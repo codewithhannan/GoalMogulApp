@@ -1,28 +1,54 @@
-import React, { Component } from 'react'
-import { View, Text, TextInput } from 'react-native'
-import { Button } from 'react-native-elements'
+import React, { Component } from 'react';
+import { View, Text, TextInput } from 'react-native';
+import { Button } from 'react-native-elements';
 
 class Login extends Component {
-  render () {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      username: '',
+      password: '',
+      isAuthenticated: false,
+      isOpen: false,
+      text: ''
+    };
+  }
+
+  render() {
+    const { containerStyle, headerStyle, formStyle, inputLabelStyle, textInputStyle } = styles
     return (
-      <View style={styles.containerStyle}>
-        <View style={styles.headerStyle}>
-          <Text style={{color: '#fff', fontSize: 20, fontWeight: 'bold'}}>GOALMOGUL</Text>
+      <View style={containerStyle}>
+        <View style={headerStyle}>
+          <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>GOALMOGUL</Text>
         </View>
 
-        <View style={styles.formStyle}>
-          <Text style={styles.inputLabelStyle}>EMAIL</Text>
-          <TextInput style={styles.textInputStyle} />
+        <View style={formStyle}>
+          <Text style={inputLabelStyle}>EMAIL</Text>
+          <TextInput
+            style={textInputStyle}
+            onChangeText={(username) => this.setState({ username })}
+            value={this.state.username}
+          />
         </View>
 
-        <View style={styles.formStyle}>
-          <Text style={styles.inputLabelStyle}>PASSWORD</Text>
-          <TextInput style={styles.textInputStyle} />
+        <View style={formStyle}>
+          <Text style={inputLabelStyle}>PASSWORD</Text>
+          <TextInput
+            style={textInputStyle}
+            secureTextEntry
+            onChangeText={(password) => this.setState({ password })}
+            value={this.state.password}
+          />
         </View>
 
         <Button
           title='JOIN NOW'
-          textStyle={{ fontWeight: '400', color: '#fff', fontSize: 20, paddingLeft: 30, paddingRight: 30 }}
+          textStyle={{ fontWeight: '400',
+            color: '#fff',
+            fontSize: 20,
+            paddingLeft: 30,
+            paddingRight: 30 }}
           buttonStyle={{
             width: 220,
             height: 45,
@@ -39,7 +65,12 @@ class Login extends Component {
         <Button
           title='LOGIN'
           clear
-          textStyle={{ color: '#fff', fontWeight: '400', fontSize: 20, paddingLeft: 30, paddingRight: 30, textDecorationLine: 'underline' }}
+          textStyle={{ color: '#fff',
+            fontWeight: '400',
+            fontSize: 20,
+            paddingLeft: 30,
+            paddingRight: 30,
+            textDecorationLine: 'underline' }}
           buttonStyle={{
             backgroundColor: '#1a9edc',
             alignSelf: 'center',
@@ -48,7 +79,7 @@ class Login extends Component {
           containerStyle={{ marginTop: 20 }}
         />
       </View>
-    )
+    );
   }
 }
 
@@ -61,8 +92,7 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 80,
-    marginBottom: 40,
-    flexDirection: 'row'
+    marginBottom: 40
   },
   formStyle: {
     backgroundColor: '#3cb9e4',
@@ -92,6 +122,6 @@ const styles = {
     borderWidth: 4,
     borderColor: '#fff'
   }
-}
+};
 
-export default Login
+export default Login;
