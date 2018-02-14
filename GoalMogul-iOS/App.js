@@ -1,17 +1,16 @@
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import Login from './src/Login'
-import { LinearGradient } from 'expo';
-
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import Login from './src/Login';
+import Home from './src/Home';
 
 export default class App extends React.Component {
-  render () {
+  render() {
     return (
       <View style={styles.container}>
 
-        <Login />
+        <Home />
       </View>
-    )
+    );
   }
 }
 
@@ -20,4 +19,4 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff'
   }
-})
+});

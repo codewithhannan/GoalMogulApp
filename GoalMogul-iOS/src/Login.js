@@ -15,8 +15,16 @@ class Login extends Component {
     };
   }
 
+  handleLogIn() {
+    console.log(`User try to log in for username: ${this.state.username}`);
+  }
+
+  handleSignUp() {
+    console.log(`User try to sign up with username: ${this.state.username}`);
+  }
+
   render() {
-    const { containerStyle, headerStyle, formStyle, inputLabelStyle, textInputStyle } = styles
+    const { containerStyle, headerStyle, formStyle, inputLabelStyle, textInputStyle } = styles;
     return (
       <View style={containerStyle}>
         <View style={headerStyle}>
@@ -60,6 +68,7 @@ class Login extends Component {
             alignSelf: 'center'
           }}
           containerStyle={{ marginTop: 10 }}
+          onPress={this.handleSignUp}
         />
 
         <Button
@@ -77,6 +86,7 @@ class Login extends Component {
             marginTop: 100
           }}
           containerStyle={{ marginTop: 20 }}
+          onPress={this.handleLogIn}
         />
       </View>
     );
