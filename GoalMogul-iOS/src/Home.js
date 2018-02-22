@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 import { View, Text, TabBarIOS, Image } from 'react-native';
 import { SearchBar } from 'react-native-elements';
+
+/* Import Icons */
 import Icon from './asset/icons/like-icon.png';
+import IconHome from './asset/footer/navigation/home.png'
+import IconBell from './asset/footer/navigation/bell.png'
+import IconGoal from './asset/footer/navigation/goal.png'
+import IconChat from './asset/footer/navigation/chat.png'
+import IconStar from './asset/footer/navigation/star.png'
+import IconMenu from './asset/header/menu.png'
+import IconHomeLogo from './asset/header/home-logo.png'
 
 
 class Home extends Component {
@@ -12,27 +21,27 @@ class Home extends Component {
         {
           key: 'home',
           title: '',
-          icon: Icon
+          icon: IconHome
         },
         {
-          key: 'friends',
+          key: 'goals',
           title: '',
-          icon: Icon
+          icon: IconGoal
         },
         {
           key: 'notification',
           title: '',
-          icon: Icon
+          icon: IconBell
         },
         {
           key: 'explore',
           title: '',
-          icon: Icon
+          icon: IconStar
         },
         {
           key: 'chat',
           title: '',
-          icon: Icon
+          icon: IconChat
         },
       ],
       selectedTab: 0
@@ -59,7 +68,7 @@ class Home extends Component {
     return (
       <View style={styles.homeContainerStyle}>
         <View style={styles.headerStyle}>
-          <Image style={styles.headerImage} source={Icon} />
+          <Image style={styles.headerImage} source={IconHomeLogo} />
           <SearchBar
             round
             platform="ios"
@@ -68,7 +77,7 @@ class Home extends Component {
             containerStyle={styles.searchContainerStyle}
             inputStyle={styles.searchInputStyle}
           />
-          <Image style={styles.headerImage} source={Icon} />
+          <Image style={styles.headerImage} source={IconMenu} />
         </View>
         <TabBarIOS
           selectedTab={this.state.selectedTab}
@@ -89,7 +98,8 @@ const styles = {
   searchContainerStyle: {
     backgroundColor: '#ffffff',
     borderBottomColor: '#ffffff',
-    borderTopColor: '#ffffff'
+    borderTopColor: '#ffffff',
+    flex: 5
   },
   searchInputStyle: {
     backgroundColor: '#f3f4f6'
@@ -97,10 +107,13 @@ const styles = {
   headerStyle: {
     flexDirection: 'row',
     backgroundColor: '#ffffff',
-    paddingTop: 30
+    paddingTop: 30,
+    paddingLeft: 12,
+    paddingRight: 12
   },
   headerImage: {
-    marginTop: 8
+    paddingTop: 32,
+    marginTop: 8,
   }
 };
 
