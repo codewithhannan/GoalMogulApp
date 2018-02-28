@@ -4,13 +4,15 @@ import { SearchBar } from 'react-native-elements';
 
 /* Import Icons */
 import Icon from './asset/icons/like-icon.png';
-import IconHome from './asset/footer/navigation/home.png'
-import IconBell from './asset/footer/navigation/bell.png'
-import IconGoal from './asset/footer/navigation/goal.png'
-import IconChat from './asset/footer/navigation/chat.png'
-import IconStar from './asset/footer/navigation/star.png'
-import IconMenu from './asset/header/menu.png'
-import IconHomeLogo from './asset/header/home-logo.png'
+import IconHome from './asset/footer/navigation/home.png';
+import IconBell from './asset/footer/navigation/bell.png';
+import IconGoal from './asset/footer/navigation/goal.png';
+import IconChat from './asset/footer/navigation/chat.png';
+import IconStar from './asset/footer/navigation/star.png';
+import IconMenu from './asset/header/menu.png';
+import IconHomeLogo from './asset/header/home-logo.png';
+
+import PostCard from './components/PostCard';
 
 
 class Home extends Component {
@@ -79,6 +81,7 @@ class Home extends Component {
           />
           <Image style={styles.headerImage} source={IconMenu} />
         </View>
+        <PostCard />
         <TabBarIOS
           selectedTab={this.state.selectedTab}
           color='#ffffff'
