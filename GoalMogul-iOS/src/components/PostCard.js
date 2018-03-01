@@ -11,6 +11,7 @@ import profilePic from '../asset/test-profile-pic.png';
 
 /* Component */
 import Card from './Card'
+import ContentContainer from './ContentContainer'
 
 class PostCard extends Component {
   constructor(props) {
@@ -65,7 +66,7 @@ class PostCard extends Component {
       <Card>
         <View style={styles.bodyContainerStyle}>
           <Image style={styles.imageContainerStyle} source={profilePic} />
-          <Text>Body</Text>
+          <ContentContainer />
         </View>
 
         <View style={styles.progressBarContainerStyle}>
@@ -114,8 +115,8 @@ const styles = StyleSheet.create({
     marginBottom: 14
   },
   imageContainerStyle: {
-    height: 50,
-    width: 50
+    height: 55,
+    width: 55
   }
 });
 
