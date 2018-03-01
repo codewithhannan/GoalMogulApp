@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { Icon } from 'react-native-elements'
 
 /* Components */
@@ -12,12 +12,11 @@ const Headline = (props) => {
     <View style={styles.containerStyle}>
       <Name text={props.name} />
       <Category text={props.category} />
-      <View>
+      <View style={styles.caretStyle}>
         <Icon
-          reverse
-          name='triangle-down'
+          name='triangle'
           color='#bec1c5'
-          size=10
+          size='12'
         />
       </View>
     </View>
@@ -26,8 +25,11 @@ const Headline = (props) => {
 
 const styles = {
   containerStyle: {
-    flex: 1,
+    display: 'flex',
     flexDirection: 'row'
+  },
+  caretStyle: {
+    alignItems: 'flex-end'
   }
 };
 

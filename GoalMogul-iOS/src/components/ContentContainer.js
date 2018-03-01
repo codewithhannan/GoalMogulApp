@@ -21,7 +21,7 @@ class ContentContainer extends Component {
 
 const styles = {
   containerStyle: {
-    flex: 1,
+    marginTop: 2,
     marginLeft: 14,
     marginRight: 10
   }

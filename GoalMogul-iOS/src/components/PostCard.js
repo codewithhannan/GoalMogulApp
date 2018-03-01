@@ -10,8 +10,9 @@ import ShareIcon from '../asset/utils/share.png';
 import profilePic from '../asset/test-profile-pic.png';
 
 /* Component */
-import Card from './Card'
-import ContentContainer from './ContentContainer'
+import Card from './Card';
+import ContentContainer from './ContentContainer';
+import ProgressBar from './ProgressBar';
 
 class PostCard extends Component {
   constructor(props) {
@@ -65,13 +66,13 @@ class PostCard extends Component {
     return (
       <Card>
         <View style={styles.bodyContainerStyle}>
-          <Image style={styles.imageContainerStyle} source={profilePic} />
+          <View style={styles.imageContainerStyle}>
+            <Image style={styles.imageStyle} source={profilePic} />
+          </View>
           <ContentContainer />
         </View>
 
-        <View style={styles.progressBarContainerStyle}>
-          <Text>Progress Bar</Text>
-        </View>
+        <ProgressBar startTime='March 13' endTime='Nov 11' />
 
         <View style={styles.buttonGroupStyle}>
           {this.renderButtonGroup()}
@@ -83,11 +84,13 @@ class PostCard extends Component {
 
 const styles = StyleSheet.create({
   containerStyle: {
-    height: 50
+    height: 60
   },
 
   buttonGroupStyle: {
-    borderTopWidth: 0.5,
+    marginTop: 5,
+    borderTopWidth: 1,
+    borderTopColor: '#f4f4f4',
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingLeft: 40,
@@ -103,20 +106,33 @@ const styles = StyleSheet.create({
     marginRight: 8
   },
   buttonCountStyle: {
-    paddingTop: 3
+    alignSelf: 'center',
+    fontSize: 10,
+    fontWeight: '600'
   },
   bodyContainerStyle: {
-    margin: 14,
+    margin: 12,
     flexDirection: 'row'
   },
   progressBarContainerStyle: {
+    display: 'flex',
     marginLeft: 14,
     marginRight: 14,
     marginBottom: 14
   },
   imageContainerStyle: {
-    height: 55,
-    width: 55
+    height: 60,
+    width: 60,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#f4f4f4',
+    padding: 2
+  },
+  imageStyle: {
+    height: 54,
+    width: 54,
+    borderRadius: 5,
+
   }
 });
 
