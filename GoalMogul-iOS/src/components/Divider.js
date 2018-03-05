@@ -9,8 +9,8 @@ const Divider = () => {
 
 const styles = {
   containerStyle: {
-    borderLeftColor: 'black',
-    borderLeftWidth: 1,
+    borderColor: '#dcdcdc',
+    borderWidth: 0.5
   }
 };
 

@@ -13,6 +13,9 @@ import IconMenu from './asset/header/menu.png';
 import IconHomeLogo from './asset/header/home-logo.png';
 
 import PostCard from './components/PostCard';
+import TabButtonGroup from './components/TabButtonGroup';
+import TabButton from './components/TabButton';
+import GoalFilterBar from './components/GoalFilterBar';
 
 
 class Home extends Component {
@@ -82,9 +85,14 @@ class Home extends Component {
           <Image style={styles.headerImage} source={IconMenu} />
         </View>
 
-        <View>
-          <Text>hi</Text>
-        </View>
+        <TabButtonGroup>
+          <TabButton text='GOALS' />
+          <TabButton text='POSTS' />
+          <TabButton text='NEEDS' />
+        </TabButtonGroup>
+
+        <GoalFilterBar />
+
         <PostCard />
         <TabBarIOS
           selectedTab={this.state.selectedTab}

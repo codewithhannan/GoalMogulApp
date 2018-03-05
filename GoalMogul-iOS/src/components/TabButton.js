@@ -3,17 +3,25 @@ import { View, Text } from 'react-native';
 
 const TabButton = (props) => {
   return (
-    <Text style={styles.containerStyle}>
-      {props.text}
-    </Text>
+    <View style={styles.containerStyle}>
+      <Text style={styles.textStyle}>
+        {props.text}
+      </Text>
+    </View>
   );
 };
 
 const styles = {
   containerStyle: {
+    flex: 1,
+    display: 'flex',
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textStyle: {
     fontSize: 10,
-    color: '#33495f'
+    fontWeight: '700',
+    color: '#33495f',
   }
 };
 

@@ -12,21 +12,23 @@ class TabButtonGroup extends Component {
   renderButton() {
     return this.props.children.map((b, index) => {
       if (index !== 0) {
+        console.log('hi I am number 1');
         return (
-          <View>
+          <View style={styles.dividerContainerStyle}>
             <Divider />
             {b}
           </View>
         );
       }
-      return b
-    })
+      return b;
+    });
   }
 
   render() {
+    console.log(this.props.children);
     return (
       <View style={styles.containerStyle}>
-        {this.props.children}
+        {this.renderButton()}
       </View>
     );
   }
@@ -35,17 +37,21 @@ class TabButtonGroup extends Component {
 const styles = {
   containerStyle: {
     display: 'flex',
-    height: 22,
+    height: 32,
     flexDirection: 'row',
     borderWidth: 1,
     borderColor: '#ddd',
     borderBottomWidth: 0,
     backgroundColor: '#fff',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 1
+  },
+  dividerContainerStyle: {
+    flexDirection: 'row',
+    flex: 1
   }
 };
 
