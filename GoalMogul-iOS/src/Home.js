@@ -11,6 +11,7 @@ import IconChat from './asset/footer/navigation/chat.png';
 import IconStar from './asset/footer/navigation/star.png';
 import IconMenu from './asset/header/menu.png';
 import IconHomeLogo from './asset/header/home-logo.png';
+import Logo from './asset/header/logo.png';
 
 import PostCard from './components/PostCard';
 import TabButtonGroup from './components/TabButtonGroup';
@@ -73,7 +74,7 @@ class Home extends Component {
     return (
       <View style={styles.homeContainerStyle}>
         <View style={styles.headerStyle}>
-          <Image style={styles.headerImage} source={IconHomeLogo} />
+          <Image style={styles.headerLeftImage} source={Logo} />
           <SearchBar
             round
             platform="ios"
@@ -82,7 +83,7 @@ class Home extends Component {
             containerStyle={styles.searchContainerStyle}
             inputStyle={styles.searchInputStyle}
           />
-          <Image style={styles.headerImage} source={IconMenu} />
+          <Image style={styles.headerRightImage} source={IconMenu} />
         </View>
 
         <TabButtonGroup>
@@ -114,10 +115,12 @@ const styles = {
     backgroundColor: '#ffffff',
     borderBottomColor: '#ffffff',
     borderTopColor: '#ffffff',
-    flex: 5
+    flex: 4,
+    marginRight: 3
   },
   searchInputStyle: {
-    backgroundColor: '#f3f4f6'
+    backgroundColor: '#f3f4f6',
+    fontSize: 12
   },
   headerStyle: {
     flexDirection: 'row',
@@ -126,7 +129,15 @@ const styles = {
     paddingLeft: 12,
     paddingRight: 12
   },
-  headerImage: {
+  headerLeftImage: {
+    width: 36,
+    height: 36,
+    paddingTop: 32,
+    marginTop: 8,
+  },
+  headerRightImage: {
+    width: 25,
+    height: 30,
     paddingTop: 32,
     marginTop: 8,
   }

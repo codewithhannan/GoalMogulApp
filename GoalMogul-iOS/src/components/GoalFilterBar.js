@@ -11,8 +11,6 @@ class GoalFilterBar extends Component {
     return (
       <View style={containerStyle}>
 
-        <View style={detailContainerStyle} />
-
         <View style={detailContainerStyle}>
           <Text style={textStyle}>MOST IMPORTANT</Text>
           <Image style={caretStyle} source={dropDown} />
@@ -34,16 +32,17 @@ const styles = {
   containerStyle: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 12,
     marginBottom: 12
   },
   detailContainerStyle: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginRight: 5,
+    marginLeft: 5
   },
   textStyle: {
     fontSize: 9,

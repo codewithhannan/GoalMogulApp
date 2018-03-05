@@ -55,7 +55,7 @@ class PostCard extends Component {
           onResponderRelease={this.handleButtonPressedRelease.bind(this)}
           nativeID={b.key}
         >
-          <Image style={styles.buttonStyle} source={LikeIcon} />
+          <Image style={styles.buttonStyle} source={b.icon} />
           <Text style={styles.buttonCountStyle}>{b.data}</Text>
         </View>
       );
