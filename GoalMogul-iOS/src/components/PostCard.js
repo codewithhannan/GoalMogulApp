@@ -89,13 +89,15 @@ const styles = StyleSheet.create({
     borderTopColor: '#f4f4f4',
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingLeft: 40,
-    paddingRight: 40,
+    paddingLeft: 20,
+    paddingRight: 20,
     paddingTop: 8,
     paddingBottom: 8
 
   },
   buttonContainerStyle: {
+    justifyContent: 'center',
+    alignItems: 'center',
     flexDirection: 'row'
   },
   buttonStyle: {
