@@ -72,7 +72,7 @@ class PostCard extends Component {
           <ContentContainer />
         </View>
 
-        <ProgressBar startTime='March 13' endTime='Nov 11' />
+        <ProgressBar startTime='Mar 2013' endTime='Nov 2011' />
 
         <View style={styles.buttonGroupStyle}>
           {this.renderButtonGroup()}
@@ -83,12 +83,8 @@ class PostCard extends Component {
 }
 
 const styles = StyleSheet.create({
-  containerStyle: {
-    height: 60
-  },
 
   buttonGroupStyle: {
-    marginTop: 5,
     borderTopWidth: 1,
     borderTopColor: '#f4f4f4',
     flexDirection: 'row',

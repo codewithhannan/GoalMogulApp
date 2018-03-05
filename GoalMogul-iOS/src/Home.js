@@ -81,6 +81,10 @@ class Home extends Component {
           />
           <Image style={styles.headerImage} source={IconMenu} />
         </View>
+
+        <View>
+          <Text>hi</Text>
+        </View>
         <PostCard />
         <TabBarIOS
           selectedTab={this.state.selectedTab}

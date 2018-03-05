@@ -23,7 +23,8 @@ const styles = {
   containerStyle: {
     marginTop: 2,
     marginLeft: 14,
-    marginRight: 10
+    marginRight: 10,
+    flex: 1
   }
 }
 

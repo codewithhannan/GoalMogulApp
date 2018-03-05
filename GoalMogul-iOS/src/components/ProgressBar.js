@@ -8,11 +8,11 @@ const ProgressBar = (props) => {
   return (
     <View style={styles.containerStyle}>
       <Text style={styles.textStyle}>
-        March 11 {props.startTime}
+        {props.startTime}
       </Text>
       <Image source={Bar} style={styles.imageStyle} />
       <Text style={styles.textStyle}>
-        Nov 12 {props.endTime}
+        {props.endTime}
       </Text>
     </View>
   );
@@ -20,17 +20,19 @@ const ProgressBar = (props) => {
 
 const styles = {
   containerStyle: {
-    flex: 1,
     flexDirection: 'row',
-    marginBottom: 14
+    marginTop: 2,
+    marginBottom: 16,
+    marginLeft: 14,
+    marginRight: 14
   },
   imageStyle: {
     flex: 6
   },
   textStyle: {
-    flex: 1,
     color: '#7b7b7b',
-    fontSize: 10
+    fontSize: 8.5,
+    alignSelf: 'center'
   }
 };
 

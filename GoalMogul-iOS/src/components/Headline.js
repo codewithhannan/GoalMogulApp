@@ -1,23 +1,24 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Image } from 'react-native';
 import { Icon } from 'react-native-elements'
 
 /* Components */
 import Name from './Name';
 import Category from './Category';
 
+/* Asset */
+import badge from '../asset/utils/badge.png';
+import dropDown from '../asset/utils/dropDown.png';
+
 const Headline = (props) => {
   // TODO: format time
   return (
     <View style={styles.containerStyle}>
       <Name text={props.name} />
+      <Image style={styles.imageStyle} source={badge} />
       <Category text={props.category} />
-      <View style={styles.caretStyle}>
-        <Icon
-          name='triangle'
-          color='#bec1c5'
-          size='12'
-        />
+      <View style={styles.caretContainer}>
+        <Image source={dropDown} />
       </View>
     </View>
   );
@@ -28,8 +29,15 @@ const styles = {
     display: 'flex',
     flexDirection: 'row'
   },
-  caretStyle: {
-    alignItems: 'flex-end'
+  caretContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
+  },
+  imageStyle: {
+    alignSelf: 'center',
+    marginLeft: 3,
+    marginRight: 3
   }
 };
 
