@@ -54,6 +54,16 @@ class Home extends Component {
     };
   }
 
+  // <SearchBar
+  //   lightTheme
+  //   round
+  //   platform="ios"
+  //   placeholder='Search GoalMogul'
+  //   placeholderTextColor='#b2b3b4'
+  //   containerStyle={styles.searchContainerStyle}
+  //   inputStyle={styles.searchInputStyle}
+  // />
+
   render() {
     const children = this.state.navigation.map((tab, i) => {
      return (
@@ -75,19 +85,18 @@ class Home extends Component {
       <View style={styles.homeContainerStyle}>
         <View style={styles.headerStyle}>
           <Image style={styles.headerLeftImage} source={Logo} />
-          <SearchBar
-            round
-            platform="ios"
-            placeholder='Search GoalMogul'
-            placeholderTextColor='#b2b3b4'
-            containerStyle={styles.searchContainerStyle}
-            inputStyle={styles.searchInputStyle}
-          />
+            <SearchBar
+              round
+              inputStyle={styles.searchInputStyle}
+              containerStyle={styles.searchContainerStyle}
+              icon={{ type: 'font-awesome', name: 'search', style: styles.searchIconStyle }}
+              placeholder='Search GoalMogul'
+            />
           <Image style={styles.headerRightImage} source={IconMenu} />
         </View>
 
         <TabButtonGroup>
-          <TabButton text='GOALS' />
+          <TabButton text='GOALS' onSelect />
           <TabButton text='POSTS' />
           <TabButton text='NEEDS' />
         </TabButtonGroup>
@@ -95,9 +104,12 @@ class Home extends Component {
         <GoalFilterBar />
 
         <PostCard />
+        <PostCard />
         <TabBarIOS
           selectedTab={this.state.selectedTab}
           color='#ffffff'
+          tintColor='#324a61'
+          unselectedItemTintColor='#b8c7cc'
         >
           {children}
         </TabBarIOS>
@@ -113,14 +125,20 @@ const styles = {
   },
   searchContainerStyle: {
     backgroundColor: '#ffffff',
-    borderBottomColor: '#ffffff',
     borderTopColor: '#ffffff',
+    borderBottomColor: '#ffffff',
+    padding: 0,
     flex: 4,
-    marginRight: 3
+    marginRight: 3,
   },
   searchInputStyle: {
     backgroundColor: '#f3f4f6',
-    fontSize: 12
+    fontSize: 12,
+    height: 25
+  },
+  searchIconStyle: {
+    top: 13.5,
+    fontSize: 13
   },
   headerStyle: {
     flexDirection: 'row',
@@ -132,14 +150,13 @@ const styles = {
   headerLeftImage: {
     width: 36,
     height: 36,
-    paddingTop: 32,
+    paddingTop: 30,
     marginTop: 8,
   },
   headerRightImage: {
-    width: 25,
-    height: 30,
-    paddingTop: 32,
-    marginTop: 8,
+    width: 20,
+    height: 15,
+    marginTop: 14,
   }
 };
 

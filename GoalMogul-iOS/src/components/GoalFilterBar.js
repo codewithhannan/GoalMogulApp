@@ -41,12 +41,12 @@ const styles = {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 5,
-    marginLeft: 5
+    marginRight: 15,
+    marginLeft: 15
   },
   textStyle: {
     fontSize: 9,
-    color: '#2abedf',
+    color: '#1fb6dd',
     fontWeight: '600'
   },
   standardTextStyle: {

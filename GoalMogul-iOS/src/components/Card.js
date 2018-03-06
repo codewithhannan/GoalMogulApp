@@ -13,16 +13,14 @@ const styles = {
   containerStyle: {
     display: 'flex',
     borderWidth: 1,
-    borderRadius: 2,
-    borderColor: '#ddd',
+    borderColor: '#eaeaea',
     borderBottomWidth: 0,
     backgroundColor: '#fff',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2},
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
-    elevation: 1,
-    marginBottom: 10
+    marginBottom: 7
   }
 };
 
