@@ -134,10 +134,10 @@ const styles = {
   searchInputStyle: {
     backgroundColor: '#f3f4f6',
     fontSize: 12,
-    height: 25
+    height: 28
   },
   searchIconStyle: {
-    top: 13.5,
+    top: 14,
     fontSize: 13
   },
   headerStyle: {
@@ -148,10 +148,9 @@ const styles = {
     paddingRight: 12
   },
   headerLeftImage: {
-    width: 36,
-    height: 36,
-    paddingTop: 30,
-    marginTop: 8,
+    width: 25,
+    height: 25,
+    marginTop: 10,
   },
   headerRightImage: {
     width: 20,

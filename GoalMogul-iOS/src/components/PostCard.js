@@ -26,16 +26,16 @@ class PostCard extends Component {
           data: 13
         },
         {
-          key: 'bulk',
-          title: '',
-          icon: BulbIcon,
-          data: 128
-        },
-        {
           key: 'share',
           title: '',
           icon: ShareIcon,
           data: 1000
+        },
+        {
+          key: 'bulk',
+          title: '',
+          icon: BulbIcon,
+          data: 128
         },
       ]
     };
