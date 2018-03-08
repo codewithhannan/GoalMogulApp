@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { View, Text, TextInput } from 'react-native';
 
 /* Components */
+import RegistrationContainer from './RegistrationContainer';
+import RegistrationBody from './RegistrationBody';
 import Header from './Header';
 import Button from './Button';
 import Divider from './Divider';
@@ -67,31 +69,21 @@ class Account extends Component {
 
   render() {
     return (
-      <View style={styles.containerStyle}>
+      <RegistrationContainer>
         <Header />
-        <View style={styles.bodyStyle}>
+        <RegistrationBody>
           <Text style={styles.titleTextStyle}>Get Started!</Text>
           {this.renderForm()}
           <Button text='Next' />
           {this.renderSplitter()}
           {this.renderLogIn()}
-        </View>
-      </View>
+        </RegistrationBody>
+      </RegistrationContainer>
     );
   }
 }
 
 const styles = {
-  containerStyle: {
-    flex: 1,
-    display: 'flex'
-  },
-  bodyStyle: {
-    flex: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-  },
   titleTextStyle: {
     fontSize: 26,
     fontWeight: '700',
