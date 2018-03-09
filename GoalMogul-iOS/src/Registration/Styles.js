@@ -4,6 +4,16 @@ import { StyleSheet } from 'react-native';
 Styling for Registration workflow
 */
 export default StyleSheet.create({
+  containerStyle: {
+    flex: 1,
+    display: 'flex'
+  },
+  bodyContainerStyle: {
+    flex: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+  },
   titleTextStyle: {
     fontSize: 25,
     fontWeight: '700',

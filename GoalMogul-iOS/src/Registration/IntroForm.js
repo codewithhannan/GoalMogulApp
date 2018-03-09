@@ -5,8 +5,6 @@ import { View, Text, TextInput } from 'react-native';
 import Header from './Header';
 import Button from './Button';
 import Divider from './Divider';
-import RegistrationContainer from './RegistrationContainer';
-import RegistrationBody from './RegistrationBody';
 import FormContainer from './FormContainer';
 
 /* Styles */
@@ -23,9 +21,9 @@ class IntroForm extends Component {
 
   render() {
     return (
-      <RegistrationContainer>
+      <View style={Styles.containerStyle}>
         <Header name='John Doe' />
-        <RegistrationBody>
+        <View style={Styles.bodyContainerStyle}>
           <Text style={Styles.titleTextStyle}>A brief intro...</Text>
           <View style={{ alignSelf: 'center' }}>
             <Divider
@@ -53,8 +51,8 @@ class IntroForm extends Component {
 
           <Button text='Next' />
           <Button text='Skip' arrow />
-        </RegistrationBody>
-      </RegistrationContainer>
+        </View>
+      </View>
     );
   }
 }
