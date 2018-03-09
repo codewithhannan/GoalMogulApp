@@ -7,6 +7,10 @@ import RegistrationBody from './RegistrationBody';
 import Header from './Header';
 import Button from './Button';
 import Divider from './Divider';
+import FormContainer from './FormContainer';
+
+/* Styles */
+import Styles from './Styles';
 
 class Account extends Component {
 
@@ -40,9 +44,9 @@ class Account extends Component {
 
   renderForm() {
     return (
-      <View style={styles.formContainer}>
+      <FormContainer>
           <TextInput
-            style={styles.textInputStyle}
+            style={Styles.textInputStyle}
             placeholder='Full Name'
             onChangeText={(name) => this.setState({ name })}
             value={this.state.name}
@@ -50,20 +54,20 @@ class Account extends Component {
 
         <Divider horizontal flex={1} color='#eaeaea' />
         <TextInput
-          style={styles.textInputStyle}
+          style={Styles.textInputStyle}
           placeholder='Email'
           onChangeText={(email) => this.setState({ email })}
           value={this.state.email}
         />
         <Divider horizontal flex={1} color='#eaeaea' />
         <TextInput
-          style={styles.textInputStyle}
+          style={Styles.textInputStyle}
           placeholder='Password'
           secureTextEntry
           onChangeText={(password) => this.setState({ password })}
           value={this.state.password}
         />
-      </View>
+      </FormContainer>
     );
   }
 
@@ -72,7 +76,7 @@ class Account extends Component {
       <RegistrationContainer>
         <Header />
         <RegistrationBody>
-          <Text style={styles.titleTextStyle}>Get Started!</Text>
+          <Text style={Styles.titleTextStyle}>Get Started!</Text>
           {this.renderForm()}
           <Button text='Next' />
           {this.renderSplitter()}
@@ -84,14 +88,6 @@ class Account extends Component {
 }
 
 const styles = {
-  titleTextStyle: {
-    fontSize: 26,
-    fontWeight: '700',
-    color: '#646464',
-    alignSelf: 'center',
-    marginTop: 28,
-    marginBottom: 28
-  },
   splitterStyle: {
     display: 'flex',
     flexDirection: 'row',
@@ -117,21 +113,6 @@ const styles = {
     fontSize: 15,
     color: '#34c0dd',
     fontWeight: '600'
-  },
-  formContainer: {
-    display: 'flex',
-    borderWidth: 2,
-    borderColor: '#eaeaea',
-    marginBottom: 12,
-    marginRight: 18,
-    marginLeft: 18
-  },
-  textInputStyle: {
-    fontSize: 15,
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingTop: 16,
-    paddingBottom: 16
   }
 };
 

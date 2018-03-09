@@ -2,16 +2,18 @@ import React from 'react';
 import { View, Image, Text } from 'react-native';
 
 /* Asset */
-import HeaderImage from '../asset/header/header_logo.png'
+import HeaderImage from '../asset/header/header-logo.png';
+import HeaderLogo from '../asset/header/header-logo-white.png';
 
 const Header = (props) => {
   let headerStyle = { ...styles.containerStyle }
 
   if (props.name) {
-    headerStyle.height = 167
+    headerStyle.height = 167;
+    headerStyle.paddingTop = 0;
     return (
       <View style={headerStyle}>
-        <Image style={styles.imageStyle} source={HeaderImage} />
+        <Image style={styles.imageStyle} source={HeaderLogo} />
         <Text style={styles.introTextStyle}>Welcome to GoalMogul,</Text>
         <Text style={styles.headerNameStyle}>{props.name}</Text>
       </View>
@@ -20,7 +22,7 @@ const Header = (props) => {
 
   return (
     <View style={headerStyle}>
-      <Image style={styles.imageStyle} source={HeaderImage} />
+      <Image source={HeaderImage} />
     </View>
   );
 };
@@ -35,16 +37,19 @@ const styles = {
     alignItems: 'center'
   },
   imageStyle: {
-
+    height: 38,
+    width: 38
   },
   introTextStyle: {
-    fontSize: 20,
+    fontSize: 19,
     justifyContent: 'center',
     alignSelf: 'center',
-    color: '#ffffff'
+    color: '#ffffff',
+    marginTop: 10,
+    marginBottom: 8
   },
   headerNameStyle: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: '800',
     justifyContent: 'center',
     alignSelf: 'center',

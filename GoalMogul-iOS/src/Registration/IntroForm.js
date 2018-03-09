@@ -7,18 +7,26 @@ import Button from './Button';
 import Divider from './Divider';
 import RegistrationContainer from './RegistrationContainer';
 import RegistrationBody from './RegistrationBody';
+import FormContainer from './FormContainer';
 
 /* Styles */
 import Styles from './Styles';
 
-class AddProfilePic extends Component {
+class IntroForm extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      headline: ''
+    };
+  }
 
   render() {
     return (
       <RegistrationContainer>
         <Header name='John Doe' />
         <RegistrationBody>
-          <Text style={Styles.titleTextStyle}>Add a picture</Text>
+          <Text style={Styles.titleTextStyle}>A brief intro...</Text>
           <View style={{ alignSelf: 'center' }}>
             <Divider
               horizontal
@@ -27,10 +35,22 @@ class AddProfilePic extends Component {
               color='#f4f4f4'
             />
           </View>
+
+          <View style={{ marginTop: 15 }} />
+
           <Text style={Styles.explanationTextStyle}>
-            It helps your friends identify you
+            Your headline:
           </Text>
-          <View style={styles.profilePicStyle} />
+
+          <FormContainer>
+            <TextInput
+              style={Styles.textInputStyle}
+              placeholder="Ex: 'CEO of Wayne Enterprises'"
+              onChangeText={(headline) => this.setState({ headline })}
+              value={this.state.headline}
+            />
+          </FormContainer>
+
           <Button text='Next' />
           <Button text='Skip' arrow />
         </RegistrationBody>
@@ -39,16 +59,4 @@ class AddProfilePic extends Component {
   }
 }
 
-const styles = {
-  profilePicStyle: {
-    height: 200,
-    width: 200,
-    alignSelf: 'center',
-    marginBottom: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-  }
-};
-
-export default AddProfilePic;
+export default IntroForm;

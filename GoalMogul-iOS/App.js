@@ -4,6 +4,7 @@ import Login from './src/Login';
 import Home from './src/Home';
 import Account from './src/Registration/Account';
 import AddProfilePic from './src/Registration/AddProfilePic';
+import IntroForm from './src/Registration/IntroForm';
 
 export default class App extends React.Component {
   render() {
