@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Image, Text } from 'react-native';
 
 /* Asset */
-import HeaderImage from '../asset/header/header-logo.png';
-import HeaderLogo from '../asset/header/header-logo-white.png';
+import HeaderImage from '../../asset/header/header-logo.png';
+import HeaderLogo from '../../asset/header/header-logo-white.png';
 
 const Header = (props) => {
   let headerStyle = { ...styles.containerStyle }
@@ -20,6 +20,17 @@ const Header = (props) => {
     );
   }
 
+  if (props.contact) {
+    headerStyle.height = 157;
+    headerStyle.paddingTop = 0;
+    return (
+      <View style={headerStyle}>
+        <Image style={styles.imageStyle} source={HeaderLogo} />
+        <Text style={styles.introTextStyle}>Contacts on GoalMogul,</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={headerStyle}>
       <Image source={HeaderImage} />
@@ -31,7 +42,7 @@ const styles = {
   containerStyle: {
     display: 'flex',
     backgroundColor: '#34c0dd',
-    height: 205,
+    height: 207,
     paddingTop: 14,
     justifyContent: 'center',
     alignItems: 'center'

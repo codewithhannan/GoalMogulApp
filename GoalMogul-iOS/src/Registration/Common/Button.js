@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
+import { Icon } from 'react-native-elements';
 
 const Button = (props) => {
   const containerStyle = { ...styles.containerStyle };
@@ -9,10 +10,16 @@ const Button = (props) => {
     containerStyle.backgroundColor = '#ffffff';
     textStyle.color = '#34c0dd';
     textStyle.fontWeight = '600';
-    
+
     return (
       <View style={containerStyle}>
         <Text style={textStyle}>{props.text}</Text>
+        <Icon
+          name='ios-arrow-round-forward'
+          type='ionicon'
+          color='#34c0dd'
+          iconStyle={styles.iconStyle}
+        />
       </View>
     );
   }
@@ -26,6 +33,7 @@ const Button = (props) => {
 const styles = {
   containerStyle: {
     display: 'flex',
+    flexDirection: 'row',
     marginTop: 8,
     marginBottom: 8,
     marginLeft: 18,
@@ -39,6 +47,12 @@ const styles = {
     fontWeight: '800',
     color: '#ffffff',
     alignSelf: 'center'
+  },
+  iconStyle: {
+    alignSelf: 'center',
+    fontSize: 26,
+    marginLeft: 5,
+    marginTop: 3
   }
 };
 

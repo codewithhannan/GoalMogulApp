@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { View, Text, TextInput } from 'react-native';
 
 /* Components */
-import Header from './Header';
-import Button from './Button';
-import Divider from './Divider';
-import FormContainer from './FormContainer';
+import Header from './Common/Header';
+import Button from './Common/Button';
+import Divider from './Common/Divider';
+import FormContainer from './Common/FormContainer';
 
 /* Styles */
 import Styles from './Styles';
@@ -31,11 +31,16 @@ class Account extends Component {
     );
   }
 
+  // renderLogIn() {
+  //   return (
+  //     <View style={styles.logInContainer}>
+  //       <Text style={styles.logInTextStyle}>Log In to your account</Text>
+  //     </View>
+  //   );
+  // }
   renderLogIn() {
     return (
-      <View style={styles.logInContainer}>
-        <Text style={styles.logInTextStyle}>Log In to your account</Text>
-      </View>
+      <Button text='Log In to your account' arrow />
     );
   }
   // <View style={styles.textInputStyle}>
@@ -74,7 +79,7 @@ class Account extends Component {
       <View style={Styles.containerStyle}>
         <Header />
         <View style={Styles.bodyContainerStyle}>
-          <Text style={Styles.titleTextStyle}>Get Started!</Text>
+          <Text style={styles.titleTextStyle}>Get Started!</Text>
           {this.renderForm()}
           <Button text='Next' />
           {this.renderSplitter()}
@@ -86,13 +91,21 @@ class Account extends Component {
 }
 
 const styles = {
+  titleTextStyle: {
+    fontSize: 25,
+    fontWeight: '700',
+    color: '#646464',
+    alignSelf: 'center',
+    marginTop: 30,
+    marginBottom: 25
+  },
   splitterStyle: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 30,
-    marginBottom: 30
+    marginTop: 32,
+    marginBottom: 10
   },
   splitterTextStyle: {
     fontSize: 15,

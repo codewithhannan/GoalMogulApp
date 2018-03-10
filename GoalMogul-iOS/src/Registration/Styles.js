@@ -35,5 +35,19 @@ export default StyleSheet.create({
     alignSelf: 'center',
     color: '#858585',
     fontSize: 15
+  },
+  contactSyncPromptingText: {
+    alignSelf: 'center',
+    color: '#858585',
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 5
+  },
+  contactNoteText: {
+    marginTop: 5,
+    marginBottom: 14,
+    alignSelf: 'center',
+    color: '#858585',
+    fontSize: 13
   }
 });

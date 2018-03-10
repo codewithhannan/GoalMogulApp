@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { View, Text, TextInput } from 'react-native';
 
 /* Components */
-import Header from './Header';
-import Button from './Button';
-import Divider from './Divider';
-import FormContainer from './FormContainer';
+import Header from './Common/Header';
+import Button from './Common/Button';
+import Divider from './Common/Divider';
+import FormContainer from './Common/FormContainer';
 
 /* Styles */
 import Styles from './Styles';
