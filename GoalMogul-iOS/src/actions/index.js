@@ -16,3 +16,18 @@ export const passwordChanged = (password) => {
     payload: password
   };
 };
+
+export const loginUser = ({ username, password }) => {
+  // Call the endpoint to use username and password to signin
+  // Obtain the credential
+
+  // fetch(url, header).then((res) => {
+  //  res.json().then((data) => {
+  //     // Handle data
+  //     dispatch({ type: , payload: });
+  //  })
+  // })
+  return (dispatch) => {
+
+  };
+};

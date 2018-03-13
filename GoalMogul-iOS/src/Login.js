@@ -34,6 +34,20 @@ class Login extends Component {
     console.log(`User try to sign up with username: ${this.state.username}`);
   }
 
+  renderError() {
+    if (this.props.error) {
+      //TODO: return a toast to properly show error message
+    }
+  }
+
+  renderButton() {
+    if (this.props.loading) {
+      //TODO: render spiner
+    }
+
+    // TODO: render login button
+  }
+
   render() {
     const { containerStyle, headerStyle, formStyle, inputLabelStyle, textInputStyle } = styles;
     return (
@@ -146,9 +160,13 @@ const styles = {
 };
 
 const mapStateToProps = state => {
+  const { username, password, error, loading } = state.auth;
+
   return {
-    username: state.auth.username,
-    password: state.auth.password
+    username: username,
+    password: password,
+    error: error,
+    loading: loading
   }
 };
 

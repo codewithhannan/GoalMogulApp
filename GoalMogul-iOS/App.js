@@ -3,7 +3,8 @@ import { StyleSheet, View } from 'react-native';
 
 /* State management */
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import ReduxThunk from 'redux-thunk';
 
 /* Reducers */
 import reducers from './reducers';
@@ -23,8 +24,10 @@ export default class App extends React.Component {
   // Persist app state
 
   render() {
+    const store = createStore(reducers, {}, applyMiddleware(ReduxThunk))
+
     return (
-      <Provider store={createStore(reducers)}>
+      <Provider store={store}>
         <View style={styles.container}>
 
           <IntroForm />
