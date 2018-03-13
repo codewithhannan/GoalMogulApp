@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput } from 'react-native';
+import { connect } from 'react-redux';
+import { userNameChanged, passwordChanged } from './actions';
 import { Button } from 'react-native-elements';
+
 
 class Login extends Component {
   constructor(props) {
@@ -13,6 +16,14 @@ class Login extends Component {
       isOpen: false,
       text: ''
     };
+  }
+
+  onUserNameChange(text) {
+    this.props.userNameChanged(text);
+  }
+
+  onPasswordChange(pw) {
+    this.props.passwordChanged(pw);
   }
 
   handleLogIn() {
@@ -35,8 +46,8 @@ class Login extends Component {
           <Text style={inputLabelStyle}>EMAIL</Text>
           <TextInput
             style={textInputStyle}
-            onChangeText={(username) => this.setState({ username })}
-            value={this.state.username}
+            onChangeText={this.onUserNameChange.bind(this)}
+            value={this.props.username}
           />
         </View>
 
@@ -45,8 +56,8 @@ class Login extends Component {
           <TextInput
             style={textInputStyle}
             secureTextEntry
-            onChangeText={(password) => this.setState({ password })}
-            value={this.state.password}
+            onChangeText={this.onPasswordChange.bind(this)}
+            value={this.props.password}
           />
         </View>
 
@@ -134,4 +145,11 @@ const styles = {
   }
 };
 
-export default Login;
+const mapStateToProps = state => {
+  return {
+    username: state.auth.username,
+    password: state.auth.password
+  }
+};
+
+export default connect(mapStateToProps, { userNameChanged, passwordChanged })(Login);
