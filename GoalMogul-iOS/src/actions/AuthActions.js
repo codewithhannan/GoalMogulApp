@@ -3,7 +3,7 @@ import { Actions } from 'react-native-router-flux';
 import {
   USERNAME_CHANGED,
   PASSWORD_CHANGED,
-  LOGIN_REGISTRATION
+  REGISTRATION_ACCOUNT
 } from './types';
 
 export const userNameChanged = (username) => {
@@ -38,7 +38,7 @@ export const loginUser = ({ username, password }) => {
 export const registerUser = () => {
   return (dispatch) => {
     dispatch({
-      type: LOGIN_REGISTRATION
+      type: REGISTRATION_ACCOUNT
     });
     Actions.registration();
   };
