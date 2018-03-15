@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import { connect } from 'react-redux';
-import { userNameChanged, passwordChanged } from './actions';
+import { userNameChanged, passwordChanged, registerUser } from './actions';
 import { Button } from 'react-native-elements';
 
 
@@ -31,7 +31,8 @@ class Login extends Component {
   }
 
   handleSignUp() {
-    console.log(`User try to sign up with username: ${this.state.username}`);
+    console.log('User try to register');
+    this.props.registerUser();
   }
 
   renderError() {
@@ -170,4 +171,4 @@ const mapStateToProps = state => {
   }
 };
 
-export default connect(mapStateToProps, { userNameChanged, passwordChanged })(Login);
+export default connect(mapStateToProps, { userNameChanged, passwordChanged, registerUser })(Login);

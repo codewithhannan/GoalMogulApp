@@ -1,3 +1,5 @@
+import { Actions } from 'react-native-router-flux';
+
 import {
   USERNAME_CHANGED,
   PASSWORD_CHANGED
@@ -30,4 +32,8 @@ export const loginUser = ({ username, password }) => {
   return (dispatch) => {
 
   };
+};
+
+export const registerUser = () => {
+  Actions.registration();
 };
