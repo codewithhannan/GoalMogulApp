@@ -12,15 +12,6 @@ import reducers from './src/reducers';
 /* Router */
 import Router from './src/Router';
 
-/* Components */
-import Login from './src/Login';
-import Home from './src/Home';
-import Account from './src/Registration/Account';
-import AddProfilePic from './src/Registration/AddProfilePic';
-import IntroForm from './src/Registration/IntroForm';
-import Contact from './src/Registration/Contacts';
-import ContactSync from './src/Registration/ContactSync';
-
 const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
 
 export default class App extends React.Component {
@@ -29,7 +20,6 @@ export default class App extends React.Component {
   // Persist app state
 
   render() {
-    // const store = createStore(reducers, {}, applyMiddleware(ReduxThunk))
     return (
       <Provider store={store}>
         <View style={styles.container}>
