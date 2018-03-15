@@ -9,7 +9,7 @@ if there is corresponding issue, state it
 -->
 
 ## 22 Feb 2018, by Jia Zeng <andyzeng96@gmail.com>
-* See [Issue #](https://github.com/issues)
-* Modify home container
-* Crop icons and add to home and post card
-* Initial Implementation for post card
+* See [Issue #7](https://github.com/somechild/goalmogul-ios/issues/7)
+* Set up routing between pages for registration
+* Set up react-native-router-flux package
+* Implement basic Registration UI
