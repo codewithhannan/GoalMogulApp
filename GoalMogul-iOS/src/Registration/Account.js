@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput } from 'react-native';
+import { View, Text, TextInput, TouchableWithoutFeedback } from 'react-native';
+import { connect } from 'react-redux';
 
 /* Components */
 import Header from './Common/Header';
@@ -9,6 +10,9 @@ import FormContainer from './Common/FormContainer';
 
 /* Styles */
 import Styles from './Styles';
+
+/* Actions */
+import { registrationLogin, registrationNextAddProfile } from '../actions';
 
 class Account extends Component {
 
@@ -21,6 +25,16 @@ class Account extends Component {
     };
   }
 
+  handleLogInPressed() {
+    console.log('login pressed');
+    this.props.registrationLogin();
+  }
+
+  handleNextPressed() {
+    console.log('next pressed');
+    this.props.registrationNextAddProfile();
+  }
+
   renderSplitter() {
     return (
       <View style={styles.splitterStyle}>
@@ -31,19 +45,15 @@ class Account extends Component {
     );
   }
 
-  // renderLogIn() {
-  //   return (
-  //     <View style={styles.logInContainer}>
-  //       <Text style={styles.logInTextStyle}>Log In to your account</Text>
-  //     </View>
-  //   );
-  // }
   renderLogIn() {
     return (
-      <Button text='Log In to your account' arrow />
+      <TouchableWithoutFeedback onPress={this.handleLogInPressed.bind(this)}>
+        <View>
+          <Button text='Log In to your account' arrow />
+        </View>
+      </TouchableWithoutFeedback>
     );
   }
-  // <View style={styles.textInputStyle}>
 
   renderForm() {
     return (
@@ -81,7 +91,11 @@ class Account extends Component {
         <View style={Styles.bodyContainerStyle}>
           <Text style={styles.titleTextStyle}>Get Started!</Text>
           {this.renderForm()}
-          <Button text='Next' />
+          <TouchableWithoutFeedback onPress={this.handleNextPressed.bind(this)}>
+            <View>
+              <Button text='Next' />
+            </View>
+          </TouchableWithoutFeedback>
           {this.renderSplitter()}
           {this.renderLogIn()}
         </View>
@@ -127,4 +141,15 @@ const styles = {
   }
 };
 
-export default Account;
+const mapStateToProps = state => {
+  const { username, password, error, loading } = state.auth;
+
+  return {
+    username: username,
+    password: password,
+    error: error,
+    loading: loading
+  }
+};
+
+export default connect(null, { registrationLogin, registrationNextAddProfile })(Account);

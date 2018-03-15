@@ -7,7 +7,10 @@ import { createStore, applyMiddleware } from 'redux';
 import ReduxThunk from 'redux-thunk';
 
 /* Reducers */
-import reducers from './reducers';
+import reducers from './src/reducers';
+
+/* Router */
+import Router from './src/Router';
 
 /* Components */
 import Login from './src/Login';
@@ -18,19 +21,20 @@ import IntroForm from './src/Registration/IntroForm';
 import Contact from './src/Registration/Contacts';
 import ContactSync from './src/Registration/ContactSync';
 
+const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
+
 export default class App extends React.Component {
 
   // TODO: in ComponentWillMount set up dependencies for verification and
   // Persist app state
 
   render() {
-    const store = createStore(reducers, {}, applyMiddleware(ReduxThunk))
-
+    // const store = createStore(reducers, {}, applyMiddleware(ReduxThunk))
     return (
       <Provider store={store}>
         <View style={styles.container}>
 
-          <IntroForm />
+          <Router />
         </View>
       </Provider>
     );

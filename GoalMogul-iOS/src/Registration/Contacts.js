@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableWithoutFeedback } from 'react-native';
+import { connect } from 'react-redux';
 
 /* Components */
 import Header from './Common/Header';
@@ -9,7 +10,14 @@ import Divider from './Common/Divider';
 /* Styles */
 import Styles from './Styles';
 
+/* Actions */
+import { registrationNextContactSync } from '../actions';
+
 class Contacts extends Component {
+
+  handleNextOnPressed() {
+    this.props.registrationNextContactSync();
+  }
 
   render() {
     return (
@@ -40,7 +48,12 @@ class Contacts extends Component {
             Note: we do not collect or share contact data.
           </Text>
 
-          <Button text='Sync' />
+          <TouchableWithoutFeedback onPress={this.handleNextOnPressed.bind(this)}>
+            <View>
+              <Button text='Sync' />
+            </View>
+          </TouchableWithoutFeedback>
+
           <Button text='Skip' arrow />
         </View>
       </View>
@@ -48,4 +61,4 @@ class Contacts extends Component {
   }
 }
 
-export default Contacts;
+export default connect(null, { registrationNextContactSync })(Contacts);

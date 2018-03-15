@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput } from 'react-native';
+import { View, Text, TouchableWithoutFeedback } from 'react-native';
+import { connect } from 'react-redux';
 
 /* Components */
 import Header from './Common/Header';
@@ -9,7 +10,14 @@ import Divider from './Common/Divider';
 /* Styles */
 import Styles from './Styles';
 
+/* Actions */
+import { registrationNextIntro } from '../actions';
+
 class AddProfilePic extends Component {
+
+  handleNextOnPressed() {
+    this.props.registrationNextIntro();
+  }
 
   render() {
     return (
@@ -29,7 +37,11 @@ class AddProfilePic extends Component {
             It helps your friends identify you
           </Text>
           <View style={styles.profilePicStyle} />
-          <Button text='Next' />
+          <TouchableWithoutFeedback onPress={this.handleNextOnPressed.bind(this)}>
+            <View>
+              <Button text='Next' />
+            </View>
+          </TouchableWithoutFeedback>
           <Button text='Skip' arrow />
         </View>
       </View>
@@ -49,4 +61,4 @@ const styles = {
   }
 };
 
-export default AddProfilePic;
+export default connect(null, { registrationNextIntro })(AddProfilePic);

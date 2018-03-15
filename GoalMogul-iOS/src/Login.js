@@ -1,22 +1,11 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import { connect } from 'react-redux';
-import { userNameChanged, passwordChanged, registerUser } from './actions';
 import { Button } from 'react-native-elements';
 
+import { userNameChanged, passwordChanged, registerUser } from './actions';
 
 class Login extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      username: '',
-      password: '',
-      isAuthenticated: false,
-      isOpen: false,
-      text: ''
-    };
-  }
 
   onUserNameChange(text) {
     this.props.userNameChanged(text);
@@ -27,7 +16,7 @@ class Login extends Component {
   }
 
   handleLogIn() {
-    console.log(`User try to log in for username: ${this.state.username}`);
+    // console.log(`User try to log in for username: ${this.props.username}`);
   }
 
   handleSignUp() {
@@ -77,7 +66,7 @@ class Login extends Component {
         </View>
 
         <Button
-          title='JOIN NOW'
+          text='JOIN NOW'
           textStyle={{ fontWeight: '400',
             color: '#fff',
             fontSize: 20,
@@ -94,11 +83,11 @@ class Login extends Component {
             alignSelf: 'center'
           }}
           containerStyle={{ marginTop: 10 }}
-          onPress={this.handleSignUp}
+          onPress={this.handleSignUp.bind(this)}
         />
 
         <Button
-          title='LOGIN'
+          text='LOGIN'
           clear
           textStyle={{ color: '#fff',
             fontWeight: '400',

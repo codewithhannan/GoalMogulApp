@@ -10,7 +10,8 @@ export default StyleSheet.create({
   },
   bodyContainerStyle: {
     flex: 1,
-    shadowColor: '#000',
+    backgroundColor: '#ffffff',
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
   },

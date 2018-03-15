@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput } from 'react-native';
+import { View, Text, TextInput, TouchableWithoutFeedback } from 'react-native';
+import { connect } from 'react-redux';
 
 /* Components */
 import Header from './Common/Header';
@@ -10,6 +11,9 @@ import FormContainer from './Common/FormContainer';
 /* Styles */
 import Styles from './Styles';
 
+/* Actions */
+import { registrationNextContact } from '../actions';
+
 class IntroForm extends Component {
 
   constructor(props) {
@@ -17,6 +21,10 @@ class IntroForm extends Component {
     this.state = {
       headline: ''
     };
+  }
+
+  handleNextOnPressed() {
+    this.props.registrationNextContact();
   }
 
   render() {
@@ -48,8 +56,11 @@ class IntroForm extends Component {
               value={this.state.headline}
             />
           </FormContainer>
-
-          <Button text='Next' />
+          <TouchableWithoutFeedback onPress={this.handleNextOnPressed.bind(this)}>
+            <View>
+              <Button text='Next' />
+            </View>
+          </TouchableWithoutFeedback>
           <Button text='Skip' arrow />
         </View>
       </View>
@@ -57,4 +68,4 @@ class IntroForm extends Component {
   }
 }
 
-export default IntroForm;
+export default connect(null, { registrationNextContact })(IntroForm);
