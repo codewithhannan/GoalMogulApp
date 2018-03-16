@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableWithoutFeedback, ActionSheetIOS } from 'react-native';
+import { View, Text, TouchableWithoutFeedback } from 'react-native';
 import { connect } from 'react-redux';
 
 /* Components */
 import Header from './Common/Header';
 import Button from './Common/Button';
 import Divider from './Common/Divider';
+import AddingProfilePicture from './Common/AddingProfilePicture';
 
 /* Styles */
 import Styles from './Styles';
@@ -13,26 +14,10 @@ import Styles from './Styles';
 /* Actions */
 import { registrationNextIntro } from '../actions';
 
-/* Action sheet specific */
-//TODO: abstract out as util function
-const BUTTONS = ['Taking Pictures', 'Camera Roll', 'Cancel'];
-const CANCEL_INDEX = 2;
-
 class AddProfilePic extends Component {
 
   handleNextOnPressed() {
     this.props.registrationNextIntro();
-  }
-
-  handlePictureOnPressed() {
-    ActionSheetIOS.showActionSheetWithOptions({
-      options: BUTTONS,
-      cancelButtonIndex: CANCEL_INDEX,
-    },
-    (buttonIndex) => {
-      console.log('button clicked', BUTTONS[buttonIndex]);
-      // this.setState({ clicked: BUTTONS[buttonIndex] });
-    });
   }
 
   render() {
@@ -52,9 +37,7 @@ class AddProfilePic extends Component {
           <Text style={Styles.explanationTextStyle}>
             It helps your friends identify you
           </Text>
-          <TouchableWithoutFeedback onPress={this.handlePictureOnPressed.bind(this)}>
-            <View style={styles.profilePicStyle} />
-          </TouchableWithoutFeedback>
+          <AddingProfilePicture />
           <TouchableWithoutFeedback onPress={this.handleNextOnPressed.bind(this)}>
             <View>
               <Button text='Next' />
@@ -66,17 +49,5 @@ class AddProfilePic extends Component {
     );
   }
 }
-
-const styles = {
-  profilePicStyle: {
-    height: 200,
-    width: 200,
-    alignSelf: 'center',
-    marginBottom: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-  }
-};
 
 export default connect(null, { registrationNextIntro })(AddProfilePic);
