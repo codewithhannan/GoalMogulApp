@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TouchableWithoutFeedback, ActionSheetIOS } from 'react-native';
 import { connect } from 'react-redux';
 
 /* Components */
@@ -13,10 +13,26 @@ import Styles from './Styles';
 /* Actions */
 import { registrationNextIntro } from '../actions';
 
+/* Action sheet specific */
+//TODO: abstract out as util function
+const BUTTONS = ['Taking Pictures', 'Camera Roll', 'Cancel'];
+const CANCEL_INDEX = 2;
+
 class AddProfilePic extends Component {
 
   handleNextOnPressed() {
     this.props.registrationNextIntro();
+  }
+
+  handlePictureOnPressed() {
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: BUTTONS,
+      cancelButtonIndex: CANCEL_INDEX,
+    },
+    (buttonIndex) => {
+      console.log('button clicked', BUTTONS[buttonIndex]);
+      // this.setState({ clicked: BUTTONS[buttonIndex] });
+    });
   }
 
   render() {
@@ -36,7 +52,9 @@ class AddProfilePic extends Component {
           <Text style={Styles.explanationTextStyle}>
             It helps your friends identify you
           </Text>
-          <View style={styles.profilePicStyle} />
+          <TouchableWithoutFeedback onPress={this.handlePictureOnPressed.bind(this)}>
+            <View style={styles.profilePicStyle} />
+          </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={this.handleNextOnPressed.bind(this)}>
             <View>
               <Button text='Next' />
