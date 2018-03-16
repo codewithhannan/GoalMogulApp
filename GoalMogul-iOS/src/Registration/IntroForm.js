@@ -30,7 +30,7 @@ class IntroForm extends Component {
   render() {
     return (
       <View style={Styles.containerStyle}>
-        <Header name='John Doe' />
+        <Header name='John Doe' type='intro' />
         <View style={Styles.bodyContainerStyle}>
           <Text style={Styles.titleTextStyle}>A brief intro...</Text>
           <View style={{ alignSelf: 'center' }}>

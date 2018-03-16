@@ -1,6 +1,7 @@
 import { Actions } from 'react-native-router-flux';
 
 import {
+  REGISTRATION_ACCOUNT,
   REGISTRATION_LOGIN,
   REGISTRATION_ADDPROFILE,
   REGISTRATION_INTRO,
@@ -15,6 +16,7 @@ const INITIAL_STATE = {
   headline: '',
   contacts: [],
   profilePic: {},
+  step: '',
   error: '',
   loading: false
 };
@@ -25,17 +27,20 @@ export default (state = INITIAL_STATE, action) => {
     case REGISTRATION_LOGIN:
       return { ...state, ...INITIAL_STATE };
 
+    case REGISTRATION_ACCOUNT:
+      return { ...state, step: REGISTRATION_ACCOUNT };
+
     case REGISTRATION_ADDPROFILE:
-      return { ...state };
+      return { ...state, step: REGISTRATION_ADDPROFILE };
 
     case REGISTRATION_INTRO:
-      return { ...state };
+      return { ...state, step: REGISTRATION_INTRO };
 
     case REGISTRATION_CONTACT:
-      return { ...state };
+      return { ...state, step: REGISTRATION_CONTACT };
 
     case REGISTRATION_CONTACT_SYNC:
-      return { ...state };
+      return { ...state, step: REGISTRATION_CONTACT_SYNC };
 
     default:
       return state;

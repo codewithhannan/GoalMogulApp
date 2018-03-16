@@ -13,3 +13,7 @@ if there is corresponding issue, state it
 * Set up routing between pages for registration
 * Set up react-native-router-flux package
 * Implement basic Registration UI
+
+## 22 Feb 2018, by Jia Zeng <andyzeng96@gmail.com>
+* See [Issue #9](https://github.com/somechild/goalmogul-ios/issues/9)
+* Implement header pagination
