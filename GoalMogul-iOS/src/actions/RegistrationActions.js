@@ -5,7 +5,8 @@ import {
   REGISTRATION_ADDPROFILE,
   REGISTRATION_INTRO,
   REGISTRATION_CONTACT,
-  REGISTRATION_CONTACT_SYNC
+  REGISTRATION_CONTACT_SYNC,
+  REGISTRATION_INTRO_FORM_CHANGE
 } from './types';
 
 export const registrationLogin = () => {
@@ -20,6 +21,10 @@ export const registrationLogin = () => {
 /* Account actions */
 
 export const registrationNextAddProfile = () => {
+
+  // TODO: verify with server if email has already existed
+  // If exist, prompt user to log in
+  // If there are missing fields then show red error message
   return (dispatch) => {
     dispatch({
       type: REGISTRATION_ADDPROFILE
@@ -27,6 +32,8 @@ export const registrationNextAddProfile = () => {
     Actions.registrationProfile();
   };
 };
+
+export * from './AccountActions';
 
 /* Profile Picture actions */
 
@@ -36,6 +43,13 @@ export const registrationNextIntro = () => {
       type: REGISTRATION_INTRO,
     });
     Actions.registrationIntro();
+  };
+};
+
+export const handleOnHeadlineChanged = (headline) => {
+  return {
+    type: REGISTRATION_INTRO_FORM_CHANGE,
+    payload: headline
   };
 };
 

@@ -6,7 +6,10 @@ import {
   REGISTRATION_ADDPROFILE,
   REGISTRATION_INTRO,
   REGISTRATION_CONTACT,
-  REGISTRATION_CONTACT_SYNC
+  REGISTRATION_CONTACT_SYNC,
+
+  REGISTRATION_ACCOUNT_FORM_CHANGE,
+  REGISTRATION_INTRO_FORM_CHANGE
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -29,6 +32,12 @@ export default (state = INITIAL_STATE, action) => {
 
     case REGISTRATION_ACCOUNT:
       return { ...state, step: REGISTRATION_ACCOUNT };
+
+    case REGISTRATION_ACCOUNT_FORM_CHANGE:
+      return { ...state, [action.payload.prop]: action.payload.value };
+
+    case REGISTRATION_INTRO_FORM_CHANGE:
+      return { ...state, headline: action.payload };
 
     case REGISTRATION_ADDPROFILE:
       return { ...state, step: REGISTRATION_ADDPROFILE };
