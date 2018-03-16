@@ -20,6 +20,7 @@ export default class App extends React.Component {
   // Persist app state
 
   render() {
+    console.log('.env is: ', process.env.DEBUGGING_MODE);
     return (
       <Provider store={store}>
         <View style={styles.container}>

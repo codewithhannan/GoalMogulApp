@@ -23,7 +23,7 @@ class ContactSync extends Component {
   render() {
     return (
       <View style={Styles.containerStyle}>
-        <Header contact />
+        <Header contact type='contact' />
         <View style={Styles.bodyContainerStyle}>
           <ScrollView>
             <ContactCard>

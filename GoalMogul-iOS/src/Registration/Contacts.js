@@ -22,7 +22,7 @@ class Contacts extends Component {
   render() {
     return (
       <View style={Styles.containerStyle}>
-        <Header name='John Doe' />
+        <Header name='John Doe' type='contact' />
         <View style={Styles.bodyContainerStyle}>
           <Text style={Styles.titleTextStyle}>Find your friends</Text>
           <View style={{ alignSelf: 'center' }}>
