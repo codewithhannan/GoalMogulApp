@@ -27,6 +27,11 @@ class Login extends Component {
   renderError() {
     if (this.props.error) {
       //TODO: return a toast to properly show error message
+      return (
+        <View>
+          <Text style={styles.errorStyle}>{this.props.error}</Text>
+        </View>
+      );
     }
   }
 
@@ -45,7 +50,8 @@ class Login extends Component {
         <View style={headerStyle}>
           <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>GOALMOGUL</Text>
         </View>
-
+        {/* Render customized error message */}
+        {this.renderError()}
         <View style={formStyle}>
           <Text style={inputLabelStyle}>EMAIL</Text>
           <TextInput
@@ -146,6 +152,11 @@ const styles = {
     marginTop: 20,
     borderWidth: 4,
     borderColor: '#fff'
+  },
+  errorStyle: {
+    color: '#ff0033',
+    justifyContent: 'center',
+    marginBottom: 4
   }
 };
 

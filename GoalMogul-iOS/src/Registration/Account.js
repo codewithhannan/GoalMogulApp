@@ -66,6 +66,7 @@ class Account extends Component {
             style={Styles.textInputStyle}
             placeholder='Full Name'
             onChangeText={this.handleOnNameChange.bind(this)}
+            returnKeyType='done'
             value={this.props.name}
           />
 
@@ -74,6 +75,7 @@ class Account extends Component {
           style={Styles.textInputStyle}
           placeholder='Email'
           onChangeText={this.handleOnEmailChange.bind(this)}
+          returnKeyType='done'
           value={this.props.email}
         />
         <Divider horizontal flex={1} color='#eaeaea' />
@@ -82,6 +84,7 @@ class Account extends Component {
           placeholder='Password'
           secureTextEntry
           onChangeText={this.handleOnPasswordChange.bind(this)}
+          returnKeyType='done'
           value={this.props.password}
         />
       </FormContainer>
