@@ -8,6 +8,10 @@
 if there is corresponding issue, state it
 -->
 
+## 22 Mar 2018, by Jia Zeng <andyzeng96@gmail.com>
+* See [Issue #11](https://github.com/somechild/goalmogul-ios/issues/11)
+* Registration import photo for profile picture
+
 ## 22 Feb 2018, by Jia Zeng <andyzeng96@gmail.com>
 * See [Issue #7](https://github.com/somechild/goalmogul-ios/issues/7)
 * Set up routing between pages for registration
