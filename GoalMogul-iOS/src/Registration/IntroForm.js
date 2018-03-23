@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TextInput, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 
 /* Components */
@@ -12,7 +12,7 @@ import FormContainer from './Common/FormContainer';
 import Styles from './Styles';
 
 /* Actions */
-import { registrationNextContact } from '../actions';
+import { registrationNextContact, handleOnHeadlineChanged } from '../actions';
 
 class IntroForm extends Component {
 
@@ -25,6 +25,10 @@ class IntroForm extends Component {
 
   handleNextOnPressed() {
     this.props.registrationNextContact();
+  }
+
+  handleOnHeadlineChanged(headline) {
+    this.props.handleOnHeadlineChanged(headline);
   }
 
   render() {
@@ -52,8 +56,8 @@ class IntroForm extends Component {
             <TextInput
               style={Styles.textInputStyle}
               placeholder="Ex: 'CEO of Wayne Enterprises'"
-              onChangeText={(headline) => this.setState({ headline })}
-              value={this.state.headline}
+              onChangeText={this.handleOnHeadlineChanged.bind(this)}
+              value={this.props.headline}
             />
           </FormContainer>
           <TouchableWithoutFeedback onPress={this.handleNextOnPressed.bind(this)}>
@@ -68,4 +72,15 @@ class IntroForm extends Component {
   }
 }
 
-export default connect(null, { registrationNextContact })(IntroForm);
+const mapStateToProps = state => {
+  const { error, headline } = state.registration;
+
+  return {
+    error,
+    headline
+  };
+};
+
+export default connect(mapStateToProps, {
+  registrationNextContact,
+  handleOnHeadlineChanged })(IntroForm);

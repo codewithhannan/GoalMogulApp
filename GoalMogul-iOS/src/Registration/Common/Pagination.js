@@ -5,21 +5,24 @@ import { Icon } from 'react-native-elements';
 const Pagination = (props) => {
   const { total, current } = props;
 
-  let pagination = [];
+  const pagination = [];
 
-  for (let i = 0; i < total; i = i + 1) {
+  for (let i = 0; i < total; i += 1) {
     let color = '';
     if (i <= current) {
       color = '#ffffff';
     } else {
       color = '#2ea1b8';
     }
+
+    const key = `registration-pagination-${i}`;
     pagination.push(
       <Icon
         name='primitive-dot'
         type='octicon'
         color={color}
         size={21}
+        key={key}
         containerStyle={styles.iconContainerStyle}
       />
     );

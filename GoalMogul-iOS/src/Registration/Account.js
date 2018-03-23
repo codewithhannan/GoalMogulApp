@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableWithoutFeedback } from 'react-native';
+import { ScrollView, View, Text, TextInput, TouchableWithoutFeedback } from 'react-native';
 import { connect } from 'react-redux';
 
 /* Components */
@@ -12,18 +12,9 @@ import FormContainer from './Common/FormContainer';
 import Styles from './Styles';
 
 /* Actions */
-import { registrationLogin, registrationNextAddProfile } from '../actions';
+import { registrationLogin, registrationNextAddProfile, handleOnFormChange } from '../actions';
 
 class Account extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: '',
-      email: '',
-      password: ''
-    };
-  }
 
   handleLogInPressed() {
     console.log('login pressed');
@@ -33,6 +24,19 @@ class Account extends Component {
   handleNextPressed() {
     console.log('next pressed');
     this.props.registrationNextAddProfile();
+  }
+
+  handleOnNameChange(name) {
+    this.props.handleOnFormChange(name, 'name');
+  }
+
+  handleOnEmailChange(email) {
+    this.props.handleOnFormChange(email, 'email');
+  }
+
+  handleOnPasswordChange(password) {
+    console.log('password is ', password);
+    this.props.handleOnFormChange(password, 'password');
   }
 
   renderSplitter() {
@@ -61,24 +65,24 @@ class Account extends Component {
           <TextInput
             style={Styles.textInputStyle}
             placeholder='Full Name'
-            onChangeText={(name) => this.setState({ name })}
-            value={this.state.name}
+            onChangeText={this.handleOnNameChange.bind(this)}
+            value={this.props.name}
           />
 
         <Divider horizontal flex={1} color='#eaeaea' />
         <TextInput
           style={Styles.textInputStyle}
           placeholder='Email'
-          onChangeText={(email) => this.setState({ email })}
-          value={this.state.email}
+          onChangeText={this.handleOnEmailChange.bind(this)}
+          value={this.props.email}
         />
         <Divider horizontal flex={1} color='#eaeaea' />
         <TextInput
           style={Styles.textInputStyle}
           placeholder='Password'
           secureTextEntry
-          onChangeText={(password) => this.setState({ password })}
-          value={this.state.password}
+          onChangeText={this.handleOnPasswordChange.bind(this)}
+          value={this.props.password}
         />
       </FormContainer>
     );
@@ -142,14 +146,18 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { username, password, error, loading } = state.auth;
+  const { name, password, email, error, loading } = state.registration;
 
   return {
-    username: username,
-    password: password,
-    error: error,
-    loading: loading
-  }
+    name,
+    email,
+    password,
+    error,
+    loading
+  };
 };
 
-export default connect(null, { registrationLogin, registrationNextAddProfile })(Account);
+export default connect(mapStateToProps, {
+  registrationLogin,
+  registrationNextAddProfile,
+  handleOnFormChange })(Account);
