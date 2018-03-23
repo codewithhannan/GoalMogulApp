@@ -1,5 +1,5 @@
 import { Actions } from 'react-native-router-flux';
-import { CameraRoll } from 'react-native';
+import { CameraRoll, ImagePickerIOS } from 'react-native';
 
 import {
   REGISTRATION_LOGIN,
@@ -54,12 +54,41 @@ export const registrationNextIntro = () => {
 // Action to open camera roll modal
 export const registrationCameraRollOnOpen = () => {
   return (dispatch) => {
-    dispatch({
-      type: REGISTRATION_ADDPROFILE_CAMERAROLL_OPEN
+    ImagePickerIOS.canUseCamera(() => {
+      ImagePickerIOS.openSelectDialog({}, imageUri => {
+        dispatch({
+          type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+          payload: imageUri
+        });
+      }, () => {
+        console.log('user cancel choosing from camera roll');
+      });
     });
-    console.log('Open photo library modal');
-    // Open photo library modal
-    Actions.photolib();
+
+    /* Customized Image picker for IOS. Could use for Android */
+    // dispatch({
+    //   type: REGISTRATION_ADDPROFILE_CAMERAROLL_OPEN
+    // });
+    // console.log('Open photo library modal');
+    // // Open photo library modal
+    // Actions.photolib();
+    // CameraRoll.getPhotos({
+    //   first: 20,
+    //   assetType: 'All'
+    // })
+    // .then((r) => {
+    //   console.log('loading photos with r: ', r);
+    //   dispatch({
+    //     type: REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO,
+    //     payload: r.edges
+    //   });
+    // });
+  };
+};
+
+// TODO: deprecate this action
+export const registrationCameraRollLoadPhoto = () => {
+  return (dispatch) => {
     CameraRoll.getPhotos({
       first: 20,
       assetType: 'All'
@@ -75,23 +104,6 @@ export const registrationCameraRollOnOpen = () => {
 };
 
 // TODO: deprecate this action
-export const registrationCameraRollLoadPhoto = () => {
-  return (dispatch) => {
-    // TODO: load photos and then dispatch this action
-    CameraRoll.getPhotos({
-      first: 20,
-      assetType: 'All'
-    })
-    .then((r) => {
-      console.log('loading photos with r: ', r);
-      dispatch({
-        type: REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO,
-        payload: r.edges
-      });
-    });
-  };
-};
-
 export const registrationCameraRollOnImageChoosen = (uri) => {
   return (dispatch) => {
     Actions.pop();
@@ -102,10 +114,18 @@ export const registrationCameraRollOnImageChoosen = (uri) => {
   };
 };
 
+// Open Camera / Video
 export const registrationCameraOnOpen = () => {
   return (dispatch) => {
-    dispatch({
-      type: REGISTRATION_ADDPROFILE_CAMERA_OPEN
+    ImagePickerIOS.canRecordVideos(() => {
+      ImagePickerIOS.openCameraDialog({}, imageUri => {
+        dispatch({
+          type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+          payload: imageUri
+        });
+      }, () => {
+        console.log('user cancel taking pictures');
+      });
     });
   };
 };

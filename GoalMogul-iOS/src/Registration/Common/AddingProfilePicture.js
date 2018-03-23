@@ -8,7 +8,7 @@ import {
 import { connect } from 'react-redux';
 
 /* Actions */
-import { registrationCameraRollOnOpen } from '../../actions';
+import { registrationCameraRollOnOpen, registrationCameraOnOpen } from '../../actions';
 
 /* Action sheet specific */
 //TODO: abstract out as util function
@@ -20,7 +20,7 @@ const CANCEL_INDEX = 2;
 class AddingProfilePicture extends Component {
 
   handleTakingPicture() {
-
+    this.props.registrationCameraOnOpen();
   }
 
   handleCameraRoll() {
@@ -84,4 +84,8 @@ const styles = {
   }
 };
 
-export default connect(mapStateToProps, { registrationCameraRollOnOpen })(AddingProfilePicture);
+export default connect(
+  mapStateToProps, {
+    registrationCameraRollOnOpen,
+    registrationCameraOnOpen
+  })(AddingProfilePicture);

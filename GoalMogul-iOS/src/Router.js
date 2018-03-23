@@ -34,7 +34,11 @@ const RouterComponent = () => {
             <Scene key="registrationContactSync" component={ContactSync} />
           </Scene>
         </Scene>
-        <Scene key="photolib" component={CameraRollModal} />
+        {/*
+          This model is deprecated. Using ImagePickerIOS instead.
+          Could potential later be used in Android.
+          <Scene key="photolib" component={CameraRollModal} />
+        */}
 
       </Modal>
 
