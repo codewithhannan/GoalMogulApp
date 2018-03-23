@@ -5,6 +5,7 @@ export const LOGIN_USER_FAIL = 'login_user_fail';
 export const LOGIN_USER_LOADING = 'login_user_loading';
 
 /* Registration Constants */
+export const REGISTRATION_BACK = 'registration_back';
 export const REGISTRATION_ACCOUNT = 'registration_account';
 export const REGISTRATION_ACCOUNT_FORM_CHANGE = 'registration_account_form_change';
 

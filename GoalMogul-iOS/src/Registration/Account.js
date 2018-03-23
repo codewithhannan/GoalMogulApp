@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableWithoutFeedback } from 'react-native';
+import { ScrollView, View, Text, TextInput, TouchableWithoutFeedback } from 'react-native';
 import { connect } from 'react-redux';
 
 /* Components */

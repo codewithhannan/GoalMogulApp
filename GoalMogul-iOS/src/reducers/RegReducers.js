@@ -1,6 +1,7 @@
 import { Actions } from 'react-native-router-flux';
 
 import {
+  REGISTRATION_BACK,
   REGISTRATION_ACCOUNT,
   REGISTRATION_LOGIN,
   REGISTRATION_ADDPROFILE,
@@ -28,6 +29,9 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
+
+    case REGISTRATION_BACK:
+      return { ...state };
 
     case REGISTRATION_LOGIN:
       return { ...state, ...INITIAL_STATE };

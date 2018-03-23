@@ -2,6 +2,7 @@ import { Actions } from 'react-native-router-flux';
 import { CameraRoll, ImagePickerIOS } from 'react-native';
 
 import {
+  REGISTRATION_BACK,
   REGISTRATION_LOGIN,
   REGISTRATION_ADDPROFILE,
   REGISTRATION_INTRO,
@@ -11,7 +12,6 @@ import {
   REGISTRATION_ADDPROFILE_CAMERAROLL_OPEN,
   REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO,
   REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
-  REGISTRATION_ADDPROFILE_CAMERA_OPEN
 } from './types';
 
 export const registrationLogin = () => {
@@ -23,10 +23,18 @@ export const registrationLogin = () => {
   };
 };
 
+export const registrationBack = () => {
+  return (dispatch) => {
+    dispatch({
+      type: REGISTRATION_BACK
+    });
+    Actions.pop();
+  };
+};
+
 /* Account actions */
 
 export const registrationNextAddProfile = () => {
-
   // TODO: verify with server if email has already existed
   // If exist, prompt user to log in
   // If there are missing fields then show red error message
