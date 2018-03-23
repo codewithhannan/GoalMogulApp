@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "expo": "^25.0.0",
+    "lodash": "^4.17.5",
     "native-base": "^2.3.8",
     "npm": "^5.7.1",
     "react": "16.2.0",

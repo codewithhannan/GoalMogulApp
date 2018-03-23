@@ -15,3 +15,11 @@ export const REGISTRATION_CONTACT = 'registration_contact';
 export const REGISTRATION_CONTACT_SYNC = 'registration_contact_sync';
 
 export const REGISTRATION_INTRO_FORM_CHANGE = 'registration_intro_form_change';
+
+export const REGISTRATION_ADDPROFILE_CAMERAROLL_OPEN = 'registration_addprofile_cameraroll_open';
+export const REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO = 'registration_addprofile_load_photo';
+export const REGISTRATION_ADDPROFILE_CAMERAROLL_CLOSE = 'registration_addprofile_cameraroll_close';
+export const REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE
+  = 'registration_addprofile_cameraroll_photo_choose';
+
+export const REGISTRATION_ADDPROFILE_CAMERA_OPEN = 'registration_addprofile_camera_open'

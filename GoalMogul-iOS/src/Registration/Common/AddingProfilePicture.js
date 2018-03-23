@@ -1,5 +1,14 @@
 import React, { Component } from 'react';
-import { View, TouchableWithoutFeedback, ActionSheetIOS } from 'react-native';
+import {
+  View,
+  TouchableWithoutFeedback,
+  ActionSheetIOS,
+  Image
+} from 'react-native';
+import { connect } from 'react-redux';
+
+/* Actions */
+import { registrationCameraRollOnOpen } from '../../actions';
 
 /* Action sheet specific */
 //TODO: abstract out as util function
@@ -15,7 +24,7 @@ class AddingProfilePicture extends Component {
   }
 
   handleCameraRoll() {
-
+    this.props.registrationCameraRollOnOpen();
   }
 
   handlePictureOnPressed() {
@@ -38,14 +47,30 @@ class AddingProfilePicture extends Component {
     });
   }
 
+  renderImage() {
+    const uri = this.props.profilePic;
+    if (uri !== null && uri !== undefined) {
+      return (
+        <Image source={{ uri }} style={styles.profilePicStyle} />
+      );
+    }
+    return <View style={styles.profilePicStyle} />;
+  }
+
   render() {
     return (
       <TouchableWithoutFeedback onPress={this.handlePictureOnPressed.bind(this)}>
-        <View style={styles.profilePicStyle} />
+        {this.renderImage()}
       </TouchableWithoutFeedback>
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  const { profilePic } = state.registration;
+
+  return { profilePic };
+};
 
 const styles = {
   profilePicStyle: {
@@ -59,4 +84,4 @@ const styles = {
   }
 };
 
-export default AddingProfilePicture;
+export default connect(mapStateToProps, { registrationCameraRollOnOpen })(AddingProfilePicture);

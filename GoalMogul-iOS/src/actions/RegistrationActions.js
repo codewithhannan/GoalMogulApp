@@ -1,4 +1,5 @@
 import { Actions } from 'react-native-router-flux';
+import { CameraRoll } from 'react-native';
 
 import {
   REGISTRATION_LOGIN,
@@ -6,7 +7,11 @@ import {
   REGISTRATION_INTRO,
   REGISTRATION_CONTACT,
   REGISTRATION_CONTACT_SYNC,
-  REGISTRATION_INTRO_FORM_CHANGE
+  REGISTRATION_INTRO_FORM_CHANGE,
+  REGISTRATION_ADDPROFILE_CAMERAROLL_OPEN,
+  REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO,
+  REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+  REGISTRATION_ADDPROFILE_CAMERA_OPEN
 } from './types';
 
 export const registrationLogin = () => {
@@ -46,10 +51,62 @@ export const registrationNextIntro = () => {
   };
 };
 
-export const handleOnHeadlineChanged = (headline) => {
-  return {
-    type: REGISTRATION_INTRO_FORM_CHANGE,
-    payload: headline
+// Action to open camera roll modal
+export const registrationCameraRollOnOpen = () => {
+  return (dispatch) => {
+    dispatch({
+      type: REGISTRATION_ADDPROFILE_CAMERAROLL_OPEN
+    });
+    console.log('Open photo library modal');
+    // Open photo library modal
+    Actions.photolib();
+    CameraRoll.getPhotos({
+      first: 20,
+      assetType: 'All'
+    })
+    .then((r) => {
+      console.log('loading photos with r: ', r);
+      dispatch({
+        type: REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO,
+        payload: r.edges
+      });
+    });
+  };
+};
+
+// TODO: deprecate this action
+export const registrationCameraRollLoadPhoto = () => {
+  return (dispatch) => {
+    // TODO: load photos and then dispatch this action
+    CameraRoll.getPhotos({
+      first: 20,
+      assetType: 'All'
+    })
+    .then((r) => {
+      console.log('loading photos with r: ', r);
+      dispatch({
+        type: REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO,
+        payload: r.edges
+      });
+    });
+  };
+};
+
+export const registrationCameraRollOnImageChoosen = (uri) => {
+  return (dispatch) => {
+    Actions.pop();
+    dispatch({
+      type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+      payload: uri
+    });
+  };
+};
+
+export const registrationCameraOnOpen = () => {
+  return (dispatch) => {
+    dispatch({
+      type: REGISTRATION_ADDPROFILE_CAMERA_OPEN
+    });
   };
 };
 
@@ -61,6 +118,13 @@ export const registrationNextContact = () => {
       type: REGISTRATION_CONTACT,
     });
     Actions.registrationContact();
+  };
+};
+
+export const handleOnHeadlineChanged = (headline) => {
+  return {
+    type: REGISTRATION_INTRO_FORM_CHANGE,
+    payload: headline
   };
 };
 

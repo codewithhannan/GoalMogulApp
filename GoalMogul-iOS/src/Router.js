@@ -1,5 +1,10 @@
 import React from 'react';
-import { Scene, Router } from 'react-native-router-flux';
+import {
+  Scene,
+  Router,
+  Stack,
+  Modal
+} from 'react-native-router-flux';
 
 /* Auth */
 import Login from './Login';
@@ -10,23 +15,29 @@ import IntroForm from './Registration/IntroForm';
 import AddProfilePic from './Registration/AddProfilePic';
 import Contacts from './Registration/Contacts';
 import ContactSync from './Registration/ContactSync';
+import CameraRollModal from './Registration/CameraRollModal';
 
 const RouterComponent = () => {
   return (
     <Router>
-      <Scene key="root" hideNavBar>
-        <Scene key="auth" hideNavBar>
-          <Scene key="login" component={Login} initial />
-        </Scene>
+      <Modal>
+        <Scene key="root" hideNavBar>
+          <Scene key="auth" hideNavBar>
+            <Scene key="login" component={Login} initial />
+          </Scene>
 
-        <Scene key="registration" hideNavBar>
-          <Scene key="registrationAccount" component={Account} intial />
-          <Scene key="registrationProfile" component={AddProfilePic} />
-          <Scene key="registrationIntro" component={IntroForm} />
-          <Scene key="registrationContact" component={Contacts} />
-          <Scene key="registrationContactSync" component={ContactSync} />
+          <Scene key="registration" hideNavBar>
+            <Scene key="registrationAccount" component={Account} intial />
+            <Scene key="registrationProfile" component={AddProfilePic} />
+            <Scene key="registrationIntro" component={IntroForm} />
+            <Scene key="registrationContact" component={Contacts} />
+            <Scene key="registrationContactSync" component={ContactSync} />
+          </Scene>
         </Scene>
-      </Scene>
+        <Scene key="photolib" component={CameraRollModal} />
+
+      </Modal>
+
     </Router>
   );
 };
