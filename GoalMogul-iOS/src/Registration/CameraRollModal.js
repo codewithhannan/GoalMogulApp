@@ -22,7 +22,7 @@ class cameraRollModal extends Component {
   _keyExtractor = (item, index) => item.node.image.uri;
 
   renderRow(data) {
-    console.log('rendering item p: ', data.item);
+    // console.log('rendering item p: ', data.item);
     const p = data.item;
     return (
       <ImageRow photo={p} key={p.node.image.uri} />

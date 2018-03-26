@@ -35,6 +35,8 @@
     "react-native-vector-icons": "^4.5.0",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0"
+    "redux-form": "^7.3.0",
+    "redux-thunk": "^2.2.0",
+    "validate.js": "^0.12.0"
   }
 }

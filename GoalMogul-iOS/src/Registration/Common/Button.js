@@ -34,7 +34,7 @@ const styles = {
   containerStyle: {
     display: 'flex',
     flexDirection: 'row',
-    marginTop: 8,
+    marginTop: 16,
     marginBottom: 8,
     marginLeft: 18,
     marginRight: 18,

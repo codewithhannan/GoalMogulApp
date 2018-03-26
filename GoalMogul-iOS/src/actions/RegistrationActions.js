@@ -1,17 +1,25 @@
 import { Actions } from 'react-native-router-flux';
 import { CameraRoll, ImagePickerIOS } from 'react-native';
 
+// import contraints from '../Registration/Common/Constraints';
+
 import {
   REGISTRATION_BACK,
   REGISTRATION_LOGIN,
   REGISTRATION_ADDPROFILE,
-  REGISTRATION_INTRO,
+
+  REGISTRATION_CONTACT_SKIP,
   REGISTRATION_CONTACT,
   REGISTRATION_CONTACT_SYNC,
+
+  REGISTRATION_INTRO,
   REGISTRATION_INTRO_FORM_CHANGE,
+  REGISTRATION_INTRO_SKIP,
+
   REGISTRATION_ADDPROFILE_CAMERAROLL_OPEN,
   REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO,
   REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+  REGISTRATION_ERROR
 } from './types';
 
 export const registrationLogin = () => {
@@ -33,11 +41,31 @@ export const registrationBack = () => {
 };
 
 /* Account actions */
+const validateEmail = (email) => {
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+   return re.test(String(email).toLowerCase());
+};
 
-export const registrationNextAddProfile = () => {
+export const registrationNextAddProfile = (value) => {
   // TODO: verify with server if email has already existed
   // If exist, prompt user to log in
   // If there are missing fields then show red error message
+  const { name, email, password } = value;
+
+  const error = {};
+  // let errorMessage = validate({ email, name, password }, contraints);
+  // console.log(errorMessage);
+  error.name = name === '';
+  error.email = email === '' || !validateEmail(email);
+  error.password = password === '';
+
+  if (error.name || error.email || error.password) {
+    return ({
+      type: REGISTRATION_ERROR,
+      payload: error
+    });
+  }
+
   return (dispatch) => {
     dispatch({
       type: REGISTRATION_ADDPROFILE
@@ -50,10 +78,11 @@ export * from './AccountActions';
 
 /* Profile Picture actions */
 
-export const registrationNextIntro = () => {
+export const registrationNextIntro = (skip) => {
+  const type = skip ? REGISTRATION_INTRO_SKIP : REGISTRATION_INTRO;
   return (dispatch) => {
     dispatch({
-      type: REGISTRATION_INTRO,
+      type,
     });
     Actions.registrationIntro();
   };
@@ -140,10 +169,20 @@ export const registrationCameraOnOpen = () => {
 
 /* IntroForm actions */
 
-export const registrationNextContact = () => {
+export const registrationNextContact = (headline, skip) => {
+  const type = skip ? REGISTRATION_CONTACT_SKIP : REGISTRATION_CONTACT;
+
+  const error = {};
+  if (headline === '' && !skip) {
+    error.headline = true;
+    return ({
+      type: REGISTRATION_ERROR,
+      payload: error
+    });
+  }
   return (dispatch) => {
     dispatch({
-      type: REGISTRATION_CONTACT,
+      type
     });
     Actions.registrationContact();
   };

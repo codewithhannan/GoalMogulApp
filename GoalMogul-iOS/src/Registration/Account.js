@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, TextInput, TouchableWithoutFeedback } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  Keyboard
+} from 'react-native';
 import { connect } from 'react-redux';
 
 /* Components */
 import Header from './Common/Header';
 import Button from './Common/Button';
 import Divider from './Common/Divider';
-import FormContainer from './Common/FormContainer';
+import InputField from './Common/InputField';
 
 /* Styles */
 import Styles from './Styles';
@@ -16,6 +22,10 @@ import { registrationLogin, registrationNextAddProfile, handleOnFormChange } fro
 
 class Account extends Component {
 
+  handleContainerOnPressed() {
+    Keyboard.dismiss();
+  }
+
   handleLogInPressed() {
     console.log('login pressed');
     this.props.registrationLogin();
@@ -23,7 +33,11 @@ class Account extends Component {
 
   handleNextPressed() {
     console.log('next pressed');
-    this.props.registrationNextAddProfile();
+    const name = this.props.name;
+    const email = this.props.email;
+    const password = this.props.password;
+    Keyboard.dismiss();
+    this.props.registrationNextAddProfile({ name, email, password });
   }
 
   handleOnNameChange(name) {
@@ -35,7 +49,6 @@ class Account extends Component {
   }
 
   handleOnPasswordChange(password) {
-    console.log('password is ', password);
     this.props.handleOnFormChange(password, 'password');
   }
 
@@ -59,54 +72,56 @@ class Account extends Component {
     );
   }
 
-  renderForm() {
-    return (
-      <FormContainer>
-          <TextInput
-            style={Styles.textInputStyle}
-            placeholder='Full Name'
-            onChangeText={this.handleOnNameChange.bind(this)}
-            value={this.props.name}
-          />
-
-        <Divider horizontal flex={1} color='#eaeaea' />
-        <TextInput
-          style={Styles.textInputStyle}
-          placeholder='Email'
-          onChangeText={this.handleOnEmailChange.bind(this)}
-          value={this.props.email}
-        />
-        <Divider horizontal flex={1} color='#eaeaea' />
-        <TextInput
-          style={Styles.textInputStyle}
-          placeholder='Password'
-          secureTextEntry
-          onChangeText={this.handleOnPasswordChange.bind(this)}
-          value={this.props.password}
-        />
-      </FormContainer>
-    );
-  }
-
   render() {
     return (
-      <View style={Styles.containerStyle}>
-        <Header />
-        <View style={Styles.bodyContainerStyle}>
-          <Text style={styles.titleTextStyle}>Get Started!</Text>
-          {this.renderForm()}
-          <TouchableWithoutFeedback onPress={this.handleNextPressed.bind(this)}>
-            <View>
-              <Button text='Next' />
+      <KeyboardAvoidingView
+        behavior='position'
+        style={{ flex: 1 }}
+        contentContainerStyle={Styles.containerStyle}
+        keyboardVerticalOffset={-150}
+      >
+        <TouchableWithoutFeedback onPress={this.handleContainerOnPressed.bind(this)}>
+          <View style={Styles.containerStyle}>
+            <Header />
+            <View style={Styles.bodyContainerStyle}>
+
+              <Text style={styles.titleTextStyle}>Get Started!</Text>
+              <InputField
+                placeholder='Full Name'
+                value={this.props.name}
+                onChange={this.handleOnNameChange.bind(this)}
+                error={this.props.error.name}
+              />
+              <InputField
+                placeholder='Email'
+                value={this.props.email}
+                onChange={this.handleOnEmailChange.bind(this)}
+                error={this.props.error.email}
+              />
+              <InputField
+                placeholder='Password'
+                value={this.props.password}
+                secureTextEntry
+                onChange={this.handleOnPasswordChange.bind(this)}
+                error={this.props.error.password}
+              />
+
+              <TouchableWithoutFeedback onPress={this.handleNextPressed.bind(this)}>
+                <View>
+                  <Button text='Next' />
+                </View>
+              </TouchableWithoutFeedback>
+              {this.renderSplitter()}
+              {this.renderLogIn()}
+
             </View>
-          </TouchableWithoutFeedback>
-          {this.renderSplitter()}
-          {this.renderLogIn()}
-        </View>
-      </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     );
   }
 }
+
 
 const styles = {
   titleTextStyle: {
