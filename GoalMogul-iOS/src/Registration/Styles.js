@@ -1,15 +1,19 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
+
+const window = Dimensions.get('window');
 /*
 Styling for Registration workflow
 */
 export default StyleSheet.create({
   containerStyle: {
     flex: 1,
-    display: 'flex'
+    backgroundColor: '#ffffff'
+    // display: 'flex',
   },
   bodyContainerStyle: {
     flex: 1,
+    display: 'flex',
     backgroundColor: '#ffffff',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
@@ -28,7 +32,10 @@ export default StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 16,
-    paddingBottom: 16
+    paddingBottom: 16,
+    width: window - 36,
+    borderBottomWidth: 2,
+    borderColor: '#eaeaea'
   },
   explanationTextStyle: {
     marginTop: 23,

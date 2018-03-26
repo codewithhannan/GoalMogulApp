@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, Text, TouchableWithoutFeedback } from 'react-native';
+import { View, Image, Text, TouchableWithoutFeedback, Keyboard, Animated } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 
@@ -11,7 +11,43 @@ import Pagination from './Pagination';
 
 import { registrationBack, registrationLogin } from '../../actions';
 
+// const IMAGE_HEIGHT_SMALL = 60;
+// const IMAGE_HEIGHT = 80;
+// const VIEW_HEIGHT = 207;
+// const VIEW_AMOUNT = 20;
+
 class Header extends Component {
+
+  // constructor(props) {
+  //   super(props);
+  //
+  //   this.imageHeight = new Animated.Value(IMAGE_HEIGHT);
+  //   this.containerViewHeight = new Animated.Value(VIEW_HEIGHT);
+  // }
+  //
+  // componentWillMount() {
+  //   this.keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
+  //   this.keyboardWillHideSub = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
+  // }
+  //
+  // componentWillUnmount() {
+  //   this.keyboardWillShowSub.remove();
+  //   this.keyboardWillHideSub.remove();
+  // }
+  //
+  // keyboardWillShow = (event) => {
+  //   Animated.timing(this.imageHeight, {
+  //     duration: event.duration,
+  //     toValue: IMAGE_HEIGHT_SMALL,
+  //   }).start();
+  // };
+  //
+  // keyboardWillHide = (event) => {
+  //   Animated.timing(this.imageHeight, {
+  //     duration: event.duration,
+  //     toValue: IMAGE_HEIGHT,
+  //   }).start();
+  // };
 
   handleBackOnClick() {
     this.props.registrationBack();

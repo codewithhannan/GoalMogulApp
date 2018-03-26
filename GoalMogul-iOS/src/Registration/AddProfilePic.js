@@ -17,7 +17,12 @@ import { registrationNextIntro } from '../actions';
 class AddProfilePic extends Component {
 
   handleNextOnPressed() {
-    this.props.registrationNextIntro();
+    this.props.registrationNextIntro(false);
+  }
+
+  handleSkipOnPressed() {
+    console.log('skip on pressed callign action');
+    this.props.registrationNextIntro(true);
   }
 
   render() {
@@ -43,7 +48,11 @@ class AddProfilePic extends Component {
               <Button text='Next' />
             </View>
           </TouchableWithoutFeedback>
-          <Button text='Skip' arrow />
+          <TouchableWithoutFeedback onPress={this.handleSkipOnPressed.bind(this)}>
+            <View>
+              <Button text='Skip' arrow />
+            </View>
+          </TouchableWithoutFeedback>
         </View>
       </View>
     );
