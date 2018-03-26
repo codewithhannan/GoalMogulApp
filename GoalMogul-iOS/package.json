@@ -23,6 +23,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "babel-plugin-transform-inline-environment-variables": "^0.3.0",
     "expo": "^25.0.0",
     "lodash": "^4.17.5",
     "native-base": "^2.3.8",

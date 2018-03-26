@@ -30,7 +30,7 @@ class AddProfilePic extends Component {
       <View style={Styles.containerStyle}>
         <Header name='John Doe' type='profile' />
         <View style={Styles.bodyContainerStyle}>
-          <Text style={Styles.titleTextStyle}>Add a picture</Text>
+          <Text style={Styles.titleTextStyle}>Upload a picture</Text>
           <View style={{ alignSelf: 'center' }}>
             <Divider
               horizontal
