@@ -9,6 +9,12 @@ if there is corresponding issue, state it
 -->
 
 ## 22 Mar 2018, by Jia Zeng <andyzeng96@gmail.com>
+* See [Issue #17](https://github.com/somechild/goalmogul-ios/issues/17)
+* Registration error handling
+* Registration skip button implementation
+* Form redesign
+
+## 22 Mar 2018, by Jia Zeng <andyzeng96@gmail.com>
 * See [Issue #11](https://github.com/somechild/goalmogul-ios/issues/11)
 * Registration import photo for profile picture
 
