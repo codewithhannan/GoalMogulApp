@@ -18,6 +18,16 @@ import ContactSync from './Registration/ContactSync';
 import CameraRollModal from './Registration/CameraRollModal';
 import Header from './Registration/Common/Header';
 
+/* Main App */
+import Home from './Main/Home/Home';
+
+/* Assets */
+import IconHome from './asset/footer/navigation/home.png';
+import IconBell from './asset/footer/navigation/bell.png';
+import IconGoal from './asset/footer/navigation/goal.png';
+import IconChat from './asset/footer/navigation/chat.png';
+import IconStar from './asset/footer/navigation/star.png';
+
 const RouterComponent = () => {
   return (
     <Router>
@@ -51,6 +61,60 @@ const RouterComponent = () => {
               component={ContactSync}
             />
           </Stack>
+
+          {/* Main App */}
+          <Scene
+            key="main-tabs"
+            hideNavBar
+            swipeEnabled
+            tabBarStyle={styles.tabBarStyle}
+            activeTintColor="#324a61"
+            inactiveTintColor="#b8c7cc"
+            tabs
+          >
+            <Stack
+              key="home-tab"
+              initial
+              icon={IconHome}
+              hideNavBar
+            >
+              <Scene key="home" component={Home} initial hideNavBar />
+            </Stack>
+
+            <Stack
+              key="goal-tab"
+              icon={IconGoal}
+              hideNavBar
+            >
+              <Scene key="goal" component={Home} hideNavBar />
+            </Stack>
+
+            <Stack
+              key="notification-tab"
+              icon={IconBell}
+              hideNavBar
+            >
+              <Scene key="notification" component={Home} />
+            </Stack>
+
+            <Stack
+              key="explore-tab"
+              icon={IconHome}
+              hideNavBar
+            >
+              <Scene key="explore" component={Home} />
+            </Stack>
+
+            <Stack
+              key="chat-tab"
+              icon={IconHome}
+              hideNavBar
+            >
+              <Scene key="chat" component={Home} />
+            </Stack>
+
+
+          </Scene>
         </Scene>
         {/*
           This model is deprecated. Using ImagePickerIOS instead.
@@ -68,6 +132,9 @@ const styles = {
   navBarStyle: {
     backgroundColor: '#34c0dd',
     borderBottomColor: 'transparent'
+  },
+  tabBarStyle: {
+
   }
 };
 

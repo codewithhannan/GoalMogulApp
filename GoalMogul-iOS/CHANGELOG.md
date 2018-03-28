@@ -8,7 +8,12 @@
 if there is corresponding issue, state it
 -->
 
-## 22 Mar 2018, by Jia Zeng <andyzeng96@gmail.com>
+* Version 0.0.1
+## 25 Mar 2018, by Jia Zeng <andyzeng96@gmail.com>
+* Add ghost image for profile picture
+* Disable InputText onFocus enlarge 
+
+## 25 Mar 2018, by Jia Zeng <andyzeng96@gmail.com>
 * See [Issue #17](https://github.com/somechild/goalmogul-ios/issues/17)
 * Registration error handling
 * Registration skip button implementation
