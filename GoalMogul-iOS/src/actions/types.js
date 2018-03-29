@@ -17,6 +17,8 @@ export const REGISTRATION_INTRO_SKIP = 'registration_intro_skip';
 export const REGISTRATION_CONTACT = 'registration_contact';
 export const REGISTRATION_CONTACT_SKIP = 'registration_contact_skip';
 export const REGISTRATION_CONTACT_SYNC = 'registration_contact_sync';
+export const REGISTRATION_CONTACT_SYNC_SKIP = 'registration_contact_sync_skip';
+export const REGISTRATION_CONTACT_SYNC_DONE = 'registration_contact_sync_done';
 
 export const REGISTRATION_INTRO_FORM_CHANGE = 'registration_intro_form_change';
 

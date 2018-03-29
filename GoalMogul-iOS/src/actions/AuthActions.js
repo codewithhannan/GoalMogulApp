@@ -36,15 +36,33 @@ export const loginUser = ({ username, password }) => {
   // return (dispatch) => {
   //
   // };
-  console.log('loging user');
   return (dispatch) => {
-    dispatch({
-      type: LOGIN_USER_SUCCESS,
-      payload: null
-    });
-    Actions.mainTabs();
+    let url = `http://localhost:8081/api/pub/user/authenticate/`;
+    let headers = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: username,
+        password: password
+      })
+    }
+    fetch(url, headers)
+      .then((res) => res.json())
+      .then((res) => {
+        console.log('loging user', res);
+        dispatch({
+          type: LOGIN_USER_SUCCESS,
+          payload: null
+        });
+        Actions.mainTabs();
+      })
+      .catch((err) => {
+        console.log('error in login, ', err)
+      })
   }
-  
 };
 
 export const registerUser = () => {

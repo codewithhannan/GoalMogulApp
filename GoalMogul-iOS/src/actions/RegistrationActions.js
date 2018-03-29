@@ -11,6 +11,8 @@ import {
   REGISTRATION_CONTACT_SKIP,
   REGISTRATION_CONTACT,
   REGISTRATION_CONTACT_SYNC,
+  REGISTRATION_CONTACT_SYNC_SKIP,
+  REGISTRATION_CONTACT_SYNC_DONE,
 
   REGISTRATION_INTRO,
   REGISTRATION_INTRO_FORM_CHANGE,
@@ -197,13 +199,36 @@ export const handleOnHeadlineChanged = (headline) => {
 
 /* Contact actions */
 
-export const registrationNextContactSync = () => {
+export const registrationNextContactSync = ({ skip }) => {
+  const type = skip ? REGISTRATION_CONTACT_SYNC_SKIP : REGISTRATION_CONTACT_SYNC;
+
+  if (skip) {
+    return (dispatch) => {
+      dispatch({
+        type: type,
+      });
+      Actions.mainTabs();
+    };
+  }
+
+  // TODO: load contacts from iphone contacts and send to server
+
   return (dispatch) => {
     dispatch({
-      type: REGISTRATION_CONTACT_SYNC,
+      type: type,
     });
     Actions.registrationContactSync();
   };
 };
 
 /* Contact Sync actions */
+export const registrationContactSyncDone = () => {
+  // Passed in a list of contacts that user wants to add as friends
+
+  return (dispatch) => {
+    dispatch({
+      type: REGISTRATION_CONTACT_SYNC_DONE
+    });
+    Actions.mainTabs();
+  };
+}

@@ -42,13 +42,12 @@ class PostCard extends Component {
   }
 
   handleButtonPressedRelease(event) {
-    
+
   }
 
 
   renderButtonGroup() {
     return this.state.buttons.map((b) => {
-      console.log(b.key);
       return (
         <View
           style={styles.buttonContainerStyle}
