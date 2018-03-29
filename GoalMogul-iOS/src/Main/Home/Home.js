@@ -18,6 +18,7 @@ import TabButtonGroup from '../../components/TabButtonGroup';
 import TabButton from '../../components/TabButton';
 import GoalFilterBar from '../../components/GoalFilterBar';
 
+import Tabbar from '../Common/TabIcon';
 
 class Home extends Component {
   constructor(props) {
@@ -103,16 +104,18 @@ class Home extends Component {
 
         <GoalFilterBar />
 
-        <PostCard />
-        <PostCard />
-        <TabBarIOS
-          selectedTab={this.state.selectedTab}
-          color='#ffffff'
-          tintColor='#324a61'
-          unselectedItemTintColor='#b8c7cc'
-        >
-          {children}
-        </TabBarIOS>
+        <PostCard key={1}/>
+        <PostCard key={2}/>
+        {/* 
+          <TabBarIOS
+            selectedTab={this.state.selectedTab}
+            color='#ffffff'
+            tintColor='#324a61'
+            unselectedItemTintColor='#b8c7cc'
+          >
+            {children}
+          </TabBarIOS>
+        */}
       </View>
     );
   }

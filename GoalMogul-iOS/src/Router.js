@@ -3,6 +3,7 @@ import {
   Scene,
   Router,
   Stack,
+  Tabs,
   Modal
 } from 'react-native-router-flux';
 
@@ -15,25 +16,17 @@ import IntroForm from './Registration/IntroForm';
 import AddProfilePic from './Registration/AddProfilePic';
 import Contacts from './Registration/Contacts';
 import ContactSync from './Registration/ContactSync';
-import CameraRollModal from './Registration/CameraRollModal';
-import Header from './Registration/Common/Header';
 
 /* Main App */
+import TabIcon from './Main/Common/TabIcon';
 import Home from './Main/Home/Home';
-
-/* Assets */
-import IconHome from './asset/footer/navigation/home.png';
-import IconBell from './asset/footer/navigation/bell.png';
-import IconGoal from './asset/footer/navigation/goal.png';
-import IconChat from './asset/footer/navigation/chat.png';
-import IconStar from './asset/footer/navigation/star.png';
 
 const RouterComponent = () => {
   return (
     <Router>
       <Modal>
         <Scene key="root" hideNavBar>
-          <Scene key="auth" hideNavBar>
+          <Scene key="auth" initial hideNavBar>
             <Scene key="login" component={Login} initial />
           </Scene>
 
@@ -63,58 +56,62 @@ const RouterComponent = () => {
           </Stack>
 
           {/* Main App */}
-          <Scene
-            key="main-tabs"
-            hideNavBar
-            swipeEnabled
-            tabBarStyle={styles.tabBarStyle}
-            activeTintColor="#324a61"
-            inactiveTintColor="#b8c7cc"
-            tabs
-          >
-            <Stack
-              key="home-tab"
-              initial
-              icon={IconHome}
+
+          <Scene hideNavBar panHandlers={null}>
+            <Tabs
+              key="mainTabs"
               hideNavBar
+              swipeEnabled
+              tabBarStyle={styles.tabBarStyle}
+              activeTintColor="#324a61"
+              inactiveTintColor="#b8c7cc"
+              tabs
+              showLabel={false}
             >
-              <Scene key="home" component={Home} initial hideNavBar />
-            </Stack>
+              <Stack
+                key="homeTab"
+                initial
+                icon={TabIcon}
+                hideNavBar
+              >
+                <Scene key="home" component={Home} initial hideNavBar />
+              </Stack>
 
-            <Stack
-              key="goal-tab"
-              icon={IconGoal}
-              hideNavBar
-            >
-              <Scene key="goal" component={Home} hideNavBar />
-            </Stack>
+              <Stack
+                key="goalTab"
+                icon={TabIcon}
+                hideNavBar
+              >
+                <Scene key="goal" component={Home} hideNavBar />
+              </Stack>
 
-            <Stack
-              key="notification-tab"
-              icon={IconBell}
-              hideNavBar
-            >
-              <Scene key="notification" component={Home} />
-            </Stack>
+              <Stack
+                key="notificationTab"
+                icon={TabIcon}
+                hideNavBar
+              >
+                <Scene key="notification" component={Home} />
+              </Stack>
 
-            <Stack
-              key="explore-tab"
-              icon={IconHome}
-              hideNavBar
-            >
-              <Scene key="explore" component={Home} />
-            </Stack>
+              <Stack
+                key="exploreTab"
+                icon={TabIcon}
+                hideNavBar
+              >
+                <Scene key="explore" component={Home} />
+              </Stack>
 
-            <Stack
-              key="chat-tab"
-              icon={IconHome}
-              hideNavBar
-            >
-              <Scene key="chat" component={Home} />
-            </Stack>
+              <Stack
+                key="chatTab"
+                icon={TabIcon}
+                hideNavBar
+              >
+                <Scene key="chat" component={Home} />
+              </Stack>
 
-
+            </Tabs>
           </Scene>
+
         </Scene>
         {/*
           This model is deprecated. Using ImagePickerIOS instead.

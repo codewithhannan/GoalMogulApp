@@ -3,7 +3,10 @@ import { Actions } from 'react-native-router-flux';
 import {
   USERNAME_CHANGED,
   PASSWORD_CHANGED,
-  REGISTRATION_ACCOUNT
+  REGISTRATION_ACCOUNT,
+  LOGIN_USER_SUCCESS,
+  LOGIN_USER_FAIL,
+  LOGIN_USER_LOADING
 } from './types';
 
 export const userNameChanged = (username) => {
@@ -33,6 +36,15 @@ export const loginUser = ({ username, password }) => {
   // return (dispatch) => {
   //
   // };
+  console.log('loging user');
+  return (dispatch) => {
+    dispatch({
+      type: LOGIN_USER_SUCCESS,
+      payload: null
+    });
+    Actions.mainTabs();
+  }
+  
 };
 
 export const registerUser = () => {

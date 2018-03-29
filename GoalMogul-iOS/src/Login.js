@@ -3,7 +3,7 @@ import { View, Text, TextInput } from 'react-native';
 import { connect } from 'react-redux';
 import { Button } from 'react-native-elements';
 
-import { userNameChanged, passwordChanged, registerUser } from './actions';
+import { userNameChanged, passwordChanged, registerUser, loginUser } from './actions';
 
 class Login extends Component {
 
@@ -17,6 +17,9 @@ class Login extends Component {
 
   handleLogIn() {
     // console.log(`User try to log in for username: ${this.props.username}`);
+    let username = this.props.username;
+    let password = this.props.password;
+    this.props.loginUser({ username, password });
   }
 
   handleSignUp() {
@@ -107,7 +110,7 @@ class Login extends Component {
             marginTop: 100
           }}
           containerStyle={{ marginTop: 20 }}
-          onPress={this.handleLogIn}
+          onPress={this.handleLogIn.bind(this)}
         />
       </View>
     );
@@ -171,4 +174,11 @@ const mapStateToProps = state => {
   }
 };
 
-export default connect(mapStateToProps, { userNameChanged, passwordChanged, registerUser })(Login);
+export default connect(
+  mapStateToProps, { 
+    userNameChanged, 
+    passwordChanged, 
+    registerUser,
+    loginUser
+  })
+  (Login);
