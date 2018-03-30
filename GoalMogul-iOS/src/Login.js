@@ -28,14 +28,12 @@ class Login extends Component {
   }
 
   renderError() {
-    if (this.props.error) {
-      //TODO: return a toast to properly show error message
-      return (
-        <View>
-          <Text style={styles.errorStyle}>{this.props.error}</Text>
-        </View>
-      );
-    }
+    let error = this.props.error ? this.props.error : "";
+    return (
+      <View style={{height: 15}}>
+        <Text style={styles.errorStyle}>{error}</Text>
+      </View>
+    );
   }
 
   renderButton() {
@@ -159,7 +157,8 @@ const styles = {
   errorStyle: {
     color: '#ff0033',
     justifyContent: 'center',
-    marginBottom: 4
+    marginBottom: 4,
+    alignSelf: 'center'
   }
 };
 
@@ -175,9 +174,9 @@ const mapStateToProps = state => {
 };
 
 export default connect(
-  mapStateToProps, { 
-    userNameChanged, 
-    passwordChanged, 
+  mapStateToProps, {
+    userNameChanged,
+    passwordChanged,
     registerUser,
     loginUser
   })

@@ -57,5 +57,11 @@ export default StyleSheet.create({
     alignSelf: 'center',
     color: '#858585',
     fontSize: 13
+  },
+  errorStyle: {
+    color: '#ff0033',
+    justifyContent: 'center',
+    marginBottom: 4,
+    alignSelf: 'center'
   }
 });

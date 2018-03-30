@@ -5,9 +5,11 @@ export const LOGIN_USER_FAIL = 'login_user_fail';
 export const LOGIN_USER_LOADING = 'login_user_loading';
 
 /* Registration Constants */
+// General registration error 
 export const REGISTRATION_ERROR = 'registration_error';
 export const REGISTRATION_BACK = 'registration_back';
 export const REGISTRATION_ACCOUNT = 'registration_account';
+export const REGISTRATION_ACCOUNT_SUCCESS = 'registration_account_success';
 export const REGISTRATION_ACCOUNT_FORM_CHANGE = 'registration_account_form_change';
 
 export const REGISTRATION_LOGIN = 'registration_login';

@@ -37,7 +37,7 @@ export const loginUser = ({ username, password }) => {
   //
   // };
   return (dispatch) => {
-    let url = `http://192.168.0.3:8081/api/pub/user/authenticate/`;
+    let url = `http://10.197.4.72:8081/api/pub/user/authenticate/`;
     let headers = {
       method: 'POST',
       headers: {
@@ -49,15 +49,27 @@ export const loginUser = ({ username, password }) => {
         password: password
       })
     }
+    dispatch({
+      type: LOGIN_USER_LOADING
+    })
     fetch(url, headers)
       .then((res) => res.json())
       .then((res) => {
-        console.log('loging user', res);
-        dispatch({
-          type: LOGIN_USER_SUCCESS,
-          payload: null
-        });
-        Actions.mainTabs();
+        console.log('login with message: ', res);
+        // User Login Successfully
+        if (res.token) {
+          dispatch({
+            type: LOGIN_USER_SUCCESS,
+            payload: res.token
+          });
+          Actions.mainTabs();
+        } else {
+          // User login fail
+          dispatch({
+            type: LOGIN_USER_FAIL,
+            payload: res.message
+          });
+        }
       })
       .catch((err) => {
         console.log('error in login, ', err)

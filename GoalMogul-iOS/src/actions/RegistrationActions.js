@@ -67,12 +67,45 @@ export const registrationNextAddProfile = (value) => {
       payload: error
     });
   }
-
+  // TODO: refactor network request as factory function
   return (dispatch) => {
-    dispatch({
-      type: REGISTRATION_ADDPROFILE
-    });
-    Actions.registrationProfile();
+    let url = `http://10.197.4.72:8081/api/pub/user/`;
+    let headers = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        password: password
+      })
+    }
+
+    fetch(url, headers)
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.message) {
+          const error = { account: res.message };
+          dispatch({
+            type: REGISTRATION_ERROR,
+            payload: error
+          })
+        } else {
+          dispatch({
+            type: REGISTRATION_ADDPROFILE
+          });
+          // AuthReducers record user token
+          dispatch({
+            type: REGISTRATION_ACCOUNT_SUCCESS,
+            payload: res.token
+          })
+          Actions.registrationProfile();
+        }
+      })
+      // TODO: error handling
+      .catch((err) => console.err(err))
   };
 };
 

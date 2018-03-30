@@ -4,7 +4,8 @@ import {
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAIL,
   LOGIN_USER_LOADING,
-  REGISTRATION_ACCOUNT
+  REGISTRATION_ACCOUNT,
+  REGISTRATION_ACCOUNT_SUCCESS
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -29,13 +30,16 @@ export default (state = INITIAL_STATE, action) => {
       };
     case LOGIN_USER_FAIL:
     //TODO: alter error message
-      return { ...state, error: 'auth fail', password: '', loading: false };
+      return { ...state, error: action.payload, password: '', loading: false };
 
     case LOGIN_USER_LOADING:
       return { ...state, error: '', loading: true };
 
     case REGISTRATION_ACCOUNT:
       return { ...state, ...INITIAL_STATE, registration: true };
+
+    case REGISTRATION_ACCOUNT_SUCCESS:
+      return { ...state, user: action.payload };
     default:
       return state;
   }

@@ -52,6 +52,15 @@ class Account extends Component {
     this.props.handleOnFormChange(password, 'password');
   }
 
+  renderError() {
+    let error = this.props.error.account ? this.props.error.account : "";
+    return (
+      <View style={{height: 15}}>
+        <Text style={Styles.errorStyle}>{error}</Text>
+      </View>
+    );
+  }
+
   renderSplitter() {
     return (
       <View style={styles.splitterStyle}>
@@ -86,6 +95,7 @@ class Account extends Component {
             <View style={Styles.bodyContainerStyle}>
 
               <Text style={styles.titleTextStyle}>Get Started!</Text>
+              {this.renderError()}
               <InputField
                 placeholder='Full Name'
                 value={this.props.name}
@@ -129,8 +139,8 @@ const styles = {
     fontWeight: '700',
     color: '#646464',
     alignSelf: 'center',
-    marginTop: 30,
-    marginBottom: 25
+    marginTop: 25,
+    marginBottom: 10
   },
   splitterStyle: {
     display: 'flex',
