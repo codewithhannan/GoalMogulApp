@@ -37,7 +37,7 @@ export const loginUser = ({ username, password }) => {
   //
   // };
   return (dispatch) => {
-    let url = `http://localhost:8081/api/pub/user/authenticate/`;
+    let url = `http://192.168.0.3:8081/api/pub/user/authenticate/`;
     let headers = {
       method: 'POST',
       headers: {
