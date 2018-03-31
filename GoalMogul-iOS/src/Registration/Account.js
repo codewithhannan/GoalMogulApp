@@ -5,8 +5,7 @@ import {
   ScrollView,
   Text,
   TouchableWithoutFeedback,
-  Keyboard,
-  DeviceEventEmitter
+  Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -15,7 +14,6 @@ import Header from './Common/Header';
 import Button from './Common/Button';
 import Divider from './Common/Divider';
 import InputField from './Common/InputField';
-import KeyboardSpacer from './Common/KeyboardSpacer';
 
 /* Styles */
 import Styles from './Styles';
@@ -24,39 +22,6 @@ import Styles from './Styles';
 import { registrationLogin, registrationNextAddProfile, handleOnFormChange } from '../actions';
 
 class Account extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      keyboardSpacerHeight: 0
-    };
-  }
-
-  componentWillMount () {
-    this.keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      this.keyboardDidShow.bind(this))
-    this.keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      this.keyboardDidHide.bind(this))
-  }
-
-  componentWillUnmount () {
-    this.keyboardDidShowListener.remove()
-    this.keyboardDidHideListener.remove()
-  }
-
-  keyboardDidShow (e) {
-    this.setState({
-      keyboardSpacerHeight: e.endCoordinates.height,
-    })
-  }
-
-  keyboardDidHide (e) {
-    this.setState({
-      keyboardSpacerHeight: 0,
-    })
-  }
 
   handleContainerOnPressed() {
     Keyboard.dismiss();
