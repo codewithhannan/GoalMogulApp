@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import {
   KeyboardAvoidingView,
   View,
+  ScrollView,
   Text,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
+  DeviceEventEmitter
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -13,6 +15,7 @@ import Header from './Common/Header';
 import Button from './Common/Button';
 import Divider from './Common/Divider';
 import InputField from './Common/InputField';
+import KeyboardSpacer from './Common/KeyboardSpacer';
 
 /* Styles */
 import Styles from './Styles';
@@ -21,6 +24,39 @@ import Styles from './Styles';
 import { registrationLogin, registrationNextAddProfile, handleOnFormChange } from '../actions';
 
 class Account extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      keyboardSpacerHeight: 0
+    };
+  }
+
+  componentWillMount () {
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this.keyboardDidShow.bind(this))
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this.keyboardDidHide.bind(this))
+  }
+
+  componentWillUnmount () {
+    this.keyboardDidShowListener.remove()
+    this.keyboardDidHideListener.remove()
+  }
+
+  keyboardDidShow (e) {
+    this.setState({
+      keyboardSpacerHeight: e.endCoordinates.height,
+    })
+  }
+
+  keyboardDidHide (e) {
+    this.setState({
+      keyboardSpacerHeight: 0,
+    })
+  }
 
   handleContainerOnPressed() {
     Keyboard.dismiss();
@@ -80,53 +116,63 @@ class Account extends Component {
       </TouchableWithoutFeedback>
     );
   }
-
+  // <KeyboardAvoidingView
+  //   behavior='position'
+  //   style={{ flex: 1 }}
+  //   contentContainerStyle={Styles.containerStyle}
+  //   keyboardVerticalOffset={-150}
+  // >
   render() {
     return (
       <KeyboardAvoidingView
-        behavior='position'
+        behavior='padding'
         style={{ flex: 1 }}
-        contentContainerStyle={Styles.containerStyle}
-        keyboardVerticalOffset={-150}
       >
-        <TouchableWithoutFeedback onPress={this.handleContainerOnPressed.bind(this)}>
-          <View style={Styles.containerStyle}>
-            <Header />
-            <View style={Styles.bodyContainerStyle}>
+        <ScrollView
+          contentContainerStyle={{flexGrow: 1}}
+          keyboardDismissMode='interactive'
+          keyboardShouldPersistTaps='never'
+          overScrollMode='never'
+          bounces={false}
+        >
+          <TouchableWithoutFeedback onPress={this.handleContainerOnPressed.bind(this)}>
+            <View style={Styles.containerStyle}>
+              <Header />
+              <View style={Styles.bodyContainerStyle}>
 
-              <Text style={styles.titleTextStyle}>Get Started!</Text>
-              {this.renderError()}
-              <InputField
-                placeholder='Full Name'
-                value={this.props.name}
-                onChange={this.handleOnNameChange.bind(this)}
-                error={this.props.error.name}
-              />
-              <InputField
-                placeholder='Email'
-                value={this.props.email}
-                onChange={this.handleOnEmailChange.bind(this)}
-                error={this.props.error.email}
-              />
-              <InputField
-                placeholder='Password'
-                value={this.props.password}
-                secureTextEntry
-                onChange={this.handleOnPasswordChange.bind(this)}
-                error={this.props.error.password}
-              />
+                <Text style={styles.titleTextStyle}>Get Started!</Text>
+                {this.renderError()}
+                <InputField
+                  placeholder='Full Name'
+                  value={this.props.name}
+                  onChange={this.handleOnNameChange.bind(this)}
+                  error={this.props.error.name}
+                />
+                <InputField
+                  placeholder='Email'
+                  value={this.props.email}
+                  onChange={this.handleOnEmailChange.bind(this)}
+                  error={this.props.error.email}
+                />
+                <InputField
+                  placeholder='Password'
+                  value={this.props.password}
+                  secureTextEntry
+                  onChange={this.handleOnPasswordChange.bind(this)}
+                  error={this.props.error.password}
+                />
 
-              <TouchableWithoutFeedback onPress={this.handleNextPressed.bind(this)}>
-                <View>
-                  <Button text='Next' />
-                </View>
-              </TouchableWithoutFeedback>
-              {this.renderSplitter()}
-              {this.renderLogIn()}
-
+                <TouchableWithoutFeedback onPress={this.handleNextPressed.bind(this)}>
+                  <View>
+                    <Button text='Next' />
+                  </View>
+                </TouchableWithoutFeedback>
+                {this.renderSplitter()}
+                {this.renderLogIn()}
+              </View>
             </View>
-          </View>
-        </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback>
+        </ScrollView>
       </KeyboardAvoidingView>
     );
   }

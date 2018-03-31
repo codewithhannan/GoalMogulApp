@@ -7,6 +7,7 @@ import {
   REGISTRATION_BACK,
   REGISTRATION_LOGIN,
   REGISTRATION_ADDPROFILE,
+  REGISTRATION_ACCOUNT_SUCCESS,
 
   REGISTRATION_CONTACT_SKIP,
   REGISTRATION_CONTACT,
@@ -69,7 +70,7 @@ export const registrationNextAddProfile = (value) => {
   }
   // TODO: refactor network request as factory function
   return (dispatch) => {
-    let url = `http://10.197.4.72:8081/api/pub/user/`;
+    let url = `http://192.168.0.3:8081/api/pub/user/`;
     let headers = {
       method: 'POST',
       headers: {
@@ -105,7 +106,7 @@ export const registrationNextAddProfile = (value) => {
         }
       })
       // TODO: error handling
-      .catch((err) => console.err(err))
+      .catch((err) => console.log(err))
   };
 };
 
