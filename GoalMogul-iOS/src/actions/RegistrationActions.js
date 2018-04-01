@@ -17,6 +17,7 @@ import {
   REGISTRATION_INTRO_FORM_CHANGE,
   REGISTRATION_INTRO_SKIP,
 
+  REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS,
   REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO,
   REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
   REGISTRATION_ERROR
@@ -141,11 +142,17 @@ export const registrationNextIntro = (skip) => {
         token
       })
     };
-    ImageUtils.UploadImage(imageUri, token).then((res) => {
+    ImageUtils.UploadImage(imageUri, token, (objectKey) => {
+      console.log('dispatching from inside with objectKey: ', objectKey);
+      dispatch({
+        type: REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS,
+        payload: objectKey
+      });
+    }).then((res) => {
       console.log('finish with res', res);
     }).catch((err) => {
       console.log('error uploading: ', err);
-    })
+    });
     // fetch(url, headers)
     //   .then((res) => res.json())
     //   .then(({ signedRequest, objectKey }) => {

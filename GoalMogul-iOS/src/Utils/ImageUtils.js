@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const ImageUtils = {
-    UploadImage(file, token) {
+  UploadImage(file, token, dispatch) {
     return new Promise((resolve, reject) => {
       const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/s3/ProfileImage/signature';
       const param = {
@@ -16,7 +16,8 @@ const ImageUtils = {
       axios(param)
         .then((res) => {
           const { objectKey, signedRequest } = res.data;
-          console.log('url is: ', signedRequest);
+          dispatch(objectKey);
+
           const options = {
             headers: {
               'Content-Type': 'image/jpeg'
