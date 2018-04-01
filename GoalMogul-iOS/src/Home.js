@@ -13,6 +13,7 @@ import IconMenu from './asset/header/menu.png';
 import IconHomeLogo from './asset/header/home-logo.png';
 import Logo from './asset/header/logo.png';
 
+/* Components */
 import PostCard from './components/PostCard';
 import TabButtonGroup from './components/TabButtonGroup';
 import TabButton from './components/TabButton';

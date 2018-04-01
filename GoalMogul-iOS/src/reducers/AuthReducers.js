@@ -11,7 +11,6 @@ import {
 const INITIAL_STATE = {
   username: '',
   password: '',
-  user: null,
   error: '',
   loading: false
 };
@@ -39,7 +38,8 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, ...INITIAL_STATE, registration: true };
 
     case REGISTRATION_ACCOUNT_SUCCESS:
-      return { ...state, user: action.payload };
+      return { ...state };
+
     default:
       return state;
   }

@@ -21,6 +21,8 @@ import ContactSync from './Registration/ContactSync';
 import TabIcon from './Main/Common/TabIcon';
 import Home from './Main/Home/Home';
 
+import Profile from './Main/Profile/Profile';
+
 const RouterComponent = () => {
   return (
     <Router>
@@ -75,6 +77,7 @@ const RouterComponent = () => {
                 hideNavBar
               >
                 <Scene key="home" component={Home} initial hideNavBar />
+                <Scene key="profile" component={Profile} hideNavBar />
               </Stack>
 
               <Stack

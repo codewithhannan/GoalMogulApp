@@ -1,8 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import { CameraRoll, ImagePickerIOS } from 'react-native';
 
-// import contraints from '../Registration/Common/Constraints';
-
 import {
   REGISTRATION_BACK,
   REGISTRATION_LOGIN,
@@ -19,7 +17,6 @@ import {
   REGISTRATION_INTRO_FORM_CHANGE,
   REGISTRATION_INTRO_SKIP,
 
-  REGISTRATION_ADDPROFILE_CAMERAROLL_OPEN,
   REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO,
   REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
   REGISTRATION_ERROR
@@ -70,43 +67,47 @@ export const registrationNextAddProfile = (value) => {
   }
   // TODO: refactor network request as factory function
   return (dispatch) => {
-    let url = `http://192.168.0.3:8081/api/pub/user/`;
-    let headers = {
+    const url = 'https://goalmogul-api-dev.herokuapp.com/api/pub/user/';
+    const headers = {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        name: name,
-        email: email,
-        password: password
+        name,
+        email,
+        password
       })
-    }
+    };
 
     fetch(url, headers)
       .then((res) => res.json())
       .then((res) => {
         if (res.message) {
-          const error = { account: res.message };
+          const err = { account: res.message };
           dispatch({
             type: REGISTRATION_ERROR,
-            payload: error
-          })
+            payload: err
+          });
         } else {
           dispatch({
             type: REGISTRATION_ADDPROFILE
           });
           // AuthReducers record user token
+          const payload = {
+            token: res.token,
+            userId: res.userId
+          };
           dispatch({
             type: REGISTRATION_ACCOUNT_SUCCESS,
-            payload: res.token
-          })
+            payload
+          });
           Actions.registrationProfile();
         }
       })
       // TODO: error handling
-      .catch((err) => console.log(err))
+      .catch((err) => console.log(err));
   };
 };
 
@@ -187,6 +188,22 @@ export const registrationCameraRollOnImageChoosen = (uri) => {
   };
 };
 
+const uploadPhoto = (token, imageUri) => {
+  const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/s3/upload/signature';
+  const headers = {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      headline,
+      token
+    })
+  };
+  fetch(url, headers)
+}
+
 // Open Camera / Video
 export const registrationCameraOnOpen = () => {
   return (dispatch) => {
@@ -216,11 +233,42 @@ export const registrationNextContact = (headline, skip) => {
       payload: error
     });
   }
-  return (dispatch) => {
-    dispatch({
-      type
-    });
-    Actions.registrationContact();
+  return (dispatch, getState) => {
+    if (skip) {
+      return dispatch({
+        type
+      });
+    }
+    const token = getState().user.token;
+    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
+    const headers = {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        headline,
+        token
+      })
+    };
+    fetch(url, headers)
+      .then((res) => res.json())
+      .then((res) => {
+        dispatch({
+          type,
+          payload: headline
+        });
+        Actions.registrationContact();
+      })
+      .catch((err) => {
+        console.log('error is: ', err);
+        error.headline = err.message;
+        return ({
+          type: REGISTRATION_ERROR,
+          payload: error
+        });
+      });
   };
 };
 
@@ -239,7 +287,7 @@ export const registrationNextContactSync = ({ skip }) => {
   if (skip) {
     return (dispatch) => {
       dispatch({
-        type: type,
+        type,
       });
       Actions.mainTabs();
     };
@@ -249,7 +297,7 @@ export const registrationNextContactSync = ({ skip }) => {
 
   return (dispatch) => {
     dispatch({
-      type: type,
+      type,
     });
     Actions.registrationContactSync();
   };
@@ -265,4 +313,4 @@ export const registrationContactSyncDone = () => {
     });
     Actions.mainTabs();
   };
-}
+};

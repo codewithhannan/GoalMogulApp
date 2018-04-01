@@ -13,12 +13,13 @@ import IconMenu from '../../asset/header/menu.png';
 import IconHomeLogo from '../../asset/header/home-logo.png';
 import Logo from '../../asset/header/logo.png';
 
+/* Components */
 import PostCard from '../../components/PostCard';
 import TabButtonGroup from '../../components/TabButtonGroup';
 import TabButton from '../../components/TabButton';
 import GoalFilterBar from '../../components/GoalFilterBar';
-
-import Tabbar from '../Common/TabIcon';
+//TODO: delete following imports
+import MyGoalCard from '../Common/MyGoalCard';
 
 class Home extends Component {
   constructor(props) {
@@ -104,9 +105,10 @@ class Home extends Component {
 
         <GoalFilterBar />
 
-        <PostCard key={1}/>
-        <PostCard key={2}/>
-        {/* 
+        <PostCard key={1} />
+        <PostCard key={2} />
+        <MyGoalCard key={3} />
+        {/*
           <TabBarIOS
             selectedTab={this.state.selectedTab}
             color='#ffffff'

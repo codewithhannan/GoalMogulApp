@@ -37,8 +37,8 @@ export const loginUser = ({ username, password }) => {
   //
   // };
   return (dispatch) => {
-    let url = `http://10.197.4.72:8081/api/pub/user/authenticate/`;
-    let headers = {
+    const url = 'https://goalmogul-api-dev.herokuapp.com/api/pub/user/authenticate/';
+    const headers = {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -46,21 +46,25 @@ export const loginUser = ({ username, password }) => {
       },
       body: JSON.stringify({
         email: username,
-        password: password
+        password
       })
-    }
+    };
     dispatch({
       type: LOGIN_USER_LOADING
-    })
+    });
     fetch(url, headers)
       .then((res) => res.json())
       .then((res) => {
         console.log('login with message: ', res);
         // User Login Successfully
         if (res.token) {
+          const payload = {
+            token: res.token,
+            userId: res.userId
+          };
           dispatch({
             type: LOGIN_USER_SUCCESS,
-            payload: res.token
+            payload
           });
           Actions.mainTabs();
         } else {
@@ -72,9 +76,9 @@ export const loginUser = ({ username, password }) => {
         }
       })
       .catch((err) => {
-        console.log('error in login, ', err)
-      })
-  }
+        console.log('error in login, ', err);
+      });
+  };
 };
 
 export const registerUser = () => {
