@@ -5,7 +5,7 @@ export const LOGIN_USER_FAIL = 'login_user_fail';
 export const LOGIN_USER_LOADING = 'login_user_loading';
 
 /* Registration Constants */
-// General registration error 
+// General registration error
 export const REGISTRATION_ERROR = 'registration_error';
 export const REGISTRATION_BACK = 'registration_back';
 export const REGISTRATION_ACCOUNT = 'registration_account';
@@ -24,6 +24,8 @@ export const REGISTRATION_CONTACT_SYNC_DONE = 'registration_contact_sync_done';
 
 export const REGISTRATION_INTRO_FORM_CHANGE = 'registration_intro_form_change';
 
+export const REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS = 'registration_addprofile_upload_success';
+export const REGISTRATION_ADDPROFILE_UPLOAD_FAIL = 'registration_addprofile_upload_fail';
 export const REGISTRATION_ADDPROFILE_CAMERAROLL_OPEN = 'registration_addprofile_cameraroll_open';
 export const REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO = 'registration_addprofile_load_photo';
 export const REGISTRATION_ADDPROFILE_CAMERAROLL_CLOSE = 'registration_addprofile_cameraroll_close';

@@ -22,6 +22,8 @@ import {
   REGISTRATION_ERROR
 } from './types';
 
+import ImageUtils from '../Utils/ImageUtils';
+
 export const registrationLogin = () => {
   return (dispatch) => {
     dispatch({
@@ -117,10 +119,53 @@ export * from './AccountActions';
 
 export const registrationNextIntro = (skip) => {
   const type = skip ? REGISTRATION_INTRO_SKIP : REGISTRATION_INTRO;
-  return (dispatch) => {
-    dispatch({
-      type,
-    });
+  return (dispatch, getState) => {
+    if (skip) {
+      dispatch({
+        type,
+      });
+      return Actions.registrationIntro();
+    }
+    // Obtain pre-signed url
+    const imageUri = getState().registration.profilePic;
+    const token = getState().user.token;
+    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/s3/ProfileImage/signature';
+    const headers = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        fileType: 'jpg',
+        token
+      })
+    };
+    ImageUtils.UploadImage(imageUri, token).then((res) => {
+      console.log('finish with res', res);
+    }).catch((err) => {
+      console.log('error uploading: ', err);
+    })
+    // fetch(url, headers)
+    //   .then((res) => res.json())
+    //   .then(({ signedRequest, objectKey }) => {
+    //     console.log('url: ', signedRequest);
+    //     const xhr = new XMLHttpRequest();
+    //     xhr.open('PUT', signedRequest);
+    //     xhr.onreadystatechange = function () {
+    //       if (xhr.readyState === 4) {
+    //         if (xhr.status === 200) {
+    //           console.log('Image successfully uploaded to S3');
+    //         } else {
+    //           console.log('Error while sending the image to S3');
+    //         }
+    //       }
+    //     };
+    //     xhr.setRequestHeader('Content-Type', 'image/jpeg');
+    //     xhr.send({ uri: imageUri, type: 'image/jpeg' });
+    //     //TODO: user reducer records objectId
+    //   })
+    //   .catch((err) => console.log('error in getting signed file, ', err));
     Actions.registrationIntro();
   };
 };
@@ -187,22 +232,6 @@ export const registrationCameraRollOnImageChoosen = (uri) => {
     });
   };
 };
-
-const uploadPhoto = (token, imageUri) => {
-  const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/s3/upload/signature';
-  const headers = {
-    method: 'PUT',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      headline,
-      token
-    })
-  };
-  fetch(url, headers)
-}
 
 // Open Camera / Video
 export const registrationCameraOnOpen = () => {
