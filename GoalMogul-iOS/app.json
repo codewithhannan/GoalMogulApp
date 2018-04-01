@@ -1,5 +1,19 @@
 {
   "expo": {
-    "sdkVersion": "25.0.0"
+    "name": "goalmogul",
+    "sdkVersion": "25.0.0",
+    "slug": "goalmogul",
+    "ios": {
+      "bundleIdentifier": "com.goalmogul.ios",
+      "infoPlist": {
+        "NSLocationAlwaysUsageDescription" : "needs gps data.",
+        "NSAppTransportSecurity" : {
+          "NSAllowsArbitraryLoads" : true,
+          "NSAllowsArbitraryLoadsForMedia": true,
+          "NSAllowsArbitraryLoadsInWebContent": true,
+          "NSExceptionAllowsInsecureHTTPLoads": true
+        }
+      }
+    }
   }
 }

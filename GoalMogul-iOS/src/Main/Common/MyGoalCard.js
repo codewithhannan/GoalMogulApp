@@ -2,19 +2,20 @@ import React, { Component } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 
-/* Import icons */
-import LikeIcon from '../asset/utils/like.png';
-import BulbIcon from '../asset/utils/bulb.png';
-import ShareIcon from '../asset/utils/share.png';
+/* asset */
+import profilePic from '../../asset/test-profile-pic.png';
 
-import profilePic from '../asset/test-profile-pic.png';
+/* Import icons */
+import LikeIcon from '../../asset/utils/like.png';
+import BulbIcon from '../../asset/utils/bulb.png';
+import ShareIcon from '../../asset/utils/share.png';
 
 /* Component */
 import Card from './Card';
 import ContentContainer from './ContentContainer';
 import ProgressBar from './ProgressBar';
 
-class PostCard extends Component {
+class MyGoalCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -45,7 +46,6 @@ class PostCard extends Component {
 
   }
 
-
   renderButtonGroup() {
     return this.state.buttons.map((b) => {
       return (
@@ -65,9 +65,6 @@ class PostCard extends Component {
     return (
       <Card>
         <View style={styles.bodyContainerStyle}>
-          <View style={styles.imageContainerStyle}>
-            <Image style={styles.imageStyle} source={profilePic} />
-          </View>
           <ContentContainer />
         </View>
 
@@ -82,7 +79,6 @@ class PostCard extends Component {
 }
 
 const styles = StyleSheet.create({
-
   buttonGroupStyle: {
     borderTopWidth: 1,
     borderTopColor: '#f4f4f4',
@@ -133,4 +129,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default PostCard;
+export default MyGoalCard;

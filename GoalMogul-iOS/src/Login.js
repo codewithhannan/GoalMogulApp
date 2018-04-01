@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  KeyboardAvoidingView,
+  ScrollView
+} from 'react-native';
 import { connect } from 'react-redux';
 import { Button } from 'react-native-elements';
 
-import { userNameChanged, passwordChanged, registerUser } from './actions';
+import { userNameChanged, passwordChanged, registerUser, loginUser } from './actions';
 
 class Login extends Component {
 
@@ -17,6 +23,9 @@ class Login extends Component {
 
   handleLogIn() {
     // console.log(`User try to log in for username: ${this.props.username}`);
+    let username = this.props.username;
+    let password = this.props.password;
+    this.props.loginUser({ username, password });
   }
 
   handleSignUp() {
@@ -25,14 +34,12 @@ class Login extends Component {
   }
 
   renderError() {
-    if (this.props.error) {
-      //TODO: return a toast to properly show error message
-      return (
-        <View>
-          <Text style={styles.errorStyle}>{this.props.error}</Text>
-        </View>
-      );
-    }
+    let error = this.props.error ? this.props.error : "";
+    return (
+      <View style={{height: 15}}>
+        <Text style={styles.errorStyle}>{error}</Text>
+      </View>
+    );
   }
 
   renderButton() {
@@ -46,70 +53,83 @@ class Login extends Component {
   render() {
     const { containerStyle, headerStyle, formStyle, inputLabelStyle, textInputStyle } = styles;
     return (
-      <View style={containerStyle}>
-        <View style={headerStyle}>
-          <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>GOALMOGUL</Text>
-        </View>
-        {/* Render customized error message */}
-        {this.renderError()}
-        <View style={formStyle}>
-          <Text style={inputLabelStyle}>EMAIL</Text>
-          <TextInput
-            style={textInputStyle}
-            onChangeText={this.onUserNameChange.bind(this)}
-            value={this.props.username}
-          />
-        </View>
+      <KeyboardAvoidingView
+        behavior='padding'
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          contentContainerStyle={{flexGrow: 1}}
+          keyboardDismissMode='interactive'
+          keyboardShouldPersistTaps='never'
+          overScrollMode='never'
+          bounces={false}
+        >
+          <View style={containerStyle}>
+            <View style={headerStyle}>
+              <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>GOALMOGUL</Text>
+            </View>
+            {/* Render customized error message */}
+            {this.renderError()}
+            <View style={formStyle}>
+              <Text style={inputLabelStyle}>EMAIL</Text>
+              <TextInput
+                style={textInputStyle}
+                onChangeText={this.onUserNameChange.bind(this)}
+                value={this.props.username}
+              />
+            </View>
 
-        <View style={formStyle}>
-          <Text style={inputLabelStyle}>PASSWORD</Text>
-          <TextInput
-            style={textInputStyle}
-            secureTextEntry
-            onChangeText={this.onPasswordChange.bind(this)}
-            value={this.props.password}
-          />
-        </View>
+            <View style={formStyle}>
+              <Text style={inputLabelStyle}>PASSWORD</Text>
+              <TextInput
+                style={textInputStyle}
+                secureTextEntry
+                onChangeText={this.onPasswordChange.bind(this)}
+                value={this.props.password}
+              />
+            </View>
 
-        <Button
-          text='JOIN NOW'
-          textStyle={{ fontWeight: '400',
-            color: '#fff',
-            fontSize: 20,
-            paddingLeft: 30,
-            paddingRight: 30 }}
-          buttonStyle={{
-            width: 220,
-            height: 45,
-            borderColor: '#fff',
-            backgroundColor: '#1a9edc',
-            borderWidth: 4,
-            borderRadius: 20,
-            marginTop: 30,
-            alignSelf: 'center'
-          }}
-          containerStyle={{ marginTop: 10 }}
-          onPress={this.handleSignUp.bind(this)}
-        />
+            <Button
+              text='JOIN NOW'
+              textStyle={{ fontWeight: '400',
+                color: '#fff',
+                fontSize: 20,
+                paddingLeft: 30,
+                paddingRight: 30 }}
+              buttonStyle={{
+                width: 220,
+                height: 45,
+                borderColor: '#fff',
+                backgroundColor: '#1a9edc',
+                borderWidth: 4,
+                borderRadius: 20,
+                marginTop: 30,
+                alignSelf: 'center'
+              }}
+              containerStyle={{ marginTop: 10 }}
+              onPress={this.handleSignUp.bind(this)}
+            />
 
-        <Button
-          text='LOGIN'
-          clear
-          textStyle={{ color: '#fff',
-            fontWeight: '400',
-            fontSize: 20,
-            paddingLeft: 30,
-            paddingRight: 30,
-            textDecorationLine: 'underline' }}
-          buttonStyle={{
-            backgroundColor: '#1a9edc',
-            alignSelf: 'center',
-            marginTop: 100
-          }}
-          containerStyle={{ marginTop: 20 }}
-          onPress={this.handleLogIn}
-        />
-      </View>
+            <Button
+              text='LOGIN'
+              clear
+              textStyle={{ color: '#fff',
+                fontWeight: '400',
+                fontSize: 20,
+                paddingLeft: 30,
+                paddingRight: 30,
+                textDecorationLine: 'underline' }}
+              buttonStyle={{
+                backgroundColor: '#1a9edc',
+                alignSelf: 'center',
+                marginTop: 100
+              }}
+              containerStyle={{ marginTop: 20 }}
+              onPress={this.handleLogIn.bind(this)}
+            />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -156,7 +176,8 @@ const styles = {
   errorStyle: {
     color: '#ff0033',
     justifyContent: 'center',
-    marginBottom: 4
+    marginBottom: 4,
+    alignSelf: 'center'
   }
 };
 
@@ -171,4 +192,11 @@ const mapStateToProps = state => {
   }
 };
 
-export default connect(mapStateToProps, { userNameChanged, passwordChanged, registerUser })(Login);
+export default connect(
+  mapStateToProps, {
+    userNameChanged,
+    passwordChanged,
+    registerUser,
+    loginUser
+  })
+  (Login);

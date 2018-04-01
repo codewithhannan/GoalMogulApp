@@ -12,9 +12,9 @@ class TabButtonGroup extends Component {
   renderButton() {
     return this.props.children.map((b, index) => {
       if (index !== 0) {
-        console.log('hi I am number 1');
+        // console.log('hi I am number 1');
         return (
-          <View style={styles.dividerContainerStyle}>
+          <View key={index} style={styles.dividerContainerStyle}>
             <Divider />
             {b}
           </View>
@@ -25,7 +25,7 @@ class TabButtonGroup extends Component {
   }
 
   render() {
-    console.log(this.props.children);
+    // console.log(this.props.children);
     return (
       <View style={styles.containerStyle}>
         {this.renderButton()}

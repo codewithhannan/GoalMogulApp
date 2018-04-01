@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
+import ghost from '../../asset/utils/default_profile.png';
+
 /* Actions */
 import { registrationCameraRollOnOpen, registrationCameraOnOpen } from '../../actions';
 
@@ -49,12 +51,20 @@ class AddingProfilePicture extends Component {
 
   renderImage() {
     const uri = this.props.profilePic;
+    const profilePicStyle = { ...styles.profilePicStyle };
     if (uri !== null && uri !== undefined) {
       return (
-        <Image source={{ uri }} style={styles.profilePicStyle} />
+        <View style={styles.containerStyle}>
+          <Image source={{ uri }} style={profilePicStyle} />
+        </View>
       );
     }
-    return <View style={styles.profilePicStyle} />;
+    profilePicStyle.tintColor = '#eaeaea';
+    return (
+      <View style={styles.containerStyle}>
+        <Image source={ghost} style={profilePicStyle} />
+      </View>
+    );
   }
 
   render() {
@@ -76,11 +86,16 @@ const styles = {
   profilePicStyle: {
     height: 200,
     width: 200,
+    alignSelf: 'center'
+  },
+  containerStyle: {
+    height: 200,
+    width: 200,
     alignSelf: 'center',
-    marginBottom: 24,
-    shadowColor: '#000',
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
+    marginBottom: 24
   }
 };
 

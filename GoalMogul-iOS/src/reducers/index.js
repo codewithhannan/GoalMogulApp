@@ -4,9 +4,11 @@ import { combineReducers } from 'redux';
 import AuthReducers from './AuthReducers';
 import RegReducers from './RegReducers';
 import CameraRollReducers from './CameraRollReducers';
+import User from './User';
 
 export default combineReducers({
   auth: AuthReducers,
   registration: RegReducers,
-  cameraRoll: CameraRollReducers
+  cameraRoll: CameraRollReducers,
+  user: User
 });

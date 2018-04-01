@@ -16,7 +16,13 @@ import { registrationNextContactSync } from '../actions';
 class Contacts extends Component {
 
   handleNextOnPressed() {
-    this.props.registrationNextContactSync();
+    const skip = false;
+    this.props.registrationNextContactSync({ skip });
+  }
+
+  handleSkipOnPressed() {
+    const skip = true;
+    this.props.registrationNextContactSync({ skip })
   }
 
   render() {
@@ -54,7 +60,11 @@ class Contacts extends Component {
             </View>
           </TouchableWithoutFeedback>
 
-          <Button text='Skip' arrow />
+          <TouchableWithoutFeedback onPress={this.handleSkipOnPressed.bind(this)}>
+            <View>
+              <Button text='Skip' arrow />
+            </View>
+          </TouchableWithoutFeedback>
         </View>
       </View>
     );

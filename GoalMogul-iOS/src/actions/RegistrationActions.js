@@ -1,22 +1,22 @@
 import { Actions } from 'react-native-router-flux';
 import { CameraRoll, ImagePickerIOS } from 'react-native';
 
-// import contraints from '../Registration/Common/Constraints';
-
 import {
   REGISTRATION_BACK,
   REGISTRATION_LOGIN,
   REGISTRATION_ADDPROFILE,
+  REGISTRATION_ACCOUNT_SUCCESS,
 
   REGISTRATION_CONTACT_SKIP,
   REGISTRATION_CONTACT,
   REGISTRATION_CONTACT_SYNC,
+  REGISTRATION_CONTACT_SYNC_SKIP,
+  REGISTRATION_CONTACT_SYNC_DONE,
 
   REGISTRATION_INTRO,
   REGISTRATION_INTRO_FORM_CHANGE,
   REGISTRATION_INTRO_SKIP,
 
-  REGISTRATION_ADDPROFILE_CAMERAROLL_OPEN,
   REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO,
   REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
   REGISTRATION_ERROR
@@ -65,12 +65,49 @@ export const registrationNextAddProfile = (value) => {
       payload: error
     });
   }
-
+  // TODO: refactor network request as factory function
   return (dispatch) => {
-    dispatch({
-      type: REGISTRATION_ADDPROFILE
-    });
-    Actions.registrationProfile();
+    const url = 'https://goalmogul-api-dev.herokuapp.com/api/pub/user/';
+    const headers = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password
+      })
+    };
+
+    fetch(url, headers)
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.message) {
+          const err = { account: res.message };
+          dispatch({
+            type: REGISTRATION_ERROR,
+            payload: err
+          });
+        } else {
+          dispatch({
+            type: REGISTRATION_ADDPROFILE
+          });
+          // AuthReducers record user token
+          const payload = {
+            token: res.token,
+            userId: res.userId
+          };
+          dispatch({
+            type: REGISTRATION_ACCOUNT_SUCCESS,
+            payload
+          });
+          Actions.registrationProfile();
+        }
+      })
+      // TODO: error handling
+      .catch((err) => console.log(err));
   };
 };
 
@@ -151,6 +188,22 @@ export const registrationCameraRollOnImageChoosen = (uri) => {
   };
 };
 
+const uploadPhoto = (token, imageUri) => {
+  const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/s3/upload/signature';
+  const headers = {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      headline,
+      token
+    })
+  };
+  fetch(url, headers)
+}
+
 // Open Camera / Video
 export const registrationCameraOnOpen = () => {
   return (dispatch) => {
@@ -180,11 +233,42 @@ export const registrationNextContact = (headline, skip) => {
       payload: error
     });
   }
-  return (dispatch) => {
-    dispatch({
-      type
-    });
-    Actions.registrationContact();
+  return (dispatch, getState) => {
+    if (skip) {
+      return dispatch({
+        type
+      });
+    }
+    const token = getState().user.token;
+    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
+    const headers = {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        headline,
+        token
+      })
+    };
+    fetch(url, headers)
+      .then((res) => res.json())
+      .then((res) => {
+        dispatch({
+          type,
+          payload: headline
+        });
+        Actions.registrationContact();
+      })
+      .catch((err) => {
+        console.log('error is: ', err);
+        error.headline = err.message;
+        return ({
+          type: REGISTRATION_ERROR,
+          payload: error
+        });
+      });
   };
 };
 
@@ -197,13 +281,36 @@ export const handleOnHeadlineChanged = (headline) => {
 
 /* Contact actions */
 
-export const registrationNextContactSync = () => {
+export const registrationNextContactSync = ({ skip }) => {
+  const type = skip ? REGISTRATION_CONTACT_SYNC_SKIP : REGISTRATION_CONTACT_SYNC;
+
+  if (skip) {
+    return (dispatch) => {
+      dispatch({
+        type,
+      });
+      Actions.mainTabs();
+    };
+  }
+
+  // TODO: load contacts from iphone contacts and send to server
+
   return (dispatch) => {
     dispatch({
-      type: REGISTRATION_CONTACT_SYNC,
+      type,
     });
     Actions.registrationContactSync();
   };
 };
 
 /* Contact Sync actions */
+export const registrationContactSyncDone = () => {
+  // Passed in a list of contacts that user wants to add as friends
+
+  return (dispatch) => {
+    dispatch({
+      type: REGISTRATION_CONTACT_SYNC_DONE
+    });
+    Actions.mainTabs();
+  };
+};

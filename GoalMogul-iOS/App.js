@@ -17,7 +17,7 @@ const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
 export default class App extends React.Component {
 
   // TODO: in ComponentWillMount set up dependencies for verification and
-  // Persist app state
+  // Persist app state. Check if AuthReducers' user token is null and valid.
 
   render() {
     console.log('.env is: ', process.env.DEBUGGING_MODE);

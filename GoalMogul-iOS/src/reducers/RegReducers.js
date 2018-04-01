@@ -9,6 +9,8 @@ import {
   REGISTRATION_CONTACT,
   REGISTRATION_CONTACT_SKIP,
   REGISTRATION_CONTACT_SYNC,
+  REGISTRATION_CONTACT_SYNC_DONE,
+  REGISTRATION_CONTACT_SYNC_SKIP,
 
   REGISTRATION_ACCOUNT_FORM_CHANGE,
   REGISTRATION_INTRO_FORM_CHANGE,
@@ -78,6 +80,12 @@ export default (state = INITIAL_STATE, action) => {
 
     case REGISTRATION_CONTACT_SYNC:
       return { ...state, step: REGISTRATION_CONTACT_SYNC };
+
+    case REGISTRATION_CONTACT_SYNC_DONE:
+      return { ...state };
+
+    case REGISTRATION_CONTACT_SYNC_SKIP:
+      return { ...state };
 
     default:
       return state;

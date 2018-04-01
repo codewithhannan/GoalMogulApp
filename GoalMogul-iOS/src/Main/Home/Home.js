@@ -3,22 +3,23 @@ import { View, Text, TabBarIOS, Image } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 
 /* Import Icons */
-import Icon from './asset/icons/like-icon.png';
-import IconHome from './asset/footer/navigation/home.png';
-import IconBell from './asset/footer/navigation/bell.png';
-import IconGoal from './asset/footer/navigation/goal.png';
-import IconChat from './asset/footer/navigation/chat.png';
-import IconStar from './asset/footer/navigation/star.png';
-import IconMenu from './asset/header/menu.png';
-import IconHomeLogo from './asset/header/home-logo.png';
-import Logo from './asset/header/logo.png';
+import Icon from '../../asset/icons/like-icon.png';
+import IconHome from '../../asset/footer/navigation/home.png';
+import IconBell from '../../asset/footer/navigation/bell.png';
+import IconGoal from '../../asset/footer/navigation/goal.png';
+import IconChat from '../../asset/footer/navigation/chat.png';
+import IconStar from '../../asset/footer/navigation/star.png';
+import IconMenu from '../../asset/header/menu.png';
+import IconHomeLogo from '../../asset/header/home-logo.png';
+import Logo from '../../asset/header/logo.png';
 
 /* Components */
-import PostCard from './components/PostCard';
-import TabButtonGroup from './components/TabButtonGroup';
-import TabButton from './components/TabButton';
-import GoalFilterBar from './components/GoalFilterBar';
-
+import PostCard from '../../components/PostCard';
+import TabButtonGroup from '../../components/TabButtonGroup';
+import TabButton from '../../components/TabButton';
+import GoalFilterBar from '../../components/GoalFilterBar';
+//TODO: delete following imports
+import MyGoalCard from '../Common/MyGoalCard';
 
 class Home extends Component {
   constructor(props) {
@@ -104,16 +105,19 @@ class Home extends Component {
 
         <GoalFilterBar />
 
-        <PostCard />
-        <PostCard />
-        <TabBarIOS
-          selectedTab={this.state.selectedTab}
-          color='#ffffff'
-          tintColor='#324a61'
-          unselectedItemTintColor='#b8c7cc'
-        >
-          {children}
-        </TabBarIOS>
+        <PostCard key={1} />
+        <PostCard key={2} />
+        <MyGoalCard key={3} />
+        {/*
+          <TabBarIOS
+            selectedTab={this.state.selectedTab}
+            color='#ffffff'
+            tintColor='#324a61'
+            unselectedItemTintColor='#b8c7cc'
+          >
+            {children}
+          </TabBarIOS>
+        */}
       </View>
     );
   }

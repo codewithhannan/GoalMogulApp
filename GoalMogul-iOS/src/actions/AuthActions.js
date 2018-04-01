@@ -3,7 +3,10 @@ import { Actions } from 'react-native-router-flux';
 import {
   USERNAME_CHANGED,
   PASSWORD_CHANGED,
-  REGISTRATION_ACCOUNT
+  REGISTRATION_ACCOUNT,
+  LOGIN_USER_SUCCESS,
+  LOGIN_USER_FAIL,
+  LOGIN_USER_LOADING
 } from './types';
 
 export const userNameChanged = (username) => {
@@ -33,6 +36,49 @@ export const loginUser = ({ username, password }) => {
   // return (dispatch) => {
   //
   // };
+  return (dispatch) => {
+    const url = 'https://goalmogul-api-dev.herokuapp.com/api/pub/user/authenticate/';
+    const headers = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: username,
+        password
+      })
+    };
+    dispatch({
+      type: LOGIN_USER_LOADING
+    });
+    fetch(url, headers)
+      .then((res) => res.json())
+      .then((res) => {
+        console.log('login with message: ', res);
+        // User Login Successfully
+        if (res.token) {
+          const payload = {
+            token: res.token,
+            userId: res.userId
+          };
+          dispatch({
+            type: LOGIN_USER_SUCCESS,
+            payload
+          });
+          Actions.mainTabs();
+        } else {
+          // User login fail
+          dispatch({
+            type: LOGIN_USER_FAIL,
+            payload: res.message
+          });
+        }
+      })
+      .catch((err) => {
+        console.log('error in login, ', err);
+      });
+  };
 };
 
 export const registerUser = () => {

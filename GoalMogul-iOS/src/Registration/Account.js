@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   KeyboardAvoidingView,
   View,
+  ScrollView,
   Text,
   TouchableWithoutFeedback,
   Keyboard
@@ -52,6 +53,15 @@ class Account extends Component {
     this.props.handleOnFormChange(password, 'password');
   }
 
+  renderError() {
+    let error = this.props.error.account ? this.props.error.account : "";
+    return (
+      <View style={{height: 15}}>
+        <Text style={Styles.errorStyle}>{error}</Text>
+      </View>
+    );
+  }
+
   renderSplitter() {
     return (
       <View style={styles.splitterStyle}>
@@ -71,52 +81,63 @@ class Account extends Component {
       </TouchableWithoutFeedback>
     );
   }
-
+  // <KeyboardAvoidingView
+  //   behavior='position'
+  //   style={{ flex: 1 }}
+  //   contentContainerStyle={Styles.containerStyle}
+  //   keyboardVerticalOffset={-150}
+  // >
   render() {
     return (
       <KeyboardAvoidingView
-        behavior='position'
+        behavior='padding'
         style={{ flex: 1 }}
-        contentContainerStyle={Styles.containerStyle}
-        keyboardVerticalOffset={-150}
       >
-        <TouchableWithoutFeedback onPress={this.handleContainerOnPressed.bind(this)}>
-          <View style={Styles.containerStyle}>
-            <Header />
-            <View style={Styles.bodyContainerStyle}>
+        <ScrollView
+          contentContainerStyle={{flexGrow: 1}}
+          keyboardDismissMode='interactive'
+          keyboardShouldPersistTaps='never'
+          overScrollMode='never'
+          bounces={false}
+        >
+          <TouchableWithoutFeedback onPress={this.handleContainerOnPressed.bind(this)}>
+            <View style={Styles.containerStyle}>
+              <Header />
+              <View style={Styles.bodyContainerStyle}>
 
-              <Text style={styles.titleTextStyle}>Get Started!</Text>
-              <InputField
-                placeholder='Full Name'
-                value={this.props.name}
-                onChange={this.handleOnNameChange.bind(this)}
-                error={this.props.error.name}
-              />
-              <InputField
-                placeholder='Email'
-                value={this.props.email}
-                onChange={this.handleOnEmailChange.bind(this)}
-                error={this.props.error.email}
-              />
-              <InputField
-                placeholder='Password'
-                value={this.props.password}
-                secureTextEntry
-                onChange={this.handleOnPasswordChange.bind(this)}
-                error={this.props.error.password}
-              />
+                <Text style={styles.titleTextStyle}>Get Started!</Text>
+                {this.renderError()}
+                <InputField
+                  placeholder='Full Name'
+                  value={this.props.name}
+                  onChange={this.handleOnNameChange.bind(this)}
+                  error={this.props.error.name}
+                />
+                <InputField
+                  placeholder='Email'
+                  value={this.props.email}
+                  onChange={this.handleOnEmailChange.bind(this)}
+                  error={this.props.error.email}
+                />
+                <InputField
+                  placeholder='Password'
+                  value={this.props.password}
+                  secureTextEntry
+                  onChange={this.handleOnPasswordChange.bind(this)}
+                  error={this.props.error.password}
+                />
 
-              <TouchableWithoutFeedback onPress={this.handleNextPressed.bind(this)}>
-                <View>
-                  <Button text='Next' />
-                </View>
-              </TouchableWithoutFeedback>
-              {this.renderSplitter()}
-              {this.renderLogIn()}
-
+                <TouchableWithoutFeedback onPress={this.handleNextPressed.bind(this)}>
+                  <View>
+                    <Button text='Next' />
+                  </View>
+                </TouchableWithoutFeedback>
+                {this.renderSplitter()}
+                {this.renderLogIn()}
+              </View>
             </View>
-          </View>
-        </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback>
+        </ScrollView>
       </KeyboardAvoidingView>
     );
   }
@@ -129,8 +150,8 @@ const styles = {
     fontWeight: '700',
     color: '#646464',
     alignSelf: 'center',
-    marginTop: 30,
-    marginBottom: 25
+    marginTop: 25,
+    marginBottom: 10
   },
   splitterStyle: {
     display: 'flex',

@@ -22,7 +22,7 @@ class InputField extends Component {
 
   renderOnFocus = () => {
     const textInputStyle = { ...this.state.textInputStyle };
-    textInputStyle.fontSize = 20;
+    textInputStyle.fontSize = 18;
     this.setState({
       textInputStyle
     });
@@ -30,7 +30,7 @@ class InputField extends Component {
 
   renderOnBlur = () => {
     const textInputStyle = { ...this.state.textInputStyle };
-    textInputStyle.fontSize = 16;
+    textInputStyle.fontSize = 18;
     this.setState({
       textInputStyle
     });
@@ -79,7 +79,7 @@ const styles = {
     height: 45
   },
   textInputStyle: {
-    fontSize: 16,
+    fontSize: 18,
     paddingLeft: 18,
     paddingRight: 18,
     paddingBottom: 5,
