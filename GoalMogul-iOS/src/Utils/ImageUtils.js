@@ -31,8 +31,9 @@ const ImageUtils = {
                 'x-amz-acl': 'public-read'
             },
           };
-
-          return axios(request);
+          //TODO: delete line 35 and uncomment line 36
+          return resolve(5);
+          // return axios(request);
         })
         .then((res) => {
           console.log('res from s3: ', res);

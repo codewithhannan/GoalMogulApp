@@ -29,7 +29,7 @@ const RouterComponent = () => {
       <Modal>
         <Scene key="root" hideNavBar>
           <Scene key="auth" initial hideNavBar>
-            <Scene key="login" component={Login} initial />
+            <Scene key="login" component={Profile} initial />
           </Scene>
 
           {/* Registration screen stack*/}

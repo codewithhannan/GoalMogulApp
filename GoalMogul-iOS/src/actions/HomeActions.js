@@ -5,5 +5,5 @@ import {
 } from './types';
 
 export const openProfile = () => {
-  
-}
+  Actions.profile();
+};
