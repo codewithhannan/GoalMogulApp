@@ -18,8 +18,7 @@ const ImageUtils = {
         .then((res) => {
           const { objectKey, signedRequest } = res.data;
           dispatch(objectKey);
-          // console.log('signed request: ', signedRequest);
-
+          console.log('signed request: ', signedRequest);
           const request = {
             url: signedRequest,
             data: {
@@ -32,15 +31,15 @@ const ImageUtils = {
                 'x-amz-acl': 'public-read'
             },
           };
-          return axios.put(request);
-          // return resolve(5)
+
+          return axios(request);
         })
         .then((res) => {
-          // console.log('res from s3: ', res);
+          console.log('res from s3: ', res);
         })
         .catch((err) => {
           console.log('error uploading: ', err);
-          reject();
+          reject(err);
         });
     });
   },

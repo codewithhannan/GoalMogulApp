@@ -130,18 +130,6 @@ export const registrationNextIntro = (skip) => {
     // Obtain pre-signed url
     const imageUri = getState().registration.profilePic;
     const token = getState().user.token;
-    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/s3/ProfileImage/signature';
-    const headers = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        fileType: 'jpg',
-        token
-      })
-    };
 
     ImageUtils.getImageSize(imageUri)
       .then(({ width, height }) => {
@@ -161,7 +149,7 @@ export const registrationNextIntro = (skip) => {
         });
       })
       .then((res) => {
-        // console.log('finish with res', res);
+        console.log('finish with res', res);
       })
       .catch((err) => {
         console.log('resizing image error: ', err);
