@@ -142,17 +142,31 @@ export const registrationNextIntro = (skip) => {
         token
       })
     };
-    ImageUtils.UploadImage(imageUri, token, (objectKey) => {
-      console.log('dispatching from inside with objectKey: ', objectKey);
-      dispatch({
-        type: REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS,
-        payload: objectKey
+
+    ImageUtils.getImageSize(imageUri)
+      .then(({ width, height }) => {
+        // console.log('get image size with height: ', height, ' width: ', width);
+        return ImageUtils.resizeImage(imageUri, width, height);
+      })
+      .then((image) => {
+        // console.log('uri is : ', image.uri);
+        // console.log('name is : ', image.name);
+        // console.log('type is : ', image.type);
+        return ImageUtils.uploadImage(image.uri, token, (objectKey) => {
+          // console.log('dispatching from inside with objectKey: ', objectKey);
+          dispatch({
+            type: REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS,
+            payload: objectKey
+          });
+        });
+      })
+      .then((res) => {
+        // console.log('finish with res', res);
+      })
+      .catch((err) => {
+        console.log('resizing image error: ', err);
       });
-    }).then((res) => {
-      console.log('finish with res', res);
-    }).catch((err) => {
-      console.log('error uploading: ', err);
-    });
+
     // fetch(url, headers)
     //   .then((res) => res.json())
     //   .then(({ signedRequest, objectKey }) => {
