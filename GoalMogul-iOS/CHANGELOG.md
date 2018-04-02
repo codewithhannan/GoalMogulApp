@@ -9,6 +9,10 @@ if there is corresponding issue, state it
 -->
 
 * Version 0.0.1
+
+## 2 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
+* Finish Profile page UI (Apr 2nd)
+
 ## 25 Mar 2018, by Jia Zeng <andyzeng96@gmail.com>
 * Add ghost image for profile picture
 * Disable InputText onFocus enlarge

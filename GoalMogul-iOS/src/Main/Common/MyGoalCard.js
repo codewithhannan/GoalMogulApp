@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { SearchBar } from 'react-native-elements';
 
 /* asset */
 import profilePic from '../../asset/test-profile-pic.png';

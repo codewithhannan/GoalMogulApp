@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TabBarIOS, Image } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+import { View, Text, TabBarIOS } from 'react-native';
 
 /* Import Icons */
 import Icon from '../../asset/icons/like-icon.png';
@@ -9,15 +8,13 @@ import IconBell from '../../asset/footer/navigation/bell.png';
 import IconGoal from '../../asset/footer/navigation/goal.png';
 import IconChat from '../../asset/footer/navigation/chat.png';
 import IconStar from '../../asset/footer/navigation/star.png';
-import IconMenu from '../../asset/header/menu.png';
-import IconHomeLogo from '../../asset/header/home-logo.png';
-import Logo from '../../asset/header/logo.png';
 
 /* Components */
 import PostCard from '../../components/PostCard';
 import TabButtonGroup from '../../components/TabButtonGroup';
 import TabButton from '../../components/TabButton';
 import GoalFilterBar from '../../components/GoalFilterBar';
+import SearchBarHeader from '../Common/SearchBarHeader';
 //TODO: delete following imports
 import MyGoalCard from '../Common/MyGoalCard';
 
@@ -85,17 +82,7 @@ class Home extends Component {
    });
     return (
       <View style={styles.homeContainerStyle}>
-        <View style={styles.headerStyle}>
-          <Image style={styles.headerLeftImage} source={Logo} />
-            <SearchBar
-              round
-              inputStyle={styles.searchInputStyle}
-              containerStyle={styles.searchContainerStyle}
-              icon={{ type: 'font-awesome', name: 'search', style: styles.searchIconStyle }}
-              placeholder='Search GoalMogul'
-            />
-          <Image style={styles.headerRightImage} source={IconMenu} />
-        </View>
+        <SearchBarHeader />
 
         <TabButtonGroup>
           <TabButton text='GOALS' onSelect />
@@ -127,40 +114,6 @@ const styles = {
   homeContainerStyle: {
     backgroundColor: '#f3f4f6',
     flex: 1
-  },
-  searchContainerStyle: {
-    backgroundColor: '#ffffff',
-    borderTopColor: '#ffffff',
-    borderBottomColor: '#ffffff',
-    padding: 0,
-    flex: 4,
-    marginRight: 3,
-  },
-  searchInputStyle: {
-    backgroundColor: '#f3f4f6',
-    fontSize: 12,
-    height: 28
-  },
-  searchIconStyle: {
-    top: 14,
-    fontSize: 13
-  },
-  headerStyle: {
-    flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    paddingTop: 30,
-    paddingLeft: 12,
-    paddingRight: 12
-  },
-  headerLeftImage: {
-    width: 25,
-    height: 25,
-    marginTop: 10,
-  },
-  headerRightImage: {
-    width: 20,
-    height: 15,
-    marginTop: 14,
   }
 };
 

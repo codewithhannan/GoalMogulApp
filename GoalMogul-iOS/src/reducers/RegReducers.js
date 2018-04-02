@@ -15,7 +15,8 @@ import {
   REGISTRATION_ACCOUNT_FORM_CHANGE,
   REGISTRATION_INTRO_FORM_CHANGE,
   REGISTRATION_ADDPROFILE_CAMERAROLL_OPEN,
-  REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE
+  REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+  REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -25,6 +26,7 @@ const INITIAL_STATE = {
   headline: '',
   contacts: [],
   profilePic: null,
+  profileObjectId: null,
   step: '',
   error: {},
   errorMessage: '',
@@ -58,6 +60,9 @@ export default (state = INITIAL_STATE, action) => {
     // User go to adding profile picture part
     case REGISTRATION_ADDPROFILE:
       return { ...state, step: REGISTRATION_ADDPROFILE };
+
+    case REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS:
+      return { ...state, profileObjectId: action.payload };
 
     case REGISTRATION_ADDPROFILE_CAMERAROLL_OPEN:
       return { ...state, cameraRollModalOpen: true };
