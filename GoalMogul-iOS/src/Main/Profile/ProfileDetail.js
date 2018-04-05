@@ -29,7 +29,7 @@ class ProfileDetail extends Component {
   render() {
     return (
       <View style={styles.containerStyle}>
-        <SearchBarHeader back />
+        <SearchBarHeader backButton />
         <ScrollView>
           <ProfileDetailCard data={testData} />
           <ProfileOccupationCard data={testData} />

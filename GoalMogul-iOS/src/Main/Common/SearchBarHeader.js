@@ -5,23 +5,28 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 import { SearchBar, Icon } from 'react-native-elements';
+import { connect } from 'react-redux';
 
 /* Asset */
 import Logo from '../../asset/header/logo.png';
 import IconMenu from '../../asset/header/menu.png';
 
+/* Actions */
+import { back, openProfile } from '../../actions';
+
 class SearchBarHeader extends Component {
 
-  handleBackOnClick(event) {
-    // TODO: attach with Actions.pop event
+  handleBackOnClick() {
+    this.props.back();
   }
 
   handleProfileOnClick(event) {
-    // TODO: attach with open profile action
+    // TODO: attach with open profile action with user id
+    this.props.openProfile();
   }
 
   renderSearchBarLeftIcon() {
-    if (this.props.back) {
+    if (this.props.backButton) {
       return (
         <TouchableWithoutFeedback onPress={this.handleBackOnClick.bind(this)}>
           <View style={styles.headerLeftImage}>
@@ -95,4 +100,4 @@ const styles = {
   }
 };
 
-export default SearchBarHeader;
+export default connect(null, { back, openProfile })(SearchBarHeader);
