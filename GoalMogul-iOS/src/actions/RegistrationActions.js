@@ -133,15 +133,12 @@ export const registrationNextIntro = (skip) => {
 
     ImageUtils.getImageSize(imageUri)
       .then(({ width, height }) => {
-        // console.log('get image size with height: ', height, ' width: ', width);
+        // Resize image
         return ImageUtils.resizeImage(imageUri, width, height);
       })
       .then((image) => {
-        // console.log('uri is : ', image.uri);
-        // console.log('name is : ', image.name);
-        // console.log('type is : ', image.type);
+        // Upload image to S3 server
         return ImageUtils.uploadImage(image.uri, token, (objectKey) => {
-          // console.log('dispatching from inside with objectKey: ', objectKey);
           dispatch({
             type: REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS,
             payload: objectKey
@@ -149,32 +146,46 @@ export const registrationNextIntro = (skip) => {
         });
       })
       .then((res) => {
-        console.log('finish with res', res);
+        // If upload succeed
+        if (res.status === 200) {
+          return getState().user.profile.imageObjectId;
+        }
+        console.log('Unsuccessful uploading with res: ', res);
+        throw new Error(`Unsuccessful uploading with res: ${res}`);
+      })
+      .then((image) => {
+        // Update profile imageId to the latest uploaded one
+        const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account/profile';
+        const headers = {
+          method: 'PUT',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            image,
+            token
+          })
+        };
+        // console.log('updating imageId, id is: ', image);
+        return fetch(url, headers)
+          .then((res) => res.json());
+          // .then((res) => {
+          //   console.log('update profile picture Id with res: ', res);
+          // })
+          // .catch(err => err);
       })
       .catch((err) => {
+        // TODO: error handling for different kinds of errors.
+        /*
+        Error Type:
+          image getSize
+          image Resize
+          image upload to S3
+          update profile image Id
+        */
         console.log('resizing image error: ', err);
       });
-
-    // fetch(url, headers)
-    //   .then((res) => res.json())
-    //   .then(({ signedRequest, objectKey }) => {
-    //     console.log('url: ', signedRequest);
-    //     const xhr = new XMLHttpRequest();
-    //     xhr.open('PUT', signedRequest);
-    //     xhr.onreadystatechange = function () {
-    //       if (xhr.readyState === 4) {
-    //         if (xhr.status === 200) {
-    //           console.log('Image successfully uploaded to S3');
-    //         } else {
-    //           console.log('Error while sending the image to S3');
-    //         }
-    //       }
-    //     };
-    //     xhr.setRequestHeader('Content-Type', 'image/jpeg');
-    //     xhr.send({ uri: imageUri, type: 'image/jpeg' });
-    //     //TODO: user reducer records objectId
-    //   })
-    //   .catch((err) => console.log('error in getting signed file, ', err));
     Actions.registrationIntro();
   };
 };

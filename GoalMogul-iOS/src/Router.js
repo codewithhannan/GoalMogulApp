@@ -22,6 +22,7 @@ import TabIcon from './Main/Common/TabIcon';
 import Home from './Main/Home/Home';
 
 import Profile from './Main/Profile/Profile';
+import ProfileDetail from './Main/Profile/ProfileDetail';
 
 const RouterComponent = () => {
   return (
@@ -29,7 +30,7 @@ const RouterComponent = () => {
       <Modal>
         <Scene key="root" hideNavBar>
           <Scene key="auth" initial hideNavBar>
-            <Scene key="login" component={Profile} initial />
+            <Scene key="login" component={ProfileDetail} initial />
           </Scene>
 
           {/* Registration screen stack*/}

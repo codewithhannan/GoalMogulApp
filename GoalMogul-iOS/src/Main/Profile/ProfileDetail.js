@@ -1,37 +1,40 @@
 import React, { Component } from 'react';
-import { View, FlatList } from 'react-native';
+import { View, ScrollView } from 'react-native';
 
 /* Component */
-import ProfileDetailCard from './ProfileDetailCard';
+import ProfileDetailCard from './ProfileCard/ProfileDetailCard';
+import ProfileOccupationCard from './ProfileCard/ProfileOccupationCard';
+import ProfileAboutMeCard from './ProfileCard/ProfileAboutMeCard';
+import SearchBarHeader from '../Common/SearchBarHeader';
 
-const testData = [
-  {
-
+const testData = {
+  name: 'Jia Zeng',
+  email: 'jz145@duke.edu',
+  phone: '9194912504',
+  headline: 'I am a student at Duke.',
+  privacy: {
+    friends: 'Public'
+  },
+  profile: {
+    pointsEarned: 10,
+    about: 'This is a test page.',
+    elevatorPitch: 'This is a profile elevator pitch',
+    image: 'uri',
+    occupation: 'Student'
   }
-];
+};
 
 class ProfileDetail extends Component {
-
-  keyExtractor = (item, index) => item.node.image.uri;
-
-  renderRow(data) {
-    // console.log('rendering item p: ', data.item);
-    const p = data.item;
-    return (
-      <ProfileDetailCard />
-    );
-  }
 
   render() {
     return (
       <View style={styles.containerStyle}>
-        <FlatList
-          enableEmptySections
-          data={testData}
-          renderItem={(item) => this.renderRow(item)}
-          numColumns={1}
-          keyExtractor={this.keyExtractor}
-        />
+        <SearchBarHeader back />
+        <ScrollView>
+          <ProfileDetailCard data={testData} />
+          <ProfileOccupationCard data={testData} />
+          <ProfileAboutMeCard data={testData} />
+        </ScrollView>
       </View>
     );
   }

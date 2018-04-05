@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import { View, Image } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+import {
+  View,
+  Image,
+  TouchableWithoutFeedback
+} from 'react-native';
+import { SearchBar, Icon } from 'react-native-elements';
 
 /* Asset */
 import Logo from '../../asset/header/logo.png';
@@ -8,17 +12,46 @@ import IconMenu from '../../asset/header/menu.png';
 
 class SearchBarHeader extends Component {
 
+  handleBackOnClick(event) {
+    // TODO: attach with Actions.pop event
+  }
+
+  handleProfileOnClick(event) {
+    // TODO: attach with open profile action
+  }
+
+  renderSearchBarLeftIcon() {
+    if (this.props.back) {
+      return (
+        <TouchableWithoutFeedback onPress={this.handleBackOnClick.bind(this)}>
+          <View style={styles.headerLeftImage}>
+            <Icon
+              type='entypo'
+              name='chevron-thin-left'
+              containerStyle={{ justifyContent: 'flex-start' }}
+            />
+          </View>
+        </TouchableWithoutFeedback>
+      );
+    }
+    return (
+      <TouchableWithoutFeedback onPress={this.handleProfileOnClick.bind(this)}>
+        <Image style={styles.headerLeftImage} source={Logo} />
+      </TouchableWithoutFeedback>
+    );
+  }
+
   render() {
     return (
       <View style={styles.headerStyle}>
-        <Image style={styles.headerLeftImage} source={Logo} />
-          <SearchBar
-            round
-            inputStyle={styles.searchInputStyle}
-            containerStyle={styles.searchContainerStyle}
-            icon={{ type: 'font-awesome', name: 'search', style: styles.searchIconStyle }}
-            placeholder='Search GoalMogul'
-          />
+        {this.renderSearchBarLeftIcon()}
+        <SearchBar
+          round
+          inputStyle={styles.searchInputStyle}
+          containerStyle={styles.searchContainerStyle}
+          icon={{ type: 'font-awesome', name: 'search', style: styles.searchIconStyle }}
+          placeholder='Search GoalMogul'
+        />
         <Image style={styles.headerRightImage} source={IconMenu} />
       </View>
     );

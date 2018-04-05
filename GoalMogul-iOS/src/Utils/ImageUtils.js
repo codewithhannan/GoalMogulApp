@@ -25,18 +25,12 @@ const ImageUtils = {
               uri: file,
               type: 'image/jpeg'
             },
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'image/jpeg',
-                'x-amz-acl': 'public-read'
-            },
+            method: 'PUT'
           };
-          //TODO: delete line 35 and uncomment line 36
-          return resolve(5);
-          // return axios(request);
+          return axios(request);
         })
         .then((res) => {
-          console.log('res from s3: ', res);
+          return resolve(res);
         })
         .catch((err) => {
           console.log('error uploading: ', err);
