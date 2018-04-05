@@ -12,6 +12,9 @@ if there is corresponding issue, state it
 
 ## 2 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
 * Finish Profile page UI (Apr 2nd)
+* Profile detail card UI
+* Link button actions among profile pages
+* Image uploading
 
 ## 25 Mar 2018, by Jia Zeng <andyzeng96@gmail.com>
 * Add ghost image for profile picture
