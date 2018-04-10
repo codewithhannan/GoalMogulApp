@@ -64,22 +64,25 @@ class Home extends Component {
   // />
 
   render() {
-    const children = this.state.navigation.map((tab, i) => {
-     return (
-      <TabBarIOS.Item
-        key={tab.key}
-        icon={tab.icon}
-        selectedIcon={tab.selectedIcon}
-        title={tab.title}
-        onPress={() => this.setState({
-            selectedTab: i
-        })}
-        selected={this.state.selectedTab === i}
-      >
-        <Text>Page {i}</Text>
-       </TabBarIOS.Item>
-     );
-   });
+    /*
+      const children = this.state.navigation.map((tab, i) => {
+       return (
+        <TabBarIOS.Item
+          key={tab.key}
+          icon={tab.icon}
+          selectedIcon={tab.selectedIcon}
+          title={tab.title}
+          onPress={() => this.setState({
+              selectedTab: i
+          })}
+          selected={this.state.selectedTab === i}
+        >
+          <Text>Page {i}</Text>
+         </TabBarIOS.Item>
+       );
+      });
+    */
+
     return (
       <View style={styles.homeContainerStyle}>
         <SearchBarHeader />

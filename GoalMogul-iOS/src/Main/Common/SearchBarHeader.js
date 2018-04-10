@@ -20,9 +20,9 @@ class SearchBarHeader extends Component {
     this.props.back();
   }
 
-  handleProfileOnClick(event) {
-    // TODO: attach with open profile action with user id
-    this.props.openProfile();
+  handleProfileOnClick() {
+    // Open profile and passed in userId that's being opened
+    this.props.openProfile(this.props.userId);
   }
 
   renderSearchBarLeftIcon() {
@@ -100,4 +100,12 @@ const styles = {
   }
 };
 
-export default connect(null, { back, openProfile })(SearchBarHeader);
+const mapStateToProps = state => {
+  const { userId } = state.user;
+
+  return {
+    userId
+  };
+};
+
+export default connect(mapStateToProps, { back, openProfile })(SearchBarHeader);
