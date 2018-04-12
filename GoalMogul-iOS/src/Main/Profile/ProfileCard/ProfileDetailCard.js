@@ -10,11 +10,12 @@ import profilePic from '../../../asset/test-profile-pic.png';
 
 /* Components */
 import Card from './Card';
+import EditButton from '../../Common/Button/EditButton';
 
 // TODO: use redux instead of passed in props
 class ProfileDetailCard extends Component {
 
-  renderProfileImage = () => {
+  renderProfileImage() {
     const { profile } = this.props.data;
     let { image } = profile;
 
@@ -33,7 +34,8 @@ class ProfileDetailCard extends Component {
     return (
       <Card>
         <View style={styles.containerStyle}>
-          {this.renderProfileImage}
+          <EditButton />
+          {this.renderProfileImage()}
           <Text style={styles.nameTextStyle}>
             {name}
           </Text>
@@ -52,10 +54,10 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 30,
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingBottom: 10
+    paddingTop: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingBottom: 15
   },
   imageStyle: {
     width: 80,

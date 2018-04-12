@@ -3,12 +3,24 @@ import {
   View,
   Text
 } from 'react-native';
+import { connect } from 'react-redux';
 
 /* Components */
 import Card from './Card';
+import EditButton from '../../Common/Button/EditButton';
 
 // TODO: use redux instead of passed in props
 class ProfileOccupationCard extends Component {
+
+  handleEditOnPressed() {
+    console.log('I am editing');
+  }
+
+  renderEditButton() {
+    if (this.props.canEdit) {
+      return <EditButton onPress={() => this.handleEditOnPressed()} />;
+    }
+  }
 
   render() {
     const { elevatorPitch, occupation } = this.props.data.profile;
@@ -20,6 +32,7 @@ class ProfileOccupationCard extends Component {
             <Text style={styles.headlineTextStyle}>
               {occupation}
             </Text>
+            {this.renderEditButton()}
           </View>
           <View style={styles.detailContainerStyle}>
             <Text stye={styles.detailTextStyle}>{elevatorPitch}</Text>
@@ -58,7 +71,27 @@ const styles = {
   },
   detailTextStyle: {
     fontSize: 20
+  },
+  buttonContainerStyle: {
+    display: 'flex',
+    flex: 1
+  },
+  editButtonStyle: {
+    height: 23,
+    width: 23,
+    padding: 3,
+    alignSelf: 'flex-end',
   }
 };
 
-export default ProfileOccupationCard;
+const mapStateToProps = state => {
+  const canEdit = state.profile.userId.toString() === state.user.userId.toString();
+  console.log('current profile id: ', state.profile.userId);
+  console.log('current user id: ', state.user.userId);
+  console.log('result: ', canEdit);
+  return {
+    canEdit
+  };
+};
+
+export default connect(mapStateToProps, null)(ProfileOccupationCard);

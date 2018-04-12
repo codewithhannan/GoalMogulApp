@@ -6,6 +6,7 @@ import {
 
 /* Components */
 import Card from './Card';
+import EditButton from '../../Common/Button/EditButton';
 
 // TODO: use redux instead of passed in props
 class ProfileAboutMeCard extends Component {
@@ -17,6 +18,7 @@ class ProfileAboutMeCard extends Component {
         <View style={styles.containerStyle}>
           <View style={styles.headerContainerStyle}>
             <Text style={styles.titleTextStyle}>About Me</Text>
+            <EditButton />
           </View>
           <View style={styles.detailContainerStyle}>
             <Text stye={styles.detailTextStyle}>{about}</Text>

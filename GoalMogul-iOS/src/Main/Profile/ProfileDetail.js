@@ -20,7 +20,7 @@ const testData = {
     pointsEarned: 10,
     about: 'This is a test page.',
     elevatorPitch: 'This is a profile elevator pitch',
-    image: 'uri',
+    image: '',
     occupation: 'Student'
   }
 };
@@ -33,9 +33,9 @@ class ProfileDetail extends Component {
       <View style={styles.containerStyle}>
         <SearchBarHeader backButton />
         <ScrollView>
-          <ProfileDetailCard data={user} />
-          <ProfileOccupationCard data={user} />
-          <ProfileAboutMeCard data={user} />
+          <ProfileDetailCard data={testData} />
+          <ProfileOccupationCard data={testData} />
+          <ProfileAboutMeCard data={testData} />
         </ScrollView>
       </View>
     );
