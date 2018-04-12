@@ -1,24 +1,62 @@
 import React, { Component } from 'react';
-import { View, Image } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+import {
+  View,
+  Image,
+  TouchableWithoutFeedback
+} from 'react-native';
+import { SearchBar, Icon } from 'react-native-elements';
+import { connect } from 'react-redux';
 
 /* Asset */
 import Logo from '../../asset/header/logo.png';
 import IconMenu from '../../asset/header/menu.png';
 
+/* Actions */
+import { back, openProfile } from '../../actions';
+
 class SearchBarHeader extends Component {
+
+  handleBackOnClick() {
+    this.props.back();
+  }
+
+  handleProfileOnClick() {
+    // Open profile and passed in userId that's being opened
+    this.props.openProfile(this.props.userId);
+  }
+
+  renderSearchBarLeftIcon() {
+    if (this.props.backButton) {
+      return (
+        <TouchableWithoutFeedback onPress={this.handleBackOnClick.bind(this)}>
+          <View style={styles.headerLeftImage}>
+            <Icon
+              type='entypo'
+              name='chevron-thin-left'
+              containerStyle={{ justifyContent: 'flex-start' }}
+            />
+          </View>
+        </TouchableWithoutFeedback>
+      );
+    }
+    return (
+      <TouchableWithoutFeedback onPress={this.handleProfileOnClick.bind(this)}>
+        <Image style={styles.headerLeftImage} source={Logo} />
+      </TouchableWithoutFeedback>
+    );
+  }
 
   render() {
     return (
       <View style={styles.headerStyle}>
-        <Image style={styles.headerLeftImage} source={Logo} />
-          <SearchBar
-            round
-            inputStyle={styles.searchInputStyle}
-            containerStyle={styles.searchContainerStyle}
-            icon={{ type: 'font-awesome', name: 'search', style: styles.searchIconStyle }}
-            placeholder='Search GoalMogul'
-          />
+        {this.renderSearchBarLeftIcon()}
+        <SearchBar
+          round
+          inputStyle={styles.searchInputStyle}
+          containerStyle={styles.searchContainerStyle}
+          icon={{ type: 'font-awesome', name: 'search', style: styles.searchIconStyle }}
+          placeholder='Search GoalMogul'
+        />
         <Image style={styles.headerRightImage} source={IconMenu} />
       </View>
     );
@@ -62,4 +100,12 @@ const styles = {
   }
 };
 
-export default SearchBarHeader;
+const mapStateToProps = state => {
+  const { userId } = state.user;
+
+  return {
+    userId
+  };
+};
+
+export default connect(mapStateToProps, { back, openProfile })(SearchBarHeader);

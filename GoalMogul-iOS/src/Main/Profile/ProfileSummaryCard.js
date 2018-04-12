@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
-import { View, Image } from 'react-native';
+import {
+  View,
+  Image,
+  TouchableWithoutFeedback
+} from 'react-native';
 import { Button, Icon } from 'react-native-elements';
+import { connect } from 'react-redux';
 
 /* Asset To Delete */
 import profilePic from '../../asset/test-profile-pic.png';
+
+/* Actions */
+import { openProfileDetail } from '../../actions';
 
 /* Components */
 import Name from '../Common/Name';
@@ -22,38 +30,51 @@ const data = [
 ];
 
 class ProfileSummaryCard extends Component {
-  render() {
-    return (
-      <View style={styles.containerStyle}>
-        <View style={{ flex: 5, flexDirection: 'row' }}>
-          <Image style={styles.imageStyle} source={profilePic} />
 
-          <View style={styles.bodyStyle}>
-            <Name text='Beverly Andrew' />
-            <Position text='Sr. UI/UX designer & developer' />
-            <Stats data={data} />
+  handleOpenProfileDetail() {
+    this.props.openProfileDetail();
+  }
+
+  render() {
+    let imageUrl = this.props.user.profile.image;
+    let profileImage = <Image style={styles.imageStyle} source={profilePic} />;
+    if (imageUrl) {
+      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
+      profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
+    }
+
+    return (
+      <TouchableWithoutFeedback onPress={this.handleOpenProfileDetail.bind(this)}>
+        <View style={styles.containerStyle}>
+          <View style={{ flex: 5, flexDirection: 'row' }}>
+            {profileImage}
+
+            <View style={styles.bodyStyle}>
+              <Name text='Beverly Andrew' />
+              <Position text='Sr. UI/UX designer & developer' />
+              <Stats data={data} />
+            </View>
+          </View>
+          <View style={styles.buttonContainerStyle}>
+            <Button
+              text='Friend'
+              textStyle={styles.buttonTextStyle}
+              clear
+              icon={
+                <Icon
+                  type='octicon'
+                  name='plus-small'
+                  width={10}
+                  color='#34c0dd'
+                  iconStyle={styles.buttonIconStyle}
+                />
+              }
+              iconLeft
+              buttonStyle={styles.buttonStyle}
+            />
           </View>
         </View>
-        <View style={styles.buttonContainerStyle}>
-          <Button
-            text='Friend'
-            textStyle={styles.buttonTextStyle}
-            clear
-            icon={
-              <Icon
-                type='octicon'
-                name='plus-small'
-                width={10}
-                color='#34c0dd'
-                iconStyle={styles.buttonIconStyle}
-              />
-            }
-            iconLeft
-            buttonStyle={styles.buttonStyle}
-          />
-        </View>
-
-      </View>
+      </TouchableWithoutFeedback>
     );
   }
 }
@@ -84,7 +105,7 @@ const styles = {
   imageStyle: {
     height: 54,
     width: 54,
-    borderRadius: 20,
+    borderRadius: 27,
   },
   buttonStyle: {
     width: 80,
@@ -104,4 +125,13 @@ const styles = {
   }
 };
 
-export default ProfileSummaryCard;
+const mapStateToProps = state => {
+  const { userId, user } = state.profile;
+
+  return {
+    userId,
+    user
+  };
+};
+
+export default connect(mapStateToProps, { openProfileDetail })(ProfileSummaryCard);

@@ -26,16 +26,6 @@ export const passwordChanged = (password) => {
 export const loginUser = ({ username, password }) => {
   // Call the endpoint to use username and password to signin
   // Obtain the credential
-
-  // fetch(url, header).then((res) => {
-  //  res.json().then((data) => {
-  //     // Handle data
-  //     dispatch({ type: , payload: });
-  //  })
-  // })
-  // return (dispatch) => {
-  //
-  // };
   return (dispatch) => {
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/pub/user/authenticate/';
     const headers = {

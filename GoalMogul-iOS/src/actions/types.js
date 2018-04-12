@@ -1,3 +1,4 @@
+/* Login Actions */
 export const USERNAME_CHANGED = 'username_changed';
 export const PASSWORD_CHANGED = 'password_changed';
 export const LOGIN_USER_SUCCESS = 'login_user_success';
@@ -31,5 +32,12 @@ export const REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO = 'registration_addpr
 export const REGISTRATION_ADDPROFILE_CAMERAROLL_CLOSE = 'registration_addprofile_cameraroll_close';
 export const REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE
   = 'registration_addprofile_cameraroll_photo_choose';
+export const REGISTRATION_ADDPROFILE_CAMERA_OPEN = 'registration_addprofile_camera_open';
 
-export const REGISTRATION_ADDPROFILE_CAMERA_OPEN = 'registration_addprofile_camera_open'
+/* Main App Actions */
+/* Profile actions */
+export const PROFILE_OPEN_PROFILE = 'profile_open_profile'; // User tries to open a profile
+export const PROFILE_FETCHING_SUCCESS = 'profile_fetching_success'; // Loading profile succeed
+export const PROFILE_FETCHING_FAIL = 'profile_fetching_fail'; // Loading profile fails
+export const PROFILE_OPEN_PROFILE_DETAIL
+  = 'profile_open_profile_detail'; // User opens a profile detail

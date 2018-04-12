@@ -10,8 +10,16 @@ if there is corresponding issue, state it
 
 * Version 0.0.1
 
+## 12 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
+* Bug fix image uploading
+* Conditional rendering for edit button
+* Hook up profile cards with real data
+
 ## 2 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
 * Finish Profile page UI (Apr 2nd)
+* Profile detail card UI
+* Link button actions among profile pages
+* Image uploading
 
 ## 25 Mar 2018, by Jia Zeng <andyzeng96@gmail.com>
 * Add ghost image for profile picture
