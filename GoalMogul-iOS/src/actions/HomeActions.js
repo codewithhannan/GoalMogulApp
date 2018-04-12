@@ -1,4 +1,5 @@
 import { Actions } from 'react-native-router-flux';
+import { Image } from 'react-native';
 
 import {
   PROFILE_OPEN_PROFILE,
@@ -44,6 +45,14 @@ export const openProfile = (userId) => {
         payload: res.data
       });
       Actions.profile();
+    })
+    .then(() => {
+      // prefetch profile image
+      const imageUrl = getState().user.profile.image;
+      if (imageUrl) {
+        const fullImageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
+        Image.prefetch(fullImageUrl);
+      }
     })
     /* TODO: error handling */
     .catch((err) => console.log('err in loading user profile', err));

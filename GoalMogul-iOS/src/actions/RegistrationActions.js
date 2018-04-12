@@ -138,24 +138,27 @@ export const registrationNextIntro = (skip) => {
       })
       .then((image) => {
         // Upload image to S3 server
-        return ImageUtils.uploadImage(image.uri, token, (objectKey) => {
+        console.log('image to uplaod is: ', image);
+        return ImageUtils.getPresignedUrl(image.uri, token, (objectKey) => {
           dispatch({
             type: REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS,
             payload: objectKey
           });
         });
       })
+      .then(({ signedRequest, file }) => {
+        return ImageUtils.uploadImage(file, signedRequest);
+      })
       .then((res) => {
-        // If upload succeed
-        if (res.status === 200) {
-          return getState().user.profile.imageObjectId;
+        if (res instanceof Error) {
+          // uploading to s3 failed
+          console.log('error uploading image to s3 with res: ', res);
         }
-        console.log('Unsuccessful uploading with res: ', res);
-        throw new Error(`Unsuccessful uploading with res: ${res}`);
+        return getState().user.profile.imageObjectId;
       })
       .then((image) => {
         // Update profile imageId to the latest uploaded one
-        const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account/profile';
+        const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/profile';
         const headers = {
           method: 'PUT',
           headers: {
@@ -167,13 +170,14 @@ export const registrationNextIntro = (skip) => {
             token
           })
         };
-        // console.log('updating imageId, id is: ', image);
         return fetch(url, headers)
-          .then((res) => res.json());
-          // .then((res) => {
-          //   console.log('update profile picture Id with res: ', res);
-          // })
-          // .catch(err => err);
+          .then((res) => res.json())
+          .then((res) => {
+            console.log('update profile picture Id with res: ', res);
+          })
+          .catch((err) => {
+            console.log('error updating record: ', err);
+          });
       })
       .catch((err) => {
         // TODO: error handling for different kinds of errors.
@@ -184,7 +188,7 @@ export const registrationNextIntro = (skip) => {
           image upload to S3
           update profile image Id
         */
-        console.log('resizing image error: ', err);
+        console.log('profile picture error: ', err);
       });
     Actions.registrationIntro();
   };

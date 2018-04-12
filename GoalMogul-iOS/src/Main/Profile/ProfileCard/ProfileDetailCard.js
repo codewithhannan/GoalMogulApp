@@ -14,16 +14,26 @@ import Card from './Card';
 // TODO: use redux instead of passed in props
 class ProfileDetailCard extends Component {
 
-  ComponentWillMount() {
-    // TODO: prefetch profile image
+  renderProfileImage = () => {
+    const { profile } = this.props.data;
+    let { image } = profile;
+
+    let profileImage = <Image style={styles.imageStyle} source={profilePic} />;
+    if (image) {
+      image = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+      profileImage = <Image style={styles.imageStyle} source={{ uri: image }} />;
+    }
+    return profileImage;
   }
 
   render() {
-    const { image, name, headline } = this.props.data;
+    const { name, headline } = this.props.data;
+
+
     return (
       <Card>
         <View style={styles.containerStyle}>
-          <Image style={styles.imageStyle} source={profilePic} />
+          {this.renderProfileImage}
           <Text style={styles.nameTextStyle}>
             {name}
           </Text>

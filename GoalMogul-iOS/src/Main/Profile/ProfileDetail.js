@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, ScrollView } from 'react-native';
+import { connect } from 'react-redux';
 
 /* Component */
 import ProfileDetailCard from './ProfileCard/ProfileDetailCard';
@@ -27,13 +28,14 @@ const testData = {
 class ProfileDetail extends Component {
 
   render() {
+    const user = this.props.user;
     return (
       <View style={styles.containerStyle}>
         <SearchBarHeader backButton />
         <ScrollView>
-          <ProfileDetailCard data={testData} />
-          <ProfileOccupationCard data={testData} />
-          <ProfileAboutMeCard data={testData} />
+          <ProfileDetailCard data={user} />
+          <ProfileOccupationCard data={user} />
+          <ProfileAboutMeCard data={user} />
         </ScrollView>
       </View>
     );
@@ -46,4 +48,13 @@ const styles = {
   }
 };
 
-export default ProfileDetail;
+const mapStateToProps = state => {
+  const { userId, user } = state.profile;
+
+  return {
+    userId,
+    user
+  };
+};
+
+export default connect(mapStateToProps, null)(ProfileDetail);

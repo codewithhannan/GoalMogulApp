@@ -36,11 +36,18 @@ class ProfileSummaryCard extends Component {
   }
 
   render() {
+    let imageUrl = this.props.user.profile.image;
+    let profileImage = <Image style={styles.imageStyle} source={profilePic} />;
+    if (imageUrl) {
+      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
+      profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
+    }
+
     return (
       <TouchableWithoutFeedback onPress={this.handleOpenProfileDetail.bind(this)}>
         <View style={styles.containerStyle}>
           <View style={{ flex: 5, flexDirection: 'row' }}>
-            <Image style={styles.imageStyle} source={profilePic} />
+            {profileImage}
 
             <View style={styles.bodyStyle}>
               <Name text='Beverly Andrew' />
@@ -98,7 +105,7 @@ const styles = {
   imageStyle: {
     height: 54,
     width: 54,
-    borderRadius: 20,
+    borderRadius: 27,
   },
   buttonStyle: {
     width: 80,
@@ -118,4 +125,13 @@ const styles = {
   }
 };
 
-export default connect(null, { openProfileDetail })(ProfileSummaryCard);
+const mapStateToProps = state => {
+  const { userId, user } = state.profile;
+
+  return {
+    userId,
+    user
+  };
+};
+
+export default connect(mapStateToProps, { openProfileDetail })(ProfileSummaryCard);
