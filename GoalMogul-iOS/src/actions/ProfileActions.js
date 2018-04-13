@@ -9,11 +9,11 @@ export const openProfileDetail = () => {
   };
 };
 
-export const openProfileOccupationEditForm = () => {
+export const openProfileDetailEditForm = () => {
   return (dispatch) => {
     dispatch({
       type: ''
     });
-    Actions.profileOccupationEditForm();
+    Actions.profileDetailEditForm();
   };
 };

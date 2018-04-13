@@ -18,7 +18,6 @@ class ProfileAboutMeCard extends Component {
         <View style={styles.containerStyle}>
           <View style={styles.headerContainerStyle}>
             <Text style={styles.titleTextStyle}>About Me</Text>
-            <EditButton />
           </View>
           <View style={styles.detailContainerStyle}>
             <Text stye={styles.detailTextStyle}>{about}</Text>

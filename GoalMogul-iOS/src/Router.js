@@ -25,7 +25,7 @@ import Home from './Main/Home/Home';
 import Profile from './Main/Profile/Profile';
 import ProfileDetail from './Main/Profile/ProfileDetail';
 // ProfileForm
-import ProfileOccupationEditForm from './Main/Profile/ProfileCard/ProfileOccupationEditForm';
+import ProfileDetailEditForm from './Main/Profile/ProfileCard/ProfileDetailEditForm';
 
 
 const RouterComponent = () => {
@@ -128,8 +128,8 @@ const RouterComponent = () => {
           <Scene key="photolib" component={CameraRollModal} />
         */}
         <Scene
-          key="profileOccupationEditForm"
-          component={ProfileOccupationEditForm}
+          key="profileDetailEditForm"
+          component={ProfileDetailEditForm}
           hideNavBar
         />
 
