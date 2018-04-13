@@ -9,11 +9,15 @@ import { connect } from 'react-redux';
 import Card from './Card';
 import EditButton from '../../Common/Button/EditButton';
 
+/* Actions */
+import { openProfileOccupationEditForm } from '../../../actions/';
+
 // TODO: use redux instead of passed in props
 class ProfileOccupationCard extends Component {
 
   handleEditOnPressed() {
     console.log('I am editing');
+    this.props.openProfileOccupationEditForm();
   }
 
   renderEditButton() {
@@ -94,4 +98,9 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, null)(ProfileOccupationCard);
+export default connect(
+  mapStateToProps,
+  {
+    openProfileOccupationEditForm
+  }
+)(ProfileOccupationCard);
