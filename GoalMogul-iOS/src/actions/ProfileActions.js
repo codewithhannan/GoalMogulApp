@@ -8,3 +8,12 @@ export const openProfileDetail = () => {
     Actions.profileDetail();
   };
 };
+
+export const openProfileOccupationEditForm = () => {
+  return (dispatch) => {
+    dispatch({
+      type: ''
+    });
+    Actions.profileOccupationEditForm();
+  };
+};

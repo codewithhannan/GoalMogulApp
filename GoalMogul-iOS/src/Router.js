@@ -21,8 +21,12 @@ import ContactSync from './Registration/ContactSync';
 import TabIcon from './Main/Common/TabIcon';
 import Home from './Main/Home/Home';
 
+// Profile
 import Profile from './Main/Profile/Profile';
 import ProfileDetail from './Main/Profile/ProfileDetail';
+// ProfileForm
+import ProfileOccupationEditForm from './Main/Profile/ProfileCard/ProfileOccupationEditForm';
+
 
 const RouterComponent = () => {
   return (
@@ -123,6 +127,11 @@ const RouterComponent = () => {
           Could potential later be used in Android.
           <Scene key="photolib" component={CameraRollModal} />
         */}
+        <Scene
+          key="profileOccupationEditForm"
+          component={ProfileOccupationEditForm}
+          hideNavBar
+        />
 
       </Modal>
 
