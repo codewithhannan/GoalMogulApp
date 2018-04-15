@@ -33,7 +33,7 @@ class ProfileDetail extends Component {
       <View style={styles.containerStyle}>
         <SearchBarHeader backButton />
         <ScrollView>
-          <ProfileDetailCard data={testData} />
+          <ProfileDetailCard data={user} />
           <ProfileOccupationCard data={testData} />
           <ProfileAboutMeCard data={testData} />
         </ScrollView>
