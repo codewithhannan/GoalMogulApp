@@ -2,7 +2,7 @@ import { Actions } from 'react-native-router-flux';
 import { ImagePickerIOS } from 'react-native';
 
 import ImageUtils from '../Utils/ImageUtils';
-import { updateAccount, updateProfile } from '../Utils/ProfileUtils';
+import { updateAccount, updateProfile, updatePassword } from '../Utils/ProfileUtils';
 
 import {
   PROFILE_SUBMIT_UPDATE,
@@ -31,7 +31,7 @@ export const openProfileDetailEditForm = () => {
 
 export const submitUpdatingProfile = ({ values, hasImageModified }) => {
   return (dispatch, getState) => {
-    const { headline, name, email, password } = values;
+    const { headline, name, email, oldPassword, newPassword } = values;
     const { about, occupation, elevatorPitch } = values.profile;
     const imageUri = values.profile.image;
 
@@ -42,8 +42,8 @@ export const submitUpdatingProfile = ({ values, hasImageModified }) => {
       type: PROFILE_SUBMIT_UPDATE
     });
 
-    const updateAccountPromise = updateAccount({ name, email, password, headline, token });
-    const updateProfilePromis = ImageUtils
+    const updateAccountPromise = updateAccount({ name, email, headline, token });
+    const updateProfilePromise = ImageUtils
       .upload(hasImageModified, imageUri, token, PROFILE_IMAGE_UPLOAD_SUCCESS, dispatch)
       .then(() => {
         const image = getState().profile.user.profile.image;
@@ -56,10 +56,15 @@ export const submitUpdatingProfile = ({ values, hasImageModified }) => {
         });
       });
 
+    let updatePasswordPromise = null;
+    if (oldPassword && newPassword) {
+      updatePasswordPromise = updatePassword({ oldPassword, newPassword, token });
+    }
+
     Promise
-      .all([updateAccountPromise, updateProfilePromis])
+      .all([updateAccountPromise, updateProfilePromise, updatePasswordPromise])
       .then((res) => {
-        const [accountUpdateRes, profileUpdateRes] = res;
+        const [accountUpdateRes, profileUpdateRes, passwordUpdateRes] = res;
         const profile = { ...profileUpdateRes };
         const user = { ...accountUpdateRes, profile };
 

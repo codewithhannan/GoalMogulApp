@@ -153,6 +153,7 @@ export const registrationNextIntro = (skip) => {
         if (res instanceof Error) {
           // uploading to s3 failed
           console.log('error uploading image to s3 with res: ', res);
+          throw res;
         }
         return getState().user.profile.imageObjectId;
       })

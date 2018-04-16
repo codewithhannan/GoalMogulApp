@@ -3,7 +3,6 @@ const ProfileUtils = {
     const {
       name,
       email,
-      password,
       headline,
       token
     } = values;
@@ -25,7 +24,6 @@ const ProfileUtils = {
         email,
         name,
         headline,
-        password,
         token
       })
     };
@@ -70,7 +68,7 @@ const ProfileUtils = {
 
   updatePassword(values) {
     const { oldPassword, newPassword, token } = values;
-    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/profile';
+    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account/password';
     const headers = {
       method: 'PUT',
       headers: {
@@ -109,5 +107,6 @@ const ProfileUtils = {
 
 module.exports = {
   updateProfile: ProfileUtils.updateProfile,
-  updateAccount: ProfileUtils.updateAccount
+  updateAccount: ProfileUtils.updateAccount,
+  updatePassword: ProfileUtils.updatePassword
 };

@@ -83,6 +83,7 @@ class ProfileDetailEditForm extends Component {
   renderInput = ({
     input: { onChange, ...restInput },
     label,
+    secure,
     meta: { touched, error },
     ...custom
   }) => {
@@ -97,6 +98,7 @@ class ProfileDetailEditForm extends Component {
           error={error}
           enablesReturnKeyAutomatically={false}
           returnKeyType='done'
+          secureTextEntry={secure}
           {...custom}
           {...restInput}
         />
@@ -123,18 +125,18 @@ class ProfileDetailEditForm extends Component {
         >
           <Field name='profile.image' label='profile picture' component={this.renderImage} />
           <Field name='name' label='Name' component={this.renderInput} title='this is test' />
-          <Field name='email' label='Name' component={this.renderInput} title='this is test' />
+          <Field name='email' label='Email' component={this.renderInput} />
           <Field
             name='oldPassword'
-            label='Old Password'
+            label='Enter old passwordd'
             component={this.renderInput}
-            title='this is test'
+            secure
           />
           <Field
             name='newPassword'
-            label='New Password'
+            label='Enter new password'
             component={this.renderInput}
-            title='this is test'
+            secure
           />
           <Field name='headline' label='Headline' component={this.renderInput} />
           <Field name='profile.about' label='About' component={this.renderInput} />
