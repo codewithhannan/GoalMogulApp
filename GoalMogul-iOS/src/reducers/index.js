@@ -6,11 +6,13 @@ import RegReducers from './RegReducers';
 import CameraRollReducers from './CameraRollReducers';
 import User from './User';
 import Profile from './Profile';
+import { reducer as formReducer } from 'redux-form';
 
 export default combineReducers({
   auth: AuthReducers,
   registration: RegReducers,
   cameraRoll: CameraRollReducers,
   user: User,
-  profile: Profile
+  profile: Profile,
+  form: formReducer
 });

@@ -10,6 +10,10 @@ if there is corresponding issue, state it
 
 * Version 0.0.1
 
+## 16 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
+* Implement profile editing form UI
+* Connect profile edit form UI with data
+
 ## 12 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
 * Bug fix image uploading
 * Conditional rendering for edit button

@@ -10,14 +10,13 @@ import Card from './Card';
 import EditButton from '../../Common/Button/EditButton';
 
 /* Actions */
-import { openProfileOccupationEditForm } from '../../../actions/';
+import { openProfileDetailEditForm } from '../../../actions/';
 
 // TODO: use redux instead of passed in props
 class ProfileOccupationCard extends Component {
 
   handleEditOnPressed() {
-    console.log('I am editing');
-    this.props.openProfileOccupationEditForm();
+    this.props.openProfileDetailEditForm();
   }
 
   renderEditButton() {
@@ -35,8 +34,7 @@ class ProfileOccupationCard extends Component {
             <Text style={styles.titleTextStyle}>Occupation</Text>
             <Text style={styles.headlineTextStyle}>
               {occupation}
-            </Text>
-            {this.renderEditButton()}
+            </Text>            
           </View>
           <View style={styles.detailContainerStyle}>
             <Text stye={styles.detailTextStyle}>{elevatorPitch}</Text>
@@ -90,9 +88,7 @@ const styles = {
 
 const mapStateToProps = state => {
   const canEdit = state.profile.userId.toString() === state.user.userId.toString();
-  console.log('current profile id: ', state.profile.userId);
-  console.log('current user id: ', state.user.userId);
-  console.log('result: ', canEdit);
+
   return {
     canEdit
   };
@@ -101,6 +97,6 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    openProfileOccupationEditForm
+    openProfileDetailEditForm
   }
 )(ProfileOccupationCard);

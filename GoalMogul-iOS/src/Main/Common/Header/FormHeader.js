@@ -23,19 +23,24 @@ class FormHeader extends Component {
     const { textStyle } = styles;
     return (
       <View style={styles.headerStyle}>
+        <View style={{ flex: 2, alignItems: 'flex-start' }}>
         <TouchableOpacity onPress={this.onCancelPress}>
-          <View style={{ flex: 1 }}>
+
             <Text style={textStyle}>Cancel</Text>
-          </View>
+
         </TouchableOpacity>
-        <View style={{ flex: 4 }}>
+        </View>
+
+        <View style={{ flex: 1 }}>
           <Text style={textStyle}>{this.props.title}</Text>
         </View>
+        <View style={{ flex: 2, alignItems: 'flex-end' }}>
         <TouchableOpacity onPress={this.onSavePress}>
-          <View style={{ flex: 1 }}>
+
             <Text style={textStyle}>Save</Text>
-          </View>
+
         </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -45,7 +50,7 @@ const styles = {
   headerStyle: {
     flexDirection: 'row',
     backgroundColor: '#ffffff',
-    height: 70,
+    paddingBottom: 12,
     paddingTop: 30,
     paddingLeft: 12,
     paddingRight: 12

@@ -36,6 +36,7 @@ class ProfileSummaryCard extends Component {
   }
 
   render() {
+    const name = this.props.user.name;
     let imageUrl = this.props.user.profile.image;
     let profileImage = <Image style={styles.imageStyle} source={profilePic} />;
     if (imageUrl) {
@@ -50,7 +51,7 @@ class ProfileSummaryCard extends Component {
             {profileImage}
 
             <View style={styles.bodyStyle}>
-              <Name text='Beverly Andrew' />
+              <Name text={name} />
               <Position text='Sr. UI/UX designer & developer' />
               <Stats data={data} />
             </View>

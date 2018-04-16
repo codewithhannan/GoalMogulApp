@@ -41,3 +41,7 @@ export const PROFILE_FETCHING_SUCCESS = 'profile_fetching_success'; // Loading p
 export const PROFILE_FETCHING_FAIL = 'profile_fetching_fail'; // Loading profile fails
 export const PROFILE_OPEN_PROFILE_DETAIL
   = 'profile_open_profile_detail'; // User opens a profile detail
+export const PROFILE_SUBMIT_UPDATE = 'profile_submit_update';
+export const PROFILE_IMAGE_UPLOAD_SUCCESS = 'profile_image_upload_success';
+export const PROFILE_UPDATE_SUCCESS = 'profile_update_success';
+export const PROFILE_UPDATE_FAIL = 'profile_update_fail';

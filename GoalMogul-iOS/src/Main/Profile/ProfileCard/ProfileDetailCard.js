@@ -4,9 +4,13 @@ import {
   Image,
   Text
 } from 'react-native';
+import { connect } from 'react-redux';
 
 /* Asset to delete */
 import profilePic from '../../../asset/test-profile-pic.png';
+
+/* Actions */
+import { openProfileDetailEditForm } from '../../../actions/';
 
 /* Components */
 import Card from './Card';
@@ -14,6 +18,16 @@ import EditButton from '../../Common/Button/EditButton';
 
 // TODO: use redux instead of passed in props
 class ProfileDetailCard extends Component {
+
+  handleEditOnPressed() {
+    this.props.openProfileDetailEditForm();
+  }
+
+  renderEditButton() {
+    if (this.props.canEdit) {
+      return <EditButton onPress={() => this.handleEditOnPressed()} />;
+    }
+  }
 
   renderProfileImage() {
     const { profile } = this.props.data;
@@ -34,7 +48,7 @@ class ProfileDetailCard extends Component {
     return (
       <Card>
         <View style={styles.containerStyle}>
-          <EditButton />
+          {this.renderEditButton()}
           {this.renderProfileImage()}
           <Text style={styles.nameTextStyle}>
             {name}
@@ -73,4 +87,12 @@ const styles = {
   }
 };
 
-export default ProfileDetailCard;
+const mapStateToProps = state => {
+  const canEdit = state.profile.userId.toString() === state.user.userId.toString();
+
+  return {
+    canEdit
+  };
+};
+
+export default connect(mapStateToProps, { openProfileDetailEditForm })(ProfileDetailCard);
