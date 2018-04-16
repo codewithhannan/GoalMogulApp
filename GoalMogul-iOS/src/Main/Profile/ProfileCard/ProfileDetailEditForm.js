@@ -25,10 +25,6 @@ import profilePic from '../../../asset/test-profile-pic.png';
 
 class ProfileDetailEditForm extends Component {
 
-  onFieldSubmit = fieldType => {
-    // TODO: link to onFocus for next field
-  }
-
   updateRef(name, ref) {
     this[name] = ref;
   }
