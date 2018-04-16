@@ -4,7 +4,8 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  ImagePickerIOS
 } from 'react-native';
 import { Field, reduxForm } from 'redux-form';
 import { TextField } from 'react-native-material-textfield';
@@ -15,6 +16,9 @@ import FormHeader from '../../Common/Header/FormHeader';
 
 /* Asset */
 import editImage from '../../../asset/utils/edit.png';
+
+/* Actions */
+import { submitUpdatingProfile } from '../../../actions';
 
 /* Asset to delete */
 import profilePic from '../../../asset/test-profile-pic.png';
@@ -30,31 +34,52 @@ class ProfileDetailEditForm extends Component {
   }
 
   submit = values => {
-    console.log('submitting form: ', values);
+    const hasImageModified = JSON.stringify(this.props.initialValues.profile.image) !==
+      JSON.stringify(values.profile.image);
+    this.props.submitUpdatingProfile({ values, hasImageModified });
   };
 
+  chooseImage = () => {
+    ImagePickerIOS.canUseCamera(() => {
+      ImagePickerIOS.openSelectDialog({}, imageUri => {
+        this.props.change('profile.image', imageUri);
+      }, () => {
+        console.log('user cancel choosing from camera roll');
+      });
+    });
+  }
+
   renderImage = ({
-    input: { onChange, value, ...restInput },
-    label,
-    meta: { error },
-    ...custom
+    input: { value },
+    // meta: { error },
   }) => {
+    const hasImageModified = JSON.stringify(this.props.initialValues.profile.image) !==
+      JSON.stringify(value);
+
     let profileImage = <Image style={styles.imageStyle} source={profilePic} />;
     if (value) {
-      const image = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${value}`;
+      let image;
+      if (hasImageModified) {
+        image = value;
+      } else {
+        image = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${value}`;
+      }
       profileImage = <Image style={styles.imageStyle} source={{ uri: image }} />;
     }
 
     return (
-      <TouchableOpacity>
+      <TouchableOpacity onPress={this.chooseImage}>
         <View style={{ alignSelf: 'center' }}>
           {profileImage}
-          <Image style={styles.editIconStyle} source={editImage} />
+          <View style={styles.iconContainerStyle}>
+            <Image style={styles.editIconStyle} source={editImage} />
+          </View>
         </View>
       </TouchableOpacity>
     );
   }
 
+  // TODO: convert this to an independent component
   renderInput = ({
     input: { onChange, ...restInput },
     label,
@@ -87,7 +112,10 @@ class ProfileDetailEditForm extends Component {
         behavior='padding'
         style={{ flex: 1, backgroundColor: '#ffffff' }}
       >
-        <FormHeader title='Profile' onSubmit={handleSubmit(this.submit)} />
+        <FormHeader
+          title='Profile'
+          onSubmit={handleSubmit(this.submit)}
+        />
         <ScrollView
           style={styles.scroll}
           keyboardShouldPersistTaps='handled'
@@ -95,9 +123,21 @@ class ProfileDetailEditForm extends Component {
         >
           <Field name='profile.image' label='profile picture' component={this.renderImage} />
           <Field name='name' label='Name' component={this.renderInput} title='this is test' />
-          <Field name='email' label='Email' component={this.renderInput} />
-          <Field name='password' label='Password' component={this.renderInput} />
+          <Field name='email' label='Name' component={this.renderInput} title='this is test' />
+          <Field
+            name='oldPassword'
+            label='Old Password'
+            component={this.renderInput}
+            title='this is test'
+          />
+          <Field
+            name='newPassword'
+            label='New Password'
+            component={this.renderInput}
+            title='this is test'
+          />
           <Field name='headline' label='Headline' component={this.renderInput} />
+          <Field name='profile.about' label='About' component={this.renderInput} />
           <Field name='profile.occupation' label='Occupation' component={this.renderInput} />
           <Field name='profile.elevatorPitch' label='elevator pitch' component={this.renderInput} />
         </ScrollView>
@@ -126,18 +166,36 @@ const styles = {
     borderRadius: 40,
     marginTop: 10
   },
+  iconContainerStyle: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 2,
+    justifyContent: 'center',
+    position: 'absolute',
+    right: 0,
+    bottom: 3
+  },
   editIconStyle: {
     width: 20,
     height: 20,
-    borderRadius: 10,
+    borderRadius: 10
   }
 };
 
-const mapStateToProps = state => {
-  return { initialValues: state.profile.user };
-};
-
-export default (connect(mapStateToProps, null)(reduxForm({
+ProfileDetailEditForm = reduxForm({
   form: 'profileDetailEditForm',
   enableReinitialize: true
-})(ProfileDetailEditForm)));
+})(ProfileDetailEditForm);
+
+const mapStateToProps = state => {
+  return {
+    initialValues: state.profile.user
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  { submitUpdatingProfile }
+)(ProfileDetailEditForm);

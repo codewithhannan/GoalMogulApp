@@ -34,8 +34,8 @@ class ProfileDetail extends Component {
         <SearchBarHeader backButton />
         <ScrollView>
           <ProfileDetailCard data={user} />
-          <ProfileOccupationCard data={testData} />
-          <ProfileAboutMeCard data={testData} />
+          <ProfileOccupationCard data={user} />
+          <ProfileAboutMeCard data={user} />
         </ScrollView>
       </View>
     );

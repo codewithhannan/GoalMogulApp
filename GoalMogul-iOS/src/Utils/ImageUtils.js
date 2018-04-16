@@ -97,6 +97,47 @@ const ImageUtils = {
     });
 
     return promise;
+  },
+
+  /**
+	 * Upload image to S3 server
+	 * @param(required) imageUri
+	 * @param(required) token
+	 * @param(required) dispatch
+	 * @param(required) path
+	 * @return
+	 */
+  upload(hasImageModified, imageUri, token, type, dispatch) {
+    return new Promise((resolve, reject) => {
+      if (!hasImageModified) {
+        return resolve();
+      }
+      ImageUtils.getImageSize(imageUri)
+        .then(({ width, height }) => {
+          // Resize image
+          return ImageUtils.resizeImage(imageUri, width, height);
+        })
+        .then((image) => {
+          // Upload image to S3 server
+          return ImageUtils.getPresignedUrl(image.uri, token, (objectKey) => {
+            dispatch({
+              type,
+              payload: objectKey
+            });
+          });
+        })
+        .then(({ signedRequest, file }) => {
+          return ImageUtils.uploadImage(file, signedRequest);
+        })
+        .then((res) => {
+          if (res instanceof Error) {
+            // uploading to s3 failed
+            console.log('error uploading image to s3 with res: ', res);
+            reject(res);
+          }
+          resolve();
+        });
+    });
   }
 };
 
