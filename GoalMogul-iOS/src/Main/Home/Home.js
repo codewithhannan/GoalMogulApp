@@ -11,9 +11,9 @@ import IconStar from '../../asset/footer/navigation/star.png';
 
 /* Components */
 import PostCard from '../../components/PostCard';
-import TabButtonGroup from '../../components/TabButtonGroup';
-import TabButton from '../../components/TabButton';
-import GoalFilterBar from '../../components/GoalFilterBar';
+import TabButtonGroup from '../Common/TabButtonGroup';
+import TabButton from '../Common/Button/TabButton';
+import GoalFilterBar from '../Common/GoalFilterBar';
 import SearchBarHeader from '../Common/SearchBarHeader';
 //TODO: delete following imports
 import MyGoalCard from '../Common/MyGoalCard';

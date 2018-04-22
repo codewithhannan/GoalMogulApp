@@ -28,7 +28,8 @@ import ProfileDetail from './Main/Profile/ProfileDetail';
 import ProfileDetailEditForm from './Main/Profile/ProfileCard/ProfileDetailEditForm';
 
 // Account
-import Account from './Main/Account/Account';
+import Setting from './Main/Setting/Setting';
+import Email from './Main/Setting/Email';
 
 
 const RouterComponent = () => {
@@ -37,7 +38,7 @@ const RouterComponent = () => {
       <Modal>
         <Scene key="root" hideNavBar>
           <Scene key="auth" initial hideNavBar>
-            <Scene key="login" component={Account} initial />
+            <Scene key="login" component={Login} initial />
           </Scene>
 
           {/* Registration screen stack*/}
@@ -87,6 +88,8 @@ const RouterComponent = () => {
                 <Scene key="home" component={Home} initial />
                 <Scene key="profile" component={Profile} panHandlers={null} />
                 <Scene key="profileDetail" component={ProfileDetail} panHandlers={null} />
+                <Scene key="setting" component={Setting} />
+                <Scene key="email" component={Email} />
               </Stack>
 
               <Stack

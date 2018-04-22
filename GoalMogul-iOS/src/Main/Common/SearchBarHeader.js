@@ -14,7 +14,7 @@ import IconMenu from '../../asset/header/menu.png';
 import Setting from '../../asset/header/setting.png';
 
 /* Actions */
-import { back, openProfile } from '../../actions';
+import { back, openProfile, openSetting } from '../../actions';
 
 class SearchBarHeader extends Component {
 
@@ -28,6 +28,7 @@ class SearchBarHeader extends Component {
 
   handleSettingOnClick() {
     // TODO: open account setting page
+    this.props.openSetting();
   }
 
   renderSearchBarLeftIcon() {
@@ -147,4 +148,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { back, openProfile })(SearchBarHeader);
+export default connect(mapStateToProps, { back, openProfile, openSetting })(SearchBarHeader);
