@@ -31,7 +31,7 @@ class ProfileDetail extends Component {
     const user = this.props.user;
     return (
       <View style={styles.containerStyle}>
-        <SearchBarHeader backButton />
+        <SearchBarHeader backButton setting />
         <ScrollView>
           <ProfileDetailCard data={user} />
           <ProfileOccupationCard data={user} />

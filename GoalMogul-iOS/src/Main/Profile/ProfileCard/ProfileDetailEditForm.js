@@ -25,10 +25,6 @@ import profilePic from '../../../asset/test-profile-pic.png';
 
 class ProfileDetailEditForm extends Component {
 
-  onFieldSubmit = fieldType => {
-    // TODO: link to onFocus for next field
-  }
-
   updateRef(name, ref) {
     this[name] = ref;
   }
@@ -84,6 +80,8 @@ class ProfileDetailEditForm extends Component {
     input: { onChange, ...restInput },
     label,
     secure,
+    limitation,
+    multiline,
     meta: { touched, error },
     ...custom
   }) => {
@@ -99,6 +97,8 @@ class ProfileDetailEditForm extends Component {
           enablesReturnKeyAutomatically={false}
           returnKeyType='done'
           secureTextEntry={secure}
+          characterRestriction={limitation}
+          multiline={multiline}
           {...custom}
           {...restInput}
         />
@@ -124,24 +124,22 @@ class ProfileDetailEditForm extends Component {
           contentContainerStyle={{ flexGrow: 1, backgroundColor: '#ffffff' }}
         >
           <Field name='profile.image' label='profile picture' component={this.renderImage} />
-          <Field name='name' label='Name' component={this.renderInput} title='this is test' />
-          <Field name='email' label='Email' component={this.renderInput} />
-          <Field
-            name='oldPassword'
-            label='Enter old passwordd'
-            component={this.renderInput}
-            secure
-          />
-          <Field
-            name='newPassword'
-            label='Enter new password'
-            component={this.renderInput}
-            secure
-          />
+          <Field name='name' label='Name' component={this.renderInput} />
           <Field name='headline' label='Headline' component={this.renderInput} />
-          <Field name='profile.about' label='About' component={this.renderInput} />
           <Field name='profile.occupation' label='Occupation' component={this.renderInput} />
-          <Field name='profile.elevatorPitch' label='elevator pitch' component={this.renderInput} />
+          <Field
+            name='profile.elevatorPitch'
+            label='elevator pitch'
+            component={this.renderInput}
+            limitation={250}
+          />
+          <Field
+            name='profile.about'
+            label='About'
+            component={this.renderInput}
+            limitation={250}
+            multiline
+          />
         </ScrollView>
       </KeyboardAvoidingView>
     );

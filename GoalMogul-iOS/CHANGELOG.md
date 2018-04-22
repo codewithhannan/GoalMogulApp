@@ -10,6 +10,11 @@ if there is corresponding issue, state it
 
 * Version 0.0.1
 
+## 22 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
+* See [Issue #34](https://github.com/somechild/goalmogul-ios/issues/34)
+* reorder inputs
+* length limitation
+
 ## 16 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
 * Implement profile editing form UI
 * Connect profile edit form UI with data

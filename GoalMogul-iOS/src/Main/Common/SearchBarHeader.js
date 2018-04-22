@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 /* Asset */
 import Logo from '../../asset/header/logo.png';
 import IconMenu from '../../asset/header/menu.png';
+import Setting from '../../asset/header/setting.png';
 
 /* Actions */
 import { back, openProfile } from '../../actions';
@@ -21,8 +22,11 @@ class SearchBarHeader extends Component {
   }
 
   handleProfileOnClick() {
-    // Open profile and passed in userId that's being opened
     this.props.openProfile(this.props.userId);
+  }
+
+  handleSettingOnClick() {
+    // TODO: open account setting page
   }
 
   renderSearchBarLeftIcon() {
@@ -46,6 +50,19 @@ class SearchBarHeader extends Component {
     );
   }
 
+  renderSearchBarRightIcon() {
+    if (this.props.setting) {
+      return (
+        <TouchableWithoutFeedback onPress={this.handleSettingOnClick.bind(this)}>
+          <Image style={styles.headerRightImage} source={Setting} />
+        </TouchableWithoutFeedback>
+      );
+    }
+    return (
+      <Image style={styles.headerRightImage} source={IconMenu} />
+    );
+  }
+
   render() {
     return (
       <View style={styles.headerStyle}>
@@ -57,7 +74,7 @@ class SearchBarHeader extends Component {
           icon={{ type: 'font-awesome', name: 'search', style: styles.searchIconStyle }}
           placeholder='Search GoalMogul'
         />
-        <Image style={styles.headerRightImage} source={IconMenu} />
+        {this.renderSearchBarRightIcon()}
       </View>
     );
   }
