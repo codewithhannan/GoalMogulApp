@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Text
 } from 'react-native';
 import { SearchBar, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
@@ -58,8 +59,34 @@ class SearchBarHeader extends Component {
         </TouchableWithoutFeedback>
       );
     }
+    if (!this.props.menu) {
+      return (
+        <View style={styles.headerRightImage} />
+      );
+    }
     return (
       <Image style={styles.headerRightImage} source={IconMenu} />
+    );
+  }
+
+  renderSearchBarOrTitle() {
+    if (this.props.title) {
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 20 }} >
+            {this.props.title}
+          </Text>
+        </View>
+      );
+    }
+    return (
+      <SearchBar
+        round
+        inputStyle={styles.searchInputStyle}
+        containerStyle={styles.searchContainerStyle}
+        icon={{ type: 'font-awesome', name: 'search', style: styles.searchIconStyle }}
+        placeholder='Search GoalMogul'
+      />
     );
   }
 
@@ -67,13 +94,7 @@ class SearchBarHeader extends Component {
     return (
       <View style={styles.headerStyle}>
         {this.renderSearchBarLeftIcon()}
-        <SearchBar
-          round
-          inputStyle={styles.searchInputStyle}
-          containerStyle={styles.searchContainerStyle}
-          icon={{ type: 'font-awesome', name: 'search', style: styles.searchIconStyle }}
-          placeholder='Search GoalMogul'
-        />
+        {this.renderSearchBarOrTitle()}
         {this.renderSearchBarRightIcon()}
       </View>
     );
@@ -101,9 +122,10 @@ const styles = {
   headerStyle: {
     flexDirection: 'row',
     backgroundColor: '#ffffff',
-    paddingTop: 30,
+    paddingTop: 28,
     paddingLeft: 12,
-    paddingRight: 12
+    paddingRight: 12,
+    paddingBottom: 10
   },
   headerLeftImage: {
     width: 25,
@@ -111,9 +133,9 @@ const styles = {
     marginTop: 10,
   },
   headerRightImage: {
-    width: 20,
-    height: 15,
-    marginTop: 14,
+    width: 25,
+    height: 25,
+    marginTop: 11,
   }
 };
 

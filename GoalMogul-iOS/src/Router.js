@@ -11,7 +11,7 @@ import {
 import Login from './Login';
 
 /* Registration */
-import Account from './Registration/Account';
+import RegistrationAccount from './Registration/Account';
 import IntroForm from './Registration/IntroForm';
 import AddProfilePic from './Registration/AddProfilePic';
 import Contacts from './Registration/Contacts';
@@ -27,6 +27,9 @@ import ProfileDetail from './Main/Profile/ProfileDetail';
 // ProfileForm
 import ProfileDetailEditForm from './Main/Profile/ProfileCard/ProfileDetailEditForm';
 
+// Account
+import Account from './Main/Account/Account';
+
 
 const RouterComponent = () => {
   return (
@@ -34,14 +37,14 @@ const RouterComponent = () => {
       <Modal>
         <Scene key="root" hideNavBar>
           <Scene key="auth" initial hideNavBar>
-            <Scene key="login" component={Login} initial />
+            <Scene key="login" component={Account} initial />
           </Scene>
 
           {/* Registration screen stack*/}
           <Stack key="registration" hideNavBar>
             <Scene
               key="registrationAccount"
-              component={Account}
+              component={RegistrationAccount}
               intial
             />
             <Scene
