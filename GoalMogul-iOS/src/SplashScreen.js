@@ -10,7 +10,10 @@ import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import { LinearGradient } from 'expo';
 
+/* Asset */
 import HeaderLogo from './asset/header/header-logo-white.png';
+/* TODO: delete */
+import ghost from './asset/utils/default_profile.png';
 
 const width = Dimensions.get('window').width
 
@@ -19,7 +22,7 @@ class SplashScreen extends Component {
   renderLogo() {
     return (
       <View style={styles.headerContainerStyle}>
-        <Image style={styles.imageStyle} source={HeaderLogo} />
+        <Image style={styles.logoImageStyle} source={HeaderLogo} />
         <Text style={styles.headerBoldTextStyle}>Goal</Text>
         <Text style={styles.headerTextStyle}>Mogul</Text>
       </View>
@@ -35,7 +38,8 @@ class SplashScreen extends Component {
         >
           {this.renderLogo()}
 
-          <View>
+          <View style={styles.bodyContainerStyle}>
+            <Image style={styles.imageStyle} source={ghost} />
             <Text style={styles.titleTextStyle}>Achieve more,</Text>
             <Text style={styles.titleTextStyle}>together.</Text>
           </View>
@@ -73,28 +77,49 @@ const styles = {
   containerStyle: {
     flex: 1
   },
+  // Header style
   headerContainerStyle: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 50
+    marginTop: 70
   },
   headerTextStyle: {
-    fontSize: 32,
+    fontSize: 36,
     color: '#ffffff',
     letterSpacing: 1
   },
   headerBoldTextStyle: {
-    fontSize: 32,
+    fontSize: 36,
     color: '#ffffff',
     fontWeight: '800',
     letterSpacing: 1
   },
-  imageStyle: {
+  logoImageStyle: {
     height: 45,
     width: 45,
     marginRight: 10
   },
+
+  // Body style
+  bodyContainerStyle: {
+    marginTop: 30,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  imageStyle: {
+    height: 230,
+    width: 230
+  },
+  titleTextStyle: {
+    fontSize: 22,
+    color: '#217a9b',
+    alignSelf: 'center',
+    fontWeight: '700',
+    letterSpacing: 0.5
+  },
+
+  // Highlight style
   buttonTextStyle: {
     fontSize: 20,
     fontWeight: '700',
@@ -102,7 +127,7 @@ const styles = {
     alignSelf: 'center'
   },
   highlightContainerStyle: {
-    marginTop: 40,
+    marginTop: 50,
     marginBottom: 40,
     backgroundColor: '#4ccbf5',
     height: 50,
@@ -117,11 +142,8 @@ const styles = {
     justifyContent: 'center',
     alignSelf: 'center'
   },
-  titleTextStyle: {
-    fontSize: 20,
-    color: '#217a9b',
-    alignSelf: 'center'
-  },
+
+  // Footer style
   loginHighlightContainerStyle: {
     backgroundColor: '#4ccbf5',
     flexDirection: 'row',
