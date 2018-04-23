@@ -14,8 +14,11 @@ if there is corresponding issue, state it
 * See [Issue #30](https://github.com/somechild/goalmogul-ios/issues/30)
 * See [Issue #31](https://github.com/somechild/goalmogul-ios/issues/31)
 * Create setting page UI + hook up with data
-* Create email verification page UI
-* Create privacy friends setting page UI 
+* Create email managing page UI
+* Create email update page UI + hook up with data
+* Create phone managing page UI
+* Create add phone number page UI
+* Create privacy friends setting page UI
 
 ## 22 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
 * See [Issue #30](https://github.com/somechild/goalmogul-ios/issues/30)
