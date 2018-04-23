@@ -46,10 +46,10 @@ class FriendsSetting extends Component {
   renderTick(info) {
     if (info.title === this.props.privacy.friends) {
       return (
-        <View style={{ height: 15, width: 15 }} >
+        <View style={{ height: 15, width: 20 }} >
           <Icon
             type='entypo'
-            name='chevron-thin-left'
+            name='check'
           />
         </View>
       );

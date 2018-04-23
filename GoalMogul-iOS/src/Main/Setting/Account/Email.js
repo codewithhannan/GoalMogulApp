@@ -53,7 +53,7 @@ class Email extends Component {
     if (this.props.email) {
       return (
         <Text style={Styles.detailTextStyle}>
-          {this.props.email}
+          {this.props.email.address}
         </Text>
       );
     }
