@@ -16,6 +16,12 @@ import Setting from '../../asset/header/setting.png';
 /* Actions */
 import { back, openProfile, openSetting } from '../../actions';
 
+/**
+  TODO: refactor element to have consistent behavior
+  rightIcon: 'empty' or null,
+  backButton: true or false,
+  setting: true or false
+*/
 class SearchBarHeader extends Component {
 
   handleBackOnClick() {
@@ -60,7 +66,7 @@ class SearchBarHeader extends Component {
         </TouchableWithoutFeedback>
       );
     }
-    if (!this.props.menu) {
+    if (this.props.rightIcon === 'empty') {
       return (
         <View style={styles.headerRightImage} />
       );

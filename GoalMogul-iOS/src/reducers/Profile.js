@@ -12,6 +12,9 @@ const INITIAL_STATE = {
   user: {
     profile: {
       image: undefined
+    },
+    email: {
+      
     }
   }, // User model for profile
   uploading: false

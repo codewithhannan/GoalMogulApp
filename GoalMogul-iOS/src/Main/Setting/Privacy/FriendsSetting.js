@@ -1,0 +1,106 @@
+import React, { Component } from 'react';
+import { Text, View, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
+import { Icon } from 'react-native-elements';
+
+/* Components */
+import SearchBarHeader from '../../Common/SearchBarHeader';
+
+/* Styles */
+import Styles from '../Styles';
+
+/* Actions */
+import { onResendEmailPress } from '../../../actions';
+
+/*
+  TODO: export this const file
+*/
+const friendsSettingList = [
+  {
+    title: 'Public',
+    explanation: "Everyone can see who I'm friends with"
+  },
+  {
+    title: 'Mutual',
+    explanation: 'Anyone can see the friends we have in common'
+  },
+  {
+    title: 'Friends',
+    explanation: "Friends can see who I'm friend with"
+  },
+  {
+    title: 'Private',
+    explanation: "Only I know who I'm friend with"
+  }
+];
+
+class FriendsSetting extends Component {
+
+
+  renderPrivacySettingDetail() {
+    return friendsSettingList.map((info) => {
+      return (
+        <TouchableOpacity>
+          <View style={styles.sectionContainerStyle}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.titleTextStyle}>
+                {info.title}
+              </Text>
+              <Text style={styles.explanationStyle}>
+                {info.explanation}
+              </Text>
+            </View>
+            <View style={{ height: 15, width: 15 }} >
+              <Icon
+                type='entypo'
+                name='chevron-thin-left'
+              />
+            </View>
+          </View>
+        </TouchableOpacity>
+      );
+    });
+  }
+
+  render() {
+    return (
+      <View style={{ flex: 1 }}>
+        <SearchBarHeader backButton rightIcon='empty' title="Friends" />
+        <View style={Styles.titleSectionStyle}>
+          <Text style={Styles.titleTextStyle}>
+            Who can see your friends
+          </Text>
+        </View>
+        <View style={Styles.detailCardSection}>
+          {this.renderPrivacySettingDetail()}
+        </View>
+      </View>
+    );
+  }
+}
+
+const mapStateToProps = state => {
+  const { user } = state.profile;
+
+  return {
+    user
+  };
+};
+
+const styles = {
+  sectionContainerStyle: {
+    paddingBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  titleTextStyle: {
+    fontSize: 14,
+    fontWeight: '700'
+  },
+  explanationStyle: {
+    fontSize: 13,
+    color: '#4d525b'
+  }
+};
+
+export default connect(mapStateToProps, { onResendEmailPress })(FriendsSetting);

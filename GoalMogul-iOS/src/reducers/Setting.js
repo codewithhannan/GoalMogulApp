@@ -6,10 +6,16 @@ import {
 const INITIAL_STATE = {
   email: {},
   phone: {},
-  privacy: {},
+  privacy: {
+    friends: ''
+  },
   selectedTab: 'account'
 };
 
+/*
+  TODO:
+  1. populate initial set on profile fetch successfully
+*/
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
 

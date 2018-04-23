@@ -49,3 +49,4 @@ export const PROFILE_UPDATE_FAIL = 'profile_update_fail';
 /* Setting actions */
 export const SETTING_OPEN_SETTING = 'setting_open_setting';
 export const SETTING_TAB_SELECTION = 'setting_tab_selection';
+export const SETTING_RESENT_EMAIL_VERIFICATION = 'setting_resent_email_verification';

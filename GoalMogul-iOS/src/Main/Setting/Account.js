@@ -3,10 +3,10 @@ import {
   View,
   ScrollView
 } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 
 /* Components */
 import SettingCard from './SettingCard';
-import { Actions } from 'react-native-router-flux';
 
 class Account extends Component {
   render() {

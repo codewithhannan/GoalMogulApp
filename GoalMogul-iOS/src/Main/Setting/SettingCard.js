@@ -1,21 +1,22 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 
-const SettingCard = props => {
-  console.log('onpress is: ', props.onPress);
-  return (
-    <TouchableOpacity onPress={() => props.onPress}>
-      <View style={styles.containerStyle}>
-        <Text style={styles.titleStyle}>
-          {props.title}
-        </Text>
-        <Text style={styles.explanationTextStyle}>
-          {props.explanation}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
-};
+class SettingCard extends Component {
+  render() {
+    return (
+      <TouchableOpacity onPress={this.props.onPress}>
+        <View style={styles.containerStyle}>
+          <Text style={styles.titleStyle}>
+            {this.props.title}
+          </Text>
+          <Text style={styles.explanationTextStyle}>
+            {this.props.explanation}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+}
 
 const styles = {
   containerStyle: {
