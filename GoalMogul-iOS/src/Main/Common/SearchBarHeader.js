@@ -25,6 +25,9 @@ import { back, openProfile, openSetting } from '../../actions';
 class SearchBarHeader extends Component {
 
   handleBackOnClick() {
+    if (this.props.onBackPress) {
+      this.props.onBackPress();
+    }
     this.props.back();
   }
 
@@ -59,20 +62,20 @@ class SearchBarHeader extends Component {
   }
 
   renderSearchBarRightIcon() {
-    if (this.props.setting) {
+    if (this.props.setting && this.props.haveSetting) {
       return (
         <TouchableWithoutFeedback onPress={this.handleSettingOnClick.bind(this)}>
           <Image style={styles.headerRightImage} source={Setting} />
         </TouchableWithoutFeedback>
       );
     }
-    if (this.props.rightIcon === 'empty') {
+    if (this.props.rightIcon === 'menu') {
       return (
-        <View style={styles.headerRightImage} />
+        <Image style={styles.headerRightImage} source={IconMenu} />
       );
     }
     return (
-      <Image style={styles.headerRightImage} source={IconMenu} />
+      <View style={styles.headerRightImage} />
     );
   }
 
@@ -148,9 +151,11 @@ const styles = {
 
 const mapStateToProps = state => {
   const { userId } = state.user;
+  const haveSetting = state.profile.userId.toString() === state.user.userId.toString();
 
   return {
-    userId
+    userId,
+    haveSetting
   };
 };
 

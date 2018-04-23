@@ -4,7 +4,8 @@ import {
   PROFILE_IMAGE_UPLOAD_SUCCESS,
   PROFILE_SUBMIT_UPDATE,
   PROFILE_UPDATE_SUCCESS,
-  PROFILE_UPDATE_FAIL
+  PROFILE_UPDATE_FAIL,
+  SETTING_EMAIL_UPDATE_SUCCESS
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -14,7 +15,7 @@ const INITIAL_STATE = {
       image: undefined
     },
     email: {
-      
+
     }
   }, // User model for profile
   uploading: false

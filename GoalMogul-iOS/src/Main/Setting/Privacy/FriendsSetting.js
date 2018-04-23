@@ -10,7 +10,10 @@ import SearchBarHeader from '../../Common/SearchBarHeader';
 import Styles from '../Styles';
 
 /* Actions */
-import { onResendEmailPress } from '../../../actions';
+import {
+  onFriendsSettingSelection,
+  updateFriendsSetting
+} from '../../../actions';
 
 /*
   TODO: export this const file
@@ -36,11 +39,27 @@ const friendsSettingList = [
 
 class FriendsSetting extends Component {
 
+  handleOnSelectedPress(id) {
+    this.props.onFriendsSettingSelection(id);
+  }
+
+  renderTick(info) {
+    if (info.title === this.props.privacy.friends) {
+      return (
+        <View style={{ height: 15, width: 15 }} >
+          <Icon
+            type='entypo'
+            name='chevron-thin-left'
+          />
+        </View>
+      );
+    }
+  }
 
   renderPrivacySettingDetail() {
     return friendsSettingList.map((info) => {
       return (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={this.handleOnSelectedPress.bind(this, info.title)}>
           <View style={styles.sectionContainerStyle}>
             <View style={{ flex: 1 }}>
               <Text style={styles.titleTextStyle}>
@@ -50,12 +69,7 @@ class FriendsSetting extends Component {
                 {info.explanation}
               </Text>
             </View>
-            <View style={{ height: 15, width: 15 }} >
-              <Icon
-                type='entypo'
-                name='chevron-thin-left'
-              />
-            </View>
+            {this.renderTick(info)}
           </View>
         </TouchableOpacity>
       );
@@ -65,7 +79,12 @@ class FriendsSetting extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <SearchBarHeader backButton rightIcon='empty' title="Friends" />
+        <SearchBarHeader
+          backButton
+          rightIcon='empty'
+          title="Friends"
+          onBackPress={() => this.props.updateFriendsSetting()}
+        />
         <View style={Styles.titleSectionStyle}>
           <Text style={Styles.titleTextStyle}>
             Who can see your friends
@@ -80,10 +99,10 @@ class FriendsSetting extends Component {
 }
 
 const mapStateToProps = state => {
-  const { user } = state.profile;
+  const { privacy } = state.setting;
 
   return {
-    user
+    privacy
   };
 };
 
@@ -103,4 +122,8 @@ const styles = {
   }
 };
 
-export default connect(mapStateToProps, { onResendEmailPress })(FriendsSetting);
+export default connect(
+  mapStateToProps, {
+    onFriendsSettingSelection,
+    updateFriendsSetting
+  })(FriendsSetting);

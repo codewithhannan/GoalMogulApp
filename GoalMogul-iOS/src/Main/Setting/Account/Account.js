@@ -6,7 +6,7 @@ import {
 import { Actions } from 'react-native-router-flux';
 
 /* Components */
-import SettingCard from './SettingCard';
+import SettingCard from '../SettingCard';
 
 class Account extends Component {
   render() {
@@ -21,7 +21,7 @@ class Account extends Component {
           <SettingCard
             title="Phone numbers"
             explanation="Manage your phone numbers"
-            onPress={() => console.log('Open phone number')}
+            onPress={() => Actions.phone()}
           />
         </ScrollView>
       </View>

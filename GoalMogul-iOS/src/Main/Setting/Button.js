@@ -1,54 +1,59 @@
-import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import React from 'react';
+import { View, Text } from 'react-native';
+import { Icon } from 'react-native-elements';
 
-import { connect } from 'react-redux';
-import { onTabPress } from '../../actions';
+const Button = (props) => {
+  const containerStyle = { ...styles.containerStyle };
+  const textStyle = { ...styles.textStyle };
 
-class Button extends Component {
-  onPress() {
-    this.props.onTabPress(this.props.tabId);
-  }
+  if (props.arrow) {
+    containerStyle.backgroundColor = '#ffffff';
+    textStyle.color = '#34c0dd';
+    textStyle.fontWeight = '600';
 
-  render() {
-    const buttonContainerStyle = { ...styles.buttonContainerStyle };
-    const selected = this.props.selectedTab === this.props.tabId;
-    if (selected) {
-      buttonContainerStyle.borderBottomWidth = 2;
-      buttonContainerStyle.borderBottomColor = '#45C9F6';
-    }
     return (
-      <TouchableWithoutFeedback onPress={this.onPress.bind(this)}>
-        <View style={buttonContainerStyle}>
-          <Text style={styles.textStyle}>
-            {this.props.title}
-          </Text>
-        </View>
-      </TouchableWithoutFeedback>
+      <View style={containerStyle}>
+        <Text style={textStyle}>{props.text}</Text>
+        <Icon
+          name='ios-arrow-round-forward'
+          type='ionicon'
+          color='#34c0dd'
+          iconStyle={styles.iconStyle}
+        />
+      </View>
     );
   }
-}
+  return (
+    <View style={styles.containerStyle}>
+      <Text style={styles.textStyle}>{props.text}</Text>
+    </View>
+  );
+};
 
 const styles = {
-  textStyle: {
-    paddingTop: 10,
-    paddingBottom: 10,
-    fontSize: 15,
-  },
-  buttonContainerStyle: {
-    marginLeft: 5,
-    marginRight: 5,
-    alignItems: 'center',
+  containerStyle: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginTop: 16,
+    marginBottom: 8,
+    marginLeft: 18,
+    marginRight: 18,
+    height: 41,
     justifyContent: 'center',
-    flex: 1
+    backgroundColor: '#34c0dd'
+  },
+  textStyle: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#ffffff',
+    alignSelf: 'center'
+  },
+  iconStyle: {
+    alignSelf: 'center',
+    fontSize: 26,
+    marginLeft: 5,
+    marginTop: 3
   }
 };
 
-const mapStateToProps = state => {
-  const { selectedTab } = state.setting;
-
-  return {
-    selectedTab
-  };
-};
-
-export default connect(mapStateToProps, { onTabPress })(Button);
+export default Button;

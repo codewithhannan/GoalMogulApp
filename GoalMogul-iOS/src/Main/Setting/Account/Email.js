@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, Image, TouchableWithoutFeedback } from 'react-native';
 import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 
 /* Components */
-import SearchBarHeader from '../Common/SearchBarHeader';
+import SearchBarHeader from '../../Common/SearchBarHeader';
+
+/* Assets */
+import editImage from '../../../asset/utils/edit.png';
 
 /* Styles */
-import Styles from './Styles';
+import Styles from '../Styles';
 
 /* Actions */
-import { onResendEmailPress } from '../../actions';
+import { onResendEmailPress } from '../../../actions';
 
 class Email extends Component {
 
@@ -18,6 +22,11 @@ class Email extends Component {
     this.props.onResendEmailPress();
   }
 
+  handleOnEditEmailPress() {
+    Actions.editEmailForm();
+  }
+
+  // TODO: uncomment this line
   renderEmailDetailText() {
     // if (this.props.email.isVerified) {
     //   return (
@@ -40,6 +49,21 @@ class Email extends Component {
     );
   }
 
+  renderEmail() {
+    if (this.props.email) {
+      return (
+        <Text style={Styles.detailTextStyle}>
+          {this.props.email}
+        </Text>
+      );
+    }
+    return (
+      <Text style={Styles.detailTextStyle}>
+        andyzeng96@gmail.com
+      </Text>
+    );
+  }
+
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
@@ -50,7 +74,13 @@ class Email extends Component {
           </Text>
         </View>
         <View style={Styles.detailCardSection}>
-          <Text style={Styles.detailTextStyle}>andyzeng96@gmail.com</Text>
+          <TouchableWithoutFeedback onPress={this.handleOnEditEmailPress.bind(this)}>
+            <View style={Styles.iconContainerStyle}>
+              <Image style={Styles.editIconStyle} source={editImage} />
+            </View>
+          </TouchableWithoutFeedback>
+
+          {this.renderEmail()}
           {this.renderEmailDetailText()}
         </View>
       </View>
@@ -59,8 +89,7 @@ class Email extends Component {
 }
 
 const mapStateToProps = state => {
-  const { user } = state.profile;
-  const { email } = user;
+  const { email } = state.setting;
 
   return {
     email

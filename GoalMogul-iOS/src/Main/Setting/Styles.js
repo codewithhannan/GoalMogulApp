@@ -34,5 +34,18 @@ export default StyleSheet.create({
     color: '#45C9F6',
     paddingBottom: 20,
     fontWeight: '700'
+  },
+  iconContainerStyle: {
+    width: 30,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    right: 0,
+    top: 10
+  },
+  editIconStyle: {
+    width: 20,
+    height: 20,
   }
 });

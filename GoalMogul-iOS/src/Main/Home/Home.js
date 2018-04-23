@@ -85,7 +85,7 @@ class Home extends Component {
 
     return (
       <View style={styles.homeContainerStyle}>
-        <SearchBarHeader />
+        <SearchBarHeader rightIcon='menu' />
 
         <TabButtonGroup>
           <TabButton text='GOALS' onSelect />
