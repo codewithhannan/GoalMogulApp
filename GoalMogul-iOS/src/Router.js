@@ -8,6 +8,7 @@ import {
 } from 'react-native-router-flux';
 
 /* Auth */
+import SplashScreen from './SplashScreen';
 import Login from './Login';
 
 /* Registration */
@@ -42,7 +43,7 @@ const RouterComponent = () => {
       <Modal>
         <Scene key="root" hideNavBar>
           <Scene key="auth" initial hideNavBar>
-            <Scene key="login" component={FriendsSetting} initial />
+            <Scene key="login" component={SplashScreen} initial />
           </Scene>
 
           {/* Registration screen stack*/}

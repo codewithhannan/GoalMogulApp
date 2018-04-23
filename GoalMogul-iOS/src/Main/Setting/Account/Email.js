@@ -50,7 +50,7 @@ class Email extends Component {
   }
 
   renderEmail() {
-    if (this.props.email) {
+    if (this.props.email.address) {
       return (
         <Text style={Styles.detailTextStyle}>
           {this.props.email.address}

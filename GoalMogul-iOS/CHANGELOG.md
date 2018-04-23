@@ -10,6 +10,12 @@ if there is corresponding issue, state it
 
 * Version 0.0.1
 
+## 23 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
+* See [Issue #33](https://github.com/somechild/goalmogul-ios/issues/33)
+* Create Splash screen
+* Implement splash screen actions
+* Update friends privacy setting tick icon
+
 ## 22 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
 * See [Issue #30](https://github.com/somechild/goalmogul-ios/issues/30)
 * See [Issue #31](https://github.com/somechild/goalmogul-ios/issues/31)
