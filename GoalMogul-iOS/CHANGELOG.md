@@ -11,6 +11,17 @@ if there is corresponding issue, state it
 * Version 0.0.1
 
 ## 22 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
+* See [Issue #30](https://github.com/somechild/goalmogul-ios/issues/30)
+* See [Issue #31](https://github.com/somechild/goalmogul-ios/issues/31)
+* Create setting page UI + hook up with data
+* Create email verification page UI
+* Create privacy friends setting page UI 
+
+## 22 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
+* See [Issue #30](https://github.com/somechild/goalmogul-ios/issues/30)
+* Create setting page
+
+## 22 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
 * See [Issue #34](https://github.com/somechild/goalmogul-ios/issues/34)
 * reorder inputs
 * length limitation
