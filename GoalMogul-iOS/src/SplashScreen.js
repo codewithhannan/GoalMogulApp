@@ -8,23 +8,40 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
-import { LinearGradient } from 'expo';
+import { LinearGradient, Font } from 'expo';
 
 /* Asset */
 import HeaderLogo from './asset/header/header-logo-white.png';
-/* TODO: delete */
-import ghost from './asset/utils/default_profile.png';
+import Helpfulness from './asset/utils/help.png';
 
 const width = Dimensions.get('window').width
 
 class SplashScreen extends Component {
 
+  state = {
+    fontLoaded: false,
+  };
+
+  async componentDidMount() {
+    await Font.loadAsync({
+      'gotham-pro': require('../assets/fonts/GothamPro.ttf'),
+      'gotham-pro-bold': require('../assets/fonts/GothamPro-Bold.ttf')
+    });
+    this.setState({ fontLoaded: true });
+  }
+
   renderLogo() {
     return (
       <View style={styles.headerContainerStyle}>
         <Image style={styles.logoImageStyle} source={HeaderLogo} />
-        <Text style={styles.headerBoldTextStyle}>Goal</Text>
-        <Text style={styles.headerTextStyle}>Mogul</Text>
+        {
+          this.state.fontLoaded ?
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={styles.headerBoldTextStyle}>Goal</Text>
+              <Text style={styles.headerTextStyle}>Mogul</Text>
+            </View>
+          : null
+        }
       </View>
     );
   }
@@ -39,14 +56,24 @@ class SplashScreen extends Component {
           {this.renderLogo()}
 
           <View style={styles.bodyContainerStyle}>
-            <Image style={styles.imageStyle} source={ghost} />
-            <Text style={styles.titleTextStyle}>Achieve more,</Text>
-            <Text style={styles.titleTextStyle}>together.</Text>
+            <Image style={styles.imageStyle} source={Helpfulness} />
+            {this.state.fontLoaded ?
+              <View>
+                <Text style={styles.titleTextStyle}>Achieve more,</Text>
+                <Text style={styles.titleTextStyle}>together.</Text>
+              </View>
+              : null
+            }
           </View>
 
           <View style={styles.highlightContainerStyle}>
             <TouchableOpacity style={styles.reactionContainerStyle}>
-              <Text style={styles.buttonTextStyle}>Get Started</Text>
+              {
+                this.state.fontLoaded ?
+                  <Text style={styles.buttonTextStyle}>Get Started</Text>
+                : null
+              }
+
               <Icon
                 name='ios-arrow-round-forward'
                 type='ionicon'
@@ -57,13 +84,20 @@ class SplashScreen extends Component {
           </View>
 
           <View style={styles.loginHighlightContainerStyle}>
-            <Text style={styles.haveAccountTextStyle}>
-              Have an account?
-            </Text>
+            {
+              this.state.fontLoaded ?
+                <Text style={styles.haveAccountTextStyle}>
+                  Have an account?
+                </Text>
+              : null
+            }
+
             <TouchableOpacity>
-              <Text style={styles.loginTextStyle}>
-                Log In
-              </Text>
+              {
+                this.state.fontLoaded ?
+                  <Text style={styles.loginTextStyle}>Log In</Text>
+                : null
+              }
             </TouchableOpacity>
           </View>
         </LinearGradient>
@@ -87,13 +121,13 @@ const styles = {
   headerTextStyle: {
     fontSize: 36,
     color: '#ffffff',
-    letterSpacing: 1
+    fontFamily: 'gotham-pro'
   },
   headerBoldTextStyle: {
     fontSize: 36,
     color: '#ffffff',
     fontWeight: '800',
-    letterSpacing: 1
+    fontFamily: 'gotham-pro-bold'
   },
   logoImageStyle: {
     height: 45,
@@ -109,22 +143,25 @@ const styles = {
   },
   imageStyle: {
     height: 230,
-    width: 230
+    width: 230,
+    tintColor: '#217a9b'
   },
   titleTextStyle: {
     fontSize: 22,
     color: '#217a9b',
     alignSelf: 'center',
     fontWeight: '700',
-    letterSpacing: 0.5
+    letterSpacing: 0.5,
+    fontFamily: 'gotham-pro'
   },
 
   // Highlight style
   buttonTextStyle: {
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: '800',
     color: '#ffffff',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    fontFamily: 'gotham-pro-bold'
   },
   highlightContainerStyle: {
     marginTop: 50,
@@ -159,10 +196,13 @@ const styles = {
     color: '#ffffff',
     fontWeight: '800',
     fontSize: 18,
+    fontFamily: 'gotham-pro-bold'
   },
   haveAccountTextStyle: {
     fontSize: 15,
-    color: '#0d6992'
+    color: '#0d6992',
+    marginRight: 3,
+    fontFamily: 'gotham-pro'
   },
   iconStyle: {
     alignSelf: 'center',
@@ -172,4 +212,4 @@ const styles = {
   }
 };
 
-export default SplashScreen;
+export default connect(null, null)(SplashScreen);
