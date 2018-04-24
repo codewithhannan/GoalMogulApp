@@ -10,6 +10,9 @@ if there is corresponding issue, state it
 
 * Version 0.0.1
 
+## 24 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
+* Update splash screen fonts and image
+
 ## 23 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
 * See [Issue #33](https://github.com/somechild/goalmogul-ios/issues/33)
 * Create Splash screen
