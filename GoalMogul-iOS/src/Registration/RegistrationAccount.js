@@ -1,5 +1,3 @@
-/* This file is deprecated. It's replaced by RegistrationAccount.js */
-
 import React, { Component } from 'react';
 import {
   KeyboardAvoidingView,
@@ -10,18 +8,45 @@ import {
   Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
+import { Field, reduxForm, SubmissionError } from 'redux-form';
 
 /* Components */
 import Header from './Common/Header';
 import Button from './Common/Button';
 import Divider from './Common/Divider';
 import InputField from './Common/InputField';
+import Input from './Common/Input';
 
 /* Styles */
 import Styles from './Styles';
 
 /* Actions */
 import { registrationLogin, registrationNextAddProfile, handleOnFormChange } from '../actions';
+
+/* Refactor validation as a separate module */
+const validateEmail = value =>
+  value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
+    ? 'Invalid email address'
+    : undefined;
+
+const minLength = min => value =>
+  value && value.length < min ? `Must be ${min} characters or more` : undefined;
+
+const minLength8 = minLength(8);
+
+const validate = values => {
+  const errors = {};
+  if (!values.name) {
+    errors.name = 'Required';
+  }
+  if (!values.email) {
+    errors.email = 'Required';
+  }
+  if (!values.password) {
+    errors.password = 'Required';
+  }
+  return errors;
+};
 
 class Account extends Component {
 
@@ -34,34 +59,16 @@ class Account extends Component {
     this.props.registrationLogin();
   }
 
-  handleNextPressed() {
-    console.log('next pressed');
-    const name = this.props.name;
-    const email = this.props.email;
-    const password = this.props.password;
+  handleNextPressed = values => {
+    console.log('next pressed: with values', values);
+    const errors = validate(values);
+    if (errors) {
+      throw new SubmissionError(errors);
+    }
+    const { name, email, password } = values;
+
     Keyboard.dismiss();
     this.props.registrationNextAddProfile({ name, email, password });
-  }
-
-  handleOnNameChange(name) {
-    this.props.handleOnFormChange(name, 'name');
-  }
-
-  handleOnEmailChange(email) {
-    this.props.handleOnFormChange(email, 'email');
-  }
-
-  handleOnPasswordChange(password) {
-    this.props.handleOnFormChange(password, 'password');
-  }
-
-  renderError() {
-    let error = this.props.error.account ? this.props.error.account : "";
-    return (
-      <View style={{height: 15}}>
-        <Text style={Styles.errorStyle}>{error}</Text>
-      </View>
-    );
   }
 
   renderSplitter() {
@@ -90,13 +97,14 @@ class Account extends Component {
   //   keyboardVerticalOffset={-150}
   // >
   render() {
+    const { handleSubmit } = this.props;
     return (
       <KeyboardAvoidingView
         behavior='padding'
         style={{ flex: 1 }}
       >
         <ScrollView
-          contentContainerStyle={{flexGrow: 1}}
+          contentContainerStyle={{ flexGrow: 1 }}
           keyboardDismissMode='interactive'
           keyboardShouldPersistTaps='never'
           overScrollMode='never'
@@ -108,28 +116,26 @@ class Account extends Component {
               <View style={Styles.bodyContainerStyle}>
 
                 <Text style={styles.titleTextStyle}>Get Started!</Text>
-                {this.renderError()}
-                <InputField
-                  placeholder='Full Name'
-                  value={this.props.name}
-                  onChange={this.handleOnNameChange.bind(this)}
-                  error={this.props.error.name}
+                <Field
+                  name='name'
+                  label='Full name'
+                  component={Input}
                 />
-                <InputField
-                  placeholder='Email'
-                  value={this.props.email}
-                  onChange={this.handleOnEmailChange.bind(this)}
-                  error={this.props.error.email}
+                <Field
+                  name='email'
+                  label='Email'
+                  component={Input}
+                  validate={validateEmail}
                 />
-                <InputField
-                  placeholder='Password'
-                  value={this.props.password}
-                  secureTextEntry
-                  onChange={this.handleOnPasswordChange.bind(this)}
-                  error={this.props.error.password}
+                <Field
+                  name='password'
+                  label='Password'
+                  component={Input}
+                  secure
+                  validate={minLength8}
                 />
 
-                <TouchableWithoutFeedback onPress={this.handleNextPressed.bind(this)}>
+                <TouchableWithoutFeedback onPress={handleSubmit(this.handleNextPressed)}>
                   <View>
                     <Button text='Next' />
                   </View>
@@ -153,15 +159,13 @@ const styles = {
     color: '#646464',
     alignSelf: 'center',
     marginTop: 25,
-    marginBottom: 10
   },
   splitterStyle: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 32,
-    marginBottom: 10
+    marginTop: 22,
   },
   splitterTextStyle: {
     fontSize: 15,
@@ -183,6 +187,10 @@ const styles = {
   }
 };
 
+Account = reduxForm({
+  form: 'accountRegistrationForm'
+})(Account);
+
 const mapStateToProps = state => {
   const { name, password, email, error, loading } = state.registration;
 
@@ -195,7 +203,11 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, {
-  registrationLogin,
-  registrationNextAddProfile,
-  handleOnFormChange })(Account);
+export default connect(
+  mapStateToProps,
+  {
+    registrationLogin,
+    registrationNextAddProfile,
+    handleOnFormChange
+  }
+)(Account);

@@ -12,7 +12,8 @@ import SplashScreen from './SplashScreen';
 import Login from './Login';
 
 /* Registration */
-import RegistrationAccount from './Registration/Account';
+// import RegistrationAccount from './Registration/Account';
+import RegistrationAccount from './Registration/RegistrationAccount';
 import IntroForm from './Registration/IntroForm';
 import AddProfilePic from './Registration/AddProfilePic';
 import Contacts from './Registration/Contacts';

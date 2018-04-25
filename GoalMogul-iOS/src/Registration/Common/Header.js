@@ -138,7 +138,7 @@ class Header extends Component {
 const styles = {
   containerStyle: {
     display: 'flex',
-    backgroundColor: '#34c0dd',
+    backgroundColor: '#45C9F6',
     height: 207,
     paddingTop: 14,
     justifyContent: 'center',
