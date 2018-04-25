@@ -9,7 +9,8 @@ import {
 
 /* Auth */
 import SplashScreen from './SplashScreen';
-import Login from './Login';
+// import Login from './Login';
+import LoginPage from './LoginPage';
 
 /* Registration */
 // import RegistrationAccount from './Registration/Account';
@@ -45,7 +46,7 @@ const RouterComponent = () => {
         <Scene key="root" hideNavBar>
           <Scene key="auth" initial hideNavBar>
             <Scene key="splash" component={SplashScreen} initial />
-            <Scene key="login" component={Login} />
+            <Scene key="login" component={LoginPage} />
           </Scene>
 
           {/* Registration screen stack*/}

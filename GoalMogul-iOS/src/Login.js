@@ -1,3 +1,6 @@
+/**
+NOTE: This page is deprecated and replaced by LoginPage.js
+*/
 import React, { Component } from 'react';
 import {
   View,

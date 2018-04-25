@@ -1,4 +1,5 @@
 import { Actions } from 'react-native-router-flux';
+import { SubmissionError } from 'redux-form';
 
 import {
   USERNAME_CHANGED,
@@ -26,7 +27,7 @@ export const passwordChanged = (password) => {
 export const loginUser = ({ username, password }) => {
   // Call the endpoint to use username and password to signin
   // Obtain the credential
-  return (dispatch) => {
+  return async (dispatch) => {
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/pub/user/authenticate/';
     const headers = {
       method: 'POST',
@@ -42,7 +43,8 @@ export const loginUser = ({ username, password }) => {
     dispatch({
       type: LOGIN_USER_LOADING
     });
-    fetch(url, headers)
+
+    const message = await fetch(url, headers)
       .then((res) => res.json())
       .then((res) => {
         console.log('login with message: ', res);
@@ -59,15 +61,18 @@ export const loginUser = ({ username, password }) => {
           Actions.mainTabs();
         } else {
           // User login fail
-          dispatch({
-            type: LOGIN_USER_FAIL,
-            payload: res.message
-          });
+          return res.message;
         }
       })
       .catch((err) => {
         console.log('error in login, ', err);
       });
+
+    if (message) {
+      throw new SubmissionError({
+        _error: message
+      });
+    }
   };
 };
 

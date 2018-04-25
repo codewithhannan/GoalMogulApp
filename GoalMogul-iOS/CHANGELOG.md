@@ -12,6 +12,7 @@ if there is corresponding issue, state it
 
 ## 24 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
 * Update splash screen fonts and image
+* Refactor login page and account creation page
 
 ## 23 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
 * See [Issue #33](https://github.com/somechild/goalmogul-ios/issues/33)
