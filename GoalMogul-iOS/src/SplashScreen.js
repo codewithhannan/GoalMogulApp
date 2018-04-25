@@ -9,6 +9,7 @@ import {
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import { LinearGradient, Font } from 'expo';
+import { Actions } from 'react-native-router-flux';
 
 /* Asset */
 import HeaderLogo from './asset/header/header-logo-white.png';
@@ -28,6 +29,14 @@ class SplashScreen extends Component {
       'gotham-pro-bold': require('../assets/fonts/GothamPro-Bold.ttf')
     });
     this.setState({ fontLoaded: true });
+  }
+
+  handleGetStartedOnPress() {
+    this.props.registration();
+  }
+
+  handleLoginPress() {
+    this.props.login();
   }
 
   renderLogo() {
@@ -56,9 +65,9 @@ class SplashScreen extends Component {
           {this.renderLogo()}
 
           <View style={styles.bodyContainerStyle}>
-            <Image style={styles.imageStyle} source={Helpfulness} />
+            <Image style={styles.imageStyle} source={Helpfulness} resizeMode='contain' />
             {this.state.fontLoaded ?
-              <View>
+              <View style={{ marginTop: 30 }}>
                 <Text style={styles.titleTextStyle}>Achieve more,</Text>
                 <Text style={styles.titleTextStyle}>together.</Text>
               </View>
@@ -67,7 +76,10 @@ class SplashScreen extends Component {
           </View>
 
           <View style={styles.highlightContainerStyle}>
-            <TouchableOpacity style={styles.reactionContainerStyle}>
+            <TouchableOpacity
+              style={styles.reactionContainerStyle}
+              onPress={this.handleGetStartedOnPress.bind(this)}
+            >
               {
                 this.state.fontLoaded ?
                   <Text style={styles.buttonTextStyle}>Get Started</Text>
@@ -92,7 +104,7 @@ class SplashScreen extends Component {
               : null
             }
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={this.handleLoginPress.bind(this)}>
               {
                 this.state.fontLoaded ?
                   <Text style={styles.loginTextStyle}>Log In</Text>
@@ -137,18 +149,18 @@ const styles = {
 
   // Body style
   bodyContainerStyle: {
-    marginTop: 30,
+    marginTop: 40,
     justifyContent: 'center',
     alignItems: 'center'
   },
   imageStyle: {
-    height: 230,
-    width: 230,
-    tintColor: '#217a9b'
+    height: 200,
+    width: 200,
+    tintColor: '#045C7A'
   },
   titleTextStyle: {
     fontSize: 22,
-    color: '#217a9b',
+    color: '#045C7A',
     alignSelf: 'center',
     fontWeight: '700',
     letterSpacing: 0.5,
@@ -212,4 +224,11 @@ const styles = {
   }
 };
 
-export default connect(null, null)(SplashScreen);
+const mapDispatchToProps = () => {
+  return {
+    registration: () => Actions.registration(),
+    login: () => Actions.login()
+  };
+};
+
+export default connect(null, mapDispatchToProps)(SplashScreen);
