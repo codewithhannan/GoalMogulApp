@@ -62,7 +62,7 @@ class Account extends Component {
   handleNextPressed = values => {
     console.log('next pressed: with values', values);
     const errors = validate(values);
-    if (errors) {
+    if (!(Object.keys(errors).length === 0 && errors.constructor === Object)) {
       throw new SubmissionError(errors);
     }
     const { name, email, password } = values;

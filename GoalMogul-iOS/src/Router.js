@@ -36,6 +36,7 @@ import Email from './Main/Setting/Account/Email';
 import EditEmailForm from './Main/Setting/Account/EditEmailForm';
 import Phone from './Main/Setting/Account/Phone';
 import AddPhoneNumberForm from './Main/Setting/Account/AddPhoneNumberForm';
+import EditPasswordForm from './Main/Setting/Account/EditPasswordForm';
 import Privacy from './Main/Setting/Privacy/Privacy';
 import FriendsSetting from './Main/Setting/Privacy/FriendsSetting';
 
@@ -45,7 +46,7 @@ const RouterComponent = () => {
       <Modal>
         <Scene key="root" hideNavBar>
           <Scene key="auth" initial hideNavBar>
-            <Scene key="splash" component={SplashScreen} initial />
+            <Scene key="splash" component={EditPasswordForm} initial />
             <Scene key="login" component={LoginPage} />
           </Scene>
 

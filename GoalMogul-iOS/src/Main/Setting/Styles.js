@@ -47,5 +47,22 @@ export default StyleSheet.create({
   editIconStyle: {
     width: 20,
     height: 20,
+  },
+  buttonContainerStyle: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginTop: 10,
+    marginBottom: 8,
+    marginLeft: 18,
+    marginRight: 18,
+    height: 41,
+    justifyContent: 'center',
+    backgroundColor: '#45C9F6'
+  },
+  buttonTextStyle: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#ffffff',
+    alignSelf: 'center'
   }
 });

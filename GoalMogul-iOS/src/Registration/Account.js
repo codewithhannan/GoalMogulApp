@@ -1,4 +1,6 @@
-/* This file is deprecated. It's replaced by RegistrationAccount.js */
+/*
+NOTE: This file is deprecated. It's replaced by RegistrationAccount.js 
+*/
 
 import React, { Component } from 'react';
 import {
