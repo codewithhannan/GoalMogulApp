@@ -1,5 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import { SubmissionError } from 'redux-form';
+import Expo, { Linking, WebBrowser } from 'expo';
 
 import {
   SETTING_OPEN_SETTING,
@@ -126,6 +127,42 @@ export const onUpdatePhoneNumberSubmit = values => {
         throw new SubmissionError({
           _error: err
         });
+      });
+  };
+};
+
+// Verify phone number
+export const onVerifyPhoneNumber = () => {
+  return (dispatch, getState) => {
+    const { token } = getState().user;
+    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account/verification';
+    const headers = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        token,
+        for: 'phone'
+      })
+    };
+    fetch(url, headers)
+      .then((res) => res.json())
+      .then(async (res) => {
+        console.log('verify phone number successfully: ', res);
+        // dispatch({
+        //   type: SETTING_PHONE_UPDATE_SUCCESS,
+        //   payload: values.phone
+        // });
+        // Actions.pop();
+        let result = await WebBrowser.openBrowserAsync(
+          `https://goalmogul-web.herokuapp.com/phone-verification/`
+        );
+        console.log('result is: ', result);
+      })
+      .catch((err) => {
+        console.log('error updating phone number: ', err);
       });
   };
 };

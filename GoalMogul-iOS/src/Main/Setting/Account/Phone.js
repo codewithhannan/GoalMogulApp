@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, TouchableWithoutFeedback, Image } from 'react-native';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Image,
+  // Linking
+} from 'react-native';
+import Expo, { Linking, WebBrowser } from 'expo';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 
@@ -11,12 +19,24 @@ import Button from '../Button';
 import Styles from '../Styles';
 
 /* Actions */
-import { onResendEmailPress } from '../../../actions';
+import { onVerifyPhoneNumber } from '../../../actions';
 
 /* Assets */
 import editImage from '../../../asset/utils/edit.png';
 
 class Phone extends Component {
+
+  // componentDidMount() {
+  //   Linking.addEventListener('url', this.handleOpenURL);
+  // }
+  //
+  // componentWillUnmount() { // C
+  //   Linking.removeEventListener('url', this.handleOpenURL);
+  // }
+  //
+  // handleOpenURL = (event) => { // D
+  //   console.log('event is: ', event);
+  // }
 
   handleOnAddPhoneNumberPress() {
     console.log('user tries to verify');
@@ -30,54 +50,94 @@ class Phone extends Component {
 
   handleOnVerifyPress() {
     console.log('user trying to verify phone number');
+    this.props.onVerifyPhoneNumber();
   }
 
+  handleRedirect = event => {
+    WebBrowser.dismissBrowser();
+
+    let data = Linking.parse(event.url);
+    console.log('data is: ', data);
+    // this.setState({ redirectData: data });
+  };
+
+  openWebBrowserAsync = async () => {
+    // Linking.openURL('https://goalmogul-web.herokuapp.com/phone-verification?returnURL=goalmogul');
+    this.addLinkingListener();
+    let result = await WebBrowser.openBrowserAsync(
+      `https://goalmogul-web.herokuapp.com/phone-verification/`
+    );
+    this.removeLinkingListener();
+    // this.setState({ result });
+  };
+
+  addLinkingListener = () => {
+    Linking.addEventListener('url', this.handleRedirect);
+  };
+
+  removeLinkingListener = () => {
+    Linking.removeEventListener('url', this.handleRedirect);
+  };
+
+  /* Rendering */
   renderPhoneDetailText() {
-    if (!this.props.needAddPhone) {
-      if (this.props.phone.isVerified) {
-        return (
-          <View>
-            <Text style={Styles.statusTextStyle}>
-              Confirmed
-            </Text>
-          </View>
-        );
-      }
-      return (
-        <View>
-          <Text style={Styles.statusTextStyle}>
-            Unverified
-          </Text>
-          <TouchableOpacity onPress={this.handleOnVerifyPress.bind(this)}>
-            <Text style={Styles.actionTextStyle}>
-              Verify phone number
-            </Text>
-          </TouchableOpacity>
-        </View>
-      );
-    }
     return (
       <View>
         <Text style={Styles.statusTextStyle}>
-          Confirmed
+          Unverified
         </Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={this.handleOnVerifyPress.bind(this)}>
           <Text style={Styles.actionTextStyle}>
-            Make primary
+            Verify phone number
           </Text>
         </TouchableOpacity>
       </View>
     );
+    // if (!this.props.needAddPhone) {
+    //   if (this.props.phone.isVerified) {
+    //     return (
+    //       <View>
+    //         <Text style={Styles.statusTextStyle}>
+    //           Confirmed
+    //         </Text>
+    //       </View>
+    //     );
+    //   }
+    //   return (
+    //     <View>
+    //       <Text style={Styles.statusTextStyle}>
+    //         Unverified
+    //       </Text>
+    //       <TouchableOpacity onPress={this.handleOnVerifyPress.bind(this)}>
+    //         <Text style={Styles.actionTextStyle}>
+    //           Verify phone number
+    //         </Text>
+    //       </TouchableOpacity>
+    //     </View>
+    //   );
+    // }
+    // return (
+    //   <View>
+    //     <Text style={Styles.statusTextStyle}>
+    //       Confirmed
+    //     </Text>
+    //     <TouchableOpacity>
+    //       <Text style={Styles.actionTextStyle}>
+    //         Make primary
+    //       </Text>
+    //     </TouchableOpacity>
+    //   </View>
+    // );
   }
 
   renderBody() {
-    if (this.props.needAddPhone) {
-      return (
-        <TouchableOpacity onPress={this.handleOnAddPhoneNumberPress.bind(this)}>
-          <Button text="Add phone number" />
-        </TouchableOpacity>
-      );
-    }
+    // if (this.props.needAddPhone) {
+    //   return (
+    //     <TouchableOpacity onPress={this.handleOnAddPhoneNumberPress.bind(this)}>
+    //       <Button text="Add phone number" />
+    //     </TouchableOpacity>
+    //   );
+    // }
 
     return (
       <View style={Styles.detailCardSection}>
@@ -118,4 +178,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { onResendEmailPress })(Phone);
+export default connect(mapStateToProps, { onVerifyPhoneNumber })(Phone);
