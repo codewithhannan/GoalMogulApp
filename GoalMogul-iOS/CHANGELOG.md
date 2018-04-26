@@ -10,6 +10,10 @@ if there is corresponding issue, state it
 
 * Version 0.0.1
 
+## 26 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
+* Update image resizing size
+* Create password update UI and hook up with data
+
 ## 24 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
 * Update splash screen fonts and image
 * Refactor login page and account creation page
