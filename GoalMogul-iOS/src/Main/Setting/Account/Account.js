@@ -23,6 +23,11 @@ class Account extends Component {
             explanation="Manage your phone numbers"
             onPress={() => Actions.phone()}
           />
+          <SettingCard
+            title="Password"
+            explanation="Upate your passwords"
+            onPress={() => Actions.editPasswordForm()}
+          />
         </ScrollView>
       </View>
     );

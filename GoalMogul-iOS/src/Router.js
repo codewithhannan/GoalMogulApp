@@ -36,6 +36,7 @@ import Email from './Main/Setting/Account/Email';
 import EditEmailForm from './Main/Setting/Account/EditEmailForm';
 import Phone from './Main/Setting/Account/Phone';
 import AddPhoneNumberForm from './Main/Setting/Account/AddPhoneNumberForm';
+import EditPhoneNumberForm from './Main/Setting/Account/EditPhoneNumberForm';
 import EditPasswordForm from './Main/Setting/Account/EditPasswordForm';
 import Privacy from './Main/Setting/Privacy/Privacy';
 import FriendsSetting from './Main/Setting/Privacy/FriendsSetting';
@@ -46,7 +47,7 @@ const RouterComponent = () => {
       <Modal>
         <Scene key="root" hideNavBar>
           <Scene key="auth" initial hideNavBar>
-            <Scene key="splash" component={EditPasswordForm} initial />
+            <Scene key="splash" component={SplashScreen} initial />
             <Scene key="login" component={LoginPage} />
           </Scene>
 
@@ -100,8 +101,10 @@ const RouterComponent = () => {
                 <Scene key="setting" component={Setting} />
                 <Scene key="email" component={Email} />
                 <Scene key="editEmailForm" component={EditEmailForm} />
+                <Scene key="editPasswordForm" component={EditPasswordForm} />
                 <Scene key="phone" component={Phone} />
                 <Scene key="addPhoneNumberForm" component={AddPhoneNumberForm} />
+                <Scene key="editPhoneNumberForm" component={EditPhoneNumberForm} />
                 <Scene key="privacy" component={Privacy} />
                 <Scene key="friendsSetting" component={FriendsSetting} />
               </Stack>

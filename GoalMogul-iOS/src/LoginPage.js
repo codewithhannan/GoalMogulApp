@@ -5,7 +5,8 @@ import {
   ScrollView,
   Text,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
@@ -120,11 +121,11 @@ class LoginPage extends Component {
                   component={Input}
                   secure
                 />
-                <TouchableWithoutFeedback onPress={handleSubmit(this.handleLoginPressed)}>
+                <TouchableOpacity onPress={handleSubmit(this.handleLoginPressed)}>
                   <View>
                     <Button text='Log In' />
                   </View>
-                </TouchableWithoutFeedback>
+                </TouchableOpacity>
                 {this.renderSplitter()}
                 {this.renderCreateAccount()}
               </View>

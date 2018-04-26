@@ -17,7 +17,7 @@ import Input from '../../Common/Text/Input';
 import Styles from '../Styles';
 
 /* Actions */
-import { onResendEmailPress } from '../../../actions';
+import { handleUpdatePassword } from '../../../actions';
 
 /* TODO: abstract this validation fuction */
 const minLength = min => value =>
@@ -44,10 +44,12 @@ class EidtPasswordForm extends Component {
   handleOnSendPress = values => {
     const errors = validate(values);
     if (!(Object.keys(errors).length === 0 && errors.constructor === Object)) {
+      console.log('submission error: ', errors);
       throw new SubmissionError(errors);
     }
     console.log('user tries to Reset password with values: ', values);
     // this.props.onResendEmailPress();
+    return this.props.handleUpdatePassword(values);
   }
 
   renderPasswordForm() {
@@ -62,7 +64,7 @@ class EidtPasswordForm extends Component {
           secure
         />
         <Field
-          name='confirmPassowrd'
+          name='confirmPassword'
           label='Confirm new password'
           component={Input}
           secure
@@ -125,7 +127,7 @@ class EidtPasswordForm extends Component {
                 Update password
               </Text>
             </View>
-            {this.renderError()}
+            {this.renderError(error)}
             {this.renderPasswordForm()}
             {this.renderButton(handleSubmit)}
           </ScrollView>
@@ -159,5 +161,7 @@ EidtPasswordForm = reduxForm({
 
 export default connect(
   mapStateToProps,
-  null
+  {
+    handleUpdatePassword
+  }
 )(EidtPasswordForm);

@@ -26,15 +26,14 @@ class Email extends Component {
     Actions.editEmailForm();
   }
 
-  // TODO: uncomment this line
   renderEmailDetailText() {
-    // if (this.props.email.isVerified) {
-    //   return (
-    //     <Text style={Styles.statusTextStyle}>
-    //       Primary email
-    //     </Text>
-    //   );
-    // }
+    if (this.props.email.isVerified) {
+      return (
+        <Text style={Styles.statusTextStyle}>
+          Primary email
+        </Text>
+      );
+    }
     return (
       <View>
         <Text style={Styles.statusTextStyle}>

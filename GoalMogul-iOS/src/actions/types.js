@@ -51,5 +51,6 @@ export const SETTING_OPEN_SETTING = 'setting_open_setting';
 export const SETTING_TAB_SELECTION = 'setting_tab_selection';
 export const SETTING_RESENT_EMAIL_VERIFICATION = 'setting_resent_email_verification';
 export const SETTING_EMAIL_UPDATE_SUCCESS = 'setting_email_update_success';
+export const SETTING_PHONE_UPDATE_SUCCESS = 'setting_phone_update_success';
 export const SETTING_FRIEND_SETTING_SELECTION = 'setting_friend_setting_selection';
 export const SETTING_FRIEND_SETTING_UPDATE_SUCCESS = 'setting_friend_setting_update_success';

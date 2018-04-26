@@ -3,7 +3,8 @@ import {
   SETTING_TAB_SELECTION,
   PROFILE_FETCHING_SUCCESS,
   SETTING_FRIEND_SETTING_SELECTION,
-  SETTING_EMAIL_UPDATE_SUCCESS
+  SETTING_EMAIL_UPDATE_SUCCESS,
+  SETTING_PHONE_UPDATE_SUCCESS
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -24,11 +25,8 @@ export default (state = INITIAL_STATE, action) => {
 
     case PROFILE_FETCHING_SUCCESS: {
       console.log('profile fetched is: ', action.payload);
-      const { privacy } = action.payload;
-      if (privacy) {
-        return { ...state, privacy };
-      }
-      return { ...state };
+      const { privacy, email, phone } = action.payload;
+      return { ...state, privacy, email, phone };
     }
 
     case SETTING_FRIEND_SETTING_SELECTION: {
@@ -46,7 +44,15 @@ export default (state = INITIAL_STATE, action) => {
     case SETTING_EMAIL_UPDATE_SUCCESS: {
       const email = { ...state.email };
       email.address = action.payload;
+      email.isVerified = false;
       return { ...state, email };
+    }
+
+    case SETTING_PHONE_UPDATE_SUCCESS: {
+      const phone = { ...state.phone };
+      phone.number = action.payload;
+      phone.isVerified = false;
+      return { ...state, phone };
     }
 
     default:

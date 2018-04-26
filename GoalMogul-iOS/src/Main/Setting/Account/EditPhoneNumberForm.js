@@ -19,20 +19,20 @@ import Styles from '../Styles';
 
 /* Actions */
 /* TODO: update actions needed */
-import { onUpdateEmailSubmit } from '../../../actions';
+import { onUpdatePhoneNumberSubmit } from '../../../actions';
 
-const validateEmail = value =>
-  value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
-    ? 'Invalid email address'
+const validatePhone = value =>
+  value && /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(value)
+    ? 'Invalid phone number'
     : undefined;
 
-class EditEmailForm extends Component {
+class EditPhoneNumberForm extends Component {
 
   handleOnSubmitPress = values => {
     // TODO: send code and show
     // update actions imported and used in connect()
     console.log('values are: ', values);
-    return this.props.onUpdateEmailSubmit(values);
+    return this.props.onUpdatePhoneNumberSubmit(values);
   }
 
   /* Refactor error function out */
@@ -61,7 +61,7 @@ class EditEmailForm extends Component {
           error={error}
           enablesReturnKeyAutomatically={false}
           returnKeyType='done'
-          keyboardType='email-address'
+          keyboardType='phone-pad'
           {...custom}
           {...restInput}
         />
@@ -77,7 +77,7 @@ class EditEmailForm extends Component {
         behavior='padding'
         style={{ flex: 1 }}
       >
-        <SearchBarHeader backButton rightIcon='empty' title="Email addresses" />
+        <SearchBarHeader backButton rightIcon='empty' title="Phone number" />
         <ScrollView
           style={styles.scroll}
           keyboardShouldPersistTaps='handled'
@@ -86,18 +86,17 @@ class EditEmailForm extends Component {
 
           <View style={Styles.titleSectionStyle}>
             <Text style={Styles.titleTextStyle}>
-              Update your email address
+              Update your phone number
             </Text>
             <Text style={{ paddingBottom: 10 }}>
-              We'll send a verification code to this email address.
+              It's important to protect your account.
             </Text>
           </View>
           {this.renderError(error)}
           <Field
-            name='email'
-            label='Email address'
+            name='phone'
+            label='Phone number'
             component={this.renderInput}
-            validate={validateEmail}
           />
 
           <TouchableOpacity onPress={handleSubmit(this.handleOnSubmitPress)}>
@@ -123,21 +122,21 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  const { user } = state.profile;
-  const { email } = user;
+// const mapStateToProps = state => {
+//   const { user } = state.profile;
+//   const { email } = user;
+//
+//   return {
+//     email
+//   };
+// };
 
-  return {
-    email
-  };
-};
-
-EditEmailForm = reduxForm({
+EditPhoneNumberForm = reduxForm({
   form: 'addPhoneNumberForm',
   enableReinitialize: true
-})(EditEmailForm);
+})(EditPhoneNumberForm);
 
 export default connect(
-  mapStateToProps,
-  { onUpdateEmailSubmit }
-)(EditEmailForm);
+  null,
+  { onUpdatePhoneNumberSubmit }
+)(EditPhoneNumberForm);

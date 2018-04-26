@@ -22,7 +22,8 @@ export default StyleSheet.create({
   detailTextStyle: {
     fontSize: 14,
     fontWeight: '700',
-    paddingBottom: 7
+    paddingBottom: 7,
+    maxWidth: 250
   },
   statusTextStyle: {
     fontSize: 13,
@@ -42,7 +43,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     right: 0,
-    top: 10
+    top: 12
   },
   editIconStyle: {
     width: 20,

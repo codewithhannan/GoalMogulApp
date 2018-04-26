@@ -19,13 +19,15 @@ import Styles from '../Styles';
 
 /* Actions */
 /* TODO: update actions needed */
-import { onResendEmailPress } from '../../../actions';
+import { onUpdatePhoneNumberSubmit } from '../../../actions';
 
 class AddPhoneNumberForm extends Component {
 
-  handleOnSendCodePress() {
-    // TODO: send code and show
+  handleOnAddPress = values => {
+    // TODO: validate phone number
     // update actions imported and used in connect()
+    console.log('phone number is: ', values);
+    return this.props.onUpdatePhoneNumberSubmit(values);
   }
 
   renderInput = ({
@@ -80,8 +82,8 @@ class AddPhoneNumberForm extends Component {
 
           <Field name='phone' label='Phone number' component={this.renderInput} />
 
-          <TouchableOpacity onPress={this.handleOnSendCodePress.bind(this)}>
-            <Button text="Send code" />
+          <TouchableOpacity onPress={handleSubmit(this.handleOnAddPress)}>
+            <Button text="Add" />
           </TouchableOpacity>
 
         </ScrollView>
@@ -118,5 +120,5 @@ AddPhoneNumberForm = reduxForm({
 
 export default connect(
   mapStateToProps,
-  { onResendEmailPress }
+  { onUpdatePhoneNumberSubmit }
 )(AddPhoneNumberForm);

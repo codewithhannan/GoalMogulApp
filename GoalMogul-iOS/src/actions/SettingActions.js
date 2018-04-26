@@ -1,12 +1,14 @@
 import { Actions } from 'react-native-router-flux';
+import { SubmissionError } from 'redux-form';
 
 import {
   SETTING_OPEN_SETTING,
   SETTING_TAB_SELECTION,
   SETTING_RESENT_EMAIL_VERIFICATION,
   SETTING_EMAIL_UPDATE_SUCCESS,
+  SETTING_PHONE_UPDATE_SUCCESS,
   SETTING_FRIEND_SETTING_SELECTION,
-  SETTING_FRIEND_SETTING_UPDATE_SUCCESS
+  SETTING_FRIEND_SETTING_UPDATE_SUCCESS,
 } from './types';
 
 export const openSetting = () => {
@@ -86,6 +88,44 @@ export const onUpdateEmailSubmit = values => {
       })
       .catch((err) => {
         console.log('error updating email: ', err);
+        throw new SubmissionError({
+          _error: err
+        });
+      });
+  };
+};
+
+// update user phone number
+export const onUpdatePhoneNumberSubmit = values => {
+  return (dispatch, getState) => {
+    const { token } = getState().user;
+    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
+    const headers = {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        token,
+        phone: values.phone
+      })
+    };
+    fetch(url, headers)
+      .then((res) => res.json())
+      .then((res) => {
+        console.log('update phone number successfully: ', res);
+        dispatch({
+          type: SETTING_PHONE_UPDATE_SUCCESS,
+          payload: values.phone
+        });
+        Actions.pop();
+      })
+      .catch((err) => {
+        console.log('error updating phone number: ', err);
+        throw new SubmissionError({
+          _error: err
+        });
       });
   };
 };
