@@ -1,6 +1,7 @@
 import { Actions } from 'react-native-router-flux';
 import { SubmissionError } from 'redux-form';
-import Expo, { Linking, WebBrowser } from 'expo';
+import Expo, { WebBrowser } from 'expo';
+import { Linking } from 'react-native'
 
 import {
   SETTING_OPEN_SETTING,
@@ -147,25 +148,51 @@ export const onVerifyPhoneNumber = () => {
         for: 'phone'
       })
     };
-    fetch(url, headers)
+    return fetch(url, headers)
       .then((res) => res.json())
-      .then(async (res) => {
+      .then((res) => {
         console.log('verify phone number successfully: ', res);
-        // dispatch({
-        //   type: SETTING_PHONE_UPDATE_SUCCESS,
-        //   payload: values.phone
-        // });
-        // Actions.pop();
-        let result = await WebBrowser.openBrowserAsync(
-          `https://goalmogul-web.herokuapp.com/phone-verification/`
-        );
-        console.log('result is: ', result);
+        // let returnUrl = 'exp://100.64.25.239:19000?action=verifyPhone&status=success'
+        // // let testUrl = `https://goalmogul-web.herokuapp.com/phone-verification?returnURL=${returnUrl}`
+        // addLinkingListener();
+        // // let url = Linking.makeUrl('test', {route: 'password'})
+        // // console.log('url is: ', testUrl);
+        // let result = await WebBrowser.openBrowserAsync(
+        //   `https://goalmogul-web.herokuapp.com/phone-verification?returnURL=${returnUrl}`
+        // );
+        // removeLinkingListener();
+
+        let returnUrl = 'exp://100.64.25.239:19000?action=verifyPhone&status=success';
+        let testUrl = `https://goalmogul-web.herokuapp.com/phone-verification?returnURL=${returnUrl}`;
+
+        Linking.canOpenURL(testUrl).then(supported => {
+          if (!supported) {
+            console.log('Can\'t handle url: ' + testUrl);
+          } else {
+            return Linking.openURL(testUrl);
+          }
+        }).catch(err => console.error('An error occurred', err));
+                // console.log('result is: ', result);
       })
       .catch((err) => {
         console.log('error updating phone number: ', err);
       });
   };
 };
+
+// const addLinkingListener = () => {
+//   Linking.addEventListener('url', handleRedirect);
+// };
+//
+// const removeLinkingListener = () => {
+//   Linking.removeEventListener('url', handleRedirect);
+// };
+//
+// const handleRedirect = event => {
+//
+//   console.log('data is: ', event);
+//   // this.setState({ redirectData: data });
+// };
 
 /* Privacy actions */
 

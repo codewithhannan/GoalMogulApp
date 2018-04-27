@@ -1,4 +1,7 @@
 import { combineReducers } from 'redux';
+import storage from 'redux-persist/lib/storage';
+import { persistReducer } from 'redux-persist';
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
 /* reducers */
 import AuthReducers from './AuthReducers';
@@ -9,7 +12,14 @@ import Profile from './Profile';
 import Setting from './Setting';
 import { reducer as formReducer } from 'redux-form';
 
-export default combineReducers({
+const rootPersistConfig = {
+  key: 'root',
+  storage,
+  stateReconciler: autoMergeLevel2, // see "Merge Process" section for details.
+  blacklist: ['registration', 'form']
+};
+
+const reducers = combineReducers({
   auth: AuthReducers,
   registration: RegReducers,
   cameraRoll: CameraRollReducers,
@@ -18,3 +28,5 @@ export default combineReducers({
   form: formReducer,
   setting: Setting
 });
+
+export default persistReducer(rootPersistConfig, reducers);

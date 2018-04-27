@@ -1,32 +1,39 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Linking } from 'react-native';
 
 /* State management */
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import ReduxThunk from 'redux-thunk';
+import { PersistGate } from 'redux-persist/lib/integration/react';
 
 /* Reducers */
-import reducers from './src/reducers';
+// import reducers from './src/reducers';
+import { persistor, store } from './src/store';
 
 /* Router */
 import Router from './src/Router';
-
-const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
 
 export default class App extends React.Component {
 
   // TODO: in ComponentWillMount set up dependencies for verification and
   // Persist app state. Check if AuthReducers' user token is null and valid.
+  componentDidMount() {
+    Linking.getInitialURL().then((url) => {
+      if (url) {
+        console.log('Initial url is: ' + url);
+      }
+    }).catch(err => console.error('An error occurred', err));
+  }
 
   render() {
     console.log('.env is: ', process.env.DEBUGGING_MODE);
     return (
       <Provider store={store}>
-        <View style={styles.container}>
+        <PersistGate persistor={persistor}>
+          <View style={styles.container}>
 
-          <Router />
-        </View>
+            <Router />
+          </View>
+        </PersistGate>
       </Provider>
     );
   }

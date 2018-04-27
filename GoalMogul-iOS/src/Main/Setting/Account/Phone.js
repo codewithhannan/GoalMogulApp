@@ -5,9 +5,9 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Image,
-  // Linking
+  Linking
 } from 'react-native';
-import Expo, { Linking, WebBrowser } from 'expo';
+import Expo, { WebBrowser } from 'expo';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 
@@ -36,6 +36,8 @@ class Phone extends Component {
   //
   // handleOpenURL = (event) => { // D
   //   console.log('event is: ', event);
+  //   let data = Linking.parse(event.url);
+  //   console.log('data is: ', data);
   // }
 
   handleOnAddPhoneNumberPress() {
@@ -48,36 +50,23 @@ class Phone extends Component {
     Actions.editPhoneNumberForm();
   }
 
-  handleOnVerifyPress() {
+  async handleOnVerifyPress() {
     console.log('user trying to verify phone number');
+
     this.props.onVerifyPhoneNumber();
+    // this.test();
   }
 
-  handleRedirect = event => {
-    WebBrowser.dismissBrowser();
-
-    let data = Linking.parse(event.url);
-    console.log('data is: ', data);
-    // this.setState({ redirectData: data });
-  };
-
-  openWebBrowserAsync = async () => {
-    // Linking.openURL('https://goalmogul-web.herokuapp.com/phone-verification?returnURL=goalmogul');
-    this.addLinkingListener();
-    let result = await WebBrowser.openBrowserAsync(
-      `https://goalmogul-web.herokuapp.com/phone-verification/`
-    );
-    this.removeLinkingListener();
-    // this.setState({ result });
-  };
-
-  addLinkingListener = () => {
-    Linking.addEventListener('url', this.handleRedirect);
-  };
-
-  removeLinkingListener = () => {
-    Linking.removeEventListener('url', this.handleRedirect);
-  };
+  // async test() {
+  //   let returnUrl = 'exp://100.64.25.239:19000?action=verifyPhone&status=success'
+  //   // let testUrl = `https://goalmogul-web.herokuapp.com/phone-verification?returnURL=${returnUrl}`
+  //   // let url = Linking.makeUrl('test', {route: 'password'})
+  //   // console.log('url is: ', testUrl);
+  //   let result = await WebBrowser.openBrowserAsync(
+  //     `https://goalmogul-web.herokuapp.com/phone-verification?returnURL=${returnUrl}`
+  //   );
+  //   console.log('result is: ', result);
+  // }
 
   /* Rendering */
   renderPhoneDetailText() {
