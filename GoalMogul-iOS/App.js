@@ -1,9 +1,11 @@
 import React from 'react';
 import { StyleSheet, View, Linking } from 'react-native';
+import Expo from 'expo';
 
 /* State management */
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
+import { Actions } from 'react-native-router-flux';
 
 /* Reducers */
 // import reducers from './src/reducers';
@@ -16,13 +18,6 @@ export default class App extends React.Component {
 
   // TODO: in ComponentWillMount set up dependencies for verification and
   // Persist app state. Check if AuthReducers' user token is null and valid.
-  componentDidMount() {
-    Linking.getInitialURL().then((url) => {
-      if (url) {
-        console.log('Initial url is: ' + url);
-      }
-    }).catch(err => console.error('An error occurred', err));
-  }
 
   render() {
     console.log('.env is: ', process.env.DEBUGGING_MODE);

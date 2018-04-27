@@ -48,20 +48,6 @@ import FriendsSetting from './Main/Setting/Privacy/FriendsSetting';
 
 class RouterComponent extends Component {
 
-  componentDidMount() {
-    Linking.getInitialURL().then((url) => {
-      if (url) {
-        console.log('Initial url is: ' + url);
-        let newURL = Expo.Linking.parse(url);
-        console.log('newURL is: ', newURL);
-        // console.log('navigation state is: ', this.props.navigation);
-        // if (newURL.queryParams.action === 'verify') {
-        //   // Actions.state = this.props.state;
-        // }
-      }
-    }).catch(err => console.error('An error occurred', err));
-  }
-
   reducerCreate(params) {
     const defaultReducer = Reducer(params);
     return (state, action) => {
