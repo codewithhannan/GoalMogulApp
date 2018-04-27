@@ -4,7 +4,8 @@ import {
   PROFILE_FETCHING_SUCCESS,
   SETTING_FRIEND_SETTING_SELECTION,
   SETTING_EMAIL_UPDATE_SUCCESS,
-  SETTING_PHONE_UPDATE_SUCCESS
+  SETTING_PHONE_UPDATE_SUCCESS,
+  SETTING_PHONE_VERIFICATION_SUCCESS
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -52,6 +53,12 @@ export default (state = INITIAL_STATE, action) => {
       const phone = { ...state.phone };
       phone.number = action.payload;
       phone.isVerified = false;
+      return { ...state, phone };
+    }
+
+    case SETTING_PHONE_VERIFICATION_SUCCESS: {
+      const phone = { ...state.phone };
+      phone.isVerified = true;
       return { ...state, phone };
     }
 

@@ -11,6 +11,7 @@ import User from './User';
 import Profile from './Profile';
 import Setting from './Setting';
 import { reducer as formReducer } from 'redux-form';
+import NavigationReducers from './NavigationReducers';
 
 const rootPersistConfig = {
   key: 'root',
@@ -26,7 +27,8 @@ const reducers = combineReducers({
   user: User,
   profile: Profile,
   form: formReducer,
-  setting: Setting
+  setting: Setting,
+  navigation: NavigationReducers
 });
 
 export default persistReducer(rootPersistConfig, reducers);
