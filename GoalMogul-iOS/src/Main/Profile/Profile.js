@@ -27,7 +27,7 @@ class Profile extends Component {
   render() {
     return (
       <View style={styles.containerStyle}>
-        <SearchBarHeader backButton />
+        <SearchBarHeader backButton rightIcon='menu' />
         <ProfileSummaryCard />
         <View style={styles.tabContainerStyle}>
           <FilterBarButton data={testData.goal} />

@@ -45,3 +45,13 @@ export const PROFILE_SUBMIT_UPDATE = 'profile_submit_update';
 export const PROFILE_IMAGE_UPLOAD_SUCCESS = 'profile_image_upload_success';
 export const PROFILE_UPDATE_SUCCESS = 'profile_update_success';
 export const PROFILE_UPDATE_FAIL = 'profile_update_fail';
+
+/* Setting actions */
+export const SETTING_OPEN_SETTING = 'setting_open_setting';
+export const SETTING_TAB_SELECTION = 'setting_tab_selection';
+export const SETTING_RESENT_EMAIL_VERIFICATION = 'setting_resent_email_verification';
+export const SETTING_EMAIL_UPDATE_SUCCESS = 'setting_email_update_success';
+export const SETTING_PHONE_UPDATE_SUCCESS = 'setting_phone_update_success';
+export const SETTING_PHONE_VERIFICATION_SUCCESS = 'setting_phone_verification_success';
+export const SETTING_FRIEND_SETTING_SELECTION = 'setting_friend_setting_selection';
+export const SETTING_FRIEND_SETTING_UPDATE_SUCCESS = 'setting_friend_setting_update_success';

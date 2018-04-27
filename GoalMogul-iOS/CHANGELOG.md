@@ -10,6 +10,34 @@ if there is corresponding issue, state it
 
 * Version 0.0.1
 
+## 26 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
+* Update image resizing size
+* Create password update UI and hook up with data
+
+## 24 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
+* Update splash screen fonts and image
+* Refactor login page and account creation page
+
+## 23 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
+* See [Issue #33](https://github.com/somechild/goalmogul-ios/issues/33)
+* Create Splash screen
+* Implement splash screen actions
+* Update friends privacy setting tick icon
+
+## 22 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
+* See [Issue #30](https://github.com/somechild/goalmogul-ios/issues/30)
+* See [Issue #31](https://github.com/somechild/goalmogul-ios/issues/31)
+* Create setting page UI + hook up with data
+* Create email managing page UI
+* Create email update page UI + hook up with data
+* Create phone managing page UI
+* Create add phone number page UI
+* Create privacy friends setting page UI
+
+## 22 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
+* See [Issue #30](https://github.com/somechild/goalmogul-ios/issues/30)
+* Create setting page
+
 ## 22 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
 * See [Issue #34](https://github.com/somechild/goalmogul-ios/issues/34)
 * reorder inputs

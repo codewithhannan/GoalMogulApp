@@ -1,3 +1,7 @@
+/**
+NOTE: This file is deprecated and replaced by Input.js
+*/
+
 import React, { Component } from 'react';
 import {
   View,

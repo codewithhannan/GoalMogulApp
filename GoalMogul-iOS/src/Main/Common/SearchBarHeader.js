@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Text
 } from 'react-native';
 import { SearchBar, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
@@ -13,11 +14,20 @@ import IconMenu from '../../asset/header/menu.png';
 import Setting from '../../asset/header/setting.png';
 
 /* Actions */
-import { back, openProfile } from '../../actions';
+import { back, openProfile, openSetting } from '../../actions';
 
+/**
+  TODO: refactor element to have consistent behavior
+  rightIcon: 'empty' or null,
+  backButton: true or false,
+  setting: true or false
+*/
 class SearchBarHeader extends Component {
 
   handleBackOnClick() {
+    if (this.props.onBackPress) {
+      this.props.onBackPress();
+    }
     this.props.back();
   }
 
@@ -27,6 +37,7 @@ class SearchBarHeader extends Component {
 
   handleSettingOnClick() {
     // TODO: open account setting page
+    this.props.openSetting();
   }
 
   renderSearchBarLeftIcon() {
@@ -51,15 +62,41 @@ class SearchBarHeader extends Component {
   }
 
   renderSearchBarRightIcon() {
-    if (this.props.setting) {
+    if (this.props.setting && this.props.haveSetting) {
       return (
         <TouchableWithoutFeedback onPress={this.handleSettingOnClick.bind(this)}>
           <Image style={styles.headerRightImage} source={Setting} />
         </TouchableWithoutFeedback>
       );
     }
+    if (this.props.rightIcon === 'menu') {
+      return (
+        <Image style={styles.headerRightImage} source={IconMenu} />
+      );
+    }
     return (
-      <Image style={styles.headerRightImage} source={IconMenu} />
+      <View style={styles.headerRightImage} />
+    );
+  }
+
+  renderSearchBarOrTitle() {
+    if (this.props.title) {
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 20 }} >
+            {this.props.title}
+          </Text>
+        </View>
+      );
+    }
+    return (
+      <SearchBar
+        round
+        inputStyle={styles.searchInputStyle}
+        containerStyle={styles.searchContainerStyle}
+        icon={{ type: 'font-awesome', name: 'search', style: styles.searchIconStyle }}
+        placeholder='Search GoalMogul'
+      />
     );
   }
 
@@ -67,13 +104,7 @@ class SearchBarHeader extends Component {
     return (
       <View style={styles.headerStyle}>
         {this.renderSearchBarLeftIcon()}
-        <SearchBar
-          round
-          inputStyle={styles.searchInputStyle}
-          containerStyle={styles.searchContainerStyle}
-          icon={{ type: 'font-awesome', name: 'search', style: styles.searchIconStyle }}
-          placeholder='Search GoalMogul'
-        />
+        {this.renderSearchBarOrTitle()}
         {this.renderSearchBarRightIcon()}
       </View>
     );
@@ -101,9 +132,10 @@ const styles = {
   headerStyle: {
     flexDirection: 'row',
     backgroundColor: '#ffffff',
-    paddingTop: 30,
+    paddingTop: 28,
     paddingLeft: 12,
-    paddingRight: 12
+    paddingRight: 12,
+    paddingBottom: 10
   },
   headerLeftImage: {
     width: 25,
@@ -111,18 +143,20 @@ const styles = {
     marginTop: 10,
   },
   headerRightImage: {
-    width: 20,
-    height: 15,
-    marginTop: 14,
+    width: 25,
+    height: 25,
+    marginTop: 11,
   }
 };
 
 const mapStateToProps = state => {
   const { userId } = state.user;
+  const haveSetting = state.profile.userId.toString() === state.user.userId.toString();
 
   return {
-    userId
+    userId,
+    haveSetting
   };
 };
 
-export default connect(mapStateToProps, { back, openProfile })(SearchBarHeader);
+export default connect(mapStateToProps, { back, openProfile, openSetting })(SearchBarHeader);

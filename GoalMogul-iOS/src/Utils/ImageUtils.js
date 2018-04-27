@@ -70,8 +70,8 @@ const ImageUtils = {
         height,
       },
       displaySize: {
-        width: 750 * (width > height ? 1 : width / height),
-        height: 750 * (height > width ? 1 : height / width),
+        width: 600 * (width > height ? 1 : width / height),
+        height: 600 * (height > width ? 1 : height / width),
       },
       resizeMode: 'cover',
     };
