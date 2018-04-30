@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 /* Components */
 import SearchBarHeader from '../Common/SearchBarHeader';
 import MeetFilterBar from './MeetFilterBar';
-import MeetCard from './MeetTab';
+import MeetCard from './MeetCard';
 
 const Tabs = [
   {
@@ -62,26 +62,32 @@ class MeetTab extends Component {
   }
 
   renderItem = ({ item }) => {
-    return <MeetTab />;
+    return <MeetCard />;
   }
 
   render() {
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         <SearchBarHeader rightIcon='menu' />
-        <ScrollView horizontal>
-          {this.renderTabs()}
-        </ScrollView>
+        <View>
+          <ScrollView horizontal>
+            {this.renderTabs()}
+          </ScrollView>
+        </View>
+
         <MeetFilterBar />
-        <FlatList
-          data={testData}
-          renderItem={this.renderItem}
-          keyExtractor={this.keyExtractor}
-        />
+        <View style={{ flex: 1 }}>
+          <FlatList
+            data={testData}
+            renderItem={this.renderItem}
+            keyExtractor={this.keyExtractor}
+          />
+        </View>
       </View>
     );
   }
 }
+
 
 const styles = {
   buttonContainerStyle: {

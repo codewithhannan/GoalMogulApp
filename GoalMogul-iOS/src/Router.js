@@ -5,12 +5,9 @@ import {
   Stack,
   Tabs,
   Modal,
-  Reducer,
-  Actions
+  Reducer
 } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import Expo from 'expo';
-import { Linking } from 'react-native';
 
 /* Auth */
 import SplashScreen from './SplashScreen';
@@ -129,11 +126,11 @@ class RouterComponent extends Component {
                 </Stack>
 
                 <Stack
-                  key="goalTab"
+                  key="meetTab"
                   icon={TabIcon}
                   hideNavBar
                 >
-                  <Scene key="goal" component={Home} hideNavBar />
+                  <Scene key="goal" component={MeetTab} hideNavBar />
                 </Stack>
 
                 <Stack
