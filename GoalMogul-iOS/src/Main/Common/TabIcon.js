@@ -17,27 +17,27 @@ class TabIcon extends React.Component {
     switch (navigation.state.key) {
       case 'homeTab':
         return (
-          <Image source={IconHome} style={{tintColor: tintColor}} />
+          <Image source={IconHome} style={{ tintColor }} />
         );
-      case 'goalTab':
+      case 'meetTab':
         return (
-          <Image source={IconGoal} style={{tintColor: tintColor}} />
+          <Image source={IconGoal} style={{ tintColor }} />
         );
       case 'notificationTab':
         return (
-          <Image source={IconBell} style={{tintColor: tintColor}} />
+          <Image source={IconBell} style={{ tintColor }} />
         );
       case 'chatTab':
         return (
-          <Image source={IconChat} style={{tintColor: tintColor}} />
+          <Image source={IconChat} style={{ tintColor }} />
         );
       case 'exploreTab':
         return (
-          <Image source={IconStar} style={{tintColor: tintColor}} />
+          <Image source={IconStar} style={{ tintColor }} />
         );
       default:
         return (
-          <Image source={IconHome} style={{tintColor: tintColor}} />
+          <Image source={IconHome} style={{ tintColor }} />
         );
     }
   }

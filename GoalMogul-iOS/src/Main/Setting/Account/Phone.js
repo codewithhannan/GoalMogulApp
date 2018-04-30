@@ -4,8 +4,7 @@ import {
   View,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Image,
-  Linking
+  Image
 } from 'react-native';
 import Expo, { WebBrowser } from 'expo';
 import { connect } from 'react-redux';
@@ -45,7 +44,12 @@ class Phone extends Component {
   handleRedirect = event => {
     WebBrowser.dismissBrowser();
     // TODO: parse url and determine verification states
-    console.log('data is: ', event);
+    let { path, queryParams } = Expo.Linking.parse(event.url);
+
+    if (path === 'status=fail') {
+      // TODO: error handling, verification failed
+      return;
+    }
     this.props.verifyPhoneNumberSuccess();
   }
 

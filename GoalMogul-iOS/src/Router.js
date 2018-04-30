@@ -5,12 +5,9 @@ import {
   Stack,
   Tabs,
   Modal,
-  Reducer,
-  Actions
+  Reducer
 } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import Expo from 'expo';
-import { Linking } from 'react-native';
 
 /* Auth */
 import SplashScreen from './SplashScreen';
@@ -28,6 +25,8 @@ import ContactSync from './Registration/ContactSync';
 /* Main App */
 import TabIcon from './Main/Common/TabIcon';
 import Home from './Main/Home/Home';
+import MeetTab from './Main/MeetTab/MeetTab';
+import MeetCard from './Main/MeetTab/MeetCard';
 
 // Profile
 import Profile from './Main/Profile/Profile';
@@ -48,20 +47,6 @@ import FriendsSetting from './Main/Setting/Privacy/FriendsSetting';
 
 class RouterComponent extends Component {
 
-  componentDidMount() {
-    Linking.getInitialURL().then((url) => {
-      if (url) {
-        console.log('Initial url is: ' + url);
-        let newURL = Expo.Linking.parse(url);
-        console.log('newURL is: ', newURL);
-        // console.log('navigation state is: ', this.props.navigation);
-        // if (newURL.queryParams.action === 'verify') {
-        //   // Actions.state = this.props.state;
-        // }
-      }
-    }).catch(err => console.error('An error occurred', err));
-  }
-
   reducerCreate(params) {
     const defaultReducer = Reducer(params);
     return (state, action) => {
@@ -74,7 +59,6 @@ class RouterComponent extends Component {
     return (
       <Router
         createReducer={this.reducerCreate.bind(this)}
-        uriPrefix='exp://100.64.25.239:19000'
       >
         <Modal>
           <Scene key="root" hideNavBar>
@@ -142,11 +126,11 @@ class RouterComponent extends Component {
                 </Stack>
 
                 <Stack
-                  key="goalTab"
+                  key="meetTab"
                   icon={TabIcon}
                   hideNavBar
                 >
-                  <Scene key="goal" component={Home} hideNavBar />
+                  <Scene key="goal" component={MeetTab} hideNavBar />
                 </Stack>
 
                 <Stack

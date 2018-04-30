@@ -4,7 +4,8 @@ import {
   View,
   TouchableOpacity,
   KeyboardAvoidingView,
-  ScrollView
+  ScrollView,
+  Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
@@ -42,6 +43,7 @@ const validate = values => {
 class EidtPasswordForm extends Component {
 
   handleOnSendPress = values => {
+    Keyboard.dismiss();
     const errors = validate(values);
     if (!(Object.keys(errors).length === 0 && errors.constructor === Object)) {
       console.log('submission error: ', errors);

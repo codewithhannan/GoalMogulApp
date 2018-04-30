@@ -10,6 +10,14 @@ if there is corresponding issue, state it
 
 * Version 0.0.1
 
+## 29 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
+* Initial implementation for MeetTab and MeetCard UI done
+* Integrate phone verification status code passed back from server
+
+## 27 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
+* Refactor and add redux persist to persist reducers
+* Image phone verification logic with deep link
+
 ## 26 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
 * Update image resizing size
 * Create password update UI and hook up with data
