@@ -24,9 +24,9 @@ export default (state = initialState, action = {}) => {
     }
 
     case ActionConst.PUSH: {
-      console.log('push new scene', action);
+      // console.log('push new scene', action);
       const newStack = [...state.stack];
-      console.log('new stack is: ', newStack);
+      // console.log('new stack is: ', newStack);
       newStack.push(action.routeName);
       return { ...state, stack: newStack };
     }
