@@ -1,5 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import { CameraRoll, ImagePickerIOS } from 'react-native';
+import Expo from 'expo';
 
 import {
   REGISTRATION_BACK,
@@ -24,6 +25,7 @@ import {
 } from './types';
 
 import ImageUtils from '../Utils/ImageUtils';
+import { uploadContacts } from '../Utils/ContactUtils';
 
 export const registrationLogin = () => {
   return (dispatch) => {
@@ -349,11 +351,44 @@ export const registrationNextContactSync = ({ skip }) => {
 
   // TODO: load contacts from iphone contacts and send to server
 
-  return (dispatch) => {
-    dispatch({
-      type,
+  return async (dispatch, getState) => {
+    const permission = await Expo.Permissions.askAsync(Expo.Permissions.CONTACTS);
+    if (permission.status !== 'granted') {
+    // Permission was denied and dispatch an action
+      return;
+    }
+    const { token } = getState().user;
+
+    // Show spinning bar
+    const contacts = await Expo.Contacts.getContactsAsync({
+      fields: [
+        Expo.Contacts.PHONE_NUMBERS,
+        Expo.Contacts.EMAILS,
+        Expo.Contacts.ADDRESSES,
+        Expo.Contacts.NONGREGORIANBIRTHDAY,
+        Expo.Contacts.SOCIAL_PROFILES,
+        Expo.Contacts.IM_ADDRESSES,
+        Expo.Contacts.URLS,
+        Expo.Contacts.DATES,
+      ],
+      pageSize: 10,
+      pageOffset: 0,
     });
-    Actions.registrationContactSync();
+
+    console.log('contacts are: ', contacts);
+    uploadContacts(contacts.data, token)
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(' response is: ', res);
+        // dispatch({
+        //   type,
+        // });
+        // Actions.registrationContactSync();
+      })
+      .catch((err) => {
+        // TODO: error handling
+        console.log('error in uploading contacts: ', err);
+      });
   };
 };
 

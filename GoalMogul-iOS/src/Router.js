@@ -26,7 +26,7 @@ import ContactSync from './Registration/ContactSync';
 import TabIcon from './Main/Common/TabIcon';
 import Home from './Main/Home/Home';
 import MeetTab from './Main/MeetTab/MeetTab';
-import MeetCard from './Main/MeetTab/MeetCard';
+// import MeetCard from './Main/MeetTab/MeetCard';
 
 // Profile
 import Profile from './Main/Profile/Profile';
@@ -63,7 +63,7 @@ class RouterComponent extends Component {
         <Modal>
           <Scene key="root" hideNavBar>
             <Scene key="auth" initial hideNavBar>
-              <Scene key="splash" component={SplashScreen} initial />
+              <Scene key="splash" component={Contacts} initial />
               <Scene key="login" component={LoginPage} />
             </Scene>
 

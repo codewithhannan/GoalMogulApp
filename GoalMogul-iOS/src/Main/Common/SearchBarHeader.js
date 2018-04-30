@@ -95,7 +95,7 @@ class SearchBarHeader extends Component {
         inputStyle={styles.searchInputStyle}
         containerStyle={styles.searchContainerStyle}
         icon={{ type: 'font-awesome', name: 'search', style: styles.searchIconStyle }}
-        placeholder='Search GoalMogul'
+        placeholder='                   Search GoalMogul'
       />
     );
   }
@@ -123,7 +123,7 @@ const styles = {
   searchInputStyle: {
     backgroundColor: '#f3f4f6',
     fontSize: 12,
-    height: 28
+    height: 28,
   },
   searchIconStyle: {
     top: 14,
