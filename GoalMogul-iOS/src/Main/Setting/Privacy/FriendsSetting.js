@@ -29,11 +29,11 @@ const friendsSettingList = [
   },
   {
     title: 'Friends',
-    explanation: "Friends can see who I'm friend with"
+    explanation: "Friends can see who I'm friends with"
   },
   {
     title: 'Private',
-    explanation: "Only I know who I'm friend with"
+    explanation: "Only I know who I'm friends with"
   }
 ];
 

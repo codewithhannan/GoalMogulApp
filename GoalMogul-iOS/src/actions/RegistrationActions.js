@@ -368,7 +368,7 @@ export const registrationNextContactSync = ({ skip }) => {
         Expo.Contacts.NONGREGORIANBIRTHDAY,
         Expo.Contacts.SOCIAL_PROFILES,
         Expo.Contacts.IM_ADDRESSES,
-        Expo.Contacts.URLS,
+        
         Expo.Contacts.DATES,
       ],
       pageSize: 10,

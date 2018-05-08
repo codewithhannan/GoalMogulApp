@@ -57,7 +57,7 @@ class EidtPasswordForm extends Component {
   renderPasswordForm() {
     return (
       <View>
-        <Field name='oldPassword' label='Old passowrd' component={Input} secure />
+        <Field name='oldPassword' label='Old password' component={Input} secure />
         <Field
           name='newPassowrd'
           label='New password'

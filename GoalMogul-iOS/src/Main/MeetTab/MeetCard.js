@@ -82,7 +82,7 @@ class MeetCard extends Component {
           numberOfLines={1}
           ellipsizeMode='tail'
         >
-          TOP GOALS: {' '}
+          GOALS: {' '}
           <Text style={styles.detailTextStyle}>
             BUY A HOME, NYC MARATHON, SKY-DIVING
           </Text>
@@ -98,8 +98,8 @@ class MeetCard extends Component {
 
         <View style={styles.bodyContainerStyle}>
           {this.renderInfo()}
-          {this.renderNeed()}
           {this.renderGoal()}
+          {this.renderNeed()}
         </View>
       </View>
     );

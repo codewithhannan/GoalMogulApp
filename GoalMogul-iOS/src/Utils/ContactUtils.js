@@ -5,7 +5,7 @@ const ContactUtils = {
   @return update result promise
   */
   uploadContacts(contacts, token) {
-    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account/contactSync/remote-matches';
+    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account/contactSync/';
     const headers = {
       method: 'POST',
       headers: {

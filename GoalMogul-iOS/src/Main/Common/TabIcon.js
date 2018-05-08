@@ -4,7 +4,7 @@ import { Image } from 'react-native';
 /* Assets */
 import IconHome from '../../asset/footer/navigation/home.png';
 import IconBell from '../../asset/footer/navigation/bell.png';
-import IconGoal from '../../asset/footer/navigation/goal.png';
+import IconMeet from '../../asset/footer/navigation/meet.png';
 import IconChat from '../../asset/footer/navigation/chat.png';
 import IconStar from '../../asset/footer/navigation/star.png';
 
@@ -21,7 +21,7 @@ class TabIcon extends React.Component {
         );
       case 'meetTab':
         return (
-          <Image source={IconGoal} style={{ tintColor }} />
+          <Image style={styles.iconStyle} source={IconMeet} style={{ tintColor }} />
         );
       case 'notificationTab':
         return (
@@ -42,5 +42,12 @@ class TabIcon extends React.Component {
     }
   }
 }
+
+const styles = {
+  iconStyle: {
+    width: 30,
+    height: 30
+  }
+};
 
 export default TabIcon;
