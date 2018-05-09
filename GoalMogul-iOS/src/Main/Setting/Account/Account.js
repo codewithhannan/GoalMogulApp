@@ -25,7 +25,7 @@ class Account extends Component {
           />
           <SettingCard
             title="Password"
-            explanation="Upate your passwords"
+            explanation="Update your passwords"
             onPress={() => Actions.editPasswordForm()}
           />
         </ScrollView>

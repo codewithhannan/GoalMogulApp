@@ -10,6 +10,9 @@ if there is corresponding issue, state it
 
 * Version 0.0.1
 
+## 30 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
+* Center search text
+
 ## 29 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
 * Initial implementation for MeetTab and MeetCard UI done
 * Integrate phone verification status code passed back from server
