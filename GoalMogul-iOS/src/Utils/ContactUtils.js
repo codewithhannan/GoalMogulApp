@@ -10,14 +10,16 @@ const ContactUtils = {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'x-access-token': token
       },
       body: JSON.stringify({
-        contactList: contacts,
-        token
+        contactList: []
       })
     };
 
+    console.log(`headers is: `, headers);
+    // console.log('parsed header is: ', JSON.parse(headers));
     return ContactUtils.custumeFetch(url, headers, null);
   },
 
@@ -26,6 +28,7 @@ const ContactUtils = {
       fetch(url, headers)
       .then((res) => res.json())
       .then((res) => {
+        console.log('original res is: ', res);
         if (!res.message && res.success) {
           if (data) {
             return resolve(data);

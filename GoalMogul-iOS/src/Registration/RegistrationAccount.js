@@ -68,7 +68,7 @@ class Account extends Component {
     const { name, email, password } = values;
 
     Keyboard.dismiss();
-    this.props.registrationNextAddProfile({ name, email, password });
+    return this.props.registrationNextAddProfile({ name, email, password });
   }
 
   renderSplitter() {
@@ -79,6 +79,14 @@ class Account extends Component {
         <Divider horizontal width={80} />
       </View>
     );
+  }
+
+  renderError(error) {
+    return error ? (
+      <View style={{ height: 15 }}>
+        <Text style={styles.errorStyle}>{error}</Text>
+      </View>
+    ) : null;
   }
 
   renderLogIn() {
@@ -97,7 +105,7 @@ class Account extends Component {
   //   keyboardVerticalOffset={-150}
   // >
   render() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, error } = this.props;
     return (
       <KeyboardAvoidingView
         behavior='padding'
@@ -114,7 +122,7 @@ class Account extends Component {
             <View style={Styles.containerStyle}>
               <Header />
               <View style={Styles.bodyContainerStyle}>
-
+                {this.renderError(error)}
                 <Text style={styles.titleTextStyle}>Get Started!</Text>
                 <Field
                   name='name'
@@ -184,6 +192,13 @@ const styles = {
     fontSize: 15,
     color: '#34c0dd',
     fontWeight: '600'
+  },
+  errorStyle: {
+    marginTop: 15,
+    color: '#ff0033',
+    justifyContent: 'center',
+    marginBottom: 4,
+    alignSelf: 'center'
   }
 };
 
