@@ -20,6 +20,9 @@ export const REGISTRATION_INTRO_SKIP = 'registration_intro_skip';
 export const REGISTRATION_CONTACT = 'registration_contact';
 export const REGISTRATION_CONTACT_SKIP = 'registration_contact_skip';
 export const REGISTRATION_CONTACT_SYNC = 'registration_contact_sync';
+export const REGISTRATION_CONTACT_SYNC_UPLOAD_DONE = 'registration_contact_sync_upload_done';
+export const REGISTRATION_CONTACT_SYNC_FETCH = 'registration_contact_sync_fetch';
+export const REGISTRATION_CONTACT_SYNC_FETCH_DONE = 'registration_contact_sync_fetch_done';
 export const REGISTRATION_CONTACT_SYNC_SKIP = 'registration_contact_sync_skip';
 export const REGISTRATION_CONTACT_SYNC_DONE = 'registration_contact_sync_done';
 
@@ -55,3 +58,6 @@ export const SETTING_PHONE_UPDATE_SUCCESS = 'setting_phone_update_success';
 export const SETTING_PHONE_VERIFICATION_SUCCESS = 'setting_phone_verification_success';
 export const SETTING_FRIEND_SETTING_SELECTION = 'setting_friend_setting_selection';
 export const SETTING_FRIEND_SETTING_UPDATE_SUCCESS = 'setting_friend_setting_update_success';
+
+/* Meet Actions */
+export const MEET_SELECT_TAB = 'meet_select_tab';

@@ -13,6 +13,9 @@ import SearchBarHeader from '../Common/SearchBarHeader';
 import MeetFilterBar from './MeetFilterBar';
 import MeetCard from './MeetCard';
 
+// actions
+import { selectTab } from '../../actions';
+
 const Tabs = [
   {
     name: 'SUGGESTED'
@@ -37,23 +40,26 @@ const testData = [
 
 class MeetTab extends Component {
 
+  selectTab = id => {
+    this.props.selectTab(id);
+  }
+
   keyExtractor = (item) => item.id;
 
   renderTabs() {
     return Tabs.map((t, index) => {
       // Test selection
-      let selected = 'SUGGESTED';
       let buttonContainerStyle = { ...styles.buttonContainerStyle };
       let buttonTextStyle = { ...styles.buttonTextStyle };
 
-      if (t.name === selected) {
+      if (t.name === this.props.selectedTab) {
         buttonContainerStyle.backgroundColor = '#1379a7';
       } else {
         buttonContainerStyle.backgroundColor = '#1aa0dd';
       }
       return (
         <View style={buttonContainerStyle} key={index}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={this.selectTab(t.name)}>
             <Text style={buttonTextStyle}>{t.name}</Text>
           </TouchableOpacity>
         </View>
@@ -100,4 +106,13 @@ const styles = {
   }
 };
 
-export default connect(null, null)(MeetTab);
+
+const mapStateToProps = state => {
+  const { selectedTab } = state.meet;
+
+  return {
+    selectedTab
+  };
+};
+
+export default connect(mapStateToProps, { selectTab })(MeetTab);

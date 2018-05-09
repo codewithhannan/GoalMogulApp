@@ -10,6 +10,9 @@ import {
   REGISTRATION_CONTACT_SKIP,
   REGISTRATION_CONTACT_SYNC,
   REGISTRATION_CONTACT_SYNC_DONE,
+  REGISTRATION_CONTACT_SYNC_FETCH,
+  REGISTRATION_CONTACT_SYNC_FETCH_DONE,
+  REGISTRATION_CONTACT_SYNC_UPLOAD_DONE,
   REGISTRATION_CONTACT_SYNC_SKIP,
 
   REGISTRATION_ACCOUNT_FORM_CHANGE,
@@ -24,13 +27,18 @@ const INITIAL_STATE = {
   email: '',
   password: '',
   headline: '',
-  contacts: [],
+  matchedContacts: {
+    contacts: [],
+    limit: 20,
+    skip: 0
+  },
   profilePic: null,
   profileObjectId: null,
   step: '',
   error: {},
   errorMessage: '',
-  loading: false
+  uploading: false,
+  fetching: false
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -83,8 +91,21 @@ export default (state = INITIAL_STATE, action) => {
     case REGISTRATION_CONTACT_SKIP:
       return { ...state, headline: '' };
 
+    // User starts to upload contacts
     case REGISTRATION_CONTACT_SYNC:
-      return { ...state, step: REGISTRATION_CONTACT_SYNC };
+      return { ...state, step: REGISTRATION_CONTACT_SYNC, uploading: true };
+
+    // Contacts upload done
+    case REGISTRATION_CONTACT_SYNC_UPLOAD_DONE:
+      return { ...state, uploading: false };
+
+    case REGISTRATION_CONTACT_SYNC_FETCH:
+      return { ...state, fetching: true };
+
+    // Contacts fetching done
+    case REGISTRATION_CONTACT_SYNC_FETCH_DONE: {
+      return { ...state, fetching: false, matchedContacts: action.payload };
+    }
 
     case REGISTRATION_CONTACT_SYNC_DONE:
       return { ...state };

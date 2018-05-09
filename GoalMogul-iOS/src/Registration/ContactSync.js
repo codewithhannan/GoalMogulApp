@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, TouchableWithoutFeedback } from 'react-native';
+import { ScrollView, View, Text, TouchableWithoutFeedback, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 
 /* Components */
@@ -14,6 +14,19 @@ import Styles from './Styles';
 
 /* Actions */
 import { registrationContactSyncDone } from '../actions';
+
+const testData = [
+  {
+    name: 'Jia Zeng',
+    headline: 'Students at Duke University',
+    request: false
+  },
+  {
+    name: 'Peter Kushner',
+    headline: 'CEO at start industries',
+    request: false
+  }
+];
 
 class ContactSync extends Component {
 
@@ -32,12 +45,11 @@ class ContactSync extends Component {
 
   renderItem(item) {
     // TODO: render item
-    /*
+    return (
       <ContactCard>
-        <ContactDetail item={item}/>
+        <ContactDetail item={item} />
       </ContactCard>
-    */
-    return ""
+    );
   }
 
   render() {
@@ -45,20 +57,23 @@ class ContactSync extends Component {
       <View style={Styles.containerStyle}>
         <Header contact type='contact' />
         <View style={Styles.bodyContainerStyle}>
-        {/*
+
           <FlatList
             enableEmptySections
-            data={this.props.contacts}
+            data={testData}
             renderItem={(item) => this.renderItem(item)}
             numColumns={1}
             keyExtractor={this._keyExtractor}
           />
-          */}
+
+          {/*
             <ScrollView>
               <ContactCard>
                 <ContactDetail />
               </ContactCard>
             </ScrollView>
+
+          */}
 
           <TouchableWithoutFeedback onPress={this.handleDoneOnPressed.bind(this)}>
             <View style={styles.footer}>
