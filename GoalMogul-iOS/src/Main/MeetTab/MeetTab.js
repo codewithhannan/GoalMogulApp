@@ -21,7 +21,7 @@ const Tabs = [
     name: 'REQUESTS'
   },
   {
-    name: 'OUTGOING'
+    name: 'FRIENDS'
   },
   {
     name: 'CONTACTS'
