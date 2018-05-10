@@ -61,3 +61,7 @@ export const SETTING_FRIEND_SETTING_UPDATE_SUCCESS = 'setting_friend_setting_upd
 
 /* Meet Actions */
 export const MEET_SELECT_TAB = 'meet_select_tab';
+export const MEET_LOADING = 'meet_loading';
+export const MEET_LOADING_DONE = 'meet_loading_done';
+export const MEET_UPDATE_FRIENDSHIP = 'meet_update_friendship';
+export const MEET_UPDATE_FRIENDSHIP_DONE = 'meet_update_friendship_done';

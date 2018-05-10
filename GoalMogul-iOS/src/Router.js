@@ -63,7 +63,7 @@ class RouterComponent extends Component {
         <Modal>
           <Scene key="root" hideNavBar>
             <Scene key="auth" initial hideNavBar>
-              <Scene key="splash" component={ContactSync} initial />
+              <Scene key="splash" component={MeetTab} initial />
               <Scene key="login" component={LoginPage} />
             </Scene>
 

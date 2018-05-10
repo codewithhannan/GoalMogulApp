@@ -4,7 +4,8 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -14,7 +15,10 @@ import MeetFilterBar from './MeetFilterBar';
 import MeetCard from './MeetCard';
 
 // actions
-import { selectTab } from '../../actions';
+import {
+  selectTab,
+  preloadMeet
+} from '../../actions';
 
 const Tabs = [
   {
@@ -31,14 +35,22 @@ const Tabs = [
   }
 ];
 
-const testData = [
+const testDataSuggested = [
   {
-    data: '1',
-    id: '1'
+    id: 1,
+    name: 'Jia Zeng',
+    profile: {
+      occupation: 'SR. ACCOUNTANT'
+    }
+
   }
 ];
 
 class MeetTab extends Component {
+
+  componentWillMount() {
+    this.props.preloadMeet();
+  }
 
   selectTab = id => {
     this.props.selectTab(id);
@@ -48,7 +60,6 @@ class MeetTab extends Component {
 
   renderTabs() {
     return Tabs.map((t, index) => {
-      // Test selection
       let buttonContainerStyle = { ...styles.buttonContainerStyle };
       let buttonTextStyle = { ...styles.buttonTextStyle };
 
@@ -59,7 +70,7 @@ class MeetTab extends Component {
       }
       return (
         <View style={buttonContainerStyle} key={index}>
-          <TouchableOpacity onPress={this.selectTab(t.name)}>
+          <TouchableOpacity onPress={this.selectTab.bind(this, t.name)}>
             <Text style={buttonTextStyle}>{t.name}</Text>
           </TouchableOpacity>
         </View>
@@ -68,7 +79,13 @@ class MeetTab extends Component {
   }
 
   renderItem = ({ item }) => {
-    return <MeetCard />;
+    return <MeetCard item={item} />;
+  }
+
+  renderActivityIndicator() {
+    if (this.props.tab.loading) {
+      return <ActivityIndicator size="small" color="#0000ff" />;
+    }
   }
 
   render() {
@@ -83,8 +100,9 @@ class MeetTab extends Component {
 
         <MeetFilterBar />
         <View style={{ flex: 1 }}>
+          {this.renderActivityIndicator()}
           <FlatList
-            data={testData}
+            data={this.props.tab.data}
             renderItem={this.renderItem}
             keyExtractor={this.keyExtractor}
           />
@@ -97,7 +115,7 @@ class MeetTab extends Component {
 
 const styles = {
   buttonContainerStyle: {
-
+    
   },
   buttonTextStyle: {
     color: '#ffffff',
@@ -108,11 +126,36 @@ const styles = {
 
 
 const mapStateToProps = state => {
-  const { selectedTab } = state.meet;
+  const { selectedTab, suggested, requests, friends, contacts } = state.meet;
+
+  const tab = ((id) => {
+    switch (id) {
+      case 'SUGGESTED': {
+        let newSuggested = { ...suggested };
+        newSuggested.data = testDataSuggested;
+        return newSuggested;
+        // return suggested
+      }
+
+      case 'REQUESTS':
+        return requests;
+      case 'FRIENDS':
+        return friends;
+      case 'CONTACTS':
+        return contacts;
+      default:
+        return suggested;
+    }
+  })(selectedTab);
 
   return {
-    selectedTab
+    selectedTab,
+    tab
   };
 };
 
-export default connect(mapStateToProps, { selectTab })(MeetTab);
+export default connect(
+  mapStateToProps, {
+    selectTab,
+    preloadMeet
+  })(MeetTab);

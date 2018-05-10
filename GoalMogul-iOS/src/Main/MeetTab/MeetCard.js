@@ -43,11 +43,12 @@ class MeetCard extends Component {
   }
 
   renderInfo() {
+    const { name, profile } = this.props.item;
     return (
       <View style={styles.infoContainerStyle}>
         <View style={{ flex: 1, flexDirection: 'column', marginRight: 6 }}>
-          <Name text='Heather Mayor' />
-          <Text style={styles.jobTitleTextStyle}>SR. ACCOUNTANT</Text>
+          <Name text={name} />
+          <Text style={styles.jobTitleTextStyle}>{profile.occupation}</Text>
         </View>
         <View style={{ flex: 1, justifyContent: 'center' }}>
           <Text style={styles.friendTextStyle}>38 MUTUAL FRIENDS</Text>
