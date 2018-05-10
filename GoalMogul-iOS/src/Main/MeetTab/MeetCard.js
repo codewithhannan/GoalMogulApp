@@ -13,7 +13,14 @@ import Name from '../Common/Name';
 /* Asset To Delete */
 import profilePic from '../../asset/test-profile-pic.png';
 
+// Actions
+import { updateFriendship } from '../../actions';
+
 class MeetCard extends Component {
+
+  onButtonClicked = () => {
+    this.props.updateFriendship();
+  }
 
   renderProfileImage() {
     return <Image style={styles.imageStyle} source={profilePic} />;
@@ -178,4 +185,6 @@ const styles = {
   }
 };
 
-export default MeetCard;
+export default connect(null, {
+  updateFriendship
+})(MeetCard);

@@ -65,3 +65,5 @@ export const MEET_LOADING = 'meet_loading';
 export const MEET_LOADING_DONE = 'meet_loading_done';
 export const MEET_UPDATE_FRIENDSHIP = 'meet_update_friendship';
 export const MEET_UPDATE_FRIENDSHIP_DONE = 'meet_update_friendship_done';
+export const MEET_TAB_REFRESH = 'meet_tab_refresh';
+export const MEET_TAB_REFRESH_DONE = 'meet_tab_refresh_done';

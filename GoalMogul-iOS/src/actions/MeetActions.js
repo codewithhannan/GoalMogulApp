@@ -4,7 +4,9 @@ import {
   MEET_LOADING,
   MEET_LOADING_DONE,
   MEET_UPDATE_FRIENDSHIP,
-  MEET_UPDATE_FRIENDSHIP_DONE
+  MEET_UPDATE_FRIENDSHIP_DONE,
+  MEET_TAB_REFRESH,
+  MEET_TAB_REFRESH_DONE
 } from './types';
 
 export const selectTab = id => {
@@ -65,22 +67,32 @@ const loadOneTab = (type) => {
 
 }
 
+// Refresh current tab based on selected id
+export const handleRefresh = (type) => {
+  return (dispatch, getState) => {
+    dispatch({
+      type: MEET_TAB_REFRESH,
+      payload: {
+        type
+      }
+    });
+
+    // TODO: refresh and fetch
+  };
+};
+
 /**
   Update friendship between two users
   1. requestFriend
   2. acceptFriend
   3. deleteFriend
 */
-export const requestFriend = (id, type) => {
+export const updateFriendship = (id, type) => {
   return (dispatch, getState) => {
     // TODO: update type to MEET_UPDATE_FRIENDSHIP
-    // dispatch({
-    //   type: MEET_UPDATE_FRIENDSHIP,
-    //   payload: {
-    //     type: '',
-    //     data: []
-    //   }
-    // });
+    dispatch({
+      type: MEET_UPDATE_FRIENDSHIP
+    });
 
     const requestType = ((request) => {
       switch (request) {
@@ -125,8 +137,8 @@ export const requestFriend = (id, type) => {
         dispatch({
           type: MEET_LOADING_DONE,
           payload: {
-            type: '',
-            data: []
+            type,
+            data: id
           }
         });
       });

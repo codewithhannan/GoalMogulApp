@@ -17,7 +17,8 @@ import MeetCard from './MeetCard';
 // actions
 import {
   selectTab,
-  preloadMeet
+  preloadMeet,
+  handleRefresh
 } from '../../actions';
 
 const Tabs = [
@@ -56,6 +57,10 @@ class MeetTab extends Component {
     this.props.selectTab(id);
   }
 
+  handleRefresh = () => {
+    this.props.handleRefresh(this.props.selectedTab.toLowerCase());
+  }
+
   keyExtractor = (item) => item.id;
 
   renderTabs() {
@@ -89,6 +94,7 @@ class MeetTab extends Component {
   }
 
   render() {
+    console.log('tab is: ', this.props.tab.refreshing);
     return (
       <View style={{ flex: 1 }}>
         <SearchBarHeader rightIcon='menu' />
@@ -100,11 +106,12 @@ class MeetTab extends Component {
 
         <MeetFilterBar />
         <View style={{ flex: 1 }}>
-          {this.renderActivityIndicator()}
           <FlatList
             data={this.props.tab.data}
             renderItem={this.renderItem}
             keyExtractor={this.keyExtractor}
+            refreshing={this.props.tab.refreshing}
+            onRefresh={this.handleRefresh.bind()}
           />
         </View>
       </View>
@@ -115,7 +122,7 @@ class MeetTab extends Component {
 
 const styles = {
   buttonContainerStyle: {
-    
+
   },
   buttonTextStyle: {
     color: '#ffffff',
@@ -157,5 +164,6 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps, {
     selectTab,
-    preloadMeet
+    preloadMeet,
+    handleRefresh
   })(MeetTab);
