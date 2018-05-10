@@ -30,11 +30,8 @@ const testData = [
 
 class ContactSync extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      age: 0
-    };
+  onLoadMore = () => {
+    
   }
 
   handleDoneOnPressed() {
@@ -44,7 +41,6 @@ class ContactSync extends Component {
   _keyExtractor = (item, index) => index;
 
   renderItem(item) {
-    // TODO: render item
     return (
       <ContactCard>
         <ContactDetail item={item} />
@@ -52,6 +48,7 @@ class ContactSync extends Component {
     );
   }
 
+  // TODO: replace data with this.props.data
   render() {
     return (
       <View style={Styles.containerStyle}>
@@ -64,6 +61,9 @@ class ContactSync extends Component {
             renderItem={(item) => this.renderItem(item)}
             numColumns={1}
             keyExtractor={this._keyExtractor}
+            refreshing={this.props.refreshing}
+            onEndReached={this.onLoadMore}
+            onEndThreshold={0}
           />
 
           {/*
@@ -93,10 +93,11 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { contacts } = state.registration;
+  const { matchedContacts } = state.registration;
+  const { limit, skip, refreshing, data } = matchedContacts;
 
   return {
-    contacts
+    limit, skip, refreshing, data
   };
 };
 

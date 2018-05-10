@@ -9,6 +9,6 @@ export default (state = INITIAL_STATE, action) => {
     case REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO:
       return action.payload;
     default:
-      return state;
+      return { ...state };
   }
 };

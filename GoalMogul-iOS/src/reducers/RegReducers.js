@@ -28,9 +28,10 @@ const INITIAL_STATE = {
   password: '',
   headline: '',
   matchedContacts: {
-    contacts: [],
-    limit: 20,
-    skip: 0
+    data: [],
+    limit: 30,
+    skip: 0,
+    refreshing: true
   },
   profilePic: null,
   profileObjectId: null,
@@ -104,7 +105,11 @@ export default (state = INITIAL_STATE, action) => {
 
     // Contacts fetching done
     case REGISTRATION_CONTACT_SYNC_FETCH_DONE: {
-      return { ...state, fetching: false, matchedContacts: action.payload };
+      const newMatchedContacts = { ...state.matchedContacts };
+      newMatchedContacts.data = action.payload;
+      newMatchedContacts.refreshing = false;
+
+      return { ...state, fetching: false, matchedContacts: newMatchedContacts };
     }
 
     case REGISTRATION_CONTACT_SYNC_DONE:
@@ -114,6 +119,6 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state };
 
     default:
-      return state;
+      return { ...state };
   }
 };

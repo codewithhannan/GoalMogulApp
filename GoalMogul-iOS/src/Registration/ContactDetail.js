@@ -1,13 +1,50 @@
 import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
-
+import { connect } from 'react-redux';
 import { Avatar } from 'react-native-elements';
+
 import badge from '../asset/utils/badge.png';
+
+// Actions
+import { updateFriendship } from '../actions';
 
 class ContactDetail extends Component {
 
-  onFriendRequest = () => {
+  state = {
+    requested: false
+  }
 
+  onFriendRequest = () => {
+    this.props.updateFriendship(0, 'requestFriend', this.updateState);
+  }
+
+  updateState = () => {
+    console.log('requested');
+    this.setState({
+      requested: true
+    });
+  }
+
+  renderButton() {
+    if (this.state.requested) {
+      return (
+        <Avatar
+          rounded
+          icon={{ name: 'check' }}
+          activeOpacity={0.7}
+          width={25}
+          overlayContainerStyle={{ backgroundColor: '#2ec25e' }}
+        />
+      );
+    }
+    return (
+      <Avatar
+        rounded
+        icon={{ name: 'user' }}
+        activeOpacity={0.7}
+        width={25}
+      />
+    );
   }
 
   render() {
@@ -39,12 +76,7 @@ class ContactDetail extends Component {
         </View>
         <View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
           <TouchableOpacity onPress={this.onFriendRequest}>
-            <Avatar
-              rounded
-              icon={{ name: 'user' }}
-              activeOpacity={0.7}
-              width={25}
-            />
+            {this.renderButton()}
           </TouchableOpacity>
         </View>
       </View>
@@ -88,4 +120,9 @@ const styles = {
   }
 };
 
-export default ContactDetail;
+export default connect(
+  null,
+  {
+    updateFriendship
+  }
+)(ContactDetail);

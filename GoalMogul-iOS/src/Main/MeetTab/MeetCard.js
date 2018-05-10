@@ -18,6 +18,10 @@ import { updateFriendship } from '../../actions';
 
 class MeetCard extends Component {
 
+  state = {
+    requested: false
+  }
+
   onButtonClicked = () => {
     this.props.updateFriendship();
   }
@@ -27,26 +31,35 @@ class MeetCard extends Component {
   }
 
   renderButton() {
-    return (
-      <View style={styles.buttonContainerStyle}>
+    if (this.state.requested) {
+      return (
         <Button
-          text='Friend'
+          text='Sent'
           textStyle={styles.buttonTextStyle}
           clear
-          icon={
-            <Icon
-              type='octicon'
-              name='plus-small'
-              width={10}
-              color='#45C9F6'
-              iconStyle={styles.buttonIconStyle}
-            />
-          }
-          iconLeft
           buttonStyle={styles.buttonStyle}
         />
-      </View>
+      );
+    }
+    return (
+      <Button
+        text='Friend'
+        textStyle={styles.buttonTextStyle}
+        clear
+        icon={
+          <Icon
+            type='octicon'
+            name='plus-small'
+            width={10}
+            color='#45C9F6'
+            iconStyle={styles.buttonIconStyle}
+          />
+        }
+        iconLeft
+        buttonStyle={styles.buttonStyle}
+      />
     );
+
   }
 
   renderInfo() {
@@ -60,7 +73,9 @@ class MeetCard extends Component {
         <View style={{ flex: 1, justifyContent: 'center' }}>
           <Text style={styles.friendTextStyle}>38 MUTUAL FRIENDS</Text>
         </View>
-        {this.renderButton()}
+        <View style={styles.buttonContainerStyle}>
+          {this.renderButton()}
+        </View>
       </View>
     );
   }

@@ -94,7 +94,6 @@ class MeetTab extends Component {
   }
 
   render() {
-    console.log('tab is: ', this.props.tab.refreshing);
     return (
       <View style={{ flex: 1 }}>
         <SearchBarHeader rightIcon='menu' />

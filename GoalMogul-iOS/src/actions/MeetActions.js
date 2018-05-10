@@ -29,8 +29,8 @@ export const preloadMeet = () => {
       }
     });
     const { token } = getState().user;
-    // const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/friendship';
-    const url = 'http://192.168.0.3:8081/api/secure/user/friendship?limit=100&skip=0';
+    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/friendship?limit=100&skip=0';
+    // const url = 'http://192.168.0.3:8081/api/secure/user/friendship?limit=100&skip=0';
     const headers = {
       method: 'GET',
       headers: {
@@ -42,6 +42,7 @@ export const preloadMeet = () => {
     fetchData(url, headers, null)
       .then((res) => {
         console.log('response for friendship: ', res);
+
         dispatch({
           type: MEET_LOADING_DONE,
           payload: {
@@ -78,6 +79,12 @@ export const handleRefresh = (type) => {
     });
 
     // TODO: refresh and fetch
+    dispatch({
+      type: MEET_TAB_REFRESH_DONE,
+      payload: {
+        type
+      }
+    })
   };
 };
 
@@ -87,7 +94,7 @@ export const handleRefresh = (type) => {
   2. acceptFriend
   3. deleteFriend
 */
-export const updateFriendship = (id, type) => {
+export const updateFriendship = (id, type, callback) => {
   return (dispatch, getState) => {
     // TODO: update type to MEET_UPDATE_FRIENDSHIP
     dispatch({
@@ -107,7 +114,8 @@ export const updateFriendship = (id, type) => {
       }
     })(type);
     const { token } = getState().user;
-    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/friendship';
+    // const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/friendship';
+    const url = 'http://192.168.0.3:8081/api/secure/user/friendship';
     const headers = {
       method: `${requestType}`,
       headers: {
@@ -123,7 +131,16 @@ export const updateFriendship = (id, type) => {
       .then((res) => {
         console.log(`response for ${type}: `, res);
 
-        // TODO: update type to MEET_UPDATE_FRIEND_DONE
+        if (res.message) {
+          // TODO: error handling
+          console.log('res status: ', res.status);
+        }
+
+        if (callback !== null && callback !== undefined) {
+          callback();
+          return;
+        }
+
         dispatch({
           type: MEET_UPDATE_FRIENDSHIP_DONE,
           payload: {
@@ -151,12 +168,10 @@ const fetchData = (url, headers, callback) => {
     .then((res) => res.json())
     .then((res) => {
       console.log('original res is: ', res);
-      if (!res.message && res.success) {
-        return resolve(true);
+      if (res.status && res.status !== 200) {
+        reject(res.message);
       }
-      // Update fails
-      // reject(res.message);
-      // TODO: replace the following line with reject
+
       return resolve(res);
     })
     .catch((err) => {
