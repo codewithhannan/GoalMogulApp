@@ -2,14 +2,12 @@ const ProfileUtils = {
   updateAccount(values) {
     const {
       name,
-      email,
       headline,
       token
     } = values;
 
     const user = {
       name,
-      email,
       headline
     };
 
@@ -21,7 +19,6 @@ const ProfileUtils = {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        email,
         name,
         headline,
         token

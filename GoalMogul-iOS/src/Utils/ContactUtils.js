@@ -49,8 +49,8 @@ const ContactUtils = {
   @return update result promise
   */
   uploadContacts(contacts, token) {
-    // const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/contactSync/';
-    const url = 'http://192.168.0.3:8081/api/secure/user/contactSync/';
+    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/contactSync/';
+    // const url = 'http://192.168.0.3:8081/api/secure/user/contactSync/';
     const headers = {
       method: 'POST',
       headers: {
@@ -72,8 +72,8 @@ const ContactUtils = {
   */
   async fetchMatchedContacts(token, skip, limit) {
     console.log('fetching matched contacts');
-    // const url = `https://goalmogul-api-dev.herokuapp.com/api/secure/user/contactSync/stored-matches?limit=${limit}&skip=${skip}`;
-    const url = `http://192.168.0.3:8081/api/secure/user/contactSync/stored-matches?limit=${limit}&skip=${skip}`;
+    const url = `https://goalmogul-api-dev.herokuapp.com/api/secure/user/contactSync/stored-matches?limit=${limit}&skip=${skip}`;
+    // const url = `http://192.168.0.3:8081/api/secure/user/contactSync/stored-matches?limit=${limit}&skip=${skip}`;
     const headers = {
       method: 'GET',
       headers: {

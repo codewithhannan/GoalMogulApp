@@ -66,7 +66,7 @@ export const preloadMeet = () => {
 
 const loadOneTab = (type) => {
 
-}
+};
 
 // Refresh current tab based on selected id
 export const handleRefresh = (type) => {
@@ -84,7 +84,7 @@ export const handleRefresh = (type) => {
       payload: {
         type
       }
-    })
+    });
   };
 };
 
@@ -114,8 +114,8 @@ export const updateFriendship = (id, type, callback) => {
       }
     })(type);
     const { token } = getState().user;
-    // const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/friendship';
-    const url = 'http://192.168.0.3:8081/api/secure/user/friendship';
+    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/friendship';
+    // const url = 'http://192.168.0.3:8081/api/secure/user/friendship';
     const headers = {
       method: `${requestType}`,
       headers: {
@@ -130,7 +130,6 @@ export const updateFriendship = (id, type, callback) => {
     fetchData(url, headers, null)
       .then((res) => {
         console.log(`response for ${type}: `, res);
-
         if (res.message) {
           // TODO: error handling
           console.log('res status: ', res.status);
