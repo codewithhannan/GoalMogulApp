@@ -58,3 +58,42 @@ export const openProfile = (userId) => {
     .catch((err) => console.log('err in loading user profile', err));
   };
 };
+
+export const fetchProfile = (userId, callback) => {
+  return (dispatch, getState) => {
+    const token = getState().user.token;
+    const url = `https://goalmogul-api-dev.herokuapp.com/api/secure/user/profile?userId=${userId}`;
+    const headers = {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      }
+    };
+    fetch(url, headers)
+    .then((res) => res.json())
+    .then((res) => {
+      /* If message, it means error */
+      if (res.message) {
+        /* TODO: error handling */
+        console.log('error fetching user profile: ', res);
+        dispatch({
+          type: PROFILE_FETCHING_FAIL,
+          payload: res.message
+        });
+        return;
+      }
+      dispatch({
+        type: PROFILE_FETCHING_SUCCESS,
+        payload: res.data
+      });
+      if (callback) {
+        callback();
+        return;
+      }
+    })
+    /* TODO: error handling */
+    .catch((err) => console.log('err in loading user profile', err));
+  };
+};

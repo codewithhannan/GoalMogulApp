@@ -119,6 +119,13 @@ const styles = {
     paddingLeft: 20,
     paddingRight: 20,
     marginBottom: 5,
+  },
+  errorStyle: {
+    marginTop: 15,
+    color: '#ff0033',
+    justifyContent: 'center',
+    marginBottom: 4,
+    alignSelf: 'center'
   }
 };
 

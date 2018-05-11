@@ -31,12 +31,13 @@ const validate = values => {
   if (!values.oldPassword) {
     errors.oldPassword = 'Required';
   }
-  if (!values.newPassowrd) {
-    errors.newPassowrd = 'Required';
+  if (!values.newPassword) {
+    errors.newPassword = 'Required';
   }
   if (!values.confirmPassword) {
     errors.confirmPassword = 'Required';
   }
+
   return errors;
 };
 
@@ -59,7 +60,7 @@ class EidtPasswordForm extends Component {
       <View>
         <Field name='oldPassword' label='Old password' component={Input} secure />
         <Field
-          name='newPassowrd'
+          name='newPassword'
           label='New password'
           component={Input}
           validate={minLength8}

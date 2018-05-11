@@ -1,7 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import { SubmissionError } from 'redux-form';
 import Expo, { WebBrowser } from 'expo';
-import { Linking } from 'react-native'
 
 import {
   SETTING_OPEN_SETTING,
@@ -65,7 +64,7 @@ export const onResendEmailPress = () => {
 
 // Update user email
 export const onUpdateEmailSubmit = values => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const { token } = getState().user;
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
     const headers = {
@@ -79,15 +78,19 @@ export const onUpdateEmailSubmit = values => {
         email: values.email
       })
     };
-    fetch(url, headers)
+    const message = await fetch(url, headers)
       .then((res) => res.json())
       .then((res) => {
-        console.log('update email address successfully: ', res);
-        dispatch({
-          type: SETTING_EMAIL_UPDATE_SUCCESS,
-          payload: values.email
-        });
-        Actions.pop();
+        console.log('update email address with response: ', res);
+        if (res.success) {
+          dispatch({
+            type: SETTING_EMAIL_UPDATE_SUCCESS,
+            payload: values.email
+          });
+          Actions.popTo('setting');
+          return;
+        }
+        return res.message;
       })
       .catch((err) => {
         console.log('error updating email: ', err);
@@ -95,12 +98,18 @@ export const onUpdateEmailSubmit = values => {
           _error: err
         });
       });
+
+    if (message) {
+      throw new SubmissionError({
+        _error: message
+      });
+    }
   };
 };
 
 // update user phone number
 export const onUpdatePhoneNumberSubmit = values => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const { token } = getState().user;
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
     const headers = {
@@ -114,15 +123,19 @@ export const onUpdatePhoneNumberSubmit = values => {
         phone: values.phone
       })
     };
-    fetch(url, headers)
+    const message = await fetch(url, headers)
       .then((res) => res.json())
       .then((res) => {
         console.log('update phone number successfully: ', res);
-        dispatch({
-          type: SETTING_PHONE_UPDATE_SUCCESS,
-          payload: values.phone
-        });
-        Actions.pop();
+        if (res.success) {
+          dispatch({
+            type: SETTING_PHONE_UPDATE_SUCCESS,
+            payload: values.phone
+          });
+          Actions.pop();
+          return;
+        }
+        return res.message;
       })
       .catch((err) => {
         console.log('error updating phone number: ', err);
@@ -130,6 +143,11 @@ export const onUpdatePhoneNumberSubmit = values => {
           _error: err
         });
       });
+    if (message) {
+      throw new SubmissionError({
+        _error: message
+      });
+    }
   };
 };
 
