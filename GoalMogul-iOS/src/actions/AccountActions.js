@@ -17,24 +17,43 @@ export const handleOnFormChange = (value, prop) => {
 
 /* Profile Account Actions */
 export const handleUpdatePassword = values => {
-  console.log('values are: ', values);
   return async (dispatch, getState) => {
-    console.log('values are: ', values);
     const { token } = getState().user;
-    const { oldPassword, newPassword } = values;
+    const { oldPassword, newPassword, confirmPassword } = values;
+
+    if (oldPassword === newPassword) {
+      throw new SubmissionError({
+        _error: 'Password does\'t change.'
+      });
+    }
+
+    if (newPassword !== confirmPassword) {
+      throw new SubmissionError({
+        _error: 'New passwords does\'t match.'
+      });
+    }
+
     const result = await updatePassword({ oldPassword, newPassword, token })
-      .then((res) => res.json())
+      .then((res) => {
+        console.log('response for updating password is: ', res);
+        return res;
+      })
       .catch((err) => {
         console.log('errro in updating password', err);
         throw new SubmissionError({
           _error: err
         });
       });
-    if (result === undefined || !result.success) {
+    /*
+      If result is not true, then update fails.
+      Please look into custumeFetch in ProfileUtils.handleUpdatePassword
+    */
+    if (!result) {
       throw new SubmissionError({
         _error: 'Error updating password. Please try later.'
       });
     }
     console.log('result: ', result);
+    Actions.pop();
   };
 };

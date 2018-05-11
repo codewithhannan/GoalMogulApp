@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableWithoutFeedback } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  ActivityIndicator
+} from 'react-native';
 import { connect } from 'react-redux';
 
 /* Components */
@@ -22,7 +27,7 @@ class Contacts extends Component {
 
   handleSkipOnPressed() {
     const skip = true;
-    this.props.registrationNextContactSync({ skip })
+    this.props.registrationNextContactSync({ skip });
   }
 
   render() {

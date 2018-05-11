@@ -14,6 +14,9 @@ import {
   REGISTRATION_CONTACT_SYNC,
   REGISTRATION_CONTACT_SYNC_SKIP,
   REGISTRATION_CONTACT_SYNC_DONE,
+  REGISTRATION_CONTACT_SYNC_UPLOAD_DONE,
+  REGISTRATION_CONTACT_SYNC_FETCH,
+  REGISTRATION_CONTACT_SYNC_FETCH_DONE,
 
   REGISTRATION_INTRO,
   REGISTRATION_INTRO_FORM_CHANGE,
@@ -26,7 +29,7 @@ import {
 } from './types';
 
 import ImageUtils from '../Utils/ImageUtils';
-import { uploadContacts } from '../Utils/ContactUtils';
+import { handleUploadContacts, fetchMatchedContacts } from '../Utils/ContactUtils';
 
 export const registrationLogin = () => {
   return (dispatch) => {
@@ -363,37 +366,44 @@ export const registrationNextContactSync = ({ skip }) => {
       return;
     }
     const { token } = getState().user;
+    // Skip and limit for fetching matched contacts
+    const limit = 100;
 
     // Show spinning bar
-    const contacts = await Expo.Contacts.getContactsAsync({
-      fields: [
-        Expo.Contacts.PHONE_NUMBERS,
-        Expo.Contacts.EMAILS,
-        Expo.Contacts.ADDRESSES,
-        Expo.Contacts.NONGREGORIANBIRTHDAY,
-        Expo.Contacts.SOCIAL_PROFILES,
-        Expo.Contacts.IM_ADDRESSES,
-
-        Expo.Contacts.DATES,
-      ],
-      pageSize: 10,
-      pageOffset: 0,
+    dispatch({
+      type
     });
 
-    console.log('contacts are: ', contacts);
-    console.log('first contact is: ', contacts.data[0].name);
-    console.log('first contact is: ', JSON.parse(JSON.stringify(contacts.data[0].phoneNumbers)));
-
-    // const data = JSON.stringify(contacts.data);
-    // console.log('json data: ', data);
-    uploadContacts(contacts.data, token)
-      .then((res) => res.json())
+    handleUploadContacts(token)
       .then((res) => {
         console.log(' response is: ', res);
-        // dispatch({
-        //   type,
-        // });
-        // Actions.registrationContactSync();
+        // Uploading contacts done. Hide spinner
+        dispatch({
+          type: REGISTRATION_CONTACT_SYNC_UPLOAD_DONE
+        });
+
+        Actions.registrationContactSync();
+
+        // Fetching matched records. Show spinner
+        dispatch({
+          type: REGISTRATION_CONTACT_SYNC_FETCH
+        });
+
+        /* TODO: load matched contacts */
+        return fetchMatchedContacts(token, 0, limit);
+      })
+      .then((res) => {
+        console.log('matched contacts are: ', res);
+
+        // User finish fetching
+        dispatch({
+          type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
+          payload: {
+            contacts: [], // TODO: replaced with res
+            skip: 0,
+            limit
+          }
+        });
       })
       .catch((err) => {
         // TODO: error handling

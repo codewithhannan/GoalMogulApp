@@ -29,6 +29,7 @@ export const loginUser = ({ username, password }) => {
   // Obtain the credential
   return async (dispatch) => {
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/pub/user/authenticate/';
+    // const url = 'http://192.168.0.3:8081/api/pub/user/authenticate/';
     const headers = {
       method: 'POST',
       headers: {

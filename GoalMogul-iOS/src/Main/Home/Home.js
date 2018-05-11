@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TabBarIOS } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 
 /* Import Icons */
 import Icon from '../../asset/icons/like-icon.png';
@@ -83,21 +83,28 @@ class Home extends Component {
       });
     */
 
+    /*
+      TODO:
+      1. use flatlist instead of scrollview
+      2. assign key on for TabButton
+    */
     return (
       <View style={styles.homeContainerStyle}>
         <SearchBarHeader rightIcon='menu' />
 
         <TabButtonGroup>
-          <TabButton text='GOALS' onSelect />
-          <TabButton text='POSTS' />
-          <TabButton text='NEEDS' />
+          <TabButton text='GOALS' onSelect key='GOALS' />
+          <TabButton text='POSTS' key='POSTS' />
+          <TabButton text='NEEDS' key='NEEDS' />
         </TabButtonGroup>
 
         <GoalFilterBar />
 
-        <PostCard key={1} />
-        <PostCard key={2} />
-        <MyGoalCard key={3} />
+        <ScrollView>
+          <PostCard key={1} />
+          <PostCard key={2} />
+        </ScrollView>
+
         {/*
           <TabBarIOS
             selectedTab={this.state.selectedTab}

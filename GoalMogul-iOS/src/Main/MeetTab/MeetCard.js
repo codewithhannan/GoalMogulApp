@@ -13,46 +13,69 @@ import Name from '../Common/Name';
 /* Asset To Delete */
 import profilePic from '../../asset/test-profile-pic.png';
 
+// Actions
+import { updateFriendship } from '../../actions';
+
 class MeetCard extends Component {
+
+  state = {
+    requested: false
+  }
+
+  onButtonClicked = () => {
+    this.props.updateFriendship();
+  }
 
   renderProfileImage() {
     return <Image style={styles.imageStyle} source={profilePic} />;
   }
 
   renderButton() {
-    return (
-      <View style={styles.buttonContainerStyle}>
+    if (this.state.requested) {
+      return (
         <Button
-          text='Friend'
+          text='Sent'
           textStyle={styles.buttonTextStyle}
           clear
-          icon={
-            <Icon
-              type='octicon'
-              name='plus-small'
-              width={10}
-              color='#45C9F6'
-              iconStyle={styles.buttonIconStyle}
-            />
-          }
-          iconLeft
           buttonStyle={styles.buttonStyle}
         />
-      </View>
+      );
+    }
+    return (
+      <Button
+        text='Friend'
+        textStyle={styles.buttonTextStyle}
+        clear
+        icon={
+          <Icon
+            type='octicon'
+            name='plus-small'
+            width={10}
+            color='#45C9F6'
+            iconStyle={styles.buttonIconStyle}
+          />
+        }
+        iconLeft
+        buttonStyle={styles.buttonStyle}
+      />
     );
+
   }
 
   renderInfo() {
+    const { name, profile } = this.props.item;
     return (
       <View style={styles.infoContainerStyle}>
         <View style={{ flex: 1, flexDirection: 'column', marginRight: 6 }}>
-          <Name text='Heather Mayor' />
-          <Text style={styles.jobTitleTextStyle}>SR. ACCOUNTANT</Text>
+          <Name text={name} />
+          <Text style={styles.jobTitleTextStyle}>{profile.occupation}</Text>
         </View>
         <View style={{ flex: 1, justifyContent: 'center' }}>
           <Text style={styles.friendTextStyle}>38 MUTUAL FRIENDS</Text>
         </View>
-        {this.renderButton()}
+        <View style={styles.buttonContainerStyle}>
+          {this.renderButton()}
+        </View>
       </View>
     );
   }
@@ -177,4 +200,6 @@ const styles = {
   }
 };
 
-export default MeetCard;
+export default connect(null, {
+  updateFriendship
+})(MeetCard);

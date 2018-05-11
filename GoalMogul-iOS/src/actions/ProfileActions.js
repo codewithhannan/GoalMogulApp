@@ -31,7 +31,7 @@ export const openProfileDetailEditForm = () => {
 
 export const submitUpdatingProfile = ({ values, hasImageModified }) => {
   return (dispatch, getState) => {
-    const { headline, name, email, oldPassword, newPassword } = values;
+    const { headline, name, oldPassword, newPassword } = values;
     const { about, occupation, elevatorPitch } = values.profile;
     const imageUri = values.profile.image;
 
@@ -42,7 +42,7 @@ export const submitUpdatingProfile = ({ values, hasImageModified }) => {
       type: PROFILE_SUBMIT_UPDATE
     });
 
-    const updateAccountPromise = updateAccount({ name, email, headline, token });
+    const updateAccountPromise = updateAccount({ name, headline, token });
     const updateProfilePromise = ImageUtils
       .upload(hasImageModified, imageUri, token, PROFILE_IMAGE_UPLOAD_SUCCESS, dispatch)
       .then(() => {

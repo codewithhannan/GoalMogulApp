@@ -12,6 +12,7 @@ import Profile from './Profile';
 import Setting from './Setting';
 import { reducer as formReducer } from 'redux-form';
 import NavigationReducers from './NavigationReducers';
+import MeetReducers from './MeetReducers';
 
 const rootPersistConfig = {
   key: 'root',
@@ -28,7 +29,8 @@ const reducers = combineReducers({
   profile: Profile,
   form: formReducer,
   setting: Setting,
-  navigation: NavigationReducers
+  navigation: NavigationReducers,
+  meet: MeetReducers
 });
 
 export default persistReducer(rootPersistConfig, reducers);

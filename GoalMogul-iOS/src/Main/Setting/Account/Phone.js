@@ -132,7 +132,7 @@ class Phone extends Component {
 
 const mapStateToProps = state => {
   const { phone } = state.setting;
-  const needAddPhone = (Object.keys(phone).length === 0 && phone.constructor === Object);
+  const needAddPhone = (!phone || (Object.keys(phone).length === 0 && phone.constructor === Object));
   const { stack, scene } = state.navigation;
 
   return {

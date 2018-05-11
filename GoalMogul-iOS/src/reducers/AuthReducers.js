@@ -19,9 +19,6 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
 
-    // case REHYDRATE:
-    //   return
-
     case USERNAME_CHANGED:
       return { ...state, username: action.payload };
     case PASSWORD_CHANGED:
@@ -46,6 +43,6 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state };
 
     default:
-      return state;
+      return { ...state };
   }
 };

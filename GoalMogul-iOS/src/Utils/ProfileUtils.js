@@ -2,14 +2,12 @@ const ProfileUtils = {
   updateAccount(values) {
     const {
       name,
-      email,
       headline,
       token
     } = values;
 
     const user = {
       name,
-      email,
       headline
     };
 
@@ -21,7 +19,6 @@ const ProfileUtils = {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        email,
         name,
         headline,
         token
@@ -68,6 +65,9 @@ const ProfileUtils = {
 
   updatePassword(values) {
     const { oldPassword, newPassword, token } = values;
+    console.log('in utils old password is: ', oldPassword);
+    console.log('in utils new password is: ', newPassword);
+    console.log('in utils values is: ', values);
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account/password';
     const headers = {
       method: 'PUT',
