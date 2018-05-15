@@ -13,6 +13,8 @@ class Input extends Component {
       limitation,
       multiline,
       keyboardType,
+      title,
+      disabled,
       meta: { touched, error },
       ...custom
     } = this.props;
@@ -20,7 +22,7 @@ class Input extends Component {
       <View style={styles.inputContainerStyle}>
         <TextField
           label={label}
-          title={custom.title}
+          title={title}
           autoCapitalize={'none'}
           autoCorrect={false}
           onChangeText={onChange}
@@ -31,6 +33,9 @@ class Input extends Component {
           characterRestriction={limitation}
           multiline={multiline}
           keyboardType={keyboardType || 'default'}
+          labelHeight={26}
+          fontSize={17}
+          disabled={disabled}
           {...custom}
           {...restInput}
         />

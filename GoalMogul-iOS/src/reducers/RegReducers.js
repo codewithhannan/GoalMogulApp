@@ -2,6 +2,8 @@ import {
   REGISTRATION_ERROR,
   REGISTRATION_BACK,
   REGISTRATION_ACCOUNT,
+  REGISTRATION_ACCOUNT_LOADING,
+  REGISTRATION_ACCOUNT_SUCCESS,
   REGISTRATION_LOGIN,
   REGISTRATION_ADDPROFILE,
   REGISTRATION_INTRO,
@@ -38,8 +40,9 @@ const INITIAL_STATE = {
   step: '',
   error: {},
   errorMessage: '',
-  uploading: false,
-  fetching: false
+  uploading: false, // flag for uploading user contacts
+  fetching: false, // flag for fetching matched contacts
+  loading: false // Register account loading. Disable account input when loading
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -58,6 +61,12 @@ export default (state = INITIAL_STATE, action) => {
 
     case REGISTRATION_ACCOUNT:
       return { ...state, step: REGISTRATION_ACCOUNT };
+
+    case REGISTRATION_ACCOUNT_LOADING:
+      return { ...state, loading: true };
+
+    case REGISTRATION_ACCOUNT_SUCCESS:
+      return { ...state, loading: false };
 
     // Registration account form change
     case REGISTRATION_ACCOUNT_FORM_CHANGE:

@@ -7,6 +7,7 @@ import {
   REGISTRATION_BACK,
   REGISTRATION_LOGIN,
   REGISTRATION_ADDPROFILE,
+  REGISTRATION_ACCOUNT_LOADING,
   REGISTRATION_ACCOUNT_SUCCESS,
 
   REGISTRATION_CONTACT_SKIP,
@@ -74,8 +75,12 @@ export const registrationNextAddProfile = (value) => {
       payload: error
     });
   }
+
   // TODO: refactor network request as factory function
   return async (dispatch) => {
+    dispatch({
+      type: REGISTRATION_ACCOUNT_LOADING
+    });
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/pub/user/';
     const headers = {
       method: 'POST',

@@ -10,6 +10,7 @@ export const LOGIN_USER_LOADING = 'login_user_loading';
 export const REGISTRATION_ERROR = 'registration_error';
 export const REGISTRATION_BACK = 'registration_back';
 export const REGISTRATION_ACCOUNT = 'registration_account';
+export const REGISTRATION_ACCOUNT_LOADING = 'registration_account_loading';
 export const REGISTRATION_ACCOUNT_SUCCESS = 'registration_account_success';
 export const REGISTRATION_ACCOUNT_FORM_CHANGE = 'registration_account_form_change';
 

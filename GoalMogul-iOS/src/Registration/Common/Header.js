@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, Text, TouchableWithoutFeedback, Keyboard, Animated } from 'react-native';
+import { View, Image, Text, TouchableWithoutFeedback } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 
@@ -57,6 +57,21 @@ class Header extends Component {
     this.props.registrationLogin();
   }
 
+  renderBackButton() {
+    return (
+      <TouchableWithoutFeedback onPress={this.handleBackOnClick.bind(this)}>
+        <View style={styles.navBarStyle}>
+          <Icon
+            type='entypo'
+            name='chevron-thin-left'
+            containerStyle={styles.iconStyle}
+            color='white'
+          />
+        </View>
+      </TouchableWithoutFeedback>
+    );
+  }
+
   renderPagination(type) {
     switch (type) {
       case 'profile':
@@ -80,15 +95,7 @@ class Header extends Component {
       headerStyle.paddingTop = 0;
       return (
         <View style={headerStyle}>
-          <TouchableWithoutFeedback onPress={this.handleBackOnClick.bind(this)}>
-            <View style={styles.navBarStyle}>
-              <Icon
-                type='entypo'
-                name='chevron-thin-left'
-                containerStyle={styles.iconStyle}
-              />
-            </View>
-          </TouchableWithoutFeedback>
+          {this.renderBackButton()}
           <Image style={styles.imageStyle} source={HeaderLogo} />
           <Text style={styles.introTextStyle}>Welcome to GoalMogul,</Text>
           <Text style={styles.headerNameStyle}>{this.props.name}</Text>
@@ -102,15 +109,7 @@ class Header extends Component {
       headerStyle.paddingTop = 0;
       return (
         <View style={headerStyle}>
-          <TouchableWithoutFeedback onPress={this.handleBackOnClick.bind(this)}>
-            <View style={styles.navBarStyle}>
-              <Icon
-                type='entypo'
-                name='chevron-thin-left'
-                containerStyle={styles.iconStyle}
-              />
-            </View>
-          </TouchableWithoutFeedback>
+          {this.renderBackButton()}
           <Image style={styles.imageStyle} source={HeaderLogo} />
           <Text style={styles.introTextStyle}>Contacts on GoalMogul,</Text>
           {pagination}
@@ -126,6 +125,7 @@ class Header extends Component {
               type='entypo'
               name='chevron-thin-left'
               containerStyle={styles.iconStyle}
+              color='white'
             />
           </View>
         </TouchableWithoutFeedback>
@@ -153,7 +153,7 @@ const styles = {
     flexDirection: 'row'
   },
   iconStyle: {
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-start'
   },
   imageStyle: {
     height: 38,

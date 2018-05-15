@@ -109,17 +109,20 @@ class LoginPage extends Component {
               <View style={Styles.bodyContainerStyle}>
                 {this.renderError(error)}
                 {/* <Text style={styles.titleTextStyle}>Get Started!</Text> */}
+                <View style={{ height: 6 }} />
                 <Field
                   name='username'
-                  label='Email'
+                  label='Email or Phone number'
                   keyboardType='email-address'
                   component={Input}
+                  disabled={this.props.loading}
                 />
                 <Field
                   name='password'
                   label='Password'
                   component={Input}
                   secure
+                  disabled={this.props.loading}
                 />
                 <TouchableOpacity onPress={handleSubmit(this.handleLoginPressed)}>
                   <View>
@@ -168,12 +171,20 @@ const styles = {
   }
 };
 
+const mapStateToProps = state => {
+  const { loading } = state.auth;
+
+  return {
+    loading
+  };
+};
+
 LoginPage = reduxForm({
   form: 'loginForm'
 })(LoginPage);
 
 export default connect(
-  null,
+  mapStateToProps,
   {
     registerUser,
     loginUser
