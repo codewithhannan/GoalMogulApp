@@ -8,44 +8,24 @@ import {
   ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
+import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
 
 /* Components */
+import Suggested from './Suggested';
+import Contacts from './Contacts';
+import Friends from './Friends';
+import Requests from './Requests';
+
 import SearchBarHeader from '../Common/SearchBarHeader';
 import MeetFilterBar from './MeetFilterBar';
 import MeetCard from './MeetCard';
+import TabButtonGroup from '../Common/TabButtonGroup';
 
 // actions
 import {
   selectTab,
   preloadMeet,
-  handleRefresh
 } from '../../actions';
-
-const Tabs = [
-  {
-    name: 'SUGGESTED'
-  },
-  {
-    name: 'REQUESTS'
-  },
-  {
-    name: 'FRIENDS'
-  },
-  {
-    name: 'CONTACTS'
-  }
-];
-
-const testDataSuggested = [
-  {
-    id: 1,
-    name: 'Jia Zeng',
-    profile: {
-      occupation: 'SR. ACCOUNTANT'
-    }
-
-  }
-];
 
 class MeetTab extends Component {
 
@@ -53,15 +33,35 @@ class MeetTab extends Component {
     this.props.preloadMeet();
   }
 
+  _handleIndexChange = (index) => {
+    this.props.selectTab(index);
+  };
+
+  _renderHeader = props => {
+    return (
+      <TabButtonGroup buttons={props} />
+    );
+  };
+
+  _renderScene = SceneMap({
+    suggested: Suggested,
+    friends: Friends,
+    contacts: Contacts,
+    requests: Requests,
+  });
+
+  keyExtractor = (item) => item.id;
+
+  /*
+  NOTE: this method is deprecated since we move to swiping mode between tabs
+
   selectTab = id => {
     this.props.selectTab(id);
   }
 
-  handleRefresh = () => {
-    this.props.handleRefresh(this.props.selectedTab.toLowerCase());
+  renderItem = ({ item }) => {
+    return <MeetCard item={item} />;
   }
-
-  keyExtractor = (item) => item.id;
 
   renderTabs() {
     return Tabs.map((t, index) => {
@@ -82,42 +82,34 @@ class MeetTab extends Component {
       );
     });
   }
+  */
 
-  renderItem = ({ item }) => {
-    return <MeetCard item={item} />;
-  }
+  /*
+  Note: This is a good practice for activityIndicator rendering
 
   renderActivityIndicator() {
     if (this.props.tab.loading) {
       return <ActivityIndicator size="small" color="#0000ff" />;
     }
   }
+  */
 
   render() {
     return (
       <View style={{ flex: 1 }}>
         <SearchBarHeader rightIcon='menu' />
-        <View>
-          <ScrollView horizontal>
-            {this.renderTabs()}
-          </ScrollView>
-        </View>
+        <TabViewAnimated
+          navigationState={this.props.navigationState}
+          renderScene={this._renderScene}
+          renderHeader={this._renderHeader}
+          onIndexChange={this._handleIndexChange}
+          useNativeDriver
+        />
 
-        <MeetFilterBar />
-        <View style={{ flex: 1 }}>
-          <FlatList
-            data={this.props.tab.data}
-            renderItem={this.renderItem}
-            keyExtractor={this.keyExtractor}
-            refreshing={this.props.tab.refreshing}
-            onRefresh={this.handleRefresh.bind()}
-          />
-        </View>
       </View>
     );
   }
 }
-
 
 const styles = {
   buttonContainerStyle: {
@@ -132,37 +124,16 @@ const styles = {
 
 
 const mapStateToProps = state => {
-  const { selectedTab, suggested, requests, friends, contacts } = state.meet;
-
-  const tab = ((id) => {
-    switch (id) {
-      case 'SUGGESTED': {
-        let newSuggested = { ...suggested };
-        newSuggested.data = testDataSuggested;
-        return newSuggested;
-        // return suggested
-      }
-
-      case 'REQUESTS':
-        return requests;
-      case 'FRIENDS':
-        return friends;
-      case 'CONTACTS':
-        return contacts;
-      default:
-        return suggested;
-    }
-  })(selectedTab);
+  const { selectedTab, navigationState } = state.meet;
 
   return {
     selectedTab,
-    tab
+    navigationState
   };
 };
 
 export default connect(
   mapStateToProps, {
     selectTab,
-    preloadMeet,
-    handleRefresh
+    preloadMeet
   })(MeetTab);

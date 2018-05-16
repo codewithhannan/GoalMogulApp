@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image } from 'react-native';
+import { Image, TouchableOpacity } from 'react-native';
 
 /* Assets */
 import IconHome from '../../asset/footer/navigation/home.png';
@@ -53,6 +53,11 @@ const styles = {
   iconStyle: {
     width: 10,
     height: 10
+  },
+  containerStyle: {
+    height: 25,
+    width: 25,
+    alignSelf: 'center'
   }
 };
 

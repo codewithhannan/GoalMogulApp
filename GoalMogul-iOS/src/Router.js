@@ -24,9 +24,11 @@ import ContactSync from './Registration/ContactSync';
 
 /* Main App */
 import TabIcon from './Main/Common/TabIcon';
-import Home from './Main/Home/Home';
 import MeetTab from './Main/MeetTab/MeetTab';
 // import MeetCard from './Main/MeetTab/MeetCard';
+
+// Home Tab
+import Home from './Main/Home/Home';
 
 // Profile
 import Profile from './Main/Profile/Profile';
@@ -63,7 +65,7 @@ class RouterComponent extends Component {
         <Modal>
           <Scene key="root" hideNavBar>
             <Scene key="auth" initial hideNavBar>
-              <Scene key="splash" component={SplashScreen} initial />
+              <Scene key="splash" component={MeetTab} initial />
               <Scene key="login" component={LoginPage} />
             </Scene>
 
@@ -98,12 +100,13 @@ class RouterComponent extends Component {
               <Tabs
                 key="mainTabs"
                 hideNavBar
-                swipeEnabled
+                swipeEnabled={false}
                 tabBarStyle={styles.tabBarStyle}
                 activeTintColor="#324a61"
                 inactiveTintColor="#b8c7cc"
                 tabs
                 showLabel={false}
+                panHandlers={null}
               >
                 <Stack
                   key="homeTab"

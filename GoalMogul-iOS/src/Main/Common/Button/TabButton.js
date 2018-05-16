@@ -1,21 +1,21 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Animated } from 'react-native';
 
 const TabButton = (props) => {
   if (props.onSelect) {
     return (
       <View style={styles.onSelectContainerStyle}>
-        <Text style={styles.onSelectTextStyle}>
+        <Animated.Text style={styles.onSelectTextStyle}>
           {props.text}
-        </Text>
+        </Animated.Text>
       </View>
     );
   }
   return (
     <View style={styles.containerStyle}>
-      <Text style={styles.textStyle}>
+      <Animated.Text style={styles.textStyle}>
         {props.text}
-      </Text>
+      </Animated.Text>
     </View>
   );
 };
@@ -26,24 +26,24 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'white'
   },
   onSelectContainerStyle: {
     flex: 1,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomWidth: 2,
-    borderColor: '#1fb6dd',
+    backgroundColor: '#4dc9f2'
   },
   textStyle: {
-    fontSize: 9,
+    fontSize: 12,
     fontWeight: '600',
-    color: '#33495f',
+    color: '#696969',
   },
   onSelectTextStyle: {
-    fontSize: 9,
+    fontSize: 12,
     fontWeight: '600',
-    color: '#1fb6dd',
+    color: 'white',
   }
 };
 

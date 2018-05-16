@@ -1,31 +1,42 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 
-import Divider from './Divider'
+import Divider from './Divider';
+import TabButton from './Button/TabButton';
 
 class TabButtonGroup extends Component {
 
-  constructor(props) {
-    super(props);
-  }
-
   renderButton() {
-    return this.props.children.map((b, index) => {
-      if (index !== 0) {
+    const { navigationState, jumpTo } = this.props.buttons;
+    const { index, routes } = navigationState;
+    return routes.map((b, i) => {
+      const selected = i === index;
+      if (i !== 0) {
         // console.log('hi I am number 1');
         return (
-          <View key={index} style={styles.dividerContainerStyle}>
+          <TouchableOpacity
+            key={b.key}
+            style={styles.dividerContainerStyle}
+            onPress={jumpTo.bind(this, b.key)}
+          >
             <Divider />
-            {b}
-          </View>
+            <TabButton text={b.title} onSelect={selected} />
+          </TouchableOpacity>
         );
       }
-      return b;
+      return (
+        <TouchableOpacity
+          key={b.key}
+          style={styles.dividerContainerStyle}
+          onPress={jumpTo.bind(this, b.key)}
+        >
+          <TabButton text={b.title} onSelect={selected} />
+        </TouchableOpacity>
+      );
     });
   }
 
   render() {
-    // console.log(this.props.children);
     return (
       <View style={styles.containerStyle}>
         {this.renderButton()}
@@ -39,15 +50,14 @@ const styles = {
     display: 'flex',
     height: 32,
     flexDirection: 'row',
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: '#ddd',
-    borderBottomWidth: 0,
     backgroundColor: '#fff',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 0.5 },
     shadowOpacity: 0.1,
     shadowRadius: 1,
-    elevation: 1
+    elevation: 0.5
   },
   dividerContainerStyle: {
     flexDirection: 'row',

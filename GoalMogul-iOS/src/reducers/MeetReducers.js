@@ -12,7 +12,17 @@ const TabNames = ['SUGGESTED', 'REQUESTS', 'FRIENDS', 'CONTACTS'];
 const limit = 20;
 
 const INITIAL_STATE = {
-  selectedTab: 'SUGGESTED',
+  selectedTab: 'suggested',
+  navigationState: {
+    index: 0,
+    routes: [
+      { key: 'suggested', title: 'Suggested' },
+      { key: 'friends', title: 'Friends' },
+      { key: 'requests', title: 'Requests' },
+      { key: 'contacts', title: 'Contacts' },
+    ],
+  },
+
   suggested: {
     data: [],
     loading: false,
@@ -48,7 +58,14 @@ export default (state = INITIAL_STATE, action) => {
 
     // Selection of tabs for meet
     case MEET_SELECT_TAB: {
-      return { ...state, selectedTab: action.payload };
+      const newNavigationState = { ...state.navigationState };
+      newNavigationState.index = action.payload;
+
+      return {
+        ...state,
+        selectedTab: newNavigationState.routes[action.payload].key,
+        navigationState: newNavigationState
+      };
     }
 
     // Loading suggested cards

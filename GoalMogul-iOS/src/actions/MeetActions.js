@@ -9,11 +9,11 @@ import {
   MEET_TAB_REFRESH_DONE
 } from './types';
 
-export const selectTab = id => {
+export const selectTab = index => {
   return (dispatch) => {
     dispatch({
       type: MEET_SELECT_TAB,
-      payload: id
+      payload: index
     });
   };
 };
@@ -69,12 +69,12 @@ const loadOneTab = (type) => {
 };
 
 // Refresh current tab based on selected id
-export const handleRefresh = (type) => {
+export const handleRefresh = (key) => {
   return (dispatch, getState) => {
     dispatch({
       type: MEET_TAB_REFRESH,
       payload: {
-        type
+        type: key
       }
     });
 
@@ -82,7 +82,7 @@ export const handleRefresh = (type) => {
     dispatch({
       type: MEET_TAB_REFRESH_DONE,
       payload: {
-        type
+        type: key
       }
     });
   };

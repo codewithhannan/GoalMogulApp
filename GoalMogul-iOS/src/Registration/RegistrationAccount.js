@@ -9,12 +9,12 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
+import { Actions } from 'react-native-router-flux';
 
 /* Components */
 import Header from './Common/Header';
 import Button from './Common/Button';
 import Divider from './Common/Divider';
-import InputField from './Common/InputField';
 import Input from './Common/Input';
 
 /* Styles */
@@ -24,9 +24,10 @@ import Styles from './Styles';
 import { registrationLogin, registrationNextAddProfile, handleOnFormChange } from '../actions';
 
 /* Refactor validation as a separate module */
-const validateEmail = value =>
-  value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
-    ? 'Invalid email address'
+const validateInput = value =>
+  value && !(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ||
+    /^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,3})|(\(?\d{2,3}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$/i.test(value))
+    ? 'Invalid input'
     : undefined;
 
 const minLength = min => value =>
@@ -56,7 +57,7 @@ class Account extends Component {
 
   handleLogInPressed() {
     console.log('login pressed');
-    this.props.registrationLogin();
+    Actions.login();
   }
 
   handleNextPressed = values => {
@@ -128,12 +129,15 @@ class Account extends Component {
                   name='name'
                   label='Full name'
                   component={Input}
+                  disabled={this.props.loading}
                 />
                 <Field
                   name='email'
-                  label='Email'
+                  label='Email or Phone number'
+                  title='please specify your country code, e.g. +1 for US'
                   component={Input}
-                  validate={validateEmail}
+                  validate={validateInput}
+                  disabled={this.props.loading}
                 />
                 <Field
                   name='password'
@@ -141,6 +145,7 @@ class Account extends Component {
                   component={Input}
                   secure
                   validate={minLength8}
+                  disabled={this.props.loading}
                 />
 
                 <TouchableWithoutFeedback onPress={handleSubmit(this.handleNextPressed)}>

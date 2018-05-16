@@ -3,7 +3,11 @@ import { Text } from 'react-native';
 
 const Name = (props) => {
   return (
-    <Text style={styles.containerStyle}>
+    <Text
+      style={styles.containerStyle}
+      numberOfLines={1}
+      ellipsizeMode='tail'
+    >
       {props.text}
     </Text>
   );
@@ -12,7 +16,8 @@ const Name = (props) => {
 const styles = {
   containerStyle: {
     fontSize: 12,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    maxWidth: 100
   }
 };
 

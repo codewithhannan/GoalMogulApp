@@ -10,6 +10,7 @@ export const LOGIN_USER_LOADING = 'login_user_loading';
 export const REGISTRATION_ERROR = 'registration_error';
 export const REGISTRATION_BACK = 'registration_back';
 export const REGISTRATION_ACCOUNT = 'registration_account';
+export const REGISTRATION_ACCOUNT_LOADING = 'registration_account_loading';
 export const REGISTRATION_ACCOUNT_SUCCESS = 'registration_account_success';
 export const REGISTRATION_ACCOUNT_FORM_CHANGE = 'registration_account_form_change';
 
@@ -38,6 +39,11 @@ export const REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE
 export const REGISTRATION_ADDPROFILE_CAMERA_OPEN = 'registration_addprofile_camera_open';
 
 /* Main App Actions */
+
+
+/* Home Tab actions */
+export const HOME_SWITCH_TAB = 'home_switch_tab';
+
 /* Profile actions */
 export const PROFILE_OPEN_PROFILE = 'profile_open_profile'; // User tries to open a profile
 export const PROFILE_FETCHING_SUCCESS = 'profile_fetching_success'; // Loading profile succeed
