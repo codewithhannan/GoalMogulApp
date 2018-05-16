@@ -138,9 +138,9 @@ const styles = {
     paddingBottom: 10
   },
   headerLeftImage: {
-    width: 25,
-    height: 25,
-    marginTop: 10,
+    width: 28,
+    height: 28,
+    marginTop: 10
   },
   headerRightImage: {
     width: 25,
