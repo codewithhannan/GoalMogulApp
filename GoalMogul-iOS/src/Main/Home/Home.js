@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Animated } from 'react-native';
-import {
-  Scene,
-  Stack,
-  Tabs,
-  Router
-} from 'react-native-router-flux';
-import { TabViewAnimated, TabBar, SceneMap } from 'react-native-tab-view';
+import { View } from 'react-native';
+import { connect } from 'react-redux';
+import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
 
 /* Components */
 import PostCard from '../../components/PostCard';
@@ -15,6 +10,9 @@ import SearchBarHeader from '../Common/SearchBarHeader';
 
 import Mastermind from './Mastermind';
 import ActivityFeed from './ActivityFeed';
+
+// Actions
+import { homeSwitchTab } from '../../actions';
 
 //TODO: delete following imports
 import MyGoalCard from '../Common/MyGoalCard';
@@ -31,7 +29,10 @@ class Home extends Component {
     };
   }
 
-  _handleIndexChange = index => this.setState({ index });
+  _handleIndexChange = index => {
+    this.setState({ index });
+    this.props.homeSwitchTab(index);
+  };
 
   _renderHeader = props => {
     return (
@@ -94,4 +95,9 @@ const styles = {
   }
 };
 
-export default Home;
+export default connect(
+  null,
+  {
+    homeSwitchTab
+  }
+)(Home);

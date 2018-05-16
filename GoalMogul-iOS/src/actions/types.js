@@ -39,6 +39,11 @@ export const REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE
 export const REGISTRATION_ADDPROFILE_CAMERA_OPEN = 'registration_addprofile_camera_open';
 
 /* Main App Actions */
+
+
+/* Home Tab actions */
+export const HOME_SWITCH_TAB = 'home_switch_tab';
+
 /* Profile actions */
 export const PROFILE_OPEN_PROFILE = 'profile_open_profile'; // User tries to open a profile
 export const PROFILE_FETCHING_SUCCESS = 'profile_fetching_success'; // Loading profile succeed

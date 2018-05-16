@@ -4,7 +4,8 @@ import { Image } from 'react-native';
 import {
   PROFILE_OPEN_PROFILE,
   PROFILE_FETCHING_SUCCESS,
-  PROFILE_FETCHING_FAIL
+  PROFILE_FETCHING_FAIL,
+  HOME_SWITCH_TAB
 } from './types';
 
 export const openProfile = (userId) => {
@@ -59,6 +60,7 @@ export const openProfile = (userId) => {
   };
 };
 
+// Fetching profile
 export const fetchProfile = (userId, callback) => {
   return (dispatch, getState) => {
     const token = getState().user.token;
@@ -95,5 +97,15 @@ export const fetchProfile = (userId, callback) => {
     })
     /* TODO: error handling */
     .catch((err) => console.log('err in loading user profile', err));
+  };
+};
+
+// Tab switch between ActivityFeed and Mastermind
+export const homeSwitchTab = (index) => {
+  return (dispatch) => {
+    dispatch({
+      type: HOME_SWITCH_TAB,
+      payload: index
+    });
   };
 };

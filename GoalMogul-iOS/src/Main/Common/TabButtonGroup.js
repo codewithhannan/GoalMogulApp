@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 
-import Divider from './Divider'
+import Divider from './Divider';
 import TabButton from './Button/TabButton';
 
 class TabButtonGroup extends Component {
-
-  handlePress = values => {
-
-  }
 
   renderButton() {
     const { navigationState, jumpTo } = this.props.buttons;
@@ -18,14 +14,22 @@ class TabButtonGroup extends Component {
       if (i !== 0) {
         // console.log('hi I am number 1');
         return (
-          <TouchableOpacity key={b.key} style={styles.dividerContainerStyle} onPress={jumpTo.bind(this, b.key)}>
+          <TouchableOpacity
+            key={b.key}
+            style={styles.dividerContainerStyle}
+            onPress={jumpTo.bind(this, b.key)}
+          >
             <Divider />
             <TabButton text={b.title} onSelect={selected} />
           </TouchableOpacity>
         );
       }
       return (
-        <TouchableOpacity key={b.key} style={styles.dividerContainerStyle} onPress={jumpTo.bind(this, b.key)}>
+        <TouchableOpacity
+          key={b.key}
+          style={styles.dividerContainerStyle}
+          onPress={jumpTo.bind(this, b.key)}
+        >
           <TabButton text={b.title} onSelect={selected} />
         </TouchableOpacity>
       );
