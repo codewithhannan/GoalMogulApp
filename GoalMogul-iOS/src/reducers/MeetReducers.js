@@ -18,8 +18,8 @@ const INITIAL_STATE = {
     routes: [
       { key: 'suggested', title: 'Suggested' },
       { key: 'friends', title: 'Friends' },
-      { key: 'contacts', title: 'Contacts' },
       { key: 'requests', title: 'Requests' },
+      { key: 'contacts', title: 'Contacts' },
     ],
   },
 

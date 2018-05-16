@@ -63,16 +63,20 @@ class MeetCard extends Component {
   }
 
   renderInfo() {
-    const { name, profile } = this.props.item;
+    const { name } = this.props.item;
     return (
       <View style={styles.infoContainerStyle}>
-        <View style={{ flex: 1, flexDirection: 'column', marginRight: 6 }}>
+        <View style={{ flex: 1, flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
           <Name text={name} />
-          <Text style={styles.jobTitleTextStyle}>{profile.occupation}</Text>
+          <Text
+            style={styles.friendTextStyle}
+            numberOfLines={1}
+            ellipsizeMode='tail'
+          >
+            380 MUTUAL FRIENDS
+          </Text>
         </View>
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-          <Text style={styles.friendTextStyle}>38 MUTUAL FRIENDS</Text>
-        </View>
+
         <View style={styles.buttonContainerStyle}>
           {this.renderButton()}
         </View>
@@ -80,7 +84,17 @@ class MeetCard extends Component {
     );
   }
 
-  renderNeed() {
+  renderAdditionalInfo() {
+    const { profile } = this.props.item;
+    let title = '';
+    let content = '';
+    if (profile.elevatorPitch) {
+      title = 'Elevator Pitch:';
+      content = profile.elevatorPitch;
+    } else if (profile.about) {
+      title = 'About:';
+      content = profile.about;
+    }
     return (
       <View style={{ flex: 1 }}>
         <Text
@@ -88,27 +102,30 @@ class MeetCard extends Component {
           numberOfLines={1}
           ellipsizeMode='tail'
         >
-          NEEDS: {' '}
+          {title} {' '}
           <Text style={styles.detailTextStyle}>
-            ACCOUNTANT, PAYROLL ASSISTANT, TAX GUIDE
+            {content}
           </Text>
         </Text>
       </View>
     );
   }
 
-  renderGoal() {
+  renderOccupation() {
+    const { profile } = this.props.item;
+    let title = '';
+    if (profile.occupation) {
+      title = 'Occupation: ';
+    }
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, marginTop: 5 }}>
         <Text
           style={styles.titleTextStyle}
           numberOfLines={1}
           ellipsizeMode='tail'
         >
-          GOALS: {' '}
-          <Text style={styles.detailTextStyle}>
-            BUY A HOME, NYC MARATHON, SKY-DIVING
-          </Text>
+          {title}
+          <Text style={styles.detailTextStyle}>{profile.occupation}</Text>
         </Text>
       </View>
     );
@@ -121,8 +138,8 @@ class MeetCard extends Component {
 
         <View style={styles.bodyContainerStyle}>
           {this.renderInfo()}
-          {this.renderGoal()}
-          {this.renderNeed()}
+          {this.renderOccupation()}
+          {this.renderAdditionalInfo()}
         </View>
       </View>
     );
@@ -141,7 +158,7 @@ const styles = {
   },
   bodyContainerStyle: {
     marginLeft: 8,
-    flex: 1
+    flex: 1,
   },
   infoContainerStyle: {
     flexDirection: 'row',
@@ -150,7 +167,7 @@ const styles = {
   imageStyle: {
     height: 48,
     width: 48,
-    borderRadius: 24,
+    borderRadius: 5,
   },
   buttonContainerStyle: {
     marginLeft: 8,
@@ -194,9 +211,11 @@ const styles = {
     paddingBottom: 3
   },
   friendTextStyle: {
+    paddingLeft: 10,
     color: '#45C9F6',
     fontSize: 9,
     fontWeight: '800',
+    maxWidth: 120
   }
 };
 

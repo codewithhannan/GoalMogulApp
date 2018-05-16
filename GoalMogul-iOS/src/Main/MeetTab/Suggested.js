@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 // Components
 import MeetFilterBar from './MeetFilterBar';
+import MeetCard from './MeetCard';
 
 // actions
 import {
@@ -14,9 +15,14 @@ import {
 const key = 'suggested';
 
 /* TODO: delete the test data */
-const testData = [
+const testDataSuggested = [
   {
-    name: 'Jia Zeng'
+    id: 1,
+    name: 'Jia Zeng aldjl;fajskl;djfla;jskd;as',
+    profile: {
+      
+    }
+
   }
 ];
 
@@ -29,8 +35,8 @@ class Suggested extends Component {
     this.props.handleRefresh(key);
   }
 
-  renderItem = item => {
-    // TODO: render item
+  renderItem = ({ item }) => {
+    return <MeetCard item={item} />;
   }
 
   render() {
@@ -39,7 +45,7 @@ class Suggested extends Component {
         <MeetFilterBar />
           <View style={{ flex: 1 }}>
             <FlatList
-              data={this.props.data}
+              data={testDataSuggested}
               renderItem={this.renderItem}
               keyExtractor={this._keyExtractor}
               onRefresh={this.handleRefresh.bind()}

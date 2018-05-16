@@ -27,17 +27,6 @@ import {
   preloadMeet,
 } from '../../actions';
 
-const testDataSuggested = [
-  {
-    id: 1,
-    name: 'Jia Zeng',
-    profile: {
-      occupation: 'SR. ACCOUNTANT'
-    }
-
-  }
-];
-
 class MeetTab extends Component {
 
   componentWillMount() {
@@ -70,6 +59,10 @@ class MeetTab extends Component {
     this.props.selectTab(id);
   }
 
+  renderItem = ({ item }) => {
+    return <MeetCard item={item} />;
+  }
+
   renderTabs() {
     return Tabs.map((t, index) => {
       let buttonContainerStyle = { ...styles.buttonContainerStyle };
@@ -90,10 +83,6 @@ class MeetTab extends Component {
     });
   }
   */
-
-  renderItem = ({ item }) => {
-    return <MeetCard item={item} />;
-  }
 
   /*
   Note: This is a good practice for activityIndicator rendering
