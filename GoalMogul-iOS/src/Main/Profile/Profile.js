@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, ScrollView } from 'react-native';
+import { MenuProvider } from 'react-native-popup-menu';
 
 /* Components */
 import MyGoalCard from '../Common/MyGoalCard';
@@ -26,19 +27,21 @@ const testData = {
 class Profile extends Component {
   render() {
     return (
-      <View style={styles.containerStyle}>
-        <SearchBarHeader backButton rightIcon='menu' />
-        <ProfileSummaryCard />
-        <View style={styles.tabContainerStyle}>
-          <FilterBarButton data={testData.goal} />
-          <FilterBarButton data={testData.post} />
-          <FilterBarButton data={testData.need} />
+      <MenuProvider>
+        <View style={styles.containerStyle}>
+          <SearchBarHeader backButton rightIcon='menu' />
+          <ProfileSummaryCard />
+          <View style={styles.tabContainerStyle}>
+            <FilterBarButton data={testData.goal} />
+            <FilterBarButton data={testData.post} />
+            <FilterBarButton data={testData.need} />
+          </View>
+          <GoalFilterBar />
+          <ScrollView>
+            <MyGoalCard />
+          </ScrollView>
         </View>
-        <GoalFilterBar />
-        <ScrollView>
-          <MyGoalCard />
-        </ScrollView>
-      </View>
+      </MenuProvider>
     );
   }
 }

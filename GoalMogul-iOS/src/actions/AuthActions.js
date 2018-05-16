@@ -70,6 +70,9 @@ export const loginUser = ({ username, password }) => {
       });
 
     if (message) {
+      dispatch({
+        type: LOGIN_USER_FAIL,
+      });
       throw new SubmissionError({
         _error: message
       });

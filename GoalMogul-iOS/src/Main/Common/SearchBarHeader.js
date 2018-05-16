@@ -48,6 +48,7 @@ class SearchBarHeader extends Component {
             <Icon
               type='entypo'
               name='chevron-thin-left'
+              color='#35475d'
               containerStyle={{ justifyContent: 'flex-start' }}
             />
           </View>

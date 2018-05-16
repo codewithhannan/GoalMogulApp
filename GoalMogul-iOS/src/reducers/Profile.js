@@ -8,6 +8,12 @@ import {
   SETTING_EMAIL_UPDATE_SUCCESS
 } from '../actions/types';
 
+const GOAL_FILTER_CONST = {
+  sortBy: ['important', 'recent', 'popular'],
+  orderBy: ['ascending', 'descending'],
+  caterogy: ['all']
+};
+
 const INITIAL_STATE = {
   userId: '',
   user: {
@@ -18,7 +24,21 @@ const INITIAL_STATE = {
 
     }
   }, // User model for profile
-  uploading: false
+  uploading: false,
+  goalFilter: {
+    sortBy: {
+      overlay: false,
+      type: 'important'
+    },
+    orderBy: {
+      overlay: false,
+      type: 'ascending'
+    },
+    catergory: {
+      overlay: false,
+      type: 'all'
+    }
+  }
 };
 
 export default (state = INITIAL_STATE, action) => {
