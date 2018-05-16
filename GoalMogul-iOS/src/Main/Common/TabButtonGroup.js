@@ -50,14 +50,14 @@ const styles = {
     display: 'flex',
     height: 32,
     flexDirection: 'row',
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: '#ddd',
     backgroundColor: '#fff',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 0.5 },
     shadowOpacity: 0.1,
     shadowRadius: 1,
-    elevation: 1
+    elevation: 0.5
   },
   dividerContainerStyle: {
     flexDirection: 'row',
