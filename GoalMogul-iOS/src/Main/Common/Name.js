@@ -15,7 +15,7 @@ const Name = (props) => {
 
 const styles = {
   containerStyle: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
     maxWidth: 100
   }

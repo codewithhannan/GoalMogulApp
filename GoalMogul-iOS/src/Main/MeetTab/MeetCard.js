@@ -51,6 +51,7 @@ class MeetCard extends Component {
             type='octicon'
             name='plus-small'
             width={10}
+            size={20}
             color='#45C9F6'
             iconStyle={styles.buttonIconStyle}
           />
@@ -184,10 +185,13 @@ const styles = {
     color: '#45C9F6',
     fontSize: 11,
     fontWeight: '700',
-    paddingLeft: 1
+    paddingLeft: 1,
+    padding: 0,
+    paddingTop: 1,
+    alignSelf: 'center'
   },
   buttonIconStyle: {
-    paddingTop: 1
+    marginTop: 1
   },
   needContainerStyle: {
 
