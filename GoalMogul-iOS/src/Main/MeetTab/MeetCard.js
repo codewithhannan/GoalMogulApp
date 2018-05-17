@@ -59,7 +59,6 @@ class MeetCard extends Component {
         buttonStyle={styles.buttonStyle}
       />
     );
-
   }
 
   renderInfo() {

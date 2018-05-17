@@ -76,11 +76,11 @@ const styles = {
   imageStyle: {
     width: 80,
     height: 80,
-    borderRadius: 40
+    borderRadius: 5
   },
   nameTextStyle: {
     marginTop: 10,
-    fontSize: 23
+    fontSize: 25
   },
   headlineTextStyle: {
     fontSize: 15

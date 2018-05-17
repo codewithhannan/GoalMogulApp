@@ -22,7 +22,6 @@ class Mastermind extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <GoalFilterBar />
         <FlatList
           enableEmptySections
           data={testData}

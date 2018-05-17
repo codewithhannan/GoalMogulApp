@@ -20,7 +20,7 @@ const testDataSuggested = [
     id: 1,
     name: 'Jia Zeng aldjl;fajskl;djfla;jskd;as',
     profile: {
-      
+
     }
 
   }
@@ -28,7 +28,7 @@ const testDataSuggested = [
 
 class Suggested extends Component {
 
-  _keyExtractor = (item) => item.id
+  _keyExtractor = (item, index) => index
 
   handleRefresh = () => {
     console.log('Refreshing tab: ', key);

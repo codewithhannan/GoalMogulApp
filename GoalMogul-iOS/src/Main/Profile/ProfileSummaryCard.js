@@ -22,10 +22,6 @@ const data = [
   {
     name: 'Friends',
     stat: '100K'
-  },
-  {
-    name: 'Referrals',
-    stat: '290K'
   }
 ];
 
@@ -106,7 +102,7 @@ const styles = {
   imageStyle: {
     height: 54,
     width: 54,
-    borderRadius: 27,
+    borderRadius: 5,
   },
   buttonStyle: {
     width: 80,

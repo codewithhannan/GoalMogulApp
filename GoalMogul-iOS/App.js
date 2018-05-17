@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View, Linking } from 'react-native';
-import Expo from 'expo';
 
 /* State management */
 import { Provider } from 'react-redux';
@@ -25,7 +24,6 @@ export default class App extends React.Component {
       <Provider store={store}>
         <PersistGate persistor={persistor}>
           <View style={styles.container}>
-
             <Router />
           </View>
         </PersistGate>

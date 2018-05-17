@@ -54,6 +54,7 @@ export const PROFILE_SUBMIT_UPDATE = 'profile_submit_update';
 export const PROFILE_IMAGE_UPLOAD_SUCCESS = 'profile_image_upload_success';
 export const PROFILE_UPDATE_SUCCESS = 'profile_update_success';
 export const PROFILE_UPDATE_FAIL = 'profile_update_fail';
+export const PROFILE_SWITCH_TAB = 'profile_switch_tab';
 
 /* Setting actions */
 export const SETTING_OPEN_SETTING = 'setting_open_setting';

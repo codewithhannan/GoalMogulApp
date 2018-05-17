@@ -8,7 +8,8 @@ import {
   PROFILE_SUBMIT_UPDATE,
   PROFILE_UPDATE_SUCCESS,
   PROFILE_UPDATE_FAIL,
-  PROFILE_IMAGE_UPLOAD_SUCCESS
+  PROFILE_IMAGE_UPLOAD_SUCCESS,
+  PROFILE_SWITCH_TAB
 } from './types';
 
 export const openProfileDetail = () => {
@@ -84,3 +85,12 @@ export const submitUpdatingProfile = ({ values, hasImageModified }) => {
       });
   };
 };
+
+export const selectProfileTab = (index) => {
+  return (dispatch) => {
+    dispatch({
+      type: PROFILE_SWITCH_TAB,
+      payload: index
+    });
+  };
+}
