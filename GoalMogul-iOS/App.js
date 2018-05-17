@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View, Linking } from 'react-native';
-import { MenuProvider } from 'react-native-popup-menu';
 
 /* State management */
 import { Provider } from 'react-redux';
@@ -25,10 +24,7 @@ export default class App extends React.Component {
       <Provider store={store}>
         <PersistGate persistor={persistor}>
           <View style={styles.container}>
-            <MenuProvider>
-              <Router />
-            </MenuProvider>
-
+            <Router />
           </View>
         </PersistGate>
       </Provider>
