@@ -1,13 +1,22 @@
 import React, { Component } from 'react';
 import { View, ScrollView } from 'react-native';
 import { MenuProvider } from 'react-native-popup-menu';
+import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
+import { connect } from 'react-redux';
 
 /* Components */
-import MyGoalCard from '../Common/MyGoalCard';
 import SearchBarHeader from '../Common/SearchBarHeader';
 import ProfileSummaryCard from './ProfileSummaryCard';
-import FilterBarButton from '../Common/Button/FilterBarButton';
-import GoalFilterBar from '../Common/GoalFilterBar';
+import TabButtonGroup from '../Common/TabButtonGroup';
+
+import MyGoals from './MyGoals';
+import MyNeeds from './MyNeeds';
+import MyPosts from './MyPosts';
+
+/* Actions */
+import {
+  selectProfileTab
+} from '../../actions';
 
 const testData = {
   goal: {
@@ -25,23 +34,37 @@ const testData = {
 };
 
 class Profile extends Component {
+
+  _handleIndexChange = (index) => {
+    this.props.selectProfileTab(index);
+  };
+
+  _renderHeader = props => {
+    return (
+      <TabButtonGroup buttons={props} />
+    );
+  };
+
+  _renderScene = SceneMap({
+    goals: MyGoals,
+    posts: MyPosts,
+    needs: MyNeeds,
+  });
+
   render() {
     return (
-      <MenuProvider>
+
         <View style={styles.containerStyle}>
           <SearchBarHeader backButton rightIcon='menu' />
           <ProfileSummaryCard />
-          <View style={styles.tabContainerStyle}>
-            <FilterBarButton data={testData.goal} />
-            <FilterBarButton data={testData.post} />
-            <FilterBarButton data={testData.need} />
-          </View>
-          <GoalFilterBar />
-          <ScrollView>
-            <MyGoalCard />
-          </ScrollView>
+          <TabViewAnimated
+            navigationState={this.props.navigationState}
+            renderScene={this._renderScene}
+            renderHeader={this._renderHeader}
+            onIndexChange={this._handleIndexChange}
+            useNativeDriver
+          />
         </View>
-      </MenuProvider>
     );
   }
 }
@@ -53,8 +76,22 @@ const styles = {
   tabContainerStyle: {
     display: 'flex',
     height: 35,
-    flexDirection: 'row',
+    flexDirection: 'row'
   }
 };
 
-export default Profile;
+const mapStateToProps = state => {
+  const { selectedTab, navigationState } = state.profile;
+
+  return {
+    selectedTab,
+    navigationState
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  {
+    selectProfileTab
+  }
+)(Profile);

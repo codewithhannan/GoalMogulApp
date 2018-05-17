@@ -5,7 +5,8 @@ import {
   PROFILE_SUBMIT_UPDATE,
   PROFILE_UPDATE_SUCCESS,
   PROFILE_UPDATE_FAIL,
-  SETTING_EMAIL_UPDATE_SUCCESS
+  SETTING_EMAIL_UPDATE_SUCCESS,
+  PROFILE_SWITCH_TAB
 } from '../actions/types';
 
 const GOAL_FILTER_CONST = {
@@ -16,6 +17,7 @@ const GOAL_FILTER_CONST = {
 
 const INITIAL_STATE = {
   userId: '',
+  // User model for profile
   user: {
     profile: {
       image: undefined
@@ -23,20 +25,56 @@ const INITIAL_STATE = {
     email: {
 
     }
-  }, // User model for profile
+  },
   uploading: false,
-  goalFilter: {
-    sortBy: {
-      overlay: false,
-      type: 'important'
-    },
-    orderBy: {
-      overlay: false,
-      type: 'ascending'
-    },
-    catergory: {
-      overlay: false,
-      type: 'all'
+  // navigation state
+  selectedTab: 'suggested',
+  navigationState: {
+    index: 0,
+    routes: [
+      { key: 'goals', title: 'MY GOALS' },
+      { key: 'posts', title: 'MY POSTS' },
+      { key: 'needs', title: 'MY NEEDS' }
+    ]
+  },
+  // Individual tab state
+  goals: {
+    filterbar: {
+      sortBy: {
+        type: 'important'
+      },
+      orderBy: {
+        type: 'ascending'
+      },
+      catergory: {
+        type: 'all'
+      }
+    }
+  },
+  posts: {
+    filterbar: {
+      sortBy: {
+        type: 'important'
+      },
+      orderBy: {
+        type: 'ascending'
+      },
+      catergory: {
+        type: 'all'
+      }
+    }
+  },
+  needs: {
+    filterbar: {
+      sortBy: {
+        type: 'important'
+      },
+      orderBy: {
+        type: 'ascending'
+      },
+      catergory: {
+        type: 'all'
+      }
     }
   }
 };
@@ -60,6 +98,18 @@ export default (state = INITIAL_STATE, action) => {
 
     case PROFILE_UPDATE_SUCCESS: {
       return { ...state, user: action.payload, uploading: false };
+    }
+
+    // Update navigation state when new tab is selected
+    case PROFILE_SWITCH_TAB: {
+      const newNavigationState = { ...state.navigationState };
+      newNavigationState.index = action.payload;
+
+      return {
+        ...state,
+        selectedTab: newNavigationState.routes[action.payload].key,
+        navigationState: newNavigationState
+      };
     }
 
     default:

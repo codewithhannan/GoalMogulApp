@@ -50,14 +50,14 @@ class MeetTab extends Component {
     requests: Requests,
   });
 
-  keyExtractor = (item) => item.id;
-
   /*
   NOTE: this method is deprecated since we move to swiping mode between tabs
 
   selectTab = id => {
     this.props.selectTab(id);
   }
+
+  keyExtractor = (item) => item.id;
 
   renderItem = ({ item }) => {
     return <MeetCard item={item} />;

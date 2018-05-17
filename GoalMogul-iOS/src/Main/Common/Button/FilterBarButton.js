@@ -1,3 +1,6 @@
+/*
+NOTE: this element is deprecated due to milestone 1 UI chagnes
+*/
 import React from 'react';
 import {
   Text,

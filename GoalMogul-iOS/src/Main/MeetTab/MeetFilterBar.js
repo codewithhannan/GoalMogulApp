@@ -40,9 +40,7 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 12,
-    paddingBottom: 12,
-    marginBottom: 5,
-    backgroundColor: '#ffffff'
+    paddingBottom: 12
   },
   detailContainerStyle: {
     flexDirection: 'row',
