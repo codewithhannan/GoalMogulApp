@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import {
   View,
-  ScrollView
+  ScrollView,
+  Image
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
 /* Components */
 import SettingCard from '../SettingCard';
+
+// Assets
+import PrivacyIcon from '../../../asset/utils/privacy.png';
 
 class Privacy extends Component {
   render() {
@@ -16,6 +20,7 @@ class Privacy extends Component {
           <SettingCard
             title="Who can see your friends"
             onPress={() => Actions.friendsSetting()}
+            icon={PrivacyIcon}
           />
         </ScrollView>
       </View>

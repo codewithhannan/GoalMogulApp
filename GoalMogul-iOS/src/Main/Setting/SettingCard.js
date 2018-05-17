@@ -1,14 +1,27 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, Image } from 'react-native';
 
 class SettingCard extends Component {
+
+  renderIcon() {
+    if (this.props.icon) {
+      return (
+        <Image source={this.props.icon} style={styles.titleIconStyle} />
+      );
+    }
+    return '';
+  }
+
   render() {
     return (
       <TouchableOpacity onPress={this.props.onPress}>
         <View style={styles.containerStyle}>
-          <Text style={styles.titleStyle}>
-            {this.props.title}
-          </Text>
+          <View style={styles.titleContainerStyle}>
+            {this.renderIcon()}
+            <Text style={styles.titleStyle}>
+              {this.props.title}
+            </Text>
+          </View>
           <Text style={styles.explanationTextStyle}>
             {this.props.explanation}
           </Text>
@@ -28,12 +41,21 @@ const styles = {
     borderBottomWidth: 1,
     borderBottomColor: '#b8bec6'
   },
+  titleContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  titleIconStyle: {
+    height: 20,
+    width: 20,
+    marginRight: 5
+  },
   titleStyle: {
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: '700'
   },
   explanationTextStyle: {
-    fontSize: 12,
+    fontSize: 12
   }
 };
 
