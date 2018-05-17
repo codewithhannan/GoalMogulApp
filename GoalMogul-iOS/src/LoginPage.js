@@ -78,10 +78,12 @@ class LoginPage extends Component {
 
   renderError(error) {
     return error ? (
-      <View style={{ height: 15 }}>
+      <View style={{ height: 29 }}>
         <Text style={styles.errorStyle}>{error}</Text>
       </View>
-    ) : null;
+    ) : (
+      <View style={{ height: 29 }} />
+    );
   }
   // <KeyboardAvoidingView
   //   behavior='position'
@@ -109,7 +111,7 @@ class LoginPage extends Component {
               <View style={Styles.bodyContainerStyle}>
                 {this.renderError(error)}
                 {/* <Text style={styles.titleTextStyle}>Get Started!</Text> */}
-                <View style={{ height: 6 }} />
+
                 <Field
                   name='username'
                   label='Email or Phone number'
@@ -163,10 +165,9 @@ const styles = {
     marginRight: 10
   },
   errorStyle: {
-    marginTop: 15,
+    marginTop: 12,
     color: '#ff0033',
     justifyContent: 'center',
-    marginBottom: 4,
     alignSelf: 'center'
   }
 };
