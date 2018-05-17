@@ -3,7 +3,7 @@ import { View, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 
 // Components
-import MeetFilterBar from './MeetFilterBar';
+import FriendsFilterBar from './Friends/FriendsFilterBar';
 
 // actions
 import {
@@ -21,7 +21,6 @@ const testData = [
 ];
 
 class Friends extends Component {
-
   _keyExtractor = (item) => item.id
 
   handleRefresh = () => {
@@ -36,16 +35,16 @@ class Friends extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <MeetFilterBar />
-          <View style={{ flex: 1 }}>
-            <FlatList
-              data={this.props.data}
-              renderItem={this.renderItem}
-              keyExtractor={this._keyExtractor}
-              onRefresh={this.handleRefresh.bind()}
-              refreshing={this.props.refreshing}
-            />
-          </View>
+        <FriendsFilterBar />
+        <View style={{ flex: 1 }}>
+          <FlatList
+            data={this.props.data}
+            renderItem={this.renderItem}
+            keyExtractor={this._keyExtractor}
+            onRefresh={this.handleRefresh.bind()}
+            refreshing={this.props.refreshing}
+          />
+        </View>
         {/*
           onEndReached={this.onLoadMore}
         */}

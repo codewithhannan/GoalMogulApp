@@ -55,7 +55,9 @@ const styles = {
     fontWeight: '700'
   },
   explanationTextStyle: {
-    fontSize: 12
+    fontSize: 12,
+    marginTop: 3,
+    marginLeft: 3
   }
 };
 

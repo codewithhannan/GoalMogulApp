@@ -12,7 +12,7 @@ class TabButtonGroup extends Component {
     return routes.map((b, i) => {
       const selected = i === index;
       if (i !== 0) {
-        // console.log('hi I am number 1');
+        // render divider to the left
         return (
           <TouchableOpacity
             key={b.key}
@@ -20,7 +20,7 @@ class TabButtonGroup extends Component {
             onPress={jumpTo.bind(this, b.key)}
           >
             <Divider />
-            <TabButton text={b.title} onSelect={selected} />
+            <TabButton text={b.title} onSelect={selected} stat={b.stat} />
           </TouchableOpacity>
         );
       }
@@ -30,7 +30,7 @@ class TabButtonGroup extends Component {
           style={styles.dividerContainerStyle}
           onPress={jumpTo.bind(this, b.key)}
         >
-          <TabButton text={b.title} onSelect={selected} />
+          <TabButton text={b.title} onSelect={selected} stat={b.stat} />
         </TouchableOpacity>
       );
     });

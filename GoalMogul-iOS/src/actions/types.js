@@ -1,3 +1,7 @@
+/* Initializing Apps */
+export const APP_LOADING = 'app_loading';
+export const APP_LOADING_DONE = 'app_loading_done';
+
 /* Login Actions */
 export const USERNAME_CHANGED = 'username_changed';
 export const PASSWORD_CHANGED = 'password_changed';
@@ -74,3 +78,5 @@ export const MEET_UPDATE_FRIENDSHIP = 'meet_update_friendship';
 export const MEET_UPDATE_FRIENDSHIP_DONE = 'meet_update_friendship_done';
 export const MEET_TAB_REFRESH = 'meet_tab_refresh';
 export const MEET_TAB_REFRESH_DONE = 'meet_tab_refresh_done';
+export const MEET_CHANGE_FILTER = 'meet_change_filter';
+export const MEET_REQUESTS_CHANGE_TAB = 'meet_requests_change_tab';
