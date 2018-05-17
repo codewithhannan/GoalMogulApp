@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
+  ImageBackground,
   TouchableOpacity,
   ScrollView,
   KeyboardAvoidingView,
@@ -52,7 +53,13 @@ class ProfileDetailEditForm extends Component {
     const hasImageModified = JSON.stringify(this.props.initialValues.profile.image) !==
       JSON.stringify(value);
 
-    let profileImage = <Image style={styles.imageStyle} source={profilePic} />;
+    let profileImage = (
+      <ImageBackground style={styles.imageStyle} source={profilePic}>
+        <View style={styles.iconContainerStyle}>
+          <Image style={styles.editIconStyle} source={editImage} />
+        </View>
+      </ImageBackground>
+    )
     if (value) {
       let image;
       if (hasImageModified) {
@@ -60,16 +67,18 @@ class ProfileDetailEditForm extends Component {
       } else {
         image = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${value}`;
       }
-      profileImage = <Image style={styles.imageStyle} source={{ uri: image }} />;
+      profileImage =
+        <ImageBackground style={styles.imageStyle} source={{ uri: image }} >
+          <View style={styles.iconContainerStyle}>
+            <Image style={styles.editIconStyle} source={editImage} />
+          </View>
+        </ImageBackground>;
     }
 
     return (
       <TouchableOpacity onPress={this.chooseImage}>
         <View style={{ alignSelf: 'center' }}>
           {profileImage}
-          <View style={styles.iconContainerStyle}>
-            <Image style={styles.editIconStyle} source={editImage} />
-          </View>
         </View>
       </TouchableOpacity>
     );
@@ -82,6 +91,7 @@ class ProfileDetailEditForm extends Component {
     secure,
     limitation,
     multiline,
+    disabled,
     meta: { touched, error },
     ...custom
   }) => {
@@ -123,14 +133,30 @@ class ProfileDetailEditForm extends Component {
           keyboardShouldPersistTaps='handled'
           contentContainerStyle={{ flexGrow: 1, backgroundColor: '#ffffff' }}
         >
-          <Field name='profile.image' label='profile picture' component={this.renderImage} />
-          <Field name='name' label='Name' component={this.renderInput} />
-          <Field name='headline' label='Headline' component={this.renderInput} />
-          <Field name='profile.occupation' label='Occupation' component={this.renderInput} />
+          <Field name='profile.image' label='Profile Picture' component={this.renderImage} />
+          <Field
+            name='name'
+            label='Name'
+            component={this.renderInput}
+            disabled={this.props.uploading}
+          />
+          <Field
+            name='headline'
+            label='Headline'
+            component={this.renderInput}
+            disabled={this.props.uploading}
+          />
+          <Field
+            name='profile.occupation'
+            label='Occupation'
+            component={this.renderInput}
+            disabled={this.props.uploading}
+          />
           <Field
             name='profile.elevatorPitch'
-            label='elevator pitch'
+            label='Elevator Pitch'
             component={this.renderInput}
+            disabled={this.props.uploading}
             limitation={250}
           />
           <Field
@@ -138,6 +164,7 @@ class ProfileDetailEditForm extends Component {
             label='About'
             component={this.renderInput}
             limitation={250}
+            disabled={this.props.uploading}
             multiline
           />
         </ScrollView>
@@ -163,23 +190,23 @@ const styles = {
   imageStyle: {
     width: 80,
     height: 80,
-    borderRadius: 40,
-    marginTop: 10
+    borderRadius: 5,
+    marginTop: 10,
+    opacity: 0.7,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   iconContainerStyle: {
-    width: 24,
-    height: 24,
+    width: 32,
+    height: 32,
     borderRadius: 12,
-    borderWidth: 1,
     padding: 2,
     justifyContent: 'center',
-    position: 'absolute',
-    right: 0,
-    bottom: 3
+    alignSelf: 'center'
   },
   editIconStyle: {
-    width: 20,
-    height: 20,
+    width: 28,
+    height: 28,
     borderRadius: 10
   }
 };
@@ -191,6 +218,7 @@ ProfileDetailEditForm = reduxForm({
 
 const mapStateToProps = state => {
   return {
+    uploading: state.profile.uploading,
     initialValues: state.profile.user
   };
 };

@@ -53,7 +53,7 @@ class Profile extends Component {
 
   render() {
     return (
-
+      <MenuProvider>
         <View style={styles.containerStyle}>
           <SearchBarHeader backButton rightIcon='menu' />
           <ProfileSummaryCard />
@@ -65,6 +65,7 @@ class Profile extends Component {
             useNativeDriver
           />
         </View>
+      </MenuProvider>
     );
   }
 }
