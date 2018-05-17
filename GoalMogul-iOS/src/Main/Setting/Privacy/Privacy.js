@@ -18,7 +18,8 @@ class Privacy extends Component {
       <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
         <ScrollView>
           <SettingCard
-            title="Who can see your friends"
+            title='Friend list'
+            explanation='Who can see your friends'
             onPress={() => Actions.friendsSetting()}
             icon={PrivacyIcon}
           />

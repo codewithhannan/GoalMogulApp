@@ -1,3 +1,7 @@
+/* Initializing Apps */
+export const APP_LOADING = 'app_loading';
+export const APP_LOADING_DONE = 'app_loading_done';
+
 /* Login Actions */
 export const USERNAME_CHANGED = 'username_changed';
 export const PASSWORD_CHANGED = 'password_changed';
