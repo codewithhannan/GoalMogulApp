@@ -30,6 +30,7 @@ export default class App extends React.Component {
       require('./src/asset/utils/dropDown.png'),
       require('./src/asset/utils/like.png'),
       require('./src/asset/utils/bulb.png'),
+      require('./src/asset/utils/help.png'),
       require('./src/asset/utils/privacy.png'),
       require('./src/asset/utils/edit.png'),
       require('./src/asset/footer/navigation/home.png'),

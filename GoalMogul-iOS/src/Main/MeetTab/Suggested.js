@@ -42,16 +42,15 @@ class Suggested extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <MeetFilterBar />
-          <View style={{ flex: 1 }}>
-            <FlatList
-              data={testDataSuggested}
-              renderItem={this.renderItem}
-              keyExtractor={this._keyExtractor}
-              onRefresh={this.handleRefresh.bind()}
-              refreshing={this.props.refreshing}
-            />
-          </View>
+        <View style={{ flex: 1 }}>
+          <FlatList
+            data={testDataSuggested}
+            renderItem={this.renderItem}
+            keyExtractor={this._keyExtractor}
+            onRefresh={this.handleRefresh.bind()}
+            refreshing={this.props.refreshing}
+          />
+        </View>
         {/*
           onEndReached={this.onLoadMore}
         */}

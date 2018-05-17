@@ -6,7 +6,9 @@ import {
   MEET_UPDATE_FRIENDSHIP,
   MEET_UPDATE_FRIENDSHIP_DONE,
   MEET_TAB_REFRESH,
-  MEET_TAB_REFRESH_DONE
+  MEET_TAB_REFRESH_DONE,
+  MEET_CHANGE_FILTER,
+  MEET_REQUESTS_CHANGE_TAB
 } from './types';
 
 export const selectTab = index => {
@@ -178,3 +180,25 @@ const fetchData = (url, headers, callback) => {
     });
   });
 };
+
+// Update meet tabs filter criteria
+export const meetChangeFilter = (tab, type, value) => {
+  return (dispatch) => {
+    dispatch({
+      type: MEET_CHANGE_FILTER,
+      payload: {
+        tab,
+        type,
+        value
+      }
+    })
+  }
+}
+
+// Requesets tab actions
+export const requestsSelectTab = (key) => {
+  return {
+    type: MEET_REQUESTS_CHANGE_TAB,
+    payload: key
+  }
+}

@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
+import { MenuProvider } from 'react-native-popup-menu';
 
 /* Components */
 import Suggested from './Suggested';
@@ -96,17 +97,19 @@ class MeetTab extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <SearchBarHeader rightIcon='menu' />
-        <TabViewAnimated
-          navigationState={this.props.navigationState}
-          renderScene={this._renderScene}
-          renderHeader={this._renderHeader}
-          onIndexChange={this._handleIndexChange}
-          useNativeDriver
-        />
-
-      </View>
+      <MenuProvider>
+        <View style={{ flex: 1 }}>
+          <SearchBarHeader rightIcon='menu' />
+          <TabViewAnimated
+            navigationState={this.props.navigationState}
+            renderScene={this._renderScene}
+            renderHeader={this._renderHeader}
+            onIndexChange={this._handleIndexChange}
+            useNativeDriver
+          />
+          <View style={{ height: 3 }} />
+        </View>
+      </MenuProvider>
     );
   }
 }

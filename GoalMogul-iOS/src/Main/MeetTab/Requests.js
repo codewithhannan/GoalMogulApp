@@ -1,51 +1,97 @@
 import React, { Component } from 'react';
-import { View, FlatList } from 'react-native';
+import {
+  View,
+  FlatList,
+  TouchableOpacity,
+  Text
+} from 'react-native';
 import { connect } from 'react-redux';
 
 // Components
 import MeetFilterBar from './MeetFilterBar';
+import MeetCard from './MeetCard';
 
 // actions
 import {
-  handleRefresh
+  handleRefresh,
+  requestsSelectTab,
 } from '../../actions';
 
 // tab key
 const key = 'requests';
+const Tabs = [
+  {
+    name: 'Outgoing',
+    key: 'outgoing'
+  },
+  {
+    name: 'Incoming',
+    key: 'incoming'
+  }
+];
 
 /* TODO: delete the test data */
-const testData = [
+const testDataOutgoing = [
   {
-    name: 'Jia Zeng'
+    id: 12,
+    name: 'Jia Zeng',
+    profile: {
+      occupation: 'Student'
+    }
   }
 ];
 
 class Requests extends Component {
-
-  _keyExtractor = (item) => item.id
+  _keyExtractor = (item) => item.id;
 
   handleRefresh = () => {
     console.log('Refreshing tab: ', key);
     this.props.handleRefresh(key);
   }
 
-  renderItem = item => {
-    // TODO: render item
+  selectTab = key => {
+    this.props.requestsSelectTab(key);
+  }
+
+  renderItem = ({ item }) => {
+    return <MeetCard item={item} />;
+  }
+
+  renderTabs() {
+    return Tabs.map((t, index) => {
+      let buttonContainerStyle = { ...styles.buttonContainerStyle };
+      let buttonTextStyle = { ...styles.buttonTextStyle };
+
+      if (t.key === this.props.selectedTab) {
+        buttonContainerStyle.backgroundColor = '#1379a7';
+      } else {
+        buttonContainerStyle.backgroundColor = '#1aa0dd';
+      }
+      return (
+        <View style={buttonContainerStyle} key={index}>
+          <TouchableOpacity onPress={this.selectTab.bind(this, t.key)}>
+            <Text style={buttonTextStyle}>{t.name}</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    });
   }
 
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <MeetFilterBar />
-          <View style={{ flex: 1 }}>
-            <FlatList
-              data={this.props.data}
-              renderItem={this.renderItem}
-              keyExtractor={this._keyExtractor}
-              onRefresh={this.handleRefresh.bind()}
-              refreshing={this.props.refreshing}
-            />
-          </View>
+        <View style={{ flexDirection: 'row' }}>
+          {this.renderTabs()}
+        </View>
+        <View style={{ flex: 1 }}>
+          <FlatList
+            data={this.props.data}
+            renderItem={this.renderItem}
+            keyExtractor={this._keyExtractor}
+            onRefresh={this.handleRefresh.bind()}
+            refreshing={this.props.refreshing}
+          />
+        </View>
         {/*
 
           onEndReached={this.onLoadMore}
@@ -55,13 +101,46 @@ class Requests extends Component {
   }
 }
 
+const styles = {
+  buttonContainerStyle: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  buttonTextStyle: {
+    color: '#ffffff',
+    padding: 10,
+    fontWeight: '700'
+  }
+};
+
 const mapStateToProps = state => {
   const { requests } = state.meet;
-  const { data, refreshing } = requests;
+  const { outgoing, incoming, selectedTab } = requests;
+
+  const tab = ((id) => {
+    switch (id) {
+      case 'outgoing': {
+        let newOutgoing = { ...outgoing };
+        newOutgoing.data = testDataOutgoing;
+        return newOutgoing;
+        // return suggested
+      }
+
+      case 'incoming':
+        return incoming;
+      default:
+        return outgoing;
+    }
+  })(selectedTab);
+
+  const { data, refreshing } = tab;
 
   return {
+    selectedTab,
     requests,
     data,
+    tab,
     refreshing
   };
 };
@@ -69,6 +148,7 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    handleRefresh
+    handleRefresh,
+    requestsSelectTab
   }
 )(Requests);

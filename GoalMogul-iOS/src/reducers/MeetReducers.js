@@ -5,11 +5,18 @@ import {
   MEET_UPDATE_FRIENDSHIP,
   MEET_UPDATE_FRIENDSHIP_DONE,
   MEET_TAB_REFRESH,
-  MEET_TAB_REFRESH_DONE
+  MEET_TAB_REFRESH_DONE,
+  MEET_CHANGE_FILTER,
+  MEET_REQUESTS_CHANGE_TAB
 } from '../actions/types';
 
 const TabNames = ['SUGGESTED', 'REQUESTS', 'FRIENDS', 'CONTACTS'];
 const limit = 20;
+const filter = {
+  friends: {
+    sortBy: ['alphabetical', 'lastadd']
+  }
+}
 
 const INITIAL_STATE = {
   selectedTab: 'suggested',
@@ -31,13 +38,26 @@ const INITIAL_STATE = {
     skip: 0
   },
   requests: {
-    data: [],
-    loading: false,
-    refreshing: false,
-    limit,
-    skip: 0
+    selectedTab: 'outgoing',
+    incoming: {
+      data: [],
+      loading: false,
+      refreshing: false,
+      limit,
+      skip: 0
+    },
+    outgoing: {
+      data: [],
+      loading: false,
+      refreshing: false,
+      limit,
+      skip: 0
+    }
   },
   friends: {
+    filter: {
+      sortBy: 'alphabetical'
+    },
     data: [],
     loading: false,
     refreshing: false,
@@ -114,6 +134,24 @@ export default (state = INITIAL_STATE, action) => {
       const newState = { ...state[action.payload.type] };
       newState.refreshing = false;
       return { ...state, [action.payload.type]: newState };
+    }
+
+    // Handle tab change filter criteria
+    case MEET_CHANGE_FILTER: {
+      const { tab, type, value } = action.payload;
+      const newTabState = { ...state[tab] };
+      const newFilterState = newTabState.filter;
+      newFilterState[type] = value;
+      newTabState.filter = newFilterState
+      console.log('new tab state is: ', newTabState);
+      return { ...state, [tab]: newTabState };
+    }
+
+    // Requests Tab actions
+    case MEET_REQUESTS_CHANGE_TAB: {
+      const newRequests = { ...state['requests'] };
+      newRequests.selectedTab = action.payload;
+      return { ...state, requests: newRequests };
     }
 
     default:
