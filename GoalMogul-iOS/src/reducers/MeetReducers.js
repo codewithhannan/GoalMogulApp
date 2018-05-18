@@ -1,3 +1,5 @@
+import _ from 'lodash';
+import set from 'lodash/fp/set';
 import {
   MEET_SELECT_TAB,
   MEET_LOADING,
@@ -90,18 +92,34 @@ export default (state = INITIAL_STATE, action) => {
 
     // Loading suggested cards
     case MEET_LOADING: {
-      const newState = { ...state[action.payload.type] };
-      newState.loading = true;
-      return { ...state, [action.payload.type]: newState };
+      // const newState = { ...state[action.payload.type] };
+      // newState.loading = true;
+      // return { ...state, [action.payload.type]: newState };
+
+      // const newState = _.cloneDeep(_.get(state, action.payload.type))
+      // _.set(newState, [action.payload.type, 'loading'], true)
+      // console.log('new state is: ', newState);
+      // return { state: newState };
+      return set([action.payload.type, 'loading'], true, state)
     }
 
     // Loading suggested cards done
     case MEET_LOADING_DONE: {
       const { data, type } = action.payload;
-      const newState = { ...state[type] };
-      newState.data = data;
-      newState.loading = false;
-      return { ...state, [type]: newState };
+      // const newState = { ...state[type] };
+      // newState.data = data;
+      // newState.loading = false;
+      // return { ...state, [type]: newState };
+
+      // console.log('data is: ', data);
+      // console.log('type is: ', type);
+      // const newState = _.cloneDeep(state)
+      // _.set(newState, [type, 'data'], data)
+      // _.set(newState, [type, 'loading'], false)
+      // return { newState };
+
+      state = set([type, 'loading'], false, state)
+      return set([type, 'data'], data, state)
     }
 
     /**

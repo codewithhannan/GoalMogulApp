@@ -61,7 +61,11 @@ class Suggested extends Component {
 
 const mapStateToProps = state => {
   const { suggested } = state.meet;
+  console.log('state meet is: ', state.meet);
+  console.log('suggested is: ', suggested);
+
   const { data, refreshing } = suggested;
+
 
   return {
     suggested,
