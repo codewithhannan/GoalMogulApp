@@ -54,7 +54,7 @@ class Suggested extends Component {
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
             onRefresh={this.handleRefresh.bind()}
-            refreshing={this.props.refreshing}
+            refreshing={this.props.loading}
           />
         </View>
         {/*
@@ -67,16 +67,14 @@ class Suggested extends Component {
 
 const mapStateToProps = state => {
   const { suggested } = state.meet;
-  console.log('state meet is: ', state.meet);
-  console.log('suggested is: ', suggested);
-
-  const { data, refreshing } = suggested;
+  const { data, refreshing, loading } = suggested;
 
 
   return {
     suggested,
     data,
-    refreshing
+    refreshing,
+    loading
   };
 };
 

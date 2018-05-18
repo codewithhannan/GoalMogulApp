@@ -13,18 +13,18 @@ import {
 } from './types';
 
 const requestMap = {
-  'suggested': 'friendship/recommendations',
-  'requests': {
-    'outgoing': 'friendship/invitations/outgoing',
-    'incoming': 'friendship/invitations/incoming'
+  suggested: 'friendship/recommendations',
+  requests: {
+    outgoing: 'friendship/invitations/outgoing',
+    incoming: 'friendship/invitations/incoming'
   },
-  'friends': 'friendship/',
-  'contacts': 'ContactSync/stored-matches'
-}
+  friends: 'friendship/',
+  contacts: 'ContactSync/stored-matches'
+};
 
 const tabs = [
   'suggested', 'requests.outgoing', 'requests.incoming', 'friends', 'contacts'
-]
+];
 
 export const selectTab = index => {
   return (dispatch) => {
@@ -46,14 +46,28 @@ export const preloadMeet = () => {
       }
     });
     const { token } = getState().user;
-    loadOneTab('suggested', 0, 20, token, dispatch);
-    // tabs.map((key) => {
-    //   loadOneTab(key, 0, 20, token, dispatch);
-    // })
+    // loadOneTab('suggested', 0, 20, token, dispatch);
+    tabs.map((key) => loadOneTab(key, 0, 20, token, dispatch, (data) => {
+      dispatch({
+        type: MEET_LOADING_DONE,
+        payload: {
+          type: key,
+          data // TODO: replace this with actual data
+        }
+      });
+    }));
   };
 };
 
-const loadOneTab = (type, skip, limit, token, dispatch) => {
+/*
+@param type (string): current tab key
+@param skip (number): number to skip for data
+@param limit (number): number of cards to fetch
+@param token:
+@param dispatch:
+@param callback:
+*/
+const loadOneTab = (type, skip, limit, token, dispatch, callback) => {
   const route = _.get(requestMap, type);
   const url = `https://goalmogul-api-dev.herokuapp.com/api/secure/user/${route}?limit=${limit}&skip=${skip}`;
   // const url = 'http://192.168.0.3:8081/api/secure/user/friendship?limit=100&skip=0';
@@ -71,14 +85,19 @@ const loadOneTab = (type, skip, limit, token, dispatch) => {
 
       // TODO: update failure condition
       if (res.data) {
-        dispatch({
-          type: MEET_LOADING_DONE,
-          payload: {
-            type,
-            data: [] // TODO: replace this with actual data
-          }
-        });
+        if (callback) {
+          return callback(res.data);
+        }
       }
+
+      // fetch data failure
+      dispatch({
+        type: MEET_LOADING_DONE,
+        payload: {
+          type,
+          data: []
+        }
+      });
     })
     .catch((err) => {
       console.log(`fetching friendship for type: ${type}, fails with error: ${err}`);
@@ -102,13 +121,23 @@ export const handleRefresh = (key) => {
       }
     });
 
-    // TODO: refresh and fetch
-    dispatch({
-      type: MEET_TAB_REFRESH_DONE,
-      payload: {
-        type: key
-      }
+    const { token } = getState().user;
+    loadOneTab(key, 0, 20, token, dispatch, (data) => {
+      dispatch({
+        type: MEET_TAB_REFRESH_DONE,
+        payload: {
+          type: key,
+          data
+        }
+      });
     });
+  };
+};
+
+// Load more data
+export const meetOnLoadMore = (key) => {
+  return (dispatch, getState) => {
+    const { token } = getState().user;
   };
 };
 
@@ -213,14 +242,14 @@ export const meetChangeFilter = (tab, type, value) => {
         type,
         value
       }
-    })
-  }
-}
+    });
+  };
+};
 
 // Requesets tab actions
 export const requestsSelectTab = (key) => {
   return {
     type: MEET_REQUESTS_CHANGE_TAB,
     payload: key
-  }
-}
+  };
+};

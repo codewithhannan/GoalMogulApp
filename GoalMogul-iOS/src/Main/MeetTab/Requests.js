@@ -8,7 +8,6 @@ import {
 import { connect } from 'react-redux';
 
 // Components
-import MeetFilterBar from './MeetFilterBar';
 import MeetCard from './MeetCard';
 
 // actions
@@ -19,6 +18,11 @@ import {
 
 // tab key
 const key = 'requests';
+const routes = {
+  outgoing: 'requests.outgoing',
+  incoming: 'requests.incoming'
+};
+
 const Tabs = [
   {
     name: 'Outgoing',
@@ -42,16 +46,22 @@ const testDataOutgoing = [
 ];
 
 class Requests extends Component {
-  _keyExtractor = (item) => item.id;
+
+  onLoadMore = () => {
+    console.log('loading more data for tab: ', routes[this.props.selectedTab]);
+  }
+
+  selectTab = tabKey => {
+    this.props.requestsSelectTab(tabKey);
+  }
 
   handleRefresh = () => {
-    console.log('Refreshing tab: ', key);
-    this.props.handleRefresh(key);
+    const route = routes[this.props.selectedTab];
+    console.log('Refreshing tab: ', route);
+    this.props.handleRefresh(route);
   }
 
-  selectTab = key => {
-    this.props.requestsSelectTab(key);
-  }
+  _keyExtractor = (item) => item.id;
 
   renderItem = ({ item }) => {
     return <MeetCard item={item} />;
