@@ -158,7 +158,7 @@ export default (state = INITIAL_STATE, action) => {
     // Handle tab refresh
     case MEET_TAB_REFRESH_DONE: {
       // TODO: update the data
-      const { type, data } = action.payload;
+      const { type, data, limit } = action.payload;
       // Method 1
       // const newState = { ...state[action.payload.type] };
       // newState.refreshing = false;
@@ -169,6 +169,7 @@ export default (state = INITIAL_STATE, action) => {
       // Method 2
       let newState = set([type, 'loading'], false, state);
       newState = set([type, 'refreshing'], false, newState);
+      newState = set([type, 'skip'], limit, newState);
       return set([type, 'data'], data, newState);
     }
 

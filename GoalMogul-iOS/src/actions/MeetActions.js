@@ -127,7 +127,9 @@ export const handleRefresh = (key) => {
         type: MEET_TAB_REFRESH_DONE,
         payload: {
           type: key,
-          data
+          data,
+          skip: 0,
+          limit: 20
         }
       });
     });
@@ -137,7 +139,13 @@ export const handleRefresh = (key) => {
 // Load more data
 export const meetOnLoadMore = (key) => {
   return (dispatch, getState) => {
+    // TODO: dispatch onLoadMore start
+
     const { token } = getState().user;
+    const tabState = _.get(getState().meet, [key]);
+    const { skip, limit } = tabState;
+
+    // TODO: loadOneTab()
   };
 };
 
