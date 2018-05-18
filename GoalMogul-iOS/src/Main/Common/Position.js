@@ -16,7 +16,8 @@ const styles = {
   containerStyle: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#34c0dd'
+    color: '#45C9F6',
+    paddingTop: 3
   }
 };
 

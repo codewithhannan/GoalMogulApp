@@ -51,6 +51,7 @@ class MeetCard extends Component {
             type='octicon'
             name='plus-small'
             width={10}
+            size={20}
             color='#45C9F6'
             iconStyle={styles.buttonIconStyle}
           />
@@ -67,13 +68,6 @@ class MeetCard extends Component {
       <View style={styles.infoContainerStyle}>
         <View style={{ flex: 1, flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
           <Name text={name} />
-          <Text
-            style={styles.friendTextStyle}
-            numberOfLines={1}
-            ellipsizeMode='tail'
-          >
-            380 MUTUAL FRIENDS
-          </Text>
         </View>
 
         <View style={styles.buttonContainerStyle}>
@@ -83,51 +77,45 @@ class MeetCard extends Component {
     );
   }
 
+  // TODO: decide the final UI for additional info
   renderAdditionalInfo() {
-    const { profile } = this.props.item;
-    let title = '';
-    let content = '';
-    if (profile.elevatorPitch) {
-      title = 'Elevator Pitch:';
-      content = profile.elevatorPitch;
-    } else if (profile.about) {
-      title = 'About:';
-      content = profile.about;
-    }
-    return (
-      <View style={{ flex: 1 }}>
-        <Text
-          style={styles.titleTextStyle}
-          numberOfLines={1}
-          ellipsizeMode='tail'
-        >
-          {title} {' '}
-          <Text style={styles.detailTextStyle}>
-            {content}
-          </Text>
-        </Text>
-      </View>
-    );
+    return '';
+    // const { profile } = this.props.item;
+    // let content = '';
+    // if (profile.elevatorPitch) {
+    //   content = profile.elevatorPitch;
+    // } else if (profile.about) {
+    //   content = profile.about;
+    // }
+    // return (
+    //   <View style={{ flex: 1 }}>
+    //     <Text
+    //       style={styles.titleTextStyle}
+    //       numberOfLines={1}
+    //       ellipsizeMode='tail'
+    //     >
+    //       <Text style={styles.detailTextStyle}>
+    //         {content}
+    //       </Text>
+    //     </Text>
+    //   </View>
+    // );
   }
 
   renderOccupation() {
     const { profile } = this.props.item;
-    let title = '';
     if (profile.occupation) {
-      title = 'Occupation: ';
-    }
-    return (
-      <View style={{ flex: 1, marginTop: 5 }}>
+      return (
         <Text
           style={styles.titleTextStyle}
           numberOfLines={1}
           ellipsizeMode='tail'
         >
-          {title}
           <Text style={styles.detailTextStyle}>{profile.occupation}</Text>
         </Text>
-      </View>
-    );
+      );
+    }
+    return '';
   }
 
   render() {
@@ -138,6 +126,13 @@ class MeetCard extends Component {
         <View style={styles.bodyContainerStyle}>
           {this.renderInfo()}
           {this.renderOccupation()}
+          <Text
+            style={styles.jobTitleTextStyle}
+            numberOfLines={1}
+            ellipsizeMode='tail'
+          >
+            380 MUTUAL FRIENDS
+          </Text>
           {this.renderAdditionalInfo()}
         </View>
       </View>
@@ -148,6 +143,7 @@ class MeetCard extends Component {
 const styles = {
   containerStyle: {
     flexDirection: 'row',
+    marginTop: 5,
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 8,
@@ -184,10 +180,13 @@ const styles = {
     color: '#45C9F6',
     fontSize: 11,
     fontWeight: '700',
-    paddingLeft: 1
+    paddingLeft: 1,
+    padding: 0,
+    paddingTop: 1,
+    alignSelf: 'center'
   },
   buttonIconStyle: {
-    paddingTop: 1
+    marginTop: 1
   },
   needContainerStyle: {
 

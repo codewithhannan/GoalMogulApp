@@ -18,11 +18,17 @@ const key = 'suggested';
 const testDataSuggested = [
   {
     id: 1,
-    name: 'Jia Zeng aldjl;fajskl;djfla;jskd;as',
+    name: 'Jia Zeng',
+    profile: {
+      occupation: 'student'
+    }
+  },
+  {
+    id: 1,
+    name: 'Jay Patel',
     profile: {
 
     }
-
   }
 ];
 
@@ -48,7 +54,7 @@ class Suggested extends Component {
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
             onRefresh={this.handleRefresh.bind()}
-            refreshing={this.props.refreshing}
+            refreshing={this.props.loading}
           />
         </View>
         {/*
@@ -61,12 +67,14 @@ class Suggested extends Component {
 
 const mapStateToProps = state => {
   const { suggested } = state.meet;
-  const { data, refreshing } = suggested;
+  const { data, refreshing, loading } = suggested;
+
 
   return {
     suggested,
     data,
-    refreshing
+    refreshing,
+    loading
   };
 };
 

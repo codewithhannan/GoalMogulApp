@@ -5,10 +5,11 @@ import { Icon } from 'react-native-elements';
 const renderStats = (props) => {
   return props.data.map((c) => {
     return (
-      <View style={{ flex: 1, flexDirection: 'row', marginRight: 5 }}>
+      <View style={{ flex: 1, flexDirection: 'row', marginRight: 5, alignItems: 'center' }}>
         <Text style={styles.titleStyle}>
           {c.name}
         </Text>
+        <View>
           <Icon
             name='dot-single'
             type='entypo'
@@ -17,7 +18,7 @@ const renderStats = (props) => {
             iconStyle={styles.iconStyle}
             containerStyle={styles.iconContainerStyle}
           />
-
+        </View>
         <Text style={styles.numberStyle}>
           {c.stat}
         </Text>
@@ -45,7 +46,7 @@ const styles = {
     color: '#818181'
   },
   numberStyle: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#45C9F6'
   },
@@ -54,10 +55,8 @@ const styles = {
 
   },
   iconContainerStyle: {
-    width: 18,
-    height: 15,
-    justifyContent: 'center',
-    alignItems: 'center'
+    width: 15,
+    marginRight: 2
   }
 };
 

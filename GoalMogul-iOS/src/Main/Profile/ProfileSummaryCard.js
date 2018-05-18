@@ -62,7 +62,8 @@ class ProfileSummaryCard extends Component {
                   type='octicon'
                   name='plus-small'
                   width={10}
-                  color='#34c0dd'
+                  size={21}
+                  color='#45C9F6'
                   iconStyle={styles.buttonIconStyle}
                 />
               }
@@ -97,7 +98,8 @@ const styles = {
   buttonContainerStyle: {
     flex: 2,
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    alignSelf: 'flex-start',
+    justifyContent: 'center'
   },
   imageStyle: {
     height: 54,
@@ -108,17 +110,19 @@ const styles = {
     width: 80,
     height: 25,
     borderWidth: 1,
-    borderColor: '#34c0dd',
+    borderColor: '#45C9F6',
     borderRadius: 20,
   },
   buttonTextStyle: {
-    color: '#34c0dd',
-    fontSize: 15,
+    color: '#45C9F6',
+    fontSize: 13,
     fontWeight: '700',
-    paddingLeft: 1
+    padding: 0,
+    paddingTop: 1,
+    alignSelf: 'center'
   },
   buttonIconStyle: {
-    paddingTop: 1
+    marginTop: 2,
   }
 };
 

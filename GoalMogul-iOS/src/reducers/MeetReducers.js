@@ -1,3 +1,5 @@
+import _ from 'lodash';
+import set from 'lodash/fp/set';
 import {
   MEET_SELECT_TAB,
   MEET_LOADING,
@@ -75,7 +77,6 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-
     // Selection of tabs for meet
     case MEET_SELECT_TAB: {
       const newNavigationState = { ...state.navigationState };
@@ -90,18 +91,38 @@ export default (state = INITIAL_STATE, action) => {
 
     // Loading suggested cards
     case MEET_LOADING: {
-      const newState = { ...state[action.payload.type] };
-      newState.loading = true;
-      return { ...state, [action.payload.type]: newState };
+      // method 1:
+      // const newState = { ...state[action.payload.type] };
+      // newState.loading = true;
+      // return { ...state, [action.payload.type]: newState };
+
+      // method 2:
+      // const newState = _.cloneDeep(_.get(state, action.payload.type))
+      // _.set(newState, [action.payload.type, 'loading'], true)
+      // console.log('new state is: ', newState);
+      // return { state: newState };
+      return set([action.payload.type, 'loading'], true, state);
     }
 
     // Loading suggested cards done
     case MEET_LOADING_DONE: {
       const { data, type } = action.payload;
-      const newState = { ...state[type] };
-      newState.data = data;
-      newState.loading = false;
-      return { ...state, [type]: newState };
+      // Method 1
+      // const newState = { ...state[type] };
+      // newState.data = data;
+      // newState.loading = false;
+      // return { ...state, [type]: newState };
+
+      // Method 2
+      // console.log('data is: ', data);
+      // console.log('type is: ', type);
+      // const newState = _.cloneDeep(state)
+      // _.set(newState, [type, 'data'], data)
+      // _.set(newState, [type, 'loading'], false)
+      // return { newState };
+
+      let newState = set([type, 'loading'], false, state);
+      return set([type, 'data'], data, newState);
     }
 
     /**
@@ -121,19 +142,34 @@ export default (state = INITIAL_STATE, action) => {
 
     // Handle tab refresh
     case MEET_TAB_REFRESH: {
-      console.log('type is ', action.payload.type);
-      const newState = { ...state[action.payload.type] };
-      newState.refreshing = true;
-      console.log('new state is: ', newState);
-      return { ...state, [action.payload.type]: newState };
+      const { type } = action.payload;
+      console.log('type is ', type);
+      // Method 1:
+      // const newState = { ...state[action.payload.type] };
+      // newState.refreshing = true;
+      // newState.loading = true;
+      // return { ...state, [action.payload.type]: newState };
+
+      // Method 2
+      let newState = set([type, 'loading'], true, state);
+      return set([type, 'refreshing'], true, newState);
     }
 
     // Handle tab refresh
     case MEET_TAB_REFRESH_DONE: {
       // TODO: update the data
-      const newState = { ...state[action.payload.type] };
-      newState.refreshing = false;
-      return { ...state, [action.payload.type]: newState };
+      const { type, data } = action.payload;
+      // Method 1
+      // const newState = { ...state[action.payload.type] };
+      // newState.refreshing = false;
+      // newState.loading = false;
+      // newState.data = action.payload.data;
+      // return { ...state, [action.payload.type]: newState };
+
+      // Method 2
+      let newState = set([type, 'loading'], false, state);
+      newState = set([type, 'refreshing'], false, newState);
+      return set([type, 'data'], data, newState);
     }
 
     // Handle tab change filter criteria
