@@ -18,11 +18,17 @@ const key = 'suggested';
 const testDataSuggested = [
   {
     id: 1,
-    name: 'Jia Zeng aldjl;fajskl;djfla;jskd;as',
+    name: 'Jia Zeng',
+    profile: {
+      occupation: 'student'
+    }
+  },
+  {
+    id: 1,
+    name: 'Jay Patel',
     profile: {
 
     }
-
   }
 ];
 

@@ -17,7 +17,7 @@ const styles = {
   containerStyle: {
     fontSize: 16,
     fontWeight: 'bold',
-    maxWidth: 100
+    maxWidth: 150
   }
 };
 
