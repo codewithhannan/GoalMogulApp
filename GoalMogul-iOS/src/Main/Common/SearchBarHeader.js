@@ -157,17 +157,17 @@ const styles = {
     alignItems: 'center'
   },
   headerLeftImage: {
-    width: 28,
-    height: 28,
+    width: 30,
+    height: 30,
   },
   headerRightImage: {
-    width: 25,
-    height: 25,
+    width: 30,
+    height: 30,
   },
   // Styles for method 2
   searchButtonContainerStyle: {
     height: 32,
-    width: 250,
+    width: 260,
     backgroundColor: '#f3f4f6',
     borderRadius: 16,
     padding: 0,
