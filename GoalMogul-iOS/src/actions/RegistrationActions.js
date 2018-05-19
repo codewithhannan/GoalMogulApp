@@ -327,9 +327,11 @@ export const registrationNextContact = (headline, skip) => {
   }
   return (dispatch, getState) => {
     if (skip) {
-      return dispatch({
+      // User skip intro input
+      dispatch({
         type
       });
+      return Actions.registrationContact();
     }
     const token = getState().user.token;
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
