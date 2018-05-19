@@ -5,7 +5,8 @@ import {
   Stack,
   Tabs,
   Modal,
-  Reducer
+  Reducer,
+  Lightbox
 } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 
@@ -25,6 +26,7 @@ import ContactSync from './Registration/ContactSync';
 /* Main App */
 import TabIcon from './Main/Common/TabIcon';
 import MeetTab from './Main/MeetTab/MeetTab';
+import SearchOverlay from './Main/Common/Search/SearchOverlay';
 // import MeetCard from './Main/MeetTab/MeetCard';
 
 // Home Tab
@@ -63,118 +65,120 @@ class RouterComponent extends Component {
         createReducer={this.reducerCreate.bind(this)}
       >
         <Modal>
-          <Scene key="root" hideNavBar>
-            <Scene key="auth" initial hideNavBar>
-              <Scene key="splash" component={SplashScreen} initial />
-              <Scene key="login" component={LoginPage} />
+          <Lightbox>
+            <Scene key="root" hideNavBar>
+              <Scene key="auth" initial hideNavBar>
+                <Scene key="splash" component={Home} initial />
+                <Scene key="login" component={LoginPage} />
+              </Scene>
+
+              {/* Registration screen stack*/}
+              <Stack key="registration" hideNavBar>
+                <Scene
+                  key="registrationAccount"
+                  component={RegistrationAccount}
+                  intial
+                />
+                <Scene
+                  key="registrationProfile"
+                  component={AddProfilePic}
+                />
+                <Scene
+                  key="registrationIntro"
+                  component={IntroForm}
+                />
+                <Scene
+                  key="registrationContact"
+                  component={Contacts}
+                />
+                <Scene
+                  key="registrationContactSync"
+                  component={ContactSync}
+                />
+              </Stack>
+
+              {/* Main App */}
+
+              <Scene hideNavBar panHandlers={null}>
+                <Tabs
+                  key="mainTabs"
+                  hideNavBar
+                  swipeEnabled={false}
+                  tabBarStyle={styles.tabBarStyle}
+                  activeTintColor="#324a61"
+                  inactiveTintColor="#b8c7cc"
+                  tabs
+                  showLabel={false}
+                  panHandlers={null}
+                >
+                  <Stack
+                    key="homeTab"
+                    initial
+                    icon={TabIcon}
+                    hideNavBar
+                  >
+                    <Scene key="home" component={Home} initial />
+                    <Scene key="profile" component={Profile} panHandlers={null} />
+                    <Scene key="profileDetail" component={ProfileDetail} panHandlers={null} />
+                    <Scene key="setting" component={Setting} />
+                    <Scene key="email" component={Email} />
+                    <Scene key="editEmailForm" component={EditEmailForm} />
+                    <Scene key="editPasswordForm" component={EditPasswordForm} />
+                    <Scene key="phone" component={Phone} path='/phone/verification' />
+                    <Scene key="addPhoneNumberForm" component={AddPhoneNumberForm} />
+                    <Scene key="editPhoneNumberForm" component={EditPhoneNumberForm} />
+                    <Scene key="privacy" component={Privacy} />
+                    <Scene key="friendsSetting" component={FriendsSetting} />
+                  </Stack>
+
+                  <Stack
+                    key="meetTab"
+                    icon={TabIcon}
+                    hideNavBar
+                  >
+                    <Scene key="goal" component={MeetTab} hideNavBar />
+                  </Stack>
+
+                  <Stack
+                    key="notificationTab"
+                    icon={TabIcon}
+                    hideNavBar
+                  >
+                    <Scene key="notification" component={Home} />
+                  </Stack>
+
+                  <Stack
+                    key="exploreTab"
+                    icon={TabIcon}
+                    hideNavBar
+                  >
+                    <Scene key="explore" component={Home} />
+                  </Stack>
+
+                  <Stack
+                    key="chatTab"
+                    icon={TabIcon}
+                    hideNavBar
+                  >
+                    <Scene key="chat" component={Home} />
+                  </Stack>
+
+                </Tabs>
+              </Scene>
+
             </Scene>
-
-            {/* Registration screen stack*/}
-            <Stack key="registration" hideNavBar>
-              <Scene
-                key="registrationAccount"
-                component={RegistrationAccount}
-                intial
-              />
-              <Scene
-                key="registrationProfile"
-                component={AddProfilePic}
-              />
-              <Scene
-                key="registrationIntro"
-                component={IntroForm}
-              />
-              <Scene
-                key="registrationContact"
-                component={Contacts}
-              />
-              <Scene
-                key="registrationContactSync"
-                component={ContactSync}
-              />
-            </Stack>
-
-            {/* Main App */}
-
-            <Scene hideNavBar panHandlers={null}>
-              <Tabs
-                key="mainTabs"
-                hideNavBar
-                swipeEnabled={false}
-                tabBarStyle={styles.tabBarStyle}
-                activeTintColor="#324a61"
-                inactiveTintColor="#b8c7cc"
-                tabs
-                showLabel={false}
-                panHandlers={null}
-              >
-                <Stack
-                  key="homeTab"
-                  initial
-                  icon={TabIcon}
-                  hideNavBar
-                >
-                  <Scene key="home" component={Home} initial />
-                  <Scene key="profile" component={Profile} panHandlers={null} />
-                  <Scene key="profileDetail" component={ProfileDetail} panHandlers={null} />
-                  <Scene key="setting" component={Setting} />
-                  <Scene key="email" component={Email} />
-                  <Scene key="editEmailForm" component={EditEmailForm} />
-                  <Scene key="editPasswordForm" component={EditPasswordForm} />
-                  <Scene key="phone" component={Phone} path='/phone/verification' />
-                  <Scene key="addPhoneNumberForm" component={AddPhoneNumberForm} />
-                  <Scene key="editPhoneNumberForm" component={EditPhoneNumberForm} />
-                  <Scene key="privacy" component={Privacy} />
-                  <Scene key="friendsSetting" component={FriendsSetting} />
-                </Stack>
-
-                <Stack
-                  key="meetTab"
-                  icon={TabIcon}
-                  hideNavBar
-                >
-                  <Scene key="goal" component={MeetTab} hideNavBar />
-                </Stack>
-
-                <Stack
-                  key="notificationTab"
-                  icon={TabIcon}
-                  hideNavBar
-                >
-                  <Scene key="notification" component={Home} />
-                </Stack>
-
-                <Stack
-                  key="exploreTab"
-                  icon={TabIcon}
-                  hideNavBar
-                >
-                  <Scene key="explore" component={Home} />
-                </Stack>
-
-                <Stack
-                  key="chatTab"
-                  icon={TabIcon}
-                  hideNavBar
-                >
-                  <Scene key="chat" component={Home} />
-                </Stack>
-
-              </Tabs>
-            </Scene>
-
-          </Scene>
-          {/*
-            This model is deprecated. Using ImagePickerIOS instead.
-            Could potential later be used in Android.
-            <Scene key="photolib" component={CameraRollModal} />
-          */}
+            {/*
+              This model is deprecated. Using ImagePickerIOS instead.
+              Could potential later be used in Android.
+              <Scene key="photolib" component={CameraRollModal} />
+            */}
+            <Scene key="searchLightBox" component={SearchOverlay} hideNavBar />
+          </Lightbox>
           <Scene
             key="profileDetailEditForm"
             component={ProfileDetailEditForm}
             hideNavBar
           />
-
         </Modal>
 
       </Router>

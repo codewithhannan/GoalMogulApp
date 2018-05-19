@@ -22,7 +22,8 @@ const key = 'mygoals';
 /* TODO: delete the test data */
 const testData = [
   {
-    name: 'Jia Zeng'
+    name: 'Jia Zeng',
+    id: 1
   }
 ];
 

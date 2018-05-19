@@ -94,3 +94,16 @@ export const selectProfileTab = (index) => {
     });
   };
 }
+
+/*
+Handle user profile on refresh
+NOTE: This is TODO for milestone 2
+*/
+export const handleProfileRefresh = () => {
+
+};
+
+// TODO: implement in milestone 2
+const loadOneTab = () => {
+
+};
