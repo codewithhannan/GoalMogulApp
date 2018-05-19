@@ -54,8 +54,8 @@ class ProfileSummaryCard extends Component {
           </View>
           <View style={styles.buttonContainerStyle}>
             <Button
-              text='Friend'
-              textStyle={styles.buttonTextStyle}
+              title='Friend'
+              titleStyle={styles.buttonTextStyle}
               clear
               icon={
                 <Icon
@@ -108,17 +108,16 @@ const styles = {
   },
   buttonStyle: {
     width: 80,
-    height: 25,
+    height: 26,
     borderWidth: 1,
     borderColor: '#45C9F6',
-    borderRadius: 20,
+    borderRadius: 13,
   },
   buttonTextStyle: {
     color: '#45C9F6',
     fontSize: 13,
     fontWeight: '700',
     padding: 0,
-    paddingTop: 1,
     alignSelf: 'center'
   },
   buttonIconStyle: {
