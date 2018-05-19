@@ -11,6 +11,7 @@ import {
 import { Field, reduxForm } from 'redux-form';
 import { TextField } from 'react-native-material-textfield';
 import { connect } from 'react-redux';
+import { Permissions, ImagePicker } from 'expo';
 
 /* Component */
 import FormHeader from '../../Common/Header/FormHeader';
@@ -20,6 +21,7 @@ import editImage from '../../../asset/utils/edit.png';
 
 /* Actions */
 import { submitUpdatingProfile } from '../../../actions';
+import ImageUtils from '../../../Utils/ImageUtils';
 
 /* Asset to delete */
 import profilePic from '../../../asset/test-profile-pic.png';
@@ -36,14 +38,24 @@ class ProfileDetailEditForm extends Component {
     this.props.submitUpdatingProfile({ values, hasImageModified });
   };
 
-  chooseImage = () => {
-    ImagePickerIOS.canUseCamera(() => {
-      ImagePickerIOS.openSelectDialog({}, imageUri => {
-        this.props.change('profile.image', imageUri);
-      }, () => {
-        console.log('user cancel choosing from camera roll');
-      });
+  chooseImage = async () => {
+    const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL];
+
+    const permissionGranted = await ImageUtils.checkPermission(permissions);
+    if (!permissionGranted) {
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
     });
+
+    if (!result.cancelled) {
+      return this.props.change('profile.image', result.uri);
+    }
+
+    console.log('user choosing from camera roll fail with result: ', result);
   }
 
   renderImage = ({

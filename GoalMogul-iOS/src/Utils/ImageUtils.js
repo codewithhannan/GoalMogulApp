@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { Image, ImageEditor } from 'react-native';
+import Expo, { Permissions } from 'expo';
+import _ from 'lodash';
 
 const ImageUtils = {
   getPresignedUrl(file, token, dispatch) {
@@ -138,6 +140,24 @@ const ImageUtils = {
           resolve();
         });
     });
+  },
+  async checkPermission(permissions) {
+    const promises = permissions.map((value) => Permissions.getAsync(value))
+    const status = await Promise.all(promises);
+
+    const requestPromises = status.forEach((value, index) => {
+      if (value.status !== 'granted') {
+        return Permissions.askAsync(permissions[index]);
+      }
+    });
+
+    const filteredPromises = _.compact(requestPromises);
+    const requestStatus = await Promise.all(filteredPromises);
+    if (requestStatus.some((value) => value.status !== 'granted')) {
+      alert('Please grant access to photos.');
+      return false;
+    }
+    return true;
   }
 };
 
