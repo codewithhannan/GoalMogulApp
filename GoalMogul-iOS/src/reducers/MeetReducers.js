@@ -151,7 +151,6 @@ export default (state = INITIAL_STATE, action) => {
     // Handle tab refresh
     case MEET_TAB_REFRESH: {
       const { type } = action.payload;
-      console.log('type is ', type);
       // Method 1:
       // const newState = { ...state[action.payload.type] };
       // newState.refreshing = true;
