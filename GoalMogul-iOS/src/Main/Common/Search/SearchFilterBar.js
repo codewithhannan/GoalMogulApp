@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, Button } from 'react-native';
 import {
   Menu,
@@ -6,16 +6,20 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
+import { connect } from 'react-redux';
 
 /* asset */
 import dropDown from '../../../asset/utils/dropDown.png';
 
-class SearchFilterBar extends Component {
+// actions
+import { searchChangeFilter } from '../../../actions';
 
+const DEBUG_KEY = '[ Component SearchFilterBar ]';
+
+class SearchFilterBar extends Component {
   handleOnMenuSelect = (type, value) => {
-    console.log('selecting value is: ', value);
-    console.log('selecting type is: ', type)
-    // TODO: alter reducer state
+    console.log(`${DEBUG_KEY} filter by type: ${type} with value: ${value}`);
+    this.props.searchChangeFilter(type, value);
   }
 
   render() {
@@ -51,7 +55,7 @@ class SearchFilterBar extends Component {
           </MenuOptions>
         </Menu>
 
-        <Menu onSelect={value => console.log('selecting value is: ', value)}>
+        <Menu onSelect={value => this.handleOnMenuSelect('category', value)}>
           <MenuTrigger
             customStyles={{
               TriggerTouchableComponent: TouchableOpacity,
@@ -120,4 +124,4 @@ const styles = {
   }
 };
 
-export default SearchFilterBar;
+export default connect(null, { searchChangeFilter })(SearchFilterBar);
