@@ -43,7 +43,6 @@ class Contacts extends Component {
   }
 
   renderSyncContact() {
-    console.log('data for contact is: ', this.props.data);
     if (this.props.data === undefined || this.props.data.length === 0) {
       return (
         <View style={styles.labelContainerStyle}>

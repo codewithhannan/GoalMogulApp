@@ -7,7 +7,8 @@ import GoalFilterBar from '../Common/GoalFilterBar';
 /* TODO: delete the test data */
 const testData = [
   {
-    name: 'Jia Zeng'
+    name: 'Jia Zeng',
+    id: 1
   }
 ];
 
@@ -28,11 +29,11 @@ class Mastermind extends Component {
           renderItem={(item) => this.renderItem(item)}
           numColumns={1}
           keyExtractor={this._keyExtractor}
-          onEndThreshold={0}
         />
         {/*
           refreshing={this.props.refreshing}
           onEndReached={this.onLoadMore}
+          onEndThreshold={0}
         */}
       </View>
     );

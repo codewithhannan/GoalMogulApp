@@ -26,6 +26,8 @@ const tabs = [
   'suggested', 'requests.outgoing', 'requests.incoming', 'friends', 'contacts'
 ];
 
+const DEBUG_KEY = '[ MeetAction ]';
+
 export const selectTab = index => {
   return (dispatch) => {
     dispatch({
@@ -52,7 +54,9 @@ export const preloadMeet = () => {
         type: MEET_LOADING_DONE,
         payload: {
           type: key,
-          data // TODO: replace this with actual data
+          data, // TODO: replace this with actual data
+          skip: 0,
+          limit: 20
         }
       });
     }));
@@ -140,12 +144,25 @@ export const handleRefresh = (key) => {
 export const meetOnLoadMore = (key) => {
   return (dispatch, getState) => {
     // TODO: dispatch onLoadMore start
+    console.log(`${DEBUG_KEY} Loading more for ${key}`);
+    const tabState = _.get(getState().meet, key);
+    const { skip, limit, hasNextPage } = tabState;
+    if (hasNextPage) {
+      const { token } = getState().user;
+      loadOneTab(key, skip + limit, limit, token, dispatch, (data) => {
+        dispatch({
+          type: MEET_LOADING_DONE,
+          payload: {
+            type: key,
+            data,
+            skip: skip + limit,
+            limit
+          }
+        });
+      });
+    }
 
-    const { token } = getState().user;
-    const tabState = _.get(getState().meet, [key]);
-    const { skip, limit } = tabState;
-
-    // TODO: loadOneTab()
+    // TODO: dispatch no new data
   };
 };
 

@@ -8,7 +8,8 @@ import MeetCard from './MeetCard';
 
 // actions
 import {
-  handleRefresh
+  handleRefresh,
+  meetOnLoadMore
 } from '../../actions';
 
 // tab key
@@ -37,8 +38,13 @@ class Suggested extends Component {
   _keyExtractor = (item, index) => index
 
   handleRefresh = () => {
-    console.log('Refreshing tab: ', key);
+    console.log('[ Component Suggested ] Refreshing tab: ', key);
     this.props.handleRefresh(key);
+  }
+
+  handleOnLoadMore = () => {
+    console.log('[ Component Suggested ] Loading more for tab: ', key);
+    this.props.meetOnLoadMore(key);
   }
 
   renderItem = ({ item }) => {
@@ -48,18 +54,15 @@ class Suggested extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <View style={{ flex: 1 }}>
-          <FlatList
-            data={testDataSuggested}
-            renderItem={this.renderItem}
-            keyExtractor={this._keyExtractor}
-            onRefresh={this.handleRefresh.bind()}
-            refreshing={this.props.loading}
-          />
-        </View>
-        {/*
-          onEndReached={this.onLoadMore}
-        */}
+        <FlatList
+          data={testDataSuggested}
+          renderItem={this.renderItem}
+          keyExtractor={this._keyExtractor}
+          onRefresh={this.handleRefresh.bind()}
+          refreshing={this.props.loading}
+          onEndReached={this.handleOnLoadMore}
+          onEndReachedThreshold={0.5}
+        />
       </View>
     );
   }
@@ -81,6 +84,7 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    handleRefresh
+    handleRefresh,
+    meetOnLoadMore
   }
 )(Suggested);

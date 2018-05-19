@@ -54,7 +54,7 @@ export default class App extends React.Component {
 
     await Promise.all([...imageAssets, ...fontAssets]);
 
-    this.setState({ appReady: true });
+    // this.setState({ appReady: true });
   }
 
   render() {
