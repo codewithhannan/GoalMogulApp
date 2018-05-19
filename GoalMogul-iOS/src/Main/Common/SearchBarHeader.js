@@ -3,10 +3,14 @@ import {
   View,
   Image,
   TouchableWithoutFeedback,
-  Text
+  TouchableHighlight,
+  Text,
+  TouchableOpacity
 } from 'react-native';
-import { SearchBar, Icon } from 'react-native-elements';
+import { Icon } from 'react-native-elements';
+import { BlurView } from 'react-native-blur';
 import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 
 /* Asset */
 import Logo from '../../asset/header/logo.png';
@@ -23,6 +27,10 @@ import { back, openProfile, openSetting } from '../../actions';
   setting: true or false
 */
 class SearchBarHeader extends Component {
+
+  state = {
+    overlay: false
+  }
 
   handleBackOnClick() {
     if (this.props.onBackPress) {
@@ -91,13 +99,19 @@ class SearchBarHeader extends Component {
       );
     }
     return (
-      <SearchBar
-        round
-        inputStyle={styles.searchInputStyle}
-        containerStyle={styles.searchContainerStyle}
-        icon={{ type: 'font-awesome', name: 'search', style: styles.searchIconStyle }}
-        placeholder='                   Search GoalMogul'
-      />
+      <TouchableOpacity onPress={() => Actions.searchLightBox()}>
+        <View style={styles.searchButtonContainerStyle}>
+        <Icon
+          type='font-awesome'
+          name='search'
+          size={17}
+          color='#b2b3b4'
+        />
+        <Text style={styles.searchPlaceHolderTextStyle}>
+          Search GoalMogul
+        </Text>
+      </View>
+      </TouchableOpacity>
     );
   }
 
@@ -113,12 +127,14 @@ class SearchBarHeader extends Component {
 }
 
 const styles = {
+  // Styles for search method 1
   searchContainerStyle: {
     backgroundColor: '#ffffff',
     borderTopColor: '#ffffff',
     borderBottomColor: '#ffffff',
     padding: 0,
-    flex: 4,
+    height: 30,
+    width: 250,
     marginRight: 3,
   },
   searchInputStyle: {
@@ -133,21 +149,42 @@ const styles = {
   headerStyle: {
     flexDirection: 'row',
     backgroundColor: '#ffffff',
-    paddingTop: 28,
+    paddingTop: 30,
     paddingLeft: 12,
     paddingRight: 12,
-    paddingBottom: 10
+    paddingBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   headerLeftImage: {
     width: 28,
     height: 28,
-    marginTop: 10
   },
   headerRightImage: {
     width: 25,
     height: 25,
-    marginTop: 11,
+  },
+  // Styles for method 2
+  searchButtonContainerStyle: {
+    height: 32,
+    width: 250,
+    backgroundColor: '#f3f4f6',
+    borderRadius: 16,
+    padding: 0,
+    marginRight: 12,
+    marginLeft: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center'
+  },
+  searchPlaceHolderTextStyle: {
+    fontSize: 13,
+    alignSelf: 'center',
+    color: '#b2b3b4',
+    marginLeft: 3
   }
+
 };
 
 const mapStateToProps = state => {
