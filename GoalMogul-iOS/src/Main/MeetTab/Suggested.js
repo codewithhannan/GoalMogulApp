@@ -14,6 +14,7 @@ import {
 
 // tab key
 const key = 'suggested';
+const DEBUG_KEY = '[ Component Suggested ]';
 
 /* TODO: delete the test data */
 const testDataSuggested = [
@@ -38,12 +39,12 @@ class Suggested extends Component {
   _keyExtractor = (item, index) => index
 
   handleRefresh = () => {
-    console.log('[ Component Suggested ] Refreshing tab: ', key);
+    console.log(`${DEBUG_KEY} Refreshing tab: `, key);
     this.props.handleRefresh(key);
   }
 
   handleOnLoadMore = () => {
-    console.log('[ Component Suggested ] Loading more for tab: ', key);
+    console.log(`${DEBUG_KEY} Loading more for tab: `, key);
     this.props.meetOnLoadMore(key);
   }
 

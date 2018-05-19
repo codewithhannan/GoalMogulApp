@@ -12,16 +12,19 @@ import MeetFilterBar from './MeetFilterBar';
 
 // actions
 import {
-  handleRefresh
+  handleRefresh,
+  meetOnLoadMore
 } from '../../actions';
 
 // tab key
 const key = 'contacts';
+const DEBUG_KEY = '[ Component Contacts ]';
 
 /* TODO: delete the test data */
 const testData = [
   {
-    name: 'Jia Zeng'
+    name: 'Jia Zeng',
+    id: 1
   }
 ];
 
@@ -30,8 +33,13 @@ class Contacts extends Component {
   _keyExtractor = (item) => item.id
 
   handleRefresh = () => {
-    console.log('Refreshing tab: ', key);
+    console.log(`${DEBUG_KEY} Refreshing tab: `, key);
     this.props.handleRefresh(key);
+  }
+
+  handleOnLoadMore = () => {
+    console.log(`${DEBUG_KEY} Loading more for tab: `, key);
+    this.props.meetOnLoadMore(key);
   }
 
   renderItem = item => {
@@ -71,6 +79,8 @@ class Contacts extends Component {
             keyExtractor={this._keyExtractor}
             onRefresh={this.handleRefresh.bind()}
             refreshing={this.props.refreshing}
+            onEndReached={this.handleOnLoadMore}
+            onEndReachedThreshold={0.5}
           />
         </View>
         {/*
@@ -117,6 +127,7 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    handleRefresh
+    handleRefresh,
+    meetOnLoadMore
   }
 )(Contacts);
