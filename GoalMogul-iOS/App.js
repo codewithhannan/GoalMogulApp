@@ -47,12 +47,12 @@ export default class App extends React.Component {
       require('./src/asset/header/logo.png'),
     ]);
 
-    const fontAssets = cacheFonts([
-      require('./assets/fonts/GothamPro.ttf'),
-      require('./assets/fonts/GothamPro-Bold.ttf')
-    ]);
+    const fontAssets = cacheFonts({
+      'gotham-pro': require('./assets/fonts/GothamPro.ttf'),
+      'gotham-pro-bold': require('./assets/fonts/GothamPro-Bold.ttf')
+    });
 
-    await Promise.all([...imageAssets, ...fontAssets]);
+    return Promise.all([...imageAssets, ...fontAssets]);
 
     // this.setState({ appReady: true });
   }
@@ -91,7 +91,7 @@ function cacheImages(images) {
 }
 
 function cacheFonts(fonts) {
-  return fonts.map(font => Font.loadAsync(font));
+  return Font.loadAsync(fonts);
 }
 
 const styles = StyleSheet.create({

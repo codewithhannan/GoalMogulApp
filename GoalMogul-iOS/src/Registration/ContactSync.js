@@ -31,14 +31,14 @@ const testData = [
 class ContactSync extends Component {
 
   onLoadMore = () => {
-    
+
   }
 
   handleDoneOnPressed() {
     this.props.registrationContactSyncDone();
   }
 
-  _keyExtractor = (item, index) => index;
+  _keyExtractor = (item) => item.name;
 
   renderItem(item) {
     return (

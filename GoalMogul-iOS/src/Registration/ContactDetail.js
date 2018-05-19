@@ -30,17 +30,18 @@ class ContactDetail extends Component {
       return (
         <Avatar
           rounded
-          icon={{ name: 'check' }}
+          icon={{ name: 'check', type: 'font-awesome', size: 15 }}
           activeOpacity={0.7}
           width={25}
-          overlayContainerStyle={{ backgroundColor: '#2ec25e' }}
+          overlayContainerStyle={{ backgroundColor: '#2ec25e', alignSelf: 'center' }}
         />
       );
     }
     return (
       <Avatar
         rounded
-        icon={{ name: 'user' }}
+        icon={{ name: 'user', type: 'font-awesome', size: 15 }}
+        overlayContainerStyle={{ alignSelf: 'center' }}
         activeOpacity={0.7}
         width={25}
       />
@@ -53,9 +54,10 @@ class ContactDetail extends Component {
       <View style={styles.containerStyle}>
         <Avatar
           rounded
-          icon={{ name: 'user' }}
+          icon={{ name: 'user', type: 'font-awesome', size: 15 }}
           activeOpacity={0.7}
           width={25}
+          overlayContainerStyle={{ alignSelf: 'center' }}
         />
       <View style={styles.bodyContainerStyle}>
           <Text

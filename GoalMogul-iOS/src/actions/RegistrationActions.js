@@ -212,18 +212,41 @@ export const registrationNextIntro = (skip) => {
 
 // Action to open camera roll modal
 export const registrationCameraRollOnOpen = () => {
-  return (dispatch) => {
-    ImagePickerIOS.canUseCamera(() => {
-      ImagePickerIOS.openSelectDialog({}, imageUri => {
-        dispatch({
-          type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
-          payload: imageUri
-        });
-      }, () => {
-        console.log('user cancel choosing from camera roll');
-      });
+  return async (dispatch) => {
+    const { Permissions } = Expo;
+    const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL];
+
+    const permissionGranted = await ImageUtils.checkPermission(permissions);
+    if (!permissionGranted) {
+      return;
+    }
+
+    const result = await Expo.ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
     });
 
+    if (!result.cancelled) {
+      return dispatch({
+        type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+        payload: result.uri
+      });
+    }
+
+    console.log('user choosing from camera roll fail with result: ', result);
+    // Method 2:
+    // ImagePickerIOS.canUseCamera(() => {
+    //   ImagePickerIOS.openSelectDialog({}, imageUri => {
+    //     dispatch({
+    //       type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+    //       payload: imageUri
+    //     });
+    //   }, () => {
+    //     console.log('user cancel choosing from camera roll');
+    //   });
+    // });
+
+    // Method 3:
     /* Customized Image picker for IOS. Could use for Android */
     // dispatch({
     //   type: REGISTRATION_ADDPROFILE_CAMERAROLL_OPEN
@@ -304,9 +327,11 @@ export const registrationNextContact = (headline, skip) => {
   }
   return (dispatch, getState) => {
     if (skip) {
-      return dispatch({
+      // User skip intro input
+      dispatch({
         type
       });
+      return Actions.registrationContact();
     }
     const token = getState().user.token;
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
