@@ -36,6 +36,7 @@ const INITIAL_STATE = {
     data: [],
     loading: false,
     refreshing: false,
+    hasNextPage: undefined,
     limit,
     skip: 0
   },
@@ -45,6 +46,7 @@ const INITIAL_STATE = {
       data: [],
       loading: false,
       refreshing: false,
+      hasNextPage: undefined,
       limit,
       skip: 0
     },
@@ -52,6 +54,7 @@ const INITIAL_STATE = {
       data: [],
       loading: false,
       refreshing: false,
+      hasNextPage: undefined,
       limit,
       skip: 0
     }
@@ -63,6 +66,7 @@ const INITIAL_STATE = {
     data: [],
     loading: false,
     refreshing: false,
+    hasNextPage: undefined,
     limit,
     skip: 0
   },
@@ -70,6 +74,7 @@ const INITIAL_STATE = {
     data: [],
     loading: false,
     refreshing: false,
+    hasNextPage: undefined,
     limit,
     skip: 0
   }
@@ -106,7 +111,7 @@ export default (state = INITIAL_STATE, action) => {
 
     // Loading suggested cards done
     case MEET_LOADING_DONE: {
-      const { data, type } = action.payload;
+      const { data, type, skip } = action.payload;
       // Method 1
       // const newState = { ...state[type] };
       // newState.data = data;
@@ -122,6 +127,9 @@ export default (state = INITIAL_STATE, action) => {
       // return { newState };
 
       let newState = set([type, 'loading'], false, state);
+      if (skip !== undefined) {
+        newState = set([type, 'skip'], skip, newState);
+      }
       return set([type, 'data'], data, newState);
     }
 
@@ -158,7 +166,7 @@ export default (state = INITIAL_STATE, action) => {
     // Handle tab refresh
     case MEET_TAB_REFRESH_DONE: {
       // TODO: update the data
-      const { type, data } = action.payload;
+      const { type, data, limit } = action.payload;
       // Method 1
       // const newState = { ...state[action.payload.type] };
       // newState.refreshing = false;
@@ -169,6 +177,7 @@ export default (state = INITIAL_STATE, action) => {
       // Method 2
       let newState = set([type, 'loading'], false, state);
       newState = set([type, 'refreshing'], false, newState);
+      newState = set([type, 'skip'], limit, newState);
       return set([type, 'data'], data, newState);
     }
 

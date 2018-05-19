@@ -14,6 +14,7 @@ import MeetCard from './MeetCard';
 import {
   handleRefresh,
   requestsSelectTab,
+  meetOnLoadMore
 } from '../../actions';
 
 // tab key
@@ -45,11 +46,9 @@ const testDataOutgoing = [
   }
 ];
 
-class Requests extends Component {
+const DEBUG_KEY = '[Component Requests]';
 
-  onLoadMore = () => {
-    console.log('loading more data for tab: ', routes[this.props.selectedTab]);
-  }
+class Requests extends Component {
 
   selectTab = tabKey => {
     this.props.requestsSelectTab(tabKey);
@@ -57,8 +56,14 @@ class Requests extends Component {
 
   handleRefresh = () => {
     const route = routes[this.props.selectedTab];
-    console.log('Refreshing tab: ', route);
+    console.log(`${DEBUG_KEY} Refreshing tab: `, route);
     this.props.handleRefresh(route);
+  }
+
+  handleOnLoadMore = () => {
+    const route = [key, this.props.selectedTab];
+    console.log(`${DEBUG_KEY} Loading more for tab: `, route);
+    this.props.meetOnLoadMore(route);
   }
 
   _keyExtractor = (item) => item.id;
@@ -100,12 +105,10 @@ class Requests extends Component {
             keyExtractor={this._keyExtractor}
             onRefresh={this.handleRefresh.bind()}
             refreshing={this.props.refreshing}
+            onEndReached={this.handleOnLoadMore}
+            onEndReachedThreshold={0.5}
           />
         </View>
-        {/*
-
-          onEndReached={this.onLoadMore}
-        */}
       </View>
     );
   }
@@ -159,6 +162,7 @@ export default connect(
   mapStateToProps,
   {
     handleRefresh,
-    requestsSelectTab
+    requestsSelectTab,
+    meetOnLoadMore
   }
 )(Requests);

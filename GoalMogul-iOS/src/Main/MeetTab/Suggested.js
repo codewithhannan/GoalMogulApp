@@ -8,11 +8,13 @@ import MeetCard from './MeetCard';
 
 // actions
 import {
-  handleRefresh
+  handleRefresh,
+  meetOnLoadMore
 } from '../../actions';
 
 // tab key
 const key = 'suggested';
+const DEBUG_KEY = '[ Component Suggested ]';
 
 /* TODO: delete the test data */
 const testDataSuggested = [
@@ -37,8 +39,13 @@ class Suggested extends Component {
   _keyExtractor = (item, index) => index
 
   handleRefresh = () => {
-    console.log('Refreshing tab: ', key);
+    console.log(`${DEBUG_KEY} Refreshing tab: `, key);
     this.props.handleRefresh(key);
+  }
+
+  handleOnLoadMore = () => {
+    console.log(`${DEBUG_KEY} Loading more for tab: `, key);
+    this.props.meetOnLoadMore(key);
   }
 
   renderItem = ({ item }) => {
@@ -48,18 +55,15 @@ class Suggested extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <View style={{ flex: 1 }}>
-          <FlatList
-            data={testDataSuggested}
-            renderItem={this.renderItem}
-            keyExtractor={this._keyExtractor}
-            onRefresh={this.handleRefresh.bind()}
-            refreshing={this.props.loading}
-          />
-        </View>
-        {/*
-          onEndReached={this.onLoadMore}
-        */}
+        <FlatList
+          data={testDataSuggested}
+          renderItem={this.renderItem}
+          keyExtractor={this._keyExtractor}
+          onRefresh={this.handleRefresh.bind()}
+          refreshing={this.props.loading}
+          onEndReached={this.handleOnLoadMore}
+          onEndReachedThreshold={0.5}
+        />
       </View>
     );
   }
@@ -81,6 +85,7 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    handleRefresh
+    handleRefresh,
+    meetOnLoadMore
   }
 )(Suggested);
