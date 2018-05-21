@@ -30,6 +30,8 @@ export const REGISTRATION_CONTACT_SYNC_FETCH = 'registration_contact_sync_fetch'
 export const REGISTRATION_CONTACT_SYNC_FETCH_DONE = 'registration_contact_sync_fetch_done';
 export const REGISTRATION_CONTACT_SYNC_SKIP = 'registration_contact_sync_skip';
 export const REGISTRATION_CONTACT_SYNC_DONE = 'registration_contact_sync_done';
+export const REGISTRATION_CONTACT_SYNC_REFRESH = 'registratoin_contact_sync_refresh';
+export const REGISTRATION_CONTACT_SYNC_REFRESH_DONE = 'registratoin_contact_sync_refresh_done';
 
 export const REGISTRATION_INTRO_FORM_CHANGE = 'registration_intro_form_change';
 

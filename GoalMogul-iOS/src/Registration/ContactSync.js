@@ -13,7 +13,11 @@ import ContactDetail from './ContactDetail';
 import Styles from './Styles';
 
 /* Actions */
-import { registrationContactSyncDone } from '../actions';
+import {
+  registrationContactSyncDone,
+  contactSyncRefresh,
+  contactSyncLoadMore
+} from '../actions';
 
 const testData = [
   {
@@ -31,7 +35,11 @@ const testData = [
 class ContactSync extends Component {
 
   onLoadMore = () => {
+    this.props.contactSyncLoadMore();
+  }
 
+  handleRefresh = () => {
+    this.props.contactSyncRefresh();
   }
 
   handleDoneOnPressed() {
@@ -50,6 +58,7 @@ class ContactSync extends Component {
 
   // TODO: replace data with this.props.data
   render() {
+    const dataToRender = testData.concat(this.props.data);
     return (
       <View style={Styles.containerStyle}>
         <Header contact type='contact' />
@@ -57,11 +66,12 @@ class ContactSync extends Component {
 
           <FlatList
             enableEmptySections
-            data={testData}
+            data={dataToRender}
             renderItem={(item) => this.renderItem(item)}
             numColumns={1}
             keyExtractor={this._keyExtractor}
             refreshing={this.props.refreshing}
+            onRefresh={this.handleRefresh}
             onEndReached={this.onLoadMore}
             onEndThreshold={0}
           />
@@ -101,4 +111,11 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { registrationContactSyncDone })(ContactSync);
+export default connect(
+  mapStateToProps,
+  {
+    registrationContactSyncDone,
+    contactSyncRefresh,
+    contactSyncLoadMore
+  }
+)(ContactSync);
