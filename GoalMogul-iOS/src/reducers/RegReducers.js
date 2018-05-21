@@ -16,6 +16,8 @@ import {
   REGISTRATION_CONTACT_SYNC_FETCH_DONE,
   REGISTRATION_CONTACT_SYNC_UPLOAD_DONE,
   REGISTRATION_CONTACT_SYNC_SKIP,
+  REGISTRATION_CONTACT_SYNC_REFRESH,
+  REGISTRATION_CONTACT_SYNC_REFRESH_DONE,
 
   REGISTRATION_ACCOUNT_FORM_CHANGE,
   REGISTRATION_INTRO_FORM_CHANGE,
@@ -115,8 +117,26 @@ export default (state = INITIAL_STATE, action) => {
     // Contacts fetching done
     case REGISTRATION_CONTACT_SYNC_FETCH_DONE: {
       const newMatchedContacts = { ...state.matchedContacts };
-      newMatchedContacts.data = action.payload;
+      newMatchedContacts.data = newMatchedContacts.data.concat(action.payload.data);
       newMatchedContacts.refreshing = false;
+      newMatchedContacts.skip = action.payload.skip;
+
+      return { ...state, fetching: false, matchedContacts: newMatchedContacts };
+    }
+
+    // Refresh contact sync
+    case REGISTRATION_CONTACT_SYNC_REFRESH: {
+      const newMatchedContacts = { ...state.matchedContacts };
+      newMatchedContacts.refreshing = true;
+      return { ...state, fetching: true, matchedContacts: newMatchedContacts };
+    }
+
+    // Refresh contact sync cards done
+    case REGISTRATION_CONTACT_SYNC_REFRESH_DONE: {
+      const newMatchedContacts = { ...state.matchedContacts };
+      newMatchedContacts.data = action.payload.data;
+      newMatchedContacts.refreshing = false;
+      newMatchedContacts.skip = action.payload.skip;
 
       return { ...state, fetching: false, matchedContacts: newMatchedContacts };
     }
