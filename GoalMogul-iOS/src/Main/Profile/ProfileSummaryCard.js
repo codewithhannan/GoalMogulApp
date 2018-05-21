@@ -40,6 +40,26 @@ class ProfileSummaryCard extends Component {
       profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
     }
 
+    const addFriendButton = !this.props.isSelf ? (
+      <Button
+        title='Friend'
+        titleStyle={styles.buttonTextStyle}
+        clear
+        icon={
+          <Icon
+            type='octicon'
+            name='plus-small'
+            width={10}
+            size={21}
+            color='#45C9F6'
+            iconStyle={styles.buttonIconStyle}
+          />
+        }
+        iconLeft
+        buttonStyle={styles.buttonStyle}
+      />
+    ) : '';
+
     return (
       <TouchableWithoutFeedback onPress={this.handleOpenProfileDetail.bind(this)}>
         <View style={styles.containerStyle}>
@@ -53,23 +73,7 @@ class ProfileSummaryCard extends Component {
             </View>
           </View>
           <View style={styles.buttonContainerStyle}>
-            <Button
-              title='Friend'
-              titleStyle={styles.buttonTextStyle}
-              clear
-              icon={
-                <Icon
-                  type='octicon'
-                  name='plus-small'
-                  width={10}
-                  size={21}
-                  color='#45C9F6'
-                  iconStyle={styles.buttonIconStyle}
-                />
-              }
-              iconLeft
-              buttonStyle={styles.buttonStyle}
-            />
+            {addFriendButton}
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -127,10 +131,12 @@ const styles = {
 
 const mapStateToProps = state => {
   const { userId, user } = state.profile;
+  const isSelf = state.profile.userId.toString() === state.user.userId.toString();
 
   return {
     userId,
-    user
+    user,
+    isSelf
   };
 };
 

@@ -58,6 +58,7 @@ class ContactSync extends Component {
 
   // TODO: replace data with this.props.data
   render() {
+    const dataToRender = testData.concat(this.props.data);
     return (
       <View style={Styles.containerStyle}>
         <Header contact type='contact' />
@@ -65,7 +66,7 @@ class ContactSync extends Component {
 
           <FlatList
             enableEmptySections
-            data={testData}
+            data={dataToRender}
             renderItem={(item) => this.renderItem(item)}
             numColumns={1}
             keyExtractor={this._keyExtractor}
