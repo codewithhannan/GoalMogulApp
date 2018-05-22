@@ -55,8 +55,17 @@ class AddPhoneNumberForm extends Component {
     );
   };
 
+  /* Refactor error function out */
+  renderError(error) {
+    return error ? (
+      <View style={{ height: 15 }}>
+        <Text style={styles.errorStyle}>{error}</Text>
+      </View>
+    ) : null;
+  }
+
   render() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, error } = this.props;
 
     return (
       <KeyboardAvoidingView
@@ -79,6 +88,7 @@ class AddPhoneNumberForm extends Component {
               You'll need it for the next step.
             </Text>
           </View>
+          {this.renderError(error)}
 
           <Field name='phone' label='Phone number' component={this.renderInput} />
 
@@ -101,6 +111,13 @@ const styles = {
     paddingLeft: 20,
     paddingRight: 20,
     marginBottom: 5,
+  },
+  errorStyle: {
+    marginTop: 15,
+    color: '#ff0033',
+    justifyContent: 'center',
+    marginBottom: 4,
+    alignSelf: 'center'
   }
 };
 

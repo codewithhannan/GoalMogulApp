@@ -23,12 +23,14 @@ const testData = [
   {
     name: 'Jia Zeng',
     headline: 'Students at Duke University',
-    request: false
+    request: false,
+    _id: '120937109287091'
   },
   {
     name: 'Peter Kushner',
     headline: 'CEO at start industries',
-    request: false
+    request: false,
+    _id: '019280980248303'
   }
 ];
 
@@ -46,7 +48,7 @@ class ContactSync extends Component {
     this.props.registrationContactSyncDone();
   }
 
-  _keyExtractor = (item) => item.name;
+  _keyExtractor = (item) => item._id;
 
   renderItem(item) {
     return (
