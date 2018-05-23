@@ -46,10 +46,11 @@ class FriendsSetting extends Component {
   renderTick(info) {
     if (info.title === this.props.privacy.friends) {
       return (
-        <View style={{ height: 15, width: 20 }} >
+        <View style={{ height: 20, width: 20 }} >
           <Icon
             type='entypo'
             name='check'
+            size={22}
           />
         </View>
       );
@@ -59,7 +60,10 @@ class FriendsSetting extends Component {
   renderPrivacySettingDetail() {
     return friendsSettingList.map((info) => {
       return (
-        <TouchableOpacity onPress={this.handleOnSelectedPress.bind(this, info.title)}>
+        <TouchableOpacity
+          onPress={this.handleOnSelectedPress.bind(this, info.title)}
+          key={info.title}
+        >
           <View style={styles.sectionContainerStyle}>
             <View style={{ flex: 1 }}>
               <Text style={styles.titleTextStyle}>
