@@ -19,18 +19,27 @@ class Account extends Component {
         <ScrollView>
           <SettingCard
             title="Email address"
+            key="emailaddress"
             explanation="Add or remove email addresses"
             onPress={() => this.props.fetchProfile(this.props.userId, Actions.email())}
           />
           <SettingCard
             title="Phone numbers"
+            key="phonenumbers"
             explanation="Manage your phone numbers"
             onPress={() => Actions.phone()}
           />
           <SettingCard
             title="Password"
+            key="password"
             explanation="Update your passwords"
             onPress={() => Actions.editPasswordForm()}
+          />
+          <SettingCard
+            title="Blocked Users"
+            key="blockedusers"
+            explanation="Manage blocked users"
+            onPress={() => Actions.friendsBlocked()}
           />
         </ScrollView>
       </View>

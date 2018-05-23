@@ -14,7 +14,12 @@ const INITIAL_STATE = {
   privacy: {
     friends: ''
   },
-  selectedTab: 'account'
+  selectedTab: 'account',
+  block: {
+    data: [],
+    refreshing: false,
+    hasNextPage: undefined
+  }
 };
 
 /*
