@@ -258,3 +258,25 @@ export const updateFriendsSetting = () => {
       });
   };
 };
+
+// Setting account get blocked users
+export const getBlockedUsers = () => {
+  return (dispatch, getState) => {
+    const { token } = getState().user;
+    
+  };
+};
+
+export const blockUser = (userId) => {
+  return (dispatch, getState) => {
+    const { token } = getState().user;
+  };
+};
+
+// Setting account unblock user
+export const unblockUser = (userId) => {
+  return (dispatch, getState) => {
+    const { token } = getState().user;
+
+  };
+};
