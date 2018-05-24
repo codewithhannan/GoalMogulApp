@@ -1,6 +1,6 @@
-import * as config from './config';
+import { config } from './config';
 
-export const fetchApi = (path, payload = { type: '', data: {} }, method = 'get', token) => {
+export const fetchApi = (path, payload = {}, method = 'get', token) => {
   // Generate headers
   const headers = ((requestType) => {
     switch (requestType) {
@@ -12,11 +12,11 @@ export const fetchApi = (path, payload = { type: '', data: {} }, method = 'get',
             'Content-Type': 'application/json',
             'x-access-token': token
           }
-        }
+        };
       }
       case 'put':
+      case 'delete':
       case 'post': {
-        const { type, data } = payload;
         return {
           method: method.toUpperCase(),
           headers: {
@@ -24,15 +24,10 @@ export const fetchApi = (path, payload = { type: '', data: {} }, method = 'get',
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            `${type}`: data,
+            ...payload,
             token
           })
-        }
-      }
-
-      // TODO: implement delete
-      case 'delete': {
-        return ''
+        };
       }
 
       default:
@@ -41,7 +36,25 @@ export const fetchApi = (path, payload = { type: '', data: {} }, method = 'get',
   })(method);
 
   // Generate url
-  const url = `${config.url}``${path}`;
+  const url = `${config.url}${path}`;
 
+  console.log('headers are: ', headers);
+  console.log('url is: ', url);
+  console.log('config is: ', config);
   return fetch(url, headers).then((res) => res.json())
-}
+};
+
+export const api = {
+  get(path, token) {
+    return fetchApi(path, null, 'get', token);
+  },
+  post(path, payload, token) {
+    return fetchApi(path, payload, 'post', token);
+  },
+  put(path, payload, token) {
+    return fetchApi(path, payload, 'put', token);
+  },
+  delete(path, payload, token) {
+    return fetchApi(path, payload, 'delete', token);
+  }
+};

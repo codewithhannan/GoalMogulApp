@@ -2,6 +2,8 @@ import { Actions } from 'react-native-router-flux';
 import { SubmissionError } from 'redux-form';
 import Expo, { WebBrowser } from 'expo';
 
+import { api as API } from '../redux/middleware/api';
+
 import {
   SETTING_OPEN_SETTING,
   SETTING_TAB_SELECTION,
@@ -260,23 +262,34 @@ export const updateFriendsSetting = () => {
 };
 
 // Setting account get blocked users
-export const getBlockedUsers = () => {
-  return (dispatch, getState) => {
-    const { token } = getState().user;
-    
-  };
+export const getBlockedUsers = () => (dispatch, getState) => {
+  const { token } = getState().user;
+  API.get('secure/user/settings/block', token).then((res) => {
+    console.log('response for get all blocked users: ', res);
+  })
+  .catch((error) => {
+    console.log('error for getting all blocked user: ', error);
+  });
 };
 
-export const blockUser = (userId) => {
-  return (dispatch, getState) => {
-    const { token } = getState().user;
-  };
+// Block one particular user with userId
+export const blockUser = (userId) => (dispatch, getState) => {
+  const { token } = getState().user;
+  API.post('secure/user/settings/block', { userId }, token).then((res) => {
+    console.log('response for blockUser: ', userId, ', is: ', res);
+  })
+  .catch((error) => {
+    console.log('error for blocking user: ', error);
+  });
 };
 
 // Setting account unblock user
-export const unblockUser = (userId) => {
-  return (dispatch, getState) => {
-    const { token } = getState().user;
-
-  };
+export const unblockUser = (userId) => (dispatch, getState) => {
+  const { token } = getState().user;
+  API.delete('secure/user/settings/block', { userId }, token).then((res) => {
+    console.log('response for deleting a blocked user: ', userId, ', is: ', res);
+  })
+  .catch((error) => {
+    console.log('error for unblocking user: ', error);
+  });
 };

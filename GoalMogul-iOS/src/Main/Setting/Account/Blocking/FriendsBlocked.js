@@ -6,11 +6,13 @@ import {
   FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements';
 
 /* Components */
 import SearchBarHeader from '../../../Common/SearchBarHeader';
 import FriendCard from './FriendCard';
+
+// Actions
+import { getBlockedUsers } from '../../../../actions';
 
 const DEBUG_KEY = '[ Component FriendsBlocked ]';
 
@@ -33,6 +35,10 @@ const testData = [
 ];
 
 class FriendsBlocked extends Component {
+
+  componentWillMount() {
+    this.props.getBlockedUsers();
+  }
 
   handleOnLoadMore = () => {
     console.log(`${DEBUG_KEY} load more`);
@@ -81,4 +87,6 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, null)(FriendsBlocked);
+export default connect(mapStateToProps, {
+  getBlockedUsers
+})(FriendsBlocked);
