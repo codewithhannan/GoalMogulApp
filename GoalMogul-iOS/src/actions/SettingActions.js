@@ -35,33 +35,17 @@ export const onTabPress = tabId => {
 };
 
 /* Account actions */
-export const onResendEmailPress = () => {
-  return (dispatch, getState) => {
-    dispatch({
-      type: SETTING_RESENT_EMAIL_VERIFICATION
-    });
-    const { token } = getState().user;
-    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account/verification';
-    const headers = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        token,
-        for: 'email'
-      })
-    };
-    fetch(url, headers)
-      .then((res) => res.json())
-      .then((res) => {
-        console.log('resend email verification: ', res);
-      })
-      .catch((err) => {
-        console.log('error getting email verification: ', err);
-      });
-  };
+export const onResendEmailPress = () => (dispatch, getState) => {
+  dispatch({
+    type: SETTING_RESENT_EMAIL_VERIFICATION
+  });
+  const { token } = getState().user;
+  API.post('secure/user/account/verification', { for: 'email ' }, token).then((res) => {
+    console.log('resend email verification: ', res);
+  })
+  .catch((err) => {
+    console.log('error getting email verification: ', err);
+  });
 };
 
 // Update user email
@@ -157,20 +141,8 @@ export const onUpdatePhoneNumberSubmit = values => {
 export const onVerifyPhoneNumber = (handleRedirect) => {
   return (dispatch, getState) => {
     const { token } = getState().user;
-    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account/verification';
-    const headers = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        token,
-        for: 'phone'
-      })
-    };
-    return fetch(url, headers)
-      .then((res) => res.json())
+    return API
+      .post('secure/user/account/verification', { for: 'phone' }, token)
       .then(async (res) => {
         console.log('verify phone number successfully: ', res);
 
@@ -180,24 +152,51 @@ export const onVerifyPhoneNumber = (handleRedirect) => {
           `https://goalmogul-web.herokuapp.com/phone-verification?returnURL=${returnUrl}`
         );
         removeLinkingListener(handleRedirect);
-
-        /* Version 2 of using deep link */
-        // let returnUrl = Expo.Linking.makeUrl('');
-        // returnUrl += '/phone/verification';
-        // console.log('return url is: ', returnUrl);
-        // let testUrl = `https://goalmogul-web.herokuapp.com/phone-verification?returnURL=${returnUrl}`;
-        //
-        // Linking.canOpenURL(testUrl).then(supported => {
-        //   if (!supported) {
-        //     console.log('Can\'t handle url: ' + testUrl);
-        //   } else {
-        //     return Linking.openURL(testUrl);
-        //   }
-        // }).catch(err => console.error('An error occurred', err));
       })
       .catch((err) => {
         console.log('error updating phone number: ', err);
       });
+    // const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account/verification';
+    // const headers = {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify({
+    //     token,
+    //     for: 'phone'
+    //   })
+    // };
+    // return fetch(url, headers)
+    //   .then((res) => res.json())
+    //   .then(async (res) => {
+    //     console.log('verify phone number successfully: ', res);
+    //
+    //     let returnUrl = Expo.Linking.makeUrl('/');
+    //     addLinkingListener(handleRedirect);
+    //     let result = await WebBrowser.openBrowserAsync(
+    //       `https://goalmogul-web.herokuapp.com/phone-verification?returnURL=${returnUrl}`
+    //     );
+    //     removeLinkingListener(handleRedirect);
+    //
+    //     /* Version 2 of using deep link */
+    //     // let returnUrl = Expo.Linking.makeUrl('');
+    //     // returnUrl += '/phone/verification';
+    //     // console.log('return url is: ', returnUrl);
+    //     // let testUrl = `https://goalmogul-web.herokuapp.com/phone-verification?returnURL=${returnUrl}`;
+    //     //
+    //     // Linking.canOpenURL(testUrl).then(supported => {
+    //     //   if (!supported) {
+    //     //     console.log('Can\'t handle url: ' + testUrl);
+    //     //   } else {
+    //     //     return Linking.openURL(testUrl);
+    //     //   }
+    //     // }).catch(err => console.error('An error occurred', err));
+    //   })
+    //   .catch((err) => {
+    //     console.log('error updating phone number: ', err);
+    //   });
   };
 };
 
@@ -218,47 +217,29 @@ export const verifyPhoneNumberSuccess = () => {
 /* Privacy actions */
 
 // Update privacy.friends setting selection locally
-export const onFriendsSettingSelection = id => {
-  return (dispatch) => {
-    dispatch({
-      type: SETTING_FRIEND_SETTING_SELECTION,
-      payload: id
-    });
-  };
+export const onFriendsSettingSelection = id => (dispatch) => {
+  dispatch({
+    type: SETTING_FRIEND_SETTING_SELECTION,
+    payload: id
+  });
 };
 
 // Update privacy.friends setting selection
-export const updateFriendsSetting = () => {
-  return (dispatch, getState) => {
-    const { token } = getState().user;
-    const { friends } = getState().setting.privacy;
-    if (!friends) {
-      return;
-    }
-    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account/privacy';
-    const headers = {
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        token,
-        friends
-      })
-    };
-    fetch(url, headers)
-      .then((res) => res.json())
-      .then((res) => {
-        console.log('successfully update privacy setting: ', res);
-        dispatch({
-          type: SETTING_FRIEND_SETTING_UPDATE_SUCCESS
-        });
-      })
-      .catch((err) => {
-        console.log('error updating privacy setting: ', err);
-      });
-  };
+export const updateFriendsSetting = () => (dispatch, getState) => {
+  const { token } = getState().user;
+  const { friends } = getState().setting.privacy;
+  if (!friends) {
+    return;
+  }
+  API.put('secure/user/account/privacy', { friends }, token).then((res) => {
+    console.log('successfully update privacy setting: ', res);
+    dispatch({
+      type: SETTING_FRIEND_SETTING_UPDATE_SUCCESS
+    });
+  })
+  .catch((err) => {
+    console.log('error updating privacy setting: ', err);
+  });
 };
 
 // Setting account get blocked users
