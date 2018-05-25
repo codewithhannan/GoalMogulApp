@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList
+} from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar, Icon } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
@@ -9,12 +13,23 @@ import { MenuProvider } from 'react-native-popup-menu';
 import BaseOverlay from './BaseOverlay';
 import SearchFilterBar from './SearchFilterBar';
 
-class SearchOverlay extends Component {
+import { refreshSearchResult } from '../../../redux/modules/search/SearchActions';
 
+const DEBUG_KEY = '[ Component Search ]';
+
+const testDataSearch = [
+  {
+    name: 'Jia Zeng',
+    _id: '120379187290381'
+  }
+];
+
+class SearchOverlay extends Component {
   componentDidMount() {
     this.refs.searchBar.focus();
   }
 
+  // Search bar functions
   handleCancel = () => {
     //TODO: potentially clear search state
     Actions.pop();
@@ -28,6 +43,17 @@ class SearchOverlay extends Component {
     console.log('input is: ', value);
   }
 
+  // FlatList renderer functions
+  handleRefresh = () => {
+    this.props.refreshSearchResult();
+  }
+
+  _keyExtractor = (item) => item._id;
+
+  handleOnLoadMore = () => {
+    console.log(`${DEBUG_KEY} Loading more`);
+  }
+
   searchIcon = () => (
     <View style={{ flexDirection: 'row' }}>
       <Icon
@@ -38,6 +64,10 @@ class SearchOverlay extends Component {
       <Text>Search GoalMogul</Text>
     </View>
   );
+
+  renderItem = ({ item }) => {
+    // TODO: render search result
+  }
 
   render() {
     return (
@@ -61,6 +91,15 @@ class SearchOverlay extends Component {
             />
           </View>
           <SearchFilterBar />
+          <FlatList
+            data={testDataSearch}
+            renderItem={this.renderItem}
+            keyExtractor={this._keyExtractor}
+            onEndReached={this.handleOnLoadMore}
+            onEndReachedThreshold={0.5}
+          />
+        {/*refreshing={this.props.loading}*/}
+        {/*onRefresh={this.handleRefresh}*/}
         </MenuProvider>
       </BaseOverlay>
     );
@@ -96,4 +135,22 @@ const styles = {
   }
 };
 
-export default connect(null, null)(SearchOverlay);
+const mapStateToProps = state => {
+  const { suggested } = state.meet;
+  const { data, refreshing, loading } = suggested;
+
+
+  return {
+    suggested,
+    data,
+    refreshing,
+    loading
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  {
+    refreshSearchResult
+  }
+)(SearchOverlay);

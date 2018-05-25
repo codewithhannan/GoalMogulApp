@@ -27,7 +27,7 @@ import {
   REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS
 } from '../actions/types';
 
-function arrayUnique(array) {
+export function arrayUnique(array) {
   let a = array.concat();
   for (let i = 0; i < a.length; ++i) {
     for (let j = i + 1; j < a.length; ++j) {
@@ -37,7 +37,7 @@ function arrayUnique(array) {
     }
   }
 
-    return a;
+  return a;
 }
 
 const INITIAL_STATE = {
