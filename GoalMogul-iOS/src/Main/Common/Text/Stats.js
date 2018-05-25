@@ -2,30 +2,31 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 
-const renderStats = (props) => {
-  return props.data.map((c) => {
-    return (
-      <View style={{ flex: 1, flexDirection: 'row', marginRight: 5, alignItems: 'center' }}>
-        <Text style={styles.titleStyle}>
-          {c.name}
-        </Text>
-        <View>
-          <Icon
-            name='dot-single'
-            type='entypo'
-            color='#818181'
-            size={18}
-            iconStyle={styles.iconStyle}
-            containerStyle={styles.iconContainerStyle}
-          />
-        </View>
-        <Text style={styles.numberStyle}>
-          {c.stat}
-        </Text>
+const renderStats = (props) => props.data.map((c, index) => {
+  return (
+    <View
+      style={{ flex: 1, flexDirection: 'row', marginRight: 5, alignItems: 'center' }}
+      key={index}
+    >
+      <Text style={styles.titleStyle}>
+        {c.name}
+      </Text>
+      <View>
+        <Icon
+          name='dot-single'
+          type='entypo'
+          color='#818181'
+          size={18}
+          iconStyle={styles.iconStyle}
+          containerStyle={styles.iconContainerStyle}
+        />
       </View>
-    );
-  });
-};
+      <Text style={styles.numberStyle}>
+        {c.stat}
+      </Text>
+    </View>
+  );
+});
 
 const Stats = (props) => {
   return (

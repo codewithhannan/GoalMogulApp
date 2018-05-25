@@ -46,6 +46,7 @@ import Phone from './Main/Setting/Account/Phone';
 import AddPhoneNumberForm from './Main/Setting/Account/AddPhoneNumberForm';
 import EditPhoneNumberForm from './Main/Setting/Account/EditPhoneNumberForm';
 import EditPasswordForm from './Main/Setting/Account/EditPasswordForm';
+import FriendsBlocked from './Main/Setting/Account/Blocking/FriendsBlocked';
 import Privacy from './Main/Setting/Privacy/Privacy';
 import FriendsSetting from './Main/Setting/Privacy/FriendsSetting';
 
@@ -127,6 +128,7 @@ class RouterComponent extends Component {
                     <Scene key="phone" component={Phone} path='/phone/verification' />
                     <Scene key="addPhoneNumberForm" component={AddPhoneNumberForm} />
                     <Scene key="editPhoneNumberForm" component={EditPhoneNumberForm} />
+                    <Scene key="friendsBlocked" component={FriendsBlocked} />
                     <Scene key="privacy" component={Privacy} />
                     <Scene key="friendsSetting" component={FriendsSetting} />
                   </Stack>

@@ -27,14 +27,21 @@ class ProfileOccupationCard extends Component {
 
   render() {
     const { elevatorPitch, occupation } = this.props.data.profile;
+    if (!occupation && !elevatorPitch) {
+      return '';
+    }
     return (
       <Card>
         <View style={styles.containerStyle}>
           <View style={styles.headerContainerStyle}>
             <Text style={styles.titleTextStyle}>Occupation</Text>
-            <Text style={styles.headlineTextStyle}>
+            <Text
+              style={{ maxWidth: 180 }}
+              numberOfLines={1}
+              ellipsizeMode='tail'
+            >
               {occupation}
-            </Text>            
+            </Text>
           </View>
           <View style={styles.detailContainerStyle}>
             <Text stye={styles.detailTextStyle}>{elevatorPitch}</Text>

@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import storage from 'redux-persist/lib/storage';
 import { persistReducer } from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
+import { reducer as formReducer } from 'redux-form';
 
 /* reducers */
 import AuthReducers from './AuthReducers';
@@ -10,7 +11,6 @@ import CameraRollReducers from './CameraRollReducers';
 import User from './User';
 import Profile from './Profile';
 import Setting from './Setting';
-import { reducer as formReducer } from 'redux-form';
 import NavigationReducers from './NavigationReducers';
 import MeetReducers from './MeetReducers';
 import Home from './Home';

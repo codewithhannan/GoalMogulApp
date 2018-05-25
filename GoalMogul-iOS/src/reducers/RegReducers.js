@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {
   REGISTRATION_ERROR,
   REGISTRATION_BACK,
@@ -25,6 +26,19 @@ import {
   REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
   REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS
 } from '../actions/types';
+
+function arrayUnique(array) {
+  let a = array.concat();
+  for (let i = 0; i < a.length; ++i) {
+    for (let j = i + 1; j < a.length; ++j) {
+      if (a[i]._id === a[j]._id) {
+        a.splice(j--, 1);
+      }
+    }
+  }
+
+    return a;
+}
 
 const INITIAL_STATE = {
   name: '',
@@ -117,10 +131,10 @@ export default (state = INITIAL_STATE, action) => {
     // Contacts fetching done
     case REGISTRATION_CONTACT_SYNC_FETCH_DONE: {
       const newMatchedContacts = { ...state.matchedContacts };
-      newMatchedContacts.data = newMatchedContacts.data.concat(action.payload.data);
-      newMatchedContacts.refreshing = false;
+      newMatchedContacts.data = arrayUnique(newMatchedContacts.data.concat(action.payload.data));
       newMatchedContacts.skip = action.payload.skip;
-
+      newMatchedContacts.refreshing = false;
+      console.log('contact sync fetch done.');
       return { ...state, fetching: false, matchedContacts: newMatchedContacts };
     }
 
