@@ -1,5 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import { SubmissionError } from 'redux-form';
+import { api as API } from '../redux/middleware/api';
 
 import {
   USERNAME_CHANGED,
@@ -28,25 +29,14 @@ export const loginUser = ({ username, password }) => {
   // Call the endpoint to use username and password to signin
   // Obtain the credential
   return async (dispatch) => {
-    const url = 'https://goalmogul-api-dev.herokuapp.com/api/pub/user/authenticate/';
-    // const url = 'http://192.168.0.3:8081/api/pub/user/authenticate/';
-    const headers = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: username,
-        password
-      })
-    };
     dispatch({
       type: LOGIN_USER_LOADING
     });
-
-    const message = await fetch(url, headers)
-      .then((res) => res.json())
+    const message = await API
+      .post('pub/user/authenticate/', {
+        email: username,
+        password
+      }, undefined)
       .then((res) => {
         console.log('login with message: ', res);
         // User Login Successfully
@@ -80,11 +70,9 @@ export const loginUser = ({ username, password }) => {
   };
 };
 
-export const registerUser = () => {
-  return (dispatch) => {
-    dispatch({
-      type: REGISTRATION_ACCOUNT
-    });
-    Actions.registration();
-  };
+export const registerUser = () => (dispatch) => {
+  dispatch({
+    type: REGISTRATION_ACCOUNT
+  });
+  Actions.registration();
 };

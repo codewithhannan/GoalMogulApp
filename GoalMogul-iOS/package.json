@@ -57,6 +57,7 @@
     "redux-form": "^7.3.0",
     "redux-persist": "^5.9.1",
     "redux-thunk": "^2.2.0",
+    "reselect": "^3.0.1",
     "validate.js": "^0.12.0"
   }
 }

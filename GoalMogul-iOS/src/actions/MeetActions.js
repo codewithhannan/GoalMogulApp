@@ -116,54 +116,50 @@ const loadOneTab = (type, skip, limit, token, dispatch, callback) => {
 };
 
 // Refresh current tab based on selected id
-export const handleRefresh = (key) => {
-  return (dispatch, getState) => {
+export const handleRefresh = (key) => (dispatch, getState) => {
+  dispatch({
+    type: MEET_TAB_REFRESH,
+    payload: {
+      type: key
+    }
+  });
+
+  const { token } = getState().user;
+  loadOneTab(key, 0, 20, token, dispatch, (data) => {
     dispatch({
-      type: MEET_TAB_REFRESH,
+      type: MEET_TAB_REFRESH_DONE,
       payload: {
-        type: key
+        type: key,
+        data,
+        skip: 0,
+        limit: 20
       }
     });
-
-    const { token } = getState().user;
-    loadOneTab(key, 0, 20, token, dispatch, (data) => {
-      dispatch({
-        type: MEET_TAB_REFRESH_DONE,
-        payload: {
-          type: key,
-          data,
-          skip: 0,
-          limit: 20
-        }
-      });
-    });
-  };
+  });
 };
 
 // Load more data
-export const meetOnLoadMore = (key) => {
-  return (dispatch, getState) => {
-    // TODO: dispatch onLoadMore start
-    console.log(`${DEBUG_KEY} Loading more for ${key}`);
-    const tabState = _.get(getState().meet, key);
-    const { skip, limit, hasNextPage } = tabState;
-    if (hasNextPage) {
-      const { token } = getState().user;
-      loadOneTab(key, skip + limit, limit, token, dispatch, (data) => {
-        dispatch({
-          type: MEET_LOADING_DONE,
-          payload: {
-            type: key,
-            data,
-            skip: skip + limit,
-            limit
-          }
-        });
+export const meetOnLoadMore = (key) => (dispatch, getState) => {
+  // TODO: dispatch onLoadMore start
+  console.log(`${DEBUG_KEY} Loading more for ${key}`);
+  const tabState = _.get(getState().meet, key);
+  const { skip, limit, hasNextPage } = tabState;
+  if (hasNextPage) {
+    const { token } = getState().user;
+    loadOneTab(key, skip + limit, limit, token, dispatch, (data) => {
+      dispatch({
+        type: MEET_LOADING_DONE,
+        payload: {
+          type: key,
+          data,
+          skip: skip + limit,
+          limit
+        }
       });
-    }
+    });
+  }
 
-    // TODO: dispatch no new data
-  };
+  // TODO: dispatch no new data
 };
 
 /**
@@ -172,71 +168,69 @@ export const meetOnLoadMore = (key) => {
   2. acceptFriend
   3. deleteFriend
 */
-export const updateFriendship = (id, type, callback) => {
-  return (dispatch, getState) => {
-    // TODO: update type to MEET_UPDATE_FRIENDSHIP
-    dispatch({
-      type: MEET_UPDATE_FRIENDSHIP
-    });
+export const updateFriendship = (id, type, callback) => (dispatch, getState) => {
+  // TODO: update type to MEET_UPDATE_FRIENDSHIP
+  dispatch({
+    type: MEET_UPDATE_FRIENDSHIP
+  });
 
-    const requestType = ((request) => {
-      switch (request) {
-        case 'requestFriend':
-          return 'POST';
-        case 'acceptFriend':
-          return 'PUT';
-        case 'deleteFriend':
-          return 'DELETE';
-        default:
-          return 'POST';
-      }
-    })(type);
-    const { token } = getState().user;
-    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/friendship';
-    // const url = 'http://192.168.0.3:8081/api/secure/user/friendship';
-    const headers = {
-      method: `${requestType}`,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'x-access-token': token
-      },
-      body: JSON.stringify({
-        userId: id
-      })
-    };
-    fetchData(url, headers, null)
-      .then((res) => {
-        console.log(`response for ${type}: `, res);
-        if (res.message) {
-          // TODO: error handling
-          console.log('res status: ', res.status);
-        }
-
-        if (callback !== null && callback !== undefined) {
-          callback();
-          return;
-        }
-
-        dispatch({
-          type: MEET_UPDATE_FRIENDSHIP_DONE,
-          payload: {
-            type: '',
-            data: []
-          }
-        });
-      })
-      .catch((err) => {
-        console.log(`update friendship ${type} fails: `, err);
-        dispatch({
-          type: MEET_LOADING_DONE,
-          payload: {
-            type,
-            data: id
-          }
-        });
-      });
+  const requestType = ((request) => {
+    switch (request) {
+      case 'requestFriend':
+        return 'POST';
+      case 'acceptFriend':
+        return 'PUT';
+      case 'deleteFriend':
+        return 'DELETE';
+      default:
+        return 'POST';
+    }
+  })(type);
+  const { token } = getState().user;
+  const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/friendship';
+  // const url = 'http://192.168.0.3:8081/api/secure/user/friendship';
+  const headers = {
+    method: `${requestType}`,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'x-access-token': token
+    },
+    body: JSON.stringify({
+      userId: id
+    })
   };
+  fetchData(url, headers, null)
+    .then((res) => {
+      console.log(`response for ${type}: `, res);
+      if (res.message) {
+        // TODO: error handling
+        console.log('res status: ', res.status);
+      }
+
+      if (callback !== null && callback !== undefined) {
+        callback();
+        return;
+      }
+
+      dispatch({
+        type: MEET_UPDATE_FRIENDSHIP_DONE,
+        payload: {
+          type: '',
+          data: []
+        }
+      });
+    })
+    .catch((err) => {
+      console.log(`update friendship ${type} fails: `, err);
+      dispatch({
+        type: MEET_LOADING_DONE,
+        payload: {
+          type,
+          data: id
+        }
+      });
+    });
 };
 
 const fetchData = (url, headers, callback) => {
@@ -258,17 +252,15 @@ const fetchData = (url, headers, callback) => {
 };
 
 // Update meet tabs filter criteria
-export const meetChangeFilter = (tab, type, value) => {
-  return (dispatch) => {
-    dispatch({
-      type: MEET_CHANGE_FILTER,
-      payload: {
-        tab,
-        type,
-        value
-      }
-    });
-  };
+export const meetChangeFilter = (tab, type, value) => (dispatch) => {
+  dispatch({
+    type: MEET_CHANGE_FILTER,
+    payload: {
+      tab,
+      type,
+      value
+    }
+  });
 };
 
 // Requesets tab actions
