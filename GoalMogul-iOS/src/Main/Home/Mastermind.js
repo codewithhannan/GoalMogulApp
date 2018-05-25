@@ -8,25 +8,25 @@ import GoalFilterBar from '../Common/GoalFilterBar';
 const testData = [
   {
     name: 'Jia Zeng',
-    id: 1
+    _id: 1
   }
 ];
 
 class Mastermind extends Component {
 
-  _keyExtractor = (item) => item.id
+  _keyExtractor = (item) => item._id
 
   renderItem = item => {
     // TODO: render item
+    return <View />;
   }
 
   render() {
     return (
       <View style={{ flex: 1 }}>
         <FlatList
-          enableEmptySections
           data={testData}
-          renderItem={(item) => this.renderItem(item)}
+          renderItem={this.renderItem}
           numColumns={1}
           keyExtractor={this._keyExtractor}
         />

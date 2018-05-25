@@ -3,7 +3,6 @@ import {
   View,
   Image,
   TouchableWithoutFeedback,
-  TouchableHighlight,
   Text,
   TouchableOpacity
 } from 'react-native';
@@ -51,22 +50,26 @@ class SearchBarHeader extends Component {
   renderSearchBarLeftIcon() {
     if (this.props.backButton) {
       return (
-        <TouchableWithoutFeedback onPress={this.handleBackOnClick.bind(this)}>
-          <View style={styles.headerLeftImage}>
+        <View style={styles.headerLeftImage}>
+          <TouchableOpacity onPress={this.handleBackOnClick.bind(this)}>
             <Icon
               type='entypo'
               name='chevron-thin-left'
               color='#35475d'
               containerStyle={{ justifyContent: 'flex-start' }}
             />
-          </View>
-        </TouchableWithoutFeedback>
+          </TouchableOpacity>
+        </View>
+
       );
     }
     return (
-      <TouchableWithoutFeedback onPress={this.handleProfileOnClick.bind(this)}>
+      <TouchableOpacity
+        style={styles.headerLeftImage}
+        onPress={this.handleProfileOnClick.bind(this)}
+      >
         <Image style={styles.headerLeftImage} source={Logo} />
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     );
   }
 
