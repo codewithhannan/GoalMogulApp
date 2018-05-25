@@ -52,6 +52,7 @@ class MyGoalCard extends Component {
           style={styles.buttonContainerStyle}
           onResponderRelease={this.handleButtonPressedRelease.bind(this)}
           nativeID={b.key}
+          key={b.key}
         >
           <Image style={styles.buttonStyle} source={b.icon} />
           <Text style={styles.buttonCountStyle}>{b.data}</Text>

@@ -6,6 +6,7 @@ import {
   FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 
 /* Components */
 import SearchBarHeader from '../../../Common/SearchBarHeader';
@@ -35,7 +36,6 @@ const testData = [
 ];
 
 class FriendsBlocked extends Component {
-
   componentWillMount() {
     this.props.getBlockedUsers();
   }
@@ -48,11 +48,9 @@ class FriendsBlocked extends Component {
     console.log(`${DEBUG_KEY} refresh`);
   }
 
-  _keyExtractor = (item) => item._id
+  _keyExtractor = (item) => item._id;
 
-  renderItem = (item) => {
-    return <FriendCard item={item} />;
-  }
+  renderItem = (item) => <FriendCard item={item} />;
 
   render() {
     return (
@@ -61,7 +59,7 @@ class FriendsBlocked extends Component {
           backButton
           rightIcon='empty'
           title="Block"
-          onBackPress={() => this.props.updateFriendsSetting()}
+          onBackPress={() => Actions.pop()}
         />
         <FlatList
           data={testData}

@@ -13,6 +13,13 @@ import {
   SETTING_PHONE_VERIFICATION_SUCCESS,
   SETTING_FRIEND_SETTING_SELECTION,
   SETTING_FRIEND_SETTING_UPDATE_SUCCESS,
+  SETTING_BLOCK_FETCH_ALL,
+  SETTING_BLOCK_FETCH_ALL_DONE,
+  SETTING_BLOCK_BLOCK_REQUEST,
+  SETTING_BLOCK_BLOCK_REQUEST_DONE,
+  SETTING_BLOCK_UNBLOCK_REQUEST,
+  SETTING_BLOCK_UNBLOCK_REQUEST_DONE,
+  SETTING_BLOCK_REFRESH_DONE
 } from './types';
 
 export const openSetting = () => {
@@ -242,11 +249,52 @@ export const updateFriendsSetting = () => (dispatch, getState) => {
   });
 };
 
-// Setting account get blocked users
+// Setting account get blocked users with skip and limit
 export const getBlockedUsers = () => (dispatch, getState) => {
+  dispatch({
+    type: SETTING_BLOCK_FETCH_ALL
+  });
   const { token } = getState().user;
-  API.get('secure/user/settings/block', token).then((res) => {
+  const { skip, limit } = getState().setting.block;
+  fetchBlockedUsers(skip, limit, token, (res) => {
     console.log('response for get all blocked users: ', res);
+    dispatch({
+      type: SETTING_BLOCK_FETCH_ALL_DONE,
+      payload: {
+        skip: skip + limit,
+        data: []
+      }
+    });
+  });
+};
+
+// Refresh blocked user page with skip and limit
+export const refreshBlockedUsers = () => (dispatch, getState) => {
+  dispatch({
+    type: SETTING_BLOCK_FETCH_ALL
+  });
+  const { token } = getState().user;
+  const { limit } = getState().setting.block;
+
+  fetchBlockedUsers(0, limit, token, (res) => {
+    console.log(`response to refresh blocked users with limit: ${limit}: `, res);
+    dispatch({
+      type: SETTING_BLOCK_FETCH_ALL_DONE,
+      payload: {
+        skip: limit,
+        data: []
+      }
+    });
+  });
+};
+
+const fetchBlockedUsers = (skip, limit, token, callback) => {
+  API
+  .get(`secure/user/settings/block?skip=${skip}&limit=${limit}`, token)
+  .then((res) => {
+    if (callback) {
+      callback(res);
+    }
   })
   .catch((error) => {
     console.log('error for getting all blocked user: ', error);
@@ -255,9 +303,17 @@ export const getBlockedUsers = () => (dispatch, getState) => {
 
 // Block one particular user with userId
 export const blockUser = (userId) => (dispatch, getState) => {
+  dispatch({
+    type: SETTING_BLOCK_BLOCK_REQUEST,
+    payload: userId
+  });
   const { token } = getState().user;
   API.post('secure/user/settings/block', { userId }, token).then((res) => {
     console.log('response for blockUser: ', userId, ', is: ', res);
+    dispatch({
+      type: SETTING_BLOCK_BLOCK_REQUEST_DONE,
+      payload: userId
+    });
   })
   .catch((error) => {
     console.log('error for blocking user: ', error);
@@ -266,9 +322,17 @@ export const blockUser = (userId) => (dispatch, getState) => {
 
 // Setting account unblock user
 export const unblockUser = (userId) => (dispatch, getState) => {
+  dispatch({
+    type: SETTING_BLOCK_UNBLOCK_REQUEST,
+    payload: userId
+  });
   const { token } = getState().user;
   API.delete('secure/user/settings/block', { userId }, token).then((res) => {
     console.log('response for deleting a blocked user: ', userId, ', is: ', res);
+    dispatch({
+      type: SETTING_BLOCK_UNBLOCK_REQUEST_DONE,
+      payload: userId
+    });
   })
   .catch((error) => {
     console.log('error for unblocking user: ', error);

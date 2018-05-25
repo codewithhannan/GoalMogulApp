@@ -71,6 +71,13 @@ export const SETTING_PHONE_UPDATE_SUCCESS = 'setting_phone_update_success';
 export const SETTING_PHONE_VERIFICATION_SUCCESS = 'setting_phone_verification_success';
 export const SETTING_FRIEND_SETTING_SELECTION = 'setting_friend_setting_selection';
 export const SETTING_FRIEND_SETTING_UPDATE_SUCCESS = 'setting_friend_setting_update_success';
+export const SETTING_BLOCK_FETCH_ALL = 'setting_block_fetch_all';
+export const SETTING_BLOCK_FETCH_ALL_DONE = 'setting_block_fetch_all_done';
+export const SETTING_BLOCK_REFRESH_DONE = 'setting_block_fetch_all_done';
+export const SETTING_BLOCK_BLOCK_REQUEST = 'setting_block_block_request';
+export const SETTING_BLOCK_BLOCK_REQUEST_DONE = 'setting_block_block_request_done';
+export const SETTING_BLOCK_UNBLOCK_REQUEST = 'setting_block_unblock_request';
+export const SETTING_BLOCK_UNBLOCK_REQUEST_DONE = 'setting_block_unblock_request_done';
 
 /* Meet Actions */
 export const MEET_SELECT_TAB = 'meet_select_tab';

@@ -5,7 +5,14 @@ import {
   SETTING_FRIEND_SETTING_SELECTION,
   SETTING_EMAIL_UPDATE_SUCCESS,
   SETTING_PHONE_UPDATE_SUCCESS,
-  SETTING_PHONE_VERIFICATION_SUCCESS
+  SETTING_PHONE_VERIFICATION_SUCCESS,
+  SETTING_BLOCK_FETCH_ALL,
+  SETTING_BLOCK_FETCH_ALL_DONE,
+  SETTING_BLOCK_REFRESH_DONE,
+  SETTING_BLOCK_BLOCK_REQUEST,
+  SETTING_BLOCK_BLOCK_REQUEST_DONE,
+  SETTING_BLOCK_UNBLOCK_REQUEST,
+  SETTING_BLOCK_UNBLOCK_REQUEST_DONE
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -17,6 +24,8 @@ const INITIAL_STATE = {
   selectedTab: 'account',
   block: {
     data: [],
+    skip: 0,
+    limit: 20,
     refreshing: false,
     hasNextPage: undefined
   }
@@ -65,6 +74,47 @@ export default (state = INITIAL_STATE, action) => {
       const phone = { ...state.phone };
       phone.isVerified = true;
       return { ...state, phone };
+    }
+
+    /*
+    Blocked user management
+    1. fetch/refresh/load more blocked users
+    2. unblock user
+    3. block user
+    TODO: implement block, unblock, refresh and load more logic
+    */
+    case SETTING_BLOCK_FETCH_ALL:
+      return { ...state, block: { ...state.block, fetching: true } };
+
+    case SETTING_BLOCK_FETCH_ALL_DONE:
+      return {
+        ...state,
+        block: {
+          ...state.block,
+          fetching: false,
+          data: action.payload.data,
+          skip: action.payload.skip
+        }
+      };
+
+    case SETTING_BLOCK_BLOCK_REQUEST: {
+      return { ...state };
+    }
+
+    case SETTING_BLOCK_BLOCK_REQUEST_DONE: {
+      return { ...state };
+    }
+
+    case SETTING_BLOCK_REFRESH_DONE: {
+      return { ...state };
+    }
+
+    case SETTING_BLOCK_UNBLOCK_REQUEST: {
+      return { ...state };
+    }
+
+    case SETTING_BLOCK_UNBLOCK_REQUEST_DONE: {
+      return { ...state };
     }
 
     default:
