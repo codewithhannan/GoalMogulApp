@@ -20,45 +20,45 @@ export const searchChangeFilter = (type, value) => {
   };
 };
 
-const debounceWithId = (fn, delay, id) => {
-  const testFunc = curry(debounce);
-  const testFunc2 = testFunc(fn, delay)
-
-}
-
+const searchCurry = curry(searchWithId);
 const generateQueryId = (text) => hashCode(text);
 
-export const searchWithId = (searchContent, queryId) => (dispatch, getState) => {
+export const handleSearch = (searchContent) => {
+  const queryId = generateQueryId(searchContent);
+  searchCurry(searchContent, queryId);
+};
+
+const searchWithId = (searchContent, queryId) => (dispatch, getState) => {
   const { token } = getState().user;
   const { skip, limit } = getState().search;
   console.log(`sending request with text: ${searchContent} and queryId: ${queryId}`);
-  dispatch({
-    type: SEARCH_REQUEST,
-    payload: {
-      queryId,
-      searchContent
-    }
-  });
-  // Send request to end point using API
-  API
-    .get(
-      `secure/user/friendship/es?skip=${skip}&limit=${limit}&query=${searchContent}`,
-      token
-    )
-    .then((res) => {
-      console.log(`${DEBUG_KEY} fetching with res: `, res);
-      dispatch({
-        type: SEARCH_REQUEST_DONE,
-        payload: {
-          queryId,
-          data: [],
-          skip: skip + limit,
-        }
-      });
-    })
-    .catch((err) => {
-      console.log(`${DEBUG_KEY} fetching fails with err: `, err);
-    });
+  // dispatch({
+  //   type: SEARCH_REQUEST,
+  //   payload: {
+  //     queryId,
+  //     searchContent
+  //   }
+  // });
+  // // Send request to end point using API
+  // API
+  //   .get(
+  //     `secure/user/friendship/es?skip=${skip}&limit=${limit}&query=${searchContent}`,
+  //     token
+  //   )
+  //   .then((res) => {
+  //     console.log(`${DEBUG_KEY} fetching with res: `, res);
+  //     dispatch({
+  //       type: SEARCH_REQUEST_DONE,
+  //       payload: {
+  //         queryId,
+  //         data: [],
+  //         skip: skip + limit,
+  //       }
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log(`${DEBUG_KEY} fetching fails with err: `, err);
+  //   });
 };
 
 export const refreshSearchResult = () => (dispatch, getState) => {

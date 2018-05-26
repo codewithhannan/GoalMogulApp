@@ -13,7 +13,11 @@ import { MenuProvider } from 'react-native-popup-menu';
 import BaseOverlay from './BaseOverlay';
 import SearchFilterBar from './SearchFilterBar';
 
-import { refreshSearchResult } from '../../../redux/modules/search/SearchActions';
+import {
+  refreshSearchResult,
+  debounce,
+  handleSearch
+} from '../../../redux/modules/search/SearchActions';
 
 const DEBUG_KEY = '[ Component Search ]';
 
@@ -25,6 +29,12 @@ const testDataSearch = [
 ];
 
 class SearchOverlay extends Component {
+
+  constructor(props) {
+    super(props);
+    this.handleChangeText = debounce(this.handleChangeText, 400);
+  }
+
   componentDidMount() {
     this.refs.searchBar.focus();
   }
@@ -41,6 +51,7 @@ class SearchOverlay extends Component {
 
   handleChangeText = value => {
     console.log('input is: ', value);
+    this.props.handleSearch(value);
   }
 
   // FlatList renderer functions
@@ -151,6 +162,7 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    refreshSearchResult
+    refreshSearchResult,
+    handleSearch
   }
 )(SearchOverlay);
