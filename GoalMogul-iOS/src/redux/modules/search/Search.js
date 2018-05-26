@@ -44,8 +44,7 @@ export default (state = INITIAL_STATE, action) => {
     // Search request done
     case SEARCH_REQUEST_DONE: {
       const { queryId, skip, data } = action.payload;
-      const oldData = { ...state.data };
-
+      const oldData = [...state.data];
       if (queryId === state.queryId) {
         const newData = oldData.concat(data);
         return {

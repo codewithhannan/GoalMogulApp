@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { SearchBar, Icon } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import { MenuProvider } from 'react-native-popup-menu';
+import _ from 'lodash';
 
 // Component
 import BaseOverlay from './BaseOverlay';
@@ -29,12 +30,6 @@ const testDataSearch = [
 ];
 
 class SearchOverlay extends Component {
-
-  constructor(props) {
-    super(props);
-    this.handleChangeText = debounce(this.handleChangeText, 400);
-  }
-
   componentDidMount() {
     this.refs.searchBar.focus();
   }
@@ -49,9 +44,8 @@ class SearchOverlay extends Component {
     console.log('user clear search input');
   }
 
-  handleChangeText = value => {
-    console.log('input is: ', value);
-    this.props.handleSearch(value);
+  handleChangeText = (value) => {
+    this.props.debouncedSearch(value);
   }
 
   // FlatList renderer functions
@@ -159,10 +153,15 @@ const mapStateToProps = state => {
   };
 };
 
+const mapDispatchToProps = dispatch => {
+  const debouncedSearch = _.debounce(value => dispatch(handleSearch(value)), 400);
+  return ({
+    debouncedSearch,
+    refreshSearchResult
+  });
+};
+
 export default connect(
   mapStateToProps,
-  {
-    refreshSearchResult,
-    handleSearch
-  }
+  mapDispatchToProps
 )(SearchOverlay);
