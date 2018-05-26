@@ -26,7 +26,6 @@ import { back, openProfile, openSetting } from '../../actions';
   setting: true or false
 */
 class SearchBarHeader extends Component {
-
   state = {
     overlay: false
   }
@@ -187,7 +186,6 @@ const styles = {
     color: '#b2b3b4',
     marginLeft: 3
   }
-
 };
 
 const mapStateToProps = state => {

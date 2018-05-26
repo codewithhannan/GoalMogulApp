@@ -2,6 +2,7 @@ import { Actions } from 'react-native-router-flux';
 import { CameraRoll, ImagePickerIOS } from 'react-native';
 import Expo from 'expo';
 import { SubmissionError } from 'redux-form';
+import { api as API } from '../redux/middleware/api';
 
 import {
   REGISTRATION_BACK,
@@ -83,22 +84,13 @@ export const registrationNextAddProfile = (value) => {
     dispatch({
       type: REGISTRATION_ACCOUNT_LOADING
     });
-    const url = 'https://goalmogul-api-dev.herokuapp.com/api/pub/user/';
-    const headers = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
+
+    const message = await API
+      .post('pub/user/', {
         name,
         email,
         password
-      })
-    };
-
-    const message = await fetch(url, headers)
-      .then((res) => res.json())
+      }, undefined)
       .then((res) => {
         if (res.message) {
           return res.message;
@@ -119,6 +111,44 @@ export const registrationNextAddProfile = (value) => {
       })
       // TODO: error handling
       .catch((err) => console.log(err));
+
+
+    // const url = 'https://goalmogul-api-dev.herokuapp.com/api/pub/user/';
+    // const headers = {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify({
+    //     name,
+    //     email,
+    //     password
+    //   })
+    // };
+    //
+    // const message = await fetch(url, headers)
+    //   .then((res) => res.json())
+    //   .then((res) => {
+    //     if (res.message) {
+    //       return res.message;
+    //     }
+    //     dispatch({
+    //       type: REGISTRATION_ADDPROFILE
+    //     });
+    //     // AuthReducers record user token
+    //     const payload = {
+    //       token: res.token,
+    //       userId: res.userId
+    //     };
+    //     dispatch({
+    //       type: REGISTRATION_ACCOUNT_SUCCESS,
+    //       payload
+    //     });
+    //     Actions.registrationProfile();
+    //   })
+    //   // TODO: error handling
+    //   .catch((err) => console.log(err));
 
     if (message) {
       throw new SubmissionError({
@@ -175,26 +205,36 @@ export const registrationNextIntro = (skip) => {
         })
         .then((image) => {
           // Update profile imageId to the latest uploaded one
-          const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/profile';
-          const headers = {
-            method: 'PUT',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              image,
-              token
-            })
-          };
-          return fetch(url, headers)
-            .then((res) => res.json())
-            .then((res) => {
-              console.log('update profile picture Id with res: ', res);
-            })
-            .catch((err) => {
-              console.log('error updating record: ', err);
-            });
+          return API.put('secure/user/profile', {
+            image
+          }, token)
+          .then((res) => {
+            console.log('update profile picture Id with res: ', res);
+          })
+          .catch((err) => {
+            console.log('error updating record: ', err);
+          });
+
+          // const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/profile';
+          // const headers = {
+          //   method: 'PUT',
+          //   headers: {
+          //     Accept: 'application/json',
+          //     'Content-Type': 'application/json'
+          //   },
+          //   body: JSON.stringify({
+          //     image,
+          //     token
+          //   })
+          // };
+          // return fetch(url, headers)
+          //   .then((res) => res.json())
+          //   .then((res) => {
+          //     console.log('update profile picture Id with res: ', res);
+          //   })
+          //   .catch((err) => {
+          //     console.log('error updating record: ', err);
+          //   });
         })
         .catch((err) => {
           // TODO: error handling for different kinds of errors.
@@ -336,20 +376,9 @@ export const registrationNextContact = (headline, skip) => {
       return Actions.registrationContact();
     }
     const token = getState().user.token;
-    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
-    const headers = {
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        headline,
-        token
-      })
-    };
-    fetch(url, headers)
-      .then((res) => res.json())
+
+    API
+      .put('secure/user/account', { headline }, token)
       .then((res) => {
         dispatch({
           type,
@@ -365,6 +394,36 @@ export const registrationNextContact = (headline, skip) => {
           payload: error
         });
       });
+
+    // const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
+    // const headers = {
+    //   method: 'PUT',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify({
+    //     headline,
+    //     token
+    //   })
+    // };
+    // fetch(url, headers)
+    //   .then((res) => res.json())
+    //   .then((res) => {
+    //     dispatch({
+    //       type,
+    //       payload: headline
+    //     });
+    //     Actions.registrationContact();
+    //   })
+    //   .catch((err) => {
+    //     console.log('error is: ', err);
+    //     error.headline = err.message;
+    //     return ({
+    //       type: REGISTRATION_ERROR,
+    //       payload: error
+    //     });
+    //   });
   };
 };
 

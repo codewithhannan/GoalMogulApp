@@ -1,20 +1,40 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList
+} from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar, Icon } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import { MenuProvider } from 'react-native-popup-menu';
+import _ from 'lodash';
 
 // Component
 import BaseOverlay from './BaseOverlay';
 import SearchFilterBar from './SearchFilterBar';
 
-class SearchOverlay extends Component {
+import {
+  refreshSearchResult,
+  debounce,
+  handleSearch
+} from '../../../redux/modules/search/SearchActions';
 
+const DEBUG_KEY = '[ Component Search ]';
+
+const testDataSearch = [
+  {
+    name: 'Jia Zeng',
+    _id: '120379187290381'
+  }
+];
+
+class SearchOverlay extends Component {
   componentDidMount() {
     this.refs.searchBar.focus();
   }
 
+  // Search bar functions
   handleCancel = () => {
     //TODO: potentially clear search state
     Actions.pop();
@@ -24,8 +44,20 @@ class SearchOverlay extends Component {
     console.log('user clear search input');
   }
 
-  handleChangeText = value => {
-    console.log('input is: ', value);
+  handleChangeText = (value) => {
+    this.props.debouncedSearch(value);
+  }
+
+  // FlatList renderer functions
+  handleRefresh = () => {
+    console.log(`${DEBUG_KEY} refresh result`);
+    this.props.refreshSearchResult();
+  }
+
+  _keyExtractor = (item) => item._id;
+
+  handleOnLoadMore = () => {
+    console.log(`${DEBUG_KEY}: loading more`);
   }
 
   searchIcon = () => (
@@ -39,9 +71,14 @@ class SearchOverlay extends Component {
     </View>
   );
 
-  render() {
-    return (
+  renderItem = ({ item }) => {
+    // TODO: render search result
+  }
 
+  render() {
+    let dataToRender = testDataSearch.concat(this.props.data);
+
+    return (
       <BaseOverlay verticalPercent={1} horizontalPercent={1}>
         <MenuProvider>
           <View style={styles.headerContainerStyle}>
@@ -61,6 +98,15 @@ class SearchOverlay extends Component {
             />
           </View>
           <SearchFilterBar />
+          <FlatList
+            data={dataToRender}
+            renderItem={this.renderItem}
+            keyExtractor={this._keyExtractor}
+            onEndReached={this.handleOnLoadMore}
+            onEndReachedThreshold={0.5}
+            refreshing={this.props.loading}
+            onRefresh={this.handleRefresh}
+          />
         </MenuProvider>
       </BaseOverlay>
     );
@@ -96,4 +142,24 @@ const styles = {
   }
 };
 
-export default connect(null, null)(SearchOverlay);
+const mapStateToProps = state => {
+  const { data, loading } = state.search;
+
+  return {
+    data,
+    loading
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  const debouncedSearch = _.debounce(value => dispatch(handleSearch(value)), 400);
+  return ({
+    debouncedSearch,
+    refreshSearchResult
+  });
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SearchOverlay);
