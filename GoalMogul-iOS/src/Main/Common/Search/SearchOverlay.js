@@ -50,13 +50,14 @@ class SearchOverlay extends Component {
 
   // FlatList renderer functions
   handleRefresh = () => {
+    console.log(`${DEBUG_KEY} refresh result`);
     this.props.refreshSearchResult();
   }
 
   _keyExtractor = (item) => item._id;
 
   handleOnLoadMore = () => {
-    console.log(`${DEBUG_KEY} Loading more`);
+    console.log(`${DEBUG_KEY}: loading more`);
   }
 
   searchIcon = () => (
@@ -75,8 +76,9 @@ class SearchOverlay extends Component {
   }
 
   render() {
-    return (
+    let dataToRender = testDataSearch.concat(this.props.data);
 
+    return (
       <BaseOverlay verticalPercent={1} horizontalPercent={1}>
         <MenuProvider>
           <View style={styles.headerContainerStyle}>
@@ -97,14 +99,14 @@ class SearchOverlay extends Component {
           </View>
           <SearchFilterBar />
           <FlatList
-            data={testDataSearch}
+            data={dataToRender}
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
             onEndReached={this.handleOnLoadMore}
             onEndReachedThreshold={0.5}
+            refreshing={this.props.loading}
+            onRefresh={this.handleRefresh}
           />
-        {/*refreshing={this.props.loading}*/}
-        {/*onRefresh={this.handleRefresh}*/}
         </MenuProvider>
       </BaseOverlay>
     );
@@ -141,14 +143,10 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { suggested } = state.meet;
-  const { data, refreshing, loading } = suggested;
-
+  const { data, loading } = state.search;
 
   return {
-    suggested,
     data,
-    refreshing,
     loading
   };
 };
