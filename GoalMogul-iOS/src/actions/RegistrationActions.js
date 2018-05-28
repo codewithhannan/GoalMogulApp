@@ -65,19 +65,13 @@ export const registrationNextAddProfile = (value) => {
   // If there are missing fields then show red error message
   const { name, email, password } = value;
 
-  const error = {};
-  // let errorMessage = validate({ email, name, password }, contraints);
-  // console.log(errorMessage);
-  error.name = name === '';
-  error.email = email === '' || !validateEmail(email);
-  error.password = password === '';
-
-  if (error.name || error.email || error.password) {
-    return ({
-      type: REGISTRATION_ERROR,
-      payload: error
-    });
-  }
+  const data = validateEmail(email) ?
+  {
+    name, email, password
+  } :
+  {
+    name, phone: email, password
+  };
 
   // TODO: refactor network request as factory function
   return async (dispatch) => {
@@ -86,11 +80,7 @@ export const registrationNextAddProfile = (value) => {
     });
 
     const message = await API
-      .post('pub/user/', {
-        name,
-        email,
-        password
-      }, undefined)
+      .post('pub/user/', { ...data }, undefined)
       .then((res) => {
         if (res.message) {
           return res.message;
@@ -151,6 +141,10 @@ export const registrationNextAddProfile = (value) => {
     //   .catch((err) => console.log(err));
 
     if (message) {
+      dispatch({
+        type: REGISTRATION_ERROR,
+        error: message
+      });
       throw new SubmissionError({
         _error: message
       });
