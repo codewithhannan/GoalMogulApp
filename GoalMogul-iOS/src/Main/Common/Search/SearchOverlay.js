@@ -16,7 +16,6 @@ import SearchFilterBar from './SearchFilterBar';
 
 import {
   refreshSearchResult,
-  debounce,
   handleSearch
 } from '../../../redux/modules/search/SearchActions';
 
@@ -30,22 +29,14 @@ const testDataSearch = [
 ];
 
 class SearchOverlay extends Component {
-  componentDidMount() {
-    this.refs.searchBar.focus();
-  }
-
   // Search bar functions
   handleCancel = () => {
     //TODO: potentially clear search state
     Actions.pop();
   }
 
-  handleClear = () => {
-    console.log('user clear search input');
-  }
-
   handleChangeText = (value) => {
-    this.props.debouncedSearch(value);
+    this.props.debouncedSearch(value.trim());
   }
 
   // FlatList renderer functions
@@ -83,9 +74,9 @@ class SearchOverlay extends Component {
         <MenuProvider>
           <View style={styles.headerContainerStyle}>
             <SearchBar
-              ref='searchBar'
               platform='ios'
               round
+              autoFocus
               inputStyle={styles.searchInputStyle}
               inputContainerStyle={styles.searchInputContainerStyle}
               containerStyle={styles.searchContainerStyle}
@@ -93,8 +84,9 @@ class SearchOverlay extends Component {
               cancelButtonTitle='Cancel'
               onCancel={this.handleCancel}
               onChangeText={this.handleChangeText}
-              onClear={this.handleClear}
+              clearIcon={null}
               cancelButtonProps={{ color: '#45C9F6' }}
+              showLoading={this.props.loading}
             />
           </View>
           <SearchFilterBar />
@@ -104,9 +96,9 @@ class SearchOverlay extends Component {
             keyExtractor={this._keyExtractor}
             onEndReached={this.handleOnLoadMore}
             onEndReachedThreshold={0.5}
-            refreshing={this.props.loading}
-            onRefresh={this.handleRefresh}
           />
+        {/*refreshing={this.props.loading}
+          onRefresh={this.handleRefresh}*/}
         </MenuProvider>
       </BaseOverlay>
     );

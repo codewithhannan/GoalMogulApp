@@ -38,7 +38,7 @@ const Tabs = [
 /* TODO: delete the test data */
 const testDataOutgoing = [
   {
-    id: 12,
+    _id: 12,
     name: 'Jia Zeng',
     profile: {
       occupation: 'Student'
@@ -66,7 +66,7 @@ class Requests extends Component {
     this.props.meetOnLoadMore(route);
   }
 
-  _keyExtractor = (item) => item.id;
+  _keyExtractor = (item) => item._id;
 
   renderItem = ({ item }) => {
     return <MeetCard item={item} />;

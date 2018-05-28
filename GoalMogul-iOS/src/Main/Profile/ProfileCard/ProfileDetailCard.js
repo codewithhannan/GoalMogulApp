@@ -18,6 +18,17 @@ import EditButton from '../../Common/Button/EditButton';
 
 // TODO: use redux instead of passed in props
 class ProfileDetailCard extends Component {
+  componentWillMount() {
+    const { image } = this.props.user.profile;
+    if (image) {
+      this.prefetchImage(image);
+    }
+  }
+
+  prefetchImage(image) {
+    const fullImageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+    Image.prefetch(fullImageUrl);
+  }
 
   handleEditOnPressed() {
     this.props.openProfileDetailEditForm();
@@ -29,8 +40,7 @@ class ProfileDetailCard extends Component {
     }
   }
 
-  renderProfileImage() {
-    const { profile } = this.props.data;
+  renderProfileImage(profile) {
     let { image } = profile;
 
     let profileImage = <Image style={styles.imageStyle} source={profilePic} />;
@@ -42,14 +52,13 @@ class ProfileDetailCard extends Component {
   }
 
   render() {
-    const { name, headline } = this.props.data;
-
+    const { name, headline, profile } = this.props.user;
 
     return (
       <Card>
         <View style={styles.containerStyle}>
           {this.renderEditButton()}
-          {this.renderProfileImage()}
+          {this.renderProfileImage(profile)}
           <Text style={styles.nameTextStyle}>
             {name}
           </Text>
@@ -89,9 +98,11 @@ const styles = {
 
 const mapStateToProps = state => {
   const canEdit = state.profile.userId.toString() === state.user.userId.toString();
+  const { user } = state.profile;
 
   return {
-    canEdit
+    canEdit,
+    user
   };
 };
 

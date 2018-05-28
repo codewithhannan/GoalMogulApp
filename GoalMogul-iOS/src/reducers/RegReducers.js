@@ -65,7 +65,7 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
 
     case REGISTRATION_ERROR:
-     return { ...state, error: action.payload };
+     return { ...state, error: action.payload, loading: false };
 
     // User pressed back button on nav bar
     case REGISTRATION_BACK:

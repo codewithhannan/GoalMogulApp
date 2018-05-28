@@ -24,13 +24,13 @@ const DEBUG_KEY = '[ Component Contacts ]';
 const testData = [
   {
     name: 'Jia Zeng',
-    id: 1
+    _id: 1
   }
 ];
 
 class Contacts extends Component {
 
-  _keyExtractor = (item) => item.id
+  _keyExtractor = (item) => item._id
 
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing tab: `, key);

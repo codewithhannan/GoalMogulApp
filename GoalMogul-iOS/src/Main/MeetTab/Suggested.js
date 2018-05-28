@@ -19,14 +19,14 @@ const DEBUG_KEY = '[ Component Suggested ]';
 /* TODO: delete the test data */
 const testDataSuggested = [
   {
-    id: 1,
+    _id: 1,
     name: 'Jia Zeng',
     profile: {
       occupation: 'student'
     }
   },
   {
-    id: 1,
+    _id: 3,
     name: 'Jay Patel',
     profile: {
 
@@ -35,8 +35,7 @@ const testDataSuggested = [
 ];
 
 class Suggested extends Component {
-
-  _keyExtractor = (item, index) => index
+  _keyExtractor = (item) => item._id;
 
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing tab: `, key);

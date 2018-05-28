@@ -19,12 +19,12 @@ const DEBUG_KEY = '[ Component Friends ]';
 const testData = [
   {
     name: 'Jia Zeng',
-    id: 1
+    _id: 1
   }
 ];
 
 class Friends extends Component {
-  _keyExtractor = (item) => item.id
+  _keyExtractor = (item) => item._id
 
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing tab: `, key);

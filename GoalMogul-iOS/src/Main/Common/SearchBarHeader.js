@@ -19,6 +19,8 @@ import Setting from '../../asset/header/setting.png';
 /* Actions */
 import { back, openProfile, openSetting } from '../../actions';
 
+const tintColor = '#33485e';
+
 /**
   TODO: refactor element to have consistent behavior
   rightIcon: 'empty' or null,
@@ -67,7 +69,7 @@ class SearchBarHeader extends Component {
         style={styles.headerLeftImage}
         onPress={this.handleProfileOnClick.bind(this)}
       >
-        <Image style={styles.headerLeftImage} source={Logo} />
+        <Image style={{ ...styles.headerLeftImage, tintColor }} source={Logo} />
       </TouchableOpacity>
     );
   }

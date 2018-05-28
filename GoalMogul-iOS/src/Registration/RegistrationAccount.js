@@ -84,7 +84,7 @@ class Account extends Component {
 
   renderError(error) {
     return error ? (
-      <View style={{ height: 15 }}>
+      <View style={{ height: 29 }}>
         <Text style={styles.errorStyle}>{error}</Text>
       </View>
     ) : null;
@@ -123,8 +123,8 @@ class Account extends Component {
             <View style={Styles.containerStyle}>
               <Header />
               <View style={Styles.bodyContainerStyle}>
-                {this.renderError(error)}
                 <Text style={styles.titleTextStyle}>Get Started!</Text>
+                {this.renderError(error)}
                 <Field
                   name='name'
                   label='Full name'
@@ -134,7 +134,7 @@ class Account extends Component {
                 <Field
                   name='email'
                   label='Email or Phone number'
-                  title='please specify your country code, e.g. +1 for US'
+                  title='Please specify your country code, e.g. +1 for US'
                   component={Input}
                   validate={validateInput}
                   disabled={this.props.loading}
@@ -171,7 +171,7 @@ const styles = {
     fontWeight: '700',
     color: '#646464',
     alignSelf: 'center',
-    marginTop: 25,
+    marginTop: 20,
   },
   splitterStyle: {
     display: 'flex',
@@ -199,10 +199,9 @@ const styles = {
     fontWeight: '600'
   },
   errorStyle: {
-    marginTop: 15,
+    marginTop: 5,
     color: '#ff0033',
     justifyContent: 'center',
-    marginBottom: 4,
     alignSelf: 'center'
   }
 };

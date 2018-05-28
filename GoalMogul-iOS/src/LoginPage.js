@@ -165,7 +165,7 @@ const styles = {
     marginRight: 10
   },
   errorStyle: {
-    marginTop: 12,
+    paddingTop: 12,
     color: '#ff0033',
     justifyContent: 'center',
     alignSelf: 'center'
