@@ -3,7 +3,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image
+  Image,
+  ActionSheetIOS
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Button, Icon } from 'react-native-elements';
@@ -12,6 +13,10 @@ import Name from '../Common/Name';
 
 /* Asset To Delete */
 import profilePic from '../../asset/test-profile-pic.png';
+
+const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
+const WITHDRAW_INDEX = 0;
+const CANCEL_INDEX = 1;
 
 // Actions
 import { updateFriendship } from '../../actions';
@@ -23,8 +28,21 @@ class MeetCard extends Component {
 
   onButtonClicked = (_id) => {
     if (this.state.requested) {
-      return this.props.updateFriendship(_id, 'deleteFriend', () => {
-        this.setState({ requested: false });
+      ActionSheetIOS.showActionSheetWithOptions({
+        options: FRIENDSHIP_BUTTONS,
+        cancelButtonIndex: CANCEL_INDEX,
+      },
+      (buttonIndex) => {
+        console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
+        switch (buttonIndex) {
+          case WITHDRAW_INDEX:
+            this.props.updateFriendship(_id, 'deleteFriend', () => {
+              this.setState({ requested: false });
+            });
+            break;
+          default:
+            return;
+        }
       });
     }
     return this.props.updateFriendship(_id, 'requesteFriend', () => {
