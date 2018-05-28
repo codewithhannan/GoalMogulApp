@@ -168,6 +168,7 @@ const styles = {
     paddingTop: 12,
     color: '#ff0033',
     justifyContent: 'center',
+    alignSelf: 'center'
   }
 };
 

@@ -35,10 +35,6 @@ class SearchOverlay extends Component {
     Actions.pop();
   }
 
-  handleClear = () => {
-    console.log('user clear search input');
-  }
-
   handleChangeText = (value) => {
     this.props.debouncedSearch(value.trim());
   }
@@ -88,7 +84,7 @@ class SearchOverlay extends Component {
               cancelButtonTitle='Cancel'
               onCancel={this.handleCancel}
               onChangeText={this.handleChangeText}
-              onClear={this.handleClear}
+              clearIcon={null}
               cancelButtonProps={{ color: '#45C9F6' }}
               showLoading={this.props.loading}
             />

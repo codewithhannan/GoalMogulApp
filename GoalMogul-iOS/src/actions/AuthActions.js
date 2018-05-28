@@ -25,18 +25,31 @@ export const passwordChanged = (password) => {
   };
 };
 
+const validateEmail = (email) => {
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+   return re.test(String(email).toLowerCase());
+};
+
 export const loginUser = ({ username, password }) => {
   // Call the endpoint to use username and password to signin
   // Obtain the credential
+
+  const data = validateEmail(username) ?
+  {
+    email: username,
+    password
+  } :
+  {
+    phone: username,
+    password
+  };
+
   return async (dispatch) => {
     dispatch({
       type: LOGIN_USER_LOADING
     });
     const message = await API
-      .post('pub/user/authenticate/', {
-        email: username,
-        password
-      }, undefined)
+      .post('pub/user/authenticate/', { ...data }, undefined)
       .then((res) => {
         console.log('login with message: ', res);
         // User Login Successfully
