@@ -78,15 +78,6 @@ class ContactSync extends Component {
             onEndThreshold={0}
           />
 
-          {/*
-            <ScrollView>
-              <ContactCard>
-                <ContactDetail />
-              </ContactCard>
-            </ScrollView>
-
-          */}
-
           <TouchableWithoutFeedback onPress={this.handleDoneOnPressed.bind(this)}>
             <View style={styles.footer}>
               <Button text='Done' />

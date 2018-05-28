@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { Avatar } from 'react-native-elements';
+import { Avatar, Icon } from 'react-native-elements';
 
 import badge from '../asset/utils/badge.png';
+import addUser from '../asset/utils/addUser.png';
+import check from '../asset/utils/check.png';
 
 // Actions
 import { updateFriendship } from '../actions';
+
+const checkIconColor = '#2dca4a';
 
 class ContactDetail extends Component {
 
@@ -28,23 +32,15 @@ class ContactDetail extends Component {
   renderButton() {
     if (this.state.requested) {
       return (
-        <Avatar
-          rounded
-          icon={{ name: 'check', type: 'font-awesome', size: 15 }}
-          activeOpacity={0.7}
-          width={25}
-          overlayContainerStyle={{ backgroundColor: '#2ec25e', alignSelf: 'center' }}
-        />
+        <View style={styles.checkIconContainerStyle}>
+          <Image source={check} style={{ ...styles.iconStyle, tintColor: checkIconColor }} />
+        </View>
       );
     }
     return (
-      <Avatar
-        rounded
-        icon={{ name: 'user', type: 'font-awesome', size: 15 }}
-        overlayContainerStyle={{ alignSelf: 'center' }}
-        activeOpacity={0.7}
-        width={25}
-      />
+      <View style={styles.addUserIconContainerStyle}>
+        <Image source={addUser} style={{ ...styles.iconStyle, tintColor: 'white' }} />
+      </View>
     );
   }
 
@@ -52,12 +48,12 @@ class ContactDetail extends Component {
     const { name, headline } = this.props.item.item;
     return (
       <View style={styles.containerStyle}>
-        <Avatar
-          rounded
-          icon={{ name: 'user', type: 'font-awesome', size: 15 }}
-          activeOpacity={0.7}
-          width={25}
-          overlayContainerStyle={{ alignSelf: 'center' }}
+        <View
+          style={{
+            ...styles.addUserIconContainerStyle,
+            backgroundColor: '#d8d8d8',
+            borderWidth: 0
+          }}
         />
       <View style={styles.bodyContainerStyle}>
           <Text
@@ -113,12 +109,34 @@ const styles = {
     maxWidth: 200
   },
   titleTextStyle: {
-
     flex: 1,
     flexWrap: 'wrap'
   },
   imageStyle: {
     marginRight: 3
+  },
+  addUserIconContainerStyle: {
+    height: 30,
+    width: 30,
+    borderRadius: 15,
+    borderWidth: 0,
+    backgroundColor: '#45C9F6',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  checkIconContainerStyle: {
+    height: 30,
+    width: 30,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: checkIconColor,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  iconStyle: {
+    height: 16,
+    width: 16
   }
 };
 
