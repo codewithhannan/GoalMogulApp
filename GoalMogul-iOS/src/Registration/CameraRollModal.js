@@ -8,7 +8,7 @@ import {
 import { connect } from 'react-redux';
 
 /* Actions */
-import { registrationCameraRollOnOpen, registrationCameraRollLoadPhoto } from '../actions';
+import { openCameraRoll, registrationCameraRollLoadPhoto } from '../actions';
 
 /* Components */
 import ImageRow from './Common/ImageRow';
@@ -55,6 +55,6 @@ const mapStateToProps = (state) => {
 
 export default connect(
   mapStateToProps, {
-    registrationCameraRollOnOpen,
+    openCameraRoll,
     registrationCameraRollLoadPhoto
   })(cameraRollModal);

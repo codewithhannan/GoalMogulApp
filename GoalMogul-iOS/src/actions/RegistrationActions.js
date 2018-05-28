@@ -247,7 +247,7 @@ export const registrationNextIntro = (skip) => {
 };
 
 // Actions to Open Camera to take photos
-export const registrationCameraOnOpen = () => async (dispatch) => {
+export const openCamera = (callback) => async (dispatch) => {
   const { Permissions } = Expo;
   const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL];
 
@@ -262,6 +262,9 @@ export const registrationCameraOnOpen = () => async (dispatch) => {
     .catch(error => console.log(permissions, { error }));
 
   if (!result.cancelled) {
+    if (callback) {
+      return callback(result);
+    }
     return dispatch({
       type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
       payload: result.uri
@@ -272,7 +275,7 @@ export const registrationCameraOnOpen = () => async (dispatch) => {
 };
 
 // Action to open camera roll modal
-export const registrationCameraRollOnOpen = () => async (dispatch) => {
+export const openCameraRoll = (callback) => async (dispatch) => {
   const { Permissions } = Expo;
   const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL];
 
@@ -287,6 +290,9 @@ export const registrationCameraRollOnOpen = () => async (dispatch) => {
   });
 
   if (!result.cancelled) {
+    if (callback) {
+      return callback(result);
+    }
     return dispatch({
       type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
       payload: result.uri

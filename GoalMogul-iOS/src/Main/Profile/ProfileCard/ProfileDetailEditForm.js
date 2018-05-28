@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   KeyboardAvoidingView,
-  ImagePickerIOS
+  ActionSheetIOS
 } from 'react-native';
 import { Field, reduxForm } from 'redux-form';
 import { TextField } from 'react-native-material-textfield';
@@ -20,8 +20,13 @@ import FormHeader from '../../Common/Header/FormHeader';
 import editImage from '../../../asset/utils/edit.png';
 
 /* Actions */
-import { submitUpdatingProfile } from '../../../actions';
+import { submitUpdatingProfile, openCamera, openCameraRoll } from '../../../actions';
 import ImageUtils from '../../../Utils/ImageUtils';
+
+const BUTTONS = ['Taking Pictures', 'Camera Roll', 'Cancel'];
+const TAKING_PICTURE_INDEX = 0;
+const CAMERA_ROLL_INDEX = 1;
+const CANCEL_INDEX = 2;
 
 /* Asset to delete */
 import profilePic from '../../../asset/test-profile-pic.png';
@@ -39,23 +44,27 @@ class ProfileDetailEditForm extends Component {
   };
 
   chooseImage = async () => {
-    const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL];
-
-    const permissionGranted = await ImageUtils.checkPermission(permissions);
-    if (!permissionGranted) {
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: BUTTONS,
+      cancelButtonIndex: CANCEL_INDEX,
+    },
+    (buttonIndex) => {
+      console.log('button clicked', BUTTONS[buttonIndex]);
+      switch (buttonIndex) {
+        case TAKING_PICTURE_INDEX:
+          this.props.openCamera((result) => {
+            this.props.change('profile.image', result.uri);
+          });
+          break;
+        case CAMERA_ROLL_INDEX:
+          this.props.openCameraRoll((result) => {
+            this.props.change('profile.image', result.uri);
+          });
+          break;
+        default:
+          return;
+      }
     });
-
-    if (!result.cancelled) {
-      return this.props.change('profile.image', result.uri);
-    }
-
-    console.log('user choosing from camera roll fail with result: ', result);
   }
 
   renderImage = ({
@@ -237,5 +246,9 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { submitUpdatingProfile }
+  {
+    submitUpdatingProfile,
+    openCamera,
+    openCameraRoll
+  }
 )(ProfileDetailEditForm);

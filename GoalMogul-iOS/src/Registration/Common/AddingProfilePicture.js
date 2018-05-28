@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import ghost from '../../asset/utils/default_profile.png';
 
 /* Actions */
-import { registrationCameraRollOnOpen, registrationCameraOnOpen } from '../../actions';
+import { openCameraRoll, openCamera } from '../../actions';
 
 /* Action sheet specific */
 //TODO: abstract out as util function
@@ -22,11 +22,11 @@ const CANCEL_INDEX = 2;
 class AddingProfilePicture extends Component {
 
   handleTakingPicture() {
-    this.props.registrationCameraOnOpen();
+    this.props.openCamera();
   }
 
   handleCameraRoll() {
-    this.props.registrationCameraRollOnOpen();
+    this.props.openCameraRoll();
   }
 
   handlePictureOnPressed() {
@@ -101,6 +101,6 @@ const styles = {
 
 export default connect(
   mapStateToProps, {
-    registrationCameraRollOnOpen,
-    registrationCameraOnOpen
+    openCameraRoll,
+    openCamera
   })(AddingProfilePicture);

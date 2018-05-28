@@ -86,14 +86,12 @@ export const submitUpdatingProfile = ({ values, hasImageModified }) => {
   };
 };
 
-export const selectProfileTab = (index) => {
-  return (dispatch) => {
-    dispatch({
-      type: PROFILE_SWITCH_TAB,
-      payload: index
-    });
-  };
-}
+export const selectProfileTab = (index) => (dispatch) => {
+  dispatch({
+    type: PROFILE_SWITCH_TAB,
+    payload: index
+  });
+};
 
 /*
 Handle user profile on refresh
