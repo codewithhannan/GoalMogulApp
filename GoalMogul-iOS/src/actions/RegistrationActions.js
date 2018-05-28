@@ -246,62 +246,85 @@ export const registrationNextIntro = (skip) => {
   };
 };
 
-// Action to open camera roll modal
-export const registrationCameraRollOnOpen = () => {
-  return async (dispatch) => {
-    const { Permissions } = Expo;
-    const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL];
+// Actions to Open Camera to take photos
+export const registrationCameraOnOpen = () => async (dispatch) => {
+  const { Permissions } = Expo;
+  const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL];
 
-    const permissionGranted = await ImageUtils.checkPermission(permissions);
-    if (!permissionGranted) {
-      return;
-    }
+  const permissionGranted = await ImageUtils.checkPermission(permissions);
+  if (!permissionGranted) {
+    return;
+  }
 
-    const result = await Expo.ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
+  const result = await Expo.ImagePicker.launchCameraAsync({
+      mediaTypes: 'Images',
+    })
+    .catch(error => console.log(permissions, { error }));
+
+  if (!result.cancelled) {
+    return dispatch({
+      type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+      payload: result.uri
     });
+  }
 
-    if (!result.cancelled) {
-      return dispatch({
-        type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
-        payload: result.uri
-      });
-    }
+  console.log('user took image fail with result: ', result);
+};
 
-    console.log('user choosing from camera roll fail with result: ', result);
-    // Method 2:
-    // ImagePickerIOS.canUseCamera(() => {
-    //   ImagePickerIOS.openSelectDialog({}, imageUri => {
-    //     dispatch({
-    //       type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
-    //       payload: imageUri
-    //     });
-    //   }, () => {
-    //     console.log('user cancel choosing from camera roll');
-    //   });
-    // });
+// Action to open camera roll modal
+export const registrationCameraRollOnOpen = () => async (dispatch) => {
+  const { Permissions } = Expo;
+  const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL];
 
-    // Method 3:
-    /* Customized Image picker for IOS. Could use for Android */
-    // dispatch({
-    //   type: REGISTRATION_ADDPROFILE_CAMERAROLL_OPEN
-    // });
-    // console.log('Open photo library modal');
-    // // Open photo library modal
-    // Actions.photolib();
-    // CameraRoll.getPhotos({
-    //   first: 20,
-    //   assetType: 'All'
-    // })
-    // .then((r) => {
-    //   console.log('loading photos with r: ', r);
-    //   dispatch({
-    //     type: REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO,
-    //     payload: r.edges
-    //   });
-    // });
-  };
+  const permissionGranted = await ImageUtils.checkPermission(permissions);
+  if (!permissionGranted) {
+    return;
+  }
+
+  const result = await Expo.ImagePicker.launchImageLibraryAsync({
+    allowsEditing: true,
+    aspect: [4, 3],
+  });
+
+  if (!result.cancelled) {
+    return dispatch({
+      type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+      payload: result.uri
+    });
+  }
+
+  console.log('user choosing from camera roll fail with result: ', result);
+  // Method 2:
+  // ImagePickerIOS.canUseCamera(() => {
+  //   ImagePickerIOS.openSelectDialog({}, imageUri => {
+  //     dispatch({
+  //       type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+  //       payload: imageUri
+  //     });
+  //   }, () => {
+  //     console.log('user cancel choosing from camera roll');
+  //   });
+  // });
+
+  // Method 3:
+  /* Customized Image picker for IOS. Could use for Android */
+  // dispatch({
+  //   type: REGISTRATION_ADDPROFILE_CAMERAROLL_OPEN
+  // });
+  // console.log('Open photo library modal');
+  // // Open photo library modal
+  // Actions.photolib();
+  // CameraRoll.getPhotos({
+  //   first: 20,
+  //   assetType: 'All'
+  // })
+  // .then((r) => {
+  //   console.log('loading photos with r: ', r);
+  //   dispatch({
+  //     type: REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO,
+  //     payload: r.edges
+  //   });
+  // });
 };
 
 // TODO: deprecate this action
@@ -328,22 +351,6 @@ export const registrationCameraRollOnImageChoosen = (uri) => {
     dispatch({
       type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
       payload: uri
-    });
-  };
-};
-
-// Open Camera / Video
-export const registrationCameraOnOpen = () => {
-  return (dispatch) => {
-    ImagePickerIOS.canRecordVideos(() => {
-      ImagePickerIOS.openCameraDialog({}, imageUri => {
-        dispatch({
-          type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
-          payload: imageUri
-        });
-      }, () => {
-        console.log('user cancel taking pictures');
-      });
     });
   };
 };
@@ -481,7 +488,7 @@ export const registrationNextContactSync = ({ skip }) => {
         console.log('matched contacts are: ', res);
         if (res.data) {
           // User finish fetching
-          dispatch({
+          return dispatch({
             type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
             payload: {
               data: res.data, // TODO: replaced with res
@@ -491,6 +498,15 @@ export const registrationNextContactSync = ({ skip }) => {
           });
         }
         // TODO: error handling for fail to fetch contact cards
+        // TODO: show toast for user to refresh
+        dispatch({
+          type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
+          payload: {
+            data: [], // TODO: replaced with res
+            skip: matchedContacts.skip,
+            limit: matchedContacts.limit
+          }
+        });
       })
       .catch((err) => {
         console.warn('[ Action ContactSync Fail ]: ', err);
