@@ -1,5 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
+import { api as API, fetchApi } from '../redux/middleware/api';
 import {
   MEET_SELECT_TAB,
   MEET_LOADING,
@@ -73,17 +74,8 @@ export const preloadMeet = () => {
 */
 const loadOneTab = (type, skip, limit, token, dispatch, callback) => {
   const route = _.get(requestMap, type);
-  const url = `https://goalmogul-api-dev.herokuapp.com/api/secure/user/${route}?limit=${limit}&skip=${skip}`;
-  // const url = 'http://192.168.0.3:8081/api/secure/user/friendship?limit=100&skip=0';
-  const headers = {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'x-access-token': token
-    }
-  };
-  fetchData(url, headers, null)
+  API
+    .get(`secure/user/${route}?limit=${limit}&skip=${skip}`, token)
     .then((res) => {
       console.log(`loading type: ${type} with res: `, res);
 
@@ -113,6 +105,47 @@ const loadOneTab = (type, skip, limit, token, dispatch, callback) => {
         }
       });
     });
+
+  // const url = `https://goalmogul-api-dev.herokuapp.com/api/secure/user/${route}?limit=${limit}&skip=${skip}`;
+  // // const url = 'http://192.168.0.3:8081/api/secure/user/friendship?limit=100&skip=0';
+  // const headers = {
+  //   method: 'GET',
+  //   headers: {
+  //     Accept: 'application/json',
+  //     'Content-Type': 'application/json',
+  //     'x-access-token': token
+  //   }
+  // };
+  // fetchData(url, headers, null)
+  //   .then((res) => {
+  //     console.log(`loading type: ${type} with res: `, res);
+  //
+  //     // TODO: update failure condition
+  //     if (res.data) {
+  //       if (callback) {
+  //         return callback(res.data);
+  //       }
+  //     }
+  //
+  //     // fetch data failure
+  //     dispatch({
+  //       type: MEET_LOADING_DONE,
+  //       payload: {
+  //         type,
+  //         data: []
+  //       }
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log(`fetching friendship for type: ${type}, fails with error: ${err}`);
+  //     dispatch({
+  //       type: MEET_LOADING_DONE,
+  //       payload: {
+  //         type,
+  //         data: []
+  //       }
+  //     });
+  //   });
 };
 
 // Refresh current tab based on selected id
@@ -187,20 +220,7 @@ export const updateFriendship = (id, type, callback) => (dispatch, getState) => 
     }
   })(type);
   const { token } = getState().user;
-  const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/friendship';
-  // const url = 'http://192.168.0.3:8081/api/secure/user/friendship';
-  const headers = {
-    method: `${requestType}`,
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'x-access-token': token
-    },
-    body: JSON.stringify({
-      userId: id
-    })
-  };
-  fetchData(url, headers, null)
+  fetchApi('secure/user/friendship', { userId: id }, requestType, token)
     .then((res) => {
       console.log(`response for ${type}: `, res);
       if (res.message) {
@@ -231,24 +251,6 @@ export const updateFriendship = (id, type, callback) => (dispatch, getState) => 
         }
       });
     });
-};
-
-const fetchData = (url, headers, callback) => {
-  return new Promise((resolve, reject) => {
-    fetch(url, headers)
-    .then((res) => res.json())
-    .then((res) => {
-      // console.log('original res is: ', res);
-      if (res.status && res.status !== 200) {
-        reject(res.message);
-      }
-
-      return resolve(res);
-    })
-    .catch((err) => {
-      reject(err);
-    });
-  });
 };
 
 // Update meet tabs filter criteria

@@ -24,7 +24,7 @@ const DEBUG_KEY = '[ Component Contacts ]';
 const testData = [
   {
     name: 'Jia Zeng',
-    id: 1
+    _id: 1
   }
 ];
 

@@ -38,7 +38,7 @@ const Tabs = [
 /* TODO: delete the test data */
 const testDataOutgoing = [
   {
-    id: 12,
+    _id: 12,
     name: 'Jia Zeng',
     profile: {
       occupation: 'Student'

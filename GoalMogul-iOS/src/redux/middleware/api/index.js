@@ -33,14 +33,13 @@ export const fetchApi = (path, payload = {}, method = 'get', token) => {
       default:
         return '';
     }
-  })(method);
+  })(method.toLowerCase());
 
   // Generate url
   const url = `${config.url}${path}`;
 
   console.log('headers are: ', headers);
   console.log('url is: ', url);
-  console.log('config is: ', config);
   return fetch(url, headers).then((res) => res.json())
 };
 

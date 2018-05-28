@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Avatar, Icon } from 'react-native-elements';
 
+// Assets
 import badge from '../asset/utils/badge.png';
 import addUser from '../asset/utils/addUser.png';
 import check from '../asset/utils/check.png';
@@ -45,7 +46,7 @@ class ContactDetail extends Component {
   }
 
   render() {
-    const { name, headline } = this.props.item.item;
+    const { name, headline, _id } = this.props.item.item;
     return (
       <View style={styles.containerStyle}>
         <View
@@ -73,7 +74,7 @@ class ContactDetail extends Component {
           </Text>
         </View>
         <View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
-          <TouchableOpacity onPress={this.onFriendRequest}>
+          <TouchableOpacity onPress={this.onFriendRequest.bind(this, _id)}>
             {this.renderButton()}
           </TouchableOpacity>
         </View>

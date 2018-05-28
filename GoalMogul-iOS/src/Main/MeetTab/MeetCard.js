@@ -17,20 +17,26 @@ import profilePic from '../../asset/test-profile-pic.png';
 import { updateFriendship } from '../../actions';
 
 class MeetCard extends Component {
-
   state = {
     requested: false
   }
 
-  onButtonClicked = () => {
-    this.props.updateFriendship();
+  onButtonClicked = (_id) => {
+    if (this.state.requested) {
+      return this.props.updateFriendship(_id, 'deleteFriend', () => {
+        this.setState({ requested: false });
+      });
+    }
+    return this.props.updateFriendship(_id, 'requesteFriend', () => {
+      this.setState({ requested: true });
+    });
   }
 
   renderProfileImage() {
     return <Image style={styles.imageStyle} source={profilePic} />;
   }
 
-  renderButton() {
+  renderButton(_id) {
     if (this.state.requested) {
       return (
         <Button
@@ -58,12 +64,13 @@ class MeetCard extends Component {
         }
         iconLeft
         buttonStyle={styles.buttonStyle}
+        onPress={this.onButtonClicked.bind(this, _id)}
       />
     );
   }
 
   renderInfo() {
-    const { name } = this.props.item;
+    const { name, _id } = this.props.item;
     return (
       <View style={styles.infoContainerStyle}>
         <View style={{ flex: 1, flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
@@ -71,7 +78,7 @@ class MeetCard extends Component {
         </View>
 
         <View style={styles.buttonContainerStyle}>
-          {this.renderButton()}
+          {this.renderButton(_id)}
         </View>
       </View>
     );

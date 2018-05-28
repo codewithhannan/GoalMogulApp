@@ -19,7 +19,7 @@ const DEBUG_KEY = '[ Component Friends ]';
 const testData = [
   {
     name: 'Jia Zeng',
-    id: 1
+    _id: 1
   }
 ];
 
