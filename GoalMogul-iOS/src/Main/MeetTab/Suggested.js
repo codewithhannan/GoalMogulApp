@@ -35,8 +35,7 @@ const testDataSuggested = [
 ];
 
 class Suggested extends Component {
-
-  _keyExtractor = (item, index) => index
+  _keyExtractor = (item) => item._id;
 
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing tab: `, key);

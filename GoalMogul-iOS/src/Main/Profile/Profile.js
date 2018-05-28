@@ -53,7 +53,7 @@ class Profile extends Component {
 
   render() {
     return (
-      <MenuProvider>
+      <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={styles.containerStyle}>
           <SearchBarHeader backButton rightIcon='menu' />
           <ProfileSummaryCard />
@@ -78,6 +78,10 @@ const styles = {
     display: 'flex',
     height: 35,
     flexDirection: 'row'
+  },
+  backdrop: {
+    backgroundColor: 'gray',
+    opacity: 0.7,
   }
 };
 

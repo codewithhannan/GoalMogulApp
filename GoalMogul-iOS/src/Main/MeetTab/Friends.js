@@ -24,7 +24,7 @@ const testData = [
 ];
 
 class Friends extends Component {
-  _keyExtractor = (item) => item.id
+  _keyExtractor = (item) => item._id
 
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing tab: `, key);

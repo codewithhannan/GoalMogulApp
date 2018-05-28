@@ -97,7 +97,7 @@ class MeetTab extends Component {
 
   render() {
     return (
-      <MenuProvider>
+      <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={{ flex: 1 }}>
           <SearchBarHeader rightIcon='menu' />
           <TabViewAnimated
@@ -122,6 +122,10 @@ const styles = {
     color: '#ffffff',
     padding: 10,
     fontWeight: '700'
+  },
+  backdrop: {
+    backgroundColor: 'gray',
+    opacity: 0.7,
   }
 };
 

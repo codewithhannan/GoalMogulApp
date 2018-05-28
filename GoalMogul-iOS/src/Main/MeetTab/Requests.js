@@ -66,7 +66,7 @@ class Requests extends Component {
     this.props.meetOnLoadMore(route);
   }
 
-  _keyExtractor = (item) => item.id;
+  _keyExtractor = (item) => item._id;
 
   renderItem = ({ item }) => {
     return <MeetCard item={item} />;

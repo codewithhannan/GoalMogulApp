@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger,
+  renderers
 } from 'react-native-popup-menu';
 
 /* asset */
@@ -13,6 +14,9 @@ import dropDown from '../../../asset/utils/dropDown.png';
 
 // Actions
 import { meetChangeFilter } from '../../../actions';
+
+const { width } = Dimensions.get('window');
+const { Popover } = renderers;
 
 class FriendsFilterbar extends Component {
   handleOnMenuSelect(type, value) {
@@ -30,7 +34,11 @@ class FriendsFilterbar extends Component {
     return (
       <View style={containerStyle}>
 
-        <Menu onSelect={value => this.handleOnMenuSelect('sortBy', value)}>
+        <Menu
+          onSelect={value => this.handleOnMenuSelect('sortBy', value)}
+          rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
+          renderer={Popover}
+        >
           <MenuTrigger
             customStyles={{
               TriggerTouchableComponent: TouchableOpacity,
@@ -41,7 +49,7 @@ class FriendsFilterbar extends Component {
               <Image style={caretStyle} source={dropDown} />
             </View>
           </MenuTrigger>
-          <MenuOptions>
+          <MenuOptions customStyles={styles.menuOptionsStyles}>
             <MenuOption
               text='Alphabetical'
               value='alphabetical'
@@ -87,6 +95,31 @@ const styles = {
   caretStyle: {
     tintColor: '#20485f',
     marginLeft: 5
+  },
+  anchorStyle: {
+    backgroundColor: 'white'
+  },
+  menuOptionsStyles: {
+    optionsContainer: {
+      width: width - 14,
+    },
+    optionsWrapper: {
+
+    },
+    optionWrapper: {
+      flex: 1,
+    },
+    optionTouchable: {
+      underlayColor: 'lightgray',
+      activeOpacity: 10,
+    },
+    optionText: {
+      paddingTop: 3,
+      paddingBottom: 3,
+      paddingLeft: 10,
+      paddingRight: 10,
+      color: 'black',
+    },
   }
 };
 
