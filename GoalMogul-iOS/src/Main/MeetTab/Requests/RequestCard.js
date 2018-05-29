@@ -26,6 +26,9 @@ const ACCPET_INDEX = 0;
 const ACCPET_REMOVE_INDEX = 0;
 const ACCEPT_CANCEL_INDEX = 2;
 
+const TAB_KEY_OUTGOING = 'requests.outgoing';
+const TAB_KEY_INCOMING = 'requests.incoming';
+
 class RequestCard extends Component {
   state = {
     requested: true,
@@ -44,10 +47,10 @@ class RequestCard extends Component {
       console.log('button clicked', ACCEPT_BUTTONS[buttonIndex]);
       switch (buttonIndex) {
         case ACCPET_INDEX:
-          this.props.updateFriendship(_id, 'acceptFriend', null);
+          this.props.updateFriendship(_id, 'acceptFriend', TAB_KEY_INCOMING, null);
           break;
         case ACCPET_REMOVE_INDEX:
-          this.props.updateFriendship(_id, 'deleteFriend', null);
+          this.props.updateFriendship(_id, 'deleteFriend', TAB_KEY_INCOMING, null);
           break;
         default:
           return;
@@ -64,7 +67,7 @@ class RequestCard extends Component {
       console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
       switch (buttonIndex) {
         case WITHDRAW_INDEX:
-          this.props.updateFriendship(_id, 'deleteFriend', () => {
+          this.props.updateFriendship(_id, 'deleteFriend', TAB_KEY_OUTGOING, () => {
             this.setState({ requested: false });
           });
           break;

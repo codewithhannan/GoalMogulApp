@@ -15,6 +15,7 @@ const checkIconColor = '#2dca4a';
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
 const WITHDRAW_INDEX = 0;
 const CANCEL_INDEX = 1;
+const TAB_KEY = 'contacts'
 
 class ContactDetail extends Component {
 
@@ -32,7 +33,7 @@ class ContactDetail extends Component {
         console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
         switch (buttonIndex) {
           case WITHDRAW_INDEX:
-            this.props.updateFriendship(_id, 'deleteFriend', () => {
+            this.props.updateFriendship(_id, 'deleteFriend', TAB_KEY, () => {
               this.setState({ requested: false });
             });
             break;
@@ -42,7 +43,7 @@ class ContactDetail extends Component {
       });
       return;
     }
-    this.props.updateFriendship(_id, 'requestFriend', () => {
+    this.props.updateFriendship(_id, 'requestFriend', TAB_KEY, () => {
       this.setState({ requested: true });
     });
   }

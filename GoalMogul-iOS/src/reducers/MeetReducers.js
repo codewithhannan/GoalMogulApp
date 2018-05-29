@@ -150,10 +150,35 @@ export default (state = INITIAL_STATE, action) => {
       1. send friend request
       2. accept friend request
       3. delete friend request, remove corresponding user from the array
-      payload contains update type and id (userId)
+      payload: {
+        data: userId,
+        type: ['acceptFriend', 'deleteFriend', 'requestFriend'],
+        tab: ['suggsted', 'friends', 'requests.outgoing', 'requests.incoming', 'contacts']
+      }
     */
     case MEET_UPDATE_FRIENDSHIP_DONE: {
-      return { ...state };
+      let newState = { ...state };
+      const { data, type, tab } = action.payload;
+      newState = ((updateType) => {
+        switch (updateType) {
+          case 'deleteFriend': {
+            console.log('tab is: ', tab);
+            console.log('new state is: ', newState);
+            // TODO: i can't get data like this
+            console.log('data before update is: ', R.path(`${tab}.data`)(newState));
+            const newData = R.pipe(
+              R.path(`${tab}.data`),
+              R.filter((item) => item._id === data
+            ))(newState);
+            console.log('new data is: ', newData);
+            return _.set(newState, `${type}.data`, newData);
+          }
+
+          default:
+            return { ...newState };
+        }
+      })(type);
+      return { ...newState };
     }
 
     // Handle tab refresh
@@ -218,3 +243,9 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state };
   }
 };
+
+const updateFriendshipData = (type, _id) =>
+  R.pipe(
+    R.path(`${type}.data`),
+    R.filter((item) => item._id === _id
+  ));

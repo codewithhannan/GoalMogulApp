@@ -204,7 +204,7 @@ export const meetOnLoadMore = (key) => (dispatch, getState) => {
   2. acceptFriend
   3. deleteFriend
 */
-export const updateFriendship = (id, type, callback) => (dispatch, getState) => {
+export const updateFriendship = (id, type, tab, callback) => (dispatch, getState) => {
   // TODO: update type to MEET_UPDATE_FRIENDSHIP
   dispatch({
     type: MEET_UPDATE_FRIENDSHIP
@@ -233,23 +233,32 @@ export const updateFriendship = (id, type, callback) => (dispatch, getState) => 
 
       if (callback !== null && callback !== undefined) {
         callback();
-        return;
       }
 
       dispatch({
         type: MEET_UPDATE_FRIENDSHIP_DONE,
         payload: {
-          type: '',
-          data: []
+          type,
+          tab,
+          data: id
         }
       });
     })
     .catch((err) => {
       console.log(`update friendship ${type} fails: `, err);
+      // dispatch({
+      //   type: MEET_LOADING_DONE,
+      //   payload: {
+      //     type,
+      //     tab,
+      //     data: id
+      //   }
+      // });
       dispatch({
-        type: MEET_LOADING_DONE,
+        type: MEET_UPDATE_FRIENDSHIP_DONE,
         payload: {
           type,
+          tab,
           data: id
         }
       });

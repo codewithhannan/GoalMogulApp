@@ -26,6 +26,7 @@ const FRIENDSHIP_BUTTONS = ['Block', 'Unfriend', 'Cancel'];
 const BLOCK_INDEX = 0;
 const UNFRIEND_INDEX = 1;
 const CANCEL_INDEX = 2;
+const TAB_KEY = 'friends';
 
 class FriendCard extends Component {
   state = {
@@ -53,7 +54,7 @@ class FriendCard extends Component {
 
         case UNFRIEND_INDEX:
           // User chose to unfriend
-          this.props.updateFriendship(_id, 'deleteFriend', () => {
+          this.props.updateFriendship(_id, 'deleteFriend', TAB_KEY, () => {
             console.log('Successfully delete friend with id: ', _id);
             this.setState({ requested: false });
           });
