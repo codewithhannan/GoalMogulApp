@@ -9,17 +9,18 @@ import {
 import { connect } from 'react-redux';
 import { Button, Icon } from 'react-native-elements';
 
+// Components
 import Name from '../Common/Name';
 
-/* Asset To Delete */
-import profilePic from '../../asset/test-profile-pic.png';
+// Assets
+import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
+
+// Actions
+import { updateFriendship } from '../../actions';
 
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
 const WITHDRAW_INDEX = 0;
 const CANCEL_INDEX = 1;
-
-// Actions
-import { updateFriendship } from '../../actions';
 
 class MeetCard extends Component {
   state = {
@@ -51,7 +52,13 @@ class MeetCard extends Component {
   }
 
   renderProfileImage() {
-    return <Image style={styles.imageStyle} source={profilePic} />;
+    const { image } = this.props.item.profile;
+    let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
+    if (image) {
+      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+      profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
+    }
+    return profileImage;
   }
 
   renderButton(_id) {

@@ -19,7 +19,7 @@ const requestMap = {
     outgoing: 'friendship/invitations/outgoing',
     incoming: 'friendship/invitations/incoming'
   },
-  friends: 'friendship/',
+  friends: 'friendship',
   contacts: 'ContactSync/stored-matches'
 };
 
@@ -49,7 +49,7 @@ export const preloadMeet = () => {
       }
     });
     const { token } = getState().user;
-    // loadOneTab('suggested', 0, 20, token, dispatch);
+    loadOneTab('suggested', 0, 20, token, dispatch);
     tabs.map((key) => loadOneTab(key, 0, 20, token, dispatch, (data) => {
       dispatch({
         type: MEET_LOADING_DONE,
