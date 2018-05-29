@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import R from 'ramda';
 import set from 'lodash/fp/set';
 import {
   MEET_SELECT_TAB,
@@ -9,7 +10,8 @@ import {
   MEET_TAB_REFRESH,
   MEET_TAB_REFRESH_DONE,
   MEET_CHANGE_FILTER,
-  MEET_REQUESTS_CHANGE_TAB
+  MEET_REQUESTS_CHANGE_TAB,
+  SETTING_BLOCK_BLOCK_REQUEST_DONE
 } from '../actions/types';
 
 const TabNames = ['SUGGESTED', 'REQUESTS', 'FRIENDS', 'CONTACTS'];
@@ -203,6 +205,13 @@ export default (state = INITIAL_STATE, action) => {
       const newRequests = { ...state['requests'] };
       newRequests.selectedTab = action.payload;
       return { ...state, requests: newRequests };
+    }
+
+    // User blocks a friend
+    case SETTING_BLOCK_BLOCK_REQUEST_DONE: {
+      const newFriends = { ...state.friends };
+      newFriends.data = R.filter((a) => a._id !== action.payload)(newFriends.data);
+      return { ...state, friends: newFriends };
     }
 
     default:

@@ -17,7 +17,10 @@ import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
 import meetSetting from '../../../asset/utils/meetSetting.png';
 
 // Actions
-import { updateFriendship } from '../../../actions';
+import {
+  updateFriendship,
+  blockUser
+} from '../../../actions';
 
 const FRIENDSHIP_BUTTONS = ['Block', 'Unfriend', 'Cancel'];
 const BLOCK_INDEX = 0;
@@ -43,11 +46,13 @@ class FriendCard extends Component {
       console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
       switch (buttonIndex) {
         case BLOCK_INDEX:
-          // TODO: call block endpoint to block user
+          // User chose to block user with id: _id
           console.log('User blocks _id: ', _id);
+          this.props.blockUser(_id);
           break;
 
         case UNFRIEND_INDEX:
+          // User chose to unfriend
           this.props.updateFriendship(_id, 'deleteFriend', () => {
             console.log('Successfully delete friend with id: ', _id);
             this.setState({ requested: false });
@@ -236,5 +241,6 @@ const styles = {
 };
 
 export default connect(null, {
-  updateFriendship
+  updateFriendship,
+  blockUser
 })(FriendCard);

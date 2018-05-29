@@ -10,7 +10,7 @@ import {
   MEET_TAB_REFRESH,
   MEET_TAB_REFRESH_DONE,
   MEET_CHANGE_FILTER,
-  MEET_REQUESTS_CHANGE_TAB
+  MEET_REQUESTS_CHANGE_TAB,
 } from './types';
 
 // const BASE_ROUTE = 'secure/user/';

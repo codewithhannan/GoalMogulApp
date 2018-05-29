@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
 import R from 'ramda';
-import __ from 'ramda/src/__';
 
 const getFriendsFilter = (state) => state.meet.friends.filter.sortBy;
 const getFriendsData = (state) => state.meet.friends.data;
