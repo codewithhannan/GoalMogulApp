@@ -71,7 +71,7 @@ class SearchOverlay extends Component {
 
     return (
       <BaseOverlay verticalPercent={1} horizontalPercent={1}>
-        <MenuProvider>
+        <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
           <View style={styles.headerContainerStyle}>
             <SearchBar
               platform='ios'
@@ -131,6 +131,10 @@ const styles = {
     marginTop: 15,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  backdrop: {
+    backgroundColor: 'gray',
+    opacity: 0.7,
   }
 };
 

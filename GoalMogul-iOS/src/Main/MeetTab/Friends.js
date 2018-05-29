@@ -2,8 +2,12 @@ import React, { Component } from 'react';
 import { View, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 
+// Selector
+import { getFilteredFriendsList } from '../../redux/modules/meet/selector';
+
 // Components
 import FriendsFilterBar from './Friends/FriendsFilterBar';
+import FriendCard from './Friends/FriendCard';
 
 // actions
 import {
@@ -36,9 +40,7 @@ class Friends extends Component {
     this.props.meetOnLoadMore(key);
   }
 
-  renderItem = item => {
-    // TODO: render item
-  }
+  renderItem = ({ item }) => <FriendCard item={item} />;
 
   render() {
     return (
@@ -65,11 +67,11 @@ class Friends extends Component {
 
 const mapStateToProps = state => {
   const { friends } = state.meet;
-  const { data, refreshing } = friends;
+  const { refreshing } = friends;
 
   return {
     friends,
-    data,
+    data: getFilteredFriendsList(state),
     refreshing
   };
 };

@@ -13,13 +13,16 @@ import {
   MEET_REQUESTS_CHANGE_TAB
 } from './types';
 
+// const BASE_ROUTE = 'secure/user/';
+const BASE_ROUTE = 'dummy/user/';
+
 const requestMap = {
   suggested: 'friendship/recommendations',
   requests: {
     outgoing: 'friendship/invitations/outgoing',
     incoming: 'friendship/invitations/incoming'
   },
-  friends: 'friendship/',
+  friends: 'friendship',
   contacts: 'ContactSync/stored-matches'
 };
 
@@ -50,17 +53,17 @@ export const preloadMeet = () => {
     });
     const { token } = getState().user;
     // loadOneTab('suggested', 0, 20, token, dispatch);
-    tabs.map((key) => loadOneTab(key, 0, 20, token, dispatch, (data) => {
-      dispatch({
-        type: MEET_LOADING_DONE,
-        payload: {
-          type: key,
-          data, // TODO: replace this with actual data
-          skip: 0,
-          limit: 20
-        }
-      });
-    }));
+    // tabs.map((key) => loadOneTab(key, 0, 20, token, dispatch, (data) => {
+    //   dispatch({
+    //     type: MEET_LOADING_DONE,
+    //     payload: {
+    //       type: key,
+    //       data, // TODO: replace this with actual data
+    //       skip: 0,
+    //       limit: 20
+    //     }
+    //   });
+    // }));
   };
 };
 
@@ -75,7 +78,7 @@ export const preloadMeet = () => {
 const loadOneTab = (type, skip, limit, token, dispatch, callback) => {
   const route = _.get(requestMap, type);
   API
-    .get(`secure/user/${route}?limit=${limit}&skip=${skip}`, token)
+    .get(`${BASE_ROUTE}${route}?limit=${limit}&skip=${skip}`, token)
     .then((res) => {
       console.log(`loading type: ${type} with res: `, res);
 

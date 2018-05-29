@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, Button } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger,
+  renderers
 } from 'react-native-popup-menu';
 import { connect } from 'react-redux';
 
 /* asset */
 import dropDown from '../../../asset/utils/dropDown.png';
+
+const { width } = Dimensions.get('window');
+const { Popover } = renderers;
 
 // actions
 import { searchChangeFilter } from '../../../actions';
@@ -27,7 +31,11 @@ class SearchFilterBar extends Component {
     return (
       <View style={containerStyle}>
 
-        <Menu onSelect={value => this.handleOnMenuSelect('sortBy', value)}>
+        <Menu
+          onSelect={value => this.handleOnMenuSelect('sortBy', value)}
+          rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
+          renderer={Popover}
+        >
           <MenuTrigger
             customStyles={{
               TriggerTouchableComponent: TouchableOpacity,
@@ -38,7 +46,7 @@ class SearchFilterBar extends Component {
               <Image style={styles.caretStyle} source={dropDown} />
             </View>
           </MenuTrigger>
-          <MenuOptions>
+          <MenuOptions customStyles={styles.menuOptionsStyles}>
             <MenuOption
               text='Important'
               value='important'
@@ -55,7 +63,11 @@ class SearchFilterBar extends Component {
           </MenuOptions>
         </Menu>
 
-        <Menu onSelect={value => this.handleOnMenuSelect('category', value)}>
+        <Menu
+          onSelect={value => this.handleOnMenuSelect('category', value)}
+          rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
+          renderer={Popover}
+        >
           <MenuTrigger
             customStyles={{
               TriggerTouchableComponent: TouchableOpacity,
@@ -68,7 +80,7 @@ class SearchFilterBar extends Component {
               <Image style={caretStyle} source={dropDown} />
             </View>
           </MenuTrigger>
-          <MenuOptions>
+          <MenuOptions customStyles={styles.menuOptionsStyles}>
             <MenuOption
               text='People'
               value='people'
@@ -121,6 +133,31 @@ const styles = {
   caretStyle: {
     tintColor: '#20485f',
     marginLeft: 5
+  },
+  anchorStyle: {
+    backgroundColor: 'white'
+  },
+  menuOptionsStyles: {
+    optionsContainer: {
+      width: width - 14,
+    },
+    optionsWrapper: {
+
+    },
+    optionWrapper: {
+      flex: 1,
+    },
+    optionTouchable: {
+      underlayColor: 'lightgray',
+      activeOpacity: 10,
+    },
+    optionText: {
+      paddingTop: 3,
+      paddingBottom: 3,
+      paddingLeft: 10,
+      paddingRight: 10,
+      color: 'black',
+    },
   }
 };
 

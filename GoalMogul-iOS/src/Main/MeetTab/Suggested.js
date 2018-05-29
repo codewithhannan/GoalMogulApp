@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 // Components
 import MeetFilterBar from './MeetFilterBar';
-import MeetCard from './MeetCard';
+import SuggestedCard from './Suggested/SuggestedCard';
 
 // actions
 import {
@@ -47,9 +47,7 @@ class Suggested extends Component {
     this.props.meetOnLoadMore(key);
   }
 
-  renderItem = ({ item }) => {
-    return <MeetCard item={item} />;
-  }
+  renderItem = ({ item }) => <SuggestedCard item={item} />;
 
   render() {
     return (

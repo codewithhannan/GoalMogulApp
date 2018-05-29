@@ -37,6 +37,8 @@ export default class App extends React.Component {
       require('./src/asset/utils/check.png'),
       require('./src/asset/utils/addUser.png'),
       require('./src/asset/utils/default_profile.png'),
+      require('./src/asset/utils/defaultUserProfile.png'),
+      require('./src/asset/utils/meetSetting.png'),
       require('./src/asset/footer/navigation/home.png'),
       require('./src/asset/footer/navigation/bell.png'),
       require('./src/asset/footer/navigation/meet.png'),

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ActionSheetIOS } from 'react-native';
 import { connect } from 'react-redux';
 import { Avatar, Icon } from 'react-native-elements';
 
@@ -12,6 +12,9 @@ import check from '../asset/utils/check.png';
 import { updateFriendship } from '../actions';
 
 const checkIconColor = '#2dca4a';
+const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
+const WITHDRAW_INDEX = 0;
+const CANCEL_INDEX = 1;
 
 class ContactDetail extends Component {
 
@@ -19,14 +22,28 @@ class ContactDetail extends Component {
     requested: false
   }
 
-  onFriendRequest = () => {
-    this.props.updateFriendship(0, 'requestFriend', this.updateState);
-  }
-
-  updateState = () => {
-    console.log('requested');
-    this.setState({
-      requested: true
+  onFriendRequest = (_id) => {
+    if (this.state.requested) {
+      ActionSheetIOS.showActionSheetWithOptions({
+        options: FRIENDSHIP_BUTTONS,
+        cancelButtonIndex: CANCEL_INDEX,
+      },
+      (buttonIndex) => {
+        console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
+        switch (buttonIndex) {
+          case WITHDRAW_INDEX:
+            this.props.updateFriendship(_id, 'deleteFriend', () => {
+              this.setState({ requested: false });
+            });
+            break;
+          default:
+            return;
+        }
+      });
+      return;
+    }
+    this.props.updateFriendship(_id, 'requestFriend', () => {
+      this.setState({ requested: true });
     });
   }
 

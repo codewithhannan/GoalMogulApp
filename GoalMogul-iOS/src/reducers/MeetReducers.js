@@ -137,13 +137,19 @@ export default (state = INITIAL_STATE, action) => {
       Update friendship
       1. send friend request
       2. accept friend request
-      3. delete friend request
+      3. delete friend request, remove corresponding user from the array
     */
     case MEET_UPDATE_FRIENDSHIP: {
       return { ...state };
     }
 
-    //payload contains update type and id (userId)
+    /**
+      Update friendship
+      1. send friend request
+      2. accept friend request
+      3. delete friend request, remove corresponding user from the array
+      payload contains update type and id (userId)
+    */
     case MEET_UPDATE_FRIENDSHIP_DONE: {
       return { ...state };
     }
@@ -165,7 +171,7 @@ export default (state = INITIAL_STATE, action) => {
     // Handle tab refresh
     case MEET_TAB_REFRESH_DONE: {
       // TODO: update the data
-      const { type, data, limit } = action.payload;
+      const { type, data } = action.payload;
       // Method 1
       // const newState = { ...state[action.payload.type] };
       // newState.refreshing = false;
@@ -174,10 +180,11 @@ export default (state = INITIAL_STATE, action) => {
       // return { ...state, [action.payload.type]: newState };
 
       // Method 2
-      let newState = set([type, 'loading'], false, state);
-      newState = set([type, 'refreshing'], false, newState);
-      newState = set([type, 'skip'], limit, newState);
-      return set([type, 'data'], data, newState);
+      let newState = _.set({ ...state }, `${type}.loading`, false);
+      newState = _.set({ ...newState }, `${type}.refreshing`, false);
+      newState = _.set({ ...newState }, `${type}.skip`, action.payload.limit);
+      newState = _.set({ ...newState }, `${type}.data`, data);
+      return { ...newState };
     }
 
     // Handle tab change filter criteria
