@@ -10,19 +10,21 @@ import { connect } from 'react-redux';
 import { Button, Icon } from 'react-native-elements';
 
 // Components
-import Name from '../Common/Name';
+import Name from '../../Common/Name';
 
 // Assets
-import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
+import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
+import meetSetting from '../../../asset/utils/meetSetting.png';
 
 // Actions
-import { updateFriendship } from '../../actions';
+import { updateFriendship } from '../../../actions';
 
-const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
-const WITHDRAW_INDEX = 0;
-const CANCEL_INDEX = 1;
+const FRIENDSHIP_BUTTONS = ['Block', 'Unfriend', 'Cancel'];
+const BLOCK_INDEX = 0;
+const UNFRIEND_INDEX = 1;
+const CANCEL_INDEX = 2;
 
-class MeetCard extends Component {
+class FriendCard extends Component {
   state = {
     requested: false,
     accpeted: false
@@ -33,26 +35,27 @@ class MeetCard extends Component {
   }
 
   onButtonClicked = (_id) => {
-    if (this.state.requested) {
-      ActionSheetIOS.showActionSheetWithOptions({
-        options: FRIENDSHIP_BUTTONS,
-        cancelButtonIndex: CANCEL_INDEX,
-      },
-      (buttonIndex) => {
-        console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
-        switch (buttonIndex) {
-          case WITHDRAW_INDEX:
-            this.props.updateFriendship(_id, 'deleteFriend', () => {
-              this.setState({ requested: false });
-            });
-            break;
-          default:
-            return;
-        }
-      });
-    }
-    return this.props.updateFriendship(_id, 'requesteFriend', () => {
-      this.setState({ requested: true });
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: FRIENDSHIP_BUTTONS,
+      cancelButtonIndex: CANCEL_INDEX,
+    },
+    (buttonIndex) => {
+      console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
+      switch (buttonIndex) {
+        case BLOCK_INDEX:
+          // TODO: call block endpoint to block user
+          console.log('User blocks _id: ', _id);
+          break;
+
+        case UNFRIEND_INDEX:
+          this.props.updateFriendship(_id, 'deleteFriend', () => {
+            console.log('Successfully delete friend with id: ', _id);
+            this.setState({ requested: false });
+          });
+          break;
+        default:
+          return;
+      }
     });
   }
 
@@ -67,35 +70,10 @@ class MeetCard extends Component {
   }
 
   renderButton(_id) {
-    if (this.state.requested) {
-      return (
-        <Button
-          title='Sent'
-          titleStyle={styles.buttonTextStyle}
-          clear
-          buttonStyle={styles.buttonStyle}
-        />
-      );
-    }
     return (
-      <Button
-        title='Friend'
-        titleStyle={styles.buttonTextStyle}
-        clear
-        icon={
-          <Icon
-            type='octicon'
-            name='plus-small'
-            width={10}
-            size={20}
-            color='#45C9F6'
-            iconStyle={styles.buttonIconStyle}
-          />
-        }
-        iconLeft
-        buttonStyle={styles.buttonStyle}
-        onPress={this.onButtonClicked.bind(this, _id)}
-      />
+      <TouchableOpacity onPress={this.onButtonClicked.bind(this, _id)}>
+        <Image source={meetSetting} style={styles.settingIconStyle} />
+      </TouchableOpacity>
     );
   }
 
@@ -221,6 +199,10 @@ const styles = {
     padding: 0,
     alignSelf: 'center'
   },
+  settingIconStyle: {
+    height: 20,
+    width: 20
+  },
   buttonIconStyle: {
     marginTop: 1
   },
@@ -255,4 +237,4 @@ const styles = {
 
 export default connect(null, {
   updateFriendship
-})(MeetCard);
+})(FriendCard);

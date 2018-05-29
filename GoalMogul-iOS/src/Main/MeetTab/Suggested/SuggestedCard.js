@@ -10,19 +10,19 @@ import { connect } from 'react-redux';
 import { Button, Icon } from 'react-native-elements';
 
 // Components
-import Name from '../Common/Name';
+import Name from '../../Common/Name';
 
 // Assets
-import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
+import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
 
 // Actions
-import { updateFriendship } from '../../actions';
+import { updateFriendship } from '../../../actions';
 
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
 const WITHDRAW_INDEX = 0;
 const CANCEL_INDEX = 1;
 
-class MeetCard extends Component {
+class SuggestedCard extends Component {
   state = {
     requested: false,
     accpeted: false
@@ -255,4 +255,4 @@ const styles = {
 
 export default connect(null, {
   updateFriendship
-})(MeetCard);
+})(SuggestedCard);

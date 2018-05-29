@@ -7,7 +7,7 @@ import { getFilteredFriendsList } from '../../redux/modules/meet/selector';
 
 // Components
 import FriendsFilterBar from './Friends/FriendsFilterBar';
-import MeetCard from './MeetCard';
+import FriendCard from './Friends/FriendCard';
 
 // actions
 import {
@@ -40,7 +40,7 @@ class Friends extends Component {
     this.props.meetOnLoadMore(key);
   }
 
-  renderItem = ({ item }) => <MeetCard item={item} />;
+  renderItem = ({ item }) => <FriendCard item={item} />;
 
   render() {
     return (

@@ -137,13 +137,19 @@ export default (state = INITIAL_STATE, action) => {
       Update friendship
       1. send friend request
       2. accept friend request
-      3. delete friend request
+      3. delete friend request, remove corresponding user from the array
     */
     case MEET_UPDATE_FRIENDSHIP: {
       return { ...state };
     }
 
-    //payload contains update type and id (userId)
+    /**
+      Update friendship
+      1. send friend request
+      2. accept friend request
+      3. delete friend request, remove corresponding user from the array
+      payload contains update type and id (userId)
+    */
     case MEET_UPDATE_FRIENDSHIP_DONE: {
       return { ...state };
     }

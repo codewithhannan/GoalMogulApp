@@ -8,7 +8,7 @@ import {
 import { connect } from 'react-redux';
 
 // Components
-import MeetCard from './MeetCard';
+import RequestCard from './Requests/RequestCard';
 
 // actions
 import {
@@ -68,9 +68,7 @@ class Requests extends Component {
 
   _keyExtractor = (item) => item._id;
 
-  renderItem = ({ item }) => {
-    return <MeetCard item={item} />;
-  }
+  renderItem = ({ item }) => <RequestCard item={item} />;
 
   renderTabs() {
     return Tabs.map((t, index) => {
