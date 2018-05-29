@@ -13,8 +13,8 @@ import {
   MEET_REQUESTS_CHANGE_TAB
 } from './types';
 
-// const BASE_ROUTE = 'secure/api/user/';
-const BASE_ROUTE = 'dummy/api/user/';
+// const BASE_ROUTE = 'secure/user/';
+const BASE_ROUTE = 'dummy/user/';
 
 const requestMap = {
   suggested: 'friendship/recommendations',

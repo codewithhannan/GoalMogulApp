@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import R from 'ramda';
+import __ from 'ramda/src/__';
 
 const getFriendsFilter = (state) => state.meet.friends.filter.sortBy;
 const getFriendsData = (state) => state.meet.friends.data;
@@ -26,4 +27,26 @@ export const getFilteredFriendsList = createSelector(
         return data;
     }
   }
+);
+
+// Extract outgoing request user information
+const getOutgoingData = (state) => state.meet.requests.outgoing.data;
+
+const extractUser = R.map(
+  R.pipe(R.prop('participants'), R.head, R.prop('users_id'))
+);
+
+export const getOutgoingUserFromFriendship = createSelector(
+  [getOutgoingData],
+  (data) => extractUser(data)
+);
+
+// Extract incoming request user information
+const getIncomingData = (state) => state.meet.requests.incoming.data;
+
+const extractIncomingUser = R.map(R.prop('initiator_id'));
+
+export const getIncomingUserFromFriendship = createSelector(
+  [getIncomingData],
+  (data) => extractIncomingUser(data)
 );

@@ -17,6 +17,12 @@ import {
   meetOnLoadMore
 } from '../../actions';
 
+// Selectors
+import {
+  getOutgoingUserFromFriendship,
+  getIncomingUserFromFriendship
+} from '../../redux/modules/meet/selector';
+
 // tab key
 const key = 'requests';
 const routes = {
@@ -32,17 +38,6 @@ const Tabs = [
   {
     name: 'Incoming',
     key: 'incoming'
-  }
-];
-
-/* TODO: delete the test data */
-const testDataOutgoing = [
-  {
-    _id: 12,
-    name: 'Jia Zeng',
-    profile: {
-      occupation: 'Student'
-    }
   }
 ];
 
@@ -68,7 +63,7 @@ class Requests extends Component {
 
   _keyExtractor = (item) => item._id;
 
-  renderItem = ({ item }) => <RequestCard item={item} />;
+  renderItem = ({ item }) => <RequestCard item={item} type={this.props.selectedTab} />;
 
   renderTabs() {
     return Tabs.map((t, index) => {
@@ -91,6 +86,7 @@ class Requests extends Component {
   }
 
   render() {
+    // console.log('data for requests are: ', this.props.data);
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: 'row' }}>
@@ -133,13 +129,17 @@ const mapStateToProps = state => {
     switch (id) {
       case 'outgoing': {
         let newOutgoing = { ...outgoing };
-        newOutgoing.data = testDataOutgoing;
+        newOutgoing.data = getOutgoingUserFromFriendship(state);
         return newOutgoing;
         // return suggested
       }
 
-      case 'incoming':
-        return incoming;
+      case 'incoming': {
+        let newIncoming = { ...incoming };
+        newIncoming.data = getIncomingUserFromFriendship(state);
+        return newIncoming;
+      }
+
       default:
         return outgoing;
     }

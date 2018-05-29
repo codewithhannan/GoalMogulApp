@@ -21,37 +21,56 @@ const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
 const WITHDRAW_INDEX = 0;
 const CANCEL_INDEX = 1;
 
+const ACCEPT_BUTTONS = ['Accept', 'Remove', 'Cancel'];
+const ACCPET_INDEX = 0;
+const ACCPET_REMOVE_INDEX = 0;
+const ACCEPT_CANCEL_INDEX = 2;
+
 class RequestCard extends Component {
   state = {
-    requested: false,
-    accpeted: false
+    requested: true,
   }
 
   componentWillReceiveProps(props) {
     console.log('new props for meet card are: ', props);
   }
 
+  onAcceptClicked = (_id) => {
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: ACCEPT_BUTTONS,
+      cancelButtonIndex: ACCEPT_CANCEL_INDEX,
+    },
+    (buttonIndex) => {
+      console.log('button clicked', ACCEPT_BUTTONS[buttonIndex]);
+      switch (buttonIndex) {
+        case ACCPET_INDEX:
+          this.props.updateFriendship(_id, 'acceptFriend', null);
+          break;
+        case ACCPET_REMOVE_INDEX:
+          this.props.updateFriendship(_id, 'deleteFriend', null);
+          break;
+        default:
+          return;
+      }
+    });
+  }
+
   onButtonClicked = (_id) => {
-    if (this.state.requested) {
-      ActionSheetIOS.showActionSheetWithOptions({
-        options: FRIENDSHIP_BUTTONS,
-        cancelButtonIndex: CANCEL_INDEX,
-      },
-      (buttonIndex) => {
-        console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
-        switch (buttonIndex) {
-          case WITHDRAW_INDEX:
-            this.props.updateFriendship(_id, 'deleteFriend', () => {
-              this.setState({ requested: false });
-            });
-            break;
-          default:
-            return;
-        }
-      });
-    }
-    return this.props.updateFriendship(_id, 'requesteFriend', () => {
-      this.setState({ requested: true });
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: FRIENDSHIP_BUTTONS,
+      cancelButtonIndex: CANCEL_INDEX,
+    },
+    (buttonIndex) => {
+      console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
+      switch (buttonIndex) {
+        case WITHDRAW_INDEX:
+          this.props.updateFriendship(_id, 'deleteFriend', () => {
+            this.setState({ requested: false });
+          });
+          break;
+        default:
+          return;
+      }
     });
   }
 
@@ -66,36 +85,33 @@ class RequestCard extends Component {
   }
 
   renderButton(_id) {
-    if (this.state.requested) {
-      return (
-        <Button
-          title='Sent'
-          titleStyle={styles.buttonTextStyle}
-          clear
-          buttonStyle={styles.buttonStyle}
-        />
-      );
-    }
-    return (
-      <Button
-        title='Friend'
-        titleStyle={styles.buttonTextStyle}
-        clear
-        icon={
-          <Icon
-            type='octicon'
-            name='plus-small'
-            width={10}
-            size={20}
-            color='#45C9F6'
-            iconStyle={styles.buttonIconStyle}
+    switch (this.props.type) {
+      case 'outgoing': {
+        return (
+          <Button
+            title='Invited'
+            titleStyle={styles.buttonTextStyle}
+            clear
+            buttonStyle={styles.buttonStyle}
+            onPress={this.onButtonClicked.bind(this, _id)}
           />
-        }
-        iconLeft
-        buttonStyle={styles.buttonStyle}
-        onPress={this.onButtonClicked.bind(this, _id)}
-      />
-    );
+        );
+      }
+      case 'incoming': {
+        return (
+          <Button
+            title='Respond'
+            titleStyle={styles.buttonTextStyle}
+            clear
+            buttonStyle={styles.buttonStyle}
+            onPress={this.onAcceptClicked.bind(this, _id)}
+          />
+        );
+      }
+
+      default:
+        return '';
+    }
   }
 
   renderInfo() {

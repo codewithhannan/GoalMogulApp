@@ -29,7 +29,7 @@ class MeetCard extends Component {
   }
 
   componentWillReceiveProps(props) {
-    console.log('new props for meet card are: ', props);
+    // console.log('new props for meet card are: ', props);
   }
 
   onButtonClicked = (_id) => {
