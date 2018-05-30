@@ -2,31 +2,28 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar, Icon } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import { MenuProvider } from 'react-native-popup-menu';
 import _ from 'lodash';
+import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
 
 // Component
 import BaseOverlay from './BaseOverlay';
 import SearchFilterBar from './SearchFilterBar';
+import TabButtonGroup from '../Common/TabButtonGroup';
+import PeopleSearch from './People/PeopleSearch';
+// import EventSearch from './Event/EventSearch';
+// import TribeSearch from './Tribe/TribeSearch';
 
 import {
-  refreshSearchResult,
-  handleSearch
-} from '../../../redux/modules/search/SearchActions';
+  handleSearch,
+  searchSwitchTab
+} from '../../redux/modules/search/SearchActions';
 
 const DEBUG_KEY = '[ Component Search ]';
-
-const testDataSearch = [
-  {
-    name: 'Jia Zeng',
-    _id: '120379187290381'
-  }
-];
 
 class SearchOverlay extends Component {
   // Search bar functions
@@ -36,19 +33,7 @@ class SearchOverlay extends Component {
   }
 
   handleChangeText = (value) => {
-    this.props.debouncedSearch(value.trim());
-  }
-
-  // FlatList renderer functions
-  handleRefresh = () => {
-    console.log(`${DEBUG_KEY} refresh result`);
-    this.props.refreshSearchResult();
-  }
-
-  _keyExtractor = (item) => item._id;
-
-  handleOnLoadMore = () => {
-    console.log(`${DEBUG_KEY}: loading more`);
+    this.props.debouncedSearch(value.trim(), this.props.selectedTab);
   }
 
   searchIcon = () => (
@@ -62,13 +47,25 @@ class SearchOverlay extends Component {
     </View>
   );
 
-  renderItem = ({ item }) => {
-    // TODO: render search result
-  }
+  // Tabs handler functions
+  _handleIndexChange = index => {
+    console.log(`${DEBUG_KEY}: index changed to ${index}`);
+    this.props.searchSwitchTab(index);
+  };
+
+  _renderHeader = props => {
+    return (
+      <TabButtonGroup buttons={props} />
+    );
+  };
+
+  _renderScene = SceneMap({
+    people: PeopleSearch,
+    tribes: PeopleSearch,
+    events: PeopleSearch
+  });
 
   render() {
-    let dataToRender = testDataSearch.concat(this.props.data);
-
     return (
       <BaseOverlay verticalPercent={1} horizontalPercent={1}>
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -89,16 +86,14 @@ class SearchOverlay extends Component {
               showLoading={this.props.loading}
             />
           </View>
-          <SearchFilterBar />
-          <FlatList
-            data={dataToRender}
-            renderItem={this.renderItem}
-            keyExtractor={this._keyExtractor}
-            onEndReached={this.handleOnLoadMore}
-            onEndReachedThreshold={0.5}
+          <TabViewAnimated
+            navigationState={this.props.navigationState}
+            renderScene={this._renderScene}
+            renderHeader={this._renderHeader}
+            onIndexChange={this._handleIndexChange}
+            useNativeDriver
           />
-        {/*refreshing={this.props.loading}
-          onRefresh={this.handleRefresh}*/}
+          <SearchFilterBar />
         </MenuProvider>
       </BaseOverlay>
     );
@@ -139,19 +134,19 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { data, loading } = state.search;
+  const { selectedTab, navigationState } = state.search;
 
   return {
-    data,
-    loading
+    selectedTab,
+    navigationState
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  const debouncedSearch = _.debounce(value => dispatch(handleSearch(value)), 400);
+const mapDispatchToProps = (dispatch) => {
+  const debouncedSearch = _.debounce((value, type) => dispatch(handleSearch(value, type)), 400);
   return ({
     debouncedSearch,
-    refreshSearchResult
+    searchSwitchTab: searchSwitchTab(dispatch)
   });
 };
 

@@ -9,7 +9,9 @@ const styles = {
   }
 };
 
-const Name = (props) => {
+
+// TODO: given a point number and return a colored badge
+const Badge = (props) => {
   const style = props.textStyle ? { ...styles.containerStyle, ...props.textStyle }
     : { ...styles.containerStyle };
   return (
@@ -23,4 +25,4 @@ const Name = (props) => {
   );
 };
 
-export default Name;
+export default Badge;

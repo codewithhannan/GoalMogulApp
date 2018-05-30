@@ -172,7 +172,7 @@ export default (state = INITIAL_STATE, action) => {
             // );
             const filterFunction = filterFactory(tab);
             const newData = updateFriendshipData(tab, data, filterFunction)(newState);
-            console.log('new data is: ', newData);
+            // console.log('new data is: ', newData);
             return _.set(newState, `${tab}.data`, newData);
           }
 
@@ -180,7 +180,7 @@ export default (state = INITIAL_STATE, action) => {
             return { ...newState };
         }
       })(type);
-      console.log('new state is: ', newState);
+      // console.log('new state is: ', newState);
       return { ...newState };
     }
 

@@ -10,13 +10,13 @@ import {
 import { connect } from 'react-redux';
 
 /* asset */
-import dropDown from '../../../asset/utils/dropDown.png';
+import dropDown from '../../asset/utils/dropDown.png';
+
+// actions
+import { searchChangeFilter } from '../../actions';
 
 const { width } = Dimensions.get('window');
 const { Popover } = renderers;
-
-// actions
-import { searchChangeFilter } from '../../../actions';
 
 const DEBUG_KEY = '[ Component SearchFilterBar ]';
 
