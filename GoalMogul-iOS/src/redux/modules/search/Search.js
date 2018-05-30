@@ -1,4 +1,13 @@
 const INITIAL_STATE = {
+  selectedTab: 'people',
+  navigationState: {
+    index: 0,
+    routes: [
+      { key: 'people', title: 'People' },
+      { key: 'tribes', title: 'Tribes' },
+      { key: 'events', title: 'Events' },
+    ],
+  },
   filterBar: {
     sortBy: 'relevance',
     category: 'people'
@@ -16,6 +25,9 @@ export const SEARCH_CHANGE_FILTER = 'search_change_filter';
 export const SEARCH_REQUEST = 'search_request';
 export const SEARCH_REQUEST_DONE = 'search_request_done';
 export const SEARCH_REFRESH_DONE = 'search_refresh_done';
+export const SEARCH_SWITCH_TAB = 'search_switch_tab';
+
+const TabNames = ['PEOPLE', 'TRIBES', 'EVENTS'];
 
 /*
   TODO:
@@ -70,6 +82,19 @@ export default (state = INITIAL_STATE, action) => {
         };
       }
       return { ...state };
+    }
+
+    // Search switch tab
+    case SEARCH_SWITCH_TAB: {
+      const newNavigationState = { ...state.navigationState };
+      newNavigationState.index = action.payload;
+
+      console.log('index isL ', action.payload);
+      return {
+        ...state,
+        selectedTab: newNavigationState.routes[action.payload].key,
+        navigationState: newNavigationState
+      };
     }
 
     default:

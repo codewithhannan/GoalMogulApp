@@ -32,39 +32,35 @@ const tabs = [
 
 const DEBUG_KEY = '[ MeetAction ]';
 
-export const selectTab = index => {
-  return (dispatch) => {
-    dispatch({
-      type: MEET_SELECT_TAB,
-      payload: index
-    });
-  };
+export const selectTab = index => (dispatch) => {
+  dispatch({
+    type: MEET_SELECT_TAB,
+    payload: index
+  });
 };
 
 // Preload meet tab
 // TODO: abstract this method to accomodate four types of requests
-export const preloadMeet = () => {
-  return (dispatch, getState) => {
-    dispatch({
-      type: MEET_LOADING,
-      payload: {
-        type: 'suggested'
-      }
-    });
-    const { token } = getState().user;
-    // loadOneTab('suggested', 0, 20, token, dispatch);
-    // tabs.map((key) => loadOneTab(key, 0, 20, token, dispatch, (data) => {
-    //   dispatch({
-    //     type: MEET_LOADING_DONE,
-    //     payload: {
-    //       type: key,
-    //       data, // TODO: replace this with actual data
-    //       skip: 0,
-    //       limit: 20
-    //     }
-    //   });
-    // }));
-  };
+export const preloadMeet = () => (dispatch, getState) => {
+  dispatch({
+    type: MEET_LOADING,
+    payload: {
+      type: 'suggested'
+    }
+  });
+  const { token } = getState().user;
+  // loadOneTab('suggested', 0, 20, token, dispatch);
+  // tabs.map((key) => loadOneTab(key, 0, 20, token, dispatch, (data) => {
+  //   dispatch({
+  //     type: MEET_LOADING_DONE,
+  //     payload: {
+  //       type: key,
+  //       data, // TODO: replace this with actual data
+  //       skip: 0,
+  //       limit: 20
+  //     }
+  //   });
+  // }));
 };
 
 /*

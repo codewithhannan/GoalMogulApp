@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
 
 /* Components */
-import PostCard from '../../components/PostCard';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import SearchBarHeader from '../Common/SearchBarHeader';
 
@@ -13,9 +12,6 @@ import ActivityFeed from './ActivityFeed';
 
 // Actions
 import { homeSwitchTab } from '../../actions';
-
-//TODO: delete following imports
-import MyGoalCard from '../Common/MyGoalCard';
 
 class Home extends Component {
   constructor(props) {

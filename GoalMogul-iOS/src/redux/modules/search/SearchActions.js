@@ -5,7 +5,8 @@ import {
   SEARCH_CHANGE_FILTER,
   SEARCH_REQUEST,
   SEARCH_REQUEST_DONE,
-  SEARCH_REFRESH_DONE
+  SEARCH_REFRESH_DONE,
+  SEARCH_SWITCH_TAB
 } from './Search';
 
 const DEBUG_KEY = '[ Action Search ]';
@@ -56,12 +57,14 @@ const searchWithId = (searchContent, queryId) => (dispatch, getState) => {
 const searchCurry = curry(searchWithId);
 const generateQueryId = (text) => hashCode(text);
 
+// Functions to handle search
 export const handleSearch = (searchContent) => {
   const queryId = generateQueryId(searchContent);
   return searchCurry(searchContent, queryId);
 };
 
-export const refreshSearchResult = () => (dispatch, getState) => {
+
+export const refreshSearchResult = curry((dispatch, getState) => {
   const { token } = getState().user;
   const { skip, limit, queryId, searchContent } = getState().search;
   dispatch({
@@ -81,8 +84,9 @@ export const refreshSearchResult = () => (dispatch, getState) => {
       data: []
     }
   });
-};
+});
 
+// Function to generate queryId for text
 export const hashCode = function (text) {
   let hash = 0;
   let i;
@@ -95,3 +99,11 @@ export const hashCode = function (text) {
   }
   return hash;
 };
+
+export const searchSwitchTab = curry((dispatch, index) => {
+  console.log('index in action is: ', index);
+  dispatch({
+    type: SEARCH_SWITCH_TAB,
+    payload: index
+  });
+});

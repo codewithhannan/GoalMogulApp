@@ -26,7 +26,7 @@ import ContactSync from './Registration/ContactSync';
 /* Main App */
 import TabIcon from './Main/Common/TabIcon';
 import MeetTab from './Main/MeetTab/MeetTab';
-import SearchOverlay from './Main/Common/Search/SearchOverlay';
+import SearchOverlay from './Main/Search/SearchOverlay';
 // import MeetCard from './Main/MeetTab/MeetCard';
 
 // Home Tab
@@ -69,7 +69,7 @@ class RouterComponent extends Component {
           <Lightbox>
             <Scene key="root" hideNavBar>
               <Scene key="auth" initial hideNavBar>
-                <Scene key="splash" component={SplashScreen} initial />
+                <Scene key="splash" component={Home} initial />
                 <Scene key="login" component={LoginPage} />
               </Scene>
 
