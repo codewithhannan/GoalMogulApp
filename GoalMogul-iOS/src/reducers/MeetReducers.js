@@ -165,32 +165,25 @@ export default (state = INITIAL_STATE, action) => {
             console.log('tab is: ', tab);
             console.log('new state is: ', newState);
             // TODO: i can't get data like this
-            console.log('data before update is: ', R.path(`${tab}.data`)(newState));
-            const newData = R.pipe(
-              R.path(`${tab}.data`),
-              R.filter((item) => item._id === data
-            ))(newState);
+            console.log('data before update is: ', R.path(R.split('.', `${tab}.data`))(newState));
+            const filterFunction = filterFactory(tab);
+            const newData = updateFriendshipData(tab, data, filterFunction)(newState);
             console.log('new data is: ', newData);
-            return _.set(newState, `${type}.data`, newData);
+            return _.set(newState, `${tab}.data`, newData);
           }
 
           default:
             return { ...newState };
         }
       })(type);
+      console.log('new state is: ', newState);
       return { ...newState };
     }
 
     // Handle tab refresh
     case MEET_TAB_REFRESH: {
       const { type } = action.payload;
-      // Method 1:
-      // const newState = { ...state[action.payload.type] };
-      // newState.refreshing = true;
-      // newState.loading = true;
-      // return { ...state, [action.payload.type]: newState };
 
-      // Method 2
       let newState = set([type, 'loading'], true, state);
       return set([type, 'refreshing'], true, newState);
     }
@@ -199,14 +192,6 @@ export default (state = INITIAL_STATE, action) => {
     case MEET_TAB_REFRESH_DONE: {
       // TODO: update the data
       const { type, data } = action.payload;
-      // Method 1
-      // const newState = { ...state[action.payload.type] };
-      // newState.refreshing = false;
-      // newState.loading = false;
-      // newState.data = action.payload.data;
-      // return { ...state, [action.payload.type]: newState };
-
-      // Method 2
       let newState = _.set({ ...state }, `${type}.loading`, false);
       newState = _.set({ ...newState }, `${type}.refreshing`, false);
       newState = _.set({ ...newState }, `${type}.skip`, action.payload.limit);
@@ -220,14 +205,14 @@ export default (state = INITIAL_STATE, action) => {
       const newTabState = { ...state[tab] };
       const newFilterState = newTabState.filter;
       newFilterState[type] = value;
-      newTabState.filter = newFilterState
-      console.log('new tab state is: ', newTabState);
+      newTabState.filter = newFilterState;
+      // console.log('new tab state is: ', newTabState);
       return { ...state, [tab]: newTabState };
     }
 
     // Requests Tab actions
     case MEET_REQUESTS_CHANGE_TAB: {
-      const newRequests = { ...state['requests'] };
+      const newRequests = { ...state.requests };
       newRequests.selectedTab = action.payload;
       return { ...state, requests: newRequests };
     }
@@ -244,8 +229,42 @@ export default (state = INITIAL_STATE, action) => {
   }
 };
 
-const updateFriendshipData = (type, _id) =>
+// Curry function for getting user that is acted on
+const incomingGetUser = R.prop('initiator_id');
+const outgoingGetUser = R.pipe(R.prop('participants'), R.head, R.prop('users_id'));
+const friendsGetUser = R.curry((state) => state); // Dummy function
+
+// Filtering for [friendship] by userId with customized getUser function
+const filterElementById = R.curry((getUser, _id) =>
+  R.filter(
+    // for each element performs
+    R.pipe(
+      // grab initiator_id
+      getUser,
+      // compare if current user is filtered
+      (item) => item._id !== _id
+    )
+  ),
+);
+
+// Factory function for creating specific user filtering function
+const filterFactory = (tab) => {
+  const getUser = ((tabType) => {
+    switch (tabType) {
+      case 'requests.incoming':
+        return incomingGetUser;
+      case 'requests.outgoing':
+        return outgoingGetUser;
+
+      default:
+        return friendsGetUser;
+    }
+  })(tab);
+  return filterElementById(getUser);
+};
+
+const updateFriendshipData = R.curry((tab, _id, filterById) =>
   R.pipe(
-    R.path(`${type}.data`),
-    R.filter((item) => item._id === _id
+    R.path(R.split('.', `${tab}.data`)),
+    filterById(_id)
   ));

@@ -254,6 +254,7 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
       //     data: id
       //   }
       // });
+      //TODO: show toaster for updating failure
       dispatch({
         type: MEET_UPDATE_FRIENDSHIP_DONE,
         payload: {

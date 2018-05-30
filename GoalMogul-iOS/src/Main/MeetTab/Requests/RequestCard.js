@@ -23,7 +23,7 @@ const CANCEL_INDEX = 1;
 
 const ACCEPT_BUTTONS = ['Accept', 'Remove', 'Cancel'];
 const ACCPET_INDEX = 0;
-const ACCPET_REMOVE_INDEX = 0;
+const ACCPET_REMOVE_INDEX = 1;
 const ACCEPT_CANCEL_INDEX = 2;
 
 const TAB_KEY_OUTGOING = 'requests.outgoing';
