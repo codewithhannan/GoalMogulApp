@@ -36,7 +36,7 @@ export const openProfile = (userId) => {
       if (res.message) {
         /* TODO: error handling */
         console.log('error fetching user profile: ', res);
-        dispatch({
+        return dispatch({
           type: PROFILE_FETCHING_FAIL,
           payload: res.message
         });

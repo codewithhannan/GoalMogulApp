@@ -19,7 +19,8 @@ import meetSetting from '../../../asset/utils/meetSetting.png';
 // Actions
 import {
   updateFriendship,
-  blockUser
+  blockUser,
+  openProfile
 } from '../../../actions';
 
 const FRIENDSHIP_BUTTONS = ['Block', 'Unfriend', 'Cancel'];
@@ -35,7 +36,7 @@ class FriendCard extends Component {
   }
 
   componentWillReceiveProps(props) {
-    console.log('new props for meet card are: ', props);
+    // console.log('new props for meet card are: ', props);
   }
 
   onButtonClicked = (_id) => {
@@ -63,6 +64,13 @@ class FriendCard extends Component {
           return;
       }
     });
+  }
+
+  handleOnOpenProfile = () => {
+    if (this.props.item._id) {
+      return this.props.openProfile(this.props.item._id);
+    }
+    // TODO: showToast
   }
 
   renderProfileImage() {
@@ -141,7 +149,7 @@ class FriendCard extends Component {
 
   render() {
     return (
-      <View style={styles.containerStyle}>
+      <TouchableOpacity style={styles.containerStyle} onPress={this.handleOnOpenProfile}>
         {this.renderProfileImage()}
 
         <View style={styles.bodyContainerStyle}>
@@ -156,7 +164,7 @@ class FriendCard extends Component {
           </Text>
           {this.renderAdditionalInfo()}
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 }
@@ -243,5 +251,6 @@ const styles = {
 
 export default connect(null, {
   updateFriendship,
-  blockUser
+  blockUser,
+  openProfile
 })(FriendCard);

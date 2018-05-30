@@ -49,7 +49,8 @@ const INITIAL_STATE = {
     data: [],
     limit: 30,
     skip: 0,
-    refreshing: true
+    refreshing: true,
+    hasNextPage: undefined
   },
   profilePic: null,
   profileObjectId: null,
@@ -131,9 +132,11 @@ export default (state = INITIAL_STATE, action) => {
     // Contacts fetching done
     case REGISTRATION_CONTACT_SYNC_FETCH_DONE: {
       const newMatchedContacts = { ...state.matchedContacts };
-      newMatchedContacts.data = arrayUnique(newMatchedContacts.data.concat(action.payload.data));
-      newMatchedContacts.skip = action.payload.skip;
+      const { data, skip, hasNextPage } = action.payload;
+      newMatchedContacts.data = arrayUnique(newMatchedContacts.data.concat(data));
+      newMatchedContacts.skip = skip;
       newMatchedContacts.refreshing = false;
+      newMatchedContacts.hasNextPage = hasNextPage;
       console.log('contact sync fetch done.');
       return { ...state, fetching: false, matchedContacts: newMatchedContacts };
     }

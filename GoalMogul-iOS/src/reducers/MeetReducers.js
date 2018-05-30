@@ -113,7 +113,7 @@ export default (state = INITIAL_STATE, action) => {
 
     // Loading suggested cards done
     case MEET_LOADING_DONE: {
-      const { data, type, skip } = action.payload;
+      const { data, type, skip, hasNextPage } = action.payload;
       // Method 1
       // const newState = { ...state[type] };
       // newState.data = data;
@@ -132,6 +132,7 @@ export default (state = INITIAL_STATE, action) => {
       if (skip !== undefined) {
         newState = set([type, 'skip'], skip, newState);
       }
+      newState = set([type, 'hasNextPage'], hasNextPage, newState);
       return set([type, 'data'], data, newState);
     }
 
@@ -161,11 +162,14 @@ export default (state = INITIAL_STATE, action) => {
       const { data, type, tab } = action.payload;
       newState = ((updateType) => {
         switch (updateType) {
+          case 'acceptFriend':
           case 'deleteFriend': {
-            console.log('tab is: ', tab);
-            console.log('new state is: ', newState);
-            // TODO: i can't get data like this
-            console.log('data before update is: ', R.path(R.split('.', `${tab}.data`))(newState));
+            // console.log('tab is: ', tab);
+            // console.log('new state is: ', newState);
+            // console.log(
+            //   'data before update is: ',
+            //   R.path(R.split('.', `${tab}.data`))(newState)
+            // );
             const filterFunction = filterFactory(tab);
             const newData = updateFriendshipData(tab, data, filterFunction)(newState);
             console.log('new data is: ', newData);
