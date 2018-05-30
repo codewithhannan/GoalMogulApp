@@ -68,9 +68,7 @@ export const loginUser = ({ username, password }) => {
           return res.message;
         }
       })
-      .catch((err) => {
-        console.log('error in login, ', err);
-      });
+      .catch((err) => err.message || 'Please try again later');
 
     if (message) {
       dispatch({

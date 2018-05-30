@@ -22,6 +22,9 @@ import {
   SETTING_BLOCK_REFRESH_DONE
 } from './types';
 
+const DEBUG_KEY = '[ Setting Action ]';
+const BASE_ROUTE = 'secure/user/settings';
+
 export const openSetting = () => {
   return (dispatch) => {
     dispatch({
@@ -308,15 +311,19 @@ export const blockUser = (userId) => (dispatch, getState) => {
     payload: userId
   });
   const { token } = getState().user;
-  API.post('secure/user/settings/block', { userId }, token).then((res) => {
-    console.log('response for blockUser: ', userId, ', is: ', res);
+  API.post(`${BASE_ROUTE}/block`, { userId }, token).then((res) => {
+    console.log(`${DEBUG_KEY}: block user with res: `, res);
     dispatch({
       type: SETTING_BLOCK_BLOCK_REQUEST_DONE,
       payload: userId
     });
   })
-  .catch((error) => {
-    console.log('error for blocking user: ', error);
+  .catch((err) => {
+    console.log(`${DEBUG_KEY}: block user with error: `, err);
+    dispatch({
+      type: SETTING_BLOCK_BLOCK_REQUEST_DONE,
+      payload: undefined
+    });
   });
 };
 
@@ -327,14 +334,14 @@ export const unblockUser = (userId) => (dispatch, getState) => {
     payload: userId
   });
   const { token } = getState().user;
-  API.delete('secure/user/settings/block', { userId }, token).then((res) => {
-    console.log('response for deleting a blocked user: ', userId, ', is: ', res);
+  API.delete(`${BASE_ROUTE}/block`, { userId }, token).then((res) => {
+    console.log(`${DEBUG_KEY} response for deleting a blocked user: `, userId, ', is: ', res);
     dispatch({
       type: SETTING_BLOCK_UNBLOCK_REQUEST_DONE,
       payload: userId
     });
   })
   .catch((error) => {
-    console.log('error for unblocking user: ', error);
+    console.log(`${DEBUG_KEY} error for unblocking user: `, error);
   });
 };

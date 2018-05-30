@@ -21,6 +21,7 @@ import { updateFriendship } from '../../../actions';
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
 const WITHDRAW_INDEX = 0;
 const CANCEL_INDEX = 1;
+const TAB_KEY = 'suggested';
 
 class SuggestedCard extends Component {
   state = {
@@ -42,7 +43,7 @@ class SuggestedCard extends Component {
         console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
         switch (buttonIndex) {
           case WITHDRAW_INDEX:
-            this.props.updateFriendship(_id, 'deleteFriend', () => {
+            this.props.updateFriendship(_id, 'deleteFriend', TAB_KEY, () => {
               this.setState({ requested: false });
             });
             break;
@@ -51,7 +52,7 @@ class SuggestedCard extends Component {
         }
       });
     }
-    return this.props.updateFriendship(_id, 'requesteFriend', () => {
+    return this.props.updateFriendship(_id, 'requesteFriend', TAB_KEY, () => {
       this.setState({ requested: true });
     });
   }
