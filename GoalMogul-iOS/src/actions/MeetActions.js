@@ -190,7 +190,7 @@ export const meetOnLoadMore = (key) => (dispatch, getState) => {
           data,
           skip: skip + limit,
           limit,
-          hasNextPage: !(data === undefined || data.length() === 0)
+          hasNextPage: !(data === undefined || data.length === 0)
         }
       });
     });

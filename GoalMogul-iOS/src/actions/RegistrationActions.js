@@ -539,7 +539,7 @@ export const contactSyncLoadMore = () => (dispatch, getState) => {
             data: res.data, // TODO: replaced with res
             skip: skip + limit,
             limit,
-            hasNextPage: res.data.length() !== 0
+            hasNextPage: res.data.length !== 0
           }
         });
       }
