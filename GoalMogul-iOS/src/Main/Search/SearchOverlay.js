@@ -33,7 +33,7 @@ class SearchOverlay extends Component {
   }
 
   handleChangeText = (value) => {
-    this.props.debouncedSearch(value.trim());
+    this.props.debouncedSearch(value.trim(), this.props.selectedTab);
   }
 
   searchIcon = () => (
@@ -143,7 +143,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  const debouncedSearch = _.debounce(value => dispatch(handleSearch(value)), 400);
+  const debouncedSearch = _.debounce((value, type) => dispatch(handleSearch(value, type)), 400);
   return ({
     debouncedSearch,
     searchSwitchTab: searchSwitchTab(dispatch)

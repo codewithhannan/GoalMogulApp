@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Expo from 'expo';
 import {
   View,
   Text,
@@ -7,7 +8,6 @@ import {
   ActionSheetIOS
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Button, Icon } from 'react-native-elements';
 
 // Components
 import Name from '../../Common/Name';
@@ -28,11 +28,10 @@ const CANCEL_INDEX = 1;
 class SearchUserCard extends Component {
   state = {
     requested: false,
-    accpeted: false
   }
 
   onButtonClicked = (_id) => {
-    if (this.state.requested) {
+    if (this.props.item.status === 'Invited') {
       ActionSheetIOS.showActionSheetWithOptions({
         options: FRIENDSHIP_BUTTONS,
         cancelButtonIndex: CANCEL_INDEX,
@@ -66,15 +65,16 @@ class SearchUserCard extends Component {
   }
 
   renderButton(_id) {
-    if (this.props.item.status === 'Invited') {
+    if (this.props.item.status === 'Invited' || this.state.requested) {
       return (
         <View style={styles.iconContainerStyle}>
         <TouchableOpacity
           onPress={this.onButtonClicked.bind(this, _id)}
+          style={{ padding: 15 }}
         >
           <Image
-            source={addUser}
-            style={styles.iconStyle}
+            source={check}
+            style={{ width: 25, height: 18 }}
           />
         </TouchableOpacity>
         </View>
@@ -83,12 +83,12 @@ class SearchUserCard extends Component {
     return (
       <View style={styles.iconContainerStyle}>
       <TouchableOpacity
-        style={styles.iconContainerStyle}
         onPress={this.onButtonClicked.bind(this, _id)}
+        style={{ padding: 15 }}
       >
         <Image
-          source={check}
-          style={{ width: 25, height: 18 }}
+          source={addUser}
+          style={styles.iconStyle}
         />
       </TouchableOpacity>
       </View>
@@ -99,36 +99,9 @@ class SearchUserCard extends Component {
     const { name } = this.props.item;
     return (
       <View style={styles.infoContainerStyle}>
-        <View style={{ flex: 1, flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
-          <Name text={name} />
-        </View>
+        <Name text={name} textStyle={{ color: '#4F4F4F' }} />
       </View>
     );
-  }
-
-  // TODO: decide the final UI for additional info
-  renderAdditionalInfo() {
-    return '';
-    // const { profile } = this.props.item;
-    // let content = '';
-    // if (profile.elevatorPitch) {
-    //   content = profile.elevatorPitch;
-    // } else if (profile.about) {
-    //   content = profile.about;
-    // }
-    // return (
-    //   <View style={{ flex: 1 }}>
-    //     <Text
-    //       style={styles.titleTextStyle}
-    //       numberOfLines={1}
-    //       ellipsizeMode='tail'
-    //     >
-    //       <Text style={styles.detailTextStyle}>
-    //         {content}
-    //       </Text>
-    //     </Text>
-    //   </View>
-    // );
   }
 
   renderOccupation() {
@@ -186,35 +159,12 @@ const styles = {
   },
   infoContainerStyle: {
     flexDirection: 'row',
-    flex: 1
+    height: 25,
   },
   imageStyle: {
     height: 48,
     width: 48,
     borderRadius: 5,
-  },
-  buttonContainerStyle: {
-    marginLeft: 8,
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
-  },
-  buttonStyle: {
-    width: 70,
-    height: 26,
-    borderWidth: 1,
-    borderColor: '#45C9F6',
-    borderRadius: 13,
-  },
-  buttonTextStyle: {
-    color: '#45C9F6',
-    fontSize: 11,
-    fontWeight: '700',
-    paddingLeft: 1,
-    padding: 0,
-    alignSelf: 'center'
-  },
-  buttonIconStyle: {
-    marginTop: 1
   },
   titleTextStyle: {
     color: '#45C9F6',
@@ -223,22 +173,9 @@ const styles = {
     paddingBottom: 1
   },
   detailTextStyle: {
-    color: '#000000',
-    paddingLeft: 3
-  },
-  jobTitleTextStyle: {
-    color: '#45C9F6',
-    fontSize: 11,
-    fontWeight: '800',
-    paddingTop: 5,
-    paddingBottom: 3
-  },
-  friendTextStyle: {
-    paddingLeft: 10,
-    color: '#45C9F6',
-    fontSize: 9,
-    fontWeight: '800',
-    maxWidth: 120
+    color: '#9B9B9B',
+    paddingLeft: 3,
+    fontFamily: 'gotham-pro',
   },
   iconContainerStyle: {
     marginLeft: 8,

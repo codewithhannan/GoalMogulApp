@@ -1,5 +1,4 @@
 import curry from 'ramda/src/curry';
-import __ from 'ramda/src/__';
 import { api as API } from '../../middleware/api';
 import {
   SEARCH_CHANGE_FILTER,
@@ -21,7 +20,13 @@ export const searchChangeFilter = (type, value) => {
   };
 };
 
-const searchWithId = (searchContent, queryId) => (dispatch, getState) => {
+/**
+	 * Sends a search requests and update reducers
+	 * @param searchContent: searchContent of the current search
+   * @param queryId: hashCode of searchContent
+   * @param type: one of ['people', 'events', 'tribes']
+	 */
+const searchWithId = (searchContent, queryId, type) => (dispatch, getState) => {
   const { token } = getState().user;
   const { skip, limit } = getState().search;
   console.log(`${DEBUG_KEY} with text: ${searchContent} and queryId: ${queryId}`);
@@ -29,60 +34,62 @@ const searchWithId = (searchContent, queryId) => (dispatch, getState) => {
     type: SEARCH_REQUEST,
     payload: {
       queryId,
-      searchContent
+      searchContent,
+      type
     }
   });
   // Send request to end point using API
-  API
-    .get(
-      `secure/user/friendship/es?skip=${skip}&limit=${limit}&query=${searchContent}`,
-      token
-    )
-    .then((res) => {
-      console.log(`${DEBUG_KEY} fetching with res: `, res);
-      dispatch({
-        type: SEARCH_REQUEST_DONE,
-        payload: {
-          queryId,
-          data: [],
-          skip: skip + limit,
-        }
-      });
-    })
-    .catch((err) => {
-      console.log(`${DEBUG_KEY} fetching fails with err: `, err);
+  fetchData(searchContent, skip, limit, token, (res) => {
+    const data = res.data ? res.data : [];
+    dispatch({
+      type: SEARCH_REQUEST_DONE,
+      payload: {
+        queryId,
+        data,
+        skip: skip + limit,
+        type
+      }
     });
+  });
 };
 
+// search function generator
 const searchCurry = curry(searchWithId);
+
+// Hashcode generator
 const generateQueryId = (text) => hashCode(text);
 
 // Functions to handle search
-export const handleSearch = (searchContent) => {
+export const handleSearch = (searchContent, type) => {
   const queryId = generateQueryId(searchContent);
-  return searchCurry(searchContent, queryId);
+  return searchCurry(searchContent, queryId, type);
 };
 
 
-export const refreshSearchResult = curry((dispatch, getState) => {
+export const refreshSearchResult = curry((type) => (dispatch, getState) => {
+  console.log(`${DEBUG_KEY} refresh tab: ${type}`);
   const { token } = getState().user;
   const { skip, limit, queryId, searchContent } = getState().search;
   dispatch({
     type: SEARCH_REQUEST,
     payload: {
       queryId,
-      searchContent
+      searchContent,
+      type
     }
   });
 
-  //
-  dispatch({
-    type: SEARCH_REFRESH_DONE,
-    payload: {
-      queryId,
-      skip: skip + limit,
-      data: []
-    }
+  fetchData(searchContent, skip, limit, token, (res) => {
+    const data = res.data ? res.data : [];
+    dispatch({
+      type: SEARCH_REFRESH_DONE,
+      payload: {
+        queryId,
+        data,
+        skip: limit,
+        type
+      }
+    });
   });
 });
 
@@ -107,3 +114,23 @@ export const searchSwitchTab = curry((dispatch, index) => {
     payload: index
   });
 });
+
+const fetchData = curry((searchContent, skip, limit, token, callback) =>
+  API
+    .get(
+      `secure/user/friendship/es?skip=${skip}&limit=${limit}&query=${searchContent}`,
+      token
+    )
+    .then((res) => {
+      console.log(`${DEBUG_KEY} fetching with res: `, res);
+      if (callback) {
+        callback(res);
+      }
+    })
+    .catch((err) => {
+      console.log(`${DEBUG_KEY} fetching fails with err: `, err);
+      if (callback) {
+        callback({ data: [] });
+      }
+    })
+);

@@ -12,11 +12,27 @@ const INITIAL_STATE = {
     sortBy: 'relevance',
     category: 'people'
   },
-  data: [],
-  queryId: undefined,
-  loading: false,
-  skip: 0,
-  limit: 20,
+  people: {
+    data: [],
+    queryId: undefined,
+    loading: false,
+    skip: 0,
+    limit: 20,
+  },
+  tribes: {
+    data: [],
+    queryId: undefined,
+    loading: false,
+    skip: 0,
+    limit: 20,
+  },
+  events: {
+    data: [],
+    queryId: undefined,
+    loading: false,
+    skip: 0,
+    limit: 20,
+  },
   searchContent: ''
 };
 
@@ -44,45 +60,41 @@ export default (state = INITIAL_STATE, action) => {
 
     // Initiate search request
     case SEARCH_REQUEST: {
-      const { searchContent, queryId } = action.payload;
-      return {
-        ...state,
-        loading: true,
-        queryId,
-        searchContent
-      };
+      const { searchContent, queryId, type } = action.payload;
+      let newState = { ...state };
+      newState[type].loading = true;
+      newState.queryId = queryId;
+      newState.searchContent = searchContent;
+      return { ...newState };
     }
 
-    // Search request done
+    // Search refresh and request done
+    case SEARCH_REFRESH_DONE:
     case SEARCH_REQUEST_DONE: {
-      const { queryId, skip, data } = action.payload;
-      const oldData = [...state.data];
+      const { queryId, skip, data, type } = action.payload;
+      let newState = { ...state };
       if (queryId === state.queryId) {
-        const newData = oldData.concat(data);
-        return {
-          ...state,
-          loading: false,
-          data: newData,
-          skip
-        };
+        newState[type].data = newState[type].data.concat(data);
+        newState[type].loading = false;
+        newState[type].skip = skip;
       }
-      return { ...state };
+      return { ...newState };
     }
 
     // Search refresh done
-    case SEARCH_REFRESH_DONE: {
-      const { queryId, skip, data } = action.payload;
-
-      if (queryId === state.queryId) {
-        return {
-          ...state,
-          loading: false,
-          data,
-          skip
-        };
-      }
-      return { ...state };
-    }
+    // case SEARCH_REFRESH_DONE: {
+    //   const { queryId, skip, data, type } = action.payload;
+    //
+    //   if (queryId === state.queryId) {
+    //     return {
+    //       ...state,
+    //       loading: false,
+    //       data,
+    //       skip
+    //     };
+    //   }
+    //   return { ...state };
+    // }
 
     // Search switch tab
     case SEARCH_SWITCH_TAB: {
