@@ -113,7 +113,7 @@ export default (state = INITIAL_STATE, action) => {
 
     // Loading suggested cards done
     case MEET_LOADING_DONE: {
-      const { data, type, skip } = action.payload;
+      const { data, type, skip, hasNextPage } = action.payload;
       // Method 1
       // const newState = { ...state[type] };
       // newState.data = data;
@@ -132,6 +132,7 @@ export default (state = INITIAL_STATE, action) => {
       if (skip !== undefined) {
         newState = set([type, 'skip'], skip, newState);
       }
+      newState = set([type, 'hasNextPage'], hasNextPage, newState);
       return set([type, 'data'], data, newState);
     }
 

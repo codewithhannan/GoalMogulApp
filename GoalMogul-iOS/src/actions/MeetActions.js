@@ -180,7 +180,7 @@ export const meetOnLoadMore = (key) => (dispatch, getState) => {
   console.log(`${DEBUG_KEY} Loading more for ${key}`);
   const tabState = _.get(getState().meet, key);
   const { skip, limit, hasNextPage } = tabState;
-  if (hasNextPage) {
+  if (hasNextPage || hasNextPage === undefined) {
     const { token } = getState().user;
     loadOneTab(key, skip + limit, limit, token, dispatch, (data) => {
       dispatch({
@@ -189,7 +189,8 @@ export const meetOnLoadMore = (key) => (dispatch, getState) => {
           type: key,
           data,
           skip: skip + limit,
-          limit
+          limit,
+          hasNextPage: !(data === undefined || data.length() === 0)
         }
       });
     });

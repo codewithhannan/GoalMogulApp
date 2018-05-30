@@ -521,16 +521,16 @@ export const registrationNextContactSync = ({ skip }) => {
 };
 
 // Load more matched contacts for contact sync
-export const contactSyncLoadMore = () => {
-  return (dispatch, getState) => {
-    dispatch({
-      type: REGISTRATION_CONTACT_SYNC_FETCH
-    });
+export const contactSyncLoadMore = () => (dispatch, getState) => {
+  dispatch({
+    type: REGISTRATION_CONTACT_SYNC_FETCH
+  });
 
-    const { token } = getState().user;
-    // Skip and limit for fetching matched contacts
-    const { skip, limit } = getState().registration.matchedContacts;
+  const { token } = getState().user;
+  // Skip and limit for fetching matched contacts
+  const { skip, limit, hasNextPage } = getState().registration.matchedContacts;
 
+  if (hasNextPage === undefined || hasNextPage) {
     fetchMatchedContacts(token, skip, limit).then((res) => {
       if (res.data) {
         dispatch({
@@ -538,7 +538,8 @@ export const contactSyncLoadMore = () => {
           payload: {
             data: res.data, // TODO: replaced with res
             skip: skip + limit,
-            limit
+            limit,
+            hasNextPage: res.data.length() !== 0
           }
         });
       }
@@ -546,39 +547,37 @@ export const contactSyncLoadMore = () => {
     .catch((err) => {
       console.warn('[ Action ContactSync Loadmore Fail ]: ', err);
     });
-  };
+  }
 };
 
 // Refresh contact sync cards
-export const contactSyncRefresh = () => {
-  return (dispatch, getState) => {
-    // REGISTRATION_CONTACT_SYNC_REFRESH
-    // REGISTRATION_CONTACT_SYNC_REFRESH_DONE
-    dispatch({
-      type: REGISTRATION_CONTACT_SYNC_REFRESH
-    });
+export const contactSyncRefresh = () => (dispatch, getState) => {
+  // REGISTRATION_CONTACT_SYNC_REFRESH
+  // REGISTRATION_CONTACT_SYNC_REFRESH_DONE
+  dispatch({
+    type: REGISTRATION_CONTACT_SYNC_REFRESH
+  });
 
-    const { token } = getState().user;
-    // Skip and limit for fetching matched contacts
-    const { limit } = getState().registration.matchedContacts;
+  const { token } = getState().user;
+  // Skip and limit for fetching matched contacts
+  const { limit } = getState().registration.matchedContacts;
 
-    fetchMatchedContacts(token, 0, limit).then((res) => {
-      console.log('[ Action ContactSync ]: Refresh with res: ', res);
-      if (res.data) {
-        dispatch({
-          type: REGISTRATION_CONTACT_SYNC_REFRESH_DONE,
-          payload: {
-            data: res.data, // TODO: replaced with res
-            skip: limit,
-          }
-        });
-      }
-      // TODO: error handling for failing to fetch data
-    })
-    .catch((err) => {
-      console.warn('[ Action ContactSync Refresh Fail ]: ', err);
-    });
-  };
+  fetchMatchedContacts(token, 0, limit).then((res) => {
+    console.log('[ Action ContactSync ]: Refresh with res: ', res);
+    if (res.data) {
+      dispatch({
+        type: REGISTRATION_CONTACT_SYNC_REFRESH_DONE,
+        payload: {
+          data: res.data, // TODO: replaced with res
+          skip: limit,
+        }
+      });
+    }
+    // TODO: error handling for failing to fetch data
+  })
+  .catch((err) => {
+    console.warn('[ Action ContactSync Refresh Fail ]: ', err);
+  });
 };
 
 /* Contact Sync actions */
