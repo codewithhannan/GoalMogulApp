@@ -38,7 +38,7 @@ class RequestCard extends Component {
     console.log('new props for meet card are: ', props);
   }
 
-  onAcceptClicked = (_id) => {
+  onRespondClicked = (_id) => {
     ActionSheetIOS.showActionSheetWithOptions({
       options: ACCEPT_BUTTONS,
       cancelButtonIndex: ACCEPT_CANCEL_INDEX,
@@ -58,7 +58,7 @@ class RequestCard extends Component {
     });
   }
 
-  onButtonClicked = (_id) => {
+  onInvitedClicked = (_id) => {
     ActionSheetIOS.showActionSheetWithOptions({
       options: FRIENDSHIP_BUTTONS,
       cancelButtonIndex: CANCEL_INDEX,
@@ -96,7 +96,7 @@ class RequestCard extends Component {
             titleStyle={styles.buttonTextStyle}
             clear
             buttonStyle={styles.buttonStyle}
-            onPress={this.onButtonClicked.bind(this, _id)}
+            onPress={this.onInvitedClicked.bind(this, _id)}
           />
         );
       }
@@ -107,7 +107,7 @@ class RequestCard extends Component {
             titleStyle={styles.buttonTextStyle}
             clear
             buttonStyle={styles.buttonStyle}
-            onPress={this.onAcceptClicked.bind(this, _id)}
+            onPress={this.onRespondClicked.bind(this, _id)}
           />
         );
       }
