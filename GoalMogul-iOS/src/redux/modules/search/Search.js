@@ -18,6 +18,7 @@ const INITIAL_STATE = {
     loading: false,
     skip: 0,
     limit: 20,
+    hasNextPage: undefined
   },
   tribes: {
     data: [],
@@ -25,6 +26,7 @@ const INITIAL_STATE = {
     loading: false,
     skip: 0,
     limit: 20,
+    hasNextPage: undefined
   },
   events: {
     data: [],
@@ -32,6 +34,7 @@ const INITIAL_STATE = {
     loading: false,
     skip: 0,
     limit: 20,
+    hasNextPage: undefined
   },
   searchContent: ''
 };
@@ -42,8 +45,6 @@ export const SEARCH_REQUEST = 'search_request';
 export const SEARCH_REQUEST_DONE = 'search_request_done';
 export const SEARCH_REFRESH_DONE = 'search_refresh_done';
 export const SEARCH_SWITCH_TAB = 'search_switch_tab';
-
-const TabNames = ['PEOPLE', 'TRIBES', 'EVENTS'];
 
 /*
   TODO:
@@ -71,12 +72,13 @@ export default (state = INITIAL_STATE, action) => {
     // Search refresh and request done
     case SEARCH_REFRESH_DONE:
     case SEARCH_REQUEST_DONE: {
-      const { queryId, skip, data, type } = action.payload;
+      const { queryId, skip, data, type, hasNextPage } = action.payload;
       let newState = { ...state };
       if (queryId === state.queryId) {
         newState[type].data = newState[type].data.concat(data);
         newState[type].loading = false;
         newState[type].skip = skip;
+        newState[type].hasNextPage = hasNextPage;
       }
       return { ...newState };
     }
@@ -101,7 +103,6 @@ export default (state = INITIAL_STATE, action) => {
       const newNavigationState = { ...state.navigationState };
       newNavigationState.index = action.payload;
 
-      console.log('index isL ', action.payload);
       return {
         ...state,
         selectedTab: newNavigationState.routes[action.payload].key,

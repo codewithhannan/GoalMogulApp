@@ -28,7 +28,7 @@ export const searchChangeFilter = (type, value) => {
 	 */
 const searchWithId = (searchContent, queryId, type) => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit } = getState().search;
+  const { skip, limit } = getState().search[type];
   console.log(`${DEBUG_KEY} with text: ${searchContent} and queryId: ${queryId}`);
   dispatch({
     type: SEARCH_REQUEST,
@@ -39,7 +39,7 @@ const searchWithId = (searchContent, queryId, type) => (dispatch, getState) => {
     }
   });
   // Send request to end point using API
-  fetchData(searchContent, skip, limit, token, (res) => {
+  fetchData(searchContent, type, skip, limit, token, (res) => {
     const data = res.data ? res.data : [];
     dispatch({
       type: SEARCH_REQUEST_DONE,
@@ -47,7 +47,8 @@ const searchWithId = (searchContent, queryId, type) => (dispatch, getState) => {
         queryId,
         data,
         skip: skip + limit,
-        type
+        type,
+        hasNextPage: data.length !== 0
       }
     });
   });
@@ -65,11 +66,15 @@ export const handleSearch = (searchContent, type) => {
   return searchCurry(searchContent, queryId, type);
 };
 
-
+/**
+  * Refresh search result
+  * @param type: tab that needs to refresh
+  */
 export const refreshSearchResult = curry((type) => (dispatch, getState) => {
   console.log(`${DEBUG_KEY} refresh tab: ${type}`);
   const { token } = getState().user;
-  const { skip, limit, queryId, searchContent } = getState().search;
+  const { searchContent } = getState().search;
+  const { skip, limit, queryId } = getState().search[type];
   dispatch({
     type: SEARCH_REQUEST,
     payload: {
@@ -79,7 +84,7 @@ export const refreshSearchResult = curry((type) => (dispatch, getState) => {
     }
   });
 
-  fetchData(searchContent, skip, limit, token, (res) => {
+  fetchData(searchContent, type, skip, limit, token, (res) => {
     const data = res.data ? res.data : [];
     dispatch({
       type: SEARCH_REFRESH_DONE,
@@ -87,11 +92,46 @@ export const refreshSearchResult = curry((type) => (dispatch, getState) => {
         queryId,
         data,
         skip: limit,
-        type
+        type,
+        hasNextPage: data.length !== 0
       }
     });
   });
 });
+
+/**
+  * Load more for search result
+  * @param type: tab that needs to load more
+  */
+export const onLoadMore = (type) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const { skip, limit, queryId, searchContent, hasNextPage } = getState().search[type];
+  if (hasNextPage !== undefined && !hasNextPage) {
+    return;
+  }
+  dispatch({
+    type: SEARCH_REQUEST,
+    payload: {
+      queryId,
+      searchContent,
+      type
+    }
+  });
+
+  fetchData(searchContent, type, skip, limit, token, (res) => {
+    const data = res.data ? res.data : [];
+    dispatch({
+      type: SEARCH_REQUEST_DONE,
+      payload: {
+        queryId,
+        data,
+        skip: limit,
+        type,
+        hasNextPage: data.length !== 0
+      }
+    });
+  });
+};
 
 // Function to generate queryId for text
 export const hashCode = function (text) {
@@ -107,6 +147,7 @@ export const hashCode = function (text) {
   return hash;
 };
 
+// Actions to switch tab index for search overlay
 export const searchSwitchTab = curry((dispatch, index) => {
   console.log('index in action is: ', index);
   dispatch({
@@ -115,7 +156,8 @@ export const searchSwitchTab = curry((dispatch, index) => {
   });
 });
 
-const fetchData = curry((searchContent, skip, limit, token, callback) =>
+const fetchData = curry((searchContent, type, skip, limit, token, callback) =>
+// TODO: integrate with search type later
   API
     .get(
       `secure/user/friendship/es?skip=${skip}&limit=${limit}&query=${searchContent}`,

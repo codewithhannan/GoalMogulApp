@@ -7,10 +7,8 @@ import SearchUserCard from './SearchUserCard';
 
 // actions
 import {
-  meetOnLoadMore
-} from '../../../actions';
-import {
-  refreshSearchResult
+  refreshSearchResult,
+  onLoadMore
 } from '../../../redux/modules/search/SearchActions';
 
 // tab key
@@ -42,13 +40,12 @@ class PeopleSearch extends Component {
 
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing tab: `, key);
-    // this.props.handleRefresh(key);
-    this.props.refreshSearchResult('people');
+    this.props.refreshSearchResult(key);
   }
 
   handleOnLoadMore = () => {
     console.log(`${DEBUG_KEY} Loading more for tab: `, key);
-    // this.props.meetOnLoadMore(key);
+    this.props.onLoadMore(key);
   }
 
   renderItem = ({ item }) => {
@@ -65,7 +62,7 @@ class PeopleSearch extends Component {
           keyExtractor={this._keyExtractor}
           onEndReached={this.handleOnLoadMore}
           onEndReachedThreshold={0.5}
-          onRefresh={this.handleRefresh.bind()}
+          onRefresh={this.handleRefresh}
           refreshing={this.props.loading}
         />
       </View>
@@ -76,7 +73,6 @@ class PeopleSearch extends Component {
 const mapStateToProps = state => {
   const { people } = state.search;
   const { data, refreshing, loading } = people;
-
 
   return {
     people,
@@ -89,7 +85,7 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    meetOnLoadMore,
-    refreshSearchResult
+    refreshSearchResult,
+    onLoadMore
   }
 )(PeopleSearch);
