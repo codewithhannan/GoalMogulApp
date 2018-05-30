@@ -23,14 +23,16 @@ const testDataSuggested = [
     name: 'Jia Zeng',
     profile: {
       occupation: 'student'
-    }
+    },
+    status: 'Invited'
   },
   {
     _id: 3,
     name: 'Jay Patel',
     profile: {
       occupaton: 'Typist at Typeform.com'
-    }
+    },
+    status: 'Accepted'
   }
 ];
 

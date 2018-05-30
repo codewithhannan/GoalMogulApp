@@ -52,7 +52,14 @@ class ContactDetail extends Component {
     if (this.state.requested) {
       return (
         <View style={styles.checkIconContainerStyle}>
-          <Image source={check} style={{ ...styles.iconStyle, tintColor: checkIconColor }} />
+          <Image
+            source={check}
+            style={{
+              height: 16,
+              width: 20,
+              tintColor: checkIconColor
+            }} 
+          />
         </View>
       );
     }

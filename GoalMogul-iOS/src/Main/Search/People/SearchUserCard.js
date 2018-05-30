@@ -66,48 +66,41 @@ class SearchUserCard extends Component {
   }
 
   renderButton(_id) {
-    if (this.state.requested) {
+    if (this.props.item.status === 'Invited') {
       return (
-        <Button
-          title='Sent'
-          titleStyle={styles.buttonTextStyle}
-          clear
-          buttonStyle={styles.buttonStyle}
-        />
+        <View style={styles.iconContainerStyle}>
+        <TouchableOpacity
+          onPress={this.onButtonClicked.bind(this, _id)}
+        >
+          <Image
+            source={addUser}
+            style={styles.iconStyle}
+          />
+        </TouchableOpacity>
+        </View>
       );
     }
     return (
-      <Button
-        title='Friend'
-        titleStyle={styles.buttonTextStyle}
-        clear
-        icon={
-          <Icon
-            type='octicon'
-            name='plus-small'
-            width={10}
-            size={20}
-            color='#45C9F6'
-            iconStyle={styles.buttonIconStyle}
-          />
-        }
-        iconLeft
-        buttonStyle={styles.buttonStyle}
+      <View style={styles.iconContainerStyle}>
+      <TouchableOpacity
+        style={styles.iconContainerStyle}
         onPress={this.onButtonClicked.bind(this, _id)}
-      />
+      >
+        <Image
+          source={check}
+          style={{ width: 25, height: 18 }}
+        />
+      </TouchableOpacity>
+      </View>
     );
   }
 
   renderInfo() {
-    const { name, _id } = this.props.item;
+    const { name } = this.props.item;
     return (
       <View style={styles.infoContainerStyle}>
         <View style={{ flex: 1, flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
           <Name text={name} />
-        </View>
-
-        <View style={styles.buttonContainerStyle}>
-          {this.renderButton(_id)}
         </View>
       </View>
     );
@@ -155,6 +148,7 @@ class SearchUserCard extends Component {
   }
 
   render() {
+    const { _id } = this.props.item;
     return (
       <View style={styles.containerStyle}>
         {this.renderProfileImage()}
@@ -162,15 +156,8 @@ class SearchUserCard extends Component {
         <View style={styles.bodyContainerStyle}>
           {this.renderInfo()}
           {this.renderOccupation()}
-          <Text
-            style={styles.jobTitleTextStyle}
-            numberOfLines={1}
-            ellipsizeMode='tail'
-          >
-            380 MUTUAL FRIENDS
-          </Text>
-          {this.renderAdditionalInfo()}
         </View>
+        {this.renderButton(_id)}
       </View>
     );
   }
@@ -179,13 +166,19 @@ class SearchUserCard extends Component {
 const styles = {
   containerStyle: {
     flexDirection: 'row',
-    marginTop: 5,
+    marginTop: 7,
+    marginLeft: 4,
+    marginRight: 4,
     paddingLeft: 10,
-    paddingRight: 10,
+    paddingRight: 25,
     paddingTop: 8,
     paddingBottom: 8,
     alignItems: 'center',
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
+    shadowColor: 'gray',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
   },
   bodyContainerStyle: {
     marginLeft: 8,
@@ -223,9 +216,6 @@ const styles = {
   buttonIconStyle: {
     marginTop: 1
   },
-  needContainerStyle: {
-
-  },
   titleTextStyle: {
     color: '#45C9F6',
     fontSize: 11,
@@ -249,6 +239,15 @@ const styles = {
     fontSize: 9,
     fontWeight: '800',
     maxWidth: 120
+  },
+  iconContainerStyle: {
+    marginLeft: 8,
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
+  },
+  iconStyle: {
+    height: 25,
+    width: 25
   }
 };
 
