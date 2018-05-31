@@ -93,7 +93,6 @@ class SearchOverlay extends Component {
             onIndexChange={this._handleIndexChange}
             useNativeDriver
           />
-          <SearchFilterBar />
         </MenuProvider>
       </BaseOverlay>
     );
