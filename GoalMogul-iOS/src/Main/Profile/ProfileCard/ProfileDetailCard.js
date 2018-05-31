@@ -3,9 +3,11 @@ import {
   View,
   Image,
   Text,
-  Dimensions
+  Dimensions,
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
+import { Icon } from 'react-native-elements';
 
 /* Asset to delete */
 import profilePic from '../../../asset/test-profile-pic.png';
@@ -16,6 +18,7 @@ import { openProfileDetailEditForm } from '../../../actions/';
 /* Components */
 import Card from './Card';
 import EditButton from '../../Common/Button/EditButton';
+import ButtonArrow from '../../Common/Button/ButtonArrow'
 
 const { width } = Dimensions.get('window');
 
@@ -54,11 +57,41 @@ class ProfileDetailCard extends Component {
     this.props.openProfileDetailEditForm();
   }
 
+  handleMutualFriendOnPressed = () => {
+
+  }
+
   renderEditButton() {
     if (this.props.canEdit) {
       return (
         <View style={{ padding: 10 }}>
           <EditButton onPress={() => this.handleEditOnPressed()} />
+        </View>
+      );
+    }
+  }
+
+  renderFriendInfo() {
+    if (this.props.canEdit) {
+      return (
+        <View style={styles.friendInfoContainerStyle}>
+          <Text style={{ fontSize: 13, color: '#646464', alignSelf: 'center' }}>
+            <Text style={{ fontWeight: 'bold' }}>12 </Text>
+             Mutual Friends
+          </Text>
+          <View>
+            <Icon
+              name='dot-single'
+              type='entypo'
+              color='#818181'
+              size={18}
+              iconStyle={styles.dotIconStyle}
+              containerStyle={styles.dotIconContainerStyle}
+            />
+          </View>
+          <TouchableOpacity onPress={this.handleMutualFriendOnPressed}>
+            <ButtonArrow text='View friends' arrow />
+          </TouchableOpacity>
         </View>
       );
     }
@@ -103,12 +136,15 @@ class ProfileDetailCard extends Component {
           <Text style={styles.headlineTextStyle}>
             {headline}
           </Text>
-
+          <View style={styles.dividerStyle} />
+          {this.renderFriendInfo()}
         </View>
       </Card>
     );
   }
 }
+
+const padding = 15;
 
 const styles = {
   containerStyle: {
@@ -119,7 +155,7 @@ const styles = {
     paddingTop: 15,
     paddingLeft: 15,
     paddingRight: 15,
-    paddingBottom: 15
+    paddingBottom: 5
   },
   imageWrapperStyle: {
     shadowColor: '#000',
@@ -151,7 +187,30 @@ const styles = {
   },
   headlineTextStyle: {
     fontSize: 13,
-    color: '#646464'
+    color: '#646464',
+    marginBottom: padding
+  },
+  dividerStyle: {
+    height: 1,
+    width: (width * 5) / 7,
+    borderColor: '#dcdcdc',
+    borderBottomWidth: 1,
+    marginBottom: padding
+  },
+  friendInfoContainerStyle: {
+    flexDirection: 'row',
+    marginBottom: padding,
+    alignItems: 'center'
+  },
+  dotIconStyle: {
+
+
+  },
+  dotIconContainerStyle: {
+    width: 15,
+    marginRight: 2,
+    alignSelf: 'center',
+    justifyContent: 'center'
   }
 };
 
