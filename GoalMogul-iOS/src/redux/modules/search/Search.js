@@ -71,7 +71,7 @@ export default (state = INITIAL_STATE, action) => {
     // Initiate search request
     case SEARCH_REQUEST: {
       const { searchContent, queryId, type } = action.payload;
-      let newState = { ...state };
+      let newState = _.cloneDeep(state);
       newState[type].loading = true;
       newState.queryId = queryId;
       newState.searchContent = searchContent;
@@ -82,7 +82,7 @@ export default (state = INITIAL_STATE, action) => {
     case SEARCH_REFRESH_DONE:
     case SEARCH_REQUEST_DONE: {
       const { queryId, skip, data, type, hasNextPage } = action.payload;
-      let newState = { ...state };
+      let newState = _.cloneDeep(state);
       if (queryId === state.queryId) {
         newState[type].data = data;
         newState[type].loading = false;
@@ -95,7 +95,7 @@ export default (state = INITIAL_STATE, action) => {
     // Search refresh done
     case SEARCH_ON_LOADMORE_DONE: {
       const { queryId, skip, data, type, hasNextPage } = action.payload;
-      let newState = { ...state };
+      let newState = _.cloneDeep(state);
       if (queryId === state.queryId) {
         newState[type].data = newState[type].data.concat(data);
         newState[type].loading = false;
@@ -117,10 +117,8 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
 
-    case SEARCH_CLEAR_STATE: {
-      console.log('clear state in reducer');
-      return { ...state, ...INITIAL_STATE };
-    }
+    case SEARCH_CLEAR_STATE:
+      return INITIAL_STATE;
 
     default:
       return { ...state };
