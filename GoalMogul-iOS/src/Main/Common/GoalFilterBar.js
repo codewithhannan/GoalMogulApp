@@ -141,7 +141,8 @@ const styles = {
   },
   textStyle: {
     fontSize: 10,
-    color: '#1fb6dd',
+    // color: '#1fb6dd',
+    color: '#696969',
     fontWeight: '600',
   },
   standardTextStyle: {
@@ -149,7 +150,8 @@ const styles = {
     color: 'black'
   },
   caretStyle: {
-    tintColor: '#20485f',
+    // tintColor: '#20485f',
+    tintColor: '#696969',
     marginLeft: 5
   },
   anchorStyle: {
@@ -170,8 +172,8 @@ const styles = {
       activeOpacity: 10,
     },
     optionText: {
-      paddingTop: 3,
-      paddingBottom: 3,
+      paddingTop: 5,
+      paddingBottom: 5,
       paddingLeft: 10,
       paddingRight: 10,
       color: 'black',

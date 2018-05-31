@@ -2,13 +2,17 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+  ActionSheetIOS
 } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 /* Asset To Delete */
 import profilePic from '../../asset/test-profile-pic.png';
+import addUser from '../../asset/utils/addUser.png';
+import check from '../../asset/utils/check.png';
 
 /* Actions */
 import { openProfileDetail } from '../../actions';
@@ -25,10 +29,70 @@ const data = [
   }
 ];
 
+const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
+const WITHDRAW_INDEX = 0;
+const CANCEL_INDEX = 1;
+
 class ProfileSummaryCard extends Component {
+  state = {
+    requested: false
+  }
+
+  onButtonClicked = (_id) => {
+    if (this.props.item.status === 'Invited' || this.state.requested) {
+      ActionSheetIOS.showActionSheetWithOptions({
+        options: FRIENDSHIP_BUTTONS,
+        cancelButtonIndex: CANCEL_INDEX,
+      },
+      (buttonIndex) => {
+        console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
+        switch (buttonIndex) {
+          case WITHDRAW_INDEX:
+            this.props.updateFriendship(
+              _id,
+              'deleteFriend',
+              'requests.outgoing',
+              () => {
+                this.setState({ requested: false });
+              }
+            );
+            break;
+          default:
+            return;
+        }
+      });
+    }
+    return this.props.updateFriendship(
+      _id,
+      'requesteFriend',
+      'suggested',
+      () => {
+        this.setState({ requested: true });
+      }
+    );
+  }
 
   handleOpenProfileDetail() {
     this.props.openProfileDetail();
+  }
+
+  renderButton(_id) {
+    if (this.props.isSelf) {
+      return '';
+    }
+
+    if (this.state.requested) {
+      return (
+        <TouchableOpacity onPress={this.onButtonClicked.bind(this, _id)}>
+          <Image source={check} style={{ height: 16, width: 21 }} />
+        </TouchableOpacity>
+      );
+    }
+    return (
+      <TouchableOpacity onPress={this.onButtonClicked.bind(this, _id)}>
+        <Image source={addUser} style={{ height: 22, width: 23 }} />
+      </TouchableOpacity>
+    );
   }
 
   render() {
@@ -39,26 +103,26 @@ class ProfileSummaryCard extends Component {
       imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
       profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
     }
-
-    const addFriendButton = !this.props.isSelf ? (
-      <Button
-        title='Friend'
-        titleStyle={styles.buttonTextStyle}
-        clear
-        icon={
-          <Icon
-            type='octicon'
-            name='plus-small'
-            width={10}
-            size={21}
-            color='#45C9F6'
-            iconStyle={styles.buttonIconStyle}
-          />
-        }
-        iconLeft
-        buttonStyle={styles.buttonStyle}
-      />
-    ) : '';
+    // Style 1:
+    // const addFriendButton = !this.props.isSelf ? (
+    //   <Button
+    //     title='Friend'
+    //     titleStyle={styles.buttonTextStyle}
+    //     clear
+    //     icon={
+    //       <Icon
+    //         type='octicon'
+    //         name='plus-small'
+    //         width={10}
+    //         size={21}
+    //         color='#45C9F6'
+    //         iconStyle={styles.buttonIconStyle}
+    //       />
+    //     }
+    //     iconLeft
+    //     buttonStyle={styles.buttonStyle}
+    //   />
+    // ) : '';
 
     return (
       <TouchableWithoutFeedback onPress={this.handleOpenProfileDetail.bind(this)}>
@@ -73,7 +137,7 @@ class ProfileSummaryCard extends Component {
             </View>
           </View>
           <View style={styles.buttonContainerStyle}>
-            {addFriendButton}
+            {this.renderButton()}
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -100,9 +164,9 @@ const styles = {
     justifyContent: 'space-between'
   },
   buttonContainerStyle: {
-    flex: 2,
+    flex: 1,
     flexDirection: 'row',
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
     justifyContent: 'center'
   },
   imageStyle: {

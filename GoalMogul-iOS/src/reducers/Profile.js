@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import {
   PROFILE_OPEN_PROFILE,
   PROFILE_FETCHING_SUCCESS,
@@ -26,15 +28,28 @@ const INITIAL_STATE = {
 
     }
   },
+  // Me Page mutual friends count
+  mutualFriends: {
+    count: 0
+  },
+
+/**
+  * Friendship between current user and current profile fetched
+  * Ignore if it's self
+  */
+  friendship: {
+    status: undefined // one of [undefined, 'Invited', 'Accepted']
+  },
+
   uploading: false,
   // navigation state
   selectedTab: 'suggested',
   navigationState: {
     index: 0,
     routes: [
-      { key: 'goals', title: 'MY GOALS' },
-      { key: 'posts', title: 'MY POSTS' },
-      { key: 'needs', title: 'MY NEEDS' }
+      { key: 'goals', title: 'My Goals' },
+      { key: 'posts', title: 'My Posts' },
+      { key: 'needs', title: 'My Needs' }
     ]
   },
   // Individual tab state
@@ -88,7 +103,7 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, user: action.payload };
 
     case PROFILE_IMAGE_UPLOAD_SUCCESS: {
-      let user = { ...state.user };
+      let user = _.cloneDeep(state.user);
       user.profile.image = action.payload;
       return { ...state, user };
     }
