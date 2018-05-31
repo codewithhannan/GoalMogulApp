@@ -31,7 +31,7 @@ class SearchUserCard extends Component {
   }
 
   onButtonClicked = (_id) => {
-    if (this.props.item.status === 'Invited') {
+    if (this.props.item.status === 'Invited' || this.state.requested) {
       ActionSheetIOS.showActionSheetWithOptions({
         options: FRIENDSHIP_BUTTONS,
         cancelButtonIndex: CANCEL_INDEX,
@@ -40,18 +40,28 @@ class SearchUserCard extends Component {
         console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
         switch (buttonIndex) {
           case WITHDRAW_INDEX:
-            this.props.updateFriendship(_id, 'deleteFriend', () => {
-              this.setState({ requested: false });
-            });
+            this.props.updateFriendship(
+              '5aebd3fa6eed042e6be297ec',
+              'deleteFriend',
+              'requests.outgoing',
+              () => {
+                this.setState({ requested: false });
+              }
+            );
             break;
           default:
             return;
         }
       });
     }
-    return this.props.updateFriendship(_id, 'requesteFriend', () => {
-      this.setState({ requested: true });
-    });
+    return this.props.updateFriendship(
+      '5aebd3fa6eed042e6be297ec',
+      'requesteFriend',
+      'suggested',
+      () => {
+        this.setState({ requested: true });
+      }
+    );
   }
 
   renderProfileImage() {

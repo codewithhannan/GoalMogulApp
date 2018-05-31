@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import R from 'ramda';
-import set from 'lodash/fp/set';
 import {
   MEET_SELECT_TAB,
   MEET_LOADING,
@@ -108,7 +107,8 @@ export default (state = INITIAL_STATE, action) => {
       // _.set(newState, [action.payload.type, 'loading'], true)
       // console.log('new state is: ', newState);
       // return { state: newState };
-      return set([action.payload.type, 'loading'], true, state);
+      let newState = _.cloneDeep(state);
+      return _.set(newState, `${action.payload.type}.loading`, true);
     }
 
     // Loading suggested cards done
@@ -127,13 +127,14 @@ export default (state = INITIAL_STATE, action) => {
       // _.set(newState, [type, 'data'], data)
       // _.set(newState, [type, 'loading'], false)
       // return { newState };
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, `${type}.loading`, false);
 
-      let newState = set([type, 'loading'], false, state);
       if (skip !== undefined) {
-        newState = set([type, 'skip'], skip, newState);
+        newState = _.set(newState, `${type}.skip`, skip);
       }
-      newState = set([type, 'hasNextPage'], hasNextPage, newState);
-      return set([type, 'data'], data, newState);
+      newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
+      return _.set(newState, `${type}.data`, data);
     }
 
     /**
@@ -187,9 +188,9 @@ export default (state = INITIAL_STATE, action) => {
     // Handle tab refresh
     case MEET_TAB_REFRESH: {
       const { type } = action.payload;
-
-      let newState = set([type, 'loading'], true, state);
-      return set([type, 'refreshing'], true, newState);
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, `${type}.loading`, true);
+      return _.set(newState, `${type}.refreshing`, true);
     }
 
     // Handle tab refresh

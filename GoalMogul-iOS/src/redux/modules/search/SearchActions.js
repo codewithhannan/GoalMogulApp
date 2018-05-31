@@ -111,6 +111,10 @@ export const onLoadMore = (type) => (dispatch, getState) => {
   if (hasNextPage !== undefined && !hasNextPage) {
     return;
   }
+
+  if (searchContent === undefined || searchContent === '') {
+    return;
+  }
   dispatch({
     type: SEARCH_REQUEST,
     payload: {
@@ -159,10 +163,13 @@ export const searchSwitchTab = curry((dispatch, index) => {
 });
 
 // Clear search state on cancel
-export const clearSearchState = curry((dispatch) => () => {
+export const clearSearchState = curry((dispatch) => (tab) => {
   console.log('clear state in action');
   dispatch({
-    type: SEARCH_CLEAR_STATE
+    type: SEARCH_CLEAR_STATE,
+    payload: {
+      tab
+    }
   });
 });
 

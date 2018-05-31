@@ -30,12 +30,18 @@ class SearchOverlay extends Component {
   // Search bar functions
   handleCancel = () => {
     //TODO: potentially clear search state
-    console.log('handle cancel on component');
+    console.log(`${DEBUG_KEY} handle cancel`);
     this.props.clearSearchState();
     Actions.pop();
   }
 
   handleChangeText = (value) => {
+    if (value === undefined) {
+      return;
+    }
+    if (value === '') {
+      this.props.clearSearchState(this.props.selectedTab);
+    }
     this.props.debouncedSearch(value.trim(), this.props.selectedTab);
   }
 

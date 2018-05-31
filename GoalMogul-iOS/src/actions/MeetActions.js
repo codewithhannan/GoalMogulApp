@@ -157,7 +157,7 @@ export const handleRefresh = (key) => (dispatch, getState) => {
   });
 
   const { token } = getState().user;
-  const { limit } = getState().meet[key];
+  const { limit } = _.get(getState().meet, key);
   loadOneTab(key, 0, limit, token, dispatch, (data) => {
     dispatch({
       type: MEET_TAB_REFRESH_DONE,
@@ -180,7 +180,7 @@ export const meetOnLoadMore = (key) => (dispatch, getState) => {
   if (hasNextPage || hasNextPage === undefined) {
     const { token } = getState().user;
     loadOneTab(key, skip + limit, limit, token, dispatch, (data) => {
-      const newSkip = data.length === 0 ? skip : skip + limit;
+      const newSkip = data.length === 0 ? skip : skip + data.length;
       dispatch({
         type: MEET_LOADING_DONE,
         payload: {
@@ -225,12 +225,13 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
   fetchApi('secure/user/friendship', { userId: id }, requestType, token)
     .then((res) => {
       console.log(`response for ${type}: `, res);
-      if (res.message) {
+      if (res.message && !res.message.toLowerCase().trim().includes('success')) {
         // TODO: error handling
-        console.log('res status: ', res.status);
+        return;
       }
 
       if (callback !== null && callback !== undefined) {
+        console.log(`${DEBUG_KEY} calling callback`);
         callback();
       }
 
