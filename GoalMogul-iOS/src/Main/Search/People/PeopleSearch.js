@@ -49,15 +49,15 @@ class PeopleSearch extends Component {
   }
 
   renderItem = ({ item }) => {
-    console.log('rendering item: ', item);
     return <SearchUserCard item={item} />;
   };
 
   render() {
+    const dataToRender = testDataSuggested.concat(this.props.data);
     return (
       <View style={{ flex: 1 }}>
         <FlatList
-          data={testDataSuggested}
+          data={dataToRender}
           renderItem={this.renderItem}
           keyExtractor={this._keyExtractor}
           onEndReached={this.handleOnLoadMore}

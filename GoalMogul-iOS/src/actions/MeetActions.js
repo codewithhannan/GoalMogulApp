@@ -13,8 +13,8 @@ import {
   MEET_REQUESTS_CHANGE_TAB,
 } from './types';
 
-// const BASE_ROUTE = 'secure/user/';
-const BASE_ROUTE = 'dummy/user/';
+const BASE_ROUTE = 'secure/user/';
+// const BASE_ROUTE = 'dummy/user/';
 
 const requestMap = {
   suggested: 'friendship/recommendations',
@@ -157,13 +157,14 @@ export const handleRefresh = (key) => (dispatch, getState) => {
   });
 
   const { token } = getState().user;
-  loadOneTab(key, 0, 20, token, dispatch, (data) => {
+  const { limit } = getState().meet[key];
+  loadOneTab(key, 0, limit, token, dispatch, (data) => {
     dispatch({
       type: MEET_TAB_REFRESH_DONE,
       payload: {
         type: key,
         data,
-        skip: 0,
+        skip: data.length,
         limit: 20
       }
     });
@@ -179,12 +180,13 @@ export const meetOnLoadMore = (key) => (dispatch, getState) => {
   if (hasNextPage || hasNextPage === undefined) {
     const { token } = getState().user;
     loadOneTab(key, skip + limit, limit, token, dispatch, (data) => {
+      const newSkip = data.length === 0 ? skip : skip + limit;
       dispatch({
         type: MEET_LOADING_DONE,
         payload: {
           type: key,
           data,
-          skip: skip + limit,
+          skip: newSkip,
           limit,
           hasNextPage: !(data === undefined || data.length === 0)
         }

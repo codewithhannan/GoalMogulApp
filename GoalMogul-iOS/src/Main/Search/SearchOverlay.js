@@ -20,7 +20,8 @@ import PeopleSearch from './People/PeopleSearch';
 
 import {
   handleSearch,
-  searchSwitchTab
+  searchSwitchTab,
+  clearSearchState
 } from '../../redux/modules/search/SearchActions';
 
 const DEBUG_KEY = '[ Component Search ]';
@@ -29,6 +30,8 @@ class SearchOverlay extends Component {
   // Search bar functions
   handleCancel = () => {
     //TODO: potentially clear search state
+    console.log('handle cancel on component');
+    this.props.clearSearchState();
     Actions.pop();
   }
 
@@ -134,10 +137,12 @@ const styles = {
 
 const mapStateToProps = state => {
   const { selectedTab, navigationState } = state.search;
+  const { loading } = state.search[selectedTab];
 
   return {
     selectedTab,
-    navigationState
+    navigationState,
+    loading
   };
 };
 
@@ -145,7 +150,8 @@ const mapDispatchToProps = (dispatch) => {
   const debouncedSearch = _.debounce((value, type) => dispatch(handleSearch(value, type)), 400);
   return ({
     debouncedSearch,
-    searchSwitchTab: searchSwitchTab(dispatch)
+    searchSwitchTab: searchSwitchTab(dispatch),
+    clearSearchState: clearSearchState(dispatch)
   });
 };
 
