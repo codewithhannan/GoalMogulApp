@@ -38,8 +38,8 @@ class ProfileSummaryCard extends Component {
 
   renderStats() {
     const data = this.props.isSelf ?
-      [{ Friends: '100K' }] :
-      [{ 'Mutual Friends': 0 || this.props.mutualFriends.count }];
+      [{ name: 'Friends', stat: '100K' }] :
+      [{ name: 'Mutual Friends', stat: 0 || this.props.mutualFriends.count }];
     return <Stats data={data} />;
   }
 
