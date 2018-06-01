@@ -5,7 +5,9 @@ import {
   SEARCH_REQUEST,
   SEARCH_REQUEST_DONE,
   SEARCH_REFRESH_DONE,
-  SEARCH_SWITCH_TAB
+  SEARCH_SWITCH_TAB,
+  SEARCH_ON_LOADMORE_DONE,
+  SEARCH_CLEAR_STATE
 } from './Search';
 
 const DEBUG_KEY = '[ Action Search ]';
@@ -39,14 +41,14 @@ const searchWithId = (searchContent, queryId, type) => (dispatch, getState) => {
     }
   });
   // Send request to end point using API
-  fetchData(searchContent, type, skip, limit, token, (res) => {
+  fetchData(searchContent, type, 0, limit, token, (res) => {
     const data = res.data ? res.data : [];
     dispatch({
       type: SEARCH_REQUEST_DONE,
       payload: {
         queryId,
         data,
-        skip: skip + limit,
+        skip: data.length,
         type,
         hasNextPage: data.length !== 0
       }
@@ -91,7 +93,7 @@ export const refreshSearchResult = curry((type) => (dispatch, getState) => {
       payload: {
         queryId,
         data,
-        skip: limit,
+        skip: data.length,
         type,
         hasNextPage: data.length !== 0
       }
@@ -109,6 +111,10 @@ export const onLoadMore = (type) => (dispatch, getState) => {
   if (hasNextPage !== undefined && !hasNextPage) {
     return;
   }
+
+  if (searchContent === undefined || searchContent === '') {
+    return;
+  }
   dispatch({
     type: SEARCH_REQUEST,
     payload: {
@@ -121,11 +127,11 @@ export const onLoadMore = (type) => (dispatch, getState) => {
   fetchData(searchContent, type, skip, limit, token, (res) => {
     const data = res.data ? res.data : [];
     dispatch({
-      type: SEARCH_REQUEST_DONE,
+      type: SEARCH_ON_LOADMORE_DONE,
       payload: {
         queryId,
         data,
-        skip: limit,
+        skip: skip + data.length,
         type,
         hasNextPage: data.length !== 0
       }
@@ -156,11 +162,22 @@ export const searchSwitchTab = curry((dispatch, index) => {
   });
 });
 
+// Clear search state on cancel
+export const clearSearchState = curry((dispatch) => (tab) => {
+  console.log('clear state in action');
+  dispatch({
+    type: SEARCH_CLEAR_STATE,
+    payload: {
+      tab
+    }
+  });
+});
+
 const fetchData = curry((searchContent, type, skip, limit, token, callback) =>
 // TODO: integrate with search type later
   API
     .get(
-      `secure/user/friendship/es?skip=${skip}&limit=${limit}&query=${searchContent}`,
+      `secure/user/profile/es?skip=${skip}&limit=${limit}&query=${searchContent}`,
       token
     )
     .then((res) => {

@@ -1,6 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
-import { api as API, fetchApi } from '../redux/middleware/api';
+import { api as API, singleFetch } from '../redux/middleware/api';
 import {
   MEET_SELECT_TAB,
   MEET_LOADING,
@@ -157,13 +157,14 @@ export const handleRefresh = (key) => (dispatch, getState) => {
   });
 
   const { token } = getState().user;
-  loadOneTab(key, 0, 20, token, dispatch, (data) => {
+  const { limit } = _.get(getState().meet, key);
+  loadOneTab(key, 0, limit, token, dispatch, (data) => {
     dispatch({
       type: MEET_TAB_REFRESH_DONE,
       payload: {
         type: key,
         data,
-        skip: 0,
+        skip: data.length,
         limit: 20
       }
     });
@@ -179,12 +180,13 @@ export const meetOnLoadMore = (key) => (dispatch, getState) => {
   if (hasNextPage || hasNextPage === undefined) {
     const { token } = getState().user;
     loadOneTab(key, skip + limit, limit, token, dispatch, (data) => {
+      const newSkip = data.length === 0 ? skip : skip + data.length;
       dispatch({
         type: MEET_LOADING_DONE,
         payload: {
           type: key,
           data,
-          skip: skip + limit,
+          skip: newSkip,
           limit,
           hasNextPage: !(data === undefined || data.length === 0)
         }
@@ -220,15 +222,16 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
     }
   })(type);
   const { token } = getState().user;
-  fetchApi('secure/user/friendship', { userId: id }, requestType, token)
+  singleFetch('secure/user/friendship', { userId: id }, requestType, token)
     .then((res) => {
       console.log(`response for ${type}: `, res);
-      if (res.message) {
+      if (res.message && !res.message.toLowerCase().trim().includes('success')) {
         // TODO: error handling
-        console.log('res status: ', res.status);
+        return;
       }
 
       if (callback !== null && callback !== undefined) {
+        console.log(`${DEBUG_KEY} calling callback`);
         callback();
       }
 

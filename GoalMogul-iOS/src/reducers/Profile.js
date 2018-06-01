@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import {
   PROFILE_OPEN_PROFILE,
   PROFILE_FETCHING_SUCCESS,
@@ -8,6 +10,12 @@ import {
   SETTING_EMAIL_UPDATE_SUCCESS,
   PROFILE_SWITCH_TAB
 } from '../actions/types';
+
+export const PROFILE_FETCH_MUTUAL_FRIEND_DONE = 'profile_fetch_mutual_friend_done';
+export const PROFILE_FETCH_FRIENDSHIP_DONE = 'profile_fetch_friendship_done';
+export const PROFILE_FETCH_FRIEND_DONE = 'profile_fetch_friend_done';
+export const PROFILE_FETCH_FRIEND_COUNT_DONE = 'profile_fetch_friend_count_done';
+export const PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE = 'profile_fetch_mutual_friend_count_done';
 
 const GOAL_FILTER_CONST = {
   sortBy: ['important', 'recent', 'popular'],
@@ -26,15 +34,29 @@ const INITIAL_STATE = {
 
     }
   },
+  // Me Page mutual friends count
+  mutualFriends: {
+    count: 0
+  },
+  // Overall loading status
+  loading: false,
+/**
+  * Friendship between current user and current profile fetched
+  * Ignore if it's self
+  */
+  friendship: {
+    status: undefined // one of [undefined, 'Invited', 'Accepted']
+  },
+
   uploading: false,
   // navigation state
   selectedTab: 'suggested',
   navigationState: {
     index: 0,
     routes: [
-      { key: 'goals', title: 'MY GOALS' },
-      { key: 'posts', title: 'MY POSTS' },
-      { key: 'needs', title: 'MY NEEDS' }
+      { key: 'goals', title: 'Goals' },
+      { key: 'posts', title: 'Posts' },
+      { key: 'needs', title: 'Needs' }
     ]
   },
   // Individual tab state
@@ -82,13 +104,13 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case PROFILE_OPEN_PROFILE:
-      return { ...state, userId: action.payload };
+      return { ...state, userId: action.payload, loading: true };
 
     case PROFILE_FETCHING_SUCCESS:
-      return { ...state, user: action.payload };
+      return { ...state, user: action.payload, loading: false };
 
     case PROFILE_IMAGE_UPLOAD_SUCCESS: {
-      let user = { ...state.user };
+      let user = _.cloneDeep(state.user);
       user.profile.image = action.payload;
       return { ...state, user };
     }
@@ -110,6 +132,24 @@ export default (state = INITIAL_STATE, action) => {
         selectedTab: newNavigationState.routes[action.payload].key,
         navigationState: newNavigationState
       };
+    }
+
+    // profile fetch mutual friend request done
+    case PROFILE_FETCH_MUTUAL_FRIEND_DONE: {
+      let newMutualFriends = _.cloneDeep(state.mutualFriends);
+      newMutualFriends.data = action.payload;
+      return { ...state, mutualFriends: newMutualFriends };
+    }
+
+    case PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE: {
+      let newMutualFriends = _.cloneDeep(state.mutualFriends);
+      newMutualFriends.count = action.payload;
+      return { ...state, mutualFriends: newMutualFriends };
+    }
+
+    // profile fetch friendship request done
+    case PROFILE_FETCH_FRIENDSHIP_DONE: {
+      return { ...state };
     }
 
     default:

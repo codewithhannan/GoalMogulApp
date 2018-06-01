@@ -20,7 +20,8 @@ import PeopleSearch from './People/PeopleSearch';
 
 import {
   handleSearch,
-  searchSwitchTab
+  searchSwitchTab,
+  clearSearchState
 } from '../../redux/modules/search/SearchActions';
 
 const DEBUG_KEY = '[ Component Search ]';
@@ -29,10 +30,18 @@ class SearchOverlay extends Component {
   // Search bar functions
   handleCancel = () => {
     //TODO: potentially clear search state
+    console.log(`${DEBUG_KEY} handle cancel`);
+    this.props.clearSearchState();
     Actions.pop();
   }
 
   handleChangeText = (value) => {
+    if (value === undefined) {
+      return;
+    }
+    if (value === '') {
+      this.props.clearSearchState(this.props.selectedTab);
+    }
     this.props.debouncedSearch(value.trim(), this.props.selectedTab);
   }
 
@@ -93,7 +102,6 @@ class SearchOverlay extends Component {
             onIndexChange={this._handleIndexChange}
             useNativeDriver
           />
-          <SearchFilterBar />
         </MenuProvider>
       </BaseOverlay>
     );
@@ -135,10 +143,12 @@ const styles = {
 
 const mapStateToProps = state => {
   const { selectedTab, navigationState } = state.search;
+  const { loading } = state.search[selectedTab];
 
   return {
     selectedTab,
-    navigationState
+    navigationState,
+    loading
   };
 };
 
@@ -146,7 +156,8 @@ const mapDispatchToProps = (dispatch) => {
   const debouncedSearch = _.debounce((value, type) => dispatch(handleSearch(value, type)), 400);
   return ({
     debouncedSearch,
-    searchSwitchTab: searchSwitchTab(dispatch)
+    searchSwitchTab: searchSwitchTab(dispatch),
+    clearSearchState: clearSearchState(dispatch)
   });
 };
 

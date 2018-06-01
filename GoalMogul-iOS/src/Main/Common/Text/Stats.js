@@ -3,6 +3,9 @@ import { Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 
 const renderStats = (props) => props.data.map((c, index) => {
+  if (c.stat === undefined || c.stat === null) {
+    return '';
+  }
   return (
     <View
       style={{ flex: 1, flexDirection: 'row', marginRight: 5, alignItems: 'center' }}
@@ -49,7 +52,8 @@ const styles = {
   numberStyle: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#45C9F6'
+    color: '#45C9F6',
+    maxWidth: 50
   },
   iconStyle: {
 

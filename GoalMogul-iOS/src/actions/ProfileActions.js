@@ -1,10 +1,14 @@
 import { Actions } from 'react-native-router-flux';
-import { ImagePickerIOS } from 'react-native';
+import { Image } from 'react-native';
 
 import ImageUtils from '../Utils/ImageUtils';
 import { updateAccount, updateProfile, updatePassword } from '../Utils/ProfileUtils';
+import { api as API } from '../redux/middleware/api';
 
 import {
+  PROFILE_OPEN_PROFILE,
+  PROFILE_FETCHING_FAIL,
+  PROFILE_FETCHING_SUCCESS,
   PROFILE_SUBMIT_UPDATE,
   PROFILE_UPDATE_SUCCESS,
   PROFILE_UPDATE_FAIL,
@@ -12,13 +16,117 @@ import {
   PROFILE_SWITCH_TAB
 } from './types';
 
-export const openProfileDetail = () => {
-  return (dispatch) => {
-    dispatch({
-      type: ''
+import {
+  PROFILE_FETCH_FRIEND_COUNT_DONE,
+  PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE,
+  PROFILE_FETCH_FRIENDSHIP_DONE,
+} from '../reducers/Profile';
+
+const DEBUG_KEY = '[ Action Profile ]';
+
+const prefetchImage = (imageUrl) => {
+  if (imageUrl) {
+    const fullImageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
+    Image.prefetch(fullImageUrl);
+  }
+};
+
+const fetchFriendshipSucceed = (res, dispatch) => {
+  console.log(`${DEBUG_KEY} fetchFriendshipSucceed with res: `, res);
+  dispatch({
+    type: PROFILE_FETCH_FRIENDSHIP_DONE,
+    payload: res.data
+  });
+};
+
+const fetchFriendsCountSucceed = (res, self, dispatch) => {
+  console.log(`${DEBUG_KEY} fetchMutualFriendSucceed with res: `, res);
+  const type = self ? PROFILE_FETCH_FRIEND_COUNT_DONE : PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE;
+  dispatch({
+    type,
+    payload: res.data
+  });
+};
+
+const fetchProfileSucceed = (res, dispatch) => {
+  console.log(`${DEBUG_KEY} fetch profile succeed`);
+  dispatch({
+    type: PROFILE_FETCHING_SUCCESS,
+    payload: res.data
+  });
+};
+
+const fetchProfileFail = (res, dispatch) => {
+  console.log(`${DEBUG_KEY} fetch profile succeed`);
+  dispatch({
+    type: PROFILE_FETCHING_FAIL,
+    payload: res.message
+  });
+};
+
+export const openProfile = (userId) => (dispatch, getState) => {
+  dispatch({
+    type: PROFILE_OPEN_PROFILE,
+    payload: userId
+  });
+  Actions.profile();
+
+  const { token, } = getState().user;
+  const self = getState().profile.userId.toString() === getState().user.userId.toString();
+
+  const profilePromise =
+    API.get(`secure/user/profile?userId=${userId}`, token);
+
+  // If self, fetch friend list. Otherwise, fetch mutual friends
+  const friendsCountPromise = self ?
+    API.get(`secure/user/friendship?userId=${userId}`, token) :
+    API.get(`secure/user/friendship/mutual-friends?userId=${userId}`, token);
+
+  // If self, fetch nothing. Otherwise, fetch friendship with userId
+  const friendshipPromise = self ?
+    new Promise((resolve, reject) => resolve({ data: [] })) :
+    API.get(`secure/user/friendship/friendship?userId=${userId}`, token);
+
+  Promise
+    .all([profilePromise, friendsCountPromise, friendshipPromise])
+    .then((res) => {
+      const [profileRes, friendsCountRes, friendshipRes] = res;
+
+      if (profileRes.message) {
+        /* TODO: error handling */
+        return fetchProfileFail(profileRes, dispatch);
+      }
+      fetchProfileSucceed(profileRes, dispatch);
+      // Prefetch profile image
+      prefetchImage(profileRes.data.profile.image);
+
+      if (friendsCountRes.message) {
+        /* TODO: error handling for failing to fetch friends */
+        console.log(`${DEBUG_KEY} fetch friends count fails: `, friendsCountRes.message);
+      }
+      fetchFriendsCountSucceed({ data: 20 }, self, dispatch);
+
+      if (friendshipRes.message) {
+        /* TODO: error handling for failing to fetch friends */
+        console.log(`${DEBUG_KEY} fetch friendship fails: `, friendshipRes.message);
+      }
+      fetchFriendshipSucceed(friendshipRes, dispatch);
+    })
+    .catch((err) => {
+      console.log('err in loading user profile', err);
+      dispatch({
+        type: PROFILE_FETCHING_FAIL,
+        payload: `Error loading user profile: ${err}`
+      });
+      // TODO: show toaster saying loading fail
     });
-    Actions.profileDetail();
-  };
+};
+
+export const openProfileDetail = () => (dispatch) => {
+  dispatch({
+    type: ''
+  });
+  Actions.profileDetail();
 };
 
 export const openProfileDetailEditForm = () => {

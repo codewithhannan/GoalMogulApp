@@ -15,6 +15,7 @@ import { Actions } from 'react-native-router-flux';
 import Logo from '../../asset/header/logo.png';
 import IconMenu from '../../asset/header/menu.png';
 import Setting from '../../asset/header/setting.png';
+import BackButton from '../../asset/utils/back.png'
 
 /* Actions */
 import { back, openProfile, openSetting } from '../../actions';
@@ -53,11 +54,16 @@ class SearchBarHeader extends Component {
       return (
         <View style={styles.headerLeftImage}>
           <TouchableOpacity onPress={this.handleBackOnClick.bind(this)}>
-            <Icon
+            {/*<Icon
               type='entypo'
               name='chevron-thin-left'
               color='#35475d'
               containerStyle={{ justifyContent: 'flex-start' }}
+            />
+            */}
+            <Image
+              source={BackButton}
+              style={{ ...styles.headerLeftImage, tintColor: '#32485f' }}
             />
           </TouchableOpacity>
         </View>

@@ -15,14 +15,8 @@ const styles = {
     borderWidth: 1,
     borderColor: '#eaeaea',
     borderBottomWidth: 0,
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    backgroundColor: 'transparent',
     marginTop: 7,
-    marginLeft: 7,
-    marginRight: 7
   }
 };
 

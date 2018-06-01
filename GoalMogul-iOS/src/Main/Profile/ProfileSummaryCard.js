@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+  ActionSheetIOS
 } from 'react-native';
-import { Button, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-/* Asset To Delete */
-import profilePic from '../../asset/test-profile-pic.png';
+/* Assets */
+import back from '../../asset/utils/back.png';
+import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
 
 /* Actions */
 import { openProfileDetail } from '../../actions';
@@ -18,47 +20,81 @@ import Name from '../Common/Name';
 import Position from '../Common/Position';
 import Stats from '../Common/Text/Stats';
 
-const data = [
-  {
-    name: 'Friends',
-    stat: '100K'
-  }
-];
+const DEBUG_KEY = '[ Component ProfileSummaryCard ]';
 
 class ProfileSummaryCard extends Component {
+  state = {
+    requested: false
+  }
+
+  onButtonClicked = (_id) => {
+    console.log(`${DEBUG_KEY} open profile detail for id: ${_id}`);
+    this.props.openProfileDetail();
+  }
 
   handleOpenProfileDetail() {
-    this.props.openProfileDetail();
+    // this.props.openProfileDetail();
+  }
+
+  renderStats() {
+    const data = this.props.isSelf ?
+      [{ Friends: '100K' }] :
+      [{ 'Mutual Friends': 0 || this.props.mutualFriends.count }];
+    return <Stats data={data} />;
+  }
+
+  renderButton(_id) {
+    if (this.props.isSelf) {
+      return '';
+    }
+
+    return (
+      <TouchableOpacity
+        onPress={this.onButtonClicked.bind(this, _id)}
+        style={{
+          padding: 20,
+          paddingTop: 10,
+          paddingBottom: 10,
+          borderLeftWidth: 1,
+          borderColor: 'lightgray'
+        }}
+      >
+        <Image
+          source={back}
+          style={styles.iconStyle}
+        />
+      </TouchableOpacity>
+    );
   }
 
   render() {
     const name = this.props.user.name;
     let imageUrl = this.props.user.profile.image;
-    let profileImage = <Image style={styles.imageStyle} source={profilePic} />;
+    let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
     if (imageUrl) {
       imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
       profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
     }
-
-    const addFriendButton = !this.props.isSelf ? (
-      <Button
-        title='Friend'
-        titleStyle={styles.buttonTextStyle}
-        clear
-        icon={
-          <Icon
-            type='octicon'
-            name='plus-small'
-            width={10}
-            size={21}
-            color='#45C9F6'
-            iconStyle={styles.buttonIconStyle}
-          />
-        }
-        iconLeft
-        buttonStyle={styles.buttonStyle}
-      />
-    ) : '';
+    // Style 1:
+    // const addFriendButton = !this.props.isSelf ? (
+    //   <Button
+    //     title='Friend'
+    //     titleStyle={styles.buttonTextStyle}
+    //     clear
+    //     icon={
+    //       <Icon
+    //         type='octicon'
+    //         name='plus-small'
+    //         width={10}
+    //         size={21}
+    //         color='#45C9F6'
+    //         iconStyle={styles.buttonIconStyle}
+    //       />
+    //     }
+    //     iconLeft
+    //     buttonStyle={styles.buttonStyle}
+    //   />
+    // ) : '';
 
     return (
       <TouchableWithoutFeedback onPress={this.handleOpenProfileDetail.bind(this)}>
@@ -69,11 +105,11 @@ class ProfileSummaryCard extends Component {
             <View style={styles.bodyStyle}>
               <Name text={name} />
               <Position text='Sr. UI/UX designer & developer' />
-              <Stats data={data} />
+              {this.renderStats()}
             </View>
           </View>
           <View style={styles.buttonContainerStyle}>
-            {addFriendButton}
+            {this.renderButton()}
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -100,9 +136,9 @@ const styles = {
     justifyContent: 'space-between'
   },
   buttonContainerStyle: {
-    flex: 2,
+    flex: 1,
     flexDirection: 'row',
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
     justifyContent: 'center'
   },
   imageStyle: {
@@ -126,17 +162,24 @@ const styles = {
   },
   buttonIconStyle: {
     marginTop: 2,
+  },
+  iconStyle: {
+    height: 25,
+    width: 26,
+    transform: [{ rotateY: '180deg' }],
+    tintColor: '#45C9F6'
   }
 };
 
 const mapStateToProps = state => {
-  const { userId, user } = state.profile;
+  const { userId, user, mutualFriends } = state.profile;
   const isSelf = state.profile.userId.toString() === state.user.userId.toString();
 
   return {
     userId,
     user,
-    isSelf
+    isSelf,
+    mutualFriends
   };
 };
 
