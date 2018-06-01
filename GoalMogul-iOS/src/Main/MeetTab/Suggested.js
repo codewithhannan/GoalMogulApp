@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 // Components
 import MeetFilterBar from './MeetFilterBar';
 import SuggestedCard from './Suggested/SuggestedCard';
+import EmptyResult from '../Common/Text/EmptyResult';
 
 // actions
 import {
@@ -53,13 +54,14 @@ class Suggested extends Component {
     return (
       <View style={{ flex: 1 }}>
         <FlatList
-          data={testDataSuggested}
+          data={this.props.data}
           renderItem={this.renderItem}
           keyExtractor={this._keyExtractor}
-          onRefresh={this.handleRefresh.bind()}
-          refreshing={this.props.loading}
           onEndReached={this.handleOnLoadMore}
           onEndReachedThreshold={0.5}
+          onRefresh={this.handleRefresh}
+          refreshing={this.props.loading}
+          ListEmptyComponent={<EmptyResult text={'No Recommendations'} />}
         />
       </View>
     );
