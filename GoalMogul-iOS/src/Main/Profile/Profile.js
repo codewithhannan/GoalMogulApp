@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View } from 'react-native';
 import { MenuProvider } from 'react-native-popup-menu';
 import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
 import { connect } from 'react-redux';
@@ -17,21 +17,6 @@ import MyPosts from './MyPosts';
 import {
   selectProfileTab
 } from '../../actions';
-
-const testData = {
-  goal: {
-    text: 'MY GOALS',
-    number: '10'
-  },
-  post: {
-    text: 'MY POSTS',
-    number: '2'
-  },
-  need: {
-    text: 'MY NEEDS',
-    number: '21'
-  }
-};
 
 class Profile extends Component {
 

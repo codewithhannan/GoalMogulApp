@@ -3,6 +3,7 @@ import { Image } from 'react-native';
 
 import ImageUtils from '../Utils/ImageUtils';
 import { updateAccount, updateProfile, updatePassword } from '../Utils/ProfileUtils';
+import { api as API } from '../redux/middleware/api';
 
 import {
   PROFILE_OPEN_PROFILE,
@@ -15,56 +16,81 @@ import {
   PROFILE_SWITCH_TAB
 } from './types';
 
-export const openProfile = (userId) => {
-  return (dispatch, getState) => {
-    dispatch({
-      type: PROFILE_OPEN_PROFILE,
-      payload: userId
-    });
-    /*
-    TODO:
-      1. start loading profile and shows spinner
-      2. On loading succeed, call Actions.profile();
-    */
-    const token = getState().user.token;
-    const url = `https://goalmogul-api-dev.herokuapp.com/api/secure/user/profile?userId=${userId}`;
-    const headers = {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'x-access-token': token
-      }
-    };
-    fetch(url, headers)
-    .then((res) => res.json())
+import {
+  PROFILE_FETCH_MUTUAL_FRIEND_DONE
+} from '../reducers/Profile';
+
+const DEBUG_KEY = '[ Action Profile ]';
+
+const prefetchImage = (imageUrl) => {
+  if (imageUrl) {
+    const fullImageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
+    Image.prefetch(fullImageUrl);
+  }
+};
+
+const fetchMutualFriendSucceed = (res, dispatch) => {
+  console.log(`${DEBUG_KEY} fetchMutualFriendSucceed with res: `, res);
+  dispatch({
+    type: PROFILE_FETCH_MUTUAL_FRIEND_DONE,
+    payload: res.data
+  });
+};
+
+const fetchProfileSucceed = (res, dispatch) => {
+  console.log(`${DEBUG_KEY} fetch profile succeed`);
+  dispatch({
+    type: PROFILE_FETCHING_SUCCESS,
+    payload: res.data
+  });
+};
+
+const fetchProfileFail = (res, dispatch) => {
+  console.log(`${DEBUG_KEY} fetch profile succeed`);
+  dispatch({
+    type: PROFILE_FETCHING_FAIL,
+    payload: res.message
+  });
+};
+
+export const openProfile = (userId) => (dispatch, getState) => {
+  dispatch({
+    type: PROFILE_OPEN_PROFILE,
+    payload: userId
+  });
+  Actions.profile();
+
+  const { token } = getState().user;
+
+  const profilePromise =
+    API.get(`secure/user/profile?userId=${userId}`, token);
+  const mutualFriendsPromise =
+    API.get(`secure/user/friendship/mutual-friends?userId=${userId}`, token);
+
+  Promise
+    .all([profilePromise, mutualFriendsPromise])
     .then((res) => {
-      /* If message, it means error */
-      if (res.message) {
+      const [profileRes, friendsRes] = res;
+
+      if (profileRes.message) {
         /* TODO: error handling */
-        console.log('error fetching user profile: ', res);
-        return dispatch({
-          type: PROFILE_FETCHING_FAIL,
-          payload: res.message
-        });
+        return fetchProfileFail(profileRes, dispatch);
       }
+
+      // Dispatch actions
+      fetchMutualFriendSucceed(friendsRes, dispatch);
+      fetchProfileSucceed(profileRes, dispatch);
+      // Prefetch profile image
+      prefetchImage(profileRes.profile.image);
+    })
+    .catch((err) => {
+      console.log('err in loading user profile', err);
       dispatch({
-        type: PROFILE_FETCHING_SUCCESS,
-        payload: res.data
+        type: PROFILE_FETCHING_FAIL,
+        payload: `Error loading user profile: ${err}`
       });
-      Actions.profile();
-    })
-    .then(() => {
-      // prefetch profile image
-      const imageUrl = getState().user.profile.image;
-      if (imageUrl) {
-        const fullImageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
-        Image.prefetch(fullImageUrl);
-      }
-    })
-    /* TODO: error handling */
-    .catch((err) => console.log('err in loading user profile', err));
-  };
+      // TODO: show toaster saying loading fail
+    });
 };
 
 export const openProfileDetail = () => {

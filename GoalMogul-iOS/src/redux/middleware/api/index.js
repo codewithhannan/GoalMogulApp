@@ -1,6 +1,10 @@
 import { config } from './config';
+import R from 'ramda';
 
-export const fetchApi = (path, payload = {}, method = 'get', token) => {
+export const singleFetch = (path, payload, method, token) =>
+  fetchData(path, payload, method, token).then((res) => res.json());
+
+const fetchData = R.curry((path, payload = {}, method = 'get', token) => {
   // Generate headers
   const headers = ((requestType) => {
     switch (requestType) {
@@ -37,23 +41,23 @@ export const fetchApi = (path, payload = {}, method = 'get', token) => {
 
   // Generate url
   const url = `${config.url}${path}`;
-
-  console.log('headers are: ', headers);
-  console.log('url is: ', url);
-  return fetch(url, headers).then((res) => res.json())
-};
+  return fetch(url, headers);
+});
 
 export const api = {
   get(path, token) {
-    return fetchApi(path, null, 'get', token);
+    return singleFetch(path, null, 'get', token);
+  },
+  getPromise(path, token) {
+    return fetchData(path, null, 'get', token);
   },
   post(path, payload, token) {
-    return fetchApi(path, payload, 'post', token);
+    return singleFetch(path, payload, 'post', token);
   },
   put(path, payload, token) {
-    return fetchApi(path, payload, 'put', token);
+    return singleFetch(path, payload, 'put', token);
   },
   delete(path, payload, token) {
-    return fetchApi(path, payload, 'delete', token);
+    return singleFetch(path, payload, 'delete', token);
   }
 };

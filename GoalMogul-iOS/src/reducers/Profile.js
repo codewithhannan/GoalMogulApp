@@ -11,6 +11,8 @@ import {
   PROFILE_SWITCH_TAB
 } from '../actions/types';
 
+export const PROFILE_FETCH_MUTUAL_FRIEND_DONE = 'profile_fetch_mutual_friend_done';
+
 const GOAL_FILTER_CONST = {
   sortBy: ['important', 'recent', 'popular'],
   orderBy: ['ascending', 'descending'],
@@ -32,7 +34,8 @@ const INITIAL_STATE = {
   mutualFriends: {
     count: 0
   },
-
+  // Overall loading status
+  loading: false,
 /**
   * Friendship between current user and current profile fetched
   * Ignore if it's self
@@ -97,10 +100,10 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case PROFILE_OPEN_PROFILE:
-      return { ...state, userId: action.payload };
+      return { ...state, userId: action.payload, loading: true };
 
     case PROFILE_FETCHING_SUCCESS:
-      return { ...state, user: action.payload };
+      return { ...state, user: action.payload, loading: false };
 
     case PROFILE_IMAGE_UPLOAD_SUCCESS: {
       let user = _.cloneDeep(state.user);
@@ -125,6 +128,13 @@ export default (state = INITIAL_STATE, action) => {
         selectedTab: newNavigationState.routes[action.payload].key,
         navigationState: newNavigationState
       };
+    }
+
+    // profile fetch mutual friend request done
+    case PROFILE_FETCH_MUTUAL_FRIEND_DONE: {
+      let newMutualFriends = _.cloneDeep(state.mutualFriends);
+      newMutualFriends.data = action.payload;
+      return { ...state, mutualFriends: newMutualFriends };
     }
 
     default:

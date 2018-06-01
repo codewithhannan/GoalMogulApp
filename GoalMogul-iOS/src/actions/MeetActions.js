@@ -1,6 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
-import { api as API, fetchApi } from '../redux/middleware/api';
+import { api as API, singleFetch } from '../redux/middleware/api';
 import {
   MEET_SELECT_TAB,
   MEET_LOADING,
@@ -222,7 +222,7 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
     }
   })(type);
   const { token } = getState().user;
-  fetchApi('secure/user/friendship', { userId: id }, requestType, token)
+  singleFetch('secure/user/friendship', { userId: id }, requestType, token)
     .then((res) => {
       console.log(`response for ${type}: `, res);
       if (res.message && !res.message.toLowerCase().trim().includes('success')) {

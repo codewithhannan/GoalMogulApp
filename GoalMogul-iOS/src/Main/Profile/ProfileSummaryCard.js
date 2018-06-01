@@ -6,13 +6,13 @@ import {
   TouchableOpacity,
   ActionSheetIOS
 } from 'react-native';
-import { Button, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 /* Asset To Delete */
 import profilePic from '../../asset/test-profile-pic.png';
 import addUser from '../../asset/utils/addUser.png';
 import check from '../../asset/utils/check.png';
+import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
 
 /* Actions */
 import { openProfileDetail } from '../../actions';
@@ -98,7 +98,7 @@ class ProfileSummaryCard extends Component {
   render() {
     const name = this.props.user.name;
     let imageUrl = this.props.user.profile.image;
-    let profileImage = <Image style={styles.imageStyle} source={profilePic} />;
+    let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
     if (imageUrl) {
       imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
       profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;

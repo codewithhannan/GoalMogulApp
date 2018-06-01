@@ -51,7 +51,7 @@ class MyGoals extends Component {
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
             onRefresh={this.handleRefresh.bind()}
-            refreshing={this.props.refreshing}
+            refreshing={this.props.refreshing || this.props.loading}
           />
         </View>
         {/*
@@ -86,14 +86,15 @@ const styles = {
 
 const mapStateToProps = state => {
   const { contacts } = state.meet;
-  const { selectedTab } = state.profile;
+  const { selectedTab, loading } = state.profile;
   const { data, refreshing } = contacts;
 
   return {
     selectedTab,
     contacts,
     data,
-    refreshing
+    refreshing,
+    loading
   };
 };
 
