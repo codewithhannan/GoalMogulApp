@@ -17,7 +17,8 @@ import {
 } from './types';
 
 import {
-  PROFILE_FETCH_MUTUAL_FRIEND_DONE
+  PROFILE_FETCH_MUTUAL_FRIEND_DONE,
+  PROFILE_FETCH_FRIENDSHIP_DONE
 } from '../reducers/Profile';
 
 const DEBUG_KEY = '[ Action Profile ]';
@@ -27,6 +28,14 @@ const prefetchImage = (imageUrl) => {
     const fullImageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
     Image.prefetch(fullImageUrl);
   }
+};
+
+const fetchFriendshipSucceed = (res, dispatch) => {
+  console.log(`${DEBUG_KEY} fetchFriendshipSucceed with res: `, res);
+  dispatch({
+    type: PROFILE_FETCH_FRIENDSHIP_DONE,
+    payload: res.data
+  });
 };
 
 const fetchMutualFriendSucceed = (res, dispatch) => {
@@ -66,11 +75,13 @@ export const openProfile = (userId) => (dispatch, getState) => {
     API.get(`secure/user/profile?userId=${userId}`, token);
   const mutualFriendsPromise =
     API.get(`secure/user/friendship/mutual-friends?userId=${userId}`, token);
+  const friendshipPromise =
+    API.get(`secure/user/friendship/friendship?userId=${userId}`, token);
 
   Promise
-    .all([profilePromise, mutualFriendsPromise])
+    .all([profilePromise, mutualFriendsPromise, friendshipPromise])
     .then((res) => {
-      const [profileRes, friendsRes] = res;
+      const [profileRes, friendsRes, friendshipRes] = res;
 
       if (profileRes.message) {
         /* TODO: error handling */
@@ -80,8 +91,9 @@ export const openProfile = (userId) => (dispatch, getState) => {
       // Dispatch actions
       fetchMutualFriendSucceed(friendsRes, dispatch);
       fetchProfileSucceed(profileRes, dispatch);
+      fetchFriendshipSucceed(friendshipRes, dispatch);
       // Prefetch profile image
-      prefetchImage(profileRes.profile.image);
+      prefetchImage(profileRes.data.profile.image);
     })
     .catch((err) => {
       console.log('err in loading user profile', err);

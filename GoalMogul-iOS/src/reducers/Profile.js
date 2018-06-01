@@ -12,6 +12,7 @@ import {
 } from '../actions/types';
 
 export const PROFILE_FETCH_MUTUAL_FRIEND_DONE = 'profile_fetch_mutual_friend_done';
+export const PROFILE_FETCH_FRIENDSHIP_DONE = 'profile_fetch_friendship_done';
 
 const GOAL_FILTER_CONST = {
   sortBy: ['important', 'recent', 'popular'],
@@ -135,6 +136,11 @@ export default (state = INITIAL_STATE, action) => {
       let newMutualFriends = _.cloneDeep(state.mutualFriends);
       newMutualFriends.data = action.payload;
       return { ...state, mutualFriends: newMutualFriends };
+    }
+
+    // profile fetch friendship request done
+    case PROFILE_FETCH_FRIENDSHIP_DONE: {
+      return { ...state };
     }
 
     default:

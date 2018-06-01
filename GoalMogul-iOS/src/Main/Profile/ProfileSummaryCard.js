@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 /* Asset To Delete */
 import addUser from '../../asset/utils/addUser.png';
 import check from '../../asset/utils/check.png';
+import back from '../../asset/utils/back.png';
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
 
 /* Actions */
@@ -21,9 +22,7 @@ import Name from '../Common/Name';
 import Position from '../Common/Position';
 import Stats from '../Common/Text/Stats';
 
-const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
-const WITHDRAW_INDEX = 0;
-const CANCEL_INDEX = 1;
+const DEBUG_KEY = '[ Component ProfileSummaryCard ]';
 
 class ProfileSummaryCard extends Component {
   state = {
@@ -31,37 +30,8 @@ class ProfileSummaryCard extends Component {
   }
 
   onButtonClicked = (_id) => {
-    if (this.props.item.status === 'Invited' || this.state.requested) {
-      ActionSheetIOS.showActionSheetWithOptions({
-        options: FRIENDSHIP_BUTTONS,
-        cancelButtonIndex: CANCEL_INDEX,
-      },
-      (buttonIndex) => {
-        console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
-        switch (buttonIndex) {
-          case WITHDRAW_INDEX:
-            this.props.updateFriendship(
-              _id,
-              'deleteFriend',
-              'requests.outgoing',
-              () => {
-                this.setState({ requested: false });
-              }
-            );
-            break;
-          default:
-            return;
-        }
-      });
-    }
-    return this.props.updateFriendship(
-      _id,
-      'requesteFriend',
-      'suggested',
-      () => {
-        this.setState({ requested: true });
-      }
-    );
+    console.log(`${DEBUG_KEY} open profile detail for id: ${_id}`);
+    this.props.openProfileDetail();
   }
 
   handleOpenProfileDetail() {
@@ -70,8 +40,8 @@ class ProfileSummaryCard extends Component {
 
   renderStats() {
     const data = this.props.isSelf ?
-      { Friends: '100K' } :
-      { 'Mutual Friends': this.props.mutualFriends.count };
+      [{ Friends: '100K' }] :
+      [{ 'Mutual Friends': this.props.mutualFriends.count || 0 }];
     return <Stats data={data} />;
   }
 
@@ -80,16 +50,15 @@ class ProfileSummaryCard extends Component {
       return '';
     }
 
-    if (this.state.requested) {
-      return (
-        <TouchableOpacity onPress={this.onButtonClicked.bind(this, _id)}>
-          <Image source={check} style={{ height: 16, width: 21 }} />
-        </TouchableOpacity>
-      );
-    }
     return (
-      <TouchableOpacity onPress={this.onButtonClicked.bind(this, _id)}>
-        <Image source={addUser} style={{ height: 22, width: 23 }} />
+      <TouchableOpacity
+        onPress={this.onButtonClicked.bind(this, _id)}
+        style={{ padding: 15 }}
+      >
+        <Image
+          source={back}
+          style={styles.iconStyle}
+        />
       </TouchableOpacity>
     );
   }
@@ -189,6 +158,12 @@ const styles = {
   },
   buttonIconStyle: {
     marginTop: 2,
+  },
+  iconStyle: {
+    height: 25,
+    width: 26,
+    transform: [{ rotateY: '180deg' }],
+    tintColor: '#45C9F6'
   }
 };
 

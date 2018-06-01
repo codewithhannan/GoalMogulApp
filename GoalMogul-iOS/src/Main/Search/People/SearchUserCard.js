@@ -4,8 +4,7 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image,
-  ActionSheetIOS
+  Image
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -15,53 +14,24 @@ import Name from '../../Common/Name';
 // Assets
 import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
 import badge from '../../../asset/utils/badge.png';
-import addUser from '../../../asset/utils/addUser.png';
-import check from '../../../asset/utils/check.png';
+import back from '../../../asset/utils/back.png';
 
 // Actions
-import { updateFriendship } from '../../../actions';
+import { updateFriendship, openProfile } from '../../../actions';
 
-const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
-const WITHDRAW_INDEX = 0;
-const CANCEL_INDEX = 1;
+const DEBUG_KEY = '[ Component SearchUserCard ]';
 
 class SearchUserCard extends Component {
-  state = {
-    requested: false,
-  }
 
   onButtonClicked = (_id) => {
-    if (this.props.item.status === 'Invited' || this.state.requested) {
-      ActionSheetIOS.showActionSheetWithOptions({
-        options: FRIENDSHIP_BUTTONS,
-        cancelButtonIndex: CANCEL_INDEX,
-      },
-      (buttonIndex) => {
-        console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
-        switch (buttonIndex) {
-          case WITHDRAW_INDEX:
-            this.props.updateFriendship(
-              '5aebd3fa6eed042e6be297ec',
-              'deleteFriend',
-              'requests.outgoing',
-              () => {
-                this.setState({ requested: false });
-              }
-            );
-            break;
-          default:
-            return;
-        }
-      });
-    }
-    return this.props.updateFriendship(
-      '5aebd3fa6eed042e6be297ec',
-      'requesteFriend',
-      'suggested',
-      () => {
-        this.setState({ requested: true });
-      }
-    );
+    console.log(`${DEBUG_KEY} open profile with id: `, _id);
+    this.props.openProfile(_id);
+  }
+
+  openProfile = (_id) => {
+    // TODO: open profile
+    console.log(`${DEBUG_KEY} open profile with id: `, _id);
+    this.props.openProfile(_id);
   }
 
   renderProfileImage() {
@@ -75,32 +45,17 @@ class SearchUserCard extends Component {
   }
 
   renderButton(_id) {
-    if (this.props.item.status === 'Invited' || this.state.requested) {
-      return (
-        <View style={styles.iconContainerStyle}>
+    return (
+      <View style={styles.iconContainerStyle}>
         <TouchableOpacity
           onPress={this.onButtonClicked.bind(this, _id)}
           style={{ padding: 15 }}
         >
           <Image
-            source={check}
-            style={{ width: 25, height: 18 }}
+            source={back}
+            style={styles.iconStyle}
           />
         </TouchableOpacity>
-        </View>
-      );
-    }
-    return (
-      <View style={styles.iconContainerStyle}>
-      <TouchableOpacity
-        onPress={this.onButtonClicked.bind(this, _id)}
-        style={{ padding: 15 }}
-      >
-        <Image
-          source={addUser}
-          style={styles.iconStyle}
-        />
-      </TouchableOpacity>
       </View>
     );
   }
@@ -133,15 +88,17 @@ class SearchUserCard extends Component {
   render() {
     const { _id } = this.props.item;
     return (
-      <View style={styles.containerStyle}>
-        {this.renderProfileImage()}
+      <TouchableOpacity onPress={this.openProfile.bind(this, _id)}>
+        <View style={styles.containerStyle}>
+          {this.renderProfileImage()}
 
-        <View style={styles.bodyContainerStyle}>
-          {this.renderInfo()}
-          {this.renderOccupation()}
+          <View style={styles.bodyContainerStyle}>
+            {this.renderInfo()}
+            {this.renderOccupation()}
+          </View>
+          {this.renderButton(_id)}
         </View>
-        {this.renderButton(_id)}
-      </View>
+      </TouchableOpacity>
     );
   }
 }
@@ -153,7 +110,7 @@ const styles = {
     marginLeft: 4,
     marginRight: 4,
     paddingLeft: 10,
-    paddingRight: 25,
+    paddingRight: 5,
     paddingTop: 8,
     paddingBottom: 8,
     alignItems: 'center',
@@ -194,10 +151,13 @@ const styles = {
   },
   iconStyle: {
     height: 25,
-    width: 26
+    width: 26,
+    transform: [{ rotateY: '180deg' }],
+    tintColor: '#45C9F6'
   }
 };
 
 export default connect(null, {
-  updateFriendship
+  updateFriendship,
+  openProfile
 })(SearchUserCard);

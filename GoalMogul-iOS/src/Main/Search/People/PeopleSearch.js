@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 // Components
 import SearchUserCard from './SearchUserCard';
+import EmptyResult from '../../Common/Text/EmptyResult';
 
 // actions
 import {
@@ -53,32 +54,37 @@ class PeopleSearch extends Component {
   };
 
   render() {
-    const dataToRender = testDataSuggested.concat(this.props.data);
     return (
       <View style={{ flex: 1 }}>
-        <FlatList
-          data={dataToRender}
-          renderItem={this.renderItem}
-          keyExtractor={this._keyExtractor}
-          onEndReached={this.handleOnLoadMore}
-          onEndReachedThreshold={0.5}
-          onRefresh={this.handleRefresh}
-          refreshing={this.props.loading}
-        />
+        {
+          (this.props.data.length === 0 && this.props.searchContent) ?
+            <EmptyResult text={'No Results'} />
+          :
+            <FlatList
+              data={this.props.data}
+              renderItem={this.renderItem}
+              keyExtractor={this._keyExtractor}
+              onEndReached={this.handleOnLoadMore}
+              onEndReachedThreshold={0.5}
+              onRefresh={this.handleRefresh}
+              refreshing={this.props.loading}
+            />
+        }
       </View>
     );
   }
 }
 
 const mapStateToProps = state => {
-  const { people } = state.search;
+  const { people, searchContent } = state.search;
   const { data, refreshing, loading } = people;
 
   return {
     people,
     data,
     refreshing,
-    loading
+    loading,
+    searchContent
   };
 };
 

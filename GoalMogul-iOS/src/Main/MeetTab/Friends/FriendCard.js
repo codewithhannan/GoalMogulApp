@@ -67,8 +67,9 @@ class FriendCard extends Component {
   }
 
   handleOnOpenProfile = () => {
-    if (this.props.item._id) {
-      return this.props.openProfile(this.props.item._id);
+    const { _id } = this.props.item;
+    if (_id) {
+      return this.props.openProfile(_id);
     }
     // TODO: showToast
   }
@@ -83,12 +84,16 @@ class FriendCard extends Component {
     return profileImage;
   }
 
+  /*
+  NOTE: friends card doesn't have any button. only on profile page
+  */
   renderButton(_id) {
-    return (
-      <TouchableOpacity onPress={this.onButtonClicked.bind(this, _id)}>
-        <Image source={meetSetting} style={styles.settingIconStyle} />
-      </TouchableOpacity>
-    );
+    return '';
+    // return (
+    //   <TouchableOpacity onPress={this.onButtonClicked.bind(this, _id)}>
+    //     <Image source={meetSetting} style={styles.settingIconStyle} />
+    //   </TouchableOpacity>
+    // );
   }
 
   renderInfo() {

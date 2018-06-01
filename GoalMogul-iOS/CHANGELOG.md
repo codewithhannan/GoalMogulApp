@@ -9,6 +9,10 @@ if there is corresponding issue, state it
 -->
 
 * Version 0.0.1
+## 1 June 2018, by Jia Zeng <andyzeng96@gmail.com>
+* Empty results for search results (No Results)
+* change search card button to blue background circle >
+* A lot of refactoring
 
 ## 30 Apr 2018, by Jia Zeng <andyzeng96@gmail.com>
 * Center search text
