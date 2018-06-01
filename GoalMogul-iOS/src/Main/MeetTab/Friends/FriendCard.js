@@ -14,7 +14,7 @@ import Name from '../../Common/Name';
 
 // Assets
 import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
-import meetSetting from '../../../asset/utils/meetSetting.png';
+// import meetSetting from '../../../asset/utils/meetSetting.png';
 
 // Actions
 import {

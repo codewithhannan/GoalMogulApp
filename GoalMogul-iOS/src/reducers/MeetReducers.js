@@ -13,13 +13,17 @@ import {
   SETTING_BLOCK_BLOCK_REQUEST_DONE
 } from '../actions/types';
 
-const TabNames = ['SUGGESTED', 'REQUESTS', 'FRIENDS', 'CONTACTS'];
+import {
+  PROFILE_FETCH_FRIEND_DONE,
+  PROFILE_FETCH_FRIEND_COUNT_DONE
+} from './Profile';
+
 const limit = 20;
 const filter = {
   friends: {
     sortBy: ['alphabetical', 'lastadd']
   }
-}
+};
 
 const INITIAL_STATE = {
   selectedTab: 'suggested',
@@ -69,7 +73,8 @@ const INITIAL_STATE = {
     refreshing: false,
     hasNextPage: undefined,
     limit,
-    skip: 0
+    skip: 0,
+    count: undefined
   },
   contacts: {
     data: [],
@@ -195,7 +200,6 @@ export default (state = INITIAL_STATE, action) => {
 
     // Handle tab refresh
     case MEET_TAB_REFRESH_DONE: {
-      // TODO: update the data
       const { type, data } = action.payload;
       let newState = _.set({ ...state }, `${type}.loading`, false);
       newState = _.set({ ...newState }, `${type}.refreshing`, false);
@@ -226,6 +230,18 @@ export default (state = INITIAL_STATE, action) => {
     case SETTING_BLOCK_BLOCK_REQUEST_DONE: {
       const newFriends = { ...state.friends };
       newFriends.data = R.filter((a) => a._id !== action.payload)(newFriends.data);
+      return { ...state, friends: newFriends };
+    }
+
+    // User fetch friend list in profile
+    case PROFILE_FETCH_FRIEND_DONE: {
+      return { ...state };
+    }
+
+    // fetch friends count when opening profile
+    case PROFILE_FETCH_FRIEND_COUNT_DONE: {
+      const newFriends = _.cloneDeep(state.friends);
+      newFriends.count = action.payload;
       return { ...state, friends: newFriends };
     }
 

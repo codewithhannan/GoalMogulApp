@@ -17,8 +17,9 @@ import {
 } from './types';
 
 import {
-  PROFILE_FETCH_MUTUAL_FRIEND_DONE,
-  PROFILE_FETCH_FRIENDSHIP_DONE
+  PROFILE_FETCH_FRIEND_COUNT_DONE,
+  PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE,
+  PROFILE_FETCH_FRIENDSHIP_DONE,
 } from '../reducers/Profile';
 
 const DEBUG_KEY = '[ Action Profile ]';
@@ -38,10 +39,11 @@ const fetchFriendshipSucceed = (res, dispatch) => {
   });
 };
 
-const fetchMutualFriendSucceed = (res, dispatch) => {
+const fetchFriendsCountSucceed = (res, self, dispatch) => {
   console.log(`${DEBUG_KEY} fetchMutualFriendSucceed with res: `, res);
+  const type = self ? PROFILE_FETCH_FRIEND_COUNT_DONE : PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE;
   dispatch({
-    type: PROFILE_FETCH_MUTUAL_FRIEND_DONE,
+    type,
     payload: res.data
   });
 };
@@ -69,31 +71,46 @@ export const openProfile = (userId) => (dispatch, getState) => {
   });
   Actions.profile();
 
-  const { token } = getState().user;
+  const { token, } = getState().user;
+  const self = getState().profile.userId.toString() === getState().user.userId.toString();
 
   const profilePromise =
     API.get(`secure/user/profile?userId=${userId}`, token);
-  const mutualFriendsPromise =
+
+  // If self, fetch friend list. Otherwise, fetch mutual friends
+  const friendsCountPromise = self ?
+    API.get(`secure/user/friendship?userId=${userId}`, token) :
     API.get(`secure/user/friendship/mutual-friends?userId=${userId}`, token);
-  const friendshipPromise =
+
+  // If self, fetch nothing. Otherwise, fetch friendship with userId
+  const friendshipPromise = self ?
+    new Promise((resolve, reject) => resolve({ data: [] })) :
     API.get(`secure/user/friendship/friendship?userId=${userId}`, token);
 
   Promise
-    .all([profilePromise, mutualFriendsPromise, friendshipPromise])
+    .all([profilePromise, friendsCountPromise, friendshipPromise])
     .then((res) => {
-      const [profileRes, friendsRes, friendshipRes] = res;
+      const [profileRes, friendsCountRes, friendshipRes] = res;
 
       if (profileRes.message) {
         /* TODO: error handling */
         return fetchProfileFail(profileRes, dispatch);
       }
-
-      // Dispatch actions
-      fetchMutualFriendSucceed(friendsRes, dispatch);
       fetchProfileSucceed(profileRes, dispatch);
-      fetchFriendshipSucceed(friendshipRes, dispatch);
       // Prefetch profile image
       prefetchImage(profileRes.data.profile.image);
+
+      if (friendsCountRes.message) {
+        /* TODO: error handling for failing to fetch friends */
+        console.log(`${DEBUG_KEY} fetch friends count fails: `, friendsCountRes.message);
+      }
+      fetchFriendsCountSucceed({ data: 20 }, self, dispatch);
+
+      if (friendshipRes.message) {
+        /* TODO: error handling for failing to fetch friends */
+        console.log(`${DEBUG_KEY} fetch friendship fails: `, friendshipRes.message);
+      }
+      fetchFriendshipSucceed(friendshipRes, dispatch);
     })
     .catch((err) => {
       console.log('err in loading user profile', err);
@@ -105,13 +122,11 @@ export const openProfile = (userId) => (dispatch, getState) => {
     });
 };
 
-export const openProfileDetail = () => {
-  return (dispatch) => {
-    dispatch({
-      type: ''
-    });
-    Actions.profileDetail();
-  };
+export const openProfileDetail = () => (dispatch) => {
+  dispatch({
+    type: ''
+  });
+  Actions.profileDetail();
 };
 
 export const openProfileDetailEditForm = () => {

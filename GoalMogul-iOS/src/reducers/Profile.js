@@ -13,6 +13,9 @@ import {
 
 export const PROFILE_FETCH_MUTUAL_FRIEND_DONE = 'profile_fetch_mutual_friend_done';
 export const PROFILE_FETCH_FRIENDSHIP_DONE = 'profile_fetch_friendship_done';
+export const PROFILE_FETCH_FRIEND_DONE = 'profile_fetch_friend_done';
+export const PROFILE_FETCH_FRIEND_COUNT_DONE = 'profile_fetch_friend_count_done';
+export const PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE = 'profile_fetch_mutual_friend_count_done';
 
 const GOAL_FILTER_CONST = {
   sortBy: ['important', 'recent', 'popular'],
@@ -51,9 +54,9 @@ const INITIAL_STATE = {
   navigationState: {
     index: 0,
     routes: [
-      { key: 'goals', title: 'My Goals' },
-      { key: 'posts', title: 'My Posts' },
-      { key: 'needs', title: 'My Needs' }
+      { key: 'goals', title: 'Goals' },
+      { key: 'posts', title: 'Posts' },
+      { key: 'needs', title: 'Needs' }
     ]
   },
   // Individual tab state
@@ -135,6 +138,12 @@ export default (state = INITIAL_STATE, action) => {
     case PROFILE_FETCH_MUTUAL_FRIEND_DONE: {
       let newMutualFriends = _.cloneDeep(state.mutualFriends);
       newMutualFriends.data = action.payload;
+      return { ...state, mutualFriends: newMutualFriends };
+    }
+
+    case PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE: {
+      let newMutualFriends = _.cloneDeep(state.mutualFriends);
+      newMutualFriends.count = action.payload;
       return { ...state, mutualFriends: newMutualFriends };
     }
 

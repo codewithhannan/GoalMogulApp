@@ -8,9 +8,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-/* Asset To Delete */
-import addUser from '../../asset/utils/addUser.png';
-import check from '../../asset/utils/check.png';
+/* Assets */
 import back from '../../asset/utils/back.png';
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
 
@@ -35,13 +33,13 @@ class ProfileSummaryCard extends Component {
   }
 
   handleOpenProfileDetail() {
-    this.props.openProfileDetail();
+    // this.props.openProfileDetail();
   }
 
   renderStats() {
     const data = this.props.isSelf ?
       [{ Friends: '100K' }] :
-      [{ 'Mutual Friends': this.props.mutualFriends.count || 0 }];
+      [{ 'Mutual Friends': 0 || this.props.mutualFriends.count }];
     return <Stats data={data} />;
   }
 
@@ -53,7 +51,13 @@ class ProfileSummaryCard extends Component {
     return (
       <TouchableOpacity
         onPress={this.onButtonClicked.bind(this, _id)}
-        style={{ padding: 15 }}
+        style={{
+          padding: 20,
+          paddingTop: 10,
+          paddingBottom: 10,
+          borderLeftWidth: 1,
+          borderColor: 'lightgray'
+        }}
       >
         <Image
           source={back}

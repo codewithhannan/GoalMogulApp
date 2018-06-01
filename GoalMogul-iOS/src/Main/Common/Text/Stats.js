@@ -3,6 +3,9 @@ import { Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 
 const renderStats = (props) => props.data.map((c, index) => {
+  if (c.stat === undefined || c.stat === null) {
+    return '';
+  }
   return (
     <View
       style={{ flex: 1, flexDirection: 'row', marginRight: 5, alignItems: 'center' }}
