@@ -8,7 +8,8 @@ import {
   PROFILE_UPDATE_SUCCESS,
   PROFILE_UPDATE_FAIL,
   SETTING_EMAIL_UPDATE_SUCCESS,
-  PROFILE_SWITCH_TAB
+  PROFILE_SWITCH_TAB,
+  MEET_UPDATE_FRIENDSHIP_DONE
 } from '../actions/types';
 
 export const PROFILE_FETCH_MUTUAL_FRIEND_DONE = 'profile_fetch_mutual_friend_done';
@@ -149,6 +150,11 @@ export default (state = INITIAL_STATE, action) => {
 
     // profile fetch friendship request done
     case PROFILE_FETCH_FRIENDSHIP_DONE: {
+      return { ...state };
+    }
+
+    case MEET_UPDATE_FRIENDSHIP_DONE: {
+      // If updating current profile's friendship, then update the status
       return { ...state };
     }
 

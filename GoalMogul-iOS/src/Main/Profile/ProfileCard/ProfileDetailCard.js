@@ -11,16 +11,25 @@ import { Icon } from 'react-native-elements';
 
 /* Asset to delete */
 import profilePic from '../../../asset/test-profile-pic.png';
+/* Assets */
+import addUser from '../../../asset/utils/addUser.png';
+import love from '../../../asset/utils/love.png';
+import edit from '../../../asset/utils/edit.png';
+import cancel from '../../../asset/utils/cancel.png';
 
 /* Actions */
-import { openProfileDetailEditForm } from '../../../actions/';
+import {
+  openProfileDetailEditForm,
+  updateFriendship
+} from '../../../actions/';
 
 /* Components */
 import Card from './Card';
-import EditButton from '../../Common/Button/EditButton';
-import ButtonArrow from '../../Common/Button/ButtonArrow'
+import ButtonArrow from '../../Common/Button/ButtonArrow';
+import ProfileActionButton from '../../Common/Button/ProfileActionButton';
 
 const { width } = Dimensions.get('window');
+const DEBUG = true;
 
 const testData = {
   name: 'Jia Zeng',
@@ -57,22 +66,64 @@ class ProfileDetailCard extends Component {
     this.props.openProfileDetailEditForm();
   }
 
+  // type: ['acceptFriend', 'deleteFriend', 'requestFriend']
+  handleButtonOnPress = (type) => {
+    console.log('type is: ', type);
+  }
+
   handleMutualFriendOnPressed = () => {
 
   }
 
-  renderEditButton() {
-    if (this.props.canEdit) {
-      return (
-        <View style={{ padding: 10 }}>
-          <EditButton onPress={() => this.handleEditOnPressed()} />
-        </View>
-      );
+  renderProfileActionButton() {
+    // if (this.props.self) {
+    //   return (
+    //     <ProfileActionButton
+    //       text='Edit profile'
+    //       source={edit}
+    //       onPress={() => this.handleEditOnPressed()}
+    //     />
+    //   );
+    // }
+
+    const status = DEBUG ? 'Invited' : this.props.friendship.status;
+
+    switch (status) {
+      case undefined:
+        return (
+          <ProfileActionButton
+            text='Add friend'
+            source={addUser}
+            onPress={this.handleButtonOnPress.bind(this, 'requestFriend')}
+            style={{ height: 14, width: 15 }}
+          />
+        );
+
+      case 'Accepted':
+        return (
+          <ProfileActionButton
+            text='Friend'
+            source={love}
+            onPress={this.handleButtonOnPress.bind(this, 'accpetFriend')}
+          />
+        );
+
+      case 'Invited':
+        return (
+          <ProfileActionButton
+            text='Cancel request'
+            source={cancel}
+            onPress={this.handleButtonOnPress.bind(this, 'deleteFriend')}
+          />
+        );
+
+      default:
+        return '';
     }
   }
 
   renderFriendInfo() {
-    if (this.props.canEdit) {
+    if (this.props.self) {
       return (
         <View style={styles.friendInfoContainerStyle}>
           <Text style={{ fontSize: 13, color: '#646464', alignSelf: 'center' }}>
@@ -127,7 +178,7 @@ class ProfileDetailCard extends Component {
         <View style={{ height: 90, backgroundColor: '#75d8fb' }} />
         <View style={styles.imageWrapperStyle}>
           {this.renderProfileImage(profile)}
-          {this.renderEditButton()}
+          {this.renderProfileActionButton()}
         </View>
         <View style={styles.containerStyle}>
           <Text style={styles.nameTextStyle}>
@@ -216,13 +267,20 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const canEdit = state.profile.userId.toString() === state.user.userId.toString();
-  const { user } = state.profile;
+  const self = state.profile.userId.toString() === state.user.userId.toString();
+  const { user, friendship } = state.profile;
 
   return {
-    canEdit,
-    user
+    self,
+    user,
+    friendship
   };
 };
 
-export default connect(mapStateToProps, { openProfileDetailEditForm })(ProfileDetailCard);
+export default connect(
+  mapStateToProps,
+  {
+    openProfileDetailEditForm,
+    updateFriendship
+  }
+)(ProfileDetailCard);

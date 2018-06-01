@@ -212,17 +212,32 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
   const requestType = ((request) => {
     switch (request) {
       case 'requestFriend':
-        return 'POST';
+        return {
+          type: 'POST',
+          data: {
+            userId: id
+          }
+        };
       case 'acceptFriend':
-        return 'PUT';
+        return {
+          type: 'PUT',
+          data: {
+            friendshipId: id
+          }
+        };
       case 'deleteFriend':
-        return 'DELETE';
+      return {
+        type: 'DELETE',
+        data: {
+          friendshipId: id
+        }
+      };
       default:
         return 'POST';
     }
   })(type);
   const { token } = getState().user;
-  singleFetch('secure/user/friendship', { userId: id }, requestType, token)
+  singleFetch('secure/user/friendship', { ...requestType.data }, requestType.type, token)
     .then((res) => {
       console.log(`response for ${type}: `, res);
       if (res.message && !res.message.toLowerCase().trim().includes('success')) {

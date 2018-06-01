@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 
 /* Components */
 import Card from './Card';
-import EditButton from '../../Common/Button/EditButton';
+import ProfileActionButton from '../../Common/Button/ProfileActionButton';
 
 /* Actions */
 import { openProfileDetailEditForm } from '../../../actions/';
@@ -66,9 +66,9 @@ class ProfileInfoCard extends Component {
     return '';
   }
 
-  renderEditButton() {
+  renderProfileActionButton() {
     if (this.props.canEdit) {
-      return <EditButton onPress={() => this.handleEditOnPressed()} />;
+      return <ProfileActionButton onPress={() => this.handleEditOnPressed()} />;
     }
   }
 
