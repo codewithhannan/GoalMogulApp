@@ -9,7 +9,6 @@ import {
 import { connect } from 'react-redux';
 
 /* Asset To Delete */
-import profilePic from '../../asset/test-profile-pic.png';
 import addUser from '../../asset/utils/addUser.png';
 import check from '../../asset/utils/check.png';
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
@@ -21,13 +20,6 @@ import { openProfileDetail } from '../../actions';
 import Name from '../Common/Name';
 import Position from '../Common/Position';
 import Stats from '../Common/Text/Stats';
-
-const data = [
-  {
-    name: 'Friends',
-    stat: '100K'
-  }
-];
 
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
 const WITHDRAW_INDEX = 0;
@@ -74,6 +66,13 @@ class ProfileSummaryCard extends Component {
 
   handleOpenProfileDetail() {
     this.props.openProfileDetail();
+  }
+
+  renderStats() {
+    const data = this.props.isSelf ?
+      { Friends: '100K' } :
+      { 'Mutual Friends': this.props.mutualFriends.count };
+    return <Stats data={data} />;
   }
 
   renderButton(_id) {
@@ -133,7 +132,7 @@ class ProfileSummaryCard extends Component {
             <View style={styles.bodyStyle}>
               <Name text={name} />
               <Position text='Sr. UI/UX designer & developer' />
-              <Stats data={data} />
+              {this.renderStats()}
             </View>
           </View>
           <View style={styles.buttonContainerStyle}>
@@ -194,13 +193,14 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { userId, user } = state.profile;
+  const { userId, user, mutualFriends } = state.profile;
   const isSelf = state.profile.userId.toString() === state.user.userId.toString();
 
   return {
     userId,
     user,
-    isSelf
+    isSelf,
+    mutualFriends
   };
 };
 

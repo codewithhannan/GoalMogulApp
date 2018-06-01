@@ -49,7 +49,8 @@ const styles = {
   numberStyle: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#45C9F6'
+    color: '#45C9F6',
+    maxWidth: 50
   },
   iconStyle: {
 
