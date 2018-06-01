@@ -35,7 +35,6 @@ class ProfileDetail extends Component {
         <ScrollView>
           <ProfileDetailCard />
           <ProfileInfoCard data={testData} />
-          <ProfileAboutMeCard data={user} />
         </ScrollView>
       </View>
     );
