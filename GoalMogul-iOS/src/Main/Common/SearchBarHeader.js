@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActionSheetIOS
 } from 'react-native';
+import R from 'ramda';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
@@ -17,6 +18,8 @@ import IconMenu from '../../asset/header/menu.png';
 import Setting from '../../asset/header/setting.png';
 import BackButton from '../../asset/utils/back.png';
 import FriendsSettingIcon from '../../asset/utils/friendsSettingIcon.png';
+
+import { actionSheet, switchByButtonIndex } from './ActionSheetFactory';
 
 /* Actions */
 import {
@@ -30,8 +33,6 @@ const tintColor = '#33485e';
 
 // For profile friend setting ActionSheetIOS
 const FRIENDSHIP_SETTING_BUTTONS = ['Block', 'Report', 'Cancel'];
-const BLOCK_INDEX = 0;
-const REPORT_INDEX = 1;
 const CANCEL_INDEX = 2;
 
 const DEBUG_KEY = '[ Component SearchBarHeader ]';
@@ -64,31 +65,21 @@ class SearchBarHeader extends Component {
   }
 
   handleFriendsSettingOnClick = () => {
-    ActionSheetIOS.showActionSheetWithOptions({
-      options: FRIENDSHIP_SETTING_BUTTONS,
-      cancelButtonIndex: CANCEL_INDEX,
-    },
-    (buttonIndex) => {
-      console.log('button clicked', FRIENDSHIP_SETTING_BUTTONS[buttonIndex]);
-      switch (buttonIndex) {
-        case BLOCK_INDEX:
-          // User chose to block user with id: _id
-          console.log(`${DEBUG_KEY} User blocks _id: `, this.props.profileUserId);
-          this.props.blockUser(this.props.profileUserId);
-          break;
-
-        case REPORT_INDEX:
-          // User chose to unfriend
-          console.log(`${DEBUG_KEY} User reports profile with _id: `, this.props.profileUserId);
-          // this.props.updateFriendship(_id, 'deleteFriend', TAB_KEY, () => {
-          //   console.log('Successfully delete friend with id: ', _id);
-          //   this.setState({ requested: false });
-          // });
-          break;
-        default:
-          return;
-      }
-    });
+    const switchCases = switchByButtonIndex([
+      [R.equals(0), () => {
+        console.log(`${DEBUG_KEY} User blocks _id: `, this.props.profileUserId);
+        this.props.blockUser(this.props.profileUserId);
+      }],
+      [R.equals(1), () => {
+        console.log(`${DEBUG_KEY} User reports profile with _id: `, this.props.profileUserId);
+      }]
+    ]);
+    const friendsSettingActionSheet = actionSheet(
+      FRIENDSHIP_SETTING_BUTTONS,
+      CANCEL_INDEX,
+      switchCases
+    );
+    friendsSettingActionSheet();
   }
 
   renderSearchBarLeftIcon() {

@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
+import R from 'ramda';
 
 /* Asset to delete */
 import profilePic from '../../../asset/test-profile-pic.png';
@@ -27,9 +28,10 @@ import {
 import Card from './Card';
 import ButtonArrow from '../../Common/Button/ButtonArrow';
 import ProfileActionButton from '../../Common/Button/ProfileActionButton';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 
 const { width } = Dimensions.get('window');
-const DEBUG = true;
+const DEBUG_KEY = '[ Copmonent ProfileDetailCard ]';
 
 const testData = {
   name: 'Jia Zeng',
@@ -47,6 +49,12 @@ const testData = {
     occupation: 'Quantative Analyst at Jane Street'
   }
 };
+
+const CANCEL_REQUEST_OPTIONS = ['Withdraw request', 'Cancel'];
+const CANCEL_REQUEST_CANCEL_INDEX = 1;
+
+const UNFRIEND_REQUEST_OPTIONS = ['Unfriend', 'Cancel'];
+const UNFRIEND_REQUEST_CANCEL_INDEX = 1;
 
 // TODO: use redux instead of passed in props
 class ProfileDetailCard extends Component {
@@ -66,9 +74,43 @@ class ProfileDetailCard extends Component {
     this.props.openProfileDetailEditForm();
   }
 
-  // type: ['acceptFriend', 'deleteFriend', 'requestFriend']
+  // type: ['unfriend', 'deleteFriend', 'requestFriend']
   handleButtonOnPress = (type) => {
-    console.log('type is: ', type);
+    if (type === 'requestFriend') {
+      console.log('request friend');
+    }
+
+    if (type === 'deleteFriend') {
+      const cancelRequestSwitchCases = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User withdraw request _id: `, this.props.friendship._id);
+          // this.props.blockUser(this.props.profileUserId);
+        }]
+      ]);
+
+      const cancelActionSheet = actionSheet(
+        CANCEL_REQUEST_OPTIONS,
+        CANCEL_REQUEST_CANCEL_INDEX,
+        cancelRequestSwitchCases
+      );
+      return cancelActionSheet();
+    }
+
+    if (type === 'unfriend') {
+      const unFriendRequestSwitchCases = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User unfriend _id: `, this.props.friendship._id);
+          // this.props.blockUser(this.props.profileUserId);
+        }]
+      ]);
+
+      const unFriendActionSheet = actionSheet(
+        UNFRIEND_REQUEST_OPTIONS,
+        UNFRIEND_REQUEST_CANCEL_INDEX,
+        unFriendRequestSwitchCases
+      );
+      return unFriendActionSheet();
+    }
   }
 
   handleMutualFriendOnPressed = () => {
@@ -76,17 +118,18 @@ class ProfileDetailCard extends Component {
   }
 
   renderProfileActionButton() {
-    // if (this.props.self) {
-    //   return (
-    //     <ProfileActionButton
-    //       text='Edit profile'
-    //       source={edit}
-    //       onPress={() => this.handleEditOnPressed()}
-    //     />
-    //   );
-    // }
+    if (this.props.self) {
+      return (
+        <ProfileActionButton
+          text='Edit profile'
+          source={edit}
+          onPress={() => this.handleEditOnPressed()}
+        />
+      );
+    }
 
-    const status = DEBUG ? 'Invited' : this.props.friendship.status;
+    // const status = DEBUG ? 'Accepted' : this.props.friendship.status;
+    const status = this.props.friendship.status;
 
     switch (status) {
       case undefined:
@@ -104,7 +147,7 @@ class ProfileDetailCard extends Component {
           <ProfileActionButton
             text='Friend'
             source={love}
-            onPress={this.handleButtonOnPress.bind(this, 'accpetFriend')}
+            onPress={this.handleButtonOnPress.bind(this, 'unfriend')}
           />
         );
 
