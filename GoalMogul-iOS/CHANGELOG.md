@@ -11,6 +11,7 @@ if there is corresponding issue, state it
 * Version 0.0.1
 ## 1 June 2018, by Jia Zeng <andyzeng96@gmail.com>
 * Bug fix for rendering # of mutual friends
+* Update profile detail design
 
 ## 1 June 2018, by Jia Zeng <andyzeng96@gmail.com>
 * Empty results for suggested (“No Recommendations ”)

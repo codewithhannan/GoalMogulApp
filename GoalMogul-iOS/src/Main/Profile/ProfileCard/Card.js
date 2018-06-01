@@ -16,7 +16,7 @@ const styles = {
     borderColor: '#eaeaea',
     borderBottomWidth: 0,
     backgroundColor: 'transparent',
-    marginTop: 7,
+    marginBottom: 1
   }
 };
 

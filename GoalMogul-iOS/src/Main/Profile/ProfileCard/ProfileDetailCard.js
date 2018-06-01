@@ -26,7 +26,7 @@ const testData = {
   name: 'Jia Zeng',
   email: 'jz145@duke.edu',
   phone: '9194912504',
-  headline: 'I am a student at Duke.',
+  headline: 'I predict market with mathematical models',
   privacy: {
     friends: 'Public'
   },
@@ -35,7 +35,7 @@ const testData = {
     about: 'This is a test page.',
     elevatorPitch: 'This is a profile elevator pitch',
     image: '',
-    occupation: 'Student a;ljsdl;fajls;dkfjal;sdkjfl;sajkdl;f'
+    occupation: 'Quantative Analyst at Jane Street'
   }
 };
 
@@ -124,7 +124,7 @@ class ProfileDetailCard extends Component {
 
     return (
       <Card>
-        <View style={{ height: 90, backgroundColor: 'transparent' }} />
+        <View style={{ height: 90, backgroundColor: '#75d8fb' }} />
         <View style={styles.imageWrapperStyle}>
           {this.renderProfileImage(profile)}
           {this.renderEditButton()}
@@ -152,7 +152,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 15,
+    paddingTop: 10,
     paddingLeft: 15,
     paddingRight: 15,
     paddingBottom: 5
@@ -171,12 +171,13 @@ const styles = {
     alignItems: 'center',
     borderRadius: 14,
     position: 'absolute',
-    bottom: 5,
-    alignSelf: 'center'
+    bottom: 10,
+    alignSelf: 'center',
+    backgroundColor: 'white'
   },
   imageStyle: {
-    width: width / 3,
-    height: width / 3,
+    width: (width * 0.9) / 3,
+    height: (width * 0.9) / 3,
     borderRadius: 13,
     borderWidth: 1,
     borderColor: 'white'
@@ -186,7 +187,7 @@ const styles = {
     marginBottom: 5
   },
   headlineTextStyle: {
-    fontSize: 13,
+    fontSize: 14,
     color: '#646464',
     marginBottom: padding
   },
