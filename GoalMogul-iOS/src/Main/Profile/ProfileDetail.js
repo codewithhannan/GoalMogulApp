@@ -28,13 +28,12 @@ const testData = {
 class ProfileDetail extends Component {
 
   render() {
-    const user = this.props.user;
     return (
       <View style={styles.containerStyle}>
         <SearchBarHeader backButton setting />
         <ScrollView>
           <ProfileDetailCard />
-          <ProfileInfoCard data={testData} />
+          <ProfileInfoCard data={this.props.user} />
         </ScrollView>
       </View>
     );

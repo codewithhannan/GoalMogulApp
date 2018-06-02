@@ -108,9 +108,10 @@ export const openProfile = (userId) => (dispatch, getState) => {
 
       if (friendshipRes.message) {
         /* TODO: error handling for failing to fetch friends */
-        console.log(`${DEBUG_KEY} fetch friendship fails: `, friendshipRes.message);
+        console.log(`${DEBUG_KEY} fetch friendship fails: `, friendshipRes);
+      } else {
+        fetchFriendshipSucceed(friendshipRes, dispatch);
       }
-      fetchFriendshipSucceed(friendshipRes, dispatch);
     })
     .catch((err) => {
       console.log('err in loading user profile', err);

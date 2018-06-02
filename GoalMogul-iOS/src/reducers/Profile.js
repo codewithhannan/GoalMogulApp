@@ -46,6 +46,7 @@ const INITIAL_STATE = {
   * Ignore if it's self
   */
   friendship: {
+    _id: undefined,
     status: undefined // one of [undefined, 'Invited', 'Accepted']
   },
 
@@ -150,12 +151,34 @@ export default (state = INITIAL_STATE, action) => {
 
     // profile fetch friendship request done
     case PROFILE_FETCH_FRIENDSHIP_DONE: {
-      return { ...state };
+      let newFriendship = _.cloneDeep(state.friendship);
+      if (action.payload !== undefined) {
+        newFriendship = action.payload;
+      }
+      return { ...state, friendship: newFriendship };
     }
 
+    /**
+    payload: {
+      type: ['acceptFriend', 'deleteFriend', 'requestFriend']
+      tab: ['requests.outgoing', 'requests.incoming', 'friends', 'suggested']
+      data: if 'deleteFriend' or 'acceptFriend', then friendshipId. Otherwise, userId
+    }
+    */
     case MEET_UPDATE_FRIENDSHIP_DONE: {
       // If updating current profile's friendship, then update the status
-      return { ...state };
+      const { type, data } = action.payload;
+      const newFriendship = _.cloneDeep(state.friendship);
+
+      if (type === 'requestFriend' && data === state.userId) {
+        newFriendship.status = 'Invited';
+      } else if (type === 'deleteFriend' && data === state.friendship._id) {
+        newFriendship.status = undefined;
+      } else if (type === 'acceptFriend' && data === state.friendship._id) {
+        newFriendship.status = 'Accepted';
+      }
+
+      return { ...state, friendship: newFriendship };
     }
 
     default:

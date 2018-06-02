@@ -78,6 +78,13 @@ class ProfileDetailCard extends Component {
   handleButtonOnPress = (type) => {
     if (type === 'requestFriend') {
       console.log('request friend');
+      this.props.updateFriendship(
+        this.props.userId,
+        'requestFriend',
+        'requests.outgoing',
+        undefined
+      );
+      return;
     }
 
     if (type === 'deleteFriend') {
@@ -85,6 +92,12 @@ class ProfileDetailCard extends Component {
         [R.equals(0), () => {
           console.log(`${DEBUG_KEY} User withdraw request _id: `, this.props.friendship._id);
           // this.props.blockUser(this.props.profileUserId);
+          this.props.updateFriendship(
+            this.props.friendship._id,
+            'deleteFriend',
+            'requests.outgoing',
+            undefined
+          );
         }]
       ]);
 
@@ -100,7 +113,12 @@ class ProfileDetailCard extends Component {
       const unFriendRequestSwitchCases = switchByButtonIndex([
         [R.equals(0), () => {
           console.log(`${DEBUG_KEY} User unfriend _id: `, this.props.friendship._id);
-          // this.props.blockUser(this.props.profileUserId);
+          this.props.updateFriendship(
+            this.props.friendship._id,
+            'deleteFriend',
+            'friends',
+            undefined
+          );
         }]
       ]);
 
@@ -213,8 +231,8 @@ class ProfileDetailCard extends Component {
   }
 
   render() {
-    // const { name, headline, profile } = this.props.user;
-    const { name, headline, profile } = testData;
+    const { name, headline, profile } = this.props.user;
+    // const { name, headline, profile } = testData;
 
     return (
       <Card>
@@ -311,12 +329,13 @@ const styles = {
 
 const mapStateToProps = state => {
   const self = state.profile.userId.toString() === state.user.userId.toString();
-  const { user, friendship } = state.profile;
+  const { user, friendship, userId } = state.profile;
 
   return {
     self,
     user,
-    friendship
+    friendship,
+    userId
   };
 };
 

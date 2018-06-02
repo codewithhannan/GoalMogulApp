@@ -109,7 +109,7 @@ class ProfileSummaryCard extends Component {
             </View>
           </View>
           <View style={styles.buttonContainerStyle}>
-            {this.renderButton()}
+            {this.renderButton(this.props.userId)}
           </View>
         </View>
       </TouchableWithoutFeedback>

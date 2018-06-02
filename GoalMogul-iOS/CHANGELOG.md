@@ -10,6 +10,7 @@ if there is corresponding issue, state it
 
 * Version 0.0.1
 ## 1 June 2018, by Jia Zeng <andyzeng96@gmail.com>
+* Refactor to create factory function for ActionSheetIOS
 * Update SearchBarHeader to include Profile Friendship setting
   that includes block and report user
 * Bug fix for rendering # of mutual friends
