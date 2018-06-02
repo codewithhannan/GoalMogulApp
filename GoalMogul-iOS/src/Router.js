@@ -119,8 +119,8 @@ class RouterComponent extends Component {
                     hideNavBar
                   >
                     <Scene key="home" component={Home} initial />
-                    <Scene key="profile" component={Profile} panHandlers={null} />
-                    <Scene key="profileDetail" component={ProfileDetail} panHandlers={null} />
+                    <Scene key="profile" component={Profile} />
+                    <Scene key="profileDetail" component={ProfileDetail} />
                     <Scene key="setting" component={Setting} />
                     <Scene key="email" component={Email} />
                     <Scene key="editEmailForm" component={EditEmailForm} />

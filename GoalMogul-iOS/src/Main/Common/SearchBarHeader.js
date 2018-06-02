@@ -160,7 +160,7 @@ class SearchBarHeader extends Component {
       );
     }
     return (
-      <TouchableOpacity onPress={() => Actions.searchLightBox()}>
+      <TouchableOpacity onPress={() => Actions.push('searchLightBox')}>
         <View style={styles.searchButtonContainerStyle}>
         <Icon
           type='font-awesome'

@@ -32,7 +32,8 @@ class SearchOverlay extends Component {
     //TODO: potentially clear search state
     console.log(`${DEBUG_KEY} handle cancel`);
     this.props.clearSearchState();
-    Actions.pop();
+    // Actions.pop();
+    this.refs.baseOverlay.closeModal();
   }
 
   handleChangeText = (value) => {
@@ -76,7 +77,7 @@ class SearchOverlay extends Component {
 
   render() {
     return (
-      <BaseOverlay verticalPercent={1} horizontalPercent={1}>
+      <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
           <View style={styles.headerContainerStyle}>
             <SearchBar
