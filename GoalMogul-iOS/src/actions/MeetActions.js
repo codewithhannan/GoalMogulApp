@@ -203,6 +203,8 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
     type: MEET_UPDATE_FRIENDSHIP
   });
 
+  const baseUrl = 'secure/user/friendship';
+
   const requestType = ((request) => {
     switch (request) {
       case 'requestFriend':
@@ -210,28 +212,31 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
           type: 'POST',
           data: {
             userId: id
-          }
+          },
+          url: baseUrl
         };
       case 'acceptFriend':
         return {
           type: 'PUT',
           data: {
             friendshipId: id
-          }
+          },
+          url: baseUrl
         };
       case 'deleteFriend':
       return {
         type: 'DELETE',
         data: {
-          friendshipId: id
-        }
+          friendshipId: id,
+        },
+        url: `${baseUrl}?friendshipId=${id}`
       };
       default:
         return 'POST';
     }
   })(type);
   const { token } = getState().user;
-  singleFetch('secure/user/friendship', { ...requestType.data }, requestType.type, token)
+  singleFetch(...requestType.url, { ...requestType.data }, requestType.type, token)
     .then((res) => {
       console.log(`response for ${type}: `, res);
       if (res.message && !res.message.toLowerCase().trim().includes('success')) {
