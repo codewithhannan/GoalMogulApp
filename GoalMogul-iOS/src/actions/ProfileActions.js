@@ -79,8 +79,8 @@ export const openProfile = (userId) => (dispatch, getState) => {
 
   // If self, fetch friend list. Otherwise, fetch mutual friends
   const friendsCountPromise = self ?
-    API.get(`secure/user/friendship?userId=${userId}`, token) :
-    API.get(`secure/user/friendship/mutual-friends?userId=${userId}`, token);
+    API.get(`secure/user/friendship/count?userId=${userId}`, token) :
+    API.get(`secure/user/friendship/mutual-friends/count?userId=${userId}`, token);
 
   // If self, fetch nothing. Otherwise, fetch friendship with userId
   const friendshipPromise = self ?
@@ -103,8 +103,10 @@ export const openProfile = (userId) => (dispatch, getState) => {
       if (friendsCountRes.message) {
         /* TODO: error handling for failing to fetch friends */
         console.log(`${DEBUG_KEY} fetch friends count fails: `, friendsCountRes.message);
+      } else {
+        fetchFriendsCountSucceed(res, self, dispatch);
       }
-      fetchFriendsCountSucceed({ data: 20 }, self, dispatch);
+
 
       if (friendshipRes.message) {
         /* TODO: error handling for failing to fetch friends */

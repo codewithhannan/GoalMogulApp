@@ -9,7 +9,8 @@ import {
   PROFILE_UPDATE_FAIL,
   SETTING_EMAIL_UPDATE_SUCCESS,
   PROFILE_SWITCH_TAB,
-  MEET_UPDATE_FRIENDSHIP_DONE
+  MEET_UPDATE_FRIENDSHIP_DONE,
+  PROFILE_FETCHING_FAIL
 } from '../actions/types';
 
 export const PROFILE_FETCH_MUTUAL_FRIEND_DONE = 'profile_fetch_mutual_friend_done';
@@ -107,6 +108,9 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case PROFILE_OPEN_PROFILE:
       return { ...state, userId: action.payload, loading: true };
+
+    case PROFILE_FETCHING_FAIL:
+      return { ...state, loading: false };
 
     case PROFILE_FETCHING_SUCCESS:
       return { ...state, user: action.payload, loading: false };

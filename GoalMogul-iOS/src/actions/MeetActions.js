@@ -42,12 +42,6 @@ export const selectTab = index => (dispatch) => {
 // Preload meet tab
 // TODO: abstract this method to accomodate four types of requests
 export const preloadMeet = () => (dispatch, getState) => {
-  dispatch({
-    type: MEET_LOADING,
-    payload: {
-      type: 'suggested'
-    }
-  });
   const { token } = getState().user;
   // loadOneTab('suggested', 0, 20, token, dispatch);
   // tabs.map((key) => loadOneTab(key, 0, 20, token, dispatch, (data) => {
