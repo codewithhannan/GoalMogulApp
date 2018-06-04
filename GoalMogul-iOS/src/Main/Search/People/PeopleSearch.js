@@ -57,7 +57,7 @@ class PeopleSearch extends Component {
     return (
       <View style={{ flex: 1 }}>
         {
-          (this.props.data.length === 0 && this.props.searchContent) ?
+          (this.props.data.length === 0 && this.props.searchContent && !this.props.loading) ?
             <EmptyResult text={'No Results'} />
           :
             <FlatList

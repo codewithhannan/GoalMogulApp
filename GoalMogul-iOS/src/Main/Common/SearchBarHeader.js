@@ -4,10 +4,11 @@ import {
   Image,
   TouchableWithoutFeedback,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  ActionSheetIOS
 } from 'react-native';
+import R from 'ramda';
 import { Icon } from 'react-native-elements';
-import { BlurView } from 'react-native-blur';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 
@@ -15,12 +16,26 @@ import { Actions } from 'react-native-router-flux';
 import Logo from '../../asset/header/logo.png';
 import IconMenu from '../../asset/header/menu.png';
 import Setting from '../../asset/header/setting.png';
-import BackButton from '../../asset/utils/back.png'
+import BackButton from '../../asset/utils/back.png';
+import FriendsSettingIcon from '../../asset/utils/friendsSettingIcon.png';
+
+import { actionSheet, switchByButtonIndex } from './ActionSheetFactory';
 
 /* Actions */
-import { back, openProfile, openSetting } from '../../actions';
+import {
+  back,
+  openProfile,
+  openSetting,
+  blockUser
+} from '../../actions';
 
 const tintColor = '#33485e';
+
+// For profile friend setting ActionSheetIOS
+const FRIENDSHIP_SETTING_BUTTONS = ['Block', 'Report', 'Cancel'];
+const CANCEL_INDEX = 2;
+
+const DEBUG_KEY = '[ Component SearchBarHeader ]';
 
 /**
   TODO: refactor element to have consistent behavior
@@ -47,6 +62,24 @@ class SearchBarHeader extends Component {
   handleSettingOnClick() {
     // TODO: open account setting page
     this.props.openSetting();
+  }
+
+  handleFriendsSettingOnClick = () => {
+    const switchCases = switchByButtonIndex([
+      [R.equals(0), () => {
+        console.log(`${DEBUG_KEY} User blocks _id: `, this.props.profileUserId);
+        this.props.blockUser(this.props.profileUserId);
+      }],
+      [R.equals(1), () => {
+        console.log(`${DEBUG_KEY} User reports profile with _id: `, this.props.profileUserId);
+      }]
+    ]);
+    const friendsSettingActionSheet = actionSheet(
+      FRIENDSHIP_SETTING_BUTTONS,
+      CANCEL_INDEX,
+      switchCases
+    );
+    friendsSettingActionSheet();
   }
 
   renderSearchBarLeftIcon() {
@@ -81,6 +114,20 @@ class SearchBarHeader extends Component {
   }
 
   renderSearchBarRightIcon() {
+    // On other people's profile page
+    if (this.props.setting && !this.props.haveSetting) {
+    // if (this.props.setting && true) {
+      return (
+        <TouchableWithoutFeedback onPress={this.handleFriendsSettingOnClick.bind(this)}>
+          <Image
+            style={{ ...styles.headerRightImage, tintColor, height: 28 }}
+            source={FriendsSettingIcon}
+          />
+        </TouchableWithoutFeedback>
+      );
+    }
+
+    // On self profile page
     if (this.props.setting && this.props.haveSetting) {
       return (
         <TouchableWithoutFeedback onPress={this.handleSettingOnClick.bind(this)}>
@@ -88,11 +135,15 @@ class SearchBarHeader extends Component {
         </TouchableWithoutFeedback>
       );
     }
+
+    // Standard search bar menu
     if (this.props.rightIcon === 'menu') {
       return (
         <Image style={styles.headerRightImage} source={IconMenu} />
       );
     }
+
+    // Empty dummy view as default
     return (
       <View style={styles.headerRightImage} />
     );
@@ -109,7 +160,7 @@ class SearchBarHeader extends Component {
       );
     }
     return (
-      <TouchableOpacity onPress={() => Actions.searchLightBox()}>
+      <TouchableOpacity onPress={() => Actions.push('searchLightBox')}>
         <View style={styles.searchButtonContainerStyle}>
         <Icon
           type='font-awesome'
@@ -198,12 +249,22 @@ const styles = {
 
 const mapStateToProps = state => {
   const { userId } = state.user;
+  const profileUserId = state.profile.userId;
   const haveSetting = state.profile.userId.toString() === state.user.userId.toString();
 
   return {
     userId,
-    haveSetting
+    haveSetting,
+    profileUserId
   };
 };
 
-export default connect(mapStateToProps, { back, openProfile, openSetting })(SearchBarHeader);
+export default connect(
+  mapStateToProps,
+  {
+    back,
+    openProfile,
+    openSetting,
+    blockUser
+  }
+)(SearchBarHeader);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Animated, Dimensions, Button } from 'react-native';
+import { View, StyleSheet, Animated, Dimensions } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
 const { height: deviceHeight, width: deviceWidth } = Dimensions.get('window');
@@ -23,7 +23,7 @@ export default class BaseLightbox extends Component {
 
   closeModal = () => {
     Animated.timing(this.state.opacity, {
-      duration: 100,
+      duration: 150,
       toValue: 0,
     }).start(Actions.pop);
   }

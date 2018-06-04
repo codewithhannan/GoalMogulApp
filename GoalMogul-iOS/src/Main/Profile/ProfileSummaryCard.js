@@ -38,16 +38,12 @@ class ProfileSummaryCard extends Component {
 
   renderStats() {
     const data = this.props.isSelf ?
-      [{ Friends: '100K' }] :
-      [{ 'Mutual Friends': 0 || this.props.mutualFriends.count }];
+      [{ name: 'Friends', stat: '100K' }] :
+      [{ name: 'Mutual Friends', stat: 0 || this.props.mutualFriends.count }];
     return <Stats data={data} />;
   }
 
   renderButton(_id) {
-    if (this.props.isSelf) {
-      return '';
-    }
-
     return (
       <TouchableOpacity
         onPress={this.onButtonClicked.bind(this, _id)}
@@ -109,7 +105,7 @@ class ProfileSummaryCard extends Component {
             </View>
           </View>
           <View style={styles.buttonContainerStyle}>
-            {this.renderButton()}
+            {this.renderButton(this.props.userId)}
           </View>
         </View>
       </TouchableWithoutFeedback>

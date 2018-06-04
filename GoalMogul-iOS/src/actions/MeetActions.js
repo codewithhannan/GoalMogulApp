@@ -13,8 +13,8 @@ import {
   MEET_REQUESTS_CHANGE_TAB,
 } from './types';
 
-// const BASE_ROUTE = 'secure/user/';
-const BASE_ROUTE = 'dummy/user/';
+const BASE_ROUTE = 'secure/user/';
+// const BASE_ROUTE = 'dummy/user/';
 
 const requestMap = {
   suggested: 'friendship/recommendations',
@@ -42,12 +42,6 @@ export const selectTab = index => (dispatch) => {
 // Preload meet tab
 // TODO: abstract this method to accomodate four types of requests
 export const preloadMeet = () => (dispatch, getState) => {
-  dispatch({
-    type: MEET_LOADING,
-    payload: {
-      type: 'suggested'
-    }
-  });
   const { token } = getState().user;
   // loadOneTab('suggested', 0, 20, token, dispatch);
   // tabs.map((key) => loadOneTab(key, 0, 20, token, dispatch, (data) => {
@@ -209,20 +203,40 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
     type: MEET_UPDATE_FRIENDSHIP
   });
 
+  const baseUrl = 'secure/user/friendship';
+
   const requestType = ((request) => {
     switch (request) {
       case 'requestFriend':
-        return 'POST';
+        return {
+          type: 'POST',
+          data: {
+            userId: id
+          },
+          url: baseUrl
+        };
       case 'acceptFriend':
-        return 'PUT';
+        return {
+          type: 'PUT',
+          data: {
+            friendshipId: id
+          },
+          url: baseUrl
+        };
       case 'deleteFriend':
-        return 'DELETE';
+      return {
+        type: 'DELETE',
+        data: {
+          friendshipId: id,
+        },
+        url: `${baseUrl}?friendshipId=${id}`
+      };
       default:
         return 'POST';
     }
   })(type);
   const { token } = getState().user;
-  singleFetch('secure/user/friendship', { userId: id }, requestType, token)
+  singleFetch(requestType.url, { ...requestType.data }, requestType.type, token)
     .then((res) => {
       console.log(`response for ${type}: `, res);
       if (res.message && !res.message.toLowerCase().trim().includes('success')) {
@@ -240,7 +254,10 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
         payload: {
           type,
           tab,
-          data: id
+          data: {
+            id,
+            data: res.data
+          }
         }
       });
     })
@@ -260,7 +277,8 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
         payload: {
           type,
           tab,
-          data: id
+          data: id,
+          message: 'updating friendship fails'
         }
       });
     });

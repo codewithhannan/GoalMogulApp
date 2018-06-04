@@ -8,25 +8,36 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
+import R from 'ramda';
 
 /* Asset to delete */
 import profilePic from '../../../asset/test-profile-pic.png';
+/* Assets */
+import addUser from '../../../asset/utils/addUser.png';
+import love from '../../../asset/utils/love.png';
+import edit from '../../../asset/utils/edit.png';
+import cancel from '../../../asset/utils/cancel.png';
 
 /* Actions */
-import { openProfileDetailEditForm } from '../../../actions/';
+import {
+  openProfileDetailEditForm,
+  updateFriendship
+} from '../../../actions/';
 
 /* Components */
 import Card from './Card';
-import EditButton from '../../Common/Button/EditButton';
-import ButtonArrow from '../../Common/Button/ButtonArrow'
+import ButtonArrow from '../../Common/Button/ButtonArrow';
+import ProfileActionButton from '../../Common/Button/ProfileActionButton';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 
 const { width } = Dimensions.get('window');
+const DEBUG_KEY = '[ Copmonent ProfileDetailCard ]';
 
 const testData = {
   name: 'Jia Zeng',
   email: 'jz145@duke.edu',
   phone: '9194912504',
-  headline: 'I am a student at Duke.',
+  headline: 'I predict market with mathematical models',
   privacy: {
     friends: 'Public'
   },
@@ -35,9 +46,15 @@ const testData = {
     about: 'This is a test page.',
     elevatorPitch: 'This is a profile elevator pitch',
     image: '',
-    occupation: 'Student a;ljsdl;fajls;dkfjal;sdkjfl;sajkdl;f'
+    occupation: 'Quantative Analyst at Jane Street'
   }
 };
+
+const CANCEL_REQUEST_OPTIONS = ['Withdraw request', 'Cancel'];
+const CANCEL_REQUEST_CANCEL_INDEX = 1;
+
+const UNFRIEND_REQUEST_OPTIONS = ['Unfriend', 'Cancel'];
+const UNFRIEND_REQUEST_CANCEL_INDEX = 1;
 
 // TODO: use redux instead of passed in props
 class ProfileDetailCard extends Component {
@@ -57,22 +74,117 @@ class ProfileDetailCard extends Component {
     this.props.openProfileDetailEditForm();
   }
 
+  // type: ['unfriend', 'deleteFriend', 'requestFriend']
+  handleButtonOnPress = (type) => {
+    if (type === 'requestFriend') {
+      console.log('request friend');
+      this.props.updateFriendship(
+        this.props.userId,
+        'requestFriend',
+        'requests.outgoing',
+        undefined
+      );
+      return;
+    }
+
+    if (type === 'deleteFriend') {
+      const cancelRequestSwitchCases = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User withdraw request _id: `, this.props.friendship._id);
+          // this.props.blockUser(this.props.profileUserId);
+          this.props.updateFriendship(
+            this.props.friendship._id,
+            'deleteFriend',
+            'requests.outgoing',
+            undefined
+          );
+        }]
+      ]);
+
+      const cancelActionSheet = actionSheet(
+        CANCEL_REQUEST_OPTIONS,
+        CANCEL_REQUEST_CANCEL_INDEX,
+        cancelRequestSwitchCases
+      );
+      return cancelActionSheet();
+    }
+
+    if (type === 'unfriend') {
+      const unFriendRequestSwitchCases = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User unfriend _id: `, this.props.friendship._id);
+          this.props.updateFriendship(
+            this.props.friendship._id,
+            'deleteFriend',
+            'friends',
+            undefined
+          );
+        }]
+      ]);
+
+      const unFriendActionSheet = actionSheet(
+        UNFRIEND_REQUEST_OPTIONS,
+        UNFRIEND_REQUEST_CANCEL_INDEX,
+        unFriendRequestSwitchCases
+      );
+      return unFriendActionSheet();
+    }
+  }
+
   handleMutualFriendOnPressed = () => {
 
   }
 
-  renderEditButton() {
-    if (this.props.canEdit) {
+  renderProfileActionButton() {
+    if (this.props.self) {
       return (
-        <View style={{ padding: 10 }}>
-          <EditButton onPress={() => this.handleEditOnPressed()} />
-        </View>
+        <ProfileActionButton
+          text='Edit profile'
+          source={edit}
+          onPress={() => this.handleEditOnPressed()}
+        />
       );
+    }
+
+    // const status = DEBUG ? 'Accepted' : this.props.friendship.status;
+    const status = this.props.friendship.status;
+
+    switch (status) {
+      case undefined:
+        return (
+          <ProfileActionButton
+            text='Add friend'
+            source={addUser}
+            onPress={this.handleButtonOnPress.bind(this, 'requestFriend')}
+            style={{ height: 14, width: 15 }}
+          />
+        );
+
+      case 'Accepted':
+        return (
+          <ProfileActionButton
+            text='Friend'
+            source={love}
+            onPress={this.handleButtonOnPress.bind(this, 'unfriend')}
+          />
+        );
+
+      case 'Invited':
+        return (
+          <ProfileActionButton
+            text='Cancel request'
+            source={cancel}
+            onPress={this.handleButtonOnPress.bind(this, 'deleteFriend')}
+          />
+        );
+
+      default:
+        return '';
     }
   }
 
   renderFriendInfo() {
-    if (this.props.canEdit) {
+    if (this.props.self) {
       return (
         <View style={styles.friendInfoContainerStyle}>
           <Text style={{ fontSize: 13, color: '#646464', alignSelf: 'center' }}>
@@ -119,15 +231,15 @@ class ProfileDetailCard extends Component {
   }
 
   render() {
-    // const { name, headline, profile } = this.props.user;
-    const { name, headline, profile } = testData;
+    const { name, headline, profile } = this.props.user;
+    // const { name, headline, profile } = testData;
 
     return (
       <Card>
-        <View style={{ height: 90, backgroundColor: 'transparent' }} />
+        <View style={{ height: 90, backgroundColor: '#75d8fb' }} />
         <View style={styles.imageWrapperStyle}>
           {this.renderProfileImage(profile)}
-          {this.renderEditButton()}
+          {this.renderProfileActionButton()}
         </View>
         <View style={styles.containerStyle}>
           <Text style={styles.nameTextStyle}>
@@ -152,7 +264,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 15,
+    paddingTop: 10,
     paddingLeft: 15,
     paddingRight: 15,
     paddingBottom: 5
@@ -171,12 +283,13 @@ const styles = {
     alignItems: 'center',
     borderRadius: 14,
     position: 'absolute',
-    bottom: 5,
-    alignSelf: 'center'
+    bottom: 10,
+    alignSelf: 'center',
+    backgroundColor: 'white'
   },
   imageStyle: {
-    width: width / 3,
-    height: width / 3,
+    width: (width * 0.9) / 3,
+    height: (width * 0.9) / 3,
     borderRadius: 13,
     borderWidth: 1,
     borderColor: 'white'
@@ -186,7 +299,7 @@ const styles = {
     marginBottom: 5
   },
   headlineTextStyle: {
-    fontSize: 13,
+    fontSize: 14,
     color: '#646464',
     marginBottom: padding
   },
@@ -215,13 +328,21 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const canEdit = state.profile.userId.toString() === state.user.userId.toString();
-  const { user } = state.profile;
+  const self = state.profile.userId.toString() === state.user.userId.toString();
+  const { user, friendship, userId } = state.profile;
 
   return {
-    canEdit,
-    user
+    self,
+    user,
+    friendship,
+    userId
   };
 };
 
-export default connect(mapStateToProps, { openProfileDetailEditForm })(ProfileDetailCard);
+export default connect(
+  mapStateToProps,
+  {
+    openProfileDetailEditForm,
+    updateFriendship
+  }
+)(ProfileDetailCard);

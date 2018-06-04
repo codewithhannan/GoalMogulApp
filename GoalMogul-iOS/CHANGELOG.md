@@ -9,6 +9,22 @@ if there is corresponding issue, state it
 -->
 
 * Version 0.0.1
+## 3 June 2018, by Jia Zeng <andyzeng96@gmail.com>
+* Test update friendship in profile page (block, unblock, request, withdraw request, accept and rejects)
+* action button design change for profile page (darken gray background)
+* Bug fix for updating reducer in request friendship in profile page
+
+## 1 June 2018, by Jia Zeng <andyzeng96@gmail.com>
+* Refactor to create factory function for ActionSheetIOS
+* Update SearchBarHeader to include Profile Friendship setting
+  that includes block and report user
+* Bug fix for rendering # of mutual friends
+* Update profile detail design
+  * Occupation
+  * divider
+  * Elevator pitch
+  * about
+
 ## 1 June 2018, by Jia Zeng <andyzeng96@gmail.com>
 * Empty results for suggested (“No Recommendations ”)
 * remove friends … button

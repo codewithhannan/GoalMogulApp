@@ -6,7 +6,7 @@ import {
 
 /* Components */
 import Card from './Card';
-import EditButton from '../../Common/Button/EditButton';
+import ProfileActionButton from '../../Common/Button/ProfileActionButton';
 
 // TODO: use redux instead of passed in props
 class ProfileAboutMeCard extends Component {

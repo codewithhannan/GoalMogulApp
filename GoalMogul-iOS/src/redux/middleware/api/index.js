@@ -1,6 +1,8 @@
 import { config } from './config';
 import R from 'ramda';
 
+const DEBUG_KEY = '[ API ]';
+
 export const singleFetch = (path, payload, method, token) =>
   fetchData(path, payload, method, token).then((res) => res.json());
 
@@ -41,6 +43,8 @@ const fetchData = R.curry((path, payload = {}, method = 'get', token) => {
 
   // Generate url
   const url = `${config.url}${path}`;
+  console.log(`${DEBUG_KEY} url is: ${url}`);
+  console.log(`${DEBUG_KEY} header is: `, headers);
   return fetch(url, headers);
 });
 

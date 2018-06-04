@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 /* Component */
 import ProfileDetailCard from './ProfileCard/ProfileDetailCard';
-import ProfileOccupationCard from './ProfileCard/ProfileOccupationCard';
+import ProfileInfoCard from './ProfileCard/ProfileInfoCard';
 import ProfileAboutMeCard from './ProfileCard/ProfileAboutMeCard';
 import SearchBarHeader from '../Common/SearchBarHeader';
 
@@ -12,7 +12,7 @@ const testData = {
   name: 'Jia Zeng',
   email: 'jz145@duke.edu',
   phone: '9194912504',
-  headline: 'I am a student at Duke.',
+  headline: 'I predict market with mathematical models',
   privacy: {
     friends: 'Public'
   },
@@ -21,21 +21,19 @@ const testData = {
     about: 'This is a test page.',
     elevatorPitch: 'This is a profile elevator pitch',
     image: '',
-    occupation: 'Student a;ljsdl;fajls;dkfjal;sdkjfl;sajkdl;f'
+    occupation: 'Quantative Analyst at Jane Street'
   }
 };
 
 class ProfileDetail extends Component {
 
   render() {
-    const user = this.props.user;
     return (
       <View style={styles.containerStyle}>
         <SearchBarHeader backButton setting />
         <ScrollView>
           <ProfileDetailCard />
-          <ProfileOccupationCard data={user} />
-          <ProfileAboutMeCard data={user} />
+          <ProfileInfoCard data={this.props.user} />
         </ScrollView>
       </View>
     );
