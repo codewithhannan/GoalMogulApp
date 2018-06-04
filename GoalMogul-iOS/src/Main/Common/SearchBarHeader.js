@@ -115,8 +115,8 @@ class SearchBarHeader extends Component {
 
   renderSearchBarRightIcon() {
     // On other people's profile page
-    // if (this.props.setting && !this.props.haveSetting) {
-    if (this.props.setting && true) {
+    if (this.props.setting && !this.props.haveSetting) {
+    // if (this.props.setting && true) {
       return (
         <TouchableWithoutFeedback onPress={this.handleFriendsSettingOnClick.bind(this)}>
           <Image

@@ -9,12 +9,22 @@ import {
 const ProfileActionButton = (props) => {
   return (
     <TouchableOpacity onPress={props.onPress}>
-      <View style={{ flexDirection: 'row', alignSelf: 'flex-end', padding: 15, paddingTop: 10 }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignSelf: 'flex-end',
+          marginTop: 7,
+          marginRight: 8,
+          padding: 7,
+          borderRadius: 5,
+          backgroundColor: '#f3f3f3'
+        }}
+      >
         <Image
           source={props.source}
-          style={{ height: 15, width: 15, ...props.style }}
+          style={{ backgroundColor: '#f3f3f3', height: 15, width: 15, ...props.style }}
         />
-        <Text style={{ fontSize: 10, marginLeft: 5, alignSelf: 'center' }}>
+      <Text style={{ fontSize: 9.5, marginLeft: 5, alignSelf: 'center' }}>
           {props.text}
         </Text>
       </View>

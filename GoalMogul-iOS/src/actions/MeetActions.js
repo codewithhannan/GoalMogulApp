@@ -254,7 +254,10 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
         payload: {
           type,
           tab,
-          data: id
+          data: {
+            id,
+            data: res.data
+          }
         }
       });
     })

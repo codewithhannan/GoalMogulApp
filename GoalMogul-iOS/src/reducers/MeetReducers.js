@@ -166,6 +166,7 @@ export default (state = INITIAL_STATE, action) => {
     case MEET_UPDATE_FRIENDSHIP_DONE: {
       let newState = _.cloneDeep(state);
       const { data, type, tab, message } = action.payload;
+      const { id } = data;
       if (message) {
         return { ...newState };
       }
@@ -180,7 +181,7 @@ export default (state = INITIAL_STATE, action) => {
             //   R.path(R.split('.', `${tab}.data`))(newState)
             // );
             const filterFunction = filterFactory(tab);
-            const newData = updateFriendshipData(tab, data, filterFunction)(newState);
+            const newData = updateFriendshipData(tab, id, filterFunction)(newState);
             // console.log('new data is: ', newData);
             return _.set(newState, `${tab}.data`, newData);
           }

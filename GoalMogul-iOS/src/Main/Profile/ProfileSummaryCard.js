@@ -44,10 +44,6 @@ class ProfileSummaryCard extends Component {
   }
 
   renderButton(_id) {
-    if (this.props.isSelf) {
-      return '';
-    }
-
     return (
       <TouchableOpacity
         onPress={this.onButtonClicked.bind(this, _id)}
