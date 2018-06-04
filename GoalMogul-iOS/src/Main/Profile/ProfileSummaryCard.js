@@ -38,7 +38,7 @@ class ProfileSummaryCard extends Component {
 
   renderStats() {
     const data = this.props.isSelf ?
-      [{ name: 'Friends', stat: '100K' }] :
+      [{ name: 'Friends', stat: 0 || this.props.friendsCount }] :
       [{ name: 'Mutual Friends', stat: 0 || this.props.mutualFriends.count }];
     return <Stats data={data} />;
   }
@@ -169,13 +169,15 @@ const styles = {
 
 const mapStateToProps = state => {
   const { userId, user, mutualFriends } = state.profile;
+  const friendsCount = state.meet.friends.count;
   const isSelf = state.profile.userId.toString() === state.user.userId.toString();
 
   return {
     userId,
     user,
     isSelf,
-    mutualFriends
+    mutualFriends,
+    friendsCount
   };
 };
 

@@ -184,29 +184,29 @@ class ProfileDetailCard extends Component {
   }
 
   renderFriendInfo() {
-    if (this.props.self) {
-      return (
-        <View style={styles.friendInfoContainerStyle}>
-          <Text style={{ fontSize: 13, color: '#646464', alignSelf: 'center' }}>
-            <Text style={{ fontWeight: 'bold' }}>12 </Text>
-             Mutual Friends
-          </Text>
-          <View>
-            <Icon
-              name='dot-single'
-              type='entypo'
-              color='#818181'
-              size={18}
-              iconStyle={styles.dotIconStyle}
-              containerStyle={styles.dotIconContainerStyle}
-            />
-          </View>
-          <TouchableOpacity onPress={this.handleMutualFriendOnPressed}>
-            <ButtonArrow text='View friends' arrow />
-          </TouchableOpacity>
+    const title = this.props.self ? 'Friends' : 'Mutual Friends';
+    const data = this.props.self ? this.props.friendsCount : this.props.mutualFriends.count;
+    return (
+      <View style={styles.friendInfoContainerStyle}>
+        <Text style={{ fontSize: 13, color: '#646464', alignSelf: 'center' }}>
+          <Text style={{ fontWeight: 'bold' }}>{data === undefined ? 0 : data} </Text>
+          {title}
+        </Text>
+        <View>
+          <Icon
+            name='dot-single'
+            type='entypo'
+            color='#818181'
+            size={18}
+            iconStyle={styles.dotIconStyle}
+            containerStyle={styles.dotIconContainerStyle}
+          />
         </View>
-      );
-    }
+        <TouchableOpacity onPress={this.handleMutualFriendOnPressed}>
+          <ButtonArrow text='View friends' arrow />
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   renderProfileImage(profile) {
@@ -329,13 +329,16 @@ const styles = {
 
 const mapStateToProps = state => {
   const self = state.profile.userId.toString() === state.user.userId.toString();
-  const { user, friendship, userId } = state.profile;
+  const { user, friendship, userId, mutualFriends } = state.profile;
+  const friendsCount = state.meet.friends.count;
 
   return {
     self,
     user,
     friendship,
-    userId
+    userId,
+    friendsCount,
+    mutualFriends
   };
 };
 
