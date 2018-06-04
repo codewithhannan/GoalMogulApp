@@ -95,7 +95,10 @@ class SplashScreen extends Component {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.loginHighlightContainerStyle}>
+          <TouchableOpacity
+            style={styles.loginHighlightContainerStyle}
+            onPress={this.handleLoginPress.bind(this)}
+          >
             {
               this.state.fontLoaded ?
                 <Text style={styles.haveAccountTextStyle}>
@@ -111,7 +114,7 @@ class SplashScreen extends Component {
                 : null
               }
             </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         </LinearGradient>
       </View>
 
@@ -144,7 +147,8 @@ const styles = {
   logoImageStyle: {
     height: 45,
     width: 45,
-    marginRight: 10
+    marginRight: 10,
+    marginBottom: 3
   },
 
   // Body style

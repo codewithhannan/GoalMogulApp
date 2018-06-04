@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, TouchableWithoutFeedback, FlatList } from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  FlatList
+} from 'react-native';
 import { connect } from 'react-redux';
 
 /* Components */
 import Header from './Common/Header';
 import Button from './Common/Button';
-import Divider from './Common/Divider';
 import ContactCard from './ContactCard';
 import ContactDetail from './ContactDetail';
 
@@ -78,11 +81,11 @@ class ContactSync extends Component {
             onEndThreshold={0}
           />
 
-          <TouchableWithoutFeedback onPress={this.handleDoneOnPressed.bind(this)}>
+          <TouchableOpacity onPress={this.handleDoneOnPressed.bind(this)}>
             <View style={styles.footer}>
               <Button text='Done' />
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
         </View>
       </View>
     );

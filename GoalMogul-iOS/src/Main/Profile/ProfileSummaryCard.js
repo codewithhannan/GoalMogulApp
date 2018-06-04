@@ -3,8 +3,7 @@ import {
   View,
   Image,
   TouchableWithoutFeedback,
-  TouchableOpacity,
-  ActionSheetIOS
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 

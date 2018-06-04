@@ -5,6 +5,7 @@ import {
   ScrollView,
   Text,
   TouchableWithoutFeedback,
+  TouchableOpacity,
   Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -92,11 +93,11 @@ class Account extends Component {
 
   renderLogIn() {
     return (
-      <TouchableWithoutFeedback onPress={this.handleLogInPressed.bind(this)}>
+      <TouchableOpacity onPress={this.handleLogInPressed.bind(this)}>
         <View>
           <Button text='Log In to your account' arrow />
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     );
   }
   // <KeyboardAvoidingView
@@ -148,11 +149,11 @@ class Account extends Component {
                   disabled={this.props.loading}
                 />
 
-                <TouchableWithoutFeedback onPress={handleSubmit(this.handleNextPressed)}>
+                <TouchableOpacity onPress={handleSubmit(this.handleNextPressed)}>
                   <View>
                     <Button text='Next' />
                   </View>
-                </TouchableWithoutFeedback>
+                </TouchableOpacity>
                 {this.renderSplitter()}
                 {this.renderLogIn()}
               </View>

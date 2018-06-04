@@ -3,6 +3,7 @@ import {
   View,
   Text,
   TouchableWithoutFeedback,
+  TouchableOpacity,
   Keyboard,
   KeyboardAvoidingView,
   ScrollView
@@ -55,7 +56,7 @@ class IntroForm extends Component {
         style={{ flex: 1 }}
       >
         <ScrollView
-          contentContainerStyle={{flexGrow: 1}}
+          contentContainerStyle={{ flexGrow: 1 }}
           keyboardDismissMode='interactive'
           keyboardShouldPersistTaps='never'
           overScrollMode='never'
@@ -63,7 +64,7 @@ class IntroForm extends Component {
         >
           <TouchableWithoutFeedback onPress={this.handleContainerOnPressed.bind(this)}>
             <View style={Styles.containerStyle}>
-                <Header name='John Doe' type='intro' />
+                <Header name={this.props.name} type='intro' />
                 <View style={Styles.bodyContainerStyle}>
                   <Text style={Styles.titleTextStyle}>A brief intro...</Text>
                   <View style={{ alignSelf: 'center' }}>
@@ -93,11 +94,11 @@ class IntroForm extends Component {
                       <Button text='Next' />
                     </View>
                   </TouchableWithoutFeedback>
-                  <TouchableWithoutFeedback onPress={this.handleSkipOnPressed.bind(this)}>
+                  <TouchableOpacity onPress={this.handleSkipOnPressed.bind(this)}>
                     <View>
                       <Button text='Skip' arrow />
                     </View>
-                  </TouchableWithoutFeedback>
+                  </TouchableOpacity>
                 </View>
             </View>
           </TouchableWithoutFeedback>
@@ -108,11 +109,12 @@ class IntroForm extends Component {
 }
 
 const mapStateToProps = state => {
-  const { error, headline } = state.registration;
+  const { error, headline, name } = state.registration;
 
   return {
     error,
-    headline
+    headline,
+    name
   };
 };
 
