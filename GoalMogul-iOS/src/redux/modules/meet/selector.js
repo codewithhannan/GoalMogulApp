@@ -32,7 +32,10 @@ export const getFilteredFriendsList = createSelector(
 const getOutgoingData = (state) => state.meet.requests.outgoing.data;
 
 const extractUser = R.map(
-  R.pipe(R.prop('participants'), R.head, R.prop('users_id'))
+  d => ({
+    user: R.pipe(R.prop('participants'), R.last, R.prop('users_id'))(d),
+    friendshipId: R.prop('_id', d)
+  })
 );
 
 export const getOutgoingUserFromFriendship = createSelector(
@@ -43,7 +46,12 @@ export const getOutgoingUserFromFriendship = createSelector(
 // Extract incoming request user information
 const getIncomingData = (state) => state.meet.requests.incoming.data;
 
-const extractIncomingUser = R.map(R.prop('initiator_id'));
+const extractIncomingUser = R.map(
+  d => ({
+    user: R.prop('initiator_id')(d),
+    friendshipId: R.prop('_id', d)
+  })
+);
 
 export const getIncomingUserFromFriendship = createSelector(
   [getIncomingData],

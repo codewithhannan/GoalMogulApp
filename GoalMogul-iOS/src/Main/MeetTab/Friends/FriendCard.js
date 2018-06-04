@@ -39,32 +39,32 @@ class FriendCard extends Component {
     // console.log('new props for meet card are: ', props);
   }
 
-  onButtonClicked = (_id) => {
-    ActionSheetIOS.showActionSheetWithOptions({
-      options: FRIENDSHIP_BUTTONS,
-      cancelButtonIndex: CANCEL_INDEX,
-    },
-    (buttonIndex) => {
-      console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
-      switch (buttonIndex) {
-        case BLOCK_INDEX:
-          // User chose to block user with id: _id
-          console.log('User blocks _id: ', _id);
-          this.props.blockUser(_id);
-          break;
-
-        case UNFRIEND_INDEX:
-          // User chose to unfriend
-          this.props.updateFriendship(_id, 'deleteFriend', TAB_KEY, () => {
-            console.log('Successfully delete friend with id: ', _id);
-            this.setState({ requested: false });
-          });
-          break;
-        default:
-          return;
-      }
-    });
-  }
+  // onButtonClicked = (friendshipId) => {
+  //   ActionSheetIOS.showActionSheetWithOptions({
+  //     options: FRIENDSHIP_BUTTONS,
+  //     cancelButtonIndex: CANCEL_INDEX,
+  //   },
+  //   (buttonIndex) => {
+  //     console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
+  //     switch (buttonIndex) {
+  //       case BLOCK_INDEX:
+  //         // User chose to block user with id: _id
+  //         console.log('User blocks _id: ', friendshipId);
+  //         this.props.blockUser(friendshipId);
+  //         break;
+  //
+  //       case UNFRIEND_INDEX:
+  //         // User chose to unfriend
+  //         this.props.updateFriendship('', friendshipId, 'deleteFriend', TAB_KEY, () => {
+  //           console.log('Successfully delete friend with friendshipId: ', friendshipId);
+  //           this.setState({ requested: false });
+  //         });
+  //         break;
+  //       default:
+  //         return;
+  //     }
+  //   });
+  // }
 
   handleOnOpenProfile = () => {
     const { _id } = this.props.item;
@@ -97,7 +97,7 @@ class FriendCard extends Component {
   }
 
   renderInfo() {
-    const { name, _id } = this.props.item;
+    const { name } = this.props.item;
     return (
       <View style={styles.infoContainerStyle}>
         <View style={{ flex: 1, flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
@@ -105,7 +105,7 @@ class FriendCard extends Component {
         </View>
 
         <View style={styles.buttonContainerStyle}>
-          {this.renderButton(_id)}
+          {this.renderButton()}
         </View>
       </View>
     );
@@ -137,7 +137,7 @@ class FriendCard extends Component {
   }
 
   renderOccupation() {
-    const { profile } = this.props.item;
+    const { profile } = this.props.item.user;
     if (profile.occupation) {
       return (
         <Text

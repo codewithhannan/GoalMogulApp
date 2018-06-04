@@ -43,7 +43,7 @@ class SuggestedCard extends Component {
         console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
         switch (buttonIndex) {
           case WITHDRAW_INDEX:
-            this.props.updateFriendship(_id, 'deleteFriend', TAB_KEY, () => {
+            this.props.updateFriendship(_id, '', 'deleteFriend', TAB_KEY, () => {
               this.setState({ requested: false });
             });
             break;
@@ -52,7 +52,7 @@ class SuggestedCard extends Component {
         }
       });
     }
-    return this.props.updateFriendship(_id, 'requesteFriend', TAB_KEY, () => {
+    return this.props.updateFriendship(_id, '', 'requesteFriend', TAB_KEY, () => {
       this.setState({ requested: true });
     });
   }

@@ -38,7 +38,7 @@ class RequestCard extends Component {
     // console.log('new props for meet card are: ', props);
   }
 
-  onRespondClicked = (_id) => {
+  onRespondClicked = (friendshipId, userId) => {
     ActionSheetIOS.showActionSheetWithOptions({
       options: ACCEPT_BUTTONS,
       cancelButtonIndex: ACCEPT_CANCEL_INDEX,
@@ -47,10 +47,10 @@ class RequestCard extends Component {
       console.log('button clicked', ACCEPT_BUTTONS[buttonIndex]);
       switch (buttonIndex) {
         case ACCPET_INDEX:
-          this.props.updateFriendship(_id, 'acceptFriend', TAB_KEY_INCOMING, null);
+          this.props.updateFriendship(userId, friendshipId, 'acceptFriend', TAB_KEY_INCOMING, null);
           break;
         case ACCPET_REMOVE_INDEX:
-          this.props.updateFriendship(_id, 'deleteFriend', TAB_KEY_INCOMING, null);
+          this.props.updateFriendship(userId, friendshipId, 'deleteFriend', TAB_KEY_INCOMING, null);
           break;
         default:
           return;
@@ -58,7 +58,7 @@ class RequestCard extends Component {
     });
   }
 
-  onInvitedClicked = (_id) => {
+  onInvitedClicked = (friendshipId, userId) => {
     ActionSheetIOS.showActionSheetWithOptions({
       options: FRIENDSHIP_BUTTONS,
       cancelButtonIndex: CANCEL_INDEX,
@@ -67,9 +67,15 @@ class RequestCard extends Component {
       console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
       switch (buttonIndex) {
         case WITHDRAW_INDEX:
-          this.props.updateFriendship(_id, 'deleteFriend', TAB_KEY_OUTGOING, () => {
-            this.setState({ requested: false });
-          });
+          this.props.updateFriendship(
+            userId,
+            friendshipId,
+            'deleteFriend',
+            TAB_KEY_OUTGOING,
+            () => {
+              this.setState({ requested: false });
+            }
+          );
           break;
         default:
           return;
@@ -78,7 +84,9 @@ class RequestCard extends Component {
   }
 
   renderProfileImage() {
-    const { image } = this.props.item.profile;
+    const { profile } = this.props.item.user;
+    if (!profile) return '';
+    const { image } = profile;
     let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
     if (image) {
       const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
@@ -87,7 +95,7 @@ class RequestCard extends Component {
     return profileImage;
   }
 
-  renderButton(_id) {
+  renderButton(friendshipId, userId) {
     switch (this.props.type) {
       case 'outgoing': {
         return (
@@ -96,7 +104,7 @@ class RequestCard extends Component {
             titleStyle={styles.buttonTextStyle}
             clear
             buttonStyle={styles.buttonStyle}
-            onPress={this.onInvitedClicked.bind(this, _id)}
+            onPress={this.onInvitedClicked.bind(this, friendshipId, userId)}
           />
         );
       }
@@ -107,7 +115,7 @@ class RequestCard extends Component {
             titleStyle={styles.buttonTextStyle}
             clear
             buttonStyle={styles.buttonStyle}
-            onPress={this.onRespondClicked.bind(this, _id)}
+            onPress={this.onRespondClicked.bind(this, friendshipId, userId)}
           />
         );
       }
@@ -118,7 +126,9 @@ class RequestCard extends Component {
   }
 
   renderInfo() {
-    const { name, _id } = this.props.item;
+    const { user, friendshipId } = this.props.item;
+    const { name } = user;
+    const userId = user._id;
     return (
       <View style={styles.infoContainerStyle}>
         <View style={{ flex: 1, flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
@@ -126,7 +136,7 @@ class RequestCard extends Component {
         </View>
 
         <View style={styles.buttonContainerStyle}>
-          {this.renderButton(_id)}
+          {this.renderButton(friendshipId, userId)}
         </View>
       </View>
     );
@@ -158,7 +168,7 @@ class RequestCard extends Component {
   }
 
   renderOccupation() {
-    const { profile } = this.props.item;
+    const { profile } = this.props.item.user;
     if (profile.occupation) {
       return (
         <Text
@@ -174,6 +184,7 @@ class RequestCard extends Component {
   }
 
   render() {
+    console.log('item is: ', this.props.item);
     return (
       <View style={styles.containerStyle}>
         {this.renderProfileImage()}

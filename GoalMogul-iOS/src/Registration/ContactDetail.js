@@ -33,7 +33,7 @@ class ContactDetail extends Component {
         console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
         switch (buttonIndex) {
           case WITHDRAW_INDEX:
-            this.props.updateFriendship(_id, 'deleteFriend', TAB_KEY, () => {
+            this.props.updateFriendship(_id, '', 'deleteFriend', TAB_KEY, () => {
               this.setState({ requested: false });
             });
             break;
@@ -43,7 +43,7 @@ class ContactDetail extends Component {
       });
       return;
     }
-    this.props.updateFriendship(_id, 'requestFriend', TAB_KEY, () => {
+    this.props.updateFriendship(_id, '', 'requestFriend', TAB_KEY, () => {
       this.setState({ requested: true });
     });
   }
@@ -58,7 +58,7 @@ class ContactDetail extends Component {
               height: 16,
               width: 20,
               tintColor: checkIconColor
-            }} 
+            }}
           />
         </View>
       );
@@ -71,6 +71,7 @@ class ContactDetail extends Component {
   }
 
   render() {
+    console.log('item is: ', this.props.item.item);
     const { name, headline, _id } = this.props.item.item;
     return (
       <View style={styles.containerStyle}>
