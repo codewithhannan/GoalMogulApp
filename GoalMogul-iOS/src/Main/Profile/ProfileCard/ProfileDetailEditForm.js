@@ -6,12 +6,12 @@ import {
   TouchableOpacity,
   ScrollView,
   KeyboardAvoidingView,
-  ActionSheetIOS
+  ActionSheetIOS,
+  Dimensions
 } from 'react-native';
 import { Field, reduxForm } from 'redux-form';
 import { TextField } from 'react-native-material-textfield';
 import { connect } from 'react-redux';
-import { Permissions, ImagePicker } from 'expo';
 
 /* Component */
 import FormHeader from '../../Common/Header/FormHeader';
@@ -21,15 +21,16 @@ import editImage from '../../../asset/utils/edit.png';
 
 /* Actions */
 import { submitUpdatingProfile, openCamera, openCameraRoll } from '../../../actions';
-import ImageUtils from '../../../Utils/ImageUtils';
+
+/* Asset to delete */
+import profilePic from '../../../asset/test-profile-pic.png';
 
 const BUTTONS = ['Taking Pictures', 'Camera Roll', 'Cancel'];
 const TAKING_PICTURE_INDEX = 0;
 const CAMERA_ROLL_INDEX = 1;
 const CANCEL_INDEX = 2;
 
-/* Asset to delete */
-import profilePic from '../../../asset/test-profile-pic.png';
+const { width, height } = Dimensions.get('window');
 
 class ProfileDetailEditForm extends Component {
 
@@ -42,6 +43,11 @@ class ProfileDetailEditForm extends Component {
       JSON.stringify(values.profile.image);
     this.props.submitUpdatingProfile({ values, hasImageModified });
   };
+
+  handleOnFocus = (position) => {
+    console.log('on focus');
+    this.refs.scrollview.scrollTo({ x: 0, y: position, animated: true })
+  }
 
   chooseImage = async () => {
     ActionSheetIOS.showActionSheetWithOptions({
@@ -75,11 +81,19 @@ class ProfileDetailEditForm extends Component {
       JSON.stringify(value);
 
     let profileImage = (
-      <ImageBackground style={styles.imageStyle} source={profilePic}>
-        <View style={styles.iconContainerStyle}>
-          <Image style={styles.editIconStyle} source={editImage} />
+      <View style={styles.imageContainerStyle}>
+        <View style={styles.imageWrapperStyle}>
+          <ImageBackground
+            style={styles.imageStyle}
+            source={profilePic}
+            imageStyle={{ borderRadius: 13 }}
+          >
+            <View style={styles.iconContainerStyle}>
+              <Image style={styles.editIconStyle} source={editImage} />
+            </View>
+          </ImageBackground>
         </View>
-      </ImageBackground>
+      </View>
     )
     if (value) {
       let image;
@@ -88,17 +102,26 @@ class ProfileDetailEditForm extends Component {
       } else {
         image = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${value}`;
       }
-      profileImage =
-        <ImageBackground style={styles.imageStyle} source={{ uri: image }} >
-          <View style={styles.iconContainerStyle}>
-            <Image style={styles.editIconStyle} source={editImage} />
+      profileImage = (
+        <View style={styles.imageContainerStyle}>
+          <View style={styles.imageWrapperStyle}>
+            <ImageBackground
+              style={styles.imageStyle}
+              source={{ uri: image }}
+              imageStyle={{ borderRadius: 13 }}
+            >
+              <View style={styles.iconContainerStyle}>
+                <Image style={styles.editIconStyle} source={editImage} />
+              </View>
+            </ImageBackground>
           </View>
-        </ImageBackground>;
+        </View>
+      );
     }
 
     return (
       <TouchableOpacity onPress={this.chooseImage}>
-        <View style={{ alignSelf: 'center' }}>
+        <View style={{ alignSelf: 'center', justifyContent: 'center', alignItems: 'center' }}>
           {profileImage}
         </View>
       </TouchableOpacity>
@@ -107,13 +130,16 @@ class ProfileDetailEditForm extends Component {
 
   // TODO: convert this to an independent component
   renderInput = ({
-    input: { onChange, ...restInput },
+    input: { onChange, onFocus, ...restInput },
     label,
     secure,
     limitation,
     multiline,
     disabled,
-    meta: { touched, error },
+    clearButtonMode,
+    enablesReturnKeyAutomatically,
+    forFocus,
+    meta: { error },
     ...custom
   }) => {
     return (
@@ -125,11 +151,14 @@ class ProfileDetailEditForm extends Component {
           autoCorrect={false}
           onChangeText={onChange}
           error={error}
-          enablesReturnKeyAutomatically={false}
+          enablesReturnKeyAutomatically={enablesReturnKeyAutomatically}
           returnKeyType='done'
           secureTextEntry={secure}
           characterRestriction={limitation}
           multiline={multiline}
+          clearButtonMode={clearButtonMode}
+          onFocus={forFocus}
+          disabled={disabled}
           {...custom}
           {...restInput}
         />
@@ -150,6 +179,7 @@ class ProfileDetailEditForm extends Component {
           onSubmit={handleSubmit(this.submit)}
         />
         <ScrollView
+          ref='scrollview'
           style={styles.scroll}
           keyboardShouldPersistTaps='handled'
           contentContainerStyle={{ flexGrow: 1, backgroundColor: '#ffffff' }}
@@ -179,6 +209,9 @@ class ProfileDetailEditForm extends Component {
             component={this.renderInput}
             disabled={this.props.uploading}
             limitation={250}
+            multiline
+            clearButtonMode='while-editing'
+            forFocus={() => this.handleOnFocus(150)}
           />
           <Field
             name='profile.about'
@@ -187,6 +220,7 @@ class ProfileDetailEditForm extends Component {
             limitation={250}
             disabled={this.props.uploading}
             multiline
+            forFocus={() => this.handleOnFocus(200)}
           />
         </ScrollView>
       </KeyboardAvoidingView>
@@ -209,13 +243,28 @@ const styles = {
     marginBottom: 5,
   },
   imageStyle: {
-    width: 80,
-    height: 80,
-    borderRadius: 5,
-    marginTop: 10,
     opacity: 0.7,
+    width: (width * 0.9) / 3,
+    height: (width * 0.9) / 3,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    alignSelf: 'center'
+  },
+  imageWrapperStyle: {
+    alignItems: 'center',
+    borderRadius: 14,
+    borderColor: 'white',
+    borderWidth: 1
+  },
+  imageContainerStyle: {
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#646464',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 14,
+    alignSelf: 'center',
+    backgroundColor: 'white'
   },
   iconContainerStyle: {
     width: 32,

@@ -8,7 +8,7 @@ import {
 import { connect } from 'react-redux';
 
 /* Assets */
-import back from '../../asset/utils/back.png';
+import next from '../../asset/utils/next.png';
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
 
 /* Actions */
@@ -51,11 +51,11 @@ class ProfileSummaryCard extends Component {
           paddingTop: 10,
           paddingBottom: 10,
           borderLeftWidth: 1,
-          borderColor: 'lightgray'
+          borderColor: '#efefef'
         }}
       >
         <Image
-          source={back}
+          source={next}
           style={styles.iconStyle}
         />
       </TouchableOpacity>

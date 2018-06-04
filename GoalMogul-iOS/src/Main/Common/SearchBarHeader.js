@@ -85,7 +85,7 @@ class SearchBarHeader extends Component {
   renderSearchBarLeftIcon() {
     if (this.props.backButton) {
       return (
-        <View style={styles.headerLeftImage}>
+        <View style={{ height: 25, width: 25 }}>
           <TouchableOpacity onPress={this.handleBackOnClick.bind(this)}>
             {/*<Icon
               type='entypo'
@@ -96,7 +96,7 @@ class SearchBarHeader extends Component {
             */}
             <Image
               source={BackButton}
-              style={{ ...styles.headerLeftImage, tintColor: '#32485f' }}
+              style={{ height: 25, width: 25, tintColor: '#32485f' }}
             />
           </TouchableOpacity>
         </View>

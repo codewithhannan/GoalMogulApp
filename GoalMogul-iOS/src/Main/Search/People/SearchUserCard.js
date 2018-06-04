@@ -14,7 +14,7 @@ import Name from '../../Common/Name';
 // Assets
 import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
 import badge from '../../../asset/utils/badge.png';
-import back from '../../../asset/utils/back.png';
+import next from '../../../asset/utils/next.png';
 
 // Actions
 import { updateFriendship, openProfile } from '../../../actions';
@@ -52,7 +52,7 @@ class SearchUserCard extends Component {
           style={{ padding: 15 }}
         >
           <Image
-            source={back}
+            source={next}
             style={styles.iconStyle}
           />
         </TouchableOpacity>
