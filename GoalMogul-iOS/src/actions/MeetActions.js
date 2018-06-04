@@ -236,7 +236,7 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
     }
   })(type);
   const { token } = getState().user;
-  singleFetch(...requestType.url, { ...requestType.data }, requestType.type, token)
+  singleFetch(requestType.url, { ...requestType.data }, requestType.type, token)
     .then((res) => {
       console.log(`response for ${type}: `, res);
       if (res.message && !res.message.toLowerCase().trim().includes('success')) {
@@ -274,7 +274,8 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
         payload: {
           type,
           tab,
-          data: id
+          data: id,
+          message: 'updating friendship fails'
         }
       });
     });

@@ -164,8 +164,11 @@ export default (state = INITIAL_STATE, action) => {
       }
     */
     case MEET_UPDATE_FRIENDSHIP_DONE: {
-      let newState = { ...state };
-      const { data, type, tab } = action.payload;
+      let newState = _.cloneDeep(state);
+      const { data, type, tab, message } = action.payload;
+      if (message) {
+        return { ...newState };
+      }
       newState = ((updateType) => {
         switch (updateType) {
           case 'acceptFriend':
