@@ -9,6 +9,14 @@ if there is corresponding issue, state it
 -->
 
 * Version 0.0.1
+## 4 June 2018, by Jia Zeng <andyzeng96@gmail.com>
+* logo image on splash, tappable footer
+* registration buttons tappable and opacity
+* lighter gray for profile summary page divider
+* Profile edit form profile image styling
+* Setting divider lighter gray
+* fix multiline input
+
 ## 3 June 2018, by Jia Zeng <andyzeng96@gmail.com>
 * Test update friendship in profile page (block, unblock, request, withdraw request, accept and rejects)
 * action button design change for profile page (darken gray background)

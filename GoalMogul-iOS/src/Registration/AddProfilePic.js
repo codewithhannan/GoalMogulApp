@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity
+} from 'react-native';
 import { connect } from 'react-redux';
 
 /* Components */
@@ -43,16 +47,16 @@ class AddProfilePic extends Component {
             It helps your friends identify you
           </Text>
           <AddingProfilePicture />
-          <TouchableWithoutFeedback onPress={this.handleNextOnPressed.bind(this)}>
+          <TouchableOpacity onPress={this.handleNextOnPressed.bind(this)}>
             <View>
               <Button text='Next' />
             </View>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={this.handleSkipOnPressed.bind(this)}>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.handleSkipOnPressed.bind(this)}>
             <View>
               <Button text='Skip' arrow />
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
         </View>
       </View>
     );

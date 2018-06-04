@@ -70,9 +70,7 @@ class Contacts extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-
         <View style={{ flex: 1 }}>
-          {this.renderSyncContact()}
           <FlatList
             data={this.props.data}
             renderItem={this.renderItem}
@@ -81,6 +79,7 @@ class Contacts extends Component {
             refreshing={this.props.refreshing}
             onEndReached={this.handleOnLoadMore}
             onEndReachedThreshold={0.5}
+            ListEmptyComponent={this.renderSyncContact()}
           />
         </View>
         {/*
@@ -94,22 +93,22 @@ class Contacts extends Component {
 const styles = {
   // Extract label color out
   labelContainerStyle: {
-    marginTop: 10,
+    flex: 1,
+    marginTop: 20,
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 5,
     justifyContent: 'center'
   },
   labelTextStyle: {
     fontWeight: '600',
     color: '#969696',
-    fontSize: 11
+    fontSize: 13
   },
   buttonTextStyle: {
     marginLeft: 5,
     color: '#45C9F6',
-    fontSize: 11
+    fontSize: 13
   }
 };
 

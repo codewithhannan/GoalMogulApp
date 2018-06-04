@@ -39,7 +39,7 @@ const styles = {
     marginLeft: 15,
     marginRight: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#b8bec6'
+    borderBottomColor: '#e6e6e6'
   },
   titleContainerStyle: {
     flexDirection: 'row',

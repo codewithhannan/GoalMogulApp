@@ -44,7 +44,7 @@ const styles = {
   buttonGroupContainerStyle: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderColor: '#6b788e'
+    borderColor: '#b8bec6'
   }
 };
 

@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  TouchableWithoutFeedback,
-  ActivityIndicator
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -59,17 +58,17 @@ class Contacts extends Component {
             Note: we do not collect or share contact data.
           </Text>
 
-          <TouchableWithoutFeedback onPress={this.handleNextOnPressed.bind(this)}>
+          <TouchableOpacity onPress={this.handleNextOnPressed.bind(this)}>
             <View>
               <Button text='Sync' />
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
 
-          <TouchableWithoutFeedback onPress={this.handleSkipOnPressed.bind(this)}>
+          <TouchableOpacity onPress={this.handleSkipOnPressed.bind(this)}>
             <View>
               <Button text='Skip' arrow />
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
         </View>
       </View>
     );
