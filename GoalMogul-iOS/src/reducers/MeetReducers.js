@@ -166,7 +166,7 @@ export default (state = INITIAL_STATE, action) => {
     case MEET_UPDATE_FRIENDSHIP_DONE: {
       let newState = _.cloneDeep(state);
       const { data, type, tab, message } = action.payload;
-      const { id } = data;
+      const { friendshipId, userId } = data;
       if (message) {
         return { ...newState };
       }
@@ -181,7 +181,7 @@ export default (state = INITIAL_STATE, action) => {
             //   R.path(R.split('.', `${tab}.data`))(newState)
             // );
             const filterFunction = filterFactory(tab);
-            const newData = updateFriendshipData(tab, id, filterFunction)(newState);
+            const newData = updateFriendshipData(tab, userId, filterFunction)(newState);
             // console.log('new data is: ', newData);
             return _.set(newState, `${tab}.data`, newData);
           }
@@ -207,7 +207,7 @@ export default (state = INITIAL_STATE, action) => {
       const { type, data } = action.payload;
       let newState = _.set({ ...state }, `${type}.loading`, false);
       newState = _.set({ ...newState }, `${type}.refreshing`, false);
-      newState = _.set({ ...newState }, `${type}.skip`, action.payload.limit);
+      newState = _.set({ ...newState }, `${type}.skip`, action.payload.skip);
       newState = _.set({ ...newState }, `${type}.data`, data);
       return { ...newState };
     }
@@ -256,7 +256,7 @@ export default (state = INITIAL_STATE, action) => {
 
 // Curry function for getting user that is acted on
 const incomingGetUser = R.prop('initiator_id');
-const outgoingGetUser = R.pipe(R.prop('participants'), R.head, R.prop('users_id'));
+const outgoingGetUser = R.pipe(R.prop('participants'), R.last, R.prop('users_id'));
 const friendsGetUser = R.curry((state) => state); // Dummy function
 
 // Filtering for [friendship] by userId with customized getUser function

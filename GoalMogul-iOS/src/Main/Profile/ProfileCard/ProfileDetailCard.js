@@ -80,6 +80,7 @@ class ProfileDetailCard extends Component {
       console.log('request friend');
       this.props.updateFriendship(
         this.props.userId,
+        '',
         'requestFriend',
         'requests.outgoing',
         undefined
@@ -93,6 +94,7 @@ class ProfileDetailCard extends Component {
           console.log(`${DEBUG_KEY} User withdraw request _id: `, this.props.friendship._id);
           // this.props.blockUser(this.props.profileUserId);
           this.props.updateFriendship(
+            '',
             this.props.friendship._id,
             'deleteFriend',
             'requests.outgoing',
@@ -114,6 +116,7 @@ class ProfileDetailCard extends Component {
         [R.equals(0), () => {
           console.log(`${DEBUG_KEY} User unfriend _id: `, this.props.friendship._id);
           this.props.updateFriendship(
+            '',
             this.props.friendship._id,
             'deleteFriend',
             'friends',

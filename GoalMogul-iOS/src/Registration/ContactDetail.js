@@ -33,7 +33,7 @@ class ContactDetail extends Component {
         console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
         switch (buttonIndex) {
           case WITHDRAW_INDEX:
-            this.props.updateFriendship(_id, 'deleteFriend', TAB_KEY, () => {
+            this.props.updateFriendship(_id, '', 'deleteFriend', TAB_KEY, () => {
               this.setState({ requested: false });
             });
             break;
@@ -43,7 +43,7 @@ class ContactDetail extends Component {
       });
       return;
     }
-    this.props.updateFriendship(_id, 'requestFriend', TAB_KEY, () => {
+    this.props.updateFriendship(_id, '', 'requestFriend', TAB_KEY, () => {
       this.setState({ requested: true });
     });
   }

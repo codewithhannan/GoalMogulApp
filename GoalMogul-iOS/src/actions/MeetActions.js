@@ -159,7 +159,8 @@ export const handleRefresh = (key) => (dispatch, getState) => {
         type: key,
         data,
         skip: data.length,
-        limit: 20
+        limit: 20,
+        hasNextPage: !(data === undefined || data.length === 0)
       }
     });
   });
@@ -173,7 +174,7 @@ export const meetOnLoadMore = (key) => (dispatch, getState) => {
   const { skip, limit, hasNextPage } = tabState;
   if (hasNextPage || hasNextPage === undefined) {
     const { token } = getState().user;
-    loadOneTab(key, skip + limit, limit, token, dispatch, (data) => {
+    loadOneTab(key, skip, limit, token, dispatch, (data) => {
       const newSkip = data.length === 0 ? skip : skip + data.length;
       dispatch({
         type: MEET_LOADING_DONE,
@@ -197,7 +198,8 @@ export const meetOnLoadMore = (key) => (dispatch, getState) => {
   2. acceptFriend
   3. deleteFriend
 */
-export const updateFriendship = (id, type, tab, callback) => (dispatch, getState) => {
+export const updateFriendship = (userId, friendshipId, type, tab, callback) =>
+(dispatch, getState) => {
   // TODO: update type to MEET_UPDATE_FRIENDSHIP
   dispatch({
     type: MEET_UPDATE_FRIENDSHIP
@@ -211,7 +213,7 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
         return {
           type: 'POST',
           data: {
-            userId: id
+            userId
           },
           url: baseUrl
         };
@@ -219,7 +221,7 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
         return {
           type: 'PUT',
           data: {
-            friendshipId: id
+            friendshipId
           },
           url: baseUrl
         };
@@ -227,9 +229,9 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
       return {
         type: 'DELETE',
         data: {
-          friendshipId: id,
+          friendshipId,
         },
-        url: `${baseUrl}?friendshipId=${id}`
+        url: `${baseUrl}?friendshipId=${friendshipId}`
       };
       default:
         return 'POST';
@@ -255,7 +257,8 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
           type,
           tab,
           data: {
-            id,
+            friendshipId,
+            userId,
             data: res.data
           }
         }
@@ -277,7 +280,10 @@ export const updateFriendship = (id, type, tab, callback) => (dispatch, getState
         payload: {
           type,
           tab,
-          data: id,
+          data: {
+            friendshipId,
+            userId
+          },
           message: 'updating friendship fails'
         }
       });

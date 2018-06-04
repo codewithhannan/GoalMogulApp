@@ -172,20 +172,20 @@ export default (state = INITIAL_STATE, action) => {
     case MEET_UPDATE_FRIENDSHIP_DONE: {
       // If updating current profile's friendship, then update the status
       const { type, data, message } = action.payload;
-      const { id } = data;
+      const { userId, friendshipId } = data;
       const resData = data.data;
       let newFriendship = _.cloneDeep(state.friendship);
       if (!message) {
         // If no message, upate succeed
-        if (type === 'requestFriend' && id === state.userId) {
+        if (type === 'requestFriend' && userId === state.userId) {
           if (resData) {
             newFriendship = _.cloneDeep(resData);
           } else {
             newFriendship.status = 'Invited';
           }
-        } else if (type === 'deleteFriend' && id === state.friendship._id) {
+        } else if (type === 'deleteFriend' && friendshipId === state.friendship._id) {
           newFriendship.status = undefined;
-        } else if (type === 'acceptFriend' && id === state.friendship._id) {
+        } else if (type === 'acceptFriend' && friendshipId === state.friendship._id) {
           newFriendship.status = 'Accepted';
         }
       }
