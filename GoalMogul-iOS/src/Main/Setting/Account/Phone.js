@@ -37,6 +37,7 @@ class Phone extends Component {
 
   async handleOnVerifyPress() {
     console.log('user trying to verify phone number');
+    alert('Please check your message for a 6 digit verification code.');
 
     this.props.onVerifyPhoneNumber(this.handleRedirect);
   }
@@ -51,6 +52,7 @@ class Phone extends Component {
       return;
     }
     this.props.verifyPhoneNumberSuccess();
+    alert('You have successfully verified your phone number.');
   }
 
   /* Rendering */

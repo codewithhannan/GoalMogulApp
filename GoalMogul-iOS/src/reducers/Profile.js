@@ -13,6 +13,7 @@ import {
   PROFILE_FETCHING_FAIL
 } from '../actions/types';
 
+export const PROFILE_FETCH_MUTUAL_FRIEND = 'profile_fetch_mutual_friend';
 export const PROFILE_FETCH_MUTUAL_FRIEND_DONE = 'profile_fetch_mutual_friend_done';
 export const PROFILE_FETCH_FRIENDSHIP_DONE = 'profile_fetch_friendship_done';
 export const PROFILE_FETCH_FRIEND_DONE = 'profile_fetch_friend_done';
@@ -38,7 +39,12 @@ const INITIAL_STATE = {
   },
   // Me Page mutual friends count
   mutualFriends: {
-    count: 0
+    loading: false,
+    count: 0,
+    data: [],
+    skip: 0,
+    limit: 20,
+    hasNextPage: undefined
   },
   // Overall loading status
   loading: false,

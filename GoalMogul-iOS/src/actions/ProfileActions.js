@@ -20,6 +20,8 @@ import {
   PROFILE_FETCH_FRIEND_COUNT_DONE,
   PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE,
   PROFILE_FETCH_FRIENDSHIP_DONE,
+  PROFILE_FETCH_MUTUAL_FRIEND,
+  PROFILE_FETCH_MUTUAL_FRIEND_DONE
 } from '../reducers/Profile';
 
 const DEBUG_KEY = '[ Action Profile ]';
@@ -123,6 +125,14 @@ export const openProfile = (userId) => (dispatch, getState) => {
       });
       // TODO: show toaster saying loading fail
     });
+};
+
+export const fetchMutualFriends = () => (dispatch, getState) => {
+  dispatch({
+    type: PROFILE_FETCH_MUTUAL_FRIEND
+  });
+
+  const { token } = getState().user;
 };
 
 export const openProfileDetail = () => (dispatch) => {

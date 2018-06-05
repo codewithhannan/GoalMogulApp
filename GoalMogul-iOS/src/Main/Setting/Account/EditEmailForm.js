@@ -32,7 +32,7 @@ class EditEmailForm extends Component {
     // TODO: send code and show
     // update actions imported and used in connect()
     console.log('values are: ', values);
-    return this.props.onUpdateEmailSubmit(values);
+    return this.props.onUpdateEmailSubmit(values, (message) => alert(message));
   }
 
   /* Refactor error function out */

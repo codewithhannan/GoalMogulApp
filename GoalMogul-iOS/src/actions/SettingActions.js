@@ -45,12 +45,16 @@ export const onTabPress = tabId => {
 };
 
 /* Account actions */
-export const onResendEmailPress = () => (dispatch, getState) => {
+export const onResendEmailPress = (callback) => (dispatch, getState) => {
   dispatch({
     type: SETTING_RESENT_EMAIL_VERIFICATION
   });
   const { token } = getState().user;
+  const { email } = getState().profile.user;
   API.post('secure/user/account/verification', { for: 'email ' }, token).then((res) => {
+    if (callback) {
+      callback(`We\'ve resent a verification email to ${email.address}`);
+    }
     console.log('resend email verification: ', res);
   })
   .catch((err) => {
@@ -59,7 +63,7 @@ export const onResendEmailPress = () => (dispatch, getState) => {
 };
 
 // Update user email
-export const onUpdateEmailSubmit = values => {
+export const onUpdateEmailSubmit = (values, callback) => {
   return async (dispatch, getState) => {
     const { token } = getState().user;
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
@@ -84,6 +88,9 @@ export const onUpdateEmailSubmit = values => {
             payload: values.email
           });
           Actions.popTo('setting');
+          if (callback) {
+            callback('Your email has been updated. We\'ll send you a verification email shortly.');
+          }
           return;
         }
         return res.message;
