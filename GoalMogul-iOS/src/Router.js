@@ -31,6 +31,7 @@ import SearchOverlay from './Main/Search/SearchOverlay';
 
 // Home Tab
 import Home from './Main/Home/Home';
+import CreateGoalButtonOverlay from './Main/Common/Button/CreateGoalButtonOverlay';
 
 // Profile
 import Profile from './Main/Profile/Profile';
@@ -69,7 +70,7 @@ class RouterComponent extends Component {
           <Lightbox>
             <Scene key="root" hideNavBar>
               <Scene key="auth" initial hideNavBar>
-                <Scene key="splash" component={ProfileDetailEditForm} initial />
+                <Scene key="splash" component={Home} initial />
                 <Scene key="login" component={LoginPage} />
               </Scene>
 
@@ -175,6 +176,11 @@ class RouterComponent extends Component {
               <Scene key="photolib" component={CameraRollModal} />
             */}
             <Scene key="searchLightBox" component={SearchOverlay} hideNavBar />
+            <Scene
+              key="createGoalButtonOverlay"
+              component={CreateGoalButtonOverlay}
+              hideNavBar
+            />
           </Lightbox>
           <Scene
             key="profileDetailEditForm"

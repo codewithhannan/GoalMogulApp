@@ -15,9 +15,11 @@ export default class BaseLightbox extends Component {
   }
 
   componentDidMount() {
+    const { opacity } = this.props;
+    const value = opacity !== undefined ? opacity : 1;
     Animated.timing(this.state.opacity, {
       duration: 100,
-      toValue: 1,
+      toValue: value,
     }).start();
   }
 
