@@ -4,8 +4,7 @@ import {
   Image,
   TouchableWithoutFeedback,
   Text,
-  TouchableOpacity,
-  ActionSheetIOS
+  TouchableOpacity
 } from 'react-native';
 import R from 'ramda';
 import { Icon } from 'react-native-elements';
@@ -13,13 +12,13 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 
 /* Asset */
-import Logo from '../../asset/header/logo.png';
-import IconMenu from '../../asset/header/menu.png';
-import Setting from '../../asset/header/setting.png';
-import BackButton from '../../asset/utils/back.png';
-import FriendsSettingIcon from '../../asset/utils/friendsSettingIcon.png';
+import Logo from '../../../asset/header/logo.png';
+import IconMenu from '../../../asset/header/menu.png';
+import Setting from '../../../asset/header/setting.png';
+import BackButton from '../../../asset/utils/back.png';
+import FriendsSettingIcon from '../../../asset/utils/friendsSettingIcon.png';
 
-import { actionSheet, switchByButtonIndex } from './ActionSheetFactory';
+import { actionSheet, switchByButtonIndex } from '../ActionSheetFactory';
 
 /* Actions */
 import {
@@ -27,7 +26,7 @@ import {
   openProfile,
   openSetting,
   blockUser
-} from '../../actions';
+} from '../../../actions';
 
 const tintColor = '#33485e';
 

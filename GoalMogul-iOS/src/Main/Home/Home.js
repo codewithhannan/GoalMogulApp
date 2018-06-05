@@ -6,7 +6,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup';
-import SearchBarHeader from '../Common/SearchBarHeader';
+import SearchBarHeader from '../Common/Header/SearchBarHeader';
 
 import Mastermind from './Mastermind';
 import ActivityFeed from './ActivityFeed';

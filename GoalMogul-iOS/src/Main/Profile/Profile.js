@@ -5,7 +5,7 @@ import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
 import { connect } from 'react-redux';
 
 /* Components */
-import SearchBarHeader from '../Common/SearchBarHeader';
+import SearchBarHeader from '../Common/Header/SearchBarHeader';
 import ProfileSummaryCard from './ProfileSummaryCard';
 import TabButtonGroup from '../Common/TabButtonGroup';
 

@@ -11,7 +11,7 @@ import { Field, reduxForm } from 'redux-form';
 import { TextField } from 'react-native-material-textfield';
 
 /* Components */
-import SearchBarHeader from '../../Common/SearchBarHeader';
+import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import Button from '../Button';
 
 /* Styles */

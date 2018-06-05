@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 
 /* Components */
-import SearchBarHeader from '../../Common/SearchBarHeader';
+import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import Input from '../../Common/Text/Input';
 
 /* Styles */

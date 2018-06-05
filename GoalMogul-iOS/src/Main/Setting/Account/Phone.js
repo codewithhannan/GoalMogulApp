@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 
 /* Components */
-import SearchBarHeader from '../../Common/SearchBarHeader';
+import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import Button from '../Button';
 
 /* Styles */

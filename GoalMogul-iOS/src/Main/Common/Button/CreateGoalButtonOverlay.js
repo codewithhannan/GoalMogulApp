@@ -67,7 +67,7 @@ class CreateGoalButtonOverlay extends Component {
       <Animated.View style={{ ...styles.wrapperStyle, opacity: this.fadeAnim }}>
         <TouchableWithoutFeedback onPress={this.handleCancel}>
           <Animated.View style={[styles.fullscreen, { opacity: this.fadeAnim }]}>
-            <View style={[styles.fullscreen, { opacity: 0.7, backgroundColor: 'lightgray' }]} />
+            <View style={[styles.fullscreen, { opacity: 0.3, backgroundColor: '#000' }]} />
           </Animated.View>
         </TouchableWithoutFeedback>
         <View style={styles.containerStyle}>
