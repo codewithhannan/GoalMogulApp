@@ -36,23 +36,22 @@ const testData = [
 ];
 
 class FriendsBlocked extends Component {
-  componentWillMount() {
-    this.props.getBlockedUsers();
-  }
-
   handleOnLoadMore = () => {
     console.log(`${DEBUG_KEY} load more`);
+    this.props.getBlockedUsers();
   }
 
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} refresh`);
+    this.props.getBlockedUsers(true);
   }
 
   _keyExtractor = (item) => item._id;
 
-  renderItem = (item) => <FriendCard item={item} />;
+  renderItem = ({ item }) => <FriendCard item={item} />;
 
   render() {
+    const dataToRender = testData.concat(this.props.data);
     return (
       <View style={{ flex: 1 }}>
         <SearchBarHeader
@@ -62,7 +61,7 @@ class FriendsBlocked extends Component {
           onBackPress={() => Actions.pop()}
         />
         <FlatList
-          data={testData}
+          data={dataToRender}
           renderItem={this.renderItem}
           keyExtractor={this._keyExtractor}
           onRefresh={this.handleRefresh.bind()}
@@ -77,11 +76,12 @@ class FriendsBlocked extends Component {
 
 const mapStateToProps = state => {
   const { block } = state.setting;
-  const { refreshing } = block;
+  const { refreshing, data } = block;
 
   return {
     block,
-    refreshing
+    refreshing,
+    data
   };
 };
 

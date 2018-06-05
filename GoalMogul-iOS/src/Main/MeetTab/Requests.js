@@ -61,7 +61,7 @@ class Requests extends Component {
     this.props.meetOnLoadMore(route);
   }
 
-  _keyExtractor = (item) => item._id;
+  _keyExtractor = (item) => item.friendshipId;
 
   renderItem = ({ item }) => <RequestCard item={item} type={this.props.selectedTab} />;
 

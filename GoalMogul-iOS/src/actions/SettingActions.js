@@ -51,7 +51,7 @@ export const onResendEmailPress = (callback) => (dispatch, getState) => {
   });
   const { token } = getState().user;
   const { email } = getState().profile.user;
-  API.post('secure/user/account/verification', { for: 'email ' }, token).then((res) => {
+  API.post('secure/user/account/verification', { for: 'email' }, token).then((res) => {
     if (callback) {
       callback(`We\'ve resent a verification email to ${email.address}`);
     }
@@ -260,55 +260,45 @@ export const updateFriendsSetting = () => (dispatch, getState) => {
 };
 
 // Setting account get blocked users with skip and limit
-export const getBlockedUsers = () => (dispatch, getState) => {
+export const getBlockedUsers = (refresh) => (dispatch, getState) => {
   dispatch({
     type: SETTING_BLOCK_FETCH_ALL
   });
   const { token } = getState().user;
-  const { skip, limit } = getState().setting.block;
-  fetchBlockedUsers(skip, limit, token, (res) => {
-    console.log('response for get all blocked users: ', res);
-    dispatch({
-      type: SETTING_BLOCK_FETCH_ALL_DONE,
-      payload: {
-        skip: skip + limit,
-        data: []
+  const { skip, limit, hasNextPage } = getState().setting.block;
+  const newSkip = refresh ? 0 : skip;
+  if (hasNextPage === undefined || hasNextPage) {
+    API
+    .get(`secure/user/settings/block?skip=${newSkip}&limit=${limit}`, token)
+    .then((res) => {
+      console.log('response for get all blocked users: ', res);
+      if (res.data !== null && res.data) {
+        const { data } = res;
+        dispatch({
+          type: SETTING_BLOCK_FETCH_ALL_DONE,
+          payload: {
+            skip: newSkip + data.length,
+            data,
+            refresh,
+            hasNextPage: data.length !== 0
+          }
+        });
       }
+    })
+    .catch((error) => {
+      console.log('error for getting blocked user: ', error);
+      dispatch({
+        type: SETTING_BLOCK_FETCH_ALL_DONE,
+        payload: {
+          skip: newSkip,
+          data: [],
+          message: error,
+          refresh,
+          hasNextPage: undefined
+        }
+      });
     });
-  });
-};
-
-// Refresh blocked user page with skip and limit
-export const refreshBlockedUsers = () => (dispatch, getState) => {
-  dispatch({
-    type: SETTING_BLOCK_FETCH_ALL
-  });
-  const { token } = getState().user;
-  const { limit } = getState().setting.block;
-
-  fetchBlockedUsers(0, limit, token, (res) => {
-    console.log(`response to refresh blocked users with limit: ${limit}: `, res);
-    dispatch({
-      type: SETTING_BLOCK_FETCH_ALL_DONE,
-      payload: {
-        skip: limit,
-        data: []
-      }
-    });
-  });
-};
-
-const fetchBlockedUsers = (skip, limit, token, callback) => {
-  API
-  .get(`secure/user/settings/block?skip=${skip}&limit=${limit}`, token)
-  .then((res) => {
-    if (callback) {
-      callback(res);
-    }
-  })
-  .catch((error) => {
-    console.log('error for getting all blocked user: ', error);
-  });
+  }
 };
 
 // Block one particular user with userId

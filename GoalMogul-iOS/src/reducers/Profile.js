@@ -146,10 +146,23 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
 
+    case PROFILE_FETCH_MUTUAL_FRIEND: {
+      let newState = _.cloneDeep(state);
+      newState.mutualFriends.loading = true;
+      return { ...newState };
+    }
+
     // profile fetch mutual friend request done
     case PROFILE_FETCH_MUTUAL_FRIEND_DONE: {
+      const { skip, hasNextPage, data, refresh } = action.payload;
       let newMutualFriends = _.cloneDeep(state.mutualFriends);
-      newMutualFriends.data = action.payload;
+      if (refresh) {
+        newMutualFriends.data = data;
+      } else {
+        newMutualFriends.data = newMutualFriends.data.concat(data);
+      }
+      newMutualFriends.hasNextPage = hasNextPage;
+      newMutualFriends.skip = skip;
       return { ...state, mutualFriends: newMutualFriends };
     }
 

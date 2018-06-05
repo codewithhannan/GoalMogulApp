@@ -15,8 +15,8 @@ import Styles from './Styles';
 // Actions
 import { unblockUser } from '../../../../actions';
 
-// Asset to delete
-import profilePic from '../../../../asset/test-profile-pic.png';
+// Assets
+import profilePic from '../../../../asset/utils/defaultUserProfile.png';
 
 class FriendCard extends Component {
   onUnBlocked = (userId) => {
@@ -44,7 +44,7 @@ class FriendCard extends Component {
   };
 
   render() {
-    const { item } = this.props.item;
+    const { item } = this.props;
     console.log('item is: ', item);
     if (item) {
       const { name } = item;
@@ -69,7 +69,7 @@ class FriendCard extends Component {
     }
     return '';
   }
-};
+}
 
 export default connect(null, {
   unblockUser

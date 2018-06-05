@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {
   SETTING_OPEN_SETTING,
   SETTING_TAB_SELECTION,
@@ -86,16 +87,22 @@ export default (state = INITIAL_STATE, action) => {
     case SETTING_BLOCK_FETCH_ALL:
       return { ...state, block: { ...state.block, fetching: true } };
 
-    case SETTING_BLOCK_FETCH_ALL_DONE:
-      return {
-        ...state,
-        block: {
-          ...state.block,
-          fetching: false,
-          data: action.payload.data,
-          skip: action.payload.skip
+    case SETTING_BLOCK_FETCH_ALL_DONE: {
+      const { data, refresh, skip, hasNextPage, message } = action.payload;
+      let newState = _.cloneDeep(state);
+      if (!message) {
+        if (refresh) {
+          newState.block.data = data;
+        } else {
+          newState.block.data = newState.block.data.concat(data);
         }
-      };
+        newState.block.skip = skip;
+        newState.block.hasNextPage = hasNextPage;
+        newState.block.refreshing = false;
+      }
+
+      return { ...newState };
+    }
 
     case SETTING_BLOCK_BLOCK_REQUEST: {
       return { ...state };

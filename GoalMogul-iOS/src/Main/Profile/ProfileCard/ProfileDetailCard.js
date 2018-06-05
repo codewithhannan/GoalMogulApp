@@ -9,10 +9,10 @@ import {
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import R from 'ramda';
+import { Actions } from 'react-native-router-flux';
 
-/* Asset to delete */
-import profilePic from '../../../asset/test-profile-pic.png';
 /* Assets */
+import profilePic from '../../../asset/utils/defaultUserProfile.png';
 import addUser from '../../../asset/utils/addUser.png';
 import love from '../../../asset/utils/love.png';
 import edit from '../../../asset/utils/edit.png';
@@ -135,7 +135,7 @@ class ProfileDetailCard extends Component {
   }
 
   handleMutualFriendOnPressed = () => {
-
+    Actions.push('mutualFriends');
   }
 
   renderProfileActionButton() {

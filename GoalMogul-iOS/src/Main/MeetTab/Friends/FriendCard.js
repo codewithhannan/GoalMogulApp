@@ -137,7 +137,7 @@ class FriendCard extends Component {
   }
 
   renderOccupation() {
-    const { profile } = this.props.item.user;
+    const { profile } = this.props.item;
     if (profile.occupation) {
       return (
         <Text

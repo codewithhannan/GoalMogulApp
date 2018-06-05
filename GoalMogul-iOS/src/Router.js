@@ -39,6 +39,7 @@ import Profile from './Main/Profile/Profile';
 import ProfileDetail from './Main/Profile/ProfileDetail';
 // ProfileForm
 import ProfileDetailEditForm from './Main/Profile/ProfileCard/ProfileDetailEditForm';
+import MutualFriends from './Main/Profile/MutualFriends';
 
 // Account
 import Setting from './Main/Setting/Setting';
@@ -193,6 +194,7 @@ class RouterComponent extends Component {
             component={CreateGoalModal}
             hideNavBar
           />
+          <Scene key="mutualFriends" component={MutualFriends} />
         </Modal>
 
       </Router>
