@@ -9,7 +9,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import { FieldArray, Field, reduxForm } from 'redux-form';
+import { Field, reduxForm } from 'redux-form';
 import _ from 'lodash';
 
 /* Components */
@@ -29,7 +29,7 @@ import { } from '../../actions';
 const STEP_PLACE_HOLDER = 'Add an important step to achieving your goal...';
 const NEED_PLACE_HOLDER = 'Something you\'re specifically looking for help with';
 
-class CreateGoalModal extends Component {
+class CreatePostModal extends Component {
 
   componentDidMount() {
     this.initializeForm();
@@ -109,7 +109,7 @@ class CreateGoalModal extends Component {
     );
   }
 
-  renderGoal() {
+  renderPost() {
     const titleText = <Text style={styles.titleTextStyle}>Your Goal</Text>;
     return (
       <View>
@@ -127,77 +127,6 @@ class CreateGoalModal extends Component {
     );
   }
 
-  renderGoalDescription = ({ fields, meta: { error, submitFailed } }) => {
-    const button = fields.length > 0 ?
-      <Button text='remove description' source={cancel} onPress={() => fields.remove(0)} />
-      :
-      <Button text='detailed description' source={plus} onPress={() => fields.push({})} />;
-    return (
-      <View style={{ marginTop: 10 }}>
-        {
-          fields.map((description, index) => {
-            return (
-              <Field
-                key={`description-${index}`}
-                name={description}
-                component={InputField}
-                editable
-                numberOfLines={4}
-                style={styles.standardInputStyle}
-              />
-            );
-          })
-        }
-        {button}
-      </View>
-    );
-  }
-
-  renderCategory() {
-
-  }
-
-  renderFieldArray = (title, buttonText, placeholder, fields, error) => {
-    const button = <Button text={buttonText} source={plus} onPress={() => fields.push()} />;
-    const titleText = <Text style={styles.titleTextStyle}>{title}</Text>;
-    return (
-      <View style={{ marginTop: 10 }}>
-        {titleText}
-        {
-          fields.map((field, index) => {
-            const iconOnPress = index === 0 ?
-              undefined
-              :
-              () => fields.remove(index);
-            return (
-              <Field
-                key={`description-${index}`}
-                name={field}
-                component={InputField}
-                editable
-                numberOfLines={4}
-                style={styles.standardInputStyle}
-                placeholder={placeholder}
-                iconSource={cancel}
-                iconStyle={styles.cancelIconStyle}
-                iconOnPress={iconOnPress}
-              />
-            );
-          })
-        }
-        {button}
-      </View>
-    );
-  }
-
-  renderSteps = ({ fields, meta: { error, submitFailed } }) => {
-    return this.renderFieldArray('Steps', 'step', STEP_PLACE_HOLDER, fields, error);
-  }
-
-  renderNeeds = ({ fields, meta: { error, submitFailed } }) => {
-    return this.renderFieldArray('Needs (optional)', 'need', NEED_PLACE_HOLDER, fields, error);
-  }
-
   render() {
     const { handleSubmit, errors } = this.props;
     return (
@@ -209,11 +138,7 @@ class CreateGoalModal extends Component {
         <ScrollView style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}>
           <View style={{ flex: 1, padding: 20 }}>
             {this.renderUserInfo()}
-            {this.renderGoal()}
-            <FieldArray name="description" component={this.renderGoalDescription} />
-            {this.renderCategory()}
-            <FieldArray name="steps" component={this.renderSteps} />
-            <FieldArray name="needs" component={this.renderNeeds} />
+            {this.renderPost()}
           </View>
 
         </ScrollView>
@@ -266,10 +191,10 @@ const styles = {
   }
 };
 
-CreateGoalModal = reduxForm({
-  form: 'createGoalModal',
+CreatePostModal = reduxForm({
+  form: 'createPoalModal',
   enableReinitialize: true
-})(CreateGoalModal);
+})(CreatePostModal);
 
 const mapStateToProps = state => {
   const { user } = state.user;
@@ -284,4 +209,4 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   null
-)(CreateGoalModal);
+)(CreatePostModal);
