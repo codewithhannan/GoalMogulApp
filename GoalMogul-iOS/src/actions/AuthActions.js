@@ -12,7 +12,8 @@ import {
 } from './types';
 
 import {
-  USER_LOAD_PROFILE_DONE
+  USER_LOAD_PROFILE_DONE,
+  USER_LOG_OUT
 } from '../reducers/User';
 
 export const userNameChanged = (username) => {
@@ -107,4 +108,11 @@ export const registerUser = () => (dispatch) => {
     type: REGISTRATION_ACCOUNT
   });
   Actions.registration();
+};
+
+export const logout = () => (dispatch) => {
+  dispatch({
+    type: USER_LOG_OUT
+  });
+  Actions.popTo('splash');
 };

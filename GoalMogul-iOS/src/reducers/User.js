@@ -22,6 +22,7 @@ const INITIAL_STATE = {
 };
 
 export const USER_LOAD_PROFILE_DONE = 'user_load_profile_done';
+export const USER_LOG_OUT = 'user_log_out';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -37,7 +38,7 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS: {
-      const profile = { ...state.profile };
+      const profile = _.cloneDeep(state.profile);
       profile.imageObjectId = action.payload;
       return { ...state, profile };
     }
@@ -46,6 +47,10 @@ export default (state = INITIAL_STATE, action) => {
       let newState = _.cloneDeep(state);
       newState.user = { ...action.payload };
       return { ...newState };
+    }
+
+    case USER_LOG_OUT: {
+      return { ...INITIAL_STATE };
     }
 
     default:
