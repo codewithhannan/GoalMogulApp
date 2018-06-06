@@ -4,16 +4,21 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Image,
-  TextInput
+  TextInput,
+  Text
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
+import { FieldArray, Field, reduxForm } from 'redux-form';
 
 /* Components */
 import ModalHeader from '../Common/Header/ModalHeader';
+import Button from './Button';
 
 // assets
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
+import plus from '../../asset/utils/plus.png';
+import cancel_no_background from '../../asset/utils/cancel_no_background.png';
+
 
 // Actions
 import { } from '../../actions';
@@ -24,12 +29,13 @@ class CreateGoalModal extends Component {
     input: { onChange, onFocus, ...restInput },
     multiline,
     editable,
-    clearButtonMode,
     numberOfLines,
     placeholder,
+    style,
     meta: { touched, error },
     ...custom
   }) => {
+    console.log('custom areL ', restInput);
     // TODO: placeholderTextColor
     return (
       <View style={styles.inputContainerStyle}>
@@ -41,12 +47,12 @@ class CreateGoalModal extends Component {
           numberOfLines={1 || numberOfLines}
           returnKeyType='done'
           multiline={multiline}
-          clearButtonMode={clearButtonMode}
           onFocus={onFocus}
           editable={editable}
           placeholder={placeholder}
-          {...custom}
+          style={style}
           {...restInput}
+          {...custom}
         />
       </View>
     );
@@ -59,18 +65,58 @@ class CreateGoalModal extends Component {
       imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
       profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
     }
-    return profileImage;
+    return (
+      <View style={{ flexDirection: 'row', marginBottom: 15 }}>
+        {profileImage}
+        <View style={{ flexDirection: 'column', marginLeft: 15 }}>
+          <Text style={{ fontSize: 18 }}>
+            Jordan Gardener
+          </Text>
+        </View>
+      </View>
+    );
   }
 
-  renderGoalDescription() {
+  renderGoal() {
     const titleText = <Text style={styles.titleTextStyle}>Your Goal</Text>;
-    const field = (
-      <Field
-        name='description'
-        component={this.renderInput}
-        editable={this.props.uploading}
-        numberOfLines={}
-      />
+    return (
+      <View>
+        {titleText}
+        <Field
+          name='goal'
+          label='goal'
+          component={this.renderInput}
+          editable={this.props.uploading}
+          numberOfLines={4}
+          style={styles.goalInputStyle}
+          placeholder='What are you trying to achieve?'
+        />
+      </View>
+    );
+  }
+
+  renderGoalDescription = ({ fields, meta: { error, submitFailed } }) => {
+    const button = fields.length > 0 ?
+      <Button text='remove description' source={cancel_no_background} onPress={() => fields.remove(0)} />
+      :
+      <Button text='detailed description' source={plus} onPress={() => fields.push({})} />;
+    return (
+      <View style={{ marginTop: 10 }}>
+        {
+          fields.map((description, index) => {
+            return (
+              <Field
+                name={`description.${index}`}
+                component={this.renderInput}
+                editable
+                numberOfLines={4}
+                style={styles.standardInputStyle}
+              />
+            );
+          })
+        }
+        {button}
+      </View>
     );
   }
 
@@ -78,8 +124,37 @@ class CreateGoalModal extends Component {
 
   }
 
-  renderSteps() {
-
+  renderSteps = ({ fields, meta: { error, submitFailed } }) => {
+    const button = fields.length > 0 ?
+      <Button text='remove step' source={cancel_no_background} onPress={() => fields.remove(0)} />
+      :
+      <Button text='step' source={plus} onPress={() => fields.push({})} />;
+    return (
+      <View style={{ marginTop: 10 }}>
+        <Field
+          name='step.0'
+          component={this.renderInput}
+          editable
+          numberOfLines={4}
+          style={styles.standardInputStyle}
+          placeholder='Add an important step to achieving your goal...'
+        />
+        {
+          fields.map((description, index) => {
+            return (
+              <Field
+                name={`step.${index + 1}`}
+                component={this.renderInput}
+                editable
+                numberOfLines={4}
+                style={styles.standardInputStyle}
+              />
+            );
+          })
+        }
+        {button}
+      </View>
+    );
   }
 
   renderNeeds() {
@@ -94,12 +169,13 @@ class CreateGoalModal extends Component {
         style={{ flex: 1, backgroundColor: '#ffffff' }}
       >
         <ModalHeader title='New Goal' actionText='Create' />
-        <ScrollView>
+        <ScrollView style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}>
           <View style={{ flex: 1, padding: 20 }}>
             {this.renderUserInfo()}
-            {this.renderGoalDescription()}
+            {this.renderGoal()}
+            <FieldArray name="description" component={this.renderGoalDescription} />
             {this.renderCategory()}
-            {this.renderSteps()}
+            <FieldArray name="steps" component={this.renderSteps} />
             {this.renderNeeds()}
           </View>
 
@@ -111,23 +187,39 @@ class CreateGoalModal extends Component {
 
 const styles = {
   inputContainerStyle: {
-    shadowColor: 'gray',
-    shadowOffset: { width: 0, height: 1.5 },
-    shadowOpacity: 0.1,
+    marginTop: 5,
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: '#e9e9e9',
+    shadowColor: '#ddd',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.8,
     shadowRadius: 1,
-    elevation: 0.5
-  }
+    elevation: 1,
+  },
   imageStyle: {
     height: 54,
     width: 54,
     borderRadius: 5,
   },
   titleTextStyle: {
-    fontSize: 10,
-    color: '#a1a1a1'
+    fontSize: 13,
+    color: '#a1a1a1',
+    padding: 2
+  },
+  standardInputStyle: {
+    fontSize: 15,
+    padding: 15,
+    paddingRight: 18,
+    paddingLeft: 18
+  },
+  goalInputStyle: {
+    fontSize: 20,
+    padding: 30,
+    paddingRight: 20,
+    paddingLeft: 20
   }
 };
-
 
 CreateGoalModal = reduxForm({
   form: 'createGoalModal',
