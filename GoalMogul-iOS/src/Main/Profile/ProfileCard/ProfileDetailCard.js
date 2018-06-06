@@ -56,6 +56,9 @@ const CANCEL_REQUEST_CANCEL_INDEX = 1;
 const UNFRIEND_REQUEST_OPTIONS = ['Unfriend', 'Cancel'];
 const UNFRIEND_REQUEST_CANCEL_INDEX = 1;
 
+const RESPOND_REQUEST_OPTIONS = ['Accpet', 'Remove', 'Cancel'];
+const RESPOND_REQUEST_CANCEL_INDEX = 2;
+
 // TODO: use redux instead of passed in props
 class ProfileDetailCard extends Component {
   componentWillMount() {
@@ -132,6 +135,38 @@ class ProfileDetailCard extends Component {
       );
       return unFriendActionSheet();
     }
+
+    if (type === 'respond') {
+      const respondRequestSwitchCases = switchByButtonIndex([
+        [R.equals(1), () => {
+          console.log(`${DEBUG_KEY} User refuse _id: `, this.props.friendship._id);
+          this.props.updateFriendship(
+            '',
+            this.props.friendship._id,
+            'deleteFriend',
+            'requests.incoming',
+            undefined
+          );
+        }],
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User accpet _id: `, this.props.friendship._id);
+          this.props.updateFriendship(
+            '',
+            this.props.friendship._id,
+            'acceptFriend',
+            'requests.incoming',
+            undefined
+          );
+        }],
+      ]);
+
+      const respondActionSheet = actionSheet(
+        RESPOND_REQUEST_OPTIONS,
+        RESPOND_REQUEST_CANCEL_INDEX,
+        respondRequestSwitchCases
+      );
+      return respondActionSheet();
+    }
   }
 
   handleMutualFriendOnPressed = () => {
@@ -151,6 +186,16 @@ class ProfileDetailCard extends Component {
 
     // const status = DEBUG ? 'Accepted' : this.props.friendship.status;
     const status = this.props.friendship.status;
+
+    if (this.props.needRespond) {
+      return (
+        <ProfileActionButton
+          text='Respond'
+          onPress={this.handleButtonOnPress.bind(this, 'respond')}
+          style={{ height: 14, width: 15 }}
+        />
+      );
+    }
 
     switch (status) {
       case undefined:
@@ -334,6 +379,9 @@ const mapStateToProps = state => {
   const self = state.profile.userId.toString() === state.user.userId.toString();
   const { user, friendship, userId, mutualFriends } = state.profile;
   const friendsCount = state.meet.friends.count;
+  const needRespond = friendship.initiator_id
+    && (friendship.initiator_id !== state.user.userId)
+    && (friendship.status === 'Invited');
 
   return {
     self,
@@ -341,7 +389,8 @@ const mapStateToProps = state => {
     friendship,
     userId,
     friendsCount,
-    mutualFriends
+    mutualFriends,
+    needRespond
   };
 };
 

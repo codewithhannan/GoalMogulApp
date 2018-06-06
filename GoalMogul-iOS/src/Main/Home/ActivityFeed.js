@@ -23,14 +23,14 @@ class ActivityFeed extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <FlatList
-          enableEmptySections
-          data={testData}
-          renderItem={(item) => this.renderItem(item)}
-          numColumns={1}
-          keyExtractor={this._keyExtractor}
-          onEndThreshold={0}
-        />
+        {/*
+          <FlatList
+            data={testData}
+            renderItem={this.renderItem}
+            numColumns={1}
+            keyExtractor={this._keyExtractor}
+          />
+        */}
         {/*
           refreshing={this.props.refreshing}
           onEndReached={this.onLoadMore}

@@ -280,7 +280,8 @@ export const getBlockedUsers = (refresh) => (dispatch, getState) => {
             skip: newSkip + data.length,
             data,
             refresh,
-            hasNextPage: data.length !== 0
+            hasNextPage: data.length !== 0,
+            message: undefined
           }
         });
       }
@@ -302,14 +303,17 @@ export const getBlockedUsers = (refresh) => (dispatch, getState) => {
 };
 
 // Block one particular user with userId
-export const blockUser = (userId) => (dispatch, getState) => {
+export const blockUser = (userId, callback) => (dispatch, getState) => {
   dispatch({
     type: SETTING_BLOCK_BLOCK_REQUEST,
     payload: userId
   });
   const { token } = getState().user;
-  API.post(`${BASE_ROUTE}/block`, { userId }, token).then((res) => {
+  API.post(`${BASE_ROUTE}/block`, { blockeeId: userId }, token).then((res) => {
     console.log(`${DEBUG_KEY}: block user with res: `, res);
+    if (callback) {
+      callback();
+    }
     dispatch({
       type: SETTING_BLOCK_BLOCK_REQUEST_DONE,
       payload: userId
@@ -325,17 +329,21 @@ export const blockUser = (userId) => (dispatch, getState) => {
 };
 
 // Setting account unblock user
-export const unblockUser = (userId) => (dispatch, getState) => {
+export const unblockUser = (blockId, callback) => (dispatch, getState) => {
   dispatch({
     type: SETTING_BLOCK_UNBLOCK_REQUEST,
-    payload: userId
+    payload: blockId
   });
   const { token } = getState().user;
-  API.delete(`${BASE_ROUTE}/block`, { userId }, token).then((res) => {
-    console.log(`${DEBUG_KEY} response for deleting a blocked user: `, userId, ', is: ', res);
+  API.delete(`${BASE_ROUTE}/block?blockId=${blockId}`, { blockId }, token).then((res) => {
+    console.log(`${DEBUG_KEY} response for deleting a blocked user: `, blockId, ', is: ', res);
+    if (callback) {
+      callback();
+    }
+
     dispatch({
       type: SETTING_BLOCK_UNBLOCK_REQUEST_DONE,
-      payload: userId
+      payload: blockId
     });
   })
   .catch((error) => {

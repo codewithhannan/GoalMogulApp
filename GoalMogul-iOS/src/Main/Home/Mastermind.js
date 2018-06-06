@@ -57,12 +57,15 @@ class Mastermind extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <FlatList
-          data={testData}
-          renderItem={this.renderItem}
-          numColumns={1}
-          keyExtractor={this._keyExtractor}
-        />
+        {/*
+          <FlatList
+            data={testData}
+            renderItem={this.renderItem}
+            numColumns={1}
+            keyExtractor={this._keyExtractor}
+          />
+        */}
+
         {/*
           refreshing={this.props.refreshing}
           onEndReached={this.onLoadMore}

@@ -15,6 +15,9 @@ import FriendCard from './FriendCard';
 // Actions
 import { getBlockedUsers } from '../../../../actions';
 
+// selectors
+import { getBlockees } from '../../../../redux/modules/setting/selector';
+
 const DEBUG_KEY = '[ Component FriendsBlocked ]';
 
 const testData = [
@@ -38,7 +41,7 @@ const testData = [
 class FriendsBlocked extends Component {
   handleOnLoadMore = () => {
     console.log(`${DEBUG_KEY} load more`);
-    this.props.getBlockedUsers();
+    this.props.getBlockedUsers(false);
   }
 
   handleRefresh = () => {
@@ -46,12 +49,11 @@ class FriendsBlocked extends Component {
     this.props.getBlockedUsers(true);
   }
 
-  _keyExtractor = (item) => item._id;
+  _keyExtractor = (item) => item.blockId;
 
   renderItem = ({ item }) => <FriendCard item={item} />;
 
   render() {
-    const dataToRender = testData.concat(this.props.data);
     return (
       <View style={{ flex: 1 }}>
         <SearchBarHeader
@@ -61,13 +63,11 @@ class FriendsBlocked extends Component {
           onBackPress={() => Actions.pop()}
         />
         <FlatList
-          data={dataToRender}
+          data={this.props.data}
           renderItem={this.renderItem}
           keyExtractor={this._keyExtractor}
           onRefresh={this.handleRefresh.bind()}
           refreshing={this.props.refreshing}
-          onEndReached={this.handleOnLoadMore}
-          onEndReachedThreshold={0.5}
         />
       </View>
     );
@@ -76,12 +76,12 @@ class FriendsBlocked extends Component {
 
 const mapStateToProps = state => {
   const { block } = state.setting;
-  const { refreshing, data } = block;
+  const { refreshing } = block;
 
   return {
     block,
     refreshing,
-    data
+    data: getBlockees(state)
   };
 };
 

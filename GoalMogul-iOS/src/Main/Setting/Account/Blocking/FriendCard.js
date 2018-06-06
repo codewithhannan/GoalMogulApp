@@ -19,39 +19,46 @@ import { unblockUser } from '../../../../actions';
 import profilePic from '../../../../asset/utils/defaultUserProfile.png';
 
 class FriendCard extends Component {
-  onUnBlocked = (userId) => {
-    console.log('[ Unblock user ]: ', userId);
-    this.props.unblockUser(userId);
+  onUnBlocked = (blockId) => {
+    console.log('[ Unblock user ]: ', blockId);
+    this.props.unblockUser(
+      blockId,
+      () => alert(
+        `You have successfully unblock ${this.props.item.user.name}. Please pull to refresh.`
+      )
+    );
   };
 
   renderProfileImage = (url) => {
     if (url) {
-      return <Image style={Styles.imageStyle} source={url} />;
+      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${url}`
+      return <Image style={Styles.imageStyle} source={{ uri: imageUrl }} />;
     }
     return <Image style={Styles.imageStyle} source={profilePic} />;
   };
 
-  renderButton = (item) => {
+  renderButton = (blockId) => {
     return (
       <Button
         title='Unblock'
         titleStyle={Styles.buttonTextStyle}
         clear
         buttonStyle={Styles.buttonStyle}
-        onPress={() => this.onUnBlocked(item._id)}
+        onPress={() => this.onUnBlocked(blockId)}
       />
     );
   };
 
   render() {
     const { item } = this.props;
+    const { user, blockId } = item;
     console.log('item is: ', item);
-    if (item) {
-      const { name } = item;
+    if (user) {
+      const { name, profile } = user;
       return (
         <View style={{ height: 60, flex: 1 }}>
           <View style={{ flexDirection: 'row', padding: 10 }}>
-            {this.renderProfileImage()}
+            {this.renderProfileImage(profile.image)}
             <View style={{ flex: 1, marginLeft: 10, marginRight: 10 }}>
               <Text
                 ellipsizeMode='tail'
@@ -61,7 +68,7 @@ class FriendCard extends Component {
               </Text>
             </View>
 
-            {this.renderButton(item)}
+            {this.renderButton(blockId)}
           </View>
 
         </View>

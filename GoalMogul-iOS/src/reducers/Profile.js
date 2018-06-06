@@ -54,6 +54,7 @@ const INITIAL_STATE = {
   */
   friendship: {
     _id: undefined,
+    initiator_id: undefined,
     status: undefined // one of [undefined, 'Invited', 'Accepted']
   },
 

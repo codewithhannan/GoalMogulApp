@@ -7,6 +7,15 @@ import {
 } from 'react-native';
 
 const ProfileActionButton = (props) => {
+  let image = '';
+  if (props.source) {
+    image = (
+      <Image
+        source={props.source}
+        style={{ backgroundColor: '#f3f3f3', height: 15, width: 15, ...props.style }}
+      />
+    );
+  }
   return (
     <TouchableOpacity onPress={props.onPress}>
       <View
@@ -20,10 +29,7 @@ const ProfileActionButton = (props) => {
           backgroundColor: '#f3f3f3'
         }}
       >
-        <Image
-          source={props.source}
-          style={{ backgroundColor: '#f3f3f3', height: 15, width: 15, ...props.style }}
-        />
+        {image}
       <Text style={{ fontSize: 9.5, marginLeft: 5, alignSelf: 'center' }}>
           {props.text}
         </Text>

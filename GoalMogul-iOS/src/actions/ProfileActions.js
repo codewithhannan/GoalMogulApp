@@ -83,6 +83,7 @@ export const openProfile = (userId) => (dispatch, getState) => {
   const friendsCountPromise = self ?
     API.get(`secure/user/friendship/count?userId=${userId}`, token) :
     API.get(`secure/user/friendship/mutual-friends/count?userId=${userId}`, token);
+    // new Promise((resolve, reject) => resolve({ data: [] }));
 
   // If self, fetch nothing. Otherwise, fetch friendship with userId
   const friendshipPromise = self ?

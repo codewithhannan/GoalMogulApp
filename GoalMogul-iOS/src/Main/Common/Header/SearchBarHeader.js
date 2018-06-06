@@ -64,10 +64,16 @@ class SearchBarHeader extends Component {
   }
 
   handleFriendsSettingOnClick = () => {
+    const text = 'Please go to Settings to manage blocked users.';
     const switchCases = switchByButtonIndex([
       [R.equals(0), () => {
         console.log(`${DEBUG_KEY} User blocks _id: `, this.props.profileUserId);
-        this.props.blockUser(this.props.profileUserId);
+        this.props.blockUser(
+          this.props.profileUserId,
+          () => alert(
+            `You have successfully blocked ${this.props.profileUserName}. ${text}`
+          )
+        );
       }],
       [R.equals(1), () => {
         console.log(`${DEBUG_KEY} User reports profile with _id: `, this.props.profileUserId);
@@ -249,12 +255,14 @@ const styles = {
 const mapStateToProps = state => {
   const { userId } = state.user;
   const profileUserId = state.profile.userId;
+  const profileUserName = state.profile.user.name;
   const haveSetting = state.profile.userId.toString() === state.user.userId.toString();
 
   return {
     userId,
     haveSetting,
-    profileUserId
+    profileUserId,
+    profileUserName
   };
 };
 

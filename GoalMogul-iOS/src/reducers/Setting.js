@@ -91,9 +91,10 @@ export default (state = INITIAL_STATE, action) => {
       const { data, refresh, skip, hasNextPage, message } = action.payload;
       let newState = _.cloneDeep(state);
       if (!message) {
-        if (refresh) {
+        if (refresh || skip === 0) {
           newState.block.data = data;
         } else {
+          console.log('payload is: ', action.payload);
           newState.block.data = newState.block.data.concat(data);
         }
         newState.block.skip = skip;
