@@ -13,6 +13,10 @@ import {
   PROFILE_FETCHING_FAIL
 } from '../actions/types';
 
+import {
+  USER_LOG_OUT
+} from './User';
+
 export const PROFILE_FETCH_MUTUAL_FRIEND = 'profile_fetch_mutual_friend';
 export const PROFILE_FETCH_MUTUAL_FRIEND_DONE = 'profile_fetch_mutual_friend_done';
 export const PROFILE_FETCH_FRIENDSHIP_DONE = 'profile_fetch_friendship_done';
@@ -211,6 +215,10 @@ export default (state = INITIAL_STATE, action) => {
       }
 
       return { ...state, friendship: newFriendship };
+    }
+
+    case USER_LOG_OUT: {
+      return { ...INITIAL_STATE };
     }
 
     default:

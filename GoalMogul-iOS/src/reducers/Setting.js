@@ -16,6 +16,10 @@ import {
   SETTING_BLOCK_UNBLOCK_REQUEST_DONE
 } from '../actions/types';
 
+import {
+  USER_LOG_OUT
+} from './User';
+
 const INITIAL_STATE = {
   email: {},
   phone: {},
@@ -123,6 +127,10 @@ export default (state = INITIAL_STATE, action) => {
 
     case SETTING_BLOCK_UNBLOCK_REQUEST_DONE: {
       return { ...state };
+    }
+
+    case USER_LOG_OUT: {
+      return { ...INITIAL_STATE };
     }
 
     default:

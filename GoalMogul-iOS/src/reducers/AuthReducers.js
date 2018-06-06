@@ -8,6 +8,9 @@ import {
   REGISTRATION_ACCOUNT,
   REGISTRATION_ACCOUNT_SUCCESS
 } from '../actions/types';
+import {
+  USER_LOG_OUT
+} from './User';
 
 const INITIAL_STATE = {
   username: '',
@@ -41,6 +44,10 @@ export default (state = INITIAL_STATE, action) => {
 
     case REGISTRATION_ACCOUNT_SUCCESS:
       return { ...state };
+
+    case USER_LOG_OUT: {
+      return { ...INITIAL_STATE };
+    }
 
     default:
       return { ...state };
