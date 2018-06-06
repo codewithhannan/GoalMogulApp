@@ -20,24 +20,24 @@ class FormHeader extends Component {
   }
 
   render() {
-    const { textStyle } = styles;
+    const { cancelTextStyle, saveTextStyle, titleTextStyle } = styles;
     return (
       <View style={styles.headerStyle}>
         <View style={{ flex: 2, alignItems: 'flex-start' }}>
         <TouchableOpacity onPress={this.onCancelPress}>
 
-            <Text style={textStyle}>Cancel</Text>
+            <Text style={cancelTextStyle}>Cancel</Text>
 
         </TouchableOpacity>
         </View>
 
         <View style={{ flex: 1 }}>
-          <Text style={textStyle}>{this.props.title}</Text>
+          <Text style={titleTextStyle}>{this.props.title}</Text>
         </View>
         <View style={{ flex: 2, alignItems: 'flex-end' }}>
         <TouchableOpacity onPress={this.onSavePress}>
 
-            <Text style={textStyle}>Save</Text>
+            <Text style={saveTextStyle}>Save</Text>
 
         </TouchableOpacity>
         </View>
@@ -46,19 +46,34 @@ class FormHeader extends Component {
   }
 }
 
+const fontSize = 16;
+
 const styles = {
   headerStyle: {
     flexDirection: 'row',
     backgroundColor: '#ffffff',
-    paddingBottom: 12,
-    paddingTop: 30,
-    paddingLeft: 12,
-    paddingRight: 12
+    paddingBottom: 18,
+    paddingTop: 35,
+    paddingLeft: 17,
+    paddingRight: 17,
+    borderBottomColor: '#e9e9e9',
+    borderBottomWidth: 1
   },
-  textStyle: {
-    fontSize: 18,
-    color: '#000000',
-    alignSelf: 'center'
+  cancelTextStyle: {
+    fontSize,
+    alignSelf: 'center',
+    color: '#45C9F6',
+  },
+  titleTextStyle: {
+    fontSize,
+    alignSelf: 'center',
+    fontWeight: '600'
+  },
+  saveTextStyle: {
+    color: '#45C9F6',
+    fontSize,
+    alignSelf: 'center',
+    fontWeight: '700'
   }
 };
 

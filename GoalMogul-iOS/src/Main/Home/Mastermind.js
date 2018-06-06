@@ -80,8 +80,8 @@ class Mastermind extends Component {
 const styles = {
   iconContainerStyle: {
     position: 'absolute',
-    bottom: 70,
-    right: 30,
+    bottom: 20,
+    right: 15,
     height: 40,
     width: 40,
     borderRadius: 20,

@@ -255,7 +255,7 @@ const styles = {
     borderWidth: 1
   },
   imageContainerStyle: {
-    marginTop: 10,
+    marginTop: 30,
     borderWidth: 1,
     borderColor: '#646464',
     alignItems: 'center',

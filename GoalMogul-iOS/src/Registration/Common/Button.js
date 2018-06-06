@@ -14,12 +14,14 @@ const Button = (props) => {
     return (
       <View style={containerStyle}>
         <Text style={textStyle}>{props.text}</Text>
-        <Icon
-          name='ios-arrow-round-forward'
-          type='ionicon'
-          color='#34c0dd'
-          iconStyle={styles.iconStyle}
-        />
+        <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+          <Icon
+            name='ios-arrow-round-forward'
+            type='ionicon'
+            color='#34c0dd'
+            iconStyle={styles.iconStyle}
+          />
+        </View>
       </View>
     );
   }
@@ -51,8 +53,7 @@ const styles = {
   iconStyle: {
     alignSelf: 'center',
     fontSize: 26,
-    marginLeft: 5,
-    marginTop: 3
+    marginLeft: 5
   }
 };
 

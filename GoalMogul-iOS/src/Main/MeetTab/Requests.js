@@ -32,12 +32,12 @@ const routes = {
 
 const Tabs = [
   {
-    name: 'Outgoing',
-    key: 'outgoing'
-  },
-  {
     name: 'Incoming',
     key: 'incoming'
+  },
+  {
+    name: 'Outgoing',
+    key: 'outgoing'
   }
 ];
 

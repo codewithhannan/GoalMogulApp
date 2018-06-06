@@ -111,7 +111,7 @@ export const onUpdateEmailSubmit = (values, callback) => {
 };
 
 // update user phone number
-export const onUpdatePhoneNumberSubmit = values => {
+export const onUpdatePhoneNumberSubmit = (values, callback) => {
   return async (dispatch, getState) => {
     const { token } = getState().user;
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
@@ -136,6 +136,9 @@ export const onUpdatePhoneNumberSubmit = values => {
             payload: values.phone
           });
           Actions.pop();
+          if (callback) {
+            callback();
+          }
           return;
         }
         return res.message;
@@ -152,6 +155,15 @@ export const onUpdatePhoneNumberSubmit = values => {
       });
     }
   };
+};
+
+export const onAddVerifyPhone = (handleRedirect) => async (dispatch) => {
+  const returnUrl = Expo.Linking.makeUrl('/');
+  addLinkingListener(handleRedirect);
+  const result = await WebBrowser.openBrowserAsync(
+    `https://goalmogul-web.herokuapp.com/phone-verification?returnURL=${returnUrl}`
+  );
+  removeLinkingListener(handleRedirect);
 };
 
 // Verify phone number

@@ -45,7 +45,6 @@ class Friends extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <FriendsFilterBar />
         <View style={{ flex: 1 }}>
           <FlatList
             data={this.props.data}

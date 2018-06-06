@@ -167,16 +167,18 @@ class SearchBarHeader extends Component {
     return (
       <TouchableOpacity onPress={() => Actions.push('searchLightBox')}>
         <View style={styles.searchButtonContainerStyle}>
-        <Icon
-          type='font-awesome'
-          name='search'
-          size={17}
-          color='#b2b3b4'
-        />
-        <Text style={styles.searchPlaceHolderTextStyle}>
-          Search GoalMogul
-        </Text>
-      </View>
+          <View style={{ marginBottom: 3 }}>
+            <Icon
+              type='font-awesome'
+              name='search'
+              size={17}
+              color='#b2b3b4'
+            />
+          </View>
+          <Text style={styles.searchPlaceHolderTextStyle}>
+            Search GoalMogul
+          </Text>
+        </View>
       </TouchableOpacity>
     );
   }
@@ -248,7 +250,7 @@ const styles = {
     fontSize: 13,
     alignSelf: 'center',
     color: '#b2b3b4',
-    marginLeft: 3
+    marginLeft: 5
   }
 };
 

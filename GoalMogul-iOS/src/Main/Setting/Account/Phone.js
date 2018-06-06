@@ -45,7 +45,7 @@ class Phone extends Component {
   handleRedirect = event => {
     WebBrowser.dismissBrowser();
     // TODO: parse url and determine verification states
-    let { path, queryParams } = Expo.Linking.parse(event.url);
+    const { path, queryParams } = Expo.Linking.parse(event.url);
 
     if (path === 'status=fail') {
       // TODO: error handling, verification failed
