@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 
 /* Components */
-import SearchBarHeader from '../../Common/SearchBarHeader';
+import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import Button from '../Button';
 
 /* Styles */
@@ -37,6 +37,7 @@ class Phone extends Component {
 
   async handleOnVerifyPress() {
     console.log('user trying to verify phone number');
+    alert('Please check your message for a 6 digit verification code.');
 
     this.props.onVerifyPhoneNumber(this.handleRedirect);
   }
@@ -44,13 +45,14 @@ class Phone extends Component {
   handleRedirect = event => {
     WebBrowser.dismissBrowser();
     // TODO: parse url and determine verification states
-    let { path, queryParams } = Expo.Linking.parse(event.url);
+    const { path, queryParams } = Expo.Linking.parse(event.url);
 
     if (path === 'status=fail') {
       // TODO: error handling, verification failed
       return;
     }
     this.props.verifyPhoneNumberSuccess();
+    alert('You have successfully verified your phone number.');
   }
 
   /* Rendering */

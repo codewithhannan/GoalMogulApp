@@ -31,12 +31,15 @@ import SearchOverlay from './Main/Search/SearchOverlay';
 
 // Home Tab
 import Home from './Main/Home/Home';
+import CreateGoalButtonOverlay from './Main/Common/Button/CreateGoalButtonOverlay';
+import CreateGoalModal from './Main/Goal/CreateGoalModal';
 
 // Profile
 import Profile from './Main/Profile/Profile';
 import ProfileDetail from './Main/Profile/ProfileDetail';
 // ProfileForm
 import ProfileDetailEditForm from './Main/Profile/ProfileCard/ProfileDetailEditForm';
+import MutualFriends from './Main/Profile/MutualFriends';
 
 // Account
 import Setting from './Main/Setting/Setting';
@@ -69,7 +72,7 @@ class RouterComponent extends Component {
           <Lightbox>
             <Scene key="root" hideNavBar>
               <Scene key="auth" initial hideNavBar>
-                <Scene key="splash" component={ProfileDetailEditForm} initial />
+                <Scene key="splash" component={SplashScreen} initial />
                 <Scene key="login" component={LoginPage} />
               </Scene>
 
@@ -175,12 +178,23 @@ class RouterComponent extends Component {
               <Scene key="photolib" component={CameraRollModal} />
             */}
             <Scene key="searchLightBox" component={SearchOverlay} hideNavBar />
+            <Scene
+              key="createGoalButtonOverlay"
+              component={CreateGoalButtonOverlay}
+              hideNavBar
+            />
           </Lightbox>
           <Scene
             key="profileDetailEditForm"
             component={ProfileDetailEditForm}
             hideNavBar
           />
+          <Scene
+            key="createGoalModal"
+            component={CreateGoalModal}
+            hideNavBar
+          />
+          <Scene key="mutualFriends" component={MutualFriends} />
         </Modal>
 
       </Router>
@@ -198,7 +212,7 @@ const styles = {
     borderBottomColor: 'transparent'
   },
   tabBarStyle: {
-
+    backgroundColor: 'white'
   }
 };
 

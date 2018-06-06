@@ -6,31 +6,31 @@ import {
   Text
 } from 'react-native';
 
-const ProfileActionButton = (props) => {
-  let image = '';
-  if (props.source) {
-    image = (
-      <Image
-        source={props.source}
-        style={{ backgroundColor: '#f3f3f3', height: 15, width: 15, ...props.style }}
-      />
-    );
-  }
+const Button = (props) => {
   return (
     <TouchableOpacity onPress={props.onPress}>
       <View
         style={{
           flexDirection: 'row',
           alignSelf: 'flex-end',
-          marginTop: 7,
-          marginRight: 8,
+          marginTop: 10,
           padding: 7,
           borderRadius: 5,
           backgroundColor: '#f3f3f3'
         }}
       >
-        {image}
-      <Text style={{ fontSize: 9.5, marginLeft: 5, alignSelf: 'center' }}>
+        <Image
+          source={props.source}
+          style={{
+            backgroundColor: '#f3f3f3',
+            height: 10,
+            width: 10,
+            tintColor: '#a1a1a1',
+            alignSelf: 'center',
+            ...props.style
+          }}
+        />
+        <Text style={{ fontSize: 10, marginLeft: 5, alignSelf: 'center', color: '#a1a1a1' }}>
           {props.text}
         </Text>
       </View>
@@ -38,4 +38,4 @@ const ProfileActionButton = (props) => {
   );
 };
 
-export default ProfileActionButton;
+export default Button;

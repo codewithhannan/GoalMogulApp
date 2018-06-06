@@ -13,6 +13,11 @@ import {
   PROFILE_FETCHING_FAIL
 } from '../actions/types';
 
+import {
+  USER_LOG_OUT
+} from './User';
+
+export const PROFILE_FETCH_MUTUAL_FRIEND = 'profile_fetch_mutual_friend';
 export const PROFILE_FETCH_MUTUAL_FRIEND_DONE = 'profile_fetch_mutual_friend_done';
 export const PROFILE_FETCH_FRIENDSHIP_DONE = 'profile_fetch_friendship_done';
 export const PROFILE_FETCH_FRIEND_DONE = 'profile_fetch_friend_done';
@@ -38,7 +43,12 @@ const INITIAL_STATE = {
   },
   // Me Page mutual friends count
   mutualFriends: {
-    count: 0
+    loading: false,
+    count: 0,
+    data: [],
+    skip: 0,
+    limit: 20,
+    hasNextPage: undefined
   },
   // Overall loading status
   loading: false,
@@ -48,6 +58,7 @@ const INITIAL_STATE = {
   */
   friendship: {
     _id: undefined,
+    initiator_id: undefined,
     status: undefined // one of [undefined, 'Invited', 'Accepted']
   },
 
@@ -140,10 +151,23 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
 
+    case PROFILE_FETCH_MUTUAL_FRIEND: {
+      let newState = _.cloneDeep(state);
+      newState.mutualFriends.loading = true;
+      return { ...newState };
+    }
+
     // profile fetch mutual friend request done
     case PROFILE_FETCH_MUTUAL_FRIEND_DONE: {
+      const { skip, hasNextPage, data, refresh } = action.payload;
       let newMutualFriends = _.cloneDeep(state.mutualFriends);
-      newMutualFriends.data = action.payload;
+      if (refresh) {
+        newMutualFriends.data = data;
+      } else {
+        newMutualFriends.data = newMutualFriends.data.concat(data);
+      }
+      newMutualFriends.hasNextPage = hasNextPage;
+      newMutualFriends.skip = skip;
       return { ...state, mutualFriends: newMutualFriends };
     }
 
@@ -191,6 +215,10 @@ export default (state = INITIAL_STATE, action) => {
       }
 
       return { ...state, friendship: newFriendship };
+    }
+
+    case USER_LOG_OUT: {
+      return { ...INITIAL_STATE };
     }
 
     default:

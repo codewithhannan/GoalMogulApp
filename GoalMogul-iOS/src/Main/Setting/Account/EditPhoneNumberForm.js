@@ -9,9 +9,10 @@ import {
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { TextField } from 'react-native-material-textfield';
+import Expo, { WebBrowser } from 'expo';
 
 /* Components */
-import SearchBarHeader from '../../Common/SearchBarHeader';
+import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import Button from '../Button';
 
 /* Styles */
@@ -19,7 +20,11 @@ import Styles from '../Styles';
 
 /* Actions */
 /* TODO: update actions needed */
-import { onUpdatePhoneNumberSubmit } from '../../../actions';
+import {
+  onUpdatePhoneNumberSubmit,
+  onAddVerifyPhone,
+  verifyPhoneNumberSuccess
+} from '../../../actions';
 
 const validatePhone = value =>
   value && /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(value)
@@ -32,7 +37,27 @@ class EditPhoneNumberForm extends Component {
     // TODO: send code and show
     // update actions imported and used in connect()
     console.log('values are: ', values);
-    return this.props.onUpdatePhoneNumberSubmit(values);
+    return this.props.onUpdatePhoneNumberSubmit(values, () => this.handleOnVerifyPress());
+  }
+
+  handleOnVerifyPress = async () => {
+    console.log('user trying to verify phone number');
+    alert('Please check your message for a 6 digit verification code.');
+
+    this.props.onAddVerifyPhone(this.handleRedirect);
+  }
+
+  handleRedirect = event => {
+    WebBrowser.dismissBrowser();
+    // TODO: parse url and determine verification states
+    const { path, queryParams } = Expo.Linking.parse(event.url);
+
+    if (path === 'status=fail') {
+      // TODO: error handling, verification failed
+      return;
+    }
+    this.props.verifyPhoneNumberSuccess();
+    alert('You have successfully verified your phone number.');
   }
 
   /* Refactor error function out */
@@ -145,5 +170,9 @@ EditPhoneNumberForm = reduxForm({
 
 export default connect(
   null,
-  { onUpdatePhoneNumberSubmit }
+  {
+    onUpdatePhoneNumberSubmit,
+    onAddVerifyPhone,
+    verifyPhoneNumberSuccess
+  }
 )(EditPhoneNumberForm);

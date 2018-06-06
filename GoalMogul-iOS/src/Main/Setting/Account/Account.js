@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
   View,
-  ScrollView
+  ScrollView,
+  Alert
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
@@ -10,7 +11,7 @@ import { connect } from 'react-redux';
 import SettingCard from '../SettingCard';
 
 // Actions
-import { fetchProfile } from '../../../actions';
+import { fetchProfile, logout } from '../../../actions';
 
 class Account extends Component {
   render() {
@@ -41,6 +42,18 @@ class Account extends Component {
             explanation="Manage blocked users"
             onPress={() => Actions.friendsBlocked()}
           />
+          <SettingCard
+            title="Log out"
+            key="logout"
+            explanation="Log out current account"
+            onPress={() => {
+              Alert.alert('Log out', 'Are you sure to log out?', [
+                  { text: 'Cancel', onPress: () => console.log('user cancel logout') },
+                  { text: 'Confirm', onPress: () => this.props.logout() }
+                ]
+              );
+            }}
+          />
         </ScrollView>
       </View>
     );
@@ -55,4 +68,10 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { fetchProfile })(Account);
+export default connect(
+  mapStateToProps,
+  {
+    fetchProfile,
+    logout
+  }
+)(Account);

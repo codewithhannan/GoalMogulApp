@@ -11,7 +11,7 @@ import { Field, reduxForm } from 'redux-form';
 import { TextField } from 'react-native-material-textfield';
 
 /* Components */
-import SearchBarHeader from '../../Common/SearchBarHeader';
+import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import Button from '../Button';
 
 /* Styles */
@@ -32,7 +32,7 @@ class EditEmailForm extends Component {
     // TODO: send code and show
     // update actions imported and used in connect()
     console.log('values are: ', values);
-    return this.props.onUpdateEmailSubmit(values);
+    return this.props.onUpdateEmailSubmit(values, (message) => alert(message));
   }
 
   /* Refactor error function out */

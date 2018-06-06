@@ -32,12 +32,12 @@ const routes = {
 
 const Tabs = [
   {
-    name: 'Outgoing',
-    key: 'outgoing'
-  },
-  {
     name: 'Incoming',
     key: 'incoming'
+  },
+  {
+    name: 'Outgoing',
+    key: 'outgoing'
   }
 ];
 
@@ -61,7 +61,7 @@ class Requests extends Component {
     this.props.meetOnLoadMore(route);
   }
 
-  _keyExtractor = (item) => item._id;
+  _keyExtractor = (item) => item.friendshipId;
 
   renderItem = ({ item }) => <RequestCard item={item} type={this.props.selectedTab} />;
 

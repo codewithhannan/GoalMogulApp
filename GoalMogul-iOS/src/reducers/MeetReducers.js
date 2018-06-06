@@ -18,6 +18,10 @@ import {
   PROFILE_FETCH_FRIEND_COUNT_DONE
 } from './Profile';
 
+import {
+  USER_LOG_OUT
+} from './User';
+
 const limit = 20;
 const filter = {
   friends: {
@@ -205,10 +209,11 @@ export default (state = INITIAL_STATE, action) => {
     // Handle tab refresh
     case MEET_TAB_REFRESH_DONE: {
       const { type, data } = action.payload;
-      let newState = _.set({ ...state }, `${type}.loading`, false);
-      newState = _.set({ ...newState }, `${type}.refreshing`, false);
-      newState = _.set({ ...newState }, `${type}.skip`, action.payload.skip);
-      newState = _.set({ ...newState }, `${type}.data`, data);
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, `${type}.loading`, false);
+      newState = _.set(newState, `${type}.refreshing`, false);
+      newState = _.set(newState, `${type}.skip`, action.payload.skip);
+      newState = _.set(newState, `${type}.data`, data);
       return { ...newState };
     }
 
@@ -249,13 +254,18 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, friends: newFriends };
     }
 
+    case USER_LOG_OUT: {
+      return { ...INITIAL_STATE };
+    }
+
     default:
       return { ...state };
   }
 };
 
 // Curry function for getting user that is acted on
-const incomingGetUser = R.prop('initiator_id');
+// const incomingGetUser = R.prop('initiator_id');
+const incomingGetUser = R.pipe(R.prop('participants'), R.head, R.prop('users_id'));
 const outgoingGetUser = R.pipe(R.prop('participants'), R.last, R.prop('users_id'));
 const friendsGetUser = R.curry((state) => state); // Dummy function
 

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 
 /* Components */
-import SearchBarHeader from '../../Common/SearchBarHeader';
+import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 
 /* Styles */
 import Styles from '../Styles';

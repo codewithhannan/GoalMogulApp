@@ -4,8 +4,7 @@ import {
   Image,
   TouchableWithoutFeedback,
   Text,
-  TouchableOpacity,
-  ActionSheetIOS
+  TouchableOpacity
 } from 'react-native';
 import R from 'ramda';
 import { Icon } from 'react-native-elements';
@@ -13,13 +12,13 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 
 /* Asset */
-import Logo from '../../asset/header/logo.png';
-import IconMenu from '../../asset/header/menu.png';
-import Setting from '../../asset/header/setting.png';
-import BackButton from '../../asset/utils/back.png';
-import FriendsSettingIcon from '../../asset/utils/friendsSettingIcon.png';
+import Logo from '../../../asset/header/logo.png';
+import IconMenu from '../../../asset/header/menu.png';
+import Setting from '../../../asset/header/setting.png';
+import BackButton from '../../../asset/utils/back.png';
+import FriendsSettingIcon from '../../../asset/utils/friendsSettingIcon.png';
 
-import { actionSheet, switchByButtonIndex } from './ActionSheetFactory';
+import { actionSheet, switchByButtonIndex } from '../ActionSheetFactory';
 
 /* Actions */
 import {
@@ -27,7 +26,7 @@ import {
   openProfile,
   openSetting,
   blockUser
-} from '../../actions';
+} from '../../../actions';
 
 const tintColor = '#33485e';
 
@@ -65,10 +64,16 @@ class SearchBarHeader extends Component {
   }
 
   handleFriendsSettingOnClick = () => {
+    const text = 'Please go to Settings to manage blocked users.';
     const switchCases = switchByButtonIndex([
       [R.equals(0), () => {
         console.log(`${DEBUG_KEY} User blocks _id: `, this.props.profileUserId);
-        this.props.blockUser(this.props.profileUserId);
+        this.props.blockUser(
+          this.props.profileUserId,
+          () => alert(
+            `You have successfully blocked ${this.props.profileUserName}. ${text}`
+          )
+        );
       }],
       [R.equals(1), () => {
         console.log(`${DEBUG_KEY} User reports profile with _id: `, this.props.profileUserId);
@@ -162,16 +167,18 @@ class SearchBarHeader extends Component {
     return (
       <TouchableOpacity onPress={() => Actions.push('searchLightBox')}>
         <View style={styles.searchButtonContainerStyle}>
-        <Icon
-          type='font-awesome'
-          name='search'
-          size={17}
-          color='#b2b3b4'
-        />
-        <Text style={styles.searchPlaceHolderTextStyle}>
-          Search GoalMogul
-        </Text>
-      </View>
+          <View style={{ marginBottom: 3 }}>
+            <Icon
+              type='font-awesome'
+              name='search'
+              size={17}
+              color='#b2b3b4'
+            />
+          </View>
+          <Text style={styles.searchPlaceHolderTextStyle}>
+            Search GoalMogul
+          </Text>
+        </View>
       </TouchableOpacity>
     );
   }
@@ -243,19 +250,21 @@ const styles = {
     fontSize: 13,
     alignSelf: 'center',
     color: '#b2b3b4',
-    marginLeft: 3
+    marginLeft: 5
   }
 };
 
 const mapStateToProps = state => {
   const { userId } = state.user;
   const profileUserId = state.profile.userId;
+  const profileUserName = state.profile.user.name;
   const haveSetting = state.profile.userId.toString() === state.user.userId.toString();
 
   return {
     userId,
     haveSetting,
-    profileUserId
+    profileUserId,
+    profileUserName
   };
 };
 

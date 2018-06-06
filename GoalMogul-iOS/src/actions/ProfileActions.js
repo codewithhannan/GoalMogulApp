@@ -20,6 +20,8 @@ import {
   PROFILE_FETCH_FRIEND_COUNT_DONE,
   PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE,
   PROFILE_FETCH_FRIENDSHIP_DONE,
+  PROFILE_FETCH_MUTUAL_FRIEND,
+  PROFILE_FETCH_MUTUAL_FRIEND_DONE
 } from '../reducers/Profile';
 
 const DEBUG_KEY = '[ Action Profile ]';
@@ -81,6 +83,7 @@ export const openProfile = (userId) => (dispatch, getState) => {
   const friendsCountPromise = self ?
     API.get(`secure/user/friendship/count?userId=${userId}`, token) :
     API.get(`secure/user/friendship/mutual-friends/count?userId=${userId}`, token);
+    // new Promise((resolve, reject) => resolve({ data: [] }));
 
   // If self, fetch nothing. Otherwise, fetch friendship with userId
   const friendshipPromise = self ?
@@ -123,6 +126,51 @@ export const openProfile = (userId) => (dispatch, getState) => {
       });
       // TODO: show toaster saying loading fail
     });
+};
+
+// Fetch mutual friends
+export const fetchMutualFriends = (userId, refresh) => (dispatch, getState) => {
+  dispatch({
+    type: PROFILE_FETCH_MUTUAL_FRIEND
+  });
+
+  const { token } = getState().user;
+  const { skip, limit, hasNextPage } = getState().profile.mutualFriends;
+  const newSkip = refresh ? 0 : skip;
+  if (hasNextPage === undefined || hasNextPage) {
+    API
+      .get(
+        `secure/user/friendship/mutual-friends?userId=${userId}&skip=${skip}&limit=${limit}`,
+        token
+      )
+      .then((res) => {
+        console.log(`${DEBUG_KEY} fetch mutual friends with res: `, res);
+        if (res.data) {
+          const data = res.data;
+          dispatch({
+            type: PROFILE_FETCH_MUTUAL_FRIEND_DONE,
+            payload: {
+              skip: newSkip + res.data.length,
+              hasNextPage: !(data === undefined || data.length === 0),
+              data: data === null || data === undefined ? [] : data,
+              refresh
+            }
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(`${DEBUG_KEY} fetch mutual friends error: ${err}`);
+        dispatch({
+          type: PROFILE_FETCH_MUTUAL_FRIEND_DONE,
+          payload: {
+            skip,
+            hasNextPage,
+            data: [],
+            refresh: false
+          }
+        });
+      });
+  }
 };
 
 export const openProfileDetail = () => (dispatch) => {

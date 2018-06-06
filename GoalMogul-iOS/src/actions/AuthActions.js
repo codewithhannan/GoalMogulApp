@@ -11,6 +11,11 @@ import {
   LOGIN_USER_LOADING
 } from './types';
 
+import {
+  USER_LOAD_PROFILE_DONE,
+  USER_LOG_OUT
+} from '../reducers/User';
+
 export const userNameChanged = (username) => {
   return {
     type: USERNAME_CHANGED,
@@ -62,6 +67,7 @@ export const loginUser = ({ username, password }) => {
             type: LOGIN_USER_SUCCESS,
             payload
           });
+          fetchUserProfile(res.token, res.userId, dispatch);
           Actions.mainTabs();
         } else {
           // User login fail
@@ -81,9 +87,32 @@ export const loginUser = ({ username, password }) => {
   };
 };
 
+const fetchUserProfile = (token, userId, dispatch) => {
+  API
+    .get(`secure/user/profile?userId=${userId}`, token)
+    .then((res) => {
+      if (res.data) {
+        dispatch({
+          type: USER_LOAD_PROFILE_DONE,
+          payload: { ...res.data }
+        });
+      }
+    })
+    .catch((err) => {
+      console.log('[ Auth Action ] fetch user profile fails: ', err);
+    });
+};
+
 export const registerUser = () => (dispatch) => {
   dispatch({
     type: REGISTRATION_ACCOUNT
   });
   Actions.registration();
+};
+
+export const logout = () => (dispatch) => {
+  dispatch({
+    type: USER_LOG_OUT
+  });
+  Actions.popTo('splash');
 };

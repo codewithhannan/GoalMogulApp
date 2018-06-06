@@ -46,9 +46,16 @@ export const getOutgoingUserFromFriendship = createSelector(
 // Extract incoming request user information
 const getIncomingData = (state) => state.meet.requests.incoming.data;
 
+// const extractIncomingUser = R.map(
+//   d => ({
+//     user: R.prop('initiator_id')(d),
+//     friendshipId: R.prop('_id', d)
+//   })
+// );
+
 const extractIncomingUser = R.map(
   d => ({
-    user: R.prop('initiator_id')(d),
+    user: R.pipe(R.prop('participants'), R.head, R.prop('users_id'))(d),
     friendshipId: R.prop('_id', d)
   })
 );

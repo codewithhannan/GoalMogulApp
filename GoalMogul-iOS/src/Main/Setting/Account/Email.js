@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 
 /* Components */
-import SearchBarHeader from '../../Common/SearchBarHeader';
+import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 
 /* Assets */
 import editImage from '../../../asset/utils/edit.png';
@@ -19,7 +19,7 @@ class Email extends Component {
 
   handleOnResendPress() {
     console.log('user tries to resend email');
-    this.props.onResendEmailPress();
+    this.props.onResendEmailPress((message) => alert(message));
   }
 
   handleOnEditEmailPress() {

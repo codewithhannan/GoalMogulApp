@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {
   SETTING_OPEN_SETTING,
   SETTING_TAB_SELECTION,
@@ -14,6 +15,10 @@ import {
   SETTING_BLOCK_UNBLOCK_REQUEST,
   SETTING_BLOCK_UNBLOCK_REQUEST_DONE
 } from '../actions/types';
+
+import {
+  USER_LOG_OUT
+} from './User';
 
 const INITIAL_STATE = {
   email: {},
@@ -86,16 +91,23 @@ export default (state = INITIAL_STATE, action) => {
     case SETTING_BLOCK_FETCH_ALL:
       return { ...state, block: { ...state.block, fetching: true } };
 
-    case SETTING_BLOCK_FETCH_ALL_DONE:
-      return {
-        ...state,
-        block: {
-          ...state.block,
-          fetching: false,
-          data: action.payload.data,
-          skip: action.payload.skip
+    case SETTING_BLOCK_FETCH_ALL_DONE: {
+      const { data, refresh, skip, hasNextPage, message } = action.payload;
+      let newState = _.cloneDeep(state);
+      if (!message) {
+        if (refresh || skip === 0) {
+          newState.block.data = data;
+        } else {
+          console.log('payload is: ', action.payload);
+          newState.block.data = newState.block.data.concat(data);
         }
-      };
+        newState.block.skip = skip;
+        newState.block.hasNextPage = hasNextPage;
+        newState.block.refreshing = false;
+      }
+
+      return { ...newState };
+    }
 
     case SETTING_BLOCK_BLOCK_REQUEST: {
       return { ...state };
@@ -115,6 +127,10 @@ export default (state = INITIAL_STATE, action) => {
 
     case SETTING_BLOCK_UNBLOCK_REQUEST_DONE: {
       return { ...state };
+    }
+
+    case USER_LOG_OUT: {
+      return { ...INITIAL_STATE };
     }
 
     default:

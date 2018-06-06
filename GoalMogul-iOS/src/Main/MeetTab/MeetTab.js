@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  FlatList,
-  ActivityIndicator
+  View
 } from 'react-native';
 import { connect } from 'react-redux';
 import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
@@ -17,7 +12,7 @@ import Contacts from './Contacts';
 import Friends from './Friends';
 import Requests from './Requests';
 
-import SearchBarHeader from '../Common/SearchBarHeader';
+import SearchBarHeader from '../Common/Header/SearchBarHeader';
 import MeetFilterBar from './MeetFilterBar';
 import MeetCard from './MeetCard';
 import TabButtonGroup from '../Common/TabButtonGroup';

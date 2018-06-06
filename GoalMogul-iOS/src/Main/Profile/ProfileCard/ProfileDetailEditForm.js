@@ -18,12 +18,10 @@ import FormHeader from '../../Common/Header/FormHeader';
 
 /* Asset */
 import editImage from '../../../asset/utils/edit.png';
+import profilePic from '../../../asset/utils/defaultUserProfile.png';
 
 /* Actions */
 import { submitUpdatingProfile, openCamera, openCameraRoll } from '../../../actions';
-
-/* Asset to delete */
-import profilePic from '../../../asset/test-profile-pic.png';
 
 const BUTTONS = ['Taking Pictures', 'Camera Roll', 'Cancel'];
 const TAKING_PICTURE_INDEX = 0;
@@ -257,7 +255,7 @@ const styles = {
     borderWidth: 1
   },
   imageContainerStyle: {
-    marginTop: 10,
+    marginTop: 30,
     borderWidth: 1,
     borderColor: '#646464',
     alignItems: 'center',

@@ -23,7 +23,7 @@ const key = 'mygoals';
 const testData = [
   {
     name: 'Jia Zeng',
-    id: 1
+    id: '1'
   }
 ];
 

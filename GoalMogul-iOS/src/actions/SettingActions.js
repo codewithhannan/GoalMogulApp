@@ -45,12 +45,16 @@ export const onTabPress = tabId => {
 };
 
 /* Account actions */
-export const onResendEmailPress = () => (dispatch, getState) => {
+export const onResendEmailPress = (callback) => (dispatch, getState) => {
   dispatch({
     type: SETTING_RESENT_EMAIL_VERIFICATION
   });
   const { token } = getState().user;
-  API.post('secure/user/account/verification', { for: 'email ' }, token).then((res) => {
+  const { email } = getState().profile.user;
+  API.post('secure/user/account/verification', { for: 'email' }, token).then((res) => {
+    if (callback) {
+      callback(`We\'ve resent a verification email to ${email.address}`);
+    }
     console.log('resend email verification: ', res);
   })
   .catch((err) => {
@@ -59,7 +63,7 @@ export const onResendEmailPress = () => (dispatch, getState) => {
 };
 
 // Update user email
-export const onUpdateEmailSubmit = values => {
+export const onUpdateEmailSubmit = (values, callback) => {
   return async (dispatch, getState) => {
     const { token } = getState().user;
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
@@ -84,6 +88,9 @@ export const onUpdateEmailSubmit = values => {
             payload: values.email
           });
           Actions.popTo('setting');
+          if (callback) {
+            callback('Your email has been updated. We\'ll send you a verification email shortly.');
+          }
           return;
         }
         return res.message;
@@ -104,7 +111,7 @@ export const onUpdateEmailSubmit = values => {
 };
 
 // update user phone number
-export const onUpdatePhoneNumberSubmit = values => {
+export const onUpdatePhoneNumberSubmit = (values, callback) => {
   return async (dispatch, getState) => {
     const { token } = getState().user;
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
@@ -129,6 +136,9 @@ export const onUpdatePhoneNumberSubmit = values => {
             payload: values.phone
           });
           Actions.pop();
+          if (callback) {
+            callback();
+          }
           return;
         }
         return res.message;
@@ -145,6 +155,15 @@ export const onUpdatePhoneNumberSubmit = values => {
       });
     }
   };
+};
+
+export const onAddVerifyPhone = (handleRedirect) => async (dispatch) => {
+  const returnUrl = Expo.Linking.makeUrl('/');
+  addLinkingListener(handleRedirect);
+  const result = await WebBrowser.openBrowserAsync(
+    `https://goalmogul-web.herokuapp.com/phone-verification?returnURL=${returnUrl}`
+  );
+  removeLinkingListener(handleRedirect);
 };
 
 // Verify phone number
@@ -253,66 +272,60 @@ export const updateFriendsSetting = () => (dispatch, getState) => {
 };
 
 // Setting account get blocked users with skip and limit
-export const getBlockedUsers = () => (dispatch, getState) => {
+export const getBlockedUsers = (refresh) => (dispatch, getState) => {
   dispatch({
     type: SETTING_BLOCK_FETCH_ALL
   });
   const { token } = getState().user;
-  const { skip, limit } = getState().setting.block;
-  fetchBlockedUsers(skip, limit, token, (res) => {
-    console.log('response for get all blocked users: ', res);
-    dispatch({
-      type: SETTING_BLOCK_FETCH_ALL_DONE,
-      payload: {
-        skip: skip + limit,
-        data: []
+  const { skip, limit, hasNextPage } = getState().setting.block;
+  const newSkip = refresh ? 0 : skip;
+  if (hasNextPage === undefined || hasNextPage) {
+    API
+    .get(`secure/user/settings/block?skip=${newSkip}&limit=${limit}`, token)
+    .then((res) => {
+      console.log('response for get all blocked users: ', res);
+      if (res.data !== null && res.data) {
+        const { data } = res;
+        dispatch({
+          type: SETTING_BLOCK_FETCH_ALL_DONE,
+          payload: {
+            skip: newSkip + data.length,
+            data,
+            refresh,
+            hasNextPage: data.length !== 0,
+            message: undefined
+          }
+        });
       }
+    })
+    .catch((error) => {
+      console.log('error for getting blocked user: ', error);
+      dispatch({
+        type: SETTING_BLOCK_FETCH_ALL_DONE,
+        payload: {
+          skip: newSkip,
+          data: [],
+          message: error,
+          refresh,
+          hasNextPage: undefined
+        }
+      });
     });
-  });
-};
-
-// Refresh blocked user page with skip and limit
-export const refreshBlockedUsers = () => (dispatch, getState) => {
-  dispatch({
-    type: SETTING_BLOCK_FETCH_ALL
-  });
-  const { token } = getState().user;
-  const { limit } = getState().setting.block;
-
-  fetchBlockedUsers(0, limit, token, (res) => {
-    console.log(`response to refresh blocked users with limit: ${limit}: `, res);
-    dispatch({
-      type: SETTING_BLOCK_FETCH_ALL_DONE,
-      payload: {
-        skip: limit,
-        data: []
-      }
-    });
-  });
-};
-
-const fetchBlockedUsers = (skip, limit, token, callback) => {
-  API
-  .get(`secure/user/settings/block?skip=${skip}&limit=${limit}`, token)
-  .then((res) => {
-    if (callback) {
-      callback(res);
-    }
-  })
-  .catch((error) => {
-    console.log('error for getting all blocked user: ', error);
-  });
+  }
 };
 
 // Block one particular user with userId
-export const blockUser = (userId) => (dispatch, getState) => {
+export const blockUser = (userId, callback) => (dispatch, getState) => {
   dispatch({
     type: SETTING_BLOCK_BLOCK_REQUEST,
     payload: userId
   });
   const { token } = getState().user;
-  API.post(`${BASE_ROUTE}/block`, { userId }, token).then((res) => {
+  API.post(`${BASE_ROUTE}/block`, { blockeeId: userId }, token).then((res) => {
     console.log(`${DEBUG_KEY}: block user with res: `, res);
+    if (callback) {
+      callback();
+    }
     dispatch({
       type: SETTING_BLOCK_BLOCK_REQUEST_DONE,
       payload: userId
@@ -328,17 +341,21 @@ export const blockUser = (userId) => (dispatch, getState) => {
 };
 
 // Setting account unblock user
-export const unblockUser = (userId) => (dispatch, getState) => {
+export const unblockUser = (blockId, callback) => (dispatch, getState) => {
   dispatch({
     type: SETTING_BLOCK_UNBLOCK_REQUEST,
-    payload: userId
+    payload: blockId
   });
   const { token } = getState().user;
-  API.delete(`${BASE_ROUTE}/block`, { userId }, token).then((res) => {
-    console.log(`${DEBUG_KEY} response for deleting a blocked user: `, userId, ', is: ', res);
+  API.delete(`${BASE_ROUTE}/block?blockId=${blockId}`, { blockId }, token).then((res) => {
+    console.log(`${DEBUG_KEY} response for deleting a blocked user: `, blockId, ', is: ', res);
+    if (callback) {
+      callback();
+    }
+
     dispatch({
       type: SETTING_BLOCK_UNBLOCK_REQUEST_DONE,
-      payload: userId
+      payload: blockId
     });
   })
   .catch((error) => {

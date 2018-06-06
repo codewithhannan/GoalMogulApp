@@ -51,7 +51,7 @@ class AddingProfilePicture extends Component {
 
   renderImage() {
     const uri = this.props.profilePic;
-    const profilePicStyle = { ...styles.profilePicStyle };
+    let profilePicStyle = { ...styles.profilePicStyle };
     if (uri !== null && uri !== undefined) {
       return (
         <View style={styles.containerStyle}>
@@ -59,7 +59,7 @@ class AddingProfilePicture extends Component {
         </View>
       );
     }
-    profilePicStyle.tintColor = '#eaeaea';
+    profilePicStyle.tintColor = 'darkgray';
     return (
       <View style={styles.containerStyle}>
         <Image source={ghost} style={profilePicStyle} />
@@ -91,11 +91,7 @@ const styles = {
   containerStyle: {
     height: 200,
     width: 200,
-    alignSelf: 'center',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    marginBottom: 24
+    alignSelf: 'center'
   }
 };
 

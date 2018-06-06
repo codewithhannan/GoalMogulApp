@@ -5,7 +5,7 @@ import {
 import { connect } from 'react-redux';
 
 /* Components */
-import SearchBarHeader from '../Common/SearchBarHeader';
+import SearchBarHeader from '../Common/Header/SearchBarHeader';
 import TabButton from './TabButton';
 import Account from './Account/Account';
 import Privacy from './Privacy/Privacy';

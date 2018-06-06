@@ -77,11 +77,15 @@ class ProfileInfoCard extends Component {
     if (!occupation && !elevatorPitch) {
       return '';
     }
+    const divider = elevatorPitch || about ?
+      (<View style={profileStyles.dividerStyle} />)
+      :
+      '';
     return (
       <Card>
         <View style={styles.containerStyle}>
           {this.renderOccupation(occupation)}
-          <View style={profileStyles.dividerStyle} />
+          {divider}
           {this.renderElevatorPitch(elevatorPitch)}
           {this.renderAbout(about)}
         </View>

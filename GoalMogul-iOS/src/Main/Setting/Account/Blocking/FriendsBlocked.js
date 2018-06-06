@@ -9,11 +9,14 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 
 /* Components */
-import SearchBarHeader from '../../../Common/SearchBarHeader';
+import SearchBarHeader from '../../../Common/Header/SearchBarHeader';
 import FriendCard from './FriendCard';
 
 // Actions
 import { getBlockedUsers } from '../../../../actions';
+
+// selectors
+import { getBlockees } from '../../../../redux/modules/setting/selector';
 
 const DEBUG_KEY = '[ Component FriendsBlocked ]';
 
@@ -36,21 +39,19 @@ const testData = [
 ];
 
 class FriendsBlocked extends Component {
-  componentWillMount() {
-    this.props.getBlockedUsers();
-  }
-
   handleOnLoadMore = () => {
     console.log(`${DEBUG_KEY} load more`);
+    this.props.getBlockedUsers(false);
   }
 
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} refresh`);
+    this.props.getBlockedUsers(true);
   }
 
-  _keyExtractor = (item) => item._id;
+  _keyExtractor = (item) => item.blockId;
 
-  renderItem = (item) => <FriendCard item={item} />;
+  renderItem = ({ item }) => <FriendCard item={item} />;
 
   render() {
     return (
@@ -62,13 +63,11 @@ class FriendsBlocked extends Component {
           onBackPress={() => Actions.pop()}
         />
         <FlatList
-          data={testData}
+          data={this.props.data}
           renderItem={this.renderItem}
           keyExtractor={this._keyExtractor}
           onRefresh={this.handleRefresh.bind()}
           refreshing={this.props.refreshing}
-          onEndReached={this.handleOnLoadMore}
-          onEndReachedThreshold={0.5}
         />
       </View>
     );
@@ -81,7 +80,8 @@ const mapStateToProps = state => {
 
   return {
     block,
-    refreshing
+    refreshing,
+    data: getBlockees(state)
   };
 };
 

@@ -27,6 +27,10 @@ import {
   REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS
 } from '../actions/types';
 
+import {
+  USER_LOG_OUT
+} from './User';
+
 export function arrayUnique(array) {
   let a = array.concat();
   for (let i = 0; i < a.length; ++i) {
@@ -163,6 +167,10 @@ export default (state = INITIAL_STATE, action) => {
 
     case REGISTRATION_CONTACT_SYNC_SKIP:
       return { ...state };
+
+    case USER_LOG_OUT: {
+      return { ...state, ...INITIAL_STATE };
+    }
 
     default:
       return { ...state };

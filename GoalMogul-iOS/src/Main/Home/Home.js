@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
+import { MenuProvider } from 'react-native-popup-menu';
 
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup';
-import SearchBarHeader from '../Common/SearchBarHeader';
+import SearchBarHeader from '../Common/Header/SearchBarHeader';
 
 import Mastermind from './Mastermind';
 import ActivityFeed from './ActivityFeed';
@@ -50,25 +51,27 @@ class Home extends Component {
       2. assign key on for TabButton
     */
     return (
-      <View style={styles.homeContainerStyle}>
-        <SearchBarHeader rightIcon='menu' />
-        <TabViewAnimated
-          navigationState={this.state}
-          renderScene={this._renderScene}
-          renderHeader={this._renderHeader}
-          onIndexChange={this._handleIndexChange}
-          useNativeDriver
-        />
-
-        {/*
-          <FlatList
-            data={this.props.photos}
-            renderItem={(item) => this.renderRow(item)}
-            numColumns={3}
-            keyExtractor={this._keyExtractor}
+      <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+        <View style={styles.homeContainerStyle}>
+          <SearchBarHeader rightIcon='menu' />
+          <TabViewAnimated
+            navigationState={this.state}
+            renderScene={this._renderScene}
+            renderHeader={this._renderHeader}
+            onIndexChange={this._handleIndexChange}
+            useNativeDriver
           />
-          */}
-      </View>
+
+          {/*
+            <FlatList
+              data={this.props.photos}
+              renderItem={(item) => this.renderRow(item)}
+              numColumns={3}
+              keyExtractor={this._keyExtractor}
+            />
+            */}
+        </View>
+      </MenuProvider>
     );
   }
 }
@@ -88,6 +91,10 @@ const styles = {
     fontSize: 12,
     fontWeight: '600',
     color: 'white',
+  },
+  backdrop: {
+    backgroundColor: 'gray',
+    opacity: 0.5,
   }
 };
 
