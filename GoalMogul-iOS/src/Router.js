@@ -6,7 +6,8 @@ import {
   Tabs,
   Modal,
   Reducer,
-  Lightbox
+  Lightbox,
+  Actions
 } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 
@@ -33,6 +34,7 @@ import SearchOverlay from './Main/Search/SearchOverlay';
 import Home from './Main/Home/Home';
 import CreateGoalButtonOverlay from './Main/Common/Button/CreateGoalButtonOverlay';
 import CreateGoalModal from './Main/Goal/CreateGoalModal';
+import CreatePostModal from './Main/Post/CreatePostModal';
 
 // Profile
 import Profile from './Main/Profile/Profile';
@@ -54,6 +56,15 @@ import Privacy from './Main/Setting/Privacy/Privacy';
 import FriendsSetting from './Main/Setting/Privacy/FriendsSetting';
 
 class RouterComponent extends Component {
+
+  onTabPress = ({ scene }) => {
+    console.log('scene is: ', scene);
+    const { route, focused } = scene;
+    if (route.key === 'homeTab' && focused) {
+      return Actions.popTo('home');
+    }
+    return Actions[route.key].call();
+  }
 
   reducerCreate(params) {
     const defaultReducer = Reducer(params);
@@ -113,7 +124,7 @@ class RouterComponent extends Component {
                   inactiveTintColor="#b8c7cc"
                   tabs
                   showLabel={false}
-                  panHandlers={null}
+                  tabBarOnPress={this.onTabPress}
                 >
                   <Stack
                     key="homeTab"
@@ -192,6 +203,11 @@ class RouterComponent extends Component {
           <Scene
             key="createGoalModal"
             component={CreateGoalModal}
+            hideNavBar
+          />
+          <Scene
+            key="createPostModal"
+            component={CreatePostModal}
             hideNavBar
           />
           <Scene key="mutualFriends" component={MutualFriends} />

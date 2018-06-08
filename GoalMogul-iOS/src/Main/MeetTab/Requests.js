@@ -45,6 +45,10 @@ const DEBUG_KEY = '[Component Requests]';
 
 class Requests extends Component {
 
+  componentDidMount() {
+    this.handleRefresh();
+  }
+
   selectTab = tabKey => {
     this.props.requestsSelectTab(tabKey);
   }
@@ -71,9 +75,10 @@ class Requests extends Component {
       let buttonTextStyle = { ...styles.buttonTextStyle };
 
       if (t.key === this.props.selectedTab) {
-        buttonContainerStyle.backgroundColor = '#1379a7';
-      } else {
         buttonContainerStyle.backgroundColor = '#1aa0dd';
+      } else {
+        buttonContainerStyle.backgroundColor = 'white';
+        buttonTextStyle.color = '#696969';
       }
       return (
         <View style={buttonContainerStyle} key={index}>
@@ -100,7 +105,7 @@ class Requests extends Component {
             onRefresh={this.handleRefresh.bind()}
             refreshing={this.props.refreshing}
             onEndReached={this.handleOnLoadMore}
-            onEndReachedThreshold={0.5}
+            onEndReachedThreshold={0}
           />
         </View>
       </View>

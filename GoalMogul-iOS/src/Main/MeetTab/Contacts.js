@@ -30,6 +30,10 @@ const testData = [
 
 class Contacts extends Component {
 
+  componentDidMount() {
+    this.handleRefresh();
+  }
+
   _keyExtractor = (item) => item._id
 
   handleRefresh = () => {
@@ -96,7 +100,7 @@ const styles = {
     flex: 1,
     marginTop: 20,
     marginBottom: 10,
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -106,9 +110,9 @@ const styles = {
     fontSize: 13
   },
   buttonTextStyle: {
-    marginLeft: 5,
+    marginTop: 5,
     color: '#45C9F6',
-    fontSize: 13
+    fontSize: 15,
   }
 };
 

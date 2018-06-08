@@ -11,11 +11,13 @@ import {
 import { connect } from 'react-redux';
 import { FieldArray, Field, reduxForm } from 'redux-form';
 import _ from 'lodash';
+import { MenuProvider } from 'react-native-popup-menu';
 
 /* Components */
 import ModalHeader from '../Common/Header/ModalHeader';
 import Button from './Button';
 import InputField from '../Common/TextInput/InputField';
+import ViewableSettingMenu from './ViewableSettingMenu';
 
 // assets
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
@@ -104,6 +106,7 @@ class CreateGoalModal extends Component {
           <Text style={{ fontSize: 18 }}>
             Jordan Gardener
           </Text>
+          <ViewableSettingMenu />
         </View>
       </View>
     );
@@ -201,23 +204,25 @@ class CreateGoalModal extends Component {
   render() {
     const { handleSubmit, errors } = this.props;
     return (
-      <KeyboardAvoidingView
-        behavior='padding'
-        style={{ flex: 1, backgroundColor: '#ffffff' }}
-      >
-        <ModalHeader title='New Goal' actionText='Create' />
-        <ScrollView style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}>
-          <View style={{ flex: 1, padding: 20 }}>
-            {this.renderUserInfo()}
-            {this.renderGoal()}
-            <FieldArray name="description" component={this.renderGoalDescription} />
-            {this.renderCategory()}
-            <FieldArray name="steps" component={this.renderSteps} />
-            <FieldArray name="needs" component={this.renderNeeds} />
-          </View>
+      <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+        <KeyboardAvoidingView
+          behavior='padding'
+          style={{ flex: 1, backgroundColor: '#ffffff' }}
+        >
+          <ModalHeader title='New Goal' actionText='Create' />
+          <ScrollView style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}>
+            <View style={{ flex: 1, padding: 20 }}>
+              {this.renderUserInfo()}
+              {this.renderGoal()}
+              <FieldArray name="description" component={this.renderGoalDescription} />
+              {this.renderCategory()}
+              <FieldArray name="steps" component={this.renderSteps} />
+              <FieldArray name="needs" component={this.renderNeeds} />
+            </View>
 
-        </ScrollView>
-      </KeyboardAvoidingView>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </MenuProvider>
     );
   }
 }
@@ -263,6 +268,9 @@ const styles = {
     height: 13,
     width: 13,
     justifyContent: 'flex-end'
+  },
+  backdrop: {
+    backgroundColor: 'transparent'
   }
 };
 

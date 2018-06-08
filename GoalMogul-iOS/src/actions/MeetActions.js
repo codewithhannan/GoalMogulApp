@@ -151,19 +151,21 @@ export const handleRefresh = (key) => (dispatch, getState) => {
   });
 
   const { token } = getState().user;
-  const { limit } = _.get(getState().meet, key);
-  loadOneTab(key, 0, limit, token, dispatch, (data) => {
-    dispatch({
-      type: MEET_TAB_REFRESH_DONE,
-      payload: {
-        type: key,
-        data,
-        skip: data.length,
-        limit: 20,
-        hasNextPage: !(data === undefined || data.length === 0)
-      }
+  const { limit, hasNextPage } = _.get(getState().meet, key);
+  if (hasNextPage === undefined || hasNextPage) {
+    loadOneTab(key, 0, limit, token, dispatch, (data) => {
+      dispatch({
+        type: MEET_TAB_REFRESH_DONE,
+        payload: {
+          type: key,
+          data,
+          skip: data.length,
+          limit: 20,
+          hasNextPage: !(data === undefined || data.length === 0)
+        }
+      });
     });
-  });
+  }
 };
 
 // Load more data

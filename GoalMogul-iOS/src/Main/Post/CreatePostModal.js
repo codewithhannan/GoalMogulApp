@@ -14,7 +14,7 @@ import _ from 'lodash';
 
 /* Components */
 import ModalHeader from '../Common/Header/ModalHeader';
-import Button from './Button';
+import Button from '../Goal/Button';
 import InputField from '../Common/TextInput/InputField';
 
 // assets

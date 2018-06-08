@@ -2,14 +2,17 @@ import React from 'react';
 import { Text } from 'react-native';
 
 const Position = (props) => {
-  return (
-    <Text
-      style={styles.containerStyle}
-      numberOfLines={1}
-    >
-      {props.text.toUpperCase()}
-    </Text>
-  );
+  if (props.text) {
+    return (
+      <Text
+        style={styles.containerStyle}
+        numberOfLines={1}
+      >
+        {props.text.toUpperCase()}
+      </Text>
+    );
+  }
+  return '';
 };
 
 const styles = {

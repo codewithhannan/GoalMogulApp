@@ -28,6 +28,11 @@ const testData = [
 ];
 
 class Friends extends Component {
+
+  componentDidMount() {
+    this.handleRefresh();
+  }
+
   _keyExtractor = (item) => item._id
 
   handleRefresh = () => {
@@ -53,7 +58,7 @@ class Friends extends Component {
             onRefresh={this.handleRefresh.bind()}
             refreshing={this.props.refreshing}
             onEndReached={this.handleOnLoadMore}
-            onEndReachedThreshold={0.5}
+            onEndReachedThreshold={0}
           />
         </View>
         {/*
