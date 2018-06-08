@@ -41,16 +41,26 @@ const testData = [
 ];
 
 class ContactSync extends Component {
+  state = {
+    type: 'registration'
+  }
+
+  componentWillReceiveProps(props) {
+    if (props.type) {
+      this.setState({ type: props.type });
+    }
+  }
 
   onLoadMore = () => {
-    if (this.props.type === 'meet') {
-      return this.props.meetContactSyncLoadMore(false);
+    if (this.state.type === 'meet') {
+      // return this.props.meetContactSyncLoadMore(false);
+      return;
     }
     this.props.contactSyncLoadMore();
   }
 
   handleRefresh = () => {
-    if (this.props.type === 'meet') {
+    if (this.state.type === 'meet') {
       return this.props.meetContactSyncLoadMore(true);
     }
     this.props.contactSyncRefresh();
@@ -77,7 +87,7 @@ class ContactSync extends Component {
     // Assign header
     const header = (type !== undefined && type === 'meet') ?
       (<ModalHeader
-        onCancel={() => Actions.popTo('goal')}
+        cancelText={null}
         title='Sync contacts'
         actionText='Done'
         onAction={() => {

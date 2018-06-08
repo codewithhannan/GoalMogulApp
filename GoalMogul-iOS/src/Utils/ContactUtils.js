@@ -92,6 +92,10 @@ const ContactUtils = {
       .then((res) => res.json())
       .then((res) => {
         console.log('original res is: ', res);
+        if (res.data) {
+          return resolve(res);
+        }
+
         if (!res.message && res.success) {
           if (data) {
             return resolve(data);

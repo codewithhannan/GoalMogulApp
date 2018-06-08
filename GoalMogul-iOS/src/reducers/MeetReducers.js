@@ -155,7 +155,7 @@ export default (state = INITIAL_STATE, action) => {
       }
       newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
       const oldData = _.get(newState, `${type}.data`);
-      return _.set(newState, `${type}.data`, oldData.concat(data));
+      return _.set(newState, `${type}.data`, arrayUnique(oldData.concat(data)));
     }
 
     /**

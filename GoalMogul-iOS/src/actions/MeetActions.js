@@ -399,7 +399,17 @@ export const meetContactSyncLoadMore = (refresh) => (dispatch, getState) => {
             data: res.data, // TODO: replaced with res
             skip: newSkip + res.data.length,
             limit,
-            hasNextPage: res.data.length !== 0
+            hasNextPage: res.data.length !== 0 && res.data !== undefined
+          }
+        });
+      } else {
+        dispatch({
+          type,
+          payload: {
+            data: [], // TODO: replaced with res
+            skip: newSkip,
+            limit,
+            hasNextPage: res.data !== undefined && res.data.length !== 0
           }
         });
       }
