@@ -14,14 +14,16 @@ import Name from '../../Common/Name';
 
 // Assets
 import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
+import next from '../../../asset/utils/next.png';
 
 // Actions
-import { updateFriendship } from '../../../actions';
+import { updateFriendship, openProfile } from '../../../actions';
 
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
 const WITHDRAW_INDEX = 0;
 const CANCEL_INDEX = 1;
 const TAB_KEY = 'suggested';
+const DEBUG_KEY = '[ Component SearchUserCard ]';
 
 class SuggestedCard extends Component {
   state = {
@@ -29,32 +31,30 @@ class SuggestedCard extends Component {
     accpeted: false
   }
 
-  componentWillReceiveProps(props) {
-    // console.log('new props for meet card are: ', props);
-  }
-
   onButtonClicked = (_id) => {
-    if (this.state.requested) {
-      ActionSheetIOS.showActionSheetWithOptions({
-        options: FRIENDSHIP_BUTTONS,
-        cancelButtonIndex: CANCEL_INDEX,
-      },
-      (buttonIndex) => {
-        console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
-        switch (buttonIndex) {
-          case WITHDRAW_INDEX:
-            this.props.updateFriendship(_id, '', 'deleteFriend', TAB_KEY, () => {
-              this.setState({ requested: false });
-            });
-            break;
-          default:
-            return;
-        }
-      });
-    }
-    return this.props.updateFriendship(_id, '', 'requesteFriend', TAB_KEY, () => {
-      this.setState({ requested: true });
-    });
+    console.log(`${DEBUG_KEY} open profile with id: `, _id);
+    this.props.openProfile(_id);
+    // if (this.state.requested) {
+    //   ActionSheetIOS.showActionSheetWithOptions({
+    //     options: FRIENDSHIP_BUTTONS,
+    //     cancelButtonIndex: CANCEL_INDEX,
+    //   },
+    //   (buttonIndex) => {
+    //     console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
+    //     switch (buttonIndex) {
+    //       case WITHDRAW_INDEX:
+    //         this.props.updateFriendship(_id, '', 'deleteFriend', TAB_KEY, () => {
+    //           this.setState({ requested: false });
+    //         });
+    //         break;
+    //       default:
+    //         return;
+    //     }
+    //   });
+    // }
+    // return this.props.updateFriendship(_id, '', 'requesteFriend', TAB_KEY, () => {
+    //   this.setState({ requested: true });
+    // });
   }
 
   renderProfileImage() {
@@ -68,76 +68,63 @@ class SuggestedCard extends Component {
   }
 
   renderButton(_id) {
-    if (this.state.requested) {
-      return (
-        <Button
-          title='Sent'
-          titleStyle={styles.buttonTextStyle}
-          clear
-          buttonStyle={styles.buttonStyle}
-        />
-      );
-    }
     return (
-      <Button
-        title='Friend'
-        titleStyle={styles.buttonTextStyle}
-        clear
-        icon={
-          <Icon
-            type='octicon'
-            name='plus-small'
-            width={10}
-            size={20}
-            color='#45C9F6'
-            iconStyle={styles.buttonIconStyle}
+      <View style={styles.iconContainerStyle}>
+        <TouchableOpacity
+          onPress={this.onButtonClicked.bind(this, _id)}
+          style={{ padding: 15 }}
+        >
+          <Image
+            source={next}
+            style={styles.iconStyle}
           />
-        }
-        iconLeft
-        buttonStyle={styles.buttonStyle}
-        onPress={this.onButtonClicked.bind(this, _id)}
-      />
+        </TouchableOpacity>
+      </View>
     );
   }
 
+  // renderButton(_id) {
+  //   if (this.state.requested) {
+  //     return (
+  //       <Button
+  //         title='Sent'
+  //         titleStyle={styles.buttonTextStyle}
+  //         clear
+  //         buttonStyle={styles.buttonStyle}
+  //       />
+  //     );
+  //   }
+  //   return (
+  //     <Button
+  //       title='Friend'
+  //       titleStyle={styles.buttonTextStyle}
+  //       clear
+  //       icon={
+  //         <Icon
+  //           type='octicon'
+  //           name='plus-small'
+  //           width={10}
+  //           size={20}
+  //           color='#45C9F6'
+  //           iconStyle={styles.buttonIconStyle}
+  //         />
+  //       }
+  //       iconLeft
+  //       buttonStyle={styles.buttonStyle}
+  //       onPress={this.onButtonClicked.bind(this, _id)}
+  //     />
+  //   );
+  // }
+
   renderInfo() {
-    const { name, _id } = this.props.item;
+    const { name } = this.props.item;
     return (
       <View style={styles.infoContainerStyle}>
         <View style={{ flex: 1, flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
           <Name text={name} />
         </View>
-
-        <View style={styles.buttonContainerStyle}>
-          {this.renderButton(_id)}
-        </View>
       </View>
     );
-  }
-
-  // TODO: decide the final UI for additional info
-  renderAdditionalInfo() {
-    return '';
-    // const { profile } = this.props.item;
-    // let content = '';
-    // if (profile.elevatorPitch) {
-    //   content = profile.elevatorPitch;
-    // } else if (profile.about) {
-    //   content = profile.about;
-    // }
-    // return (
-    //   <View style={{ flex: 1 }}>
-    //     <Text
-    //       style={styles.titleTextStyle}
-    //       numberOfLines={1}
-    //       ellipsizeMode='tail'
-    //     >
-    //       <Text style={styles.detailTextStyle}>
-    //         {content}
-    //       </Text>
-    //     </Text>
-    //   </View>
-    // );
   }
 
   renderOccupation() {
@@ -157,6 +144,7 @@ class SuggestedCard extends Component {
   }
 
   render() {
+    const { _id } = this.props.item;
     return (
       <View style={styles.containerStyle}>
         {this.renderProfileImage()}
@@ -171,8 +159,16 @@ class SuggestedCard extends Component {
           >
             380 MUTUAL FRIENDS
           </Text>
-          {this.renderAdditionalInfo()}
         </View>
+
+        {this.renderButton(_id)}
+
+        {/*
+          <View style={styles.buttonContainerStyle}>
+            {this.renderButton(_id)}
+          </View>
+        */}
+
       </View>
     );
   }
@@ -251,9 +247,21 @@ const styles = {
     fontSize: 9,
     fontWeight: '800',
     maxWidth: 120
+  },
+  iconContainerStyle: {
+    marginLeft: 8,
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
+  },
+  iconStyle: {
+    height: 25,
+    width: 26,
+    transform: [{ rotateY: '180deg' }],
+    tintColor: '#45C9F6'
   }
 };
 
 export default connect(null, {
-  updateFriendship
+  updateFriendship,
+  openProfile
 })(SuggestedCard);
