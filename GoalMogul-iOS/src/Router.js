@@ -58,7 +58,6 @@ import FriendsSetting from './Main/Setting/Privacy/FriendsSetting';
 class RouterComponent extends Component {
 
   onTabPress = ({ scene }) => {
-    console.log('scene is: ', scene);
     const { route, focused } = scene;
     if (route.key === 'homeTab' && focused) {
       return Actions.popTo('home');
