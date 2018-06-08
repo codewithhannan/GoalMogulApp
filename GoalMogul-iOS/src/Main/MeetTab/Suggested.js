@@ -36,6 +36,16 @@ const testDataSuggested = [
 ];
 
 class Suggested extends Component {
+
+  constructor(props) {
+    super(props);
+    this.handleRefresh = this.handleRefresh.bind(this);
+  }
+
+  componentWillMount() {
+    this.handleRefresh();
+  }
+
   _keyExtractor = (item) => item._id;
 
   handleRefresh = () => {
@@ -58,7 +68,7 @@ class Suggested extends Component {
           renderItem={this.renderItem}
           keyExtractor={this._keyExtractor}
           onEndReached={this.handleOnLoadMore}
-          onEndReachedThreshold={0.5}
+          onEndReachedThreshold={0}
           onRefresh={this.handleRefresh}
           refreshing={this.props.loading}
           ListEmptyComponent={<EmptyResult text={'No Recommendations'} />}

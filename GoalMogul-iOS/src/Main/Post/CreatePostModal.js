@@ -9,15 +9,13 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import { FieldArray, Field, reduxForm } from 'redux-form';
+import { Field, reduxForm } from 'redux-form';
 import _ from 'lodash';
-import { MenuProvider } from 'react-native-popup-menu';
 
 /* Components */
 import ModalHeader from '../Common/Header/ModalHeader';
-import Button from './Button';
+import Button from '../Goal/Button';
 import InputField from '../Common/TextInput/InputField';
-import ViewableSettingMenu from './ViewableSettingMenu';
 
 // assets
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
@@ -31,7 +29,7 @@ import { } from '../../actions';
 const STEP_PLACE_HOLDER = 'Add an important step to achieving your goal...';
 const NEED_PLACE_HOLDER = 'Something you\'re specifically looking for help with';
 
-class CreateGoalModal extends Component {
+class CreatePostModal extends Component {
 
   componentDidMount() {
     this.initializeForm();
@@ -106,13 +104,12 @@ class CreateGoalModal extends Component {
           <Text style={{ fontSize: 18 }}>
             Jordan Gardener
           </Text>
-          <ViewableSettingMenu />
         </View>
       </View>
     );
   }
 
-  renderGoal() {
+  renderPost() {
     const titleText = <Text style={styles.titleTextStyle}>Your Goal</Text>;
     return (
       <View>
@@ -130,99 +127,22 @@ class CreateGoalModal extends Component {
     );
   }
 
-  renderGoalDescription = ({ fields, meta: { error, submitFailed } }) => {
-    const button = fields.length > 0 ?
-      <Button text='remove description' source={cancel} onPress={() => fields.remove(0)} />
-      :
-      <Button text='detailed description' source={plus} onPress={() => fields.push({})} />;
-    return (
-      <View style={{ marginTop: 10 }}>
-        {
-          fields.map((description, index) => {
-            return (
-              <Field
-                key={`description-${index}`}
-                name={description}
-                component={InputField}
-                editable
-                numberOfLines={4}
-                style={styles.standardInputStyle}
-              />
-            );
-          })
-        }
-        {button}
-      </View>
-    );
-  }
-
-  renderCategory() {
-
-  }
-
-  renderFieldArray = (title, buttonText, placeholder, fields, error) => {
-    const button = <Button text={buttonText} source={plus} onPress={() => fields.push()} />;
-    const titleText = <Text style={styles.titleTextStyle}>{title}</Text>;
-    return (
-      <View style={{ marginTop: 10 }}>
-        {titleText}
-        {
-          fields.map((field, index) => {
-            const iconOnPress = index === 0 ?
-              undefined
-              :
-              () => fields.remove(index);
-            return (
-              <Field
-                key={`description-${index}`}
-                name={field}
-                component={InputField}
-                editable
-                numberOfLines={4}
-                style={styles.standardInputStyle}
-                placeholder={placeholder}
-                iconSource={cancel}
-                iconStyle={styles.cancelIconStyle}
-                iconOnPress={iconOnPress}
-              />
-            );
-          })
-        }
-        {button}
-      </View>
-    );
-  }
-
-  renderSteps = ({ fields, meta: { error, submitFailed } }) => {
-    return this.renderFieldArray('Steps', 'step', STEP_PLACE_HOLDER, fields, error);
-  }
-
-  renderNeeds = ({ fields, meta: { error, submitFailed } }) => {
-    return this.renderFieldArray('Needs (optional)', 'need', NEED_PLACE_HOLDER, fields, error);
-  }
-
   render() {
     const { handleSubmit, errors } = this.props;
     return (
-      <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <KeyboardAvoidingView
-          behavior='padding'
-          style={{ flex: 1, backgroundColor: '#ffffff' }}
-        >
-          <ModalHeader title='New Goal' actionText='Create' />
-          <ScrollView style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}>
-            <View style={{ flex: 1, padding: 20 }}>
-              {this.renderUserInfo()}
-              {this.renderGoal()}
-              <FieldArray name="description" component={this.renderGoalDescription} />
-              {this.renderCategory()}
-              <FieldArray name="steps" component={this.renderSteps} />
-              <FieldArray name="needs" component={this.renderNeeds} />
-            </View>
+      <KeyboardAvoidingView
+        behavior='padding'
+        style={{ flex: 1, backgroundColor: '#ffffff' }}
+      >
+        <ModalHeader title='New Goal' actionText='Create' />
+        <ScrollView style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}>
+          <View style={{ flex: 1, padding: 20 }}>
+            {this.renderUserInfo()}
+            {this.renderPost()}
+          </View>
 
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </MenuProvider>
+        </ScrollView>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -268,16 +188,13 @@ const styles = {
     height: 13,
     width: 13,
     justifyContent: 'flex-end'
-  },
-  backdrop: {
-    backgroundColor: 'transparent'
   }
 };
 
-CreateGoalModal = reduxForm({
-  form: 'createGoalModal',
+CreatePostModal = reduxForm({
+  form: 'createPoalModal',
   enableReinitialize: true
-})(CreateGoalModal);
+})(CreatePostModal);
 
 const mapStateToProps = state => {
   const { user } = state.user;
@@ -292,4 +209,4 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   null
-)(CreateGoalModal);
+)(CreatePostModal);

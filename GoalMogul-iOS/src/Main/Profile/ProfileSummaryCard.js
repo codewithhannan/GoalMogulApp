@@ -3,7 +3,8 @@ import {
   View,
   Image,
   TouchableWithoutFeedback,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -23,7 +24,8 @@ const DEBUG_KEY = '[ Component ProfileSummaryCard ]';
 
 class ProfileSummaryCard extends Component {
   state = {
-    requested: false
+    requested: false,
+    imageLoading: false
   }
 
   onButtonClicked = (_id) => {
@@ -63,12 +65,27 @@ class ProfileSummaryCard extends Component {
   }
 
   render() {
-    const name = this.props.user.name;
+    const { name, headline } = this.props.user;
     let imageUrl = this.props.user.profile.image;
-    let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
+    // let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
+    let profileImage = (!this.props.loading & !imageUrl) ?
+    (<Image style={styles.imageStyle} source={defaultUserProfile} />)
+    :
+    (
+      <View style={{ ...styles.imageStyle, alignItems: 'center', justifyContent: 'center' }}>
+         <ActivityIndicator size="large" color="lightgray" />
+      </View>
+    );
+
     if (imageUrl) {
       imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
-      profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
+      profileImage =
+        (<Image
+          onLoadStart={() => this.setState({ imageLoading: true })}
+          onLoadEnd={() => this.setState({ imageLoading: false })}
+          style={styles.imageStyle}
+          source={{ uri: imageUrl }}
+        />);
     }
     // Style 1:
     // const addFriendButton = !this.props.isSelf ? (
@@ -98,8 +115,8 @@ class ProfileSummaryCard extends Component {
             {profileImage}
 
             <View style={styles.bodyStyle}>
-              <Name text={name} />
-              <Position text='Sr. UI/UX designer & developer' />
+              <Name text={name} textStyle={{ fontSize: 18 }} />
+              <Position text={headline} />
               {this.renderStats()}
             </View>
           </View>
@@ -126,7 +143,7 @@ const styles = {
   bodyStyle: {
     flex: 3,
     display: 'flex',
-    marginLeft: 5,
+    marginLeft: 10,
     marginRight: 5,
     justifyContent: 'space-between'
   },
@@ -167,7 +184,7 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { userId, user, mutualFriends } = state.profile;
+  const { userId, user, mutualFriends, loading } = state.profile;
   const friendsCount = state.meet.friends.count;
   const isSelf = state.profile.userId.toString() === state.user.userId.toString();
 
@@ -176,7 +193,8 @@ const mapStateToProps = state => {
     user,
     isSelf,
     mutualFriends,
-    friendsCount
+    friendsCount,
+    loading
   };
 };
 

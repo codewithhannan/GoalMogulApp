@@ -84,7 +84,7 @@ class ProfileDetailEditForm extends Component {
           <ImageBackground
             style={styles.imageStyle}
             source={profilePic}
-            imageStyle={{ borderRadius: 13 }}
+            imageStyle={{ borderRadius: 13, opacity: 0.5, resizeMode: 'contain' }}
           >
             <View style={styles.iconContainerStyle}>
               <Image style={styles.editIconStyle} source={editImage} />
@@ -106,7 +106,7 @@ class ProfileDetailEditForm extends Component {
             <ImageBackground
               style={styles.imageStyle}
               source={{ uri: image }}
-              imageStyle={{ borderRadius: 13 }}
+              imageStyle={{ borderRadius: 13, opacity: 0.5, resizeMode: 'contain' }}
             >
               <View style={styles.iconContainerStyle}>
                 <Image style={styles.editIconStyle} source={editImage} />
@@ -137,6 +137,7 @@ class ProfileDetailEditForm extends Component {
     clearButtonMode,
     enablesReturnKeyAutomatically,
     forFocus,
+    autoCorrect,
     meta: { error },
     ...custom
   }) => {
@@ -146,7 +147,7 @@ class ProfileDetailEditForm extends Component {
           label={label}
           title={custom.title}
           autoCapitalize={'none'}
-          autoCorrect={false}
+          autoCorrect={autoCorrect}
           onChangeText={onChange}
           error={error}
           enablesReturnKeyAutomatically={enablesReturnKeyAutomatically}
@@ -188,18 +189,21 @@ class ProfileDetailEditForm extends Component {
             label='Name'
             component={this.renderInput}
             disabled={this.props.uploading}
+            autoCorrect
           />
           <Field
             name='headline'
             label='Headline'
             component={this.renderInput}
             disabled={this.props.uploading}
+            autoCorrect
           />
           <Field
             name='profile.occupation'
             label='Occupation'
             component={this.renderInput}
             disabled={this.props.uploading}
+            autoCorrect
           />
           <Field
             name='profile.elevatorPitch'
@@ -210,6 +214,7 @@ class ProfileDetailEditForm extends Component {
             multiline
             clearButtonMode='while-editing'
             forFocus={() => this.handleOnFocus(150)}
+            autoCorrect
           />
           <Field
             name='profile.about'
@@ -219,6 +224,7 @@ class ProfileDetailEditForm extends Component {
             disabled={this.props.uploading}
             multiline
             forFocus={() => this.handleOnFocus(200)}
+            autoCorrect
           />
         </ScrollView>
       </KeyboardAvoidingView>
@@ -241,7 +247,6 @@ const styles = {
     marginBottom: 5,
   },
   imageStyle: {
-    opacity: 0.7,
     width: (width * 0.9) / 3,
     height: (width * 0.9) / 3,
     justifyContent: 'center',
@@ -275,7 +280,8 @@ const styles = {
   editIconStyle: {
     width: 28,
     height: 28,
-    borderRadius: 10
+    borderRadius: 10,
+    tintColor: 'black'
   }
 };
 

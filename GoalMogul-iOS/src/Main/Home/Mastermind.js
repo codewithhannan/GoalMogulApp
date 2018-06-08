@@ -55,6 +55,7 @@ class Mastermind extends Component {
   }
 
   render() {
+    console.log('navigation props: ', this.props.navigation);
     return (
       <View style={{ flex: 1 }}>
         {/*
@@ -82,12 +83,16 @@ const styles = {
     position: 'absolute',
     bottom: 20,
     right: 15,
-    height: 40,
-    width: 40,
-    borderRadius: 20,
+    height: 50,
+    width: 50,
+    borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#45C9F6'
+    backgroundColor: '#45C9F6',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 2,
   },
   iconStyle: {
     height: 26,

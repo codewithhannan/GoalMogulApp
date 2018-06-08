@@ -1,5 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
+import Expo from 'expo';
 import { api as API, singleFetch } from '../redux/middleware/api';
 import {
   MEET_SELECT_TAB,
@@ -12,6 +13,14 @@ import {
   MEET_CHANGE_FILTER,
   MEET_REQUESTS_CHANGE_TAB,
 } from './types';
+
+import {
+  MEET_CONTACT_SYNC_FETCH_DONE,
+  MEET_CONTACT_SYNC,
+  MEET_CONTACT_SYNC_REFRESH_DONE
+} from '../reducers/MeetReducers';
+
+import { handleUploadContacts, fetchMatchedContacts } from '../Utils/ContactUtils';
 
 const BASE_ROUTE = 'secure/user/';
 // const BASE_ROUTE = 'dummy/user/';
@@ -143,15 +152,14 @@ const loadOneTab = (type, skip, limit, token, dispatch, callback) => {
 
 // Refresh current tab based on selected id
 export const handleRefresh = (key) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const { limit } = _.get(getState().meet, key);
   dispatch({
     type: MEET_TAB_REFRESH,
     payload: {
       type: key
     }
   });
-
-  const { token } = getState().user;
-  const { limit } = _.get(getState().meet, key);
   loadOneTab(key, 0, limit, token, dispatch, (data) => {
     dispatch({
       type: MEET_TAB_REFRESH_DONE,
@@ -238,7 +246,10 @@ export const updateFriendship = (userId, friendshipId, type, tab, callback) =>
     }
   })(type);
   const { token } = getState().user;
-  singleFetch(requestType.url, { ...requestType.data }, requestType.type, token)
+  if (type === 'requestFriend' && requestType.data === undefined) {
+    console.warn('[ Meet Actions ] sending friend request with userId: ', userId);
+  }
+  singleFetch(requestType.url, _.cloneDeep(requestType.data), requestType.type, token)
     .then((res) => {
       console.log(`response for ${type}: `, res);
       if (res.message && !res.message.toLowerCase().trim().includes('success')) {
@@ -307,5 +318,116 @@ export const requestsSelectTab = (key) => {
   return {
     type: MEET_REQUESTS_CHANGE_TAB,
     payload: key
+  };
+};
+
+// Contact sync
+export const meetContactSync = (callback) => {
+  return async (dispatch, getState) => {
+    const permission = await Expo.Permissions.askAsync(Expo.Permissions.CONTACTS);
+    if (permission.status !== 'granted') {
+    // Permission was denied and dispatch an action
+      alert('Please grant access to sync contact');
+      return;
+    }
+    const { token } = getState().user;
+    // Skip and limit for fetching matched contacts
+    const { matchedContacts } = getState().meet;
+
+    dispatch({
+      type: MEET_CONTACT_SYNC
+    });
+
+    Actions.push('meetContactSync', { type: 'meet', actionCallback: callback });
+
+    handleUploadContacts(token)
+      .then((res) => {
+        console.log(' response is: ', res);
+
+        /* TODO: load matched contacts */
+        return fetchMatchedContacts(token, 0, matchedContacts.limit);
+      })
+      .then((res) => {
+        console.log('matched contacts are: ', res);
+        if (res.data) {
+          // User finish fetching
+          return dispatch({
+            type: MEET_CONTACT_SYNC_FETCH_DONE,
+            payload: {
+              data: res.data, // TODO: replaced with res
+              skip: matchedContacts.skip + res.data.length,
+              limit: matchedContacts.limit
+            }
+          });
+        }
+        // TODO: error handling for fail to fetch contact cards
+        // TODO: show toast for user to refresh
+        dispatch({
+          type: MEET_CONTACT_SYNC_FETCH_DONE,
+          payload: {
+            data: [], // TODO: replaced with res
+            skip: matchedContacts.skip,
+            limit: matchedContacts.limit
+          }
+        });
+      })
+      .catch((err) => {
+        console.warn('[ Action ContactSync Fail ]: ', err);
+      });
+  };
+};
+
+
+// Load more matched contacts for contact sync
+export const meetContactSyncLoadMore = (refresh) => (dispatch, getState) => {
+  dispatch({
+    type: MEET_CONTACT_SYNC
+  });
+
+  const { token } = getState().user;
+  // Skip and limit for fetching matched contacts
+  const { skip, limit, hasNextPage } = getState().registration.matchedContacts;
+  const newSkip = refresh ? 0 : skip;
+  const type = refresh ? MEET_CONTACT_SYNC_REFRESH_DONE : MEET_CONTACT_SYNC_FETCH_DONE;
+
+  if (hasNextPage === undefined || hasNextPage) {
+    fetchMatchedContacts(token, newSkip, limit).then((res) => {
+      if (res.data) {
+        dispatch({
+          type,
+          payload: {
+            data: res.data, // TODO: replaced with res
+            skip: newSkip + res.data.length,
+            limit,
+            hasNextPage: res.data.length !== 0 && res.data !== undefined
+          }
+        });
+      } else {
+        dispatch({
+          type,
+          payload: {
+            data: [], // TODO: replaced with res
+            skip: newSkip,
+            limit,
+            hasNextPage: res.data !== undefined && res.data.length !== 0
+          }
+        });
+      }
+    })
+    .catch((err) => {
+      console.warn('[ Action ContactSync Loadmore Fail ]: ', err);
+    });
+  }
+};
+
+/* Contact Sync actions */
+export const meetContactSyncDone = () => {
+  // Passed in a list of contacts that user wants to add as friends
+
+  return (dispatch) => {
+    // dispatch({
+    //   type: MEET_CONTACT_SYNC_DONE
+    // });
+    Actions.mainTabs();
   };
 };

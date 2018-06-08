@@ -4,7 +4,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image
+  Image,
+  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -23,6 +24,10 @@ const DEBUG_KEY = '[ Component SearchUserCard ]';
 
 class SearchUserCard extends Component {
 
+  state = {
+    imageLoading: false
+  }
+
   onButtonClicked = (_id) => {
     console.log(`${DEBUG_KEY} open profile with id: `, _id);
     this.props.openProfile(_id);
@@ -39,7 +44,25 @@ class SearchUserCard extends Component {
     let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
     if (image) {
       const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
-      profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
+      profileImage =
+      (
+        <View>
+          <Image
+            onLoadStart={() => this.setState({ imageLoading: true })}
+            onLoadEnd={() => this.setState({ imageLoading: false })}
+            style={styles.imageStyle}
+            source={{ uri: imageUrl }}
+          />
+          {
+            this.state.imageLoading ?
+            <View style={{ ...styles.imageStyle, alignItems: 'center', justifyContent: 'center' }}>
+               <ActivityIndicator size="large" color="lightgray" />
+            </View>
+            : ''
+          }
+        </View>
+
+      );
     }
     return profileImage;
   }

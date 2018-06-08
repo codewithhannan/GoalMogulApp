@@ -177,6 +177,7 @@ const styles = {
     fontWeight: '800',
     color: '#ffffff',
     alignSelf: 'center',
+    marginTop: 5,
     fontFamily: 'gotham-pro-bold'
   },
   highlightContainerStyle: {
@@ -187,7 +188,8 @@ const styles = {
     width: 220,
     alignItems: 'center',
     justifyContent: 'center',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    borderRadius: 5
   },
   reactionContainerStyle: {
     flexDirection: 'row',

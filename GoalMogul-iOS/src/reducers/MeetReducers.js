@@ -29,6 +29,10 @@ const filter = {
   }
 };
 
+export const MEET_CONTACT_SYNC_FETCH_DONE = 'meet_contact_sync_fetch_done';
+export const MEET_CONTACT_SYNC = 'meet_contact_sync';
+export const MEET_CONTACT_SYNC_REFRESH_DONE = 'meet_contact_sync_refresh_done';
+
 const INITIAL_STATE = {
   selectedTab: 'suggested',
   navigationState: {
@@ -50,7 +54,7 @@ const INITIAL_STATE = {
     skip: 0
   },
   requests: {
-    selectedTab: 'outgoing',
+    selectedTab: 'incoming',
     incoming: {
       data: [],
       loading: false,
@@ -87,7 +91,14 @@ const INITIAL_STATE = {
     hasNextPage: undefined,
     limit,
     skip: 0
-  }
+  },
+  matchedContacts: {
+    data: [],
+    limit: 30,
+    skip: 0,
+    refreshing: true,
+    hasNextPage: undefined
+  },
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -143,7 +154,8 @@ export default (state = INITIAL_STATE, action) => {
         newState = _.set(newState, `${type}.skip`, skip);
       }
       newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
-      return _.set(newState, `${type}.data`, data);
+      const oldData = _.get(newState, `${type}.data`);
+      return _.set(newState, `${type}.data`, arrayUnique(oldData.concat(data)));
     }
 
     /**
@@ -258,6 +270,39 @@ export default (state = INITIAL_STATE, action) => {
       return { ...INITIAL_STATE };
     }
 
+    // Contact sync
+    // Contacts fetching done
+    case MEET_CONTACT_SYNC_FETCH_DONE: {
+      let newState = _.cloneDeep(state);
+      let newMatchedContacts = _.cloneDeep(state.matchedContacts);
+      const { data, skip, hasNextPage } = action.payload;
+      newMatchedContacts.data = arrayUnique(newMatchedContacts.data.concat(data));
+      newMatchedContacts.skip = skip;
+      newMatchedContacts.refreshing = false;
+      newMatchedContacts.hasNextPage = hasNextPage;
+      console.log('contact sync fetch done.');
+      newState.matchedContacts = newMatchedContacts;
+      console.log('new state is: ', newState.matchedContacts);
+      return { ...newState };
+    }
+
+    // Contact Sync requests
+    case MEET_CONTACT_SYNC: {
+      let newMatchedContacts = _.cloneDeep(state.matchedContacts);
+      newMatchedContacts.refreshing = true;
+      return { ...state, matchedContacts: newMatchedContacts };
+    }
+
+    // Refresh contact sync cards done
+    case MEET_CONTACT_SYNC_REFRESH_DONE: {
+      let newMatchedContacts = _.cloneDeep(state.matchedContacts);
+      newMatchedContacts.data = action.payload.data;
+      newMatchedContacts.refreshing = false;
+      newMatchedContacts.skip = action.payload.skip;
+
+      return { ...state, fetching: false, matchedContacts: newMatchedContacts };
+    }
+
     default:
       return { ...state };
   }
@@ -303,3 +348,16 @@ const updateFriendshipData = R.curry((tab, _id, filterById) =>
     R.path(R.split('.', `${tab}.data`)),
     filterById(_id)
   ));
+
+export function arrayUnique(array) {
+  let a = array.concat();
+  for (let i = 0; i < a.length; ++i) {
+    for (let j = i + 1; j < a.length; ++j) {
+      if (a[i]._id === a[j]._id) {
+        a.splice(j--, 1);
+      }
+    }
+  }
+
+  return a;
+}
