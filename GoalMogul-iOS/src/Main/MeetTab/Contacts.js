@@ -9,11 +9,13 @@ import { connect } from 'react-redux';
 
 // Components
 import MeetFilterBar from './MeetFilterBar';
+import ContactCard from './Contacts/ContactCard';
 
 // actions
 import {
   handleRefresh,
-  meetOnLoadMore
+  meetOnLoadMore,
+  meetContactSync
 } from '../../actions';
 
 // tab key
@@ -34,7 +36,7 @@ class Contacts extends Component {
     this.handleRefresh();
   }
 
-  _keyExtractor = (item) => item._id
+  _keyExtractor = (item) => item._id;
 
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing tab: `, key);
@@ -46,13 +48,11 @@ class Contacts extends Component {
     this.props.meetOnLoadMore(key);
   }
 
-  renderItem = item => {
-    // TODO: render item
+  handleSyncContact = () => {
+    this.props.meetContactSync(() => this.handleRefresh());
   }
 
-  handleSyncContact = () => {
-    // TODO: redirect to contact sync page
-  }
+  renderItem = ({ item }) => <ContactCard item={item} />;
 
   renderSyncContact() {
     if (this.props.data === undefined || this.props.data.length === 0) {
@@ -72,6 +72,7 @@ class Contacts extends Component {
   }
 
   render() {
+    console.log('data for contact is: ', this.props.contactSync);
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
@@ -79,10 +80,10 @@ class Contacts extends Component {
             data={this.props.data}
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
-            onRefresh={this.handleRefresh.bind()}
+            onRefresh={this.handleRefresh}
             refreshing={this.props.refreshing}
             onEndReached={this.handleOnLoadMore}
-            onEndReachedThreshold={0.5}
+            onEndReachedThreshold={0}
             ListEmptyComponent={this.renderSyncContact()}
           />
         </View>
@@ -131,6 +132,7 @@ export default connect(
   mapStateToProps,
   {
     handleRefresh,
-    meetOnLoadMore
+    meetOnLoadMore,
+    meetContactSync
   }
 )(Contacts);

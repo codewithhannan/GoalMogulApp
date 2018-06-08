@@ -124,6 +124,7 @@ class RouterComponent extends Component {
                   tabs
                   showLabel={false}
                   tabBarOnPress={this.onTabPress}
+                  lazy
                 >
                   <Stack
                     key="homeTab"
@@ -210,6 +211,7 @@ class RouterComponent extends Component {
             hideNavBar
           />
           <Scene key="mutualFriends" component={MutualFriends} />
+          <Scene key="meetContactSync" component={ContactSync} hideNavBar />
         </Modal>
 
       </Router>

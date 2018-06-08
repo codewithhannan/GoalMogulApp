@@ -8,6 +8,7 @@ import { getFilteredFriendsList } from '../../redux/modules/meet/selector';
 // Components
 import FriendsFilterBar from './Friends/FriendsFilterBar';
 import FriendCard from './Friends/FriendCard';
+import EmptyResult from '../Common/Text/EmptyResult';
 
 // actions
 import {
@@ -59,6 +60,7 @@ class Friends extends Component {
             refreshing={this.props.refreshing}
             onEndReached={this.handleOnLoadMore}
             onEndReachedThreshold={0}
+            ListEmptyComponent={<EmptyResult text={'You haven\'t added any friends'} />}
           />
         </View>
         {/*

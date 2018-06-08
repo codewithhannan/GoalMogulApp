@@ -5,12 +5,14 @@ import {
   FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 
 /* Components */
 import Header from './Common/Header';
 import Button from './Common/Button';
 import ContactCard from './ContactCard';
 import ContactDetail from './ContactDetail';
+import ModalHeader from '../Main/Common/Header/ModalHeader';
 
 /* Styles */
 import Styles from './Styles';
@@ -19,7 +21,8 @@ import Styles from './Styles';
 import {
   registrationContactSyncDone,
   contactSyncRefresh,
-  contactSyncLoadMore
+  contactSyncLoadMore,
+  meetContactSyncLoadMore
 } from '../actions';
 
 const testData = [
@@ -40,10 +43,16 @@ const testData = [
 class ContactSync extends Component {
 
   onLoadMore = () => {
+    if (this.props.type === 'meet') {
+      return this.props.meetContactSyncLoadMore(false);
+    }
     this.props.contactSyncLoadMore();
   }
 
   handleRefresh = () => {
+    if (this.props.type === 'meet') {
+      return this.props.meetContactSyncLoadMore(true);
+    }
     this.props.contactSyncRefresh();
   }
 
@@ -63,30 +72,56 @@ class ContactSync extends Component {
 
   // TODO: replace data with this.props.data
   render() {
-    const dataToRender = testData.concat(this.props.data);
+    const { type, actionCallback } = this.props;
+
+    // Assign header
+    const header = (type !== undefined && type === 'meet') ?
+      (<ModalHeader
+        onCancel={() => Actions.popTo('goal')}
+        title='Sync contacts'
+        actionText='Done'
+        onAction={() => {
+          Actions.popTo('goal');
+          actionCallback();
+        }}
+      />)
+      :
+      <Header contact type='contact' />;
+
+    // Assign actionable buttons
+    const button = (type !== undefined && type === 'meet') ?
+    '' :
+    (<TouchableOpacity onPress={this.handleDoneOnPressed.bind(this)}>
+      <View style={styles.footer}>
+        <Button text='Done' />
+      </View>
+    </TouchableOpacity>);
+
+    const data = (type !== undefined && type === 'meet') ?
+      this.props.meetMatchedContacts.data : this.props.registrationMatchedContacts.data;
+
+    const refreshing = (type !== undefined && type === 'meet') ?
+      this.props.meetMatchedContacts.refreshing : this.props.registrationMatchedContacts.refreshing;
+
     return (
       <View style={Styles.containerStyle}>
-        <Header contact type='contact' />
+        {header}
         <View style={Styles.bodyContainerStyle}>
 
           <FlatList
             enableEmptySections
-            data={dataToRender}
+            data={data}
             renderItem={(item) => this.renderItem(item)}
             numColumns={1}
             keyExtractor={this._keyExtractor}
-            refreshing={this.props.refreshing}
+            refreshing={refreshing}
             onRefresh={this.handleRefresh}
             onEndReached={this.onLoadMore}
             onEndThreshold={0}
           />
-
-          <TouchableOpacity onPress={this.handleDoneOnPressed.bind(this)}>
-            <View style={styles.footer}>
-              <Button text='Done' />
-            </View>
-          </TouchableOpacity>
+          {button}
         </View>
+
       </View>
     );
   }
@@ -99,11 +134,12 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { matchedContacts } = state.registration;
-  const { limit, skip, refreshing, data } = matchedContacts;
+  const meetMatchedContacts = state.meet.matchedContacts;
+  const registrationMatchedContacts = state.registration.matchedContacts;
 
   return {
-    limit, skip, refreshing, data
+    meetMatchedContacts,
+    registrationMatchedContacts
   };
 };
 
@@ -112,6 +148,7 @@ export default connect(
   {
     registrationContactSyncDone,
     contactSyncRefresh,
-    contactSyncLoadMore
+    contactSyncLoadMore,
+    meetContactSyncLoadMore
   }
 )(ContactSync);

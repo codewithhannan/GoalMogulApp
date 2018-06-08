@@ -184,7 +184,6 @@ class RequestCard extends Component {
   }
 
   render() {
-    console.log('item is: ', this.props.item);
     return (
       <View style={styles.containerStyle}>
         {this.renderProfileImage()}

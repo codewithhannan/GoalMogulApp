@@ -45,8 +45,9 @@ const DEBUG_KEY = '[Component Requests]';
 
 class Requests extends Component {
 
-  componentDidMount() {
-    this.handleRefresh();
+  componentWillMount() {
+    this.props.handleRefresh('requests.incoming');
+    this.props.handleRefresh('requests.outgoing');
   }
 
   selectTab = tabKey => {
@@ -60,7 +61,7 @@ class Requests extends Component {
   }
 
   handleOnLoadMore = () => {
-    const route = [key, this.props.selectedTab];
+    const route = routes[this.props.selectedTab];
     console.log(`${DEBUG_KEY} Loading more for tab: `, route);
     this.props.meetOnLoadMore(route);
   }

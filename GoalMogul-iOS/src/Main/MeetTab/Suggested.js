@@ -42,7 +42,7 @@ class Suggested extends Component {
     this.handleRefresh = this.handleRefresh.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.handleRefresh();
   }
 

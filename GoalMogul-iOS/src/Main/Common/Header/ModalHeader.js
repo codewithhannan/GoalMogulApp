@@ -4,7 +4,7 @@ import { Text, View, TouchableOpacity } from 'react-native';
 /* Icon */
 
 const ModalHeader = (props) => {
-  const { title, actionText, onCancel } = props;
+  const { title, actionText, onCancel, onAction } = props;
   return (
     <View style={styles.containerStyle}>
       <TouchableOpacity
@@ -19,7 +19,10 @@ const ModalHeader = (props) => {
 
       </TouchableOpacity>
 
-      <TouchableOpacity style={{ alignItems: 'center', flex: 1 }}>
+      <TouchableOpacity
+        style={{ alignItems: 'center', flex: 1 }}
+        onPress={onAction}
+      >
 
         <Text style={styles.actionTextStyle}>{actionText}</Text>
 

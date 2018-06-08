@@ -50,7 +50,7 @@ class MutualFriends extends Component {
         visible={this.state.modalVisible}
       >
         <ModalHeader
-          title='Mutual friends'
+          title={`${this.props.user.name}\'s friends`}
           actionText=''
           onCancel={() => {
             this.closeModal();
@@ -73,7 +73,7 @@ class MutualFriends extends Component {
 }
 
 const mapStateToProps = state => {
-  const { mutualFriends, userId } = state.profile;
+  const { mutualFriends, userId, user } = state.profile;
   const { data, loading, count } = mutualFriends;
   const isSelf = state.profile.userId.toString() === state.user.userId.toString();
 
@@ -82,7 +82,8 @@ const mapStateToProps = state => {
     data,
     loading,
     userId,
-    isSelf
+    isSelf,
+    user
   };
 };
 
