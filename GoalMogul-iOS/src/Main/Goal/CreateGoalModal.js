@@ -4,14 +4,21 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Image,
-  TextInput,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions
 } from 'react-native';
 import { connect } from 'react-redux';
-import { FieldArray, Field, reduxForm } from 'redux-form';
-import _ from 'lodash';
-import { MenuProvider } from 'react-native-popup-menu';
+import { FieldArray, Field, reduxForm, formValueSelector } from 'redux-form';
+import R from 'ramda';
+import {
+  MenuProvider,
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+  renderers
+} from 'react-native-popup-menu';
 
 /* Components */
 import ModalHeader from '../Common/Header/ModalHeader';
@@ -23,10 +30,13 @@ import ViewableSettingMenu from './ViewableSettingMenu';
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
 import plus from '../../asset/utils/plus.png';
 import cancel from '../../asset/utils/cancel_no_background.png';
-
+import dropDown from '../../asset/utils/dropDown.png';
 
 // Actions
 import { } from '../../actions';
+
+const { Popover } = renderers;
+const { width } = Dimensions.get('window');
 
 const STEP_PLACE_HOLDER = 'Add an important step to achieving your goal...';
 const NEED_PLACE_HOLDER = 'Something you\'re specifically looking for help with';
@@ -42,71 +52,44 @@ class CreateGoalModal extends Component {
 
     this.props.initialize({
       steps: [...values],
-      needs: [...values]
+      needs: [...values],
+      shareToMastermind: true,
+      category: 'General',
+      viewableSetting: 'Friends',
+      priority: 1
     });
   }
 
-  renderInput = ({
-    input: { onChange, onFocus, value, ...restInput },
-    multiline,
-    editable,
-    numberOfLines,
-    placeholder,
-    style,
-    iconSource,
-    iconStyle,
-    iconOnPress,
-    meta: { touched, error },
-    ...custom
-  }) => {
-    const icon = iconSource ?
-      <Image source={iconSource} style={{ ...iconStyle }} />
-      :
-      '';
-    return (
-      <View style={styles.inputContainerStyle}>
-        <TextInput
-          ref={input => { this.textInput = input; }}
-          title={custom.title}
-          autoCapitalize={'none'}
-          autoCorrect={false}
-          onChangeText={onChange}
-          numberOfLines={1 || numberOfLines}
-          returnKeyType='done'
-          multiline={multiline}
-          onFocus={onFocus}
-          editable={editable}
-          placeholder={placeholder}
-          style={style}
-          value={_.isEmpty(value) ? '' : value}
-          {...restInput}
-          {...custom}
-        />
-        <TouchableOpacity
-          style={{ padding: 15, alignItems: 'flex-end', alignSelf: 'center' }}
-          onPress={iconOnPress}
-        >
-          {icon}
-        </TouchableOpacity>
-      </View>
-    );
-  };
+  handleCatergoryOnSelect = (value) => {
+    console.log('category selected is: ', value);
+    this.props.change('category', value);
+  }
+
+  handlePriorityOnSelect = (value) => {
+    console.log('priority selected is: ', value);
+    this.props.change('priority', value);
+  }
 
   renderUserInfo() {
     let imageUrl = this.props.user.profile.image;
-    let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
+    let profileImage =
+      <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />;
     if (imageUrl) {
       imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
       profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
     }
+    const callback = R.curry((value) => this.props.change('viewableSetting', value));
     return (
       <View style={{ flexDirection: 'row', marginBottom: 15 }}>
         {profileImage}
-        <View style={{ flexDirection: 'column', marginLeft: 15 }}>
-          <Text style={{ fontSize: 18 }}>
+        <View style={{ marginLeft: 15 }}>
+          <Text style={{ fontSize: 18, marginBottom: 8 }}>
             Jordan Gardener
           </Text>
-          <ViewableSettingMenu />
+          <ViewableSettingMenu
+            viewableSetting={this.props.viewableSetting}
+            callback={callback}
+          />
         </View>
       </View>
     );
@@ -157,7 +140,46 @@ class CreateGoalModal extends Component {
   }
 
   renderCategory() {
+    const titleText = <Text style={styles.titleTextStyle}>Category</Text>;
 
+    const menu = MenuFactory(
+      [
+        'General',
+        'Learning/Education',
+        'Career/Business',
+        'Financial',
+        'Spiritual',
+        'Family/Personal'
+      ],
+      this.handleCatergoryOnSelect,
+      this.props.category,
+      { ...styles.triggerContainerStyle }
+    );
+
+    return (
+      <View style={{ marginTop: 15 }}>
+        {titleText}
+        {menu}
+      </View>
+    );
+  }
+
+  renderPriority() {
+    const titleText = <Text style={styles.titleTextStyle}>Priority</Text>;
+
+    const menu = MenuFactory(
+      ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+      this.handlePriorityOnSelect,
+      this.props.priority,
+      { ...styles.triggerContainerStyle, width: 80 }
+    );
+
+    return (
+      <View style={{ marginTop: 15 }}>
+        {titleText}
+        {menu}
+      </View>
+    );
   }
 
   renderFieldArray = (title, buttonText, placeholder, fields, error) => {
@@ -216,6 +238,7 @@ class CreateGoalModal extends Component {
               {this.renderGoal()}
               <FieldArray name="description" component={this.renderGoalDescription} />
               {this.renderCategory()}
+              {this.renderPriority()}
               <FieldArray name="steps" component={this.renderSteps} />
               <FieldArray name="needs" component={this.renderNeeds} />
             </View>
@@ -269,8 +292,52 @@ const styles = {
     width: 13,
     justifyContent: 'flex-end'
   },
+  caretStyle: {
+    marginRight: 10,
+    height: 18,
+    width: 18
+  },
+  // Menu related style
   backdrop: {
     backgroundColor: 'transparent'
+  },
+  triggerContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 5,
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: '#e9e9e9',
+    shadowColor: '#ddd',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.8,
+    shadowRadius: 1,
+    elevation: 1,
+  },
+  anchorStyle: {
+    backgroundColor: 'white'
+  },
+  menuOptionsStyles: {
+    optionsContainer: {
+      width: width - 14,
+    },
+    optionsWrapper: {
+
+    },
+    optionWrapper: {
+      flex: 1,
+    },
+    optionTouchable: {
+      underlayColor: 'lightgray',
+      activeOpacity: 10,
+    },
+    optionText: {
+      paddingTop: 5,
+      paddingBottom: 5,
+      paddingLeft: 10,
+      paddingRight: 10,
+      color: 'black',
+    },
   }
 };
 
@@ -280,12 +347,16 @@ CreateGoalModal = reduxForm({
 })(CreateGoalModal);
 
 const mapStateToProps = state => {
+  const selector = formValueSelector('createGoalModal');
   const { user } = state.user;
   const { profile } = user;
 
   return {
     user,
-    profile
+    profile,
+    category: selector(state, 'category'),
+    viewableSetting: selector(state, 'viewableSetting'),
+    priority: selector(state, 'priority'),
   };
 };
 
@@ -293,3 +364,39 @@ export default connect(
   mapStateToProps,
   null
 )(CreateGoalModal);
+
+const MenuFactory = (options, callback, triggerText, triggerContainerStyle) => {
+  return (
+    <Menu
+      onSelect={value => callback(value)}
+      rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
+      renderer={Popover}
+    >
+      <MenuTrigger
+        customStyles={{
+          TriggerTouchableComponent: TouchableOpacity,
+        }}
+      >
+        <View style={triggerContainerStyle}>
+          <Text
+            style={{ fontSize: 15, margin: 10, marginLeft: 15, flex: 1 }}
+          >
+            {triggerText}
+          </Text>
+          <Image style={styles.caretStyle} source={dropDown} />
+        </View>
+      </MenuTrigger>
+      <MenuOptions customStyles={styles.menuOptionsStyles}>
+        {
+          options.map((value, index) => (
+            <MenuOption
+              text={value}
+              value={value}
+              key={index}
+            />
+          ))
+        }
+      </MenuOptions>
+    </Menu>
+  );
+};
