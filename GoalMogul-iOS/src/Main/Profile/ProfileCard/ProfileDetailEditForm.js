@@ -44,7 +44,7 @@ class ProfileDetailEditForm extends Component {
 
   handleOnFocus = (position) => {
     console.log('on focus');
-    this.refs.scrollview.scrollTo({ x: 0, y: position, animated: true })
+    this.refs.scrollview.scrollTo({ x: 0, y: position, animated: true });
   }
 
   chooseImage = async () => {

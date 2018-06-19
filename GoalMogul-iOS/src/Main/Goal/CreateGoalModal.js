@@ -6,7 +6,8 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
 import { FieldArray, Field, reduxForm, formValueSelector } from 'redux-form';
@@ -79,6 +80,7 @@ class CreateGoalModal extends Component {
       profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
     }
     const callback = R.curry((value) => this.props.change('viewableSetting', value));
+    const shareToMastermindCallback = R.curry((value) => this.props.change('shareToMastermind', value));
     return (
       <View style={{ flexDirection: 'row', marginBottom: 15 }}>
         {profileImage}
@@ -89,6 +91,8 @@ class CreateGoalModal extends Component {
           <ViewableSettingMenu
             viewableSetting={this.props.viewableSetting}
             callback={callback}
+            shareToMastermind={this.props.shareToMastermind}
+            shareToMastermindCallback={shareToMastermindCallback}
           />
         </View>
       </View>
@@ -139,7 +143,7 @@ class CreateGoalModal extends Component {
     );
   }
 
-  renderCategory() {
+  renderCategory = () => {
     const titleText = <Text style={styles.titleTextStyle}>Category</Text>;
 
     const menu = MenuFactory(
@@ -153,7 +157,9 @@ class CreateGoalModal extends Component {
       ],
       this.handleCatergoryOnSelect,
       this.props.category,
-      { ...styles.triggerContainerStyle }
+      { ...styles.triggerContainerStyle },
+      () => console.log('animationCallback')
+      // () => this.scrollView.scrollTo({ x: 0, y: 50, animated: true })
     );
 
     return (
@@ -164,14 +170,16 @@ class CreateGoalModal extends Component {
     );
   }
 
-  renderPriority() {
+  renderPriority = () => {
     const titleText = <Text style={styles.titleTextStyle}>Priority</Text>;
 
     const menu = MenuFactory(
       ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
       this.handlePriorityOnSelect,
       this.props.priority,
-      { ...styles.triggerContainerStyle, width: 80 }
+      { ...styles.triggerContainerStyle, width: 80 },
+      () => console.log('animationCallback')
+      // () => this.scrollView.scrollTo({ x: 0, y: 50, animated: true })
     );
 
     return (
@@ -182,11 +190,15 @@ class CreateGoalModal extends Component {
     );
   }
 
+  renderTimeline = () => {
+    
+  }
+
   renderFieldArray = (title, buttonText, placeholder, fields, error) => {
     const button = <Button text={buttonText} source={plus} onPress={() => fields.push()} />;
     const titleText = <Text style={styles.titleTextStyle}>{title}</Text>;
     return (
-      <View style={{ marginTop: 10 }}>
+      <View style={{ marginTop: 15 }}>
         {titleText}
         {
           fields.map((field, index) => {
@@ -232,7 +244,9 @@ class CreateGoalModal extends Component {
           style={{ flex: 1, backgroundColor: '#ffffff' }}
         >
           <ModalHeader title='New Goal' actionText='Create' />
-          <ScrollView style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}>
+          <ScrollView
+            style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
+          >
             <View style={{ flex: 1, padding: 20 }}>
               {this.renderUserInfo()}
               {this.renderGoal()}
@@ -357,6 +371,7 @@ const mapStateToProps = state => {
     category: selector(state, 'category'),
     viewableSetting: selector(state, 'viewableSetting'),
     priority: selector(state, 'priority'),
+    shareToMastermind: selector(state, 'shareToMastermind'),
   };
 };
 
@@ -365,12 +380,14 @@ export default connect(
   null
 )(CreateGoalModal);
 
-const MenuFactory = (options, callback, triggerText, triggerContainerStyle) => {
+const MenuFactory = (options, callback, triggerText, triggerContainerStyle, animationCallback) => {
+
   return (
     <Menu
       onSelect={value => callback(value)}
       rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
       renderer={Popover}
+      onOpen={animationCallback}
     >
       <MenuTrigger
         customStyles={{
@@ -387,15 +404,14 @@ const MenuFactory = (options, callback, triggerText, triggerContainerStyle) => {
         </View>
       </MenuTrigger>
       <MenuOptions customStyles={styles.menuOptionsStyles}>
-        {
-          options.map((value, index) => (
-            <MenuOption
-              text={value}
-              value={value}
-              key={index}
-            />
-          ))
-        }
+        <FlatList
+          data={options}
+          renderItem={({ item }) => (
+            <MenuOption value={item} text={item} />
+          )}
+          keyExtractor={(item, index) => index.toString()}
+          style={{ height: 200 }}
+        />
       </MenuOptions>
     </Menu>
   );
