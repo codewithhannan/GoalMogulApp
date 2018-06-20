@@ -7,11 +7,14 @@ import {
   Text,
   TouchableOpacity,
   Dimensions,
-  FlatList
+  FlatList,
+  DatePickerIOS,
+  Modal
 } from 'react-native';
 import { connect } from 'react-redux';
 import { FieldArray, Field, reduxForm, formValueSelector } from 'redux-form';
 import R from 'ramda';
+import moment from 'moment';
 import {
   MenuProvider,
   Menu,
@@ -57,7 +60,10 @@ class CreateGoalModal extends Component {
       shareToMastermind: true,
       category: 'General',
       viewableSetting: 'Friends',
-      priority: 1
+      priority: 1,
+      hasTimeline: false,
+      startTime: { date: undefined, picker: false },
+      endTime: { date: undefined, picker: false },
     });
   }
 
@@ -190,8 +196,167 @@ class CreateGoalModal extends Component {
     );
   }
 
+  // Renderer for timeline
   renderTimeline = () => {
-    
+    const titleText = <Text style={styles.titleTextStyle}>Timeline</Text>;
+    if (!this.props.hasTimeline) {
+      return (
+        <View style={{ marginTop: 15 }}>
+          {titleText}
+          <TouchableOpacity
+            style={{
+              height: 40,
+              width: 90,
+              backgroundColor: '#fafafa',
+              borderRadius: 4,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 8
+            }}
+            onPress={() => this.props.change('hasTimeline', true)}
+          >
+            <Text style={{ padding: 10, fontSize: 13 }}>timeline</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    const startDatePicker =
+      (
+        <Modal
+          animationType="fade"
+          transparent={false}
+          visible={this.props.startTime.picker}
+        >
+          <ModalHeader
+            title='Select start time'
+            actionText='Done'
+            onAction={() =>
+              this.props.change('startTime', {
+                date: this.props.startTime.date,
+                picker: false
+              })
+            }
+            onCancel={() =>
+              this.props.change('startTime', {
+                date: this.props.startTime.date,
+                picker: false
+              })
+            }
+          />
+          <View style={{ flex: 1 }}>
+            <DatePickerIOS
+              date={this.props.startTime.date}
+              onDateChange={(date) => this.props.change('startTime', { date, picker: true })}
+              mode='date'
+            />
+          </View>
+
+        </Modal>
+      );
+
+      const endDatePicker =
+        (
+          <Modal
+            animationType="fade"
+            transparent={false}
+            visible={this.props.endTime.picker}
+          >
+            <ModalHeader
+              title='Select end time'
+              actionText='Done'
+              onAction={() =>
+                this.props.change('endTime', {
+                  date: this.props.endTime.date,
+                  picker: false
+                })
+              }
+              onCancel={() =>
+                this.props.change('endTime', {
+                  date: this.props.endTime.date,
+                  picker: false
+                })
+              }
+            />
+            <View style={{ flex: 1 }}>
+              <DatePickerIOS
+                date={this.props.endTime.date}
+                onDateChange={(date) => this.props.change('endTime', { date, picker: true })}
+                mode='date'
+              />
+            </View>
+
+          </Modal>
+        );
+
+    const startTime = this.props.startTime.date ?
+      <Text>{moment(this.props.startTime.date).format('DD/MM/YYYY')}</Text> :
+      <Text>Start</Text>;
+
+    const endTime = this.props.endTime.date ?
+      <Text>{moment(this.props.endTime.date).format('DD/MM/YYYY')}</Text> :
+      <Text>End</Text>;
+
+    return (
+      <View style={{ marginTop: 15 }}>
+        {titleText}
+        <View style={{ marginTop: 8, flexDirection: 'row' }}>
+          <TouchableOpacity
+            style={{
+              height: 50,
+              width: 130,
+              alignItems: 'center',
+              justifyContent: 'center',
+              ...styles.borderStyle
+            }}
+            onPress={() =>
+              this.props.change('startTime', {
+                date: this.props.startTime.date ? this.props.startTime.date : new Date(),
+                picker: true
+              })
+            }
+          >
+            {startTime}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{
+              height: 50,
+              width: 130,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: 15,
+              ...styles.borderStyle
+            }}
+            onPress={() =>
+              this.props.change('endTime', {
+                date: this.props.endTime.date ? this.props.endTime.date : new Date(),
+                picker: true
+              })
+            }
+          >
+            {endTime}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{ justifyContent: 'center', padding: 10 }}
+            onPress={() => {
+              this.props.change('hasTimeline', false);
+              this.props.change('endTime', {
+                date: undefined, picker: false
+              });
+              this.props.change('startTime', {
+                date: undefined, picker: false
+              });
+            }}
+          >
+            <Image source={cancel} style={{ ...styles.cancelIconStyle }} />
+          </TouchableOpacity>
+        </View>
+        {startDatePicker}
+        {endDatePicker}
+      </View>
+    );
   }
 
   renderFieldArray = (title, buttonText, placeholder, fields, error) => {
@@ -253,6 +418,7 @@ class CreateGoalModal extends Component {
               <FieldArray name="description" component={this.renderGoalDescription} />
               {this.renderCategory()}
               {this.renderPriority()}
+              {this.renderTimeline()}
               <FieldArray name="steps" component={this.renderSteps} />
               <FieldArray name="needs" component={this.renderNeeds} />
             </View>
@@ -284,7 +450,7 @@ const styles = {
     borderRadius: 5,
   },
   titleTextStyle: {
-    fontSize: 13,
+    fontSize: 11,
     color: '#a1a1a1',
     padding: 2
   },
@@ -310,6 +476,15 @@ const styles = {
     marginRight: 10,
     height: 18,
     width: 18
+  },
+  borderStyle: {
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#e9e9e9',
+    shadowColor: '#ddd',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.8,
+    shadowRadius: 1,
   },
   // Menu related style
   backdrop: {
@@ -372,6 +547,9 @@ const mapStateToProps = state => {
     viewableSetting: selector(state, 'viewableSetting'),
     priority: selector(state, 'priority'),
     shareToMastermind: selector(state, 'shareToMastermind'),
+    hasTimeline: selector(state, 'hasTimeline'),
+    startTime: selector(state, 'startTime'),
+    endTime: selector(state, 'endTime'),
   };
 };
 
