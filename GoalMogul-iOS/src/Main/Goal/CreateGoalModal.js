@@ -169,7 +169,7 @@ class CreateGoalModal extends Component {
     );
 
     return (
-      <View style={{ marginTop: 15 }}>
+      <View style={{ ...styles.sectionMargin }}>
         {titleText}
         {menu}
       </View>
@@ -189,7 +189,7 @@ class CreateGoalModal extends Component {
     );
 
     return (
-      <View style={{ marginTop: 15 }}>
+      <View style={{ ...styles.sectionMargin }}>
         {titleText}
         {menu}
       </View>
@@ -201,7 +201,7 @@ class CreateGoalModal extends Component {
     const titleText = <Text style={styles.titleTextStyle}>Timeline</Text>;
     if (!this.props.hasTimeline) {
       return (
-        <View style={{ marginTop: 15 }}>
+        <View style={{ ...styles.sectionMargin }}>
           {titleText}
           <TouchableOpacity
             style={{
@@ -291,14 +291,14 @@ class CreateGoalModal extends Component {
 
     const startTime = this.props.startTime.date ?
       <Text>{moment(this.props.startTime.date).format('DD/MM/YYYY')}</Text> :
-      <Text>Start</Text>;
+      <Text style={{ fontSize: 9 }}>Start</Text>;
 
     const endTime = this.props.endTime.date ?
       <Text>{moment(this.props.endTime.date).format('DD/MM/YYYY')}</Text> :
-      <Text>End</Text>;
+      <Text style={{ fontSize: 9 }}>End</Text>;
 
     return (
-      <View style={{ marginTop: 15 }}>
+      <View style={{ ...styles.sectionMargin }}>
         {titleText}
         <View style={{ marginTop: 8, flexDirection: 'row' }}>
           <TouchableOpacity
@@ -363,7 +363,7 @@ class CreateGoalModal extends Component {
     const button = <Button text={buttonText} source={plus} onPress={() => fields.push()} />;
     const titleText = <Text style={styles.titleTextStyle}>{title}</Text>;
     return (
-      <View style={{ marginTop: 15 }}>
+      <View style={{ ...styles.sectionMargin }}>
         {titleText}
         {
           fields.map((field, index) => {
@@ -431,6 +431,9 @@ class CreateGoalModal extends Component {
 }
 
 const styles = {
+  sectionMargin: {
+    marginTop: 20
+  },
   inputContainerStyle: {
     flexDirection: 'row',
     alignItems: 'center',
