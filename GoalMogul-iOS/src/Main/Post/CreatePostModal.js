@@ -11,11 +11,13 @@ import {
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import _ from 'lodash';
+import R from 'ramda';
 
 /* Components */
 import ModalHeader from '../Common/Header/ModalHeader';
 import Button from '../Goal/Button';
 import InputField from '../Common/TextInput/InputField';
+import ViewableSettingMenu from '../Goal/ViewableSettingMenu';
 
 // assets
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
@@ -40,7 +42,8 @@ class CreatePostModal extends Component {
 
     this.props.initialize({
       steps: [...values],
-      needs: [...values]
+      needs: [...values],
+      viewableSetting: 'Friends',
     });
   }
 
@@ -97,6 +100,9 @@ class CreatePostModal extends Component {
       imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
       profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
     }
+
+    const callback = R.curry((value) => this.props.change('viewableSetting', value));
+
     return (
       <View style={{ flexDirection: 'row', marginBottom: 15 }}>
         {profileImage}
@@ -104,6 +110,11 @@ class CreatePostModal extends Component {
           <Text style={{ fontSize: 18 }}>
             Jordan Gardener
           </Text>
+          <ViewableSettingMenu
+            viewableSetting={this.props.viewableSetting}
+            callback={callback}
+            shareToMastermind={null}
+          />
         </View>
       </View>
     );
@@ -127,6 +138,20 @@ class CreatePostModal extends Component {
     );
   }
 
+  renderActionIcons() {
+    const actionIconStyle = { ...styles.actionIconStyle };
+    return (
+      <View>
+        <TouchableOpacity>
+          <Image style={actionIconStyle} source={cancel} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Image style={actionIconStyle} source={cancel} />
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   render() {
     const { handleSubmit, errors } = this.props;
     return (
@@ -139,6 +164,7 @@ class CreatePostModal extends Component {
           <View style={{ flex: 1, padding: 20 }}>
             {this.renderUserInfo()}
             {this.renderPost()}
+            {this.renderActionIcons()}
           </View>
 
         </ScrollView>
@@ -188,6 +214,11 @@ const styles = {
     height: 13,
     width: 13,
     justifyContent: 'flex-end'
+  },
+  actionIconStyle: {
+    tintColor: '#4a4a4a',
+    height: 15,
+    width: 15
   }
 };
 
@@ -197,12 +228,14 @@ CreatePostModal = reduxForm({
 })(CreatePostModal);
 
 const mapStateToProps = state => {
+  const selector = formValueSelector('createGoalModal');
   const { user } = state.user;
   const { profile } = user;
 
   return {
     user,
-    profile
+    profile,
+    viewableSetting: selector(state, 'viewableSetting'),
   };
 };
 

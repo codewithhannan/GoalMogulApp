@@ -48,6 +48,9 @@ class ViewableSettingMenu extends Component {
   }
 
   renderShareToMSButton() {
+    if (this.props.shareToMastermind === null) {
+      return '';
+    }
     const containerStyle = this.props.shareToMastermind ?
       {
         ...styles.containerStyle,
