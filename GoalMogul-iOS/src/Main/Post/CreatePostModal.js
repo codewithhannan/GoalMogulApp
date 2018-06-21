@@ -6,10 +6,11 @@ import {
   Image,
   TextInput,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  ImageBackground
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, formValueSelector } from 'redux-form';
 import _ from 'lodash';
 import R from 'ramda';
 
@@ -23,10 +24,14 @@ import ViewableSettingMenu from '../Goal/ViewableSettingMenu';
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
 import plus from '../../asset/utils/plus.png';
 import cancel from '../../asset/utils/cancel_no_background.png';
+import camera from '../../asset/utils/camera.png';
+import cameraRoll from '../../asset/utils/cameraRoll.png';
+import photoIcon from '../../asset/utils/photoIcon.png';
+import expand from '../../asset/utils/expand.png';
 
 
 // Actions
-import { } from '../../actions';
+import { openCameraRoll, openCamera } from '../../actions';
 
 const STEP_PLACE_HOLDER = 'Add an important step to achieving your goal...';
 const NEED_PLACE_HOLDER = 'Something you\'re specifically looking for help with';
@@ -44,6 +49,19 @@ class CreatePostModal extends Component {
       steps: [...values],
       needs: [...values],
       viewableSetting: 'Friends',
+      media: undefined
+    });
+  }
+
+  handleOpenCamera = () => {
+    this.props.openCamera((result) => {
+      this.props.change('media', result.uri);
+    });
+  }
+
+  handleOpenCameraRoll = () => {
+    this.props.openCameraRoll((result) => {
+      this.props.change('media', result.uri);
     });
   }
 
@@ -95,7 +113,9 @@ class CreatePostModal extends Component {
 
   renderUserInfo() {
     let imageUrl = this.props.user.profile.image;
-    let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
+    let profileImage = (
+      <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />
+    );
     if (imageUrl) {
       imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
       profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
@@ -107,7 +127,7 @@ class CreatePostModal extends Component {
       <View style={{ flexDirection: 'row', marginBottom: 15 }}>
         {profileImage}
         <View style={{ flexDirection: 'column', marginLeft: 15 }}>
-          <Text style={{ fontSize: 18 }}>
+          <Text style={{ fontSize: 18, marginBottom: 8 }}>
             Jordan Gardener
           </Text>
           <ViewableSettingMenu
@@ -120,10 +140,48 @@ class CreatePostModal extends Component {
     );
   }
 
+  // Current media type is only picture
+  renderMedia() {
+    if (this.props.media) {
+      return (
+        <ImageBackground
+          style={styles.mediaStyle}
+          source={{ uri: this.props.media }}
+          imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'stretch' }}
+        >
+          <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
+            <Image
+              source={photoIcon}
+              style={{
+                alignSelf: 'center',
+                justifyContent: 'center',
+                height: 40,
+                width: 50,
+                tintColor: '#fafafa'
+              }}
+            />
+          </View>
+          <Image
+            source={expand}
+            style={{
+              position: 'absolute',
+              top: 10,
+              right: 15,
+              width: 18,
+              height: 18,
+              tintColor: '#fafafa'
+            }}
+          />
+        </ImageBackground>
+      );
+    }
+    return '';
+  }
+
   renderPost() {
     const titleText = <Text style={styles.titleTextStyle}>Your Goal</Text>;
     return (
-      <View>
+      <View style={{ marginTop: 15 }}>
         {titleText}
         <Field
           name='goal'
@@ -140,13 +198,17 @@ class CreatePostModal extends Component {
 
   renderActionIcons() {
     const actionIconStyle = { ...styles.actionIconStyle };
+    const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
     return (
-      <View>
-        <TouchableOpacity>
-          <Image style={actionIconStyle} source={cancel} />
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10 }}>
+        <TouchableOpacity style={actionIconWrapperStyle} onPress={this.handleOpenCamera}>
+          <Image style={actionIconStyle} source={camera} />
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Image style={actionIconStyle} source={cancel} />
+        <TouchableOpacity
+          style={{ ...actionIconWrapperStyle, marginLeft: 5 }}
+          onPress={this.handleOpenCameraRoll}
+        >
+          <Image style={actionIconStyle} source={cameraRoll} />
         </TouchableOpacity>
       </View>
     );
@@ -163,6 +225,7 @@ class CreatePostModal extends Component {
         <ScrollView style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}>
           <View style={{ flex: 1, padding: 20 }}>
             {this.renderUserInfo()}
+            {this.renderMedia()}
             {this.renderPost()}
             {this.renderActionIcons()}
           </View>
@@ -215,10 +278,24 @@ const styles = {
     width: 13,
     justifyContent: 'flex-end'
   },
+  mediaStyle: {
+    height: 150,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  actionIconWrapperStyle: {
+    backgroundColor: '#fafafa',
+    padding: 10,
+    paddingLeft: 15,
+    paddingRight: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4
+  },
   actionIconStyle: {
     tintColor: '#4a4a4a',
     height: 15,
-    width: 15
+    width: 18
   }
 };
 
@@ -228,7 +305,7 @@ CreatePostModal = reduxForm({
 })(CreatePostModal);
 
 const mapStateToProps = state => {
-  const selector = formValueSelector('createGoalModal');
+  const selector = formValueSelector('createPoalModal');
   const { user } = state.user;
   const { profile } = user;
 
@@ -236,10 +313,14 @@ const mapStateToProps = state => {
     user,
     profile,
     viewableSetting: selector(state, 'viewableSetting'),
+    media: selector(state, 'media'),
   };
 };
 
 export default connect(
   mapStateToProps,
-  null
+  {
+    openCameraRoll,
+    openCamera
+  }
 )(CreatePostModal);
