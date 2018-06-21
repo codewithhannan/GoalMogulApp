@@ -7,7 +7,9 @@ import {
   TextInput,
   Text,
   TouchableOpacity,
-  ImageBackground
+  ImageBackground,
+  Modal,
+  Dimensions
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
@@ -35,8 +37,15 @@ import { openCameraRoll, openCamera } from '../../actions';
 
 const STEP_PLACE_HOLDER = 'Add an important step to achieving your goal...';
 const NEED_PLACE_HOLDER = 'Something you\'re specifically looking for help with';
+const { width } = Dimensions.get('window');
 
 class CreatePostModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mediaModal: false
+    };
+  }
 
   componentDidMount() {
     this.initializeForm();
@@ -161,18 +170,67 @@ class CreatePostModal extends Component {
               }}
             />
           </View>
-          <Image
-            source={expand}
-            style={{
-              position: 'absolute',
-              top: 10,
-              right: 15,
-              width: 18,
-              height: 18,
-              tintColor: '#fafafa'
-            }}
-          />
+
+          <TouchableOpacity
+            onPress={() => this.setState({ mediaModal: true })}
+            style={{ position: 'absolute', top: 10, right: 15 }}
+          >
+            <Image
+              source={expand}
+              style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => this.props.change('media', false)}
+            style={{ position: 'absolute', top: 10, left: 15 }}
+          >
+            <Image
+              source={cancel}
+              style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+            />
+          </TouchableOpacity>
         </ImageBackground>
+      );
+    }
+    return '';
+  }
+
+  renderImageModal() {
+    if (this.props.media) {
+      return (
+        <Modal
+          animationType="fade"
+          transparent={false}
+          visible={this.state.mediaModal}
+        >
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'black'
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => { this.setState({ mediaModal: false }); }}
+              style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
+            >
+              <Image
+                source={cancel}
+                style={{
+                  ...styles.cancelIconStyle,
+                  tintColor: 'white'
+                }}
+              />
+            </TouchableOpacity>
+            <Image
+              source={{ uri: this.props.media }}
+              style={{ width, height: 200 }}
+              resizeMode='cover'
+            />
+          </View>
+        </Modal>
       );
     }
     return '';
@@ -231,6 +289,7 @@ class CreatePostModal extends Component {
           </View>
 
         </ScrollView>
+        {this.renderImageModal()}
       </KeyboardAvoidingView>
     );
   }
