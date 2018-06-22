@@ -76,7 +76,9 @@ class FriendCard extends Component {
 
   renderProfileImage() {
     const { image } = this.props.item.profile;
-    let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
+    let profileImage = (
+      <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />
+    );
     if (image) {
       const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
       profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;

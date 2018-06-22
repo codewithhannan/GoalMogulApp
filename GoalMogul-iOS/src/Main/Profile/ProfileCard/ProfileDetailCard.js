@@ -262,7 +262,7 @@ class ProfileDetailCard extends Component {
 
     let profileImage = (
       <View style={styles.imageContainerStyle}>
-        <Image style={styles.imageStyle} source={profilePic} />
+        <Image style={styles.imageStyle} resizeMode='contain' source={profilePic} />
       </View>
     );
     if (image) {

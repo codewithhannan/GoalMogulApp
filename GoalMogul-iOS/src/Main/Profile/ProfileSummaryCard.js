@@ -69,7 +69,7 @@ class ProfileSummaryCard extends Component {
     let imageUrl = this.props.user.profile.image;
     // let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
     let profileImage = (!this.props.loading & !imageUrl) ?
-    (<Image style={styles.imageStyle} source={defaultUserProfile} />)
+    (<Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />)
     :
     (
       <View style={{ ...styles.imageStyle, alignItems: 'center', justifyContent: 'center' }}>
@@ -156,7 +156,7 @@ const styles = {
   imageStyle: {
     height: 54,
     width: 54,
-    borderRadius: 5,
+    borderRadius: 5
   },
   buttonStyle: {
     width: 80,

@@ -43,7 +43,6 @@ class InputField extends Component {
   }
 
   updateRef(name, ref) {
-    console.log('updating ref with name: ', name);
     this[name] = ref;
   }
 

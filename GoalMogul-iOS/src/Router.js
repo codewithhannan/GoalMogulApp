@@ -35,6 +35,8 @@ import Home from './Main/Home/Home';
 import CreateGoalButtonOverlay from './Main/Common/Button/CreateGoalButtonOverlay';
 import CreateGoalModal from './Main/Goal/CreateGoalModal';
 import CreatePostModal from './Main/Post/CreatePostModal';
+import GoalCard from './Main/Goal/GoalCard/GoalCard';
+import NeedCard from './Main/Goal/NeedCard/NeedCard';
 
 // Profile
 import Profile from './Main/Profile/Profile';
@@ -82,7 +84,7 @@ class RouterComponent extends Component {
           <Lightbox>
             <Scene key="root" hideNavBar>
               <Scene key="auth" initial hideNavBar>
-                <Scene key="splash" component={SplashScreen} initial />
+                <Scene key="splash" component={Home} initial />
                 <Scene key="login" component={LoginPage} />
               </Scene>
 
