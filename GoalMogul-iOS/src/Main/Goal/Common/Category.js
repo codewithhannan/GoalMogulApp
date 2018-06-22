@@ -14,7 +14,8 @@ const styles = {
   containerStyle: {
     fontSize: 11,
     color: '#6d6d6d',
-    fontWeight: '600'
+    fontWeight: '600',
+    alignSelf: 'center'
   }
 };
 
