@@ -18,7 +18,7 @@ import LikeIcon from '../../../asset/utils/like.png';
 import BulbIcon from '../../../asset/utils/bulb.png';
 import ShareIcon from '../../../asset/utils/share.png';
 
-class GoalCard extends Component {
+class NeedCard extends Component {
 
   // card central content
   renderCardContent() {
@@ -78,4 +78,4 @@ const styles = {
 export default connect(
   null,
   null
-)(GoalCard);
+)(NeedCard);

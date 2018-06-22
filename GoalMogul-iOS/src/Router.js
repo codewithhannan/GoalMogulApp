@@ -35,6 +35,7 @@ import Home from './Main/Home/Home';
 import CreateGoalButtonOverlay from './Main/Common/Button/CreateGoalButtonOverlay';
 import CreateGoalModal from './Main/Goal/CreateGoalModal';
 import CreatePostModal from './Main/Post/CreatePostModal';
+import GoalCard from './Main/Goal/GoalCard/GoalCard';
 
 // Profile
 import Profile from './Main/Profile/Profile';
