@@ -13,7 +13,7 @@ import ActionButton from '../Common/ActionButton';
 import ActionButtonGroup from '../Common/ActionButtonGroup';
 
 // Asset
-import defaultProfilePic from '../../../asset/utils/defaultUserProfile';
+import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
 import LikeIcon from '../../../asset/utils/like.png';
 import BulbIcon from '../../../asset/utils/bulb.png';
 import ShareIcon from '../../../asset/utils/share.png';

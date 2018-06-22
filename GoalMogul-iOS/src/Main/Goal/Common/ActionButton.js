@@ -2,7 +2,8 @@ import React from 'react';
 import {
   TouchableOpacity,
   Image,
-  Text
+  Text,
+  View
 } from 'react-native';
 
 const ActionButton = (props) => {
@@ -11,7 +12,9 @@ const ActionButton = (props) => {
       style={styles.containerStyle}
       onPress={props.onPress}
     >
-      <Image source={props.iconSource} style={{ ...styles.iconStyle, ...props.styles }} />
+      <View style={{ ...styles.iconContainerStyle, ...props.iconContainerStyle }}>
+        <Image source={props.iconSource} style={{ ...styles.iconStyle, ...props.iconStyle }} />
+      </View>
       <Text style={{ ...styles.textStyle, ...props.textStyle }}>{props.count}</Text>
     </TouchableOpacity>
   );
@@ -19,13 +22,22 @@ const ActionButton = (props) => {
 
 const styles = {
   containerStyle: {
-    height: 40,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    flex: 1,
+    flexDirection: 'row'
+  },
+  iconContainerStyle: {
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   iconStyle: {
-    height: 40,
-    width: 40
+    height: 26,
+    width: 26,
+    borderRadius: 13
   },
   textStyle: {
     fontSize: 12,

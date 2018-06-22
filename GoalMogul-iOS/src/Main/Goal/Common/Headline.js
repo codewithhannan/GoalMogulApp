@@ -6,8 +6,8 @@ import Name from './Name';
 import Category from './Category';
 
 /* Asset */
-import badge from '../../asset/utils/badge.png';
-import dropDown from '../../asset/utils/dropDown.png';
+import badge from '../../../asset/utils/badge.png';
+import dropDown from '../../../asset/utils/dropDown.png';
 
 const Headline = (props) => {
   // TODO: format time

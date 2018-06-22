@@ -9,6 +9,7 @@ import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 
 // Components
+import NeedCard from '../Goal/NeedCard/NeedCard';
 
 // asset
 import plus from '../../asset/utils/plus.png';
@@ -58,6 +59,7 @@ class Mastermind extends Component {
     console.log('navigation props: ', this.props.navigation);
     return (
       <View style={{ flex: 1 }}>
+        <NeedCard />
         {/*
           <FlatList
             data={testData}
