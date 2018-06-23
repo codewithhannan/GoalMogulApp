@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 
 // Components
 import NeedCard from '../Goal/NeedCard/NeedCard';
+import GoalCard from '../Goal/GoalCard/GoalCard';
 
 // asset
 import plus from '../../asset/utils/plus.png';
@@ -59,7 +60,7 @@ class Mastermind extends Component {
     console.log('navigation props: ', this.props.navigation);
     return (
       <View style={{ flex: 1 }}>
-        <NeedCard />
+        <GoalCard />
         {/*
           <FlatList
             data={testData}
