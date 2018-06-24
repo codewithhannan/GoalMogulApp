@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View, Image } from 'react-native';
 
 /* Icon */
-import Bar from '../../asset/utils/progressBar.png';
+import Bar from '../../../asset/utils/progressBar.png';
 
 const ProgressBar = (props) => {
   return (
@@ -22,9 +22,7 @@ const styles = {
   containerStyle: {
     flexDirection: 'row',
     marginTop: 2,
-    marginBottom: 16,
-    marginLeft: 14,
-    marginRight: 14
+    marginBottom: 6
   },
   imageStyle: {
     flex: 6

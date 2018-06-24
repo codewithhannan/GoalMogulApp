@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
-  Text
+  Text,
+  MaskedViewIOS
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
+import { LinearGradient } from 'expo';
 
 // Component
 import Headline from '../Common/Headline';
@@ -15,6 +17,7 @@ import ActionButtonGroup from '../Common/ActionButtonGroup';
 import SectionCard from '../Common/SectionCard';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import TabButton from '../Common/TabButton';
+import ProgressBar from '../Common/ProgressBar';
 
 // Asset
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
@@ -30,7 +33,9 @@ const testNeed = [
   },
   {
     text: 'Introduction to someone from Bill and Melinda Gates foundation'
-  }
+  },
+
+
 ];
 
 class GoalCard extends Component {
@@ -39,13 +44,11 @@ class GoalCard extends Component {
     tab: 'needs'
   }
 
-  // card central content
+  // Card central content. Progressbar for goal card
   renderCardContent() {
     return (
       <View style={{ marginTop: 20 }}>
-        <Text style={{ color: '#505050' }}>
-          Hey guys, do you know anyone that can connect me? It'd mean a lot to me
-        </Text>
+        <ProgressBar startTime='Mar 2013' endTime='Nov 2011' />
       </View>
     );
   }
@@ -60,11 +63,11 @@ class GoalCard extends Component {
           <Timestamp time='5 mins ago' />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text
-              style={{ flex: 1, flexWrap: 'wrap', color: '#818181', fontSize: 11 }}
+              style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
               numberOfLines={3}
               ellipsizeMode='tail'
             >
-              Establish a LMFBR near Westport. Connecticut by the year 2020
+              Establish a LMFBR near Westport, Connecticut by the year 2020
             </Text>
           </View>
 
@@ -95,6 +98,46 @@ class GoalCard extends Component {
     );
   }
 
+  renderSections() {
+    const sections = testNeed.map((section, index) => {
+      if (index < 2) {
+        return <SectionCard key={index} />;
+      }
+      if (index === 2) {
+        return (
+          <View style={{ backgroundColor: 'white', marginTop: 0.5 }} key={index}>
+            <MaskedViewIOS
+              style={{ maxHeight: 300 }}
+              maskElement={
+                <LinearGradient
+                  colors={['white', 'transparent']}
+                  style={{ flex: 1 }}
+                  start={[0, 0.40]}
+                  end={[0, 0.7]}
+                />
+              }
+            >
+              <SectionCard />
+            </MaskedViewIOS>
+          </View>
+        );
+      }
+      return '';
+    });
+    if (testNeed.length < 3) {
+      sections.push(
+        <View
+          style={{ height: 40, backgroundColor: 'white', marginTop: 0.5 }} key={testNeed.length} 
+        />
+      );
+    }
+    return (
+      <View>
+        {sections}
+      </View>
+    );
+  }
+
   renderViewGoal() {
     return (
       <View
@@ -102,7 +145,11 @@ class GoalCard extends Component {
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
-          marginTop: 10
+          marginTop: 10,
+          position: 'absolute',
+          bottom: 70,
+          left: 0,
+          right: 0
         }}
       >
         <Text style={styles.viewGoalTextStyle}>View Goal</Text>
@@ -147,12 +194,6 @@ class GoalCard extends Component {
   render() {
     return (
       <View style={{ backgroundColor: '#e5e5e5' }}>
-        <View style={{ marginBottom: 0.5, backgroundColor: 'white', padding: 5 }}>
-          <Text style={{ fontSize: 11 }}>
-            <Text style={{ fontWeight: '800' }}>John Doe </Text>
-              share a need
-          </Text>
-        </View>
         <View style={styles.containerStyle}>
           <View style={{ marginTop: 20, marginBottom: 20, marginRight: 15, marginLeft: 15 }}>
             {this.renderUserDetail()}
@@ -161,6 +202,7 @@ class GoalCard extends Component {
         </View>
 
         {this.renderTabs()}
+        {this.renderSections()}
 
         <View style={styles.containerStyle}>
           {this.renderViewGoal()}
@@ -176,7 +218,7 @@ const styles = {
     backgroundColor: 'white'
   },
   viewGoalTextStyle: {
-    fontSize: 11,
+    fontSize: 13,
     fontWeight: '800',
     color: '#45C9F6',
     alignSelf: 'center'

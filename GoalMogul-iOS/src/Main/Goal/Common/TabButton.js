@@ -41,7 +41,7 @@ const styles = {
     justifyContent: 'center',
     flex: 1,
     flexDirection: 'row',
-    height: 36
+    height: 38
   },
   iconStyle: {
     height: 26,
