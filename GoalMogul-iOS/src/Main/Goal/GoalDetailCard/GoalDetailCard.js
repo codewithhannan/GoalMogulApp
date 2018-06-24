@@ -3,11 +3,10 @@ import {
   View,
   Image,
   Text,
-  MaskedViewIOS
+  ScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
-import { LinearGradient } from 'expo';
 
 // Component
 import Headline from '../Common/Headline';
@@ -100,7 +99,11 @@ class GoalDetailCard extends Component {
     const needs = this.renderNeeds();
     const steps = this.renderSteps();
 
-    return '';
+    return (
+      <ScrollView>
+        {needs}
+      </ScrollView>
+    );
   }
 
   renderNeeds() {
@@ -109,15 +112,20 @@ class GoalDetailCard extends Component {
     }
     const title = (
       <SectionTitle
-        iconSource={ShareIcon}
+        iconSource={HelpIcon}
         text='Needs'
         count={5}
       />
     );
 
+    const needs = testNeed.map((need, index) => {
+      return <SectionCard key={index}/>
+    })
+
     return (
       <View>
         {title}
+        {needs}
       </View>
     );
   }
@@ -154,7 +162,7 @@ class GoalDetailCard extends Component {
 
   render() {
     return (
-      <View style={{ backgroundColor: '#e5e5e5' }}>
+      <View style={{ backgroundColor: '#e5e5e5', flex: 1 }}>
         <View style={styles.containerStyle}>
           <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
             {this.renderUserDetail()}
@@ -186,7 +194,6 @@ const styles = {
   sectionTitleStyle: {
     containerStyle: {
       alignItems: 'center',
-      justifyContent: 'center',
       flexDirection: 'row',
       height: 38,
       marginLeft: 15
@@ -194,10 +201,12 @@ const styles = {
     iconStyle: {
       height: 26,
       width: 26,
+      tintColor: '#616161'
     },
     textStyle: {
       fontSize: 11,
       marginLeft: 8,
+      color: '#616161'
     },
     countTextStyle: {
       fontSize: 11,
