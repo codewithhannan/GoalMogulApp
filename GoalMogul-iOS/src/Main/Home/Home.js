@@ -20,8 +20,8 @@ class Home extends Component {
     this.state = {
       index: 0,
       routes: [
-        { key: 'mastermind', title: 'Mastermind' },
-        { key: 'activityfeed', title: 'ActivityFeed' },
+        { key: 'goals', title: 'GOALS' },
+        { key: 'activity', title: 'ACTIVITY' },
       ],
     };
   }
@@ -38,8 +38,8 @@ class Home extends Component {
   };
 
   _renderScene = SceneMap({
-    mastermind: Mastermind,
-    activityfeed: ActivityFeed,
+    goals: Mastermind,
+    activity: ActivityFeed,
   });
 
   _keyExtractor = (item, index) => index;
