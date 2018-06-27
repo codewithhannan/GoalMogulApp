@@ -48,7 +48,7 @@ class TabButtonGroup extends Component {
 const styles = {
   containerStyle: {
     display: 'flex',
-    height: 32,
+    height: 36,
     flexDirection: 'row',
     borderWidth: 0.5,
     borderColor: '#ddd',

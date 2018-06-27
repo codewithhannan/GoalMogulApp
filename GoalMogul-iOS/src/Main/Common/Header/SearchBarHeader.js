@@ -172,7 +172,7 @@ class SearchBarHeader extends Component {
               type='font-awesome'
               name='search'
               size={17}
-              color='#b2b3b4'
+              color='#4ec9f3'
             />
           </View>
           <Text style={styles.searchPlaceHolderTextStyle}>
@@ -216,7 +216,7 @@ const styles = {
   },
   headerStyle: {
     flexDirection: 'row',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#4ec9f3',
     paddingTop: 30,
     paddingLeft: 12,
     paddingRight: 12,
@@ -236,7 +236,7 @@ const styles = {
   searchButtonContainerStyle: {
     height: 32,
     width: 260,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: '#1998c9',
     borderRadius: 16,
     padding: 0,
     marginRight: 12,
@@ -249,7 +249,8 @@ const styles = {
   searchPlaceHolderTextStyle: {
     fontSize: 13,
     alignSelf: 'center',
-    color: '#b2b3b4',
+    // color: '#b2b3b4',
+    color: '#4ec9f3',
     marginLeft: 5
   }
 };

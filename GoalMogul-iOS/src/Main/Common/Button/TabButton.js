@@ -56,7 +56,8 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#4dc9f2'
+    // backgroundColor: '#4dc9f2'
+    backgroundColor: '#f8f8f8'
   },
   textStyle: {
     fontSize: 12,
@@ -66,7 +67,8 @@ const styles = {
   onSelectTextStyle: {
     fontSize: 12,
     fontWeight: '600',
-    color: 'white',
+    // color: 'white',
+    color: '#1998c9'
   },
   iconStyle: {
 
