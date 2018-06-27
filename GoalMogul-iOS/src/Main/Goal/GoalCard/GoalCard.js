@@ -34,8 +34,9 @@ const testNeed = [
   {
     text: 'Introduction to someone from Bill and Melinda Gates foundation'
   },
-
-
+  {
+    text: 'Introduction to someone from Bill and Melinda Gates foundation'
+  },
 ];
 
 class GoalCard extends Component {
@@ -127,7 +128,7 @@ class GoalCard extends Component {
     if (testNeed.length < 3) {
       sections.push(
         <View
-          style={{ height: 40, backgroundColor: 'white', marginTop: 0.5 }} key={testNeed.length} 
+          style={{ height: 40, backgroundColor: 'white', marginTop: 0.5 }} key={testNeed.length}
         />
       );
     }

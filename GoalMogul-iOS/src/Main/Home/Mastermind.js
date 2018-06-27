@@ -61,7 +61,7 @@ class Mastermind extends Component {
     console.log('navigation props: ', this.props.navigation);
     return (
       <View style={{ flex: 1 }}>
-        <GoalDetailCard />
+        <NeedCard />
         {/*
           <FlatList
             data={testData}

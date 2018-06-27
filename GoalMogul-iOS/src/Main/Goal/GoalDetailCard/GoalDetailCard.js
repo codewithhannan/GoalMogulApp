@@ -48,7 +48,8 @@ const testStep = [
 class GoalDetailCard extends Component {
   state = {
     // tab state stays within each component
-    tab: 'comments'
+    tab: 'comments',
+    suggestionModal: true,
   }
 
   // Card central content. Progressbar for goal card
@@ -195,7 +196,10 @@ class GoalDetailCard extends Component {
   render() {
     return (
       <View style={{ backgroundColor: '#e5e5e5', flex: 1 }}>
-        <SuggestionModal />
+        <SuggestionModal
+          visible={this.state.suggestionModal}
+          onCancel={() => this.setState({ suggestionModal: false })}
+        />
         <SearchBarHeader backButton title='Goal' />
         <View style={{ ...styles.containerStyle, marginTop: 2 }}>
           <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
