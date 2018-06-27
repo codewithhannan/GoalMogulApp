@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 
 // Component
+import SearchBarHeader from '../../../Main/Common/Header/SearchBarHeader';
 import Headline from '../Common/Headline';
 import Timestamp from '../Common/Timestamp';
 import ActionButton from '../Common/ActionButton';
@@ -35,6 +36,12 @@ const testNeed = [
   },
 
 
+];
+
+const testStep = [
+  {
+    text: 'step 1'
+  }
 ];
 
 class GoalDetailCard extends Component {
@@ -102,10 +109,12 @@ class GoalDetailCard extends Component {
     return (
       <ScrollView>
         {needs}
+        {steps}
       </ScrollView>
     );
   }
 
+  // Render needs
   renderNeeds() {
     if (!testNeed || testNeed.length === 0) {
       return;
@@ -119,8 +128,8 @@ class GoalDetailCard extends Component {
     );
 
     const needs = testNeed.map((need, index) => {
-      return <SectionCard key={index}/>
-    })
+      return <SectionCard key={index} />;
+    });
 
     return (
       <View>
@@ -130,8 +139,30 @@ class GoalDetailCard extends Component {
     );
   }
 
+  // Render steps
   renderSteps() {
+    if (!testStep || testNeed.length === 0) {
+      return;
+    }
+    const title = (
+      <SectionTitle
+        iconSource={StepIcon}
+        iconStyle={{ height: 20, width: 20 }}
+        text='Steps'
+        count={7}
+      />
+    );
 
+    const steps = testStep.map((step, index) => {
+      return <SectionCard key={index} />;
+    });
+
+    return (
+      <View>
+        {title}
+        {steps}
+      </View>
+    );
   }
 
   renderActionButtons() {
@@ -163,7 +194,8 @@ class GoalDetailCard extends Component {
   render() {
     return (
       <View style={{ backgroundColor: '#e5e5e5', flex: 1 }}>
-        <View style={styles.containerStyle}>
+        <SearchBarHeader backButton title='Goal' />
+        <View style={{ ...styles.containerStyle, marginTop: 2 }}>
           <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
             {this.renderUserDetail()}
             {this.renderCardContent()}
@@ -183,7 +215,7 @@ class GoalDetailCard extends Component {
 
 const styles = {
   containerStyle: {
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   iconStyle: {
     alignSelf: 'center',

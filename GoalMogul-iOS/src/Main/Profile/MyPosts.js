@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 
 // Components
 import GoalFilterBar from '../Common/GoalFilterBar';
-import MyGoalCard from '../Common/MyGoalCard';
+import MyGoalCard from '../Goal/GoalCard/GoalCard';
 
 // actions
 import {
