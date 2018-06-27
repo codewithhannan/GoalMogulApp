@@ -10,6 +10,7 @@ import { Icon } from 'react-native-elements';
 
 // Component
 import SearchBarHeader from '../../../Main/Common/Header/SearchBarHeader';
+import SuggestionModal from './SuggestionModal';
 import Headline from '../Common/Headline';
 import Timestamp from '../Common/Timestamp';
 import ActionButton from '../Common/ActionButton';
@@ -194,6 +195,7 @@ class GoalDetailCard extends Component {
   render() {
     return (
       <View style={{ backgroundColor: '#e5e5e5', flex: 1 }}>
+        <SuggestionModal />
         <SearchBarHeader backButton title='Goal' />
         <View style={{ ...styles.containerStyle, marginTop: 2 }}>
           <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
