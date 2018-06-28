@@ -65,7 +65,7 @@ class Mastermind extends Component {
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={{ flex: 1 }}>
           <GoalFilter />
-          <GoalCard />
+          <NeedCard />
           {/*
             <FlatList
               data={testData}
