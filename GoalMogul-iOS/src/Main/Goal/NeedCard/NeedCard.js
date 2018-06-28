@@ -13,6 +13,7 @@ import Timestamp from '../Common/Timestamp';
 import ActionButton from '../Common/ActionButton';
 import ActionButtonGroup from '../Common/ActionButtonGroup';
 import SectionCard from '../Common/SectionCard';
+import NextButton from '../Common/NextButton';
 
 // Asset
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
@@ -111,26 +112,32 @@ class NeedCard extends Component {
 
   render() {
     return (
-      <View style={{ backgroundColor: '#e5e5e5' }}>
-        <View style={{ marginBottom: 0.5, backgroundColor: 'white', padding: 5 }}>
-          <Text style={{ fontSize: 11 }}>
-            <Text style={{ fontWeight: '800' }}>John Doe </Text>
-              share a need
-          </Text>
-        </View>
-        <View style={styles.containerStyle}>
-          <View style={{ marginTop: 20, marginBottom: 20, marginRight: 15, marginLeft: 15 }}>
-            {this.renderUserDetail()}
-            {this.renderCardContent()}
+      <View>
+        <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
+          <View style={{ backgroundColor: '#e5e5e5' }}>
+            <View style={{ marginBottom: 0.5, backgroundColor: 'white', padding: 5 }}>
+              <Text style={{ fontSize: 11 }}>
+                <Text style={{ fontWeight: '800' }}>John Doe </Text>
+                  share a need
+              </Text>
+            </View>
+            <View style={styles.containerStyle}>
+              <View style={{ marginTop: 20, marginBottom: 20, marginRight: 15, marginLeft: 15 }}>
+                {this.renderUserDetail()}
+                {this.renderCardContent()}
+              </View>
+            </View>
+
+            {this.renderNeed()}
+
+            <View style={{ ...styles.containerStyle }}>
+              {this.renderViewGoal()}
+              {this.renderActionButtons()}
+            </View>
           </View>
         </View>
 
-        {this.renderNeed()}
-
-        <View style={styles.containerStyle}>
-          {this.renderViewGoal()}
-          {this.renderActionButtons()}
-        </View>
+        <NextButton onPress={() => console.log('press for next item')} />
       </View>
     );
   }
@@ -151,6 +158,13 @@ const styles = {
     fontSize: 20,
     marginLeft: 5,
     marginTop: 2
+  },
+  borderShadow: {
+    shadowColor: 'lightgray',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 1,
+    shadowRadius: 3,
+    elevation: 1,
   }
 };
 

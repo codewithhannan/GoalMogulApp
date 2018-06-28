@@ -37,6 +37,7 @@ import CreateGoalModal from './Main/Goal/CreateGoalModal';
 import CreatePostModal from './Main/Post/CreatePostModal';
 import GoalCard from './Main/Goal/GoalCard/GoalCard';
 import NeedCard from './Main/Goal/NeedCard/NeedCard';
+import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCard';
 
 // Profile
 import Profile from './Main/Profile/Profile';
@@ -135,6 +136,7 @@ class RouterComponent extends Component {
                     hideNavBar
                   >
                     <Scene key="home" component={Home} initial />
+                    <Scene key="goal" component={GoalDetailCard} />
                     <Scene key="profile" component={Profile} />
                     <Scene key="profileDetail" component={ProfileDetail} />
                     <Scene key="setting" component={Setting} />

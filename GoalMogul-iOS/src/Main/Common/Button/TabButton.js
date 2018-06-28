@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Animated } from 'react-native';
+import { View, Text, Animated, Image } from 'react-native';
 import { Icon } from 'react-native-elements';
 
 const TabButton = (props) => {
@@ -12,7 +12,7 @@ const TabButton = (props) => {
           type='entypo'
           color='#818181'
           size={18}
-          iconStyle={[styles.iconStyle, color]}
+          iconStyle={[styles.dotIconStyle, color]}
           containerStyle={styles.iconContainerStyle}
         />
         <Text style={styles.textStyle}>
@@ -21,9 +21,22 @@ const TabButton = (props) => {
       </View>
     );
 
+  // Select iconStyle
+  const iconStyle = props.onSelect ? { ...styles.iconStyle, ...props.iconStyle }
+    : { ...styles.iconStyle, ...props.iconStyle, tintColor: '#696969' };
+
+  const icon = !props.iconSource ? '' :
+    (
+      <Image
+        source={props.iconSource}
+        style={iconStyle}
+      />
+  );
+
   if (props.onSelect) {
     return (
       <View style={styles.onSelectContainerStyle}>
+        {icon}
         <Animated.Text style={styles.onSelectTextStyle}>
           {props.text}
         </Animated.Text>
@@ -33,6 +46,7 @@ const TabButton = (props) => {
   }
   return (
     <View style={styles.containerStyle}>
+      {icon}
       <Animated.Text style={styles.textStyle}>
         {props.text}
       </Animated.Text>
@@ -56,19 +70,21 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#4dc9f2'
+    // backgroundColor: '#4dc9f2'
+    backgroundColor: '#f8f8f8'
   },
   textStyle: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
     color: '#696969',
   },
   onSelectTextStyle: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: 'white',
+    fontSize: 11,
+    fontWeight: '800',
+    // color: 'white',
+    color: '#1998c9'
   },
-  iconStyle: {
+  dotIconStyle: {
 
 
   },
@@ -77,6 +93,14 @@ const styles = {
     height: 15,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  iconStyle: {
+    height: 12,
+    width: 12,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    tintColor: '#1998c9',
+    marginRight: 7
   }
 };
 
