@@ -7,7 +7,8 @@ import TabButton from './Button/TabButton';
 class TabButtonGroup extends Component {
 
   renderButton() {
-    const { navigationState, jumpTo } = this.props.buttons;
+    const { buttons, tabIconMap } = this.props;
+    const { navigationState, jumpTo } = buttons;
     const { index, routes } = navigationState;
     return routes.map((b, i) => {
       const selected = i === index;
@@ -20,7 +21,13 @@ class TabButtonGroup extends Component {
             onPress={jumpTo.bind(this, b.key)}
           >
             <Divider />
-            <TabButton text={b.title} onSelect={selected} stat={b.stat} />
+            <TabButton
+              text={b.title}
+              onSelect={selected}
+              stat={b.stat}
+              iconSource={tabIconMap[b.key].iconSource}
+              iconStyle={tabIconMap[b.key].iconStyle}
+            />
           </TouchableOpacity>
         );
       }
@@ -30,7 +37,13 @@ class TabButtonGroup extends Component {
           style={styles.dividerContainerStyle}
           onPress={jumpTo.bind(this, b.key)}
         >
-          <TabButton text={b.title} onSelect={selected} stat={b.stat} />
+          <TabButton
+            text={b.title}
+            onSelect={selected}
+            stat={b.stat}
+            iconSource={tabIconMap[b.key].iconSource}
+            iconStyle={tabIconMap[b.key].iconStyle}
+          />
         </TouchableOpacity>
       );
     });

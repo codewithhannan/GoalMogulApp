@@ -22,7 +22,7 @@ const TabButton = (props) => {
     );
 
   // Select iconStyle
-  const iconStyle = !props.onSelect ? { ...styles.iconStyle, ...props.iconStyle }
+  const iconStyle = props.onSelect ? { ...styles.iconStyle, ...props.iconStyle }
     : { ...styles.iconStyle, ...props.iconStyle, tintColor: '#696969' };
 
   const icon = !props.iconSource ? '' :
@@ -74,13 +74,13 @@ const styles = {
     backgroundColor: '#f8f8f8'
   },
   textStyle: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
     color: '#696969',
   },
   onSelectTextStyle: {
-    fontSize: 12,
-    fontWeight: '700',
+    fontSize: 11,
+    fontWeight: '800',
     // color: 'white',
     color: '#1998c9'
   },
@@ -99,7 +99,8 @@ const styles = {
     width: 12,
     alignSelf: 'center',
     justifyContent: 'center',
-    tintColor: '#1998c9'
+    tintColor: '#1998c9',
+    marginRight: 7
   }
 };
 

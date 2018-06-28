@@ -14,26 +14,55 @@ import ActivityFeed from './ActivityFeed';
 // Actions
 import { homeSwitchTab } from '../../actions';
 
+// Assets
+import Logo from '../../asset/header/logo.png';
+import Activity from '../../asset/utils/activity.png';
+
+const TabIconMap = {
+  goals: {
+    iconSource: Logo,
+    iconStyle: {
+      height: 17,
+      width: 17
+    }
+  },
+  activity: {
+    iconSource: Activity,
+    iconStyle: {
+      height: 15,
+      width: 15
+    }
+  }
+};
+
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      index: 0,
-      routes: [
-        { key: 'goals', title: 'GOALS' },
-        { key: 'activity', title: 'ACTIVITY' },
-      ],
+      navigationState: {
+        index: 0,
+        routes: [
+          { key: 'goals', title: 'GOALS' },
+          { key: 'activity', title: 'ACTIVITY' },
+        ],
+      }
     };
   }
 
   _handleIndexChange = index => {
-    this.setState({ index });
+    this.setState({
+      ...this.state,
+      navigationState: {
+        ...this.state.navigationState,
+        index,
+      }
+    });
     this.props.homeSwitchTab(index);
   };
 
   _renderHeader = props => {
     return (
-      <TabButtonGroup buttons={props} />
+      <TabButtonGroup buttons={props} tabIconMap={TabIconMap} />
     );
   };
 
@@ -55,7 +84,7 @@ class Home extends Component {
         <View style={styles.homeContainerStyle}>
           <SearchBarHeader rightIcon='menu' />
           <TabViewAnimated
-            navigationState={this.state}
+            navigationState={this.state.navigationState}
             renderScene={this._renderScene}
             renderHeader={this._renderHeader}
             onIndexChange={this._handleIndexChange}

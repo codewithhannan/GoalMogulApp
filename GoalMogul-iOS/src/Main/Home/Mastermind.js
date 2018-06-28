@@ -7,11 +7,13 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
+import { MenuProvider } from 'react-native-popup-menu';
 
 // Components
 import NeedCard from '../Goal/NeedCard/NeedCard';
 import GoalCard from '../Goal/GoalCard/GoalCard';
 import GoalDetailCard from '../Goal/GoalDetailCard/GoalDetailCard';
+import GoalFilter from './GoalFilter';
 
 // asset
 import plus from '../../asset/utils/plus.png';
@@ -60,24 +62,27 @@ class Mastermind extends Component {
   render() {
     console.log('navigation props: ', this.props.navigation);
     return (
-      <View style={{ flex: 1 }}>
-        <NeedCard />
-        {/*
-          <FlatList
-            data={testData}
-            renderItem={this.renderItem}
-            numColumns={1}
-            keyExtractor={this._keyExtractor}
-          />
-        */}
+      <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+        <View style={{ flex: 1 }}>
+          <GoalFilter />
+          <GoalCard />
+          {/*
+            <FlatList
+              data={testData}
+              renderItem={this.renderItem}
+              numColumns={1}
+              keyExtractor={this._keyExtractor}
+            />
+          */}
 
-        {/*
-          refreshing={this.props.refreshing}
-          onEndReached={this.onLoadMore}
-          onEndThreshold={0}
-        */}
-        {this.renderPlus()}
-      </View>
+          {/*
+            refreshing={this.props.refreshing}
+            onEndReached={this.onLoadMore}
+            onEndThreshold={0}
+          */}
+          {this.renderPlus()}
+        </View>
+      </MenuProvider>
     );
   }
 }
@@ -103,6 +108,10 @@ const styles = {
     width: 26,
     tintColor: 'white',
   },
+  backdrop: {
+    backgroundColor: 'gray',
+    opacity: 0.7,
+  }
 };
 
 const mapStateToProps = state => {
