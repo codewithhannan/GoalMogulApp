@@ -19,7 +19,7 @@ class InputField extends Component {
 
  onChange(event) {
     const { onChange } = this.props;
-
+    console.log('something happens');
     if ('function' === typeof onChange) {
       onChange(event);
     }
@@ -81,7 +81,7 @@ class InputField extends Component {
           autoCorrect={false}
           onChangeText={this.onChangeText}
           onChange={this.onChange}
-          numberOfLines={1 || numberOfLines}
+          numberOfLines={numberOfLines || 1}
           returnKeyType='done'
           multiline={multiline}
           onFocus={onFocus}
