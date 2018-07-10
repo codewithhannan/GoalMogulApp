@@ -9,7 +9,8 @@ import {
   Dimensions,
   FlatList,
   DatePickerIOS,
-  Modal
+  Modal,
+  Alert
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
@@ -25,7 +26,7 @@ import {
   renderers
 } from 'react-native-popup-menu';
 
-/* Components */
+// Components
 import ModalHeader from '../Common/Header/ModalHeader';
 import Button from './Button';
 import InputField from '../Common/TextInput/InputField';
@@ -38,7 +39,11 @@ import cancel from '../../asset/utils/cancel_no_background.png';
 import dropDown from '../../asset/utils/dropDown.png';
 
 // Actions
-import { } from '../../actions';
+// import { } from '../../actions';
+import {
+  validate,
+  submitGoal
+} from '../../redux/modules/goal/CreateGoalActions';
 
 const { Popover } = renderers;
 const { width } = Dimensions.get('window');
@@ -87,11 +92,17 @@ class CreateGoalModal extends Component {
    * NOTE:
    * Verify by comparing
    * console.log('handleSubmit passed in values are: ', values);
-   * console.log('form state values: ', this.props.formVals.values);
+   * console.log('form state values: ', this.props.formVals);
+   *
+   * Synchronize validate form values, contains simple check
    */
   handleCreate = values => {
-    console.log('handleSubmit passed in values are: ', values);
-    console.log('form state values: ', this.props.formVals.values);
+    const errors = validate(this.props.formVals.values);
+    if (!(Object.keys(errors).length === 0 && errors.constructor === Object)) {
+      // throw new SubmissionError(errors);
+      return Alert.alert('Error', 'You have incomplete fields.');
+    }
+    return this.props.submitGoal(this.props.formVals.values);
   }
 
   renderUserInfo() {
@@ -581,7 +592,9 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  null
+  {
+    submitGoal
+  }
 )(CreateGoalModal);
 
 const MenuFactory = (options, callback, triggerText, triggerContainerStyle, animationCallback) => {
