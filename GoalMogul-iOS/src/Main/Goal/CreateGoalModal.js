@@ -98,11 +98,12 @@ class CreateGoalModal extends Component {
    */
   handleCreate = values => {
     const errors = validate(this.props.formVals.values);
+    console.log('values are: ', this.props.formVals.values);
     if (!(Object.keys(errors).length === 0 && errors.constructor === Object)) {
       // throw new SubmissionError(errors);
       return Alert.alert('Error', 'You have incomplete fields.');
     }
-    return this.props.submitGoal(this.props.formVals.values);
+    // return this.props.submitGoal(this.props.formVals.values);
   }
 
   renderUserInfo() {
