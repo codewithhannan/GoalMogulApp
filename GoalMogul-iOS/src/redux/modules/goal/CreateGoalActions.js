@@ -5,9 +5,6 @@ const DEBUG_KEY = '[ Action CreateGoal ]';
 // Validate goal form
 export const validate = values => {
   const errors = {};
-  if (!values.owner || values.owner === null) {
-    errors.owner = 'Required';
-  }
   if (!values.title) {
     errors.title = 'Required';
   }
@@ -18,9 +15,10 @@ export const validate = values => {
 };
 
 // Submit values
-export const submitGoal = values => (dispatch, getState) => {
+export const submitGoal = (values, userId) => (dispatch, getState) => {
   const { token } = getState().user;
-  const goal = goalAdapter(values);
+  const goal = goalAdapter(values, userId);
+  console.log('Transformed goal is: ', goal);
   API
     .post(
       'secure/goal/',
@@ -38,9 +36,8 @@ export const submitGoal = values => (dispatch, getState) => {
 };
 
 // Transform values from Goal form to server accepted format
-const goalAdapter = values => {
+const goalAdapter = (values, userId) => {
   const {
-    owner,
     title,
     category,
     privacy,
@@ -54,10 +51,10 @@ const goalAdapter = values => {
     endTime
   } = values;
   return {
-    owner,
+    owner: userId,
     title,
-    category: category.toLowerCase,
-    privacy: privacy.toLowerCase,
+    category: category.toLowerCase(),
+    privacy: privacy.toLowerCase(),
     shareToGoalFeed: shareToMastermind,
     needs: stepsNeedsAdapter(needs),
     steps: stepsNeedsAdapter(steps),
@@ -75,11 +72,15 @@ const goalAdapter = values => {
  * 1. Things in [] is optional
  * 2. Right now, steps and needs share the same format
  */
-const stepsNeedsAdapter = values =>
-  values.map((val) => ({
+const stepsNeedsAdapter = values => {
+  if (values && values.length > 0) {
+    return undefined;
+  }
+  return values.map((val) => ({
     isCompleted: false,
     description: val,
   }));
+};
 
 const detailsAdapter = value => {
   return {

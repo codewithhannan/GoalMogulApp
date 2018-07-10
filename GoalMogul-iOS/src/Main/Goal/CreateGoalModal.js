@@ -70,7 +70,6 @@ class CreateGoalModal extends Component {
       hasTimeline: false,
       startTime: { date: undefined, picker: false },
       endTime: { date: undefined, picker: false },
-      owner: this.props.user.userId || null,
       title: ''
     });
   }
@@ -103,7 +102,7 @@ class CreateGoalModal extends Component {
       // throw new SubmissionError(errors);
       return Alert.alert('Error', 'You have incomplete fields.');
     }
-    // return this.props.submitGoal(this.props.formVals.values);
+    return this.props.submitGoal(this.props.formVals.values, this.props.user._id);
   }
 
   renderUserInfo() {
