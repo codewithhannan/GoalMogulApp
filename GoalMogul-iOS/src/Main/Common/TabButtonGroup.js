@@ -12,6 +12,8 @@ class TabButtonGroup extends Component {
     const { index, routes } = navigationState;
     return routes.map((b, i) => {
       const selected = i === index;
+      const iconSource = tabIconMap ? tabIconMap[b.key].iconSource : undefined;
+      const iconStyle = tabIconMap ? tabIconMap[b.key].iconStyle : undefined;
       if (i !== 0) {
         // render divider to the left
         return (
@@ -25,8 +27,8 @@ class TabButtonGroup extends Component {
               text={b.title}
               onSelect={selected}
               stat={b.stat}
-              iconSource={tabIconMap[b.key].iconSource}
-              iconStyle={tabIconMap[b.key].iconStyle}
+              iconSource={iconSource}
+              iconStyle={iconStyle}
             />
           </TouchableOpacity>
         );
@@ -41,8 +43,8 @@ class TabButtonGroup extends Component {
             text={b.title}
             onSelect={selected}
             stat={b.stat}
-            iconSource={tabIconMap[b.key].iconSource}
-            iconStyle={tabIconMap[b.key].iconStyle}
+            iconSource={iconSource}
+            iconStyle={iconStyle}
           />
         </TouchableOpacity>
       );
