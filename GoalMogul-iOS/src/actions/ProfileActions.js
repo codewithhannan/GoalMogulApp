@@ -1,5 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import { Image } from 'react-native';
+import _ from 'lodash';
 
 import ImageUtils from '../Utils/ImageUtils';
 import { updateAccount, updateProfile, updatePassword } from '../Utils/ProfileUtils';
@@ -252,15 +253,89 @@ export const selectProfileTab = (index) => (dispatch) => {
   });
 };
 
-/*
-Handle user profile on refresh
-NOTE: This is TODO for milestone 2
-*/
-export const handleProfileRefresh = () => {
+/**
+ * Handle user profile on refresh
+ * NOTE: This is TODO for milestone 2
+ * Refresh for profile tab
+ */
+export const handleTabRefresh = (tab) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const { filterBar, limit } = _.get(getState().profile, tab);
 
+  dispatch({
+    type: '',
+    payload: {
+      type: tab
+    }
+  });
+  loadOneTab(tab, 0, limit, filterBar, token, (data) => {
+    dispatch({
+      type: '',
+      payload: {
+        type: tab,
+        data,
+        skip: data.length,
+        limit,
+        hasNextPage: !(data === undefined || data.length === 0)
+      }
+    });
+  });
 };
 
-// TODO: implement in milestone 2
-const loadOneTab = () => {
+// Load more for profile tab
+export const handleTabOnLoadMore = (tab) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const { filterBar, skip, limit, hasNextPage } = _.get(getState().profile, tab);
 
+  if (!hasNextPage) {
+    return;
+  }
+
+  loadOneTab(tab, skip, limit, filterBar, token, (data) => {
+    dispatch({
+      type: '',
+      payload: {
+        type: tab,
+        data,
+        skip: skip + data.length,
+        limit,
+        hasNextPage: !(data === undefined || data.length === 0)
+      }
+    });
+  });
 };
+
+/**
+ * Basic API to load one tab based on params
+ * @param tab:
+ * @param skip:
+ * @param limit:
+ * @param filter:
+ * @param token:
+ * @param callback:
+ */
+const loadOneTab = (tab, skip, limit, filter, token, callback) => {
+  const BASE_ROUTE = 'secure/goal';
+  API
+    .get(
+      `${BASE_ROUTE}/user?skip=${skip}&limit=${limit}`,
+      token
+    )
+    .then((res) => {
+      console.log('res is: ', res);
+      // TOOD: test and return real data
+      if (res) {
+        callback([]);
+      }
+    })
+    .catch((err) => {
+      console.warn(`${DEBUG_KEY} load ${tab} error: ${err}`);
+    });
+};
+
+/**
+ * Url String builder to generate URL based on params
+ */
+const urlBuilder = (base) => {
+
+}

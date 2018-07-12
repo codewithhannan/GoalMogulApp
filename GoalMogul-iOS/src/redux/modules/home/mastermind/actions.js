@@ -71,7 +71,10 @@ export const refreshGoals = () => (dispatch, getState) => {
 // Load more goal for mastermind tab
 export const loadMoreGoals = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, filter } = getState().home.mastermind;
+  const { skip, limit, filter, hasNextPage } = getState().home.mastermind;
+  if (!hasNextPage) {
+    return;
+  }
   const { categories, priority } = filter;
   loadGoals(skip, limit, token, priority, categories, (data) => {
     dispatch({

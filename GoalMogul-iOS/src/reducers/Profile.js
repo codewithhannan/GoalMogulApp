@@ -85,7 +85,11 @@ const INITIAL_STATE = {
       catergory: {
         type: 'all'
       }
-    }
+    },
+    limit: 20,
+    skip: 0,
+    hasNextPage: undefined,
+    goals: []
   },
   posts: {
     filterbar: {
@@ -98,7 +102,11 @@ const INITIAL_STATE = {
       catergory: {
         type: 'all'
       }
-    }
+    },
+    limit: 20,
+    skip: 0,
+    hasNextPage: undefined,
+    posts: []
   },
   needs: {
     filterbar: {
@@ -111,7 +119,11 @@ const INITIAL_STATE = {
       catergory: {
         type: 'all'
       }
-    }
+    },
+    limit: 20,
+    skip: 0,
+    hasNextPage: undefined,
+    needs: []
   }
 };
 
