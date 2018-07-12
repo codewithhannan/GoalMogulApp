@@ -20,6 +20,10 @@ const INITIAL_STATE = {
     limit: 20,
     skip: 0,
     currentIndex: 0,
+    filter: {
+      category: 'general',
+      priority: 10,
+    },
     hasNextPage: undefined
   },
   activityfeed: {

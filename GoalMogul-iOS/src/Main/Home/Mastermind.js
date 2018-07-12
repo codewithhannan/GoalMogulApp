@@ -27,8 +27,26 @@ import {
 /* TODO: delete the test data */
 const testData = [
   {
-    name: 'Jia Zeng',
+    owner: {
+
+    },
+    title: 'Establish a LMFBR near Westport, Connecticut by 2020',
+    priority: 1,
+    category: 'general',
+    privacy: 'friends',
+    shareToGoalFeed: true,
+    start: new Date(),
+    end: new Date(),
+    detail: {
+      text: 'This is detail'
+    },
     _id: 1
+  },
+  {
+    needRequest: {
+      description: 'Introduction to someone from the Bill and Melinda Gates Foundation'
+    },
+    description: 'Hey guys! Do you know anyone that can connect me?? It\'d would mean a lot to me'
   }
 ];
 

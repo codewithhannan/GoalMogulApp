@@ -50,11 +50,12 @@ export const getNextGoal = () => (dispatch, getState) => {
 // Refresh goal for mastermind tab
 export const refreshGoals = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { limit } = getState().home.mastermind;
+  const { limit, filter } = getState().home.mastermind;
+  const { categories, priority } = filter;
   dispatch({
     type: HOME_REFRESH_GOAL
   });
-  loadGoals(0, limit, token, (data) => {
+  loadGoals(0, limit, token, priority, categories, (data) => {
     dispatch({
       type: HOME_REFRESH_GOAL_DONE,
       payload: {
@@ -70,8 +71,9 @@ export const refreshGoals = () => (dispatch, getState) => {
 // Load more goal for mastermind tab
 export const loadMoreGoals = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit } = getState().home.mastermind;
-  loadGoals(skip, limit, token, (data) => {
+  const { skip, limit, filter } = getState().home.mastermind;
+  const { categories, priority } = filter;
+  loadGoals(skip, limit, token, priority, categories, (data) => {
     dispatch({
       type: HOME_LOAD_GOAL_DONE,
       payload: {
@@ -91,10 +93,13 @@ export const loadMoreGoals = () => (dispatch, getState) => {
  * @param limit:
  * @param token:
  */
-const loadGoals = (skip, limit, token, callback) => {
+const loadGoals = (skip, limit, token, priority, categories, callback) => {
   const route = '/feed';
   API
-    .get(`${BASE_ROUTE}${route}?limit=${limit}&skip=${skip}`, token)
+    .get(
+      `${BASE_ROUTE}${route}?limit=${limit}&skip=${skip}&priority=${priority}&categories=${categories}`,
+      token
+    )
     .then((res) => {
       console.log('loading goal with res: ', res);
       if (res) {
