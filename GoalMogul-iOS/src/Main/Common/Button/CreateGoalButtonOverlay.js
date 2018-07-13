@@ -45,6 +45,14 @@ class CreateGoalButtonOverlay extends Component {
 
   handleCreatePost = () => {
     console.log('User trying to create post');
+    Animated.timing(this.fadeAnim, {
+      duration: 100,
+      toValue: 0,
+    }).start(() => {
+      this.props.closeCreateOverlay(this.props.tab);
+      Actions.pop();
+      Actions.createPostModal();
+    });
   }
 
   handleCreateGoal = () => {
