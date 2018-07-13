@@ -5,6 +5,7 @@ import _ from 'lodash';
 import ImageUtils from '../Utils/ImageUtils';
 import { updateAccount, updateProfile, updatePassword } from '../Utils/ProfileUtils';
 import { api as API } from '../redux/middleware/api';
+import { queryBuilder } from '../redux/middleware/utils';
 
 import {
   PROFILE_OPEN_PROFILE,
@@ -26,7 +27,9 @@ import {
   // Profile load tabs constants
   PROFILE_FETCH_TAB_DONE,
   PROFILE_REFRESH_TAB_DONE,
-  PROFILE_REFRESH_TAB
+  PROFILE_REFRESH_TAB,
+  PROFILE_UPDATE_FILTER,
+  PROFILE_GOAL_FILTER_CONST
 } from '../reducers/Profile';
 
 const DEBUG_KEY = '[ Action Profile ]';
@@ -257,6 +260,18 @@ export const selectProfileTab = (index) => (dispatch) => {
   });
 };
 
+// User update filter for specific tab
+export const changeFilter = (tab, filterType, value) => (dispatch) => {
+  dispatch({
+    type: PROFILE_UPDATE_FILTER,
+    payload: {
+      tab,
+      type: filterType,
+      value
+    }
+  });
+};
+
 /**
  * Handle user profile on refresh
  * NOTE: This is TODO for milestone 2
@@ -265,7 +280,7 @@ export const selectProfileTab = (index) => (dispatch) => {
  */
 export const handleTabRefresh = (tab) => (dispatch, getState) => {
   const { token } = getState().user;
-  const { filterBar, limit } = _.get(getState().profile, tab);
+  const { filter, limit } = _.get(getState().profile, tab);
 
   dispatch({
     type: PROFILE_REFRESH_TAB,
@@ -273,7 +288,7 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
       type: tab
     }
   });
-  loadOneTab(tab, 0, limit, filterBar, token, (data) => {
+  loadOneTab(tab, 0, limit, profileFilterAdapter(filter), token, (data) => {
     dispatch({
       type: PROFILE_REFRESH_TAB_DONE,
       payload: {
@@ -293,13 +308,13 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
  */
 export const handleTabOnLoadMore = (tab) => (dispatch, getState) => {
   const { token } = getState().user;
-  const { filterBar, skip, limit, hasNextPage } = _.get(getState().profile, tab);
+  const { filter, skip, limit, hasNextPage } = _.get(getState().profile, tab);
 
   if (!hasNextPage) {
     return;
   }
 
-  loadOneTab(tab, skip, limit, filterBar, token, (data) => {
+  loadOneTab(tab, skip, limit, profileFilterAdapter(filter), token, (data) => {
     dispatch({
       type: PROFILE_FETCH_TAB_DONE,
       payload: {
@@ -312,6 +327,15 @@ export const handleTabOnLoadMore = (tab) => (dispatch, getState) => {
     });
   });
 };
+
+/**
+ * Original field for orderBy should be ['ascending', 'descending'],
+ * server accpeted types are ['asc', 'desc']
+ */
+const profileFilterAdapter = (filter) => ({
+    ...filter,
+    orderBy: PROFILE_GOAL_FILTER_CONST.orderBy[filter.orderBy]
+  });
 
 /**
  * Basic API to load one tab based on params
@@ -341,12 +365,3 @@ const loadOneTab = (tab, skip, limit, filter, token, callback) => {
       console.warn(`${DEBUG_KEY} load ${tab} error: ${err}`);
     });
 };
-
-/**
- * Url query builder to query URL based on params
- */
-const queryBuilder = (skip, limit, filter) =>
-  queryBuilderBasicBuilder({ skip, limit, ...filter });
-
-const queryBuilderBasicBuilder = (params) =>
-  Object.keys(params).map(key => `${key}=${params[key].type}`).join('&');

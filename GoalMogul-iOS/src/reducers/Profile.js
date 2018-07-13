@@ -23,15 +23,32 @@ export const PROFILE_FETCH_MUTUAL_FRIEND_DONE = 'profile_fetch_mutual_friend_don
 export const PROFILE_FETCH_FRIENDSHIP_DONE = 'profile_fetch_friendship_done';
 export const PROFILE_FETCH_FRIEND_DONE = 'profile_fetch_friend_done';
 export const PROFILE_FETCH_FRIEND_COUNT_DONE = 'profile_fetch_friend_count_done';
+// Constants for profile fetching goals and posts
 export const PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE = 'profile_fetch_mutual_friend_count_done';
 export const PROFILE_FETCH_TAB_DONE = 'profile_fetch_tab_done';
 export const PROFILE_REFRESH_TAB_DONE = 'profile_refresh_tab_done';
 export const PROFILE_REFRESH_TAB = 'profile_refresh_tab';
+// Constants for updating filter bar
+export const PROFILE_UPDATE_FILTER = 'profile_update_filter';
 
-const GOAL_FILTER_CONST = {
-  sortBy: ['important', 'recent', 'popular'],
-  orderBy: ['ascending', 'descending'],
-  caterogy: ['all']
+export const PROFILE_GOAL_FILTER_CONST = {
+  sortBy: ['created', 'updated', 'shared', 'priority'],
+  orderBy: {
+    ascending: 'asc',
+    descending: 'desc'
+  },
+  caterogy: [
+    'General',
+    'Physical',
+    'Learning/Education',
+    'Career/Business',
+    'Financial',
+    'Spiritual',
+    'Family/Personal',
+    'Charity/Philanthropy',
+    'Travel',
+    'Things'
+  ]
 };
 
 const INITIAL_STATE = {
@@ -79,16 +96,11 @@ const INITIAL_STATE = {
   },
   // Individual tab state
   goals: {
-    filterbar: {
-      sortBy: {
-        type: 'important'
-      },
-      orderBy: {
-        type: 'ascending'
-      },
-      catergory: {
-        type: 'all'
-      }
+    filter: {
+      sortBy: 'created',
+      orderBy: 'ascending',
+      catergory: 'General',
+      completedOnly: 'false'
     },
     limit: 20,
     skip: 0,
@@ -97,16 +109,11 @@ const INITIAL_STATE = {
     loading: false
   },
   needs: {
-    filterbar: {
-      sortBy: {
-        type: 'important'
-      },
-      orderBy: {
-        type: 'ascending'
-      },
-      catergory: {
-        type: 'all'
-      }
+    filter: {
+      sortBy: 'created',
+      orderBy: 'ascending',
+      catergory: 'General',
+      completedOnly: 'false'
     },
     limit: 20,
     skip: 0,
@@ -115,16 +122,11 @@ const INITIAL_STATE = {
     loading: false
   },
   posts: {
-    filterbar: {
-      sortBy: {
-        type: 'important'
-      },
-      orderBy: {
-        type: 'ascending'
-      },
-      catergory: {
-        type: 'all'
-      }
+    filter: {
+      sortBy: 'created',
+      orderBy: 'ascending',
+      catergory: 'General',
+      completedOnly: 'false'
     },
     limit: 20,
     skip: 0,
@@ -239,7 +241,11 @@ export default (state = INITIAL_STATE, action) => {
     /**
      * Cases when loading/refreshing profile tabs
      * TODO: refactor the following three cases to abstract logic
-     * Right now, MeetReducers and Profile both have the same pattern
+     * Right now,
+     * 1. MeetReducers
+     * 2. Profile
+     * 3. Home tabs
+     * Share the same patterns
      */
     case PROFILE_FETCH_TAB_DONE: {
       const { skip, data, hasNextPage, type } = action.payload;
@@ -272,6 +278,14 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, `${type}.loading`, true);
     }
 
+    // Update one of filter within tab
+    case PROFILE_UPDATE_FILTER: {
+      const { tab, type, value } = action.payload;
+      let newState = _.cloneDeep(state);
+      return _.set(newState, `${tab}.filterbar.${type}`, value);
+    }
+
+    // Clean up actions
     case USER_LOG_OUT: {
       return { ...INITIAL_STATE };
     }

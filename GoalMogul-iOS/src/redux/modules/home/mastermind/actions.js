@@ -4,10 +4,12 @@ import {
   HOME_REFRESH_GOAL,
   HOME_REFRESH_GOAL_DONE,
   HOME_LOAD_GOAL_DONE,
-  HOME_SET_GOAL_INDEX
+  HOME_SET_GOAL_INDEX,
+  HOME_UPDATE_FILTER
 } from '../../../../reducers/Home';
 
 import { api as API } from '../../../middleware/api';
+import { queryBuilder } from '../../../middleware/utils';
 
 const DEBUG_KEY = '[ Action Home Mastermind ]';
 const BASE_ROUTE = 'secure/goal/';
@@ -47,7 +49,24 @@ export const getNextGoal = () => (dispatch, getState) => {
   return true;
 };
 
-// Refresh goal for mastermind tab
+// User update filter for specific tab in Mastermind
+export const changeFilter = (tab, filterType, value) => (dispatch) => {
+  dispatch({
+    type: HOME_UPDATE_FILTER,
+    payload: {
+      tab,
+      type: filterType,
+      value
+    }
+  });
+};
+
+/**
+ * For the next three functions, we could abstract a pattern since
+ * It's shared across mastermind/actions, feed/actions, MeetActions, ProfileActions
+ */
+
+//Refresh goal for mastermind tab
 export const refreshGoals = () => (dispatch, getState) => {
   const { token } = getState().user;
   const { limit, filter } = getState().home.mastermind;
@@ -59,6 +78,7 @@ export const refreshGoals = () => (dispatch, getState) => {
     dispatch({
       type: HOME_REFRESH_GOAL_DONE,
       payload: {
+        type: 'mastermind',
         data,
         skip: data.length,
         limit: 20,
@@ -80,6 +100,7 @@ export const loadMoreGoals = () => (dispatch, getState) => {
     dispatch({
       type: HOME_LOAD_GOAL_DONE,
       payload: {
+        type: 'mastermind',
         data,
         skip: data.length,
         limit: 20,
@@ -100,14 +121,18 @@ const loadGoals = (skip, limit, token, priority, categories, callback) => {
   const route = '/feed';
   API
     .get(
-      `${BASE_ROUTE}${route}?limit=${limit}&skip=${skip}&priority=${priority}&categories=${categories}`,
+      `${BASE_ROUTE}${route}?${queryBuilder(skip, limit, { priority, categories })}`,
       token
     )
     .then((res) => {
       console.log('loading goal with res: ', res);
       if (res) {
-        // Right now return empty data
-        callback([]);
+        // Right now return test data
+        if (skip === 0) {
+          callback(testData);
+        } else {
+          callback([]);
+        }
       }
       console.warn(`${DEBUG_KEY}: Loading goal with no res`);
     })
@@ -115,3 +140,30 @@ const loadGoals = (skip, limit, token, priority, categories, callback) => {
       console.log(`${DEBUG_KEY} load goal error: ${err}`);
     });
 };
+
+// TODO: delete this test data
+const testData = [
+  {
+    _id: '1231293187907',
+    owner: {
+      name: 'Jia Zeng'
+    },
+    title: 'Establish a LMFBR near Westport, Connecticut by 2020',
+    priority: 1,
+    category: 'general',
+    privacy: 'friends',
+    shareToGoalFeed: true,
+    start: new Date(),
+    end: new Date(),
+    detail: {
+      text: 'This is detail'
+    },
+  },
+  {
+    _id: '109283719082',
+    needRequest: {
+      description: 'Introduction to someone from the Bill and Melinda Gates Foundation'
+    },
+    description: 'Hey guys! Do you know anyone that can connect me?? It\'d would mean a lot to me'
+  }
+];
