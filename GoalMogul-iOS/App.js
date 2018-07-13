@@ -55,6 +55,16 @@ export default class App extends React.Component {
       require('./src/asset/utils/forward.png'),
       require('./src/asset/utils/steps.png'),
       require('./src/asset/utils/activity.png'),
+      // Suggestion Modal Icons
+      require('./src/asset/suggestion/book.png'),
+      require('./src/asset/suggestion/chat.png'),
+      require('./src/asset/suggestion/event.png'),
+      require('./src/asset/suggestion/flag.png'),
+      require('./src/asset/suggestion/friend.png'),
+      require('./src/asset/suggestion/group.png'),
+      require('./src/asset/suggestion/link.png'),
+      require('./src/asset/suggestion/other.png'),
+      // Navigation Icons
       require('./src/asset/footer/navigation/home.png'),
       require('./src/asset/footer/navigation/bell.png'),
       require('./src/asset/footer/navigation/meet.png'),

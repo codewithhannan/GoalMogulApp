@@ -3,7 +3,9 @@ import {
   View,
   Modal,
   Text,
-  FlatList
+  FlatList,
+  Image,
+  TouchableWithoutFeedback
 } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 
@@ -11,6 +13,16 @@ import { SearchBar } from 'react-native-elements';
 import ModalHeader from '../../../Main/Common/Header/ModalHeader';
 import PeopleCard from '../Common/PeopleCard';
 import PeopleCardDetail from '../Common/PeopleCardDetail';
+
+// Asset
+import Book from '../../../asset/suggestion/book.png';
+import Chat from '../../../asset/suggestion/chat.png';
+import Event from '../../../asset/suggestion/event.png';
+import Flag from '../../../asset/suggestion/flag.png';
+import Friend from '../../../asset/suggestion/friend.png';
+import Group from '../../../asset/suggestion/group.png';
+import Link from '../../../asset/suggestion/link.png';
+import Other from '../../../asset/suggestion/other.png';
 
 const testData = [
   {
@@ -54,7 +66,7 @@ class SuggestionModal extends Component {
       <SearchBar
         platform='ios'
         round
-        autoFocus
+        autoFocus={false}
         inputStyle={styles.searchInputStyle}
         inputContainerStyle={styles.searchInputContainerStyle}
         containerStyle={styles.searchContainerStyle}
@@ -70,7 +82,51 @@ class SuggestionModal extends Component {
     );
   }
 
+  renderIconItem = ({ item, index }) => {
+    const selected = 1;
+    const style = index === selected ?
+      {
+        ...styles.selectedSuggestionIconStyle,
+        ...item.value.iconStyle
+      } : {
+        ...styles.suggestionIconStyle,
+        ...item.value.iconStyle
+      };
+
+    const textStyle = index === selected ? { ...styles.selectedSuggestionTextStyle }
+      : { ...styles.suggestionTextStyle };
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'flex-start',
+          justifyContent: 'center',
+          marginBottom: 7,
+          marginLeft: 45
+        }}
+      >
+        <TouchableWithoutFeedback onPress={() => console.log('press icon with indexL ', index)}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+          <Image source={item.value.iconSource} style={style} />
+          <Text style={textStyle}>{item.key.toUpperCase()}</Text>
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    );
+  }
+
   renderOptions() {
+    const options = (
+      <View style={{ padding: 10 }}>
+      <FlatList
+        data={IconMap}
+        renderItem={this.renderIconItem}
+        keyExtractor={(item) => item.key}
+        numColumns={2}
+      />
+      </View>
+    );
+
     return (
       <View style={{ backgroundColor: 'white', marginTop: 0.5 }}>
         <Text
@@ -85,6 +141,7 @@ class SuggestionModal extends Component {
         >
           Suggest a...
         </Text>
+        {options}
       </View>
     );
   }
@@ -158,7 +215,105 @@ const styles = {
   searchIconStyle: {
     top: 15,
     fontSize: 13
+  },
+  // Options style
+  selectedSuggestionIconStyle: {
+    tintColor: '#45C9F6',
+    height: 20,
+    width: 20
+  },
+  suggestionIconStyle: {
+    tintColor: '#b8c7cb',
+    height: 20,
+    width: 20
+  },
+  selectedSuggestionTextStyle: {
+    color: 'black',
+    fontSize: 14,
+    fontWeight: '700',
+    marginLeft: 15
+  },
+  suggestionTextStyle: {
+    color: '#b8c7cb',
+    fontSize: 14,
+    fontWeight: '700',
+    marginLeft: 15
   }
 };
+
+const IconMap = [
+  {
+    key: 'book',
+    value: {
+      iconSource: Book,
+      iconStyle: {
+
+      }
+    }
+  },
+  {
+    key: 'chat',
+    value: {
+      iconSource: Chat,
+      iconStyle: {
+
+      }
+    }
+  },
+  {
+    key: 'event',
+    value: {
+      iconSource: Event,
+      iconStyle: {
+
+      }
+    }
+  },
+  {
+    key: 'flag',
+    value: {
+      iconSource: Flag,
+      iconStyle: {
+
+      }
+    }
+  },
+  {
+    key: 'friend',
+    value: {
+      iconSource: Friend,
+      iconStyle: {
+
+      }
+    }
+  },
+  {
+    key: 'group',
+    value: {
+      iconSource: Group,
+      iconStyle: {
+
+      }
+    }
+  },
+  {
+    key: 'link',
+    value: {
+      iconSource: Link,
+      iconStyle: {
+
+      }
+    }
+  },
+  {
+    key: 'other',
+    value: {
+      iconSource: Other,
+      iconStyle: {
+
+      }
+    }
+  },
+];
 
 export default SuggestionModal;

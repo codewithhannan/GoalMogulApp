@@ -14,8 +14,10 @@ import {
   renderers
 } from 'react-native-popup-menu';
 
-/* asset */
+// Asset
 import dropDown from '../../asset/utils/dropDown.png';
+
+// Actions
 
 const { Popover } = renderers;
 const { width } = Dimensions.get('window');

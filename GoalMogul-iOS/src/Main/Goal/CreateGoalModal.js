@@ -9,10 +9,12 @@ import {
   Dimensions,
   FlatList,
   DatePickerIOS,
-  Modal
+  Modal,
+  Alert
 } from 'react-native';
 import { connect } from 'react-redux';
-import { FieldArray, Field, reduxForm, formValueSelector } from 'redux-form';
+import { Actions } from 'react-native-router-flux';
+import { FieldArray, Field, reduxForm, formValueSelector, SubmissionError } from 'redux-form';
 import R from 'ramda';
 import moment from 'moment';
 import {
@@ -24,7 +26,7 @@ import {
   renderers
 } from 'react-native-popup-menu';
 
-/* Components */
+// Components
 import ModalHeader from '../Common/Header/ModalHeader';
 import Button from './Button';
 import InputField from '../Common/TextInput/InputField';
@@ -37,7 +39,11 @@ import cancel from '../../asset/utils/cancel_no_background.png';
 import dropDown from '../../asset/utils/dropDown.png';
 
 // Actions
-import { } from '../../actions';
+// import { } from '../../actions';
+import {
+  validate,
+  submitGoal
+} from '../../redux/modules/goal/CreateGoalActions';
 
 const { Popover } = renderers;
 const { width } = Dimensions.get('window');
@@ -59,11 +65,12 @@ class CreateGoalModal extends Component {
       needs: [...values],
       shareToMastermind: true,
       category: 'General',
-      viewableSetting: 'Friends',
+      privacy: 'Friends',
       priority: 1,
       hasTimeline: false,
       startTime: { date: undefined, picker: false },
       endTime: { date: undefined, picker: false },
+      title: ''
     });
   }
 
@@ -77,6 +84,27 @@ class CreateGoalModal extends Component {
     this.props.change('priority', value);
   }
 
+  // Goal creation handler
+  /**
+   * This is a hacky solution due to the fact that redux-form
+   * handleSubmit values differ from the values actually stored.
+   * NOTE:
+   * Verify by comparing
+   * console.log('handleSubmit passed in values are: ', values);
+   * console.log('form state values: ', this.props.formVals);
+   *
+   * Synchronize validate form values, contains simple check
+   */
+  handleCreate = values => {
+    const errors = validate(this.props.formVals.values);
+    console.log('values are: ', this.props.formVals.values);
+    if (!(Object.keys(errors).length === 0 && errors.constructor === Object)) {
+      // throw new SubmissionError(errors);
+      return Alert.alert('Error', 'You have incomplete fields.');
+    }
+    return this.props.submitGoal(this.props.formVals.values, this.props.user._id);
+  }
+
   renderUserInfo() {
     let imageUrl = this.props.user.profile.image;
     let profileImage =
@@ -85,7 +113,7 @@ class CreateGoalModal extends Component {
       imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
       profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
     }
-    const callback = R.curry((value) => this.props.change('viewableSetting', value));
+    const callback = R.curry((value) => this.props.change('privacy', value));
     const shareToMastermindCallback = R.curry((value) => this.props.change('shareToMastermind', value));
     return (
       <View style={{ flexDirection: 'row', marginBottom: 15 }}>
@@ -95,7 +123,7 @@ class CreateGoalModal extends Component {
             Jordan Gardener
           </Text>
           <ViewableSettingMenu
-            viewableSetting={this.props.viewableSetting}
+            viewableSetting={this.props.privacy}
             callback={callback}
             shareToMastermind={this.props.shareToMastermind}
             shareToMastermindCallback={shareToMastermindCallback}
@@ -111,8 +139,8 @@ class CreateGoalModal extends Component {
       <View>
         {titleText}
         <Field
-          name='goal'
-          label='goal'
+          name='title'
+          label='title'
           component={InputField}
           editable={this.props.uploading}
           numberOfLines={4}
@@ -408,7 +436,12 @@ class CreateGoalModal extends Component {
           behavior='padding'
           style={{ flex: 1, backgroundColor: '#ffffff' }}
         >
-          <ModalHeader title='New Goal' actionText='Create' />
+          <ModalHeader
+            title='New Goal'
+            actionText='Create'
+            onCancel={() => Actions.pop()}
+            onAction={handleSubmit(this.handleCreate)}
+          />
           <ScrollView
             style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
           >
@@ -547,18 +580,21 @@ const mapStateToProps = state => {
     user,
     profile,
     category: selector(state, 'category'),
-    viewableSetting: selector(state, 'viewableSetting'),
+    privacy: selector(state, 'privacy'),
     priority: selector(state, 'priority'),
     shareToMastermind: selector(state, 'shareToMastermind'),
     hasTimeline: selector(state, 'hasTimeline'),
     startTime: selector(state, 'startTime'),
     endTime: selector(state, 'endTime'),
+    formVals: state.form.createGoalModal
   };
 };
 
 export default connect(
   mapStateToProps,
-  null
+  {
+    submitGoal
+  }
 )(CreateGoalModal);
 
 const MenuFactory = (options, callback, triggerText, triggerContainerStyle, animationCallback) => {

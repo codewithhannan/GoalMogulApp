@@ -1,9 +1,11 @@
 import { Actions } from 'react-native-router-flux';
 import { Image } from 'react-native';
+import _ from 'lodash';
 
 import ImageUtils from '../Utils/ImageUtils';
 import { updateAccount, updateProfile, updatePassword } from '../Utils/ProfileUtils';
 import { api as API } from '../redux/middleware/api';
+import { queryBuilder } from '../redux/middleware/utils';
 
 import {
   PROFILE_OPEN_PROFILE,
@@ -21,7 +23,13 @@ import {
   PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE,
   PROFILE_FETCH_FRIENDSHIP_DONE,
   PROFILE_FETCH_MUTUAL_FRIEND,
-  PROFILE_FETCH_MUTUAL_FRIEND_DONE
+  PROFILE_FETCH_MUTUAL_FRIEND_DONE,
+  // Profile load tabs constants
+  PROFILE_FETCH_TAB_DONE,
+  PROFILE_REFRESH_TAB_DONE,
+  PROFILE_REFRESH_TAB,
+  PROFILE_UPDATE_FILTER,
+  PROFILE_GOAL_FILTER_CONST
 } from '../reducers/Profile';
 
 const DEBUG_KEY = '[ Action Profile ]';
@@ -252,15 +260,108 @@ export const selectProfileTab = (index) => (dispatch) => {
   });
 };
 
-/*
-Handle user profile on refresh
-NOTE: This is TODO for milestone 2
-*/
-export const handleProfileRefresh = () => {
-
+// User update filter for specific tab
+export const changeFilter = (tab, filterType, value) => (dispatch) => {
+  dispatch({
+    type: PROFILE_UPDATE_FILTER,
+    payload: {
+      tab,
+      type: filterType,
+      value
+    }
+  });
 };
 
-// TODO: implement in milestone 2
-const loadOneTab = () => {
+/**
+ * Handle user profile on refresh
+ * NOTE: This is TODO for milestone 2
+ * Refresh for profile tab
+ * @params tab: one of ['goals', 'posts', 'needs']
+ */
+export const handleTabRefresh = (tab) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const { filter, limit } = _.get(getState().profile, tab);
 
+  dispatch({
+    type: PROFILE_REFRESH_TAB,
+    payload: {
+      type: tab
+    }
+  });
+  loadOneTab(tab, 0, limit, profileFilterAdapter(filter), token, (data) => {
+    dispatch({
+      type: PROFILE_REFRESH_TAB_DONE,
+      payload: {
+        type: tab,
+        data,
+        skip: data.length,
+        limit,
+        hasNextPage: !(data === undefined || data.length === 0)
+      }
+    });
+  });
+};
+
+/**
+ * Load more for profile tab
+ * @params tab: one of ['goals', 'posts', 'needs']
+ */
+export const handleTabOnLoadMore = (tab) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const { filter, skip, limit, hasNextPage } = _.get(getState().profile, tab);
+
+  if (!hasNextPage) {
+    return;
+  }
+
+  loadOneTab(tab, skip, limit, profileFilterAdapter(filter), token, (data) => {
+    dispatch({
+      type: PROFILE_FETCH_TAB_DONE,
+      payload: {
+        type: tab,
+        data,
+        skip: skip + data.length,
+        limit,
+        hasNextPage: !(data === undefined || data.length === 0)
+      }
+    });
+  });
+};
+
+/**
+ * Original field for orderBy should be ['ascending', 'descending'],
+ * server accpeted types are ['asc', 'desc']
+ */
+const profileFilterAdapter = (filter) => ({
+    ...filter,
+    orderBy: PROFILE_GOAL_FILTER_CONST.orderBy[filter.orderBy]
+  });
+
+/**
+ * Basic API to load one tab based on params
+ * @param tab:
+ * @param skip:
+ * @param limit:
+ * @param filter:
+ * @param token:
+ * @param callback:
+ */
+const loadOneTab = (tab, skip, limit, filter, token, callback) => {
+  // Todo: base route depends on tab selection
+  const BASE_ROUTE = 'secure/goal';
+  API
+    .get(
+      `${BASE_ROUTE}/user?${queryBuilder(skip, limit, filter)}`,
+      token
+    )
+    .then((res) => {
+      console.log('res is: ', res);
+      // TOOD: test and return real data
+      if (res) {
+        callback([]);
+      }
+    })
+    .catch((err) => {
+      console.warn(`${DEBUG_KEY} load ${tab} error: ${err}`);
+    });
 };

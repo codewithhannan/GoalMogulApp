@@ -24,14 +24,6 @@ import {
   closeCreateOverlay
 } from '../../redux/modules/home/mastermind/actions';
 
-/* TODO: delete the test data */
-const testData = [
-  {
-    name: 'Jia Zeng',
-    _id: 1
-  }
-];
-
 const TAB_KEY = 'mastermind';
 
 class Mastermind extends Component {

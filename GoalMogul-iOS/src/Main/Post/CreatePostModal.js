@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import _ from 'lodash';
 import R from 'ramda';
+import { Actions } from 'react-native-router-flux';
 
 /* Components */
 import ModalHeader from '../Common/Header/ModalHeader';
@@ -279,7 +280,11 @@ class CreatePostModal extends Component {
         behavior='padding'
         style={{ flex: 1, backgroundColor: '#ffffff' }}
       >
-        <ModalHeader title='New Goal' actionText='Create' />
+        <ModalHeader
+          title='New Goal'
+          actionText='Create'
+          onCancel={() => Actions.pop()}
+        />
         <ScrollView style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}>
           <View style={{ flex: 1, padding: 20 }}>
             {this.renderUserInfo()}
