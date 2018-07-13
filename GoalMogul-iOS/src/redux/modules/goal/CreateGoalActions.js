@@ -23,7 +23,7 @@ export const submitGoal = (values, userId) => (dispatch, getState) => {
     .post(
       'secure/goal/',
       {
-        goal: { ...goal }
+        goal: JSON.stringify({ ...goal })
       },
       token
     )

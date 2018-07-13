@@ -22,7 +22,11 @@ import {
   PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE,
   PROFILE_FETCH_FRIENDSHIP_DONE,
   PROFILE_FETCH_MUTUAL_FRIEND,
-  PROFILE_FETCH_MUTUAL_FRIEND_DONE
+  PROFILE_FETCH_MUTUAL_FRIEND_DONE,
+  // Profile load tabs constants
+  PROFILE_FETCH_TAB_DONE,
+  PROFILE_REFRESH_TAB_DONE,
+  PROFILE_REFRESH_TAB
 } from '../reducers/Profile';
 
 const DEBUG_KEY = '[ Action Profile ]';
@@ -257,20 +261,21 @@ export const selectProfileTab = (index) => (dispatch) => {
  * Handle user profile on refresh
  * NOTE: This is TODO for milestone 2
  * Refresh for profile tab
+ * @params tab: one of ['goals', 'posts', 'needs']
  */
 export const handleTabRefresh = (tab) => (dispatch, getState) => {
   const { token } = getState().user;
   const { filterBar, limit } = _.get(getState().profile, tab);
 
   dispatch({
-    type: '',
+    type: PROFILE_REFRESH_TAB,
     payload: {
       type: tab
     }
   });
   loadOneTab(tab, 0, limit, filterBar, token, (data) => {
     dispatch({
-      type: '',
+      type: PROFILE_REFRESH_TAB_DONE,
       payload: {
         type: tab,
         data,
@@ -282,7 +287,10 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
   });
 };
 
-// Load more for profile tab
+/**
+ * Load more for profile tab
+ * @params tab: one of ['goals', 'posts', 'needs']
+ */
 export const handleTabOnLoadMore = (tab) => (dispatch, getState) => {
   const { token } = getState().user;
   const { filterBar, skip, limit, hasNextPage } = _.get(getState().profile, tab);
@@ -293,7 +301,7 @@ export const handleTabOnLoadMore = (tab) => (dispatch, getState) => {
 
   loadOneTab(tab, skip, limit, filterBar, token, (data) => {
     dispatch({
-      type: '',
+      type: PROFILE_FETCH_TAB_DONE,
       payload: {
         type: tab,
         data,
@@ -315,10 +323,11 @@ export const handleTabOnLoadMore = (tab) => (dispatch, getState) => {
  * @param callback:
  */
 const loadOneTab = (tab, skip, limit, filter, token, callback) => {
+  // Todo: base route depends on tab selection
   const BASE_ROUTE = 'secure/goal';
   API
     .get(
-      `${BASE_ROUTE}/user?skip=${skip}&limit=${limit}`,
+      `${BASE_ROUTE}/user?${queryBuilder(skip, limit, filter)}`,
       token
     )
     .then((res) => {
@@ -334,8 +343,10 @@ const loadOneTab = (tab, skip, limit, filter, token, callback) => {
 };
 
 /**
- * Url String builder to generate URL based on params
+ * Url query builder to query URL based on params
  */
-const urlBuilder = (base) => {
+const queryBuilder = (skip, limit, filter) =>
+  queryBuilderBasicBuilder({ skip, limit, ...filter });
 
-}
+const queryBuilderBasicBuilder = (params) =>
+  Object.keys(params).map(key => `${key}=${params[key].type}`).join('&');

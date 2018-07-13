@@ -17,12 +17,16 @@ import {
   USER_LOG_OUT
 } from './User';
 
+// Profile action constants
 export const PROFILE_FETCH_MUTUAL_FRIEND = 'profile_fetch_mutual_friend';
 export const PROFILE_FETCH_MUTUAL_FRIEND_DONE = 'profile_fetch_mutual_friend_done';
 export const PROFILE_FETCH_FRIENDSHIP_DONE = 'profile_fetch_friendship_done';
 export const PROFILE_FETCH_FRIEND_DONE = 'profile_fetch_friend_done';
 export const PROFILE_FETCH_FRIEND_COUNT_DONE = 'profile_fetch_friend_count_done';
 export const PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE = 'profile_fetch_mutual_friend_count_done';
+export const PROFILE_FETCH_TAB_DONE = 'profile_fetch_tab_done';
+export const PROFILE_REFRESH_TAB_DONE = 'profile_refresh_tab_done';
+export const PROFILE_REFRESH_TAB = 'profile_refresh_tab';
 
 const GOAL_FILTER_CONST = {
   sortBy: ['important', 'recent', 'popular'],
@@ -89,24 +93,8 @@ const INITIAL_STATE = {
     limit: 20,
     skip: 0,
     hasNextPage: undefined,
-    goals: []
-  },
-  posts: {
-    filterbar: {
-      sortBy: {
-        type: 'important'
-      },
-      orderBy: {
-        type: 'ascending'
-      },
-      catergory: {
-        type: 'all'
-      }
-    },
-    limit: 20,
-    skip: 0,
-    hasNextPage: undefined,
-    posts: []
+    data: [],
+    loading: false
   },
   needs: {
     filterbar: {
@@ -123,7 +111,26 @@ const INITIAL_STATE = {
     limit: 20,
     skip: 0,
     hasNextPage: undefined,
-    needs: []
+    data: [],
+    loading: false
+  },
+  posts: {
+    filterbar: {
+      sortBy: {
+        type: 'important'
+      },
+      orderBy: {
+        type: 'ascending'
+      },
+      catergory: {
+        type: 'all'
+      }
+    },
+    limit: 20,
+    skip: 0,
+    hasNextPage: undefined,
+    data: [],
+    loading: false
   }
 };
 
@@ -229,6 +236,42 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, friendship: newFriendship };
     }
 
+    /**
+     * Cases when loading/refreshing profile tabs
+     * TODO: refactor the following three cases to abstract logic
+     * Right now, MeetReducers and Profile both have the same pattern
+     */
+    case PROFILE_FETCH_TAB_DONE: {
+      const { skip, data, hasNextPage, type } = action.payload;
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, `${type}.loading`, false);
+
+      if (skip !== undefined) {
+        newState = _.set(newState, `${type}.skip`, skip);
+      }
+      newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
+      const oldData = _.get(newState, `${type}.data`);
+      return _.set(newState, `${type}.data`, arrayUnique(oldData.concat(data)));
+    }
+
+    case PROFILE_REFRESH_TAB_DONE: {
+      const { skip, data, hasNextPage, type } = action.payload;
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, `${type}.loading`, false);
+
+      if (skip !== undefined) {
+        newState = _.set(newState, `${type}.skip`, skip);
+      }
+      newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
+      return _.set(newState, `${type}.data`, data);
+    }
+
+    case PROFILE_REFRESH_TAB: {
+      const { type } = action.payload;
+      let newState = _.cloneDeep(state);
+      return _.set(newState, `${type}.loading`, true);
+    }
+
     case USER_LOG_OUT: {
       return { ...INITIAL_STATE };
     }
@@ -237,3 +280,16 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state };
   }
 };
+
+function arrayUnique(array) {
+  let a = array.concat();
+  for (let i = 0; i < a.length; ++i) {
+    for (let j = i + 1; j < a.length; ++j) {
+      if (a[i]._id === a[j]._id) {
+        a.splice(j--, 1);
+      }
+    }
+  }
+
+  return a;
+}
