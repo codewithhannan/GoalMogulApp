@@ -90,15 +90,6 @@ class Home extends Component {
             onIndexChange={this._handleIndexChange}
             useNativeDriver
           />
-
-          {/*
-            <FlatList
-              data={this.props.photos}
-              renderItem={(item) => this.renderRow(item)}
-              numColumns={3}
-              keyExtractor={this._keyExtractor}
-            />
-            */}
         </View>
       </MenuProvider>
     );

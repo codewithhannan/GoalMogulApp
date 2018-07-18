@@ -72,7 +72,10 @@ export const refreshGoals = () => (dispatch, getState) => {
   const { limit, filter } = getState().home.mastermind;
   const { categories, priority } = filter;
   dispatch({
-    type: HOME_REFRESH_GOAL
+    type: HOME_REFRESH_GOAL,
+    payload: {
+      type: 'mastermind'
+    }
   });
   loadGoals(0, limit, token, priority, categories, (data) => {
     dispatch({
@@ -85,6 +88,8 @@ export const refreshGoals = () => (dispatch, getState) => {
         hasNextPage: !(data === undefined || data.length === 0)
       }
     });
+  }, () => {
+    // TODO: implement for onError
   });
 };
 
@@ -107,6 +112,8 @@ export const loadMoreGoals = () => (dispatch, getState) => {
         hasNextPage: !(data === undefined || data.length === 0)
       }
     });
+  }, () => {
+    // TODO: implement for onError
   });
 };
 
@@ -117,7 +124,7 @@ export const loadMoreGoals = () => (dispatch, getState) => {
  * @param limit:
  * @param token:
  */
-const loadGoals = (skip, limit, token, priority, categories, callback) => {
+const loadGoals = (skip, limit, token, priority, categories, callback, onError) => {
   const route = '/feed';
   API
     .get(
@@ -138,6 +145,11 @@ const loadGoals = (skip, limit, token, priority, categories, callback) => {
     })
     .catch((err) => {
       console.log(`${DEBUG_KEY} load goal error: ${err}`);
+      if (skip === 0) {
+        callback(testData);
+      } else {
+        callback([]);
+      }
     });
 };
 
@@ -158,12 +170,17 @@ const testData = [
     detail: {
       text: 'This is detail'
     },
+    type: 'goal'
   },
   {
     _id: '109283719082',
+    owner: {
+      name: 'Jia Zeng'
+    },
     needRequest: {
       description: 'Introduction to someone from the Bill and Melinda Gates Foundation'
     },
-    description: 'Hey guys! Do you know anyone that can connect me?? It\'d would mean a lot to me'
+    description: 'Hey guys! Do you know anyone that can connect me?? It\'d would mean a lot to me',
+    type: 'need'
   }
 ];

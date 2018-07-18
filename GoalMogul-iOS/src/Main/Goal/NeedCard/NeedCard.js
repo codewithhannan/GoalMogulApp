@@ -25,10 +25,11 @@ class NeedCard extends Component {
 
   // card central content
   renderCardContent() {
+    const { description } = this.props.item;
     return (
       <View style={{ marginTop: 20 }}>
         <Text style={{ color: '#505050' }}>
-          Hey guys, do you know anyone that can connect me? It'd mean a lot to me
+          {description}
         </Text>
       </View>
     );
@@ -36,6 +37,7 @@ class NeedCard extends Component {
 
   // user basic information
   renderUserDetail() {
+    const { description } = this.props.item.needRequest;
     return (
       <View style={{ flexDirection: 'row' }}>
         <Image source={defaultProfilePic} resizeMode='contain' style={{ height: 60, width: 60 }} />
@@ -48,7 +50,7 @@ class NeedCard extends Component {
               numberOfLines={3}
               ellipsizeMode='tail'
             >
-              Establish a LMFBR near Westport. Connecticut by the year 2020
+              {description}
             </Text>
           </View>
 
@@ -111,13 +113,15 @@ class NeedCard extends Component {
   }
 
   render() {
+    const { owner } = this.props.item;
+    const { name } = owner;
     return (
       <View>
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <View style={{ backgroundColor: '#e5e5e5' }}>
             <View style={{ marginBottom: 0.5, backgroundColor: 'white', padding: 5 }}>
               <Text style={{ fontSize: 11 }}>
-                <Text style={{ fontWeight: '800' }}>John Doe </Text>
+                <Text style={{ fontWeight: '800' }}>{name} </Text>
                   share a need
               </Text>
             </View>

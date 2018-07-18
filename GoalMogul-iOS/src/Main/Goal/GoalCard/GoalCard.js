@@ -57,6 +57,7 @@ class GoalCard extends Component {
 
   // user basic information
   renderUserDetail() {
+    const { title } = this.props.item;
     return (
       <View style={{ flexDirection: 'row' }}>
         <Image source={defaultProfilePic} resizeMode='contain' style={{ height: 60, width: 60 }} />
@@ -69,7 +70,7 @@ class GoalCard extends Component {
               numberOfLines={3}
               ellipsizeMode='tail'
             >
-              Establish a LMFBR near Westport, Connecticut by the year 2020
+              {title}
             </Text>
           </View>
 

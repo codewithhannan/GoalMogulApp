@@ -15,6 +15,7 @@ import NavigationReducers from './NavigationReducers';
 import MeetReducers from './MeetReducers';
 import Home from './Home';
 import Search from '../redux/modules/search/Search';
+import GoalDetailReducers from './GoalDetailReducers';
 
 const rootPersistConfig = {
   key: 'root',
@@ -34,7 +35,8 @@ const reducers = combineReducers({
   navigation: NavigationReducers,
   meet: MeetReducers,
   home: Home,
-  search: Search
+  search: Search,
+  goalDetail: GoalDetailReducers
 });
 
 export default persistReducer(rootPersistConfig, reducers);
