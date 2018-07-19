@@ -201,9 +201,9 @@ const styles = {
     borderTopColor: '#ffffff',
     borderBottomColor: '#ffffff',
     padding: 0,
-    height: 30,
+    height: 28,
     width: 250,
-    marginRight: 3,
+    marginRight: 5,
   },
   searchInputStyle: {
     backgroundColor: '#f3f4f6',
@@ -217,9 +217,10 @@ const styles = {
   headerStyle: {
     flexDirection: 'row',
     backgroundColor: '#4ec9f3',
+    // backgroundColor: '#6bc6f0',
     paddingTop: 30,
-    paddingLeft: 12,
-    paddingRight: 12,
+    paddingLeft: 10,
+    paddingRight: 10,
     paddingBottom: 10,
     justifyContent: 'center',
     alignItems: 'center'
@@ -229,18 +230,19 @@ const styles = {
     height: 30,
   },
   headerRightImage: {
-    width: 30,
-    height: 30,
+    width: 25,
+    height: 21,
   },
   // Styles for method 2
+  // It's currently being used
   searchButtonContainerStyle: {
-    height: 32,
+    height: 30,
     width: 260,
     backgroundColor: '#1998c9',
     borderRadius: 16,
     padding: 0,
-    marginRight: 12,
-    marginLeft: 12,
+    marginRight: 14,
+    marginLeft: 14,
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'center',

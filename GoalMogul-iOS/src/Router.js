@@ -122,8 +122,8 @@ class RouterComponent extends Component {
                   hideNavBar
                   swipeEnabled={false}
                   tabBarStyle={styles.tabBarStyle}
-                  activeTintColor="#324a61"
-                  inactiveTintColor="#b8c7cc"
+                  activeTintColor="#4096c6"
+                  inactiveTintColor="#dde4e6"
                   tabs
                   showLabel={false}
                   tabBarOnPress={this.onTabPress}
@@ -233,7 +233,13 @@ const styles = {
     borderBottomColor: 'transparent'
   },
   tabBarStyle: {
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    borderTopColor: 'transparent',
+    shadowColor: 'lightgray',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 1,
+    shadowRadius: 3,
+    elevation: 1,
   }
 };
 
