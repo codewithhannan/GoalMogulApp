@@ -7,13 +7,28 @@ import {
 const INITIAL_STATE = {
   goal: {
 
+  },
+  post: {
+
+  },
+  like: {
+    likeId: undefined,
+    isLiked: undefined
   }
 };
 
 export const GOAL_DETAIL_FETCH = 'goal_detail_fetch';
 export const GOAL_DETAIL_FETCH_DONE = 'goal_detail_fetch_done';
 export const GOAL_DETAIL_CLOSE = 'goal_detail_close';
-export const GOAL_DETAIL_COMMENT = 'goal_detail_comment';
+// Comment related constants
+export const GOAL_DETAIL_GET_COMMENT = 'goal_detail_get_comment';
+export const GOAL_DETAIL_CREATE_COMMENT = 'goal_detail_create_comment';
+export const GOAL_DETAIL_UPDATE_COMMENT = 'goal_detail_create_comment';
+export const GOAL_DETAIL_DELETE_COMMENT = 'goal_detail_create_comment';
+// Like related constants
+export const GOAL_DETAIL_GET_LIKE = 'goal_detail_get_like';
+export const GOAL_DETAIL_CREATE_LIKE = 'goal_detail_create_like';
+export const GOAL_DETAIL_DELETE_LIKE = 'goal_detail_create_like';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
