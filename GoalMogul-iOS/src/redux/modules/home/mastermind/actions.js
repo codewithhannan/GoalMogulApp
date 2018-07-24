@@ -171,16 +171,5 @@ const testData = [
       text: 'This is detail'
     },
     type: 'goal'
-  },
-  {
-    _id: '109283719082',
-    owner: {
-      name: 'Jia Zeng'
-    },
-    needRequest: {
-      description: 'Introduction to someone from the Bill and Melinda Gates Foundation'
-    },
-    description: 'Hey guys! Do you know anyone that can connect me?? It\'d would mean a lot to me',
-    type: 'need'
   }
 ];

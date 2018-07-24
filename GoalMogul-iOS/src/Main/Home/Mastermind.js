@@ -63,7 +63,6 @@ class Mastermind extends Component {
   }
 
   render() {
-    console.log('navigation props: ', this.props.navigation);
     return (
       <View style={{ flex: 1 }}>
         <GoalFilter />

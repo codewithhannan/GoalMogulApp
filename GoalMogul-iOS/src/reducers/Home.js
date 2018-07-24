@@ -13,6 +13,13 @@ export const HOME_LOAD_GOAL_DONE = 'home_load_goal_done';
 export const HOME_SET_GOAL_INDEX = 'home_set_goal_index'; // set current goal viewing index
 export const HOME_UPDATE_FILTER = 'home_update_filter';
 
+// Feed related constants
+export const HOME_REFRESH_FEED = 'home_refresh_feed';
+export const HOME_REFRESH_FEED_DONE = 'home_refresh_feed_done';
+export const HOME_LOAD_FEED_DONE = 'home_load_feed_done';
+export const HOME_SET_FEED_INDEX = 'home_set_feed_index'; // set current goal viewing index
+export const HOME_UPDATE_FEED_FILTER = 'home_update_feed_filter';
+
 const INITIAL_STATE = {
   tabIndex: 0,
   mastermind: {
@@ -29,9 +36,17 @@ const INITIAL_STATE = {
     loading: false
   },
   activityfeed: {
-    feeds: [],
+    showPlus: true,
+    data: [],
     limit: 20,
-    skip: 0
+    skip: 0,
+    currentIndex: 0,
+    filter: {
+      category: 'general',
+      priority: 10,
+    },
+    hasNextPage: undefined,
+    loading: false
   }
 };
 
