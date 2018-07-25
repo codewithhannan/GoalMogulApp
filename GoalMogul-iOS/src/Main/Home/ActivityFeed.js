@@ -12,9 +12,9 @@ import {
 } from '../../redux/modules/home/feed/actions';
 
 class ActivityFeed extends Component {
-  handleOnLoadMore = () => this.props.loadMoreGoals();
+  handleOnLoadMore = () => this.props.loadMoreFeed();
 
-  handleOnRefresh = () => this.props.refreshGoals();
+  handleOnRefresh = () => this.props.refreshFeed();
 
   _keyExtractor = (item) => item._id
 

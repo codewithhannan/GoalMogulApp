@@ -102,31 +102,46 @@ const loadFeed = (skip, limit, token, priority, categories, callback, onError) =
 // TODO: delete this test data
 const testData = [
   {
-    _id: '1231293187907',
-    owner: {
-      name: 'Jia Zeng'
+    _id: '5b5677e2e2f7ceccddb56069',
+    created: '2018-07-24T00:50:42.632Z',
+    actor: {
+      _id: '5b172a82e64f7e001a2ade23',
+      name: 'John Doe',
+      headline: 'Your friendly boi',
+      profile: {
+        views: 0,
+        pointsEarned: 0,
+        image: 'ProfileImage/5e339201-31bf-4a00-b0e9-1c5cc1d20236'
+      }
     },
-    title: 'Establish a LMFBR near Westport, Connecticut by 2020',
-    priority: 1,
-    category: 'general',
-    privacy: 'friends',
-    shareToGoalFeed: true,
-    start: new Date(),
-    end: new Date(),
-    detail: {
-      text: 'This is detail'
+    action: 'Create',
+    actedWith: 'Post',
+    actedUponEntityOwnerId: '5b172a82e64f7e001a2ade23',
+    actedUponEntityType: 'Post',
+    actedUponEntityId: '5b5677e2e2f7ceccddb56068',
+    postRef: {
+      _id: '5b5677e2e2f7ceccddb56068',
+      created: '2018-07-24T00:50:42.534Z',
+      lastUpdated: '2018-07-24T00:50:42.534Z',
+      owner: {
+          _id: '5b17781ebec96d001a409960',
+          name: 'jia zeng',
+          profile: {
+              views: 0,
+              pointsEarned: 0,
+              elevatorPitch: '',
+              occupation: 'test'
+          }
+      },
+      postType: 'General',
+      privacy: 'friends',
+      __v: 0,
+      content: {
+        text: 'test 4!',
+        links: [],
+        tags: []
+      }
     },
-    type: 'goal'
-  },
-  {
-    _id: '109283719082',
-    owner: {
-      name: 'Jia Zeng'
-    },
-    needRequest: {
-      description: 'Introduction to someone from the Bill and Melinda Gates Foundation'
-    },
-    description: 'Hey guys! Do you know anyone that can connect me?? It\'d would mean a lot to me',
-    type: 'need'
+    __v: 0
   }
 ];
