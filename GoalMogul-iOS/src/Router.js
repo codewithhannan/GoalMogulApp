@@ -49,6 +49,9 @@ import MutualFriends from './Main/Profile/MutualFriends';
 // Event
 import Event from './Main/Event/Event';
 
+// Tribe
+import Tribe from './Main/Tribe/Tribe';
+
 // Account
 import Setting from './Main/Setting/Setting';
 import Email from './Main/Setting/Account/Email';
@@ -88,7 +91,7 @@ class RouterComponent extends Component {
           <Lightbox>
             <Scene key="root" hideNavBar>
               <Scene key="auth" initial hideNavBar>
-                <Scene key="splash" component={Event} initial />
+                <Scene key="splash" component={Tribe} initial />
                 <Scene key="login" component={LoginPage} />
               </Scene>
 

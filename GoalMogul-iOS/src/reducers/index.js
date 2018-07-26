@@ -16,6 +16,7 @@ import MeetReducers from './MeetReducers';
 import Home from './Home';
 import Search from '../redux/modules/search/Search';
 import GoalDetailReducers from './GoalDetailReducers';
+import TribeReducers from '../redux/modules/tribe/TribeReducers';
 
 const rootPersistConfig = {
   key: 'root',
@@ -36,7 +37,8 @@ const reducers = combineReducers({
   meet: MeetReducers,
   home: Home,
   search: Search,
-  goalDetail: GoalDetailReducers
+  goalDetail: GoalDetailReducers,
+  tribe: TribeReducers
 });
 
 export default persistReducer(rootPersistConfig, reducers);
