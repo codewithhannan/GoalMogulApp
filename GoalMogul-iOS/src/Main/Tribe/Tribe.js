@@ -8,6 +8,7 @@ import {
 import { connect } from 'react-redux';
 import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
+import { Icon } from 'react-native-elements';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
@@ -73,10 +74,17 @@ class Tribe extends Component {
   // Render tribe size and created date
   renderTribeInfo() {
     const date = 'Jan 2017';
+    const count = '102';
     return (
       <View style={styles.tribeInfoContainerStyle}>
-        <Text>102 members</Text>
-        <Text>Created {date}</Text>
+        <Text style={styles.tribeSizeTextStyle}>
+          <Text style={styles.tribeCountTextStyle}>{count} </Text>
+            members
+        </Text>
+        <Icon name='dot-single' type='entypo' color="#616161" size={16} />
+        <Text style={{ ...styles.tribeSizeTextStyle }}>
+          Created {date}
+        </Text>
       </View>
     );
   }
@@ -162,12 +170,16 @@ const styles = {
   // Style for tribe info
   tribeInfoContainerStyle: {
     flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 5,
     marginBottom: 5
   },
   tribeSizeTextStyle: {
-
+    fontSize: 11
   },
+  tribeCountTextStyle: {
+    fontWeight: '600'
+  }
 
 };
 

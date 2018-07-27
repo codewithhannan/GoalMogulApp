@@ -4,7 +4,7 @@ import { View } from 'react-native';
 const Divider = (props) => {
   let style = { ...styles.containerStyle };
   if (props.horizontal) {
-    style = { ...style, ...props.width };
+    style = { ...style, width: props.width };
   }
   if (props.orthogonal) {
     style = { ...style, height: props.height };
