@@ -16,6 +16,9 @@ import TabButtonGroup from '../Common/TabButtonGroup';
 import Divider from '../Common/Divider';
 import About from './About';
 
+// Asset
+import check from '../../asset/utils/check.png';
+
 import TestEventImage from '../../asset/TestEventImage.png';
 import {
   tribeSelectTab
@@ -64,10 +67,30 @@ class Tribe extends Component {
   }
 
   renderMemberStatus() {
+    // TODO: remove test var
+    const isMemeber = true;
+    const tintColor = isMemeber ? '#2dca4a' : 'gray';
+
     return (
-      <Text style={{ ...styles.tribeStatusTextStyle, ...styles.memberStatusTextStyle }}>
-        Member
-      </Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}>
+        <Image
+          source={check}
+          style={{
+            height: 10,
+            width: 13,
+            tintColor
+          }}
+        />
+        <Text
+          style={{
+            ...styles.tribeStatusTextStyle,
+            ...styles.memberStatusTextStyle,
+            color: tintColor
+          }}
+        >
+          Member
+        </Text>
+      </View>
     );
   }
 
