@@ -100,7 +100,7 @@ class Tribe extends Component {
     const count = '102';
     return (
       <View style={styles.tribeInfoContainerStyle}>
-        <Text style={styles.tribeSizeTextStyle}>
+        <Text style={{ ...styles.tribeSizeTextStyle, color: '#4ec9f3' }}>
           <Text style={styles.tribeCountTextStyle}>{count} </Text>
             members
         </Text>
@@ -195,7 +195,8 @@ const styles = {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 5,
-    marginBottom: 5
+    marginBottom: 5,
+    height: 30
   },
   tribeSizeTextStyle: {
     fontSize: 11
