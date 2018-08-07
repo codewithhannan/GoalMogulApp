@@ -11,57 +11,53 @@ import Divider from '../Common/Divider';
 
 // Asset
 import Calendar from '../../asset/utils/calendar.png';
+import LocationIcon from '../../asset/utils/location.png';
 import DefaultUserProfile from '../../asset/test-profile-pic.png';
 
 const { width } = Dimensions.get('window');
 
 class About extends Component {
 
-  renderMemberStatus() {
-    const count = '102';
+  renderLocation() {
+    const location = 'The Mirage -- Brooklyn, New York';
+    const {
+      rowContainerStyle,
+      iconContainerStyle,
+      iconStyle,
+      contentTextStyle
+    } = styles;
     return (
-      <View style={{ flexDirection: 'row', marginTop: 8, marginBottom: 5 }}>
-        <View style={styles.memberPicturesContainerStyle}>
-          <View style={styles.bottomPictureContainerStyle}>
-            <Image source={DefaultUserProfile} style={styles.pictureStyle} />
-          </View>
-
-          <View style={styles.topPictureContainerStyle}>
-            <Image
-              source={DefaultUserProfile}
-              style={styles.pictureStyle}
-            />
-          </View>
-
+      <View style={rowContainerStyle}>
+        <View style={iconContainerStyle}>
+          <Image source={LocationIcon} style={iconStyle} />
         </View>
-        <Text style={{ alignSelf: 'center' }}>
-          <Text style={styles.boldTextStyle}>{count} </Text>
-          members
-        </Text>
+
+        <Text style={contentTextStyle}>{location}</Text>
       </View>
     );
   }
 
   renderCreated() {
-    const date = 'January 12, 2017';
-
+    const date = 'August 12, 2017';
+    const startTime = '5pm';
+    const endTime = '9pm';
+    const {
+      rowContainerStyle,
+      iconContainerStyle,
+      iconStyle,
+      contentTextStyle,
+      boldTextStyle
+    } = styles;
     return (
-      <View
-        style={{
-          flexDirection: 'row',
-          marginTop: 5,
-          marginBottom: 10,
-          alignItems: 'center'
-        }}
-      >
-        <View style={styles.iconContainerStyle}>
-          <Image source={Calendar} style={styles.iconStyle} />
+      <View style={rowContainerStyle}>
+        <View style={iconContainerStyle}>
+          <Image source={Calendar} style={iconStyle} />
         </View>
 
-        <View style={{ padding: 5 }}>
-          <Text style={styles.subtitleTextStyle}>Created</Text>
-          <Text style={styles.boldTextStyle}>{date}</Text>
-        </View>
+        <Text style={contentTextStyle}>
+          {date}
+          <Text style={{ fontWeight: '700' }}>  {startTime} - {endTime}</Text>
+        </Text>
       </View>
     );
   }
@@ -85,8 +81,8 @@ class About extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, margin: 25, marginTop: 15 }}>
-        {this.renderMemberStatus()}
+      <View style={{ flex: 1, margin: 25, marginTop: 15, paddingTop: 10 }}>
+        {this.renderLocation()}
         {this.renderCreated()}
         <Divider horizontal width={0.8 * width} borderColor='gray' />
         {this.renderDescription()}
@@ -104,13 +100,20 @@ const styles = {
     justifyContent: 'center'
   },
   iconStyle: {
-    height: 28,
-    width: 28
+    height: 26,
+    width: 26
   },
   subtitleTextStyle: {
     fontStyle: 'italic',
     fontSize: 10,
     color: '#696969'
+  },
+  // text style for row content
+  contentTextStyle: {
+    fontSize: 14,
+    fontWeight: '300',
+    color: '#696969',
+    marginLeft: 8
   },
   boldTextStyle: {
     fontSize: 13,
@@ -122,34 +125,11 @@ const styles = {
     marginTop: 8,
     color: '#696969'
   },
-  // Style for member pictures
-  memberPicturesContainerStyle: {
-    height: 25,
-    width: 50
-  },
-  topPictureContainerStyle: {
-    height: PictureDimension + 2,
-    width: PictureDimension + 2,
-    borderRadius: (PictureDimension / 2) + 1,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    left: 2
-  },
-  bottomPictureContainerStyle: {
-    height: PictureDimension + 2,
-    width: PictureDimension + 2,
-    borderRadius: (PictureDimension / 2) + 1,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 15
-  },
-  pictureStyle: {
-    height: PictureDimension,
-    width: PictureDimension,
-    borderRadius: PictureDimension / 2
+  rowContainerStyle: {
+    flexDirection: 'row',
+    marginTop: 5,
+    marginBottom: 10,
+    alignItems: 'center'
   }
 };
 
