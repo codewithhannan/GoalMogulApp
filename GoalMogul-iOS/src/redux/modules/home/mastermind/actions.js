@@ -70,14 +70,14 @@ export const changeFilter = (tab, filterType, value) => (dispatch) => {
 export const refreshGoals = () => (dispatch, getState) => {
   const { token } = getState().user;
   const { limit, filter } = getState().home.mastermind;
-  const { categories, priority } = filter;
+  const { category, priority } = filter;
   dispatch({
     type: HOME_REFRESH_GOAL,
     payload: {
       type: 'mastermind'
     }
   });
-  loadGoals(0, limit, token, priority, categories, (data) => {
+  loadGoals(0, limit, token, priority, category, (data) => {
     dispatch({
       type: HOME_REFRESH_GOAL_DONE,
       payload: {
@@ -100,8 +100,8 @@ export const loadMoreGoals = () => (dispatch, getState) => {
   if (!hasNextPage) {
     return;
   }
-  const { categories, priority } = filter;
-  loadGoals(skip, limit, token, priority, categories, (data) => {
+  const { category, priority } = filter;
+  loadGoals(skip, limit, token, priority, category, (data) => {
     dispatch({
       type: HOME_LOAD_GOAL_DONE,
       payload: {
@@ -124,11 +124,11 @@ export const loadMoreGoals = () => (dispatch, getState) => {
  * @param limit:
  * @param token:
  */
-const loadGoals = (skip, limit, token, priority, categories, callback, onError) => {
-  const route = '/feed';
+const loadGoals = (skip, limit, token, priority, category, callback, onError) => {
+  const route = 'feed';
   API
     .get(
-      `${BASE_ROUTE}${route}?${queryBuilder(skip, limit, { priority, categories })}`,
+      `${BASE_ROUTE}${route}?${queryBuilder(skip, limit, { priority, category })}`,
       token
     )
     .then((res) => {

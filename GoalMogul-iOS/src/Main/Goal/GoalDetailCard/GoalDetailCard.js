@@ -3,7 +3,9 @@ import {
   View,
   Image,
   Text,
-  ScrollView
+  ScrollView,
+  KeyboardAvoidingView,
+  SafeAreaView
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
@@ -19,6 +21,7 @@ import SectionCard from '../Common/SectionCard';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import TabButton from '../Common/TabButton';
 import ProgressBar from '../Common/ProgressBar';
+import CommentBox from '../Common/CommentBox';
 
 // Asset
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
@@ -49,7 +52,7 @@ class GoalDetailCard extends Component {
   state = {
     // tab state stays within each component
     tab: 'comments',
-    suggestionModal: true,
+    suggestionModal: false,
   }
 
   // Card central content. Progressbar for goal card
@@ -201,19 +204,24 @@ class GoalDetailCard extends Component {
           onCancel={() => this.setState({ suggestionModal: false })}
         />
         <SearchBarHeader backButton title='Goal' />
-        <View style={{ ...styles.containerStyle, marginTop: 2 }}>
-          <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
-            {this.renderUserDetail()}
-            {this.renderCardContent()}
-          </View>
-        </View>
+          <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
+            <View style={{ ...styles.containerStyle, marginTop: 2 }}>
+              <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
+                {this.renderUserDetail()}
+                {this.renderCardContent()}
+              </View>
+            </View>
 
-        <View style={styles.containerStyle}>
-          {this.renderActionButtons()}
-        </View>
+            <View style={styles.containerStyle}>
+              {this.renderActionButtons()}
+            </View>
 
-        {this.renderTabs()}
-        {this.renderSections()}
+            {this.renderTabs()}
+            {this.renderSections()}
+
+            <CommentBox />
+
+          </KeyboardAvoidingView>
       </View>
     );
   }

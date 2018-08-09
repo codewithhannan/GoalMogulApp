@@ -29,8 +29,8 @@ const INITIAL_STATE = {
     skip: 0,
     currentIndex: 0,
     filter: {
-      category: 'general',
-      priority: 10,
+      category: 'General',
+      priority: 3,
     },
     hasNextPage: undefined,
     loading: false
@@ -42,8 +42,8 @@ const INITIAL_STATE = {
     skip: 0,
     currentIndex: 0,
     filter: {
-      category: 'general',
-      priority: 10,
+      category: 'General',
+      priority: 3,
     },
     hasNextPage: undefined,
     loading: false
