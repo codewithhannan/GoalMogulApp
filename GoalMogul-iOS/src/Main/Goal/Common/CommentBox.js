@@ -5,30 +5,63 @@ import {
   Text,
   KeyboardAvoidingView,
   SafeAreaView,
-  Image
+  Image,
+  Platform,
+  TouchableOpacity
 } from 'react-native';
 
 // Assets
 import PhotoIcon from '../../../asset/utils/photoIcon.png';
+import LightBulb from '../../../asset/utils/lightBulb.png';
+
+// Components
+import TextInputLines from '../Common/TextInputLines';
+
+const maxHeight = 120;
 
 class CommentBox extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
       newValue: '',
-      height: 40
+      height: 34
     };
   }
 
   updateSize = (height) => {
     this.setState({
-      height
+      height: Math.min(height, maxHeight)
     });
   }
 
   renderSuggestionIcon() {
+    return (
+      <TouchableOpacity style={styles.iconContainerStyle}>
+        <Image
+          source={LightBulb}
+          style={{
+            ...styles.iconStyle,
+            tintColor: '#f5d573'
+          }}
+        />
+      </TouchableOpacity>
+    );
+  }
 
+  renderLeftIcons() {
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          marginLeft: 5,
+          marginRight: 5,
+          marginBottom: 5
+        }}
+      >
+        {this.renderSuggestionIcon()}
+        {this.renderImageIcon()}
+      </View>
+    );
   }
 
   renderImageIcon() {
@@ -43,7 +76,7 @@ class CommentBox extends Component {
     const color = '#45C9F6';
     return (
       <View style={styles.postContainerStyle}>
-        <Text style={{ color, fontSize: 13, fontWeight: '500' }}>Post</Text>
+        <Text style={{ color, fontSize: 13, fontWeight: '500', padding: 5, margin: 5 }}>Post</Text>
       </View>
     );
   }
@@ -57,24 +90,25 @@ class CommentBox extends Component {
 
     const inputContainerStyle = {
       ...styles.inputContainerStyle,
-      height: height + 4
+      height: Math.max(36, height + 6)
     };
 
     const inputStyle = {
       ...styles.inputStyle,
-      height
-    }
+      height: Math.max(30, height)
+    };
 
     return (
       <SafeAreaView style={{ backgroundColor: 'white' }}>
         <View style={{ flexDirection: 'row' }}>
-          {this.renderImageIcon()}
+          {this.renderLeftIcons()}
           <View style={inputContainerStyle}>
             <TextInput
-              placeholder="Your Placeholder"
-              onChangeText={(value) => this.setState({value})}
+              placeholder="Write a comment..."
+              onChangeText={(val) => this.setState({ value: val })}
               style={inputStyle}
               editable
+              maxHeight={maxHeight}
               multiline
               value={value}
               onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
@@ -89,25 +123,30 @@ class CommentBox extends Component {
 
 const styles = {
   inputContainerStyle: {
-    alignItems: 'center',
-    borderRadius: 10,
-    borderColor: 'black',
+    justifyContent: 'center',
+    borderRadius: 18,
+    marginTop: 5,
+    marginBottom: 5,
+    borderColor: '#cbd6d8',
+    borderWidth: 1,
     flex: 1
   },
   inputStyle: {
-    minHeight: 30,
-    width: '60%',
+    paddingTop: 6,
+    paddingBottom: 2,
+    padding: 13,
     backgroundColor: 'white',
-    maxHeight: 100
+    borderRadius: 22,
   },
   postContainerStyle: {
     alignItems: 'flex-end',
     justifyContent: 'flex-end'
   },
   iconStyle: {
-    height: 20,
-    width: 20,
-    padding: 4
+    height: 24,
+    width: 24,
+    tintColor: '#cbd6d8',
+    margin: 5
   },
   iconContainerStyle: {
     alignItems: 'flex-end',
