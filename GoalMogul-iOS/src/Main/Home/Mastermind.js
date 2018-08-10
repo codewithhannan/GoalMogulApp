@@ -43,6 +43,7 @@ class Mastermind extends Component {
 
   renderItem = ({ item }) => {
     // TODO: render item
+    console.log('item rendering in Mastermind is: ', item);
     if (item.type === 'need') {
       return <NeedCard item={item} />;
     } else if (item.type === 'goal') {

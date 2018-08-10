@@ -14,9 +14,7 @@ import {
 import PhotoIcon from '../../../asset/utils/photoIcon.png';
 import LightBulb from '../../../asset/utils/lightBulb.png';
 
-// Components
-import TextInputLines from '../Common/TextInputLines';
-
+// Consts
 const maxHeight = 120;
 
 class CommentBox extends Component {

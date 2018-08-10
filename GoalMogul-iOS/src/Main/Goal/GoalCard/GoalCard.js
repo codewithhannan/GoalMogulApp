@@ -57,12 +57,14 @@ class GoalCard extends Component {
 
   // user basic information
   renderUserDetail() {
-    const { title } = this.props.item;
+    const { title, owner, category } = this.props.item;
+    // TODO: verify all the fields have data
+
     return (
       <View style={{ flexDirection: 'row' }}>
         <Image source={defaultProfilePic} resizeMode='contain' style={{ height: 60, width: 60 }} />
         <View style={{ marginLeft: 15, flex: 1 }}>
-          <Headline name='John Doe' category='Personal Development' />
+          <Headline name={owner.name} category={category} />
           <Timestamp time='5 mins ago' />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text
