@@ -3,11 +3,13 @@ import {
   View,
   Image,
   Text,
-  MaskedViewIOS
+  MaskedViewIOS,
+  Dimensions
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import { LinearGradient } from 'expo';
+import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
 
 // Component
 import Headline from '../Common/Headline';
@@ -19,6 +21,8 @@ import TabButtonGroup from '../Common/TabButtonGroup';
 import TabButton from '../Common/TabButton';
 import ProgressBar from '../Common/ProgressBar';
 import NextButton from '../Common/NextButton';
+import NeedTab from './NeedTab';
+import StepTab from './StepTab';
 
 // Asset
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
@@ -27,6 +31,9 @@ import BulbIcon from '../../../asset/utils/bulb.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 import HelpIcon from '../../../asset/utils/help.png';
 import StepIcon from '../../../asset/utils/steps.png';
+
+const { height } = Dimensions.get('window');
+const CardHeight = height * 0.7;
 
 const testNeed = [
   {
@@ -40,10 +47,72 @@ const testNeed = [
   },
 ];
 
+const TabIconMap = {
+  steps: {
+    iconSource: StepIcon,
+    iconStyle: { height: 20, width: 20 }
+  },
+  needs: {
+    iconSource: HelpIcon,
+    iconStyle: { height: 20, width: 20 }
+  }
+};
+
 class GoalCard extends Component {
-  state = {
-    // tab state stays within each component
-    tab: 'needs'
+  // state = {
+  //   navigationState: {
+  //     index: 0,
+  //     routes: [
+  //       { key: 'needs', title: 'Needs' },
+  //       { key: 'steps', title: 'Steps' },
+  //     ],
+  //   }
+  // }
+  constructor(props) {
+    super(props);
+    this.state = {
+      navigationState: {
+        index: 0,
+        routes: [
+          { key: 'needs', title: 'Needs' },
+          { key: 'steps', title: 'Steps' },
+        ],
+      }
+    };
+  }
+
+  // Tab related handlers
+  _handleIndexChange = index => {
+    this.setState({
+      ...this.state,
+      navigationState: {
+        ...this.state.navigationState,
+        index,
+      }
+    });
+  };
+
+  _renderHeader = props => {
+    return (
+      <TabButtonGroup buttons={props} tabIconMap={TabIconMap} />
+    );
+  };
+
+  _renderScene = SceneMap({
+    needs: () => <NeedTab item={testData.needs} />,
+    steps: StepTab,
+  });
+
+  renderTabs() {
+    return (
+      <TabViewAnimated
+        navigationState={this.state.navigationState}
+        renderScene={this._renderScene}
+        renderHeader={this._renderHeader}
+        onIndexChange={this._handleIndexChange}
+        useNativeDriver
+      />
+    );
   }
 
   // Card central content. Progressbar for goal card
@@ -57,11 +126,14 @@ class GoalCard extends Component {
 
   // user basic information
   renderUserDetail() {
+    const { title, owner, category } = testData;
+    // TODO: verify all the fields have data
+
     return (
       <View style={{ flexDirection: 'row' }}>
         <Image source={defaultProfilePic} resizeMode='contain' style={{ height: 60, width: 60 }} />
         <View style={{ marginLeft: 15, flex: 1 }}>
-          <Headline name='John Doe' category='Personal Development' />
+          <Headline name={owner.name} category={category} />
           <Timestamp time='5 mins ago' />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text
@@ -69,34 +141,12 @@ class GoalCard extends Component {
               numberOfLines={3}
               ellipsizeMode='tail'
             >
-              Establish a LMFBR near Westport, Connecticut by the year 2020
+              {title}
             </Text>
           </View>
 
         </View>
       </View>
-    );
-  }
-
-  renderTabs() {
-    return (
-      <TabButtonGroup>
-        <TabButton
-          text='Needs'
-          iconSource={HelpIcon}
-          selected={this.state.tab === 'needs'}
-          count={20}
-          onPress={() => this.setState({ tab: 'needs' })}
-        />
-        <TabButton
-          text='Steps'
-          iconSource={StepIcon}
-          iconStyle={{ height: 20, width: 20 }}
-          selected={this.state.tab === 'steps'}
-          count={20}
-          onPress={() => this.setState({ tab: 'steps' })}
-        />
-      </TabButtonGroup>
     );
   }
 
@@ -205,11 +255,11 @@ class GoalCard extends Component {
               </View>
             </View>
 
-            {this.renderTabs()}
-            {this.renderSections()}
+            <View style={{ height: CardHeight * 0.51 }}>
+              {this.renderTabs()}
+            </View>
 
             <View style={styles.containerStyle}>
-              {this.renderViewGoal()}
               {this.renderActionButtons()}
             </View>
           </View>
@@ -243,6 +293,54 @@ const styles = {
     shadowRadius: 3,
     elevation: 1,
   }
+};
+
+const testData = {
+  __v: 0,
+  _id: '5b502211e500e3001afd1e20',
+  category: 'General',
+  created: '2018-07-19T05:30:57.531Z',
+  details: {
+    tags: [],
+    text: 'This is detail'
+  },
+  feedInfo: {
+    _id: '5b502211e500e3001afd1e18',
+    publishDate: '2018-07-19T05:30:57.531Z',
+  },
+  lastUpdated: '2018-07-19T05:30:57.531Z',
+  needs: [{
+    created: '2018-07-19T05:30:57.531Z',
+    description: 'introduction to someone from the Bill and Melinda Gates Foundation',
+    isCompleted: false,
+    order: 0,
+  },
+  {
+    created: '2018-07-19T05:30:57.531Z',
+    description: 'Get in contact with Nuclear experts',
+    isCompleted: false,
+    order: 1,
+  },
+  {
+    created: '2018-07-19T05:30:57.531Z',
+    description: 'Legal & Safety experts who have worked with the United States',
+    isCompleted: false,
+    order: 2,
+  }],
+  owner: {
+    _id: '5b17781ebec96d001a409960',
+    name: 'jia zeng',
+    profile: {
+      elevatorPitch: 'This is my elevatorPitch',
+      occupation: 'Software Engineer',
+      pointsEarned: 10,
+      views: 0,
+    },
+  },
+  priority: 3,
+  privacy: 'friends',
+  steps: [],
+  title: 'Establish a LMFBR near Westport, Connecticut by 2020',
 };
 
 export default connect(

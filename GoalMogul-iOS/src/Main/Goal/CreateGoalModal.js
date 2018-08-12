@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import { FieldArray, Field, reduxForm, formValueSelector, SubmissionError } from 'redux-form';
+import { FieldArray, Field, reduxForm, formValueSelector, SubmissionError, reset } from 'redux-form';
 import R from 'ramda';
 import moment from 'moment';
 import {
@@ -102,7 +102,13 @@ class CreateGoalModal extends Component {
       // throw new SubmissionError(errors);
       return Alert.alert('Error', 'You have incomplete fields.');
     }
-    return this.props.submitGoal(this.props.formVals.values, this.props.user._id);
+    return this.props.submitGoal(
+      this.props.formVals.values,
+      this.props.user._id,
+      () => {
+        Actions.pop();
+      }
+    );
   }
 
   renderUserInfo() {

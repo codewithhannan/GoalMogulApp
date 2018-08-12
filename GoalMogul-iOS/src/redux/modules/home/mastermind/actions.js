@@ -70,21 +70,27 @@ export const changeFilter = (tab, filterType, value) => (dispatch) => {
 export const refreshGoals = () => (dispatch, getState) => {
   const { token } = getState().user;
   const { limit, filter } = getState().home.mastermind;
-  const { categories, priority } = filter;
+  const { category, priority } = filter;
   dispatch({
-    type: HOME_REFRESH_GOAL
+    type: HOME_REFRESH_GOAL,
+    payload: {
+      type: 'mastermind'
+    }
   });
-  loadGoals(0, limit, token, priority, categories, (data) => {
+  loadGoals(0, limit, token, priority, category, (data) => {
     dispatch({
       type: HOME_REFRESH_GOAL_DONE,
       payload: {
         type: 'mastermind',
-        data,
+        // TOOD: fix to remove testData
+        data: [...data, testData],
         skip: data.length,
         limit: 20,
         hasNextPage: !(data === undefined || data.length === 0)
       }
     });
+  }, () => {
+    // TODO: implement for onError
   });
 };
 
@@ -95,18 +101,21 @@ export const loadMoreGoals = () => (dispatch, getState) => {
   if (!hasNextPage) {
     return;
   }
-  const { categories, priority } = filter;
-  loadGoals(skip, limit, token, priority, categories, (data) => {
+  const { category, priority } = filter;
+  loadGoals(skip, limit, token, priority, category, (data) => {
     dispatch({
       type: HOME_LOAD_GOAL_DONE,
       payload: {
         type: 'mastermind',
-        data,
+        // TOOD: fix to remove testData
+        data: [...data, ...testData],
         skip: data.length,
         limit: 20,
         hasNextPage: !(data === undefined || data.length === 0)
       }
     });
+  }, () => {
+    // TODO: implement for onError
   });
 };
 
@@ -117,53 +126,74 @@ export const loadMoreGoals = () => (dispatch, getState) => {
  * @param limit:
  * @param token:
  */
-const loadGoals = (skip, limit, token, priority, categories, callback) => {
-  const route = '/feed';
+const loadGoals = (skip, limit, token, priority, category, callback, onError) => {
+  const route = 'feed';
   API
     .get(
-      `${BASE_ROUTE}${route}?${queryBuilder(skip, limit, { priority, categories })}`,
+      `${BASE_ROUTE}${route}?${queryBuilder(skip, limit, { priority, category })}`,
       token
     )
     .then((res) => {
       console.log('loading goal with res: ', res);
-      if (res) {
+      if (res && res.data) {
         // Right now return test data
-        if (skip === 0) {
-          callback(testData);
-        } else {
-          callback([]);
-        }
+        callback(res.data);
       }
       console.warn(`${DEBUG_KEY}: Loading goal with no res`);
     })
     .catch((err) => {
       console.log(`${DEBUG_KEY} load goal error: ${err}`);
+      onError(err);
     });
 };
 
 // TODO: delete this test data
 const testData = [
   {
-    _id: '1231293187907',
-    owner: {
-      name: 'Jia Zeng'
-    },
-    title: 'Establish a LMFBR near Westport, Connecticut by 2020',
-    priority: 1,
-    category: 'general',
-    privacy: 'friends',
-    shareToGoalFeed: true,
-    start: new Date(),
-    end: new Date(),
-    detail: {
+    __v: 0,
+    _id: '5b502211e500e3001afd1e20',
+    category: 'General',
+    created: '2018-07-19T05:30:57.531Z',
+    details: {
+      tags: [],
       text: 'This is detail'
     },
-  },
-  {
-    _id: '109283719082',
-    needRequest: {
-      description: 'Introduction to someone from the Bill and Melinda Gates Foundation'
+    feedInfo: {
+      _id: '5b502211e500e3001afd1e18',
+      publishDate: '2018-07-19T05:30:57.531Z',
     },
-    description: 'Hey guys! Do you know anyone that can connect me?? It\'d would mean a lot to me'
+    lastUpdated: '2018-07-19T05:30:57.531Z',
+    needs: [{
+      created: '2018-07-19T05:30:57.531Z',
+      description: 'introduction to someone from the Bill and Melinda Gates Foundation',
+      isCompleted: false,
+      order: 0,
+    },
+    {
+      created: '2018-07-19T05:30:57.531Z',
+      description: 'Get in contact with Nuclear experts',
+      isCompleted: false,
+      order: 1,
+    },
+    {
+      created: '2018-07-19T05:30:57.531Z',
+      description: 'Legal & Safety experts who have worked with the United States',
+      isCompleted: false,
+      order: 2,
+    }],
+    owner: {
+      _id: '5b17781ebec96d001a409960',
+      name: 'jia zeng',
+      profile: {
+        elevatorPitch: 'This is my elevatorPitch',
+        occupation: 'Software Engineer',
+        pointsEarned: 10,
+        views: 0,
+      },
+    },
+    priority: 3,
+    privacy: 'friends',
+    steps: [],
+    title: 'Establish a LMFBR near Westport, Connecticut by 2020',
   }
 ];

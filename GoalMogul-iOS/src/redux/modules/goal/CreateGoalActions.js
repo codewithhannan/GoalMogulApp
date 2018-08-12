@@ -1,3 +1,4 @@
+import { reset } from 'redux-form';
 import { api as API } from '../../middleware/api';
 
 const DEBUG_KEY = '[ Action CreateGoal ]';
@@ -15,7 +16,7 @@ export const validate = values => {
 };
 
 // Submit values
-export const submitGoal = (values, userId) => (dispatch, getState) => {
+export const submitGoal = (values, userId, callback) => (dispatch, getState) => {
   const { token } = getState().user;
   const goal = goalAdapter(values, userId);
   console.log('Transformed goal is: ', goal);
@@ -28,7 +29,14 @@ export const submitGoal = (values, userId) => (dispatch, getState) => {
       token
     )
     .then((res) => {
-      console.log(`${DEBUG_KEY}: creating goal result ${res}`);
+      if (res.data && res.data !== null) {
+        console.log(`${DEBUG_KEY}: creating goal success`);
+        console.log(`${DEBUG_KEY}: result is`, res);
+        // TODO: dispatch changes to feed and clear CreateGoalForm state
+        callback();
+        dispatch(reset('createGoalModal'));
+      }
+      console.log(`${DEBUG_KEY}: creating goal success without returning data, res is: `, res);
     })
     .catch((err) => {
       console.log(`${DEBUG_KEY}: Error in submitting new goal ${err}`);
@@ -53,7 +61,7 @@ const goalAdapter = (values, userId) => {
   return {
     owner: userId,
     title,
-    category: category.toLowerCase(),
+    category,
     privacy: privacy.toLowerCase(),
     shareToGoalFeed: shareToMastermind,
     needs: stepsNeedsAdapter(needs),

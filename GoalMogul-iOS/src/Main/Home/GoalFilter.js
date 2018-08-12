@@ -45,8 +45,8 @@ class GoalFilter extends Component {
               TriggerTouchableComponent: TouchableOpacity,
             }}
           >
-            <View style={styles.detailContainerStyle}>
-              <Text style={styles.textStyle}>PRIORITY (ALL)</Text>
+            <View style={detailContainerStyle}>
+              <Text style={textStyle}>PRIORITY (ALL)</Text>
               <Image style={styles.caretStyle} source={dropDown} />
             </View>
           </MenuTrigger>
@@ -114,16 +114,16 @@ const styles = {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 15,
-    marginLeft: 15,
-    paddingTop: 12,
-    paddingBottom: 12
+    marginRight: 12,
+    marginLeft: 12,
+    paddingTop: 6,
+    paddingBottom: 6
   },
   textStyle: {
-    fontSize: 10,
+    fontSize: 9,
     // color: '#1fb6dd',
     color: '#696969',
-    fontWeight: '600',
+    // fontWeight: '600',
   },
   standardTextStyle: {
     fontSize: 9,

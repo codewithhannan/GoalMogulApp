@@ -35,8 +35,8 @@ import Home from './Main/Home/Home';
 import CreateGoalButtonOverlay from './Main/Common/Button/CreateGoalButtonOverlay';
 import CreateGoalModal from './Main/Goal/CreateGoalModal';
 import CreatePostModal from './Main/Post/CreatePostModal';
-import GoalCard from './Main/Goal/GoalCard/GoalCard';
-import NeedCard from './Main/Goal/NeedCard/NeedCard';
+import GoalCard from './Main/Goal/GoalCard/GoalCard'; // For debug purpose
+import NeedCard from './Main/Goal/NeedCard/NeedCard'; // For debug purpose
 import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCard';
 
 // Profile
@@ -45,6 +45,12 @@ import ProfileDetail from './Main/Profile/ProfileDetail';
 // ProfileForm
 import ProfileDetailEditForm from './Main/Profile/ProfileCard/ProfileDetailEditForm';
 import MutualFriends from './Main/Profile/MutualFriends';
+
+// Event
+import Event from './Main/Event/Event';
+
+// Tribe
+import Tribe from './Main/Tribe/Tribe';
 
 // Account
 import Setting from './Main/Setting/Setting';
@@ -85,7 +91,7 @@ class RouterComponent extends Component {
           <Lightbox>
             <Scene key="root" hideNavBar>
               <Scene key="auth" initial hideNavBar>
-                <Scene key="splash" component={SplashScreen} initial />
+                <Scene key="splash" component={GoalCard} initial />
                 <Scene key="login" component={LoginPage} />
               </Scene>
 
@@ -122,8 +128,8 @@ class RouterComponent extends Component {
                   hideNavBar
                   swipeEnabled={false}
                   tabBarStyle={styles.tabBarStyle}
-                  activeTintColor="#324a61"
-                  inactiveTintColor="#b8c7cc"
+                  activeTintColor="#4096c6"
+                  inactiveTintColor="#dde4e6"
                   tabs
                   showLabel={false}
                   tabBarOnPress={this.onTabPress}
@@ -233,7 +239,13 @@ const styles = {
     borderBottomColor: 'transparent'
   },
   tabBarStyle: {
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    borderTopColor: 'transparent',
+    shadowColor: 'lightgray',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 1,
+    shadowRadius: 3,
+    elevation: 1,
   }
 };
 

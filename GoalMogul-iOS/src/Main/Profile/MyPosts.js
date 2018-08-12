@@ -38,7 +38,7 @@ class MyPosts extends Component {
 
   renderItem = item => {
     // TODO: render item
-    return <MyGoalCard />
+    return <View />
   }
 
   render() {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -11,46 +11,57 @@ import bulb from '../../../asset/utils/bulb.png';
 import forward from '../../../asset/utils/forward.png';
 import checkIcon from '../../../asset/utils/check.png';
 
-const SectionCard = (props) => {
-  const check = props.completed ? (
-    <View style={styles.checkIconContainerStyle}>
-      <Image source={checkIcon} style={styles.checkIconStyle} />
-    </View>
-  ) : '';
+class SectionCard extends Component {
+  render() {
+    console.log('item for props is: ', this.props.item);
+    const item = this.props.item
+      ? this.props.item
+      : { description: 'No content', isCompleted: false };
+    const { description, isCompleted } = item;
+    const sectionText = description === undefined ? 'No content' : description;
 
-  return (
-    <View style={styles.sectionContainerStyle}>
-      <View
-        style={{
-          margin: 15,
-          marginTop: 18,
-          marginBottom: 18,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
-      >
-        {check}
-        <View style={styles.textContainerStyle}>
-          <Text
-            style={styles.sectionTextStyle}
-            numberOfLines={2}
-            ellipsizeMode='tail'
-          >
-            Introduction to someone from Bill and Melinda Gates foundation
-          </Text>
-        </View>
-        <TouchableOpacity style={styles.iconContainerStyle}>
-          <Image style={styles.iconStyle} source={bulb} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.iconContainerStyle}>
-          <Image style={styles.iconStyle} source={forward} />
-        </TouchableOpacity>
+    const check = isCompleted ? (
+      <View style={styles.checkIconContainerStyle}>
+        <Image source={checkIcon} style={styles.checkIconStyle} />
       </View>
-    </View>
-  );
-};
+    ) : '';
+
+    return (
+      <View style={styles.sectionContainerStyle}>
+        <View
+          style={{
+            margin: 13,
+            marginTop: 16,
+            marginBottom: 16,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          {check}
+          <View style={styles.textContainerStyle}>
+            <Text
+              style={styles.sectionTextStyle}
+              numberOfLines={2}
+              ellipsizeMode='tail'
+            >
+              {sectionText}
+            </Text>
+          </View>
+          <View style={{ flex: 9, flexDirection: 'row' }}>
+            <TouchableOpacity style={styles.iconContainerStyle}>
+              <Image style={styles.iconStyle} source={bulb} />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.iconContainerStyle}>
+              <Image style={styles.iconStyle} source={forward} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
+  }
+}
 
 const styles = {
   sectionContainerStyle: {
@@ -67,7 +78,8 @@ const styles = {
     borderRightWidth: 0.5,
     borderColor: '#e5e5e5',
     paddingRight: 10,
-    flexShrink: 1
+    flexShrink: 1,
+    flex: 20
   },
   iconContainerStyle: {
     height: 36,

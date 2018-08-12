@@ -21,7 +21,9 @@ import plus from '../../asset/utils/plus.png';
 // actions
 import {
   openCreateOverlay,
-  closeCreateOverlay
+  closeCreateOverlay,
+  loadMoreGoals,
+  refreshGoals
 } from '../../redux/modules/home/mastermind/actions';
 
 const TAB_KEY = 'mastermind';
@@ -33,10 +35,20 @@ class Mastermind extends Component {
     Actions.createGoalButtonOverlay({ tab: TAB_KEY });
   }
 
+  handleOnLoadMore = () => this.props.loadMoreGoals();
+
+  handleOnRefresh = () => this.props.refreshGoals();
+
   _keyExtractor = (item) => item._id
 
-  renderItem = item => {
+  renderItem = ({ item }) => {
     // TODO: render item
+    console.log('item rendering in Mastermind is: ', item);
+    if (item.type === 'need') {
+      return <NeedCard item={item} />;
+    } else if (item.type === 'goal') {
+      return <GoalCard item={item} />;
+    }
     return <View />;
   }
 
@@ -52,29 +64,21 @@ class Mastermind extends Component {
   }
 
   render() {
-    console.log('navigation props: ', this.props.navigation);
     return (
-      <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <View style={{ flex: 1 }}>
-          <GoalFilter />
-          <NeedCard />
-          {/*
-            <FlatList
-              data={testData}
-              renderItem={this.renderItem}
-              numColumns={1}
-              keyExtractor={this._keyExtractor}
-            />
-          */}
-
-          {/*
-            refreshing={this.props.refreshing}
-            onEndReached={this.onLoadMore}
-            onEndThreshold={0}
-          */}
-          {this.renderPlus()}
-        </View>
-      </MenuProvider>
+      <View style={{ flex: 1 }}>
+        <GoalFilter />
+        <FlatList
+          data={this.props.data}
+          renderItem={this.renderItem}
+          numColumns={1}
+          keyExtractor={this._keyExtractor}
+          refreshing={this.props.loading}
+          onRefresh={this.handleOnRefresh}
+          onEndReached={this.handleOnLoadMore}
+          onEndThreshold={0}
+        />
+        {this.renderPlus()}
+      </View>
     );
   }
 }
@@ -89,7 +93,8 @@ const styles = {
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#45C9F6',
+    // backgroundColor: '#45C9F6',
+    backgroundColor: '#4096c6',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
@@ -107,10 +112,12 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { showPlus } = state.home.mastermind;
+  const { showPlus, data, loading } = state.home.mastermind;
 
   return {
-    showPlus
+    showPlus,
+    data,
+    loading
   };
 };
 
@@ -118,6 +125,8 @@ export default connect(
   mapStateToProps,
   {
     openCreateOverlay,
-    closeCreateOverlay
+    closeCreateOverlay,
+    loadMoreGoals,
+    refreshGoals
   }
 )(Mastermind);

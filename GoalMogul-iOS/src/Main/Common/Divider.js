@@ -1,9 +1,19 @@
 import React from 'react';
 import { View } from 'react-native';
 
-const Divider = () => {
+const Divider = (props) => {
+  let style = { ...styles.containerStyle };
+  if (props.horizontal) {
+    style = { ...style, width: props.width };
+  }
+  if (props.orthogonal) {
+    style = { ...style, height: props.height };
+  }
+  if (props.color) {
+    style = { ...style, borderColor: props.borderColor };
+  }
   return (
-    <View style={styles.containerStyle} />
+    <View style={style} />
   );
 };
 

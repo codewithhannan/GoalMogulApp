@@ -74,14 +74,12 @@ const styles = {
     backgroundColor: '#f8f8f8'
   },
   textStyle: {
-    fontSize: 11,
-    fontWeight: '600',
+    fontSize: 10,
     color: '#696969',
   },
   onSelectTextStyle: {
-    fontSize: 11,
-    fontWeight: '800',
-    // color: 'white',
+    fontSize: 10,
+    fontWeight: '700',
     color: '#1998c9'
   },
   dotIconStyle: {
