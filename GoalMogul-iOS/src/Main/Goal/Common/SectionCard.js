@@ -18,7 +18,7 @@ class SectionCard extends Component {
       ? this.props.item
       : { description: 'No content', isCompleted: false };
     const { description, isCompleted } = item;
-    const sectionText = description === undefined ? description : 'No content';
+    const sectionText = description === undefined ? 'No content' : description;
 
     const check = isCompleted ? (
       <View style={styles.checkIconContainerStyle}>
@@ -30,9 +30,9 @@ class SectionCard extends Component {
       <View style={styles.sectionContainerStyle}>
         <View
           style={{
-            margin: 15,
-            marginTop: 18,
-            marginBottom: 18,
+            margin: 13,
+            marginTop: 16,
+            marginBottom: 16,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center'
@@ -48,13 +48,15 @@ class SectionCard extends Component {
               {sectionText}
             </Text>
           </View>
-          <TouchableOpacity style={styles.iconContainerStyle}>
-            <Image style={styles.iconStyle} source={bulb} />
-          </TouchableOpacity>
+          <View style={{ flex: 9, flexDirection: 'row' }}>
+            <TouchableOpacity style={styles.iconContainerStyle}>
+              <Image style={styles.iconStyle} source={bulb} />
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.iconContainerStyle}>
-            <Image style={styles.iconStyle} source={forward} />
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.iconContainerStyle}>
+              <Image style={styles.iconStyle} source={forward} />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
@@ -76,7 +78,8 @@ const styles = {
     borderRightWidth: 0.5,
     borderColor: '#e5e5e5',
     paddingRight: 10,
-    flexShrink: 1
+    flexShrink: 1,
+    flex: 20
   },
   iconContainerStyle: {
     height: 36,

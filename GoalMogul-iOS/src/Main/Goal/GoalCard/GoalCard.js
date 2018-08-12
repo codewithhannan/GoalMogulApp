@@ -255,7 +255,7 @@ class GoalCard extends Component {
               </View>
             </View>
 
-            <View style={{ height: CardHeight * 0.53 }}>
+            <View style={{ height: CardHeight * 0.51 }}>
               {this.renderTabs()}
             </View>
 
