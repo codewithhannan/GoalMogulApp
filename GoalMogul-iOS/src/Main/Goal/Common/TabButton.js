@@ -3,6 +3,7 @@ import {
   TouchableOpacity,
   Image,
   Text,
+  View
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 
@@ -20,6 +21,14 @@ const TabButton = (props) => {
     />)
     : '';
 
+  const stat = !props.count ? '' :
+    (
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Icon name='dot-single' type='entypo' color={color} size={20} />
+        <Text style={{ ...styles.countTextStyle, color }}>{props.count}</Text>
+      </View>
+    );
+
   return (
     <TouchableOpacity
       style={{ ...styles.containerStyle, backgroundColor }}
@@ -29,8 +38,7 @@ const TabButton = (props) => {
       <Text style={{ ...styles.textStyle, ...props.textStyle, color, fontWeight }}>
         {props.text}
       </Text>
-      <Icon name='dot-single' type='entypo' color={color} size={20} />
-      <Text style={{ ...styles.countTextStyle, color }}>{props.count}</Text>
+      {stat}
     </TouchableOpacity>
   );
 };
