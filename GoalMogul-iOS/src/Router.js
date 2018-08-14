@@ -88,10 +88,10 @@ class RouterComponent extends Component {
         createReducer={this.reducerCreate.bind(this)}
       >
         <Modal>
-          <Lightbox>
+          <Lightbox hideNavBar>
             <Scene key="root" hideNavBar>
               <Scene key="auth" initial hideNavBar>
-                <Scene key="splash" component={GoalCard} initial />
+                <Scene key="splash" component={GoalDetailCard} initial />
                 <Scene key="login" component={LoginPage} />
               </Scene>
 

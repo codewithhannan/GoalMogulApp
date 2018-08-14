@@ -23,10 +23,10 @@ const testStep = [
 
 class StepTab extends Component {
 
-  renderSections() {
-    const sections = testStep.map((section, index) => {
+  renderSections(steps) {
+    const sections = steps.map((section, index) => {
       if (index < 2) {
-        return <SectionCard key={index} />;
+        return <SectionCard key={index} item={section} />;
       }
       if (index === 2) {
         return (
@@ -42,7 +42,7 @@ class StepTab extends Component {
                 />
               }
             >
-              <SectionCard />
+              <SectionCard item={section} />;
             </MaskedViewIOS>
           </View>
         );
@@ -91,9 +91,11 @@ class StepTab extends Component {
   }
 
   render() {
+    const steps = this.props.item ? this.props.item : testStep;
+
     return (
       <View style={{ flex: 1 }}>
-        {this.renderSections()}
+        {this.renderSections(steps)}
         <View style={{ backgroundColor: 'white' }}>
           {this.renderViewGoal()}
         </View>
