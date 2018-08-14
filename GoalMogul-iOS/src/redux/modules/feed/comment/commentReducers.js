@@ -12,8 +12,14 @@ const INITIAL_STATE = {
   hasNextPage: undefined
 };
 
+export const COMMENT_LOAD = 'comment_load';
+export const COMMENT_REFRESH_DONE = 'comment_refresh_done';
+export const COMMENT_LOAD_DONE = 'comment_load';
+
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    // TODO: clear state on GoalDetailCard close
+
     default:
       return { ...state };
   }
