@@ -1,6 +1,8 @@
 import R from 'ramda';
 import _ from 'lodash';
 
+import { arrayUnique } from '../../../middleware/utils';
+
 /**
  * This reducer is servered as denormalized comment stores
  */
@@ -19,6 +21,38 @@ export const COMMENT_LOAD_DONE = 'comment_load';
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     // TODO: clear state on GoalDetailCard close
+
+    // following switches are to handle loading Comments
+    case COMMENT_LOAD: {
+      const { type } = action.payload;
+      let newState = _.cloneDeep(state);
+      return _.set(newState, `${type}.loading`, true);
+    }
+
+    case COMMENT_REFRESH_DONE: {
+      const { skip, data, hasNextPage, type } = action.payload;
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'loading', false);
+
+      if (skip !== undefined) {
+        newState = _.set(newState, 'skip', skip);
+      }
+      newState = _.set(newState, 'hasNextPage', hasNextPage);
+      return _.set(newState, `${type}.data`, data);
+    }
+
+    case COMMENT_LOAD_DONE: {
+      const { skip, data, hasNextPage, type } = action.payload;
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'loading', false);
+
+      if (skip !== undefined) {
+        newState = _.set(newState, 'skip', skip);
+      }
+      newState = _.set(newState, 'hasNextPage', hasNextPage);
+      const oldData = _.get(newState, 'data');
+      return _.set(newState, `${type}.data`, arrayUnique(oldData.concat(data)));
+    }
 
     default:
       return { ...state };
