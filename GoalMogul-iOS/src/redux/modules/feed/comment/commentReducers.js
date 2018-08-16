@@ -8,6 +8,7 @@ import { arrayUnique } from '../../../middleware/utils';
  */
 const INITIAL_STATE = {
   data: [],
+  transformedComments: [],
   skip: 0,
   limit: 20,
   loading: false,
@@ -38,7 +39,20 @@ export default (state = INITIAL_STATE, action) => {
         newState = _.set(newState, 'skip', skip);
       }
       newState = _.set(newState, 'hasNextPage', hasNextPage);
-      return _.set(newState, `${type}.data`, data);
+      newState = _.set(newState, 'data', data);
+
+      // A dump way to transform all comments to comments with childComments
+      const transformedComments = data.filter(comment => !comment.replyToRef).map(comment => {
+        const commentId = comment._id.toString();
+        const childComments = data.filter(
+          currentComment => currentComment.replyToRef.toString() === commentId);
+        const newComment = {
+          ...comment,
+          childComments
+        };
+        return newComment;
+      });
+      return _.set(newState, 'transformedComments', transformedComments);
     }
 
     case COMMENT_LOAD_DONE: {
