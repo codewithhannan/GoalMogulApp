@@ -2,6 +2,9 @@ import R from 'ramda';
 import _ from 'lodash';
 
 import { arrayUnique } from '../../../middleware/utils';
+import {
+  GOAL_DETAIL_CLOSE
+} from '../../../../reducers/GoalDetailReducers';
 
 /**
  * This reducer is servered as denormalized comment stores
@@ -22,6 +25,11 @@ export const COMMENT_LOAD_DONE = 'comment_load';
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     // TODO: clear state on GoalDetailCard close
+    case GOAL_DETAIL_CLOSE: {
+      return {
+        ...INITIAL_STATE
+      };
+    }
 
     // following switches are to handle loading Comments
     case COMMENT_LOAD: {
