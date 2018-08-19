@@ -1,3 +1,4 @@
+// Note: This is the old implementation where Goal Detail is pinned and commenttab is scrollable
 import React, { Component } from 'react';
 import {
   View,

@@ -14,11 +14,23 @@ export const getGoalStepsAndNeeds = createSelector(
     if (needs && needs.length > 0) {
       res.push({ sectionTitle: 'needs' });
     }
-    res.concat(needs);
+    // Transform needs to have a type
+    const newNeeds = needs.map(need => ({
+      ...need,
+      type: 'need'
+    }));
+    res.concat(newNeeds);
+
     if (steps && steps.length > 0) {
       res.push({ sectionTitle: 'steps' });
     }
-    res.concat(steps);
+
+    // Transform needs to have a type
+    const newSteps = steps.map(step => ({
+      ...step,
+      type: 'step'
+    }));
+    res.concat(newSteps);
     return res;
   }
 );

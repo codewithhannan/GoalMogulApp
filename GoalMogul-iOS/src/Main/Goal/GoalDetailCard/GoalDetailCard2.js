@@ -17,6 +17,8 @@ import TabButtonGroup from '../Common/TabButtonGroup';
 import CommentBox from '../Common/CommentBox';
 import CommentTab from './CommentTab';
 import MastermindTab from './MastermindTab';
+import StepAndNeedCard from './StepAndNeedCard';
+import CommentCard from './Comment/CommentCard';
 
 import GoalDetailSection from './GoalDetailSection';
 
@@ -47,7 +49,6 @@ class GoalDetailCard2 extends Component {
   };
 
   _renderHeader = props => {
-    console.log('props are: ', props);
     return (
       <TabButtonGroup buttons={props} />
     );
@@ -63,12 +64,22 @@ class GoalDetailCard2 extends Component {
   keyExtractor = ({ item, index }) => index;
 
   renderItem = ({ item }) => {
-    return (
-      <View />
-    )
+    const { routes, index } = this.state.navigationState;
+    switch (routes[index].key) {
+      case 'comments': {
+        return <CommentCard />;
+      }
+
+      case 'mastermind': {
+        return <StepAndNeedCard item={item} />;
+      }
+
+      default:
+        return <View />;
+    }
   }
 
-  renderGoalDetailSectoin() {
+  renderGoalDetailSection() {
     return (
       <View>
         <GoalDetailSection />
@@ -83,6 +94,10 @@ class GoalDetailCard2 extends Component {
   }
 
   render() {
+    const { comments, stepsAndNeeds } = this.props;
+    const { routes, index } = this.state.navigationState;
+    const data = routes[index].key === 'comments' ? comments : stepsAndNeeds;
+
     return (
       <View style={{ backgroundColor: '#e5e5e5', flex: 1 }}>
         <SuggestionModal
@@ -92,10 +107,10 @@ class GoalDetailCard2 extends Component {
         <SearchBarHeader backButton title='Goal' />
           <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
             <FlatList
-              data={[]}
+              data={data}
               renderItem={this.renderItem}
               keyExtractor={this.keyExtractor}
-              ListHeaderComponent={() => this.renderGoalDetailSectoin()}
+              ListHeaderComponent={() => this.renderGoalDetailSection()}
             />
 
             <CommentBox />
@@ -176,8 +191,55 @@ const testData = {
 
 const mapStateToProps = state => {
 
+  const testStepsAndNeeds = [
+    {
+      _id: '1',
+      sectionTitle: 'needs',
+      count: 3
+    },
+    {
+      _id: '2',
+      description: 'testneed1',
+      completed: 'false',
+      order: 1
+    },
+    {
+      _id: '3',
+      sectionTitle: 'steps',
+      count: 4
+    },
+    {
+      _id: '4',
+      description: 'testStep 1',
+      completed: 'false',
+      order: 1
+    }
+  ];
+
+  const testTransformedComments = [
+    {
+      description: 'test',
+      childComments: [
+        {
+          description: 'test'
+        }
+      ]
+    },
+    {
+      description: 'test 2',
+      childComments: []
+    },
+    {
+      description: 'test 3'
+    }
+  ];
+
+  // const { transformedComments } = state.comment;
+
   return {
-    data: getGoalStepsAndNeeds(state),
+    // stepsAndNeeds: getGoalStepsAndNeeds(state),
+    stepsAndNeeds: testStepsAndNeeds,
+    comments: testTransformedComments
   };
 };
 
