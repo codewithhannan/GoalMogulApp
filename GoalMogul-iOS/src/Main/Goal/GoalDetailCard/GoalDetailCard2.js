@@ -67,7 +67,7 @@ class GoalDetailCard2 extends Component {
     const { routes, index } = this.state.navigationState;
     switch (routes[index].key) {
       case 'comments': {
-        return <CommentCard />;
+        return <CommentCard item={item} />;
       }
 
       case 'mastermind': {

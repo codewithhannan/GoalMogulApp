@@ -7,9 +7,8 @@ import {
 
 // Assets
 import defaultProfilePic from '../../../../asset/utils/defaultUserProfile.png';
-import LoveIcon from '../../../../asset/utils/love.png';
-import BulbIcon from '../../../../asset/utils/bulb.png';
-import ShareIcon from '../../../../asset/utils/forward.png';
+import LikeIcon from '../../../../asset/utils/like.png';
+import CommentIcon from '../../../../asset/utils/comment.png';
 
 // Components
 import ProgressBar from '../../Common/ProgressBar';
@@ -17,18 +16,15 @@ import ActionButton from '../../Common/ActionButton';
 import ActionButtonGroup from '../../Common/ActionButtonGroup';
 import Headline from '../../Common/Headline';
 import Timestamp from '../../Common/Timestamp';
-
+import CommentHeadline from './CommentHeadline';
 
 class CommentUserDetail extends Component {
 
   // user basic information
   renderUserDetail() {
     return (
-      <View style={{ flexDirection: 'row' }}>
-        <Image source={defaultProfilePic} resizeMode='contain' style={{ height: 60, width: 60 }} />
         <View style={{ marginLeft: 15, flex: 1 }}>
-          <Headline name='John Doe' category='Personal Development' />
-          <Timestamp time='5 mins ago' />
+          <CommentHeadline item={testComment} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text
               style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
@@ -40,10 +36,18 @@ class CommentUserDetail extends Component {
           </View>
 
         </View>
+    );
+  }
+
+  renderUserProfileImage() {
+    return (
+      <View style={styles.profileImageContianerStyle}>
+        <Image source={defaultProfilePic} resizeMode='contain' style={styles.profileImageStyle} />
       </View>
     );
   }
 
+  // Render any suggestions
   renderCardContent() {
     return (
       <View style={{ marginTop: 20 }}>
@@ -54,25 +58,18 @@ class CommentUserDetail extends Component {
 
   renderActionButtons() {
     return (
-      <ActionButtonGroup>
+      <ActionButtonGroup containerStyle={{ height: 40 }}>
         <ActionButton
-          iconSource={LoveIcon}
+          iconSource={LikeIcon}
           count={22}
-          iconContainerStyle={{ backgroundColor: '#f9d6c9' }}
-          iconStyle={{ tintColor: '#f15860' }}
+          iconStyle={{ tintColor: '#cbd6d8', height: 27, width: 27 }}
           onPress={() => console.log('like')}
         />
         <ActionButton
-          iconSource={ShareIcon}
+          iconSource={CommentIcon}
           count={5}
-          iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
+          iconStyle={{ tintColor: '#cbd6d8', height: 25, width: 25 }}
           onPress={() => console.log('share')}
-        />
-        <ActionButton
-          iconSource={BulbIcon}
-          count={45}
-          iconStyle={{ tintColor: '#f5eb6f', height: 26, width: 26 }}
-          onPress={() => console.log('suggest')}
         />
       </ActionButtonGroup>
     );
@@ -82,19 +79,29 @@ class CommentUserDetail extends Component {
     return (
       <View>
         <View style={{ ...styles.containerStyle }}>
-          <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
+          <View
+            style={{
+              marginTop: 16,
+              marginBottom: 10,
+              marginRight: 15,
+              marginLeft: 15,
+              flexDirection: 'row'
+            }}
+          >
+            {this.renderUserProfileImage()}
             {this.renderUserDetail()}
-            {this.renderCardContent()}
           </View>
         </View>
 
-        <View style={styles.containerStyle}>
+        <View style={{ ...styles.containerStyle, marginTop: 0.5 }}>
           {this.renderActionButtons()}
         </View>
       </View>
     );
   }
 }
+
+const ImageHeight = 46;
 
 const styles = {
   containerStyle: {
@@ -105,6 +112,45 @@ const styles = {
     fontSize: 20,
     marginLeft: 5,
     marginTop: 2
+  },
+  profileImageStyle: {
+    height: ImageHeight,
+    width: ImageHeight,
+    borderRadius: ImageHeight / 2
+  },
+  profileImageContianerStyle: {
+    height: ImageHeight + 6,
+    width: ImageHeight + 6,
+    borderWidth: 0.5,
+    borderColor: 'gray',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: (ImageHeight + 4) / 2,
+    alignSelf: 'flex-start'
+  }
+};
+
+const testComment = {
+  owner: {
+    name: 'Jia Zeng'
+  },
+  parentType: 'Goal',
+  commentType: 'Suggestion',
+  suggestion: {
+    suggestionType: 'User',
+    suggestionFor: 'Step',
+    suggestionForRef: {
+      order: 2,
+      description: 'Find good books tes testset adfasdf'
+    },
+    suggestionText:
+      'You should connect with Sharon! She\'s an avid reader and an incredible writer.',
+    userRef: {
+
+    }
+  },
+  parentRef: {
+
   }
 };
 
