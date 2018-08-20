@@ -97,7 +97,16 @@ class CommentBox extends Component {
     };
 
     return (
-      <SafeAreaView style={{ backgroundColor: 'white' }}>
+      <SafeAreaView
+        style={{
+          backgroundColor: 'white',
+          shadowColor: 'black',
+          shadowOffset: { width: 0, height: 1.5 },
+          shadowOpacity: 0.5,
+          shadowRadius: 1,
+          elevation: 0.5
+        }}
+      >
         <View style={{ flexDirection: 'row' }}>
           {this.renderLeftIcons()}
           <View style={inputContainerStyle}>

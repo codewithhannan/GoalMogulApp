@@ -30,9 +30,9 @@ class SectionCard extends Component {
       <View style={styles.sectionContainerStyle}>
         <View
           style={{
-            margin: 13,
-            marginTop: 16,
-            marginBottom: 16,
+            margin: 12,
+            marginTop: 15,
+            marginBottom: 15,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center'

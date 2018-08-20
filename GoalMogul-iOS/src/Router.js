@@ -37,7 +37,7 @@ import CreateGoalModal from './Main/Goal/CreateGoalModal';
 import CreatePostModal from './Main/Post/CreatePostModal';
 import GoalCard from './Main/Goal/GoalCard/GoalCard'; // For debug purpose
 import NeedCard from './Main/Goal/NeedCard/NeedCard'; // For debug purpose
-import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCard';
+import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCard2';
 
 // Profile
 import Profile from './Main/Profile/Profile';
@@ -88,10 +88,10 @@ class RouterComponent extends Component {
         createReducer={this.reducerCreate.bind(this)}
       >
         <Modal>
-          <Lightbox>
+          <Lightbox hideNavBar>
             <Scene key="root" hideNavBar>
               <Scene key="auth" initial hideNavBar>
-                <Scene key="splash" component={GoalCard} initial />
+                <Scene key="splash" component={GoalDetailCard} initial />
                 <Scene key="login" component={LoginPage} />
               </Scene>
 

@@ -3,12 +3,10 @@ import {
   View,
   Image,
   Text,
-  ScrollView,
   KeyboardAvoidingView,
-  SafeAreaView
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements';
+import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
 
 // Component
 import SearchBarHeader from '../../../Main/Common/Header/SearchBarHeader';
@@ -17,43 +15,89 @@ import Headline from '../Common/Headline';
 import Timestamp from '../Common/Timestamp';
 import ActionButton from '../Common/ActionButton';
 import ActionButtonGroup from '../Common/ActionButtonGroup';
-import SectionCard from '../Common/SectionCard';
 import TabButtonGroup from '../Common/TabButtonGroup';
-import TabButton from '../Common/TabButton';
 import ProgressBar from '../Common/ProgressBar';
 import CommentBox from '../Common/CommentBox';
+import CommentTab from './CommentTab';
+import MastermindTab from './MastermindTab';
+
 
 // Asset
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
 import LoveIcon from '../../../asset/utils/love.png';
 import BulbIcon from '../../../asset/utils/bulb.png';
 import ShareIcon from '../../../asset/utils/forward.png';
-import HelpIcon from '../../../asset/utils/help.png';
-import StepIcon from '../../../asset/utils/steps.png';
-
-const testNeed = [
-  {
-    text: 'Get in contact with Nuclear expert'
-  },
-  {
-    text: 'Introduction to someone from Bill and Melinda Gates foundation'
-  },
-
-
-];
-
-const testStep = [
-  {
-    text: 'step 1'
-  }
-];
 
 class GoalDetailCard extends Component {
-  state = {
-    // tab state stays within each component
-    tab: 'comments',
-    suggestionModal: false,
+  constructor(props) {
+    super(props);
+    this.state = {
+      navigationState: {
+        index: 0,
+        routes: [
+          { key: 'comments', title: 'Comments' },
+          { key: 'mastermind', title: 'Mastermind' },
+        ],
+      },
+      suggestionModal: false,
+    };
   }
+
+  // Tab related handlers
+  _handleIndexChange = index => {
+    this.setState({
+      ...this.state,
+      navigationState: {
+        ...this.state.navigationState,
+        index,
+      }
+    });
+  };
+
+  _renderHeader = props => {
+    return (
+      <TabButtonGroup buttons={props} />
+    );
+  };
+
+  _renderScene = SceneMap({
+    comments: () =>
+      <CommentTab />,
+    mastermind: () =>
+      <MastermindTab item={{ needs: testData.needs, steps: testData.steps }} />,
+  });
+
+  renderTabs() {
+    return (
+      <TabViewAnimated
+        navigationState={this.state.navigationState}
+        renderScene={this._renderScene}
+        renderHeader={this._renderHeader}
+        onIndexChange={this._handleIndexChange}
+        useNativeDriver
+      />
+    );
+  }
+  //
+  // renderTabs() {
+  //   return (
+  //     <TabButtonGroup>
+  //       <TabButton
+  //         text='Comments'
+  //         selected={this.state.tab === 'comments'}
+  //         count={25}
+  //         onPress={() => this.setState({ tab: 'comments' })}
+  //       />
+  //       <TabButton
+  //         text='Needs and Steps'
+  //         iconStyle={{ height: 20, width: 20 }}
+  //         selected={this.state.tab === 'steps'}
+  //         count={20}
+  //         onPress={() => this.setState({ tab: 'steps' })}
+  //       />
+  //     </TabButtonGroup>
+  //   );
+  // }
 
   // Card central content. Progressbar for goal card
   renderCardContent() {
@@ -83,89 +127,6 @@ class GoalDetailCard extends Component {
           </View>
 
         </View>
-      </View>
-    );
-  }
-
-  renderTabs() {
-    return (
-      <TabButtonGroup>
-        <TabButton
-          text='Comments'
-          selected={this.state.tab === 'comments'}
-          count={25}
-          onPress={() => this.setState({ tab: 'comments' })}
-        />
-        <TabButton
-          text='Needs and Steps'
-          iconStyle={{ height: 20, width: 20 }}
-          selected={this.state.tab === 'steps'}
-          count={20}
-          onPress={() => this.setState({ tab: 'steps' })}
-        />
-      </TabButtonGroup>
-    );
-  }
-
-  renderSections() {
-    const needs = this.renderNeeds();
-    const steps = this.renderSteps();
-
-    return (
-      <ScrollView>
-        {needs}
-        {steps}
-      </ScrollView>
-    );
-  }
-
-  // Render needs
-  renderNeeds() {
-    if (!testNeed || testNeed.length === 0) {
-      return;
-    }
-    const title = (
-      <SectionTitle
-        iconSource={HelpIcon}
-        text='Needs'
-        count={5}
-      />
-    );
-
-    const needs = testNeed.map((need, index) => {
-      return <SectionCard key={index} />;
-    });
-
-    return (
-      <View>
-        {title}
-        {needs}
-      </View>
-    );
-  }
-
-  // Render steps
-  renderSteps() {
-    if (!testStep || testNeed.length === 0) {
-      return;
-    }
-    const title = (
-      <SectionTitle
-        iconSource={StepIcon}
-        iconStyle={{ height: 20, width: 20 }}
-        text='Steps'
-        count={7}
-      />
-    );
-
-    const steps = testStep.map((step, index) => {
-      return <SectionCard key={index} />;
-    });
-
-    return (
-      <View>
-        {title}
-        {steps}
       </View>
     );
   }
@@ -205,7 +166,7 @@ class GoalDetailCard extends Component {
         />
         <SearchBarHeader backButton title='Goal' />
           <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
-            <View style={{ ...styles.containerStyle, marginTop: 2 }}>
+            <View style={{ ...styles.containerStyle }}>
               <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
                 {this.renderUserDetail()}
                 {this.renderCardContent()}
@@ -217,7 +178,6 @@ class GoalDetailCard extends Component {
             </View>
 
             {this.renderTabs()}
-            {this.renderSections()}
 
             <CommentBox />
 
@@ -236,50 +196,60 @@ const styles = {
     fontSize: 20,
     marginLeft: 5,
     marginTop: 2
-  },
-  sectionTitleStyle: {
-    containerStyle: {
-      alignItems: 'center',
-      flexDirection: 'row',
-      height: 38,
-      marginLeft: 15
-    },
-    iconStyle: {
-      height: 26,
-      width: 26,
-      tintColor: '#616161'
-    },
-    textStyle: {
-      fontSize: 11,
-      marginLeft: 8,
-      color: '#616161'
-    },
-    countTextStyle: {
-      fontSize: 11,
-      color: '#616161'
-    }
   }
 };
 
-const SectionTitle = (props) => {
-  const { sectionTitleStyle } = styles;
-  const image = props.iconSource ?
-    (<Image
-      source={props.iconSource}
-      style={{ ...sectionTitleStyle.iconStyle, ...props.iconStyle }}
-    />)
-    : '';
-
-  return (
-    <View style={{ ...sectionTitleStyle.containerStyle }}>
-      {image}
-      <Text style={{ ...sectionTitleStyle.textStyle, ...props.textStyle }}>
-        {props.text}
-      </Text>
-      <Icon name='dot-single' type='entypo' color='#616161' size={20} />
-      <Text style={sectionTitleStyle.countTextStyle}>{props.count}</Text>
-    </View>
-  );
+const testData = {
+  __v: 0,
+  _id: '5b502211e500e3001afd1e20',
+  category: 'General',
+  created: '2018-07-19T05:30:57.531Z',
+  details: {
+    tags: [],
+    text: 'This is detail'
+  },
+  feedInfo: {
+    _id: '5b502211e500e3001afd1e18',
+    publishDate: '2018-07-19T05:30:57.531Z',
+  },
+  lastUpdated: '2018-07-19T05:30:57.531Z',
+  needs: [{
+    created: '2018-07-19T05:30:57.531Z',
+    description: 'introduction to someone from the Bill and Melinda Gates Foundation',
+    isCompleted: false,
+    order: 0,
+  },
+  {
+    created: '2018-07-19T05:30:57.531Z',
+    description: 'Get in contact with Nuclear experts',
+    isCompleted: false,
+    order: 1,
+  },
+  {
+    created: '2018-07-19T05:30:57.531Z',
+    description: 'Legal & Safety experts who have worked with the United States',
+    isCompleted: false,
+    order: 2,
+  }],
+  owner: {
+    _id: '5b17781ebec96d001a409960',
+    name: 'jia zeng',
+    profile: {
+      elevatorPitch: 'This is my elevatorPitch',
+      occupation: 'Software Engineer',
+      pointsEarned: 10,
+      views: 0,
+    },
+  },
+  priority: 3,
+  privacy: 'friends',
+  steps: [{
+    created: '2018-07-19T05:30:57.531Z',
+    description: 'This is my first step to complete the goal',
+    isCompleted: false,
+    order: 0,
+  }],
+  title: 'Establish a LMFBR near Westport, Connecticut by 2020',
 };
 
 export default connect(

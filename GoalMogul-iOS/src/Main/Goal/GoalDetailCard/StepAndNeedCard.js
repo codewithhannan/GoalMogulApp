@@ -1,10 +1,8 @@
-// Note: This is the old implementation where Goal Detail is pinned and Mastermind is scrollable
 import React, { Component } from 'react';
 import {
   View,
   Image,
-  Text,
-  ScrollView
+  Text
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 
@@ -15,86 +13,40 @@ import SectionCard from '../Common/SectionCard';
 import HelpIcon from '../../../asset/utils/help.png';
 import StepIcon from '../../../asset/utils/steps.png';
 
-class MastermindTab extends Component {
+class StepAndNeedCard extends Component {
 
-  renderMastermind() {
-    const { needs, steps } = this.props.item;
-    const needCards = this.renderNeeds(needs);
-    const stepCards = this.renderSteps(steps);
-
-    return (
-      <ScrollView>
-        {needCards}
-        {stepCards}
-      </ScrollView>
-    );
-  }
-
-  // Render needs
-  renderNeeds(needs) {
-    if (!needs || needs.length === 0) {
-      return;
+  renderSectionTitle(item) {
+    if (item.sectionTitle === 'needs') {
+      return (
+        <SectionTitle
+          iconSource={HelpIcon}
+          text='Needs'
+          count={item.count}
+        />
+      );
     }
-    const title = (
-      <SectionTitle
-        iconSource={HelpIcon}
-        text='Needs'
-        count={needs.length}
-      />
-    );
-
-    const needCards = needs.map((need, index) => (<SectionCard key={index} item={need} />));
-
     return (
-      <View>
-        {title}
-        {needCards}
-      </View>
-    );
-  }
-
-  // Render steps
-  renderSteps(steps) {
-    if (!steps || steps.length === 0) {
-      return;
-    }
-    const title = (
       <SectionTitle
         iconSource={StepIcon}
         iconStyle={{ height: 20, width: 20 }}
         text='Steps'
-        count={steps.length}
+        count={item.count}
       />
-    );
-
-    const stepCards = steps.map((step, index) =>
-      (<SectionCard key={index} item={step} />)
-    );
-
-    return (
-      <View>
-        {title}
-        {stepCards}
-      </View>
     );
   }
 
   render() {
-    return (
-      <View style={{ flex: 1 }}>
-        {this.renderMastermind()}
-      </View>
-    );
+    const { item } = this.props;
+
+    if (item.sectionTitle) {
+      return this.renderSectionTitle(item);
+    }
+
+    return <SectionCard item={item} />;
   }
 }
 
 const styles = {
-  viewGoalTextStyle: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: '#45C9F6',
-    alignSelf: 'center'
-  },
   iconStyle: {
     alignSelf: 'center',
     fontSize: 20,
@@ -146,4 +98,4 @@ const SectionTitle = (props) => {
   );
 };
 
-export default MastermindTab;
+export default StepAndNeedCard;

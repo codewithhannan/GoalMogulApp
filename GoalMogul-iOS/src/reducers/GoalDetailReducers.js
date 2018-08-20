@@ -8,9 +8,6 @@ const INITIAL_STATE = {
   goal: {
 
   },
-  post: {
-
-  },
   like: {
     likeId: undefined,
     isLiked: undefined

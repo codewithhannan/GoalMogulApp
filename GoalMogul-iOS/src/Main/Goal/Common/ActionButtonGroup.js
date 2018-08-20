@@ -4,8 +4,9 @@ import {
 } from 'react-native';
 
 const ActionButtonGroup = (props) => {
+  const { containerStyle } = props;
   return (
-    <View style={styles.containerStyle}>
+    <View style={{ ...styles.containerStyle, ...containerStyle }}>
       {props.children}
     </View>
   );

@@ -18,6 +18,7 @@ import Search from '../redux/modules/search/Search';
 import GoalDetailReducers from './GoalDetailReducers';
 import TribeReducers from '../redux/modules/tribe/TribeReducers';
 import EventReducers from '../redux/modules/event/EventReducers';
+import CommentReducers from '../redux/modules/feed/comment/CommentReducers';
 
 const rootPersistConfig = {
   key: 'root',
@@ -40,7 +41,8 @@ const reducers = combineReducers({
   search: Search,
   goalDetail: GoalDetailReducers,
   tribe: TribeReducers,
-  event: EventReducers
+  event: EventReducers,
+  comment: CommentReducers
 });
 
 export default persistReducer(rootPersistConfig, reducers);

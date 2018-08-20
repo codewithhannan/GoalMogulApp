@@ -7,9 +7,11 @@ import {
 } from 'react-native';
 
 const ActionButton = (props) => {
+  const { containerStyle } = props;
+
   return (
     <TouchableOpacity
-      style={styles.containerStyle}
+      style={{ ...styles.containerStyle, ...containerStyle }}
       onPress={props.onPress}
     >
       <View style={{ ...styles.iconContainerStyle, ...props.iconContainerStyle }}>

@@ -92,7 +92,6 @@ class NeedTab extends Component {
 
   render() {
     const needs = this.props.item ? this.props.item : testNeed;
-    console.log('needs are: ', needs);
     return (
       <View style={{ flex: 1 }}>
         {this.renderSections(needs)}

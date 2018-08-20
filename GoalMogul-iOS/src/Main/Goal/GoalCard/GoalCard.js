@@ -59,15 +59,6 @@ const TabIconMap = {
 };
 
 class GoalCard extends Component {
-  // state = {
-  //   navigationState: {
-  //     index: 0,
-  //     routes: [
-  //       { key: 'needs', title: 'Needs' },
-  //       { key: 'steps', title: 'Steps' },
-  //     ],
-  //   }
-  // }
   constructor(props) {
     super(props);
     this.state = {
@@ -100,7 +91,7 @@ class GoalCard extends Component {
 
   _renderScene = SceneMap({
     needs: () => <NeedTab item={testData.needs} />,
-    steps: StepTab,
+  steps: () => <StepTab item={testData.steps}/>,
   });
 
   renderTabs() {
