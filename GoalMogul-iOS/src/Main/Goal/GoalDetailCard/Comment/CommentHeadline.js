@@ -49,16 +49,15 @@ const CommentHeadline = (props) => {
     case 'Comment':
     default:
       return (
-        <View>
-          <View style={styles.containerStyle}>
-            <Name text={props.name} />
-            <Image style={styles.imageStyle} source={badge} />
-            <View style={styles.caretContainer}>
-              <Image source={dropDown} />
-            </View>
-          </View>
+        <View style={styles.containerStyle}>
+          <Name text={owner.name} textStyle={{ fontSize: 12 }} />
+          <Image style={styles.imageStyle} source={badge} />
           <Timestamp time='5 mins ago' />
+          <View style={styles.caretContainer}>
+            <Image source={dropDown} />
+          </View>
         </View>
+
       );
   }
 };
@@ -66,7 +65,8 @@ const CommentHeadline = (props) => {
 const styles = {
   containerStyle: {
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   caretContainer: {
     position: 'absolute',

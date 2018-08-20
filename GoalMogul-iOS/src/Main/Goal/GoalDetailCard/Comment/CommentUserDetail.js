@@ -11,28 +11,43 @@ import LikeIcon from '../../../../asset/utils/like.png';
 import CommentIcon from '../../../../asset/utils/comment.png';
 
 // Components
-import ProgressBar from '../../Common/ProgressBar';
 import ActionButton from '../../Common/ActionButton';
 import ActionButtonGroup from '../../Common/ActionButtonGroup';
-import Headline from '../../Common/Headline';
-import Timestamp from '../../Common/Timestamp';
 import CommentHeadline from './CommentHeadline';
 
 class CommentUserDetail extends Component {
+
+  /*
+   * Render card content based on scenario
+   * 1. If Suggestion, render suggestion.suggestionText
+   * 2. If Comment / Reply, render content
+   */
+  renderCardContent() {
+    const { item } = this.props;
+    let text;
+    if (item.commentType === 'Suggestion') {
+      text = item.suggestion.suggestionText;
+    } else {
+      text = item.content.text;
+    }
+    return (
+      <Text
+        style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 12 }}
+        numberOfLines={3}
+        ellipsizeMode='tail'
+      >
+        {text}
+      </Text>
+    );
+  }
 
   // user basic information
   renderUserDetail() {
     return (
         <View style={{ marginLeft: 15, flex: 1 }}>
-          <CommentHeadline item={testComment} />
-          <View style={{ flexDirection: 'row', marginTop: 10 }}>
-            <Text
-              style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
-              numberOfLines={3}
-              ellipsizeMode='tail'
-            >
-              Establish a LMFBR near Westport, Connecticut by the year 2020
-            </Text>
+          <CommentHeadline item={this.props.item} />
+          <View style={{ flexDirection: 'row', marginTop: 5 }}>
+            {this.renderCardContent()}
           </View>
 
         </View>
@@ -47,16 +62,12 @@ class CommentUserDetail extends Component {
     );
   }
 
-  // Render any suggestions
-  renderCardContent() {
-    return (
-      <View style={{ marginTop: 20 }}>
-        <ProgressBar startTime='Mar 2013' endTime='Nov 2011' />
-      </View>
-    );
-  }
-
   renderActionButtons() {
+    const { childComments } = this.props.item;
+    const commentCounts = childComments && childComments.length > 0
+      ? childComments.length
+      : undefined;
+
     return (
       <ActionButtonGroup containerStyle={{ height: 40 }}>
         <ActionButton
@@ -67,7 +78,7 @@ class CommentUserDetail extends Component {
         />
         <ActionButton
           iconSource={CommentIcon}
-          count={5}
+          count={commentCounts}
           iconStyle={{ tintColor: '#cbd6d8', height: 25, width: 25 }}
           onPress={() => console.log('share')}
         />
@@ -127,30 +138,6 @@ const styles = {
     alignItems: 'center',
     borderRadius: (ImageHeight + 4) / 2,
     alignSelf: 'flex-start'
-  }
-};
-
-const testComment = {
-  owner: {
-    name: 'Jia Zeng'
-  },
-  parentType: 'Goal',
-  commentType: 'Suggestion',
-  suggestion: {
-    suggestionType: 'User',
-    suggestionFor: 'Step',
-    suggestionForRef: {
-      order: 2,
-      description: 'Find good books tes testset adfasdf'
-    },
-    suggestionText:
-      'You should connect with Sharon! She\'s an avid reader and an incredible writer.',
-    userRef: {
-
-    }
-  },
-  parentRef: {
-
   }
 };
 

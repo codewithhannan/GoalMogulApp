@@ -218,19 +218,96 @@ const mapStateToProps = state => {
 
   const testTransformedComments = [
     {
-      description: 'test',
-      childComments: [
-        {
-          description: 'test'
+      owner: {
+        name: 'Jia Zeng'
+      },
+      parentType: 'Goal',
+      commentType: 'Suggestion',
+      suggestion: {
+        suggestionType: 'User',
+        suggestionFor: 'Step',
+        suggestionForRef: {
+          order: 1,
+          description: 'Find good books tes testset adfasdf'
+        },
+        suggestionText:
+          'You should connect with Sharon! She\'s an avid reader and an incredible writer.',
+        userRef: {
+
         }
-      ]
+      },
+      parentRef: {
+
+      },
+      childComments: [{
+        owner: {
+          name: 'Mike Zeng'
+        },
+        parentType: 'Goal',
+        commentType: 'Reply',
+        replyToRef: '',
+        content: {
+          text: 'this should be a child component'
+        },
+        parentRef: {
+
+        },
+      }]
     },
     {
-      description: 'test 2',
+      owner: {
+        name: 'Jay Patel'
+      },
+      parentType: 'Goal',
+      commentType: 'Suggestion',
+      suggestion: {
+        suggestionType: 'User',
+        suggestionFor: 'Step',
+        suggestionForRef: {
+          order: 2,
+          description: 'Find good books tes testset adfasdf'
+        },
+        suggestionText: 'This is a test comment with' +
+         'a lot of lines so that we can test if that function works out of box. ' +
+         'With this length, we can really tell it. ' +
+         'Need more lines to test this feature',
+        userRef: {
+
+        }
+      },
+      content: {
+
+      },
+      parentRef: {
+
+      },
       childComments: []
     },
     {
-      description: 'test 3'
+      owner: {
+        name: 'Lydia'
+      },
+      content: {
+        text: 'This is a very simple comment by Lydia'
+      },
+      parentType: 'Goal',
+      commentType: 'Comment',
+      // suggestion: {
+      //   suggestionType: 'User',
+      //   suggestionFor: 'Step',
+      //   suggestionForRef: {
+      //     order: 2,
+      //     description: 'Find good books tes testset adfasdf'
+      //   },
+      //   suggestionText:
+      //     'You should connect with Sharon! She\'s an avid reader and an incredible writer.',
+      //   userRef: {
+      //
+      //   }
+      // },
+      parentRef: {
+
+      }
     }
   ];
 
