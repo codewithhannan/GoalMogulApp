@@ -63,15 +63,15 @@ class GoalDetailCard2 extends Component {
 
   keyExtractor = ({ item, index }) => index;
 
-  renderItem = ({ item }) => {
+  renderItem = (props) => {
     const { routes, index } = this.state.navigationState;
     switch (routes[index].key) {
       case 'comments': {
-        return <CommentCard item={item} />;
+        return <CommentCard item={props.item} />;
       }
 
       case 'mastermind': {
-        return <StepAndNeedCard item={item} />;
+        return <StepAndNeedCard item={props.item} />;
       }
 
       default:

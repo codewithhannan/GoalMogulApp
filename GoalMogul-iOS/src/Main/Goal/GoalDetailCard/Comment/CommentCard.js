@@ -8,14 +8,12 @@ import {
 
 // Components
 import CommentUserDetail from './CommentUserDetail';
-import Tag from '../../Common/Tag';
 import ChildCommentCard from './ChildCommentCard';
 
 // Assets
 import ReplyIcon from '../../../../asset/utils/reply.png';
 
 class CommentCard extends React.Component {
-
   // Render child comments if there are some.
   renderChildComments() {
     const { childComments, numberOfChildrenShowing, hasMoreToShow } = this.props.item;
@@ -26,7 +24,7 @@ class CommentCard extends React.Component {
     const childCommentCards = childComments.map((comment, index) => {
       if (index < numberOfChildrenShowing) {
         return (
-          <View key={index + 1} style={{ flexDirection: 'row', marginTop: 0.5 }}>
+          <View key={index} style={{ flexDirection: 'row', marginTop: 0.5 }}>
             <ChildCommentIcon />
             <View style={{ flex: 1 }}>
               <ChildCommentCard item={comment} />
@@ -37,11 +35,11 @@ class CommentCard extends React.Component {
     });
 
     if (hasMoreToShow) {
-      childCommentCards.unshift(
+      childCommentCards.push(
         <TouchableOpacity
-          key={0}
+          key={childComments.length}
           onPress={() => console.log('Loading more comments')}
-          style={{ marginTop: 0.5, backgroundColor: 'white' }}
+          style={{ marginTop: 0.5 }}
         >
           <Text
             style={{
@@ -49,7 +47,7 @@ class CommentCard extends React.Component {
               color: '#4ec9f3',
               padding: 5
             }}
-          >Load more replies</Text>
+          >Load more replies ({childComments.length - numberOfChildrenShowing})</Text>
         </TouchableOpacity>
       );
     }
