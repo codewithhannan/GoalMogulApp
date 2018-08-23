@@ -221,6 +221,8 @@ const mapStateToProps = state => {
       owner: {
         name: 'Jia Zeng'
       },
+      numberOfChildrenShowing: 1,
+      hasMoreToShow: true,
       parentType: 'Goal',
       commentType: 'Suggestion',
       suggestion: {
@@ -247,7 +249,46 @@ const mapStateToProps = state => {
         commentType: 'Reply',
         replyToRef: '',
         content: {
-          text: 'this should be a child component'
+          text: 'There are a total of four children. This should be a child component 1'
+        },
+        parentRef: {
+
+        },
+      }, {
+        owner: {
+          name: 'Super Andy'
+        },
+        parentType: 'Goal',
+        commentType: 'Reply',
+        replyToRef: '',
+        content: {
+          text: 'this should be a child component 2'
+        },
+        parentRef: {
+
+        },
+      }, {
+        owner: {
+          name: 'This is super long nameeeeeee nameeeeee nameee'
+        },
+        parentType: 'Goal',
+        commentType: 'Reply',
+        replyToRef: '',
+        content: {
+          text: 'this should be a child component 3'
+        },
+        parentRef: {
+
+        },
+      }, {
+        owner: {
+          name: 'Wait a minute'
+        },
+        parentType: 'Goal',
+        commentType: 'Reply',
+        replyToRef: '',
+        content: {
+          text: 'this should be a child component 4'
         },
         parentRef: {
 
@@ -258,6 +299,8 @@ const mapStateToProps = state => {
       owner: {
         name: 'Jay Patel'
       },
+      numberOfChildrenShowing: 0,
+      hasMoreToShow: false,
       parentType: 'Goal',
       commentType: 'Suggestion',
       suggestion: {
@@ -287,6 +330,8 @@ const mapStateToProps = state => {
       owner: {
         name: 'Lydia'
       },
+      numberOfChildrenShowing: 0,
+      hasMoreToShow: false,
       content: {
         text: 'This is a very simple comment by Lydia'
       },

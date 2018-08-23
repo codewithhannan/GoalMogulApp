@@ -1,12 +1,15 @@
 import React from 'react';
 import {
   View,
-  Image
+  Image,
+  Text,
+  TouchableOpacity
 } from 'react-native';
 
 // Components
 import CommentUserDetail from './CommentUserDetail';
 import Tag from '../../Common/Tag';
+import ChildCommentCard from './ChildCommentCard';
 
 // Assets
 import ReplyIcon from '../../../../asset/utils/reply.png';
@@ -15,33 +18,46 @@ class CommentCard extends React.Component {
 
   // Render child comments if there are some.
   renderChildComments() {
-    const { childComments } = this.props.item;
+    const { childComments, numberOfChildrenShowing, hasMoreToShow } = this.props.item;
     console.log('item is; ', this.props.item);
     if (!childComments || childComments.length === 0) return '';
 
     // For child comments, only load the first three
     const childCommentCards = childComments.map((comment, index) => {
-      if (index < 3) {
+      if (index < numberOfChildrenShowing) {
         return (
-          <View key={index} style={{ flexDirection: 'row', marginTop: 0.5 }}>
+          <View key={index + 1} style={{ flexDirection: 'row', marginTop: 0.5 }}>
             <ChildCommentIcon />
             <View style={{ flex: 1 }}>
-              <CommentCard item={comment} />
+              <ChildCommentCard item={comment} />
             </View>
           </View>
         );
       }
     });
 
+    if (hasMoreToShow) {
+      childCommentCards.unshift(
+        <TouchableOpacity
+          key={0}
+          onPress={() => console.log('Loading more comments')}
+          style={{ marginTop: 0.5, backgroundColor: 'white' }}
+        >
+          <Text
+            style={{
+              alignSelf: 'center',
+              color: '#4ec9f3',
+              padding: 5
+            }}
+          >Load more replies</Text>
+        </TouchableOpacity>
+      );
+    }
     return (
       <View>
         {childCommentCards}
       </View>
     );
-  }
-
-  renderCommentRef(item) {
-
   }
 
   render() {
