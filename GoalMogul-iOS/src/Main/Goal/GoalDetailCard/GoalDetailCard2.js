@@ -63,11 +63,24 @@ class GoalDetailCard2 extends Component {
 
   keyExtractor = ({ item, index }) => index;
 
+  scrollToIndex = (index, viewOffset = 0) =>
+    this.refs['flatList'].scrollToIndex({
+      index,
+      animated: true,
+      viewPosition: 0.5,
+      viewOffset 
+    });
+
   renderItem = (props) => {
     const { routes, index } = this.state.navigationState;
     switch (routes[index].key) {
       case 'comments': {
-        return <CommentCard item={props.item} />;
+        return (
+          <CommentCard
+            item={props.item}
+            scrollToIndex={(i) => this.scrollToIndex(i)}
+          />
+      );
       }
 
       case 'mastermind': {
@@ -107,6 +120,7 @@ class GoalDetailCard2 extends Component {
         <SearchBarHeader backButton title='Goal' />
           <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
             <FlatList
+              ref="flatList"
               data={data}
               renderItem={this.renderItem}
               keyExtractor={this.keyExtractor}

@@ -17,7 +17,6 @@ class CommentCard extends React.Component {
   // Render child comments if there are some.
   renderChildComments() {
     const { childComments, numberOfChildrenShowing, hasMoreToShow } = this.props.item;
-    console.log('item is; ', this.props.item);
     if (!childComments || childComments.length === 0) return '';
 
     // For child comments, only load the first three
@@ -59,11 +58,9 @@ class CommentCard extends React.Component {
   }
 
   render() {
-    const { item } = this.props;
-
     return (
       <View style={styles.cardContainerStyle}>
-        <CommentUserDetail item={item} />
+        <CommentUserDetail {...this.props} />
         {this.renderChildComments()}
       </View>
     );

@@ -3,10 +3,8 @@ import {
   View,
   TextInput,
   Text,
-  KeyboardAvoidingView,
   SafeAreaView,
   Image,
-  Platform,
   TouchableOpacity
 } from 'react-native';
 
