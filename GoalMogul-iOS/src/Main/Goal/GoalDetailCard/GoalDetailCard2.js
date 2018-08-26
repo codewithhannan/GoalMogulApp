@@ -25,6 +25,7 @@ import GoalDetailSection from './GoalDetailSection';
 class GoalDetailCard2 extends Component {
   constructor(props) {
     super(props);
+    this.commentBox = {};
     this.state = {
       navigationState: {
         index: 0,
@@ -61,15 +62,17 @@ class GoalDetailCard2 extends Component {
       <MastermindTab item={{ needs: testData.needs, steps: testData.steps }} />,
   });
 
-  keyExtractor = ({ item, index }) => index;
+  keyExtractor = (item) => item._id;
 
-  scrollToIndex = (index, viewOffset = 0) =>
+  scrollToIndex = (index, viewOffset = -210) =>
     this.refs['flatList'].scrollToIndex({
       index,
       animated: true,
-      viewPosition: 0.5,
-      viewOffset 
+      viewPosition: 1,
+      viewOffset
     });
+
+  dialogOnFocus = () => this.commentBox.focus();
 
   renderItem = (props) => {
     const { routes, index } = this.state.navigationState;
@@ -77,18 +80,21 @@ class GoalDetailCard2 extends Component {
       case 'comments': {
         return (
           <CommentCard
+            key={props.index}
             item={props.item}
+            index={props.index}
             scrollToIndex={(i) => this.scrollToIndex(i)}
+            onCommentClicked={() => this.dialogOnFocus()}
           />
       );
       }
 
       case 'mastermind': {
-        return <StepAndNeedCard item={props.item} />;
+        return <StepAndNeedCard key={props.index} item={props.item} />;
       }
 
       default:
-        return <View />;
+        return <View key={props.index} />;
     }
   }
 
@@ -127,7 +133,9 @@ class GoalDetailCard2 extends Component {
               ListHeaderComponent={() => this.renderGoalDetailSection()}
             />
 
-            <CommentBox />
+            <CommentBox
+              onRef={(ref) => { this.commentBox = ref; }}
+            />
 
           </KeyboardAvoidingView>
       </View>
@@ -232,6 +240,7 @@ const mapStateToProps = state => {
 
   const testTransformedComments = [
     {
+      _id: '1',
       owner: {
         name: 'Jia Zeng'
       },
@@ -310,6 +319,7 @@ const mapStateToProps = state => {
       }]
     },
     {
+      _id: '2',
       owner: {
         name: 'Jay Patel'
       },
@@ -341,6 +351,7 @@ const mapStateToProps = state => {
       childComments: []
     },
     {
+      _id: '3',
       owner: {
         name: 'Lydia'
       },

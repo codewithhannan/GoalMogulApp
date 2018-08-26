@@ -23,6 +23,16 @@ class CommentBox extends Component {
       height: 34
     };
   }
+  
+  componentDidMount() {
+    if (this.props.onRef !== null) {
+      this.props.onRef(this);
+    }
+  }
+
+  focus() {
+    this.refs['textInput'].focus();
+  }
 
   updateSize = (height) => {
     this.setState({
@@ -109,6 +119,7 @@ class CommentBox extends Component {
           {this.renderLeftIcons()}
           <View style={inputContainerStyle}>
             <TextInput
+              ref="textInput"
               placeholder="Write a comment..."
               onChangeText={(val) => this.setState({ value: val })}
               style={inputStyle}

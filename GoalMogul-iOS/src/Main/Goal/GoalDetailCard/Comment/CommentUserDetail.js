@@ -71,7 +71,7 @@ class CommentUserDetail extends Component {
   }
 
   renderActionButtons() {
-    const { item, scrollToIndex } = this.props;
+    const { item, index, scrollToIndex, onCommentClicked } = this.props;
     const { childComments } = item;
     const commentCounts = childComments && childComments.length > 0
       ? childComments.length
@@ -90,8 +90,9 @@ class CommentUserDetail extends Component {
           count={commentCounts}
           iconStyle={{ tintColor: '#cbd6d8', height: 25, width: 25 }}
           onPress={() => {
-            console.log('share');
-            scrollToIndex(0);
+            console.log('index is: ', index);
+            scrollToIndex(index);
+            onCommentClicked();
           }}
         />
       </ActionButtonGroup>
