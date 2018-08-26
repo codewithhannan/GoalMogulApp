@@ -17,6 +17,18 @@ import CommentHeadline from './CommentHeadline';
 
 class ChildCommentCard extends Component {
 
+  onLayout = (e) => {
+    this.setState({
+      layout: {
+        width: e.nativeEvent.layout.width,
+        height: e.nativeEvent.layout.height,
+        x: e.nativeEvent.layout.x,
+        y: e.nativeEvent.layout.y,
+      }
+    });
+  }
+
+  getLayout = () => this.state.layout;
   /*
    * Render card content based on scenario
    * 1. If Suggestion, render suggestion.suggestionText
@@ -63,7 +75,8 @@ class ChildCommentCard extends Component {
   }
 
   renderActionButtons() {
-    const { childComments } = this.props.item;
+    const { item, index, scrollToIndex, onCommentClicked, viewOffset } = this.props;
+    const { childComments } = item;
     const commentCounts = childComments && childComments.length > 0
       ? childComments.length
       : undefined;
@@ -80,7 +93,11 @@ class ChildCommentCard extends Component {
           iconSource={CommentIcon}
           count={commentCounts}
           iconStyle={{ tintColor: '#cbd6d8', height: 25, width: 25 }}
-          onPress={() => console.log('share')}
+          onPress={() => {
+            console.log('share');
+            scrollToIndex(index, viewOffset);
+            onCommentClicked();
+          }}
         />
       </ActionButtonGroup>
     );
@@ -88,7 +105,7 @@ class ChildCommentCard extends Component {
 
   render() {
     return (
-      <View>
+      <View onLayout={this.onLayout}>
         <View style={{ ...styles.containerStyle }}>
           <View
             style={{

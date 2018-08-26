@@ -17,6 +17,25 @@ import CommentHeadline from './CommentHeadline';
 import CommentRef from './CommentRef';
 
 class CommentUserDetail extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      layout: {}
+    };
+  }
+
+  onLayout = (e) => {
+    const layout = {
+      width: e.nativeEvent.layout.width,
+      height: e.nativeEvent.layout.height,
+      x: e.nativeEvent.layout.x,
+      y: e.nativeEvent.layout.y,
+    };
+    this.setState({ layout });
+    this.props.onLayout(layout);
+  }
+
+  getLayout = () => this.state.layout;
 
   /*
    * Render card content based on scenario
@@ -71,7 +90,7 @@ class CommentUserDetail extends Component {
   }
 
   renderActionButtons() {
-    const { item, index, scrollToIndex, onCommentClicked } = this.props;
+    const { item, index, scrollToIndex, onCommentClicked, viewOffset } = this.props;
     const { childComments } = item;
     const commentCounts = childComments && childComments.length > 0
       ? childComments.length
@@ -90,8 +109,7 @@ class CommentUserDetail extends Component {
           count={commentCounts}
           iconStyle={{ tintColor: '#cbd6d8', height: 25, width: 25 }}
           onPress={() => {
-            console.log('index is: ', index);
-            scrollToIndex(index);
+            scrollToIndex(index, viewOffset);
             onCommentClicked();
           }}
         />
@@ -101,7 +119,7 @@ class CommentUserDetail extends Component {
 
   render() {
     return (
-      <View>
+      <View onLayout={this.onLayout}>
         <View style={{ ...styles.containerStyle }}>
           <View
             style={{

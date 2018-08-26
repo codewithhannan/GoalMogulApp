@@ -3,7 +3,8 @@ import {
   View,
   Image,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  Keyboard
 } from 'react-native';
 
 // Components
@@ -14,6 +15,51 @@ import ChildCommentCard from './ChildCommentCard';
 import ReplyIcon from '../../../../asset/utils/reply.png';
 
 class CommentCard extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      childCommentLayouts: {},
+      totalViewHeight: 0,
+      keyboardHeight: 0
+    };
+  }
+
+  componentWillMount() {
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+  }
+
+  onLayout = (e, index) => {
+    const childCommentLayouts = this.state.childCommentLayouts;
+    childCommentLayouts[index] = {
+      width: e.nativeEvent.layout.width,
+      height: e.nativeEvent.layout.height,
+      x: e.nativeEvent.layout.x,
+      y: e.nativeEvent.layout.y,
+    };
+    this.setState({ childCommentLayouts, totalViewHeight: getTotalViewHeight(this.state) });
+  }
+
+  _keyboardDidShow = (e) => {
+    this.setState({
+      keyboardHeight: e.endCoordinates.height
+    });
+  };
+
+  _keyboardDidHide = (e) => {
+    this.setState({
+      keyboardHeight: e.endCoordinates.height
+    });
+  };
+
+  // update user detail layout for childcomments computing
+  updateUserDetailLayout = (layout) => {
+    this.setState({
+      userDetailLayout: layout,
+      totalViewHeight: getTotalViewHeight(this.state)
+    });
+  }
+
   // Render child comments if there are some.
   renderChildComments() {
     const { childComments, numberOfChildrenShowing, hasMoreToShow } = this.props.item;
@@ -21,12 +67,17 @@ class CommentCard extends React.Component {
 
     // For child comments, only load the first three
     const childCommentCards = childComments.map((comment, index) => {
-      if (index < numberOfChildrenShowing) {
+      if (index < numberOfChildrenShowing + 2) {
+        const viewOffset = getTotalPrevHeight(this.state, index) - this.state.keyboardHeight;
         return (
-          <View key={index} style={{ flexDirection: 'row', marginTop: 0.5 }}>
+          <View
+            key={index}
+            style={{ flexDirection: 'row', marginTop: 0.5 }}
+            onLayout={(e) => this.onLayout(e, `${index}`)}
+          >
             <ChildCommentIcon />
             <View style={{ flex: 1 }}>
-              <ChildCommentCard item={comment} />
+              <ChildCommentCard item={comment} {...this.props} viewOffset={viewOffset} />
             </View>
           </View>
         );
@@ -58,15 +109,48 @@ class CommentCard extends React.Component {
   }
 
   render() {
+    const viewOffset = getTotalPrevHeight(this.state) - this.state.keyboardHeight;
     return (
       <View style={styles.cardContainerStyle}>
-        <CommentUserDetail {...this.props} />
+        <CommentUserDetail
+          {...this.props}
+          ref="userDetail"
+          onLayout={(layout) => this.updateUserDetailLayout(layout)}
+          viewOffset={viewOffset}
+        />
         {this.renderChildComments()}
       </View>
     );
   }
 }
 // <CommentRef item={item.}/>
+
+const getTotalPrevHeight = (state, index) => {
+  const { childCommentLayouts } = state;
+  const i = index === undefined ? -1 : index
+
+  const totalHeights = Object.entries(childCommentLayouts).reduce((total, [key, value]) => {
+    if (parseInt(key, 10) > i) {
+      return total + parseInt(value.height, 10);
+    }
+    return total;
+  }, 0);
+
+  return totalHeights;
+};
+
+const getTotalViewHeight = (state) => {
+  const { userDetailLayout, childCommentLayouts } = state;
+
+  let totalHeights = Object.entries(childCommentLayouts).reduce((total, [key, value]) => {
+      return total + parseInt(value.height, 10);
+  }, 0);
+  if (userDetailLayout && userDetailLayout.height) {
+    totalHeights -= userDetailLayout.height;
+  }
+
+  return totalHeights;
+}
 
 const ChildCommentIcon = () => {
   return (

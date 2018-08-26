@@ -55,22 +55,16 @@ class GoalDetailCard2 extends Component {
     );
   };
 
-  _renderScene = SceneMap({
-    comments: () =>
-      <CommentTab />,
-    mastermind: () =>
-      <MastermindTab item={{ needs: testData.needs, steps: testData.steps }} />,
-  });
-
   keyExtractor = (item) => item._id;
 
-  scrollToIndex = (index, viewOffset = -210) =>
+  scrollToIndex = (index, viewOffset = 0) => {
     this.refs['flatList'].scrollToIndex({
       index,
       animated: true,
       viewPosition: 1,
       viewOffset
     });
+  }
 
   dialogOnFocus = () => this.commentBox.focus();
 
@@ -83,7 +77,7 @@ class GoalDetailCard2 extends Component {
             key={props.index}
             item={props.item}
             index={props.index}
-            scrollToIndex={(i) => this.scrollToIndex(i)}
+            scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
             onCommentClicked={() => this.dialogOnFocus()}
           />
       );
@@ -265,6 +259,7 @@ const mapStateToProps = state => {
 
       },
       childComments: [{
+        _id: 'child1',
         owner: {
           name: 'Mike Zeng'
         },
@@ -278,6 +273,7 @@ const mapStateToProps = state => {
 
         },
       }, {
+        _id: 'child2',
         owner: {
           name: 'Super Andy'
         },
@@ -291,6 +287,7 @@ const mapStateToProps = state => {
 
         },
       }, {
+        _id: 'child3',
         owner: {
           name: 'This is super long nameeeeeee nameeeeee nameee'
         },
