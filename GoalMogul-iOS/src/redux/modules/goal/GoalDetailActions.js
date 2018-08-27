@@ -5,8 +5,8 @@ import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
 import {
-
-} from '../../../reducers';
+  GOAL_DETAIL_CLOSE
+} from '../../../reducers/GoalDetailReducers';
 
 const DEBUG_KEY = '[ Action GoalDetail ]';
 
@@ -19,48 +19,18 @@ const GOAL_BASE_ROUTE = 'secure/goal';
 /**
  * Right now, we implement no cache system for such case.
  */
-export const fetchGoalDetail = (id) => {
+export const openGoalDetail = (id) => {
   // Fetch Goal and like and comment in three different requests with three futures
-};
-
-export const closeGoalDetail = () => {
-
-}
-
-// Comment module related actions
-
-/**
- * action to update comments for a goal / post
- * @params parentId: goal/post id
- * @params parentType: ['goal', 'post' ]
- */
-export const getComments = (parentId, parentType) => (dispatch, getState) {
 
 };
 
-/**
- * action to update a comment for a goal / post
- * @params commentId: id of the comment
- * @params updates: JsonObject of the updated comment
- */
-export const updateComment = (commentId, udpates) => {
-
-};
-
-/**
- * action to create a comment for a goal / post
- * @params comment: a json object of a comment object
- */
-export const createComment = (rawComment) => {
-  // rawComment needs an adapter to transform to backend jsonObject
-};
-
-/**
- * action to delete a comment for a goal / post
- * @params commentId: id of the comment
- */
-export const deleteComment = (commentId) => {
-
+export const closeGoalDetail = () => (dispatch) => {
+  // Return to previous page
+  Actions.pop();
+  // Clear the state
+  dispatch({
+    type: GOAL_DETAIL_CLOSE
+  });
 };
 
 // Like module related actions

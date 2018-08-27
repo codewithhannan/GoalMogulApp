@@ -15,7 +15,10 @@ const INITIAL_STATE = {
   skip: 0,
   limit: 20,
   loading: false,
-  hasNextPage: undefined
+  hasNextPage: undefined,
+  newComment: {
+    contentText: ''
+  }
 };
 
 export const COMMENT_LOAD = 'comment_load';
@@ -23,12 +26,28 @@ export const COMMENT_REFRESH_DONE = 'comment_refresh_done';
 export const COMMENT_LOAD_DONE = 'comment_load';
 export const COMMENT_LOAD_MORE_REPLIES = 'comment_load_more_replies';
 
+// New comment related constants
+export const COMMENT_POST = 'comment_post';
+export const COMMENT_POST_DONE = 'comment_post_done';
+export const COMMENT_NEW_TEXT_ON_CHANGE = 'comment_new_text_on_change';
+
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     // TODO: clear state on GoalDetailCard close
     case GOAL_DETAIL_CLOSE: {
       return {
         ...INITIAL_STATE
+      };
+    }
+
+    // cases related to new comment
+    case COMMENT_NEW_TEXT_ON_CHANGE: {
+      return {
+        ...state,
+        newComment: {
+          ...state.newComment,
+          contentText: action.payload
+        }
       };
     }
 

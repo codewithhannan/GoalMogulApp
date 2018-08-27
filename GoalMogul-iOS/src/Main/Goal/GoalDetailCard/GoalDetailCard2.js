@@ -7,6 +7,11 @@ import {
 import { connect } from 'react-redux';
 import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
 
+// Actions
+import {
+  closeGoalDetail
+} from '../../../redux/modules/goal/GoalDetailActions';
+
 // selector
 import { getGoalStepsAndNeeds } from '../../../redux/modules/goal/selector';
 
@@ -117,7 +122,11 @@ class GoalDetailCard2 extends Component {
           visible={this.state.suggestionModal}
           onCancel={() => this.setState({ suggestionModal: false })}
         />
-        <SearchBarHeader backButton title='Goal' />
+        <SearchBarHeader
+          backButton
+          title='Goal'
+          onBackPress={() => this.props.closeGoalDetail()}
+        />
           <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
             <FlatList
               ref="flatList"
@@ -125,6 +134,8 @@ class GoalDetailCard2 extends Component {
               renderItem={this.renderItem}
               keyExtractor={this.keyExtractor}
               ListHeaderComponent={() => this.renderGoalDetailSection()}
+              refreshing={this.props.commentLoading}
+              onRefresh={() => console.log('refreshing')}
             />
 
             <CommentBox
@@ -206,6 +217,7 @@ const testData = {
 };
 
 const mapStateToProps = state => {
+  const { loading } = state.comment;
 
   const testStepsAndNeeds = [
     {
@@ -382,6 +394,7 @@ const mapStateToProps = state => {
 
   return {
     // stepsAndNeeds: getGoalStepsAndNeeds(state),
+    commentLoading: loading,
     stepsAndNeeds: testStepsAndNeeds,
     comments: testTransformedComments
   };
@@ -389,5 +402,7 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  null
+  {
+    closeGoalDetail
+  }
 )(GoalDetailCard2);
