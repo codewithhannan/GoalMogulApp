@@ -7,13 +7,19 @@ import {
   REPORT_POST_FAIL
 } from './ReportReducers';
 
+const BASE_URL = 'secure/';
+
 // Creating a new report
-export const createReport = () => (dispatch) => {
+export const createReport = (referenceId, type, category = 'User', ) => (dispatch, getState) => {
+  const { userId } = getState().user;
   // Set the basic information for a report
   dispatch({
     type: REPORT_CREATE,
     payload: {
-
+      type,
+      creatorId: userId,
+      category,
+      referenceId
     }
   });
 };
@@ -31,6 +37,15 @@ export const cancelReport = () => (dispatch) =>
     type: REPORT_CREATE_CANCEL
   });
 
-export const postingReport = () => (dispatch, getState) => {
+export const postingReport = (callback) => (dispatch, getState) => {
   // Calling endpoint to post a report
+  const { token } = getState.user;
+  dispatch({
+    type: REPORT_POST
+  });
+
+  dispatch({
+    type: REPORT_POST_SUCCESS
+  });
+  callback();
 };

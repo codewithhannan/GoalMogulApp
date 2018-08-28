@@ -4,6 +4,12 @@ import {
   Image,
   Text
 } from 'react-native';
+import { connect } from 'react-redux';
+
+// Actions
+import {
+  createReport
+} from '../../../redux/modules/report/ReportActions';
 
 // Assets
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
@@ -23,11 +29,19 @@ class GoalDetailSection extends Component {
 
   // user basic information
   renderUserDetail() {
+    const { _id } = this.props.item;
     return (
       <View style={{ flexDirection: 'row' }}>
         <Image source={defaultProfilePic} resizeMode='contain' style={{ height: 60, width: 60 }} />
         <View style={{ marginLeft: 15, flex: 1 }}>
-          <Headline name='John Doe' category='Personal Development' />
+          <Headline
+            name='John Doe'
+            category='Personal Development'
+            caretOnPress={() => {
+              console.log('I am pressed');
+              this.props.createReport(_id, 'detail', 'User');
+            }}
+          />
           <Timestamp time='5 mins ago' />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text
@@ -108,4 +122,9 @@ const styles = {
   }
 };
 
-export default GoalDetailSection;
+export default connect(
+  null,
+  {
+    createReport
+  }
+)(GoalDetailSection);

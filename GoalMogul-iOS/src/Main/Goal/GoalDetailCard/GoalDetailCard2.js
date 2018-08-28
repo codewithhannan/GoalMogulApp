@@ -20,10 +20,9 @@ import SearchBarHeader from '../../../Main/Common/Header/SearchBarHeader';
 import SuggestionModal from './SuggestionModal';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import CommentBox from '../Common/CommentBox';
-import CommentTab from './CommentTab';
-import MastermindTab from './MastermindTab';
 import StepAndNeedCard from './StepAndNeedCard';
 import CommentCard from './Comment/CommentCard';
+import Report from '../../../Main/Report/Report';
 
 import GoalDetailSection from './GoalDetailSection';
 
@@ -100,7 +99,7 @@ class GoalDetailCard2 extends Component {
   renderGoalDetailSection() {
     return (
       <View>
-        <GoalDetailSection />
+        <GoalDetailSection item={this.props.goalDetail} />
         {
           this._renderHeader({
             jumpToIndex: (i) => this._handleIndexChange(i),
@@ -122,6 +121,7 @@ class GoalDetailCard2 extends Component {
           visible={this.state.suggestionModal}
           onCancel={() => this.setState({ suggestionModal: false })}
         />
+        <Report showing={this.props.showingModalInDetail} />
         <SearchBarHeader
           backButton
           title='Goal'
@@ -390,13 +390,19 @@ const mapStateToProps = state => {
     }
   ];
 
+  // const { goal } = state.goalDetail;
+  const { showingModalInDetail } = state.report;
   // const { transformedComments } = state.comment;
 
   return {
     // stepsAndNeeds: getGoalStepsAndNeeds(state),
     commentLoading: loading,
     stepsAndNeeds: testStepsAndNeeds,
-    comments: testTransformedComments
+    comments: testTransformedComments,
+    goalDetail: {
+      _id: '123109287309'
+    },
+    showingModalInDetail
   };
 };
 

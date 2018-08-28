@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image } from 'react-native';
+import { TouchableOpacity, View, Image } from 'react-native';
 
 /* Components */
 import Name from './Name';
@@ -10,15 +10,19 @@ import badge from '../../../asset/utils/badge.png';
 import dropDown from '../../../asset/utils/dropDown.png';
 
 const Headline = (props) => {
+  const { category, name, caretOnPress } = props;
   // TODO: format time
   return (
     <View style={styles.containerStyle}>
-      <Name text={props.name} />
+      <Name text={name} />
       <Image style={styles.imageStyle} source={badge} />
-      <Category text={props.category} />
-      <View style={styles.caretContainer}>
+      <Category text={category} />
+      <TouchableOpacity
+        style={styles.caretContainer}
+        onPress={() => caretOnPress()}
+      >
         <Image source={dropDown} />
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

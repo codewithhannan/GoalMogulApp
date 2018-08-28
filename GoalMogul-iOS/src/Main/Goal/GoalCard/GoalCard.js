@@ -11,14 +11,18 @@ import { Icon } from 'react-native-elements';
 import { LinearGradient } from 'expo';
 import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
 
-// Component
+// Actions
+import {
+  createReport
+} from '../../../redux/modules/report/ReportActions';
+
+// Components
 import Headline from '../Common/Headline';
 import Timestamp from '../Common/Timestamp';
 import ActionButton from '../Common/ActionButton';
 import ActionButtonGroup from '../Common/ActionButtonGroup';
 import SectionCard from '../Common/SectionCard';
 import TabButtonGroup from '../Common/TabButtonGroup';
-import TabButton from '../Common/TabButton';
 import ProgressBar from '../Common/ProgressBar';
 import NextButton from '../Common/NextButton';
 import NeedTab from './NeedTab';
@@ -117,14 +121,18 @@ class GoalCard extends Component {
 
   // user basic information
   renderUserDetail() {
-    const { title, owner, category } = testData;
+    const { title, owner, category, _id } = testData;
     // TODO: verify all the fields have data
 
     return (
       <View style={{ flexDirection: 'row' }}>
         <Image source={defaultProfilePic} resizeMode='contain' style={{ height: 60, width: 60 }} />
         <View style={{ marginLeft: 15, flex: 1 }}>
-          <Headline name={owner.name} category={category} />
+          <Headline
+            name={owner.name}
+            category={category}
+            caretOnPress={() => this.props.createReport(_id, 'goal', 'User')}
+          />
           <Timestamp time='5 mins ago' />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text
@@ -336,5 +344,7 @@ const testData = {
 
 export default connect(
   null,
-  null
+  {
+    createReport
+  }
 )(GoalCard);

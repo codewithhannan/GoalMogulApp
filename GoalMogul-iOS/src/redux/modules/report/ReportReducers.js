@@ -8,8 +8,11 @@ const INITIAL_STATE = {
   details: '',
   creatorId: undefined,
   category: undefined,
-  _id: undefined,
-  error: undefined
+  referenceId: undefined,
+  error: undefined,
+  loading: false,
+  showingModal: false,
+  showingModalInDetail: false
 };
 
 // Set the basic information for a report
@@ -33,6 +36,39 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         details: action.paylaod
       };
+    }
+
+    case REPORT_POST: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case REPORT_POST_SUCCESS: {
+      return {
+        ...INITIAL_STATE
+      };
+    }
+
+    case REPORT_POST_FAIL: {
+      return {
+        ...state,
+        error: action.payload
+      };
+    }
+
+    case REPORT_CREATE: {
+      const { type, creatorId, category, referenceId } = action.payload;
+      let newState = _.cloneDeep(state);
+      if (type === 'detail') {
+        newState = _.set(newState, 'showingModalInDetail', true);
+      } else {
+        newState = _.set(newState, 'showingModal', true);
+      }
+      newState = _.set(newState, 'creatorId', creatorId);
+      newState = _.set(newState, 'category', category);
+      return _.set(newState, 'referenceId', referenceId);
     }
 
     default:
