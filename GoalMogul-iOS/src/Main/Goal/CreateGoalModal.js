@@ -14,7 +14,14 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import { FieldArray, Field, reduxForm, formValueSelector, SubmissionError, reset } from 'redux-form';
+import {
+  FieldArray,
+  Field,
+  reduxForm,
+  formValueSelector,
+  SubmissionError,
+  reset
+} from 'redux-form';
 import R from 'ramda';
 import moment from 'moment';
 import {

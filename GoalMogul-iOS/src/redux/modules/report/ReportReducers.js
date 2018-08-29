@@ -32,11 +32,17 @@ export const REPORT_POST_FAIL = 'report_post_fail';
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case REPORT_UPDATE_DETAILS: {
+      let newState = _.cloneDeep(state);
       return {
-        ...state,
+        ...newState,
         details: action.paylaod
       };
     }
+
+    case REPORT_CREATE_CANCEL:
+      return {
+        ...INITIAL_STATE
+      };
 
     case REPORT_POST: {
       return {

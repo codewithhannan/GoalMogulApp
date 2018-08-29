@@ -5,7 +5,9 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
+import {
+  MenuProvider
+} from 'react-native-popup-menu';
 
 // Actions
 import {
@@ -116,34 +118,36 @@ class GoalDetailCard2 extends Component {
     const data = routes[index].key === 'comments' ? comments : stepsAndNeeds;
 
     return (
-      <View style={{ backgroundColor: '#e5e5e5', flex: 1 }}>
-        <SuggestionModal
-          visible={this.state.suggestionModal}
-          onCancel={() => this.setState({ suggestionModal: false })}
-        />
-        <Report showing={this.props.showingModalInDetail} />
-        <SearchBarHeader
-          backButton
-          title='Goal'
-          onBackPress={() => this.props.closeGoalDetail()}
-        />
-          <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
-            <FlatList
-              ref="flatList"
-              data={data}
-              renderItem={this.renderItem}
-              keyExtractor={this.keyExtractor}
-              ListHeaderComponent={() => this.renderGoalDetailSection()}
-              refreshing={this.props.commentLoading}
-              onRefresh={() => console.log('refreshing')}
-            />
+      <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+        <View style={{ backgroundColor: '#e5e5e5', flex: 1 }}>
+          <SuggestionModal
+            visible={this.state.suggestionModal}
+            onCancel={() => this.setState({ suggestionModal: false })}
+          />
+          <Report showing={this.props.showingModalInDetail} />
+          <SearchBarHeader
+            backButton
+            title='Goal'
+            onBackPress={() => this.props.closeGoalDetail()}
+          />
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
+              <FlatList
+                ref="flatList"
+                data={data}
+                renderItem={this.renderItem}
+                keyExtractor={this.keyExtractor}
+                ListHeaderComponent={() => this.renderGoalDetailSection()}
+                refreshing={this.props.commentLoading}
+                onRefresh={() => console.log('refreshing')}
+              />
 
-            <CommentBox
-              onRef={(ref) => { this.commentBox = ref; }}
-            />
+              <CommentBox
+                onRef={(ref) => { this.commentBox = ref; }}
+              />
 
-          </KeyboardAvoidingView>
-      </View>
+            </KeyboardAvoidingView>
+        </View>
+      </MenuProvider>
     );
   }
 }
@@ -160,7 +164,10 @@ const styles = {
     fontSize: 20,
     marginLeft: 5,
     marginTop: 2
-  }
+  },
+  backdrop: {
+    backgroundColor: 'transparent'
+  },
 };
 
 const testData = {

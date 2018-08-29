@@ -10,7 +10,7 @@ import {
 const BASE_URL = 'secure/';
 
 // Creating a new report
-export const createReport = (referenceId, type, category = 'User', ) => (dispatch, getState) => {
+export const createReport = (referenceId, type, category = 'User') => (dispatch, getState) => {
   const { userId } = getState().user;
   // Set the basic information for a report
   dispatch({
@@ -25,11 +25,14 @@ export const createReport = (referenceId, type, category = 'User', ) => (dispatc
 };
 
 // Updating a report detail
-export const updateReportDetails = (text) => (dispatch) =>
+export const updateReportDetails = (text) => (dispatch) => {
+  console.log('text is: ', text);
   dispatch({
     type: REPORT_UPDATE_DETAILS,
     payload: text
   });
+};
+
 
 // Cancel a report
 export const cancelReport = () => (dispatch) =>
@@ -39,7 +42,7 @@ export const cancelReport = () => (dispatch) =>
 
 export const postingReport = (callback) => (dispatch, getState) => {
   // Calling endpoint to post a report
-  const { token } = getState.user;
+  // const { token } = getState.user;
   dispatch({
     type: REPORT_POST
   });
