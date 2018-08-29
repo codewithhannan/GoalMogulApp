@@ -2,6 +2,7 @@ import {
   COMMENT_LOAD,
   COMMENT_REFRESH_DONE,
   COMMENT_LOAD_DONE,
+  COMMENT_NEW_TEXT_ON_CHANGE
 } from './CommentReducers';
 import { api as API } from '../../../middleware/api';
 import { queryBuilder } from '../../../middleware/utils';
@@ -9,15 +10,39 @@ import { queryBuilder } from '../../../middleware/utils';
 const DEBUG_KEY = 'Comment ]';
 const BASE_ROUTE = 'secure/feed/comment';
 
-export const createComment = () => {
+// New comment related actions
+export const newCommentOnTextChange = (text) => (dispatch) => {
+  dispatch({
+    type: COMMENT_NEW_TEXT_ON_CHANGE,
+    payload: text
+  });
+};
+
+// Comment module related actions
+
+/**
+ * action to update a comment for a goal / post
+ * @params commentId: id of the comment
+ * @params updates: JsonObject of the updated comment
+ */
+export const updateComment = (commentId, udpates) => {
 
 };
 
-export const editComment = () => {
-
+/**
+ * action to create a comment for a goal / post
+ * @params comment: a json object of a comment object
+ */
+export const createComment = (rawComment) => {
+  // rawComment needs an adapter to transform to backend jsonObject
+  console.log('Creating comment with obj: ', rawComment);
 };
 
-export const deleteComment = () => {
+/**
+ * action to delete a comment for a goal / post
+ * @params commentId: id of the comment
+ */
+export const deleteComment = (commentId) => {
 
 };
 

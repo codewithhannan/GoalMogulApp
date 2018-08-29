@@ -14,29 +14,21 @@ import CommentIcon from '../../../../asset/utils/comment.png';
 import ActionButton from '../../Common/ActionButton';
 import ActionButtonGroup from '../../Common/ActionButtonGroup';
 import CommentHeadline from './CommentHeadline';
-import CommentRef from './CommentRef';
 
-class CommentUserDetail extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      layout: {}
-    };
-  }
+class ChildCommentCard extends Component {
 
   onLayout = (e) => {
-    const layout = {
-      width: e.nativeEvent.layout.width,
-      height: e.nativeEvent.layout.height,
-      x: e.nativeEvent.layout.x,
-      y: e.nativeEvent.layout.y,
-    };
-    this.setState({ layout });
-    this.props.onLayout(layout);
+    this.setState({
+      layout: {
+        width: e.nativeEvent.layout.width,
+        height: e.nativeEvent.layout.height,
+        x: e.nativeEvent.layout.x,
+        y: e.nativeEvent.layout.y,
+      }
+    });
   }
 
   getLayout = () => this.state.layout;
-
   /*
    * Render card content based on scenario
    * 1. If Suggestion, render suggestion.suggestionText
@@ -52,7 +44,7 @@ class CommentUserDetail extends Component {
     }
     return (
       <Text
-        style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 12 }}
+        style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 11 }}
         numberOfLines={3}
         ellipsizeMode='tail'
       >
@@ -70,7 +62,6 @@ class CommentUserDetail extends Component {
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
             {this.renderCardContent()}
           </View>
-          {this.renderCommentRef(item)}
         </View>
     );
   }
@@ -80,12 +71,6 @@ class CommentUserDetail extends Component {
       <View style={styles.profileImageContianerStyle}>
         <Image source={defaultProfilePic} resizeMode='contain' style={styles.profileImageStyle} />
       </View>
-    );
-  }
-
-  renderCommentRef(item) {
-    return (
-      <CommentRef item={item} />
     );
   }
 
@@ -109,6 +94,7 @@ class CommentUserDetail extends Component {
           count={commentCounts}
           iconStyle={{ tintColor: '#cbd6d8', height: 25, width: 25 }}
           onPress={() => {
+            console.log('share');
             scrollToIndex(index, viewOffset);
             onCommentClicked();
           }}
@@ -124,7 +110,7 @@ class CommentUserDetail extends Component {
           <View
             style={{
               marginTop: 16,
-              marginBottom: 10,
+              marginBottom: 16,
               marginRight: 15,
               marginLeft: 15,
               flexDirection: 'row'
@@ -143,11 +129,12 @@ class CommentUserDetail extends Component {
   }
 }
 
-const ImageHeight = 46;
+const ImageHeight = 38;
 
 const styles = {
   containerStyle: {
     backgroundColor: 'white',
+    marginTop: 0.5
   },
   iconStyle: {
     alignSelf: 'center',
@@ -172,4 +159,4 @@ const styles = {
   }
 };
 
-export default CommentUserDetail;
+export default ChildCommentCard;

@@ -5,7 +5,14 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
+import {
+  MenuProvider
+} from 'react-native-popup-menu';
+
+// Actions
+import {
+  closeGoalDetail
+} from '../../../redux/modules/goal/GoalDetailActions';
 
 // selector
 import { getGoalStepsAndNeeds } from '../../../redux/modules/goal/selector';
@@ -15,16 +22,16 @@ import SearchBarHeader from '../../../Main/Common/Header/SearchBarHeader';
 import SuggestionModal from './SuggestionModal';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import CommentBox from '../Common/CommentBox';
-import CommentTab from './CommentTab';
-import MastermindTab from './MastermindTab';
 import StepAndNeedCard from './StepAndNeedCard';
 import CommentCard from './Comment/CommentCard';
+import Report from '../../../Main/Report/Report';
 
 import GoalDetailSection from './GoalDetailSection';
 
 class GoalDetailCard2 extends Component {
   constructor(props) {
     super(props);
+    this.commentBox = {};
     this.state = {
       navigationState: {
         index: 0,
@@ -54,35 +61,47 @@ class GoalDetailCard2 extends Component {
     );
   };
 
-  _renderScene = SceneMap({
-    comments: () =>
-      <CommentTab />,
-    mastermind: () =>
-      <MastermindTab item={{ needs: testData.needs, steps: testData.steps }} />,
-  });
+  keyExtractor = (item) => item._id;
 
-  keyExtractor = ({ item, index }) => index;
+  scrollToIndex = (index, viewOffset = 0) => {
+    this.refs['flatList'].scrollToIndex({
+      index,
+      animated: true,
+      viewPosition: 1,
+      viewOffset
+    });
+  }
 
-  renderItem = ({ item }) => {
+  dialogOnFocus = () => this.commentBox.focus();
+
+  renderItem = (props) => {
     const { routes, index } = this.state.navigationState;
     switch (routes[index].key) {
       case 'comments': {
-        return <CommentCard item={item} />;
+        return (
+          <CommentCard
+            key={props.index}
+            item={props.item}
+            index={props.index}
+            scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
+            onCommentClicked={() => this.dialogOnFocus()}
+          />
+      );
       }
 
       case 'mastermind': {
-        return <StepAndNeedCard item={item} />;
+        return <StepAndNeedCard key={props.index} item={props.item} />;
       }
 
       default:
-        return <View />;
+        return <View key={props.index} />;
     }
   }
 
   renderGoalDetailSection() {
     return (
       <View>
-        <GoalDetailSection />
+        <GoalDetailSection item={this.props.goalDetail} />
         {
           this._renderHeader({
             jumpToIndex: (i) => this._handleIndexChange(i),
@@ -99,24 +118,36 @@ class GoalDetailCard2 extends Component {
     const data = routes[index].key === 'comments' ? comments : stepsAndNeeds;
 
     return (
-      <View style={{ backgroundColor: '#e5e5e5', flex: 1 }}>
-        <SuggestionModal
-          visible={this.state.suggestionModal}
-          onCancel={() => this.setState({ suggestionModal: false })}
-        />
-        <SearchBarHeader backButton title='Goal' />
-          <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
-            <FlatList
-              data={data}
-              renderItem={this.renderItem}
-              keyExtractor={this.keyExtractor}
-              ListHeaderComponent={() => this.renderGoalDetailSection()}
-            />
+      <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+        <View style={{ backgroundColor: '#e5e5e5', flex: 1 }}>
+          <SuggestionModal
+            visible={this.state.suggestionModal}
+            onCancel={() => this.setState({ suggestionModal: false })}
+          />
+          <Report showing={this.props.showingModalInDetail} />
+          <SearchBarHeader
+            backButton
+            title='Goal'
+            onBackPress={() => this.props.closeGoalDetail()}
+          />
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
+              <FlatList
+                ref="flatList"
+                data={data}
+                renderItem={this.renderItem}
+                keyExtractor={this.keyExtractor}
+                ListHeaderComponent={() => this.renderGoalDetailSection()}
+                refreshing={this.props.commentLoading}
+                onRefresh={() => console.log('refreshing')}
+              />
 
-            <CommentBox />
+              <CommentBox
+                onRef={(ref) => { this.commentBox = ref; }}
+              />
 
-          </KeyboardAvoidingView>
-      </View>
+            </KeyboardAvoidingView>
+        </View>
+      </MenuProvider>
     );
   }
 }
@@ -133,7 +164,10 @@ const styles = {
     fontSize: 20,
     marginLeft: 5,
     marginTop: 2
-  }
+  },
+  backdrop: {
+    backgroundColor: 'transparent'
+  },
 };
 
 const testData = {
@@ -190,6 +224,7 @@ const testData = {
 };
 
 const mapStateToProps = state => {
+  const { loading } = state.comment;
 
   const testStepsAndNeeds = [
     {
@@ -218,9 +253,12 @@ const mapStateToProps = state => {
 
   const testTransformedComments = [
     {
+      _id: '1',
       owner: {
         name: 'Jia Zeng'
       },
+      numberOfChildrenShowing: 1,
+      hasMoreToShow: true,
       parentType: 'Goal',
       commentType: 'Suggestion',
       suggestion: {
@@ -240,6 +278,7 @@ const mapStateToProps = state => {
 
       },
       childComments: [{
+        _id: 'child1',
         owner: {
           name: 'Mike Zeng'
         },
@@ -247,7 +286,48 @@ const mapStateToProps = state => {
         commentType: 'Reply',
         replyToRef: '',
         content: {
-          text: 'this should be a child component'
+          text: 'There are a total of four children. This should be a child component 1'
+        },
+        parentRef: {
+
+        },
+      }, {
+        _id: 'child2',
+        owner: {
+          name: 'Super Andy'
+        },
+        parentType: 'Goal',
+        commentType: 'Reply',
+        replyToRef: '',
+        content: {
+          text: 'this should be a child component 2'
+        },
+        parentRef: {
+
+        },
+      }, {
+        _id: 'child3',
+        owner: {
+          name: 'This is super long nameeeeeee nameeeeee nameee'
+        },
+        parentType: 'Goal',
+        commentType: 'Reply',
+        replyToRef: '',
+        content: {
+          text: 'this should be a child component 3'
+        },
+        parentRef: {
+
+        },
+      }, {
+        owner: {
+          name: 'Wait a minute'
+        },
+        parentType: 'Goal',
+        commentType: 'Reply',
+        replyToRef: '',
+        content: {
+          text: 'this should be a child component 4'
         },
         parentRef: {
 
@@ -255,9 +335,12 @@ const mapStateToProps = state => {
       }]
     },
     {
+      _id: '2',
       owner: {
         name: 'Jay Patel'
       },
+      numberOfChildrenShowing: 0,
+      hasMoreToShow: false,
       parentType: 'Goal',
       commentType: 'Suggestion',
       suggestion: {
@@ -284,9 +367,12 @@ const mapStateToProps = state => {
       childComments: []
     },
     {
+      _id: '3',
       owner: {
         name: 'Lydia'
       },
+      numberOfChildrenShowing: 0,
+      hasMoreToShow: false,
       content: {
         text: 'This is a very simple comment by Lydia'
       },
@@ -311,16 +397,25 @@ const mapStateToProps = state => {
     }
   ];
 
+  // const { goal } = state.goalDetail;
+  const { showingModalInDetail } = state.report;
   // const { transformedComments } = state.comment;
 
   return {
     // stepsAndNeeds: getGoalStepsAndNeeds(state),
+    commentLoading: loading,
     stepsAndNeeds: testStepsAndNeeds,
-    comments: testTransformedComments
+    comments: testTransformedComments,
+    goalDetail: {
+      _id: '123109287309'
+    },
+    showingModalInDetail
   };
 };
 
 export default connect(
   mapStateToProps,
-  null
+  {
+    closeGoalDetail
+  }
 )(GoalDetailCard2);

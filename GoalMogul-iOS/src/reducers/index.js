@@ -19,6 +19,7 @@ import GoalDetailReducers from './GoalDetailReducers';
 import TribeReducers from '../redux/modules/tribe/TribeReducers';
 import EventReducers from '../redux/modules/event/EventReducers';
 import CommentReducers from '../redux/modules/feed/comment/CommentReducers';
+import ReportReducers from '../redux/modules/report/ReportReducers';
 
 const rootPersistConfig = {
   key: 'root',
@@ -42,7 +43,8 @@ const reducers = combineReducers({
   goalDetail: GoalDetailReducers,
   tribe: TribeReducers,
   event: EventReducers,
-  comment: CommentReducers
+  comment: CommentReducers,
+  report: ReportReducers
 });
 
 export default persistReducer(rootPersistConfig, reducers);

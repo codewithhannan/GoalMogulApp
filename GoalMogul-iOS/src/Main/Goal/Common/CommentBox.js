@@ -3,12 +3,16 @@ import {
   View,
   TextInput,
   Text,
-  KeyboardAvoidingView,
   SafeAreaView,
   Image,
-  Platform,
   TouchableOpacity
 } from 'react-native';
+import { connect } from 'react-redux';
+
+// Actions
+import {
+  newCommentOnTextChange
+} from '../../../redux/modules/feed/comment/CommentActions';
 
 // Assets
 import PhotoIcon from '../../../asset/utils/photoIcon.png';
@@ -24,6 +28,16 @@ class CommentBox extends Component {
       newValue: '',
       height: 34
     };
+  }
+
+  componentDidMount() {
+    if (this.props.onRef !== null) {
+      this.props.onRef(this);
+    }
+  }
+
+  focus() {
+    this.refs['textInput'].focus();
   }
 
   updateSize = (height) => {
@@ -111,13 +125,14 @@ class CommentBox extends Component {
           {this.renderLeftIcons()}
           <View style={inputContainerStyle}>
             <TextInput
+              ref="textInput"
               placeholder="Write a comment..."
-              onChangeText={(val) => this.setState({ value: val })}
+              onChangeText={(val) => this.props.newCommentOnTextChange(val)}
               style={inputStyle}
               editable
               maxHeight={maxHeight}
               multiline
-              value={value}
+              value={this.props.newComment.contentText}
               onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
             />
           </View>
@@ -161,4 +176,17 @@ const styles = {
   }
 };
 
-export default CommentBox;
+const mapStateToProps = state => {
+  const { newComment } = state.comment;
+
+  return {
+    newComment
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  {
+    newCommentOnTextChange
+  }
+)(CommentBox);
