@@ -66,12 +66,12 @@ import FriendsSetting from './Main/Setting/Privacy/FriendsSetting';
 
 class RouterComponent extends Component {
 
-  onTabPress = ({ scene }) => {
-    const { route, focused } = scene;
-    if (route.key === 'homeTab' && focused) {
+  onTabPress = (all) => {
+    const { state, isFocused } = all.navigation;
+    if (state.key === 'homeTab' && isFocused() && state.routes.length > 1) {
       return Actions.popTo('home');
     }
-    return Actions[route.key].call();
+    return Actions[state.key].call();
   }
 
   reducerCreate(params) {
@@ -91,7 +91,7 @@ class RouterComponent extends Component {
           <Lightbox hideNavBar>
             <Scene key="root" hideNavBar>
               <Scene key="auth" initial hideNavBar>
-                <Scene key="splash" component={GoalDetailCard} initial />
+                <Scene key="splash" component={SplashScreen} initial />
                 <Scene key="login" component={LoginPage} />
               </Scene>
 
