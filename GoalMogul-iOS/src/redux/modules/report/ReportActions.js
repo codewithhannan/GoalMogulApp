@@ -50,5 +50,8 @@ export const postingReport = (callback) => (dispatch, getState) => {
   dispatch({
     type: REPORT_POST_SUCCESS
   });
-  callback();
+  if (callback) {
+    callback();
+    // alert('You have successfully created a report');
+  }
 };

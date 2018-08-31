@@ -139,6 +139,7 @@ const loadGoals = (skip, limit, token, priority, category, callback, onError) =>
         // Right now return test data
         callback(res.data);
       }
+      callback([]); // TODO: delete this line
       console.warn(`${DEBUG_KEY}: Loading goal with no res`);
     })
     .catch((err) => {
@@ -148,7 +149,7 @@ const loadGoals = (skip, limit, token, priority, category, callback, onError) =>
 };
 
 // TODO: delete this test data
-const testData = [
+const testData = 
   {
     __v: 0,
     _id: '5b502211e500e3001afd1e20',
@@ -195,5 +196,4 @@ const testData = [
     privacy: 'friends',
     steps: [],
     title: 'Establish a LMFBR near Westport, Connecticut by 2020',
-  }
-];
+  };

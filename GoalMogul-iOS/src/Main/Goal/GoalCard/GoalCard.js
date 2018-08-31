@@ -94,8 +94,8 @@ class GoalCard extends Component {
   };
 
   _renderScene = SceneMap({
-    needs: () => <NeedTab item={testData.needs} />,
-  steps: () => <StepTab item={testData.steps}/>,
+    needs: () => <NeedTab item={this.props.item.needs} />,
+    steps: () => <StepTab item={this.props.item.steps}/>,
   });
 
   renderTabs() {
@@ -121,7 +121,7 @@ class GoalCard extends Component {
 
   // user basic information
   renderUserDetail() {
-    const { title, owner, category, _id } = testData;
+    const { title, owner, category, _id } = this.props.item;
     // TODO: verify all the fields have data
 
     return (

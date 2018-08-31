@@ -166,7 +166,8 @@ const styles = {
     marginTop: 2
   },
   backdrop: {
-    backgroundColor: 'transparent'
+    backgroundColor: 'gray',
+    opacity: 0.5
   },
 };
 
