@@ -46,6 +46,8 @@ import ProfileDetail from './Main/Profile/ProfileDetail';
 import ProfileDetailEditForm from './Main/Profile/ProfileCard/ProfileDetailEditForm';
 import MutualFriends from './Main/Profile/MutualFriends';
 
+// Explore Tab
+import Explore from './Main/Explore/Explore';
 // Event
 import Event from './Main/Event/Event';
 
@@ -178,7 +180,7 @@ class RouterComponent extends Component {
                     icon={TabIcon}
                     hideNavBar
                   >
-                    <Scene key="explore" component={Home} />
+                    <Scene key="explore" component={Explore} initial />
                   </Stack>
 
                   <Stack

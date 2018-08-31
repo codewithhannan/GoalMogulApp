@@ -28,7 +28,7 @@ export const updateFilterOptions = (value) => (dispatch) =>
   });
 /**
  * For the next three functions, we could abstract a pattern since
- * It's shared across mastermind/actions, feed/actions, MeetActions, ProfileActions
+ * It's shared across mastermind/actions, feed/actions, MeetActions, ProfileActions, TribeTabActions
  * NOTE: goal feed and activity feed share the same constants with different
  * input on type field
  */

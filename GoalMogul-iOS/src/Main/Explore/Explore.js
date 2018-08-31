@@ -12,21 +12,21 @@ import TribeTab from './TribeTab';
 import EventTab from './EventTab';
 
 // Actions
-import { homeSwitchTab } from '../../actions';
+import { exploreSelectTab } from '../../redux/modules/explore/ExploreActions';
 
 // Assets
 import Logo from '../../asset/header/logo.png';
 import Activity from '../../asset/utils/activity.png';
 
 const TabIconMap = {
-  goals: {
+  events: {
     iconSource: Logo,
     iconStyle: {
       height: 17,
       width: 17
     }
   },
-  activity: {
+  tribes: {
     iconSource: Activity,
     iconStyle: {
       height: 15,
@@ -36,30 +36,6 @@ const TabIconMap = {
 };
 
 class Explore extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      navigationState: {
-        index: 0,
-        routes: [
-          { key: 'tribes', title: 'TRIBES' },
-          { key: 'events', title: 'EVENTS' },
-        ],
-      }
-    };
-  }
-
-  _handleIndexChange = index => {
-    this.setState({
-      ...this.state,
-      navigationState: {
-        ...this.state.navigationState,
-        index,
-      }
-    });
-    this.props.homeSwitchTab(index);
-  };
-
   _renderHeader = props => {
     return (
       <TabButtonGroup buttons={props} tabIconMap={TabIconMap} />
@@ -84,10 +60,10 @@ class Explore extends Component {
         <View style={styles.homeContainerStyle}>
           <SearchBarHeader rightIcon='menu' />
           <TabViewAnimated
-            navigationState={this.state.navigationState}
+            navigationState={this.props.navigationState}
             renderScene={this._renderScene}
             renderHeader={this._renderHeader}
-            onIndexChange={this._handleIndexChange}
+            onIndexChange={this.props.exploreSelectTab}
             useNativeDriver
           />
         </View>
@@ -118,9 +94,17 @@ const styles = {
   }
 };
 
+const mapStateToProps = state => {
+  const { navigationState } = state.explore;
+
+  return {
+    navigationState
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   {
-    homeSwitchTab
+    exploreSelectTab
   }
 )(Explore);

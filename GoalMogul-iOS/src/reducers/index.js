@@ -20,6 +20,10 @@ import TribeReducers from '../redux/modules/tribe/TribeReducers';
 import EventReducers from '../redux/modules/event/EventReducers';
 import CommentReducers from '../redux/modules/feed/comment/CommentReducers';
 import ReportReducers from '../redux/modules/report/ReportReducers';
+// Explore tab related reducers
+import EventTabReducers from '../redux/modules/event/EventTabReducers';
+import TribeTabReducers from '../redux/modules/tribe/TribeTabReducers';
+import ExploreReducers from '../redux/modules/explore/ExploreReducers';
 
 const rootPersistConfig = {
   key: 'root',
@@ -44,7 +48,10 @@ const reducers = combineReducers({
   tribe: TribeReducers,
   event: EventReducers,
   comment: CommentReducers,
-  report: ReportReducers
+  report: ReportReducers,
+  explore: ExploreReducers,
+  eventTab: EventTabReducers,
+  tribeTab: TribeTabReducers
 });
 
 export default persistReducer(rootPersistConfig, reducers);
