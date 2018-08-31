@@ -61,9 +61,9 @@ export default (state = INITIAL_STATE, action) => {
 
     // following switches are to handle loading Comments
     case COMMENT_LOAD: {
-      const { type } = action.payload;
+      // const { type } = action.payload;
       let newState = _.cloneDeep(state);
-      return _.set(newState, `${type}.loading`, true);
+      return _.set(newState, 'loading', true);
     }
 
     case COMMENT_REFRESH_DONE: {
@@ -106,7 +106,7 @@ export default (state = INITIAL_STATE, action) => {
       }
       newState = _.set(newState, 'hasNextPage', hasNextPage);
       const oldData = _.get(newState, 'data');
-      return _.set(newState, `${type}.data`, arrayUnique(oldData.concat(data)));
+      return _.set(newState, 'data', arrayUnique(oldData.concat(data)));
     }
 
     default:

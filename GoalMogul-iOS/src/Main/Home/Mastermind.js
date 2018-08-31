@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import { MenuProvider } from 'react-native-popup-menu';
 
 // Components
 import NeedCard from '../Goal/NeedCard/NeedCard';
@@ -44,12 +43,8 @@ class Mastermind extends Component {
   renderItem = ({ item }) => {
     // TODO: render item
     console.log('item rendering in Mastermind is: ', item);
-    if (item.type === 'need') {
-      return <NeedCard item={item} />;
-    } else if (item.type === 'goal') {
-      return <GoalCard item={item} />;
-    }
-    return <View />;
+    // mastermind currently only renders goals
+    return <GoalCard item={item} />;
   }
 
   renderPlus() {
