@@ -45,7 +45,50 @@ class EventTab extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { data, loading } = state.eventTab;
+  // const { data, loading } = state.eventTab;
+
+  const loading = false;
+  const data = [
+    // {
+    //   created: '',
+    //   creator: {
+    //     // User ref
+    //   },
+    //   title: 'Cele',
+    //   start: {
+    //       type: Date,
+    //       required: true,
+    //   },
+    //   durationHours: {
+    //       type: Number,
+    //       required: true,
+    //   },
+    //   participantsCanInvite: {
+    //       type: Boolean,
+    //       required: true,
+    //   },
+    //   isInviteOnly: {
+    //       type: Boolean,
+    //       required: true,
+    //   },
+    //   participantLimit: {
+    //       type: Number,
+    //       required: true,
+    //       min: 2,
+    //       max: 10000,
+    //   },
+    //   location: String,
+    //   description: String,
+    //   picture: String,
+    //   participants: [{
+    //       type: eventParticipants,
+    //   }],
+    //   participantCount: {
+    //       type: Number,
+    //       required: true,
+    //   },
+    // }
+  ];
 
   return {
     data,
