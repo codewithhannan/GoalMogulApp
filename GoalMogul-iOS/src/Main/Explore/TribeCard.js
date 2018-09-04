@@ -7,16 +7,23 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import timeago from 'timeago.js';
+import { connect } from 'react-redux';
 
 // Assets
 // TODO: set default tribe picture
 import profilePic from '../../asset/utils/defaultUserProfile.png';
 
-class TribeCard extends React.Component {
+// Actions
+import {
+  tribeDetailOpen
+} from '../../redux/modules/tribe/TribeActions';
 
+const DEBUG_KEY = '[UI Tribe Card] ';
+
+class TribeCard extends React.Component {
   onCardPress = () => {
-    console.log('card pressed.');
-    Actions.tribeDetail();
+    console.log(`${DEBUG_KEY} open Tribe Detail`);
+    this.props.tribeDetailOpen(this.props.item);
   }
 
   renderTimeStamp() {
@@ -174,7 +181,7 @@ const styles = {
     flexWrap: 'wrap',
     fontSize: 13,
     fontWeight: '700',
-    marginRight: 70
+    marginRight: 80
   },
   descriptionTextStyle: {
     flex: 1,
@@ -188,4 +195,9 @@ const styles = {
   }
 };
 
-export default TribeCard;
+export default connect(
+  null,
+  {
+    tribeDetailOpen
+  }
+)(TribeCard);

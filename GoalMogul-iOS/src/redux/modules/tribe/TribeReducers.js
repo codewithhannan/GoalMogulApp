@@ -9,10 +9,13 @@ const INITIAL_STATE = {
       { key: 'members', title: 'Members' }
     ]
   },
-  selectedTab: 'about'
+  selectedTab: 'about',
+  item: undefined
 };
 
 export const TRIBE_SWITCH_TAB = 'tribe_switch_tab';
+export const TRIBE_DETAIL_OPEN = 'tribe_detail_open';
+export const TRIBE_DETAIL_CLOSE = 'tribe_detail_close';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -24,6 +27,17 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         selectedTab: newNavigationState.routes[action.payload].key,
         navigationState: newNavigationState
+      };
+    }
+
+    case TRIBE_DETAIL_OPEN: {
+      let newState = _.cloneDeep(state);
+      return _.set(newState, 'item', { ...action.payload });
+    }
+
+    case TRIBE_DETAIL_CLOSE: {
+      return {
+        ...INITIAL_STATE
       };
     }
 
