@@ -93,7 +93,7 @@ class RouterComponent extends Component {
           <Lightbox hideNavBar>
             <Scene key="root" hideNavBar>
               <Scene key="auth" initial hideNavBar>
-                <Scene key="splash" component={SplashScreen} initial />
+                <Scene key="splash" component={Explore} initial />
                 <Scene key="login" component={LoginPage} />
               </Scene>
 
@@ -181,6 +181,8 @@ class RouterComponent extends Component {
                     hideNavBar
                   >
                     <Scene key="explore" component={Explore} initial />
+                    <Scene key="tribeDetail" component={Tribe} />
+                      <Scene key="eventDetail" component={Event} />
                   </Stack>
 
                   <Stack

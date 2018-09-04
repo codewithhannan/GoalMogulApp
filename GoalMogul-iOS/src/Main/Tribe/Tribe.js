@@ -15,13 +15,15 @@ import SearchBarHeader from '../Common/Header/SearchBarHeader';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import Divider from '../Common/Divider';
 import About from './About';
+import MemberList from './MemberList';
 
 // Asset
 import check from '../../asset/utils/check.png';
 
 import TestEventImage from '../../asset/TestEventImage.png';
 import {
-  tribeSelectTab
+  tribeSelectTab,
+  tribeDetailClose
 } from '../../redux/modules/tribe/TribeActions';
 
 const { width } = Dimensions.get('window');
@@ -44,7 +46,7 @@ class Tribe extends Component {
   _renderScene = SceneMap({
     about: About,
     posts: About,
-    members: About,
+    members: MemberList,
   });
 
   renderEventImage() {
@@ -56,31 +58,51 @@ class Tribe extends Component {
   }
 
   // Render tribe visibility and user membership status
-  renderVisibilityAndStatus() {
+  renderVisibilityAndStatus(item) {
+    const tribeVisibility = item.isPubliclyVisibl
+      ? 'Publicly Visible'
+      : 'Private Tribe';
+
     return (
       <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 10 }}>
-        <Text style={styles.tribeStatusTextStyle}>Publicly visible</Text>
+        <Text style={styles.tribeStatusTextStyle}>{tribeVisibility}</Text>
         <Divider orthogonal height={12} borderColor='gray' />
-        {this.renderMemberStatus()}
+        {this.renderMemberStatus(item)}
       </View>
     );
   }
 
-  renderMemberStatus() {
+  renderMemberStatus(item) {
     // TODO: remove test var
-    const isMemeber = true;
-    const tintColor = isMemeber ? '#2dca4a' : 'gray';
+    const isUserMemeber = isMember(item.members, this.props.user);
+    const tintColor = isUserMemeber ? '#2dca4a' : 'gray';
 
+    if (isUserMemeber) {
+      return (
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}>
+          <Image
+            source={check}
+            style={{
+              height: 10,
+              width: 13,
+              tintColor
+            }}
+          />
+          <Text
+            style={{
+              ...styles.tribeStatusTextStyle,
+              ...styles.memberStatusTextStyle,
+              color: tintColor
+            }}
+          >
+            Member
+          </Text>
+        </View>
+      );
+    }
+    // Return view to request to join
     return (
       <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}>
-        <Image
-          source={check}
-          style={{
-            height: 10,
-            width: 13,
-            tintColor
-          }}
-        />
         <Text
           style={{
             ...styles.tribeStatusTextStyle,
@@ -88,16 +110,16 @@ class Tribe extends Component {
             color: tintColor
           }}
         >
-          Member
+          Request to Join
         </Text>
       </View>
     );
   }
 
   // Render tribe size and created date
-  renderTribeInfo() {
+  renderTribeInfo(item) {
     const date = 'Jan 2017';
-    const count = '102';
+    const count = item.memberCount ? item.memberCount : '102';
     return (
       <View style={styles.tribeInfoContainerStyle}>
         <Text style={{ ...styles.tribeSizeTextStyle, color: '#4ec9f3' }}>
@@ -113,9 +135,14 @@ class Tribe extends Component {
   }
 
   render() {
+    const { item } = this.props;
+    if (!item) return <View />;
+
+    const { name } = item;
+
     return (
       <View style={{ flex: 1 }}>
-        <SearchBarHeader setting backButton />
+        <SearchBarHeader setting backButton onBackPress={() => this.props.tribeDetailClose()} />
         <View style={{ height: 70, backgroundColor: '#1998c9' }} />
         <View style={styles.imageWrapperStyle}>
           {this.renderEventImage()}
@@ -124,9 +151,9 @@ class Tribe extends Component {
           <Text
             style={{ fontSize: 22, fontWeight: '300' }}
           >
-            SoHo Artists
+            {name}
           </Text>
-          {this.renderVisibilityAndStatus()}
+          {this.renderVisibilityAndStatus(item)}
           <View
             style={{
               width: width * 0.75,
@@ -134,7 +161,7 @@ class Tribe extends Component {
               borderWidth: 0.5
             }}
           />
-          {this.renderTribeInfo()}
+          {this.renderTribeInfo(item)}
         </View>
         <TabViewAnimated
           navigationState={this.props.navigationState}
@@ -204,20 +231,31 @@ const styles = {
   tribeCountTextStyle: {
     fontWeight: '600'
   }
-
 };
 
 const mapStateToProps = state => {
-  const { navigationState } = state.tribe;
+  const { navigationState, item } = state.tribe;
 
   return {
-    navigationState
+    navigationState,
+    item,
+    user: state.user
   };
 };
+
+const isMember = (memberList, self) =>
+  memberList.reduce((total, curr) => {
+    if (curr._id && self._id && (curr._id.toString() === self._id.toString())) {
+      return 1;
+    }
+    return 0;
+  }, 0);
+
 
 export default connect(
   mapStateToProps,
   {
-    tribeSelectTab
+    tribeSelectTab,
+    tribeDetailClose
   }
 )(Tribe);

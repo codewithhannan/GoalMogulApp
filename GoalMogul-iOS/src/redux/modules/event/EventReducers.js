@@ -9,10 +9,13 @@ const INITIAL_STATE = {
       { key: 'attendees', title: 'Attendees' }
     ]
   },
-  selectedTab: 'about'
+  selectedTab: 'about',
+  item: undefined
 };
 
 export const EVENT_SWITCH_TAB = 'event_switch_tab';
+export const EVENT_DETAIL_OPEN = 'event_detail_open';
+export const EVENT_DETAIL_CLOSE = 'event_detail_close';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -24,6 +27,17 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         selectedTab: newNavigationState.routes[action.payload].key,
         navigationState: newNavigationState
+      };
+    }
+
+    case EVENT_DETAIL_OPEN: {
+      let newState = _.cloneDeep(state);
+      return _.set(newState, 'item', { ...action.payload });
+    }
+
+    case EVENT_DETAIL_CLOSE: {
+      return {
+        ...INITIAL_STATE
       };
     }
 

@@ -22,7 +22,8 @@ import DefaultUserProfile from '../../asset/test-profile-pic.png';
 
 // Actions
 import {
-  eventSelectTab
+  eventSelectTab,
+  eventDetailClose
 } from '../../redux/modules/event/EventActions';
 
 const { width } = Dimensions.get('window');
@@ -48,18 +49,32 @@ class Event extends Component {
     attendees: About,
   });
 
-
   renderEventImage() {
+    const { item } = this.props;
+    if (!item) return <View />;
+
+    const { picture } = item;
+    if (picture && picture.length > 0) {
+      // Return provided picture
+      return (
+        <Image source={TestEventImage} style={styles.coverImageStyle} />
+      );
+    }
+    // Return default picture
     return (
       <Image source={TestEventImage} style={styles.coverImageStyle} />
     );
   }
 
   renderEventStatus() {
+    const { item } = this.props;
+    if (!item) return <View />;
+
+    const eventProperty = item.isInviteOnly ? 'Private Event' : 'Public Event';
     const { eventPropertyTextStyle, eventPropertyContainerStyle } = styles;
     return (
       <View style={eventPropertyContainerStyle}>
-        <Text style={eventPropertyTextStyle}>Private Event</Text>
+        <Text style={eventPropertyTextStyle}>{eventProperty}</Text>
         <Dot />
         <View style={styles.rsvpBoxContainerStyle}>
           <Image source={EditIcon} style={styles.rsvpIconStyle} />
@@ -70,6 +85,9 @@ class Event extends Component {
   }
 
   renderEventInfo() {
+    const { item } = this.props;
+    if (!item) return <View />;
+
     const date = 'August 12';
     const startTime = '5pm';
     const endTime = '9pm';
@@ -77,7 +95,9 @@ class Event extends Component {
     return (
       <View style={eventContainerStyle}>
         <StackedAvatars imageSource={DefaultUserProfile} />
-        <Text style={{ ...eventInfoBasicTextStyle, color: '#4ec9f3' }}>37 going</Text>
+        <Text style={{ ...eventInfoBasicTextStyle, color: '#4ec9f3' }}>
+          {item.participantCount} going
+        </Text>
         <Dot />
         <Text style={{ ...eventInfoBasicTextStyle }}>{date}, </Text>
         <Text style={{ ...eventInfoBasicTextStyle, fontWeight: '600' }}>
@@ -88,13 +108,17 @@ class Event extends Component {
   }
 
   render() {
+    const { item } = this.props;
+    if (!item) return <View />;
+
+    const { title } = item;
     return (
       <View style={{ flex: 1 }}>
-        <SearchBarHeader setting backButton />
+        <SearchBarHeader setting backButton onBackPress={() => this.props.eventDetailClose()} />
         {this.renderEventImage()}
         <View style={styles.generalInfoContainerStyle}>
           <Text style={styles.eventTitleTextStyle}>
-            Jay's end of internship party
+            {title}
           </Text>
           {this.renderEventStatus()}
           <View
@@ -178,10 +202,11 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { navigationState } = state.event;
+  const { navigationState, item } = state.event;
 
   return {
-    navigationState
+    navigationState,
+    item
   };
 };
 
@@ -189,6 +214,7 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    eventSelectTab
+    eventSelectTab,
+    eventDetailClose
   }
 )(Event);

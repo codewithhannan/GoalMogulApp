@@ -50,6 +50,7 @@ class SearchBarHeader extends Component {
   handleBackOnClick() {
     if (this.props.onBackPress) {
       this.props.onBackPress();
+      return;
     }
     this.props.back();
   }

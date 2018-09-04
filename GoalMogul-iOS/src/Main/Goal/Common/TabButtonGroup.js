@@ -8,7 +8,7 @@ class TabButtonGroup extends Component {
 
   renderTabs() {
     const { buttons, tabIconMap } = this.props;
-    const { navigationState, jumpTo } = buttons;
+    const { navigationState, jumpToIndex } = buttons;
     const { index, routes } = navigationState;
 
     return routes.map((b, i) => {
@@ -21,7 +21,7 @@ class TabButtonGroup extends Component {
           key={b.key}
           text={b.title}
           selected={selected}
-          onPress={jumpTo.bind(this, b.key)}
+          onPress={jumpToIndex.bind(this, i)}
           count={10}
           iconSource={iconSource}
           iconStyle={iconStyle}
