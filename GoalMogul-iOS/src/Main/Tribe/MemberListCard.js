@@ -34,10 +34,6 @@ class MemberListCard extends Component {
         <View style={{ flex: 1, flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
           <Name text={name} />
         </View>
-
-        <View style={styles.buttonContainerStyle}>
-          {this.renderButton()}
-        </View>
       </View>
     );
   }

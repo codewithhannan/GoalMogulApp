@@ -30,7 +30,7 @@ class MemberList extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const item = state.tribe;
+  const { item } = state.tribe;
 
   return {
     data: item.members
