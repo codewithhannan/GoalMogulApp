@@ -61,6 +61,7 @@ const mapStateToProps = state => {
       picture: '',
       members: [
         {
+          _id: '1203798700',
           name: 'Jia Zeng',
           profile: {
             image: undefined
@@ -80,6 +81,7 @@ const mapStateToProps = state => {
       picture: '',
       members: [
         {
+          _id: '1203798705',
           name: 'Super Andy',
           profile: {
             image: undefined

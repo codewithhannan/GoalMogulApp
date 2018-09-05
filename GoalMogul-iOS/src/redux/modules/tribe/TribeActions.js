@@ -2,7 +2,9 @@ import { Actions } from 'react-native-router-flux';
 import {
   TRIBE_SWITCH_TAB,
   TRIBE_DETAIL_OPEN,
-  TRIBE_DETAIL_CLOSE
+  TRIBE_DETAIL_CLOSE,
+  TRIBE_FEED_FETCH,
+  TRIBE_FEED_FETCH_DONE
 } from './TribeReducers';
 
 export const tribeSelectTab = (index) => (dispatch) => {
@@ -18,6 +20,14 @@ export const tribeDetailOpen = (tribe) => (dispatch) => {
     payload: { ...tribe }
   });
   Actions.tribeDetail();
+};
+
+const fetchTribeFeed = (tribeId, token, dispatch) => {
+  dispatch({
+    type: TRIBE_FEED_FETCH,
+  });
+
+  // TODO: fetch tribe feed
 };
 
 export const tribeDetailClose = () => (dispatch) => {

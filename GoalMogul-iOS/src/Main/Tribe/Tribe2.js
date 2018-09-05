@@ -1,12 +1,14 @@
+// This is the original implementation of Tribe before structural change.
 import React, { Component } from 'react';
 import {
   View,
   Image,
   Dimensions,
-  Text,
-  FlatList
+  Text
  } from 'react-native';
 import { connect } from 'react-redux';
+import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
+import { MenuProvider } from 'react-native-popup-menu';
 import { Icon } from 'react-native-elements';
 
 // Components
@@ -14,7 +16,7 @@ import SearchBarHeader from '../Common/Header/SearchBarHeader';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import Divider from '../Common/Divider';
 import About from './About';
-import MemberListCard from './MemberListCard';
+import MemberList from './MemberList';
 
 // Asset
 import check from '../../asset/utils/check.png';
@@ -29,7 +31,8 @@ const { width } = Dimensions.get('window');
 /**
  * This is the UI file for a single event.
  */
-class Tribe extends Component {
+class Tribe2 extends Component {
+
   // Tab related functions
   _handleIndexChange = (index) => {
     this.props.tribeSelectTab(index);
@@ -40,6 +43,12 @@ class Tribe extends Component {
       <TabButtonGroup buttons={props} />
     );
   };
+
+  _renderScene = SceneMap({
+    about: About,
+    posts: About,
+    members: MemberList,
+  });
 
   renderEventImage() {
     return (
@@ -126,11 +135,15 @@ class Tribe extends Component {
     );
   }
 
-  renderTribeOverview(item) {
+  render() {
+    const { item } = this.props;
+    if (!item) return <View />;
+
     const { name } = item;
 
     return (
-      <View>
+      <View style={{ flex: 1 }}>
+        <SearchBarHeader setting backButton onBackPress={() => this.props.tribeDetailClose()} />
         <View style={{ height: 70, backgroundColor: '#1998c9' }} />
         <View style={styles.imageWrapperStyle}>
           {this.renderEventImage()}
@@ -151,68 +164,13 @@ class Tribe extends Component {
           />
           {this.renderTribeInfo(item)}
         </View>
-        {
-          this._renderHeader({
-            jumpToIndex: (i) => {
-              this._handleIndexChange(i)
-            },
-            navigationState: this.props.navigationState
-          })
-        }
-      </View>
-    );
-  }
-
-  renderItem = (props) => {
-    const { routes, index } = this.props.navigationState;
-
-    switch (routes[index].key) {
-      case 'about': {
-        return <About item={props.item} key={props.index} />;
-      }
-
-      case 'posts': {
-        return <View />;
-      }
-
-      case 'members': {
-        return <MemberListCard item={props.item} key={props.index} />;
-      }
-
-      default:
-        return <View key={props.index} />;
-    }
-  }
-
-  render() {
-    const { item, feed } = this.props;
-    if (!item) return <View />;
-
-    const { routes, index } = this.props.navigationState;
-    const data = ((key) => {
-      switch (key) {
-        case 'about':
-          return [item];
-
-        case 'members':
-          return item.members;
-
-        case 'posts':
-          return feed;
-
-        default: return [];
-      }
-    })(routes[index].key);
-
-    return (
-      <View style={{ flex: 1 }}>
-        <SearchBarHeader setting backButton onBackPress={() => this.props.tribeDetailClose()} />
-          <FlatList
-            data={data}
-            renderItem={this.renderItem}
-            keyExtractor={(i) => i._id}
-            ListHeaderComponent={this.renderTribeOverview(item)}
-          />
+        <TabViewAnimated
+          navigationState={this.props.navigationState}
+          renderScene={this._renderScene}
+          renderHeader={this._renderHeader}
+          onIndexChange={this._handleIndexChange}
+          useNativeDriver
+        />
       </View>
     );
   }
@@ -277,13 +235,12 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { navigationState, item, feed } = state.tribe;
+  const { navigationState, item } = state.tribe;
 
   return {
     navigationState,
     item,
-    user: state.user,
-    feed
+    user: state.user
   };
 };
 
@@ -302,4 +259,4 @@ export default connect(
     tribeSelectTab,
     tribeDetailClose
   }
-)(Tribe);
+)(Tribe2);

@@ -10,12 +10,15 @@ const INITIAL_STATE = {
     ]
   },
   selectedTab: 'about',
-  item: undefined
+  item: undefined,
+  feed: []
 };
 
 export const TRIBE_SWITCH_TAB = 'tribe_switch_tab';
 export const TRIBE_DETAIL_OPEN = 'tribe_detail_open';
 export const TRIBE_DETAIL_CLOSE = 'tribe_detail_close';
+export const TRIBE_FEED_FETCH = 'tribe_feed_fetch';
+export const TRIBE_FEED_FETCH_DONE = 'tribe_feed_fetch_done';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
