@@ -66,10 +66,18 @@ const mapStateToProps = state => {
       picture: '',
       participants: [
         {
-          name: 'Super Andy'
+          _id: '123698172691',
+          name: 'Super Andy',
+          profile: {
+            image: undefined
+          }
         },
         {
-          name: 'Mike Gai'
+          _id: '123698172692',
+          name: 'Mike Gai',
+          profile: {
+            image: undefined
+          }
         }
       ],
       participantCount: 2,
@@ -92,10 +100,18 @@ const mapStateToProps = state => {
       picture: '',
       participants: [
         {
-          name: 'Batman'
+          _id: '123698172693',
+          name: 'Batman',
+          profile: {
+            image: undefined
+          }
         },
         {
-          name: 'Captain America'
+          _id: '123698172694',
+          name: 'Captain America',
+          profile: {
+            image: undefined
+          }
         }
       ],
       participantCount: 2,

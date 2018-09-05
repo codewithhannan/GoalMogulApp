@@ -8,7 +8,8 @@ class TabButtonGroup extends Component {
 
   renderButton() {
     const { buttons, tabIconMap } = this.props;
-    const { navigationState, jumpTo } = buttons;
+    const { navigationState, jumpTo, jumpToIndex } = buttons;
+
     const { index, routes } = navigationState;
     return routes.map((b, i) => {
       const selected = i === index;
@@ -20,7 +21,13 @@ class TabButtonGroup extends Component {
           <TouchableOpacity
             key={b.key}
             style={styles.dividerContainerStyle}
-            onPress={jumpTo.bind(this, b.key)}
+            onPress={() => {
+              if (jumpTo) {
+                jumpTo(b.key);
+              } else {
+                jumpToIndex(i);
+              }
+            }}
           >
             <Divider />
             <TabButton
@@ -37,7 +44,13 @@ class TabButtonGroup extends Component {
         <TouchableOpacity
           key={b.key}
           style={styles.dividerContainerStyle}
-          onPress={jumpTo.bind(this, b.key)}
+          onPress={() => {
+            if (jumpTo) {
+              jumpTo(b.key);
+            } else {
+              jumpToIndex(i);
+            }
+          }}
         >
           <TabButton
             text={b.title}

@@ -48,7 +48,7 @@ export const refreshFeed = () => (dispatch, getState) => {
 export const loadMoreFeed = () => (dispatch, getState) => {
   const { token } = getState().user;
   const { skip, limit, filter, hasNextPage } = getState().home.mastermind;
-  if (!hasNextPage) {
+  if (hasNextPage === false) {
     return;
   }
   const { categories, priority } = filter;

@@ -28,7 +28,8 @@ export const updateFilterOptions = (value) => (dispatch) =>
   });
 /**
  * For the next three functions, we could abstract a pattern since
- * It's shared across mastermind/actions, feed/actions, MeetActions, ProfileActions, TribeTabActions
+ * It's shared across mastermind/actions, feed/actions, MeetActions, ProfileActions, TribeTabActions,
+ * TribeActions, EventActions
  * NOTE: goal feed and activity feed share the same constants with different
  * input on type field
  */
@@ -61,7 +62,7 @@ export const refreshEvent = () => (dispatch, getState) => {
 export const loadMoreEvent = () => (dispatch, getState) => {
   const { token } = getState().user;
   const { skip, limit, sortBy, filterOptions, hasNextPage } = getState().eventTab;
-  if (!hasNextPage) {
+  if (hasNextPage === false) {
     return;
   }
   loadEvent(skip, limit, token, sortBy, filterOptions, (data) => {

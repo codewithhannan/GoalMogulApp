@@ -98,7 +98,7 @@ export const refreshGoals = () => (dispatch, getState) => {
 export const loadMoreGoals = () => (dispatch, getState) => {
   const { token } = getState().user;
   const { skip, limit, filter, hasNextPage } = getState().home.mastermind;
-  if (!hasNextPage) {
+  if (hasNextPage === false) {
     return;
   }
   const { category, priority } = filter;
@@ -149,7 +149,7 @@ const loadGoals = (skip, limit, token, priority, category, callback, onError) =>
 };
 
 // TODO: delete this test data
-const testData = 
+const testData =
   {
     __v: 0,
     _id: '5b502211e500e3001afd1e20',

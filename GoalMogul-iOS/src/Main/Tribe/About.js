@@ -17,8 +17,8 @@ const { width } = Dimensions.get('window');
 
 class About extends Component {
 
-  renderMemberStatus() {
-    const count = '102';
+  renderMemberStatus(item) {
+    const count = item.memberCount ? item.memberCount : 0;
     return (
       <View style={{ flexDirection: 'row', marginTop: 8, marginBottom: 5 }}>
         <View style={styles.memberPicturesContainerStyle}>
@@ -42,8 +42,9 @@ class About extends Component {
     );
   }
 
-  renderCreated() {
-    const date = 'January 12, 2017';
+  renderCreated(item) {
+    const newDate = item.created ? new Date(item.created) : new Date();
+    const date = `${newDate.getMonth()} ${newDate.getDate}, ${newDate.getFullYear()}`;
 
     return (
       <View
@@ -66,7 +67,11 @@ class About extends Component {
     );
   }
 
-  renderDescription() {
+  renderDescription(item) {
+    const description = item.description
+      ? item.description
+      : 'Currently this event has no decription.';
+
     return (
       <View style={{ padding: 10 }}>
         <Text
@@ -75,21 +80,22 @@ class About extends Component {
           Description
         </Text>
         <Text style={styles.descriptionTextStyle}>
-          This is a group for all artists currently living in or working out
-          of SOHo, NY. We exchange ideas, get feedback from each other and
-          help each other organize exhibits for our work.
+          {description}
         </Text>
       </View>
     );
   }
 
   render() {
+    const { item } = this.props;
+    if (!item) return <View />;
+
     return (
       <View style={{ flex: 1, margin: 25, marginTop: 15 }}>
-        {this.renderMemberStatus()}
-        {this.renderCreated()}
+        {this.renderMemberStatus(item)}
+        {this.renderCreated(item)}
         <Divider horizontal width={0.8 * width} borderColor='gray' />
-        {this.renderDescription()}
+        {this.renderDescription(item)}
       </View>
     );
   }
