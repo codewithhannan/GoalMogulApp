@@ -61,7 +61,7 @@ export const refreshTribe = () => (dispatch, getState) => {
 export const loadMoreTribe = () => (dispatch, getState) => {
   const { token } = getState().user;
   const { skip, limit, sortBy, filterForMembershipCategory, hasNextPage } = getState().eventTab;
-  if (!hasNextPage) {
+  if (hasNextPage === false) {
     return;
   }
   loadTribe(skip, limit, token, sortBy, filterForMembershipCategory, (data) => {

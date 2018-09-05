@@ -37,10 +37,26 @@ class About extends Component {
     );
   }
 
-  renderCreated() {
-    const date = 'August 12, 2017';
-    const startTime = '5pm';
-    const endTime = '9pm';
+  // For event, it's rendering the start time and duration of the event
+  renderCreated(item) {
+    const { start, durationHours } = item;
+    const startDate = start ? new Date(start) : new Date();
+    const date = `${startDate.getMonth()} ${startDate.getDate}, ${startDate.getFullYear()}`;
+
+    const startTime = `${startDate.toLocaleString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    })}`;
+
+    const endDate = durationHours
+      ? new Date(startDate.getTime() + (1000 * 60 * 60 * durationHours))
+      : new Date(startDate.getTime() + (1000 * 60 * 60 * 2));
+    const endTime = `${endDate.toLocaleString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    })}`;
     const {
       rowContainerStyle,
       iconContainerStyle,
@@ -62,7 +78,11 @@ class About extends Component {
     );
   }
 
-  renderDescription() {
+  renderDescription(item) {
+    const description = item.description
+      ? item.description
+      : 'Currently this event has no decription.';
+
     return (
       <View style={{ padding: 10 }}>
         <Text
@@ -71,21 +91,22 @@ class About extends Component {
           Description
         </Text>
         <Text style={styles.descriptionTextStyle}>
-          This is a group for all artists currently living in or working out
-          of SOHo, NY. We exchange ideas, get feedback from each other and
-          help each other organize exhibits for our work.
+          {description}
         </Text>
       </View>
     );
   }
 
   render() {
+    const { item } = this.props;
+    if (!item) return <View />;
+
     return (
       <View style={{ flex: 1, margin: 25, marginTop: 15, paddingTop: 10 }}>
-        {this.renderLocation()}
-        {this.renderCreated()}
+        {this.renderLocation(item)}
+        {this.renderCreated(item)}
         <Divider horizontal width={0.8 * width} borderColor='gray' />
-        {this.renderDescription()}
+        {this.renderDescription(item)}
       </View>
     );
   }

@@ -153,9 +153,7 @@ class Tribe extends Component {
         </View>
         {
           this._renderHeader({
-            jumpToIndex: (i) => {
-              this._handleIndexChange(i)
-            },
+            jumpToIndex: (i) => this._handleIndexChange(i),
             navigationState: this.props.navigationState
           })
         }
@@ -185,34 +183,18 @@ class Tribe extends Component {
   }
 
   render() {
-    const { item, feed } = this.props;
+    const { item, data } = this.props;
     if (!item) return <View />;
-
-    const { routes, index } = this.props.navigationState;
-    const data = ((key) => {
-      switch (key) {
-        case 'about':
-          return [item];
-
-        case 'members':
-          return item.members;
-
-        case 'posts':
-          return feed;
-
-        default: return [];
-      }
-    })(routes[index].key);
 
     return (
       <View style={{ flex: 1 }}>
         <SearchBarHeader setting backButton onBackPress={() => this.props.tribeDetailClose()} />
-          <FlatList
-            data={data}
-            renderItem={this.renderItem}
-            keyExtractor={(i) => i._id}
-            ListHeaderComponent={this.renderTribeOverview(item)}
-          />
+        <FlatList
+          data={data}
+          renderItem={this.renderItem}
+          keyExtractor={(i) => i._id}
+          ListHeaderComponent={this.renderTribeOverview(item)}
+        />
       </View>
     );
   }
@@ -279,11 +261,27 @@ const styles = {
 const mapStateToProps = state => {
   const { navigationState, item, feed } = state.tribe;
 
+  const { routes, index } = navigationState;
+  const data = ((key) => {
+    switch (key) {
+      case 'about':
+        return [item];
+
+      case 'members':
+        return item.members;
+
+      case 'posts':
+        return feed;
+
+      default: return [];
+    }
+  })(routes[index].key);
+
   return {
     navigationState,
     item,
     user: state.user,
-    feed
+    data
   };
 };
 

@@ -55,7 +55,7 @@ export const deleteComment = (commentId) => {
 export const refreshComments = (parentId, parentType) => (dispatch, getState) => {
   const { token } = getState().user;
   const { limit, hasNextPage } = getState().comment;
-  if (!hasNextPage) {
+  if (hasNextPage === false) {
     return;
   }
   dispatch({
@@ -80,7 +80,7 @@ export const refreshComments = (parentId, parentType) => (dispatch, getState) =>
 export const loadMoreComments = (parentId, parentType) => (dispatch, getState) => {
   const { token } = getState().user;
   const { skip, limit, hasNextPage } = getState().comment;
-  if (!hasNextPage) {
+  if (hasNextPage === false) {
     return;
   }
   dispatch({

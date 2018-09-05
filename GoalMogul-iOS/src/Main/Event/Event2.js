@@ -1,12 +1,13 @@
+// This file is the original implementation for Event before restructuring. Can be deleleted.
 import React, { Component } from 'react';
 import {
   View,
   Image,
   Dimensions,
-  Text,
-  FlatList
+  Text
  } from 'react-native';
 import { connect } from 'react-redux';
+import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
@@ -14,7 +15,6 @@ import TabButtonGroup from '../Common/TabButtonGroup';
 import About from './About';
 import StackedAvatars from '../Common/StackedAvatars';
 import Dot from '../Common/Dot';
-import MemberListCard from '../Tribe/MemberListCard';
 
 // Asset
 import TestEventImage from '../../asset/TestEventImage.png';
@@ -31,7 +31,7 @@ const { width } = Dimensions.get('window');
 /**
  * This is the UI file for a single event.
  */
-class Event extends Component {
+class Event2 extends Component {
 
   // Tab related functions
   _handleIndexChange = (index) => {
@@ -43,6 +43,12 @@ class Event extends Component {
       <TabButtonGroup buttons={props} />
     );
   };
+
+  _renderScene = SceneMap({
+    about: About,
+    posts: About,
+    attendees: About,
+  });
 
   renderEventImage() {
     const { item } = this.props;
@@ -102,11 +108,14 @@ class Event extends Component {
     );
   }
 
-  renderEventOverview(item) {
-    const { title } = item;
+  render() {
+    const { item } = this.props;
+    if (!item) return <View />;
 
+    const { title } = item;
     return (
-      <View>
+      <View style={{ flex: 1 }}>
+        <SearchBarHeader setting backButton onBackPress={() => this.props.eventDetailClose()} />
         {this.renderEventImage()}
         <View style={styles.generalInfoContainerStyle}>
           <Text style={styles.eventTitleTextStyle}>
@@ -123,53 +132,13 @@ class Event extends Component {
           {this.renderEventInfo()}
 
         </View>
-        {
-          // Render tabs
-          this._renderHeader({
-            jumpToIndex: (i) => this._handleIndexChange(i),
-            navigationState: this.props.navigationState
-          })
-        }
-      </View>
-    );
-  }
-
-  renderItem = (props) => {
-    const { routes, index } = this.props.navigationState;
-
-    // TODO: refactor to become a literal function
-    switch (routes[index].key) {
-      case 'about': {
-        return <About item={props.item} key={props.index} />;
-      }
-
-      case 'posts': {
-        return <View item={props.item} key={props.index} />;
-      }
-
-      case 'attendees': {
-        return <MemberListCard item={props.item} key={props.index} />;
-      }
-
-      default:
-        return <View key={props.index} />;
-    }
-  }
-
-  render() {
-    const { item, data } = this.props;
-    if (!item) return <View />;
-
-    return (
-      <View style={{ flex: 1 }}>
-        <SearchBarHeader setting backButton onBackPress={() => this.props.eventDetailClose()} />
-        <FlatList
-          data={data}
-          renderItem={this.renderItem}
-          keyExtractor={(i) => i._id}
-          ListHeaderComponent={this.renderEventOverview(item)}
+        <TabViewAnimated
+          navigationState={this.props.navigationState}
+          renderScene={this._renderScene}
+          renderHeader={this._renderHeader}
+          onIndexChange={this._handleIndexChange}
+          useNativeDriver
         />
-
       </View>
     );
   }
@@ -234,28 +203,11 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { navigationState, item, feed } = state.event;
-
-  const { routes, index } = navigationState;
-  const data = ((key) => {
-    switch (key) {
-      case 'about':
-        return [item];
-
-      case 'attendees':
-        return item.participants;
-
-      case 'posts':
-        return feed;
-
-      default: return [];
-    }
-  })(routes[index].key);
+  const { navigationState, item } = state.event;
 
   return {
     navigationState,
-    item,
-    data
+    item
   };
 };
 
@@ -266,4 +218,4 @@ export default connect(
     eventSelectTab,
     eventDetailClose
   }
-)(Event);
+)(Event2);
