@@ -12,11 +12,12 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 
 /* Asset */
-import Logo from '../../../asset/header/logo.png';
+// import Logo from '../../../asset/header/logo.png';
 import IconMenu from '../../../asset/header/menu.png';
 import Setting from '../../../asset/header/setting.png';
 import BackButton from '../../../asset/utils/back.png';
 import FriendsSettingIcon from '../../../asset/utils/friendsSettingIcon.png';
+import profilePic from '../../../asset/utils/defaultUserProfile.png';
 
 import { actionSheet, switchByButtonIndex } from '../ActionSheetFactory';
 
@@ -109,14 +110,50 @@ class SearchBarHeader extends Component {
 
       );
     }
-    return (
+    return this.renderProfileImage();
+    // return (
+    //   <TouchableOpacity
+    //     style={styles.headerLeftImage}
+    //     onPress={this.handleProfileOnClick.bind(this)}
+    //   >
+    //     <Image style={{ ...styles.headerLeftImage, tintColor }} source={Logo} />
+    //   </TouchableOpacity>
+    // );
+  }
+
+  // This is to replace logo image with user profile preview
+  renderProfileImage() {
+    let image = this.props.image;
+    console.log('image is: ', image);
+    let profileImage = (
       <TouchableOpacity
         style={styles.headerLeftImage}
         onPress={this.handleProfileOnClick.bind(this)}
       >
-        <Image style={{ ...styles.headerLeftImage, tintColor }} source={Logo} />
+        <Image
+          style={{ ...styles.headerLeftImage, tintColor }}
+          resizeMode='contain'
+          source={profilePic}
+        />
       </TouchableOpacity>
+
     );
+    if (image) {
+      image = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+      profileImage = (
+        <TouchableOpacity
+          style={styles.headerLeftImage}
+          onPress={this.handleProfileOnClick.bind(this)}
+        >
+          <Image
+            style={{ ...styles.headerLeftImage, borderWidth: 1, borderColor: 'white' }}
+            resizeMode='contain'
+            source={{ uri: image }}
+          />
+        </TouchableOpacity>
+      );
+    }
+    return profileImage;
   }
 
   renderSearchBarRightIcon() {
@@ -229,6 +266,11 @@ const styles = {
   headerLeftImage: {
     width: 30,
     height: 30,
+    borderRadius: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   headerRightImage: {
     width: 25,
@@ -262,13 +304,15 @@ const mapStateToProps = state => {
   const { userId } = state.user;
   const profileUserId = state.profile.userId;
   const profileUserName = state.profile.user.name;
+  const { image } = state.user.user.profile;
   const haveSetting = state.profile.userId.toString() === state.user.userId.toString();
 
   return {
     userId,
     haveSetting,
     profileUserId,
-    profileUserName
+    profileUserName,
+    image
   };
 };
 
