@@ -28,13 +28,13 @@ export const eventDetailClose = () => (dispatch) => {
   });
 };
 
-export const eventDetailOpen = (event) => (dispatch) => {
+export const eventDetailOpen = (event) => (dispatch, getState) => {
   dispatch({
     type: EVENT_DETAIL_OPEN,
     payload: { ...event }
   });
   Actions.eventDetail();
-  refreshEventFeed(event._id);
+  refreshEventFeed(event._id, dispatch, getState);
 };
 
 /**
@@ -44,7 +44,7 @@ export const eventDetailOpen = (event) => (dispatch) => {
  * NOTE: goal feed and activity feed share the same constants with different
  * input on type field
  */
-export const refreshEventFeed = (eventId) => (dispatch, getState) => {
+export const refreshEventFeed = (eventId, dispatch, getState) => {
   const { token } = getState().user;
   const { limit } = getState().event;
 
@@ -108,9 +108,10 @@ export const loadEventFeed = (skip, limit, token, params, callback, onError) => 
           callback([]);
         }
       }
+      callback([]);
       console.warn(`${DEBUG_KEY}: loading with no res`);
     })
     .catch((err) => {
-      console.log(`${DEBUG_KEY}: loading comment error: ${err}`);
+      console.log(`${DEBUG_KEY}: loading event error: ${err}`);
     });
 };

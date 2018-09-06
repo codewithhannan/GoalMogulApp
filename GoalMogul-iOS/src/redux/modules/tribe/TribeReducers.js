@@ -16,7 +16,7 @@ const INITIAL_STATE = {
   feedLoading: false,
   hasNextPage: undefined,
   skip: 0,
-  limit: 20
+  limit: 100
 };
 
 export const TRIBE_SWITCH_TAB = 'tribe_switch_tab';

@@ -91,7 +91,7 @@ const loadEvent = (skip, limit, token, sortBy, filterOptions, callback, onError)
       token
     )
     .then((res) => {
-      console.log('loading goal with res: ', res);
+      console.log('loading events with res: ', res);
       if (res) {
         // Right now return test data
         if (skip === 0) {
@@ -103,7 +103,7 @@ const loadEvent = (skip, limit, token, sortBy, filterOptions, callback, onError)
       console.warn(`${DEBUG_KEY}: Loading goal with no res`);
     })
     .catch((err) => {
-      console.log(`${DEBUG_KEY} load goal error: ${err}`);
+      console.log(`${DEBUG_KEY} load events error: ${err}`);
       if (skip === 0) {
         callback([]);
       } else {

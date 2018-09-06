@@ -4,7 +4,8 @@ import {
   Image,
   Dimensions,
   Text,
-  FlatList
+  FlatList,
+  ActivityIndicator
  } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -16,6 +17,9 @@ import StackedAvatars from '../Common/StackedAvatars';
 import Dot from '../Common/Dot';
 import MemberListCard from '../Tribe/MemberListCard';
 
+import GoalCard from '../Goal/GoalCard/GoalCard';
+import NeedCard from '../Goal/NeedCard/NeedCard';
+
 // Asset
 import TestEventImage from '../../asset/TestEventImage.png';
 import EditIcon from '../../asset/utils/edit.png';
@@ -24,7 +28,8 @@ import DefaultUserProfile from '../../asset/test-profile-pic.png';
 // Actions
 import {
   eventSelectTab,
-  eventDetailClose
+  eventDetailClose,
+  loadMoreEventFeed
 } from '../../redux/modules/event/EventActions';
 
 const { width } = Dimensions.get('window');
@@ -43,6 +48,16 @@ class Event extends Component {
       <TabButtonGroup buttons={props} />
     );
   };
+
+  // If feed is loading and feed tab is selected, then render the spinner
+  renderFooter = () => {
+    const { routes, index } = this.props.navigationState;
+    if (this.props.feedLoading && routes[index].key === 'posts') {
+      return <ActivityIndicator size='small' color='45C9F6' />;
+    }
+
+    return '';
+  }
 
   renderEventImage() {
     const { item } = this.props;
@@ -144,7 +159,18 @@ class Event extends Component {
       }
 
       case 'posts': {
-        return <View item={props.item} key={props.index} />;
+        if (props.item.type === 'need') {
+          return <NeedCard item={props.item} key={props.index} />;
+        } else if (props.item.type === 'goal') {
+          return <GoalCard item={props.item} key={props.index} />;
+        }
+        return (
+          <View
+            item={props.item}
+            key={props.index}
+            style={{ height: 20, backgroundColor: 'black' }}
+          />
+        );
       }
 
       case 'attendees': {
@@ -168,6 +194,7 @@ class Event extends Component {
           renderItem={this.renderItem}
           keyExtractor={(i) => i._id}
           ListHeaderComponent={this.renderEventOverview(item)}
+          ListFooterComponent={this.renderFooter}
         />
 
       </View>
@@ -234,7 +261,7 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { navigationState, item, feed } = state.event;
+  const { navigationState, item, feed, feedLoading } = state.event;
 
   const { routes, index } = navigationState;
   const data = ((key) => {
@@ -255,7 +282,8 @@ const mapStateToProps = state => {
   return {
     navigationState,
     item,
-    data
+    data,
+    feedLoading
   };
 };
 
@@ -264,6 +292,7 @@ export default connect(
   mapStateToProps,
   {
     eventSelectTab,
-    eventDetailClose
+    eventDetailClose,
+    loadMoreEventFeed
   }
 )(Event);
