@@ -1,3 +1,4 @@
+import { Actions } from 'react-native-router-flux';
 import {
   HOME_CLOSE_CREATE_OVERLAY,
   HOME_MASTERMIND_OPEN_CREATE_OVERLAY,
@@ -7,6 +8,10 @@ import {
   HOME_SET_GOAL_INDEX,
   HOME_UPDATE_FILTER
 } from '../../../../reducers/Home';
+
+import {
+  GOAL_DETAIL_OPEN
+} from '../../../../reducers/GoalDetailReducers';
 
 import { api as API } from '../../../middleware/api';
 import { queryBuilder } from '../../../middleware/utils';
@@ -22,6 +27,17 @@ export const closeCreateOverlay = (tab) => ({
   type: HOME_CLOSE_CREATE_OVERLAY,
   payload: tab
 });
+
+// Open goal detail
+export const openGoalDetail = goal => (dispatch) => {
+  dispatch({
+    type: GOAL_DETAIL_OPEN,
+    payload: goal
+  });
+
+  // TODO: create new stack using Actions.create(React.Element) if needed
+  Actions.goal();
+};
 
 // set currentIndex to the prev one
 export const getPrevGoal = () => (dispatch, getState) => {

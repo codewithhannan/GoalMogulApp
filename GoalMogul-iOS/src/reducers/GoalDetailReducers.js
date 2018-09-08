@@ -16,6 +16,7 @@ const INITIAL_STATE = {
 
 export const GOAL_DETAIL_FETCH = 'goal_detail_fetch';
 export const GOAL_DETAIL_FETCH_DONE = 'goal_detail_fetch_done';
+export const GOAL_DETAIL_OPEN = 'goal_detail_open';
 export const GOAL_DETAIL_CLOSE = 'goal_detail_close';
 // Comment related constants
 export const GOAL_DETAIL_GET_COMMENT = 'goal_detail_get_comment';
@@ -35,6 +36,11 @@ export default (state = INITIAL_STATE, action) => {
 
     case GOAL_DETAIL_FETCH_DONE: {
       return { ...state };
+    }
+
+    case GOAL_DETAIL_OPEN: {
+      let newState = _.cloneDeep(state);
+      return _.set(newState, 'goal', { ...action.payload });
     }
 
     /**

@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
+import timeago from 'timeago.js';
 
 // Component
 import Headline from '../Common/Headline';
@@ -37,13 +38,16 @@ class NeedCard extends Component {
 
   // user basic information
   renderUserDetail() {
-    const { description } = this.props.item.needRequest;
+    const { created, needRequest } = this.props.item;
+    const { description } = needRequest;
+    const timeStamp = (created === undefined || created.length === 0)
+      ? new Date() : created;
     return (
       <View style={{ flexDirection: 'row' }}>
         <Image source={defaultProfilePic} resizeMode='contain' style={{ height: 60, width: 60 }} />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline name='John Doe' category='Personal Development' />
-          <Timestamp time='5 mins ago' />
+          <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text
               style={{ flex: 1, flexWrap: 'wrap', color: '#818181', fontSize: 11 }}

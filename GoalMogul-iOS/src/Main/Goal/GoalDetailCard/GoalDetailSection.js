@@ -5,6 +5,7 @@ import {
   Text
 } from 'react-native';
 import { connect } from 'react-redux';
+import timeago from 'timeago.js';
 
 // Actions
 import {
@@ -24,32 +25,33 @@ import ActionButtonGroup from '../Common/ActionButtonGroup';
 import Headline from '../Common/Headline';
 import Timestamp from '../Common/Timestamp';
 
-
 class GoalDetailSection extends Component {
 
   // user basic information
   renderUserDetail() {
-    const { _id } = this.props.item;
+    const { _id, created, title, owner, category } = this.props.item;
+    const timeStamp = (created === undefined || created.length === 0)
+      ? new Date() : created;
     return (
       <View style={{ flexDirection: 'row' }}>
         <Image source={defaultProfilePic} resizeMode='contain' style={{ height: 60, width: 60 }} />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
-            name='John Doe'
-            category='Personal Development'
+            name={owner.name || ''}
+            category={category}
             caretOnPress={() => {
               console.log('I am pressed');
               this.props.createReport(_id, 'detail', 'User');
             }}
           />
-          <Timestamp time='5 mins ago' />
+          <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text
               style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
               numberOfLines={3}
               ellipsizeMode='tail'
             >
-              Establish a LMFBR near Westport, Connecticut by the year 2020
+              {title}
             </Text>
           </View>
 

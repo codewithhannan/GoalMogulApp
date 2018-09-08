@@ -4,12 +4,14 @@ import {
   Image,
   Text,
   MaskedViewIOS,
-  Dimensions
+  Dimensions,
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import { LinearGradient } from 'expo';
 import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
+import timeago from 'timeago.js';
 
 // Actions
 import {
@@ -121,7 +123,9 @@ class GoalCard extends Component {
 
   // user basic information
   renderUserDetail() {
-    const { title, owner, category, _id } = this.props.item;
+    const { title, owner, category, _id, created } = this.props.item;
+    const timeStamp = (created === undefined || created.length === 0)
+      ? new Date() : created;
     // TODO: verify all the fields have data
 
     return (
@@ -133,7 +137,7 @@ class GoalCard extends Component {
             category={category}
             caretOnPress={() => this.props.createReport(_id, 'goal', 'User')}
           />
-          <Timestamp time='5 mins ago' />
+          <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text
               style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
@@ -191,7 +195,7 @@ class GoalCard extends Component {
 
   renderViewGoal() {
     return (
-      <View
+      <TouchableOpacity
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -202,6 +206,7 @@ class GoalCard extends Component {
           left: 0,
           right: 0
         }}
+        onPress={this.props.onPress}
       >
         <Text style={styles.viewGoalTextStyle}>View Goal</Text>
         <View style={{ alignSelf: 'center', alignItems: 'center' }}>
@@ -212,7 +217,7 @@ class GoalCard extends Component {
             iconStyle={styles.iconStyle}
           />
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 
