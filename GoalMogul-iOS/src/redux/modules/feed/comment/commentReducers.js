@@ -7,6 +7,11 @@ import {
   GOAL_DETAIL_CLOSE
 } from '../../../../reducers/GoalDetailReducers';
 
+import {
+  LIKE_COMMENT,
+  UNLIKE_COMMENT
+} from '../../like/LikeReducers';
+
 /**
  * This reducer is servered as denormalized comment stores
  */
@@ -64,26 +69,12 @@ export default (state = INITIAL_STATE, action) => {
       newState = _.set(newState, 'data', data);
 
       // A dump way to transform all comments to comments with childComments
-      const transformedComments = data.filter(comment => !comment.replyToRef).map(comment => {
-        const commentId = comment._id.toString();
-        const childComments = data.filter(
-          currentComment => currentComment.replyToRef.toString() === commentId);
-
-        const numberOfChildrenShowing = childComments.length > 0 ? 1 : 0;
-        const hasMoreToShow = numberOfChildrenShowing !== childComments.length;
-        const newComment = {
-          ...comment,
-          childComments,
-          hasMoreToShow,
-          numberOfChildrenShowing
-        };
-        return newComment;
-      });
+      const transformedComments = transformComments(data);
       return _.set(newState, 'transformedComments', transformedComments);
     }
 
     case COMMENT_LOAD_DONE: {
-      const { skip, data, hasNextPage, type } = action.payload;
+      const { skip, data, hasNextPage } = action.payload;
       let newState = _.cloneDeep(state);
       newState = _.set(newState, 'loading', false);
 
@@ -95,10 +86,50 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, 'data', arrayUnique(oldData.concat(data)));
     }
 
+    // User likes a comment or User unlikes a comment
+    case UNLIKE_COMMENT:
+    case LIKE_COMMENT: {
+      const { id, likeId } = action.payload;
+      let newState = _.cloneDeep(state);
+      // Update original comments
+      const newData = updateLike(_.get(newState, 'data'), id, likeId);
+      // Update transformed comments
+      const transformedComments = transformComments(newData);
+      newState = _.set(newState, 'data', newData);
+      return _.set(newState, 'transformedComments', transformedComments);
+    }
+
     default:
       return { ...state };
   }
 };
+
+const transformComments = (data) =>
+  data.filter(comment => !comment.replyToRef).map(comment => {
+    const commentId = comment._id.toString();
+    const childComments = data.filter(
+      currentComment => currentComment.replyToRef.toString() === commentId);
+
+    const numberOfChildrenShowing = childComments.length > 0 ? 1 : 0;
+    const hasMoreToShow = numberOfChildrenShowing !== childComments.length;
+    const newComment = {
+      ...comment,
+      childComments,
+      hasMoreToShow,
+      numberOfChildrenShowing
+    };
+    return newComment;
+  });
+
+function updateLike(array, id, like) {
+  return array.map((item) => {
+    let newItem = _.cloneDeep(item);
+    if (item._id.toString() === id.toString()) {
+      newItem = _.set(newItem, 'maybeLikeRef', like);
+    }
+    return newItem;
+  });
+}
 
 /**
  * Note: following is the schema design for comment

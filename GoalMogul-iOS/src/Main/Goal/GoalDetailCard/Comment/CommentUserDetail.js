@@ -4,6 +4,7 @@ import {
   Image,
   Text
 } from 'react-native';
+import { connect } from 'react-redux';
 
 // Assets
 import defaultProfilePic from '../../../../asset/utils/defaultUserProfile.png';
@@ -15,6 +16,15 @@ import ActionButton from '../../Common/ActionButton';
 import ActionButtonGroup from '../../Common/ActionButtonGroup';
 import CommentHeadline from './CommentHeadline';
 import CommentRef from './CommentRef';
+
+// Actions
+import {
+  likeGoal,
+  unLikeGoal
+} from '../../../../redux/modules/like/LikeActions';
+
+// Constants
+const DEBUG_KEY = '[ UI CommentCard.CommentUserDetail ]';
 
 class CommentUserDetail extends Component {
   constructor(props) {
@@ -91,18 +101,26 @@ class CommentUserDetail extends Component {
 
   renderActionButtons() {
     const { item, index, scrollToIndex, onCommentClicked, viewOffset } = this.props;
-    const { childComments } = item;
+    const { childComments, _id, maybeLikeRef } = item;
     const commentCounts = childComments && childComments.length > 0
       ? childComments.length
       : undefined;
+
+    const likeCount = item.likeCount ? item.likeCount : 0;
 
     return (
       <ActionButtonGroup containerStyle={{ height: 40 }}>
         <ActionButton
           iconSource={LikeIcon}
-          count={22}
+          count={likeCount}
           iconStyle={{ tintColor: '#cbd6d8', height: 27, width: 27 }}
-          onPress={() => console.log('like')}
+          onPress={() => {
+            console.log(`${DEBUG_KEY}: user clicks like icon.`);
+            if (maybeLikeRef && maybeLikeRef.length > 0) {
+              return this.props.unLikeGoal('comment', _id, maybeLikeRef);
+            }
+            this.props.likeGoal('comment', _id);
+          }}
         />
         <ActionButton
           iconSource={CommentIcon}
@@ -172,4 +190,10 @@ const styles = {
   }
 };
 
-export default CommentUserDetail;
+export default connect(
+  null,
+  {
+    likeGoal,
+    unLikeGoal
+  }
+)(CommentUserDetail);

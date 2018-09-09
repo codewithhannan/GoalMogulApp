@@ -23,6 +23,18 @@ import LoveIcon from '../../../asset/utils/love.png';
 import BulbIcon from '../../../asset/utils/bulb.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 
+// Actions
+import {
+  likeGoal,
+  unLikeGoal
+} from '../../../redux/modules/like/LikeActions';
+
+import {
+  createReport
+} from '../../../redux/modules/report/ReportActions';
+
+const DEBUG_KEY = '[ UI NeedCard ]';
+
 class NeedCard extends Component {
 
   // card central content
@@ -98,24 +110,41 @@ class NeedCard extends Component {
   }
 
   renderActionButtons() {
+    const { item } = this.props;
+    const { maybeLikeRef, _id } = item;
+
+    const likeCount = item.likeCount ? item.likeCount : 0;
+    const commentCount = item.commentCount ? item.commentCount : 0;
+    const shareCount = item.shareCount ? item.shareCount : 0;
+
+    const likeButtonContainerStyle = maybeLikeRef && maybeLikeRef.length > 0
+      ? { backgroundColor: '#f9d6c9' }
+      : { backgroundColor: 'white' };
+
     return (
       <ActionButtonGroup>
         <ActionButton
           iconSource={LoveIcon}
-          count={22}
-          iconContainerStyle={{ backgroundColor: '#f9d6c9' }}
+          count={likeCount}
+          iconContainerStyle={likeButtonContainerStyle}
           iconStyle={{ tintColor: '#f15860' }}
-          onPress={() => console.log('like')}
+          onPress={() => {
+            console.log(`${DEBUG_KEY}: user clicks like icon.`);
+            if (maybeLikeRef && maybeLikeRef.length > 0) {
+              return this.props.unLikeGoal('post', _id, maybeLikeRef);
+            }
+            this.props.likeGoal('post', _id);
+          }}
         />
         <ActionButton
           iconSource={ShareIcon}
-          count={5}
+          count={shareCount}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
           onPress={() => console.log('share')}
         />
         <ActionButton
           iconSource={BulbIcon}
-          count={45}
+          count={commentCount}
           iconStyle={{ tintColor: '#f5eb6f', height: 26, width: 26 }}
           onPress={() => console.log('suggest')}
         />
@@ -186,5 +215,9 @@ const styles = {
 
 export default connect(
   null,
-  null
+  {
+    likeGoal,
+    createReport,
+    unLikeGoal
+  }
 )(NeedCard);

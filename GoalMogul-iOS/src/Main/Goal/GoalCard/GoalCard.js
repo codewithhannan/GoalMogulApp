@@ -18,6 +18,11 @@ import {
   createReport
 } from '../../../redux/modules/report/ReportActions';
 
+import {
+  likeGoal,
+  unLikeGoal
+} from '../../../redux/modules/like/LikeActions';
+
 // Components
 import Headline from '../Common/Headline';
 import Timestamp from '../Common/Timestamp';
@@ -38,6 +43,7 @@ import ShareIcon from '../../../asset/utils/forward.png';
 import HelpIcon from '../../../asset/utils/help.png';
 import StepIcon from '../../../asset/utils/steps.png';
 
+// Constants
 const { height } = Dimensions.get('window');
 const CardHeight = height * 0.7;
 
@@ -63,6 +69,8 @@ const TabIconMap = {
     iconStyle: { height: 20, width: 20 }
   }
 };
+
+const DEBUG_KEY = '[ UI GoalCard ]';
 
 class GoalCard extends Component {
   constructor(props) {
@@ -223,24 +231,41 @@ class GoalCard extends Component {
   }
 
   renderActionButtons() {
+    const { item } = this.props;
+    const { maybeLikeRef, _id } = item;
+
+    const likeCount = item.likeCount ? item.likeCount : 0;
+    const commentCount = item.commentCount ? item.commentCount : 0;
+    const shareCount = item.shareCount ? item.shareCount : 0;
+
+    const likeButtonContainerStyle = maybeLikeRef && maybeLikeRef.length > 0
+      ? { backgroundColor: '#f9d6c9' }
+      : { backgroundColor: 'white' };
+
     return (
       <ActionButtonGroup>
         <ActionButton
           iconSource={LoveIcon}
-          count={22}
-          iconContainerStyle={{ backgroundColor: '#f9d6c9' }}
+          count={likeCount}
+          iconContainerStyle={likeButtonContainerStyle}
           iconStyle={{ tintColor: '#f15860' }}
-          onPress={() => console.log('like')}
+          onPress={() => {
+            console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
+            if (maybeLikeRef && maybeLikeRef.length > 0) {
+              return this.props.unLikeGoal('goal', _id, maybeLikeRef);
+            }
+            this.props.likeGoal('goal', _id);
+          }}
         />
         <ActionButton
           iconSource={ShareIcon}
-          count={5}
+          count={shareCount}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
           onPress={() => console.log('share')}
         />
         <ActionButton
           iconSource={BulbIcon}
-          count={45}
+          count={commentCount}
           iconStyle={{ tintColor: '#f5eb6f', height: 26, width: 26 }}
           onPress={() => console.log('suggest')}
         />
@@ -351,6 +376,8 @@ const testData = {
 export default connect(
   null,
   {
-    createReport
+    createReport,
+    likeGoal,
+    unLikeGoal
   }
 )(GoalCard);

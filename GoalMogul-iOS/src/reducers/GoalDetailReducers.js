@@ -5,13 +5,16 @@ import {
   USER_LOG_OUT
 } from './User';
 
+import {
+  LIKE_POST,
+  LIKE_GOAL,
+  UNLIKE_POST,
+  UNLIKE_GOAL
+} from '../redux/modules/like/LikeReducers';
+
 const INITIAL_STATE = {
   goal: {
 
-  },
-  like: {
-    likeId: undefined,
-    isLiked: undefined
   }
 };
 
@@ -50,6 +53,20 @@ export default (state = INITIAL_STATE, action) => {
     case GOAL_DETAIL_CLOSE:
     case USER_LOG_OUT: {
       return { ...INITIAL_STATE };
+    }
+
+    case LIKE_POST:
+    case LIKE_GOAL:
+    case UNLIKE_POST:
+    case UNLIKE_GOAL: {
+      const { _id, likeId } = action.payload;
+      let newState = _.cloneDeep(state);
+
+      const { goal } = newState;
+      if (goal._id && goal._id.toString() === _id.toString()) {
+        newState = _.set(newState, 'goal.maybeLikeRef', likeId);
+      }
+      return newState;
     }
 
     default:

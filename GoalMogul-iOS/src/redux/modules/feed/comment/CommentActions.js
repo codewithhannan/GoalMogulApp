@@ -69,23 +69,25 @@ export const createComment = (commentDetail) =>
 
   console.log('Creating comment with commentDetail: ', commentDetail);
 
-  // TODO: update the owner for creating a comment
   dispatch({
     type: COMMENT_NEW,
     payload: {
-      ...commentDetail
+      ...commentDetail,
+      owner: userId
     }
   });
 };
 
 // When user clicks on suggestion icon outside comment box
 export const createCommentFromSuggestion = (commentDetail, suggestionForRef, suggestionFor) =>
-(dispatch) => {
-  // TODO: update the owner for creating a comment
+(dispatch, getState) => {
+  const { userId } = getState().user;
+
   dispatch({
     type: COMMENT_NEW,
     payload: {
-      ...commentDetail
+      ...commentDetail,
+      owner: userId
     }
   });
 
