@@ -108,12 +108,17 @@ class CommentUserDetail extends Component {
 
     const likeCount = item.likeCount ? item.likeCount : 0;
 
+    // If comment is like, like icon is tinted with red
+    const tintColor = maybeLikeRef && maybeLikeRef.length > 0
+      ? '#f15860'
+      : '#cbd6d8';
+
     return (
       <ActionButtonGroup containerStyle={{ height: 40 }}>
         <ActionButton
           iconSource={LikeIcon}
           count={likeCount}
-          iconStyle={{ tintColor: '#cbd6d8', height: 27, width: 27 }}
+          iconStyle={{ tintColor, height: 27, width: 27 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks like icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
