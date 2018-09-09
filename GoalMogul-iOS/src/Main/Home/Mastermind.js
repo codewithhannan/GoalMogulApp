@@ -45,7 +45,14 @@ class Mastermind extends Component {
     // TODO: render item
     console.log('item rendering in Mastermind is: ', item);
     // mastermind currently only renders goals
-    return <GoalCard item={item} onPress={() => this.props.openGoalDetail(item)} />;
+    return (
+      <GoalCard
+        item={item}
+        onPress={() => {
+          this.props.openGoalDetail(item);
+        }}
+      />
+    );
   }
 
   renderPlus() {

@@ -96,8 +96,8 @@ class GoalCard extends Component {
   };
 
   _renderScene = SceneMap({
-    needs: () => <NeedTab item={this.props.item.needs} />,
-    steps: () => <StepTab item={this.props.item.steps}/>,
+    needs: () => <NeedTab item={this.props.item.needs} onPress={this.props.onPress} />,
+    steps: () => <StepTab item={this.props.item.steps} onPress={this.props.onPress} />,
   });
 
   renderTabs() {
@@ -193,6 +193,7 @@ class GoalCard extends Component {
     );
   }
 
+  // Note: deprecated
   renderViewGoal() {
     return (
       <TouchableOpacity
@@ -206,7 +207,7 @@ class GoalCard extends Component {
           left: 0,
           right: 0
         }}
-        onPress={this.props.onPress}
+        onPress={() => this.props.onPress}
       >
         <Text style={styles.viewGoalTextStyle}>View Goal</Text>
         <View style={{ alignSelf: 'center', alignItems: 'center' }}>

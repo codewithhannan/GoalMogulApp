@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
-  Text
+  Text,
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
@@ -25,8 +26,8 @@ import ShareIcon from '../../../asset/utils/forward.png';
 class NeedCard extends Component {
 
   // card central content
-  renderCardContent() {
-    const { description } = this.props.item;
+  renderCardContent(item) {
+    const { description } = item;
     return (
       <View style={{ marginTop: 20 }}>
         <Text style={{ color: '#505050' }}>
@@ -37,16 +38,21 @@ class NeedCard extends Component {
   }
 
   // user basic information
-  renderUserDetail() {
-    const { created, needRequest } = this.props.item;
+  renderUserDetail(item) {
+    const { created, needRequest, category, owner, _id } = item;
     const { description } = needRequest;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
+
     return (
       <View style={{ flexDirection: 'row' }}>
         <Image source={defaultProfilePic} resizeMode='contain' style={{ height: 60, width: 60 }} />
         <View style={{ marginLeft: 15, flex: 1 }}>
-          <Headline name='John Doe' category='Personal Development' />
+          <Headline
+            name={owner.name}
+            category={category}
+            caretOnPress={() => this.props.createReport(_id, 'goal', 'User')}
+          />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text
@@ -69,13 +75,14 @@ class NeedCard extends Component {
 
   renderViewGoal() {
     return (
-      <View
+      <TouchableOpacity
         style={{
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
           marginTop: 10
         }}
+        onPress={() => this.props.onPress}
       >
         <Text style={styles.viewGoalTextStyle}>View Goal</Text>
         <View style={{ alignSelf: 'center', alignItems: 'center' }}>
@@ -86,7 +93,7 @@ class NeedCard extends Component {
             iconStyle={styles.iconStyle}
           />
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 
@@ -117,7 +124,8 @@ class NeedCard extends Component {
   }
 
   render() {
-    const { owner } = this.props.item;
+    const { item } = this.props;
+    const { owner } = item;
     const { name } = owner;
     return (
       <View>
@@ -131,8 +139,8 @@ class NeedCard extends Component {
             </View>
             <View style={styles.containerStyle}>
               <View style={{ marginTop: 20, marginBottom: 20, marginRight: 15, marginLeft: 15 }}>
-                {this.renderUserDetail()}
-                {this.renderCardContent()}
+                {this.renderUserDetail(item)}
+                {this.renderCardContent(item)}
               </View>
             </View>
 

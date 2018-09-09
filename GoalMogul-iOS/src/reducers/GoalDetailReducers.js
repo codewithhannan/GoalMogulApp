@@ -1,4 +1,5 @@
 import R from 'ramda';
+import _ from 'lodash';
 
 import {
   USER_LOG_OUT

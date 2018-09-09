@@ -71,9 +71,12 @@ class Report extends Component {
               <ModalHeader
                 title='Report'
                 actionText='Submit'
-                onCancel={() => this.props.cancelReport()}
+                onCancel={() => {
+                  this.setState({ postingSucceed: false });
+                  this.props.cancelReport();
+                }}
                 onAction={() => {
-                  this.props.postingReport(() => this.setState({ postingSucceed: true }))
+                  this.props.postingReport(() => this.setState({ postingSucceed: true }));
                 }}
               />
               <Text style={styles.subTitleTextStyle}>Description</Text>

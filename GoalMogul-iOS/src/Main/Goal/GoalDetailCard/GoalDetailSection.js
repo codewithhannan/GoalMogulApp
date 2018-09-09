@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import timeago from 'timeago.js';
+import _ from 'lodash';
 
 // Actions
 import {
@@ -28,10 +29,13 @@ import Timestamp from '../Common/Timestamp';
 class GoalDetailSection extends Component {
 
   // user basic information
-  renderUserDetail() {
-    const { _id, created, title, owner, category } = this.props.item;
+  renderUserDetail(item) {
+    const { _id, created, title, owner, category } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
+    console.log('owner is ', owner);
+    console.log('item is: ', item);
+
     return (
       <View style={{ flexDirection: 'row' }}>
         <Image source={defaultProfilePic} resizeMode='contain' style={{ height: 60, width: 60 }} />
@@ -95,11 +99,14 @@ class GoalDetailSection extends Component {
   }
 
   render() {
+    const { item } = this.props;
+    if (!item || _.isEmpty(item)) return '';
+
     return (
       <View>
         <View style={{ ...styles.containerStyle }}>
           <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
-            {this.renderUserDetail()}
+            {this.renderUserDetail(item)}
             {this.renderCardContent()}
           </View>
         </View>

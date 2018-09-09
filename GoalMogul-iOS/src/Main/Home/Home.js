@@ -7,6 +7,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup';
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
+import Report from '../Report/Report';
 
 import Mastermind from './Mastermind';
 import ActivityFeed from './ActivityFeed';
@@ -82,6 +83,7 @@ class Home extends Component {
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={styles.homeContainerStyle}>
+          <Report showing={this.props.showingModal} />
           <SearchBarHeader rightIcon='menu' />
           <TabViewAnimated
             navigationState={this.state.navigationState}
@@ -95,6 +97,14 @@ class Home extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const { showingModal } = state.report;
+
+  return {
+    showingModal
+  };
+};
 
 const styles = {
   homeContainerStyle: {
@@ -119,7 +129,7 @@ const styles = {
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   {
     homeSwitchTab
   }
