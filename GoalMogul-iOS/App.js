@@ -69,6 +69,9 @@ export default class App extends React.Component {
       require('./src/asset/suggestion/group.png'),
       require('./src/asset/suggestion/link.png'),
       require('./src/asset/suggestion/other.png'),
+      // Explore related icons
+      require('./src/asset/explore/explore.png'),
+      require('./src/asset/explore/tribe.png'),
       // Navigation Icons
       require('./src/asset/footer/navigation/home.png'),
       require('./src/asset/footer/navigation/bell.png'),
