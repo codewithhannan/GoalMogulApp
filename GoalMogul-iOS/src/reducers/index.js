@@ -19,6 +19,7 @@ import GoalDetailReducers from './GoalDetailReducers';
 import TribeReducers from '../redux/modules/tribe/TribeReducers';
 import EventReducers from '../redux/modules/event/EventReducers';
 import CommentReducers from '../redux/modules/feed/comment/CommentReducers';
+import NewCommentReducers from '../redux/modules/feed/comment/NewCommentReducers';
 import ReportReducers from '../redux/modules/report/ReportReducers';
 // Explore tab related reducers
 import EventTabReducers from '../redux/modules/event/EventTabReducers';
@@ -48,6 +49,7 @@ const reducers = combineReducers({
   tribe: TribeReducers,
   event: EventReducers,
   comment: CommentReducers,
+  newComment: NewCommentReducers,
   report: ReportReducers,
   explore: ExploreReducers,
   eventTab: EventTabReducers,

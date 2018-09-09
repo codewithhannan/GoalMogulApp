@@ -177,7 +177,7 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { newComment } = state.comment;
+  const { newComment } = state;
 
   return {
     newComment

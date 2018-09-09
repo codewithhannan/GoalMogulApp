@@ -1,9 +1,28 @@
+/**
+ * This file contains actions for fetching comments for a specific goal and also
+ * actions related to a specific comment
+ */
 import {
   COMMENT_LOAD,
   COMMENT_REFRESH_DONE,
-  COMMENT_LOAD_DONE,
-  COMMENT_NEW_TEXT_ON_CHANGE
+  COMMENT_LOAD_DONE
 } from './CommentReducers';
+
+import {
+  COMMENT_NEW,
+  COMMENT_NEW_TEXT_ON_CHANGE,
+  COMMENT_NEW_SUGGESTION_REMOVE,
+  COMMENT_NEW_SUGGESTION_CREATE,
+  COMMENT_NEW_SUGGESTION_ATTACH,
+  COMMENT_NEW_SUGGESTION_CANCEL,
+  COMMENT_NEW_SUGGESTION_OPEN_CURRENT,
+  COMMENT_NEW_SUGGESTION_UPDAET_TYPE,
+
+  COMMENT_NEW_POST_START,
+  COMMENT_NEW_POST_SUCCESS,
+  COMMENT_NEW_POST_FAIL,
+} from './NewCommentReducers';
+
 import { api as API } from '../../../middleware/api';
 import { queryBuilder } from '../../../middleware/utils';
 
@@ -25,17 +44,8 @@ export const newCommentOnTextChange = (text) => (dispatch) => {
  * @params commentId: id of the comment
  * @params updates: JsonObject of the updated comment
  */
-export const updateComment = (commentId, udpates) => {
+export const updateComment = (commentId, updates) => {
 
-};
-
-/**
- * action to create a comment for a goal / post
- * @params comment: a json object of a comment object
- */
-export const createComment = (rawComment) => {
-  // rawComment needs an adapter to transform to backend jsonObject
-  console.log('Creating comment with obj: ', rawComment);
 };
 
 /**
@@ -44,6 +54,91 @@ export const createComment = (rawComment) => {
  */
 export const deleteComment = (commentId) => {
 
+};
+
+/**
+ * Following section is for actions related to creating a new comment
+ * which involes suggestion
+ */
+
+// User clicks on the comment button
+export const createComment = (commentDetail) =>
+(dispatch, getState) => {
+  // const { parentType, parentRef, commentType, replyToRef } = commentDetail;
+  const { userId } = getState().user;
+
+  console.log('Creating comment with commentDetail: ', commentDetail);
+
+  // TODO: update the owner for creating a comment
+  dispatch({
+    type: COMMENT_NEW,
+    payload: {
+      ...commentDetail
+    }
+  });
+};
+
+// When user clicks on suggestion icon outside comment box
+export const createCommentFromSuggestion = (commentDetail, suggestionForRef, suggestionFor) =>
+(dispatch) => {
+  // TODO: update the owner for creating a comment
+  dispatch({
+    type: COMMENT_NEW,
+    payload: {
+      ...commentDetail
+    }
+  });
+
+  dispatch({
+    type: COMMENT_NEW_SUGGESTION_CREATE,
+    payload: {
+      suggestionFor,
+      suggestionForRef
+    }
+  });
+};
+
+/* Actions for suggestion modal */
+// When user clicks on the suggestion icon on teh comment box
+export const createSuggestion = (suggestionForRef, suggestionFor) => (dispatch) => {
+  dispatch({
+    type: COMMENT_NEW_SUGGESTION_CREATE,
+    payload: {
+      suggestionFor,
+      suggestionForRef
+    }
+  });
+};
+
+// Cancel creating a suggestion
+export const cancelSuggestion = () => (dispatch) => {
+  dispatch({
+    type: COMMENT_NEW_SUGGESTION_CANCEL
+  });
+};
+
+// Remove the suggestion
+export const removeSuggestion = () => (dispatch) =>
+  dispatch({
+    type: COMMENT_NEW_SUGGESTION_REMOVE
+  });
+
+export const updateSuggestionType = suggestionType => (dispatch) =>
+  dispatch({
+    type: COMMENT_NEW_SUGGESTION_UPDAET_TYPE,
+    payload: suggestionType
+  });
+
+export const openCurrentSuggestion = () => (dispatch) => {
+  dispatch({
+    type: COMMENT_NEW_SUGGESTION_OPEN_CURRENT
+  });
+};
+
+export const attachSuggestion = () => (dispatch) => {
+  dispatch({
+    type: COMMENT_NEW_SUGGESTION_ATTACH
+  });
 };
 
 /**

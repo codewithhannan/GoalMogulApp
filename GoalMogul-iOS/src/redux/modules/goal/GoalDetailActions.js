@@ -49,7 +49,6 @@ export const getLike = (parentId, parentType) => (dispatch, getState) => {
     .catch((err) => {
       console.log('Error in getting like: ', err);
     })
-
 };
 
 /**
@@ -81,6 +80,7 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
     .post(`${LIKE_BASE_ROUTE}`, { ...requestBody }, token)
     .then((res) => {
       // TODO: update reducers
+
     })
     .catch((err) => {
       console.log(`Error when like ${type} with id: ${id}. Error is: `, err);
