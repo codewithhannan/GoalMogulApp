@@ -18,6 +18,10 @@ import {
   unLikeGoal
 } from '../../../redux/modules/like/LikeActions';
 
+import {
+  createCommentFromSuggestion
+} from '../../../redux/modules/feed/comment/CommentActions';
+
 // Assets
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
 import LoveIcon from '../../../asset/utils/love.png';
@@ -116,7 +120,20 @@ class GoalDetailSection extends Component {
           iconSource={BulbIcon}
           count={commentCount}
           iconStyle={{ tintColor: '#f5eb6f', height: 26, width: 26 }}
-          onPress={() => console.log('suggest')}
+          onPress={() => {
+            console.log(`${DEBUG_KEY}: user clicks suggestion icon.`);
+            this.props.createCommentFromSuggestion({
+              commentDetail: {
+                parentType: 'Goal',
+                parentRef: _id,
+                commentType: 'Suggestion',
+                replyToRef: undefined
+              },
+              suggestionForRef: _id,
+              suggestionFor: 'Goal'
+            });
+            this.props.onSuggestion();
+          }}
         />
       </ActionButtonGroup>
     );
@@ -160,6 +177,7 @@ export default connect(
   {
     createReport,
     likeGoal,
-    unLikeGoal
+    unLikeGoal,
+    createCommentFromSuggestion
   }
 )(GoalDetailSection);

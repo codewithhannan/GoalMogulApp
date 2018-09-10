@@ -79,7 +79,7 @@ export const createComment = (commentDetail) =>
 };
 
 // When user clicks on suggestion icon outside comment box
-export const createCommentFromSuggestion = (commentDetail, suggestionForRef, suggestionFor) =>
+export const createCommentFromSuggestion = ({ commentDetail, suggestionForRef, suggestionFor }) =>
 (dispatch, getState) => {
   const { userId } = getState().user;
 

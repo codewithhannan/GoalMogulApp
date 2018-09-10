@@ -101,7 +101,7 @@ class GoalDetailCard2 extends Component {
   renderGoalDetailSection() {
     return (
       <View>
-        <GoalDetailSection item={this.props.goalDetail} />
+        <GoalDetailSection item={this.props.goalDetail} onSuggestion={() => this.dialogOnFocus()} />
         {
           this._renderHeader({
             jumpToIndex: (i) => this._handleIndexChange(i),

@@ -48,7 +48,14 @@ class CommentBox extends Component {
 
   renderSuggestionIcon() {
     return (
-      <TouchableOpacity style={styles.iconContainerStyle}>
+      <TouchableOpacity
+        style={styles.iconContainerStyle}
+        onPress={() => {
+          //TODO: check if suggestionFor and suggestionRef have assignment,
+          //If not then we assign the current goal ref and 'Goal'
+          console.log('suggestion on click in comment box');
+        }}
+      >
         <Image
           source={LightBulb}
           style={{

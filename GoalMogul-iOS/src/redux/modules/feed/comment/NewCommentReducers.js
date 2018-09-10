@@ -60,15 +60,28 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, 'contentText', action.payload);
     }
 
+    case COMMENT_NEW: {
+      const { parentType, parentRef, commentType, replyToRef, owner } = action.payload;
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'parentType', parentType);
+      newState = _.set(newState, 'parentRef', parentRef);
+      newState = _.set(newState, 'commentType', commentType);
+      newState = _.set(newState, 'replyToRef', replyToRef);
+      newState = _.set(newState, 'owner', owner);
+
+      return newState;
+    }
+
     case COMMENT_NEW_SUGGESTION_UPDAET_TYPE: {
       let newState = _.cloneDeep(state);
       return _.set(newState, 'tmpSuggestion.suggestionType', action.payload);
     }
 
     case COMMENT_NEW_SUGGESTION_CREATE: {
-      const { suggestionFor } = action.payload;
+      const { suggestionFor, suggestionForRef } = action.payload;
       let newState = _.cloneDeep(state);
       newState = _.set(newState, 'tmpSuggestion.suggestionFor', suggestionFor);
+      newState = _.set(newState, 'tmpSuggestion.suggestionForRef', suggestionForRef);
 
       // Open suggestion modal
       newState = _.set(newState, 'showSuggestionModal', true);
