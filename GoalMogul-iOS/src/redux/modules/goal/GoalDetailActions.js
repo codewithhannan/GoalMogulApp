@@ -16,14 +16,6 @@ const LIKE_BASE_ROUTE = `${BASE_ROUTE}/like`;
 const COMMENT_BASE_ROUTE = `${BASE_ROUTE}/comment`;
 const GOAL_BASE_ROUTE = 'secure/goal';
 
-/**
- * Right now, we implement no cache system for such case.
- */
-export const openGoalDetail = (id) => {
-  // Fetch Goal and like and comment in three different requests with three futures
-
-};
-
 export const closeGoalDetail = () => (dispatch) => {
   // Return to previous page
   Actions.pop();

@@ -43,6 +43,7 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case GOAL_DETAIL_OPEN: {
+      console.log('payload is: ', action.payload);
       let newState = _.cloneDeep(state);
       return _.set(newState, 'goal', { ...action.payload });
     }
@@ -59,11 +60,11 @@ export default (state = INITIAL_STATE, action) => {
     case LIKE_GOAL:
     case UNLIKE_POST:
     case UNLIKE_GOAL: {
-      const { _id, likeId } = action.payload;
+      const { id, likeId } = action.payload;
       let newState = _.cloneDeep(state);
 
       const { goal } = newState;
-      if (goal._id && goal._id.toString() === _id.toString()) {
+      if (goal._id && goal._id.toString() === id.toString()) {
         newState = _.set(newState, 'goal.maybeLikeRef', likeId);
       }
       return newState;

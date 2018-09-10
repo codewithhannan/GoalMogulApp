@@ -85,7 +85,7 @@ class NeedCard extends Component {
     return <SectionCard />;
   }
 
-  renderViewGoal() {
+  renderViewGoal(item) {
     return (
       <TouchableOpacity
         style={{
@@ -94,7 +94,7 @@ class NeedCard extends Component {
           justifyContent: 'center',
           marginTop: 10
         }}
-        onPress={() => this.props.onPress}
+        onPress={() => this.props.onPress(item)}
       >
         <Text style={styles.viewGoalTextStyle}>View Goal</Text>
         <View style={{ alignSelf: 'center', alignItems: 'center' }}>
@@ -176,7 +176,7 @@ class NeedCard extends Component {
             {this.renderNeed()}
 
             <View style={{ ...styles.containerStyle }}>
-              {this.renderViewGoal()}
+              {this.renderViewGoal(item)}
               {this.renderActionButtons()}
             </View>
           </View>

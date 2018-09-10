@@ -103,6 +103,7 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
  * @params id: LikeId
  */
 export const unLikeGoal = (type, id, likeId) => (dispatch, getState) => {
+  console.log('[ Action Like ]: id passed in is: ', id);
   const { token } = getState().user;
   const tmp = ((request) => {
     switch (request) {

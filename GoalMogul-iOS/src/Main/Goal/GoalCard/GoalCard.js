@@ -104,8 +104,10 @@ class GoalCard extends Component {
   };
 
   _renderScene = SceneMap({
-    needs: () => <NeedTab item={this.props.item.needs} onPress={this.props.onPress} />,
-    steps: () => <StepTab item={this.props.item.steps} onPress={this.props.onPress} />,
+    needs: () =>
+      <NeedTab item={this.props.item.needs} onPress={() => this.props.onPress(this.props.item)} />,
+    steps: () =>
+      <StepTab item={this.props.item.steps} onPress={() => this.props.onPress(this.props.item)} />,
   });
 
   renderTabs() {

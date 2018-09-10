@@ -23,9 +23,23 @@ class ActivityFeed extends Component {
   renderItem = ({ item }) => {
     // TODO: render item
     if (item.type === 'need') {
-      return <NeedCard item={item} />;
+      return (
+        <NeedCard
+          item={item}
+          onPress={(curItem) => {
+            this.props.openGoalDetail(curItem);
+          }}
+        />
+      );
     } else if (item.type === 'goal') {
-      return <GoalCard item={item} />;
+      return (
+        <GoalCard 
+          item={item}
+          onPress={(curItem) => {
+            this.props.openGoalDetail(curItem);
+          }}
+        />
+      );
     }
     return <View />;
   }

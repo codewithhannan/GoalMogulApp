@@ -48,8 +48,8 @@ class Mastermind extends Component {
     return (
       <GoalCard
         item={item}
-        onPress={() => {
-          this.props.openGoalDetail(item);
+        onPress={(curItem) => {
+          this.props.openGoalDetail(curItem);
         }}
       />
     );

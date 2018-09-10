@@ -131,9 +131,9 @@ export default (state = INITIAL_STATE, action) => {
       const oldActivityData = _.get(newState, 'activityfeed.data');
 
       // Update activity feed
-      newState = _.set(newState, 'data', updateLike(oldActivityData, id, likeId));
+      newState = _.set(newState, 'activityfeed.data', updateLike(oldActivityData, id, likeId));
       // Update goal feed
-      return _.set(newState, 'data', updateLike(oldGoalFeedData, id, likeId));
+      return _.set(newState, 'mastermind.data', updateLike(oldGoalFeedData, id, likeId));
     }
 
     default:

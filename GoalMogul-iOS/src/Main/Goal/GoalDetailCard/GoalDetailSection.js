@@ -41,8 +41,7 @@ class GoalDetailSection extends Component {
     const { _id, created, title, owner, category } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
-    console.log('owner is ', owner);
-    console.log('item is: ', item);
+    // console.log('item is: ', item);
 
     return (
       <View style={{ flexDirection: 'row' }}>
