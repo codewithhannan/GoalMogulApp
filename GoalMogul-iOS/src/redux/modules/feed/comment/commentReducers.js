@@ -90,6 +90,8 @@ export default (state = INITIAL_STATE, action) => {
     case UNLIKE_COMMENT:
     case LIKE_COMMENT: {
       const { id, likeId } = action.payload;
+      console.log(`${action.type} comment, id is: ${id}, likeId is: ${likeId}`);
+
       let newState = _.cloneDeep(state);
       // Update original comments
       const newData = updateLike(_.get(newState, 'data'), id, likeId);

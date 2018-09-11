@@ -269,7 +269,10 @@ class GoalCard extends Component {
           iconSource={BulbIcon}
           count={commentCount}
           iconStyle={{ tintColor: '#f5eb6f', height: 26, width: 26 }}
-          onPress={() => console.log('suggest')}
+          onPress={() => {
+            console.log(`${DEBUG_KEY}: user clicks suggest icon`);
+            this.props.onPress(this.props.item);
+          }}
         />
       </ActionButtonGroup>
     );

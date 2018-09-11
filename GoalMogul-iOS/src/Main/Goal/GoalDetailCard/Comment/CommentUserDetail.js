@@ -23,6 +23,10 @@ import {
   unLikeGoal
 } from '../../../../redux/modules/like/LikeActions';
 
+import {
+  createComment
+} from '../../../../redux/modules/feed/comment/CommentActions';
+
 // Constants
 const DEBUG_KEY = '[ UI CommentCard.CommentUserDetail ]';
 
@@ -132,8 +136,15 @@ class CommentUserDetail extends Component {
           count={commentCounts}
           iconStyle={{ tintColor: '#cbd6d8', height: 25, width: 25 }}
           onPress={() => {
+            // Update the position for FlatList
             scrollToIndex(index, viewOffset);
+            // Focus the comment box
             onCommentClicked();
+            // Update new comment reducer
+            createComment({
+              commentType: 'Reply',
+              replyToRef: _id
+            });
           }}
         />
       </ActionButtonGroup>
@@ -199,6 +210,7 @@ export default connect(
   null,
   {
     likeGoal,
-    unLikeGoal
+    unLikeGoal,
+    createComment
   }
 )(CommentUserDetail);

@@ -22,6 +22,10 @@ import {
   unLikeGoal
 } from '../../../../redux/modules/like/LikeActions';
 
+import {
+  createComment
+} from '../../../../redux/modules/feed/comment/CommentActions';
+
 // Constants
 const DEBUG_KEY = '[ UI CommentCard.ChildCommentCard ]';
 
@@ -120,6 +124,10 @@ class ChildCommentCard extends Component {
             console.log('share');
             scrollToIndex(index, viewOffset);
             onCommentClicked();
+            createComment({
+              commentType: 'Reply',
+              replyToRef: _id
+            });
           }}
         />
       </ActionButtonGroup>
@@ -186,6 +194,7 @@ export default connect(
   null,
   {
     likeGoal,
-    unLikeGoal
+    unLikeGoal,
+    createComment
   }
 )(ChildCommentCard);

@@ -1,6 +1,9 @@
 // This is the reducer for creating a new comment
 import _ from 'lodash';
-
+import {
+  GOAL_DETAIL_OPEN,
+  GOAL_DETAIL_CLOSE
+} from '../../../../reducers/GoalDetailReducers';
 /**
  * This reducer is servered as denormalized comment stores
  */
@@ -53,6 +56,33 @@ export const COMMENT_NEW_POST_FAIL = 'comment_new_post_fail';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
+
+    case GOAL_DETAIL_OPEN: {
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'parentType', 'goal');
+      return _.set(newState, 'parentRef', action.payload._id);
+    }
+
+    // when comment posts succeed, delete everything but parent type and ref
+    case COMMENT_NEW_POST_SUCCESS: {
+      const newState = _.cloneDeep(state);
+      const parentType = _.get(newState, 'parentType');
+      const parentRef = _.get(newState, 'parentRef');
+
+      return {
+        ...INITIAL_STATE,
+        parentType,
+        parentRef
+      };
+    }
+
+    // When user exits the GoalDetailCard, we need to reset the state
+    case GOAL_DETAIL_CLOSE: {
+      return {
+        ...INITIAL_STATE
+      };
+    }
+
     // cases related to new comment
     case COMMENT_NEW_TEXT_ON_CHANGE: {
       // TODO: potential optimzation
@@ -63,11 +93,11 @@ export default (state = INITIAL_STATE, action) => {
     case COMMENT_NEW: {
       const { parentType, parentRef, commentType, replyToRef, owner } = action.payload;
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, 'parentType', parentType);
-      newState = _.set(newState, 'parentRef', parentRef);
-      newState = _.set(newState, 'commentType', commentType);
-      newState = _.set(newState, 'replyToRef', replyToRef);
-      newState = _.set(newState, 'owner', owner);
+      newState = setState(newState, 'parentType', parentType);
+      newState = setState(newState, 'parentRef', parentRef);
+      newState = setState(newState, 'commentType', commentType);
+      newState = setState(newState, 'replyToRef', replyToRef);
+      newState = setState(newState, 'owner', owner);
 
       return newState;
     }
@@ -125,6 +155,12 @@ export default (state = INITIAL_STATE, action) => {
 
     default: return { ...state };
   }
+};
+
+const setState = (newState, path, data) => {
+  // If data exists or original field is set, then we set explicitly.
+  if (data || _.get(newState, `${path}`)) return _.set(newState, `${path}`, data);
+  return newState;
 };
 
 /**

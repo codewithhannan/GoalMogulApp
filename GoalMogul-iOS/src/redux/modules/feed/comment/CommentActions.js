@@ -100,6 +100,16 @@ export const createCommentFromSuggestion = ({ commentDetail, suggestionForRef, s
   });
 };
 
+export const postComment = () => (dispatch, getstate) => {
+  dispatch({
+    type: COMMENT_NEW_POST_START
+  });
+  // TODO: Check if no suggestion and no replyToRef is filled
+  // and commentType is Suggestion, then we set commentType to Comment.
+
+  // If succeed, COMMENT_NEW_POST_SUCCESS, otherwise, COMMENT_NEW_POST_FAIL
+};
+
 /* Actions for suggestion modal */
 // When user clicks on the suggestion icon on teh comment box
 export const createSuggestion = (suggestionForRef, suggestionFor) => (dispatch) => {
