@@ -9,36 +9,27 @@ import { connect } from 'react-redux';
 
 // Components
 import GoalFilterBar from '../Common/GoalFilterBar';
-import MyGoalCard from '../Goal/GoalCard/GoalCard';
+import ProfileGoalCard from '../Goal/GoalCard/ProfileGoalCard';
 
 // actions
 import {
-  handleRefresh
+  handleTabRefresh
 } from '../../actions';
 
 // tab key
-const key = 'myneeds';
-
-/* TODO: delete the test data */
-const testData = [
-  {
-    name: 'Jia Zeng',
-    id: '1'
-  }
-];
+const key = 'goals';
 
 class MyGoals extends Component {
-
   _keyExtractor = (item) => item.id
 
   handleRefresh = () => {
     console.log('Refreshing tab: ', key);
-    // this.props.handleRefresh(key);
+    this.props.handleTabRefresh(key);
   }
 
-  renderItem = item => {
+  renderItem = ({ item }) => {
     // TODO: render item
-    return <View />
+    return <ProfileGoalCard item={item} />;
   }
 
   render() {
@@ -98,9 +89,21 @@ const mapStateToProps = state => {
   };
 };
 
+const testData = [
+  {
+    _id: '128039187294',
+    owner: {
+      _id: '12937109823',
+      name: 'Jia Zeng'
+    },
+    title: 'This is a test goal for Jia',
+    category: 'General'
+  }
+];
+
 export default connect(
   mapStateToProps,
   {
-    handleRefresh
+    handleTabRefresh
   }
 )(MyGoals);

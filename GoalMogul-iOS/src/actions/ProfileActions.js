@@ -310,7 +310,7 @@ export const handleTabOnLoadMore = (tab) => (dispatch, getState) => {
   const { token } = getState().user;
   const { filter, skip, limit, hasNextPage } = _.get(getState().profile, tab);
 
-  if (!hasNextPage) {
+  if (!hasNextPage && hasNextPage !== undefined) {
     return;
   }
 
