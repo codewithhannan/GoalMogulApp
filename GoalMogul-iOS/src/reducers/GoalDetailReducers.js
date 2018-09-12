@@ -43,7 +43,6 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case GOAL_DETAIL_OPEN: {
-      console.log('payload is: ', action.payload);
       let newState = _.cloneDeep(state);
       return _.set(newState, 'goal', { ...action.payload });
     }
