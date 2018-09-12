@@ -44,7 +44,8 @@ class Mastermind extends Component {
   renderItem = ({ item }) => {
     // TODO: render item
     console.log('item rendering in Mastermind is: ', item);
-    // mastermind currently only renders goals
+    // mastermind currently renders goals and needs
+    // TODO: add NeedCard
     return (
       <GoalCard
         item={item}
