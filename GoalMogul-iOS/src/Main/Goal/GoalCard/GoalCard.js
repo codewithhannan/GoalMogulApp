@@ -12,6 +12,7 @@ import { Icon } from 'react-native-elements';
 import { LinearGradient } from 'expo';
 import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
 import timeago from 'timeago.js';
+import R from 'ramda';
 
 // Actions
 import {
@@ -22,6 +23,10 @@ import {
   likeGoal,
   unLikeGoal
 } from '../../../redux/modules/like/LikeActions';
+
+import {
+  chooseShareDest
+} from '../../../redux/modules/feed/post/ShareActions';
 
 // Components
 import Headline from '../Common/Headline';
@@ -34,6 +39,7 @@ import ProgressBar from '../Common/ProgressBar';
 import NextButton from '../Common/NextButton';
 import NeedTab from './NeedTab';
 import StepTab from './StepTab';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 
 // Asset
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
@@ -71,6 +77,8 @@ const TabIconMap = {
 };
 
 const DEBUG_KEY = '[ UI GoalCard ]';
+const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to a tribe', 'Share to an event'];
+const CANCEL_INDEX = 3;
 
 class GoalCard extends Component {
   constructor(props) {
@@ -85,6 +93,36 @@ class GoalCard extends Component {
       }
     };
   }
+
+  handleShareOnClick = () => {
+    const { _id } = this.props.item;
+
+    const shareToSwitchCases = switchByButtonIndex([
+      [R.equals(0), () => {
+        // User choose to share to feed
+        console.log(`${DEBUG_KEY} User choose destination: Feed `);
+        this.props.chooseShareDest('ShareGoal', _id, 'feed');
+        // TODO: update reducer state
+      }],
+      [R.equals(1), () => {
+        // User choose to share to an event
+        console.log(`${DEBUG_KEY} User choose destination: Event `);
+        this.props.chooseShareDest('ShareGoal', _id, 'event');
+      }],
+      [R.equals(2), () => {
+        // User choose to share to a tribe
+        console.log(`${DEBUG_KEY} User choose destination: Tribe `);
+        this.props.chooseShareDest('ShareGoal', _id, 'tribe');
+      }],
+    ]);
+
+    const shareToActionSheet = actionSheet(
+      SHARE_TO_MENU_OPTTIONS,
+      CANCEL_INDEX,
+      shareToSwitchCases
+    );
+    return shareToActionSheet();
+  };
 
   // Tab related handlers
   _handleIndexChange = index => {
@@ -263,7 +301,7 @@ class GoalCard extends Component {
           iconSource={ShareIcon}
           count={shareCount}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
-          onPress={() => console.log('share')}
+          onPress={() => this.handleShareOnClick}
         />
         <ActionButton
           iconSource={BulbIcon}
@@ -383,6 +421,7 @@ export default connect(
   {
     createReport,
     likeGoal,
-    unLikeGoal
+    unLikeGoal,
+    chooseShareDest
   }
 )(GoalCard);

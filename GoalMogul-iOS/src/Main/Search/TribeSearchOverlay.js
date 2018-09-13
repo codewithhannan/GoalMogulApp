@@ -1,33 +1,27 @@
-// This component is a search overlay for three tabs, people, event and tribe
+// This component is used for search for only tribe
+// This component is a search overlay for three tabs, people, tribe and tribe
 import React, { Component } from 'react';
 import {
   View,
-  Text,
+  Text
 } from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar, Icon } from 'react-native-elements';
-import { Actions } from 'react-native-router-flux';
 import { MenuProvider } from 'react-native-popup-menu';
 import _ from 'lodash';
-import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
 
 // Component
 import BaseOverlay from './BaseOverlay';
-import SearchFilterBar from './SearchFilterBar';
-import TabButtonGroup from '../Common/TabButtonGroup';
-import PeopleSearch from './People/PeopleSearch';
-// import EventSearch from './Event/EventSearch';
-// import TribeSearch from './Tribe/TribeSearch';
+import TribeSearch from './Tribe/TribeSearch';
 
 import {
   handleSearch,
-  searchSwitchTab,
   clearSearchState
 } from '../../redux/modules/search/SearchActions';
 
-const DEBUG_KEY = '[ Component Search ]';
+const DEBUG_KEY = '[ Tribe Search ]';
 
-class SearchOverlay extends Component {
+class TribeSearchOverlay extends Component {
   // Search bar functions
   handleCancel = () => {
     //TODO: potentially clear search state
@@ -58,24 +52,6 @@ class SearchOverlay extends Component {
     </View>
   );
 
-  // Tabs handler functions
-  _handleIndexChange = index => {
-    console.log(`${DEBUG_KEY}: index changed to ${index}`);
-    this.props.searchSwitchTab(index);
-  };
-
-  _renderHeader = props => {
-    return (
-      <TabButtonGroup buttons={props} />
-    );
-  };
-
-  _renderScene = SceneMap({
-    people: PeopleSearch,
-    tribes: PeopleSearch,
-    events: PeopleSearch
-  });
-
   render() {
     return (
       <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>
@@ -88,7 +64,7 @@ class SearchOverlay extends Component {
               inputStyle={styles.searchInputStyle}
               inputContainerStyle={styles.searchInputContainerStyle}
               containerStyle={styles.searchContainerStyle}
-              placeholder='Search GoalMogul'
+              placeholder='Search a tribe'
               cancelButtonTitle='Cancel'
               onCancel={this.handleCancel}
               onChangeText={this.handleChangeText}
@@ -97,13 +73,7 @@ class SearchOverlay extends Component {
               showLoading={this.props.loading}
             />
           </View>
-          <TabViewAnimated
-            navigationState={this.props.navigationState}
-            renderScene={this._renderScene}
-            renderHeader={this._renderHeader}
-            onIndexChange={this._handleIndexChange}
-            useNativeDriver
-          />
+          <TribeSearch />
         </MenuProvider>
       </BaseOverlay>
     );
@@ -158,7 +128,6 @@ const mapDispatchToProps = (dispatch) => {
   const debouncedSearch = _.debounce((value, type) => dispatch(handleSearch(value, type)), 400);
   return ({
     debouncedSearch,
-    searchSwitchTab: searchSwitchTab(dispatch),
     clearSearchState: clearSearchState(dispatch)
   });
 };
@@ -166,4 +135,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SearchOverlay);
+)(TribeSearchOverlay);
