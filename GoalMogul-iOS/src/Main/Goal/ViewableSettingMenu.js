@@ -18,8 +18,8 @@ import profilePeople from '../../asset/utils/profile_people.png';
 // Actions
 import { } from '../../actions';
 
-const VIEWABLE_SETTING_MENU_OPTTIONS = ['Friends', 'Public', 'Cancel'];
-const CANCEL_INDEX = 2;
+const VIEWABLE_SETTING_MENU_OPTTIONS = ['Friends', 'Public', 'Private', 'Cancel'];
+const CANCEL_INDEX = 3;
 const DEBUG_KEY = '[ ViewableSettingMenu Component ]';
 
 class ViewableSettingMenu extends Component {
@@ -36,6 +36,11 @@ class ViewableSettingMenu extends Component {
         // User choose Public
         console.log(`${DEBUG_KEY} User choose setting: Public `);
         this.props.callback('Public');
+      }],
+      [R.equals(2), () => {
+        // User choose Public
+        console.log(`${DEBUG_KEY} User choose setting: Self `);
+        this.props.callback('Private');
       }]
     ]);
 

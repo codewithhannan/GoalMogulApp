@@ -47,12 +47,13 @@ class ShareModal extends React.Component {
     this.props.initialize({
       // steps: [...values],
       // needs: [...values],
-      // viewableSetting: 'Friends',
       // media: undefined
+      privacy: 'Friends'
     });
   }
 
   updateSize = (height) => {
+    console.log('new height is: ', height);
     this.setState({
       height: Math.min(height, maxHeight)
     });
@@ -61,7 +62,6 @@ class ShareModal extends React.Component {
   renderInput = ({
     input: { onChange, onFocus, value, ...restInput },
     editable,
-    numberOfLines,
     meta: { touched, error },
     ...custom
   }) => {
@@ -69,7 +69,7 @@ class ShareModal extends React.Component {
 
     const inputStyle = {
       ...styles.inputStyle,
-      height: Math.max(30, height)
+      height: Math.max(30, height + 3)
     };
 
     return (
@@ -89,7 +89,6 @@ class ShareModal extends React.Component {
           maxHeight={maxHeight}
           multiline
           value={value}
-          numberOfLines={numberOfLines}
           onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
         />
       </SafeAreaView>
@@ -169,7 +168,7 @@ class ShareModal extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const selector = formValueSelector('createPoalModal');
+  const selector = formValueSelector('shareModal');
   const { user } = state.user;
 
   return {

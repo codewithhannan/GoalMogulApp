@@ -17,6 +17,8 @@ const INITIAL_STATE = {
   postRef: '',
   goalRef: '',
   needRef: '', // pairs with goalRef
+  belongsToTribe: '',
+  belongsToEvent: '',
   // Following parts are set in share modal
   // enum: ["public", "friends", "self"],
   privacy: {
@@ -30,8 +32,6 @@ const INITIAL_STATE = {
     links: []
   },
   mediaRef: String,
-  belongsToTribe: '',
-  belongsToEvent: '',
 
   // Extra info to render
   belongsToTribeItem: undefined,

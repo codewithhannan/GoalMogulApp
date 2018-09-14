@@ -48,7 +48,7 @@ const switchShareToAction = (dest) => switchCaseF({
 })('feed')(dest);
 
 // User chooses a share destination
-export const chooseShareDest = (postType, ref, dest, itemToShare, goalRef) => 
+export const chooseShareDest = (postType, ref, dest, itemToShare, goalRef) =>
 (dispatch, getState) => {
   const { userId } = getState().user;
 
@@ -76,8 +76,24 @@ export const cancelShare = () => (dispatch) => {
 
 // User submit the share modal form
 export const submitShare = (values) => (dispatch, getState) => {
+  // TODO: Temperary logging
+  console.log('Submitting share values are: ', values);
 
+  const {
+    owner,
+    postType,
+    userRef,
+    postRef,
+    goalRef,
+    needRef,
+    belongsToTribe,
+    belongsToEvent
+  } = getState().newShare;
 
+  const {
+    privacy, // needs to uncapitalize the first character and map Private to self
+    content
+  } = values;
   // If succeed, close modal and reset form
   // Actions.pop(); dispatch(reset('shareModal'))
 };
