@@ -53,6 +53,9 @@ class TribeSearchOverlay extends Component {
   );
 
   render() {
+    const searchPlaceHolder = this.props.searchPlaceHolder
+      ? this.props.searchPlaceHolder
+      : 'Search a tribe';
     return (
       <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -64,7 +67,7 @@ class TribeSearchOverlay extends Component {
               inputStyle={styles.searchInputStyle}
               inputContainerStyle={styles.searchInputContainerStyle}
               containerStyle={styles.searchContainerStyle}
-              placeholder='Search a tribe'
+              placeholder={searchPlaceHolder}
               cancelButtonTitle='Cancel'
               onCancel={this.handleCancel}
               onChangeText={this.handleChangeText}

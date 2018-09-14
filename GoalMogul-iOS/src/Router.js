@@ -215,7 +215,6 @@ class RouterComponent extends Component {
             />
             <Scene key="searchEventLightBox" component={EventSearchOverlay} hideNavBar />
             <Scene key="searchTribeLightBox" component={TribeSearchOverlay} hideNavBar />
-            <Scene key="shareModal" component={ShareModal} hideNavBar />
           </Lightbox>
           <Scene
             key="profileDetailEditForm"
@@ -232,6 +231,7 @@ class RouterComponent extends Component {
             component={CreatePostModal}
             hideNavBar
           />
+          <Scene key="shareModal" component={ShareModal} hideNavBar />
           <Scene key="mutualFriends" component={MutualFriends} />
           <Scene key="meetContactSync" component={ContactSync} hideNavBar />
         </Modal>

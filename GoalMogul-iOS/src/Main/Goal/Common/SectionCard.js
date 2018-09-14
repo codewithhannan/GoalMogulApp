@@ -5,15 +5,55 @@ import {
   TouchableOpacity,
   Image
 } from 'react-native';
+import R from 'ramda';
 
 // Asset
 import bulb from '../../../asset/utils/bulb.png';
 import forward from '../../../asset/utils/forward.png';
 import checkIcon from '../../../asset/utils/check.png';
 
+// Components
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+
+// Constants
+const DEBUG_KEY = '[ UI GoalCard.Need/Step SectionCard ]';
+const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to a tribe', 'Share to an event'];
+const CANCEL_INDEX = 3;
+
 class SectionCard extends Component {
+
+  handleShareOnClick = () => {
+    const { _id } = this.props.item;
+
+    const shareToSwitchCases = switchByButtonIndex([
+      [R.equals(0), () => {
+        // User choose to share to feed
+        console.log(`${DEBUG_KEY} User choose destination: Feed `);
+        this.props.chooseShareDest('ShareGoal', _id, 'feed');
+        // TODO: update reducer state
+      }],
+      [R.equals(1), () => {
+        // User choose to share to an event
+        console.log(`${DEBUG_KEY} User choose destination: Event `);
+        this.props.chooseShareDest('ShareGoal', _id, 'event');
+      }],
+      [R.equals(2), () => {
+        // User choose to share to a tribe
+        console.log(`${DEBUG_KEY} User choose destination: Tribe `);
+        this.props.chooseShareDest('ShareGoal', _id, 'tribe');
+      }],
+    ]);
+
+    const shareToActionSheet = actionSheet(
+      SHARE_TO_MENU_OPTTIONS,
+      CANCEL_INDEX,
+      shareToSwitchCases
+    );
+    return shareToActionSheet();
+  };
+
   render() {
-    console.log('item for props is: ', this.props.item);
+    // console.log('item for props is: ', this.props.item);
     const item = this.props.item
       ? this.props.item
       : { description: 'No content', isCompleted: false };
@@ -49,11 +89,17 @@ class SectionCard extends Component {
             </Text>
           </View>
           <View style={{ flex: 9, flexDirection: 'row' }}>
-            <TouchableOpacity style={styles.iconContainerStyle}>
+            <TouchableOpacity
+              style={styles.iconContainerStyle}
+              onPress={() => console.log('Suggest')}
+            >
               <Image style={styles.iconStyle} source={bulb} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.iconContainerStyle}>
+            <TouchableOpacity
+              style={styles.iconContainerStyle}
+              onPress={() => this.handleShareOnClick()}
+            >
               <Image style={styles.iconStyle} source={forward} />
             </TouchableOpacity>
           </View>
