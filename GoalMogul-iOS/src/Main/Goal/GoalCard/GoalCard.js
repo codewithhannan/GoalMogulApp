@@ -4,17 +4,29 @@ import {
   Image,
   Text,
   MaskedViewIOS,
-  Dimensions
+  Dimensions,
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import { LinearGradient } from 'expo';
 import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
+import timeago from 'timeago.js';
+import R from 'ramda';
 
 // Actions
 import {
   createReport
 } from '../../../redux/modules/report/ReportActions';
+
+import {
+  likeGoal,
+  unLikeGoal
+} from '../../../redux/modules/like/LikeActions';
+
+import {
+  chooseShareDest
+} from '../../../redux/modules/feed/post/ShareActions';
 
 // Components
 import Headline from '../Common/Headline';
@@ -27,6 +39,7 @@ import ProgressBar from '../Common/ProgressBar';
 import NextButton from '../Common/NextButton';
 import NeedTab from './NeedTab';
 import StepTab from './StepTab';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 
 // Asset
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
@@ -36,6 +49,7 @@ import ShareIcon from '../../../asset/utils/forward.png';
 import HelpIcon from '../../../asset/utils/help.png';
 import StepIcon from '../../../asset/utils/steps.png';
 
+// Constants
 const { height } = Dimensions.get('window');
 const CardHeight = height * 0.7;
 
@@ -62,6 +76,10 @@ const TabIconMap = {
   }
 };
 
+const DEBUG_KEY = '[ UI GoalCard ]';
+const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to a tribe', 'Share to an event'];
+const CANCEL_INDEX = 3;
+
 class GoalCard extends Component {
   constructor(props) {
     super(props);
@@ -75,6 +93,36 @@ class GoalCard extends Component {
       }
     };
   }
+
+  handleShareOnClick = () => {
+    const { _id } = this.props.item;
+
+    const shareToSwitchCases = switchByButtonIndex([
+      [R.equals(0), () => {
+        // User choose to share to feed
+        console.log(`${DEBUG_KEY} User choose destination: Feed `);
+        this.props.chooseShareDest('ShareGoal', _id, 'feed');
+        // TODO: update reducer state
+      }],
+      [R.equals(1), () => {
+        // User choose to share to an event
+        console.log(`${DEBUG_KEY} User choose destination: Event `);
+        this.props.chooseShareDest('ShareGoal', _id, 'event');
+      }],
+      [R.equals(2), () => {
+        // User choose to share to a tribe
+        console.log(`${DEBUG_KEY} User choose destination: Tribe `);
+        this.props.chooseShareDest('ShareGoal', _id, 'tribe');
+      }],
+    ]);
+
+    const shareToActionSheet = actionSheet(
+      SHARE_TO_MENU_OPTTIONS,
+      CANCEL_INDEX,
+      shareToSwitchCases
+    );
+    return shareToActionSheet();
+  };
 
   // Tab related handlers
   _handleIndexChange = index => {
@@ -94,8 +142,10 @@ class GoalCard extends Component {
   };
 
   _renderScene = SceneMap({
-    needs: () => <NeedTab item={this.props.item.needs} />,
-    steps: () => <StepTab item={this.props.item.steps}/>,
+    needs: () =>
+      <NeedTab item={this.props.item.needs} onPress={() => this.props.onPress(this.props.item)} />,
+    steps: () =>
+      <StepTab item={this.props.item.steps} onPress={() => this.props.onPress(this.props.item)} />,
   });
 
   renderTabs() {
@@ -121,7 +171,9 @@ class GoalCard extends Component {
 
   // user basic information
   renderUserDetail() {
-    const { title, owner, category, _id } = this.props.item;
+    const { title, owner, category, _id, created } = this.props.item;
+    const timeStamp = (created === undefined || created.length === 0)
+      ? new Date() : created;
     // TODO: verify all the fields have data
 
     return (
@@ -133,7 +185,7 @@ class GoalCard extends Component {
             category={category}
             caretOnPress={() => this.props.createReport(_id, 'goal', 'User')}
           />
-          <Timestamp time='5 mins ago' />
+          <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text
               style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
@@ -189,9 +241,10 @@ class GoalCard extends Component {
     );
   }
 
+  // Note: deprecated
   renderViewGoal() {
     return (
-      <View
+      <TouchableOpacity
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -202,6 +255,7 @@ class GoalCard extends Component {
           left: 0,
           right: 0
         }}
+        onPress={() => this.props.onPress}
       >
         <Text style={styles.viewGoalTextStyle}>View Goal</Text>
         <View style={{ alignSelf: 'center', alignItems: 'center' }}>
@@ -212,31 +266,51 @@ class GoalCard extends Component {
             iconStyle={styles.iconStyle}
           />
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 
   renderActionButtons() {
+    const { item } = this.props;
+    const { maybeLikeRef, _id } = item;
+
+    const likeCount = item.likeCount ? item.likeCount : 0;
+    const commentCount = item.commentCount ? item.commentCount : 0;
+    const shareCount = item.shareCount ? item.shareCount : 0;
+
+    const likeButtonContainerStyle = maybeLikeRef && maybeLikeRef.length > 0
+      ? { backgroundColor: '#f9d6c9' }
+      : { backgroundColor: 'white' };
+
     return (
       <ActionButtonGroup>
         <ActionButton
           iconSource={LoveIcon}
-          count={22}
-          iconContainerStyle={{ backgroundColor: '#f9d6c9' }}
+          count={likeCount}
+          iconContainerStyle={likeButtonContainerStyle}
           iconStyle={{ tintColor: '#f15860' }}
-          onPress={() => console.log('like')}
+          onPress={() => {
+            console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
+            if (maybeLikeRef && maybeLikeRef.length > 0) {
+              return this.props.unLikeGoal('goal', _id, maybeLikeRef);
+            }
+            this.props.likeGoal('goal', _id);
+          }}
         />
         <ActionButton
           iconSource={ShareIcon}
-          count={5}
+          count={shareCount}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
-          onPress={() => console.log('share')}
+          onPress={() => this.handleShareOnClick()}
         />
         <ActionButton
           iconSource={BulbIcon}
-          count={45}
+          count={commentCount}
           iconStyle={{ tintColor: '#f5eb6f', height: 26, width: 26 }}
-          onPress={() => console.log('suggest')}
+          onPress={() => {
+            console.log(`${DEBUG_KEY}: user clicks suggest icon`);
+            this.props.onPress(this.props.item);
+          }}
         />
       </ActionButtonGroup>
     );
@@ -345,6 +419,9 @@ const testData = {
 export default connect(
   null,
   {
-    createReport
+    createReport,
+    likeGoal,
+    unLikeGoal,
+    chooseShareDest
   }
 )(GoalCard);

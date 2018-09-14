@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 // Components
 import GoalFilterBar from '../Common/GoalFilterBar';
+import GoalCard from '../Goal/GoalCard/GoalCard';
+import NeedCard from '../Goal/NeedCard/NeedCard';
 
 // actions
 import {
@@ -21,9 +23,23 @@ class ActivityFeed extends Component {
   renderItem = ({ item }) => {
     // TODO: render item
     if (item.type === 'need') {
-      return <View item={item} />;
+      return (
+        <NeedCard
+          item={item}
+          onPress={(curItem) => {
+            this.props.openGoalDetail(curItem);
+          }}
+        />
+      );
     } else if (item.type === 'goal') {
-      return <View item={item} />;
+      return (
+        <GoalCard 
+          item={item}
+          onPress={(curItem) => {
+            this.props.openGoalDetail(curItem);
+          }}
+        />
+      );
     }
     return <View />;
   }

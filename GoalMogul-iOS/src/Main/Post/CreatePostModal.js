@@ -75,51 +75,51 @@ class CreatePostModal extends Component {
     });
   }
 
-  renderInput = ({
-    input: { onChange, onFocus, value, ...restInput },
-    multiline,
-    editable,
-    numberOfLines,
-    placeholder,
-    style,
-    iconSource,
-    iconStyle,
-    iconOnPress,
-    meta: { touched, error },
-    ...custom
-  }) => {
-    const icon = iconSource ?
-      <Image source={iconSource} style={{ ...iconStyle }} />
-      :
-      '';
-    return (
-      <View style={styles.inputContainerStyle}>
-        <TextInput
-          ref={input => { this.textInput = input; }}
-          title={custom.title}
-          autoCapitalize={'none'}
-          autoCorrect={false}
-          onChangeText={onChange}
-          numberOfLines={1 || numberOfLines}
-          returnKeyType='done'
-          multiline={multiline}
-          onFocus={onFocus}
-          editable={editable}
-          placeholder={placeholder}
-          style={style}
-          value={_.isEmpty(value) ? '' : value}
-          {...restInput}
-          {...custom}
-        />
-        <TouchableOpacity
-          style={{ padding: 15, alignItems: 'flex-end', alignSelf: 'center' }}
-          onPress={iconOnPress}
-        >
-          {icon}
-        </TouchableOpacity>
-      </View>
-    );
-  };
+  // renderInput = ({
+  //   input: { onChange, onFocus, value, ...restInput },
+  //   multiline,
+  //   editable,
+  //   numberOfLines,
+  //   placeholder,
+  //   style,
+  //   iconSource,
+  //   iconStyle,
+  //   iconOnPress,
+  //   meta: { touched, error },
+  //   ...custom
+  // }) => {
+  //   const icon = iconSource ?
+  //     <Image source={iconSource} style={{ ...iconStyle }} />
+  //     :
+  //     '';
+  //   return (
+  //     <View style={styles.inputContainerStyle}>
+  //       <TextInput
+  //         ref={input => { this.textInput = input; }}
+  //         title={custom.title}
+  //         autoCapitalize={'none'}
+  //         autoCorrect={false}
+  //         onChangeText={onChange}
+  //         numberOfLines={1 || numberOfLines}
+  //         returnKeyType='done'
+  //         multiline={multiline}
+  //         onFocus={onFocus}
+  //         editable={editable}
+  //         placeholder={placeholder}
+  //         style={style}
+  //         value={_.isEmpty(value) ? '' : value}
+  //         {...restInput}
+  //         {...custom}
+  //       />
+  //       <TouchableOpacity
+  //         style={{ padding: 15, alignItems: 'flex-end', alignSelf: 'center' }}
+  //         onPress={iconOnPress}
+  //       >
+  //         {icon}
+  //       </TouchableOpacity>
+  //     </View>
+  //   );
+  // };
 
   renderUserInfo() {
     let imageUrl = this.props.user.profile.image;

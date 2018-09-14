@@ -1,3 +1,4 @@
+// This stores all the comments for a specific goal
 import R from 'ramda';
 import _ from 'lodash';
 
@@ -5,6 +6,11 @@ import { arrayUnique } from '../../../middleware/utils';
 import {
   GOAL_DETAIL_CLOSE
 } from '../../../../reducers/GoalDetailReducers';
+
+import {
+  LIKE_COMMENT,
+  UNLIKE_COMMENT
+} from '../../like/LikeReducers';
 
 /**
  * This reducer is servered as denormalized comment stores
@@ -15,10 +21,7 @@ const INITIAL_STATE = {
   skip: 0,
   limit: 20,
   loading: false,
-  hasNextPage: undefined,
-  newComment: {
-    contentText: ''
-  }
+  hasNextPage: undefined
 };
 
 export const COMMENT_LOAD = 'comment_load';
@@ -29,7 +32,6 @@ export const COMMENT_LOAD_MORE_REPLIES = 'comment_load_more_replies';
 // New comment related constants
 export const COMMENT_POST = 'comment_post';
 export const COMMENT_POST_DONE = 'comment_post_done';
-export const COMMENT_NEW_TEXT_ON_CHANGE = 'comment_new_text_on_change';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -37,17 +39,6 @@ export default (state = INITIAL_STATE, action) => {
     case GOAL_DETAIL_CLOSE: {
       return {
         ...INITIAL_STATE
-      };
-    }
-
-    // cases related to new comment
-    case COMMENT_NEW_TEXT_ON_CHANGE: {
-      return {
-        ...state,
-        newComment: {
-          ...state.newComment,
-          contentText: action.payload
-        }
       };
     }
 
@@ -78,26 +69,12 @@ export default (state = INITIAL_STATE, action) => {
       newState = _.set(newState, 'data', data);
 
       // A dump way to transform all comments to comments with childComments
-      const transformedComments = data.filter(comment => !comment.replyToRef).map(comment => {
-        const commentId = comment._id.toString();
-        const childComments = data.filter(
-          currentComment => currentComment.replyToRef.toString() === commentId);
-
-        const numberOfChildrenShowing = childComments.length > 0 ? 1 : 0;
-        const hasMoreToShow = numberOfChildrenShowing !== childComments.length;
-        const newComment = {
-          ...comment,
-          childComments,
-          hasMoreToShow,
-          numberOfChildrenShowing
-        };
-        return newComment;
-      });
+      const transformedComments = transformComments(data);
       return _.set(newState, 'transformedComments', transformedComments);
     }
 
     case COMMENT_LOAD_DONE: {
-      const { skip, data, hasNextPage, type } = action.payload;
+      const { skip, data, hasNextPage } = action.payload;
       let newState = _.cloneDeep(state);
       newState = _.set(newState, 'loading', false);
 
@@ -109,10 +86,52 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, 'data', arrayUnique(oldData.concat(data)));
     }
 
+    // User likes a comment or User unlikes a comment
+    case UNLIKE_COMMENT:
+    case LIKE_COMMENT: {
+      const { id, likeId } = action.payload;
+      console.log(`${action.type} comment, id is: ${id}, likeId is: ${likeId}`);
+
+      let newState = _.cloneDeep(state);
+      // Update original comments
+      const newData = updateLike(_.get(newState, 'data'), id, likeId);
+      // Update transformed comments
+      const transformedComments = transformComments(newData);
+      newState = _.set(newState, 'data', newData);
+      return _.set(newState, 'transformedComments', transformedComments);
+    }
+
     default:
       return { ...state };
   }
 };
+
+const transformComments = (data) =>
+  data.filter(comment => !comment.replyToRef).map(comment => {
+    const commentId = comment._id.toString();
+    const childComments = data.filter(
+      currentComment => currentComment.replyToRef.toString() === commentId);
+
+    const numberOfChildrenShowing = childComments.length > 0 ? 1 : 0;
+    const hasMoreToShow = numberOfChildrenShowing !== childComments.length;
+    const newComment = {
+      ...comment,
+      childComments,
+      hasMoreToShow,
+      numberOfChildrenShowing
+    };
+    return newComment;
+  });
+
+function updateLike(array, id, like) {
+  return array.map((item) => {
+    let newItem = _.cloneDeep(item);
+    if (item._id.toString() === id.toString()) {
+      newItem = _.set(newItem, 'maybeLikeRef', like);
+    }
+    return newItem;
+  });
+}
 
 /**
  * Note: following is the schema design for comment

@@ -5,11 +5,22 @@ import {
   Text
 } from 'react-native';
 import { connect } from 'react-redux';
+import timeago from 'timeago.js';
+import _ from 'lodash';
 
 // Actions
 import {
   createReport
 } from '../../../redux/modules/report/ReportActions';
+
+import {
+  likeGoal,
+  unLikeGoal
+} from '../../../redux/modules/like/LikeActions';
+
+import {
+  createCommentFromSuggestion
+} from '../../../redux/modules/feed/comment/CommentActions';
 
 // Assets
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
@@ -24,32 +35,38 @@ import ActionButtonGroup from '../Common/ActionButtonGroup';
 import Headline from '../Common/Headline';
 import Timestamp from '../Common/Timestamp';
 
+// Constants
+const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
 
 class GoalDetailSection extends Component {
 
   // user basic information
-  renderUserDetail() {
-    const { _id } = this.props.item;
+  renderUserDetail(item) {
+    const { _id, created, title, owner, category } = item;
+    const timeStamp = (created === undefined || created.length === 0)
+      ? new Date() : created;
+    // console.log('item is: ', item);
+
     return (
       <View style={{ flexDirection: 'row' }}>
         <Image source={defaultProfilePic} resizeMode='contain' style={{ height: 60, width: 60 }} />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
-            name='John Doe'
-            category='Personal Development'
+            name={owner.name || ''}
+            category={category}
             caretOnPress={() => {
               console.log('I am pressed');
               this.props.createReport(_id, 'detail', 'User');
             }}
           />
-          <Timestamp time='5 mins ago' />
+          <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text
               style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
               numberOfLines={3}
               ellipsizeMode='tail'
             >
-              Establish a LMFBR near Westport, Connecticut by the year 2020
+              {title}
             </Text>
           </View>
 
@@ -67,43 +84,76 @@ class GoalDetailSection extends Component {
   }
 
   renderActionButtons() {
+    const { item } = this.props;
+    const { maybeLikeRef, _id } = item;
+
+    const likeCount = item.likeCount ? item.likeCount : 0;
+    const commentCount = item.commentCount ? item.commentCount : 0;
+    const shareCount = item.shareCount ? item.shareCount : 0;
+
+    const likeButtonContainerStyle = maybeLikeRef && maybeLikeRef.length > 0
+      ? { backgroundColor: '#f9d6c9' }
+      : { backgroundColor: 'white' };
+
     return (
       <ActionButtonGroup>
         <ActionButton
           iconSource={LoveIcon}
-          count={22}
-          iconContainerStyle={{ backgroundColor: '#f9d6c9' }}
+          count={likeCount}
+          iconContainerStyle={likeButtonContainerStyle}
           iconStyle={{ tintColor: '#f15860' }}
-          onPress={() => console.log('like')}
+          onPress={() => {
+            console.log(`${DEBUG_KEY}: user clicks like icon.`);
+            if (maybeLikeRef && maybeLikeRef.length > 0) {
+              return this.props.unLikeGoal('goal', _id, maybeLikeRef);
+            }
+            this.props.likeGoal('goal', _id);
+          }}
         />
         <ActionButton
           iconSource={ShareIcon}
-          count={5}
+          count={shareCount}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
           onPress={() => console.log('share')}
         />
         <ActionButton
           iconSource={BulbIcon}
-          count={45}
+          count={commentCount}
           iconStyle={{ tintColor: '#f5eb6f', height: 26, width: 26 }}
-          onPress={() => console.log('suggest')}
+          onPress={() => {
+            console.log(`${DEBUG_KEY}: user clicks suggestion icon.`);
+            this.props.createCommentFromSuggestion({
+              commentDetail: {
+                parentType: 'Goal',
+                parentRef: _id,
+                commentType: 'Suggestion',
+                replyToRef: undefined
+              },
+              suggestionForRef: _id,
+              suggestionFor: 'Goal'
+            });
+            this.props.onSuggestion();
+          }}
         />
       </ActionButtonGroup>
     );
   }
 
   render() {
+    const { item } = this.props;
+    if (!item || _.isEmpty(item)) return '';
+
     return (
       <View>
         <View style={{ ...styles.containerStyle }}>
           <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
-            {this.renderUserDetail()}
+            {this.renderUserDetail(item)}
             {this.renderCardContent()}
           </View>
         </View>
 
         <View style={styles.containerStyle}>
-          {this.renderActionButtons()}
+          {this.renderActionButtons(item)}
         </View>
       </View>
     );
@@ -125,6 +175,9 @@ const styles = {
 export default connect(
   null,
   {
-    createReport
+    createReport,
+    likeGoal,
+    unLikeGoal,
+    createCommentFromSuggestion
   }
 )(GoalDetailSection);

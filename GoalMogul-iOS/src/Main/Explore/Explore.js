@@ -15,19 +15,19 @@ import EventTab from './EventTab';
 import { exploreSelectTab } from '../../redux/modules/explore/ExploreActions';
 
 // Assets
-import Logo from '../../asset/header/logo.png';
-import Activity from '../../asset/utils/activity.png';
+import TribeIcon from '../../asset/explore/tribe.png';
+import EventIcon from '../../asset/suggestion/event.png';
 
 const TabIconMap = {
   events: {
-    iconSource: Logo,
+    iconSource: EventIcon,
     iconStyle: {
       height: 17,
       width: 17
     }
   },
   tribes: {
-    iconSource: Activity,
+    iconSource: TribeIcon,
     iconStyle: {
       height: 15,
       width: 15

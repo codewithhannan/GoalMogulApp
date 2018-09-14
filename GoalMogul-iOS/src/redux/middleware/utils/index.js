@@ -1,4 +1,5 @@
-// This is a utils functions for netowrk
+// This is a utils functions
+import _ from 'lodash';
 
 /**
  * Url query builder to query URL based on params
@@ -26,3 +27,19 @@ export const arrayUnique = (array) => {
 
   return a;
 };
+
+/* Functions to create switch cases */
+export const switchCase = cases => defaultCase => key =>
+  (cases.hasOwnProperty(key) ? cases[key] : defaultCase);
+
+const executeIfFunction = f => (f instanceof Function ? f() : f);
+
+export const switchCaseF = cases => defaultCase => key =>
+  executeIfFunction(switchCase(cases)(defaultCase)(key));
+
+/* Functions to set state and skip if undefined */
+export const setState = (newState, path, data) => {
+    // If data exists or original field is set, then we set explicitly.
+    if (data || _.get(newState, `${path}`)) return _.set(newState, `${path}`, data);
+    return newState;
+  };

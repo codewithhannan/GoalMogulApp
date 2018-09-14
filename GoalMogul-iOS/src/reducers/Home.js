@@ -1,8 +1,14 @@
 import _ from 'lodash';
 import {
   HOME_SWITCH_TAB,
-
 } from '../actions/types';
+
+import {
+  LIKE_GOAL,
+  LIKE_POST,
+  UNLIKE_POST,
+  UNLIKE_GOAL
+} from '../redux/modules/like/LikeReducers';
 
 export const HOME_MASTERMIND_OPEN_CREATE_OVERLAY = 'home_mastermind_open_create_overlay';
 export const HOME_CLOSE_CREATE_OVERLAY = 'home_mastermind_close_create_overlay';
@@ -114,10 +120,36 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, `${tab}.filter.${type}`, value);
     }
 
+    // Update like
+    case UNLIKE_GOAL:
+    case UNLIKE_POST:
+    case LIKE_GOAL:
+    case LIKE_POST: {
+      const { id, likeId } = action.payload;
+      let newState = _.cloneDeep(state);
+      const oldGoalFeedData = _.get(newState, 'mastermind.data');
+      const oldActivityData = _.get(newState, 'activityfeed.data');
+
+      // Update activity feed
+      newState = _.set(newState, 'activityfeed.data', updateLike(oldActivityData, id, likeId));
+      // Update goal feed
+      return _.set(newState, 'mastermind.data', updateLike(oldGoalFeedData, id, likeId));
+    }
+
     default:
       return { ...state };
   }
 };
+
+function updateLike(array, id, likeId) {
+  return array.map((item) => {
+    let newItem = _.cloneDeep(item);
+    if (item._id.toString() === id.toString()) {
+      newItem = _.set(newItem, 'maybeLikeRef', likeId);
+    }
+    return newItem;
+  });
+}
 
 function arrayUnique(array) {
   let a = array.concat();

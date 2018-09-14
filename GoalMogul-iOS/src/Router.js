@@ -28,6 +28,8 @@ import ContactSync from './Registration/ContactSync';
 import TabIcon from './Main/Common/TabIcon';
 import MeetTab from './Main/MeetTab/MeetTab';
 import SearchOverlay from './Main/Search/SearchOverlay';
+import EventSearchOverlay from './Main/Search/EventSearchOverlay';
+import TribeSearchOverlay from './Main/Search/TribeSearchOverlay';
 // import MeetCard from './Main/MeetTab/MeetCard';
 
 // Home Tab
@@ -66,6 +68,9 @@ import FriendsBlocked from './Main/Setting/Account/Blocking/FriendsBlocked';
 import Privacy from './Main/Setting/Privacy/Privacy';
 import FriendsSetting from './Main/Setting/Privacy/FriendsSetting';
 
+// Lightbox form
+import ShareModal from './Main/Post/ShareModal';
+
 class RouterComponent extends Component {
 
   onTabPress = (all) => {
@@ -93,7 +98,7 @@ class RouterComponent extends Component {
           <Lightbox hideNavBar>
             <Scene key="root" hideNavBar>
               <Scene key="auth" initial hideNavBar>
-                <Scene key="splash" component={Explore} initial />
+                <Scene key="splash" component={Home} initial />
                 <Scene key="login" component={LoginPage} />
               </Scene>
 
@@ -208,6 +213,9 @@ class RouterComponent extends Component {
               component={CreateGoalButtonOverlay}
               hideNavBar
             />
+            <Scene key="searchEventLightBox" component={EventSearchOverlay} hideNavBar />
+            <Scene key="searchTribeLightBox" component={TribeSearchOverlay} hideNavBar />
+            <Scene key="shareModal" component={ShareModal} hideNavBar />
           </Lightbox>
           <Scene
             key="profileDetailEditForm"

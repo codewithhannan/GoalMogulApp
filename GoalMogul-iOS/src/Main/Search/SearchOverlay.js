@@ -1,3 +1,4 @@
+// This component is a search overlay for three tabs, people, event and tribe
 import React, { Component } from 'react';
 import {
   View,

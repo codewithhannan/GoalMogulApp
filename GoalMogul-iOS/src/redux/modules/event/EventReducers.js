@@ -17,7 +17,7 @@ const INITIAL_STATE = {
   feedLoading: false,
   hasNextPage: undefined,
   skip: 0,
-  limit: 20
+  limit: 100
 };
 
 export const EVENT_SWITCH_TAB = 'event_switch_tab';

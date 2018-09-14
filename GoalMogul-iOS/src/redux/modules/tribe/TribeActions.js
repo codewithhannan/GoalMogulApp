@@ -28,13 +28,13 @@ export const tribeDetailClose = () => (dispatch) => {
   });
 };
 
-export const tribeDetailOpen = (tribe) => (dispatch) => {
+export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
   dispatch({
     type: TRIBE_DETAIL_OPEN,
     payload: { ...tribe }
   });
   Actions.tribeDetail();
-  refreshTribeFeed(tribe._id);
+  refreshTribeFeed(tribe._id, dispatch, getState);
 };
 
 /**
@@ -44,7 +44,7 @@ export const tribeDetailOpen = (tribe) => (dispatch) => {
  * NOTE: goal feed and activity feed share the same constants with different
  * input on type field
  */
-export const refreshTribeFeed = (tribeId) => (dispatch, getState) => {
+export const refreshTribeFeed = (tribeId, dispatch, getState) => {
   const { token } = getState().user;
   const { limit } = getState().tribe;
 

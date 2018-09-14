@@ -79,7 +79,7 @@ export const openProfile = (userId) => (dispatch, getState) => {
     type: PROFILE_OPEN_PROFILE,
     payload: userId
   });
-  Actions.profile();
+  Actions.push('profile');
 
   const { token, } = getState().user;
   const self = getState().profile.userId.toString() === getState().user.userId.toString();
@@ -310,7 +310,7 @@ export const handleTabOnLoadMore = (tab) => (dispatch, getState) => {
   const { token } = getState().user;
   const { filter, skip, limit, hasNextPage } = _.get(getState().profile, tab);
 
-  if (!hasNextPage) {
+  if (!hasNextPage && hasNextPage !== undefined) {
     return;
   }
 

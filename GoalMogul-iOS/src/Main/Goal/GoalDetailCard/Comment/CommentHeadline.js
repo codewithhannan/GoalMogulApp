@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Image, Text } from 'react-native';
+import timeago from 'timeago.js';
 
 /* Components */
 import Name from '../../Common/Name';
@@ -12,7 +13,9 @@ import dropDown from '../../../../asset/utils/dropDown.png';
 const CommentHeadline = (props) => {
   // TODO: format time
   const { item } = props;
-  const { owner, commentType, suggestion } = item;
+  const { owner, commentType, suggestion, created } = item;
+  const timeStamp = (created === undefined || created.length === 0)
+    ? new Date() : created;
 
   switch (commentType) {
     case 'Suggestion': {
@@ -40,7 +43,7 @@ const CommentHeadline = (props) => {
               <Image source={dropDown} />
             </View>
           </View>
-          <Timestamp time='5 mins ago' />
+          <Timestamp time={timeago().format(timeStamp)} />
         </View>
       );
     }
@@ -52,7 +55,7 @@ const CommentHeadline = (props) => {
         <View style={styles.containerStyle}>
           <Name text={owner.name} textStyle={{ fontSize: 12 }} />
           <Image style={styles.imageStyle} source={badge} />
-          <Timestamp time='5 mins ago' />
+          <Timestamp time={timeago().format(timeStamp)} />
           <View style={styles.caretContainer}>
             <Image source={dropDown} />
           </View>

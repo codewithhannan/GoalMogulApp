@@ -26,7 +26,7 @@ const Headline = (props) => {
     () => caretOnPress(),
     '',
     { ...styles.caretContainer },
-    () => console.log('animationCallback')
+    () => console.log('Report Modal is opened')
   );
 
   // TODO: format time

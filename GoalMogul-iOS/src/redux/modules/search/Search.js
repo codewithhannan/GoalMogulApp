@@ -1,6 +1,29 @@
 import R from 'ramda';
 import _ from 'lodash';
 
+import {
+  SHARE_NEW_CANCEL,
+  SHARE_NEW_POST_SUCCESS
+} from '../feed/post/NewShareReducers';
+
+const INITIAL_STATE_EVENT = {
+  data: [],
+  queryId: undefined,
+  loading: false,
+  skip: 0,
+  limit: 20,
+  hasNextPage: undefined
+};
+
+const INITIAL_STATE_TRIBE = {
+  data: [],
+  queryId: undefined,
+  loading: false,
+  skip: 0,
+  limit: 20,
+  hasNextPage: undefined
+};
+
 const INITIAL_STATE = {
   selectedTab: 'people',
   navigationState: {
@@ -23,21 +46,9 @@ const INITIAL_STATE = {
     limit: 20,
     hasNextPage: undefined
   },
-  tribes: {
-    data: [],
-    queryId: undefined,
-    loading: false,
-    skip: 0,
-    limit: 20,
-    hasNextPage: undefined
-  },
+  tribes: { ...INITIAL_STATE_TRIBE },
   events: {
-    data: [],
-    queryId: undefined,
-    loading: false,
-    skip: 0,
-    limit: 20,
-    hasNextPage: undefined
+    ...INITIAL_STATE_EVENT
   },
   searchContent: ''
 };
@@ -127,6 +138,19 @@ export default (state = INITIAL_STATE, action) => {
       const tabInitialState = dotPath(tab, INITIAL_STATE);
       const newState = _.cloneDeep(state);
       return _.set(newState, tab, tabInitialState);
+    }
+
+    /* Following cases is related to search for share */
+    case SHARE_NEW_CANCEL:
+    case SHARE_NEW_POST_SUCCESS: {
+      let newState = _.cloneDeep(state);
+      if (action.payload === 'event') {
+        newState = _.set(newState, 'event', { ...INITIAL_STATE_EVENT });
+      }
+      if (action.payload === 'tribe') {
+        newState = _.set(newState, 'tribe', { ...INITIAL_STATE_TRIBE });
+      }
+      return newState;
     }
 
     default:

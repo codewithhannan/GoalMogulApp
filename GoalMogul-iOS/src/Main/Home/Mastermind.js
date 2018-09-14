@@ -22,7 +22,8 @@ import {
   openCreateOverlay,
   closeCreateOverlay,
   loadMoreGoals,
-  refreshGoals
+  refreshGoals,
+  openGoalDetail
 } from '../../redux/modules/home/mastermind/actions';
 
 const TAB_KEY = 'mastermind';
@@ -43,8 +44,16 @@ class Mastermind extends Component {
   renderItem = ({ item }) => {
     // TODO: render item
     console.log('item rendering in Mastermind is: ', item);
-    // mastermind currently only renders goals
-    return <GoalCard item={item} />;
+    // mastermind currently renders goals and needs
+    // TODO: add NeedCard
+    return (
+      <GoalCard
+        item={item}
+        onPress={(curItem) => {
+          this.props.openGoalDetail(curItem);
+        }}
+      />
+    );
   }
 
   renderPlus() {
@@ -122,6 +131,7 @@ export default connect(
     openCreateOverlay,
     closeCreateOverlay,
     loadMoreGoals,
-    refreshGoals
+    refreshGoals,
+    openGoalDetail
   }
 )(Mastermind);

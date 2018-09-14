@@ -16,7 +16,7 @@ import {
 
 // Assets
 import PhotoIcon from '../../../asset/utils/photoIcon.png';
-import LightBulb from '../../../asset/utils/lightBulb.png';
+import LightBulb from '../../../asset/utils/makeSuggestion.png';
 
 // Consts
 const maxHeight = 120;
@@ -46,14 +46,23 @@ class CommentBox extends Component {
     });
   }
 
+  //tintColor: '#f5d573'
   renderSuggestionIcon() {
     return (
-      <TouchableOpacity style={styles.iconContainerStyle}>
+      <TouchableOpacity
+        style={styles.iconContainerStyle}
+        onPress={() => {
+          //TODO: check if suggestionFor and suggestionRef have assignment,
+          //If not then we assign the current goal ref and 'Goal'
+          console.log('suggestion on click in comment box');
+        }}
+      >
         <Image
           source={LightBulb}
           style={{
-            ...styles.iconStyle,
-            tintColor: '#f5d573'
+            height: 28,
+            width: 28,
+            margin: 4
           }}
         />
       </TouchableOpacity>
@@ -79,7 +88,13 @@ class CommentBox extends Component {
   renderImageIcon() {
     return (
       <View style={styles.iconContainerStyle}>
-        <Image source={PhotoIcon} style={styles.iconStyle} />
+        <Image
+          source={PhotoIcon}
+          style={{
+            ...styles.iconStyle,
+            tintColor: '#cbd6d8'
+          }}
+        />
       </View>
     );
   }
@@ -167,7 +182,6 @@ const styles = {
   iconStyle: {
     height: 24,
     width: 24,
-    tintColor: '#cbd6d8',
     margin: 5
   },
   iconContainerStyle: {
@@ -177,7 +191,7 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { newComment } = state.comment;
+  const { newComment } = state;
 
   return {
     newComment

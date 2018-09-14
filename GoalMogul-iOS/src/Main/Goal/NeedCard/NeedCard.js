@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
-  Text
+  Text,
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
+import timeago from 'timeago.js';
 
 // Component
 import Headline from '../Common/Headline';
@@ -21,11 +23,23 @@ import LoveIcon from '../../../asset/utils/love.png';
 import BulbIcon from '../../../asset/utils/bulb.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 
+// Actions
+import {
+  likeGoal,
+  unLikeGoal
+} from '../../../redux/modules/like/LikeActions';
+
+import {
+  createReport
+} from '../../../redux/modules/report/ReportActions';
+
+const DEBUG_KEY = '[ UI NeedCard ]';
+
 class NeedCard extends Component {
 
   // card central content
-  renderCardContent() {
-    const { description } = this.props.item;
+  renderCardContent(item) {
+    const { description } = item;
     return (
       <View style={{ marginTop: 20 }}>
         <Text style={{ color: '#505050' }}>
@@ -36,14 +50,22 @@ class NeedCard extends Component {
   }
 
   // user basic information
-  renderUserDetail() {
-    const { description } = this.props.item.needRequest;
+  renderUserDetail(item) {
+    const { created, needRequest, category, owner, _id } = item;
+    const { description } = needRequest;
+    const timeStamp = (created === undefined || created.length === 0)
+      ? new Date() : created;
+
     return (
       <View style={{ flexDirection: 'row' }}>
         <Image source={defaultProfilePic} resizeMode='contain' style={{ height: 60, width: 60 }} />
         <View style={{ marginLeft: 15, flex: 1 }}>
-          <Headline name='John Doe' category='Personal Development' />
-          <Timestamp time='5 mins ago' />
+          <Headline
+            name={owner.name}
+            category={category}
+            caretOnPress={() => this.props.createReport(_id, 'goal', 'User')}
+          />
+          <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text
               style={{ flex: 1, flexWrap: 'wrap', color: '#818181', fontSize: 11 }}
@@ -63,15 +85,16 @@ class NeedCard extends Component {
     return <SectionCard />;
   }
 
-  renderViewGoal() {
+  renderViewGoal(item) {
     return (
-      <View
+      <TouchableOpacity
         style={{
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
           marginTop: 10
         }}
+        onPress={() => this.props.onPress(item)}
       >
         <Text style={styles.viewGoalTextStyle}>View Goal</Text>
         <View style={{ alignSelf: 'center', alignItems: 'center' }}>
@@ -82,29 +105,46 @@ class NeedCard extends Component {
             iconStyle={styles.iconStyle}
           />
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 
   renderActionButtons() {
+    const { item } = this.props;
+    const { maybeLikeRef, _id } = item;
+
+    const likeCount = item.likeCount ? item.likeCount : 0;
+    const commentCount = item.commentCount ? item.commentCount : 0;
+    const shareCount = item.shareCount ? item.shareCount : 0;
+
+    const likeButtonContainerStyle = maybeLikeRef && maybeLikeRef.length > 0
+      ? { backgroundColor: '#f9d6c9' }
+      : { backgroundColor: 'white' };
+
     return (
       <ActionButtonGroup>
         <ActionButton
           iconSource={LoveIcon}
-          count={22}
-          iconContainerStyle={{ backgroundColor: '#f9d6c9' }}
+          count={likeCount}
+          iconContainerStyle={likeButtonContainerStyle}
           iconStyle={{ tintColor: '#f15860' }}
-          onPress={() => console.log('like')}
+          onPress={() => {
+            console.log(`${DEBUG_KEY}: user clicks like icon.`);
+            if (maybeLikeRef && maybeLikeRef.length > 0) {
+              return this.props.unLikeGoal('post', _id, maybeLikeRef);
+            }
+            this.props.likeGoal('post', _id);
+          }}
         />
         <ActionButton
           iconSource={ShareIcon}
-          count={5}
+          count={shareCount}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
           onPress={() => console.log('share')}
         />
         <ActionButton
           iconSource={BulbIcon}
-          count={45}
+          count={commentCount}
           iconStyle={{ tintColor: '#f5eb6f', height: 26, width: 26 }}
           onPress={() => console.log('suggest')}
         />
@@ -113,7 +153,8 @@ class NeedCard extends Component {
   }
 
   render() {
-    const { owner } = this.props.item;
+    const { item } = this.props;
+    const { owner } = item;
     const { name } = owner;
     return (
       <View>
@@ -127,15 +168,15 @@ class NeedCard extends Component {
             </View>
             <View style={styles.containerStyle}>
               <View style={{ marginTop: 20, marginBottom: 20, marginRight: 15, marginLeft: 15 }}>
-                {this.renderUserDetail()}
-                {this.renderCardContent()}
+                {this.renderUserDetail(item)}
+                {this.renderCardContent(item)}
               </View>
             </View>
 
             {this.renderNeed()}
 
             <View style={{ ...styles.containerStyle }}>
-              {this.renderViewGoal()}
+              {this.renderViewGoal(item)}
               {this.renderActionButtons()}
             </View>
           </View>
@@ -174,5 +215,9 @@ const styles = {
 
 export default connect(
   null,
-  null
+  {
+    likeGoal,
+    createReport,
+    unLikeGoal
+  }
 )(NeedCard);
