@@ -25,6 +25,7 @@ import ReportReducers from '../redux/modules/report/ReportReducers';
 import EventTabReducers from '../redux/modules/event/EventTabReducers';
 import TribeTabReducers from '../redux/modules/tribe/TribeTabReducers';
 import ExploreReducers from '../redux/modules/explore/ExploreReducers';
+import NewShareReducers from '../redux/modules/feed/post/NewShareReducers';
 
 const rootPersistConfig = {
   key: 'root',
@@ -53,7 +54,8 @@ const reducers = combineReducers({
   report: ReportReducers,
   explore: ExploreReducers,
   eventTab: EventTabReducers,
-  tribeTab: TribeTabReducers
+  tribeTab: TribeTabReducers,
+  newShare: NewShareReducers
 });
 
 export default persistReducer(rootPersistConfig, reducers);

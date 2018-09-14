@@ -14,7 +14,7 @@ import {
 } from '../../../redux/modules/search/SearchActions';
 
 // tab key
-const key = 'tribe';
+const key = 'tribes';
 const DEBUG_KEY = '[ Component TribeSearch ]';
 
 /* TODO: delete the test data */
@@ -69,11 +69,11 @@ class TribeSearch extends Component {
 }
 
 const mapStateToProps = state => {
-  const { tribe, searchContent } = state.search;
-  const { data, refreshing, loading } = tribe;
+  const { tribes, searchContent } = state.search;
+  const { data, refreshing, loading } = tribes;
 
   return {
-    tribe,
+    tribes,
     data,
     refreshing,
     loading,

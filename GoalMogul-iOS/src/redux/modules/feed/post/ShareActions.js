@@ -9,7 +9,8 @@ import {
 } from './NewShareReducers';
 
 import {
-  switchCaseF
+  switchCaseF,
+  switchCase
 } from '../../../middleware/utils';
 
 const switchPostType = (postType, ref, goalRef) => switchCaseF({
@@ -34,15 +35,18 @@ const switchPostType = (postType, ref, goalRef) => switchCaseF({
     needRef: ref,
     goalRef
   }
-}, 'General', postType);
+})('General')(postType);
 
 const switchShareToAction = (dest) => switchCaseF({
   // Open modal directly if share to feed
-  feed: () => Actions.push('shareModal'),
+  feed: () => {
+    console.log('feed is chosen');
+    Actions.push('shareModal');
+  },
   // Open search overlay if share to either tribe or event
   tribe: () => Actions.push('searchTribeLightBox'),
   event: () => Actions.push('searchEventLightBox')
-}, 'feed', dest);
+})('feed')(dest);
 
 // User chooses a share destination
 export const chooseShareDest = (postType, ref, dest, goalRef) => (dispatch, getState) => {
@@ -70,7 +74,7 @@ export const cancelShare = () => (dispatch) => {
 };
 
 // User submit the share modal form
-export const submitShare = () => (dispatch, getState) => {
+export const submitShare = (values) => (dispatch, getState) => {
 
 
   // If succeed, close modal and reset form

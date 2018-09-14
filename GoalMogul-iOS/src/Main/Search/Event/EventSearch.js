@@ -14,7 +14,7 @@ import {
 } from '../../../redux/modules/search/SearchActions';
 
 // tab key
-const key = 'event';
+const key = 'events';
 const DEBUG_KEY = '[ Component EventSearch ]';
 
 /* TODO: delete the test data */
@@ -69,11 +69,11 @@ class EventSearch extends Component {
 }
 
 const mapStateToProps = state => {
-  const { event, searchContent } = state.search;
-  const { data, refreshing, loading } = event;
+  const { events, searchContent } = state.search;
+  const { data, refreshing, loading } = events;
 
   return {
-    event,
+    events,
     data,
     refreshing,
     loading,

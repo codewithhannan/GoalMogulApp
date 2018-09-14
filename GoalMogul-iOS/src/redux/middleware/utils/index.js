@@ -30,7 +30,7 @@ export const arrayUnique = (array) => {
 
 /* Functions to create switch cases */
 export const switchCase = cases => defaultCase => key =>
-  (Object.prototype.hasOwnProperty.call(cases, key) ? cases[key] : defaultCase);
+  (cases.hasOwnProperty(key) ? cases[key] : defaultCase);
 
 const executeIfFunction = f => (f instanceof Function ? f() : f);
 

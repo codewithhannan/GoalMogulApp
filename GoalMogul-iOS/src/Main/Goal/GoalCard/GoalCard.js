@@ -301,7 +301,7 @@ class GoalCard extends Component {
           iconSource={ShareIcon}
           count={shareCount}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
-          onPress={() => this.handleShareOnClick}
+          onPress={() => this.handleShareOnClick()}
         />
         <ActionButton
           iconSource={BulbIcon}
