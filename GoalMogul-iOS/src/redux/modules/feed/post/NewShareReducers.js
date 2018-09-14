@@ -35,7 +35,8 @@ const INITIAL_STATE = {
 
   // Extra info to render
   belongsToTribeItem: undefined,
-  belongsToEventItem: undefined
+  belongsToEventItem: undefined,
+  itemToShare: undefined
 };
 
 // User chooses to share to ['feed', 'event', 'tribe']
@@ -56,7 +57,8 @@ export default (state = INITIAL_STATE, action) => {
         userRef,
         postRef,
         goalRef,
-        needRef
+        needRef,
+        itemToShare
       } = action.payload;
       let newState = _.cloneDeep(state);
       newState = setState(newState, 'owner', owner);
@@ -64,6 +66,7 @@ export default (state = INITIAL_STATE, action) => {
       newState = setState(newState, 'userRef', userRef);
       newState = setState(newState, 'postRef', postRef);
       newState = setState(newState, 'goalRef', goalRef);
+      newState = setState(newState, 'itemToShare', itemToShare);
       return setState(newState, 'needRef', needRef);
     }
 

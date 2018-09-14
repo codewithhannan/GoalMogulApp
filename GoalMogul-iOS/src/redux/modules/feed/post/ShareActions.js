@@ -9,8 +9,7 @@ import {
 } from './NewShareReducers';
 
 import {
-  switchCaseF,
-  switchCase
+  switchCaseF
 } from '../../../middleware/utils';
 
 const switchPostType = (postType, ref, goalRef) => switchCaseF({
@@ -49,7 +48,8 @@ const switchShareToAction = (dest) => switchCaseF({
 })('feed')(dest);
 
 // User chooses a share destination
-export const chooseShareDest = (postType, ref, dest, goalRef) => (dispatch, getState) => {
+export const chooseShareDest = (postType, ref, dest, itemToShare, goalRef) => 
+(dispatch, getState) => {
   const { userId } = getState().user;
 
   dispatch({
@@ -57,7 +57,8 @@ export const chooseShareDest = (postType, ref, dest, goalRef) => (dispatch, getS
     payload: {
       ...switchPostType(postType, ref, goalRef),
       shareTo: dest,
-      owner: userId
+      owner: userId,
+      itemToShare
     }
   });
 

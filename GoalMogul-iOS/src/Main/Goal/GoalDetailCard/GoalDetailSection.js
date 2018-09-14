@@ -7,6 +7,7 @@ import {
 import { connect } from 'react-redux';
 import timeago from 'timeago.js';
 import _ from 'lodash';
+import R from 'ramda';
 
 // Actions
 import {
@@ -22,6 +23,10 @@ import {
   createCommentFromSuggestion
 } from '../../../redux/modules/feed/comment/CommentActions';
 
+import {
+  chooseShareDest
+} from '../../../redux/modules/feed/post/ShareActions';
+
 // Assets
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
 import LoveIcon from '../../../asset/utils/love.png';
@@ -34,11 +39,46 @@ import ActionButton from '../Common/ActionButton';
 import ActionButtonGroup from '../Common/ActionButtonGroup';
 import Headline from '../Common/Headline';
 import Timestamp from '../Common/Timestamp';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 
 // Constants
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
+const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to a tribe', 'Share to an event', 'Cancel'];
+const CANCEL_INDEX = 3;
 
 class GoalDetailSection extends Component {
+
+  handleShareOnClick = () => {
+    const { item } = this.props;
+    const { _id } = item;
+    const shareType = 'ShareGoal';
+
+    const shareToSwitchCases = switchByButtonIndex([
+      [R.equals(0), () => {
+        // User choose to share to feed
+        console.log(`${DEBUG_KEY} User choose destination: Feed `);
+        this.props.chooseShareDest(shareType, _id, 'feed', item);
+        // TODO: update reducer state
+      }],
+      [R.equals(1), () => {
+        // User choose to share to an event
+        console.log(`${DEBUG_KEY} User choose destination: Event `);
+        this.props.chooseShareDest(shareType, _id, 'event', item);
+      }],
+      [R.equals(2), () => {
+        // User choose to share to a tribe
+        console.log(`${DEBUG_KEY} User choose destination: Tribe `);
+        this.props.chooseShareDest(shareType, _id, 'tribe', item);
+      }],
+    ]);
+
+    const shareToActionSheet = actionSheet(
+      SHARE_TO_MENU_OPTTIONS,
+      CANCEL_INDEX,
+      shareToSwitchCases
+    );
+    return shareToActionSheet();
+  };
 
   // user basic information
   renderUserDetail(item) {
@@ -114,7 +154,7 @@ class GoalDetailSection extends Component {
           iconSource={ShareIcon}
           count={shareCount}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
-          onPress={() => console.log('share')}
+          onPress={() => this.handleShareOnClick()}
         />
         <ActionButton
           iconSource={BulbIcon}
@@ -178,6 +218,7 @@ export default connect(
     createReport,
     likeGoal,
     unLikeGoal,
-    createCommentFromSuggestion
+    createCommentFromSuggestion,
+    chooseShareDest
   }
 )(GoalDetailSection);

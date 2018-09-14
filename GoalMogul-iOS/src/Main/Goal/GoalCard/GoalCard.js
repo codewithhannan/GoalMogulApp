@@ -77,7 +77,7 @@ const TabIconMap = {
 };
 
 const DEBUG_KEY = '[ UI GoalCard ]';
-const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to a tribe', 'Share to an event'];
+const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to a tribe', 'Share to an event', 'Cancel'];
 const CANCEL_INDEX = 3;
 
 class GoalCard extends Component {
@@ -95,24 +95,25 @@ class GoalCard extends Component {
   }
 
   handleShareOnClick = () => {
-    const { _id } = this.props.item;
+    const { item } = this.props;
+    const { _id } = item;
 
     const shareToSwitchCases = switchByButtonIndex([
       [R.equals(0), () => {
         // User choose to share to feed
         console.log(`${DEBUG_KEY} User choose destination: Feed `);
-        this.props.chooseShareDest('ShareGoal', _id, 'feed');
+        this.props.chooseShareDest('ShareGoal', _id, 'feed', item);
         // TODO: update reducer state
       }],
       [R.equals(1), () => {
         // User choose to share to an event
         console.log(`${DEBUG_KEY} User choose destination: Event `);
-        this.props.chooseShareDest('ShareGoal', _id, 'event');
+        this.props.chooseShareDest('ShareGoal', _id, 'event', item);
       }],
       [R.equals(2), () => {
         // User choose to share to a tribe
         console.log(`${DEBUG_KEY} User choose destination: Tribe `);
-        this.props.chooseShareDest('ShareGoal', _id, 'tribe');
+        this.props.chooseShareDest('ShareGoal', _id, 'tribe', item);
       }],
     ]);
 
@@ -142,10 +143,20 @@ class GoalCard extends Component {
   };
 
   _renderScene = SceneMap({
-    needs: () =>
-      <NeedTab item={this.props.item.needs} onPress={() => this.props.onPress(this.props.item)} />,
-    steps: () =>
-      <StepTab item={this.props.item.steps} onPress={() => this.props.onPress(this.props.item)} />,
+    needs: () => (
+      <NeedTab
+        item={this.props.item.needs}
+        onPress={() => this.props.onPress(this.props.item)}
+        goalRef={this.props.item}
+      />
+    ),
+    steps: () => (
+      <StepTab
+        item={this.props.item.steps}
+        onPress={() => this.props.onPress(this.props.item)}
+        goalRef={this.props.item}
+      />
+    )
   });
 
   renderTabs() {
