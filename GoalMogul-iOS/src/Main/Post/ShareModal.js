@@ -18,6 +18,7 @@ import { switchCaseF } from '../../redux/middleware/utils';
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
 import ViewableSettingMenu from '../Goal/ViewableSettingMenu';
+import RefPreview from '../Common/RefPreview';
 
 // Actions
 import {
@@ -66,6 +67,7 @@ class ShareModal extends React.Component {
     input: { onChange, onFocus, value, ...restInput },
     editable,
     meta: { touched, error },
+    placeholder,
     ...custom
   }) => {
     const { height } = this.state;
@@ -85,7 +87,7 @@ class ShareModal extends React.Component {
         }}
       >
         <TextInput
-          placeholder="Say something about this share"
+          placeholder={placeholder}
           onChangeText={onChange}
           style={inputStyle}
           editable={editable}
@@ -132,7 +134,7 @@ class ShareModal extends React.Component {
   renderContentHeader(shareTo) {
     const { item, name } = shareTo;
     const { shareToBasicTextStyle } = styles;
-    const basicText = name === 'feed' ? 'To feed ' : `To ${name} `;
+    const basicText = name === 'feed' ? 'To' : `To ${name} `;
 
     const shareToComponent = switchCaseF({
       feed: <Text style={shareToBasicTextStyle}>feed</Text>,
@@ -145,7 +147,9 @@ class ShareModal extends React.Component {
     })('feed')(name);
 
     return (
-      <View style={{ marginTop: 10, marginLeft: 10, marginRight: 10, flexDirection: 'row', width: 200 }}>
+      <View
+        style={{ marginTop: 10, marginLeft: 10, marginRight: 10, flexDirection: 'row', width: 200 }}
+      >
         <Text style={shareToBasicTextStyle}>{basicText}</Text>
         {shareToComponent}
       </View>
@@ -162,15 +166,15 @@ class ShareModal extends React.Component {
           editable={this.props.uploading}
           numberOfLines={10}
           style={styles.goalInputStyle}
-          placeholder='What are you trying to achieve?'
+          placeholder='Say something about this share'
         />
       </View>
     );
   }
 
   render() {
-    const { handleSubmit, errors, user, shareTo, itemToShare } = this.props;
-    const modalTitle = shareTo && shareTo.name
+    const { handleSubmit, errors, user, shareTo, itemToShare, postType } = this.props;
+    const modalTitle = shareTo.name !== 'feed'
       ? `Share to ${shareTo.name}`
       : 'Share to feed';
     return (
@@ -189,6 +193,7 @@ class ShareModal extends React.Component {
             {this.renderUserInfo(user)}
             {this.renderContentHeader(shareTo)}
             {this.renderPost()}
+            <RefPreview item={itemToShare} postType={postType} />
           </View>
 
         </ScrollView>
@@ -200,13 +205,14 @@ class ShareModal extends React.Component {
 const mapStateToProps = state => {
   const selector = formValueSelector('shareModal');
   const { user } = state.user;
-  const { itemToShare } = state.newShare;
+  const { itemToShare, postType } = state.newShare;
 
   return {
     user,
     shareTo: getShareTo(state),
     privacy: selector(state, 'privacy'),
-    itemToShare
+    itemToShare,
+    postType
   };
 };
 

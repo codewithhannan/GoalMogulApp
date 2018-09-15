@@ -40,6 +40,7 @@ import ActionButtonGroup from '../Common/ActionButtonGroup';
 import Headline from '../Common/Headline';
 import Timestamp from '../Common/Timestamp';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import ProfileImage from '../../Common/ProfileImage';
 
 // Constants
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
@@ -89,7 +90,10 @@ class GoalDetailSection extends Component {
 
     return (
       <View style={{ flexDirection: 'row' }}>
-        <Image source={defaultProfilePic} resizeMode='contain' style={{ height: 60, width: 60 }} />
+        <ProfileImage
+          imageStyle={{ height: 60, width: 60 }}
+          imageUrl={owner && owner.profile ? owner.profile.picture : undefined}
+        />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
             name={owner.name || ''}

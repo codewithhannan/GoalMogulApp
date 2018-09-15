@@ -237,10 +237,10 @@ class RouterComponent extends Component {
             hideNavBar
           />
 
-            <Scene key="shareModal" init={false} component={ShareModal} hideNavBar />
-            <Scene key="searchEventLightBox" component={EventSearchOverlay} hideNavBar />
-            <Scene key="searchTribeLightBox" component={TribeSearchOverlay} hideNavBar />
-          
+          <Scene key="shareModal" component={ShareModal} hideNavBar />
+          <Scene key="searchEventLightBox" component={EventSearchOverlay} hideNavBar />
+          <Scene key="searchTribeLightBox" component={TribeSearchOverlay} hideNavBar />
+
           <Scene key="mutualFriends" component={MutualFriends} />
           <Scene key="meetContactSync" component={ContactSync} hideNavBar />
         </Modal>
