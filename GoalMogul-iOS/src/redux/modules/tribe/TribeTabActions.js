@@ -60,7 +60,7 @@ export const refreshTribe = () => (dispatch, getState) => {
 // Load more goal for mastermind tab
 export const loadMoreTribe = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, sortBy, filterForMembershipCategory, hasNextPage } = getState().eventTab;
+  const { skip, limit, sortBy, filterForMembershipCategory, hasNextPage } = getState().tribeTab;
   if (hasNextPage === false) {
     return;
   }
@@ -68,7 +68,7 @@ export const loadMoreTribe = () => (dispatch, getState) => {
     dispatch({
       type: TRIBETAB_LOAD_DONE,
       payload: {
-        type: 'eventtab',
+        type: 'tribetab',
         data,
         skip: data.length,
         limit: 20,
@@ -99,10 +99,10 @@ const loadTribe = (skip, limit, token, sortBy, filterForMembershipCategory, call
           callback([]);
         }
       }
-      console.warn(`${DEBUG_KEY}: Loading goal with no res`);
+      console.warn(`${DEBUG_KEY}: Loading tribe with no res`);
     })
     .catch((err) => {
-      console.log(`${DEBUG_KEY} load goal error: ${err}`);
+      console.log(`${DEBUG_KEY} load tribe error: ${err}`);
       if (skip === 0) {
         callback([]);
       } else {

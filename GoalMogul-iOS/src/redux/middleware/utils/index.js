@@ -37,6 +37,16 @@ const executeIfFunction = f => (f instanceof Function ? f() : f);
 export const switchCaseF = cases => defaultCase => key =>
   executeIfFunction(switchCase(cases)(defaultCase)(key));
 
+// const switchCaseF = cases => ({
+//   withDefaultCase(defaultCase) {
+//     return {
+//       execute(key) {
+//         return executeIfFunction(switchCase(cases)(defaultCase)(key));
+//       }
+//     }
+//   }
+// })
+
 /* Functions to set state and skip if undefined */
 export const setState = (newState, path, data) => {
     // If data exists or original field is set, then we set explicitly.

@@ -14,6 +14,7 @@ import Calendar from '../../asset/utils/calendar.png';
 import DefaultUserProfile from '../../asset/test-profile-pic.png';
 
 const { width } = Dimensions.get('window');
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 class About extends Component {
 
@@ -44,7 +45,7 @@ class About extends Component {
 
   renderCreated(item) {
     const newDate = item.created ? new Date(item.created) : new Date();
-    const date = `${newDate.getMonth()} ${newDate.getDate}, ${newDate.getFullYear()}`;
+    const date = `${months[newDate.getMonth() - 1]} ${newDate.getDate()}, ${newDate.getFullYear()}`;
 
     return (
       <View

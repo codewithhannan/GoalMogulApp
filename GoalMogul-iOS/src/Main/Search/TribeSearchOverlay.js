@@ -56,6 +56,7 @@ class TribeSearchOverlay extends Component {
     const searchPlaceHolder = this.props.searchPlaceHolder
       ? this.props.searchPlaceHolder
       : 'Search a tribe';
+
     return (
       <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>

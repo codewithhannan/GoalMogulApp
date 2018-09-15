@@ -15,6 +15,7 @@ import LocationIcon from '../../asset/utils/location.png';
 import DefaultUserProfile from '../../asset/test-profile-pic.png';
 
 const { width } = Dimensions.get('window');
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 class About extends Component {
 
@@ -41,7 +42,8 @@ class About extends Component {
   renderCreated(item) {
     const { start, durationHours } = item;
     const startDate = start ? new Date(start) : new Date();
-    const date = `${startDate.getMonth()} ${startDate.getDate}, ${startDate.getFullYear()}`;
+    const date = `${months[startDate.getMonth() - 1]} ${startDate.getDate()}, ` +
+      `${startDate.getFullYear()}`;
 
     const startTime = `${startDate.toLocaleString('en-US', {
       hour: 'numeric',

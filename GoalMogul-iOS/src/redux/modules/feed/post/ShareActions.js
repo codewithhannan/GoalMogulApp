@@ -39,7 +39,6 @@ const switchPostType = (postType, ref, goalRef) => switchCaseF({
 const switchShareToAction = (dest) => switchCaseF({
   // Open modal directly if share to feed
   feed: () => {
-    console.log('feed is chosen');
     Actions.push('shareModal');
   },
   // Open search overlay if share to either tribe or event

@@ -23,7 +23,7 @@ import {
 
 // Constants
 const DEBUG_KEY = '[ UI GoalCard.Need/Step SectionCard ]';
-const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to a tribe', 'Share to an event', 'Cancel'];
+const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to an event', 'Share to a tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 
 class SectionCard extends Component {
