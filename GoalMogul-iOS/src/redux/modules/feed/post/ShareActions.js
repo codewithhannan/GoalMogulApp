@@ -39,10 +39,11 @@ const switchPostType = (postType, ref, goalRef) => switchCaseF({
 const switchShareToAction = (dest) => switchCaseF({
   // Open modal directly if share to feed
   feed: () => {
+    console.log('feed also pushes');
     Actions.push('shareModal');
   },
   // Open search overlay if share to either tribe or event
-  tribe: () => Actions.push('searchTribeLightBox'),
+  tribe: () => Actions.searchTribeLightBox(),
   event: () => Actions.push('searchEventLightBox')
 })('feed')(dest);
 
@@ -107,7 +108,8 @@ export const selectEvent = (event) => (dispatch) => {
   });
 
   // Open share modal
-  Actions.push('shareModal');
+  Actions.pop();
+  Actions.shareModal();
 };
 
 export const selectTribe = (tribe) => (dispatch) => {
@@ -120,5 +122,6 @@ export const selectTribe = (tribe) => (dispatch) => {
   });
 
   // Open share modal
-  Actions.push('shareModal');
+  Actions.pop();
+  Actions.shareModal();
 };

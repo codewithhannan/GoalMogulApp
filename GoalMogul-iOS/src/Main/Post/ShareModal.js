@@ -6,11 +6,14 @@ import {
   Image,
   Text,
   TextInput,
-  SafeAreaView
+  SafeAreaView,
+  TouchableOpacity
 } from 'react-native';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
+import { Actions, Stack, Scene } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import R from 'ramda';
+import { switchCaseF } from '../../redux/middleware/utils';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
@@ -126,6 +129,29 @@ class ShareModal extends React.Component {
     );
   }
 
+  renderContentHeader(shareTo) {
+    const { item, name } = shareTo;
+    const { shareToBasicTextStyle } = styles;
+    const basicText = name === 'feed' ? 'To feed ' : `To ${name} `;
+
+    const shareToComponent = switchCaseF({
+      feed: <Text style={shareToBasicTextStyle}>feed</Text>,
+      tribe: () => ShareToComponent(item.name, () => {
+        Actions.push('searchTribeLightBox');
+      }),
+      event: () => ShareToComponent(item.title, () => {
+        Actions.push('searchEventLightBox');
+      })
+    })('feed')(name);
+
+    return (
+      <View style={{ marginTop: 10, marginLeft: 10, marginRight: 10, flexDirection: 'row', width: 200 }}>
+        <Text style={shareToBasicTextStyle}>{basicText}</Text>
+        {shareToComponent}
+      </View>
+    );
+  }
+
   renderPost() {
     return (
       <View style={{ marginTop: 10 }}>
@@ -143,7 +169,10 @@ class ShareModal extends React.Component {
   }
 
   render() {
-    const { handleSubmit, errors, user, modalTitle } = this.props;
+    const { handleSubmit, errors, user, shareTo, itemToShare } = this.props;
+    const modalTitle = shareTo && shareTo.name
+      ? `Share to ${shareTo.name}`
+      : 'Share to feed';
     return (
       <KeyboardAvoidingView
         behavior='padding'
@@ -158,6 +187,7 @@ class ShareModal extends React.Component {
         <ScrollView style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}>
           <View style={{ flex: 1, padding: 20 }}>
             {this.renderUserInfo(user)}
+            {this.renderContentHeader(shareTo)}
             {this.renderPost()}
           </View>
 
@@ -170,15 +200,17 @@ class ShareModal extends React.Component {
 const mapStateToProps = state => {
   const selector = formValueSelector('shareModal');
   const { user } = state.user;
+  const { itemToShare } = state.newShare;
 
   return {
     user,
-    modalTitle: getModalTitle(state),
+    shareTo: getShareTo(state),
     privacy: selector(state, 'privacy'),
+    itemToShare
   };
 };
 
-const getModalTitle = (state) => {
+const getShareTo = (state) => {
   const {
     belongsToTribe,
     belongsToEvent,
@@ -186,15 +218,41 @@ const getModalTitle = (state) => {
     belongsToEventItem,
   } = state.newShare;
 
-  const whoami = 'Your ';
-  let title = `${whoami} feed`;
+  let destination = {
+    name: 'feed'
+  };
   if (belongsToTribe && belongsToTribeItem) {
-    title = `${whoami} tribe ${belongsToTribeItem.name}`;
+    console.log('tribe item is: ', belongsToTribeItem);
+    destination = {
+      name: 'tribe',
+      item: belongsToTribeItem
+    };
   }
   if (belongsToEvent && belongsToEventItem) {
-    title = `${whoami} tribe ${belongsToEventItem.title}`;
+    destination = {
+      name: 'event',
+      item: belongsToEventItem
+    };
   }
-  return title;
+  return destination;
+};
+
+const ShareToComponent = (name, onPress) => {
+
+  return (
+    <TouchableOpacity
+      style={styles.shareToContainerStyler}
+      onPress={onPress}
+    >
+      <Text
+        style={styles.shareToTextStyle}
+        numberOfLines={1}
+        ellipsizeMode='tail'
+      >
+        {name}
+      </Text>
+    </TouchableOpacity>
+  );
 };
 
 const styles = {
@@ -210,6 +268,22 @@ const styles = {
     backgroundColor: 'white',
     borderRadius: 22,
   },
+  shareToBasicTextStyle: {
+    fontSize: 12,
+    padding: 5
+  },
+  shareToTextStyle: {
+    fontSize: 12,
+    fontWeight: '600',
+    flexWrap: 'wrap',
+    flex: 1,
+  },
+  shareToContainerStyler: {
+    backgroundColor: 'lightgray',
+    borderRadius: 4,
+    maxWidth: 200,
+    padding: 5
+  }
 };
 
 ShareModal = reduxForm({

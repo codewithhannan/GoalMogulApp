@@ -84,21 +84,28 @@ class RouterComponent extends Component {
   reducerCreate(params) {
     const defaultReducer = Reducer(params);
     return (state, action) => {
+      console.log('reducer: ACTION: ', action);
       this.props.dispatch(action);
       return defaultReducer(state, action);
     };
+  }
+
+  stateHandler = (prevState, newState, action) => {
+    console.log('onStateChange: ACTION: ', action);
+    console.log('newState is: ', newState);
   }
 
   render() {
     return (
       <Router
         createReducer={this.reducerCreate.bind(this)}
+        onStateChange={this.stateHandler.bind(this)}
       >
         <Modal>
           <Lightbox hideNavBar>
             <Scene key="root" hideNavBar>
               <Scene key="auth" initial hideNavBar>
-                <Scene key="splash" component={Explore} initial />
+                <Scene key="splash" component={Home} initial />
                 <Scene key="login" component={LoginPage} />
               </Scene>
 
@@ -213,8 +220,6 @@ class RouterComponent extends Component {
               component={CreateGoalButtonOverlay}
               hideNavBar
             />
-            <Scene key="searchEventLightBox" component={EventSearchOverlay} hideNavBar />
-            <Scene key="searchTribeLightBox" component={TribeSearchOverlay} hideNavBar />
           </Lightbox>
           <Scene
             key="profileDetailEditForm"
@@ -231,7 +236,11 @@ class RouterComponent extends Component {
             component={CreatePostModal}
             hideNavBar
           />
-          <Scene key="shareModal" component={ShareModal} hideNavBar />
+
+            <Scene key="shareModal" init={false} component={ShareModal} hideNavBar />
+            <Scene key="searchEventLightBox" component={EventSearchOverlay} hideNavBar />
+            <Scene key="searchTribeLightBox" component={TribeSearchOverlay} hideNavBar />
+          
           <Scene key="mutualFriends" component={MutualFriends} />
           <Scene key="meetContactSync" component={ContactSync} hideNavBar />
         </Modal>
