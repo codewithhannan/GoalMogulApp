@@ -1,29 +1,50 @@
+// This reducer stores information for my tribes
+import { Actions } from 'react-native-router-flux';
 import {
-  TRIBETAB_REFRESH_DONE,
-  TRIBETAB_LOAD_DONE,
-  TRIBETAB_LOAD,
-  TRIBETAB_SORTBY,
-  TRIBETAB_UPDATE_FILTEROPTIONS
-} from './TribeTabReducers';
+  MYTRIBETAB_REFRESH_DONE,
+  MYTRIBETAB_LOAD_DONE,
+  MYTRIBETAB_LOAD,
+  MYTRIBETAB_SORTBY,
+  MYTRIBETAB_UPDATE_FILTEROPTIONS,
+  MYTRIBETAB_OPEN,
+  MYTRIBETAB_CLOSE
+} from './MyTribeTabReducers';
 
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
-const DEBUG_KEY = '[ Action Explore Tribe Tab ]';
+const DEBUG_KEY = '[ Action MyTribeTab ]';
 const BASE_ROUTE = 'secure/tribe/';
 
+// Open my tribe modal
+export const openMyTribeTab = () => (dispatch, getState) => {
+  dispatch({
+    type: MYTRIBETAB_OPEN
+  });
+
+  Actions.push('myTribeTab');
+  refreshTribe()(dispatch, getState);
+};
+
+// Close my tribe modal
+export const closeMyTribeTab = () => (dispatch) => {
+  Actions.popTo('home');
+  dispatch({
+    type: MYTRIBETAB_CLOSE
+  });
+};
 
 // update sortBy
 export const updateSortBy = (value) => (dispatch) =>
   dispatch({
-    type: TRIBETAB_SORTBY,
+    type: MYTRIBETAB_SORTBY,
     value
   });
 
 // update filterForMembershipCategory
 export const updateFilterForMembershipCategory = (value) => (dispatch) =>
   dispatch({
-    type: TRIBETAB_UPDATE_FILTEROPTIONS,
+    type: MYTRIBETAB_UPDATE_FILTEROPTIONS,
     value
   });
 /**
@@ -39,13 +60,13 @@ export const refreshTribe = () => (dispatch, getState) => {
   const { limit, filterForMembershipCategory, sortBy } = getState().eventTab;
 
   dispatch({
-    type: TRIBETAB_LOAD
+    type: MYTRIBETAB_LOAD
   });
   loadTribe(0, limit, token, sortBy, filterForMembershipCategory, (data) => {
     dispatch({
-      type: TRIBETAB_REFRESH_DONE,
+      type: MYTRIBETAB_REFRESH_DONE,
       payload: {
-        type: 'tribetab',
+        type: 'mytribetab',
         data,
         skip: data.length,
         limit: 20,
@@ -66,9 +87,9 @@ export const loadMoreTribe = () => (dispatch, getState) => {
   }
   loadTribe(skip, limit, token, sortBy, filterForMembershipCategory, (data) => {
     dispatch({
-      type: TRIBETAB_LOAD_DONE,
+      type: MYTRIBETAB_LOAD_DONE,
       payload: {
-        type: 'tribetab',
+        type: 'mytribetab',
         data,
         skip: data.length,
         limit: 20,

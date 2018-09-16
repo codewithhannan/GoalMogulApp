@@ -1,4 +1,4 @@
-// This stores events information for events under explore
+// This reducer stores information for my tribes
 import _ from 'lodash';
 import { arrayUnique } from '../../middleware/utils';
 
@@ -8,32 +8,39 @@ const INITIAL_STATE = {
   limit: 20,
   skip: 0,
   loading: false,
-  // ['start', 'created', 'title']
+  // ['name', 'created']
   sortBy: 'created',
-  filterOptions: {
-    // TODO: update the filter options
-    // ['Invited', 'Interested', 'Going', 'Maybe', 'NotGoing']
-    rspv: 'Invited',
-    // boolean
-    isCreator: false,
-    // ['Past', 'Upcoming']
-    dateRange: 'Upcoming'
-  }
-
+  // ['Admin', 'Member', 'JoinRequester', 'Invitee']
+  filterForMembershipCategory: 'Admin',
+  showModal: false
 };
 
 const sortByList = ['start', 'created', 'title'];
 
-export const EVENTTAB_REFRESH_DONE = 'eventtab_refresh_done';
-export const EVENTTAB_LOAD_DONE = 'eventtab_load_done';
-export const EVENTTAB_LOAD = 'eventtab_load';
-export const EVENTTAB_SORTBY = 'eventtab_sortby';
-export const EVENTTAB_UPDATE_FILTEROPTIONS = 'eventtab_update_filteroptions';
+export const MYTRIBETAB_OPEN = 'mytribetab_open';
+export const MYTRIBETAB_CLOSE = 'mytribetab_close';
+export const MYTRIBETAB_REFRESH_DONE = 'mytribetab_refresh_done';
+export const MYTRIBETAB_LOAD_DONE = 'mytribetab_load_done';
+export const MYTRIBETAB_LOAD = 'mytribetab_load';
+export const MYTRIBETAB_SORTBY = 'mytribetab_sortby';
+export const MYTRIBETAB_UPDATE_FILTEROPTIONS = 'mytribetab_update_filteroptions';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    // Event refresh done
-    case EVENTTAB_REFRESH_DONE: {
+    // Open my tribe modal
+    case MYTRIBETAB_OPEN: {
+      let newState = _.cloneDeep(state);
+      return _.set(newState, 'showModal', true);
+    }
+
+    // Open my event modal
+    case MYTRIBETAB_CLOSE: {
+      let newState = _.cloneDeep(state);
+      return _.set(newState, 'showModal', false);
+    }
+
+    // Tribe refresh done
+    case MYTRIBETAB_REFRESH_DONE: {
       const { skip, data, hasNextPage, type } = action.payload;
       let newState = _.cloneDeep(state);
       newState = _.set(newState, 'loading', false);
@@ -45,8 +52,8 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, 'data', data);
     }
 
-    // Event load done.
-    case EVENTTAB_LOAD_DONE: {
+    // Tribe load done.
+    case MYTRIBETAB_LOAD_DONE: {
       const { skip, data, hasNextPage, type } = action.payload;
       let newState = _.cloneDeep(state);
       newState = _.set(newState, 'loading', false);
@@ -59,14 +66,14 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, 'data', arrayUnique(oldData.concat(data)));
     }
 
-    // Event tab starts any type of loading
-    case EVENTTAB_LOAD: {
+    // Tribe tab starts any type of loading
+    case MYTRIBETAB_LOAD: {
       let newState = _.cloneDeep(state);
       return _.set(newState, 'loading', true);
     }
 
     // case related to filtering
-    case EVENTTAB_SORTBY: {
+    case MYTRIBETAB_SORTBY: {
       let newState = _.cloneDeep(state);
       if (sortByList.includes(action.payload)) {
         return _.set(newState, 'sortBy', action.payload);
@@ -74,10 +81,10 @@ export default (state = INITIAL_STATE, action) => {
       return { ...newState };
     }
 
-    case EVENTTAB_UPDATE_FILTEROPTIONS: {
+    case MYTRIBETAB_UPDATE_FILTEROPTIONS: {
       // TODO: valid filter options
       let newState = _.cloneDeep(state);
-      return _.set(newState, 'filterOptions', action.payload);
+      return _.set(newState, 'filterForMembershipCategory', action.payload);
     }
 
     default:

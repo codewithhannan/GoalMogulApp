@@ -1,3 +1,4 @@
+// This reducer stores information for recommended tribes
 import _ from 'lodash';
 import { arrayUnique } from '../../middleware/utils';
 

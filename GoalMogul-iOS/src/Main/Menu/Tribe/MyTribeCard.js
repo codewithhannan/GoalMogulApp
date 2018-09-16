@@ -10,16 +10,16 @@ import { connect } from 'react-redux';
 
 // Assets
 // TODO: set default tribe picture
-import profilePic from '../../asset/utils/defaultUserProfile.png';
+import profilePic from '../../../asset/utils/defaultUserProfile.png';
 
 // Actions
 import {
   tribeDetailOpen
-} from '../../redux/modules/tribe/TribeActions';
+} from '../../../redux/modules/tribe/TribeActions';
 
 const DEBUG_KEY = '[UI Tribe Card] ';
 
-class TribeCard extends React.Component {
+class MyTribeCard extends React.Component {
   onCardPress = () => {
     console.log(`${DEBUG_KEY} open Tribe Detail`);
     this.props.tribeDetailOpen(this.props.item);
@@ -199,4 +199,4 @@ export default connect(
   {
     tribeDetailOpen
   }
-)(TribeCard);
+)(MyTribeCard);
