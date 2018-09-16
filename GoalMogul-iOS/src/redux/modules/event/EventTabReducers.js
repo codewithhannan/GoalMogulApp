@@ -8,17 +8,8 @@ const INITIAL_STATE = {
   limit: 20,
   skip: 0,
   loading: false,
-  // ['start', 'created', 'title']
-  sortBy: 'created',
-  filterOptions: {
-    // TODO: update the filter options
-    // ['Invited', 'Interested', 'Going', 'Maybe', 'NotGoing']
-    rspv: 'Invited',
-    // boolean
-    isCreator: false,
-    // ['Past', 'Upcoming']
-    dateRange: 'Upcoming'
-  }
+  // ['Popular', 'RecentlyCreated', 'Random']
+  sortBy: 'created'
 
 };
 

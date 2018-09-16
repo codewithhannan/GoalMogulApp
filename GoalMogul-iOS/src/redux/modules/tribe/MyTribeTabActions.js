@@ -35,18 +35,26 @@ export const closeMyTribeTab = () => (dispatch) => {
 };
 
 // update sortBy
-export const updateSortBy = (value) => (dispatch) =>
+export const updateSortBy = (value) => (dispatch, getState) => {
   dispatch({
     type: MYTRIBETAB_SORTBY,
     value
   });
 
+  refreshTribe()(dispatch, getState);
+};
+
+
 // update filterForMembershipCategory
-export const updateFilterForMembershipCategory = (value) => (dispatch) =>
+export const updateFilterForMembershipCategory = (value) => (dispatch, getState) => {
   dispatch({
     type: MYTRIBETAB_UPDATE_FILTEROPTIONS,
     value
   });
+
+  refreshTribe()(dispatch, getState);
+};
+
 /**
  * For the next three functions, we could abstract a pattern since
  * It's shared across mastermind/actions, feed/actions, MeetActions, ProfileActions, EventTabActions
@@ -107,7 +115,7 @@ export const loadMoreTribe = () => (dispatch, getState) => {
 const loadTribe = (skip, limit, token, sortBy, filterForMembershipCategory, callback, onError) => {
   API
     .get(
-      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, filterForMembershipCategory })}`,
+      `${BASE_ROUTE}?${queryBuilder(skip, limit, { ...sortBy, ...filterForMembershipCategory })}`,
       token
     )
     .then((res) => {

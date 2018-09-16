@@ -13,6 +13,7 @@ import {
 
 // Components
 import TribeCard from './TribeCard';
+import TribeTabFilterBar from './TribeTabFilterBar';
 
 class TribeTab extends React.Component {
   _keyExtractor = (item) => item._id;
@@ -23,6 +24,10 @@ class TribeTab extends React.Component {
 
   renderItem = ({ item }) => {
     return <TribeCard item={item} />;
+  }
+
+  renderListHeader() {
+    return <TribeTabFilterBar />;
   }
 
   render() {
@@ -36,6 +41,7 @@ class TribeTab extends React.Component {
           refreshing={this.props.loading}
           onRefresh={this.handleOnRefresh}
           onEndReached={this.handleOnLoadMore}
+          ListHeaderComponent={this.renderListHeader()}
           onEndThreshold={0}
         />
       </View>

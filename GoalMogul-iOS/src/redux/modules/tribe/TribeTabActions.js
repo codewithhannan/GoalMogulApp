@@ -14,18 +14,22 @@ const BASE_ROUTE = 'secure/tribe/';
 
 
 // update sortBy
-export const updateSortBy = (value) => (dispatch) =>
+export const updateSortBy = (value) => (dispatch, getState) => {
   dispatch({
     type: TRIBETAB_SORTBY,
     value
   });
+  refreshTribe()(dispatch, getState);
+};
 
+
+/* Depreacted method */
 // update filterForMembershipCategory
-export const updateFilterForMembershipCategory = (value) => (dispatch) =>
-  dispatch({
-    type: TRIBETAB_UPDATE_FILTEROPTIONS,
-    value
-  });
+// export const updateFilterForMembershipCategory = (value) => (dispatch) =>
+//   dispatch({
+//     type: TRIBETAB_UPDATE_FILTEROPTIONS,
+//     value
+//   });
 /**
  * For the next three functions, we could abstract a pattern since
  * It's shared across mastermind/actions, feed/actions, MeetActions, ProfileActions, EventTabActions
@@ -36,12 +40,12 @@ export const updateFilterForMembershipCategory = (value) => (dispatch) =>
 //Refresh feed for activity tab
 export const refreshTribe = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { limit, filterForMembershipCategory, sortBy } = getState().eventTab;
+  const { limit, sortBy } = getState().eventTab;
 
   dispatch({
     type: TRIBETAB_LOAD
   });
-  loadTribe(0, limit, token, sortBy, filterForMembershipCategory, (data) => {
+  loadTribe(0, limit, token, sortBy, { refresh: true }, (data) => {
     dispatch({
       type: TRIBETAB_REFRESH_DONE,
       payload: {
@@ -60,11 +64,11 @@ export const refreshTribe = () => (dispatch, getState) => {
 // Load more goal for mastermind tab
 export const loadMoreTribe = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, sortBy, filterForMembershipCategory, hasNextPage } = getState().tribeTab;
+  const { skip, limit, sortBy, hasNextPage } = getState().tribeTab;
   if (hasNextPage === false) {
     return;
   }
-  loadTribe(skip, limit, token, sortBy, filterForMembershipCategory, (data) => {
+  loadTribe(skip, limit, token, sortBy, {}, (data) => {
     dispatch({
       type: TRIBETAB_LOAD_DONE,
       payload: {
@@ -86,7 +90,7 @@ export const loadMoreTribe = () => (dispatch, getState) => {
 const loadTribe = (skip, limit, token, sortBy, filterForMembershipCategory, callback, onError) => {
   API
     .get(
-      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, filterForMembershipCategory })}`,
+      `${BASE_ROUTE}?${queryBuilder(skip, limit, { ...sortBy, ...filterForMembershipCategory })}`,
       token
     )
     .then((res) => {

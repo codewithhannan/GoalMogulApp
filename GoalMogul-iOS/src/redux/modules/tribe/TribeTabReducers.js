@@ -8,10 +8,8 @@ const INITIAL_STATE = {
   limit: 20,
   skip: 0,
   loading: false,
-  // ['name', 'created']
+  // ['Popular', 'RecentlyCreated', 'Random']
   sortBy: 'created',
-  // ['Admin', 'Member', 'JoinRequester', 'Invitee']
-  filterForMembershipCategory: 'Admin'
 };
 
 const sortByList = ['start', 'created', 'title'];

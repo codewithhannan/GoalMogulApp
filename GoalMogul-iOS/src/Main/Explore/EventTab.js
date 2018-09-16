@@ -13,6 +13,7 @@ import {
 
 // Components
 import EventCard from './EventCard';
+import EventTabFilterBar from './EventTabFilterBar';
 
 class EventTab extends React.Component {
   _keyExtractor = (item) => item._id;
@@ -23,6 +24,10 @@ class EventTab extends React.Component {
 
   renderItem = ({ item }) => {
     return <EventCard item={item} />;
+  }
+
+  renderListHeader() {
+    return <EventTabFilterBar />;
   }
 
   render() {
@@ -36,6 +41,7 @@ class EventTab extends React.Component {
           refreshing={this.props.loading}
           onRefresh={this.handleOnRefresh}
           onEndReached={this.handleOnLoadMore}
+          ListHeaderComponent={this.renderListHeader()}
           onEndThreshold={0}
         />
       </View>

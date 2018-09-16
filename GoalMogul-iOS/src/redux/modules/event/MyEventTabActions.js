@@ -34,14 +34,18 @@ export const closeMyEventTab = () => (dispatch) => {
 };
 
 // update sortBy
-export const updateSortBy = (value) => (dispatch) =>
+export const updateSortBy = (value) => (dispatch, getState) => {
   dispatch({
     type: MYEVENTTAB_SORTBY,
     value
   });
 
+  refreshEvent()(dispatch, getState);
+};
+
+
 // update filterOptions
-export const updateFilterOptions = ({ type, value }) => (dispatch) =>
+export const updateFilterOptions = ({ type, value }) => (dispatch, getState) => {
   dispatch({
     type: MYEVENTTAB_UPDATE_FILTEROPTIONS,
     payload: {
@@ -49,6 +53,10 @@ export const updateFilterOptions = ({ type, value }) => (dispatch) =>
       value
     }
   });
+
+  refreshEvent()(dispatch, getState);
+};
+
 /**
  * For the next three functions, we could abstract a pattern since
  * It's shared across mastermind/actions, feed/actions, MeetActions, ProfileActions, TribeTabActions,
@@ -110,7 +118,7 @@ export const loadMoreEvent = () => (dispatch, getState) => {
 const loadEvent = (skip, limit, token, sortBy, filterOptions, callback, onError) => {
   API
     .get(
-      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, filterOptions })}`,
+      `${BASE_ROUTE}?${queryBuilder(skip, limit, { ...sortBy, ...filterOptions })}`,
       token
     )
     .then((res) => {

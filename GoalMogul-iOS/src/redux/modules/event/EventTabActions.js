@@ -14,18 +14,24 @@ const BASE_ROUTE = 'secure/event/feed';
 
 
 // update sortBy
-export const updateSortBy = (value) => (dispatch) =>
+export const updateSortBy = (value) => (dispatch, getState) => {
   dispatch({
     type: EVENTTAB_SORTBY,
     value
   });
 
+  refreshEvent()(dispatch, getState);
+};
+
+/*
+ * Deprecated
+ */
 // update filterOptions
-export const updateFilterOptions = (value) => (dispatch) =>
-  dispatch({
-    type: EVENTTAB_UPDATE_FILTEROPTIONS,
-    value
-  });
+// export const updateFilterOptions = (value) => (dispatch) =>
+//   dispatch({
+//     type: EVENTTAB_UPDATE_FILTEROPTIONS,
+//     value
+//   });
 /**
  * For the next three functions, we could abstract a pattern since
  * It's shared across mastermind/actions, feed/actions, MeetActions, ProfileActions, TribeTabActions,
@@ -37,12 +43,12 @@ export const updateFilterOptions = (value) => (dispatch) =>
 //Refresh feed for activity tab
 export const refreshEvent = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { limit, filterOptions, sortBy } = getState().eventTab;
+  const { limit, sortBy } = getState().eventTab;
 
   dispatch({
     type: EVENTTAB_LOAD
   });
-  loadEvent(0, limit, token, sortBy, filterOptions, (data) => {
+  loadEvent(0, limit, token, sortBy, { refresh: true }, (data) => {
     dispatch({
       type: EVENTTAB_REFRESH_DONE,
       payload: {
@@ -61,11 +67,11 @@ export const refreshEvent = () => (dispatch, getState) => {
 // Load more goal for mastermind tab
 export const loadMoreEvent = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, sortBy, filterOptions, hasNextPage } = getState().eventTab;
+  const { skip, limit, sortBy, hasNextPage } = getState().eventTab;
   if (hasNextPage === false) {
     return;
   }
-  loadEvent(skip, limit, token, sortBy, filterOptions, (data) => {
+  loadEvent(skip, limit, token, sortBy, {}, (data) => {
     dispatch({
       type: EVENTTAB_LOAD_DONE,
       payload: {
@@ -87,7 +93,7 @@ export const loadMoreEvent = () => (dispatch, getState) => {
 const loadEvent = (skip, limit, token, sortBy, filterOptions, callback, onError) => {
   API
     .get(
-      `${BASE_ROUTE}?${queryBuilder(skip, limit, { })}`,
+      `${BASE_ROUTE}?${queryBuilder(skip, limit, { ...sortBy, ...filterOptions })}`,
       token
     )
     .then((res) => {
