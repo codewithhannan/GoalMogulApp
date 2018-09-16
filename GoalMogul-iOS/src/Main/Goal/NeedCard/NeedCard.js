@@ -18,6 +18,7 @@ import ActionButtonGroup from '../Common/ActionButtonGroup';
 import SectionCard from '../Common/SectionCard';
 import NextButton from '../Common/NextButton';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import ProfileImage from '../../Common/ProfileImage';
 
 // Asset
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
@@ -93,7 +94,10 @@ class NeedCard extends Component {
 
     return (
       <View style={{ flexDirection: 'row' }}>
-        <Image source={defaultProfilePic} resizeMode='contain' style={{ height: 60, width: 60 }} />
+        <ProfileImage
+          imageStyle={{ height: 60, width: 60 }}
+          imageUrl={owner && owner.profile ? owner.profile.picture : undefined}
+        />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
             name={owner.name}

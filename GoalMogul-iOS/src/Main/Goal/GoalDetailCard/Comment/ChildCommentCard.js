@@ -15,6 +15,7 @@ import CommentIcon from '../../../../asset/utils/comment.png';
 import ActionButton from '../../Common/ActionButton';
 import ActionButtonGroup from '../../Common/ActionButtonGroup';
 import CommentHeadline from './CommentHeadline';
+import ProfileImage from '../../../Common/ProfileImage';
 
 // Actions
 import {
@@ -25,6 +26,10 @@ import {
 import {
   createComment
 } from '../../../../redux/modules/feed/comment/CommentActions';
+
+import {
+  createReport
+} from '../../../../redux/modules/report/ReportActions';
 
 // Constants
 const DEBUG_KEY = '[ UI CommentCard.ChildCommentCard ]';
@@ -70,9 +75,15 @@ class ChildCommentCard extends Component {
   // user basic information
   renderUserDetail() {
     const { item } = this.props;
+    const { _id } = item;
     return (
         <View style={{ marginLeft: 15, flex: 1 }}>
-          <CommentHeadline item={item} />
+          <CommentHeadline
+            item={item}
+            caretOnPress={() => {
+              this.props.createReport(_id, 'detail', 'Comment');
+            }}
+          />
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
             {this.renderCardContent()}
           </View>
@@ -82,10 +93,17 @@ class ChildCommentCard extends Component {
 
   renderUserProfileImage() {
     return (
-      <View style={styles.profileImageContianerStyle}>
-        <Image source={defaultProfilePic} resizeMode='contain' style={styles.profileImageStyle} />
-      </View>
+      <ProfileImage
+        imageContainerStyle={{ ...styles.profileImageContianerStyle }}
+        defaultImageSource={defaultProfilePic}
+        imageStyle={{ ...styles.profileImageStyle }}
+      />
     );
+    // return (
+    //   <View style={styles.profileImageContianerStyle}>
+    //     <Image source={defaultProfilePic} resizeMode='contain' style={styles.profileImageStyle} />
+    //   </View>
+    // );
   }
 
   renderActionButtons() {
@@ -195,6 +213,7 @@ export default connect(
   {
     likeGoal,
     unLikeGoal,
-    createComment
+    createComment,
+    createReport
   }
 )(ChildCommentCard);

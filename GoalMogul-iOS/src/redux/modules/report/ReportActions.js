@@ -10,6 +10,8 @@ import {
 const BASE_URL = 'secure/';
 
 // Creating a new report
+// category: ['General', 'User', 'Post', 'Goal', 'Comment', 'Tribe', 'Event']
+// type: ['detail', something else]
 export const createReport = (referenceId, type, category = 'User') => (dispatch, getState) => {
   const { userId } = getState().user;
   // Set the basic information for a report
