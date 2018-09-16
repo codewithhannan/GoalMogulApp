@@ -89,8 +89,9 @@ export default (state = INITIAL_STATE, action) => {
 
     case MYEVENTTAB_UPDATE_FILTEROPTIONS: {
       // TODO: valid filter options
+      const { type, value } = action.payload;
       let newState = _.cloneDeep(state);
-      return _.set(newState, 'filterOptions', action.payload);
+      return _.set(newState, `filterOptions.${type}`, value);
     }
 
     default:

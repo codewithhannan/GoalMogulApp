@@ -5,6 +5,7 @@ import {
   FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
+import { MenuProvider } from 'react-native-popup-menu';
 
 // Actions
 import {
@@ -16,6 +17,7 @@ import {
 // Components
 import MyEventCard from './MyEventCard';
 import ModalHeader from '../../Common/Header/ModalHeader';
+import MyEventFilterBar from './MyEventFilterBar';
 
 class MyEventTab extends React.Component {
 
@@ -30,29 +32,31 @@ class MyEventTab extends React.Component {
   }
 
   renderListHeader() {
-    return '';
+    return <MyEventFilterBar />;
   }
 
   render() {
     return (
       <Modal style={{ flex: 1 }} animationType='fade'>
-        <ModalHeader
-          title='My Events'
-          actionText='Close'
-          onCancel={() => console.log('User closed event modal')}
-          onAction={() => this.props.closeMyEventTab()}
-        />
-        <FlatList
-          data={this.props.data}
-          renderItem={this.renderItem}
-          numColumns={1}
-          keyExtractor={this._keyExtractor}
-          refreshing={this.props.loading}
-          onRefresh={this.handleOnRefresh}
-          onEndReached={this.handleOnLoadMore}
-          ListHeaderComponent={this.renderListHeader()}
-          onEndThreshold={0}
-        />
+        <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+          <ModalHeader
+            title='My Events'
+            actionText='Close'
+            onCancel={() => console.log('User closed event modal')}
+            onAction={() => this.props.closeMyEventTab()}
+          />
+          <FlatList
+            data={this.props.data}
+            renderItem={this.renderItem}
+            numColumns={1}
+            keyExtractor={this._keyExtractor}
+            refreshing={this.props.loading}
+            onRefresh={this.handleOnRefresh}
+            onEndReached={this.handleOnLoadMore}
+            ListHeaderComponent={this.renderListHeader()}
+            onEndThreshold={0}
+          />
+        </MenuProvider>
       </Modal>
     );
   }
@@ -138,6 +142,13 @@ const mapStateToProps = state => {
     loading,
     showModal
   };
+};
+
+const styles = {
+  backdrop: {
+    backgroundColor: 'gray',
+    opacity: 0.5,
+  }
 };
 
 export default connect(

@@ -41,10 +41,13 @@ export const updateSortBy = (value) => (dispatch) =>
   });
 
 // update filterOptions
-export const updateFilterOptions = (value) => (dispatch) =>
+export const updateFilterOptions = ({ type, value }) => (dispatch) =>
   dispatch({
     type: MYEVENTTAB_UPDATE_FILTEROPTIONS,
-    value
+    payload: {
+      type,
+      value
+    }
   });
 /**
  * For the next three functions, we could abstract a pattern since

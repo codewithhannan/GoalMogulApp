@@ -5,6 +5,7 @@ import {
   FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
+import { MenuProvider } from 'react-native-popup-menu';
 
 // Actions
 import {
@@ -16,6 +17,7 @@ import {
 // Components
 import MyTribeCard from './MyTribeCard';
 import ModalHeader from '../../Common/Header/ModalHeader';
+import MyTribeFilterBar from './MyTribeFilterBar';
 
 class MyTribeTab extends React.Component {
   _keyExtractor = (item) => item._id;
@@ -29,30 +31,36 @@ class MyTribeTab extends React.Component {
   }
 
   renderListHeader() {
-    return '';
+    return (
+      <MyTribeFilterBar />
+    );
   }
+  // ListHeaderComponent={this.renderListHeader()}
 
   render() {
     return (
       <Modal style={{ flex: 1 }} animationType='fade'>
-        <ModalHeader
-          title='My Tribes'
-          actionText='Close'
-          onCancel={() => console.log('User closed tribe modal')}
-          onAction={() => this.props.closeMyTribeTab()}
-        />
-        <FlatList
-          data={this.props.data}
-          renderItem={this.renderItem}
-          numColumns={1}
-          keyExtractor={this._keyExtractor}
-          refreshing={this.props.loading}
-          onRefresh={this.handleOnRefresh}
-          onEndReached={this.handleOnLoadMore}
-          ListHeaderComponent={this.renderListHeader()}
-          onEndThreshold={0}
-        />
+        <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+          <ModalHeader
+            title='My Tribes'
+            actionText='Close'
+            onCancel={() => console.log('User closed tribe modal')}
+            onAction={() => this.props.closeMyTribeTab()}
+          />
+          <FlatList
+            data={this.props.data}
+            renderItem={this.renderItem}
+            numColumns={1}
+            keyExtractor={this._keyExtractor}
+            refreshing={this.props.loading}
+            onRefresh={this.handleOnRefresh}
+            onEndReached={this.handleOnLoadMore}
+            ListHeaderComponent={this.renderListHeader()}
+            onEndThreshold={0}
+          />
+        </MenuProvider>
       </Modal>
+
     );
   }
 }
@@ -111,6 +119,13 @@ const mapStateToProps = state => {
     loading,
     showModal
   };
+};
+
+const styles = {
+  backdrop: {
+    backgroundColor: 'gray',
+    opacity: 0.5,
+  }
 };
 
 export default connect(

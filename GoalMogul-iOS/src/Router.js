@@ -94,7 +94,7 @@ class RouterComponent extends Component {
 
   stateHandler = (prevState, newState, action) => {
     console.log('onStateChange: ACTION: ', action);
-    console.log('newState is: ', newState);
+    // console.log('newState is: ', newState);
   }
 
   render() {
