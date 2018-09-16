@@ -67,10 +67,13 @@ class Mastermind extends Component {
     return '';
   }
 
+  renderListHeader() {
+    return <GoalFilter />;
+  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <GoalFilter />
         <FlatList
           data={this.props.data}
           renderItem={this.renderItem}
@@ -79,6 +82,7 @@ class Mastermind extends Component {
           refreshing={this.props.loading}
           onRefresh={this.handleOnRefresh}
           onEndReached={this.handleOnLoadMore}
+          ListHeaderComponent={this.renderListHeader()}
           onEndThreshold={0}
         />
         {this.renderPlus()}

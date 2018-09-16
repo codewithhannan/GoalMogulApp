@@ -6,7 +6,7 @@ import {
   Text
 } from 'react-native';
 
-import { switchCaseF } from '../../redux/middleware/utils';
+import { switchCaseFWithVal } from '../../redux/middleware/utils';
 
 // Assets
 import badge from '../../asset/utils/badge.png';
@@ -22,8 +22,9 @@ class RefPreview extends Component {
     const { item, postType } = this.props;
     if (!item) return '';
 
-    const { title, content } = switchCaseItem(item, postType);
     console.log('item and postType are: ', item, postType);
+    const { title, content } = switchCaseItem(item, postType);
+
     console.log('title and contents are: ', title, content);
     return (
       <View style={styles.containerStyle}>
@@ -38,7 +39,7 @@ class RefPreview extends Component {
               numberOfLines={1}
               ellipsizeMode='tail'
             >
-              {title}
+              {postType === 'ShareNeed' ? 'Need' : title}
             </Text>
 
 
@@ -62,28 +63,28 @@ class RefPreview extends Component {
 // <Text style={styles.headingTextStyle}>{content}</Text>
 
 // type: ["General", "ShareUser", "SharePost", "ShareGoal", "ShareNeed"]
-const switchCaseItem = (item, type) => switchCaseF({
-  General: {
+const switchCaseItem = (val, type) => switchCaseFWithVal(val)({
+  General: () => ({
     title: undefined
-  },
-  ShareUser: {
+  }),
+  ShareUser: (item) => ({
     title: item.name,
     content: item.profile ? item.profile.about : undefined
-  },
-  SharePost: {
+  }),
+  SharePost: (item) => ({
     title: item.owner ? item.owner.name : undefined,
     // TODO: TAG: convert this to string later on
     content: item.content ? item.content.text : undefined
-  },
-  ShareGoal: {
+  }),
+  ShareGoal: (item) => ({
     title: item.title,
     // TODO: TAG: convert this to string later on
     content: item.details.text
-  },
-  ShareNeed: {
-    title: item.description,
-    content: undefined
-  }
+  }),
+  ShareNeed: (item) => ({
+      title: undefined,
+      content: item.description
+  })
 })('General')(type);
 
 const styles = {
@@ -104,18 +105,16 @@ const styles = {
     elevation: 1
   },
   titleTextStyle: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '600',
     marginTop: 4,
-    marginBottom: 2,
     flexWrap: 'wrap',
     flex: 1,
   },
   headingTextStyle: {
-    fontSize: 9,
+    fontSize: 10,
     flexWrap: 'wrap',
     flex: 1,
-
   }
 };
 
