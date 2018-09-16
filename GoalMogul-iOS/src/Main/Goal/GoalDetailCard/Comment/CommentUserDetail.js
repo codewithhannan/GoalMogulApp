@@ -27,6 +27,10 @@ import {
   createComment
 } from '../../../../redux/modules/feed/comment/CommentActions';
 
+import {
+  createReport
+} from '../../../../redux/modules/report/ReportActions';
+
 // Constants
 const DEBUG_KEY = '[ UI CommentCard.CommentUserDetail ]';
 
@@ -78,9 +82,15 @@ class CommentUserDetail extends Component {
   // user basic information
   renderUserDetail() {
     const { item } = this.props;
+    const { _id } = item;
     return (
         <View style={{ marginLeft: 15, flex: 1 }}>
-          <CommentHeadline item={item} />
+          <CommentHeadline
+            item={item}
+            caretOnPress={() => {
+              this.props.createReport(_id, 'detail', 'Comment');
+            }}
+          />
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
             {this.renderCardContent()}
           </View>
@@ -211,6 +221,7 @@ export default connect(
   {
     likeGoal,
     unLikeGoal,
-    createComment
+    createComment,
+    createReport
   }
 )(CommentUserDetail);

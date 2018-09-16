@@ -1,3 +1,4 @@
+// This stores events information for events under explore
 import _ from 'lodash';
 import { arrayUnique } from '../../middleware/utils';
 
@@ -7,16 +8,8 @@ const INITIAL_STATE = {
   limit: 20,
   skip: 0,
   loading: false,
-  // ['start', 'created', 'title']
-  sortBy: 'created',
-  filterOptions: {
-    // ['Invited', 'Interested', 'Going', 'Maybe', 'NotGoing']
-    rspv: 'Invited',
-    // boolean
-    isCreator: false,
-    // ['Past', 'Upcoming']
-    dateRange: 'Upcoming'
-  }
+  // ['Popular', 'RecentlyCreated', 'Random']
+  sortBy: 'created'
 
 };
 

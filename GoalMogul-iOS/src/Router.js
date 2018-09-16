@@ -40,6 +40,8 @@ import CreatePostModal from './Main/Post/CreatePostModal';
 import GoalCard from './Main/Goal/GoalCard/GoalCard'; // For debug purpose
 import NeedCard from './Main/Goal/NeedCard/NeedCard'; // For debug purpose
 import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCard2';
+import MyEventTab from './Main/Menu/Event/MyEventTab';
+import MyTribeTab from './Main/Menu/Tribe/MyTribeTab';
 
 // Profile
 import Profile from './Main/Profile/Profile';
@@ -84,21 +86,28 @@ class RouterComponent extends Component {
   reducerCreate(params) {
     const defaultReducer = Reducer(params);
     return (state, action) => {
+      console.log('reducer: ACTION: ', action);
       this.props.dispatch(action);
       return defaultReducer(state, action);
     };
+  }
+
+  stateHandler = (prevState, newState, action) => {
+    console.log('onStateChange: ACTION: ', action);
+    // console.log('newState is: ', newState);
   }
 
   render() {
     return (
       <Router
         createReducer={this.reducerCreate.bind(this)}
+        onStateChange={this.stateHandler.bind(this)}
       >
         <Modal>
           <Lightbox hideNavBar>
             <Scene key="root" hideNavBar>
               <Scene key="auth" initial hideNavBar>
-                <Scene key="splash" component={Home} initial />
+                <Scene key="splash" component={Explore} initial />
                 <Scene key="login" component={LoginPage} />
               </Scene>
 
@@ -149,6 +158,14 @@ class RouterComponent extends Component {
                     hideNavBar
                   >
                     <Scene key="home" component={Home} initial />
+                    <Stack key="myEventTabRoot" hideNavBar>
+                      <Scene key="myEventTab" component={MyEventTab} initial />
+                      <Scene key="myEventDetail" component={Event} />
+                    </Stack>
+                    <Stack key="myTribeTabRoot" hideNavBar>
+                      <Scene key="myTribeTab" component={MyTribeTab} initial />
+                      <Scene key="myTribeDetail" component={Tribe} />
+                    </Stack>
                     <Scene key="goal" component={GoalDetailCard} />
                     <Scene key="profile" component={Profile} />
                     <Scene key="profileDetail" component={ProfileDetail} />
@@ -213,9 +230,6 @@ class RouterComponent extends Component {
               component={CreateGoalButtonOverlay}
               hideNavBar
             />
-            <Scene key="searchEventLightBox" component={EventSearchOverlay} hideNavBar />
-            <Scene key="searchTribeLightBox" component={TribeSearchOverlay} hideNavBar />
-            <Scene key="shareModal" component={ShareModal} hideNavBar />
           </Lightbox>
           <Scene
             key="profileDetailEditForm"
@@ -232,6 +246,11 @@ class RouterComponent extends Component {
             component={CreatePostModal}
             hideNavBar
           />
+
+          <Scene key="shareModal" component={ShareModal} hideNavBar />
+          <Scene key="searchEventLightBox" component={EventSearchOverlay} hideNavBar />
+          <Scene key="searchTribeLightBox" component={TribeSearchOverlay} hideNavBar />
+
           <Scene key="mutualFriends" component={MutualFriends} />
           <Scene key="meetContactSync" component={ContactSync} hideNavBar />
         </Modal>

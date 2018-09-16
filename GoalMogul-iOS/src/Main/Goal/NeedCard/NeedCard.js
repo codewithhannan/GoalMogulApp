@@ -8,6 +8,7 @@ import {
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import timeago from 'timeago.js';
+import R from 'ramda';
 
 // Component
 import Headline from '../Common/Headline';
@@ -16,6 +17,8 @@ import ActionButton from '../Common/ActionButton';
 import ActionButtonGroup from '../Common/ActionButtonGroup';
 import SectionCard from '../Common/SectionCard';
 import NextButton from '../Common/NextButton';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import ProfileImage from '../../Common/ProfileImage';
 
 // Asset
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
@@ -34,8 +37,41 @@ import {
 } from '../../../redux/modules/report/ReportActions';
 
 const DEBUG_KEY = '[ UI NeedCard ]';
+const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to an event', 'Share to a tribe', 'Cancel'];
+const CANCEL_INDEX = 3;
 
 class NeedCard extends Component {
+
+  handleShareOnClick = () => {
+    const { item } = this.props;
+    const { _id } = item;
+
+    const shareToSwitchCases = switchByButtonIndex([
+      [R.equals(0), () => {
+        // User choose to share to feed
+        console.log(`${DEBUG_KEY} User choose destination: Feed `);
+        this.props.chooseShareDest('ShareNeed', _id, 'feed', item);
+        // TODO: update reducer state
+      }],
+      [R.equals(1), () => {
+        // User choose to share to an event
+        console.log(`${DEBUG_KEY} User choose destination: Event `);
+        this.props.chooseShareDest('ShareNeed', _id, 'event', item);
+      }],
+      [R.equals(2), () => {
+        // User choose to share to a tribe
+        console.log(`${DEBUG_KEY} User choose destination: Tribe `);
+        this.props.chooseShareDest('ShareNeed', _id, 'tribe', item);
+      }],
+    ]);
+
+    const shareToActionSheet = actionSheet(
+      SHARE_TO_MENU_OPTTIONS,
+      CANCEL_INDEX,
+      shareToSwitchCases
+    );
+    return shareToActionSheet();
+  };
 
   // card central content
   renderCardContent(item) {
@@ -58,7 +94,10 @@ class NeedCard extends Component {
 
     return (
       <View style={{ flexDirection: 'row' }}>
-        <Image source={defaultProfilePic} resizeMode='contain' style={{ height: 60, width: 60 }} />
+        <ProfileImage
+          imageStyle={{ height: 60, width: 60 }}
+          imageUrl={owner && owner.profile ? owner.profile.picture : undefined}
+        />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
             name={owner.name}
@@ -140,13 +179,16 @@ class NeedCard extends Component {
           iconSource={ShareIcon}
           count={shareCount}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
-          onPress={() => console.log('share')}
+          onPress={() => this.handleShareOnClick()}
         />
         <ActionButton
           iconSource={BulbIcon}
           count={commentCount}
           iconStyle={{ tintColor: '#f5eb6f', height: 26, width: 26 }}
-          onPress={() => console.log('suggest')}
+          onPress={() => {
+            console.log(`${DEBUG_KEY}: user clicks suggest icon`);
+            this.props.onPress(this.props.item);
+          }}
         />
       </ActionButtonGroup>
     );

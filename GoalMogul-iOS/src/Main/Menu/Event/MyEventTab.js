@@ -1,21 +1,26 @@
 import React from 'react';
 import {
   View,
+  Modal,
   FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
+import { MenuProvider } from 'react-native-popup-menu';
 
 // Actions
 import {
   refreshEvent,
-  loadMoreEvent
-} from '../../redux/modules/event/EventTabActions';
+  loadMoreEvent,
+  closeMyEventTab
+} from '../../../redux/modules/event/MyEventTabActions';
 
 // Components
-import EventCard from './EventCard';
-import EventTabFilterBar from './EventTabFilterBar';
+import MyEventCard from './MyEventCard';
+import ModalHeader from '../../Common/Header/ModalHeader';
+import MyEventFilterBar from './MyEventFilterBar';
 
-class EventTab extends React.Component {
+class MyEventTab extends React.Component {
+
   _keyExtractor = (item) => item._id;
 
   handleOnRefresh = () => this.props.refreshEvent();
@@ -23,34 +28,42 @@ class EventTab extends React.Component {
   handleOnLoadMore = () => this.props.loadMoreEvent();
 
   renderItem = ({ item }) => {
-    return <EventCard item={item} />;
+    return <MyEventCard item={item} />;
   }
 
   renderListHeader() {
-    return <EventTabFilterBar />;
+    return <MyEventFilterBar />;
   }
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <FlatList
-          data={this.props.data}
-          renderItem={this.renderItem}
-          numColumns={1}
-          keyExtractor={this._keyExtractor}
-          refreshing={this.props.loading}
-          onRefresh={this.handleOnRefresh}
-          onEndReached={this.handleOnLoadMore}
-          ListHeaderComponent={this.renderListHeader()}
-          onEndThreshold={0}
-        />
-      </View>
+      <Modal style={{ flex: 1 }} animationType='fade'>
+        <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+          <ModalHeader
+            title='My Events'
+            actionText='Close'
+            onCancel={() => console.log('User closed event modal')}
+            onAction={() => this.props.closeMyEventTab()}
+          />
+          <FlatList
+            data={this.props.data}
+            renderItem={this.renderItem}
+            numColumns={1}
+            keyExtractor={this._keyExtractor}
+            refreshing={this.props.loading}
+            onRefresh={this.handleOnRefresh}
+            onEndReached={this.handleOnLoadMore}
+            ListHeaderComponent={this.renderListHeader()}
+            onEndThreshold={0}
+          />
+        </MenuProvider>
+      </Modal>
     );
   }
 }
 
 const mapStateToProps = state => {
-  // const { data, loading } = state.eventTab;
+  const { showModal } = state.myEventTab;
 
   const loading = false;
   const data = [
@@ -126,14 +139,23 @@ const mapStateToProps = state => {
 
   return {
     data,
-    loading
+    loading,
+    showModal
   };
+};
+
+const styles = {
+  backdrop: {
+    backgroundColor: 'gray',
+    opacity: 0.5,
+  }
 };
 
 export default connect(
   mapStateToProps,
   {
     refreshEvent,
-    loadMoreEvent
+    loadMoreEvent,
+    closeMyEventTab
   }
-)(EventTab);
+)(MyEventTab);

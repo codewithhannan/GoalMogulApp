@@ -9,8 +9,7 @@ import {
 } from './NewShareReducers';
 
 import {
-  switchCaseF,
-  switchCase
+  switchCaseF
 } from '../../../middleware/utils';
 
 const switchPostType = (postType, ref, goalRef) => switchCaseF({
@@ -40,16 +39,17 @@ const switchPostType = (postType, ref, goalRef) => switchCaseF({
 const switchShareToAction = (dest) => switchCaseF({
   // Open modal directly if share to feed
   feed: () => {
-    console.log('feed is chosen');
+    console.log('feed also pushes');
     Actions.push('shareModal');
   },
   // Open search overlay if share to either tribe or event
-  tribe: () => Actions.push('searchTribeLightBox'),
+  tribe: () => Actions.searchTribeLightBox(),
   event: () => Actions.push('searchEventLightBox')
 })('feed')(dest);
 
 // User chooses a share destination
-export const chooseShareDest = (postType, ref, dest, goalRef) => (dispatch, getState) => {
+export const chooseShareDest = (postType, ref, dest, itemToShare, goalRef) =>
+(dispatch, getState) => {
   const { userId } = getState().user;
 
   dispatch({
@@ -57,7 +57,8 @@ export const chooseShareDest = (postType, ref, dest, goalRef) => (dispatch, getS
     payload: {
       ...switchPostType(postType, ref, goalRef),
       shareTo: dest,
-      owner: userId
+      owner: userId,
+      itemToShare
     }
   });
 
@@ -75,8 +76,24 @@ export const cancelShare = () => (dispatch) => {
 
 // User submit the share modal form
 export const submitShare = (values) => (dispatch, getState) => {
+  // TODO: Temperary logging
+  console.log('Submitting share values are: ', values);
 
+  const {
+    owner,
+    postType,
+    userRef,
+    postRef,
+    goalRef,
+    needRef,
+    belongsToTribe,
+    belongsToEvent
+  } = getState().newShare;
 
+  const {
+    privacy, // needs to uncapitalize the first character and map Private to self
+    content
+  } = values;
   // If succeed, close modal and reset form
   // Actions.pop(); dispatch(reset('shareModal'))
 };
@@ -91,7 +108,8 @@ export const selectEvent = (event) => (dispatch) => {
   });
 
   // Open share modal
-  Actions.push('shareModal');
+  Actions.pop();
+  Actions.shareModal();
 };
 
 export const selectTribe = (tribe) => (dispatch) => {
@@ -104,5 +122,6 @@ export const selectTribe = (tribe) => (dispatch) => {
   });
 
   // Open share modal
-  Actions.push('shareModal');
+  Actions.pop();
+  Actions.shareModal();
 };

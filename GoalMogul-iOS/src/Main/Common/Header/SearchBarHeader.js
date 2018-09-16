@@ -29,6 +29,14 @@ import {
   blockUser
 } from '../../../actions';
 
+import {
+  openMyEventTab
+} from '../../../redux/modules/event/MyEventTabActions';
+
+import {
+  openMyTribeTab
+} from '../../../redux/modules/tribe/MyTribeTabActions';
+
 const tintColor = '#33485e';
 
 // For profile friend setting ActionSheetIOS
@@ -36,6 +44,8 @@ const FRIENDSHIP_SETTING_BUTTONS = ['Block', 'Report', 'Cancel'];
 const CANCEL_INDEX = 2;
 
 const DEBUG_KEY = '[ Component SearchBarHeader ]';
+const SHARE_TO_MENU_OPTTIONS = ['My tribes', 'My events', 'Cancel'];
+const CANCEL_INDEX_MEN = 2;
 
 /**
   TODO: refactor element to have consistent behavior
@@ -88,6 +98,28 @@ class SearchBarHeader extends Component {
     );
     friendsSettingActionSheet();
   }
+
+  handleMenuIconOnClick = () => {
+    const menuSwitchCases = switchByButtonIndex([
+      [R.equals(0), () => {
+        // User choose to share to feed
+        console.log(`${DEBUG_KEY} User choose My Tribes `);
+        this.props.openMyTribeTab();
+      }],
+      [R.equals(1), () => {
+        // User choose to share to an event
+        console.log(`${DEBUG_KEY} User choose My Events `);
+        this.props.openMyEventTab();
+      }]
+    ]);
+
+    const menuActionSheet = actionSheet(
+      SHARE_TO_MENU_OPTTIONS,
+      CANCEL_INDEX,
+      menuSwitchCases
+    );
+    return menuActionSheet();
+  };
 
   renderSearchBarLeftIcon() {
     if (this.props.backButton) {
@@ -180,9 +212,12 @@ class SearchBarHeader extends Component {
     }
 
     // Standard search bar menu
+    const { menuOnPress } = this.props;
     if (this.props.rightIcon === 'menu') {
       return (
-        <Image style={styles.headerRightImage} source={IconMenu} />
+        <TouchableOpacity onPress={menuOnPress || this.handleMenuIconOnClick}>
+          <Image style={styles.headerRightImage} source={IconMenu} />
+        </TouchableOpacity>
       );
     }
 
@@ -322,6 +357,8 @@ export default connect(
     back,
     openProfile,
     openSetting,
-    blockUser
+    blockUser,
+    openMyEventTab,
+    openMyTribeTab
   }
 )(SearchBarHeader);

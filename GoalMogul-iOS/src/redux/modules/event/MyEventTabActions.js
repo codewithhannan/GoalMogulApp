@@ -1,37 +1,62 @@
+// This stores informations for events under my events
+import { Actions } from 'react-native-router-flux';
 import {
-  EVENTTAB_REFRESH_DONE,
-  EVENTTAB_LOAD_DONE,
-  EVENTTAB_LOAD,
-  EVENTTAB_SORTBY,
-  EVENTTAB_UPDATE_FILTEROPTIONS
-} from './EventTabReducers';
+  MYEVENTTAB_REFRESH_DONE,
+  MYEVENTTAB_LOAD_DONE,
+  MYEVENTTAB_LOAD,
+  MYEVENTTAB_SORTBY,
+  MYEVENTTAB_UPDATE_FILTEROPTIONS,
+  MYEVENTTAB_OPEN,
+  MYEVENTTAB_CLOSE
+} from './MyEventTabReducers';
 
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
-const DEBUG_KEY = '[ Action Explore Event Tab ]';
-const BASE_ROUTE = 'secure/event/feed';
+const DEBUG_KEY = '[ Action MyEventTab ]';
+const BASE_ROUTE = 'secure/event/';
 
+// Open my event tab
+export const openMyEventTab = () => (dispatch, getState) => {
+  dispatch({
+    type: MYEVENTTAB_OPEN
+  });
+  Actions.push('myEventTab');
+  refreshEvent()(dispatch, getState);
+};
+
+// Close my event tab
+export const closeMyEventTab = () => (dispatch) => {
+  Actions.popTo('home');
+  dispatch({
+    type: MYEVENTTAB_CLOSE
+  });
+};
 
 // update sortBy
 export const updateSortBy = (value) => (dispatch, getState) => {
   dispatch({
-    type: EVENTTAB_SORTBY,
+    type: MYEVENTTAB_SORTBY,
     value
   });
 
   refreshEvent()(dispatch, getState);
 };
 
-/*
- * Deprecated
- */
+
 // update filterOptions
-// export const updateFilterOptions = (value) => (dispatch) =>
-//   dispatch({
-//     type: EVENTTAB_UPDATE_FILTEROPTIONS,
-//     value
-//   });
+export const updateFilterOptions = ({ type, value }) => (dispatch, getState) => {
+  dispatch({
+    type: MYEVENTTAB_UPDATE_FILTEROPTIONS,
+    payload: {
+      type,
+      value
+    }
+  });
+
+  refreshEvent()(dispatch, getState);
+};
+
 /**
  * For the next three functions, we could abstract a pattern since
  * It's shared across mastermind/actions, feed/actions, MeetActions, ProfileActions, TribeTabActions,
@@ -43,16 +68,16 @@ export const updateSortBy = (value) => (dispatch, getState) => {
 //Refresh feed for activity tab
 export const refreshEvent = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { limit, sortBy } = getState().eventTab;
+  const { limit, filterOptions, sortBy } = getState().myEventTab;
 
   dispatch({
-    type: EVENTTAB_LOAD
+    type: MYEVENTTAB_LOAD
   });
-  loadEvent(0, limit, token, sortBy, { refresh: true }, (data) => {
+  loadEvent(0, limit, token, sortBy, filterOptions, (data) => {
     dispatch({
-      type: EVENTTAB_REFRESH_DONE,
+      type: MYEVENTTAB_REFRESH_DONE,
       payload: {
-        type: 'eventtab',
+        type: 'myeventtab',
         data,
         skip: data.length,
         limit: 20,
@@ -67,15 +92,15 @@ export const refreshEvent = () => (dispatch, getState) => {
 // Load more goal for mastermind tab
 export const loadMoreEvent = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, sortBy, hasNextPage } = getState().eventTab;
+  const { skip, limit, sortBy, filterOptions, hasNextPage } = getState().myEventTab;
   if (hasNextPage === false) {
     return;
   }
-  loadEvent(skip, limit, token, sortBy, {}, (data) => {
+  loadEvent(skip, limit, token, sortBy, filterOptions, (data) => {
     dispatch({
-      type: EVENTTAB_LOAD_DONE,
+      type: MYEVENTTAB_LOAD_DONE,
       payload: {
-        type: 'eventtab',
+        type: 'myeventtab',
         data,
         skip: data.length,
         limit: 20,
@@ -97,7 +122,7 @@ const loadEvent = (skip, limit, token, sortBy, filterOptions, callback, onError)
       token
     )
     .then((res) => {
-      console.log('loading events feed with res: ', res);
+      console.log('loading events with res: ', res);
       if (res) {
         // Right now return test data
         if (skip === 0) {
@@ -106,10 +131,10 @@ const loadEvent = (skip, limit, token, sortBy, filterOptions, callback, onError)
           callback([]);
         }
       }
-      console.warn(`${DEBUG_KEY}: Loading event feed with no res`);
+      console.warn(`${DEBUG_KEY}: Loading goal with no res`);
     })
     .catch((err) => {
-      console.log(`${DEBUG_KEY} load event feed error: ${err}`);
+      console.log(`${DEBUG_KEY} load events error: ${err}`);
       if (skip === 0) {
         callback([]);
       } else {

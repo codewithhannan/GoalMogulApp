@@ -1,21 +1,25 @@
 import React from 'react';
 import {
   View,
+  Modal,
   FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
+import { MenuProvider } from 'react-native-popup-menu';
 
 // Actions
 import {
   refreshTribe,
-  loadMoreTribe
-} from '../../redux/modules/tribe/TribeTabActions';
+  loadMoreTribe,
+  closeMyTribeTab
+} from '../../../redux/modules/tribe/MyTribeTabActions';
 
 // Components
-import TribeCard from './TribeCard';
-import TribeTabFilterBar from './TribeTabFilterBar';
+import MyTribeCard from './MyTribeCard';
+import ModalHeader from '../../Common/Header/ModalHeader';
+import MyTribeFilterBar from './MyTribeFilterBar';
 
-class TribeTab extends React.Component {
+class MyTribeTab extends React.Component {
   _keyExtractor = (item) => item._id;
 
   handleOnRefresh = () => this.props.refreshTribe();
@@ -23,34 +27,46 @@ class TribeTab extends React.Component {
   handleOnLoadMore = () => this.props.loadMoreTribe();
 
   renderItem = ({ item }) => {
-    return <TribeCard item={item} />;
+    return <MyTribeCard item={item} />;
   }
 
   renderListHeader() {
-    return <TribeTabFilterBar />;
+    return (
+      <MyTribeFilterBar />
+    );
   }
+  // ListHeaderComponent={this.renderListHeader()}
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <FlatList
-          data={this.props.data}
-          renderItem={this.renderItem}
-          numColumns={1}
-          keyExtractor={this._keyExtractor}
-          refreshing={this.props.loading}
-          onRefresh={this.handleOnRefresh}
-          onEndReached={this.handleOnLoadMore}
-          ListHeaderComponent={this.renderListHeader()}
-          onEndThreshold={0}
-        />
-      </View>
+      <Modal style={{ flex: 1 }} animationType='fade'>
+        <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+          <ModalHeader
+            title='My Tribes'
+            actionText='Close'
+            onCancel={() => console.log('User closed tribe modal')}
+            onAction={() => this.props.closeMyTribeTab()}
+          />
+          <FlatList
+            data={this.props.data}
+            renderItem={this.renderItem}
+            numColumns={1}
+            keyExtractor={this._keyExtractor}
+            refreshing={this.props.loading}
+            onRefresh={this.handleOnRefresh}
+            onEndReached={this.handleOnLoadMore}
+            ListHeaderComponent={this.renderListHeader()}
+            onEndThreshold={0}
+          />
+        </MenuProvider>
+      </Modal>
+
     );
   }
 }
 
 const mapStateToProps = state => {
-  // const { data, loading } = state.tribeTab;
+  const { showModal } = state.myTribeTab;
 
   const loading = false;
   const data = [
@@ -100,14 +116,23 @@ const mapStateToProps = state => {
 
   return {
     data,
-    loading
+    loading,
+    showModal
   };
+};
+
+const styles = {
+  backdrop: {
+    backgroundColor: 'gray',
+    opacity: 0.5,
+  }
 };
 
 export default connect(
   mapStateToProps,
   {
     refreshTribe,
-    loadMoreTribe
+    loadMoreTribe,
+    closeMyTribeTab
   }
-)(TribeTab);
+)(MyTribeTab);

@@ -26,6 +26,9 @@ import EventTabReducers from '../redux/modules/event/EventTabReducers';
 import TribeTabReducers from '../redux/modules/tribe/TribeTabReducers';
 import ExploreReducers from '../redux/modules/explore/ExploreReducers';
 import NewShareReducers from '../redux/modules/feed/post/NewShareReducers';
+// Menu related reducers
+import MyEventTabReducers from '../redux/modules/event/MyEventTabReducers';
+import MyTribeTabReducers from '../redux/modules/tribe/MyTribeTabReducers';
 
 const rootPersistConfig = {
   key: 'root',
@@ -55,7 +58,10 @@ const reducers = combineReducers({
   explore: ExploreReducers,
   eventTab: EventTabReducers,
   tribeTab: TribeTabReducers,
-  newShare: NewShareReducers
+  newShare: NewShareReducers,
+  // menu related reducers
+  myEventTab: MyEventTabReducers,
+  myTribeTab: MyTribeTabReducers
 });
 
 export default persistReducer(rootPersistConfig, reducers);

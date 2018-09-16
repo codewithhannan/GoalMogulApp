@@ -53,6 +53,9 @@ class EventSearchOverlay extends Component {
   );
 
   render() {
+    const searchPlaceHolder = this.props.searchPlaceHolder
+      ? this.props.searchPlaceHolder
+      : 'Search an event';
     return (
       <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -64,7 +67,7 @@ class EventSearchOverlay extends Component {
               inputStyle={styles.searchInputStyle}
               inputContainerStyle={styles.searchInputContainerStyle}
               containerStyle={styles.searchContainerStyle}
-              placeholder='Search an event'
+              placeholder={searchPlaceHolder}
               cancelButtonTitle='Cancel'
               onCancel={this.handleCancel}
               onChangeText={this.handleChangeText}

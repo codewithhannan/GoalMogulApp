@@ -1,21 +1,31 @@
 import React from 'react';
-import { View, Image, Text } from 'react-native';
+import { View, Image, Text, TouchableOpacity } from 'react-native';
 import timeago from 'timeago.js';
 
 /* Components */
 import Name from '../../Common/Name';
 import Timestamp from '../../Common/Timestamp';
+import MenuFactory from '../../../Common/MenuFactory';
 
 /* Asset */
 import badge from '../../../../asset/utils/badge.png';
-import dropDown from '../../../../asset/utils/dropDown.png';
 
 const CommentHeadline = (props) => {
   // TODO: format time
-  const { item } = props;
+  const { item, caretOnPress } = props;
   const { owner, commentType, suggestion, created } = item;
   const timeStamp = (created === undefined || created.length === 0)
     ? new Date() : created;
+
+  const menu = MenuFactory(
+    [
+      'Report',
+    ],
+    () => caretOnPress(),
+    '',
+    { paddingBottom: 10, paddingLeft: 5, paddingRight: 5, paddingTop: 5 },
+    () => console.log('Report Modal is opened')
+  );
 
   switch (commentType) {
     case 'Suggestion': {
@@ -40,7 +50,7 @@ const CommentHeadline = (props) => {
               </Text>
             </Text>
             <View style={styles.caretContainer}>
-              <Image source={dropDown} />
+              {menu}
             </View>
           </View>
           <Timestamp time={timeago().format(timeStamp)} />
@@ -56,9 +66,9 @@ const CommentHeadline = (props) => {
           <Name text={owner.name} textStyle={{ fontSize: 12 }} />
           <Image style={styles.imageStyle} source={badge} />
           <Timestamp time={timeago().format(timeStamp)} />
-          <View style={styles.caretContainer}>
-            <Image source={dropDown} />
-          </View>
+            <View style={styles.caretContainer}>
+              {menu}
+            </View>
         </View>
 
       );
@@ -73,8 +83,8 @@ const styles = {
   },
   caretContainer: {
     position: 'absolute',
-    right: 2,
-    top: 2
+    right: 0,
+    top: 0
   },
   imageStyle: {
     alignSelf: 'center',
@@ -87,7 +97,7 @@ const styles = {
     flexWrap: 'wrap',
     alignSelf: 'center',
     color: '#767676',
-    paddingRight: 12
+    paddingRight: 15
   },
   suggestionDetailTextStyle: {
     fontWeight: '700',
