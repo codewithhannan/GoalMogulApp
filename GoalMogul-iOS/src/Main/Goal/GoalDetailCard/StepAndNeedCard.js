@@ -22,6 +22,7 @@ class StepAndNeedCard extends Component {
           iconSource={HelpIcon}
           text='Needs'
           count={item.count}
+          goalRef={this.props.goalRef}
         />
       );
     }
@@ -31,12 +32,13 @@ class StepAndNeedCard extends Component {
         iconStyle={{ height: 20, width: 20 }}
         text='Steps'
         count={item.count}
+        goalRef={this.props.goalRef}
       />
     );
   }
 
   render() {
-    const { item } = this.props;
+    const { item, goalRef } = this.props;
 
     if (item.sectionTitle) {
       return this.renderSectionTitle(item);
@@ -49,6 +51,7 @@ class StepAndNeedCard extends Component {
           this.props.onPress();
         }}
         type={item.type}
+        goalRef={goalRef}
       />
     );
   }

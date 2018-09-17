@@ -96,10 +96,11 @@ class GoalDetailCard2 extends Component {
       }
 
       case 'mastermind': {
+        const { goalDetail } = this.props;
         const newCommentParams = {
           commentDetail: {
             parentType: 'Goal',
-            parentRef: this.props.goalDetail._id, // Goal ref
+            parentRef: goalDetail._id, // Goal ref
             commentType: 'Suggestion'
           },
           suggestionForRef: props.item._id, // Need or Step ref
@@ -109,6 +110,7 @@ class GoalDetailCard2 extends Component {
           <StepAndNeedCard
             key={props.index}
             item={props.item}
+            goalRef={goalDetail}
             onPress={() => {
               this.props.createCommentFromSuggestion(newCommentParams);
               this.setState({ suggestionModal: true });
