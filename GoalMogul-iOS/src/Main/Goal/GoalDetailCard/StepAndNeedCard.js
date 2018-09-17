@@ -42,7 +42,15 @@ class StepAndNeedCard extends Component {
       return this.renderSectionTitle(item);
     }
 
-    return <SectionCard item={item} />;
+    return (
+      <SectionCard
+        item={item}
+        onPress={() => {
+          this.props.onPress();
+        }}
+        type={item.type}
+      />
+    );
   }
 }
 

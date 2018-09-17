@@ -14,6 +14,11 @@ import {
   closeGoalDetail
 } from '../../../redux/modules/goal/GoalDetailActions';
 
+import {
+  createCommentFromSuggestion,
+  attachSuggestion
+} from '../../../redux/modules/feed/comment/CommentActions';
+
 // selector
 import { getGoalStepsAndNeeds } from '../../../redux/modules/goal/selector';
 
@@ -76,6 +81,7 @@ class GoalDetailCard2 extends Component {
 
   renderItem = (props) => {
     const { routes, index } = this.state.navigationState;
+
     switch (routes[index].key) {
       case 'comments': {
         return (
@@ -86,11 +92,29 @@ class GoalDetailCard2 extends Component {
             scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
             onCommentClicked={() => this.dialogOnFocus()}
           />
-      );
+        );
       }
 
       case 'mastermind': {
-        return <StepAndNeedCard key={props.index} item={props.item} />;
+        const newCommentParams = {
+          commentDetail: {
+            parentType: 'Goal',
+            parentRef: this.props.goalDetail._id, // Goal ref
+            commentType: 'Suggestion'
+          },
+          suggestionForRef: props.item._id, // Need or Step ref
+          suggestionFor: props.item.type === 'need' ? 'Need' : 'Step'
+        };
+        return (
+          <StepAndNeedCard
+            key={props.index}
+            item={props.item}
+            onPress={() => {
+              this.props.createCommentFromSuggestion(newCommentParams);
+              this.setState({ suggestionModal: true });
+            }}
+          />
+        );
       }
 
       default:
@@ -123,6 +147,10 @@ class GoalDetailCard2 extends Component {
           <SuggestionModal
             visible={this.state.suggestionModal}
             onCancel={() => this.setState({ suggestionModal: false })}
+            onAttach={() => {
+              this.props.attachSuggestion();
+              this.setState({ suggestionModal: false });
+            }}
           />
           <Report showing={this.props.showingModalInDetail} />
           <SearchBarHeader
@@ -403,8 +431,8 @@ const mapStateToProps = state => {
   // const { transformedComments } = state.comment;
 
   return {
-    // stepsAndNeeds: getGoalStepsAndNeeds(state),
     commentLoading: loading,
+    // stepsAndNeeds: getGoalStepsAndNeeds(state),
     stepsAndNeeds: testStepsAndNeeds,
     comments: testTransformedComments,
     goalDetail: goal,
@@ -415,6 +443,8 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    closeGoalDetail
+    closeGoalDetail,
+    createCommentFromSuggestion,
+    attachSuggestion
   }
 )(GoalDetailCard2);

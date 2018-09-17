@@ -31,7 +31,7 @@ class SectionCard extends Component {
   handleShareOnClick = () => {
     const { item, goalRef, type } = this.props;
     const { _id } = item;
-    const shareType = type ? `Share${type}` : 'ShareStep';
+    const shareType = (type === 'need' || type === 'Need') ? 'ShareNeed' : 'ShareStep';
 
     const shareToSwitchCases = switchByButtonIndex([
       [R.equals(0), () => {

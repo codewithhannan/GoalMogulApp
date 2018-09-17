@@ -5,9 +5,11 @@ import {
   Text,
   FlatList,
   Image,
-  TouchableWithoutFeedback
+  TouchableOpacity
 } from 'react-native';
 import { SearchBar } from 'react-native-elements';
+import { connect } from 'react-redux';
+import _ from 'lodash';
 
 // Components
 import ModalHeader from '../../../Main/Common/Header/ModalHeader';
@@ -23,6 +25,13 @@ import Friend from '../../../asset/suggestion/friend.png';
 import Group from '../../../asset/suggestion/group.png';
 import Link from '../../../asset/suggestion/link.png';
 import Other from '../../../asset/suggestion/other.png';
+import HelpIcon from '../../../asset/utils/help.png';
+import StepIcon from '../../../asset/utils/steps.png';
+
+// Actions
+import {
+  updateSuggestionType
+} from '../../../redux/modules/feed/comment/CommentActions';
 
 const testData = [
   {
@@ -82,9 +91,17 @@ class SuggestionModal extends Component {
     );
   }
 
-  renderIconItem = ({ item, index }) => {
-    const selected = 1;
-    const style = index === selected ?
+  renderIconItem = ({ item }) => {
+    const { suggestionType } = this.props.tmpSuggestion;
+    const { selected } = item;
+    // const selected = suggestionType === item.key;
+    console.log('temp suggestion is: ', this.props.tmpSuggestion);
+    console.log('suggestion type is: ', suggestionType);
+    console.log('item key is: ', item.key);
+    console.log('compare res is: ', selected);
+
+    // Update Icon style if selected
+    const style = selected ?
       {
         ...styles.selectedSuggestionIconStyle,
         ...item.value.iconStyle
@@ -93,24 +110,28 @@ class SuggestionModal extends Component {
         ...item.value.iconStyle
       };
 
-    const textStyle = index === selected ? { ...styles.selectedSuggestionTextStyle }
+    // Update text style if selected
+    const textStyle = selected
+      ? { ...styles.selectedSuggestionTextStyle }
       : { ...styles.suggestionTextStyle };
     return (
       <View
         style={{
           flex: 1,
           alignItems: 'flex-start',
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
           marginBottom: 7,
-          marginLeft: 45
+          marginLeft: 10
         }}
       >
-        <TouchableWithoutFeedback onPress={() => console.log('press icon with indexL ', index)}>
+        <TouchableOpacity
+          onPress={() => this.props.updateSuggestionType(item.key)}
+        >
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
           <Image source={item.value.iconSource} style={style} />
-          <Text style={textStyle}>{item.key.toUpperCase()}</Text>
+          <Text style={textStyle}>{item.text.toUpperCase()}</Text>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -119,7 +140,7 @@ class SuggestionModal extends Component {
     const options = (
       <View style={{ padding: 10 }}>
       <FlatList
-        data={IconMap}
+        data={this.props.iconMap}
         renderItem={this.renderIconItem}
         keyExtractor={(item) => item.key}
         numColumns={2}
@@ -181,7 +202,7 @@ class SuggestionModal extends Component {
             title='Suggestion'
             actionText='Attach'
             onCancel={this.props.onCancel}
-            onAction={() => console.log('Action')}
+            onAction={() => this.props.onAttach()}
           />
           {this.renderOptions()}
           {this.renderSearch()}
@@ -240,80 +261,141 @@ const styles = {
     marginLeft: 15
   }
 };
-
+//["ChatConvoRoom", "Event", "Tribe", "Link", "Reading",
+// "Step", "Need", "Friend", "User", "Custom"]
 const IconMap = [
   {
-    key: 'book',
+    key: 'Reading',
+    text: 'Reading',
     value: {
       iconSource: Book,
       iconStyle: {
 
       }
-    }
+    },
+    selected: undefined
   },
   {
-    key: 'chat',
+    key: 'ChatConvoRoom',
+    text: 'Chatroom',
     value: {
       iconSource: Chat,
       iconStyle: {
 
       }
-    }
+    },
+    selected: undefined
   },
   {
-    key: 'event',
+    key: 'Event',
+    text: 'Event',
     value: {
       iconSource: Event,
       iconStyle: {
 
       }
-    }
+    },
+    selected: undefined
   },
   {
-    key: 'flag',
+    key: 'Tribe',
+    text: 'Tribe',
     value: {
       iconSource: Flag,
       iconStyle: {
 
       }
-    }
+    },
+    selected: undefined
   },
   {
-    key: 'friend',
+    key: 'User',
+    text: 'User',
     value: {
       iconSource: Friend,
       iconStyle: {
 
       }
-    }
+    },
+    selected: undefined
   },
   {
-    key: 'group',
+    key: 'Friend',
+    text: 'Friend',
     value: {
       iconSource: Group,
       iconStyle: {
 
       }
-    }
+    },
+    selected: undefined
   },
   {
-    key: 'link',
+    key: 'Step',
+    text: 'Step',
+    value: {
+      iconSource: StepIcon,
+      iconStyle: {
+
+      }
+    },
+    selected: undefined
+  },
+  {
+    key: 'Need',
+    text: 'Need',
+    value: {
+      iconSource: HelpIcon,
+      iconStyle: {
+
+      }
+    },
+    selected: undefined
+  },
+  {
+    key: 'Link',
+    text: 'Link',
     value: {
       iconSource: Link,
       iconStyle: {
 
       }
-    }
+    },
+    selected: undefined
   },
   {
-    key: 'other',
+    key: 'Custom',
+    text: 'Custom',
     value: {
       iconSource: Other,
       iconStyle: {
 
       }
-    }
+    },
+    selected: undefined
   },
 ];
 
-export default SuggestionModal;
+const updateIconMap = (suggestionType, iconMap) => iconMap.map((item) => {
+  const newItem = _.cloneDeep(item);
+  newItem.selected = suggestionType === item.key;
+  return newItem;
+});
+
+const mapStateToProps = state => {
+  const { tmpSuggestion } = state.newComment;
+  const { suggestionType } = tmpSuggestion;
+  const iconMap = updateIconMap(suggestionType, IconMap);
+
+  return {
+    tmpSuggestion,
+    iconMap
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  {
+    updateSuggestionType
+  }
+)(SuggestionModal);

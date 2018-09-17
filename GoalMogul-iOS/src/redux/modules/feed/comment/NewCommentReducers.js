@@ -21,13 +21,14 @@ const INITIAL_STATE = {
   tmpSuggestion: { ...INITIAL_SUGGESETION },
   suggestion: { ...INITIAL_SUGGESETION },
   // This is used when suggestion type is friend and we search for certain friend
+  showAttachedSuggestion: false,
   friendList: []
 };
 
 const INITIAL_SUGGESETION = {
   // ["ChatConvoRoom", "Event", "Tribe", "Link", "Reading",
   // "Step", "Need", "Friend", "User", "Custom"]
-  suggestionType: undefined,
+  suggestionType: 'Reading',
   // ["Goal", "Need", "Step"]
   suggestionFor: undefined,
   suggestionForRef: undefined,
@@ -104,7 +105,10 @@ export default (state = INITIAL_STATE, action) => {
 
     case COMMENT_NEW_SUGGESTION_UPDAET_TYPE: {
       let newState = _.cloneDeep(state);
-      return _.set(newState, 'tmpSuggestion.suggestionType', action.payload);
+      console.log('Updating suggestion type: ', action.payload);
+      newState = _.set(newState, 'tmpSuggestion.suggestionType', action.payload);
+      console.log('new state after updating suggestion type: ', newState);
+      return newState;
     }
 
     case COMMENT_NEW_SUGGESTION_CREATE: {
@@ -121,6 +125,7 @@ export default (state = INITIAL_STATE, action) => {
     // Remove the suggestion to become initial state
     case COMMENT_NEW_SUGGESTION_REMOVE: {
       let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'showAttachedSuggestion', false);
       return _.set(newState, 'suggestion', { ...INITIAL_SUGGESETION });
     }
 
@@ -138,7 +143,7 @@ export default (state = INITIAL_STATE, action) => {
       let newState = _.cloneDeep(state);
       const tmpSuggestion = _.get(newState, 'tmpSuggestion');
       newState = _.set(newState, 'suggestion', tmpSuggestion);
-
+      newState = _.set(newState, 'showAttachedSuggestion', true);
       // Close suggestion modal
       return _.set(newState, 'showSuggestionModal', false);
     }
