@@ -10,29 +10,29 @@ import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 
 // Components
-import SearchBarHeader from '../Common/Header/SearchBarHeader';
-import TabButtonGroup from '../Common/TabButtonGroup';
-import Divider from '../Common/Divider';
-import About from './About';
-import MemberListCard from './MemberListCard';
+import SearchBarHeader from '../../Common/Header/SearchBarHeader';
+import TabButtonGroup from '../../Common/TabButtonGroup';
+import Divider from '../../Common/Divider';
+import About from './MyTribeAbout';
+import MemberListCard from '../../Tribe/MemberListCard';
 
-import GoalCard from '../Goal/GoalCard/GoalCard';
-import NeedCard from '../Goal/NeedCard/NeedCard';
+import GoalCard from '../../Goal/GoalCard/GoalCard';
+import NeedCard from '../../Goal/NeedCard/NeedCard';
 
 // Asset
-import check from '../../asset/utils/check.png';
+import check from '../../../asset/utils/check.png';
 
-import TestEventImage from '../../asset/TestEventImage.png';
+import TestEventImage from '../../../asset/TestEventImage.png';
 import {
   tribeSelectTab,
   tribeDetailClose
-} from '../../redux/modules/tribe/TribeActions';
+} from '../../../redux/modules/tribe/MyTribeActions';
 
 const { width } = Dimensions.get('window');
 /**
  * This is the UI file for a single event.
  */
-class Tribe extends Component {
+class MyTribe extends Component {
   // Tab related functions
   _handleIndexChange = (index) => {
     this.props.tribeSelectTab(index);
@@ -199,6 +199,7 @@ class Tribe extends Component {
   render() {
     const { item, data } = this.props;
     if (!item) return <View />;
+    console.log('data in my tribe is: ', data);
 
     return (
       <View style={{ flex: 1 }}>
@@ -273,7 +274,7 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { navigationState, item, feed } = state.tribe;
+  const { navigationState, item, feed } = state.myTribe;
 
   const { routes, index } = navigationState;
   const data = ((key) => {
@@ -314,4 +315,4 @@ export default connect(
     tribeSelectTab,
     tribeDetailClose
   }
-)(Tribe);
+)(MyTribe);

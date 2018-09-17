@@ -2,6 +2,11 @@
 import _ from 'lodash';
 import { arrayUnique } from '../../middleware/utils';
 
+import {
+  MYTRIBE_DETAIL_OPEN,
+  MYTRIBE_DETAIL_CLOSE
+} from './MyTribeReducers';
+
 const INITIAL_STATE = {
   data: [],
   hasNextPage: undefined,
@@ -28,12 +33,14 @@ export const MYTRIBETAB_UPDATE_FILTEROPTIONS = 'mytribetab_update_filteroptions'
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     // Open my tribe modal
+    case MYTRIBE_DETAIL_CLOSE:
     case MYTRIBETAB_OPEN: {
       let newState = _.cloneDeep(state);
       return _.set(newState, 'showModal', true);
     }
 
     // Open my event modal
+    case MYTRIBE_DETAIL_OPEN:
     case MYTRIBETAB_CLOSE: {
       let newState = _.cloneDeep(state);
       return _.set(newState, 'showModal', false);

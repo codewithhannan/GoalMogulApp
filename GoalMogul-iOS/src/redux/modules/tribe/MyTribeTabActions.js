@@ -14,7 +14,7 @@ import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Action MyTribeTab ]';
-const BASE_ROUTE = 'secure/tribe/';
+const BASE_ROUTE = 'secure/tribe';
 
 // Open my tribe modal
 export const openMyTribeTab = () => (dispatch, getState) => {
@@ -28,6 +28,7 @@ export const openMyTribeTab = () => (dispatch, getState) => {
 
 // Close my tribe modal
 export const closeMyTribeTab = () => (dispatch) => {
+  console.log('closing my tribe tab');
   Actions.popTo('home');
   dispatch({
     type: MYTRIBETAB_CLOSE

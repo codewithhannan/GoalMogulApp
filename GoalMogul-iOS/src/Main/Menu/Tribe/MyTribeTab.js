@@ -39,12 +39,16 @@ class MyTribeTab extends React.Component {
 
   render() {
     return (
-      <Modal style={{ flex: 1 }} animationType='fade'>
+      <Modal
+        style={{ flex: 1 }}
+        animationType='fade'
+        visible={this.props.showModal}
+      >
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
           <ModalHeader
             title='My Tribes'
             actionText='Close'
-            onCancel={() => console.log('User closed tribe modal')}
+            cancelText={null}
             onAction={() => this.props.closeMyTribeTab()}
           />
           <FlatList
@@ -117,7 +121,7 @@ const mapStateToProps = state => {
   return {
     data,
     loading,
-    showModal
+    showModal,
   };
 };
 

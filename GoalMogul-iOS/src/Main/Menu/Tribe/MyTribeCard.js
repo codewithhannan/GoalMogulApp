@@ -15,7 +15,7 @@ import profilePic from '../../../asset/utils/defaultUserProfile.png';
 // Actions
 import {
   tribeDetailOpen
-} from '../../../redux/modules/tribe/TribeActions';
+} from '../../../redux/modules/tribe/MyTribeActions';
 
 const DEBUG_KEY = '[UI Tribe Card] ';
 

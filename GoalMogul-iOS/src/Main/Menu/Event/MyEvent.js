@@ -10,33 +10,33 @@ import {
 import { connect } from 'react-redux';
 
 // Components
-import SearchBarHeader from '../Common/Header/SearchBarHeader';
-import TabButtonGroup from '../Common/TabButtonGroup';
-import About from './About';
-import StackedAvatars from '../Common/StackedAvatars';
-import Dot from '../Common/Dot';
-import MemberListCard from '../Tribe/MemberListCard';
+import SearchBarHeader from '../../Common/Header/SearchBarHeader';
+import TabButtonGroup from '../../Common/TabButtonGroup';
+import About from './MyEventAbout';
+import StackedAvatars from '../../Common/StackedAvatars';
+import Dot from '../../Common/Dot';
+import MemberListCard from '../../Tribe/MemberListCard';
 
-import GoalCard from '../Goal/GoalCard/GoalCard';
-import NeedCard from '../Goal/NeedCard/NeedCard';
+import GoalCard from '../../Goal/GoalCard/GoalCard';
+import NeedCard from '../../Goal/NeedCard/NeedCard';
 
 // Asset
-import TestEventImage from '../../asset/TestEventImage.png';
-import EditIcon from '../../asset/utils/edit.png';
-import DefaultUserProfile from '../../asset/test-profile-pic.png';
+import TestEventImage from '../../../asset/TestEventImage.png';
+import EditIcon from '../../../asset/utils/edit.png';
+import DefaultUserProfile from '../../../asset/test-profile-pic.png';
 
 // Actions
 import {
   eventSelectTab,
   eventDetailClose,
   loadMoreEventFeed
-} from '../../redux/modules/event/EventActions';
+} from '../../../redux/modules/event/MyEventActions';
 
 const { width } = Dimensions.get('window');
 /**
  * This is the UI file for a single event.
  */
-class Event extends Component {
+class MyEvent extends Component {
 
   // Tab related functions
   _handleIndexChange = (index) => {
@@ -261,7 +261,7 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { navigationState, item, feed, feedLoading } = state.event;
+  const { navigationState, item, feed, feedLoading } = state.myEvent;
 
   const { routes, index } = navigationState;
   const data = ((key) => {
@@ -295,4 +295,4 @@ export default connect(
     eventDetailClose,
     loadMoreEventFeed
   }
-)(Event);
+)(MyEvent);

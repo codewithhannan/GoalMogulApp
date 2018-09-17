@@ -15,7 +15,7 @@ import profilePic from '../../../asset/utils/defaultUserProfile.png';
 // Actions
 import {
   eventDetailOpen
-} from '../../../redux/modules/event/MyEventTabActions';
+} from '../../../redux/modules/event/MyEventActions';
 
 const DEBUG_KEY = '[UI My Event Card] ';
 

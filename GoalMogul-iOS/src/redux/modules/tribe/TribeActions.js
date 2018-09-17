@@ -12,7 +12,7 @@ import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Tribe Actions ]';
-const BASE_ROUTE = 'secure/tribe/';
+const BASE_ROUTE = 'secure/tribe';
 
 export const tribeSelectTab = (index) => (dispatch) => {
   dispatch({

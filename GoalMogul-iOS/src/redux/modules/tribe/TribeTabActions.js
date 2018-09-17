@@ -10,7 +10,7 @@ import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Action Explore Tribe Tab ]';
-const BASE_ROUTE = 'secure/tribe/';
+const BASE_ROUTE = 'secure/tribe/recommendation';
 
 
 // update sortBy
