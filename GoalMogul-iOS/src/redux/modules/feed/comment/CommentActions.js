@@ -115,19 +115,34 @@ export const postComment = () => (dispatch, getstate) => {
 };
 
 /* Actions for suggestion modal */
-export const openSuggestionModal = () => dispatch => dispatch({
+export const openSuggestionModal = () => (dispatch) => dispatch({
   type: COMMENT_NEW_SUGGESTION_OPEN_MODAL
 });
 
-// When user clicks on the suggestion icon on teh comment box
-export const createSuggestion = (suggestionForRef, suggestionFor) => (dispatch) => {
-  dispatch({
-    type: COMMENT_NEW_SUGGESTION_CREATE,
-    payload: {
-      suggestionFor,
-      suggestionForRef
-    }
-  });
+// When user clicks on the suggestion icon on the comment box
+export const createSuggestion = () => (dispatch, getState) => {
+  //check if suggestionFor and suggestionRef have assignment,
+  //If not then we assign the current goal ref and 'Goal'
+  const { suggestion, tmpSuggestion } = getState().newComment;
+  const { _id } = getState().goalDetail;
+
+  // Already have a suggestion. Open the current one
+  if (suggestion.suggestionFor && suggestion.suggestionForRef) {
+    return openCurrentSuggestion()(dispatch);
+  }
+
+  // This is the first time user clicks on the suggestion icon. No other entry points.
+  if (!tmpSuggestion.suggestionFor && !tmpSuggestion.suggestionForRef) {
+    dispatch({
+      type: COMMENT_NEW_SUGGESTION_CREATE,
+      payload: {
+        suggestionFor: 'Goal',
+        suggestionForRef: _id
+      }
+    });
+  }
+
+  openSuggestionModal()(dispatch);
 };
 
 // Cancel creating a suggestion

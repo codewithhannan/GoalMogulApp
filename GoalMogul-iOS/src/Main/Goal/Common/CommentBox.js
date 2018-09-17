@@ -16,7 +16,8 @@ import SuggestionPreview from '../GoalDetailCard/SuggestionPreview';
 import {
   newCommentOnTextChange,
   openCurrentSuggestion,
-  removeSuggestion
+  removeSuggestion,
+  createSuggestion
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 // Assets
@@ -57,9 +58,8 @@ class CommentBox extends Component {
       <TouchableOpacity
         style={styles.iconContainerStyle}
         onPress={() => {
-          //TODO: check if suggestionFor and suggestionRef have assignment,
-          //If not then we assign the current goal ref and 'Goal'
           console.log('suggestion on click in comment box');
+          this.props.createSuggestion();
         }}
       >
         <Image
@@ -229,6 +229,7 @@ export default connect(
   {
     newCommentOnTextChange,
     openCurrentSuggestion,
-    removeSuggestion
+    removeSuggestion,
+    createSuggestion
   }
 )(CommentBox);
