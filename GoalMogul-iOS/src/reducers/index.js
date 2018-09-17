@@ -20,6 +20,7 @@ import TribeReducers from '../redux/modules/tribe/TribeReducers';
 import EventReducers from '../redux/modules/event/EventReducers';
 import CommentReducers from '../redux/modules/feed/comment/CommentReducers';
 import NewCommentReducers from '../redux/modules/feed/comment/NewCommentReducers';
+import SuggestionSearchReducers from '../redux/modules/feed/comment/SuggestionSearchReducers';
 import ReportReducers from '../redux/modules/report/ReportReducers';
 // Explore tab related reducers
 import EventTabReducers from '../redux/modules/event/EventTabReducers';
@@ -61,6 +62,7 @@ const reducers = combineReducers({
   eventTab: EventTabReducers,
   tribeTab: TribeTabReducers,
   newShare: NewShareReducers,
+  suggestionSearch: SuggestionSearchReducers,
   // menu related reducers. The following four reducers can be abstracted out later
   myEventTab: MyEventTabReducers,
   myTribeTab: MyTribeTabReducers,

@@ -19,6 +19,10 @@ import {
   COMMENT_NEW_SUGGESTION_OPEN_MODAL,
   COMMENT_NEW_SUGGESTION_UPDAET_TYPE,
 
+  // update suggestion link and text
+  COMMENT_NEW_SUGGESTION_UPDATE_TEXT,
+  COMMENT_NEW_SUGGESTION_UPDATE_LINK,
+
   COMMENT_NEW_POST_START,
   COMMENT_NEW_POST_SUCCESS,
   COMMENT_NEW_POST_FAIL,
@@ -173,6 +177,20 @@ export const openCurrentSuggestion = () => (dispatch) => {
 export const attachSuggestion = () => (dispatch) => {
   dispatch({
     type: COMMENT_NEW_SUGGESTION_ATTACH
+  });
+};
+
+export const onSuggestionTextChange = (text) => (dispatch) => {
+  dispatch({
+    type: COMMENT_NEW_SUGGESTION_UPDATE_TEXT,
+    payload: text
+  });
+};
+
+export const onSuggestionLinkChange = (link) => (dispatch) => {
+  dispatch({
+    type: COMMENT_NEW_SUGGESTION_UPDATE_LINK,
+    payload: link
   });
 };
 
