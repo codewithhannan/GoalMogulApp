@@ -24,9 +24,17 @@ const testStep = [
 class StepTab extends Component {
 
   renderSections(steps) {
+    const { goalRef, onPress } = this.props;
     const sections = steps.map((section, index) => {
       if (index < 2) {
-        return <SectionCard key={index} item={section} />;
+        return (
+          <SectionCard
+            key={index}
+            item={section}
+            goalRef={goalRef}
+            onPress={onPress}
+          />
+        );
       }
       if (index === 2) {
         return (
@@ -42,7 +50,12 @@ class StepTab extends Component {
                 />
               }
             >
-              <SectionCard item={section} />;
+              <SectionCard
+                key={index}
+                item={section}
+                goalRef={goalRef}
+                onPress={onPress}
+              />
             </MaskedViewIOS>
           </View>
         );

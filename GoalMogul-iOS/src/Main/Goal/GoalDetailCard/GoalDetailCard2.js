@@ -14,6 +14,13 @@ import {
   closeGoalDetail
 } from '../../../redux/modules/goal/GoalDetailActions';
 
+import {
+  createCommentFromSuggestion,
+  attachSuggestion,
+  cancelSuggestion,
+  openSuggestionModal
+} from '../../../redux/modules/feed/comment/CommentActions';
+
 // selector
 import { getGoalStepsAndNeeds } from '../../../redux/modules/goal/selector';
 
@@ -76,6 +83,7 @@ class GoalDetailCard2 extends Component {
 
   renderItem = (props) => {
     const { routes, index } = this.state.navigationState;
+
     switch (routes[index].key) {
       case 'comments': {
         return (
@@ -86,11 +94,31 @@ class GoalDetailCard2 extends Component {
             scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
             onCommentClicked={() => this.dialogOnFocus()}
           />
-      );
+        );
       }
 
       case 'mastermind': {
-        return <StepAndNeedCard key={props.index} item={props.item} />;
+        const { goalDetail } = this.props;
+        const newCommentParams = {
+          commentDetail: {
+            parentType: 'Goal',
+            parentRef: goalDetail._id, // Goal ref
+            commentType: 'Suggestion'
+          },
+          suggestionForRef: props.item._id, // Need or Step ref
+          suggestionFor: props.item.type === 'need' ? 'Need' : 'Step'
+        };
+        return (
+          <StepAndNeedCard
+            key={props.index}
+            item={props.item}
+            goalRef={goalDetail}
+            onPress={() => {
+              this.props.createCommentFromSuggestion(newCommentParams);
+              this.props.openSuggestionModal();
+            }}
+          />
+        );
       }
 
       default:
@@ -121,8 +149,11 @@ class GoalDetailCard2 extends Component {
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={{ backgroundColor: '#e5e5e5', flex: 1 }}>
           <SuggestionModal
-            visible={this.state.suggestionModal}
-            onCancel={() => this.setState({ suggestionModal: false })}
+            visible={this.props.showSuggestionModal}
+            onCancel={() => this.props.cancelSuggestion()}
+            onAttach={() => {
+              this.props.attachSuggestion();
+            }}
           />
           <Report showing={this.props.showingModalInDetail} />
           <SearchBarHeader
@@ -226,6 +257,7 @@ const testData = {
 
 const mapStateToProps = state => {
   const { loading } = state.comment;
+  const { showSuggestionModal } = state.newComment;
 
   const testStepsAndNeeds = [
     {
@@ -403,18 +435,23 @@ const mapStateToProps = state => {
   // const { transformedComments } = state.comment;
 
   return {
-    // stepsAndNeeds: getGoalStepsAndNeeds(state),
     commentLoading: loading,
+    // stepsAndNeeds: getGoalStepsAndNeeds(state),
     stepsAndNeeds: testStepsAndNeeds,
     comments: testTransformedComments,
     goalDetail: goal,
-    showingModalInDetail
+    showingModalInDetail,
+    showSuggestionModal
   };
 };
 
 export default connect(
   mapStateToProps,
   {
-    closeGoalDetail
+    closeGoalDetail,
+    createCommentFromSuggestion,
+    attachSuggestion,
+    cancelSuggestion,
+    openSuggestionModal
   }
 )(GoalDetailCard2);

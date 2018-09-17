@@ -16,6 +16,7 @@ import {
   COMMENT_NEW_SUGGESTION_ATTACH,
   COMMENT_NEW_SUGGESTION_CANCEL,
   COMMENT_NEW_SUGGESTION_OPEN_CURRENT,
+  COMMENT_NEW_SUGGESTION_OPEN_MODAL,
   COMMENT_NEW_SUGGESTION_UPDAET_TYPE,
 
   COMMENT_NEW_POST_START,
@@ -79,6 +80,7 @@ export const createComment = (commentDetail) =>
 };
 
 // When user clicks on suggestion icon outside comment box
+// const { parentType, parentRef, commentType, replyToRef } = commentDetail;
 export const createCommentFromSuggestion = ({ commentDetail, suggestionForRef, suggestionFor }) =>
 (dispatch, getState) => {
   const { userId } = getState().user;
@@ -108,9 +110,15 @@ export const postComment = () => (dispatch, getstate) => {
   // and commentType is Suggestion, then we set commentType to Comment.
 
   // If succeed, COMMENT_NEW_POST_SUCCESS, otherwise, COMMENT_NEW_POST_FAIL
+  // If succeed and comment type is suggestionFor a need or a step, switch to
+  // comment tab
 };
 
 /* Actions for suggestion modal */
+export const openSuggestionModal = () => dispatch => dispatch({
+  type: COMMENT_NEW_SUGGESTION_OPEN_MODAL
+});
+
 // When user clicks on the suggestion icon on teh comment box
 export const createSuggestion = (suggestionForRef, suggestionFor) => (dispatch) => {
   dispatch({
@@ -135,7 +143,7 @@ export const removeSuggestion = () => (dispatch) =>
     type: COMMENT_NEW_SUGGESTION_REMOVE
   });
 
-export const updateSuggestionType = suggestionType => (dispatch) =>
+export const updateSuggestionType = (suggestionType) => (dispatch) =>
   dispatch({
     type: COMMENT_NEW_SUGGESTION_UPDAET_TYPE,
     payload: suggestionType

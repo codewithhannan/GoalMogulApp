@@ -9,9 +9,14 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
+// Components
+import SuggestionPreview from '../GoalDetailCard/SuggestionPreview';
+
 // Actions
 import {
-  newCommentOnTextChange
+  newCommentOnTextChange,
+  openCurrentSuggestion,
+  removeSuggestion
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 // Assets
@@ -108,6 +113,26 @@ class CommentBox extends Component {
     );
   }
 
+  renderSuggestionPreview() {
+    const { showAttachedSuggestion } = this.props.newComment;
+
+    if (showAttachedSuggestion) {
+      return (
+        <SuggestionPreview
+          item={{}}
+          onRemove={() => {
+            this.props.removeSuggestion();
+          }}
+          onPress={() => {
+            this.props.openCurrentSuggestion();
+          }}
+        />
+      );
+    }
+
+    return '';
+  }
+
   render() {
     const { value, height } = this.state;
 
@@ -136,6 +161,7 @@ class CommentBox extends Component {
           elevation: 0.5
         }}
       >
+        {this.renderSuggestionPreview()}
         <View style={{ flexDirection: 'row' }}>
           {this.renderLeftIcons()}
           <View style={inputContainerStyle}>
@@ -201,6 +227,8 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    newCommentOnTextChange
+    newCommentOnTextChange,
+    openCurrentSuggestion,
+    removeSuggestion
   }
 )(CommentBox);

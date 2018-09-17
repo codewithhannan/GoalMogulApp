@@ -1,58 +1,64 @@
-// This component is a ref on Comment / Post
+// This component is used to show the attached suggestion for comment box// This component is a ref on Comment / Post
 import React, { Component } from 'react';
 import {
   View,
   Image,
-  Text
+  Text,
+  TouchableOpacity
 } from 'react-native';
 
-import { switchCaseFWithVal } from '../../redux/middleware/utils';
+import { switchCaseFWithVal } from '../../../redux/middleware/utils';
 
 // Assets
-import badge from '../../asset/utils/badge.png';
-import profilePic from '../../asset/test-profile-pic.png';
+import badge from '../../../asset/utils/badge.png';
+import profilePic from '../../../asset/test-profile-pic.png';
+import cancelIcon from '../../../asset/utils/cancel_no_background.png';
 
 // Components
-import ProfileImage from './ProfileImage';
+import ProfileImage from '../../Common/ProfileImage';
 
-class RefPreview extends Component {
+class SuggestionPreview extends Component {
 
   // Currently this is a dummy component
   render() {
-    const { item, postType } = this.props;
+    const { item, suggestionType, onPress, onRemove } = this.props;
     if (!item) return '';
 
-    const { title, content } = switchCaseItem(item, postType);
+    const title = 'test title';
+    const content = 'test content';
     return (
-      <View style={styles.containerStyle}>
+      <TouchableOpacity style={styles.containerStyle} onPress={onPress}>
         <ProfileImage
           imageStyle={{ width: 50, height: 50 }}
           defaultImageSource={profilePic}
         />
         <View style={{ flex: 1, marginLeft: 12, marginRight: 12, justifyContent: 'center' }}>
 
-            <Text
-              style={styles.titleTextStyle}
-              numberOfLines={1}
-              ellipsizeMode='tail'
-            >
-              {postType === 'ShareNeed' ? 'Need' : title}
-            </Text>
+          <Text
+            style={styles.titleTextStyle}
+            numberOfLines={1}
+            ellipsizeMode='tail'
+          >
+            {title}
+          </Text>
 
 
-            <Text
-              style={styles.headingTextStyle}
-              numberOfLines={2}
-              ellipsizeMode='tail'
-            >
-              {content}
-            </Text>
+          <Text
+            style={styles.headingTextStyle}
+            numberOfLines={2}
+            ellipsizeMode='tail'
+          >
+            {content}
+          </Text>
 
         </View>
-        <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent: 'center' }}>
+        <View style={styles.iconContainerStyle}>
           <Image source={badge} style={{ height: 23, width: 23 }} />
         </View>
-      </View>
+        <TouchableOpacity onPress={onRemove} style={styles.iconContainerStyle}>
+          <Image source={cancelIcon} style={{ height: 15, width: 15 }} />
+        </TouchableOpacity>
+      </TouchableOpacity>
     );
   }
 }
@@ -88,7 +94,6 @@ const styles = {
   containerStyle: {
     flexDirection: 'row',
     height: 50,
-    marginTop: 12,
     marginBottom: 8,
     borderWidth: 1,
     borderRadius: 2,
@@ -112,7 +117,13 @@ const styles = {
     fontSize: 10,
     flexWrap: 'wrap',
     flex: 1,
+  },
+  iconContainerStyle: {
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 };
 
-export default RefPreview;
+export default SuggestionPreview;

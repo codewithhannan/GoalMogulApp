@@ -37,6 +37,11 @@ const executeIfFunction = f => (f instanceof Function ? f() : f);
 export const switchCaseF = cases => defaultCase => key =>
   executeIfFunction(switchCase(cases)(defaultCase)(key));
 
+const executeIfFunctionWithVal = (f, val) => (f instanceof Function ? f(val) : f);
+
+export const switchCaseFWithVal = values => cases => defaultCase => key =>
+  executeIfFunctionWithVal(switchCase(cases)(defaultCase)(key), values);
+
 // const switchCaseF = cases => ({
 //   withDefaultCase(defaultCase) {
 //     return {
