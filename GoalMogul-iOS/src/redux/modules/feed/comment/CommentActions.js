@@ -16,6 +16,7 @@ import {
   COMMENT_NEW_SUGGESTION_ATTACH,
   COMMENT_NEW_SUGGESTION_CANCEL,
   COMMENT_NEW_SUGGESTION_OPEN_CURRENT,
+  COMMENT_NEW_SUGGESTION_OPEN_MODAL,
   COMMENT_NEW_SUGGESTION_UPDAET_TYPE,
 
   COMMENT_NEW_POST_START,
@@ -114,6 +115,10 @@ export const postComment = () => (dispatch, getstate) => {
 };
 
 /* Actions for suggestion modal */
+export const openSuggestionModal = () => dispatch => dispatch({
+  type: COMMENT_NEW_SUGGESTION_OPEN_MODAL
+});
+
 // When user clicks on the suggestion icon on teh comment box
 export const createSuggestion = (suggestionForRef, suggestionFor) => (dispatch) => {
   dispatch({

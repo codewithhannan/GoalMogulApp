@@ -16,7 +16,9 @@ import {
 
 import {
   createCommentFromSuggestion,
-  attachSuggestion
+  attachSuggestion,
+  cancelSuggestion,
+  openSuggestionModal
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 // selector
@@ -113,7 +115,7 @@ class GoalDetailCard2 extends Component {
             goalRef={goalDetail}
             onPress={() => {
               this.props.createCommentFromSuggestion(newCommentParams);
-              this.setState({ suggestionModal: true });
+              this.props.openSuggestionModal();
             }}
           />
         );
@@ -147,11 +149,10 @@ class GoalDetailCard2 extends Component {
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={{ backgroundColor: '#e5e5e5', flex: 1 }}>
           <SuggestionModal
-            visible={this.state.suggestionModal}
-            onCancel={() => this.setState({ suggestionModal: false })}
+            visible={this.props.showSuggestionModal}
+            onCancel={() => this.props.cancelSuggestion()}
             onAttach={() => {
               this.props.attachSuggestion();
-              this.setState({ suggestionModal: false });
             }}
           />
           <Report showing={this.props.showingModalInDetail} />
@@ -256,6 +257,7 @@ const testData = {
 
 const mapStateToProps = state => {
   const { loading } = state.comment;
+  const { showSuggestionModal } = state.newComment;
 
   const testStepsAndNeeds = [
     {
@@ -438,7 +440,8 @@ const mapStateToProps = state => {
     stepsAndNeeds: testStepsAndNeeds,
     comments: testTransformedComments,
     goalDetail: goal,
-    showingModalInDetail
+    showingModalInDetail,
+    showSuggestionModal
   };
 };
 
@@ -447,6 +450,8 @@ export default connect(
   {
     closeGoalDetail,
     createCommentFromSuggestion,
-    attachSuggestion
+    attachSuggestion,
+    cancelSuggestion,
+    openSuggestionModal
   }
 )(GoalDetailCard2);

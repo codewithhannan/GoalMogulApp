@@ -17,12 +17,12 @@ const INITIAL_STATE = {
   // ["Comment", "Reply", "Suggestion"]
   commentType: undefined,
   replyToRef: undefined,
-  showSuggestionModal: false,
   tmpSuggestion: { ...INITIAL_SUGGESETION },
   suggestion: { ...INITIAL_SUGGESETION },
   // This is used when suggestion type is friend and we search for certain friend
+  friendList: [],
+  showSuggestionModal: false,
   showAttachedSuggestion: false,
-  friendList: []
 };
 
 const INITIAL_SUGGESETION = {
@@ -45,6 +45,8 @@ export const COMMENT_NEW = 'comment_new';
 export const COMMENT_NEW_TEXT_ON_CHANGE = 'comment_new_text_on_change';
 export const COMMENT_NEW_SUGGESTION_CREATE = 'comment_new_suggestion_create';
 export const COMMENT_NEW_SUGGESTION_ATTACH = 'comment_new_suggestion_attach';
+// Open suggestion modal
+export const COMMENT_NEW_SUGGESTION_OPEN_MODAL = 'comment_new_suggestion_open_modal';
 // Open the attached suggestion to edit
 export const COMMENT_NEW_SUGGESTION_OPEN_CURRENT = 'comment_new_suggestion_open_current';
 export const COMMENT_NEW_SUGGESTION_CANCEL = 'comment_new_suggestion_cancel';
@@ -117,8 +119,6 @@ export default (state = INITIAL_STATE, action) => {
       newState = _.set(newState, 'tmpSuggestion.suggestionFor', suggestionFor);
       newState = _.set(newState, 'tmpSuggestion.suggestionForRef', suggestionForRef);
 
-      // Open suggestion modal
-      newState = _.set(newState, 'showSuggestionModal', true);
       return newState;
     }
 
@@ -155,6 +155,11 @@ export default (state = INITIAL_STATE, action) => {
       newState = _.set(newState, 'tmpSuggestion', suggestion);
 
       // Open suggestion modal
+      return _.set(newState, 'showSuggestionModal', true);
+    }
+
+    case COMMENT_NEW_SUGGESTION_OPEN_MODAL: {
+      const newState = _.cloneDeep(state);
       return _.set(newState, 'showSuggestionModal', true);
     }
 
