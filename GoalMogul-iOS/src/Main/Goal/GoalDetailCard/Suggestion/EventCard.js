@@ -14,15 +14,15 @@ import profilePic from '../../../../asset/utils/defaultUserProfile.png';
 
 // Actions
 import {
-
+  
 } from '../../../../redux/modules/feed/comment/CommentActions';
 
 const DEBUG_KEY = '[UI Event Card] ';
 
 class EventCard extends React.Component {
   onCardPress = () => {
-    console.log(`${DEBUG_KEY} open Event Detail.`);
-
+    const { onCardPress, item } = this.props;
+    onCardPress(item);
   }
 
   renderTimeStamp(item) {
@@ -201,6 +201,6 @@ const styles = {
 export default connect(
   null,
   {
-    
+
   }
 )(EventCard);

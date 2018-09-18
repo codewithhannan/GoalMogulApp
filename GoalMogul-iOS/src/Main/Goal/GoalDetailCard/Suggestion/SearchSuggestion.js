@@ -23,7 +23,8 @@ import {
   handleSearch,
   clearSearchState,
   refreshSearchResult,
-  onLoadMore
+  onLoadMore,
+  onSuggestionItemSelect
 } from '../../../../redux/modules/feed/comment/SuggestionSearchActions';
 
 class SearchSuggestion extends React.Component {
@@ -51,10 +52,10 @@ class SearchSuggestion extends React.Component {
 
   renderItem = ({ item }) => {
     return switchCaseF({
-      User: (<UserCard item={item} />),
-      Tribe: (<TribeCard item={item} />),
-      Event: (<EventCard item={item} />),
-      Friend: (<UserCard item={item} />),
+      User: (<UserCard item={item} onCardPress={this.props.onSuggestionItemSelect} />),
+      Tribe: (<TribeCard item={item} onCardPress={this.props.onSuggestionItemSelect} />),
+      Event: (<EventCard item={item} onCardPress={this.props.onSuggestionItemSelect} />),
+      Friend: (<UserCard item={item} onCardPress={this.props.onSuggestionItemSelect} />),
       Default: <View />
     })('Default')(this.props.suggestionType);
   }
@@ -155,7 +156,8 @@ const mapDispatchToProps = (dispatch, getState) => {
     debouncedSearch,
     clearSearchState: clearSearchState(dispatch),
     refreshSearchResult,
-    onLoadMore
+    onLoadMore,
+    onSuggestionItemSelect
   });
 };
 

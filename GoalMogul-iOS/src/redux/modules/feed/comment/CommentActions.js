@@ -3,6 +3,9 @@
  * actions related to a specific comment
  */
 import {
+  Alert
+} from 'react-native';
+import {
   COMMENT_LOAD,
   COMMENT_REFRESH_DONE,
   COMMENT_LOAD_DONE
@@ -22,6 +25,9 @@ import {
   // update suggestion link and text
   COMMENT_NEW_SUGGESTION_UPDATE_TEXT,
   COMMENT_NEW_SUGGESTION_UPDATE_LINK,
+
+  // Select searched suggestion item
+  COMMENT_NEW_SUGGESTION_SELECT_ITEM,
 
   COMMENT_NEW_POST_START,
   COMMENT_NEW_POST_SUCCESS,
@@ -174,7 +180,15 @@ export const openCurrentSuggestion = () => (dispatch) => {
   });
 };
 
-export const attachSuggestion = () => (dispatch) => {
+export const attachSuggestion = () => (dispatch, getState) => {
+  const { tmpSuggestion } = getState().newComment;
+  const { suggestionText, suggestionLink, selectedItem } = tmpSuggestion;
+
+  // If nothing is selected, then we show an error
+  if (!suggestionText && !suggestionLink && !selectedItem) {
+    return Alert.alert('Error', 'You need to suggestion something.');
+  }
+
   dispatch({
     type: COMMENT_NEW_SUGGESTION_ATTACH
   });
@@ -191,6 +205,14 @@ export const onSuggestionLinkChange = (link) => (dispatch) => {
   dispatch({
     type: COMMENT_NEW_SUGGESTION_UPDATE_LINK,
     payload: link
+  });
+};
+
+export const onSuggestionItemSelect = (item) => (dispatch) => {
+  console.log('suggestion item selected');
+  dispatch({
+    type: COMMENT_NEW_SUGGESTION_SELECT_ITEM,
+    payload: item
   });
 };
 

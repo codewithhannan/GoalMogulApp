@@ -3,7 +3,7 @@ import {
   View,
   Image,
   Text,
-  TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native';
 import timeago from 'timeago.js';
 import { connect } from 'react-redux';
@@ -13,16 +13,13 @@ import { connect } from 'react-redux';
 import profilePic from '../../../../asset/utils/defaultUserProfile.png';
 
 // Actions
-import {
-
-} from '../../../../redux/modules/feed/comment/CommentActions';
 
 const DEBUG_KEY = '[UI Tribe Card] ';
 
 class TribeCard extends React.Component {
   onCardPress = () => {
-    console.log(`${DEBUG_KEY} open Tribe Detail`);
-
+    const { onCardPress, item } = this.props;
+    onCardPress(item);
   }
 
   renderTimeStamp() {
@@ -113,7 +110,7 @@ class TribeCard extends React.Component {
 
   render() {
     return (
-      <TouchableWithoutFeedback onPress={this.onCardPress}>
+      <TouchableOpacity onPress={this.onCardPress}>
         <View style={styles.containerStyle}>
           {this.renderTribeImage()}
           {this.renderTimeStamp()}
@@ -123,7 +120,7 @@ class TribeCard extends React.Component {
             {this.renderTribeInfo()}
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     );
   }
 }
@@ -197,6 +194,6 @@ const styles = {
 export default connect(
   null,
   {
-
+    
   }
 )(TribeCard);
