@@ -8,7 +8,7 @@ import PeopleCard from '../../Common/PeopleCard';
 import PeopleCardDetail from '../../Common/PeopleCardDetail';
 
 const UserCard = (props) => {
-  const { item, onCardPress } = props;
+  const { item, onCardPress, selected } = props;
   return (
     <TouchableOpacity onPress={() => onCardPress(item)}>
       <PeopleCard>

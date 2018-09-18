@@ -1,4 +1,5 @@
 import curry from 'ramda/src/curry';
+import _ from 'lodash';
 import { api as API } from '../../../middleware/api';
 import {
   SUGGESTION_SEARCH_REQUEST,
@@ -69,11 +70,14 @@ export const handleSearch = (searchContent, type) => {
   return searchCurry(searchContent, queryId, type);
 };
 
+export const debouncedSearch = () => (dispatch) =>
+  _.debounce((value, type) => dispatch(handleSearch(value, type)), 400);
+
 /**
   * Refresh search result
   * @param type: tab that needs to refresh
   */
-export const refreshSearchResult = curry((type) => (dispatch, getState) => {
+export const refreshSearchResult = (type) => (dispatch, getState) => {
   const { token } = getState().user;
   const { searchContent, searchType, searchRes } = getState().suggestionSearch;
   const { skip, limit, queryId } = searchRes;
@@ -99,13 +103,13 @@ export const refreshSearchResult = curry((type) => (dispatch, getState) => {
       }
     });
   });
-});
+};
 
 /**
   * Load more for search result
   * @param type: tab that needs to load more
   */
-export const onLoadMore = (type) => (dispatch, getState) => {
+export const onLoadMore = (type) =>(dispatch, getState) => {
   const { token } = getState().user;
   const { searchType, searchRes } = getState().suggestionSearch;
   const { skip, limit, queryId, searchContent, hasNextPage } = searchRes;

@@ -209,7 +209,7 @@ export const onSuggestionLinkChange = (link) => (dispatch) => {
 };
 
 export const onSuggestionItemSelect = (item) => (dispatch) => {
-  console.log('suggestion item selected');
+  console.log('suggestion item selected with item: ', item);
   dispatch({
     type: COMMENT_NEW_SUGGESTION_SELECT_ITEM,
     payload: item

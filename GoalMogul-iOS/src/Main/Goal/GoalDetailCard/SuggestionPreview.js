@@ -99,7 +99,9 @@ class SuggestionPreview extends Component {
       <ProfileImage
         imageStyle={{ width: 50, height: 50, ...style }}
         defaultImageSource={source}
+        defaultImageStyle={{ width: 30, height: 30, ...style }}
         imageUrl={imageUrl}
+        imageContainerStyle={{ alignItems: 'center', justifyContent: 'center', marginLeft: 3 }}
       />
     );
   }

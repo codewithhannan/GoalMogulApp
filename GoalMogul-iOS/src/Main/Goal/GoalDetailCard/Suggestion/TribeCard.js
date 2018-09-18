@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 // Assets
 // TODO: set default tribe picture
 import profilePic from '../../../../asset/utils/defaultUserProfile.png';
+import check from '../../../../asset/utils/check.png';
 
 // Actions
 
@@ -108,10 +109,28 @@ class TribeCard extends React.Component {
     );
   }
 
+  renderCheck() {
+    const { selected } = this.props;
+    const checkIconContainerStyle = selected
+      ? { ...styles.checkIconContainerStyle, borderWidth: 0.5, borderColor: '#a0deba' }
+      : { ...styles.checkIconContainerStyle };
+
+    const checkIconStyle = selected
+      ? { ...styles.checkIconStyle, tintColor: '#a0deba' }
+      : { ...styles.checkIconStyle };
+
+    return (
+      <View style={checkIconContainerStyle}>
+        <Image source={check} resizeMode='contain' style={checkIconStyle} />
+      </View>
+    );
+  }
+
   render() {
     return (
       <TouchableOpacity onPress={this.onCardPress}>
         <View style={styles.containerStyle}>
+          {this.renderCheck()}
           {this.renderTribeImage()}
           {this.renderTimeStamp()}
           <View style={styles.detailContainerStyle}>
@@ -133,6 +152,22 @@ const styles = {
     marginTop: 1,
     height: CardHeight,
     backgroundColor: 'white',
+  },
+  // Check icon style
+  checkIconContainerStyle: {
+    marginLeft: 8,
+    height: 24,
+    width: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 12,
+    borderWidth: 0.5,
+    borderColor: 'lightgray',
+    alignSelf: 'center'
+  },
+  checkIconStyle: {
+    width: 16,
+    height: 14
   },
   // Image related styles
   imageContainerStyle: {
@@ -194,6 +229,6 @@ const styles = {
 export default connect(
   null,
   {
-    
+
   }
 )(TribeCard);

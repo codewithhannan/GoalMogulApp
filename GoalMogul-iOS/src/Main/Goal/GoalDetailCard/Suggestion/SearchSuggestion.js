@@ -24,8 +24,11 @@ import {
   clearSearchState,
   refreshSearchResult,
   onLoadMore,
-  onSuggestionItemSelect
 } from '../../../../redux/modules/feed/comment/SuggestionSearchActions';
+
+import {
+  onSuggestionItemSelect
+} from '../../../../redux/modules/feed/comment/CommentActions';
 
 class SearchSuggestion extends React.Component {
   state = {
@@ -51,11 +54,38 @@ class SearchSuggestion extends React.Component {
   }
 
   renderItem = ({ item }) => {
+    const { selectedItem } = this.props;
+    const selected = selectedItem && selectedItem._id === item._id;
+
     return switchCaseF({
-      User: (<UserCard item={item} onCardPress={this.props.onSuggestionItemSelect} />),
-      Tribe: (<TribeCard item={item} onCardPress={this.props.onSuggestionItemSelect} />),
-      Event: (<EventCard item={item} onCardPress={this.props.onSuggestionItemSelect} />),
-      Friend: (<UserCard item={item} onCardPress={this.props.onSuggestionItemSelect} />),
+      User: (
+        <UserCard
+          item={item}
+          onCardPress={this.props.onSuggestionItemSelect}
+          selected={selected}
+        />
+      ),
+      Tribe: (
+        <TribeCard
+          item={item}
+          onCardPress={this.props.onSuggestionItemSelect}
+          selected={selected}
+        />
+      ),
+      Event: (
+        <EventCard
+          item={item}
+          onCardPress={this.props.onSuggestionItemSelect}
+          selected={selected}
+        />
+      ),
+      Friend: (
+        <UserCard
+          item={item}
+          onCardPress={this.props.onSuggestionItemSelect}
+          selected={selected}
+        />
+      ),
       Default: <View />
     })('Default')(this.props.suggestionType);
   }
@@ -91,7 +121,7 @@ class SearchSuggestion extends React.Component {
         {this.renderSearch()}
         <View style={{ flex: 1, marginTop: 0.5, backgroundColor: 'white' }}>
           <FlatList
-            data={[]}
+            data={testData[this.props.suggestionType]}
             renderItem={this.renderItem}
             keyExtractor={(item) => item._id}
             onEndReached={() => this.props.onLoadMore()}
@@ -135,34 +165,176 @@ const styles = {
   },
 };
 
-const testData = [
-  {
-    name: 'Jia Zeng',
-    headline: 'Students at Duke University',
-    request: false,
-    _id: '120937109287091'
-  },
-  {
-    name: 'Peter Kushner',
-    headline: 'CEO at start industries',
-    request: false,
-    _id: '019280980248303'
-  }
-];
+const testData = {
+  User: [
+    {
+      name: 'Jia Zeng',
+      headline: 'Students at Duke University',
+      request: false,
+      _id: '120937109287091',
+      profile: {
+        about: 'this is about for jia zeng',
+      }
+    },
+    {
+      name: 'Peter Kushner',
+      headline: 'CEO at start industries',
+      request: false,
+      _id: '019280980248303',
+      profile: {
+        about: 'this is about for jia zeng',
+      }
+    }
+  ],
+  Friend: [
+    {
+      name: 'Jia Zeng',
+      headline: 'Students at Duke University',
+      request: false,
+      _id: '120937109287091',
+      profile: {
+        about: 'this is about for jia zeng',
+      }
+    },
+    {
+      name: 'Peter Kushner',
+      headline: 'CEO at start industries',
+      request: false,
+      _id: '019280980248303',
+      profile: {
+        about: 'this is about for jia zeng',
+      }
+    }
+  ],
+  Tribe: [
+    {
+      _id: '123170293817024',
+      created: '',
+      name: 'SoHo Artists',
+      membersCanInvite: true,
+      isPubliclyVisible: true,
+      membershipLimit: 100,
+      description: 'This group is for all artists currently living in or working out of ' +
+      'SoHo, NY. We exchange ideas, get feedback from each other and help each other ' +
+      'organize exhiits for our work!',
+      picture: '',
+      members: [
+        {
+          _id: '1203798700',
+          name: 'Jia Zeng',
+          profile: {
+            image: undefined
+          }
+        }
+      ],
+      memberCount: 10,
+    },
+    {
+      _id: '123170293817023',
+      created: '',
+      name: 'Comic fans',
+      membersCanInvite: true,
+      isPubliclyVisible: true,
+      membershipLimit: 20,
+      description: 'This group is dedicated to the fan of comics in LA!',
+      picture: '',
+      members: [
+        {
+          _id: '1203798705',
+          name: 'Super Andy',
+          profile: {
+            image: undefined
+          }
+        }
+      ],
+      memberCount: 19,
+    }
+  ],
+  Event: [
+    {
+      _id: '980987230941',
+      created: '2018-09-03T05:46:44.038Z',
+      creator: {
+        // User ref
+        name: 'Jia Zeng'
+      },
+      title: 'Jay\'s end of internship party',
+      start: '2018-09-05T05:46:44.038Z',
+      durationHours: 2,
+      participantsCanInvite: true,
+      isInviteOnly: true,
+      participantLimit: 100,
+      location: '100 event ave, NY',
+      description: 'Let\'s get together to celebrate Jay\'s birthday',
+      picture: '',
+      participants: [
+        {
+          _id: '123698172691',
+          name: 'Super Andy',
+          profile: {
+            image: undefined
+          }
+        },
+        {
+          _id: '123698172692',
+          name: 'Mike Gai',
+          profile: {
+            image: undefined
+          }
+        }
+      ],
+      participantCount: 2,
+    },
+    {
+      _id: '980987230942',
+      created: '2018-6-03T05:46:44.038Z',
+      creator: {
+        // User ref
+        name: 'David Bogger'
+      },
+      title: 'Back to school party',
+      start: '2018-09-10T05:46:44.038Z',
+      durationHours: 3,
+      participantsCanInvite: false,
+      isInviteOnly: true,
+      participantLimit: 30,
+      location: 'TBD',
+      description: 'We do nothing and simple enjoy life',
+      picture: '',
+      participants: [
+        {
+          _id: '123698172693',
+          name: 'Batman',
+          profile: {
+            image: undefined
+          }
+        },
+        {
+          _id: '123698172694',
+          name: 'Captain America',
+          profile: {
+            image: undefined
+          }
+        }
+      ],
+      participantCount: 2,
+    }
+  ],
+  ChatConvoRoom: []
+};
 
-const mapDispatchToProps = (dispatch, getState) => {
+const mapDispatchToProps = (dispatch) => {
   const debouncedSearch = _.debounce((value, type) => dispatch(handleSearch(value, type)), 400);
+  console.log('getState is: ', dispatch);
   return ({
     debouncedSearch,
     clearSearchState: clearSearchState(dispatch),
-    refreshSearchResult,
-    onLoadMore,
-    onSuggestionItemSelect
+    onSuggestionItemSelect: onSuggestionItemSelect(dispatch)
   });
 };
 
 const mapStateToProps = state => {
-  const { suggestionType } = state.newComment.tmpSuggestion;
+  const { suggestionType, selectedItem } = state.newComment.tmpSuggestion;
   const { searchRes, searchContent } = state.suggestionSearch;
   const { data, loading } = searchRes;
 
@@ -170,11 +342,18 @@ const mapStateToProps = state => {
     suggestionType,
     data,
     loading,
-    searchContent
+    searchContent,
+    selectedItem
   };
 };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  {
+    ...mapDispatchToProps,
+    refreshSearchResult,
+    onLoadMore,
+    onSuggestionItemSelect
+  }
+
 )(SearchSuggestion);
