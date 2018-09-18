@@ -1,12 +1,13 @@
+// Actions for an event that belongs to my event tab
 import { Actions } from 'react-native-router-flux';
 import {
-  EVENT_SWITCH_TAB,
-  EVENT_DETAIL_CLOSE,
-  EVENT_DETAIL_OPEN,
-  EVENT_FEED_FETCH,
-  EVENT_FEED_FETCH_DONE,
-  EVENT_FEED_REFRESH_DONE
-} from './EventReducers';
+  MYEVENT_SWITCH_TAB,
+  MYEVENT_DETAIL_CLOSE,
+  MYEVENT_DETAIL_OPEN,
+  MYEVENT_FEED_FETCH,
+  MYEVENT_FEED_FETCH_DONE,
+  MYEVENT_FEED_REFRESH_DONE
+} from './MyEventReducers';
 
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
@@ -16,7 +17,7 @@ const BASE_ROUTE = 'secure/event';
 
 export const eventSelectTab = (index) => (dispatch) => {
   dispatch({
-    type: EVENT_SWITCH_TAB,
+    type: MYEVENT_SWITCH_TAB,
     payload: index
   });
 };
@@ -24,16 +25,16 @@ export const eventSelectTab = (index) => (dispatch) => {
 export const eventDetailClose = () => (dispatch) => {
   Actions.pop();
   dispatch({
-    type: EVENT_DETAIL_CLOSE
+    type: MYEVENT_DETAIL_CLOSE
   });
 };
 
 export const eventDetailOpen = (event) => (dispatch, getState) => {
   dispatch({
-    type: EVENT_DETAIL_OPEN,
+    type: MYEVENT_DETAIL_OPEN,
     payload: { ...event }
   });
-  Actions.eventDetail();
+  Actions.myEventDetail();
   refreshEventFeed(event._id, dispatch, getState);
 };
 
@@ -49,11 +50,11 @@ export const refreshEventFeed = (eventId, dispatch, getState) => {
   const { limit } = getState().event;
 
   dispatch({
-    type: EVENT_FEED_FETCH
+    type: MYEVENT_FEED_FETCH
   });
   loadEventFeed(0, limit, token, { eventId }, (data) => {
     dispatch({
-      type: EVENT_FEED_REFRESH_DONE,
+      type: MYEVENT_FEED_REFRESH_DONE,
       payload: {
         type: 'eventfeed',
         data,
@@ -74,11 +75,11 @@ export const loadMoreEventFeed = (eventId) => (dispatch, getState) => {
     return;
   }
   dispatch({
-    type: EVENT_FEED_FETCH
+    type: MYEVENT_FEED_FETCH
   });
   loadEventFeed(skip, limit, token, { eventId }, (data) => {
     dispatch({
-      type: EVENT_FEED_FETCH_DONE,
+      type: MYEVENT_FEED_FETCH_DONE,
       payload: {
         type: 'eventfeed',
         data,

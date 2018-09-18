@@ -39,6 +39,10 @@ const INITIAL_SUGGESETION = {
   goalRef: undefined,
   needRef: undefined,
   stepRef: undefined,
+  chatRoomRef: undefined,
+  eventRef: undefined,
+  tribeRef: undefined,
+  selectedItem: undefined
 };
 
 export const COMMENT_NEW = 'comment_new';
@@ -52,6 +56,10 @@ export const COMMENT_NEW_SUGGESTION_OPEN_CURRENT = 'comment_new_suggestion_open_
 export const COMMENT_NEW_SUGGESTION_CANCEL = 'comment_new_suggestion_cancel';
 export const COMMENT_NEW_SUGGESTION_REMOVE = 'comment_new_suggestion_remove';
 export const COMMENT_NEW_SUGGESTION_UPDAET_TYPE = 'comment_new_suggestion_update_type';
+export const COMMENT_NEW_SUGGESTION_UPDATE_TEXT = 'comment_new_suggestion_update_text';
+export const COMMENT_NEW_SUGGESTION_UPDATE_LINK = 'comment_new_suggestion_update_link';
+// Select item for suggestion
+export const COMMENT_NEW_SUGGESTION_SELECT_ITEM = 'comment_new_suggestion_select_item';
 // Posting a comment
 export const COMMENT_NEW_POST_START = 'comment_new_post_start';
 export const COMMENT_NEW_POST_SUCCESS = 'comment_new_post_success';
@@ -59,7 +67,6 @@ export const COMMENT_NEW_POST_FAIL = 'comment_new_post_fail';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-
     case GOAL_DETAIL_OPEN: {
       let newState = _.cloneDeep(state);
       newState = _.set(newState, 'parentType', 'goal');
@@ -107,9 +114,7 @@ export default (state = INITIAL_STATE, action) => {
 
     case COMMENT_NEW_SUGGESTION_UPDAET_TYPE: {
       let newState = _.cloneDeep(state);
-      console.log('Updating suggestion type: ', action.payload);
       newState = _.set(newState, 'tmpSuggestion.suggestionType', action.payload);
-      console.log('new state after updating suggestion type: ', newState);
       return newState;
     }
 
@@ -161,6 +166,24 @@ export default (state = INITIAL_STATE, action) => {
     case COMMENT_NEW_SUGGESTION_OPEN_MODAL: {
       const newState = _.cloneDeep(state);
       return _.set(newState, 'showSuggestionModal', true);
+    }
+
+    // Update suggestion text
+    case COMMENT_NEW_SUGGESTION_UPDATE_TEXT: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'tmpSuggestion.suggestionText', action.payload);
+    }
+
+    // Update suggestion link
+    case COMMENT_NEW_SUGGESTION_UPDATE_LINK: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'tmpSuggestion.suggestionLink', action.payload);
+    }
+
+    // Update item selected
+    case COMMENT_NEW_SUGGESTION_SELECT_ITEM: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'tmpSuggestion.selectedItem', action.payload);
     }
 
     default: return { ...state };

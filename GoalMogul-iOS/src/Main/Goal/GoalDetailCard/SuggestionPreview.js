@@ -1,4 +1,5 @@
-// This component is used to show the attached suggestion for comment box// This component is a ref on Comment / Post
+// This component is used to show the attached suggestion for comment box
+// This component is a ref on Comment / Post
 import React, { Component } from 'react';
 import {
   View,
@@ -6,58 +7,117 @@ import {
   Text,
   TouchableOpacity
 } from 'react-native';
-
-import { switchCaseFWithVal } from '../../../redux/middleware/utils';
+import {
+  switchCaseFWithVal
+} from '../../../redux/middleware/utils';
 
 // Assets
 import badge from '../../../asset/utils/badge.png';
-import profilePic from '../../../asset/test-profile-pic.png';
 import cancelIcon from '../../../asset/utils/cancel_no_background.png';
+
+import stepIcon from '../../../asset/utils/steps.png'
+import needIcon from '../../../asset/utils/help.png';
+import eventIcon from '../../../asset/suggestion/event.png';
+import tribeIcon from '../../../asset/suggestion/flag.png';
+import userIcon from '../../../asset/suggestion/friend.png';
+import friendIcon from '../../../asset/suggestion/group.png';
+import linkIcon from '../../../asset/suggestion/link.png';
+import customIcon from '../../../asset/suggestion/other.png';
+import chatIcon from '../../../asset/suggestion/chat.png';
+import readingIcon from '../../../asset/suggestion/book.png';
 
 // Components
 import ProfileImage from '../../Common/ProfileImage';
 
 class SuggestionPreview extends Component {
 
-  // Currently this is a dummy component
-  render() {
-    const { item, suggestionType, onPress, onRemove } = this.props;
-    if (!item) return '';
-
-    const title = 'test title';
-    const content = 'test content';
-    return (
-      <TouchableOpacity style={styles.containerStyle} onPress={onPress}>
-        <ProfileImage
-          imageStyle={{ width: 50, height: 50 }}
-          defaultImageSource={profilePic}
-        />
-        <View style={{ flex: 1, marginLeft: 12, marginRight: 12, justifyContent: 'center' }}>
-
-          <Text
-            style={styles.titleTextStyle}
-            numberOfLines={1}
-            ellipsizeMode='tail'
-          >
-            {title}
-          </Text>
-
-
-          <Text
-            style={styles.headingTextStyle}
-            numberOfLines={2}
-            ellipsizeMode='tail'
-          >
-            {content}
-          </Text>
-
-        </View>
+  // Render badge
+  renderEndImage(suggestionType, selectedItem) {
+    if (suggestionType === 'User' || suggestionType === 'Friend') {
+      return (
         <View style={styles.iconContainerStyle}>
           <Image source={badge} style={{ height: 23, width: 23 }} />
         </View>
-        <TouchableOpacity onPress={onRemove} style={styles.iconContainerStyle}>
-          <Image source={cancelIcon} style={{ height: 15, width: 15 }} />
-        </TouchableOpacity>
+      );
+    }
+    return '';
+  }
+
+  // Render suggestion preview when suggesting a Link, Reading, Custom
+  renderText(item) {
+    const { suggestionType, selectedItem, suggestionText, suggestionLink } = item;
+    let title;
+    let content;
+    if (suggestionType === 'Link' || suggestionType === 'Reading' || suggestionType === 'Custom') {
+      title = suggestionText;
+      content = suggestionLink;
+    }
+
+    if (suggestionType === 'Tribe' || suggestionType === 'Event' ||
+        suggestionType === 'Friend' || suggestionType === 'User' ||
+        suggestionType === 'ChatConvoRoom') {
+      const switchedItem = switchSearchItem(selectedItem, suggestionType);
+      title = switchedItem.title;
+      content = switchedItem.content;
+    }
+
+    if (suggestionType === 'Need' || suggestionType === 'Step') {
+      title = suggestionText;
+    }
+
+    const contentView = content
+      ? (
+        <Text
+          style={styles.headingTextStyle}
+          numberOfLines={2}
+          ellipsizeMode='tail'
+        >
+          {content}
+        </Text>
+      ) : '';
+
+    return (
+      <View style={{ flex: 1, marginLeft: 12, marginRight: 12, justifyContent: 'center' }}>
+
+        <Text
+          style={styles.titleTextStyle}
+          numberOfLines={1}
+          ellipsizeMode='tail'
+        >
+          {title}
+        </Text>
+        {contentView}
+      </View>
+    );
+  }
+
+  renderImage(suggestionType, selectedItem) {
+    const defaultImage = switchDefaultImageType(suggestionType, selectedItem);
+    const { source, style, imageUrl } = defaultImage;
+
+    return (
+      <ProfileImage
+        imageStyle={{ width: 50, height: 50, ...style }}
+        defaultImageSource={source}
+        defaultImageStyle={{ width: 30, height: 30, ...style }}
+        imageUrl={imageUrl}
+        imageContainerStyle={{ alignItems: 'center', justifyContent: 'center', marginLeft: 3 }}
+      />
+    );
+  }
+
+  // Currently this is a dummy component
+  render() {
+    const { item, onPress, onRemove } = this.props;
+    const { suggestionType, selectedItem } = item;
+    if (!item) return '';
+
+    return (
+      <TouchableOpacity style={styles.containerStyle} onPress={onPress}>
+        {this.renderImage(suggestionType, selectedItem)}
+        {this.renderText(item)}
+        {this.renderEndImage(suggestionType, selectedItem)}
+        {RemoveComponent(onRemove)}
       </TouchableOpacity>
     );
   }
@@ -65,30 +125,82 @@ class SuggestionPreview extends Component {
 // <Text style={styles.titleTextStyle}>{title}</Text>
 // <Text style={styles.headingTextStyle}>{content}</Text>
 
-// type: ["General", "ShareUser", "SharePost", "ShareGoal", "ShareNeed"]
-const switchCaseItem = (val, type) => switchCaseFWithVal(val)({
-  General: () => ({
-    title: undefined
+const RemoveComponent = (onRemove) => {
+  return (
+    <TouchableOpacity onPress={onRemove} style={styles.iconContainerStyle}>
+      <Image source={cancelIcon} style={{ height: 15, width: 15 }} />
+    </TouchableOpacity>
+  );
+};
+
+// ["ChatConvoRoom", "Event", "Tribe", "Link", "Reading",
+// "Step", "Need", "Friend", "User", "Custom"]
+const switchSearchItem = (val, type) => switchCaseFWithVal(val)({
+  ChatConvoRoom: (item) => ({
+    title: 'Chatroom',
+    content: 'Chatroom description',
+    picture: undefined
   }),
-  ShareUser: (item) => ({
-    title: item.name,
-    content: item.profile ? item.profile.about : undefined
-  }),
-  SharePost: (item) => ({
-    title: item.owner ? item.owner.name : undefined,
-    // TODO: TAG: convert this to string later on
-    content: item.content ? item.content.text : undefined
-  }),
-  ShareGoal: (item) => ({
+  Event: (item) => ({
     title: item.title,
-    // TODO: TAG: convert this to string later on
-    content: item.details.text
+    content: item.description,
+    picture: item.picture
   }),
-  ShareNeed: (item) => ({
-      title: undefined,
-      content: item.description
+  Tribe: (item) => ({
+    title: item.name,
+    content: item.description,
+    picture: item.picture
+  }),
+  Friend: (item) => ({
+    title: item.name,
+    content: item.profile ? item.profile.about : undefined,
+    picture: item.profile ? item.propfile.picture : undefined
+  }),
+  User: (item) => ({
+    title: item.name,
+    content: item.profile ? item.profile.about : undefined,
+    picture: item.profile ? item.propfile.picture : undefined
   })
-})('General')(type);
+})('User')(type);
+
+const switchDefaultImageType = (type, item) => switchCaseFWithVal(item)({
+  ChatConvoRoom: val => ({
+    source: chatIcon,
+    style: undefined,
+    imageUrl: undefined
+  }),
+  Event: val => ({
+    source: eventIcon,
+    imageUrl: val.picture
+  }),
+  Tribe: val => ({
+    source: tribeIcon,
+    imageUrl: val.picture
+  }),
+  Friend: val => ({
+    source: friendIcon,
+    imageUrl: val.profile ? val.propfile.picture : undefined
+  }),
+  User: val => ({
+    source: userIcon,
+    imageUrl: val.profile ? val.propfile.picture : undefined
+  }),
+  Reading: () => ({
+    source: readingIcon
+  }),
+  Link: () => ({
+    source: linkIcon
+  }),
+  Custom: () => ({
+    source: customIcon
+  }),
+  Need: () => ({
+    source: needIcon
+  }),
+  Step: () => ({
+    source: stepIcon
+  })
+})('User')(type);
 
 const styles = {
   containerStyle: {

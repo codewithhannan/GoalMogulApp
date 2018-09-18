@@ -14,7 +14,7 @@ import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Action MyEventTab ]';
-const BASE_ROUTE = 'secure/event/';
+const BASE_ROUTE = 'secure/event';
 
 // Open my event tab
 export const openMyEventTab = () => (dispatch, getState) => {

@@ -3,26 +3,24 @@ import {
   View,
   Image,
   Text,
-  TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native';
 import timeago from 'timeago.js';
 import { connect } from 'react-redux';
 
 // Assets
 // TODO: set default tribe picture
-import profilePic from '../../../asset/utils/defaultUserProfile.png';
+import profilePic from '../../../../asset/utils/defaultUserProfile.png';
+import check from '../../../../asset/utils/check.png';
 
 // Actions
-import {
-  tribeDetailOpen
-} from '../../../redux/modules/tribe/MyTribeActions';
 
 const DEBUG_KEY = '[UI Tribe Card] ';
 
-class MyTribeCard extends React.Component {
+class TribeCard extends React.Component {
   onCardPress = () => {
-    console.log(`${DEBUG_KEY} open Tribe Detail`);
-    this.props.tribeDetailOpen(this.props.item);
+    const { onCardPress, item } = this.props;
+    onCardPress(item);
   }
 
   renderTimeStamp() {
@@ -111,10 +109,28 @@ class MyTribeCard extends React.Component {
     );
   }
 
+  renderCheck() {
+    const { selected } = this.props;
+    const checkIconContainerStyle = selected
+      ? { ...styles.checkIconContainerStyle, borderWidth: 0.5, borderColor: '#a0deba' }
+      : { ...styles.checkIconContainerStyle };
+
+    const checkIconStyle = selected
+      ? { ...styles.checkIconStyle, tintColor: '#a0deba' }
+      : { ...styles.checkIconStyle };
+
+    return (
+      <View style={checkIconContainerStyle}>
+        <Image source={check} resizeMode='contain' style={checkIconStyle} />
+      </View>
+    );
+  }
+
   render() {
     return (
-      <TouchableWithoutFeedback onPress={this.onCardPress}>
+      <TouchableOpacity onPress={this.onCardPress}>
         <View style={styles.containerStyle}>
+          {this.renderCheck()}
           {this.renderTribeImage()}
           {this.renderTimeStamp()}
           <View style={styles.detailContainerStyle}>
@@ -123,7 +139,7 @@ class MyTribeCard extends React.Component {
             {this.renderTribeInfo()}
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     );
   }
 }
@@ -136,6 +152,22 @@ const styles = {
     marginTop: 1,
     height: CardHeight,
     backgroundColor: 'white',
+  },
+  // Check icon style
+  checkIconContainerStyle: {
+    marginLeft: 8,
+    height: 24,
+    width: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 12,
+    borderWidth: 0.5,
+    borderColor: 'lightgray',
+    alignSelf: 'center'
+  },
+  checkIconStyle: {
+    width: 16,
+    height: 14
   },
   // Image related styles
   imageContainerStyle: {
@@ -197,6 +229,6 @@ const styles = {
 export default connect(
   null,
   {
-    tribeDetailOpen
+
   }
-)(MyTribeCard);
+)(TribeCard);

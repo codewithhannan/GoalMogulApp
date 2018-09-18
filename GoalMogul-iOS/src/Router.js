@@ -40,8 +40,11 @@ import CreatePostModal from './Main/Post/CreatePostModal';
 import GoalCard from './Main/Goal/GoalCard/GoalCard'; // For debug purpose
 import NeedCard from './Main/Goal/NeedCard/NeedCard'; // For debug purpose
 import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCard2';
+// Menu
 import MyEventTab from './Main/Menu/Event/MyEventTab';
+import MyEvent from './Main/Menu/Event/MyEvent';
 import MyTribeTab from './Main/Menu/Tribe/MyTribeTab';
+import MyTribe from './Main/Menu/Tribe/MyTribe';
 
 // Profile
 import Profile from './Main/Profile/Profile';
@@ -160,11 +163,11 @@ class RouterComponent extends Component {
                     <Scene key="home" component={Home} initial />
                     <Stack key="myEventTabRoot" hideNavBar>
                       <Scene key="myEventTab" component={MyEventTab} initial />
-                      <Scene key="myEventDetail" component={Event} />
+                      <Scene key="myEventDetail" component={MyEvent} />
                     </Stack>
                     <Stack key="myTribeTabRoot" hideNavBar>
                       <Scene key="myTribeTab" component={MyTribeTab} initial />
-                      <Scene key="myTribeDetail" component={Tribe} />
+                      <Scene key="myTribeDetail" component={MyTribe} />
                     </Stack>
                     <Scene key="goal" component={GoalDetailCard} />
                     <Scene key="profile" component={Profile} />
@@ -204,7 +207,7 @@ class RouterComponent extends Component {
                   >
                     <Scene key="explore" component={Explore} initial />
                     <Scene key="tribeDetail" component={Tribe} />
-                      <Scene key="eventDetail" component={Event} />
+                    <Scene key="eventDetail" component={Event} />
                   </Stack>
 
                   <Stack

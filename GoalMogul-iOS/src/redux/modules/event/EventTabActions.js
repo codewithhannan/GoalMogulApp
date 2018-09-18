@@ -10,7 +10,7 @@ import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Action Explore Event Tab ]';
-const BASE_ROUTE = 'secure/event/feed';
+const BASE_ROUTE = 'secure/event/recommendation';
 
 
 // update sortBy

@@ -37,12 +37,16 @@ class MyEventTab extends React.Component {
 
   render() {
     return (
-      <Modal style={{ flex: 1 }} animationType='fade'>
+      <Modal
+        style={{ flex: 1 }}
+        animationType='fade'
+        visible={this.props.showModal}
+      >
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
           <ModalHeader
             title='My Events'
             actionText='Close'
-            onCancel={() => console.log('User closed event modal')}
+            cancelText={null}
             onAction={() => this.props.closeMyEventTab()}
           />
           <FlatList

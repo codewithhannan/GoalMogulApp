@@ -10,23 +10,23 @@ import { connect } from 'react-redux';
 
 // Assets
 // TODO: set default tribe picture
-import profilePic from '../../../asset/utils/defaultUserProfile.png';
+import profilePic from '../../../../asset/utils/defaultUserProfile.png';
 
 // Actions
 import {
-  tribeDetailOpen
-} from '../../../redux/modules/tribe/MyTribeActions';
+  
+} from '../../../../redux/modules/feed/comment/CommentActions';
 
-const DEBUG_KEY = '[UI Tribe Card] ';
+const DEBUG_KEY = '[UI Event Card] ';
 
-class MyTribeCard extends React.Component {
+class EventCard extends React.Component {
   onCardPress = () => {
-    console.log(`${DEBUG_KEY} open Tribe Detail`);
-    this.props.tribeDetailOpen(this.props.item);
+    const { onCardPress, item } = this.props;
+    onCardPress(item);
   }
 
-  renderTimeStamp() {
-    const { created } = this.props.item;
+  renderTimeStamp(item) {
+    const { created } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
     const { timeStampContainerStyle, timeStampTextStyle } = styles;
@@ -40,9 +40,9 @@ class MyTribeCard extends React.Component {
     );
   }
 
-  renderTribeImage() {
+  renderEventImage(item) {
     // If no tribe image, render a default one
-    const { picture } = this.props.item;
+    const { picture } = item;
     if (picture && picture.length > 0) {
       // Render the corresponding image
       return (
@@ -64,8 +64,8 @@ class MyTribeCard extends React.Component {
     );
   }
 
-  renderTribeTitle() {
-    const { name } = this.props.item;
+  renderEventTitle(item) {
+    const { title } = item;
     return (
       <View style={{ flexDirection: 'row' }}>
         <Text
@@ -73,14 +73,14 @@ class MyTribeCard extends React.Component {
           numberOfLines={1}
           ellipsizeMode='tail'
         >
-          {name}
+          {title}
         </Text>
       </View>
     );
   }
 
-  renderDescription() {
-    const { description } = this.props.item;
+  renderDescription(item) {
+    const { description } = item;
     return (
       <View style={{ flexDirection: 'row' }}>
         <Text
@@ -95,15 +95,17 @@ class MyTribeCard extends React.Component {
   }
 
   // Info includes memeber count for now
-  renderTribeInfo() {
-    const { memberCount } = this.props.item;
-    const member = ' Member';
+  renderEventInfo(item) {
+    const { participantCount } = item;
+    const member = participantCount > 1
+      ? ' Members'
+      : ' Member';
 
     return (
       <View>
         <Text style={styles.memberInfoTextStyle}>
           <Text>
-            {memberCount}
+            {participantCount}
           </Text>
           {member}
         </Text>
@@ -112,15 +114,17 @@ class MyTribeCard extends React.Component {
   }
 
   render() {
+    const { item } = this.props;
+    if (!item) return <View />;
     return (
       <TouchableWithoutFeedback onPress={this.onCardPress}>
         <View style={styles.containerStyle}>
-          {this.renderTribeImage()}
-          {this.renderTimeStamp()}
+          {this.renderEventImage(item)}
+          {this.renderTimeStamp(item)}
           <View style={styles.detailContainerStyle}>
-            {this.renderTribeTitle()}
-            {this.renderDescription()}
-            {this.renderTribeInfo()}
+            {this.renderEventTitle(item)}
+            {this.renderDescription(item)}
+            {this.renderEventInfo(item)}
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -165,7 +169,7 @@ const styles = {
     fontSize: 9,
     fontWeight: '700'
   },
-  // Tribe detail related style
+  // Event detail related style
   detailContainerStyle: {
     justifyContent: 'space-between',
     paddingTop: (CardHeight - ProfileImageWidth) / 2,
@@ -197,6 +201,6 @@ const styles = {
 export default connect(
   null,
   {
-    tribeDetailOpen
+
   }
-)(MyTribeCard);
+)(EventCard);

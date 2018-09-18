@@ -3,6 +3,9 @@
  * actions related to a specific comment
  */
 import {
+  Alert
+} from 'react-native';
+import {
   COMMENT_LOAD,
   COMMENT_REFRESH_DONE,
   COMMENT_LOAD_DONE
@@ -18,6 +21,13 @@ import {
   COMMENT_NEW_SUGGESTION_OPEN_CURRENT,
   COMMENT_NEW_SUGGESTION_OPEN_MODAL,
   COMMENT_NEW_SUGGESTION_UPDAET_TYPE,
+
+  // update suggestion link and text
+  COMMENT_NEW_SUGGESTION_UPDATE_TEXT,
+  COMMENT_NEW_SUGGESTION_UPDATE_LINK,
+
+  // Select searched suggestion item
+  COMMENT_NEW_SUGGESTION_SELECT_ITEM,
 
   COMMENT_NEW_POST_START,
   COMMENT_NEW_POST_SUCCESS,
@@ -115,19 +125,34 @@ export const postComment = () => (dispatch, getstate) => {
 };
 
 /* Actions for suggestion modal */
-export const openSuggestionModal = () => dispatch => dispatch({
+export const openSuggestionModal = () => (dispatch) => dispatch({
   type: COMMENT_NEW_SUGGESTION_OPEN_MODAL
 });
 
-// When user clicks on the suggestion icon on teh comment box
-export const createSuggestion = (suggestionForRef, suggestionFor) => (dispatch) => {
-  dispatch({
-    type: COMMENT_NEW_SUGGESTION_CREATE,
-    payload: {
-      suggestionFor,
-      suggestionForRef
-    }
-  });
+// When user clicks on the suggestion icon on the comment box
+export const createSuggestion = () => (dispatch, getState) => {
+  //check if suggestionFor and suggestionRef have assignment,
+  //If not then we assign the current goal ref and 'Goal'
+  const { suggestion, tmpSuggestion } = getState().newComment;
+  const { _id } = getState().goalDetail;
+
+  // Already have a suggestion. Open the current one
+  if (suggestion.suggestionFor && suggestion.suggestionForRef) {
+    return openCurrentSuggestion()(dispatch);
+  }
+
+  // This is the first time user clicks on the suggestion icon. No other entry points.
+  if (!tmpSuggestion.suggestionFor && !tmpSuggestion.suggestionForRef) {
+    dispatch({
+      type: COMMENT_NEW_SUGGESTION_CREATE,
+      payload: {
+        suggestionFor: 'Goal',
+        suggestionForRef: _id
+      }
+    });
+  }
+
+  openSuggestionModal()(dispatch);
 };
 
 // Cancel creating a suggestion
@@ -155,9 +180,39 @@ export const openCurrentSuggestion = () => (dispatch) => {
   });
 };
 
-export const attachSuggestion = () => (dispatch) => {
+export const attachSuggestion = () => (dispatch, getState) => {
+  const { tmpSuggestion } = getState().newComment;
+  const { suggestionText, suggestionLink, selectedItem } = tmpSuggestion;
+
+  // If nothing is selected, then we show an error
+  if (!suggestionText && !suggestionLink && !selectedItem) {
+    return Alert.alert('Error', 'You need to suggestion something.');
+  }
+
   dispatch({
     type: COMMENT_NEW_SUGGESTION_ATTACH
+  });
+};
+
+export const onSuggestionTextChange = (text) => (dispatch) => {
+  dispatch({
+    type: COMMENT_NEW_SUGGESTION_UPDATE_TEXT,
+    payload: text
+  });
+};
+
+export const onSuggestionLinkChange = (link) => (dispatch) => {
+  dispatch({
+    type: COMMENT_NEW_SUGGESTION_UPDATE_LINK,
+    payload: link
+  });
+};
+
+export const onSuggestionItemSelect = (item) => (dispatch) => {
+  console.log('suggestion item selected with item: ', item);
+  dispatch({
+    type: COMMENT_NEW_SUGGESTION_SELECT_ITEM,
+    payload: item
   });
 };
 

@@ -16,7 +16,8 @@ import SuggestionPreview from '../GoalDetailCard/SuggestionPreview';
 import {
   newCommentOnTextChange,
   openCurrentSuggestion,
-  removeSuggestion
+  removeSuggestion,
+  createSuggestion
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 // Assets
@@ -57,9 +58,8 @@ class CommentBox extends Component {
       <TouchableOpacity
         style={styles.iconContainerStyle}
         onPress={() => {
-          //TODO: check if suggestionFor and suggestionRef have assignment,
-          //If not then we assign the current goal ref and 'Goal'
           console.log('suggestion on click in comment box');
+          this.props.createSuggestion();
         }}
       >
         <Image
@@ -114,12 +114,12 @@ class CommentBox extends Component {
   }
 
   renderSuggestionPreview() {
-    const { showAttachedSuggestion } = this.props.newComment;
+    const { showAttachedSuggestion, suggestion } = this.props.newComment;
 
     if (showAttachedSuggestion) {
       return (
         <SuggestionPreview
-          item={{}}
+          item={suggestion}
           onRemove={() => {
             this.props.removeSuggestion();
           }}
@@ -142,12 +142,12 @@ class CommentBox extends Component {
 
     const inputContainerStyle = {
       ...styles.inputContainerStyle,
-      height: Math.max(36, height + 6)
+      // height: Math.max(36, height + 6)
     };
 
     const inputStyle = {
       ...styles.inputStyle,
-      height: Math.max(30, height)
+      // height: Math.max(30, height)
     };
 
     return (
@@ -174,7 +174,6 @@ class CommentBox extends Component {
               maxHeight={maxHeight}
               multiline
               value={this.props.newComment.contentText}
-              onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
             />
           </View>
           {this.renderPost()}
@@ -183,6 +182,7 @@ class CommentBox extends Component {
     );
   }
 }
+// onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
 
 const styles = {
   inputContainerStyle: {
@@ -229,6 +229,7 @@ export default connect(
   {
     newCommentOnTextChange,
     openCurrentSuggestion,
-    removeSuggestion
+    removeSuggestion,
+    createSuggestion
   }
 )(CommentBox);

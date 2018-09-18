@@ -1,6 +1,11 @@
 import _ from 'lodash';
 import { arrayUnique } from '../../middleware/utils';
 
+import {
+  MYEVENT_DETAIL_OPEN,
+  MYEVENT_DETAIL_CLOSE
+} from './MyEventReducers';
+
 const INITIAL_STATE = {
   data: [],
   hasNextPage: undefined,
@@ -33,12 +38,14 @@ export const MYEVENTTAB_UPDATE_FILTEROPTIONS = 'myeventtab_update_filteroptions'
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     // Open the modal
+    case MYEVENT_DETAIL_CLOSE:
     case MYEVENTTAB_OPEN: {
       let newState = _.cloneDeep(state);
       return _.set(newState, 'showModal', true);
     }
 
     // Close the modal
+    case MYEVENT_DETAIL_OPEN:
     case MYEVENTTAB_CLOSE: {
       let newState = _.cloneDeep(state);
       return _.set(newState, 'showModal', false);

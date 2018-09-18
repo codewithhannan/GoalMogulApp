@@ -28,10 +28,19 @@ const ProfileImage = (props) => {
   const { imageContainerStyle, imageStyle, defaultImageSource } = props;
   const resizeMode = setValue(props.resizeMode).withDefaultCase('contain');
 
+  let defaultImageStyle;
+  if (props.defaultImageStyle) {
+    defaultImageStyle = { ...props.defaultImageStyle };
+  } else if (imageStyle) {
+    defaultImageStyle = { ...imageStyle };
+  } else {
+    defaultImageStyle = { ...styles.imageStyle };
+  }
+
   let profileImage = (
     <View style={imageContainerStyle || styles.imageContainerStyle}>
       <Image
-        style={imageStyle || styles.imageStyle}
+        style={defaultImageStyle}
         resizeMode={resizeMode}
         source={defaultImageSource || profilePic}
       />
