@@ -3,7 +3,7 @@ import {
   View,
   Image,
   Text,
-  TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native';
 import timeago from 'timeago.js';
 import { connect } from 'react-redux';
@@ -12,9 +12,12 @@ import { connect } from 'react-redux';
 // TODO: set default tribe picture
 import profilePic from '../../../../asset/utils/defaultUserProfile.png';
 
+// Components
+import Check from '../../../Common/Check';
+
 // Actions
 import {
-  
+
 } from '../../../../redux/modules/feed/comment/CommentActions';
 
 const DEBUG_KEY = '[UI Event Card] ';
@@ -114,11 +117,12 @@ class EventCard extends React.Component {
   }
 
   render() {
-    const { item } = this.props;
+    const { item, selected } = this.props;
     if (!item) return <View />;
     return (
-      <TouchableWithoutFeedback onPress={this.onCardPress}>
+      <TouchableOpacity onPress={this.onCardPress}>
         <View style={styles.containerStyle}>
+          <Check selected={selected} />;
           {this.renderEventImage(item)}
           {this.renderTimeStamp(item)}
           <View style={styles.detailContainerStyle}>
@@ -127,7 +131,7 @@ class EventCard extends React.Component {
             {this.renderEventInfo(item)}
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     );
   }
 }
@@ -162,7 +166,7 @@ const styles = {
     position: 'absolute',
     top: 0,
     right: 5,
-    padding: (CardHeight - ProfileImageWidth) / 2
+    padding: ((CardHeight - ProfileImageWidth) + 4) / 2
   },
   timeStampTextStyle: {
     color: '#28485e',

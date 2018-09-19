@@ -162,7 +162,7 @@ class SuggestionModal extends Component {
     );
   }
 
-  renderItem = (item) => (
+  renderItem = ({ item }) => (
     <PeopleCard>
       <PeopleCardDetail item={item} />
     </PeopleCard>

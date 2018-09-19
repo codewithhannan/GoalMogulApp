@@ -70,8 +70,7 @@ class ContactDetail extends Component {
   }
 
   render() {
-    console.log('item is: ', this.props.item.item);
-    const { name, headline, _id } = this.props.item.item;
+    const { name, headline, _id } = this.props.item;
     return (
       <View style={styles.containerStyle}>
         <View
