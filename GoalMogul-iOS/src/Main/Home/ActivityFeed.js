@@ -153,5 +153,53 @@ const testData = [
       }
     },
     __v: 0
+  },
+
+  // Test sharing a need
+  {
+    _id: '5b5677e2e2f7ceccddb56069',
+    created: '2018-07-24T00:50:42.632Z',
+    actor: {
+      _id: '5b172a82e64f7e001a2ade23',
+      name: 'John Doe',
+      headline: 'Your friendly boi',
+      profile: {
+        views: 0,
+        pointsEarned: 0,
+        image: 'ProfileImage/5e339201-31bf-4a00-b0e9-1c5cc1d20236'
+      }
+    },
+    action: 'Create',
+    actedWith: 'Post',
+    actedUponEntityOwnerId: '5b172a82e64f7e001a2ade23',
+    actedUponEntityType: 'Post',
+    actedUponEntityId: '5b5677e2e2f7ceccddb56068',
+    postRef: {
+      _id: '5b5677e2e2f7ceccddb56068',
+      created: '2018-07-24T00:50:42.534Z',
+      lastUpdated: '2018-07-24T00:50:42.534Z',
+      owner: {
+          _id: '5b17781ebec96d001a409960',
+          name: 'jia zeng',
+          profile: {
+              views: 0,
+              pointsEarned: 0,
+              elevatorPitch: '',
+              occupation: 'test'
+          }
+      },
+      postType: 'ShareNeed',
+      privacy: 'friends',
+      __v: 0,
+      content: {
+        text: 'This is a test need that should be shared by John Doe',
+        links: [],
+        tags: []
+      },
+      needRef: {
+
+      }
+    },
+    __v: 0
   }
 ];
