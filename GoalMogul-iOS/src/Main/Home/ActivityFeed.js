@@ -3,9 +3,7 @@ import { View, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 
 // Components
-import GoalFilterBar from '../Common/GoalFilterBar';
-import GoalCard from '../Goal/GoalCard/GoalCard';
-import NeedCard from '../Goal/NeedCard/NeedCard';
+import ActivityCard from '../Activity/ActivityCard';
 
 // actions
 import {
@@ -22,26 +20,7 @@ class ActivityFeed extends Component {
 
   renderItem = ({ item }) => {
     // TODO: render item
-    if (item.type === 'need') {
-      return (
-        <NeedCard
-          item={item}
-          onPress={(curItem) => {
-            this.props.openGoalDetail(curItem);
-          }}
-        />
-      );
-    } else if (item.type === 'goal') {
-      return (
-        <GoalCard 
-          item={item}
-          onPress={(curItem) => {
-            this.props.openGoalDetail(curItem);
-          }}
-        />
-      );
-    }
-    return <View />;
+    return <ActivityCard item={item} />
   }
 
   render() {
@@ -63,7 +42,9 @@ class ActivityFeed extends Component {
 }
 
 const mapStateToProps = state => {
-  const { data, loading } = state.home.activityfeed;
+  const { loading } = state.home.activityfeed;
+
+  const data = testData;
 
   return {
     data,
@@ -78,3 +59,99 @@ export default connect(
     refreshFeed
   }
 )(ActivityFeed);
+
+const testData = [
+  // Test creating a post
+  {
+    created: new Date(),
+    lastUpdated: new Date(),
+    owner: {
+      name: 'Jia Zeng',
+      profile: ''
+    },
+    privacy: 'Public',
+    content: {
+      text: '',
+      tags: [],
+      links: []
+    },
+    // ["General", "ShareUser", "SharePost", "ShareGoal", "ShareNeed"]
+    postType: 'General',
+    mediaRef: 'akdf;laskdf',
+    userRef: undefined,
+    postRef: undefined,
+    goalRef: undefined,
+    needRef: undefined, // pair with goal ref
+    belongsToTribe: undefined,
+    belongsToEvent: undefined,
+  },
+  // Test creating a comment
+  {
+    created: new Date(),
+    lastUpdated: new Date(),
+    owner: {
+      name: 'Jia Zeng',
+      profile: ''
+    },
+    privacy: 'Public',
+    content: {
+      text: '',
+      tags: [],
+      links: []
+    },
+    // ["General", "ShareUser", "SharePost", "ShareGoal", "ShareNeed"]
+    postType: 'General',
+    mediaRef: 'akdf;laskdf',
+    userRef: undefined,
+    postRef: undefined,
+    goalRef: undefined,
+    needRef: undefined, // pair with goal ref
+    belongsToTribe: undefined,
+    belongsToEvent: undefined,
+  },
+
+  // Test creating a post
+  {
+    _id: '5b5677e2e2f7ceccddb56069',
+    created: '2018-07-24T00:50:42.632Z',
+    actor: {
+      _id: '5b172a82e64f7e001a2ade23',
+      name: 'John Doe',
+      headline: 'Your friendly boi',
+      profile: {
+        views: 0,
+        pointsEarned: 0,
+        image: 'ProfileImage/5e339201-31bf-4a00-b0e9-1c5cc1d20236'
+      }
+    },
+    action: 'Create',
+    actedWith: 'Post',
+    actedUponEntityOwnerId: '5b172a82e64f7e001a2ade23',
+    actedUponEntityType: 'Post',
+    actedUponEntityId: '5b5677e2e2f7ceccddb56068',
+    postRef: {
+      _id: '5b5677e2e2f7ceccddb56068',
+      created: '2018-07-24T00:50:42.534Z',
+      lastUpdated: '2018-07-24T00:50:42.534Z',
+      owner: {
+          _id: '5b17781ebec96d001a409960',
+          name: 'jia zeng',
+          profile: {
+              views: 0,
+              pointsEarned: 0,
+              elevatorPitch: '',
+              occupation: 'test'
+          }
+      },
+      postType: 'General',
+      privacy: 'friends',
+      __v: 0,
+      content: {
+        text: 'test 4!',
+        links: [],
+        tags: []
+      }
+    },
+    __v: 0
+  }
+];

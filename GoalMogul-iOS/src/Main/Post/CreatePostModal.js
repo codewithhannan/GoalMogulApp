@@ -25,7 +25,6 @@ import ViewableSettingMenu from '../Goal/ViewableSettingMenu';
 
 // assets
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
-import plus from '../../asset/utils/plus.png';
 import cancel from '../../asset/utils/cancel_no_background.png';
 import camera from '../../asset/utils/camera.png';
 import cameraRoll from '../../asset/utils/cameraRoll.png';
