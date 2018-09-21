@@ -33,10 +33,10 @@ class ActivityBody extends React.Component {
   renderGoalBody(goalRef) {
     const { start, end } = goalRef;
 
-    const startDate = `${months[(start ? start.getMonth() : new Date()) - 1]} ` +
+    const startDate = `${months[(start !== undefined ? start : new Date()).getMonth() - 1]} ` +
       `${(start || new Date()).getFullYear()}`;
 
-      const endDate = `${months[(end ? end.getMonth() : new Date()) - 1]} ` +
+      const endDate = `${months[(end !== undefined ? end : new Date()).getMonth() - 1]} ` +
         `${(end || new Date()).getFullYear()}`;
 
     return (
