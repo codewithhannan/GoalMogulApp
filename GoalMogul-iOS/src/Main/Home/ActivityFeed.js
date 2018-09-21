@@ -63,56 +63,92 @@ export default connect(
 const testData = [
   // Test creating a post
   {
-    created: new Date(),
-    lastUpdated: new Date(),
-    owner: {
-      name: 'Jia Zeng',
-      profile: ''
+    // Test creating a post
+    _id: '5b5677e2e2f7cecasdddb56069',
+    created: '2018-07-24T00:50:42.632Z',
+    actor: {
+      _id: '5b172a82e64f7e001a2ade23',
+      name: 'John Doe',
+      headline: 'Your friendly boi',
+      profile: {
+        views: 0,
+        pointsEarned: 0,
+        image: 'ProfileImage/5e339201-31bf-4a00-b0e9-1c5cc1d20236'
+      }
     },
-    privacy: 'Public',
-    content: {
-      text: '',
-      tags: [],
-      links: []
+    action: 'Create',
+    actedWith: 'Post',
+    actedUponEntityOwnerId: '5b172a82e64f7e001a2ade23',
+    actedUponEntityType: 'Post',
+    actedUponEntityId: '5b5677e2e2f7ceccddb56068',
+    postRef: {
+      created: new Date(),
+      lastUpdated: new Date(),
+      owner: {
+        name: 'Jia Zeng',
+        profile: ''
+      },
+      privacy: 'Public',
+      content: {
+        text: '',
+        tags: [],
+        links: []
+      },
+      // ["General", "ShareUser", "SharePost", "ShareGoal", "ShareNeed"]
+      postType: 'General',
+      mediaRef: 'akdf;laskdf',
     },
-    // ["General", "ShareUser", "SharePost", "ShareGoal", "ShareNeed"]
-    postType: 'General',
-    mediaRef: 'akdf;laskdf',
-    userRef: undefined,
-    postRef: undefined,
-    goalRef: undefined,
-    needRef: undefined, // pair with goal ref
-    belongsToTribe: undefined,
-    belongsToEvent: undefined,
+    __v: 0
+
   },
   // Test creating a comment
   {
-    created: new Date(),
-    lastUpdated: new Date(),
-    owner: {
-      name: 'Jia Zeng',
-      profile: ''
+    _id: '0179283701928470192',
+    created: '2018-07-24T00:50:42.632Z',
+    actor: {
+      _id: '5b172a82e64f7e001a2ade23',
+      name: 'John Doe',
+      headline: 'Your friendly boi',
+      profile: {
+        views: 0,
+        pointsEarned: 0,
+        image: 'ProfileImage/5e339201-31bf-4a00-b0e9-1c5cc1d20236'
+      }
     },
-    privacy: 'Public',
-    content: {
-      text: '',
-      tags: [],
-      links: []
+    action: 'Create',
+    actedWith: 'Post',
+    actedUponEntityOwnerId: '5b172a82e64f7e001a2ade23',
+    actedUponEntityType: 'Post',
+    actedUponEntityId: '5b5677e2e2f7ceccddb56068',
+    postRef: {
+      created: new Date(),
+      lastUpdated: new Date(),
+      owner: {
+        name: 'Jia Zeng',
+        profile: ''
+      },
+      privacy: 'Public',
+      content: {
+        text: '',
+        tags: [],
+        links: []
+      },
+      // ["General", "ShareUser", "SharePost", "ShareGoal", "ShareNeed"]
+      postType: 'General',
+      mediaRef: 'akdf;laskdf',
+      userRef: undefined,
+      postRef: undefined,
+      goalRef: undefined,
+      needRef: undefined, // pair with goal ref
+      belongsToTribe: undefined,
+      belongsToEvent: undefined,
     },
-    // ["General", "ShareUser", "SharePost", "ShareGoal", "ShareNeed"]
-    postType: 'General',
-    mediaRef: 'akdf;laskdf',
-    userRef: undefined,
-    postRef: undefined,
-    goalRef: undefined,
-    needRef: undefined, // pair with goal ref
-    belongsToTribe: undefined,
-    belongsToEvent: undefined,
+    __v: 0
   },
 
   // Test creating a post
   {
-    _id: '5b5677e2e2f7ceccddb56069',
+    _id: '5b5677e2e2f7cecc1231256069',
     created: '2018-07-24T00:50:42.632Z',
     actor: {
       _id: '5b172a82e64f7e001a2ade23',
@@ -157,7 +193,7 @@ const testData = [
 
   // Test sharing a need
   {
-    _id: '5b5677e2e2f7ceccddb56069',
+    _id: '5b5677e2e2f7ceccddb56123',
     created: '2018-07-24T00:50:42.632Z',
     actor: {
       _id: '5b172a82e64f7e001a2ade23',

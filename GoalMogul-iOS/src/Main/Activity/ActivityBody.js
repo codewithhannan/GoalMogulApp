@@ -27,7 +27,7 @@ const { width } = Dimensions.get('window')
 
 class ActivityBody extends React.Component {
   state = {
-    mediaModal: 'false'
+    mediaModal: false
   }
 
   renderGoalBody(goalRef) {
@@ -63,8 +63,8 @@ class ActivityBody extends React.Component {
                 style={{
                   alignSelf: 'center',
                   justifyContent: 'center',
-                  height: width,
-                  width,
+                  height: 40,
+                  width: 50,
                   tintColor: '#fafafa'
                 }}
               />
@@ -80,7 +80,7 @@ class ActivityBody extends React.Component {
               />
             </TouchableOpacity>
           </ImageBackground>
-          {this.renderImageModal(url)}
+          {this.renderPostImageModal(url)}
         </View>
       );
   }
@@ -90,40 +90,40 @@ class ActivityBody extends React.Component {
     if (!uri) {
       return '';
     }
-      return (
-        <Modal
-          animationType="fade"
-          transparent={false}
-          visible={this.state.mediaModal}
+    return (
+      <Modal
+        animationType="fade"
+        transparent={false}
+        visible={this.state.mediaModal}
+      >
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'black'
+          }}
         >
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'black'
-            }}
+          <TouchableOpacity
+            onPress={() => { this.setState({ mediaModal: false }); }}
+            style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
           >
-            <TouchableOpacity
-              onPress={() => { this.setState({ mediaModal: false }); }}
-              style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
-            >
-              <Image
-                source={cancel}
-                style={{
-                  ...styles.cancelIconStyle,
-                  tintColor: 'white'
-                }}
-              />
-            </TouchableOpacity>
             <Image
-              source={TestImage}
-              style={{ width, height: 200 }}
-              resizeMode='cover'
+              source={cancel}
+              style={{
+                ...styles.cancelIconStyle,
+                tintColor: 'white'
+              }}
             />
-          </View>
-        </Modal>
-      );
+          </TouchableOpacity>
+          <Image
+            source={TestImage}
+            style={{ width, height: 200 }}
+            resizeMode='cover'
+          />
+        </View>
+      </Modal>
+    );
   }
 
   renderPostBody(postRef) {
@@ -133,7 +133,11 @@ class ActivityBody extends React.Component {
       return this.renderPostImage(postRef.mediaRef);
     }
 
-    return <RefPreview item={postRef} postType={postType} />;
+    return (
+      <View>
+        <RefPreview item={postRef} postType={postType} />
+      </View>
+    );
   }
 
   // Render Activity Card body
@@ -158,8 +162,8 @@ class ActivityBody extends React.Component {
     if (!item) return '';
 
     return (
-      <View style={{ marginTop: 20 }}>
-        {this.renderBody(item)}
+      <View style={{ marginTop: 10 }}>
+        {this.renderCardContent(item)}
       </View>
     );
   }
@@ -177,7 +181,7 @@ const styles = {
     justifyContent: 'flex-end'
   },
   mediaStyle: {
-    height: width,
+    height: width / 2,
     alignItems: 'center',
     justifyContent: 'center'
   },

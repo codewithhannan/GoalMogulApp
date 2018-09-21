@@ -32,8 +32,9 @@ class ActivityHeader extends Component {
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
 
+    // TODO: TAG: for the content
     const content = actedUponEntityType === 'Post'
-      ? item.content // Show content if entity type is post / share
+      ? item.content.text // Show content if entity type is post / share
       : item.title; // Show title if entity type is goal
 
     return (

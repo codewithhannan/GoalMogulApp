@@ -123,7 +123,7 @@ const switchPostType = (postType) => switchCase({
   ShareUser: 'user'
 })('ShareNeed')(postType);
 
-const style = {
+const styles = {
   boldTextStyle: {
     fontWeight: '700'
   },

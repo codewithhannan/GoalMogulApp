@@ -125,18 +125,20 @@ class ActivityCard extends Component {
     if (!item || _.isEmpty(item)) return '';
 
     return (
-      <View>
-        <ActivitySummary item={item} />
-        <View style={{ ...styles.containerStyle }}>
-          <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
-            <ActivityHeader item={item} />
-            <ActivityBody item={item} />
+      <View style={{ marginTop: 5, marginBottom: 5 }}>
+        <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
+          <ActivitySummary item={item} />
+          <View style={{ ...styles.containerStyle, marginTop: 1 }}>
+            <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
+              <ActivityHeader item={item} />
+              <ActivityBody item={item} />
+            </View>
           </View>
-        </View>
 
-        <View style={styles.containerStyle}>
-          {this.renderActionButtons(item)}
-        </View>
+          <View style={{ ...styles.containerStyle, marginTop: 1 }}>
+            {this.renderActionButtons(item)}
+          </View>
+          </View>
       </View>
     );
   }
@@ -145,12 +147,20 @@ class ActivityCard extends Component {
 const styles = {
   containerStyle: {
     backgroundColor: 'white',
+
   },
   iconStyle: {
     alignSelf: 'center',
     fontSize: 20,
     marginLeft: 5,
     marginTop: 2
+  },
+  borderShadow: {
+    shadowColor: 'lightgray',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 1,
+    shadowRadius: 3,
+    elevation: 1,
   }
 };
 
