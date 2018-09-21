@@ -31,22 +31,22 @@ class ActivitySummary extends React.Component {
       : '';
     const actorText = <Text style={{ ...boldTextStyle, ...textStyle }}>{actor.name} </Text>;
     const text = getSummaryText({
-      create: {
-        goal: (val) => `${val.action} a ${val.actedWith}`,
-        post: (val) => {
+      Create: {
+        Goal: (val) => `${val.action.toLowerCase()}d a ${val.actedWith}`,
+        Post: (val) => {
           if (!val.postRef && !val.postRef.postType) return '';
           if (val.postRef.postType === 'General') {
-            return `${val.action} a ${val.actedWith} ` +
+            return `${val.action.toLowerCase()}d a ${val.actedWith} ` +
               `${val.belongsToEvent || val.belongsToTribe ? 'in' : ''}`;
           }
-          return `Share a ${switchPostType(val.postRef.postType)}` +
+          return `shared a ${switchPostType(val.postRef.postType)}` +
             `${val.belongsToEvent || val.belongsToTribe ? 'to' : ''}`;
         },
-        comment: (val) => `${val.action} on ${val.actedUponEntityType}`,
-        like: (val) => `like a ${val.actedUponEntityType}`
+        Comment: (val) => `commented on ${val.actedUponEntityType}`,
+        Like: (val) => `liked a ${val.actedUponEntityType}`
       },
-      update: {
-        goal: () => 'completed the goal'
+      Update: {
+        Goal: () => 'completed the goal'
       }
 })({ belongsToTribe, belongsToEvent, postRef }).do(action).with(actedWith).on(actedUponEntityType);
 
@@ -63,7 +63,7 @@ class ActivitySummary extends React.Component {
         <Text
           numberOfLines={1}
           ellipsizeMode='tail'
-          style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 12 }}
+          style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 11 }}
         >
           {actorText}
           {text}
@@ -125,10 +125,10 @@ const switchPostType = (postType) => switchCase({
 
 const styles = {
   boldTextStyle: {
-    fontWeight: '700'
+    fontWeight: '800'
   },
   textStyle: {
-    fontSize: 10
+    fontSize: 11
   }
 };
 

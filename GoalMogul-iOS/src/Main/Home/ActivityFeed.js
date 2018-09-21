@@ -116,7 +116,7 @@ const testData = [
       }
     },
     action: 'Create',
-    actedWith: 'Post',
+    actedWith: 'Comment',
     actedUponEntityOwnerId: '5b172a82e64f7e001a2ade23',
     actedUponEntityType: 'Post',
     actedUponEntityId: '5b5677e2e2f7ceccddb56068',
