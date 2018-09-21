@@ -16,6 +16,7 @@ import MeetReducers from './MeetReducers';
 import Home from './Home';
 import Search from '../redux/modules/search/Search';
 import GoalDetailReducers from './GoalDetailReducers';
+import PostReducers from '../redux/modules/feed/post/PostReducers';
 import TribeReducers from '../redux/modules/tribe/TribeReducers';
 import EventReducers from '../redux/modules/event/EventReducers';
 import CommentReducers from '../redux/modules/feed/comment/CommentReducers';
@@ -53,6 +54,7 @@ const reducers = combineReducers({
   home: Home,
   search: Search,
   goalDetail: GoalDetailReducers,
+  postDetail: PostReducers,
   tribe: TribeReducers,
   event: EventReducers,
   comment: CommentReducers,
