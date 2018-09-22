@@ -93,6 +93,7 @@ class GoalDetailCard2 extends Component {
             index={props.index}
             scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
             onCommentClicked={() => this.dialogOnFocus()}
+            reportType='detail'
           />
         );
       }

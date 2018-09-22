@@ -55,6 +55,7 @@ class PostDetailCard extends Component {
         scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
         onCommentClicked={() => this.dialogOnFocus()}
         onReportPressed={() => console.log('post detail report clicked')}
+        reportType='postDetail'
       />
     );
   }
