@@ -11,6 +11,10 @@ import {
   refreshFeed
 } from '../../redux/modules/home/feed/actions';
 
+import {
+  openPostDetail
+} from '../../redux/modules/feed/post/PostActions';
+
 class ActivityFeed extends Component {
   handleOnLoadMore = () => this.props.loadMoreFeed();
 
@@ -20,7 +24,14 @@ class ActivityFeed extends Component {
 
   renderItem = ({ item }) => {
     // TODO: render item
-    return <ActivityCard item={item} />
+    return (
+      <ActivityCard
+        item={item}
+        onPress={(curItem) => {
+          this.props.openPostDetail(curItem);
+        }}
+      />
+    );
   }
 
   render() {
@@ -56,7 +67,8 @@ export default connect(
   mapStateToProps,
   {
     loadMoreFeed,
-    refreshFeed
+    refreshFeed,
+    openPostDetail
   }
 )(ActivityFeed);
 

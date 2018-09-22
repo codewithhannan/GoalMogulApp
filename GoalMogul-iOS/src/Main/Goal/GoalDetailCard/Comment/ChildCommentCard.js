@@ -74,14 +74,15 @@ class ChildCommentCard extends Component {
 
   // user basic information
   renderUserDetail() {
-    const { item } = this.props;
+    const { item, reportType } = this.props;
     const { _id } = item;
     return (
         <View style={{ marginLeft: 15, flex: 1 }}>
           <CommentHeadline
+            reportType={reportType}
             item={item}
             caretOnPress={() => {
-              this.props.createReport(_id, 'detail', 'Comment');
+              this.props.createReport(_id, reportType, 'Comment');
             }}
           />
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
