@@ -61,10 +61,10 @@ class ActivityCard extends Component {
     }
   }
 
-  handleShareOnClick = () => {
+  handleShareOnClick = (actedUponEntityType) => {
     const { item } = this.props;
     const { _id } = item;
-    const shareType = 'ShareGoal';
+    const shareType = `Share${actedUponEntityType}`;
 
     const shareToSwitchCases = switchByButtonIndex([
       [R.equals(0), () => {
@@ -127,7 +127,7 @@ class ActivityCard extends Component {
           iconSource={ShareIcon}
           count={shareCount}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
-          onPress={() => this.handleShareOnClick()}
+          onPress={() => this.handleShareOnClick(actedUponEntityType)}
         />
         <ActionButton
           iconSource={BulbIcon}

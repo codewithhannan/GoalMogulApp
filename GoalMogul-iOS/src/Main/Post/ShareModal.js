@@ -70,11 +70,8 @@ class ShareModal extends React.Component {
     placeholder,
     ...custom
   }) => {
-    const { height } = this.state;
-
     const inputStyle = {
       ...styles.inputStyle,
-      height: Math.max(30, height + 3)
     };
 
     return (
@@ -91,7 +88,7 @@ class ShareModal extends React.Component {
           onChangeText={onChange}
           style={inputStyle}
           editable={editable}
-          maxHeight={maxHeight}
+          maxHeight={150}
           multiline
           value={value}
           onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
@@ -269,7 +266,7 @@ const styles = {
   },
   inputStyle: {
     paddingTop: 6,
-    paddingBottom: 2,
+    paddingBottom: 6,
     padding: 13,
     backgroundColor: 'white',
     borderRadius: 22,
