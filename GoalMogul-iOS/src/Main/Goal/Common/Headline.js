@@ -52,8 +52,8 @@ const Headline = (props) => {
 
 // Following is a duplicated code and it should be abstracted out
 const { Popover } = renderers;
-const MenuFactory = (options, callback, triggerText, triggerContainerStyle, animationCallback) => {
-
+export const MenuFactory =
+(options, callback, triggerText, triggerContainerStyle, animationCallback) => {
   const triggerTextView = triggerText
     ? (
         <Text

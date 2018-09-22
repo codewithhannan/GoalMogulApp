@@ -33,11 +33,11 @@ class ActivityBody extends React.Component {
   renderGoalBody(goalRef) {
     const { start, end } = goalRef;
 
-    const startDate = `${months[(start !== undefined ? start : new Date()).getMonth() - 1]} ` +
-      `${(start || new Date()).getFullYear()}`;
+    const startDate = start || new Date();
 
-      const endDate = `${months[(end !== undefined ? end : new Date()).getMonth() - 1]} ` +
-        `${(end || new Date()).getFullYear()}`;
+    // const endDate = `${months[(end !== undefined ? end : new Date()).getMonth() - 1]} ` +
+    //   `${(end || new Date()).getFullYear()}`;
+    const endDate = end || new Date();
 
     return (
       <ProgressBar startTime={startDate} endTime={endDate} />

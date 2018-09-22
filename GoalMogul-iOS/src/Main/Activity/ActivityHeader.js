@@ -6,7 +6,6 @@ import {
 import { connect } from 'react-redux';
 import timeago from 'timeago.js';
 import _ from 'lodash';
-import R from 'ramda';
 
 // Actions
 import {
@@ -48,8 +47,7 @@ class ActivityHeader extends Component {
             name={owner.name || ''}
             category={category}
             caretOnPress={() => {
-              console.log('I am pressed');
-              this.props.createReport(_id, 'detail', 'User');
+              this.props.createReport(_id, 'post', `${actedUponEntityType}`);
             }}
           />
           <Timestamp time={timeago().format(timeStamp)} />

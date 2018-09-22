@@ -21,8 +21,8 @@ import {
 // Component
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import CommentBox from '../../Goal/Common/CommentBox';
-import CommentCard from '../../Goal/Comment/CommentCard';
-import Report from '../../../Main/Report/Report';
+import CommentCard from '../../Goal/GoalDetailCard/Comment/CommentCard';
+import Report from '../../Report/Report';
 
 import PostDetailSection from './PostDetailSection';
 
@@ -54,14 +54,15 @@ class PostDetailCard extends Component {
         index={props.index}
         scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
         onCommentClicked={() => this.dialogOnFocus()}
+        onReportPressed={() => console.log('post detail report clicked')}
       />
     );
   }
 
   renderPostDetailSection() {
     return (
-      <View>
-        <PostDetailSection item={this.props.goalDetail} onSuggestion={() => this.dialogOnFocus()} />
+      <View style={{ marginBottom: 1 }}>
+        <PostDetailSection item={this.props.postDetail} onSuggestion={() => this.dialogOnFocus()} />
       </View>
     );
   }
@@ -73,7 +74,7 @@ class PostDetailCard extends Component {
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={{ backgroundColor: '#e5e5e5', flex: 1 }}>
-          <Report showing={this.props.showingModalInDetail} />
+          <Report showing={this.props.showingModalInPostDetail} />
           <SearchBarHeader
             backButton
             title='Goal'
@@ -298,7 +299,7 @@ const mapStateToProps = state => {
   ];
 
   const { post } = state.postDetail;
-  const { showingModalInDetail } = state.report;
+  const { showingModalInPostDetail } = state.report;
   // const { transformedComments } = state.comment;
 
   return {
@@ -306,7 +307,7 @@ const mapStateToProps = state => {
     // stepsAndNeeds: getGoalStepsAndNeeds(state),
     comments: testTransformedComments,
     postDetail: post,
-    showingModalInDetail
+    showingModalInPostDetail
   };
 };
 

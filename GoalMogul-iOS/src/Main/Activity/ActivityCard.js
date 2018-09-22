@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   View,
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -19,6 +20,14 @@ import {
 import {
   chooseShareDest
 } from '../../redux/modules/feed/post/ShareActions';
+
+import {
+  openPostDetail
+} from '../../redux/modules/feed/post/PostActions';
+
+import {
+  openGoalDetail
+} from '../../redux/modules/home/mastermind/actions';
 
 // Assets
 import LoveIcon from '../../asset/utils/love.png';
@@ -39,6 +48,19 @@ const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to an event', 'Share to 
 const CANCEL_INDEX = 3;
 
 class ActivityCard extends Component {
+
+  handleCardOnPress = (item) => {
+    console.log('activity card on pressed');
+    const { goalRef, postRef, actedUponEntityType } = item;
+    if (actedUponEntityType === 'Post') {
+      return this.props.openPostDetail({ ...postRef });
+    }
+
+    if (actedUponEntityType === 'Goal') {
+      return this.props.openGoalDetail({ ...goalRef });
+    }
+  }
+
   handleShareOnClick = () => {
     const { item } = this.props;
     const { _id } = item;
@@ -128,13 +150,16 @@ class ActivityCard extends Component {
       <View style={{ marginTop: 5, marginBottom: 5 }}>
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <ActivitySummary item={item} />
-          <View style={{ ...styles.containerStyle, marginTop: 1 }}>
-            <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
-              <ActivityHeader item={item} />
-              <ActivityBody item={item} />
+            <View style={{ ...styles.containerStyle, marginTop: 1 }}>
+              <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
+                <TouchableOpacity
+                  onPress={() => this.handleCardOnPress(item)}
+                >
+                  <ActivityHeader item={item} />
+                </TouchableOpacity>
+                <ActivityBody item={item} />
+              </View>
             </View>
-          </View>
-
           <View style={{ ...styles.containerStyle, marginTop: 1 }}>
             {this.renderActionButtons(item)}
           </View>
@@ -170,6 +195,8 @@ export default connect(
     likeGoal,
     unLikeGoal,
     createCommentFromSuggestion,
-    chooseShareDest
+    chooseShareDest,
+    openPostDetail,
+    openGoalDetail
   }
 )(ActivityCard);

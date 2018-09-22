@@ -100,7 +100,7 @@ class GoalDetailSection extends Component {
             category={category}
             caretOnPress={() => {
               console.log('I am pressed');
-              this.props.createReport(_id, 'detail', 'User');
+              this.props.createReport(_id, 'detail', 'Goal');
             }}
           />
           <Timestamp time={timeago().format(timeStamp)} />

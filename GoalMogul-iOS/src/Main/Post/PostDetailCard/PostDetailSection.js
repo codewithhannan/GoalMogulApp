@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   View,
-  Image,
   Text
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -51,14 +50,13 @@ class PostDetailSection extends Component {
   handleShareOnClick = () => {
     const { item } = this.props;
     const { _id } = item;
-    const shareType = 'ShareGoal';
+    const shareType = 'SharePost';
 
     const shareToSwitchCases = switchByButtonIndex([
       [R.equals(0), () => {
         // User choose to share to feed
         console.log(`${DEBUG_KEY} User choose destination: Feed `);
         this.props.chooseShareDest(shareType, _id, 'feed', item);
-        // TODO: update reducer state
       }],
       [R.equals(1), () => {
         // User choose to share to an event
@@ -86,7 +84,6 @@ class PostDetailSection extends Component {
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
     // console.log('item is: ', item);
-
     return (
       <View style={{ flexDirection: 'row' }}>
         <ProfileImage
@@ -98,8 +95,8 @@ class PostDetailSection extends Component {
             name={owner.name || ''}
             category={category}
             caretOnPress={() => {
-              console.log('I am pressed');
-              this.props.createReport(_id, 'detail', 'User');
+              console.log('I am pressed on PostDetailSEction');
+              this.props.createReport(_id, 'postDetail', 'Post');
             }}
           />
           <Timestamp time={timeago().format(timeStamp)} />
@@ -148,7 +145,7 @@ class PostDetailSection extends Component {
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks like icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
-              return this.props.unLikeGoal('goal', _id, maybeLikeRef);
+              return this.props.unLikeGoal('post', _id, maybeLikeRef);
             }
             this.props.likeGoal('goal', _id);
           }}
@@ -167,13 +164,13 @@ class PostDetailSection extends Component {
             console.log(`${DEBUG_KEY}: user clicks suggestion icon.`);
             this.props.createCommentFromSuggestion({
               commentDetail: {
-                parentType: 'Goal',
+                parentType: 'Post',
                 parentRef: _id,
                 commentType: 'Suggestion',
                 replyToRef: undefined
               },
               suggestionForRef: _id,
-              suggestionFor: 'Goal'
+              suggestionFor: 'Post'
             });
             this.props.onSuggestion();
           }}

@@ -197,7 +197,7 @@ class GoalCard extends Component {
           <Headline
             name={owner.name}
             category={category}
-            caretOnPress={() => this.props.createReport(_id, 'goal', 'User')}
+            caretOnPress={() => this.props.createReport(_id, 'goal', 'Goal')}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>

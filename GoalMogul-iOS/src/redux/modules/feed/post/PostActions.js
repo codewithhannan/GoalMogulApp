@@ -19,7 +19,7 @@ export const openPostDetail = (post) => (dispatch) => {
 // close post detail
 export const closePostDetail = () => (dispatch) => {
   Actions.pop();
-  
+
   dispatch({
     type: POST_DETAIL_CLOSE,
   });
