@@ -14,10 +14,11 @@ import ProgressBar from '../Common/ProgressBar';
 class ProfileGoalCard extends React.Component {
 
   // Card central content. Progressbar for goal card
-  renderCardContent() {
+  renderCardContent(item) {
+    const { start, end } = item;
     return (
       <View style={{ marginTop: 20 }}>
-        <ProgressBar startTime='Mar 2013' endTime='Nov 2011' />
+        <ProgressBar startTime={start} endTime={end} />
       </View>
     );
   }
@@ -63,7 +64,7 @@ class ProfileGoalCard extends React.Component {
             <View style={styles.containerStyle}>
               <View style={{ marginTop: 20, marginBottom: 20, marginRight: 15, marginLeft: 15 }}>
                 {this.renderUserDetail(item)}
-                {this.renderCardContent()}
+                {this.renderCardContent(item)}
               </View>
             </View>
           </View>

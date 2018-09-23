@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 
 // Components
 import GoalFilterBar from '../Common/GoalFilterBar';
-import MyGoalCard from '../Goal/GoalCard/GoalCard';
+import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
 
 // actions
 import {
@@ -36,9 +36,9 @@ class MyPosts extends Component {
     // this.props.handleRefresh(key);
   }
 
-  renderItem = item => {
+  renderItem = ({ item }) => {
     // TODO: render item
-    return <View />
+    return <ProfilePostCard item={item} />
   }
 
   render() {

@@ -19,15 +19,16 @@ import dropDown from '../../../asset/utils/dropDown.png';
 const { width } = Dimensions.get('window');
 const Headline = (props) => {
   const { category, name, caretOnPress } = props;
-  const menu = MenuFactory(
-    [
-      'Report',
-    ],
-    () => caretOnPress(),
-    '',
-    { ...styles.caretContainer },
-    () => console.log('Report Modal is opened')
-  );
+  const menu =
+      MenuFactory(
+        [
+          'Report',
+        ],
+        () => caretOnPress(),
+        '',
+        { ...styles.caretContainer },
+        () => console.log('Report Modal is opened')
+      );
 
   // TODO: format time
   return (

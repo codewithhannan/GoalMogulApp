@@ -8,39 +8,22 @@ import {
   ImageBackground
 } from 'react-native';
 
-// Components
-import ProgressBar from '../Goal/Common/ProgressBar';
-
 // Assets
-import cancel from '../../asset/utils/cancel_no_background.png';
-import photoIcon from '../../asset/utils/photoIcon.png';
-import expand from '../../asset/utils/expand.png';
-import RefPreview from '../Common/RefPreview';
+import cancel from '../../../asset/utils/cancel_no_background.png';
+import photoIcon from '../../../asset/utils/photoIcon.png';
+import expand from '../../../asset/utils/expand.png';
+import RefPreview from '../../Common/RefPreview';
 
-import TestImage from '../../asset/TestEventImage.png';
+import TestImage from '../../../asset/TestEventImage.png';
 
 
 // Constants
-const DEBUG_KEY = '[ UI ActivityCard.ActivityBody ]';
+const DEBUG_KEY = '[ UI ProfilePostCard.ProfilePostBody ]';
 const { width } = Dimensions.get('window');
 
-class ActivityBody extends React.Component {
+class ProfilePostBody extends React.Component {
   state = {
     mediaModal: false
-  }
-
-  renderGoalBody(goalRef) {
-    const { start, end } = goalRef;
-
-    const startDate = start || new Date();
-
-    // const endDate = `${months[(end !== undefined ? end : new Date()).getMonth() - 1]} ` +
-    //   `${(end || new Date()).getFullYear()}`;
-    const endDate = end || new Date();
-
-    return (
-      <ProgressBar startTime={startDate} endTime={endDate} />
-    );
   }
 
   // Current media type is only picture
@@ -125,35 +108,18 @@ class ActivityBody extends React.Component {
     );
   }
 
-  renderPostBody(postRef) {
-    if (!postRef) return '';
-    const { postType } = postRef;
+  renderPostBody(item) {
+    if (!item) return '';
+    const { postType } = item;
     if (postType === 'General') {
-      return this.renderPostImage(postRef.mediaRef);
+      return this.renderPostImage(item.mediaRef);
     }
 
     return (
       <View>
-        <RefPreview item={postRef} postType={postType} />
+        <RefPreview item={item} postType={postType} />
       </View>
     );
-  }
-
-  // Render Activity Card body
-  renderCardContent(item) {
-    const { postRef, goalRef, actedUponEntityType } = item;
-
-    if (actedUponEntityType === 'Post') {
-      return this.renderPostBody(postRef);
-    }
-
-    if (actedUponEntityType === 'Goal') {
-      return this.renderGoalBody(goalRef);
-    }
-
-    // Incorrect acteduponEntityType
-    console.warn(`${DEBUG_KEY}: incorrect actedUponEntityType: ${actedUponEntityType}`);
-    return '';
   }
 
   render() {
@@ -162,7 +128,7 @@ class ActivityBody extends React.Component {
 
     return (
       <View style={{ marginTop: 10 }}>
-        {this.renderCardContent(item)}
+        {this.renderPostBody(item)}
       </View>
     );
   }
@@ -186,4 +152,4 @@ const styles = {
   },
 };
 
-export default ActivityBody;
+export default ProfilePostBody;
