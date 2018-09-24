@@ -14,6 +14,10 @@ import {
 } from '../actions/types';
 
 import {
+  GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS
+} from './GoalDetailReducers';
+
+import {
   USER_LOG_OUT
 } from './User';
 
@@ -290,10 +294,36 @@ export default (state = INITIAL_STATE, action) => {
       return { ...INITIAL_STATE };
     }
 
+    // Find and update the goal that current user marks as complete
+    case GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS: {
+      const newState = _.cloneDeep(state);
+      const oldGoals = newState.goals.data;
+      return _.set(
+        newState,
+        'goals.data',
+        findAndUpdate(action.payload, oldGoals, { isCompleted: true })
+      );
+    }
+
     default:
       return { ...state };
   }
 };
+
+// Find the object with id and update the object with the newValsMap
+function findAndUpdate(id, data, newValsMap) {
+  return data.map((item) => {
+    let newItem = _.cloneDeep(item);
+    if (item._id === id) {
+      Object.keys(newValsMap).forEach(key => {
+        if (newValsMap[key] !== null) {
+          newItem = _.set(newItem, `${key}`, newValsMap[key]);
+        }
+      });
+    }
+    return newItem;
+  });
+}
 
 function arrayUnique(array) {
   let a = array.concat();

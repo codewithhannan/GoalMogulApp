@@ -130,7 +130,11 @@ class GoalDetailCard2 extends Component {
   renderGoalDetailSection() {
     return (
       <View>
-        <GoalDetailSection item={this.props.goalDetail} onSuggestion={() => this.dialogOnFocus()} />
+        <GoalDetailSection
+          item={this.props.goalDetail}
+          onSuggestion={() => this.dialogOnFocus()}
+          isSelf={this.props.isSelf}
+        />
         {
           this._renderHeader({
             jumpToIndex: (i) => this._handleIndexChange(i),
@@ -433,6 +437,7 @@ const mapStateToProps = state => {
 
   const { goal } = state.goalDetail;
   const { showingModalInDetail } = state.report;
+  const { userId } = state.user;
   // const { transformedComments } = state.comment;
 
   return {
@@ -442,7 +447,9 @@ const mapStateToProps = state => {
     comments: testTransformedComments,
     goalDetail: goal,
     showingModalInDetail,
-    showSuggestionModal
+    showSuggestionModal,
+    // isSelf: userId === goal.owner._id
+    isSelf: true
   };
 };
 

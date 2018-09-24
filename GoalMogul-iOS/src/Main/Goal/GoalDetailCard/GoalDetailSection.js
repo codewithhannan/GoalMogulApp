@@ -27,11 +27,19 @@ import {
   chooseShareDest
 } from '../../../redux/modules/feed/post/ShareActions';
 
+import {
+  editGoal,
+  shareGoalToMastermind,
+  markGoalAsComplete
+} from '../../../redux/modules/goal/GoalDetailActions';
+
 // Assets
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
 import LoveIcon from '../../../asset/utils/love.png';
 import BulbIcon from '../../../asset/utils/bulb.png';
 import ShareIcon from '../../../asset/utils/forward.png';
+import EditIcon from '../../../asset/utils/edit.png';
+import CheckIcon from '../../../asset/utils/check.png';
 
 // Components
 import ProgressBar from '../Common/ProgressBar';
@@ -41,6 +49,7 @@ import Headline from '../Common/Headline';
 import Timestamp from '../Common/Timestamp';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import ProfileImage from '../../Common/ProfileImage';
+import IndividualActionButton from '../Common/IndividualActionButton';
 
 // Constants
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
@@ -127,9 +136,40 @@ class GoalDetailSection extends Component {
     );
   }
 
-  renderActionButtons() {
-    const { item } = this.props;
+  // If this goal belongs to current user, display Edit goal, Share to Mastermind, Mark complete
+  renderSelfActionButtons(goalId) {
+    return (
+      <View style={styles.selfActionButtonsContainerStyle}>
+        <IndividualActionButton
+          buttonName='Edit goal'
+          iconSource={EditIcon}
+          iconStyle={{ tintColor: '#3f3f3f' }}
+          onPress={() => this.props.editGoal()}
+        />
+        <IndividualActionButton
+          buttonName='Mastermind'
+          iconSource={ShareIcon}
+          iconStyle={{ tintColor: '#3f3f3f' }}
+          textStyle={{}}
+          onPress={() => this.props.shareGoalToMastermind()}
+        />
+        <IndividualActionButton
+          buttonName='Mark Complete'
+          iconSource={CheckIcon}
+          iconStyle={{ tintColor: '#3f3f3f', height: 13 }}
+          textStyle={{}}
+          onPress={() => this.props.markGoalAsComplete(goalId)}
+        />
+      </View>
+    );
+  }
+
+  renderActionButtons(item) {
     const { maybeLikeRef, _id } = item;
+
+    if (this.props.isSelf) {
+      return this.renderSelfActionButtons(_id);
+    }
 
     const likeCount = item.likeCount ? item.likeCount : 0;
     const commentCount = item.commentCount ? item.commentCount : 0;
@@ -213,6 +253,12 @@ const styles = {
     fontSize: 20,
     marginLeft: 5,
     marginTop: 2
+  },
+  selfActionButtonsContainerStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+    margin: 20
   }
 };
 
@@ -223,6 +269,9 @@ export default connect(
     likeGoal,
     unLikeGoal,
     createCommentFromSuggestion,
-    chooseShareDest
+    chooseShareDest,
+    editGoal,
+    shareGoalToMastermind,
+    markGoalAsComplete
   }
 )(GoalDetailSection);

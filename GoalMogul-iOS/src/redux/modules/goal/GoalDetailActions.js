@@ -1,11 +1,15 @@
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
+import {
+  Alert
+} from 'react-native';
 
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
 import {
-  GOAL_DETAIL_CLOSE
+  GOAL_DETAIL_CLOSE,
+  GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS
 } from '../../../reducers/GoalDetailReducers';
 
 const DEBUG_KEY = '[ Action GoalDetail ]';
@@ -24,3 +28,45 @@ export const closeGoalDetail = () => (dispatch) => {
     type: GOAL_DETAIL_CLOSE
   });
 };
+
+// User marks a goal as completed
+export const markGoalAsComplete = (goalId) => (dispatch, getState) => {
+  const { token } = getState().user;
+
+  API
+    .put('secure/goal', { goalId, updates: JSON.stringify({ isCompleted: true }) }, token)
+    .then((res) => {
+      dispatch({
+        type: GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
+        payload: goalId
+      });
+      console.log(`${DEBUG_KEY}: markGoalAsComplete return with message: `, res);
+    })
+    .catch((err) => {
+      console.log(`${DEBUG_KEY}: Error in markGoalAsComplete: `, err);
+    });
+};
+
+// Load states to CreateGoal modal to edit.
+export const editGoal = () => (dispatch) => {
+
+};
+
+// Show a popup to confirm if user wants to share this goal to mastermind
+export const shareGoalToMastermidn = () => (dispatch, getState) => {
+  Alert.alert(
+    'Are you sure to share this goal to mastermind?',
+    '',
+    [
+      {
+        text: 'Confirm',
+        onPress: () => console.log('user pressed confirm ')
+      },
+      {
+        text: 'Cancel',
+        onPress: () => console.log('User cancel share to mastermind'),
+        style: 'cancel'
+      }
+    ]
+  )
+}
