@@ -306,7 +306,7 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
  * Load more for profile tab
  * @params tab: one of ['goals', 'posts', 'needs']
  */
-export const handleTabOnLoadMore = (tab) => (dispatch, getState) => {
+export const handleProfileTabOnLoadMore = (tab) => (dispatch, getState) => {
   const { token } = getState().user;
   const { filter, skip, limit, hasNextPage } = _.get(getState().profile, tab);
 

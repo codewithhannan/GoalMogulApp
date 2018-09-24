@@ -8,6 +8,10 @@ import {
   ImageBackground
 } from 'react-native';
 
+import {
+  switchCase
+} from '../../../redux/middleware/utils';
+
 // Assets
 import cancel from '../../../asset/utils/cancel_no_background.png';
 import photoIcon from '../../../asset/utils/photoIcon.png';
@@ -115,9 +119,10 @@ class ProfilePostBody extends React.Component {
       return this.renderPostImage(item.mediaRef);
     }
 
+    const previewItem = switchItem(item, postType);
     return (
       <View>
-        <RefPreview item={item} postType={postType} />
+        <RefPreview item={previewItem} postType={postType} />
       </View>
     );
   }
@@ -151,5 +156,12 @@ const styles = {
     justifyContent: 'center'
   },
 };
+
+const switchItem = (item, postType) => switchCase({
+  ShareNeed: item.goalRef,
+  ShareGoal: item.goalRef,
+  SharePost: item.postRef,
+  ShareUser: item.userRef
+})('ShareGoal')(postType);
 
 export default ProfilePostBody;

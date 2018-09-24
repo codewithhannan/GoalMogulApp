@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
   FlatList,
-  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -13,7 +11,8 @@ import ProfileGoalCard from '../Goal/GoalCard/ProfileGoalCard';
 
 // actions
 import {
-  handleTabRefresh
+  handleTabRefresh,
+  handleProfileTabOnLoadMore
 } from '../../actions';
 
 // tab key
@@ -46,7 +45,7 @@ class MyGoals extends Component {
           />
         </View>
         {/*
-          onEndReached={this.onLoadMore}
+          onEndReached={() => this.props.handleProfileTabOnLoadMore(key)}
         */}
       </View>
     );
@@ -76,15 +75,12 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { contacts } = state.meet;
-  const { selectedTab, loading } = state.profile;
-  const { data, refreshing } = contacts;
+  const { selectedTab, goals } = state.profile;
+  const { data, loading } = goals;
 
   return {
     selectedTab,
-    contacts,
     data,
-    refreshing,
     loading
   };
 };
@@ -104,6 +100,7 @@ const testData = [
 export default connect(
   mapStateToProps,
   {
-    handleTabRefresh
+    handleTabRefresh,
+    handleProfileTabOnLoadMore
   }
 )(MyGoals);
