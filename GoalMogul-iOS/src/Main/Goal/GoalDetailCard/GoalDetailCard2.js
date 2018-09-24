@@ -449,7 +449,7 @@ const mapStateToProps = state => {
     showingModalInDetail,
     showSuggestionModal,
     // isSelf: userId === goal.owner._id
-    isSelf: true
+    isSelf: false
   };
 };
 

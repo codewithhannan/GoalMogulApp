@@ -154,12 +154,12 @@ const switchSearchItem = (val, type) => switchCaseFWithVal(val)({
   Friend: (item) => ({
     title: item.name,
     content: item.profile ? item.profile.about : undefined,
-    picture: item.profile ? item.propfile.picture : undefined
+    picture: item.profile ? item.profile.picture : undefined
   }),
   User: (item) => ({
     title: item.name,
     content: item.profile ? item.profile.about : undefined,
-    picture: item.profile ? item.propfile.picture : undefined
+    picture: item.profile ? item.profile.picture : undefined
   })
 })('User')(type);
 
@@ -179,11 +179,11 @@ const switchDefaultImageType = (type, item) => switchCaseFWithVal(item)({
   }),
   Friend: val => ({
     source: friendIcon,
-    imageUrl: val.profile ? val.propfile.picture : undefined
+    imageUrl: val.profile ? val.profile.picture : undefined
   }),
   User: val => ({
     source: userIcon,
-    imageUrl: val.profile ? val.propfile.picture : undefined
+    imageUrl: val.profile ? val.profile.picture : undefined
   }),
   Reading: () => ({
     source: readingIcon

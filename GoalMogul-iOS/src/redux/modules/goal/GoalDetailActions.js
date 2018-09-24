@@ -36,10 +36,12 @@ export const markGoalAsComplete = (goalId) => (dispatch, getState) => {
   API
     .put('secure/goal', { goalId, updates: JSON.stringify({ isCompleted: true }) }, token)
     .then((res) => {
-      dispatch({
-        type: GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
-        payload: goalId
-      });
+      if (!res.message) {
+        dispatch({
+          type: GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
+          payload: goalId
+        });
+      }
       console.log(`${DEBUG_KEY}: markGoalAsComplete return with message: `, res);
     })
     .catch((err) => {
@@ -53,14 +55,14 @@ export const editGoal = () => (dispatch) => {
 };
 
 // Show a popup to confirm if user wants to share this goal to mastermind
-export const shareGoalToMastermidn = () => (dispatch, getState) => {
+export const shareGoalToMastermind = () => (dispatch, getState) => {
   Alert.alert(
     'Are you sure to share this goal to mastermind?',
     '',
     [
       {
         text: 'Confirm',
-        onPress: () => console.log('user pressed confirm ')
+        onPress: () => shareToMastermind(dispatch, getState)
       },
       {
         text: 'Cancel',
@@ -68,5 +70,9 @@ export const shareGoalToMastermidn = () => (dispatch, getState) => {
         style: 'cancel'
       }
     ]
-  )
-}
+  );
+};
+
+const shareToMastermind = (dispatch, getState) => {
+  console.log('user pressed confirm ')
+};
