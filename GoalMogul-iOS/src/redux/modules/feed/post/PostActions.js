@@ -13,7 +13,7 @@ export const openPostDetail = (post) => (dispatch) => {
     payload: post
   });
 
-  Actions.post();
+  Actions.push('post');
 };
 
 // close post detail

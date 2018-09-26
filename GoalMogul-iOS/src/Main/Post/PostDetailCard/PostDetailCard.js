@@ -60,17 +60,18 @@ class PostDetailCard extends Component {
     );
   }
 
-  renderPostDetailSection() {
+  renderPostDetailSection(postDetail) {
     return (
       <View style={{ marginBottom: 1 }}>
-        <PostDetailSection item={this.props.postDetail} onSuggestion={() => this.dialogOnFocus()} />
+        <PostDetailSection item={postDetail} onSuggestion={() => this.dialogOnFocus()} />
       </View>
     );
   }
 
   render() {
-    const { comments } = this.props;
+    const { comments, postDetail } = this.props;
     const data = comments;
+
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -87,7 +88,7 @@ class PostDetailCard extends Component {
                 data={data}
                 renderItem={this.renderItem}
                 keyExtractor={this.keyExtractor}
-                ListHeaderComponent={() => this.renderPostDetailSection()}
+                ListHeaderComponent={() => this.renderPostDetailSection(postDetail)}
                 refreshing={this.props.commentLoading}
                 onRefresh={() => console.log('refreshing')}
               />
@@ -305,7 +306,6 @@ const mapStateToProps = state => {
 
   return {
     commentLoading: loading,
-    // stepsAndNeeds: getGoalStepsAndNeeds(state),
     comments: testTransformedComments,
     postDetail: post,
     showingModalInPostDetail

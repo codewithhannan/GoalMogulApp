@@ -11,7 +11,6 @@ import { connect } from 'react-redux';
 // Components
 import NeedCard from '../Goal/NeedCard/NeedCard';
 import GoalCard from '../Goal/GoalCard/GoalCard';
-import GoalDetailCard from '../Goal/GoalDetailCard/GoalDetailCard';
 import GoalFilter from './GoalFilter';
 
 // asset

@@ -13,6 +13,10 @@ import timeago from 'timeago.js';
 import _ from 'lodash';
 import R from 'ramda';
 
+import {
+  switchCase
+} from '../../../redux/middleware/utils';
+
 // Actions
 import {
   createReport
@@ -30,6 +34,18 @@ import {
 import {
   chooseShareDest
 } from '../../../redux/modules/feed/post/ShareActions';
+
+import {
+  openPostDetail
+} from '../../../redux/modules/feed/post/PostActions';
+
+import {
+  openProfile
+} from '../../../actions';
+
+import {
+  openGoalDetail
+} from '../../../redux/modules/home/mastermind/actions';
 
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
@@ -49,6 +65,7 @@ import Headline from '../../Goal/Common/Headline';
 import Timestamp from '../../Goal/Common/Timestamp';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import ProfileImage from '../../Common/ProfileImage';
+import RefPreview from '../../Common/RefPreview';
 
 // Constants
 const DEBUG_KEY = '[ UI PostDetailCard.PostDetailSection ]';
@@ -94,7 +111,8 @@ class PostDetailSection extends Component {
 
   // user basic information
   renderUserDetail(item) {
-    const { _id, created, title, owner, category } = item;
+    // TODO: TAG: for content
+    const { _id, created, content, owner, category } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
     // console.log('item is: ', item);
@@ -120,7 +138,7 @@ class PostDetailSection extends Component {
               numberOfLines={3}
               ellipsizeMode='tail'
             >
-              {title}
+              {content.text}
             </Text>
           </View>
 
@@ -212,10 +230,26 @@ class PostDetailSection extends Component {
   }
 
   // TODO: Switch to decide amoung renderImage, RefPreview and etc.
-  renderCardContent() {
+  renderCardContent(item) {
+    const { postType, mediaRef } = item;
+    if (postType === 'General') {
+      return this.renderPostImage(mediaRef);
+    }
+    const refPreview = switchItem(item, postType);
+    const onPress = switchCase({
+      SharePost: () => this.props.openPostDetail(refPreview),
+      ShareUser: () => this.props.openProfile(refPreview._id),
+      ShareGoal: () => this.props.openGoalDetail(refPreview),
+      ShareNeed: () => this.props.openGoalDetail(refPreview)
+    })('SharePost')(postType);
+
     return (
       <View style={{ marginTop: 20 }}>
-        <ProgressBar startTime='Mar 2013' endTime='Nov 2011' />
+        <RefPreview
+          item={refPreview}
+          postType={postType}
+          onPress={onPress}
+        />
       </View>
     );
   }
@@ -285,7 +319,7 @@ class PostDetailSection extends Component {
         <View style={{ ...styles.containerStyle }}>
           <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
             {this.renderUserDetail(item)}
-            {this.renderCardContent()}
+            {this.renderCardContent(item)}
           </View>
         </View>
 
@@ -296,6 +330,13 @@ class PostDetailSection extends Component {
     );
   }
 }
+
+const switchItem = (item, postType) => switchCase({
+  SharePost: item.postRef,
+  ShareUser: item.userRef,
+  ShareGoal: item.goalRef,
+  ShareNeed: item.needRef
+})('SharePost')(postType);
 
 const styles = {
   containerStyle: {
@@ -321,6 +362,9 @@ export default connect(
     likeGoal,
     unLikeGoal,
     createCommentFromSuggestion,
-    chooseShareDest
+    chooseShareDest,
+    openPostDetail,
+    openProfile,
+    openGoalDetail
   }
 )(PostDetailSection);

@@ -122,7 +122,7 @@ class ProfilePostBody extends React.Component {
     const previewItem = switchItem(item, postType);
     return (
       <View>
-        <RefPreview item={previewItem} postType={postType} />
+        <RefPreview item={previewItem} postType={postType} goalRef={item.goalRef} />
       </View>
     );
   }
