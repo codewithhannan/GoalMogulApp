@@ -191,9 +191,12 @@ class ProfilePostCard extends Component {
               <ProfilePostBody item={item} />
             </View>
           </View>
-          <View style={{ ...styles.containerStyle, marginTop: 1 }}>
-            {this.renderActionButtons(item)}
-          </View>
+          {/*  
+            Temperoraily remove action icons from ProfilePostCard. It was at line 194.
+            <View style={{ ...styles.containerStyle, marginTop: 1 }}>
+              {this.renderActionButtons(item)}
+            </View>
+            */}
           </View>
       </View>
     );

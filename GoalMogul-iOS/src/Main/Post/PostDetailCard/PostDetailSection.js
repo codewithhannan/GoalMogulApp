@@ -154,7 +154,7 @@ class PostDetailSection extends Component {
       return '';
     }
       return (
-        <View>
+        <View style={{ marginTop: 10 }}>
           <ImageBackground
             style={styles.mediaStyle}
             source={TestImage}
@@ -352,6 +352,11 @@ const styles = {
     height: width / 2,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  cancelIconStyle: {
+    height: 20,
+    width: 20,
+    justifyContent: 'flex-end'
   },
 };
 

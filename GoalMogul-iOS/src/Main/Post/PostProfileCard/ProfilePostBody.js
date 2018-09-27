@@ -146,8 +146,8 @@ const styles = {
     height: width
   },
   cancelIconStyle: {
-    height: 13,
-    width: 13,
+    height: 20,
+    width: 20,
     justifyContent: 'flex-end'
   },
   mediaStyle: {
