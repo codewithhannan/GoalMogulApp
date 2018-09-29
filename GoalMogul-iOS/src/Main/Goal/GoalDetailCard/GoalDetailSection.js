@@ -33,6 +33,8 @@ import {
   markGoalAsComplete
 } from '../../../redux/modules/goal/GoalDetailActions';
 
+import { deleteGoal } from '../../../actions';
+
 // Assets
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
 import LoveIcon from '../../../asset/utils/love.png';
@@ -107,6 +109,8 @@ class GoalDetailSection extends Component {
           <Headline
             name={owner.name || ''}
             category={category}
+            isSelf={this.props.userId === owner._id}
+            caretOnDelete={() => this.props.deleteGoal(_id)}
             caretOnPress={() => {
               console.log('I am pressed');
               this.props.createReport(_id, 'detail', 'Goal');
@@ -262,8 +266,15 @@ const styles = {
   }
 };
 
+const mapStateToProps = state => {
+  const { userId } = state.user;
+  return {
+    userId
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   {
     createReport,
     likeGoal,
@@ -272,6 +283,7 @@ export default connect(
     chooseShareDest,
     editGoal,
     shareGoalToMastermind,
-    markGoalAsComplete
+    markGoalAsComplete,
+    deleteGoal
   }
 )(GoalDetailSection);

@@ -40,7 +40,8 @@ import {
 } from '../../../redux/modules/feed/post/PostActions';
 
 import {
-  openProfile
+  openProfile,
+  deletePost
 } from '../../../actions';
 
 import {
@@ -126,6 +127,8 @@ class PostDetailSection extends Component {
           <Headline
             name={owner.name || ''}
             category={category}
+            isSelf={this.props.userId === owner._id}
+            caretOnDelete={() => this.props.deletePost(_id)}
             caretOnPress={() => {
               console.log('I am pressed on PostDetailSEction');
               this.props.createReport(_id, 'postDetail', 'Post');
@@ -360,8 +363,15 @@ const styles = {
   },
 };
 
+const mapStateToProps = state => {
+  const { userId } = state.user;
+  return {
+    userId
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   {
     createReport,
     likeGoal,
@@ -370,6 +380,7 @@ export default connect(
     chooseShareDest,
     openPostDetail,
     openProfile,
-    openGoalDetail
+    openGoalDetail,
+    deletePost
   }
 )(PostDetailSection);

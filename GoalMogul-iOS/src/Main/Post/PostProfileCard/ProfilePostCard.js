@@ -32,6 +32,8 @@ import {
 
 } from '../../../redux/modules/home/mastermind/actions';
 
+import { deletePost } from '../../../actions';
+
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
 import BulbIcon from '../../../asset/utils/bulb.png';
@@ -154,9 +156,9 @@ class ProfilePostCard extends Component {
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
             name={owner.name || ''}
-            caretOnPress={() => {
-              this.props.createReport(_id, 'profile', 'Post');
-            }}
+            isSelf={this.props.userId === owner._id}
+            caretOnDelete={() => this.props.deletePost(_id)}
+            caretOnPress={() => this.props.createReport(_id, 'profile', 'Goal')}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
@@ -191,7 +193,7 @@ class ProfilePostCard extends Component {
               <ProfilePostBody item={item} />
             </View>
           </View>
-          {/*  
+          {/*
             Temperoraily remove action icons from ProfilePostCard. It was at line 194.
             <View style={{ ...styles.containerStyle, marginTop: 1 }}>
               {this.renderActionButtons(item)}
@@ -223,13 +225,21 @@ const styles = {
   }
 };
 
+const mapStateToProps = state => {
+  const { userId } = state.user;
+  return {
+    userId
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   {
     likeGoal,
     unLikeGoal,
     createCommentFromSuggestion,
     chooseShareDest,
     openPostDetail,
+    deletePost
   }
 )(ProfilePostCard);

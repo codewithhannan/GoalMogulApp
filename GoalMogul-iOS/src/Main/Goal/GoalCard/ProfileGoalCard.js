@@ -2,16 +2,31 @@
 import React from 'react';
 import {
   View,
-  Text
+  Text,
+  TouchableOpacity
 } from 'react-native';
 import timeago from 'timeago.js';
+import { connect } from 'react-redux';
 
 // Components
 import Headline from '../Common/Headline';
 import Timestamp from '../Common/Timestamp';
 import ProgressBar from '../Common/ProgressBar';
 
+// Actions
+import {
+  openGoalDetail
+} from '../../../redux/modules/home/mastermind/actions';
+
+import {
+  deleteGoal,
+} from '../../../actions';
+
 class ProfileGoalCard extends React.Component {
+
+  handleCardOnPress(item) {
+    this.props.openGoalDetail(item);
+  }
 
   // Card central content. Progressbar for goal card
   renderCardContent(item) {
@@ -29,13 +44,14 @@ class ProfileGoalCard extends React.Component {
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
     // TODO: verify all the fields have data
-
     return (
       <View style={{ flexDirection: 'row' }}>
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
             name={owner.name}
             category={category}
+            isSelf={this.props.userId === owner._id}
+            caretOnDelete={() => this.props.deleteGoal(_id)}
             caretOnPress={() => this.props.createReport(_id, 'goal', 'Goal')}
           />
           <Timestamp time={timeago().format(timeStamp)} />
@@ -63,7 +79,9 @@ class ProfileGoalCard extends React.Component {
           <View style={{ backgroundColor: '#e5e5e5' }}>
             <View style={styles.containerStyle}>
               <View style={{ marginTop: 20, marginBottom: 20, marginRight: 15, marginLeft: 15 }}>
+                <TouchableOpacity onPress={() => this.handleCardOnPress(item)}>
                 {this.renderUserDetail(item)}
+                </TouchableOpacity>
                 {this.renderCardContent(item)}
               </View>
             </View>
@@ -93,4 +111,18 @@ const styles = {
   }
 };
 
-export default ProfileGoalCard;
+const mapStateToProps = (state) => {
+  const { userId } = state.user;
+
+  return {
+    userId
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  {
+    openGoalDetail,
+    deleteGoal
+  }
+)(ProfileGoalCard);

@@ -35,6 +35,10 @@ export const PROFILE_REFRESH_TAB = 'profile_refresh_tab';
 // Constants for updating filter bar
 export const PROFILE_UPDATE_FILTER = 'profile_update_filter';
 
+// Constants related to goals, posts and needs in user page
+export const PROFILE_GOAL_DELETE_SUCCESS = 'profile_goal_delete_success';
+export const PROFILE_POST_DELETE_SUCCESS = 'profile_post_delete_success';
+
 export const PROFILE_GOAL_FILTER_CONST = {
   sortBy: ['created', 'updated', 'shared', 'priority'],
   orderBy: {
@@ -305,10 +309,27 @@ export default (state = INITIAL_STATE, action) => {
       );
     }
 
+    // When a goal or a post is deleted by user
+    case PROFILE_GOAL_DELETE_SUCCESS: {
+      const newState = _.cloneDeep(state);
+      const oldData = newState.goals.data;
+      return _.set(newState, 'goals.data', removeItem(action.payload, oldData));
+    }
+
+    case PROFILE_POST_DELETE_SUCCESS: {
+      const newState = _.cloneDeep(state);
+      const oldData = newState.posts.data;
+      return _.set(newState, 'posts.data', removeItem(action.payload, oldData));
+    }
+
     default:
       return { ...state };
   }
 };
+
+function removeItem(id, data) {
+  return data.filter((item) => item._id !== id);
+}
 
 // Find the object with id and update the object with the newValsMap
 function findAndUpdate(id, data, newValsMap) {

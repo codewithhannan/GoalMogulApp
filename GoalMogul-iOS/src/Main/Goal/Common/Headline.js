@@ -17,10 +17,26 @@ import badge from '../../../asset/utils/badge.png';
 import dropDown from '../../../asset/utils/dropDown.png';
 
 const { width } = Dimensions.get('window');
+
+/**
+ * category:
+ * name:
+ * caretOnPress:
+ * caretOnDelete:
+ * isSelf:
+ */
 const Headline = (props) => {
-  const { category, name, caretOnPress } = props;
-  const menu =
-      MenuFactory(
+  const {
+    category,
+    name,
+    caretOnPress,
+    isSelf,
+    caretOnDelete,
+  } = props;
+
+  // If item belongs to self, then caret displays delete
+  const menu = isSelf === undefined || !isSelf
+    ? MenuFactory(
         [
           'Report',
         ],
@@ -28,14 +44,24 @@ const Headline = (props) => {
         '',
         { ...styles.caretContainer },
         () => console.log('Report Modal is opened')
+      )
+    : MenuFactory(
+        [
+          'Delete',
+        ],
+        () => caretOnDelete(),
+        '',
+        { ...styles.caretContainer },
+        () => console.log('Report Modal is opened')
       );
 
+  const categoryComponent = category ? <Category text={category} /> : '';
   // TODO: format time
   return (
     <View style={styles.containerStyle}>
       <Name text={name} />
       <Image style={styles.imageStyle} source={badge} />
-      <Category text={category} />
+      {categoryComponent}
       <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
         {menu}
       </View>
