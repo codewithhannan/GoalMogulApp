@@ -1,5 +1,4 @@
 // This reducer is for Post Detail Page
-import R from 'ramda';
 import _ from 'lodash';
 
 import {
@@ -11,9 +10,16 @@ import {
   UNLIKE_POST,
 } from '../../like/LikeReducers';
 
+const NEW_POST_INITIAL_STATE = {
+  mediaRef: undefined
+};
+
 const INITIAL_STATE = {
   post: {
 
+  },
+  newPost: {
+    ...NEW_POST_INITIAL_STATE
   }
 };
 
@@ -26,6 +32,12 @@ export const POST_DETAIL_GET_COMMENT = 'post_detail_get_comment';
 export const POST_DETAIL_CREATE_COMMENT = 'post_detail_create_comment';
 export const POST_DETAIL_UPDATE_COMMENT = 'post_detail_create_comment';
 export const POST_DETAIL_DELETE_COMMENT = 'post_detail_create_comment';
+
+// New post related constants
+export const POST_NEW_POST_UPDATE_MEDIA = 'post_new_post_update_media';
+export const POST_NEW_POST_SUBMIT = 'post_new_post_submit';
+export const POST_NEW_POST_SUBMIT_SUCCESS = 'post_new_post_submit_success';
+export const POST_NEW_POST_SUBMIT_FAIL = 'post_new_post_submit_fail';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -60,6 +72,16 @@ export default (state = INITIAL_STATE, action) => {
         newState = _.set(newState, 'post.maybeLikeRef', likeId);
       }
       return newState;
+    }
+
+    case POST_NEW_POST_UPDATE_MEDIA: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'newPost.mediaRef', action.payload);
+    }
+
+    case POST_NEW_POST_SUBMIT_SUCCESS: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'newPost', { ...NEW_POST_INITIAL_STATE });
     }
 
     default:

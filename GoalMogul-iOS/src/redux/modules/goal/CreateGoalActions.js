@@ -19,7 +19,7 @@ export const validate = values => {
 export const submitGoal = (values, userId, callback) => (dispatch, getState) => {
   const { token } = getState().user;
   const goal = goalAdapter(values, userId);
-  console.log('Transformed goal is: ', goal);
+  // console.log('Transformed goal is: ', goal);
   API
     .post(
       'secure/goal/',
