@@ -1,16 +1,23 @@
 import { Actions } from 'react-native-router-flux';
 import { reset } from 'redux-form';
+import { Alert } from 'react-native';
 
 import {
   SHARE_NEW_SHARE_TO,
   SHARE_NEW_SELECT_DEST,
   SHARE_NEW_CANCEL,
-  SHARE_NEW_POST_SUCCESS
+  SHARE_NEW_POST_SUCCESS,
+  SHARE_NEW_POST,
+  SHARE_NEW_POST_FAIL
 } from './NewShareReducers';
 
 import {
   switchCaseF
 } from '../../../middleware/utils';
+
+import { api as API } from '../../../middleware/api';
+
+const DEBUG_KEY = '[ Action Share ]';
 
 const switchPostType = (postType, ref, goalRef) => switchCaseF({
   General: {
@@ -76,9 +83,50 @@ export const cancelShare = () => (dispatch) => {
 
 // User submit the share modal form
 export const submitShare = (values) => (dispatch, getState) => {
-  // TODO: Temperary logging
-  console.log('Submitting share values are: ', values);
+  dispatch({
+    type: SHARE_NEW_POST
+  });
 
+  const { token } = getState().user;
+  const newShare = newShareAdaptor(getState().newShare, values);
+
+  console.log(`${DEBUG_KEY}: new share to create is: `, newShare);
+
+  API
+    .post(
+      'secure/feed/post',
+      {
+        post: JSON.stringify({ ...newShare })
+      },
+      token
+    )
+    .then((res) => {
+      if (!res.message && res.data) {
+        dispatch({
+          type: SHARE_NEW_POST_SUCCESS,
+          payload: res.data
+        });
+        Actions.pop();
+        return dispatch(reset('shareModal'));
+      }
+      console.warn(`${DEBUG_KEY}: creating share failed with message: `, res);
+      dispatch({
+        type: SHARE_NEW_POST_FAIL
+      });
+    })
+    .catch((err) => {
+      Alert.alert(
+        'Creating share failed',
+        'Please try again later'
+      );
+      dispatch({
+        type: SHARE_NEW_POST_FAIL
+      });
+      console.warn(`${DEBUG_KEY}: creating share failed with exception: `, err);
+    });
+};
+
+const newShareAdaptor = (newShare, formVales) => {
   const {
     owner,
     postType,
@@ -88,14 +136,27 @@ export const submitShare = (values) => (dispatch, getState) => {
     needRef,
     belongsToTribe,
     belongsToEvent
-  } = getState().newShare;
+  } = newShare;
 
   const {
     privacy, // needs to uncapitalize the first character and map Private to self
     content
-  } = values;
-  // If succeed, close modal and reset form
-  // Actions.pop(); dispatch(reset('shareModal'))
+  } = formVales;
+
+  const transformedPrivacy = privacy === 'Private' ? 'self' : privacy.toLowerCase();
+
+  return {
+    owner,
+    postType,
+    userRef,
+    postRef,
+    goalRef,
+    needRef,
+    belongsToTribe,
+    belongsToEvent,
+    content,
+    privacy: transformedPrivacy
+  };
 };
 
 export const selectEvent = (event) => (dispatch) => {

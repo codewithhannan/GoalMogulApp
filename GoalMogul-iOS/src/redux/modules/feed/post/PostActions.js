@@ -6,7 +6,8 @@ import {
   POST_DETAIL_OPEN,
   POST_DETAIL_CLOSE,
   POST_NEW_POST_UPDATE_MEDIA,
-  POST_NEW_POST_SUBMIT_SUCCESS
+  POST_NEW_POST_SUBMIT_SUCCESS,
+  POST_NEW_POST_SUBMIT_FAIL
 } from './PostReducers';
 
 import { api as API } from '../../../middleware/api';
@@ -95,6 +96,9 @@ export const submitCreatingPost = (values) => (dispatch, getState) => {
             'Create post failed',
             'Please try again later.'
           );
+          dispatch({
+            type: POST_NEW_POST_SUBMIT_FAIL
+          });
         });
     }
 
@@ -110,10 +114,15 @@ export const submitCreatingPost = (values) => (dispatch, getState) => {
  * @param dispatch: function to update store
  */
 const sendCreatePostRequest = (newPost, token, dispatch, onError) => {
-  const handleError = onError || (() => Alert.alert(
+  const handleError = onError || (() => {
+    Alert.alert(
       'Create post failed',
       'Please try again later.'
-    ));
+    );
+    dispatch({
+      type: POST_NEW_POST_SUBMIT_FAIL
+    });
+  });
   API
     .post(
       'secure/feed/post',
@@ -147,7 +156,7 @@ const newPostAdaptor = (values, userId) => {
 
   return {
     owner: userId,
-    privacy: viewableSetting.toLowerCase(),
+    privacy: viewableSetting === 'Private' ? 'self' : viewableSetting.toLowerCase(),
     content: {
       text: values.post,
       tags: [],

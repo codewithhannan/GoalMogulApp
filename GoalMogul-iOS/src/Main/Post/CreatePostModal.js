@@ -390,7 +390,8 @@ const mapStateToProps = state => {
     profile,
     viewableSetting: selector(state, 'viewableSetting'),
     mediaRef: selector(state, 'mediaRef'),
-    formVals: state.form.createPostModal
+    formVals: state.form.createPostModal,
+    uploading: state.postDetail.newPost.uploading
   };
 };
 

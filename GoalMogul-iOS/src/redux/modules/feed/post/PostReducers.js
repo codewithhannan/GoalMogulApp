@@ -11,7 +11,8 @@ import {
 } from '../../like/LikeReducers';
 
 const NEW_POST_INITIAL_STATE = {
-  mediaRef: undefined
+  mediaRef: undefined,
+  uploading: false
 };
 
 const INITIAL_STATE = {
@@ -77,6 +78,16 @@ export default (state = INITIAL_STATE, action) => {
     case POST_NEW_POST_UPDATE_MEDIA: {
       const newState = _.cloneDeep(state);
       return _.set(newState, 'newPost.mediaRef', action.payload);
+    }
+
+    case POST_NEW_POST_SUBMIT: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'newPost.uploading', true);
+    }
+
+    case POST_NEW_POST_SUBMIT_FAIL: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'newPost.uploading', false);
     }
 
     case POST_NEW_POST_SUBMIT_SUCCESS: {
