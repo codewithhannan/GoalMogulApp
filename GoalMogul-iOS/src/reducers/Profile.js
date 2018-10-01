@@ -14,7 +14,8 @@ import {
 } from '../actions/types';
 
 import {
-  GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS
+  GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
+  GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS
 } from './GoalDetailReducers';
 
 import {
@@ -306,6 +307,17 @@ export default (state = INITIAL_STATE, action) => {
         newState,
         'goals.data',
         findAndUpdate(action.payload, oldGoals, { isCompleted: true })
+      );
+    }
+
+    // Find and upate the goal that current user shared to mastermind
+    case GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS: {
+      const newState = _.cloneDeep(state);
+      const oldGoals = newState.goals.data;
+      return _.set(
+        newState,
+        'goals.data',
+        findAndUpdate(action.payload, oldGoals, { shareToGoalFeed: true })
       );
     }
 

@@ -23,6 +23,7 @@ export const GOAL_DETAIL_FETCH_DONE = 'goal_detail_fetch_done';
 export const GOAL_DETAIL_OPEN = 'goal_detail_open';
 export const GOAL_DETAIL_CLOSE = 'goal_detail_close';
 export const GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS = 'goal_detail_mark_as_complete_success';
+export const GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS = 'goal_detail_share_to_mastermind_success';
 // Comment related constants
 export const GOAL_DETAIL_GET_COMMENT = 'goal_detail_get_comment';
 export const GOAL_DETAIL_CREATE_COMMENT = 'goal_detail_create_comment';
@@ -73,6 +74,11 @@ export default (state = INITIAL_STATE, action) => {
     case GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS: {
       const newState = _.cloneDeep(state);
       return _.set(newState, 'goal.isCompleted', true);
+    }
+
+    case GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'goal.shareToGoalFeed', true);
     }
 
     default:

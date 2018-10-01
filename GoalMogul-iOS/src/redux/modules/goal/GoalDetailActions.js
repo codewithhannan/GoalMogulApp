@@ -9,7 +9,8 @@ import { queryBuilder } from '../../middleware/utils';
 
 import {
   GOAL_DETAIL_CLOSE,
-  GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS
+  GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
+  GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS
 } from '../../../reducers/GoalDetailReducers';
 
 const DEBUG_KEY = '[ Action GoalDetail ]';
@@ -33,20 +34,21 @@ export const closeGoalDetail = () => (dispatch) => {
 export const markGoalAsComplete = (goalId) => (dispatch, getState) => {
   const { token } = getState().user;
 
-  API
-    .put('secure/goal', { goalId, updates: JSON.stringify({ isCompleted: true }) }, token)
-    .then((res) => {
-      if (!res.message) {
-        dispatch({
-          type: GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
-          payload: goalId
-        });
-      }
-      console.log(`${DEBUG_KEY}: markGoalAsComplete return with message: `, res);
-    })
-    .catch((err) => {
-      console.log(`${DEBUG_KEY}: Error in markGoalAsComplete: `, err);
+  const onSuccess = () => {
+    dispatch({
+      type: GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
+      payload: goalId
     });
+  };
+
+  const onError = () => {
+    Alert.alert(
+      'Mark goal as complete failed',
+      'Please try again later'
+    );
+  };
+
+  updateGoalWithFields(goalId, { isCompleted: true }, token, onSuccess, onError);
 };
 
 // Load states to CreateGoal modal to edit.
@@ -55,14 +57,14 @@ export const editGoal = () => (dispatch) => {
 };
 
 // Show a popup to confirm if user wants to share this goal to mastermind
-export const shareGoalToMastermind = () => (dispatch, getState) => {
+export const shareGoalToMastermind = (goalId) => (dispatch, getState) => {
   Alert.alert(
     'Are you sure to share this goal to mastermind?',
     '',
     [
       {
         text: 'Confirm',
-        onPress: () => shareToMastermind(dispatch, getState)
+        onPress: () => shareToMastermind(goalId, dispatch, getState)
       },
       {
         text: 'Cancel',
@@ -73,6 +75,52 @@ export const shareGoalToMastermind = () => (dispatch, getState) => {
   );
 };
 
-const shareToMastermind = (dispatch, getState) => {
-  console.log('user pressed confirm ')
+const shareToMastermind = (goalId, dispatch, getState) => {
+  console.log('user pressed confirm ');
+  const { token } = getState().user;
+
+  const onSuccess = (data) => {
+    dispatch({
+      type: GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS,
+      payload: goalId
+    });
+  };
+
+  const onError = (err) => {
+    Alert.alert(
+      'Share to mastermind failed',
+      'Please try again later'
+    );
+    console.warn(`${DEBUG_KEY}: share to mastermind failed with error: `, err);
+  };
+  updateGoalWithFields(goalId, { shareToGoalFeed: true }, token, onSuccess, onError);
+};
+
+/**
+ * This is a API to send updates for a goal
+ * @param fields: fields for the goal that needs updates
+ * @param goalId: the goal that is updated
+ * @param token: current user token
+ * @param dispatch
+ */
+const updateGoalWithFields = (goalId, fields, token, onSuccessFunc, onErrorFunc) => {
+  const onError = onErrorFunc ||
+    ((err) => console.log(`${DEBUG_KEY}: updating fields with Error: `, err));
+  const onSuccess = onSuccessFunc ||
+    ((message) => console.log(`${DEBUG_KEY}: updating fields succeed with message: `, message));
+  API
+    .put('secure/goal', { goalId, updates: JSON.stringify({ ...fields }) }, token)
+    .then((res) => {
+      if (!res.message) {
+        return onSuccess(res.data);
+      }
+      console.log(`${DEBUG_KEY}: updating fields ${fields} with with message: `, res);
+      onError(res);
+    })
+    .catch((err) => {
+      console.log(`${DEBUG_KEY}: updating fields ${fields} with err: `, err);
+      if (onError && onError instanceof Function) {
+        onError(err);
+      }
+    });
 };
