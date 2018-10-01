@@ -66,7 +66,7 @@ class SectionCard extends Component {
   };
 
   renderActionIcons() {
-    const suggestionButton = this.props.self 
+    const suggestionButton = this.props.self
       ? ''
       : (
         <TouchableOpacity
@@ -79,8 +79,6 @@ class SectionCard extends Component {
     const flexSize = this.props.isSelf ? 4 : 9;
 
     return (
-
-
       <View style={{ flex: flexSize, flexDirection: 'row' }}>
         {suggestionButton}
         <TouchableOpacity

@@ -90,14 +90,14 @@ export default (state = INITIAL_STATE, action) => {
       const { isCompleted, id } = action.payload;
       const newState = _.cloneDeep(state);
       const oldSteps = newState.goal.steps;
-      return _.set(newState, 'steps', findAndUpdate(id, oldSteps, { isCompleted }));
+      return _.set(newState, 'goal.steps', findAndUpdate(id, oldSteps, { isCompleted }));
     }
 
     case GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS: {
       const { isCompleted, id } = action.payload;
       const newState = _.cloneDeep(state);
       const oldNeeds = newState.goal.needs;
-      return _.set(newState, 'needs', findAndUpdate(id, oldNeeds, { isCompleted }));
+      return _.set(newState, 'goal.needs', findAndUpdate(id, oldNeeds, { isCompleted }));
     }
 
     default:

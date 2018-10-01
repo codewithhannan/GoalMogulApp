@@ -15,7 +15,9 @@ import {
 
 import {
   GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
-  GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS
+  GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS,
+  GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS,
+  GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS
 } from './GoalDetailReducers';
 
 import {
@@ -334,6 +336,42 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, 'posts.data', removeItem(action.payload, oldData));
     }
 
+    // Update the status of a step within a goal
+    case GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS: {
+      const { goalId, id, isCompleted } = action.payload;
+      const newState = _.cloneDeep(state);
+      const oldDate = newState.goals.data;
+      return _.set(
+        newState,
+        'goals.data',
+        updateNeedsOrSteps(
+          goalId,
+          id,
+          { isCompleted },
+          oldDate,
+          'steps'
+        )
+      );
+    }
+
+    // Update the status of a need within a goal
+    case GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS: {
+      const { goalId, id, isCompleted } = action.payload;
+      const newState = _.cloneDeep(state);
+      const oldDate = newState.goals.data;
+      return _.set(
+        newState,
+        'goals.data',
+        updateNeedsOrSteps(
+          goalId,
+          id,
+          { isCompleted },
+          oldDate,
+          'needs'
+        )
+      );
+    }
+
     default:
       return { ...state };
   }
@@ -353,6 +391,18 @@ function findAndUpdate(id, data, newValsMap) {
           newItem = _.set(newItem, `${key}`, newValsMap[key]);
         }
       });
+    }
+    return newItem;
+  });
+}
+
+// Find the corresponding goal to update needs and steps
+function updateNeedsOrSteps(goalId, id, fields, data, type) {
+  return data.map((item) => {
+    let newItem = _.cloneDeep(item);
+    if (item._id === goalId) {
+      const oldList = _.get(newItem, `${type}`);
+      newItem = _.set(newItem, `${type}`, findAndUpdate(id, oldList, { ...fields }));
     }
     return newItem;
   });

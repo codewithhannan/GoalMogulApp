@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   View,
-  Image,
   Text
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -141,7 +140,12 @@ class GoalDetailSection extends Component {
   }
 
   // If this goal belongs to current user, display Edit goal, Share to Mastermind, Mark complete
-  renderSelfActionButtons(goalId) {
+  renderSelfActionButtons(item) {
+    const { _id, isCompleted } = item;
+    const containerStyle = isCompleted
+      ? { backgroundColor: '#eafcee' }
+      : {};
+
     return (
       <View style={styles.selfActionButtonsContainerStyle}>
         <IndividualActionButton
@@ -162,7 +166,8 @@ class GoalDetailSection extends Component {
           iconSource={CheckIcon}
           iconStyle={{ tintColor: '#3f3f3f', height: 13 }}
           textStyle={{}}
-          onPress={() => this.props.markGoalAsComplete(goalId)}
+          constainerStyle={containerStyle}
+          onPress={() => this.props.markGoalAsComplete(_id)}
         />
       </View>
     );
@@ -172,7 +177,7 @@ class GoalDetailSection extends Component {
     const { maybeLikeRef, _id } = item;
 
     if (this.props.isSelf) {
-      return this.renderSelfActionButtons(_id);
+      return this.renderSelfActionButtons(item);
     }
 
     const likeCount = item.likeCount ? item.likeCount : 0;

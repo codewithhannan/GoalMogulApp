@@ -53,7 +53,8 @@ export const markStepAsComplete = (stepId) => (dispatch, getState) => {
       type: GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS,
       payload: {
         id: stepId,
-        isCompleted
+        isCompleted,
+        goalId: _id
       }
     });
   };
@@ -89,7 +90,8 @@ export const markNeedAsComplete = (needId) => (dispatch, getState) => {
       type: GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS,
       payload: {
         id: needId,
-        isCompleted
+        isCompleted,
+        goalId: _id
       }
     });
   };
@@ -197,7 +199,7 @@ const updateGoalWithFields = (goalId, fields, token, onSuccessFunc, onErrorFunc)
         return onSuccess(res.data);
       }
       console.log(`${DEBUG_KEY}: updating fields ${fields} with with message: `, res);
-      onSuccess(res);
+      onError(res.message);
     })
     .catch((err) => {
       console.log(`${DEBUG_KEY}: updating fields ${fields} with err: `, err);
