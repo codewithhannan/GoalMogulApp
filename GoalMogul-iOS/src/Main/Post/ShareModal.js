@@ -46,14 +46,13 @@ class ShareModal extends React.Component {
   }
 
   initializeForm() {
-    // const values = [{}];
-
     this.props.initialize({
-      // steps: [...values],
-      // needs: [...values],
-      // media: undefined
       privacy: 'Friends'
     });
+  }
+
+  handleCreate = (values) => {
+    this.props.submitShare(this.props.formVals.values);
   }
 
   updateSize = (height) => {
@@ -70,11 +69,8 @@ class ShareModal extends React.Component {
     placeholder,
     ...custom
   }) => {
-    const { height } = this.state;
-
     const inputStyle = {
       ...styles.inputStyle,
-      height: Math.max(30, height + 3)
     };
 
     return (
@@ -91,14 +87,14 @@ class ShareModal extends React.Component {
           onChangeText={onChange}
           style={inputStyle}
           editable={editable}
-          maxHeight={maxHeight}
+          maxHeight={150}
           multiline
           value={value}
-          onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
         />
       </SafeAreaView>
     );
   }
+  // onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
 
   // Render user info
   renderUserInfo(user) {
@@ -186,7 +182,7 @@ class ShareModal extends React.Component {
           title={modalTitle}
           actionText='Submit'
           onCancel={() => this.props.cancelShare()}
-          onAction={handleSubmit(this.props.submitShare)}
+          onAction={handleSubmit(this.handleCreate)}
         />
         <ScrollView style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}>
           <View style={{ flex: 1, padding: 20 }}>
@@ -212,7 +208,9 @@ const mapStateToProps = state => {
     shareTo: getShareTo(state),
     privacy: selector(state, 'privacy'),
     itemToShare,
-    postType
+    postType,
+    formVals: state.form.shareModal,
+    uploading: state.newShare.uploading
   };
 };
 
@@ -269,7 +267,7 @@ const styles = {
   },
   inputStyle: {
     paddingTop: 6,
-    paddingBottom: 2,
+    paddingBottom: 6,
     padding: 13,
     backgroundColor: 'white',
     borderRadius: 22,

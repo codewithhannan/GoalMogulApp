@@ -25,7 +25,6 @@ import ViewableSettingMenu from '../Goal/ViewableSettingMenu';
 
 // assets
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
-import plus from '../../asset/utils/plus.png';
 import cancel from '../../asset/utils/cancel_no_background.png';
 import camera from '../../asset/utils/camera.png';
 import cameraRoll from '../../asset/utils/cameraRoll.png';
@@ -35,9 +34,10 @@ import expand from '../../asset/utils/expand.png';
 
 // Actions
 import { openCameraRoll, openCamera } from '../../actions';
+import {
+  submitCreatingPost
+} from '../../redux/modules/feed/post/PostActions';
 
-const STEP_PLACE_HOLDER = 'Add an important step to achieving your goal...';
-const NEED_PLACE_HOLDER = 'Something you\'re specifically looking for help with';
 const { width } = Dimensions.get('window');
 
 class CreatePostModal extends Component {
@@ -53,28 +53,39 @@ class CreatePostModal extends Component {
   }
 
   initializeForm() {
-    const values = [{}];
-
     this.props.initialize({
-      steps: [...values],
-      needs: [...values],
       viewableSetting: 'Friends',
-      media: undefined
+      mediaRef: undefined,
+      post: ''
     });
   }
 
   handleOpenCamera = () => {
     this.props.openCamera((result) => {
-      this.props.change('media', result.uri);
+      this.props.change('mediaRef', result.uri);
     });
   }
 
   handleOpenCameraRoll = () => {
-    this.props.openCameraRoll((result) => {
-      this.props.change('media', result.uri);
+    const callback = R.curry((result) => {
+      this.props.change('mediaRef', result.uri);
     });
+    this.props.openCameraRoll(callback);
   }
 
+  /**
+   * This is a hacky solution due to the fact that redux-form
+   * handleSubmit values differ from the values actually stored.
+   * NOTE:
+   * Verify by comparing
+   * console.log('handleSubmit passed in values are: ', values);
+   * console.log('form state values: ', this.props.formVals);
+   *
+   * Synchronize validate form values, contains simple check
+   */
+  handleCreate = (values) => {
+    return this.props.submitCreatingPost(this.props.formVals.values);
+  }
   // renderInput = ({
   //   input: { onChange, onFocus, value, ...restInput },
   //   multiline,
@@ -124,7 +135,7 @@ class CreatePostModal extends Component {
   renderUserInfo() {
     let imageUrl = this.props.user.profile.image;
     let profileImage = (
-      <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />
+      <Image style={styles.imageStyle} resizeMode='cover' source={defaultUserProfile} />
     );
     if (imageUrl) {
       imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
@@ -152,11 +163,11 @@ class CreatePostModal extends Component {
 
   // Current media type is only picture
   renderMedia() {
-    if (this.props.media) {
+    if (this.props.mediaRef) {
       return (
         <ImageBackground
           style={styles.mediaStyle}
-          source={{ uri: this.props.media }}
+          source={{ uri: this.props.mediaRef }}
           imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'stretch' }}
         >
           <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
@@ -183,7 +194,7 @@ class CreatePostModal extends Component {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => this.props.change('media', false)}
+            onPress={() => this.props.change('mediaRef', false)}
             style={{ position: 'absolute', top: 10, left: 15 }}
           >
             <Image
@@ -198,7 +209,7 @@ class CreatePostModal extends Component {
   }
 
   renderImageModal() {
-    if (this.props.media) {
+    if (this.props.mediaRef) {
       return (
         <Modal
           animationType="fade"
@@ -226,7 +237,7 @@ class CreatePostModal extends Component {
               />
             </TouchableOpacity>
             <Image
-              source={{ uri: this.props.media }}
+              source={{ uri: this.props.mediaRef }}
               style={{ width, height: 200 }}
               resizeMode='cover'
             />
@@ -238,13 +249,13 @@ class CreatePostModal extends Component {
   }
 
   renderPost() {
-    const titleText = <Text style={styles.titleTextStyle}>Your Goal</Text>;
+    const titleText = <Text style={styles.titleTextStyle}>Your thoughts</Text>;
     return (
       <View style={{ marginTop: 15 }}>
         {titleText}
         <Field
-          name='goal'
-          label='goal'
+          name='post'
+          label='post'
           component={InputField}
           editable={this.props.uploading}
           numberOfLines={4}
@@ -284,6 +295,7 @@ class CreatePostModal extends Component {
           title='New Goal'
           actionText='Create'
           onCancel={() => Actions.pop()}
+          onAction={handleSubmit(this.handleCreate)}
         />
         <ScrollView style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}>
           <View style={{ flex: 1, padding: 20 }}>
@@ -338,8 +350,8 @@ const styles = {
     paddingLeft: 20
   },
   cancelIconStyle: {
-    height: 13,
-    width: 13,
+    height: 20,
+    width: 20,
     justifyContent: 'flex-end'
   },
   mediaStyle: {
@@ -364,12 +376,12 @@ const styles = {
 };
 
 CreatePostModal = reduxForm({
-  form: 'createPoalModal',
+  form: 'createPostModal',
   enableReinitialize: true
 })(CreatePostModal);
 
 const mapStateToProps = state => {
-  const selector = formValueSelector('createPoalModal');
+  const selector = formValueSelector('createPostModal');
   const { user } = state.user;
   const { profile } = user;
 
@@ -377,7 +389,9 @@ const mapStateToProps = state => {
     user,
     profile,
     viewableSetting: selector(state, 'viewableSetting'),
-    media: selector(state, 'media'),
+    mediaRef: selector(state, 'mediaRef'),
+    formVals: state.form.createPostModal,
+    uploading: state.postDetail.newPost.uploading
   };
 };
 
@@ -385,6 +399,7 @@ export default connect(
   mapStateToProps,
   {
     openCameraRoll,
-    openCamera
+    openCamera,
+    submitCreatingPost
   }
 )(CreatePostModal);

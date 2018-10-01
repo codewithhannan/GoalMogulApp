@@ -21,6 +21,11 @@ import {
   chooseShareDest
 } from '../../../redux/modules/feed/post/ShareActions';
 
+import {
+  markStepAsComplete,
+  markNeedAsComplete
+} from '../../../redux/modules/goal/GoalDetailActions';
+
 // Constants
 const DEBUG_KEY = '[ UI GoalCard.Need/Step SectionCard ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to an event', 'Share to a tribe', 'Cancel'];
@@ -60,6 +65,67 @@ class SectionCard extends Component {
     return shareToActionSheet();
   };
 
+  renderActionIcons() {
+    const suggestionButton = this.props.self
+      ? ''
+      : (
+        <TouchableOpacity
+          style={styles.iconContainerStyle}
+          onPress={() => this.props.onPress()}
+        >
+          <Image style={styles.iconStyle} source={bulb} />
+        </TouchableOpacity>
+      );
+    const flexSize = this.props.isSelf ? 4 : 9;
+
+    return (
+      <View style={{ flex: flexSize, flexDirection: 'row' }}>
+        {suggestionButton}
+        <TouchableOpacity
+          style={styles.iconContainerStyle}
+          onPress={() => this.handleShareOnClick()}
+        >
+          <Image style={styles.iconStyle} source={forward} />
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  // If owner is self, user can click to mark a step / need as complete
+  renderSelfCheckBox(isCompleted) {
+    const { type, item } = this.props;
+    const { _id } = item;
+    const onPress = type === 'need'
+      ? () => this.props.markNeedAsComplete(_id)
+      : () => this.props.markStepAsComplete(_id);
+
+    const iconContainerStyle = isCompleted
+      ? { ...styles.checkIconContainerStyle }
+      : { ...styles.checkIconContainerStyle, backgroundColor: '#efefef' };
+
+    return (
+      <TouchableOpacity
+        style={iconContainerStyle}
+        onPress={onPress}
+      >
+        <Image style={styles.checkIconStyle} source={checkIcon} />
+      </TouchableOpacity>
+    );
+  }
+
+  renderCheckBox(isCompleted) {
+    if (this.props.isSelf) {
+      return this.renderSelfCheckBox(isCompleted);
+    }
+
+    if (!isCompleted) return '';
+    return (
+      <View style={styles.checkIconContainerStyle}>
+        <Image source={checkIcon} style={styles.checkIconStyle} />
+      </View>
+    );
+  }
+
   render() {
     // console.log('item for props is: ', this.props.item);
     const item = this.props.item
@@ -67,12 +133,6 @@ class SectionCard extends Component {
       : { description: 'No content', isCompleted: false };
     const { description, isCompleted } = item;
     const sectionText = description === undefined ? 'No content' : description;
-
-    const check = isCompleted ? (
-      <View style={styles.checkIconContainerStyle}>
-        <Image source={checkIcon} style={styles.checkIconStyle} />
-      </View>
-    ) : '';
 
     return (
       <View style={styles.sectionContainerStyle}>
@@ -86,7 +146,7 @@ class SectionCard extends Component {
             justifyContent: 'center'
           }}
         >
-          {check}
+          {this.renderCheckBox(isCompleted)}
           <View style={styles.textContainerStyle}>
             <Text
               style={styles.sectionTextStyle}
@@ -96,21 +156,7 @@ class SectionCard extends Component {
               {sectionText}
             </Text>
           </View>
-          <View style={{ flex: 9, flexDirection: 'row' }}>
-            <TouchableOpacity
-              style={styles.iconContainerStyle}
-              onPress={() => this.props.onPress()}
-            >
-              <Image style={styles.iconStyle} source={bulb} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.iconContainerStyle}
-              onPress={() => this.handleShareOnClick()}
-            >
-              <Image style={styles.iconStyle} source={forward} />
-            </TouchableOpacity>
-          </View>
+          {this.renderActionIcons()}
         </View>
       </View>
     );
@@ -170,6 +216,8 @@ const styles = {
 export default connect(
   null,
   {
-    chooseShareDest
+    chooseShareDest,
+    markStepAsComplete,
+    markNeedAsComplete
   }
 )(SectionCard);

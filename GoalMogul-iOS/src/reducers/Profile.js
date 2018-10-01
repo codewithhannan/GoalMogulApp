@@ -14,6 +14,13 @@ import {
 } from '../actions/types';
 
 import {
+  GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
+  GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS,
+  GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS,
+  GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS
+} from './GoalDetailReducers';
+
+import {
   USER_LOG_OUT
 } from './User';
 
@@ -30,6 +37,10 @@ export const PROFILE_REFRESH_TAB_DONE = 'profile_refresh_tab_done';
 export const PROFILE_REFRESH_TAB = 'profile_refresh_tab';
 // Constants for updating filter bar
 export const PROFILE_UPDATE_FILTER = 'profile_update_filter';
+
+// Constants related to goals, posts and needs in user page
+export const PROFILE_GOAL_DELETE_SUCCESS = 'profile_goal_delete_success';
+export const PROFILE_POST_DELETE_SUCCESS = 'profile_post_delete_success';
 
 export const PROFILE_GOAL_FILTER_CONST = {
   sortBy: ['created', 'updated', 'shared', 'priority'],
@@ -290,10 +301,112 @@ export default (state = INITIAL_STATE, action) => {
       return { ...INITIAL_STATE };
     }
 
+    // Find and update the goal that current user marks as complete
+    case GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS: {
+      const newState = _.cloneDeep(state);
+      const oldGoals = newState.goals.data;
+      return _.set(
+        newState,
+        'goals.data',
+        findAndUpdate(action.payload, oldGoals, { isCompleted: true })
+      );
+    }
+
+    // Find and upate the goal that current user shared to mastermind
+    case GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS: {
+      const newState = _.cloneDeep(state);
+      const oldGoals = newState.goals.data;
+      return _.set(
+        newState,
+        'goals.data',
+        findAndUpdate(action.payload, oldGoals, { shareToGoalFeed: true })
+      );
+    }
+
+    // When a goal or a post is deleted by user
+    case PROFILE_GOAL_DELETE_SUCCESS: {
+      const newState = _.cloneDeep(state);
+      const oldData = newState.goals.data;
+      return _.set(newState, 'goals.data', removeItem(action.payload, oldData));
+    }
+
+    case PROFILE_POST_DELETE_SUCCESS: {
+      const newState = _.cloneDeep(state);
+      const oldData = newState.posts.data;
+      return _.set(newState, 'posts.data', removeItem(action.payload, oldData));
+    }
+
+    // Update the status of a step within a goal
+    case GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS: {
+      const { goalId, id, isCompleted } = action.payload;
+      const newState = _.cloneDeep(state);
+      const oldDate = newState.goals.data;
+      return _.set(
+        newState,
+        'goals.data',
+        updateNeedsOrSteps(
+          goalId,
+          id,
+          { isCompleted },
+          oldDate,
+          'steps'
+        )
+      );
+    }
+
+    // Update the status of a need within a goal
+    case GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS: {
+      const { goalId, id, isCompleted } = action.payload;
+      const newState = _.cloneDeep(state);
+      const oldDate = newState.goals.data;
+      return _.set(
+        newState,
+        'goals.data',
+        updateNeedsOrSteps(
+          goalId,
+          id,
+          { isCompleted },
+          oldDate,
+          'needs'
+        )
+      );
+    }
+
     default:
       return { ...state };
   }
 };
+
+function removeItem(id, data) {
+  return data.filter((item) => item._id !== id);
+}
+
+// Find the object with id and update the object with the newValsMap
+function findAndUpdate(id, data, newValsMap) {
+  return data.map((item) => {
+    let newItem = _.cloneDeep(item);
+    if (item._id === id) {
+      Object.keys(newValsMap).forEach(key => {
+        if (newValsMap[key] !== null) {
+          newItem = _.set(newItem, `${key}`, newValsMap[key]);
+        }
+      });
+    }
+    return newItem;
+  });
+}
+
+// Find the corresponding goal to update needs and steps
+function updateNeedsOrSteps(goalId, id, fields, data, type) {
+  return data.map((item) => {
+    let newItem = _.cloneDeep(item);
+    if (item._id === goalId) {
+      const oldList = _.get(newItem, `${type}`);
+      newItem = _.set(newItem, `${type}`, findAndUpdate(id, oldList, { ...fields }));
+    }
+    return newItem;
+  });
+}
 
 function arrayUnique(array) {
   let a = array.concat();

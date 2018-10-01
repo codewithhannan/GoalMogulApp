@@ -1,23 +1,21 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
   FlatList,
-  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 
 // Components
 import GoalFilterBar from '../Common/GoalFilterBar';
-import MyGoalCard from '../Goal/GoalCard/GoalCard';
 
 // actions
 import {
-  handleRefresh
+  handleRefresh,
+  handleProfileTabOnLoadMore
 } from '../../actions';
 
 // tab key
-const key = 'myneeds';
+const key = 'needs';
 
 /* TODO: delete the test data */
 const testData = [
@@ -51,11 +49,11 @@ class MyNeeds extends Component {
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
             onRefresh={this.handleRefresh.bind()}
-            refreshing={this.props.refreshing}
+            refreshing={this.props.loading}
           />
         </View>
         {/*
-          onEndReached={this.onLoadMore}
+          onEndReached={() => this.props.handleProfileTabOnLoadMore(key)}
         */}
       </View>
     );
@@ -85,21 +83,20 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { contacts } = state.meet;
-  const { selectedTab } = state.profile;
-  const { data, refreshing } = contacts;
+  const { selectedTab, needs } = state.profile;
+  const { data, loading } = needs;
 
   return {
     selectedTab,
-    contacts,
     data,
-    refreshing
+    loading
   };
 };
 
 export default connect(
   mapStateToProps,
   {
-    handleRefresh
+    handleRefresh,
+    handleProfileTabOnLoadMore
   }
 )(MyNeeds);

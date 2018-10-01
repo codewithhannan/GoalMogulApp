@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text
+  Text,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
+  Modal,
+  Dimensions
 } from 'react-native';
 import { connect } from 'react-redux';
 import timeago from 'timeago.js';
 import _ from 'lodash';
 import R from 'ramda';
+
+import {
+  switchCase
+} from '../../../redux/middleware/utils';
 
 // Actions
 import {
@@ -27,49 +36,59 @@ import {
 } from '../../../redux/modules/feed/post/ShareActions';
 
 import {
-  editGoal,
-  shareGoalToMastermind,
-  markGoalAsComplete
-} from '../../../redux/modules/goal/GoalDetailActions';
+  openPostDetail
+} from '../../../redux/modules/feed/post/PostActions';
 
-import { deleteGoal } from '../../../actions';
+import {
+  openProfile,
+  deletePost
+} from '../../../actions';
+
+import {
+  openGoalDetail
+} from '../../../redux/modules/home/mastermind/actions';
 
 // Assets
-import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
 import LoveIcon from '../../../asset/utils/love.png';
 import BulbIcon from '../../../asset/utils/bulb.png';
 import ShareIcon from '../../../asset/utils/forward.png';
-import EditIcon from '../../../asset/utils/edit.png';
-import CheckIcon from '../../../asset/utils/check.png';
+import cancel from '../../../asset/utils/cancel_no_background.png';
+import photoIcon from '../../../asset/utils/photoIcon.png';
+import expand from '../../../asset/utils/expand.png';
+
+import TestImage from '../../../asset/TestEventImage.png';
 
 // Components
-import ProgressBar from '../Common/ProgressBar';
-import ActionButton from '../Common/ActionButton';
-import ActionButtonGroup from '../Common/ActionButtonGroup';
-import Headline from '../Common/Headline';
-import Timestamp from '../Common/Timestamp';
+import ProgressBar from '../../Goal/Common/ProgressBar';
+import ActionButton from '../../Goal/Common/ActionButton';
+import ActionButtonGroup from '../../Goal/Common/ActionButtonGroup';
+import Headline from '../../Goal/Common/Headline';
+import Timestamp from '../../Goal/Common/Timestamp';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import ProfileImage from '../../Common/ProfileImage';
-import IndividualActionButton from '../Common/IndividualActionButton';
+import RefPreview from '../../Common/RefPreview';
 
 // Constants
-const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
+const DEBUG_KEY = '[ UI PostDetailCard.PostDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to an event', 'Share to a tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
+const { width } = Dimensions.get('window');
 
-class GoalDetailSection extends Component {
+class PostDetailSection extends Component {
+  state = {
+    mediaModal: false
+  }
 
   handleShareOnClick = () => {
     const { item } = this.props;
     const { _id } = item;
-    const shareType = 'ShareGoal';
+    const shareType = 'SharePost';
 
     const shareToSwitchCases = switchByButtonIndex([
       [R.equals(0), () => {
         // User choose to share to feed
         console.log(`${DEBUG_KEY} User choose destination: Feed `);
         this.props.chooseShareDest(shareType, _id, 'feed', item);
-        // TODO: update reducer state
       }],
       [R.equals(1), () => {
         // User choose to share to an event
@@ -93,11 +112,11 @@ class GoalDetailSection extends Component {
 
   // user basic information
   renderUserDetail(item) {
-    const { _id, created, title, owner, category } = item;
+    // TODO: TAG: for content
+    const { _id, created, content, owner, category } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
     // console.log('item is: ', item);
-
     return (
       <View style={{ flexDirection: 'row' }}>
         <ProfileImage
@@ -109,10 +128,10 @@ class GoalDetailSection extends Component {
             name={owner.name || ''}
             category={category}
             isSelf={this.props.userId === owner._id}
-            caretOnDelete={() => this.props.deleteGoal(_id)}
+            caretOnDelete={() => this.props.deletePost(_id)}
             caretOnPress={() => {
-              console.log('I am pressed');
-              this.props.createReport(_id, 'detail', 'Goal');
+              console.log('I am pressed on PostDetailSEction');
+              this.props.createReport(_id, 'postDetail', 'Post');
             }}
           />
           <Timestamp time={timeago().format(timeStamp)} />
@@ -122,7 +141,7 @@ class GoalDetailSection extends Component {
               numberOfLines={3}
               ellipsizeMode='tail'
             >
-              {title}
+              {content.text}
             </Text>
           </View>
 
@@ -131,54 +150,116 @@ class GoalDetailSection extends Component {
     );
   }
 
-  renderCardContent() {
+  // Current media type is only picture
+  renderPostImage(url) {
+    // TODO: update this to be able to load image
+    if (!url) {
+      return '';
+    }
+      return (
+        <View style={{ marginTop: 10 }}>
+          <ImageBackground
+            style={styles.mediaStyle}
+            source={TestImage}
+            imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'stretch' }}
+          >
+            <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
+              <Image
+                source={photoIcon}
+                style={{
+                  alignSelf: 'center',
+                  justifyContent: 'center',
+                  height: 40,
+                  width: 50,
+                  tintColor: '#fafafa'
+                }}
+              />
+            </View>
+
+            <TouchableOpacity
+              onPress={() => this.setState({ mediaModal: true })}
+              style={{ position: 'absolute', top: 10, right: 15 }}
+            >
+              <Image
+                source={expand}
+                style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+              />
+            </TouchableOpacity>
+          </ImageBackground>
+          {this.renderPostImageModal(url)}
+        </View>
+      );
+  }
+
+
+  renderPostImageModal(uri) {
+    if (!uri) {
+      return '';
+    }
+    return (
+      <Modal
+        animationType="fade"
+        transparent={false}
+        visible={this.state.mediaModal}
+      >
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'black'
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => { this.setState({ mediaModal: false }); }}
+            style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
+          >
+            <Image
+              source={cancel}
+              style={{
+                ...styles.cancelIconStyle,
+                tintColor: 'white'
+              }}
+            />
+          </TouchableOpacity>
+          <Image
+            source={TestImage}
+            style={{ width, height: 200 }}
+            resizeMode='cover'
+          />
+        </View>
+      </Modal>
+    );
+  }
+
+  // TODO: Switch to decide amoung renderImage, RefPreview and etc.
+  renderCardContent(item) {
+    const { postType, mediaRef } = item;
+    if (postType === 'General') {
+      return this.renderPostImage(mediaRef);
+    }
+    const refPreview = switchItem(item, postType);
+    const onPress = switchCase({
+      SharePost: () => this.props.openPostDetail(refPreview),
+      ShareUser: () => this.props.openProfile(refPreview._id),
+      ShareGoal: () => this.props.openGoalDetail(refPreview),
+      ShareNeed: () => this.props.openGoalDetail(refPreview)
+    })('SharePost')(postType);
+
     return (
       <View style={{ marginTop: 20 }}>
-        <ProgressBar startTime='Mar 2013' endTime='Nov 2011' />
-      </View>
-    );
-  }
-
-  // If this goal belongs to current user, display Edit goal, Share to Mastermind, Mark complete
-  renderSelfActionButtons(item) {
-    const { _id, isCompleted } = item;
-    const containerStyle = isCompleted
-      ? { backgroundColor: '#eafcee' }
-      : {};
-
-    return (
-      <View style={styles.selfActionButtonsContainerStyle}>
-        <IndividualActionButton
-          buttonName='Edit goal'
-          iconSource={EditIcon}
-          iconStyle={{ tintColor: '#3f3f3f' }}
-          onPress={() => this.props.editGoal()}
-        />
-        <IndividualActionButton
-          buttonName='Mastermind'
-          iconSource={ShareIcon}
-          iconStyle={{ tintColor: '#3f3f3f' }}
-          textStyle={{}}
-          onPress={() => this.props.shareGoalToMastermind()}
-        />
-        <IndividualActionButton
-          buttonName='Mark Complete'
-          iconSource={CheckIcon}
-          iconStyle={{ tintColor: '#3f3f3f', height: 13 }}
-          textStyle={{}}
-          constainerStyle={containerStyle}
-          onPress={() => this.props.markGoalAsComplete(_id)}
+        <RefPreview
+          item={refPreview}
+          postType={postType}
+          onPress={onPress}
         />
       </View>
     );
   }
 
-  renderActionButtons(item) {
+  renderActionButtons() {
+    const { item } = this.props;
     const { maybeLikeRef, _id } = item;
-
-    if (this.props.isSelf) {
-      return this.renderSelfActionButtons(item);
-    }
 
     const likeCount = item.likeCount ? item.likeCount : 0;
     const commentCount = item.commentCount ? item.commentCount : 0;
@@ -198,7 +279,7 @@ class GoalDetailSection extends Component {
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks like icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
-              return this.props.unLikeGoal('goal', _id, maybeLikeRef);
+              return this.props.unLikeGoal('post', _id, maybeLikeRef);
             }
             this.props.likeGoal('goal', _id);
           }}
@@ -217,13 +298,13 @@ class GoalDetailSection extends Component {
             console.log(`${DEBUG_KEY}: user clicks suggestion icon.`);
             this.props.createCommentFromSuggestion({
               commentDetail: {
-                parentType: 'Goal',
+                parentType: 'Post',
                 parentRef: _id,
                 commentType: 'Suggestion',
                 replyToRef: undefined
               },
               suggestionForRef: _id,
-              suggestionFor: 'Goal'
+              suggestionFor: 'Post'
             });
             this.props.onSuggestion();
           }}
@@ -241,7 +322,7 @@ class GoalDetailSection extends Component {
         <View style={{ ...styles.containerStyle }}>
           <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
             {this.renderUserDetail(item)}
-            {this.renderCardContent()}
+            {this.renderCardContent(item)}
           </View>
         </View>
 
@@ -253,6 +334,13 @@ class GoalDetailSection extends Component {
   }
 }
 
+const switchItem = (item, postType) => switchCase({
+  SharePost: item.postRef,
+  ShareUser: item.userRef,
+  ShareGoal: item.goalRef,
+  ShareNeed: item.needRef
+})('SharePost')(postType);
+
 const styles = {
   containerStyle: {
     backgroundColor: 'white',
@@ -263,12 +351,16 @@ const styles = {
     marginLeft: 5,
     marginTop: 2
   },
-  selfActionButtonsContainerStyle: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
-    margin: 20
-  }
+  mediaStyle: {
+    height: width / 2,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  cancelIconStyle: {
+    height: 20,
+    width: 20,
+    justifyContent: 'flex-end'
+  },
 };
 
 const mapStateToProps = state => {
@@ -286,9 +378,9 @@ export default connect(
     unLikeGoal,
     createCommentFromSuggestion,
     chooseShareDest,
-    editGoal,
-    shareGoalToMastermind,
-    markGoalAsComplete,
-    deleteGoal
+    openPostDetail,
+    openProfile,
+    openGoalDetail,
+    deletePost
   }
-)(GoalDetailSection);
+)(PostDetailSection);

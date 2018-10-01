@@ -162,7 +162,7 @@ const styles = {
     position: 'absolute',
     top: 0,
     right: 5,
-    padding: (CardHeight - ProfileImageWidth) / 2
+    padding: ((CardHeight - ProfileImageWidth) + 4) / 2
   },
   timeStampTextStyle: {
     color: '#28485e',

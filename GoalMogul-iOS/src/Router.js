@@ -40,6 +40,7 @@ import CreatePostModal from './Main/Post/CreatePostModal';
 import GoalCard from './Main/Goal/GoalCard/GoalCard'; // For debug purpose
 import NeedCard from './Main/Goal/NeedCard/NeedCard'; // For debug purpose
 import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCard2';
+import PostDetailCard from './Main/Post/PostDetailCard/PostDetailCard';
 // Menu
 import MyEventTab from './Main/Menu/Event/MyEventTab';
 import MyEvent from './Main/Menu/Event/MyEvent';
@@ -89,14 +90,14 @@ class RouterComponent extends Component {
   reducerCreate(params) {
     const defaultReducer = Reducer(params);
     return (state, action) => {
-      console.log('reducer: ACTION: ', action);
+      // console.log('reducer: ACTION: ', action);
       this.props.dispatch(action);
       return defaultReducer(state, action);
     };
   }
 
   stateHandler = (prevState, newState, action) => {
-    console.log('onStateChange: ACTION: ', action);
+    // console.log('onStateChange: ACTION: ', action);
     // console.log('newState is: ', newState);
   }
 
@@ -170,6 +171,7 @@ class RouterComponent extends Component {
                       <Scene key="myTribeDetail" component={MyTribe} />
                     </Stack>
                     <Scene key="goal" component={GoalDetailCard} />
+                    <Scene key="post" component={PostDetailCard} />
                     <Scene key="profile" component={Profile} />
                     <Scene key="profileDetail" component={ProfileDetail} />
                     <Scene key="setting" component={Setting} />

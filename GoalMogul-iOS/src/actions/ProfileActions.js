@@ -1,5 +1,5 @@
 import { Actions } from 'react-native-router-flux';
-import { Image } from 'react-native';
+import { Image, Alert } from 'react-native';
 import _ from 'lodash';
 
 import ImageUtils from '../Utils/ImageUtils';
@@ -29,7 +29,10 @@ import {
   PROFILE_REFRESH_TAB_DONE,
   PROFILE_REFRESH_TAB,
   PROFILE_UPDATE_FILTER,
-  PROFILE_GOAL_FILTER_CONST
+  PROFILE_GOAL_FILTER_CONST,
+
+  PROFILE_GOAL_DELETE_SUCCESS,
+  PROFILE_POST_DELETE_SUCCESS
 } from '../reducers/Profile';
 
 const DEBUG_KEY = '[ Action Profile ]';
@@ -306,7 +309,7 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
  * Load more for profile tab
  * @params tab: one of ['goals', 'posts', 'needs']
  */
-export const handleTabOnLoadMore = (tab) => (dispatch, getState) => {
+export const handleProfileTabOnLoadMore = (tab) => (dispatch, getState) => {
   const { token } = getState().user;
   const { filter, skip, limit, hasNextPage } = _.get(getState().profile, tab);
 
@@ -363,5 +366,81 @@ const loadOneTab = (tab, skip, limit, filter, token, callback) => {
     })
     .catch((err) => {
       console.warn(`${DEBUG_KEY} load ${tab} error: ${err}`);
+    });
+};
+
+/**
+ * Delete a goal in profile tab
+ */
+export const deleteGoal = (goalId) => (dispatch, getState) =>
+  deleteItem(
+    {
+      param: { goalId },
+      route: `secure/goal?goalId=${goalId}`
+    },
+    dispatch,
+    getState,
+    // onSuccess
+    () => {
+      dispatch({
+        type: PROFILE_GOAL_DELETE_SUCCESS,
+        payload: goalId
+      });
+    },
+    // onError
+    ({ message }) => {
+      Alert.alert(
+        'Deleting goal failed',
+        `${message}`,
+        [
+          { text: 'Cancel', style: 'cancel' }
+        ]
+      );
+    }
+  );
+/**
+ * Delete a post in profile tab
+ */
+
+export const deletePost = (postId) => (dispatch, getState) =>
+  deleteItem(
+    {
+      param: { postId },
+      route: `secure/feed/post?postId=${postId}`
+    },
+    dispatch,
+    getState,
+    () => {
+      dispatch({
+        type: PROFILE_POST_DELETE_SUCCESS,
+        payload: postId
+      });
+    },
+    ({ message }) => {
+      Alert.alert(
+        'Deleting post failed',
+        `${message}`,
+        [
+          { text: 'Cancel', style: 'cancel' }
+        ]
+      );
+    }
+  );
+
+
+const deleteItem = (item, dispatch, getState, onSuccess, onError) => {
+  const { token } = getState().user;
+  API
+    .delete(item.route, { ...item.param }, token)
+    .then((res) => {
+      if (res.isSuccess) {
+        return onSuccess();
+      }
+      console.warn('Delete item fail in profile err with res: ', res);
+      return onError({ message: res.message });
+    })
+    .catch((err) => {
+      console.warn('Delete item fail in profile with exception: ', err);
+      return onError({ message: err });
     });
 };

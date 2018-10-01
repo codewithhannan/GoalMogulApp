@@ -36,7 +36,8 @@ const INITIAL_STATE = {
   // Extra info to render
   belongsToTribeItem: undefined,
   belongsToEventItem: undefined,
-  itemToShare: undefined
+  itemToShare: undefined,
+  uploading: false
 };
 
 // User chooses to share to ['feed', 'event', 'tribe']
@@ -80,6 +81,16 @@ export default (state = INITIAL_STATE, action) => {
     // After new share is canceled or posted successfully, we clear the state
     case SHARE_NEW_CANCEL:
     case SHARE_NEW_POST_SUCCESS: return { ...INITIAL_STATE };
+
+    case SHARE_NEW_POST: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'uploading', true);
+    }
+
+    case SHARE_NEW_POST_FAIL: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'uploading', false);
+    }
 
     default: return { ...state };
   }

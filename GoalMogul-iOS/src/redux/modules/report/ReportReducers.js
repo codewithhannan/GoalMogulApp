@@ -12,7 +12,8 @@ const INITIAL_STATE = {
   error: undefined,
   loading: false,
   showingModal: false,
-  showingModalInDetail: false
+  showingModalInDetail: false,
+  showingModalInPostDetail: false
 };
 
 // Set the basic information for a report
@@ -69,6 +70,8 @@ export default (state = INITIAL_STATE, action) => {
       let newState = _.cloneDeep(state);
       if (type === 'detail') {
         newState = _.set(newState, 'showingModalInDetail', true);
+      } else if (type === 'postDetail') {
+        newState = _.set(newState, 'showingModalInPostDetail', true);
       } else {
         newState = _.set(newState, 'showingModal', true);
       }

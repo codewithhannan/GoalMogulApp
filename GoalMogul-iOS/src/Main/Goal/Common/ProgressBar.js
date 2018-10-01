@@ -4,15 +4,26 @@ import { Text, View, Image } from 'react-native';
 /* Icon */
 import Bar from '../../../asset/utils/progressBar.png';
 
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+const formatDate = (date) => `${months[(date !== undefined ? date : new Date()).getMonth() - 1]} ` +
+  `${(date || new Date()).getFullYear()}`;
+
+
 const ProgressBar = (props) => {
+  const { startTime, endTime } = props;
+
+  const startTimeText = startTime instanceof Date ? formatDate(startTime) : startTime;
+  const endTimeText = endTime instanceof Date ? formatDate(endTime) : endTime;
+
   return (
     <View style={styles.containerStyle}>
       <Text style={styles.textStyle}>
-        {props.startTime}
+        {startTimeText}
       </Text>
       <Image source={Bar} style={styles.imageStyle} />
       <Text style={styles.textStyle}>
-        {props.endTime}
+        {endTimeText}
       </Text>
     </View>
   );

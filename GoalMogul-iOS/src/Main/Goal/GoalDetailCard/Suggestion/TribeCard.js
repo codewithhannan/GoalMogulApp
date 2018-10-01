@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 // Assets
 // TODO: set default tribe picture
 import profilePic from '../../../../asset/utils/defaultUserProfile.png';
-import check from '../../../../asset/utils/check.png';
+import Check from '../../../Common/Check';
 
 // Actions
 
@@ -111,19 +111,7 @@ class TribeCard extends React.Component {
 
   renderCheck() {
     const { selected } = this.props;
-    const checkIconContainerStyle = selected
-      ? { ...styles.checkIconContainerStyle, borderWidth: 0.5, borderColor: '#a0deba' }
-      : { ...styles.checkIconContainerStyle };
-
-    const checkIconStyle = selected
-      ? { ...styles.checkIconStyle, tintColor: '#a0deba' }
-      : { ...styles.checkIconStyle };
-
-    return (
-      <View style={checkIconContainerStyle}>
-        <Image source={check} resizeMode='contain' style={checkIconStyle} />
-      </View>
-    );
+    return <Check selected={selected} />;
   }
 
   render() {
@@ -153,22 +141,6 @@ const styles = {
     height: CardHeight,
     backgroundColor: 'white',
   },
-  // Check icon style
-  checkIconContainerStyle: {
-    marginLeft: 8,
-    height: 24,
-    width: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 12,
-    borderWidth: 0.5,
-    borderColor: 'lightgray',
-    alignSelf: 'center'
-  },
-  checkIconStyle: {
-    width: 16,
-    height: 14
-  },
   // Image related styles
   imageContainerStyle: {
     borderWidth: 1,
@@ -190,7 +162,7 @@ const styles = {
     position: 'absolute',
     top: 0,
     right: 5,
-    padding: (CardHeight - ProfileImageWidth) / 2
+    padding: ((CardHeight - ProfileImageWidth) + 4) / 2
   },
   timeStampTextStyle: {
     color: '#28485e',

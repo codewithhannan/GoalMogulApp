@@ -18,8 +18,9 @@ export const validate = values => {
 // Submit values
 export const submitGoal = (values, userId, callback) => (dispatch, getState) => {
   const { token } = getState().user;
-  const goal = goalAdapter(values, userId);
+  const goal = formToGoalAdapter(values, userId);
   console.log('Transformed goal is: ', goal);
+
   API
     .post(
       'secure/goal/',
@@ -44,7 +45,7 @@ export const submitGoal = (values, userId, callback) => (dispatch, getState) => 
 };
 
 // Transform values from Goal form to server accepted format
-const goalAdapter = (values, userId) => {
+const formToGoalAdapter = (values, userId) => {
   const {
     title,
     category,
@@ -62,7 +63,7 @@ const goalAdapter = (values, userId) => {
     owner: userId,
     title,
     category,
-    privacy: privacy.toLowerCase(),
+    privacy: privacy === 'Private' ? 'self' : privacy.toLowerCase(),
     shareToGoalFeed: shareToMastermind,
     needs: stepsNeedsAdapter(needs),
     steps: stepsNeedsAdapter(steps),
@@ -70,6 +71,51 @@ const goalAdapter = (values, userId) => {
     priority,
     start: startTime.date,
     end: endTime.date
+  };
+};
+
+// Transform a goal object to
+export const goalToFormAdaptor = (values) => {
+  // Function to capitalize the first character
+  const capitalizeWord = (word) => {
+    if (!word) return '';
+    word.replace(/^\w/, c => c.toUpperCase());
+  };
+
+  const {
+    title,
+    category,
+    privacy,
+    shareToGoalFeed,
+    priority,
+    details,
+    needs,
+    steps,
+    start,
+    end
+  } = values.goal;
+
+  console.log('values are: ', values);
+
+  return {
+    title,
+    category,
+    privacy: privacy === 'self' ? 'Private' : capitalizeWord(privacy),
+    // Following are not required
+    shareToMastermind: shareToGoalFeed,
+    needs: stepsNeedsReverseAdapter(needs),
+    steps: stepsNeedsReverseAdapter(steps),
+    // TODO: TAG:
+    details: details.text,
+    priority,
+    startTime: {
+      date: start ? new Date(`${start}`) : undefined,
+      picker: false
+    },
+    endTime: {
+      date: end ? new Date(`${end}`) : undefined,
+      picker: false
+    }
   };
 };
 
@@ -81,12 +127,13 @@ const goalAdapter = (values, userId) => {
  * 2. Right now, steps and needs share the same format
  */
 const stepsNeedsAdapter = values => {
-  if (values && values.length > 0) {
+  if (!values && values.length < 0) {
     return undefined;
   }
-  return values.map((val) => ({
+  return values.map((val, index) => ({
     isCompleted: false,
     description: val,
+    order: index
   }));
 };
 
@@ -95,4 +142,23 @@ const detailsAdapter = value => {
     text: value,
     tag: undefined
   };
+};
+
+/**
+ * Transform an array of needs object to a list of Strings for the form
+ * in the order of order params
+ */
+const stepsNeedsReverseAdapter = values => {
+  if (!values || values.length <= 0) return undefined;
+
+  return (
+    values
+      .sort((a, b) => {
+        if (!a.order && !b.order) return a.description - b.description;
+        if (!a.order && b.order) return 1;
+        if (a.order && !b.order) return -1;
+        return (a.order - b.order);
+      })
+      .map((item) => item.description)
+  );
 };

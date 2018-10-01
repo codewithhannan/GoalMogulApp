@@ -93,6 +93,7 @@ class GoalDetailCard2 extends Component {
             index={props.index}
             scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
             onCommentClicked={() => this.dialogOnFocus()}
+            reportType='detail'
           />
         );
       }
@@ -117,6 +118,7 @@ class GoalDetailCard2 extends Component {
               this.props.createCommentFromSuggestion(newCommentParams);
               this.props.openSuggestionModal();
             }}
+            isSelf={this.props.isSelf}
           />
         );
       }
@@ -129,7 +131,11 @@ class GoalDetailCard2 extends Component {
   renderGoalDetailSection() {
     return (
       <View>
-        <GoalDetailSection item={this.props.goalDetail} onSuggestion={() => this.dialogOnFocus()} />
+        <GoalDetailSection
+          item={this.props.goalDetail}
+          onSuggestion={() => this.dialogOnFocus()}
+          isSelf={this.props.isSelf}
+        />
         {
           this._renderHeader({
             jumpToIndex: (i) => this._handleIndexChange(i),
@@ -432,16 +438,20 @@ const mapStateToProps = state => {
 
   const { goal } = state.goalDetail;
   const { showingModalInDetail } = state.report;
+  const { userId } = state.user;
   // const { transformedComments } = state.comment;
 
   return {
     commentLoading: loading,
-    // stepsAndNeeds: getGoalStepsAndNeeds(state),
-    stepsAndNeeds: testStepsAndNeeds,
+    stepsAndNeeds: getGoalStepsAndNeeds(state),
+    // stepsAndNeeds: testStepsAndNeeds,
     comments: testTransformedComments,
     goalDetail: goal,
     showingModalInDetail,
-    showSuggestionModal
+    showSuggestionModal,
+    // isSelf: userId === goal.owner._id
+    // TODO: delete
+    isSelf: true
   };
 };
 
