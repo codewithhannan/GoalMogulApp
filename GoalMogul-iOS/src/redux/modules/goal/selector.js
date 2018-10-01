@@ -15,22 +15,22 @@ export const getGoalStepsAndNeeds = createSelector(
       res.push({ sectionTitle: 'needs' });
     }
     // Transform needs to have a type
-    const newNeeds = needs.map(need => ({
+    const newNeeds = needs.map((need) => ({
       ...need,
       type: 'need'
     }));
-    res.concat(newNeeds);
+    res = res.concat(newNeeds);
 
     if (steps && steps.length > 0) {
       res.push({ sectionTitle: 'steps' });
     }
 
     // Transform needs to have a type
-    const newSteps = steps.map(step => ({
+    const newSteps = steps.map((step) => ({
       ...step,
       type: 'step'
     }));
-    res.concat(newSteps);
+    res = res.concat(newSteps);
     return res;
   }
 );

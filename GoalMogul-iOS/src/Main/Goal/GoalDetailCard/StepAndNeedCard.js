@@ -52,6 +52,7 @@ class StepAndNeedCard extends Component {
         }}
         type={item.type}
         goalRef={goalRef}
+        isSelf={this.props.isSelf}
       />
     );
   }

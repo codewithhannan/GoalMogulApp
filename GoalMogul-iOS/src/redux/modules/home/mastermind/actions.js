@@ -181,18 +181,21 @@ const testData = [
     },
     lastUpdated: '2018-07-19T05:30:57.531Z',
     needs: [{
+      _id: '1',
       created: '2018-07-19T05:30:57.531Z',
       description: 'introduction to someone from the Bill and Melinda Gates Foundation',
       isCompleted: false,
       order: 0,
     },
     {
+      _id: '2',
       created: '2018-07-19T05:30:57.531Z',
       description: 'Get in contact with Nuclear experts',
       isCompleted: false,
       order: 1,
     },
     {
+      _id: '3',
       created: '2018-07-19T05:30:57.531Z',
       description: 'Legal & Safety experts who have worked with the United States',
       isCompleted: false,
@@ -212,12 +215,14 @@ const testData = [
     privacy: 'friends',
     steps: [
       {
+        _id: '100',
         created: new Date(),
         description: 'Talk to 10 neighbourhood around the area for the scene',
         isCompleted: true,
         order: 0
       },
       {
+        _id: '101',
         created: new Date(),
         description: 'Gather crime report for 301 tribe ave.',
         isCompleted: false,

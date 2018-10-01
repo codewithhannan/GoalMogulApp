@@ -118,6 +118,7 @@ class GoalDetailCard2 extends Component {
               this.props.createCommentFromSuggestion(newCommentParams);
               this.props.openSuggestionModal();
             }}
+            isSelf={this.props.isSelf}
           />
         );
       }
@@ -442,15 +443,15 @@ const mapStateToProps = state => {
 
   return {
     commentLoading: loading,
-    // stepsAndNeeds: getGoalStepsAndNeeds(state),
-    stepsAndNeeds: testStepsAndNeeds,
+    stepsAndNeeds: getGoalStepsAndNeeds(state),
+    // stepsAndNeeds: testStepsAndNeeds,
     comments: testTransformedComments,
     goalDetail: goal,
     showingModalInDetail,
     showSuggestionModal,
-    isSelf: userId === goal.owner._id
+    // isSelf: userId === goal.owner._id
     // TODO: delete
-    // isSelf: true
+    isSelf: true
   };
 };
 
