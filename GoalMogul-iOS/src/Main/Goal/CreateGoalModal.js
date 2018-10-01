@@ -49,7 +49,8 @@ import dropDown from '../../asset/utils/dropDown.png';
 // import { } from '../../actions';
 import {
   validate,
-  submitGoal
+  submitGoal,
+  goalToFormAdaptor
 } from '../../redux/modules/goal/CreateGoalActions';
 
 const { Popover } = renderers;
@@ -66,8 +67,7 @@ class CreateGoalModal extends Component {
 
   initializeForm() {
     const values = [{}];
-
-    this.props.initialize({
+    const defaulVals = {
       steps: [...values],
       needs: [...values],
       shareToMastermind: true,
@@ -78,6 +78,15 @@ class CreateGoalModal extends Component {
       startTime: { date: undefined, picker: false },
       endTime: { date: undefined, picker: false },
       title: ''
+    };
+
+    // Initialize based on the props, if it's opened through edit button
+    const initialVals = this.props.initializeFromState
+      ? { ...goalToFormAdaptor(this.props.goalDetail) }
+      : { ...defaulVals };
+
+    this.props.initialize({
+      ...initialVals
     });
   }
 
@@ -443,6 +452,7 @@ class CreateGoalModal extends Component {
 
   render() {
     const { handleSubmit, errors } = this.props;
+
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <KeyboardAvoidingView
@@ -599,7 +609,8 @@ const mapStateToProps = state => {
     hasTimeline: selector(state, 'hasTimeline'),
     startTime: selector(state, 'startTime'),
     endTime: selector(state, 'endTime'),
-    formVals: state.form.createGoalModal
+    formVals: state.form.createGoalModal,
+    goalDetail: state.goalDetail
   };
 };
 

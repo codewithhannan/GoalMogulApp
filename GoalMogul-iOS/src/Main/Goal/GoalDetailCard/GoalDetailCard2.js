@@ -448,8 +448,9 @@ const mapStateToProps = state => {
     goalDetail: goal,
     showingModalInDetail,
     showSuggestionModal,
-    // isSelf: userId === goal.owner._id
-    isSelf: false
+    isSelf: userId === goal.owner._id
+    // TODO: delete
+    // isSelf: true
   };
 };
 
