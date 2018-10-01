@@ -118,9 +118,11 @@ class CreateGoalModal extends Component {
       // throw new SubmissionError(errors);
       return Alert.alert('Error', 'You have incomplete fields.');
     }
+
     return this.props.submitGoal(
       this.props.formVals.values,
       this.props.user._id,
+      this.props.initializeFromState,
       () => {
         Actions.pop();
       }
@@ -187,7 +189,7 @@ class CreateGoalModal extends Component {
                 key={`description-${index}`}
                 name={description}
                 component={InputField}
-                editable
+                editable={this.props.uploading}
                 numberOfLines={4}
                 style={styles.standardInputStyle}
               />
@@ -426,7 +428,7 @@ class CreateGoalModal extends Component {
                 key={`description-${index}`}
                 name={field}
                 component={InputField}
-                editable
+                editable={this.props.uploading}
                 numberOfLines={4}
                 style={styles.standardInputStyle}
                 placeholder={placeholder}
@@ -452,6 +454,8 @@ class CreateGoalModal extends Component {
 
   render() {
     const { handleSubmit, errors } = this.props;
+    const actionText = this.props.initializeFromState ? 'Update' : 'Create';
+    const titleText = this.props.initializeFromState ? 'Edit Goal' : 'New Goal';
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -460,8 +464,8 @@ class CreateGoalModal extends Component {
           style={{ flex: 1, backgroundColor: '#ffffff' }}
         >
           <ModalHeader
-            title='New Goal'
-            actionText='Create'
+            title={titleText}
+            actionText={actionText}
             onCancel={() => Actions.pop()}
             onAction={handleSubmit(this.handleCreate)}
           />
@@ -598,6 +602,7 @@ const mapStateToProps = state => {
   const selector = formValueSelector('createGoalModal');
   const { user } = state.user;
   const { profile } = user;
+  const { uploading } = state.createGoal;
 
   return {
     user,
@@ -610,7 +615,8 @@ const mapStateToProps = state => {
     startTime: selector(state, 'startTime'),
     endTime: selector(state, 'endTime'),
     formVals: state.form.createGoalModal,
-    goalDetail: state.goalDetail
+    goalDetail: state.goalDetail,
+    uploading
   };
 };
 

@@ -1,5 +1,12 @@
 import { reset } from 'redux-form';
+import { Alert } from 'react-native';
 import { api as API } from '../../middleware/api';
+
+import {
+  GOAL_CREATE_SUBMIT,
+  GOAL_CREATE_SUBMIT_SUCCESS,
+  GOAL_CREATE_SUBMIT_FAIL
+} from './CreateGoal';
 
 const DEBUG_KEY = '[ Action CreateGoal ]';
 
@@ -16,11 +23,37 @@ export const validate = values => {
 };
 
 // Submit values
-export const submitGoal = (values, userId, callback) => (dispatch, getState) => {
+export const submitGoal = (values, userId, isEdit, callback) => (dispatch, getState) => {
   const { token } = getState().user;
   const goal = formToGoalAdapter(values, userId);
   console.log('Transformed goal is: ', goal);
 
+  dispatch({
+    type: GOAL_CREATE_SUBMIT
+  });
+
+  // If user is editing the goal, then call another endpoint
+  if (isEdit) {
+    return submitEditGoal(goal, token, callback, dispatch);
+  }
+
+  const onError = () => {
+    dispatch({
+      type: GOAL_CREATE_SUBMIT_FAIL
+    });
+    Alert.alert(
+      'Creating new goal failed',
+      'Please try again later'
+    );
+  };
+
+  const onSuccess = () => {
+    dispatch({
+      type: GOAL_CREATE_SUBMIT_SUCCESS
+    });
+  };
+
+  // Creating new goal
   API
     .post(
       'secure/goal/',
@@ -35,12 +68,59 @@ export const submitGoal = (values, userId, callback) => (dispatch, getState) => 
         console.log(`${DEBUG_KEY}: result is`, res);
         // TODO: dispatch changes to feed and clear CreateGoalForm state
         callback();
+        onSuccess();
         dispatch(reset('createGoalModal'));
       }
       console.log(`${DEBUG_KEY}: creating goal success without returning data, res is: `, res);
+      onError();
     })
     .catch((err) => {
       console.log(`${DEBUG_KEY}: Error in submitting new goal ${err}`);
+      onError();
+    });
+};
+
+// Submit editting a goal
+const submitEditGoal = (goal, token, callback, dispatch) => {
+  const onError = () => {
+    dispatch({
+      type: GOAL_CREATE_SUBMIT_FAIL
+    });
+    Alert.alert(
+      'Edit goal failed',
+      'Please try again later'
+    );
+  };
+
+  const onSuccess = () => {
+    dispatch({
+      type: GOAL_CREATE_SUBMIT_SUCCESS
+    });
+  };
+
+  API
+    .put(
+      'secure/goal/',
+      {
+        goal: JSON.stringify({ ...goal })
+      },
+      token
+    )
+    .then((res) => {
+      if (res.data && res.data !== null) {
+        console.log(`${DEBUG_KEY}: editing goal success`);
+        console.log(`${DEBUG_KEY}: result is`, res);
+        // TODO: dispatch changes to feed and clear CreateGoalForm state
+        callback();
+        onSuccess();
+        dispatch(reset('createGoalModal'));
+      }
+      console.log(`${DEBUG_KEY}: editing goal success without returning data, res is: `, res);
+      onError();
+    })
+    .catch((err) => {
+      console.log(`${DEBUG_KEY}: Error in editing new goal ${err}`);
+      onError();
     });
 };
 
