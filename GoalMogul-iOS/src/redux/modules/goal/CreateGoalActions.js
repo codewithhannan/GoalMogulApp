@@ -1,5 +1,6 @@
 import { reset } from 'redux-form';
 import { Alert } from 'react-native';
+import _ from 'lodash';
 import { api as API } from '../../middleware/api';
 
 import {
@@ -63,13 +64,14 @@ export const submitGoal = (values, userId, isEdit, callback) => (dispatch, getSt
       token
     )
     .then((res) => {
-      if (res.data && res.data !== null) {
+      if (res.data && !_.isEmpty(res.data)) {
         console.log(`${DEBUG_KEY}: creating goal success`);
         console.log(`${DEBUG_KEY}: result is`, res);
         // TODO: dispatch changes to feed and clear CreateGoalForm state
         callback();
         onSuccess();
         dispatch(reset('createGoalModal'));
+        return;
       }
       console.log(`${DEBUG_KEY}: creating goal success without returning data, res is: `, res);
       onError();
@@ -210,14 +212,20 @@ const stepsNeedsAdapter = values => {
   if (!values && values.length < 0) {
     return undefined;
   }
-  return values.map((val, index) => ({
-    isCompleted: false,
-    description: val,
-    order: index
-  }));
+  return values.map((val, index) => {
+    if (!_.isEmpty(val)) {
+      return {
+        isCompleted: false,
+        description: val,
+        order: index
+      };
+    }
+    return '';
+  }).filter((val) => val !== '');
 };
 
-const detailsAdapter = value => {
+const detailsAdapter = (value) => {
+  if (!value) return undefined;
   return {
     text: value,
     tag: undefined
