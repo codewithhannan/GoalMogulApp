@@ -33,7 +33,10 @@ import {
 } from '../../redux/modules/tribe/TribeActions';
 
 // Selector
-import { getUserStatus } from '../../redux/modules/tribe/TribeSelector';
+import {
+  getUserStatus,
+  memberSelector
+} from '../../redux/modules/tribe/TribeSelector';
 
 const DEBUG_KEY = '[ UI Tribe ]';
 const { width } = Dimensions.get('window');
@@ -341,7 +344,7 @@ const mapStateToProps = state => {
         return [item];
 
       case 'members':
-        return item.members;
+        return memberSelector(state);
 
       case 'posts':
         return feed;

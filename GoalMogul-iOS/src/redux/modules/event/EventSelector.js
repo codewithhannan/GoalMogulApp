@@ -7,6 +7,7 @@ const getEventParticipants = (state) => {
   return [];
 };
 const getUserId = (state) => state.user.userId;
+const getParticipantsFilter = (state) => state.event.participantsFilter;
 
 /*
  * Transform a goal's need and step to become
@@ -25,5 +26,15 @@ export const getUserStatus = createSelector(
       return '';
     });
     return status;
+  }
+);
+
+// Select participants based on the filter option
+export const participantSelector = createSelector(
+  [getParticipantsFilter, getEventParticipants],
+  (filter, participants) => {
+    if (!participants) return '';
+
+    return participants.filter((participant) => participant.rsvp === filter);
   }
 );

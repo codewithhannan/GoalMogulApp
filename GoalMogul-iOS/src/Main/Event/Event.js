@@ -37,7 +37,10 @@ import {
 } from '../../redux/modules/event/EventActions';
 
 // Selector
-import { getUserStatus } from '../../redux/modules/event/EventSelector';
+import {
+  getUserStatus,
+  participantSelector
+} from '../../redux/modules/event/EventSelector';
 
 
 const DEBUG_KEY = '[ Component SearchBarHeader ]';
@@ -318,7 +321,7 @@ const mapStateToProps = state => {
         return [item];
 
       case 'attendees':
-        return item.participants;
+        return participantSelector(state);
 
       case 'posts':
         return feed;

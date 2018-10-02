@@ -17,7 +17,9 @@ const INITIAL_STATE = {
   hasNextPage: undefined,
   skip: 0,
   limit: 100,
-  hasRequested: undefined
+  hasRequested: undefined,
+  // ['Admin', 'Member', 'JoinRequester', 'Invitee']
+  membersFilter: 'Member'
 };
 
 export const TRIBE_SWITCH_TAB = 'tribe_switch_tab';
@@ -30,6 +32,7 @@ export const TRIBE_REQUEST_JOIN = 'tribe_request_join';
 export const TRIBE_REQUEST_JOIN_SUCCESS = 'tribe_request_join_success';
 export const TRIBE_REQUEST_JOIN_FAIL = 'tribe_request_join_fail';
 export const TRIBE_REQUEST_CANCEL_JOIN_SUCCESS = 'tribe_request_cancel_join_success';
+export const TRIBE_MEMBER_SELECT_FILTER = 'tribe_member_select_filter';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -98,6 +101,11 @@ export default (state = INITIAL_STATE, action) => {
     case TRIBE_REQUEST_CANCEL_JOIN_SUCCESS: {
       const newState = _.cloneDeep(state);
       return _.set(newState, 'hasRequested', false);
+    }
+
+    case TRIBE_MEMBER_SELECT_FILTER: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'membersFilter', action.payload);
     }
 
     default:

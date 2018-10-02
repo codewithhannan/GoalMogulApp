@@ -8,7 +8,8 @@ import {
   TRIBE_FEED_FETCH_DONE,
   TRIBE_FEED_REFRESH_DONE,
   TRIBE_REQUEST_JOIN_SUCCESS,
-  TRIBE_REQUEST_CANCEL_JOIN_SUCCESS
+  TRIBE_REQUEST_CANCEL_JOIN_SUCCESS,
+  TRIBE_MEMBER_SELECT_FILTER
 } from './TribeReducers';
 
 import { api as API } from '../../middleware/api';
@@ -16,6 +17,14 @@ import { queryBuilder } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Tribe Actions ]';
 const BASE_ROUTE = 'secure/tribe';
+
+// User selects member filter
+export const tribeSelectMembersFilter = (option) => (dispatch) => {
+  dispatch({
+    type: TRIBE_MEMBER_SELECT_FILTER,
+    payload: option
+  });
+};
 
 export const requestJoinTribe = (tribeId, join) => (dispatch, getState) => {
   const { token } = getState().user;

@@ -9,7 +9,8 @@ import {
   EVENT_FEED_REFRESH_DONE,
   EVENT_UPDATE_RSVP_STATUS,
   EVENT_UPDATE_RSVP_STATUS_SUCCESS,
-  EVENT_UPDATE_RSVP_STATUS_FAIL
+  EVENT_UPDATE_RSVP_STATUS_FAIL,
+  EVENT_PARTICIPANT_SELECT_FILTER
 } from './EventReducers';
 
 import { api as API } from '../../middleware/api';
@@ -57,6 +58,13 @@ export const rsvpEvent = (option, eventId) => (dispatch, getState) => {
     .catch((err) => {
       onError(err);
     });
+};
+
+export const eventSelectParticipantsFilter = (option) => (dispatch) => {
+  dispatch({
+    type: EVENT_PARTICIPANT_SELECT_FILTER,
+    payload: option
+  });
 };
 
 export const eventSelectTab = (index) => (dispatch) => {

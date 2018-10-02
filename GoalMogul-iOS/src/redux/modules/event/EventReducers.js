@@ -17,7 +17,9 @@ const INITIAL_STATE = {
   feedLoading: false,
   hasNextPage: undefined,
   skip: 0,
-  limit: 100
+  limit: 100,
+  // ['Invited', 'Interested', 'Going', 'Maybe', 'NotGoing']
+  participantsFilter: 'Going'
 };
 
 export const EVENT_SWITCH_TAB = 'event_switch_tab';
@@ -29,6 +31,7 @@ export const EVENT_FEED_REFRESH_DONE = 'event_feed_refresh_done';
 export const EVENT_UPDATE_RSVP_STATUS = 'event_update_rsvp_status';
 export const EVENT_UPDATE_RSVP_STATUS_SUCCESS = 'event_update_rsvp_status_success';
 export const EVENT_UPDATE_RSVP_STATUS_FAIL = 'event_update_rsvp_status_fail';
+export const EVENT_PARTICIPANT_SELECT_FILTER = 'event_participant_select_filter';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -126,6 +129,12 @@ export default (state = INITIAL_STATE, action) => {
       newItem = _.set(newItem, 'participantCount', participantCount);
 
       return _.set(newState, 'item', newItem);
+    }
+
+    // User selects participants filter
+    case EVENT_PARTICIPANT_SELECT_FILTER: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'participantsFilter', action.payload);
     }
 
     default:
