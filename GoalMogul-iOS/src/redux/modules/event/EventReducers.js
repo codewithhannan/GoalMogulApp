@@ -26,6 +26,9 @@ export const EVENT_DETAIL_CLOSE = 'event_detail_close';
 export const EVENT_FEED_FETCH = 'event_feed_fetch';
 export const EVENT_FEED_FETCH_DONE = 'event_feed_fetch_done';
 export const EVENT_FEED_REFRESH_DONE = 'event_feed_refresh_done';
+export const EVENT_UPDATE_RSVP_STATUS = 'event_update_rsvp_status';
+export const EVENT_UPDATE_RSVP_STATUS_SUCCESS = 'event_update_rsvp_status_success';
+export const EVENT_UPDATE_RSVP_STATUS_FAIL = 'event_update_rsvp_status_fail';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -84,6 +87,45 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...INITIAL_STATE
       };
+    }
+
+    // Current user update RSVP status for an event
+    case EVENT_UPDATE_RSVP_STATUS_SUCCESS: {
+      let isInEvent = false;
+      const newParticipant = action.payload;
+
+      const newState = _.cloneDeep(state);
+      let newItem = _.cloneDeep(newState.item);
+
+      let participants = newItem.participants;
+      let participantCount = newItem.participantCount;
+      if (!participants || participants.length === 0 || participantCount === 0) {
+        // If there is no participants originally
+        participants = participants.concat(newParticipant);
+        participantCount += 1;
+        isInEvent = true;
+      } else {
+        // If user has rsvped before
+        participants = participants.map((participant) => {
+          if (participant.participantRef === newParticipant.participantRef) {
+            isInEvent = true;
+            return newParticipant;
+          }
+          return participant;
+        });
+      }
+
+      if (!isInEvent) {
+        // user has never rsvped before
+        participants = participants.concat(newParticipant);
+        participantCount += 1;
+        isInEvent = true;
+      }
+
+      newItem = _.set(newItem, 'participants', participants);
+      newItem = _.set(newItem, 'participantCount', participantCount);
+
+      return _.set(newState, 'item', newItem);
     }
 
     default:
