@@ -72,18 +72,24 @@ const mapStateToProps = state => {
       picture: '',
       participants: [
         {
-          _id: '123698172691',
-          name: 'Super Andy',
-          profile: {
-            image: undefined
-          }
+          participantRef: {
+            _id: '123698172691',
+            name: 'Super Andy',
+            profile: {
+              image: undefined
+            }
+          },
+          rsvp: 'Interested'
         },
         {
-          _id: '123698172692',
-          name: 'Mike Gai',
-          profile: {
-            image: undefined
-          }
+          participantRef: {
+            _id: '123698172692',
+            name: 'Mike Gai',
+            profile: {
+              image: undefined
+            }
+          },
+          rsvp: 'Going'
         }
       ],
       participantCount: 2,
@@ -106,18 +112,24 @@ const mapStateToProps = state => {
       picture: '',
       participants: [
         {
-          _id: '123698172693',
-          name: 'Batman',
-          profile: {
-            image: undefined
-          }
+          participantRef: {
+            _id: '123698172693',
+            name: 'Batman',
+            profile: {
+              image: undefined
+            }
+          },
+          rsvp: 'Interested'
         },
         {
-          _id: '123698172694',
-          name: 'Captain America',
-          profile: {
-            image: undefined
-          }
+          participantRef: {
+            _id: '123698172694',
+            name: 'Captain America',
+            profile: {
+              image: undefined
+            }
+          },
+          rsvp: 'Going'
         }
       ],
       participantCount: 2,

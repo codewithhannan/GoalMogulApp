@@ -4,10 +4,12 @@ import {
   Image,
   Dimensions,
   Text,
-  FlatList
+  FlatList,
+  TouchableOpacity
  } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
+import R from 'ramda';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
@@ -18,6 +20,7 @@ import MemberListCard from './MemberListCard';
 
 import GoalCard from '../Goal/GoalCard/GoalCard';
 import NeedCard from '../Goal/NeedCard/NeedCard';
+import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 
 // Asset
 import check from '../../asset/utils/check.png';
@@ -25,14 +28,58 @@ import check from '../../asset/utils/check.png';
 import TestEventImage from '../../asset/TestEventImage.png';
 import {
   tribeSelectTab,
-  tribeDetailClose
+  tribeDetailClose,
+  requestJoinTribe
 } from '../../redux/modules/tribe/TribeActions';
 
+// Selector
+import {
+  getUserStatus,
+  memberSelector
+} from '../../redux/modules/tribe/TribeSelector';
+
+const DEBUG_KEY = '[ UI Tribe ]';
 const { width } = Dimensions.get('window');
+const CANCEL_REQUEST_INDEX = 1;
+const CANCEL_REQUEST_OPTIONS = ['Cancel the request', 'Cancel'];
+const REQUEST_OPTIONS = ['Request to join', 'Cancel'];
 /**
  * This is the UI file for a single event.
  */
 class Tribe extends Component {
+
+  handleRequestOnPress = () => {
+    const { item, hasRequested } = this.props;
+    if (!item) return;
+    const { _id } = item;
+
+    let switchCases;
+    if (hasRequested) {
+      switchCases = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to remove request`);
+          this.props.requestJoinTribe(_id, false);
+        }]
+      ]);
+    } else {
+      switchCases = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to join the tribe`);
+          this.props.requestJoinTribe(_id, true);
+        }]
+      ]);
+    }
+
+    const requestOptions = hasRequested ? CANCEL_REQUEST_OPTIONS : REQUEST_OPTIONS;
+
+    const rsvpActionSheet = actionSheet(
+      requestOptions,
+      CANCEL_REQUEST_INDEX,
+      switchCases
+    );
+    rsvpActionSheet();
+  }
+
   // Tab related functions
   _handleIndexChange = (index) => {
     this.props.tribeSelectTab(index);
@@ -69,10 +116,10 @@ class Tribe extends Component {
 
   renderMemberStatus(item) {
     // TODO: remove test var
-    const isUserMemeber = isMember(item.members, this.props.user);
-    const tintColor = isUserMemeber ? '#2dca4a' : 'gray';
+    const { isMember, hasRequested } = this.props;
+    const tintColor = isMember ? '#2dca4a' : 'gray';
 
-    if (isUserMemeber) {
+    if (isMember) {
       return (
         <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}>
           <Image
@@ -96,8 +143,13 @@ class Tribe extends Component {
       );
     }
     // Return view to request to join
+    const requestText = hasRequested ? 'Cancel Request' : 'Request to Join';
+
     return (
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}>
+      <TouchableOpacity
+        style={styles.memberStatusContainerStyle}
+        onPress={this.handleRequestOnPress}
+      >
         <Text
           style={{
             ...styles.tribeStatusTextStyle,
@@ -105,9 +157,9 @@ class Tribe extends Component {
             color: tintColor
           }}
         >
-          Request to Join
+          {requestText}
         </Text>
-      </View>
+      </TouchableOpacity>
     );
   }
 
@@ -255,6 +307,16 @@ const styles = {
   memberStatusTextStyle: {
 
   },
+  memberStatusContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 8,
+    width: 100,
+    height: 25,
+    justifyContent: 'center',
+    borderRadius: 5,
+    backgroundColor: '#efefef',
+  },
 
   // Style for tribe info
   tribeInfoContainerStyle: {
@@ -273,7 +335,7 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { navigationState, item, feed } = state.tribe;
+  const { navigationState, item, feed, hasRequested } = state.tribe;
 
   const { routes, index } = navigationState;
   const data = ((key) => {
@@ -282,7 +344,7 @@ const mapStateToProps = state => {
         return [item];
 
       case 'members':
-        return item.members;
+        return memberSelector(state);
 
       case 'posts':
         return feed;
@@ -295,23 +357,26 @@ const mapStateToProps = state => {
     navigationState,
     item,
     user: state.user,
-    data
+    data,
+    isMember: getUserStatus(state),
+    hasRequested
   };
 };
 
-const isMember = (memberList, self) =>
-  memberList.reduce((total, curr) => {
-    if (curr._id && self._id && (curr._id.toString() === self._id.toString())) {
-      return 1;
-    }
-    return 0;
-  }, 0);
-
+// This method is replaced by TribeSelector.getUserStatus
+// const isMember = (memberList, self) =>
+//   memberList.reduce((total, curr) => {
+//     if (curr._id && self._id && (curr._id.toString() === self._id.toString())) {
+//       return 1;
+//     }
+//     return 0;
+//   }, 0);
 
 export default connect(
   mapStateToProps,
   {
     tribeSelectTab,
-    tribeDetailClose
+    tribeDetailClose,
+    requestJoinTribe
   }
 )(Tribe);

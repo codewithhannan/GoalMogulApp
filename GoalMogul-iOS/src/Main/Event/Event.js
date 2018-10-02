@@ -5,9 +5,11 @@ import {
   Dimensions,
   Text,
   FlatList,
-  ActivityIndicator
+  ActivityIndicator,
+  TouchableOpacity
  } from 'react-native';
 import { connect } from 'react-redux';
+import R from 'ramda';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
@@ -19,6 +21,7 @@ import MemberListCard from '../Tribe/MemberListCard';
 
 import GoalCard from '../Goal/GoalCard/GoalCard';
 import NeedCard from '../Goal/NeedCard/NeedCard';
+import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 
 // Asset
 import TestEventImage from '../../asset/TestEventImage.png';
@@ -29,14 +32,56 @@ import DefaultUserProfile from '../../asset/test-profile-pic.png';
 import {
   eventSelectTab,
   eventDetailClose,
-  loadMoreEventFeed
+  loadMoreEventFeed,
+  rsvpEvent
 } from '../../redux/modules/event/EventActions';
 
+// Selector
+import {
+  getUserStatus,
+  participantSelector
+} from '../../redux/modules/event/EventSelector';
+
+
+const DEBUG_KEY = '[ Component SearchBarHeader ]';
+const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
+const CANCEL_INDEX = 4;
 const { width } = Dimensions.get('window');
 /**
  * This is the UI file for a single event.
  */
 class Event extends Component {
+
+  handleRSVPOnPress = () => {
+    const { item } = this.props;
+    if (!item) return;
+    const { _id } = item;
+
+    const switchCases = switchByButtonIndex([
+      [R.equals(0), () => {
+        console.log(`${DEBUG_KEY} User chooses: Intereseted`);
+        this.props.rsvpEvent('Interested', _id);
+      }],
+      [R.equals(1), () => {
+        console.log(`${DEBUG_KEY} User chooses: Going`);
+        this.props.rsvpEvent('Going', _id);
+      }],
+      [R.equals(2), () => {
+        console.log(`${DEBUG_KEY} User chooses: Maybe`);
+        this.props.rsvpEvent('Maybe', _id);
+      }],
+      [R.equals(3), () => {
+        console.log(`${DEBUG_KEY} User chooses: Not Going`);
+        this.props.rsvpEvent('NotGoing', _id);
+      }],
+    ]);
+    const rsvpActionSheet = actionSheet(
+      RSVP_OPTIONS,
+      CANCEL_INDEX,
+      switchCases
+    );
+    rsvpActionSheet();
+  }
 
   // Tab related functions
   _handleIndexChange = (index) => {
@@ -77,19 +122,25 @@ class Event extends Component {
   }
 
   renderEventStatus() {
-    const { item } = this.props;
+    const { item, status } = this.props;
     if (!item) return <View />;
 
+    const rsvpText = status === undefined ? 'RSVP' : status;
     const eventProperty = item.isInviteOnly ? 'Private Event' : 'Public Event';
     const { eventPropertyTextStyle, eventPropertyContainerStyle } = styles;
     return (
       <View style={eventPropertyContainerStyle}>
         <Text style={eventPropertyTextStyle}>{eventProperty}</Text>
         <Dot />
-        <View style={styles.rsvpBoxContainerStyle}>
+        <TouchableOpacity
+          style={styles.rsvpBoxContainerStyle}
+          onPress={this.handleRSVPOnPress}
+        >
           <Image source={EditIcon} style={styles.rsvpIconStyle} />
-          <Text style={styles.rsvpTextStyle}>RSVP</Text>
-        </View>
+          <Text style={styles.rsvpTextStyle}>
+            {rsvpText === 'NotGoing' ? 'Not going' : rsvpText}
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -231,7 +282,7 @@ const styles = {
   // RSVP related styles
   rsvpBoxContainerStyle: {
     height: 25,
-    width: 60,
+    width: 80,
     borderRadius: 5,
     backgroundColor: '#efefef',
     alignItems: 'center',
@@ -270,7 +321,7 @@ const mapStateToProps = state => {
         return [item];
 
       case 'attendees':
-        return item.participants;
+        return participantSelector(state);
 
       case 'posts':
         return feed;
@@ -283,7 +334,8 @@ const mapStateToProps = state => {
     navigationState,
     item,
     data,
-    feedLoading
+    feedLoading,
+    status: getUserStatus(state)
   };
 };
 
@@ -293,6 +345,7 @@ export default connect(
   {
     eventSelectTab,
     eventDetailClose,
-    loadMoreEventFeed
+    loadMoreEventFeed,
+    rsvpEvent
   }
 )(Event);

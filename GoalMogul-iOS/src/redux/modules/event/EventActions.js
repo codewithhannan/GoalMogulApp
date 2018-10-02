@@ -1,18 +1,71 @@
 import { Actions } from 'react-native-router-flux';
+import { Alert } from 'react-native';
 import {
   EVENT_SWITCH_TAB,
   EVENT_DETAIL_CLOSE,
   EVENT_DETAIL_OPEN,
   EVENT_FEED_FETCH,
   EVENT_FEED_FETCH_DONE,
-  EVENT_FEED_REFRESH_DONE
+  EVENT_FEED_REFRESH_DONE,
+  EVENT_UPDATE_RSVP_STATUS,
+  EVENT_UPDATE_RSVP_STATUS_SUCCESS,
+  EVENT_UPDATE_RSVP_STATUS_FAIL,
+  EVENT_PARTICIPANT_SELECT_FILTER
 } from './EventReducers';
 
 import { api as API } from '../../middleware/api';
-import { queryBuilder } from '../../middleware/utils';
+import { queryBuilder, switchCase } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Event Actions ]';
 const BASE_ROUTE = 'secure/event';
+
+// User updates his rsvp status for an event
+export const rsvpEvent = (option, eventId) => (dispatch, getState) => {
+  const { token, userId } = getState().user;
+
+  const onSuccess = (res) => {
+    dispatch({
+      type: EVENT_UPDATE_RSVP_STATUS_SUCCESS,
+      payload: {
+        participantRef: {
+          _id: userId
+        },
+        rsvp: option
+      }
+    });
+    console.log(`${DEBUG_KEY}: rsvp success with res: `, res);
+  };
+
+  const onError = (err) => {
+    dispatch({
+      type: EVENT_UPDATE_RSVP_STATUS_FAIL
+    });
+    Alert.alert(
+      'RSVP failed',
+      'Please try again later'
+    );
+    console.log(`${DEBUG_KEY}: rsvp failed with err: `, err);
+  };
+
+  API
+    .put(`${BASE_ROUTE}/rsvp`, { eventId, rsvpStatus: option }, token)
+    .then((res) => {
+      if (!res.message) {
+        return onSuccess();
+      }
+      onError();
+    })
+    .catch((err) => {
+      onError(err);
+    });
+};
+
+export const eventSelectParticipantsFilter = (option) => (dispatch) => {
+  dispatch({
+    type: EVENT_PARTICIPANT_SELECT_FILTER,
+    payload: option
+  });
+};
 
 export const eventSelectTab = (index) => (dispatch) => {
   dispatch({

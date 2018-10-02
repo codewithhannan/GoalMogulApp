@@ -282,7 +282,7 @@ export const changeFilter = (tab, filterType, value) => (dispatch) => {
  * @params tab: one of ['goals', 'posts', 'needs']
  */
 export const handleTabRefresh = (tab) => (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
   const { filter, limit } = _.get(getState().profile, tab);
 
   dispatch({
@@ -291,7 +291,7 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
       type: tab
     }
   });
-  loadOneTab(tab, 0, limit, profileFilterAdapter(filter), token, (data) => {
+  loadOneTab(tab, 0, limit, { ...profileFilterAdapter(filter), userId }, token, (data) => {
     dispatch({
       type: PROFILE_REFRESH_TAB_DONE,
       payload: {
@@ -310,14 +310,14 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
  * @params tab: one of ['goals', 'posts', 'needs']
  */
 export const handleProfileTabOnLoadMore = (tab) => (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
   const { filter, skip, limit, hasNextPage } = _.get(getState().profile, tab);
 
   if (!hasNextPage && hasNextPage !== undefined) {
     return;
   }
 
-  loadOneTab(tab, skip, limit, profileFilterAdapter(filter), token, (data) => {
+  loadOneTab(tab, skip, limit, { ...profileFilterAdapter(filter), userId }, token, (data) => {
     dispatch({
       type: PROFILE_FETCH_TAB_DONE,
       payload: {
@@ -335,10 +335,21 @@ export const handleProfileTabOnLoadMore = (tab) => (dispatch, getState) => {
  * Original field for orderBy should be ['ascending', 'descending'],
  * server accpeted types are ['asc', 'desc']
  */
-const profileFilterAdapter = (filter) => ({
-    ...filter,
-    orderBy: PROFILE_GOAL_FILTER_CONST.orderBy[filter.orderBy]
-  });
+const profileFilterAdapter = (filter) => {
+  const newFilter = _.cloneDeep(filter);
+  // const sortOrder = _.clone(newFilter.orderBy);
+  const sortOrder = PROFILE_GOAL_FILTER_CONST.orderBy[filter.orderBy];
+  const categories = filter.catergory;
+  console.log('categories are: ', categories);
+
+  delete newFilter.orderBy;
+  delete newFilter.catergory;
+  return {
+    ...newFilter,
+    sortOrder,
+    categories
+  };
+};
 
 /**
  * Basic API to load one tab based on params

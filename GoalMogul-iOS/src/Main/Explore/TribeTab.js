@@ -67,11 +67,14 @@ const mapStateToProps = state => {
       picture: '',
       members: [
         {
-          _id: '1203798700',
-          name: 'Jia Zeng',
-          profile: {
-            image: undefined
-          }
+          memberRef: {
+            _id: '1203798700',
+            name: 'Jia Zeng',
+            profile: {
+              image: undefined
+            }
+          },
+          category: 'Member'
         }
       ],
       memberCount: 10,
@@ -87,11 +90,14 @@ const mapStateToProps = state => {
       picture: '',
       members: [
         {
-          _id: '1203798705',
-          name: 'Super Andy',
-          profile: {
-            image: undefined
-          }
+          memberRef: {
+            _id: '1203798705',
+            name: 'Super Andy',
+            profile: {
+              image: undefined
+            }
+          },
+          category: 'Member'
         }
       ],
       memberCount: 19,

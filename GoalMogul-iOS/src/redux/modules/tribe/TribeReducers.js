@@ -16,7 +16,10 @@ const INITIAL_STATE = {
   feedLoading: false,
   hasNextPage: undefined,
   skip: 0,
-  limit: 100
+  limit: 100,
+  hasRequested: undefined,
+  // ['Admin', 'Member', 'JoinRequester', 'Invitee']
+  membersFilter: 'Member'
 };
 
 export const TRIBE_SWITCH_TAB = 'tribe_switch_tab';
@@ -25,6 +28,11 @@ export const TRIBE_DETAIL_CLOSE = 'tribe_detail_close';
 export const TRIBE_FEED_FETCH = 'tribe_feed_fetch';
 export const TRIBE_FEED_FETCH_DONE = 'tribe_feed_fetch_done';
 export const TRIBE_FEED_REFRESH_DONE = 'tribe_feed_refresh_done';
+export const TRIBE_REQUEST_JOIN = 'tribe_request_join';
+export const TRIBE_REQUEST_JOIN_SUCCESS = 'tribe_request_join_success';
+export const TRIBE_REQUEST_JOIN_FAIL = 'tribe_request_join_fail';
+export const TRIBE_REQUEST_CANCEL_JOIN_SUCCESS = 'tribe_request_cancel_join_success';
+export const TRIBE_MEMBER_SELECT_FILTER = 'tribe_member_select_filter';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -83,6 +91,21 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...INITIAL_STATE
       };
+    }
+
+    case TRIBE_REQUEST_JOIN_SUCCESS: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'hasRequested', true);
+    }
+
+    case TRIBE_REQUEST_CANCEL_JOIN_SUCCESS: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'hasRequested', false);
+    }
+
+    case TRIBE_MEMBER_SELECT_FILTER: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'membersFilter', action.payload);
     }
 
     default:
