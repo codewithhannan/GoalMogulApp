@@ -107,7 +107,7 @@ export default (state = INITIAL_STATE, action) => {
       } else {
         // If user has rsvped before
         participants = participants.map((participant) => {
-          if (participant.participantRef === newParticipant.participantRef) {
+          if (participant.participantRef._id === newParticipant.participantRef._id) {
             isInEvent = true;
             return newParticipant;
           }

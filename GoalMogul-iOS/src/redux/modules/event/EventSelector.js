@@ -1,6 +1,11 @@
 import { createSelector } from 'reselect';
 
-const getEventParticipants = (state) => state.event.item.participants;
+const getEventParticipants = (state) => {
+  if (state.event.item) {
+    return state.event.item.participants;
+  }
+  return [];
+};
 const getUserId = (state) => state.user.userId;
 
 /*
@@ -14,7 +19,7 @@ export const getUserStatus = createSelector(
 
     let status;
     participants.map((participant) => {
-      if (participant.participantRef === userId) {
+      if (participant.participantRef._id === userId) {
         status = participant.rsvp;
       }
       return '';

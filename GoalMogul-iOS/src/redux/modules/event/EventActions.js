@@ -26,7 +26,9 @@ export const rsvpEvent = (option, eventId) => (dispatch, getState) => {
     dispatch({
       type: EVENT_UPDATE_RSVP_STATUS_SUCCESS,
       payload: {
-        participantRef: userId,
+        participantRef: {
+          _id: userId
+        },
         rsvp: option
       }
     });
