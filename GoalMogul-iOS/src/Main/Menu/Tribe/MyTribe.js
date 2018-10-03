@@ -16,8 +16,7 @@ import Divider from '../../Common/Divider';
 import About from './MyTribeAbout';
 import MemberListCard from '../../Tribe/MemberListCard';
 
-import GoalCard from '../../Goal/GoalCard/GoalCard';
-import NeedCard from '../../Goal/NeedCard/NeedCard';
+import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
 
 // Asset
 import check from '../../../asset/utils/check.png';
@@ -173,22 +172,16 @@ class MyTribe extends Component {
       }
 
       case 'posts': {
-        if (props.item.type === 'need') {
-          return <NeedCard item={props.item} key={props.index} />;
-        } else if (props.item.type === 'goal') {
-          return <GoalCard item={props.item} key={props.index} />;
-        }
         return (
-          <View
+          <ProfilePostCard
             item={props.item}
             key={props.index}
-            style={{ height: 20, backgroundColor: 'black' }}
           />
         );
       }
 
       case 'members': {
-        return <MemberListCard item={props.item} key={props.index} />;
+        return <MemberListCard item={props.item.memberRef} key={props.index} />;
       }
 
       default:

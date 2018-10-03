@@ -20,8 +20,7 @@ import About from './About';
 import MemberListCard from './MemberListCard';
 import MemberFilterBar from './MemberFilterBar';
 
-import GoalCard from '../Goal/GoalCard/GoalCard';
-import NeedCard from '../Goal/NeedCard/NeedCard';
+import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 
 // Asset
@@ -231,16 +230,10 @@ class Tribe extends Component {
       }
 
       case 'posts': {
-        if (props.item.type === 'need') {
-          return <NeedCard item={props.item} key={props.index} />;
-        } else if (props.item.type === 'goal') {
-          return <GoalCard item={props.item} key={props.index} />;
-        }
         return (
-          <View
+          <ProfilePostCard
             item={props.item}
             key={props.index}
-            style={{ height: 20, backgroundColor: 'black' }}
           />
         );
       }
