@@ -10,6 +10,7 @@ import {
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import R from 'ramda';
+import { MenuProvider } from 'react-native-popup-menu';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
@@ -17,6 +18,7 @@ import TabButtonGroup from '../Common/TabButtonGroup';
 import Divider from '../Common/Divider';
 import About from './About';
 import MemberListCard from './MemberListCard';
+import MemberFilterBar from './MemberFilterBar';
 
 import GoalCard from '../Goal/GoalCard/GoalCard';
 import NeedCard from '../Goal/NeedCard/NeedCard';
@@ -106,7 +108,7 @@ class Tribe extends Component {
       : 'Private Tribe';
 
     return (
-      <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 10 }}>
+      <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 10, alignItems: 'center' }}>
         <Text style={styles.tribeStatusTextStyle}>{tribeVisibility}</Text>
         <Divider orthogonal height={12} borderColor='gray' />
         {this.renderMemberStatus(item)}
@@ -114,7 +116,7 @@ class Tribe extends Component {
     );
   }
 
-  renderMemberStatus(item) {
+  renderMemberStatus() {
     // TODO: remove test var
     const { isMember, hasRequested } = this.props;
     const tintColor = isMember ? '#2dca4a' : 'gray';
@@ -183,6 +185,9 @@ class Tribe extends Component {
 
   renderTribeOverview(item) {
     const { name } = item;
+    const filterBar = this.props.tab === 'members'
+      ? <MemberFilterBar />
+      : '';
 
     return (
       <View>
@@ -212,6 +217,7 @@ class Tribe extends Component {
             navigationState: this.props.navigationState
           })
         }
+        {filterBar}
       </View>
     );
   }
@@ -253,15 +259,17 @@ class Tribe extends Component {
     if (!item) return <View />;
 
     return (
-      <View style={{ flex: 1 }}>
-        <SearchBarHeader backButton onBackPress={() => this.props.tribeDetailClose()} />
-        <FlatList
-          data={data}
-          renderItem={this.renderItem}
-          keyExtractor={(i) => i._id}
-          ListHeaderComponent={this.renderTribeOverview(item)}
-        />
-      </View>
+      <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+        <View style={{ flex: 1 }}>
+          <SearchBarHeader backButton onBackPress={() => this.props.tribeDetailClose()} />
+          <FlatList
+            data={data}
+            renderItem={this.renderItem}
+            keyExtractor={(i) => i._id}
+            ListHeaderComponent={this.renderTribeOverview(item)}
+          />
+        </View>
+      </MenuProvider>
     );
   }
 }
@@ -331,6 +339,10 @@ const styles = {
   },
   tribeCountTextStyle: {
     fontWeight: '600'
+  },
+  backdrop: {
+    backgroundColor: 'gray',
+    opacity: 0.5,
   }
 };
 
@@ -359,7 +371,8 @@ const mapStateToProps = state => {
     user: state.user,
     data,
     isMember: getUserStatus(state),
-    hasRequested
+    hasRequested,
+    tab: routes[index].key
   };
 };
 

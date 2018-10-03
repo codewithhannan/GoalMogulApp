@@ -10,6 +10,7 @@ import {
  } from 'react-native';
 import { connect } from 'react-redux';
 import R from 'ramda';
+import { MenuProvider } from 'react-native-popup-menu';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
@@ -18,6 +19,7 @@ import About from './About';
 import StackedAvatars from '../Common/StackedAvatars';
 import Dot from '../Common/Dot';
 import MemberListCard from '../Tribe/MemberListCard';
+import ParticipantFilterBar from './ParticipantFilterBar';
 
 import GoalCard from '../Goal/GoalCard/GoalCard';
 import NeedCard from '../Goal/NeedCard/NeedCard';
@@ -170,6 +172,9 @@ class Event extends Component {
 
   renderEventOverview(item) {
     const { title } = item;
+    const filterBar = this.props.tab === 'attendees'
+      ? <ParticipantFilterBar />
+      : '';
 
     return (
       <View>
@@ -196,6 +201,7 @@ class Event extends Component {
             navigationState: this.props.navigationState
           })
         }
+        {filterBar}
       </View>
     );
   }
@@ -238,17 +244,19 @@ class Event extends Component {
     if (!item) return <View />;
 
     return (
-      <View style={{ flex: 1 }}>
-        <SearchBarHeader backButton onBackPress={() => this.props.eventDetailClose()} />
-        <FlatList
-          data={data}
-          renderItem={this.renderItem}
-          keyExtractor={(i) => i._id}
-          ListHeaderComponent={this.renderEventOverview(item)}
-          ListFooterComponent={this.renderFooter}
-        />
+      <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+        <View style={{ flex: 1 }}>
+          <SearchBarHeader backButton onBackPress={() => this.props.eventDetailClose()} />
+          <FlatList
+            data={data}
+            renderItem={this.renderItem}
+            keyExtractor={(i) => i._id}
+            ListHeaderComponent={this.renderEventOverview(item)}
+            ListFooterComponent={this.renderFooter}
+          />
 
-      </View>
+        </View>
+      </MenuProvider>
     );
   }
 }
@@ -308,6 +316,10 @@ const styles = {
   eventInfoBasicTextStyle: {
     fontSize: 11,
     fontWeight: '300'
+  },
+  backdrop: {
+    backgroundColor: 'gray',
+    opacity: 0.5,
   }
 };
 
@@ -335,7 +347,8 @@ const mapStateToProps = state => {
     item,
     data,
     feedLoading,
-    status: getUserStatus(state)
+    status: getUserStatus(state),
+    tab: routes[index].key
   };
 };
 

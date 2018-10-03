@@ -75,9 +75,29 @@ const mapStateToProps = state => {
             }
           },
           category: 'Member'
+        },
+        {
+          memberRef: {
+            _id: '1203798701',
+            name: 'Aditya Zheng',
+            profile: {
+              image: undefined
+            }
+          },
+          category: 'Admin'
+        },
+        {
+          memberRef: {
+            _id: '1203798703',
+            name: 'Requester',
+            profile: {
+              image: undefined
+            }
+          },
+          category: 'JoinRequester'
         }
       ],
-      memberCount: 10,
+      memberCount: 3,
     },
     {
       _id: '123170293817023',
