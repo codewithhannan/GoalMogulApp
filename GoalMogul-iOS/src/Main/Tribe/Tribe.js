@@ -246,7 +246,7 @@ class Tribe extends Component {
       }
 
       case 'members': {
-        return <MemberListCard item={props.item} key={props.index} />;
+        return <MemberListCard item={props.item.memberRef} key={props.index} />;
       }
 
       default:

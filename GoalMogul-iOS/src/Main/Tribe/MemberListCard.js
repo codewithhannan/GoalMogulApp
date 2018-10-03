@@ -80,16 +80,16 @@ class MemberListCard extends Component {
   }
 
   render() {
-    const { memberRef } = this.props.item;
-    if (!memberRef) return '';
+    const { item } = this.props;
+    if (!item) return '';
 
     return (
       <View style={styles.containerStyle}>
-        {this.renderProfileImage(memberRef)}
+        {this.renderProfileImage(item)}
 
         <View style={styles.bodyContainerStyle}>
-          {this.renderInfo(memberRef)}
-          {this.renderOccupation(memberRef)}
+          {this.renderInfo(item)}
+          {this.renderOccupation(item)}
           <Text
             style={styles.jobTitleTextStyle}
             numberOfLines={1}
@@ -97,7 +97,7 @@ class MemberListCard extends Component {
           >
             380 MUTUAL FRIENDS
           </Text>
-          {this.renderAdditionalInfo(memberRef)}
+          {this.renderAdditionalInfo(item)}
         </View>
       </View>
     );

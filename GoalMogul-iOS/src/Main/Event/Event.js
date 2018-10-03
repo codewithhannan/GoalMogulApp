@@ -231,7 +231,7 @@ class Event extends Component {
       }
 
       case 'attendees': {
-        return <MemberListCard item={props.item} key={props.index} />;
+        return <MemberListCard item={props.item.participantRef} key={props.index} />;
       }
 
       default:
