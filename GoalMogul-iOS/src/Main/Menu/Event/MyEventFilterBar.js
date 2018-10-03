@@ -77,7 +77,7 @@ class MyEventFilterBar extends Component {
           >
             <View style={detailContainerStyle}>
               <Text style={textStyle}>
-                Status
+                RSVP
               </Text>
               <Image style={caretStyle} source={dropDown} />
             </View>
@@ -118,7 +118,7 @@ class MyEventFilterBar extends Component {
           >
             <View style={detailContainerStyle}>
               <Text style={textStyle}>
-                Status
+                Filter By
               </Text>
               <Image style={caretStyle} source={dropDown} />
             </View>

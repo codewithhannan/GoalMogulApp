@@ -10,6 +10,7 @@ import {
  } from 'react-native';
 import { connect } from 'react-redux';
 import R from 'ramda';
+import { MenuProvider } from 'react-native-popup-menu';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
@@ -18,9 +19,9 @@ import About from './About';
 import StackedAvatars from '../Common/StackedAvatars';
 import Dot from '../Common/Dot';
 import MemberListCard from '../Tribe/MemberListCard';
+import ParticipantFilterBar from './ParticipantFilterBar';
 
-import GoalCard from '../Goal/GoalCard/GoalCard';
-import NeedCard from '../Goal/NeedCard/NeedCard';
+import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 
 // Asset
@@ -170,6 +171,9 @@ class Event extends Component {
 
   renderEventOverview(item) {
     const { title } = item;
+    const filterBar = this.props.tab === 'attendees'
+      ? <ParticipantFilterBar />
+      : '';
 
     return (
       <View>
@@ -196,6 +200,7 @@ class Event extends Component {
             navigationState: this.props.navigationState
           })
         }
+        {filterBar}
       </View>
     );
   }
@@ -210,22 +215,16 @@ class Event extends Component {
       }
 
       case 'posts': {
-        if (props.item.type === 'need') {
-          return <NeedCard item={props.item} key={props.index} />;
-        } else if (props.item.type === 'goal') {
-          return <GoalCard item={props.item} key={props.index} />;
-        }
         return (
-          <View
+          <ProfilePostCard
             item={props.item}
             key={props.index}
-            style={{ height: 20, backgroundColor: 'black' }}
           />
         );
       }
 
       case 'attendees': {
-        return <MemberListCard item={props.item} key={props.index} />;
+        return <MemberListCard item={props.item.participantRef} key={props.index} />;
       }
 
       default:
@@ -238,17 +237,19 @@ class Event extends Component {
     if (!item) return <View />;
 
     return (
-      <View style={{ flex: 1 }}>
-        <SearchBarHeader backButton onBackPress={() => this.props.eventDetailClose()} />
-        <FlatList
-          data={data}
-          renderItem={this.renderItem}
-          keyExtractor={(i) => i._id}
-          ListHeaderComponent={this.renderEventOverview(item)}
-          ListFooterComponent={this.renderFooter}
-        />
+      <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+        <View style={{ flex: 1 }}>
+          <SearchBarHeader backButton onBackPress={() => this.props.eventDetailClose()} />
+          <FlatList
+            data={data}
+            renderItem={this.renderItem}
+            keyExtractor={(i) => i._id}
+            ListHeaderComponent={this.renderEventOverview(item)}
+            ListFooterComponent={this.renderFooter}
+          />
 
-      </View>
+        </View>
+      </MenuProvider>
     );
   }
 }
@@ -308,6 +309,10 @@ const styles = {
   eventInfoBasicTextStyle: {
     fontSize: 11,
     fontWeight: '300'
+  },
+  backdrop: {
+    backgroundColor: 'gray',
+    opacity: 0.5,
   }
 };
 
@@ -324,7 +329,8 @@ const mapStateToProps = state => {
         return participantSelector(state);
 
       case 'posts':
-        return feed;
+      // TODO: delete testData
+        return [...feed, ...testData];
 
       default: return [];
     }
@@ -335,7 +341,8 @@ const mapStateToProps = state => {
     item,
     data,
     feedLoading,
-    status: getUserStatus(state)
+    status: getUserStatus(state),
+    tab: routes[index].key
   };
 };
 
@@ -349,3 +356,103 @@ export default connect(
     rsvpEvent
   }
 )(Event);
+
+// TODO: delete
+const testData = [
+  {
+    _id: '5b5677e2e2f7ceccddb56067',
+    created: '2018-07-24T00:50:42.534Z',
+    lastUpdated: '2018-07-24T00:50:42.534Z',
+    owner: {
+        _id: '5b17781ebec96d001a409960',
+        name: 'jia zeng',
+        profile: {
+            views: 0,
+            pointsEarned: 0,
+            elevatorPitch: '',
+            occupation: 'test'
+        }
+    },
+    postType: 'ShareGoal',
+    privacy: 'friends',
+    __v: 0,
+    content: {
+      text: 'This is a test post.',
+      links: [],
+      tags: []
+    },
+    needRef: {
+
+    },
+    goalRef: {
+      __v: 0,
+      _id: '5b502211e500e3001afd1e20',
+      category: 'General',
+      created: '2018-07-19T05:30:57.531Z',
+      details: {
+        tags: [],
+        text: 'This is detail'
+      },
+      feedInfo: {
+        _id: '5b502211e500e3001afd1e18',
+        publishDate: '2018-07-19T05:30:57.531Z',
+      },
+      lastUpdated: '2018-07-19T05:30:57.531Z',
+      needs: [{
+        created: '2018-07-19T05:30:57.531Z',
+        description: 'introduction to someone from the Bill and Melinda Gates Foundation',
+        isCompleted: false,
+        order: 0,
+      },
+      {
+        created: '2018-07-19T05:30:57.531Z',
+        description: 'Get in contact with Nuclear experts',
+        isCompleted: false,
+        order: 1,
+      },
+      {
+        created: '2018-07-19T05:30:57.531Z',
+        description: 'Legal & Safety experts who have worked with the United States',
+        isCompleted: false,
+        order: 2,
+      }],
+      owner: {
+        _id: '5b17781ebec96d001a409960',
+        name: 'jia zeng',
+        profile: {
+          elevatorPitch: 'This is my elevatorPitch',
+          occupation: 'Software Engineer',
+          pointsEarned: 10,
+          views: 0,
+        },
+      },
+      priority: 3,
+      privacy: 'friends',
+      steps: [],
+      title: 'Establish a LMFBR near Westport, Connecticut by 2020',
+    }
+  },
+  {
+    _id: '5b5677e2e2f7ceccddb56068',
+    created: '2018-07-24T00:50:42.534Z',
+    lastUpdated: '2018-07-24T00:50:42.534Z',
+    owner: {
+        _id: '5b17781ebec96d001a409960',
+        name: 'jia zeng',
+        profile: {
+            views: 0,
+            pointsEarned: 0,
+            elevatorPitch: '',
+            occupation: 'test'
+        }
+    },
+    postType: 'General',
+    privacy: 'friends',
+    __v: 0,
+    content: {
+      text: 'This is a test post with content.',
+      links: [],
+      tags: []
+    }
+  }
+];

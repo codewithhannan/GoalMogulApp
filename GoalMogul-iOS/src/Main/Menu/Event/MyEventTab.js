@@ -123,18 +123,24 @@ const mapStateToProps = state => {
       picture: '',
       participants: [
         {
-          _id: '123698172693',
-          name: 'Batman',
-          profile: {
-            image: undefined
-          }
+          participantRef: {
+            _id: '123698172693',
+            name: 'Batman',
+            profile: {
+              image: undefined
+            }
+          },
+          rsvp: 'Invited'
         },
         {
-          _id: '123698172694',
-          name: 'Captain America',
-          profile: {
-            image: undefined
-          }
+          participantRef: {
+            _id: '123698172694',
+            name: 'Captain America',
+            profile: {
+              image: undefined
+            }
+          },
+          rsvp: 'Interested'
         }
       ],
       participantCount: 2,

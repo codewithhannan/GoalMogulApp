@@ -32,9 +32,9 @@ export const getUserStatus = createSelector(
 export const memberSelector = createSelector(
   // Select participants based on the filter option
   [getMembersFilter, getTribeMembers],
-  (filter, members) => {
+  (filterOption, members) => {
     if (!members) return '';
 
-    return members.filter((member) => member.category === filter);
+    return members.filter((member) => member.category === filterOption);
   }
 );

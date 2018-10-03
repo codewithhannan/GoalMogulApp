@@ -15,8 +15,8 @@ import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
 // Actions
 
 class MemberListCard extends Component {
-  renderProfileImage() {
-    const { image } = this.props.item.profile;
+  renderProfileImage(item) {
+    const { image } = item.profile;
     let profileImage = (
       <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />
     );
@@ -27,8 +27,8 @@ class MemberListCard extends Component {
     return profileImage;
   }
 
-  renderInfo() {
-    const { name } = this.props.item;
+  renderInfo(item) {
+    const { name } = item;
     return (
       <View style={styles.infoContainerStyle}>
         <View style={{ flex: 1, flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
@@ -63,8 +63,8 @@ class MemberListCard extends Component {
     // );
   }
 
-  renderOccupation() {
-    const { profile } = this.props.item;
+  renderOccupation(item) {
+    const { profile } = item;
     if (profile.occupation) {
       return (
         <Text
@@ -80,13 +80,16 @@ class MemberListCard extends Component {
   }
 
   render() {
+    const { item } = this.props;
+    if (!item) return '';
+
     return (
       <View style={styles.containerStyle}>
-        {this.renderProfileImage()}
+        {this.renderProfileImage(item)}
 
         <View style={styles.bodyContainerStyle}>
-          {this.renderInfo()}
-          {this.renderOccupation()}
+          {this.renderInfo(item)}
+          {this.renderOccupation(item)}
           <Text
             style={styles.jobTitleTextStyle}
             numberOfLines={1}
@@ -94,7 +97,7 @@ class MemberListCard extends Component {
           >
             380 MUTUAL FRIENDS
           </Text>
-          {this.renderAdditionalInfo()}
+          {this.renderAdditionalInfo(item)}
         </View>
       </View>
     );

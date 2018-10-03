@@ -19,6 +19,7 @@ import MemberListCard from '../../Tribe/MemberListCard';
 
 import GoalCard from '../../Goal/GoalCard/GoalCard';
 import NeedCard from '../../Goal/NeedCard/NeedCard';
+import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
 
 // Asset
 import TestEventImage from '../../../asset/TestEventImage.png';
@@ -159,22 +160,16 @@ class MyEvent extends Component {
       }
 
       case 'posts': {
-        if (props.item.type === 'need') {
-          return <NeedCard item={props.item} key={props.index} />;
-        } else if (props.item.type === 'goal') {
-          return <GoalCard item={props.item} key={props.index} />;
-        }
         return (
-          <View
+          <ProfilePostCard
             item={props.item}
             key={props.index}
-            style={{ height: 20, backgroundColor: 'black' }}
           />
         );
       }
 
       case 'attendees': {
-        return <MemberListCard item={props.item} key={props.index} />;
+        return <MemberListCard item={props.item.participantRef} key={props.index} />;
       }
 
       default:

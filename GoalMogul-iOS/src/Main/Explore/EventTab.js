@@ -90,7 +90,17 @@ const mapStateToProps = state => {
             }
           },
           rsvp: 'Going'
-        }
+        },
+        {
+          participantRef: {
+            _id: '1236981798190287',
+            name: 'Maybe',
+            profile: {
+              image: undefined
+            }
+          },
+          rsvp: 'Maybe'
+        },
       ],
       participantCount: 2,
     },
