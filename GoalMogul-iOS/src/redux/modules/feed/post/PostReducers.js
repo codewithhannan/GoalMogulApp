@@ -21,6 +21,22 @@ const INITIAL_STATE = {
   },
   newPost: {
     ...NEW_POST_INITIAL_STATE
+  },
+  // Post detail in meet tab
+  postMeetTab: {
+
+  },
+  // Post detail in notification tab
+  postNotificationTab: {
+
+  },
+  // Post detail in explore tab
+  exploreTab: {
+
+  },
+  // Post detail in chatTab
+  chatTab: {
+
   }
 };
 
@@ -52,7 +68,14 @@ export default (state = INITIAL_STATE, action) => {
 
     case POST_DETAIL_OPEN: {
       const newState = _.cloneDeep(state);
-      return _.set(newState, 'post', { ...action.payload });
+      const {
+        post,
+        tab
+      } = action.payload;
+      if (!tab) {
+        return _.set(newState, 'post', { ...post });
+      }
+      return _.set(newState, `${post}${capitalizeWord(tab)}`, { ...post });
     }
 
     /**
@@ -65,12 +88,14 @@ export default (state = INITIAL_STATE, action) => {
 
     case LIKE_POST:
     case UNLIKE_POST: {
-      const { id, likeId } = action.payload;
+      const { id, likeId, tab } = action.payload;
       let newState = _.cloneDeep(state);
 
-      const { post } = newState;
+      const path = !tab ? 'post' : `post${capitalizeWord(tab)}`;
+      const post = _.get(newState, path);
+
       if (post._id && post._id.toString() === id.toString()) {
-        newState = _.set(newState, 'post.maybeLikeRef', likeId);
+        newState = _.set(newState, `${path}.maybeLikeRef`, likeId);
       }
       return newState;
     }
@@ -98,4 +123,9 @@ export default (state = INITIAL_STATE, action) => {
     default:
       return { ...state };
   }
+};
+
+const capitalizeWord = (word) => {
+  if (!word) return '';
+  word.replace(/^\w/, c => c.toUpperCase());
 };

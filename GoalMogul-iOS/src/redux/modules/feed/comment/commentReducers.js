@@ -12,16 +12,33 @@ import {
   UNLIKE_COMMENT
 } from '../../like/LikeReducers';
 
-/**
- * This reducer is servered as denormalized comment stores
- */
-const INITIAL_STATE = {
+const COMMENT_INITIAL_STATE = {
   data: [],
   transformedComments: [],
   skip: 0,
   limit: 20,
   loading: false,
   hasNextPage: undefined
+};
+/**
+ * This reducer is servered as denormalized comment stores
+ */
+const INITIAL_STATE = {
+  homeTab: {
+    ...COMMENT_INITIAL_STATE
+  },
+  meetTab: {
+    ...COMMENT_INITIAL_STATE
+  },
+  notificationTab: {
+    ...COMMENT_INITIAL_STATE
+  },
+  exploreTab: {
+    ...COMMENT_INITIAL_STATE
+  },
+  chatTab: {
+    ...COMMENT_INITIAL_STATE
+  }
 };
 
 export const COMMENT_LOAD = 'comment_load';
@@ -37,9 +54,9 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     // TODO: clear state on GoalDetailCard close
     case GOAL_DETAIL_CLOSE: {
-      return {
-        ...INITIAL_STATE
-      };
+      const { tab } = action.payload;
+      const path = !tab ? 'homeTab' : `${tab}`;
+      return _.set(state, `${path}`, { ...COMMENT_INITIAL_STATE });
     }
 
     // load more child comments
@@ -52,53 +69,57 @@ export default (state = INITIAL_STATE, action) => {
 
     // following switches are to handle loading Comments
     case COMMENT_LOAD: {
-      // const { type } = action.payload;
-      let newState = _.cloneDeep(state);
-      return _.set(newState, 'loading', true);
+      const { tab } = action.payload;
+      const newState = _.cloneDeep(state);
+      const path = !tab ? 'homeTab' : `${tab}`;
+      return _.set(newState, `${path}.loading`, true);
     }
 
     case COMMENT_REFRESH_DONE: {
-      const { skip, data, hasNextPage, type } = action.payload;
+      const { skip, data, hasNextPage, tab } = action.payload;
+      const path = !tab ? 'homeTab' : `${tab}`;
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, 'loading', false);
+      newState = _.set(newState, `${path}.loading`, false);
 
       if (skip !== undefined) {
-        newState = _.set(newState, 'skip', skip);
+        newState = _.set(newState, `${path}.skip`, skip);
       }
-      newState = _.set(newState, 'hasNextPage', hasNextPage);
-      newState = _.set(newState, 'data', data);
+      newState = _.set(newState, `${path}.hasNextPage`, hasNextPage);
+      newState = _.set(newState, `${path}.data`, data);
 
       // A dump way to transform all comments to comments with childComments
       const transformedComments = transformComments(data);
-      return _.set(newState, 'transformedComments', transformedComments);
+      return _.set(newState, `${path}.transformedComments`, transformedComments);
     }
 
     case COMMENT_LOAD_DONE: {
-      const { skip, data, hasNextPage } = action.payload;
+      const { skip, data, hasNextPage, tab } = action.payload;
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, 'loading', false);
+      const path = !tab ? 'homeTab' : `${tab}`;
+      newState = _.set(newState, `${path}.loading`, false);
 
       if (skip !== undefined) {
-        newState = _.set(newState, 'skip', skip);
+        newState = _.set(newState, `${path}.skip`, skip);
       }
-      newState = _.set(newState, 'hasNextPage', hasNextPage);
-      const oldData = _.get(newState, 'data');
-      return _.set(newState, 'data', arrayUnique(oldData.concat(data)));
+      newState = _.set(newState, `${path}.hasNextPage`, hasNextPage);
+      const oldData = _.get(newState, `${path}.data`);
+      return _.set(newState, `${path}.data`, arrayUnique(oldData.concat(data)));
     }
 
     // User likes a comment or User unlikes a comment
     case UNLIKE_COMMENT:
     case LIKE_COMMENT: {
-      const { id, likeId } = action.payload;
+      const { id, likeId, tab } = action.payload;
       console.log(`${action.type} comment, id is: ${id}, likeId is: ${likeId}`);
 
       let newState = _.cloneDeep(state);
+      const path = !tab ? 'homeTab' : `${tab}`;
       // Update original comments
-      const newData = updateLike(_.get(newState, 'data'), id, likeId);
+      const newData = updateLike(_.get(newState, `${path}.data`), id, likeId);
       // Update transformed comments
       const transformedComments = transformComments(newData);
-      newState = _.set(newState, 'data', newData);
-      return _.set(newState, 'transformedComments', transformedComments);
+      newState = _.set(newState, `${path}.data`, newData);
+      return _.set(newState, `${path}.transformedComments`, transformedComments);
     }
 
     default:

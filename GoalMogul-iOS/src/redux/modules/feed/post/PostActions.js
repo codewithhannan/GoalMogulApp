@@ -15,22 +15,30 @@ import ImageUtils from '../../../../Utils/ImageUtils';
 
 const DEBUG_KEY = '[ Action Post ]';
 
+const capitalizeWord = (word) => {
+  if (!word) return '';
+  word.replace(/^\w/, c => c.toUpperCase());
+};
+
 // open post detail
-export const openPostDetail = (post) => (dispatch) => {
+export const openPostDetail = (post, tab) => (dispatch) => {
   dispatch({
     type: POST_DETAIL_OPEN,
-    payload: post
+    payload: post,
+    tab
   });
 
-  Actions.push('post');
+  const scene = !tab ? 'post' : `post${capitalizeWord(tab)}`;
+  Actions.push(`${scene}`);
 };
 
 // close post detail
-export const closePostDetail = () => (dispatch) => {
+export const closePostDetail = (tab) => (dispatch) => {
   Actions.pop();
 
   dispatch({
     type: POST_DETAIL_CLOSE,
+    tab
   });
 };
 

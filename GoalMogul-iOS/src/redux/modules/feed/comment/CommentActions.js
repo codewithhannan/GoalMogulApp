@@ -222,14 +222,15 @@ export const onSuggestionItemSelect = (item) => (dispatch) => {
  * NOTE: goal feed and activity feed share the same constants with different
  * input on type field
  */
-export const refreshComments = (parentId, parentType) => (dispatch, getState) => {
+export const refreshComments = (parentId, parentType, tab) => (dispatch, getState) => {
   const { token } = getState().user;
   const { limit, hasNextPage } = getState().comment;
   if (hasNextPage === false) {
     return;
   }
   dispatch({
-    type: COMMENT_LOAD
+    type: COMMENT_LOAD,
+    tab
   });
   loadComments(0, limit, token, { parentId, parentType }, (data) => {
     dispatch({
@@ -239,7 +240,8 @@ export const refreshComments = (parentId, parentType) => (dispatch, getState) =>
         data,
         skip: data.length,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        tab
       }
     });
   }, () => {
@@ -247,14 +249,15 @@ export const refreshComments = (parentId, parentType) => (dispatch, getState) =>
   });
 };
 
-export const loadMoreComments = (parentId, parentType) => (dispatch, getState) => {
+export const loadMoreComments = (parentId, parentType, tab) => (dispatch, getState) => {
   const { token } = getState().user;
   const { skip, limit, hasNextPage } = getState().comment;
   if (hasNextPage === false) {
     return;
   }
   dispatch({
-    type: COMMENT_LOAD
+    type: COMMENT_LOAD,
+    tab
   });
   loadComments(skip, limit, token, { parentId, parentType }, (data) => {
     dispatch({
@@ -264,7 +267,8 @@ export const loadMoreComments = (parentId, parentType) => (dispatch, getState) =
         data,
         skip: data.length,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        tab
       }
     });
   }, () => {
