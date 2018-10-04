@@ -23,12 +23,16 @@ const LIKE_BASE_ROUTE = `${BASE_ROUTE}/like`;
 const COMMENT_BASE_ROUTE = `${BASE_ROUTE}/comment`;
 const GOAL_BASE_ROUTE = 'secure/goal';
 
-export const closeGoalDetail = () => (dispatch) => {
+export const closeGoalDetail = () => (dispatch, getState) => {
+  const { tab } = getState().navigation;
   // Return to previous page
   Actions.pop();
   // Clear the state
   dispatch({
-    type: GOAL_DETAIL_CLOSE
+    type: GOAL_DETAIL_CLOSE,
+    payload: {
+      tab
+    }
   });
 };
 

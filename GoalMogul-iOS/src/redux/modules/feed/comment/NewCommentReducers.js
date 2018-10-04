@@ -4,10 +4,8 @@ import {
   GOAL_DETAIL_OPEN,
   GOAL_DETAIL_CLOSE
 } from '../../../../reducers/GoalDetailReducers';
-/**
- * This reducer is servered as denormalized comment stores
- */
-const INITIAL_STATE = {
+
+const NEW_COMMENT_INITIAL_STATE = {
   contentText: '',
   owner: undefined,
   // ["Goal", "Post"]
@@ -23,6 +21,26 @@ const INITIAL_STATE = {
   friendList: [],
   showSuggestionModal: false,
   showAttachedSuggestion: false,
+};
+/**
+ * This reducer is servered as denormalized comment stores
+ */
+const INITIAL_STATE = {
+  homeTab: {
+    ...NEW_COMMENT_INITIAL_STATE
+  },
+  meetTab: {
+    ...NEW_COMMENT_INITIAL_STATE
+  },
+  notificationTab: {
+    ...NEW_COMMENT_INITIAL_STATE
+  },
+  exploreTab: {
+    ...NEW_COMMENT_INITIAL_STATE
+  },
+  chatTab: {
+    ...NEW_COMMENT_INITIAL_STATE
+  }
 };
 
 const INITIAL_SUGGESETION = {
@@ -69,60 +87,73 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case GOAL_DETAIL_OPEN: {
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, 'parentType', 'goal');
-      return _.set(newState, 'parentRef', action.payload._id);
+      const { tab, _id } = action.payload;
+      const path = !tab ? 'homeTab' : `${tab}`;
+      newState = _.set(newState, `${path}.parentType`, 'goal');
+      return _.set(newState, `${path}.parentRef`, _id);
     }
 
     // when comment posts succeed, delete everything but parent type and ref
     case COMMENT_NEW_POST_SUCCESS: {
       const newState = _.cloneDeep(state);
-      const parentType = _.get(newState, 'parentType');
-      const parentRef = _.get(newState, 'parentRef');
+      const { tab } = action.payload;
+      const path = !tab ? 'homeTab' : `${tab}`;
+      const parentType = _.get(newState, `${path}.parentType`);
+      const parentRef = _.get(newState, `${path}.parentRef`);
 
-      return {
-        ...INITIAL_STATE,
+      const newTabState = {
+        ...NEW_COMMENT_INITIAL_STATE,
         parentType,
         parentRef
       };
+
+      return _.set(newState, `${path}`, newTabState);
     }
 
     // When user exits the GoalDetailCard, we need to reset the state
     case GOAL_DETAIL_CLOSE: {
-      return {
-        ...INITIAL_STATE
-      };
+      const newState = _.cloneDeep(state);
+      const { tab } = action.payload;
+      const path = !tab ? 'homeTab' : `${tab}`;
+      return _.set(newState, `${path}`, { ...NEW_COMMENT_INITIAL_STATE });
     }
 
     // cases related to new comment
     case COMMENT_NEW_TEXT_ON_CHANGE: {
       // TODO: potential optimzation
-      let newState = _.cloneDeep(state);
-      return _.set(newState, 'contentText', action.payload);
+      const newState = _.cloneDeep(state);
+      const { tab, text } = action.payload;
+      const path = !tab ? 'homeTab' : `${tab}`;
+      return _.set(newState, `${path}.contentText`, text);
     }
 
     case COMMENT_NEW: {
-      const { parentType, parentRef, commentType, replyToRef, owner } = action.payload;
+      const { parentType, parentRef, commentType, replyToRef, owner, tab } = action.payload;
+      const path = !tab ? 'homeTab' : `${tab}`;
       let newState = _.cloneDeep(state);
-      newState = setState(newState, 'parentType', parentType);
-      newState = setState(newState, 'parentRef', parentRef);
-      newState = setState(newState, 'commentType', commentType);
-      newState = setState(newState, 'replyToRef', replyToRef);
-      newState = setState(newState, 'owner', owner);
+      newState = setState(newState, `${path}.parentType`, parentType);
+      newState = setState(newState, `${path}.parentRef`, parentRef);
+      newState = setState(newState, `${path}.commentType`, commentType);
+      newState = setState(newState, `${path}.replyToRef`, replyToRef);
+      newState = setState(newState, `${path}.owner`, owner);
 
       return newState;
     }
 
     case COMMENT_NEW_SUGGESTION_UPDAET_TYPE: {
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, 'tmpSuggestion.suggestionType', action.payload);
+      const { tab, suggestionType } = action.payload;
+      const path = !tab ? 'homeTab' : `${tab}`;
+      newState = _.set(newState, `${path}.tmpSuggestion.suggestionType`, suggestionType);
       return newState;
     }
 
     case COMMENT_NEW_SUGGESTION_CREATE: {
-      const { suggestionFor, suggestionForRef } = action.payload;
+      const { suggestionFor, suggestionForRef, tab } = action.payload;
+      const path = !tab ? 'homeTab' : `${tab}`;
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, 'tmpSuggestion.suggestionFor', suggestionFor);
-      newState = _.set(newState, 'tmpSuggestion.suggestionForRef', suggestionForRef);
+      newState = _.set(newState, `${path}.tmpSuggestion.suggestionFor`, suggestionFor);
+      newState = _.set(newState, `${path}.tmpSuggestion.suggestionForRef`, suggestionForRef);
 
       return newState;
     }
@@ -130,60 +161,79 @@ export default (state = INITIAL_STATE, action) => {
     // Remove the suggestion to become initial state
     case COMMENT_NEW_SUGGESTION_REMOVE: {
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, 'showAttachedSuggestion', false);
-      return _.set(newState, 'suggestion', { ...INITIAL_SUGGESETION });
+      const { tab } = action.payload;
+      const path = !tab ? 'homeTab' : `${tab}`;
+      newState = _.set(newState, `${path}.showAttachedSuggestion`, false);
+      return _.set(newState, `${path}.suggestion`, { ...INITIAL_SUGGESETION });
     }
 
     // Reset the temperary suggestion to become initial state
     case COMMENT_NEW_SUGGESTION_CANCEL: {
       let newState = _.cloneDeep(state);
+      const { tab } = action.payload;
+      const path = !tab ? 'homeTab' : `${tab}`;
 
       // Close suggestion modal
-      newState = _.set(newState, 'showSuggestionModal', false);
-      return _.set(newState, 'tmpSuggestion', { ...INITIAL_SUGGESETION });
+      newState = _.set(newState, `${path}.showSuggestionModal`, false);
+      return _.set(newState, `${path}.tmpSuggestion`, { ...INITIAL_SUGGESETION });
     }
 
     // Set tmp suggestion to final suggestion
     case COMMENT_NEW_SUGGESTION_ATTACH: {
       let newState = _.cloneDeep(state);
-      const tmpSuggestion = _.get(newState, 'tmpSuggestion');
-      newState = _.set(newState, 'suggestion', tmpSuggestion);
-      newState = _.set(newState, 'showAttachedSuggestion', true);
+      const { tab } = action.payload;
+      const path = !tab ? 'homeTab' : `${tab}`;
+
+      const tmpSuggestion = _.get(newState, `${path}.tmpSuggestion`);
+      newState = _.set(newState, `${path}.suggestion`, tmpSuggestion);
+      newState = _.set(newState, `${path}.showAttachedSuggestion`, true);
       // Close suggestion modal
-      return _.set(newState, 'showSuggestionModal', false);
+      return _.set(newState, `${path}.showSuggestionModal`, false);
     }
 
     // Set current suggestion to tmp suggestion for editing
     case COMMENT_NEW_SUGGESTION_OPEN_CURRENT: {
       let newState = _.cloneDeep(state);
-      const suggestion = _.get(newState, 'suggestion');
-      newState = _.set(newState, 'tmpSuggestion', suggestion);
+      const { tab } = action.payload;
+      const path = !tab ? 'homeTab' : `${tab}`;
+
+      const suggestion = _.get(newState, `${path}.suggestion`);
+      newState = _.set(newState, `${path}.tmpSuggestion`, suggestion);
 
       // Open suggestion modal
-      return _.set(newState, 'showSuggestionModal', true);
+      return _.set(newState, `${path}.showSuggestionModal`, true);
     }
 
     case COMMENT_NEW_SUGGESTION_OPEN_MODAL: {
       const newState = _.cloneDeep(state);
-      return _.set(newState, 'showSuggestionModal', true);
+      const { tab } = action.payload;
+      const path = !tab ? 'homeTab' : `${tab}`;
+
+      return _.set(newState, `${path}.showSuggestionModal`, true);
     }
 
     // Update suggestion text
     case COMMENT_NEW_SUGGESTION_UPDATE_TEXT: {
       const newState = _.cloneDeep(state);
-      return _.set(newState, 'tmpSuggestion.suggestionText', action.payload);
+      const { tab, text } = action.payload;
+      const path = !tab ? 'homeTab' : `${tab}`;
+      return _.set(newState, `${path}.tmpSuggestion.suggestionText`, text);
     }
 
     // Update suggestion link
     case COMMENT_NEW_SUGGESTION_UPDATE_LINK: {
       const newState = _.cloneDeep(state);
-      return _.set(newState, 'tmpSuggestion.suggestionLink', action.payload);
+      const { tab, suggestionLink } = action.payload;
+      const path = !tab ? 'homeTab' : `${tab}`;
+      return _.set(newState, `${path}.tmpSuggestion.suggestionLink`, suggestionLink);
     }
 
     // Update item selected
     case COMMENT_NEW_SUGGESTION_SELECT_ITEM: {
       const newState = _.cloneDeep(state);
-      return _.set(newState, 'tmpSuggestion.selectedItem', action.payload);
+      const { tab, selectedItem } = action.payload;
+      const path = !tab ? 'homeTab' : `${tab}`;
+      return _.set(newState, `${path}.tmpSuggestion.selectedItem`, selectedItem);
     }
 
     default: return { ...state };

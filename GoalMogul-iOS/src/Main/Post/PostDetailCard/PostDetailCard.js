@@ -15,8 +15,12 @@ import {
 } from '../../../redux/modules/feed/post/PostActions';
 
 import {
-  createCommentFromSuggestion
+  createCommentFromSuggestion,
+  refreshComments
 } from '../../../redux/modules/feed/comment/CommentActions';
+
+// Selectors
+import { getCommentByTab } from '../../../redux/modules/feed/comment/CommentSelector';
 
 // Component
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
@@ -30,6 +34,14 @@ class PostDetailCard extends Component {
   constructor(props) {
     super(props);
     this.commentBox = {};
+  }
+
+  handleRefresh = () => {
+    const { routes, index } = this.state.navigationState;
+    const { tab, postDetail } = this.props;
+    if (routes[index].key === 'comments') {
+      this.props.refreshComments('Post', postDetail._id, tab);
+    }
   }
 
   keyExtractor = (item) => item._id;
@@ -90,7 +102,7 @@ class PostDetailCard extends Component {
                 keyExtractor={this.keyExtractor}
                 ListHeaderComponent={() => this.renderPostDetailSection(postDetail)}
                 refreshing={this.props.commentLoading}
-                onRefresh={() => console.log('refreshing')}
+                onRefresh={this.handleRefresh}
               />
 
               <CommentBox
@@ -152,8 +164,6 @@ const testData = [
 ];
 
 const mapStateToProps = state => {
-  const { loading } = state.comment;
-
   const testTransformedComments = [
     {
       _id: '1',
@@ -302,10 +312,11 @@ const mapStateToProps = state => {
 
   const { post } = state.postDetail;
   const { showingModalInPostDetail } = state.report;
-  // const { transformedComments } = state.comment;
+  // TODO: uncomment
+  // const { transformedComments, loading } = getCommentByTab(state);
 
   return {
-    commentLoading: loading,
+    commentLoading: false,
     comments: testTransformedComments,
     postDetail: post,
     showingModalInPostDetail
@@ -316,6 +327,7 @@ export default connect(
   mapStateToProps,
   {
     closePostDetail,
-    createCommentFromSuggestion
+    createCommentFromSuggestion,
+    refreshComments
   }
 )(PostDetailCard);
