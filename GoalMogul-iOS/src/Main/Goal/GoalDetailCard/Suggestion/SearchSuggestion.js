@@ -30,6 +30,10 @@ import {
   onSuggestionItemSelect
 } from '../../../../redux/modules/feed/comment/CommentActions';
 
+import {
+  getNewCommentByTab
+} from '../../../../redux/modules/feed/comment/CommentSelector';
+
 class SearchSuggestion extends React.Component {
   state = {
     query: ''
@@ -334,7 +338,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const mapStateToProps = state => {
-  const { suggestionType, selectedItem } = state.newComment.tmpSuggestion;
+  const { suggestionType, selectedItem } = getNewCommentByTab(state).tmpSuggestion;
   const { searchRes, searchContent } = state.suggestionSearch;
   const { data, loading } = searchRes;
 

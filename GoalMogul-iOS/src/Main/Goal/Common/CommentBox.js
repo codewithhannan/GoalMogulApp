@@ -20,6 +20,11 @@ import {
   createSuggestion
 } from '../../../redux/modules/feed/comment/CommentActions';
 
+// Selectors
+import {
+  getNewCommentByTab
+} from '../../../redux/modules/feed/comment/CommentSelector';
+
 // Assets
 import PhotoIcon from '../../../asset/utils/photoIcon.png';
 import LightBulb from '../../../asset/utils/makeSuggestion.png';
@@ -217,10 +222,9 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { newComment } = state;
 
   return {
-    newComment
+    newComment: getNewCommentByTab(state)
   };
 };
 

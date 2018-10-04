@@ -18,11 +18,16 @@ import {
   createCommentFromSuggestion,
   attachSuggestion,
   cancelSuggestion,
-  openSuggestionModal
+  openSuggestionModal,
+  refreshComments
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 // selector
 import { getGoalStepsAndNeeds } from '../../../redux/modules/goal/selector';
+import { 
+  getCommentByTab,
+  getNewCommentByTab
+} from '../../../redux/modules/feed/comment/CommentSelector';
 
 // Component
 import SearchBarHeader from '../../../Main/Common/Header/SearchBarHeader';
@@ -49,6 +54,14 @@ class GoalDetailCard2 extends Component {
       },
       suggestionModal: false,
     };
+  }
+
+  handleRefresh = () => {
+    const { routes, index } = this.state.navigationState;
+    const { tab, goalDetail } = this.props;
+    if (routes[index].key === 'comments') {
+      this.props.refreshComments('Goal', goalDetail._id, tab);
+    }
   }
 
   // Tab related handlers
@@ -175,7 +188,7 @@ class GoalDetailCard2 extends Component {
                 keyExtractor={this.keyExtractor}
                 ListHeaderComponent={() => this.renderGoalDetailSection()}
                 refreshing={this.props.commentLoading}
-                onRefresh={() => console.log('refreshing')}
+                onRefresh={this.handleRefresh}
               />
 
               <CommentBox
@@ -262,8 +275,7 @@ const testData = {
 };
 
 const mapStateToProps = state => {
-  const { loading } = state.comment;
-  const { showSuggestionModal } = state.newComment;
+  const { showSuggestionModal } = getNewCommentByTab(state);
 
   const testStepsAndNeeds = [
     {
@@ -439,10 +451,10 @@ const mapStateToProps = state => {
   const { goal } = state.goalDetail;
   const { showingModalInDetail } = state.report;
   const { userId } = state.user;
-  // const { transformedComments } = state.comment;
+  // const { transformedComments, loading } = getCommentByTab(state);
 
   return {
-    commentLoading: loading,
+    commentLoading: false,
     stepsAndNeeds: getGoalStepsAndNeeds(state),
     // stepsAndNeeds: testStepsAndNeeds,
     comments: testTransformedComments,
@@ -451,7 +463,8 @@ const mapStateToProps = state => {
     showSuggestionModal,
     // isSelf: userId === goal.owner._id
     // TODO: delete
-    isSelf: true
+    isSelf: true,
+    tab: state.navigation.tab
   };
 };
 
@@ -462,6 +475,7 @@ export default connect(
     createCommentFromSuggestion,
     attachSuggestion,
     cancelSuggestion,
-    openSuggestionModal
+    openSuggestionModal,
+    refreshComments
   }
 )(GoalDetailCard2);

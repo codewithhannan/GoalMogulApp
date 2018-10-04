@@ -6,6 +6,7 @@ const getSteps = (state) => state.goalDetail.goal.steps;
 /*
  * Transform a goal's need and step to become
  * [ {needTitle: 'needs'}, ..., {stepTitle: 'steps'}, ...]
+ * in GoalDetailCard2
  */
 export const getGoalStepsAndNeeds = createSelector(
   [getNeeds, getSteps],
@@ -15,10 +16,14 @@ export const getGoalStepsAndNeeds = createSelector(
       res.push({ sectionTitle: 'needs' });
     }
     // Transform needs to have a type
-    const newNeeds = needs.map((need) => ({
-      ...need,
-      type: 'need'
-    }));
+    let newNeeds = [];
+    if (needs && needs.length !== 0) {
+      newNeeds = needs.map((need) => ({
+        ...need,
+        type: 'need'
+      }));
+    }
+
     res = res.concat(newNeeds);
 
     if (steps && steps.length > 0) {
@@ -26,10 +31,14 @@ export const getGoalStepsAndNeeds = createSelector(
     }
 
     // Transform needs to have a type
-    const newSteps = steps.map((step) => ({
-      ...step,
-      type: 'step'
-    }));
+    let newSteps = [];
+    if (needs && needs.length !== 0) {
+      newSteps = steps.map((step) => ({
+        ...step,
+        type: 'step'
+      }));
+    }
+
     res = res.concat(newSteps);
     return res;
   }

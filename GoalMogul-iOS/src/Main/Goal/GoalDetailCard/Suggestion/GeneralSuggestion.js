@@ -15,6 +15,10 @@ import {
   onSuggestionLinkChange
 } from '../../../../redux/modules/feed/comment/CommentActions';
 
+import {
+  getNewCommentByTab
+} from '../../../../redux/modules/feed/comment/CommentSelector';
+
 const MaxHeight = 70;
 
 class GeneralSuggestion extends React.Component {
@@ -81,7 +85,7 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { suggestionLink, suggestionText } = state.newComment.tmpSuggestion;
+  const { suggestionLink, suggestionText } = getNewCommentByTab(state).tmpSuggestion;
 
   return {
     suggestionLink,

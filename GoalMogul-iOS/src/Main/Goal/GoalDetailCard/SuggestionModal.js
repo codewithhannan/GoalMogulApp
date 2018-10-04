@@ -34,6 +34,10 @@ import {
   updateSuggestionType
 } from '../../../redux/modules/feed/comment/CommentActions';
 
+import {
+  getNewCommentByTab
+} from '../../../redux/modules/feed/comment/CommentSelector';
+
 class SuggestionModal extends Component {
   state = {
     query: ''
@@ -294,7 +298,7 @@ const updateIconMap = (suggestionType, iconMap) => iconMap.map((item) => {
 });
 
 const mapStateToProps = state => {
-  const { tmpSuggestion } = state.newComment;
+  const { tmpSuggestion } = getNewCommentByTab(state);
   const { suggestionType } = tmpSuggestion;
   const iconMap = updateIconMap(suggestionType, IconMap);
 

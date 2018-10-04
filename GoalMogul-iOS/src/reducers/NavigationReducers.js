@@ -1,34 +1,53 @@
 import { ActionConst, Actions } from 'react-native-router-flux';
+import _ from 'lodash';
 
 const initialState = {
   scene: {},
   stack: [],
-  state: {}
+  state: {},
+  tab: undefined
 };
+
+const routes = ['homeTab', 'meetTab', 'notificationTab', 'exploreTab', 'chatTab'];
 
 export default (state = initialState, action = {}) => {
   switch (action.type) {
     // focus action is dispatched when a new screen comes into focus
-    case ActionConst.FOCUS: {
-      return {
-        ...state,
-        scene: action.scene,
-        state: Actions.state
-      };
-    }
+    // case ActionConst.FOCUS: {
+    //   return {
+    //     ...state,
+    //     scene: action.scene,
+    //     state: Actions.state
+    //   };
+    // }
+    //
+    // case ActionConst.POP: {
+    //   const newStack = { ...state.stack };
+    //   newStack.pop();
+    //   return { ...state, stack: newStack, state: Actions.state };
+    // }
 
-    case ActionConst.POP: {
-      const newStack = { ...state.stack };
-      newStack.pop();
-      return { ...state, stack: newStack, state: Actions.state };
-    }
-
-    case ActionConst.PUSH: {
+    // case ActionConst.PUSH: {
       // console.log('push new scene', action);
-      const newStack = [...state.stack];
+      // const newStack = [...state.stack];
       // console.log('new stack is: ', newStack);
-      newStack.push(action.routeName);
-      return { ...state, stack: newStack };
+      // newStack.push(action.routeName);
+      // return { ...state, stack: newStack };
+    // }
+
+    case 'Navigation/NAVIGATE': {
+      console.log('navigate to: ', action.routeName);
+      const newState = _.cloneDeep(state);
+      const { routeName } = action;
+      if (!routeName) return newState;
+
+      let route;
+      if (routeName === 'mainTabs') route = 'homeTab';
+      if (!routes.some((r) => r === routeName)) {
+        return newState;
+      }
+      route = routeName;
+      return _.set(newState, 'tab', route);
     }
 
     default:
