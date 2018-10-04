@@ -21,6 +21,9 @@ import {
 
 // Selectors
 import { getCommentByTab } from '../../../redux/modules/feed/comment/CommentSelector';
+import {
+  getPostDetailByTab
+} from '../../../redux/modules/feed/post/PostSelector';
 
 // Component
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
@@ -310,7 +313,6 @@ const mapStateToProps = state => {
     }
   ];
 
-  const { post } = state.postDetail;
   const { showingModalInPostDetail } = state.report;
   // TODO: uncomment
   // const { transformedComments, loading } = getCommentByTab(state);
@@ -318,7 +320,7 @@ const mapStateToProps = state => {
   return {
     commentLoading: false,
     comments: testTransformedComments,
-    postDetail: post,
+    postDetail: getPostDetailByTab(state),
     showingModalInPostDetail
   };
 };

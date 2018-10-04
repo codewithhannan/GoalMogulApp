@@ -21,11 +21,15 @@ const capitalizeWord = (word) => {
 };
 
 // open post detail
-export const openPostDetail = (post, tab) => (dispatch) => {
+export const openPostDetail = (post) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+
   dispatch({
     type: POST_DETAIL_OPEN,
-    payload: post,
-    tab
+    payload: {
+      post,
+      tab
+    },
   });
 
   const scene = !tab ? 'post' : `post${capitalizeWord(tab)}`;
@@ -33,12 +37,15 @@ export const openPostDetail = (post, tab) => (dispatch) => {
 };
 
 // close post detail
-export const closePostDetail = (tab) => (dispatch) => {
+export const closePostDetail = () => (dispatch, getState) => {
+  const { tab } = getState().navigation;
   Actions.pop();
 
   dispatch({
     type: POST_DETAIL_CLOSE,
-    tab
+    payload: {
+      tab
+    }
   });
 };
 
