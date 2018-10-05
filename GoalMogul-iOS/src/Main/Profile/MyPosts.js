@@ -11,7 +11,7 @@ import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
 
 // actions
 import {
-  handleRefresh,
+  handleTabRefresh,
   handleProfileTabOnLoadMore
 } from '../../actions';
 
@@ -124,7 +124,7 @@ class MyPosts extends Component {
 
   handleRefresh = () => {
     console.log('Refreshing tab: ', key);
-    // this.props.handleRefresh(key);
+    this.props.handleTabRefresh(key);
   }
 
   renderItem = ({ item }) => {
@@ -189,7 +189,7 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    handleRefresh,
+    handleTabRefresh,
     handleProfileTabOnLoadMore
   }
 )(MyPosts);

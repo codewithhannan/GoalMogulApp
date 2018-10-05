@@ -66,7 +66,7 @@ class SectionCard extends Component {
   };
 
   renderActionIcons() {
-    const suggestionButton = this.props.self
+    const suggestionButton = this.props.isSelf
       ? ''
       : (
         <TouchableOpacity
