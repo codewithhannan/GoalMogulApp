@@ -21,5 +21,5 @@ export const getPostDetailByTab = createSelector(
 
 const capitalizeWord = (word) => {
   if (!word) return '';
-  word.replace(/^\w/, c => c.toUpperCase());
+  return word.replace(/^\w/, c => c.toUpperCase());
 };

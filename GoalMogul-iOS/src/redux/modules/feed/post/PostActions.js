@@ -17,7 +17,7 @@ const DEBUG_KEY = '[ Action Post ]';
 
 const capitalizeWord = (word) => {
   if (!word) return '';
-  word.replace(/^\w/, c => c.toUpperCase());
+  return word.replace(/^\w/, c => c.toUpperCase());
 };
 
 // open post detail
