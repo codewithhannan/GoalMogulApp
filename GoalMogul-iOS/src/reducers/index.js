@@ -29,6 +29,8 @@ import EventTabReducers from '../redux/modules/event/EventTabReducers';
 import TribeTabReducers from '../redux/modules/tribe/TribeTabReducers';
 import ExploreReducers from '../redux/modules/explore/ExploreReducers';
 import NewShareReducers from '../redux/modules/feed/post/NewShareReducers';
+import NewTribeReducers from '../redux/modules/tribe/NewTribeReducers';
+import NewEventReducers from '../redux/modules/event/NewEventReducers';
 // Menu related reducers
 import MyEventTabReducers from '../redux/modules/event/MyEventTabReducers';
 import MyEventReducers from '../redux/modules/event/MyEventReducers';
@@ -71,7 +73,9 @@ const reducers = combineReducers({
   myEventTab: MyEventTabReducers,
   myTribeTab: MyTribeTabReducers,
   myEvent: MyEventReducers,
-  myTribe: MyTribeReducers
+  myTribe: MyTribeReducers,
+  newTribe: NewTribeReducers,
+  newEvent: NewEventReducers
 });
 
 export default persistReducer(rootPersistConfig, reducers);
