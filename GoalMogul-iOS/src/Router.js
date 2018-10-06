@@ -46,6 +46,7 @@ import MyEventTab from './Main/Menu/Event/MyEventTab';
 import MyEvent from './Main/Menu/Event/MyEvent';
 import MyTribeTab from './Main/Menu/Tribe/MyTribeTab';
 import MyTribe from './Main/Menu/Tribe/MyTribe';
+import CreateTribeModal from './Main/Tribe/CreateTribeModal';
 
 // Profile
 import Profile from './Main/Profile/Profile';
@@ -252,6 +253,9 @@ class RouterComponent extends Component {
             component={CreatePostModal}
             hideNavBar
           />
+          <Stack key="createTribeStack" hideNavBar>
+            <Scene key="createTribeModal" component={CreateTribeModal} initial hideNavBar />
+          </Stack>
 
           <Scene key="shareModal" component={ShareModal} hideNavBar />
           <Scene key="searchEventLightBox" component={EventSearchOverlay} hideNavBar />

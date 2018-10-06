@@ -3,47 +3,56 @@ import {
   View,
   KeyboardAvoidingView,
   ScrollView,
+  SafeAreaView,
+  TextInput,
   Image,
   Text,
   TouchableOpacity,
   Dimensions,
-  FlatList,
-  DatePickerIOS,
-  Modal,
-  Alert
+  ImageBackground,
+  Modal
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { CheckBox } from 'react-native-elements';
 import {
-  FieldArray,
   Field,
   reduxForm,
   formValueSelector,
-  SubmissionError,
-  reset
-} from 'redux-form'
+  SubmissionError
+} from 'redux-form';
 import R from 'ramda';
-import moment from 'moment';
 import {
   MenuProvider,
 } from 'react-native-popup-menu';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
-import InputField from '../Common/TextInput/InputField';
 
 // Actions
 import {
   cancelCreatingNewTribe,
   createNewTribe
 } from '../../redux/modules/tribe/NewTribeActions';
+import { openCameraRoll, openCamera } from '../../actions';
 
+// assets
+import cancel from '../../asset/utils/cancel_no_background.png';
+import camera from '../../asset/utils/camera.png';
+import cameraRoll from '../../asset/utils/cameraRoll.png';
+import photoIcon from '../../asset/utils/photoIcon.png';
+import expand from '../../asset/utils/expand.png';
 
 // const { Popover } = renderers;
 const { width } = Dimensions.get('window');
 
 class CreateTribeModal extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mediaModal: false
+    };
+  }
 
   componentDidMount() {
     this.initializeForm();
@@ -72,21 +81,200 @@ class CreateTribeModal extends React.Component {
 
   handleCreate = values => {
     console.log('values are: ', this.props.formVals.values);
+    this.props.createNewTribe(this.props.formVals.values);
+  }
+
+  handleOpenCamera = () => {
+    this.props.openCamera((result) => {
+      this.props.change('picture', result.uri);
+    });
+  }
+
+  handleOpenCameraRoll = () => {
+    const callback = R.curry((result) => {
+      this.props.change('picture', result.uri);
+    });
+    this.props.openCameraRoll(callback);
+  }
+
+  renderInput = ({
+    input: { onChange, onFocus, value, ...restInput },
+    editable,
+    numberOfLines,
+    meta: { touched, error },
+    placeholder,
+    keyboardType,
+    ...custom
+  }) => {
+    const inputStyle = {
+      ...styles.inputStyle,
+    };
+
+    let multiline = true;
+    if (numberOfLines && numberOfLines === 1) {
+      multiline = false;
+    }
+    return (
+      <SafeAreaView
+        style={{
+          backgroundColor: 'white',
+          borderBottomWidth: 0.5,
+          margin: 5,
+          borderColor: 'lightgray'
+        }}
+      >
+        <TextInput
+          placeholder={placeholder}
+          onChangeText={onChange}
+          style={inputStyle}
+          editable={editable}
+          maxHeight={150}
+          keyboardType={keyboardType || 'default'}
+          multiline={multiline}
+          value={value}
+        />
+      </SafeAreaView>
+    );
+  }
+
+  renderActionIcons() {
+    const actionIconStyle = { ...styles.actionIconStyle };
+    const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
+    return (
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10 }}>
+        <TouchableOpacity style={actionIconWrapperStyle} onPress={this.handleOpenCamera}>
+          <Image style={actionIconStyle} source={camera} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ ...actionIconWrapperStyle, marginLeft: 5 }}
+          onPress={this.handleOpenCameraRoll}
+        >
+          <Image style={actionIconStyle} source={cameraRoll} />
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  // Current media type is only picture
+  renderMedia() {
+    if (this.props.picture) {
+      return (
+        <ImageBackground
+          style={styles.mediaStyle}
+          source={{ uri: this.props.picture }}
+          imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
+        >
+          <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
+            <Image
+              source={photoIcon}
+              style={{
+                alignSelf: 'center',
+                justifyContent: 'center',
+                height: 40,
+                width: 50,
+                tintColor: '#fafafa'
+              }}
+            />
+          </View>
+
+          <TouchableOpacity
+            onPress={() => this.setState({ mediaModal: true })}
+            style={{ position: 'absolute', top: 10, right: 15 }}
+          >
+            <Image
+              source={expand}
+              style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => this.props.change('picture', false)}
+            style={{ position: 'absolute', top: 10, left: 15 }}
+          >
+            <Image
+              source={cancel}
+              style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+            />
+          </TouchableOpacity>
+        </ImageBackground>
+      );
+    }
+    return '';
+  }
+
+  renderImageModal() {
+    if (this.props.picture) {
+      return (
+        <Modal
+          animationType="fade"
+          transparent={false}
+          visible={this.state.mediaModal}
+        >
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'black'
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => { this.setState({ mediaModal: false }); }}
+              style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
+            >
+              <Image
+                source={cancel}
+                style={{
+                  ...styles.cancelIconStyle,
+                  tintColor: 'white'
+                }}
+              />
+            </TouchableOpacity>
+            <Image
+              source={{ uri: this.props.picture }}
+              style={{ width, height: 200 }}
+              resizeMode='cover'
+            />
+          </View>
+        </Modal>
+      );
+    }
+    return '';
   }
 
   renderTribeName() {
     const titleText = <Text style={styles.titleTextStyle}>Tribe Name</Text>;
     return (
-      <View>
+      <View style={{ marginBottom: 5 }}>
         {titleText}
         <Field
           name='name'
           label='name'
-          component={InputField}
-          editable={this.props.uploading}
+          component={this.renderInput}
+          editable={!this.props.uploading}
           numberOfLines={1}
+          multiline
           style={styles.goalInputStyle}
           placeholder='Enter the name...'
+        />
+      </View>
+    );
+  }
+
+  renderTribeMemberLimit() {
+    const titleText = <Text style={styles.titleTextStyle}>Member Limit</Text>;
+    return (
+      <View style={{ marginBottom: 5 }}>
+        {titleText}
+        <Field
+          name='membershipLimit'
+          label='membershipLimit'
+          component={this.renderInput}
+          editable={!this.props.uploading}
+          numberOfLines={1}
+          keyboardType='number-pad'
+          style={styles.goalInputStyle}
+          placeholder='Enter a number...'
         />
       </View>
     );
@@ -95,14 +283,14 @@ class CreateTribeModal extends React.Component {
   renderTribeDescription() {
     const titleText = <Text style={styles.titleTextStyle}>Description</Text>;
     return (
-      <View>
+      <View style={{ marginBottom: 5 }}>
         {titleText}
         <Field
           name='description'
           label='description'
-          component={InputField}
-          editable={this.props.uploading}
-          numberOfLines={1}
+          component={this.renderInput}
+          editable={!this.props.uploading}
+          numberOfLines={5}
           style={styles.goalInputStyle}
           placeholder='Describe your tribe...'
         />
@@ -141,7 +329,7 @@ class CreateTribeModal extends React.Component {
           <ModalHeader
             title={titleText}
             actionText={actionText}
-            onCancel={() => Actions.pop()}
+            onCancel={() => this.props.cancelCreatingNewTribe()}
             onAction={handleSubmit(this.handleCreate)}
           />
           <ScrollView
@@ -150,10 +338,14 @@ class CreateTribeModal extends React.Component {
             <View style={{ flex: 1, padding: 20 }}>
               {this.renderTribeName()}
               {this.renderTribeDescription()}
+              {this.renderTribeMemberLimit()}
               {this.renderOptions()}
+              {this.renderMedia()}
+              {this.renderActionIcons()}
             </View>
 
           </ScrollView>
+          {this.renderImageModal()}
         </KeyboardAvoidingView>
       </MenuProvider>
     );
@@ -189,7 +381,9 @@ export default connect(
   mapStateToProps,
   {
     cancelCreatingNewTribe,
-    createNewTribe
+    createNewTribe,
+    openCameraRoll,
+    openCamera
   }
 )(CreateTribeModal);
 
@@ -229,18 +423,39 @@ const styles = {
   },
   goalInputStyle: {
     fontSize: 20,
-    padding: 30,
-    paddingRight: 20,
-    paddingLeft: 20
+    padding: 20,
+    paddingRight: 15,
+    paddingLeft: 15
+  },
+  inputStyle: {
+    paddingTop: 6,
+    paddingBottom: 6,
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 22,
   },
   cancelIconStyle: {
     height: 20,
     width: 20,
     justifyContent: 'flex-end'
   },
-  caretStyle: {
-    marginRight: 10,
-    height: 18,
+  mediaStyle: {
+    height: 150,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  actionIconWrapperStyle: {
+    backgroundColor: '#fafafa',
+    padding: 10,
+    paddingLeft: 15,
+    paddingRight: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4
+  },
+  actionIconStyle: {
+    tintColor: '#4a4a4a',
+    height: 15,
     width: 18
   },
   borderStyle: {
@@ -255,43 +470,5 @@ const styles = {
   // Menu related style
   backdrop: {
     backgroundColor: 'transparent'
-  },
-  triggerContainerStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 5,
-    borderWidth: 1,
-    borderRadius: 5,
-    borderColor: '#e9e9e9',
-    shadowColor: '#ddd',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.8,
-    shadowRadius: 1,
-    elevation: 1,
-  },
-  anchorStyle: {
-    backgroundColor: 'white'
-  },
-  menuOptionsStyles: {
-    optionsContainer: {
-      width: width - 14,
-    },
-    optionsWrapper: {
-
-    },
-    optionWrapper: {
-      flex: 1,
-    },
-    optionTouchable: {
-      underlayColor: 'lightgray',
-      activeOpacity: 10,
-    },
-    optionText: {
-      paddingTop: 5,
-      paddingBottom: 5,
-      paddingLeft: 10,
-      paddingRight: 10,
-      color: 'black',
-    },
   }
 };

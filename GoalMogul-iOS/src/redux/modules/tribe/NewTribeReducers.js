@@ -9,12 +9,15 @@ const INITIAL_STATE = {
   // membershipLimit: 100,
   // description: '',
   // picture: undefined,
-  uploading: false
+  uploading: false,
+  picture: undefined
 };
 
+export const TRIBE_NEW_CANCEL = 'tribe_new_cancel';
 export const TRIBE_NEW_SUBMIT = 'tribe_new_submit';
 export const TRIBE_NEW_SUBMIT_SUCCESS = 'tribe_new_submit_success';
 export const TRIBE_NEW_SUBMIT_FAIL = 'tribe_new_submit_fail';
+export const TRIBE_NEW_UPLOAD_PICTURE_SUCCESS = 'tribe_new_upload_picture_success';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -28,9 +31,16 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, 'uploading', false);
     }
 
+    case TRIBE_NEW_CANCEL:
     case TRIBE_NEW_SUBMIT_SUCCESS: {
-      const newState = _.cloneDeep(state);
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'picture', undefined);
       return _.set(newState, 'uploading', false);
+    }
+
+    case TRIBE_NEW_UPLOAD_PICTURE_SUCCESS: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'picture', action.payload);
     }
 
     default: return { ...state };
