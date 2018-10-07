@@ -147,17 +147,14 @@ export const loadTribeFeed = (skip, limit, token, params, callback, onError) => 
     )
     .then((res) => {
       console.log(`${DEBUG_KEY}: loading with res: `, res);
-      if (res && !res.message) {
+      if (res && res.data) {
         // Right now return test data
-        if (skip === 0) {
-          callback(res);
-        } else {
-          callback([]);
-        }
+        return callback(res.data);
       }
       console.warn(`${DEBUG_KEY}: loading with no res. Message is: ${res.message}`);
     })
     .catch((err) => {
       console.log(`${DEBUG_KEY}: loading comment error: ${err}`);
+      onError(err);
     });
 };

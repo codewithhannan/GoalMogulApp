@@ -50,10 +50,10 @@ class TribeTab extends React.Component {
 }
 
 const mapStateToProps = state => {
-  // const { data, loading } = state.tribeTab;
+  const { data, loading } = state.tribeTab;
 
-  const loading = false;
-  const data = [
+  // const loading = false;
+  const testData = [
     {
       _id: '123170293817024',
       created: '',
@@ -125,7 +125,7 @@ const mapStateToProps = state => {
   ];
 
   return {
-    data,
+    data: [...data, ...testData],
     loading
   };
 };

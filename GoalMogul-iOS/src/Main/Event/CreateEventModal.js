@@ -457,7 +457,7 @@ class CreateEventModal extends React.Component {
           editable={!this.props.uploading}
           numberOfLines={5}
           style={styles.goalInputStyle}
-          placeholder='Describe your tribe...'
+          placeholder='Describe your event...'
         />
       </View>
     );
