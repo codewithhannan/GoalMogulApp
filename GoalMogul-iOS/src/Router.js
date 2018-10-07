@@ -30,6 +30,7 @@ import MeetTab from './Main/MeetTab/MeetTab';
 import SearchOverlay from './Main/Search/SearchOverlay';
 import EventSearchOverlay from './Main/Search/EventSearchOverlay';
 import TribeSearchOverlay from './Main/Search/TribeSearchOverlay';
+import PeopleSearchOverlay from './Main/Search/PeopleSearchOverlay';
 // import MeetCard from './Main/MeetTab/MeetCard';
 
 // Home Tab
@@ -265,6 +266,7 @@ class RouterComponent extends Component {
           <Scene key="shareModal" component={ShareModal} hideNavBar />
           <Scene key="searchEventLightBox" component={EventSearchOverlay} hideNavBar />
           <Scene key="searchTribeLightBox" component={TribeSearchOverlay} hideNavBar />
+          <Scene key="searchPeopleLightBox" component={PeopleSearchOverlay} hideNavBar />
 
           <Scene key="mutualFriends" component={MutualFriends} />
           <Scene key="meetContactSync" component={ContactSync} hideNavBar />

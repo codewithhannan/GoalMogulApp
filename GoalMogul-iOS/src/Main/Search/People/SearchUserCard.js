@@ -30,12 +30,9 @@ class SearchUserCard extends Component {
 
   onButtonClicked = (_id) => {
     console.log(`${DEBUG_KEY} open profile with id: `, _id);
-    this.props.openProfile(_id);
-  }
-
-  openProfile = (_id) => {
-    // TODO: open profile
-    console.log(`${DEBUG_KEY} open profile with id: `, _id);
+    if (this.props.onSelect && this.props.onSelect instanceof Function) {
+      return this.props.onSelect(_id);
+    }
     this.props.openProfile(_id);
   }
 
@@ -111,7 +108,7 @@ class SearchUserCard extends Component {
   render() {
     const { _id } = this.props.item;
     return (
-      <TouchableOpacity onPress={this.openProfile.bind(this, _id)}>
+      <TouchableOpacity onPress={this.onButtonClicked.bind(this, _id)}>
         <View style={styles.containerStyle}>
           {this.renderProfileImage()}
 

@@ -50,7 +50,7 @@ class PeopleSearch extends Component {
   }
 
   renderItem = ({ item }) => {
-    return <SearchUserCard item={item} />;
+    return <SearchUserCard item={item} onSelect={this.props.onSelect} />;
   };
 
   render() {

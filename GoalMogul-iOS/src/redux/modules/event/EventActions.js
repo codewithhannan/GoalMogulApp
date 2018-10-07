@@ -10,7 +10,9 @@ import {
   EVENT_UPDATE_RSVP_STATUS,
   EVENT_UPDATE_RSVP_STATUS_SUCCESS,
   EVENT_UPDATE_RSVP_STATUS_FAIL,
-  EVENT_PARTICIPANT_SELECT_FILTER
+  EVENT_PARTICIPANT_SELECT_FILTER,
+  EVENT_PARTICIPANT_INVITE_SUCCESS,
+  EVENT_PARTICIPANT_INVITE_FAIL
 } from './EventReducers';
 
 import { api as API } from '../../middleware/api';
@@ -18,6 +20,53 @@ import { queryBuilder, switchCase } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Event Actions ]';
 const BASE_ROUTE = 'secure/event';
+
+export const openEventInvitModal = (eventId) => (dispatch) => {
+  const searchFor = {
+    type: 'event',
+    id: eventId
+  };
+  Actions.push('searchPeopleLightBox', { searchFor });
+};
+
+export const inviteParticipantToEvent = (eventId, inviteeId) => (dispatch, getState) => {
+  const { token } = getState().user;
+
+  const onSuccess = (res) => {
+    dispatch({
+      type: EVENT_PARTICIPANT_INVITE_SUCCESS
+    });
+    console.log(`${DEBUG_KEY}: invite user success: `, res);
+    Actions.pop();
+    Alert.aler(
+      'Success',
+      'You have successfully invited the user.'
+    );
+  };
+
+  const onError = (err) => {
+    dispatch({
+      type: EVENT_PARTICIPANT_INVITE_FAIL
+    });
+    Alert.alert(
+      'Error',
+      'Failed to send invitation to user. Please try again later.'
+    );
+    console.log(`${DEBUG_KEY}: error sending invitation to user: `, err);
+  };
+
+  API
+    .put(`${BASE_ROUTE}/participant`, { eventId, inviteeId }, token)
+    .then((res) => {
+      if (res && res.data) {
+        return onSuccess(res.data);
+      }
+      return onError(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
+};
 
 // User updates his rsvp status for an event
 export const rsvpEvent = (option, eventId) => (dispatch, getState) => {

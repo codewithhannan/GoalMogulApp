@@ -49,6 +49,10 @@ const REQUEST_OPTIONS = ['Request to join', 'Cancel'];
  */
 class Tribe extends Component {
 
+  handleInvite = () => {
+    
+  }
+
   handleRequestOnPress = () => {
     const { item, hasRequested } = this.props;
     if (!item) return;
@@ -188,6 +192,14 @@ class Tribe extends Component {
       ? <MemberFilterBar />
       : '';
 
+    const inviteButton = this.props.tab === 'members'
+      ? (
+        <TouchableOpacity onPress={this.handleInvite} style={styles.inviteButtonContainerStyle}>
+          <Text>Invite</Text>
+        </TouchableOpacity>
+      )
+      : '';
+
     return (
       <View>
         <View style={{ height: 70, backgroundColor: '#1998c9' }} />
@@ -217,6 +229,7 @@ class Tribe extends Component {
           })
         }
         {filterBar}
+        {inviteButton}
       </View>
     );
   }
@@ -317,6 +330,18 @@ const styles = {
     justifyContent: 'center',
     borderRadius: 5,
     backgroundColor: '#efefef',
+  },
+
+  // Style for Invite button
+  inviteButtonContainerStyle: {
+    height: 30,
+    width: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'flex-end',
+    marginRight: 20,
+    backgroundColor: '#efefef',
+    borderRadius: 5
   },
 
   // Style for tribe info

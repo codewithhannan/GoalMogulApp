@@ -9,7 +9,9 @@ import {
   TRIBE_FEED_REFRESH_DONE,
   TRIBE_REQUEST_JOIN_SUCCESS,
   TRIBE_REQUEST_CANCEL_JOIN_SUCCESS,
-  TRIBE_MEMBER_SELECT_FILTER
+  TRIBE_MEMBER_SELECT_FILTER,
+  TRIBE_MEMBER_INVITE_SUCCESS,
+  TRIBE_MEMBER_INVITE_FAIL
 } from './TribeReducers';
 
 import { api as API } from '../../middleware/api';
@@ -17,6 +19,45 @@ import { queryBuilder } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Tribe Actions ]';
 const BASE_ROUTE = 'secure/tribe';
+
+export const inviteUserToTribe = (tribeId, inviteeId) => (dispatch, getState) => {
+  const { token } = getState().user;
+
+  const onSuccess = (res) => {
+    dispatch({
+      type: TRIBE_MEMBER_INVITE_SUCCESS
+    });
+    console.log(`${DEBUG_KEY}: invite user success: `, res);
+    Actions.pop();
+    Alert.aler(
+      'Success',
+      'You have successfully invited the user.'
+    );
+  };
+
+  const onError = (err) => {
+    dispatch({
+      type: TRIBE_MEMBER_INVITE_FAIL
+    });
+    Alert.alert(
+      'Error',
+      'Failed to send invitation to user. Please try again later.'
+    );
+    console.log(`${DEBUG_KEY}: error sending invitation to user: `, err);
+  };
+
+  API
+    .put(`${BASE_ROUTE}/member-invitation`, { tribeId, inviteeId }, token)
+    .then((res) => {
+      if (res && res.data) {
+        return onSuccess(res.data);
+      }
+      return onError(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
+};
 
 // User selects member filter
 export const tribeSelectMembersFilter = (option) => (dispatch) => {
