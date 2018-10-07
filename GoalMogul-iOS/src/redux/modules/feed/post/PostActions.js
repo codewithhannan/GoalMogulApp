@@ -79,7 +79,7 @@ export const submitCreatingPost = (values) => (dispatch, getState) => {
               type: POST_NEW_POST_UPDATE_MEDIA,
               payload: objectKey
             });
-          });
+          }, 'FeedImage');
         })
         .then(({ signedRequest, file }) => {
           return ImageUtils.uploadImage(file, signedRequest);

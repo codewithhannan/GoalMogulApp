@@ -40,7 +40,7 @@ export const updateSortBy = (value) => (dispatch, getState) => {
 //Refresh feed for activity tab
 export const refreshTribe = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { limit, sortBy } = getState().eventTab;
+  const { limit, sortBy } = getState().tribeTab;
 
   dispatch({
     type: TRIBETAB_LOAD
@@ -90,7 +90,7 @@ export const loadMoreTribe = () => (dispatch, getState) => {
 const loadTribe = (skip, limit, token, sortBy, filterForMembershipCategory, callback, onError) => {
   API
     .get(
-      `${BASE_ROUTE}?${queryBuilder(skip, limit, { ...sortBy, ...filterForMembershipCategory })}`,
+      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, filterForMembershipCategory })}`,
       token
     )
     .then((res) => {

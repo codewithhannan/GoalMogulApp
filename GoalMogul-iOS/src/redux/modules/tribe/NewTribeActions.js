@@ -2,6 +2,7 @@
 import { Actions } from 'react-native-router-flux';
 import { Alert } from 'react-native';
 import { api as API } from '../../middleware/api';
+import ImageUtils from '../../../Utils/ImageUtils';
 
 import {
   TRIBE_NEW_SUBMIT,
@@ -11,7 +12,8 @@ import {
   TRIBE_NEW_UPLOAD_PICTURE_SUCCESS
 } from './NewTribeReducers';
 
- const BASE_ROUTE = 'secure/tribe';
+const BASE_ROUTE = 'secure/tribe';
+const DEBUG_KEY = '[ Action Create Tribe ]';
 
 // Open creating tribe modal
 export const openNewTribeModal = () => (dispatch) => {
@@ -55,13 +57,69 @@ export const createNewTribe = (values) => (dispatch, getState) => {
       type: TRIBE_NEW_SUBMIT_FAIL
     });
     Alert.alert(
-      'Failed to create new tribe',
+      'Failed to create new Tribe',
       'Please try again later'
     );
   };
 
-  // TODO: upload picture first
+  const imageUri = newTribe.options.picture;
+  if (!imageUri) {
+    // If no mediaRef then directly submit the post
+    sendCreateTribeRequest(newTribe, token, dispatch, onSuccess, onError);
+  } else {
+    ImageUtils.getImageSize(imageUri)
+      .then(({ width, height }) => {
+        // Resize image
+        console.log('width, height are: ', width, height);
+        return ImageUtils.resizeImage(imageUri, width, height);
+      })
+      .then((image) => {
+        // Upload image to S3 server
+        console.log('image to upload is: ', image);
+        return ImageUtils.getPresignedUrl(image.uri, token, (objectKey) => {
+          // Obtain pre-signed url and store in getState().postDetail.newPost.mediaRef
+          dispatch({
+            type: TRIBE_NEW_UPLOAD_PICTURE_SUCCESS,
+            payload: objectKey
+          });
+        }, 'PageImage');
+      })
+      .then(({ signedRequest, file }) => {
+        return ImageUtils.uploadImage(file, signedRequest);
+      })
+      .then((res) => {
+        if (res instanceof Error) {
+          // uploading to s3 failed
+          console.log(`${DEBUG_KEY}: error uploading image to s3 with res: `, res);
+          throw res;
+        }
+        return getState().newEvent.picture;
+      })
+      .then((image) => {
+        // Use the presignedUrl as media string
+        console.log(`${BASE_ROUTE}: presigned url sent is: `, image);
+        return sendCreateTribeRequest(
+          { ...newTribe, options: { ...newTribe.options, picture: image } },
+          token,
+          dispatch,
+          onSuccess,
+          onError
+        );
+      })
+      .catch((err) => {
+        /*
+        Error Type:
+          image getSize
+          image Resize
+          image upload to S3
+          update profile image Id
+        */
+        onError(err);
+      });
+  }
+};
 
+const sendCreateTribeRequest = (newTribe, token, dispatch, onSuccess, onError) => {
   API
     .post(`${BASE_ROUTE}`, { ...newTribe }, token)
     .then((res) => {

@@ -93,7 +93,7 @@ export const loadMoreEvent = () => (dispatch, getState) => {
 const loadEvent = (skip, limit, token, sortBy, filterOptions, callback, onError) => {
   API
     .get(
-      `${BASE_ROUTE}?${queryBuilder(skip, limit, { ...sortBy, ...filterOptions })}`,
+      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, filterOptions })}`,
       token
     )
     .then((res) => {

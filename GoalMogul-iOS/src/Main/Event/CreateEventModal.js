@@ -10,11 +10,14 @@ import {
   TouchableOpacity,
   Dimensions,
   ImageBackground,
-  Modal
+  Modal,
+  DatePickerIOS,
+  Alert
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { CheckBox } from 'react-native-elements';
+import moment from 'moment';
 import {
   Field,
   reduxForm,
@@ -31,9 +34,9 @@ import ModalHeader from '../Common/Header/ModalHeader';
 
 // Actions
 import {
-  cancelCreatingNewTribe,
-  createNewTribe
-} from '../../redux/modules/tribe/NewTribeActions';
+  cancelCreatingNewEvent,
+  createNewEvent
+} from '../../redux/modules/event/NewEventActions';
 import { openCameraRoll, openCamera } from '../../actions';
 
 // assets
@@ -46,7 +49,7 @@ import expand from '../../asset/utils/expand.png';
 // const { Popover } = renderers;
 const { width } = Dimensions.get('window');
 
-class CreateTribeModal extends React.Component {
+class CreateEventModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -60,11 +63,13 @@ class CreateTribeModal extends React.Component {
 
   initializeForm() {
     const defaulVals = {
-      name: undefined,
-      membersCanInvite: false,
-      isPubliclyVisible: false,
-      membershipLimit: 100,
+      title: '',
+      participantsCanInvite: false,
+      isInviteOnly: false,
+      location: '',
       description: '',
+      startTime: { date: new Date(), picker: false },
+      endTime: { date: new Date(), picker: false },
       picture: undefined,
     };
 
@@ -80,7 +85,7 @@ class CreateTribeModal extends React.Component {
   }
 
   handleCreate = values => {
-    this.props.createNewTribe(this.props.formVals.values);
+    this.props.createNewEvent(this.props.formVals.values);
   }
 
   handleOpenCamera = () => {
@@ -133,6 +138,167 @@ class CreateTribeModal extends React.Component {
           value={value}
         />
       </SafeAreaView>
+    );
+  }
+
+  // Renderer for timeline
+  renderTimeline = () => {
+    const titleText = <Text style={styles.titleTextStyle}>Timeline</Text>;
+    if (!this.props.hasTimeline) {
+      return (
+        <View style={{ ...styles.sectionMargin }}>
+          {titleText}
+          <TouchableOpacity
+            style={{
+              height: 40,
+              width: 90,
+              backgroundColor: '#fafafa',
+              borderRadius: 4,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 8
+            }}
+            onPress={() => this.props.change('hasTimeline', true)}
+          >
+            <Text style={{ padding: 10, fontSize: 13 }}>timeline</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    const startDatePicker =
+      (
+        <Modal
+          animationType="fade"
+          transparent={false}
+          visible={this.props.startTime.picker}
+        >
+          <ModalHeader
+            title='Select start time'
+            actionText='Done'
+            onAction={() =>
+              this.props.change('startTime', {
+                date: this.props.startTime.date,
+                picker: false
+              })
+            }
+            onCancel={() =>
+              this.props.change('startTime', {
+                date: this.props.startTime.date,
+                picker: false
+              })
+            }
+          />
+          <View style={{ flex: 1 }}>
+            <DatePickerIOS
+              date={this.props.startTime.date}
+              onDateChange={(date) => this.props.change('startTime', { date, picker: true })}
+            />
+          </View>
+
+        </Modal>
+      );
+
+      const endDatePicker =
+        (
+          <Modal
+            animationType="fade"
+            transparent={false}
+            visible={this.props.endTime.picker}
+          >
+            <ModalHeader
+              title='Select end time'
+              actionText='Done'
+              onAction={() => {
+                this.props.change('endTime', {
+                  date: this.props.endTime.date,
+                  picker: false
+                });
+              }}
+              onCancel={() =>
+                this.props.change('endTime', {
+                  date: this.props.endTime.date,
+                  picker: false
+                })
+              }
+            />
+            <View style={{ flex: 1 }}>
+              <DatePickerIOS
+                date={this.props.endTime.date}
+                onDateChange={(date) => this.props.change('endTime', { date, picker: true })}
+              />
+            </View>
+
+          </Modal>
+        );
+
+    const startTime = this.props.startTime.date ?
+      <Text>{moment(this.props.startTime.date).format('DD/MM/YYYY')}</Text> :
+      <Text style={{ fontSize: 9 }}>Start</Text>;
+
+    const endTime = this.props.endTime.date ?
+      <Text>{moment(this.props.endTime.date).format('DD/MM/YYYY')}</Text> :
+      <Text style={{ fontSize: 9 }}>End</Text>;
+
+    return (
+      <View style={{ ...styles.sectionMargin }}>
+        {titleText}
+        <View style={{ marginTop: 8, flexDirection: 'row' }}>
+          <TouchableOpacity
+            style={{
+              height: 50,
+              width: 130,
+              alignItems: 'center',
+              justifyContent: 'center',
+              ...styles.borderStyle
+            }}
+            onPress={() =>
+              this.props.change('startTime', {
+                date: this.props.startTime.date ? this.props.startTime.date : new Date(),
+                picker: true
+              })
+            }
+          >
+            {startTime}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{
+              height: 50,
+              width: 130,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: 15,
+              ...styles.borderStyle
+            }}
+            onPress={() =>
+              this.props.change('endTime', {
+                date: this.props.endTime.date ? this.props.endTime.date : new Date(),
+                picker: true
+              })
+            }
+          >
+            {endTime}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{ justifyContent: 'center', padding: 10 }}
+            onPress={() => {
+              this.props.change('hasTimeline', false);
+              this.props.change('endTime', {
+                date: undefined, picker: false
+              });
+              this.props.change('startTime', {
+                date: undefined, picker: false
+              });
+            }}
+          >
+            <Image source={cancel} style={{ ...styles.cancelIconStyle }} />
+          </TouchableOpacity>
+        </View>
+        {startDatePicker}
+        {endDatePicker}
+      </View>
     );
   }
 
@@ -241,45 +407,45 @@ class CreateTribeModal extends React.Component {
     return '';
   }
 
-  renderTribeName() {
-    const titleText = <Text style={styles.titleTextStyle}>Tribe Name</Text>;
+  renderEventTitle() {
+    const titleText = <Text style={styles.titleTextStyle}>Event Title</Text>;
     return (
       <View style={{ marginBottom: 5 }}>
         {titleText}
         <Field
-          name='name'
-          label='name'
+          name='title'
+          label='title'
           component={this.renderInput}
           editable={!this.props.uploading}
           numberOfLines={1}
           multiline
           style={styles.goalInputStyle}
-          placeholder='Enter the name...'
+          placeholder='Enter the title...'
         />
       </View>
     );
   }
 
-  renderTribeMemberLimit() {
-    const titleText = <Text style={styles.titleTextStyle}>Member Limit</Text>;
+  renderEventLocation() {
+    const titleText = <Text style={styles.titleTextStyle}>Event Location</Text>;
     return (
       <View style={{ marginBottom: 5 }}>
         {titleText}
         <Field
-          name='membershipLimit'
-          label='membershipLimit'
+          name='location'
+          label='location'
           component={this.renderInput}
           editable={!this.props.uploading}
           numberOfLines={1}
-          keyboardType='number-pad'
+          keyboardType='default'
           style={styles.goalInputStyle}
-          placeholder='Enter a number...'
+          placeholder='Enter the location...'
         />
       </View>
     );
   }
 
-  renderTribeDescription() {
+  renderEventDescription() {
     const titleText = <Text style={styles.titleTextStyle}>Description</Text>;
     return (
       <View style={{ marginBottom: 5 }}>
@@ -301,14 +467,16 @@ class CreateTribeModal extends React.Component {
     return (
       <View>
         <CheckBox
-          title='Members can invite new member'
-          checked={this.props.membersCanInvite}
-          onPress={() => this.props.change('membersCanInvite', !this.props.membersCanInvite)}
+          title='Participants can invite'
+          checked={this.props.participantsCanInvite}
+          onPress={() =>
+            this.props.change('participantsCanInvite', !this.props.participantsCanInvite)
+          }
         />
         <CheckBox
-          title='Public visible'
-          checked={this.props.isPubliclyVisible}
-          onPress={() => this.props.change('isPubliclyVisible', !this.props.isPubliclyVisible)}
+          title='Invite only'
+          checked={this.props.isInviteOnly}
+          onPress={() => this.props.change('isInviteOnly', !this.props.isInviteOnly)}
         />
       </View>
     );
@@ -317,7 +485,7 @@ class CreateTribeModal extends React.Component {
   render() {
     const { handleSubmit, errors } = this.props;
     const actionText = this.props.initializeFromState ? 'Update' : 'Create';
-    const titleText = this.props.initializeFromState ? 'Edit Tribe' : 'New Tribe';
+    const titleText = this.props.initializeFromState ? 'Edit Event' : 'New Event';
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -328,16 +496,17 @@ class CreateTribeModal extends React.Component {
           <ModalHeader
             title={titleText}
             actionText={actionText}
-            onCancel={() => this.props.cancelCreatingNewTribe()}
+            onCancel={() => this.props.cancelCreatingNewEvent()}
             onAction={handleSubmit(this.handleCreate)}
           />
           <ScrollView
             style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
           >
             <View style={{ flex: 1, padding: 20 }}>
-              {this.renderTribeName()}
-              {this.renderTribeDescription()}
-              {this.renderTribeMemberLimit()}
+              {this.renderEventTitle()}
+              {this.renderEventDescription()}
+              {this.renderEventLocation()}
+              {this.renderTimeline()}
               {this.renderOptions()}
               {this.renderMedia()}
               {this.renderActionIcons()}
@@ -351,13 +520,13 @@ class CreateTribeModal extends React.Component {
   }
 }
 
-CreateTribeModal = reduxForm({
-  form: 'createTribeModal',
+CreateEventModal = reduxForm({
+  form: 'createEventModal',
   enableReinitialize: true
-})(CreateTribeModal);
+})(CreateEventModal);
 
 const mapStateToProps = state => {
-  const selector = formValueSelector('createTribeModal');
+  const selector = formValueSelector('createEventModal');
   const { user } = state.user;
   const { profile } = user;
   const { uploading } = state.newTribe;
@@ -365,13 +534,18 @@ const mapStateToProps = state => {
   return {
     user,
     profile,
-    name: selector(state, 'name'),
-    membersCanInvite: selector(state, 'membersCanInvite'),
-    isPubliclyVisible: selector(state, 'isPubliclyVisible'),
-    membershipLimit: selector(state, 'membershipLimit'),
+    title: selector(state, 'title'),
+    // start: selector(state, 'start'),
+    // durationHours: selector(state, 'durationHours'),
+    startTime: selector(state, 'startTime'),
+    endTime: selector(state, 'endTime'),
+    participantsCanInvite: selector(state, 'participantsCanInvite'),
+    isInviteOnly: selector(state, 'isInviteOnly'),
+    location: selector(state, 'location'),
     description: selector(state, 'description'),
     picture: selector(state, 'picture'),
-    formVals: state.form.createTribeModal,
+    hasTimeline: selector(state, 'hasTimeline'),
+    formVals: state.form.createEventModal,
     uploading
   };
 };
@@ -379,16 +553,17 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    cancelCreatingNewTribe,
-    createNewTribe,
+    cancelCreatingNewEvent,
+    createNewEvent,
     openCameraRoll,
     openCamera
   }
-)(CreateTribeModal);
+)(CreateEventModal);
 
 const styles = {
   sectionMargin: {
-    marginTop: 20
+    marginTop: 10,
+    marginBottom: 10
   },
   inputContainerStyle: {
     flexDirection: 'row',

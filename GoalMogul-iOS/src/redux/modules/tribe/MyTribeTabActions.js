@@ -66,7 +66,7 @@ export const updateFilterForMembershipCategory = (value) => (dispatch, getState)
 //Refresh feed for activity tab
 export const refreshTribe = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { limit, filterForMembershipCategory, sortBy } = getState().eventTab;
+  const { limit, filterForMembershipCategory, sortBy } = getState().myTribeTab;
 
   dispatch({
     type: MYTRIBETAB_LOAD
@@ -90,7 +90,7 @@ export const refreshTribe = () => (dispatch, getState) => {
 // Load more goal for mastermind tab
 export const loadMoreTribe = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, sortBy, filterForMembershipCategory, hasNextPage } = getState().tribeTab;
+  const { skip, limit, sortBy, filterForMembershipCategory, hasNextPage } = getState().myTribeTab;
   if (hasNextPage === false) {
     return;
   }
@@ -116,7 +116,7 @@ export const loadMoreTribe = () => (dispatch, getState) => {
 const loadTribe = (skip, limit, token, sortBy, filterForMembershipCategory, callback, onError) => {
   API
     .get(
-      `${BASE_ROUTE}?${queryBuilder(skip, limit, { ...sortBy, ...filterForMembershipCategory })}`,
+      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, filterForMembershipCategory })}`,
       token
     )
     .then((res) => {

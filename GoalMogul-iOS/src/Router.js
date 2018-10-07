@@ -44,6 +44,7 @@ import PostDetailCard from './Main/Post/PostDetailCard/PostDetailCard';
 // Menu
 import MyEventTab from './Main/Menu/Event/MyEventTab';
 import MyEvent from './Main/Menu/Event/MyEvent';
+import CreateEventModal from './Main/Event/CreateEventModal';
 import MyTribeTab from './Main/Menu/Tribe/MyTribeTab';
 import MyTribe from './Main/Menu/Tribe/MyTribe';
 import CreateTribeModal from './Main/Tribe/CreateTribeModal';
@@ -112,7 +113,7 @@ class RouterComponent extends Component {
           <Lightbox hideNavBar>
             <Scene key="root" hideNavBar>
               <Scene key="auth" initial hideNavBar>
-                <Scene key="splash" component={Home} initial />
+                <Scene key="splash" component={SplashScreen} initial />
                 <Scene key="login" component={LoginPage} />
               </Scene>
 
@@ -255,6 +256,10 @@ class RouterComponent extends Component {
           />
           <Stack key="createTribeStack" hideNavBar>
             <Scene key="createTribeModal" component={CreateTribeModal} initial hideNavBar />
+          </Stack>
+
+          <Stack key="createEventStack" hideNavBar>
+            <Scene key="createEventModal" component={CreateEventModal} initial hideNavBar />
           </Stack>
 
           <Scene key="shareModal" component={ShareModal} hideNavBar />
