@@ -49,6 +49,7 @@ const DEBUG_KEY = '[ Component SearchBarHeader ]';
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
 const CANCEL_INDEX = 4;
 const { width } = Dimensions.get('window');
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 /**
  * This is the UI file for a single event.
  */
@@ -155,9 +156,26 @@ class Event extends Component {
     const { item } = this.props;
     if (!item) return <View />;
 
-    const date = 'August 12';
-    const startTime = '5pm';
-    const endTime = '9pm';
+    const { start, durationHours } = item;
+    const startDate = start ? new Date(start) : new Date();
+    const date = `${months[startDate.getMonth() - 1]} ${startDate.getDate()}, ` +
+      `${startDate.getFullYear()}`;
+
+    const startTime = `${startDate.toLocaleString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    })}`;
+
+    const endDate = durationHours
+      ? new Date(startDate.getTime() + (1000 * 60 * 60 * durationHours))
+      : new Date(startDate.getTime() + (1000 * 60 * 60 * 2));
+    const endTime = `${endDate.toLocaleString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    })}`;
+
     const { eventInfoBasicTextStyle, eventContainerStyle } = styles;
     return (
       <View style={eventContainerStyle}>
@@ -328,7 +346,7 @@ const styles = {
     backgroundColor: '#efefef',
     borderRadius: 5
   },
-  
+
   // Event info related styles
   eventContainerStyle: {
     flexDirection: 'row',

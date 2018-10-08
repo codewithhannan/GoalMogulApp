@@ -41,6 +41,7 @@ import {
 } from '../../redux/modules/tribe/TribeSelector';
 
 const DEBUG_KEY = '[ UI Tribe ]';
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const { width } = Dimensions.get('window');
 const CANCEL_REQUEST_INDEX = 1;
 const CANCEL_REQUEST_OPTIONS = ['Cancel the request', 'Cancel'];
@@ -171,7 +172,8 @@ class Tribe extends Component {
 
   // Render tribe size and created date
   renderTribeInfo(item) {
-    const date = 'Jan 2017';
+    const newDate = item.created ? new Date(item.created) : new Date();
+    const date = `${months[newDate.getMonth() - 1]} ${newDate.getDate()}, ${newDate.getFullYear()}`;
     const count = item.memberCount ? item.memberCount : '102';
     return (
       <View style={styles.tribeInfoContainerStyle}>
@@ -196,7 +198,7 @@ class Tribe extends Component {
     const inviteButton = this.props.tab === 'members'
       ? (
         <TouchableOpacity
-          onPress={() => this.handleInvite(_id)} 
+          onPress={() => this.handleInvite(_id)}
           style={styles.inviteButtonContainerStyle}
         >
           <Text>Invite</Text>

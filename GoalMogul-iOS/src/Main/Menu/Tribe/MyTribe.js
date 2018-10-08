@@ -34,6 +34,7 @@ import {
 } from '../../../redux/modules/tribe/TribeActions';
 
 const { width } = Dimensions.get('window');
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 /**
  * This is the UI file for a single event.
  */
@@ -122,7 +123,8 @@ class MyTribe extends Component {
 
   // Render tribe size and created date
   renderTribeInfo(item) {
-    const date = 'Jan 2017';
+    const newDate = item.created ? new Date(item.created) : new Date();
+    const date = `${months[newDate.getMonth() - 1]} ${newDate.getDate()}, ${newDate.getFullYear()}`;
     const count = item.memberCount ? item.memberCount : '102';
     return (
       <View style={styles.tribeInfoContainerStyle}>
