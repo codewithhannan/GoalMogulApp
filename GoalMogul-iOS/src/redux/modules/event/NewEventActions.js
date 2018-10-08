@@ -193,8 +193,38 @@ const formToEventAdapter = (values) => {
 };
 
 // Transform event object to form values
-const eventToFormAdapter = (event) => {
+export const eventToFormAdapter = (event) => {
+  const {
+    title,
+    start,
+    durationHours,
+    participantsCanInvite,
+    isInviteOnly,
+    participantLimit,
+    location,
+    description,
+    picture
+  } = event;
 
+  const cloneStartDate = new Date(start.getTime());
+  const end = moment(cloneStartDate).add(durationHours, 'h').toDate();
+  return {
+    title,
+    startTime: {
+      date: start,
+      picker: false
+    },
+    endTime: {
+      date: end,
+      picker: false
+    },
+    participantsCanInvite,
+    isInviteOnly,
+    participantLimit,
+    location,
+    description,
+    picture
+  };
 };
 
 /**

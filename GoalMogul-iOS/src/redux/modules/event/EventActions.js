@@ -12,7 +12,9 @@ import {
   EVENT_UPDATE_RSVP_STATUS_FAIL,
   EVENT_PARTICIPANT_SELECT_FILTER,
   EVENT_PARTICIPANT_INVITE_SUCCESS,
-  EVENT_PARTICIPANT_INVITE_FAIL
+  EVENT_PARTICIPANT_INVITE_FAIL,
+  EVENT_DELETE_SUCCESS,
+  EVENT_EDIT
 } from './EventReducers';
 
 import { api as API } from '../../middleware/api';
@@ -20,6 +22,45 @@ import { queryBuilder, switchCase } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Event Actions ]';
 const BASE_ROUTE = 'secure/event';
+
+// User deletes an event belongs to self
+export const deleteEvent = (eventId) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const onSuccess = (res) => {
+    Actions.pop();
+    dispatch({
+      type: EVENT_DELETE_SUCCESS
+    });
+    console.log(`${DEBUG_KEY}: event with id: ${eventId}, is deleted with res: `, res);
+    Alert.alert(
+      'Success',
+      'You have successfully deleted the event.'
+    );
+  };
+
+  const onError = (err) => {
+    Alert.alert(
+      'Error',
+      'Failed to delete this event. Please try again later.'
+    );
+    console.log(`${DEBUG_KEY}: delete event error: `, err);
+  };
+
+  API
+    .delete(`${BASE_ROUTE}`, { eventId }, token)
+    .then((res) => {
+      onSuccess(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
+};
+
+// User edits an event. Open the create event page with pre-populated item.
+export const editEvent = () => (dispatch, getState) => {
+  const { event } = getState().event;
+  Actions.push('createEventModal', { initializeFromState: true, event });
+};
 
 export const openEventInvitModal = (eventId) => (dispatch) => {
   const searchFor = {

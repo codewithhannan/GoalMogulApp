@@ -156,7 +156,11 @@ const formToGoalAdapter = (values, userId) => {
   };
 };
 
-// Transform a goal object to
+/**
+ * Transform a goal object to form format
+ * Note: currently, if a goal is updated, then all its needs' and steps'
+ * created will be updated to the current date
+ */
 export const goalToFormAdaptor = (values) => {
   // Function to capitalize the first character
   const capitalizeWord = (word) => {
@@ -217,7 +221,8 @@ const stepsNeedsAdapter = values => {
       return {
         isCompleted: false,
         description: val,
-        order: index
+        order: index,
+        created: new Date()
       };
     }
     return '';
@@ -235,6 +240,8 @@ const detailsAdapter = (value) => {
 /**
  * Transform an array of needs object to a list of Strings for the form
  * in the order of order params
+ * Note: currently, if a goal is updated, then all its needs' and steps'
+ * created will be updated to the current date
  */
 const stepsNeedsReverseAdapter = values => {
   if (!values || values.length <= 0) return undefined;

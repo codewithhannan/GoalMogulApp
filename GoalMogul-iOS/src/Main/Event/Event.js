@@ -36,7 +36,9 @@ import {
   eventDetailClose,
   loadMoreEventFeed,
   rsvpEvent,
-  openEventInvitModal
+  openEventInvitModal,
+  deleteEvent,
+  editEvent
 } from '../../redux/modules/event/EventActions';
 
 // Selector
@@ -58,6 +60,15 @@ class Event extends Component {
 
   handleInvite = (_id) => {
     return this.props.openEventInvitModal(_id);
+  }
+
+  handleEventOptionsOnSelect = (value) => {
+    if (value === 'Delete') {
+      return this.props.deleteEvent();
+    }
+    if (value === 'Edit') {
+      return this.props.editEvent(this.props.item);
+    }
   }
 
   handleRSVPOnPress = () => {
@@ -119,6 +130,7 @@ class Event extends Component {
    */
   renderCaret(item) {
     // If item belongs to self, then caret displays delete
+    console.log('rendering caret');
     const { creator } = item;
     const menu = (creator._id !== this.props.userId)
       ? MenuFactory(
@@ -128,17 +140,17 @@ class Event extends Component {
           () => this.props.reportEvent(),
           '',
           { ...styles.caretContainer },
-          () => console.log('Report Modal is opened')
+          () => console.log('User clicks on options for event')
         )
       : MenuFactory(
           [
             'Delete',
             'Edit'
           ],
-          () => this.props.deleteEvent(),
+          this.handleEventOptionsOnSelect,
           '',
           { ...styles.caretContainer },
-          () => console.log('Report Modal is opened')
+          () => console.log('User clicks on options for self event.')
         );
     return menu;
   }
@@ -245,6 +257,7 @@ class Event extends Component {
       <View>
         {this.renderEventImage()}
         <View style={styles.generalInfoContainerStyle}>
+          {this.renderCaret(item)}
           <Text style={styles.eventTitleTextStyle}>
             {title}
           </Text>
@@ -367,6 +380,14 @@ const styles = {
     margin: 2
   },
 
+  // caret for options
+  caretContainer: {
+    position: 'absolute',
+    top: 3,
+    right: 3,
+    padding: 10
+  },
+
   // Style for Invite button
   inviteButtonContainerStyle: {
     height: 30,
@@ -436,7 +457,9 @@ export default connect(
     eventDetailClose,
     loadMoreEventFeed,
     rsvpEvent,
-    openEventInvitModal
+    openEventInvitModal,
+    deleteEvent,
+    editEvent
   }
 )(Event);
 

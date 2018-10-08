@@ -34,6 +34,8 @@ export const EVENT_UPDATE_RSVP_STATUS_FAIL = 'event_update_rsvp_status_fail';
 export const EVENT_PARTICIPANT_SELECT_FILTER = 'event_participant_select_filter';
 export const EVENT_PARTICIPANT_INVITE_SUCCESS = 'event_partitipant_invite_success';
 export const EVENT_PARTICIPANT_INVITE_FAIL = 'event_partitipant_invite_fail';
+export const EVENT_DELETE_SUCCESS = 'event_delete_success';
+export const EVENT_EDIT = 'event_edit';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -84,10 +86,11 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case EVENT_DETAIL_OPEN: {
-      let newState = _.cloneDeep(state);
+      const newState = _.cloneDeep(state);
       return _.set(newState, 'item', { ...action.payload });
     }
 
+    case EVENT_DELETE_SUCCESS:
     case EVENT_DETAIL_CLOSE: {
       return {
         ...INITIAL_STATE

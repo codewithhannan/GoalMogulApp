@@ -35,7 +35,8 @@ import ModalHeader from '../Common/Header/ModalHeader';
 // Actions
 import {
   cancelCreatingNewEvent,
-  createNewEvent
+  createNewEvent,
+  eventToFormAdapter
 } from '../../redux/modules/event/NewEventActions';
 import { openCameraRoll, openCamera } from '../../actions';
 
@@ -74,13 +75,13 @@ class CreateEventModal extends React.Component {
     };
 
     // Initialize based on the props, if it's opened through edit button
-    // const initialVals = this.props.initializeFromState
-    //   ? { ...goalToFormAdaptor(this.props.goalDetail) }
-    //   : { ...defaulVals };
+    const { initializeFromState, event } = this.props;
+    const initialVals = initializeFromState
+      ? { ...eventToFormAdapter(event) }
+      : { ...defaulVals };
 
     this.props.initialize({
-      // ...initialVals
-      ...defaulVals
+      ...initialVals
     });
   }
 
@@ -556,7 +557,8 @@ export default connect(
     cancelCreatingNewEvent,
     createNewEvent,
     openCameraRoll,
-    openCamera
+    openCamera,
+    eventToFormAdapter
   }
 )(CreateEventModal);
 
