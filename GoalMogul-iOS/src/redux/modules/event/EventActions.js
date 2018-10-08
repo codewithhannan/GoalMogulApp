@@ -56,7 +56,7 @@ export const inviteParticipantToEvent = (eventId, inviteeId) => (dispatch, getSt
   };
 
   API
-    .put(`${BASE_ROUTE}/participant`, { eventId, inviteeId }, token)
+    .post(`${BASE_ROUTE}/participant`, { eventId, inviteeId }, token)
     .then((res) => {
       if (res && res.data) {
         return onSuccess(res.data);

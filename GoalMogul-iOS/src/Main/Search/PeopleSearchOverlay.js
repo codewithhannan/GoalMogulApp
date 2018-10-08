@@ -148,19 +148,18 @@ import { openProfile } from '../../actions';
    return ({
      debouncedSearch,
      clearSearchState: clearSearchState(dispatch),
+     inviteParticipantToEvent: (eventId, inviteeId) =>
+      dispatch(inviteParticipantToEvent(eventId, inviteeId)),
+     openProfile: (userId) =>
+      dispatch(openProfile(userId)),
+     inviteUserToTribe: (tribeId, inviteeId) =>
+      dispatch(inviteUserToTribe(tribeId, inviteeId))
    });
  };
 
 export default connect(
   mapStateToProps,
-  {
-    debouncedSearch: (dispatch) => _.debounce(
-      (value, type) => dispatch(handleSearch(value, type)), 400),
-    inviteUserToTribe,
-    openProfile,
-    inviteParticipantToEvent,
-    clearSearchState: (dispatch) => () => clearSearchState(dispatch),
-  }
+  mapDispatchToProps
   // {
   //   ...mapDispatchToProps,
   //   inviteUserToTribe,

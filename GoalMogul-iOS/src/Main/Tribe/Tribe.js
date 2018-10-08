@@ -30,7 +30,8 @@ import TestEventImage from '../../asset/TestEventImage.png';
 import {
   tribeSelectTab,
   tribeDetailClose,
-  requestJoinTribe
+  requestJoinTribe,
+  openTribeInvitModal
 } from '../../redux/modules/tribe/TribeActions';
 
 // Selector
@@ -49,8 +50,8 @@ const REQUEST_OPTIONS = ['Request to join', 'Cancel'];
  */
 class Tribe extends Component {
 
-  handleInvite = () => {
-    
+  handleInvite = (_id) => {
+    return this.props.openTribeInvitModal(_id);
   }
 
   handleRequestOnPress = () => {
@@ -187,14 +188,17 @@ class Tribe extends Component {
   }
 
   renderTribeOverview(item) {
-    const { name } = item;
+    const { name, _id } = item;
     const filterBar = this.props.tab === 'members'
       ? <MemberFilterBar />
       : '';
 
     const inviteButton = this.props.tab === 'members'
       ? (
-        <TouchableOpacity onPress={this.handleInvite} style={styles.inviteButtonContainerStyle}>
+        <TouchableOpacity
+          onPress={() => this.handleInvite(_id)} 
+          style={styles.inviteButtonContainerStyle}
+        >
           <Text>Invite</Text>
         </TouchableOpacity>
       )
@@ -408,6 +412,7 @@ export default connect(
   {
     tribeSelectTab,
     tribeDetailClose,
-    requestJoinTribe
+    requestJoinTribe,
+    openTribeInvitModal
   }
 )(Tribe);

@@ -20,6 +20,14 @@ import { queryBuilder } from '../../middleware/utils';
 const DEBUG_KEY = '[ Tribe Actions ]';
 const BASE_ROUTE = 'secure/tribe';
 
+export const openTribeInvitModal = (tribeId) => (dispatch) => {
+  const searchFor = {
+    type: 'tribe',
+    id: tribeId
+  };
+  Actions.push('searchPeopleLightBox', { searchFor });
+};
+
 export const inviteUserToTribe = (tribeId, inviteeId) => (dispatch, getState) => {
   const { token } = getState().user;
 
@@ -47,7 +55,7 @@ export const inviteUserToTribe = (tribeId, inviteeId) => (dispatch, getState) =>
   };
 
   API
-    .put(`${BASE_ROUTE}/member-invitation`, { tribeId, inviteeId }, token)
+    .post(`${BASE_ROUTE}/member-invitation`, { tribeId, inviteeId }, token)
     .then((res) => {
       if (res && res.data) {
         return onSuccess(res.data);

@@ -4,7 +4,8 @@ import {
   Image,
   Dimensions,
   Text,
-  FlatList
+  FlatList,
+  TouchableOpacity
  } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
@@ -22,16 +23,25 @@ import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
 import check from '../../../asset/utils/check.png';
 
 import TestEventImage from '../../../asset/TestEventImage.png';
+
+// Actions
 import {
   tribeSelectTab,
   tribeDetailClose
 } from '../../../redux/modules/tribe/MyTribeActions';
+import {
+  openTribeInvitModal
+} from '../../../redux/modules/tribe/TribeActions';
 
 const { width } = Dimensions.get('window');
 /**
  * This is the UI file for a single event.
  */
 class MyTribe extends Component {
+  handleInvite = (_id) => {
+    return this.props.openTribeInvitModal(_id);
+  }
+
   // Tab related functions
   _handleIndexChange = (index) => {
     this.props.tribeSelectTab(index);
@@ -129,7 +139,19 @@ class MyTribe extends Component {
   }
 
   renderTribeOverview(item) {
-    const { name } = item;
+    const { name, _id } = item;
+
+    const inviteButton = this.props.tab === 'members'
+      ? (
+        <TouchableOpacity
+          onPress={() => this.handleInvite(_id)}
+          style={styles.inviteButtonContainerStyle}
+        >
+          <Text>Invite</Text>
+        </TouchableOpacity>
+      )
+      : '';
+
 
     return (
       <View>
@@ -159,6 +181,7 @@ class MyTribe extends Component {
             navigationState: this.props.navigationState
           })
         }
+        {inviteButton}
       </View>
     );
   }
@@ -250,6 +273,18 @@ const styles = {
 
   },
 
+  // Style for Invite button
+  inviteButtonContainerStyle: {
+    height: 30,
+    width: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'flex-end',
+    marginRight: 20,
+    backgroundColor: '#efefef',
+    borderRadius: 5
+  },
+
   // Style for tribe info
   tribeInfoContainerStyle: {
     flexDirection: 'row',
@@ -306,6 +341,7 @@ export default connect(
   mapStateToProps,
   {
     tribeSelectTab,
-    tribeDetailClose
+    tribeDetailClose,
+    openTribeInvitModal
   }
 )(MyTribe);
