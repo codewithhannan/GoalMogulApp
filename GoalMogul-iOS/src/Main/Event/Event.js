@@ -23,6 +23,7 @@ import ParticipantFilterBar from './ParticipantFilterBar';
 
 import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
+import MenuFactory from '../Common/MenuFactory';
 
 // Asset
 import TestEventImage from '../../asset/TestEventImage.png';
@@ -109,6 +110,37 @@ class Event extends Component {
     }
 
     return '';
+  }
+
+  /**
+   * Caret to show options for an event.
+   * If owner, options are delete and edit.
+   * Otherwise, option is report
+   */
+  renderCaret(item) {
+    // If item belongs to self, then caret displays delete
+    const { creator } = item;
+    const menu = (creator._id !== this.props.userId)
+      ? MenuFactory(
+          [
+            'Report',
+          ],
+          () => this.props.reportEvent(),
+          '',
+          { ...styles.caretContainer },
+          () => console.log('Report Modal is opened')
+        )
+      : MenuFactory(
+          [
+            'Delete',
+            'Edit'
+          ],
+          () => this.props.deleteEvent(),
+          '',
+          { ...styles.caretContainer },
+          () => console.log('Report Modal is opened')
+        );
+    return menu;
   }
 
   renderEventImage() {
@@ -366,6 +398,7 @@ const styles = {
 
 const mapStateToProps = state => {
   const { navigationState, item, feed, feedLoading } = state.event;
+  const { userId } = state.user;
 
   const { routes, index } = navigationState;
   const data = ((key) => {
@@ -390,7 +423,8 @@ const mapStateToProps = state => {
     data,
     feedLoading,
     status: getUserStatus(state),
-    tab: routes[index].key
+    tab: routes[index].key,
+    userId
   };
 };
 
