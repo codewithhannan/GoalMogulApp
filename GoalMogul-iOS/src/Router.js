@@ -30,6 +30,7 @@ import MeetTab from './Main/MeetTab/MeetTab';
 import SearchOverlay from './Main/Search/SearchOverlay';
 import EventSearchOverlay from './Main/Search/EventSearchOverlay';
 import TribeSearchOverlay from './Main/Search/TribeSearchOverlay';
+import PeopleSearchOverlay from './Main/Search/PeopleSearchOverlay';
 // import MeetCard from './Main/MeetTab/MeetCard';
 
 // Home Tab
@@ -44,8 +45,10 @@ import PostDetailCard from './Main/Post/PostDetailCard/PostDetailCard';
 // Menu
 import MyEventTab from './Main/Menu/Event/MyEventTab';
 import MyEvent from './Main/Menu/Event/MyEvent';
+import CreateEventModal from './Main/Event/CreateEventModal';
 import MyTribeTab from './Main/Menu/Tribe/MyTribeTab';
 import MyTribe from './Main/Menu/Tribe/MyTribe';
+import CreateTribeModal from './Main/Tribe/CreateTribeModal';
 
 // Profile
 import Profile from './Main/Profile/Profile';
@@ -111,7 +114,7 @@ class RouterComponent extends Component {
           <Lightbox hideNavBar>
             <Scene key="root" hideNavBar>
               <Scene key="auth" initial hideNavBar>
-                <Scene key="splash" component={Home} initial />
+                <Scene key="splash" component={SplashScreen} initial />
                 <Scene key="login" component={LoginPage} />
               </Scene>
 
@@ -210,6 +213,7 @@ class RouterComponent extends Component {
                     <Scene key="explore" component={Explore} initial />
                     <Scene key="tribeDetail" component={Tribe} />
                     <Scene key="eventDetail" component={Event} />
+                    <Scene key="postExploreTab" component={PostDetailCard} />
                   </Stack>
 
                   <Stack
@@ -251,10 +255,18 @@ class RouterComponent extends Component {
             component={CreatePostModal}
             hideNavBar
           />
+          <Stack key="createTribeStack" hideNavBar>
+            <Scene key="createTribeModal" component={CreateTribeModal} initial hideNavBar />
+          </Stack>
+
+          <Stack key="createEventStack" hideNavBar>
+            <Scene key="createEventModal" component={CreateEventModal} initial hideNavBar />
+          </Stack>
 
           <Scene key="shareModal" component={ShareModal} hideNavBar />
           <Scene key="searchEventLightBox" component={EventSearchOverlay} hideNavBar />
           <Scene key="searchTribeLightBox" component={TribeSearchOverlay} hideNavBar />
+          <Scene key="searchPeopleLightBox" component={PeopleSearchOverlay} hideNavBar />
 
           <Scene key="mutualFriends" component={MutualFriends} />
           <Scene key="meetContactSync" component={ContactSync} hideNavBar />

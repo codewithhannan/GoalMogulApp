@@ -329,7 +329,7 @@ const testData = {
 
 const mapDispatchToProps = (dispatch) => {
   const debouncedSearch = _.debounce((value, type) => dispatch(handleSearch(value, type)), 400);
-  console.log('getState is: ', dispatch);
+
   return ({
     debouncedSearch,
     clearSearchState: clearSearchState(dispatch),

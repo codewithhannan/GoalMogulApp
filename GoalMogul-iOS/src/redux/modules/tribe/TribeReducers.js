@@ -33,6 +33,8 @@ export const TRIBE_REQUEST_JOIN_SUCCESS = 'tribe_request_join_success';
 export const TRIBE_REQUEST_JOIN_FAIL = 'tribe_request_join_fail';
 export const TRIBE_REQUEST_CANCEL_JOIN_SUCCESS = 'tribe_request_cancel_join_success';
 export const TRIBE_MEMBER_SELECT_FILTER = 'tribe_member_select_filter';
+export const TRIBE_MEMBER_INVITE_SUCCESS = 'tribe_member_invite_success';
+export const TRIBE_MEMBER_INVITE_FAIL = 'tribe_member_invite_fail';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {

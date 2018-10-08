@@ -34,7 +34,8 @@ import {
   eventSelectTab,
   eventDetailClose,
   loadMoreEventFeed,
-  rsvpEvent
+  rsvpEvent,
+  openEventInvitModal
 } from '../../redux/modules/event/EventActions';
 
 // Selector
@@ -52,6 +53,10 @@ const { width } = Dimensions.get('window');
  * This is the UI file for a single event.
  */
 class Event extends Component {
+
+  handleInvite = (_id) => {
+    return this.props.openEventInvitModal(_id);
+  }
 
   handleRSVPOnPress = () => {
     const { item } = this.props;
@@ -170,9 +175,20 @@ class Event extends Component {
   }
 
   renderEventOverview(item) {
-    const { title } = item;
+    const { title, _id } = item;
     const filterBar = this.props.tab === 'attendees'
       ? <ParticipantFilterBar />
+      : '';
+
+    const inviteButton = this.props.tab === 'attendees'
+      ? (
+        <TouchableOpacity
+          onPress={() => this.handleInvite(_id)}
+          style={styles.inviteButtonContainerStyle}
+        >
+          <Text>Invite</Text>
+        </TouchableOpacity>
+      )
       : '';
 
     return (
@@ -201,6 +217,7 @@ class Event extends Component {
           })
         }
         {filterBar}
+        {inviteButton}
       </View>
     );
   }
@@ -299,6 +316,19 @@ const styles = {
     fontSize: 10,
     margin: 2
   },
+
+  // Style for Invite button
+  inviteButtonContainerStyle: {
+    height: 30,
+    width: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'flex-end',
+    marginRight: 20,
+    backgroundColor: '#efefef',
+    borderRadius: 5
+  },
+  
   // Event info related styles
   eventContainerStyle: {
     flexDirection: 'row',
@@ -353,7 +383,8 @@ export default connect(
     eventSelectTab,
     eventDetailClose,
     loadMoreEventFeed,
-    rsvpEvent
+    rsvpEvent,
+    openEventInvitModal
   }
 )(Event);
 

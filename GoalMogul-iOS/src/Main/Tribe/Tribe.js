@@ -30,7 +30,8 @@ import TestEventImage from '../../asset/TestEventImage.png';
 import {
   tribeSelectTab,
   tribeDetailClose,
-  requestJoinTribe
+  requestJoinTribe,
+  openTribeInvitModal
 } from '../../redux/modules/tribe/TribeActions';
 
 // Selector
@@ -48,6 +49,10 @@ const REQUEST_OPTIONS = ['Request to join', 'Cancel'];
  * This is the UI file for a single event.
  */
 class Tribe extends Component {
+
+  handleInvite = (_id) => {
+    return this.props.openTribeInvitModal(_id);
+  }
 
   handleRequestOnPress = () => {
     const { item, hasRequested } = this.props;
@@ -183,9 +188,20 @@ class Tribe extends Component {
   }
 
   renderTribeOverview(item) {
-    const { name } = item;
+    const { name, _id } = item;
     const filterBar = this.props.tab === 'members'
       ? <MemberFilterBar />
+      : '';
+
+    const inviteButton = this.props.tab === 'members'
+      ? (
+        <TouchableOpacity
+          onPress={() => this.handleInvite(_id)} 
+          style={styles.inviteButtonContainerStyle}
+        >
+          <Text>Invite</Text>
+        </TouchableOpacity>
+      )
       : '';
 
     return (
@@ -217,6 +233,7 @@ class Tribe extends Component {
           })
         }
         {filterBar}
+        {inviteButton}
       </View>
     );
   }
@@ -319,6 +336,18 @@ const styles = {
     backgroundColor: '#efefef',
   },
 
+  // Style for Invite button
+  inviteButtonContainerStyle: {
+    height: 30,
+    width: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'flex-end',
+    marginRight: 20,
+    backgroundColor: '#efefef',
+    borderRadius: 5
+  },
+
   // Style for tribe info
   tribeInfoContainerStyle: {
     flexDirection: 'row',
@@ -383,6 +412,7 @@ export default connect(
   {
     tribeSelectTab,
     tribeDetailClose,
-    requestJoinTribe
+    requestJoinTribe,
+    openTribeInvitModal
   }
 )(Tribe);

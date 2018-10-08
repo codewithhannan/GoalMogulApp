@@ -50,10 +50,10 @@ class EventTab extends React.Component {
 }
 
 const mapStateToProps = state => {
-  // const { data, loading } = state.eventTab;
+  const { data, loading } = state.eventTab;
 
-  const loading = false;
-  const data = [
+  // const loading = false;
+  const testData = [
     {
       _id: '980987230941',
       created: '2018-09-03T05:46:44.038Z',
@@ -147,7 +147,7 @@ const mapStateToProps = state => {
   ];
 
   return {
-    data,
+    data: [...data, ...testData],
     loading
   };
 };

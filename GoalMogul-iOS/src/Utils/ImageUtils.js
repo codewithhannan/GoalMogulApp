@@ -3,10 +3,23 @@ import { Image, ImageEditor } from 'react-native';
 import Expo, { Permissions } from 'expo';
 import _ from 'lodash';
 
+const ImageTypes = ['ProfileImage', 'FeedImage', 'PageImage'];
+const getImageUrl = (type) => {
+  let imageType;
+  if (!type) {
+    imageType = 'ProfileImage';
+  } else if (ImageTypes.some((oneType) => oneType === type)) {
+    imageType = type;
+  } else {
+    throw new Error(`Image type: ${type} is not included`);
+  }
+  return `https://goalmogul-api-dev.herokuapp.com/api/secure/s3/${imageType}/signature`;
+};
+
 const ImageUtils = {
-  getPresignedUrl(file, token, dispatch) {
+  getPresignedUrl(file, token, dispatch, type) {
     return new Promise((resolve, reject) => {
-      const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/s3/ProfileImage/signature';
+      const url = getImageUrl(type);
       const param = {
         url,
         method: 'post',

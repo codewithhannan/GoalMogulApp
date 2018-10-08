@@ -127,5 +127,5 @@ export default (state = INITIAL_STATE, action) => {
 
 const capitalizeWord = (word) => {
   if (!word) return '';
-  word.replace(/^\w/, c => c.toUpperCase());
+  return word.replace(/^\w/, c => c.toUpperCase());
 };

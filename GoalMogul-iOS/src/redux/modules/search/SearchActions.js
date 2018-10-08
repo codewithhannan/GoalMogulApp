@@ -1,5 +1,6 @@
 import curry from 'ramda/src/curry';
 import { api as API } from '../../middleware/api';
+import _ from 'lodash';
 import {
   SEARCH_CHANGE_FILTER,
   SEARCH_REQUEST,
@@ -29,6 +30,7 @@ export const searchChangeFilter = (type, value) => {
    * @param type: one of ['people', 'events', 'tribes']
 	 */
 const searchWithId = (searchContent, queryId, type) => (dispatch, getState) => {
+  console.log('dispatch is: ', dispatch);
   const { token } = getState().user;
   const { skip, limit } = getState().search[type];
   console.log(`${DEBUG_KEY} with text: ${searchContent} and queryId: ${queryId}`);
@@ -64,6 +66,7 @@ const generateQueryId = (text) => hashCode(text);
 
 // Functions to handle search
 export const handleSearch = (searchContent, type) => {
+  console.log('searchContent is: ', searchContent);
   const queryId = generateQueryId(searchContent);
   return searchCurry(searchContent, queryId, type);
 };

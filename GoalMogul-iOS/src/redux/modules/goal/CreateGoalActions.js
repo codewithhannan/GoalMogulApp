@@ -161,7 +161,7 @@ export const goalToFormAdaptor = (values) => {
   // Function to capitalize the first character
   const capitalizeWord = (word) => {
     if (!word) return '';
-    word.replace(/^\w/, c => c.toUpperCase());
+    return word.replace(/^\w/, c => c.toUpperCase());
   };
 
   const {

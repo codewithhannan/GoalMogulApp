@@ -5,7 +5,8 @@ import {
   Dimensions,
   Text,
   FlatList,
-  ActivityIndicator
+  ActivityIndicator,
+  TouchableOpacity
  } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -16,9 +17,6 @@ import About from './MyEventAbout';
 import StackedAvatars from '../../Common/StackedAvatars';
 import Dot from '../../Common/Dot';
 import MemberListCard from '../../Tribe/MemberListCard';
-
-import GoalCard from '../../Goal/GoalCard/GoalCard';
-import NeedCard from '../../Goal/NeedCard/NeedCard';
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
 
 // Asset
@@ -32,12 +30,18 @@ import {
   eventDetailClose,
   loadMoreEventFeed
 } from '../../../redux/modules/event/MyEventActions';
+import {
+  openEventInvitModal
+} from '../../../redux/modules/event/EventActions';
 
 const { width } = Dimensions.get('window');
 /**
  * This is the UI file for a single event.
  */
 class MyEvent extends Component {
+  handleInvite = (_id) => {
+    return this.props.openEventInvitModal(_id);
+  }
 
   // Tab related functions
   _handleIndexChange = (index) => {
@@ -119,7 +123,18 @@ class MyEvent extends Component {
   }
 
   renderEventOverview(item) {
-    const { title } = item;
+    const { title, _id } = item;
+
+    const inviteButton = this.props.tab === 'attendees'
+      ? (
+        <TouchableOpacity
+          onPress={() => this.handleInvite(_id)}
+          style={styles.inviteButtonContainerStyle}
+        >
+          <Text>Invite</Text>
+        </TouchableOpacity>
+      )
+      : '';
 
     return (
       <View>
@@ -146,6 +161,7 @@ class MyEvent extends Component {
             navigationState: this.props.navigationState
           })
         }
+        {inviteButton}
       </View>
     );
   }
@@ -223,6 +239,18 @@ const styles = {
     color: '#696969',
     fontSize: 12
   },
+  // Style for Invite button
+  inviteButtonContainerStyle: {
+    height: 30,
+    width: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'flex-end',
+    marginRight: 20,
+    backgroundColor: '#efefef',
+    borderRadius: 5
+  },
+
   // RSVP related styles
   rsvpBoxContainerStyle: {
     height: 25,
@@ -288,6 +316,7 @@ export default connect(
   {
     eventSelectTab,
     eventDetailClose,
-    loadMoreEventFeed
+    loadMoreEventFeed,
+    openEventInvitModal
   }
 )(MyEvent);

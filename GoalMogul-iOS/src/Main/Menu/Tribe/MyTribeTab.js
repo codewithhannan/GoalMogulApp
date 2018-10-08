@@ -2,7 +2,9 @@ import React from 'react';
 import {
   View,
   Modal,
-  FlatList
+  FlatList,
+  TouchableOpacity,
+  Text
 } from 'react-native';
 import { connect } from 'react-redux';
 import { MenuProvider } from 'react-native-popup-menu';
@@ -13,6 +15,10 @@ import {
   loadMoreTribe,
   closeMyTribeTab
 } from '../../../redux/modules/tribe/MyTribeTabActions';
+
+import {
+  openNewTribeModal
+} from '../../../redux/modules/tribe/NewTribeActions';
 
 // Components
 import MyTribeCard from './MyTribeCard';
@@ -26,23 +32,41 @@ class MyTribeTab extends React.Component {
 
   handleOnLoadMore = () => this.props.loadMoreTribe();
 
+  handleCreate = () => {
+    this.props.openNewTribeModal();
+  }
+
   renderItem = ({ item }) => {
     return <MyTribeCard item={item} />;
   }
 
+  renderCreateTribeButton() {
+    return (
+      <TouchableOpacity onPress={this.handleCreate} style={styles.createButtonContainerStyle}>
+        <Text>Create Tribe</Text>
+      </TouchableOpacity>
+    )
+  }
+
   renderListHeader() {
     return (
-      <MyTribeFilterBar />
+      <View>
+        <MyTribeFilterBar />
+        {this.renderCreateTribeButton()}
+      </View>
     );
   }
   // ListHeaderComponent={this.renderListHeader()}
+  // <Modal
+  //   style={{ flex: 1 }}
+  //   animationType='fade'
+  //   visible={this.props.showModal}
+  // >
 
   render() {
     return (
-      <Modal
-        style={{ flex: 1 }}
-        animationType='fade'
-        visible={this.props.showModal}
+      <View
+        style={{ flex: 1, backgroundColor: 'white' }}
       >
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
           <ModalHeader
@@ -63,7 +87,7 @@ class MyTribeTab extends React.Component {
             onEndThreshold={0}
           />
         </MenuProvider>
-      </Modal>
+      </View>
 
     );
   }
@@ -135,6 +159,16 @@ const styles = {
   backdrop: {
     backgroundColor: 'gray',
     opacity: 0.5,
+  },
+  createButtonContainerStyle: {
+    height: 30,
+    width: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'flex-end',
+    marginRight: 20,
+    backgroundColor: '#efefef',
+    borderRadius: 5
   }
 };
 
@@ -143,6 +177,7 @@ export default connect(
   {
     refreshTribe,
     loadMoreTribe,
-    closeMyTribeTab
+    closeMyTribeTab,
+    openNewTribeModal
   }
 )(MyTribeTab);

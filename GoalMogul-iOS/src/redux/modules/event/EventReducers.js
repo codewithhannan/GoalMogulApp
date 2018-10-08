@@ -32,6 +32,8 @@ export const EVENT_UPDATE_RSVP_STATUS = 'event_update_rsvp_status';
 export const EVENT_UPDATE_RSVP_STATUS_SUCCESS = 'event_update_rsvp_status_success';
 export const EVENT_UPDATE_RSVP_STATUS_FAIL = 'event_update_rsvp_status_fail';
 export const EVENT_PARTICIPANT_SELECT_FILTER = 'event_participant_select_filter';
+export const EVENT_PARTICIPANT_INVITE_SUCCESS = 'event_partitipant_invite_success';
+export const EVENT_PARTICIPANT_INVITE_FAIL = 'event_partitipant_invite_fail';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
