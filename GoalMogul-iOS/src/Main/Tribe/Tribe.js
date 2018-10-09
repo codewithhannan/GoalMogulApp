@@ -19,6 +19,7 @@ import Divider from '../Common/Divider';
 import About from './About';
 import MemberListCard from './MemberListCard';
 import MemberFilterBar from './MemberFilterBar';
+import { MenuFactory } from '../Common/MenuFactory';
 
 import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
@@ -31,7 +32,10 @@ import {
   tribeSelectTab,
   tribeDetailClose,
   requestJoinTribe,
-  openTribeInvitModal
+  openTribeInvitModal,
+  deleteTribe,
+  editTribe,
+  reportTribe
 } from '../../redux/modules/tribe/TribeActions';
 
 // Selector
@@ -50,6 +54,19 @@ const REQUEST_OPTIONS = ['Request to join', 'Cancel'];
  * This is the UI file for a single event.
  */
 class Tribe extends Component {
+
+  handleTribeOptionsOnSelect = (value) => {
+    const { item } = this.props;
+    if (!item) return;
+
+    const { _id } = item;
+    if (value === 'Delete') {
+      return this.props.deleteTribe(_id);
+    }
+    if (value === 'Edit') {
+      return this.props.editTribe(item);
+    }
+  }
 
   handleInvite = (_id) => {
     return this.props.openTribeInvitModal(_id);
@@ -97,6 +114,44 @@ class Tribe extends Component {
       <TabButtonGroup buttons={props} />
     );
   };
+
+  /**
+   * Caret to show options for a tribe.
+   * If owner, options are delete and edit.
+   * Otherwise, option is report
+   */
+  renderCaret(item) {
+    // If item belongs to self, then caret displays delete
+    const { creator } = item;
+
+    // const isSelf = creator._id === this.props.userId;
+    const isSelf = false;
+    const menu = (!isSelf)
+      ? MenuFactory(
+          [
+            'Report',
+          ],
+          () => this.props.reportTribe(),
+          '',
+          { ...styles.caretContainer },
+          () => console.log('User clicks on options for tribe')
+        )
+      : MenuFactory(
+          [
+            'Delete',
+            'Edit'
+          ],
+          this.handleTribeOptionsOnSelect,
+          '',
+          { ...styles.caretContainer },
+          () => console.log('User clicks on options for self tribe.')
+        );
+    return (
+      <View style={{ position: 'absolute', top: 3, right: 3 }}>
+        {menu}
+      </View>
+    );
+  }
 
   renderEventImage() {
     return (
@@ -213,6 +268,7 @@ class Tribe extends Component {
           {this.renderEventImage()}
         </View>
         <View style={styles.generalInfoContainerStyle}>
+          {this.renderCaret(item)}
           <Text
             style={{ fontSize: 22, fontWeight: '300' }}
           >
@@ -338,6 +394,11 @@ const styles = {
     backgroundColor: '#efefef',
   },
 
+  // caret for options
+  caretContainer: {
+    padding: 14
+  },
+
   // Style for Invite button
   inviteButtonContainerStyle: {
     height: 30,
@@ -372,6 +433,7 @@ const styles = {
 
 const mapStateToProps = state => {
   const { navigationState, item, feed, hasRequested } = state.tribe;
+  const { userId } = state.user;
 
   const { routes, index } = navigationState;
   const data = ((key) => {
@@ -396,7 +458,8 @@ const mapStateToProps = state => {
     data,
     isMember: getUserStatus(state),
     hasRequested,
-    tab: routes[index].key
+    tab: routes[index].key,
+    userId
   };
 };
 
@@ -415,6 +478,9 @@ export default connect(
     tribeSelectTab,
     tribeDetailClose,
     requestJoinTribe,
-    openTribeInvitModal
+    openTribeInvitModal,
+    deleteTribe,
+    editTribe,
+    reportTribe
   }
 )(Tribe);

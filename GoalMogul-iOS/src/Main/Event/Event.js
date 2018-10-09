@@ -40,7 +40,8 @@ import {
   rsvpEvent,
   openEventInvitModal,
   deleteEvent,
-  editEvent
+  editEvent,
+  reportEvent
 } from '../../redux/modules/event/EventActions';
 
 // Selector
@@ -66,6 +67,8 @@ class Event extends Component {
 
   handleEventOptionsOnSelect = (value) => {
     const { item } = this.props;
+    if (!item) return;
+    
     const { _id } = item;
     if (value === 'Delete') {
       return this.props.deleteEvent(_id);
@@ -134,7 +137,7 @@ class Event extends Component {
    */
   renderCaret(item) {
     // If item belongs to self, then caret displays delete
-    const { creator } = item;
+    const { creator, _id } = item;
 
     const isSelf = creator._id === this.props.userId;
     const menu = (!isSelf)
@@ -142,7 +145,7 @@ class Event extends Component {
           [
             'Report',
           ],
-          () => this.props.reportEvent(),
+          () => this.props.reportEvent(_id),
           '',
           { ...styles.caretContainer },
           () => console.log('User clicks on options for event')
@@ -465,7 +468,8 @@ export default connect(
     rsvpEvent,
     openEventInvitModal,
     deleteEvent,
-    editEvent
+    editEvent,
+    reportEvent
   }
 )(Event);
 

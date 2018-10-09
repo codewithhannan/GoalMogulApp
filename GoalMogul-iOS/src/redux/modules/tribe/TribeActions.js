@@ -11,7 +11,8 @@ import {
   TRIBE_REQUEST_CANCEL_JOIN_SUCCESS,
   TRIBE_MEMBER_SELECT_FILTER,
   TRIBE_MEMBER_INVITE_SUCCESS,
-  TRIBE_MEMBER_INVITE_FAIL
+  TRIBE_MEMBER_INVITE_FAIL,
+  TRIBE_DELETE_SUCCESS
 } from './TribeReducers';
 
 import { api as API } from '../../middleware/api';
@@ -19,6 +20,51 @@ import { queryBuilder } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Tribe Actions ]';
 const BASE_ROUTE = 'secure/tribe';
+
+export const reportTribe = (tribeId) => (dispatch, getState) => {
+  
+};
+
+// User deletes an tribe belongs to self
+export const deleteTribe = (tribeId) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const onSuccess = (res) => {
+    Actions.pop();
+    dispatch({
+      type: TRIBE_DELETE_SUCCESS
+    });
+    console.log(`${DEBUG_KEY}: tribe with id: ${tribeId}, is deleted with res: `, res);
+    Alert.alert(
+      'Success',
+      'You have successfully deleted the tribe.'
+    );
+  };
+
+  const onError = (err) => {
+    Alert.alert(
+      'Error',
+      'Failed to delete this tribe. Please try again later.'
+    );
+    console.log(`${DEBUG_KEY}: delete tribe error: `, err);
+  };
+
+  API
+    .delete(`${BASE_ROUTE}`, { tribeId }, token)
+    .then((res) => {
+      if (res.message && res.message.includes('Deleted')) {
+        return onSuccess(res);
+      }
+      onError(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
+};
+
+// User edits a tribe. Open the create tribe modal with pre-populated item.
+export const editTribe = (tribe) => (dispatch, getState) => {
+  Actions.push('createTribeModal', { initializeFromState: true, tribe });
+};
 
 export const openTribeInvitModal = (tribeId) => (dispatch) => {
   const searchFor = {

@@ -23,6 +23,10 @@ import { queryBuilder, switchCase } from '../../middleware/utils';
 const DEBUG_KEY = '[ Event Actions ]';
 const BASE_ROUTE = 'secure/event';
 
+export const reportEvent = (eventId) => (dispatch, getState) => {
+
+};
+
 // User deletes an event belongs to self
 export const deleteEvent = (eventId) => (dispatch, getState) => {
   const { token } = getState().user;
@@ -49,7 +53,10 @@ export const deleteEvent = (eventId) => (dispatch, getState) => {
   API
     .delete(`${BASE_ROUTE}`, { eventId }, token)
     .then((res) => {
-      onSuccess(res);
+      if (res.message && res.message.includes('Deleted')) {
+        return onSuccess(res);
+      }
+      onError(res);
     })
     .catch((err) => {
       onError(err);

@@ -32,7 +32,8 @@ import ModalHeader from '../Common/Header/ModalHeader';
 // Actions
 import {
   cancelCreatingNewTribe,
-  createNewTribe
+  createNewTribe,
+  tribeToFormAdapter
 } from '../../redux/modules/tribe/NewTribeActions';
 import { openCameraRoll, openCamera } from '../../actions';
 
@@ -69,13 +70,14 @@ class CreateTribeModal extends React.Component {
     };
 
     // Initialize based on the props, if it's opened through edit button
-    // const initialVals = this.props.initializeFromState
-    //   ? { ...goalToFormAdaptor(this.props.goalDetail) }
-    //   : { ...defaulVals };
+    const { initializeFromState, tribe } = this.props;
+    const initialVals = initializeFromState
+      ? { ...tribeToFormAdapter(tribe) }
+      : { ...defaulVals };
 
     this.props.initialize({
       // ...initialVals
-      ...defaulVals
+      ...initialVals
     });
   }
 

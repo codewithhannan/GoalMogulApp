@@ -9,6 +9,7 @@ import {
  } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
+import { MenuProvider } from 'react-native-popup-menu';
 
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
@@ -16,6 +17,8 @@ import TabButtonGroup from '../../Common/TabButtonGroup';
 import Divider from '../../Common/Divider';
 import About from './MyTribeAbout';
 import MemberListCard from '../../Tribe/MemberListCard';
+import { MenuFactory } from '../../Common/MenuFactory';
+import MemberFilterBar from '../../Tribe/MemberFilterBar';
 
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
 
@@ -30,7 +33,10 @@ import {
   tribeDetailClose
 } from '../../../redux/modules/tribe/MyTribeActions';
 import {
-  openTribeInvitModal
+  openTribeInvitModal,
+  deleteTribe,
+  editTribe,
+  reportTribe
 } from '../../../redux/modules/tribe/TribeActions';
 
 const { width } = Dimensions.get('window');
@@ -39,6 +45,20 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
  * This is the UI file for a single event.
  */
 class MyTribe extends Component {
+
+  handleTribeOptionsOnSelect = (value) => {
+    const { item } = this.props;
+    if (!item) return;
+
+    const { _id } = item;
+    if (value === 'Delete') {
+      return this.props.deleteTribe(_id);
+    }
+    if (value === 'Edit') {
+      return this.props.editTribe(item);
+    }
+  }
+
   handleInvite = (_id) => {
     return this.props.openTribeInvitModal(_id);
   }
@@ -53,6 +73,44 @@ class MyTribe extends Component {
       <TabButtonGroup buttons={props} />
     );
   };
+
+  /**
+   * Caret to show options for a tribe.
+   * If owner, options are delete and edit.
+   * Otherwise, option is report
+   */
+  renderCaret(item) {
+    // If item belongs to self, then caret displays delete
+    const { creator } = item;
+
+    // const isSelf = creator._id === this.props.userId;
+    const isSelf = true;
+    const menu = (!isSelf)
+      ? MenuFactory(
+          [
+            'Report',
+          ],
+          () => this.props.reportTribe(),
+          '',
+          { ...styles.caretContainer },
+          () => console.log('User clicks on options for tribe')
+        )
+      : MenuFactory(
+          [
+            'Delete',
+            'Edit'
+          ],
+          this.handleTribeOptionsOnSelect,
+          '',
+          { ...styles.caretContainer },
+          () => console.log('User clicks on options for self tribe.')
+        );
+    return (
+      <View style={{ position: 'absolute', top: 3, right: 3 }}>
+        {menu}
+      </View>
+    );
+  }
 
   renderEventImage() {
     return (
@@ -143,6 +201,10 @@ class MyTribe extends Component {
   renderTribeOverview(item) {
     const { name, _id } = item;
 
+    const filterBar = this.props.tab === 'members'
+      ? <MemberFilterBar />
+      : '';
+
     const inviteButton = this.props.tab === 'members'
       ? (
         <TouchableOpacity
@@ -162,6 +224,7 @@ class MyTribe extends Component {
           {this.renderEventImage()}
         </View>
         <View style={styles.generalInfoContainerStyle}>
+          {this.renderCaret(item)}
           <Text
             style={{ fontSize: 22, fontWeight: '300' }}
           >
@@ -183,6 +246,7 @@ class MyTribe extends Component {
             navigationState: this.props.navigationState
           })
         }
+        {filterBar}
         {inviteButton}
       </View>
     );
@@ -220,15 +284,17 @@ class MyTribe extends Component {
     console.log('data in my tribe is: ', data);
 
     return (
-      <View style={{ flex: 1 }}>
-        <SearchBarHeader backButton onBackPress={() => this.props.tribeDetailClose()} />
-        <FlatList
-          data={data}
-          renderItem={this.renderItem}
-          keyExtractor={(i) => i._id}
-          ListHeaderComponent={this.renderTribeOverview(item)}
-        />
-      </View>
+      <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+        <View style={{ flex: 1 }}>
+          <SearchBarHeader backButton onBackPress={() => this.props.tribeDetailClose()} />
+          <FlatList
+            data={data}
+            renderItem={this.renderItem}
+            keyExtractor={(i) => i._id}
+            ListHeaderComponent={this.renderTribeOverview(item)}
+          />
+        </View>
+      </MenuProvider>
     );
   }
 }
@@ -275,6 +341,11 @@ const styles = {
 
   },
 
+  // caret for options
+  caretContainer: {
+    padding: 14
+  },
+
   // Style for Invite button
   inviteButtonContainerStyle: {
     height: 30,
@@ -300,6 +371,10 @@ const styles = {
   },
   tribeCountTextStyle: {
     fontWeight: '600'
+  },
+  backdrop: {
+    backgroundColor: 'gray',
+    opacity: 0.5,
   }
 };
 
@@ -344,6 +419,9 @@ export default connect(
   {
     tribeSelectTab,
     tribeDetailClose,
-    openTribeInvitModal
+    openTribeInvitModal,
+    deleteTribe,
+    editTribe,
+    reportTribe
   }
 )(MyTribe);

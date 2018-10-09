@@ -157,8 +157,24 @@ const formToTribeAdapter = (values) => {
 };
 
 // Transform tribe object to form values
-const tribeToFormAdapter = (tribe) => {
+export const tribeToFormAdapter = (tribe) => {
+  const {
+    name,
+    membersCanInvite,
+    isPubliclyVisible,
+    membershipLimit,
+    description,
+    picture
+  } = tribe;
 
+  return {
+    name,
+    membersCanInvite,
+    isPubliclyVisible,
+    membershipLimit,
+    description,
+    picture
+  };
 };
 
 /**

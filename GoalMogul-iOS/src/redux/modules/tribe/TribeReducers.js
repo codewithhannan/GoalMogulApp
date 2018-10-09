@@ -22,6 +22,7 @@ const INITIAL_STATE = {
   membersFilter: 'Member'
 };
 
+export const TRIBE_DELETE_SUCCESS = 'tribe_delete_success';
 export const TRIBE_SWITCH_TAB = 'tribe_switch_tab';
 export const TRIBE_DETAIL_OPEN = 'tribe_detail_open';
 export const TRIBE_DETAIL_CLOSE = 'tribe_detail_close';
@@ -89,6 +90,7 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, 'item', { ...action.payload });
     }
 
+    case TRIBE_DELETE_SUCCESS:
     case TRIBE_DETAIL_CLOSE: {
       return {
         ...INITIAL_STATE

@@ -22,6 +22,7 @@ import Dot from '../../Common/Dot';
 import MemberListCard from '../../Tribe/MemberListCard';
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
 import { MenuFactory } from '../../Common/MenuFactory';
+import ParticipantFilterBar from '../../Event/ParticipantFilterBar';
 
 // Asset
 import TestEventImage from '../../../asset/TestEventImage.png';
@@ -38,7 +39,8 @@ import {
 import {
   openEventInvitModal,
   deleteEvent,
-  editEvent
+  editEvent,
+  reportEvent
 } from '../../../redux/modules/event/EventActions';
 
 const { width } = Dimensions.get('window');
@@ -90,7 +92,7 @@ class MyEvent extends Component {
    */
   renderCaret(item) {
     // If item belongs to self, then caret displays delete
-    const { creator } = item;
+    const { creator, _id } = item;
 
     const isSelf = creator._id === this.props.userId;
     const menu = (!isSelf)
@@ -98,7 +100,7 @@ class MyEvent extends Component {
           [
             'Report',
           ],
-          () => this.props.reportEvent(),
+          () => this.props.reportEvent(_id),
           '',
           { ...styles.caretContainer },
           () => console.log('User clicks on options for event')
@@ -196,6 +198,9 @@ class MyEvent extends Component {
 
   renderEventOverview(item) {
     const { title, _id } = item;
+    const filterBar = this.props.tab === 'attendees'
+      ? <ParticipantFilterBar />
+      : '';
 
     const inviteButton = this.props.tab === 'attendees'
       ? (
@@ -234,6 +239,7 @@ class MyEvent extends Component {
             navigationState: this.props.navigationState
           })
         }
+        {filterBar}
         {inviteButton}
       </View>
     );
@@ -404,6 +410,7 @@ export default connect(
     loadMoreEventFeed,
     openEventInvitModal,
     deleteEvent,
-    editEvent
+    editEvent,
+    reportEvent
   }
 )(MyEvent);
