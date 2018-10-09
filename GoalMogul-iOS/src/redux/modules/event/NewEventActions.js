@@ -1,4 +1,5 @@
 /**
+ * Note: event edition is in EventActions
  * @param title
  * @param start
  * @param durationHours
@@ -206,12 +207,14 @@ export const eventToFormAdapter = (event) => {
     picture
   } = event;
 
-  const cloneStartDate = new Date(start.getTime());
+  const cloneStartDate = new Date(start);
   const end = moment(cloneStartDate).add(durationHours, 'h').toDate();
+  const hasTimeline = start && durationHours;
+
   return {
     title,
     startTime: {
-      date: start,
+      date: cloneStartDate,
       picker: false
     },
     endTime: {
@@ -223,13 +226,7 @@ export const eventToFormAdapter = (event) => {
     participantLimit,
     location,
     description,
-    picture
+    picture,
+    hasTimeline
   };
-};
-
-/**
- * User edits a event that belongs to self
- */
-export const editEvent = (event) => (dispatch, getState) => {
-
 };

@@ -10,7 +10,9 @@ import {
  } from 'react-native';
 import { connect } from 'react-redux';
 import R from 'ramda';
-import { MenuProvider } from 'react-native-popup-menu';
+import {
+  MenuProvider
+} from 'react-native-popup-menu';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
@@ -23,7 +25,7 @@ import ParticipantFilterBar from './ParticipantFilterBar';
 
 import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
-import MenuFactory from '../Common/MenuFactory';
+import { MenuFactory } from '../Common/MenuFactory';
 
 // Asset
 import TestEventImage from '../../asset/TestEventImage.png';
@@ -63,11 +65,13 @@ class Event extends Component {
   }
 
   handleEventOptionsOnSelect = (value) => {
+    const { item } = this.props;
+    const { _id } = item;
     if (value === 'Delete') {
-      return this.props.deleteEvent();
+      return this.props.deleteEvent(_id);
     }
     if (value === 'Edit') {
-      return this.props.editEvent(this.props.item);
+      return this.props.editEvent(item);
     }
   }
 
@@ -130,9 +134,10 @@ class Event extends Component {
    */
   renderCaret(item) {
     // If item belongs to self, then caret displays delete
-    console.log('rendering caret');
     const { creator } = item;
-    const menu = (creator._id !== this.props.userId)
+
+    const isSelf = creator._id === this.props.userId;
+    const menu = (!isSelf)
       ? MenuFactory(
           [
             'Report',
@@ -152,7 +157,11 @@ class Event extends Component {
           { ...styles.caretContainer },
           () => console.log('User clicks on options for self event.')
         );
-    return menu;
+    return (
+      <View style={{ position: 'absolute', top: 3, right: 3 }}>
+        {menu}
+      </View>
+    );
   }
 
   renderEventImage() {
@@ -382,10 +391,7 @@ const styles = {
 
   // caret for options
   caretContainer: {
-    position: 'absolute',
-    top: 3,
-    right: 3,
-    padding: 10
+    padding: 14
   },
 
   // Style for Invite button

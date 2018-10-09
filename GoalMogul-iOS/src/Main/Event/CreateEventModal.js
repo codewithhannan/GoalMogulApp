@@ -558,7 +558,6 @@ export default connect(
     createNewEvent,
     openCameraRoll,
     openCamera,
-    eventToFormAdapter
   }
 )(CreateEventModal);
 

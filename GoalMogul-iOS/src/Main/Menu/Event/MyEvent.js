@@ -9,6 +9,9 @@ import {
   TouchableOpacity
  } from 'react-native';
 import { connect } from 'react-redux';
+import {
+  MenuProvider
+} from 'react-native-popup-menu';
 
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
@@ -18,6 +21,7 @@ import StackedAvatars from '../../Common/StackedAvatars';
 import Dot from '../../Common/Dot';
 import MemberListCard from '../../Tribe/MemberListCard';
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
+import { MenuFactory } from '../../Common/MenuFactory';
 
 // Asset
 import TestEventImage from '../../../asset/TestEventImage.png';
@@ -28,10 +32,13 @@ import DefaultUserProfile from '../../../asset/test-profile-pic.png';
 import {
   eventSelectTab,
   eventDetailClose,
-  loadMoreEventFeed
+  loadMoreEventFeed,
 } from '../../../redux/modules/event/MyEventActions';
+
 import {
-  openEventInvitModal
+  openEventInvitModal,
+  deleteEvent,
+  editEvent
 } from '../../../redux/modules/event/EventActions';
 
 const { width } = Dimensions.get('window');
@@ -49,6 +56,17 @@ class MyEvent extends Component {
     this.props.eventSelectTab(index);
   };
 
+  handleEventOptionsOnSelect = (value) => {
+    const { item } = this.props;
+    const { _id } = item;
+    if (value === 'Delete') {
+      return this.props.deleteEvent(_id);
+    }
+    if (value === 'Edit') {
+      return this.props.editEvent(item);
+    }
+  }
+
   _renderHeader = props => {
     return (
       <TabButtonGroup buttons={props} />
@@ -63,6 +81,43 @@ class MyEvent extends Component {
     }
 
     return '';
+  }
+
+  /**
+   * Caret to show options for an event.
+   * If owner, options are delete and edit.
+   * Otherwise, option is report
+   */
+  renderCaret(item) {
+    // If item belongs to self, then caret displays delete
+    const { creator } = item;
+
+    const isSelf = creator._id === this.props.userId;
+    const menu = (!isSelf)
+      ? MenuFactory(
+          [
+            'Report',
+          ],
+          () => this.props.reportEvent(),
+          '',
+          { ...styles.caretContainer },
+          () => console.log('User clicks on options for event')
+        )
+      : MenuFactory(
+          [
+            'Delete',
+            'Edit'
+          ],
+          this.handleEventOptionsOnSelect,
+          '',
+          { ...styles.caretContainer },
+          () => console.log('User clicks on options for self event.')
+        );
+    return (
+      <View style={{ position: 'absolute', top: 3, right: 3 }}>
+        {menu}
+      </View>
+    );
   }
 
   renderEventImage() {
@@ -157,6 +212,7 @@ class MyEvent extends Component {
       <View>
         {this.renderEventImage()}
         <View style={styles.generalInfoContainerStyle}>
+          {this.renderCaret(item)}
           <Text style={styles.eventTitleTextStyle}>
             {title}
           </Text>
@@ -215,17 +271,19 @@ class MyEvent extends Component {
     if (!item) return <View />;
 
     return (
-      <View style={{ flex: 1 }}>
-        <SearchBarHeader backButton onBackPress={() => this.props.eventDetailClose()} />
-        <FlatList
-          data={data}
-          renderItem={this.renderItem}
-          keyExtractor={(i) => i._id}
-          ListHeaderComponent={this.renderEventOverview(item)}
-          ListFooterComponent={this.renderFooter}
-        />
+      <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+        <View style={{ flex: 1 }}>
+          <SearchBarHeader backButton onBackPress={() => this.props.eventDetailClose()} />
+          <FlatList
+            data={data}
+            renderItem={this.renderItem}
+            keyExtractor={(i) => i._id}
+            ListHeaderComponent={this.renderEventOverview(item)}
+            ListFooterComponent={this.renderFooter}
+          />
 
-      </View>
+        </View>
+      </MenuProvider>
     );
   }
 }
@@ -256,6 +314,12 @@ const styles = {
     color: '#696969',
     fontSize: 12
   },
+
+  // caret for options
+  caretContainer: {
+    padding: 14
+  },
+
   // Style for Invite button
   inviteButtonContainerStyle: {
     height: 30,
@@ -297,6 +361,10 @@ const styles = {
   eventInfoBasicTextStyle: {
     fontSize: 11,
     fontWeight: '300'
+  },
+  backdrop: {
+    backgroundColor: 'gray',
+    opacity: 0.5,
   }
 };
 
@@ -334,6 +402,8 @@ export default connect(
     eventSelectTab,
     eventDetailClose,
     loadMoreEventFeed,
-    openEventInvitModal
+    openEventInvitModal,
+    deleteEvent,
+    editEvent
   }
 )(MyEvent);
