@@ -122,7 +122,7 @@ class Tribe extends Component {
    */
   renderCaret(item) {
     // If item belongs to self, then caret displays delete
-    const { creator } = item;
+    const { creator, _id } = item;
 
     // const isSelf = creator._id === this.props.userId;
     const isSelf = false;
@@ -131,7 +131,7 @@ class Tribe extends Component {
           [
             'Report',
           ],
-          () => this.props.reportTribe(),
+          () => this.props.reportTribe(_id),
           '',
           { ...styles.caretContainer },
           () => console.log('User clicks on options for tribe')

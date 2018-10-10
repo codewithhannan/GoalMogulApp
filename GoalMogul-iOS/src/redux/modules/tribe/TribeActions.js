@@ -15,15 +15,34 @@ import {
   TRIBE_DELETE_SUCCESS
 } from './TribeReducers';
 
+import {
+  REPORT_CREATE
+} from '../report/ReportReducers';
+
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Tribe Actions ]';
 const BASE_ROUTE = 'secure/tribe';
 
-export const reportTribe = (tribeId) => (dispatch, getState) => {
-  
+// Creating a new report
+// category: ['General', 'User', 'Post', 'Goal', 'Comment', 'Tribe', 'Event']
+// type: ['detail', something else]
+export const reportTribe = (referenceId, type) => (dispatch, getState) => {
+  const { userId } = getState().user;
+  // Set the basic information for a report
+  dispatch({
+    type: REPORT_CREATE,
+    payload: {
+      type,
+      creatorId: userId,
+      category: 'Tribe',
+      referenceId
+    }
+  });
+  Actions.push('createReport');
 };
+
 
 // User deletes an tribe belongs to self
 export const deleteTribe = (tribeId) => (dispatch, getState) => {

@@ -79,6 +79,7 @@ import FriendsSetting from './Main/Setting/Privacy/FriendsSetting';
 
 // Lightbox form
 import ShareModal from './Main/Post/ShareModal';
+import ReportModal from './Main/Report/ReportModal';
 
 class RouterComponent extends Component {
 
@@ -261,6 +262,10 @@ class RouterComponent extends Component {
 
           <Stack key="createEventStack" hideNavBar>
             <Scene key="createEventModal" component={CreateEventModal} initial hideNavBar />
+          </Stack>
+
+          <Stack key="createReportStack" hideNavBar>
+            <Scene key="createReport" component={ReportModal} intial hideNavBar />
           </Stack>
 
           <Scene key="shareModal" component={ShareModal} hideNavBar />

@@ -2,6 +2,7 @@ import {
   REPORT_CREATE,
   REPORT_CREATE_CANCEL,
   REPORT_UPDATE_DETAILS,
+  REPORT_UPDATE_TITLE,
   REPORT_POST,
   REPORT_POST_SUCCESS,
   REPORT_POST_FAIL
@@ -31,6 +32,15 @@ export const updateReportDetails = (text) => (dispatch) => {
   console.log('text is: ', text);
   dispatch({
     type: REPORT_UPDATE_DETAILS,
+    payload: text
+  });
+};
+
+// Updating a report detail
+export const updateReportTitle = (text) => (dispatch) => {
+  console.log('text is: ', text);
+  dispatch({
+    type: REPORT_UPDATE_TITLE,
     payload: text
   });
 };

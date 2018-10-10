@@ -17,14 +17,32 @@ import {
   EVENT_EDIT
 } from './EventReducers';
 
+import {
+  REPORT_CREATE
+} from '../report/ReportReducers';
+
 import { api as API } from '../../middleware/api';
 import { queryBuilder, switchCase } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Event Actions ]';
 const BASE_ROUTE = 'secure/event';
 
-export const reportEvent = (eventId) => (dispatch, getState) => {
-
+// Creating a new report
+// category: ['General', 'User', 'Post', 'Goal', 'Comment', 'Tribe', 'Event']
+// type: ['detail', something else]
+export const reportEvent = (referenceId, type) => (dispatch, getState) => {
+  const { userId } = getState().user;
+  // Set the basic information for a report
+  dispatch({
+    type: REPORT_CREATE,
+    payload: {
+      type,
+      creatorId: userId,
+      category: 'Event',
+      referenceId
+    }
+  });
+  Actions.push('createReport');
 };
 
 // User deletes an event belongs to self

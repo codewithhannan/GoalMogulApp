@@ -1,3 +1,6 @@
+/**
+ * This report modal is used in Home and Goal Detail
+ */
 import React, { Component } from 'react';
 import {
   View,
