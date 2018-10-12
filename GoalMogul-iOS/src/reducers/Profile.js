@@ -303,23 +303,25 @@ export default (state = INITIAL_STATE, action) => {
 
     // Find and update the goal that current user marks as complete
     case GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS: {
+      const { goalId } = action.payload;
       const newState = _.cloneDeep(state);
       const oldGoals = newState.goals.data;
       return _.set(
         newState,
         'goals.data',
-        findAndUpdate(action.payload, oldGoals, { isCompleted: true })
+        findAndUpdate(goalId, oldGoals, { isCompleted: true })
       );
     }
 
     // Find and upate the goal that current user shared to mastermind
     case GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS: {
+      const { goalId } = action.payload;
       const newState = _.cloneDeep(state);
       const oldGoals = newState.goals.data;
       return _.set(
         newState,
         'goals.data',
-        findAndUpdate(action.payload, oldGoals, { shareToGoalFeed: true })
+        findAndUpdate(goalId, oldGoals, { shareToGoalFeed: true })
       );
     }
 

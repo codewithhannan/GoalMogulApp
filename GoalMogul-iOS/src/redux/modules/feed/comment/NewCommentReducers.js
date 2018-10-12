@@ -87,10 +87,10 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case GOAL_DETAIL_OPEN: {
       let newState = _.cloneDeep(state);
-      const { tab, _id } = action.payload;
+      const { tab, goal } = action.payload;
       const path = !tab ? 'homeTab' : `${tab}`;
       newState = _.set(newState, `${path}.parentType`, 'goal');
-      return _.set(newState, `${path}.parentRef`, _id);
+      return _.set(newState, `${path}.parentRef`, goal._id);
     }
 
     // when comment posts succeed, delete everything but parent type and ref

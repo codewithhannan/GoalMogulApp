@@ -23,8 +23,8 @@ import {
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 // selector
-import { getGoalStepsAndNeeds } from '../../../redux/modules/goal/selector';
-import { 
+import { getGoalStepsAndNeeds, getGoalDetailByTab } from '../../../redux/modules/goal/selector';
+import {
   getCommentByTab,
   getNewCommentByTab
 } from '../../../redux/modules/feed/comment/CommentSelector';
@@ -448,7 +448,6 @@ const mapStateToProps = state => {
     }
   ];
 
-  const { goal } = state.goalDetail;
   const { showingModalInDetail } = state.report;
   const { userId } = state.user;
   // const { transformedComments, loading } = getCommentByTab(state);
@@ -458,7 +457,7 @@ const mapStateToProps = state => {
     stepsAndNeeds: getGoalStepsAndNeeds(state),
     // stepsAndNeeds: testStepsAndNeeds,
     comments: testTransformedComments,
-    goalDetail: goal,
+    goalDetail: getGoalDetailByTab(state),
     showingModalInDetail,
     showSuggestionModal,
     // isSelf: userId === goal.owner._id

@@ -53,6 +53,11 @@ import {
   goalToFormAdaptor
 } from '../../redux/modules/goal/CreateGoalActions';
 
+// Selector
+import {
+  getGoalDetailByTab
+} from '../../redux/modules/goal/selector';
+
 const { Popover } = renderers;
 const { width } = Dimensions.get('window');
 
@@ -615,7 +620,7 @@ const mapStateToProps = state => {
     startTime: selector(state, 'startTime'),
     endTime: selector(state, 'endTime'),
     formVals: state.form.createGoalModal,
-    goalDetail: state.goalDetail,
+    goalDetail: getGoalDetailByTab(state),
     uploading
   };
 };

@@ -40,6 +40,7 @@ export const closeGoalDetail = () => (dispatch, getState) => {
 export const markStepAsComplete = (stepId) => (dispatch, getState) => {
   const { token } = getState().user;
   const { goal } = getState().goalDetail;
+  const { tab } = getState().navigation;
   const { _id, steps } = goal;
 
   let isCompleted;
@@ -58,7 +59,8 @@ export const markStepAsComplete = (stepId) => (dispatch, getState) => {
       payload: {
         id: stepId,
         isCompleted,
-        goalId: _id
+        goalId: _id,
+        tab
       }
     });
   };
@@ -78,6 +80,7 @@ export const markNeedAsComplete = (needId) => (dispatch, getState) => {
   const { token } = getState().user;
   const { goal } = getState().goalDetail;
   const { _id, needs } = goal;
+  const { tab } = getState().navigation;
 
   let isCompleted;
   const needToUpdate = needs.map((item) => {
@@ -89,15 +92,17 @@ export const markNeedAsComplete = (needId) => (dispatch, getState) => {
     return newItem;
   });
 
-  const onSuccess = () => {
+  const onSuccess = (res) => {
     dispatch({
       type: GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS,
       payload: {
         id: needId,
         isCompleted,
-        goalId: _id
+        goalId: _id,
+        tab
       }
     });
+    console.log(`${DEBUG_KEY}: mark need complete succeed with res: `, res);
   };
   const onError = (err) => {
     Alert.alert(
@@ -113,11 +118,15 @@ export const markNeedAsComplete = (needId) => (dispatch, getState) => {
 // User marks a goal as completed
 export const markGoalAsComplete = (goalId) => (dispatch, getState) => {
   const { token } = getState().user;
+  const { tab } = getState().navigation;
 
   const onSuccess = () => {
     dispatch({
       type: GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
-      payload: goalId
+      payload: {
+        goalId,
+        tab
+      }
     });
   };
 
@@ -166,12 +175,17 @@ export const shareGoalToMastermind = (goalId) => (dispatch, getState) => {
 const shareToMastermind = (goalId, dispatch, getState) => {
   console.log('user pressed confirm ');
   const { token } = getState().user;
+  const { tab } = getState().navigation;
 
-  const onSuccess = (data) => {
+  const onSuccess = (res) => {
     dispatch({
       type: GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS,
-      payload: goalId
+      payload: {
+        goalId,
+        tab
+      }
     });
+    console.log(`${DEBUG_KEY}: shareToMastermind succeed with res: `, res);
   };
 
   const onError = (err) => {

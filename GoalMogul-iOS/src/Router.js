@@ -215,6 +215,7 @@ class RouterComponent extends Component {
                     <Scene key="tribeDetail" component={Tribe} />
                     <Scene key="eventDetail" component={Event} />
                     <Scene key="postExploreTab" component={PostDetailCard} />
+                    <Scene key="goalExploreTab" component={GoalDetailCard} />
                   </Stack>
 
                   <Stack

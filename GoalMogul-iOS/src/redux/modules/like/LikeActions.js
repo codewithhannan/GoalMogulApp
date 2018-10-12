@@ -41,6 +41,7 @@ export const getLike = (parentId, parentType) => (dispatch, getState) => {
  */
 export const likeGoal = (type, id) => (dispatch, getState) => {
   const { token } = getState().user;
+  const { tab } = getState().navigation;
   const tmp = ((request) => {
     switch (request) {
       case 'goal':
@@ -52,7 +53,8 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
             type: LIKE_GOAL,
             payload: {
               id,
-              likeId
+              likeId,
+              tab
             }
           })
         };
@@ -65,7 +67,8 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
             type: LIKE_POST,
             payload: {
               id,
-              likeId
+              likeId,
+              tab
             }
           })
         };
@@ -79,7 +82,8 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
             type: LIKE_COMMENT,
             payload: {
               id,
-              likeId
+              likeId,
+              tab
             }
           })
         };
@@ -105,6 +109,7 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
 export const unLikeGoal = (type, id, likeId) => (dispatch, getState) => {
   console.log('[ Action Like ]: id passed in is: ', id);
   const { token } = getState().user;
+  const { tab } = getState().navigation;
   const tmp = ((request) => {
     switch (request) {
       case 'goal':
@@ -113,7 +118,8 @@ export const unLikeGoal = (type, id, likeId) => (dispatch, getState) => {
             type: UNLIKE_GOAL,
             payload: {
               id,
-              likeId: undefined
+              likeId: undefined,
+              tab
             }
           })
         };
@@ -123,7 +129,8 @@ export const unLikeGoal = (type, id, likeId) => (dispatch, getState) => {
             type: UNLIKE_POST,
             payload: {
               id,
-              likeId: undefined
+              likeId: undefined,
+              tab
             }
           })
         };
@@ -134,7 +141,8 @@ export const unLikeGoal = (type, id, likeId) => (dispatch, getState) => {
             type: UNLIKE_COMMENT,
             payload: {
               id,
-              likeId: undefined
+              likeId: undefined,
+              tab
             }
           })
         };

@@ -31,11 +31,11 @@ const INITIAL_STATE = {
 
   },
   // Post detail in explore tab
-  exploreTab: {
+  postExploreTab: {
 
   },
   // Post detail in chatTab
-  chatTab: {
+  postChatTab: {
 
   }
 };

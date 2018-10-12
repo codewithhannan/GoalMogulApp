@@ -179,7 +179,7 @@ export const goalToFormAdaptor = (values) => {
     steps,
     start,
     end
-  } = values.goal;
+  } = values;
 
   console.log('values are: ', values);
 
