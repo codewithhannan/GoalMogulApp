@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import {
   MenuProvider
 } from 'react-native-popup-menu';
+import R from 'ramda';
 
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
@@ -22,6 +23,7 @@ import Dot from '../../Common/Dot';
 import MemberListCard from '../../Tribe/MemberListCard';
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
 import { MenuFactory } from '../../Common/MenuFactory';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import ParticipantFilterBar from '../../Event/ParticipantFilterBar';
 
 // Asset
@@ -36,6 +38,11 @@ import {
   loadMoreEventFeed,
 } from '../../../redux/modules/event/MyEventActions';
 
+// Selector
+import {
+  getMyEventUserStatus,
+} from '../../../redux/modules/event/EventSelector';
+
 import {
   openEventInvitModal,
   deleteEvent,
@@ -43,6 +50,9 @@ import {
   reportEvent
 } from '../../../redux/modules/event/EventActions';
 
+const DEBUG_KEY = '[ UI MyEvent ]';
+const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
+const CANCEL_INDEX = 4;
 const { width } = Dimensions.get('window');
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 /**
@@ -51,6 +61,37 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 class MyEvent extends Component {
   handleInvite = (_id) => {
     return this.props.openEventInvitModal(_id);
+  }
+
+  handleRSVPOnPress = () => {
+    const { item } = this.props;
+    if (!item) return;
+    const { _id } = item;
+
+    const switchCases = switchByButtonIndex([
+      [R.equals(0), () => {
+        console.log(`${DEBUG_KEY} User chooses: Intereseted`);
+        this.props.rsvpEvent('Interested', _id);
+      }],
+      [R.equals(1), () => {
+        console.log(`${DEBUG_KEY} User chooses: Going`);
+        this.props.rsvpEvent('Going', _id);
+      }],
+      [R.equals(2), () => {
+        console.log(`${DEBUG_KEY} User chooses: Maybe`);
+        this.props.rsvpEvent('Maybe', _id);
+      }],
+      [R.equals(3), () => {
+        console.log(`${DEBUG_KEY} User chooses: Not Going`);
+        this.props.rsvpEvent('NotGoing', _id);
+      }],
+    ]);
+    const rsvpActionSheet = actionSheet(
+      RSVP_OPTIONS,
+      CANCEL_INDEX,
+      switchCases
+    );
+    rsvpActionSheet();
   }
 
   // Tab related functions
@@ -140,19 +181,25 @@ class MyEvent extends Component {
   }
 
   renderEventStatus() {
-    const { item } = this.props;
+    const { item, status } = this.props;
     if (!item) return <View />;
 
+    const rsvpText = status === undefined ? 'RSVP' : status;
     const eventProperty = item.isInviteOnly ? 'Private Event' : 'Public Event';
     const { eventPropertyTextStyle, eventPropertyContainerStyle } = styles;
     return (
       <View style={eventPropertyContainerStyle}>
         <Text style={eventPropertyTextStyle}>{eventProperty}</Text>
         <Dot />
-        <View style={styles.rsvpBoxContainerStyle}>
-          <Image source={EditIcon} style={styles.rsvpIconStyle} />
-          <Text style={styles.rsvpTextStyle}>RSVP</Text>
-        </View>
+        <TouchableOpacity
+          style={styles.rsvpBoxContainerStyle}
+          onPress={this.handleRSVPOnPress}
+        >
+          {/* <Image source={EditIcon} style={styles.rsvpIconStyle} /> */}
+          <Text style={styles.rsvpTextStyle}>
+            {rsvpText === 'NotGoing' ? 'Not going' : rsvpText}
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -397,7 +444,8 @@ const mapStateToProps = state => {
     navigationState,
     item,
     data,
-    feedLoading
+    feedLoading,
+    status: getMyEventUserStatus(state),
   };
 };
 

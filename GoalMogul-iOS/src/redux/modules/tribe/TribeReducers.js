@@ -36,6 +36,8 @@ export const TRIBE_REQUEST_CANCEL_JOIN_SUCCESS = 'tribe_request_cancel_join_succ
 export const TRIBE_MEMBER_SELECT_FILTER = 'tribe_member_select_filter';
 export const TRIBE_MEMBER_INVITE_SUCCESS = 'tribe_member_invite_success';
 export const TRIBE_MEMBER_INVITE_FAIL = 'tribe_member_invite_fail';
+export const TRIBE_MEMBER_REMOVE_SUCCESS = 'tribe_member_remove_success';
+export const TRIBE_MEMBER_ACCEPT_SUCCESS = 'tribe_member_accept_succes';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -110,6 +112,18 @@ export default (state = INITIAL_STATE, action) => {
     case TRIBE_MEMBER_SELECT_FILTER: {
       const newState = _.cloneDeep(state);
       return _.set(newState, 'membersFilter', action.payload);
+    }
+
+    case TRIBE_MEMBER_REMOVE_SUCCESS: {
+      const { userId } = action.payload;
+      let newState = _.cloneDeep(state);
+      let newItem = _.cloneDeep(newState.item);
+      if (newItem) {
+        newItem = newItem.members.filter((member) => member.memberRef._id !== userId);
+      }
+      // After removal, user resets his/her relationship with the tribe
+      newState = _.set(newState, 'hasRequested', undefined);
+      return _.set(newState, 'item', newItem);
     }
 
     default:

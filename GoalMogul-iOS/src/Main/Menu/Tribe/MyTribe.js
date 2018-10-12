@@ -10,6 +10,7 @@ import {
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
+import R from 'ramda';
 
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
@@ -19,8 +20,10 @@ import About from './MyTribeAbout';
 import MemberListCard from '../../Tribe/MemberListCard';
 import { MenuFactory } from '../../Common/MenuFactory';
 import MemberFilterBar from '../../Tribe/MemberFilterBar';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
+import { switchCases } from '../../../redux/middleware/utils';
 
 // Asset
 import check from '../../../asset/utils/check.png';
@@ -36,11 +39,24 @@ import {
   openTribeInvitModal,
   deleteTribe,
   editTribe,
-  reportTribe
+  reportTribe,
+  leaveTribe,
+  acceptTribeInvit,
+  declineTribeInvit,
 } from '../../../redux/modules/tribe/TribeActions';
 
+// Selector
+import {
+  getMyTribeUserStatus,
+  myTribeMemberSelector,
+} from '../../../redux/modules/tribe/TribeSelector';
+
+const DEBUG_KEY = '[ UI MyTribe ]';
 const { width } = Dimensions.get('window');
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const CANCEL_REQUEST_INDEX = 1;
+const CANCEL_REQUEST_OPTIONS = ['Cancel the request', 'Cancel'];
+const REQUEST_OPTIONS = ['Request to join', 'Cancel'];
 /**
  * This is the UI file for a single event.
  */
@@ -73,6 +89,82 @@ class MyTribe extends Component {
       <TabButtonGroup buttons={props} />
     );
   };
+
+  handleStatusChange = (isMember) => {
+    let options;
+    if (isMember === 'Member') {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to remove request`);
+          this.props.leaveTribe(_id, 'mytribe');
+        }]
+      ]);
+    } else if (isMember === 'JoinRequester') {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to remove request`);
+          this.props.requestJoinTribe(_id, false, 'mytribe');
+        }]
+      ]);
+    } else if (isMember === 'Invitee') {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to accept`);
+          this.props.acceptTribeInvit(_id, 'mytribe');
+        }],
+        [R.equals(1), () => {
+          console.log(`${DEBUG_KEY} User chooses to decline`);
+          this.props.declineTribeInvit(_id, 'mytribe');
+        }],
+      ]);
+    } else {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to `);
+        }]
+      ]);
+    }
+
+    const requestOptions = switchCasesMemberStatusChangeText(isMember);
+    const statusActionSheet = actionSheet(
+      requestOptions,
+      CANCEL_REQUEST_INDEX,
+      options
+    );
+    statusActionSheet();
+  }
+
+  handleRequestOnPress = () => {
+    const { item, hasRequested } = this.props;
+    if (!item) return;
+    const { _id } = item;
+
+    let options;
+    if (hasRequested) {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to remove request`);
+          this.props.requestJoinTribe(_id, false, 'mytribe');
+        }]
+      ]);
+    } else {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to join the tribe`);
+          this.props.requestJoinTribe(_id, true, 'mytribe');
+        }]
+      ]);
+    }
+
+    const requestOptions = hasRequested ? CANCEL_REQUEST_OPTIONS : REQUEST_OPTIONS;
+
+    const rsvpActionSheet = actionSheet(
+      requestOptions,
+      CANCEL_REQUEST_INDEX,
+      options
+    );
+    rsvpActionSheet();
+  }
 
   /**
    * Caret to show options for a tribe.
@@ -135,12 +227,14 @@ class MyTribe extends Component {
     );
   }
 
-  renderMemberStatus(item) {
+  renderMemberStatus() {
     // TODO: remove test var
-    const isUserMemeber = isMember(item.members, this.props.user);
-    const tintColor = isUserMemeber ? '#2dca4a' : 'gray';
+    // const isUserMemeber = isMember(item.members, this.props.user);
+    const { isMember, hasRequested } = this.props;
+    const tintColor = isMember ? '#2dca4a' : 'gray';
 
-    if (isUserMemeber) {
+    if (isMember) {
+      const statusText = switchCaseMemberStatus(isMember);
       return (
         <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}>
           <Image
@@ -158,14 +252,18 @@ class MyTribe extends Component {
               color: tintColor
             }}
           >
-            Member
+            {statusText}
           </Text>
         </View>
       );
     }
     // Return view to request to join
+    const requestText = hasRequested ? 'Cancel Request' : 'Request to Join';
     return (
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}>
+      <TouchableOpacity
+        style={styles.memberStatusContainerStyle}
+        onPress={this.handleRequestOnPress}
+      >
         <Text
           style={{
             ...styles.tribeStatusTextStyle,
@@ -173,9 +271,9 @@ class MyTribe extends Component {
             color: tintColor
           }}
         >
-          Request to Join
+          {requestText}
         </Text>
-      </View>
+      </TouchableOpacity>
     );
   }
 
@@ -340,6 +438,16 @@ const styles = {
   memberStatusTextStyle: {
 
   },
+  memberStatusContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 8,
+    width: 100,
+    height: 25,
+    justifyContent: 'center',
+    borderRadius: 5,
+    backgroundColor: '#efefef',
+  },
 
   // caret for options
   caretContainer: {
@@ -379,7 +487,8 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { navigationState, item, feed } = state.myTribe;
+  const { navigationState, item, feed, hasRequested } = state.myTribe;
+  const { userId } = state.user;
 
   const { routes, index } = navigationState;
   const data = ((key) => {
@@ -388,7 +497,7 @@ const mapStateToProps = state => {
         return [item];
 
       case 'members':
-        return item.members;
+        return myTribeMemberSelector(state);
 
       case 'posts':
         return feed;
@@ -401,17 +510,21 @@ const mapStateToProps = state => {
     navigationState,
     item,
     user: state.user,
-    data
+    data,
+    isMember: getMyTribeUserStatus(state),
+    hasRequested,
+    tab: routes[index].key,
+    userId
   };
 };
 
-const isMember = (memberList, self) =>
-  memberList.reduce((total, curr) => {
-    if (curr._id && self._id && (curr._id.toString() === self._id.toString())) {
-      return 1;
-    }
-    return 0;
-  }, 0);
+// const isMember = (memberList, self) =>
+//   memberList.reduce((total, curr) => {
+//     if (curr._id && self._id && (curr._id.toString() === self._id.toString())) {
+//       return 1;
+//     }
+//     return 0;
+//   }, 0);
 
 
 export default connect(
@@ -422,6 +535,35 @@ export default connect(
     openTribeInvitModal,
     deleteTribe,
     editTribe,
-    reportTribe
+    reportTribe,
+    leaveTribe,
+    acceptTribeInvit,
+    declineTribeInvit,
   }
 )(MyTribe);
+
+const switchCaseMemberStatus = (status) => switchCases({
+  Admin: {
+    text: 'Admin',
+    icon: undefined
+  },
+  Member: {
+    text: 'Member',
+    icon: undefined
+  },
+  JoinRequester: {
+    text: 'requsted',
+    icon: undefined
+  },
+  Invitee: {
+    text: 'accept',
+    icon: undefined
+  }
+})('Member')(status);
+
+const switchCasesMemberStatusChangeText = (status) => switchCases({
+  Admin: ['Cancel'],
+  Member: ['Leave tribe', 'Cancel'],
+  JoinRequester: ['Cancel Request', 'Cancel'],
+  Invitee: ['Accept', 'Decline', 'Cancel']
+})('Member')(status);

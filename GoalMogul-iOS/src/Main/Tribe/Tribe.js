@@ -26,6 +26,7 @@ import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 
 // Asset
 import check from '../../asset/utils/check.png';
+import { switchCases } from '../../redux/middleware/utils';
 
 import TestEventImage from '../../asset/TestEventImage.png';
 import {
@@ -35,7 +36,10 @@ import {
   openTribeInvitModal,
   deleteTribe,
   editTribe,
-  reportTribe
+  reportTribe,
+  leaveTribe,
+  acceptTribeInvit,
+  declineTribeInvit,
 } from '../../redux/modules/tribe/TribeActions';
 
 // Selector
@@ -72,21 +76,65 @@ class Tribe extends Component {
     return this.props.openTribeInvitModal(_id);
   }
 
+  handleStatusChange = (isMember) => {
+    let options;
+    if (isMember === 'Member') {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to remove request`);
+          this.props.leaveTribe(_id, 'tribe');
+        }]
+      ]);
+    } else if (isMember === 'JoinRequester') {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to remove request`);
+          this.props.requestJoinTribe(_id, false);
+        }]
+      ]);
+    } else if (isMember === 'Invitee') {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to accept`);
+          this.props.acceptTribeInvit(_id, 'tribe');
+        }],
+        [R.equals(1), () => {
+          console.log(`${DEBUG_KEY} User chooses to decline`);
+          this.props.declineTribeInvit(_id, 'tribe');
+        }],
+      ]);
+    } else {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to `);
+        }]
+      ]);
+    }
+
+    const requestOptions = switchCasesMemberStatusChangeText(isMember);
+    const statusActionSheet = actionSheet(
+      requestOptions,
+      CANCEL_REQUEST_INDEX,
+      options
+    );
+    statusActionSheet();
+  }
+
   handleRequestOnPress = () => {
     const { item, hasRequested } = this.props;
     if (!item) return;
     const { _id } = item;
 
-    let switchCases;
+    let options;
     if (hasRequested) {
-      switchCases = switchByButtonIndex([
+      options = switchByButtonIndex([
         [R.equals(0), () => {
           console.log(`${DEBUG_KEY} User chooses to remove request`);
           this.props.requestJoinTribe(_id, false);
         }]
       ]);
     } else {
-      switchCases = switchByButtonIndex([
+      options = switchByButtonIndex([
         [R.equals(0), () => {
           console.log(`${DEBUG_KEY} User chooses to join the tribe`);
           this.props.requestJoinTribe(_id, true);
@@ -99,7 +147,7 @@ class Tribe extends Component {
     const rsvpActionSheet = actionSheet(
       requestOptions,
       CANCEL_REQUEST_INDEX,
-      switchCases
+      options
     );
     rsvpActionSheet();
   }
@@ -182,8 +230,12 @@ class Tribe extends Component {
     const tintColor = isMember ? '#2dca4a' : 'gray';
 
     if (isMember) {
+      const statusText = switchCaseMemberStatus(isMember);
       return (
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}>
+        <TouchableOpacity
+          style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}
+          onPress={() => this.handleStatusChange(isMember)}
+        >
           <Image
             source={check}
             style={{
@@ -199,9 +251,9 @@ class Tribe extends Component {
               color: tintColor
             }}
           >
-            Member
+            {statusText}
           </Text>
-        </View>
+        </TouchableOpacity>
       );
     }
     // Return view to request to join
@@ -481,6 +533,35 @@ export default connect(
     openTribeInvitModal,
     deleteTribe,
     editTribe,
-    reportTribe
+    reportTribe,
+    leaveTribe,
+    acceptTribeInvit,
+    declineTribeInvit,
   }
 )(Tribe);
+
+const switchCaseMemberStatus = (status) => switchCases({
+  Admin: {
+    text: 'Admin',
+    icon: undefined
+  },
+  Member: {
+    text: 'Member',
+    icon: undefined
+  },
+  JoinRequester: {
+    text: 'requsted',
+    icon: undefined
+  },
+  Invitee: {
+    text: 'accept',
+    icon: undefined
+  }
+})('Member')(status);
+
+const switchCasesMemberStatusChangeText = (status) => switchCases({
+  Admin: ['Cancel'],
+  Member: ['Leave tribe', 'Cancel'],
+  JoinRequester: ['Cancel Request', 'Cancel'],
+  Invitee: ['Accept', 'Decline', 'Cancel']
+})('Member')(status);

@@ -12,8 +12,17 @@ import {
   TRIBE_MEMBER_SELECT_FILTER,
   TRIBE_MEMBER_INVITE_SUCCESS,
   TRIBE_MEMBER_INVITE_FAIL,
-  TRIBE_DELETE_SUCCESS
+  TRIBE_DELETE_SUCCESS,
+  TRIBE_MEMBER_REMOVE_SUCCESS,
+  TRIBE_MEMBER_ACCEPT_SUCCESS
 } from './TribeReducers';
+
+import {
+  MYTRIBE_MEMBER_REMOVE_SUCCESS,
+  MYTRIBE_MEMBER_ACCEPT_SUCCESS,
+  MYTRIBE_REQUEST_JOIN_SUCCESS,
+  MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS
+} from './MyTribeReducers';
 
 import {
   REPORT_CREATE
@@ -140,27 +149,146 @@ export const tribeSelectMembersFilter = (option) => (dispatch) => {
   });
 };
 
-export const requestJoinTribe = (tribeId, join) => (dispatch, getState) => {
-  const { token } = getState().user;
-
+/**
+ * User chooses to leave a tribe
+ * type: ['mytribe', 'tribe'];
+ */
+export const leaveTribe = (tribeId, type) => (dispatch, getState) => {
+  const { token, userId } = getState().user;
+  const actionType = type === 'mytribe'
+    ? MYTRIBE_MEMBER_REMOVE_SUCCESS
+    : TRIBE_MEMBER_REMOVE_SUCCESS;
   const onSuccess = () => {
-    if (join) {
-      return dispatch({
-        type: TRIBE_REQUEST_JOIN_SUCCESS
-      });
-    }
-    return dispatch({
-      type: TRIBE_REQUEST_CANCEL_JOIN_SUCCESS
+    dispatch({
+      type: actionType,
+      payload: {
+        userId
+      }
     });
   };
 
   const onError = (err) => {
     Alert.alert(
-      'Failed to request to join',
-      'Please try again later'
+      'Error',
+      'Failed to leave tribe. Please try again later.'
     );
+    console.log(`${DEBUG_KEY}: error leaving tribe with err: `, err);
+  };
+
+  API
+    .delete(`${BASE_ROUTE}/member`, { tribeId, removeeId: userId }, token)
+    .then((res) => {
+      if (res && res.message && res.message.includes('Delete')) {
+        return onSuccess();
+      }
+      onError(res);
+    })
+    .catch(err => {
+      onError(err);
+    });
+};
+
+/**
+ * User accept tribe invitation
+ * type: ['mytribe', 'tribe'];
+ */
+export const acceptTribeInvit = (tribeId, type) => (dispatch, getState) => {
+  const { token, userId } = getState().user;
+  const actionType = type === 'mytribe'
+    ? MYTRIBE_MEMBER_ACCEPT_SUCCESS
+    : TRIBE_MEMBER_ACCEPT_SUCCESS;
+  const onSuccess = (res) => {
+    dispatch({
+      type: actionType,
+      payload: {
+        userId
+      }
+    });
+    console.log(`${DEBUG_KEY}: success accept tribe invitation with res: `, res);
+    // TODO: refresh page
+  };
+
+  const onError = (err) => {
+    Alert.alert(
+      'Error',
+      'Failed to accept inivitation. Please try again later.'
+    );
+    console.log(`${DEBUG_KEY}: error accept tribe invitation with err: `, err);
+  };
+
+  API
+    .put(`${BASE_ROUTE}/accept-invitation`, { tribeId }, token)
+    .then((res) => {
+      if (res && res.message) {
+        return onSuccess(res);
+      }
+      onError(res);
+    })
+    .catch(err => {
+      onError(err);
+    });
+};
+
+// Decline tribe invitation is the same as leaving a tribe
+export const declineTribeInvit = (tribeId, type) => (dispatch, getState) => {
+  leaveTribe(tribeId, type)(dispatch, getState);
+};
+
+/**
+ * User request to join a tribe
+ * type: ['mytribe', 'tribe']
+ * @param type: if type is undefined or tribe, then it's requested from tribe page
+ * Otherwise, it's from mytribe
+ */
+export const requestJoinTribe = (tribeId, join, type) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const { userId } = getState().user;
+
+  const onSuccess = () => {
+    if (join) {
+      return dispatch({
+        type: (type && type === 'mytribe')
+          ? MYTRIBE_REQUEST_JOIN_SUCCESS
+          : TRIBE_REQUEST_JOIN_SUCCESS
+      });
+    }
+    return dispatch({
+      type: (type && type === 'mytribe')
+        ? MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS
+        : TRIBE_REQUEST_CANCEL_JOIN_SUCCESS
+    });
+  };
+
+  const onError = (err) => {
+    if (join) {
+      Alert.alert(
+        'Failed to request to join',
+        'Please try again later'
+      );
+    } else {
+      Alert.alert(
+        'Failed to cancel request',
+        'Please try again later'
+      );
+    }
+
     console.log(`${DEBUG_KEY}: request to join tribe failed with err: `, err);
   };
+
+  if (!join) {
+    API
+      .delete(`${BASE_ROUTE}/member`, { tribeId, removeeId: userId }, token)
+      .then((res) => {
+        if (res.message && res.message.includes('Delete')) {
+          return onSuccess();
+        }
+        return onError();
+      })
+      .catch((err) => {
+        onError(err);
+      });
+      return;
+  }
 
   API
     .post(`${BASE_ROUTE}/joint-request`, { tribeId }, token)

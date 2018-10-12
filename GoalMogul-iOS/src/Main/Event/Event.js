@@ -51,7 +51,7 @@ import {
 } from '../../redux/modules/event/EventSelector';
 
 
-const DEBUG_KEY = '[ Component SearchBarHeader ]';
+const DEBUG_KEY = '[ UI Event ]';
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
 const CANCEL_INDEX = 4;
 const { width } = Dimensions.get('window');
@@ -68,7 +68,7 @@ class Event extends Component {
   handleEventOptionsOnSelect = (value) => {
     const { item } = this.props;
     if (!item) return;
-    
+
     const { _id } = item;
     if (value === 'Delete') {
       return this.props.deleteEvent(_id);
