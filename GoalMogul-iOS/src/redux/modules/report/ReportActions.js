@@ -1,3 +1,4 @@
+import { Actions } from 'react-native-router-flux';
 import {
   REPORT_CREATE,
   REPORT_CREATE_CANCEL,
@@ -19,12 +20,13 @@ export const createReport = (referenceId, type, category = 'User') => (dispatch,
   dispatch({
     type: REPORT_CREATE,
     payload: {
-      type,
+      type: undefined,
       creatorId: userId,
       category,
       referenceId
     }
   });
+  Actions.push('createReport');
 };
 
 // Updating a report detail

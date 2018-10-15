@@ -42,6 +42,7 @@ import GoalCard from './Main/Goal/GoalCard/GoalCard'; // For debug purpose
 import NeedCard from './Main/Goal/NeedCard/NeedCard'; // For debug purpose
 import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCard2';
 import PostDetailCard from './Main/Post/PostDetailCard/PostDetailCard';
+import ShareDetailCard from './Main/Post/ShareDetailCard/ShareDetailCard';
 // Menu
 import MyEventTab from './Main/Menu/Event/MyEventTab';
 import MyEvent from './Main/Menu/Event/MyEvent';
@@ -176,6 +177,7 @@ class RouterComponent extends Component {
                     </Stack>
                     <Scene key="goal" component={GoalDetailCard} />
                     <Scene key="post" component={PostDetailCard} />
+                    <Scene key="share" component={ShareDetailCard} />
                     <Scene key="profile" component={Profile} />
                     <Scene key="profileDetail" component={ProfileDetail} />
                     <Scene key="setting" component={Setting} />
@@ -196,6 +198,7 @@ class RouterComponent extends Component {
                     hideNavBar
                   >
                     <Scene key="goal" component={MeetTab} hideNavBar />
+                    <Scene key="shareMeetTab" component={ShareDetailCard} />
                   </Stack>
 
                   <Stack
@@ -216,6 +219,7 @@ class RouterComponent extends Component {
                     <Scene key="eventDetail" component={Event} />
                     <Scene key="postExploreTab" component={PostDetailCard} />
                     <Scene key="goalExploreTab" component={GoalDetailCard} />
+                    <Scene key="shareExploreTab" component={ShareDetailCard} />
                   </Stack>
 
                   <Stack

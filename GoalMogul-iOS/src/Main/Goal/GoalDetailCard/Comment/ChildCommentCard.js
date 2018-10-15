@@ -146,7 +146,7 @@ class ChildCommentCard extends Component {
             createComment({
               commentType: 'Reply',
               replyToRef: _id
-            });
+            }, this.props.pageId);
           }}
         />
       </ActionButtonGroup>

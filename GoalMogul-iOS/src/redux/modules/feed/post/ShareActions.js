@@ -1,6 +1,7 @@
 import { Actions } from 'react-native-router-flux';
 import { reset } from 'redux-form';
 import { Alert } from 'react-native';
+import _ from 'lodash';
 
 import {
   SHARE_NEW_SHARE_TO,
@@ -26,33 +27,41 @@ const DEBUG_KEY = '[ Action Share ]';
 
 /* Functions related to a share detail */
 
-/* 
+/*
  * open share detail
  */
 export const openShareDetail = (share) => (dispatch, getState) => {
   const { tab } = getState().navigation;
 
+  const scene = !tab ? 'share' : `share${capitalizeWord(tab)}`;
+  const { pageId } = _.get(getState().shareDetail, `${scene}`);
+
   dispatch({
     type: SHARE_DETAIL_OPEN,
     payload: {
       share,
-      tab
+      tab,
+      pageId
     },
   });
 
-  const scene = !tab ? 'share' : `share${capitalizeWord(tab)}`;
+
   Actions.push(`${scene}`);
 };
 
 // close share detail
 export const closeShareDetail = () => (dispatch, getState) => {
-  const { tab } = getState().navigation;
   Actions.pop();
+  
+  const { tab } = getState().navigation;
+  const path = !tab ? 'share' : `share${capitalizeWord(tab)}`;
+  const { pageId } = _.get(getState().shareDetail, `${path}`);
 
   dispatch({
     type: SHARE_DETAIL_CLOSE,
     payload: {
-      tab
+      tab,
+      pageId
     }
   });
 };

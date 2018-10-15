@@ -58,35 +58,35 @@ class SearchSuggestion extends React.Component {
   }
 
   renderItem = ({ item }) => {
-    const { selectedItem } = this.props;
+    const { selectedItem, pageId } = this.props;
     const selected = selectedItem && selectedItem._id === item._id;
 
     return switchCaseF({
       User: (
         <UserCard
           item={item}
-          onCardPress={this.props.onSuggestionItemSelect}
+          onCardPress={(val) => this.props.onSuggestionItemSelect(val, pageId)}
           selected={selected}
         />
       ),
       Tribe: (
         <TribeCard
           item={item}
-          onCardPress={this.props.onSuggestionItemSelect}
+          onCardPress={(val) => this.props.onSuggestionItemSelect(val, pageId)}
           selected={selected}
         />
       ),
       Event: (
         <EventCard
           item={item}
-          onCardPress={this.props.onSuggestionItemSelect}
+          onCardPress={(val) => this.props.onSuggestionItemSelect(val, pageId)}
           selected={selected}
         />
       ),
       Friend: (
         <UserCard
           item={item}
-          onCardPress={this.props.onSuggestionItemSelect}
+          onCardPress={(val) => this.props.onSuggestionItemSelect(val, pageId)}
           selected={selected}
         />
       ),
@@ -337,8 +337,8 @@ const mapDispatchToProps = (dispatch) => {
   });
 };
 
-const mapStateToProps = state => {
-  const { suggestionType, selectedItem } = getNewCommentByTab(state).tmpSuggestion;
+const mapStateToProps = (state, props) => {
+  const { suggestionType, selectedItem } = getNewCommentByTab(state, props.pageId).tmpSuggestion;
   const { searchRes, searchContent } = state.suggestionSearch;
   const { data, loading } = searchRes;
 

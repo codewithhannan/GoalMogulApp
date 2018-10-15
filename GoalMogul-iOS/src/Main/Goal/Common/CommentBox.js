@@ -64,7 +64,7 @@ class CommentBox extends Component {
         style={styles.iconContainerStyle}
         onPress={() => {
           console.log('suggestion on click in comment box');
-          this.props.createSuggestion();
+          this.props.createSuggestion(this.props.pageId);
         }}
       >
         <Image
@@ -119,17 +119,18 @@ class CommentBox extends Component {
   }
 
   renderSuggestionPreview() {
-    const { showAttachedSuggestion, suggestion } = this.props.newComment;
+    const { pageId, newComment } = this.props;
+    const { showAttachedSuggestion, suggestion } = newComment;
 
     if (showAttachedSuggestion) {
       return (
         <SuggestionPreview
           item={suggestion}
           onRemove={() => {
-            this.props.removeSuggestion();
+            this.props.removeSuggestion(pageId);
           }}
           onPress={() => {
-            this.props.openCurrentSuggestion();
+            this.props.openCurrentSuggestion(pageId);
           }}
         />
       );
@@ -144,6 +145,8 @@ class CommentBox extends Component {
     let newStyle = {
       height
     }
+
+    const { pageId } = this.props;
 
     const inputContainerStyle = {
       ...styles.inputContainerStyle,
@@ -173,7 +176,7 @@ class CommentBox extends Component {
             <TextInput
               ref="textInput"
               placeholder="Write a comment..."
-              onChangeText={(val) => this.props.newCommentOnTextChange(val)}
+              onChangeText={(val) => this.props.newCommentOnTextChange(val, pageId)}
               style={inputStyle}
               editable
               maxHeight={maxHeight}
@@ -221,10 +224,10 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
 
   return {
-    newComment: getNewCommentByTab(state)
+    newComment: getNewCommentByTab(state, props.pageId)
   };
 };
 

@@ -173,6 +173,7 @@ class GoalDetailCard2 extends Component {
             onAttach={() => {
               this.props.attachSuggestion();
             }}
+            pageId={undefined}
           />
           <Report showing={this.props.showingModalInDetail} />
           <SearchBarHeader
@@ -274,8 +275,8 @@ const testData = {
   title: 'Establish a LMFBR near Westport, Connecticut by 2020',
 };
 
-const mapStateToProps = state => {
-  const { showSuggestionModal } = getNewCommentByTab(state);
+const mapStateToProps = (state, props) => {
+  const { showSuggestionModal } = getNewCommentByTab(state, props.pageId);
 
   const testStepsAndNeeds = [
     {

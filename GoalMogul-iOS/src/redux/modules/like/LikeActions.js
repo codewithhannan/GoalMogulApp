@@ -106,7 +106,7 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
  * action to unlike a goal / post / comment
  * @params id: LikeId
  */
-export const unLikeGoal = (type, id, likeId) => (dispatch, getState) => {
+export const unLikeGoal = (type, id, likeId, pageId) => (dispatch, getState) => {
   console.log('[ Action Like ]: id passed in is: ', id);
   const { token } = getState().user;
   const { tab } = getState().navigation;
@@ -119,7 +119,8 @@ export const unLikeGoal = (type, id, likeId) => (dispatch, getState) => {
             payload: {
               id,
               likeId: undefined,
-              tab
+              tab,
+              pageId
             }
           })
         };
@@ -130,7 +131,8 @@ export const unLikeGoal = (type, id, likeId) => (dispatch, getState) => {
             payload: {
               id,
               likeId: undefined,
-              tab
+              tab,
+              pageId
             }
           })
         };
@@ -142,7 +144,8 @@ export const unLikeGoal = (type, id, likeId) => (dispatch, getState) => {
             payload: {
               id,
               likeId: undefined,
-              tab
+              tab,
+              pageId
             }
           })
         };

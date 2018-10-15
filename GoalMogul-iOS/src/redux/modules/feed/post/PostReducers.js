@@ -73,14 +73,11 @@ export default (state = INITIAL_STATE, action) => {
 
     case POST_DETAIL_OPEN: {
       const newState = _.cloneDeep(state);
-      const {
-        post,
-        tab
-      } = action.payload;
-      if (!tab) {
-        return _.set(newState, 'post', { ...post });
-      }
-      return _.set(newState, `${post}${capitalizeWord(tab)}`, { ...post });
+      const { post, tab } = action.payload;
+      const path = !tab ? 'share' : `share${capitalizeWord(tab)}`;
+      const { pageIdCount, pageId } = _.get(newState, `${path}`);
+
+      return _.set(newState, `${post}${capitalizeWord(tab)}`, { ...post, pageIdCount, pageId });
     }
 
     /**

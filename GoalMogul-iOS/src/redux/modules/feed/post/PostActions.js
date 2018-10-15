@@ -2,6 +2,7 @@
 import { Actions } from 'react-native-router-flux';
 import { SubmissionError } from 'redux-form';
 import { Alert } from 'react-native';
+import _ from 'lodash';
 import {
   POST_DETAIL_OPEN,
   POST_DETAIL_CLOSE,
@@ -11,8 +12,7 @@ import {
 } from './PostReducers';
 
 import {
-  openShareDetail,
-  closeShareDetail
+  openShareDetail
 } from './ShareActions';
 
 import { api as API } from '../../../middleware/api';
@@ -35,28 +35,34 @@ export const openPostDetail = (post) => (dispatch, getState) => {
   }
 
   const { tab } = getState().navigation;
+  const scene = !tab ? 'post' : `post${capitalizeWord(tab)}`;
+  const { pageId } = _.get(getState().shareDetail, `${scene}`);
 
   dispatch({
     type: POST_DETAIL_OPEN,
     payload: {
       post,
-      tab
+      tab,
+      pageId
     },
   });
 
-  const scene = !tab ? 'post' : `post${capitalizeWord(tab)}`;
   Actions.push(`${scene}`);
 };
 
 // close post detail
 export const closePostDetail = () => (dispatch, getState) => {
-  const { tab } = getState().navigation;
   Actions.pop();
+
+  const { tab } = getState().navigation;
+  const path = !tab ? 'post' : `post${capitalizeWord(tab)}`;
+  const { pageId } = _.get(getState().shareDetail, `${path}`);
 
   dispatch({
     type: POST_DETAIL_CLOSE,
     payload: {
-      tab
+      tab,
+      pageId
     }
   });
 };

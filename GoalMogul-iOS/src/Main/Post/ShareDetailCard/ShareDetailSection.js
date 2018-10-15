@@ -69,12 +69,12 @@ import ProfileImage from '../../Common/ProfileImage';
 import RefPreview from '../../Common/RefPreview';
 
 // Constants
-const DEBUG_KEY = '[ UI PostDetailCard.PostDetailSection ]';
+const DEBUG_KEY = '[ UI ShareDetailCard.ShareDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to an event', 'Share to a tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 const { width } = Dimensions.get('window');
 
-class PostDetailSection extends Component {
+class ShareDetailSection extends Component {
   state = {
     mediaModal: false
   }
@@ -383,4 +383,4 @@ export default connect(
     openGoalDetail,
     deletePost
   }
-)(PostDetailSection);
+)(ShareDetailSection);

@@ -11,8 +11,8 @@ import {
 
 // Actions
 import {
-  closePostDetail
-} from '../../../redux/modules/feed/post/PostActions';
+  closeShareDetail
+} from '../../../redux/modules/feed/post/ShareActions';
 
 import {
   createCommentFromSuggestion,
@@ -22,7 +22,7 @@ import {
 // Selectors
 import { getCommentByTab } from '../../../redux/modules/feed/comment/CommentSelector';
 import {
-  getPostDetailByTab
+  getShareDetailByTab
 } from '../../../redux/modules/feed/post/PostSelector';
 
 // Component
@@ -31,9 +31,9 @@ import CommentBox from '../../Goal/Common/CommentBox';
 import CommentCard from '../../Goal/GoalDetailCard/Comment/CommentCard';
 import Report from '../../Report/Report';
 
-import PostDetailSection from './PostDetailSection';
+import ShareDetailSection from './ShareDetailSection';
 
-class PostDetailCard extends Component {
+class ShareDetailCard extends Component {
   constructor(props) {
     super(props);
     this.commentBox = {};
@@ -41,9 +41,9 @@ class PostDetailCard extends Component {
 
   handleRefresh = () => {
     const { routes, index } = this.state.navigationState;
-    const { tab, postDetail, pageId } = this.props;
+    const { tab, shareDetail, pageId } = this.props;
     if (routes[index].key === 'comments') {
-      this.props.refreshComments('Post', postDetail._id, tab, pageId);
+      this.props.refreshComments('Post', shareDetail._id, tab, pageId);
     }
   }
 
@@ -69,18 +69,18 @@ class PostDetailCard extends Component {
         index={props.index}
         scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
         onCommentClicked={() => this.dialogOnFocus()}
-        onReportPressed={() => console.log('post detail report clicked')}
-        reportType='postDetail'
+        onReportPressed={() => console.log('share detail report clicked')}
+        reportType='shareDetail'
         pageId={this.props.pageId}
       />
     );
   }
 
-  renderPostDetailSection(postDetail) {
+  renderShareDetailSection(shareDetail) {
     return (
       <View style={{ marginBottom: 1 }}>
-        <PostDetailSection
-          item={postDetail}
+        <ShareDetailSection
+          item={shareDetail}
           onSuggestion={() => this.dialogOnFocus()}
           pageId={this.props.pageId}
         />
@@ -89,7 +89,7 @@ class PostDetailCard extends Component {
   }
 
   render() {
-    const { comments, postDetail, pageId } = this.props;
+    const { comments, shareDetail, pageId } = this.props;
     const data = comments;
 
 
@@ -98,8 +98,8 @@ class PostDetailCard extends Component {
         <View style={{ backgroundColor: '#e5e5e5', flex: 1 }}>
           <SearchBarHeader
             backButton
-            title='Post'
-            onBackPress={() => this.props.closePostDetail()}
+            title='Share'
+            onBackPress={() => this.props.closeShareDetail()}
           />
             <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
               <FlatList
@@ -107,7 +107,7 @@ class PostDetailCard extends Component {
                 data={data}
                 renderItem={this.renderItem}
                 keyExtractor={this.keyExtractor}
-                ListHeaderComponent={() => this.renderPostDetailSection(postDetail)}
+                ListHeaderComponent={() => this.renderShareDetailSection(shareDetail)}
                 refreshing={this.props.commentLoading}
                 onRefresh={this.handleRefresh}
               />
@@ -317,15 +317,16 @@ const mapStateToProps = state => {
       }
     }
   ];
+
+  const shareDetail = getShareDetailByTab(state);
+  const { pageId } = shareDetail;
   // TODO: uncomment
-  // const { transformedComments, loading } = getCommentByTab(state);
-  const postDetail = getPostDetailByTab(state);
-  const { pageId } = postDetail;
+  // const { transformedComments, loading } = getCommentByTab(state, pageId);
 
   return {
     commentLoading: false,
     comments: testTransformedComments,
-    postDetail,
+    shareDetail,
     pageId
   };
 };
@@ -333,8 +334,8 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    closePostDetail,
+    closeShareDetail,
     createCommentFromSuggestion,
     refreshComments
   }
-)(PostDetailCard);
+)(ShareDetailCard);
