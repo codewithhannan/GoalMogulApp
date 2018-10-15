@@ -10,6 +10,11 @@ import {
   POST_NEW_POST_SUBMIT_FAIL
 } from './PostReducers';
 
+import {
+  openShareDetail,
+  closeShareDetail
+} from './ShareActions';
+
 import { api as API } from '../../../middleware/api';
 import ImageUtils from '../../../../Utils/ImageUtils';
 
@@ -20,8 +25,15 @@ const capitalizeWord = (word) => {
   return word.replace(/^\w/, c => c.toUpperCase());
 };
 
-// open post detail
+/**
+ * If post is a share, then open share detail. Otherwise, open post detail
+ */
 export const openPostDetail = (post) => (dispatch, getState) => {
+  // Open share detail if not a general post
+  if (post.type !== 'General') {
+    return openShareDetail(post)(dispatch, getState);
+  }
+
   const { tab } = getState().navigation;
 
   dispatch({
