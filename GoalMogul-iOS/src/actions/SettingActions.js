@@ -1,6 +1,7 @@
 import { Actions } from 'react-native-router-flux';
 import { SubmissionError } from 'redux-form';
-import Expo, { WebBrowser } from 'expo';
+import Expo, { WebBrowser, Permissions, Notifications } from 'expo';
+import { Alert } from 'react-native';
 
 import { api as API } from '../redux/middleware/api';
 
@@ -19,7 +20,8 @@ import {
   SETTING_BLOCK_BLOCK_REQUEST_DONE,
   SETTING_BLOCK_UNBLOCK_REQUEST,
   SETTING_BLOCK_UNBLOCK_REQUEST_DONE,
-  SETTING_BLOCK_REFRESH_DONE
+  SETTING_BLOCK_REFRESH_DONE,
+  SETTING_NOTIFICATION_TOKEN_PUSH_SUCCESS
 } from './types';
 
 const DEBUG_KEY = '[ Setting Action ]';
@@ -361,4 +363,65 @@ export const unblockUser = (blockId, callback) => (dispatch, getState) => {
   .catch((error) => {
     console.log(`${DEBUG_KEY} error for unblocking user: `, error);
   });
+};
+
+// Push notification token to server
+export const registerForPushNotificationsAsync = () => async (dispatch, getState) => {
+  const { token } = getState().user;
+  const { status: existingStatus } = await Permissions.getAsync(
+    Permissions.NOTIFICATIONS
+  );
+  let finalStatus = existingStatus;
+
+  // only ask if permissions have not already been determined, because
+  // iOS won't necessarily prompt the user a second time.
+  if (existingStatus !== 'granted') {
+    // Android remote notification permissions are granted during the app
+    // install, so this will only ask on iOS
+    const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    finalStatus = status;
+  }
+
+  // Stop here if the user did not grant permissions
+  if (finalStatus !== 'granted') {
+    return;
+  }
+
+  // Get the token that uniquely identifies this device
+  const notificationToken = await Notifications.getExpoPushTokenAsync();
+
+  const onSuccess = (res) => {
+    Alert.alert(
+      'Success',
+      'You have succesfully enabled the notification.'
+    );
+    console.log(`${DEBUG_KEY}: enable notification success with res: `, res);
+    dispatch({
+      type: SETTING_NOTIFICATION_TOKEN_PUSH_SUCCESS,
+      payload: {
+        notificationToken
+      }
+    });
+  };
+
+  const onError = (err) => {
+    Alert.alert(
+      'Error',
+      'Failed to enable notification. Please try again later.'
+    );
+    console.log(`${DEBUG_KEY}: error enable notification with err: `, err);
+  };
+
+  // POST the token to your backend server from
+  // where you can retrieve it to send push notifications.
+  return API
+    .put(
+      `${BASE_ROUTE}/expo-token`, { pushToken: notificationToken }, token
+    )
+    .then((res) => {
+      onSuccess(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
 };
