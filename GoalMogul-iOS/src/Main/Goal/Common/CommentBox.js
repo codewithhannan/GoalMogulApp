@@ -176,7 +176,7 @@ class CommentBox extends Component {
               editable
               maxHeight={maxHeight}
               multiline
-              value={this.props.newComment.contentText}
+              value={newComment.contentText}
             />
           </View>
           {this.renderPost()}
