@@ -52,6 +52,10 @@ export const submitGoal = (values, userId, isEdit, callback) => (dispatch, getSt
     dispatch({
       type: GOAL_CREATE_SUBMIT_SUCCESS
     });
+    Alert.alert(
+      'Success',
+      'You have successfully created a goal.'
+    );
   };
 
   // Creating new goal
@@ -95,6 +99,10 @@ const submitEditGoal = (goal, token, callback, dispatch) => {
   };
 
   const onSuccess = () => {
+    Alert.alert(
+      'Success',
+      'You have successfully edited a goal.'
+    );
     dispatch({
       type: GOAL_CREATE_SUBMIT_SUCCESS
     });
@@ -230,9 +238,10 @@ const stepsNeedsAdapter = values => {
 };
 
 const detailsAdapter = (value) => {
-  if (!value) return undefined;
+  if (!value || value.length === 0 || _.isEmpty(value[0])) return undefined;
+
   return {
-    text: value,
+    text: value[0],
     tag: undefined
   };
 };
