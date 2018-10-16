@@ -276,8 +276,6 @@ const testData = {
 };
 
 const mapStateToProps = (state, props) => {
-  const { showSuggestionModal } = getNewCommentByTab(state, props.pageId);
-
   const testStepsAndNeeds = [
     {
       _id: '1',
@@ -449,9 +447,11 @@ const mapStateToProps = (state, props) => {
     }
   ];
 
+  const newComment = getNewCommentByTab(state, props.pageId);
+
   const { showingModalInDetail } = state.report;
   const { userId } = state.user;
-  // const { transformedComments, loading } = getCommentByTab(state);
+  // const { transformedComments, loading } = getCommentByTab(state, props.pageId);
 
   return {
     commentLoading: false,
@@ -460,7 +460,7 @@ const mapStateToProps = (state, props) => {
     comments: testTransformedComments,
     goalDetail: getGoalDetailByTab(state),
     showingModalInDetail,
-    showSuggestionModal,
+    showSuggestionModal: newComment ? newComment.showSuggestionModal : false,
     // isSelf: userId === goal.owner._id
     // TODO: delete
     isSelf: true,

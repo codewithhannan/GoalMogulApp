@@ -4,7 +4,7 @@ import _ from 'lodash';
 const getNeeds = (state) => state.goalDetail.goal.needs;
 const getSteps = (state) => state.goalDetail.goal.steps;
 
-const getTab = (state) => state.navigation;
+const getTab = (state) => state.navigation.tab;
 const getState = (state) => state.goalDetail;
 
 /*

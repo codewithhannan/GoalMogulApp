@@ -60,7 +60,7 @@ export default (state = INITIAL_STATE, action) => {
     case SHARE_DETAIL_OPEN: {
       const newState = _.cloneDeep(state);
       const { share, tab } = action.payload;
-      const path = !tab ? 'share' : `share${capitalizeWord(tab)}`;
+      const path = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
       const { pageIdCount, pageId } = _.get(newState, `${path}`);
 
       return _.set(newState, `${path}`, { ...share, pageId, pageIdCount });
@@ -72,9 +72,9 @@ export default (state = INITIAL_STATE, action) => {
     case SHARE_DETAIL_CLOSE:
     case USER_LOG_OUT: {
       const { tab } = action.payload;
-      const path = !tab ? 'share' : `share${capitalizeWord(tab)}`;
+      const path = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
       const newState = _.cloneDeep(state);
-      return _.newState(newState, `${path}`, { ...SHARE_INITIAL_STATE });
+      return _.set(newState, `${path}`, { ...SHARE_INITIAL_STATE });
     }
 
     case LIKE_SHARE:
@@ -82,7 +82,7 @@ export default (state = INITIAL_STATE, action) => {
       const { id, likeId, tab } = action.payload;
       let newState = _.cloneDeep(state);
 
-      const path = !tab ? 'share' : `share${capitalizeWord(tab)}`;
+      const path = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
       const share = _.get(newState, path);
 
       if (share._id && share._id.toString() === id.toString()) {

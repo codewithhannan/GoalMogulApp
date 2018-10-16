@@ -38,19 +38,19 @@ const NEW_COMMENT_INITIAL_STATE = {
  */
 const INITIAL_STATE = {
   homeTab: {
-    ...NEW_COMMENT_INITIAL_STATE
+    //...NEW_COMMENT_INITIAL_STATE
   },
   meetTab: {
-    ...NEW_COMMENT_INITIAL_STATE
+    //...NEW_COMMENT_INITIAL_STATE
   },
   notificationTab: {
-    ...NEW_COMMENT_INITIAL_STATE
+    //...NEW_COMMENT_INITIAL_STATE
   },
   exploreTab: {
-    ...NEW_COMMENT_INITIAL_STATE
+    //...NEW_COMMENT_INITIAL_STATE
   },
   chatTab: {
-    ...NEW_COMMENT_INITIAL_STATE
+    //...NEW_COMMENT_INITIAL_STATE
   }
 };
 

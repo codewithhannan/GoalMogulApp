@@ -74,7 +74,7 @@ export default (state = INITIAL_STATE, action) => {
     case POST_DETAIL_OPEN: {
       const newState = _.cloneDeep(state);
       const { post, tab } = action.payload;
-      const path = !tab ? 'share' : `share${capitalizeWord(tab)}`;
+      const path = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
       const { pageIdCount, pageId } = _.get(newState, `${path}`);
 
       return _.set(newState, `${post}${capitalizeWord(tab)}`, { ...post, pageIdCount, pageId });
@@ -86,7 +86,7 @@ export default (state = INITIAL_STATE, action) => {
     case POST_DETAIL_CLOSE:
     case USER_LOG_OUT: {
       const { tab } = action.payload;
-      const path = !tab ? 'post' : `post${capitalizeWord(tab)}`;
+      const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
       const newState = _.cloneDeep(state);
       return _.newState(newState, `${path}`, { ...POST_INITIAL_STATE });
     }
@@ -96,7 +96,7 @@ export default (state = INITIAL_STATE, action) => {
       const { id, likeId, tab } = action.payload;
       let newState = _.cloneDeep(state);
 
-      const path = !tab ? 'post' : `post${capitalizeWord(tab)}`;
+      const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
       const post = _.get(newState, path);
 
       if (post._id && post._id.toString() === id.toString()) {

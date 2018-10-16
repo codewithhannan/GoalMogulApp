@@ -64,7 +64,7 @@ class CommentBox extends Component {
         style={styles.iconContainerStyle}
         onPress={() => {
           console.log('suggestion on click in comment box');
-          this.props.createSuggestion(this.props.pageId);
+          this.props.createSuggestion();
         }}
       >
         <Image
@@ -140,13 +140,8 @@ class CommentBox extends Component {
   }
 
   render() {
-    const { value, height } = this.state;
-
-    let newStyle = {
-      height
-    }
-
-    const { pageId } = this.props;
+    const { pageId, newComment } = this.props;
+    if (!newComment) return '';
 
     const inputContainerStyle = {
       ...styles.inputContainerStyle,

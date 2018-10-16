@@ -33,7 +33,7 @@ const DEBUG_KEY = '[ Action Share ]';
 export const openShareDetail = (share) => (dispatch, getState) => {
   const { tab } = getState().navigation;
 
-  const scene = !tab ? 'share' : `share${capitalizeWord(tab)}`;
+  const scene = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
   const { pageId } = _.get(getState().shareDetail, `${scene}`);
 
   dispatch({
@@ -52,9 +52,9 @@ export const openShareDetail = (share) => (dispatch, getState) => {
 // close share detail
 export const closeShareDetail = () => (dispatch, getState) => {
   Actions.pop();
-  
+
   const { tab } = getState().navigation;
-  const path = !tab ? 'share' : `share${capitalizeWord(tab)}`;
+  const path = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
   const { pageId } = _.get(getState().shareDetail, `${path}`);
 
   dispatch({

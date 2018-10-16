@@ -35,7 +35,7 @@ export const openPostDetail = (post) => (dispatch, getState) => {
   }
 
   const { tab } = getState().navigation;
-  const scene = !tab ? 'post' : `post${capitalizeWord(tab)}`;
+  const scene = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
   const { pageId } = _.get(getState().shareDetail, `${scene}`);
 
   dispatch({
@@ -55,7 +55,7 @@ export const closePostDetail = () => (dispatch, getState) => {
   Actions.pop();
 
   const { tab } = getState().navigation;
-  const path = !tab ? 'post' : `post${capitalizeWord(tab)}`;
+  const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
   const { pageId } = _.get(getState().shareDetail, `${path}`);
 
   dispatch({

@@ -91,7 +91,7 @@ class ShareDetailCard extends Component {
   render() {
     const { comments, shareDetail, pageId } = this.props;
     const data = comments;
-
+    if (!shareDetail || !shareDetail.created) return '';
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>

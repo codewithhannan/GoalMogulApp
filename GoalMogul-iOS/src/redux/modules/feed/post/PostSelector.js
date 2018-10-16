@@ -15,7 +15,7 @@ const getShare = (state) => state.shareDetail;
 export const getPostDetailByTab = createSelector(
   [getNavigationTab, getPost],
   (tab, post) => {
-    const path = !tab ? 'post' : `post${capitalizeWord(tab)}`;
+    const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
     return _.get(post, `${path}`);
   }
 );
@@ -23,7 +23,7 @@ export const getPostDetailByTab = createSelector(
 export const getShareDetailByTab = createSelector(
   [getNavigationTab, getShare],
   (tab, share) => {
-    const path = !tab ? 'share' : `share${capitalizeWord(tab)}`;
+    const path = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
     return _.get(share, `${path}`);
   }
 );
