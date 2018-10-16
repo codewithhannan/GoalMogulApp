@@ -127,16 +127,37 @@ export const createCommentFromSuggestion = (
   });
 };
 
-export const postComment = () => (dispatch, getstate) => {
+export const postComment = () => (dispatch, getState) => {
   dispatch({
     type: COMMENT_NEW_POST_START
   });
+
+  const { token } = getState().user;
   // TODO: Check if no suggestion and no replyToRef is filled
   // and commentType is Suggestion, then we set commentType to Comment.
+  const onError = (err) => {
+    Alert.alert('Error', 'Failed to submit comment. Please try again later.');
+    console.log(`${DEBUG_KEY}: error submitting comment: `, err);
+  };
 
   // If succeed, COMMENT_NEW_POST_SUCCESS, otherwise, COMMENT_NEW_POST_FAIL
   // If succeed and comment type is suggestionFor a need or a step, switch to
   // comment tab
+  const onSuccess = (data) => {
+
+  };
+
+  API
+    .post(`${BASE_ROUTE}`, { comment: JSON.stringify({}) }, token)
+    .then((res) => {
+      if (!res.message && res.data) {
+        return onSuccess(res.data);
+      }
+      onError(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
 };
 
 /* Actions for suggestion modal */

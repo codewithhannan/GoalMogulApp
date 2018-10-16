@@ -89,7 +89,7 @@ class GoalFilterBar extends Component {
         </Menu>
 
         <Menu
-          onSelect={value => console.log('selecting value is: ', value)}
+          onSelect={value => this.handleOnMenuSelect('categories', value)}
           rendererProps={{ placement: 'bottom' }}
           renderer={Popover}
         >
@@ -107,10 +107,29 @@ class GoalFilterBar extends Component {
           </MenuTrigger>
           <MenuOptions customStyles={styles.menuOptionsStyles}>
             <MenuOption
-              text='All'
-              value='all'
+              text='General'
+              value='General'
             />
-
+            <MenuOption
+              text='Learning/Education'
+              value='Learning/Education'
+            />
+            <MenuOption
+              text='Career/Business'
+              value='Career/Business'
+            />
+            <MenuOption
+              text='Financial'
+              value='Financial'
+            />
+            <MenuOption
+              text='Spiritual'
+              value='Spiritual'
+            />
+            <MenuOption
+              text='Family/Personal'
+              value='Family/Personal'
+            />
           </MenuOptions>
         </Menu>
 
