@@ -40,11 +40,11 @@ class PostDetailCard extends Component {
   }
 
   handleRefresh = () => {
-    const { routes, index } = this.state.navigationState;
+    // const { routes, index } = this.state.navigationState;
     const { tab, postDetail, pageId } = this.props;
-    if (routes[index].key === 'comments') {
+    // if (routes[index].key === 'comments') {
       this.props.refreshComments('Post', postDetail._id, tab, pageId);
-    }
+    // }
   }
 
   keyExtractor = (item) => item._id;
@@ -319,7 +319,8 @@ const mapStateToProps = state => {
   ];
   // TODO: uncomment
   // const { transformedComments, loading } = getCommentByTab(state);
-  const postDetail = getPostDetailByTab(state);
+  const getPostDetail = getPostDetailByTab();
+  const postDetail = getPostDetail(state);
   const { pageId } = postDetail;
 
   return {

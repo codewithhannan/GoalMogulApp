@@ -12,7 +12,8 @@ import {
   GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
   GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS,
   GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS,
-  GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS
+  GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS,
+  GOAL_DETAIL_SWITCH_TAB
 } from '../../../reducers/GoalDetailReducers';
 
 const DEBUG_KEY = '[ Action GoalDetail ]';
@@ -22,6 +23,17 @@ const BASE_ROUTE = 'secure/feed';
 const LIKE_BASE_ROUTE = `${BASE_ROUTE}/like`;
 const COMMENT_BASE_ROUTE = `${BASE_ROUTE}/comment`;
 const GOAL_BASE_ROUTE = 'secure/goal';
+
+export const goalDetailSwitchTab = (index) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+  dispatch({
+    type: GOAL_DETAIL_SWITCH_TAB,
+    payload: {
+      tab,
+      index
+    }
+  });
+};
 
 export const closeGoalDetail = () => (dispatch, getState) => {
   const { tab } = getState().navigation;

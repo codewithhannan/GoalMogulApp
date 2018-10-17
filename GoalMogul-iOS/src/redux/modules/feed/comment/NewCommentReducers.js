@@ -92,6 +92,8 @@ export const COMMENT_NEW_SUGGESTION_SELECT_ITEM = 'comment_new_suggestion_select
 // Posting a comment
 export const COMMENT_NEW_POST_START = 'comment_new_post_start';
 export const COMMENT_NEW_POST_SUCCESS = 'comment_new_post_success';
+// Comment with suggestion for a need or a step succeed
+export const COMMENT_NEW_POST_SUGGESTION_SUCCESS = 'comment_new_post_suggestion_success';
 export const COMMENT_NEW_POST_FAIL = 'comment_new_post_fail';
 
 export default (state = INITIAL_STATE, action) => {

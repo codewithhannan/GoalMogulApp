@@ -33,6 +33,7 @@ import {
   COMMENT_NEW_POST_START,
   COMMENT_NEW_POST_SUCCESS,
   COMMENT_NEW_POST_FAIL,
+  COMMENT_NEW_POST_SUGGESTION_SUCCESS
 } from './NewCommentReducers';
 
 import { api as API } from '../../../middleware/api';
@@ -126,29 +127,60 @@ export const createCommentFromSuggestion = (
     }
   });
 };
-
-export const postComment = () => (dispatch, getState) => {
+/**
+ * comment(jsonStrObj):
+ * parentRef, parentType("Goal" || "Post"), contentText, contentTags, commentType[, replyToRef, suggestion(Suggestion)]
+ */
+export const postComment = (pageId) => (dispatch, getState) => {
   dispatch({
     type: COMMENT_NEW_POST_START
   });
 
   const { token } = getState().user;
+  const { tab } = getState().navigation;
+  const newComment = commentAdapter(getState(), pageId, tab);
+  const { suggestion, contentText } = newComment;
+  console.log('new comment is: ', newComment);
+
+  return;
   // TODO: Check if no suggestion and no replyToRef is filled
   // and commentType is Suggestion, then we set commentType to Comment.
   const onError = (err) => {
+    dispatch({
+      type: COMMENT_NEW_POST_FAIL
+    });
     Alert.alert('Error', 'Failed to submit comment. Please try again later.');
     console.log(`${DEBUG_KEY}: error submitting comment: `, err);
   };
 
   // If succeed, COMMENT_NEW_POST_SUCCESS, otherwise, COMMENT_NEW_POST_FAIL
-  // If succeed and comment type is suggestionFor a need or a step, switch to
-  // comment tab
   const onSuccess = (data) => {
-
+    const { commentType } = newComment;
+    dispatch({
+      type: COMMENT_NEW_POST_SUCCESS,
+      payload: {
+        comment: newComment,
+        tab,
+        pageId
+      }
+    });
+    // If succeed and comment type is suggestionFor a need or a step, switch to
+    // comment tab
+    if (commentType === 'Suggestion'
+        && (suggestion.suggestionFor === 'Need'
+        || suggestion.suggestionFor === 'Step')) {
+      dispatch({
+        type: COMMENT_NEW_POST_SUGGESTION_SUCCESS,
+        payload: {
+          tab
+        }
+      });
+    }
+    Alert.alert('Success', 'You have successfully created a comment.');
   };
 
   API
-    .post(`${BASE_ROUTE}`, { comment: JSON.stringify({}) }, token)
+    .post(`${BASE_ROUTE}`, { comment: JSON.stringify(newComment) }, token)
     .then((res) => {
       if (!res.message && res.data) {
         return onSuccess(res.data);
@@ -158,6 +190,37 @@ export const postComment = () => (dispatch, getState) => {
     .catch((err) => {
       onError(err);
     });
+};
+
+/**
+ * Transform the new comment in state to proper comment format
+ */
+const commentAdapter = (state, pageId, tab) => {
+  const page = pageId ? `${pageId}` : 'default';
+  const path = tab ? `homeTab.${page}` : `${tab}.${page}`;
+  let newComment = _.get(state.newComment, `${path}`);
+
+  const {
+    contentText,
+    // owner,
+    parentType,
+    parentRef,
+    // content,
+    commentType,
+    replyToRef,
+    suggestion
+  } = newComment;
+
+  return {
+    contentText,
+    contentTags: [],
+    parentType,
+    parentRef,
+    // content,
+    commentType,
+    replyToRef,
+    suggestion
+  };
 };
 
 /* Actions for suggestion modal */

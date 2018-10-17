@@ -17,7 +17,8 @@ import {
   newCommentOnTextChange,
   openCurrentSuggestion,
   removeSuggestion,
-  createSuggestion
+  createSuggestion,
+  postComment
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 // Selectors
@@ -45,6 +46,10 @@ class CommentBox extends Component {
     if (this.props.onRef !== null) {
       this.props.onRef(this);
     }
+  }
+
+  handleOnPost = () => {
+    this.props.postComment(this.props.pageId);
   }
 
   focus() {
@@ -112,9 +117,12 @@ class CommentBox extends Component {
   renderPost() {
     const color = '#45C9F6';
     return (
-      <View style={styles.postContainerStyle}>
+      <TouchableOpacity
+        style={styles.postContainerStyle}
+        onPress={this.handleOnPost}
+      >
         <Text style={{ color, fontSize: 13, fontWeight: '500', padding: 5, margin: 5 }}>Post</Text>
-      </View>
+      </TouchableOpacity>
     );
   }
 

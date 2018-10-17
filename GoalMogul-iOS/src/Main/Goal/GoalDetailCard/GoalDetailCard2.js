@@ -11,7 +11,8 @@ import {
 
 // Actions
 import {
-  closeGoalDetail
+  closeGoalDetail,
+  goalDetailSwitchTab
 } from '../../../redux/modules/goal/GoalDetailActions';
 
 import {
@@ -57,8 +58,9 @@ class GoalDetailCard2 extends Component {
   }
 
   handleRefresh = () => {
-    const { routes, index } = this.state.navigationState;
-    const { tab, goalDetail } = this.props;
+    // const { routes, index } = this.state.navigationState;
+    const { tab, goalDetail, navigationState } = this.props;
+    const { routes, index } = navigationState;
     if (routes[index].key === 'comments') {
       this.props.refreshComments('Goal', goalDetail._id, tab);
     }
@@ -66,6 +68,7 @@ class GoalDetailCard2 extends Component {
 
   // Tab related handlers
   _handleIndexChange = index => {
+    this.props.goalDetailSwitchTab(index);
     this.setState({
       ...this.state,
       navigationState: {
@@ -152,7 +155,7 @@ class GoalDetailCard2 extends Component {
         {
           this._renderHeader({
             jumpToIndex: (i) => this._handleIndexChange(i),
-            navigationState: this.state.navigationState
+            navigationState: this.props.navigationState
           })
         }
       </View>
@@ -448,6 +451,8 @@ const mapStateToProps = (state, props) => {
   ];
 
   const newComment = getNewCommentByTab(state, props.pageId);
+  const goalDetail = getGoalDetailByTab(state);
+  const { goal, navigationState } = goalDetail;
 
   const { showingModalInDetail } = state.report;
   const { userId } = state.user;
@@ -458,7 +463,8 @@ const mapStateToProps = (state, props) => {
     stepsAndNeeds: getGoalStepsAndNeeds(state),
     // stepsAndNeeds: testStepsAndNeeds,
     comments: testTransformedComments,
-    goalDetail: getGoalDetailByTab(state),
+    goalDetail: goal,
+    navigationState,
     showingModalInDetail,
     showSuggestionModal: newComment ? newComment.showSuggestionModal : false,
     // isSelf: userId === goal.owner._id
@@ -476,6 +482,7 @@ export default connect(
     attachSuggestion,
     cancelSuggestion,
     openSuggestionModal,
-    refreshComments
+    refreshComments,
+    goalDetailSwitchTab
   }
 )(GoalDetailCard2);

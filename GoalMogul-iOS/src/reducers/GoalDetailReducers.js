@@ -12,21 +12,58 @@ import {
   UNLIKE_GOAL
 } from '../redux/modules/like/LikeReducers';
 
+import {
+  COMMENT_NEW_POST_SUGGESTION_SUCCESS
+} from '../redux/modules/feed/comment/NewCommentReducers';
+
+const INITIAL_NAVIGATION_STATE = {
+  index: 0,
+  routes: [
+    { key: 'comments', title: 'Comments' },
+    { key: 'mastermind', title: 'Mastermind' },
+  ],
+};
+
 const INITIAL_STATE = {
   goal: {
+    navigationState: {
+      ...INITIAL_NAVIGATION_STATE
+    },
+    goal: {
 
+    }
   },
   goalExploreTab: {
+    navigationState: {
+      ...INITIAL_NAVIGATION_STATE
+    },
+    goal: {
 
+    }
   },
   goalMeetTab: {
+    navigationState: {
+      ...INITIAL_NAVIGATION_STATE
+    },
+    goal: {
 
+    }
   },
   goalNotificationTab: {
+    navigationState: {
+      ...INITIAL_NAVIGATION_STATE
+    },
+    goal: {
 
+    }
   },
   goalChatTab: {
+    navigationState: {
+      ...INITIAL_NAVIGATION_STATE
+    },
+    goal: {
 
+    }
   }
 };
 
@@ -41,6 +78,7 @@ export const GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS =
 export const GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS =
   'goal_detail_mark_need_as_complete_success';
 
+export const GOAL_DETAIL_SWITCH_TAB = 'goal_detail_switch_tab';
 // Comment related constants
 export const GOAL_DETAIL_GET_COMMENT = 'goal_detail_get_comment';
 export const GOAL_DETAIL_CREATE_COMMENT = 'goal_detail_create_comment';
@@ -63,7 +101,7 @@ export default (state = INITIAL_STATE, action) => {
 
     case GOAL_DETAIL_OPEN: {
       const { tab, goal } = action.payload;
-      const path = !tab ? 'goal' : `goal${capitalizeWord(tab)}`;
+      const path = !tab ? 'goal.goal' : `goal${capitalizeWord(tab)}.goal`;
       const newState = _.cloneDeep(state);
       return _.set(newState, `${path}`, { ...goal });
     }
@@ -73,9 +111,16 @@ export default (state = INITIAL_STATE, action) => {
      */
     case GOAL_DETAIL_CLOSE: {
       const { tab } = action.payload;
-      const path = !tab ? 'goal' : `goal${capitalizeWord(tab)}`;
+      const path = !tab ? 'goal.goal' : `goal${capitalizeWord(tab)}.goal`;
       const newState = _.cloneDeep(state);
       return _.set(newState, `${path}`, {});
+    }
+
+    case GOAL_DETAIL_SWITCH_TAB: {
+      const { tab, index } = action.payload;
+      const path = !tab ? 'goal.navigation' : `goal${capitalizeWord(tab)}.navigation`;
+      const newState = _.cloneDeep(state);
+      return _.set(newState, `${path}.index`, index);
     }
 
     case USER_LOG_OUT: {
@@ -89,7 +134,7 @@ export default (state = INITIAL_STATE, action) => {
       const { id, likeId, tab } = action.payload;
       let newState = _.cloneDeep(state);
 
-      const path = !tab ? 'goal' : `goal${capitalizeWord(tab)}`;
+      const path = !tab ? 'goal.goal' : `goal${capitalizeWord(tab)}.goal`;
       const goal = _.get(newState, `${path}`);
       if (goal._id && goal._id.toString() === id.toString()) {
         newState = _.set(newState, `${path}.maybeLikeRef`, likeId);
@@ -99,14 +144,14 @@ export default (state = INITIAL_STATE, action) => {
 
     case GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS: {
       const { tab } = action.payload;
-      const path = !tab ? 'goal' : `goal${capitalizeWord(tab)}`;
+      const path = !tab ? 'goal.goal' : `goal${capitalizeWord(tab)}.goal`;
       const newState = _.cloneDeep(state);
       return _.set(newState, `${path}.isCompleted`, true);
     }
 
     case GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS: {
       const { tab } = action.payload;
-      const path = !tab ? 'goal' : `goal${capitalizeWord(tab)}`;
+      const path = !tab ? 'goal.goal' : `goal${capitalizeWord(tab)}.goal`;
       const newState = _.cloneDeep(state);
       return _.set(newState, `${path}.shareToGoalFeed`, true);
     }
@@ -114,7 +159,7 @@ export default (state = INITIAL_STATE, action) => {
     case GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS: {
       const { isCompleted, id, tab } = action.payload;
       const newState = _.cloneDeep(state);
-      const path = !tab ? 'goal' : `goal${capitalizeWord(tab)}`;
+      const path = !tab ? 'goal.goal' : `goal${capitalizeWord(tab)}.goal`;
       const oldSteps = _.get(newState, `${path}.steps`);
       return _.set(newState, `${path}.steps`, findAndUpdate(id, oldSteps, { isCompleted }));
     }
@@ -122,9 +167,18 @@ export default (state = INITIAL_STATE, action) => {
     case GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS: {
       const { isCompleted, id, tab } = action.payload;
       const newState = _.cloneDeep(state);
-      const path = !tab ? 'goal' : `goal${capitalizeWord(tab)}`;
+      const path = !tab ? 'goal.goal' : `goal${capitalizeWord(tab)}.goal`;
       const oldNeeds = _.get(newState, `${path}.needs`);
-      return _.set(newState, 'goal.needs', findAndUpdate(id, oldNeeds, { isCompleted }));
+      return _.set(newState, `${path}.needs`, findAndUpdate(id, oldNeeds, { isCompleted }));
+    }
+
+    // Comment with suggestion for need or step is posted successfully
+    case COMMENT_NEW_POST_SUGGESTION_SUCCESS: {
+      const { tab } = action.payload;
+      const newState = _.cloneDeep(state);
+      const path = !tab ? 'goal' : `goal${capitalizeWord(tab)}`;
+      // set the navigationState to have comment as the tab
+      return _.set(newState, `${path}.navigationState.index`, 0);
     }
 
     default:
