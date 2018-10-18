@@ -27,6 +27,8 @@ import {
   // Profile load tabs constants
   PROFILE_FETCH_TAB_DONE,
   PROFILE_REFRESH_TAB_DONE,
+  PROFILE_FETCH_TAB_FAIL,
+  PROFILE_REFRESH_TAB_FAIL,
   PROFILE_REFRESH_TAB,
   PROFILE_UPDATE_FILTER,
   PROFILE_GOAL_FILTER_CONST,
@@ -291,7 +293,8 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
       type: tab
     }
   });
-  loadOneTab(tab, 0, limit, { ...profileFilterAdapter(filter), userId }, token, (data) => {
+
+  const onSuccess = (data) => {
     dispatch({
       type: PROFILE_REFRESH_TAB_DONE,
       payload: {
@@ -302,7 +305,20 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
         hasNextPage: !(data === undefined || data.length === 0)
       }
     });
-  });
+  };
+
+  const onError = (err) => {
+    dispatch({
+      type: PROFILE_REFRESH_TAB_FAIL,
+      payload: {
+        type: tab
+      }
+    });
+    console.log(`${DEBUG_KEY}: refresh tab: ${tab} failed with err: `, err);
+  };
+
+  loadOneTab(tab, 0, limit, { ...profileFilterAdapter(filter), userId },
+    token, onSuccess, onError);
 };
 
 /**
@@ -317,7 +333,7 @@ export const handleProfileTabOnLoadMore = (tab) => (dispatch, getState) => {
     return;
   }
 
-  loadOneTab(tab, skip, limit, { ...profileFilterAdapter(filter), userId }, token, (data) => {
+  const onSuccess = (data) => {
     dispatch({
       type: PROFILE_FETCH_TAB_DONE,
       payload: {
@@ -328,7 +344,20 @@ export const handleProfileTabOnLoadMore = (tab) => (dispatch, getState) => {
         hasNextPage: !(data === undefined || data.length === 0)
       }
     });
-  });
+  };
+
+  const onError = (err) => {
+    dispatch({
+      type: PROFILE_FETCH_TAB_FAIL,
+      payload: {
+        type: tab
+      }
+    });
+    console.log(`${DEBUG_KEY}: tab: ${tab} on load more fail with err: `, err);
+  };
+
+  loadOneTab(tab, skip, limit, { ...profileFilterAdapter(filter), userId },
+    token, onSuccess, onError);
 };
 
 /**
@@ -344,10 +373,11 @@ const profileFilterAdapter = (filter) => {
 
   delete newFilter.orderBy;
   delete newFilter.catergory;
+  delete newFilter.completedOnly;
   return {
     ...newFilter,
     sortOrder,
-    categories
+    // categories
   };
 };
 
@@ -360,7 +390,7 @@ const profileFilterAdapter = (filter) => {
  * @param token:
  * @param callback:
  */
-const loadOneTab = (tab, skip, limit, filter, token, callback) => {
+const loadOneTab = (tab, skip, limit, filter, token, onSuccess, onError) => {
   // Todo: base route depends on tab selection
   const BASE_ROUTE = 'secure/goal';
   API
@@ -369,14 +399,15 @@ const loadOneTab = (tab, skip, limit, filter, token, callback) => {
       token
     )
     .then((res) => {
-      console.log('res is: ', res);
-      // TOOD: test and return real data
-      if (res) {
-        callback([]);
+      console.log(`${DEBUG_KEY}: res for fetching for tab: ${tab}, is: `, res);
+      if (res && res.data) {
+        // TODO: change this
+        return onSuccess([]);
       }
+      onError(res);
     })
     .catch((err) => {
-      console.warn(`${DEBUG_KEY} load ${tab} error: ${err}`);
+      onError(err);
     });
 };
 

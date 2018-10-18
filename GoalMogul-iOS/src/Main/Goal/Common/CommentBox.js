@@ -240,6 +240,7 @@ export default connect(
     newCommentOnTextChange,
     openCurrentSuggestion,
     removeSuggestion,
-    createSuggestion
+    createSuggestion,
+    postComment
   }
 )(CommentBox);

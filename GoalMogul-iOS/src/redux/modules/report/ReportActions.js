@@ -1,4 +1,5 @@
 import { Actions } from 'react-native-router-flux';
+import { Alert } from 'react-native';
 import {
   REPORT_CREATE,
   REPORT_CREATE_CANCEL,
@@ -9,7 +10,11 @@ import {
   REPORT_POST_FAIL
 } from './ReportReducers';
 
-const BASE_URL = 'secure/';
+import { api as API } from '../../middleware/api';
+import { switchCase } from '../../middleware/utils';
+
+const BASE_ROUTE = 'secure/report';
+const DEBUG_KEY = '[ Action Report ]';
 
 // Creating a new report
 // category: ['General', 'User', 'Post', 'Goal', 'Comment', 'Tribe', 'Event']
@@ -56,16 +61,83 @@ export const cancelReport = () => (dispatch) =>
 
 export const postingReport = (callback) => (dispatch, getState) => {
   // Calling endpoint to post a report
-  // const { token } = getState.user;
+  const { token } = getState().user;
+  const report = reportAdapter(getState().report);
   dispatch({
     type: REPORT_POST
   });
 
-  dispatch({
-    type: REPORT_POST_SUCCESS
-  });
-  if (callback) {
-    callback();
-    // alert('You have successfully created a report');
-  }
+
+  const onSuccess = (data) => {
+    if (callback) {
+      callback();
+      // alert('You have successfully created a report');
+    }
+    Actions.pop();
+    dispatch({
+      type: REPORT_POST_SUCCESS
+    });
+    console.log(`${DEBUG_KEY}: submit report success with return data: `, data);
+  };
+
+  const onError = (err) => {
+    dispatch({
+      type: REPORT_POST_FAIL
+    });
+    Alert.alert('Error', 'Failed to submit report. Please try again later.');
+    console.log(`${DEBUG_KEY}: submit report errror with err: `, err);
+  };
+
+  API
+    .post(`${BASE_ROUTE}`, { ...report }, token)
+    .then((res) => {
+      if (!res.message && res.data) {
+        return onSuccess(res.data);
+      }
+      onError(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
 };
+
+const reportAdapter = (report) => {
+  const {
+    details,
+    title,
+    category,
+    referenceId
+  } = report;
+
+  return {
+    category,
+    title,
+    details,
+    refs: switchRefs(referenceId, category)
+  };
+};
+
+/**
+ * @param category: ['General', 'User', 'Post', 'Goal', 'Comment', 'Tribe', 'Event']
+ * @param referenceId: string
+ */
+const switchRefs = (referenceId, category) => switchCase({
+  User: {
+    usersRef: referenceId
+  },
+  Post: {
+    postRef: referenceId
+  },
+  Goal: {
+    goalRef: referenceId
+  },
+  Comment: {
+    commentRef: referenceId
+  },
+  Tribe: {
+    tribeRef: referenceId
+  },
+  Event: {
+    eventRef: referenceId
+  }
+})('User')(category);

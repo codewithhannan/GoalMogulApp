@@ -140,9 +140,8 @@ export const postComment = (pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   const newComment = commentAdapter(getState(), pageId, tab);
   const { suggestion, contentText } = newComment;
-  console.log('new comment is: ', newComment);
+  console.log(`${DEBUG_KEY}: new comment to submit is: `, newComment);
 
-  return;
   // TODO: Check if no suggestion and no replyToRef is filled
   // and commentType is Suggestion, then we set commentType to Comment.
   const onError = (err) => {
@@ -197,7 +196,7 @@ export const postComment = (pageId) => (dispatch, getState) => {
  */
 const commentAdapter = (state, pageId, tab) => {
   const page = pageId ? `${pageId}` : 'default';
-  const path = tab ? `homeTab.${page}` : `${tab}.${page}`;
+  const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
   let newComment = _.get(state.newComment, `${path}`);
 
   const {

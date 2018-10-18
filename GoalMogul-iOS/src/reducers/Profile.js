@@ -33,6 +33,8 @@ export const PROFILE_FETCH_FRIEND_COUNT_DONE = 'profile_fetch_friend_count_done'
 // Constants for profile fetching goals and posts
 export const PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE = 'profile_fetch_mutual_friend_count_done';
 export const PROFILE_FETCH_TAB_DONE = 'profile_fetch_tab_done';
+export const PROFILE_FETCH_TAB_FAIL = 'profile_fetch_tab_fail';
+export const PROFILE_REFRESH_TAB_FAIL = 'profile_refresh_tab_fail';
 export const PROFILE_REFRESH_TAB_DONE = 'profile_refresh_tab_done';
 export const PROFILE_REFRESH_TAB = 'profile_refresh_tab';
 // Constants for updating filter bar
@@ -271,6 +273,12 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, `${type}.data`, arrayUnique(oldData.concat(data)));
     }
 
+    case PROFILE_FETCH_TAB_FAIL: {
+      const { type } = action.payload;
+      const newState = _.cloneDeep(state);
+      return _.set(newState, `${type}.loading`, false);
+    }
+
     case PROFILE_REFRESH_TAB_DONE: {
       const { skip, data, hasNextPage, type } = action.payload;
       let newState = _.cloneDeep(state);
@@ -287,6 +295,12 @@ export default (state = INITIAL_STATE, action) => {
       const { type } = action.payload;
       let newState = _.cloneDeep(state);
       return _.set(newState, `${type}.loading`, true);
+    }
+
+    case PROFILE_REFRESH_TAB_FAIL: {
+      const { type } = action.payload;
+      const newState = _.cloneDeep(state);
+      return _.set(newState, `${type}.loading`, false);
     }
 
     // Update one of filter within tab

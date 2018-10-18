@@ -92,10 +92,7 @@ class ReportModal extends Component {
                     this.props.cancelReport();
                   }}
                   onAction={() => {
-                    this.props.postingReport(() => {
-                      Actions.pop();
-                      Alert.alert('Success', 'You have successfully submitted your report.');
-                    });
+                    this.props.postingReport();
                   }}
                 />
                 <Text style={styles.subTitleTextStyle}>Title</Text>
