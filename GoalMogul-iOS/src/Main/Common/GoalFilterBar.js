@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import {
   Menu,
   MenuOptions,
@@ -7,6 +7,7 @@ import {
   MenuTrigger,
   renderers
 } from 'react-native-popup-menu';
+import { CheckBox } from 'react-native-elements';
 
 /* asset */
 import dropDown from '../../asset/utils/dropDown.png';
@@ -14,16 +15,38 @@ import dropDown from '../../asset/utils/dropDown.png';
 const { Popover } = renderers;
 const { width } = Dimensions.get('window');
 
+/**
+ * Update the filter based on parents functions
+ * @param onMenuChange(type, value)
+ * @param filter
+ */
 class GoalFilterBar extends Component {
 
+  /**
+   * @param type: ['sortBy', 'sortOrder', 'categories', 'priorities']
+   */
   handleOnMenuSelect = (type, value) => {
-    console.log('selecting value is: ', value);
-    console.log('selecting type is: ', type)
-    // TODO: alter reducer state
+    this.props.onMenuChange(type, value);
   }
 
   render() {
-    const { containerStyle, textStyle, detailContainerStyle, standardTextStyle, caretStyle } = styles;
+    const {
+      containerStyle,
+      textStyle,
+      detailContainerStyle,
+      standardTextStyle,
+      caretStyle
+    } = styles;
+
+    const {
+      sortBy,
+      orderBy,
+      categories,
+      priorities
+    } = this.props.filter;
+
+    const prioritiesArray = priorities === '' ? [] : priorities.split(',');
+
     return (
       <View style={containerStyle}>
 
@@ -44,23 +67,27 @@ class GoalFilterBar extends Component {
           </MenuTrigger>
           <MenuOptions customStyles={styles.menuOptionsStyles}>
             <MenuOption
-              text='Important'
-              value='important'
+              text='Created'
+              value='created'
             />
             <MenuOption
-              text='Recent'
-              vale='recent'
+              text='Updated'
+              vale='updated'
             />
             <MenuOption
-              text='Popular'
-              value='popular'
+              text='Shared'
+              value='shared'
+            />
+            <MenuOption
+              text='Priority'
+              value='priority'
             />
 
           </MenuOptions>
         </Menu>
 
         <Menu
-          onSelect={value => console.log('selecting value is: ', value)}
+          onSelect={value => this.handleOnMenuSelect('orderBy', value)}
           rendererProps={{ placement: 'bottom' }}
           renderer={Popover}
         >
@@ -83,7 +110,7 @@ class GoalFilterBar extends Component {
             />
             <MenuOption
               text='Descending'
-              vale='descending'
+              value='descending'
             />
           </MenuOptions>
         </Menu>
@@ -106,6 +133,10 @@ class GoalFilterBar extends Component {
             </View>
           </MenuTrigger>
           <MenuOptions customStyles={styles.menuOptionsStyles}>
+            <MenuOption
+              text='All'
+              value='All'
+            />
             <MenuOption
               text='General'
               value='General'
@@ -130,6 +161,96 @@ class GoalFilterBar extends Component {
               text='Family/Personal'
               value='Family/Personal'
             />
+          </MenuOptions>
+        </Menu>
+
+        <Menu
+          onSelect={value => this.handleOnMenuSelect('priorities', value)}
+          rendererProps={{ placement: 'bottom' }}
+          renderer={Popover}
+        >
+          <MenuTrigger
+            customStyles={{
+              TriggerTouchableComponent: TouchableOpacity,
+            }}
+          >
+            <View style={detailContainerStyle}>
+              <Text style={textStyle}>Priorities
+                {/* <Text style={standardTextStyle}> (ALL)</Text> */}
+              </Text>
+              <Image style={caretStyle} source={dropDown} />
+            </View>
+          </MenuTrigger>
+          <MenuOptions customStyles={styles.menuOptionsStyles}>
+            <MenuOption
+              text='All'
+              value='All'
+            />
+            <ScrollView style={{ height: 250 }}>
+              <CheckBox
+                title='1'
+                checked={prioritiesArray.indexOf('1') > -1}
+                onPress={() =>
+                  this.handleOnMenuSelect('priorities', '1')
+                }
+              />
+              <CheckBox
+                title='2'
+                checked={prioritiesArray.indexOf('2') > -1}
+                onPress={() =>
+                  this.handleOnMenuSelect('priorities', '2')
+                }
+              />
+              <CheckBox
+                title='3'
+                checked={prioritiesArray.indexOf('3') > -1}
+                onPress={() =>
+                  this.handleOnMenuSelect('priorities', '3')
+                }
+              />
+              <CheckBox
+                title='4'
+                checked={prioritiesArray.indexOf('4') > -1}
+                onPress={() =>
+                  this.handleOnMenuSelect('priorities', '4')
+                }
+              />
+              <CheckBox
+                title='5'
+                checked={prioritiesArray.indexOf('5') > -1}
+                onPress={() =>
+                  this.handleOnMenuSelect('priorities', '5')
+                }
+              />
+              <CheckBox
+                title='6'
+                checked={prioritiesArray.indexOf('6') > -1}
+                onPress={() =>
+                  this.handleOnMenuSelect('priorities', '6')
+                }
+              />
+              <CheckBox
+                title='7'
+                checked={prioritiesArray.indexOf('7') > -1}
+                onPress={() =>
+                  this.handleOnMenuSelect('priorities', '7')
+                }
+              />
+              <CheckBox
+                title='8'
+                checked={prioritiesArray.indexOf('8') > -1}
+                onPress={() =>
+                  this.handleOnMenuSelect('priorities', '8')
+                }
+              />
+              <CheckBox
+                title='9'
+                checked={prioritiesArray.indexOf('9') > -1}
+                onPress={() =>
+                  this.handleOnMenuSelect('priorities', '9')
+                }
+              />
+            </ScrollView>
           </MenuOptions>
         </Menu>
 

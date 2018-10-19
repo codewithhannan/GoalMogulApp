@@ -12,7 +12,8 @@ import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
 // actions
 import {
   handleTabRefresh,
-  handleProfileTabOnLoadMore
+  handleProfileTabOnLoadMore,
+  changeFilter
 } from '../../actions';
 
 // tab key
@@ -127,6 +128,13 @@ class MyPosts extends Component {
     this.props.handleTabRefresh(key);
   }
 
+  /**
+   * @param type: ['sortBy', 'orderBy', 'categories', 'priorities']
+   */
+  handleOnMenuChange = (type, value) => {
+    this.props.changeFilter(key, type, value);
+  }
+
   renderItem = ({ item }) => {
     // TODO: render item
     return <ProfilePostCard item={item} />
@@ -135,7 +143,11 @@ class MyPosts extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <GoalFilterBar selectedTab={this.props.selectedTab} />
+        <GoalFilterBar
+          selectedTab={this.props.selectedTab}
+          filter={this.props.filter}
+          onMenuChange={this.handleOnMenuChange}
+        />
         <View style={{ flex: 1 }}>
           <FlatList
             data={testData}
@@ -177,12 +189,13 @@ const styles = {
 
 const mapStateToProps = state => {
   const { selectedTab, posts } = state.profile;
-  const { data, loading } = posts;
+  const { data, loading, filter } = posts;
 
   return {
     selectedTab,
     data,
-    loading
+    loading,
+    filter
   };
 };
 
@@ -190,6 +203,7 @@ export default connect(
   mapStateToProps,
   {
     handleTabRefresh,
-    handleProfileTabOnLoadMore
+    handleProfileTabOnLoadMore,
+    changeFilter
   }
 )(MyPosts);

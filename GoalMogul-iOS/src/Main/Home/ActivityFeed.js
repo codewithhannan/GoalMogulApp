@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 // Components
 import ActivityCard from '../Activity/ActivityCard';
+import GoalFilterBar from '../Common/GoalFilterBar';
 
 // actions
 import {
@@ -15,10 +16,20 @@ import {
   openPostDetail
 } from '../../redux/modules/feed/post/PostActions';
 
+const TAB_KEY = 'activityfeed';
+
 class ActivityFeed extends Component {
   handleOnLoadMore = () => this.props.loadMoreFeed();
 
   handleOnRefresh = () => this.props.refreshFeed();
+
+  /**
+   * @param type: ['sortBy', 'orderBy', 'categories', 'priorities']
+   */
+  handleOnMenuChange = (type, value) => {
+    this.props.changeFilter(TAB_KEY, type, value);
+  }
+
 
   _keyExtractor = (item) => item._id
 
@@ -37,6 +48,10 @@ class ActivityFeed extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
+        <GoalFilterBar
+          filter={this.props.filter}
+          onMenuChange={this.handleOnMenuChange}
+        />
         <FlatList
           data={this.props.data}
           renderItem={this.renderItem}
@@ -53,13 +68,14 @@ class ActivityFeed extends Component {
 }
 
 const mapStateToProps = state => {
-  const { loading } = state.home.activityfeed;
+  const { loading, filter } = state.home.activityfeed;
 
   const data = testData;
 
   return {
     data,
-    loading
+    loading,
+    filter
   };
 };
 

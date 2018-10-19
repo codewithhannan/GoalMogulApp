@@ -112,8 +112,9 @@ const INITIAL_STATE = {
     filter: {
       sortBy: 'created',
       orderBy: 'ascending',
-      catergory: 'General',
-      completedOnly: 'false'
+      categories: 'General',
+      completedOnly: 'false',
+      priorities: ''
     },
     limit: 20,
     skip: 0,
@@ -125,8 +126,9 @@ const INITIAL_STATE = {
     filter: {
       sortBy: 'created',
       orderBy: 'ascending',
-      catergory: 'General',
-      completedOnly: 'false'
+      categories: 'General',
+      completedOnly: 'false',
+      priorities: ''
     },
     limit: 20,
     skip: 0,
@@ -138,8 +140,9 @@ const INITIAL_STATE = {
     filter: {
       sortBy: 'created',
       orderBy: 'ascending',
-      catergory: 'General',
-      completedOnly: 'false'
+      categories: 'General',
+      completedOnly: 'false',
+      priorities: ''
     },
     limit: 20,
     skip: 0,
@@ -306,8 +309,13 @@ export default (state = INITIAL_STATE, action) => {
     // Update one of filter within tab
     case PROFILE_UPDATE_FILTER: {
       const { tab, type, value } = action.payload;
-      let newState = _.cloneDeep(state);
-      return _.set(newState, `${tab}.filterbar.${type}`, value);
+      const newState = _.cloneDeep(state);
+      if (type === 'priorities') {
+        const oldPriorities = _.get(newState, `${tab}.filter.priorities`);
+        const newPriorities = updatePriorities(oldPriorities, value);
+        return _.set(newState, `${tab}.filter.priorities`, newPriorities);
+      }
+      return _.set(newState, `${tab}.filter.${type}`, value);
     }
 
     // Clean up actions
@@ -435,4 +443,26 @@ function arrayUnique(array) {
   }
 
   return a;
+}
+
+function updatePriorities(priorities, newPriority) {
+  let newPriorities = [];
+  const oldPriorities = priorities === '' ? [] : priorities.split(',').sort();
+
+  if (newPriority === 'All') {
+    if (oldPriorities.join() === '1,2,3,4,5,6,7,8,9') {
+      return '';
+    }
+    return '1,2,3,4,5,6,7,8,9';
+  }
+
+  if (oldPriorities.indexOf(`${newPriority}`) < 0) {
+    // Add the new priority to the string
+    newPriorities = [...oldPriorities, newPriority];
+  } else {
+    // Remove the new priority from the string
+    newPriorities = oldPriorities.filter((p) => p !== newPriority);
+  }
+
+  return newPriorities.join();
 }

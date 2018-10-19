@@ -9,6 +9,7 @@ import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 
 // Components
+import GoalFilterBar from '../Common/GoalFilterBar';
 import NeedCard from '../Goal/NeedCard/NeedCard';
 import GoalCard from '../Goal/GoalCard/GoalCard';
 import GoalFilter from './GoalFilter';
@@ -22,7 +23,8 @@ import {
   closeCreateOverlay,
   loadMoreGoals,
   refreshGoals,
-  openGoalDetail
+  openGoalDetail,
+  changeFilter
 } from '../../redux/modules/home/mastermind/actions';
 
 const TAB_KEY = 'mastermind';
@@ -37,6 +39,13 @@ class Mastermind extends Component {
   handleOnLoadMore = () => this.props.loadMoreGoals();
 
   handleOnRefresh = () => this.props.refreshGoals();
+
+  /**
+   * @param type: ['sortBy', 'orderBy', 'categories', 'priorities']
+   */
+  handleOnMenuChange = (type, value) => {
+    this.props.changeFilter(TAB_KEY, type, value);
+  }
 
   _keyExtractor = (item) => item._id
 
@@ -73,6 +82,11 @@ class Mastermind extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
+        <GoalFilterBar
+          selectedTab={this.props.selectedTab}
+          filter={this.props.filter}
+          onMenuChange={this.handleOnMenuChange}
+        />
         <FlatList
           data={this.props.data}
           renderItem={this.renderItem}
@@ -119,12 +133,13 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { showPlus, data, loading } = state.home.mastermind;
+  const { showPlus, data, loading, filter } = state.home.mastermind;
 
   return {
     showPlus,
     data,
-    loading
+    loading,
+    filter
   };
 };
 
@@ -135,6 +150,7 @@ export default connect(
     closeCreateOverlay,
     loadMoreGoals,
     refreshGoals,
-    openGoalDetail
+    openGoalDetail,
+    changeFilter
   }
 )(Mastermind);

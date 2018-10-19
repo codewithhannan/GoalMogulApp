@@ -368,11 +368,13 @@ const profileFilterAdapter = (filter) => {
   const newFilter = _.cloneDeep(filter);
   // const sortOrder = _.clone(newFilter.orderBy);
   const sortOrder = PROFILE_GOAL_FILTER_CONST.orderBy[filter.orderBy];
-  const categories = filter.catergory;
-  console.log('categories are: ', categories);
-
+  // const categories = filter.catergory;
+  // console.log('categories are: ', categories);
+  if (newFilter.categories === 'All') {
+    delete newFilter.categories;
+  }
   delete newFilter.orderBy;
-  delete newFilter.catergory;
+  // delete newFilter.catergory;
   delete newFilter.completedOnly;
   return {
     ...newFilter,

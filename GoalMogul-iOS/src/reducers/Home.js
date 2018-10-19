@@ -35,8 +35,11 @@ const INITIAL_STATE = {
     skip: 0,
     currentIndex: 0,
     filter: {
-      category: 'General',
-      priority: 3,
+      sortBy: 'created',
+      orderBy: 'ascending',
+      categories: 'General',
+      completedOnly: 'false',
+      priorities: ''
     },
     hasNextPage: undefined,
     loading: false
@@ -48,8 +51,11 @@ const INITIAL_STATE = {
     skip: 0,
     currentIndex: 0,
     filter: {
-      category: 'General',
-      priority: 3,
+      sortBy: 'created',
+      orderBy: 'ascending',
+      categories: 'General',
+      completedOnly: 'false',
+      priorities: ''
     },
     hasNextPage: undefined,
     loading: false
@@ -116,7 +122,12 @@ export default (state = INITIAL_STATE, action) => {
     // Update one of the home tab filters
     case HOME_UPDATE_FILTER: {
       const { tab, type, value } = action.payload;
-      let newState = _.cloneDeep(state);
+      const newState = _.cloneDeep(state);
+      if (type === 'priorities') {
+        const oldPriorities = _.get(newState, `${tab}.filter.priorities`);
+        const newPriorities = updatePriorities(oldPriorities, value);
+        return _.set(newState, `${tab}.filter.priorities`, newPriorities);
+      }
       return _.set(newState, `${tab}.filter.${type}`, value);
     }
 
@@ -162,4 +173,26 @@ function arrayUnique(array) {
   }
 
   return a;
+}
+
+function updatePriorities(priorities, newPriority) {
+  let newPriorities = [];
+  const oldPriorities = priorities === '' ? [] : priorities.split(',').sort();
+
+  if (newPriority === 'All') {
+    if (oldPriorities.join() === '1,2,3,4,5,6,7,8,9') {
+      return '';
+    }
+    return '1,2,3,4,5,6,7,8,9';
+  }
+
+  if (oldPriorities.indexOf(`${newPriority}`) < 0) {
+    // Add the new priority to the string
+    newPriorities = [...oldPriorities, newPriority];
+  } else {
+    // Remove the new priority from the string
+    newPriorities = oldPriorities.filter((p) => p !== newPriority);
+  }
+
+  return newPriorities.join();
 }
