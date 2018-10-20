@@ -86,8 +86,9 @@ class CreateGoalModal extends Component {
     };
 
     // Initialize based on the props, if it's opened through edit button
-    const initialVals = this.props.initializeFromState
-      ? { ...goalToFormAdaptor(this.props.goalDetail) }
+    const { initializeFromState, goal } = this.props;
+    const initialVals = initializeFromState
+      ? { ...goalToFormAdaptor(goal) }
       : { ...defaulVals };
 
     this.props.initialize({

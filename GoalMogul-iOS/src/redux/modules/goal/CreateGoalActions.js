@@ -200,7 +200,7 @@ export const goalToFormAdaptor = (values) => {
     needs: stepsNeedsReverseAdapter(needs),
     steps: stepsNeedsReverseAdapter(steps),
     // TODO: TAG:
-    details: details.text,
+    details: details ? details.text : '',
     priority,
     startTime: {
       date: start ? new Date(`${start}`) : undefined,

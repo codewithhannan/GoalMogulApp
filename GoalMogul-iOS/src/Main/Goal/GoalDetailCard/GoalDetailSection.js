@@ -152,7 +152,7 @@ class GoalDetailSection extends Component {
           buttonName='Edit goal'
           iconSource={EditIcon}
           iconStyle={{ tintColor: '#3f3f3f' }}
-          onPress={() => this.props.editGoal()}
+          onPress={() => this.props.editGoal(item)}
         />
         <IndividualActionButton
           buttonName='Mastermind'
