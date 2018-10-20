@@ -16,14 +16,10 @@ import {
 } from './ShareActions';
 
 import { api as API } from '../../../middleware/api';
+import { capitalizeWord } from '../../../middleware/utils';
 import ImageUtils from '../../../../Utils/ImageUtils';
 
 const DEBUG_KEY = '[ Action Post ]';
-
-const capitalizeWord = (word) => {
-  if (!word) return '';
-  return word.replace(/^\w/, c => c.toUpperCase());
-};
 
 /**
  * If post is a share, then open share detail. Otherwise, open post detail
@@ -68,17 +64,17 @@ export const closePostDetail = () => (dispatch, getState) => {
 };
 
 // open edit modal for post given post belongs to current user
-export const editPost = () => {
-
+export const editPost = (post) => (dispatch, getState) => {
+  Actions.push('createPostModal', { initializeFromState: true, post });
 };
 
 // Submit creating new post
-export const submitCreatingPost = (values) => (dispatch, getState) => {
+export const submitCreatingPost = (values, needUpload) => (dispatch, getState) => {
     const { userId, token } = getState().user;
     const newPost = newPostAdaptor(values, userId);
 
     const imageUri = newPost.mediaRef;
-    if (!imageUri) {
+    if (!needUpload) {
       // If no mediaRef then directly submit the post
       sendCreatePostRequest(newPost, token, dispatch);
     } else {
@@ -185,17 +181,33 @@ const sendCreatePostRequest = (newPost, token, dispatch, onError) => {
  * Transform values in CreatePostModal to Server readable format
  */
 const newPostAdaptor = (values, userId) => {
-  const { viewableSetting, mediaRef } = values;
+  const { viewableSetting, mediaRef, post } = values;
 
   return {
     owner: userId,
     privacy: viewableSetting === 'Private' ? 'self' : viewableSetting.toLowerCase(),
     content: {
-      text: values.post,
+      text: post,
       tags: [],
       links: []
     },
     mediaRef,
     postType: 'General'
+  };
+};
+/**
+ * Transform a post to CreatePostModal initial values
+ */
+export const postToFormAdapter = (values) => {
+  const {
+    privacy,
+    content,
+    mediaRef
+  } = values;
+
+  return {
+    post: content.text,
+    viewableSetting: privacy === 'self' ? 'Private' : capitalizeWord(privacy),
+    mediaRef
   };
 };

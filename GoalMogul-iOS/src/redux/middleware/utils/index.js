@@ -58,3 +58,11 @@ export const setState = (newState, path, data) => {
     if (data || _.get(newState, `${path}`)) return _.set(newState, `${path}`, data);
     return newState;
   };
+
+/**
+ * Helper functions
+ */
+export const capitalizeWord = (word) => {
+  if (!word) return '';
+  return word.replace(/^\w/, c => c.toUpperCase());
+};
