@@ -219,7 +219,7 @@ class MyTribe extends Component {
       : 'Private Tribe';
 
     return (
-      <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 10 }}>
+      <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 10, alignItems: 'center' }}>
         <Text style={styles.tribeStatusTextStyle}>{tribeVisibility}</Text>
         <Divider orthogonal height={12} borderColor='gray' />
         {this.renderMemberStatus(item)}

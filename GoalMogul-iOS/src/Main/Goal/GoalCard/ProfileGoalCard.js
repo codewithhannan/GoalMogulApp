@@ -74,7 +74,7 @@ class ProfileGoalCard extends React.Component {
     if (!item) return '';
 
     return (
-      <View>
+      <View style={{ marginTop: 3 }}>
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <View style={{ backgroundColor: '#e5e5e5' }}>
             <View style={styles.containerStyle}>

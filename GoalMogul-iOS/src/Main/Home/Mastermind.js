@@ -76,17 +76,18 @@ class Mastermind extends Component {
   }
 
   renderListHeader() {
-    return <GoalFilter />;
+    return (
+      <GoalFilterBar
+        selectedTab={this.props.selectedTab}
+        filter={this.props.filter}
+        onMenuChange={this.handleOnMenuChange}
+      />
+    );
   }
 
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <GoalFilterBar
-          selectedTab={this.props.selectedTab}
-          filter={this.props.filter}
-          onMenuChange={this.handleOnMenuChange}
-        />
         <FlatList
           data={this.props.data}
           renderItem={this.renderItem}

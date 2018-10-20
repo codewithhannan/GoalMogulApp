@@ -10,7 +10,7 @@ import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Action Explore Tribe Tab ]';
-const BASE_ROUTE = 'secure/tribe/recommendation';
+const BASE_ROUTE = 'secure/tribe/recommendations';
 
 
 // update sortBy
@@ -90,7 +90,7 @@ export const loadMoreTribe = () => (dispatch, getState) => {
 const loadTribe = (skip, limit, token, sortBy, filterForMembershipCategory, callback, onError) => {
   API
     .get(
-      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, filterForMembershipCategory })}`,
+      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, ...filterForMembershipCategory })}`,
       token
     )
     .then((res) => {

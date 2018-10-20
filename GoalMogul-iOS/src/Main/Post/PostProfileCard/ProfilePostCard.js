@@ -181,7 +181,7 @@ class ProfilePostCard extends Component {
     if (!item || _.isEmpty(item)) return '';
 
     return (
-      <View style={{ marginTop: 5, marginBottom: 5 }}>
+      <View style={{ marginTop: 3, marginBottom: 3 }}>
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <View style={{ ...styles.containerStyle, marginTop: 1 }}>
             <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>

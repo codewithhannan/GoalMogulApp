@@ -394,17 +394,16 @@ const profileFilterAdapter = (filter) => {
  */
 const loadOneTab = (tab, skip, limit, filter, token, onSuccess, onError) => {
   // Todo: base route depends on tab selection
-  const BASE_ROUTE = 'secure/goal';
+  const route = tab === 'posts'
+    ? `secure/feed/post/user?${queryBuilder(skip, limit, {})}`
+    : `secure/goal/user?${queryBuilder(skip, limit, filter)}`;
   API
-    .get(
-      `${BASE_ROUTE}/user?${queryBuilder(skip, limit, filter)}`,
-      token
-    )
+    .get(route, token)
     .then((res) => {
       console.log(`${DEBUG_KEY}: res for fetching for tab: ${tab}, is: `, res);
       if (res && res.data) {
         // TODO: change this
-        return onSuccess([]);
+        return onSuccess(res.data);
       }
       onError(res);
     })

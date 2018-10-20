@@ -141,6 +141,7 @@ class MyPosts extends Component {
   }
 
   render() {
+    const { loading, data } = this.props;
     return (
       <View style={{ flex: 1 }}>
         <GoalFilterBar
@@ -150,11 +151,11 @@ class MyPosts extends Component {
         />
         <View style={{ flex: 1 }}>
           <FlatList
-            data={testData}
+            data={[...data, ...testData]}
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
             onRefresh={this.handleRefresh.bind()}
-            refreshing={this.props.loading}
+            refreshing={loading}
           />
         </View>
         {/*

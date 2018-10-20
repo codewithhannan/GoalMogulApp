@@ -45,13 +45,18 @@ class ActivityFeed extends Component {
     );
   }
 
+  renderListHeader() {
+    return (
+      <GoalFilterBar
+        filter={this.props.filter}
+        onMenuChange={this.handleOnMenuChange}
+      />
+  );
+  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <GoalFilterBar
-          filter={this.props.filter}
-          onMenuChange={this.handleOnMenuChange}
-        />
         <FlatList
           data={this.props.data}
           renderItem={this.renderItem}
@@ -60,6 +65,7 @@ class ActivityFeed extends Component {
           refreshing={this.props.loading}
           onRefresh={this.handleOnRefresh}
           onEndReached={this.handleOnLoadMore}
+          ListHeaderComponent={this.renderListHeader()}
           onEndThreshold={0}
         />
       </View>

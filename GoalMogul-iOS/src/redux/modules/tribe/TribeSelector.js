@@ -30,10 +30,11 @@ export const getUserStatus = createSelector(
   (members, userId) => {
     if (!members) return '';
 
-    let status = false;
+    let status;
     members.map((member) => {
-      if (member.memberRef._id === userId) {
-        status = true;
+      const { memberRef, category } = member;
+      if (memberRef._id === userId) {
+        status = category;
       }
       return '';
     });
@@ -59,10 +60,11 @@ export const getMyTribeUserStatus = createSelector(
   (members, userId) => {
     if (!members) return '';
 
-    let status = false;
+    let status;
     members.map((member) => {
-      if (member.memberRef._id === userId) {
-        status = true;
+      const { memberRef, category } = member;
+      if (memberRef._id === userId) {
+        status = category;
       }
       return '';
     });

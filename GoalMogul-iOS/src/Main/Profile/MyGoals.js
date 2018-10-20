@@ -39,6 +39,7 @@ class MyGoals extends Component {
   }
 
   render() {
+    const { data, loading } = this.props;
     return (
       <View style={{ flex: 1 }}>
         <GoalFilterBar
@@ -48,11 +49,11 @@ class MyGoals extends Component {
         />
         <View style={{ flex: 1 }}>
           <FlatList
-            data={testData}
+            data={[...data, ...testData]}
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
             onRefresh={this.handleRefresh.bind()}
-            refreshing={this.props.refreshing || this.props.loading}
+            refreshing={this.props.refreshing || loading}
           />
         </View>
         {/*
