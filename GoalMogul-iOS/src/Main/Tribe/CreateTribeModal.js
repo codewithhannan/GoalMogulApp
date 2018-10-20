@@ -83,10 +83,17 @@ class CreateTribeModal extends React.Component {
 
   handleCreate = values => {
     const { initializeFromState, tribe, picture } = this.props;
+    const tribeId = tribe ? tribe._id : undefined;
     const needUpload =
       (initializeFromState && tribe.picture && tribe.picture !== picture)
       || (!initializeFromState && picture);
-    this.props.createNewTribe(this.props.formVals.values, needUpload);
+
+    this.props.createNewTribe(
+      this.props.formVals.values,
+      needUpload,
+      initializeFromState, // isEdit
+      tribeId // tribeId
+    );
   }
 
   handleOpenCamera = () => {

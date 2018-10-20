@@ -111,7 +111,7 @@ export const inviteUserToTribe = (tribeId, inviteeId) => (dispatch, getState) =>
     });
     console.log(`${DEBUG_KEY}: invite user success: `, res);
     Actions.pop();
-    Alert.aler(
+    Alert.alert(
       'Success',
       'You have successfully invited the user.'
     );
