@@ -201,10 +201,24 @@ class Tribe extends Component {
     );
   }
 
-  renderEventImage() {
+  renderTribeImage(picture) {
+    let imageUrl;
+    let eventImage = (<Image source={TestEventImage} style={styles.imageStyle} />);
+    if (picture) {
+      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
+      eventImage = (
+        <Image
+          onLoadStart={() => this.setState({ imageLoading: true })}
+          onLoadEnd={() => this.setState({ imageLoading: false })}
+          style={styles.imageStyle}
+          source={{ uri: imageUrl }}
+        />
+      );
+    }
+
     return (
       <View style={styles.imageContainerStyle}>
-        <Image source={TestEventImage} style={styles.imageStyle} />
+        {eventImage}
       </View>
     );
   }
@@ -297,7 +311,7 @@ class Tribe extends Component {
   }
 
   renderTribeOverview(item) {
-    const { name, _id } = item;
+    const { name, _id, picture } = item;
     const filterBar = this.props.tab === 'members'
       ? <MemberFilterBar />
       : '';
@@ -317,7 +331,7 @@ class Tribe extends Component {
       <View>
         <View style={{ height: 70, backgroundColor: '#1998c9' }} />
         <View style={styles.imageWrapperStyle}>
-          {this.renderEventImage()}
+          {this.renderTribeImage(picture)}
         </View>
         <View style={styles.generalInfoContainerStyle}>
           {this.renderCaret(item)}

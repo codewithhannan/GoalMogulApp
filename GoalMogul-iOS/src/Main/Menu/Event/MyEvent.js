@@ -163,21 +163,22 @@ class MyEvent extends Component {
     );
   }
 
-  renderEventImage() {
-    const { item } = this.props;
-    if (!item) return <View />;
-
-    const { picture } = item;
-    if (picture && picture.length > 0) {
-      // Return provided picture
-      return (
-        <Image source={TestEventImage} style={styles.coverImageStyle} />
+  renderEventImage(picture) {
+    let imageUrl;
+    let eventImage = (<Image source={TestEventImage} style={styles.coverImageStyle} />);
+    if (picture) {
+      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
+      eventImage = (
+        <Image
+          onLoadStart={() => this.setState({ imageLoading: true })}
+          onLoadEnd={() => this.setState({ imageLoading: false })}
+          style={styles.coverImageStyle}
+          source={{ uri: imageUrl }}
+        />
       );
     }
-    // Return default picture
-    return (
-      <Image source={TestEventImage} style={styles.coverImageStyle} />
-    );
+
+    return eventImage;
   }
 
   renderEventStatus() {
@@ -244,7 +245,7 @@ class MyEvent extends Component {
   }
 
   renderEventOverview(item) {
-    const { title, _id } = item;
+    const { title, _id, picture } = item;
     const filterBar = this.props.tab === 'attendees'
       ? <ParticipantFilterBar />
       : '';
@@ -262,7 +263,7 @@ class MyEvent extends Component {
 
     return (
       <View>
-        {this.renderEventImage()}
+        {this.renderEventImage(picture)}
         <View style={styles.generalInfoContainerStyle}>
           {this.renderCaret(item)}
           <Text style={styles.eventTitleTextStyle}>
