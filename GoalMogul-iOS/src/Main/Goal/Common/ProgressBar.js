@@ -13,8 +13,12 @@ const formatDate = (date) => `${months[(date !== undefined ? date : new Date()).
 const ProgressBar = (props) => {
   const { startTime, endTime } = props;
 
-  const startTimeText = startTime instanceof Date ? formatDate(startTime) : startTime;
-  const endTimeText = endTime instanceof Date ? formatDate(endTime) : endTime;
+  const startTimeText = startTime instanceof Date
+    ? formatDate(startTime)
+    : formatDate(new Date(startTime));
+  const endTimeText = endTime instanceof Date
+    ? formatDate(endTime)
+    : formatDate(new Date(endTime));
 
   return (
     <View style={styles.containerStyle}>

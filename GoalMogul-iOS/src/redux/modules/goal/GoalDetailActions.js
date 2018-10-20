@@ -153,8 +153,8 @@ export const markGoalAsComplete = (goalId) => (dispatch, getState) => {
 };
 
 // Load states to CreateGoal modal to edit.
-export const editGoal = () => (dispatch) => {
-  Actions.push('createGoalModal', { initializeFromState: true });
+export const editGoal = (goal) => (dispatch) => {
+  Actions.push('createGoalModal', { initializeFromState: true, goal });
 };
 
 /**

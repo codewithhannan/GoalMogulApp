@@ -85,10 +85,16 @@ class CreateEventModal extends React.Component {
 
   handleCreate = values => {
     const { initializeFromState, event, picture } = this.props;
+    const eventId = event ? event._id : undefined;
     const needUpload =
       (initializeFromState && event.picture && event.picture !== picture)
       || (!initializeFromState && picture);
-    this.props.createNewEvent(this.props.formVals.values, needUpload);
+    this.props.createNewEvent(
+      this.props.formVals.values,
+      needUpload,
+      initializeFromState, // isEdit
+      eventId // eventId for updating
+    );
   }
 
   handleOpenCamera = () => {

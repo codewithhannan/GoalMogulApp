@@ -28,13 +28,18 @@ export const cancelCreatingNewTribe = () => (dispatch) => {
 };
 
 /**
+ * @param values: new tribe values
+ * @param needUpload: if there is media to be uploaded
+ * @param isEdit: if edit, then use put rather than post
+ *
+ * Following are the params for the values submitted to the server
  * @param name
  * @param options:
     {membersCanInvite, isPubliclyVisible, membershipLimit, description, picture}
  */
-export const createNewTribe = (values, needUpload) => (dispatch, getState) => {
+export const createNewTribe = (values, needUpload, isEdit, tribeId) => (dispatch, getState) => {
   const { token } = getState().user;
-  const newTribe = formToTribeAdapter(values);
+  const newTribe = formToTribeAdapter(values, tribeId, isEdit);
 
   dispatch({
     type: TRIBE_NEW_SUBMIT
@@ -48,7 +53,7 @@ export const createNewTribe = (values, needUpload) => (dispatch, getState) => {
     Actions.pop();
     Alert.alert(
       'Success',
-      'Congrats! Your tribe is successfully created.'
+      `Congrats! Your tribe is successfully ${isEdit ? 'updated' : 'created'}.`
     );
   };
 
@@ -57,7 +62,7 @@ export const createNewTribe = (values, needUpload) => (dispatch, getState) => {
       type: TRIBE_NEW_SUBMIT_FAIL
     });
     Alert.alert(
-      'Failed to create new Tribe',
+      `Failed to ${isEdit ? 'update' : 'create'} new Tribe`,
       'Please try again later'
     );
   };
@@ -65,7 +70,7 @@ export const createNewTribe = (values, needUpload) => (dispatch, getState) => {
   const imageUri = newTribe.options.picture;
   if (!needUpload) {
     // If no mediaRef then directly submit the post
-    sendCreateTribeRequest(newTribe, token, dispatch, onSuccess, onError);
+    sendCreateTribeRequest(newTribe, token, isEdit, dispatch, onSuccess, onError);
   } else {
     ImageUtils.getImageSize(imageUri)
       .then(({ width, height }) => {
@@ -98,9 +103,21 @@ export const createNewTribe = (values, needUpload) => (dispatch, getState) => {
       .then((image) => {
         // Use the presignedUrl as media string
         console.log(`${BASE_ROUTE}: presigned url sent is: `, image);
+        const newTribeObject = isEdit
+          ?
+          {
+            ...newTribe,
+            details: { ...newTribe.details, picture: image }
+          }
+          :
+          {
+            ...newTribe,
+            options: { ...newTribe.options, picture: image }
+          };
         return sendCreateTribeRequest(
-          { ...newTribe, options: { ...newTribe.options, picture: image } },
+          newTribeObject,
           token,
+          isEdit,
           dispatch,
           onSuccess,
           onError
@@ -119,7 +136,21 @@ export const createNewTribe = (values, needUpload) => (dispatch, getState) => {
   }
 };
 
-const sendCreateTribeRequest = (newTribe, token, dispatch, onSuccess, onError) => {
+const sendCreateTribeRequest = (newTribe, token, isEdit, dispatch, onSuccess, onError) => {
+  if (isEdit) {
+    API
+      .put(`${BASE_ROUTE}`, { ...newTribe }, token)
+      .then((res) => {
+        if (res.data) {
+          return onSuccess(res.data);
+        }
+        onError(res.message);
+      })
+      .catch((err) => {
+        onError(err);
+      });
+    return;
+  }
   API
     .post(`${BASE_ROUTE}`, { ...newTribe }, token)
     .then((res) => {
@@ -134,7 +165,7 @@ const sendCreateTribeRequest = (newTribe, token, dispatch, onSuccess, onError) =
 };
 
 // Tranform form values to a tribe object
-const formToTribeAdapter = (values) => {
+const formToTribeAdapter = (values, tribeId, isEdit) => {
   const {
     name,
     membersCanInvite,
@@ -143,6 +174,19 @@ const formToTribeAdapter = (values) => {
     description,
     picture
   } = values;
+
+  if (isEdit) {
+    return {
+      tribeId,
+      details: {
+        membersCanInvite,
+        isPubliclyVisible,
+        membershipLimit,
+        description,
+        picture
+      }
+    };
+  }
 
   return {
     name,

@@ -43,15 +43,19 @@ export const cancelCreatingNewEvent = () => (dispatch) => {
 };
 
 /**
+ * @param values: new tribe values
+ * @param needUpload: if there is media to be uploaded
+ * @param isEdit: if edit, then use put rather than post
+ *
  * @param title
  * @param start
  * @param durationHours
  * @param options:
   {participantsCanInvite, isInviteOnly, participantLimit, location, description, picture}
  */
-export const createNewEvent = (values, needUpload) => (dispatch, getState) => {
+export const createNewEvent = (values, needUpload, isEdit, eventId) => (dispatch, getState) => {
   const { token } = getState().user;
-  const newEvent = formToEventAdapter(values);
+  const newEvent = formToEventAdapter(values, eventId, isEdit);
   console.log('hours is: ', newEvent);
 
   dispatch({
@@ -66,7 +70,7 @@ export const createNewEvent = (values, needUpload) => (dispatch, getState) => {
     Actions.pop();
     Alert.alert(
       'Success',
-      'Congrats! Your event is successfully created.'
+      `Congrats! Your event is successfully ${isEdit ? 'updated' : 'created'}.`
     );
   };
 
@@ -75,7 +79,7 @@ export const createNewEvent = (values, needUpload) => (dispatch, getState) => {
       type: EVENT_NEW_SUBMIT_FAIL
     });
     Alert.alert(
-      'Failed to create new Event',
+      `Failed to ${isEdit ? 'update' : 'create'} new Event`,
       'Please try again later'
     );
     console.log('Error submitting new Event with err: ', err);
@@ -84,7 +88,7 @@ export const createNewEvent = (values, needUpload) => (dispatch, getState) => {
   const imageUri = newEvent.options.picture;
   if (!needUpload) {
     // If no mediaRef then directly submit the post
-    sendCreateEventRequest(newEvent, token, dispatch, onSuccess, onError);
+    sendCreateEventRequest(newEvent, token, isEdit, dispatch, onSuccess, onError);
   } else {
     ImageUtils.getImageSize(imageUri)
       .then(({ width, height }) => {
@@ -117,9 +121,21 @@ export const createNewEvent = (values, needUpload) => (dispatch, getState) => {
       .then((image) => {
         // Use the presignedUrl as media string
         console.log(`${BASE_ROUTE}: presigned url sent is: `, image);
+        const newEventObject = isEdit
+          ?
+          {
+            ...newEvent,
+            details: { ...newEvent.details, picture: image }
+          }
+          :
+          {
+            ...newEvent,
+            options: { ...newEvent.options, picture: image }
+          };
         return sendCreateEventRequest(
-          { ...newEvent, options: { ...newEvent.options, picture: image } },
+          newEventObject,
           token,
+          isEdit,
           dispatch,
           onSuccess,
           onError
@@ -139,7 +155,21 @@ export const createNewEvent = (values, needUpload) => (dispatch, getState) => {
   }
 };
 
-const sendCreateEventRequest = (newEvent, token, dispatch, onSuccess, onError) => {
+const sendCreateEventRequest = (newEvent, token, isEdit, dispatch, onSuccess, onError) => {
+  if (isEdit) {
+    API
+      .put(`${BASE_ROUTE}`, { ...newEvent }, token)
+      .then((res) => {
+        if (res.data) {
+          return onSuccess(res.data);
+        }
+        onError(res.message);
+      })
+      .catch((err) => {
+        onError(err);
+      });
+    return;
+  }
   API
     .post(`${BASE_ROUTE}`, { ...newEvent }, token)
     .then((res) => {
@@ -161,7 +191,7 @@ const sendCreateEventRequest = (newEvent, token, dispatch, onSuccess, onError) =
  * @param options:
   {participantsCanInvite, isInviteOnly, participantLimit, location, description, picture}
  */
-const formToEventAdapter = (values) => {
+const formToEventAdapter = (values, eventId, isEdit) => {
   const {
     title,
     startTime,
@@ -177,6 +207,23 @@ const formToEventAdapter = (values) => {
   const startMoment = moment(startTime.date);
   const endMoment = moment(endTime.date);
   const duration = moment.duration(endMoment.diff(startMoment));
+
+  if (isEdit) {
+    return {
+      eventId,
+      details: {
+        participantsCanInvite,
+        isInviteOnly,
+        participantLimit,
+        location,
+        description,
+        picture,
+        title,
+        start: startTime.date,
+        durationHours: duration.asHours(),
+      }
+    };
+  }
 
   return {
     title,

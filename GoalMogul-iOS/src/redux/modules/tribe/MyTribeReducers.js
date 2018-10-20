@@ -22,6 +22,10 @@ const INITIAL_STATE = {
 
 export const MYTRIBE_SWITCH_TAB = 'mytribe_switch_tab';
 export const MYTRIBE_DETAIL_OPEN = 'mytribe_detail_open';
+// Successfully load tribe detail
+export const MYTRIBE_DETAIL_LOAD_SUCCESS = 'mytribe_detail_load_success';
+// Failed to load tribe detail
+export const MYTRIBE_DETAIL_LOAD_FAIL = 'mytribe_detail_load_fail';
 export const MYTRIBE_DETAIL_CLOSE = 'mytribe_detail_close';
 export const MYTRIBE_FEED_FETCH = 'mytribe_feed_fetch';
 export const MYTRIBE_FEED_FETCH_DONE = 'mytribe_feed_fetch_done';
@@ -79,9 +83,11 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, 'feed', data);
     }
 
+    case MYTRIBE_DETAIL_LOAD_SUCCESS:
     case MYTRIBE_DETAIL_OPEN: {
-      let newState = _.cloneDeep(state);
-      return _.set(newState, 'item', { ...action.payload });
+      const { tribe } = action.payload;
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'item', { ...tribe });
     }
 
     case MYTRIBE_DETAIL_CLOSE: {

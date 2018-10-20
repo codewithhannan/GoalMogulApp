@@ -103,7 +103,7 @@ export const inviteParticipantToEvent = (eventId, inviteeId) => (dispatch, getSt
     });
     console.log(`${DEBUG_KEY}: invite user success: `, res);
     Actions.pop();
-    Alert.aler(
+    Alert.alert(
       'Success',
       'You have successfully invited the user.'
     );
@@ -123,7 +123,7 @@ export const inviteParticipantToEvent = (eventId, inviteeId) => (dispatch, getSt
   API
     .post(`${BASE_ROUTE}/participant`, { eventId, inviteeId }, token)
     .then((res) => {
-      if (res && res.data) {
+      if (res && res.success) {
         return onSuccess(res.data);
       }
       return onError(res);
