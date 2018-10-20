@@ -1,12 +1,15 @@
 // Actions for an event that belongs to my event tab
 import { Actions } from 'react-native-router-flux';
+import _ from 'lodash';
 import {
   MYEVENT_SWITCH_TAB,
   MYEVENT_DETAIL_CLOSE,
   MYEVENT_DETAIL_OPEN,
   MYEVENT_FEED_FETCH,
   MYEVENT_FEED_FETCH_DONE,
-  MYEVENT_FEED_REFRESH_DONE
+  MYEVENT_FEED_REFRESH_DONE,
+  MYEVENT_DETAIL_LOAD_SUCCESS,
+  MYEVENT_DETAIL_LOAD_FAIL
 } from './MyEventReducers';
 
 import { api as API } from '../../middleware/api';
@@ -30,12 +33,52 @@ export const eventDetailClose = () => (dispatch) => {
 };
 
 export const eventDetailOpen = (event) => (dispatch, getState) => {
+  const newEvent = _.cloneDeep(event);
   dispatch({
     type: MYEVENT_DETAIL_OPEN,
-    payload: { ...event }
+    payload: {
+      event: _.set(newEvent, 'participants', [])
+    }
   });
   Actions.myEventDetail();
-  refreshEventFeed(event._id, dispatch, getState);
+  const { _id } = event;
+  fetchEventDetail(_id)(dispatch, getState);
+  refreshEventFeed(_id, dispatch, getState);
+};
+
+/**
+ * Fetch tribe detail for a tribe
+ */
+export const fetchEventDetail = (eventId) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const onSuccess = (data) => {
+    dispatch({
+      type: MYEVENT_DETAIL_LOAD_SUCCESS,
+      payload: {
+        event: data
+      }
+    });
+    console.log(`${DEBUG_KEY}: load event detail success with data: `, data);
+  };
+
+  const onError = (err) => {
+    dispatch({
+      type: MYEVENT_DETAIL_LOAD_FAIL
+    });
+    console.log(`${DEBUG_KEY}: failed to load event detail with err: `, err);
+  };
+
+  API
+    .get(`${BASE_ROUTE}/documents/${eventId}`, token)
+    .then((res) => {
+      if (res.data) {
+        return onSuccess(res.data);
+      }
+      onError(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
 };
 
 /**
