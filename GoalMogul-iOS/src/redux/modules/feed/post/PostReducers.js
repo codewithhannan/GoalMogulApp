@@ -74,10 +74,10 @@ export default (state = INITIAL_STATE, action) => {
     case POST_DETAIL_OPEN: {
       const newState = _.cloneDeep(state);
       const { post, tab } = action.payload;
-      const path = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
+      const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
       const { pageIdCount, pageId } = _.get(newState, `${path}`);
 
-      return _.set(newState, `${post}${capitalizeWord(tab)}`, { ...post, pageIdCount, pageId });
+      return _.set(newState, `${path}`, { ...post, pageIdCount, pageId });
     }
 
     /**
@@ -88,7 +88,7 @@ export default (state = INITIAL_STATE, action) => {
       const { tab } = action.payload;
       const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
       const newState = _.cloneDeep(state);
-      return _.newState(newState, `${path}`, { ...POST_INITIAL_STATE });
+      return _.set(newState, `${path}`, { ...POST_INITIAL_STATE });
     }
 
     case LIKE_POST:

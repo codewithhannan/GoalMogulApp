@@ -36,12 +36,13 @@ class ProfilePostBody extends React.Component {
     if (!url) {
       return '';
     }
+    const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${url}`;
       return (
         <View>
           <ImageBackground
             style={styles.mediaStyle}
-            source={TestImage}
-            imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'stretch' }}
+            source={{ uri: imageUrl }}
+            imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
           >
             <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
               <Image
@@ -66,16 +67,13 @@ class ProfilePostBody extends React.Component {
               />
             </TouchableOpacity>
           </ImageBackground>
-          {this.renderPostImageModal(url)}
+          {this.renderPostImageModal(imageUrl)}
         </View>
       );
   }
 
 
-  renderPostImageModal(uri) {
-    if (!uri) {
-      return '';
-    }
+  renderPostImageModal(imageUrl) {
     return (
       <Modal
         animationType="fade"
@@ -103,7 +101,7 @@ class ProfilePostBody extends React.Component {
             />
           </TouchableOpacity>
           <Image
-            source={TestImage}
+            source={{ uri: imageUrl }}
             style={{ width, height: 200 }}
             resizeMode='cover'
           />

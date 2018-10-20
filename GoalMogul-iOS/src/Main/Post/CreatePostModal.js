@@ -149,7 +149,8 @@ class CreatePostModal extends Component {
   // };
 
   renderUserInfo() {
-    let imageUrl = this.props.user.profile.image;
+    const { profile, name } = this.props.user;
+    let imageUrl = profile.image;
     let profileImage = (
       <Image style={styles.imageStyle} resizeMode='cover' source={defaultUserProfile} />
     );
@@ -165,7 +166,7 @@ class CreatePostModal extends Component {
         {profileImage}
         <View style={{ flexDirection: 'column', marginLeft: 15 }}>
           <Text style={{ fontSize: 18, marginBottom: 8 }}>
-            Jordan Gardener
+            {name}
           </Text>
           <ViewableSettingMenu
             viewableSetting={this.props.viewableSetting}
@@ -284,7 +285,7 @@ class CreatePostModal extends Component {
           name='post'
           label='post'
           component={InputField}
-          editable={this.props.uploading}
+          editable={!this.props.uploading}
           numberOfLines={4}
           style={styles.goalInputStyle}
           placeholder='What are you trying to achieve?'

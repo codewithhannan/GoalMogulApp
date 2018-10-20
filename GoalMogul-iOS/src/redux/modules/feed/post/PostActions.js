@@ -26,13 +26,13 @@ const DEBUG_KEY = '[ Action Post ]';
  */
 export const openPostDetail = (post) => (dispatch, getState) => {
   // Open share detail if not a general post
-  if (post.type !== 'General') {
+  if (post.postType !== 'General') {
     return openShareDetail(post)(dispatch, getState);
   }
 
   const { tab } = getState().navigation;
   const scene = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
-  const { pageId } = _.get(getState().shareDetail, `${scene}`);
+  const { pageId } = _.get(getState().postDetail, `${scene}`);
 
   dispatch({
     type: POST_DETAIL_OPEN,
@@ -52,7 +52,7 @@ export const closePostDetail = () => (dispatch, getState) => {
 
   const { tab } = getState().navigation;
   const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
-  const { pageId } = _.get(getState().shareDetail, `${path}`);
+  const { pageId } = _.get(getState().postDetail, `${path}`);
 
   dispatch({
     type: POST_DETAIL_CLOSE,
@@ -167,6 +167,7 @@ const sendCreatePostRequest = (newPost, token, dispatch, onError) => {
           type: POST_NEW_POST_SUBMIT_SUCCESS,
           payload: { ...res.data }
         });
+        return;
       }
       console.log('Creating post failed with message: ', res);
       handleError();

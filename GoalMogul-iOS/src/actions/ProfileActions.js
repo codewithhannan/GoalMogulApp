@@ -395,7 +395,7 @@ const profileFilterAdapter = (filter) => {
 const loadOneTab = (tab, skip, limit, filter, token, onSuccess, onError) => {
   // Todo: base route depends on tab selection
   const route = tab === 'posts'
-    ? `secure/feed/post/user?${queryBuilder(skip, limit, {})}`
+    ? `secure/feed/post/user?${queryBuilder(skip, limit, { userId: filter.userId })}`
     : `secure/goal/user?${queryBuilder(skip, limit, filter)}`;
   API
     .get(route, token)
