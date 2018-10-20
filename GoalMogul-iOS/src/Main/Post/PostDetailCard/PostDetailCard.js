@@ -40,11 +40,11 @@ class PostDetailCard extends Component {
   }
 
   handleRefresh = () => {
-    const { routes, index } = this.state.navigationState;
-    const { tab, postDetail } = this.props;
-    if (routes[index].key === 'comments') {
-      this.props.refreshComments('Post', postDetail._id, tab);
-    }
+    // const { routes, index } = this.state.navigationState;
+    const { tab, postDetail, pageId } = this.props;
+    // if (routes[index].key === 'comments') {
+      this.props.refreshComments('Post', postDetail._id, tab, pageId);
+    // }
   }
 
   keyExtractor = (item) => item._id;
@@ -71,6 +71,7 @@ class PostDetailCard extends Component {
         onCommentClicked={() => this.dialogOnFocus()}
         onReportPressed={() => console.log('post detail report clicked')}
         reportType='postDetail'
+        pageId={this.props.pageId}
       />
     );
   }
@@ -78,23 +79,26 @@ class PostDetailCard extends Component {
   renderPostDetailSection(postDetail) {
     return (
       <View style={{ marginBottom: 1 }}>
-        <PostDetailSection item={postDetail} onSuggestion={() => this.dialogOnFocus()} />
+        <PostDetailSection
+          item={postDetail}
+          onSuggestion={() => this.dialogOnFocus()}
+          pageId={this.props.pageId}
+        />
       </View>
     );
   }
 
   render() {
-    const { comments, postDetail } = this.props;
+    const { comments, postDetail, pageId } = this.props;
     const data = comments;
 
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={{ backgroundColor: '#e5e5e5', flex: 1 }}>
-          <Report showing={this.props.showingModalInPostDetail} />
           <SearchBarHeader
             backButton
-            title='Goal'
+            title='Post'
             onBackPress={() => this.props.closePostDetail()}
           />
             <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
@@ -110,6 +114,7 @@ class PostDetailCard extends Component {
 
               <CommentBox
                 onRef={(ref) => { this.commentBox = ref; }}
+                pageId={pageId}
               />
 
             </KeyboardAvoidingView>
@@ -312,16 +317,17 @@ const mapStateToProps = state => {
       }
     }
   ];
-
-  const { showingModalInPostDetail } = state.report;
   // TODO: uncomment
   // const { transformedComments, loading } = getCommentByTab(state);
+  const getPostDetail = getPostDetailByTab();
+  const postDetail = getPostDetail(state);
+  const { pageId } = postDetail;
 
   return {
     commentLoading: false,
     comments: testTransformedComments,
-    postDetail: getPostDetailByTab(state),
-    showingModalInPostDetail
+    postDetail,
+    pageId
   };
 };
 

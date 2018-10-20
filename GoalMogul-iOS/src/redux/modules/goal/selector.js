@@ -1,7 +1,11 @@
 import { createSelector } from 'reselect';
+import _ from 'lodash';
 
 const getNeeds = (state) => state.goalDetail.goal.needs;
 const getSteps = (state) => state.goalDetail.goal.steps;
+
+const getTab = (state) => state.navigation.tab;
+const getState = (state) => state.goalDetail;
 
 /*
  * Transform a goal's need and step to become
@@ -43,3 +47,17 @@ export const getGoalStepsAndNeeds = createSelector(
     return res;
   }
 );
+
+// Get goal detail by tabs
+export const getGoalDetailByTab = createSelector(
+  [getState, getTab],
+  (goalDetails, tab) => {
+    const path = !tab ? 'goal' : `goal${capitalizeWord(tab)}`;
+    return _.get(goalDetails, `${path}`);
+  }
+);
+
+const capitalizeWord = (word) => {
+  if (!word) return '';
+  return word.replace(/^\w/, c => c.toUpperCase());
+};

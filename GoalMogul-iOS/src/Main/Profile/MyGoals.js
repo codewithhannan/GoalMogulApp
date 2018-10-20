@@ -12,7 +12,8 @@ import ProfileGoalCard from '../Goal/GoalCard/ProfileGoalCard';
 // actions
 import {
   handleTabRefresh,
-  handleProfileTabOnLoadMore
+  handleProfileTabOnLoadMore,
+  changeFilter
 } from '../../actions';
 
 // tab key
@@ -26,22 +27,33 @@ class MyGoals extends Component {
     this.props.handleTabRefresh(key);
   }
 
+  /**
+   * @param type: ['sortBy', 'orderBy', 'categories', 'priorities']
+   */
+  handleOnMenuChange = (type, value) => {
+    this.props.changeFilter(key, type, value);
+  }
+
   renderItem = ({ item }) => {
-    // TODO: render item
     return <ProfileGoalCard item={item} />;
   }
 
   render() {
+    const { data, loading } = this.props;
     return (
       <View style={{ flex: 1 }}>
-        <GoalFilterBar selectedTab={this.props.selectedTab} />
+        <GoalFilterBar
+          selectedTab={this.props.selectedTab}
+          filter={this.props.filter}
+          onMenuChange={this.handleOnMenuChange}
+        />
         <View style={{ flex: 1 }}>
           <FlatList
-            data={testData}
+            data={[...data, ...testData]}
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
             onRefresh={this.handleRefresh.bind()}
-            refreshing={this.props.refreshing || this.props.loading}
+            refreshing={this.props.refreshing || loading}
           />
         </View>
         {/*
@@ -76,12 +88,13 @@ const styles = {
 
 const mapStateToProps = state => {
   const { selectedTab, goals } = state.profile;
-  const { data, loading } = goals;
+  const { data, loading, filter } = goals;
 
   return {
     selectedTab,
     data,
-    loading
+    loading,
+    filter
   };
 };
 
@@ -101,6 +114,7 @@ export default connect(
   mapStateToProps,
   {
     handleTabRefresh,
-    handleProfileTabOnLoadMore
+    handleProfileTabOnLoadMore,
+    changeFilter
   }
 )(MyGoals);

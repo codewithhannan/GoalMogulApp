@@ -13,7 +13,8 @@ import dropDown from '../../asset/utils/dropDown.png';
 
 const { width } = Dimensions.get('window');
 const { Popover } = renderers;
-const MenuFactory = (options, callback, triggerText, triggerContainerStyle, animationCallback) => {
+export const MenuFactory =
+(options, callback, triggerText, triggerContainerStyle, animationCallback) => {
   const triggerTextView = triggerText
     ? (
         <Text
@@ -74,26 +75,24 @@ const styles = {
   },
   menuOptionsStyles: {
     optionsContainer: {
-      width: width / 3,
+      // flex: 1
     },
     optionsWrapper: {
 
     },
     optionWrapper: {
-      flex: 1,
+      // margin: 3
     },
     optionTouchable: {
       underlayColor: 'lightgray',
       activeOpacity: 10,
     },
     optionText: {
-      paddingTop: 5,
-      paddingBottom: 5,
-      paddingLeft: 10,
-      paddingRight: 10,
-      color: 'black',
+      // paddingTop: 5,
+      // paddingBottom: 5,
+      // paddingLeft: 10,
+      // paddingRight: 10,
+      // color: 'black',
     },
   }
 };
-
-export default MenuFactory;

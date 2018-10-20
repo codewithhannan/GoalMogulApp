@@ -124,7 +124,7 @@ class SuggestionModal extends Component {
         }}
       >
         <TouchableOpacity
-          onPress={() => this.props.updateSuggestionType(item.key)}
+          onPress={() => this.props.updateSuggestionType(item.key, this.props.pageId)}
         >
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
           <Image source={item.value.iconSource} style={style} />
@@ -381,8 +381,8 @@ const updateIconMap = (suggestionType, iconMap) => iconMap.map((item) => {
   return newItem;
 });
 
-const mapStateToProps = state => {
-  const { tmpSuggestion } = getNewCommentByTab(state);
+const mapStateToProps = (state, props) => {
+  const { tmpSuggestion } = getNewCommentByTab(state, props.pageId);
   const { suggestionType } = tmpSuggestion;
   const iconMap = updateIconMap(suggestionType, IconMap);
 

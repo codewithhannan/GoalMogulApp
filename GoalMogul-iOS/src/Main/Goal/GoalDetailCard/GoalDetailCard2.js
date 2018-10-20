@@ -11,7 +11,8 @@ import {
 
 // Actions
 import {
-  closeGoalDetail
+  closeGoalDetail,
+  goalDetailSwitchTab
 } from '../../../redux/modules/goal/GoalDetailActions';
 
 import {
@@ -23,8 +24,8 @@ import {
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 // selector
-import { getGoalStepsAndNeeds } from '../../../redux/modules/goal/selector';
-import { 
+import { getGoalStepsAndNeeds, getGoalDetailByTab } from '../../../redux/modules/goal/selector';
+import {
   getCommentByTab,
   getNewCommentByTab
 } from '../../../redux/modules/feed/comment/CommentSelector';
@@ -57,8 +58,9 @@ class GoalDetailCard2 extends Component {
   }
 
   handleRefresh = () => {
-    const { routes, index } = this.state.navigationState;
-    const { tab, goalDetail } = this.props;
+    // const { routes, index } = this.state.navigationState;
+    const { tab, goalDetail, navigationState } = this.props;
+    const { routes, index } = navigationState;
     if (routes[index].key === 'comments') {
       this.props.refreshComments('Goal', goalDetail._id, tab);
     }
@@ -66,6 +68,7 @@ class GoalDetailCard2 extends Component {
 
   // Tab related handlers
   _handleIndexChange = index => {
+    this.props.goalDetailSwitchTab(index);
     this.setState({
       ...this.state,
       navigationState: {
@@ -152,7 +155,7 @@ class GoalDetailCard2 extends Component {
         {
           this._renderHeader({
             jumpToIndex: (i) => this._handleIndexChange(i),
-            navigationState: this.state.navigationState
+            navigationState: this.props.navigationState
           })
         }
       </View>
@@ -173,6 +176,7 @@ class GoalDetailCard2 extends Component {
             onAttach={() => {
               this.props.attachSuggestion();
             }}
+            pageId={undefined}
           />
           <Report showing={this.props.showingModalInDetail} />
           <SearchBarHeader
@@ -274,9 +278,7 @@ const testData = {
   title: 'Establish a LMFBR near Westport, Connecticut by 2020',
 };
 
-const mapStateToProps = state => {
-  const { showSuggestionModal } = getNewCommentByTab(state);
-
+const mapStateToProps = (state, props) => {
   const testStepsAndNeeds = [
     {
       _id: '1',
@@ -448,10 +450,13 @@ const mapStateToProps = state => {
     }
   ];
 
-  const { goal } = state.goalDetail;
+  const newComment = getNewCommentByTab(state, props.pageId);
+  const goalDetail = getGoalDetailByTab(state);
+  const { goal, navigationState } = goalDetail;
+
   const { showingModalInDetail } = state.report;
   const { userId } = state.user;
-  // const { transformedComments, loading } = getCommentByTab(state);
+  // const { transformedComments, loading } = getCommentByTab(state, props.pageId);
 
   return {
     commentLoading: false,
@@ -459,8 +464,9 @@ const mapStateToProps = state => {
     // stepsAndNeeds: testStepsAndNeeds,
     comments: testTransformedComments,
     goalDetail: goal,
+    navigationState,
     showingModalInDetail,
-    showSuggestionModal,
+    showSuggestionModal: newComment ? newComment.showSuggestionModal : false,
     // isSelf: userId === goal.owner._id
     // TODO: delete
     isSelf: true,
@@ -476,6 +482,7 @@ export default connect(
     attachSuggestion,
     cancelSuggestion,
     openSuggestionModal,
-    refreshComments
+    refreshComments,
+    goalDetailSwitchTab
   }
 )(GoalDetailCard2);

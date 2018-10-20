@@ -52,6 +52,10 @@ export const submitGoal = (values, userId, isEdit, callback) => (dispatch, getSt
     dispatch({
       type: GOAL_CREATE_SUBMIT_SUCCESS
     });
+    Alert.alert(
+      'Success',
+      'You have successfully created a goal.'
+    );
   };
 
   // Creating new goal
@@ -95,6 +99,10 @@ const submitEditGoal = (goal, token, callback, dispatch) => {
   };
 
   const onSuccess = () => {
+    Alert.alert(
+      'Success',
+      'You have successfully edited a goal.'
+    );
     dispatch({
       type: GOAL_CREATE_SUBMIT_SUCCESS
     });
@@ -156,7 +164,11 @@ const formToGoalAdapter = (values, userId) => {
   };
 };
 
-// Transform a goal object to
+/**
+ * Transform a goal object to form format
+ * Note: currently, if a goal is updated, then all its needs' and steps'
+ * created will be updated to the current date
+ */
 export const goalToFormAdaptor = (values) => {
   // Function to capitalize the first character
   const capitalizeWord = (word) => {
@@ -175,7 +187,7 @@ export const goalToFormAdaptor = (values) => {
     steps,
     start,
     end
-  } = values.goal;
+  } = values;
 
   console.log('values are: ', values);
 
@@ -217,7 +229,8 @@ const stepsNeedsAdapter = values => {
       return {
         isCompleted: false,
         description: val,
-        order: index
+        order: index,
+        created: new Date()
       };
     }
     return '';
@@ -225,9 +238,10 @@ const stepsNeedsAdapter = values => {
 };
 
 const detailsAdapter = (value) => {
-  if (!value) return undefined;
+  if (!value || value.length === 0 || _.isEmpty(value[0])) return undefined;
+
   return {
-    text: value,
+    text: value[0],
     tag: undefined
   };
 };
@@ -235,6 +249,8 @@ const detailsAdapter = (value) => {
 /**
  * Transform an array of needs object to a list of Strings for the form
  * in the order of order params
+ * Note: currently, if a goal is updated, then all its needs' and steps'
+ * created will be updated to the current date
  */
 const stepsNeedsReverseAdapter = values => {
   if (!values || values.length <= 0) return undefined;

@@ -35,14 +35,14 @@ export default (state = INITIAL_STATE, action) => {
     // Open my tribe modal
     case MYTRIBE_DETAIL_CLOSE:
     case MYTRIBETAB_OPEN: {
-      let newState = _.cloneDeep(state);
+      const newState = _.cloneDeep(state);
       return _.set(newState, 'showModal', true);
     }
 
     // Open my event modal
     case MYTRIBE_DETAIL_OPEN:
     case MYTRIBETAB_CLOSE: {
-      let newState = _.cloneDeep(state);
+      const newState = _.cloneDeep(state);
       return _.set(newState, 'showModal', false);
     }
 

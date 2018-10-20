@@ -4,8 +4,19 @@ import _ from 'lodash';
 
 import { arrayUnique } from '../../../middleware/utils';
 import {
+  GOAL_DETAIL_OPEN,
   GOAL_DETAIL_CLOSE
 } from '../../../../reducers/GoalDetailReducers';
+
+import {
+  POST_DETAIL_OPEN,
+  POST_DETAIL_CLOSE
+} from '../post/PostReducers';
+
+import {
+  SHARE_DETAIL_OPEN,
+  SHARE_DETAIL_CLOSE
+} from '../post/ShareReducers';
 
 import {
   LIKE_COMMENT,
@@ -21,11 +32,13 @@ const COMMENT_INITIAL_STATE = {
   hasNextPage: undefined
 };
 /**
- * This reducer is servered as denormalized comment stores
+ * This reducer is servered as denormalized comment stores. For each tab,
+ * it looks like
+ * goal_{pageId}: { COMMENT_INITIAL_STATE };
  */
 const INITIAL_STATE = {
   homeTab: {
-    ...COMMENT_INITIAL_STATE
+
   },
   meetTab: {
     ...COMMENT_INITIAL_STATE
@@ -52,13 +65,6 @@ export const COMMENT_POST_DONE = 'comment_post_done';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    // TODO: clear state on GoalDetailCard close
-    case GOAL_DETAIL_CLOSE: {
-      const { tab } = action.payload;
-      const path = !tab ? 'homeTab' : `${tab}`;
-      return _.set(state, `${path}`, { ...COMMENT_INITIAL_STATE });
-    }
-
     // load more child comments
     case COMMENT_LOAD_MORE_REPLIES: {
       // TODO: find the comment and update the numberOfChildrenShowing and hasMoreToShow
@@ -69,15 +75,18 @@ export default (state = INITIAL_STATE, action) => {
 
     // following switches are to handle loading Comments
     case COMMENT_LOAD: {
-      const { tab } = action.payload;
+      const { tab, pageId } = action.payload;
       const newState = _.cloneDeep(state);
-      const path = !tab ? 'homeTab' : `${tab}`;
+
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       return _.set(newState, `${path}.loading`, true);
     }
 
     case COMMENT_REFRESH_DONE: {
-      const { skip, data, hasNextPage, tab } = action.payload;
-      const path = !tab ? 'homeTab' : `${tab}`;
+      const { skip, data, hasNextPage, tab, pageId } = action.payload;
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       let newState = _.cloneDeep(state);
       newState = _.set(newState, `${path}.loading`, false);
 
@@ -93,9 +102,11 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case COMMENT_LOAD_DONE: {
-      const { skip, data, hasNextPage, tab } = action.payload;
+      const { skip, data, hasNextPage, tab, pageId } = action.payload;
       let newState = _.cloneDeep(state);
-      const path = !tab ? 'homeTab' : `${tab}`;
+
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       newState = _.set(newState, `${path}.loading`, false);
 
       if (skip !== undefined) {
@@ -109,17 +120,41 @@ export default (state = INITIAL_STATE, action) => {
     // User likes a comment or User unlikes a comment
     case UNLIKE_COMMENT:
     case LIKE_COMMENT: {
-      const { id, likeId, tab } = action.payload;
+      const { id, likeId, tab, pageId } = action.payload;
       console.log(`${action.type} comment, id is: ${id}, likeId is: ${likeId}`);
+      const page = pageId ? `${pageId}` : 'default';
 
       let newState = _.cloneDeep(state);
-      const path = !tab ? 'homeTab' : `${tab}`;
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       // Update original comments
       const newData = updateLike(_.get(newState, `${path}.data`), id, likeId);
       // Update transformed comments
       const transformedComments = transformComments(newData);
       newState = _.set(newState, `${path}.data`, newData);
       return _.set(newState, `${path}.transformedComments`, transformedComments);
+    }
+
+    case SHARE_DETAIL_OPEN:
+    case POST_DETAIL_OPEN:
+    case GOAL_DETAIL_OPEN: {
+      const { tab, pageId } = action.payload;
+      const page = pageId ? `${pageId}` : 'default';
+
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      return _.set(state, `${path}`, { ...COMMENT_INITIAL_STATE });
+    }
+
+    case SHARE_DETAIL_CLOSE:
+    case POST_DETAIL_CLOSE:
+    case GOAL_DETAIL_CLOSE: {
+      const { tab, pageId } = action.payload;
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? 'homeTab' : `${tab}`;
+
+      const properties = _.keys(_.get(state, path)).filter((property) => property !== page);
+      const newState = _.cloneDeep(state);
+      const newTab = _.cloneDeep(_.get(newState, path));
+      return _.set(newState, `${path}`, _.pick(newTab, properties));
     }
 
     default:

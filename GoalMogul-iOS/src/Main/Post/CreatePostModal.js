@@ -35,7 +35,8 @@ import expand from '../../asset/utils/expand.png';
 // Actions
 import { openCameraRoll, openCamera } from '../../actions';
 import {
-  submitCreatingPost
+  submitCreatingPost,
+  postToFormAdapter
 } from '../../redux/modules/feed/post/PostActions';
 
 const { width } = Dimensions.get('window');
@@ -53,10 +54,21 @@ class CreatePostModal extends Component {
   }
 
   initializeForm() {
-    this.props.initialize({
+    const defaulVals = {
       viewableSetting: 'Friends',
       mediaRef: undefined,
       post: ''
+    };
+
+    // Initialize based on the props, if it's opened through edit button
+    const { initializeFromState, post } = this.props;
+    const initialVals = initializeFromState
+      ? { ...postToFormAdapter(post) }
+      : { ...defaulVals };
+
+    this.props.initialize({
+      // ...initialVals
+      ...initialVals
     });
   }
 
@@ -84,7 +96,11 @@ class CreatePostModal extends Component {
    * Synchronize validate form values, contains simple check
    */
   handleCreate = (values) => {
-    return this.props.submitCreatingPost(this.props.formVals.values);
+    const { initializeFromState, post, mediaRef } = this.props;
+    const needUpload =
+      (initializeFromState && post.mediaRef && post.mediaRef !== mediaRef)
+      || (!initializeFromState && mediaRef);
+    return this.props.submitCreatingPost(this.props.formVals.values, needUpload);
   }
   // renderInput = ({
   //   input: { onChange, onFocus, value, ...restInput },
@@ -133,7 +149,8 @@ class CreatePostModal extends Component {
   // };
 
   renderUserInfo() {
-    let imageUrl = this.props.user.profile.image;
+    const { profile, name } = this.props.user;
+    let imageUrl = profile.image;
     let profileImage = (
       <Image style={styles.imageStyle} resizeMode='cover' source={defaultUserProfile} />
     );
@@ -149,7 +166,7 @@ class CreatePostModal extends Component {
         {profileImage}
         <View style={{ flexDirection: 'column', marginLeft: 15 }}>
           <Text style={{ fontSize: 18, marginBottom: 8 }}>
-            Jordan Gardener
+            {name}
           </Text>
           <ViewableSettingMenu
             viewableSetting={this.props.viewableSetting}
@@ -163,11 +180,22 @@ class CreatePostModal extends Component {
 
   // Current media type is only picture
   renderMedia() {
+    const { initializeFromState, post, mediaRef } = this.props;
+    let imageUrl = mediaRef;
+    if (initializeFromState && mediaRef) {
+      const hasImageModified = post.mediaRef && post.mediaRef !== mediaRef;
+      if (!hasImageModified) {
+        // If editing a tribe and image hasn't changed, then image source should
+        // be from server
+        imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${mediaRef}`;
+      }
+    }
+
     if (this.props.mediaRef) {
       return (
         <ImageBackground
           style={styles.mediaStyle}
-          source={{ uri: this.props.mediaRef }}
+          source={{ uri: imageUrl }}
           imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'stretch' }}
         >
           <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
@@ -257,7 +285,7 @@ class CreatePostModal extends Component {
           name='post'
           label='post'
           component={InputField}
-          editable={this.props.uploading}
+          editable={!this.props.uploading}
           numberOfLines={4}
           style={styles.goalInputStyle}
           placeholder='What are you trying to achieve?'

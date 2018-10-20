@@ -16,7 +16,8 @@ const INITIAL_STATE = {
   feedLoading: false,
   hasNextPage: undefined,
   skip: 0,
-  limit: 100
+  limit: 100,
+  hasRequested: undefined
 };
 
 export const MYTRIBE_SWITCH_TAB = 'mytribe_switch_tab';
@@ -25,6 +26,10 @@ export const MYTRIBE_DETAIL_CLOSE = 'mytribe_detail_close';
 export const MYTRIBE_FEED_FETCH = 'mytribe_feed_fetch';
 export const MYTRIBE_FEED_FETCH_DONE = 'mytribe_feed_fetch_done';
 export const MYTRIBE_FEED_REFRESH_DONE = 'mytribe_feed_refresh_done';
+export const MYTRIBE_MEMBER_REMOVE_SUCCESS = 'mytribe_member_remove_success';
+export const MYTRIBE_MEMBER_ACCEPT_SUCCESS = 'mytribe_member_accept_success';
+export const MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS = 'mytribe_request_cancel_join_success';
+export const MYTRIBE_REQUEST_JOIN_SUCCESS = 'mytribe_request_join_success';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -83,6 +88,28 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...INITIAL_STATE
       };
+    }
+
+    case MYTRIBE_MEMBER_REMOVE_SUCCESS: {
+      const { userId } = action.payload;
+      let newState = _.cloneDeep(state);
+      let newItem = _.cloneDeep(newState.item);
+      if (newItem) {
+        newItem = newItem.members.filter((member) => member.memberRef._id !== userId);
+      }
+      // After removal, user resets his/her relationship with the tribe
+      newState = _.set(newState, 'hasRequested', undefined);
+      return _.set(newState, 'item', newItem);
+    }
+
+    case MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'hasRequested', false);
+    }
+
+    case MYTRIBE_REQUEST_JOIN_SUCCESS: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'hasRequested', true);
     }
 
     default:

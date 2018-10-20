@@ -10,7 +10,7 @@ import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Action Explore Event Tab ]';
-const BASE_ROUTE = 'secure/event/recommendation';
+const BASE_ROUTE = 'secure/event/recommendations';
 
 
 // update sortBy
@@ -93,7 +93,7 @@ export const loadMoreEvent = () => (dispatch, getState) => {
 const loadEvent = (skip, limit, token, sortBy, filterOptions, callback, onError) => {
   API
     .get(
-      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, filterOptions })}`,
+      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, ...filterOptions })}`,
       token
     )
     .then((res) => {

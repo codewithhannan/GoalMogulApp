@@ -9,6 +9,10 @@ import {
   TouchableOpacity
  } from 'react-native';
 import { connect } from 'react-redux';
+import {
+  MenuProvider
+} from 'react-native-popup-menu';
+import R from 'ramda';
 
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
@@ -18,6 +22,9 @@ import StackedAvatars from '../../Common/StackedAvatars';
 import Dot from '../../Common/Dot';
 import MemberListCard from '../../Tribe/MemberListCard';
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
+import { MenuFactory } from '../../Common/MenuFactory';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import ParticipantFilterBar from '../../Event/ParticipantFilterBar';
 
 // Asset
 import TestEventImage from '../../../asset/TestEventImage.png';
@@ -28,13 +35,26 @@ import DefaultUserProfile from '../../../asset/test-profile-pic.png';
 import {
   eventSelectTab,
   eventDetailClose,
-  loadMoreEventFeed
+  loadMoreEventFeed,
 } from '../../../redux/modules/event/MyEventActions';
+
+// Selector
 import {
-  openEventInvitModal
+  getMyEventUserStatus,
+} from '../../../redux/modules/event/EventSelector';
+
+import {
+  openEventInvitModal,
+  deleteEvent,
+  editEvent,
+  reportEvent
 } from '../../../redux/modules/event/EventActions';
 
+const DEBUG_KEY = '[ UI MyEvent ]';
+const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
+const CANCEL_INDEX = 4;
 const { width } = Dimensions.get('window');
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 /**
  * This is the UI file for a single event.
  */
@@ -43,10 +63,52 @@ class MyEvent extends Component {
     return this.props.openEventInvitModal(_id);
   }
 
+  handleRSVPOnPress = () => {
+    const { item } = this.props;
+    if (!item) return;
+    const { _id } = item;
+
+    const switchCases = switchByButtonIndex([
+      [R.equals(0), () => {
+        console.log(`${DEBUG_KEY} User chooses: Intereseted`);
+        this.props.rsvpEvent('Interested', _id);
+      }],
+      [R.equals(1), () => {
+        console.log(`${DEBUG_KEY} User chooses: Going`);
+        this.props.rsvpEvent('Going', _id);
+      }],
+      [R.equals(2), () => {
+        console.log(`${DEBUG_KEY} User chooses: Maybe`);
+        this.props.rsvpEvent('Maybe', _id);
+      }],
+      [R.equals(3), () => {
+        console.log(`${DEBUG_KEY} User chooses: Not Going`);
+        this.props.rsvpEvent('NotGoing', _id);
+      }],
+    ]);
+    const rsvpActionSheet = actionSheet(
+      RSVP_OPTIONS,
+      CANCEL_INDEX,
+      switchCases
+    );
+    rsvpActionSheet();
+  }
+
   // Tab related functions
   _handleIndexChange = (index) => {
     this.props.eventSelectTab(index);
   };
+
+  handleEventOptionsOnSelect = (value) => {
+    const { item } = this.props;
+    const { _id } = item;
+    if (value === 'Delete') {
+      return this.props.deleteEvent(_id);
+    }
+    if (value === 'Edit') {
+      return this.props.editEvent(item);
+    }
+  }
 
   _renderHeader = props => {
     return (
@@ -64,37 +126,81 @@ class MyEvent extends Component {
     return '';
   }
 
-  renderEventImage() {
-    const { item } = this.props;
-    if (!item) return <View />;
+  /**
+   * Caret to show options for an event.
+   * If owner, options are delete and edit.
+   * Otherwise, option is report
+   */
+  renderCaret(item) {
+    // If item belongs to self, then caret displays delete
+    const { creator, _id } = item;
 
-    const { picture } = item;
-    if (picture && picture.length > 0) {
-      // Return provided picture
-      return (
-        <Image source={TestEventImage} style={styles.coverImageStyle} />
-      );
-    }
-    // Return default picture
+    const isSelf = creator._id === this.props.userId;
+    const menu = (!isSelf)
+      ? MenuFactory(
+          [
+            'Report',
+          ],
+          () => this.props.reportEvent(_id),
+          '',
+          { ...styles.caretContainer },
+          () => console.log('User clicks on options for event')
+        )
+      : MenuFactory(
+          [
+            'Delete',
+            'Edit'
+          ],
+          this.handleEventOptionsOnSelect,
+          '',
+          { ...styles.caretContainer },
+          () => console.log('User clicks on options for self event.')
+        );
     return (
-      <Image source={TestEventImage} style={styles.coverImageStyle} />
+      <View style={{ position: 'absolute', top: 3, right: 3 }}>
+        {menu}
+      </View>
     );
   }
 
+  renderEventImage(picture) {
+    let imageUrl;
+    let eventImage = (<Image source={TestEventImage} style={styles.coverImageStyle} />);
+    if (picture) {
+      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
+      eventImage = (
+        <Image
+          onLoadStart={() => this.setState({ imageLoading: true })}
+          onLoadEnd={() => this.setState({ imageLoading: false })}
+          style={styles.coverImageStyle}
+          source={{ uri: imageUrl }}
+        />
+      );
+    }
+
+    return eventImage;
+  }
+
   renderEventStatus() {
-    const { item } = this.props;
+    const { item, status } = this.props;
     if (!item) return <View />;
 
+    const rsvpText = status === undefined ? 'RSVP' : status;
     const eventProperty = item.isInviteOnly ? 'Private Event' : 'Public Event';
     const { eventPropertyTextStyle, eventPropertyContainerStyle } = styles;
     return (
       <View style={eventPropertyContainerStyle}>
         <Text style={eventPropertyTextStyle}>{eventProperty}</Text>
         <Dot />
-        <View style={styles.rsvpBoxContainerStyle}>
-          <Image source={EditIcon} style={styles.rsvpIconStyle} />
-          <Text style={styles.rsvpTextStyle}>RSVP</Text>
-        </View>
+        <TouchableOpacity
+          style={styles.rsvpBoxContainerStyle}
+          onPress={this.handleRSVPOnPress}
+        >
+          {/* <Image source={EditIcon} style={styles.rsvpIconStyle} /> */}
+          <Text style={styles.rsvpTextStyle}>
+            {rsvpText === 'NotGoing' ? 'Not going' : rsvpText}
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -103,9 +209,25 @@ class MyEvent extends Component {
     const { item } = this.props;
     if (!item) return <View />;
 
-    const date = 'August 12';
-    const startTime = '5pm';
-    const endTime = '9pm';
+    const { start, durationHours } = item;
+    const startDate = start ? new Date(start) : new Date();
+    const date = `${months[startDate.getMonth() - 1]} ${startDate.getDate()}, ` +
+      `${startDate.getFullYear()}`;
+
+    const startTime = `${startDate.toLocaleString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    })}`;
+
+    const endDate = durationHours
+      ? new Date(startDate.getTime() + (1000 * 60 * 60 * durationHours))
+      : new Date(startDate.getTime() + (1000 * 60 * 60 * 2));
+    const endTime = `${endDate.toLocaleString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    })}`;
     const { eventInfoBasicTextStyle, eventContainerStyle } = styles;
     return (
       <View style={eventContainerStyle}>
@@ -123,7 +245,10 @@ class MyEvent extends Component {
   }
 
   renderEventOverview(item) {
-    const { title, _id } = item;
+    const { title, _id, picture } = item;
+    const filterBar = this.props.tab === 'attendees'
+      ? <ParticipantFilterBar />
+      : '';
 
     const inviteButton = this.props.tab === 'attendees'
       ? (
@@ -138,8 +263,9 @@ class MyEvent extends Component {
 
     return (
       <View>
-        {this.renderEventImage()}
+        {this.renderEventImage(picture)}
         <View style={styles.generalInfoContainerStyle}>
+          {this.renderCaret(item)}
           <Text style={styles.eventTitleTextStyle}>
             {title}
           </Text>
@@ -161,6 +287,7 @@ class MyEvent extends Component {
             navigationState: this.props.navigationState
           })
         }
+        {filterBar}
         {inviteButton}
       </View>
     );
@@ -198,17 +325,19 @@ class MyEvent extends Component {
     if (!item) return <View />;
 
     return (
-      <View style={{ flex: 1 }}>
-        <SearchBarHeader backButton onBackPress={() => this.props.eventDetailClose()} />
-        <FlatList
-          data={data}
-          renderItem={this.renderItem}
-          keyExtractor={(i) => i._id}
-          ListHeaderComponent={this.renderEventOverview(item)}
-          ListFooterComponent={this.renderFooter}
-        />
+      <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+        <View style={{ flex: 1 }}>
+          <SearchBarHeader backButton onBackPress={() => this.props.eventDetailClose()} />
+          <FlatList
+            data={data}
+            renderItem={this.renderItem}
+            keyExtractor={(i) => i._id}
+            ListHeaderComponent={this.renderEventOverview(item)}
+            ListFooterComponent={this.renderFooter}
+          />
 
-      </View>
+        </View>
+      </MenuProvider>
     );
   }
 }
@@ -239,6 +368,12 @@ const styles = {
     color: '#696969',
     fontSize: 12
   },
+
+  // caret for options
+  caretContainer: {
+    padding: 14
+  },
+
   // Style for Invite button
   inviteButtonContainerStyle: {
     height: 30,
@@ -280,6 +415,10 @@ const styles = {
   eventInfoBasicTextStyle: {
     fontSize: 11,
     fontWeight: '300'
+  },
+  backdrop: {
+    backgroundColor: 'gray',
+    opacity: 0.5,
   }
 };
 
@@ -306,7 +445,8 @@ const mapStateToProps = state => {
     navigationState,
     item,
     data,
-    feedLoading
+    feedLoading,
+    status: getMyEventUserStatus(state),
   };
 };
 
@@ -317,6 +457,9 @@ export default connect(
     eventSelectTab,
     eventDetailClose,
     loadMoreEventFeed,
-    openEventInvitModal
+    openEventInvitModal,
+    deleteEvent,
+    editEvent,
+    reportEvent
   }
 )(MyEvent);

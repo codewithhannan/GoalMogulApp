@@ -10,7 +10,7 @@ import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Action Explore Tribe Tab ]';
-const BASE_ROUTE = 'secure/tribe/recommendation';
+const BASE_ROUTE = 'secure/tribe/recommendations';
 
 
 // update sortBy
@@ -90,18 +90,14 @@ export const loadMoreTribe = () => (dispatch, getState) => {
 const loadTribe = (skip, limit, token, sortBy, filterForMembershipCategory, callback, onError) => {
   API
     .get(
-      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, filterForMembershipCategory })}`,
+      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, ...filterForMembershipCategory })}`,
       token
     )
     .then((res) => {
       console.log('loading goal with res: ', res);
-      if (res) {
+      if (res && res.data) {
         // Right now return test data
-        if (skip === 0) {
-          callback([]);
-        } else {
-          callback([]);
-        }
+        return callback(res.data);
       }
       console.warn(`${DEBUG_KEY}: Loading tribe with no res`);
     })

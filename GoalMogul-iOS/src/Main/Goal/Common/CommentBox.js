@@ -17,7 +17,8 @@ import {
   newCommentOnTextChange,
   openCurrentSuggestion,
   removeSuggestion,
-  createSuggestion
+  createSuggestion,
+  postComment
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 // Selectors
@@ -45,6 +46,10 @@ class CommentBox extends Component {
     if (this.props.onRef !== null) {
       this.props.onRef(this);
     }
+  }
+
+  handleOnPost = () => {
+    this.props.postComment(this.props.pageId);
   }
 
   focus() {
@@ -112,24 +117,28 @@ class CommentBox extends Component {
   renderPost() {
     const color = '#45C9F6';
     return (
-      <View style={styles.postContainerStyle}>
+      <TouchableOpacity
+        style={styles.postContainerStyle}
+        onPress={this.handleOnPost}
+      >
         <Text style={{ color, fontSize: 13, fontWeight: '500', padding: 5, margin: 5 }}>Post</Text>
-      </View>
+      </TouchableOpacity>
     );
   }
 
   renderSuggestionPreview() {
-    const { showAttachedSuggestion, suggestion } = this.props.newComment;
+    const { pageId, newComment } = this.props;
+    const { showAttachedSuggestion, suggestion } = newComment;
 
     if (showAttachedSuggestion) {
       return (
         <SuggestionPreview
           item={suggestion}
           onRemove={() => {
-            this.props.removeSuggestion();
+            this.props.removeSuggestion(pageId);
           }}
           onPress={() => {
-            this.props.openCurrentSuggestion();
+            this.props.openCurrentSuggestion(pageId);
           }}
         />
       );
@@ -139,11 +148,8 @@ class CommentBox extends Component {
   }
 
   render() {
-    const { value, height } = this.state;
-
-    let newStyle = {
-      height
-    }
+    const { pageId, newComment } = this.props;
+    if (!newComment) return '';
 
     const inputContainerStyle = {
       ...styles.inputContainerStyle,
@@ -173,12 +179,12 @@ class CommentBox extends Component {
             <TextInput
               ref="textInput"
               placeholder="Write a comment..."
-              onChangeText={(val) => this.props.newCommentOnTextChange(val)}
+              onChangeText={(val) => this.props.newCommentOnTextChange(val, pageId)}
               style={inputStyle}
               editable
               maxHeight={maxHeight}
               multiline
-              value={this.props.newComment.contentText}
+              value={newComment.contentText}
             />
           </View>
           {this.renderPost()}
@@ -221,10 +227,10 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
 
   return {
-    newComment: getNewCommentByTab(state)
+    newComment: getNewCommentByTab(state, props.pageId)
   };
 };
 
@@ -234,6 +240,7 @@ export default connect(
     newCommentOnTextChange,
     openCurrentSuggestion,
     removeSuggestion,
-    createSuggestion
+    createSuggestion,
+    postComment
   }
 )(CommentBox);

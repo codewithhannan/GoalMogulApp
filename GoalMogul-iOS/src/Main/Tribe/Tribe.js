@@ -19,19 +19,27 @@ import Divider from '../Common/Divider';
 import About from './About';
 import MemberListCard from './MemberListCard';
 import MemberFilterBar from './MemberFilterBar';
+import { MenuFactory } from '../Common/MenuFactory';
 
 import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 
 // Asset
 import check from '../../asset/utils/check.png';
+import { switchCases } from '../../redux/middleware/utils';
 
 import TestEventImage from '../../asset/TestEventImage.png';
 import {
   tribeSelectTab,
   tribeDetailClose,
   requestJoinTribe,
-  openTribeInvitModal
+  openTribeInvitModal,
+  deleteTribe,
+  editTribe,
+  reportTribe,
+  leaveTribe,
+  acceptTribeInvit,
+  declineTribeInvit,
 } from '../../redux/modules/tribe/TribeActions';
 
 // Selector
@@ -41,6 +49,7 @@ import {
 } from '../../redux/modules/tribe/TribeSelector';
 
 const DEBUG_KEY = '[ UI Tribe ]';
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const { width } = Dimensions.get('window');
 const CANCEL_REQUEST_INDEX = 1;
 const CANCEL_REQUEST_OPTIONS = ['Cancel the request', 'Cancel'];
@@ -50,8 +59,65 @@ const REQUEST_OPTIONS = ['Request to join', 'Cancel'];
  */
 class Tribe extends Component {
 
+  handleTribeOptionsOnSelect = (value) => {
+    const { item } = this.props;
+    if (!item) return;
+
+    const { _id } = item;
+    if (value === 'Delete') {
+      return this.props.deleteTribe(_id);
+    }
+    if (value === 'Edit') {
+      return this.props.editTribe(item);
+    }
+  }
+
   handleInvite = (_id) => {
     return this.props.openTribeInvitModal(_id);
+  }
+
+  handleStatusChange = (isMember) => {
+    let options;
+    if (isMember === 'Member') {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to remove request`);
+          this.props.leaveTribe(_id, 'tribe');
+        }]
+      ]);
+    } else if (isMember === 'JoinRequester') {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to remove request`);
+          this.props.requestJoinTribe(_id, false);
+        }]
+      ]);
+    } else if (isMember === 'Invitee') {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to accept`);
+          this.props.acceptTribeInvit(_id, 'tribe');
+        }],
+        [R.equals(1), () => {
+          console.log(`${DEBUG_KEY} User chooses to decline`);
+          this.props.declineTribeInvit(_id, 'tribe');
+        }],
+      ]);
+    } else {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to `);
+        }]
+      ]);
+    }
+
+    const requestOptions = switchCasesMemberStatusChangeText(isMember);
+    const statusActionSheet = actionSheet(
+      requestOptions,
+      CANCEL_REQUEST_INDEX,
+      options
+    );
+    statusActionSheet();
   }
 
   handleRequestOnPress = () => {
@@ -59,16 +125,16 @@ class Tribe extends Component {
     if (!item) return;
     const { _id } = item;
 
-    let switchCases;
+    let options;
     if (hasRequested) {
-      switchCases = switchByButtonIndex([
+      options = switchByButtonIndex([
         [R.equals(0), () => {
           console.log(`${DEBUG_KEY} User chooses to remove request`);
           this.props.requestJoinTribe(_id, false);
         }]
       ]);
     } else {
-      switchCases = switchByButtonIndex([
+      options = switchByButtonIndex([
         [R.equals(0), () => {
           console.log(`${DEBUG_KEY} User chooses to join the tribe`);
           this.props.requestJoinTribe(_id, true);
@@ -81,7 +147,7 @@ class Tribe extends Component {
     const rsvpActionSheet = actionSheet(
       requestOptions,
       CANCEL_REQUEST_INDEX,
-      switchCases
+      options
     );
     rsvpActionSheet();
   }
@@ -97,10 +163,62 @@ class Tribe extends Component {
     );
   };
 
-  renderEventImage() {
+  /**
+   * Caret to show options for a tribe.
+   * If owner, options are delete and edit.
+   * Otherwise, option is report
+   */
+  renderCaret(item) {
+    // If item belongs to self, then caret displays delete
+    const { creator, _id } = item;
+
+    // const isSelf = creator._id === this.props.userId;
+    const isSelf = false;
+    const menu = (!isSelf)
+      ? MenuFactory(
+          [
+            'Report',
+          ],
+          () => this.props.reportTribe(_id),
+          '',
+          { ...styles.caretContainer },
+          () => console.log('User clicks on options for tribe')
+        )
+      : MenuFactory(
+          [
+            'Delete',
+            'Edit'
+          ],
+          this.handleTribeOptionsOnSelect,
+          '',
+          { ...styles.caretContainer },
+          () => console.log('User clicks on options for self tribe.')
+        );
+    return (
+      <View style={{ position: 'absolute', top: 3, right: 3 }}>
+        {menu}
+      </View>
+    );
+  }
+
+  renderTribeImage(picture) {
+    let imageUrl;
+    let eventImage = (<Image source={TestEventImage} style={styles.imageStyle} />);
+    if (picture) {
+      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
+      eventImage = (
+        <Image
+          onLoadStart={() => this.setState({ imageLoading: true })}
+          onLoadEnd={() => this.setState({ imageLoading: false })}
+          style={styles.imageStyle}
+          source={{ uri: imageUrl }}
+        />
+      );
+    }
+
     return (
       <View style={styles.imageContainerStyle}>
-        <Image source={TestEventImage} style={styles.imageStyle} />
+        {eventImage}
       </View>
     );
   }
@@ -126,8 +244,12 @@ class Tribe extends Component {
     const tintColor = isMember ? '#2dca4a' : 'gray';
 
     if (isMember) {
+      const statusText = switchCaseMemberStatus(isMember);
       return (
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}>
+        <TouchableOpacity
+          style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}
+          onPress={() => this.handleStatusChange(isMember)}
+        >
           <Image
             source={check}
             style={{
@@ -143,9 +265,9 @@ class Tribe extends Component {
               color: tintColor
             }}
           >
-            Member
+            {statusText}
           </Text>
-        </View>
+        </TouchableOpacity>
       );
     }
     // Return view to request to join
@@ -171,7 +293,8 @@ class Tribe extends Component {
 
   // Render tribe size and created date
   renderTribeInfo(item) {
-    const date = 'Jan 2017';
+    const newDate = item.created ? new Date(item.created) : new Date();
+    const date = `${months[newDate.getMonth() - 1]} ${newDate.getDate()}, ${newDate.getFullYear()}`;
     const count = item.memberCount ? item.memberCount : '102';
     return (
       <View style={styles.tribeInfoContainerStyle}>
@@ -188,7 +311,7 @@ class Tribe extends Component {
   }
 
   renderTribeOverview(item) {
-    const { name, _id } = item;
+    const { name, _id, picture } = item;
     const filterBar = this.props.tab === 'members'
       ? <MemberFilterBar />
       : '';
@@ -196,7 +319,7 @@ class Tribe extends Component {
     const inviteButton = this.props.tab === 'members'
       ? (
         <TouchableOpacity
-          onPress={() => this.handleInvite(_id)} 
+          onPress={() => this.handleInvite(_id)}
           style={styles.inviteButtonContainerStyle}
         >
           <Text>Invite</Text>
@@ -208,9 +331,10 @@ class Tribe extends Component {
       <View>
         <View style={{ height: 70, backgroundColor: '#1998c9' }} />
         <View style={styles.imageWrapperStyle}>
-          {this.renderEventImage()}
+          {this.renderTribeImage(picture)}
         </View>
         <View style={styles.generalInfoContainerStyle}>
+          {this.renderCaret(item)}
           <Text
             style={{ fontSize: 22, fontWeight: '300' }}
           >
@@ -336,6 +460,11 @@ const styles = {
     backgroundColor: '#efefef',
   },
 
+  // caret for options
+  caretContainer: {
+    padding: 14
+  },
+
   // Style for Invite button
   inviteButtonContainerStyle: {
     height: 30,
@@ -370,6 +499,7 @@ const styles = {
 
 const mapStateToProps = state => {
   const { navigationState, item, feed, hasRequested } = state.tribe;
+  const { userId } = state.user;
 
   const { routes, index } = navigationState;
   const data = ((key) => {
@@ -394,7 +524,8 @@ const mapStateToProps = state => {
     data,
     isMember: getUserStatus(state),
     hasRequested,
-    tab: routes[index].key
+    tab: routes[index].key,
+    userId
   };
 };
 
@@ -413,6 +544,38 @@ export default connect(
     tribeSelectTab,
     tribeDetailClose,
     requestJoinTribe,
-    openTribeInvitModal
+    openTribeInvitModal,
+    deleteTribe,
+    editTribe,
+    reportTribe,
+    leaveTribe,
+    acceptTribeInvit,
+    declineTribeInvit,
   }
 )(Tribe);
+
+const switchCaseMemberStatus = (status) => switchCases({
+  Admin: {
+    text: 'Admin',
+    icon: undefined
+  },
+  Member: {
+    text: 'Member',
+    icon: undefined
+  },
+  JoinRequester: {
+    text: 'requsted',
+    icon: undefined
+  },
+  Invitee: {
+    text: 'accept',
+    icon: undefined
+  }
+})('Member')(status);
+
+const switchCasesMemberStatusChangeText = (status) => switchCases({
+  Admin: ['Cancel'],
+  Member: ['Leave tribe', 'Cancel'],
+  JoinRequester: ['Cancel Request', 'Cancel'],
+  Invitee: ['Accept', 'Decline', 'Cancel']
+})('Member')(status);

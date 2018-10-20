@@ -53,6 +53,11 @@ import {
   goalToFormAdaptor
 } from '../../redux/modules/goal/CreateGoalActions';
 
+// Selector
+import {
+  getGoalDetailByTab
+} from '../../redux/modules/goal/selector';
+
 const { Popover } = renderers;
 const { width } = Dimensions.get('window');
 
@@ -186,7 +191,7 @@ class CreateGoalModal extends Component {
           fields.map((description, index) => {
             return (
               <Field
-                key={`description-${index}`}
+                key={`goal-description-${index}`}
                 name={description}
                 component={InputField}
                 editable={this.props.uploading}
@@ -475,7 +480,7 @@ class CreateGoalModal extends Component {
             <View style={{ flex: 1, padding: 20 }}>
               {this.renderUserInfo()}
               {this.renderGoal()}
-              <FieldArray name="description" component={this.renderGoalDescription} />
+              <FieldArray name="details" component={this.renderGoalDescription} />
               {this.renderCategory()}
               {this.renderPriority()}
               {this.renderTimeline()}
@@ -615,7 +620,7 @@ const mapStateToProps = state => {
     startTime: selector(state, 'startTime'),
     endTime: selector(state, 'endTime'),
     formVals: state.form.createGoalModal,
-    goalDetail: state.goalDetail,
+    goalDetail: getGoalDetailByTab(state),
     uploading
   };
 };

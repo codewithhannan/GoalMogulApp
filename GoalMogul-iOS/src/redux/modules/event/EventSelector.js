@@ -6,6 +6,13 @@ const getEventParticipants = (state) => {
   }
   return [];
 };
+
+const getMyEventParticipants = (state) => {
+  if (state.myEvent.item) {
+    return state.myEvent.item.participants;
+  }
+  return [];
+};
 const getUserId = (state) => state.user.userId;
 const getParticipantsFilter = (state) => state.event.participantsFilter;
 
@@ -15,6 +22,22 @@ const getParticipantsFilter = (state) => state.event.participantsFilter;
  */
 export const getUserStatus = createSelector(
   [getEventParticipants, getUserId],
+  (participants, userId) => {
+    if (!participants) return '';
+
+    let status;
+    participants.map((participant) => {
+      if (participant.participantRef._id === userId) {
+        status = participant.rsvp;
+      }
+      return '';
+    });
+    return status;
+  }
+);
+
+export const getMyEventUserStatus = createSelector(
+  [getMyEventParticipants, getUserId],
   (participants, userId) => {
     if (!participants) return '';
 

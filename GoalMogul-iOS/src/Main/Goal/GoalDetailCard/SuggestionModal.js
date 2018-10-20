@@ -71,7 +71,7 @@ class SuggestionModal extends Component {
         }}
       >
         <TouchableOpacity
-          onPress={() => this.props.updateSuggestionType(item.key)}
+          onPress={() => this.props.updateSuggestionType(item.key, this.props.pageId)}
         >
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
           <Image source={item.value.iconSource} style={style} />
@@ -82,11 +82,14 @@ class SuggestionModal extends Component {
     );
   }
 
-  renderOptions() {
+  renderOptions(newComment) {
+    const { suggestionType } = newComment.tmpSuggestion;
+    const iconMap = updateIconMap(suggestionType, IconMap);
+
     const options = (
       <View style={{ padding: 10 }}>
         <FlatList
-          data={this.props.iconMap}
+          data={iconMap}
           renderItem={this.renderIconItem}
           keyExtractor={(item) => item.key}
           numColumns={2}
@@ -113,19 +116,23 @@ class SuggestionModal extends Component {
     );
   }
 
-  renderSuggestionBody() {
-    const { suggestionType } = this.props;
+  renderSuggestionBody(newComment) {
+    const { suggestionType } = newComment.tmpSuggestion;
+
     if (suggestionType === 'User' || suggestionType === 'Friend' ||
       suggestionType === 'Event' || suggestionType === 'Tribe' ||
       suggestionType === 'ChatConvoRoom'
     ) {
-      return <SearchSuggestion />;
+      return <SearchSuggestion pageId={this.props.pageId} />;
     }
 
-    return <GeneralSuggestion />;
+    return <GeneralSuggestion pageId={this.props.pageId} />;
   }
 
   render() {
+    const { newComment } = this.props;
+    if (!newComment) return '';
+
     return (
       <Modal
         animationType="fade"
@@ -141,8 +148,8 @@ class SuggestionModal extends Component {
         <ScrollView>
           <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
             <View style={{ flex: 1, backgroundColor: 'lightgray' }}>
-              {this.renderOptions()}
-              {this.renderSuggestionBody()}
+              {this.renderOptions(newComment)}
+              {this.renderSuggestionBody(newComment)}
             </View>
           </KeyboardAvoidingView>
         </ScrollView>
@@ -297,15 +304,11 @@ const updateIconMap = (suggestionType, iconMap) => iconMap.map((item) => {
   return newItem;
 });
 
-const mapStateToProps = state => {
-  const { tmpSuggestion } = getNewCommentByTab(state);
-  const { suggestionType } = tmpSuggestion;
-  const iconMap = updateIconMap(suggestionType, IconMap);
+const mapStateToProps = (state, props) => {
+  const newComment = getNewCommentByTab(state, props.pageId);
 
   return {
-    tmpSuggestion,
-    iconMap,
-    suggestionType
+    newComment,
   };
 };
 

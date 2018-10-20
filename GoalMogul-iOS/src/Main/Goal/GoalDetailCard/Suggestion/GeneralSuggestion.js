@@ -22,13 +22,13 @@ import {
 const MaxHeight = 70;
 
 class GeneralSuggestion extends React.Component {
-  renderLinkInput() {
+  renderLinkInput(pageId) {
     return (
       <View style={{ marginBottom: 5, height: MaxHeight }}>
         <Text style={styles.headerTextStyle}>Link</Text>
         <TextInput
           placeholder='Enter the link'
-          onChangeText={val => this.props.onSuggestionLinkChange(val)}
+          onChangeText={val => this.props.onSuggestionLinkChange(val, pageId)}
           style={styles.inputStyle}
           maxHeight={MaxHeight}
           multiline
@@ -38,14 +38,14 @@ class GeneralSuggestion extends React.Component {
     );
   }
 
-  renderSuggestionText() {
+  renderSuggestionText(pageId) {
     return (
       <SafeAreaView>
         <View style={{ marginBottom: 5, height: MaxHeight }}>
           <Text style={styles.headerTextStyle}>Content</Text>
           <TextInput
             placeholder='What is in your mind?'
-            onChangeText={val => this.props.onSuggestionTextChange(val)}
+            onChangeText={val => this.props.onSuggestionTextChange(val, pageId)}
             style={styles.inputStyle}
             maxHeight={MaxHeight}
             multiline
@@ -57,10 +57,11 @@ class GeneralSuggestion extends React.Component {
   }
 
   render() {
+    const { pageId } = this.props;
     return (
       <View style={styles.containerStyle}>
-        {this.renderLinkInput()}
-        {this.renderSuggestionText()}
+        {this.renderLinkInput(pageId)}
+        {this.renderSuggestionText(pageId)}
       </View>
     );
   }
@@ -84,8 +85,8 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  const { suggestionLink, suggestionText } = getNewCommentByTab(state).tmpSuggestion;
+const mapStateToProps = (state, props) => {
+  const { suggestionLink, suggestionText } = getNewCommentByTab(state, props.pageId).tmpSuggestion;
 
   return {
     suggestionLink,

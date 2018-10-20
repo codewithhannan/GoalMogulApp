@@ -121,13 +121,9 @@ const loadTribe = (skip, limit, token, sortBy, filterForMembershipCategory, call
     )
     .then((res) => {
       console.log('loading goal with res: ', res);
-      if (res) {
+      if (res && res.data) {
         // Right now return test data
-        if (skip === 0) {
-          callback([]);
-        } else {
-          callback([]);
-        }
+        return callback(res.data);
       }
       console.warn(`${DEBUG_KEY}: Loading tribe with no res`);
     })

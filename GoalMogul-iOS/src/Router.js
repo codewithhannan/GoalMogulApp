@@ -42,6 +42,7 @@ import GoalCard from './Main/Goal/GoalCard/GoalCard'; // For debug purpose
 import NeedCard from './Main/Goal/NeedCard/NeedCard'; // For debug purpose
 import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCard2';
 import PostDetailCard from './Main/Post/PostDetailCard/PostDetailCard';
+import ShareDetailCard from './Main/Post/ShareDetailCard/ShareDetailCard';
 // Menu
 import MyEventTab from './Main/Menu/Event/MyEventTab';
 import MyEvent from './Main/Menu/Event/MyEvent';
@@ -79,6 +80,7 @@ import FriendsSetting from './Main/Setting/Privacy/FriendsSetting';
 
 // Lightbox form
 import ShareModal from './Main/Post/ShareModal';
+import ReportModal from './Main/Report/ReportModal';
 
 class RouterComponent extends Component {
 
@@ -175,6 +177,7 @@ class RouterComponent extends Component {
                     </Stack>
                     <Scene key="goal" component={GoalDetailCard} />
                     <Scene key="post" component={PostDetailCard} />
+                    <Scene key="share" component={ShareDetailCard} />
                     <Scene key="profile" component={Profile} />
                     <Scene key="profileDetail" component={ProfileDetail} />
                     <Scene key="setting" component={Setting} />
@@ -195,6 +198,7 @@ class RouterComponent extends Component {
                     hideNavBar
                   >
                     <Scene key="goal" component={MeetTab} hideNavBar />
+                    <Scene key="shareMeetTab" component={ShareDetailCard} />
                   </Stack>
 
                   <Stack
@@ -214,6 +218,8 @@ class RouterComponent extends Component {
                     <Scene key="tribeDetail" component={Tribe} />
                     <Scene key="eventDetail" component={Event} />
                     <Scene key="postExploreTab" component={PostDetailCard} />
+                    <Scene key="goalExploreTab" component={GoalDetailCard} />
+                    <Scene key="shareExploreTab" component={ShareDetailCard} />
                   </Stack>
 
                   <Stack
@@ -261,6 +267,10 @@ class RouterComponent extends Component {
 
           <Stack key="createEventStack" hideNavBar>
             <Scene key="createEventModal" component={CreateEventModal} initial hideNavBar />
+          </Stack>
+
+          <Stack key="createReportStack" hideNavBar>
+            <Scene key="createReport" component={ReportModal} intial hideNavBar />
           </Stack>
 
           <Scene key="shareModal" component={ShareModal} hideNavBar />

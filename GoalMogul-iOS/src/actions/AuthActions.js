@@ -94,7 +94,9 @@ const fetchUserProfile = (token, userId, dispatch) => {
       if (res.data) {
         dispatch({
           type: USER_LOAD_PROFILE_DONE,
-          payload: { ...res.data }
+          payload: { 
+            user: res.data
+          }
         });
       }
     })

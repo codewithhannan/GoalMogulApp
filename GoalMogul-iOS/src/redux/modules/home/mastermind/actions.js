@@ -29,10 +29,14 @@ export const closeCreateOverlay = (tab) => ({
 });
 
 // Open goal detail
-export const openGoalDetail = goal => (dispatch) => {
+export const openGoalDetail = goal => (dispatch, getState) => {
+  const { tab } = getState().navigation;
   dispatch({
     type: GOAL_DETAIL_OPEN,
-    payload: goal
+    payload: {
+      goal,
+      tab
+    }
   });
 
   // TODO: create new stack using Actions.create(React.Element) if needed

@@ -15,28 +15,33 @@ const NEW_POST_INITIAL_STATE = {
   uploading: false
 };
 
+const POST_INITIAL_STATE = {
+  pageIdCount: 0,
+  pageId: 'post_0'
+};
+
 const INITIAL_STATE = {
   post: {
-
+    ...POST_INITIAL_STATE
   },
   newPost: {
     ...NEW_POST_INITIAL_STATE
   },
   // Post detail in meet tab
   postMeetTab: {
-
+    ...POST_INITIAL_STATE
   },
   // Post detail in notification tab
   postNotificationTab: {
-
+    ...POST_INITIAL_STATE
   },
   // Post detail in explore tab
-  exploreTab: {
-
+  postExploreTab: {
+    ...POST_INITIAL_STATE
   },
   // Post detail in chatTab
-  chatTab: {
-
+  postChatTab: {
+    ...POST_INITIAL_STATE
   }
 };
 
@@ -68,14 +73,11 @@ export default (state = INITIAL_STATE, action) => {
 
     case POST_DETAIL_OPEN: {
       const newState = _.cloneDeep(state);
-      const {
-        post,
-        tab
-      } = action.payload;
-      if (!tab) {
-        return _.set(newState, 'post', { ...post });
-      }
-      return _.set(newState, `${post}${capitalizeWord(tab)}`, { ...post });
+      const { post, tab } = action.payload;
+      const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
+      const { pageIdCount, pageId } = _.get(newState, `${path}`);
+
+      return _.set(newState, `${path}`, { ...post, pageIdCount, pageId });
     }
 
     /**
@@ -83,7 +85,10 @@ export default (state = INITIAL_STATE, action) => {
      */
     case POST_DETAIL_CLOSE:
     case USER_LOG_OUT: {
-      return { ...INITIAL_STATE };
+      const { tab } = action.payload;
+      const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
+      const newState = _.cloneDeep(state);
+      return _.set(newState, `${path}`, { ...POST_INITIAL_STATE });
     }
 
     case LIKE_POST:
@@ -91,7 +96,7 @@ export default (state = INITIAL_STATE, action) => {
       const { id, likeId, tab } = action.payload;
       let newState = _.cloneDeep(state);
 
-      const path = !tab ? 'post' : `post${capitalizeWord(tab)}`;
+      const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
       const post = _.get(newState, path);
 
       if (post._id && post._id.toString() === id.toString()) {

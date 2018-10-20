@@ -10,7 +10,9 @@ import {
  } from 'react-native';
 import { connect } from 'react-redux';
 import R from 'ramda';
-import { MenuProvider } from 'react-native-popup-menu';
+import {
+  MenuProvider
+} from 'react-native-popup-menu';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
@@ -23,6 +25,7 @@ import ParticipantFilterBar from './ParticipantFilterBar';
 
 import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
+import { MenuFactory } from '../Common/MenuFactory';
 
 // Asset
 import TestEventImage from '../../asset/TestEventImage.png';
@@ -35,7 +38,10 @@ import {
   eventDetailClose,
   loadMoreEventFeed,
   rsvpEvent,
-  openEventInvitModal
+  openEventInvitModal,
+  deleteEvent,
+  editEvent,
+  reportEvent
 } from '../../redux/modules/event/EventActions';
 
 // Selector
@@ -45,10 +51,11 @@ import {
 } from '../../redux/modules/event/EventSelector';
 
 
-const DEBUG_KEY = '[ Component SearchBarHeader ]';
+const DEBUG_KEY = '[ UI Event ]';
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
 const CANCEL_INDEX = 4;
 const { width } = Dimensions.get('window');
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 /**
  * This is the UI file for a single event.
  */
@@ -56,6 +63,19 @@ class Event extends Component {
 
   handleInvite = (_id) => {
     return this.props.openEventInvitModal(_id);
+  }
+
+  handleEventOptionsOnSelect = (value) => {
+    const { item } = this.props;
+    if (!item) return;
+
+    const { _id } = item;
+    if (value === 'Delete') {
+      return this.props.deleteEvent(_id);
+    }
+    if (value === 'Edit') {
+      return this.props.editEvent(item);
+    }
   }
 
   handleRSVPOnPress = () => {
@@ -110,21 +130,59 @@ class Event extends Component {
     return '';
   }
 
-  renderEventImage() {
-    const { item } = this.props;
-    if (!item) return <View />;
+  /**
+   * Caret to show options for an event.
+   * If owner, options are delete and edit.
+   * Otherwise, option is report
+   */
+  renderCaret(item) {
+    // If item belongs to self, then caret displays delete
+    const { creator, _id } = item;
 
-    const { picture } = item;
-    if (picture && picture.length > 0) {
-      // Return provided picture
-      return (
-        <Image source={TestEventImage} style={styles.coverImageStyle} />
+    const isSelf = creator._id === this.props.userId;
+    const menu = (!isSelf)
+      ? MenuFactory(
+          [
+            'Report',
+          ],
+          () => this.props.reportEvent(_id),
+          '',
+          { ...styles.caretContainer },
+          () => console.log('User clicks on options for event')
+        )
+      : MenuFactory(
+          [
+            'Delete',
+            'Edit'
+          ],
+          this.handleEventOptionsOnSelect,
+          '',
+          { ...styles.caretContainer },
+          () => console.log('User clicks on options for self event.')
+        );
+    return (
+      <View style={{ position: 'absolute', top: 3, right: 3 }}>
+        {menu}
+      </View>
+    );
+  }
+
+  renderEventImage(picture) {
+    let imageUrl;
+    let eventImage = (<Image source={TestEventImage} style={styles.coverImageStyle} />);
+    if (picture) {
+      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
+      eventImage = (
+        <Image
+          onLoadStart={() => this.setState({ imageLoading: true })}
+          onLoadEnd={() => this.setState({ imageLoading: false })}
+          style={styles.coverImageStyle}
+          source={{ uri: imageUrl }}
+        />
       );
     }
-    // Return default picture
-    return (
-      <Image source={TestEventImage} style={styles.coverImageStyle} />
-    );
+
+    return eventImage;
   }
 
   renderEventStatus() {
@@ -155,9 +213,26 @@ class Event extends Component {
     const { item } = this.props;
     if (!item) return <View />;
 
-    const date = 'August 12';
-    const startTime = '5pm';
-    const endTime = '9pm';
+    const { start, durationHours } = item;
+    const startDate = start ? new Date(start) : new Date();
+    const date = `${months[startDate.getMonth() - 1]} ${startDate.getDate()}, ` +
+      `${startDate.getFullYear()}`;
+
+    const startTime = `${startDate.toLocaleString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    })}`;
+
+    const endDate = durationHours
+      ? new Date(startDate.getTime() + (1000 * 60 * 60 * durationHours))
+      : new Date(startDate.getTime() + (1000 * 60 * 60 * 2));
+    const endTime = `${endDate.toLocaleString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    })}`;
+
     const { eventInfoBasicTextStyle, eventContainerStyle } = styles;
     return (
       <View style={eventContainerStyle}>
@@ -175,7 +250,7 @@ class Event extends Component {
   }
 
   renderEventOverview(item) {
-    const { title, _id } = item;
+    const { title, _id, picture } = item;
     const filterBar = this.props.tab === 'attendees'
       ? <ParticipantFilterBar />
       : '';
@@ -193,8 +268,9 @@ class Event extends Component {
 
     return (
       <View>
-        {this.renderEventImage()}
+        {this.renderEventImage(picture)}
         <View style={styles.generalInfoContainerStyle}>
+          {this.renderCaret(item)}
           <Text style={styles.eventTitleTextStyle}>
             {title}
           </Text>
@@ -317,6 +393,11 @@ const styles = {
     margin: 2
   },
 
+  // caret for options
+  caretContainer: {
+    padding: 14
+  },
+
   // Style for Invite button
   inviteButtonContainerStyle: {
     height: 30,
@@ -328,7 +409,7 @@ const styles = {
     backgroundColor: '#efefef',
     borderRadius: 5
   },
-  
+
   // Event info related styles
   eventContainerStyle: {
     flexDirection: 'row',
@@ -348,6 +429,7 @@ const styles = {
 
 const mapStateToProps = state => {
   const { navigationState, item, feed, feedLoading } = state.event;
+  const { userId } = state.user;
 
   const { routes, index } = navigationState;
   const data = ((key) => {
@@ -372,7 +454,8 @@ const mapStateToProps = state => {
     data,
     feedLoading,
     status: getUserStatus(state),
-    tab: routes[index].key
+    tab: routes[index].key,
+    userId
   };
 };
 
@@ -384,7 +467,10 @@ export default connect(
     eventDetailClose,
     loadMoreEventFeed,
     rsvpEvent,
-    openEventInvitModal
+    openEventInvitModal,
+    deleteEvent,
+    editEvent,
+    reportEvent
   }
 )(Event);
 

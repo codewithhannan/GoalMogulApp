@@ -20,6 +20,8 @@ import {
   USER_LOG_OUT
 } from './User';
 
+export const SETTING_NOTIFICATION_TOKEN_PUSH_SUCCESS = 'setting_notification_token_push_success';
+
 const INITIAL_STATE = {
   email: {},
   phone: {},
@@ -33,7 +35,8 @@ const INITIAL_STATE = {
     limit: 20,
     refreshing: false,
     hasNextPage: undefined
-  }
+  },
+  notificationToken: undefined
 };
 
 /*
@@ -131,6 +134,12 @@ export default (state = INITIAL_STATE, action) => {
 
     case USER_LOG_OUT: {
       return { ...INITIAL_STATE };
+    }
+
+    case SETTING_NOTIFICATION_TOKEN_PUSH_SUCCESS: {
+      const { notificationToken } = action.payload;
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'notificationToken', notificationToken);
     }
 
     default:

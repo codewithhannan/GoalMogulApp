@@ -1,4 +1,5 @@
 /**
+ * Note: event edition is in EventActions
  * @param title
  * @param start
  * @param durationHours
@@ -48,7 +49,7 @@ export const cancelCreatingNewEvent = () => (dispatch) => {
  * @param options:
   {participantsCanInvite, isInviteOnly, participantLimit, location, description, picture}
  */
-export const createNewEvent = (values) => (dispatch, getState) => {
+export const createNewEvent = (values, needUpload) => (dispatch, getState) => {
   const { token } = getState().user;
   const newEvent = formToEventAdapter(values);
   console.log('hours is: ', newEvent);
@@ -81,7 +82,7 @@ export const createNewEvent = (values) => (dispatch, getState) => {
   };
 
   const imageUri = newEvent.options.picture;
-  if (!imageUri) {
+  if (!needUpload) {
     // If no mediaRef then directly submit the post
     sendCreateEventRequest(newEvent, token, dispatch, onSuccess, onError);
   } else {
@@ -193,13 +194,39 @@ const formToEventAdapter = (values) => {
 };
 
 // Transform event object to form values
-const eventToFormAdapter = (event) => {
+export const eventToFormAdapter = (event) => {
+  const {
+    title,
+    start,
+    durationHours,
+    participantsCanInvite,
+    isInviteOnly,
+    participantLimit,
+    location,
+    description,
+    picture
+  } = event;
 
-};
+  const cloneStartDate = new Date(start);
+  const end = moment(cloneStartDate).add(durationHours, 'h').toDate();
+  const hasTimeline = start && durationHours;
 
-/**
- * User edits a event that belongs to self
- */
-export const editEvent = (event) => (dispatch, getState) => {
-
+  return {
+    title,
+    startTime: {
+      date: cloneStartDate,
+      picker: false
+    },
+    endTime: {
+      date: end,
+      picker: false
+    },
+    participantsCanInvite,
+    isInviteOnly,
+    participantLimit,
+    location,
+    description,
+    picture,
+    hasTimeline
+  };
 };

@@ -7,17 +7,28 @@ const getNavigationTab = (state) => {
 };
 
 const getPost = (state) => state.postDetail;
+const getShare = (state) => state.shareDetail;
 
 /*
  * Iterate through member list to check if user is a current member
  */
-export const getPostDetailByTab = createSelector(
+export const getPostDetailByTab = () => createSelector(
   [getNavigationTab, getPost],
   (tab, post) => {
-    const path = !tab ? 'post' : `post${capitalizeWord(tab)}`;
+    const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
     return _.get(post, `${path}`);
   }
 );
+
+export const getShareDetailByTab = () => {
+  return createSelector(
+    [getNavigationTab, getShare],
+    (tab, share) => {
+      const path = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
+      return _.get(share, `${path}`);
+    }
+  );
+};
 
 const capitalizeWord = (word) => {
   if (!word) return '';

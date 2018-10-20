@@ -44,9 +44,9 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case USER_LOAD_PROFILE_DONE: {
+      const { user } = action.payload;
       let newState = _.cloneDeep(state);
-      newState.user = { ...action.payload };
-      return { ...newState };
+      return _.set(newState, 'user', { ...user });
     }
 
     case USER_LOG_OUT: {

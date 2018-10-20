@@ -5,7 +5,7 @@ import timeago from 'timeago.js';
 /* Components */
 import Name from '../../Common/Name';
 import Timestamp from '../../Common/Timestamp';
-import MenuFactory from '../../../Common/MenuFactory';
+import { MenuFactory } from '../../../Common/MenuFactory';
 
 /* Asset */
 import badge from '../../../../asset/utils/badge.png';

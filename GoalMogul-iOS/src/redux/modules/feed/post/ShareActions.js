@@ -1,6 +1,7 @@
 import { Actions } from 'react-native-router-flux';
 import { reset } from 'redux-form';
 import { Alert } from 'react-native';
+import _ from 'lodash';
 
 import {
   SHARE_NEW_SHARE_TO,
@@ -12,6 +13,11 @@ import {
 } from './NewShareReducers';
 
 import {
+  SHARE_DETAIL_OPEN,
+  SHARE_DETAIL_CLOSE
+} from './ShareReducers';
+
+import {
   switchCaseF
 } from '../../../middleware/utils';
 
@@ -19,6 +25,50 @@ import { api as API } from '../../../middleware/api';
 
 const DEBUG_KEY = '[ Action Share ]';
 
+/* Functions related to a share detail */
+
+/*
+ * open share detail
+ */
+export const openShareDetail = (share) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+
+  const scene = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
+  const { pageId } = _.get(getState().shareDetail, `${scene}`);
+
+  dispatch({
+    type: SHARE_DETAIL_OPEN,
+    payload: {
+      share,
+      tab,
+      pageId
+    },
+  });
+
+
+  Actions.push(`${scene}`);
+};
+
+// close share detail
+export const closeShareDetail = () => (dispatch, getState) => {
+  Actions.pop();
+
+  const { tab } = getState().navigation;
+  const path = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
+  const { pageId } = _.get(getState().shareDetail, `${path}`);
+
+  dispatch({
+    type: SHARE_DETAIL_CLOSE,
+    payload: {
+      tab,
+      pageId
+    }
+  });
+};
+
+/**
+ * Functions related to creating a new share
+ */
 const switchPostType = (postType, ref, goalRef) => switchCaseF({
   General: {
     postType,
@@ -185,4 +235,12 @@ export const selectTribe = (tribe) => (dispatch) => {
   // Open share modal
   Actions.pop();
   Actions.shareModal();
+};
+
+/**
+ * Helper functions
+ */
+const capitalizeWord = (word) => {
+  if (!word) return '';
+  return word.replace(/^\w/, c => c.toUpperCase());
 };

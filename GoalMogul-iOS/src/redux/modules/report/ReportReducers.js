@@ -6,6 +6,7 @@ import _ from 'lodash';
  */
 const INITIAL_STATE = {
   details: '',
+  title: '',
   creatorId: undefined,
   category: undefined,
   referenceId: undefined,
@@ -22,6 +23,8 @@ export const REPORT_CREATE = 'report_create';
 export const REPORT_CREATE_CANCEL = 'report_create_cancel';
 // Update the details for a report
 export const REPORT_UPDATE_DETAILS = 'report_update_details';
+// Update the title for a report
+export const REPORT_UPDATE_TITLE = 'report_update_title';
 // Posting a report
 export const REPORT_POST = 'report_post';
 // Report posting succeed
@@ -38,6 +41,11 @@ export default (state = INITIAL_STATE, action) => {
         ...newState,
         details: action.paylaod
       };
+    }
+
+    case REPORT_UPDATE_TITLE: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'title', action.payload);
     }
 
     case REPORT_CREATE_CANCEL:
@@ -68,13 +76,18 @@ export default (state = INITIAL_STATE, action) => {
     case REPORT_CREATE: {
       const { type, creatorId, category, referenceId } = action.payload;
       let newState = _.cloneDeep(state);
-      if (type === 'detail') {
-        newState = _.set(newState, 'showingModalInDetail', true);
-      } else if (type === 'postDetail') {
-        newState = _.set(newState, 'showingModalInPostDetail', true);
-      } else {
-        newState = _.set(newState, 'showingModal', true);
+      // If there is type, it means it's using the modal in Component
+      // Otherwise, it's using the router lightbox
+      if (type) {
+        if (type === 'detail') {
+          newState = _.set(newState, 'showingModalInDetail', true);
+        } else if (type === 'postDetail') {
+          newState = _.set(newState, 'showingModalInPostDetail', true);
+        } else {
+          newState = _.set(newState, 'showingModal', true);
+        }
       }
+
       newState = _.set(newState, 'creatorId', creatorId);
       newState = _.set(newState, 'category', category);
       return _.set(newState, 'referenceId', referenceId);

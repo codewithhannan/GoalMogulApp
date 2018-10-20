@@ -33,6 +33,7 @@ import {
   COMMENT_NEW_POST_START,
   COMMENT_NEW_POST_SUCCESS,
   COMMENT_NEW_POST_FAIL,
+  COMMENT_NEW_POST_SUGGESTION_SUCCESS
 } from './NewCommentReducers';
 
 import { api as API } from '../../../middleware/api';
@@ -42,13 +43,14 @@ const DEBUG_KEY = 'Comment ]';
 const BASE_ROUTE = 'secure/feed/comment';
 
 // New comment related actions
-export const newCommentOnTextChange = (text) => (dispatch, getState) => {
+export const newCommentOnTextChange = (text, pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_TEXT_ON_CHANGE,
     payload: {
       text,
-      tab
+      tab,
+      pageId
     }
   });
 };
@@ -78,7 +80,7 @@ export const deleteComment = (commentId) => {
  */
 
 // User clicks on the comment button
-export const createComment = (commentDetail) =>
+export const createComment = (commentDetail, pageId) =>
 (dispatch, getState) => {
   // const { parentType, parentRef, commentType, replyToRef } = commentDetail;
   const { userId } = getState().user;
@@ -90,14 +92,17 @@ export const createComment = (commentDetail) =>
     payload: {
       ...commentDetail,
       owner: userId,
-      tab
+      tab,
+      pageId
     }
   });
 };
 
 // When user clicks on suggestion icon outside comment box
 // const { parentType, parentRef, commentType, replyToRef } = commentDetail;
-export const createCommentFromSuggestion = ({ commentDetail, suggestionForRef, suggestionFor }) =>
+export const createCommentFromSuggestion = (
+  { commentDetail, suggestionForRef, suggestionFor }, pageId
+) =>
 (dispatch, getState) => {
   const { userId } = getState().user;
   const { tab } = getState().navigation;
@@ -107,7 +112,8 @@ export const createCommentFromSuggestion = ({ commentDetail, suggestionForRef, s
     payload: {
       ...commentDetail,
       owner: userId,
-      tab
+      tab,
+      pageId
     }
   });
 
@@ -116,21 +122,104 @@ export const createCommentFromSuggestion = ({ commentDetail, suggestionForRef, s
     payload: {
       suggestionFor,
       suggestionForRef,
-      tab
+      tab,
+      pageId
     }
   });
 };
-
-export const postComment = () => (dispatch, getstate) => {
+/**
+ * comment(jsonStrObj):
+ * parentRef, parentType("Goal" || "Post"), contentText, contentTags, commentType[, replyToRef, suggestion(Suggestion)]
+ */
+export const postComment = (pageId) => (dispatch, getState) => {
   dispatch({
     type: COMMENT_NEW_POST_START
   });
+
+  const { token } = getState().user;
+  const { tab } = getState().navigation;
+  const newComment = commentAdapter(getState(), pageId, tab);
+  const { suggestion, contentText } = newComment;
+  console.log(`${DEBUG_KEY}: new comment to submit is: `, newComment);
+
   // TODO: Check if no suggestion and no replyToRef is filled
   // and commentType is Suggestion, then we set commentType to Comment.
+  const onError = (err) => {
+    dispatch({
+      type: COMMENT_NEW_POST_FAIL
+    });
+    Alert.alert('Error', 'Failed to submit comment. Please try again later.');
+    console.log(`${DEBUG_KEY}: error submitting comment: `, err);
+  };
 
   // If succeed, COMMENT_NEW_POST_SUCCESS, otherwise, COMMENT_NEW_POST_FAIL
-  // If succeed and comment type is suggestionFor a need or a step, switch to
-  // comment tab
+  const onSuccess = (data) => {
+    const { commentType } = newComment;
+    dispatch({
+      type: COMMENT_NEW_POST_SUCCESS,
+      payload: {
+        comment: newComment,
+        tab,
+        pageId
+      }
+    });
+    // If succeed and comment type is suggestionFor a need or a step, switch to
+    // comment tab
+    if (commentType === 'Suggestion'
+        && (suggestion.suggestionFor === 'Need'
+        || suggestion.suggestionFor === 'Step')) {
+      dispatch({
+        type: COMMENT_NEW_POST_SUGGESTION_SUCCESS,
+        payload: {
+          tab
+        }
+      });
+    }
+    Alert.alert('Success', 'You have successfully created a comment.');
+  };
+
+  API
+    .post(`${BASE_ROUTE}`, { comment: JSON.stringify(newComment) }, token)
+    .then((res) => {
+      if (!res.message && res.data) {
+        return onSuccess(res.data);
+      }
+      onError(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
+};
+
+/**
+ * Transform the new comment in state to proper comment format
+ */
+const commentAdapter = (state, pageId, tab) => {
+  const page = pageId ? `${pageId}` : 'default';
+  const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+  let newComment = _.get(state.newComment, `${path}`);
+
+  const {
+    contentText,
+    // owner,
+    parentType,
+    parentRef,
+    // content,
+    commentType,
+    replyToRef,
+    suggestion
+  } = newComment;
+
+  return {
+    contentText,
+    contentTags: [],
+    parentType,
+    parentRef,
+    // content,
+    commentType,
+    replyToRef,
+    suggestion
+  };
 };
 
 /* Actions for suggestion modal */
@@ -145,17 +234,18 @@ export const openSuggestionModal = () => (dispatch, getState) => {
 };
 
 // When user clicks on the suggestion icon on the comment box
-export const createSuggestion = () => (dispatch, getState) => {
+export const createSuggestion = (pageId) => (dispatch, getState) => {
   //check if suggestionFor and suggestionRef have assignment,
   //If not then we assign the current goal ref and 'Goal'
   const { tab } = getState().navigation;
-  const path = !tab ? 'homeTab' : `${tab}`;
+  const page = pageId ? `${pageId}` : 'default';
+  const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
 
   const { suggestion, tmpSuggestion } = _.get(getState().newComment, `${path}`);
   const { _id } = getState().goalDetail;
   // Already have a suggestion. Open the current one
   if (suggestion.suggestionFor && suggestion.suggestionForRef) {
-    return openCurrentSuggestion()(dispatch);
+    return openCurrentSuggestion(pageId)(dispatch);
   }
 
   // This is the first time user clicks on the suggestion icon. No other entry points.
@@ -174,55 +264,60 @@ export const createSuggestion = () => (dispatch, getState) => {
 };
 
 // Cancel creating a suggestion
-export const cancelSuggestion = () => (dispatch, getState) => {
+export const cancelSuggestion = (pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_SUGGESTION_CANCEL,
     payload: {
-      tab
+      tab,
+      pageId
     }
   });
 };
 
 // Remove the suggestion
-export const removeSuggestion = () => (dispatch, getState) => {
+export const removeSuggestion = (pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_SUGGESTION_REMOVE,
     payload: {
-      tab
+      tab,
+      pageId
     }
   });
 };
 
 
-export const updateSuggestionType = (suggestionType) => (dispatch, getState) => {
+export const updateSuggestionType = (suggestionType, pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_SUGGESTION_UPDAET_TYPE,
     payload: {
       suggestionType,
-      tab
+      tab,
+      pageId
     }
   });
 };
 
 
-export const openCurrentSuggestion = () => (dispatch, getState) => {
+export const openCurrentSuggestion = (pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_SUGGESTION_OPEN_CURRENT,
     payload: {
-      tab
+      tab,
+      pageId
     }
   });
 };
 
-export const attachSuggestion = () => (dispatch, getState) => {
+export const attachSuggestion = (pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
-  const path = !tab ? 'homeTab' : `${tab}`;
+  const page = pageId ? `${pageId}` : 'default';
+  const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
   const { tmpSuggestion } = _.get(getState().newComment, `${path}`);
-  
+
   const { suggestionText, suggestionLink, selectedItem } = tmpSuggestion;
 
   // If nothing is selected, then we show an error
@@ -233,41 +328,45 @@ export const attachSuggestion = () => (dispatch, getState) => {
   dispatch({
     type: COMMENT_NEW_SUGGESTION_ATTACH,
     payload: {
-      tab
+      tab,
+      pageId
     }
   });
 };
 
-export const onSuggestionTextChange = (text) => (dispatch, getState) => {
+export const onSuggestionTextChange = (text, pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_SUGGESTION_UPDATE_TEXT,
     payload: {
       text,
-      tab
+      tab,
+      pageId
     }
   });
 };
 
-export const onSuggestionLinkChange = (suggestionLink) => (dispatch, getState) => {
+export const onSuggestionLinkChange = (suggestionLink, pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_SUGGESTION_UPDATE_LINK,
     payload: {
       suggestionLink,
-      tab
+      tab,
+      pageId
     }
   });
 };
 
-export const onSuggestionItemSelect = (selectedItem) => (dispatch, getState) => {
+export const onSuggestionItemSelect = (selectedItem, pageId) => (dispatch, getState) => {
   console.log('suggestion item selected with item: ', selectedItem);
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_SUGGESTION_SELECT_ITEM,
     payload: {
       selectedItem,
-      tab
+      tab,
+      pageId
     }
   });
 };
@@ -278,7 +377,7 @@ export const onSuggestionItemSelect = (selectedItem) => (dispatch, getState) => 
  * NOTE: goal feed and activity feed share the same constants with different
  * input on type field
  */
-export const refreshComments = (parentId, parentType, tab) => (dispatch, getState) => {
+export const refreshComments = (parentId, parentType, tab, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
   const { limit, hasNextPage } = getState().comment;
   if (hasNextPage === false) {
@@ -287,7 +386,8 @@ export const refreshComments = (parentId, parentType, tab) => (dispatch, getStat
   dispatch({
     type: COMMENT_LOAD,
     payload: {
-      tab
+      tab,
+      pageId
     }
   });
   loadComments(0, limit, token, { parentId, parentType }, (data) => {
@@ -299,7 +399,8 @@ export const refreshComments = (parentId, parentType, tab) => (dispatch, getStat
         skip: data.length,
         limit,
         hasNextPage: !(data === undefined || data.length === 0),
-        tab
+        tab,
+        pageId
       }
     });
   }, () => {
@@ -307,7 +408,7 @@ export const refreshComments = (parentId, parentType, tab) => (dispatch, getStat
   });
 };
 
-export const loadMoreComments = (parentId, parentType, tab) => (dispatch, getState) => {
+export const loadMoreComments = (parentId, parentType, tab, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
   const { skip, limit, hasNextPage } = getState().comment;
   if (hasNextPage === false) {
@@ -316,7 +417,8 @@ export const loadMoreComments = (parentId, parentType, tab) => (dispatch, getSta
   dispatch({
     type: COMMENT_LOAD,
     payload: {
-      tab
+      tab,
+      pageId
     }
   });
   loadComments(skip, limit, token, { parentId, parentType }, (data) => {
@@ -328,7 +430,8 @@ export const loadMoreComments = (parentId, parentType, tab) => (dispatch, getSta
         skip: data.length,
         limit,
         hasNextPage: !(data === undefined || data.length === 0),
-        tab
+        tab,
+        pageId
       }
     });
   }, () => {

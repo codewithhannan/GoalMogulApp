@@ -9,7 +9,7 @@ const INITIAL_STATE = {
   skip: 0,
   loading: false,
   // ['Popular', 'RecentlyCreated', 'Random']
-  sortBy: 'created',
+  sortBy: 'Popular',
 };
 
 const sortByList = ['start', 'created', 'title'];

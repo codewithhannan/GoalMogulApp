@@ -3,10 +3,21 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
-  Text
+  Text,
+  TouchableOpacity
 } from 'react-native';
+import { connect } from 'react-redux';
 
 import { switchCaseFWithVal } from '../../redux/middleware/utils';
+
+// Actions
+import {
+  openPostDetail
+} from '../../redux/modules/feed/post/PostActions';
+
+import {
+  openGoalDetail
+} from '../../redux/modules/home/mastermind/actions';
 
 // Assets
 import badge from '../../asset/utils/badge.png';
@@ -18,6 +29,19 @@ import profilePic from '../../asset/test-profile-pic.png';
 import ProfileImage from './ProfileImage';
 
 class RefPreview extends Component {
+  handleOnPress(item, postType) {
+    if (postType === 'ShareGoal' || postType === 'ShareNeed') {
+      return this.props.openGoalDetail(item);
+    }
+
+    if (postType === 'ShareUser') {
+      return;
+    }
+
+    if (postType === 'SharePost') {
+      return this.props.openPostDetail(item);
+    }
+  }
 
   // Currently this is a dummy component
   render() {
@@ -26,7 +50,10 @@ class RefPreview extends Component {
 
     const { title, content, defaultPicture, picture } = switchCaseItem(item, postType);
     return (
-      <View style={styles.containerStyle}>
+      <TouchableOpacity
+        style={styles.containerStyle}
+        onPress={() => this.handleOnPress(item, postType)}
+      >
         <ProfileImage
           imageStyle={{ width: 50, height: 50 }}
           defaultImageSource={defaultPicture}
@@ -55,7 +82,7 @@ class RefPreview extends Component {
         <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent: 'center' }}>
           <Image source={badge} style={{ height: 23, width: 23 }} />
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 }
@@ -65,13 +92,13 @@ class RefPreview extends Component {
 // type: ["General", "ShareUser", "SharePost", "ShareGoal", "ShareNeed"]
 const switchCaseItem = (val, type) => switchCaseFWithVal(val)({
   General: () => ({
-    title: undefined // This case will never happen since it's creating a post
+    title: undefined, // This case will never happen since it's creating a post
   }),
   ShareUser: (item) => ({
     title: item.name,
     content: item.profile ? item.profile.about : undefined,
     picture: item.profile ? item.profile.image : undefined,
-    defaultPicture: profilePic
+    defaultPicture: profilePic,
   }),
   SharePost: (item) => ({
     title: item.owner ? item.owner.name : undefined,
@@ -85,7 +112,7 @@ const switchCaseItem = (val, type) => switchCaseFWithVal(val)({
     // TODO: TAG: convert this to string later on
     content: item.details.text,
     picture: item.profile ? item.profile.image : undefined,
-    defaultPicture: profilePic
+    defaultPicture: profilePic,
   }),
   ShareNeed: (item) => ({
     title: undefined,
@@ -126,4 +153,10 @@ const styles = {
   }
 };
 
-export default RefPreview;
+export default connect(
+  null,
+  {
+    openPostDetail,
+    openGoalDetail
+  }
+)(RefPreview);

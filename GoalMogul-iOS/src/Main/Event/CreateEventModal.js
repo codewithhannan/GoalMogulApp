@@ -12,10 +12,8 @@ import {
   ImageBackground,
   Modal,
   DatePickerIOS,
-  Alert
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Actions } from 'react-native-router-flux';
 import { CheckBox } from 'react-native-elements';
 import moment from 'moment';
 import {
@@ -35,7 +33,8 @@ import ModalHeader from '../Common/Header/ModalHeader';
 // Actions
 import {
   cancelCreatingNewEvent,
-  createNewEvent
+  createNewEvent,
+  eventToFormAdapter
 } from '../../redux/modules/event/NewEventActions';
 import { openCameraRoll, openCamera } from '../../actions';
 
@@ -74,18 +73,22 @@ class CreateEventModal extends React.Component {
     };
 
     // Initialize based on the props, if it's opened through edit button
-    // const initialVals = this.props.initializeFromState
-    //   ? { ...goalToFormAdaptor(this.props.goalDetail) }
-    //   : { ...defaulVals };
+    const { initializeFromState, event } = this.props;
+    const initialVals = initializeFromState
+      ? { ...eventToFormAdapter(event) }
+      : { ...defaulVals };
 
     this.props.initialize({
-      // ...initialVals
-      ...defaulVals
+      ...initialVals
     });
   }
 
   handleCreate = values => {
-    this.props.createNewEvent(this.props.formVals.values);
+    const { initializeFromState, event, picture } = this.props;
+    const needUpload =
+      (initializeFromState && event.picture && event.picture !== picture)
+      || (!initializeFromState && picture);
+    this.props.createNewEvent(this.props.formVals.values, needUpload);
   }
 
   handleOpenCamera = () => {
@@ -322,11 +325,22 @@ class CreateEventModal extends React.Component {
 
   // Current media type is only picture
   renderMedia() {
-    if (this.props.picture) {
+    const { initializeFromState, event, picture } = this.props;
+    let imageUrl = picture;
+    if (initializeFromState && picture) {
+      const hasImageModified = event.picture && event.picture !== picture;
+      if (!hasImageModified) {
+        // If editing a tribe and image hasn't changed, then image source should
+        // be from server
+        imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
+      }
+    }
+
+    if (picture) {
       return (
         <ImageBackground
           style={styles.mediaStyle}
-          source={{ uri: this.props.picture }}
+          source={{ uri: imageUrl }}
           imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
         >
           <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
@@ -556,7 +570,7 @@ export default connect(
     cancelCreatingNewEvent,
     createNewEvent,
     openCameraRoll,
-    openCamera
+    openCamera,
   }
 )(CreateEventModal);
 
