@@ -23,7 +23,7 @@ import MemberFilterBar from '../../Tribe/MemberFilterBar';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
-import { switchCases } from '../../../redux/middleware/utils';
+import { switchCase } from '../../../redux/middleware/utils';
 
 // Asset
 import check from '../../../asset/utils/check.png';
@@ -252,10 +252,9 @@ class MyTribe extends Component {
     // const isUserMemeber = isMember(item.members, this.props.user);
     const { isMember, hasRequested } = this.props;
     const tintColor = isMember ? '#2dca4a' : 'gray';
-    console.log('is member in my tribe isL ', isMember);
 
     if (isMember) {
-      const statusText = switchCaseMemberStatus(isMember);
+      const { text, icon } = switchCaseMemberStatus(isMember);
       return (
         <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}>
           <Image
@@ -273,7 +272,7 @@ class MyTribe extends Component {
               color: tintColor
             }}
           >
-            {statusText}
+            {text}
           </Text>
         </View>
       );
@@ -400,7 +399,6 @@ class MyTribe extends Component {
   render() {
     const { item, data } = this.props;
     if (!item) return <View />;
-    console.log('data in my tribe is: ', data);
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -563,7 +561,7 @@ export default connect(
   }
 )(MyTribe);
 
-const switchCaseMemberStatus = (status) => switchCases({
+const switchCaseMemberStatus = (status) => switchCase({
   Admin: {
     text: 'Admin',
     icon: undefined
@@ -582,7 +580,7 @@ const switchCaseMemberStatus = (status) => switchCases({
   }
 })('Member')(status);
 
-const switchCasesMemberStatusChangeText = (status) => switchCases({
+const switchCasesMemberStatusChangeText = (status) => switchCase({
   Admin: ['Cancel'],
   Member: ['Leave tribe', 'Cancel'],
   JoinRequester: ['Cancel Request', 'Cancel'],

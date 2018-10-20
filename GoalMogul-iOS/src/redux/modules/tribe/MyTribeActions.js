@@ -1,7 +1,10 @@
 import { Actions } from 'react-native-router-flux';
+import _ from 'lodash';
 import {
   MYTRIBE_SWITCH_TAB,
   MYTRIBE_DETAIL_OPEN,
+  MYTRIBE_DETAIL_LOAD_SUCCESS,
+  MYTRIBE_DETAIL_LOAD_FAIL,
   MYTRIBE_DETAIL_CLOSE,
   MYTRIBE_FEED_FETCH,
   MYTRIBE_FEED_FETCH_DONE,
@@ -28,13 +31,57 @@ export const tribeDetailClose = () => (dispatch) => {
   });
 };
 
+/**
+ * Populate with the basic fields for the tribe detail.
+ * Fetch tribe detail
+ */
 export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
+  const newTribe = _.cloneDeep(tribe);
   dispatch({
     type: MYTRIBE_DETAIL_OPEN,
-    payload: { ...tribe }
+    payload: {
+      tribe: _.set(newTribe, 'members', [])
+    }
   });
   Actions.push('myTribeDetail');
-  refreshTribeFeed(tribe._id, dispatch, getState);
+  const { _id } = tribe;
+  fetchTribeDetail(_id)(dispatch, getState);
+  refreshTribeFeed(_id, dispatch, getState);
+};
+
+/**
+ * Fetch tribe detail for a tribe
+ */
+export const fetchTribeDetail = (tribeId) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const onSuccess = (data) => {
+    dispatch({
+      type: MYTRIBE_DETAIL_LOAD_SUCCESS,
+      payload: {
+        tribe: data
+      }
+    });
+    console.log(`${DEBUG_KEY}: load tribe detail success with data: `, data);
+  };
+
+  const onError = (err) => {
+    dispatch({
+      type: MYTRIBE_DETAIL_LOAD_FAIL
+    });
+    console.log(`${DEBUG_KEY}: failed to load tribe detail with err: `, err);
+  };
+
+  API
+    .get(`${BASE_ROUTE}/documents/${tribeId}`, token)
+    .then((res) => {
+      if (res.data) {
+        return onSuccess(res.data);
+      }
+      onError(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
 };
 
 /**

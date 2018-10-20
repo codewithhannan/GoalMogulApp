@@ -131,7 +131,7 @@ export const inviteUserToTribe = (tribeId, inviteeId) => (dispatch, getState) =>
   API
     .post(`${BASE_ROUTE}/member-invitation`, { tribeId, inviteeId }, token)
     .then((res) => {
-      if (res && res.data) {
+      if (res && res.success) {
         return onSuccess(res.data);
       }
       return onError(res);
