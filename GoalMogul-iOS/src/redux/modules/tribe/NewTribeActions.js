@@ -32,7 +32,7 @@ export const cancelCreatingNewTribe = () => (dispatch) => {
  * @param options:
     {membersCanInvite, isPubliclyVisible, membershipLimit, description, picture}
  */
-export const createNewTribe = (values) => (dispatch, getState) => {
+export const createNewTribe = (values, needUpload) => (dispatch, getState) => {
   const { token } = getState().user;
   const newTribe = formToTribeAdapter(values);
 
@@ -63,7 +63,7 @@ export const createNewTribe = (values) => (dispatch, getState) => {
   };
 
   const imageUri = newTribe.options.picture;
-  if (!imageUri) {
+  if (!needUpload) {
     // If no mediaRef then directly submit the post
     sendCreateTribeRequest(newTribe, token, dispatch, onSuccess, onError);
   } else {
@@ -171,7 +171,7 @@ export const tribeToFormAdapter = (tribe) => {
     name,
     membersCanInvite,
     isPubliclyVisible,
-    membershipLimit,
+    membershipLimit: `${membershipLimit}`,
     description,
     picture
   };

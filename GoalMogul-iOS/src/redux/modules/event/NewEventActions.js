@@ -49,7 +49,7 @@ export const cancelCreatingNewEvent = () => (dispatch) => {
  * @param options:
   {participantsCanInvite, isInviteOnly, participantLimit, location, description, picture}
  */
-export const createNewEvent = (values) => (dispatch, getState) => {
+export const createNewEvent = (values, needUpload) => (dispatch, getState) => {
   const { token } = getState().user;
   const newEvent = formToEventAdapter(values);
   console.log('hours is: ', newEvent);
@@ -82,7 +82,7 @@ export const createNewEvent = (values) => (dispatch, getState) => {
   };
 
   const imageUri = newEvent.options.picture;
-  if (!imageUri) {
+  if (!needUpload) {
     // If no mediaRef then directly submit the post
     sendCreateEventRequest(newEvent, token, dispatch, onSuccess, onError);
   } else {

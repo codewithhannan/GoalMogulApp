@@ -12,10 +12,8 @@ import {
   ImageBackground,
   Modal,
   DatePickerIOS,
-  Alert
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Actions } from 'react-native-router-flux';
 import { CheckBox } from 'react-native-elements';
 import moment from 'moment';
 import {
@@ -86,7 +84,11 @@ class CreateEventModal extends React.Component {
   }
 
   handleCreate = values => {
-    this.props.createNewEvent(this.props.formVals.values);
+    const { initializeFromState, event, picture } = this.props;
+    const needUpload =
+      (initializeFromState && event.picture && event.picture !== picture)
+      || (!initializeFromState && picture);
+    this.props.createNewEvent(this.props.formVals.values, needUpload);
   }
 
   handleOpenCamera = () => {
@@ -323,11 +325,22 @@ class CreateEventModal extends React.Component {
 
   // Current media type is only picture
   renderMedia() {
-    if (this.props.picture) {
+    const { initializeFromState, event, picture } = this.props;
+    let imageUrl = picture;
+    if (initializeFromState && picture) {
+      const hasImageModified = event.picture && event.picture !== picture;
+      if (!hasImageModified) {
+        // If editing a tribe and image hasn't changed, then image source should
+        // be from server
+        imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
+      }
+    }
+
+    if (picture) {
       return (
         <ImageBackground
           style={styles.mediaStyle}
-          source={{ uri: this.props.picture }}
+          source={{ uri: imageUrl }}
           imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
         >
           <View style={{ alignSelf: 'center', justifyContent: 'center' }}>

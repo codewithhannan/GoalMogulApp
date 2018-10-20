@@ -64,7 +64,7 @@ class CreateTribeModal extends React.Component {
       name: undefined,
       membersCanInvite: false,
       isPubliclyVisible: false,
-      membershipLimit: 100,
+      membershipLimit: 0,
       description: '',
       picture: undefined,
     };
@@ -82,7 +82,11 @@ class CreateTribeModal extends React.Component {
   }
 
   handleCreate = values => {
-    this.props.createNewTribe(this.props.formVals.values);
+    const { initializeFromState, tribe, picture } = this.props;
+    const needUpload =
+      (initializeFromState && tribe.picture && tribe.picture !== picture)
+      || (!initializeFromState && picture);
+    this.props.createNewTribe(this.props.formVals.values, needUpload);
   }
 
   handleOpenCamera = () => {
@@ -158,11 +162,22 @@ class CreateTribeModal extends React.Component {
 
   // Current media type is only picture
   renderMedia() {
+    const { initializeFromState, tribe, picture } = this.props;
+    let imageUrl = picture;
+    if (initializeFromState && picture) {
+      const hasImageModified = tribe.picture && tribe.picture !== picture;
+      if (!hasImageModified) {
+        // If editing a tribe and image hasn't changed, then image source should
+        // be from server
+        imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
+      }
+    }
+
     if (this.props.picture) {
       return (
         <ImageBackground
           style={styles.mediaStyle}
-          source={{ uri: this.props.picture }}
+          source={{ uri: imageUrl }}
           imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
         >
           <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
