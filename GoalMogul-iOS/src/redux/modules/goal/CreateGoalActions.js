@@ -24,7 +24,7 @@ export const validate = values => {
 };
 
 // Submit values
-export const submitGoal = (values, userId, isEdit, callback) => (dispatch, getState) => {
+export const submitGoal = (values, userId, isEdit, callback, goalId) => (dispatch, getState) => {
   const { token } = getState().user;
   const goal = formToGoalAdapter(values, userId);
   console.log('Transformed goal is: ', goal);
@@ -35,7 +35,7 @@ export const submitGoal = (values, userId, isEdit, callback) => (dispatch, getSt
 
   // If user is editing the goal, then call another endpoint
   if (isEdit) {
-    return submitEditGoal(goal, token, callback, dispatch);
+    return submitEditGoal(goal, goalId, token, callback, dispatch);
   }
 
   const onError = () => {
@@ -87,7 +87,7 @@ export const submitGoal = (values, userId, isEdit, callback) => (dispatch, getSt
 };
 
 // Submit editting a goal
-const submitEditGoal = (goal, token, callback, dispatch) => {
+const submitEditGoal = (goal, goalId, token, callback, dispatch) => {
   const onError = () => {
     dispatch({
       type: GOAL_CREATE_SUBMIT_FAIL
@@ -112,7 +112,8 @@ const submitEditGoal = (goal, token, callback, dispatch) => {
     .put(
       'secure/goal/',
       {
-        goal: JSON.stringify({ ...goal })
+        goalId,
+        updates: JSON.stringify({ ...goal })
       },
       token
     )

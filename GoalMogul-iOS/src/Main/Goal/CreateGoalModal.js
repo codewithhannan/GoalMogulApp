@@ -125,13 +125,17 @@ class CreateGoalModal extends Component {
       return Alert.alert('Error', 'You have incomplete fields.');
     }
 
+    const { goal, initializeFromState } = this.props;
+    const goalId = goal ? goal._id : undefined;
+
     return this.props.submitGoal(
       this.props.formVals.values,
       this.props.user._id,
-      this.props.initializeFromState,
+      initializeFromState,
       () => {
         Actions.pop();
-      }
+      },
+      goalId
     );
   }
 
