@@ -132,7 +132,7 @@ export const markGoalAsComplete = (goalId) => (dispatch, getState) => {
   const { token } = getState().user;
   const { tab } = getState().navigation;
 
-  const onSuccess = () => {
+  const onSuccess = (data) => {
     dispatch({
       type: GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
       payload: {
@@ -140,13 +140,16 @@ export const markGoalAsComplete = (goalId) => (dispatch, getState) => {
         tab
       }
     });
+    Alert.alert('Success', 'You have successfully marked this goal as complete.');
+    console.log(`${DEBUG_KEY}: mark goal as complete succeed with data: `, data);
   };
 
-  const onError = () => {
+  const onError = (err) => {
     Alert.alert(
-      'Mark goal as complete failed',
-      'Please try again later'
+      'Error',
+      'Mark goal as complete failed. Please try again later.'
     );
+    console.log(`${DEBUG_KEY}: mark goal as complete failed with err: `, err);
   };
 
   updateGoalWithFields(goalId, { isCompleted: true }, token, onSuccess, onError);
@@ -197,6 +200,7 @@ const shareToMastermind = (goalId, dispatch, getState) => {
         tab
       }
     });
+    Alert.alert('Success', 'You have successfully shared this goal to mastermind.');
     console.log(`${DEBUG_KEY}: shareToMastermind succeed with res: `, res);
   };
 
@@ -229,7 +233,7 @@ const updateGoalWithFields = (goalId, fields, token, onSuccessFunc, onErrorFunc)
         return onSuccess(res.data);
       }
       console.log(`${DEBUG_KEY}: updating fields ${fields} with with message: `, res);
-      onError(res.message);
+      onError(res);
     })
     .catch((err) => {
       console.log(`${DEBUG_KEY}: updating fields ${fields} with err: `, err);

@@ -39,7 +39,7 @@ import {
 import { api as API } from '../../../middleware/api';
 import { queryBuilder } from '../../../middleware/utils';
 
-const DEBUG_KEY = 'Comment ]';
+const DEBUG_KEY = '[ Action Comment ]';
 const BASE_ROUTE = 'secure/feed/comment';
 
 // New comment related actions
@@ -175,6 +175,7 @@ export const postComment = (pageId) => (dispatch, getState) => {
         }
       });
     }
+    console.log(`${DEBUG_KEY}: comment posted successfully with res: `, data);
     Alert.alert('Success', 'You have successfully created a comment.');
   };
 
@@ -377,9 +378,11 @@ export const onSuggestionItemSelect = (selectedItem, pageId) => (dispatch, getSt
  * NOTE: goal feed and activity feed share the same constants with different
  * input on type field
  */
-export const refreshComments = (parentId, parentType, tab, pageId) => (dispatch, getState) => {
+export const refreshComments = (parentType, parentId, tab, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
-  const { limit, hasNextPage } = getState().comment;
+  const page = pageId ? `${pageId}` : 'default';
+  const path = tab ? `${tab}.${page}` : `homeTab.${page}`;
+  const { limit, hasNextPage } = _.get(getState().comment, path);
   if (hasNextPage === false) {
     return;
   }
@@ -390,7 +393,7 @@ export const refreshComments = (parentId, parentType, tab, pageId) => (dispatch,
       pageId
     }
   });
-  loadComments(0, limit, token, { parentId, parentType }, (data) => {
+  const onSuccess = (data) => {
     dispatch({
       type: COMMENT_REFRESH_DONE,
       payload: {
@@ -403,14 +406,22 @@ export const refreshComments = (parentId, parentType, tab, pageId) => (dispatch,
         pageId
       }
     });
-  }, () => {
-    // TODO: implement for onError
-  });
+    console.log(`${DEBUG_KEY}: refresh comment success with data: `, data);
+  };
+
+  const onError = (err) => {
+    console.log(`${DEBUG_KEY}: refresh comment failed with err: `, err);
+  };
+
+  loadComments(0, limit, token, { parentId, parentType }, onSuccess, onError);
 };
 
-export const loadMoreComments = (parentId, parentType, tab, pageId) => (dispatch, getState) => {
+export const loadMoreComments = (parentType, parentId, tab, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, hasNextPage } = getState().comment;
+  const page = pageId ? `${pageId}` : 'default';
+  const path = tab ? `${tab}.${page}` : `homeTab.${page}`;
+  const { skip, limit, hasNextPage } = _.get(getState().comment, path);
+
   if (hasNextPage === false) {
     return;
   }
@@ -421,7 +432,8 @@ export const loadMoreComments = (parentId, parentType, tab, pageId) => (dispatch
       pageId
     }
   });
-  loadComments(skip, limit, token, { parentId, parentType }, (data) => {
+
+  const onSuccess = (data) => {
     dispatch({
       type: COMMENT_LOAD_DONE,
       payload: {
@@ -434,30 +446,33 @@ export const loadMoreComments = (parentId, parentType, tab, pageId) => (dispatch
         pageId
       }
     });
-  }, () => {
-    // TODO: implement for onError
-  });
+    console.log(`${DEBUG_KEY}: load more comments succeeds with data: `, data);
+  };
+
+  const onError = (err) => {
+    console.log(`${DEBUG_KEY}: load more comments failed with err: `, err);
+  };
+
+  loadComments(skip, limit, token, { parentId, parentType }, onSuccess, onError);
 };
 
 export const loadComments = (skip, limit, token, params, callback, onError) => {
   API
     .get(
       `${BASE_ROUTE}?${queryBuilder(skip, limit, { ...params })}`,
+      // `${BASE_ROUTE}?parentId=5bc81da9d4f72c0019bb0cdb&parentType=Goal`,
       token
     )
     .then((res) => {
-      console.log(`[ Loading ${DEBUG_KEY} with res: `, res);
-      if (res) {
+      console.log(`${DEBUG_KEY}: loading with res: `, res);
+      if (res.data) {
         // Right now return test data
-        if (skip === 0) {
-          callback(res);
-        } else {
-          callback([]);
-        }
+        return callback(res.data);
       }
-      console.warn(`[ Loading ${DEBUG_KEY}: Loading comment with no res`);
+      console.warn(`${DEBUG_KEY}: Loading comment with no res`);
+      onError(res);
     })
     .catch((err) => {
-      console.log(`[ Loading ${DEBUG_KEY}: load comment error: ${err}`);
+      onError(err);
     });
 };
