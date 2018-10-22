@@ -44,7 +44,7 @@ const FRIENDSHIP_SETTING_BUTTONS = ['Block', 'Report', 'Cancel'];
 const CANCEL_INDEX = 2;
 
 const DEBUG_KEY = '[ Component SearchBarHeader ]';
-const SHARE_TO_MENU_OPTTIONS = ['My tribes', 'My events', 'Cancel'];
+const SHARE_TO_MENU_OPTTIONS = ['My Tribes', 'My Events', 'Cancel'];
 const CANCEL_INDEX_MEN = 2;
 
 /**

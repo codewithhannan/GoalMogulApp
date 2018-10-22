@@ -32,27 +32,14 @@ class MyEventTab extends React.Component {
 
   handleOnLoadMore = () => this.props.loadMoreEvent();
 
-  handleCreate = () => {
-    this.props.openNewEventModal();
-  }
-
   renderItem = ({ item }) => {
     return <MyEventCard item={item} />;
-  }
-
-  renderCreateEventButton() {
-    return (
-      <TouchableOpacity onPress={this.handleCreate} style={styles.createButtonContainerStyle}>
-        <Text>Create Event</Text>
-      </TouchableOpacity>
-    )
   }
 
   renderListHeader() {
     return (
       <View>
         <MyEventFilterBar />
-        {this.renderCreateEventButton()}
       </View>
     );
   }
@@ -70,9 +57,10 @@ class MyEventTab extends React.Component {
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
           <ModalHeader
             title='My Events'
-            actionText='Close'
-            cancelText={null}
-            onAction={() => this.props.closeMyEventTab()}
+            actionText='Create'
+            cancelText='Close'
+            onCancel={() => this.props.closeMyEventTab()}
+            onAction={() => this.props.openNewEventModal()}
           />
           <FlatList
             data={this.props.data}

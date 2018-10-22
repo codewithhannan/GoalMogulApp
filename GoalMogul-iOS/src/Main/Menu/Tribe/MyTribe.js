@@ -402,7 +402,7 @@ class MyTribe extends Component {
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: '#f2f2f2' }}>
           <SearchBarHeader backButton onBackPress={() => this.props.tribeDetailClose()} />
           <FlatList
             data={data}

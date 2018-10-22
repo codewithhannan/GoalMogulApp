@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 
 // Assets
 // TODO: set default tribe picture
-import profilePic from '../../../asset/utils/defaultUserProfile.png';
+import tribeDefaultIcon from '../../../asset/explore/tribe.png';
 
 // Actions
 import {
@@ -45,11 +45,12 @@ class MyTribeCard extends React.Component {
     const { picture } = this.props.item;
     if (picture && picture.length > 0) {
       // Render the corresponding image
+      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
       return (
         <View
           style={styles.imageContainerStyle}
         >
-          <Image style={styles.imageStyle} source={profilePic} />
+          <Image style={styles.imageStyle} source={{ uri: imageUrl }} />
         </View>
       );
     }
@@ -59,7 +60,7 @@ class MyTribeCard extends React.Component {
       <View
         style={styles.imageContainerStyle}
       >
-        <Image style={styles.imageStyle} source={profilePic} />
+        <Image style={styles.imageStyle} source={tribeDefaultIcon} />
       </View>
     );
   }

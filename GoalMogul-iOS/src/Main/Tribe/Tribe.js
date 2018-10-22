@@ -26,9 +26,9 @@ import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 
 // Asset
 import check from '../../asset/utils/check.png';
-import { switchCases } from '../../redux/middleware/utils';
-
 import TestEventImage from '../../asset/TestEventImage.png';
+
+// Actions
 import {
   tribeSelectTab,
   tribeDetailClose,
@@ -47,6 +47,8 @@ import {
   getUserStatus,
   memberSelector
 } from '../../redux/modules/tribe/TribeSelector';
+
+import { switchCases } from '../../redux/middleware/utils';
 
 const DEBUG_KEY = '[ UI Tribe ]';
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -394,7 +396,7 @@ class Tribe extends Component {
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: '#f2f2f2' }}>
           <SearchBarHeader backButton onBackPress={() => this.props.tribeDetailClose()} />
           <FlatList
             data={data}

@@ -42,7 +42,7 @@ import { openCameraRoll, openCamera } from '../../actions';
 import cancel from '../../asset/utils/cancel_no_background.png';
 import camera from '../../asset/utils/camera.png';
 import cameraRoll from '../../asset/utils/cameraRoll.png';
-import photoIcon from '../../asset/utils/photoIcon.png';
+import imageOverlay from '../../asset/utils/imageOverlay.png';
 import expand from '../../asset/utils/expand.png';
 
 // const { Popover } = renderers;
@@ -344,44 +344,46 @@ class CreateEventModal extends React.Component {
 
     if (picture) {
       return (
-        <ImageBackground
-          style={styles.mediaStyle}
-          source={{ uri: imageUrl }}
-          imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
-        >
-          <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
-            <Image
-              source={photoIcon}
-              style={{
-                alignSelf: 'center',
-                justifyContent: 'center',
-                height: 40,
-                width: 50,
-                tintColor: '#fafafa'
-              }}
-            />
-          </View>
-
-          <TouchableOpacity
-            onPress={() => this.setState({ mediaModal: true })}
-            style={{ position: 'absolute', top: 10, right: 15 }}
+        <View style={{ backgroundColor: 'gray' }}>
+          <ImageBackground
+            style={styles.mediaStyle}
+            source={{ uri: imageUrl }}
+            imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
           >
-            <Image
-              source={expand}
-              style={{ width: 15, height: 15, tintColor: '#fafafa' }}
-            />
-          </TouchableOpacity>
+            <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
+              <Image
+                source={imageOverlay}
+                style={{
+                  alignSelf: 'center',
+                  justifyContent: 'center',
+                  height: 40,
+                  width: 50,
+                  tintColor: '#fafafa'
+                }}
+              />
+            </View>
 
-          <TouchableOpacity
-            onPress={() => this.props.change('picture', false)}
-            style={{ position: 'absolute', top: 10, left: 15 }}
-          >
-            <Image
-              source={cancel}
-              style={{ width: 15, height: 15, tintColor: '#fafafa' }}
-            />
-          </TouchableOpacity>
-        </ImageBackground>
+            <TouchableOpacity
+              onPress={() => this.setState({ mediaModal: true })}
+              style={{ position: 'absolute', top: 10, right: 15 }}
+            >
+              <Image
+                source={expand}
+                style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => this.props.change('picture', false)}
+              style={{ position: 'absolute', top: 10, left: 15 }}
+            >
+              <Image
+                source={cancel}
+                style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+              />
+            </TouchableOpacity>
+          </ImageBackground>
+        </View>
       );
     }
     return '';

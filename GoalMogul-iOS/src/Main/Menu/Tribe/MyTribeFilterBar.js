@@ -67,44 +67,6 @@ class MyTribeFilterBar extends Component {
 
           </MenuOptions>
         </Menu>
-
-        <Menu
-          onSelect={value => this.props.updateFilterForMembershipCategory(value)}
-          rendererProps={{ placement: 'bottom' }}
-          renderer={Popover}
-        >
-          <MenuTrigger
-            customStyles={{
-              TriggerTouchableComponent: TouchableOpacity,
-            }}
-          >
-            <View style={detailContainerStyle}>
-              <Text style={textStyle}>CATEGORY
-                {/* <Text style={standardTextStyle}> (ALL)</Text> */}
-              </Text>
-              <Image style={caretStyle} source={dropDown} />
-            </View>
-          </MenuTrigger>
-          <MenuOptions customStyles={styles.menuOptionsStyles}>
-            <MenuOption
-              text='Admin'
-              value='Admin'
-            />
-            <MenuOption
-              text='Member'
-              value='Member'
-            />
-            <MenuOption
-              text='JoinRequester'
-              value='JoinRequester'
-            />
-            <MenuOption
-              text='Invitee'
-              value='Invitee'
-            />
-          </MenuOptions>
-        </Menu>
-
       </View>
     );
   }

@@ -7,7 +7,8 @@ import {
   MYTRIBETAB_SORTBY,
   MYTRIBETAB_UPDATE_FILTEROPTIONS,
   MYTRIBETAB_OPEN,
-  MYTRIBETAB_CLOSE
+  MYTRIBETAB_CLOSE,
+  MYTRIBETAB_UPDATE_TAB
 } from './MyTribeTabReducers';
 
 import { api as API } from '../../middleware/api';
@@ -53,6 +54,16 @@ export const updateFilterForMembershipCategory = (value) => (dispatch, getState)
     value
   });
 
+  refreshTribe()(dispatch, getState);
+};
+
+export const myTribeSelectTab = (index) => (dispatch, getState) => {
+  dispatch({
+    type: MYTRIBETAB_UPDATE_TAB,
+    payload: {
+      index
+    }
+  });
   refreshTribe()(dispatch, getState);
 };
 

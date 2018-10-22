@@ -262,12 +262,12 @@ export const requestJoinTribe = (tribeId, join, type) => (dispatch, getState) =>
   const onError = (err) => {
     if (join) {
       Alert.alert(
-        'Failed to request to join',
+        'Join request failed',
         'Please try again later'
       );
     } else {
       Alert.alert(
-        'Failed to cancel request',
+        'Cancel request failed',
         'Please try again later'
       );
     }
@@ -291,7 +291,7 @@ export const requestJoinTribe = (tribeId, join, type) => (dispatch, getState) =>
   }
 
   API
-    .post(`${BASE_ROUTE}/joint-request`, { tribeId }, token)
+    .post(`${BASE_ROUTE}/join-request`, { tribeId }, token)
     .then((res) => {
       if (!res.message) {
         return onSuccess();

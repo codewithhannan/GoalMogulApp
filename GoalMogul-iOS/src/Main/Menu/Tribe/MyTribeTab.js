@@ -13,7 +13,8 @@ import { MenuProvider } from 'react-native-popup-menu';
 import {
   refreshTribe,
   loadMoreTribe,
-  closeMyTribeTab
+  closeMyTribeTab,
+  myTribeSelectTab
 } from '../../../redux/modules/tribe/MyTribeTabActions';
 
 import {
@@ -24,6 +25,7 @@ import {
 import MyTribeCard from './MyTribeCard';
 import ModalHeader from '../../Common/Header/ModalHeader';
 import MyTribeFilterBar from './MyTribeFilterBar';
+import TabButtonGroup from '../../Common/TabButtonGroup';
 
 class MyTribeTab extends React.Component {
   _keyExtractor = (item) => item._id;
@@ -32,27 +34,24 @@ class MyTribeTab extends React.Component {
 
   handleOnLoadMore = () => this.props.loadMoreTribe();
 
-  handleCreate = () => {
-    this.props.openNewTribeModal();
+  handleIndexChange = (index) => {
+    this.props.myTribeSelectTab(index);
   }
 
   renderItem = ({ item }) => {
     return <MyTribeCard item={item} />;
   }
 
-  renderCreateTribeButton() {
+  renderTabs = props => {
     return (
-      <TouchableOpacity onPress={this.handleCreate} style={styles.createButtonContainerStyle}>
-        <Text>Create Tribe</Text>
-      </TouchableOpacity>
-    )
+      <TabButtonGroup buttons={props} />
+    );
   }
 
   renderListHeader() {
     return (
       <View>
         <MyTribeFilterBar />
-        {this.renderCreateTribeButton()}
       </View>
     );
   }
@@ -71,10 +70,17 @@ class MyTribeTab extends React.Component {
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
           <ModalHeader
             title='My Tribes'
-            actionText='Close'
-            cancelText={null}
-            onAction={() => this.props.closeMyTribeTab()}
+            actionText='Create'
+            cancelText='Close'
+            onCancel={() => this.props.closeMyTribeTab()}
+            onAction={() => this.props.openNewTribeModal()}
           />
+          {
+            this.renderTabs({
+              jumpToIndex: (i) => this.handleIndexChange(i),
+              navigationState: this.props.navigationState
+            })
+          }
           <FlatList
             data={this.props.data}
             renderItem={this.renderItem}
@@ -94,7 +100,7 @@ class MyTribeTab extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { showModal, loading, data } = state.myTribeTab;
+  const { showModal, loading, data, navigationState } = state.myTribeTab;
 
   const testData = [
     {
@@ -151,6 +157,7 @@ const mapStateToProps = state => {
     data: [...data, ...testData],
     loading,
     showModal,
+    navigationState
   };
 };
 
@@ -177,6 +184,7 @@ export default connect(
     refreshTribe,
     loadMoreTribe,
     closeMyTribeTab,
-    openNewTribeModal
+    openNewTribeModal,
+    myTribeSelectTab
   }
 )(MyTribeTab);
