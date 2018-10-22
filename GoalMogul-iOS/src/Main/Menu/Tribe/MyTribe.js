@@ -5,12 +5,14 @@ import {
   Dimensions,
   Text,
   FlatList,
+  Animated,
   TouchableOpacity
  } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
 import R from 'ramda';
+import { Actions } from 'react-native-router-flux';
 
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
@@ -27,6 +29,8 @@ import { switchCase } from '../../../redux/middleware/utils';
 
 // Asset
 import check from '../../../asset/utils/check.png';
+import plus from '../../../asset/utils/plus.png';
+import post from '../../../asset/utils/post.png';
 
 import TestEventImage from '../../../asset/TestEventImage.png';
 
@@ -64,8 +68,56 @@ class MyTribe extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      imageLoading: false
+      imageLoading: false,
+      showPlus: true
     };
+  }
+
+  /**
+   * On plus clicked, show two icons. Post and Invite
+   * const { textStyle, iconStyle, iconSource, text, onPress } = button;
+   */
+  handlePlus = (item) => {
+    const { _id } = item;
+    const buttons = [
+      // button info for creating a post
+      {
+        iconSource: post,
+        text: 'Post',
+        iconStyle: { height: 18, width: 18, marginLeft: 3 },
+        textStyle: { marginLeft: 5 },
+        onPress: () => {
+          console.log('User trying to create post');
+          this.setState({
+            ...this.state,
+            showPlus: true
+          });
+          Actions.pop();
+          Actions.createPostModal();
+        }
+      },
+      // button info for invite
+      {
+        iconSource: post,
+        text: 'Invite',
+        iconStyle: { height: 18, width: 18, marginLeft: 3 },
+        textStyle: { marginLeft: 5 },
+        onPress: () => {
+          console.log('User trying to invite an user');
+          this.setState({
+            ...this.state,
+            showPlus: true
+          });
+          Actions.pop();
+          this.props.openTribeInvitModal(_id);
+        }
+      }
+    ];
+    this.setState({
+      ...this.state,
+      showPlus: false
+    });
+    Actions.push('createButtonOverlay', { buttons });
   }
 
   handleTribeOptionsOnSelect = (value) => {
@@ -140,6 +192,46 @@ class MyTribe extends Component {
     statusActionSheet();
   }
 
+  /**
+   * Handle modal setting on click. Show IOS menu with options
+   */
+  handlePageSetting = (item) => {
+    const { _id, members } = item;
+    const { userId } = this.props;
+    const isAdmin = checkIsAdmin(members, userId);
+
+    let options;
+    if (isAdmin) {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to delete current tribe`);
+          this.props.deleteTribe(_id);
+        }],
+        [R.equals(1), () => {
+          console.log(`${DEBUG_KEY} User chooses to edit current tribe`);
+          this.props.editTribe(item);
+        }],
+      ]);
+    } else {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to remove request`);
+          this.props.reportTribe(_id);
+        }]
+      ]);
+    }
+
+    const requestOptions = isAdmin ? ['Delete', 'Edit', 'Cancel'] : ['Report', 'Cancel'];
+    const cancelIndex = isAdmin ? 2 : 1;
+
+    const tribeActionSheet = actionSheet(
+      requestOptions,
+      cancelIndex,
+      options
+    );
+    tribeActionSheet();
+  }
+
   handleRequestOnPress = () => {
     const { item, hasRequested } = this.props;
     if (!item) return;
@@ -175,14 +267,15 @@ class MyTribe extends Component {
   /**
    * Caret to show options for a tribe.
    * If owner, options are delete and edit.
-   * Otherwise, option is report
+   * Otherwise, option is report.
+   *
+   * NOTE: this is currently deprecated and replaced by handlePageSetting
    */
   renderCaret(item) {
     // If item belongs to self, then caret displays delete
     const { creator, _id } = item;
 
-    // const isSelf = creator._id === this.props.userId;
-    const isSelf = true;
+    const isSelf = creator._id === this.props.userId;
     const menu = (!isSelf)
       ? MenuFactory(
           [
@@ -342,7 +435,7 @@ class MyTribe extends Component {
           {this.renderTribeImage(picture)}
         </View>
         <View style={styles.generalInfoContainerStyle}>
-          {this.renderCaret(item)}
+          {/* {this.renderCaret(item)} */}
           <Text
             style={{ fontSize: 22, fontWeight: '300' }}
           >
@@ -396,6 +489,18 @@ class MyTribe extends Component {
     }
   }
 
+  renderPlus(item) {
+    const { isMember } = this.props;
+    if (this.state.showPlus && (isMember === 'Admin' || isMember === 'Member')) {
+      return (
+        <TouchableOpacity style={styles.iconContainerStyle} onPress={() => this.handlePlus(item)}>
+          <Image style={styles.iconStyle} source={plus} />
+        </TouchableOpacity>
+      );
+    }
+    return '';
+  }
+
   render() {
     const { item, data } = this.props;
     if (!item) return <View />;
@@ -403,13 +508,19 @@ class MyTribe extends Component {
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={{ flex: 1, backgroundColor: '#f2f2f2' }}>
-          <SearchBarHeader backButton onBackPress={() => this.props.tribeDetailClose()} />
+          <SearchBarHeader
+            backButton
+            onBackPress={() => this.props.tribeDetailClose()}
+            pageSetting
+            handlePageSetting={() => this.handlePageSetting(item)}
+          />
           <FlatList
             data={data}
             renderItem={this.renderItem}
             keyExtractor={(i) => i._id}
             ListHeaderComponent={this.renderTribeOverview(item)}
           />
+          {this.renderPlus(item)}
         </View>
       </MenuProvider>
     );
@@ -502,7 +613,29 @@ const styles = {
   backdrop: {
     backgroundColor: 'gray',
     opacity: 0.5,
-  }
+  },
+  // Styles for plus icon
+  iconContainerStyle: {
+    position: 'absolute',
+    bottom: 20,
+    right: 15,
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor: '#45C9F6',
+    backgroundColor: '#4096c6',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 2,
+  },
+  iconStyle: {
+    height: 26,
+    width: 26,
+    tintColor: 'white',
+  },
 };
 
 const mapStateToProps = state => {
@@ -537,14 +670,19 @@ const mapStateToProps = state => {
   };
 };
 
-// const isMember = (memberList, self) =>
-//   memberList.reduce((total, curr) => {
-//     if (curr._id && self._id && (curr._id.toString() === self._id.toString())) {
-//       return 1;
-//     }
-//     return 0;
-//   }, 0);
+const checkIsAdmin = (members, userId) => {
+  let isAdmin = false;
+  // Sanity check if member is not empty or undefined
+  if (members && members.length > 0) {
+    members.forEach((member) => {
+      if (member.memberRef._id === userId && member.category === 'Admin') {
+        isAdmin = true;
+      }
+    });
+  }
 
+  return isAdmin;
+};
 
 export default connect(
   mapStateToProps,

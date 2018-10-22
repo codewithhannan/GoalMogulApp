@@ -188,14 +188,24 @@ class SearchBarHeader extends Component {
     return profileImage;
   }
 
+  /**
+   * @param setting:
+   * @param haveSetting:
+   * @param pageSetting: if a page needs a pageSetting icon, ..., then it needs
+   *        to pass in pageSetting and handlePageSetting
+   * @param rightIcon:
+   */
   renderSearchBarRightIcon() {
     // On other people's profile page
-    if (this.props.setting && !this.props.haveSetting) {
+    if ((this.props.setting && !this.props.haveSetting) || this.props.pageSetting) {
     // if (this.props.setting && true) {
+      const { handlePageSetting } = this.props;
       return (
-        <TouchableWithoutFeedback onPress={this.handleFriendsSettingOnClick.bind(this)}>
+        <TouchableWithoutFeedback
+          onPress={handlePageSetting || this.handleFriendsSettingOnClick.bind(this)}
+        >
           <Image
-            style={{ ...styles.headerRightImage, tintColor, height: 28 }}
+            style={{ ...styles.headerRightImage, tintColor, height: 21 }}
             source={FriendsSettingIcon}
           />
         </TouchableWithoutFeedback>
@@ -308,7 +318,7 @@ const styles = {
     shadowRadius: 2,
   },
   headerRightImage: {
-    width: 25,
+    width: 27,
     height: 21,
   },
   // Styles for method 2
