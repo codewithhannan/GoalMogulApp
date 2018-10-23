@@ -28,6 +28,11 @@ import {
   REPORT_CREATE
 } from '../report/ReportReducers';
 
+// Selector
+import {
+  getUserStatus
+} from './TribeSelector';
+
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
@@ -318,6 +323,15 @@ export const tribeDetailClose = () => (dispatch) => {
 };
 
 export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
+  const isMember = getUserStatus(getState());
+
+  // If user is not a member nor an invitee and tribe is not public visible,
+  // Show not found for this tribe
+  if ((!isMember || isMember === 'JoinRequester') && !tribe.isPubliclyVisible) {
+    return Alert.alert(
+      'Tribe not found'
+    );
+  }
   dispatch({
     type: TRIBE_DETAIL_OPEN,
     payload: { ...tribe }

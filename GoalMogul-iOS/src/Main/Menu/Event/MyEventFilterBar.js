@@ -100,37 +100,8 @@ class MyEventFilterBar extends Component {
               value='Maybe'
             />
             <MenuOption
-              text='NotGoing'
+              text='Not Going'
               value='NotGoing'
-            />
-          </MenuOptions>
-        </Menu>
-
-        <Menu
-          onSelect={value => this.props.updateFilterOptions({ value, type: 'dateRange' })}
-          rendererProps={{ placement: 'bottom' }}
-          renderer={Popover}
-        >
-          <MenuTrigger
-            customStyles={{
-              TriggerTouchableComponent: TouchableOpacity,
-            }}
-          >
-            <View style={detailContainerStyle}>
-              <Text style={textStyle}>
-                Filter By
-              </Text>
-              <Image style={caretStyle} source={dropDown} />
-            </View>
-          </MenuTrigger>
-          <MenuOptions customStyles={styles.menuOptionsStyles}>
-            <MenuOption
-              text='Past'
-              value='Past'
-            />
-            <MenuOption
-              text='Coming'
-              value='Coming'
             />
           </MenuOptions>
         </Menu>
@@ -149,18 +120,18 @@ class MyEventFilterBar extends Component {
           >
             <View style={detailContainerStyle}>
               <Text style={textStyle}>
-                Event Type
+                Filter By
               </Text>
               <Image style={caretStyle} source={dropDown} />
             </View>
           </MenuTrigger>
           <MenuOptions customStyles={styles.menuOptionsStyles}>
             <MenuOption
-              text='Owned events'
+              text='Owned Events'
               value='true'
             />
             <MenuOption
-              text='Others events'
+              text='All Events'
               value='false'
             />
           </MenuOptions>

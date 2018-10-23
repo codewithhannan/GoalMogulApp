@@ -1,4 +1,5 @@
 import { Actions } from 'react-native-router-flux';
+import { Alert } from 'react-native';
 import _ from 'lodash';
 import {
   MYTRIBE_SWITCH_TAB,
@@ -10,6 +11,11 @@ import {
   MYTRIBE_FEED_FETCH_DONE,
   MYTRIBE_FEED_REFRESH_DONE
 } from './MyTribeReducers';
+
+// Selectors
+import {
+  getMyTribeUserStatus
+} from './TribeSelector';
 
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
@@ -36,6 +42,16 @@ export const tribeDetailClose = () => (dispatch) => {
  * Fetch tribe detail
  */
 export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
+  const isMember = getMyTribeUserStatus(getState());
+
+  // If user is not a member nor an invitee and tribe is not public visible,
+  // Show not found for this tribe
+  if ((!isMember || isMember === 'JoinRequester') && !tribe.isPubliclyVisible) {
+    return Alert.alert(
+      'Tribe not found'
+    );
+  }
+
   const newTribe = _.cloneDeep(tribe);
   dispatch({
     type: MYTRIBE_DETAIL_OPEN,

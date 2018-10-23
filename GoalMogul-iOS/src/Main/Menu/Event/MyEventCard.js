@@ -99,8 +99,8 @@ class MyEventCard extends React.Component {
   renderEventInfo(item) {
     const { participantCount } = item;
     const member = participantCount > 1
-      ? ' Members'
-      : ' Member';
+      ? ' Participants'
+      : ' Participant';
 
     return (
       <View>

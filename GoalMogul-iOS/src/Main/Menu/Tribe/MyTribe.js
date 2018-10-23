@@ -53,6 +53,7 @@ import {
 import {
   getMyTribeUserStatus,
   myTribeMemberSelector,
+  getMyTribeNavigationState
 } from '../../../redux/modules/tribe/TribeSelector';
 
 const DEBUG_KEY = '[ UI MyTribe ]';
@@ -639,8 +640,9 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { navigationState, item, feed, hasRequested } = state.myTribe;
+  const { item, feed, hasRequested } = state.myTribe;
   const { userId } = state.user;
+  const navigationState = getMyTribeNavigationState(state);
 
   const { routes, index } = navigationState;
   const data = ((key) => {

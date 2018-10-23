@@ -10,6 +10,10 @@ const INITIAL_STATE = {
       { key: 'members', title: 'Members' }
     ]
   },
+  defaultRoutes: [
+    { key: 'about', title: 'About' },
+    { key: 'members', title: 'Members' }
+  ],
   selectedTab: 'about',
   item: undefined,
   feed: [],

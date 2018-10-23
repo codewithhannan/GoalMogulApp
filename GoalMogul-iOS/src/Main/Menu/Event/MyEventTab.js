@@ -13,7 +13,8 @@ import { MenuProvider } from 'react-native-popup-menu';
 import {
   refreshEvent,
   loadMoreEvent,
-  closeMyEventTab
+  closeMyEventTab,
+  myEventSelectTab
 } from '../../../redux/modules/event/MyEventTabActions';
 import {
   openNewEventModal
@@ -23,6 +24,7 @@ import {
 import MyEventCard from './MyEventCard';
 import ModalHeader from '../../Common/Header/ModalHeader';
 import MyEventFilterBar from './MyEventFilterBar';
+import TabButtonGroup from '../../Common/TabButtonGroup';
 
 class MyEventTab extends React.Component {
 
@@ -32,8 +34,18 @@ class MyEventTab extends React.Component {
 
   handleOnLoadMore = () => this.props.loadMoreEvent();
 
+  handleIndexChange = (index) => {
+    this.props.myEventSelectTab(index);
+  }
+
   renderItem = ({ item }) => {
     return <MyEventCard item={item} />;
+  }
+
+  renderTabs = props => {
+    return (
+      <TabButtonGroup buttons={props} />
+    );
   }
 
   renderListHeader() {
@@ -62,6 +74,12 @@ class MyEventTab extends React.Component {
             onCancel={() => this.props.closeMyEventTab()}
             onAction={() => this.props.openNewEventModal()}
           />
+          {
+            this.renderTabs({
+              jumpToIndex: (i) => this.handleIndexChange(i),
+              navigationState: this.props.navigationState
+            })
+          }
           <FlatList
             data={this.props.data}
             renderItem={this.renderItem}
@@ -80,9 +98,8 @@ class MyEventTab extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { showModal, data } = state.myEventTab;
+  const { showModal, data, navigationState, loading } = state.myEventTab;
 
-  const loading = false;
   const testData = [
     {
       _id: '980987230941',
@@ -163,7 +180,8 @@ const mapStateToProps = state => {
   return {
     data: [...data, ...testData],
     loading,
-    showModal
+    showModal,
+    navigationState
   };
 };
 
@@ -190,6 +208,7 @@ export default connect(
     refreshEvent,
     loadMoreEvent,
     closeMyEventTab,
-    openNewEventModal
+    openNewEventModal,
+    myEventSelectTab
   }
 )(MyEventTab);

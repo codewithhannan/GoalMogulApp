@@ -48,7 +48,8 @@ import {
 // Selector
 import {
   getUserStatus,
-  memberSelector
+  memberSelector,
+  getTribeNavigationState
 } from '../../redux/modules/tribe/TribeSelector';
 
 import { switchCases } from '../../redux/middleware/utils';
@@ -636,10 +637,12 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { navigationState, item, feed, hasRequested } = state.tribe;
+  const { item, feed, hasRequested } = state.tribe;
   const { userId } = state.user;
 
+  const navigationState = getTribeNavigationState(state);
   const { routes, index } = navigationState;
+
   const data = ((key) => {
     switch (key) {
       case 'about':

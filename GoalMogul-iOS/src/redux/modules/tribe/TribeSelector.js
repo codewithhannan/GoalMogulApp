@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import _ from 'lodash';
 
 const getTribeMembers = (state) => {
   if (state.tribe.item) {
@@ -9,6 +10,14 @@ const getTribeMembers = (state) => {
 const getUserId = (state) => state.user.userId;
 
 const getMembersFilter = (state) => state.tribe.membersFilter;
+
+const getTribeNavigationStates = (state) => {
+  const { navigationState, defaultRoutes } = state.tribe;
+  return {
+    navigationState,
+    defaultRoutes
+  };
+};
 
 /**
  * My tribes related
@@ -21,6 +30,13 @@ const getMyTribeMembers = (state) => {
   return [];
 };
 
+const getMyTribeNavigationStates = (state) => {
+  const { navigationState, defaultRoutes } = state.myTribe;
+  return {
+    navigationState,
+    defaultRoutes
+  };
+};
 
 /*
  * Iterate through member list to check if user is a current member
@@ -52,6 +68,33 @@ export const memberSelector = createSelector(
   }
 );
 
+// Get tribe navigationState, if not a member, obfuscate Post tab with default routes
+export const getTribeNavigationState = createSelector(
+  [getTribeNavigationStates, getTribeMembers, getUserId],
+  (navigationStates, members, userId) => {
+    const { navigationState, defaultRoutes } = navigationStates;
+    const navigationStateToReturn = _.cloneDeep(navigationState);
+
+    if (!members || members.length === 0) {
+      return _.set(navigationStateToReturn, 'routes', defaultRoutes);
+    }
+
+    let isMember;
+    members.forEach((member) => {
+      if (member.memberRef._id === userId
+        && (member.category === 'Admin'
+        || member.category === 'Member'
+        || member.category === 'Invitee')) {
+        isMember = true;
+      }
+    });
+
+    return isMember
+      ? navigationStateToReturn
+      : _.set(navigationStateToReturn, 'routes', defaultRoutes);
+  }
+);
+
 /**
  * My tribe related selectors
  */
@@ -79,5 +122,32 @@ export const myTribeMemberSelector = createSelector(
     if (!members) return '';
 
     return members.filter((member) => member.category === filterOption);
+  }
+);
+
+// Get my tribe navigationState, if not a member, obfuscate Post tab with default routes
+export const getMyTribeNavigationState = createSelector(
+  [getMyTribeNavigationStates, getMyTribeMembers, getUserId],
+  (navigationStates, members, userId) => {
+    const { navigationState, defaultRoutes } = navigationStates;
+    const navigationStateToReturn = _.cloneDeep(navigationState);
+
+    if (!members || members.length === 0) {
+      return _.set(navigationStateToReturn, 'routes', defaultRoutes);
+    }
+
+    let isMember;
+    members.forEach((member) => {
+      if (member.memberRef._id === userId
+        && (member.category === 'Admin'
+        || member.category === 'Member'
+        || member.category === 'Invitee')) {
+        isMember = true;
+      }
+    });
+
+    return isMember
+      ? navigationStateToReturn
+      : _.set(navigationStateToReturn, 'routes', defaultRoutes);
   }
 );
