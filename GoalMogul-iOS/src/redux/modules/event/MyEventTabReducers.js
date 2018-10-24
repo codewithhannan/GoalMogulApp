@@ -8,7 +8,7 @@ import {
 
 const INITIAL_STATE = {
   data: [],
-  hasNextPage: undefined,
+  hasNextPage: false,
   limit: 20,
   skip: 0,
   loading: false,
@@ -22,7 +22,14 @@ const INITIAL_STATE = {
     // ['Past', 'Upcoming']
     dateRange: 'Upcoming'
   },
-  showModal: false
+  showModal: false,
+  navigationState: {
+    index: 0,
+    routes: [
+      { key: 'Upcoming', title: 'Upcoming Events' },
+      { key: 'Past', title: 'Past Events' },
+    ]
+  }
 };
 
 const sortByList = ['start', 'created', 'title'];
@@ -34,6 +41,7 @@ export const MYEVENTTAB_LOAD_DONE = 'myeventtab_load_done';
 export const MYEVENTTAB_LOAD = 'myeventtab_load';
 export const MYEVENTTAB_SORTBY = 'myeventtab_sortby';
 export const MYEVENTTAB_UPDATE_FILTEROPTIONS = 'myeventtab_update_filteroptions';
+export const MYEVENTTAB_UPDATE_TAB = 'myeventtab_update_tab';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -99,6 +107,18 @@ export default (state = INITIAL_STATE, action) => {
       const { type, value } = action.payload;
       let newState = _.cloneDeep(state);
       return _.set(newState, `filterOptions.${type}`, value);
+    }
+
+    // Update tab selection
+    case MYEVENTTAB_UPDATE_TAB: {
+      const { index } = action.payload;
+      let newState = _.cloneDeep(state);
+
+      // Update the corresponding state for filter since we just change
+      // the filter bar option to tabs
+      const { routes } = _.get(newState, 'navigationState');
+      newState = _.set(newState, 'filterOptions.dateRange', routes[index].key);
+      return _.set(newState, 'navigationState.index', index);
     }
 
     default:

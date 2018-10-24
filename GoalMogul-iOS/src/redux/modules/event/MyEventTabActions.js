@@ -7,7 +7,8 @@ import {
   MYEVENTTAB_SORTBY,
   MYEVENTTAB_UPDATE_FILTEROPTIONS,
   MYEVENTTAB_OPEN,
-  MYEVENTTAB_CLOSE
+  MYEVENTTAB_CLOSE,
+  MYEVENTTAB_UPDATE_TAB
 } from './MyEventTabReducers';
 
 import { api as API } from '../../middleware/api';
@@ -57,6 +58,18 @@ export const updateFilterOptions = ({ type, value }) => (dispatch, getState) => 
   refreshEvent()(dispatch, getState);
 };
 
+// Select tab for my event tab
+export const myEventSelectTab = (index) => (dispatch, getState) => {
+  dispatch({
+    type: MYEVENTTAB_UPDATE_TAB,
+    payload: {
+      index
+    }
+  });
+
+  refreshEvent()(dispatch, getState);
+};
+
 /**
  * For the next three functions, we could abstract a pattern since
  * It's shared across mastermind/actions, feed/actions, MeetActions, ProfileActions, TribeTabActions,
@@ -81,7 +94,7 @@ export const refreshEvent = () => (dispatch, getState) => {
         data,
         skip: data.length,
         limit: 20,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0 || data.length < limit)
       }
     });
   }, () => {
@@ -96,6 +109,10 @@ export const loadMoreEvent = () => (dispatch, getState) => {
   if (hasNextPage === false) {
     return;
   }
+
+  dispatch({
+    type: MYEVENTTAB_LOAD
+  });
   loadEvent(skip, limit, token, sortBy, filterOptions, (data) => {
     dispatch({
       type: MYEVENTTAB_LOAD_DONE,
@@ -104,7 +121,7 @@ export const loadMoreEvent = () => (dispatch, getState) => {
         data,
         skip: data.length,
         limit: 20,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0 || data.length < limit)
       }
     });
   }, () => {

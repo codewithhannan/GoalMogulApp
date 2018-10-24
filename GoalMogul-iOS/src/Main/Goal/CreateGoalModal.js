@@ -10,8 +10,10 @@ import {
   FlatList,
   DatePickerIOS,
   Modal,
-  Alert
+  Alert,
+  TextInput
 } from 'react-native';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import {
@@ -139,6 +141,37 @@ class CreateGoalModal extends Component {
     );
   }
 
+  /**
+   * This is added on ms2 polish as a new way to render textinput
+   */
+  renderInput = (props) => {
+    const {
+      input: { onFocus, value, onChange, ...restInput },
+      multiline,
+      editable,
+      numberOfLines,
+      placeholder,
+      style,
+      maxHeight,
+      meta: { touched, error },
+      ...custom
+    } = props;
+
+    return (
+      <View style={styles.inputContainerStyle}>
+        <TextInput
+          placeholder={placeholder}
+          onChangeText={(val) => onChange(val)}
+          style={style}
+          editable={editable}
+          maxHeight={maxHeight}
+          multiline={multiline}
+          value={_.isEmpty(value) ? '' : value}
+        />
+      </View>
+    );
+  }
+
   renderUserInfo() {
     let imageUrl = this.props.user.profile.image;
     let profileImage =
@@ -177,7 +210,6 @@ class CreateGoalModal extends Component {
           label='title'
           component={InputField}
           editable={this.props.uploading}
-          numberOfLines={4}
           style={styles.goalInputStyle}
           placeholder='What are you trying to achieve?'
         />
@@ -198,10 +230,12 @@ class CreateGoalModal extends Component {
               <Field
                 key={`goal-description-${index}`}
                 name={description}
-                component={InputField}
+                component={this.renderInput}
                 editable={this.props.uploading}
-                numberOfLines={4}
                 style={styles.standardInputStyle}
+                placeholder="Decribe your goal"
+                multiline
+                maxHeight={200}
               />
             );
           })
@@ -273,11 +307,16 @@ class CreateGoalModal extends Component {
               borderRadius: 4,
               alignItems: 'center',
               justifyContent: 'center',
-              marginTop: 8
+              marginTop: 8,
+              flexDirection: 'row',
+              padding: 10
             }}
             onPress={() => this.props.change('hasTimeline', true)}
           >
-            <Text style={{ padding: 10, fontSize: 13 }}>timeline</Text>
+            <Image source={plus} style={{ height: 11, width: 11 }} />
+            <Text style={{ fontSize: 14, fontWeight: '600', marginLeft: 4 }}>
+              Timeline
+            </Text>
           </TouchableOpacity>
         </View>
       );
@@ -531,6 +570,7 @@ const styles = {
     flex: 1,
     fontSize: 12,
     padding: 13,
+    paddingTop: 13,
     paddingRight: 14,
     paddingLeft: 14
   },

@@ -41,7 +41,7 @@ import { openCameraRoll, openCamera } from '../../actions';
 import cancel from '../../asset/utils/cancel_no_background.png';
 import camera from '../../asset/utils/camera.png';
 import cameraRoll from '../../asset/utils/cameraRoll.png';
-import photoIcon from '../../asset/utils/photoIcon.png';
+import imageOverlay from '../../asset/utils/imageOverlay.png';
 import expand from '../../asset/utils/expand.png';
 
 // const { Popover } = renderers;
@@ -153,7 +153,7 @@ class CreateTribeModal extends React.Component {
     const actionIconStyle = { ...styles.actionIconStyle };
     const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
     return (
-      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10 }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10 }}>
         <TouchableOpacity style={actionIconWrapperStyle} onPress={this.handleOpenCamera}>
           <Image style={actionIconStyle} source={camera} />
         </TouchableOpacity>
@@ -182,44 +182,46 @@ class CreateTribeModal extends React.Component {
 
     if (this.props.picture) {
       return (
-        <ImageBackground
-          style={styles.mediaStyle}
-          source={{ uri: imageUrl }}
-          imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
-        >
-          <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
-            <Image
-              source={photoIcon}
-              style={{
-                alignSelf: 'center',
-                justifyContent: 'center',
-                height: 40,
-                width: 50,
-                tintColor: '#fafafa'
-              }}
-            />
-          </View>
-
-          <TouchableOpacity
-            onPress={() => this.setState({ mediaModal: true })}
-            style={{ position: 'absolute', top: 10, right: 15 }}
+        <View style={{ backgroundColor: 'gray' }}>
+          <ImageBackground
+            style={styles.mediaStyle}
+            source={{ uri: imageUrl }}
+            imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
           >
-            <Image
-              source={expand}
-              style={{ width: 15, height: 15, tintColor: '#fafafa' }}
-            />
-          </TouchableOpacity>
+            <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
+              <Image
+                source={imageOverlay}
+                style={{
+                  alignSelf: 'center',
+                  justifyContent: 'center',
+                  height: 40,
+                  width: 50,
+                  tintColor: '#fafafa'
+                }}
+              />
+            </View>
 
-          <TouchableOpacity
-            onPress={() => this.props.change('picture', false)}
-            style={{ position: 'absolute', top: 10, left: 15 }}
-          >
-            <Image
-              source={cancel}
-              style={{ width: 15, height: 15, tintColor: '#fafafa' }}
-            />
-          </TouchableOpacity>
-        </ImageBackground>
+            <TouchableOpacity
+              onPress={() => this.setState({ mediaModal: true })}
+              style={{ position: 'absolute', top: 10, right: 15 }}
+            >
+              <Image
+                source={expand}
+                style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => this.props.change('picture', false)}
+              style={{ position: 'absolute', top: 10, left: 15 }}
+            >
+              <Image
+                source={cancel}
+                style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+              />
+            </TouchableOpacity>
+          </ImageBackground>
+        </View>
       );
     }
     return '';
@@ -325,15 +327,27 @@ class CreateTribeModal extends React.Component {
     return (
       <View>
         <CheckBox
-          title='Members can invite new member'
+          title='Members can invite new members'
           checked={this.props.membersCanInvite}
           onPress={() => this.props.change('membersCanInvite', !this.props.membersCanInvite)}
         />
         <CheckBox
-          title='Public visible'
+          title='Publicly visible'
           checked={this.props.isPubliclyVisible}
           onPress={() => this.props.change('isPubliclyVisible', !this.props.isPubliclyVisible)}
         />
+      </View>
+    );
+  }
+
+  // Render field to select an image for tribe
+  renderImageSelection() {
+    const titleText = <Text style={styles.titleTextStyle}>Select a photo</Text>;
+    return (
+      <View style={{ marginTop: 4 }}>
+        {titleText}
+        {this.renderMedia()}
+        {this.renderActionIcons()}
       </View>
     );
   }
@@ -363,8 +377,7 @@ class CreateTribeModal extends React.Component {
               {this.renderTribeDescription()}
               {this.renderTribeMemberLimit()}
               {this.renderOptions()}
-              {this.renderMedia()}
-              {this.renderActionIcons()}
+              {this.renderImageSelection()}
             </View>
 
           </ScrollView>

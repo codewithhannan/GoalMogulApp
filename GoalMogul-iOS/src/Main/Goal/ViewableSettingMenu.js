@@ -3,7 +3,8 @@ import {
   View,
   Text,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from 'react-native';
 import { connect } from 'react-redux';
 import R from 'ramda';
@@ -14,6 +15,9 @@ import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 // Asset
 import dropDown from '../../asset/utils/dropDown.png';
 import profilePeople from '../../asset/utils/profile_people.png';
+import informationIcon from '../../asset/utils/info_white.png';
+import informationIconBlack from '../../asset/utils/info.png';
+
 
 // Actions
 import { } from '../../actions';
@@ -23,6 +27,13 @@ const CANCEL_INDEX = 3;
 const DEBUG_KEY = '[ ViewableSettingMenu Component ]';
 
 class ViewableSettingMenu extends Component {
+
+  handleInfoIcon = () => {
+    Alert.alert(
+      'Notice',
+      'Choosing this will make your goal appears on your friends’ home feed'
+    );
+  }
 
   handleOnClick = () => {
     const viewableSettingSwitchCases = switchByButtonIndex([
@@ -61,16 +72,20 @@ class ViewableSettingMenu extends Component {
         ...styles.containerStyle,
         backgroundColor: '#45C9F6',
         borderWidth: 0,
-        borderTopRightRadius: 0,
-        borderBottomRightRadius: 0,
+        // borderTopRightRadius: 0,
+        // borderBottomRightRadius: 0,
       } : {
         ...styles.containerStyle,
-        borderTopRightRadius: 0,
-        borderBottomRightRadius: 0,
+        // borderTopRightRadius: 0,
+        // borderBottomRightRadius: 0,
       };
 
     const color = this.props.shareToMastermind ?
       'white' : '#a1a1a1';
+
+    const icon = this.props.shareToMastermind
+      ? (<Image style={styles.informationIconStyle} source={informationIcon} />)
+      : (<Image style={styles.informationIconStyle} source={informationIconBlack} />);
 
     return (
       <View style={{ ...styles.containerStyle, backgroundColor: 'transparent', borderWidth: 0 }}>
@@ -82,7 +97,9 @@ class ViewableSettingMenu extends Component {
           <Text style={{ fontSize: 10, marginLeft: 3, marginRight: 5, color }}>
             Share to Mastermind
           </Text>
-          {/*<Image style={styles.caretStyle} source={dropDown} />*/}
+          <TouchableOpacity style={{ padding: 4 }} onPress={this.handleInfoIcon}>
+            {icon}
+          </TouchableOpacity>
         </TouchableOpacity>
         <View style={{ margin: 10, borderLeftWidth: 1, borderColor: '#e9e9e9' }} />
       </View>
@@ -123,6 +140,10 @@ const styles = {
     tintColor: '#20485f',
     marginLeft: 5,
     marginRight: 3
+  },
+  informationIconStyle: {
+    width: 13,
+    height: 13,
   },
   profileIconStyle: {
     height: 13,

@@ -5,6 +5,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import {
   MenuProvider
 } from 'react-native-popup-menu';
@@ -457,6 +458,8 @@ const mapStateToProps = (state, props) => {
   const { showingModalInDetail } = state.report;
   const { userId } = state.user;
   // const { transformedComments, loading } = getCommentByTab(state, props.pageId);
+  console.log('goal is: ', goal);
+  const isSelf = userId === (!goal || _.isEmpty(goal) ? '' : goal.owner._id);
 
   return {
     commentLoading: false,
@@ -467,9 +470,9 @@ const mapStateToProps = (state, props) => {
     navigationState,
     showingModalInDetail,
     showSuggestionModal: newComment ? newComment.showSuggestionModal : false,
-    // isSelf: userId === goal.owner._id
+    isSelf,
     // TODO: delete
-    isSelf: true,
+    // isSelf: true,
     tab: state.navigation.tab
   };
 };

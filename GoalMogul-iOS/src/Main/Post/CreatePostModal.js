@@ -28,7 +28,7 @@ import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
 import cancel from '../../asset/utils/cancel_no_background.png';
 import camera from '../../asset/utils/camera.png';
 import cameraRoll from '../../asset/utils/cameraRoll.png';
-import photoIcon from '../../asset/utils/photoIcon.png';
+import imageOverlay from '../../asset/utils/imageOverlay.png';
 import expand from '../../asset/utils/expand.png';
 
 
@@ -54,10 +54,13 @@ class CreatePostModal extends Component {
   }
 
   initializeForm() {
+    const { belongsToTribe, belongsToEvent } = this.props;
     const defaulVals = {
       viewableSetting: 'Friends',
       mediaRef: undefined,
-      post: ''
+      post: '',
+      belongsToTribe,
+      belongsToEvent
     };
 
     // Initialize based on the props, if it's opened through edit button
@@ -193,44 +196,46 @@ class CreatePostModal extends Component {
 
     if (this.props.mediaRef) {
       return (
-        <ImageBackground
-          style={styles.mediaStyle}
-          source={{ uri: imageUrl }}
-          imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'stretch' }}
-        >
-          <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
-            <Image
-              source={photoIcon}
-              style={{
-                alignSelf: 'center',
-                justifyContent: 'center',
-                height: 40,
-                width: 50,
-                tintColor: '#fafafa'
-              }}
-            />
-          </View>
-
-          <TouchableOpacity
-            onPress={() => this.setState({ mediaModal: true })}
-            style={{ position: 'absolute', top: 10, right: 15 }}
+        <View style={{ backgroundColor: 'gray' }}>
+          <ImageBackground
+            style={styles.mediaStyle}
+            source={{ uri: imageUrl }}
+            imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'stretch' }}
           >
-            <Image
-              source={expand}
-              style={{ width: 15, height: 15, tintColor: '#fafafa' }}
-            />
-          </TouchableOpacity>
+            <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
+              <Image
+                source={imageOverlay}
+                style={{
+                  alignSelf: 'center',
+                  justifyContent: 'center',
+                  height: 40,
+                  width: 50,
+                  tintColor: '#fafafa'
+                }}
+              />
+            </View>
 
-          <TouchableOpacity
-            onPress={() => this.props.change('mediaRef', false)}
-            style={{ position: 'absolute', top: 10, left: 15 }}
-          >
-            <Image
-              source={cancel}
-              style={{ width: 15, height: 15, tintColor: '#fafafa' }}
-            />
-          </TouchableOpacity>
-        </ImageBackground>
+            <TouchableOpacity
+              onPress={() => this.setState({ mediaModal: true })}
+              style={{ position: 'absolute', top: 10, right: 15 }}
+            >
+              <Image
+                source={expand}
+                style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => this.props.change('mediaRef', false)}
+              style={{ position: 'absolute', top: 10, left: 15 }}
+            >
+              <Image
+                source={cancel}
+                style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+              />
+            </TouchableOpacity>
+          </ImageBackground>
+        </View>
       );
     }
     return '';
@@ -320,7 +325,7 @@ class CreatePostModal extends Component {
         style={{ flex: 1, backgroundColor: '#ffffff' }}
       >
         <ModalHeader
-          title='New Goal'
+          title='New Post'
           actionText='Create'
           onCancel={() => Actions.pop()}
           onAction={handleSubmit(this.handleCreate)}

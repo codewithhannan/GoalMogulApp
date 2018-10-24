@@ -1,5 +1,6 @@
 // Actions for an event that belongs to my event tab
 import { Actions } from 'react-native-router-flux';
+import { Alert } from 'react-native';
 import _ from 'lodash';
 import {
   MYEVENT_SWITCH_TAB,
@@ -9,8 +10,13 @@ import {
   MYEVENT_FEED_FETCH_DONE,
   MYEVENT_FEED_REFRESH_DONE,
   MYEVENT_DETAIL_LOAD_SUCCESS,
-  MYEVENT_DETAIL_LOAD_FAIL
+  MYEVENT_DETAIL_LOAD_FAIL,
+  MYEVENT_MEMBER_SELECT_FILTER
 } from './MyEventReducers';
+
+import {
+  getMyEventUserStatus
+} from './EventSelector';
 
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
@@ -33,6 +39,16 @@ export const eventDetailClose = () => (dispatch) => {
 };
 
 export const eventDetailOpen = (event) => (dispatch, getState) => {
+  const isMember = getMyEventUserStatus(getState());
+
+  // If user is not a member nor an invitee and event is not public visible,
+  // Show not found for this tribe
+  if ((!isMember) && event.isInviteOnly) {
+    return Alert.alert(
+      'Event not found'
+    );
+  }
+
   const newEvent = _.cloneDeep(event);
   dispatch({
     type: MYEVENT_DETAIL_OPEN,
@@ -45,6 +61,17 @@ export const eventDetailOpen = (event) => (dispatch, getState) => {
   fetchEventDetail(_id)(dispatch, getState);
   refreshEventFeed(_id, dispatch, getState);
 };
+
+export const myEventSelectMembersFilter = (option, index) => (dispatch) => {
+  dispatch({
+    type: MYEVENT_MEMBER_SELECT_FILTER,
+    payload: {
+      option,
+      index
+    }
+  });
+};
+
 
 /**
  * Fetch tribe detail for a tribe

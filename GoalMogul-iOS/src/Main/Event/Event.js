@@ -65,6 +65,10 @@ class Event extends Component {
     return this.props.openEventInvitModal(_id);
   }
 
+  /**
+   * This function is deprecated since renderCaret is replaced by
+   * handlePageSetting
+   */
   handleEventOptionsOnSelect = (value) => {
     const { item } = this.props;
     if (!item) return;
@@ -113,6 +117,46 @@ class Event extends Component {
   _handleIndexChange = (index) => {
     this.props.eventSelectTab(index);
   };
+
+  /**
+   * Handle modal setting on click. Show IOS menu with options
+   */
+  handlePageSetting = (item) => {
+    const { _id, creator } = item;
+    const { userId } = this.props;
+    const isAdmin = creator && creator._id === userId;
+
+    let options;
+    if (isAdmin) {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to delete current event`);
+          this.props.deleteEvent(_id);
+        }],
+        [R.equals(1), () => {
+          console.log(`${DEBUG_KEY} User chooses to edit current event`);
+          this.props.editEvent(item);
+        }],
+      ]);
+    } else {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to report this event`);
+          this.props.reportEvent(_id);
+        }]
+      ]);
+    }
+
+    const requestOptions = isAdmin ? ['Delete', 'Edit', 'Cancel'] : ['Report', 'Cancel'];
+    const cancelIndex = isAdmin ? 2 : 1;
+
+    const eventActionSheet = actionSheet(
+      requestOptions,
+      cancelIndex,
+      options
+    );
+    eventActionSheet();
+  }
 
   _renderHeader = props => {
     return (
@@ -270,7 +314,7 @@ class Event extends Component {
       <View>
         {this.renderEventImage(picture)}
         <View style={styles.generalInfoContainerStyle}>
-          {this.renderCaret(item)}
+          {/* {this.renderCaret(item)} */}
           <Text style={styles.eventTitleTextStyle}>
             {title}
           </Text>
@@ -331,8 +375,13 @@ class Event extends Component {
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <View style={{ flex: 1 }}>
-          <SearchBarHeader backButton onBackPress={() => this.props.eventDetailClose()} />
+        <View style={{ flex: 1, backgroundColor: '#f2f2f2' }}>
+          <SearchBarHeader
+            backButton
+            onBackPress={() => this.props.eventDetailClose()}
+            pageSetting
+            handlePageSetting={() => this.handlePageSetting(item)}
+          />
           <FlatList
             data={data}
             renderItem={this.renderItem}

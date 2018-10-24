@@ -20,7 +20,7 @@ import {
 const key = 'goals';
 
 class MyGoals extends Component {
-  _keyExtractor = (item) => item.id
+  _keyExtractor = (item) => item._id
 
   handleRefresh = () => {
     console.log('Refreshing tab: ', key);

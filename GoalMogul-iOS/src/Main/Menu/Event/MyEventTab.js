@@ -13,7 +13,8 @@ import { MenuProvider } from 'react-native-popup-menu';
 import {
   refreshEvent,
   loadMoreEvent,
-  closeMyEventTab
+  closeMyEventTab,
+  myEventSelectTab
 } from '../../../redux/modules/event/MyEventTabActions';
 import {
   openNewEventModal
@@ -23,6 +24,7 @@ import {
 import MyEventCard from './MyEventCard';
 import ModalHeader from '../../Common/Header/ModalHeader';
 import MyEventFilterBar from './MyEventFilterBar';
+import TabButtonGroup from '../../Common/TabButtonGroup';
 
 class MyEventTab extends React.Component {
 
@@ -32,27 +34,24 @@ class MyEventTab extends React.Component {
 
   handleOnLoadMore = () => this.props.loadMoreEvent();
 
-  handleCreate = () => {
-    this.props.openNewEventModal();
+  handleIndexChange = (index) => {
+    this.props.myEventSelectTab(index);
   }
 
   renderItem = ({ item }) => {
     return <MyEventCard item={item} />;
   }
 
-  renderCreateEventButton() {
+  renderTabs = props => {
     return (
-      <TouchableOpacity onPress={this.handleCreate} style={styles.createButtonContainerStyle}>
-        <Text>Create Event</Text>
-      </TouchableOpacity>
-    )
+      <TabButtonGroup buttons={props} />
+    );
   }
 
   renderListHeader() {
     return (
       <View>
         <MyEventFilterBar />
-        {this.renderCreateEventButton()}
       </View>
     );
   }
@@ -70,10 +69,17 @@ class MyEventTab extends React.Component {
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
           <ModalHeader
             title='My Events'
-            actionText='Close'
-            cancelText={null}
-            onAction={() => this.props.closeMyEventTab()}
+            actionText='Create'
+            cancelText='Close'
+            onCancel={() => this.props.closeMyEventTab()}
+            onAction={() => this.props.openNewEventModal()}
           />
+          {
+            this.renderTabs({
+              jumpToIndex: (i) => this.handleIndexChange(i),
+              navigationState: this.props.navigationState
+            })
+          }
           <FlatList
             data={this.props.data}
             renderItem={this.renderItem}
@@ -92,9 +98,8 @@ class MyEventTab extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { showModal, data } = state.myEventTab;
+  const { showModal, data, navigationState, loading } = state.myEventTab;
 
-  const loading = false;
   const testData = [
     {
       _id: '980987230941',
@@ -175,7 +180,8 @@ const mapStateToProps = state => {
   return {
     data: [...data, ...testData],
     loading,
-    showModal
+    showModal,
+    navigationState
   };
 };
 
@@ -202,6 +208,7 @@ export default connect(
     refreshEvent,
     loadMoreEvent,
     closeMyEventTab,
-    openNewEventModal
+    openNewEventModal,
+    myEventSelectTab
   }
 )(MyEventTab);

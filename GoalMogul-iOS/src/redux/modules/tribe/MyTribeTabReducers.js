@@ -17,7 +17,16 @@ const INITIAL_STATE = {
   sortBy: 'created',
   // ['Admin', 'Member', 'JoinRequester', 'Invitee']
   filterForMembershipCategory: 'Admin',
-  showModal: false
+  showModal: false,
+  navigationState: {
+    index: 0,
+    routes: [
+      { key: 'Admin', title: 'Admin' },
+      { key: 'Member', title: 'Member' },
+      { key: 'JoinRequester', title: 'Requested' },
+      { key: 'Invitee', title: 'Invited' }
+    ]
+  }
 };
 
 const sortByList = ['start', 'created', 'title'];
@@ -29,6 +38,7 @@ export const MYTRIBETAB_LOAD_DONE = 'mytribetab_load_done';
 export const MYTRIBETAB_LOAD = 'mytribetab_load';
 export const MYTRIBETAB_SORTBY = 'mytribetab_sortby';
 export const MYTRIBETAB_UPDATE_FILTEROPTIONS = 'mytribetab_update_filteroptions';
+export const MYTRIBETAB_UPDATE_TAB = 'mytribetab_update_tab';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -92,6 +102,18 @@ export default (state = INITIAL_STATE, action) => {
       // TODO: valid filter options
       let newState = _.cloneDeep(state);
       return _.set(newState, 'filterForMembershipCategory', action.payload);
+    }
+
+    // Update tab selection
+    case MYTRIBETAB_UPDATE_TAB: {
+      const { index } = action.payload;
+      let newState = _.cloneDeep(state);
+
+      // Update the corresponding state for filter since we just change
+      // the filter bar option to tabs
+      const { routes } = _.get(newState, 'navigationState');
+      newState = _.set(newState, 'filterForMembershipCategory', routes[index].key);
+      return _.set(newState, 'navigationState.index', index);
     }
 
     default:

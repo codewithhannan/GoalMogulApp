@@ -182,7 +182,7 @@ const sendCreatePostRequest = (newPost, token, dispatch, onError) => {
  * Transform values in CreatePostModal to Server readable format
  */
 const newPostAdaptor = (values, userId) => {
-  const { viewableSetting, mediaRef, post } = values;
+  const { viewableSetting, mediaRef, post, belongsToTribe, belongsToEvent } = values;
 
   return {
     owner: userId,
@@ -193,7 +193,9 @@ const newPostAdaptor = (values, userId) => {
       links: []
     },
     mediaRef,
-    postType: 'General'
+    postType: 'General',
+    belongsToTribe,
+    belongsToEvent
   };
 };
 /**

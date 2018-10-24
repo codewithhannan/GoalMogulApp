@@ -13,6 +13,7 @@ import {
   MenuProvider
 } from 'react-native-popup-menu';
 import R from 'ramda';
+import { Actions } from 'react-native-router-flux';
 
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
@@ -30,17 +31,22 @@ import ParticipantFilterBar from '../../Event/ParticipantFilterBar';
 import TestEventImage from '../../../asset/TestEventImage.png';
 import EditIcon from '../../../asset/utils/edit.png';
 import DefaultUserProfile from '../../../asset/test-profile-pic.png';
+import plus from '../../../asset/utils/plus.png';
+import post from '../../../asset/utils/post.png';
 
 // Actions
 import {
   eventSelectTab,
   eventDetailClose,
   loadMoreEventFeed,
+  myEventSelectMembersFilter
 } from '../../../redux/modules/event/MyEventActions';
 
 // Selector
 import {
   getMyEventUserStatus,
+  myEventParticipantSelector
+  // getMyEventMemberNavigationState
 } from '../../../redux/modules/event/EventSelector';
 
 import {
@@ -59,6 +65,63 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
  * This is the UI file for a single event.
  */
 class MyEvent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      imageLoading: false,
+      showPlus: true
+    };
+  }
+  /**
+   * On plus clicked, show two icons. Post and Invite
+   * const { textStyle, iconStyle, iconSource, text, onPress } = button;
+   */
+  handlePlus = (item) => {
+    const { _id } = item;
+    const buttons = [
+      // button info for creating a post
+      {
+        iconSource: post,
+        text: 'Post',
+        iconStyle: { height: 18, width: 18, marginLeft: 3 },
+        textStyle: { marginLeft: 5 },
+        onPress: () => {
+          console.log('User trying to create post');
+          this.setState({
+            ...this.state,
+            showPlus: true
+          });
+          Actions.pop();
+          Actions.createPostModal({ belongsToEvent: _id });
+        }
+      },
+      // button info for invite
+      {
+        iconSource: post,
+        text: 'Invite',
+        iconStyle: { height: 18, width: 18, marginLeft: 3 },
+        textStyle: { marginLeft: 5 },
+        onPress: () => {
+          console.log('User trying to invite an user');
+          this.setState({
+            ...this.state,
+            showPlus: true
+          });
+          Actions.pop();
+          this.props.openEventInvitModal(_id);
+        }
+      }
+    ];
+    this.setState({
+      ...this.state,
+      showPlus: false
+    });
+    Actions.push('createButtonOverlay', { buttons });
+  }
+
+  /**
+   * This method is deprecated by the renderPlus
+   */
   handleInvite = (_id) => {
     return this.props.openEventInvitModal(_id);
   }
@@ -99,6 +162,7 @@ class MyEvent extends Component {
     this.props.eventSelectTab(index);
   };
 
+  // This function is deprecated
   handleEventOptionsOnSelect = (value) => {
     const { item } = this.props;
     const { _id } = item;
@@ -108,6 +172,46 @@ class MyEvent extends Component {
     if (value === 'Edit') {
       return this.props.editEvent(item);
     }
+  }
+
+  /**
+   * Handle modal setting on click. Show IOS menu with options
+   */
+  handlePageSetting = (item) => {
+    const { _id, creator } = item;
+    const { userId } = this.props;
+    const isAdmin = creator && creator._id === userId;
+
+    let options;
+    if (isAdmin) {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to delete current event`);
+          this.props.deleteEvent(_id);
+        }],
+        [R.equals(1), () => {
+          console.log(`${DEBUG_KEY} User chooses to edit current event`);
+          this.props.editEvent(item);
+        }],
+      ]);
+    } else {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to report this event`);
+          this.props.reportEvent(_id);
+        }]
+      ]);
+    }
+
+    const requestOptions = isAdmin ? ['Delete', 'Edit', 'Cancel'] : ['Report', 'Cancel'];
+    const cancelIndex = isAdmin ? 2 : 1;
+
+    const eventActionSheet = actionSheet(
+      requestOptions,
+      cancelIndex,
+      options
+    );
+    eventActionSheet();
   }
 
   _renderHeader = props => {
@@ -197,6 +301,7 @@ class MyEvent extends Component {
           onPress={this.handleRSVPOnPress}
         >
           {/* <Image source={EditIcon} style={styles.rsvpIconStyle} /> */}
+          <Image source={EditIcon} style={styles.rsvpIconStyle} />
           <Text style={styles.rsvpTextStyle}>
             {rsvpText === 'NotGoing' ? 'Not going' : rsvpText}
           </Text>
@@ -244,12 +349,29 @@ class MyEvent extends Component {
     );
   }
 
+  renderMemberTabs() {
+    const { memberNavigationState } = this.props;
+    const { routes } = memberNavigationState;
+
+    const props = {
+      jumpToIndex: (i) => this.props.myEventSelectMembersFilter(routes[i].key, i),
+      navigationState: this.props.memberNavigationState
+    };
+    return (
+      <TabButtonGroup buttons={props} />
+    );
+  }
+
   renderEventOverview(item) {
     const { title, _id, picture } = item;
+    // const filterBar = this.props.tab === 'attendees'
+    //   ? <ParticipantFilterBar />
+    //   : '';
     const filterBar = this.props.tab === 'attendees'
-      ? <ParticipantFilterBar />
+      ? this.renderMemberTabs()
       : '';
 
+    // Invite button is replaced by renderPlus
     const inviteButton = this.props.tab === 'attendees'
       ? (
         <TouchableOpacity
@@ -265,7 +387,7 @@ class MyEvent extends Component {
       <View>
         {this.renderEventImage(picture)}
         <View style={styles.generalInfoContainerStyle}>
-          {this.renderCaret(item)}
+          {/* {this.renderCaret(item)} */}
           <Text style={styles.eventTitleTextStyle}>
             {title}
           </Text>
@@ -288,7 +410,6 @@ class MyEvent extends Component {
           })
         }
         {filterBar}
-        {inviteButton}
       </View>
     );
   }
@@ -320,14 +441,32 @@ class MyEvent extends Component {
     }
   }
 
+  renderPlus(item) {
+    const { isMember } = this.props;
+    // if (this.state.showPlus && (isMember === 'Admin' || isMember === 'Member')) {
+    if (this.state.showPlus) {
+      return (
+        <TouchableOpacity style={styles.iconContainerStyle} onPress={() => this.handlePlus(item)}>
+          <Image style={styles.iconStyle} source={plus} />
+        </TouchableOpacity>
+      );
+    }
+    return '';
+  }
+
   render() {
     const { item, data } = this.props;
     if (!item) return <View />;
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <View style={{ flex: 1 }}>
-          <SearchBarHeader backButton onBackPress={() => this.props.eventDetailClose()} />
+        <View style={{ flex: 1, backgroundColor: '#f2f2f2' }}>
+          <SearchBarHeader
+            backButton
+            onBackPress={() => this.props.eventDetailClose()}
+            pageSetting
+            handlePageSetting={() => this.handlePageSetting(item)}
+          />
           <FlatList
             data={data}
             renderItem={this.renderItem}
@@ -335,7 +474,7 @@ class MyEvent extends Component {
             ListHeaderComponent={this.renderEventOverview(item)}
             ListFooterComponent={this.renderFooter}
           />
-
+          {this.renderPlus(item)}
         </View>
       </MenuProvider>
     );
@@ -419,11 +558,34 @@ const styles = {
   backdrop: {
     backgroundColor: 'gray',
     opacity: 0.5,
-  }
+  },
+  // Styles for plus icon
+  iconContainerStyle: {
+    position: 'absolute',
+    bottom: 20,
+    right: 15,
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor: '#45C9F6',
+    backgroundColor: '#4096c6',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 2,
+  },
+  iconStyle: {
+    height: 26,
+    width: 26,
+    tintColor: 'white',
+  },
 };
 
 const mapStateToProps = state => {
-  const { navigationState, item, feed, feedLoading } = state.myEvent;
+  const { navigationState, item, feed, feedLoading, memberNavigationState } = state.myEvent;
+  // const memberNavigationState = getMyEventMemberNavigationState(state);
 
   const { routes, index } = navigationState;
   const data = ((key) => {
@@ -432,7 +594,7 @@ const mapStateToProps = state => {
         return [item];
 
       case 'attendees':
-        return item.participants;
+        return myEventParticipantSelector(state);
 
       case 'posts':
         return feed;
@@ -447,6 +609,8 @@ const mapStateToProps = state => {
     data,
     feedLoading,
     status: getMyEventUserStatus(state),
+    memberNavigationState,
+    tab: routes[index].key
   };
 };
 
@@ -460,6 +624,7 @@ export default connect(
     openEventInvitModal,
     deleteEvent,
     editEvent,
-    reportEvent
+    reportEvent,
+    myEventSelectMembersFilter
   }
 )(MyEvent);

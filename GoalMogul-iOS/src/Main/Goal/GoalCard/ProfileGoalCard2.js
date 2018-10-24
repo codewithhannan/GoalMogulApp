@@ -1,5 +1,5 @@
 /**
- * This component corresponds to My Goaals2.2-1 design. New user page
+ * This component corresponds to My Goals2.2-1 design. New user page
  * condensed goal layout
  */
 import React from 'react';

@@ -36,6 +36,7 @@ import PeopleSearchOverlay from './Main/Search/PeopleSearchOverlay';
 // Home Tab
 import Home from './Main/Home/Home';
 import CreateGoalButtonOverlay from './Main/Common/Button/CreateGoalButtonOverlay';
+import CreateButtonOverlay from './Main/Common/Button/CreateButtonOverlay';
 import CreateGoalModal from './Main/Goal/CreateGoalModal';
 import CreatePostModal from './Main/Post/CreatePostModal';
 import GoalCard from './Main/Goal/GoalCard/GoalCard'; // For debug purpose
@@ -243,6 +244,11 @@ class RouterComponent extends Component {
             <Scene
               key="createGoalButtonOverlay"
               component={CreateGoalButtonOverlay}
+              hideNavBar
+            />
+            <Scene
+              key="createButtonOverlay"
+              component={CreateButtonOverlay}
               hideNavBar
             />
           </Lightbox>
