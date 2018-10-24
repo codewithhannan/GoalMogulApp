@@ -39,10 +39,8 @@ class ReportModal extends Component {
           autoCorrect={false}
           onChangeText={this.props.updateReportTitle}
           returnKeyType='done'
-          multiline
-          numberOfLines={5}
           editable={!loading}
-          style={{ height: 150, padding: 15, paddingTop: 15 }}
+          style={{ height: 60, padding: 12, paddingTop: 12, fontSize: 18 }}
           placeholder='Title of the report...'
           value={_.isEmpty(title) ? '' : title}
         />
@@ -64,7 +62,7 @@ class ReportModal extends Component {
           multiline
           numberOfLines={5}
           editable={!loading}
-          style={{ height: 150, padding: 15, paddingTop: 15 }}
+          style={{ height: 150, padding: 12, paddingTop: 12, fontSize: 16 }}
           placeholder='Your description here...'
           value={_.isEmpty(details) ? '' : details}
         />

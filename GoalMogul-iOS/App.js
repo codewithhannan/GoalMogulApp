@@ -62,6 +62,8 @@ export default class App extends React.Component {
       require('./src/asset/utils/reply.png'),
       require('./src/asset/utils/makeSuggestion.png'),
       require('./src/asset/utils/imageOverlay.png'),
+      require('./src/asset/utils/info_white.png'),
+      require('./src/asset/utils/info.png'),
       // Suggestion Modal Icons
       require('./src/asset/suggestion/book.png'),
       require('./src/asset/suggestion/chat.png'),

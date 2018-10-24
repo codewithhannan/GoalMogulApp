@@ -46,10 +46,11 @@ class GoalFilterBar extends Component {
     } = this.props.filter;
 
     const prioritiesArray = priorities === '' ? [] : priorities.split(',');
+    const orderByText = orderBy === 'ascending' ? 'Order ASC' : 'Order DESC';
 
     return (
       <View style={containerStyle}>
-
+        <View style={{ flex: 1 }}>
         <Menu
           onSelect={value => this.handleOnMenuSelect('sortBy', value)}
           rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
@@ -85,7 +86,8 @@ class GoalFilterBar extends Component {
 
           </MenuOptions>
         </Menu>
-
+        </View>
+        <View style={{ flex: 1 }}>
         <Menu
           onSelect={value => this.handleOnMenuSelect('orderBy', value)}
           rendererProps={{ placement: 'bottom' }}
@@ -97,7 +99,7 @@ class GoalFilterBar extends Component {
             }}
           >
             <View style={detailContainerStyle}>
-              <Text style={textStyle}>Order by
+              <Text style={textStyle}>{orderByText}
                 {/* <Text style={standardTextStyle}> (ALL)</Text> */}
               </Text>
               <Image style={caretStyle} source={dropDown} />
@@ -105,16 +107,17 @@ class GoalFilterBar extends Component {
           </MenuTrigger>
           <MenuOptions customStyles={styles.menuOptionsStyles}>
             <MenuOption
-              text='Ascending'
-              value='ascending'
-            />
-            <MenuOption
               text='Descending'
               value='descending'
             />
+            <MenuOption
+              text='Ascending'
+              value='ascending'
+            />
           </MenuOptions>
         </Menu>
-
+        </View>
+        <View style={{ flex: 1 }}>
         <Menu
           onSelect={value => this.handleOnMenuSelect('categories', value)}
           rendererProps={{ placement: 'bottom' }}
@@ -163,7 +166,8 @@ class GoalFilterBar extends Component {
             />
           </MenuOptions>
         </Menu>
-
+        </View>
+        <View style={{ flex: 1 }}>
         <Menu
           onSelect={value => this.handleOnMenuSelect('priorities', value)}
           rendererProps={{ placement: 'bottom' }}
@@ -253,7 +257,7 @@ class GoalFilterBar extends Component {
             </ScrollView>
           </MenuOptions>
         </Menu>
-
+        </View>
       </View>
     );
   }
@@ -265,6 +269,8 @@ const touchableOpacityProps = {
 
 const styles = {
   containerStyle: {
+    marginLeft: 5,
+    marginRight: 5,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',

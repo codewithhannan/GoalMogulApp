@@ -9,6 +9,10 @@ import {
   GOAL_CREATE_SUBMIT_FAIL
 } from './CreateGoal';
 
+import {
+  openProfile
+} from '../../../actions';
+
 const DEBUG_KEY = '[ Action CreateGoal ]';
 
 // Validate goal form
@@ -56,6 +60,7 @@ export const submitGoal = (values, userId, isEdit, callback, goalId) => (dispatc
       'Success',
       'You have successfully created a goal.'
     );
+    openProfile(userId)(dispatch, getState);
   };
 
   // Creating new goal
@@ -171,12 +176,6 @@ const formToGoalAdapter = (values, userId) => {
  * created will be updated to the current date
  */
 export const goalToFormAdaptor = (values) => {
-  // Function to capitalize the first character
-  const capitalizeWord = (word) => {
-    if (!word) return '';
-    return word.replace(/^\w/, c => c.toUpperCase());
-  };
-
   const {
     title,
     category,
@@ -212,6 +211,12 @@ export const goalToFormAdaptor = (values) => {
       picker: false
     }
   };
+};
+
+// Function to capitalize the first character
+const capitalizeWord = (word) => {
+  if (!word) return '';
+  return word.replace(/^\w/, c => c.toUpperCase());
 };
 
 /**

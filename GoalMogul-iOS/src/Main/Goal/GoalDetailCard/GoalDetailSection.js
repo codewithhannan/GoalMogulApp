@@ -143,8 +143,8 @@ class GoalDetailSection extends Component {
   renderSelfActionButtons(item) {
     const { _id, isCompleted } = item;
     const containerStyle = isCompleted
-      ? { backgroundColor: '#eafcee' }
-      : {};
+      ? { backgroundColor: '#45C9F6' }
+      : { backgroundColor: '#eafcee' };
 
     return (
       <View style={styles.selfActionButtonsContainerStyle}>
@@ -159,14 +159,14 @@ class GoalDetailSection extends Component {
           iconSource={ShareIcon}
           iconStyle={{ tintColor: '#3f3f3f' }}
           textStyle={{}}
-          onPress={() => this.props.shareGoalToMastermind()}
+          onPress={() => this.props.shareGoalToMastermind(_id)}
         />
         <IndividualActionButton
           buttonName='Mark Complete'
           iconSource={CheckIcon}
           iconStyle={{ tintColor: '#3f3f3f', height: 13 }}
           textStyle={{}}
-          constainerStyle={containerStyle}
+          containerStyle={containerStyle}
           onPress={() => this.props.markGoalAsComplete(_id)}
         />
       </View>

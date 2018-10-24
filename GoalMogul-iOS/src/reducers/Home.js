@@ -36,7 +36,7 @@ const INITIAL_STATE = {
     currentIndex: 0,
     filter: {
       sortBy: 'created',
-      orderBy: 'ascending',
+      orderBy: 'descending',
       categories: 'General',
       completedOnly: 'false',
       priorities: ''
@@ -52,7 +52,7 @@ const INITIAL_STATE = {
     currentIndex: 0,
     filter: {
       sortBy: 'created',
-      orderBy: 'ascending',
+      orderBy: 'descending',
       categories: 'General',
       completedOnly: 'false',
       priorities: ''

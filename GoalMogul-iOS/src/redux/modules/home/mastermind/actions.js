@@ -160,7 +160,7 @@ const loadGoals = (skip, limit, token, priority, category, callback, onError) =>
         callback(res.data);
       }
       callback([]); // TODO: delete this line
-      console.warn(`${DEBUG_KEY}: Loading goal with no res`);
+      console.log(`${DEBUG_KEY}: Loading goal with no res`);
     })
     .catch((err) => {
       console.log(`${DEBUG_KEY} load goal error: ${err}`);

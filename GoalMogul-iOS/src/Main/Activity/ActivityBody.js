@@ -49,13 +49,15 @@ class ActivityBody extends React.Component {
     if (!url) {
       return '';
     }
+    const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${url}`;
       return (
         <View>
           <ImageBackground
             style={styles.mediaStyle}
-            source={TestImage}
-            imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'stretch' }}
+            source={{ uri: imageUrl }}
+            imageStyle={{ borderRadius: 8, resizeMode: 'stretch' }}
           >
+          {/*
             <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
               <Image
                 source={photoIcon}
@@ -78,6 +80,7 @@ class ActivityBody extends React.Component {
                 style={{ width: 15, height: 15, tintColor: '#fafafa' }}
               />
             </TouchableOpacity>
+          */}
           </ImageBackground>
           {this.renderPostImageModal(url)}
         </View>

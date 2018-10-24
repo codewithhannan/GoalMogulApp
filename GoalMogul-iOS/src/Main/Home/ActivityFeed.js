@@ -45,13 +45,17 @@ class ActivityFeed extends Component {
     );
   }
 
+  /**
+   * NOTE: currently Activity Feed has no filter
+   */
   renderListHeader() {
-    return (
-      <GoalFilterBar
-        filter={this.props.filter}
-        onMenuChange={this.handleOnMenuChange}
-      />
-  );
+    // return (
+    //   <GoalFilterBar
+    //     filter={this.props.filter}
+    //     onMenuChange={this.handleOnMenuChange}
+    //   />
+    // );
+    return '';
   }
 
   render() {

@@ -111,7 +111,7 @@ const INITIAL_STATE = {
   goals: {
     filter: {
       sortBy: 'created',
-      orderBy: 'ascending',
+      orderBy: 'descending',
       categories: 'General',
       completedOnly: 'false',
       priorities: ''
@@ -125,7 +125,7 @@ const INITIAL_STATE = {
   needs: {
     filter: {
       sortBy: 'created',
-      orderBy: 'ascending',
+      orderBy: 'descending',
       categories: 'General',
       completedOnly: 'false',
       priorities: ''
@@ -139,7 +139,7 @@ const INITIAL_STATE = {
   posts: {
     filter: {
       sortBy: 'created',
-      orderBy: 'ascending',
+      orderBy: 'descending',
       categories: 'General',
       completedOnly: 'false',
       priorities: ''
