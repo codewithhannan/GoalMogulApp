@@ -8,7 +8,7 @@ import {
 
 const INITIAL_STATE = {
   data: [],
-  hasNextPage: undefined,
+  hasNextPage: false,
   limit: 20,
   skip: 0,
   loading: false,

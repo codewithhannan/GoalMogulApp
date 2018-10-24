@@ -9,7 +9,10 @@ import {
   MYTRIBE_DETAIL_CLOSE,
   MYTRIBE_FEED_FETCH,
   MYTRIBE_FEED_FETCH_DONE,
-  MYTRIBE_FEED_REFRESH_DONE
+  MYTRIBE_FEED_REFRESH_DONE,
+  MYTRIBE_REMOVE_MEMBER_SUCCESS,
+  MYTRIBE_PROMOTE_MEMBER_SUCCESS,
+  MYTRIBE_MEMBER_SELECT_FILTER
 } from './MyTribeReducers';
 
 // Selectors
@@ -27,6 +30,16 @@ export const tribeSelectTab = (index) => (dispatch) => {
   dispatch({
     type: MYTRIBE_SWITCH_TAB,
     payload: index
+  });
+};
+
+export const myTribeSelectMembersFilter = (option, index) => (dispatch) => {
+  dispatch({
+    type: MYTRIBE_MEMBER_SELECT_FILTER,
+    payload: {
+      option,
+      index
+    }
   });
 };
 
@@ -92,6 +105,162 @@ export const fetchTribeDetail = (tribeId) => (dispatch, getState) => {
     .then((res) => {
       if (res.data) {
         return onSuccess(res.data);
+      }
+      onError(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
+};
+
+/**
+ * This function removes a user from tribe
+ * @param userId: removeeId
+ * @param tribeId: tribeId
+ */
+export const myTribeAdminRemoveUser = (userId, tribeId) => (dispatch, getState) => {
+  Alert.alert(
+    'Confirmation',
+    'Are you sure to remove this user?',
+    [
+      { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+      {
+        text: 'Confirm',
+        onPress: () => doMyTribeAdminRemoveUser(userId, tribeId)(dispatch, getState)
+      }
+    ],
+    { cancelable: false }
+  );
+};
+
+const doMyTribeAdminRemoveUser = (userId, tribeId) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const onSuccess = (res) => {
+    console.log(`${DEBUG_KEY}: remove member ${userId} successfully with res: `, res);
+    dispatch({
+      type: MYTRIBE_REMOVE_MEMBER_SUCCESS,
+      payload: {
+        removeeId: userId
+      }
+    });
+  };
+  const onError = (err) => {
+    console.log(`${DEBUG_KEY}: failed to remove member ${userId} with err: `, err);
+    Alert.alert(
+      'Remove member failed',
+      'Please try again later'
+    );
+  };
+
+  API
+    .delete(`${BASE_ROUTE}/member?removeeId=${userId}&tribeId=${tribeId}`, token)
+    .then((res) => {
+      if (res.data && res.message) {
+        return onSuccess(res);
+      }
+      onError(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
+};
+
+/**
+ * This function promotes a user in tribe to Admin
+ * @param userId: promoteeId
+ * @param tribeId: tribeId
+ */
+export const myTribeAdminPromoteUser = (userId, tribeId) => (dispatch, getState) => {
+  Alert.alert(
+    'Confirmation',
+    'Are you sure to promote this user?',
+    [
+      { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+      {
+        text: 'Confirm',
+        onPress: () => doMyTribeAdminPromoteUser(userId, tribeId)(dispatch, getState)
+      }
+    ],
+    { cancelable: false }
+  );
+};
+
+const doMyTribeAdminPromoteUser = (userId, tribeId) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const onSuccess = (res) => {
+    console.log(`${DEBUG_KEY}: promote member ${userId} successfully with res: `, res);
+    dispatch({
+      type: MYTRIBE_PROMOTE_MEMBER_SUCCESS,
+      payload: {
+        promoteeId: userId
+      }
+    });
+  };
+  const onError = (err) => {
+    console.log(`${DEBUG_KEY}: failed to promote member ${userId} with err: `, err);
+    Alert.alert(
+      'Promote member failed',
+      'Please try again later'
+    );
+  };
+
+  API
+    .post(`${BASE_ROUTE}/admin?promoteeId=${userId}&tribeId=${tribeId}`, token)
+    .then((res) => {
+      if (res.data && res.message) {
+        return onSuccess(res);
+      }
+      onError(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
+};
+
+/**
+ * This function demotes a user in tribe to member from Admin
+ * @param userId: demoteeId
+ * @param tribeId: tribeId
+ */
+export const myTribeAdminDemoteUser = (userId, tribeId) => (dispatch, getState) => {
+  Alert.alert(
+    'Confirmation',
+    'Are you sure to demote this user?',
+    [
+      { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+      {
+        text: 'Confirm',
+        onPress: () => doMyTribeAdminDemoteUser(userId, tribeId)(dispatch, getState)
+      }
+    ],
+    { cancelable: false }
+  );
+};
+
+const doMyTribeAdminDemoteUser = (userId, tribeId) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const onSuccess = (res) => {
+    console.log(`${DEBUG_KEY}: demote member ${userId} successfully with res: `, res);
+    dispatch({
+      type: MYTRIBE_PROMOTE_MEMBER_SUCCESS,
+      payload: {
+        demoteeId: userId
+      }
+    });
+  };
+  const onError = (err) => {
+    console.log(`${DEBUG_KEY}: failed to demote member ${userId} with err: `, err);
+    Alert.alert(
+      'Demote member failed',
+      'Please try again later'
+    );
+  };
+
+  API
+    .post(`${BASE_ROUTE}/admin?demoteeId=${userId}&tribeId=${tribeId}`, token)
+    .then((res) => {
+      if (res.data && res.message) {
+        return onSuccess(res);
       }
       onError(res);
     })

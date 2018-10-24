@@ -3,18 +3,72 @@ import {
   View,
   Text,
   Image,
+  TouchableOpacity
 } from 'react-native';
+import R from 'ramda';
 
 // Components
 import Name from '../Common/Name';
+import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 
 // Assets
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
+import FriendsSettingIcon from '../../asset/utils/friendsSettingIcon.png';
 // import meetSetting from '../../../asset/utils/meetSetting.png';
 
 // Actions
 
+// Constants
+const DEBUG_KEY = '[ UI MemberListCard ]';
+
 class MemberListCard extends Component {
+  handleAdminUpdateUserStatus() {
+    const { onRemoveUser, onPromoteUser, onDemoteUser, item, category } = this.props;
+    const { _id } = item;
+    let options;
+    if (category === 'Admin') {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to remove user from current tribe`);
+          return onRemoveUser(_id) || console.log(`${DEBUG_KEY}:
+             No remove user function is supplied.`);
+        }],
+        [R.equals(1), () => {
+          console.log(`${DEBUG_KEY} User chooses to demote current user to become member`);
+          return onDemoteUser(_id) || console.log(`${DEBUG_KEY}:
+             No demote user function is supplied.`);
+        }],
+      ]);
+    } else {
+      options = switchByButtonIndex([
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to remove user from current tribe`);
+          return onRemoveUser(_id) || console.log(`${DEBUG_KEY}:
+             No remove user function is supplied.`);
+        }],
+        [R.equals(1), () => {
+          console.log(`${DEBUG_KEY} User chooses to promote current user to become admin`);
+          return onPromoteUser(_id) || console.log(`${DEBUG_KEY}:
+             No promote user function is supplied.`);
+        }],
+      ]);
+    }
+
+
+    const requestOptions = category === 'Admin'
+      ? ['Remove User', 'Demote User', 'Cancel']
+      : ['Remove User', 'Promote User', 'Cancel'];
+
+    const cancelIndex = 2;
+
+    const adminActionSheet = actionSheet(
+      requestOptions,
+      cancelIndex,
+      options
+    );
+    adminActionSheet();
+  }
+
   renderProfileImage(item) {
     const { image } = item.profile;
     let profileImage = (
@@ -79,6 +133,25 @@ class MemberListCard extends Component {
     return '';
   }
 
+  // If user is admin, then he can click to remove / promote a user
+  renderSettingIcon() {
+    const { isAdmin, onRemoveUser, onPromoteUser } = this.props;
+    if (isAdmin) {
+      return (
+        <TouchableOpacity
+          onPress={() => this.handleAdminUpdateUserStatus()}
+          style={{ alignSelf: 'center', justifyContent: 'center' }}
+        >
+          <Image
+            style={{ width: 23, height: 19, tintColor: '#33485e' }}
+            source={FriendsSettingIcon}
+          />
+        </TouchableOpacity>
+      );
+    }
+    return '';
+  }
+
   render() {
     const { item } = this.props;
     if (!item) return '';
@@ -99,6 +172,7 @@ class MemberListCard extends Component {
           </Text>
           {this.renderAdditionalInfo(item)}
         </View>
+        {this.renderSettingIcon()}
       </View>
     );
   }

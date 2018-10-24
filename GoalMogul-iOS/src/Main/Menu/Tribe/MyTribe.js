@@ -5,7 +5,6 @@ import {
   Dimensions,
   Text,
   FlatList,
-  Animated,
   TouchableOpacity
  } from 'react-native';
 import { connect } from 'react-redux';
@@ -21,7 +20,6 @@ import Divider from '../../Common/Divider';
 import About from './MyTribeAbout';
 import MemberListCard from '../../Tribe/MemberListCard';
 import { MenuFactory } from '../../Common/MenuFactory';
-import MemberFilterBar from '../../Tribe/MemberFilterBar';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
@@ -37,7 +35,11 @@ import TestEventImage from '../../../asset/TestEventImage.png';
 // Actions
 import {
   tribeSelectTab,
-  tribeDetailClose
+  tribeDetailClose,
+  myTribeAdminRemoveUser,
+  myTribeAdminPromoteUser,
+  myTribeAdminDemoteUser,
+  myTribeSelectMembersFilter
 } from '../../../redux/modules/tribe/MyTribeActions';
 import {
   openTribeInvitModal,
@@ -53,7 +55,8 @@ import {
 import {
   getMyTribeUserStatus,
   myTribeMemberSelector,
-  getMyTribeNavigationState
+  getMyTribeNavigationState,
+  getMyTribeMemberNavigationState
 } from '../../../redux/modules/tribe/TribeSelector';
 
 const DEBUG_KEY = '[ UI MyTribe ]';
@@ -72,6 +75,33 @@ class MyTribe extends Component {
       imageLoading: false,
       showPlus: true
     };
+  }
+
+  /**
+   * This function is passed to MemberListCard when setting icon is clicked
+   * and remove user option is chosen
+   */
+  handleRemoveUser = (userId) => {
+    const { _id } = this.props.item;
+    this.props.myTribeAdminRemoveUser(userId, _id);
+  }
+
+  /**
+   * This function is passed to MemberListCard when setting icon is clicked
+   * and promote user option is chosen
+   */
+  handlePromoteUser = (userId) => {
+    const { _id } = this.props.item;
+    this.props.myTribeAdminPromoteUser(userId, _id);
+  }
+
+  /**
+   * This function is passed to MemberListCard when setting icon is clicked
+   * and demote user option is chosen
+   */
+  handleDemoteUser = (userId) => {
+    const { _id } = this.props.item;
+    this.props.myTribeAdminDemoteUser(userId, _id);
   }
 
   /**
@@ -94,7 +124,7 @@ class MyTribe extends Component {
             showPlus: true
           });
           Actions.pop();
-          Actions.createPostModal();
+          Actions.createPostModal({ belongsToTribe: _id });
         }
       },
       // button info for invite
@@ -134,6 +164,7 @@ class MyTribe extends Component {
     }
   }
 
+  // This function is deprecated and replaced by renderPlus
   handleInvite = (_id) => {
     return this.props.openTribeInvitModal(_id);
   }
@@ -410,13 +441,35 @@ class MyTribe extends Component {
     );
   }
 
+  renderMemberTabs() {
+    const { memberNavigationState } = this.props;
+    const { routes } = memberNavigationState;
+
+    const props = {
+      jumpToIndex: (i) => this.props.myTribeSelectMembersFilter(routes[i].key, i),
+      navigationState: this.props.memberNavigationState
+    };
+    return (
+        <TabButtonGroup buttons={props} />
+    );
+  }
+
   renderTribeOverview(item) {
     const { name, _id, picture } = item;
 
+    // const filterBar = this.props.tab === 'members'
+    //   ? (
+    //     <MemberFilterBar
+    //       onSelect={(option) => this.props.myTribeSelectMembersFilter(option)}
+    //     />
+    //   )
+    //   : '';
+
     const filterBar = this.props.tab === 'members'
-      ? <MemberFilterBar />
+      ? this.renderMemberTabs()
       : '';
 
+    // Invite button is replaced by renderPlus
     const inviteButton = this.props.tab === 'members'
       ? (
         <TouchableOpacity
@@ -459,13 +512,13 @@ class MyTribe extends Component {
           })
         }
         {filterBar}
-        {inviteButton}
       </View>
     );
   }
 
   renderItem = (props) => {
     const { routes, index } = this.props.navigationState;
+    const { isUserAdmin } = this.props;
 
     switch (routes[index].key) {
       case 'about': {
@@ -482,7 +535,17 @@ class MyTribe extends Component {
       }
 
       case 'members': {
-        return <MemberListCard item={props.item.memberRef} key={props.index} />;
+        return (
+          <MemberListCard
+            item={props.item.memberRef}
+            category={props.item.category}
+            key={props.index}
+            isAdmin={isUserAdmin}
+            onRemoveUser={this.handleRemoveUser}
+            onPromoteUser={this.handlePromoteUser}
+            onDemoteUser={this.handleDemoteUser}
+          />
+        );
       }
 
       default:
@@ -505,6 +568,8 @@ class MyTribe extends Component {
   render() {
     const { item, data } = this.props;
     if (!item) return <View />;
+
+    console.log('data is: ', data);
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -643,6 +708,7 @@ const mapStateToProps = state => {
   const { item, feed, hasRequested } = state.myTribe;
   const { userId } = state.user;
   const navigationState = getMyTribeNavigationState(state);
+  const memberNavigationState = getMyTribeMemberNavigationState(state);
 
   const { routes, index } = navigationState;
   const data = ((key) => {
@@ -668,7 +734,9 @@ const mapStateToProps = state => {
     isMember: getMyTribeUserStatus(state),
     hasRequested,
     tab: routes[index].key,
-    userId
+    userId,
+    isUserAdmin: checkIsAdmin(item ? item.members : [], userId),
+    memberNavigationState
   };
 };
 
@@ -698,6 +766,10 @@ export default connect(
     leaveTribe,
     acceptTribeInvit,
     declineTribeInvit,
+    myTribeAdminRemoveUser,
+    myTribeAdminPromoteUser,
+    myTribeAdminDemoteUser,
+    myTribeSelectMembersFilter
   }
 )(MyTribe);
 

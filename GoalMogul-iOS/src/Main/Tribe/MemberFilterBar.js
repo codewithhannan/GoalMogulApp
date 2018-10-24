@@ -1,3 +1,6 @@
+/**
+ * NOTE: this component is currently not used as we refactor it to become a tab
+ */
 import React, { Component } from 'react';
 import {
   View,
@@ -36,11 +39,12 @@ class MemberFilterBar extends Component {
       standardTextStyle,
       caretStyle
     } = styles;
+    const { onSelect } = this.props;
     return (
       <View style={containerStyle}>
 
         <Menu
-          onSelect={(value) => this.props.tribeSelectMembersFilter(value)}
+          onSelect={(value) => onSelect(value) || this.props.tribeSelectMembersFilter(value)}
           rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
           renderer={Popover}
         >

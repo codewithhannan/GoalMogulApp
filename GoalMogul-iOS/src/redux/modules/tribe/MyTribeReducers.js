@@ -21,7 +21,22 @@ const INITIAL_STATE = {
   hasNextPage: undefined,
   skip: 0,
   limit: 100,
-  hasRequested: undefined
+  hasRequested: undefined,
+  // ['Admin', 'Member', 'JoinRequester', 'Invitee']
+  membersFilter: 'Member',
+  memberNavigationState: {
+    index: 0,
+    routes: [
+      { key: 'Admin', title: 'Admin' },
+      { key: 'Member', title: 'Member' },
+      { key: 'JoinRequester', title: 'Requested' },
+      { key: 'Invitee', title: 'Invited' }
+    ]
+  },
+  memberDefaultRoutes: [
+    { key: 'Admin', title: 'Admin' },
+    { key: 'Member', title: 'Member' }
+  ]
 };
 
 export const MYTRIBE_SWITCH_TAB = 'mytribe_switch_tab';
@@ -38,6 +53,7 @@ export const MYTRIBE_MEMBER_REMOVE_SUCCESS = 'mytribe_member_remove_success';
 export const MYTRIBE_MEMBER_ACCEPT_SUCCESS = 'mytribe_member_accept_success';
 export const MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS = 'mytribe_request_cancel_join_success';
 export const MYTRIBE_REQUEST_JOIN_SUCCESS = 'mytribe_request_join_success';
+export const MYTRIBE_MEMBER_SELECT_FILTER = 'mytribe_member_select_filter';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -120,6 +136,19 @@ export default (state = INITIAL_STATE, action) => {
     case MYTRIBE_REQUEST_JOIN_SUCCESS: {
       const newState = _.cloneDeep(state);
       return _.set(newState, 'hasRequested', true);
+    }
+
+    case MYTRIBE_MEMBER_SELECT_FILTER: {
+      const { option, index } = action.payload;
+      let newState = _.cloneDeep(state);
+      if (option) {
+        newState = _.set(newState, 'membersFilter', option);
+      }
+      if (index || index === 0) {
+        newState = _.set(newState, 'memberNavigationState.index', index);
+      }
+
+      return newState;
     }
 
     default:

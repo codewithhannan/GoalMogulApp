@@ -54,10 +54,13 @@ class CreatePostModal extends Component {
   }
 
   initializeForm() {
+    const { belongsToTribe, belongsToEvent } = this.props;
     const defaulVals = {
       viewableSetting: 'Friends',
       mediaRef: undefined,
-      post: ''
+      post: '',
+      belongsToTribe,
+      belongsToEvent
     };
 
     // Initialize based on the props, if it's opened through edit button

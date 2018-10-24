@@ -8,7 +8,7 @@ const INITIAL_STATE = {
     routes: [
       { key: 'about', title: 'About' },
       { key: 'posts', title: 'Posts' },
-      { key: 'attendees', title: 'Attendees' }
+      { key: 'attendees', title: 'Participants' }
     ]
   },
   selectedTab: 'about',
@@ -18,7 +18,21 @@ const INITIAL_STATE = {
   feedLoading: false,
   hasNextPage: undefined,
   skip: 0,
-  limit: 100
+  limit: 100,
+  // ['Invited', 'Interested', 'Going', 'Maybe', 'NotGoing']
+  participantsFilter: 'Going',
+  memberNavigationState: {
+    index: 0,
+    routes: [
+      { key: 'Going', title: 'Going' },
+      { key: 'Interested', title: 'Interested' },
+      { key: 'Invited', title: 'Invited' }
+    ]
+  },
+  memberDefaultRoutes: [
+    { key: 'Admin', title: 'Admin' },
+    { key: 'Member', title: 'Member' }
+  ]
 };
 
 export const MYEVENT_SWITCH_TAB = 'myevent_switch_tab';
@@ -29,6 +43,7 @@ export const MYEVENT_FEED_FETCH_DONE = 'myevent_feed_fetch_done';
 export const MYEVENT_FEED_REFRESH_DONE = 'myevent_feed_refresh_done';
 export const MYEVENT_DETAIL_LOAD_SUCCESS = 'myevent_detail_load_success';
 export const MYEVENT_DETAIL_LOAD_FAIL = 'myevent_detail_load_fail';
+export const MYEVENT_MEMBER_SELECT_FILTER = 'myevent_member_select_filter';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -89,6 +104,19 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...INITIAL_STATE
       };
+    }
+
+    case MYEVENT_MEMBER_SELECT_FILTER: {
+      const { option, index } = action.payload;
+      let newState = _.cloneDeep(state);
+      if (option) {
+        newState = _.set(newState, 'participantsFilter', option);
+      }
+      if (index || index === 0) {
+        newState = _.set(newState, 'memberNavigationState.index', index);
+      }
+
+      return newState;
     }
 
     default:

@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import _ from 'lodash';
 
 const getEventParticipants = (state) => {
   if (state.event.item) {
@@ -15,6 +16,16 @@ const getMyEventParticipants = (state) => {
 };
 const getUserId = (state) => state.user.userId;
 const getParticipantsFilter = (state) => state.event.participantsFilter;
+
+const getMyParticipantsFilter = (state) => state.myEvent.participantsFilter;
+
+const getMyEventMemberNavigationStates = (state) => {
+  const { memberNavigationState, memberDefaultRoutes } = state.myTribe;
+  return {
+    memberNavigationState,
+    memberDefaultRoutes
+  };
+};
 
 /*
  * Transform a goal's need and step to become
@@ -59,5 +70,39 @@ export const participantSelector = createSelector(
     if (!participants) return '';
 
     return participants.filter((participant) => participant.rsvp === filter);
+  }
+);
+
+export const myEventParticipantSelector = createSelector(
+  [getMyParticipantsFilter, getMyEventParticipants],
+  (filter, participants) => {
+    if (!participants) return '';
+
+    return participants.filter((participant) => participant.rsvp === filter);
+  }
+);
+
+// This function currently is not used since people can see all participants
+export const getMyEventMemberNavigationState = createSelector(
+  [getMyEventMemberNavigationStates, getMyEventParticipants, getUserId],
+  (navigationStates, members, userId) => {
+    const { memberNavigationState, memberDefaultRoutes } = navigationStates;
+    const navigationStateToReturn = _.cloneDeep(memberNavigationState);
+
+    if (!members || members.length === 0) {
+      return _.set(navigationStateToReturn, 'routes', memberDefaultRoutes);
+    }
+
+    let isAdmin;
+    members.forEach((member) => {
+      if (member.memberRef._id === userId
+        && (member.category === 'Admin')) {
+        isAdmin = true;
+      }
+    });
+
+    return isAdmin
+      ? navigationStateToReturn
+      : _.set(navigationStateToReturn, 'routes', memberDefaultRoutes);
   }
 );

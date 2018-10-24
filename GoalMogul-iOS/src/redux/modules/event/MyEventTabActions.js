@@ -121,7 +121,7 @@ export const loadMoreEvent = () => (dispatch, getState) => {
         data,
         skip: data.length,
         limit: 20,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0 || data.length < limit)
       }
     });
   }, () => {

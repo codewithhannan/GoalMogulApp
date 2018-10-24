@@ -38,6 +38,14 @@ const getMyTribeNavigationStates = (state) => {
   };
 };
 
+const getMyTribeMemberNavigationStates = (state) => {
+  const { memberNavigationState, memberDefaultRoutes } = state.myTribe;
+  return {
+    memberNavigationState,
+    memberDefaultRoutes
+  };
+};
+
 /*
  * Iterate through member list to check if user is a current member
  */
@@ -149,5 +157,29 @@ export const getMyTribeNavigationState = createSelector(
     return isMember
       ? navigationStateToReturn
       : _.set(navigationStateToReturn, 'routes', defaultRoutes);
+  }
+);
+
+export const getMyTribeMemberNavigationState = createSelector(
+  [getMyTribeMemberNavigationStates, getMyTribeMembers, getUserId],
+  (navigationStates, members, userId) => {
+    const { memberNavigationState, memberDefaultRoutes } = navigationStates;
+    const navigationStateToReturn = _.cloneDeep(memberNavigationState);
+
+    if (!members || members.length === 0) {
+      return _.set(navigationStateToReturn, 'routes', memberDefaultRoutes);
+    }
+
+    let isAdmin;
+    members.forEach((member) => {
+      if (member.memberRef._id === userId
+        && (member.category === 'Admin')) {
+        isAdmin = true;
+      }
+    });
+
+    return isAdmin
+      ? navigationStateToReturn
+      : _.set(navigationStateToReturn, 'routes', memberDefaultRoutes);
   }
 );
