@@ -23,11 +23,11 @@ const ProgressBar = (props) => {
   return (
     <View style={styles.containerStyle}>
       <Text style={styles.textStyle}>
-        {startTimeText}
+        {startTimeText === 'undefined NaN' ? 'Jan 2018' : startTimeText}
       </Text>
       <Image source={Bar} style={styles.imageStyle} />
       <Text style={styles.textStyle}>
-        {endTimeText}
+        {endTimeText === 'undefined NaN' ? 'Aug 2019' : endTimeText}
       </Text>
     </View>
   );
@@ -40,7 +40,9 @@ const styles = {
     marginBottom: 6
   },
   imageStyle: {
-    flex: 6
+    flex: 6,
+    marginLeft: 2,
+    marginRight: 2
   },
   textStyle: {
     color: '#7b7b7b',

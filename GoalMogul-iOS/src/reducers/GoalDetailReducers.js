@@ -143,10 +143,10 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS: {
-      const { tab } = action.payload;
+      const { tab, complete } = action.payload;
       const path = !tab ? 'goal.goal' : `goal${capitalizeWord(tab)}.goal`;
       const newState = _.cloneDeep(state);
-      return _.set(newState, `${path}.isCompleted`, true);
+      return _.set(newState, `${path}.isCompleted`, complete);
     }
 
     case GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS: {
