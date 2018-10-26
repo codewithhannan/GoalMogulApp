@@ -12,6 +12,8 @@ import { CheckBox } from 'react-native-elements';
 /* asset */
 import dropDown from '../../asset/utils/dropDown.png';
 
+import { switchCase } from '../../redux/middleware/utils';
+
 const { Popover } = renderers;
 const { width } = Dimensions.get('window');
 
@@ -47,6 +49,8 @@ class GoalFilterBar extends Component {
 
     const prioritiesArray = priorities === '' ? [] : priorities.split(',');
     const orderByText = orderBy === 'ascending' ? 'Order ASC' : 'Order DESC';
+    const sortByText = switchSortByText(sortBy);
+    const categoryText = categories;
 
     return (
       <View style={containerStyle}>
@@ -62,21 +66,21 @@ class GoalFilterBar extends Component {
             }}
           >
             <View style={styles.detailContainerStyle}>
-              <Text style={styles.textStyle}>Sort by</Text>
+              <Text style={styles.textStyle}>Sort By ({`${sortByText}`})</Text>
               <Image style={styles.caretStyle} source={dropDown} />
             </View>
           </MenuTrigger>
           <MenuOptions customStyles={styles.menuOptionsStyles}>
             <MenuOption
-              text='Created'
+              text='Date Created'
               value='created'
             />
             <MenuOption
-              text='Updated'
-              vale='updated'
+              text='Last Updated'
+              value='updated'
             />
             <MenuOption
-              text='Shared'
+              text='Date Shared'
               value='shared'
             />
             <MenuOption
@@ -87,6 +91,7 @@ class GoalFilterBar extends Component {
           </MenuOptions>
         </Menu>
         </View>
+        {/*
         <View style={{ flex: 1 }}>
         <Menu
           onSelect={value => this.handleOnMenuSelect('orderBy', value)}
@@ -100,7 +105,7 @@ class GoalFilterBar extends Component {
           >
             <View style={detailContainerStyle}>
               <Text style={textStyle}>{orderByText}
-                {/* <Text style={standardTextStyle}> (ALL)</Text> */}
+                <Text style={standardTextStyle}> (ALL)</Text>
               </Text>
               <Image style={caretStyle} source={dropDown} />
             </View>
@@ -117,6 +122,7 @@ class GoalFilterBar extends Component {
           </MenuOptions>
         </Menu>
         </View>
+        */}
         <View style={{ flex: 1 }}>
         <Menu
           onSelect={value => this.handleOnMenuSelect('categories', value)}
@@ -129,7 +135,7 @@ class GoalFilterBar extends Component {
             }}
           >
             <View style={detailContainerStyle}>
-              <Text style={textStyle}>Category
+              <Text style={textStyle}>Category ({`${categoryText}`})
                 {/* <Text style={standardTextStyle}> (ALL)</Text> */}
               </Text>
               <Image style={caretStyle} source={dropDown} />
@@ -167,6 +173,7 @@ class GoalFilterBar extends Component {
           </MenuOptions>
         </Menu>
         </View>
+        {/*
         <View style={{ flex: 1 }}>
         <Menu
           onSelect={value => this.handleOnMenuSelect('priorities', value)}
@@ -180,7 +187,7 @@ class GoalFilterBar extends Component {
           >
             <View style={detailContainerStyle}>
               <Text style={textStyle}>Priorities
-                {/* <Text style={standardTextStyle}> (ALL)</Text> */}
+                <Text style={standardTextStyle}> (ALL)</Text>
               </Text>
               <Image style={caretStyle} source={dropDown} />
             </View>
@@ -258,6 +265,7 @@ class GoalFilterBar extends Component {
           </MenuOptions>
         </Menu>
         </View>
+        */}
       </View>
     );
   }
@@ -326,5 +334,12 @@ const styles = {
     },
   }
 };
+
+const switchSortByText = (sortBy) => switchCase({
+  created: 'DATE',
+  updated: 'UPDATED',
+  shared: 'LAST SHARED',
+  priority: 'PRIORITY'
+})('created')(sortBy);
 
 export default GoalFilterBar;

@@ -13,8 +13,12 @@ const getState = (state) => state.goalDetail;
  * in GoalDetailCard2
  */
 export const getGoalStepsAndNeeds = createSelector(
-  [getNeeds, getSteps],
-  (needs, steps) => {
+  [getState, getTab],
+  (goalDetails, tab) => {
+    const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
+    const goal = _.get(goalDetails, `${path}.goal`);
+
+    const { needs, steps } = goal;
     let res = [];
     if (needs && needs.length > 0) {
       res.push({ sectionTitle: 'needs' });
@@ -52,7 +56,7 @@ export const getGoalStepsAndNeeds = createSelector(
 export const getGoalDetailByTab = createSelector(
   [getState, getTab],
   (goalDetails, tab) => {
-    const path = !tab ? 'goal' : `goal${capitalizeWord(tab)}`;
+    const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
     return _.get(goalDetails, `${path}`);
   }
 );

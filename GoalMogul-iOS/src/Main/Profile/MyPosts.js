@@ -144,11 +144,13 @@ class MyPosts extends Component {
     const { loading, data } = this.props;
     return (
       <View style={{ flex: 1 }}>
+        {/*
         <GoalFilterBar
           selectedTab={this.props.selectedTab}
           filter={this.props.filter}
           onMenuChange={this.handleOnMenuChange}
         />
+        */}
         <View style={{ flex: 1 }}>
           <FlatList
             data={[...data, ...testData]}

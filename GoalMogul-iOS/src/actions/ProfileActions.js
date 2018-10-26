@@ -266,7 +266,7 @@ export const selectProfileTab = (index) => (dispatch) => {
 };
 
 // User update filter for specific tab
-export const changeFilter = (tab, filterType, value) => (dispatch) => {
+export const changeFilter = (tab, filterType, value) => (dispatch, getState) => {
   dispatch({
     type: PROFILE_UPDATE_FILTER,
     payload: {
@@ -275,6 +275,7 @@ export const changeFilter = (tab, filterType, value) => (dispatch) => {
       value
     }
   });
+  handleTabRefresh(tab)(dispatch, getState);
 };
 
 /**

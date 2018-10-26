@@ -86,7 +86,6 @@ class ProfileGoalCard2 extends React.Component {
 
   renderProgressBar(item) {
     const { start, end } = item;
-    console.log('start and end are: ', start, end);
     return (
       <View style={{ marginTop: 8 }}>
         <ProgressBar startTime={start} endTime={end} />

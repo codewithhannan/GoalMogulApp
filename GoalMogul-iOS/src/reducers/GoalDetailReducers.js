@@ -118,7 +118,9 @@ export default (state = INITIAL_STATE, action) => {
 
     case GOAL_DETAIL_SWITCH_TAB: {
       const { tab, index } = action.payload;
-      const path = !tab ? 'goal.navigation' : `goal${capitalizeWord(tab)}.navigation`;
+      const path = (!tab || tab === 'homeTab')
+        ? 'goal.navigationState'
+        : `goal${capitalizeWord(tab)}.navigationState`;
       const newState = _.cloneDeep(state);
       return _.set(newState, `${path}.index`, index);
     }
