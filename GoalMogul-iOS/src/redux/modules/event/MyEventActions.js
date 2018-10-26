@@ -39,14 +39,29 @@ export const eventDetailClose = () => (dispatch) => {
 };
 
 export const eventDetailOpen = (event) => (dispatch, getState) => {
-  const isMember = getMyEventUserStatus(getState());
+  // const isMember = getMyEventUserStatus(getState());
+  const { userId } = getState().user;
+  const { _id } = event;
 
   // If user is not a member nor an invitee and event is not public visible,
   // Show not found for this tribe
-  if ((!isMember) && event.isInviteOnly) {
-    return Alert.alert(
-      'Event not found'
-    );
+  if (event.isInviteOnly && userId !== event.creator) {
+    const callback = (res) => {
+      if (!res.data) {
+        return Alert.alert(
+          'Event not found'
+        );
+      }
+      dispatch({
+        type: MYEVENT_DETAIL_LOAD_SUCCESS,
+        payload: {
+          event: res.data
+        }
+      });
+      Actions.myEventDetail();
+    };
+    fetchEventDetail(_id, callback)(dispatch, getState);
+    return;
   }
 
   const newEvent = _.cloneDeep(event);
@@ -57,7 +72,6 @@ export const eventDetailOpen = (event) => (dispatch, getState) => {
     }
   });
   Actions.myEventDetail();
-  const { _id } = event;
   fetchEventDetail(_id)(dispatch, getState);
   refreshEventFeed(_id, dispatch, getState);
 };
@@ -74,9 +88,9 @@ export const myEventSelectMembersFilter = (option, index) => (dispatch) => {
 
 
 /**
- * Fetch tribe detail for a tribe
+ * Fetch event detail for an event
  */
-export const fetchEventDetail = (eventId) => (dispatch, getState) => {
+export const fetchEventDetail = (eventId, callback) => (dispatch, getState) => {
   const { token } = getState().user;
   const onSuccess = (data) => {
     dispatch({
@@ -98,6 +112,9 @@ export const fetchEventDetail = (eventId) => (dispatch, getState) => {
   API
     .get(`${BASE_ROUTE}/documents/${eventId}`, token)
     .then((res) => {
+      if (callback) {
+        return callback(res);
+      }
       if (res.data) {
         return onSuccess(res.data);
       }

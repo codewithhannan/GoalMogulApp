@@ -70,13 +70,13 @@ class GoalDetailCard2 extends Component {
   // Tab related handlers
   _handleIndexChange = index => {
     this.props.goalDetailSwitchTab(index);
-    this.setState({
-      ...this.state,
-      navigationState: {
-        ...this.state.navigationState,
-        index,
-      }
-    });
+    // this.setState({
+    //   ...this.state,
+    //   navigationState: {
+    //     ...this.state.navigationState,
+    //     index,
+    //   }
+    // });
   };
 
   _renderHeader = props => {
@@ -99,7 +99,7 @@ class GoalDetailCard2 extends Component {
   dialogOnFocus = () => this.commentBox.focus();
 
   renderItem = (props) => {
-    const { routes, index } = this.state.navigationState;
+    const { routes, index } = this.props.navigationState;
 
     switch (routes[index].key) {
       case 'comments': {
@@ -164,8 +164,8 @@ class GoalDetailCard2 extends Component {
   }
 
   render() {
-    const { comments, stepsAndNeeds } = this.props;
-    const { routes, index } = this.state.navigationState;
+    const { comments, stepsAndNeeds, navigationState } = this.props;
+    const { routes, index } = navigationState;
     const data = routes[index].key === 'comments' ? comments : stepsAndNeeds;
 
     return (

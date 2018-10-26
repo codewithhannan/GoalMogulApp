@@ -180,7 +180,7 @@ export const goalToFormAdaptor = (values) => {
     title,
     category,
     privacy,
-    shareToGoalFeed,
+    feedInfo,
     priority,
     details,
     needs,
@@ -196,7 +196,7 @@ export const goalToFormAdaptor = (values) => {
     category,
     privacy: privacy === 'self' ? 'Private' : capitalizeWord(privacy),
     // Following are not required
-    shareToMastermind: shareToGoalFeed,
+    shareToMastermind: feedInfo && !_.isEmpty(feedInfo),
     needs: stepsNeedsReverseAdapter(needs),
     steps: stepsNeedsReverseAdapter(steps),
     // TODO: TAG:

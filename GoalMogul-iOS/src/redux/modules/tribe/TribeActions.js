@@ -1,5 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import { Alert } from 'react-native';
+import _ from 'lodash';
 import {
   TRIBE_SWITCH_TAB,
   TRIBE_DETAIL_OPEN,
@@ -14,7 +15,9 @@ import {
   TRIBE_MEMBER_INVITE_FAIL,
   TRIBE_DELETE_SUCCESS,
   TRIBE_MEMBER_REMOVE_SUCCESS,
-  TRIBE_MEMBER_ACCEPT_SUCCESS
+  TRIBE_MEMBER_ACCEPT_SUCCESS,
+  TRIBE_DETAIL_LOAD_SUCCESS,
+  TRIBE_DETAIL_LOAD_FAIL
 } from './TribeReducers';
 
 import {
@@ -324,20 +327,80 @@ export const tribeDetailClose = () => (dispatch) => {
 
 export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
   const isMember = getUserStatus(getState());
+  const { _id } = tribe;
 
   // If user is not a member nor an invitee and tribe is not public visible,
   // Show not found for this tribe
   if ((!isMember || isMember === 'JoinRequester') && !tribe.isPubliclyVisible) {
-    return Alert.alert(
-      'Tribe not found'
-    );
+    const callback = (res) => {
+      console.log(`${DEBUG_KEY}: res for verifying user identify: `, res);
+      if (!res.data) {
+        return Alert.alert(
+          'Tribe not found'
+        );
+      }
+      dispatch({
+        type: TRIBE_DETAIL_LOAD_SUCCESS,
+        payload: {
+          tribe: res.data
+        }
+      });
+      Actions.tribeDetail();
+    };
+
+    fetchTribeDetail(_id, callback)(dispatch, getState);
+    return;
   }
+
+  const newTribe = _.cloneDeep(tribe);
   dispatch({
     type: TRIBE_DETAIL_OPEN,
-    payload: { ...tribe }
+    payload: {
+      tribe: _.set(newTribe, 'members', [])
+    }
   });
   Actions.tribeDetail();
-  refreshTribeFeed(tribe._id, dispatch, getState);
+  fetchTribeDetail(_id)(dispatch, getState);
+  refreshTribeFeed(_id, dispatch, getState);
+};
+
+/**
+ * Fetch tribe detail for a tribe
+ */
+export const fetchTribeDetail = (tribeId, callback) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const onSuccess = (data) => {
+    dispatch({
+      type: TRIBE_DETAIL_LOAD_SUCCESS,
+      payload: {
+        tribe: data
+      }
+    });
+    console.log(`${DEBUG_KEY}: load tribe detail success with data: `, data);
+  };
+
+  const onError = (err) => {
+    dispatch({
+      type: TRIBE_DETAIL_LOAD_FAIL
+    });
+    console.log(`${DEBUG_KEY}: failed to load tribe detail with err: `, err);
+  };
+
+  API
+    .get(`${BASE_ROUTE}/documents/${tribeId}`, token)
+    .then((res) => {
+      if (callback) {
+        return callback(res);
+      }
+
+      if (res.data) {
+        return onSuccess(res.data);
+      }
+      onError(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
 };
 
 /**

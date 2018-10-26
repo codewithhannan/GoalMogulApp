@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text
+  Text,
+  Alert
 } from 'react-native';
 import { connect } from 'react-redux';
 import timeago from 'timeago.js';
@@ -131,20 +132,38 @@ class GoalDetailSection extends Component {
     );
   }
 
-  renderCardContent() {
+  renderCardContent(item) {
+    const { start, end } = item;
     return (
       <View style={{ marginTop: 20 }}>
-        <ProgressBar startTime='Mar 2013' endTime='Nov 2011' />
+        <ProgressBar startTime={start} endTime={end} />
       </View>
     );
   }
 
   // If this goal belongs to current user, display Edit goal, Share to Mastermind, Mark complete
   renderSelfActionButtons(item) {
-    const { _id, isCompleted } = item;
-    const containerStyle = isCompleted
-      ? { backgroundColor: '#45C9F6' }
-      : { backgroundColor: '#eafcee' };
+    const { _id, isCompleted, feedInfo } = item;
+    const hasShareToMastermind = feedInfo && !_.isEmpty(feedInfo);
+    const markCompleteStyle = isCompleted
+      ? {
+          containerStyle: { backgroundColor: '#ecf9e9' },
+          textStyle: { color: '#9fcd8d' }
+        }
+      : {
+          containerStyle: { backgroundColor: '#eafcee' }
+        };
+
+    const markCompleteOnPress = isCompleted
+      ? () => {
+        Alert.alert(
+          'Confirmation',
+          'Are you sure to mark this goal as incomplete?', [
+          { text: 'Cancel', onPress: () => console.log('user cancel unmark') },
+          { text: 'Confirm', onPress: () => this.props.markGoalAsComplete(_id, false) }]
+        );
+      }
+      : () => this.props.markGoalAsComplete(_id, true);
 
     return (
       <View style={styles.selfActionButtonsContainerStyle}>
@@ -158,16 +177,17 @@ class GoalDetailSection extends Component {
           buttonName='Mastermind'
           iconSource={ShareIcon}
           iconStyle={{ tintColor: '#3f3f3f' }}
-          textStyle={{}}
+          textStyle={markCompleteStyle.textStyle}
+          containerStyle={markCompleteStyle.containerStyle}
           onPress={() => this.props.shareGoalToMastermind(_id)}
         />
         <IndividualActionButton
           buttonName='Mark Complete'
           iconSource={CheckIcon}
           iconStyle={{ tintColor: '#3f3f3f', height: 13 }}
-          textStyle={{}}
-          containerStyle={containerStyle}
-          onPress={() => this.props.markGoalAsComplete(_id)}
+          textStyle={markCompleteStyle.textStyle}
+          containerStyle={markCompleteStyle.containerStyle}
+          onPress={markCompleteOnPress}
         />
       </View>
     );
@@ -241,7 +261,7 @@ class GoalDetailSection extends Component {
         <View style={{ ...styles.containerStyle }}>
           <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
             {this.renderUserDetail(item)}
-            {this.renderCardContent()}
+            {this.renderCardContent(item)}
           </View>
         </View>
 

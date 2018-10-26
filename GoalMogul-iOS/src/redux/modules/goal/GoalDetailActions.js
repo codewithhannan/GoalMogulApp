@@ -128,7 +128,7 @@ export const markNeedAsComplete = (needId) => (dispatch, getState) => {
 };
 
 // User marks a goal as completed
-export const markGoalAsComplete = (goalId) => (dispatch, getState) => {
+export const markGoalAsComplete = (goalId, complete) => (dispatch, getState) => {
   const { token } = getState().user;
   const { tab } = getState().navigation;
 
@@ -137,22 +137,32 @@ export const markGoalAsComplete = (goalId) => (dispatch, getState) => {
       type: GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
       payload: {
         goalId,
-        tab
+        tab,
+        complete
       }
     });
-    Alert.alert('Success', 'You have successfully marked this goal as complete.');
-    console.log(`${DEBUG_KEY}: mark goal as complete succeed with data: `, data);
+    Alert.alert(
+      'Success',
+      `You have successfully marked this goal as ${complete ? 'complete' : 'incomplete'}.`
+    );
+    console.log(
+      `${DEBUG_KEY}: mark goal as
+      ${complete ? 'complete' : 'incomplete'}
+      succeed with data: `, data);
   };
 
   const onError = (err) => {
     Alert.alert(
-      'Error',
-      'Mark goal as complete failed. Please try again later.'
+      `Failed to mark goal as ${complete ? 'complete' : 'incomplete'}.`,
+      'Please try again later.'
     );
-    console.log(`${DEBUG_KEY}: mark goal as complete failed with err: `, err);
+    console.log(
+      `${DEBUG_KEY}: mark goal as
+      ${complete ? 'complete' : 'incomplete'}
+      failed with err: `, err);
   };
 
-  updateGoalWithFields(goalId, { isCompleted: true }, token, onSuccess, onError);
+  updateGoalWithFields(goalId, { isCompleted: complete }, token, onSuccess, onError);
 };
 
 // Load states to CreateGoal modal to edit.

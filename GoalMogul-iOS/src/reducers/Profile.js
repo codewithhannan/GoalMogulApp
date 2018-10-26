@@ -325,13 +325,13 @@ export default (state = INITIAL_STATE, action) => {
 
     // Find and update the goal that current user marks as complete
     case GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS: {
-      const { goalId } = action.payload;
+      const { goalId, complete } = action.payload;
       const newState = _.cloneDeep(state);
       const oldGoals = newState.goals.data;
       return _.set(
         newState,
         'goals.data',
-        findAndUpdate(goalId, oldGoals, { isCompleted: true })
+        findAndUpdate(goalId, oldGoals, { isCompleted: complete })
       );
     }
 
