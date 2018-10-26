@@ -42,6 +42,8 @@ export const TRIBE_MEMBER_INVITE_SUCCESS = 'tribe_member_invite_success';
 export const TRIBE_MEMBER_INVITE_FAIL = 'tribe_member_invite_fail';
 export const TRIBE_MEMBER_REMOVE_SUCCESS = 'tribe_member_remove_success';
 export const TRIBE_MEMBER_ACCEPT_SUCCESS = 'tribe_member_accept_succes';
+export const TRIBE_DETAIL_LOAD_SUCCESS = 'tribe_detail_load_success';
+export const TRIBE_DETAIL_LOAD_FAIL = 'tribe_detail_load_fail';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -91,9 +93,11 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, 'feed', data);
     }
 
+    case TRIBE_DETAIL_LOAD_SUCCESS:
     case TRIBE_DETAIL_OPEN: {
-      let newState = _.cloneDeep(state);
-      return _.set(newState, 'item', { ...action.payload });
+      const { tribe } = action.payload;
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'item', { ...tribe });
     }
 
     case TRIBE_DELETE_SUCCESS:

@@ -36,6 +36,8 @@ export const EVENT_PARTICIPANT_INVITE_SUCCESS = 'event_partitipant_invite_succes
 export const EVENT_PARTICIPANT_INVITE_FAIL = 'event_partitipant_invite_fail';
 export const EVENT_DELETE_SUCCESS = 'event_delete_success';
 export const EVENT_EDIT = 'event_edit';
+export const EVENT_DETAIL_LOAD_SUCCESS = 'event_detail_load_success';
+export const EVENT_DETAIL_LOAD_FAIL = 'event_detail_load_fail';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -85,9 +87,11 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, 'feed', data);
     }
 
+    case EVENT_DETAIL_LOAD_SUCCESS:
     case EVENT_DETAIL_OPEN: {
+      const { event } = action.payload;
       const newState = _.cloneDeep(state);
-      return _.set(newState, 'item', { ...action.payload });
+      return _.set(newState, 'item', { ...event });
     }
 
     case EVENT_DELETE_SUCCESS:

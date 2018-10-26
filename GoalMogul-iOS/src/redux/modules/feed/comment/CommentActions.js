@@ -211,7 +211,7 @@ const commentAdapter = (state, pageId, tab) => {
     suggestion
   } = newComment;
 
-  return {
+  const commentToReturn = {
     contentText,
     contentTags: [],
     parentType,
@@ -221,6 +221,12 @@ const commentAdapter = (state, pageId, tab) => {
     replyToRef,
     suggestion
   };
+
+  if (_.isEmpty(suggestion)) {
+    delete commentToReturn.suggestion;
+  }
+
+  return commentToReturn;
 };
 
 /* Actions for suggestion modal */

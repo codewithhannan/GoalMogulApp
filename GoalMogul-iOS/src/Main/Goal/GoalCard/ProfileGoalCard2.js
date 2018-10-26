@@ -17,6 +17,7 @@ import _ from 'lodash';
 import Timestamp from '../Common/Timestamp';
 import ProgressBar from '../Common/ProgressBar';
 import Category from '../Common/Category';
+import PriorityBar from '../../Common/PriorityBar';
 
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
@@ -128,8 +129,9 @@ class ProfileGoalCard2 extends React.Component {
   renderPriorityBar(item) {
     const { priority } = item;
     return (
-      <View>
+      <View style={{ alignItems: 'center' }}>
         <Text style={styles.priorityTextStyle}>Priority</Text>
+        <PriorityBar priority={priority} />
       </View>
     );
   }
@@ -187,7 +189,7 @@ const styles = {
     marginBottom: 5
   },
   priorityTextStyle: {
-    fontSize: 8,
+    fontSize: 7,
     fontStyle: 'italic',
     color: 'darkgray'
   },

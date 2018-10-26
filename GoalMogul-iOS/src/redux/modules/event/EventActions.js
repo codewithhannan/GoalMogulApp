@@ -1,5 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import { Alert } from 'react-native';
+import _ from 'lodash';
 import {
   EVENT_SWITCH_TAB,
   EVENT_DETAIL_CLOSE,
@@ -14,7 +15,9 @@ import {
   EVENT_PARTICIPANT_INVITE_SUCCESS,
   EVENT_PARTICIPANT_INVITE_FAIL,
   EVENT_DELETE_SUCCESS,
-  EVENT_EDIT
+  EVENT_EDIT,
+  EVENT_DETAIL_LOAD_SUCCESS,
+  EVENT_DETAIL_LOAD_FAIL
 } from './EventReducers';
 
 import {
@@ -195,13 +198,83 @@ export const eventDetailClose = () => (dispatch) => {
   });
 };
 
+/**
+ * Open an event detail
+ */
 export const eventDetailOpen = (event) => (dispatch, getState) => {
+  const { userId } = getState().user;
+  const { _id } = event;
+
+  // If user is not a member nor an invitee and event is not public visible,
+  // Show not found for this tribe
+  if (event.isInviteOnly && userId !== event.creator) {
+    const callback = (res) => {
+      console.log(`${DEBUG_KEY}: res for verifying user identify: `, res);
+      if (!res.data) {
+        return Alert.alert(
+          'Event not found'
+        );
+      }
+      dispatch({
+        type: EVENT_DETAIL_LOAD_SUCCESS,
+        payload: {
+          event: res.data
+        }
+      });
+      Actions.eventDetail();
+    };
+    fetchEventDetail(_id, callback)(dispatch, getState);
+    return;
+  }
+
+  const newEvent = _.cloneDeep(event);
   dispatch({
     type: EVENT_DETAIL_OPEN,
-    payload: { ...event }
+    payload: {
+      event: _.set(newEvent, 'participants', [])
+    }
   });
   Actions.eventDetail();
-  refreshEventFeed(event._id, dispatch, getState);
+  fetchEventDetail(_id)(dispatch, getState);
+  refreshEventFeed(_id, dispatch, getState);
+};
+
+/**
+ * Fetch event detail for an event
+ */
+export const fetchEventDetail = (eventId, callback) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const onSuccess = (data) => {
+    dispatch({
+      type: EVENT_DETAIL_LOAD_SUCCESS,
+      payload: {
+        event: data
+      }
+    });
+    console.log(`${DEBUG_KEY}: load event detail success with data: `, data);
+  };
+
+  const onError = (err) => {
+    dispatch({
+      type: EVENT_DETAIL_LOAD_FAIL
+    });
+    console.log(`${DEBUG_KEY}: failed to load event detail with err: `, err);
+  };
+
+  API
+    .get(`${BASE_ROUTE}/documents/${eventId}`, token)
+    .then((res) => {
+      if (callback) {
+        return callback(res);
+      }
+      if (res.data) {
+        return onSuccess(res.data);
+      }
+      onError(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
 };
 
 /**
