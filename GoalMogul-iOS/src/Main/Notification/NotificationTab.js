@@ -46,6 +46,9 @@ class NotificationTab extends Component {
     if (item.type === 'header') {
       return this.renderHeader(item);
     }
+    if (item.type === 'need') {
+      return <NotificationNeedCard item={item} />;
+    }
     return (
       <NotificationCard item={item} />
     );
@@ -78,6 +81,7 @@ const TestData = [
   { _id: '2' },
   { _id: '3', type: 'seemore' },
   { _id: '4', type: 'header' },
+  { _id: '5', type: 'need' }
 ];
 
 const SeeMoreButton = (props) => {

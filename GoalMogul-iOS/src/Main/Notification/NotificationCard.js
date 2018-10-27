@@ -21,6 +21,16 @@ const DEBUG_KEY = '[ UI NotificationCard ]';
 
 class NotificationCard extends React.Component {
 
+  handleNotificationCardOnPress = (item) => {
+    const { parsedNoti } = item;
+    if (!parsedNoti || !parsedNoti.path) {
+      console.log(`${DEBUG_KEY}: no parsedNoti or path is in notification: `, item);
+      return;
+    }
+    // TODO: open detail based on the path;
+    // this.props.openNotificationDetail(item);
+  }
+
   handleOptionsOnPress() {
     const { onRemoveUser, onPromoteUser, onDemoteUser, item, category } = this.props;
     const { _id } = item;
@@ -53,13 +63,17 @@ class NotificationCard extends React.Component {
   }
 
   renderProfileImage(item) {
+    const { parsedNoti } = item;
+    const imageUrl = parsedNoti && parsedNoti.icon
+      ? parsedNoti.icon
+      : undefined;
     return (
-        <ProfileImage
-          imageStyle={{ height: 50, width: 50 }}
-          imageUrl={undefined}
-          rounded
-          imageContainerStyle={styles.imageContainerStyle}
-        />
+      <ProfileImage
+        imageStyle={{ height: 50, width: 50 }}
+        imageUrl={imageUrl}
+        rounded
+        imageContainerStyle={styles.imageContainerStyle}
+      />
     );
   }
 
@@ -78,11 +92,12 @@ class NotificationCard extends React.Component {
   }
 
   renderContent(item) {
-    // TODO: use the actual content
-    const text = 'Jordan Gardner commented on your post in "Society of Gamma -' +
+    const { created, parsedNoti } = item;
+    const text = parsedNoti && parsedNoti.notificationMessage
+      ? parsedNoti.notificationMessage
+      : 'Jordan Gardner commented on your post in "Society of Gamma -' +
       ' Bay Area this is the test part."';
 
-    const created = '';
     return (
       <View style={{ flex: 1, marginLeft: 10, marginRight: 18 }}>
         <Text
@@ -108,11 +123,14 @@ class NotificationCard extends React.Component {
       ? { ...styles.cardContainerStyle }
       : { ...styles.cardContainerStyle, backgroundColor: '#eef8fb' };
     return (
-      <View style={cardContainerStyle}>
+      <TouchableOpacity
+        style={cardContainerStyle}
+        onPress={() => this.handleNotificationCardOnPress(item)}
+      >
         {this.renderProfileImage(item)}
         {this.renderContent(item)}
         {this.renderOptions(item)}
-      </View>
+      </TouchableOpacity>
     );
   }
 }
