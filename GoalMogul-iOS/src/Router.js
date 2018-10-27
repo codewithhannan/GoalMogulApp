@@ -67,6 +67,9 @@ import Event from './Main/Event/Event';
 // Tribe
 import Tribe from './Main/Tribe/Tribe';
 
+// Notification
+import NotificationTab from './Main/Notification/NotificationTab';
+
 // Account
 import Setting from './Main/Setting/Setting';
 import Email from './Main/Setting/Account/Email';
@@ -117,7 +120,7 @@ class RouterComponent extends Component {
           <Lightbox hideNavBar>
             <Scene key="root" hideNavBar>
               <Scene key="auth" initial hideNavBar>
-                <Scene key="splash" component={SplashScreen} initial />
+                <Scene key="splash" component={NotificationTab} initial />
                 <Scene key="login" component={LoginPage} />
               </Scene>
 
@@ -207,7 +210,7 @@ class RouterComponent extends Component {
                     icon={TabIcon}
                     hideNavBar
                   >
-                    <Scene key="notification" component={Home} />
+                    <Scene key="notification" component={NotificationTab} hideNavBar />
                   </Stack>
 
                   <Stack

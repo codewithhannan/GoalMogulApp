@@ -3,6 +3,7 @@ import {
   Image,
   View
 } from 'react-native';
+import _ from 'lodash';
 
 // default profile picture
 import profilePic from '../../asset/utils/defaultUserProfile.png';
@@ -25,7 +26,7 @@ const styles = {
  */
 const ProfileImage = (props) => {
   let { imageUrl } = props;
-  const { imageContainerStyle, imageStyle, defaultImageSource } = props;
+  const { imageContainerStyle, imageStyle, defaultImageSource, rounded } = props;
   const resizeMode = setValue(props.resizeMode).withDefaultCase('contain');
 
   let defaultImageStyle;
@@ -35,6 +36,10 @@ const ProfileImage = (props) => {
     defaultImageStyle = { ...imageStyle };
   } else {
     defaultImageStyle = { ...styles.imageStyle };
+  }
+
+  if (rounded) {
+    defaultImageStyle = _.set(defaultImageStyle, 'borderRadius', 5);
   }
 
   let profileImage = (
