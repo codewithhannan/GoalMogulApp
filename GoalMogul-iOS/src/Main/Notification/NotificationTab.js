@@ -15,6 +15,12 @@ import NotificationNeedCard from './NotificationNeedCard';
 
 // Actions
 
+// Selectors
+import {
+  getNotifications,
+  getNotificationNeeds
+} from '../../redux/modules/notification/NotificationSelector';
+
 // Constants
 const DEBUG_KEY = '[ UI NotificationTab ]';
 
@@ -125,9 +131,12 @@ const TitleComponent = (props) => {
 };
 
 const mapStateToProps = (state) => {
+  const notifications = getNotifications(state);
+  const notificationNeeds = getNotificationNeeds(state);
 
   return {
-    refreshing: false
+    refreshing: false,
+    data: [...notifications, ...notificationNeeds]
   };
 };
 

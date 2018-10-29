@@ -25,6 +25,7 @@ import CommentReducers from '../redux/modules/feed/comment/CommentReducers';
 import NewCommentReducers from '../redux/modules/feed/comment/NewCommentReducers';
 import SuggestionSearchReducers from '../redux/modules/feed/comment/SuggestionSearchReducers';
 import ReportReducers from '../redux/modules/report/ReportReducers';
+import NotificationTabReducers from '../redux/modules/notification/NotificationTabReducers';
 // Explore tab related reducers
 import EventTabReducers from '../redux/modules/event/EventTabReducers';
 import TribeTabReducers from '../redux/modules/tribe/TribeTabReducers';
@@ -77,7 +78,8 @@ const reducers = combineReducers({
   myEvent: MyEventReducers,
   myTribe: MyTribeReducers,
   newTribe: NewTribeReducers,
-  newEvent: NewEventReducers
+  newEvent: NewEventReducers,
+  notification: NotificationTabReducers
 });
 
 export default persistReducer(rootPersistConfig, reducers);

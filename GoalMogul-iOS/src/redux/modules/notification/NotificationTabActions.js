@@ -2,7 +2,9 @@ import {
   NOTIFICATION_REFRESH_SUCCESS,
   NOTIFICATION_LOAD,
   NOTIFICATION_LOAD_SUCCESS,
-  NOTIFICATION_LOAD_FAIL
+  NOTIFICATION_LOAD_FAIL,
+  NOTIFICATION_SEE_MORE,
+  NOTIFICATION_SEE_LESS
 } from './NotificationTabReducers';
 
 import { queryBuilder } from '../../middleware/utils';
@@ -11,16 +13,44 @@ import { api as API } from '../../middleware/api';
 // Constants
 const DEBUG_KEY = '[ Actions NotificationTab ]';
 
+/**
+ * clicks to see more notification for a type
+ * @param type: ['needs', 'notifications']
+ */
+export const seeMoreNotification = (type) => (dispatch) => {
+  dispatch({
+    type: NOTIFICATION_SEE_MORE,
+    payload: {
+      type
+    }
+  });
+};
+
+/**
+ * clicks to see less notification for a type
+ * @param type: ['needs', 'notifications']
+ */
+export const seeLessNotification = (type) => (dispatch) => {
+  dispatch({
+    type: NOTIFICATION_SEE_LESS,
+    payload: {
+      type
+    }
+  });
+};
+
 /* Following are actions to load notifications */
 
 /**
  * Refresh notifications and needs
  */
+// TODO:
 export const refreshNotifications = () => (dispatch, getState) => {
 
   refreshNeeds()(dispatch, getState);
 };
 
+// TODO:
 export const loadMoreNotifications = () => (dispatch, getState) => {
 
 };
@@ -53,7 +83,7 @@ export const refreshNeeds = () => (dispatch, getState) => {
   const onSuccess = (data) => {
     console.log(`${DEBUG_KEY}: refresh needs succeed with data: `, data);
     dispatch({
-      type: NOTIFICATION_LOAD_SUCCESS,
+      type: NOTIFICATION_REFRESH_SUCCESS,
       payload: {
         type: 'needs',
         data,
