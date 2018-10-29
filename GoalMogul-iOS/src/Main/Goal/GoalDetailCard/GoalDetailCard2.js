@@ -33,7 +33,7 @@ import {
 
 // Component
 import SearchBarHeader from '../../../Main/Common/Header/SearchBarHeader';
-import SuggestionModal from './SuggestionModal';
+import SuggestionModal from './SuggestionModal3';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import CommentBox from '../Common/CommentBox';
 import StepAndNeedCard from './StepAndNeedCard';
@@ -164,7 +164,7 @@ class GoalDetailCard2 extends Component {
   }
 
   render() {
-    const { comments, stepsAndNeeds, navigationState } = this.props;
+    const { comments, stepsAndNeeds, navigationState, goalDetail } = this.props;
     const { routes, index } = navigationState;
     const data = routes[index].key === 'comments' ? comments : stepsAndNeeds;
 
@@ -178,6 +178,7 @@ class GoalDetailCard2 extends Component {
               this.props.attachSuggestion();
             }}
             pageId={undefined}
+            item={goalDetail}
           />
           <Report showing={this.props.showingModalInDetail} />
           <SearchBarHeader
@@ -458,7 +459,6 @@ const mapStateToProps = (state, props) => {
   const { showingModalInDetail } = state.report;
   const { userId } = state.user;
   // const { transformedComments, loading } = getCommentByTab(state, props.pageId);
-  console.log('goal is: ', goal);
   const isSelf = userId === (!goal || _.isEmpty(goal) ? '' : goal.owner._id);
 
   return {

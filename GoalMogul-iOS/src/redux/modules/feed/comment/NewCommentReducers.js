@@ -202,7 +202,12 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case COMMENT_NEW_SUGGESTION_CREATE: {
-      const { suggestionFor, suggestionForRef, tab, pageId } = action.payload;
+      const {
+        suggestionFor,
+        suggestionForRef,
+        tab,
+        pageId
+      } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       let newState = _.cloneDeep(state);

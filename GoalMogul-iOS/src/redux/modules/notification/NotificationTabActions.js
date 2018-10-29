@@ -77,6 +77,9 @@ export const refreshNeeds = () => (dispatch, getState) => {
   loadNeeds(skip, limit, onSuccess, onError)(dispatch, getState);
 };
 
+/**
+ * Load more notifications based on skip and limit
+ */
 export const loadMoreNeeds = () => (dispatch, getState) => {
   const { skip, limit, hasNextPage } = getState().notification.needs;
   if (hasNextPage === false) return;
