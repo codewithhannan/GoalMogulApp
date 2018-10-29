@@ -333,7 +333,9 @@ const mapDispatchToProps = (dispatch) => {
   return ({
     debouncedSearch,
     clearSearchState: clearSearchState(dispatch),
-    onSuggestionItemSelect: onSuggestionItemSelect(dispatch)
+    refreshSearchResult: () => dispatch(refreshSearchResult()),
+    onLoadMore: () => dispatch(onLoadMore()),
+    onSuggestionItemSelect: (val, pageId) => dispatch(onSuggestionItemSelect(val, pageId))
   });
 };
 
@@ -353,11 +355,5 @@ const mapStateToProps = (state, props) => {
 
 export default connect(
   mapStateToProps,
-  {
-    ...mapDispatchToProps,
-    refreshSearchResult,
-    onLoadMore,
-    onSuggestionItemSelect
-  }
-
+  mapDispatchToProps
 )(SearchSuggestion);

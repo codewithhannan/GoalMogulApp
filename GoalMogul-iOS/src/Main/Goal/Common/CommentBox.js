@@ -121,7 +121,7 @@ class CommentBox extends Component {
         style={styles.postContainerStyle}
         onPress={this.handleOnPost}
       >
-        <Text style={{ color, fontSize: 13, fontWeight: '500', padding: 5, margin: 5 }}>Post</Text>
+        <Text style={{ color, fontSize: 13, fontWeight: '500', padding: 6, margin: 6 }}>Post</Text>
       </TouchableOpacity>
     );
   }
@@ -166,8 +166,8 @@ class CommentBox extends Component {
         style={{
           backgroundColor: 'white',
           shadowColor: 'black',
-          shadowOffset: { width: 0, height: 1.5 },
-          shadowOpacity: 0.5,
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0.7,
           shadowRadius: 1,
           elevation: 0.5
         }}
@@ -206,8 +206,8 @@ const styles = {
     flex: 1
   },
   inputStyle: {
-    paddingTop: 6,
-    paddingBottom: 2,
+    paddingTop: 7,
+    paddingBottom: 7,
     padding: 13,
     backgroundColor: 'white',
     borderRadius: 22,
