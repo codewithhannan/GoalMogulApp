@@ -7,13 +7,20 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
+import _ from 'lodash';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
 import NotificationCard from './NotificationCard';
 import NotificationNeedCard from './NotificationNeedCard';
+import EmptyResult from '../Common/Text/EmptyResult';
 
 // Actions
+import {
+  seeMoreNotification,
+  seeLessNotification,
+  refreshNotifications
+} from '../../redux/modules/notification/NotificationTabActions';
 
 // Selectors
 import {
@@ -28,17 +35,19 @@ class NotificationTab extends Component {
   keyExtractor = (item) => item._id;
 
   handleRefresh = () => {
-
+    this.props.refreshNotifications();
   }
 
   renderSeeMore = (item) => {
-    const { onPress } = item;
-    return <SeeMoreButton onPress={onPress} />;
+    const onPress = item.type === 'seemore'
+      ? () => this.props.seeMoreNotification()
+      : () => this.props.seeLessNotification();
+
+    return <SeeMoreButton text={item.text} onPress={onPress} />;
   }
 
   renderHeader = (item) => {
-    // const { text } = item;
-    const text = 'Notifications';
+    const { text } = item;
     return <TitleComponent text={text} />;
   }
 
@@ -46,7 +55,7 @@ class NotificationTab extends Component {
     const { item } = props;
 
     // TODO: update this to the latest type
-    if (item.type === 'seemore') {
+    if (item.type === 'seemore' || item.type === 'seeless') {
       return this.renderSeeMore(item);
     }
     if (item.type === 'header') {
@@ -54,6 +63,9 @@ class NotificationTab extends Component {
     }
     if (item.type === 'need') {
       return <NotificationNeedCard item={item} />;
+    }
+    if (item.type === 'empty') {
+      return <EmptyResult text='You have no notifications' />;
     }
     return (
       <NotificationCard item={item} />
@@ -65,6 +77,12 @@ class NotificationTab extends Component {
   }
 
   render() {
+    const { data } = this.props;
+    let dataToRender = data;
+    if (_.isEmpty(data) || data.length === 0) {
+      dataToRender = [{ type: 'empty', _id: 'empty' }];
+    }
+
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <SearchBarHeader rightIcon='menu' />
@@ -73,7 +91,7 @@ class NotificationTab extends Component {
           renderItem={this.renderItem}
           keyExtractor={this.keyExtractor}
           onRefresh={this.handleRefresh}
-          refreshing={this.props.refreshing}
+          refreshing={this.props.loading}
           ListHeaderComponent={this.renderListHeader}
         />
       </View>
@@ -82,16 +100,16 @@ class NotificationTab extends Component {
 }
 
 const TestData = [
-  { _id: '0', type: 'header' },
+  { _id: '0', type: 'header', text: 'Notifications' },
   { _id: '1' },
   { _id: '2' },
   { _id: '3', type: 'seemore' },
-  { _id: '4', type: 'header' },
+  { _id: '4', type: 'header', text: 'Friend\'s Needs' },
   { _id: '5', type: 'need' }
 ];
 
 const SeeMoreButton = (props) => {
-  const { onPress } = props;
+  const { onPress, text } = props;
   return (
     <TouchableOpacity
       style={{
@@ -102,7 +120,7 @@ const SeeMoreButton = (props) => {
       }}
       onPress={() => onPress()}
     >
-      <Text style={styles.seeMoreTextStyle}>See More</Text>
+      <Text style={styles.seeMoreTextStyle}>{text}</Text>
       <View style={{ alignSelf: 'center', alignItems: 'center' }}>
         <Icon
           name='ios-arrow-round-forward'
@@ -131,12 +149,14 @@ const TitleComponent = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const notifications = getNotifications(state);
-  const notificationNeeds = getNotificationNeeds(state);
+  const notificationData = getNotifications(state);
+  const notificationNeedData = getNotificationNeeds(state);
+  const { needs, notifications } = state.notification;
 
   return {
     refreshing: false,
-    data: [...notifications, ...notificationNeeds]
+    data: [...notificationData, ...notificationNeedData],
+    loading: needs.loading || notifications.loading
   };
 };
 
@@ -163,5 +183,9 @@ const styles = {
 
 export default connect(
   mapStateToProps,
-  null
+  {
+    refreshNotifications,
+    seeMoreNotification,
+    seeLessNotification,
+  }
 )(NotificationTab);

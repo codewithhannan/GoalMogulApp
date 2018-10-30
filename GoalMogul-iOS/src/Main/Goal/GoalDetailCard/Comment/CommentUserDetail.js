@@ -64,7 +64,9 @@ class CommentUserDetail extends Component {
     const { item } = this.props;
     let text;
     if (item.commentType === 'Suggestion') {
-      text = item.suggestion.suggestionText;
+      text = (item.suggestion && item.suggestion.suggestionText)
+        ? item.suggestion.suggestionText
+        : '';
     } else {
       text = item.content.text;
     }
@@ -114,7 +116,7 @@ class CommentUserDetail extends Component {
   }
 
   renderActionButtons() {
-    const { item, index, scrollToIndex, onCommentClicked, viewOffset } = this.props;
+    const { item, index, scrollToIndex, onCommentClicked, viewOffset, commentDetail } = this.props;
     const { childComments, _id, maybeLikeRef } = item;
     const commentCounts = childComments && childComments.length > 0
       ? childComments.length
@@ -151,7 +153,8 @@ class CommentUserDetail extends Component {
             // Focus the comment box
             onCommentClicked();
             // Update new comment reducer
-            createComment({
+            this.props.createComment({
+              ...commentDetail,
               commentType: 'Reply',
               replyToRef: _id
             }, this.props.pageId);

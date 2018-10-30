@@ -100,11 +100,6 @@ class ChildCommentCard extends Component {
         imageStyle={{ ...styles.profileImageStyle }}
       />
     );
-    // return (
-    //   <View style={styles.profileImageContianerStyle}>
-    //     <Image source={defaultProfilePic} resizeMode='contain' style={styles.profileImageStyle} />
-    //   </View>
-    // );
   }
 
   renderActionButtons() {

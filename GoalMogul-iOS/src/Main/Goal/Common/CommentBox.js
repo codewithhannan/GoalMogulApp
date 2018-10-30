@@ -8,6 +8,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 // Components
 import SuggestionPreview from '../GoalDetailCard/SuggestionPreview';
@@ -48,7 +49,9 @@ class CommentBox extends Component {
     }
   }
 
-  handleOnPost = () => {
+  handleOnPost = (uploading) => {
+    // Ensure we only create comment once
+    if (uploading) return;
     this.props.postComment(this.props.pageId);
   }
 
@@ -114,12 +117,17 @@ class CommentBox extends Component {
     );
   }
 
-  renderPost() {
+  renderPost(newComment) {
+    const { uploading, contentText, tmpSuggestion } = newComment;
+    const disable = uploading ||
+      ((contentText === '' || contentText === undefined) && _.isEmpty(tmpSuggestion));
+
     const color = '#45C9F6';
     return (
       <TouchableOpacity
         style={styles.postContainerStyle}
-        onPress={this.handleOnPost}
+        onPress={() => this.handleOnPost(uploading)}
+        disabled={disable}
       >
         <Text style={{ color, fontSize: 13, fontWeight: '500', padding: 6, margin: 6 }}>Post</Text>
       </TouchableOpacity>
@@ -151,6 +159,8 @@ class CommentBox extends Component {
     const { pageId, newComment } = this.props;
     if (!newComment) return '';
 
+    const { uploading } = newComment;
+
     const inputContainerStyle = {
       ...styles.inputContainerStyle,
       // height: Math.max(36, height + 6)
@@ -181,13 +191,13 @@ class CommentBox extends Component {
               placeholder="Write a comment..."
               onChangeText={(val) => this.props.newCommentOnTextChange(val, pageId)}
               style={inputStyle}
-              editable
+              editable={!uploading}
               maxHeight={maxHeight}
               multiline
               value={newComment.contentText}
             />
           </View>
-          {this.renderPost()}
+          {this.renderPost(newComment)}
         </View>
       </SafeAreaView>
     );

@@ -32,6 +32,7 @@ const NEW_COMMENT_INITIAL_STATE = {
   friendList: [],
   showSuggestionModal: false,
   showAttachedSuggestion: false,
+  uploading: false
 };
 /**
  * This reducer is servered as denormalized comment stores
@@ -57,7 +58,7 @@ const INITIAL_STATE = {
 const INITIAL_SUGGESETION = {
   // ["ChatConvoRoom", "Event", "Tribe", "Link", "Reading",
   // "Step", "Need", "Friend", "User", "Custom"]
-  suggestionType: 'Reading',
+  suggestionType: 'Friend',
   // ["Goal", "Need", "Step"]
   suggestionFor: undefined,
   suggestionForRef: undefined,
@@ -142,12 +143,28 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, `${path}`, _.pick(newTab, properties));
     }
 
+    case COMMENT_NEW_POST_FAIL: {
+      const newState = _.cloneDeep(state);
+      const { tab, pageId } = action.payload;
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      return _.set(newState, `${path}.uploading`, false);
+    }
+
+    case COMMENT_NEW_POST_START: {
+      const newState = _.cloneDeep(state);
+      const { tab, pageId } = action.payload;
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      return _.set(newState, `${path}.uploading`, true);
+    }
+
     // when comment posts succeed, delete everything but parent type and ref
     case COMMENT_NEW_POST_SUCCESS: {
       const newState = _.cloneDeep(state);
       const { tab, pageId } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
-      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      const path = !tab || tab === 'homeTab' ? `homeTab.${page}` : `${tab}.${page}`;
       const parentType = _.get(newState, `${path}.parentType`);
       const parentRef = _.get(newState, `${path}.parentRef`);
 

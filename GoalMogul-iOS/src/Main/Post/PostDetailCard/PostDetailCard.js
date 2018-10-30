@@ -61,12 +61,14 @@ class PostDetailCard extends Component {
   dialogOnFocus = () => this.commentBox.focus();
 
   renderItem = (props) => {
-    // const { routes, index } = this.state.navigationState;
+    const { postDetail } = this.props;
+    const parentRef = postDetail ? postDetail._id : undefined;
     return (
       <CommentCard
         key={props.index}
         item={props.item}
         index={props.index}
+        commentDetail={{ parentType: 'Post', parentRef }}
         scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
         onCommentClicked={() => this.dialogOnFocus()}
         onReportPressed={() => console.log('post detail report clicked')}
