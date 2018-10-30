@@ -162,22 +162,23 @@ export default (state = INITIAL_STATE, action) => {
   }
 };
 
-const transformComments = (data) =>
-  data.filter(comment => !comment.replyToRef).map(comment => {
-    const commentId = comment._id.toString();
+const transformComments = (data) => data.filter(comment => !comment.replyToRef)
+  .map(comment => {
+    const commentId = comment._id;
     const childComments = data.filter(
-      currentComment => currentComment.replyToRef.toString() === commentId);
+      currentComment => currentComment.replyToRef === commentId
+    );
 
-    const numberOfChildrenShowing = childComments.length > 0 ? 1 : 0;
-    const hasMoreToShow = numberOfChildrenShowing !== childComments.length;
-    const newComment = {
-      ...comment,
-      childComments,
-      hasMoreToShow,
-      numberOfChildrenShowing
-    };
-    return newComment;
-  });
+  const numberOfChildrenShowing = childComments.length > 0 ? 1 : 0;
+  const hasMoreToShow = numberOfChildrenShowing !== childComments.length;
+  const newComment = {
+    ...comment,
+    childComments,
+    hasMoreToShow,
+    numberOfChildrenShowing
+  };
+  return newComment;
+});
 
 function updateLike(array, id, like) {
   return array.map((item) => {

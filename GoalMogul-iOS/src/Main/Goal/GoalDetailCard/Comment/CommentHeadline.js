@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Image, Text, TouchableOpacity } from 'react-native';
 import timeago from 'timeago.js';
+import _ from 'lodash';
 
 /* Components */
 import Name from '../../Common/Name';
@@ -29,6 +30,7 @@ const CommentHeadline = (props) => {
 
   switch (commentType) {
     case 'Suggestion': {
+      if (!suggestion || _.isEmpty(suggestion)) return '';
       const { suggestionFor, suggestionForRef } = suggestion;
       const text = suggestionFor === 'Goal'
         ? ` ${suggestionFor}: ${suggestionForRef.title}`

@@ -85,7 +85,10 @@ class GoalDetailCard2 extends Component {
     );
   };
 
-  keyExtractor = (item) => item._id;
+  keyExtractor = (item) => {
+    const { _id } = item;
+    return _id;
+  };
 
   scrollToIndex = (index, viewOffset = 0) => {
     this.refs['flatList'].scrollToIndex({
@@ -458,14 +461,20 @@ const mapStateToProps = (state, props) => {
 
   const { showingModalInDetail } = state.report;
   const { userId } = state.user;
-  // const { transformedComments, loading } = getCommentByTab(state, props.pageId);
+  const comments = getCommentByTab(state, props.pageId);
+  const { transformedComments, loading } = comments || {
+    transformedComments: [],
+    loading: false
+  };
+
   const isSelf = userId === (!goal || _.isEmpty(goal) ? '' : goal.owner._id);
+  console.log('transformedComments are: ', transformedComments);
 
   return {
-    commentLoading: false,
+    commentLoading: loading,
     stepsAndNeeds: getGoalStepsAndNeeds(state),
     // stepsAndNeeds: testStepsAndNeeds,
-    comments: testTransformedComments,
+    comments: [...transformedComments, ...testTransformedComments],
     goalDetail: goal,
     navigationState,
     showingModalInDetail,

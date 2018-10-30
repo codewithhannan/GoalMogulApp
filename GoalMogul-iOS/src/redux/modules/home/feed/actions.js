@@ -78,14 +78,9 @@ const loadFeed = (skip, limit, token, priority, categories, callback, onError) =
       token
     )
     .then((res) => {
-      console.log('loading goal with res: ', res);
-      if (res) {
-        // Right now return test data
-        if (skip === 0) {
-          callback(testData);
-        } else {
-          callback([]);
-        }
+      console.log('loading feed with res: ', res);
+      if (res && res.data) {
+        return callback([...res.data, ...testData]);
       }
       console.warn(`${DEBUG_KEY}: Loading goal with no res`);
     })

@@ -5,11 +5,11 @@ import _ from 'lodash';
 import { arrayUnique } from '../../middleware/utils';
 
 const INITIAL_STATE = {
-  notifcations: {
+  notifications: {
     data: [],
     loading: false,
     skip: 0,
-    limit: 50,
+    limit: 100,
     hasNextPage: undefined,
     seeMoreSkip: 5, // Every time shows 5 more notifications
     seeMoreCount: 5 // how many items are shown currently
@@ -18,7 +18,7 @@ const INITIAL_STATE = {
     data: [],
     loading: false,
     skip: 0,
-    limit: 50,
+    limit: 100,
     hasNextPage: undefined,
     seeMoreSkip: 5, // Every time shows 5 more notifications
     seeMoreCount: 5 // how many items are shown currently

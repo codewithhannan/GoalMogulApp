@@ -44,15 +44,83 @@ export const seeLessNotification = (type) => (dispatch) => {
 /**
  * Refresh notifications and needs
  */
-// TODO:
 export const refreshNotifications = () => (dispatch, getState) => {
+  const { skip, limit } = getState().notification.notifications;
 
+  dispatch({
+    type: NOTIFICATION_LOAD,
+    payload: {
+      type: 'notifications'
+    }
+  });
+
+  const onSuccess = (data) => {
+    console.log(`${DEBUG_KEY}: refresh notifications succeed with data: `, data);
+    dispatch({
+      type: NOTIFICATION_REFRESH_SUCCESS,
+      payload: {
+        type: 'notifications',
+        data,
+        skip: data.length,
+        limit,
+        hasNextPage: !(data === undefined || data.length === 0 || data.length < limit)
+      }
+    });
+  };
+
+  const onError = (err) => {
+    console.log(`${DEBUG_KEY}: refresh notifications failed with err: `, err);
+    dispatch({
+      type: NOTIFICATION_LOAD_FAIL,
+      payload: {
+        type: 'notifications'
+      }
+    });
+  };
+
+  loadNotifications(skip, limit, { refresh: true }, onSuccess, onError)(dispatch, getState);
   refreshNeeds()(dispatch, getState);
 };
 
-// TODO:
+/**
+ * Load more notifications based on skip and limit and hasNextPage
+ */
 export const loadMoreNotifications = () => (dispatch, getState) => {
+  const { skip, limit, hasNextPage } = getState().notification.notifications;
+  if (hasNextPage === false) return;
 
+  dispatch({
+    type: NOTIFICATION_LOAD,
+    payload: {
+      type: 'notifications'
+    }
+  });
+
+  const onSuccess = (data) => {
+    console.log(`${DEBUG_KEY}: load more notifications succeed with data: `, data);
+    dispatch({
+      type: NOTIFICATION_LOAD_SUCCESS,
+      payload: {
+        type: 'notifications',
+        data,
+        skip: skip + data.length,
+        limit,
+        hasNextPage: !(data === undefined || data.length === 0 || data.length < limit)
+      }
+    });
+  };
+
+  const onError = (err) => {
+    console.log(`${DEBUG_KEY}: load more notifications failed with err: `, err);
+    dispatch({
+      type: NOTIFICATION_LOAD_FAIL,
+      payload: {
+        type: 'notifications'
+      }
+    });
+  };
+
+  loadNotifications(skip, limit, {}, onSuccess, onError)(dispatch, getState);
 };
 
 export const loadNotifications = (skip, limit, params, onSuccess, onError) =>

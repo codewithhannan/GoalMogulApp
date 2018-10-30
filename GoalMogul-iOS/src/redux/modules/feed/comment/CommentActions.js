@@ -132,15 +132,19 @@ export const createCommentFromSuggestion = (
  * parentRef, parentType("Goal" || "Post"), contentText, contentTags, commentType[, replyToRef, suggestion(Suggestion)]
  */
 export const postComment = (pageId) => (dispatch, getState) => {
-  dispatch({
-    type: COMMENT_NEW_POST_START
-  });
-
   const { token } = getState().user;
   const { tab } = getState().navigation;
   const newComment = commentAdapter(getState(), pageId, tab);
   const { suggestion, contentText } = newComment;
   console.log(`${DEBUG_KEY}: new comment to submit is: `, newComment);
+
+  dispatch({
+    type: COMMENT_NEW_POST_START,
+    payload: {
+      tab,
+      pageId
+    }
+  });
 
   // TODO: Check if no suggestion and no replyToRef is filled
   // and commentType is Suggestion, then we set commentType to Comment.

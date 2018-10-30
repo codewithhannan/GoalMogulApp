@@ -25,6 +25,7 @@ import _ from 'lodash';
 import ModalHeader from '../../../Main/Common/Header/ModalHeader';
 import SearchSuggestion from './Suggestion/SearchSuggestion';
 import GeneralSuggestion from './Suggestion/GeneralSuggestion';
+import NeedStepSuggestion from './Suggestion/NeedStepSuggestion';
 import SuggestionGoalPreview from './Suggestion/SuggestionGoalPreview';
 
 // Asset
@@ -52,11 +53,14 @@ import {
 import { capitalizeWord } from '../../../redux/middleware/utils';
 
 const OPTIONS_HEIGHT = 120;
+const OPTIONS_OPACITY = 0.001;
 
 class SuggestionModal extends Component {
   constructor(props) {
     super(props);
-    this.fadeAnim = new Animated.Value(OPTIONS_HEIGHT);
+    this.fadeHeight = new Animated.Value(OPTIONS_HEIGHT);
+    this.fadeOpacity = new Animated.Value(1);
+    this.suggestionOpacity = new Animated.Value(0.001);
     this.state = {
       query: '',
       iconMapRight: [...IconMapRight],
@@ -67,10 +71,20 @@ class SuggestionModal extends Component {
   }
 
   handleExpand = () => {
-    Animated.timing(this.fadeAnim, {
-      duration: 100,
-      toValue: OPTIONS_HEIGHT,
-    }).start(() => {
+    Animated.parallel([
+      Animated.timing(this.fadeHeight, {
+        duration: 100,
+        toValue: OPTIONS_HEIGHT,
+      }),
+      Animated.timing(this.fadeOpacity, {
+        duration: 100,
+        toValue: 1,
+      }),
+      Animated.timing(this.suggestionOpacity, {
+        duration: 100,
+        toValue: 0.001,
+      }),
+    ]).start(() => {
       this.setState({
         ...this.state,
         optionsCollapsed: false
@@ -79,10 +93,20 @@ class SuggestionModal extends Component {
   }
 
   handleCollapse = () => {
-    Animated.timing(this.fadeAnim, {
-      duration: 100,
-      toValue: 0,
-    }).start(() => {
+    Animated.parallel([
+      Animated.timing(this.fadeHeight, {
+        duration: 100,
+        toValue: 0,
+      }),
+      Animated.timing(this.fadeOpacity, {
+        duration: 100,
+        toValue: OPTIONS_OPACITY,
+      }),
+      Animated.timing(this.suggestionOpacity, {
+        duration: 100,
+        toValue: 1,
+      }),
+    ]).start(() => {
       this.setState({
         ...this.state,
         optionsCollapsed: true
@@ -148,17 +172,18 @@ class SuggestionModal extends Component {
           style={{ width: 50, justifyContent: 'center' }}
           onPress={this.handleExpand}
         >
-          <Text style={styles.optionsCollapsedTextStyle}>Expand</Text>
+          <Text style={styles.optionsCollapsedTextStyle}>Back</Text>
         </TouchableOpacity>
       )
-      : (
-        <TouchableOpacity
-          style={{ width: 50, justifyContent: 'center' }}
-          onPress={this.handleCollapse}
-        >
-          <Text style={styles.optionsCollapsedTextStyle}>Collapse</Text>
-        </TouchableOpacity>
-      );
+      : '';
+      // (
+      //   <TouchableOpacity
+      //     style={{ width: 50, justifyContent: 'center' }}
+      //     onPress={this.handleCollapse}
+      //   >
+      //     <Text style={styles.optionsCollapsedTextStyle}>Collapse</Text>
+      //   </TouchableOpacity>
+      // );
 
     return (
       <View
@@ -180,11 +205,11 @@ class SuggestionModal extends Component {
               Suggest a...
             </Text>
           </View>
-          <View style={{ width: 50 }} />
+          {optionsCollapsed ? <View style={{ width: 50 }} /> : ''}
         </View>
 
         <Animated.View
-          style={{ flexDirection: 'row', height: this.fadeAnim }}
+          style={{ flexDirection: 'row', height: this.fadeHeight, opacity: this.fadeOpacity }}
         >
           {optionsLeft}
           {optionsRight}
@@ -195,15 +220,26 @@ class SuggestionModal extends Component {
 
   renderSuggestionBody(newComment) {
     const { suggestionType } = newComment.tmpSuggestion;
-
+    if (!this.state.optionsCollapsed) return '';
     if (suggestionType === 'User' || suggestionType === 'Friend' ||
       suggestionType === 'Event' || suggestionType === 'Tribe' ||
       suggestionType === 'ChatConvoRoom'
     ) {
-      return <SearchSuggestion pageId={this.props.pageId} />;
+      return (
+        <SearchSuggestion pageId={this.props.pageId} opacity={this.suggestionOpacity} />
+      );
     }
-
-    return <GeneralSuggestion pageId={this.props.pageId} />;
+    if (suggestionType === 'Need' || suggestionType === 'Step') {
+      return (
+        <NeedStepSuggestion pageId={this.props.pageId} opacity={this.suggestionOpacity} />
+      );
+    }
+    if (suggestionType === 'Custom') {
+      return (
+        <GeneralSuggestion pageId={this.props.pageId} opacity={this.suggestionOpacity} />
+      );
+    }
+    return '';
   }
 
   render() {
@@ -305,7 +341,7 @@ const IconMapLeft = [
     selected: undefined
   },
   {
-    key: 'Step/Need',
+    key: 'Need',
     text: 'Step or Need',
     value: {
       iconSource: StepIcon,

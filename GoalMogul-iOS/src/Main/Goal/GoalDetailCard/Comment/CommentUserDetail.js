@@ -64,7 +64,9 @@ class CommentUserDetail extends Component {
     const { item } = this.props;
     let text;
     if (item.commentType === 'Suggestion') {
-      text = item.suggestion.suggestionText;
+      text = (item.suggestion && item.suggestion.suggestionText)
+        ? item.suggestion.suggestionText
+        : '';
     } else {
       text = item.content.text;
     }
@@ -151,7 +153,7 @@ class CommentUserDetail extends Component {
             // Focus the comment box
             onCommentClicked();
             // Update new comment reducer
-            createComment({
+            this.props.createComment({
               commentType: 'Reply',
               replyToRef: _id
             }, this.props.pageId);

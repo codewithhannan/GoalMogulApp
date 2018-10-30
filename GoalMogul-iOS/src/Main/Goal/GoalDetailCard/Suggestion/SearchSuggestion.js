@@ -3,7 +3,8 @@
 import React from 'react';
 import {
   View,
-  FlatList
+  FlatList,
+  Animated
 } from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar } from 'react-native-elements';
@@ -120,8 +121,9 @@ class SearchSuggestion extends React.Component {
   }
 
   render() {
+    const { opacity } = this.props;
     return (
-      <View>
+      <Animated.View style={{ opacity }}>
         {this.renderSearch()}
         <View style={{ flex: 1, marginTop: 0.5, backgroundColor: 'white' }}>
           <FlatList
@@ -134,7 +136,7 @@ class SearchSuggestion extends React.Component {
             refreshing={this.props.loading}
           />
         </View>
-      </View>
+      </Animated.View>
     );
     // onRefresh={this.handleRefresh}
     // refreshing={this.props.refreshing}

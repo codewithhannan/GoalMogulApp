@@ -39,8 +39,6 @@ import CreateGoalButtonOverlay from './Main/Common/Button/CreateGoalButtonOverla
 import CreateButtonOverlay from './Main/Common/Button/CreateButtonOverlay';
 import CreateGoalModal from './Main/Goal/CreateGoalModal';
 import CreatePostModal from './Main/Post/CreatePostModal';
-import GoalCard from './Main/Goal/GoalCard/GoalCard'; // For debug purpose
-import NeedCard from './Main/Goal/NeedCard/NeedCard'; // For debug purpose
 import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCard2';
 import PostDetailCard from './Main/Post/PostDetailCard/PostDetailCard';
 import ShareDetailCard from './Main/Post/ShareDetailCard/ShareDetailCard';
@@ -87,7 +85,6 @@ import ShareModal from './Main/Post/ShareModal';
 import ReportModal from './Main/Report/ReportModal';
 
 class RouterComponent extends Component {
-
   onTabPress = (all) => {
     const { state, isFocused } = all.navigation;
     if (state.key === 'homeTab' && isFocused() && state.routes.length > 1) {
@@ -120,7 +117,7 @@ class RouterComponent extends Component {
           <Lightbox hideNavBar>
             <Scene key="root" hideNavBar>
               <Scene key="auth" initial hideNavBar>
-                <Scene key="splash" component={NotificationTab} initial />
+                <Scene key="splash" component={SplashScreen} initial />
                 <Scene key="login" component={LoginPage} />
               </Scene>
 
