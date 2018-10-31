@@ -74,7 +74,7 @@ class Explore extends Component {
 
 const styles = {
   homeContainerStyle: {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: '#f2f2f2',
     flex: 1
   },
   textStyle: {
