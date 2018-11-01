@@ -23,7 +23,7 @@ class ChatRoomCard extends React.Component {
 
     return (
       <ProfileImage
-        imageStyle={{ height: 55, width: 55 }}
+        imageStyle={{ height: 55, width: 55, borderRadius: 5 }}
         imageUrl={imageUrl}
         rounded
         imageContainerStyle={styles.imageContainerStyle}

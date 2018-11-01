@@ -22,9 +22,9 @@ class SuggestionGoalPreview extends React.Component {
 
     return (
       <ProfileImage
-        imageStyle={{ width: 55, height: 55 }}
+        imageStyle={{ width: 55, height: 55, borderRadius: 4 }}
         imageUrl={imageUrl}
-        imageContainerStyle={{ alignItems: 'center', justifyContent: 'center', marginLeft: 3 }}
+        imageContainerStyle={styles.imageContainerStyle}
       />
     );
   }
@@ -90,7 +90,17 @@ const styles = {
     shadowOpacity: 1,
     shadowRadius: 3,
     elevation: 1,
-  }
+  },
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 1.5,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 6,
+    alignSelf: 'center',
+    backgroundColor: 'white',
+    marginLeft: 3
+  },
 };
 
 const mapStateToProps = (state) => {

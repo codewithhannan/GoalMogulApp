@@ -20,16 +20,29 @@ class CommentCard extends React.Component {
     this.state = {
       childCommentLayouts: {},
       totalViewHeight: 0,
-      keyboardHeight: 0,
+      keyboardHeight: 216,
       commentLength: 0,
       numberOfChildrenShowing: 3,
       showMoreCount: 3,
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+    const { childComments } = this.props.item;
+
+    if (!childComments) return;
+
+    const { commentLength } = this.state;
+
+    // Update child comment length if new child comment is added
+    if (commentLength !== childComments.length) {
+      this.setState({
+        ...this.state,
+        commentLength: childComments.length
+      });
+    }
   }
 
   onLayout = (e, index) => {
@@ -101,15 +114,8 @@ class CommentCard extends React.Component {
     const { childComments } = this.props.item;
     if (!childComments || childComments.length === 0) return '';
 
-    const { numberOfChildrenShowing, commentLength } = this.state;
+    const { numberOfChildrenShowing } = this.state;
 
-    // Update child comment length if new child comment is added
-    if (commentLength !== childComments.length) {
-      this.setState({
-        ...this.state,
-        commentLength: childComments.length
-      });
-    }    
     // For child comments, only load the first three
     const childCommentCards = childComments.map((comment, index) => {
       if (index < numberOfChildrenShowing) {

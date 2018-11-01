@@ -69,7 +69,7 @@ class NotificationCard extends React.Component {
       : undefined;
     return (
       <ProfileImage
-        imageStyle={{ height: 50, width: 50 }}
+        imageStyle={{ height: 50, width: 50, borderRadius: 5 }}
         imageUrl={imageUrl}
         rounded
         imageContainerStyle={styles.imageContainerStyle}

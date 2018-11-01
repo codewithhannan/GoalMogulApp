@@ -171,6 +171,7 @@ class GoalDetailCard2 extends Component {
     const { comments, stepsAndNeeds, navigationState, goalDetail } = this.props;
     const { routes, index } = navigationState;
     const data = routes[index].key === 'comments' ? comments : stepsAndNeeds;
+    console.log('transformed comments to render are: ', comments);
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -469,7 +470,6 @@ const mapStateToProps = (state, props) => {
   };
 
   const isSelf = userId === (!goal || _.isEmpty(goal) ? '' : goal.owner._id);
-  console.log('transformedComments are: ', transformedComments);
 
   return {
     commentLoading: loading,
