@@ -48,7 +48,7 @@ class ChatTab extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { navigationState } = state.chatTab;
+  const { navigationState } = state.chat;
 
   return {
     navigationState
