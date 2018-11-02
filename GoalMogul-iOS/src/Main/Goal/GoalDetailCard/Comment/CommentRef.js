@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
-  Text
+  Text,
+  TouchableOpacity
 } from 'react-native';
+import { connect } from 'react-redux';
 
 // Components
 import ProfileImage from '../../../Common/ProfileImage';
@@ -27,10 +29,53 @@ import {
   switchCaseFWithVal
 } from '../../../../redux/middleware/utils';
 
+// Actions
+import {
+  openProfile
+} from '../../../../actions';
+
+import {
+  myTribeDetailOpenWithId
+} from '../../../../redux/modules/tribe/MyTribeActions';
+
+import {
+  myEventDetailOpenWithId
+} from '../../../../redux/modules/event/MyEventActions';
+
+const DEBUG_KEY = '[ UI CommentRef ]';
+
 class CommentRef extends React.PureComponent {
 
-  handleOnRefPress = () => {
-
+  handleOnRefPress = (item) => {
+    const {
+      suggestionType,
+      chatRoomRef,
+      eventRef,
+      tribeRef,
+      suggestionLink,
+      suggestionText,
+      goalRef,
+      userRef,
+    } = item;
+    if ((suggestionType === 'User' || suggestionType === 'Friend') && userRef) {
+      return this.props.openProfile(userRef._id);
+    }
+    if (suggestionType === 'Tribe' && tribeRef) {
+      return this.props.myTribeDetailOpenWithId(tribeRef._id);
+    }
+    if (suggestionType === 'Event' && eventRef) {
+      return this.props.eventDetailOpenWithId(eventRef._id);
+    }
+    if (suggestionType === 'Need') {
+      return;
+    }
+    if (suggestionType === 'Step') {
+      return;
+    }
+    if (suggestionType === 'ChatConvoRoom' && chatRoomRef) {
+      // TODO: update later
+      console.log(`${DEBUG_KEY}: suggestion type is ChatConvoRoom, chatRoomRef is: `, chatRoomRef);
+    }
   }
 
   // Render badge
@@ -82,11 +127,14 @@ class CommentRef extends React.PureComponent {
     if (!item) return '';
 
     return (
-      <View style={styles.containerStyle}>
+      <TouchableOpacity
+        style={styles.containerStyle}
+        onPress={() => this.handleOnRefPress(item)}
+      >
         {this.renderImage(item)}
         {this.renderTextContent(item)}}
         {this.renderEndImage(item)}
-      </View>
+      </TouchableOpacity>
     );
   }
 }
@@ -230,4 +278,11 @@ const styles = {
   }
 };
 
-export default CommentRef;
+export default connect(
+  null,
+  {
+    openProfile,
+    myTribeDetailOpenWithId,
+    myEventDetailOpenWithId
+  }
+)(CommentRef);

@@ -51,6 +51,31 @@ export const tribeDetailClose = () => (dispatch) => {
 };
 
 /**
+ * Current behavior is to go to home page and opens up tribe detail
+ * and then open tribe detail with id
+ */
+export const myTribeDetailOpenWithId = (tribeId) => (dispatch, getState) => {
+  const callback = (res) => {
+    console.log(`${DEBUG_KEY}: res for verifying user identify: `, res);
+    if (!res.data) {
+      return Alert.alert(
+        'Tribe not found'
+      );
+    }
+    dispatch({
+      type: MYTRIBE_DETAIL_LOAD_SUCCESS,
+      payload: {
+        tribe: res.data
+      }
+    });
+    Actions.push('myTribeDetail');
+  };
+
+  fetchTribeDetail(tribeId, callback)(dispatch, getState);
+};
+
+
+/**
  * Populate with the basic fields for the tribe detail.
  * Fetch tribe detail
  */

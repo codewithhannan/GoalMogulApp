@@ -199,6 +199,30 @@ export const eventDetailClose = () => (dispatch) => {
 };
 
 /**
+ * Current behavior is to go to explore page and opens up event detail
+ * and then open event detail with id
+ */
+export const eventDetailOpenWithId = (eventId) => (dispatch, getState) => {
+  const callback = (res) => {
+    console.log(`${DEBUG_KEY}: res for verifying user identify: `, res);
+    if (!res.data) {
+      return Alert.alert(
+        'Event not found'
+      );
+    }
+    dispatch({
+      type: EVENT_DETAIL_LOAD_SUCCESS,
+      payload: {
+        tribe: res.data
+      }
+    });
+    Actions.eventDetail();
+  };
+
+  fetchEventDetail(eventId, callback)(dispatch, getState);
+};
+
+/**
  * Open an event detail
  */
 export const eventDetailOpen = (event) => (dispatch, getState) => {

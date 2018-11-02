@@ -325,6 +325,30 @@ export const tribeDetailClose = () => (dispatch) => {
   });
 };
 
+/**
+ * Current behavior is to go to explore page and opens up tribe detail
+ * and then open tribe detail with id
+ */
+export const tribeDetailOpenWithId = (tribeId) => (dispatch, getState) => {
+  const callback = (res) => {
+    console.log(`${DEBUG_KEY}: res for verifying user identify: `, res);
+    if (!res.data) {
+      return Alert.alert(
+        'Tribe not found'
+      );
+    }
+    dispatch({
+      type: TRIBE_DETAIL_LOAD_SUCCESS,
+      payload: {
+        tribe: res.data
+      }
+    });
+    Actions.tribeDetail();
+  };
+
+  fetchTribeDetail(tribeId, callback)(dispatch, getState);
+};
+
 export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
   const isMember = getUserStatus(getState());
   const { _id } = tribe;
