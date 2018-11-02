@@ -13,7 +13,7 @@ import badge from '../../../../asset/utils/badge.png';
 
 const CommentHeadline = (props) => {
   // TODO: format time
-  const { item, caretOnPress } = props;
+  const { item, caretOnPress, goalRef } = props;
   const { owner, commentType, suggestion, created } = item;
   const timeStamp = (created === undefined || created.length === 0)
     ? new Date() : created;
@@ -31,32 +31,13 @@ const CommentHeadline = (props) => {
   switch (commentType) {
     case 'Suggestion': {
       if (!suggestion || _.isEmpty(suggestion)) return '';
-      const { suggestionFor, suggestionForRef } = suggestion;
-      const text = suggestionFor === 'Goal'
-        ? ` ${suggestionFor}: ${suggestionForRef.title}`
-        : ` ${suggestionFor} ${suggestionForRef.order}: ${suggestionForRef.description}`;
-
       return (
-        <View>
-          <View style={styles.containerStyle}>
-            <Name text={owner.name} textStyle={{ fontSize: 12 }} />
-            <Image style={styles.imageStyle} source={badge} />
-            <Text
-              style={styles.suggestionTextStyle}
-              numberOfLines={1}
-              ellipsizeMode='tail'
-            >
-              suggested for
-              <Text style={styles.suggestionDetailTextStyle}>
-                {text}
-              </Text>
-            </Text>
-            <View style={styles.caretContainer}>
-              {menu}
-            </View>
-          </View>
-          <Timestamp time={timeago().format(timeStamp)} />
-        </View>
+        <SuggestionHeadline
+          goalRef={goalRef}
+          item={item}
+          timeStamp={timeStamp}
+          menu={menu}
+        />
       );
     }
 
@@ -75,6 +56,55 @@ const CommentHeadline = (props) => {
 
       );
   }
+};
+
+const SuggestionHeadline = (props) => {
+  const { goalRef, item, timeStamp, menu } = props;
+  const { owner, suggestion } = item;
+
+  const { suggestionFor, suggestionForRef } = suggestion;
+  const text = suggestionFor === 'Goal'
+    ? suggestionForGoalText(goalRef)
+    : suggestionForNeedStepText(goalRef, suggestionFor, suggestionForRef);
+
+  return (
+    <View>
+      <View style={styles.containerStyle}>
+        <Name text={owner.name} textStyle={{ fontSize: 12 }} />
+        <Image style={styles.imageStyle} source={badge} />
+        <Text
+          style={styles.suggestionTextStyle}
+          numberOfLines={1}
+          ellipsizeMode='tail'
+        >
+          suggested for
+          <Text style={styles.suggestionDetailTextStyle}>
+            {text}
+          </Text>
+        </Text>
+        <View style={styles.caretContainer}>
+          {menu}
+        </View>
+      </View>
+      <Timestamp time={timeago().format(timeStamp)} />
+    </View>
+  );
+};
+
+const suggestionForGoalText = (goalRef) => ` Goal: ${goalRef.title}`;
+const suggestionForNeedStepText = (goalRef, suggestionFor, suggestionForRef) => {
+  let ret = '';
+  const dataToGet = suggestionFor === 'Step'
+    ? goalRef.steps
+    : goalRef.needs;
+
+  if (!dataToGet || _.isEmpty(dataToGet)) return '';
+  dataToGet.forEach((item) => {
+    if (item._id === suggestionForRef) {
+      ret = ` ${suggestionFor} ${item.order}: ${item.description}`;
+    }
+  });
+  return ret;
 };
 
 const styles = {

@@ -83,12 +83,13 @@ class CommentUserDetail extends Component {
 
   // user basic information
   renderUserDetail() {
-    const { item, reportType } = this.props;
-    const { _id } = item;
+    const { item, reportType, goalRef } = this.props;
+    const { _id, suggestion } = item;
     return (
         <View style={{ marginLeft: 15, flex: 1 }}>
           <CommentHeadline
             item={item}
+            goalRef={goalRef}
             caretOnPress={() => {
               this.props.createReport(_id, reportType || 'detail', 'Comment');
             }}
@@ -96,7 +97,7 @@ class CommentUserDetail extends Component {
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
             {this.renderCardContent()}
           </View>
-          {this.renderCommentRef(item)}
+          {this.renderCommentRef(suggestion)}
         </View>
     );
   }

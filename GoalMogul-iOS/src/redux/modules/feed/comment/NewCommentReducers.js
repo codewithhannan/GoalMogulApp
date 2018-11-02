@@ -5,7 +5,6 @@ import {
   GOAL_DETAIL_CLOSE
 } from '../../../../reducers/GoalDetailReducers';
 
-
 import {
   POST_DETAIL_OPEN,
   POST_DETAIL_CLOSE

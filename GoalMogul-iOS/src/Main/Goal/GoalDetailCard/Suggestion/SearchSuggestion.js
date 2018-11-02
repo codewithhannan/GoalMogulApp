@@ -127,7 +127,7 @@ class SearchSuggestion extends React.Component {
         {this.renderSearch()}
         <View style={{ flex: 1, marginTop: 0.5, backgroundColor: 'white' }}>
           <FlatList
-            data={testData[this.props.suggestionType]}
+            data={[...this.props.data, ...testData[this.props.suggestionType]]}
             renderItem={this.renderItem}
             keyExtractor={(item) => item._id}
             onEndReached={() => this.props.onLoadMore()}

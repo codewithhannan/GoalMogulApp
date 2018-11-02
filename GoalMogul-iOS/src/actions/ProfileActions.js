@@ -86,7 +86,9 @@ export const openProfile = (userId) => (dispatch, getState) => {
   });
   Actions.push('profile');
 
-  const { token, } = getState().user;
+  // Refresh goals on open
+  handleTabRefresh('goals')(dispatch, getState);
+  const { token } = getState().user;
   const self = getState().profile.userId.toString() === getState().user.userId.toString();
 
   const profilePromise =

@@ -11,7 +11,7 @@ import {
 } from './SuggestionSearchReducers';
 import { switchCaseF } from '../../../middleware/utils';
 
-const DEBUG_KEY = '[ Action Search ]';
+const DEBUG_KEY = '[ Action Suggestion Search ]';
 
 // export const searchChangeFilter = (type, value) => {
 //   return {

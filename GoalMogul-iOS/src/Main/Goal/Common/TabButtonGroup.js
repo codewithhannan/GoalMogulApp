@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   View,
 } from 'react-native';
 import TabButton from './TabButton';
 
-class TabButtonGroup extends Component {
+class TabButtonGroup extends React.PureComponent {
 
   renderTabs() {
     const { buttons, tabIconMap } = this.props;
-    const { navigationState, jumpToIndex, jumpTo } = buttons;
+    const { navigationState, jumpToIndex, jumpTo, statsState } = buttons;
     const { index, routes } = navigationState;
 
     return routes.map((b, i) => {
@@ -28,7 +28,7 @@ class TabButtonGroup extends Component {
               jumpToIndex(i);
             }
           }}
-          count={10}
+          count={statsState ? statsState[b.key] : undefined}
           iconSource={iconSource}
           iconStyle={iconStyle}
         />

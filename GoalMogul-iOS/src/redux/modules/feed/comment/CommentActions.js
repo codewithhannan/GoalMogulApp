@@ -37,7 +37,7 @@ import {
 } from './NewCommentReducers';
 
 import { api as API } from '../../../middleware/api';
-import { queryBuilder } from '../../../middleware/utils';
+import { queryBuilder, switchCase } from '../../../middleware/utils';
 
 const DEBUG_KEY = '[ Action Comment ]';
 const BASE_ROUTE = 'secure/feed/comment';
@@ -150,7 +150,11 @@ export const postComment = (pageId) => (dispatch, getState) => {
   // and commentType is Suggestion, then we set commentType to Comment.
   const onError = (err) => {
     dispatch({
-      type: COMMENT_NEW_POST_FAIL
+      type: COMMENT_NEW_POST_FAIL,
+      payload: {
+        pageId,
+        tab
+      }
     });
     Alert.alert('Error', 'Failed to submit comment. Please try again later.');
     console.log(`${DEBUG_KEY}: error submitting comment: `, err);
@@ -223,7 +227,7 @@ const commentAdapter = (state, pageId, tab) => {
     // content,
     commentType,
     replyToRef,
-    suggestion
+    suggestion: suggestionAdapter(suggestion)
   };
 
   if (_.isEmpty(suggestion)) {
@@ -231,6 +235,51 @@ const commentAdapter = (state, pageId, tab) => {
   }
 
   return commentToReturn;
+};
+
+const suggestionAdapter = (suggestion) => {
+  if (!suggestion) return {};
+  // TODO: require validation
+  const {
+    selectedItem,
+    suggestionFor,
+    suggestionForRef,
+    suggestionType,
+    suggestionLink,
+    suggestionText
+  } = suggestion;
+
+  const ret = switchCase({
+    User: {
+      userRef: selectedItem ? selectedItem._id : undefined
+    },
+    ChatConvoRoom: {
+      chatRoomRef: selectedItem ? selectedItem._id : undefined
+    },
+    Need: {
+
+    },
+    Step: {
+
+    },
+    Event: {
+      eventRef: selectedItem ? selectedItem._id : undefined
+    },
+    Tribe: {
+      tribeRef: selectedItem ? selectedItem._id : undefined
+    },
+    Custom: {
+      suggestionLink,
+      suggestionText
+    }
+  })({})(suggestionType);
+
+  return {
+    ...ret,
+    suggestionFor,
+    suggestionForRef,
+    suggestionType,
+  };
 };
 
 /* Actions for suggestion modal */

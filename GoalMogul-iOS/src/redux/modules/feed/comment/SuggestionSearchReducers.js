@@ -5,12 +5,16 @@ import {
   COMMENT_NEW_SUGGESTION_UPDAET_TYPE
 } from './NewCommentReducers';
 
+import {
+  arrayUnique
+} from '../../../middleware/utils';
+
 const INITIAL_STATE_SEARCH = {
   data: [],
   queryId: undefined,
   loading: false,
   skip: 0,
-  limit: 20,
+  limit: 40,
   hasNextPage: undefined
 };
 
@@ -102,7 +106,8 @@ export default (state = INITIAL_STATE, action) => {
       const { queryId, skip, data, type, hasNextPage } = action.payload;
       let newState = _.cloneDeep(state);
       if (queryId === state.queryId) {
-        newState.searchRes.data = newState[type].data.concat(data);
+        const oldData = _.get(newState, 'searchRes.data');
+        newState = _.set(newState, 'searchRes.data', arrayUnique(oldData.concat(data)));
         newState.searchRes.loading = false;
         newState.searchRes.skip = skip;
         newState.searchRes.hasNextPage = hasNextPage;
@@ -125,7 +130,12 @@ export default (state = INITIAL_STATE, action) => {
     // Update search type
     case COMMENT_NEW_SUGGESTION_UPDAET_TYPE: {
       let newState = _.cloneDeep(state);
-      return _.set(newState, 'searchType', action.payload);
+      const {
+        suggestionType,
+        tab,
+        pageId
+      } = action.payload;
+      return _.set(newState, 'searchType', suggestionType);
     }
 
     default:

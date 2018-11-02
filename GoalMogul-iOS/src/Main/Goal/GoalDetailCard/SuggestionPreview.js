@@ -101,7 +101,7 @@ class SuggestionPreview extends Component {
         defaultImageSource={source}
         defaultImageStyle={{ width: 30, height: 30, ...style }}
         imageUrl={imageUrl}
-        imageContainerStyle={{ alignItems: 'center', justifyContent: 'center', marginLeft: 3 }}
+        imageContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}
       />
     );
   }
@@ -153,13 +153,13 @@ const switchSearchItem = (val, type) => switchCaseFWithVal(val)({
   }),
   Friend: (item) => ({
     title: item.name,
-    content: item.profile ? item.profile.about : undefined,
-    picture: item.profile ? item.profile.picture : undefined
+    content: item.headline,
+    picture: item.profile ? item.profile.image : undefined
   }),
   User: (item) => ({
     title: item.name,
-    content: item.profile ? item.profile.about : undefined,
-    picture: item.profile ? item.profile.picture : undefined
+    content: item.headline,
+    picture: item.profile ? item.profile.image : undefined
   })
 })('User')(type);
 
@@ -179,11 +179,11 @@ const switchDefaultImageType = (type, item) => switchCaseFWithVal(item)({
   }),
   Friend: val => ({
     source: friendIcon,
-    imageUrl: val.profile ? val.profile.picture : undefined
+    imageUrl: val.profile ? val.profile.image : undefined
   }),
   User: val => ({
     source: userIcon,
-    imageUrl: val.profile ? val.profile.picture : undefined
+    imageUrl: val.profile ? val.profile.image : undefined
   }),
   Reading: () => ({
     source: readingIcon

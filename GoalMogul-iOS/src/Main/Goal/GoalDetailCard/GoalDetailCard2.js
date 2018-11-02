@@ -113,6 +113,7 @@ class GoalDetailCard2 extends Component {
             item={props.item}
             index={props.index}
             commentDetail={{ parentType: 'Goal', parentRef: goalDetail._id }}
+            goalRef={goalDetail}
             scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
             onCommentClicked={() => this.dialogOnFocus()}
             reportType='detail'
@@ -150,17 +151,29 @@ class GoalDetailCard2 extends Component {
   }
 
   renderGoalDetailSection() {
+    const { goalDetail } = this.props;
+
+    // Tab stats
+    const { commentCount, steps, needs } = goalDetail ||
+      { commentCount: 0, steps: [], needs: [] };
+    const mastermindCount = (steps ? steps.length : 0) + (needs ? needs.length : 0);
+    const statsState = {
+      comments: commentCount,
+      mastermind: mastermindCount
+    };
+
     return (
       <View>
         <GoalDetailSection
-          item={this.props.goalDetail}
+          item={goalDetail}
           onSuggestion={() => this.dialogOnFocus()}
           isSelf={this.props.isSelf}
         />
         {
           this._renderHeader({
             jumpToIndex: (i) => this._handleIndexChange(i),
-            navigationState: this.props.navigationState
+            navigationState: this.props.navigationState,
+            statsState
           })
         }
       </View>
@@ -171,7 +184,7 @@ class GoalDetailCard2 extends Component {
     const { comments, stepsAndNeeds, navigationState, goalDetail } = this.props;
     const { routes, index } = navigationState;
     const data = routes[index].key === 'comments' ? comments : stepsAndNeeds;
-    console.log('transformed comments to render are: ', comments);
+    // console.log('transformed comments to render are: ', comments);
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
