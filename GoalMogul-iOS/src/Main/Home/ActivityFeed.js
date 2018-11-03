@@ -78,9 +78,9 @@ class ActivityFeed extends Component {
 }
 
 const mapStateToProps = state => {
-  const { loading, filter } = state.home.activityfeed;
+  const { loading, filter, data } = state.home.activityfeed;
 
-  const data = testData;
+  // const data = testData;
 
   return {
     data,

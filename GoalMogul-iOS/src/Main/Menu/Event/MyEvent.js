@@ -358,7 +358,7 @@ class MyEvent extends Component {
       navigationState: this.props.memberNavigationState
     };
     return (
-      <TabButtonGroup buttons={props} />
+      <TabButtonGroup buttons={props} subTab />
     );
   }
 
