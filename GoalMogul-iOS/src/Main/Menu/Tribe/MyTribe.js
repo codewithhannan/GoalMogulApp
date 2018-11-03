@@ -587,6 +587,7 @@ class MyTribe extends Component {
             keyExtractor={(i) => i._id}
             ListHeaderComponent={this.renderTribeOverview(item)}
             onRefresh={() => this.props.refreshMyTribeDetail(item._id)}
+            refreshing={this.props.loading}
           />
           {this.renderPlus(item)}
         </View>
@@ -707,7 +708,7 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { item, feed, hasRequested } = state.myTribe;
+  const { item, feed, hasRequested, tribeLoading } = state.myTribe;
   const { userId } = state.user;
   const navigationState = getMyTribeNavigationState(state);
   const memberNavigationState = getMyTribeMemberNavigationState(state);
@@ -738,7 +739,8 @@ const mapStateToProps = state => {
     tab: routes[index].key,
     userId,
     isUserAdmin: checkIsAdmin(item ? item.members : [], userId),
-    memberNavigationState
+    memberNavigationState,
+    loading: tribeLoading
   };
 };
 

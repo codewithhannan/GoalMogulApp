@@ -112,7 +112,7 @@ const INITIAL_STATE = {
     filter: {
       sortBy: 'created',
       orderBy: 'descending',
-      categories: 'General',
+      categories: 'All',
       completedOnly: 'false',
       priorities: ''
     },
@@ -126,7 +126,7 @@ const INITIAL_STATE = {
     filter: {
       sortBy: 'created',
       orderBy: 'descending',
-      categories: 'General',
+      categories: 'All',
       completedOnly: 'false',
       priorities: ''
     },
@@ -140,7 +140,7 @@ const INITIAL_STATE = {
     filter: {
       sortBy: 'created',
       orderBy: 'descending',
-      categories: 'General',
+      categories: 'All',
       completedOnly: 'false',
       priorities: ''
     },
@@ -273,7 +273,11 @@ export default (state = INITIAL_STATE, action) => {
       }
       newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
       const oldData = _.get(newState, `${type}.data`);
-      return _.set(newState, `${type}.data`, arrayUnique(oldData.concat(data)));
+      let newData = arrayUnique(oldData.concat(data));
+      if (type === 'needs') {
+        newData = newData.filter((item) => item.needs && item.needs.length !== 0);
+      }
+      return _.set(newState, `${type}.data`, newData);
     }
 
     case PROFILE_FETCH_TAB_FAIL: {
@@ -291,7 +295,11 @@ export default (state = INITIAL_STATE, action) => {
         newState = _.set(newState, `${type}.skip`, skip);
       }
       newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
-      return _.set(newState, `${type}.data`, data);
+      let newData = data;
+      if (type === 'needs') {
+        newData = data.filter((item) => item.needs && item.needs.length !== 0);
+      }
+      return _.set(newState, `${type}.data`, newData);
     }
 
     case PROFILE_REFRESH_TAB: {

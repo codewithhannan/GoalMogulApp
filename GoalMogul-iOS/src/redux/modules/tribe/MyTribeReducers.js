@@ -114,7 +114,7 @@ export default (state = INITIAL_STATE, action) => {
       const { tribe } = action.payload;
       let newState = _.cloneDeep(state);
       newState = _.set(newState, 'item', { ...tribe });
-      return _.set(newState, 'tribeLoading', true);
+      return _.set(newState, 'tribeLoading', false);
     }
 
     case MYTRIBE_DETAIL_OPEN: {

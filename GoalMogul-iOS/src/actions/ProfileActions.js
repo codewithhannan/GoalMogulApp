@@ -260,11 +260,14 @@ export const submitUpdatingProfile = ({ values, hasImageModified }) => {
   };
 };
 
-export const selectProfileTab = (index) => (dispatch) => {
+export const selectProfileTab = (index) => (dispatch, getState) => {
   dispatch({
     type: PROFILE_SWITCH_TAB,
     payload: index
   });
+
+  const tab = getState().profile.navigationState.routes[index].key;
+  handleTabRefresh(tab)(dispatch, getState);
 };
 
 // User update filter for specific tab

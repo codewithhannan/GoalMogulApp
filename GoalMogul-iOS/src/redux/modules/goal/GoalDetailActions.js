@@ -16,6 +16,10 @@ import {
   GOAL_DETAIL_SWITCH_TAB
 } from '../../../reducers/GoalDetailReducers';
 
+import {
+  getGoalDetailByTab
+} from './selector';
+
 const DEBUG_KEY = '[ Action GoalDetail ]';
 
 // Basic request routes
@@ -51,7 +55,8 @@ export const closeGoalDetail = () => (dispatch, getState) => {
 // If a step is already mark as completed, then it will change its state to incomplete
 export const markStepAsComplete = (stepId) => (dispatch, getState) => {
   const { token } = getState().user;
-  const { goal } = getState().goalDetail;
+  const { goal } = getGoalDetailByTab(getState());
+  // const { goal } = getState().goalDetail;
   const { tab } = getState().navigation;
   const { _id, steps } = goal;
 
@@ -90,7 +95,8 @@ export const markStepAsComplete = (stepId) => (dispatch, getState) => {
 // If a need is already mark as completed, then it will change its state to incomplete
 export const markNeedAsComplete = (needId) => (dispatch, getState) => {
   const { token } = getState().user;
-  const { goal } = getState().goalDetail;
+  const { goal } = getGoalDetailByTab(getState());
+  // const { goal } = getState().goalDetail;
   const { _id, needs } = goal;
   const { tab } = getState().navigation;
 
