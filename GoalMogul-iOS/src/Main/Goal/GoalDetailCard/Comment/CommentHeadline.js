@@ -61,6 +61,7 @@ const CommentHeadline = (props) => {
 const SuggestionHeadline = (props) => {
   const { goalRef, item, timeStamp, menu } = props;
   const { owner, suggestion } = item;
+  if (!goalRef) return '';
 
   const { suggestionFor, suggestionForRef } = suggestion;
   const text = suggestionFor === 'Goal'

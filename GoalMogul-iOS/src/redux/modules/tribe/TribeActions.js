@@ -31,6 +31,11 @@ import {
   REPORT_CREATE
 } from '../report/ReportReducers';
 
+// Actions
+import {
+  refreshMyTribeDetail
+} from './MyTribeActions';
+
 // Selector
 import {
   getUserStatus

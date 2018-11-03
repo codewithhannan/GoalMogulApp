@@ -173,7 +173,7 @@ const testData = [
   }
 ];
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
   const testTransformedComments = [
     {
       _id: '1',
@@ -320,16 +320,21 @@ const mapStateToProps = state => {
     }
   ];
   // TODO: uncomment
-  // const { transformedComments, loading } = getCommentByTab(state);
+  const comments = getCommentByTab(state, props.pageId);
+  const { transformedComments, loading } = comments || {
+    transformedComments: [],
+    loading: false
+  };
   const getPostDetail = getPostDetailByTab();
   const postDetail = getPostDetail(state);
   const { pageId } = postDetail;
 
   return {
     commentLoading: false,
-    comments: testTransformedComments,
+    comments: transformedComments,
     postDetail,
-    pageId
+    pageId,
+    loading
   };
 };
 
