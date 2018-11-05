@@ -124,8 +124,6 @@ class CommentUserDetail extends Component {
       : undefined;
 
     const likeCount = item.likeCount || 0;
-    console.log('item in user detail is: ', item);
-    console.log('likeCount is: ', likeCount);
 
     // If comment is like, like icon is tinted with red
     const tintColor = maybeLikeRef && maybeLikeRef.length > 0

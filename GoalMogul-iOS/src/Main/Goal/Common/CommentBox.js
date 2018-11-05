@@ -67,7 +67,7 @@ class CommentBox extends Component {
     && _.isEmpty(tmpSuggestion)) {
       this.setState({
         ...this.state,
-        defaultValue: 'Comment'
+        defaultValue: 'Write a Comment...'
       });
     }
   }

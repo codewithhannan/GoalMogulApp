@@ -101,6 +101,10 @@ class GoalDetailCard2 extends Component {
 
   dialogOnFocus = () => this.commentBox.focus();
 
+  handleReplyTo = () => {
+    this.commentBox.focusForReply();
+  }
+
   renderItem = (props) => {
     const { goalDetail, navigationState } = this.props;
     const { routes, index } = navigationState;
@@ -115,7 +119,7 @@ class GoalDetailCard2 extends Component {
             commentDetail={{ parentType: 'Goal', parentRef: goalDetail._id }}
             goalRef={goalDetail}
             scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
-            onCommentClicked={() => this.dialogOnFocus()}
+            onCommentClicked={() => this.handleReplyTo()}
             reportType='detail'
           />
         );
