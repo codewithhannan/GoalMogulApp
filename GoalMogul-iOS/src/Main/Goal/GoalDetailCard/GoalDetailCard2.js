@@ -189,6 +189,7 @@ class GoalDetailCard2 extends Component {
     const { routes, index } = navigationState;
     const data = routes[index].key === 'comments' ? comments : stepsAndNeeds;
     // console.log('transformed comments to render are: ', comments);
+    if (!goalDetail || _.isEmpty(goalDetail)) return '';
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>

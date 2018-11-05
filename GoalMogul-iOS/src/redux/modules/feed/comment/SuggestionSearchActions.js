@@ -65,6 +65,9 @@ const searchCurry = curry(searchWithId);
 const generateQueryId = (text) => hashCode(text);
 
 // Functions to handle search
+/**
+ * @param type: no need to supply this field for now
+ */
 export const handleSearch = (searchContent, type) => {
   const queryId = generateQueryId(searchContent);
   return searchCurry(searchContent, queryId, type);

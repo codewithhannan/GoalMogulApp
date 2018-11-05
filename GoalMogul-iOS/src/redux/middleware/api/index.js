@@ -6,9 +6,21 @@ const DEBUG_KEY = '[ API ]';
 export const singleFetch = (path, payload, method, token) =>
   fetchData(path, payload, method, token).then((res) => {
     if (!res.ok || !res.status === 200) {
-      throw new Error(`Response status is: ${res.status} with message: ${res.message}`);
+      console.log(`Fetch failed with error status: ${res.status}.`);
     }
-    return res.json();
+    return new Promise(async (resolve, reject) => {
+      res
+        .json()
+        .then((data) => {
+          resolve({
+            ...data,
+            status: res.status
+          });
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
   });
 
 const fetchData = R.curry((path, payload = {}, method = 'get', token) => {

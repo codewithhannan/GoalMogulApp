@@ -43,8 +43,9 @@ class NeedStepSuggestion extends React.Component {
   }
 
   renderInputField() {
-    const { suggestionText } = this.props;
+    const { suggestionText, suggestionType } = this.props;
     const titleText = <Text style={styles.titleTextStyle}>Your Suggestion</Text>;
+    const placeholderText = suggestionType === 'Need' ? 'New Need' : 'New Step';
 
     return (
       <SafeAreaView
@@ -57,7 +58,7 @@ class NeedStepSuggestion extends React.Component {
       >
         {titleText}
         <TextInput
-          placeholder='Your thoughts'
+          placeholder={placeholderText}
           onChangeText={(val) => this.props.onSuggestionTextChange(val)}
           style={styles.inputStyle}
           maxHeight={100}

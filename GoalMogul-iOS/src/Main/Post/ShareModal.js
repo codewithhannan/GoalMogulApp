@@ -13,7 +13,7 @@ import { Field, reduxForm, formValueSelector } from 'redux-form';
 import { Actions, Stack, Scene } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import R from 'ramda';
-import { switchCaseF } from '../../redux/middleware/utils';
+import { switchCase } from '../../redux/middleware/utils';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
@@ -130,17 +130,31 @@ class ShareModal extends React.Component {
   renderContentHeader(shareTo) {
     const { item, name } = shareTo;
     const { shareToBasicTextStyle } = styles;
-    const basicText = name === 'feed' ? 'To' : `To ${name} `;
+    // If share to event or tribe, item must not be null
+    if (!item && name !== 'Feed') return '';
 
-    const shareToComponent = switchCaseF({
-      feed: <Text style={shareToBasicTextStyle}>feed</Text>,
-      tribe: () => ShareToComponent(item.name, () => {
-        Actions.push('searchTribeLightBox');
-      }),
-      event: () => ShareToComponent(item.title, () => {
-        Actions.push('searchEventLightBox');
-      })
-    })('feed')(name);
+    // Select the item namef
+    let nameToRender = '';
+    if (name === 'Tribe') nameToRender = item.name;
+    if (name === 'Event') nameToRender = item.title;
+
+    const basicText = name === 'Feed' ? 'To' : `To ${name} `;
+
+    const shareToComponent = switchCase({
+      Feed: <Text style={shareToBasicTextStyle}>Feed</Text>,
+      Tribe: (
+        <ShareToComponent
+          name={nameToRender}
+          onPress={() => Actions.push('searchTribeLightBox')}
+        />
+      ),
+      Event: (
+        <ShareToComponent
+          name={nameToRender}
+          onPress={() => Actions.push('searchEventLightBox')}
+        />
+      )
+    })('Feed')(name);
 
     return (
       <View
@@ -241,8 +255,8 @@ const getShareTo = (state) => {
   return destination;
 };
 
-const ShareToComponent = (name, onPress) => {
-
+const ShareToComponent = (props) => {
+  const { name, onPress } = props;
   return (
     <TouchableOpacity
       style={styles.shareToContainerStyler}
