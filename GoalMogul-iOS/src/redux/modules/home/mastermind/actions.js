@@ -172,6 +172,7 @@ const loadGoals = (skip, limit, token, priority, category, callback, onError) =>
     .catch((err) => {
       console.log(`${DEBUG_KEY} load goal error: ${err}`);
       onError(err);
+      callback([]);
     });
 };
 

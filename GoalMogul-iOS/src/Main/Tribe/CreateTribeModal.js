@@ -203,31 +203,64 @@ class CreateTribeModal extends React.Component {
 
             <TouchableOpacity
               onPress={() => this.setState({ mediaModal: true })}
-              style={{ position: 'absolute', top: 10, right: 15 }}
+              style={{
+                position: 'absolute',
+                top: 10,
+                right: 15,
+                width: 24,
+                height: 24,
+                borderRadius: 12,
+                padding: 2,
+                backgroundColor: 'rgba(0,0,0,0.3)',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
             >
               <Image
                 source={expand}
-                style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+                style={{
+                  width: 16,
+                  height: 16,
+                  tintColor: '#fafafa',
+                  borderRadius: 4,
+                }}
               />
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => this.props.change('picture', false)}
-              style={{ position: 'absolute', top: 10, left: 15 }}
+              style={{
+                position: 'absolute',
+                top: 10,
+                left: 15,
+                width: 24,
+                height: 24,
+                borderRadius: 12,
+                backgroundColor: 'rgba(0,0,0,0.3)',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
             >
               <Image
                 source={cancel}
-                style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+                style={{
+                  width: 16,
+                  height: 16,
+                  tintColor: '#fafafa',
+                  borderRadius: 8,
+                  padding: 2
+                }}
               />
             </TouchableOpacity>
           </ImageBackground>
+          {this.renderImageModal(imageUrl)}
         </View>
       );
     }
     return '';
   }
 
-  renderImageModal() {
+  renderImageModal(imageUrl) {
     if (this.props.picture) {
       return (
         <Modal
@@ -256,7 +289,7 @@ class CreateTribeModal extends React.Component {
               />
             </TouchableOpacity>
             <Image
-              source={{ uri: this.props.picture }}
+              source={{ uri: imageUrl }}
               style={{ width, height: 200 }}
               resizeMode='cover'
             />
@@ -381,7 +414,6 @@ class CreateTribeModal extends React.Component {
             </View>
 
           </ScrollView>
-          {this.renderImageModal()}
         </KeyboardAvoidingView>
       </MenuProvider>
     );

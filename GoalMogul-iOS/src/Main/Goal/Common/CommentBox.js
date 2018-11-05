@@ -39,7 +39,8 @@ class CommentBox extends Component {
     super(props);
     this.state = {
       newValue: '',
-      height: 34
+      height: 34,
+      defaultValue: 'Write a Comment...'
     };
   }
 
@@ -47,12 +48,36 @@ class CommentBox extends Component {
     if (this.props.onRef !== null) {
       this.props.onRef(this);
     }
+    this.setState({
+      ...this.state,
+      defaultValue: 'Write a Comment...'
+    });
   }
 
   handleOnPost = (uploading) => {
     // Ensure we only create comment once
     if (uploading) return;
     this.props.postComment(this.props.pageId);
+  }
+
+  handleOnBlur = (newComment) => {
+    const { contentText, tmpSuggestion } = newComment;
+    // On Blur if no content then set default value to comment the goal / post
+    if ((contentText === undefined || contentText === '' || contentText.trim() === '')
+    && _.isEmpty(tmpSuggestion)) {
+      this.setState({
+        ...this.state,
+        defaultValue: 'Comment'
+      });
+    }
+  }
+
+  focusForReply() {
+    this.refs['textInput'].focus();
+    this.setState({
+      ...this.state,
+      defaultValue: 'Reply to...'
+    });
   }
 
   focus() {
@@ -120,7 +145,8 @@ class CommentBox extends Component {
   renderPost(newComment) {
     const { uploading, contentText, tmpSuggestion } = newComment;
     const disable = uploading ||
-      ((contentText === '' || contentText === undefined) && _.isEmpty(tmpSuggestion));
+      ((contentText === undefined || contentText === '' || contentText.trim() === '')
+      && _.isEmpty(tmpSuggestion));
 
     const color = '#45C9F6';
     return (
@@ -188,13 +214,15 @@ class CommentBox extends Component {
           <View style={inputContainerStyle}>
             <TextInput
               ref="textInput"
-              placeholder="Write a comment..."
+              placeholder={this.state.defaultValue}
               onChangeText={(val) => this.props.newCommentOnTextChange(val, pageId)}
               style={inputStyle}
               editable={!uploading}
               maxHeight={maxHeight}
               multiline
               value={newComment.contentText}
+              defaultValue={this.state.defaultValue}
+              onBlur={() => this.handleOnBlur(newComment)}
             />
           </View>
           {this.renderPost(newComment)}

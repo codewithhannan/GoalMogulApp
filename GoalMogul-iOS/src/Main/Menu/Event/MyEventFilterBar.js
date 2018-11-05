@@ -127,7 +127,7 @@ class MyEventFilterBar extends Component {
           </MenuTrigger>
           <MenuOptions customStyles={styles.menuOptionsStyles}>
             <MenuOption
-              text='Owned Events'
+              text='My Events'
               value='true'
             />
             <MenuOption

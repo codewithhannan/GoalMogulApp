@@ -415,6 +415,7 @@ class Tribe extends Component {
       ? <MemberFilterBar />
       : '';
 
+    // Currently it's not in sync with MyTribe
     const inviteButton = this.props.tab === 'members'
       ? (
         <TouchableOpacity
@@ -456,7 +457,6 @@ class Tribe extends Component {
           })
         }
         {filterBar}
-        {inviteButton}
       </View>
     );
   }

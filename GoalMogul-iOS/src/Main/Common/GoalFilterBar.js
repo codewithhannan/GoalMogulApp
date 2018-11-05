@@ -135,7 +135,12 @@ class GoalFilterBar extends Component {
             }}
           >
             <View style={detailContainerStyle}>
-              <Text style={textStyle}>Category ({`${categoryText}`})
+              <Text
+                style={textStyle}
+                numberOfLines={1}
+                ellipsizeMode='tail'
+              >
+                Category ({`${categoryText}`})
                 {/* <Text style={standardTextStyle}> (ALL)</Text> */}
               </Text>
               <Image style={caretStyle} source={dropDown} />
@@ -336,10 +341,10 @@ const styles = {
 };
 
 const switchSortByText = (sortBy) => switchCase({
-  created: 'DATE',
-  updated: 'UPDATED',
-  shared: 'LAST SHARED',
-  priority: 'PRIORITY'
+  created: 'Date',
+  updated: 'Updated',
+  shared: 'Last Shared',
+  priority: 'Priority'
 })('created')(sortBy);
 
 export default GoalFilterBar;

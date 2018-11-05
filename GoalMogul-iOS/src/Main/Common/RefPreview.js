@@ -43,6 +43,18 @@ class RefPreview extends Component {
     }
   }
 
+  renderBadge = (item, postType) => {
+    if (postType === 'ShareUser') {
+      // TODO: render badge accordingly based on the user points
+      return (
+        <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent: 'center' }}>
+          <Image source={badge} style={{ height: 23, width: 23 }} />
+        </View>
+      );
+    }
+    return '';
+  }
+
   // Currently this is a dummy component
   render() {
     const { item, postType } = this.props;
@@ -79,9 +91,7 @@ class RefPreview extends Component {
             </Text>
 
         </View>
-        <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent: 'center' }}>
-          <Image source={badge} style={{ height: 23, width: 23 }} />
-        </View>
+        {this.renderBadge(item, postType)}
       </TouchableOpacity>
     );
   }
@@ -126,8 +136,8 @@ const styles = {
   containerStyle: {
     flexDirection: 'row',
     height: 50,
-    marginTop: 12,
-    marginBottom: 8,
+    marginTop: 4,
+    marginBottom: 4,
     borderWidth: 1,
     borderRadius: 2,
     borderColor: '#ddd',

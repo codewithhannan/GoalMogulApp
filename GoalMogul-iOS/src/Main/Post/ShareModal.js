@@ -159,7 +159,7 @@ class ShareModal extends React.Component {
           name='content'
           label=''
           component={this.renderInput}
-          editable={this.props.uploading}
+          editable={!this.props.uploading}
           numberOfLines={10}
           style={styles.goalInputStyle}
           placeholder='Say something about this share'
@@ -223,18 +223,18 @@ const getShareTo = (state) => {
   } = state.newShare;
 
   let destination = {
-    name: 'feed'
+    name: 'Feed'
   };
   if (belongsToTribe && belongsToTribeItem) {
     console.log('tribe item is: ', belongsToTribeItem);
     destination = {
-      name: 'tribe',
+      name: 'Tribe',
       item: belongsToTribeItem
     };
   }
   if (belongsToEvent && belongsToEventItem) {
     destination = {
-      name: 'event',
+      name: 'Event',
       item: belongsToEventItem
     };
   }

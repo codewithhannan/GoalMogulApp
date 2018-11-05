@@ -4,7 +4,12 @@ import R from 'ramda';
 const DEBUG_KEY = '[ API ]';
 
 export const singleFetch = (path, payload, method, token) =>
-  fetchData(path, payload, method, token).then((res) => res.json());
+  fetchData(path, payload, method, token).then((res) => {
+    if (!res.ok || !res.status === 200) {
+      throw new Error(`Response status is: ${res.status} with message: ${res.message}`);
+    }
+    return res.json();
+  });
 
 const fetchData = R.curry((path, payload = {}, method = 'get', token) => {
   // Generate headers

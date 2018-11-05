@@ -8,7 +8,7 @@ import {
 
 const ActionButton = (props) => {
   const { containerStyle, count } = props;
-  const countText = count || count === 0
+  const countText = !count || count === 0
     ? ''
     : <Text style={{ ...styles.textStyle, ...props.textStyle }}>{props.count}</Text>;
 

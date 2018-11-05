@@ -179,11 +179,27 @@ class PostDetailSection extends Component {
 
             <TouchableOpacity
               onPress={() => this.setState({ mediaModal: true })}
-              style={{ position: 'absolute', top: 10, right: 15 }}
+              style={{
+                position: 'absolute',
+                top: 10,
+                right: 15,
+                width: 24,
+                height: 24,
+                borderRadius: 12,
+                padding: 2,
+                backgroundColor: 'rgba(0,0,0,0.3)',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
             >
               <Image
                 source={expand}
-                style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+                style={{                  
+                  width: 16,
+                  height: 16,
+                  tintColor: '#fafafa',
+                  borderRadius: 4,
+                }}
               />
             </TouchableOpacity>
           </ImageBackground>

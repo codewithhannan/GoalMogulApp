@@ -151,7 +151,7 @@ class GoalDetailSection extends Component {
           textStyle: { color: '#9fcd8d' }
         }
       : {
-          containerStyle: { backgroundColor: '#eafcee' }
+          // containerStyle: { backgroundColor: '#eafcee' }
         };
 
     const markCompleteOnPress = isCompleted
@@ -177,8 +177,6 @@ class GoalDetailSection extends Component {
           buttonName='Mastermind'
           iconSource={ShareIcon}
           iconStyle={{ tintColor: '#3f3f3f' }}
-          textStyle={markCompleteStyle.textStyle}
-          containerStyle={markCompleteStyle.containerStyle}
           onPress={() => this.props.shareGoalToMastermind(_id)}
         />
         <IndividualActionButton

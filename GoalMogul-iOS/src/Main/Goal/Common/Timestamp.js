@@ -13,7 +13,8 @@ const Timestamp = (props) => {
 const styles = {
   containerStyle: {
     fontSize: 10,
-    color: '#636363'
+    color: '#636363',
+    marginTop: 1
   }
 };
 
