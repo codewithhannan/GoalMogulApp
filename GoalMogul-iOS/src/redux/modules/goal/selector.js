@@ -40,7 +40,7 @@ export const getGoalStepsAndNeeds = createSelector(
 
     // Transform needs to have a type
     let newSteps = [];
-    if (needs && needs.length !== 0) {
+    if (steps && steps.length !== 0) {
       newSteps = steps.map((step) => ({
         ...step,
         type: 'step'

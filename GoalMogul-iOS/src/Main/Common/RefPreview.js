@@ -72,23 +72,22 @@ class RefPreview extends Component {
           imageUrl={picture}
         />
         <View style={{ flex: 1, marginLeft: 12, marginRight: 12, justifyContent: 'center' }}>
+          <Text
+            style={styles.titleTextStyle}
+            numberOfLines={1}
+            ellipsizeMode='tail'
+          >
+            {postType === 'ShareNeed' ? 'Need' : title}
+          </Text>
 
-            <Text
-              style={styles.titleTextStyle}
-              numberOfLines={1}
-              ellipsizeMode='tail'
-            >
-              {postType === 'ShareNeed' ? 'Need' : title}
-            </Text>
 
-
-            <Text
-              style={styles.headingTextStyle}
-              numberOfLines={2}
-              ellipsizeMode='tail'
-            >
-              {content}
-            </Text>
+          <Text
+            style={styles.headingTextStyle}
+            numberOfLines={2}
+            ellipsizeMode='tail'
+          >
+            {content}
+          </Text>
 
         </View>
         {this.renderBadge(item, postType)}

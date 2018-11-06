@@ -13,8 +13,13 @@ import {
 } from '../redux/modules/like/LikeReducers';
 
 import {
-  COMMENT_NEW_POST_SUGGESTION_SUCCESS
+  COMMENT_NEW_POST_SUGGESTION_SUCCESS,
+  COMMENT_NEW_POST_SUCCESS
 } from '../redux/modules/feed/comment/NewCommentReducers';
+
+import {
+  COMMENT_DELETE_SUCCESS
+} from '../redux/modules/feed/comment/CommentReducers';
 
 const INITIAL_NAVIGATION_STATE = {
   index: 0,
@@ -181,6 +186,23 @@ export default (state = INITIAL_STATE, action) => {
       const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
       // set the navigationState to have comment as the tab
       return _.set(newState, `${path}.navigationState.index`, 0);
+    }
+
+    case COMMENT_DELETE_SUCCESS: {
+      const { tab, commentId } = action.payload;
+      const newState = _.cloneDeep(state);
+      const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
+      let currentCount = _.get(newState, `${path}.goal.commentCount`);
+      if (!currentCount) return newState;
+      return _.set(newState, `${path}.goal.commentCount`, (--currentCount));
+    }
+
+    case COMMENT_NEW_POST_SUCCESS: {
+      const { tab, commentId } = action.payload;
+      const newState = _.cloneDeep(state);
+      const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
+      let currentCount = _.get(newState, `${path}.goal.commentCount`) || 0;
+      return _.set(newState, `${path}.goal.commentCount`, (++currentCount));
     }
 
     default:

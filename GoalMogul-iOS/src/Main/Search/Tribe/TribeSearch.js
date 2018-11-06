@@ -54,7 +54,7 @@ class TribeSearch extends Component {
             <EmptyResult text={'No Results'} />
           :
             <FlatList
-              data={testDataSuggested}
+              data={this.props.data}
               renderItem={this.renderItem}
               keyExtractor={this._keyExtractor}
               onEndReached={this.handleOnLoadMore}

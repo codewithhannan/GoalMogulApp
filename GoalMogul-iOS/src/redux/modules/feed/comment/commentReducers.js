@@ -109,10 +109,11 @@ export default (state = INITIAL_STATE, action) => {
         newState = _.set(newState, `${path}.skip`, skip);
       }
       newState = _.set(newState, `${path}.hasNextPage`, hasNextPage);
-      newState = _.set(newState, `${path}.data`, data);
+      const sortedData = data.sort((item1, item2) => new Date(item1.created) - new Date(item2.created));
 
+      newState = _.set(newState, `${path}.data`, sortedData);
       // A dump way to transform all comments to comments with childComments
-      const transformedComments = transformComments(data);
+      const transformedComments = transformComments(sortedData);
       return _.set(newState, `${path}.transformedComments`, transformedComments);
     }
 

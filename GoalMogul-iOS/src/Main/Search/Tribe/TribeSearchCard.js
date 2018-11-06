@@ -75,10 +75,10 @@ class SearchTribeCard extends Component {
   }
 
   renderInfo() {
-    const { title } = this.props.item;
+    const { name } = this.props.item;
     return (
       <View style={styles.infoContainerStyle}>
-        <Name text={title} textStyle={{ color: '#4F4F4F' }} />
+        <Name text={name} textStyle={{ color: '#4F4F4F' }} />
       </View>
     );
   }

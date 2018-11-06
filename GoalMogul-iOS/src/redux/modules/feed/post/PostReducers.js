@@ -10,6 +10,14 @@ import {
   UNLIKE_POST,
 } from '../../like/LikeReducers';
 
+import {
+  COMMENT_DELETE_SUCCESS
+} from '../comment/CommentReducers';
+
+import {
+  COMMENT_NEW_POST_SUCCESS
+} from '../comment/NewCommentReducers';
+
 const NEW_POST_INITIAL_STATE = {
   mediaRef: undefined,
   uploading: false
@@ -123,6 +131,24 @@ export default (state = INITIAL_STATE, action) => {
     case POST_NEW_POST_SUBMIT_SUCCESS: {
       const newState = _.cloneDeep(state);
       return _.set(newState, 'newPost', { ...NEW_POST_INITIAL_STATE });
+    }
+
+    // When a comment is deleted for a goal, decrement the comment count
+    case COMMENT_DELETE_SUCCESS: {
+      const { tab, commentId } = action.payload;
+      const newState = _.cloneDeep(state);
+      const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
+      let currentCount = _.get(newState, `${path}.commentCount`);
+      if (!currentCount) return newState;
+      return _.set(newState, `${path}.commentCount`, (--currentCount));
+    }
+
+    case COMMENT_NEW_POST_SUCCESS: {
+      const { tab, commentId } = action.payload;
+      const newState = _.cloneDeep(state);
+      const path = !tab || tab === 'homeTab' ? 'post' : `post${capitalizeWord(tab)}`;
+      let currentCount = _.get(newState, `${path}.commentCount`) || 0;
+      return _.set(newState, `${path}.commentCount`, (++currentCount));
     }
 
     default:

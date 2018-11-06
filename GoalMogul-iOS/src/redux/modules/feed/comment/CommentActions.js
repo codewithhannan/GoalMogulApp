@@ -182,7 +182,7 @@ export const createCommentFromSuggestion = (
  * parentRef, parentType("Goal" || "Post"), contentText, contentTags, commentType[, replyToRef, suggestion(Suggestion)]
  */
 export const postComment = (pageId) => (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, user } = getState().user;
   const { tab } = getState().navigation;
   const newComment = commentAdapter(getState(), pageId, tab);
   const { suggestion, mediaRef } = newComment;
@@ -216,7 +216,12 @@ export const postComment = (pageId) => (dispatch, getState) => {
     dispatch({
       type: COMMENT_NEW_POST_SUCCESS,
       payload: {
-        comment: data,
+        comment: {
+          ...data,
+          owner: {
+            ...user
+          }
+        },
         tab,
         pageId
       }
