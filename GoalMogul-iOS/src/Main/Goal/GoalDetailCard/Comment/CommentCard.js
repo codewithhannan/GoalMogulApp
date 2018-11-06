@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Keyboard
 } from 'react-native';
+import { connect } from 'react-redux';
 
 // Components
 import CommentUserDetail from './CommentUserDetail';
@@ -128,7 +129,12 @@ class CommentCard extends React.Component {
           >
             <ChildCommentIcon />
             <View style={{ flex: 1 }}>
-              <ChildCommentCard {...this.props} item={comment} viewOffset={viewOffset} />
+              <ChildCommentCard
+                {...this.props}
+                item={comment}
+                viewOffset={viewOffset}
+                userId={this.props.userId}
+              />
             </View>
           </View>
         );
@@ -169,6 +175,7 @@ class CommentCard extends React.Component {
           ref="userDetail"
           onLayout={(layout) => this.updateUserDetailLayout(layout)}
           viewOffset={viewOffset}
+          userId={this.props.userId}
         />
         {this.renderChildComments()}
       </View>
@@ -231,4 +238,15 @@ const styles = {
   }
 };
 
-export default CommentCard;
+const mapStateToProps = state => {
+  const { userId } = state.user;
+
+  return {
+    userId
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  null
+)(CommentCard);

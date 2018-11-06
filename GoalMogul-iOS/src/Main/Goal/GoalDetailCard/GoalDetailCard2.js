@@ -113,7 +113,7 @@ class GoalDetailCard2 extends Component {
       case 'comments': {
         return (
           <CommentCard
-            key={props.index}
+            key={`comment-${props.index}`}
             item={props.item}
             index={props.index}
             commentDetail={{ parentType: 'Goal', parentRef: goalDetail._id }}
@@ -137,7 +137,7 @@ class GoalDetailCard2 extends Component {
         };
         return (
           <StepAndNeedCard
-            key={props.index}
+            key={`mastermind-${props.index}`}
             item={props.item}
             goalRef={goalDetail}
             onPress={() => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, Text, TouchableOpacity } from 'react-native';
+import { View, Image, Text } from 'react-native';
 import timeago from 'timeago.js';
 import _ from 'lodash';
 
@@ -11,18 +11,36 @@ import { MenuFactory } from '../../../Common/MenuFactory';
 /* Asset */
 import badge from '../../../../asset/utils/badge.png';
 
+/**
+ * Props passed in are:
+ * @param reportType={reportType}
+ * @param isCommentOwner={isCommentOwner}
+ * @param item={item}
+ * @param goalRef
+ * @param caretOnPress
+ */
 const CommentHeadline = (props) => {
   // TODO: format time
-  const { item, caretOnPress, goalRef } = props;
+  const { item, caretOnPress, goalRef, isCommentOwner } = props;
   const { owner, commentType, suggestion, created } = item;
   const timeStamp = (created === undefined || created.length === 0)
     ? new Date() : created;
 
-  const menu = MenuFactory(
+  const menu = !isCommentOwner ?
+  MenuFactory(
     [
       'Report',
     ],
-    () => caretOnPress(),
+    (val) => caretOnPress(val),
+    '',
+    { paddingBottom: 10, paddingLeft: 5, paddingRight: 5, paddingTop: 5 },
+    () => console.log('Report Modal is opened')
+  ) :
+  MenuFactory(
+    [
+      'Delete'
+    ],
+    (val) => caretOnPress(val),
     '',
     { paddingBottom: 10, paddingLeft: 5, paddingRight: 5, paddingTop: 5 },
     () => console.log('Report Modal is opened')

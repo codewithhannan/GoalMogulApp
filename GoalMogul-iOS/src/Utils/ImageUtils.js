@@ -3,7 +3,7 @@ import { Image, ImageEditor } from 'react-native';
 import Expo, { Permissions } from 'expo';
 import _ from 'lodash';
 
-const ImageTypes = ['ProfileImage', 'FeedImage', 'PageImage'];
+const ImageTypes = ['ProfileImage', 'FeedImage', 'PageImage', 'GoalImage'];
 const getImageUrl = (type) => {
   let imageType;
   if (!type) {

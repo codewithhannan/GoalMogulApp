@@ -117,14 +117,15 @@ export default (state = INITIAL_STATE, action) => {
 
     case SUGGESTION_SEARCH_CLEAR_STATE: {
       const { tab } = action.payload;
-      if (!tab) {
-        // No tab specified, clear all state
-        return INITIAL_STATE;
-      }
-      // Clear state for specific tab
-      const tabInitialState = dotPath(tab, INITIAL_STATE);
-      const newState = _.cloneDeep(state);
-      return _.set(newState, tab, tabInitialState);
+      // if (!tab) {
+      //   // No tab specified, clear all state
+      //   return INITIAL_STATE;
+      // }
+      // // Clear state for specific tab
+      // const tabInitialState = dotPath(tab, INITIAL_STATE);
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'searchContent', '');
+      return _.set(newState, 'searchRes', { ...INITIAL_STATE_SEARCH });
     }
 
     // Update search type

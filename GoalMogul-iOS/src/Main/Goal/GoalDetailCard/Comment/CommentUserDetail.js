@@ -24,7 +24,8 @@ import {
 } from '../../../../redux/modules/like/LikeActions';
 
 import {
-  createComment
+  createComment,
+  deleteComment
 } from '../../../../redux/modules/feed/comment/CommentActions';
 
 import {
@@ -83,15 +84,26 @@ class CommentUserDetail extends Component {
 
   // user basic information
   renderUserDetail() {
-    const { item, reportType, goalRef } = this.props;
+    const { item, reportType, goalRef, userId } = this.props;
     const { _id, suggestion } = item;
+
+    // User is comment owner if user is the creator of the goal or
+    // user is the creator of the comment
+    const isCommentOwner = userId === _id || (goalRef && goalRef.owner._id === userId);
     return (
         <View style={{ marginLeft: 15, flex: 1 }}>
           <CommentHeadline
             item={item}
+            isCommentOwner={isCommentOwner}
             goalRef={goalRef}
-            caretOnPress={() => {
-              this.props.createReport(_id, reportType || 'detail', 'Comment');
+            caretOnPress={(type) => {
+              console.log('Comment options type is: ', type);
+              if (type === 'Report') {
+                return this.props.createReport(_id, reportType || 'detail', 'Comment');
+              }
+              if (type === 'Delete') {
+                return this.props.deleteComment(_id);
+              }
             }}
           />
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
@@ -226,6 +238,7 @@ export default connect(
     likeGoal,
     unLikeGoal,
     createComment,
-    createReport
+    createReport,
+    deleteComment
   }
 )(CommentUserDetail);
