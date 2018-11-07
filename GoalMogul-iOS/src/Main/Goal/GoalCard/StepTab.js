@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   View,
   MaskedViewIOS,
-  Text
+  Text,
+  TouchableOpacity
 } from 'react-native';
 import { LinearGradient } from 'expo';
 import { Icon } from 'react-native-elements';
@@ -78,7 +79,7 @@ class StepTab extends Component {
 
   renderViewGoal() {
     return (
-      <View
+      <TouchableOpacity
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -89,6 +90,7 @@ class StepTab extends Component {
           left: 0,
           right: 0
         }}
+        onPress={() => this.props.onPress()}
       >
         <Text style={styles.viewGoalTextStyle}>View Goal</Text>
         <View style={{ alignSelf: 'center', alignItems: 'center' }}>
@@ -99,7 +101,7 @@ class StepTab extends Component {
             iconStyle={styles.iconStyle}
           />
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 
