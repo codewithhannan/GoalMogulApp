@@ -19,8 +19,8 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 
 class About extends Component {
 
-  renderLocation() {
-    const location = 'The Mirage -- Brooklyn, New York';
+  renderLocation(item) {
+    const location = item.location || 'The Mirage -- Brooklyn, New York';
     const {
       rowContainerStyle,
       iconContainerStyle,
@@ -135,7 +135,8 @@ const styles = {
   contentTextStyle: {
     fontSize: 14,
     fontWeight: '300',
-    color: '#696969',
+    // color: '#696969',
+    color: 'black',
     marginLeft: 8
   },
   boldTextStyle: {

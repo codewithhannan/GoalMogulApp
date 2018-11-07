@@ -3,11 +3,12 @@ import { View, TouchableOpacity } from 'react-native';
 
 import Divider from './Divider';
 import TabButton from './Button/TabButton';
+import SubTabButton from './Button/SubTabButton';
 
 class TabButtonGroup extends Component {
 
   renderButton() {
-    const { buttons, tabIconMap } = this.props;
+    const { buttons, tabIconMap, subTab } = this.props;
     const { navigationState, jumpTo, jumpToIndex } = buttons;
 
     const { index, routes } = navigationState;
@@ -15,6 +16,25 @@ class TabButtonGroup extends Component {
       const selected = i === index;
       const iconSource = tabIconMap ? tabIconMap[b.key].iconSource : undefined;
       const iconStyle = tabIconMap ? tabIconMap[b.key].iconStyle : undefined;
+      const button = subTab
+        ? (
+          <SubTabButton
+            text={b.title}
+            onSelect={selected}
+            stat={b.stat}
+            iconSource={iconSource}
+            iconStyle={iconStyle}
+          />
+        )
+        : (
+          <TabButton
+            text={b.title}
+            onSelect={selected}
+            stat={b.stat}
+            iconSource={iconSource}
+            iconStyle={iconStyle}
+          />
+        );
       if (i !== 0) {
         // render divider to the left
         return (
@@ -30,16 +50,11 @@ class TabButtonGroup extends Component {
             }}
           >
             <Divider />
-            <TabButton
-              text={b.title}
-              onSelect={selected}
-              stat={b.stat}
-              iconSource={iconSource}
-              iconStyle={iconStyle}
-            />
+            {button}
           </TouchableOpacity>
         );
       }
+
       return (
         <TouchableOpacity
           key={b.key}
@@ -52,13 +67,7 @@ class TabButtonGroup extends Component {
             }
           }}
         >
-          <TabButton
-            text={b.title}
-            onSelect={selected}
-            stat={b.stat}
-            iconSource={iconSource}
-            iconStyle={iconStyle}
-          />
+          {button}
         </TouchableOpacity>
       );
     });

@@ -190,7 +190,7 @@ const newPostAdaptor = (values, userId) => {
     content: {
       text: post,
       tags: [],
-      links: []
+      // links: [] no link is needed for now
     },
     mediaRef,
     postType: 'General',

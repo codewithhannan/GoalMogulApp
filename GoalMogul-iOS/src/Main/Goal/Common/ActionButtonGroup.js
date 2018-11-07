@@ -14,7 +14,7 @@ const ActionButtonGroup = (props) => {
 
 const styles = {
   containerStyle: {
-    height: 60,
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',

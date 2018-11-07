@@ -5,7 +5,6 @@ import {
   GOAL_DETAIL_CLOSE
 } from '../../../../reducers/GoalDetailReducers';
 
-
 import {
   POST_DETAIL_OPEN,
   POST_DETAIL_CLOSE
@@ -23,6 +22,9 @@ const NEW_COMMENT_INITIAL_STATE = {
   parentType: undefined,
   parentRef: undefined,
   content: undefined,
+  // This field is populated after comment is posted if there is an image
+  mediaPresignedUrl: undefined,
+  mediaRef: undefined,
   // ["Comment", "Reply", "Suggestion"]
   commentType: undefined,
   replyToRef: undefined,
@@ -32,6 +34,7 @@ const NEW_COMMENT_INITIAL_STATE = {
   friendList: [],
   showSuggestionModal: false,
   showAttachedSuggestion: false,
+  uploading: false
 };
 /**
  * This reducer is servered as denormalized comment stores
@@ -57,7 +60,7 @@ const INITIAL_STATE = {
 const INITIAL_SUGGESETION = {
   // ["ChatConvoRoom", "Event", "Tribe", "Link", "Reading",
   // "Step", "Need", "Friend", "User", "Custom"]
-  suggestionType: 'Reading',
+  suggestionType: 'Friend',
   // ["Goal", "Need", "Step"]
   suggestionFor: undefined,
   suggestionForRef: undefined,
@@ -95,6 +98,10 @@ export const COMMENT_NEW_POST_SUCCESS = 'comment_new_post_success';
 // Comment with suggestion for a need or a step succeed
 export const COMMENT_NEW_POST_SUGGESTION_SUCCESS = 'comment_new_post_suggestion_success';
 export const COMMENT_NEW_POST_FAIL = 'comment_new_post_fail';
+
+// User chooses an image in the comment
+export const COMMENT_NEW_SELECT_IMAGE = 'comment_new_select_image';
+export const COMMENT_NEW_UPLOAD_PICTURE_SUCCESS = 'comment_new_upload_picture_success';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -142,12 +149,28 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, `${path}`, _.pick(newTab, properties));
     }
 
+    case COMMENT_NEW_POST_FAIL: {
+      const newState = _.cloneDeep(state);
+      const { tab, pageId } = action.payload;
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      return _.set(newState, `${path}.uploading`, false);
+    }
+
+    case COMMENT_NEW_POST_START: {
+      const newState = _.cloneDeep(state);
+      const { tab, pageId } = action.payload;
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      return _.set(newState, `${path}.uploading`, true);
+    }
+
     // when comment posts succeed, delete everything but parent type and ref
     case COMMENT_NEW_POST_SUCCESS: {
       const newState = _.cloneDeep(state);
       const { tab, pageId } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
-      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      const path = !tab || tab === 'homeTab' ? `homeTab.${page}` : `${tab}.${page}`;
       const parentType = _.get(newState, `${path}.parentType`);
       const parentRef = _.get(newState, `${path}.parentRef`);
 
@@ -202,7 +225,12 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case COMMENT_NEW_SUGGESTION_CREATE: {
-      const { suggestionFor, suggestionForRef, tab, pageId } = action.payload;
+      const {
+        suggestionFor,
+        suggestionForRef,
+        tab,
+        pageId
+      } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       let newState = _.cloneDeep(state);
@@ -296,6 +324,24 @@ export default (state = INITIAL_STATE, action) => {
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       return _.set(newState, `${path}.tmpSuggestion.selectedItem`, selectedItem);
+    }
+
+    // User chooses an image for the comment
+    case COMMENT_NEW_SELECT_IMAGE: {
+      const { tab, mediaRef, pageId } = action.payload;
+      const newState = _.cloneDeep(state);
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      return _.set(newState, `${path}.mediaRef`, mediaRef);
+    }
+
+    // Update the field with presignedUrl
+    case COMMENT_NEW_UPLOAD_PICTURE_SUCCESS: {
+      const { tab, pageId, objectKey } = action.payload;
+      const newState = _.cloneDeep(state);
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      return _.set(newState, `${path}.mediaPresignedUrl`, objectKey);
     }
 
     default: return { ...state };

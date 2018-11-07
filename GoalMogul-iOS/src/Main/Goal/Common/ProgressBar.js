@@ -6,8 +6,11 @@ import Bar from '../../../asset/utils/progressBar.png';
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-const formatDate = (date) => `${months[(date !== undefined ? date : new Date()).getMonth() - 1]} ` +
-  `${(date || new Date()).getFullYear()}`;
+const formatDate = (date) => {
+  const month = months[(date || new Date()).getMonth()];
+  const year = (date || new Date()).getFullYear();
+  return `${month} ${year}`;
+};
 
 
 const ProgressBar = (props) => {

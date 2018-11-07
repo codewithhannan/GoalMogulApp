@@ -16,8 +16,8 @@ import BaseOverlay from './BaseOverlay';
 import SearchFilterBar from './SearchFilterBar';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import PeopleSearch from './People/PeopleSearch';
-// import EventSearch from './Event/EventSearch';
-// import TribeSearch from './Tribe/TribeSearch';
+import EventSearch from './Event/EventSearch';
+import TribeSearch from './Tribe/TribeSearch';
 
 import {
   handleSearch,
@@ -71,9 +71,9 @@ class SearchOverlay extends Component {
   };
 
   _renderScene = SceneMap({
-    people: PeopleSearch,
-    tribes: PeopleSearch,
-    events: PeopleSearch
+    people: () => <PeopleSearch type='GeneralSearch' />,
+    tribes: () => <TribeSearch type='GeneralSearch' />,
+    events: () => <EventSearch type='GeneralSearch' />
   });
 
   render() {

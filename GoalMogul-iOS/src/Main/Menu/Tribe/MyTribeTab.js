@@ -175,6 +175,10 @@ const styles = {
     marginRight: 20,
     backgroundColor: '#efefef',
     borderRadius: 5
+  },
+  separator: {
+    width: 0.5,
+    color: 'gray'
   }
 };
 

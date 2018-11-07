@@ -33,7 +33,7 @@ import {
 
 // Component
 import SearchBarHeader from '../../../Main/Common/Header/SearchBarHeader';
-import SuggestionModal from './SuggestionModal';
+import SuggestionModal from './SuggestionModal3';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import CommentBox from '../Common/CommentBox';
 import StepAndNeedCard from './StepAndNeedCard';
@@ -85,7 +85,10 @@ class GoalDetailCard2 extends Component {
     );
   };
 
-  keyExtractor = (item) => item._id;
+  keyExtractor = (item) => {
+    const { _id } = item;
+    return _id;
+  };
 
   scrollToIndex = (index, viewOffset = 0) => {
     this.refs['flatList'].scrollToIndex({
@@ -98,25 +101,31 @@ class GoalDetailCard2 extends Component {
 
   dialogOnFocus = () => this.commentBox.focus();
 
+  handleReplyTo = () => {
+    this.commentBox.focusForReply();
+  }
+
   renderItem = (props) => {
-    const { routes, index } = this.props.navigationState;
+    const { goalDetail, navigationState } = this.props;
+    const { routes, index } = navigationState;
 
     switch (routes[index].key) {
       case 'comments': {
         return (
           <CommentCard
-            key={props.index}
+            key={`comment-${props.index}`}
             item={props.item}
             index={props.index}
+            commentDetail={{ parentType: 'Goal', parentRef: goalDetail._id }}
+            goalRef={goalDetail}
             scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
-            onCommentClicked={() => this.dialogOnFocus()}
+            onCommentClicked={() => this.handleReplyTo()}
             reportType='detail'
           />
         );
       }
 
       case 'mastermind': {
-        const { goalDetail } = this.props;
         const newCommentParams = {
           commentDetail: {
             parentType: 'Goal',
@@ -128,7 +137,7 @@ class GoalDetailCard2 extends Component {
         };
         return (
           <StepAndNeedCard
-            key={props.index}
+            key={`mastermind-${props.index}`}
             item={props.item}
             goalRef={goalDetail}
             onPress={() => {
@@ -146,17 +155,29 @@ class GoalDetailCard2 extends Component {
   }
 
   renderGoalDetailSection() {
+    const { goalDetail } = this.props;
+
+    // Tab stats
+    const { commentCount, steps, needs } = goalDetail ||
+      { commentCount: 0, steps: [], needs: [] };
+    const mastermindCount = (steps ? steps.length : 0) + (needs ? needs.length : 0);
+    const statsState = {
+      comments: commentCount,
+      mastermind: mastermindCount
+    };
+
     return (
       <View>
         <GoalDetailSection
-          item={this.props.goalDetail}
+          item={goalDetail}
           onSuggestion={() => this.dialogOnFocus()}
           isSelf={this.props.isSelf}
         />
         {
           this._renderHeader({
             jumpToIndex: (i) => this._handleIndexChange(i),
-            navigationState: this.props.navigationState
+            navigationState: this.props.navigationState,
+            statsState
           })
         }
       </View>
@@ -164,9 +185,11 @@ class GoalDetailCard2 extends Component {
   }
 
   render() {
-    const { comments, stepsAndNeeds, navigationState } = this.props;
+    const { comments, stepsAndNeeds, navigationState, goalDetail } = this.props;
     const { routes, index } = navigationState;
     const data = routes[index].key === 'comments' ? comments : stepsAndNeeds;
+    // console.log('transformed comments to render are: ', comments);
+    if (!goalDetail || _.isEmpty(goalDetail)) return '';
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -178,6 +201,7 @@ class GoalDetailCard2 extends Component {
               this.props.attachSuggestion();
             }}
             pageId={undefined}
+            item={goalDetail}
           />
           <Report showing={this.props.showingModalInDetail} />
           <SearchBarHeader
@@ -457,15 +481,20 @@ const mapStateToProps = (state, props) => {
 
   const { showingModalInDetail } = state.report;
   const { userId } = state.user;
-  // const { transformedComments, loading } = getCommentByTab(state, props.pageId);
-  console.log('goal is: ', goal);
+  const comments = getCommentByTab(state, props.pageId);
+  const { transformedComments, loading } = comments || {
+    transformedComments: [],
+    loading: false
+  };
+
   const isSelf = userId === (!goal || _.isEmpty(goal) ? '' : goal.owner._id);
 
   return {
-    commentLoading: false,
+    commentLoading: loading,
     stepsAndNeeds: getGoalStepsAndNeeds(state),
     // stepsAndNeeds: testStepsAndNeeds,
-    comments: testTransformedComments,
+    // comments: [...transformedComments, ...testTransformedComments],
+    comments: transformedComments,
     goalDetail: goal,
     navigationState,
     showingModalInDetail,

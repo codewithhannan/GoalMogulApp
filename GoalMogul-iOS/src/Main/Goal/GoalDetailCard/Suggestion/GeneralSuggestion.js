@@ -6,7 +6,8 @@ import {
   View,
   TextInput,
   Text,
-  SafeAreaView
+  SafeAreaView,
+  Animated
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -57,12 +58,12 @@ class GeneralSuggestion extends React.Component {
   }
 
   render() {
-    const { pageId } = this.props;
+    const { pageId, opacity } = this.props;
     return (
-      <View style={styles.containerStyle}>
+      <Animated.View style={{ ...styles.containerStyle, opacity }}>
         {this.renderLinkInput(pageId)}
         {this.renderSuggestionText(pageId)}
-      </View>
+      </Animated.View>
     );
   }
 }
@@ -70,8 +71,7 @@ class GeneralSuggestion extends React.Component {
 const styles = {
   containerStyle: {
     flex: 1,
-    marginTop: 1,
-    padding: 15,
+    margin: 15,
     backgroundColor: 'white'
   },
   headerTextStyle: {
@@ -80,6 +80,7 @@ const styles = {
   },
   inputStyle: {
     marginTop: 5,
+    padding: 10,
     marginBottom: 5,
     fontSize: 15
   }

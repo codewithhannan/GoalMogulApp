@@ -11,7 +11,7 @@ import {
 } from './SuggestionSearchReducers';
 import { switchCaseF } from '../../../middleware/utils';
 
-const DEBUG_KEY = '[ Action Search ]';
+const DEBUG_KEY = '[ Action Suggestion Search ]';
 
 // export const searchChangeFilter = (type, value) => {
 //   return {
@@ -65,6 +65,9 @@ const searchCurry = curry(searchWithId);
 const generateQueryId = (text) => hashCode(text);
 
 // Functions to handle search
+/**
+ * @param type: no need to supply this field for now
+ */
 export const handleSearch = (searchContent, type) => {
   const queryId = generateQueryId(searchContent);
   return searchCurry(searchContent, queryId, type);

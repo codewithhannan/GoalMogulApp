@@ -7,7 +7,10 @@ import {
 } from 'react-native';
 
 const ActionButton = (props) => {
-  const { containerStyle } = props;
+  const { containerStyle, count } = props;
+  const countText = !count || count === 0
+    ? ''
+    : <Text style={{ ...styles.textStyle, ...props.textStyle }}>{props.count}</Text>;
 
   return (
     <TouchableOpacity
@@ -17,7 +20,7 @@ const ActionButton = (props) => {
       <View style={{ ...styles.iconContainerStyle, ...props.iconContainerStyle }}>
         <Image source={props.iconSource} style={{ ...styles.iconStyle, ...props.iconStyle }} />
       </View>
-      <Text style={{ ...styles.textStyle, ...props.textStyle }}>{props.count}</Text>
+      {countText}
     </TouchableOpacity>
   );
 };

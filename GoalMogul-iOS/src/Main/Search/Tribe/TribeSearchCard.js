@@ -17,6 +17,9 @@ import next from '../../../asset/utils/next.png';
 
 // Actions
 import { selectTribe } from '../../../redux/modules/feed/post/ShareActions';
+import {
+  tribeDetailOpen
+} from '../../../redux/modules/tribe/TribeActions';
 
 const DEBUG_KEY = '[ Component SearchTribeCard ]';
 
@@ -25,9 +28,21 @@ class SearchTribeCard extends Component {
     imageLoading: false
   }
 
-  onButtonClicked = (item) => {
-    console.log(`${DEBUG_KEY} select tribe: `, item);
-    this.props.selectTribe(item);
+  /**
+   * @param type: ['GeneralSearch', 'SearchSuggestion']
+   * @param item: search result item
+   */
+  onButtonClicked = (item, type) => {
+    if (!type || type === 'SearchSuggestion') {
+      console.log(`${DEBUG_KEY} select tribe: `, item);
+      this.props.selectTribe(item);
+      return;
+    }
+    if (type === 'GeneralSearch') {
+      console.log('open tribe detail with type GeneralSearch');
+      this.props.tribeDetailOpen(item);
+      return;
+    }
   }
 
   renderTribeImage() {
@@ -58,11 +73,11 @@ class SearchTribeCard extends Component {
     return tribeImage;
   }
 
-  renderButton(item) {
+  renderButton(item, type) {
     return (
       <View style={styles.iconContainerStyle}>
         <TouchableOpacity
-          onPress={this.onButtonClicked.bind(this, item)}
+          onPress={() => this.onButtonClicked(item, type)}
           style={{ padding: 15 }}
         >
           <Image
@@ -75,10 +90,10 @@ class SearchTribeCard extends Component {
   }
 
   renderInfo() {
-    const { title } = this.props.item;
+    const { name } = this.props.item;
     return (
       <View style={styles.infoContainerStyle}>
-        <Name text={title} textStyle={{ color: '#4F4F4F' }} />
+        <Name text={name} textStyle={{ color: '#4F4F4F' }} />
       </View>
     );
   }
@@ -100,7 +115,7 @@ class SearchTribeCard extends Component {
   }
 
   render() {
-    const { item } = this.props;
+    const { item, type } = this.props;
     const { _id } = this.props.item;
     return (
       <TouchableOpacity>
@@ -111,7 +126,7 @@ class SearchTribeCard extends Component {
             {this.renderInfo()}
             {this.renderOccupation()}
           </View>
-          {this.renderButton(item)}
+          {this.renderButton(item, type)}
         </View>
       </TouchableOpacity>
     );
@@ -173,5 +188,6 @@ const styles = {
 };
 
 export default connect(null, {
-  selectTribe
+  selectTribe,
+  tribeDetailOpen
 })(SearchTribeCard);

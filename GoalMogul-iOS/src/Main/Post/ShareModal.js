@@ -13,7 +13,7 @@ import { Field, reduxForm, formValueSelector } from 'redux-form';
 import { Actions, Stack, Scene } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import R from 'ramda';
-import { switchCaseF } from '../../redux/middleware/utils';
+import { switchCase } from '../../redux/middleware/utils';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
@@ -130,17 +130,31 @@ class ShareModal extends React.Component {
   renderContentHeader(shareTo) {
     const { item, name } = shareTo;
     const { shareToBasicTextStyle } = styles;
-    const basicText = name === 'feed' ? 'To' : `To ${name} `;
+    // If share to event or tribe, item must not be null
+    if (!item && name !== 'Feed') return '';
 
-    const shareToComponent = switchCaseF({
-      feed: <Text style={shareToBasicTextStyle}>feed</Text>,
-      tribe: () => ShareToComponent(item.name, () => {
-        Actions.push('searchTribeLightBox');
-      }),
-      event: () => ShareToComponent(item.title, () => {
-        Actions.push('searchEventLightBox');
-      })
-    })('feed')(name);
+    // Select the item namef
+    let nameToRender = '';
+    if (name === 'Tribe') nameToRender = item.name;
+    if (name === 'Event') nameToRender = item.title;
+
+    const basicText = name === 'Feed' ? 'To' : `To ${name} `;
+
+    const shareToComponent = switchCase({
+      Feed: <Text style={shareToBasicTextStyle}>Feed</Text>,
+      Tribe: (
+        <ShareToComponent
+          name={nameToRender}
+          onPress={() => Actions.push('searchTribeLightBox')}
+        />
+      ),
+      Event: (
+        <ShareToComponent
+          name={nameToRender}
+          onPress={() => Actions.push('searchEventLightBox')}
+        />
+      )
+    })('Feed')(name);
 
     return (
       <View
@@ -159,7 +173,7 @@ class ShareModal extends React.Component {
           name='content'
           label=''
           component={this.renderInput}
-          editable={this.props.uploading}
+          editable={!this.props.uploading}
           numberOfLines={10}
           style={styles.goalInputStyle}
           placeholder='Say something about this share'
@@ -223,26 +237,26 @@ const getShareTo = (state) => {
   } = state.newShare;
 
   let destination = {
-    name: 'feed'
+    name: 'Feed'
   };
   if (belongsToTribe && belongsToTribeItem) {
     console.log('tribe item is: ', belongsToTribeItem);
     destination = {
-      name: 'tribe',
+      name: 'Tribe',
       item: belongsToTribeItem
     };
   }
   if (belongsToEvent && belongsToEventItem) {
     destination = {
-      name: 'event',
+      name: 'Event',
       item: belongsToEventItem
     };
   }
   return destination;
 };
 
-const ShareToComponent = (name, onPress) => {
-
+const ShareToComponent = (props) => {
+  const { name, onPress } = props;
   return (
     <TouchableOpacity
       style={styles.shareToContainerStyler}

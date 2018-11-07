@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   View,
-  Image,
   Text
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -74,13 +73,17 @@ class ChildCommentCard extends Component {
 
   // user basic information
   renderUserDetail() {
-    const { item, reportType } = this.props;
+    const { item, reportType, goalRef, userId } = this.props;
     const { _id } = item;
+
+    const isCommentOwner = userId === _id || (goalRef && goalRef.owner._id === userId);
     return (
         <View style={{ marginLeft: 15, flex: 1 }}>
           <CommentHeadline
             reportType={reportType}
+            isCommentOwner={isCommentOwner}
             item={item}
+            goalRef={goalRef}
             caretOnPress={() => {
               this.props.createReport(_id, reportType, 'Comment');
             }}
@@ -100,11 +103,6 @@ class ChildCommentCard extends Component {
         imageStyle={{ ...styles.profileImageStyle }}
       />
     );
-    // return (
-    //   <View style={styles.profileImageContianerStyle}>
-    //     <Image source={defaultProfilePic} resizeMode='contain' style={styles.profileImageStyle} />
-    //   </View>
-    // );
   }
 
   renderActionButtons() {

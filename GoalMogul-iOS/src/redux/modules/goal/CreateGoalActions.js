@@ -189,7 +189,7 @@ export const goalToFormAdaptor = (values) => {
     end
   } = values;
 
-  console.log('values are: ', values);
+  // console.log('values are: ', values);
 
   return {
     title,
@@ -197,10 +197,12 @@ export const goalToFormAdaptor = (values) => {
     privacy: privacy === 'self' ? 'Private' : capitalizeWord(privacy),
     // Following are not required
     shareToMastermind: feedInfo && !_.isEmpty(feedInfo),
-    needs: stepsNeedsReverseAdapter(needs),
-    steps: stepsNeedsReverseAdapter(steps),
+    // needs: stepsNeedsReverseAdapter(needs),
+    needs: (needs.length === 0 || _.isEmpty(needs)) ? [{}] : stepsNeedsReverseAdapter(needs),
+    steps: (steps.length === 0 || _.isEmpty(steps)) ? [{}] : stepsNeedsReverseAdapter(steps),
+    // steps: stepsNeedsReverseAdapter(steps),
     // TODO: TAG:
-    details: details ? details.text : '',
+    details: details ? [details.text] : [''],
     priority,
     startTime: {
       date: start ? new Date(`${start}`) : undefined,
@@ -231,11 +233,11 @@ const stepsNeedsAdapter = values => {
     return undefined;
   }
   return values.map((val, index) => {
-    if (!_.isEmpty(val)) {
+    if (!_.isEmpty(val) && val.description && val.description.trim() !== '') {
       return {
         isCompleted: false,
-        description: val,
-        order: index,
+        description: val.description.trim(),
+        order: index + 1,
         created: new Date()
       };
     }
@@ -269,6 +271,6 @@ const stepsNeedsReverseAdapter = values => {
         if (a.order && !b.order) return -1;
         return (a.order - b.order);
       })
-      .map((item) => item.description)
+      .map((item) => item)
   );
 };

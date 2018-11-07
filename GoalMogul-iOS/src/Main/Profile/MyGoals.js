@@ -49,7 +49,7 @@ class MyGoals extends Component {
         />
         <View style={{ flex: 1 }}>
           <FlatList
-            data={[...data, ...testData]}
+            data={[...data]}
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
             onRefresh={this.handleRefresh.bind()}
@@ -98,6 +98,7 @@ const mapStateToProps = state => {
   };
 };
 
+// Currently disable test data
 const testData = [
   {
     _id: '128039187294',

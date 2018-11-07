@@ -8,8 +8,11 @@ import {
   SEARCH_REFRESH_DONE,
   SEARCH_SWITCH_TAB,
   SEARCH_ON_LOADMORE_DONE,
-  SEARCH_CLEAR_STATE
+  SEARCH_CLEAR_STATE,
+  SearchRouteMap
 } from './Search';
+
+import { switchCase } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Action Search ]';
 
@@ -65,6 +68,9 @@ const searchCurry = curry(searchWithId);
 const generateQueryId = (text) => hashCode(text);
 
 // Functions to handle search
+/**
+ * @param type: ['people', 'tribes', 'events', 'chatrooms']
+ */
 export const handleSearch = (searchContent, type) => {
   console.log('searchContent is: ', searchContent);
   const queryId = generateQueryId(searchContent);
@@ -176,23 +182,26 @@ export const clearSearchState = curry((dispatch) => (tab) => {
   });
 });
 
-const fetchData = curry((searchContent, type, skip, limit, token, callback) =>
-// TODO: integrate with search type later
+const fetchData = curry((searchContent, type, skip, limit, token, callback) => {
+  const baseRoute = switchCase(SearchRouteMap)('User')(type);
   API
     .get(
-      `secure/user/profile/es?skip=${skip}&limit=${limit}&query=${searchContent}`,
+      `${baseRoute.route}?skip=${skip}&limit=${limit}&query=${searchContent}`,
       token
     )
     .then((res) => {
       console.log(`${DEBUG_KEY} fetching with res: `, res);
-      if (callback) {
+      if (res.data && callback) {
         callback(res);
+        return;
       }
+      callback({ data: [] });
     })
     .catch((err) => {
       console.log(`${DEBUG_KEY} fetching fails with err: `, err);
       if (callback) {
         callback({ data: [] });
       }
-    })
-);
+    });
+});
+// TODO: integrate with search type later

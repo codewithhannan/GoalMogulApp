@@ -146,11 +146,11 @@ class ActivityCard extends Component {
     if (!item || _.isEmpty(item)) return '';
 
     return (
-      <View style={{ marginTop: 5, marginBottom: 5 }}>
+      <View style={{ marginTop: 4, marginBottom: 4 }}>
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <ActivitySummary item={item} />
             <View style={{ ...styles.containerStyle, marginTop: 1 }}>
-              <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
+              <View style={{ marginTop: 12, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
                 <TouchableOpacity
                   onPress={() => this.handleCardOnPress(item)}
                 >

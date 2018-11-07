@@ -4,6 +4,7 @@ import _ from 'lodash';
 import {
   MYTRIBE_SWITCH_TAB,
   MYTRIBE_DETAIL_OPEN,
+  MYTRIBE_DETAIL_LOAD,
   MYTRIBE_DETAIL_LOAD_SUCCESS,
   MYTRIBE_DETAIL_LOAD_FAIL,
   MYTRIBE_DETAIL_CLOSE,
@@ -51,6 +52,31 @@ export const tribeDetailClose = () => (dispatch) => {
 };
 
 /**
+ * Current behavior is to go to home page and opens up tribe detail
+ * and then open tribe detail with id
+ */
+export const myTribeDetailOpenWithId = (tribeId) => (dispatch, getState) => {
+  const callback = (res) => {
+    console.log(`${DEBUG_KEY}: res for verifying user identify: `, res);
+    if (!res.data) {
+      return Alert.alert(
+        'Tribe not found'
+      );
+    }
+    dispatch({
+      type: MYTRIBE_DETAIL_LOAD_SUCCESS,
+      payload: {
+        tribe: res.data
+      }
+    });
+    Actions.push('myTribeDetail');
+  };
+
+  fetchTribeDetail(tribeId, callback)(dispatch, getState);
+};
+
+
+/**
  * Populate with the basic fields for the tribe detail.
  * Fetch tribe detail
  */
@@ -79,10 +105,23 @@ export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
 };
 
 /**
+ * Refresh a tribe detail
+ */
+export const refreshMyTribeDetail = (tribeId) => (dispatch, getState) => {
+  fetchTribeDetail(tribeId)(dispatch, getState);
+  refreshTribeFeed(tribeId, dispatch, getState);
+};
+
+/**
  * Fetch tribe detail for a tribe
  */
 export const fetchTribeDetail = (tribeId) => (dispatch, getState) => {
   const { token } = getState().user;
+
+  dispatch({
+    type: MYTRIBE_DETAIL_LOAD
+  });
+
   const onSuccess = (data) => {
     dispatch({
       type: MYTRIBE_DETAIL_LOAD_SUCCESS,
@@ -143,6 +182,10 @@ const doMyTribeAdminRemoveUser = (userId, tribeId) => (dispatch, getState) => {
         removeeId: userId
       }
     });
+    Alert.alert(
+      'Member is removed successfully'
+    );
+    refreshMyTribeDetail(tribeId)(dispatch, getState);
   };
   const onError = (err) => {
     console.log(`${DEBUG_KEY}: failed to remove member ${userId} with err: `, err);
@@ -153,7 +196,7 @@ const doMyTribeAdminRemoveUser = (userId, tribeId) => (dispatch, getState) => {
   };
 
   API
-    .delete(`${BASE_ROUTE}/member?removeeId=${userId}&tribeId=${tribeId}`, token)
+    .delete(`${BASE_ROUTE}/member?removeeId=${userId}&tribeId=${tribeId}`, {}, token)
     .then((res) => {
       if (res.data && res.message) {
         return onSuccess(res);

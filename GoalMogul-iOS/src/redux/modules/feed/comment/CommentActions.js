@@ -9,7 +9,9 @@ import _ from 'lodash';
 import {
   COMMENT_LOAD,
   COMMENT_REFRESH_DONE,
-  COMMENT_LOAD_DONE
+  COMMENT_LOAD_DONE,
+  COMMEND_LOAD_ERROR,
+  COMMENT_DELETE_SUCCESS
 } from './CommentReducers';
 
 import {
@@ -33,11 +35,18 @@ import {
   COMMENT_NEW_POST_START,
   COMMENT_NEW_POST_SUCCESS,
   COMMENT_NEW_POST_FAIL,
-  COMMENT_NEW_POST_SUGGESTION_SUCCESS
+  COMMENT_NEW_POST_SUGGESTION_SUCCESS,
+  COMMENT_NEW_SELECT_IMAGE,
+  COMMENT_NEW_UPLOAD_PICTURE_SUCCESS
 } from './NewCommentReducers';
 
+import {
+  SUGGESTION_SEARCH_CLEAR_STATE
+} from './SuggestionSearchReducers';
+
 import { api as API } from '../../../middleware/api';
-import { queryBuilder } from '../../../middleware/utils';
+import { queryBuilder, switchCase } from '../../../middleware/utils';
+import ImageUtils from '../../../../Utils/ImageUtils';
 
 const DEBUG_KEY = '[ Action Comment ]';
 const BASE_ROUTE = 'secure/feed/comment';
@@ -58,6 +67,20 @@ export const newCommentOnTextChange = (text, pageId) => (dispatch, getState) => 
 // Comment module related actions
 
 /**
+ * Select an image for the comment
+ */
+export const newCommentOnMediaRefChange = (mediaRef, pageId) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+  dispatch({
+    type: COMMENT_NEW_SELECT_IMAGE,
+    payload: {
+      mediaRef,
+      tab,
+      pageId
+    }
+  });
+};
+/**
  * action to update a comment for a goal / post
  * @params commentId: id of the comment
  * @params updates: JsonObject of the updated comment
@@ -70,8 +93,35 @@ export const updateComment = (commentId, updates) => {
  * action to delete a comment for a goal / post
  * @params commentId: id of the comment
  */
-export const deleteComment = (commentId) => {
+export const deleteComment = (commentId, pageId) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const { tab } = getState().navigation;
+  const onSuccess = () => {
+    dispatch({
+      type: COMMENT_DELETE_SUCCESS,
+      payload: {
+        pageId,
+        tab,
+        commentId
+      }
+    });
+    Alert.alert('Success', 'Comment deleted successfully');
+  };
 
+  const onError = (err) => {
+    console.log(`${DEBUG_KEY}: delete comment ${commentId} failed with err: `, err);
+    Alert.alert('Failed to delete comment', 'Please try again later');
+  };
+
+  API
+    .delete(`${BASE_ROUTE}?commentId=${commentId}`, {}, token)
+    .then((res) => {
+      if (res.status === '200' || res.status === 200 || res.isSuccess) {
+        return onSuccess();
+      }
+      onError(res);
+    })
+    .catch(err => onError(err));
 };
 
 /**
@@ -132,21 +182,29 @@ export const createCommentFromSuggestion = (
  * parentRef, parentType("Goal" || "Post"), contentText, contentTags, commentType[, replyToRef, suggestion(Suggestion)]
  */
 export const postComment = (pageId) => (dispatch, getState) => {
-  dispatch({
-    type: COMMENT_NEW_POST_START
-  });
-
-  const { token } = getState().user;
+  const { token, user } = getState().user;
   const { tab } = getState().navigation;
   const newComment = commentAdapter(getState(), pageId, tab);
-  const { suggestion, contentText } = newComment;
+  const { suggestion, mediaRef } = newComment;
   console.log(`${DEBUG_KEY}: new comment to submit is: `, newComment);
+
+  dispatch({
+    type: COMMENT_NEW_POST_START,
+    payload: {
+      tab,
+      pageId
+    }
+  });
 
   // TODO: Check if no suggestion and no replyToRef is filled
   // and commentType is Suggestion, then we set commentType to Comment.
   const onError = (err) => {
     dispatch({
-      type: COMMENT_NEW_POST_FAIL
+      type: COMMENT_NEW_POST_FAIL,
+      payload: {
+        pageId,
+        tab
+      }
     });
     Alert.alert('Error', 'Failed to submit comment. Please try again later.');
     console.log(`${DEBUG_KEY}: error submitting comment: `, err);
@@ -158,7 +216,12 @@ export const postComment = (pageId) => (dispatch, getState) => {
     dispatch({
       type: COMMENT_NEW_POST_SUCCESS,
       payload: {
-        comment: newComment,
+        comment: {
+          ...data,
+          owner: {
+            ...user
+          }
+        },
         tab,
         pageId
       }
@@ -176,9 +239,74 @@ export const postComment = (pageId) => (dispatch, getState) => {
       });
     }
     console.log(`${DEBUG_KEY}: comment posted successfully with res: `, data);
-    Alert.alert('Success', 'You have successfully created a comment.');
+    // Alert.alert('Success', 'You have successfully created a comment.');
   };
 
+  if (!mediaRef) {
+    return sendPostCommentRequest(newComment, token, onError, onSuccess);
+  }
+
+  // Upload the media and obtain a pointer first
+  ImageUtils.getImageSize(mediaRef)
+    .then(({ width, height }) => {
+      // Resize image
+      console.log('width, height are: ', width, height);
+      return ImageUtils.resizeImage(mediaRef, width, height);
+    })
+    .then((image) => {
+      // Upload image to S3 server
+      console.log('image to upload is: ', image);
+      return ImageUtils.getPresignedUrl(image.uri, token, (objectKey) => {
+        // Obtain pre-signed url and store in getState().postDetail.newPost.mediaRef
+        dispatch({
+          type: COMMENT_NEW_UPLOAD_PICTURE_SUCCESS,
+          payload: {
+            tab,
+            pageId,
+            objectKey
+          }
+        });
+      }, 'GoalImage');
+    })
+    .then(({ signedRequest, file }) => ImageUtils.uploadImage(file, signedRequest))
+    .then((res) => {
+      if (res instanceof Error) {
+        // uploading to s3 failed
+        console.log(`${DEBUG_KEY}: error uploading image to s3 with res: `, res);
+        throw res;
+      }
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      const imageUrl = _.get(getState().newComment, `${path}.mediaPresignedUrl`);
+      // Use the presignedUrl as media string
+      console.log(`${BASE_ROUTE}: presigned url sent is: `, imageUrl);
+      const newCommentObject =
+        {
+          ...newComment,
+          mediaRef: imageUrl
+        };
+
+      return sendPostCommentRequest(
+        newCommentObject,
+        token,
+        onError,
+        onSuccess
+      );
+    })
+    .catch((err) => {
+      /*
+      Error Type:
+        image getSize
+        image Resize
+        image upload to S3
+        update profile image Id
+      */
+      onError(err);
+    });
+};
+
+// Send creating comment request
+export const sendPostCommentRequest = (newComment, token, onError, onSuccess) => {
   API
     .post(`${BASE_ROUTE}`, { comment: JSON.stringify(newComment) }, token)
     .then((res) => {
@@ -208,7 +336,8 @@ const commentAdapter = (state, pageId, tab) => {
     // content,
     commentType,
     replyToRef,
-    suggestion
+    suggestion,
+    mediaRef
   } = newComment;
 
   const commentToReturn = {
@@ -219,7 +348,8 @@ const commentAdapter = (state, pageId, tab) => {
     // content,
     commentType,
     replyToRef,
-    suggestion
+    mediaRef,
+    suggestion: suggestionAdapter(suggestion)
   };
 
   if (_.isEmpty(suggestion)) {
@@ -227,6 +357,51 @@ const commentAdapter = (state, pageId, tab) => {
   }
 
   return commentToReturn;
+};
+
+const suggestionAdapter = (suggestion) => {
+  if (!suggestion) return {};
+  // TODO: require validation
+  const {
+    selectedItem,
+    suggestionFor,
+    suggestionForRef,
+    suggestionType,
+    suggestionLink,
+    suggestionText
+  } = suggestion;
+
+  const ret = switchCase({
+    User: {
+      userRef: selectedItem ? selectedItem._id : undefined
+    },
+    ChatConvoRoom: {
+      chatRoomRef: selectedItem ? selectedItem._id : undefined
+    },
+    Need: {
+
+    },
+    Step: {
+
+    },
+    Event: {
+      eventRef: selectedItem ? selectedItem._id : undefined
+    },
+    Tribe: {
+      tribeRef: selectedItem ? selectedItem._id : undefined
+    },
+    Custom: {
+      suggestionLink,
+      suggestionText
+    }
+  })({})(suggestionType);
+
+  return {
+    ...ret,
+    suggestionFor,
+    suggestionForRef,
+    suggestionType,
+  };
 };
 
 /* Actions for suggestion modal */
@@ -297,6 +472,15 @@ export const removeSuggestion = (pageId) => (dispatch, getState) => {
 
 export const updateSuggestionType = (suggestionType, pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
+
+  // Clear previous search state
+  dispatch({
+    type: SUGGESTION_SEARCH_CLEAR_STATE,
+    payload: {
+
+    }
+  });
+
   dispatch({
     type: COMMENT_NEW_SUGGESTION_UPDAET_TYPE,
     payload: {
@@ -417,6 +601,13 @@ export const refreshComments = (parentType, parentId, tab, pageId) => (dispatch,
 
   const onError = (err) => {
     console.log(`${DEBUG_KEY}: refresh comment failed with err: `, err);
+    dispatch({
+      type: COMMEND_LOAD_ERROR,
+      payload: {
+        tab,
+        pageId
+      }
+    });
   };
 
   loadComments(0, limit, token, { parentId, parentType }, onSuccess, onError);
@@ -457,6 +648,13 @@ export const loadMoreComments = (parentType, parentId, tab, pageId) => (dispatch
 
   const onError = (err) => {
     console.log(`${DEBUG_KEY}: load more comments failed with err: `, err);
+    dispatch({
+      type: COMMEND_LOAD_ERROR,
+      payload: {
+        tab,
+        pageId
+      }
+    });
   };
 
   loadComments(skip, limit, token, { parentId, parentType }, onSuccess, onError);

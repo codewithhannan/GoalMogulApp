@@ -1,5 +1,5 @@
 /**
- * Actions for notification and notification tab
+ * Actions for notification tab and general notification like subscribe
  */
 import { Permissions, Notifications } from 'expo';
 import { Alert } from 'react-native';
@@ -9,6 +9,22 @@ import { api as API } from '../../middleware/api';
 const BASE_ROUTE = 'secure/notification/subscription';
 const DEBUG_KEY = '[ Action Notification ]';
 
+export const openNotificationDetail = (item) => (dispatch, getState) => {
+  // TODO: use the item.parsedNoti.path to determine which detail to open
+
+};
+
+/**
+ * User clicks to see more
+ * @param type: ['notifications', 'needs']
+ */
+export const seeMore = (type) => (dispatch, getState) => {
+
+};
+
+/**
+ * Ask user for notification token to send over to subscribe for notification
+ */
 export const subscribeNotification = () => async (dispatch, getState) => {
   const { token } = getState().user;
   const { status: existingStatus } = await Permissions.getAsync(

@@ -3,7 +3,8 @@
 import React from 'react';
 import {
   View,
-  FlatList
+  FlatList,
+  Animated
 } from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar } from 'react-native-elements';
@@ -120,12 +121,13 @@ class SearchSuggestion extends React.Component {
   }
 
   render() {
+    const { opacity } = this.props;
     return (
-      <View>
+      <Animated.View style={{ opacity }}>
         {this.renderSearch()}
         <View style={{ flex: 1, marginTop: 0.5, backgroundColor: 'white' }}>
           <FlatList
-            data={testData[this.props.suggestionType]}
+            data={[...this.props.data, ...testData[this.props.suggestionType]]}
             renderItem={this.renderItem}
             keyExtractor={(item) => item._id}
             onEndReached={() => this.props.onLoadMore()}
@@ -134,7 +136,7 @@ class SearchSuggestion extends React.Component {
             refreshing={this.props.loading}
           />
         </View>
-      </View>
+      </Animated.View>
     );
     // onRefresh={this.handleRefresh}
     // refreshing={this.props.refreshing}
@@ -333,7 +335,9 @@ const mapDispatchToProps = (dispatch) => {
   return ({
     debouncedSearch,
     clearSearchState: clearSearchState(dispatch),
-    onSuggestionItemSelect: onSuggestionItemSelect(dispatch)
+    refreshSearchResult: () => dispatch(refreshSearchResult()),
+    onLoadMore: () => dispatch(onLoadMore()),
+    onSuggestionItemSelect: (val, pageId) => dispatch(onSuggestionItemSelect(val, pageId))
   });
 };
 
@@ -353,11 +357,5 @@ const mapStateToProps = (state, props) => {
 
 export default connect(
   mapStateToProps,
-  {
-    ...mapDispatchToProps,
-    refreshSearchResult,
-    onLoadMore,
-    onSuggestionItemSelect
-  }
-
+  mapDispatchToProps
 )(SearchSuggestion);

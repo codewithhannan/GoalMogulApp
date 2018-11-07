@@ -39,7 +39,8 @@ import {
   myTribeAdminRemoveUser,
   myTribeAdminPromoteUser,
   myTribeAdminDemoteUser,
-  myTribeSelectMembersFilter
+  myTribeSelectMembersFilter,
+  refreshMyTribeDetail
 } from '../../../redux/modules/tribe/MyTribeActions';
 import {
   openTribeInvitModal,
@@ -148,7 +149,14 @@ class MyTribe extends Component {
       ...this.state,
       showPlus: false
     });
-    Actions.push('createButtonOverlay', { buttons });
+
+    const callback = () => {
+      this.setState({
+        ...this.state,
+        showPlus: true
+      });
+    };
+    Actions.push('createButtonOverlay', { buttons, callback });
   }
 
   handleTribeOptionsOnSelect = (value) => {
@@ -450,7 +458,7 @@ class MyTribe extends Component {
       navigationState: this.props.memberNavigationState
     };
     return (
-        <TabButtonGroup buttons={props} />
+      <TabButtonGroup buttons={props} subTab />
     );
   }
 
@@ -585,6 +593,8 @@ class MyTribe extends Component {
             renderItem={this.renderItem}
             keyExtractor={(i) => i._id}
             ListHeaderComponent={this.renderTribeOverview(item)}
+            onRefresh={() => this.props.refreshMyTribeDetail(item._id)}
+            refreshing={this.props.loading}
           />
           {this.renderPlus(item)}
         </View>
@@ -705,7 +715,7 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { item, feed, hasRequested } = state.myTribe;
+  const { item, feed, hasRequested, tribeLoading } = state.myTribe;
   const { userId } = state.user;
   const navigationState = getMyTribeNavigationState(state);
   const memberNavigationState = getMyTribeMemberNavigationState(state);
@@ -736,7 +746,8 @@ const mapStateToProps = state => {
     tab: routes[index].key,
     userId,
     isUserAdmin: checkIsAdmin(item ? item.members : [], userId),
-    memberNavigationState
+    memberNavigationState,
+    loading: tribeLoading
   };
 };
 
@@ -757,6 +768,7 @@ const checkIsAdmin = (members, userId) => {
 export default connect(
   mapStateToProps,
   {
+    refreshMyTribeDetail,
     tribeSelectTab,
     tribeDetailClose,
     openTribeInvitModal,

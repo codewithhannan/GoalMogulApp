@@ -24,6 +24,7 @@ const { width } = Dimensions.get('window');
  * caretOnPress:
  * caretOnDelete:
  * isSelf:
+ * hasCaret: if null, show no caret
  */
 const Headline = (props) => {
   const {
@@ -32,6 +33,7 @@ const Headline = (props) => {
     caretOnPress,
     isSelf,
     caretOnDelete,
+    hasCaret
   } = props;
 
   // If item belongs to self, then caret displays delete
@@ -63,7 +65,7 @@ const Headline = (props) => {
       <Image style={styles.imageStyle} source={badge} />
       {categoryComponent}
       <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
-        {menu}
+        {hasCaret === null ? '' : menu}
       </View>
 
     </View>

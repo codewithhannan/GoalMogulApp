@@ -24,10 +24,10 @@ class ActivitySummary extends React.Component {
     } = item;
 
     const tribeText = belongsToTribe
-      ? <Text><Text style={{ ...boldTextStyle }}>{belongsToTribe.name}</Text>{' '}Tribe</Text>
+      ? <Text><Text style={{ ...boldTextStyle }}>{' '}{belongsToTribe.name}</Text>{' '}Tribe</Text>
       : '';
     const eventText = belongsToEvent
-      ? <Text><Text style={{ ...boldTextStyle }}>{belongsToEvent.title}</Text>{' '}Event</Text>
+      ? <Text><Text style={{ ...boldTextStyle }}>{' '}{belongsToEvent.title}</Text>{' '}Event</Text>
       : '';
     const actorText = <Text style={{ ...boldTextStyle, ...textStyle }}>{actor.name} </Text>;
     const text = getSummaryText({
@@ -125,7 +125,7 @@ const switchPostType = (postType) => switchCase({
 
 const styles = {
   boldTextStyle: {
-    fontWeight: '800'
+    fontWeight: '700'
   },
   textStyle: {
     fontSize: 11

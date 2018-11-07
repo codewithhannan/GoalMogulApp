@@ -20,6 +20,7 @@ import {
 } from '../../redux/modules/search/SearchActions';
 
 const DEBUG_KEY = '[ Tribe Search ]';
+const SEARCH_TYPE = 'tribes';
 
 class TribeSearchOverlay extends Component {
   // Search bar functions
@@ -38,7 +39,7 @@ class TribeSearchOverlay extends Component {
     if (value === '') {
       this.props.clearSearchState(this.props.selectedTab);
     }
-    this.props.debouncedSearch(value.trim(), this.props.selectedTab);
+    this.props.debouncedSearch(value.trim(), SEARCH_TYPE);
   }
 
   searchIcon = () => (

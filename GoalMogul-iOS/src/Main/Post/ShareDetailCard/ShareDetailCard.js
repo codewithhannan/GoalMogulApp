@@ -62,12 +62,15 @@ class ShareDetailCard extends Component {
 
   renderItem = (props) => {
     // const { routes, index } = this.state.navigationState;
+    const { shareDetail } = this.props;
+    const parentRef = shareDetail ? shareDetail._id : undefined;
     return (
       <CommentCard
         key={props.index}
         item={props.item}
         index={props.index}
         scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
+        commentDetail={{ parentType: 'Post', parentRef }}
         onCommentClicked={() => this.dialogOnFocus()}
         onReportPressed={() => console.log('share detail report clicked')}
         reportType='shareDetail'

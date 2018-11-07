@@ -101,7 +101,7 @@ class SuggestionPreview extends Component {
         defaultImageSource={source}
         defaultImageStyle={{ width: 30, height: 30, ...style }}
         imageUrl={imageUrl}
-        imageContainerStyle={{ alignItems: 'center', justifyContent: 'center', marginLeft: 3 }}
+        imageContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}
       />
     );
   }
@@ -117,7 +117,7 @@ class SuggestionPreview extends Component {
         {this.renderImage(suggestionType, selectedItem)}
         {this.renderText(item)}
         {this.renderEndImage(suggestionType, selectedItem)}
-        {RemoveComponent(onRemove)}
+        <RemoveComponent onRemove={onRemove} />
       </TouchableOpacity>
     );
   }
@@ -125,7 +125,8 @@ class SuggestionPreview extends Component {
 // <Text style={styles.titleTextStyle}>{title}</Text>
 // <Text style={styles.headingTextStyle}>{content}</Text>
 
-const RemoveComponent = (onRemove) => {
+export const RemoveComponent = (props) => {
+  const { onRemove } = props;
   return (
     <TouchableOpacity onPress={onRemove} style={styles.iconContainerStyle}>
       <Image source={cancelIcon} style={{ height: 15, width: 15 }} />
@@ -153,13 +154,13 @@ const switchSearchItem = (val, type) => switchCaseFWithVal(val)({
   }),
   Friend: (item) => ({
     title: item.name,
-    content: item.profile ? item.profile.about : undefined,
-    picture: item.profile ? item.profile.picture : undefined
+    content: item.headline,
+    picture: item.profile ? item.profile.image : undefined
   }),
   User: (item) => ({
     title: item.name,
-    content: item.profile ? item.profile.about : undefined,
-    picture: item.profile ? item.profile.picture : undefined
+    content: item.headline,
+    picture: item.profile ? item.profile.image : undefined
   })
 })('User')(type);
 
@@ -179,11 +180,11 @@ const switchDefaultImageType = (type, item) => switchCaseFWithVal(item)({
   }),
   Friend: val => ({
     source: friendIcon,
-    imageUrl: val.profile ? val.profile.picture : undefined
+    imageUrl: val.profile ? val.profile.image : undefined
   }),
   User: val => ({
     source: userIcon,
-    imageUrl: val.profile ? val.profile.picture : undefined
+    imageUrl: val.profile ? val.profile.image : undefined
   }),
   Reading: () => ({
     source: readingIcon

@@ -24,7 +24,8 @@ import {
 } from '../../../../redux/modules/like/LikeActions';
 
 import {
-  createComment
+  createComment,
+  deleteComment
 } from '../../../../redux/modules/feed/comment/CommentActions';
 
 import {
@@ -64,7 +65,9 @@ class CommentUserDetail extends Component {
     const { item } = this.props;
     let text;
     if (item.commentType === 'Suggestion') {
-      text = item.suggestion.suggestionText;
+      text = (item.suggestion && item.suggestion.suggestionText)
+        ? item.suggestion.suggestionText
+        : '';
     } else {
       text = item.content.text;
     }
@@ -81,20 +84,32 @@ class CommentUserDetail extends Component {
 
   // user basic information
   renderUserDetail() {
-    const { item, reportType } = this.props;
-    const { _id } = item;
+    const { item, reportType, goalRef, userId } = this.props;
+    const { _id, suggestion } = item;
+
+    // User is comment owner if user is the creator of the goal or
+    // user is the creator of the comment
+    const isCommentOwner = userId === _id || (goalRef && goalRef.owner._id === userId);
     return (
         <View style={{ marginLeft: 15, flex: 1 }}>
           <CommentHeadline
             item={item}
-            caretOnPress={() => {
-              this.props.createReport(_id, reportType || 'detail', 'Comment');
+            isCommentOwner={isCommentOwner}
+            goalRef={goalRef}
+            caretOnPress={(type) => {
+              console.log('Comment options type is: ', type);
+              if (type === 'Report') {
+                return this.props.createReport(_id, reportType || 'detail', 'Comment');
+              }
+              if (type === 'Delete') {
+                return this.props.deleteComment(_id);
+              }
             }}
           />
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
             {this.renderCardContent()}
           </View>
-          {this.renderCommentRef(item)}
+          {this.renderCommentRef(suggestion)}
         </View>
     );
   }
@@ -114,13 +129,13 @@ class CommentUserDetail extends Component {
   }
 
   renderActionButtons() {
-    const { item, index, scrollToIndex, onCommentClicked, viewOffset } = this.props;
+    const { item, index, scrollToIndex, onCommentClicked, viewOffset, commentDetail } = this.props;
     const { childComments, _id, maybeLikeRef } = item;
     const commentCounts = childComments && childComments.length > 0
       ? childComments.length
       : undefined;
 
-    const likeCount = item.likeCount ? item.likeCount : 0;
+    const likeCount = item.likeCount || 0;
 
     // If comment is like, like icon is tinted with red
     const tintColor = maybeLikeRef && maybeLikeRef.length > 0
@@ -151,7 +166,8 @@ class CommentUserDetail extends Component {
             // Focus the comment box
             onCommentClicked();
             // Update new comment reducer
-            createComment({
+            this.props.createComment({
+              ...commentDetail,
               commentType: 'Reply',
               replyToRef: _id
             }, this.props.pageId);
@@ -222,6 +238,7 @@ export default connect(
     likeGoal,
     unLikeGoal,
     createComment,
-    createReport
+    createReport,
+    deleteComment
   }
 )(CommentUserDetail);

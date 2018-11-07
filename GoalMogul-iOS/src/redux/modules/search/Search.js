@@ -56,6 +56,7 @@ const INITIAL_STATE = {
 // Helper Functions
 const dotPath = R.useWith(R.path, [R.split('.')]);
 const propsDotPath = R.useWith(R.ap, [R.map(dotPath), R.of]);
+const BASE_ROUTE = 'secure';
 
 // Constants for search reducers
 export const SEARCH_CHANGE_FILTER = 'search_change_filter';
@@ -65,6 +66,25 @@ export const SEARCH_REFRESH_DONE = 'search_refresh_done';
 export const SEARCH_SWITCH_TAB = 'search_switch_tab';
 export const SEARCH_ON_LOADMORE_DONE = 'search_on_loadmore_done';
 export const SEARCH_CLEAR_STATE = 'search_clear_state';
+
+// Note: Search has different route map than SuggestionSearch
+export const SearchRouteMap = {
+  friends: {
+    route: `${BASE_ROUTE}/user/friendship/es`
+  },
+  people: {
+    route: `${BASE_ROUTE}/user/profile/es`
+  },
+  events: {
+    route: `${BASE_ROUTE}/event/es`
+  },
+  tribes: {
+    route: `${BASE_ROUTE}/tribe/es`
+  },
+  chatrooms: {
+    route: ''
+  }
+};
 
 /*
   TODO:

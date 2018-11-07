@@ -40,10 +40,15 @@ class MastermindTab extends Component {
         iconSource={HelpIcon}
         text='Needs'
         count={needs.length}
+        key='need-title'
       />
     );
 
-    const needCards = needs.map((need, index) => (<SectionCard key={index} item={need} />));
+    const needCards = needs.map((need, index) =>
+      (
+        <SectionCard key={`need-${index}`} item={need} />
+      )
+    );
 
     return (
       <View>
@@ -64,11 +69,12 @@ class MastermindTab extends Component {
         iconStyle={{ height: 20, width: 20 }}
         text='Steps'
         count={steps.length}
+        key='step-title'
       />
     );
 
     const stepCards = steps.map((step, index) =>
-      (<SectionCard key={index} item={step} />)
+      (<SectionCard key={`step-${index}`} item={step} />)
     );
 
     return (

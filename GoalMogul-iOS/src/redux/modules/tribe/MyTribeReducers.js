@@ -18,6 +18,7 @@ const INITIAL_STATE = {
   item: undefined,
   feed: [],
   feedLoading: false,
+  tribeLoading: false,
   hasNextPage: undefined,
   skip: 0,
   limit: 100,
@@ -41,6 +42,7 @@ const INITIAL_STATE = {
 
 export const MYTRIBE_SWITCH_TAB = 'mytribe_switch_tab';
 export const MYTRIBE_DETAIL_OPEN = 'mytribe_detail_open';
+export const MYTRIBE_DETAIL_LOAD = 'mytribe_detail_load';
 // Successfully load tribe detail
 export const MYTRIBE_DETAIL_LOAD_SUCCESS = 'mytribe_detail_load_success';
 // Failed to load tribe detail
@@ -76,6 +78,11 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
 
+    case MYTRIBE_DETAIL_LOAD: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'tribeLoading', true);
+    }
+
     // Fetching feed done for a mytribe
     case MYTRIBE_FEED_FETCH_DONE: {
       const { skip, data, hasNextPage } = action.payload;
@@ -103,7 +110,13 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, 'feed', data);
     }
 
-    case MYTRIBE_DETAIL_LOAD_SUCCESS:
+    case MYTRIBE_DETAIL_LOAD_SUCCESS: {
+      const { tribe } = action.payload;
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'item', { ...tribe });
+      return _.set(newState, 'tribeLoading', false);
+    }
+
     case MYTRIBE_DETAIL_OPEN: {
       const { tribe } = action.payload;
       const newState = _.cloneDeep(state);

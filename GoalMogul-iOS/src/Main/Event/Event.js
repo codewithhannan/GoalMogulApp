@@ -299,6 +299,7 @@ class Event extends Component {
       ? <ParticipantFilterBar />
       : '';
 
+    // Currently, explored events is not synced with my events
     const inviteButton = this.props.tab === 'attendees'
       ? (
         <TouchableOpacity
@@ -337,7 +338,6 @@ class Event extends Component {
           })
         }
         {filterBar}
-        {inviteButton}
       </View>
     );
   }

@@ -137,6 +137,8 @@ const styles = {
     marginTop: 1,
     height: CardHeight,
     backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f2f2f2'
   },
   // Image related styles
   imageContainerStyle: {

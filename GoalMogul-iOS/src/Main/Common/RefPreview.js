@@ -24,13 +24,14 @@ import badge from '../../asset/utils/badge.png';
 import helpIcon from '../../asset/utils/help.png';
 import lightBulb from '../../asset/utils/lightBulb.png';
 import profilePic from '../../asset/test-profile-pic.png';
+import stepIcon from '../../asset/utils/steps.png';
 
 // Components
 import ProfileImage from './ProfileImage';
 
 class RefPreview extends Component {
   handleOnPress(item, postType) {
-    if (postType === 'ShareGoal' || postType === 'ShareNeed') {
+    if (postType === 'ShareGoal' || postType === 'ShareNeed' || postType === 'ShareStep') {
       return this.props.openGoalDetail(item);
     }
 
@@ -43,11 +44,24 @@ class RefPreview extends Component {
     }
   }
 
+  renderBadge = (item, postType) => {
+    if (postType === 'ShareUser') {
+      // TODO: render badge accordingly based on the user points
+      return (
+        <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent: 'center' }}>
+          <Image source={badge} style={{ height: 23, width: 23 }} />
+        </View>
+      );
+    }
+    return '';
+  }
+
   // Currently this is a dummy component
   render() {
     const { item, postType } = this.props;
     if (!item) return '';
 
+    // TODO: add a postType ShareStep
     const { title, content, defaultPicture, picture } = switchCaseItem(item, postType);
     return (
       <TouchableOpacity
@@ -56,11 +70,20 @@ class RefPreview extends Component {
       >
         <ProfileImage
           imageStyle={{ width: 50, height: 50 }}
+          imageContainerStyle={{ justifyContent: 'center' }}
+          defaultImageStyle={{ width: 32, height: 32, margin: 3 }}
           defaultImageSource={defaultPicture}
           imageUrl={picture}
         />
-        <View style={{ flex: 1, marginLeft: 12, marginRight: 12, justifyContent: 'center' }}>
-
+        <View
+          style={{
+            flex: 1,
+            marginLeft: 12,
+            marginRight: 12,
+            justifyContent: 'center',
+            marginTop: 5
+          }}
+        >
             <Text
               style={styles.titleTextStyle}
               numberOfLines={1}
@@ -69,7 +92,7 @@ class RefPreview extends Component {
               {postType === 'ShareNeed' ? 'Need' : title}
             </Text>
 
-
+          <View style={{ flex: 2, flexDirection: 'row', alignItems: 'flex-start' }}>
             <Text
               style={styles.headingTextStyle}
               numberOfLines={2}
@@ -77,11 +100,10 @@ class RefPreview extends Component {
             >
               {content}
             </Text>
+          </View>
 
         </View>
-        <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent: 'center' }}>
-          <Image source={badge} style={{ height: 23, width: 23 }} />
-        </View>
+        {this.renderBadge(item, postType)}
       </TouchableOpacity>
     );
   }
@@ -119,6 +141,11 @@ const switchCaseItem = (val, type) => switchCaseFWithVal(val)({
     content: item.description,
     // picture: item.profile ? item.profile.image : undefined,
     defaultPicture: helpIcon
+  }),
+  ShareStep: (item) => ({
+    title: 'Step',
+    content: item.description,
+    defaultPicture: stepIcon
   })
 })('General')(type);
 
@@ -126,8 +153,8 @@ const styles = {
   containerStyle: {
     flexDirection: 'row',
     height: 50,
-    marginTop: 12,
-    marginBottom: 8,
+    marginTop: 4,
+    marginBottom: 4,
     borderWidth: 1,
     borderRadius: 2,
     borderColor: '#ddd',
@@ -142,14 +169,14 @@ const styles = {
   titleTextStyle: {
     fontSize: 12,
     fontWeight: '600',
-    marginTop: 4,
     flexWrap: 'wrap',
-    flex: 1,
+    flex: 1
   },
   headingTextStyle: {
     fontSize: 10,
     flexWrap: 'wrap',
     flex: 1,
+    marginTop: 3
   }
 };
 

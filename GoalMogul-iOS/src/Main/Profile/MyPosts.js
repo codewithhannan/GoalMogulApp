@@ -153,7 +153,7 @@ class MyPosts extends Component {
         */}
         <View style={{ flex: 1 }}>
           <FlatList
-            data={[...data, ...testData]}
+            data={[...data]}
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
             onRefresh={this.handleRefresh.bind()}

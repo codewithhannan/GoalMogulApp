@@ -86,7 +86,9 @@ export const openProfile = (userId) => (dispatch, getState) => {
   });
   Actions.push('profile');
 
-  const { token, } = getState().user;
+  // Refresh goals on open
+  handleTabRefresh('goals')(dispatch, getState);
+  const { token } = getState().user;
   const self = getState().profile.userId.toString() === getState().user.userId.toString();
 
   const profilePromise =
@@ -258,11 +260,19 @@ export const submitUpdatingProfile = ({ values, hasImageModified }) => {
   };
 };
 
-export const selectProfileTab = (index) => (dispatch) => {
+export const selectProfileTab = (index) => (dispatch, getState) => {
   dispatch({
     type: PROFILE_SWITCH_TAB,
     payload: index
   });
+
+  const tab = getState().profile.navigationState.routes[index].key;
+  const { data } = _.get(getState().profile, tab);
+
+  // Only attempt to load if there is no data
+  if (!data || data.length === 0) {
+    handleTabRefresh(tab)(dispatch, getState);
+  }
 };
 
 // User update filter for specific tab

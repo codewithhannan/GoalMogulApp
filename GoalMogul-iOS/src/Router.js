@@ -39,8 +39,6 @@ import CreateGoalButtonOverlay from './Main/Common/Button/CreateGoalButtonOverla
 import CreateButtonOverlay from './Main/Common/Button/CreateButtonOverlay';
 import CreateGoalModal from './Main/Goal/CreateGoalModal';
 import CreatePostModal from './Main/Post/CreatePostModal';
-import GoalCard from './Main/Goal/GoalCard/GoalCard'; // For debug purpose
-import NeedCard from './Main/Goal/NeedCard/NeedCard'; // For debug purpose
 import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCard2';
 import PostDetailCard from './Main/Post/PostDetailCard/PostDetailCard';
 import ShareDetailCard from './Main/Post/ShareDetailCard/ShareDetailCard';
@@ -67,6 +65,12 @@ import Event from './Main/Event/Event';
 // Tribe
 import Tribe from './Main/Tribe/Tribe';
 
+// Notification
+import NotificationTab from './Main/Notification/NotificationTab';
+
+// Chat
+import ChatTab from './Main/Chat/ChatTab';
+
 // Account
 import Setting from './Main/Setting/Setting';
 import Email from './Main/Setting/Account/Email';
@@ -84,7 +88,6 @@ import ShareModal from './Main/Post/ShareModal';
 import ReportModal from './Main/Report/ReportModal';
 
 class RouterComponent extends Component {
-
   onTabPress = (all) => {
     const { state, isFocused } = all.navigation;
     if (state.key === 'homeTab' && isFocused() && state.routes.length > 1) {
@@ -207,7 +210,7 @@ class RouterComponent extends Component {
                     icon={TabIcon}
                     hideNavBar
                   >
-                    <Scene key="notification" component={Home} />
+                    <Scene key="notification" component={NotificationTab} hideNavBar />
                   </Stack>
 
                   <Stack
@@ -228,7 +231,7 @@ class RouterComponent extends Component {
                     icon={TabIcon}
                     hideNavBar
                   >
-                    <Scene key="chat" component={Home} />
+                    <Scene key="chat" component={ChatTab} initial />
                   </Stack>
 
                 </Tabs>

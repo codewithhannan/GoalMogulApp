@@ -132,10 +132,11 @@ class SearchBarHeader extends Component {
               color='#35475d'
               containerStyle={{ justifyContent: 'flex-start' }}
             />
+            // tintColor: '#32485f' for backbutton
             */}
             <Image
               source={BackButton}
-              style={{ height: 25, width: 25, tintColor: '#32485f' }}
+              style={{ height: 25, width: 25, tintColor: 'white' }}
             />
           </TouchableOpacity>
         </View>
@@ -241,7 +242,7 @@ class SearchBarHeader extends Component {
     if (this.props.title) {
       return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: 20 }} >
+          <Text style={{ fontSize: 20, color: 'white' }} >
             {this.props.title}
           </Text>
         </View>

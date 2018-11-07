@@ -5,12 +5,16 @@ import {
   COMMENT_NEW_SUGGESTION_UPDAET_TYPE
 } from './NewCommentReducers';
 
+import {
+  arrayUnique
+} from '../../../middleware/utils';
+
 const INITIAL_STATE_SEARCH = {
   data: [],
   queryId: undefined,
   loading: false,
   skip: 0,
-  limit: 20,
+  limit: 40,
   hasNextPage: undefined
 };
 
@@ -102,7 +106,8 @@ export default (state = INITIAL_STATE, action) => {
       const { queryId, skip, data, type, hasNextPage } = action.payload;
       let newState = _.cloneDeep(state);
       if (queryId === state.queryId) {
-        newState.searchRes.data = newState[type].data.concat(data);
+        const oldData = _.get(newState, 'searchRes.data');
+        newState = _.set(newState, 'searchRes.data', arrayUnique(oldData.concat(data)));
         newState.searchRes.loading = false;
         newState.searchRes.skip = skip;
         newState.searchRes.hasNextPage = hasNextPage;
@@ -112,20 +117,26 @@ export default (state = INITIAL_STATE, action) => {
 
     case SUGGESTION_SEARCH_CLEAR_STATE: {
       const { tab } = action.payload;
-      if (!tab) {
-        // No tab specified, clear all state
-        return INITIAL_STATE;
-      }
-      // Clear state for specific tab
-      const tabInitialState = dotPath(tab, INITIAL_STATE);
-      const newState = _.cloneDeep(state);
-      return _.set(newState, tab, tabInitialState);
+      // if (!tab) {
+      //   // No tab specified, clear all state
+      //   return INITIAL_STATE;
+      // }
+      // // Clear state for specific tab
+      // const tabInitialState = dotPath(tab, INITIAL_STATE);
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'searchContent', '');
+      return _.set(newState, 'searchRes', { ...INITIAL_STATE_SEARCH });
     }
 
     // Update search type
     case COMMENT_NEW_SUGGESTION_UPDAET_TYPE: {
       let newState = _.cloneDeep(state);
-      return _.set(newState, 'searchType', action.payload);
+      const {
+        suggestionType,
+        tab,
+        pageId
+      } = action.payload;
+      return _.set(newState, 'searchType', suggestionType);
     }
 
     default:

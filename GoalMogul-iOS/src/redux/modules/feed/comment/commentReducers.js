@@ -23,6 +23,10 @@ import {
   UNLIKE_COMMENT
 } from '../../like/LikeReducers';
 
+import {
+  COMMENT_NEW_POST_SUCCESS
+} from './NewCommentReducers';
+
 const COMMENT_INITIAL_STATE = {
   data: [],
   transformedComments: [],
@@ -58,6 +62,8 @@ export const COMMENT_LOAD = 'comment_load';
 export const COMMENT_REFRESH_DONE = 'comment_refresh_done';
 export const COMMENT_LOAD_DONE = 'comment_load';
 export const COMMENT_LOAD_MORE_REPLIES = 'comment_load_more_replies';
+export const COMMEND_LOAD_ERROR = 'comment_load_error';
+export const COMMENT_DELETE_SUCCESS = 'comment_delete_success';
 
 // New comment related constants
 export const COMMENT_POST = 'comment_post';
@@ -71,6 +77,15 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state
       };
+    }
+
+    case COMMEND_LOAD_ERROR: {
+      const { tab, pageId } = action.payload;
+      const newState = _.cloneDeep(state);
+
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      return _.set(newState, `${path}.loading`, false);
     }
 
     // following switches are to handle loading Comments
@@ -94,10 +109,26 @@ export default (state = INITIAL_STATE, action) => {
         newState = _.set(newState, `${path}.skip`, skip);
       }
       newState = _.set(newState, `${path}.hasNextPage`, hasNextPage);
-      newState = _.set(newState, `${path}.data`, data);
+      const sortedData = data.sort((item1, item2) => new Date(item1.created) - new Date(item2.created));
 
+      newState = _.set(newState, `${path}.data`, sortedData);
       // A dump way to transform all comments to comments with childComments
-      const transformedComments = transformComments(data);
+      const transformedComments = transformComments(sortedData);
+      return _.set(newState, `${path}.transformedComments`, transformedComments);
+    }
+
+    // On new comment posted successfully, add the new comment to the loaded comments
+    case COMMENT_NEW_POST_SUCCESS: {
+      let newState = _.cloneDeep(state);
+      const { tab, pageId, comment } = action.payload;
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      const oldComments = _.get(newState, `${path}.data`);
+      const newComments = [...oldComments, comment];
+
+      newState = _.set(newState, `${path}.data`, newComments);
+
+      const transformedComments = transformComments(newComments);
       return _.set(newState, `${path}.transformedComments`, transformedComments);
     }
 
@@ -121,7 +152,7 @@ export default (state = INITIAL_STATE, action) => {
     case UNLIKE_COMMENT:
     case LIKE_COMMENT: {
       const { id, likeId, tab, pageId } = action.payload;
-      console.log(`${action.type} comment, id is: ${id}, likeId is: ${likeId}`);
+      // console.log(`${action.type} comment, id is: ${id}, likeId is: ${likeId}`);
       const page = pageId ? `${pageId}` : 'default';
 
       let newState = _.cloneDeep(state);
@@ -157,27 +188,45 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, `${path}`, _.pick(newTab, properties));
     }
 
+    // User deletes a comment successfully, remove comments and update status
+    case COMMENT_DELETE_SUCCESS: {
+      const { commentId, tab, pageId } = action.payload;
+      // console.log(`${action.type} comment, id is: ${id}, likeId is: ${likeId}`);
+      const page = pageId ? `${pageId}` : 'default';
+
+      let newState = _.cloneDeep(state);
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      const oldData = _.get(newState, `${path}.data`);
+      // Update original comments
+      const newData = oldData.filter((item) => item._id !== commentId);
+      // Update transformed comments
+      const transformedComments = transformComments(newData);
+      newState = _.set(newState, `${path}.data`, newData);
+      return _.set(newState, `${path}.transformedComments`, transformedComments);
+    }
+
     default:
       return { ...state };
   }
 };
 
-const transformComments = (data) =>
-  data.filter(comment => !comment.replyToRef).map(comment => {
-    const commentId = comment._id.toString();
+const transformComments = (data) => data.filter(comment => !comment.replyToRef)
+  .map(comment => {
+    const commentId = comment._id;
     const childComments = data.filter(
-      currentComment => currentComment.replyToRef.toString() === commentId);
+      currentComment => currentComment.replyToRef === commentId
+    );
 
-    const numberOfChildrenShowing = childComments.length > 0 ? 1 : 0;
-    const hasMoreToShow = numberOfChildrenShowing !== childComments.length;
-    const newComment = {
-      ...comment,
-      childComments,
-      hasMoreToShow,
-      numberOfChildrenShowing
-    };
-    return newComment;
-  });
+  const numberOfChildrenShowing = childComments.length > 0 ? 1 : 0;
+  const hasMoreToShow = numberOfChildrenShowing !== childComments.length;
+  const newComment = {
+    ...comment,
+    childComments,
+    hasMoreToShow,
+    numberOfChildrenShowing
+  };
+  return newComment;
+});
 
 function updateLike(array, id, like) {
   return array.map((item) => {

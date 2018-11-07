@@ -116,7 +116,14 @@ class MyEvent extends Component {
       ...this.state,
       showPlus: false
     });
-    Actions.push('createButtonOverlay', { buttons });
+
+    const callback = () => {
+      this.setState({
+        ...this.state,
+        showPlus: true
+      });
+    };
+    Actions.push('createButtonOverlay', { buttons, callback });
   }
 
   /**
@@ -358,7 +365,7 @@ class MyEvent extends Component {
       navigationState: this.props.memberNavigationState
     };
     return (
-      <TabButtonGroup buttons={props} />
+      <TabButtonGroup buttons={props} subTab />
     );
   }
 

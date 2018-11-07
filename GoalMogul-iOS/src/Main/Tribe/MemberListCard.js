@@ -57,7 +57,7 @@ class MemberListCard extends Component {
 
     const requestOptions = category === 'Admin'
       ? ['Remove User', 'Demote User', 'Cancel']
-      : ['Remove User', 'Promote User', 'Cancel'];
+      : ['Remove User', 'Promote to Admin', 'Cancel'];
 
     const cancelIndex = 2;
 

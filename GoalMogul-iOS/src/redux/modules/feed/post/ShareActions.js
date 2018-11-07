@@ -90,6 +90,11 @@ const switchPostType = (postType, ref, goalRef) => switchCaseF({
     postType,
     needRef: ref,
     goalRef
+  },
+  ShareStep: {
+    postType,
+    stepRef: ref,
+    goalRef
   }
 })('General')(postType);
 
@@ -151,12 +156,13 @@ export const submitShare = (values) => (dispatch, getState) => {
       token
     )
     .then((res) => {
-      if (!res.message && res.data) {
+      if ((!res.message && res.data) || res.status === 200) {
         dispatch({
           type: SHARE_NEW_POST_SUCCESS,
           payload: res.data
         });
         Actions.pop();
+        console.log(`${DEBUG_KEY}: creating share successfully with data: `, res.data);
         return dispatch(reset('shareModal'));
       }
       console.warn(`${DEBUG_KEY}: creating share failed with message: `, res);
@@ -172,7 +178,7 @@ export const submitShare = (values) => (dispatch, getState) => {
       dispatch({
         type: SHARE_NEW_POST_FAIL
       });
-      console.warn(`${DEBUG_KEY}: creating share failed with exception: `, err);
+      console.log(`${DEBUG_KEY}: creating share failed with exception: `, err);
     });
 };
 
@@ -204,7 +210,10 @@ const newShareAdaptor = (newShare, formVales) => {
     needRef,
     belongsToTribe,
     belongsToEvent,
-    content,
+    content: {
+      text: content,
+      tags: []
+    },
     privacy: transformedPrivacy
   };
 };

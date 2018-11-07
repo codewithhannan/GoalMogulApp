@@ -13,6 +13,11 @@ import {
   GOAL_DETAIL_OPEN
 } from '../../../../reducers/GoalDetailReducers';
 
+// Actions
+import {
+  refreshComments
+} from '../../feed/comment/CommentActions';
+
 import { api as API } from '../../../middleware/api';
 import { queryBuilder } from '../../../middleware/utils';
 
@@ -31,6 +36,7 @@ export const closeCreateOverlay = (tab) => ({
 // Open goal detail
 export const openGoalDetail = goal => (dispatch, getState) => {
   const { tab } = getState().navigation;
+  const { _id } = goal;
   dispatch({
     type: GOAL_DETAIL_OPEN,
     payload: {
@@ -39,6 +45,7 @@ export const openGoalDetail = goal => (dispatch, getState) => {
     }
   });
 
+  refreshComments('Goal', _id, tab, undefined)(dispatch, getState);
   // TODO: create new stack using Actions.create(React.Element) if needed
   Actions.goal();
 };
@@ -103,7 +110,8 @@ export const refreshGoals = () => (dispatch, getState) => {
       payload: {
         type: 'mastermind',
         // TOOD: fix to remove testData
-        data: [...data, ...testData],
+        // data: [...data, ...testData],
+        data,
         skip: data.length,
         limit: 20,
         hasNextPage: !(data === undefined || data.length === 0)
@@ -128,7 +136,8 @@ export const loadMoreGoals = () => (dispatch, getState) => {
       payload: {
         type: 'mastermind',
         // TOOD: fix to remove testData
-        data: [...data, ...testData],
+        // data: [...data, ...testData],
+        data,
         skip: data.length,
         limit: 20,
         hasNextPage: !(data === undefined || data.length === 0)
@@ -154,7 +163,7 @@ const loadGoals = (skip, limit, token, priority, category, callback, onError) =>
       token
     )
     .then((res) => {
-      console.log('loading goal with res: ', res);
+      console.log('loading goals in mastermind with res: ', res);
       if (res && res.data) {
         // Right now return test data
         callback(res.data);
@@ -165,6 +174,7 @@ const loadGoals = (skip, limit, token, priority, category, callback, onError) =>
     .catch((err) => {
       console.log(`${DEBUG_KEY} load goal error: ${err}`);
       onError(err);
+      callback([]);
     });
 };
 
