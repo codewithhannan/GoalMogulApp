@@ -80,17 +80,19 @@ const loadFeed = (skip, limit, token, priority, categories, callback, onError) =
     .then((res) => {
       console.log('loading feed with res: ', res);
       if (res && res.data) {
-        return callback([...res.data, ...testData]);
+        // return callback([...res.data, ...testData]);
+        return callback([...res.data]);
       }
-      console.warn(`${DEBUG_KEY}: Loading goal with no res`);
+      console.log(`${DEBUG_KEY}: Loading activity feed with no data: `, res);
     })
     .catch((err) => {
-      console.log(`${DEBUG_KEY} load goal error: ${err}`);
-      if (skip === 0) {
-        callback(testData);
-      } else {
-        callback([]);
-      }
+      console.log(`${DEBUG_KEY} load activity feed with error: ${err}`);
+      // if (skip === 0) {
+      //   callback(testData);
+      // } else {
+      //   callback([]);
+      // }
+      callback([]);
     });
 };
 

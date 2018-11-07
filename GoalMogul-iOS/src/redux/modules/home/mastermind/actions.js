@@ -110,7 +110,8 @@ export const refreshGoals = () => (dispatch, getState) => {
       payload: {
         type: 'mastermind',
         // TOOD: fix to remove testData
-        data: [...data, ...testData],
+        // data: [...data, ...testData],
+        data,
         skip: data.length,
         limit: 20,
         hasNextPage: !(data === undefined || data.length === 0)
@@ -135,7 +136,8 @@ export const loadMoreGoals = () => (dispatch, getState) => {
       payload: {
         type: 'mastermind',
         // TOOD: fix to remove testData
-        data: [...data, ...testData],
+        // data: [...data, ...testData],
+        data,
         skip: data.length,
         limit: 20,
         hasNextPage: !(data === undefined || data.length === 0)

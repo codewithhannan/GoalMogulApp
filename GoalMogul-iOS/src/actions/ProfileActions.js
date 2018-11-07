@@ -267,7 +267,12 @@ export const selectProfileTab = (index) => (dispatch, getState) => {
   });
 
   const tab = getState().profile.navigationState.routes[index].key;
-  handleTabRefresh(tab)(dispatch, getState);
+  const { data } = _.get(getState().profile, tab);
+
+  // Only attempt to load if there is no data
+  if (!data || data.length === 0) {
+    handleTabRefresh(tab)(dispatch, getState);
+  }
 };
 
 // User update filter for specific tab
