@@ -43,7 +43,7 @@ class EventSearch extends Component {
   }
 
   renderItem = ({ item }) => {
-    return <EventSearchCard item={item} />;
+    return <EventSearchCard item={item} type={this.props.type} />;
   };
 
   render() {

@@ -43,7 +43,7 @@ class TribeSearch extends Component {
   }
 
   renderItem = ({ item }) => {
-    return <TribeSearchCard item={item} />;
+    return <TribeSearchCard item={item} type={this.props.type} />;
   };
 
   render() {

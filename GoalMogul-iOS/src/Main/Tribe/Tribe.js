@@ -52,7 +52,7 @@ import {
   getTribeNavigationState
 } from '../../redux/modules/tribe/TribeSelector';
 
-import { switchCases } from '../../redux/middleware/utils';
+import { switchCase } from '../../redux/middleware/utils';
 
 const DEBUG_KEY = '[ UI Tribe ]';
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -350,7 +350,7 @@ class Tribe extends Component {
     const tintColor = isMember ? '#2dca4a' : 'gray';
 
     if (isMember) {
-      const statusText = switchCaseMemberStatus(isMember);
+      const { text } = switchCaseMemberStatus(isMember);
       return (
         <TouchableOpacity
           style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}
@@ -371,7 +371,7 @@ class Tribe extends Component {
               color: tintColor
             }}
           >
-            {statusText}
+            {text}
           </Text>
         </TouchableOpacity>
       );
@@ -525,7 +525,7 @@ class Tribe extends Component {
             keyExtractor={(i) => i._id}
             ListHeaderComponent={this.renderTribeOverview(item)}
           />
-          {this.renderPlus()}
+          {this.renderPlus(item)}
         </View>
       </MenuProvider>
     );
@@ -691,23 +691,7 @@ const checkIsAdmin = (members, userId) => {
   return isAdmin;
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    tribeSelectTab,
-    tribeDetailClose,
-    requestJoinTribe,
-    openTribeInvitModal,
-    deleteTribe,
-    editTribe,
-    reportTribe,
-    leaveTribe,
-    acceptTribeInvit,
-    declineTribeInvit,
-  }
-)(Tribe);
-
-const switchCaseMemberStatus = (status) => switchCases({
+const switchCaseMemberStatus = (status) => switchCase({
   Admin: {
     text: 'Admin',
     icon: undefined
@@ -726,9 +710,25 @@ const switchCaseMemberStatus = (status) => switchCases({
   }
 })('Member')(status);
 
-const switchCasesMemberStatusChangeText = (status) => switchCases({
+const switchCasesMemberStatusChangeText = (status) => switchCase({
   Admin: ['Cancel'],
   Member: ['Leave tribe', 'Cancel'],
   JoinRequester: ['Cancel Request', 'Cancel'],
   Invitee: ['Accept', 'Decline', 'Cancel']
 })('Member')(status);
+
+export default connect(
+  mapStateToProps,
+  {
+    tribeSelectTab,
+    tribeDetailClose,
+    requestJoinTribe,
+    openTribeInvitModal,
+    deleteTribe,
+    editTribe,
+    reportTribe,
+    leaveTribe,
+    acceptTribeInvit,
+    declineTribeInvit,
+  }
+)(Tribe);

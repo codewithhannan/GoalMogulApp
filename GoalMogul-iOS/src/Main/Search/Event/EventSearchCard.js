@@ -17,6 +17,9 @@ import next from '../../../asset/utils/next.png';
 
 // Actions
 import { selectEvent } from '../../../redux/modules/feed/post/ShareActions';
+import {
+  eventDetailOpen
+} from '../../../redux/modules/event/EventActions';
 
 const DEBUG_KEY = '[ Component SearchEventCard ]';
 
@@ -25,9 +28,22 @@ class SearchEventCard extends Component {
     imageLoading: false
   }
 
-  onButtonClicked = (item) => {
-    console.log(`${DEBUG_KEY} select event: `, item);
-    this.props.selectEvent(item);
+  /**
+   * @param type: ['GeneralSearch', 'SearchSuggestion']
+   * @param item: search result item
+   */
+  onButtonClicked = (item, type) => {
+    if (!type || type === 'SearchSuggestion') {
+      console.log(`${DEBUG_KEY} select event: `, item);
+      this.props.selectEvent(item);
+      return;
+    }
+    if (type === 'GeneralSearch') {
+      console.log('open event detail with type GeneralSearch');
+      this.props.eventDetailOpen(item);
+      return;
+    }
+    // Open event page
   }
 
   renderEventImage() {
@@ -58,11 +74,11 @@ class SearchEventCard extends Component {
     return eventImage;
   }
 
-  renderButton(item) {
+  renderButton(item, type) {
     return (
       <View style={styles.iconContainerStyle}>
         <TouchableOpacity
-          onPress={this.onButtonClicked.bind(this, item)}
+          onPress={() => this.onButtonClicked(item, type)}
           style={{ padding: 15 }}
         >
           <Image
@@ -100,7 +116,7 @@ class SearchEventCard extends Component {
   }
 
   render() {
-    const { item } = this.props;
+    const { item, type } = this.props;
 
     return (
       <TouchableOpacity>
@@ -111,7 +127,7 @@ class SearchEventCard extends Component {
             {this.renderInfo()}
             {this.renderOccupation()}
           </View>
-          {this.renderButton(item)}
+          {this.renderButton(item, type)}
         </View>
       </TouchableOpacity>
     );
@@ -173,5 +189,6 @@ const styles = {
 };
 
 export default connect(null, {
-  selectEvent
+  selectEvent,
+  eventDetailOpen
 })(SearchEventCard);
