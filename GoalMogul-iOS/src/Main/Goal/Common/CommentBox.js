@@ -135,7 +135,9 @@ class CommentBox extends Component {
   }
 
   //tintColor: '#f5d573'
-  renderSuggestionIcon() {
+  renderSuggestionIcon(newComment) {
+    const { mediaRef } = newComment;
+    const disableButton = mediaRef && mediaRef !== '';
     return (
       <TouchableOpacity
         style={styles.iconContainerStyle}
@@ -143,6 +145,7 @@ class CommentBox extends Component {
           console.log('suggestion on click in comment box');
           this.props.createSuggestion();
         }}
+        disabled={disableButton}
       >
         <Image
           source={LightBulb}
@@ -156,7 +159,7 @@ class CommentBox extends Component {
     );
   }
 
-  renderLeftIcons() {
+  renderLeftIcons(newComment) {
     return (
       <View
         style={{
@@ -166,17 +169,20 @@ class CommentBox extends Component {
           marginBottom: 5
         }}
       >
-        {this.renderSuggestionIcon()}
-        {this.renderImageIcon()}
+        {this.renderSuggestionIcon(newComment)}
+        {this.renderImageIcon(newComment)}
       </View>
     );
   }
 
-  renderImageIcon() {
+  renderImageIcon(newComment) {
+    const { suggestion } = newComment;
+    const disableButton = suggestion && suggestion.suggestionFor;
     return (
       <TouchableOpacity
         style={styles.iconContainerStyle}
         onPress={this.handleImageIconOnClick}
+        disabled={disableButton}
       >
         <Image
           source={PhotoIcon}
@@ -284,7 +290,7 @@ class CommentBox extends Component {
         {this.renderSuggestionPreview()}
         {this.renderMedia(newComment)}
         <View style={{ flexDirection: 'row' }}>
-          {this.renderLeftIcons()}
+          {this.renderLeftIcons(newComment)}
           <View style={inputContainerStyle}>
             <TextInput
               ref="textInput"

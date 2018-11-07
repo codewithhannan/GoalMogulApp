@@ -239,7 +239,7 @@ export const postComment = (pageId) => (dispatch, getState) => {
       });
     }
     console.log(`${DEBUG_KEY}: comment posted successfully with res: `, data);
-    Alert.alert('Success', 'You have successfully created a comment.');
+    // Alert.alert('Success', 'You have successfully created a comment.');
   };
 
   if (!mediaRef) {

@@ -115,7 +115,14 @@ class Tribe extends Component {
       ...this.state,
       showPlus: false
     });
-    Actions.push('createButtonOverlay', { buttons });
+
+    const callback = () => {
+      this.setState({
+        ...this.state,
+        showPlus: true
+      });
+    };
+    Actions.push('createButtonOverlay', { buttons, callback });
   }
 
   handleTribeOptionsOnSelect = (value) => {

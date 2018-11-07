@@ -21,7 +21,7 @@ export const getGoalStepsAndNeeds = createSelector(
     const { needs, steps } = goal;
     let res = [];
     if (needs && needs.length > 0) {
-      res.push({ sectionTitle: 'needs' });
+      res.push({ sectionTitle: 'needs', count: needs.length, _id: 'need-title' });
     }
     // Transform needs to have a type
     let newNeeds = [];
@@ -35,7 +35,7 @@ export const getGoalStepsAndNeeds = createSelector(
     res = res.concat(newNeeds);
 
     if (steps && steps.length > 0) {
-      res.push({ sectionTitle: 'steps' });
+      res.push({ sectionTitle: 'steps', count: steps.length, _id: 'step-title' });
     }
 
     // Transform needs to have a type
