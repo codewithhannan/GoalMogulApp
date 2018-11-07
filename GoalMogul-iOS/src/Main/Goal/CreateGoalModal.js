@@ -67,6 +67,10 @@ const STEP_PLACE_HOLDER = 'Add an important step to achieving your goal...';
 const NEED_PLACE_HOLDER = 'Something you\'re specifically looking for help with';
 
 class CreateGoalModal extends Component {
+  constructor(props) {
+    super(props);
+    this.initializeForm();
+  }
 
   componentDidMount() {
     this.initializeForm();
@@ -222,24 +226,25 @@ class CreateGoalModal extends Component {
       <Button text='remove description' source={cancel} onPress={() => fields.remove(0)} />
       :
       <Button text='detailed description' source={plus} onPress={() => fields.push({})} />;
+
+    const fieldsComponet = fields.length > 0 ?
+      fields.map((description, index) => {
+        return (
+          <Field
+            key={`goal-description-${index}`}
+            name={description}
+            component={this.renderInput}
+            editable={this.props.uploading}
+            style={styles.standardInputStyle}
+            placeholder="Decribe your goal"
+            multiline
+            maxHeight={200}
+          />
+        );
+      }) : '';
     return (
       <View style={{ marginTop: 10 }}>
-        {
-          fields.map((description, index) => {
-            return (
-              <Field
-                key={`goal-description-${index}`}
-                name={description}
-                component={this.renderInput}
-                editable={this.props.uploading}
-                style={styles.standardInputStyle}
-                placeholder="Decribe your goal"
-                multiline
-                maxHeight={200}
-              />
-            );
-          })
-        }
+        {fieldsComponet}
         {button}
       </View>
     );
@@ -463,31 +468,34 @@ class CreateGoalModal extends Component {
   renderFieldArray = (title, buttonText, placeholder, fields, error) => {
     const button = <Button text={buttonText} source={plus} onPress={() => fields.push()} />;
     const titleText = <Text style={styles.titleTextStyle}>{title}</Text>;
+
+    const fieldsComponent = fields.length > 0 ?
+      fields.map((field, index) => {
+        const iconOnPress = index === 0 ?
+          undefined
+          :
+          () => fields.remove(index);
+        return (
+          <Field
+            key={`description-${index}`}
+            name={`${field}.description`}
+            component={InputField}
+            editable={this.props.uploading}
+            numberOfLines={4}
+            style={styles.standardInputStyle}
+            placeholder={placeholder}
+            iconSource={cancel}
+            iconStyle={styles.cancelIconStyle}
+            iconOnPress={iconOnPress}
+          />
+        );
+      })
+      : '';
+
     return (
       <View style={{ ...styles.sectionMargin }}>
         {titleText}
-        {
-          fields.map((field, index) => {
-            const iconOnPress = index === 0 ?
-              undefined
-              :
-              () => fields.remove(index);
-            return (
-              <Field
-                key={`description-${index}`}
-                name={field}
-                component={InputField}
-                editable={this.props.uploading}
-                numberOfLines={4}
-                style={styles.standardInputStyle}
-                placeholder={placeholder}
-                iconSource={cancel}
-                iconStyle={styles.cancelIconStyle}
-                iconOnPress={iconOnPress}
-              />
-            );
-          })
-        }
+        {fieldsComponent}
         {button}
       </View>
     );
@@ -664,6 +672,8 @@ const mapStateToProps = state => {
     hasTimeline: selector(state, 'hasTimeline'),
     startTime: selector(state, 'startTime'),
     endTime: selector(state, 'endTime'),
+    needs: selector(state, 'needs'),
+    steps: selector(state, 'steps'),
     formVals: state.form.createGoalModal,
     goalDetail: getGoalDetailByTab(state),
     uploading
