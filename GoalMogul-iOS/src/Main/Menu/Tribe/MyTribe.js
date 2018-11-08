@@ -21,6 +21,7 @@ import About from './MyTribeAbout';
 import MemberListCard from '../../Tribe/MemberListCard';
 import { MenuFactory } from '../../Common/MenuFactory';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import EmptyResult from '../../Common/Text/EmptyResult';
 
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
 import { switchCase } from '../../../redux/middleware/utils';
@@ -462,7 +463,7 @@ class MyTribe extends Component {
     );
   }
 
-  renderTribeOverview(item) {
+  renderTribeOverview(item, data) {
     const { name, _id, picture } = item;
 
     // const filterBar = this.props.tab === 'members'
@@ -476,6 +477,10 @@ class MyTribe extends Component {
     const filterBar = this.props.tab === 'members'
       ? this.renderMemberTabs()
       : '';
+
+    const emptyState = this.props.tab === 'posts' && data.length === 0
+      ? <EmptyResult text={'No Posts'} textStyle={{ paddingTop: 100 }} />
+    : '';
 
     // Invite button is replaced by renderPlus
     const inviteButton = this.props.tab === 'members'
@@ -520,6 +525,7 @@ class MyTribe extends Component {
           })
         }
         {filterBar}
+        {emptyState}
       </View>
     );
   }
@@ -592,7 +598,7 @@ class MyTribe extends Component {
             data={data}
             renderItem={this.renderItem}
             keyExtractor={(i) => i._id}
-            ListHeaderComponent={this.renderTribeOverview(item)}
+            ListHeaderComponent={this.renderTribeOverview(item, data)}
             onRefresh={() => this.props.refreshMyTribeDetail(item._id)}
             refreshing={this.props.loading}
           />

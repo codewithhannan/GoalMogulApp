@@ -96,10 +96,7 @@ export default (state = INITIAL_STATE, action) => {
     // case related to filtering
     case MYEVENTTAB_SORTBY: {
       let newState = _.cloneDeep(state);
-      if (sortByList.includes(action.payload)) {
-        return _.set(newState, 'sortBy', action.payload);
-      }
-      return { ...newState };
+      return _.set(newState, 'sortBy', action.payload);
     }
 
     case MYEVENTTAB_UPDATE_FILTEROPTIONS: {

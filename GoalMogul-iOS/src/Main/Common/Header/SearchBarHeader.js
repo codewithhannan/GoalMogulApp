@@ -123,6 +123,7 @@ class SearchBarHeader extends Component {
 
   renderSearchBarLeftIcon() {
     if (this.props.backButton) {
+      const backButtonTintColor = this.props.title ? 'white' : tintColor;
       return (
         <View style={{ height: 25, width: 25 }}>
           <TouchableOpacity onPress={this.handleBackOnClick.bind(this)}>
@@ -136,7 +137,7 @@ class SearchBarHeader extends Component {
             */}
             <Image
               source={BackButton}
-              style={{ height: 25, width: 25, tintColor: 'white' }}
+              style={{ height: 25, width: 25, tintColor: backButtonTintColor }}
             />
           </TouchableOpacity>
         </View>
@@ -217,7 +218,7 @@ class SearchBarHeader extends Component {
     if (this.props.setting && this.props.haveSetting) {
       return (
         <TouchableWithoutFeedback onPress={this.handleSettingOnClick.bind(this)}>
-          <Image style={styles.headerRightImage} source={Setting} />
+          <Image style={{ ...styles.headerRightImage, tintColor }} source={Setting} />
         </TouchableWithoutFeedback>
       );
     }
@@ -227,7 +228,7 @@ class SearchBarHeader extends Component {
     if (this.props.rightIcon === 'menu') {
       return (
         <TouchableOpacity onPress={menuOnPress || this.handleMenuIconOnClick}>
-          <Image style={styles.headerRightImage} source={IconMenu} />
+          <Image style={{ ...styles.headerRightImage, tintColor }} source={IconMenu} />
         </TouchableOpacity>
       );
     }

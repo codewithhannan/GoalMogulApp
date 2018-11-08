@@ -154,7 +154,7 @@ const mapStateToProps = state => {
   ];
 
   return {
-    data: [...data, ...testData],
+    data: [...data],
     loading,
     showModal,
     navigationState

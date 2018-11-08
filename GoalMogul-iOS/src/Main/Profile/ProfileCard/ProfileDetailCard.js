@@ -283,7 +283,7 @@ class ProfileDetailCard extends Component {
     // const { name, headline, profile } = testData;
 
     return (
-      <Card>
+      <View style={styles.cardContainerStyle}>
         <View style={{ height: 90, backgroundColor: '#75d8fb' }} />
         <View style={styles.imageWrapperStyle}>
           {this.renderProfileImage(profile)}
@@ -299,7 +299,7 @@ class ProfileDetailCard extends Component {
           <View style={styles.dividerStyle} />
           {this.renderFriendInfo()}
         </View>
-      </Card>
+      </View>
     );
   }
 }
@@ -307,6 +307,12 @@ class ProfileDetailCard extends Component {
 const padding = 15;
 
 const styles = {
+  cardContainerStyle: {
+    shadowColor: '#ddd',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.7,
+    shadowRadius: 1,
+  },
   containerStyle: {
     backgroundColor: '#fff',
     display: 'flex',

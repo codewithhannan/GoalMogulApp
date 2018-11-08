@@ -65,8 +65,10 @@ class ProfileSummaryCard extends Component {
   }
 
   render() {
-    const { name, headline } = this.props.user;
-    let imageUrl = this.props.user.profile.image;
+    const { user } = this.props;
+    if (!user) return '';
+    const { name, headline, profile } = user;
+    let imageUrl = profile.image;
     // let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
     let profileImage = (!this.props.loading & !imageUrl) ?
     (<Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />)

@@ -24,6 +24,9 @@ import {
   updateFilterForMembershipCategory
 } from '../../../redux/modules/tribe/MyTribeTabActions';
 
+// Utils
+import { capitalizeWord } from '../../../redux/middleware/utils';
+
 const { Popover } = renderers;
 const { width } = Dimensions.get('window');
 
@@ -36,12 +39,21 @@ class MyTribeFilterBar extends Component {
   }
 
   render() {
-    const { containerStyle, textStyle, detailContainerStyle, standardTextStyle, caretStyle } = styles;
+    const {
+      containerStyle,
+      textStyle,
+      detailContainerStyle,
+      standardTextStyle,
+      caretStyle
+    } = styles;
+    const { sortBy } = this.props;
     return (
       <View style={containerStyle}>
 
         <Menu
-          onSelect={value => this.props.updateSortBy(value)}
+          onSelect={value => {
+            this.props.updateSortBy(value)
+          }}
           rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
           renderer={Popover}
         >
@@ -51,7 +63,7 @@ class MyTribeFilterBar extends Component {
             }}
           >
             <View style={detailContainerStyle}>
-              <Text style={textStyle}>Sort By</Text>
+              <Text style={textStyle}>Sort By ({`${capitalizeWord(sortBy)}`})</Text>
               <Image style={styles.caretStyle} source={dropDown} />
             </View>
           </MenuTrigger>
@@ -62,7 +74,7 @@ class MyTribeFilterBar extends Component {
             />
             <MenuOption
               text='Created'
-              vale='created'
+              value='created'
             />
 
           </MenuOptions>
@@ -135,8 +147,16 @@ const styles = {
   }
 };
 
+const mapStateToProps = state => {
+  const { sortBy } = state.myTribeTab;
+
+  return {
+    sortBy
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   {
     updateSortBy,
     updateFilterForMembershipCategory

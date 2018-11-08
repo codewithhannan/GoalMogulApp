@@ -28,7 +28,7 @@ export default StyleSheet.create({
     marginBottom: 2
   },
   detailTextStyle: {
-    fontSize: 11,
+    fontSize: 14,
     color: '#646464',
   }
 });

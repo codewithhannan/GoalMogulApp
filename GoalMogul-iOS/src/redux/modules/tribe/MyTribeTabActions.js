@@ -40,7 +40,7 @@ export const closeMyTribeTab = () => (dispatch) => {
 export const updateSortBy = (value) => (dispatch, getState) => {
   dispatch({
     type: MYTRIBETAB_SORTBY,
-    value
+    payload: value
   });
 
   refreshTribe()(dispatch, getState);
@@ -51,7 +51,7 @@ export const updateSortBy = (value) => (dispatch, getState) => {
 export const updateFilterForMembershipCategory = (value) => (dispatch, getState) => {
   dispatch({
     type: MYTRIBETAB_UPDATE_FILTEROPTIONS,
-    value
+    payload: value
   });
 
   refreshTribe()(dispatch, getState);

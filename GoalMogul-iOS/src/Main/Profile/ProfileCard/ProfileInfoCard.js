@@ -82,19 +82,25 @@ class ProfileInfoCard extends Component {
       :
       '';
     return (
-      <Card>
+      <View style={styles.cardContainerStyle}>
         <View style={styles.containerStyle}>
           {this.renderOccupation(occupation)}
           {divider}
           {this.renderElevatorPitch(elevatorPitch)}
           {this.renderAbout(about)}
         </View>
-      </Card>
+      </View>
     );
   }
 }
 
 const styles = {
+  cardContainerStyle: {
+    display: 'flex',
+    // borderColor: '#eaeaea',
+    // borderBottomWidth: 0.5,
+    backgroundColor: 'transparent',
+  },
   containerStyle: {
     display: 'flex',
     padding: 30,

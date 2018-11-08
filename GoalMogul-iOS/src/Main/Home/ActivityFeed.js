@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 // Components
 import ActivityCard from '../Activity/ActivityCard';
 import GoalFilterBar from '../Common/GoalFilterBar';
+import EmptyResult from '../Common/Text/EmptyResult';
 
 // actions
 import {
@@ -70,6 +71,7 @@ class ActivityFeed extends Component {
           onRefresh={this.handleOnRefresh}
           onEndReached={this.handleOnLoadMore}
           ListHeaderComponent={this.renderListHeader()}
+          ListEmptyComponent={<EmptyResult text={'No Activity'} />}
           onEndThreshold={0}
         />
       </View>

@@ -84,7 +84,7 @@ class ProfileDetailEditForm extends Component {
           <ImageBackground
             style={styles.imageStyle}
             source={profilePic}
-            imageStyle={{ borderRadius: 13, opacity: 0.5, resizeMode: 'contain' }}
+            imageStyle={{ borderRadius: 13, opacity: 0.5, resizeMode: 'cover' }}
           >
             <View style={styles.iconContainerStyle}>
               <Image style={styles.editIconStyle} source={editImage} />
@@ -106,7 +106,7 @@ class ProfileDetailEditForm extends Component {
             <ImageBackground
               style={styles.imageStyle}
               source={{ uri: image }}
-              imageStyle={{ borderRadius: 13, opacity: 0.5, resizeMode: 'contain' }}
+              imageStyle={{ borderRadius: 13, opacity: 0.5, resizeMode: 'cover' }}
             >
               <View style={styles.iconContainerStyle}>
                 <Image style={styles.editIconStyle} source={editImage} />

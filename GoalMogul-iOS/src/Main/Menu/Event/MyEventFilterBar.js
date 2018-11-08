@@ -24,6 +24,9 @@ import {
   updateFilterOptions
 } from '../../../redux/modules/event/MyEventTabActions';
 
+// Utils
+import { capitalizeWord } from '../../../redux/middleware/utils';
+
 const { Popover } = renderers;
 const { width } = Dimensions.get('window');
 
@@ -31,6 +34,7 @@ class MyEventFilterBar extends Component {
 
   render() {
     const { containerStyle, textStyle, detailContainerStyle, standardTextStyle, caretStyle } = styles;
+    const { sortBy } = this.props;
     return (
       <View style={containerStyle}>
 
@@ -56,11 +60,11 @@ class MyEventFilterBar extends Component {
             />
             <MenuOption
               text='Created'
-              vale='created'
+              value='created'
             />
             <MenuOption
               text='Title'
-              vale='title'
+              value='title'
             />
           </MenuOptions>
         </Menu>
@@ -205,8 +209,15 @@ const styles = {
   }
 };
 
+const mapStateToProps = state => {
+  const { sortBy } = state.myEventTab;
+  return {
+    sortBy
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   {
     updateSortBy,
     updateFilterOptions

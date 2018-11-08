@@ -22,6 +22,7 @@ import StackedAvatars from '../Common/StackedAvatars';
 import Dot from '../Common/Dot';
 import MemberListCard from '../Tribe/MemberListCard';
 import ParticipantFilterBar from './ParticipantFilterBar';
+import EmptyResult from '../Common/Text/EmptyResult';
 
 import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
@@ -293,11 +294,15 @@ class Event extends Component {
     );
   }
 
-  renderEventOverview(item) {
+  renderEventOverview(item, data) {
     const { title, _id, picture } = item;
     const filterBar = this.props.tab === 'attendees'
       ? <ParticipantFilterBar />
       : '';
+
+    const emptyState = this.props.tab === 'posts' && data.length === 0
+      ? <EmptyResult text={'No Posts'} textStyle={{ paddingTop: 100 }} />
+    : '';
 
     // Currently, explored events is not synced with my events
     const inviteButton = this.props.tab === 'attendees'
@@ -338,6 +343,7 @@ class Event extends Component {
           })
         }
         {filterBar}
+        {emptyState}
       </View>
     );
   }
@@ -386,7 +392,7 @@ class Event extends Component {
             data={data}
             renderItem={this.renderItem}
             keyExtractor={(i) => i._id}
-            ListHeaderComponent={this.renderEventOverview(item)}
+            ListHeaderComponent={this.renderEventOverview(item, data)}
             ListFooterComponent={this.renderFooter}
           />
 

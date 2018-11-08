@@ -29,7 +29,7 @@ const INITIAL_STATE = {
   }
 };
 
-const sortByList = ['start', 'created', 'title'];
+const sortByList = ['name', 'created'];
 
 export const MYTRIBETAB_OPEN = 'mytribetab_open';
 export const MYTRIBETAB_CLOSE = 'mytribetab_close';
@@ -92,10 +92,7 @@ export default (state = INITIAL_STATE, action) => {
     // case related to filtering
     case MYTRIBETAB_SORTBY: {
       let newState = _.cloneDeep(state);
-      if (sortByList.includes(action.payload)) {
-        return _.set(newState, 'sortBy', action.payload);
-      }
-      return { ...newState };
+      return _.set(newState, 'sortBy', action.payload);
     }
 
     case MYTRIBETAB_UPDATE_FILTEROPTIONS: {
