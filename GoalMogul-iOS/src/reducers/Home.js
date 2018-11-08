@@ -35,9 +35,9 @@ const INITIAL_STATE = {
     skip: 0,
     currentIndex: 0,
     filter: {
-      sortBy: 'created',
+      sortBy: 'shared',
       orderBy: 'descending',
-      categories: 'General',
+      categories: 'All',
       completedOnly: 'false',
       priorities: ''
     },
@@ -53,7 +53,7 @@ const INITIAL_STATE = {
     filter: {
       sortBy: 'created',
       orderBy: 'descending',
-      categories: 'General',
+      categories: 'All',
       completedOnly: 'false',
       priorities: ''
     },

@@ -26,6 +26,7 @@ import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
 import { MenuFactory } from '../../Common/MenuFactory';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import ParticipantFilterBar from '../../Event/ParticipantFilterBar';
+import EmptyResult from '../../Common/Text/EmptyResult';
 
 // Asset
 import TestEventImage from '../../../asset/TestEventImage.png';
@@ -369,7 +370,7 @@ class MyEvent extends Component {
     );
   }
 
-  renderEventOverview(item) {
+  renderEventOverview(item, data) {
     const { title, _id, picture } = item;
     // const filterBar = this.props.tab === 'attendees'
     //   ? <ParticipantFilterBar />
@@ -389,6 +390,10 @@ class MyEvent extends Component {
         </TouchableOpacity>
       )
       : '';
+
+    const emptyState = this.props.tab === 'posts' && data.length === 0
+      ? <EmptyResult text={'No Posts'} textStyle={{ paddingTop: 100 }} />
+    : '';
 
     return (
       <View>
@@ -417,6 +422,7 @@ class MyEvent extends Component {
           })
         }
         {filterBar}
+        {emptyState}
       </View>
     );
   }
@@ -478,7 +484,7 @@ class MyEvent extends Component {
             data={data}
             renderItem={this.renderItem}
             keyExtractor={(i) => i._id}
-            ListHeaderComponent={this.renderEventOverview(item)}
+            ListHeaderComponent={this.renderEventOverview(item, data)}
             ListFooterComponent={this.renderFooter}
           />
           {this.renderPlus(item)}

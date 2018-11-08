@@ -15,6 +15,7 @@ import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 // Asset
 import dropDown from '../../asset/utils/dropDown.png';
 import profilePeople from '../../asset/utils/profile_people.png';
+import shareIcon from '../../asset/utils/share.png';
 import informationIcon from '../../asset/utils/info_white.png';
 import informationIconBlack from '../../asset/utils/info.png';
 
@@ -87,13 +88,18 @@ class ViewableSettingMenu extends Component {
       ? (<Image style={styles.informationIconStyle} source={informationIcon} />)
       : (<Image style={styles.informationIconStyle} source={informationIconBlack} />);
 
+    const shareIconTintColor = this.props.shareToMastermind ? 'white' : '#9b9b9b';
+
     return (
       <View style={{ ...styles.containerStyle, backgroundColor: 'transparent', borderWidth: 0 }}>
         <TouchableOpacity
           style={{ ...containerStyle }}
           onPress={() => this.props.shareToMastermindCallback(!this.props.shareToMastermind)}
         >
-          <Image style={styles.profileIconStyle} source={profilePeople} />
+          <Image
+            style={{ ...styles.profileIconStyle, tintColor: shareIconTintColor }}
+            source={shareIcon}
+          />
           <Text style={{ fontSize: 10, marginLeft: 3, marginRight: 5, color }}>
             Share to Mastermind
           </Text>
@@ -149,7 +155,8 @@ const styles = {
     height: 13,
     width: 13,
     margin: 3,
-    marginLeft: 6
+    marginLeft: 6,
+    tintColor: 'rgb(155,155,155)'
   }
 };
 

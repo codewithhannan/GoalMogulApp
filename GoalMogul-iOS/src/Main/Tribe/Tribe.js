@@ -21,6 +21,7 @@ import About from './About';
 import MemberListCard from './MemberListCard';
 import MemberFilterBar from './MemberFilterBar';
 import { MenuFactory } from '../Common/MenuFactory';
+import EmptyResult from '../Common/Text/EmptyResult';
 
 import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
@@ -416,12 +417,15 @@ class Tribe extends Component {
     );
   }
 
-  renderTribeOverview(item) {
+  renderTribeOverview(item, data) {
     const { name, _id, picture } = item;
     const filterBar = this.props.tab === 'members'
       ? <MemberFilterBar />
       : '';
 
+    const emptyState = this.props.tab === 'posts' && data.length === 0
+      ? <EmptyResult text={'No Posts'} textStyle={{ paddingTop: 100 }} />
+    : '';
     // Currently it's not in sync with MyTribe
     const inviteButton = this.props.tab === 'members'
       ? (
@@ -464,6 +468,7 @@ class Tribe extends Component {
           })
         }
         {filterBar}
+        {emptyState}
       </View>
     );
   }
@@ -523,7 +528,7 @@ class Tribe extends Component {
             data={data}
             renderItem={this.renderItem}
             keyExtractor={(i) => i._id}
-            ListHeaderComponent={this.renderTribeOverview(item)}
+            ListHeaderComponent={this.renderTribeOverview(item, data)}
           />
           {this.renderPlus(item)}
         </View>

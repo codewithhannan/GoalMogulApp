@@ -13,6 +13,7 @@ import GoalFilterBar from '../Common/GoalFilterBar';
 import NeedCard from '../Goal/NeedCard/NeedCard';
 import GoalCard from '../Goal/GoalCard/GoalCard';
 import GoalFilter from './GoalFilter';
+import EmptyResult from '../Common/Text/EmptyResult';
 
 // asset
 import plus from '../../asset/utils/plus.png';
@@ -97,6 +98,7 @@ class Mastermind extends Component {
           onRefresh={this.handleOnRefresh}
           onEndReached={this.handleOnLoadMore}
           ListHeaderComponent={this.renderListHeader()}
+          ListEmptyComponent={<EmptyResult text={'No Goals have been shared'} />}
           onEndThreshold={0}
         />
         {this.renderPlus()}

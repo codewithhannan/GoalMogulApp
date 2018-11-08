@@ -72,11 +72,33 @@ const fetchProfileSucceed = (res, dispatch) => {
 };
 
 const fetchProfileFail = (res, dispatch) => {
-  console.log(`${DEBUG_KEY} fetch profile succeed`);
+  console.log(`${DEBUG_KEY} fetch profile failed with res: `, res);
   dispatch({
     type: PROFILE_FETCHING_FAIL,
-    payload: res.message
+    payload: res
   });
+};
+
+/**
+ * This method only fetches user profile. It is primarily used after user updates
+ * the profile. Need to update the profile page
+ */
+export const fetchUserProfile = (userId) => (dispatch, getState) => {
+  const { token } = getState().user;
+  API
+    .get(`secure/user/profile?userId=${userId}`, token)
+    .then((res) => {
+      if (res.status === 200) {
+        fetchProfileSucceed(res, dispatch);
+        // Prefetch profile image
+        prefetchImage(res.data.profile.image);
+        return;
+      }
+      fetchProfileFail(res, dispatch);
+    })
+    .catch((err) => {
+      fetchProfileFail(err, dispatch);
+    });
 };
 
 export const openProfile = (userId) => (dispatch, getState) => {
@@ -210,7 +232,7 @@ export const submitUpdatingProfile = ({ values, hasImageModified }) => {
     const { about, occupation, elevatorPitch } = values.profile;
     const imageUri = values.profile.image;
 
-    const { token } = getState().user;
+    const { token, userId } = getState().user;
 
     // Start updaing process
     dispatch({
@@ -248,6 +270,7 @@ export const submitUpdatingProfile = ({ values, hasImageModified }) => {
           payload: user
         });
         Actions.pop();
+        fetchUserProfile(userId)(dispatch, getState);
         console.log('Update profile succeed: ', res);
       })
       .catch((err) => {

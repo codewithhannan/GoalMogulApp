@@ -28,10 +28,17 @@ const testData = {
 class ProfileDetail extends Component {
 
   render() {
+    const { user } = this.props;
+    if (!user) return '';
+    const { elevatorPitch, occupation } = user.profile;
+    let backgroundColor = '#f2f2f2';
+    if (occupation || elevatorPitch) {
+      backgroundColor = 'white';
+    }
     return (
       <View style={styles.containerStyle}>
         <SearchBarHeader backButton setting />
-        <ScrollView>
+        <ScrollView style={{ backgroundColor }}>
           <ProfileDetailCard />
           <ProfileInfoCard data={this.props.user} />
         </ScrollView>

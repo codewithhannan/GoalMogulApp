@@ -38,7 +38,7 @@ export const closeMyEventTab = () => (dispatch) => {
 export const updateSortBy = (value) => (dispatch, getState) => {
   dispatch({
     type: MYEVENTTAB_SORTBY,
-    value
+    payload: value
   });
 
   refreshEvent()(dispatch, getState);
