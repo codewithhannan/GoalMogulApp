@@ -96,10 +96,16 @@ class ChildCommentCard extends Component {
   }
 
   renderUserProfileImage() {
+    const { item } = this.props;
+    let imageUrl;
+    if (item.owner && item.owner.profile && item.owner.profile.image) {
+      imageUrl = item.owner.profile.image;
+    }
     return (
       <ProfileImage
         imageContainerStyle={{ ...styles.profileImageContianerStyle }}
         defaultImageSource={defaultProfilePic}
+        imageUrl={imageUrl}
         imageStyle={{ ...styles.profileImageStyle }}
       />
     );

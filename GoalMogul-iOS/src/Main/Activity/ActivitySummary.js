@@ -120,7 +120,8 @@ const switchPostType = (postType) => switchCase({
   ShareNeed: 'need',
   SharePost: 'post',
   ShareGoal: 'goal',
-  ShareUser: 'user'
+  ShareUser: 'user',
+  ShareStep: 'step'
 })('ShareNeed')(postType);
 
 const styles = {
