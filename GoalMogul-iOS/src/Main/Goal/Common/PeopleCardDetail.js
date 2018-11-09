@@ -73,22 +73,11 @@ class ContactDetail extends Component {
   }
 
   renderProfileImage(profile) {
-    if (profile.image) {
-      return (
-        <ProfileImage
-          imageContainerStyle={{ height: 30, width: 30, borderRadius: 15 }}
-          imageStyle={{ height: 30, width: 30, borderRadius: 15 }}
-          imageUrl={profile.image}
-        />
-      );
-    }
     return (
-      <View
-        style={{
-          ...styles.addUserIconContainerStyle,
-          backgroundColor: '#d8d8d8',
-          borderWidth: 0
-        }}
+      <ProfileImage
+        imageContainerStyle={{ height: 30, width: 30, borderRadius: 15 }}
+        imageStyle={{ height: 30, width: 30, borderRadius: 15 }}
+        imageUrl={profile.image}
       />
     );
   }
