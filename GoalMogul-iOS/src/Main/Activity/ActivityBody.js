@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ImageBackground
 } from 'react-native';
+import _ from 'lodash';
 
 // Components
 import ProgressBar from '../Goal/Common/ProgressBar';
@@ -72,16 +73,6 @@ class ActivityBody extends React.Component {
                 }}
               />
             </View>
-
-            <TouchableOpacity
-              onPress={() => this.setState({ mediaModal: true })}
-              style={{ position: 'absolute', top: 10, right: 15 }}
-            >
-              <Image
-                source={expand}
-                style={{ width: 15, height: 15, tintColor: '#fafafa' }}
-              />
-            </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => this.setState({ mediaModal: true })}
@@ -155,14 +146,27 @@ class ActivityBody extends React.Component {
 
   renderPostBody(postRef) {
     if (!postRef) return '';
-    const { postType } = postRef;
+    const { postType, goalRef, needRef, stepRef, userRef } = postRef;
     if (postType === 'General') {
       return this.renderPostImage(postRef.mediaRef);
     }
 
+    let item;
+    if (postType === 'ShareNeed') {
+      item = getNeedFromRef(goalRef, needRef);
+    }
+
+    if (postType === 'ShareStep') {
+      item = getStepFromGoal(goalRef, stepRef);
+    }
+
+    if (postType === 'ShareUser') {
+      item = userRef;
+    }
+
     return (
       <View>
-        <RefPreview item={postRef} postType={postType} />
+        <RefPreview item={item} postType={postType} goalRef={goalRef} />
       </View>
     );
   }
@@ -195,6 +199,22 @@ class ActivityBody extends React.Component {
     );
   }
 }
+
+const getStepFromGoal = (goal, stepRef) => getItemFromGoal(goal, 'steps', stepRef);
+
+const getNeedFromRef = (goal, needRef) => getItemFromGoal(goal, 'needs', needRef);
+
+const getItemFromGoal = (goal, type, ref) => {
+  let ret;
+  if (goal) {
+    _.get(goal, `${type}`).forEach((item) => {
+      if (item._id === ref) {
+        ret = item;
+      }
+    });
+  }
+  return ret;
+};
 
 const styles = {
   // Post image and modal style

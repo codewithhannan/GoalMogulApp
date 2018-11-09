@@ -191,7 +191,7 @@ class GoalCard extends Component {
       <View style={{ flexDirection: 'row' }}>
         <ProfileImage
           imageStyle={{ height: 60, width: 60 }}
-          imageUrl={owner && owner.profile ? owner.profile.picture : undefined}
+          imageUrl={owner && owner.profile ? owner.profile.image : undefined}
         />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline

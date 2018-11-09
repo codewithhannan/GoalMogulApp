@@ -30,9 +30,10 @@ import stepIcon from '../../asset/utils/steps.png';
 import ProfileImage from './ProfileImage';
 
 class RefPreview extends Component {
-  handleOnPress(item, postType) {
+  handleOnPress(item, postType, goalRef) {
+    console.log('goalref is : ', goalRef);
     if (postType === 'ShareGoal' || postType === 'ShareNeed' || postType === 'ShareStep') {
-      return this.props.openGoalDetail(item);
+      return this.props.openGoalDetail(goalRef);
     }
 
     if (postType === 'ShareUser') {
@@ -58,7 +59,7 @@ class RefPreview extends Component {
 
   // Currently this is a dummy component
   render() {
-    const { item, postType } = this.props;
+    const { item, postType, goalRef } = this.props;
     if (!item) return '';
 
     // TODO: add a postType ShareStep
@@ -66,7 +67,7 @@ class RefPreview extends Component {
     return (
       <TouchableOpacity
         style={styles.containerStyle}
-        onPress={() => this.handleOnPress(item, postType)}
+        onPress={() => this.handleOnPress(item, postType, goalRef)}
       >
         <ProfileImage
           imageStyle={{ width: 50, height: 50 }}

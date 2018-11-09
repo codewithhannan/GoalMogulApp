@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ImageBackground
 } from 'react-native';
+import _ from 'lodash';
 
 import {
   switchCase
@@ -156,10 +157,27 @@ const styles = {
 };
 
 const switchItem = (item, postType) => switchCase({
-  ShareNeed: item.goalRef,
+  ShareNeed: getNeedFromRef(item.goalRef, item.needRef),
   ShareGoal: item.goalRef,
   SharePost: item.postRef,
-  ShareUser: item.userRef
+  ShareUser: item.userRef,
+  ShareStep: getStepFromGoal(item.goalRef, item.stepRef)
 })('ShareGoal')(postType);
+
+const getStepFromGoal = (goal, stepRef) => getItemFromGoal(goal, 'steps', stepRef);
+
+const getNeedFromRef = (goal, needRef) => getItemFromGoal(goal, 'needs', needRef);
+
+const getItemFromGoal = (goal, type, ref) => {
+  let ret;
+  if (goal) {
+    _.get(goal, `${type}`).forEach((item) => {
+      if (item._id === ref) {
+        ret = item;
+      }
+    });
+  }
+  return ret;
+};
 
 export default ProfilePostBody;

@@ -102,8 +102,9 @@ class GoalDetailSection extends Component {
     return (
       <View style={{ flexDirection: 'row' }}>
         <ProfileImage
-          imageStyle={{ height: 60, width: 60 }}
+          imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
           imageUrl={owner && owner.profile ? owner.profile.image : undefined}
+          imageContainerStyle={styles.imageContainerStyle}
         />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
@@ -286,7 +287,16 @@ const styles = {
     justifyContent: 'space-between',
     marginTop: 10,
     margin: 20
-  }
+  },
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 1.5,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 6,
+    alignSelf: 'center',
+    backgroundColor: 'white'
+  },
 };
 
 const mapStateToProps = state => {
