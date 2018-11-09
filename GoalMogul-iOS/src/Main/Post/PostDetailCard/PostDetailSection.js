@@ -120,8 +120,9 @@ class PostDetailSection extends Component {
     return (
       <View style={{ flexDirection: 'row' }}>
         <ProfileImage
-          imageStyle={{ height: 60, width: 60 }}
-          imageUrl={owner && owner.profile ? owner.profile.picture : undefined}
+          imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
+          imageUrl={owner && owner.profile ? owner.profile.image : undefined}
+          imageContainerStyle={styles.imageContainerStyle}
         />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
@@ -194,7 +195,7 @@ class PostDetailSection extends Component {
             >
               <Image
                 source={expand}
-                style={{                  
+                style={{
                   width: 16,
                   height: 16,
                   tintColor: '#fafafa',
@@ -251,7 +252,7 @@ class PostDetailSection extends Component {
 
   // TODO: Switch to decide amoung renderImage, RefPreview and etc.
   renderCardContent(item) {
-    const { postType, mediaRef } = item;
+    const { postType, mediaRef, goalRef } = item;
     if (postType === 'General') {
       return this.renderPostImage(mediaRef);
     }
@@ -259,8 +260,9 @@ class PostDetailSection extends Component {
     const onPress = switchCase({
       SharePost: () => this.props.openPostDetail(refPreview),
       ShareUser: () => this.props.openProfile(refPreview._id),
-      ShareGoal: () => this.props.openGoalDetail(refPreview),
-      ShareNeed: () => this.props.openGoalDetail(refPreview)
+      ShareGoal: () => this.props.openGoalDetail(goalRef),
+      ShareNeed: () => this.props.openGoalDetail(goalRef),
+      ShareStep: () => this.props.openGoalDetail(goalRef)
     })('SharePost')(postType);
 
     return (
@@ -269,6 +271,7 @@ class PostDetailSection extends Component {
           item={refPreview}
           postType={postType}
           onPress={onPress}
+          goalRef={goalRef}
         />
       </View>
     );
@@ -359,9 +362,25 @@ class PostDetailSection extends Component {
 const switchItem = (item, postType) => switchCase({
   SharePost: item.postRef,
   ShareUser: item.userRef,
-  ShareGoal: item.goalRef,
-  ShareNeed: item.needRef
+  ShareNeed: getNeedFromRef(item.goalRef, item.needRef),
+  ShareStep: getStepFromGoal(item.goalRef, item.stepRef)
 })('SharePost')(postType);
+
+const getStepFromGoal = (goal, stepRef) => getItemFromGoal(goal, 'steps', stepRef);
+
+const getNeedFromRef = (goal, needRef) => getItemFromGoal(goal, 'needs', needRef);
+
+const getItemFromGoal = (goal, type, ref) => {
+  let ret;
+  if (goal) {
+    _.get(goal, `${type}`).forEach((item) => {
+      if (item._id === ref) {
+        ret = item;
+      }
+    });
+  }
+  return ret;
+};
 
 const styles = {
   containerStyle: {
@@ -382,6 +401,15 @@ const styles = {
     height: 20,
     width: 20,
     justifyContent: 'flex-end'
+  },
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 1.5,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 6,
+    alignSelf: 'center',
+    backgroundColor: 'white'
   },
 };
 

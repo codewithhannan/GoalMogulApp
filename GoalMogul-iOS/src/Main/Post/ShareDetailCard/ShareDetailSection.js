@@ -121,7 +121,7 @@ class ShareDetailSection extends Component {
       <View style={{ flexDirection: 'row' }}>
         <ProfileImage
           imageStyle={{ height: 60, width: 60 }}
-          imageUrl={owner && owner.profile ? owner.profile.picture : undefined}
+          imageUrl={owner && owner.profile ? owner.profile.image : undefined}
         />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
@@ -251,7 +251,7 @@ class ShareDetailSection extends Component {
 
   // TODO: Switch to decide amoung renderImage, RefPreview and etc.
   renderCardContent(item) {
-    const { postType, mediaRef } = item;
+    const { postType, mediaRef, goalRef } = item;
     if (postType === 'General') {
       return this.renderPostImage(mediaRef);
     }
@@ -259,8 +259,9 @@ class ShareDetailSection extends Component {
     const onPress = switchCase({
       SharePost: () => this.props.openPostDetail(refPreview),
       ShareUser: () => this.props.openProfile(refPreview._id),
-      ShareGoal: () => this.props.openGoalDetail(refPreview),
-      ShareNeed: () => this.props.openGoalDetail(refPreview)
+      ShareGoal: () => this.props.openGoalDetail(goalRef),
+      ShareNeed: () => this.props.openGoalDetail(goalRef),
+      ShareStep: () => this.props.openGoalDetail(goalRef)
     })('SharePost')(postType);
 
     return (
@@ -269,6 +270,7 @@ class ShareDetailSection extends Component {
           item={refPreview}
           postType={postType}
           onPress={onPress}
+          goalRef={goalRef}
         />
       </View>
     );
@@ -355,8 +357,25 @@ const switchItem = (item, postType) => switchCase({
   SharePost: item.postRef,
   ShareUser: item.userRef,
   ShareGoal: item.goalRef,
-  ShareNeed: item.needRef
+  ShareNeed: getNeedFromRef(item.goalRef, item.needRef),
+  ShareStep: getStepFromGoal(item.goalRef, item.stepRef)
 })('SharePost')(postType);
+
+const getStepFromGoal = (goal, stepRef) => getItemFromGoal(goal, 'steps', stepRef);
+
+const getNeedFromRef = (goal, needRef) => getItemFromGoal(goal, 'needs', needRef);
+
+const getItemFromGoal = (goal, type, ref) => {
+  let ret;
+  if (goal) {
+    _.get(goal, `${type}`).forEach((item) => {
+      if (item._id === ref) {
+        ret = item;
+      }
+    });
+  }
+  return ret;
+};
 
 const styles = {
   containerStyle: {

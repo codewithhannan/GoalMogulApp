@@ -127,7 +127,7 @@ class SearchSuggestion extends React.Component {
         {this.renderSearch()}
         <View style={{ flex: 1, marginTop: 0.5, backgroundColor: 'white' }}>
           <FlatList
-            data={[...this.props.data, ...testData[this.props.suggestionType]]}
+            data={this.props.data}
             renderItem={this.renderItem}
             keyExtractor={(item) => item._id}
             onEndReached={() => this.props.onLoadMore()}
@@ -138,6 +138,7 @@ class SearchSuggestion extends React.Component {
         </View>
       </Animated.View>
     );
+    // data={[...this.props.data, ...testData[this.props.suggestionType]]}
     // onRefresh={this.handleRefresh}
     // refreshing={this.props.refreshing}
     // ListEmptyComponent={<EmptyResult text={'You haven\'t added any friends'} />}

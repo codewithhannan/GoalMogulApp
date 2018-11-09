@@ -39,8 +39,9 @@ class ActivityHeader extends Component {
     return (
       <View style={{ flexDirection: 'row' }}>
         <ProfileImage
-          imageStyle={{ height: 60, width: 60 }}
-          imageUrl={owner && owner.profile ? owner.profile.picture : undefined}
+          imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
+          imageUrl={owner && owner.profile ? owner.profile.image : undefined}
+          imageContainerStyle={styles.imageContainerStyle}
         />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
@@ -79,6 +80,18 @@ class ActivityHeader extends Component {
     );
   }
 }
+
+const styles = {
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 1.5,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 6,
+    alignSelf: 'center',
+    backgroundColor: 'white'
+  }
+};
 
 export default connect(
   null,

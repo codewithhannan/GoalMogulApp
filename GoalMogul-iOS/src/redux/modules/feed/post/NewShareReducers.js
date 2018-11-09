@@ -59,6 +59,7 @@ export default (state = INITIAL_STATE, action) => {
         postRef,
         goalRef,
         needRef,
+        stepRef,
         itemToShare
       } = action.payload;
       let newState = _.cloneDeep(state);
@@ -67,6 +68,7 @@ export default (state = INITIAL_STATE, action) => {
       newState = setState(newState, 'userRef', userRef);
       newState = setState(newState, 'postRef', postRef);
       newState = setState(newState, 'goalRef', goalRef);
+      newState = setState(newState, 'stepRef', stepRef);
       newState = setState(newState, 'itemToShare', itemToShare);
       return setState(newState, 'needRef', needRef);
     }

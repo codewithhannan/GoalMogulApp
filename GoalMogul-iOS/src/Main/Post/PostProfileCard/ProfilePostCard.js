@@ -150,8 +150,8 @@ class ProfilePostCard extends Component {
     return (
       <View style={{ flexDirection: 'row' }}>
         <ProfileImage
-          imageStyle={{ height: 60, width: 60 }}
-          imageUrl={owner && owner.profile ? owner.profile.picture : undefined}
+          imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
+          imageUrl={owner && owner.profile ? owner.profile.image : undefined}
         />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline

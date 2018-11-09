@@ -113,11 +113,12 @@ const switchShareToAction = (dest) => switchCaseF({
 export const chooseShareDest = (postType, ref, dest, itemToShare, goalRef) =>
 (dispatch, getState) => {
   const { userId } = getState().user;
+  const postDetail = switchPostType(postType, ref, goalRef);
 
   dispatch({
     type: SHARE_NEW_SHARE_TO,
     payload: {
-      ...switchPostType(postType, ref, goalRef),
+      ...postDetail,
       shareTo: dest,
       owner: userId,
       itemToShare
@@ -190,6 +191,7 @@ const newShareAdaptor = (newShare, formVales) => {
     postRef,
     goalRef,
     needRef,
+    stepRef,
     belongsToTribe,
     belongsToEvent
   } = newShare;
@@ -208,6 +210,7 @@ const newShareAdaptor = (newShare, formVales) => {
     postRef,
     goalRef,
     needRef,
+    stepRef,
     belongsToTribe,
     belongsToEvent,
     content: {

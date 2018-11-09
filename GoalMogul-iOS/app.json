@@ -1,12 +1,12 @@
 {
   "expo": {
     "name": "GoalMogul",
-    "icon": "./src/asset/header/logo@5x.png",
+    "icon": "./assets/logo.png",
     "sdkVersion": "27.0.0",
     "version": "0.0.1",
     "slug": "goalmogul",
     "ios": {
-      "bundleIdentifier": "com.goalmogul.ios",
+      "bundleIdentifier": "com.goalmogul.goalmogulbeta",
       "infoPlist": {
         "NSLocationAlwaysUsageDescription" : "needs gps data.",
         "NSAppTransportSecurity" : {

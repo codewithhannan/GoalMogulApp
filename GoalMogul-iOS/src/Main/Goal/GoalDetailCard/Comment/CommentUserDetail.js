@@ -16,6 +16,7 @@ import ActionButton from '../../Common/ActionButton';
 import ActionButtonGroup from '../../Common/ActionButtonGroup';
 import CommentHeadline from './CommentHeadline';
 import CommentRef from './CommentRef';
+import ProfileImage from '../../../Common/ProfileImage';
 
 // Actions
 import {
@@ -114,11 +115,18 @@ class CommentUserDetail extends Component {
     );
   }
 
-  renderUserProfileImage() {
+  renderUserProfileImage(item) {
+    let imageUrl;
+    if (item.owner && item.owner.profile && item.owner.profile.image) {
+      imageUrl = item.owner.profile.image;
+    }
     return (
-      <View style={styles.profileImageContianerStyle}>
-        <Image source={defaultProfilePic} resizeMode='contain' style={styles.profileImageStyle} />
-      </View>
+      <ProfileImage
+        imageContainerStyle={{ ...styles.profileImageContianerStyle }}
+        defaultImageSource={defaultProfilePic}
+        imageUrl={imageUrl}
+        imageStyle={{ ...styles.profileImageStyle }}
+      />
     );
   }
 
@@ -178,6 +186,9 @@ class CommentUserDetail extends Component {
   }
 
   render() {
+    const { item } = this.props;
+    if (!item) return '';
+
     return (
       <View onLayout={this.onLayout}>
         <View style={{ ...styles.containerStyle }}>
@@ -190,13 +201,13 @@ class CommentUserDetail extends Component {
               flexDirection: 'row'
             }}
           >
-            {this.renderUserProfileImage()}
+            {this.renderUserProfileImage(item)}
             {this.renderUserDetail()}
           </View>
         </View>
 
         <View style={{ ...styles.containerStyle, marginTop: 0.5 }}>
-          {this.renderActionButtons()}
+          {this.renderActionButtons(item)}
         </View>
       </View>
     );

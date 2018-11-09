@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ImageBackground
 } from 'react-native';
+import _ from 'lodash';
 
 // Components
 import ProgressBar from '../Goal/Common/ProgressBar';
@@ -51,7 +52,9 @@ class ActivityBody extends React.Component {
     }
     const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${url}`;
       return (
-        <View>
+        <TouchableOpacity
+          onPress={() => this.setState({ mediaModal: true })}
+        >
           <ImageBackground
             style={styles.mediaStyle}
             source={{ uri: imageUrl }}
@@ -73,25 +76,38 @@ class ActivityBody extends React.Component {
 
             <TouchableOpacity
               onPress={() => this.setState({ mediaModal: true })}
-              style={{ position: 'absolute', top: 10, right: 15 }}
+              style={{
+                position: 'absolute',
+                top: 10,
+                right: 15,
+                width: 24,
+                height: 24,
+                borderRadius: 12,
+                padding: 2,
+                backgroundColor: 'rgba(0,0,0,0.3)',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
             >
               <Image
                 source={expand}
-                style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+                style={{
+                  width: 16,
+                  height: 16,
+                  tintColor: '#fafafa',
+                  borderRadius: 4,
+                }}
               />
             </TouchableOpacity>
-          */}
+            */}
           </ImageBackground>
-          {this.renderPostImageModal(url)}
-        </View>
+          {this.renderPostImageModal(imageUrl)}
+        </TouchableOpacity>
       );
   }
 
 
-  renderPostImageModal(uri) {
-    if (!uri) {
-      return '';
-    }
+  renderPostImageModal(imageUrl) {
     return (
       <Modal
         animationType="fade"
@@ -119,7 +135,7 @@ class ActivityBody extends React.Component {
             />
           </TouchableOpacity>
           <Image
-            source={TestImage}
+            source={{ uri: imageUrl }}
             style={{ width, height: 200 }}
             resizeMode='cover'
           />
@@ -130,14 +146,27 @@ class ActivityBody extends React.Component {
 
   renderPostBody(postRef) {
     if (!postRef) return '';
-    const { postType } = postRef;
+    const { postType, goalRef, needRef, stepRef, userRef } = postRef;
     if (postType === 'General') {
       return this.renderPostImage(postRef.mediaRef);
     }
 
+    let item;
+    if (postType === 'ShareNeed') {
+      item = getNeedFromRef(goalRef, needRef);
+    }
+
+    if (postType === 'ShareStep') {
+      item = getStepFromGoal(goalRef, stepRef);
+    }
+
+    if (postType === 'ShareUser') {
+      item = userRef;
+    }
+
     return (
       <View>
-        <RefPreview item={postRef} postType={postType} />
+        <RefPreview item={item} postType={postType} goalRef={goalRef} />
       </View>
     );
   }
@@ -170,6 +199,22 @@ class ActivityBody extends React.Component {
     );
   }
 }
+
+const getStepFromGoal = (goal, stepRef) => getItemFromGoal(goal, 'steps', stepRef);
+
+const getNeedFromRef = (goal, needRef) => getItemFromGoal(goal, 'needs', needRef);
+
+const getItemFromGoal = (goal, type, ref) => {
+  let ret;
+  if (goal) {
+    _.get(goal, `${type}`).forEach((item) => {
+      if (item._id === ref) {
+        ret = item;
+      }
+    });
+  }
+  return ret;
+};
 
 const styles = {
   // Post image and modal style
