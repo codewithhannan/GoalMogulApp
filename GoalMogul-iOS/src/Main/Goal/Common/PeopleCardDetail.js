@@ -3,6 +3,9 @@ import { View, Text, Image, TouchableOpacity, ActionSheetIOS } from 'react-nativ
 import { connect } from 'react-redux';
 import { Avatar, Icon } from 'react-native-elements';
 
+// Components
+import ProfileImage from '../../Common/ProfileImage';
+
 // Assets
 import badge from '../../../asset/utils/badge.png';
 import addUser from '../../../asset/utils/addUser.png';
@@ -69,17 +72,34 @@ class ContactDetail extends Component {
     );
   }
 
+  renderProfileImage(profile) {
+    if (profile.image) {
+      return (
+        <ProfileImage
+          imageContainerStyle={{ height: 30, width: 30, borderRadius: 15 }}
+          imageStyle={{ height: 30, width: 30, borderRadius: 15 }}
+          imageUrl={profile.image}
+        />
+      );
+    }
+    return (
+      <View
+        style={{
+          ...styles.addUserIconContainerStyle,
+          backgroundColor: '#d8d8d8',
+          borderWidth: 0
+        }}
+      />
+    );
+  }
+
   render() {
-    const { name, headline, _id } = this.props.item;
+    const { item } = this.props;
+    if (!item) return '';
+    const { name, headline, _id, profile } = item;
     return (
       <View style={styles.containerStyle}>
-        <View
-          style={{
-            ...styles.addUserIconContainerStyle,
-            backgroundColor: '#d8d8d8',
-            borderWidth: 0
-          }}
-        />
+        {this.renderProfileImage(profile)}
         <View style={styles.bodyContainerStyle}>
           <Text
             style={styles.nameTextStyle}
