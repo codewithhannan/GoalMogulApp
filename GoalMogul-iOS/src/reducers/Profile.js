@@ -371,37 +371,55 @@ export default (state = INITIAL_STATE, action) => {
     // Update the status of a step within a goal
     case GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS: {
       const { goalId, id, isCompleted } = action.payload;
-      const newState = _.cloneDeep(state);
-      const oldDate = newState.goals.data;
-      return _.set(
-        newState,
-        'goals.data',
-        updateNeedsOrSteps(
-          goalId,
-          id,
-          { isCompleted },
-          oldDate,
-          'steps'
-        )
+      let newState = _.cloneDeep(state);
+      const oldGoalData = newState.goals.data;
+      const newGoalData = updateNeedsOrSteps(
+        goalId,
+        id,
+        { isCompleted },
+        oldGoalData,
+        'steps'
       );
+
+      newState = _.set(newState, 'goals.data', newGoalData);
+
+      const oldNeedData = newState.needs.data;
+      const newNeedData = updateNeedsOrSteps(
+        goalId,
+        id,
+        { isCompleted },
+        oldNeedData,
+        'steps'
+      );
+
+      return _.set(newState, 'needs.data', newNeedData);
     }
 
     // Update the status of a need within a goal
     case GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS: {
       const { goalId, id, isCompleted } = action.payload;
-      const newState = _.cloneDeep(state);
-      const oldDate = newState.goals.data;
-      return _.set(
-        newState,
-        'goals.data',
-        updateNeedsOrSteps(
-          goalId,
-          id,
-          { isCompleted },
-          oldDate,
-          'needs'
-        )
+      let newState = _.cloneDeep(state);
+      const oldGoalData = newState.goals.data;
+      const newGoalData = updateNeedsOrSteps(
+        goalId,
+        id,
+        { isCompleted },
+        oldGoalData,
+        'needs'
       );
+
+      newState = _.set(newState, 'goals.data', newGoalData);
+
+      const oldNeedData = newState.needs.data;
+      const newNeedData = updateNeedsOrSteps(
+        goalId,
+        id,
+        { isCompleted },
+        oldNeedData,
+        'needs'
+      );
+
+      return _.set(newState, 'needs.data', newNeedData);
     }
 
     default:

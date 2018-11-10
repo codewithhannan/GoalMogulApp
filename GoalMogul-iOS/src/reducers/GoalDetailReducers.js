@@ -168,6 +168,10 @@ export default (state = INITIAL_STATE, action) => {
       const newState = _.cloneDeep(state);
       const path = !tab || tab === 'homeTab' ? 'goal.goal' : `goal${capitalizeWord(tab)}.goal`;
       const oldSteps = _.get(newState, `${path}.steps`);
+
+      // When mark step as complete, user might not be in goal detail view
+      // so oldSteps could be undefined
+      if (!oldSteps || oldSteps.length === 0) return newState;
       return _.set(newState, `${path}.steps`, findAndUpdate(id, oldSteps, { isCompleted }));
     }
 
@@ -176,6 +180,10 @@ export default (state = INITIAL_STATE, action) => {
       const newState = _.cloneDeep(state);
       const path = !tab || tab === 'homeTab' ? 'goal.goal' : `goal${capitalizeWord(tab)}.goal`;
       const oldNeeds = _.get(newState, `${path}.needs`);
+
+      // When mark need as complete, user might not be in goal detail view
+      // so oldNeeds could be undefined
+      if (!oldNeeds || oldNeeds.length === 0) return newState;
       return _.set(newState, `${path}.needs`, findAndUpdate(id, oldNeeds, { isCompleted }));
     }
 
@@ -212,6 +220,7 @@ export default (state = INITIAL_STATE, action) => {
 
 // Find the object with id and update the object with the newValsMap
 function findAndUpdate(id, data, newValsMap) {
+  if (!data || data.length === 0) return [];
   return data.map((item) => {
     let newItem = _.cloneDeep(item);
     if (item._id === id) {

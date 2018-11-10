@@ -93,11 +93,11 @@ class SectionCard extends Component {
 
   // If owner is self, user can click to mark a step / need as complete
   renderSelfCheckBox(isCompleted) {
-    const { type, item } = this.props;
+    const { type, item, goalRef } = this.props;
     const { _id } = item;
-    const onPress = type === 'need'
-      ? () => this.props.markNeedAsComplete(_id)
-      : () => this.props.markStepAsComplete(_id);
+    const onPress = type === 'need' || type === 'Need'
+      ? () => this.props.markNeedAsComplete(_id, goalRef)
+      : () => this.props.markStepAsComplete(_id, goalRef);
 
     const iconContainerStyle = isCompleted
       ? { ...styles.checkIconContainerStyle }

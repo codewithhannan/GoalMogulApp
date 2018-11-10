@@ -34,6 +34,7 @@ class StepTab extends Component {
             item={section}
             goalRef={goalRef}
             onPress={onPress}
+            type='step'
           />
         );
       }
@@ -56,6 +57,7 @@ class StepTab extends Component {
                 item={section}
                 goalRef={goalRef}
                 onPress={onPress}
+                type='step'
               />
             </MaskedViewIOS>
           </View>
@@ -63,10 +65,10 @@ class StepTab extends Component {
       }
       return '';
     });
-    if (testStep.length < 3) {
+    if (steps.length < 3) {
       sections.push(
         <View
-          style={{ height: 40, backgroundColor: 'white', marginTop: 0.5 }} key={testStep.length}
+          style={{ height: 40, backgroundColor: 'white', marginTop: 0.5 }} key={steps.length}
         />
       );
     }

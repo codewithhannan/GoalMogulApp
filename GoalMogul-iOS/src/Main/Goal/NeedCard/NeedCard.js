@@ -36,6 +36,10 @@ import {
   createReport
 } from '../../../redux/modules/report/ReportActions';
 
+import {
+  openGoalDetail
+} from '../../../redux/modules/home/mastermind/actions';
+
 const DEBUG_KEY = '[ UI NeedCard ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to an event', 'Share to a tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
@@ -120,8 +124,23 @@ class NeedCard extends Component {
     );
   }
 
-  renderNeed() {
-    return <SectionCard />;
+  /**
+   * Might need to change in the future since it should render the need that
+   * user shared. Currently it's rendering all the needs.
+   */
+  renderNeed(item) {
+    const { needs } = item;
+    return needs.map((need, index) => {
+      return (
+        <SectionCard
+          goalRef={item}
+          key={index}
+          item={need}
+          onPress={() => this.props.openGoalDetail(item)}
+          type='need'
+        />
+      );
+    });
   }
 
   renderViewGoal(item) {
@@ -215,7 +234,7 @@ class NeedCard extends Component {
               </View>
             </View>
 
-            {this.renderNeed()}
+            {this.renderNeed(item)}
 
             <View style={{ ...styles.containerStyle }}>
               {this.renderViewGoal(item)}
@@ -260,6 +279,7 @@ export default connect(
   {
     likeGoal,
     createReport,
-    unLikeGoal
+    unLikeGoal,
+    openGoalDetail
   }
 )(NeedCard);

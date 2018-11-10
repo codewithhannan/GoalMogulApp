@@ -23,7 +23,6 @@ const testNeed = [
 ];
 
 class NeedTab extends Component {
-
   renderSections(needs) {
     const { goalRef, onPress } = this.props;
     const sections = needs.map((section, index) => {

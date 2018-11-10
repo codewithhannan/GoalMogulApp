@@ -173,7 +173,7 @@ class GoalCard extends Component {
   }
 
   // Card central content. Progressbar for goal card
-  renderCardContent() {
+  renderCardContent(item) {
     return (
       <View style={{ marginTop: 20 }}>
         <ProgressBar startTime='Mar 2013' endTime='Nov 2011' />
@@ -182,8 +182,8 @@ class GoalCard extends Component {
   }
 
   // user basic information
-  renderUserDetail() {
-    const { title, owner, category, _id, created } = this.props.item;
+  renderUserDetail(item) {
+    const { title, owner, category, _id, created } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
 
@@ -211,46 +211,6 @@ class GoalCard extends Component {
           </View>
 
         </View>
-      </View>
-    );
-  }
-
-  renderSections() {
-    const sections = testNeed.map((section, index) => {
-      if (index < 2) {
-        return <SectionCard key={index} />;
-      }
-      if (index === 2) {
-        return (
-          <View style={{ backgroundColor: 'white', marginTop: 0.5 }} key={index}>
-            <MaskedViewIOS
-              style={{ maxHeight: 300 }}
-              maskElement={
-                <LinearGradient
-                  colors={['white', 'transparent']}
-                  style={{ flex: 1 }}
-                  start={[0, 0.40]}
-                  end={[0, 0.7]}
-                />
-              }
-            >
-              <SectionCard />
-            </MaskedViewIOS>
-          </View>
-        );
-      }
-      return '';
-    });
-    if (testNeed.length < 3) {
-      sections.push(
-        <View
-          style={{ height: 40, backgroundColor: 'white', marginTop: 0.5 }} key={testNeed.length}
-        />
-      );
-    }
-    return (
-      <View>
-        {sections}
       </View>
     );
   }
@@ -284,8 +244,7 @@ class GoalCard extends Component {
     );
   }
 
-  renderActionButtons() {
-    const { item } = this.props;
+  renderActionButtons(item) {
     const { maybeLikeRef, _id } = item;
 
     const likeCount = item.likeCount ? item.likeCount : 0;
@@ -331,14 +290,17 @@ class GoalCard extends Component {
   }
 
   render() {
+    const { item } = this.props;
+    if (!item) return;
+
     return (
       <View>
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <View style={{ backgroundColor: '#e5e5e5' }}>
             <View style={styles.containerStyle}>
               <View style={{ marginTop: 20, marginBottom: 20, marginRight: 15, marginLeft: 15 }}>
-                {this.renderUserDetail()}
-                {this.renderCardContent()}
+                {this.renderUserDetail(item)}
+                {this.renderCardContent(item)}
               </View>
             </View>
 
@@ -347,7 +309,7 @@ class GoalCard extends Component {
             </View>
 
             <View style={styles.containerStyle}>
-              {this.renderActionButtons()}
+              {this.renderActionButtons(item)}
             </View>
           </View>
         </View>

@@ -97,14 +97,14 @@ export const changeFilter = (tab, filterType, value) => (dispatch) => {
 export const refreshGoals = () => (dispatch, getState) => {
   const { token } = getState().user;
   const { limit, filter } = getState().home.mastermind;
-  const { category, priority } = filter;
+  const { categories, priorities, sortBy } = filter;
   dispatch({
     type: HOME_REFRESH_GOAL,
     payload: {
       type: 'mastermind'
     }
   });
-  loadGoals(0, limit, token, priority, category, (data) => {
+  loadGoals(0, limit, token, { priorities, categories, sortBy }, (data) => {
     dispatch({
       type: HOME_REFRESH_GOAL_DONE,
       payload: {
@@ -129,8 +129,8 @@ export const loadMoreGoals = () => (dispatch, getState) => {
   if (hasNextPage === false) {
     return;
   }
-  const { category, priority } = filter;
-  loadGoals(skip, limit, token, priority, category, (data) => {
+  const { categories, priorities, sortBy } = filter;
+  loadGoals(skip, limit, token, { priorities, categories, sortBy }, (data) => {
     dispatch({
       type: HOME_LOAD_GOAL_DONE,
       payload: {
@@ -155,11 +155,19 @@ export const loadMoreGoals = () => (dispatch, getState) => {
  * @param limit:
  * @param token:
  */
-const loadGoals = (skip, limit, token, priority, category, callback, onError) => {
+const loadGoals = (skip, limit, token, params, callback, onError) => {
   const route = 'feed';
+  const { priorities, categories, sortBy } = params;
+  let priority;
+  if (priorities && priorities !== '') {
+    priority = priorities;
+  }
+
   API
     .get(
-      `${BASE_ROUTE}${route}?${queryBuilder(skip, limit, { priority, category })}`,
+      `${BASE_ROUTE}${route}?${
+        queryBuilder(skip, limit, { priority, categories, sortBy })
+      }`,
       token
     )
     .then((res) => {
@@ -167,6 +175,7 @@ const loadGoals = (skip, limit, token, priority, category, callback, onError) =>
       if (res && res.data) {
         // Right now return test data
         callback(res.data);
+        return;
       }
       callback([]); // TODO: delete this line
       console.log(`${DEBUG_KEY}: Loading goal with no res`);

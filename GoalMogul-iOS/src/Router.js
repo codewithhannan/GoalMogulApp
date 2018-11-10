@@ -151,7 +151,7 @@ class RouterComponent extends Component {
 
               {/* Main App */}
 
-              <Scene hideNavBar panHandlers={null}>
+              <Scene hideNavBar>
                 <Tabs
                   key="mainTabs"
                   hideNavBar

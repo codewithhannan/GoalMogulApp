@@ -17,10 +17,10 @@ import StepIcon from '../../../asset/utils/steps.png';
 
 class MastermindTab extends Component {
 
-  renderMastermind() {
-    const { needs, steps } = this.props.item;
-    const needCards = this.renderNeeds(needs);
-    const stepCards = this.renderSteps(steps);
+  renderMastermind(item) {
+    const { needs, steps } = item;
+    const needCards = this.renderNeeds(needs, item);
+    const stepCards = this.renderSteps(steps, item);
 
     return (
       <ScrollView>
@@ -31,7 +31,7 @@ class MastermindTab extends Component {
   }
 
   // Render needs
-  renderNeeds(needs) {
+  renderNeeds(needs, item) {
     if (!needs || needs.length === 0) {
       return;
     }
@@ -46,7 +46,7 @@ class MastermindTab extends Component {
 
     const needCards = needs.map((need, index) =>
       (
-        <SectionCard key={`need-${index}`} item={need} />
+        <SectionCard key={`need-${index}`} item={need} goalRef={item} />
       )
     );
 
@@ -59,7 +59,7 @@ class MastermindTab extends Component {
   }
 
   // Render steps
-  renderSteps(steps) {
+  renderSteps(steps, item) {
     if (!steps || steps.length === 0) {
       return;
     }
@@ -74,7 +74,7 @@ class MastermindTab extends Component {
     );
 
     const stepCards = steps.map((step, index) =>
-      (<SectionCard key={`step-${index}`} item={step} />)
+      (<SectionCard key={`step-${index}`} item={step} goalRef={item} />)
     );
 
     return (
@@ -86,9 +86,11 @@ class MastermindTab extends Component {
   }
 
   render() {
+    const { item } = this.props;
+    if (!item) return '';
     return (
       <View style={{ flex: 1 }}>
-        {this.renderMastermind()}
+        {this.renderMastermind(item)}
       </View>
     );
   }
