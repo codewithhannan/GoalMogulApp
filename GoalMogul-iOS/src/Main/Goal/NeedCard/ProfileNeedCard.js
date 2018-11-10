@@ -29,19 +29,19 @@ class ProfileNeedCard extends React.Component {
     this.props.openGoalDetail(item);
   }
 
-  // Card central content. Progressbar for goal card
   renderCardContent(item) {
-    const { needs, _id, owner } = item;
+    const { needs, owner } = item;
     const needsComponent = needs
-      .filter((need) => need.isCompleted === false)
+      // .filter((need) => need.isCompleted === false)
       .map((need, index) => {
         return (
           <SectionCard
             key={index}
             item={need}
-            goalRef={_id}
+            goalRef={item}
             onPress={() => this.props.openGoalDetail(item)}
             isSelf={this.props.userId === owner._id}
+            type='need'
           />
         );
       });

@@ -137,7 +137,7 @@ class CommentBox extends Component {
   //tintColor: '#f5d573'
   renderSuggestionIcon(newComment) {
     const { mediaRef } = newComment;
-    const disableButton = mediaRef && mediaRef !== '';
+    const disableButton = mediaRef !== undefined && mediaRef !== '';
     return (
       <TouchableOpacity
         style={styles.iconContainerStyle}
@@ -177,7 +177,8 @@ class CommentBox extends Component {
 
   renderImageIcon(newComment) {
     const { suggestion } = newComment;
-    const disableButton = suggestion && suggestion.suggestionFor;
+    const disableButton =
+      (suggestion !== undefined && suggestion.suggestionFor !== undefined);
     return (
       <TouchableOpacity
         style={styles.iconContainerStyle}

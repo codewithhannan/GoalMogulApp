@@ -52,13 +52,18 @@ export const closeGoalDetail = () => (dispatch, getState) => {
   });
 };
 
-// If a step is already mark as completed, then it will change its state to incomplete
-export const markStepAsComplete = (stepId) => (dispatch, getState) => {
+/**
+ * If a step is already mark as completed, then it will change its state to incomplete
+ * @param goal: if it's in the need card, then goal is passed in. Otherwise, goal is
+ *              undefined
+ */
+export const markStepAsComplete = (stepId, goal) => (dispatch, getState) => {
   const { token } = getState().user;
-  const { goal } = getGoalDetailByTab(getState());
+  const goalToUpdate = goal || getGoalDetailByTab(getState()).goal;
+
   // const { goal } = getState().goalDetail;
   const { tab } = getState().navigation;
-  const { _id, steps } = goal;
+  const { _id, steps } = goalToUpdate;
 
   let isCompleted;
   const stepToUpdate = steps.map((item) => {
@@ -70,7 +75,8 @@ export const markStepAsComplete = (stepId) => (dispatch, getState) => {
     return newItem;
   });
 
-  const onSuccess = () => {
+  const onSuccess = (res) => {
+    console.log(`${DEBUG_KEY}: mark step complete succeed with res: `, res);
     dispatch({
       type: GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS,
       payload: {
@@ -93,11 +99,11 @@ export const markStepAsComplete = (stepId) => (dispatch, getState) => {
 };
 
 // If a need is already mark as completed, then it will change its state to incomplete
-export const markNeedAsComplete = (needId) => (dispatch, getState) => {
+export const markNeedAsComplete = (needId, goal) => (dispatch, getState) => {
   const { token } = getState().user;
-  const { goal } = getGoalDetailByTab(getState());
+  const goalToUpdate = goal || getGoalDetailByTab(getState()).goal;
   // const { goal } = getState().goalDetail;
-  const { _id, needs } = goal;
+  const { _id, needs } = goalToUpdate;
   const { tab } = getState().navigation;
 
   let isCompleted;
@@ -111,6 +117,7 @@ export const markNeedAsComplete = (needId) => (dispatch, getState) => {
   });
 
   const onSuccess = (res) => {
+    console.log(`${DEBUG_KEY}: mark need complete succeed with res: `, res);
     dispatch({
       type: GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS,
       payload: {
@@ -120,7 +127,6 @@ export const markNeedAsComplete = (needId) => (dispatch, getState) => {
         tab
       }
     });
-    console.log(`${DEBUG_KEY}: mark need complete succeed with res: `, res);
   };
   const onError = (err) => {
     Alert.alert(

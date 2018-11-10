@@ -8,12 +8,15 @@ export const queryBuilder = (skip, limit, filter) =>
   queryBuilderBasicBuilder({ skip, limit, ...filter });
 
 export const queryBuilderBasicBuilder = (params) =>
-  Object.keys(params).map(key => {
-    if (params[key] !== null && typeof params[key] === 'object') {
-      return `${key}=${JSON.stringify(params[key])}`;
-    }
-    return `${key}=${params[key]}`;
-  }).join('&');
+  Object
+    .keys(params)
+    .filter((key) => params[key] !== undefined && params[key] !== '')
+    .map(key => {
+      if (params[key] !== null && typeof params[key] === 'object') {
+        return `${key}=${JSON.stringify(params[key])}`;
+      }
+      return `${key}=${params[key]}`;
+    }).join('&');
 
 export const arrayUnique = (array) => {
   let a = array.concat();

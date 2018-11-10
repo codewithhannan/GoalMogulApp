@@ -1,4 +1,9 @@
-// Note: This is the old implementation where Goal Detail is pinned and commenttab is scrollable
+/**
+ * This component is used in GoalDetailCard which is replaced by GoalDetailCard2
+ * So this component is no longer being used.
+ * Note: This is the old implementation where Goal Detail is pinned
+ * and commenttab is scrollable
+ */
 import React, { Component } from 'react';
 import {
   View,
@@ -27,7 +32,7 @@ class CommentTab extends Component {
   renderSections(needs) {
     const sections = needs.map((section, index) => {
       if (index < 2) {
-        return <SectionCard key={index} item={section} />;
+        return <SectionCard key={index} item={section} type='need' />;
       }
       if (index === 2) {
         return (
@@ -43,7 +48,7 @@ class CommentTab extends Component {
                 />
               }
             >
-              <SectionCard item={section} />
+              <SectionCard item={section} type='need' />
             </MaskedViewIOS>
           </View>
         );
