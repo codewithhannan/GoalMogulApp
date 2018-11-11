@@ -39,6 +39,7 @@ export const PROFILE_REFRESH_TAB_DONE = 'profile_refresh_tab_done';
 export const PROFILE_REFRESH_TAB = 'profile_refresh_tab';
 // Constants for updating filter bar
 export const PROFILE_UPDATE_FILTER = 'profile_update_filter';
+export const PROFILE_RESET_FILTER = 'profile_reset_filter';
 
 // Constants related to goals, posts and needs in user page
 export const PROFILE_GOAL_DELETE_SUCCESS = 'profile_goal_delete_success';
@@ -62,6 +63,14 @@ export const PROFILE_GOAL_FILTER_CONST = {
     'Travel',
     'Things'
   ]
+};
+
+export const INITIAL_FILTER_STATE = {
+  sortBy: 'created',
+  orderBy: 'descending',
+  categories: 'All',
+  completedOnly: 'false',
+  priorities: ''
 };
 
 const INITIAL_STATE = {
@@ -420,6 +429,13 @@ export default (state = INITIAL_STATE, action) => {
       );
 
       return _.set(newState, 'needs.data', newNeedData);
+    }
+
+    // Reset filter to default state
+    case PROFILE_RESET_FILTER: {
+      const { tab } = action.payload;
+      const newState = _.cloneDeep(state);
+      return _.set(newState, `${tab}.filter`, { ...INITIAL_FILTER_STATE });
     }
 
     default:

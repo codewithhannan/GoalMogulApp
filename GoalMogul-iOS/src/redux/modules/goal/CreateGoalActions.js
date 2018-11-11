@@ -60,7 +60,7 @@ export const submitGoal = (values, userId, isEdit, callback, goalId) => (dispatc
       'Success',
       'You have successfully created a goal.'
     );
-    openProfile(userId)(dispatch, getState);
+    openProfile(userId, 'goals')(dispatch, getState);
   };
 
   // Creating new goal

@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 
 // Components
 import GoalFilterBar from '../Common/GoalFilterBar';
+import GoalFeedFilterBar from '../Common/GoalFeedFilterBar';
 import NeedCard from '../Goal/NeedCard/NeedCard';
 import GoalCard from '../Goal/GoalCard/GoalCard';
 import GoalFilter from './GoalFilter';
@@ -78,7 +79,7 @@ class Mastermind extends Component {
 
   renderListHeader() {
     return (
-      <GoalFilterBar
+      <GoalFeedFilterBar
         selectedTab={this.props.selectedTab}
         filter={this.props.filter}
         onMenuChange={this.handleOnMenuChange}

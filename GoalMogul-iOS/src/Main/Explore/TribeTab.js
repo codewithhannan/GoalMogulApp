@@ -125,7 +125,8 @@ const mapStateToProps = state => {
   ];
 
   return {
-    data: [...data, ...testData],
+    // data: [...data, ...testData],
+    data,
     loading
   };
 };
