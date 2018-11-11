@@ -2,6 +2,11 @@
 import _ from 'lodash';
 import { arrayUnique } from '../../middleware/utils';
 
+import {
+  EVENT_EDIT_SUCCESS,
+  updateEvent
+} from './EventReducers';
+
 const INITIAL_STATE = {
   navigationState: {
     index: 0,
@@ -117,6 +122,15 @@ export default (state = INITIAL_STATE, action) => {
       }
 
       return newState;
+    }
+
+    case EVENT_EDIT_SUCCESS: {
+      const { newEvent } = action.payload;
+      const newState = _.cloneDeep(state);
+      const oldEvent = _.get(newState, 'item');
+      if (!oldEvent || oldEvent._id !== newEvent._id) return newState;
+      const updatedEvent = updateEvent(oldEvent, newEvent);
+      return _.set(newState, 'item', updatedEvent);
     }
 
     default:

@@ -37,10 +37,7 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case REPORT_UPDATE_DETAILS: {
       let newState = _.cloneDeep(state);
-      return {
-        ...newState,
-        details: action.paylaod
-      };
+      return _.set(newState, 'details', action.payload);
     }
 
     case REPORT_UPDATE_TITLE: {
@@ -69,6 +66,7 @@ export default (state = INITIAL_STATE, action) => {
     case REPORT_POST_FAIL: {
       return {
         ...state,
+        loading: false,
         error: action.payload
       };
     }

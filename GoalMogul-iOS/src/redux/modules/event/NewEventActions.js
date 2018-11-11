@@ -24,9 +24,16 @@ import {
   EVENT_NEW_SUBMIT_SUCCESS,
   EVENT_NEW_SUBMIT_FAIL,
   EVENT_NEW_CANCEL,
-  EVENT_NEW_UPLOAD_PICTURE_SUCCESS,
-  EVENT_EDIT_SUCCESS
+  EVENT_NEW_UPLOAD_PICTURE_SUCCESS
 } from './NewEventReducers';
+
+import {
+  EVENT_EDIT_SUCCESS
+} from './EventReducers';
+
+import {
+  refreshEvent
+} from './MyEventTabActions';
 
 const BASE_ROUTE = 'secure/event';
 const DEBUG_KEY = '[ Action New Event ]';
@@ -57,25 +64,30 @@ export const cancelCreatingNewEvent = () => (dispatch) => {
 export const createNewEvent = (values, needUpload, isEdit, eventId) => (dispatch, getState) => {
   const { token } = getState().user;
   const newEvent = formToEventAdapter(values, eventId, isEdit);
-  console.log('hours is: ', newEvent);
+  console.log(`${DEBUG_KEY}: newEvent to submit is: `, newEvent);
 
   dispatch({
     type: EVENT_NEW_SUBMIT
   });
 
-  const onSuccess = (data) => {
+  const onSuccess = (res, event) => {
     dispatch({
       type: EVENT_NEW_SUBMIT_SUCCESS,
-      payload: data
+      payload: res
     });
 
     if (isEdit) {
+      console.log(`${DEBUG_KEY}: event edit success with res: `, res);
       dispatch({
         type: EVENT_EDIT_SUCCESS,
         payload: {
-          newEvent: data
+          newEvent: {
+            _id: event.eventId,
+            ...event.details
+          }
         }
       });
+      refreshEvent()(dispatch, getState);
     }
     Actions.pop();
     Alert.alert(
@@ -95,7 +107,7 @@ export const createNewEvent = (values, needUpload, isEdit, eventId) => (dispatch
     console.log('Error submitting new Event with err: ', err);
   };
 
-  const imageUri = newEvent.options.picture;
+  const imageUri = isEdit ? newEvent.details.picture : newEvent.options.picture;
   if (!needUpload) {
     // If no mediaRef then directly submit the post
     sendCreateEventRequest(newEvent, token, isEdit, dispatch, onSuccess, onError);
@@ -170,8 +182,8 @@ const sendCreateEventRequest = (newEvent, token, isEdit, dispatch, onSuccess, on
     API
       .put(`${BASE_ROUTE}`, { ...newEvent }, token)
       .then((res) => {
-        if (res.data) {
-          return onSuccess(res.data);
+        if (res.data || res.status === 200) {
+          return onSuccess(res, newEvent);
         }
         onError(res.message);
       })
@@ -183,8 +195,8 @@ const sendCreateEventRequest = (newEvent, token, isEdit, dispatch, onSuccess, on
   API
     .post(`${BASE_ROUTE}`, { ...newEvent }, token)
     .then((res) => {
-      if (res.data) {
-        return onSuccess(res.data);
+      if (res.data || res.status === 200) {
+        return onSuccess(res);
       }
       onError(res.message);
     })

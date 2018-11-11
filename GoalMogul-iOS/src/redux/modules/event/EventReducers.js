@@ -40,7 +40,7 @@ export const EVENT_DETAIL_LOAD_SUCCESS = 'event_detail_load_success';
 export const EVENT_DETAIL_LOAD_FAIL = 'event_detail_load_fail';
 
 // If an event is edited successfully and its _id is the same as the item._id
-// Replace the event with information updated
+// Replace the event with information updated. EventTab, MyEventTab should also listen to the change
 export const EVENT_EDIT_SUCCESS = 'event_edit_success';
 
 export default (state = INITIAL_STATE, action) => {
@@ -152,11 +152,25 @@ export default (state = INITIAL_STATE, action) => {
 
     case EVENT_EDIT_SUCCESS: {
       const { newEvent } = action.payload;
-
-      return { ...state };
+      const newState = _.cloneDeep(state);
+      const oldEvent = _.get(newState, 'item');
+      if (!oldEvent || oldEvent._id !== newEvent._id) return newState;
+      const updatedEvent = updateEvent(oldEvent, newEvent);
+      return _.set(newState, 'item', updatedEvent);
     }
 
     default:
       return { ...state };
   }
+};
+
+export const updateEvent = (oldEvent, newEvent) => {
+  let updatedEvent = _.cloneDeep(oldEvent);
+  Object.keys(newEvent).forEach((key) => {
+    // oldEvent doesn't have the field
+    if (!oldEvent[key] || oldEvent[key] !== newEvent[key]) {
+      updatedEvent = _.set(updatedEvent, `${key}`, newEvent[key]);
+    }
+  });
+  return updatedEvent;
 };

@@ -12,6 +12,15 @@ import {
   TRIBE_NEW_UPLOAD_PICTURE_SUCCESS
 } from './NewTribeReducers';
 
+
+import {
+  TRIBE_EDIT_SUCCESS
+} from './TribeReducers';
+
+import {
+  refreshTribe
+} from './MyTribeTabActions';
+
 const BASE_ROUTE = 'secure/tribe';
 const DEBUG_KEY = '[ Action Create Tribe ]';
 
@@ -45,11 +54,25 @@ export const createNewTribe = (values, needUpload, isEdit, tribeId) => (dispatch
     type: TRIBE_NEW_SUBMIT
   });
 
-  const onSuccess = (data) => {
+  const onSuccess = (res, tribe) => {
     dispatch({
       type: TRIBE_NEW_SUBMIT_SUCCESS,
-      payload: data
+      payload: res
     });
+
+    if (isEdit) {
+      console.log(`${DEBUG_KEY}: tribe edit success with res: `, res);
+      dispatch({
+        type: TRIBE_EDIT_SUCCESS,
+        payload: {
+          newTribe: {
+            _id: tribe.tribeId,
+            ...tribe.details
+          }
+        }
+      });
+      refreshTribe()(dispatch, getState);
+    }
     Actions.pop();
     Alert.alert(
       'Success',
@@ -57,7 +80,7 @@ export const createNewTribe = (values, needUpload, isEdit, tribeId) => (dispatch
     );
   };
 
-  const onError = () => {
+  const onError = (err) => {
     dispatch({
       type: TRIBE_NEW_SUBMIT_FAIL
     });
@@ -65,9 +88,10 @@ export const createNewTribe = (values, needUpload, isEdit, tribeId) => (dispatch
       `Failed to ${isEdit ? 'update' : 'create'} new Tribe`,
       'Please try again later'
     );
+    console.log(`${DEBUG_KEY}: edit or create new tribe failed with err: `, err);
   };
 
-  const imageUri = newTribe.options.picture;
+  const imageUri = isEdit ? newTribe.details.picture : newTribe.options.picture;
   if (!needUpload) {
     // If no mediaRef then directly submit the post
     sendCreateTribeRequest(newTribe, token, isEdit, dispatch, onSuccess, onError);
@@ -98,7 +122,7 @@ export const createNewTribe = (values, needUpload, isEdit, tribeId) => (dispatch
           console.log(`${DEBUG_KEY}: error uploading image to s3 with res: `, res);
           throw res;
         }
-        return getState().newEvent.picture;
+        return getState().newEvent.tmpPicture;
       })
       .then((image) => {
         // Use the presignedUrl as media string
@@ -141,10 +165,10 @@ const sendCreateTribeRequest = (newTribe, token, isEdit, dispatch, onSuccess, on
     API
       .put(`${BASE_ROUTE}`, { ...newTribe }, token)
       .then((res) => {
-        if (res.data) {
-          return onSuccess(res.data);
+        if (res.status === 200) {
+          return onSuccess(res, newTribe);
         }
-        onError(res.message);
+        onError(res);
       })
       .catch((err) => {
         onError(err);
@@ -154,10 +178,10 @@ const sendCreateTribeRequest = (newTribe, token, isEdit, dispatch, onSuccess, on
   API
     .post(`${BASE_ROUTE}`, { ...newTribe }, token)
     .then((res) => {
-      if (res.data) {
-        return onSuccess(res.data);
+      if (res.status === 200) {
+        return onSuccess(res, newTribe);
       }
-      onError(res.message);
+      onError(res);
     })
     .catch((err) => {
       onError(err);

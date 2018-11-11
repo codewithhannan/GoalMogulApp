@@ -17,7 +17,6 @@ const { width } = Dimensions.get('window');
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 class MyTribeAbout extends Component {
-
   renderMemberStatus(item) {
     const count = item.memberCount ? item.memberCount : 0;
     return (
