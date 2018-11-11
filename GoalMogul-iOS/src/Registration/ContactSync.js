@@ -13,6 +13,7 @@ import Button from './Common/Button';
 import ContactCard from './ContactCard';
 import ContactDetail from './ContactDetail';
 import ModalHeader from '../Main/Common/Header/ModalHeader';
+import EmptyResult from '../Main/Common/Text/EmptyResult';
 
 /* Styles */
 import Styles from './Styles';
@@ -127,6 +128,7 @@ class ContactSync extends Component {
             refreshing={refreshing}
             onRefresh={this.handleRefresh}
             onEndReached={this.onLoadMore}
+            ListEmptyComponent={<EmptyResult text={'No contacts found'} />}
             onEndThreshold={0}
           />
           {button}

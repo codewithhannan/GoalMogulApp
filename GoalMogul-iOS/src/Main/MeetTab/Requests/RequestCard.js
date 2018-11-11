@@ -3,10 +3,11 @@ import {
   View,
   Text,
   Image,
-  ActionSheetIOS
+  ActionSheetIOS,
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Button, Icon } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 
 // Components
 import Name from '../../Common/Name';
@@ -15,7 +16,7 @@ import Name from '../../Common/Name';
 import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
 
 // Actions
-import { updateFriendship } from '../../../actions';
+import { updateFriendship, openProfile } from '../../../actions';
 
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
 const WITHDRAW_INDEX = 0;
@@ -83,8 +84,8 @@ class RequestCard extends Component {
     });
   }
 
-  renderProfileImage() {
-    const { profile } = this.props.item.user;
+  renderProfileImage(item) {
+    const { profile } = item.user;
     if (!profile) return '';
     const { image } = profile;
     let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
@@ -95,7 +96,9 @@ class RequestCard extends Component {
     return profileImage;
   }
 
-  renderButton(friendshipId, userId) {
+  renderButton(item) {
+    const { friendshipId, user } = item;
+    const userId = user._id;
     switch (this.props.type) {
       case 'outgoing': {
         return (
@@ -125,25 +128,20 @@ class RequestCard extends Component {
     }
   }
 
-  renderInfo() {
-    const { user, friendshipId } = this.props.item;
+  renderInfo(item) {
+    const { user } = item;
     const { name } = user;
-    const userId = user._id;
     return (
       <View style={styles.infoContainerStyle}>
-        <View style={{ flex: 1, flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
+        <View style={{ flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
           <Name text={name} />
-        </View>
-
-        <View style={styles.buttonContainerStyle}>
-          {this.renderButton(friendshipId, userId)}
         </View>
       </View>
     );
   }
 
   // TODO: decide the final UI for additional info
-  renderAdditionalInfo() {
+  renderAdditionalInfo(item) {
     return '';
     // const { profile } = this.props.item;
     // let content = '';
@@ -167,30 +165,40 @@ class RequestCard extends Component {
     // );
   }
 
-  renderOccupation() {
-    const { profile } = this.props.item.user;
+  renderOccupation(item) {
+    const { profile } = item.user;
     if (profile.occupation) {
       return (
-        <Text
-          style={styles.titleTextStyle}
-          numberOfLines={1}
-          ellipsizeMode='tail'
-        >
-          <Text style={styles.detailTextStyle}>{profile.occupation}</Text>
-        </Text>
+        <View style={{ flex: 1 }}>
+          <Text
+            style={styles.titleTextStyle}
+            numberOfLines={1}
+            ellipsizeMode='tail'
+          >
+            <Text style={styles.detailTextStyle}>{profile.occupation}</Text>
+          </Text>
+        </View>
       );
     }
-    return '';
+    return <View style={{ flex: 1 }} />;
   }
 
   render() {
+    const { item, userId } = this.props;
+    if (!item) return '';
+
+    const { user } = item;
     return (
-      <View style={styles.containerStyle}>
-        {this.renderProfileImage()}
+      <TouchableOpacity
+        style={styles.containerStyle}
+        onPress={() => this.props.openProfile(user._id)}
+      >
+        {this.renderProfileImage(item)}
 
         <View style={styles.bodyContainerStyle}>
-          {this.renderInfo()}
-          {this.renderOccupation()}
+          {this.renderInfo(item)}
+          {this.renderOccupation(item)}
+          {/*
           <Text
             style={styles.jobTitleTextStyle}
             numberOfLines={1}
@@ -198,9 +206,13 @@ class RequestCard extends Component {
           >
             380 MUTUAL FRIENDS
           </Text>
-          {this.renderAdditionalInfo()}
+          */}
+          {this.renderAdditionalInfo(item)}
         </View>
-      </View>
+        <View style={styles.buttonContainerStyle}>
+          {this.renderButton(item)}
+        </View>
+      </TouchableOpacity>
     );
   }
 }
@@ -222,7 +234,6 @@ const styles = {
   },
   infoContainerStyle: {
     flexDirection: 'row',
-    flex: 1
   },
   imageStyle: {
     height: 48,
@@ -259,7 +270,8 @@ const styles = {
     color: '#45C9F6',
     fontSize: 11,
     paddingTop: 1,
-    paddingBottom: 1
+    paddingBottom: 1,
+    marginTop: 3
   },
   detailTextStyle: {
     color: '#000000',
@@ -281,6 +293,17 @@ const styles = {
   }
 };
 
-export default connect(null, {
-  updateFriendship
+const mapStateToProps = state => {
+  const { userId } = state.user;
+
+  return {
+    userId
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  {
+    updateFriendship,
+    openProfile
 })(RequestCard);
