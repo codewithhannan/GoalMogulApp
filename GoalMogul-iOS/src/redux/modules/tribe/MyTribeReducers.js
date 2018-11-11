@@ -1,6 +1,11 @@
 import _ from 'lodash';
 import { arrayUnique } from '../../middleware/utils';
 
+import {
+  TRIBE_EDIT_SUCCESS,
+  updateTribe
+} from './TribeReducers';
+
 const INITIAL_STATE = {
   navigationState: {
     index: 0,
@@ -162,6 +167,15 @@ export default (state = INITIAL_STATE, action) => {
       }
 
       return newState;
+    }
+
+    case TRIBE_EDIT_SUCCESS: {
+      const { newTribe } = action.payload;
+      const newState = _.cloneDeep(state);
+      const oldTribe = _.get(newState, 'item');
+      if (!oldTribe || oldTribe._id !== oldTribe._id) return newState;
+      const updatedEvent = updateTribe(oldTribe, newTribe);
+      return _.set(newState, 'item', updatedEvent);
     }
 
     default:

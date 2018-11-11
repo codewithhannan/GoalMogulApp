@@ -471,6 +471,7 @@ class MyEvent extends Component {
     const { item, data } = this.props;
     if (!item) return <View />;
 
+    console.log(`${DEBUG_KEY}: rendering myevent with item: `, item);
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={{ flex: 1, backgroundColor: '#f2f2f2' }}>

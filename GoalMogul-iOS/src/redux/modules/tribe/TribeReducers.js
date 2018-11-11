@@ -45,6 +45,11 @@ export const TRIBE_MEMBER_ACCEPT_SUCCESS = 'tribe_member_accept_succes';
 export const TRIBE_DETAIL_LOAD_SUCCESS = 'tribe_detail_load_success';
 export const TRIBE_DETAIL_LOAD_FAIL = 'tribe_detail_load_fail';
 
+
+// If a tribe is edited successfully and its _id is the same as the item._id
+// Replace the event with information updated. TribeTab, MyTribeTab should also listen to the change
+export const TRIBE_EDIT_SUCCESS = 'tribe_edit_success';
+
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case TRIBE_SWITCH_TAB: {
@@ -134,7 +139,27 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, 'item', newItem);
     }
 
+    case TRIBE_EDIT_SUCCESS: {
+      const { newTribe } = action.payload;
+      const newState = _.cloneDeep(state);
+      const oldTribe = _.get(newState, 'item');
+      if (!oldTribe || oldTribe._id !== oldTribe._id) return newState;
+      const updatedEvent = updateTribe(oldTribe, newTribe);
+      return _.set(newState, 'item', updatedEvent);
+    }
+
     default:
       return { ...state };
   }
+};
+
+export const updateTribe = (oldTribe, newTribe) => {
+  let updatedTribe = _.cloneDeep(oldTribe);
+  Object.keys(newTribe).forEach((key) => {
+    // oldEvent doesn't have the field
+    if (!oldTribe[key] || oldTribe[key] !== newTribe[key]) {
+      updatedTribe = _.set(updatedTribe, `${key}`, newTribe[key]);
+    }
+  });
+  return updatedTribe;
 };

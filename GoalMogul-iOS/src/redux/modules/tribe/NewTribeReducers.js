@@ -40,7 +40,7 @@ export default (state = INITIAL_STATE, action) => {
 
     case TRIBE_NEW_UPLOAD_PICTURE_SUCCESS: {
       const newState = _.cloneDeep(state);
-      return _.set(newState, 'picture', action.payload);
+      return _.set(newState, 'tmpPicture', action.payload);
     }
 
     default: return { ...state };
