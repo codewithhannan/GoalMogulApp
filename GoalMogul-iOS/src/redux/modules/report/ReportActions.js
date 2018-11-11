@@ -36,7 +36,6 @@ export const createReport = (referenceId, type, category = 'User') => (dispatch,
 
 // Updating a report detail
 export const updateReportDetails = (text) => (dispatch) => {
-  console.log('text is: ', text);
   dispatch({
     type: REPORT_UPDATE_DETAILS,
     payload: text
@@ -45,7 +44,6 @@ export const updateReportDetails = (text) => (dispatch) => {
 
 // Updating a report detail
 export const updateReportTitle = (text) => (dispatch) => {
-  console.log('text is: ', text);
   dispatch({
     type: REPORT_UPDATE_TITLE,
     payload: text
@@ -66,7 +64,7 @@ export const postingReport = (callback) => (dispatch, getState) => {
   dispatch({
     type: REPORT_POST
   });
-
+  console.log(`${DEBUG_KEY}: report to create is: `, report);
 
   const onSuccess = (data) => {
     if (callback) {
@@ -108,11 +106,12 @@ const reportAdapter = (report) => {
     category,
     referenceId
   } = report;
-
+  console.log('report is: ', report);
   return {
     category,
     title,
     details,
+    created: new Date(),
     refs: switchRefs(referenceId, category)
   };
 };

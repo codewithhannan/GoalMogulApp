@@ -16,6 +16,14 @@ import {
   USER_LOG_OUT
 } from '../reducers/User';
 
+import {
+  refreshFeed,
+} from '../redux/modules/home/feed/actions';
+
+import {
+  refreshGoals
+} from '../redux/modules/home/mastermind/actions';
+
 export const userNameChanged = (username) => {
   return {
     type: USERNAME_CHANGED,
@@ -49,7 +57,7 @@ export const loginUser = ({ username, password }) => {
     password
   };
 
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch({
       type: LOGIN_USER_LOADING
     });
@@ -68,6 +76,8 @@ export const loginUser = ({ username, password }) => {
             payload
           });
           fetchUserProfile(res.token, res.userId, dispatch);
+          refreshFeed()(dispatch, getState);
+          refreshGoals()(dispatch, getState);
           Actions.mainTabs();
         } else {
           // User login fail
@@ -94,7 +104,7 @@ const fetchUserProfile = (token, userId, dispatch) => {
       if (res.data) {
         dispatch({
           type: USER_LOAD_PROFILE_DONE,
-          payload: { 
+          payload: {
             user: res.data
           }
         });

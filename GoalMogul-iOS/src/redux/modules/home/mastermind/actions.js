@@ -166,7 +166,10 @@ const loadGoals = (skip, limit, token, params, callback, onError) => {
   API
     .get(
       `${BASE_ROUTE}${route}?${
-        queryBuilder(skip, limit, { priority, categories, sortBy })
+        queryBuilder(skip, limit, {
+          priority,
+          categories: categories === 'All' ? undefined : categories
+        })
       }`,
       token
     )
