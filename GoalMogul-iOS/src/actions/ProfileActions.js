@@ -251,7 +251,7 @@ export const submitUpdatingProfile = ({ values, hasImageModified }) => {
     const updateProfilePromise = ImageUtils
       .upload(hasImageModified, imageUri, token, PROFILE_IMAGE_UPLOAD_SUCCESS, dispatch)
       .then(() => {
-        const image = getState().profile.user.profile.image;
+        const image = getState().profile.user.profile.tmpImage;
         return updateProfile({
           image,
           about,
