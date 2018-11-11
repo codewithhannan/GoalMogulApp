@@ -332,7 +332,7 @@ class Tribe extends Component {
 
   // Render tribe visibility and user membership status
   renderVisibilityAndStatus(item) {
-    const tribeVisibility = item.isPubliclyVisibl
+    const tribeVisibility = item.isPubliclyVisible
       ? 'Publicly Visible'
       : 'Private Tribe';
 

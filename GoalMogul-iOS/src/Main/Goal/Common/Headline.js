@@ -128,7 +128,8 @@ const styles = {
   containerStyle: {
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'flex-start'
+    alignItems: 'center',
+    justifyContent: 'flex-start'
   },
   caretContainer: {
     paddingBottom: 10,

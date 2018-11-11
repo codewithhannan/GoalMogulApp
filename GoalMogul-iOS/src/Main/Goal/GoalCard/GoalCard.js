@@ -174,9 +174,13 @@ class GoalCard extends Component {
 
   // Card central content. Progressbar for goal card
   renderCardContent(item) {
+    const { start, end } = item;
+    const startDate = start || new Date();
+    const endDate = end || new Date();
+
     return (
       <View style={{ marginTop: 20 }}>
-        <ProgressBar startTime='Mar 2013' endTime='Nov 2011' />
+        <ProgressBar startTime={startDate} endTime={endDate} />
       </View>
     );
   }
@@ -190,7 +194,8 @@ class GoalCard extends Component {
     return (
       <View style={{ flexDirection: 'row' }}>
         <ProfileImage
-          imageStyle={{ height: 60, width: 60 }}
+          imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
+          imageContainerStyle={{ marginTop: 7 }}
           imageUrl={owner && owner.profile ? owner.profile.image : undefined}
         />
         <View style={{ marginLeft: 15, flex: 1 }}>
@@ -298,7 +303,7 @@ class GoalCard extends Component {
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <View style={{ backgroundColor: '#e5e5e5' }}>
             <View style={styles.containerStyle}>
-              <View style={{ marginTop: 20, marginBottom: 20, marginRight: 15, marginLeft: 15 }}>
+              <View style={{ marginTop: 10, marginBottom: 12, marginRight: 12, marginLeft: 12 }}>
                 {this.renderUserDetail(item)}
                 {this.renderCardContent(item)}
               </View>
