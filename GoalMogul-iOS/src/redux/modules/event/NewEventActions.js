@@ -25,6 +25,7 @@ import {
   EVENT_NEW_SUBMIT_FAIL,
   EVENT_NEW_CANCEL,
   EVENT_NEW_UPLOAD_PICTURE_SUCCESS,
+  EVENT_EDIT_SUCCESS
 } from './NewEventReducers';
 
 const BASE_ROUTE = 'secure/event';
@@ -67,6 +68,15 @@ export const createNewEvent = (values, needUpload, isEdit, eventId) => (dispatch
       type: EVENT_NEW_SUBMIT_SUCCESS,
       payload: data
     });
+
+    if (isEdit) {
+      dispatch({
+        type: EVENT_EDIT_SUCCESS,
+        payload: {
+          newEvent: data
+        }
+      });
+    }
     Actions.pop();
     Alert.alert(
       'Success',
@@ -116,7 +126,7 @@ export const createNewEvent = (values, needUpload, isEdit, eventId) => (dispatch
           console.log(`${DEBUG_KEY}: error uploading image to s3 with res: `, res);
           throw res;
         }
-        return getState().newEvent.picture;
+        return getState().newEvent.tmpPicture;
       })
       .then((image) => {
         // Use the presignedUrl as media string

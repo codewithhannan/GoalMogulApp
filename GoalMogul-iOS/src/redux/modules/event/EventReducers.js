@@ -39,6 +39,10 @@ export const EVENT_EDIT = 'event_edit';
 export const EVENT_DETAIL_LOAD_SUCCESS = 'event_detail_load_success';
 export const EVENT_DETAIL_LOAD_FAIL = 'event_detail_load_fail';
 
+// If an event is edited successfully and its _id is the same as the item._id
+// Replace the event with information updated
+export const EVENT_EDIT_SUCCESS = 'event_edit_success';
+
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case EVENT_SWITCH_TAB: {
@@ -144,6 +148,12 @@ export default (state = INITIAL_STATE, action) => {
     case EVENT_PARTICIPANT_SELECT_FILTER: {
       const newState = _.cloneDeep(state);
       return _.set(newState, 'participantsFilter', action.payload);
+    }
+
+    case EVENT_EDIT_SUCCESS: {
+      const { newEvent } = action.payload;
+
+      return { ...state };
     }
 
     default:

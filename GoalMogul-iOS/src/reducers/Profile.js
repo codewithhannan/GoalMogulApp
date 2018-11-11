@@ -174,7 +174,7 @@ export default (state = INITIAL_STATE, action) => {
 
     case PROFILE_IMAGE_UPLOAD_SUCCESS: {
       let user = _.cloneDeep(state.user);
-      user.profile.image = action.payload;
+      user.profile.tmpImage = action.payload;
       return { ...state, user };
     }
 

@@ -61,15 +61,42 @@ const RESPOND_REQUEST_CANCEL_INDEX = 2;
 
 // TODO: use redux instead of passed in props
 class ProfileDetailCard extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      imageUrl: ''
+    };
+  }
+
   componentWillMount() {
     const { image } = this.props.user.profile;
+    // console.log(`${DEBUG_KEY}: prefetch image: ${image}`);
     if (image) {
       this.prefetchImage(image);
     }
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    let prevImageUrl = '';
+    if (prevProps.user && prevProps.user.profile && prevProps.user.profile.image) {
+      prevImageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${prevProps.user.profile.image}`;
+    }
+
+    if (this.props.user && this.props.user.profile && this.props.user.profile.image) {
+      const { image } = this.props.user.profile;
+      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+      if (imageUrl !== this.state.imageUrl || imageUrl !== prevImageUrl) {
+        this.prefetchImage(image);
+        // console.log(`prefetching image, imageUrl: ${imageUrl}, prevImageUrl: ${prevImageUrl}`);
+      }
+    }
+  }
+
   prefetchImage(image) {
     const fullImageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+    this.setState({
+      imageUrl: fullImageUrl
+    });
     Image.prefetch(fullImageUrl);
   }
 
@@ -258,7 +285,8 @@ class ProfileDetailCard extends Component {
   }
 
   renderProfileImage(profile) {
-    let { image } = profile;
+    const { image } = profile;
+    let imageUrl;
 
     let profileImage = (
       <View style={styles.imageContainerStyle}>
@@ -266,12 +294,16 @@ class ProfileDetailCard extends Component {
       </View>
     );
     if (image) {
-      image = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+      // if (imageUrl !== this.state.imageUrl) {
+      //   this.prefetchImage(image);
+      // }
+      console.log(`${DEBUG_KEY}: image url is: `, imageUrl);
       profileImage = (
         <View
           style={styles.imageContainerStyle}
         >
-          <Image style={styles.imageStyle} source={{ uri: image }} />
+          <Image style={styles.imageStyle} source={{ uri: imageUrl }} />
         </View>
       );
     }
@@ -281,6 +313,7 @@ class ProfileDetailCard extends Component {
   render() {
     const { name, headline, profile } = this.props.user;
     // const { name, headline, profile } = testData;
+    console.log(`${DEBUG_KEY}: rerender with profile: `, profile);
 
     return (
       <View style={styles.cardContainerStyle}>

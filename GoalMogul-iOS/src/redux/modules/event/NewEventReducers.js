@@ -13,7 +13,8 @@ const INITIAL_STATE = {
   // description,
   // picture,
   uploading: false,
-  picture: undefined
+  picture: undefined,
+  tmpPicture: undefined
 };
 
 export const EVENT_NEW_CANCEL = 'tribe_new_cancel';
@@ -43,7 +44,7 @@ export default (state = INITIAL_STATE, action) => {
 
     case EVENT_NEW_UPLOAD_PICTURE_SUCCESS: {
       const newState = _.cloneDeep(state);
-      return _.set(newState, 'picture', action.payload);
+      return _.set(newState, 'tmpPicture', action.payload);
     }
 
     default: return { ...state };
