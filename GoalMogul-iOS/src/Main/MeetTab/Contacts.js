@@ -72,7 +72,7 @@ class Contacts extends Component {
   }
 
   render() {
-    console.log('data for contact is: ', this.props.contactSync);
+    console.log(`${DEBUG_KEY}: data for contact is: `, this.props.contacts);
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>

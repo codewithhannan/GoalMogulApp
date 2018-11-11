@@ -54,7 +54,8 @@ import {
   openEventInvitModal,
   deleteEvent,
   editEvent,
-  reportEvent
+  reportEvent,
+  rsvpEvent
 } from '../../../redux/modules/event/EventActions';
 
 const DEBUG_KEY = '[ UI MyEvent ]';
@@ -639,6 +640,7 @@ export default connect(
     deleteEvent,
     editEvent,
     reportEvent,
-    myEventSelectMembersFilter
+    myEventSelectMembersFilter,
+    rsvpEvent
   }
 )(MyEvent);

@@ -1,10 +1,7 @@
 import React from 'react';
 import {
   View,
-  Modal,
-  FlatList,
-  TouchableOpacity,
-  Text
+  FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
 import { MenuProvider } from 'react-native-popup-menu';
@@ -25,6 +22,7 @@ import MyEventCard from './MyEventCard';
 import ModalHeader from '../../Common/Header/ModalHeader';
 import MyEventFilterBar from './MyEventFilterBar';
 import TabButtonGroup from '../../Common/TabButtonGroup';
+import EmptyResult from '../../Common/Text/EmptyResult';
 
 class MyEventTab extends React.Component {
 
@@ -89,6 +87,7 @@ class MyEventTab extends React.Component {
             onRefresh={this.handleOnRefresh}
             onEndReached={this.handleOnLoadMore}
             ListHeaderComponent={this.renderListHeader()}
+            ListEmptyComponent={<EmptyResult text={'No Events found'} />}
             onEndThreshold={0}
           />
         </MenuProvider>

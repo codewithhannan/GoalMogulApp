@@ -138,14 +138,15 @@ export const inviteParticipantToEvent = (eventId, inviteeId) => (dispatch, getSt
 
 // User updates his rsvp status for an event
 export const rsvpEvent = (option, eventId) => (dispatch, getState) => {
-  const { token, userId } = getState().user;
+  const { token, user } = getState().user;
 
   const onSuccess = (res) => {
     dispatch({
       type: EVENT_UPDATE_RSVP_STATUS_SUCCESS,
       payload: {
+        eventId,
         participantRef: {
-          _id: userId
+          ...user
         },
         rsvp: option
       }
@@ -167,10 +168,10 @@ export const rsvpEvent = (option, eventId) => (dispatch, getState) => {
   API
     .put(`${BASE_ROUTE}/rsvp`, { eventId, rsvpStatus: option }, token)
     .then((res) => {
-      if (!res.message) {
-        return onSuccess();
+      if (!res.message || res.status === 200) {
+        return onSuccess(res);
       }
-      onError();
+      onError(res);
     })
     .catch((err) => {
       onError(err);

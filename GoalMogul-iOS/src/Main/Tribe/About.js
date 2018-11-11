@@ -8,6 +8,7 @@ import {
 
 // Component
 import Divider from '../Common/Divider';
+import ProfileImage from '../Common/ProfileImage';
 
 // Asset
 import Calendar from '../../asset/utils/calendar.png';
@@ -19,21 +20,28 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 class About extends Component {
 
   renderMemberStatus(item) {
-    const count = item.memberCount ? item.memberCount : 0;
+    const { members, memberCount } = item;
+    const count = memberCount || 0;
+    const memberPicturesWidth = count < 2 ? 45 : 50;
+    const memberPictures = members.map((member, index) => {
+      if (index > 1) return '';
+      const { memberRef } = member;
+      return (
+        <ProfileImage
+          key={index}
+          imageContainerStyle={{
+            ...styles.bottomPictureContainerStyle,
+            left: ((index * 13))
+          }}
+          imageUrl={memberRef.profile.image}
+          imageStyle={{ ...styles.pictureStyle }}
+        />
+      );
+    });
     return (
       <View style={{ flexDirection: 'row', marginTop: 8, marginBottom: 5 }}>
-        <View style={styles.memberPicturesContainerStyle}>
-          <View style={styles.bottomPictureContainerStyle}>
-            <Image source={DefaultUserProfile} style={styles.pictureStyle} />
-          </View>
-
-          <View style={styles.topPictureContainerStyle}>
-            <Image
-              source={DefaultUserProfile}
-              style={styles.pictureStyle}
-            />
-          </View>
-
+        <View style={{ ...styles.memberPicturesContainerStyle, width: memberPicturesWidth }}>
+          {memberPictures}
         </View>
         <Text style={{ alignSelf: 'center' }}>
           <Text style={styles.boldTextStyle}>{count} </Text>
@@ -107,7 +115,7 @@ const styles = {
   iconContainerStyle: {
     height: 30,
     width: 40,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'center'
   },
   iconStyle: {

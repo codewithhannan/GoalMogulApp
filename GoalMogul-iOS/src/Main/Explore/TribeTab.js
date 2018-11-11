@@ -14,6 +14,7 @@ import {
 // Components
 import TribeCard from './TribeCard';
 import TribeTabFilterBar from './TribeTabFilterBar';
+import EmptyResult from '../Common/Text/EmptyResult';
 
 class TribeTab extends React.Component {
   _keyExtractor = (item) => item._id;
@@ -42,6 +43,7 @@ class TribeTab extends React.Component {
           onRefresh={this.handleOnRefresh}
           onEndReached={this.handleOnLoadMore}
           ListHeaderComponent={this.renderListHeader()}
+          ListEmptyComponent={<EmptyResult text={'No Recommendations'} />}
           onEndThreshold={0}
         />
       </View>

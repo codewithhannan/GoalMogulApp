@@ -107,10 +107,21 @@ export default (state = INITIAL_STATE, action) => {
 
     // Current user update RSVP status for an event
     case EVENT_UPDATE_RSVP_STATUS_SUCCESS: {
-      let isInEvent = false;
-      const newParticipant = action.payload;
-
       const newState = _.cloneDeep(state);
+      const {
+        eventId,
+        participantRef, // current user object
+        rsvp
+      } = action.payload;
+
+      // Check if user is updating this event or myEvent
+      if (!newState.item || eventId !== newState.item._id) return newState;
+
+      let isInEvent = false;
+      const newParticipant = {
+        participantRef,
+        rsvp
+      };
       let newItem = _.cloneDeep(newState.item);
 
       let participants = newItem.participants;
