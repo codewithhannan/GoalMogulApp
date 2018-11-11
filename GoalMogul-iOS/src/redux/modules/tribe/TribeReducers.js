@@ -20,7 +20,7 @@ const INITIAL_STATE = {
   feedLoading: false,
   hasNextPage: undefined,
   skip: 0,
-  limit: 100,
+  limit: 10,
   hasRequested: undefined,
   // ['Admin', 'Member', 'JoinRequester', 'Invitee']
   membersFilter: 'Member'

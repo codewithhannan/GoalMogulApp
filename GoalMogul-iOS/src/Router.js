@@ -151,7 +151,7 @@ class RouterComponent extends Component {
 
               {/* Main App */}
 
-              <Scene hideNavBar>
+              <Scene hideNavBar panHandlers={null}>
                 <Tabs
                   key="mainTabs"
                   hideNavBar
@@ -210,7 +210,11 @@ class RouterComponent extends Component {
                     icon={TabIcon}
                     hideNavBar
                   >
-                    <Scene key="notification" component={NotificationTab} hideNavBar />
+                    <Scene
+                      key="notification"
+                      component={NotificationTab}
+                      hideNavBar
+                    />
                   </Stack>
 
                   <Stack

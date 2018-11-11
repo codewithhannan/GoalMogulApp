@@ -9,7 +9,7 @@ const INITIAL_STATE = {
     data: [],
     loading: false,
     skip: 0,
-    limit: 100,
+    limit: 10,
     hasNextPage: undefined,
     seeMoreSkip: 5, // Every time shows 5 more notifications
     seeMoreCount: 5 // how many items are shown currently
@@ -18,7 +18,7 @@ const INITIAL_STATE = {
     data: [],
     loading: false,
     skip: 0,
-    limit: 100,
+    limit: 10,
     hasNextPage: undefined,
     seeMoreSkip: 5, // Every time shows 5 more notifications
     seeMoreCount: 5 // how many items are shown currently

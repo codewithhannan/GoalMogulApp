@@ -5,7 +5,8 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  ImageBackground
+  ImageBackground,
+  TouchableWithoutFeedback
 } from 'react-native';
 import _ from 'lodash';
 
@@ -18,9 +19,7 @@ import cancel from '../../../asset/utils/cancel_no_background.png';
 import photoIcon from '../../../asset/utils/photoIcon.png';
 import expand from '../../../asset/utils/expand.png';
 import RefPreview from '../../Common/RefPreview';
-
-import TestImage from '../../../asset/TestEventImage.png';
-
+// import TestImage from '../../../asset/TestEventImage.png';
 
 // Constants
 const DEBUG_KEY = '[ UI ProfilePostCard.ProfilePostBody ]';
@@ -39,37 +38,41 @@ class ProfilePostBody extends React.Component {
     }
     const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${url}`;
       return (
-        <View>
-          <ImageBackground
-            style={styles.mediaStyle}
-            source={{ uri: imageUrl }}
-            imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
-          >
-            <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
-              <Image
-                source={photoIcon}
-                style={{
-                  alignSelf: 'center',
-                  justifyContent: 'center',
-                  height: 40,
-                  width: 50,
-                  tintColor: '#fafafa'
-                }}
-              />
-            </View>
-
-            <TouchableOpacity
-              onPress={() => this.setState({ mediaModal: true })}
-              style={{ position: 'absolute', top: 10, right: 15 }}
+        <TouchableWithoutFeedback onPress={() => this.setState({ mediaModal: true })}>
+          <View>
+            <ImageBackground
+              style={styles.mediaStyle}
+              source={{ uri: imageUrl }}
+              imageStyle={{ borderRadius: 8, resizeMode: 'cover' }}
             >
-              <Image
-                source={expand}
-                style={{ width: 15, height: 15, tintColor: '#fafafa' }}
-              />
-            </TouchableOpacity>
-          </ImageBackground>
-          {this.renderPostImageModal(imageUrl)}
-        </View>
+            {/*
+              <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
+                <Image
+                  source={photoIcon}
+                  style={{
+                    alignSelf: 'center',
+                    justifyContent: 'center',
+                    height: 40,
+                    width: 50,
+                    tintColor: '#fafafa'
+                  }}
+                />
+              </View>
+
+              <TouchableOpacity
+                onPress={() => this.setState({ mediaModal: true })}
+                style={{ position: 'absolute', top: 10, right: 15 }}
+              >
+                <Image
+                  source={expand}
+                  style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+                />
+              </TouchableOpacity>
+            */}
+            </ImageBackground>
+            {this.renderPostImageModal(imageUrl)}
+          </View>
+        </TouchableWithoutFeedback>
       );
   }
 

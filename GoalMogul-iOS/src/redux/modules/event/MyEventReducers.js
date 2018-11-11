@@ -18,7 +18,7 @@ const INITIAL_STATE = {
   feedLoading: false,
   hasNextPage: undefined,
   skip: 0,
-  limit: 100,
+  limit: 10,
   // ['Invited', 'Interested', 'Going', 'Maybe', 'NotGoing']
   participantsFilter: 'Going',
   memberNavigationState: {

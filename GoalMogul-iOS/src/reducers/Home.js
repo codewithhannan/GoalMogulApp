@@ -31,7 +31,7 @@ const INITIAL_STATE = {
   mastermind: {
     showPlus: true,
     data: [],
-    limit: 20,
+    limit: 5,
     skip: 0,
     currentIndex: 0,
     filter: {
@@ -47,7 +47,7 @@ const INITIAL_STATE = {
   activityfeed: {
     showPlus: true,
     data: [],
-    limit: 20,
+    limit: 5,
     skip: 0,
     currentIndex: 0,
     filter: {

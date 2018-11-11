@@ -31,10 +31,11 @@ import {
   PROFILE_REFRESH_TAB_FAIL,
   PROFILE_REFRESH_TAB,
   PROFILE_UPDATE_FILTER,
+  PROFILE_RESET_FILTER,
   PROFILE_GOAL_FILTER_CONST,
 
   PROFILE_GOAL_DELETE_SUCCESS,
-  PROFILE_POST_DELETE_SUCCESS
+  PROFILE_POST_DELETE_SUCCESS,
 } from '../reducers/Profile';
 
 const DEBUG_KEY = '[ Action Profile ]';
@@ -101,7 +102,7 @@ export const fetchUserProfile = (userId) => (dispatch, getState) => {
     });
 };
 
-export const openProfile = (userId) => (dispatch, getState) => {
+export const openProfile = (userId, tab) => (dispatch, getState) => {
   dispatch({
     type: PROFILE_OPEN_PROFILE,
     payload: userId
@@ -109,7 +110,14 @@ export const openProfile = (userId) => (dispatch, getState) => {
   Actions.push('profile');
 
   // Refresh goals on open
-  handleTabRefresh('goals')(dispatch, getState);
+  if (tab) {
+    selectProfileTabByName(`${tab}`)(dispatch, getState);
+    resetFilterType(`${tab}`)(dispatch, getState);
+    handleTabRefresh(`${tab}`)(dispatch, getState);
+  } else {
+    handleTabRefresh('goals')(dispatch, getState);
+  }
+
   const { token } = getState().user;
   const self = getState().profile.userId.toString() === getState().user.userId.toString();
 
@@ -283,6 +291,23 @@ export const submitUpdatingProfile = ({ values, hasImageModified }) => {
   };
 };
 
+/**
+ * select a tab by tab name
+ */
+export const selectProfileTabByName = (tab) => (dispatch, getState) => {
+  const routes = getState().profile.navigationState.routes;
+  let index = 0;
+  routes.forEach((route, i) => {
+    if (route.key === tab) {
+      index = i;
+    }
+  });
+  selectProfileTab(index)(dispatch, getState);
+};
+
+/**
+ * Select a tab by index
+ */
 export const selectProfileTab = (index) => (dispatch, getState) => {
   dispatch({
     type: PROFILE_SWITCH_TAB,
@@ -296,6 +321,16 @@ export const selectProfileTab = (index) => (dispatch, getState) => {
   if (!data || data.length === 0) {
     handleTabRefresh(tab)(dispatch, getState);
   }
+};
+
+// Reset filter state for a tab to have All for categories
+export const resetFilterType = (tab) => (dispatch, getState) => {
+  dispatch({
+    type: PROFILE_RESET_FILTER,
+    payload: {
+      tab,
+    }
+  });
 };
 
 // User update filter for specific tab

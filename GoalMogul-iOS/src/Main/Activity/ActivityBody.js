@@ -5,7 +5,8 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  ImageBackground
+  ImageBackground,
+  TouchableWithoutFeedback
 } from 'react-native';
 import _ from 'lodash';
 
@@ -52,57 +53,59 @@ class ActivityBody extends React.Component {
     }
     const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${url}`;
       return (
-        <TouchableOpacity
+        <TouchableWithoutFeedback
           onPress={() => this.setState({ mediaModal: true })}
         >
-          <ImageBackground
-            style={styles.mediaStyle}
-            source={{ uri: imageUrl }}
-            imageStyle={{ borderRadius: 8, resizeMode: 'stretch' }}
-          >
-          {/*
-            <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
-              <Image
-                source={photoIcon}
-                style={{
-                  alignSelf: 'center',
-                  justifyContent: 'center',
-                  height: 40,
-                  width: 50,
-                  tintColor: '#fafafa'
-                }}
-              />
-            </View>
-
-            <TouchableOpacity
-              onPress={() => this.setState({ mediaModal: true })}
-              style={{
-                position: 'absolute',
-                top: 10,
-                right: 15,
-                width: 24,
-                height: 24,
-                borderRadius: 12,
-                padding: 2,
-                backgroundColor: 'rgba(0,0,0,0.3)',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
+          <View>
+            <ImageBackground
+              style={styles.mediaStyle}
+              source={{ uri: imageUrl }}
+              imageStyle={{ borderRadius: 8, resizeMode: 'stretch' }}
             >
-              <Image
-                source={expand}
+            {/*
+              <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
+                <Image
+                  source={photoIcon}
+                  style={{
+                    alignSelf: 'center',
+                    justifyContent: 'center',
+                    height: 40,
+                    width: 50,
+                    tintColor: '#fafafa'
+                  }}
+                />
+              </View>
+
+              <TouchableOpacity
+                onPress={() => this.setState({ mediaModal: true })}
                 style={{
-                  width: 16,
-                  height: 16,
-                  tintColor: '#fafafa',
-                  borderRadius: 4,
+                  position: 'absolute',
+                  top: 10,
+                  right: 15,
+                  width: 24,
+                  height: 24,
+                  borderRadius: 12,
+                  padding: 2,
+                  backgroundColor: 'rgba(0,0,0,0.3)',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
-              />
-            </TouchableOpacity>
-            */}
-          </ImageBackground>
-          {this.renderPostImageModal(imageUrl)}
-        </TouchableOpacity>
+              >
+                <Image
+                  source={expand}
+                  style={{
+                    width: 16,
+                    height: 16,
+                    tintColor: '#fafafa',
+                    borderRadius: 4,
+                  }}
+                />
+              </TouchableOpacity>
+              */}
+            </ImageBackground>
+            {this.renderPostImageModal(imageUrl)}
+          </View>
+        </TouchableWithoutFeedback>
       );
   }
 

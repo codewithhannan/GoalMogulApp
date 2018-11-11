@@ -15,6 +15,10 @@ import {
   openShareDetail
 } from './ShareActions';
 
+import {
+  openProfile
+} from '../../../../actions';
+
 import { api as API } from '../../../middleware/api';
 import { capitalizeWord } from '../../../middleware/utils';
 import ImageUtils from '../../../../Utils/ImageUtils';
@@ -69,14 +73,29 @@ export const editPost = (post) => (dispatch, getState) => {
 };
 
 // Submit creating new post
-export const submitCreatingPost = (values, needUpload) => (dispatch, getState) => {
+/**
+ * @param needOpenProfile: if true, then open profile with post tab
+ */
+export const submitCreatingPost = (values, needUpload, needOpenProfile) => (dispatch, getState) => {
     const { userId, token } = getState().user;
     const newPost = newPostAdaptor(values, userId);
+
+    const onSuccess = (res) => {
+      console.log('Creating post succeed with res: ', res);
+      dispatch({
+        type: POST_NEW_POST_SUBMIT_SUCCESS,
+        payload: { ...res.data }
+      });
+
+      if (needOpenProfile) {
+        openProfile(userId, 'posts')(dispatch, getState);
+      }
+    };
 
     const imageUri = newPost.mediaRef;
     if (!needUpload) {
       // If no mediaRef then directly submit the post
-      sendCreatePostRequest(newPost, token, dispatch);
+      sendCreatePostRequest(newPost, token, dispatch, onSuccess);
     } else {
       ImageUtils.getImageSize(imageUri)
         .then(({ width, height }) => {
@@ -109,7 +128,12 @@ export const submitCreatingPost = (values, needUpload) => (dispatch, getState) =
         .then((image) => {
           // Use the presignedUrl as media string
           console.log('media ref after uploading is: ', image);
-          return sendCreatePostRequest({ ...newPost, mediaRef: image }, token, dispatch);
+          return sendCreatePostRequest(
+            { ...newPost, mediaRef: image },
+            token,
+            dispatch,
+            onSuccess
+          );
         })
         .catch((err) => {
           // TODO: error handling for different kinds of errors.
@@ -141,8 +165,9 @@ export const submitCreatingPost = (values, needUpload) => (dispatch, getState) =
  * @param newPost: the new post object to create
  * @param token: current user token
  * @param dispatch: function to update store
+ * @param needOpenProfile: if creating post from home page, then open profile post type
  */
-const sendCreatePostRequest = (newPost, token, dispatch, onError) => {
+const sendCreatePostRequest = (newPost, token, dispatch, onSuccess, onError) => {
   const handleError = onError || (() => {
     Alert.alert(
       'Create post failed',
@@ -152,6 +177,7 @@ const sendCreatePostRequest = (newPost, token, dispatch, onError) => {
       type: POST_NEW_POST_SUBMIT_FAIL
     });
   });
+
   API
     .post(
       'secure/feed/post',
@@ -161,12 +187,8 @@ const sendCreatePostRequest = (newPost, token, dispatch, onError) => {
       token
     )
     .then((res) => {
-      if (!res.message && res.data) {
-        console.log('Creating post succeed with data: ', res.data);
-        dispatch({
-          type: POST_NEW_POST_SUBMIT_SUCCESS,
-          payload: { ...res.data }
-        });
+      if ((!res.message && res.data) || res.status === 200) {
+        onSuccess(res);
         return;
       }
       console.log('Creating post failed with message: ', res);

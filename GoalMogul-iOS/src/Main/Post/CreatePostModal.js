@@ -99,11 +99,13 @@ class CreatePostModal extends Component {
    * Synchronize validate form values, contains simple check
    */
   handleCreate = (values) => {
-    const { initializeFromState, post, mediaRef } = this.props;
+    const { initializeFromState, post, mediaRef, belongsToTribe, belongsToEvent } = this.props;
     const needUpload =
       (initializeFromState && post.mediaRef && post.mediaRef !== mediaRef)
       || (!initializeFromState && mediaRef);
-    return this.props.submitCreatingPost(this.props.formVals.values, needUpload);
+
+    const needOpenProfile = belongsToTribe === undefined && belongsToEvent === undefined;
+    return this.props.submitCreatingPost(this.props.formVals.values, needUpload, needOpenProfile);
   }
   // renderInput = ({
   //   input: { onChange, onFocus, value, ...restInput },
