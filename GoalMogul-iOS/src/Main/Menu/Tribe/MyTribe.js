@@ -818,11 +818,11 @@ const switchCaseMemberStatus = (status) => switchCase({
     icon: undefined
   },
   JoinRequester: {
-    text: 'requsted',
+    text: 'Requested',
     icon: undefined
   },
   Invitee: {
-    text: 'accept',
+    text: 'Respond to Invitation',
     icon: undefined
   }
 })('Member')(status);
