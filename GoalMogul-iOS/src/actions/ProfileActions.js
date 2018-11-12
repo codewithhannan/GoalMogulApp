@@ -545,7 +545,7 @@ const deleteItem = (item, dispatch, getState, onSuccess, onError) => {
   API
     .delete(item.route, { ...item.param }, token)
     .then((res) => {
-      if (res.isSuccess) {
+      if (res.status === 200 || res.isSuccess) {
         return onSuccess();
       }
       console.warn('Delete item fail in profile err with res: ', res);

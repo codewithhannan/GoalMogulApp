@@ -90,9 +90,9 @@ export const deleteTribe = (tribeId) => (dispatch, getState) => {
   };
 
   API
-    .delete(`${BASE_ROUTE}`, { tribeId }, token)
+    .delete(`${BASE_ROUTE}?tribeId=${tribeId}`, { }, token)
     .then((res) => {
-      if (res.message && res.message.includes('Deleted')) {
+      if (res.status === 200 || (res.message && res.message.includes('Deleted'))) {
         return onSuccess(res);
       }
       onError(res);
@@ -189,9 +189,9 @@ export const leaveTribe = (tribeId, type) => (dispatch, getState) => {
   };
 
   API
-    .delete(`${BASE_ROUTE}/member`, { tribeId, removeeId: userId }, token)
+    .delete(`${BASE_ROUTE}/member?tribeId=${tribeId}&removeeId=${userId}`, { }, token)
     .then((res) => {
-      if (res && res.message && res.message.includes('Delete')) {
+      if (res.status === 200 || (res && res.message && res.message.includes('Delete'))) {
         return onSuccess();
       }
       onError(res);
@@ -290,9 +290,9 @@ export const requestJoinTribe = (tribeId, join, type) => (dispatch, getState) =>
 
   if (!join) {
     API
-      .delete(`${BASE_ROUTE}/member`, { tribeId, removeeId: userId }, token)
+      .delete(`${BASE_ROUTE}/member?tribeId=${tribeId}&removeeId=${userId}`, { }, token)
       .then((res) => {
-        if (res.message && res.message.includes('Delete')) {
+        if (res.status === 200 || (res.message && res.message.includes('Delete'))) {
           return onSuccess();
         }
         return onError();

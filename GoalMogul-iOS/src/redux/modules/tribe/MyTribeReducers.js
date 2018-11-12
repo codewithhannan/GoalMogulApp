@@ -61,6 +61,7 @@ export const MYTRIBE_MEMBER_ACCEPT_SUCCESS = 'mytribe_member_accept_success';
 export const MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS = 'mytribe_request_cancel_join_success';
 export const MYTRIBE_REQUEST_JOIN_SUCCESS = 'mytribe_request_join_success';
 export const MYTRIBE_MEMBER_SELECT_FILTER = 'mytribe_member_select_filter';
+export const MYTRIBE_ACCEPT_MEMBER_SUCCESS = 'mytribe_accept_member_success';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -176,6 +177,14 @@ export default (state = INITIAL_STATE, action) => {
       if (!oldTribe || oldTribe._id !== oldTribe._id) return newState;
       const updatedEvent = updateTribe(oldTribe, newTribe);
       return _.set(newState, 'item', updatedEvent);
+    }
+
+    // Current user as admin accept joinerId's request, update
+    // item.members 
+    case MYTRIBE_ACCEPT_MEMBER_SUCCESS: {
+      const { tribeId, joinerId } = action.payload;
+      const newState = _.cloneDeep(state);
+      return newState;
     }
 
     default:

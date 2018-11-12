@@ -13,7 +13,8 @@ import {
   MYTRIBE_FEED_REFRESH_DONE,
   MYTRIBE_REMOVE_MEMBER_SUCCESS,
   MYTRIBE_PROMOTE_MEMBER_SUCCESS,
-  MYTRIBE_MEMBER_SELECT_FILTER
+  MYTRIBE_MEMBER_SELECT_FILTER,
+  MYTRIBE_ACCEPT_MEMBER_SUCCESS
 } from './MyTribeReducers';
 
 // Selectors
@@ -198,7 +199,7 @@ const doMyTribeAdminRemoveUser = (userId, tribeId) => (dispatch, getState) => {
   API
     .delete(`${BASE_ROUTE}/member?removeeId=${userId}&tribeId=${tribeId}`, {}, token)
     .then((res) => {
-      if (res.data && res.message) {
+      if (res.status === 200 || (res.data && res.message)) {
         return onSuccess(res);
       }
       onError(res);
@@ -248,7 +249,14 @@ const doMyTribeAdminPromoteUser = (userId, tribeId) => (dispatch, getState) => {
   };
 
   API
-    .post(`${BASE_ROUTE}/admin?promoteeId=${userId}&tribeId=${tribeId}`, token)
+    .post(
+      `${BASE_ROUTE}/admin`,
+      {
+        promoteeId: userId,
+        tribeId
+      },
+      token
+    )
     .then((res) => {
       if (res.data && res.message) {
         return onSuccess(res);
@@ -300,9 +308,67 @@ const doMyTribeAdminDemoteUser = (userId, tribeId) => (dispatch, getState) => {
   };
 
   API
-    .post(`${BASE_ROUTE}/admin?demoteeId=${userId}&tribeId=${tribeId}`, token)
+    .post(
+      `${BASE_ROUTE}/admin`,
+      {
+        demoteeId: userId,
+        tribeId
+      },
+      token
+    )
     .then((res) => {
-      if (res.data && res.message) {
+      if (res.status === 200 || (res.data && res.message)) {
+        return onSuccess(res);
+      }
+      onError(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
+};
+
+
+export const myTribeAdminAcceptUser = (userId, tribeId) => (dispatch, getState) => {
+  Alert.alert(
+    'Confirmation',
+    'Are you sure to accept this user?',
+    [
+      { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+      {
+        text: 'Confirm',
+        onPress: () => doAdminAcceptUser(userId, tribeId)(dispatch, getState)
+      }
+    ],
+    { cancelable: false }
+  );
+};
+
+const doAdminAcceptUser = (userId, tribeId) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const onSuccess = (res) => {
+    console.log(`${DEBUG_KEY}: accept member ${userId} successfully with res: `, res);
+    dispatch({
+      type: MYTRIBE_ACCEPT_MEMBER_SUCCESS,
+      payload: {
+        joinerId: userId,
+        tribeId
+      }
+    });
+  };
+  const onError = (err) => {
+    console.log(`${DEBUG_KEY}: failed to accept member: ${userId} with err: `, err);
+    Alert.alert(
+      'Accept member join request failed',
+      'Please try again later'
+    );
+  };
+
+  API
+    .post(
+      `${BASE_ROUTE}/accept-joint-request`, { joinerId: userId, tribeId }, token
+    )
+    .then((res) => {
+      if (res.status === 200 || (res.data && res.message)) {
         return onSuccess(res);
       }
       onError(res);
@@ -375,7 +441,7 @@ export const loadTribeFeed = (skip, limit, token, params, callback, onError) => 
     )
     .then((res) => {
       console.log(`${DEBUG_KEY}: loading with res: `, res);
-      if (res && res.data) {
+      if (res.status === 200 || (res && res.data)) {
         // Right now return test data
         return callback(res.data);
       }

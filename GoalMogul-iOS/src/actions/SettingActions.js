@@ -349,20 +349,29 @@ export const unblockUser = (blockId, callback) => (dispatch, getState) => {
     payload: blockId
   });
   const { token } = getState().user;
-  API.delete(`${BASE_ROUTE}/block?blockId=${blockId}`, { blockId }, token).then((res) => {
-    console.log(`${DEBUG_KEY} response for deleting a blocked user: `, blockId, ', is: ', res);
-    if (callback) {
-      callback();
-    }
-
-    dispatch({
-      type: SETTING_BLOCK_UNBLOCK_REQUEST_DONE,
-      payload: blockId
+  API
+    .delete(`${BASE_ROUTE}/block?blockId=${blockId}`, { blockId }, token)
+    .then((res) => {
+      if (res.status === 200) {
+        if (callback) {
+          callback();
+        }
+        dispatch({
+          type: SETTING_BLOCK_UNBLOCK_REQUEST_DONE,
+          payload: blockId
+        });
+        console.log(`${DEBUG_KEY} unblock user: ${blockId}, success with res: ${res}`);
+        return;
+      }
+      console.log(`${DEBUG_KEY}: unblock user failed with res: `, res);
+    })
+    .catch((err) => {
+      Alert.alert(
+        'Unblock user failed.',
+        'Please try again later'
+      );
+      console.log(`${DEBUG_KEY}: unblock user failed with err: `, err);
     });
-  })
-  .catch((error) => {
-    console.log(`${DEBUG_KEY} error for unblocking user: `, error);
-  });
 };
 
 // Push notification token to server

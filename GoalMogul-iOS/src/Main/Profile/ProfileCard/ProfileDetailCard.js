@@ -33,23 +33,6 @@ import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactor
 const { width } = Dimensions.get('window');
 const DEBUG_KEY = '[ Copmonent ProfileDetailCard ]';
 
-const testData = {
-  name: 'Jia Zeng',
-  email: 'jz145@duke.edu',
-  phone: '9194912504',
-  headline: 'I predict market with mathematical models',
-  privacy: {
-    friends: 'Public'
-  },
-  profile: {
-    pointsEarned: 10,
-    about: 'This is a test page.',
-    elevatorPitch: 'This is a profile elevator pitch',
-    image: '',
-    occupation: 'Quantative Analyst at Jane Street'
-  }
-};
-
 const CANCEL_REQUEST_OPTIONS = ['Withdraw request', 'Cancel'];
 const CANCEL_REQUEST_CANCEL_INDEX = 1;
 
@@ -217,7 +200,8 @@ class ProfileDetailCard extends Component {
     if (this.props.needRespond) {
       return (
         <ProfileActionButton
-          text='Respond'
+          source={addUser}
+          text='Respond to request'
           onPress={this.handleButtonOnPress.bind(this, 'respond')}
           style={{ height: 14, width: 15 }}
         />
@@ -440,3 +424,20 @@ export default connect(
     updateFriendship
   }
 )(ProfileDetailCard);
+
+// const testData = {
+//   name: 'Jia Zeng',
+//   email: 'jz145@duke.edu',
+//   phone: '9194912504',
+//   headline: 'I predict market with mathematical models',
+//   privacy: {
+//     friends: 'Public'
+//   },
+//   profile: {
+//     pointsEarned: 10,
+//     about: 'This is a test page.',
+//     elevatorPitch: 'This is a profile elevator pitch',
+//     image: '',
+//     occupation: 'Quantative Analyst at Jane Street'
+//   }
+// };

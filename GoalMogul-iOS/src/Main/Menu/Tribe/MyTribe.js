@@ -41,7 +41,8 @@ import {
   myTribeAdminPromoteUser,
   myTribeAdminDemoteUser,
   myTribeSelectMembersFilter,
-  refreshMyTribeDetail
+  refreshMyTribeDetail,
+  myTribeAdminAcceptUser
 } from '../../../redux/modules/tribe/MyTribeActions';
 import {
   openTribeInvitModal,
@@ -104,6 +105,15 @@ class MyTribe extends Component {
   handleDemoteUser = (userId) => {
     const { _id } = this.props.item;
     this.props.myTribeAdminDemoteUser(userId, _id);
+  }
+
+  /**
+   * This function is passed to MemberListCard when setting icon is clicked
+   * and accept user's join request option is chosen
+   */
+  handleAcceptUser = (userId) => {
+    const { _id } = this.props.item;
+    this.props.myTribeAdminAcceptUser(userId, _id);
   }
 
   /**
@@ -787,7 +797,8 @@ export default connect(
     myTribeAdminRemoveUser,
     myTribeAdminPromoteUser,
     myTribeAdminDemoteUser,
-    myTribeSelectMembersFilter
+    myTribeSelectMembersFilter,
+    myTribeAdminAcceptUser
   }
 )(MyTribe);
 
