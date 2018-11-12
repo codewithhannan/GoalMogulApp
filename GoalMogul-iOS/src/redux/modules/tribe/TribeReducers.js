@@ -23,7 +23,7 @@ const INITIAL_STATE = {
   limit: 10,
   hasRequested: undefined,
   // ['Admin', 'Member', 'JoinRequester', 'Invitee']
-  membersFilter: 'Member'
+  membersFilter: 'Admin'
 };
 
 export const TRIBE_DELETE_SUCCESS = 'tribe_delete_success';

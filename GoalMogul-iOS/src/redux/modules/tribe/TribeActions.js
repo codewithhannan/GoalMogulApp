@@ -175,9 +175,11 @@ export const leaveTribe = (tribeId, type) => (dispatch, getState) => {
     dispatch({
       type: actionType,
       payload: {
-        userId
+        userId,
+        tribeId
       }
     });
+    console.log(`${DEBUG_KEY}: leave tribe success.`);
   };
 
   const onError = (err) => {
@@ -206,7 +208,7 @@ export const leaveTribe = (tribeId, type) => (dispatch, getState) => {
  * type: ['mytribe', 'tribe'];
  */
 export const acceptTribeInvit = (tribeId, type) => (dispatch, getState) => {
-  const { token, userId } = getState().user;
+  const { token, userId, user } = getState().user;
   const actionType = type === 'mytribe'
     ? MYTRIBE_MEMBER_ACCEPT_SUCCESS
     : TRIBE_MEMBER_ACCEPT_SUCCESS;
@@ -214,7 +216,13 @@ export const acceptTribeInvit = (tribeId, type) => (dispatch, getState) => {
     dispatch({
       type: actionType,
       payload: {
-        userId
+        userId,
+        member: {
+          memberRef: {
+            ...user
+          },
+          category: 'Member'
+        }
       }
     });
     console.log(`${DEBUG_KEY}: success accept tribe invitation with res: `, res);

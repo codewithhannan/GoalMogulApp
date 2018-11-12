@@ -143,8 +143,9 @@ class Tribe extends Component {
     return this.props.openTribeInvitModal(_id);
   }
 
-  handleStatusChange = (isMember) => {
+  handleStatusChange = (isMember, item) => {
     let options;
+    const { _id } = item; // tribeId
     if (isMember === 'Member') {
       options = switchByButtonIndex([
         [R.equals(0), () => {
@@ -345,7 +346,7 @@ class Tribe extends Component {
     );
   }
 
-  renderMemberStatus() {
+  renderMemberStatus(item) {
     // TODO: remove test var
     const { isMember, hasRequested } = this.props;
     const tintColor = isMember ? '#2dca4a' : 'gray';
@@ -355,7 +356,7 @@ class Tribe extends Component {
       return (
         <TouchableOpacity
           style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}
-          onPress={() => this.handleStatusChange(isMember)}
+          onPress={() => this.handleStatusChange(isMember, item)}
         >
           <Image
             source={check}

@@ -11,10 +11,11 @@ import {
   MYTRIBE_FEED_FETCH,
   MYTRIBE_FEED_FETCH_DONE,
   MYTRIBE_FEED_REFRESH_DONE,
-  MYTRIBE_REMOVE_MEMBER_SUCCESS,
+  MYTRIBE_MEMBER_REMOVE_SUCCESS,
   MYTRIBE_PROMOTE_MEMBER_SUCCESS,
   MYTRIBE_MEMBER_SELECT_FILTER,
-  MYTRIBE_ACCEPT_MEMBER_SUCCESS
+  MYTRIBE_ACCEPT_MEMBER_SUCCESS,
+  MYTRIBE_DEMOTE_MEMBER_SUCCESS
 } from './MyTribeReducers';
 
 // Selectors
@@ -178,15 +179,16 @@ const doMyTribeAdminRemoveUser = (userId, tribeId) => (dispatch, getState) => {
   const onSuccess = (res) => {
     console.log(`${DEBUG_KEY}: remove member ${userId} successfully with res: `, res);
     dispatch({
-      type: MYTRIBE_REMOVE_MEMBER_SUCCESS,
+      type: MYTRIBE_MEMBER_REMOVE_SUCCESS,
       payload: {
-        removeeId: userId
+        userId,
+        tribeId
       }
     });
     Alert.alert(
       'Member is removed successfully'
     );
-    refreshMyTribeDetail(tribeId)(dispatch, getState);
+    // refreshMyTribeDetail(tribeId)(dispatch, getState);
   };
   const onError = (err) => {
     console.log(`${DEBUG_KEY}: failed to remove member ${userId} with err: `, err);
@@ -236,7 +238,8 @@ const doMyTribeAdminPromoteUser = (userId, tribeId) => (dispatch, getState) => {
     dispatch({
       type: MYTRIBE_PROMOTE_MEMBER_SUCCESS,
       payload: {
-        promoteeId: userId
+        promoteeId: userId,
+        tribeId
       }
     });
   };
@@ -293,9 +296,10 @@ const doMyTribeAdminDemoteUser = (userId, tribeId) => (dispatch, getState) => {
   const onSuccess = (res) => {
     console.log(`${DEBUG_KEY}: demote member ${userId} successfully with res: `, res);
     dispatch({
-      type: MYTRIBE_PROMOTE_MEMBER_SUCCESS,
+      type: MYTRIBE_DEMOTE_MEMBER_SUCCESS,
       payload: {
-        demoteeId: userId
+        demoteeId: userId,
+        tribeId
       }
     });
   };
@@ -344,14 +348,18 @@ export const myTribeAdminAcceptUser = (userId, tribeId) => (dispatch, getState) 
 };
 
 const doAdminAcceptUser = (userId, tribeId) => (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, user } = getState().user;
   const onSuccess = (res) => {
     console.log(`${DEBUG_KEY}: accept member ${userId} successfully with res: `, res);
     dispatch({
       type: MYTRIBE_ACCEPT_MEMBER_SUCCESS,
       payload: {
         joinerId: userId,
-        tribeId
+        tribeId,
+        member: {
+          memberRef: user,
+          cateory: 'Member'
+        }
       }
     });
   };
