@@ -23,21 +23,23 @@ class About extends Component {
     const { members, memberCount } = item;
     const count = memberCount || 0;
     const memberPicturesWidth = count < 2 ? 45 : 50;
-    const memberPictures = members.map((member, index) => {
-      if (index > 1) return '';
-      const { memberRef } = member;
-      return (
-        <ProfileImage
-          key={index}
-          imageContainerStyle={{
-            ...styles.bottomPictureContainerStyle,
-            left: ((index * 13))
-          }}
-          imageUrl={memberRef.profile.image}
-          imageStyle={{ ...styles.pictureStyle }}
-        />
-      );
-    });
+    const memberPictures = members
+      .filter((member) => member.category === 'Admin' || member.category === 'Member')
+      .map((member, index) => {
+        if (index > 1) return '';
+        const { memberRef } = member;
+        return (
+          <ProfileImage
+            key={index}
+            imageContainerStyle={{
+              ...styles.bottomPictureContainerStyle,
+              left: ((index * 13))
+            }}
+            imageUrl={memberRef.profile.image}
+            imageStyle={{ ...styles.pictureStyle }}
+          />
+        );
+      });
     return (
       <View style={{ flexDirection: 'row', marginTop: 8, marginBottom: 5 }}>
         <View style={{ ...styles.memberPicturesContainerStyle, width: memberPicturesWidth }}>

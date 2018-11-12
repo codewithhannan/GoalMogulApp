@@ -127,7 +127,7 @@ export const myTribeMemberSelector = createSelector(
   // Select participants based on the filter option
   [getMyTribeMembersFilter, getMyTribeMembers],
   (filterOption, members) => {
-    if (!members) return '';
+    if (!members || _.isEmpty(members)) return '';
 
     return members.filter((member) => member.category === filterOption);
   }

@@ -41,7 +41,8 @@ import {
   myTribeAdminPromoteUser,
   myTribeAdminDemoteUser,
   myTribeSelectMembersFilter,
-  refreshMyTribeDetail
+  refreshMyTribeDetail,
+  myTribeAdminAcceptUser
 } from '../../../redux/modules/tribe/MyTribeActions';
 import {
   openTribeInvitModal,
@@ -104,6 +105,15 @@ class MyTribe extends Component {
   handleDemoteUser = (userId) => {
     const { _id } = this.props.item;
     this.props.myTribeAdminDemoteUser(userId, _id);
+  }
+
+  /**
+   * This function is passed to MemberListCard when setting icon is clicked
+   * and accept user's join request option is chosen
+   */
+  handleAcceptUser = (userId) => {
+    const { _id } = this.props.item;
+    this.props.myTribeAdminAcceptUser(userId, _id);
   }
 
   /**
@@ -189,8 +199,9 @@ class MyTribe extends Component {
     );
   };
 
-  handleStatusChange = (isMember) => {
+  handleStatusChange = (isMember, item) => {
     let options;
+    const { _id } = item;
     if (isMember === 'Member') {
       options = switchByButtonIndex([
         [R.equals(0), () => {
@@ -381,7 +392,7 @@ class MyTribe extends Component {
     );
   }
 
-  renderMemberStatus() {
+  renderMemberStatus(item) {
     // TODO: remove test var
     // const isUserMemeber = isMember(item.members, this.props.user);
     const { isMember, hasRequested } = this.props;
@@ -390,7 +401,10 @@ class MyTribe extends Component {
     if (isMember) {
       const { text, icon } = switchCaseMemberStatus(isMember);
       return (
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}>
+        <TouchableOpacity
+          style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}
+          onPress={() => this.handleStatusChange(isMember, item)}
+        >
           <Image
             source={check}
             style={{
@@ -408,7 +422,7 @@ class MyTribe extends Component {
           >
             {text}
           </Text>
-        </View>
+        </TouchableOpacity>
       );
     }
     // Return view to request to join
@@ -531,7 +545,8 @@ class MyTribe extends Component {
   }
 
   renderItem = (props) => {
-    const { routes, index } = this.props.navigationState;
+    const { navigationState } = this.props;
+    const { routes, index } = navigationState;
     const { isUserAdmin } = this.props;
 
     switch (routes[index].key) {
@@ -558,6 +573,7 @@ class MyTribe extends Component {
             onRemoveUser={this.handleRemoveUser}
             onPromoteUser={this.handlePromoteUser}
             onDemoteUser={this.handleDemoteUser}
+            onAcceptUser={this.handleAcceptUser}
           />
         );
       }
@@ -787,7 +803,8 @@ export default connect(
     myTribeAdminRemoveUser,
     myTribeAdminPromoteUser,
     myTribeAdminDemoteUser,
-    myTribeSelectMembersFilter
+    myTribeSelectMembersFilter,
+    myTribeAdminAcceptUser
   }
 )(MyTribe);
 
@@ -801,11 +818,11 @@ const switchCaseMemberStatus = (status) => switchCase({
     icon: undefined
   },
   JoinRequester: {
-    text: 'requsted',
+    text: 'Requested',
     icon: undefined
   },
   Invitee: {
-    text: 'accept',
+    text: 'Respond to Invitation',
     icon: undefined
   }
 })('Member')(status);

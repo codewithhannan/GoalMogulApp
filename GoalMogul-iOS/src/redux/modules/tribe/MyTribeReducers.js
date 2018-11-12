@@ -29,7 +29,7 @@ const INITIAL_STATE = {
   limit: 10,
   hasRequested: undefined,
   // ['Admin', 'Member', 'JoinRequester', 'Invitee']
-  membersFilter: 'Member',
+  membersFilter: 'Admin',
   memberNavigationState: {
     index: 0,
     routes: [
@@ -56,11 +56,18 @@ export const MYTRIBE_DETAIL_CLOSE = 'mytribe_detail_close';
 export const MYTRIBE_FEED_FETCH = 'mytribe_feed_fetch';
 export const MYTRIBE_FEED_FETCH_DONE = 'mytribe_feed_fetch_done';
 export const MYTRIBE_FEED_REFRESH_DONE = 'mytribe_feed_refresh_done';
-export const MYTRIBE_MEMBER_REMOVE_SUCCESS = 'mytribe_member_remove_success';
-export const MYTRIBE_MEMBER_ACCEPT_SUCCESS = 'mytribe_member_accept_success';
 export const MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS = 'mytribe_request_cancel_join_success';
 export const MYTRIBE_REQUEST_JOIN_SUCCESS = 'mytribe_request_join_success';
 export const MYTRIBE_MEMBER_SELECT_FILTER = 'mytribe_member_select_filter';
+
+// Either reject user join request or remove user from tribe
+export const MYTRIBE_MEMBER_REMOVE_SUCCESS = 'mytribe_member_remove_success';
+export const MYTRIBE_DEMOTE_MEMBER_SUCCESS = 'mytribe_demote_member_success';
+export const MYTRIBE_PROMOTE_MEMBER_SUCCESS = 'mytribe_promote_member_success';
+// admin accept join request
+export const MYTRIBE_ACCEPT_MEMBER_SUCCESS = 'mytribe_accept_member_success';
+// user accept invitation
+export const MYTRIBE_MEMBER_ACCEPT_SUCCESS = 'mytribe_member_accept_success';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -135,15 +142,15 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case MYTRIBE_MEMBER_REMOVE_SUCCESS: {
-      const { userId } = action.payload;
+      const { userId, tribeId } = action.payload;
       let newState = _.cloneDeep(state);
-      let newItem = _.cloneDeep(newState.item);
-      if (newItem) {
-        newItem = newItem.members.filter((member) => member.memberRef._id !== userId);
-      }
+      if (!newState.item || newState.item._id !== tribeId) return newState;
+      const oldMembers = _.get(newState, 'item.members');
+      const newMembers = oldMembers.filter((member) => member.memberRef._id !== userId);
+
       // After removal, user resets his/her relationship with the tribe
       newState = _.set(newState, 'hasRequested', undefined);
-      return _.set(newState, 'item', newItem);
+      return _.set(newState, 'item.members', newMembers);
     }
 
     case MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS: {
@@ -178,7 +185,46 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, 'item', updatedEvent);
     }
 
+    // Current user as admin accept joinerId's request or user accepts tribe invit
+    case MYTRIBE_MEMBER_ACCEPT_SUCCESS:
+    case MYTRIBE_ACCEPT_MEMBER_SUCCESS: {
+      const { tribeId, joinerId } = action.payload;
+      const newState = _.cloneDeep(state);
+      if (!newState.item || newState.item._id !== tribeId) return newState;
+      const oldMembers = _.get(newState, 'item.members');
+      const newMembers = updateMemberStatus(oldMembers, joinerId, 'Member');
+      return _.set(newState, 'item.members', newMembers);
+    }
+
+    case MYTRIBE_DEMOTE_MEMBER_SUCCESS: {
+      const { demoteeId, tribeId } = action.payload;
+      const newState = _.cloneDeep(state);
+      if (!newState.item || newState.item._id !== tribeId) return newState;
+      const oldMembers = _.get(newState, 'item.members');
+      const newMembers = updateMemberStatus(oldMembers, demoteeId, 'Member');
+      return _.set(newState, 'item.members', newMembers);
+    }
+
+    case MYTRIBE_PROMOTE_MEMBER_SUCCESS: {
+      const { promoteeId, tribeId } = action.payload;
+      const newState = _.cloneDeep(state);
+      if (!newState.item || newState.item._id !== tribeId) return newState;
+      const oldMembers = _.get(newState, 'item.members');
+      const newMembers = updateMemberStatus(oldMembers, promoteeId, 'Admin');
+      return _.set(newState, 'item.members', newMembers);
+    }
+
     default:
       return { ...state };
   }
+};
+
+const updateMemberStatus = (members, memberIdToUpdate, newCategory) => {
+  const newMembers = members.map((member) => {
+    if (member.memberRef._id === memberIdToUpdate) {
+      return _.set(member, 'category', newCategory);
+    }
+    return member;
+  });
+  return newMembers;
 };

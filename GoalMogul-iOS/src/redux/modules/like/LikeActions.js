@@ -153,9 +153,9 @@ export const unLikeGoal = (type, id, likeId, pageId) => (dispatch, getState) => 
   })(type);
 
   API
-    .delete(`${LIKE_BASE_ROUTE}`, { likeId }, token)
+    .delete(`${LIKE_BASE_ROUTE}?likeId=${likeId}`, { likeId }, token)
     .then((res) => {
-      if (res && res.isSuccess) {
+      if (res.status === 200 || (res && res.isSuccess)) {
         console.log(`Remove like successfully for ${type} with id: ${id}`);
         // TODO: update reducers
       } else {

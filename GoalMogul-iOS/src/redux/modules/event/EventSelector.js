@@ -20,7 +20,7 @@ const getParticipantsFilter = (state) => state.event.participantsFilter;
 const getMyParticipantsFilter = (state) => state.myEvent.participantsFilter;
 
 const getMyEventMemberNavigationStates = (state) => {
-  const { memberNavigationState, memberDefaultRoutes } = state.myTribe;
+  const { memberNavigationState, memberDefaultRoutes } = state.myEvent;
   return {
     memberNavigationState,
     memberDefaultRoutes

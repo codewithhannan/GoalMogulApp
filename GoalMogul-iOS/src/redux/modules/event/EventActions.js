@@ -72,9 +72,9 @@ export const deleteEvent = (eventId) => (dispatch, getState) => {
   };
 
   API
-    .delete(`${BASE_ROUTE}`, { eventId }, token)
+    .delete(`${BASE_ROUTE}?eventId=${eventId}`, { eventId }, token)
     .then((res) => {
-      if (res.message && res.message.includes('Deleted')) {
+      if (res.status === 200 || (res.message && res.message.includes('Deleted'))) {
         return onSuccess(res);
       }
       onError(res);
