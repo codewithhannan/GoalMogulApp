@@ -228,7 +228,7 @@ export const postComment = (pageId) => (dispatch, getState) => {
     });
     // If succeed and comment type is suggestionFor a need or a step, switch to
     // comment tab
-    if (commentType === 'Suggestion'
+    if (commentType === 'Suggestion' && suggestion
         && (suggestion.suggestionFor === 'Need'
         || suggestion.suggestionFor === 'Step')) {
       dispatch({

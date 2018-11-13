@@ -110,6 +110,8 @@ export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
  * Refresh a tribe detail
  */
 export const refreshMyTribeDetail = (tribeId) => (dispatch, getState) => {
+  const { item } = getState().myTribe;
+  if (!item || item._id !== tribeId) return;
   fetchTribeDetail(tribeId)(dispatch, getState);
   refreshTribeFeed(tribeId, dispatch, getState);
 };
@@ -261,7 +263,7 @@ const doMyTribeAdminPromoteUser = (userId, tribeId) => (dispatch, getState) => {
       token
     )
     .then((res) => {
-      if (res.data && res.message) {
+      if (res.status === 200 || (res.data && res.message)) {
         return onSuccess(res);
       }
       onError(res);
@@ -372,8 +374,8 @@ const doAdminAcceptUser = (userId, tribeId) => (dispatch, getState) => {
   };
 
   API
-    .post(
-      `${BASE_ROUTE}/accept-joint-request`, { joinerId: userId, tribeId }, token
+    .put(
+      `${BASE_ROUTE}/accept-join-request`, { joinerId: userId, tribeId }, token
     )
     .then((res) => {
       if (res.status === 200 || (res.data && res.message)) {

@@ -123,6 +123,8 @@ export const inviteUserToTribe = (tribeId, inviteeId) => (dispatch, getState) =>
       type: TRIBE_MEMBER_INVITE_SUCCESS
     });
     console.log(`${DEBUG_KEY}: invite user success: `, res);
+    refreshMyTribeDetail(tribeId)(dispatch, getState);
+    refreshTribeDetail(tribeId)(dispatch, getState);
     Actions.pop();
     Alert.alert(
       'Success',
@@ -216,7 +218,9 @@ export const acceptTribeInvit = (tribeId, type) => (dispatch, getState) => {
     dispatch({
       type: actionType,
       payload: {
+        tribeId,
         userId,
+        joinerId: userId,
         member: {
           memberRef: {
             ...user
@@ -262,21 +266,34 @@ export const declineTribeInvit = (tribeId, type) => (dispatch, getState) => {
  * Otherwise, it's from mytribe
  */
 export const requestJoinTribe = (tribeId, join, type) => (dispatch, getState) => {
-  const { token } = getState().user;
-  const { userId } = getState().user;
+  const { token, userId, user } = getState().user;
 
   const onSuccess = () => {
     if (join) {
       return dispatch({
         type: (type && type === 'mytribe')
           ? MYTRIBE_REQUEST_JOIN_SUCCESS
-          : TRIBE_REQUEST_JOIN_SUCCESS
+          : TRIBE_REQUEST_JOIN_SUCCESS,
+        payload: {
+          tribeId,
+          userId,
+          member: {
+            memberRef: {
+              ...user
+            },
+            category: 'JoinRequester'
+          }
+        }
       });
     }
     return dispatch({
       type: (type && type === 'mytribe')
         ? MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS
-        : TRIBE_REQUEST_CANCEL_JOIN_SUCCESS
+        : TRIBE_REQUEST_CANCEL_JOIN_SUCCESS,
+      payload: {
+        tribeId,
+        userId
+      }
     });
   };
 
@@ -360,6 +377,14 @@ export const tribeDetailOpenWithId = (tribeId) => (dispatch, getState) => {
   };
 
   fetchTribeDetail(tribeId, callback)(dispatch, getState);
+};
+
+// Refresh tribe detail
+export const refreshTribeDetail = (tribeId) => (dispatch, getState) => {
+  const { item } = getState().tribe;
+  if (!item || item._id !== tribeId) return;
+  fetchTribeDetail(tribeId)(dispatch, getState);
+  refreshTribeFeed(tribeId, dispatch, getState);
 };
 
 export const tribeDetailOpen = (tribe) => (dispatch, getState) => {

@@ -153,14 +153,30 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, 'item.members', newMembers);
     }
 
+    // Set hasRequested to false and remove user from the members
     case MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS: {
-      const newState = _.cloneDeep(state);
-      return _.set(newState, 'hasRequested', false);
+      const { userId, tribeId } = action.payload;
+      let newState = _.cloneDeep(state);
+      if (!newState.item || newState.item._id !== tribeId) return newState;
+      const oldMembers = _.get(newState, 'item.members');
+      const newMembers = oldMembers.filter((member) => member.memberRef._id !== userId);
+
+      newState = _.set(newState, 'hasRequested', false);
+      return _.set(newState, 'item.members', newMembers);
     }
 
     case MYTRIBE_REQUEST_JOIN_SUCCESS: {
-      const newState = _.cloneDeep(state);
-      return _.set(newState, 'hasRequested', true);
+      // const newState = _.cloneDeep(state);
+      // return _.set(newState, 'hasRequested', true);
+      const { userId, tribeId, member } = action.payload;
+      let newState = _.cloneDeep(state);
+      if (!newState.item || newState.item._id !== tribeId) return newState;
+      const oldMembers = _.get(newState, 'item.members');
+      let newMembers = oldMembers.filter((m) => m.memberRef._id !== userId);
+      newMembers = newMembers.concat(member);
+
+      newState = _.set(newState, 'hasRequested', true);
+      return _.set(newState, 'item.members', newMembers);
     }
 
     case MYTRIBE_MEMBER_SELECT_FILTER: {
