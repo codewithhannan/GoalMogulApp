@@ -44,6 +44,7 @@ import camera from '../../asset/utils/camera.png';
 import cameraRoll from '../../asset/utils/cameraRoll.png';
 import imageOverlay from '../../asset/utils/imageOverlay.png';
 import expand from '../../asset/utils/expand.png';
+import plus from '../../asset/utils/plus.png';
 
 // const { Popover } = renderers;
 const { width } = Dimensions.get('window');
@@ -165,11 +166,16 @@ class CreateEventModal extends React.Component {
               borderRadius: 4,
               alignItems: 'center',
               justifyContent: 'center',
-              marginTop: 8
+              marginTop: 8,
+              flexDirection: 'row',
+              padding: 10
             }}
             onPress={() => this.props.change('hasTimeline', true)}
           >
-            <Text style={{ padding: 10, fontSize: 13 }}>timeline</Text>
+            <Image source={plus} style={{ height: 11, width: 11 }} />
+            <Text style={{ fontSize: 14, fontWeight: '600', marginLeft: 4 }}>
+              timeline
+            </Text>
           </TouchableOpacity>
         </View>
       );
@@ -315,7 +321,7 @@ class CreateEventModal extends React.Component {
     const actionIconStyle = { ...styles.actionIconStyle };
     const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
     return (
-      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10 }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10 }}>
         <TouchableOpacity style={actionIconWrapperStyle} onPress={this.handleOpenCamera}>
           <Image style={actionIconStyle} source={camera} />
         </TouchableOpacity>
@@ -537,6 +543,18 @@ class CreateEventModal extends React.Component {
     );
   }
 
+  // Render field to select an image for event
+  renderImageSelection() {
+    const titleText = <Text style={styles.titleTextStyle}>Select a photo</Text>;
+    return (
+      <View style={{ marginTop: 4 }}>
+        {titleText}
+        {this.renderMedia()}
+        {this.renderActionIcons()}
+      </View>
+    );
+  }
+
   render() {
     const { handleSubmit, errors } = this.props;
     const actionText = this.props.initializeFromState ? 'Update' : 'Create';
@@ -563,8 +581,7 @@ class CreateEventModal extends React.Component {
               {this.renderEventLocation()}
               {this.renderTimeline()}
               {this.renderOptions()}
-              {this.renderMedia()}
-              {this.renderActionIcons()}
+              {this.renderImageSelection()}
             </View>
 
           </ScrollView>

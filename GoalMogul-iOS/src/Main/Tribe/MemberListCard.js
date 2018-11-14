@@ -35,14 +35,14 @@ class MemberListCard extends Component {
       requestOptions = switchByButtonIndex([
         [R.equals(0), () => {
           console.log(`${DEBUG_KEY} User chooses to remove user from current tribe`);
-          return onRemoveUser(_id) || console.log(`${DEBUG_KEY}:
+          return onDemoteUser(_id) || console.log(`${DEBUG_KEY}:
              No remove user function is supplied.`);
         }],
-        [R.equals(1), () => {
-          console.log(`${DEBUG_KEY} User chooses to demote current user to become member`);
-          return onDemoteUser(_id) || console.log(`${DEBUG_KEY}:
-             No demote user function is supplied.`);
-        }],
+        // [R.equals(1), () => {
+        //   console.log(`${DEBUG_KEY} User chooses to demote current user to become member`);
+        //   return onDemoteUser(_id) || console.log(`${DEBUG_KEY}:
+        //      No demote user function is supplied.`);
+        // }],
       ]);
     } else if (category === 'Member') {
       requestOptions = switchByButtonIndex([
@@ -176,6 +176,7 @@ class MemberListCard extends Component {
     const { item } = this.props;
     if (!item) return '';
 
+    const { headline } = item;
     return (
       <View style={styles.containerStyle}>
         {this.renderProfileImage(item)}
@@ -188,7 +189,7 @@ class MemberListCard extends Component {
             numberOfLines={1}
             ellipsizeMode='tail'
           >
-            380 MUTUAL FRIENDS
+            {headline}
           </Text>
           {this.renderAdditionalInfo(item)}
         </View>

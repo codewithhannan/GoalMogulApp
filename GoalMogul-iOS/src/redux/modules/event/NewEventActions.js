@@ -16,6 +16,9 @@
 import { Actions } from 'react-native-router-flux';
 import { Alert } from 'react-native';
 import moment from 'moment';
+import {
+  SubmissionError
+} from 'redux-form';
 import { api as API } from '../../middleware/api';
 import ImageUtils from '../../../Utils/ImageUtils';
 
@@ -226,9 +229,29 @@ const formToEventAdapter = (values, eventId, isEdit) => {
     picture
   } = values;
 
+  if (!title || !startTime.date || !endTime.date || !location || !description) {
+    Alert.alert(
+      'Missing field',
+      'Please check all the fields are filled in.'
+    );
+    throw new SubmissionError({
+      _error: 'Missing field'
+    });
+  }
+
   const startMoment = moment(startTime.date);
   const endMoment = moment(endTime.date);
   const duration = moment.duration(endMoment.diff(startMoment));
+
+  if (duration <= 0) {
+    Alert.alert(
+      'Incorrect format',
+      'Start time should be early than the end time.'
+    );
+    throw new SubmissionError({
+      _error: 'Incorrect start time'
+    });
+  }
 
   if (isEdit) {
     return {

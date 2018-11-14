@@ -52,6 +52,7 @@ import {
   leaveTribe,
   acceptTribeInvit,
   declineTribeInvit,
+  requestJoinTribe
 } from '../../../redux/modules/tribe/TribeActions';
 
 // Selector
@@ -800,6 +801,7 @@ export default connect(
     leaveTribe,
     acceptTribeInvit,
     declineTribeInvit,
+    requestJoinTribe,
     myTribeAdminRemoveUser,
     myTribeAdminPromoteUser,
     myTribeAdminDemoteUser,

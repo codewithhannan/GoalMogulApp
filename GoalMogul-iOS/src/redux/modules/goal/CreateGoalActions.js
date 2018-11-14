@@ -1,6 +1,7 @@
-import { reset } from 'redux-form';
+import { reset, SubmissionError } from 'redux-form';
 import { Alert } from 'react-native';
 import _ from 'lodash';
+import moment from 'moment';
 import { api as API } from '../../middleware/api';
 
 import {
@@ -155,6 +156,31 @@ const formToGoalAdapter = (values, userId) => {
     startTime,
     endTime
   } = values;
+
+  if (!title || !startTime.date || !endTime.date || !category) {
+    Alert.alert(
+      'Missing field',
+      'Please check all the fields are filled in.'
+    );
+    throw new SubmissionError({
+      _error: 'Missing field'
+    });
+  }
+
+  const startMoment = moment(startTime.date);
+  const endMoment = moment(endTime.date);
+  const duration = moment.duration(endMoment.diff(startMoment));
+
+  if (duration <= 0) {
+    Alert.alert(
+      'Incorrect format',
+      'Start time should be early than the end time.'
+    );
+    throw new SubmissionError({
+      _error: 'Incorrect start time'
+    });
+  }
+
   return {
     owner: userId,
     title,

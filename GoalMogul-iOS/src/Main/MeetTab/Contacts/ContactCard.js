@@ -89,6 +89,10 @@ class ContactCard extends Component {
   }
 
   render() {
+    const { item } = this.props;
+    if (!item) return '';
+
+    const { headline } = item;
     return (
       <TouchableOpacity style={styles.containerStyle} onPress={this.handleOnOpenProfile}>
         {this.renderProfileImage()}
@@ -101,7 +105,7 @@ class ContactCard extends Component {
             numberOfLines={1}
             ellipsizeMode='tail'
           >
-            380 MUTUAL FRIENDS
+            {headline}
           </Text>
         </View>
       </TouchableOpacity>
