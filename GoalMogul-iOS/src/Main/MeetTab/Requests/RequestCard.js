@@ -188,6 +188,7 @@ class RequestCard extends Component {
     if (!item) return '';
 
     const { user } = item;
+    const { headline } = item;
     return (
       <TouchableOpacity
         style={styles.containerStyle}
@@ -198,15 +199,15 @@ class RequestCard extends Component {
         <View style={styles.bodyContainerStyle}>
           {this.renderInfo(item)}
           {this.renderOccupation(item)}
-          {/*
+
           <Text
             style={styles.jobTitleTextStyle}
             numberOfLines={1}
             ellipsizeMode='tail'
           >
-            380 MUTUAL FRIENDS
+            {headline}
           </Text>
-          */}
+
           {this.renderAdditionalInfo(item)}
         </View>
         <View style={styles.buttonContainerStyle}>

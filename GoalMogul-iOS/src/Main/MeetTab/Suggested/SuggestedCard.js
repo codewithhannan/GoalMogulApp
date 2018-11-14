@@ -144,7 +144,10 @@ class SuggestedCard extends Component {
   }
 
   render() {
-    const { _id } = this.props.item;
+    const { item } = this.props;
+    if (!item) return '';
+
+    const { headline, _id } = item;
     return (
       <View style={styles.containerStyle}>
         {this.renderProfileImage()}
@@ -157,7 +160,7 @@ class SuggestedCard extends Component {
             numberOfLines={1}
             ellipsizeMode='tail'
           >
-            380 MUTUAL FRIENDS
+            {headline}
           </Text>
         </View>
 

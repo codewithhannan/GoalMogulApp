@@ -176,6 +176,7 @@ class MemberListCard extends Component {
     const { item } = this.props;
     if (!item) return '';
 
+    const { headline } = item;
     return (
       <View style={styles.containerStyle}>
         {this.renderProfileImage(item)}
@@ -188,7 +189,7 @@ class MemberListCard extends Component {
             numberOfLines={1}
             ellipsizeMode='tail'
           >
-            380 MUTUAL FRIENDS
+            {headline}
           </Text>
           {this.renderAdditionalInfo(item)}
         </View>

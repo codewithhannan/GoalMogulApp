@@ -156,6 +156,10 @@ class MeetCard extends Component {
   }
 
   render() {
+    const { item } = this.props;
+    if (!item) return '';
+
+    const { headline } = item;
     return (
       <View style={styles.containerStyle}>
         {this.renderProfileImage()}
@@ -168,7 +172,7 @@ class MeetCard extends Component {
             numberOfLines={1}
             ellipsizeMode='tail'
           >
-            380 MUTUAL FRIENDS
+            {headline}
           </Text>
           {this.renderAdditionalInfo()}
         </View>
