@@ -135,7 +135,7 @@ class CommentBox extends Component {
   }
 
   //tintColor: '#f5d573'
-  renderSuggestionIcon(newComment) {
+  renderSuggestionIcon(newComment, pageId) {
     const { mediaRef } = newComment;
     const disableButton = mediaRef !== undefined && mediaRef !== '';
     return (
@@ -143,7 +143,7 @@ class CommentBox extends Component {
         style={styles.iconContainerStyle}
         onPress={() => {
           console.log('suggestion on click in comment box');
-          this.props.createSuggestion();
+          this.props.createSuggestion(pageId);
         }}
         disabled={disableButton}
       >
@@ -159,7 +159,7 @@ class CommentBox extends Component {
     );
   }
 
-  renderLeftIcons(newComment) {
+  renderLeftIcons(newComment, pageId) {
     return (
       <View
         style={{
@@ -169,7 +169,7 @@ class CommentBox extends Component {
           marginBottom: 5
         }}
       >
-        {this.renderSuggestionIcon(newComment)}
+        {this.renderSuggestionIcon(newComment, pageId)}
         {this.renderImageIcon(newComment)}
       </View>
     );
@@ -291,7 +291,7 @@ class CommentBox extends Component {
         {this.renderSuggestionPreview()}
         {this.renderMedia(newComment)}
         <View style={{ flexDirection: 'row' }}>
-          {this.renderLeftIcons(newComment)}
+          {this.renderLeftIcons(newComment, pageId)}
           <View style={inputContainerStyle}>
             <TextInput
               ref="textInput"

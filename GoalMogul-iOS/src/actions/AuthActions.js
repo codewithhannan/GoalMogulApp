@@ -1,5 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import { SubmissionError } from 'redux-form';
+import { Alert } from 'react-native';
 import { api as API } from '../redux/middleware/api';
 
 import {
@@ -16,6 +17,8 @@ import {
   USER_LOG_OUT
 } from '../reducers/User';
 
+import { auth as Auth } from '../redux/modules/auth/Auth';
+
 import {
   refreshFeed,
 } from '../redux/modules/home/feed/actions';
@@ -24,6 +27,7 @@ import {
   refreshGoals
 } from '../redux/modules/home/mastermind/actions';
 
+const DEBUG_KEY = '[ Action Auth ]';
 export const userNameChanged = (username) => {
   return {
     type: USERNAME_CHANGED,
@@ -75,6 +79,7 @@ export const loginUser = ({ username, password }) => {
             type: LOGIN_USER_SUCCESS,
             payload
           });
+          Auth.saveKey(username, password);
           fetchUserProfile(res.token, res.userId, dispatch);
           refreshFeed()(dispatch, getState);
           refreshGoals()(dispatch, getState);
@@ -126,5 +131,13 @@ export const logout = () => (dispatch) => {
   dispatch({
     type: USER_LOG_OUT
   });
+  const callback = (res) => {
+    if (res instanceof Error) {
+      console.log(`${DEBUG_KEY}: log out user error: `, res);
+    } else {
+      console.log(`${DEBUG_KEY}: log out user with res: `, res);
+    }
+  };
+  Auth.reset(callback);
   Actions.popTo('splash');
 };

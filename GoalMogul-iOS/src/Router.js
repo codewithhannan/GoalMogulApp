@@ -300,10 +300,6 @@ class RouterComponent extends Component {
   }
 }
 
-const mapStateToProps = states => {
-  return states;
-};
-
 const styles = {
   navBarStyle: {
     backgroundColor: '#34c0dd',

@@ -8,19 +8,27 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
-import { LinearGradient, Font } from 'expo';
+import { LinearGradient, Font, AppLoading, Asset } from 'expo';
 import { Actions } from 'react-native-router-flux';
+import _ from 'lodash';
+
+// Actions
+import { auth as Auth } from './redux/modules/auth/Auth';
+
+import {
+  loginUser
+} from './actions';
 
 /* Asset */
 import HeaderLogo from './asset/header/header-logo-white.png';
 import Helpfulness from './asset/utils/help.png';
 
 const width = Dimensions.get('window').width
-
+const DEBUG_KEY = '[ UI SplashScreen ]';
 class SplashScreen extends Component {
-
   state = {
     fontLoaded: false,
+    appReady: false
   };
 
   async componentDidMount() {
@@ -29,6 +37,94 @@ class SplashScreen extends Component {
       'gotham-pro-bold': require('../assets/fonts/GothamPro-Bold.ttf')
     });
     this.setState({ fontLoaded: true });
+  }
+
+  // Functions to preload static assets
+  async _loadAssetsAsync(callback) {
+    const imageAssets = cacheImages([
+      require('./asset/utils/badge.png'),
+      require('./asset/utils/dropDown.png'),
+      require('./asset/utils/like.png'),
+      require('./asset/utils/bulb.png'),
+      require('./asset/utils/progressBar.png'),
+      require('./asset/utils/help.png'),
+      require('./asset/utils/privacy.png'),
+      require('./asset/utils/edit.png'),
+      require('./asset/utils/check.png'),
+      require('./asset/utils/addUser.png'),
+      require('./asset/utils/default_profile.png'),
+      require('./asset/utils/defaultUserProfile.png'),
+      require('./asset/utils/meetSetting.png'),
+      require('./asset/utils/back.png'),
+      require('./asset/utils/next.png'),
+      require('./asset/utils/plus.png'),
+      require('./asset/utils/cancel_no_background.png'),
+      require('./asset/utils/briefcase.png'),
+      require('./asset/utils/love.png'),
+      require('./asset/utils/cancel.png'),
+      require('./asset/utils/post.png'),
+      require('./asset/utils/friendsSettingIcon.png'),
+      require('./asset/utils/camera.png'),
+      require('./asset/utils/cameraRoll.png'),
+      require('./asset/utils/photoIcon.png'),
+      require('./asset/utils/expand.png'),
+      require('./asset/utils/forward.png'),
+      require('./asset/utils/steps.png'),
+      require('./asset/utils/activity.png'),
+      require('./asset/utils/calendar.png'),
+      require('./asset/utils/location.png'),
+      require('./asset/utils/lightBulb.png'),
+      require('./asset/utils/comment.png'),
+      require('./asset/utils/reply.png'),
+      require('./asset/utils/makeSuggestion.png'),
+      require('./asset/utils/imageOverlay.png'),
+      require('./asset/utils/info_white.png'),
+      require('./asset/utils/info.png'),
+      // Suggestion Modal Icons
+      require('./asset/suggestion/book.png'),
+      require('./asset/suggestion/chat.png'),
+      require('./asset/suggestion/event.png'),
+      require('./asset/suggestion/flag.png'),
+      require('./asset/suggestion/friend.png'),
+      require('./asset/suggestion/group.png'),
+      require('./asset/suggestion/link.png'),
+      require('./asset/suggestion/other.png'),
+      // Explore related icons
+      require('./asset/explore/explore.png'),
+      require('./asset/explore/tribe.png'),
+      // Navigation Icons
+      require('./asset/footer/navigation/home.png'),
+      require('./asset/footer/navigation/bell.png'),
+      require('./asset/footer/navigation/meet.png'),
+      require('./asset/footer/navigation/chat.png'),
+      require('./asset/footer/navigation/star.png'),
+      require('./asset/header/menu.png'),
+      require('./asset/header/setting.png'),
+      require('./asset/header/home-logo.png'),
+      require('./asset/header/header-logo-white.png'),
+      require('./asset/header/header-logo.png'),
+      require('./asset/header/logo.png'),
+    ]);
+
+    const fontAssets = cacheFonts({
+      'gotham-pro': require('../assets/fonts/GothamPro.ttf'),
+      'gotham-pro-bold': require('../assets/fonts/GothamPro-Bold.ttf')
+    });
+
+    await Promise
+      .all([...imageAssets, ...fontAssets]);
+
+    console.log('finish loading images');
+
+    await Auth.getKey().then((res) => {
+      if (!(res instanceof Error)) {
+        if (!_.isEmpty(res)) {
+          return callback(res);
+        }
+      }
+    }).catch((err) => console.log(`${DEBUG_KEY}: log in user with err: `, err));
+    console.log('finish loading keys');
+    return;
   }
 
   handleGetStartedOnPress() {
@@ -56,6 +152,16 @@ class SplashScreen extends Component {
   }
 
   render() {
+    if (!this.state.appReady) {
+      return (
+        <AppLoading
+          startAsync={() => this._loadAssetsAsync(this.props.loginUser)}
+          onFinish={() => this.setState({ appReady: true })}
+          onError={console.warn}
+        />
+      );
+    }
+
     return (
       <View style={styles.containerStyle}>
         <LinearGradient
@@ -230,11 +336,28 @@ const styles = {
   }
 };
 
-const mapDispatchToProps = () => {
+function cacheImages(images) {
+  return images.map(image => {
+    if (typeof image === 'string') {
+      return Image.prefetch(image);
+    }
+    return Asset.fromModule(image).downloadAsync();
+  });
+}
+
+function cacheFonts(fonts) {
+  return Font.loadAsync(fonts);
+}
+
+const mapDispatchToProps = (dispatch) => {
   return {
     registration: () => Actions.registration(),
-    login: () => Actions.login()
+    login: () => Actions.login(),
+    loginUser: (val) => dispatch(loginUser(val))
   };
 };
 
-export default connect(null, mapDispatchToProps)(SplashScreen);
+export default connect(
+  null,
+  mapDispatchToProps
+)(SplashScreen);

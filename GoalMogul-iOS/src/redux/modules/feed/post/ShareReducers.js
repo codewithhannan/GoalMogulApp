@@ -69,12 +69,15 @@ export default (state = INITIAL_STATE, action) => {
     /**
      * Clear share detail on user close or log out
      */
-    case SHARE_DETAIL_CLOSE:
-    case USER_LOG_OUT: {
+    case SHARE_DETAIL_CLOSE: {
       const { tab } = action.payload;
       const path = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
       const newState = _.cloneDeep(state);
       return _.set(newState, `${path}`, { ...SHARE_INITIAL_STATE });
+    }
+
+    case USER_LOG_OUT: {
+      return { ...INITIAL_STATE };
     }
 
     case LIKE_SHARE:
