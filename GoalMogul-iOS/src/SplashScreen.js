@@ -8,7 +8,12 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
-import { LinearGradient, Font, AppLoading, Asset } from 'expo';
+import Expo, {
+  LinearGradient,
+  Font,
+  AppLoading,
+  Asset
+} from 'expo';
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
 
@@ -26,10 +31,14 @@ import Helpfulness from './asset/utils/help.png';
 const width = Dimensions.get('window').width
 const DEBUG_KEY = '[ UI SplashScreen ]';
 class SplashScreen extends Component {
-  state = {
-    fontLoaded: false,
-    appReady: false
-  };
+  constructor(props) {
+    super(props);
+    // Expo.SplashScreen.preventAutoHide();
+    this.state = {
+      fontLoaded: false,
+      appReady: false
+    };
+  }
 
   async componentDidMount() {
     await Font.loadAsync({
@@ -124,6 +133,7 @@ class SplashScreen extends Component {
       }
     }).catch((err) => console.log(`${DEBUG_KEY}: log in user with err: `, err));
     console.log('finish loading keys');
+    // Expo.SplashScreen.hide();
     return;
   }
 
@@ -158,6 +168,7 @@ class SplashScreen extends Component {
           startAsync={() => this._loadAssetsAsync(this.props.loginUser)}
           onFinish={() => this.setState({ appReady: true })}
           onError={console.warn}
+          autoHideSplash={false}
         />
       );
     }

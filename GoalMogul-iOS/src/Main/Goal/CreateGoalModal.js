@@ -34,6 +34,7 @@ import {
   MenuTrigger,
   renderers
 } from 'react-native-popup-menu';
+import Slider from 'react-native-slider';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
@@ -108,7 +109,7 @@ class CreateGoalModal extends Component {
   }
 
   handlePriorityOnSelect = (value) => {
-    console.log('priority selected is: ', value);
+    // console.log('priority selected is: ', value);
     this.props.change('priority', value);
   }
 
@@ -170,6 +171,7 @@ class CreateGoalModal extends Component {
           editable={editable}
           maxHeight={maxHeight}
           multiline={multiline}
+          minHeight={70}
           value={_.isEmpty(value) ? '' : value}
         />
       </View>
@@ -280,18 +282,41 @@ class CreateGoalModal extends Component {
   renderPriority = () => {
     const titleText = <Text style={styles.titleTextStyle}>Priority</Text>;
 
-    const menu = MenuFactory(
-      ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-      this.handlePriorityOnSelect,
-      this.props.priority,
-      { ...styles.triggerContainerStyle, width: 80 },
-      () => console.log('animationCallback')
-      // () => this.scrollView.scrollTo({ x: 0, y: 50, animated: true })
+    // const menu = MenuFactory(
+    //   ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+    //   this.handlePriorityOnSelect,
+    //   this.props.priority,
+    //   { ...styles.triggerContainerStyle, width: 80 },
+    //   () => console.log('animationCallback')
+    //   // () => this.scrollView.scrollTo({ x: 0, y: 50, animated: true })
+    // );
+    const valueText = (
+      <Text
+        style={{
+          ...styles.titleTextStyle,
+          fontSize: 14,
+          fontWeight: '700'
+        }}
+      >
+        {this.props.priority}
+      </Text>
+    );
+
+    const menu = (
+      <Slider
+        value={this.props.priority}
+        onValueChange={value => this.handlePriorityOnSelect(value)}
+        step={1}
+        minimumValue={1}
+        maximumValue={10}
+        disabled={!this.props.uploading}
+      />
     );
 
     return (
       <View style={{ ...styles.sectionMargin }}>
         {titleText}
+        {valueText}
         {menu}
       </View>
     );

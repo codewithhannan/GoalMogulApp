@@ -99,7 +99,12 @@ class Mastermind extends Component {
           onRefresh={this.handleOnRefresh}
           onEndReached={this.handleOnLoadMore}
           ListHeaderComponent={this.renderListHeader()}
-          ListEmptyComponent={<EmptyResult text={'No Goals have been shared'} />}
+          ListEmptyComponent={
+            <EmptyResult
+              text={'No Goals have been shared'}
+              textStyle={{ paddingTop: 100 }}
+            />
+          }
           onEndThreshold={0}
         />
         {this.renderPlus()}
