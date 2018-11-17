@@ -232,13 +232,8 @@ export const loadEventFeed = (skip, limit, token, params, callback, onError) => 
     )
     .then((res) => {
       console.log(`${DEBUG_KEY}: loading with res: `, res);
-      if (res) {
-        // Right now return test data
-        if (skip === 0) {
-          callback(res);
-        } else {
-          callback([]);
-        }
+      if (res.status === 200 && res.data) {
+        return callback(res.data);
       }
       callback([]);
       console.warn(`${DEBUG_KEY}: loading with no res`);

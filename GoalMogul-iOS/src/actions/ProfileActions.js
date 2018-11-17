@@ -65,7 +65,7 @@ const fetchFriendsCountSucceed = (res, self, dispatch) => {
 };
 
 const fetchProfileSucceed = (res, dispatch) => {
-  console.log(`${DEBUG_KEY} fetch profile succeed`);
+  console.log(`${DEBUG_KEY} fetch profile succeed with res: `, res);
   dispatch({
     type: PROFILE_FETCHING_SUCCESS,
     payload: res.data
@@ -162,6 +162,8 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
       } else {
         fetchFriendshipSucceed(friendshipRes, dispatch);
       }
+
+      handleCurrentTabRefresh()(dispatch, getState);
     })
     .catch((err) => {
       console.log('err in loading user profile', err);
@@ -346,6 +348,12 @@ export const changeFilter = (tab, filterType, value) => (dispatch, getState) => 
   handleTabRefresh(tab)(dispatch, getState);
 };
 
+export const handleCurrentTabRefresh = () => (dispatch, getState) => {
+  const { navigationState } = getState().profile;
+  const { routes, index } = navigationState;
+  handleTabRefresh(routes[index].key)(dispatch, getState);
+};
+
 /**
  * Handle user profile on refresh
  * NOTE: This is TODO for milestone 2
@@ -353,8 +361,13 @@ export const changeFilter = (tab, filterType, value) => (dispatch, getState) => 
  * @params tab: one of ['goals', 'posts', 'needs']
  */
 export const handleTabRefresh = (tab) => (dispatch, getState) => {
-  const { token, userId } = getState().user;
-  const { filter, limit } = _.get(getState().profile, tab);
+  const { token } = getState().user;
+  const profile = getState().profile;
+  const { user } = profile;
+  const { filter, limit } = _.get(profile, tab);
+
+  if (!user || !user._id) return;
+  const userId = user._id;
 
   dispatch({
     type: PROFILE_REFRESH_TAB,
