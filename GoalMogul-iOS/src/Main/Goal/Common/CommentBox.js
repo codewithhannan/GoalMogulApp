@@ -135,7 +135,7 @@ class CommentBox extends Component {
   }
 
   //tintColor: '#f5d573'
-  renderSuggestionIcon(newComment) {
+  renderSuggestionIcon(newComment, pageId) {
     const { mediaRef } = newComment;
     const disableButton = mediaRef !== undefined && mediaRef !== '';
     return (
@@ -143,7 +143,7 @@ class CommentBox extends Component {
         style={styles.iconContainerStyle}
         onPress={() => {
           console.log('suggestion on click in comment box');
-          this.props.createSuggestion();
+          this.props.createSuggestion(pageId);
         }}
         disabled={disableButton}
       >
@@ -159,7 +159,10 @@ class CommentBox extends Component {
     );
   }
 
-  renderLeftIcons(newComment) {
+  renderLeftIcons(newComment, pageId, hasSuggestion) {
+    const suggestionIcon = hasSuggestion
+      ? this.renderSuggestionIcon(newComment, pageId)
+      : '';
     return (
       <View
         style={{
@@ -169,7 +172,7 @@ class CommentBox extends Component {
           marginBottom: 5
         }}
       >
-        {this.renderSuggestionIcon(newComment)}
+        {suggestionIcon}
         {this.renderImageIcon(newComment)}
       </View>
     );
@@ -235,7 +238,7 @@ class CommentBox extends Component {
         onPress={() => this.handleOnPost(uploading)}
         disabled={disable}
       >
-        <Text style={{ color, fontSize: 13, fontWeight: '500', padding: 6, margin: 6 }}>Post</Text>
+        <Text style={{ color, fontSize: 13, fontWeight: '700', padding: 6, margin: 6 }}>Post</Text>
       </TouchableOpacity>
     );
   }
@@ -262,7 +265,7 @@ class CommentBox extends Component {
   }
 
   render() {
-    const { pageId, newComment } = this.props;
+    const { pageId, newComment, hasSuggestion } = this.props;
     if (!newComment || !newComment.parentRef) return '';
 
     const { uploading } = newComment;
@@ -291,7 +294,7 @@ class CommentBox extends Component {
         {this.renderSuggestionPreview()}
         {this.renderMedia(newComment)}
         <View style={{ flexDirection: 'row' }}>
-          {this.renderLeftIcons(newComment)}
+          {this.renderLeftIcons(newComment, pageId, hasSuggestion)}
           <View style={inputContainerStyle}>
             <TextInput
               ref="textInput"

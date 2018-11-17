@@ -39,6 +39,7 @@ import CommentBox from '../Common/CommentBox';
 import StepAndNeedCard from './StepAndNeedCard';
 import CommentCard from './Comment/CommentCard';
 import Report from '../../../Main/Report/Report';
+import EmptyResult from '../../Common/Text/EmptyResult';
 
 import GoalDetailSection from './GoalDetailSection';
 
@@ -173,6 +174,7 @@ class GoalDetailCard2 extends Component {
           onSuggestion={() => this.dialogOnFocus()}
           isSelf={this.props.isSelf}
         />
+        <View style={{ borderBottomWidth: 0.5, borderColor: '#e5e5e5' }} />
         {
           this._renderHeader({
             jumpToIndex: (i) => this._handleIndexChange(i),
@@ -180,6 +182,7 @@ class GoalDetailCard2 extends Component {
             statsState
           })
         }
+        <View style={{ borderBottomWidth: 0.5, borderColor: '#e5e5e5' }} />
       </View>
     );
   }
@@ -188,6 +191,12 @@ class GoalDetailCard2 extends Component {
     const { comments, stepsAndNeeds, navigationState, goalDetail } = this.props;
     const { routes, index } = navigationState;
     const data = routes[index].key === 'comments' ? comments : stepsAndNeeds;
+    let emptyResult = '';
+    if (!data || data.length === 0) {
+      emptyResult = routes[index].key === 'comments'
+        ? 'No comments'
+        : 'No needs and steps';
+    }
     // console.log('transformed comments to render are: ', comments);
     if (!goalDetail || _.isEmpty(goalDetail)) return '';
 
@@ -209,22 +218,29 @@ class GoalDetailCard2 extends Component {
             title='Goal'
             onBackPress={() => this.props.closeGoalDetail()}
           />
-            <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
-              <FlatList
-                ref="flatList"
-                data={data}
-                renderItem={this.renderItem}
-                keyExtractor={this.keyExtractor}
-                ListHeaderComponent={() => this.renderGoalDetailSection()}
-                refreshing={this.props.commentLoading}
-                onRefresh={this.handleRefresh}
-              />
+          <KeyboardAvoidingView style={{ flex: 1, backgroundColor: 'white' }} behavior='padding'>
+            <FlatList
+              ref="flatList"
+              data={data}
+              renderItem={this.renderItem}
+              keyExtractor={this.keyExtractor}
+              ListHeaderComponent={() => this.renderGoalDetailSection()}
+              refreshing={this.props.commentLoading}
+              onRefresh={this.handleRefresh}
+              ListEmptyComponent={
+                <EmptyResult
+                  text={emptyResult}
+                  textStyle={{ paddingTop: 100 }}
+                />
+              }
+            />
 
-              <CommentBox
-                onRef={(ref) => { this.commentBox = ref; }}
-              />
+            <CommentBox
+              onRef={(ref) => { this.commentBox = ref; }}
+              hasSuggestion
+            />
 
-            </KeyboardAvoidingView>
+          </KeyboardAvoidingView>
         </View>
       </MenuProvider>
     );

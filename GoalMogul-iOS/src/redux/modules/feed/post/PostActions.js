@@ -76,7 +76,8 @@ export const editPost = (post) => (dispatch, getState) => {
 /**
  * @param needOpenProfile: if true, then open profile with post tab
  */
-export const submitCreatingPost = (values, needUpload, needOpenProfile) => (dispatch, getState) => {
+export const submitCreatingPost = (values, needUpload, needOpenProfile, callback) =>
+(dispatch, getState) => {
     const { userId, token } = getState().user;
     const newPost = newPostAdaptor(values, userId);
 
@@ -86,6 +87,10 @@ export const submitCreatingPost = (values, needUpload, needOpenProfile) => (disp
         type: POST_NEW_POST_SUBMIT_SUCCESS,
         payload: { ...res.data }
       });
+
+      if (callback) {
+        callback();
+      }
 
       if (needOpenProfile) {
         openProfile(userId, 'posts')(dispatch, getState);

@@ -121,8 +121,17 @@ class MyTribe extends Component {
    * On plus clicked, show two icons. Post and Invite
    * const { textStyle, iconStyle, iconSource, text, onPress } = button;
    */
-  handlePlus = (item) => {
+  handlePlus = (item, navigationState) => {
     const { _id } = item;
+    const { routes } = navigationState;
+    const indexToGo = routes.map((route) => route.key).indexOf('posts');
+    const refreshTribeCallback = () =>
+      setTimeout(() => this.refs['flatList'].scrollToEnd(), 200);
+
+    const postCallback = () => {
+      this._handleIndexChange(indexToGo);
+      this.props.refreshMyTribeDetail(_id);
+    };
     const buttons = [
       // button info for creating a post
       {
@@ -137,7 +146,7 @@ class MyTribe extends Component {
             showPlus: true
           });
           Actions.pop();
-          Actions.createPostModal({ belongsToTribe: _id });
+          Actions.createPostModal({ belongsToTribe: _id, callback: postCallback });
         }
       },
       // button info for invite
@@ -585,10 +594,13 @@ class MyTribe extends Component {
   }
 
   renderPlus(item) {
-    const { isMember } = this.props;
+    const { isMember, navigationState } = this.props;
     if (this.state.showPlus && (isMember === 'Admin' || isMember === 'Member')) {
       return (
-        <TouchableOpacity style={styles.iconContainerStyle} onPress={() => this.handlePlus(item)}>
+        <TouchableOpacity
+          style={styles.iconContainerStyle}
+          onPress={() => this.handlePlus(item, navigationState)}
+        >
           <Image style={styles.iconStyle} source={plus} />
         </TouchableOpacity>
       );
@@ -612,6 +624,7 @@ class MyTribe extends Component {
             handlePageSetting={() => this.handlePageSetting(item)}
           />
           <FlatList
+            ref='flatList'
             data={data}
             renderItem={this.renderItem}
             keyExtractor={(i) => i._id}

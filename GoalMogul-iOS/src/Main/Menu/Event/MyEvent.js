@@ -40,7 +40,8 @@ import {
   eventSelectTab,
   eventDetailClose,
   loadMoreEventFeed,
-  myEventSelectMembersFilter
+  myEventSelectMembersFilter,
+  refreshMyEventDetail
 } from '../../../redux/modules/event/MyEventActions';
 
 // Selector
@@ -78,8 +79,14 @@ class MyEvent extends Component {
    * On plus clicked, show two icons. Post and Invite
    * const { textStyle, iconStyle, iconSource, text, onPress } = button;
    */
-  handlePlus = (item) => {
+  handlePlus = (item, navigationState) => {
     const { _id } = item;
+    const { routes } = navigationState;
+    const indexToGo = routes.map((route) => route.key).indexOf('posts');
+    const postCallback = () => {
+      this._handleIndexChange(indexToGo);
+      this.props.refreshMyEventDetail(_id);
+    };
     const buttons = [
       // button info for creating a post
       {
@@ -94,7 +101,7 @@ class MyEvent extends Component {
             showPlus: true
           });
           Actions.pop();
-          Actions.createPostModal({ belongsToEvent: _id });
+          Actions.createPostModal({ belongsToEvent: _id, callback: postCallback });
         }
       },
       // button info for invite
@@ -233,7 +240,7 @@ class MyEvent extends Component {
   renderFooter = () => {
     const { routes, index } = this.props.navigationState;
     if (this.props.feedLoading && routes[index].key === 'posts') {
-      return <ActivityIndicator size='small' color='45C9F6' />;
+      return <ActivityIndicator size='small' color='#45C9F6' />;
     }
 
     return '';
@@ -456,11 +463,14 @@ class MyEvent extends Component {
   }
 
   renderPlus(item) {
-    const { isMember } = this.props;
+    const { isMember, navigationState } = this.props;
     // if (this.state.showPlus && (isMember === 'Admin' || isMember === 'Member')) {
     if (this.state.showPlus) {
       return (
-        <TouchableOpacity style={styles.iconContainerStyle} onPress={() => this.handlePlus(item)}>
+        <TouchableOpacity
+          style={styles.iconContainerStyle}
+          onPress={() => this.handlePlus(item, navigationState)}
+        >
           <Image style={styles.iconStyle} source={plus} />
         </TouchableOpacity>
       );
@@ -486,6 +496,8 @@ class MyEvent extends Component {
             data={data}
             renderItem={this.renderItem}
             keyExtractor={(i) => i._id}
+            onRefresh={() => this.props.refreshMyEventDetail(item._id)}
+            refreshing={this.props.loading}
             ListHeaderComponent={this.renderEventOverview(item, data)}
             ListFooterComponent={this.renderFooter}
           />
@@ -599,7 +611,9 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { navigationState, item, feed, feedLoading, memberNavigationState } = state.myEvent;
+  const {
+    navigationState, item, feed, feedLoading, memberNavigationState, eventLoading
+  } = state.myEvent;
   // const memberNavigationState = getMyEventMemberNavigationState(state);
 
   const { routes, index } = navigationState;
@@ -625,7 +639,8 @@ const mapStateToProps = state => {
     feedLoading,
     status: getMyEventUserStatus(state),
     memberNavigationState,
-    tab: routes[index].key
+    tab: routes[index].key,
+    loading: eventLoading || false
   };
 };
 
@@ -641,6 +656,7 @@ export default connect(
     editEvent,
     reportEvent,
     myEventSelectMembersFilter,
-    rsvpEvent
+    rsvpEvent,
+    refreshMyEventDetail
   }
 )(MyEvent);

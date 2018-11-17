@@ -91,12 +91,15 @@ export default (state = INITIAL_STATE, action) => {
     /**
      * Clear post detail on user close or log out
      */
-    case POST_DETAIL_CLOSE:
-    case USER_LOG_OUT: {
+    case POST_DETAIL_CLOSE: {
       const { tab } = action.payload;
       const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
       const newState = _.cloneDeep(state);
       return _.set(newState, `${path}`, { ...POST_INITIAL_STATE });
+    }
+
+    case USER_LOG_OUT: {
+      return { ...INITIAL_STATE };
     }
 
     case LIKE_POST:

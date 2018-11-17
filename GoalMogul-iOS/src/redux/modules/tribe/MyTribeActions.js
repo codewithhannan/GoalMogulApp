@@ -108,12 +108,13 @@ export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
 
 /**
  * Refresh a tribe detail
+ * NOTE: callback can be provided to execute on refresh finish
  */
-export const refreshMyTribeDetail = (tribeId) => (dispatch, getState) => {
+export const refreshMyTribeDetail = (tribeId, callback) => (dispatch, getState) => {
   const { item } = getState().myTribe;
   if (!item || item._id !== tribeId) return;
   fetchTribeDetail(tribeId)(dispatch, getState);
-  refreshTribeFeed(tribeId, dispatch, getState);
+  refreshTribeFeed(tribeId, dispatch, getState, callback);
 };
 
 /**
@@ -395,7 +396,7 @@ const doAdminAcceptUser = (userId, tribeId) => (dispatch, getState) => {
  * NOTE: goal feed and activity feed share the same constants with different
  * input on type field
  */
-export const refreshTribeFeed = (tribeId, dispatch, getState) => {
+export const refreshTribeFeed = (tribeId, dispatch, getState, callback) => {
   const { token } = getState().user;
   const { limit } = getState().tribe;
 
@@ -413,6 +414,11 @@ export const refreshTribeFeed = (tribeId, dispatch, getState) => {
         hasNextPage: !(data === undefined || data.length === 0)
       }
     });
+
+    // Callback are from frontend to perform scolling
+    if (callback) {
+      callback();
+    }
   }, () => {
     // TODO: implement for onError
   });
