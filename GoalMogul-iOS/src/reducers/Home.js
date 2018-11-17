@@ -156,6 +156,34 @@ export default (state = INITIAL_STATE, action) => {
 function updateLike(array, id, likeId, type) {
   return array.map((item) => {
     let newItem = _.cloneDeep(item);
+    if (type === 'post') {
+      let itemToUpdate;
+      let path;
+      if (newItem.postRef) {
+        path = 'postRef';
+      }
+      if (newItem.goalRef) {
+        path = 'goalRef';
+      }
+      if (path) {
+        itemToUpdate = _.get(newItem, `${path}`);
+        if (itemToUpdate._id === id) {
+          // upate maybeLikeRef
+          itemToUpdate = _.set(itemToUpdate, 'maybeLikeRef', likeId);
+
+          // Update like Count
+          const oldLikeCount = _.get(itemToUpdate, 'likeCount');
+          itemToUpdate = _.set(
+            itemToUpdate,
+            'likeCount',
+            likeId ? oldLikeCount + 1 : oldLikeCount - 1
+          );
+          newItem = _.set(newItem, 'path', itemToUpdate);
+        }
+      }
+      return newItem;
+    }
+
     if (item._id.toString() === id.toString()) {
       newItem = _.set(newItem, 'maybeLikeRef', likeId);
     }
