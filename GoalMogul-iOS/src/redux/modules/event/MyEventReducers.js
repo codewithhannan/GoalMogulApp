@@ -22,6 +22,7 @@ const INITIAL_STATE = {
   // Feed related vars
   feed: [],
   feedLoading: false,
+  eventLoading: false,
   hasNextPage: undefined,
   skip: 0,
   limit: 10,
@@ -47,6 +48,7 @@ export const MYEVENT_DETAIL_CLOSE = 'myevent_detail_close';
 export const MYEVENT_FEED_FETCH = 'myevent_feed_fetch';
 export const MYEVENT_FEED_FETCH_DONE = 'myevent_feed_fetch_done';
 export const MYEVENT_FEED_REFRESH_DONE = 'myevent_feed_refresh_done';
+export const MYEVENT_DETAIL_LOAD = 'myevent_detail_load';
 export const MYEVENT_DETAIL_LOAD_SUCCESS = 'myevent_detail_load_success';
 export const MYEVENT_DETAIL_LOAD_FAIL = 'myevent_detail_load_fail';
 export const MYEVENT_MEMBER_SELECT_FILTER = 'myevent_member_select_filter';
@@ -99,7 +101,18 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, 'feed', data);
     }
 
-    case MYEVENT_DETAIL_LOAD_SUCCESS:
+    case MYEVENT_DETAIL_LOAD: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'eventLoading', true);
+    }
+
+    case MYEVENT_DETAIL_LOAD_SUCCESS: {
+      const { event } = action.payload;
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'eventLoading', false);
+      return _.set(newState, 'item', { ...event });
+    }
+
     case MYEVENT_DETAIL_OPEN: {
       const { event } = action.payload;
       const newState = _.cloneDeep(state);

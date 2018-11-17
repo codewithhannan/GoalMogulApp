@@ -105,7 +105,12 @@ class CreatePostModal extends Component {
       || (!initializeFromState && mediaRef);
 
     const needOpenProfile = belongsToTribe === undefined && belongsToEvent === undefined;
-    return this.props.submitCreatingPost(this.props.formVals.values, needUpload, needOpenProfile);
+    return this.props.submitCreatingPost(
+      this.props.formVals.values,
+      needUpload,
+      needOpenProfile,
+      this.props.callback
+    );
   }
   // renderInput = ({
   //   input: { onChange, onFocus, value, ...restInput },

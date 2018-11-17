@@ -132,10 +132,10 @@ const styles = {
     justifyContent: 'flex-start'
   },
   caretContainer: {
-    paddingBottom: 10,
+    paddingBottom: 8,
     paddingRight: 8,
     paddingLeft: 10,
-    paddingTop: 5
+    paddingTop: 1
   },
   imageStyle: {
     alignSelf: 'center',
@@ -146,7 +146,7 @@ const styles = {
   triggerContainerStyle: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 5,
+    marginTop: 3,
     borderWidth: 1,
     borderRadius: 5,
     borderColor: '#e9e9e9',

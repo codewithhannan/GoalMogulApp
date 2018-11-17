@@ -115,7 +115,6 @@ class ProfilePostBody extends React.Component {
   }
 
   renderPostBody(item) {
-    if (!item) return '';
     const { postType } = item;
     if (postType === 'General') {
       return this.renderPostImage(item.mediaRef);
@@ -134,7 +133,7 @@ class ProfilePostBody extends React.Component {
     if (!item) return '';
 
     return (
-      <View style={{ marginTop: 10 }}>
+      <View style={{ marginTop: 8 }}>
         {this.renderPostBody(item)}
       </View>
     );

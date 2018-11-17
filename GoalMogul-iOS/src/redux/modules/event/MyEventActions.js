@@ -9,6 +9,7 @@ import {
   MYEVENT_FEED_FETCH,
   MYEVENT_FEED_FETCH_DONE,
   MYEVENT_FEED_REFRESH_DONE,
+  MYEVENT_DETAIL_LOAD,
   MYEVENT_DETAIL_LOAD_SUCCESS,
   MYEVENT_DETAIL_LOAD_FAIL,
   MYEVENT_MEMBER_SELECT_FILTER
@@ -39,10 +40,24 @@ export const eventDetailClose = () => (dispatch) => {
 };
 
 /**
+ * Refresh an event detail
+ * NOTE: callback can be provided to execute on refresh finish
+ */
+export const refreshMyEventDetail = (eventId, callback) => (dispatch, getState) => {
+  const { item } = getState().myEvent;
+  if (!item || item._id !== eventId) return;
+  fetchEventDetail(eventId)(dispatch, getState);
+  refreshEventFeed(eventId, dispatch, getState, callback);
+};
+
+/**
  * Current behavior is to go to explore page and opens up event detail
  * and then open event detail with id
  */
 export const myEventDetailOpenWithId = (eventId) => (dispatch, getState) => {
+  dispatch({
+    type: MYEVENT_DETAIL_LOAD
+  });
   const callback = (res) => {
     console.log(`${DEBUG_KEY}: res for verifying user identify: `, res);
     if (!res.data) {
@@ -156,7 +171,7 @@ export const fetchEventDetail = (eventId, callback) => (dispatch, getState) => {
  * NOTE: goal feed and activity feed share the same constants with different
  * input on type field
  */
-export const refreshEventFeed = (eventId, dispatch, getState) => {
+export const refreshEventFeed = (eventId, dispatch, getState, callback) => {
   const { token } = getState().user;
   const { limit } = getState().event;
 
@@ -174,6 +189,11 @@ export const refreshEventFeed = (eventId, dispatch, getState) => {
         hasNextPage: !(data === undefined || data.length === 0)
       }
     });
+
+    // This is callback is to perform actions like scrollToIndex in frontend
+    if (callback) {
+      callback();
+    }
   }, () => {
     // TODO: implement for onError
   });

@@ -148,10 +148,11 @@ class ProfilePostCard extends Component {
     const content = item.content.text;
 
     return (
-      <View style={{ flexDirection: 'row' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <ProfileImage
           imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
           imageUrl={owner && owner.profile ? owner.profile.image : undefined}
+          imageContainerStyle={styles.imageContainerStyle}
         />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
@@ -184,7 +185,13 @@ class ProfilePostCard extends Component {
       <View style={{ marginTop: 3, marginBottom: 3 }}>
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <View style={{ ...styles.containerStyle, marginTop: 1 }}>
-            <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
+            <View
+              style={{
+                marginTop: 12,
+                marginBottom: 10,
+                marginRight: 12,
+                marginLeft: 12 }}
+            >
               <TouchableOpacity
                 onPress={() => this.handleCardOnPress(item)}
               >
@@ -222,7 +229,16 @@ const styles = {
     shadowOpacity: 1,
     shadowRadius: 3,
     elevation: 1,
-  }
+  },
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 1.5,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 6,
+    alignSelf: 'center',
+    backgroundColor: 'white'
+  },
 };
 
 const mapStateToProps = state => {
