@@ -54,7 +54,8 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
             payload: {
               id,
               likeId,
-              tab
+              tab,
+              type
             }
           })
         };
@@ -68,7 +69,8 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
             payload: {
               id,
               likeId,
-              tab
+              tab,
+              type
             }
           })
         };
@@ -83,7 +85,8 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
             payload: {
               id,
               likeId,
-              tab
+              tab,
+              type
             }
           })
         };
@@ -95,7 +98,9 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
     .then((res) => {
       // TODO: update reducers
       console.log(`${DEBUG_KEY}: like goal res: `, res);
-      tmp.action('testId');
+      if (res.status === 200 && res.data) {
+        return tmp.action(res.data._id);
+      }
     })
     .catch((err) => {
       console.log(`Error when like ${type} with id: ${id}. Error is: `, err);
@@ -159,11 +164,10 @@ export const unLikeGoal = (type, id, likeId, pageId) => (dispatch, getState) => 
       if (res.status === 200 || (res && res.isSuccess)) {
         console.log(`Remove like successfully for ${type} with id: ${id}`);
         // TODO: update reducers
-      } else {
-        console.warn(`${DEBUG_KEY}: Remove like return without error and success message.
-          res is: `, res);
+        return tmp.action();
       }
-      tmp.action();
+      console.warn(`${DEBUG_KEY}: Remove like return without error and success message.
+        res is: `, res);
     })
     .catch((err) => {
       console.log(`Error when like ${type} with id: ${id}. Error is: `, err);
