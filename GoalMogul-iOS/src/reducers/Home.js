@@ -136,15 +136,16 @@ export default (state = INITIAL_STATE, action) => {
     case UNLIKE_POST:
     case LIKE_GOAL:
     case LIKE_POST: {
-      const { id, likeId } = action.payload;
+      const { id, likeId, type } = action.payload;
       let newState = _.cloneDeep(state);
       const oldGoalFeedData = _.get(newState, 'mastermind.data');
       const oldActivityData = _.get(newState, 'activityfeed.data');
 
       // Update activity feed
-      newState = _.set(newState, 'activityfeed.data', updateLike(oldActivityData, id, likeId));
+      newState =
+        _.set(newState, 'activityfeed.data', updateLike(oldActivityData, id, likeId, type));
       // Update goal feed
-      return _.set(newState, 'mastermind.data', updateLike(oldGoalFeedData, id, likeId));
+      return _.set(newState, 'mastermind.data', updateLike(oldGoalFeedData, id, likeId, type));
     }
 
     default:
@@ -152,7 +153,7 @@ export default (state = INITIAL_STATE, action) => {
   }
 };
 
-function updateLike(array, id, likeId) {
+function updateLike(array, id, likeId, type) {
   return array.map((item) => {
     let newItem = _.cloneDeep(item);
     if (item._id.toString() === id.toString()) {

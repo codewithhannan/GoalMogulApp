@@ -169,8 +169,9 @@ export default (state = INITIAL_STATE, action) => {
     case PROFILE_FETCHING_FAIL:
       return { ...state, loading: false };
 
-    case PROFILE_FETCHING_SUCCESS:
+    case PROFILE_FETCHING_SUCCESS: {
       return { ...state, user: action.payload, loading: false };
+    }
 
     case PROFILE_IMAGE_UPLOAD_SUCCESS: {
       let user = _.cloneDeep(state.user);

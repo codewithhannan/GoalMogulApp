@@ -102,6 +102,7 @@ export const loginUser = ({ username, password }) => {
   };
 };
 
+// We have the same action in Profile.js
 const fetchUserProfile = (token, userId, dispatch) => {
   API
     .get(`secure/user/profile?userId=${userId}`, token)

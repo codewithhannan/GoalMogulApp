@@ -120,7 +120,8 @@ export const unLikeGoal = (type, id, likeId, pageId) => (dispatch, getState) => 
               id,
               likeId: undefined,
               tab,
-              pageId
+              pageId,
+              type
             }
           })
         };
