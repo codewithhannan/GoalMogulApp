@@ -32,7 +32,7 @@ class AddProfilePic extends Component {
   render() {
     return (
       <View style={Styles.containerStyle}>
-        <Header name='John Doe' type='profile' />
+        <Header name={this.props.name || 'John Doe'} type='profile' />
         <View style={Styles.bodyContainerStyle}>
           <Text style={Styles.titleTextStyle}>Upload a picture</Text>
           <View style={{ alignSelf: 'center' }}>
@@ -63,4 +63,11 @@ class AddProfilePic extends Component {
   }
 }
 
-export default connect(null, { registrationNextIntro })(AddProfilePic);
+const mapStateToProps = state => {
+  const { name } = state.registration;
+  return {
+    name
+  };
+};
+
+export default connect(mapStateToProps, { registrationNextIntro })(AddProfilePic);

@@ -78,13 +78,14 @@ class Mastermind extends Component {
   }
 
   renderListHeader() {
-    return (
-      <GoalFeedFilterBar
-        selectedTab={this.props.selectedTab}
-        filter={this.props.filter}
-        onMenuChange={this.handleOnMenuChange}
-      />
-    );
+    return '';
+    // return (
+    //   <GoalFeedFilterBar
+    //     selectedTab={this.props.selectedTab}
+    //     filter={this.props.filter}
+    //     onMenuChange={this.handleOnMenuChange}
+    //   />
+    // );
   }
 
   render() {

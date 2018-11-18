@@ -178,8 +178,9 @@ class CreateGoalModal extends Component {
     );
   }
 
-  renderUserInfo() {
-    let imageUrl = this.props.user.profile.image;
+  renderUserInfo(user) {
+    if (!user) return '';
+    let imageUrl = user.profile.image;
     let profileImage =
       <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />;
     if (imageUrl) {
@@ -193,7 +194,7 @@ class CreateGoalModal extends Component {
         {profileImage}
         <View style={{ marginLeft: 15 }}>
           <Text style={{ fontSize: 18, marginBottom: 8 }}>
-            Jordan Gardener
+            {user.name}
           </Text>
           <ViewableSettingMenu
             viewableSetting={this.props.privacy}
@@ -535,7 +536,7 @@ class CreateGoalModal extends Component {
   }
 
   render() {
-    const { handleSubmit, errors } = this.props;
+    const { handleSubmit, errors, user } = this.props;
     const actionText = this.props.initializeFromState ? 'Update' : 'Create';
     const titleText = this.props.initializeFromState ? 'Edit Goal' : 'New Goal';
 
@@ -555,7 +556,7 @@ class CreateGoalModal extends Component {
             style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
           >
             <View style={{ flex: 1, padding: 20 }}>
-              {this.renderUserInfo()}
+              {this.renderUserInfo(user)}
               {this.renderGoal()}
               <FieldArray name="details" component={this.renderGoalDescription} />
               {this.renderCategory()}

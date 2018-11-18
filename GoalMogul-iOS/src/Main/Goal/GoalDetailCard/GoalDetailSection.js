@@ -134,10 +134,10 @@ class GoalDetailSection extends Component {
   }
 
   renderCardContent(item) {
-    const { start, end } = item;
+    const { start, end, steps, needs } = item;
     return (
       <View style={{ marginTop: 20 }}>
-        <ProgressBar startTime={start} endTime={end} />
+        <ProgressBar startTime={start} endTime={end} steps={steps} needs={needs} />
       </View>
     );
   }

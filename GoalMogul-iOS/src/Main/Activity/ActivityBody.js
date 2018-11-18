@@ -32,7 +32,7 @@ class ActivityBody extends React.Component {
   }
 
   renderGoalBody(goalRef) {
-    const { start, end } = goalRef;
+    const { start, end, steps, needs } = goalRef;
 
     const startDate = start || new Date();
 
@@ -41,7 +41,12 @@ class ActivityBody extends React.Component {
     const endDate = end || new Date();
 
     return (
-      <ProgressBar startTime={startDate} endTime={endDate} />
+      <ProgressBar
+        startTime={startDate}
+        endTime={endDate}
+        steps={steps}
+        needs={needs}
+      />
     );
   }
 

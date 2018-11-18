@@ -56,10 +56,9 @@ import cancel from '../../../asset/utils/cancel_no_background.png';
 import photoIcon from '../../../asset/utils/photoIcon.png';
 import expand from '../../../asset/utils/expand.png';
 
-import TestImage from '../../../asset/TestEventImage.png';
+// import TestImage from '../../../asset/TestEventImage.png';
 
 // Components
-import ProgressBar from '../../Goal/Common/ProgressBar';
 import ActionButton from '../../Goal/Common/ActionButton';
 import ActionButtonGroup from '../../Goal/Common/ActionButtonGroup';
 import Headline from '../../Goal/Common/Headline';
