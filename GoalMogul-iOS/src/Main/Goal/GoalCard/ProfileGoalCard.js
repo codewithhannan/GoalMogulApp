@@ -30,10 +30,15 @@ class ProfileGoalCard extends React.Component {
 
   // Card central content. Progressbar for goal card
   renderCardContent(item) {
-    const { start, end } = item;
+    const { start, end, steps, needs } = item;
     return (
       <View style={{ marginTop: 20 }}>
-        <ProgressBar startTime={start} endTime={end} />
+        <ProgressBar
+          startTime={start}
+          endTime={end}
+          steps={steps}
+          needs={needs}
+        />
       </View>
     );
   }

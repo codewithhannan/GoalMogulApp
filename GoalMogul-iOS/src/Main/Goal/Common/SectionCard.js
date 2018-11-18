@@ -128,10 +128,25 @@ class SectionCard extends Component {
 
   render() {
     // console.log('item for props is: ', this.props.item);
-    const item = this.props.item
-      ? this.props.item
-      : { description: 'No content', isCompleted: false };
-    const { description, isCompleted } = item;
+    const { type, item } = this.props;
+    let itemToRender = item;
+
+    // Render empty state
+    if (!item) {
+      const emptyText = (type === 'need' || type === 'Need') ? 'No needs' : 'No steps';
+      itemToRender = { description: `${emptyText}`, isCompleted: false };
+      // emptyTextStyle = {
+      //   fontWeight: '800',
+      //   fontSize: 14,
+      //   alignSelf: 'center',
+      //   justifyContent: 'center',
+      //   borderRightWidth: 0
+      // };
+      // actionIcons = '';
+      return renderEmptyState(emptyText);
+    }
+
+    const { description, isCompleted } = itemToRender;
     const sectionText = description === undefined ? 'No content' : description;
 
     return (
@@ -149,7 +164,7 @@ class SectionCard extends Component {
           {this.renderCheckBox(isCompleted)}
           <View style={styles.textContainerStyle}>
             <Text
-              style={styles.sectionTextStyle}
+              style={{ ...styles.sectionTextStyle }}
               numberOfLines={2}
               ellipsizeMode='tail'
             >
@@ -162,6 +177,33 @@ class SectionCard extends Component {
     );
   }
 }
+
+const renderEmptyState = (text) => {
+
+  return (
+    <View
+      style={{
+        ...styles.sectionContainerStyle,
+        height: 66,
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 16,
+          justifyContent: 'center',
+          fontWeight: '700',
+          color: '#909090',
+        }}
+        numberOfLines={1}
+        ellipsizeMode='tail'
+      >
+        {text}
+      </Text>
+    </View>
+  );
+};
 
 const styles = {
   sectionContainerStyle: {

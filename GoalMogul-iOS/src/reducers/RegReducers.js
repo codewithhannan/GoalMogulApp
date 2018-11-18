@@ -86,8 +86,10 @@ export default (state = INITIAL_STATE, action) => {
     case REGISTRATION_ACCOUNT_LOADING:
       return { ...state, loading: true };
 
-    case REGISTRATION_ACCOUNT_SUCCESS:
-      return { ...state, loading: false };
+    case REGISTRATION_ACCOUNT_SUCCESS: {
+      const { name } = action.payload;
+      return { ...state, loading: false, name };
+    }
 
     // Registration account form change
     case REGISTRATION_ACCOUNT_FORM_CHANGE:

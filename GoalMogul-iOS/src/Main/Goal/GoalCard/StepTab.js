@@ -72,6 +72,14 @@ class StepTab extends Component {
         />
       );
     }
+    if (steps.length === 0) {
+      sections.push(
+        <SectionCard
+          type='Step'
+          key='empty-step'
+        />
+      );
+    }
     return (
       <View>
         {sections}

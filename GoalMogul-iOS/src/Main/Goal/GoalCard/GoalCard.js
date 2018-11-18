@@ -13,6 +13,7 @@ import { LinearGradient } from 'expo';
 import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
 import timeago from 'timeago.js';
 import R from 'ramda';
+import _ from 'lodash';
 
 // Actions
 import {
@@ -81,7 +82,7 @@ const DEBUG_KEY = '[ UI GoalCard ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to an event', 'Share to a tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 
-class GoalCard extends Component {
+class GoalCard extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -174,13 +175,18 @@ class GoalCard extends Component {
 
   // Card central content. Progressbar for goal card
   renderCardContent(item) {
-    const { start, end } = item;
+    const { start, end, needs, steps } = item;
     const startDate = start || new Date();
     const endDate = end || new Date();
 
     return (
       <View style={{ marginTop: 20 }}>
-        <ProgressBar startTime={startDate} endTime={endDate} />
+        <ProgressBar
+          startTime={startDate}
+          endTime={endDate}
+          steps={steps}
+          needs={needs}
+        />
       </View>
     );
   }
@@ -298,8 +304,9 @@ class GoalCard extends Component {
     const { item } = this.props;
     if (!item) return;
 
+    const tabHeight = getTabHeight(this.state.navigationState, item);
     return (
-      <View>
+      <View style={{ height: 450 }}>
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <View style={{ backgroundColor: '#e5e5e5' }}>
             <View style={styles.containerStyle}>
@@ -309,7 +316,7 @@ class GoalCard extends Component {
               </View>
             </View>
 
-            <View style={{ height: CardHeight * 0.51 }}>
+            <View style={{ height: tabHeight }}>
               {this.renderTabs()}
             </View>
 
@@ -323,6 +330,22 @@ class GoalCard extends Component {
     );
   }
 }
+
+const TAB_HEADER_HEIGHT = 38;
+const SECTION_CARD_HEIGHT = 66;
+const VIEW_GOAL_HEIGHT = 40.5;
+const getTabHeight = (navigationState, item) => {
+  const { routes, index } = navigationState;
+  const tab = routes[index].key;
+  const dataToRender = _.get(item, `${tab}`);
+  if (!dataToRender || dataToRender.length === 0) {
+    return SECTION_CARD_HEIGHT + VIEW_GOAL_HEIGHT + TAB_HEADER_HEIGHT;
+  }
+  if (dataToRender.length < 3) {
+    return ((dataToRender.length * SECTION_CARD_HEIGHT) + VIEW_GOAL_HEIGHT + TAB_HEADER_HEIGHT);
+  }
+  return CardHeight * 0.51;
+};
 
 const styles = {
   containerStyle: {

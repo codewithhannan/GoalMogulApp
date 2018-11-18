@@ -63,6 +63,14 @@ class NeedTab extends Component {
       }
       return '';
     });
+    if (needs.length === 0) {
+      sections.push(
+        <SectionCard
+          type='Need'
+          key='empty-need'
+        />
+      );
+    }
     if (needs.length < 3) {
       sections.push(
         <View

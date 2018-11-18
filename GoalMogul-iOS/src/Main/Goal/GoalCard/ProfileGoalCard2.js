@@ -85,10 +85,15 @@ class ProfileGoalCard2 extends React.Component {
   }
 
   renderProgressBar(item) {
-    const { start, end } = item;
+    const { start, end, steps, needs } = item;
     return (
       <View style={{ marginTop: 8 }}>
-        <ProgressBar startTime={start} endTime={end} />
+        <ProgressBar
+          startTime={start}
+          endTime={end}
+          steps={steps}
+          needs={needs}
+        />
       </View>
     );
   }

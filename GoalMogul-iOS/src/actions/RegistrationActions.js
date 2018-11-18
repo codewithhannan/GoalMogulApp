@@ -91,7 +91,8 @@ export const registrationNextAddProfile = (value) => {
         // AuthReducers record user token
         const payload = {
           token: res.token,
-          userId: res.userId
+          userId: res.userId,
+          name
         };
         dispatch({
           type: REGISTRATION_ACCOUNT_SUCCESS,

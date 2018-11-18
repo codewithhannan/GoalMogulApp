@@ -32,7 +32,7 @@ class Contacts extends Component {
   render() {
     return (
       <View style={Styles.containerStyle}>
-        <Header name='John Doe' type='contact' />
+        <Header name={this.props.name || 'John Doe'} type='contact' />
         <View style={Styles.bodyContainerStyle}>
           <Text style={Styles.titleTextStyle}>Find your friends</Text>
           <View style={{ alignSelf: 'center' }}>
@@ -75,4 +75,11 @@ class Contacts extends Component {
   }
 }
 
-export default connect(null, { registrationNextContactSync })(Contacts);
+const mapStateToProps = state => {
+  const { name } = state.registration;
+  return {
+    name
+  };
+};
+
+export default connect(mapStateToProps, { registrationNextContactSync })(Contacts);
