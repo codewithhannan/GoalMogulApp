@@ -1,11 +1,19 @@
 import { Actions } from 'react-native-router-flux';
+import React from 'react';
 import { Image, Alert } from 'react-native';
 import _ from 'lodash';
 
 import ImageUtils from '../Utils/ImageUtils';
 import { updateAccount, updateProfile, updatePassword } from '../Utils/ProfileUtils';
 import { api as API } from '../redux/middleware/api';
-import { queryBuilder } from '../redux/middleware/utils';
+import { queryBuilder, switchCase } from '../redux/middleware/utils';
+
+import BronzeBanner from '../asset/banner/bronze.png';
+import GreenBanner from '../asset/banner/green.png';
+import PurpleBanner from '../asset/banner/purple.png';
+import SilverBanner from '../asset/banner/silver.png';
+import IronBanner from '../asset/banner/iron.png';
+import GoldBanner from '../asset/banner/gold.png';
 
 import {
   PROFILE_OPEN_PROFILE,
@@ -551,6 +559,45 @@ export const deletePost = (postId) => (dispatch, getState) =>
       );
     }
   );
+
+// By pass in user object, return corresponding banner
+export const UserBanner = (props) => {
+  const { user } = props;
+  if (!user || !user.profile) return '';
+  const { profile } = user;
+  const { pointsEarned } = profile;
+  const source = switchCaseBannerSource(pointsEarned);
+
+  const imageStyle = {
+    alignSelf: 'center',
+    marginLeft: 3,
+    marginRight: 3,
+    height: 14,
+    width: 10
+  };
+  return (
+    <Image source={source} style={imageStyle} />
+  );
+};
+
+const switchCaseBannerSource = (points) => {
+  let source;
+  if (!points || points < 49) {
+    source = GreenBanner;
+  } else if (points < 249) {
+    source = BronzeBanner;
+  } else if (points < 499) {
+    source = IronBanner;
+  } else if (points < 2499) {
+    source = SilverBanner;
+  } else if (points < 4999) {
+    source = GoldBanner;
+  } else if (points < 9999) {
+    source = PurpleBanner;
+  }
+
+  return source;
+};
 
 
 const deleteItem = (item, dispatch, getState, onSuccess, onError) => {

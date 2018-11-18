@@ -107,6 +107,7 @@ class NeedCard extends Component {
             name={owner.name}
             category={category}
             caretOnPress={() => this.props.createReport(_id, 'goal', 'Goal')}
+            user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>

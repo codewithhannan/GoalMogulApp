@@ -116,6 +116,7 @@ class GoalDetailSection extends Component {
               console.log('I am pressed');
               this.props.createReport(_id, 'detail', 'Goal');
             }}
+            user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>

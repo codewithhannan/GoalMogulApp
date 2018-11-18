@@ -50,6 +50,7 @@ class ActivityHeader extends Component {
             caretOnPress={() => {
               this.props.createReport(_id, 'post', `${actedUponEntityType}`);
             }}
+            user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>

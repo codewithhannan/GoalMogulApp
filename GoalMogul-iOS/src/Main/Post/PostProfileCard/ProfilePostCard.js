@@ -160,6 +160,7 @@ class ProfilePostCard extends Component {
             isSelf={this.props.userId === owner._id}
             caretOnDelete={() => this.props.deletePost(_id)}
             caretOnPress={() => this.props.createReport(_id, 'profile', 'Goal')}
+            user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>

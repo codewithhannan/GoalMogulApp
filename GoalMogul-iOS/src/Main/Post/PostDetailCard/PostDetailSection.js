@@ -133,6 +133,7 @@ class PostDetailSection extends Component {
               console.log('I am pressed on PostDetailSEction');
               this.props.createReport(_id, 'postDetail', 'Post');
             }}
+            user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>

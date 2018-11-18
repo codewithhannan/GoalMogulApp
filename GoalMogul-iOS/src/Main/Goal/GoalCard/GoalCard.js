@@ -209,6 +209,7 @@ class GoalCard extends React.PureComponent {
             name={owner.name}
             category={category}
             caretOnPress={() => this.props.createReport(_id, 'goal', 'Goal')}
+            user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
@@ -306,7 +307,7 @@ class GoalCard extends React.PureComponent {
 
     const tabHeight = getTabHeight(this.state.navigationState, item);
     return (
-      <View style={{ height: 450 }}>
+      <View style={{ height: 450, marginTop: 4 }}>
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <View style={{ backgroundColor: '#e5e5e5' }}>
             <View style={styles.containerStyle}>
