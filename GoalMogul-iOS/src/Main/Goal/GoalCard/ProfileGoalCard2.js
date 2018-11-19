@@ -208,7 +208,9 @@ const styles = {
   },
   // Stats component style
   loveIconStyle: {
-    tintColor: '#e26162'
+    tintColor: '#e26162',
+    width: 12,
+    height: 11
   },
   loveTextStyle: {
     color: '#e26162'

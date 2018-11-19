@@ -8,7 +8,7 @@ const ButtonArrow = (props) => {
 
   if (props.arrow) {
     containerStyle.backgroundColor = '#ffffff';
-    textStyle.color = '#45C9F6';
+    textStyle.color = '#46C8F5';
     textStyle.fontWeight = '600';
 
     return (
@@ -35,7 +35,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    backgroundColor: '#45C9F6'
+    backgroundColor: '#46C8F5'
   },
   textStyle: {
     fontSize: 13,

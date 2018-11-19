@@ -161,7 +161,7 @@ class SuggestionModal extends Component {
 const styles = {
   // Options style
   selectedSuggestionIconStyle: {
-    tintColor: '#45C9F6',
+    tintColor: '#46C8F5',
     height: 20,
     width: 20
   },

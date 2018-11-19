@@ -115,6 +115,13 @@ class SplashScreen extends Component {
       require('./asset/header/header-logo-white.png'),
       require('./asset/header/header-logo.png'),
       require('./asset/header/logo.png'),
+      // Banners
+      require('./asset/banner/bronze.png'),
+      require('./asset/banner/gold.png'),
+      require('./asset/banner/green.png'),
+      require('./asset/banner/iron.png'),
+      require('./asset/banner/purple.png'),
+      require('./asset/banner/silver.png'),
     ]);
 
     const fontAssets = cacheFonts({

@@ -125,6 +125,7 @@ class LoginPage extends Component {
                   component={Input}
                   secure
                   disabled={this.props.loading}
+                  onSubmitEditing={handleSubmit(this.handleLoginPressed)}
                 />
                 <TouchableOpacity onPress={handleSubmit(this.handleLoginPressed)}>
                   <View>

@@ -14,7 +14,7 @@ class Button extends Component {
     const selected = this.props.selectedTab === this.props.tabId;
     if (selected) {
       buttonContainerStyle.borderBottomWidth = 2;
-      buttonContainerStyle.borderBottomColor = '#45C9F6';
+      buttonContainerStyle.borderBottomColor = '#46C8F5';
     }
     return (
       <TouchableWithoutFeedback onPress={this.onPress.bind(this)}>

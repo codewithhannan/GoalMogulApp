@@ -15,6 +15,7 @@ class Input extends Component {
       keyboardType,
       title,
       disabled,
+      onSubmitEditing,
       meta: { touched, error },
       ...custom
     } = this.props;
@@ -36,6 +37,7 @@ class Input extends Component {
           labelHeight={26}
           fontSize={17}
           disabled={disabled}
+          onSubmitEditing={onSubmitEditing}
           {...custom}
           {...restInput}
         />

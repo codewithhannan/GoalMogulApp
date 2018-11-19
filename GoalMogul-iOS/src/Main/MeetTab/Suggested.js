@@ -71,7 +71,10 @@ class Suggested extends Component {
           onEndReachedThreshold={0}
           onRefresh={this.handleRefresh}
           refreshing={this.props.loading}
-          ListEmptyComponent={<EmptyResult text={'No Recommendations'} />}
+          ListEmptyComponent={
+            this.props.loading ? '' :
+            <EmptyResult text={'No Recommendations'} />
+          }
         />
       </View>
     );

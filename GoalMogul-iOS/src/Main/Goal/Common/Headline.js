@@ -11,6 +11,7 @@ import {
 /* Components */
 import Name from './Name';
 import Category from './Category';
+import { UserBanner } from '../../../actions';
 
 /* Asset */
 import badge from '../../../asset/utils/badge.png';
@@ -33,7 +34,8 @@ const Headline = (props) => {
     caretOnPress,
     isSelf,
     caretOnDelete,
-    hasCaret
+    hasCaret,
+    user
   } = props;
 
   // If item belongs to self, then caret displays delete
@@ -62,7 +64,8 @@ const Headline = (props) => {
   return (
     <View style={styles.containerStyle}>
       <Name text={name} />
-      <Image style={styles.imageStyle} source={badge} />
+      {/* <Image style={styles.imageStyle} source={badge} /> */}
+      <UserBanner user={user} />
       {categoryComponent}
       <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
         {hasCaret === null ? '' : menu}

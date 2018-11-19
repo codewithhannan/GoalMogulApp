@@ -100,7 +100,7 @@ const styles = {
   viewGoalTextStyle: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#45C9F6',
+    color: '#46C8F5',
     alignSelf: 'center'
   },
   iconStyle: {

@@ -154,7 +154,7 @@ const styles = {
     borderRadius: 5,
   },
   titleTextStyle: {
-    color: '#45C9F6',
+    color: '#46C8F5',
     fontSize: 11,
     paddingTop: 1,
     paddingBottom: 1
@@ -173,7 +173,7 @@ const styles = {
     height: 25,
     width: 26,
     transform: [{ rotateY: '180deg' }],
-    tintColor: '#45C9F6'
+    tintColor: '#46C8F5'
   }
 };
 

@@ -133,6 +133,7 @@ class ShareDetailSection extends Component {
               console.log('I am pressed on PostDetailSEction');
               this.props.createReport(_id, 'postDetail', 'Post');
             }}
+            user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
@@ -285,7 +286,7 @@ class ShareDetailSection extends Component {
     const shareCount = item.shareCount ? item.shareCount : 0;
 
     const likeButtonContainerStyle = maybeLikeRef && maybeLikeRef.length > 0
-      ? { backgroundColor: '#f9d6c9' }
+      ? { backgroundColor: '#FAD6C8' }
       : { backgroundColor: 'white' };
 
     return (
@@ -294,7 +295,7 @@ class ShareDetailSection extends Component {
           iconSource={LoveIcon}
           count={likeCount}
           iconContainerStyle={likeButtonContainerStyle}
-          iconStyle={{ tintColor: '#f15860' }}
+          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 22, width: 24 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks like icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
@@ -312,7 +313,7 @@ class ShareDetailSection extends Component {
         <ActionButton
           iconSource={BulbIcon}
           count={commentCount}
-          iconStyle={{ tintColor: '#f5eb6f', height: 26, width: 26 }}
+          iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks suggestion icon.`);
             this.props.createCommentFromSuggestion({

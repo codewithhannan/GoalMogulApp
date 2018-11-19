@@ -128,7 +128,10 @@ class ContactSync extends Component {
             refreshing={refreshing}
             onRefresh={this.handleRefresh}
             onEndReached={this.onLoadMore}
-            ListEmptyComponent={<EmptyResult text={'No contacts found'} />}
+            ListEmptyComponent={
+              refreshing ? '' :
+              <EmptyResult text={'No contacts found'} />
+            }
             onEndThreshold={0}
           />
           {button}

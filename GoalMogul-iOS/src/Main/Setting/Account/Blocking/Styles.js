@@ -11,7 +11,7 @@ const Styles = StyleSheet.create({
     alignSelf: 'center'
   },
   buttonTextStyle: {
-    color: '#45C9F6',
+    color: '#46C8F5',
     fontSize: 11,
     fontWeight: '700',
     paddingLeft: 1,
@@ -27,7 +27,7 @@ const Styles = StyleSheet.create({
     width: 70,
     height: 26,
     borderWidth: 1,
-    borderColor: '#45C9F6',
+    borderColor: '#46C8F5',
     borderRadius: 13,
   },
 });

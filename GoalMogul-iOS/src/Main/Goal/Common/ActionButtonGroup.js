@@ -14,12 +14,16 @@ const ActionButtonGroup = (props) => {
 
 const styles = {
   containerStyle: {
-    height: 50,
+    height: 60,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
-    marginLeft: 20,
-    marginRight: 20
+    // marginLeft: 15,
+    // marginRight: 15,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderTopWidth: 0.5,
+    borderTopColor: '#f1f1f1'
   }
 };
 

@@ -155,17 +155,19 @@ const ImageUtils = {
     });
   },
   async checkPermission(permissions) {
-    const promises = permissions.map((value) => Permissions.getAsync(value))
+    const promises = permissions.map((value) => Permissions.getAsync(value));
     const status = await Promise.all(promises);
 
-    const requestPromises = status.forEach((value, index) => {
+    const requestPromises = status.map((value, index) => {
       if (value.status !== 'granted') {
         return Permissions.askAsync(permissions[index]);
       }
+      return '';
     });
 
     const filteredPromises = _.compact(requestPromises);
     const requestStatus = await Promise.all(filteredPromises);
+
     if (requestStatus.some((value) => value.status !== 'granted')) {
       alert('Please grant access to photos.');
       return false;

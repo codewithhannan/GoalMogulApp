@@ -35,6 +35,7 @@ import {
 import ImageUtils from '../Utils/ImageUtils';
 import { handleUploadContacts, fetchMatchedContacts } from '../Utils/ContactUtils';
 
+const DEBUG_KEY = '[ Action Registration ]';
 export const registrationLogin = () => {
   return (dispatch) => {
     dispatch({
@@ -253,6 +254,7 @@ export const openCamera = (callback) => async (dispatch) => {
   const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL];
 
   const permissionGranted = await ImageUtils.checkPermission(permissions);
+  console.log(`${DEBUG_KEY}: permissionGranted is: ${permissionGranted}`);
   if (!permissionGranted) {
     return;
   }

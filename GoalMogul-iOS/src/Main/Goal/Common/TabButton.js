@@ -8,7 +8,7 @@ import {
 import { Icon } from 'react-native-elements';
 
 const TabButton = (props) => {
-  const backgroundColor = props.selected ? '#45C9F6' : 'white';
+  const backgroundColor = props.selected ? '#46C8F5' : 'white';
   const tintColor = props.selected ? 'white' : '#616161';
   const color = props.selected ? 'white' : '#616161';
   const fontWeight = props.selected ? '700' : '600';

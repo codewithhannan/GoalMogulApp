@@ -58,6 +58,7 @@ class ProfileGoalCard extends React.Component {
             isSelf={this.props.userId === owner._id}
             caretOnDelete={() => this.props.deleteGoal(_id)}
             caretOnPress={() => this.props.createReport(_id, 'goal', 'Goal')}
+            user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>

@@ -107,6 +107,7 @@ class NeedCard extends Component {
             name={owner.name}
             category={category}
             caretOnPress={() => this.props.createReport(_id, 'goal', 'Goal')}
+            user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
@@ -159,7 +160,7 @@ class NeedCard extends Component {
           <Icon
             name='ios-arrow-round-forward'
             type='ionicon'
-            color='#45C9F6'
+            color='#46C8F5'
             iconStyle={styles.iconStyle}
           />
         </View>
@@ -176,7 +177,7 @@ class NeedCard extends Component {
     const shareCount = item.shareCount ? item.shareCount : 0;
 
     const likeButtonContainerStyle = maybeLikeRef && maybeLikeRef.length > 0
-      ? { backgroundColor: '#f9d6c9' }
+      ? { backgroundColor: '#FAD6C8' }
       : { backgroundColor: 'white' };
 
     return (
@@ -185,7 +186,7 @@ class NeedCard extends Component {
           iconSource={LoveIcon}
           count={likeCount}
           iconContainerStyle={likeButtonContainerStyle}
-          iconStyle={{ tintColor: '#f15860' }}
+          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 22, width: 24 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks like icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
@@ -203,7 +204,7 @@ class NeedCard extends Component {
         <ActionButton
           iconSource={BulbIcon}
           count={commentCount}
-          iconStyle={{ tintColor: '#f5eb6f', height: 26, width: 26 }}
+          iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks suggest icon`);
             this.props.onPress(this.props.item);
@@ -256,7 +257,7 @@ const styles = {
   viewGoalTextStyle: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#45C9F6',
+    color: '#46C8F5',
     alignSelf: 'center'
   },
   iconStyle: {

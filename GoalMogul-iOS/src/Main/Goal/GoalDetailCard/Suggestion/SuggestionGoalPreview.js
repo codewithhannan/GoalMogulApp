@@ -42,6 +42,7 @@ class SuggestionGoalPreview extends React.Component {
             name={owner.name}
             category={category}
             hasCaret={null}
+            user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>

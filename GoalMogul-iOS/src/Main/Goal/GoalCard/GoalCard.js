@@ -209,6 +209,7 @@ class GoalCard extends React.PureComponent {
             name={owner.name}
             category={category}
             caretOnPress={() => this.props.createReport(_id, 'goal', 'Goal')}
+            user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
@@ -247,7 +248,7 @@ class GoalCard extends React.PureComponent {
           <Icon
             name='ios-arrow-round-forward'
             type='ionicon'
-            color='#45C9F6'
+            color='#46C8F5'
             iconStyle={styles.iconStyle}
           />
         </View>
@@ -263,7 +264,7 @@ class GoalCard extends React.PureComponent {
     const shareCount = item.shareCount ? item.shareCount : 0;
 
     const likeButtonContainerStyle = maybeLikeRef && maybeLikeRef.length > 0
-      ? { backgroundColor: '#f9d6c9' }
+      ? { backgroundColor: '#FAD6C8' }
       : { backgroundColor: 'white' };
 
     return (
@@ -272,7 +273,7 @@ class GoalCard extends React.PureComponent {
           iconSource={LoveIcon}
           count={likeCount}
           iconContainerStyle={likeButtonContainerStyle}
-          iconStyle={{ tintColor: '#f15860' }}
+          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 22, width: 24 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
@@ -290,7 +291,7 @@ class GoalCard extends React.PureComponent {
         <ActionButton
           iconSource={BulbIcon}
           count={commentCount}
-          iconStyle={{ tintColor: '#f5eb6f', height: 26, width: 26 }}
+          iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks suggest icon`);
             this.props.onPress(this.props.item);
@@ -306,7 +307,7 @@ class GoalCard extends React.PureComponent {
 
     const tabHeight = getTabHeight(this.state.navigationState, item);
     return (
-      <View style={{ height: 450 }}>
+      <View style={{ height: 450, marginTop: 4 }}>
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <View style={{ backgroundColor: '#e5e5e5' }}>
             <View style={styles.containerStyle}>
@@ -354,7 +355,7 @@ const styles = {
   viewGoalTextStyle: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#45C9F6',
+    color: '#46C8F5',
     alignSelf: 'center'
   },
   iconStyle: {

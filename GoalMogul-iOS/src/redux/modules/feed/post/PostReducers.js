@@ -109,9 +109,14 @@ export default (state = INITIAL_STATE, action) => {
 
       const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
       const post = _.get(newState, path);
-
-      if (post._id && post._id.toString() === id.toString()) {
+      if (post._id && post._id === id) {
         newState = _.set(newState, `${path}.maybeLikeRef`, likeId);
+        const oldLikeCount = _.get(newState, `${path}.likeCount`);
+        newState = _.set(
+          newState,
+          `${path}.likeCount`,
+          likeId ? oldLikeCount + 1 : oldLikeCount - 1
+        );
       }
       return newState;
     }

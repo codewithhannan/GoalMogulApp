@@ -73,7 +73,7 @@ class EventSearchOverlay extends Component {
               onCancel={this.handleCancel}
               onChangeText={this.handleChangeText}
               clearIcon={null}
-              cancelButtonProps={{ color: '#45C9F6' }}
+              cancelButtonProps={{ color: '#46C8F5' }}
               showLoading={this.props.loading}
             />
           </View>

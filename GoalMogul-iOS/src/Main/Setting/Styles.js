@@ -32,7 +32,7 @@ export default StyleSheet.create({
   },
   actionTextStyle: {
     fontSize: 13,
-    color: '#45C9F6',
+    color: '#46C8F5',
     paddingBottom: 20,
     fontWeight: '700'
   },
@@ -58,7 +58,7 @@ export default StyleSheet.create({
     marginRight: 18,
     height: 41,
     justifyContent: 'center',
-    backgroundColor: '#45C9F6'
+    backgroundColor: '#46C8F5'
   },
   buttonTextStyle: {
     fontSize: 15,
