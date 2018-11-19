@@ -88,7 +88,7 @@ class CommentTab extends Component {
           <Icon
             name='ios-arrow-round-forward'
             type='ionicon'
-            color='#45C9F6'
+            color='#46C8F5'
             iconStyle={styles.iconStyle}
           />
         </View>
@@ -113,7 +113,7 @@ const styles = {
   viewGoalTextStyle: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#45C9F6',
+    color: '#46C8F5',
     alignSelf: 'center'
   },
   iconStyle: {

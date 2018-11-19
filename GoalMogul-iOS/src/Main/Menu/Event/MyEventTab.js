@@ -87,7 +87,10 @@ class MyEventTab extends React.Component {
             onRefresh={this.handleOnRefresh}
             onEndReached={this.handleOnLoadMore}
             ListHeaderComponent={this.renderListHeader()}
-            ListEmptyComponent={<EmptyResult text={'No Events found'} />}
+            ListEmptyComponent={
+              this.props.loading ? '' :
+              <EmptyResult text={'No Events found'} />
+            }
             onEndThreshold={0}
           />
         </MenuProvider>

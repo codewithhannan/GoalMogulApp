@@ -101,6 +101,7 @@ class Mastermind extends Component {
           onEndReached={this.handleOnLoadMore}
           ListHeaderComponent={this.renderListHeader()}
           ListEmptyComponent={
+            this.props.loading ? '' :
             <EmptyResult
               text={'No Goals have been shared'}
               textStyle={{ paddingTop: 100 }}
@@ -124,7 +125,7 @@ const styles = {
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    // backgroundColor: '#45C9F6',
+    // backgroundColor: '#46C8F5',
     backgroundColor: '#4096c6',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

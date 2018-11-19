@@ -178,7 +178,7 @@ function updateLike(array, id, likeId, type) {
             'likeCount',
             likeId ? oldLikeCount + 1 : oldLikeCount - 1
           );
-          newItem = _.set(newItem, 'path', itemToUpdate);
+          newItem = _.set(newItem, `${path}`, itemToUpdate);
         }
       }
       return newItem;
@@ -186,6 +186,13 @@ function updateLike(array, id, likeId, type) {
 
     if (item._id.toString() === id.toString()) {
       newItem = _.set(newItem, 'maybeLikeRef', likeId);
+
+      const oldLikeCount = _.get(newItem, 'likeCount');
+      newItem = _.set(
+        newItem,
+        'likeCount',
+        likeId ? oldLikeCount + 1 : oldLikeCount - 1
+      );
     }
     return newItem;
   });

@@ -43,7 +43,10 @@ class TribeTab extends React.Component {
           onRefresh={this.handleOnRefresh}
           onEndReached={this.handleOnLoadMore}
           ListHeaderComponent={this.renderListHeader()}
-          ListEmptyComponent={<EmptyResult text={'No Recommendations'} />}
+          ListEmptyComponent={
+            this.props.loading ? '' :
+            <EmptyResult text={'No Recommendations'} />
+          }
           onEndThreshold={0}
         />
       </View>

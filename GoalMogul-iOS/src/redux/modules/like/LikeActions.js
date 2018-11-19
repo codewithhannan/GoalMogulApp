@@ -30,7 +30,7 @@ export const getLike = (parentId, parentType) => (dispatch, getState) => {
       console.log(`${DEBUG_KEY}: get like with res, `, res);
     })
     .catch((err) => {
-      console.log('Error in getting like: ', err);
+      console.log(`${DEBUG_KEY}: Error in getting like: `, err);
     });
 };
 
@@ -103,7 +103,7 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
       }
     })
     .catch((err) => {
-      console.log(`Error when like ${type} with id: ${id}. Error is: `, err);
+      console.log(`${DEBUG_KEY}: Error when like ${type} with id: ${id}. Error is: `, err);
     });
 };
 
@@ -138,7 +138,8 @@ export const unLikeGoal = (type, id, likeId, pageId) => (dispatch, getState) => 
               id,
               likeId: undefined,
               tab,
-              pageId
+              pageId,
+              type
             }
           })
         };
@@ -151,7 +152,8 @@ export const unLikeGoal = (type, id, likeId, pageId) => (dispatch, getState) => 
               id,
               likeId: undefined,
               tab,
-              pageId
+              pageId,
+              type
             }
           })
         };
@@ -162,7 +164,7 @@ export const unLikeGoal = (type, id, likeId, pageId) => (dispatch, getState) => 
     .delete(`${LIKE_BASE_ROUTE}?likeId=${likeId}`, { likeId }, token)
     .then((res) => {
       if (res.status === 200 || (res && res.isSuccess)) {
-        console.log(`Remove like successfully for ${type} with id: ${id}`);
+        console.log(`${DEBUG_KEY}: Remove like successfully for ${type} with id: ${id}`);
         // TODO: update reducers
         return tmp.action();
       }
@@ -170,6 +172,6 @@ export const unLikeGoal = (type, id, likeId, pageId) => (dispatch, getState) => 
         res is: `, res);
     })
     .catch((err) => {
-      console.log(`Error when like ${type} with id: ${id}. Error is: `, err);
+      console.log(`${DEBUG_KEY}: Error when like ${type} with id: ${id}. Error is: `, err);
     });
 };

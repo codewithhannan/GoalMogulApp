@@ -37,6 +37,11 @@ import {
   openMyTribeTab
 } from '../../../redux/modules/tribe/MyTribeTabActions';
 
+// styles
+import {
+  APP_BLUE
+} from '../../../styles';
+
 const tintColor = '#33485e';
 
 // For profile friend setting ActionSheetIOS
@@ -301,7 +306,8 @@ const styles = {
   },
   headerStyle: {
     flexDirection: 'row',
-    backgroundColor: '#4ec9f3',
+    // backgroundColor: '#4ec9f3',
+    backgroundColor: APP_BLUE,
     // backgroundColor: '#6bc6f0',
     paddingTop: 30,
     paddingLeft: 10,

@@ -137,7 +137,7 @@ class GoalDetailCard extends Component {
         <ActionButton
           iconSource={LoveIcon}
           count={22}
-          iconContainerStyle={{ backgroundColor: '#f9d6c9' }}
+          iconContainerStyle={{ backgroundColor: '#FAD6C8' }}
           iconStyle={{ tintColor: '#f15860' }}
           onPress={() => console.log('like')}
         />
@@ -150,7 +150,7 @@ class GoalDetailCard extends Component {
         <ActionButton
           iconSource={BulbIcon}
           count={45}
-          iconStyle={{ tintColor: '#f5eb6f', height: 26, width: 26 }}
+          iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           onPress={() => console.log('suggest')}
         />
       </ActionButtonGroup>

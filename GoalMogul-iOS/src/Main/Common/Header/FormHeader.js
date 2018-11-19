@@ -62,7 +62,7 @@ const styles = {
   cancelTextStyle: {
     fontSize,
     alignSelf: 'center',
-    color: '#45C9F6',
+    color: '#46C8F5',
   },
   titleTextStyle: {
     fontSize,
@@ -70,7 +70,7 @@ const styles = {
     fontWeight: '600'
   },
   saveTextStyle: {
-    color: '#45C9F6',
+    color: '#46C8F5',
     fontSize,
     alignSelf: 'center',
     fontWeight: '700'

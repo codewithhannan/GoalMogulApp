@@ -218,7 +218,7 @@ class GoalDetailCard2 extends Component {
             title='Goal'
             onBackPress={() => this.props.closeGoalDetail()}
           />
-          <KeyboardAvoidingView style={{ flex: 1, backgroundColor: 'white' }} behavior='padding'>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
             <FlatList
               ref="flatList"
               data={data}
@@ -228,6 +228,7 @@ class GoalDetailCard2 extends Component {
               refreshing={this.props.commentLoading}
               onRefresh={this.handleRefresh}
               ListEmptyComponent={
+                this.props.commentLoading ? '' :
                 <EmptyResult
                   text={emptyResult}
                   textStyle={{ paddingTop: 100 }}

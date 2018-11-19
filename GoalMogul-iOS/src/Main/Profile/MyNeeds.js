@@ -83,7 +83,7 @@ const styles = {
   },
   buttonTextStyle: {
     marginLeft: 5,
-    color: '#45C9F6',
+    color: '#46C8F5',
     fontSize: 11
   }
 };

@@ -65,7 +65,10 @@ class MutualFriends extends Component {
           refreshing={this.props.loading}
           onEndReached={this.handleOnLoadMore}
           onEndReachedThreshold={0.5}
-          ListEmptyComponent={<EmptyResult text={emptyText} />}
+          ListEmptyComponent={
+            this.props.loading ? '' :
+            <EmptyResult text={emptyText} />
+          }
         />
       </Modal>
     );

@@ -101,7 +101,7 @@ class ProfileSummaryCard extends Component {
     //         name='plus-small'
     //         width={10}
     //         size={21}
-    //         color='#45C9F6'
+    //         color='#46C8F5'
     //         iconStyle={styles.buttonIconStyle}
     //       />
     //     }
@@ -164,11 +164,11 @@ const styles = {
     width: 80,
     height: 26,
     borderWidth: 1,
-    borderColor: '#45C9F6',
+    borderColor: '#46C8F5',
     borderRadius: 13,
   },
   buttonTextStyle: {
-    color: '#45C9F6',
+    color: '#46C8F5',
     fontSize: 13,
     fontWeight: '700',
     padding: 0,
@@ -181,7 +181,7 @@ const styles = {
     height: 25,
     width: 26,
     transform: [{ rotateY: '180deg' }],
-    tintColor: '#45C9F6'
+    tintColor: '#46C8F5'
   }
 };
 

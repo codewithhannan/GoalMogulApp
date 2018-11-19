@@ -169,7 +169,7 @@ class Event extends Component {
   renderFooter = () => {
     const { routes, index } = this.props.navigationState;
     if (this.props.feedLoading && routes[index].key === 'posts') {
-      return <ActivityIndicator size='small' color='45C9F6' />;
+      return <ActivityIndicator size='small' color='46C8F5' />;
     }
 
     return '';

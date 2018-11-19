@@ -147,7 +147,7 @@ const styles = {
     width: 30,
     borderRadius: 15,
     borderWidth: 0,
-    backgroundColor: '#45C9F6',
+    backgroundColor: '#46C8F5',
     justifyContent: 'center',
     alignItems: 'center'
   },
