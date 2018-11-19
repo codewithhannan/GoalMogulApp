@@ -309,7 +309,7 @@ const styles = {
     // backgroundColor: '#4ec9f3',
     backgroundColor: APP_BLUE,
     // backgroundColor: '#6bc6f0',
-    paddingTop: 30,
+    paddingTop: 40,
     paddingLeft: 10,
     paddingRight: 10,
     paddingBottom: 10,
