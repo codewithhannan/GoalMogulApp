@@ -163,8 +163,19 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case PROFILE_OPEN_PROFILE:
-      return { ...state, userId: action.payload, loading: true };
+    case PROFILE_OPEN_PROFILE: {
+      const userId = action.payload;
+      let newState;
+      if (userId === state.userId || userId === state.user._id) {
+        newState = _.cloneDeep(state);
+      } else {
+        newState = _.cloneDeep(INITIAL_STATE);
+      }
+      newState = _.set(newState, 'userId', action.payload);
+      newState = _.set(newState, 'loading', true);
+
+      return newState;
+    }
 
     case PROFILE_FETCHING_FAIL:
       return { ...state, loading: false };

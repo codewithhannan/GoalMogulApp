@@ -107,6 +107,7 @@ class ChildCommentCard extends Component {
         defaultImageSource={defaultProfilePic}
         imageUrl={imageUrl}
         imageStyle={{ ...styles.profileImageStyle }}
+        userId={item.owner._id}
       />
     );
   }

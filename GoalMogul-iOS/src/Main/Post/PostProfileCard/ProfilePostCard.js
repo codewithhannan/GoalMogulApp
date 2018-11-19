@@ -153,6 +153,7 @@ class ProfilePostCard extends Component {
           imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
           imageUrl={owner && owner.profile ? owner.profile.image : undefined}
           imageContainerStyle={styles.imageContainerStyle}
+          userId={owner._id}
         />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline

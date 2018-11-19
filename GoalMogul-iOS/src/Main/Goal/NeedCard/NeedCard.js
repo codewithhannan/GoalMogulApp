@@ -101,6 +101,7 @@ class NeedCard extends Component {
         <ProfileImage
           imageStyle={{ height: 60, width: 60 }}
           imageUrl={owner && owner.profile ? owner.profile.image : undefined}
+          userId={owner._id}
         />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline

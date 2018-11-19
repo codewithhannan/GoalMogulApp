@@ -72,12 +72,13 @@ class ContactDetail extends Component {
     );
   }
 
-  renderProfileImage(profile) {
+  renderProfileImage(profile, _id) {
     return (
       <ProfileImage
         imageContainerStyle={{ height: 30, width: 30, borderRadius: 15 }}
         imageStyle={{ height: 30, width: 30, borderRadius: 15 }}
         imageUrl={profile.image}
+        userId={_id}
       />
     );
   }
@@ -88,7 +89,7 @@ class ContactDetail extends Component {
     const { name, headline, _id, profile } = item;
     return (
       <View style={styles.containerStyle}>
-        {this.renderProfileImage(profile)}
+        {this.renderProfileImage(profile, _id)}
         <View style={styles.bodyContainerStyle}>
           <Text
             style={styles.nameTextStyle}

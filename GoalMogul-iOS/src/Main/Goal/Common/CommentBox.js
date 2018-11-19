@@ -238,7 +238,11 @@ class CommentBox extends Component {
         onPress={() => this.handleOnPost(uploading)}
         disabled={disable}
       >
-        <Text style={{ color, fontSize: 13, fontWeight: '700', padding: 6, margin: 6 }}>Post</Text>
+        <Text
+          style={{ color, fontSize: 14, fontWeight: '700', padding: 13, letterSpacing: 0.5 }}
+        >
+          Post
+        </Text>
       </TouchableOpacity>
     );
   }

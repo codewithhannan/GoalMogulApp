@@ -121,9 +121,6 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
   if (tab) {
     selectProfileTabByName(`${tab}`)(dispatch, getState);
     resetFilterType(`${tab}`)(dispatch, getState);
-    handleTabRefresh(`${tab}`)(dispatch, getState);
-  } else {
-    handleTabRefresh('goals')(dispatch, getState);
   }
 
   const { token } = getState().user;
@@ -153,6 +150,7 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
         return fetchProfileFail(profileRes, dispatch);
       }
       fetchProfileSucceed(profileRes, dispatch);
+      handleCurrentTabRefresh()(dispatch, getState);
       // Prefetch profile image
       prefetchImage(profileRes.data.profile.image);
 
@@ -170,8 +168,6 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
       } else {
         fetchFriendshipSucceed(friendshipRes, dispatch);
       }
-
-      handleCurrentTabRefresh()(dispatch, getState);
     })
     .catch((err) => {
       console.log('err in loading user profile', err);
@@ -373,6 +369,7 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
   const profile = getState().profile;
   const { user } = profile;
   const { filter, limit } = _.get(profile, tab);
+  console.log(`${DEBUG_KEY}: refresh tab for user: `, user);
 
   if (!user || !user._id) return;
   const userId = user._id;

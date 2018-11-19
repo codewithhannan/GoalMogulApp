@@ -201,8 +201,9 @@ class GoalCard extends React.PureComponent {
       <View style={{ flexDirection: 'row' }}>
         <ProfileImage
           imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
-          imageContainerStyle={{ marginTop: 7 }}
+          imageContainerStyle={{ marginTop: 5 }}
           imageUrl={owner && owner.profile ? owner.profile.image : undefined}
+          userId={owner._id}
         />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
