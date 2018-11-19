@@ -33,16 +33,16 @@ const styles = {
     flexDirection: 'row'
   },
   iconContainerStyle: {
-    height: 40,
-    width: 40,
-    borderRadius: 20,
+    height: 34,
+    width: 34,
+    borderRadius: 17,
     justifyContent: 'center',
     alignItems: 'center'
   },
   iconStyle: {
-    height: 26,
-    width: 26,
-    borderRadius: 13
+    height: 20,
+    width: 20,
+    borderRadius: 10
   },
   textStyle: {
     fontSize: 12,

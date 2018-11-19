@@ -1,9 +1,9 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { View, Text, TouchableWithoutFeedback } from 'react-native';
 
 const styles = {
   containerStyle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
     maxWidth: 150,
   }
@@ -12,14 +12,19 @@ const styles = {
 const Name = (props) => {
   const style = props.textStyle ? { ...styles.containerStyle, ...props.textStyle }
     : { ...styles.containerStyle };
+  const { onPress } = props;
   return (
-    <Text
-      style={style}
-      numberOfLines={1}
-      ellipsizeMode='tail'
-    >
-      {props.text}
-    </Text>
+    <TouchableWithoutFeedback onPress={onPress}>
+      <View>
+        <Text
+          style={style}
+          numberOfLines={1}
+          ellipsizeMode='tail'
+        >
+          {props.text}
+        </Text>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

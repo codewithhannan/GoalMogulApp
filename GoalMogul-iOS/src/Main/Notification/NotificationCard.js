@@ -73,6 +73,7 @@ class NotificationCard extends React.Component {
         imageUrl={imageUrl}
         rounded
         imageContainerStyle={styles.imageContainerStyle}
+        userId=''
       />
     );
   }

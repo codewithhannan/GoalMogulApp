@@ -1,5 +1,13 @@
 import React from 'react';
-import { TouchableOpacity, View, Image, Text, FlatList, Dimensions } from 'react-native';
+import {
+  TouchableOpacity,
+  View,
+  Image,
+  Text,
+  FlatList,
+  Dimensions,
+  TouchableWithoutFeedback
+} from 'react-native';
 import {
   Menu,
   MenuOptions,
@@ -7,11 +15,12 @@ import {
   MenuTrigger,
   renderers
 } from 'react-native-popup-menu';
+import { connect } from 'react-redux';
 
 /* Components */
 import Name from './Name';
 import Category from './Category';
-import { UserBanner } from '../../../actions';
+import { UserBanner, openProfile } from '../../../actions';
 
 /* Asset */
 import badge from '../../../asset/utils/badge.png';
@@ -27,53 +36,61 @@ const { width } = Dimensions.get('window');
  * isSelf:
  * hasCaret: if null, show no caret
  */
-const Headline = (props) => {
-  const {
-    category,
-    name,
-    caretOnPress,
-    isSelf,
-    caretOnDelete,
-    hasCaret,
-    user
-  } = props;
+class Headline extends React.PureComponent {
+  handleNameOnPress = (user) => {
+    console.log('user is: ', user);
+    if (!user || !user._id) return;
+    const { _id } = user;
+    this.props.openProfile(_id);
+  }
 
-  // If item belongs to self, then caret displays delete
-  const menu = isSelf === undefined || !isSelf
-    ? MenuFactory(
-        [
-          'Report',
-        ],
-        () => caretOnPress(),
-        '',
-        { ...styles.caretContainer },
-        () => console.log('Report Modal is opened')
-      )
-    : MenuFactory(
-        [
-          'Delete',
-        ],
-        () => caretOnDelete(),
-        '',
-        { ...styles.caretContainer },
-        () => console.log('Report Modal is opened')
-      );
+  render() {
+    const {
+      category,
+      name,
+      caretOnPress,
+      isSelf,
+      caretOnDelete,
+      hasCaret,
+      user
+    } = this.props;
 
-  const categoryComponent = category ? <Category text={category} /> : '';
-  // TODO: format time
-  return (
-    <View style={styles.containerStyle}>
-      <Name text={name} />
-      {/* <Image style={styles.imageStyle} source={badge} /> */}
-      <UserBanner user={user} />
-      {categoryComponent}
-      <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
-        {hasCaret === null ? '' : menu}
+    // If item belongs to self, then caret displays delete
+    const menu = isSelf === undefined || !isSelf
+      ? MenuFactory(
+          [
+            'Report',
+          ],
+          () => caretOnPress(),
+          '',
+          { ...styles.caretContainer },
+          () => console.log('Report Modal is opened')
+        )
+      : MenuFactory(
+          [
+            'Delete',
+          ],
+          () => caretOnDelete(),
+          '',
+          { ...styles.caretContainer },
+          () => console.log('Report Modal is opened')
+        );
+
+    const categoryComponent = category ? <Category text={category} /> : '';
+
+    return (
+      <View style={styles.containerStyle}>
+        <Name text={name} onPress={() => this.handleNameOnPress(user)} />
+        {/* <Image style={styles.imageStyle} source={badge} /> */}
+        <UserBanner user={user} />
+        {categoryComponent}
+        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
+          {hasCaret === null ? '' : menu}
+        </View>
       </View>
-
-    </View>
-  );
-};
+    );
+  }
+}
 // <TouchableOpacity
 //   style={styles.caretContainer}
 //   onPress={() => caretOnPress()}
@@ -186,4 +203,9 @@ const styles = {
   }
 };
 
-export default Headline;
+export default connect(
+  null,
+  {
+    openProfile
+  }
+)(Headline);

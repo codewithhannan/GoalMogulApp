@@ -25,6 +25,7 @@ class SuggestionGoalPreview extends React.Component {
         imageStyle={{ width: 55, height: 55, borderRadius: 4 }}
         imageUrl={imageUrl}
         imageContainerStyle={styles.imageContainerStyle}
+        userId={item.owner._id}
       />
     );
   }

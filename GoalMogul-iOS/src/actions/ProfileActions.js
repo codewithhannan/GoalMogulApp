@@ -121,9 +121,6 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
   if (tab) {
     selectProfileTabByName(`${tab}`)(dispatch, getState);
     resetFilterType(`${tab}`)(dispatch, getState);
-    handleTabRefresh(`${tab}`)(dispatch, getState);
-  } else {
-    handleTabRefresh('goals')(dispatch, getState);
   }
 
   const { token } = getState().user;
