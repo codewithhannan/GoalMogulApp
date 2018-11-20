@@ -8,6 +8,8 @@ import {
 import {
   LIKE_SHARE,
   UNLIKE_SHARE,
+  LIKE_POST,
+  UNLIKE_POST,
 } from '../../like/LikeReducers';
 
 const SHARE_INITIAL_STATE = {
@@ -80,6 +82,8 @@ export default (state = INITIAL_STATE, action) => {
       return { ...INITIAL_STATE };
     }
 
+    case LIKE_POST:
+    case UNLIKE_POST:
     case LIKE_SHARE:
     case UNLIKE_SHARE: {
       const { id, likeId, tab } = action.payload;
@@ -90,6 +94,20 @@ export default (state = INITIAL_STATE, action) => {
 
       if (share._id && share._id.toString() === id.toString()) {
         newState = _.set(newState, `${path}.maybeLikeRef`, likeId);
+        const oldLikeCount = _.get(newState, `${path}.likeCount`);
+        let newLikeCount = oldLikeCount;
+        if (likeId) {
+          if (likeId === 'testId') {
+            newLikeCount += 1;
+          }
+        } else {
+          newLikeCount -= 1;
+        }
+        newState = _.set(
+          newState,
+          `${path}.likeCount`,
+          newLikeCount
+        );
       }
       return newState;
     }

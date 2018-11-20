@@ -145,6 +145,14 @@ export default (state = INITIAL_STATE, action) => {
       const goal = _.get(newState, `${path}`);
       if (goal._id && goal._id.toString() === id.toString()) {
         newState = _.set(newState, `${path}.maybeLikeRef`, likeId);
+        const oldLikeCount = _.get(newState, `${path}.likeCount`);
+        if (likeId) {
+          if (likeId === 'testId') {
+            newState = _.set(newState, `${path}.likeCount`, oldLikeCount + 1);
+          }
+        } else {
+          newState = _.set(newState, `${path}.likeCount`, oldLikeCount - 1);
+        }
       }
       return newState;
     }

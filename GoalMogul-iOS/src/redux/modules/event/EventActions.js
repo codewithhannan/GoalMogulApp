@@ -364,7 +364,7 @@ export const loadEventFeed = (skip, limit, token, params, callback, onError) => 
       token
     )
     .then((res) => {
-      console.log(`${DEBUG_KEY}: loading with res: `, res);
+      console.log(`${DEBUG_KEY}: loading event feed with res: `, res);
       if (res) {
         // Right now return test data
         if (skip === 0) {

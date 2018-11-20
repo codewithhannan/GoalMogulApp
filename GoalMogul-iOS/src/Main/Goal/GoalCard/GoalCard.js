@@ -9,7 +9,14 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
-import { LinearGradient } from 'expo';
+import {
+  GestureHandler
+} from 'expo';
+// import {
+//   FlingGestureHandler,
+//   Directions,
+//   State
+// } from 'react-native-gesture-handler';
 import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
 import timeago from 'timeago.js';
 import R from 'ramda';
@@ -274,7 +281,8 @@ class GoalCard extends React.PureComponent {
           iconSource={LoveIcon}
           count={likeCount}
           iconContainerStyle={likeButtonContainerStyle}
-          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 22, width: 24 }}
+          textStyle={{ color: '#f15860' }}
+          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
@@ -286,12 +294,14 @@ class GoalCard extends React.PureComponent {
         <ActionButton
           iconSource={ShareIcon}
           count={shareCount}
+          textStyle={{ color: '#a8e1a0' }}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
           onPress={() => this.handleShareOnClick()}
         />
         <ActionButton
           iconSource={BulbIcon}
           count={commentCount}
+          textStyle={{ color: '#FBDD0D' }}
           iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks suggest icon`);
@@ -312,7 +322,7 @@ class GoalCard extends React.PureComponent {
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <View style={{ backgroundColor: '#e5e5e5' }}>
             <View style={styles.containerStyle}>
-              <View style={{ marginTop: 10, marginBottom: 12, marginRight: 12, marginLeft: 12 }}>
+              <View style={{ marginTop: 14, marginBottom: 12, marginRight: 12, marginLeft: 12 }}>
                 {this.renderUserDetail(item)}
                 {this.renderCardContent(item)}
               </View>

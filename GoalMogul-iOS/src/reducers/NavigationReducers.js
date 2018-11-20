@@ -36,7 +36,7 @@ export default (state = initialState, action = {}) => {
     // }
 
     case 'Navigation/NAVIGATE': {
-      console.log('navigate to: ', action.routeName);
+      // console.log('navigate to: ', action.routeName);
       const newState = _.cloneDeep(state);
       const { routeName } = action;
       if (!routeName) return newState;

@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
+import { GestureHandler } from 'expo';
 
 // Components
 import GoalFilterBar from '../Common/GoalFilterBar';
@@ -92,6 +93,7 @@ class Mastermind extends Component {
     return (
       <View style={{ flex: 1 }}>
         <FlatList
+          ref='flatlist'
           data={this.props.data}
           renderItem={this.renderItem}
           numColumns={1}
@@ -114,6 +116,10 @@ class Mastermind extends Component {
     );
   }
 }
+// onScrollBeginDrag={() => {
+//   this.refs['flatlist'].scrollToIndex({ animated: true, index: 2 });
+//   console.log('drag begin');
+// }}
 
 const styles = {
   iconContainerStyle: {

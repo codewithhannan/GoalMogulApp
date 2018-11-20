@@ -362,6 +362,7 @@ class Event extends Component {
           <ProfilePostCard
             item={props.item}
             key={props.index}
+            hasActionButton
           />
         );
       }

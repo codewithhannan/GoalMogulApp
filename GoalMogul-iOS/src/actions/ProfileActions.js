@@ -567,8 +567,8 @@ export const UserBanner = (props) => {
 
   const imageStyle = {
     alignSelf: 'center',
-    marginLeft: 3,
-    marginRight: 3,
+    marginLeft: 4,
+    marginRight: 4,
     height: 14,
     width: 10
   };

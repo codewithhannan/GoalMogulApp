@@ -57,6 +57,15 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
               tab,
               type
             }
+          }),
+          undoAction: () => dispatch({
+            type: UNLIKE_GOAL,
+            payload: {
+              id,
+              likeId: undefined,
+              tab,
+              type
+            }
           })
         };
       case 'post':
@@ -69,6 +78,15 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
             payload: {
               id,
               likeId,
+              tab,
+              type
+            }
+          }),
+          undoAction: () => dispatch({
+            type: UNLIKE_POST,
+            payload: {
+              id,
+              likeId: undefined,
               tab,
               type
             }
@@ -88,10 +106,20 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
               tab,
               type
             }
+          }),
+          undoAction: () => dispatch({
+            type: UNLIKE_COMMENT,
+            payload: {
+              id,
+              likeId: undefined,
+              tab,
+              type
+            }
           })
         };
     }
   })(type);
+  tmp.action('testId');
 
   API
     .post(`${LIKE_BASE_ROUTE}`, { ...tmp.requestBody }, token)
@@ -101,9 +129,11 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
       if (res.status === 200 && res.data) {
         return tmp.action(res.data._id);
       }
+      return tmp.undoAction();
     })
     .catch((err) => {
       console.log(`${DEBUG_KEY}: Error when like ${type} with id: ${id}. Error is: `, err);
+      return tmp.undoAction();
     });
 };
 
@@ -128,6 +158,16 @@ export const unLikeGoal = (type, id, likeId, pageId) => (dispatch, getState) => 
               pageId,
               type
             }
+          }),
+          undoAction: () => dispatch({
+            type: LIKE_GOAL,
+            payload: {
+              id,
+              likeId,
+              tab,
+              pageId,
+              type
+            }
           })
         };
       case 'post':
@@ -141,7 +181,17 @@ export const unLikeGoal = (type, id, likeId, pageId) => (dispatch, getState) => 
               pageId,
               type
             }
-          })
+          }),
+          undoAction: () => dispatch({
+            type: LIKE_POST,
+            payload: {
+              id,
+              likeId,
+              tab,
+              pageId,
+              type
+            }
+          }),
         };
 
       default:
@@ -155,10 +205,21 @@ export const unLikeGoal = (type, id, likeId, pageId) => (dispatch, getState) => 
               pageId,
               type
             }
+          }),
+          undoAction: () => dispatch({
+            type: UNLIKE_COMMENT,
+            payload: {
+              id,
+              likeId,
+              tab,
+              pageId,
+              type
+            }
           })
         };
     }
   })(type);
+  tmp.action();
 
   API
     .delete(`${LIKE_BASE_ROUTE}?likeId=${likeId}`, { likeId }, token)
@@ -166,12 +227,14 @@ export const unLikeGoal = (type, id, likeId, pageId) => (dispatch, getState) => 
       if (res.status === 200 || (res && res.isSuccess)) {
         console.log(`${DEBUG_KEY}: Remove like successfully for ${type} with id: ${id}`);
         // TODO: update reducers
-        return tmp.action();
+        return;
       }
       console.warn(`${DEBUG_KEY}: Remove like return without error and success message.
         res is: `, res);
+      return tmp.undoAction();
     })
     .catch((err) => {
       console.log(`${DEBUG_KEY}: Error when like ${type} with id: ${id}. Error is: `, err);
+      return tmp.undoAction();
     });
 };

@@ -53,7 +53,7 @@ const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to an event', 'Share to a tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 
-class ProfilePostCard extends Component {
+class ProfilePostCard extends React.PureComponent {
 
   handleCardOnPress = (item) => {
     if (item) {
@@ -92,9 +92,9 @@ class ProfilePostCard extends Component {
     return shareToActionSheet();
   };
 
-  renderActionButtons(item) {
+  renderActionButtons(item, hasActionButton) {
     // Sanity check if ref exists
-    if (!item) return '';
+    if (!item || !hasActionButton) return '';
 
     const { maybeLikeRef, _id } = item;
 
@@ -107,36 +107,41 @@ class ProfilePostCard extends Component {
       : { backgroundColor: 'white' };
 
     return (
-      <ActionButtonGroup>
-        <ActionButton
-          iconSource={LoveIcon}
-          count={likeCount}
-          iconContainerStyle={likeButtonContainerStyle}
-          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 22, width: 24 }}
-          onPress={() => {
-            console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
-            if (maybeLikeRef && maybeLikeRef.length > 0) {
-              return this.props.unLikeGoal('post', _id, maybeLikeRef);
-            }
-            this.props.likeGoal('post', _id);
-          }}
-        />
-        <ActionButton
-          iconSource={ShareIcon}
-          count={shareCount}
-          iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
-          onPress={() => this.handleShareOnClick(item)}
-        />
-        <ActionButton
-          iconSource={BulbIcon}
-          count={commentCount}
-          iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
-          onPress={() => {
-            console.log(`${DEBUG_KEY}: user clicks suggest icon`);
-            this.props.onPress(item);
-          }}
-        />
-      </ActionButtonGroup>
+      <View style={{ ...styles.containerStyle, marginTop: 1 }}>
+        <ActionButtonGroup>
+          <ActionButton
+            iconSource={LoveIcon}
+            count={likeCount}
+            textStyle={{ color: '#f15860' }}
+            iconContainerStyle={likeButtonContainerStyle}
+            iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22 }}
+            onPress={() => {
+              console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
+              if (maybeLikeRef && maybeLikeRef.length > 0) {
+                return this.props.unLikeGoal('post', _id, maybeLikeRef);
+              }
+              this.props.likeGoal('post', _id);
+            }}
+          />
+          <ActionButton
+            iconSource={ShareIcon}
+            count={shareCount}
+            textStyle={{ color: '#a8e1a0' }}
+            iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
+            onPress={() => this.handleShareOnClick(item)}
+          />
+          <ActionButton
+            iconSource={BulbIcon}
+            count={commentCount}
+            textStyle={{ color: '#FBDD0D' }}
+            iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
+            onPress={() => {
+              console.log(`${DEBUG_KEY}: user clicks suggest icon`);
+              this.props.onPress(item);
+            }}
+          />
+        </ActionButtonGroup>
+      </View>
     );
   }
 
@@ -180,7 +185,7 @@ class ProfilePostCard extends Component {
   }
 
   render() {
-    const { item } = this.props;
+    const { item, hasActionButton } = this.props;
     if (!item || _.isEmpty(item)) return '';
 
     return (
@@ -202,6 +207,7 @@ class ProfilePostCard extends Component {
               <ProfilePostBody item={item} />
             </View>
           </View>
+          {this.renderActionButtons(item, hasActionButton)}
           {/*
             Temperoraily remove action icons from ProfilePostCard. It was at line 194.
             <View style={{ ...styles.containerStyle, marginTop: 1 }}>

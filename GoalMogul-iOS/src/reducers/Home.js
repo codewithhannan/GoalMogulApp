@@ -173,10 +173,18 @@ function updateLike(array, id, likeId, type) {
 
           // Update like Count
           const oldLikeCount = _.get(itemToUpdate, 'likeCount');
+          let newLikeCount = oldLikeCount;
+          if (likeId) {
+            if (likeId === 'testId') {
+              newLikeCount = oldLikeCount + 1;
+            }
+          } else {
+            newLikeCount = oldLikeCount - 1;
+          }
           itemToUpdate = _.set(
             itemToUpdate,
             'likeCount',
-            likeId ? oldLikeCount + 1 : oldLikeCount - 1
+            newLikeCount
           );
           newItem = _.set(newItem, `${path}`, itemToUpdate);
         }
@@ -188,10 +196,18 @@ function updateLike(array, id, likeId, type) {
       newItem = _.set(newItem, 'maybeLikeRef', likeId);
 
       const oldLikeCount = _.get(newItem, 'likeCount');
+      let newLikeCount = oldLikeCount;
+      if (likeId) {
+        if (likeId === 'testId') {
+          newLikeCount = oldLikeCount + 1;
+        }
+      } else {
+        newLikeCount = oldLikeCount - 1;
+      }
       newItem = _.set(
         newItem,
         'likeCount',
-        likeId ? oldLikeCount + 1 : oldLikeCount - 1
+        newLikeCount
       );
     }
     return newItem;

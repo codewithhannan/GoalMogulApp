@@ -214,8 +214,9 @@ class GoalDetailSection extends Component {
         <ActionButton
           iconSource={LoveIcon}
           count={likeCount}
+          textStyle={{ color: '#f15860' }}
           iconContainerStyle={likeButtonContainerStyle}
-          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 22, width: 24 }}
+          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks like icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
@@ -227,6 +228,7 @@ class GoalDetailSection extends Component {
         <ActionButton
           iconSource={ShareIcon}
           count={shareCount}
+          textStyle={{ color: '#a8e1a0' }}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
           onPress={() => this.handleShareOnClick()}
         />
@@ -234,6 +236,7 @@ class GoalDetailSection extends Component {
           iconSource={BulbIcon}
           count={commentCount}
           iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
+          textStyle={{ color: '#FBDD0D' }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks suggestion icon.`);
             this.props.createCommentFromSuggestion({

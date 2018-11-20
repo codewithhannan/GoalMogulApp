@@ -569,6 +569,7 @@ class MyTribe extends Component {
           <ProfilePostCard
             item={props.item}
             key={props.index}
+            hasActionButton
           />
         );
       }
@@ -612,7 +613,7 @@ class MyTribe extends Component {
     const { item, data } = this.props;
     if (!item) return <View />;
 
-    console.log('data is: ', data);
+    // console.log(`${DEBUG_KEY}: data is: `, data);
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>

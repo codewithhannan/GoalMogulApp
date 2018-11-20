@@ -113,7 +113,8 @@ class ActivityCard extends React.PureComponent {
           iconSource={LoveIcon}
           count={likeCount}
           iconContainerStyle={likeButtonContainerStyle}
-          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 22, width: 24 }}
+          textStyle={{ color: '#f15860' }}
+          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
@@ -125,12 +126,14 @@ class ActivityCard extends React.PureComponent {
         <ActionButton
           iconSource={ShareIcon}
           count={shareCount}
+          textStyle={{ color: '#a8e1a0' }}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
           onPress={() => this.handleShareOnClick(actedUponEntityType)}
         />
         <ActionButton
           iconSource={BulbIcon}
           count={commentCount}
+          textStyle={{ color: '#FBDD0D' }}
           iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks suggest icon`);
