@@ -68,7 +68,7 @@ const fetchFriendsCountSucceed = (res, self, dispatch) => {
   const type = self ? PROFILE_FETCH_FRIEND_COUNT_DONE : PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE;
   dispatch({
     type,
-    payload: res.data
+    payload: self ? res.count : res.data
   });
 };
 
@@ -181,14 +181,14 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
 
 // Fetch mutual friends
 export const fetchMutualFriends = (userId, refresh) => (dispatch, getState) => {
-  dispatch({
-    type: PROFILE_FETCH_MUTUAL_FRIEND
-  });
-
   const { token } = getState().user;
-  const { skip, limit, hasNextPage } = getState().profile.mutualFriends;
+  const { skip, limit, hasNextPage, loading } = getState().profile.mutualFriends;
   const newSkip = refresh ? 0 : skip;
-  if (hasNextPage === undefined || hasNextPage) {
+  if ((hasNextPage === undefined || hasNextPage) && !loading) {
+    dispatch({
+      type: PROFILE_FETCH_MUTUAL_FRIEND
+    });
+    
     API
       .get(
         `secure/user/friendship/mutual-friends?userId=${userId}&skip=${skip}&limit=${limit}`,
@@ -196,13 +196,13 @@ export const fetchMutualFriends = (userId, refresh) => (dispatch, getState) => {
       )
       .then((res) => {
         console.log(`${DEBUG_KEY} fetch mutual friends with res: `, res);
-        if (res.data) {
+        if (res.status === 200 || res.data) {
           const data = res.data;
           dispatch({
             type: PROFILE_FETCH_MUTUAL_FRIEND_DONE,
             payload: {
               skip: newSkip + res.data.length,
-              hasNextPage: !(data === undefined || data.length === 0),
+              hasNextPage: !(data === undefined || data.length === 0 || data.length < skip),
               data: data === null || data === undefined ? [] : data,
               refresh
             }

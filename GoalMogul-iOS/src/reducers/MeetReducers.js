@@ -261,9 +261,11 @@ export default (state = INITIAL_STATE, action) => {
 
     // fetch friends count when opening profile
     case PROFILE_FETCH_FRIEND_COUNT_DONE: {
-      const newFriends = _.cloneDeep(state.friends);
-      newFriends.count = action.payload;
-      return { ...state, friends: newFriends };
+      // console.log('payload is: ', action.payload);
+      const newState = _.cloneDeep(state);
+      let newFriends = _.get(newState, 'friends');
+      newFriends = _.set(newFriends, 'count', action.payload);
+      return _.set(newState, 'friends', newFriends);
     }
 
     case USER_LOG_OUT: {

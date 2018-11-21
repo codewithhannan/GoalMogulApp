@@ -210,29 +210,34 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case PROFILE_FETCH_MUTUAL_FRIEND: {
-      let newState = _.cloneDeep(state);
-      newState.mutualFriends.loading = true;
-      return { ...newState };
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'mutualFriends.loading', true);
     }
 
     // profile fetch mutual friend request done
     case PROFILE_FETCH_MUTUAL_FRIEND_DONE: {
       const { skip, hasNextPage, data, refresh } = action.payload;
-      let newMutualFriends = _.cloneDeep(state.mutualFriends);
+      const newState = _.cloneDeep(state);
+      let newMutualFriends = _.get(newState, 'mutualFriends');
       if (refresh) {
-        newMutualFriends.data = data;
+        newMutualFriends = _.set(newMutualFriends, 'data', data);
       } else {
-        newMutualFriends.data = newMutualFriends.data.concat(data);
+        const oldData = _.get(newMutualFriends, 'data');
+        const newData = arrayUnique(oldData.concat(data));
+        newMutualFriends = _.set(newMutualFriends, 'data', newData);
       }
-      newMutualFriends.hasNextPage = hasNextPage;
-      newMutualFriends.skip = skip;
-      return { ...state, mutualFriends: newMutualFriends };
+      newMutualFriends = _.set(newMutualFriends, 'hasNextPage', hasNextPage);
+      newMutualFriends = _.set(newMutualFriends, 'skip', skip);
+      newMutualFriends = _.set(newMutualFriends, 'loading', false);
+      return _.set(newState, 'mutualFriends', newMutualFriends);
     }
 
     case PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE: {
-      let newMutualFriends = _.cloneDeep(state.mutualFriends);
-      newMutualFriends.count = action.payload;
-      return { ...state, mutualFriends: newMutualFriends };
+      const newState = _.cloneDeep(state);
+      let newMutualFriends = _.get(newState, 'mutualFriends');
+
+      newMutualFriends = _.set(newMutualFriends, 'count', action.payload);
+      return _.set(newState, 'mutualFriends', newMutualFriends);
     }
 
     // profile fetch friendship request done
