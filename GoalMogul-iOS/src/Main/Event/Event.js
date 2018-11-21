@@ -45,6 +45,10 @@ import {
   reportEvent
 } from '../../redux/modules/event/EventActions';
 
+import {
+  openPostDetail
+} from '../../redux/modules/feed/post/PostActions';
+
 // Selector
 import {
   getUserStatus,
@@ -363,6 +367,7 @@ class Event extends Component {
             item={props.item}
             key={props.index}
             hasActionButton
+            onPress={(item) => this.props.openPostDetail(item)}
           />
         );
       }
@@ -526,7 +531,8 @@ export default connect(
     openEventInvitModal,
     deleteEvent,
     editEvent,
-    reportEvent
+    reportEvent,
+    openPostDetail
   }
 )(Event);
 

@@ -59,6 +59,10 @@ import {
   rsvpEvent
 } from '../../../redux/modules/event/EventActions';
 
+import {
+  openPostDetail
+} from '../../../redux/modules/feed/post/PostActions';
+
 const DEBUG_KEY = '[ UI MyEvent ]';
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
 const CANCEL_INDEX = 4;
@@ -450,6 +454,7 @@ class MyEvent extends Component {
             item={props.item}
             key={props.index}
             hasActionButton
+            onPress={(item) => this.props.openPostDetail(item)}
           />
         );
       }
@@ -658,6 +663,7 @@ export default connect(
     reportEvent,
     myEventSelectMembersFilter,
     rsvpEvent,
-    refreshMyEventDetail
+    refreshMyEventDetail,
+    openPostDetail
   }
 )(MyEvent);

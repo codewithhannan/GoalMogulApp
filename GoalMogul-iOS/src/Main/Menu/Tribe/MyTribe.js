@@ -63,6 +63,10 @@ import {
   getMyTribeMemberNavigationState
 } from '../../../redux/modules/tribe/TribeSelector';
 
+import {
+  openPostDetail
+} from '../../../redux/modules/feed/post/PostActions';
+
 const DEBUG_KEY = '[ UI MyTribe ]';
 const { width } = Dimensions.get('window');
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -570,6 +574,7 @@ class MyTribe extends Component {
             item={props.item}
             key={props.index}
             hasActionButton
+            onPress={(item) => this.props.openPostDetail(item)}
           />
         );
       }
@@ -820,7 +825,8 @@ export default connect(
     myTribeAdminPromoteUser,
     myTribeAdminDemoteUser,
     myTribeSelectMembersFilter,
-    myTribeAdminAcceptUser
+    myTribeAdminAcceptUser,
+    openPostDetail
   }
 )(MyTribe);
 

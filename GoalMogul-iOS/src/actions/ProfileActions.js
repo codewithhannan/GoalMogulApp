@@ -158,7 +158,7 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
         /* TODO: error handling for failing to fetch friends */
         console.log(`${DEBUG_KEY} fetch friends count fails: `, friendsCountRes.message);
       } else {
-        fetchFriendsCountSucceed(res, self, dispatch);
+        fetchFriendsCountSucceed(friendsCountRes, self, dispatch);
       }
 
 
@@ -560,7 +560,7 @@ export const deletePost = (postId) => (dispatch, getState) =>
 // By pass in user object, return corresponding banner
 export const UserBanner = (props) => {
   const { user } = props;
-  if (!user || !user.profile) return '';
+  if (!user || !user.profile || !user.profile.pointsEarned) return '';
   const { profile } = user;
   const { pointsEarned } = profile;
   const source = switchCaseBannerSource(pointsEarned);

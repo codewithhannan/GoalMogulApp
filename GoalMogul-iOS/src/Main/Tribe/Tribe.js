@@ -46,6 +46,10 @@ import {
   declineTribeInvit,
 } from '../../redux/modules/tribe/TribeActions';
 
+import {
+  openPostDetail
+} from '../../redux/modules/feed/post/PostActions';
+
 // Selector
 import {
   getUserStatus,
@@ -488,6 +492,7 @@ class Tribe extends Component {
             item={props.item}
             key={props.index}
             hasActionButton
+            onPress={(item) => this.props.openPostDetail(item)}
           />
         );
       }
@@ -737,5 +742,6 @@ export default connect(
     leaveTribe,
     acceptTribeInvit,
     declineTribeInvit,
+    openPostDetail
   }
 )(Tribe);

@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import {
   View,
-  Image,
   Text,
-  MaskedViewIOS,
+  // MaskedViewIOS,
   Dimensions,
   TouchableOpacity
 } from 'react-native';
@@ -210,6 +209,7 @@ class GoalCard extends React.PureComponent {
           imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
           imageContainerStyle={{ marginTop: 5 }}
           imageUrl={owner && owner.profile ? owner.profile.image : undefined}
+          imageContainerStyle={styles.imageContainerStyle}
           userId={owner._id}
         />
         <View style={{ marginLeft: 15, flex: 1 }}>
@@ -381,6 +381,15 @@ const styles = {
     shadowOpacity: 1,
     shadowRadius: 3,
     elevation: 1,
+  },
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 1.5,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 6,
+    alignSelf: 'center',
+    backgroundColor: 'white'
   }
 };
 
