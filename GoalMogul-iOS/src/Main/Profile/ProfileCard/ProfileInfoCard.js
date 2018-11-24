@@ -99,14 +99,19 @@ const styles = {
     display: 'flex',
     // borderColor: '#eaeaea',
     // borderBottomWidth: 0.5,
-    backgroundColor: 'transparent',
+    // backgroundColor: 'transparent'
+    // backgroundColor: 'white',
+    flex: 1,
+    borderTopWidth: 1.5,
+    borderColor: '#f2f2f2'
   },
   containerStyle: {
     display: 'flex',
     padding: 30,
     paddingLeft: 40,
     paddingRight: 40,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    flex: 1
   },
   headerContainerStyle: {
     display: 'flex',

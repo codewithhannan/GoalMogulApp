@@ -131,7 +131,7 @@ class SearchBarHeader extends Component {
       const backButtonTintColor = this.props.title ? 'white' : tintColor;
       return (
         <View style={{ height: 25, width: 25 }}>
-          <TouchableOpacity onPress={this.handleBackOnClick.bind(this)}>
+          <TouchableOpacity activeOpacity={0.85} onPress={this.handleBackOnClick.bind(this)}>
             {/*<Icon
               type='entypo'
               name='chevron-thin-left'
@@ -151,7 +151,7 @@ class SearchBarHeader extends Component {
     }
     return this.renderProfileImage();
     // return (
-    //   <TouchableOpacity
+    //   <TouchableOpacity activeOpacity={0.85}
     //     style={styles.headerLeftImage}
     //     onPress={this.handleProfileOnClick.bind(this)}
     //   >
@@ -165,7 +165,7 @@ class SearchBarHeader extends Component {
     let image = this.props.image;
     console.log('image is: ', image);
     let profileImage = (
-      <TouchableOpacity
+      <TouchableOpacity activeOpacity={0.85}
         style={styles.headerLeftImage}
         onPress={this.handleProfileOnClick.bind(this)}
       >
@@ -180,7 +180,7 @@ class SearchBarHeader extends Component {
     if (image) {
       image = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
       profileImage = (
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           style={styles.headerLeftImage}
           onPress={this.handleProfileOnClick.bind(this)}
         >
@@ -232,7 +232,7 @@ class SearchBarHeader extends Component {
     const { menuOnPress } = this.props;
     if (this.props.rightIcon === 'menu') {
       return (
-        <TouchableOpacity onPress={menuOnPress || this.handleMenuIconOnClick}>
+        <TouchableOpacity activeOpacity={0.85} onPress={menuOnPress || this.handleMenuIconOnClick}>
           <Image style={{ ...styles.headerRightImage, tintColor }} source={IconMenu} />
         </TouchableOpacity>
       );
@@ -255,7 +255,7 @@ class SearchBarHeader extends Component {
       );
     }
     return (
-      <TouchableOpacity onPress={() => Actions.push('searchLightBox')}>
+      <TouchableOpacity activeOpacity={0.85} onPress={() => Actions.push('searchLightBox')}>
         <View style={styles.searchButtonContainerStyle}>
           <View style={{ marginBottom: 3 }}>
             <Icon

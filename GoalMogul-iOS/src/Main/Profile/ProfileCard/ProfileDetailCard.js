@@ -261,7 +261,7 @@ class ProfileDetailCard extends Component {
             containerStyle={styles.dotIconContainerStyle}
           />
         </View>
-        <TouchableOpacity onPress={this.handleMutualFriendOnPressed}>
+        <TouchableOpacity activeOpacity={0.85} onPress={this.handleMutualFriendOnPressed}>
           <ButtonArrow text='View friends' arrow />
         </TouchableOpacity>
       </View>
@@ -326,7 +326,7 @@ const padding = 15;
 const styles = {
   cardContainerStyle: {
     shadowColor: '#ddd',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 1.2 },
     shadowOpacity: 0.7,
     shadowRadius: 1,
   },

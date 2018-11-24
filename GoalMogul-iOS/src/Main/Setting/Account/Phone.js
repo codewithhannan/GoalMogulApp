@@ -72,7 +72,7 @@ class Phone extends Component {
           <Text style={Styles.statusTextStyle}>
             Unverified
           </Text>
-          <TouchableOpacity onPress={this.handleOnVerifyPress.bind(this)}>
+          <TouchableOpacity activeOpacity={0.85} onPress={this.handleOnVerifyPress.bind(this)}>
             <Text style={Styles.actionTextStyle}>
               Verify phone number
             </Text>
@@ -85,7 +85,7 @@ class Phone extends Component {
         <Text style={Styles.statusTextStyle}>
           Confirmed
         </Text>
-        <TouchableOpacity>
+        <TouchableOpacity activeOpacity={0.85}>
           <Text style={Styles.actionTextStyle}>
             Make primary
           </Text>
@@ -97,7 +97,7 @@ class Phone extends Component {
   renderBody() {
     if (this.props.needAddPhone) {
       return (
-        <TouchableOpacity onPress={this.handleOnAddPhoneNumberPress.bind(this)}>
+        <TouchableOpacity activeOpacity={0.85} onPress={this.handleOnAddPhoneNumberPress.bind(this)}>
           <Button text="Add phone number" />
         </TouchableOpacity>
       );

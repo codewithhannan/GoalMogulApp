@@ -263,7 +263,11 @@ class CreateGoalModal extends Component {
         'Career/Business',
         'Financial',
         'Spiritual',
-        'Family/Personal'
+        'Family/Personal',
+        'Physical',
+        'Charity/Philanthropy',
+        'Travel',
+        'Things'
       ],
       this.handleCatergoryOnSelect,
       this.props.category,
@@ -330,7 +334,7 @@ class CreateGoalModal extends Component {
       return (
         <View style={{ ...styles.sectionMargin }}>
           {titleText}
-          <TouchableOpacity
+          <TouchableOpacity activeOpacity={0.85}
             style={{
               height: 40,
               width: 90,
@@ -433,7 +437,7 @@ class CreateGoalModal extends Component {
       <View style={{ ...styles.sectionMargin }}>
         {titleText}
         <View style={{ marginTop: 8, flexDirection: 'row' }}>
-          <TouchableOpacity
+          <TouchableOpacity activeOpacity={0.85}
             style={{
               height: 50,
               width: 130,
@@ -451,7 +455,7 @@ class CreateGoalModal extends Component {
             {startTime}
           </TouchableOpacity>
 
-          <TouchableOpacity
+          <TouchableOpacity activeOpacity={0.85}
             style={{
               height: 50,
               width: 130,
@@ -470,7 +474,7 @@ class CreateGoalModal extends Component {
             {endTime}
           </TouchableOpacity>
 
-          <TouchableOpacity
+          <TouchableOpacity activeOpacity={0.85}
             style={{ justifyContent: 'center', padding: 10 }}
             onPress={() => {
               this.props.change('hasTimeline', false);

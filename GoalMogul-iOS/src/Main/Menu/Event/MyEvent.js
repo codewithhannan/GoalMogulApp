@@ -316,7 +316,7 @@ class MyEvent extends Component {
       <View style={eventPropertyContainerStyle}>
         <Text style={eventPropertyTextStyle}>{eventProperty}</Text>
         <Dot />
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           style={styles.rsvpBoxContainerStyle}
           onPress={this.handleRSVPOnPress}
         >
@@ -394,7 +394,7 @@ class MyEvent extends Component {
     // Invite button is replaced by renderPlus
     const inviteButton = this.props.tab === 'attendees'
       ? (
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           onPress={() => this.handleInvite(_id)}
           style={styles.inviteButtonContainerStyle}
         >
@@ -473,7 +473,7 @@ class MyEvent extends Component {
     // if (this.state.showPlus && (isMember === 'Admin' || isMember === 'Member')) {
     if (this.state.showPlus) {
       return (
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           style={styles.iconContainerStyle}
           onPress={() => this.handlePlus(item, navigationState)}
         >

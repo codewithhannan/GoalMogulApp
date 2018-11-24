@@ -192,6 +192,7 @@ class GoalCard extends React.PureComponent {
           endTime={endDate}
           steps={steps}
           needs={needs}
+          goalRef={item}
         />
       </View>
     );
@@ -238,7 +239,7 @@ class GoalCard extends React.PureComponent {
   // Note: deprecated
   renderViewGoal() {
     return (
-      <TouchableOpacity
+      <TouchableOpacity activeOpacity={0.85}
         style={{
           flexDirection: 'row',
           alignItems: 'center',

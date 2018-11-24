@@ -100,7 +100,7 @@ class EditEmailForm extends Component {
             validate={validateEmail}
           />
 
-          <TouchableOpacity onPress={handleSubmit(this.handleOnSubmitPress)}>
+          <TouchableOpacity activeOpacity={0.85} onPress={handleSubmit(this.handleOnSubmitPress)}>
             <Button text="Submit" />
           </TouchableOpacity>
 

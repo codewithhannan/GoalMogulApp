@@ -38,6 +38,7 @@ class ProfileGoalCard extends React.Component {
           endTime={end}
           steps={steps}
           needs={needs}
+          goalRef={item}
         />
       </View>
     );
@@ -85,7 +86,7 @@ class ProfileGoalCard extends React.Component {
           <View style={{ backgroundColor: '#e5e5e5' }}>
             <View style={styles.containerStyle}>
               <View style={{ marginTop: 20, marginBottom: 20, marginRight: 15, marginLeft: 15 }}>
-                <TouchableOpacity onPress={() => this.handleCardOnPress(item)}>
+                <TouchableOpacity activeOpacity={0.85} onPress={() => this.handleCardOnPress(item)}>
                 {this.renderUserDetail(item)}
                 </TouchableOpacity>
                 {this.renderCardContent(item)}

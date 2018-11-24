@@ -8,7 +8,7 @@ import {
 
 const Button = (props) => {
   return (
-    <TouchableOpacity onPress={props.onPress}>
+    <TouchableOpacity activeOpacity={0.85} onPress={props.onPress}>
       <View
         style={{
           flexDirection: 'row',

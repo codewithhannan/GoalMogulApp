@@ -154,7 +154,7 @@ class ActivityCard extends React.PureComponent {
           <ActivitySummary item={item} />
             <View style={{ ...styles.containerStyle, marginTop: 1 }}>
               <View style={{ marginTop: 12, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
-                <TouchableOpacity
+                <TouchableOpacity activeOpacity={0.85}
                   onPress={() => this.handleCardOnPress(item)}
                 >
                   <ActivityHeader item={item} />

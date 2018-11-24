@@ -76,7 +76,7 @@ class SearchTribeCard extends Component {
   renderButton(item, type) {
     return (
       <View style={styles.iconContainerStyle}>
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           onPress={() => this.onButtonClicked(item, type)}
           style={{ padding: 15 }}
         >
@@ -118,7 +118,7 @@ class SearchTribeCard extends Component {
     const { item, type } = this.props;
     const { _id } = this.props.item;
     return (
-      <TouchableOpacity>
+      <TouchableOpacity activeOpacity={0.85}>
         <View style={styles.containerStyle}>
           {this.renderTribeImage()}
 

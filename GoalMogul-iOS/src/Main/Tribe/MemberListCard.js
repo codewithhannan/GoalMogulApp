@@ -158,7 +158,7 @@ class MemberListCard extends Component {
     const { isAdmin, onRemoveUser, onPromoteUser } = this.props;
     if (isAdmin) {
       return (
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           onPress={() => this.handleAdminUpdateUserStatus()}
           style={{ alignSelf: 'center', justifyContent: 'center' }}
         >

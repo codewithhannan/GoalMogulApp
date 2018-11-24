@@ -46,6 +46,7 @@ class ActivityBody extends React.Component {
         endTime={endDate}
         steps={steps}
         needs={needs}
+        goalRef={goalRef}
       />
     );
   }
@@ -81,7 +82,7 @@ class ActivityBody extends React.Component {
                 />
               </View>
 
-              <TouchableOpacity
+              <TouchableOpacity activeOpacity={0.85}
                 onPress={() => this.setState({ mediaModal: true })}
                 style={{
                   position: 'absolute',
@@ -130,7 +131,7 @@ class ActivityBody extends React.Component {
             backgroundColor: 'black'
           }}
         >
-          <TouchableOpacity
+          <TouchableOpacity activeOpacity={0.85}
             onPress={() => { this.setState({ mediaModal: false }); }}
             style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
           >

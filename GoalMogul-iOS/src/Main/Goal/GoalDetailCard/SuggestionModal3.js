@@ -168,7 +168,7 @@ class SuggestionModal extends Component {
 
     const optionsCollapsedText = optionsCollapsed
       ? (
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           style={{ width: 50, justifyContent: 'center' }}
           onPress={this.handleExpand}
         >
@@ -177,7 +177,7 @@ class SuggestionModal extends Component {
       )
       : '';
       // (
-      //   <TouchableOpacity
+      //   <TouchableOpacity activeOpacity={0.85}
       //     style={{ width: 50, justifyContent: 'center' }}
       //     onPress={this.handleCollapse}
       //   >
@@ -419,7 +419,7 @@ const Options = (props) => {
       : { ...styles.suggestionTextStyle };
 
     return (
-      <TouchableOpacity
+      <TouchableOpacity activeOpacity={0.85}
         onPress={() => onPress(key)}
         key={key}
         style={{ marginTop: 15, marginLeft: 30, alignItems: 'flex-start' }}

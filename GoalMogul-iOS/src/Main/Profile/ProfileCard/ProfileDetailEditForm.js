@@ -118,7 +118,7 @@ class ProfileDetailEditForm extends Component {
     }
 
     return (
-      <TouchableOpacity onPress={this.chooseImage}>
+      <TouchableOpacity activeOpacity={0.85} onPress={this.chooseImage}>
         <View style={{ alignSelf: 'center', justifyContent: 'center', alignItems: 'center' }}>
           {profileImage}
         </View>

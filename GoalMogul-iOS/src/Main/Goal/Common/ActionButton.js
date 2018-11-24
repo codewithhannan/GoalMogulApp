@@ -13,7 +13,7 @@ const ActionButton = (props) => {
     : <Text style={{ ...styles.textStyle, ...props.textStyle }}>{props.count}</Text>;
 
   return (
-    <TouchableOpacity
+    <TouchableOpacity activeOpacity={0.85}
       style={{ ...styles.containerStyle, ...containerStyle }}
       onPress={props.onPress}
     >

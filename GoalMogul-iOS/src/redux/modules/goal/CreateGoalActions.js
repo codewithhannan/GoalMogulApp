@@ -276,7 +276,7 @@ const detailsAdapter = (value) => {
 
   return {
     text: value[0],
-    tag: undefined
+    tag: []
   };
 };
 

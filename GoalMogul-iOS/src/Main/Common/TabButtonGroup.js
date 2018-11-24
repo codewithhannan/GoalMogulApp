@@ -38,7 +38,7 @@ class TabButtonGroup extends Component {
       if (i !== 0) {
         // render divider to the left
         return (
-          <TouchableOpacity
+          <TouchableOpacity activeOpacity={0.85}
             key={b.key}
             style={styles.dividerContainerStyle}
             onPress={() => {
@@ -56,7 +56,7 @@ class TabButtonGroup extends Component {
       }
 
       return (
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           key={b.key}
           style={styles.dividerContainerStyle}
           onPress={() => {

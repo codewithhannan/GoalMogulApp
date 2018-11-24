@@ -127,7 +127,7 @@ class LoginPage extends Component {
                   disabled={this.props.loading}
                   onSubmitEditing={handleSubmit(this.handleLoginPressed)}
                 />
-                <TouchableOpacity onPress={handleSubmit(this.handleLoginPressed)}>
+                <TouchableOpacity activeOpacity={0.85} onPress={handleSubmit(this.handleLoginPressed)}>
                   <View>
                     <Button text='Log In' />
                   </View>

@@ -60,7 +60,7 @@ class FriendsSetting extends Component {
   renderPrivacySettingDetail() {
     return friendsSettingList.map((info) => {
       return (
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           onPress={this.handleOnSelectedPress.bind(this, info.title)}
           key={info.title}
         >

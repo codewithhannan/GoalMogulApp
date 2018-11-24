@@ -65,7 +65,7 @@ class RefPreview extends Component {
     // TODO: add a postType ShareStep
     const { title, content, defaultPicture, picture } = switchCaseItem(item, postType);
     return (
-      <TouchableOpacity
+      <TouchableOpacity activeOpacity={0.85}
         style={styles.containerStyle}
         onPress={() => this.handleOnPress(item, postType, goalRef)}
       >

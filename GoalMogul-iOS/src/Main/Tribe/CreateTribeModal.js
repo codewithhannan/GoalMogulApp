@@ -64,7 +64,7 @@ class CreateTribeModal extends React.Component {
       name: undefined,
       membersCanInvite: false,
       isPubliclyVisible: false,
-      membershipLimit: 0,
+      membershipLimit: undefined,
       description: '',
       picture: undefined,
     };
@@ -154,10 +154,10 @@ class CreateTribeModal extends React.Component {
     const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
     return (
       <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10 }}>
-        <TouchableOpacity style={actionIconWrapperStyle} onPress={this.handleOpenCamera}>
+        <TouchableOpacity activeOpacity={0.85} style={actionIconWrapperStyle} onPress={this.handleOpenCamera}>
           <Image style={actionIconStyle} source={camera} />
         </TouchableOpacity>
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           style={{ ...actionIconWrapperStyle, marginLeft: 5 }}
           onPress={this.handleOpenCameraRoll}
         >
@@ -201,7 +201,7 @@ class CreateTribeModal extends React.Component {
               />
             </View>
 
-            <TouchableOpacity
+            <TouchableOpacity activeOpacity={0.85}
               onPress={() => this.setState({ mediaModal: true })}
               style={{
                 position: 'absolute',
@@ -227,7 +227,7 @@ class CreateTribeModal extends React.Component {
               />
             </TouchableOpacity>
 
-            <TouchableOpacity
+            <TouchableOpacity activeOpacity={0.85}
               onPress={() => this.props.change('picture', false)}
               style={{
                 position: 'absolute',
@@ -276,7 +276,7 @@ class CreateTribeModal extends React.Component {
               backgroundColor: 'black'
             }}
           >
-            <TouchableOpacity
+            <TouchableOpacity activeOpacity={0.85}
               onPress={() => { this.setState({ mediaModal: false }); }}
               style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
             >

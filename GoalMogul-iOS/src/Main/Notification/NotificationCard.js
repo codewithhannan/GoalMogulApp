@@ -80,7 +80,7 @@ class NotificationCard extends React.Component {
 
   renderOptions() {
     return (
-      <TouchableOpacity
+      <TouchableOpacity activeOpacity={0.85}
         onPress={() => this.handleOptionsOnPress()}
         style={{ alignSelf: 'center', justifyContent: 'center' }}
       >
@@ -124,7 +124,7 @@ class NotificationCard extends React.Component {
       ? { ...styles.cardContainerStyle }
       : { ...styles.cardContainerStyle, backgroundColor: '#eef8fb' };
     return (
-      <TouchableOpacity
+      <TouchableOpacity activeOpacity={0.85}
         style={cardContainerStyle}
         onPress={() => this.handleNotificationCardOnPress(item)}
       >

@@ -92,7 +92,7 @@ class ViewableSettingMenu extends Component {
 
     return (
       <View style={{ ...styles.containerStyle, backgroundColor: 'transparent', borderWidth: 0 }}>
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           style={{ ...containerStyle }}
           onPress={() => this.props.shareToMastermindCallback(!this.props.shareToMastermind)}
         >
@@ -103,7 +103,7 @@ class ViewableSettingMenu extends Component {
           <Text style={{ fontSize: 10, marginLeft: 3, marginRight: 5, color }}>
             Share to Mastermind
           </Text>
-          <TouchableOpacity style={{ padding: 4 }} onPress={this.handleInfoIcon}>
+          <TouchableOpacity activeOpacity={0.85} style={{ padding: 4 }} onPress={this.handleInfoIcon}>
             {icon}
           </TouchableOpacity>
         </TouchableOpacity>
@@ -115,7 +115,7 @@ class ViewableSettingMenu extends Component {
   render() {
     return (
       <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           style={{ ...styles.containerStyle, width: 80 }}
           onPress={this.handleOnClick}
         >

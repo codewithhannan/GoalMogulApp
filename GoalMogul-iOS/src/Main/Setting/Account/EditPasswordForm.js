@@ -87,7 +87,7 @@ class EidtPasswordForm extends Component {
 
   renderButton(handleSubmit) {
     return (
-      <TouchableOpacity onPress={handleSubmit(this.handleOnSendPress)}>
+      <TouchableOpacity activeOpacity={0.85} onPress={handleSubmit(this.handleOnSendPress)}>
         <View style={Styles.buttonContainerStyle}>
           <Text style={Styles.buttonTextStyle}>Update</Text>
         </View>

@@ -72,7 +72,7 @@ class NotificationCard extends React.Component {
   renderActionIcons(item) {
     return (
       <View style={{ flexDirection: 'row', borderLeftWidth: 0.5, borderColor: '#dbdbdb' }}>
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           style={{ ...styles.iconContainerStyle, backgroundColor: '#fdf9e5' }}
           onPress={() => this.handleOnSuggestion(item)}
         >
@@ -81,7 +81,7 @@ class NotificationCard extends React.Component {
             source={bulb}
           />
         </TouchableOpacity>
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           style={{ ...styles.iconContainerStyle, backgroundColor: '#ebf9fe' }}
           onPress={() => this.handleOnOpen(item)}
         >

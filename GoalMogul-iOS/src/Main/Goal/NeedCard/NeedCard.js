@@ -147,7 +147,7 @@ class NeedCard extends Component {
 
   renderViewGoal(item) {
     return (
-      <TouchableOpacity
+      <TouchableOpacity activeOpacity={0.85}
         style={{
           flexDirection: 'row',
           alignItems: 'center',

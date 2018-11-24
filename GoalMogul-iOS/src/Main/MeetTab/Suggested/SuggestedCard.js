@@ -70,7 +70,7 @@ class SuggestedCard extends Component {
   renderButton(_id) {
     return (
       <View style={styles.iconContainerStyle}>
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           onPress={this.onButtonClicked.bind(this, _id)}
           style={{ padding: 15 }}
         >

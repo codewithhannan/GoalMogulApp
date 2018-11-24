@@ -15,8 +15,11 @@ const formatDate = (date) => {
 };
 
 const ProgressBar = (props) => {
-  const { startTime, endTime, steps, needs } = props;
-  const progressPercentage = getProgress(steps || [], needs || []);
+  const { startTime, endTime, steps, needs, goalRef } = props;
+  let progressPercentage = getProgress(steps || [], needs || []);
+  if (goalRef && goalRef.isCompleted) {
+    progressPercentage = 1;
+  }
 
   const startTimeText = startTime instanceof Date
     ? formatDate(startTime)

@@ -70,7 +70,7 @@ class Mastermind extends Component {
   renderPlus() {
     if (this.props.showPlus) {
       return (
-        <TouchableOpacity style={styles.iconContainerStyle} onPress={this.handleCreateGoal}>
+        <TouchableOpacity activeOpacity={0.85} style={styles.iconContainerStyle} onPress={this.handleCreateGoal}>
           <Image style={styles.iconStyle} source={plus} />
         </TouchableOpacity>
       );

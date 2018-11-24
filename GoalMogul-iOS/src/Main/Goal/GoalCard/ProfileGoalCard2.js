@@ -93,6 +93,7 @@ class ProfileGoalCard2 extends React.Component {
           endTime={end}
           steps={steps}
           needs={needs}
+          goalRef={item}
         />
       </View>
     );
@@ -145,7 +146,7 @@ class ProfileGoalCard2 extends React.Component {
     if (!item || _.isEmpty(item)) return '';
 
     return (
-      <TouchableOpacity
+      <TouchableOpacity activeOpacity={0.85}
         style={styles.cardContainerStyle}
         onPress={() => this.handleOnCardPress(item)}
       >

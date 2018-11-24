@@ -139,7 +139,13 @@ class GoalDetailSection extends Component {
     const { start, end, steps, needs } = item;
     return (
       <View style={{ marginTop: 20 }}>
-        <ProgressBar startTime={start} endTime={end} steps={steps} needs={needs} />
+        <ProgressBar
+          startTime={start}
+          endTime={end}
+          steps={steps}
+          needs={needs}
+          goalRef={item}
+        />
       </View>
     );
   }

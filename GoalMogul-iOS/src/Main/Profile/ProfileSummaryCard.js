@@ -34,7 +34,7 @@ class ProfileSummaryCard extends Component {
   }
 
   handleOpenProfileDetail() {
-    // this.props.openProfileDetail();
+    this.props.openProfileDetail();
   }
 
   renderStats() {
@@ -46,7 +46,7 @@ class ProfileSummaryCard extends Component {
 
   renderButton(_id) {
     return (
-      <TouchableOpacity
+      <TouchableOpacity activeOpacity={0.85}
         onPress={this.onButtonClicked.bind(this, _id)}
         style={{
           padding: 20,

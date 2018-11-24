@@ -55,7 +55,7 @@ const searchWithId = (searchContent, queryId, type) => (dispatch, getState) => {
         hasNextPage: data.length !== 0
       }
     });
-  });
+  }, false);
 };
 
 // search function generator
@@ -105,7 +105,7 @@ export const refreshSearchResult = (type) => (dispatch, getState) => {
         hasNextPage: data.length !== 0
       }
     });
-  });
+  }, true);
 };
 
 /**
@@ -144,7 +144,7 @@ export const onLoadMore = (type) =>(dispatch, getState) => {
         hasNextPage: data.length !== 0
       }
     });
-  });
+  }, false);
 };
 
 // Function to generate queryId for text
@@ -181,9 +181,10 @@ export const clearSearchState = curry((dispatch) => (tab) => {
   });
 });
 
-const fetchData = curry((searchContent, type, skip, limit, token, searchType, callback) => {
+const fetchData =
+curry((searchContent, type, skip, limit, token, searchType, callback, forceRefresh) => {
   const baseRoute = switchCaseF(SearchRouteMap)('Default')(searchType);
-  const forRefreshString = skip === 0 ? '&forceRefresh=true' : '';
+  const forRefreshString = forceRefresh ? '&forceRefresh=true' : '';
   API
     .get(
       `${baseRoute.route}?skip=${skip}&limit=${limit}&query=${searchContent}${forRefreshString}`,
