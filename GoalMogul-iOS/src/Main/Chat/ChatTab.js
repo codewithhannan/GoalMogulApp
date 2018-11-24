@@ -57,7 +57,7 @@ const mapStateToProps = state => {
 
 const styles = {
   homeContainerStyle: {
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#f8f8f8',
     flex: 1
   },
   textStyle: {

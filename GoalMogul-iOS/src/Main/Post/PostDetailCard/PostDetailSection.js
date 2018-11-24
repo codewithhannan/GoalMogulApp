@@ -69,7 +69,7 @@ import RefPreview from '../../Common/RefPreview';
 
 // Constants
 const DEBUG_KEY = '[ UI PostDetailCard.PostDetailSection ]';
-const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to an event', 'Share to a tribe', 'Cancel'];
+const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 const { width } = Dimensions.get('window');
 

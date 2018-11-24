@@ -183,9 +183,10 @@ export const clearSearchState = curry((dispatch) => (tab) => {
 
 const fetchData = curry((searchContent, type, skip, limit, token, searchType, callback) => {
   const baseRoute = switchCaseF(SearchRouteMap)('Default')(searchType);
+  const forRefreshString = skip === 0 ? '&forceRefresh=true' : '';
   API
     .get(
-      `${baseRoute.route}?skip=${skip}&limit=${limit}&query=${searchContent}`,
+      `${baseRoute.route}?skip=${skip}&limit=${limit}&query=${searchContent}${forRefreshString}`,
       token
     )
     .then((res) => {

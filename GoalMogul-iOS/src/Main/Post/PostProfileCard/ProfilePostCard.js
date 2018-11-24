@@ -50,7 +50,7 @@ import Timestamp from '../../Goal/Common/Timestamp';
 
 // Constants
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
-const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to an event', 'Share to a tribe', 'Cancel'];
+const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 
 class ProfilePostCard extends React.PureComponent {

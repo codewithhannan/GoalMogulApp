@@ -188,7 +188,7 @@ export const fetchMutualFriends = (userId, refresh) => (dispatch, getState) => {
     dispatch({
       type: PROFILE_FETCH_MUTUAL_FRIEND
     });
-    
+
     API
       .get(
         `secure/user/friendship/mutual-friends?userId=${userId}&skip=${skip}&limit=${limit}`,
@@ -560,7 +560,8 @@ export const deletePost = (postId) => (dispatch, getState) =>
 // By pass in user object, return corresponding banner
 export const UserBanner = (props) => {
   const { user } = props;
-  if (!user || !user.profile || !user.profile.pointsEarned) return '';
+
+  if (!user || !user.profile || user.profile.pointsEarned === undefined) return '';
   const { profile } = user;
   const { pointsEarned } = profile;
   const source = switchCaseBannerSource(pointsEarned);
