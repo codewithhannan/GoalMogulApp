@@ -603,7 +603,8 @@ class MyTribe extends Component {
     const { isMember, navigationState } = this.props;
     if (this.state.showPlus && (isMember === 'Admin' || isMember === 'Member')) {
       return (
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity
+          activeOpacity={0.85}
           style={styles.iconContainerStyle}
           onPress={() => this.handlePlus(item, navigationState)}
         >

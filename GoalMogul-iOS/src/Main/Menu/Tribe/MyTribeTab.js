@@ -1,7 +1,9 @@
 import React from 'react';
 import {
   View,
-  FlatList
+  FlatList,
+  TouchableOpacity,
+  Image
 } from 'react-native';
 import { connect } from 'react-redux';
 import { MenuProvider } from 'react-native-popup-menu';
@@ -24,6 +26,9 @@ import ModalHeader from '../../Common/Header/ModalHeader';
 import MyTribeFilterBar from './MyTribeFilterBar';
 import TabButtonGroup from '../../Common/TabButtonGroup';
 import EmptyResult from '../../Common/Text/EmptyResult';
+
+// Assets
+import plus from '../../../asset/utils/plus.png';
 
 class MyTribeTab extends React.Component {
   _keyExtractor = (item) => item._id;
@@ -51,6 +56,18 @@ class MyTribeTab extends React.Component {
       <View>
         <MyTribeFilterBar />
       </View>
+    );
+  }
+
+  renderCreateTribeButton() {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.85}
+        style={styles.iconContainerStyle}
+        onPress={() => this.props.openNewTribeModal()}
+      >
+        <Image style={styles.iconStyle} source={plus} />
+      </TouchableOpacity>
     );
   }
   // ListHeaderComponent={this.renderListHeader()}
@@ -94,6 +111,7 @@ class MyTribeTab extends React.Component {
             }
             onEndThreshold={0}
           />
+          {this.renderCreateTribeButton()}
         </MenuProvider>
       </View>
 
@@ -181,7 +199,28 @@ const styles = {
   separator: {
     width: 0.5,
     color: 'gray'
-  }
+  },
+  iconContainerStyle: {
+    position: 'absolute',
+    bottom: 20,
+    right: 15,
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor: '#46C8F5',
+    backgroundColor: '#4096c6',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 2,
+  },
+  iconStyle: {
+    height: 26,
+    width: 26,
+    tintColor: 'white',
+  },
 };
 
 export default connect(

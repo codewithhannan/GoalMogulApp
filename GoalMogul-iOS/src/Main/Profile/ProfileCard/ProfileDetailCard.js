@@ -39,7 +39,7 @@ const CANCEL_REQUEST_CANCEL_INDEX = 1;
 const UNFRIEND_REQUEST_OPTIONS = ['Unfriend', 'Cancel'];
 const UNFRIEND_REQUEST_CANCEL_INDEX = 1;
 
-const RESPOND_REQUEST_OPTIONS = ['Accpet', 'Remove', 'Cancel'];
+const RESPOND_REQUEST_OPTIONS = ['Accpet friend request', 'Dismiss', 'Cancel'];
 const RESPOND_REQUEST_CANCEL_INDEX = 2;
 
 // TODO: use redux instead of passed in props
@@ -201,7 +201,7 @@ class ProfileDetailCard extends Component {
       return (
         <ProfileActionButton
           source={addUser}
-          text='Respond to request'
+          text='Respond'
           onPress={this.handleButtonOnPress.bind(this, 'respond')}
           style={{ height: 14, width: 15 }}
         />
@@ -225,6 +225,7 @@ class ProfileDetailCard extends Component {
             text='Friend'
             source={love}
             onPress={this.handleButtonOnPress.bind(this, 'unfriend')}
+            style={{ width: 15, height: 13 }}
           />
         );
 

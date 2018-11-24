@@ -132,7 +132,8 @@ class CreateGoalModal extends Component {
       return Alert.alert('Error', 'You have incomplete fields.');
     }
 
-    const { goal, initializeFromState } = this.props;
+    const { goal, initializeFromState, uploading } = this.props;
+    if (!uploading) return; // when uploading is false, it's actually uploading.
     const goalId = goal ? goal._id : undefined;
 
     return this.props.submitGoal(

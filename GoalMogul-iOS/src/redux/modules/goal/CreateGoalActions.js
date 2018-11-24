@@ -74,7 +74,7 @@ export const submitGoal = (values, userId, isEdit, callback, goalId) => (dispatc
       token
     )
     .then((res) => {
-      if (res.data && !_.isEmpty(res.data)) {
+      if (res.status === 200 || (res.data && !_.isEmpty(res.data))) {
         console.log(`${DEBUG_KEY}: creating goal success`);
         console.log(`${DEBUG_KEY}: result is`, res);
         // TODO: dispatch changes to feed and clear CreateGoalForm state
@@ -124,13 +124,14 @@ const submitEditGoal = (goal, goalId, token, callback, dispatch) => {
       token
     )
     .then((res) => {
-      if (res.data && res.data !== null) {
+      if (res.status === 200 || (res.data && res.data !== null)) {
         console.log(`${DEBUG_KEY}: editing goal success`);
         console.log(`${DEBUG_KEY}: result is`, res);
         // TODO: dispatch changes to feed and clear CreateGoalForm state
         callback();
         onSuccess();
         dispatch(reset('createGoalModal'));
+        return;
       }
       console.log(`${DEBUG_KEY}: editing goal success without returning data, res is: `, res);
       onError();
@@ -276,7 +277,7 @@ const detailsAdapter = (value) => {
 
   return {
     text: value[0],
-    tag: []
+    tags: []
   };
 };
 
