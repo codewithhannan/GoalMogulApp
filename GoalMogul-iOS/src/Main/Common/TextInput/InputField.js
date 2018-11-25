@@ -7,6 +7,9 @@ import {
 } from 'react-native';
 import _ from 'lodash';
 
+// Assets
+import menu from '../../../asset/header/menu.png';
+
 class InputField extends Component {
 
   constructor(props) {
@@ -63,6 +66,9 @@ class InputField extends Component {
       iconSource,
       iconStyle,
       iconOnPress,
+      move,
+      moveEnd,
+      canDrag,
       meta: { touched, error },
       ...custom
     } = this.props;
@@ -72,8 +78,20 @@ class InputField extends Component {
       :
       '';
 
+    const gestureHandler = canDrag
+      ? (
+        <TouchableOpacity
+          onLongPress={move}
+          onPressOut={moveEnd}
+          style={{ padding: 5 }}
+        >
+          <Image source={menu} style={{ height: 20, width: 22 }} />
+        </TouchableOpacity>
+    ) : '';
+
     return (
       <View style={styles.inputContainerStyle}>
+        {gestureHandler}
         <TextInput
           ref={this.updateRef}
           title={custom.title}
@@ -92,7 +110,8 @@ class InputField extends Component {
           {...restInput}
           {...custom}
         />
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity
+          activeOpacity={0.85}
           style={{ padding: 15, alignItems: 'flex-end', alignSelf: 'center' }}
           onPress={this.onIconPress}
         >

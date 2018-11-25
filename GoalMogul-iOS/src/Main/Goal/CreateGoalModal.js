@@ -11,7 +11,8 @@ import {
   DatePickerIOS,
   Modal,
   Alert,
-  TextInput
+  TextInput,
+  SafeAreaView
 } from 'react-native';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -35,6 +36,7 @@ import {
   renderers
 } from 'react-native-popup-menu';
 import Slider from 'react-native-slider';
+import DraggableFlatlist from 'react-native-draggable-flatlist';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
@@ -71,6 +73,9 @@ class CreateGoalModal extends Component {
   constructor(props) {
     super(props);
     this.initializeForm();
+    this.state = {
+      scrollEnabled: true
+    };
   }
 
   componentDidMount() {
@@ -456,7 +461,8 @@ class CreateGoalModal extends Component {
             {startTime}
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.85}
+          <TouchableOpacity
+            activeOpacity={0.85}
             style={{
               height: 50,
               width: 130,
@@ -475,7 +481,8 @@ class CreateGoalModal extends Component {
             {endTime}
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.85}
+          <TouchableOpacity
+            activeOpacity={0.85}
             style={{ justifyContent: 'center', padding: 10 }}
             onPress={() => {
               this.props.change('hasTimeline', false);
@@ -496,31 +503,93 @@ class CreateGoalModal extends Component {
     );
   }
 
+  renderFieldArrayItem = (props, placeholder, fields, canDrag) => {
+    const { item, index, move, moveEnd } = props;
+    const iconOnPress = index === 0 ?
+      undefined
+      :
+      () => fields.remove(index);
+    return (
+      <View
+        style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}
+      >
+        <SafeAreaView style={{ flex: 1 }}>
+        <Field
+          key={`description-${index}`}
+          name={`${item.item}.description`}
+          component={InputField}
+          editable={this.props.uploading}
+          numberOfLines={4}
+          style={styles.standardInputStyle}
+          placeholder={placeholder}
+          iconSource={cancel}
+          iconStyle={styles.cancelIconStyle}
+          iconOnPress={iconOnPress}
+          move={move}
+          moveEnd={moveEnd}
+          canDrag={canDrag}
+        />
+        </SafeAreaView>
+      </View>
+    );
+  }
+
   renderFieldArray = (title, buttonText, placeholder, fields, error) => {
-    const button = <Button text={buttonText} source={plus} onPress={() => fields.push()} />;
+    const button = <Button text={buttonText} source={plus} onPress={() => fields.push({})} />;
     const titleText = <Text style={styles.titleTextStyle}>{title}</Text>;
 
+    let dataToRender = [];
+    fields.forEach((field, index) => {
+      const dataToPush = {
+        item: _.cloneDeep(field),
+        index
+      };
+      dataToRender.push(dataToPush);
+    });
     const fieldsComponent = fields.length > 0 ?
-      fields.map((field, index) => {
-        const iconOnPress = index === 0 ?
-          undefined
-          :
-          () => fields.remove(index);
-        return (
-          <Field
-            key={`description-${index}`}
-            name={`${field}.description`}
-            component={InputField}
-            editable={this.props.uploading}
-            numberOfLines={4}
-            style={styles.standardInputStyle}
-            placeholder={placeholder}
-            iconSource={cancel}
-            iconStyle={styles.cancelIconStyle}
-            iconOnPress={iconOnPress}
-          />
-        );
-      })
+      (
+        <DraggableFlatlist
+          renderItem={(props) => this.renderFieldArrayItem(props, placeholder, fields, true)}
+          data={dataToRender}
+          keyExtractor={item => item.index}
+          onMoveEnd={e => {
+            // console.log('moving end for e: ', e);
+            fields.move(e.from, e.to);
+            this.setState({
+              ...this.state,
+              scrollEnabled: true
+            });
+          }}
+          onMoveBegin={(index) => {
+            // console.log('index is being moved: ', index);
+            this.setState({
+              ...this.state,
+              scrollEnabled: false
+            });
+          }}
+        />
+      )
+      // This is the original version to render undraggable list
+      // fields.map((field, index) => {
+      //   const iconOnPress = index === 0 ?
+      //     undefined
+      //     :
+      //     () => fields.remove(index);
+      //   return (
+      //     <Field
+      //       key={`description-${index}`}
+      //       name={`${field}.description`}
+      //       component={InputField}
+      //       editable={this.props.uploading}
+      //       numberOfLines={4}
+      //       style={styles.standardInputStyle}
+      //       placeholder={placeholder}
+      //       iconSource={cancel}
+      //       iconStyle={styles.cancelIconStyle}
+      //       iconOnPress={iconOnPress}
+      //     />
+      //   );
+      // })
       : '';
 
     return (
@@ -533,7 +602,13 @@ class CreateGoalModal extends Component {
   }
 
   renderSteps = ({ fields, meta: { error, submitFailed } }) => {
-    return this.renderFieldArray('Steps', 'step', STEP_PLACE_HOLDER, fields, error);
+    return this.renderFieldArray(
+      'Steps',
+      'step',
+      STEP_PLACE_HOLDER,
+      fields,
+      error
+    );
   }
 
   renderNeeds = ({ fields, meta: { error, submitFailed } }) => {
@@ -559,6 +634,7 @@ class CreateGoalModal extends Component {
           />
           <ScrollView
             style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
+            scrollEnabled={this.state.scrollEnabled}
           >
             <View style={{ flex: 1, padding: 20 }}>
               {this.renderUserInfo(user)}
