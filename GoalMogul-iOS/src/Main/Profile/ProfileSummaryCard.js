@@ -13,7 +13,7 @@ import next from '../../asset/utils/next.png';
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
 
 /* Actions */
-import { openProfileDetail } from '../../actions';
+import { openProfileDetail, UserBanner } from '../../actions';
 
 /* Components */
 import Name from '../Common/Name';
@@ -34,7 +34,7 @@ class ProfileSummaryCard extends Component {
   }
 
   handleOpenProfileDetail() {
-    // this.props.openProfileDetail();
+    this.props.openProfileDetail();
   }
 
   renderStats() {
@@ -46,7 +46,7 @@ class ProfileSummaryCard extends Component {
 
   renderButton(_id) {
     return (
-      <TouchableOpacity
+      <TouchableOpacity activeOpacity={0.85}
         onPress={this.onButtonClicked.bind(this, _id)}
         style={{
           padding: 20,
@@ -117,7 +117,11 @@ class ProfileSummaryCard extends Component {
             {profileImage}
 
             <View style={styles.bodyStyle}>
-              <Name text={name} textStyle={{ fontSize: 18 }} />
+              <View style={{ flexDirection: 'row' }}>
+                <Name text={name} textStyle={{ fontSize: 18 }} />
+                <UserBanner user={user} />
+              </View>
+
               <Position text={headline} />
               {this.renderStats()}
             </View>

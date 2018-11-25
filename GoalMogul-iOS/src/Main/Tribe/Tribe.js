@@ -44,13 +44,19 @@ import {
   leaveTribe,
   acceptTribeInvit,
   declineTribeInvit,
+  tribeSelectMembersFilter
 } from '../../redux/modules/tribe/TribeActions';
+
+import {
+  openPostDetail
+} from '../../redux/modules/feed/post/PostActions';
 
 // Selector
 import {
   getUserStatus,
   memberSelector,
-  getTribeNavigationState
+  getTribeNavigationState,
+  getTribeMemberNavigationState
 } from '../../redux/modules/tribe/TribeSelector';
 
 import { switchCase } from '../../redux/middleware/utils';
@@ -355,6 +361,7 @@ class Tribe extends Component {
       const { text } = switchCaseMemberStatus(isMember);
       return (
         <TouchableOpacity
+          activeOpacity={0.85}
           style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}
           onPress={() => this.handleStatusChange(isMember, item)}
         >
@@ -383,6 +390,7 @@ class Tribe extends Component {
 
     return (
       <TouchableOpacity
+        activeOpacity={0.85}
         style={styles.memberStatusContainerStyle}
         onPress={this.handleRequestOnPress}
       >
@@ -418,10 +426,29 @@ class Tribe extends Component {
     );
   }
 
+  renderMemberTabs() {
+    const { memberNavigationState } = this.props;
+    const { routes } = memberNavigationState;
+
+    const props = {
+      jumpToIndex: (i) => this.props.tribeSelectMembersFilter(routes[i].key, i),
+      navigationState: this.props.memberNavigationState
+    };
+    return (
+      <TabButtonGroup buttons={props} subTab />
+    );
+  }
+
   renderTribeOverview(item, data) {
     const { name, _id, picture } = item;
+
+    // Following method is replaced by renderMemberTabs
+    // const filterBar = this.props.tab === 'members'
+    //   ? <MemberFilterBar />
+    //   : '';
+
     const filterBar = this.props.tab === 'members'
-      ? <MemberFilterBar />
+      ? this.renderMemberTabs()
       : '';
 
     const emptyState = this.props.tab === 'posts' && data.length === 0
@@ -431,6 +458,7 @@ class Tribe extends Component {
     const inviteButton = this.props.tab === 'members'
       ? (
         <TouchableOpacity
+          activeOpacity={0.85}
           onPress={() => this.handleInvite(_id)}
           style={styles.inviteButtonContainerStyle}
         >
@@ -487,6 +515,8 @@ class Tribe extends Component {
           <ProfilePostCard
             item={props.item}
             key={props.index}
+            hasActionButton
+            onPress={(item) => this.props.openPostDetail(item)}
           />
         );
       }
@@ -504,7 +534,11 @@ class Tribe extends Component {
     const { isMember } = this.props;
     if (this.state.showPlus && (isMember === 'Admin' || isMember === 'Member')) {
       return (
-        <TouchableOpacity style={styles.iconContainerStyle} onPress={() => this.handlePlus(item)}>
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={styles.iconContainerStyle}
+          onPress={() => this.handlePlus(item)}
+        >
           <Image style={styles.iconStyle} source={plus} />
         </TouchableOpacity>
       );
@@ -518,7 +552,7 @@ class Tribe extends Component {
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <View style={{ flex: 1, backgroundColor: '#f2f2f2' }}>
+        <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
           <SearchBarHeader
             backButton
             onBackPress={() => this.props.tribeDetailClose()}
@@ -654,6 +688,7 @@ const mapStateToProps = state => {
   const { userId } = state.user;
 
   const navigationState = getTribeNavigationState(state);
+  const memberNavigationState = getTribeMemberNavigationState(state);
   const { routes, index } = navigationState;
 
   const data = ((key) => {
@@ -679,7 +714,8 @@ const mapStateToProps = state => {
     isMember: getUserStatus(state),
     hasRequested,
     tab: routes[index].key,
-    userId
+    userId,
+    memberNavigationState
   };
 };
 
@@ -736,5 +772,7 @@ export default connect(
     leaveTribe,
     acceptTribeInvit,
     declineTribeInvit,
+    openPostDetail,
+    tribeSelectMembersFilter
   }
 )(Tribe);

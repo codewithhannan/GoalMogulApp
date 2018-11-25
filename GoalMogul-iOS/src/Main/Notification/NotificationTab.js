@@ -111,7 +111,7 @@ const TestData = [
 const SeeMoreButton = (props) => {
   const { onPress, text } = props;
   return (
-    <TouchableOpacity
+    <TouchableOpacity activeOpacity={0.85}
       style={{
         flexDirection: 'row',
         alignItems: 'center',

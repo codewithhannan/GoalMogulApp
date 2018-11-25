@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
 import {
   View,
-  Image,
   Text,
-  MaskedViewIOS,
+  // MaskedViewIOS,
   Dimensions,
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
-import { LinearGradient } from 'expo';
+import {
+  GestureHandler
+} from 'expo';
+// import {
+//   FlingGestureHandler,
+//   Directions,
+//   State
+// } from 'react-native-gesture-handler';
 import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
 import timeago from 'timeago.js';
 import R from 'ramda';
@@ -79,7 +85,7 @@ const TabIconMap = {
 };
 
 const DEBUG_KEY = '[ UI GoalCard ]';
-const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to an event', 'Share to a tribe', 'Cancel'];
+const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 
 class GoalCard extends React.PureComponent {
@@ -186,6 +192,7 @@ class GoalCard extends React.PureComponent {
           endTime={endDate}
           steps={steps}
           needs={needs}
+          goalRef={item}
         />
       </View>
     );
@@ -203,6 +210,7 @@ class GoalCard extends React.PureComponent {
           imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
           imageContainerStyle={{ marginTop: 5 }}
           imageUrl={owner && owner.profile ? owner.profile.image : undefined}
+          imageContainerStyle={styles.imageContainerStyle}
           userId={owner._id}
         />
         <View style={{ marginLeft: 15, flex: 1 }}>
@@ -231,7 +239,7 @@ class GoalCard extends React.PureComponent {
   // Note: deprecated
   renderViewGoal() {
     return (
-      <TouchableOpacity
+      <TouchableOpacity activeOpacity={0.85}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -274,7 +282,8 @@ class GoalCard extends React.PureComponent {
           iconSource={LoveIcon}
           count={likeCount}
           iconContainerStyle={likeButtonContainerStyle}
-          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 22, width: 24 }}
+          textStyle={{ color: '#f15860' }}
+          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
@@ -286,12 +295,14 @@ class GoalCard extends React.PureComponent {
         <ActionButton
           iconSource={ShareIcon}
           count={shareCount}
+          textStyle={{ color: '#a8e1a0' }}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
           onPress={() => this.handleShareOnClick()}
         />
         <ActionButton
           iconSource={BulbIcon}
           count={commentCount}
+          textStyle={{ color: '#FBDD0D' }}
           iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks suggest icon`);
@@ -312,7 +323,7 @@ class GoalCard extends React.PureComponent {
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <View style={{ backgroundColor: '#e5e5e5' }}>
             <View style={styles.containerStyle}>
-              <View style={{ marginTop: 10, marginBottom: 12, marginRight: 12, marginLeft: 12 }}>
+              <View style={{ marginTop: 14, marginBottom: 12, marginRight: 12, marginLeft: 12 }}>
                 {this.renderUserDetail(item)}
                 {this.renderCardContent(item)}
               </View>
@@ -371,6 +382,15 @@ const styles = {
     shadowOpacity: 1,
     shadowRadius: 3,
     elevation: 1,
+  },
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 1.5,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 6,
+    alignSelf: 'center',
+    backgroundColor: 'white'
   }
 };
 

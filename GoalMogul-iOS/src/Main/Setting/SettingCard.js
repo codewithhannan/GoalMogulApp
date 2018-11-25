@@ -14,7 +14,7 @@ class SettingCard extends Component {
 
   render() {
     return (
-      <TouchableOpacity onPress={this.props.onPress}>
+      <TouchableOpacity activeOpacity={0.85} onPress={this.props.onPress}>
         <View style={styles.containerStyle}>
           <View style={styles.titleContainerStyle}>
             {this.renderIcon()}

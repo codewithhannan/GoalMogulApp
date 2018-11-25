@@ -69,7 +69,7 @@ class CreateGoalButtonOverlay extends Component {
 
   renderCancelButton() {
     return (
-      <TouchableOpacity
+      <TouchableOpacity activeOpacity={0.85}
         style={{ ...styles.iconContainerStyle, backgroundColor: 'transparent' }}
         onPress={this.handleCancel}
       >
@@ -118,7 +118,7 @@ const ActionButton = (props) => {
   const { text, source, style, onPress } = props;
   const { containerStyle, iconStyle, textStyle } = actionButtonStyles;
   return (
-    <TouchableOpacity style={containerStyle} onPress={onPress}>
+    <TouchableOpacity activeOpacity={0.85} style={containerStyle} onPress={onPress}>
       <Image style={{ ...iconStyle, ...style.iconStyle }} source={source} />
       <Text style={{ ...textStyle, ...style.textStyle }}>{text}</Text>
     </TouchableOpacity>

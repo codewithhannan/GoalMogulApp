@@ -1,3 +1,6 @@
+/**
+ * This reducer is responsible for extra of goal creation and edition
+ */
 import R from 'ramda';
 import _ from 'lodash';
 
@@ -9,6 +12,7 @@ const INITIAL_STATE = {
 export const GOAL_CREATE_SUBMIT = 'goal_create_submit';
 export const GOAL_CREATE_SUBMIT_SUCCESS = 'goal_create_submit_success';
 export const GOAL_CREATE_SUBMIT_FAIL = 'goal_create_submit_fail';
+export const GOAL_CREATE_EDIT_SUCCESS = 'goal_create_edit_success';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {

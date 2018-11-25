@@ -174,7 +174,7 @@ const loadGoals = (skip, limit, token, params, callback, onError) => {
       token
     )
     .then((res) => {
-      console.log('loading goals in mastermind with res: ', res);
+      // console.log('loading goals in mastermind with res: ', res);
       if (res && res.data) {
         // Right now return test data
         callback(res.data);

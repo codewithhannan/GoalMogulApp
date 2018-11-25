@@ -59,6 +59,10 @@ import {
   rsvpEvent
 } from '../../../redux/modules/event/EventActions';
 
+import {
+  openPostDetail
+} from '../../../redux/modules/feed/post/PostActions';
+
 const DEBUG_KEY = '[ UI MyEvent ]';
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
 const CANCEL_INDEX = 4;
@@ -312,7 +316,7 @@ class MyEvent extends Component {
       <View style={eventPropertyContainerStyle}>
         <Text style={eventPropertyTextStyle}>{eventProperty}</Text>
         <Dot />
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           style={styles.rsvpBoxContainerStyle}
           onPress={this.handleRSVPOnPress}
         >
@@ -390,7 +394,7 @@ class MyEvent extends Component {
     // Invite button is replaced by renderPlus
     const inviteButton = this.props.tab === 'attendees'
       ? (
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           onPress={() => this.handleInvite(_id)}
           style={styles.inviteButtonContainerStyle}
         >
@@ -449,6 +453,8 @@ class MyEvent extends Component {
           <ProfilePostCard
             item={props.item}
             key={props.index}
+            hasActionButton
+            onPress={(item) => this.props.openPostDetail(item)}
           />
         );
       }
@@ -468,6 +474,7 @@ class MyEvent extends Component {
     if (this.state.showPlus) {
       return (
         <TouchableOpacity
+          activeOpacity={0.85}
           style={styles.iconContainerStyle}
           onPress={() => this.handlePlus(item, navigationState)}
         >
@@ -485,7 +492,7 @@ class MyEvent extends Component {
     console.log(`${DEBUG_KEY}: rendering myevent with item: `, item);
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <View style={{ flex: 1, backgroundColor: '#f2f2f2' }}>
+        <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
           <SearchBarHeader
             backButton
             onBackPress={() => this.props.eventDetailClose()}
@@ -657,6 +664,7 @@ export default connect(
     reportEvent,
     myEventSelectMembersFilter,
     rsvpEvent,
-    refreshMyEventDetail
+    refreshMyEventDetail,
+    openPostDetail
   }
 )(MyEvent);

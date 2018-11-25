@@ -175,6 +175,22 @@ class GoalFilterBar extends Component {
               text='Family/Personal'
               value='Family/Personal'
             />
+            <MenuOption
+              text='Physical'
+              value='Physical'
+            />
+            <MenuOption
+              text='Charity/Philanthropy'
+              value='Charity/Philanthropy'
+            />
+            <MenuOption
+              text='Travel'
+              value='Travel'
+            />
+            <MenuOption
+              text='Things'
+              value='Things'
+            />
           </MenuOptions>
         </Menu>
         </View>

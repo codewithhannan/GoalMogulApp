@@ -112,10 +112,19 @@ export default (state = INITIAL_STATE, action) => {
       if (post._id && post._id === id) {
         newState = _.set(newState, `${path}.maybeLikeRef`, likeId);
         const oldLikeCount = _.get(newState, `${path}.likeCount`);
+        let newLikeCount = oldLikeCount;
+        if (likeId) {
+          if (likeId === 'testId') {
+            newLikeCount += 1;
+          }
+        } else {
+          newLikeCount -= 1;
+        }
+
         newState = _.set(
           newState,
           `${path}.likeCount`,
-          likeId ? oldLikeCount + 1 : oldLikeCount - 1
+          newLikeCount
         );
       }
       return newState;

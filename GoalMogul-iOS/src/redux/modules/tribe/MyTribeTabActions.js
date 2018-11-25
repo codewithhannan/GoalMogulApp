@@ -131,7 +131,7 @@ const loadTribe = (skip, limit, token, sortBy, filterForMembershipCategory, call
       token
     )
     .then((res) => {
-      console.log('loading goal with res: ', res);
+      // console.log(`${DEBUG_KEY}: loading tribe feed with res`, res);
       if (res && res.data) {
         // Right now return test data
         return callback(res.data);

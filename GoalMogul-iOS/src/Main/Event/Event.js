@@ -45,6 +45,10 @@ import {
   reportEvent
 } from '../../redux/modules/event/EventActions';
 
+import {
+  openPostDetail
+} from '../../redux/modules/feed/post/PostActions';
+
 // Selector
 import {
   getUserStatus,
@@ -241,7 +245,7 @@ class Event extends Component {
       <View style={eventPropertyContainerStyle}>
         <Text style={eventPropertyTextStyle}>{eventProperty}</Text>
         <Dot />
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           style={styles.rsvpBoxContainerStyle}
           onPress={this.handleRSVPOnPress}
         >
@@ -307,7 +311,7 @@ class Event extends Component {
     // Currently, explored events is not synced with my events
     const inviteButton = this.props.tab === 'attendees'
       ? (
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           onPress={() => this.handleInvite(_id)}
           style={styles.inviteButtonContainerStyle}
         >
@@ -362,6 +366,8 @@ class Event extends Component {
           <ProfilePostCard
             item={props.item}
             key={props.index}
+            hasActionButton
+            onPress={(item) => this.props.openPostDetail(item)}
           />
         );
       }
@@ -381,7 +387,7 @@ class Event extends Component {
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <View style={{ flex: 1, backgroundColor: '#f2f2f2' }}>
+        <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
           <SearchBarHeader
             backButton
             onBackPress={() => this.props.eventDetailClose()}
@@ -525,7 +531,8 @@ export default connect(
     openEventInvitModal,
     deleteEvent,
     editEvent,
-    reportEvent
+    reportEvent,
+    openPostDetail
   }
 )(Event);
 

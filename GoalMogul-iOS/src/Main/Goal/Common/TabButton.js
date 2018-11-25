@@ -30,7 +30,7 @@ const TabButton = (props) => {
     );
 
   return (
-    <TouchableOpacity
+    <TouchableOpacity activeOpacity={0.85}
       style={{ ...styles.containerStyle, backgroundColor }}
       onPress={props.onPress}
     >

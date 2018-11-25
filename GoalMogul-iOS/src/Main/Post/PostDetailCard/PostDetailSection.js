@@ -69,7 +69,7 @@ import RefPreview from '../../Common/RefPreview';
 
 // Constants
 const DEBUG_KEY = '[ UI PostDetailCard.PostDetailSection ]';
-const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to an event', 'Share to a tribe', 'Cancel'];
+const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 const { width } = Dimensions.get('window');
 
@@ -179,7 +179,7 @@ class PostDetailSection extends Component {
               />
             </View>
 
-            <TouchableOpacity
+            <TouchableOpacity activeOpacity={0.85}
               onPress={() => this.setState({ mediaModal: true })}
               style={{
                 position: 'absolute',
@@ -229,7 +229,7 @@ class PostDetailSection extends Component {
             backgroundColor: 'black'
           }}
         >
-          <TouchableOpacity
+          <TouchableOpacity activeOpacity={0.85}
             onPress={() => { this.setState({ mediaModal: false }); }}
             style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
           >
@@ -295,8 +295,9 @@ class PostDetailSection extends Component {
         <ActionButton
           iconSource={LoveIcon}
           count={likeCount}
+          textStyle={{ color: '#f15860' }}
           iconContainerStyle={likeButtonContainerStyle}
-          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 22, width: 24 }}
+          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks like icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
@@ -308,12 +309,14 @@ class PostDetailSection extends Component {
         <ActionButton
           iconSource={ShareIcon}
           count={shareCount}
+          textStyle={{ color: '#a8e1a0' }}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
           onPress={() => this.handleShareOnClick()}
         />
         <ActionButton
           iconSource={BulbIcon}
           count={commentCount}
+          textStyle={{ color: '#FBDD0D' }}
           iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks suggestion icon.`);

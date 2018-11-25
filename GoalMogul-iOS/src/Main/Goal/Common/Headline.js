@@ -91,7 +91,7 @@ class Headline extends React.PureComponent {
     );
   }
 }
-// <TouchableOpacity
+// <TouchableOpacity activeOpacity={0.85}
 //   style={styles.caretContainer}
 //   onPress={() => caretOnPress()}
 // >

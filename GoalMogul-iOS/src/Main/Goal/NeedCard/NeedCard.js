@@ -41,7 +41,7 @@ import {
 } from '../../../redux/modules/home/mastermind/actions';
 
 const DEBUG_KEY = '[ UI NeedCard ]';
-const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to an event', 'Share to a tribe', 'Cancel'];
+const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 
 class NeedCard extends Component {
@@ -147,7 +147,7 @@ class NeedCard extends Component {
 
   renderViewGoal(item) {
     return (
-      <TouchableOpacity
+      <TouchableOpacity activeOpacity={0.85}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -186,8 +186,9 @@ class NeedCard extends Component {
         <ActionButton
           iconSource={LoveIcon}
           count={likeCount}
+          textStyle={{ color: '#f15860' }}
           iconContainerStyle={likeButtonContainerStyle}
-          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 22, width: 24 }}
+          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks like icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
@@ -199,12 +200,14 @@ class NeedCard extends Component {
         <ActionButton
           iconSource={ShareIcon}
           count={shareCount}
+          textStyle={{ color: '#a8e1a0' }}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
           onPress={() => this.handleShareOnClick()}
         />
         <ActionButton
           iconSource={BulbIcon}
           count={commentCount}
+          textStyle={{ color: '#FBDD0D' }}
           iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks suggest icon`);

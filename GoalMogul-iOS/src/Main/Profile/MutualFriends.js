@@ -10,6 +10,7 @@ import { Actions } from 'react-native-router-flux';
 // Component
 import ModalHeader from '../Common/Header/ModalHeader';
 import EmptyResult from '../Common/Text/EmptyResult';
+import FriendCard from '../MeetTab/Friends/FriendCard';
 
 // actions
 import { fetchMutualFriends } from '../../actions';
@@ -19,8 +20,11 @@ class MutualFriends extends Component {
     modalVisible: false
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.openModal();
+    if (this.props.userId) {
+      this.props.fetchMutualFriends(this.props.userId, true);
+    }
   }
 
   openModal() {
@@ -41,6 +45,11 @@ class MutualFriends extends Component {
 
   _keyExtractor = (item) => item._id;
 
+  renderItem = (props) => {
+    const { item } = props;
+    return <FriendCard item={item} />;
+  }
+
   render() {
     const emptyText = this.props.isSelf ? 'You have no friends.' : 'You have no mutual friends.';
     return (
@@ -57,19 +66,21 @@ class MutualFriends extends Component {
             Actions.pop();
           }}
         />
-        <FlatList
-          data={this.props.data}
-          renderItem={this.renderItem}
-          keyExtractor={this._keyExtractor}
-          onRefresh={this.handleRefresh.bind()}
-          refreshing={this.props.loading}
-          onEndReached={this.handleOnLoadMore}
-          onEndReachedThreshold={0.5}
-          ListEmptyComponent={
-            this.props.loading ? '' :
-            <EmptyResult text={emptyText} />
-          }
-        />
+        <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
+          <FlatList
+            data={this.props.data}
+            renderItem={this.renderItem}
+            keyExtractor={this._keyExtractor}
+            onRefresh={this.handleRefresh.bind()}
+            refreshing={this.props.loading}
+            onEndReached={this.handleOnLoadMore}
+            onEndReachedThreshold={0.5}
+            ListEmptyComponent={
+              this.props.loading ? '' :
+              <EmptyResult text={emptyText} />
+            }
+          />
+        </View>
       </Modal>
     );
   }

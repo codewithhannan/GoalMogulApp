@@ -42,6 +42,11 @@ const INITIAL_STATE = {
   memberDefaultRoutes: [
     { key: 'Admin', title: 'Admin' },
     { key: 'Member', title: 'Member' }
+  ],
+  memberCanInviteRoutes: [
+    { key: 'Admin', title: 'Admin' },
+    { key: 'Member', title: 'Member' },
+    { key: 'Invitee', title: 'Invited' }
   ]
 };
 

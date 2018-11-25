@@ -148,7 +148,7 @@ class CreatePostModal extends Component {
   //         {...restInput}
   //         {...custom}
   //       />
-  //       <TouchableOpacity
+  //       <TouchableOpacity activeOpacity={0.85}
   //         style={{ padding: 15, alignItems: 'flex-end', alignSelf: 'center' }}
   //         onPress={iconOnPress}
   //       >
@@ -222,7 +222,7 @@ class CreatePostModal extends Component {
               />
             </View>
 
-            <TouchableOpacity
+            <TouchableOpacity activeOpacity={0.85}
               onPress={() => this.setState({ mediaModal: true })}
               style={{ position: 'absolute', top: 10, right: 15 }}
             >
@@ -232,7 +232,7 @@ class CreatePostModal extends Component {
               />
             </TouchableOpacity>
 
-            <TouchableOpacity
+            <TouchableOpacity activeOpacity={0.85}
               onPress={() => this.props.change('mediaRef', false)}
               style={{ position: 'absolute', top: 10, left: 15 }}
             >
@@ -264,7 +264,7 @@ class CreatePostModal extends Component {
               backgroundColor: 'black'
             }}
           >
-            <TouchableOpacity
+            <TouchableOpacity activeOpacity={0.85}
               onPress={() => { this.setState({ mediaModal: false }); }}
               style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
             >
@@ -311,10 +311,10 @@ class CreatePostModal extends Component {
     const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
     return (
       <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10 }}>
-        <TouchableOpacity style={actionIconWrapperStyle} onPress={this.handleOpenCamera}>
+        <TouchableOpacity activeOpacity={0.85} style={actionIconWrapperStyle} onPress={this.handleOpenCamera}>
           <Image style={actionIconStyle} source={camera} />
         </TouchableOpacity>
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           style={{ ...actionIconWrapperStyle, marginLeft: 5 }}
           onPress={this.handleOpenCameraRoll}
         >

@@ -11,7 +11,7 @@ import Check from '../../../Common/Check';
 const UserCard = (props) => {
   const { item, onCardPress, selected } = props;
   return (
-    <TouchableOpacity
+    <TouchableOpacity activeOpacity={0.85}
       onPress={() => onCardPress(item)}
       style={{
         flexDirection: 'row',

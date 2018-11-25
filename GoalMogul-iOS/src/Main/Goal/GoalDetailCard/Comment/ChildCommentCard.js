@@ -131,7 +131,8 @@ class ChildCommentCard extends Component {
         <ActionButton
           iconSource={LikeIcon}
           count={likeCount}
-          iconStyle={{ tintColor, borderRadius: 5, height: 22, width: 24 }}
+          textStyle={{ color: tintColor }}
+          iconStyle={{ tintColor, borderRadius: 5, height: 20, width: 22 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks like icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
@@ -143,6 +144,7 @@ class ChildCommentCard extends Component {
         <ActionButton
           iconSource={CommentIcon}
           count={commentCounts}
+          textStyle={{ color: '#cbd6d8' }}
           iconStyle={{ tintColor: '#cbd6d8', height: 25, width: 25 }}
           onPress={() => {
             console.log('share');

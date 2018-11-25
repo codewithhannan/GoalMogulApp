@@ -190,7 +190,7 @@ class RequestCard extends Component {
     const { user } = item;
     const { headline } = item;
     return (
-      <TouchableOpacity
+      <TouchableOpacity activeOpacity={0.85}
         style={styles.containerStyle}
         onPress={() => this.props.openProfile(user._id)}
       >

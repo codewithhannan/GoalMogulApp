@@ -21,6 +21,10 @@ import {
   COMMENT_DELETE_SUCCESS
 } from '../redux/modules/feed/comment/CommentReducers';
 
+import {
+  GOAL_CREATE_EDIT_SUCCESS
+} from '../redux/modules/goal/CreateGoal';
+
 const INITIAL_NAVIGATION_STATE = {
   index: 0,
   routes: [
@@ -145,6 +149,14 @@ export default (state = INITIAL_STATE, action) => {
       const goal = _.get(newState, `${path}`);
       if (goal._id && goal._id.toString() === id.toString()) {
         newState = _.set(newState, `${path}.maybeLikeRef`, likeId);
+        const oldLikeCount = _.get(newState, `${path}.likeCount`);
+        if (likeId) {
+          if (likeId === 'testId') {
+            newState = _.set(newState, `${path}.likeCount`, oldLikeCount + 1);
+          }
+        } else {
+          newState = _.set(newState, `${path}.likeCount`, oldLikeCount - 1);
+        }
       }
       return newState;
     }
@@ -211,6 +223,16 @@ export default (state = INITIAL_STATE, action) => {
       const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
       let currentCount = _.get(newState, `${path}.goal.commentCount`) || 0;
       return _.set(newState, `${path}.goal.commentCount`, (++currentCount));
+    }
+
+    // On goal edition success, update the current displayed goal
+    case GOAL_CREATE_EDIT_SUCCESS: {
+      const { tab, goal } = action.payload;
+      const newState = _.cloneDeep(state);
+      const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
+      const currentGoal = _.get(newState, `${path}.goal`);
+      if (!currentGoal || currentGoal._id !== goal._id) return;
+      return _.set(newState, `${path}.goal`, goal);
     }
 
     default:

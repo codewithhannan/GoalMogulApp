@@ -92,7 +92,7 @@ class FriendCard extends Component {
   renderButton(_id) {
     return '';
     // return (
-    //   <TouchableOpacity onPress={this.onButtonClicked.bind(this, _id)}>
+    //   <TouchableOpacity activeOpacity={0.85} onPress={this.onButtonClicked.bind(this, _id)}>
     //     <Image source={meetSetting} style={styles.settingIconStyle} />
     //   </TouchableOpacity>
     // );
@@ -160,7 +160,7 @@ class FriendCard extends Component {
 
     const { headline } = item;
     return (
-      <TouchableOpacity style={styles.containerStyle} onPress={this.handleOnOpenProfile}>
+      <TouchableOpacity activeOpacity={0.85} style={styles.containerStyle} onPress={this.handleOnOpenProfile}>
         {this.renderProfileImage()}
 
         <View style={styles.bodyContainerStyle}>

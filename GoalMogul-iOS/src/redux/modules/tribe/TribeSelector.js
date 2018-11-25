@@ -19,6 +19,22 @@ const getTribeNavigationStates = (state) => {
   };
 };
 
+const getTribeIsMemberCanInvite = (state) => {
+  const { item } = state.tribe;
+  if (!item || !item.membersCanInvite) return false;
+
+  return true;
+};
+
+const getTribeMemberNavigationStates = (state) => {
+  const { memberNavigationState, memberDefaultRoutes, memberCanInviteRoutes } = state.tribe;
+  return {
+    memberNavigationState,
+    memberDefaultRoutes,
+    memberCanInviteRoutes
+  };
+};
+
 /**
  * My tribes related
  */
@@ -39,11 +55,19 @@ const getMyTribeNavigationStates = (state) => {
 };
 
 const getMyTribeMemberNavigationStates = (state) => {
-  const { memberNavigationState, memberDefaultRoutes } = state.myTribe;
+  const { memberNavigationState, memberDefaultRoutes, memberCanInviteRoutes } = state.myTribe;
   return {
     memberNavigationState,
-    memberDefaultRoutes
+    memberDefaultRoutes,
+    memberCanInviteRoutes
   };
+};
+
+const getMyTribeIsMemberCanInvite = (state) => {
+  const { item } = state.myTribe;
+  if (!item || !item.membersCanInvite) return false;
+
+  return true;
 };
 
 /*
@@ -100,6 +124,43 @@ export const getTribeNavigationState = createSelector(
     return isMember
       ? navigationStateToReturn
       : _.set(navigationStateToReturn, 'routes', defaultRoutes);
+  }
+);
+
+export const getTribeMemberNavigationState = createSelector(
+  [getTribeMemberNavigationStates, getTribeMembers, getUserId, getTribeIsMemberCanInvite],
+  (navigationStates, members, userId, membersCanInvite) => {
+    const {
+      memberNavigationState,
+      memberDefaultRoutes,
+      memberCanInviteRoutes
+    } = navigationStates;
+    const navigationStateToReturn = _.cloneDeep(memberNavigationState);
+
+    if (!members || members.length === 0) {
+      return _.set(navigationStateToReturn, 'routes', memberDefaultRoutes);
+    }
+
+    let isAdmin;
+    let isMember;
+    members.forEach((member) => {
+      if (member.memberRef._id === userId) {
+        if (member.category === 'Admin') {
+          isAdmin = true;
+        }
+        if (member.category === 'Member') {
+          isMember = true;
+        }
+      }
+    });
+
+    if (isMember && membersCanInvite) {
+      return _.set(navigationStateToReturn, 'routes', memberCanInviteRoutes);
+    }
+
+    return isAdmin
+      ? navigationStateToReturn
+      : _.set(navigationStateToReturn, 'routes', memberDefaultRoutes);
   }
 );
 
@@ -161,9 +222,13 @@ export const getMyTribeNavigationState = createSelector(
 );
 
 export const getMyTribeMemberNavigationState = createSelector(
-  [getMyTribeMemberNavigationStates, getMyTribeMembers, getUserId],
-  (navigationStates, members, userId) => {
-    const { memberNavigationState, memberDefaultRoutes } = navigationStates;
+  [getMyTribeMemberNavigationStates, getMyTribeMembers, getUserId, getMyTribeIsMemberCanInvite],
+  (navigationStates, members, userId, membersCanInvite) => {
+    const {
+      memberNavigationState,
+      memberDefaultRoutes,
+      memberCanInviteRoutes
+    } = navigationStates;
     const navigationStateToReturn = _.cloneDeep(memberNavigationState);
 
     if (!members || members.length === 0) {
@@ -171,12 +236,21 @@ export const getMyTribeMemberNavigationState = createSelector(
     }
 
     let isAdmin;
+    let isMember;
     members.forEach((member) => {
-      if (member.memberRef._id === userId
-        && (member.category === 'Admin')) {
-        isAdmin = true;
+      if (member.memberRef._id === userId) {
+        if (member.category === 'Admin') {
+          isAdmin = true;
+        }
+        if (member.category === 'Member') {
+          isMember = true;
+        }
       }
     });
+
+    if (isMember && membersCanInvite) {
+      return _.set(navigationStateToReturn, 'routes', memberCanInviteRoutes);
+    }
 
     return isAdmin
       ? navigationStateToReturn

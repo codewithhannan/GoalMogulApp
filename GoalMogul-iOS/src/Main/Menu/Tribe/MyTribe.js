@@ -63,6 +63,10 @@ import {
   getMyTribeMemberNavigationState
 } from '../../../redux/modules/tribe/TribeSelector';
 
+import {
+  openPostDetail
+} from '../../../redux/modules/feed/post/PostActions';
+
 const DEBUG_KEY = '[ UI MyTribe ]';
 const { width } = Dimensions.get('window');
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -412,6 +416,7 @@ class MyTribe extends Component {
       const { text, icon } = switchCaseMemberStatus(isMember);
       return (
         <TouchableOpacity
+          activeOpacity={0.85}
           style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}
           onPress={() => this.handleStatusChange(isMember, item)}
         >
@@ -439,6 +444,7 @@ class MyTribe extends Component {
     const requestText = hasRequested ? 'Cancel Request' : 'Request to Join';
     return (
       <TouchableOpacity
+        activeOpacity={0.85}
         style={styles.memberStatusContainerStyle}
         onPress={this.handleRequestOnPress}
       >
@@ -510,6 +516,7 @@ class MyTribe extends Component {
     const inviteButton = this.props.tab === 'members'
       ? (
         <TouchableOpacity
+          activeOpacity={0.85}
           onPress={() => this.handleInvite(_id)}
           style={styles.inviteButtonContainerStyle}
         >
@@ -569,6 +576,8 @@ class MyTribe extends Component {
           <ProfilePostCard
             item={props.item}
             key={props.index}
+            hasActionButton
+            onPress={(item) => this.props.openPostDetail(item)}
           />
         );
       }
@@ -598,6 +607,7 @@ class MyTribe extends Component {
     if (this.state.showPlus && (isMember === 'Admin' || isMember === 'Member')) {
       return (
         <TouchableOpacity
+          activeOpacity={0.85}
           style={styles.iconContainerStyle}
           onPress={() => this.handlePlus(item, navigationState)}
         >
@@ -612,11 +622,11 @@ class MyTribe extends Component {
     const { item, data } = this.props;
     if (!item) return <View />;
 
-    console.log('data is: ', data);
+    // console.log(`${DEBUG_KEY}: data is: `, data);
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <View style={{ flex: 1, backgroundColor: '#f2f2f2' }}>
+        <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
           <SearchBarHeader
             backButton
             onBackPress={() => this.props.tribeDetailClose()}
@@ -819,7 +829,8 @@ export default connect(
     myTribeAdminPromoteUser,
     myTribeAdminDemoteUser,
     myTribeSelectMembersFilter,
-    myTribeAdminAcceptUser
+    myTribeAdminAcceptUser,
+    openPostDetail
   }
 )(MyTribe);
 

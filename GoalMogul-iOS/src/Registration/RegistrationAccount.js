@@ -93,7 +93,7 @@ class Account extends Component {
 
   renderLogIn() {
     return (
-      <TouchableOpacity onPress={this.handleLogInPressed.bind(this)}>
+      <TouchableOpacity activeOpacity={0.85} onPress={this.handleLogInPressed.bind(this)}>
         <View>
           <Button text='Log In to your account' arrow />
         </View>
@@ -149,7 +149,7 @@ class Account extends Component {
                   disabled={this.props.loading}
                 />
 
-                <TouchableOpacity onPress={handleSubmit(this.handleNextPressed)}>
+                <TouchableOpacity activeOpacity={0.85} onPress={handleSubmit(this.handleNextPressed)}>
                   <View>
                     <Button text='Next' />
                   </View>

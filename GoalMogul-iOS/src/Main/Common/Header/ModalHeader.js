@@ -8,19 +8,19 @@ const ModalHeader = (props) => {
   const cancel = cancelText === null ? cancelText : 'Cancel'
   return (
     <View style={styles.containerStyle}>
-      <TouchableOpacity
+      <TouchableOpacity activeOpacity={0.85}
         style={{ alignItems: 'center', flex: 1 }}
         onPress={onCancel}
       >
           <Text style={styles.cancelTextStyle}>{cancel}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={{ alignItems: 'center', flex: 3 }}>
+      <TouchableOpacity activeOpacity={0.85} style={{ alignItems: 'center', flex: 3 }}>
         <Text style={styles.titleTextStyle}>{title}</Text>
 
       </TouchableOpacity>
 
-      <TouchableOpacity
+      <TouchableOpacity activeOpacity={0.85}
         style={{ alignItems: 'center', flex: 1 }}
         onPress={onAction}
       >

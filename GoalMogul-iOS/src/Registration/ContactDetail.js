@@ -100,7 +100,7 @@ class ContactDetail extends Component {
           </Text>
         </View>
         <View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
-          <TouchableOpacity onPress={this.onFriendRequest.bind(this, _id)}>
+          <TouchableOpacity activeOpacity={0.85} onPress={this.onFriendRequest.bind(this, _id)}>
             {this.renderButton()}
           </TouchableOpacity>
         </View>

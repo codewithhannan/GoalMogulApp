@@ -67,7 +67,7 @@ class SearchUserCard extends Component {
   renderButton(_id) {
     return (
       <View style={styles.iconContainerStyle}>
-        <TouchableOpacity
+        <TouchableOpacity activeOpacity={0.85}
           onPress={this.onButtonClicked.bind(this, _id)}
           style={{ padding: 15 }}
         >
@@ -108,7 +108,7 @@ class SearchUserCard extends Component {
   render() {
     const { _id } = this.props.item;
     return (
-      <TouchableOpacity onPress={this.onButtonClicked.bind(this, _id)}>
+      <TouchableOpacity activeOpacity={0.85} onPress={this.onButtonClicked.bind(this, _id)}>
         <View style={styles.containerStyle}>
           {this.renderProfileImage()}
 

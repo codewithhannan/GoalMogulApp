@@ -9,7 +9,7 @@ import DropDown from '../../../asset/utils/dropDown.png';
 
 const NextButton = props => {
   return (
-    <TouchableOpacity style={{ ...styles.containerStyle, ...styles.borderShadow }}>
+    <TouchableOpacity activeOpacity={0.85} style={{ ...styles.containerStyle, ...styles.borderShadow }}>
       <Text style={styles.textStyle}>next</Text>
       <Image source={DropDown} style={{ height: 8, width: 10 }} />
     </TouchableOpacity>

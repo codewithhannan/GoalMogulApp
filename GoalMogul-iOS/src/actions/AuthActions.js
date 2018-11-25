@@ -68,7 +68,7 @@ export const loginUser = ({ username, password }) => {
     const message = await API
       .post('pub/user/authenticate/', { ...data }, undefined)
       .then((res) => {
-        console.log('login with message: ', res);
+        // console.log('login with message: ', res);
         // User Login Successfully
         if (res.token) {
           const payload = {

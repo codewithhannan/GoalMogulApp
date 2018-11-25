@@ -55,7 +55,7 @@ import IndividualActionButton from '../Common/IndividualActionButton';
 
 // Constants
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
-const SHARE_TO_MENU_OPTTIONS = ['Share to feed', 'Share to an event', 'Share to a tribe', 'Cancel'];
+const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 
 class GoalDetailSection extends Component {
@@ -139,7 +139,13 @@ class GoalDetailSection extends Component {
     const { start, end, steps, needs } = item;
     return (
       <View style={{ marginTop: 20 }}>
-        <ProgressBar startTime={start} endTime={end} steps={steps} needs={needs} />
+        <ProgressBar
+          startTime={start}
+          endTime={end}
+          steps={steps}
+          needs={needs}
+          goalRef={item}
+        />
       </View>
     );
   }
@@ -214,8 +220,9 @@ class GoalDetailSection extends Component {
         <ActionButton
           iconSource={LoveIcon}
           count={likeCount}
+          textStyle={{ color: '#f15860' }}
           iconContainerStyle={likeButtonContainerStyle}
-          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 22, width: 24 }}
+          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks like icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
@@ -227,6 +234,7 @@ class GoalDetailSection extends Component {
         <ActionButton
           iconSource={ShareIcon}
           count={shareCount}
+          textStyle={{ color: '#a8e1a0' }}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
           onPress={() => this.handleShareOnClick()}
         />
@@ -234,6 +242,7 @@ class GoalDetailSection extends Component {
           iconSource={BulbIcon}
           count={commentCount}
           iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
+          textStyle={{ color: '#FBDD0D' }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks suggestion icon.`);
             this.props.createCommentFromSuggestion({

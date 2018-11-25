@@ -116,7 +116,7 @@ class TribeCard extends React.Component {
 
   render() {
     return (
-      <TouchableOpacity onPress={this.onCardPress}>
+      <TouchableOpacity activeOpacity={0.85} onPress={this.onCardPress}>
         <View style={styles.containerStyle}>
           {this.renderCheck()}
           {this.renderTribeImage()}

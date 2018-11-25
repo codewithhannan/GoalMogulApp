@@ -59,7 +59,7 @@ class ProfilePostBody extends React.Component {
                 />
               </View>
 
-              <TouchableOpacity
+              <TouchableOpacity activeOpacity={0.85}
                 onPress={() => this.setState({ mediaModal: true })}
                 style={{ position: 'absolute', top: 10, right: 15 }}
               >
@@ -92,7 +92,7 @@ class ProfilePostBody extends React.Component {
             backgroundColor: 'black'
           }}
         >
-          <TouchableOpacity
+          <TouchableOpacity activeOpacity={0.85}
             onPress={() => { this.setState({ mediaModal: false }); }}
             style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
           >

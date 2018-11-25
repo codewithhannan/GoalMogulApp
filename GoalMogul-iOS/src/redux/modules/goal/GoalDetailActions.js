@@ -153,10 +153,10 @@ export const markGoalAsComplete = (goalId, complete) => (dispatch, getState) => 
         complete
       }
     });
-    Alert.alert(
-      'Success',
-      `You have successfully marked this goal as ${complete ? 'complete' : 'incomplete'}.`
-    );
+    // Alert.alert(
+    //   'Success',
+    //   `You have successfully marked this goal as ${complete ? 'complete' : 'incomplete'}.`
+    // );
     console.log(
       `${DEBUG_KEY}: mark goal as
       ${complete ? 'complete' : 'incomplete'}

@@ -47,7 +47,7 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
 
     case PROFILE_FETCHING_SUCCESS: {
-      console.log('profile fetched is: ', action.payload);
+      // console.log('profile fetched is: ', action.payload);
       const { privacy, email, phone } = action.payload;
       return { ...state, privacy, email, phone };
     }

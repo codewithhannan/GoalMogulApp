@@ -39,7 +39,7 @@ class Email extends Component {
         <Text style={Styles.statusTextStyle}>
           Unverified
         </Text>
-        <TouchableOpacity onPress={this.handleOnResendPress.bind(this)}>
+        <TouchableOpacity activeOpacity={0.85} onPress={this.handleOnResendPress.bind(this)}>
           <Text style={Styles.actionTextStyle}>
             Resend verification link
           </Text>

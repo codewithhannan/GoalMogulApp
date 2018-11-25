@@ -61,7 +61,7 @@ class Contacts extends Component {
           <Text style={styles.labelTextStyle}>
             Find friends on GoalMogul.
           </Text>
-          <TouchableOpacity onPress={this.handleSyncContact}>
+          <TouchableOpacity activeOpacity={0.85} onPress={this.handleSyncContact}>
             <Text style={styles.buttonTextStyle}>
               Sync your contacts
             </Text>

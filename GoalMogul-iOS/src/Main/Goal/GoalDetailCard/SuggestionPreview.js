@@ -113,7 +113,7 @@ class SuggestionPreview extends Component {
     if (!item) return '';
 
     return (
-      <TouchableOpacity style={styles.containerStyle} onPress={onPress}>
+      <TouchableOpacity activeOpacity={0.85} style={styles.containerStyle} onPress={onPress}>
         {this.renderImage(suggestionType, selectedItem)}
         {this.renderText(item)}
         {this.renderEndImage(suggestionType, selectedItem)}
@@ -128,7 +128,7 @@ class SuggestionPreview extends Component {
 export const RemoveComponent = (props) => {
   const { onRemove } = props;
   return (
-    <TouchableOpacity onPress={onRemove} style={styles.iconContainerStyle}>
+    <TouchableOpacity activeOpacity={0.85} onPress={onRemove} style={styles.iconContainerStyle}>
       <Image source={cancelIcon} style={{ height: 15, width: 15 }} />
     </TouchableOpacity>
   );

@@ -120,7 +120,7 @@ class EventCard extends React.Component {
     const { item, selected } = this.props;
     if (!item) return <View />;
     return (
-      <TouchableOpacity onPress={this.onCardPress}>
+      <TouchableOpacity activeOpacity={0.85} onPress={this.onCardPress}>
         <View style={styles.containerStyle}>
           <Check selected={selected} />;
           {this.renderEventImage(item)}
