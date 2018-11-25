@@ -24,6 +24,10 @@ import {
   USER_LOG_OUT
 } from './User';
 
+import {
+  GOAL_CREATE_EDIT_SUCCESS
+} from '../redux/modules/goal/CreateGoal';
+
 // Profile action constants
 export const PROFILE_FETCH_MUTUAL_FRIEND = 'profile_fetch_mutual_friend';
 export const PROFILE_FETCH_MUTUAL_FRIEND_DONE = 'profile_fetch_mutual_friend_done';
@@ -453,6 +457,20 @@ export default (state = INITIAL_STATE, action) => {
       const { tab } = action.payload;
       const newState = _.cloneDeep(state);
       return _.set(newState, `${tab}.filter`, { ...INITIAL_FILTER_STATE });
+    }
+
+    // User updates a goal
+    case GOAL_CREATE_EDIT_SUCCESS: {
+      // Here tab is for main navigation tab not for profile sub component tab
+      const { goal, tab } = action.payload;
+      const newState = _.cloneDeep(state);
+
+      const currentGoals = _.get(newState, 'goals.data');
+      const newGoals = currentGoals.map((oldGoal) => {
+        if (oldGoal._id === goal._id) return goal;
+        return oldGoal;
+      });
+      return _.set(newState, 'goals.data', newGoals);
     }
 
     default:

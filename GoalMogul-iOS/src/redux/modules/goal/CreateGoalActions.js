@@ -7,7 +7,8 @@ import { api as API } from '../../middleware/api';
 import {
   GOAL_CREATE_SUBMIT,
   GOAL_CREATE_SUBMIT_SUCCESS,
-  GOAL_CREATE_SUBMIT_FAIL
+  GOAL_CREATE_SUBMIT_FAIL,
+  GOAL_CREATE_EDIT_SUCCESS
 } from './CreateGoal';
 
 import {
@@ -31,6 +32,7 @@ export const validate = values => {
 // Submit values
 export const submitGoal = (values, userId, isEdit, callback, goalId) => (dispatch, getState) => {
   const { token } = getState().user;
+  const { tab } = getState().navigation;
   const goal = formToGoalAdapter(values, userId);
   console.log('Transformed goal is: ', goal);
 
@@ -40,7 +42,7 @@ export const submitGoal = (values, userId, isEdit, callback, goalId) => (dispatc
 
   // If user is editing the goal, then call another endpoint
   if (isEdit) {
-    return submitEditGoal(goal, goalId, token, callback, dispatch);
+    return submitEditGoal(goal, goalId, token, callback, dispatch, tab);
   }
 
   const onError = () => {
@@ -93,7 +95,7 @@ export const submitGoal = (values, userId, isEdit, callback, goalId) => (dispatc
 };
 
 // Submit editting a goal
-const submitEditGoal = (goal, goalId, token, callback, dispatch) => {
+const submitEditGoal = (goal, goalId, token, callback, dispatch, tab) => {
   const onError = () => {
     dispatch({
       type: GOAL_CREATE_SUBMIT_FAIL
@@ -104,13 +106,21 @@ const submitEditGoal = (goal, goalId, token, callback, dispatch) => {
     );
   };
 
-  const onSuccess = () => {
+  const onSuccess = (data) => {
     Alert.alert(
       'Success',
       'You have successfully edited a goal.'
     );
     dispatch({
       type: GOAL_CREATE_SUBMIT_SUCCESS
+    });
+
+    dispatch({
+      type: GOAL_CREATE_EDIT_SUCCESS,
+      payload: {
+        goal: data,
+        tab
+      }
     });
   };
 
@@ -129,7 +139,7 @@ const submitEditGoal = (goal, goalId, token, callback, dispatch) => {
         console.log(`${DEBUG_KEY}: result is`, res);
         // TODO: dispatch changes to feed and clear CreateGoalForm state
         callback();
-        onSuccess();
+        onSuccess(res.data);
         dispatch(reset('createGoalModal'));
         return;
       }
