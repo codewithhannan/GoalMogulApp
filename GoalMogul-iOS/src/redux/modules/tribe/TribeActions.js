@@ -157,10 +157,13 @@ export const inviteUserToTribe = (tribeId, inviteeId) => (dispatch, getState) =>
 };
 
 // User selects member filter
-export const tribeSelectMembersFilter = (option) => (dispatch) => {
+export const tribeSelectMembersFilter = (option, index) => (dispatch) => {
   dispatch({
     type: TRIBE_MEMBER_SELECT_FILTER,
-    payload: option
+    payload: {
+      option,
+      index
+    }
   });
 };
 

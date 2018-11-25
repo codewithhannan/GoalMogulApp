@@ -44,6 +44,7 @@ import {
   leaveTribe,
   acceptTribeInvit,
   declineTribeInvit,
+  tribeSelectMembersFilter
 } from '../../redux/modules/tribe/TribeActions';
 
 import {
@@ -54,7 +55,8 @@ import {
 import {
   getUserStatus,
   memberSelector,
-  getTribeNavigationState
+  getTribeNavigationState,
+  getTribeMemberNavigationState
 } from '../../redux/modules/tribe/TribeSelector';
 
 import { switchCase } from '../../redux/middleware/utils';
@@ -358,7 +360,8 @@ class Tribe extends Component {
     if (isMember) {
       const { text } = switchCaseMemberStatus(isMember);
       return (
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity
+          activeOpacity={0.85}
           style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}
           onPress={() => this.handleStatusChange(isMember, item)}
         >
@@ -386,7 +389,8 @@ class Tribe extends Component {
     const requestText = hasRequested ? 'Cancel Request' : 'Request to Join';
 
     return (
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity
+        activeOpacity={0.85}
         style={styles.memberStatusContainerStyle}
         onPress={this.handleRequestOnPress}
       >
@@ -422,10 +426,29 @@ class Tribe extends Component {
     );
   }
 
+  renderMemberTabs() {
+    const { memberNavigationState } = this.props;
+    const { routes } = memberNavigationState;
+
+    const props = {
+      jumpToIndex: (i) => this.props.tribeSelectMembersFilter(routes[i].key, i),
+      navigationState: this.props.memberNavigationState
+    };
+    return (
+      <TabButtonGroup buttons={props} subTab />
+    );
+  }
+
   renderTribeOverview(item, data) {
     const { name, _id, picture } = item;
+
+    // Following method is replaced by renderMemberTabs
+    // const filterBar = this.props.tab === 'members'
+    //   ? <MemberFilterBar />
+    //   : '';
+
     const filterBar = this.props.tab === 'members'
-      ? <MemberFilterBar />
+      ? this.renderMemberTabs()
       : '';
 
     const emptyState = this.props.tab === 'posts' && data.length === 0
@@ -434,7 +457,8 @@ class Tribe extends Component {
     // Currently it's not in sync with MyTribe
     const inviteButton = this.props.tab === 'members'
       ? (
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity
+          activeOpacity={0.85}
           onPress={() => this.handleInvite(_id)}
           style={styles.inviteButtonContainerStyle}
         >
@@ -510,7 +534,11 @@ class Tribe extends Component {
     const { isMember } = this.props;
     if (this.state.showPlus && (isMember === 'Admin' || isMember === 'Member')) {
       return (
-        <TouchableOpacity activeOpacity={0.85} style={styles.iconContainerStyle} onPress={() => this.handlePlus(item)}>
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={styles.iconContainerStyle}
+          onPress={() => this.handlePlus(item)}
+        >
           <Image style={styles.iconStyle} source={plus} />
         </TouchableOpacity>
       );
@@ -660,6 +688,7 @@ const mapStateToProps = state => {
   const { userId } = state.user;
 
   const navigationState = getTribeNavigationState(state);
+  const memberNavigationState = getTribeMemberNavigationState(state);
   const { routes, index } = navigationState;
 
   const data = ((key) => {
@@ -685,7 +714,8 @@ const mapStateToProps = state => {
     isMember: getUserStatus(state),
     hasRequested,
     tab: routes[index].key,
-    userId
+    userId,
+    memberNavigationState
   };
 };
 
@@ -742,6 +772,7 @@ export default connect(
     leaveTribe,
     acceptTribeInvit,
     declineTribeInvit,
-    openPostDetail
+    openPostDetail,
+    tribeSelectMembersFilter
   }
 )(Tribe);

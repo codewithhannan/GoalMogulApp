@@ -23,7 +23,25 @@ const INITIAL_STATE = {
   limit: 10,
   hasRequested: undefined,
   // ['Admin', 'Member', 'JoinRequester', 'Invitee']
-  membersFilter: 'Admin'
+  membersFilter: 'Admin',
+  memberNavigationState: {
+    index: 0,
+    routes: [
+      { key: 'Admin', title: 'Admin' },
+      { key: 'Member', title: 'Member' },
+      { key: 'JoinRequester', title: 'Requested' },
+      { key: 'Invitee', title: 'Invited' }
+    ]
+  },
+  memberDefaultRoutes: [
+    { key: 'Admin', title: 'Admin' },
+    { key: 'Member', title: 'Member' }
+  ],
+  memberCanInviteRoutes: [
+    { key: 'Admin', title: 'Admin' },
+    { key: 'Member', title: 'Member' },
+    { key: 'Invitee', title: 'Invited' }
+  ]
 };
 
 export const TRIBE_DELETE_SUCCESS = 'tribe_delete_success';
@@ -123,8 +141,16 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case TRIBE_MEMBER_SELECT_FILTER: {
-      const newState = _.cloneDeep(state);
-      return _.set(newState, 'membersFilter', action.payload);
+      const { option, index } = action.payload;
+      let newState = _.cloneDeep(state);
+      if (option) {
+        newState = _.set(newState, 'membersFilter', option);
+      }
+      if (index || index === 0) {
+        newState = _.set(newState, 'memberNavigationState.index', index);
+      }
+
+      return newState;
     }
 
     case TRIBE_MEMBER_REMOVE_SUCCESS: {
