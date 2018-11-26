@@ -105,6 +105,7 @@ export const refreshGoals = () => (dispatch, getState) => {
     }
   });
   loadGoals(0, limit, token, { priorities, categories, sortBy }, (data) => {
+    console.log(`${DEBUG_KEY}: refreshed goals are: `, data);
     dispatch({
       type: HOME_REFRESH_GOAL_DONE,
       payload: {

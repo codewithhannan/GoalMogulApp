@@ -51,6 +51,7 @@
     "react-native-popup-menu": "^0.13.3",
     "react-native-router-flux": "4.0.1",
     "react-native-slider": "^0.11.0",
+    "react-native-snap-carousel": "^3.7.5",
     "react-native-tab-view": "0.0.77",
     "react-navigation": "^2.11.2",
     "react-redux": "^5.0.7",

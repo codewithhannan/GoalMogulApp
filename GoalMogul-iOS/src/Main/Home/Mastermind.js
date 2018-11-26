@@ -3,22 +3,27 @@ import {
   View,
   Image,
   FlatList,
-  TouchableOpacity
+  Modal,
+  TouchableOpacity,
+  Text
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import { GestureHandler } from 'expo';
+import Carousel from 'react-native-snap-carousel';
 
 // Components
-import GoalFilterBar from '../Common/GoalFilterBar';
-import GoalFeedFilterBar from '../Common/GoalFeedFilterBar';
+// import GoalFilterBar from '../Common/GoalFilterBar';
+// import GoalFeedFilterBar from '../Common/GoalFeedFilterBar';
 import NeedCard from '../Goal/NeedCard/NeedCard';
 import GoalCard from '../Goal/GoalCard/GoalCard';
-import GoalFilter from './GoalFilter';
+// import GoalFilter from './GoalFilter';
 import EmptyResult from '../Common/Text/EmptyResult';
+import NextButton from '../Goal/Common/NextButton';
+import GoalFeedInfoModal from './GoalFeedInfoModal';
 
 // asset
 import plus from '../../asset/utils/plus.png';
+import informationIconBlack from '../../asset/utils/info.png';
 
 // actions
 import {
@@ -33,6 +38,30 @@ import {
 const TAB_KEY = 'mastermind';
 
 class Mastermind extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      infoModal: false
+    };
+  }
+
+  componentWillUnmount() {
+
+  }
+
+  closeInfoModal = () => {
+    this.setState({
+      ...this.state,
+      infoModal: false
+    });
+  }
+
+  openInfoModal = () => {
+    this.setState({
+      ...this.state,
+      infoModal: true
+    });
+  }
 
   handleCreateGoal = () => {
     this.props.openCreateOverlay();
@@ -67,15 +96,68 @@ class Mastermind extends Component {
     );
   }
 
+  renderInfoModal() {
+    if (this.state.infoModal) {
+      return (
+        <GoalFeedInfoModal
+          infoModal={this.state.infoModal}
+          onClose={this.closeInfoModal}
+          onAction={() => Actions.createGoalModal()}
+        />
+      );
+    }
+    return '';
+  }
+
+  renderInfoHeader() {
+    return (
+      <TouchableOpacity
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          padding: 12
+        }}
+        activeOpacity={0.85}
+        onPress={this.openInfoModal}
+      >
+        <Image
+          source={informationIconBlack}
+          style={{ width: 13, height: 13, tintColor: '#969696', marginRight: 4, marginLeft: 4 }}
+        />
+        <Text
+          style={{ color: '#969696', fontSize: 10, fontWeight: '600' }}
+        >
+          What is the 'Goal' Tab
+        </Text>
+      </TouchableOpacity>
+    );
+  }
+
   renderPlus() {
     if (this.props.showPlus) {
       return (
-        <TouchableOpacity activeOpacity={0.85} style={styles.iconContainerStyle} onPress={this.handleCreateGoal}>
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={styles.iconContainerStyle}
+          onPress={this.handleCreateGoal}
+        >
           <Image style={styles.iconStyle} source={plus} />
         </TouchableOpacity>
       );
     }
     return '';
+  }
+
+  renderNext() {
+    return (
+      <View style={styles.nextIconContainerStyle}>
+        <NextButton
+          onPress={() => {
+            this._carousel.snapToNext();
+          }}
+        />
+      </View>
+    );
   }
 
   renderListHeader() {
@@ -92,11 +174,14 @@ class Mastermind extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <FlatList
-          ref='flatlist'
+        {this.renderInfoHeader()}
+        {this.renderInfoModal()}
+        <Carousel
+          ref={(c) => { this._carousel = c; }}
           data={this.props.data}
           renderItem={this.renderItem}
-          numColumns={1}
+          sliderHeight={450}
+          itemHeight={450}
           keyExtractor={this._keyExtractor}
           refreshing={this.props.loading}
           onRefresh={this.handleOnRefresh}
@@ -109,17 +194,41 @@ class Mastermind extends Component {
               textStyle={{ paddingTop: 100 }}
             />
           }
-          onEndThreshold={0}
+          vertical
+          removeClippedSubviews
+          initialNumToRender={4}
         />
         {this.renderPlus()}
+        {this.renderNext()}
       </View>
     );
+    // Following is the old implementation
+    // return (
+    //   <View style={{ flex: 1 }}>
+    //     <FlatList
+    //       ref='flatlist'
+    //       data={this.props.data}
+    //       renderItem={this.renderItem}
+    //       numColumns={1}
+    //       keyExtractor={this._keyExtractor}
+    //       refreshing={this.props.loading}
+    //       onRefresh={this.handleOnRefresh}
+    //       onEndReached={this.handleOnLoadMore}
+    //       ListHeaderComponent={this.renderListHeader()}
+    //       ListEmptyComponent={
+    //         this.props.loading ? '' :
+    //         <EmptyResult
+    //           text={'No Goals have been shared'}
+    //           textStyle={{ paddingTop: 100 }}
+    //         />
+    //       }
+    //       onEndThreshold={0}
+    //     />
+    //     {this.renderPlus()}
+    //   </View>
+    // );
   }
 }
-// onScrollBeginDrag={() => {
-//   this.refs['flatlist'].scrollToIndex({ animated: true, index: 2 });
-//   console.log('drag begin');
-// }}
 
 const styles = {
   iconContainerStyle: {
@@ -146,6 +255,13 @@ const styles = {
   backdrop: {
     backgroundColor: 'gray',
     opacity: 0.7,
+  },
+  nextIconContainerStyle: {
+    position: 'absolute',
+    bottom: 5,
+    right: 0,
+    left: 0,
+    alignItems: 'center'
   }
 };
 
