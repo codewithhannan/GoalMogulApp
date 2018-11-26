@@ -19,6 +19,7 @@ import GoalCard from '../Goal/GoalCard/GoalCard';
 // import GoalFilter from './GoalFilter';
 import EmptyResult from '../Common/Text/EmptyResult';
 import NextButton from '../Goal/Common/NextButton';
+import GoalFeedInfoModal from './GoalFeedInfoModal';
 
 // asset
 import plus from '../../asset/utils/plus.png';
@@ -98,30 +99,11 @@ class Mastermind extends Component {
   renderInfoModal() {
     if (this.state.infoModal) {
       return (
-        <Modal
-          animation="fade"
-          visible={this.state.infoModal}
-          transparent
-        >
-          <View style={{ flex: 1 }}>
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: 'gray',
-                position: 'absolute',
-                top: 0,
-                bottom: 0,
-                left: 0,
-                right: 0
-              }}
-              opacity={0.4}
-            />
-            <TouchableOpacity
-              style={{ height: 100, width: '100%', backgroundColor: 'green', marginTop: 100 }}
-              onPress={this.closeInfoModal}
-            />
-          </View>
-        </Modal>
+        <GoalFeedInfoModal
+          infoModal={this.state.infoModal}
+          onClose={this.closeInfoModal}
+          onAction={() => Actions.createGoalModal()}
+        />
       );
     }
     return '';
