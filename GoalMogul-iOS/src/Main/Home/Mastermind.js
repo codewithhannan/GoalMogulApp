@@ -7,15 +7,16 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import { GestureHandler } from 'expo';
+import Carousel from 'react-native-snap-carousel';
 
 // Components
-import GoalFilterBar from '../Common/GoalFilterBar';
-import GoalFeedFilterBar from '../Common/GoalFeedFilterBar';
+// import GoalFilterBar from '../Common/GoalFilterBar';
+// import GoalFeedFilterBar from '../Common/GoalFeedFilterBar';
 import NeedCard from '../Goal/NeedCard/NeedCard';
 import GoalCard from '../Goal/GoalCard/GoalCard';
-import GoalFilter from './GoalFilter';
+// import GoalFilter from './GoalFilter';
 import EmptyResult from '../Common/Text/EmptyResult';
+import NextButton from '../Goal/Common/NextButton';
 
 // asset
 import plus from '../../asset/utils/plus.png';
@@ -78,6 +79,18 @@ class Mastermind extends Component {
     return '';
   }
 
+  renderNext() {
+    return (
+      <View style={styles.nextIconContainerStyle}>
+        <NextButton
+          onPress={() => {
+            this._carousel.snapToNext();
+          }}
+        />
+      </View>
+    );
+  }
+
   renderListHeader() {
     return '';
     // return (
@@ -92,11 +105,12 @@ class Mastermind extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <FlatList
-          ref='flatlist'
+        <Carousel
+          ref={(c) => { this._carousel = c; }}
           data={this.props.data}
           renderItem={this.renderItem}
-          numColumns={1}
+          sliderHeight={450}
+          itemHeight={450}
           keyExtractor={this._keyExtractor}
           refreshing={this.props.loading}
           onRefresh={this.handleOnRefresh}
@@ -109,17 +123,41 @@ class Mastermind extends Component {
               textStyle={{ paddingTop: 100 }}
             />
           }
-          onEndThreshold={0}
+          vertical
+          removeClippedSubviews
+          initialNumToRender={4}
         />
         {this.renderPlus()}
+        {this.renderNext()}
       </View>
     );
+    // Following is the old implementation
+    // return (
+    //   <View style={{ flex: 1 }}>
+    //     <FlatList
+    //       ref='flatlist'
+    //       data={this.props.data}
+    //       renderItem={this.renderItem}
+    //       numColumns={1}
+    //       keyExtractor={this._keyExtractor}
+    //       refreshing={this.props.loading}
+    //       onRefresh={this.handleOnRefresh}
+    //       onEndReached={this.handleOnLoadMore}
+    //       ListHeaderComponent={this.renderListHeader()}
+    //       ListEmptyComponent={
+    //         this.props.loading ? '' :
+    //         <EmptyResult
+    //           text={'No Goals have been shared'}
+    //           textStyle={{ paddingTop: 100 }}
+    //         />
+    //       }
+    //       onEndThreshold={0}
+    //     />
+    //     {this.renderPlus()}
+    //   </View>
+    // );
   }
 }
-// onScrollBeginDrag={() => {
-//   this.refs['flatlist'].scrollToIndex({ animated: true, index: 2 });
-//   console.log('drag begin');
-// }}
 
 const styles = {
   iconContainerStyle: {
@@ -146,6 +184,13 @@ const styles = {
   backdrop: {
     backgroundColor: 'gray',
     opacity: 0.7,
+  },
+  nextIconContainerStyle: {
+    position: 'absolute',
+    bottom: 5,
+    right: 0,
+    left: 0,
+    alignItems: 'center'
   }
 };
 

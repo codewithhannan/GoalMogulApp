@@ -48,6 +48,7 @@ import NeedTab from './NeedTab';
 import StepTab from './StepTab';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import ProfileImage from '../../Common/ProfileImage';
+import GoalCardHeader from '../Common/GoalCardHeader';
 
 // Asset
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
@@ -321,6 +322,7 @@ class GoalCard extends React.PureComponent {
     return (
       <View style={{ height: 450, marginTop: 4 }}>
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
+          <GoalCardHeader item={item} />
           <View style={{ backgroundColor: '#e5e5e5' }}>
             <View style={styles.containerStyle}>
               <View style={{ marginTop: 14, marginBottom: 12, marginRight: 12, marginLeft: 12 }}>
@@ -338,7 +340,7 @@ class GoalCard extends React.PureComponent {
             </View>
           </View>
         </View>
-        <NextButton onPress={() => console.log('next item')} />
+        {/* <NextButton onPress={() => console.log('next item')} /> */}
       </View>
     );
   }
