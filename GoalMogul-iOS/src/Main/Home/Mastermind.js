@@ -3,7 +3,9 @@ import {
   View,
   Image,
   FlatList,
-  TouchableOpacity
+  Modal,
+  TouchableOpacity,
+  Text
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
@@ -20,6 +22,7 @@ import NextButton from '../Goal/Common/NextButton';
 
 // asset
 import plus from '../../asset/utils/plus.png';
+import informationIconBlack from '../../asset/utils/info.png';
 
 // actions
 import {
@@ -34,6 +37,30 @@ import {
 const TAB_KEY = 'mastermind';
 
 class Mastermind extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      infoModal: false
+    };
+  }
+
+  componentWillUnmount() {
+
+  }
+
+  closeInfoModal = () => {
+    this.setState({
+      ...this.state,
+      infoModal: false
+    });
+  }
+
+  openInfoModal = () => {
+    this.setState({
+      ...this.state,
+      infoModal: true
+    });
+  }
 
   handleCreateGoal = () => {
     this.props.openCreateOverlay();
@@ -68,10 +95,70 @@ class Mastermind extends Component {
     );
   }
 
+  renderInfoModal() {
+    if (this.state.infoModal) {
+      return (
+        <Modal
+          animation="fade"
+          visible={this.state.infoModal}
+          transparent
+        >
+          <View style={{ flex: 1 }}>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: 'gray',
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0
+              }}
+              opacity={0.4}
+            />
+            <TouchableOpacity
+              style={{ height: 100, width: '100%', backgroundColor: 'green', marginTop: 100 }}
+              onPress={this.closeInfoModal}
+            />
+          </View>
+        </Modal>
+      );
+    }
+    return '';
+  }
+
+  renderInfoHeader() {
+    return (
+      <TouchableOpacity
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          padding: 12
+        }}
+        activeOpacity={0.85}
+        onPress={this.openInfoModal}
+      >
+        <Image
+          source={informationIconBlack}
+          style={{ width: 13, height: 13, tintColor: '#969696', marginRight: 4, marginLeft: 4 }}
+        />
+        <Text
+          style={{ color: '#969696', fontSize: 10, fontWeight: '600' }}
+        >
+          What is the 'Goal' Tab
+        </Text>
+      </TouchableOpacity>
+    );
+  }
+
   renderPlus() {
     if (this.props.showPlus) {
       return (
-        <TouchableOpacity activeOpacity={0.85} style={styles.iconContainerStyle} onPress={this.handleCreateGoal}>
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={styles.iconContainerStyle}
+          onPress={this.handleCreateGoal}
+        >
           <Image style={styles.iconStyle} source={plus} />
         </TouchableOpacity>
       );
@@ -105,6 +192,8 @@ class Mastermind extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
+        {this.renderInfoHeader()}
+        {this.renderInfoModal()}
         <Carousel
           ref={(c) => { this._carousel = c; }}
           data={this.props.data}

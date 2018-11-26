@@ -92,7 +92,8 @@ class ViewableSettingMenu extends Component {
 
     return (
       <View style={{ ...styles.containerStyle, backgroundColor: 'transparent', borderWidth: 0 }}>
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity
+          activeOpacity={0.85}
           style={{ ...containerStyle }}
           onPress={() => this.props.shareToMastermindCallback(!this.props.shareToMastermind)}
         >
