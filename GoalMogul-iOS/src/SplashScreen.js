@@ -4,7 +4,7 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
@@ -143,7 +143,7 @@ class SplashScreen extends Component {
       }
     }).catch((err) => console.log(`${DEBUG_KEY}: log in user with err: `, err));
     console.log('finish loading keys');
-    // Expo.SplashScreen.hide();
+    Expo.SplashScreen.hide();
     return;
   }
 
