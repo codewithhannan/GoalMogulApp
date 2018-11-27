@@ -240,6 +240,7 @@ const styles = {
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 3,
     // backgroundColor: '#46C8F5',
     backgroundColor: '#4096c6',
     shadowColor: '#000',

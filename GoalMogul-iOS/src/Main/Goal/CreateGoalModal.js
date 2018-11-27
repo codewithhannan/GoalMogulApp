@@ -283,7 +283,13 @@ class CreateGoalModal extends Component {
     );
 
     return (
-      <View style={{ ...styles.sectionMargin }}>
+      <View 
+        style={{ 
+          ...styles.sectionMargin, 
+          justifyContent: 'flex-start',
+          flex: 1
+        }}
+      >
         {titleText}
         {menu}
       </View>
@@ -291,8 +297,6 @@ class CreateGoalModal extends Component {
   }
 
   renderPriority = () => {
-    const titleText = <Text style={styles.titleTextStyle}>Priority</Text>;
-
     // const menu = MenuFactory(
     //   ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
     //   this.handlePriorityOnSelect,
@@ -312,6 +316,12 @@ class CreateGoalModal extends Component {
         {this.props.priority}
       </Text>
     );
+    
+    const titleText = (
+      <Text style={styles.titleTextStyle}>
+        Priority  {valueText}
+      </Text>
+    );
 
     const menu = (
       <Slider
@@ -325,9 +335,8 @@ class CreateGoalModal extends Component {
     );
 
     return (
-      <View style={{ ...styles.sectionMargin }}>
+      <View style={{ ...styles.sectionMargin, justifyContent: 'flex-start', flex: 1 }}>
         {titleText}
-        {valueText}
         {menu}
       </View>
     );
@@ -551,7 +560,7 @@ class CreateGoalModal extends Component {
         <DraggableFlatlist
           renderItem={(props) => this.renderFieldArrayItem(props, placeholder, fields, true)}
           data={dataToRender}
-          keyExtractor={item => item.index}
+          keyExtractor={item => `${item.index}`}
           onMoveEnd={e => {
             // console.log('moving end for e: ', e);
             fields.move(e.from, e.to);
@@ -640,8 +649,15 @@ class CreateGoalModal extends Component {
               {this.renderUserInfo(user)}
               {this.renderGoal()}
               <FieldArray name="details" component={this.renderGoalDescription} />
-              {this.renderCategory()}
-              {this.renderPriority()}
+              <View style={{ flexDirection: 'row' }}>
+                <View style={{ flex: 1, marginRight: 8 }}>
+                  {this.renderCategory()}
+                </View>
+                <View style={{ flex: 1 }}>
+                  {this.renderPriority()}
+                </View>
+              </View>
+              
               {this.renderTimeline()}
               <FieldArray name="steps" component={this.renderSteps} />
               <FieldArray name="needs" component={this.renderNeeds} />
