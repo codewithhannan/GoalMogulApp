@@ -127,7 +127,7 @@ class Mastermind extends Component {
         <Text
           style={{ color: '#969696', fontSize: 10, fontWeight: '600' }}
         >
-          What is the 'Goal' Tab
+          What is the 'Goal Feed' tab
         </Text>
       </TouchableOpacity>
     );

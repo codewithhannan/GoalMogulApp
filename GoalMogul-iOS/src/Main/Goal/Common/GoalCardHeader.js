@@ -29,8 +29,6 @@ const renderText = (item) => {
   return (
     <View
       style={{
-        marginLeft: 5,
-        marginRight: 5,
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'center'
@@ -53,7 +51,7 @@ const GoalCardHeader = (props) => {
   if (!item) return '';
 
   return (
-    <View style={{ marginBottom: 1, backgroundColor: 'white', padding: 5 }}>
+    <View style={{ marginBottom: 1, backgroundColor: 'white', padding: 5, marginLeft: 7, marginRight: 7 }}>
       {renderText(item)}
     </View>
   );

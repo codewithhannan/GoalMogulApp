@@ -82,7 +82,7 @@ class GoalFeedInfoModal extends React.PureComponent {
     const headerText = (
       <Text style={styles.headerBasicTextStyle}>
         <Text style={{ fontWeight: '700' }}>
-          Mastermind feed{' '}
+          Goal feed{' '}
         </Text>
         -- Give help, get help
       </Text>

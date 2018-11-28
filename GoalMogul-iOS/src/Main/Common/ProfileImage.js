@@ -42,7 +42,7 @@ class ProfileImage extends React.PureComponent {
   render() {
     let { imageUrl } = this.props;
     const { imageContainerStyle, imageStyle, defaultImageSource, rounded } = this.props;
-    const resizeMode = setValue(this.props.resizeMode).withDefaultCase('contain');
+    const resizeMode = setValue(this.props.resizeMode).withDefaultCase('cover');
 
     let defaultImageStyle;
     if (this.props.defaultImageStyle) {

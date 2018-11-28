@@ -65,21 +65,21 @@ class RefPreview extends Component {
     // TODO: add a postType ShareStep
     const { title, content, defaultPicture, picture } = switchCaseItem(item, postType);
     return (
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity 
+        activeOpacity={0.85}
         style={styles.containerStyle}
         onPress={() => this.handleOnPress(item, postType, goalRef)}
       >
         <ProfileImage
           imageStyle={{ width: 50, height: 50 }}
-          imageContainerStyle={{ justifyContent: 'center' }}
-          defaultImageStyle={{ width: 32, height: 32, margin: 3 }}
+          imageContainerStyle={{ justifyContent: 'center', padding: 10 }}
+          defaultImageStyle={{ width: 32, height: 32, opacity: 0.6 }}
           defaultImageSource={defaultPicture}
           imageUrl={picture}
         />
         <View
           style={{
             flex: 1,
-            marginLeft: 12,
             marginRight: 12,
             justifyContent: 'center',
             marginTop: 5
@@ -158,11 +158,11 @@ const styles = {
     marginBottom: 4,
     borderWidth: 1,
     borderRadius: 2,
-    borderColor: '#ddd',
+    borderColor: '#f2f2f2',
     borderBottomWidth: 0,
     backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowColor: 'gray',
+    shadowOffset: { width: 0, height: 1.5 },
     shadowOpacity: 0.15,
     shadowRadius: 1,
     elevation: 1

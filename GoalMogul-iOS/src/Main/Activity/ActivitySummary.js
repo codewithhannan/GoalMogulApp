@@ -53,8 +53,6 @@ class ActivitySummary extends React.Component {
     return (
       <View
         style={{
-          marginLeft: 5,
-          marginRight: 5,
           alignItems: 'center',
           flexDirection: 'row',
           justifyContent: 'center'
@@ -79,7 +77,7 @@ class ActivitySummary extends React.Component {
     if (!item) return '';
 
     return (
-      <View style={{ marginBottom: 0.5, backgroundColor: 'white', padding: 5 }}>
+      <View style={{ marginBottom: 0.5, backgroundColor: 'white', padding: 5, marginLeft: 10, marginRight: 10 }}>
           {this.renderText(item)}
       </View>
     );
