@@ -71,7 +71,7 @@ class ViewableSettingMenu extends Component {
     const containerStyle = this.props.shareToMastermind ?
       {
         ...styles.containerStyle,
-        backgroundColor: '#46C8F5',
+        backgroundColor: '#17B3EC',
         borderWidth: 0,
         // borderTopRightRadius: 0,
         // borderBottomRightRadius: 0,

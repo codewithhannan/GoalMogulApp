@@ -91,7 +91,7 @@ import { openProfile } from '../../actions';
                onCancel={this.handleCancel}
                onChangeText={this.handleChangeText}
                clearIcon={null}
-               cancelButtonProps={{ color: '#46C8F5' }}
+               cancelButtonProps={{ color: '#17B3EC' }}
                showLoading={this.props.loading}
              />
            </View>

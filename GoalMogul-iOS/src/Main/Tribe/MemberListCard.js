@@ -229,7 +229,7 @@ const styles = {
     justifyContent: 'flex-end'
   },
   titleTextStyle: {
-    color: '#46C8F5',
+    color: '#17B3EC',
     fontSize: 11,
     paddingTop: 1,
     paddingBottom: 1
@@ -239,7 +239,7 @@ const styles = {
     paddingLeft: 3
   },
   jobTitleTextStyle: {
-    color: '#46C8F5',
+    color: '#17B3EC',
     fontSize: 11,
     fontWeight: '800',
     paddingTop: 5,

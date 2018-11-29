@@ -153,13 +153,14 @@ class ProfilePostCard extends React.PureComponent {
     const content = item.content.text;
 
     return (
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
         <ProfileImage
           imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
           imageUrl={owner && owner.profile ? owner.profile.image : undefined}
           imageContainerStyle={styles.imageContainerStyle}
           userId={owner._id}
         />
+        
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
             name={owner.name || ''}
@@ -172,8 +173,6 @@ class ProfilePostCard extends React.PureComponent {
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text
               style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
-              numberOfLines={3}
-              ellipsizeMode='tail'
             >
               {content}
             </Text>
@@ -234,7 +233,7 @@ const styles = {
   borderShadow: {
     shadowColor: 'lightgray',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 1,
+    shadowOpacity: 0.5,
     shadowRadius: 3,
     elevation: 1,
   },
@@ -244,7 +243,7 @@ const styles = {
     borderColor: 'lightgray',
     alignItems: 'center',
     borderRadius: 6,
-    alignSelf: 'center',
+    alignSelf: 'flex-start',
     backgroundColor: 'white'
   },
 };

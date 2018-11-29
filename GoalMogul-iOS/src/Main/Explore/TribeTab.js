@@ -17,6 +17,12 @@ import TribeTabFilterBar from './TribeTabFilterBar';
 import EmptyResult from '../Common/Text/EmptyResult';
 
 class TribeTab extends React.Component {
+  componentDidMount() {  
+    if (!this.props.data || _.isEmpty(this.props.data)) {
+      this.handleOnRefresh();
+    }
+  }
+  
   _keyExtractor = (item) => item._id;
 
   handleOnRefresh = () => this.props.refreshTribe();

@@ -70,13 +70,14 @@ class SuggestedCard extends Component {
   renderButton(_id) {
     return (
       <View style={styles.iconContainerStyle}>
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity 
+          activeOpacity={0.85}
           onPress={this.onButtonClicked.bind(this, _id)}
           style={{ padding: 15 }}
         >
           <Image
             source={next}
-            style={styles.iconStyle}
+            style={{ ...styles.iconStyle, opacity: 0.8 }}
           />
         </TouchableOpacity>
       </View>
@@ -105,7 +106,7 @@ class SuggestedCard extends Component {
   //           name='plus-small'
   //           width={10}
   //           size={20}
-  //           color='#46C8F5'
+  //           color='#17B3EC'
   //           iconStyle={styles.buttonIconStyle}
   //         />
   //       }
@@ -149,14 +150,18 @@ class SuggestedCard extends Component {
 
     const { headline, _id } = item;
     return (
-      <View style={styles.containerStyle}>
+      <TouchableOpacity 
+        activeOpacity={0.85}
+        style={styles.containerStyle}
+        onPress={() => this.props.openProfile(_id)}
+      >
         {this.renderProfileImage()}
 
         <View style={styles.bodyContainerStyle}>
           {this.renderInfo()}
           {this.renderOccupation()}
           <Text
-            style={styles.jobTitleTextStyle}
+            style={{ ...styles.jobTitleTextStyle, fontWeight: '600' }}
             numberOfLines={1}
             ellipsizeMode='tail'
           >
@@ -172,7 +177,7 @@ class SuggestedCard extends Component {
           </View>
         */}
 
-      </View>
+      </TouchableOpacity>
     );
   }
 }
@@ -189,7 +194,7 @@ const styles = {
     backgroundColor: '#ffffff'
   },
   bodyContainerStyle: {
-    marginLeft: 8,
+    marginLeft: 10,
     flex: 1,
   },
   infoContainerStyle: {
@@ -210,11 +215,11 @@ const styles = {
     width: 70,
     height: 26,
     borderWidth: 1,
-    borderColor: '#46C8F5',
+    borderColor: '#17B3EC',
     borderRadius: 13,
   },
   buttonTextStyle: {
-    color: '#46C8F5',
+    color: '#17B3EC',
     fontSize: 11,
     fontWeight: '700',
     paddingLeft: 1,
@@ -228,7 +233,7 @@ const styles = {
 
   },
   titleTextStyle: {
-    color: '#46C8F5',
+    color: '#17B3EC',
     fontSize: 11,
     paddingTop: 1,
     paddingBottom: 1
@@ -238,7 +243,7 @@ const styles = {
     paddingLeft: 3
   },
   jobTitleTextStyle: {
-    color: '#46C8F5',
+    color: '#17B3EC',
     fontSize: 11,
     fontWeight: '800',
     paddingTop: 5,
@@ -246,7 +251,7 @@ const styles = {
   },
   friendTextStyle: {
     paddingLeft: 10,
-    color: '#46C8F5',
+    color: '#17B3EC',
     fontSize: 9,
     fontWeight: '800',
     maxWidth: 120
@@ -260,7 +265,7 @@ const styles = {
     height: 25,
     width: 26,
     transform: [{ rotateY: '180deg' }],
-    tintColor: '#46C8F5'
+    tintColor: '#17B3EC'
   }
 };
 

@@ -258,7 +258,7 @@ class GoalCard extends React.PureComponent {
           <Icon
             name='ios-arrow-round-forward'
             type='ionicon'
-            color='#46C8F5'
+            color='#17B3EC'
             iconStyle={styles.iconStyle}
           />
         </View>
@@ -324,12 +324,16 @@ class GoalCard extends React.PureComponent {
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <GoalCardHeader item={item} />
           <View style={{ backgroundColor: '#e5e5e5' }}>
-            <View style={styles.containerStyle}>
+            <TouchableOpacity 
+              activeOpacity={0.85} 
+              style={styles.containerStyle}
+              onPress={() => this.props.onPress(this.props.item)}
+            >
               <View style={{ marginTop: 14, marginBottom: 12, marginRight: 12, marginLeft: 12 }}>
                 {this.renderUserDetail(item)}
                 {this.renderCardContent(item)}
               </View>
-            </View>
+            </TouchableOpacity>
 
             <View style={{ height: tabHeight }}>
               {this.renderTabs()}
@@ -369,7 +373,7 @@ const styles = {
   viewGoalTextStyle: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#46C8F5',
+    color: '#17B3EC',
     alignSelf: 'center'
   },
   iconStyle: {
@@ -391,7 +395,7 @@ const styles = {
     borderColor: 'lightgray',
     alignItems: 'center',
     borderRadius: 6,
-    alignSelf: 'center',
+    alignSelf: 'flex-start',
     backgroundColor: 'white'
   }
 };

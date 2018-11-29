@@ -88,7 +88,7 @@ class SuggestionModal extends Component {
         cancelButtonTitle='Cancel'
         onCancel={this.handleSearchCancel}
         onChangeText={this.handleQueryChange}
-        cancelButtonProps={{ color: '#46C8F5' }}
+        cancelButtonProps={{ color: '#17B3EC' }}
         showLoading={this.props.loading}
         onClear={this.handleSearchClear}
         value={this.state.query}
@@ -218,7 +218,7 @@ const styles = {
     marginRight: 3,
     marginTop: 0.5,
     backgroundColor: '#ffffff',
-    // backgroundColor: '#46C8F5',
+    // backgroundColor: '#17B3EC',
     borderTopColor: '#ffffff',
     borderBottomColor: '#ffffff',
     alignItems: 'center',
@@ -238,7 +238,7 @@ const styles = {
   },
   // Options style
   selectedSuggestionIconStyle: {
-    tintColor: '#46C8F5',
+    tintColor: '#17B3EC',
     height: 20,
     width: 20
   },

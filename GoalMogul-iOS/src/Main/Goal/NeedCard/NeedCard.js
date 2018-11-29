@@ -97,7 +97,7 @@ class NeedCard extends Component {
       ? new Date() : created;
 
     return (
-      <View style={{ flexDirection: 'row' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
         <ProfileImage
           imageStyle={{ height: 60, width: 60 }}
           imageUrl={owner && owner.profile ? owner.profile.image : undefined}
@@ -161,7 +161,7 @@ class NeedCard extends Component {
           <Icon
             name='ios-arrow-round-forward'
             type='ionicon'
-            color='#46C8F5'
+            color='#17B3EC'
             iconStyle={styles.iconStyle}
           />
         </View>
@@ -232,12 +232,16 @@ class NeedCard extends Component {
                   share a need
               </Text>
             </View>
-            <View style={styles.containerStyle}>
+            <TouchableOpacity 
+              activeOpacity={0.85} 
+              style={styles.containerStyle}
+              onPress={() => this.props.onPress(this.props.item)}
+            >
               <View style={{ marginTop: 20, marginBottom: 20, marginRight: 15, marginLeft: 15 }}>
                 {this.renderUserDetail(item)}
                 {this.renderCardContent(item)}
               </View>
-            </View>
+            </TouchableOpacity>
 
             {this.renderNeed(item)}
 
@@ -261,7 +265,7 @@ const styles = {
   viewGoalTextStyle: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#46C8F5',
+    color: '#17B3EC',
     alignSelf: 'center'
   },
   iconStyle: {

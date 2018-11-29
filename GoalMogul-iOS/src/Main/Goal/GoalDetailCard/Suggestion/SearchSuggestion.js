@@ -112,7 +112,7 @@ class SearchSuggestion extends React.Component {
         cancelButtonTitle='Cancel'
         onCancel={this.handleSearchCancel}
         onChangeText={this.handleQueryChange}
-        cancelButtonProps={{ color: '#46C8F5' }}
+        cancelButtonProps={{ color: '#17B3EC' }}
         showLoading={this.props.loading}
         onClear={this.handleSearchClear}
         value={this.props.searchContent}
@@ -152,7 +152,7 @@ const styles = {
     marginRight: 3,
     marginTop: 0.5,
     backgroundColor: '#ffffff',
-    // backgroundColor: '#46C8F5',
+    // backgroundColor: '#17B3EC',
     borderTopColor: '#ffffff',
     borderBottomColor: '#ffffff',
     alignItems: 'center',

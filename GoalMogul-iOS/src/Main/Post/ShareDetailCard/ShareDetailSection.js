@@ -408,7 +408,7 @@ const styles = {
     borderColor: 'lightgray',
     alignItems: 'center',
     borderRadius: 6,
-    alignSelf: 'center',
+    alignSelf: 'flex-start',
     backgroundColor: 'white'
   },
 };

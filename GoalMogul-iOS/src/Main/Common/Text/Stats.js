@@ -52,7 +52,7 @@ const styles = {
   numberStyle: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#46C8F5',
+    color: '#17B3EC',
     maxWidth: 50
   },
   iconStyle: {

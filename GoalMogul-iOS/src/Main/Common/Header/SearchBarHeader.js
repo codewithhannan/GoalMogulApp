@@ -4,12 +4,14 @@ import {
   Image,
   TouchableWithoutFeedback,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  Platform
 } from 'react-native';
 import R from 'ramda';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
+import { Constants } from 'expo';
 
 /* Asset */
 // import Logo from '../../../asset/header/logo.png';
@@ -51,6 +53,8 @@ const CANCEL_INDEX = 2;
 const DEBUG_KEY = '[ Component SearchBarHeader ]';
 const SHARE_TO_MENU_OPTTIONS = ['My Tribes', 'My Events', 'Cancel'];
 const CANCEL_INDEX_MEN = 2;
+
+const IPHONE_MODELS = ['iphone 7 plus', 'iphone x', 'iPhone xs', 'iphone xr'];
 
 /**
   TODO: refactor element to have consistent behavior
@@ -274,8 +278,12 @@ class SearchBarHeader extends Component {
   }
 
   render() {
+    const paddingTop = (
+      Platform.OS === 'ios' && 
+      IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+    ) ? 40 : 30;
     return (
-      <View style={styles.headerStyle}>
+      <View style={{ ...styles.headerStyle, paddingTop }}>
         {this.renderSearchBarLeftIcon()}
         {this.renderSearchBarOrTitle()}
         {this.renderSearchBarRightIcon()}

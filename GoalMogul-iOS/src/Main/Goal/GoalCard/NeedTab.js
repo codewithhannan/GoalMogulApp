@@ -105,7 +105,7 @@ class NeedTab extends Component {
           <Icon
             name='ios-arrow-round-forward'
             type='ionicon'
-            color='#46C8F5'
+            color='#17B3EC'
             iconStyle={styles.iconStyle}
           />
         </View>
@@ -130,7 +130,7 @@ const styles = {
   viewGoalTextStyle: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#46C8F5',
+    color: '#17B3EC',
     alignSelf: 'center'
   },
   iconStyle: {

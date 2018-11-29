@@ -277,7 +277,7 @@ class SuggestionModal extends Component {
 const styles = {
   // Options style
   selectedSuggestionIconStyle: {
-    tintColor: '#46C8F5',
+    tintColor: '#17B3EC',
     height: 20,
     width: 20
   },
@@ -299,7 +299,7 @@ const styles = {
     marginLeft: 15
   },
   optionsCollapsedTextStyle: {
-    color: '#46C8F5',
+    color: '#17B3EC',
     fontSize: 12,
     alignSelf: 'center',
     justifyContent: 'center'

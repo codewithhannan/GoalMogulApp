@@ -197,6 +197,8 @@ class Mastermind extends Component {
           vertical
           removeClippedSubviews
           initialNumToRender={4}
+          inactiveSlideOpacity={0.2}
+          inactiveSlideScale={0.85}
         />
         {this.renderPlus()}
         {this.renderNext()}
@@ -241,7 +243,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 3,
-    // backgroundColor: '#46C8F5',
+    // backgroundColor: '#17B3EC',
     backgroundColor: '#4096c6',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

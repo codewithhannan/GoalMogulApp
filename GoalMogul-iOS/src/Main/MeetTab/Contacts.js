@@ -112,7 +112,7 @@ const styles = {
   },
   buttonTextStyle: {
     marginTop: 5,
-    color: '#46C8F5',
+    color: '#17B3EC',
     fontSize: 15,
   }
 };

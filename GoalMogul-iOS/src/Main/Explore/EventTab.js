@@ -4,6 +4,7 @@ import {
   FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 // Actions
 import {
@@ -17,6 +18,12 @@ import EventTabFilterBar from './EventTabFilterBar';
 import EmptyResult from '../Common/Text/EmptyResult';
 
 class EventTab extends React.Component {
+  componentDidMount() {
+    if (!this.props.data || _.isEmpty(this.props.data)) {
+      this.handleOnRefresh();
+    }
+  }
+  
   _keyExtractor = (item) => item._id;
 
   handleOnRefresh = () => this.props.refreshEvent();

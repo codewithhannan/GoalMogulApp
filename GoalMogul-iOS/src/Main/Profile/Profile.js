@@ -18,6 +18,9 @@ import {
   selectProfileTab
 } from '../../actions';
 
+/* Styles */
+import { BACKGROUND_COLOR } from '../../styles';
+
 class Profile extends Component {
 
   _handleIndexChange = (index) => {
@@ -57,7 +60,8 @@ class Profile extends Component {
 
 const styles = {
   containerStyle: {
-    flex: 1
+    flex: 1,
+    backgroundColor: BACKGROUND_COLOR
   },
   tabContainerStyle: {
     display: 'flex',

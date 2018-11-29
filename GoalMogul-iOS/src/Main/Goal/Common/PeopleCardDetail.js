@@ -150,7 +150,7 @@ const styles = {
     width: 30,
     borderRadius: 15,
     borderWidth: 0,
-    backgroundColor: '#46C8F5',
+    backgroundColor: '#17B3EC',
     justifyContent: 'center',
     alignItems: 'center'
   },

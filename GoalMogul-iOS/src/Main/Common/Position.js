@@ -19,7 +19,7 @@ const styles = {
   containerStyle: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#46C8F5',
+    color: '#17B3EC',
     paddingTop: 3
   }
 };
