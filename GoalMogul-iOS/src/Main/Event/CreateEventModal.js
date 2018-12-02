@@ -26,6 +26,7 @@ import R from 'ramda';
 import {
   MenuProvider,
 } from 'react-native-popup-menu';
+import DateTimePicker from 'react-native-modal-datetime-picker';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
@@ -181,7 +182,26 @@ class CreateEventModal extends React.Component {
       );
     }
 
-    const startDatePicker =
+    const newPicker = true;
+    const startDatePicker = newPicker ? 
+      (
+        <DateTimePicker
+          isVisible={this.props.startTime.picker}
+          mode='datetime'
+          onConfirm={(date) => {
+            if (validateTime(date, this.props.endTime.date)) {
+              this.props.change('startTime', { date, picker: false });
+              return
+            }
+            alert('Start time should not be later than start time');
+          }}
+          onCancel={() => 
+            this.props.change('startTime', { 
+              date: this.props.startTime.date, picker: false 
+            })
+          }
+        />
+      ) :
       (
         <Modal
           animationType="fade"
@@ -214,7 +234,25 @@ class CreateEventModal extends React.Component {
         </Modal>
       );
 
-      const endDatePicker =
+      const endDatePicker = newPicker ?
+        (
+          <DateTimePicker
+            isVisible={this.props.endTime.picker}
+            mode='datetime'
+            onConfirm={(date) => {
+              if (validateTime(this.props.startTime.date, date)) {
+                this.props.change('endTime', { date, picker: false });
+                return
+              }
+              alert('End time should not be early than start time');
+            }}
+            onCancel={() => 
+              this.props.change('endTime', { 
+                date: this.props.endTime.date, picker: false 
+              })
+            }
+          />
+        ) :
         (
           <Modal
             animationType="fade"
@@ -589,6 +627,12 @@ class CreateEventModal extends React.Component {
       </MenuProvider>
     );
   }
+}
+
+const validateTime = (start, end) => {
+  if (!start || !end) return true;
+  if (moment(start) > moment(end)) return false
+  return true;
 }
 
 CreateEventModal = reduxForm({

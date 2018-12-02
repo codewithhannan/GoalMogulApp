@@ -21,10 +21,12 @@ import RefPreview from '../Common/RefPreview';
 
 import TestImage from '../../asset/TestEventImage.png';
 
-
 // Constants
 const DEBUG_KEY = '[ UI ActivityCard.ActivityBody ]';
 const { width } = Dimensions.get('window');
+
+// Styles
+import { imagePreviewContainerStyle } from '../../styles';
 
 class ActivityBody extends React.Component {
   state = {
@@ -64,7 +66,7 @@ class ActivityBody extends React.Component {
         >
           <View>
             <ImageBackground
-              style={styles.mediaStyle}
+              style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle }}
               source={{ uri: imageUrl }}
               imageStyle={{ borderRadius: 8, resizeMode: 'stretch' }}
             >
@@ -240,7 +242,7 @@ const styles = {
     height: width / 2,
     alignItems: 'center',
     justifyContent: 'center'
-  },
+  }
 };
 
 export default ActivityBody;

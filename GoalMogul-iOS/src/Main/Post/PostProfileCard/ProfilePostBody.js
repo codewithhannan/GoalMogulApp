@@ -25,6 +25,9 @@ import RefPreview from '../../Common/RefPreview';
 const DEBUG_KEY = '[ UI ProfilePostCard.ProfilePostBody ]';
 const { width } = Dimensions.get('window');
 
+// Styles
+import { imagePreviewContainerStyle } from '../../../styles';
+
 class ProfilePostBody extends React.Component {
   state = {
     mediaModal: false
@@ -38,10 +41,12 @@ class ProfilePostBody extends React.Component {
     }
     const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${url}`;
       return (
-        <TouchableWithoutFeedback onPress={() => this.setState({ mediaModal: true })}>
+        <TouchableWithoutFeedback 
+          onPress={() => this.setState({ mediaModal: true })}
+        >
           <View>
             <ImageBackground
-              style={styles.mediaStyle}
+              style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle }}
               source={{ uri: imageUrl }}
               imageStyle={{ borderRadius: 8, resizeMode: 'cover' }}
             >

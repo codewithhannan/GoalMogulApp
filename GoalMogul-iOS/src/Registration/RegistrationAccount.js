@@ -109,7 +109,6 @@ class Account extends Component {
         bounces={false}
         innerRef={ref => {this.scrollview = ref}}
         style={styles.scroll}
-        extraScrollHeight={13}
         contentContainerStyle={{
           backgroundColor: 'white',
           flexGrow: 1 // this will fix scrollview scroll issue by passing parent view width and height to it

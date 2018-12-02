@@ -38,6 +38,7 @@ import {
 } from 'react-native-popup-menu';
 import Slider from 'react-native-slider';
 import DraggableFlatlist from 'react-native-draggable-flatlist';
+import DateTimePicker from 'react-native-modal-datetime-picker';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
@@ -75,7 +76,7 @@ class CreateGoalModal extends Component {
     super(props);
     this.initializeForm();
     this.state = {
-      scrollEnabled: true
+      scrollEnabled: true,
     };
   }
 
@@ -372,8 +373,25 @@ class CreateGoalModal extends Component {
         </View>
       );
     }
-
-    const startDatePicker =
+    const newPicker = true;
+    const startDatePicker = newPicker ? 
+      (
+        <DateTimePicker
+          isVisible={this.props.startTime.picker}
+          onConfirm={(date) => {
+            if (validateTime(date, this.props.endTime.date)) {
+              this.props.change('startTime', { date, picker: false });
+              return
+            }
+            alert('Start time should not be later than start time');
+          }}
+          onCancel={() => 
+            this.props.change('startTime', { 
+              date: this.props.startTime.date, picker: false 
+            })
+          }
+        />
+      ) :
       (
         <Modal
           animationType="fade"
@@ -407,7 +425,24 @@ class CreateGoalModal extends Component {
         </Modal>
       );
 
-      const endDatePicker =
+      const endDatePicker = newPicker ?
+        (
+          <DateTimePicker
+            isVisible={this.props.endTime.picker}
+            onConfirm={(date) => {
+              if (validateTime(this.props.startTime.date, date)) {
+                this.props.change('endTime', { date, picker: false });
+                return
+              }
+              alert('End time should not be early than start time');
+            }}
+            onCancel={() => 
+              this.props.change('endTime', { 
+                date: this.props.endTime.date, picker: false 
+              })
+            }
+          />
+        ) :
         (
           <Modal
             animationType="fade"
@@ -453,7 +488,8 @@ class CreateGoalModal extends Component {
       <View style={{ ...styles.sectionMargin }}>
         {titleText}
         <View style={{ marginTop: 8, flexDirection: 'row' }}>
-          <TouchableOpacity activeOpacity={0.85}
+          <TouchableOpacity 
+            activeOpacity={0.85}
             style={{
               height: 50,
               width: 130,
@@ -668,6 +704,12 @@ class CreateGoalModal extends Component {
       </MenuProvider>
     );
   }
+}
+
+const validateTime = (start, end) => {
+  if (!start || !end) return true;
+  if (moment(start) > moment(end)) return false
+  return true;
 }
 
 const styles = {

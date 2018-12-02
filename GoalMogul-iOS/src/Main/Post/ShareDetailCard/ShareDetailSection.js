@@ -73,6 +73,9 @@ const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to 
 const CANCEL_INDEX = 3;
 const { width } = Dimensions.get('window');
 
+// Styles
+import { imagePreviewContainerStyle } from '../../../styles';
+
 class ShareDetailSection extends Component {
   state = {
     mediaModal: false
@@ -162,7 +165,7 @@ class ShareDetailSection extends Component {
       return (
         <View style={{ marginTop: 10 }}>
           <ImageBackground
-            style={styles.mediaStyle}
+            style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle }}
             source={{ uri: imageUrl }}
             imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
           >
