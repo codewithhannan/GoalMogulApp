@@ -57,7 +57,7 @@ class GoalFilter extends Component {
             />
             <MenuOption
               text='Recent'
-              vale='recent'
+              value='recent'
             />
             <MenuOption
               text='Popular'

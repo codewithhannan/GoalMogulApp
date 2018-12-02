@@ -30,6 +30,10 @@ class EventTabFilterBar extends Component {
 
   render() {
     const { containerStyle, textStyle, detailContainerStyle, standardTextStyle, caretStyle } = styles;
+    const { value } = this.props;
+    const { sortBy } = value;
+    
+    const currentFilter = sortBy === 'RecentlyCreated' ? 'Recently Created' : `${sortBy}`;
     return (
       <View style={containerStyle}>
         <Menu
@@ -43,7 +47,7 @@ class EventTabFilterBar extends Component {
             }}
           >
             <View style={detailContainerStyle}>
-              <Text style={textStyle}>Sort By</Text>
+              <Text style={textStyle}>Sort By ({`${currentFilter}`})</Text>
               <Image style={caretStyle} source={dropDown} />
             </View>
           </MenuTrigger>
@@ -54,11 +58,11 @@ class EventTabFilterBar extends Component {
             />
             <MenuOption
               text='Recently Created'
-              vale='RecentlyCreated'
+              value='RecentlyCreated'
             />
             <MenuOption
               text='Random'
-              vale='Random'
+              value='Random'
             />
           </MenuOptions>
         </Menu>

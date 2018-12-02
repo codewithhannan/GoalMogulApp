@@ -83,7 +83,7 @@ class InputField extends Component {
         <TouchableOpacity
           onLongPress={move}
           onPressOut={moveEnd}
-          style={{ padding: 5 }}
+          style={{ padding: 12, paddingRight: 6 }}
         >
           <Image source={menu} style={{ height: 20, width: 22 }} />
         </TouchableOpacity>
@@ -112,7 +112,7 @@ class InputField extends Component {
         />
         <TouchableOpacity
           activeOpacity={0.85}
-          style={{ padding: 15, alignItems: 'flex-end', alignSelf: 'center' }}
+          style={{ padding: 12, paddingLeft: 6, alignItems: 'flex-end', alignSelf: 'center' }}
           onPress={this.onIconPress}
         >
           {icon}

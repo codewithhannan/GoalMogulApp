@@ -11,6 +11,7 @@ import {
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import { Actions } from 'react-native-router-flux';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 /* Components */
 import Header from './Common/Header';
@@ -100,68 +101,146 @@ class Account extends Component {
       </TouchableOpacity>
     );
   }
-  // <KeyboardAvoidingView
-  //   behavior='position'
-  //   style={{ flex: 1 }}
-  //   contentContainerStyle={Styles.containerStyle}
-  //   keyboardVerticalOffset={-150}
-  // >
+
   render() {
     const { handleSubmit, error } = this.props;
     return (
-      <KeyboardAvoidingView
-        behavior='padding'
-        style={{ flex: 1 }}
+      <KeyboardAwareScrollView
+        bounces={false}
+        innerRef={ref => {this.scrollview = ref}}
+        style={styles.scroll}
+        extraScrollHeight={13}
+        contentContainerStyle={{
+          backgroundColor: 'white',
+          flexGrow: 1 // this will fix scrollview scroll issue by passing parent view width and height to it
+        }}
       >
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardDismissMode='interactive'
-          keyboardShouldPersistTaps='never'
-          overScrollMode='never'
-          bounces={false}
-        >
-          <TouchableWithoutFeedback onPress={this.handleContainerOnPressed.bind(this)}>
-            <View style={Styles.containerStyle}>
-              <Header />
-              <View style={Styles.bodyContainerStyle}>
-                <Text style={styles.titleTextStyle}>Get Started!</Text>
-                {this.renderError(error)}
-                <Field
-                  name='name'
-                  label='Full name'
-                  component={Input}
-                  disabled={this.props.loading}
-                />
-                <Field
-                  name='email'
-                  label='Email or Phone number'
-                  title='Please specify your country code, e.g. +1 for US'
-                  component={Input}
-                  validate={validateInput}
-                  disabled={this.props.loading}
-                />
-                <Field
-                  name='password'
-                  label='Password'
-                  component={Input}
-                  secure
-                  validate={minLength8}
-                  disabled={this.props.loading}
-                />
+        <View style={Styles.containerStyle}>
+          <Header canBack={!this.props.loading} />
+          <View style={Styles.bodyContainerStyle}>
+            <Text style={styles.titleTextStyle}>Get Started!</Text>
+            {this.renderError(error)}
+            <Field
+              name='name'                  
+              label='Full name'
+              withRef
+              component={Input}
+              disabled={this.props.loading}
+              returnKeyType='next'
+              onSubmitEditing={() => {
+                this.refs['email'].getRenderedComponent().focus();
+              }}
+            />
+            <Field
+              ref='email'
+              name='email'
+              label='Email or Phone number'
+              withRef
+              title='Please specify your country code, e.g. +1 for US'
+              returnKeyType='next'
+              component={Input}
+              validate={validateInput}
+              disabled={this.props.loading}
+              onSubmitEditing={() => {
+                this.refs['password'].getRenderedComponent().focus();
+                // this._scrollToInput(findNodeHandle(this._occupation));
+              }}
+            />
+            <Field
+              ref='password'
+              name='password'
+              label='Password'
+              withRef
+              component={Input}
+              returnKeyType='done'
+              secure
+              validate={minLength8}
+              disabled={this.props.loading}
+              onSubmitEditing={handleSubmit(this.handleNextPressed)}
+            />
 
-                <TouchableOpacity activeOpacity={0.85} onPress={handleSubmit(this.handleNextPressed)}>
-                  <View>
-                    <Button text='Next' />
-                  </View>
-                </TouchableOpacity>
-                {this.renderSplitter()}
-                {this.renderLogIn()}
+            <TouchableOpacity activeOpacity={0.85} onPress={handleSubmit(this.handleNextPressed)}>
+              <View>
+                <Button text='Next' />
               </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </ScrollView>
-      </KeyboardAvoidingView>
+            </TouchableOpacity>
+            {this.renderSplitter()}
+            {this.renderLogIn()}
+          </View>
+        </View>
+      </KeyboardAwareScrollView>
     );
+    
+    // return (
+    //   <KeyboardAvoidingView
+    //     behavior='padding'
+    //     style={{ flex: 1 }}
+    //   >
+    //     <ScrollView
+    //       contentContainerStyle={{ flexGrow: 1 }}
+    //       keyboardDismissMode='interactive'
+    //       keyboardShouldPersistTaps='never'
+    //       overScrollMode='never'
+    //       bounces={false}
+    //     >
+    //       <TouchableWithoutFeedback onPress={this.handleContainerOnPressed.bind(this)}>
+    //         <View style={Styles.containerStyle}>
+    //           <Header />
+    //           <View style={Styles.bodyContainerStyle}>
+    //             <Text style={styles.titleTextStyle}>Get Started!</Text>
+    //             {this.renderError(error)}
+    //             <Field
+    //               name='name'                  
+    //               label='Full name'
+    //               withRef
+    //               component={Input}
+    //               disabled={this.props.loading}
+    //               returnKeyType='next'
+    //               onNextPress={() => {
+    //                 this.refs['email'].getRenderedComponent().focus();
+    //               }}
+    //             />
+    //             <Field
+    //               ref='email'
+    //               name='email'
+    //               label='Email or Phone number'
+    //               withRef
+    //               title='Please specify your country code, e.g. +1 for US'
+    //               returnKeyType='next'
+    //               component={Input}
+    //               validate={validateInput}
+    //               disabled={this.props.loading}
+    //               onNextPress={() => {
+    //                 this.refs['password'].getRenderedComponent().focus();
+    //                 // this._scrollToInput(findNodeHandle(this._occupation));
+    //               }}
+    //             />
+    //             <Field
+    //               ref='password'
+    //               name='password'
+    //               label='Password'
+    //               withRef
+    //               component={Input}
+    //               returnKeyType='done'
+    //               secure
+    //               validate={minLength8}
+    //               disabled={this.props.loading}
+    //               onDonePress={handleSubmit(this.handleNextPressed)}
+    //             />
+    // 
+    //             <TouchableOpacity activeOpacity={0.85} onPress={handleSubmit(this.handleNextPressed)}>
+    //               <View>
+    //                 <Button text='Next' />
+    //               </View>
+    //             </TouchableOpacity>
+    //             {this.renderSplitter()}
+    //             {this.renderLogIn()}
+    //           </View>
+    //         </View>
+    //       </TouchableWithoutFeedback>
+    //     </ScrollView>
+    //   </KeyboardAvoidingView>
+    // );
   }
 }
 

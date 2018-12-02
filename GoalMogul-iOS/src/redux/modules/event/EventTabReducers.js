@@ -13,7 +13,7 @@ const INITIAL_STATE = {
 
 };
 
-const sortByList = ['start', 'created', 'title'];
+const sortByList = ['Popular', 'RecentlyCreated', 'Random'];
 
 export const EVENTTAB_REFRESH_DONE = 'eventtab_refresh_done';
 export const EVENTTAB_LOAD_DONE = 'eventtab_load_done';

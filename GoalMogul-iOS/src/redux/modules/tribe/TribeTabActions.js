@@ -17,7 +17,7 @@ const BASE_ROUTE = 'secure/tribe/recommendations';
 export const updateSortBy = (value) => (dispatch, getState) => {
   dispatch({
     type: TRIBETAB_SORTBY,
-    value
+    payload: value
   });
   refreshTribe()(dispatch, getState);
 };

@@ -53,7 +53,7 @@ class SearchFilterBar extends Component {
             />
             <MenuOption
               text='Recent'
-              vale='recent'
+              value='recent'
             />
             <MenuOption
               text='Popular'
@@ -87,11 +87,11 @@ class SearchFilterBar extends Component {
             />
             <MenuOption
               text='Tribe'
-              vale='tribe'
+              value='tribe'
             />
             <MenuOption
               text='Event'
-              vale='event'
+              value='event'
             />
           </MenuOptions>
         </Menu>

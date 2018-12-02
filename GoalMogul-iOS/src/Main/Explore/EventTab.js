@@ -35,7 +35,7 @@ class EventTab extends React.Component {
   }
 
   renderListHeader() {
-    return <EventTabFilterBar />;
+    return <EventTabFilterBar value={{ sortBy: this.props.sortBy }}/>;
   }
 
   render() {
@@ -62,7 +62,7 @@ class EventTab extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { data, loading } = state.eventTab;
+  const { data, loading, sortBy } = state.eventTab;
 
   // const loading = false;
   const testData = [
@@ -161,7 +161,8 @@ const mapStateToProps = state => {
   return {
     // data: [...data, ...testData],
     data,
-    loading
+    loading,
+    sortBy
   };
 };
 

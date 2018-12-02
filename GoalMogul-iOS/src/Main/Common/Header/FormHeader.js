@@ -53,7 +53,7 @@ const styles = {
     flexDirection: 'row',
     backgroundColor: '#ffffff',
     paddingBottom: 18,
-    paddingTop: 35,
+    paddingTop: 15,
     paddingLeft: 17,
     paddingRight: 17,
     borderBottomColor: '#e9e9e9',

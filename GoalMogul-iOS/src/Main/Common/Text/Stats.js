@@ -18,8 +18,8 @@ const renderStats = (props) => props.data.map((c, index) => {
         <Icon
           name='dot-single'
           type='entypo'
-          color='#818181'
-          size={18}
+          color='#CCCCCC'
+          size={13}
           iconStyle={styles.iconStyle}
           containerStyle={styles.iconContainerStyle}
         />
@@ -57,11 +57,13 @@ const styles = {
   },
   iconStyle: {
 
-
   },
   iconContainerStyle: {
-    width: 15,
-    marginRight: 2
+    width: 10,
+    paddingTop: 2,
+    marginRight: 2,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 };
 

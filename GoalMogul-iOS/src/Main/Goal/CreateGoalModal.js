@@ -12,7 +12,8 @@ import {
   Modal,
   Alert,
   TextInput,
-  SafeAreaView
+  SafeAreaView,
+  Animated
 } from 'react-native';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -513,16 +514,15 @@ class CreateGoalModal extends Component {
   }
 
   renderFieldArrayItem = (props, placeholder, fields, canDrag) => {
-    const { item, index, move, moveEnd } = props;
+    const { item, index, move, moveEnd, isActive } = props;
     const iconOnPress = index === 0 ?
       undefined
       :
       () => fields.remove(index);
     return (
       <View
-        style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}
+        style={{ flexDirection: 'row', alignItems: 'center', flex: 1, backgroundColor: isActive ? 'red' : 'white' }}
       >
-        <SafeAreaView style={{ flex: 1 }}>
         <Field
           key={`description-${index}`}
           name={`${item.item}.description`}
@@ -538,7 +538,6 @@ class CreateGoalModal extends Component {
           moveEnd={moveEnd}
           canDrag={canDrag}
         />
-        </SafeAreaView>
       </View>
     );
   }
@@ -561,6 +560,7 @@ class CreateGoalModal extends Component {
           renderItem={(props) => this.renderFieldArrayItem(props, placeholder, fields, true)}
           data={dataToRender}
           keyExtractor={item => `${item.index}`}
+          scrollPercent={5}
           onMoveEnd={e => {
             // console.log('moving end for e: ', e);
             fields.move(e.from, e.to);
@@ -702,8 +702,8 @@ const styles = {
     fontSize: 12,
     padding: 13,
     paddingTop: 13,
-    paddingRight: 14,
-    paddingLeft: 14
+    paddingRight: 6,
+    paddingLeft: 6
   },
   goalInputStyle: {
     fontSize: 20,
@@ -712,8 +712,8 @@ const styles = {
     paddingLeft: 20
   },
   cancelIconStyle: {
-    height: 20,
-    width: 20,
+    height: 16,
+    width: 16,
     justifyContent: 'flex-end'
   },
   caretStyle: {

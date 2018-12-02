@@ -50,6 +50,7 @@ class Header extends Component {
   // };
 
   handleBackOnClick() {
+    if (this.props.canBack === false) return;
     this.props.registrationBack();
   }
 
