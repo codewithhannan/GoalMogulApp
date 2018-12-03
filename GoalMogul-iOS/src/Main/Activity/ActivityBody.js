@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   View,
-  Modal,
   Image,
   Dimensions,
   TouchableOpacity,
@@ -9,9 +8,11 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 import _ from 'lodash';
+import Modal from 'react-native-modal';
 
 // Components
 import ProgressBar from '../Goal/Common/ProgressBar';
+import ImageModal from '../Common/ImageModal';
 
 // Assets
 import cancel from '../../asset/utils/cancel_no_background.png';
@@ -120,38 +121,11 @@ class ActivityBody extends React.Component {
 
   renderPostImageModal(imageUrl) {
     return (
-      <Modal
-        animationType="fade"
-        transparent={false}
-        visible={this.state.mediaModal}
-      >
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'black'
-          }}
-        >
-          <TouchableOpacity activeOpacity={0.85}
-            onPress={() => { this.setState({ mediaModal: false }); }}
-            style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
-          >
-            <Image
-              source={cancel}
-              style={{
-                ...styles.cancelIconStyle,
-                tintColor: 'white'
-              }}
-            />
-          </TouchableOpacity>
-          <Image
-            source={{ uri: imageUrl }}
-            style={{ width, height: 200 }}
-            resizeMode='cover'
-          />
-        </View>
-      </Modal>
+      <ImageModal 
+        mediaRef={imageUrl}
+        mediaModal={this.state.mediaModal}
+        closeModal={() => this.setState({ mediaModal: false })}
+      />
     );
   }
 

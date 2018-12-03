@@ -5,13 +5,13 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
-  Modal,
   Dimensions
 } from 'react-native';
 import { connect } from 'react-redux';
 import timeago from 'timeago.js';
 import _ from 'lodash';
 import R from 'ramda';
+import Modal from 'react-native-modal';
 
 import {
   switchCase
@@ -66,6 +66,7 @@ import Timestamp from '../../Goal/Common/Timestamp';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import ProfileImage from '../../Common/ProfileImage';
 import RefPreview from '../../Common/RefPreview';
+import ImageModal from '../../Common/ImageModal';
 
 // Constants
 const DEBUG_KEY = '[ UI PostDetailCard.PostDetailSection ]';
@@ -213,44 +214,18 @@ class PostDetailSection extends Component {
       );
   }
 
-
+  // <Modal
+  //   animationType="fade"
+  //   transparent={false}
+  //   visible={this.state.mediaModal}
+  // >
   renderPostImageModal(imageUrl) {
-    if (!imageUrl) {
-      return '';
-    }
     return (
-      <Modal
-        animationType="fade"
-        transparent={false}
-        visible={this.state.mediaModal}
-      >
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'black'
-          }}
-        >
-          <TouchableOpacity activeOpacity={0.85}
-            onPress={() => { this.setState({ mediaModal: false }); }}
-            style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
-          >
-            <Image
-              source={cancel}
-              style={{
-                ...styles.cancelIconStyle,
-                tintColor: 'white'
-              }}
-            />
-          </TouchableOpacity>
-          <Image
-            source={{ uri: imageUrl }}
-            style={{ width, height: 200 }}
-            resizeMode='cover'
-          />
-        </View>
-      </Modal>
+      <ImageModal 
+        mediaRef={imageUrl}
+        mediaModal={this.state.mediaModal}
+        closeModal={() => this.setState({ mediaModal: false })}
+      />
     );
   }
 

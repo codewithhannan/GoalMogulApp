@@ -28,6 +28,7 @@ import {
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
+import ImageModal from '../Common/ImageModal';
 
 // Actions
 import {
@@ -261,43 +262,13 @@ class CreateTribeModal extends React.Component {
   }
 
   renderImageModal(imageUrl) {
-    if (this.props.picture) {
-      return (
-        <Modal
-          animationType="fade"
-          transparent={false}
-          visible={this.state.mediaModal}
-        >
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'black'
-            }}
-          >
-            <TouchableOpacity activeOpacity={0.85}
-              onPress={() => { this.setState({ mediaModal: false }); }}
-              style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
-            >
-              <Image
-                source={cancel}
-                style={{
-                  ...styles.cancelIconStyle,
-                  tintColor: 'white'
-                }}
-              />
-            </TouchableOpacity>
-            <Image
-              source={{ uri: imageUrl }}
-              style={{ width, height: 200 }}
-              resizeMode='cover'
-            />
-          </View>
-        </Modal>
-      );
-    }
-    return '';
+    return (
+      <ImageModal 
+        mediaRef={imageUrl}
+        mediaModal={this.state.mediaModal}
+        closeModal={() => this.setState({ mediaModal: false })}
+      />
+    );
   }
 
   renderTribeName() {

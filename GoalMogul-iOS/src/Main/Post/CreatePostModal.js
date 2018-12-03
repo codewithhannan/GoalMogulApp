@@ -8,7 +8,6 @@ import {
   Text,
   TouchableOpacity,
   ImageBackground,
-  Modal,
   Dimensions,
   SafeAreaView
 } from 'react-native';
@@ -17,13 +16,15 @@ import { Field, reduxForm, formValueSelector } from 'redux-form';
 import _ from 'lodash';
 import R from 'ramda';
 import { Actions } from 'react-native-router-flux';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Modal from 'react-native-modal';
 
 /* Components */
 import ModalHeader from '../Common/Header/ModalHeader';
 import Button from '../Goal/Button';
 import InputField from '../Common/TextInput/InputField';
 import ViewableSettingMenu from '../Goal/ViewableSettingMenu';
+import ImageModal from '../Common/ImageModal';
 
 // assets
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
@@ -283,43 +284,13 @@ class CreatePostModal extends Component {
   }
 
   renderImageModal() {
-    if (this.props.mediaRef) {
-      return (
-        <Modal
-          animationType="fade"
-          transparent={false}
-          visible={this.state.mediaModal}
-        >
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'black'
-            }}
-          >
-            <TouchableOpacity activeOpacity={0.85}
-              onPress={() => { this.setState({ mediaModal: false }); }}
-              style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
-            >
-              <Image
-                source={cancel}
-                style={{
-                  ...styles.cancelIconStyle,
-                  tintColor: 'white'
-                }}
-              />
-            </TouchableOpacity>
-            <Image
-              source={{ uri: this.props.mediaRef }}
-              style={{ width, height: 200 }}
-              resizeMode='cover'
-            />
-          </View>
-        </Modal>
-      );
-    }
-    return '';
+    return (
+      <ImageModal 
+        mediaRef={this.props.mediaRef}
+        mediaModal={this.state.mediaModal}
+        closeModal={() => this.setState({ mediaModal: false })}
+      />
+    );
   }
 
   renderPost() {
