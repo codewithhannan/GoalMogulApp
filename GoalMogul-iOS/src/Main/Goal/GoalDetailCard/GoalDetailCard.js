@@ -6,7 +6,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
+import { TabView, SceneMap } from 'react-native-tab-view';
 
 // Component
 import SearchBarHeader from '../../../Main/Common/Header/SearchBarHeader';
@@ -69,10 +69,10 @@ class GoalDetailCard extends Component {
 
   renderTabs() {
     return (
-      <TabViewAnimated
+      <TabView
         navigationState={this.state.navigationState}
         renderScene={this._renderScene}
-        renderHeader={this._renderHeader}
+        renderTabBar={this._renderHeader}
         onIndexChange={this._handleIndexChange}
         useNativeDriver
       />

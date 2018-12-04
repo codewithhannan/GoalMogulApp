@@ -13,6 +13,11 @@ import SectionCard from '../Common/SectionCard';
 import HelpIcon from '../../../asset/utils/help.png';
 import StepIcon from '../../../asset/utils/steps.png';
 
+// Styles
+import {
+  cardBoxShadow
+} from '../../../styles';
+
 class StepAndNeedCard extends Component {
 
   renderSectionTitle(item) {
@@ -45,15 +50,17 @@ class StepAndNeedCard extends Component {
     }
 
     return (
-      <SectionCard
-        item={item}
-        onPress={() => {
-          this.props.onPress();
-        }}
-        type={item.type}
-        goalRef={goalRef}
-        isSelf={this.props.isSelf}
-      />
+      <View style={cardBoxShadow}>
+        <SectionCard
+          item={item}
+          onPress={() => {
+            this.props.onPress();
+          }}
+          type={item.type}
+          goalRef={goalRef}
+          isSelf={this.props.isSelf}
+        />
+      </View>
     );
   }
 }

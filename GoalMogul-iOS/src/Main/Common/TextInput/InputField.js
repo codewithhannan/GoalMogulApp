@@ -22,7 +22,7 @@ class InputField extends Component {
 
  onChange(event) {
     const { onChange } = this.props;
-    console.log('something happens');
+    // console.log('something happens');
     if ('function' === typeof onChange) {
       onChange(event);
     }
@@ -69,6 +69,7 @@ class InputField extends Component {
       move,
       moveEnd,
       canDrag,
+      autoCorrect,
       meta: { touched, error },
       ...custom
     } = this.props;
@@ -96,12 +97,12 @@ class InputField extends Component {
           ref={this.updateRef}
           title={custom.title}
           autoCapitalize={'none'}
-          autoCorrect={false}
+          autoCorrect={autoCorrect || false}
           onChangeText={this.onChangeText}
           onChange={this.onChange}
           numberOfLines={numberOfLines || 1}
           returnKeyType='done'
-          multiline={multiline}
+          multiline={multiline || false}
           onFocus={onFocus}
           editable={editable}
           placeholder={placeholder}

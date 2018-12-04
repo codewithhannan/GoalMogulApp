@@ -31,7 +31,7 @@ class ViewableSettingMenu extends Component {
 
   handleInfoIcon = () => {
     Alert.alert(
-      'Notice',
+      'Share to goals feed',
       'Choosing this will make your goal appear on your friends’ home feed'
     );
   }

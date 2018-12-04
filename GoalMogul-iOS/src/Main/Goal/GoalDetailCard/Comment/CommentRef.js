@@ -31,7 +31,8 @@ import {
 
 // Actions
 import {
-  openProfile
+  openProfile,
+  UserBanner
 } from '../../../../actions';
 
 import {
@@ -80,11 +81,11 @@ class CommentRef extends React.PureComponent {
 
   // Render badge
   renderEndImage(item) {
-    const { suggestionType } = item;
+    const { suggestionType, userRef } = item;
     if (suggestionType === 'User' || suggestionType === 'Friend') {
       return (
         <View style={styles.iconContainerStyle}>
-          <Image source={badge} style={{ height: 23, width: 23 }} />
+          <UserBanner user={userRef} iconStyle={{ height: 24, width: 22 }} />
         </View>
       );
     }
@@ -116,7 +117,7 @@ class CommentRef extends React.PureComponent {
         defaultImageSource={source}
         defaultImageStyle={{ width: 30, height: 30, ...style }}
         imageUrl={imageUrl}
-        imageContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}
+        imageContainerStyle={{ alignItems: 'center', justifyContent: 'center', width: 50, height: 50 }}
       />
     );
   }

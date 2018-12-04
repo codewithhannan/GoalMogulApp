@@ -227,6 +227,7 @@ class CreateGoalModal extends Component {
           editable={this.props.uploading}
           style={styles.goalInputStyle}
           placeholder='What are you trying to achieve?'
+          autoCorrect
         />
       </View>
     );

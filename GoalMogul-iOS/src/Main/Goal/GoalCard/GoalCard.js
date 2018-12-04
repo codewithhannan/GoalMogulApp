@@ -16,7 +16,7 @@ import {
 //   Directions,
 //   State
 // } from 'react-native-gesture-handler';
-import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
+import { TabView, SceneMap } from 'react-native-tab-view';
 import timeago from 'timeago.js';
 import R from 'ramda';
 import _ from 'lodash';
@@ -170,10 +170,10 @@ class GoalCard extends React.PureComponent {
 
   renderTabs() {
     return (
-      <TabViewAnimated
+      <TabView
         navigationState={this.state.navigationState}
         renderScene={this._renderScene}
-        renderHeader={this._renderHeader}
+        renderTabBar={this._renderHeader}
         onIndexChange={this._handleIndexChange}
         useNativeDriver
       />

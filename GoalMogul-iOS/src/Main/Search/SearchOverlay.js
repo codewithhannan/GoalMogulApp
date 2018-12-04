@@ -9,7 +9,7 @@ import { SearchBar, Icon } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import { MenuProvider } from 'react-native-popup-menu';
 import _ from 'lodash';
-import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
+import { TabView, SceneMap } from 'react-native-tab-view';
 
 // Component
 import BaseOverlay from './BaseOverlay';
@@ -97,10 +97,10 @@ class SearchOverlay extends Component {
               showLoading={this.props.loading}
             />
           </View>
-          <TabViewAnimated
+          <TabView
             navigationState={this.props.navigationState}
             renderScene={this._renderScene}
-            renderHeader={this._renderHeader}
+            renderTabBar={this._renderHeader}
             onIndexChange={this._handleIndexChange}
             useNativeDriver
           />

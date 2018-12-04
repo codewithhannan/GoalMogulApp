@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
-import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
+import { TabView, SceneMap } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
 
 /* Components */
@@ -59,10 +59,10 @@ class Explore extends Component {
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={styles.homeContainerStyle}>
           <SearchBarHeader rightIcon='menu' />
-          <TabViewAnimated
+          <TabView
             navigationState={this.props.navigationState}
             renderScene={this._renderScene}
-            renderHeader={this._renderHeader}
+            renderTabBar={this._renderHeader}
             onIndexChange={this.props.exploreSelectTab}
             useNativeDriver
           />

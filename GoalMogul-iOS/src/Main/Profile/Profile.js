@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { MenuProvider } from 'react-native-popup-menu';
-import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
+import { TabView, SceneMap } from 'react-native-tab-view';
 import { connect } from 'react-redux';
 
 /* Components */
@@ -45,10 +45,10 @@ class Profile extends Component {
         <View style={styles.containerStyle}>
           <SearchBarHeader backButton rightIcon='menu' />
           <ProfileSummaryCard />
-          <TabViewAnimated
+          <TabView
             navigationState={this.props.navigationState}
             renderScene={this._renderScene}
-            renderHeader={this._renderHeader}
+            renderTabBar={this._renderHeader}
             onIndexChange={this._handleIndexChange}
             useNativeDriver
           />

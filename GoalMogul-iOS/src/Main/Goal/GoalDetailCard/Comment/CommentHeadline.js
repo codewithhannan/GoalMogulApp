@@ -7,6 +7,7 @@ import _ from 'lodash';
 import Name from '../../Common/Name';
 import Timestamp from '../../Common/Timestamp';
 import { MenuFactory } from '../../../Common/MenuFactory';
+import { UserBanner } from '../../../../actions';
 
 /* Asset */
 import badge from '../../../../asset/utils/badge.png';
@@ -65,7 +66,7 @@ const CommentHeadline = (props) => {
       return (
         <View style={styles.containerStyle}>
           <Name text={owner.name} textStyle={{ fontSize: 12 }} />
-          <Image style={styles.imageStyle} source={badge} />
+          <UserBanner user={owner} />
           <Timestamp time={timeago().format(timeStamp)} />
             <View style={styles.caretContainer}>
               {menu}
@@ -130,7 +131,8 @@ const styles = {
   containerStyle: {
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'flex-start'
   },
   caretContainer: {
     position: 'absolute',
