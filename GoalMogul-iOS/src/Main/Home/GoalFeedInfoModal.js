@@ -58,7 +58,7 @@ class GoalFeedInfoModal extends React.PureComponent {
         style={styles.cancelIconContainerStyle}
         onPress={this.handleCancelOnPress}
       >
-        <Image source={CancelIcon} style={{ height: 13, width: 13, tintColor: '#46C8F5' }} />
+        <Image source={CancelIcon} style={{ height: 13, width: 13, tintColor: '#17B3EC' }} />
       </TouchableOpacity>
     );
   }
@@ -82,7 +82,7 @@ class GoalFeedInfoModal extends React.PureComponent {
     const headerText = (
       <Text style={styles.headerBasicTextStyle}>
         <Text style={{ fontWeight: '700' }}>
-          Mastermind feed{' '}
+          Goal feed{' '}
         </Text>
         -- Give help, get help
       </Text>
@@ -205,7 +205,7 @@ const styles = {
   buttonContainerStyle: {
     marginLeft: 8,
     alignItems: 'center',
-    backgroundColor: '#46C8F5',
+    backgroundColor: '#17B3EC',
     padding: 10,
     borderRadius: 5
   },

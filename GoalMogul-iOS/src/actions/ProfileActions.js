@@ -559,14 +559,14 @@ export const deletePost = (postId) => (dispatch, getState) =>
 
 // By pass in user object, return corresponding banner
 export const UserBanner = (props) => {
-  const { user } = props;
+  const { user, iconStyle } = props;
 
   if (!user || !user.profile || user.profile.pointsEarned === undefined) return '';
   const { profile } = user;
   const { pointsEarned } = profile;
   const source = switchCaseBannerSource(pointsEarned);
 
-  const imageStyle = {
+  const defaultIconStyle = {
     alignSelf: 'center',
     marginLeft: 4,
     marginRight: 4,
@@ -574,7 +574,7 @@ export const UserBanner = (props) => {
     width: 10
   };
   return (
-    <Image source={source} style={imageStyle} />
+    <Image source={source} style={{ ...defaultIconStyle, ...iconStyle }} />
   );
 };
 

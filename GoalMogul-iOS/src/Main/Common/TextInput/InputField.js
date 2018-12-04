@@ -22,7 +22,7 @@ class InputField extends Component {
 
  onChange(event) {
     const { onChange } = this.props;
-    console.log('something happens');
+    // console.log('something happens');
     if ('function' === typeof onChange) {
       onChange(event);
     }
@@ -69,6 +69,7 @@ class InputField extends Component {
       move,
       moveEnd,
       canDrag,
+      autoCorrect,
       meta: { touched, error },
       ...custom
     } = this.props;
@@ -83,7 +84,7 @@ class InputField extends Component {
         <TouchableOpacity
           onLongPress={move}
           onPressOut={moveEnd}
-          style={{ padding: 5 }}
+          style={{ padding: 12, paddingRight: 6 }}
         >
           <Image source={menu} style={{ height: 20, width: 22 }} />
         </TouchableOpacity>
@@ -96,12 +97,12 @@ class InputField extends Component {
           ref={this.updateRef}
           title={custom.title}
           autoCapitalize={'none'}
-          autoCorrect={false}
+          autoCorrect={autoCorrect || false}
           onChangeText={this.onChangeText}
           onChange={this.onChange}
           numberOfLines={numberOfLines || 1}
           returnKeyType='done'
-          multiline={multiline}
+          multiline={multiline || false}
           onFocus={onFocus}
           editable={editable}
           placeholder={placeholder}
@@ -112,7 +113,7 @@ class InputField extends Component {
         />
         <TouchableOpacity
           activeOpacity={0.85}
-          style={{ padding: 15, alignItems: 'flex-end', alignSelf: 'center' }}
+          style={{ padding: 12, paddingLeft: 6, alignItems: 'flex-end', alignSelf: 'center' }}
           onPress={this.onIconPress}
         >
           {icon}

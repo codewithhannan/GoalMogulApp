@@ -21,7 +21,8 @@ import cancel from '../../../asset/utils/cancel.png';
 /* Actions */
 import {
   openProfileDetailEditForm,
-  updateFriendship
+  updateFriendship,
+  UserBanner
 } from '../../../actions/';
 
 /* Components */
@@ -296,9 +297,10 @@ class ProfileDetailCard extends Component {
   }
 
   render() {
+    if (!this.props.user) return '';
     const { name, headline, profile } = this.props.user;
     // const { name, headline, profile } = testData;
-    console.log(`${DEBUG_KEY}: rerender with profile: `, profile);
+    // console.log(`${DEBUG_KEY}: rerender with profile: `, profile);
 
     return (
       <View style={styles.cardContainerStyle}>
@@ -308,9 +310,12 @@ class ProfileDetailCard extends Component {
           {this.renderProfileActionButton()}
         </View>
         <View style={styles.containerStyle}>
-          <Text style={styles.nameTextStyle}>
-            {name}
-          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={styles.nameTextStyle}>
+              {name}
+            </Text>
+            <UserBanner user={this.props.user} iconStyle={{ height: 20, width: 17 }} />
+          </View>
           <Text style={styles.headlineTextStyle}>
             {headline}
           </Text>

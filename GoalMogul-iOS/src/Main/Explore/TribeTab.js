@@ -4,6 +4,7 @@ import {
   FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
+import _ from 'lodash'
 
 // Actions
 import {
@@ -17,6 +18,12 @@ import TribeTabFilterBar from './TribeTabFilterBar';
 import EmptyResult from '../Common/Text/EmptyResult';
 
 class TribeTab extends React.Component {
+  componentDidMount() {  
+    if (!this.props.data || _.isEmpty(this.props.data)) {
+      this.handleOnRefresh();
+    }
+  }
+  
   _keyExtractor = (item) => item._id;
 
   handleOnRefresh = () => this.props.refreshTribe();
@@ -28,7 +35,7 @@ class TribeTab extends React.Component {
   }
 
   renderListHeader() {
-    return <TribeTabFilterBar />;
+    return <TribeTabFilterBar value={{ sortBy: this.props.sortBy }}/>;
   }
 
   render() {
@@ -55,7 +62,7 @@ class TribeTab extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { data, loading } = state.tribeTab;
+  const { data, loading, sortBy } = state.tribeTab;
 
   // const loading = false;
   const testData = [
@@ -132,7 +139,8 @@ const mapStateToProps = state => {
   return {
     // data: [...data, ...testData],
     data,
-    loading
+    loading,
+    sortBy
   };
 };
 

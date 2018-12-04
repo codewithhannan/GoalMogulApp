@@ -9,7 +9,7 @@ import { SearchBar, Icon } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import { MenuProvider } from 'react-native-popup-menu';
 import _ from 'lodash';
-import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
+import { TabView, SceneMap } from 'react-native-tab-view';
 
 // Component
 import BaseOverlay from './BaseOverlay';
@@ -93,14 +93,14 @@ class SearchOverlay extends Component {
               onCancel={this.handleCancel}
               onChangeText={this.handleChangeText}
               clearIcon={null}
-              cancelButtonProps={{ color: '#46C8F5' }}
+              cancelButtonProps={{ color: '#17B3EC' }}
               showLoading={this.props.loading}
             />
           </View>
-          <TabViewAnimated
+          <TabView
             navigationState={this.props.navigationState}
             renderScene={this._renderScene}
-            renderHeader={this._renderHeader}
+            renderTabBar={this._renderHeader}
             onIndexChange={this._handleIndexChange}
             useNativeDriver
           />

@@ -33,6 +33,9 @@ import Report from '../../Report/Report';
 
 import ShareDetailSection from './ShareDetailSection';
 
+// Utils
+import { switchCase } from '../../../redux/middleware/utils';
+
 class ShareDetailCard extends Component {
   constructor(props) {
     super(props);
@@ -95,13 +98,14 @@ class ShareDetailCard extends Component {
     const { comments, shareDetail, pageId } = this.props;
     const data = comments;
     if (!shareDetail || !shareDetail.created) return '';
+    const title = switchCaseTitle(shareDetail.postType);
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={{ backgroundColor: '#e5e5e5', flex: 1 }}>
           <SearchBarHeader
             backButton
-            title='Share'
+            title={title}
             onBackPress={() => this.props.closeShareDetail()}
           />
             <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
@@ -165,6 +169,14 @@ const mapStateToProps = (state, props) => {
 
   };
 };
+
+const switchCaseTitle = (postType) => switchCase({
+  ShareUser: 'Shared User',
+  SharePost: 'Shared Post',
+  ShareGoal: 'Shared Goal',
+  ShareNeed: 'Shared Need',
+  ShareStep: 'Shared Step'
+})('SharePost')(postType)
 
 export default connect(
   mapStateToProps,

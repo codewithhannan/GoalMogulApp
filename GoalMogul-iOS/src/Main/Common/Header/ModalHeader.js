@@ -49,7 +49,7 @@ const styles = {
   },
   actionTextStyle: {
     fontSize,
-    color: '#46C8F5',
+    color: '#17B3EC',
     fontWeight: '800',
     paddingTop: padding,
     paddingBottom: padding,
@@ -64,7 +64,7 @@ const styles = {
     paddingTop: padding,
     paddingBottom: padding,
     fontSize,
-    color: '#46C8F5'
+    color: '#17B3EC'
   }
 };
 

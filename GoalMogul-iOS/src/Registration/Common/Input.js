@@ -5,6 +5,10 @@ import {
 import { TextField } from 'react-native-material-textfield';
 
 class Input extends Component {
+  focus() {
+    this.input.focus();
+  }
+  
   render() {
     const {
       input: { onChange, ...restInput },
@@ -16,12 +20,14 @@ class Input extends Component {
       title,
       disabled,
       onSubmitEditing,
+      returnKeyType,
       meta: { touched, error },
       ...custom
     } = this.props;
     return (
       <View style={styles.inputContainerStyle}>
         <TextField
+          ref={ref => this.input = ref}
           label={label}
           title={title}
           autoCapitalize={'none'}
@@ -29,7 +35,7 @@ class Input extends Component {
           onChangeText={onChange}
           error={error}
           enablesReturnKeyAutomatically={false}
-          returnKeyType='done'
+          returnKeyType={returnKeyType || 'done'}
           secureTextEntry={secure}
           characterRestriction={limitation}
           multiline={multiline}

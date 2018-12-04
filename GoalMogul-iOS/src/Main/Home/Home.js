@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
-import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
+import { TabView, SceneMap } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
 
 /* Components */
@@ -85,10 +85,10 @@ class Home extends Component {
         <View style={styles.homeContainerStyle}>
           <Report showing={this.props.showingModal} />
           <SearchBarHeader rightIcon='menu' />
-          <TabViewAnimated
+          <TabView
             navigationState={this.state.navigationState}
             renderScene={this._renderScene}
-            renderHeader={this._renderHeader}
+            renderTabBar={this._renderHeader}
             onIndexChange={this._handleIndexChange}
             useNativeDriver
           />

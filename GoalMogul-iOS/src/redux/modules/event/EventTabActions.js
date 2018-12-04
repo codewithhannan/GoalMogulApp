@@ -17,7 +17,7 @@ const BASE_ROUTE = 'secure/event/recommendations';
 export const updateSortBy = (value) => (dispatch, getState) => {
   dispatch({
     type: EVENTTAB_SORTBY,
-    value
+    payload: value
   });
 
   refreshEvent()(dispatch, getState);

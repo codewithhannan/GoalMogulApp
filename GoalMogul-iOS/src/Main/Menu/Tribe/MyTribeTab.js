@@ -209,7 +209,7 @@ const styles = {
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    // backgroundColor: '#46C8F5',
+    // backgroundColor: '#17B3EC',
     backgroundColor: '#4096c6',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

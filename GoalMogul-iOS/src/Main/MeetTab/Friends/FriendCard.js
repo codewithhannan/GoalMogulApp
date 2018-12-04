@@ -213,11 +213,11 @@ const styles = {
     width: 70,
     height: 26,
     borderWidth: 1,
-    borderColor: '#46C8F5',
+    borderColor: '#17B3EC',
     borderRadius: 13,
   },
   buttonTextStyle: {
-    color: '#46C8F5',
+    color: '#17B3EC',
     fontSize: 11,
     fontWeight: '700',
     paddingLeft: 1,
@@ -235,7 +235,7 @@ const styles = {
 
   },
   titleTextStyle: {
-    color: '#46C8F5',
+    color: '#17B3EC',
     fontSize: 11,
     paddingTop: 1,
     paddingBottom: 1
@@ -245,7 +245,7 @@ const styles = {
     paddingLeft: 3
   },
   jobTitleTextStyle: {
-    color: '#46C8F5',
+    color: '#17B3EC',
     fontSize: 11,
     fontWeight: '800',
     paddingTop: 5,
@@ -253,7 +253,7 @@ const styles = {
   },
   friendTextStyle: {
     paddingLeft: 10,
-    color: '#46C8F5',
+    color: '#17B3EC',
     fontSize: 9,
     fontWeight: '800',
     maxWidth: 120

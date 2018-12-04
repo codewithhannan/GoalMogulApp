@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 /* Components */
 import Header from './Registration/Common/Header';
@@ -85,61 +86,109 @@ class LoginPage extends Component {
       <View style={{ height: 29 }} />
     );
   }
-  // <KeyboardAvoidingView
-  //   behavior='position'
-  //   style={{ flex: 1 }}
-  //   contentContainerStyle={Styles.containerStyle}
-  //   keyboardVerticalOffset={-150}
-  // >
+
   render() {
     const { handleSubmit, error } = this.props;
     return (
-      <KeyboardAvoidingView
-        behavior='padding'
-        style={{ flex: 1 }}
+      <KeyboardAwareScrollView
+        bounces={false}
+        innerRef={ref => {this.scrollview = ref}}
+        style={styles.scroll}
+        extraScrollHeight={13}
+        contentContainerStyle={{
+          backgroundColor: 'white',
+          flexGrow: 1 // this will fix scrollview scroll issue by passing parent view width and height to it
+        }}
       >
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardDismissMode='interactive'
-          keyboardShouldPersistTaps='never'
-          overScrollMode='never'
-          bounces={false}
-        >
-          <TouchableWithoutFeedback onPress={this.handleContainerOnPressed.bind(this)}>
-            <View style={Styles.containerStyle}>
-              <Header />
-              <View style={Styles.bodyContainerStyle}>
-                {this.renderError(error)}
-                {/* <Text style={styles.titleTextStyle}>Get Started!</Text> */}
+        <TouchableWithoutFeedback onPress={this.handleContainerOnPressed.bind(this)}>
+          <View style={Styles.containerStyle}>
+            <Header canBack={!this.props.loading} />
+            <View style={Styles.bodyContainerStyle}>
+              {this.renderError(error)}
+              {/* <Text style={styles.titleTextStyle}>Get Started!</Text> */}
 
-                <Field
-                  name='username'
-                  label='Email or Phone number'
-                  keyboardType='email-address'
-                  component={Input}
-                  disabled={this.props.loading}
-                />
-                <Field
-                  name='password'
-                  label='Password'
-                  component={Input}
-                  secure
-                  disabled={this.props.loading}
-                  onSubmitEditing={handleSubmit(this.handleLoginPressed)}
-                />
-                <TouchableOpacity activeOpacity={0.85} onPress={handleSubmit(this.handleLoginPressed)}>
-                  <View>
-                    <Button text='Log In' />
-                  </View>
-                </TouchableOpacity>
-                {this.renderSplitter()}
-                {this.renderCreateAccount()}
-              </View>
+              <Field
+                name='username'
+                label='Email or Phone number'
+                keyboardType='email-address'
+                component={Input}
+                disabled={this.props.loading}
+                returnKeyType='next'
+                onSubmitEditing={() => {
+                  this.refs['password'].getRenderedComponent().focus();
+                }}
+              />
+              <Field
+                ref='password'
+                name='password'
+                label='Password'
+                withRef
+                component={Input}
+                secure
+                disabled={this.props.loading}
+                onSubmitEditing={handleSubmit(this.handleLoginPressed)}
+              />
+              <TouchableOpacity activeOpacity={0.85} onPress={handleSubmit(this.handleLoginPressed)}>
+                <View>
+                  <Button text='Log In' />
+                </View>
+              </TouchableOpacity>
+              {this.renderSplitter()}
+              {this.renderCreateAccount()}
             </View>
-          </TouchableWithoutFeedback>
-        </ScrollView>
-      </KeyboardAvoidingView>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAwareScrollView>
     );
+    
+    // Original implementation
+    // return (
+    //   <KeyboardAvoidingView
+    //     behavior='padding'
+    //     style={{ flex: 1 }}
+    //   >
+    //     <ScrollView
+    //       contentContainerStyle={{ flexGrow: 1 }}
+    //       keyboardDismissMode='interactive'
+    //       keyboardShouldPersistTaps='never'
+    //       overScrollMode='never'
+    //       bounces={false}
+    //     >
+    //       <TouchableWithoutFeedback onPress={this.handleContainerOnPressed.bind(this)}>
+    //         <View style={Styles.containerStyle}>
+    //           <Header />
+    //           <View style={Styles.bodyContainerStyle}>
+    //             {this.renderError(error)}
+    //             {/* <Text style={styles.titleTextStyle}>Get Started!</Text> */}
+    // 
+    //             <Field
+    //               name='username'
+    //               label='Email or Phone number'
+    //               keyboardType='email-address'
+    //               component={Input}
+    //               disabled={this.props.loading}
+    //             />
+    //             <Field
+    //               name='password'
+    //               label='Password'
+    //               component={Input}
+    //               secure
+    //               disabled={this.props.loading}
+    //               onSubmitEditing={handleSubmit(this.handleLoginPressed)}
+    //             />
+    //             <TouchableOpacity activeOpacity={0.85} onPress={handleSubmit(this.handleLoginPressed)}>
+    //               <View>
+    //                 <Button text='Log In' />
+    //               </View>
+    //             </TouchableOpacity>
+    //             {this.renderSplitter()}
+    //             {this.renderCreateAccount()}
+    //           </View>
+    //         </View>
+    //       </TouchableWithoutFeedback>
+    //     </ScrollView>
+    //   </KeyboardAvoidingView>
+    // );
   }
 }
 

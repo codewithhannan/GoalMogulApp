@@ -65,7 +65,9 @@ class CommentUserDetail extends Component {
   renderCardContent() {
     const { item } = this.props;
     let text;
-    if (item.commentType === 'Suggestion') {
+    if (item.commentType === 'Suggestion' && 
+        item.suggestion && 
+        item.suggestion.suggestionType === 'Link') {
       text = (item.suggestion && item.suggestion.suggestionText)
         ? item.suggestion.suggestionText
         : '';
@@ -74,9 +76,8 @@ class CommentUserDetail extends Component {
     }
     return (
       <Text
-        style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 12 }}
-        numberOfLines={3}
-        ellipsizeMode='tail'
+        style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 12, marginTop: 3 }}
+        multiline
       >
         {text}
       </Text>

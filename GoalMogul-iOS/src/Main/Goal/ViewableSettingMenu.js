@@ -31,7 +31,7 @@ class ViewableSettingMenu extends Component {
 
   handleInfoIcon = () => {
     Alert.alert(
-      'Notice',
+      'Share to goals feed',
       'Choosing this will make your goal appear on your friends’ home feed'
     );
   }
@@ -71,7 +71,7 @@ class ViewableSettingMenu extends Component {
     const containerStyle = this.props.shareToMastermind ?
       {
         ...styles.containerStyle,
-        backgroundColor: '#46C8F5',
+        backgroundColor: '#17B3EC',
         borderWidth: 0,
         // borderTopRightRadius: 0,
         // borderBottomRightRadius: 0,
@@ -101,10 +101,10 @@ class ViewableSettingMenu extends Component {
             style={{ ...styles.profileIconStyle, tintColor: shareIconTintColor }}
             source={shareIcon}
           />
-          <Text style={{ fontSize: 10, marginLeft: 3, marginRight: 5, color }}>
+          <Text style={{ fontSize: 10, marginLeft: 3, marginRight: 2, color }}>
             Share to Mastermind
           </Text>
-          <TouchableOpacity activeOpacity={0.85} style={{ padding: 4 }} onPress={this.handleInfoIcon}>
+          <TouchableOpacity activeOpacity={0.85} style={{ padding: 5 }} onPress={this.handleInfoIcon}>
             {icon}
           </TouchableOpacity>
         </TouchableOpacity>
@@ -120,11 +120,22 @@ class ViewableSettingMenu extends Component {
           style={{ ...styles.containerStyle, width: 80 }}
           onPress={this.handleOnClick}
         >
-          <Image style={styles.profileIconStyle} source={profilePeople} />
-          <Text style={{ fontSize: 10, marginLeft: 3, flex: 1 }}>
+          <View style={{ padding: 5 }}>
+            <Image 
+              style={{ 
+                height: 13,
+                width: 13,
+                tintColor: 'rgb(155,155,155)'
+              }} 
+              source={profilePeople} 
+            />
+          </View>
+          <Text style={{ fontSize: 10, flex: 1 }}>
             {this.props.viewableSetting}
           </Text>
-          <Image style={styles.caretStyle} source={dropDown} />
+          <View style={{ padding: 5 }}>
+            <Image style={styles.caretStyle} source={dropDown} />
+          </View>
         </TouchableOpacity>
         {this.renderShareToMSButton()}
       </View>
@@ -145,8 +156,8 @@ const styles = {
   },
   caretStyle: {
     tintColor: '#20485f',
-    marginLeft: 5,
-    marginRight: 3
+    // marginLeft: 5,
+    // marginRight: 3
   },
   informationIconStyle: {
     width: 13,

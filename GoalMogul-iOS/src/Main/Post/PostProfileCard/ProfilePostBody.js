@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   View,
-  Modal,
   Image,
   Dimensions,
   TouchableOpacity,
@@ -9,10 +8,14 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 import _ from 'lodash';
+import Modal from 'react-native-modal';
 
 import {
   switchCase
 } from '../../../redux/middleware/utils';
+
+// Components
+import ImageModal from '../../Common/ImageModal';
 
 // Assets
 import cancel from '../../../asset/utils/cancel_no_background.png';
@@ -24,6 +27,9 @@ import RefPreview from '../../Common/RefPreview';
 // Constants
 const DEBUG_KEY = '[ UI ProfilePostCard.ProfilePostBody ]';
 const { width } = Dimensions.get('window');
+
+// Styles
+import { imagePreviewContainerStyle } from '../../../styles';
 
 class ProfilePostBody extends React.Component {
   state = {
@@ -38,10 +44,12 @@ class ProfilePostBody extends React.Component {
     }
     const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${url}`;
       return (
-        <TouchableWithoutFeedback onPress={() => this.setState({ mediaModal: true })}>
+        <TouchableWithoutFeedback 
+          onPress={() => this.setState({ mediaModal: true })}
+        >
           <View>
             <ImageBackground
-              style={styles.mediaStyle}
+              style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle }}
               source={{ uri: imageUrl }}
               imageStyle={{ borderRadius: 8, resizeMode: 'cover' }}
             >
@@ -79,38 +87,11 @@ class ProfilePostBody extends React.Component {
 
   renderPostImageModal(imageUrl) {
     return (
-      <Modal
-        animationType="fade"
-        transparent={false}
-        visible={this.state.mediaModal}
-      >
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'black'
-          }}
-        >
-          <TouchableOpacity activeOpacity={0.85}
-            onPress={() => { this.setState({ mediaModal: false }); }}
-            style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
-          >
-            <Image
-              source={cancel}
-              style={{
-                ...styles.cancelIconStyle,
-                tintColor: 'white'
-              }}
-            />
-          </TouchableOpacity>
-          <Image
-            source={{ uri: imageUrl }}
-            style={{ width, height: 200 }}
-            resizeMode='cover'
-          />
-        </View>
-      </Modal>
+      <ImageModal 
+        mediaRef={imageUrl}
+        mediaModal={this.state.mediaModal}
+        closeModal={() => this.setState({ mediaModal: false })}
+      />
     );
   }
 

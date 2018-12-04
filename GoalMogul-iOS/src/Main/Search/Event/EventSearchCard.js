@@ -83,7 +83,7 @@ class SearchEventCard extends Component {
         >
           <Image
             source={next}
-            style={styles.iconStyle}
+            style={{ ...styles.iconStyle, opacity: 0.8 }}
           />
         </TouchableOpacity>
       </View>
@@ -165,7 +165,7 @@ const styles = {
     borderRadius: 5,
   },
   titleTextStyle: {
-    color: '#46C8F5',
+    color: '#17B3EC',
     fontSize: 11,
     paddingTop: 1,
     paddingBottom: 1
@@ -184,7 +184,7 @@ const styles = {
     height: 25,
     width: 26,
     transform: [{ rotateY: '180deg' }],
-    tintColor: '#46C8F5'
+    tintColor: '#17B3EC'
   }
 };
 

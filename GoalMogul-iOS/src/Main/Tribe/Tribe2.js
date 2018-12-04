@@ -7,7 +7,7 @@ import {
   Text
  } from 'react-native';
 import { connect } from 'react-redux';
-import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
+import { TabView, SceneMap } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Icon } from 'react-native-elements';
 
@@ -164,10 +164,10 @@ class Tribe2 extends Component {
           />
           {this.renderTribeInfo(item)}
         </View>
-        <TabViewAnimated
+        <TabView
           navigationState={this.props.navigationState}
           renderScene={this._renderScene}
-          renderHeader={this._renderHeader}
+          renderTabBar={this._renderHeader}
           onIndexChange={this._handleIndexChange}
           useNativeDriver
         />

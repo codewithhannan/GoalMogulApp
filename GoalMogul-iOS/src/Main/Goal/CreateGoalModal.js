@@ -12,7 +12,8 @@ import {
   Modal,
   Alert,
   TextInput,
-  SafeAreaView
+  SafeAreaView,
+  Animated
 } from 'react-native';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -37,6 +38,7 @@ import {
 } from 'react-native-popup-menu';
 import Slider from 'react-native-slider';
 import DraggableFlatlist from 'react-native-draggable-flatlist';
+import DateTimePicker from 'react-native-modal-datetime-picker';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
@@ -74,7 +76,7 @@ class CreateGoalModal extends Component {
     super(props);
     this.initializeForm();
     this.state = {
-      scrollEnabled: true
+      scrollEnabled: true,
     };
   }
 
@@ -225,6 +227,7 @@ class CreateGoalModal extends Component {
           editable={this.props.uploading}
           style={styles.goalInputStyle}
           placeholder='What are you trying to achieve?'
+          autoCorrect
         />
       </View>
     );
@@ -371,8 +374,25 @@ class CreateGoalModal extends Component {
         </View>
       );
     }
-
-    const startDatePicker =
+    const newPicker = true;
+    const startDatePicker = newPicker ? 
+      (
+        <DateTimePicker
+          isVisible={this.props.startTime.picker}
+          onConfirm={(date) => {
+            if (validateTime(date, this.props.endTime.date)) {
+              this.props.change('startTime', { date, picker: false });
+              return
+            }
+            alert('Start time should not be later than start time');
+          }}
+          onCancel={() => 
+            this.props.change('startTime', { 
+              date: this.props.startTime.date, picker: false 
+            })
+          }
+        />
+      ) :
       (
         <Modal
           animationType="fade"
@@ -406,7 +426,24 @@ class CreateGoalModal extends Component {
         </Modal>
       );
 
-      const endDatePicker =
+      const endDatePicker = newPicker ?
+        (
+          <DateTimePicker
+            isVisible={this.props.endTime.picker}
+            onConfirm={(date) => {
+              if (validateTime(this.props.startTime.date, date)) {
+                this.props.change('endTime', { date, picker: false });
+                return
+              }
+              alert('End time should not be early than start time');
+            }}
+            onCancel={() => 
+              this.props.change('endTime', { 
+                date: this.props.endTime.date, picker: false 
+              })
+            }
+          />
+        ) :
         (
           <Modal
             animationType="fade"
@@ -452,7 +489,8 @@ class CreateGoalModal extends Component {
       <View style={{ ...styles.sectionMargin }}>
         {titleText}
         <View style={{ marginTop: 8, flexDirection: 'row' }}>
-          <TouchableOpacity activeOpacity={0.85}
+          <TouchableOpacity 
+            activeOpacity={0.85}
             style={{
               height: 50,
               width: 130,
@@ -513,16 +551,15 @@ class CreateGoalModal extends Component {
   }
 
   renderFieldArrayItem = (props, placeholder, fields, canDrag) => {
-    const { item, index, move, moveEnd } = props;
+    const { item, index, move, moveEnd, isActive } = props;
     const iconOnPress = index === 0 ?
       undefined
       :
       () => fields.remove(index);
     return (
       <View
-        style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}
+        style={{ flexDirection: 'row', alignItems: 'center', flex: 1, backgroundColor: isActive ? 'red' : 'white' }}
       >
-        <SafeAreaView style={{ flex: 1 }}>
         <Field
           key={`description-${index}`}
           name={`${item.item}.description`}
@@ -538,7 +575,6 @@ class CreateGoalModal extends Component {
           moveEnd={moveEnd}
           canDrag={canDrag}
         />
-        </SafeAreaView>
       </View>
     );
   }
@@ -561,6 +597,7 @@ class CreateGoalModal extends Component {
           renderItem={(props) => this.renderFieldArrayItem(props, placeholder, fields, true)}
           data={dataToRender}
           keyExtractor={item => `${item.index}`}
+          scrollPercent={5}
           onMoveEnd={e => {
             // console.log('moving end for e: ', e);
             fields.move(e.from, e.to);
@@ -670,6 +707,12 @@ class CreateGoalModal extends Component {
   }
 }
 
+const validateTime = (start, end) => {
+  if (!start || !end) return true;
+  if (moment(start) > moment(end)) return false
+  return true;
+}
+
 const styles = {
   sectionMargin: {
     marginTop: 20
@@ -702,8 +745,8 @@ const styles = {
     fontSize: 12,
     padding: 13,
     paddingTop: 13,
-    paddingRight: 14,
-    paddingLeft: 14
+    paddingRight: 6,
+    paddingLeft: 6
   },
   goalInputStyle: {
     fontSize: 20,
@@ -712,8 +755,8 @@ const styles = {
     paddingLeft: 20
   },
   cancelIconStyle: {
-    height: 20,
-    width: 20,
+    height: 16,
+    width: 16,
     justifyContent: 'flex-end'
   },
   caretStyle: {

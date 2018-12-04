@@ -53,7 +53,7 @@ const styles = {
     flexDirection: 'row',
     backgroundColor: '#ffffff',
     paddingBottom: 18,
-    paddingTop: 35,
+    paddingTop: 15,
     paddingLeft: 17,
     paddingRight: 17,
     borderBottomColor: '#e9e9e9',
@@ -62,7 +62,7 @@ const styles = {
   cancelTextStyle: {
     fontSize,
     alignSelf: 'center',
-    color: '#46C8F5',
+    color: '#17B3EC',
   },
   titleTextStyle: {
     fontSize,
@@ -70,7 +70,7 @@ const styles = {
     fontWeight: '600'
   },
   saveTextStyle: {
-    color: '#46C8F5',
+    color: '#17B3EC',
     fontSize,
     alignSelf: 'center',
     fontWeight: '700'

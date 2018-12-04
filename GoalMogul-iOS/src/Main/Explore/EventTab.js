@@ -4,6 +4,7 @@ import {
   FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 // Actions
 import {
@@ -17,6 +18,12 @@ import EventTabFilterBar from './EventTabFilterBar';
 import EmptyResult from '../Common/Text/EmptyResult';
 
 class EventTab extends React.Component {
+  componentDidMount() {
+    if (!this.props.data || _.isEmpty(this.props.data)) {
+      this.handleOnRefresh();
+    }
+  }
+  
   _keyExtractor = (item) => item._id;
 
   handleOnRefresh = () => this.props.refreshEvent();
@@ -28,7 +35,7 @@ class EventTab extends React.Component {
   }
 
   renderListHeader() {
-    return <EventTabFilterBar />;
+    return <EventTabFilterBar value={{ sortBy: this.props.sortBy }}/>;
   }
 
   render() {
@@ -55,7 +62,7 @@ class EventTab extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { data, loading } = state.eventTab;
+  const { data, loading, sortBy } = state.eventTab;
 
   // const loading = false;
   const testData = [
@@ -154,7 +161,8 @@ const mapStateToProps = state => {
   return {
     // data: [...data, ...testData],
     data,
-    loading
+    loading,
+    sortBy
   };
 };
 

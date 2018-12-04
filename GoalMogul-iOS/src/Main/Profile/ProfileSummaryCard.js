@@ -58,7 +58,7 @@ class ProfileSummaryCard extends Component {
       >
         <Image
           source={next}
-          style={styles.iconStyle}
+          style={{ ...styles.iconStyle, opacity: 0.8 }}
         />
       </TouchableOpacity>
     );
@@ -82,12 +82,16 @@ class ProfileSummaryCard extends Component {
     if (imageUrl) {
       imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
       profileImage =
-        (<Image
-          onLoadStart={() => this.setState({ imageLoading: true })}
-          onLoadEnd={() => this.setState({ imageLoading: false })}
-          style={styles.imageStyle}
-          source={{ uri: imageUrl }}
-        />);
+        (
+          <View style={styles.imageContainerStyle}>
+            <Image
+              onLoadStart={() => this.setState({ imageLoading: true })}
+              onLoadEnd={() => this.setState({ imageLoading: false })}
+              style={styles.imageStyle}
+              source={{ uri: imageUrl }}
+            />
+          </View>
+        );
     }
     // Style 1:
     // const addFriendButton = !this.props.isSelf ? (
@@ -101,7 +105,7 @@ class ProfileSummaryCard extends Component {
     //         name='plus-small'
     //         width={10}
     //         size={21}
-    //         color='#46C8F5'
+    //         color='#17B3EC'
     //         iconStyle={styles.buttonIconStyle}
     //       />
     //     }
@@ -119,7 +123,7 @@ class ProfileSummaryCard extends Component {
             <View style={styles.bodyStyle}>
               <View style={{ flexDirection: 'row' }}>
                 <Name text={name} textStyle={{ fontSize: 18 }} />
-                <UserBanner user={user} />
+                <UserBanner user={user} iconStyle={{ height: 17, width: 13 }} />
               </View>
 
               <Position text={headline} />
@@ -168,11 +172,11 @@ const styles = {
     width: 80,
     height: 26,
     borderWidth: 1,
-    borderColor: '#46C8F5',
+    borderColor: '#17B3EC',
     borderRadius: 13,
   },
   buttonTextStyle: {
-    color: '#46C8F5',
+    color: '#17B3EC',
     fontSize: 13,
     fontWeight: '700',
     padding: 0,
@@ -185,7 +189,16 @@ const styles = {
     height: 25,
     width: 26,
     transform: [{ rotateY: '180deg' }],
-    tintColor: '#46C8F5'
+    tintColor: '#17B3EC'
+  },
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 1.5,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+    backgroundColor: 'white'
   }
 };
 

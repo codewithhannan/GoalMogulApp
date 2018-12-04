@@ -150,7 +150,13 @@ class SectionCard extends Component {
     const sectionText = description === undefined ? 'No content' : description;
 
     return (
-      <View style={styles.sectionContainerStyle}>
+      <View 
+        style={{ 
+          ...styles.sectionContainerStyle, 
+          backgroundColor: isCompleted ? '#fcfcfc' : 'white',
+          opacity: isCompleted ? 0.8 : 1
+        }}
+      >
         <View
           style={{
             margin: 12,
@@ -209,7 +215,7 @@ const styles = {
   sectionContainerStyle: {
     marginTop: 0.5,
     marginBottom: 0.5,
-    backgroundColor: '#fcfcfc'
+    backgroundColor: 'white'
   },
   sectionTextStyle: {
     color: '#909090',

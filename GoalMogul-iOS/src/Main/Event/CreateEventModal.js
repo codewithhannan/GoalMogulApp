@@ -26,9 +26,11 @@ import R from 'ramda';
 import {
   MenuProvider,
 } from 'react-native-popup-menu';
+import DateTimePicker from 'react-native-modal-datetime-picker';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
+import ImageModal from '../Common/ImageModal';
 
 // Actions
 import {
@@ -181,7 +183,26 @@ class CreateEventModal extends React.Component {
       );
     }
 
-    const startDatePicker =
+    const newPicker = true;
+    const startDatePicker = newPicker ? 
+      (
+        <DateTimePicker
+          isVisible={this.props.startTime.picker}
+          mode='datetime'
+          onConfirm={(date) => {
+            if (validateTime(date, this.props.endTime.date)) {
+              this.props.change('startTime', { date, picker: false });
+              return
+            }
+            alert('Start time should not be later than start time');
+          }}
+          onCancel={() => 
+            this.props.change('startTime', { 
+              date: this.props.startTime.date, picker: false 
+            })
+          }
+        />
+      ) :
       (
         <Modal
           animationType="fade"
@@ -214,7 +235,25 @@ class CreateEventModal extends React.Component {
         </Modal>
       );
 
-      const endDatePicker =
+      const endDatePicker = newPicker ?
+        (
+          <DateTimePicker
+            isVisible={this.props.endTime.picker}
+            mode='datetime'
+            onConfirm={(date) => {
+              if (validateTime(this.props.startTime.date, date)) {
+                this.props.change('endTime', { date, picker: false });
+                return
+              }
+              alert('End time should not be early than start time');
+            }}
+            onCancel={() => 
+              this.props.change('endTime', { 
+                date: this.props.endTime.date, picker: false 
+              })
+            }
+          />
+        ) :
         (
           <Modal
             animationType="fade"
@@ -429,43 +468,13 @@ class CreateEventModal extends React.Component {
   }
 
   renderImageModal(imageUrl) {
-    if (this.props.picture) {
-      return (
-        <Modal
-          animationType="fade"
-          transparent={false}
-          visible={this.state.mediaModal}
-        >
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'black'
-            }}
-          >
-            <TouchableOpacity activeOpacity={0.85}
-              onPress={() => { this.setState({ mediaModal: false }); }}
-              style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
-            >
-              <Image
-                source={cancel}
-                style={{
-                  ...styles.cancelIconStyle,
-                  tintColor: 'white'
-                }}
-              />
-            </TouchableOpacity>
-            <Image
-              source={{ uri: imageUrl }}
-              style={{ width, height: 200 }}
-              resizeMode='cover'
-            />
-          </View>
-        </Modal>
-      );
-    }
-    return '';
+    return (
+      <ImageModal 
+        mediaRef={imageUrl}
+        mediaModal={this.state.mediaModal}
+        closeModal={() => this.setState({ mediaModal: false })}
+      />
+    );
   }
 
   renderEventTitle() {
@@ -589,6 +598,12 @@ class CreateEventModal extends React.Component {
       </MenuProvider>
     );
   }
+}
+
+const validateTime = (start, end) => {
+  if (!start || !end) return true;
+  if (moment(start) > moment(end)) return false
+  return true;
 }
 
 CreateEventModal = reduxForm({

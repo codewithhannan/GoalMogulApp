@@ -18,8 +18,8 @@ const renderStats = (props) => props.data.map((c, index) => {
         <Icon
           name='dot-single'
           type='entypo'
-          color='#818181'
-          size={18}
+          color='#CCCCCC'
+          size={13}
           iconStyle={styles.iconStyle}
           containerStyle={styles.iconContainerStyle}
         />
@@ -52,16 +52,18 @@ const styles = {
   numberStyle: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#46C8F5',
+    color: '#17B3EC',
     maxWidth: 50
   },
   iconStyle: {
 
-
   },
   iconContainerStyle: {
-    width: 15,
-    marginRight: 2
+    width: 10,
+    paddingTop: 2,
+    marginRight: 2,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 };
 

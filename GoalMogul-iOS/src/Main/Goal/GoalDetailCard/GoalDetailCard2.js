@@ -43,6 +43,11 @@ import EmptyResult from '../../Common/Text/EmptyResult';
 
 import GoalDetailSection from './GoalDetailSection';
 
+// Styles
+import {
+  BACKGROUND_COLOR
+} from '../../../styles';
+
 class GoalDetailCard2 extends Component {
   constructor(props) {
     super(props);
@@ -202,7 +207,7 @@ class GoalDetailCard2 extends Component {
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <View style={{ backgroundColor: '#e5e5e5', flex: 1 }}>
+        <View style={{ backgroundColor: BACKGROUND_COLOR, flex: 1 }}>
           <SuggestionModal
             visible={this.props.showSuggestionModal}
             onCancel={() => this.props.cancelSuggestion()}

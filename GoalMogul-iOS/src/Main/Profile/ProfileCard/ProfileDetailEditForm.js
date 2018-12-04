@@ -7,11 +7,15 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   ActionSheetIOS,
-  Dimensions
+  Dimensions,
+  SafeAreaView,
+  Platform,
+  findNodeHandle
 } from 'react-native';
 import { Field, reduxForm } from 'redux-form';
 import { TextField } from 'react-native-material-textfield';
 import { connect } from 'react-redux';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 /* Component */
 import FormHeader from '../../Common/Header/FormHeader';
@@ -41,6 +45,11 @@ class ProfileDetailEditForm extends Component {
       JSON.stringify(values.profile.image);
     this.props.submitUpdatingProfile({ values, hasImageModified });
   };
+  
+  _scrollToInput (reactNode: any) {
+  // Add a 'scroll' ref to your ScrollView
+  this.scrollview.props.scrollToFocusedInput(reactNode)
+}
 
   handleOnFocus = (position) => {
     console.log('on focus');
@@ -106,7 +115,7 @@ class ProfileDetailEditForm extends Component {
             <ImageBackground
               style={styles.imageStyle}
               source={{ uri: image }}
-              imageStyle={{ borderRadius: 13, opacity: 0.5, resizeMode: 'cover' }}
+              imageStyle={{ borderRadius: 13, opacity: 0.6, resizeMode: 'cover' }}
             >
               <View style={styles.iconContainerStyle}>
                 <Image style={styles.editIconStyle} source={editImage} />
@@ -118,11 +127,13 @@ class ProfileDetailEditForm extends Component {
     }
 
     return (
-      <TouchableOpacity activeOpacity={0.85} onPress={this.chooseImage}>
-        <View style={{ alignSelf: 'center', justifyContent: 'center', alignItems: 'center' }}>
-          {profileImage}
-        </View>
-      </TouchableOpacity>
+      <View style={{ width: '100%' }}>
+        <TouchableOpacity activeOpacity={0.85} onPress={this.chooseImage}>
+          <View style={{ alignSelf: 'center', justifyContent: 'center', alignItems: 'center' }}>
+            {profileImage}
+          </View>
+        </TouchableOpacity>
+      </View>
     );
   }
 
@@ -137,8 +148,10 @@ class ProfileDetailEditForm extends Component {
     clearButtonMode,
     enablesReturnKeyAutomatically,
     forFocus,
+    onNextPress,
     autoCorrect,
     meta: { error },
+    returnKeyType,
     ...custom
   }) => {
     return (
@@ -147,17 +160,22 @@ class ProfileDetailEditForm extends Component {
           label={label}
           title={custom.title}
           autoCapitalize={'none'}
-          autoCorrect={autoCorrect}
+          autoCorrect={autoCorrect || true}
           onChangeText={onChange}
           error={error}
           enablesReturnKeyAutomatically={enablesReturnKeyAutomatically}
-          returnKeyType='done'
+          returnKeyType={returnKeyType || 'done'}
           secureTextEntry={secure}
           characterRestriction={limitation}
           multiline={multiline}
           clearButtonMode={clearButtonMode}
           onFocus={forFocus}
           disabled={disabled}
+          onKeyPress={(key) => {
+            if (key === 'next' && onNextPress) {
+              onNextPress();
+            }
+          }}
           {...custom}
           {...restInput}
         />
@@ -169,19 +187,25 @@ class ProfileDetailEditForm extends Component {
     const { handleSubmit } = this.props;
 
     return (
-      <KeyboardAvoidingView
-        behavior='padding'
-        style={{ flex: 1, backgroundColor: '#ffffff' }}
+      <SafeAreaView
+        forceInset={{ bottom: 'always' }} 
+        style={{ flex: 1, backgroundColor: 'white' }} 
+        onPress={() => {
+          Keyboard.dismiss()
+        }}
       >
         <FormHeader
           title='Profile'
           onSubmit={handleSubmit(this.submit)}
         />
-        <ScrollView
-          ref='scrollview'
+        <KeyboardAwareScrollView
+          innerRef={ref => {this.scrollview = ref}}
           style={styles.scroll}
-          keyboardShouldPersistTaps='handled'
-          contentContainerStyle={{ flexGrow: 1, backgroundColor: '#ffffff' }}
+          extraScrollHeight={13}
+          contentContainerStyle={{
+            backgroundColor: 'white',
+            flexGrow: 1 // this will fix scrollview scroll issue by passing parent view width and height to it
+          }}
         >
           <Field name='profile.image' label='Profile Picture' component={this.renderImage} />
           <Field
@@ -192,13 +216,20 @@ class ProfileDetailEditForm extends Component {
             autoCorrect
           />
           <Field
+            ref='headline'
             name='headline'
             label='Headline'
             component={this.renderInput}
             disabled={this.props.uploading}
+            returnKeyType='next'
+            onNextPress={() => {
+              this.refs['occupation'].getRenderedComponent().focus();
+              // this._scrollToInput(findNodeHandle(this._occupation));
+            }}
             autoCorrect
           />
           <Field
+            ref='occupation'
             name='profile.occupation'
             label='Occupation'
             component={this.renderInput}
@@ -213,9 +244,9 @@ class ProfileDetailEditForm extends Component {
             limitation={250}
             multiline
             clearButtonMode='while-editing'
-            forFocus={() => this.handleOnFocus(150)}
             autoCorrect
           />
+          {/*  forFocus={() => this.handleOnFocus(150)} */}
           <Field
             name='profile.about'
             label='About'
@@ -223,12 +254,77 @@ class ProfileDetailEditForm extends Component {
             limitation={250}
             disabled={this.props.uploading}
             multiline
-            forFocus={() => this.handleOnFocus(200)}
             autoCorrect
           />
-        </ScrollView>
-      </KeyboardAvoidingView>
+        {/*   forFocus={() => this.handleOnFocus(200)} */}
+            
+          
+        </KeyboardAwareScrollView>
+      </SafeAreaView>
     );
+    
+    // This is the original implementation without using KeyboardAwareScrollView
+    // return (
+    //   <KeyboardAvoidingView
+    //     behavior='padding'
+    //     style={{ flex: 1, backgroundColor: '#ffffff' }}
+    //   >
+    //     <FormHeader
+    //       title='Profile'
+    //       onSubmit={handleSubmit(this.submit)}
+    //     />
+    //     <ScrollView
+    //       ref='scrollview'
+    //       style={styles.scroll}
+    //       keyboardShouldPersistTaps='handled'
+    //       contentContainerStyle={{ flexGrow: 1, backgroundColor: '#ffffff' }}
+    //     >
+    //       <Field name='profile.image' label='Profile Picture' component={this.renderImage} />
+    //       <Field
+    //         name='name'
+    //         label='Name'
+    //         component={this.renderInput}
+    //         disabled={this.props.uploading}
+    //         autoCorrect
+    //       />
+    //       <Field
+    //         name='headline'
+    //         label='Headline'
+    //         component={this.renderInput}
+    //         disabled={this.props.uploading}
+    //         autoCorrect
+    //       />
+    //       <Field
+    //         name='profile.occupation'
+    //         label='Occupation'
+    //         component={this.renderInput}
+    //         disabled={this.props.uploading}
+    //         autoCorrect
+    //       />
+    //       <Field
+    //         name='profile.elevatorPitch'
+    //         label='Elevator Pitch'
+    //         component={this.renderInput}
+    //         disabled={this.props.uploading}
+    //         limitation={250}
+    //         multiline
+    //         clearButtonMode='while-editing'
+    //         forFocus={() => this.handleOnFocus(150)}
+    //         autoCorrect
+    //       />
+    //       <Field
+    //         name='profile.about'
+    //         label='About'
+    //         component={this.renderInput}
+    //         limitation={250}
+    //         disabled={this.props.uploading}
+    //         multiline
+    //         forFocus={() => this.handleOnFocus(200)}
+    //         autoCorrect
+    //       />
+    //     </ScrollView>
+    //   </KeyboardAvoidingView>
+    // );
   }
 }
 
@@ -262,12 +358,17 @@ const styles = {
   imageContainerStyle: {
     marginTop: 30,
     borderWidth: 1,
-    borderColor: '#646464',
+    borderColor: 'lightgray',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 14,
     alignSelf: 'center',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    shadowColor: '#ddd',
+    shadowOffset: { width: 0, height: 1.2 },
+    shadowOpacity: 0.7,
+    shadowRadius: 1.2,
+    elevation: 1,
   },
   iconContainerStyle: {
     width: 32,
@@ -281,7 +382,7 @@ const styles = {
     width: 28,
     height: 28,
     borderRadius: 10,
-    tintColor: 'black'
+    tintColor: 'darkgray'
   }
 };
 
@@ -295,6 +396,61 @@ const mapStateToProps = state => {
     uploading: state.profile.uploading,
     initialValues: state.profile.user
   };
+};
+
+/**
+ * This class to verify the idea of onNextPress
+ *
+ */
+class TestInputField extends Component {
+  
+  focus = () => {
+    this.input.focus();
+  }
+  
+  render() {
+     const {
+      input: { onChange, onFocus, ...restInput },
+      label,
+      secure,
+      limitation,
+      multiline,
+      disabled,
+      clearButtonMode,
+      enablesReturnKeyAutomatically,
+      forFocus,
+      onEndEditing,
+      autoCorrect,
+      meta: { error },
+      returnKeyType,
+      ...custom
+    } = this.props;
+    
+    return (
+      <View style={styles.inputContainerStyle}>
+        <TextField
+          ref={ref => this.input = ref}
+          label={label}
+          title={custom.title}
+          autoCapitalize={'none'}
+          autoCorrect={autoCorrect || true}
+          onChangeText={onChange}
+          error={error}
+          enablesReturnKeyAutomatically={enablesReturnKeyAutomatically}
+          returnKeyType={returnKeyType || 'done'}
+          secureTextEntry={secure}
+          characterRestriction={limitation}
+          multiline={multiline}
+          clearButtonMode={clearButtonMode}
+          onFocus={forFocus}
+          disabled={disabled}
+          onSubmitEditing={onEndEditing}
+          {...custom}
+          {...restInput}
+        />
+      </View>
+    );  
+  }
 };
 
 export default connect(

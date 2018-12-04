@@ -50,6 +50,7 @@ class Header extends Component {
   // };
 
   handleBackOnClick() {
+    if (this.props.canBack === false) return;
     this.props.registrationBack();
   }
 
@@ -138,7 +139,7 @@ class Header extends Component {
 const styles = {
   containerStyle: {
     display: 'flex',
-    backgroundColor: '#46C8F5',
+    backgroundColor: '#17B3EC',
     height: 207,
     paddingTop: 14,
     justifyContent: 'center',

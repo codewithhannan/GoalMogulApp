@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { MenuProvider } from 'react-native-popup-menu';
-import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
+import { TabView, SceneMap } from 'react-native-tab-view';
 import { connect } from 'react-redux';
 
 /* Components */
@@ -17,6 +17,9 @@ import MyPosts from './MyPosts';
 import {
   selectProfileTab
 } from '../../actions';
+
+/* Styles */
+import { BACKGROUND_COLOR } from '../../styles';
 
 class Profile extends Component {
 
@@ -42,10 +45,10 @@ class Profile extends Component {
         <View style={styles.containerStyle}>
           <SearchBarHeader backButton rightIcon='menu' />
           <ProfileSummaryCard />
-          <TabViewAnimated
+          <TabView
             navigationState={this.props.navigationState}
             renderScene={this._renderScene}
-            renderHeader={this._renderHeader}
+            renderTabBar={this._renderHeader}
             onIndexChange={this._handleIndexChange}
             useNativeDriver
           />
@@ -57,7 +60,8 @@ class Profile extends Component {
 
 const styles = {
   containerStyle: {
-    flex: 1
+    flex: 1,
+    backgroundColor: BACKGROUND_COLOR
   },
   tabContainerStyle: {
     display: 'flex',

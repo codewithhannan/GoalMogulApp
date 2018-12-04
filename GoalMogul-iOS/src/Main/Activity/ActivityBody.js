@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   View,
-  Modal,
   Image,
   Dimensions,
   TouchableOpacity,
@@ -9,9 +8,11 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 import _ from 'lodash';
+import Modal from 'react-native-modal';
 
 // Components
 import ProgressBar from '../Goal/Common/ProgressBar';
+import ImageModal from '../Common/ImageModal';
 
 // Assets
 import cancel from '../../asset/utils/cancel_no_background.png';
@@ -21,10 +22,12 @@ import RefPreview from '../Common/RefPreview';
 
 import TestImage from '../../asset/TestEventImage.png';
 
-
 // Constants
 const DEBUG_KEY = '[ UI ActivityCard.ActivityBody ]';
 const { width } = Dimensions.get('window');
+
+// Styles
+import { imagePreviewContainerStyle } from '../../styles';
 
 class ActivityBody extends React.Component {
   state = {
@@ -64,7 +67,7 @@ class ActivityBody extends React.Component {
         >
           <View>
             <ImageBackground
-              style={styles.mediaStyle}
+              style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle }}
               source={{ uri: imageUrl }}
               imageStyle={{ borderRadius: 8, resizeMode: 'stretch' }}
             >
@@ -118,38 +121,11 @@ class ActivityBody extends React.Component {
 
   renderPostImageModal(imageUrl) {
     return (
-      <Modal
-        animationType="fade"
-        transparent={false}
-        visible={this.state.mediaModal}
-      >
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'black'
-          }}
-        >
-          <TouchableOpacity activeOpacity={0.85}
-            onPress={() => { this.setState({ mediaModal: false }); }}
-            style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
-          >
-            <Image
-              source={cancel}
-              style={{
-                ...styles.cancelIconStyle,
-                tintColor: 'white'
-              }}
-            />
-          </TouchableOpacity>
-          <Image
-            source={{ uri: imageUrl }}
-            style={{ width, height: 200 }}
-            resizeMode='cover'
-          />
-        </View>
-      </Modal>
+      <ImageModal 
+        mediaRef={imageUrl}
+        mediaModal={this.state.mediaModal}
+        closeModal={() => this.setState({ mediaModal: false })}
+      />
     );
   }
 
@@ -240,7 +216,7 @@ const styles = {
     height: width / 2,
     alignItems: 'center',
     justifyContent: 'center'
-  },
+  }
 };
 
 export default ActivityBody;

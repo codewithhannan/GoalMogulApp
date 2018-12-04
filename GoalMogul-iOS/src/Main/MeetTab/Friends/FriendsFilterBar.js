@@ -56,7 +56,7 @@ class FriendsFilterbar extends Component {
             />
             <MenuOption
               text='Last added'
-              vale='lastadded'
+              value='lastadded'
             />
 
           </MenuOptions>

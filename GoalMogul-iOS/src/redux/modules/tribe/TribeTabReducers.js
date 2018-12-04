@@ -12,7 +12,7 @@ const INITIAL_STATE = {
   sortBy: 'Popular',
 };
 
-const sortByList = ['start', 'created', 'title'];
+const sortByList = ['Popular', 'RecentlyCreated', 'Random'];
 
 export const TRIBETAB_REFRESH_DONE = 'tribetab_refresh_done';
 export const TRIBETAB_LOAD_DONE = 'tribetab_load_done';

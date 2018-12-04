@@ -125,7 +125,7 @@ const SeeMoreButton = (props) => {
         <Icon
           name='ios-arrow-round-forward'
           type='ionicon'
-          color='#46C8F5'
+          color='#17B3EC'
           iconStyle={styles.iconStyle}
         />
       </View>
@@ -164,7 +164,7 @@ const styles = {
   seeMoreTextStyle: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#46C8F5',
+    color: '#17B3EC',
     alignSelf: 'center'
   },
   iconStyle: {

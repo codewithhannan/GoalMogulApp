@@ -231,7 +231,7 @@ class CommentBox extends Component {
       ((contentText === undefined || contentText === '' || contentText.trim() === '')
       && _.isEmpty(tmpSuggestion));
 
-    const color = '#46C8F5';
+    const color = '#17B3EC';
     return (
       <TouchableOpacity activeOpacity={0.85}
         style={styles.postContainerStyle}

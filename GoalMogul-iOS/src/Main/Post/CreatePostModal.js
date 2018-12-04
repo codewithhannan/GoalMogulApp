@@ -8,20 +8,23 @@ import {
   Text,
   TouchableOpacity,
   ImageBackground,
-  Modal,
-  Dimensions
+  Dimensions,
+  SafeAreaView
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import _ from 'lodash';
 import R from 'ramda';
 import { Actions } from 'react-native-router-flux';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Modal from 'react-native-modal';
 
 /* Components */
 import ModalHeader from '../Common/Header/ModalHeader';
 import Button from '../Goal/Button';
 import InputField from '../Common/TextInput/InputField';
 import ViewableSettingMenu from '../Goal/ViewableSettingMenu';
+import ImageModal from '../Common/ImageModal';
 
 // assets
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
@@ -112,6 +115,38 @@ class CreatePostModal extends Component {
       this.props.callback
     );
   }
+  
+  /**
+   * This is added on ms2 polish as a new way to render textinput for post
+   */
+  renderInput = (props) => {
+    const {
+      input: { onFocus, value, onChange, ...restInput },
+      multiline,
+      editable,
+      numberOfLines,
+      placeholder,
+      style,
+      maxHeight,
+      meta: { touched, error },
+      ...custom
+    } = props;
+
+    return (
+      <View style={styles.inputContainerStyle}>
+        <TextInput
+          placeholder={placeholder}
+          onChangeText={(val) => onChange(val)}
+          style={style}
+          editable={editable}
+          multiline={multiline}
+          value={_.isEmpty(value) ? '' : value}
+          autoCorrect
+        />
+      </View>
+    );
+  }
+  
   // renderInput = ({
   //   input: { onChange, onFocus, value, ...restInput },
   //   multiline,
@@ -249,43 +284,13 @@ class CreatePostModal extends Component {
   }
 
   renderImageModal() {
-    if (this.props.mediaRef) {
-      return (
-        <Modal
-          animationType="fade"
-          transparent={false}
-          visible={this.state.mediaModal}
-        >
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'black'
-            }}
-          >
-            <TouchableOpacity activeOpacity={0.85}
-              onPress={() => { this.setState({ mediaModal: false }); }}
-              style={{ position: 'absolute', top: 30, left: 15, padding: 10 }}
-            >
-              <Image
-                source={cancel}
-                style={{
-                  ...styles.cancelIconStyle,
-                  tintColor: 'white'
-                }}
-              />
-            </TouchableOpacity>
-            <Image
-              source={{ uri: this.props.mediaRef }}
-              style={{ width, height: 200 }}
-              resizeMode='cover'
-            />
-          </View>
-        </Modal>
-      );
-    }
-    return '';
+    return (
+      <ImageModal 
+        mediaRef={this.props.mediaRef}
+        mediaModal={this.state.mediaModal}
+        closeModal={() => this.setState({ mediaModal: false })}
+      />
+    );
   }
 
   renderPost() {
@@ -296,11 +301,11 @@ class CreatePostModal extends Component {
         <Field
           name='post'
           label='post'
-          component={InputField}
+          component={this.renderInput}
           editable={!this.props.uploading}
-          numberOfLines={4}
+          multiline
           style={styles.goalInputStyle}
-          placeholder='What are you trying to achieve?'
+          placeholder='What do you have in mind?'
         />
       </View>
     );
@@ -324,6 +329,42 @@ class CreatePostModal extends Component {
     );
   }
 
+  // render() {
+  //   const { handleSubmit, errors } = this.props;
+  //   return (
+  //     <SafeAreaView
+  //       forceInset={{ bottom: 'always' }} 
+  //       style={{ flex: 1, backgroundColor: '#6f6f6f' }} 
+  //       onPress={() => {
+  //         Keyboard.dismiss()
+  //       }}
+  //     >
+  //       <KeyboardAwareScrollView
+  //         ref='scrollView'
+  //         keyboardShouldPersistTaps={'always'}
+  //         contentContainerStyle={{
+  //           flexGrow: 1 // this will fix scrollview scroll issue by passing parent view width and height to it
+  //         }}
+  //       >
+  //       <ModalHeader
+  //         title='New Post'
+  //         actionText='Create'
+  //         onCancel={() => Actions.pop()}
+  //         onAction={handleSubmit(this.handleCreate)}
+  //       />
+  //         <View style={{ flex: 1, padding: 20 }}>
+  //           {this.renderUserInfo()}
+  //           {this.renderMedia()}
+  //           {this.renderPost()}
+  //           {this.renderActionIcons()}
+  //         </View>
+  // 
+  //       {this.renderImageModal()}
+  //       </KeyboardAwareScrollView>
+  //     </SafeAreaView>
+  //   );
+  // }
+  
   render() {
     const { handleSubmit, errors } = this.props;
     return (
@@ -344,7 +385,7 @@ class CreatePostModal extends Component {
             {this.renderPost()}
             {this.renderActionIcons()}
           </View>
-
+  
         </ScrollView>
         {this.renderImageModal()}
       </KeyboardAvoidingView>
@@ -354,8 +395,8 @@ class CreatePostModal extends Component {
 
 const styles = {
   inputContainerStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
     marginTop: 5,
     borderWidth: 1,
     borderRadius: 5,
@@ -365,6 +406,15 @@ const styles = {
     shadowOpacity: 0.8,
     shadowRadius: 1,
     elevation: 1,
+  },
+  goalInputStyle: {
+    fontSize: 17,
+    paddingTop: 20,
+    padding: 20,
+    width: '100%',
+    textAlign: 'justify',
+    height: 'auto',
+    maxHeight: 200
   },
   imageStyle: {
     height: 54,
@@ -382,12 +432,6 @@ const styles = {
     padding: 13,
     paddingRight: 14,
     paddingLeft: 14
-  },
-  goalInputStyle: {
-    fontSize: 20,
-    padding: 30,
-    paddingRight: 20,
-    paddingLeft: 20
   },
   cancelIconStyle: {
     height: 20,
@@ -412,6 +456,19 @@ const styles = {
     tintColor: '#4a4a4a',
     height: 15,
     width: 18
+  },
+  inputContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 5,
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: '#e9e9e9',
+    shadowColor: '#ddd',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.8,
+    shadowRadius: 1,
+    elevation: 1,
   }
 };
 
