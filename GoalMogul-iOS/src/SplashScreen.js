@@ -92,6 +92,7 @@ class SplashScreen extends Component {
       require('./asset/utils/progressBarCounter.png'),
       require('./asset/utils/progressBarOpac.png'),
       require('./asset/utils/HelpBG2.png'),
+      require('./asset/utils/allComments.png'),
       // Suggestion Modal Icons
       require('./asset/suggestion/book.png'),
       require('./asset/suggestion/chat.png'),

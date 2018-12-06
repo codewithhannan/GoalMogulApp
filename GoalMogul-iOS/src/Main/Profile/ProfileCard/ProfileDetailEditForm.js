@@ -10,7 +10,8 @@ import {
   Dimensions,
   SafeAreaView,
   Platform,
-  findNodeHandle
+  findNodeHandle,
+  Keyboard
 } from 'react-native';
 import { Field, reduxForm } from 'redux-form';
 import { TextField } from 'react-native-material-textfield';
@@ -45,7 +46,7 @@ class ProfileDetailEditForm extends Component {
       JSON.stringify(values.profile.image);
     this.props.submitUpdatingProfile({ values, hasImageModified });
   };
-  
+
   _scrollToInput (reactNode: any) {
   // Add a 'scroll' ref to your ScrollView
   this.scrollview.props.scrollToFocusedInput(reactNode)
@@ -188,8 +189,8 @@ class ProfileDetailEditForm extends Component {
 
     return (
       <SafeAreaView
-        forceInset={{ bottom: 'always' }} 
-        style={{ flex: 1, backgroundColor: 'white' }} 
+        forceInset={{ bottom: 'always' }}
+        style={{ flex: 1, backgroundColor: 'white' }}
         onPress={() => {
           Keyboard.dismiss()
         }}
@@ -257,12 +258,12 @@ class ProfileDetailEditForm extends Component {
             autoCorrect
           />
         {/*   forFocus={() => this.handleOnFocus(200)} */}
-            
-          
+
+
         </KeyboardAwareScrollView>
       </SafeAreaView>
     );
-    
+
     // This is the original implementation without using KeyboardAwareScrollView
     // return (
     //   <KeyboardAvoidingView
@@ -403,11 +404,11 @@ const mapStateToProps = state => {
  *
  */
 class TestInputField extends Component {
-  
+
   focus = () => {
     this.input.focus();
   }
-  
+
   render() {
      const {
       input: { onChange, onFocus, ...restInput },
@@ -425,7 +426,7 @@ class TestInputField extends Component {
       returnKeyType,
       ...custom
     } = this.props;
-    
+
     return (
       <View style={styles.inputContainerStyle}>
         <TextField
@@ -449,7 +450,7 @@ class TestInputField extends Component {
           {...restInput}
         />
       </View>
-    );  
+    );
   }
 };
 

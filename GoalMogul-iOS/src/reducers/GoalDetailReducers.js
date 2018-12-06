@@ -25,6 +25,16 @@ import {
   GOAL_CREATE_EDIT_SUCCESS
 } from '../redux/modules/goal/CreateGoal';
 
+const INITIAL_NAVIGATION_STATE_V2 = {
+  index: 0,
+  routes: [
+    { key: 'centralTab', title: 'CentralTab' },
+    { key: 'focusTab', title: 'FocusTab' },
+  ],
+  focusType: undefined, // ['need', 'step']
+  focusRef: undefined
+};
+
 const INITIAL_NAVIGATION_STATE = {
   index: 0,
   routes: [
@@ -35,6 +45,7 @@ const INITIAL_NAVIGATION_STATE = {
 
 const INITIAL_STATE = {
   goal: {
+    navigationStateV2: { ...INITIAL_NAVIGATION_STATE_V2 },
     navigationState: {
       ...INITIAL_NAVIGATION_STATE
     },
@@ -43,6 +54,7 @@ const INITIAL_STATE = {
     }
   },
   goalExploreTab: {
+    navigationStateV2: { ...INITIAL_NAVIGATION_STATE_V2 },
     navigationState: {
       ...INITIAL_NAVIGATION_STATE
     },
@@ -51,6 +63,7 @@ const INITIAL_STATE = {
     }
   },
   goalMeetTab: {
+    navigationStateV2: { ...INITIAL_NAVIGATION_STATE_V2 },
     navigationState: {
       ...INITIAL_NAVIGATION_STATE
     },
@@ -59,6 +72,7 @@ const INITIAL_STATE = {
     }
   },
   goalNotificationTab: {
+    navigationStateV2: { ...INITIAL_NAVIGATION_STATE_V2 },
     navigationState: {
       ...INITIAL_NAVIGATION_STATE
     },
@@ -67,6 +81,7 @@ const INITIAL_STATE = {
     }
   },
   goalChatTab: {
+    navigationStateV2: { ...INITIAL_NAVIGATION_STATE_V2 },
     navigationState: {
       ...INITIAL_NAVIGATION_STATE
     },
@@ -88,6 +103,7 @@ export const GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS =
   'goal_detail_mark_need_as_complete_success';
 
 export const GOAL_DETAIL_SWITCH_TAB = 'goal_detail_switch_tab';
+export const GOAL_DETAIL_SWITCH_TAB_V2 = 'goal_detail_switch_tab_v2';
 // Comment related constants
 export const GOAL_DETAIL_GET_COMMENT = 'goal_detail_get_comment';
 export const GOAL_DETAIL_CREATE_COMMENT = 'goal_detail_create_comment';
@@ -120,9 +136,11 @@ export default (state = INITIAL_STATE, action) => {
      */
     case GOAL_DETAIL_CLOSE: {
       const { tab } = action.payload;
-      const path = !tab || tab === 'homeTab' ? 'goal.goal' : `goal${capitalizeWord(tab)}.goal`;
-      const newState = _.cloneDeep(state);
-      return _.set(newState, `${path}`, {});
+      const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, `${path}.navigationState`, { ...INITIAL_NAVIGATION_STATE });
+      newState = _.set(newState, `${path}.navigationStateV2`, { ...INITIAL_NAVIGATION_STATE_V2 });
+      return _.set(newState, `${path}.goal`, {});
     }
 
     case GOAL_DETAIL_SWITCH_TAB: {
@@ -132,6 +150,31 @@ export default (state = INITIAL_STATE, action) => {
         : `goal${capitalizeWord(tab)}.navigationState`;
       const newState = _.cloneDeep(state);
       return _.set(newState, `${path}.index`, index);
+    }
+
+    case GOAL_DETAIL_SWITCH_TAB_V2: {
+      const { tab, index, key, focusType, focusRef } = action.payload;
+      const path = (!tab || tab === 'homeTab')
+        ? 'goal.navigationStateV2'
+        : `goal${capitalizeWord(tab)}.navigationStateV2`;
+      let newState = _.cloneDeep(state);
+      const navigationStateV2 = _.get(newState, `${path}`);
+      let newIndex = index || 0;
+      if (key) {
+        navigationStateV2.routes.forEach((route, i) => {
+          if (route.key === key) {
+            newIndex = i;
+          }
+        });
+      }
+      if (focusRef) {
+        newState = _.set(newState, `${path}.focusRef`, focusRef);
+      }
+
+      if (focusType) {
+        newState = _.set(newState, `${path}.focusType`, focusType);
+      }
+      return _.set(newState, `${path}.index`, newIndex);
     }
 
     case USER_LOG_OUT: {

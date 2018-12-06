@@ -13,7 +13,8 @@ import {
   GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS,
   GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS,
   GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS,
-  GOAL_DETAIL_SWITCH_TAB
+  GOAL_DETAIL_SWITCH_TAB,
+  GOAL_DETAIL_SWITCH_TAB_V2,
 } from '../../../reducers/GoalDetailReducers';
 
 import {
@@ -27,6 +28,32 @@ const BASE_ROUTE = 'secure/feed';
 const LIKE_BASE_ROUTE = `${BASE_ROUTE}/like`;
 const COMMENT_BASE_ROUTE = `${BASE_ROUTE}/comment`;
 const GOAL_BASE_ROUTE = 'secure/goal';
+
+export const goalDetailSwitchTabV2ByKey = (key, focusRef, focusType) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+  dispatch({
+    type: GOAL_DETAIL_SWITCH_TAB_V2,
+    payload: {
+      tab,
+      key,
+      focusRef,
+      focusType
+    }
+  });
+};
+
+export const goalDetailSwitchTabV2 = (index, focusRef, focusType) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+  dispatch({
+    type: GOAL_DETAIL_SWITCH_TAB_V2,
+    payload: {
+      tab,
+      index,
+      focusRef,
+      focusType
+    }
+  });
+};
 
 export const goalDetailSwitchTab = (index) => (dispatch, getState) => {
   const { tab } = getState().navigation;

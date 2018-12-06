@@ -43,7 +43,7 @@ import ActivityBody from './ActivityBody';
 import ActivitySummary from './ActivitySummary';
 
 // Constants
-const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
+const DEBUG_KEY = '[ UI ActivityCard ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 
