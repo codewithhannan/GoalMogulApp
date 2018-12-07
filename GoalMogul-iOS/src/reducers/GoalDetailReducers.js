@@ -31,7 +31,7 @@ const INITIAL_NAVIGATION_STATE_V2 = {
     { key: 'centralTab', title: 'CentralTab' },
     { key: 'focusTab', title: 'FocusTab' },
   ],
-  focusType: undefined, // ['need', 'step']
+  focusType: undefined, // ['need', 'step', 'comment']
   focusRef: undefined
 };
 
@@ -167,13 +167,9 @@ export default (state = INITIAL_STATE, action) => {
           }
         });
       }
-      if (focusRef) {
-        newState = _.set(newState, `${path}.focusRef`, focusRef);
-      }
+      newState = _.set(newState, `${path}.focusRef`, focusRef);
+      newState = _.set(newState, `${path}.focusType`, focusType);
 
-      if (focusType) {
-        newState = _.set(newState, `${path}.focusType`, focusType);
-      }
       return _.set(newState, `${path}.index`, newIndex);
     }
 

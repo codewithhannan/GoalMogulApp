@@ -20,8 +20,6 @@ import EmptyResult from '../../../Common/Text/EmptyResult';
 import StepAndNeedCardV3 from './StepAndNeedCardV3';
 
 // Assets
-import next from '../../../../asset/utils/next.png';
-import allComments from '../../../../asset/utils/allComments.png';
 
 // Actions
 import {
@@ -48,12 +46,6 @@ const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 class CentralTab extends React.Component<{}> {
 
-  // Switch tab to FocusTab and display all the comments
-  onViewCommentPress = () => {
-    console.log(`${DEBUG_KEY}: User opens all comments.`);
-    this.props.goalDetailSwitchTabV2ByKey('focusTab', undefined, 'comment');
-  }
-
   // Refresh goal content and comment
   handleRefresh = () => {
 
@@ -62,38 +54,6 @@ class CentralTab extends React.Component<{}> {
   keyExtractor = (item) => {
     const { _id } = item;
     return _id;
-  }
-
-  // Entry points to open comment subcomponent
-  renderCommentCTR() {
-    const commentCount = 20;
-    return (
-      <View
-        style={{
-          alignItems: 'center',
-          flexDirection: 'row',
-          backgroundColor: 'white',
-          marginTop: 10
-        }}
-      >
-        <View style={styles.iconContainerStyle}>
-          <Image style={styles.commentIconStyle} source={allComments} />
-        </View>
-
-        <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 15, color: '#616161' }}>
-            All comments {commentCount}
-          </Text>
-        </View>
-        <TouchableOpacity
-          activeOpacity={0.85}
-          onPress={this.onViewCommentPress}
-          style={styles.iconContainerStyle}
-        >
-          <Image source={next} style={{ ...styles.nextIconStyle, opacity: 0.8 }} />
-        </TouchableOpacity>
-      </View>
-    );
   }
 
   renderItem = (props) => {
@@ -134,7 +94,6 @@ class CentralTab extends React.Component<{}> {
         data={data}
         renderItem={this.renderItem}
         keyExtractor={this.keyExtractor}
-        ListHeaderComponent={() => this.renderCommentCTR()}
         refreshing={this.props.loading || false}
         onRefresh={this.handleRefresh}
         ListEmptyComponent={
@@ -165,25 +124,6 @@ const mapStateToProps = (state) => {
     goalDetail: goal,
     data: getGoalStepsAndNeeds(state),
   };
-};
-
-const styles = {
-  iconContainerStyle: {
-    padding: 10,
-    paddingLeft: 20,
-    paddingRight: 20
-  },
-  commentIconStyle: {
-    width: 28,
-    height: 20,
-    tintColor: '#616161'
-  },
-  nextIconStyle: {
-    height: 25,
-    width: 26,
-    transform: [{ rotateY: '180deg' }],
-    tintColor: '#17B3EC'
-  }
 };
 
 export default connect(

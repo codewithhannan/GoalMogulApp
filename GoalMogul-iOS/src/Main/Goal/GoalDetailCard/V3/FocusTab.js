@@ -2,13 +2,12 @@ import React from 'react';
 import {
   View,
   FlatList,
-  KeyboardAvoidingView,
   Animated,
   StyleSheet,
   Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
-import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
+import _ from 'lodash';
 
 // Components
 import EmptyResult from '../../../Common/Text/EmptyResult';
@@ -18,12 +17,20 @@ import CommentCard from '../Comment/CommentCard';
 // Assets
 
 // Actions
+import {
+  goalDetailSwitchTabV2ByKey
+} from '../../../../redux/modules/goal/GoalDetailActions';
 
 // Styles
 import { BACKGROUND_COLOR } from '../../../../styles';
 
 // Utils
 import { switchCase } from '../../../../redux/middleware/utils';
+
+// Selectors
+import {
+  getGoalDetailByTab
+} from '../../../../redux/modules/goal/selector';
 
 // Constants
 const DEBUG_KEY = '[ UI FocusTab ]';
@@ -115,14 +122,13 @@ class FocusTab extends React.PureComponent {
       />
     );
   }
-  // <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
 
   render() {
-    const { data, type } = this.props;
-    const emptyText = switchCaseEmptyText(type);
+    const { data, focusType } = this.props;
+    if (!focusType) return '';
+    const emptyText = switchCaseEmptyText(focusType);
     return (
       <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
-
         <AnimatedFlatList
           ref={ref => { this.flatlist = ref; }}
           data={data}
@@ -134,7 +140,7 @@ class FocusTab extends React.PureComponent {
             this.props.loading ? '' :
             <EmptyResult
               text={emptyText}
-              textStyle={{ paddingTop: 100 }}
+              textStyle={{ paddingTop: 130 }}
             />
           }
           onScroll={this.props.onScroll}
@@ -169,7 +175,9 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state, props) => {
-
+  const goalDetail = getGoalDetailByTab(state);
+  const { goal, navigationStateV2 } = goalDetail;
+  const { focusType, focusRef } = navigationStateV2;
   // Initialize data by all comments
   let data = [];
 
@@ -178,7 +186,7 @@ const mapStateToProps = (state, props) => {
     data = data.filter((comment) => {
       if (comment.suggestion &&
           comment.suggestion.suggestionForRef &&
-          comment.suggestion.suggestionForRef === props.typeRef) {
+          comment.suggestion.suggestionForRef === focusRef) {
             return true;
       }
       return false;
@@ -188,6 +196,9 @@ const mapStateToProps = (state, props) => {
   return {
     data, // Comments of interest
     // loading
+    focusType,
+    focusRef,
+    goalDetail: goal
   };
 };
 
@@ -198,13 +209,15 @@ const switchCaseEmptyText = (type) => switchCase({
 })('comment')(type);
 
 FocusTab.defaultPros = {
-  type: undefined, // ['comment', 'step', 'need']
-  typeRef: undefined,
+  focusType: undefined, // ['comment', 'step', 'need']
+  focusRef: undefined,
   goalDetail: undefined,
   isSelf: false
 };
 
 export default connect(
   mapStateToProps,
-  null
+  {
+    goalDetailSwitchTabV2ByKey
+  }
 )(FocusTab);

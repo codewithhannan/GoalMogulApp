@@ -4,7 +4,10 @@ import {
   KeyboardAvoidingView,
   Animated,
   Dimensions,
-  StyleSheet
+  StyleSheet,
+  Image,
+  Text,
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -17,7 +20,8 @@ import { Constants } from 'expo';
 // Actions
 import {
   closeGoalDetail,
-  goalDetailSwitchTabV2
+  goalDetailSwitchTabV2,
+  goalDetailSwitchTabV2ByKey
 } from '../../../redux/modules/goal/GoalDetailActions';
 
 import {
@@ -42,8 +46,13 @@ import SuggestionModal from './SuggestionModal3';
 import Report from '../../../Main/Report/Report';
 import CentralTab from './V3/CentralTab';
 import FocusTab from './V3/FocusTab';
+import SectionCardV2 from '../Common/SectionCardV2';
 
 import GoalDetailSection from './GoalDetailSection';
+
+// Assets
+import next from '../../../asset/utils/next.png';
+import allComments from '../../../asset/utils/allComments.png';
 
 // Styles
 import {
@@ -55,9 +64,10 @@ const initialLayout = {
   width: Dimensions.get('window').width
 };
 
-const HEADER_HEIGHT = 200; // Need to be calculated in the state later based on content length
-const COLLAPSED_HEIGHT = 52 + Constants.statusBarHeight;
+const HEADER_HEIGHT = 240; // Need to be calculated in the state later based on content length
+const COLLAPSED_HEIGHT = 30 + Constants.statusBarHeight;
 const SCROLLABLE_HEIGHT = HEADER_HEIGHT - COLLAPSED_HEIGHT;
+const DEBUG_KEY = '[ UI GoalDetailCardV3 ]';
 
 class GoalDetailCardV3 extends Component {
   constructor(props) {
@@ -65,6 +75,25 @@ class GoalDetailCardV3 extends Component {
     this.state = {
       scroll: new Animated.Value(0)
     };
+  }
+
+  // Switch tab to FocusTab and display all the comments
+  onViewCommentPress = () => {
+    console.log(`${DEBUG_KEY}: User opens all comments.`);
+    this.props.goalDetailSwitchTabV2ByKey('focusTab', undefined, 'comment');
+  }
+
+  // Can be replaced by memorized selector
+  getFocusedItem(focusType, focusRef) {
+    const { goalDetail } = this.props;
+    const type = focusType === 'step' ? 'steps' : 'needs';
+    let focusedItem = { description: '', isCompleted: false };
+    _.get(goalDetail, `${type}`).forEach((item) => {
+      if (item._id === focusRef) {
+        focusedItem = _.cloneDeep(item);
+      }
+    });
+    return focusedItem;
   }
 
   // Tab related handlers
@@ -121,12 +150,72 @@ class GoalDetailCardV3 extends Component {
             item={goalDetail}
             onSuggestion={() => {
               // Goes to central tab by opening all comments
+              this.props.goalDetailSwitchTabV2ByKey('centralTab', undefined, 'comment');
             }}
             isSelf={this.props.isSelf}
           />
           <View style={{ borderBottomWidth: 0.5, borderColor: '#e5e5e5' }} />
+          {this.renderFocusedItem()}
+          {this.renderCommentCTR()}
         </View>
       </Animated.View>
+    );
+  }
+
+  /**
+   * Render focused item.
+   */
+  renderFocusedItem() {
+    const { focusType, focusRef } = this.props.navigationState;
+    if (!focusType) return '';
+    const focusedItem = this.getFocusedItem(focusType, focusRef);
+
+    return (
+      <SectionCardV2
+        type={focusType}
+        item={focusedItem}
+        isFocusedItem
+        isSelf={this.props.isSelf}
+        onBackPress={() => {
+          this.props.goalDetailSwitchTabV2ByKey('centralTab', undefined, undefined);
+        }}
+        onContentSizeChange={this.props.onContentSizeChange}
+      />
+    );
+  }
+
+  // Entry points to open comment subcomponent
+  renderCommentCTR() {
+    const commentCount = 20;
+    const { focusType } = this.props.navigationState;
+    if (focusType) return '';
+    return (
+      <View style={{ paddingTop: 10, backgroundColor: BACKGROUND_COLOR }}>
+        <View
+          style={{
+            alignItems: 'center',
+            flexDirection: 'row',
+            backgroundColor: 'white',
+          }}
+        >
+          <View style={styles.iconContainerStyle}>
+            <Image style={styles.commentIconStyle} source={allComments} />
+          </View>
+
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 15, color: '#616161' }}>
+              All comments {commentCount}
+            </Text>
+          </View>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={this.onViewCommentPress}
+            style={styles.iconContainerStyle}
+          >
+            <Image source={next} style={[styles.nextIconStyle, { opacity: 0.8 }]} />
+          </TouchableOpacity>
+        </View>
+      </View>
     );
   }
 
@@ -171,6 +260,22 @@ class GoalDetailCardV3 extends Component {
 const styles = StyleSheet.create({
   containerStyle: {
     backgroundColor: 'white',
+  },
+  iconContainerStyle: {
+    padding: 10,
+    paddingLeft: 20,
+    paddingRight: 20
+  },
+  commentIconStyle: {
+    width: 28,
+    height: 20,
+    tintColor: '#616161'
+  },
+  nextIconStyle: {
+    height: 25,
+    width: 26,
+    transform: [{ rotateY: '180deg' }],
+    tintColor: '#17B3EC'
   },
   iconStyle: {
     alignSelf: 'center',
@@ -454,6 +559,7 @@ export default connect(
     attachSuggestion,
     cancelSuggestion,
     openSuggestionModal,
-    goalDetailSwitchTabV2
+    goalDetailSwitchTabV2,
+    goalDetailSwitchTabV2ByKey
   }
 )(GoalDetailCardV3);

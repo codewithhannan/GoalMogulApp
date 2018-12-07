@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import bulb from '../../../asset/utils/bulb.png';
 import forward from '../../../asset/utils/forward.png';
 import checkIcon from '../../../asset/utils/check.png';
+import next from '../../../asset/utils/next.png';
 
 // Components
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
@@ -73,7 +74,8 @@ class SectionCardV2 extends Component {
     return shareToActionSheet();
   };
 
-  renderActionIcons() {
+  renderActionIcons(type) {
+    if (type === 'comment') return '';
     return (
       <View style={{ alignItems: 'center', justifyContent: 'center' }}>
         <TouchableOpacity
@@ -124,8 +126,8 @@ class SectionCardV2 extends Component {
     );
   }
 
-  renderCheckBox(isCompleted) {
-    if (this.props.isSelf) {
+  renderCheckBox(isCompleted, type) {
+    if (this.props.isSelf && type !== 'comment') {
       return this.renderSelfCheckBox(isCompleted);
     }
 
@@ -137,30 +139,47 @@ class SectionCardV2 extends Component {
     );
   }
 
+  renderBackIcon() {
+    const { isFocusedItem } = this.props;
+    if (!isFocusedItem) return '';
+
+    return (
+      <TouchableOpacity
+        onPress={this.props.onBackPress}
+        activeOpacity={0.85}
+        style={{ paddingRight: 17 }}
+      >
+        <Image source={next} style={styles.nextIconStyle} />
+      </TouchableOpacity>
+    );
+  }
+
   render() {
     // console.log('item for props is: ', this.props.item);
     const { type, item } = this.props;
     let itemToRender = item;
 
     // Render empty state
-    if (!item) {
+    if (!item && type !== 'comment') {
       const emptyText = (type === 'need' || type === 'Need') ? 'No needs' : 'No steps';
       itemToRender = { description: `${emptyText}`, isCompleted: false };
       return renderEmptyState(emptyText);
     }
 
     const { description, isCompleted } = itemToRender;
-    const sectionText = description === undefined ? 'No content' : description;
+    const sectionText = type === 'comment' ? 'Back to mastermind' : description;
 
     return (
       <TouchableOpacity
+        activeOpacity={0.85}
         style={{
           ...styles.sectionContainerStyle,
           backgroundColor: isCompleted ? '#fcfcfc' : 'white',
           opacity: isCompleted ? 0.8 : 1
         }}
-        onPress={() => this.props.onCardPress()}
+        onPress={this.props.onCardPress}
       >
+        {this.renderBackIcon()}
         <View style={{ flex: 1 }}>
           <View
             style={{
@@ -169,18 +188,18 @@ class SectionCardV2 extends Component {
               justifyContent: 'flex-start',
             }}
           >
-            {this.renderCheckBox(isCompleted)}
+            {this.renderCheckBox(isCompleted, type)}
             <Text
               style={{ ...styles.sectionTextStyle }}
               numberOfLines={2}
               ellipsizeMode='tail'
             >
-              {sectionText}
+              {sectionText === undefined ? 'No content' : sectionText}
             </Text>
           </View>
           {this.renderStats()}
         </View>
-        {this.renderActionIcons()}
+        {this.renderActionIcons(type)}
       </TouchableOpacity>
     );
   }
@@ -272,6 +291,11 @@ const styles = {
     width: 16,
     borderRadius: 6,
     tintColor: 'black'
+  },
+  nextIconStyle: {
+    height: 25,
+    width: 26,
+    tintColor: '#bfc3c3'
   }
 };
 
