@@ -95,6 +95,20 @@ class FocusTab extends React.PureComponent {
     console.log(`${DEBUG_KEY}: user tries to refresh.`);
   }
 
+  handleOnCommentSubmitEditing = () => {
+    const { newComment } = this.props;
+    if (newComment && newComment.contentText && !_.isEmpty(newComment.contentText)) {
+      return;
+    }
+    // Since the contentText is empty, reset the replyToRef and commentType
+    // Update new comment
+    const newCommentType = this.props.focusType === 'comment' ? 'Comment' : 'Suggestion';
+    let commentToReturn = _.cloneDeep(newComment);
+    commentToReturn = _.set(commentToReturn, 'replyToRef', undefined);
+    commentToReturn = _.set(commentToReturn, 'commentType', newCommentType);
+    this.props.updateNewComment(commentToReturn, this.props.pageId);
+  }
+
   scrollToIndex = (index, viewOffset = 0) => {
     this.flatlist.getNode().scrollToIndex({
     // this.flatlist.scrollToIndex({
@@ -170,6 +184,7 @@ class FocusTab extends React.PureComponent {
           <CommentBox
             onRef={(ref) => { this.commentBox = ref; }}
             hasSuggestion
+            onSubmitEditing={this.handleOnCommentSubmitEditing}
           />
         </Animated.View>
       </View>
@@ -186,6 +201,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state, props) => {
+  const newComment = getNewCommentByTab(state, props.pageId);
   const goalDetail = getGoalDetailByTab(state);
   const { goal, navigationStateV2 } = goalDetail;
   const { focusType, focusRef } = navigationStateV2;
@@ -211,8 +227,9 @@ const mapStateToProps = (state, props) => {
   }
 
   return {
+    newComment,
     data, // Comments of interest
-    // loading
+    // loading: loading || goal.loading,
     focusType,
     focusRef,
     goalDetail: goal

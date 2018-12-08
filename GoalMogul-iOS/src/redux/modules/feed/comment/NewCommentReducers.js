@@ -78,6 +78,7 @@ const INITIAL_SUGGESETION = {
 };
 
 export const COMMENT_NEW = 'comment_new';
+export const COMMENT_NEW_UPDATE = 'comment_new_update';
 export const COMMENT_NEW_TEXT_ON_CHANGE = 'comment_new_text_on_change';
 export const COMMENT_NEW_SUGGESTION_CREATE = 'comment_new_suggestion_create';
 export const COMMENT_NEW_SUGGESTION_ATTACH = 'comment_new_suggestion_attach';
@@ -203,14 +204,15 @@ export default (state = INITIAL_STATE, action) => {
         tab,
         pageId,
         suggestionFor,
-        suggestionForRef
+        suggestionForRef,
+        suggestionType
       } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       let newState = _.cloneDeep(state);
       if (suggestionFor && suggestionForRef) {
         const suggestion = {
-          suggestionFor, suggestionForRef
+          suggestionFor, suggestionForRef, suggestionType
         };
         newState = setState(newState, `${path}.suggestion`, suggestion);
       }
@@ -221,6 +223,14 @@ export default (state = INITIAL_STATE, action) => {
       newState = setState(newState, `${path}.owner`, owner);
 
       return newState;
+    }
+
+    case COMMENT_NEW_UPDATE: {
+      let newState = _.cloneDeep(state);
+      const { newComment, tab, pageId } = action.payload;
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      return _.set(newState, `${path}`, newComment);
     }
 
     case COMMENT_NEW_SUGGESTION_UPDAET_TYPE: {

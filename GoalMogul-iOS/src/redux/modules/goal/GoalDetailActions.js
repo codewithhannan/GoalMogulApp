@@ -8,6 +8,9 @@ import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
 import {
+  GOAL_DETAIL_FETCH,
+  GOAL_DETAIL_FETCH_DONE,
+  GOAL_DETAIL_FETCH_ERROR,
   GOAL_DETAIL_CLOSE,
   GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
   GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS,
@@ -21,6 +24,10 @@ import {
   getGoalDetailByTab
 } from './selector';
 
+import {
+  refreshComments
+} from '../feed/comment/CommentActions';
+
 const DEBUG_KEY = '[ Action GoalDetail ]';
 
 // Basic request routes
@@ -28,6 +35,59 @@ const BASE_ROUTE = 'secure/feed';
 const LIKE_BASE_ROUTE = `${BASE_ROUTE}/like`;
 const COMMENT_BASE_ROUTE = `${BASE_ROUTE}/comment`;
 const GOAL_BASE_ROUTE = 'secure/goal';
+
+/**
+ * Refresh goal detail and comments by goal Id
+ */
+export const refreshGoalDetailById = (goalId) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+  const { token } = getState().user;
+
+  dispatch({
+    type: GOAL_DETAIL_FETCH,
+    payload: {
+      goalId,
+      tab
+    }
+  });
+
+  const onError = (err) => {
+    console.log(`${DEBUG_KEY}: refresh goal error: `, err);
+    dispatch({
+      type: GOAL_DETAIL_FETCH_ERROR,
+      payload: {
+        goal: undefined,
+        goalId,
+        tab,
+        error: err
+      }
+    });
+  };
+
+  const onSuccess = (res) => {
+    dispatch({
+      type: GOAL_DETAIL_FETCH_DONE,
+      payload: {
+        goal: res.data,
+        goalId,
+        tab
+      }
+    });
+  };
+
+  API
+    .get(`${GOAL_BASE_ROUTE}?goalId=${goalId}`, token)
+    .then((res) => {
+      if (res.status === 200) {
+        return onSuccess(res);
+      }
+      onError(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
+  refreshComments('Goal', goalId, tab, undefined)(dispatch, getState);
+};
 
 export const goalDetailSwitchTabV2ByKey = (key, focusRef, focusType) => (dispatch, getState) => {
   const { tab } = getState().navigation;

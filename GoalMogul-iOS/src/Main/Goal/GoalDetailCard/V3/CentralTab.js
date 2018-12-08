@@ -19,6 +19,7 @@ import StepAndNeedCardV3 from './StepAndNeedCardV3';
 
 // Actions
 import {
+  refreshGoalDetailById,
   goalDetailSwitchTabV2,
   goalDetailSwitchTabV2ByKey
 } from '../../../../redux/modules/goal/GoalDetailActions';
@@ -45,7 +46,9 @@ class CentralTab extends React.Component<{}> {
 
   // Refresh goal content and comment
   handleRefresh = () => {
-
+    if (this.props.goalDetail) {
+      this.props.refreshGoalDetailById(this.props.goalDetail._id);
+    }
   }
 
   keyExtractor = (item) => {
@@ -116,9 +119,15 @@ CentralTab.defaultPros = {
 const mapStateToProps = (state) => {
   const goalDetail = getGoalDetailByTab(state);
   const { goal } = goalDetail;
+  let loading = false;
+  if (goal) {
+    loading = goal.loading;
+  }
+  console.log(`${DEBUG_KEY}: loadgin is: `, loading);
 
   return {
     goalDetail: goal,
+    loading,
     data: getGoalStepsAndNeeds(state),
   };
 };
@@ -128,6 +137,7 @@ export default connect(
   {
     goalDetailSwitchTabV2,
     goalDetailSwitchTabV2ByKey,
+    refreshGoalDetailById,
     createCommentFromSuggestion,
     createCommentForSuggestion
   }

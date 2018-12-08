@@ -16,6 +16,7 @@ import {
 
 import {
   COMMENT_NEW,
+  COMMENT_NEW_UPDATE,
   COMMENT_NEW_TEXT_ON_CHANGE,
   COMMENT_NEW_SUGGESTION_REMOVE,
   COMMENT_NEW_SUGGESTION_CREATE,
@@ -165,7 +166,8 @@ export const createCommentForSuggestion = ({
       tab,
       pageId,
       suggestionFor,
-      suggestionForRef
+      suggestionForRef,
+      suggestionType: 'Custom'
     }
   });
 
@@ -209,6 +211,22 @@ export const createCommentFromSuggestion = (
     }
   });
 };
+
+/**
+ * Update the fields / properties for the new comment
+ */
+export const updateNewComment = (newComment, pageId) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+  dispatch({
+    type: COMMENT_NEW_UPDATE,
+    payload: {
+      newComment,
+      pageId,
+      tab
+    }
+  });
+};
+
 /**
  * comment(jsonStrObj):
  * parentRef, parentType("Goal" || "Post"), contentText, contentTags, commentType[, replyToRef, suggestion(Suggestion)]

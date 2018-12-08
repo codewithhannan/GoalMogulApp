@@ -93,6 +93,7 @@ const INITIAL_STATE = {
 
 export const GOAL_DETAIL_FETCH = 'goal_detail_fetch';
 export const GOAL_DETAIL_FETCH_DONE = 'goal_detail_fetch_done';
+export const GOAL_DETAIL_FETCH_ERROR = 'goal_detail_fetch_error';
 export const GOAL_DETAIL_OPEN = 'goal_detail_open';
 export const GOAL_DETAIL_CLOSE = 'goal_detail_close';
 export const GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS = 'goal_detail_mark_as_complete_success';
@@ -117,11 +118,36 @@ export const GOAL_DETAIL_DELETE_LIKE = 'goal_detail_create_like';
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case GOAL_DETAIL_FETCH: {
-      return { ...state };
+      const { tab, goalId } = action.payload;
+      const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
+      let newState = _.cloneDeep(state);
+      const originalGoal = _.get(newState, `${path}.goal`);
+      if (originalGoal._id === goalId) {
+        newState = _.set(newState, `${path}.goal.loading`, true);
+      }
+      return newState;
     }
 
     case GOAL_DETAIL_FETCH_DONE: {
-      return { ...state };
+      const { tab, goalId, goal } = action.payload;
+      const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
+      let newState = _.cloneDeep(state);
+      const originalGoal = _.get(newState, `${path}.goal`);
+      if (originalGoal._id === goalId) {
+        newState = _.set(newState, `${path}.goal`, { ...goal });
+      }
+      return newState;
+    }
+
+    case GOAL_DETAIL_FETCH_ERROR: {
+      const { tab, goalId, goal } = action.payload;
+      const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
+      let newState = _.cloneDeep(state);
+      const originalGoal = _.get(newState, `${path}.goal`);
+      if (originalGoal._id === goalId) {
+        newState = _.set(newState, `${path}.goal.loading`, false);
+      }
+      return newState;
     }
 
     case GOAL_DETAIL_OPEN: {

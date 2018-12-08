@@ -300,7 +300,7 @@ class CommentBox extends Component {
   }
 
   render() {
-    const { pageId, newComment, hasSuggestion } = this.props;
+    const { pageId, newComment, hasSuggestion, onSubmitEditing } = this.props;
     if (!newComment || !newComment.parentRef) return '';
 
     const { uploading } = newComment;
@@ -342,6 +342,7 @@ class CommentBox extends Component {
               value={newComment.contentText}
               defaultValue={this.state.defaultValue}
               onBlur={() => this.handleOnBlur(newComment)}
+              onSubmitEditing={onSubmitEditing}
             />
           </View>
           {this.renderPost(newComment)}

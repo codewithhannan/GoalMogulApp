@@ -173,7 +173,7 @@ class GoalDetailCardV3 extends Component {
 
     return (
       <Animated.View style={[styles.header, { transform: [{ translateY }] }]}>
-        <View style={{ height: HEADER_HEIGHT }}>
+        <View style={{ height: HEADER_HEIGHT, backgroundColor: 'white' }}>
           <GoalDetailSection
             item={goalDetail}
             onSuggestion={() => {
