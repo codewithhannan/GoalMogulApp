@@ -177,7 +177,7 @@ class SectionCardV2 extends Component {
           backgroundColor: isCompleted ? '#fcfcfc' : 'white',
           opacity: isCompleted ? 0.8 : 1
         }}
-        onPress={this.props.onCardPress}
+        onPress={this.props.onCardPress || this.props.onBackPress}
       >
         {this.renderBackIcon()}
         <View style={{ flex: 1 }}>
@@ -233,8 +233,6 @@ const renderEmptyState = (text) => {
 
 const styles = {
   sectionContainerStyle: {
-    marginTop: 0.5,
-    marginBottom: 0.5,
     padding: 9,
     paddingLeft: 17,
     paddingRight: 17,

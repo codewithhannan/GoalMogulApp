@@ -201,11 +201,19 @@ export default (state = INITIAL_STATE, action) => {
         replyToRef,
         owner,
         tab,
-        pageId
+        pageId,
+        suggestionFor,
+        suggestionForRef
       } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       let newState = _.cloneDeep(state);
+      if (suggestionFor && suggestionForRef) {
+        const suggestion = {
+          suggestionFor, suggestionForRef
+        };
+        newState = setState(newState, `${path}.suggestion`, suggestion);
+      }
       newState = setState(newState, `${path}.parentType`, parentType);
       newState = setState(newState, `${path}.parentRef`, parentRef);
       newState = setState(newState, `${path}.commentType`, commentType);
@@ -247,6 +255,7 @@ export default (state = INITIAL_STATE, action) => {
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       newState = _.set(newState, `${path}.showAttachedSuggestion`, false);
+      newState = _.set(newState, `${path}.tmpSuggestion`, { ...INITIAL_SUGGESETION });
       return _.set(newState, `${path}.suggestion`, { ...INITIAL_SUGGESETION });
     }
 

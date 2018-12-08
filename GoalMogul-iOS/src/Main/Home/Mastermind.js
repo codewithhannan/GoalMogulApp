@@ -262,8 +262,8 @@ const styles = {
   nextIconContainerStyle: {
     position: 'absolute',
     bottom: 5,
-    right: 0,
-    left: 0,
+    right: 50,
+    left: 50,
     alignItems: 'center'
   }
 };

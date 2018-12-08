@@ -32,6 +32,11 @@ import {
   getGoalDetailByTab
 } from '../../../../redux/modules/goal/selector';
 
+import {
+  getCommentByTab,
+  getNewCommentByTab
+} from '../../../../redux/modules/feed/comment/CommentSelector';
+
 // Constants
 const DEBUG_KEY = '[ UI FocusTab ]';
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
@@ -63,15 +68,19 @@ class FocusTab extends React.PureComponent {
   }
 
   keyboardWillShow = (e) => {
-    this.flatlist.getNode().scrollToOffset({
-    // this.flatlist.scrollToOffset({
-      offset: e.endCoordinates.height - TOTAL_HEIGHT,
-      animated: true
-    });
-    Animated.timing(this.state.commentBoxPadding, {
-      toValue: e.endCoordinates.height - TOTAL_HEIGHT,
-      duration: 220
-    }).start();
+    // this.flatlist.getNode().scrollToOffset({
+    // // this.flatlist.scrollToOffset({
+    //   offset: e.endCoordinates.height - TOTAL_HEIGHT,
+    //   animated: true
+    // });
+    const timeout = ((TOTAL_HEIGHT * 210) / e.endCoordinates.height) - 5;
+    Animated.sequence([
+      Animated.delay(timeout),
+      Animated.timing(this.state.commentBoxPadding, {
+        toValue: e.endCoordinates.height - TOTAL_HEIGHT,
+        duration: (210 - timeout)
+      })
+    ]).start();
   }
 
   keyboardWillHide = () => {
@@ -140,9 +149,10 @@ class FocusTab extends React.PureComponent {
             this.props.loading ? '' :
             <EmptyResult
               text={emptyText}
-              textStyle={{ paddingTop: 130 }}
+              textStyle={{ paddingTop: 110 }}
             />
           }
+          ListFooterComponent={<View style={{ height: 43, backgroundColor: 'transparent' }} />}
           onScroll={this.props.onScroll}
           scrollEventThrottle={1}
           contentContainerStyle={{ ...this.props.contentContainerStyle }}
@@ -152,7 +162,8 @@ class FocusTab extends React.PureComponent {
           style={[
             styles.composerContainer, {
               position: this.state.position,
-              paddingBottom: this.state.commentBoxPadding
+              paddingBottom: this.state.commentBoxPadding,
+              backgroundColor: 'white'
             }
           ]}
         >
@@ -178,10 +189,16 @@ const mapStateToProps = (state, props) => {
   const goalDetail = getGoalDetailByTab(state);
   const { goal, navigationStateV2 } = goalDetail;
   const { focusType, focusRef } = navigationStateV2;
+  const comments = getCommentByTab(state, props.pageId);
+  const { transformedComments, loading } = comments || {
+    transformedComments: [],
+    loading: false
+  };
   // Initialize data by all comments
-  let data = [];
+  let data = transformedComments;
 
-  if (props.type === 'step' || 'need') {
+  // console.log(`${DEBUG_KEY}: focusType is: ${focusType}, ref is: ${focusRef}`);
+  if (focusType === 'step' || focusType === 'need') {
     // TODO: grab comments by step, filter by typeRef
     data = data.filter((comment) => {
       if (comment.suggestion &&
@@ -204,8 +221,8 @@ const mapStateToProps = (state, props) => {
 
 const switchCaseEmptyText = (type) => switchCase({
   comment: 'No Comments',
-  step: 'No Comments for this step',
-  need: 'No Comments for this need'
+  step: 'No suggestions for this step',
+  need: 'No suggestions for this need'
 })('comment')(type);
 
 FocusTab.defaultPros = {

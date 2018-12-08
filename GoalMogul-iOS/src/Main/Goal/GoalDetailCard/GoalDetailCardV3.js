@@ -28,6 +28,8 @@ import {
   attachSuggestion,
   cancelSuggestion,
   openSuggestionModal,
+  removeSuggestion,
+  createCommentFromSuggestion
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 // selector
@@ -77,6 +79,14 @@ class GoalDetailCardV3 extends Component {
     };
   }
 
+  componentDidMount() {
+    this.state.scroll.addListener(({ value }) => { this._value = value; });
+  }
+
+  componentWillUnmount() {
+    this.state.scroll.removeAllListeners();
+  }
+
   // Switch tab to FocusTab and display all the comments
   onViewCommentPress = () => {
     console.log(`${DEBUG_KEY}: User opens all comments.`);
@@ -99,6 +109,13 @@ class GoalDetailCardV3 extends Component {
   // Tab related handlers
   _handleIndexChange = index => {
     // TODO: change to v2
+    const { navigationState, pageId } = this.props;
+    if (navigationState.routes[index].key === 'centralTab') {
+      this.props.removeSuggestion(pageId);
+      this.props.goalDetailSwitchTabV2ByKey('centralTab', undefined, undefined);
+      return;
+    }
+
     this.props.goalDetailSwitchTabV2(index);
   };
 
@@ -111,7 +128,12 @@ class GoalDetailCardV3 extends Component {
               [{ nativeEvent: { contentOffset: { y: this.state.scroll } } }],
               { useNativeDriver: true }
             )}
-            contentContainerStyle={{ paddingTop: HEADER_HEIGHT, flexGrow: 1 }}
+            contentContainerStyle={{ paddingTop: HEADER_HEIGHT + 20, flexGrow: 1 }}
+            contentOffset={{ y:
+              this.state.scroll._value > SCROLLABLE_HEIGHT
+                ? SCROLLABLE_HEIGHT
+                : this.state.scroll._value
+            }}
           />
         );
 
@@ -122,7 +144,13 @@ class GoalDetailCardV3 extends Component {
               [{ nativeEvent: { contentOffset: { y: this.state.scroll } } }],
               { useNativeDriver: true }
             )}
-            contentContainerStyle={{ paddingTop: HEADER_HEIGHT, flexGrow: 1 }}
+            contentContainerStyle={{ paddingTop: HEADER_HEIGHT + 20, flexGrow: 1 }}
+            contentOffset={{ y:
+              this.state.scroll._value > SCROLLABLE_HEIGHT
+                ? SCROLLABLE_HEIGHT
+                : this.state.scroll._value
+            }}
+            pageId={this.props.pageId}
           />
         );
 
@@ -176,9 +204,7 @@ class GoalDetailCardV3 extends Component {
         item={focusedItem}
         isFocusedItem
         isSelf={this.props.isSelf}
-        onBackPress={() => {
-          this.props.goalDetailSwitchTabV2ByKey('centralTab', undefined, undefined);
-        }}
+        onBackPress={() => this._handleIndexChange(0)}
         onContentSizeChange={this.props.onContentSizeChange}
       />
     );
@@ -186,8 +212,9 @@ class GoalDetailCardV3 extends Component {
 
   // Entry points to open comment subcomponent
   renderCommentCTR() {
-    const commentCount = 20;
-    const { focusType } = this.props.navigationState;
+    const { goalDetail, navigationState } = this.props;
+    const { commentCount } = goalDetail;
+    const { focusType } = navigationState;
     if (focusType) return '';
     return (
       <View style={{ paddingTop: 10, backgroundColor: BACKGROUND_COLOR }}>
@@ -220,7 +247,7 @@ class GoalDetailCardV3 extends Component {
   }
 
   render() {
-    const { goalDetail } = this.props;
+    const { goalDetail, navigationState } = this.props;
     // console.log('transformed comments to render are: ', comments);
     if (!goalDetail || _.isEmpty(goalDetail)) return '';
 
@@ -239,7 +266,7 @@ class GoalDetailCardV3 extends Component {
             renderTabBar={this._renderTabBar}
             initialLayout={initialLayout}
             onIndexChange={index => this._handleIndexChange(index)}
-            swipeEnabled={false}
+            swipeEnabled={navigationState.focusType !== undefined}
           />
           <SuggestionModal
             visible={this.props.showSuggestionModal}
@@ -560,6 +587,8 @@ export default connect(
     cancelSuggestion,
     openSuggestionModal,
     goalDetailSwitchTabV2,
-    goalDetailSwitchTabV2ByKey
+    goalDetailSwitchTabV2ByKey,
+    removeSuggestion,
+    createCommentFromSuggestion
   }
 )(GoalDetailCardV3);

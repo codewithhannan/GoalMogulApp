@@ -148,6 +148,38 @@ export const createComment = (commentDetail, pageId) =>
   });
 };
 
+/**
+ * Create comment as a suggestion as user enter focused content for a need or a step
+ */
+export const createCommentForSuggestion = ({
+  commentDetail, suggestionFor, suggestionForRef }, pageId) =>
+(dispatch, getState) => {
+  const { userId } = getState().user;
+  const { tab } = getState().navigation;
+
+  dispatch({
+    type: COMMENT_NEW,
+    payload: {
+      ...commentDetail,
+      owner: userId,
+      tab,
+      pageId,
+      suggestionFor,
+      suggestionForRef
+    }
+  });
+
+  dispatch({
+    type: COMMENT_NEW_SUGGESTION_CREATE,
+    payload: {
+      suggestionFor,
+      suggestionForRef,
+      tab,
+      pageId
+    }
+  });
+};
+
 // When user clicks on suggestion icon outside comment box
 // const { parentType, parentRef, commentType, replyToRef } = commentDetail;
 export const createCommentFromSuggestion = (
@@ -327,6 +359,7 @@ const commentAdapter = (state, pageId, tab) => {
   const page = pageId ? `${pageId}` : 'default';
   const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
   let newComment = _.get(state.newComment, `${path}`);
+  // console.log(`${DEBUG_KEY}: raw comment is: `, newComment);
 
   const {
     contentText,
@@ -351,6 +384,7 @@ const commentAdapter = (state, pageId, tab) => {
     mediaRef,
     suggestion: suggestionAdapter(suggestion)
   };
+  // console.log(`${DEBUG_KEY}: adapted comment is: `, commentToReturn.suggestion);
 
   if (_.isEmpty(suggestion)) {
     delete commentToReturn.suggestion;
@@ -360,6 +394,7 @@ const commentAdapter = (state, pageId, tab) => {
 };
 
 const suggestionAdapter = (suggestion) => {
+  // console.log(`${DEBUG_KEY}: raw suggestion is: `, suggestion);
   if (!suggestion) return {};
   // TODO: require validation
   const {
@@ -393,11 +428,19 @@ const suggestionAdapter = (suggestion) => {
     Custom: {
       suggestionLink,
       suggestionText
-    }
-  })({})(suggestionType);
+    },
+    Default: undefined
+  })('Default')(suggestionType);
 
+  if (ret && !_.isEmpty(ret)) {
+    return {
+      ...ret,
+      suggestionFor,
+      suggestionForRef,
+      suggestionType,
+    };
+  }
   return {
-    ...ret,
     suggestionFor,
     suggestionForRef,
     suggestionType,

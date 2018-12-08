@@ -14,7 +14,7 @@ import {
 } from '../../redux/modules/like/LikeActions';
 
 import {
-  createCommentFromSuggestion
+
 } from '../../redux/modules/feed/comment/CommentActions';
 
 import {
@@ -196,7 +196,6 @@ export default connect(
   {
     likeGoal,
     unLikeGoal,
-    createCommentFromSuggestion,
     chooseShareDest,
     openPostDetail,
     openGoalDetail

@@ -6,11 +6,7 @@
  */
 import React from 'react';
 import {
-  View,
   FlatList,
-  Text,
-  Image,
-  TouchableOpacity,
   Animated
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -28,7 +24,8 @@ import {
 } from '../../../../redux/modules/goal/GoalDetailActions';
 
 import {
-  createCommentFromSuggestion
+  createCommentFromSuggestion,
+  createCommentForSuggestion
 } from '../../../../redux/modules/feed/comment/CommentActions';
 
 // Selectors
@@ -80,7 +77,7 @@ class CentralTab extends React.Component<{}> {
           this.props.goalDetailSwitchTabV2ByKey(
             'focusTab', props.item._id, props.item.type
           );
-          this.props.createCommentFromSuggestion(newCommentParams);
+          this.props.createCommentForSuggestion(newCommentParams);
         }}
         isSelf={this.props.isSelf}
       />
@@ -131,6 +128,7 @@ export default connect(
   {
     goalDetailSwitchTabV2,
     goalDetailSwitchTabV2ByKey,
-    createCommentFromSuggestion
+    createCommentFromSuggestion,
+    createCommentForSuggestion
   }
 )(CentralTab);
