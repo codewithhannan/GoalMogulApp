@@ -1,6 +1,7 @@
 import {
   HOME_REFRESH_GOAL,
   HOME_REFRESH_GOAL_DONE,
+  HOME_LOAD_GOAL,
   HOME_LOAD_GOAL_DONE,
 } from '../../../../reducers/Home';
 
@@ -20,7 +21,7 @@ const BASE_ROUTE = 'secure/feed/activity';
 //Refresh feed for activity tab
 export const refreshFeed = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { limit, filter } = getState().home.mastermind;
+  const { limit, filter } = getState().home.activityfeed;
   const { categories, priority } = filter;
   dispatch({
     type: HOME_REFRESH_GOAL,
@@ -29,6 +30,8 @@ export const refreshFeed = () => (dispatch, getState) => {
     }
   });
   loadFeed(0, limit, token, priority, categories, (data) => {
+    console.log(`${DEBUG_KEY}: refresh activity with data length: ${data.length}`);
+    // console.log(`${DEBUG_KEY}: refresh activity with data: `, data);
     dispatch({
       type: HOME_REFRESH_GOAL_DONE,
       payload: {
@@ -47,18 +50,25 @@ export const refreshFeed = () => (dispatch, getState) => {
 // Load more goal for mastermind tab
 export const loadMoreFeed = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, filter, hasNextPage } = getState().home.mastermind;
-  if (hasNextPage === false) {
+  const { skip, limit, filter, hasNextPage, loadingMore } = getState().home.activityfeed;
+  if (hasNextPage === false || loadingMore) {
     return;
   }
+  dispatch({
+    type: HOME_LOAD_GOAL,
+    payload: {
+      type: 'activityfeed'
+    }
+  });
   const { categories, priority } = filter;
   loadFeed(skip, limit, token, priority, categories, (data) => {
+    console.log(`${DEBUG_KEY}: load more activity with data length: ${data.length}`);
     dispatch({
       type: HOME_LOAD_GOAL_DONE,
       payload: {
         type: 'activityfeed',
         data,
-        skip: data.length,
+        skip: skip + (data === undefined ? 0 : data.length),
         limit: 20,
         hasNextPage: !(data === undefined || data.length === 0)
       }

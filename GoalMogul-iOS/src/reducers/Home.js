@@ -15,6 +15,7 @@ export const HOME_CLOSE_CREATE_OVERLAY = 'home_mastermind_close_create_overlay';
 // Goal related constants
 export const HOME_REFRESH_GOAL = 'home_refresh_goal';
 export const HOME_REFRESH_GOAL_DONE = 'home_refresh_goal_done';
+export const HOME_LOAD_GOAL = 'home_load_goal';
 export const HOME_LOAD_GOAL_DONE = 'home_load_goal_done';
 export const HOME_SET_GOAL_INDEX = 'home_set_goal_index'; // set current goal viewing index
 export const HOME_UPDATE_FILTER = 'home_update_filter';
@@ -26,6 +27,7 @@ export const HOME_LOAD_FEED_DONE = 'home_load_feed_done';
 export const HOME_SET_FEED_INDEX = 'home_set_feed_index'; // set current goal viewing index
 export const HOME_UPDATE_FEED_FILTER = 'home_update_feed_filter';
 
+const DEBUG_KEY = '[ Action Home ]';
 const INITIAL_STATE = {
   tabIndex: 0,
   mastermind: {
@@ -58,7 +60,8 @@ const INITIAL_STATE = {
       priorities: ''
     },
     hasNextPage: undefined,
-    loading: false
+    loading: false,
+    loadingMore: false
   }
 };
 
@@ -100,11 +103,18 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, `${type}.data`, data);
     }
 
+    case HOME_LOAD_GOAL: {
+      const { type } = action.payload;
+      let newState = _.cloneDeep(state);
+      return _.set(newState, `${type}.loadingMore`, true);
+    }
+
     case HOME_LOAD_GOAL_DONE: {
       const { skip, data, hasNextPage, type } = action.payload;
       let newState = _.cloneDeep(state);
       newState = _.set(newState, `${type}.loading`, false);
-
+      newState = _.set(newState, `${type}.loadingMore`, false);
+      // console.log(`${DEBUG_KEY}: new skip for type: ${type} is: `, skip);
       if (skip !== undefined) {
         newState = _.set(newState, `${type}.skip`, skip);
       }

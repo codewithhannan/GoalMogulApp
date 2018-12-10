@@ -212,6 +212,7 @@ class GoalDetailCard2 extends Component {
             visible={this.props.showSuggestionModal}
             onCancel={() => this.props.cancelSuggestion()}
             onAttach={() => {
+              // This function requires more params now as we move to V3
               this.props.attachSuggestion();
             }}
             pageId={undefined}

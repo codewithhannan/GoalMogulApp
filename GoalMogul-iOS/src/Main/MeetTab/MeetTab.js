@@ -23,6 +23,11 @@ import {
   preloadMeet,
 } from '../../actions';
 
+// styles
+import {
+  BACKGROUND_COLOR
+} from '../../styles';
+
 class MeetTab extends Component {
 
   componentWillMount() {
@@ -93,7 +98,7 @@ class MeetTab extends Component {
   render() {
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
           <SearchBarHeader rightIcon='menu' />
           <TabView
             navigationState={this.props.navigationState}

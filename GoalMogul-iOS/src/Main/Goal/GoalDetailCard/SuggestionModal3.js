@@ -11,7 +11,6 @@ import {
   View,
   Modal,
   Text,
-  FlatList,
   Image,
   TouchableOpacity,
   ScrollView,
@@ -20,6 +19,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 // Components
 import ModalHeader from '../../../Main/Common/Header/ModalHeader';
@@ -168,7 +168,8 @@ class SuggestionModal extends Component {
 
     const optionsCollapsedText = optionsCollapsed
       ? (
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity
+          activeOpacity={0.85}
           style={{ width: 50, justifyContent: 'center' }}
           onPress={this.handleExpand}
         >
@@ -229,7 +230,7 @@ class SuggestionModal extends Component {
         <SearchSuggestion pageId={this.props.pageId} opacity={this.suggestionOpacity} />
       );
     }
-    if (suggestionType === 'Need' || suggestionType === 'Step') {
+    if (suggestionType === 'NewNeed' || suggestionType === 'NewStep') {
       return (
         <NeedStepSuggestion pageId={this.props.pageId} opacity={this.suggestionOpacity} />
       );
@@ -259,20 +260,30 @@ class SuggestionModal extends Component {
           onCancel={this.props.onCancel}
           onAction={() => this.props.onAttach()}
         />
-        <ScrollView>
-          <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
+          <KeyboardAwareScrollView
+            innerRef={ref => { this.scrollview = ref; }}
+            style={styles.scroll}
+            extraScrollHeight={13}
+            contentContainerStyle={{
+              backgroundColor: 'white',
+              flexGrow: 1 // this will fix scrollview scroll issue by passing parent view width and height to it
+            }}
+          >
             <View style={{ flex: 1 }}>
               {this.renderGoalPreview(item)}
               {this.renderSuggestionFor(newComment, item)}
               {this.renderOptions(newComment)}
               {this.renderSuggestionBody(newComment)}
             </View>
-          </KeyboardAvoidingView>
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </Modal>
     );
   }
 }
+
+// Legacy usage of KeyboardAvoidingView
+// <ScrollView>
+//   <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
 
 const styles = {
   // Options style
@@ -341,7 +352,7 @@ const IconMapLeft = [
     selected: undefined
   },
   {
-    key: 'Need',
+    key: 'NewNeed',
     text: 'Step or Need',
     value: {
       iconSource: StepIcon,
@@ -419,7 +430,8 @@ const Options = (props) => {
       : { ...styles.suggestionTextStyle };
 
     return (
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity
+        activeOpacity={0.85}
         onPress={() => onPress(key)}
         key={key}
         style={{ marginTop: 15, marginLeft: 30, alignItems: 'flex-start' }}

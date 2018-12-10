@@ -105,7 +105,8 @@ export const refreshGoals = () => (dispatch, getState) => {
     }
   });
   loadGoals(0, limit, token, { priorities, categories, sortBy }, (data) => {
-    console.log(`${DEBUG_KEY}: refreshed goals are: `, data);
+    console.log(`${DEBUG_KEY}: refreshed goals with length: ${data.length}`);
+    // console.log(`${DEBUG_KEY}: refreshed goals are: `, data);
     dispatch({
       type: HOME_REFRESH_GOAL_DONE,
       payload: {
@@ -132,6 +133,8 @@ export const loadMoreGoals = () => (dispatch, getState) => {
   }
   const { categories, priorities, sortBy } = filter;
   loadGoals(skip, limit, token, { priorities, categories, sortBy }, (data) => {
+    console.log(`${DEBUG_KEY}: load more goals with data length: `, data.length);
+    // console.log(`${DEBUG_KEY}: load more goals with data: `, data);
     dispatch({
       type: HOME_LOAD_GOAL_DONE,
       payload: {
@@ -139,7 +142,7 @@ export const loadMoreGoals = () => (dispatch, getState) => {
         // TOOD: fix to remove testData
         // data: [...data, ...testData],
         data,
-        skip: data.length,
+        skip: skip + (data === undefined ? 0 : data.length),
         limit: 20,
         hasNextPage: !(data === undefined || data.length === 0)
       }
@@ -176,7 +179,7 @@ const loadGoals = (skip, limit, token, params, callback, onError) => {
     )
     .then((res) => {
       // console.log('loading goals in mastermind with res: ', res);
-      if (res && res.data) {
+      if (res.status === 200 || (res && res.data)) {
         // Right now return test data
         callback(res.data);
         return;

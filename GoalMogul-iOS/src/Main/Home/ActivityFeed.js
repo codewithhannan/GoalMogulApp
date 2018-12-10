@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 
 // Components
@@ -18,6 +18,7 @@ import {
 } from '../../redux/modules/feed/post/PostActions';
 
 const TAB_KEY = 'activityfeed';
+const DEBUG_KEY = '[ UI ActivityFeed ]';
 
 class ActivityFeed extends Component {
   handleOnLoadMore = () => this.props.loadMoreFeed();
@@ -44,6 +45,22 @@ class ActivityFeed extends Component {
         }}
       />
     );
+  }
+
+  renderListFooter() {
+    const { loadingMore, data } = this.props;
+    // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
+    if (loadingMore && data.length > 4) {
+      return (
+        <View
+          style={{
+            paddingVertical: 20
+          }}
+        >
+          <ActivityIndicator size='large' />
+        </View>
+      );
+    }
   }
 
   /**
@@ -75,6 +92,7 @@ class ActivityFeed extends Component {
             this.props.loading ? '' :
             <EmptyResult text={'No Activity'} />
           }
+          ListFooterComponent={this.renderListFooter()}
           onEndThreshold={0}
         />
       </View>
@@ -83,14 +101,15 @@ class ActivityFeed extends Component {
 }
 
 const mapStateToProps = state => {
-  const { loading, filter, data } = state.home.activityfeed;
+  const { loading, loadingMore, filter, data } = state.home.activityfeed;
 
   // const data = testData;
 
   return {
     data,
     loading,
-    filter
+    filter,
+    loadingMore // For footer indicator
   };
 };
 

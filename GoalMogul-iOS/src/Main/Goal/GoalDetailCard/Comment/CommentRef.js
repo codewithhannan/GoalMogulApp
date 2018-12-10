@@ -6,6 +6,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 // Components
 import ProfileImage from '../../../Common/ProfileImage';
@@ -67,10 +68,10 @@ class CommentRef extends React.PureComponent {
     if (suggestionType === 'Event' && eventRef) {
       return this.props.eventDetailOpenWithId(eventRef._id);
     }
-    if (suggestionType === 'Need') {
+    if (suggestionType === 'NewNeed') {
       return;
     }
-    if (suggestionType === 'Step') {
+    if (suggestionType === 'NewStep') {
       return;
     }
     if (suggestionType === 'ChatConvoRoom' && chatRoomRef) {
@@ -95,7 +96,7 @@ class CommentRef extends React.PureComponent {
   renderTextContent(item) {
     const { title, content } = getTextContent(item);
     return (
-      <View style={{ flex: 1, marginLeft: 12, marginRight: 12, justifyContent: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center' }}>
         <Text style={styles.titleTextStyle}>{title}</Text>
         <Text style={styles.headingTextStyle}>{content}</Text>
       </View>
@@ -117,7 +118,13 @@ class CommentRef extends React.PureComponent {
         defaultImageSource={source}
         defaultImageStyle={{ width: 30, height: 30, ...style }}
         imageUrl={imageUrl}
-        imageContainerStyle={{ alignItems: 'center', justifyContent: 'center', width: 50, height: 50 }}
+        imageContainerStyle={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 50,
+          height: 50,
+          padding: 10
+        }}
       />
     );
   }
@@ -126,9 +133,18 @@ class CommentRef extends React.PureComponent {
   render() {
     const { item } = this.props;
     if (!item) return '';
+    const { suggestionType, suggestionText, suggestionLink } = item;
+
+    // if suggestionType is Custom and no suggestionText and suggestionLink,
+    // then it's a suggestionComment for a step or a need
+    if (suggestionType === 'Custom' && (!suggestionText || _.isEmpty(suggestionText)) &&
+        (!suggestionLink || _.isEmpty(suggestionLink))) {
+      return '';
+    }
 
     return (
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity
+      activeOpacity={0.85}
         style={styles.containerStyle}
         onPress={() => this.handleOnRefPress(item)}
       >
@@ -183,10 +199,10 @@ const switchDefaultImageType = (type, item) => switchCaseFWithVal(item)({
   Custom: () => ({
     source: customIcon
   }),
-  Need: () => ({
+  NewNeed: () => ({
     source: needIcon
   }),
-  Step: () => ({
+  NewStep: () => ({
     source: stepIcon
   })
 })('User')(type);
@@ -225,15 +241,15 @@ const getTextContent = (item) => {
       content: eventRef.description
     };
   }
-  if (suggestionType === 'Need' && suggestionText) {
+  if (suggestionType === 'NewNeed' && suggestionText) {
     ret = {
-      title: 'Need',
+      title: 'Suggested need',
       content: suggestionText
     };
   }
-  if (suggestionType === 'Step' && suggestionText) {
+  if (suggestionType === 'NewStep' && suggestionText) {
     ret = {
-      title: 'Step',
+      title: 'Suggested step',
       content: suggestionText
     };
   }

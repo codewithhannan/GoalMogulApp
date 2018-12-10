@@ -14,7 +14,7 @@ import {
 } from '../../redux/modules/like/LikeActions';
 
 import {
-  createCommentFromSuggestion
+
 } from '../../redux/modules/feed/comment/CommentActions';
 
 import {
@@ -43,7 +43,7 @@ import ActivityBody from './ActivityBody';
 import ActivitySummary from './ActivitySummary';
 
 // Constants
-const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
+const DEBUG_KEY = '[ UI ActivityCard ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 
@@ -196,7 +196,6 @@ export default connect(
   {
     likeGoal,
     unLikeGoal,
-    createCommentFromSuggestion,
     chooseShareDest,
     openPostDetail,
     openGoalDetail

@@ -61,8 +61,9 @@ class SuggestionPreview extends Component {
       content = switchedItem.content;
     }
 
-    if (suggestionType === 'Need' || suggestionType === 'Step') {
-      title = suggestionText;
+    if (suggestionType === 'NewNeed' || suggestionType === 'NewStep') {
+      title = suggestionType === 'NewNeed' ? 'New need' : 'New step';
+      content = suggestionText;
     }
 
     const contentView = content
@@ -77,8 +78,7 @@ class SuggestionPreview extends Component {
       ) : '';
 
     return (
-      <View style={{ flex: 1, marginLeft: 12, marginRight: 12, justifyContent: 'center' }}>
-
+      <View style={{ flex: 1, justifyContent: 'center' }}>
         <Text
           style={styles.titleTextStyle}
           numberOfLines={1}
@@ -101,7 +101,7 @@ class SuggestionPreview extends Component {
         defaultImageSource={source}
         defaultImageStyle={{ width: 30, height: 30, ...style }}
         imageUrl={imageUrl}
-        imageContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}
+        imageContainerStyle={{ padding: 10, justifyContent: 'center' }}
       />
     );
   }
@@ -129,7 +129,7 @@ export const RemoveComponent = (props) => {
   const { onRemove } = props;
   return (
     <TouchableOpacity activeOpacity={0.85} onPress={onRemove} style={styles.iconContainerStyle}>
-      <Image source={cancelIcon} style={{ height: 15, width: 15 }} />
+      <Image source={cancelIcon} style={{ height: 20, width: 20 }} />
     </TouchableOpacity>
   );
 };
@@ -195,10 +195,10 @@ const switchDefaultImageType = (type, item) => switchCaseFWithVal(item)({
   Custom: () => ({
     source: customIcon
   }),
-  Need: () => ({
+  NewNeed: () => ({
     source: needIcon
   }),
-  Step: () => ({
+  NewStep: () => ({
     source: stepIcon
   })
 })('User')(type);

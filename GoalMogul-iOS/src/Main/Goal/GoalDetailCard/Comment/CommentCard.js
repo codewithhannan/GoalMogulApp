@@ -17,7 +17,7 @@ import ReplyIcon from '../../../../asset/utils/reply.png';
 
 // Styles
 import {
-  cardBoxShadow
+  cardBoxBorder
 } from '../../../../styles';
 
 class CommentCard extends React.Component {
@@ -227,7 +227,7 @@ const ChildCommentIcon = () => {
 const styles = {
   cardContainerStyle: {
     marginBottom: 0.5,
-    ...cardBoxShadow
+    ...cardBoxBorder
   },
 
   // Styles related to child comments

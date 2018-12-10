@@ -48,27 +48,39 @@ const renderProgressBar = (percentage) => {
   // console.log(`percentage is: ${percentage}, colorFlex is: ${colorFlex}, layerFlex is: ${layerFlex}`);
   return (
     <View style={{ ...styles.imageStyle, flexDirection: 'row', justifyContent: 'center' }}>
-      <Image source={OpacBar} style={{ width: '100%', zIndex: 2, position: 'absolute' }} />
-      <View
+      <Image
+        source={OpacBar}
         style={{
-          backgroundColor: PROGRESSBAR_COLOR,
-          flex: 1,
-          height: 13
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0,
+          zIndex: 2,
+          position: 'absolute'
         }}
       />
       <View
         style={{
-          height: 13,
+          backgroundColor: PROGRESSBAR_COLOR,
           flex: 1,
+          height: 8
+        }}
+      />
+      <View
+        style={{
+          height: 8,
+          // flex: 1,
           zIndex: 1,
           flexDirection: 'row',
           position: 'absolute',
-          width: '100%'
+          left: 0,
+          right: 0
+
         }}
       >
         <View style={{ flex: colorFlex }} />
         <View style={{ flex: layerFlex, flexDirection: 'row' }}>
-          <Image source={CounterBar} style={{ tintColor: '#f2f2f2' }} />
+          <Image source={CounterBar} style={{ tintColor: '#f2f2f2', height: 8 }} />
           <View style={{ flex: 1, backgroundColor: '#f2f2f2' }} />
         </View>
       </View>
@@ -103,10 +115,11 @@ const styles = {
   containerStyle: {
     flexDirection: 'row',
     marginTop: 2,
-    marginBottom: 6
+    marginBottom: 6,
+    alignItems: 'center'
   },
   imageStyle: {
-    flex: 6,
+    flex: 1,
     marginLeft: 2,
     marginRight: 2
   },

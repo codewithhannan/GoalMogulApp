@@ -16,6 +16,7 @@ import {
 
 import {
   COMMENT_NEW,
+  COMMENT_NEW_UPDATE,
   COMMENT_NEW_TEXT_ON_CHANGE,
   COMMENT_NEW_SUGGESTION_REMOVE,
   COMMENT_NEW_SUGGESTION_CREATE,
@@ -148,6 +149,39 @@ export const createComment = (commentDetail, pageId) =>
   });
 };
 
+/**
+ * Create comment as a suggestion as user enter focused content for a need or a step
+ */
+export const createCommentForSuggestion = ({
+  commentDetail, suggestionFor, suggestionForRef }, pageId) =>
+(dispatch, getState) => {
+  const { userId } = getState().user;
+  const { tab } = getState().navigation;
+
+  dispatch({
+    type: COMMENT_NEW,
+    payload: {
+      ...commentDetail,
+      owner: userId,
+      tab,
+      pageId,
+      suggestionFor,
+      suggestionForRef,
+      suggestionType: 'Custom'
+    }
+  });
+
+  dispatch({
+    type: COMMENT_NEW_SUGGESTION_CREATE,
+    payload: {
+      suggestionFor,
+      suggestionForRef,
+      tab,
+      pageId
+    }
+  });
+};
+
 // When user clicks on suggestion icon outside comment box
 // const { parentType, parentRef, commentType, replyToRef } = commentDetail;
 export const createCommentFromSuggestion = (
@@ -177,6 +211,22 @@ export const createCommentFromSuggestion = (
     }
   });
 };
+
+/**
+ * Update the fields / properties for the new comment
+ */
+export const updateNewComment = (newComment, pageId) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+  dispatch({
+    type: COMMENT_NEW_UPDATE,
+    payload: {
+      newComment,
+      pageId,
+      tab
+    }
+  });
+};
+
 /**
  * comment(jsonStrObj):
  * parentRef, parentType("Goal" || "Post"), contentText, contentTags, commentType[, replyToRef, suggestion(Suggestion)]
@@ -327,6 +377,7 @@ const commentAdapter = (state, pageId, tab) => {
   const page = pageId ? `${pageId}` : 'default';
   const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
   let newComment = _.get(state.newComment, `${path}`);
+  // console.log(`${DEBUG_KEY}: raw comment is: `, newComment);
 
   const {
     contentText,
@@ -340,17 +391,22 @@ const commentAdapter = (state, pageId, tab) => {
     mediaRef
   } = newComment;
 
+  const tmpCommentType = suggestion && suggestion.suggestionFor && suggestion.suggestionForRef
+    ? 'Suggestion'
+    : 'Comment';
+
   const commentToReturn = {
     contentText,
     contentTags: [],
     parentType,
     parentRef,
     // content,
-    commentType,
+    commentType: commentType || tmpCommentType,
     replyToRef,
     mediaRef,
     suggestion: suggestionAdapter(suggestion)
   };
+  // console.log(`${DEBUG_KEY}: adapted comment is: `, commentToReturn.suggestion);
 
   if (_.isEmpty(suggestion)) {
     delete commentToReturn.suggestion;
@@ -360,6 +416,7 @@ const commentAdapter = (state, pageId, tab) => {
 };
 
 const suggestionAdapter = (suggestion) => {
+  // console.log(`${DEBUG_KEY}: raw suggestion is: `, suggestion);
   if (!suggestion) return {};
   // TODO: require validation
   const {
@@ -368,7 +425,8 @@ const suggestionAdapter = (suggestion) => {
     suggestionForRef,
     suggestionType,
     suggestionLink,
-    suggestionText
+    suggestionText,
+    goalRef
   } = suggestion;
 
   const ret = switchCase({
@@ -378,11 +436,13 @@ const suggestionAdapter = (suggestion) => {
     ChatConvoRoom: {
       chatRoomRef: selectedItem ? selectedItem._id : undefined
     },
-    Need: {
-
+    NewNeed: {
+      suggestionText,
+      goalRef
     },
-    Step: {
-
+    NewStep: {
+      suggestionText,
+      goalRef
     },
     Event: {
       eventRef: selectedItem ? selectedItem._id : undefined
@@ -393,11 +453,19 @@ const suggestionAdapter = (suggestion) => {
     Custom: {
       suggestionLink,
       suggestionText
-    }
-  })({})(suggestionType);
+    },
+    Default: undefined
+  })('Default')(suggestionType);
 
+  if (ret && !_.isEmpty(ret)) {
+    return {
+      ...ret,
+      suggestionFor,
+      suggestionForRef,
+      suggestionType,
+    };
+  }
   return {
-    ...ret,
     suggestionFor,
     suggestionForRef,
     suggestionType,
@@ -426,8 +494,14 @@ export const createSuggestion = (pageId) => (dispatch, getState) => {
   const { suggestion, tmpSuggestion } = _.get(getState().newComment, `${path}`);
   const { _id } = getState().goalDetail;
   // Already have a suggestion. Open the current one
-  if (suggestion.suggestionFor && suggestion.suggestionForRef) {
-    return openCurrentSuggestion(pageId)(dispatch);
+  if (suggestion.suggestionFor &&
+      suggestion.suggestionForRef &&
+      // When suggestionType is Custom and no suggestionText or suggestionLink,
+      // it means that it's suggestion comment for a step or a need
+      !(suggestion.suggestionType === 'Custom' &&
+      (!suggestion.suggestionText || _.isEmpty(suggestion.suggestionText)) &&
+        (!suggestion.suggestionLink || _.isEmpty(suggestion.suggestionLink)))) {
+    return openCurrentSuggestion(pageId)(dispatch, getState);
   }
 
   // This is the first time user clicks on the suggestion icon. No other entry points.
@@ -503,7 +577,8 @@ export const openCurrentSuggestion = (pageId) => (dispatch, getState) => {
   });
 };
 
-export const attachSuggestion = (pageId) => (dispatch, getState) => {
+export const attachSuggestion = (goalDetail, focusType,
+focusRef, pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   const page = pageId ? `${pageId}` : 'default';
   const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
@@ -513,14 +588,17 @@ export const attachSuggestion = (pageId) => (dispatch, getState) => {
 
   // If nothing is selected, then we show an error
   if (!suggestionText && !suggestionLink && !selectedItem) {
-    return Alert.alert('Error', 'You need to suggestion something.');
+    return Alert.alert('Error', 'You need to suggest something.');
   }
 
   dispatch({
     type: COMMENT_NEW_SUGGESTION_ATTACH,
     payload: {
       tab,
-      pageId
+      pageId,
+      goalDetail,
+      focusType,
+      focusRef
     }
   });
 };

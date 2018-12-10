@@ -78,6 +78,7 @@ const INITIAL_SUGGESETION = {
 };
 
 export const COMMENT_NEW = 'comment_new';
+export const COMMENT_NEW_UPDATE = 'comment_new_update';
 export const COMMENT_NEW_TEXT_ON_CHANGE = 'comment_new_text_on_change';
 export const COMMENT_NEW_SUGGESTION_CREATE = 'comment_new_suggestion_create';
 export const COMMENT_NEW_SUGGESTION_ATTACH = 'comment_new_suggestion_attach';
@@ -201,11 +202,20 @@ export default (state = INITIAL_STATE, action) => {
         replyToRef,
         owner,
         tab,
-        pageId
+        pageId,
+        suggestionFor,
+        suggestionForRef,
+        suggestionType
       } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       let newState = _.cloneDeep(state);
+      if (suggestionFor && suggestionForRef) {
+        const suggestion = {
+          suggestionFor, suggestionForRef, suggestionType
+        };
+        newState = setState(newState, `${path}.suggestion`, suggestion);
+      }
       newState = setState(newState, `${path}.parentType`, parentType);
       newState = setState(newState, `${path}.parentRef`, parentRef);
       newState = setState(newState, `${path}.commentType`, commentType);
@@ -213,6 +223,14 @@ export default (state = INITIAL_STATE, action) => {
       newState = setState(newState, `${path}.owner`, owner);
 
       return newState;
+    }
+
+    case COMMENT_NEW_UPDATE: {
+      let newState = _.cloneDeep(state);
+      const { newComment, tab, pageId } = action.payload;
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      return _.set(newState, `${path}`, newComment);
     }
 
     case COMMENT_NEW_SUGGESTION_UPDAET_TYPE: {
@@ -247,6 +265,7 @@ export default (state = INITIAL_STATE, action) => {
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       newState = _.set(newState, `${path}.showAttachedSuggestion`, false);
+      newState = _.set(newState, `${path}.tmpSuggestion`, { ...INITIAL_SUGGESETION });
       return _.set(newState, `${path}.suggestion`, { ...INITIAL_SUGGESETION });
     }
 
@@ -265,11 +284,33 @@ export default (state = INITIAL_STATE, action) => {
     // Set tmp suggestion to final suggestion
     case COMMENT_NEW_SUGGESTION_ATTACH: {
       let newState = _.cloneDeep(state);
-      const { tab, pageId } = action.payload;
+      const { tab, pageId, goalDetail, focusType, focusRef } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
 
-      const tmpSuggestion = _.get(newState, `${path}.tmpSuggestion`);
+      let tmpSuggestion = _.get(newState, `${path}.tmpSuggestion`);
+      // If suggestion type is NewStep or NewNeed, we need to set the
+      // suggestionFor and suggestionForRef as the current goal
+      // Or if the focusType is comment, it means user is viewing all comments
+      if (tmpSuggestion.suggestionType === 'NewStep' ||
+          tmpSuggestion.suggestionType === 'NewNeed' ||
+          focusType === 'comment') {
+        tmpSuggestion = _.set(tmpSuggestion, 'suggestionFor', 'Goal');
+        tmpSuggestion = _.set(tmpSuggestion, 'suggestionForRef', goalDetail._id);
+
+        if (tmpSuggestion.suggestionType === 'NewStep' ||
+            tmpSuggestion.suggestionType === 'NewNeed') {
+          tmpSuggestion = _.set(tmpSuggestion, 'goalRef', goalDetail._id);
+        }
+      } else if (focusType === 'step' || focusType === 'need') {
+        // If focusType is either step or need, it means user are suggesting
+        // everything else but NewStep and NewNeed for a step or a need
+        tmpSuggestion = _.set(
+          tmpSuggestion,
+          'suggestionFor', focusType === 'step' ? 'Step' : 'Need'
+        );
+        tmpSuggestion = _.set(tmpSuggestion, 'suggestionForRef', focusRef);
+      }
       newState = _.set(newState, `${path}.suggestion`, tmpSuggestion);
       newState = _.set(newState, `${path}.showAttachedSuggestion`, true);
       // Close suggestion modal

@@ -23,11 +23,11 @@ const NextButton = props => {
 
 const styles = {
   containerStyle: {
-    height: 36,
-    width: 36,
-    borderRadius: 18,
-    marginTop: 30,
-    marginBottom: 30,
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    marginTop: 12,
+    marginBottom: 12,
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',

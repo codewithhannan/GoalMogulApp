@@ -18,6 +18,11 @@ import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
 // Actions
 import { updateFriendship, openProfile } from '../../../actions';
 
+// Styles
+import {
+  cardBoxShadow
+} from '../../../styles';
+
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
 const WITHDRAW_INDEX = 0;
 const CANCEL_INDEX = 1;
@@ -190,8 +195,9 @@ class RequestCard extends Component {
     const { user } = item;
     const { headline } = item;
     return (
-      <TouchableOpacity activeOpacity={0.85}
-        style={styles.containerStyle}
+      <TouchableOpacity
+        activeOpacity={0.85}
+        style={[styles.containerStyle, cardBoxShadow]}
         onPress={() => this.props.openProfile(user._id)}
       >
         {this.renderProfileImage(item)}

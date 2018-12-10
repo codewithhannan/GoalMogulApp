@@ -39,7 +39,7 @@ import CreateGoalButtonOverlay from './Main/Common/Button/CreateGoalButtonOverla
 import CreateButtonOverlay from './Main/Common/Button/CreateButtonOverlay';
 import CreateGoalModal from './Main/Goal/CreateGoalModal';
 import CreatePostModal from './Main/Post/CreatePostModal';
-import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCard2';
+import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCardV3';
 import PostDetailCard from './Main/Post/PostDetailCard/PostDetailCard';
 import ShareDetailCard from './Main/Post/ShareDetailCard/ShareDetailCard';
 // Menu

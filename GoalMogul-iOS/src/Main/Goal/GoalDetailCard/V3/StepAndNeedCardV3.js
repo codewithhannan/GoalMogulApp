@@ -7,18 +7,18 @@ import {
 import { Icon } from 'react-native-elements';
 
 // Components
-import SectionCard from '../Common/SectionCard';
+import SectionCardV2 from '../../Common/SectionCardV2';
 
 // Assets
-import HelpIcon from '../../../asset/utils/help.png';
-import StepIcon from '../../../asset/utils/steps.png';
+import HelpIcon from '../../../../asset/utils/help.png';
+import StepIcon from '../../../../asset/utils/steps.png';
 
 // Styles
 import {
-  cardBoxBorder
-} from '../../../styles';
 
-class StepAndNeedCard extends Component {
+} from '../../../../styles';
+
+class StepAndNeedCardV3 extends Component {
 
   renderSectionTitle(item) {
     if (item.sectionTitle === 'needs') {
@@ -50,17 +50,10 @@ class StepAndNeedCard extends Component {
     }
 
     return (
-      <View style={cardBoxBorder}>
-        <SectionCard
-          item={item}
-          onPress={() => {
-            this.props.onPress();
-          }}
-          type={item.type}
-          goalRef={goalRef}
-          isSelf={this.props.isSelf}
-        />
-      </View>
+      <SectionCardV2
+        type={item.type}
+        {...this.props}
+      />
     );
   }
 }
@@ -77,7 +70,8 @@ const styles = {
       alignItems: 'center',
       flexDirection: 'row',
       height: 38,
-      marginLeft: 15
+      marginLeft: 15,
+      marginTop: 10
     },
     iconStyle: {
       height: 26,
@@ -117,4 +111,4 @@ const SectionTitle = (props) => {
   );
 };
 
-export default StepAndNeedCard;
+export default StepAndNeedCardV3;

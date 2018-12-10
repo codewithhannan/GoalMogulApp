@@ -59,7 +59,7 @@ class MutualFriends extends Component {
         visible={this.state.modalVisible}
       >
         <ModalHeader
-          title={`${this.props.user.name}\'s friends`}
+          title={`${this.props.user.name}\'s Friends`}
           actionText=''
           onCancel={() => {
             this.closeModal();

@@ -15,7 +15,6 @@ import {
 } from '../../../redux/modules/feed/post/PostActions';
 
 import {
-  createCommentFromSuggestion,
   refreshComments
 } from '../../../redux/modules/feed/comment/CommentActions';
 
@@ -196,7 +195,6 @@ export default connect(
   mapStateToProps,
   {
     closePostDetail,
-    createCommentFromSuggestion,
     refreshComments
   }
 )(PostDetailCard);

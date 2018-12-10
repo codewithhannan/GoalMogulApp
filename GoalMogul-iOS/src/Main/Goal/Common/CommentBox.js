@@ -5,7 +5,9 @@ import {
   Text,
   SafeAreaView,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -50,10 +52,15 @@ class CommentBox extends Component {
       newValue: '',
       height: 34,
       defaultValue: 'Write a Comment...'
+      // position: 'absolute'
     };
   }
 
   componentDidMount() {
+    // this.keyboardDidShowListener = Keyboard.addListener(
+    //   'keyboardDidShow', this._keyboardDidShow);
+    // this.keyboardDidHideListener = Keyboard.addListener(
+    //   'keyboardDidHide', this._keyboardDidHide);
     if (this.props.onRef !== null) {
       this.props.onRef(this);
     }
@@ -62,6 +69,29 @@ class CommentBox extends Component {
       defaultValue: 'Write a Comment...'
     });
   }
+
+  // componentWillUnmount() {
+  //   this.keyboardDidShowListener.remove();
+  //   this.keyboardDidHideListener.remove();
+  // }
+
+  // _keyboardDidShow = () => {
+  //   if (this.state.position !== 'relative') {
+  //     this.setState({
+  //       ...this.state,
+  //       position: 'relative'
+  //     });
+  //   }
+  // }
+  //
+  // _keyboardDidHide = () => {
+  //   if (this.state.position !== 'absolute') {
+  //     this.setState({
+  //       ...this.state,
+  //       position: 'absolute'
+  //     });
+  //   }
+  // }
 
   handleOnPost = (uploading) => {
     // Ensure we only create comment once
@@ -139,7 +169,8 @@ class CommentBox extends Component {
     const { mediaRef } = newComment;
     const disableButton = mediaRef !== undefined && mediaRef !== '';
     return (
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity
+        activeOpacity={0.85}
         style={styles.iconContainerStyle}
         onPress={() => {
           console.log('suggestion on click in comment box');
@@ -233,7 +264,8 @@ class CommentBox extends Component {
 
     const color = '#17B3EC';
     return (
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity
+        activeOpacity={0.85}
         style={styles.postContainerStyle}
         onPress={() => this.handleOnPost(uploading)}
         disabled={disable}
@@ -269,7 +301,7 @@ class CommentBox extends Component {
   }
 
   render() {
-    const { pageId, newComment, hasSuggestion } = this.props;
+    const { pageId, newComment, hasSuggestion, onSubmitEditing } = this.props;
     if (!newComment || !newComment.parentRef) return '';
 
     const { uploading } = newComment;
@@ -311,6 +343,7 @@ class CommentBox extends Component {
               value={newComment.contentText}
               defaultValue={this.state.defaultValue}
               onBlur={() => this.handleOnBlur(newComment)}
+              onSubmitEditing={onSubmitEditing}
             />
           </View>
           {this.renderPost(newComment)}
