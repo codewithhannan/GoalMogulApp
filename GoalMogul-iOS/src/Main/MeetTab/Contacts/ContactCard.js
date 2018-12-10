@@ -21,6 +21,11 @@ import {
   openProfile
 } from '../../../actions';
 
+// Styles
+import {
+  cardBoxShadow
+} from '../../../styles';
+
 class ContactCard extends Component {
   state = {
     requested: false,
@@ -94,7 +99,11 @@ class ContactCard extends Component {
 
     const { headline } = item;
     return (
-      <TouchableOpacity activeOpacity={0.85} style={styles.containerStyle} onPress={this.handleOnOpenProfile}>
+      <TouchableOpacity
+        activeOpacity={0.85}
+        style={[styles.containerStyle, cardBoxShadow]} 
+        onPress={this.handleOnOpenProfile}
+      >
         {this.renderProfileImage()}
 
         <View style={styles.bodyContainerStyle}>

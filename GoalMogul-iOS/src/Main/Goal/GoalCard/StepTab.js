@@ -65,18 +65,18 @@ class StepTab extends Component {
       }
       return '';
     });
-    if (steps.length < 3) {
-      sections.push(
-        <View
-          style={{ height: 40, backgroundColor: 'white', marginTop: 0.5 }} key={steps.length}
-        />
-      );
-    }
     if (steps.length === 0) {
       sections.push(
         <SectionCard
           type='Step'
           key='empty-step'
+        />
+      );
+    }
+    if (steps.length < 3) {
+      sections.push(
+        <View
+          style={{ height: 40, backgroundColor: 'white', marginTop: 0.5 }} key={steps.length}
         />
       );
     }

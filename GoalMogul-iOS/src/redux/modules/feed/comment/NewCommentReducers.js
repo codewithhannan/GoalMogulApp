@@ -284,11 +284,28 @@ export default (state = INITIAL_STATE, action) => {
     // Set tmp suggestion to final suggestion
     case COMMENT_NEW_SUGGESTION_ATTACH: {
       let newState = _.cloneDeep(state);
-      const { tab, pageId } = action.payload;
+      const { tab, pageId, goalDetail, focusType, focusRef } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
 
-      const tmpSuggestion = _.get(newState, `${path}.tmpSuggestion`);
+      let tmpSuggestion = _.get(newState, `${path}.tmpSuggestion`);
+      // If suggestion type is NewStep or NewNeed, we need to set the
+      // suggestionFor and suggestionForRef as the current goal
+      // Or if the focusType is comment, it means user is viewing all comments
+      if (tmpSuggestion.suggestionType === 'NewStep' ||
+          tmpSuggestion.suggestionType === 'NewNeed' ||
+          focusType === 'comment') {
+        tmpSuggestion = _.set(tmpSuggestion, 'suggestionFor', 'Goal');
+        tmpSuggestion = _.set(tmpSuggestion, 'suggestionForRef', goalDetail._id);
+      } else if (focusType === 'step' || focusType === 'need') {
+        // If focusType is either step or need, it means user are suggesting
+        // everything else but NewStep and NewNeed for a step or a need
+        tmpSuggestion = _.set(
+          tmpSuggestion,
+          'suggestionFor', focusType === 'step' ? 'Step' : 'Need'
+        );
+        tmpSuggestion = _.set(tmpSuggestion, 'suggestionForRef', focusRef);
+      }
       newState = _.set(newState, `${path}.suggestion`, tmpSuggestion);
       newState = _.set(newState, `${path}.showAttachedSuggestion`, true);
       // Close suggestion modal

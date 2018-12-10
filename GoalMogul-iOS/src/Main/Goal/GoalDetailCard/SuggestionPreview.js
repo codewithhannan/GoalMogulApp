@@ -61,8 +61,9 @@ class SuggestionPreview extends Component {
       content = switchedItem.content;
     }
 
-    if (suggestionType === 'Need' || suggestionType === 'Step') {
-      title = suggestionText;
+    if (suggestionType === 'NewNeed' || suggestionType === 'NewStep') {
+      title = suggestionType === 'NewNeed' ? 'New need' : 'New step';
+      content = suggestionText;
     }
 
     const contentView = content
@@ -195,10 +196,10 @@ const switchDefaultImageType = (type, item) => switchCaseFWithVal(item)({
   Custom: () => ({
     source: customIcon
   }),
-  Need: () => ({
+  NewNeed: () => ({
     source: needIcon
   }),
-  Step: () => ({
+  NewStep: () => ({
     source: stepIcon
   })
 })('User')(type);

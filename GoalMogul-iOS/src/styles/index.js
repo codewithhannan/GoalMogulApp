@@ -14,12 +14,15 @@ export const imagePreviewContainerStyle = {
   elevation: 1,
 };
 
-export const cardBoxShadow = {
-  // shadowColor: '#ddd',
-  // shadowOffset: { width: 0, height: 1 },
-  // shadowOpacity: 0.3,
-  // shadowRadius: 1,
-  // elevation: 1,
+export const cardBoxBorder = {
   borderTopWidth: 0.5,
   borderTopColor: '#eaeaea'
+};
+
+export const cardBoxShadow = {
+  shadowColor: '#ddd',
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.3,
+  shadowRadius: 1,
+  elevation: 1,
 };

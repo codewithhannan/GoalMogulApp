@@ -26,16 +26,16 @@ class NeedStepSuggestion extends React.Component {
       <View>
         <CheckBox
           title='Need'
-          checked={suggestionType === 'Need'}
+          checked={suggestionType === 'NewNeed'}
           onPress={() =>
-            this.props.updateSuggestionType('Need', pageId)
+            this.props.updateSuggestionType('NewNeed', pageId)
           }
         />
         <CheckBox
           title='Step'
-          checked={suggestionType === 'Step'}
+          checked={suggestionType === 'NewStep'}
           onPress={() =>
-            this.props.updateSuggestionType('Step', pageId)
+            this.props.updateSuggestionType('NewStep', pageId)
           }
         />
       </View>
@@ -45,7 +45,7 @@ class NeedStepSuggestion extends React.Component {
   renderInputField() {
     const { suggestionText, suggestionType } = this.props;
     const titleText = <Text style={styles.titleTextStyle}>Your Suggestion</Text>;
-    const placeholderText = suggestionType === 'Need' ? 'New Need' : 'New Step';
+    const placeholderText = suggestionType === 'NewNeed' ? 'New Need' : 'New Step';
 
     return (
       <SafeAreaView

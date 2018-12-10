@@ -15,7 +15,7 @@ import StepIcon from '../../../asset/utils/steps.png';
 
 // Styles
 import {
-  cardBoxShadow
+  cardBoxBorder
 } from '../../../styles';
 
 class StepAndNeedCard extends Component {
@@ -50,7 +50,7 @@ class StepAndNeedCard extends Component {
     }
 
     return (
-      <View style={cardBoxShadow}>
+      <View style={cardBoxBorder}>
         <SectionCard
           item={item}
           onPress={() => {

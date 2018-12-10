@@ -23,6 +23,11 @@ import {
   openProfile
 } from '../../../actions';
 
+// Styles
+import {
+  cardBoxShadow
+} from '../../../styles';
+
 const FRIENDSHIP_BUTTONS = ['Block', 'Unfriend', 'Cancel'];
 const BLOCK_INDEX = 0;
 const UNFRIEND_INDEX = 1;
@@ -160,7 +165,11 @@ class FriendCard extends Component {
 
     const { headline } = item;
     return (
-      <TouchableOpacity activeOpacity={0.85} style={styles.containerStyle} onPress={this.handleOnOpenProfile}>
+      <TouchableOpacity
+        activeOpacity={0.85}
+        style={[styles.containerStyle, cardBoxShadow]}
+        onPress={this.handleOnOpenProfile}
+      >
         {this.renderProfileImage()}
 
         <View style={styles.bodyContainerStyle}>

@@ -37,7 +37,7 @@ class ActivityHeader extends Component {
       : item.title; // Show title if entity type is goal
 
     return (
-      <View style={{ flexDirection: 'row' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
         <ProfileImage
           imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
           imageUrl={owner && owner.profile ? owner.profile.image : undefined}
@@ -90,7 +90,7 @@ const styles = {
     borderColor: 'lightgray',
     alignItems: 'center',
     borderRadius: 6,
-    alignSelf: 'center',
+    alignSelf: 'flex-start',
     backgroundColor: 'white'
   }
 };

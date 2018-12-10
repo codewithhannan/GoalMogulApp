@@ -178,7 +178,7 @@ class GoalDetailCardV3 extends Component {
             item={goalDetail}
             onSuggestion={() => {
               // Goes to central tab by opening all comments
-              this.props.goalDetailSwitchTabV2ByKey('centralTab', undefined, 'comment');
+              this.props.goalDetailSwitchTabV2ByKey('focusTab', undefined, 'comment');
             }}
             isSelf={this.props.isSelf}
           />
@@ -250,6 +250,7 @@ class GoalDetailCardV3 extends Component {
     const { goalDetail, navigationState } = this.props;
     // console.log('transformed comments to render are: ', comments);
     if (!goalDetail || _.isEmpty(goalDetail)) return '';
+    const { focusType, focusRef } = navigationState;
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -272,7 +273,7 @@ class GoalDetailCardV3 extends Component {
             visible={this.props.showSuggestionModal}
             onCancel={() => this.props.cancelSuggestion()}
             onAttach={() => {
-              this.props.attachSuggestion();
+              this.props.attachSuggestion(goalDetail, focusType, focusRef);
             }}
             pageId={undefined}
             item={goalDetail}

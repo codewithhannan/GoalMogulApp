@@ -16,6 +16,11 @@ import Name from '../../Common/Name';
 import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
 import next from '../../../asset/utils/next.png';
 
+// Styles
+import {
+  cardBoxShadow
+} from '../../../styles';
+
 // Actions
 import { updateFriendship, openProfile } from '../../../actions';
 
@@ -70,7 +75,7 @@ class SuggestedCard extends Component {
   renderButton(_id) {
     return (
       <View style={styles.iconContainerStyle}>
-        <TouchableOpacity 
+        <TouchableOpacity
           activeOpacity={0.85}
           onPress={this.onButtonClicked.bind(this, _id)}
           style={{ padding: 15 }}
@@ -150,9 +155,9 @@ class SuggestedCard extends Component {
 
     const { headline, _id } = item;
     return (
-      <TouchableOpacity 
+      <TouchableOpacity
         activeOpacity={0.85}
-        style={styles.containerStyle}
+        style={[styles.containerStyle, cardBoxShadow]}
         onPress={() => this.props.openProfile(_id)}
       >
         {this.renderProfileImage()}

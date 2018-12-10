@@ -431,10 +431,10 @@ const suggestionAdapter = (suggestion) => {
     ChatConvoRoom: {
       chatRoomRef: selectedItem ? selectedItem._id : undefined
     },
-    Need: {
+    NewNeed: {
 
     },
-    Step: {
+    NewStep: {
 
     },
     Event: {
@@ -487,8 +487,14 @@ export const createSuggestion = (pageId) => (dispatch, getState) => {
   const { suggestion, tmpSuggestion } = _.get(getState().newComment, `${path}`);
   const { _id } = getState().goalDetail;
   // Already have a suggestion. Open the current one
-  if (suggestion.suggestionFor && suggestion.suggestionForRef) {
-    return openCurrentSuggestion(pageId)(dispatch);
+  if (suggestion.suggestionFor &&
+      suggestion.suggestionForRef &&
+      // When suggestionType is Custom and no suggestionText or suggestionLink,
+      // it means that it's suggestion comment for a step or a need
+      !(suggestion.suggestionType === 'Custom' &&
+      (!suggestion.suggestionText || _.isEmpty(suggestion.suggestionText)) &&
+        (!suggestion.suggestionLink || _.isEmpty(suggestion.suggestionLink)))) {
+    return openCurrentSuggestion(pageId)(dispatch, getState);
   }
 
   // This is the first time user clicks on the suggestion icon. No other entry points.
@@ -564,7 +570,8 @@ export const openCurrentSuggestion = (pageId) => (dispatch, getState) => {
   });
 };
 
-export const attachSuggestion = (pageId) => (dispatch, getState) => {
+export const attachSuggestion = (goalDetail, focusType,
+focusRef, pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   const page = pageId ? `${pageId}` : 'default';
   const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
@@ -574,14 +581,17 @@ export const attachSuggestion = (pageId) => (dispatch, getState) => {
 
   // If nothing is selected, then we show an error
   if (!suggestionText && !suggestionLink && !selectedItem) {
-    return Alert.alert('Error', 'You need to suggestion something.');
+    return Alert.alert('Error', 'You need to suggest something.');
   }
 
   dispatch({
     type: COMMENT_NEW_SUGGESTION_ATTACH,
     payload: {
       tab,
-      pageId
+      pageId,
+      goalDetail,
+      focusType,
+      focusRef
     }
   });
 };
