@@ -391,13 +391,17 @@ const commentAdapter = (state, pageId, tab) => {
     mediaRef
   } = newComment;
 
+  const tmpCommentType = suggestion && suggestion.suggestionFor && suggestion.suggestionForRef
+    ? 'Suggestion'
+    : 'Comment';
+
   const commentToReturn = {
     contentText,
     contentTags: [],
     parentType,
     parentRef,
     // content,
-    commentType,
+    commentType: commentType || tmpCommentType,
     replyToRef,
     mediaRef,
     suggestion: suggestionAdapter(suggestion)
@@ -421,7 +425,8 @@ const suggestionAdapter = (suggestion) => {
     suggestionForRef,
     suggestionType,
     suggestionLink,
-    suggestionText
+    suggestionText,
+    goalRef
   } = suggestion;
 
   const ret = switchCase({
@@ -432,10 +437,12 @@ const suggestionAdapter = (suggestion) => {
       chatRoomRef: selectedItem ? selectedItem._id : undefined
     },
     NewNeed: {
-
+      suggestionText,
+      goalRef
     },
     NewStep: {
-
+      suggestionText,
+      goalRef
     },
     Event: {
       eventRef: selectedItem ? selectedItem._id : undefined

@@ -31,7 +31,7 @@ import ProfileImage from './ProfileImage';
 
 class RefPreview extends Component {
   handleOnPress(item, postType, goalRef) {
-    console.log('goalref is : ', goalRef);
+    // console.log('goalref is : ', goalRef);
     if (postType === 'ShareGoal' || postType === 'ShareNeed' || postType === 'ShareStep') {
       return this.props.openGoalDetail(goalRef);
     }
@@ -65,7 +65,7 @@ class RefPreview extends Component {
     // TODO: add a postType ShareStep
     const { title, content, defaultPicture, picture } = switchCaseItem(item, postType);
     return (
-      <TouchableOpacity 
+      <TouchableOpacity
         activeOpacity={0.85}
         style={styles.containerStyle}
         onPress={() => this.handleOnPress(item, postType, goalRef)}

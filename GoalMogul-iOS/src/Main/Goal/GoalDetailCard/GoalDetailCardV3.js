@@ -206,6 +206,7 @@ class GoalDetailCardV3 extends Component {
         isSelf={this.props.isSelf}
         onBackPress={() => this._handleIndexChange(0)}
         onContentSizeChange={this.props.onContentSizeChange}
+        count={this.props.focusedItemCount}
       />
     );
   }
@@ -561,6 +562,9 @@ const mapStateToProps = (state, props) => {
     loading: false
   };
 
+  const { focusType, focusRef } = navigationStateV2;
+  const focusedItemCount = getFocusedItemCount(transformedComments, focusType, focusRef);
+  // console.log('focusedItemCount is: ', focusedItemCount);
   const isSelf = userId === (!goal || _.isEmpty(goal) ? '' : goal.owner._id);
 
   return {
@@ -576,8 +580,36 @@ const mapStateToProps = (state, props) => {
     isSelf,
     // TODO: delete
     // isSelf: true,
-    tab: state.navigation.tab
+    tab: state.navigation.tab,
+    // When on focusTab, show the count for focusedItem
+    focusedItemCount
   };
+};
+
+const getFocusedItemCount = (comments, focusType, focusRef) => {
+  // Initialize data by all comments
+  // console.log(`type is: ${focusType}, ref is: ${focusRef}, count is: ${comments.length}`);
+  let rawComments = comments;
+  let focusedItemCount = 0;
+  // console.log(`${DEBUG_KEY}: focusType is: ${focusType}, ref is: ${focusRef}`);
+  if (focusType === 'step' || focusType === 'need') {
+    // TODO: grab comments by step, filter by typeRef
+    rawComments = rawComments.filter((comment) => {
+      if (comment.suggestion &&
+          comment.suggestion.suggestionForRef &&
+          comment.suggestion.suggestionForRef === focusRef) {
+            return true;
+      }
+      return false;
+    });
+    focusedItemCount = rawComments.length;
+  }
+
+  if (focusType === 'comment') {
+    focusedItemCount = rawComments.length;
+  }
+
+  return focusedItemCount;
 };
 
 export default connect(

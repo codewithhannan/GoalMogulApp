@@ -297,6 +297,11 @@ export default (state = INITIAL_STATE, action) => {
           focusType === 'comment') {
         tmpSuggestion = _.set(tmpSuggestion, 'suggestionFor', 'Goal');
         tmpSuggestion = _.set(tmpSuggestion, 'suggestionForRef', goalDetail._id);
+
+        if (tmpSuggestion.suggestionType === 'NewStep' ||
+            tmpSuggestion.suggestionType === 'NewNeed') {
+          tmpSuggestion = _.set(tmpSuggestion, 'goalRef', goalDetail._id);
+        }
       } else if (focusType === 'step' || focusType === 'need') {
         // If focusType is either step or need, it means user are suggesting
         // everything else but NewStep and NewNeed for a step or a need

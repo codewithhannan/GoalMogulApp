@@ -15,7 +15,7 @@ import StepIcon from '../../../../asset/utils/steps.png';
 
 // Styles
 import {
-  
+
 } from '../../../../styles';
 
 class StepAndNeedCardV3 extends Component {
@@ -51,13 +51,8 @@ class StepAndNeedCardV3 extends Component {
 
     return (
       <SectionCardV2
-        item={item}
-        onCardPress={() => {
-          this.props.onCardPress();
-        }}
         type={item.type}
-        goalRef={goalRef}
-        isSelf={this.props.isSelf}
+        {...this.props}
       />
     );
   }

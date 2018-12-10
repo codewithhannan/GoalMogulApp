@@ -264,7 +264,8 @@ class CommentBox extends Component {
 
     const color = '#17B3EC';
     return (
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity
+        activeOpacity={0.85}
         style={styles.postContainerStyle}
         onPress={() => this.handleOnPost(uploading)}
         disabled={disable}

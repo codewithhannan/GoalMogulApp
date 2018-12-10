@@ -114,7 +114,7 @@ class SectionCardV2 extends Component {
 
   // Render Suggestion icon and number of comments
   renderStats() {
-    const commentCount = 15;
+    const commentCount = this.props.count === undefined ? 15 : this.props.count;
     return (
       <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, paddingBottom: 4 }}>
         <Image

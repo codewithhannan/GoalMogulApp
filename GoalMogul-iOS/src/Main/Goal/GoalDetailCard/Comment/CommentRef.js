@@ -96,7 +96,7 @@ class CommentRef extends React.PureComponent {
   renderTextContent(item) {
     const { title, content } = getTextContent(item);
     return (
-      <View style={{ flex: 1, marginLeft: 12, marginRight: 12, justifyContent: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center' }}>
         <Text style={styles.titleTextStyle}>{title}</Text>
         <Text style={styles.headingTextStyle}>{content}</Text>
       </View>
@@ -122,7 +122,8 @@ class CommentRef extends React.PureComponent {
           alignItems: 'center',
           justifyContent: 'center',
           width: 50,
-          height: 50
+          height: 50,
+          padding: 10
         }}
       />
     );

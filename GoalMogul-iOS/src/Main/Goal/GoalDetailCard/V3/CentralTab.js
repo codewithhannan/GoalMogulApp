@@ -123,7 +123,6 @@ const mapStateToProps = (state) => {
   if (goal) {
     loading = goal.loading;
   }
-  console.log(`${DEBUG_KEY}: loadgin is: `, loading);
 
   return {
     goalDetail: goal,

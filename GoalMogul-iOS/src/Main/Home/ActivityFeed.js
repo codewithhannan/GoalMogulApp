@@ -49,7 +49,7 @@ class ActivityFeed extends Component {
 
   renderListFooter() {
     const { loadingMore, data } = this.props;
-    console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
+    // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
     if (loadingMore && data.length > 4) {
       return (
         <View
