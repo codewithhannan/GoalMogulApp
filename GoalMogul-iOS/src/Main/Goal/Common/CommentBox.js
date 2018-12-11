@@ -174,6 +174,7 @@ class CommentBox extends Component {
         style={styles.iconContainerStyle}
         onPress={() => {
           console.log('suggestion on click in comment box');
+          Keyboard.dismiss();
           this.props.createSuggestion(pageId);
         }}
         disabled={disableButton}

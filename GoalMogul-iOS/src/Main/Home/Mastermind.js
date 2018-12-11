@@ -127,7 +127,7 @@ class Mastermind extends Component {
         <Text
           style={{ color: '#969696', fontSize: 10, fontWeight: '600' }}
         >
-          What is the 'Goal Feed' tab
+          What is the ‘Goals’ feed?
         </Text>
       </TouchableOpacity>
     );
@@ -199,6 +199,7 @@ class Mastermind extends Component {
           initialNumToRender={4}
           inactiveSlideOpacity={0.2}
           inactiveSlideScale={0.85}
+          onEndReachedThreshold={0.2}
         />
         {this.renderPlus()}
         {this.renderNext()}

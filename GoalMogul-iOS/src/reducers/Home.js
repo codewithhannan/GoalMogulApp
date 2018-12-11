@@ -33,7 +33,7 @@ const INITIAL_STATE = {
   mastermind: {
     showPlus: true,
     data: [],
-    limit: 5,
+    limit: 4,
     skip: 0,
     currentIndex: 0,
     filter: {
@@ -44,12 +44,13 @@ const INITIAL_STATE = {
       priorities: ''
     },
     hasNextPage: undefined,
-    loading: false
+    loading: false,
+    refreshing: false
   },
   activityfeed: {
     showPlus: true,
     data: [],
-    limit: 5,
+    limit: 4,
     skip: 0,
     currentIndex: 0,
     filter: {
@@ -88,6 +89,7 @@ export default (state = INITIAL_STATE, action) => {
     case HOME_REFRESH_GOAL: {
       const { type } = action.payload;
       let newState = _.cloneDeep(state);
+      newState = _.set(newState, `${type}.refreshing`, true);
       return _.set(newState, `${type}.loading`, true);
     }
 
@@ -95,6 +97,7 @@ export default (state = INITIAL_STATE, action) => {
       const { skip, data, hasNextPage, type } = action.payload;
       let newState = _.cloneDeep(state);
       newState = _.set(newState, `${type}.loading`, false);
+      newState = _.set(newState, `${type}.refreshing`, false);
 
       if (skip !== undefined) {
         newState = _.set(newState, `${type}.skip`, skip);

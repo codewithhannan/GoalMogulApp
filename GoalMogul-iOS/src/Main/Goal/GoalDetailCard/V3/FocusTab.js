@@ -51,20 +51,23 @@ class FocusTab extends React.PureComponent {
     this.state = {
       keyboardHeight: 0,
       position: 'absolute',
-      commentBoxPadding: new Animated.Value(0)
+      commentBoxPadding: new Animated.Value(0),
+      keyboardDidShow: false
     };
   }
 
   componentDidMount() {
-    this.keyboardDidShowListener = Keyboard.addListener(
+    console.log(`${DEBUG_KEY}: did mount.`);
+    this.keyboardWillShowListener = Keyboard.addListener(
       'keyboardWillShow', this.keyboardWillShow);
-    this.keyboardDidHideListener = Keyboard.addListener(
+    this.keyboardWillHideListener = Keyboard.addListener(
       'keyboardWillHide', this.keyboardWillHide);
   }
 
   componentWillUnmount() {
-    this.keyboardDidShowListener.remove();
-    this.keyboardDidHideListener.remove();
+    console.log(`${DEBUG_KEY}: unmounting.`);
+    this.keyboardWillShowListener.remove();
+    this.keyboardWillHideListener.remove();
   }
 
   keyboardWillShow = (e) => {
@@ -73,7 +76,10 @@ class FocusTab extends React.PureComponent {
     //   offset: e.endCoordinates.height - TOTAL_HEIGHT,
     //   animated: true
     // });
-    const timeout = ((TOTAL_HEIGHT * 210) / e.endCoordinates.height) - 5;
+    if (!this.state.keyboardDidShow) {
+      this.handleReplyTo();
+    }
+    const timeout = ((TOTAL_HEIGHT * 210) / e.endCoordinates.height);
     Animated.sequence([
       Animated.delay(timeout),
       Animated.timing(this.state.commentBoxPadding, {
@@ -88,6 +94,10 @@ class FocusTab extends React.PureComponent {
       toValue: 0,
       duration: 210
     }).start();
+    this.setState({
+      ...this.state,
+      keyboardDidShow: false
+    });
   }
 
   // Refresh goal detail and comments all together
@@ -127,6 +137,10 @@ class FocusTab extends React.PureComponent {
   dialogOnFocus = () => this.commentBox.focus();
 
   handleReplyTo = () => {
+    this.setState({
+      ...this.state,
+      keyboardDidShow: true
+    });
     this.commentBox.focusForReply();
   }
 

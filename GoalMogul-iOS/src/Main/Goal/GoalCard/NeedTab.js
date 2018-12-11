@@ -24,9 +24,9 @@ const testNeed = [
 
 class NeedTab extends Component {
   renderSections(needs) {
-    const { goalRef, onPress } = this.props;
+    const { goalRef, onPress, itemCount } = this.props;
     const sections = needs.map((section, index) => {
-      if (index < 2) {
+      if (index < itemCount - 1) {
         return (
           <SectionCard
             key={index}
@@ -37,7 +37,7 @@ class NeedTab extends Component {
           />
         );
       }
-      if (index === 2) {
+      if (index === itemCount - 1) {
         return (
           <View style={{ backgroundColor: 'white', marginTop: 0.5 }} key={index}>
             <MaskedViewIOS
@@ -71,7 +71,7 @@ class NeedTab extends Component {
         />
       );
     }
-    if (needs.length < 3) {
+    if (needs.length < itemCount) {
       sections.push(
         <View
           style={{ height: 40, backgroundColor: 'white', marginTop: 0.5 }} key={needs.length}
@@ -87,7 +87,8 @@ class NeedTab extends Component {
 
   renderViewGoal() {
     return (
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity
+        activeOpacity={0.85}
         style={{
           flexDirection: 'row',
           alignItems: 'center',

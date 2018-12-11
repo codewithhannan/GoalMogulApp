@@ -3,7 +3,8 @@
  * actions related to a specific comment
  */
 import {
-  Alert
+  Alert,
+  Keyboard
 } from 'react-native';
 import _ from 'lodash';
 import {
@@ -249,6 +250,7 @@ export const postComment = (pageId) => (dispatch, getState) => {
   // TODO: Check if no suggestion and no replyToRef is filled
   // and commentType is Suggestion, then we set commentType to Comment.
   const onError = (err) => {
+    Keyboard.dismiss();
     dispatch({
       type: COMMENT_NEW_POST_FAIL,
       payload: {
@@ -452,7 +454,7 @@ const suggestionAdapter = (suggestion) => {
     },
     Custom: {
       suggestionLink,
-      suggestionText
+      suggestionText: suggestionText || JSON.stringify({})
     },
     Default: undefined
   })('Default')(suggestionType);

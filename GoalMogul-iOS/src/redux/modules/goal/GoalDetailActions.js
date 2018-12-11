@@ -280,7 +280,7 @@ export const editGoalDone = () => (dispatch, getState) => {
 // Show a popup to confirm if user wants to share this goal to mastermind
 export const shareGoalToMastermind = (goalId) => (dispatch, getState) => {
   Alert.alert(
-    'Are you sure to share this goal to mastermind?',
+    'Are you sure you want to share this to the Goal Feed?',
     '',
     [
       {
@@ -289,7 +289,7 @@ export const shareGoalToMastermind = (goalId) => (dispatch, getState) => {
       },
       {
         text: 'Cancel',
-        onPress: () => console.log('User cancel share to mastermind'),
+        onPress: () => console.log('User cancel share to goal feed'),
         style: 'cancel'
       }
     ]

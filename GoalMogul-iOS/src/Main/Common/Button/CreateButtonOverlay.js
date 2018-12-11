@@ -145,7 +145,8 @@ const ActionButton = (props) => {
 
 const actionButtonStyles = {
   containerStyle: {
-    backgroundColor: '#17B3EC',
+    // backgroundColor: '#17B3EC',
+    backgroundColor: '#0397CB',
     height: 35,
     width: 80,
     borderRadius: 6,
