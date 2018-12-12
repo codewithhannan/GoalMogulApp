@@ -23,7 +23,7 @@ import {
 import badge from '../../asset/utils/badge.png';
 import helpIcon from '../../asset/utils/help.png';
 import lightBulb from '../../asset/utils/lightBulb.png';
-import profilePic from '../../asset/test-profile-pic.png';
+import profilePic from '../../asset/utils/defaultUserProfile.png';
 import stepIcon from '../../asset/utils/steps.png';
 
 // Components
@@ -80,11 +80,14 @@ class RefPreview extends Component {
         <View
           style={{
             flex: 1,
-            marginRight: 12,
             justifyContent: 'center',
-            marginTop: 5
+            paddingLeft: 0,
+            paddingTop: 7,
+            paddingBottom: 7,
+            paddingRight: 12,
           }}
         >
+          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
             <Text
               style={styles.titleTextStyle}
               numberOfLines={1}
@@ -92,11 +95,12 @@ class RefPreview extends Component {
             >
               {postType === 'ShareNeed' ? 'Need' : title}
             </Text>
+          </View>
 
-          <View style={{ flex: 2, flexDirection: 'row', alignItems: 'flex-start' }}>
+          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-start' }}>
             <Text
               style={styles.headingTextStyle}
-              numberOfLines={2}
+              numberOfLines={1}
               ellipsizeMode='tail'
             >
               {content}
@@ -168,16 +172,15 @@ const styles = {
     elevation: 1
   },
   titleTextStyle: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
     flexWrap: 'wrap',
     flex: 1
   },
   headingTextStyle: {
-    fontSize: 10,
+    fontSize: 12,
     flexWrap: 'wrap',
     flex: 1,
-    marginTop: 3
   }
 };
 

@@ -33,7 +33,7 @@ const INITIAL_STATE = {
   mastermind: {
     showPlus: true,
     data: [],
-    limit: 5,
+    limit: 4,
     skip: 0,
     currentIndex: 0,
     filter: {
@@ -44,12 +44,13 @@ const INITIAL_STATE = {
       priorities: ''
     },
     hasNextPage: undefined,
-    loading: false
+    loading: false,
+    refreshing: false
   },
   activityfeed: {
     showPlus: true,
     data: [],
-    limit: 5,
+    limit: 4,
     skip: 0,
     currentIndex: 0,
     filter: {
@@ -88,6 +89,7 @@ export default (state = INITIAL_STATE, action) => {
     case HOME_REFRESH_GOAL: {
       const { type } = action.payload;
       let newState = _.cloneDeep(state);
+      newState = _.set(newState, `${type}.refreshing`, true);
       return _.set(newState, `${type}.loading`, true);
     }
 
@@ -95,12 +97,14 @@ export default (state = INITIAL_STATE, action) => {
       const { skip, data, hasNextPage, type } = action.payload;
       let newState = _.cloneDeep(state);
       newState = _.set(newState, `${type}.loading`, false);
+      newState = _.set(newState, `${type}.refreshing`, false);
 
       if (skip !== undefined) {
         newState = _.set(newState, `${type}.skip`, skip);
       }
       newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
-      return _.set(newState, `${type}.data`, data);
+      const sortedData = data.sort((a, b) => new Date(b.created) - new Date(a.created));
+      return _.set(newState, `${type}.data`, sortedData);
     }
 
     case HOME_LOAD_GOAL: {
@@ -120,7 +124,9 @@ export default (state = INITIAL_STATE, action) => {
       }
       newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
       const oldData = _.get(newState, `${type}.data`);
-      return _.set(newState, `${type}.data`, arrayUnique(oldData.concat(data)));
+      const newData = arrayUnique(oldData.concat(data))
+        .sort((a, b) => new Date(b.created) - new Date(a.created));
+      return _.set(newState, `${type}.data`, newData);
     }
 
     case HOME_SET_GOAL_INDEX: {

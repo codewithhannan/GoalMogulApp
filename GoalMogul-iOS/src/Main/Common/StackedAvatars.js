@@ -1,15 +1,13 @@
 import React from 'react';
 import {
   View,
-  Image,
-  Text
+  Image
 } from 'react-native';
 
 /* This is a simple logic to render stacked avatars.
  * Could be refactored to user
  */
 const StackedAvatars = (props) => {
-  const count = '102';
   const { imageSource } = props;
   return (
     <View style={{ flexDirection: 'row', marginTop: 5, marginBottom: 5, alignSelf: 'center' }}>

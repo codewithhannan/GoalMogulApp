@@ -44,6 +44,10 @@ import {
   APP_BLUE
 } from '../../../styles';
 
+import {
+  IPHONE_MODELS
+} from '../../../Utils/Constants';
+
 const tintColor = '#33485e';
 
 // For profile friend setting ActionSheetIOS
@@ -53,8 +57,6 @@ const CANCEL_INDEX = 2;
 const DEBUG_KEY = '[ Component SearchBarHeader ]';
 const SHARE_TO_MENU_OPTTIONS = ['My Tribes', 'My Events', 'Cancel'];
 const CANCEL_INDEX_MEN = 2;
-
-const IPHONE_MODELS = ['iphone 7 plus', 'iphone x', 'iPhone xs', 'iphone xr'];
 
 /**
   TODO: refactor element to have consistent behavior
@@ -184,7 +186,8 @@ class SearchBarHeader extends Component {
     if (image) {
       image = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
       profileImage = (
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity
+          activeOpacity={0.85}
           style={styles.headerLeftImage}
           onPress={this.handleProfileOnClick.bind(this)}
         >
@@ -279,7 +282,7 @@ class SearchBarHeader extends Component {
 
   render() {
     const paddingTop = (
-      Platform.OS === 'ios' && 
+      Platform.OS === 'ios' &&
       IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
     ) ? 40 : 30;
     return (
@@ -304,7 +307,8 @@ const styles = {
     marginRight: 5,
   },
   searchInputStyle: {
-    backgroundColor: '#f3f4f6',
+    // backgroundColor: '#f3f4f6',
+    backgroundColor: '#0397CB',
     fontSize: 12,
     height: 28,
   },
@@ -342,7 +346,8 @@ const styles = {
   searchButtonContainerStyle: {
     height: 30,
     width: 260,
-    backgroundColor: '#1998c9',
+    // backgroundColor: '#1998c9',
+    backgroundColor: '#0397CB',
     borderRadius: 16,
     padding: 0,
     marginRight: 14,

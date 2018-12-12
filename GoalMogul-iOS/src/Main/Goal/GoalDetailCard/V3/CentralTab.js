@@ -83,6 +83,7 @@ class CentralTab extends React.Component<{}> {
           this.props.createCommentForSuggestion(newCommentParams);
         }}
         isSelf={this.props.isSelf}
+        count={props.item.count}
       />
     );
   }
@@ -116,7 +117,7 @@ CentralTab.defaultPros = {
   isSelf: false
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
   const goalDetail = getGoalDetailByTab(state);
   const { goal } = goalDetail;
   let loading = false;
@@ -127,7 +128,7 @@ const mapStateToProps = (state) => {
   return {
     goalDetail: goal,
     loading,
-    data: getGoalStepsAndNeeds(state),
+    data: getGoalStepsAndNeeds(state, props.pageId),
   };
 };
 

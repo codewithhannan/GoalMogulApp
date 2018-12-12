@@ -3,7 +3,8 @@
  * actions related to a specific comment
  */
 import {
-  Alert
+  Alert,
+  Keyboard
 } from 'react-native';
 import _ from 'lodash';
 import {
@@ -17,6 +18,7 @@ import {
 import {
   COMMENT_NEW,
   COMMENT_NEW_UPDATE,
+  COMMENT_NEW_UPDATE_COMMENT_TYPE,
   COMMENT_NEW_TEXT_ON_CHANGE,
   COMMENT_NEW_SUGGESTION_REMOVE,
   COMMENT_NEW_SUGGESTION_CREATE,
@@ -212,6 +214,18 @@ export const createCommentFromSuggestion = (
   });
 };
 
+export const resetCommentType = (commentType, pageId) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+  dispatch({
+    type: COMMENT_NEW_UPDATE_COMMENT_TYPE,
+    payload: {
+      commentType,
+      pageId,
+      tab
+    }
+  });
+};
+
 /**
  * Update the fields / properties for the new comment
  */
@@ -249,6 +263,7 @@ export const postComment = (pageId) => (dispatch, getState) => {
   // TODO: Check if no suggestion and no replyToRef is filled
   // and commentType is Suggestion, then we set commentType to Comment.
   const onError = (err) => {
+    Keyboard.dismiss();
     dispatch({
       type: COMMENT_NEW_POST_FAIL,
       payload: {
@@ -452,7 +467,7 @@ const suggestionAdapter = (suggestion) => {
     },
     Custom: {
       suggestionLink,
-      suggestionText
+      suggestionText: suggestionText || JSON.stringify({})
     },
     Default: undefined
   })('Default')(suggestionType);

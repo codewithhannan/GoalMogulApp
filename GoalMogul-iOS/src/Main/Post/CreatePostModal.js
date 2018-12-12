@@ -21,8 +21,6 @@ import Modal from 'react-native-modal';
 
 /* Components */
 import ModalHeader from '../Common/Header/ModalHeader';
-import Button from '../Goal/Button';
-import InputField from '../Common/TextInput/InputField';
 import ViewableSettingMenu from '../Goal/ViewableSettingMenu';
 import ImageModal from '../Common/ImageModal';
 
@@ -115,7 +113,7 @@ class CreatePostModal extends Component {
       this.props.callback
     );
   }
-  
+
   /**
    * This is added on ms2 polish as a new way to render textinput for post
    */
@@ -146,7 +144,7 @@ class CreatePostModal extends Component {
       </View>
     );
   }
-  
+
   // renderInput = ({
   //   input: { onChange, onFocus, value, ...restInput },
   //   multiline,
@@ -238,11 +236,11 @@ class CreatePostModal extends Component {
 
     if (this.props.mediaRef) {
       return (
-        <View style={{ backgroundColor: 'gray' }}>
+        <View style={{ backgroundColor: 'gray', borderRadius: 8 }}>
           <ImageBackground
             style={styles.mediaStyle}
             source={{ uri: imageUrl }}
-            imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'stretch' }}
+            imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
           >
             <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
               <Image
@@ -250,14 +248,15 @@ class CreatePostModal extends Component {
                 style={{
                   alignSelf: 'center',
                   justifyContent: 'center',
-                  height: 40,
+                  height: 45,
                   width: 50,
                   tintColor: '#fafafa'
                 }}
               />
             </View>
 
-            <TouchableOpacity activeOpacity={0.85}
+            <TouchableOpacity
+              activeOpacity={0.85}
               onPress={() => this.setState({ mediaModal: true })}
               style={{ position: 'absolute', top: 10, right: 15 }}
             >
@@ -267,7 +266,8 @@ class CreatePostModal extends Component {
               />
             </TouchableOpacity>
 
-            <TouchableOpacity activeOpacity={0.85}
+            <TouchableOpacity
+              activeOpacity={0.85}
               onPress={() => this.props.change('mediaRef', false)}
               style={{ position: 'absolute', top: 10, left: 15 }}
             >
@@ -285,7 +285,7 @@ class CreatePostModal extends Component {
 
   renderImageModal() {
     return (
-      <ImageModal 
+      <ImageModal
         mediaRef={this.props.mediaRef}
         mediaModal={this.state.mediaModal}
         closeModal={() => this.setState({ mediaModal: false })}
@@ -312,14 +312,22 @@ class CreatePostModal extends Component {
   }
 
   renderActionIcons() {
+    // If user already has the image, they need to delete the image and then
+    // these icons would show up to attach another image
+    if (this.props.mediaRef) return '';
     const actionIconStyle = { ...styles.actionIconStyle };
     const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
     return (
       <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10 }}>
-        <TouchableOpacity activeOpacity={0.85} style={actionIconWrapperStyle} onPress={this.handleOpenCamera}>
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={actionIconWrapperStyle}
+          onPress={this.handleOpenCamera}
+        >
           <Image style={actionIconStyle} source={camera} />
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity
+          activeOpacity={0.85}
           style={{ ...actionIconWrapperStyle, marginLeft: 5 }}
           onPress={this.handleOpenCameraRoll}
         >
@@ -333,8 +341,8 @@ class CreatePostModal extends Component {
   //   const { handleSubmit, errors } = this.props;
   //   return (
   //     <SafeAreaView
-  //       forceInset={{ bottom: 'always' }} 
-  //       style={{ flex: 1, backgroundColor: '#6f6f6f' }} 
+  //       forceInset={{ bottom: 'always' }}
+  //       style={{ flex: 1, backgroundColor: '#6f6f6f' }}
   //       onPress={() => {
   //         Keyboard.dismiss()
   //       }}
@@ -358,13 +366,13 @@ class CreatePostModal extends Component {
   //           {this.renderPost()}
   //           {this.renderActionIcons()}
   //         </View>
-  // 
+  //
   //       {this.renderImageModal()}
   //       </KeyboardAwareScrollView>
   //     </SafeAreaView>
   //   );
   // }
-  
+
   render() {
     const { handleSubmit, errors } = this.props;
     return (
@@ -385,7 +393,7 @@ class CreatePostModal extends Component {
             {this.renderPost()}
             {this.renderActionIcons()}
           </View>
-  
+
         </ScrollView>
         {this.renderImageModal()}
       </KeyboardAvoidingView>
@@ -414,7 +422,8 @@ const styles = {
     width: '100%',
     textAlign: 'justify',
     height: 'auto',
-    maxHeight: 200
+    maxHeight: 200,
+    minHeight: 80
   },
   imageStyle: {
     height: 54,

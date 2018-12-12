@@ -69,7 +69,7 @@ class ActivityBody extends React.Component {
             <ImageBackground
               style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle }}
               source={{ uri: imageUrl }}
-              imageStyle={{ borderRadius: 8, resizeMode: 'stretch' }}
+              imageStyle={{ borderRadius: 8, resizeMode: 'cover' }}
             >
             {/*
               <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
@@ -121,7 +121,7 @@ class ActivityBody extends React.Component {
 
   renderPostImageModal(imageUrl) {
     return (
-      <ImageModal 
+      <ImageModal
         mediaRef={imageUrl}
         mediaModal={this.state.mediaModal}
         closeModal={() => this.setState({ mediaModal: false })}

@@ -4,13 +4,12 @@ import {
   Text,
   // MaskedViewIOS,
   Dimensions,
-  TouchableOpacity
+  TouchableOpacity,
+  Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
-import {
-  GestureHandler
-} from 'expo';
+import { Constants } from 'expo';
 // import {
 //   FlingGestureHandler,
 //   Directions,
@@ -40,10 +39,8 @@ import Headline from '../Common/Headline';
 import Timestamp from '../Common/Timestamp';
 import ActionButton from '../Common/ActionButton';
 import ActionButtonGroup from '../Common/ActionButtonGroup';
-import SectionCard from '../Common/SectionCard';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import ProgressBar from '../Common/ProgressBar';
-import NextButton from '../Common/NextButton';
 import NeedTab from './NeedTab';
 import StepTab from './StepTab';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
@@ -59,20 +56,13 @@ import HelpIcon from '../../../asset/utils/help.png';
 import StepIcon from '../../../asset/utils/steps.png';
 
 // Constants
+import { IPHONE_MODELS } from '../../../Utils/Constants';
+
 const { height } = Dimensions.get('window');
 const CardHeight = height * 0.7;
-
-const testNeed = [
-  {
-    text: 'Get in contact with Nuclear expert'
-  },
-  {
-    text: 'Introduction to someone from Bill and Melinda Gates foundation'
-  },
-  {
-    text: 'Introduction to someone from Bill and Melinda Gates foundation'
-  },
-];
+const ITEM_COUNT = Platform.OS === 'ios' &&
+  IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+  ? 3 : 2;
 
 const TabIconMap = {
   steps: {
@@ -157,6 +147,7 @@ class GoalCard extends React.PureComponent {
         item={this.props.item.needs}
         onPress={() => this.props.onPress(this.props.item)}
         goalRef={this.props.item}
+        itemCount={ITEM_COUNT}
       />
     ),
     steps: () => (
@@ -164,6 +155,7 @@ class GoalCard extends React.PureComponent {
         item={this.props.item.steps}
         onPress={() => this.props.onPress(this.props.item)}
         goalRef={this.props.item}
+        itemCount={ITEM_COUNT}
       />
     )
   });
@@ -240,7 +232,8 @@ class GoalCard extends React.PureComponent {
   // Note: deprecated
   renderViewGoal() {
     return (
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity
+        activeOpacity={0.85}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -324,8 +317,8 @@ class GoalCard extends React.PureComponent {
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <GoalCardHeader item={item} />
           <View style={{ backgroundColor: '#e5e5e5' }}>
-            <TouchableOpacity 
-              activeOpacity={0.85} 
+            <TouchableOpacity
+              activeOpacity={0.85}
               style={styles.containerStyle}
               onPress={() => this.props.onPress(this.props.item)}
             >
@@ -357,11 +350,15 @@ const getTabHeight = (navigationState, item) => {
   const { routes, index } = navigationState;
   const tab = routes[index].key;
   const dataToRender = _.get(item, `${tab}`);
-  if (!dataToRender || dataToRender.length === 0) {
+  if (!dataToRender || dataToRender.length === 0 || dataToRender.length === 1) {
     return SECTION_CARD_HEIGHT + VIEW_GOAL_HEIGHT + TAB_HEADER_HEIGHT;
   }
-  if (dataToRender.length < 3) {
-    return ((dataToRender.length * SECTION_CARD_HEIGHT) + VIEW_GOAL_HEIGHT + TAB_HEADER_HEIGHT);
+  // if (dataToRender.length < 3) {
+  //   return ((dataToRender.length * SECTION_CARD_HEIGHT) + VIEW_GOAL_HEIGHT + TAB_HEADER_HEIGHT);
+  // }
+  if (dataToRender.length < ITEM_COUNT || ITEM_COUNT < 3) {
+    return ((Math.min(dataToRender.length, ITEM_COUNT) * SECTION_CARD_HEIGHT)
+      + VIEW_GOAL_HEIGHT);
   }
   return CardHeight * 0.51;
 };

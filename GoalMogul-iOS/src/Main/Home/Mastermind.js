@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
-  FlatList,
-  Modal,
   TouchableOpacity,
   Text
 } from 'react-native';
@@ -127,25 +125,40 @@ class Mastermind extends Component {
         <Text
           style={{ color: '#969696', fontSize: 10, fontWeight: '600' }}
         >
-          What is the 'Goal Feed' tab
+          What is the ‘Goals’ feed?
         </Text>
       </TouchableOpacity>
     );
   }
 
+  // This was used in V1 where user can choose either to create goal or post
+  // in goal feed. But now, they can only create goal in goal feed
+  // and post in activity feed
+  // renderPlus() {
+  //   if (this.props.showPlus) {
+  //     return (
+  //       <TouchableOpacity
+  //         activeOpacity={0.85}
+  //         style={styles.iconContainerStyle}
+  //         onPress={this.handleCreateGoal}
+  //       >
+  //         <Image style={styles.iconStyle} source={plus} />
+  //       </TouchableOpacity>
+  //     );
+  //   }
+  //   return '';
+  // }
+
   renderPlus() {
-    if (this.props.showPlus) {
-      return (
-        <TouchableOpacity
-          activeOpacity={0.85}
-          style={styles.iconContainerStyle}
-          onPress={this.handleCreateGoal}
-        >
-          <Image style={styles.iconStyle} source={plus} />
-        </TouchableOpacity>
-      );
-    }
-    return '';
+    return (
+      <TouchableOpacity
+        activeOpacity={0.85}
+        style={styles.iconContainerStyle}
+        onPress={() => Actions.createGoalModal()}
+      >
+        <Image style={styles.iconStyle} source={plus} />
+      </TouchableOpacity>
+    );
   }
 
   renderNext() {
@@ -199,6 +212,7 @@ class Mastermind extends Component {
           initialNumToRender={4}
           inactiveSlideOpacity={0.2}
           inactiveSlideScale={0.85}
+          onEndReachedThreshold={0.2}
         />
         {this.renderPlus()}
         {this.renderNext()}

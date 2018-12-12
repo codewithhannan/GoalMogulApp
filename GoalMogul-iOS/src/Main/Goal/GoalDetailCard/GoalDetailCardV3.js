@@ -144,7 +144,7 @@ class GoalDetailCardV3 extends Component {
               [{ nativeEvent: { contentOffset: { y: this.state.scroll } } }],
               { useNativeDriver: true }
             )}
-            contentContainerStyle={{ paddingTop: HEADER_HEIGHT + 20, flexGrow: 1 }}
+            contentContainerStyle={{ paddingTop: HEADER_HEIGHT + 30, flexGrow: 1 }}
             contentOffset={{ y:
               this.state.scroll._value > SCROLLABLE_HEIGHT
                 ? SCROLLABLE_HEIGHT

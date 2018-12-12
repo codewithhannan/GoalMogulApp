@@ -80,12 +80,17 @@ class GoalFeedInfoModal extends React.PureComponent {
 
   renderHeader() {
     const headerText = (
-      <Text style={styles.headerBasicTextStyle}>
-        <Text style={{ fontWeight: '700' }}>
-          Goal feed{' '}
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Text style={styles.headerBasicTextStyle}>
+          <Text style={{ fontWeight: '700' }}>
+            Goal feed{' '}
+          </Text>
         </Text>
-        -- Give help, get help
-      </Text>
+        <View
+          style={{ height: 1.2, width: 15, marginRight: 4, marginTop: 2, backgroundColor: '#7d7d7d' }} 
+        />
+        <Text style={styles.headerBasicTextStyle}>Give help, get help</Text>
+      </View>
     );
     const explainText = (
       <Text style={{ ...styles.basicTextStyle, fontStyle: 'italic', marginTop: 4 }}>
@@ -121,7 +126,7 @@ class GoalFeedInfoModal extends React.PureComponent {
             </View>
             <View>
               <Text style={{ ...styles.basicTextStyle, flexWrap: 'wrap' }}>
-                Watch it appear at the top the Mastermind feed!
+                Watch it appear at the top of the Goal feed!
               </Text>
             </View>
           </View>

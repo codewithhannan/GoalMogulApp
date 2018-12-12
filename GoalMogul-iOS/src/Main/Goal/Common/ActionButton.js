@@ -6,24 +6,52 @@ import {
   View
 } from 'react-native';
 
-const ActionButton = (props) => {
-  const { containerStyle, count } = props;
-  const countText = !count || count === 0
-    ? ''
-    : <Text style={{ ...styles.textStyle, ...props.textStyle }}>{props.count}</Text>;
+class ActionButton extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      buttonDisabled: false
+    };
+  }
 
-  return (
-    <TouchableOpacity activeOpacity={0.85}
-      style={{ ...styles.containerStyle, ...containerStyle }}
-      onPress={props.onPress}
-    >
-      <View style={{ ...styles.iconContainerStyle, ...props.iconContainerStyle }}>
-        <Image source={props.iconSource} style={{ ...styles.iconStyle, ...props.iconStyle }} />
-      </View>
-      {countText}
-    </TouchableOpacity>
-  );
-};
+  handleOnPress = () => {
+    this.setState({
+      ...this.state,
+      buttonDisabled: true
+    });
+    this.props.onPress();
+    setTimeout(() => {
+      this.setState({
+        ...this.state,
+        buttonDisabled: false
+      });
+    }, 500);
+  }
+
+  render() {
+    const { containerStyle, count } = this.props;
+    const countText = !count || count === 0
+      ? ''
+      : <Text style={{ ...styles.textStyle, ...this.props.textStyle }}>{this.props.count}</Text>;
+
+    return (
+      <TouchableOpacity
+        activeOpacity={0.85}
+        style={{ ...styles.containerStyle, ...containerStyle }}
+        onPress={this.handleOnPress}
+        disabled={this.state.buttonDisabled}
+      >
+        <View style={{ ...styles.iconContainerStyle, ...this.props.iconContainerStyle }}>
+          <Image
+            source={this.props.iconSource}
+            style={{ ...styles.iconStyle, ...this.props.iconStyle }}
+          />
+        </View>
+        {countText}
+      </TouchableOpacity>
+    );
+  }
+}
 
 const styles = {
   containerStyle: {

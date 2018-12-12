@@ -141,7 +141,11 @@ class ShareModal extends React.Component {
     const basicText = name === 'Feed' ? 'To' : `To ${name} `;
 
     const shareToComponent = switchCase({
-      Feed: <Text style={shareToBasicTextStyle}>Feed</Text>,
+      Feed: (
+        <Text style={{ paddingLeft: 0, paddingTop: 5, paddingBottom: 5, fontSize: 12, fontWeight: '600' }}>
+          Feed
+        </Text>
+      ),
       Tribe: (
         <ShareToComponent
           name={nameToRender}
@@ -194,7 +198,7 @@ class ShareModal extends React.Component {
       >
         <ModalHeader
           title={modalTitle}
-          actionText='Submit'
+          actionText='Share'
           onCancel={() => this.props.cancelShare()}
           onAction={handleSubmit(this.handleCreate)}
         />
