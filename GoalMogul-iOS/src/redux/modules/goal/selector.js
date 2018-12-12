@@ -4,6 +4,9 @@ import _ from 'lodash';
 const getNeeds = (state) => state.goalDetail.goal.needs;
 const getSteps = (state) => state.goalDetail.goal.steps;
 
+const getComments = (state) => state.comment;
+const getPageId = (state, pageId) => pageId;
+
 const getTab = (state) => state.navigation.tab;
 const getState = (state) => state.goalDetail;
 
@@ -13,27 +16,17 @@ const getState = (state) => state.goalDetail;
  * in GoalDetailCard2
  */
 export const getGoalStepsAndNeeds = createSelector(
-  [getState, getTab],
-  (goalDetails, tab) => {
+  [getState, getTab, getComments, getPageId],
+  (goalDetails, tab, allComments, pageId) => {
     const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
     const goal = _.get(goalDetails, `${path}.goal`);
 
+    const page = pageId ? `${pageId}` : 'default';
+    const commentPath = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+    const comments = _.get(allComments, `${commentPath}`);
+
     const { needs, steps } = goal;
     let res = [];
-    if (needs && needs.length > 0) {
-      res.push({ sectionTitle: 'needs', count: needs.length, _id: 'need-title' });
-    }
-    // Transform needs to have a type
-    let newNeeds = [];
-    if (needs && needs.length !== 0) {
-      newNeeds = needs.map((need) => ({
-        ...need,
-        type: 'need'
-      }));
-    }
-
-    res = res.concat(newNeeds);
-
     if (steps && steps.length > 0) {
       res.push({ sectionTitle: 'steps', count: steps.length, _id: 'step-title' });
     }
@@ -41,13 +34,49 @@ export const getGoalStepsAndNeeds = createSelector(
     // Transform needs to have a type
     let newSteps = [];
     if (steps && steps.length !== 0) {
-      newSteps = steps.map((step) => ({
-        ...step,
-        type: 'step'
-      }));
+      newSteps = steps.map((step) => {
+        const count = comments.data.filter((c) => {
+          if (c.suggestion &&
+              c.suggestion.suggestionForRef &&
+              c.suggestion.suggestionForRef === step._id) {
+                return true;
+          }
+          return false;
+        }).length;
+        return {
+          ...step,
+          type: 'step',
+          count
+        };
+      });
     }
 
     res = res.concat(newSteps);
+
+    if (needs && needs.length > 0) {
+      res.push({ sectionTitle: 'needs', count: needs.length, _id: 'need-title' });
+    }
+    // Transform needs to have a type
+    let newNeeds = [];
+    if (needs && needs.length !== 0) {
+      newNeeds = needs.map((need) => {
+        const count = comments.data.filter((c) => {
+          if (c.suggestion &&
+              c.suggestion.suggestionForRef &&
+              c.suggestion.suggestionForRef === need._id) {
+                return true;
+          }
+          return false;
+        }).length;
+        return {
+          ...need,
+          type: 'need',
+          count
+        };
+      });
+    }
+
+    res = res.concat(newNeeds);
     return res;
   }
 );

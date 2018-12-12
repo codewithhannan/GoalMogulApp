@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
-  FlatList,
-  Modal,
   TouchableOpacity,
   Text
 } from 'react-native';
@@ -133,19 +131,34 @@ class Mastermind extends Component {
     );
   }
 
+  // This was used in V1 where user can choose either to create goal or post
+  // in goal feed. But now, they can only create goal in goal feed
+  // and post in activity feed
+  // renderPlus() {
+  //   if (this.props.showPlus) {
+  //     return (
+  //       <TouchableOpacity
+  //         activeOpacity={0.85}
+  //         style={styles.iconContainerStyle}
+  //         onPress={this.handleCreateGoal}
+  //       >
+  //         <Image style={styles.iconStyle} source={plus} />
+  //       </TouchableOpacity>
+  //     );
+  //   }
+  //   return '';
+  // }
+
   renderPlus() {
-    if (this.props.showPlus) {
-      return (
-        <TouchableOpacity
-          activeOpacity={0.85}
-          style={styles.iconContainerStyle}
-          onPress={this.handleCreateGoal}
-        >
-          <Image style={styles.iconStyle} source={plus} />
-        </TouchableOpacity>
-      );
-    }
-    return '';
+    return (
+      <TouchableOpacity
+        activeOpacity={0.85}
+        style={styles.iconContainerStyle}
+        onPress={() => Actions.createGoalModal()}
+      >
+        <Image style={styles.iconStyle} source={plus} />
+      </TouchableOpacity>
+    );
   }
 
   renderNext() {

@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Image,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity
+} from 'react-native';
 import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 
 // Components
 import ActivityCard from '../Activity/ActivityCard';
-import GoalFilterBar from '../Common/GoalFilterBar';
 import EmptyResult from '../Common/Text/EmptyResult';
+
+// Assets
+import plus from '../../asset/utils/plus.png';
 
 // actions
 import {
@@ -76,6 +85,18 @@ class ActivityFeed extends Component {
     return '';
   }
 
+  renderPlus() {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.85}
+        style={styles.iconContainerStyle}
+        onPress={() => Actions.createPostModal()}
+      >
+        <Image style={styles.iconStyle} source={plus} />
+      </TouchableOpacity>
+    );
+  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -95,6 +116,7 @@ class ActivityFeed extends Component {
           ListFooterComponent={this.renderListFooter()}
           onEndThreshold={0}
         />
+        {this.renderPlus()}
       </View>
     );
   }
@@ -111,6 +133,31 @@ const mapStateToProps = state => {
     filter,
     loadingMore // For footer indicator
   };
+};
+
+const styles = {
+  iconContainerStyle: {
+    position: 'absolute',
+    bottom: 20,
+    right: 15,
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 3,
+    // backgroundColor: '#17B3EC',
+    backgroundColor: '#4096c6',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 2,
+  },
+  iconStyle: {
+    height: 26,
+    width: 26,
+    tintColor: 'white',
+  },
 };
 
 export default connect(

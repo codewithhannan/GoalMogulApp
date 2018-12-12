@@ -12,7 +12,6 @@ import ProfileImage from '../Common/ProfileImage';
 
 // Asset
 import Calendar from '../../asset/utils/calendar.png';
-import DefaultUserProfile from '../../asset/test-profile-pic.png';
 
 const { width } = Dimensions.get('window');
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

@@ -31,7 +31,7 @@ const COMMENT_INITIAL_STATE = {
   data: [],
   transformedComments: [],
   skip: 0,
-  limit: 20,
+  limit: 40,
   loading: false,
   hasNextPage: undefined
 };

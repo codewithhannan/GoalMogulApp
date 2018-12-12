@@ -21,6 +21,10 @@ import {
   goalDetailSwitchTabV2ByKey
 } from '../../../../redux/modules/goal/GoalDetailActions';
 
+import {
+  resetCommentType
+} from '../../../../redux/modules/feed/comment/CommentActions';
+
 // Styles
 import { BACKGROUND_COLOR } from '../../../../styles';
 
@@ -161,9 +165,14 @@ class FocusTab extends React.PureComponent {
   }
 
   render() {
-    const { data, focusType } = this.props;
+    const { data, focusType, pageId } = this.props;
     if (!focusType) return '';
     const emptyText = switchCaseEmptyText(focusType);
+
+    const resetCommentTypeFunc = focusType === 'comment'
+      ? () => this.props.resetCommentType('Comment', pageId)
+      : () => this.props.resetCommentType('Suggestion', pageId);
+
     return (
       <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
         <AnimatedFlatList
@@ -199,6 +208,7 @@ class FocusTab extends React.PureComponent {
             onRef={(ref) => { this.commentBox = ref; }}
             hasSuggestion
             onSubmitEditing={this.handleOnCommentSubmitEditing}
+            resetCommentType={resetCommentTypeFunc}
           />
         </Animated.View>
       </View>
@@ -266,6 +276,7 @@ FocusTab.defaultPros = {
 export default connect(
   mapStateToProps,
   {
-    goalDetailSwitchTabV2ByKey
+    goalDetailSwitchTabV2ByKey,
+    resetCommentType
   }
 )(FocusTab);

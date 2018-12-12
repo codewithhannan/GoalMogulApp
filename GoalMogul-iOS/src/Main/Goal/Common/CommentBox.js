@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   Image,
   TouchableOpacity,
-  KeyboardAvoidingView,
   Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -135,15 +134,24 @@ class CommentBox extends Component {
   }
 
   handleOnBlur = (newComment) => {
+    const { resetCommentType } = this.props;
     const { contentText, tmpSuggestion } = newComment;
     // On Blur if no content then set default value to comment the goal / post
-    if ((contentText === undefined || contentText === '' || contentText.trim() === '')
-    && _.isEmpty(tmpSuggestion)) {
+    if ((contentText === undefined || contentText === '' || contentText.trim() === '')) {
       this.setState({
         ...this.state,
         defaultValue: 'Write a Comment...'
       });
+      if (resetCommentType) {
+        resetCommentType();
+      }
     }
+  }
+
+  handleOnSubmitEditing = (newComment) => {
+    const { onSubmitEditing } = this.props;
+    if (onSubmitEditing) onSubmitEditing();
+    this.handleOnBlur(newComment);
   }
 
   focusForReply() {
@@ -166,8 +174,10 @@ class CommentBox extends Component {
 
   //tintColor: '#f5d573'
   renderSuggestionIcon(newComment, pageId) {
-    const { mediaRef } = newComment;
+    const { mediaRef, commentType } = newComment;
     const disableButton = mediaRef !== undefined && mediaRef !== '';
+    if (commentType === 'Reply') return '';
+
     return (
       <TouchableOpacity
         activeOpacity={0.85}
@@ -302,7 +312,7 @@ class CommentBox extends Component {
   }
 
   render() {
-    const { pageId, newComment, hasSuggestion, onSubmitEditing } = this.props;
+    const { pageId, newComment, hasSuggestion } = this.props;
     if (!newComment || !newComment.parentRef) return '';
 
     const { uploading } = newComment;
@@ -344,7 +354,7 @@ class CommentBox extends Component {
               value={newComment.contentText}
               defaultValue={this.state.defaultValue}
               onBlur={() => this.handleOnBlur(newComment)}
-              onSubmitEditing={onSubmitEditing}
+              onSubmitEditing={() => this.handleOnSubmitEditing(newComment)}
             />
           </View>
           {this.renderPost(newComment)}

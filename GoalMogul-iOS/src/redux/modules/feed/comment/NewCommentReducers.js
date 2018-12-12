@@ -79,6 +79,7 @@ const INITIAL_SUGGESETION = {
 
 export const COMMENT_NEW = 'comment_new';
 export const COMMENT_NEW_UPDATE = 'comment_new_update';
+export const COMMENT_NEW_UPDATE_COMMENT_TYPE = 'comment_new_update_comment_type';
 export const COMMENT_NEW_TEXT_ON_CHANGE = 'comment_new_text_on_change';
 export const COMMENT_NEW_SUGGESTION_CREATE = 'comment_new_suggestion_create';
 export const COMMENT_NEW_SUGGESTION_ATTACH = 'comment_new_suggestion_attach';
@@ -226,11 +227,19 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case COMMENT_NEW_UPDATE: {
-      let newState = _.cloneDeep(state);
+      const newState = _.cloneDeep(state);
       const { newComment, tab, pageId } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       return _.set(newState, `${path}`, newComment);
+    }
+
+    case COMMENT_NEW_UPDATE_COMMENT_TYPE: {
+      const newState = _.cloneDeep(state);
+      const { commentType, tab, pageId } = action.payload;
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      return _.set(newState, `${path}.commentType`, commentType);
     }
 
     case COMMENT_NEW_SUGGESTION_UPDAET_TYPE: {

@@ -23,7 +23,7 @@ import {
 import badge from '../../asset/utils/badge.png';
 import helpIcon from '../../asset/utils/help.png';
 import lightBulb from '../../asset/utils/lightBulb.png';
-import profilePic from '../../asset/test-profile-pic.png';
+import profilePic from '../../asset/utils/defaultUserProfile.png';
 import stepIcon from '../../asset/utils/steps.png';
 
 // Components

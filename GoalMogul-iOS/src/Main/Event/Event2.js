@@ -19,7 +19,7 @@ import Dot from '../Common/Dot';
 // Asset
 import TestEventImage from '../../asset/TestEventImage.png';
 import EditIcon from '../../asset/utils/edit.png';
-import DefaultUserProfile from '../../asset/test-profile-pic.png';
+import DefaultUserProfile from '../../asset/utils/defaultUserProfile.png';
 
 // Actions
 import {

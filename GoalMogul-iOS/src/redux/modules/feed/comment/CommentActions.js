@@ -18,6 +18,7 @@ import {
 import {
   COMMENT_NEW,
   COMMENT_NEW_UPDATE,
+  COMMENT_NEW_UPDATE_COMMENT_TYPE,
   COMMENT_NEW_TEXT_ON_CHANGE,
   COMMENT_NEW_SUGGESTION_REMOVE,
   COMMENT_NEW_SUGGESTION_CREATE,
@@ -209,6 +210,18 @@ export const createCommentFromSuggestion = (
       suggestionForRef,
       tab,
       pageId
+    }
+  });
+};
+
+export const resetCommentType = (commentType, pageId) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+  dispatch({
+    type: COMMENT_NEW_UPDATE_COMMENT_TYPE,
+    payload: {
+      commentType,
+      pageId,
+      tab
     }
   });
 };

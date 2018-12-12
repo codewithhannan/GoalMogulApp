@@ -7,7 +7,7 @@ import LikeIcon from '../asset/utils/like.png';
 import BulbIcon from '../asset/utils/bulb.png';
 import ShareIcon from '../asset/utils/share.png';
 
-import profilePic from '../asset/test-profile-pic.png';
+import profilePic from '../asset/utils/defaultUserProfile.png';
 
 /* Component */
 import Card from './Card';

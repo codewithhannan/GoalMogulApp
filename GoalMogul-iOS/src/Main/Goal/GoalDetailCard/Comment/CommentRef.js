@@ -13,7 +13,6 @@ import ProfileImage from '../../../Common/ProfileImage';
 
 // Assets
 import badge from '../../../../asset/utils/badge.png';
-import profilePic from '../../../../asset/test-profile-pic.png';
 import stepIcon from '../../../../asset/utils/steps.png'
 import needIcon from '../../../../asset/utils/help.png';
 import eventIcon from '../../../../asset/suggestion/event.png';

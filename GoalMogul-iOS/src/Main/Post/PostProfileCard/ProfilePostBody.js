@@ -24,12 +24,12 @@ import expand from '../../../asset/utils/expand.png';
 import RefPreview from '../../Common/RefPreview';
 // import TestImage from '../../../asset/TestEventImage.png';
 
+// Styles
+import { imagePreviewContainerStyle } from '../../../styles';
+
 // Constants
 const DEBUG_KEY = '[ UI ProfilePostCard.ProfilePostBody ]';
 const { width } = Dimensions.get('window');
-
-// Styles
-import { imagePreviewContainerStyle } from '../../../styles';
 
 class ProfilePostBody extends React.Component {
   state = {
@@ -44,7 +44,7 @@ class ProfilePostBody extends React.Component {
     }
     const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${url}`;
       return (
-        <TouchableWithoutFeedback 
+        <TouchableWithoutFeedback
           onPress={() => this.setState({ mediaModal: true })}
         >
           <View>
@@ -87,7 +87,7 @@ class ProfilePostBody extends React.Component {
 
   renderPostImageModal(imageUrl) {
     return (
-      <ImageModal 
+      <ImageModal
         mediaRef={imageUrl}
         mediaModal={this.state.mediaModal}
         closeModal={() => this.setState({ mediaModal: false })}
