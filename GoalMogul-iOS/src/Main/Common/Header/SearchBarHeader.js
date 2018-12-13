@@ -111,25 +111,27 @@ class SearchBarHeader extends Component {
   }
 
   handleMenuIconOnClick = () => {
-    const menuSwitchCases = switchByButtonIndex([
-      [R.equals(0), () => {
-        // User choose to share to feed
-        console.log(`${DEBUG_KEY} User choose My Tribes `);
-        this.props.openMyTribeTab();
-      }],
-      [R.equals(1), () => {
-        // User choose to share to an event
-        console.log(`${DEBUG_KEY} User choose My Events `);
-        this.props.openMyEventTab();
-      }]
-    ]);
-
-    const menuActionSheet = actionSheet(
-      SHARE_TO_MENU_OPTTIONS,
-      CANCEL_INDEX,
-      menuSwitchCases
-    );
-    return menuActionSheet();
+    Actions.drawerOpen();
+    // Menu options are moved to drawer in /Main/Menu/Menu.js
+    // const menuSwitchCases = switchByButtonIndex([
+    //   [R.equals(0), () => {
+    //     // User choose to share to feed
+    //     console.log(`${DEBUG_KEY} User choose My Tribes `);
+    //     this.props.openMyTribeTab();
+    //   }],
+    //   [R.equals(1), () => {
+    //     // User choose to share to an event
+    //     console.log(`${DEBUG_KEY} User choose My Events `);
+    //     this.props.openMyEventTab();
+    //   }]
+    // ]);
+    //
+    // const menuActionSheet = actionSheet(
+    //   SHARE_TO_MENU_OPTTIONS,
+    //   CANCEL_INDEX,
+    //   menuSwitchCases
+    // );
+    // return menuActionSheet();
   };
 
   renderSearchBarLeftIcon() {
