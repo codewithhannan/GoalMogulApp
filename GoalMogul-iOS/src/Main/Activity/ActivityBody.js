@@ -1,9 +1,7 @@
 import React from 'react';
 import {
   View,
-  Image,
   Dimensions,
-  TouchableOpacity,
   ImageBackground,
   TouchableWithoutFeedback
 } from 'react-native';
@@ -20,14 +18,12 @@ import photoIcon from '../../asset/utils/photoIcon.png';
 import expand from '../../asset/utils/expand.png';
 import RefPreview from '../Common/RefPreview';
 
-import TestImage from '../../asset/TestEventImage.png';
+// Styles
+import { imagePreviewContainerStyle } from '../../styles';
 
 // Constants
 const DEBUG_KEY = '[ UI ActivityCard.ActivityBody ]';
 const { width } = Dimensions.get('window');
-
-// Styles
-import { imagePreviewContainerStyle } from '../../styles';
 
 class ActivityBody extends React.Component {
   state = {
@@ -147,6 +143,10 @@ class ActivityBody extends React.Component {
 
     if (postType === 'ShareUser') {
       item = userRef;
+    }
+
+    if (postType === 'SharePost') {
+      item = postRef.postRef;
     }
 
     return (
