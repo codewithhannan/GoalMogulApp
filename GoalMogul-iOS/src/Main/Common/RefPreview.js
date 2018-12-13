@@ -22,9 +22,9 @@ import {
 // Assets
 import badge from '../../asset/utils/badge.png';
 import helpIcon from '../../asset/utils/help.png';
-import lightBulb from '../../asset/utils/lightBulb.png';
 import profilePic from '../../asset/utils/defaultUserProfile.png';
 import stepIcon from '../../asset/utils/steps.png';
+import postIcon from '../../asset/utils/post.png';
 
 // Components
 import ProfileImage from './ProfileImage';
@@ -132,7 +132,7 @@ const switchCaseItem = (val, type) => switchCaseFWithVal(val)({
     // TODO: TAG: convert this to string later on
     content: item.content ? item.content.text : undefined,
     picture: item.media ? item.media : undefined,
-    defaultPicture: lightBulb,
+    defaultPicture: postIcon,
   }),
   ShareGoal: (item) => ({
     title: item.title,
