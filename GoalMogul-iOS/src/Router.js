@@ -7,7 +7,8 @@ import {
   Modal,
   Reducer,
   Lightbox,
-  Actions
+  Actions,
+  Drawer
 } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 
@@ -49,6 +50,7 @@ import CreateEventModal from './Main/Event/CreateEventModal';
 import MyTribeTab from './Main/Menu/Tribe/MyTribeTab';
 import MyTribe from './Main/Menu/Tribe/MyTribe';
 import CreateTribeModal from './Main/Tribe/CreateTribeModal';
+import Menu from './Main/Menu/Menu';
 
 // Profile
 import Profile from './Main/Profile/Profile';
@@ -150,8 +152,22 @@ class RouterComponent extends Component {
               </Stack>
 
               {/* Main App */}
-
-              <Scene hideNavBar panHandlers={null}>
+              <Drawer
+                panHandlers={null}
+                drawerType='push-screen'
+                hideNavBar
+                key="drawer"
+                onExit={() => {
+                  console.log('Drawer closed');
+                }}
+                onEnter={() => {
+                  console.log('Drawer opened');
+                }}
+                drawerPosition='right'
+                contentComponent={Menu}
+                drawerWidth={240}
+              >
+              <Scene hideNavBar>
                 <Tabs
                   key="mainTabs"
                   hideNavBar
@@ -240,6 +256,8 @@ class RouterComponent extends Component {
 
                 </Tabs>
               </Scene>
+              </Drawer>
+
 
             </Scene>
             {/*
