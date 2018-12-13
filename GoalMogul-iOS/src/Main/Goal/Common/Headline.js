@@ -2,6 +2,7 @@ import React from 'react';
 import {
   TouchableOpacity,
   View,
+  Alert,
   Image,
   Text,
   FlatList,
@@ -16,15 +17,26 @@ import {
   renderers
 } from 'react-native-popup-menu';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 /* Components */
 import Name from './Name';
 import Category from './Category';
 import { UserBanner, openProfile } from '../../../actions';
 
+// Actions
+import {
+  editGoal,
+  shareGoalToMastermind,
+  markGoalAsComplete
+} from '../../../redux/modules/goal/GoalDetailActions';
+
 /* Asset */
 import badge from '../../../asset/utils/badge.png';
 import dropDown from '../../../asset/utils/dropDown.png';
+import ShareIcon from '../../../asset/utils/forward.png';
+import EditIcon from '../../../asset/utils/edit.png';
+import CheckIcon from '../../../asset/utils/check.png';
 
 const { width } = Dimensions.get('window');
 
@@ -37,11 +49,69 @@ const { width } = Dimensions.get('window');
  * hasCaret: if null, show no caret
  */
 class Headline extends React.PureComponent {
+  handleSelfCaretOnPress = (val) => {
+    const { item } = this.props;
+    if (!item) return '';
+
+    const { isCompleted, _id } = item;
+    const markCompleteOnPress = isCompleted
+      ? () => {
+        Alert.alert(
+          'Confirmation',
+          'Are you sure to mark this goal as incomplete?', [
+          { text: 'Cancel', onPress: () => console.log('user cancel unmark') },
+          { text: 'Confirm', onPress: () => this.props.markGoalAsComplete(_id, false) }]
+        );
+      }
+      : () => this.props.markGoalAsComplete(_id, true);
+
+    if (val === 'Delete') return this.props.caretOnDelete();
+    if (val === 'Edit Goal') return this.props.editGoal(item);
+    if (val === 'Goal Feed') return this.props.shareGoalToMastermind(_id);
+    if (val === 'Mark as Incomplete' || val === 'Mark as Complete') {
+      markCompleteOnPress();
+    }
+  }
+
   handleNameOnPress = (user) => {
-    console.log('user is: ', user);
     if (!user || !user._id) return;
     const { _id } = user;
     this.props.openProfile(_id);
+  }
+
+  renderDeleteOptionOnly() {
+    return (
+      MenuFactory(
+        [
+          'Delete',
+        ],
+        () => this.props.caretOnDelete(),
+        '',
+        { ...styles.caretContainer },
+        () => console.log('Report Modal is opened'),
+        false
+      )
+    );
+  }
+
+  renderSelfCaret(item) {
+    if (!item) return this.renderDeleteOptionOnly();
+    const { isCompleted } = item;
+
+    const caret = MenuFactory(
+      [
+        { option: 'Edit Goal', iconSource: EditIcon },
+        { option: 'Goal Feed', iconSource: ShareIcon },
+        { option: isCompleted ? 'Mark as Incomplete' : 'Mark as Complete', iconSource: CheckIcon },
+        { option: 'Delete' },
+      ],
+      (val) => this.handleSelfCaretOnPress(val),
+      '',
+      { ...styles.caretContainer },
+      () => console.log('Report Modal is opened'),
+      true
+    );
+    return caret;
   }
 
   render() {
@@ -50,31 +120,24 @@ class Headline extends React.PureComponent {
       name,
       caretOnPress,
       isSelf,
-      caretOnDelete,
       hasCaret,
-      user
+      user,
+      item
     } = this.props;
 
     // If item belongs to self, then caret displays delete
     const menu = isSelf === undefined || !isSelf
       ? MenuFactory(
           [
-            'Report',
+            { option: 'Report' },
           ],
           () => caretOnPress(),
           '',
           { ...styles.caretContainer },
-          () => console.log('Report Modal is opened')
+          () => console.log('Report Modal is opened'),
+          false
         )
-      : MenuFactory(
-          [
-            'Delete',
-          ],
-          () => caretOnDelete(),
-          '',
-          { ...styles.caretContainer },
-          () => console.log('Report Modal is opened')
-        );
+      : this.renderSelfCaret(item);
 
     const categoryComponent = category ? <Category text={category} /> : '';
 
@@ -102,7 +165,7 @@ class Headline extends React.PureComponent {
 // Following is a duplicated code and it should be abstracted out
 const { Popover } = renderers;
 export const MenuFactory =
-(options, callback, triggerText, triggerContainerStyle, animationCallback) => {
+(options, callback, triggerText, triggerContainerStyle, animationCallback, shouldExtendOptionLength) => {
   const triggerTextView = triggerText
     ? (
         <Text
@@ -112,6 +175,10 @@ export const MenuFactory =
         </Text>
       )
     : '';
+
+  const menuOptionsStyles = shouldExtendOptionLength
+    ? getUpdatedStyles()
+    : _.cloneDeep(styles.menuOptionsStyles);
   return (
     <Menu
       onSelect={value => callback(value)}
@@ -129,18 +196,47 @@ export const MenuFactory =
           <Image source={dropDown} style={{ height: 12, width: 12 }} />
         </View>
       </MenuTrigger>
-      <MenuOptions customStyles={styles.menuOptionsStyles}>
+      <MenuOptions customStyles={menuOptionsStyles}>
         <FlatList
           data={options}
-          renderItem={({ item }) => (
-            <MenuOption value={item} text={item} />
-          )}
+          renderItem={({ item }) => {
+            const { iconSource, option } = item;
+            return (
+              <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
+                {
+                  iconSource
+                    ? (
+                      <View
+                        style={{
+                          paddingTop: 10,
+                          paddingBottom: 10,
+                          paddingLeft: 10,
+                          paddingRight: 5
+                        }}
+                      >
+                        <Image source={iconSource} style={styles.iconStyle} />
+                      </View>
+                    )
+                    : ''
+                }
+                <MenuOption value={option} text={option} />
+              </TouchableOpacity>
+            );
+          }}
           keyExtractor={(item, index) => index.toString()}
-          style={{ height: 40 }}
+          style={{ height: 37 * options.length }}
         />
       </MenuOptions>
     </Menu>
   );
+};
+
+const getUpdatedStyles = () => {
+  let ret = _.cloneDeep(styles.menuOptionsStyles);
+  ret = _.set(styles.menuOptionsStyles, 'optionsContainer.width', 200);
+  ret = _.set(styles.menuOptionsStyles, 'optionsContainer.paddingLeft', 0);
+  ret = _.set(styles.menuOptionsStyles, 'optionsContainer.paddingRight', 0);
+  return ret;
 };
 
 
@@ -162,6 +258,10 @@ const styles = {
     marginLeft: 3,
     marginRight: 3
   },
+  iconStyle: {
+    height: 17,
+    width: 17,
+  },
   // Menu related style
   triggerContainerStyle: {
     flexDirection: 'row',
@@ -182,6 +282,10 @@ const styles = {
   menuOptionsStyles: {
     optionsContainer: {
       width: width / 3,
+      paddingTop: 5,
+      paddingBottom: 5,
+      paddingLeft: 10,
+      paddingRight: 10
     },
     optionsWrapper: {
 
@@ -196,8 +300,6 @@ const styles = {
     optionText: {
       paddingTop: 5,
       paddingBottom: 5,
-      paddingLeft: 10,
-      paddingRight: 10,
       color: 'black',
     },
   }
@@ -206,6 +308,9 @@ const styles = {
 export default connect(
   null,
   {
-    openProfile
+    openProfile,
+    editGoal,
+    shareGoalToMastermind,
+    markGoalAsComplete
   }
 )(Headline);

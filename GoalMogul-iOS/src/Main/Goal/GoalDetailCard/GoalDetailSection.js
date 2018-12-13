@@ -114,9 +114,9 @@ class GoalDetailSection extends Component {
             isSelf={this.props.userId === owner._id}
             caretOnDelete={() => this.props.deleteGoal(_id)}
             caretOnPress={() => {
-              console.log('I am pressed');
               this.props.createReport(_id, 'detail', 'Goal');
             }}
+            item={item}
             user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
@@ -202,10 +202,10 @@ class GoalDetailSection extends Component {
 
   renderActionButtons(item) {
     const { maybeLikeRef, _id } = item;
-
-    if (this.props.isSelf) {
-      return this.renderSelfActionButtons(item);
-    }
+    // Self Action Buttons are moved to caret drop down in Headline
+    // if (this.props.isSelf) {
+    //   return this.renderSelfActionButtons(item);
+    // }
 
     const likeCount = item.likeCount ? item.likeCount : 0;
     const commentCount = item.commentCount ? item.commentCount : 0;
