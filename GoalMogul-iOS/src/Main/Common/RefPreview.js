@@ -64,6 +64,15 @@ class RefPreview extends Component {
 
     // TODO: add a postType ShareStep
     const { title, content, defaultPicture, picture } = switchCaseItem(item, postType);
+    const imageContainerstyle = picture ?
+    {
+      justifyContent: 'center',
+      paddingRight: 10
+    } :
+    {
+      justifyContent: 'center',
+      padding: 10
+    };
     return (
       <TouchableOpacity
         activeOpacity={0.85}
@@ -72,8 +81,8 @@ class RefPreview extends Component {
       >
         <ProfileImage
           imageStyle={{ width: 50, height: 50 }}
-          imageContainerStyle={{ justifyContent: 'center', padding: 10 }}
-          defaultImageStyle={{ width: 32, height: 32, opacity: 0.6 }}
+          imageContainerStyle={imageContainerstyle}
+          defaultImageStyle={{ width: 32, height: 34, opacity: 0.6 }}
           defaultImageSource={defaultPicture}
           imageUrl={picture}
         />
@@ -135,10 +144,10 @@ const switchCaseItem = (val, type) => switchCaseFWithVal(val)({
     defaultPicture: postIcon,
   }),
   ShareGoal: (item) => ({
-    title: item.title,
+    title: 'Goal',
     // TODO: TAG: convert this to string later on
-    content: item.details.text,
-    picture: item.profile ? item.profile.image : undefined,
+    content: item.title,
+    picture: item.owner.profile ? item.owner.profile.image : undefined,
     defaultPicture: profilePic,
   }),
   ShareNeed: (item) => ({

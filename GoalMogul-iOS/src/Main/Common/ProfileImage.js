@@ -59,7 +59,9 @@ class ProfileImage extends React.PureComponent {
 
     let profileImage = (
       <TouchableWithoutFeedback onPress={this.handleProfileImageOnPress}>
-        <View style={imageContainerStyle || styles.imageContainerStyle}>
+        <View
+          style={[imageContainerStyle || styles.imageContainerStyle]}
+        >
           <Image
             style={defaultImageStyle}
             resizeMode={resizeMode}
