@@ -30,6 +30,7 @@ import { switchCase } from '../../../redux/middleware/utils';
 import check from '../../../asset/utils/check.png';
 import plus from '../../../asset/utils/plus.png';
 import post from '../../../asset/utils/post.png';
+import invite from '../../../asset/utils/invite.png';
 
 import TestEventImage from '../../../asset/TestEventImage.png';
 
@@ -155,7 +156,7 @@ class MyTribe extends Component {
       },
       // button info for invite
       {
-        iconSource: post,
+        iconSource: invite,
         text: 'Invite',
         iconStyle: { height: 18, width: 18, marginLeft: 3 },
         textStyle: { marginLeft: 5 },

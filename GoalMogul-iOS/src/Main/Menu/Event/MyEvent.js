@@ -34,6 +34,7 @@ import EditIcon from '../../../asset/utils/edit.png';
 import DefaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
 import plus from '../../../asset/utils/plus.png';
 import post from '../../../asset/utils/post.png';
+import invite from '../../../asset/utils/invite.png';
 
 // Actions
 import {
@@ -110,7 +111,7 @@ class MyEvent extends Component {
       },
       // button info for invite
       {
-        iconSource: post,
+        iconSource: invite,
         text: 'Invite',
         iconStyle: { height: 18, width: 18, marginLeft: 3 },
         textStyle: { marginLeft: 5 },
