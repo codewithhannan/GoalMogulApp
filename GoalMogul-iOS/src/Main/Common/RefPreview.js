@@ -25,6 +25,7 @@ import helpIcon from '../../asset/utils/help.png';
 import profilePic from '../../asset/utils/defaultUserProfile.png';
 import stepIcon from '../../asset/utils/steps.png';
 import postIcon from '../../asset/utils/post.png';
+import goalIcon from '../../asset/header/home-logo.png';
 
 // Components
 import ProfileImage from './ProfileImage';
@@ -147,8 +148,8 @@ const switchCaseItem = (val, type) => switchCaseFWithVal(val)({
     title: 'Goal',
     // TODO: TAG: convert this to string later on
     content: item.title,
-    picture: item.owner.profile ? item.owner.profile.image : undefined,
-    defaultPicture: profilePic,
+    // picture: item.owner.profile ? item.owner.profile.image : undefined,
+    defaultPicture: goalIcon,
   }),
   ShareNeed: (item) => ({
     title: undefined,

@@ -68,6 +68,9 @@ import {
   openPostDetail
 } from '../../../redux/modules/feed/post/PostActions';
 
+// Styles
+import { APP_BLUE_BRIGHT } from '../../../styles';
+
 const DEBUG_KEY = '[ UI MyTribe ]';
 const { width } = Dimensions.get('window');
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -167,7 +170,11 @@ class MyTribe extends Component {
             showPlus: true
           });
           Actions.pop();
-          this.props.openTribeInvitModal(_id);
+          this.props.openTribeInvitModal({
+            tribeId: _id,
+            cardIconSource: invite,
+            cardIconStyle: { tintColor: APP_BLUE_BRIGHT }
+          });
         }
       }
     ];

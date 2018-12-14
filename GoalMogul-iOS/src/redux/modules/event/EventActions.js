@@ -89,12 +89,13 @@ export const editEvent = (event) => (dispatch, getState) => {
   Actions.push('createEventModal', { initializeFromState: true, event });
 };
 
-export const openEventInvitModal = (eventId) => (dispatch) => {
+export const openEventInvitModal = ({ eventId, cardIconSource, cardIconStyle }) =>
+(dispatch) => {
   const searchFor = {
     type: 'event',
     id: eventId
   };
-  Actions.push('searchPeopleLightBox', { searchFor });
+  Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle });
 };
 
 export const inviteParticipantToEvent = (eventId, inviteeId) => (dispatch, getState) => {

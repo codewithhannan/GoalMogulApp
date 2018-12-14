@@ -72,9 +72,10 @@ import { openProfile } from '../../actions';
   }
 
    render() {
-     const searchPlaceHolder = this.props.searchPlaceHolder
-       ? this.props.searchPlaceHolder
-       : 'Search a person';
+      const searchPlaceHolder = this.props.searchPlaceHolder
+        ? this.props.searchPlaceHolder
+        : 'Search a person';
+
      return (
        <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>
          <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -95,7 +96,7 @@ import { openProfile } from '../../actions';
                showLoading={this.props.loading}
              />
            </View>
-           <PeopleSearch reducerPath='' onSelect={this.handleOnResSelect} />
+           <PeopleSearch reducerPath='' onSelect={this.handleOnResSelect} {...this.props} />
          </MenuProvider>
        </BaseOverlay>
      );

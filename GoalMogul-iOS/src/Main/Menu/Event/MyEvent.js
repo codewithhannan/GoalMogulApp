@@ -64,6 +64,9 @@ import {
   openPostDetail
 } from '../../../redux/modules/feed/post/PostActions';
 
+// Styles
+import { APP_BLUE_BRIGHT } from '../../../styles';
+
 const DEBUG_KEY = '[ UI MyEvent ]';
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
 const CANCEL_INDEX = 4;
@@ -122,7 +125,13 @@ class MyEvent extends Component {
             showPlus: true
           });
           Actions.pop();
-          this.props.openEventInvitModal(_id);
+          this.props.openEventInvitModal(
+            {
+              eventId: _id,
+              cardIconSource: invite,
+              cardIconStyle: { tintColor: APP_BLUE_BRIGHT }
+            }
+          );
         }
       }
     ];
