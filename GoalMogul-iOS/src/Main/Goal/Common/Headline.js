@@ -37,6 +37,8 @@ import dropDown from '../../../asset/utils/dropDown.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 import EditIcon from '../../../asset/utils/edit.png';
 import CheckIcon from '../../../asset/utils/check.png';
+import UndoIcon from '../../../asset/utils/undo.png';
+import TrashIcon from '../../../asset/utils/trash.png';
 
 const { width } = Dimensions.get('window');
 
@@ -67,8 +69,8 @@ class Headline extends React.PureComponent {
 
     if (val === 'Delete') return this.props.caretOnDelete();
     if (val === 'Edit Goal') return this.props.editGoal(item);
-    if (val === 'Goal Feed') return this.props.shareGoalToMastermind(_id);
-    if (val === 'Mark as Incomplete' || val === 'Mark as Complete') {
+    if (val === 'Share to Goal Feed') return this.props.shareGoalToMastermind(_id);
+    if (val === 'Unmark as Complete' || val === 'Mark as Complete') {
       markCompleteOnPress();
     }
   }
@@ -101,9 +103,10 @@ class Headline extends React.PureComponent {
     const caret = MenuFactory(
       [
         { option: 'Edit Goal', iconSource: EditIcon },
-        { option: 'Goal Feed', iconSource: ShareIcon },
-        { option: isCompleted ? 'Mark as Incomplete' : 'Mark as Complete', iconSource: CheckIcon },
-        { option: 'Delete' },
+        { option: 'Share to Goal Feed', iconSource: ShareIcon },
+        { option: isCompleted ? 'Unmark as Complete' : 'Mark as Complete',
+          iconSource: isCompleted ? UndoIcon : CheckIcon },
+        { option: 'Delete', iconSource: TrashIcon },
       ],
       (val) => this.handleSelfCaretOnPress(val),
       '',
@@ -261,6 +264,7 @@ const styles = {
   iconStyle: {
     height: 17,
     width: 17,
+    tintColor: '#555'
   },
   // Menu related style
   triggerContainerStyle: {
@@ -300,7 +304,7 @@ const styles = {
     optionText: {
       paddingTop: 5,
       paddingBottom: 5,
-      color: 'black',
+      color: '#555'
     },
   }
 };

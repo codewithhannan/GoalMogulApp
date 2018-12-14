@@ -107,6 +107,10 @@ class ActivityCard extends React.PureComponent {
       ? { backgroundColor: '#FAD6C8' }
       : { backgroundColor: 'white' };
 
+    // User shouldn't share a share. When Activity on a post which is a share,
+    // We disable the share button.
+    const isShare = postRef.postType !== 'General';
+
     return (
       <ActionButtonGroup>
         <ActionButton
@@ -129,6 +133,7 @@ class ActivityCard extends React.PureComponent {
           textStyle={{ color: '#a8e1a0' }}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
           onPress={() => this.handleShareOnClick(actedUponEntityType)}
+          disabled={isShare}
         />
         <ActionButton
           iconSource={BulbIcon}

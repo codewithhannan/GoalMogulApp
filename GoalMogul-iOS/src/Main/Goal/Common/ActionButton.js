@@ -29,19 +29,26 @@ class ActionButton extends React.PureComponent {
   }
 
   render() {
-    const { containerStyle, count } = this.props;
+    const { containerStyle, count, disabled } = this.props;
     const countText = !count || count === 0
       ? ''
       : <Text style={{ ...styles.textStyle, ...this.props.textStyle }}>{this.props.count}</Text>;
 
+    const buttonDisabled = disabled === true;
     return (
       <TouchableOpacity
         activeOpacity={0.85}
         style={{ ...styles.containerStyle, ...containerStyle }}
         onPress={this.handleOnPress}
-        disabled={this.state.buttonDisabled}
+        disabled={this.state.buttonDisabled || buttonDisabled}
       >
-        <View style={{ ...styles.iconContainerStyle, ...this.props.iconContainerStyle }}>
+        <View
+          style={{
+            ...styles.iconContainerStyle,
+            ...this.props.iconContainerStyle,
+            opacity: buttonDisabled ? 0.4 : 1
+          }}
+        >
           <Image
             source={this.props.iconSource}
             style={{ ...styles.iconStyle, ...this.props.iconStyle }}

@@ -221,7 +221,7 @@ class PostDetailSection extends Component {
   // >
   renderPostImageModal(imageUrl) {
     return (
-      <ImageModal 
+      <ImageModal
         mediaRef={imageUrl}
         mediaModal={this.state.mediaModal}
         closeModal={() => this.setState({ mediaModal: false })}
@@ -268,6 +268,10 @@ class PostDetailSection extends Component {
       ? { backgroundColor: '#FAD6C8' }
       : { backgroundColor: 'white' };
 
+    // User shouldn't share a share. When Activity on a post which is a share,
+    // We disable the share button.
+    const isShare = item.postType !== 'General';
+
     return (
       <ActionButtonGroup>
         <ActionButton
@@ -290,6 +294,7 @@ class PostDetailSection extends Component {
           textStyle={{ color: '#a8e1a0' }}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
           onPress={() => this.handleShareOnClick()}
+          disabled={isShare}
         />
         <ActionButton
           iconSource={BulbIcon}
