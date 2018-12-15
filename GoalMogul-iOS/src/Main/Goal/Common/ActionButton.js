@@ -6,6 +6,8 @@ import {
   View
 } from 'react-native';
 
+const DEBUG_KEY = '[ UI ActionButton ]';
+
 class ActionButton extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -15,17 +17,20 @@ class ActionButton extends React.PureComponent {
   }
 
   handleOnPress = () => {
+    if (this.state.buttonDisabled) return '';
     this.setState({
       ...this.state,
       buttonDisabled: true
     });
     this.props.onPress();
+    console.log(`${DEBUG_KEY}: set timeout`);
     setTimeout(() => {
       this.setState({
         ...this.state,
         buttonDisabled: false
       });
-    }, 500);
+    }, 800);
+    console.log(`${DEBUG_KEY}: enable button`);
   }
 
   render() {
@@ -40,7 +45,7 @@ class ActionButton extends React.PureComponent {
         activeOpacity={0.85}
         style={{ ...styles.containerStyle, ...containerStyle }}
         onPress={this.handleOnPress}
-        disabled={this.state.buttonDisabled || buttonDisabled}
+        disabled={(this.state.buttonDisabled || buttonDisabled)}
       >
         <View
           style={{

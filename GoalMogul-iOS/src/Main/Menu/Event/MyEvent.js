@@ -19,13 +19,13 @@ import { Actions } from 'react-native-router-flux';
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import TabButtonGroup from '../../Common/TabButtonGroup';
 import About from './MyEventAbout';
-import StackedAvatars, { StackedAvatarsV2 } from '../../Common/StackedAvatars';
+import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
 import Dot from '../../Common/Dot';
 import MemberListCard from '../../Tribe/MemberListCard';
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
 import { MenuFactory } from '../../Common/MenuFactory';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
-import ParticipantFilterBar from '../../Event/ParticipantFilterBar';
+// import ParticipantFilterBar from '../../Event/ParticipantFilterBar';
 import EmptyResult from '../../Common/Text/EmptyResult';
 
 // Asset
@@ -499,7 +499,7 @@ class MyEvent extends Component {
     const { item, data } = this.props;
     if (!item) return <View />;
 
-    console.log(`${DEBUG_KEY}: rendering myevent with item: `, item);
+    // console.log(`${DEBUG_KEY}: rendering myevent with item: `, item);
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>

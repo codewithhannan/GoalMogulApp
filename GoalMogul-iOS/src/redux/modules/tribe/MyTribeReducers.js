@@ -2,6 +2,11 @@ import _ from 'lodash';
 import { arrayUnique } from '../../middleware/utils';
 
 import {
+  LIKE_POST,
+  UNLIKE_POST,
+} from '../like/LikeReducers';
+
+import {
   TRIBE_EDIT_SUCCESS,
   updateTribe
 } from './TribeReducers';
@@ -233,6 +238,37 @@ export default (state = INITIAL_STATE, action) => {
       const oldMembers = _.get(newState, 'item.members');
       const newMembers = updateMemberStatus(oldMembers, promoteeId, 'Admin');
       return _.set(newState, 'item.members', newMembers);
+    }
+
+    // Currently for a post like update, it will iterator through the feed to
+    // Update the post
+    case LIKE_POST:
+    case UNLIKE_POST: {
+      const { id, likeId, tab } = action.payload;
+      let newState = _.cloneDeep(state);
+
+      const oldTribeFeed = _.get(newState, 'feed');
+      const newTribeFeed = oldTribeFeed.map((post) => {
+        if (post._id === id) {
+          if (likeId === 'testId') {
+            return {
+              ...post,
+              maybeLikeRef: likeId,
+              likeCount: post.likeCount + 1
+            };
+          }
+          if (likeId === undefined) {
+            return {
+              ...post,
+              maybeLikeRef: likeId,
+              likeCount: post.likeCount - 1
+            };
+          }
+        }
+        return post;
+      });
+
+      return _.set(newState, 'feed', newTribeFeed);
     }
 
     default:

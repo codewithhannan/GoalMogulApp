@@ -1,9 +1,7 @@
 import React from 'react';
 import {
   View,
-  Image,
   Dimensions,
-  TouchableOpacity,
   ImageBackground,
   TouchableWithoutFeedback
 } from 'react-native';
@@ -18,9 +16,6 @@ import {
 import ImageModal from '../../Common/ImageModal';
 
 // Assets
-import cancel from '../../../asset/utils/cancel_no_background.png';
-import photoIcon from '../../../asset/utils/photoIcon.png';
-import expand from '../../../asset/utils/expand.png';
 import RefPreview from '../../Common/RefPreview';
 // import TestImage from '../../../asset/TestEventImage.png';
 
