@@ -18,7 +18,7 @@ import {
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import About from './About';
-import StackedAvatars from '../Common/StackedAvatars';
+import StackedAvatars, { StackedAvatarsV2 } from '../Common/StackedAvatars';
 import Dot from '../Common/Dot';
 import MemberListCard from '../Tribe/MemberListCard';
 import ParticipantFilterBar from './ParticipantFilterBar';
@@ -262,7 +262,7 @@ class Event extends Component {
     const { item } = this.props;
     if (!item) return <View />;
 
-    const { start, durationHours } = item;
+    const { start, durationHours, participants } = item;
     const startDate = start ? new Date(start) : new Date();
     const date = `${months[startDate.getMonth() - 1]} ${startDate.getDate()}, ` +
       `${startDate.getFullYear()}`;
@@ -285,7 +285,7 @@ class Event extends Component {
     const { eventInfoBasicTextStyle, eventContainerStyle } = styles;
     return (
       <View style={eventContainerStyle}>
-        <StackedAvatars imageSource={DefaultUserProfile} />
+        <StackedAvatarsV2 imageSource={DefaultUserProfile} participants={participants} />
         <Text style={{ ...eventInfoBasicTextStyle, color: '#4ec9f3' }}>
           {item.participantCount} going
         </Text>
