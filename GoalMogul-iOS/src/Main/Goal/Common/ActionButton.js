@@ -23,14 +23,14 @@ class ActionButton extends React.PureComponent {
       buttonDisabled: true
     });
     this.props.onPress();
-    console.log(`${DEBUG_KEY}: set timeout`);
+    // console.log(`${DEBUG_KEY}: set timeout`);
     setTimeout(() => {
       this.setState({
         ...this.state,
         buttonDisabled: false
       });
     }, 800);
-    console.log(`${DEBUG_KEY}: enable button`);
+    // console.log(`${DEBUG_KEY}: enable button`);
   }
 
   render() {

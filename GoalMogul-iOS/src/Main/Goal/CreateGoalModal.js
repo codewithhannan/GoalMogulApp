@@ -41,6 +41,7 @@ import DraggableFlatlist from 'react-native-draggable-flatlist';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 
 // Components
+// import DraggableFlatlist from '../Common/DraggableFlatlist';
 import ModalHeader from '../Common/Header/ModalHeader';
 import Button from './Button';
 import InputField from '../Common/TextInput/InputField';
@@ -286,9 +287,9 @@ class CreateGoalModal extends Component {
     );
 
     return (
-      <View 
-        style={{ 
-          ...styles.sectionMargin, 
+      <View
+        style={{
+          ...styles.sectionMargin,
           justifyContent: 'flex-start',
           flex: 1
         }}
@@ -319,7 +320,7 @@ class CreateGoalModal extends Component {
         {this.props.priority}
       </Text>
     );
-    
+
     const titleText = (
       <Text style={styles.titleTextStyle}>
         Priority  {valueText}
@@ -375,7 +376,7 @@ class CreateGoalModal extends Component {
       );
     }
     const newPicker = true;
-    const startDatePicker = newPicker ? 
+    const startDatePicker = newPicker ?
       (
         <DateTimePicker
           isVisible={this.props.startTime.picker}
@@ -386,9 +387,9 @@ class CreateGoalModal extends Component {
             }
             alert('Start time should not be later than start time');
           }}
-          onCancel={() => 
-            this.props.change('startTime', { 
-              date: this.props.startTime.date, picker: false 
+          onCancel={() =>
+            this.props.change('startTime', {
+              date: this.props.startTime.date, picker: false
             })
           }
         />
@@ -437,9 +438,9 @@ class CreateGoalModal extends Component {
               }
               alert('End time should not be early than start time');
             }}
-            onCancel={() => 
-              this.props.change('endTime', { 
-                date: this.props.endTime.date, picker: false 
+            onCancel={() =>
+              this.props.change('endTime', {
+                date: this.props.endTime.date, picker: false
               })
             }
           />
@@ -489,7 +490,7 @@ class CreateGoalModal extends Component {
       <View style={{ ...styles.sectionMargin }}>
         {titleText}
         <View style={{ marginTop: 8, flexDirection: 'row' }}>
-          <TouchableOpacity 
+          <TouchableOpacity
             activeOpacity={0.85}
             style={{
               height: 50,
@@ -694,7 +695,7 @@ class CreateGoalModal extends Component {
                   {this.renderPriority()}
                 </View>
               </View>
-              
+
               {this.renderTimeline()}
               <FieldArray name="steps" component={this.renderSteps} />
               <FieldArray name="needs" component={this.renderNeeds} />

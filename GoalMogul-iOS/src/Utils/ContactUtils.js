@@ -1,6 +1,7 @@
 import Expo from 'expo';
 
-const pageSize = 100;
+const pageSize = 10;
+const DEBUG_KEY = '[ Utils ContactUtils ]';
 
 const ContactUtils = {
 
@@ -12,14 +13,14 @@ const ContactUtils = {
     console.log('total number of contact is: ', total);
 
     // TODO: revert this change
-    for (pageOffset = 0; pageOffset < pageSize; pageOffset += pageSize) {
-      console.log('page offset is: ', pageOffset);
+    for (pageOffset = 0; pageOffset < total; pageOffset += pageSize) {
+      // console.log('page offset is: ', pageOffset);
       const contacts = await Expo.Contacts.getContactsAsync({
         fields: [
           Expo.Contacts.PHONE_NUMBERS,
           Expo.Contacts.EMAILS,
           Expo.Contacts.ADDRESSES,
-          Expo.Contacts.NONGREGORIANBIRTHDAY,
+          // Expo.Contacts.NONGREGORIANBIRTHDAY,
           Expo.Contacts.SOCIAL_PROFILES,
           Expo.Contacts.IM_ADDRESSES,
           // Expo.Contacts.URLS,
@@ -28,6 +29,7 @@ const ContactUtils = {
         pageSize,
         pageOffset,
       });
+      // console.log(`${DEBUG_KEY}: contacts load: `, contacts);
       uploadPromise.push(ContactUtils.uploadContacts(contacts.data, token));
     }
 
@@ -62,7 +64,8 @@ const ContactUtils = {
         contactList: contacts
       })
     };
-
+    // console.log(`${DEBUG_KEY}: [ Uploading contact ] header is: `, headers);
+    // console.log(`${DEBUG_KEY}: contacts to upload is: `, contacts);
     return ContactUtils.custumeFetch(url, headers, null);
   },
 
@@ -82,17 +85,35 @@ const ContactUtils = {
         'x-access-token': token
       }
     };
-
     return ContactUtils.custumeFetch(url, headers, null);
   },
 
   custumeFetch(url, headers, data) {
     return new Promise((resolve, reject) => {
       fetch(url, headers)
-      .then((res) => res.json())
       .then((res) => {
-        console.log('original res is: ', res);
-        if (res.data) {
+        if (!res.ok || !res.status === 200) {
+          console.log(`Fetch failed with error status: ${res.status}.`);
+        }
+        return new Promise(
+          async (resol, rej) => {
+          res
+            .json()
+            .then((resData) => {
+              resol({
+                ...resData,
+                status: res.status
+              });
+            })
+            .catch((err) => {
+              rej(err);
+            }
+          );
+        });
+      })
+      .then((res) => {
+        // console.log(`${DEBUG_KEY}: original res is: `, res);
+        if (res.status === 200 || res.data) {
           return resolve(res);
         }
 

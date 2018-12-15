@@ -322,8 +322,7 @@ export const requestsSelectTab = (key) => {
 };
 
 // Contact sync
-export const meetContactSync = (callback) => {
-  return async (dispatch, getState) => {
+export const meetContactSync = (callback) => async (dispatch, getState) => {
     const permission = await Expo.Permissions.askAsync(Expo.Permissions.CONTACTS);
     if (permission.status !== 'granted') {
     // Permission was denied and dispatch an action
@@ -342,7 +341,7 @@ export const meetContactSync = (callback) => {
 
     handleUploadContacts(token)
       .then((res) => {
-        console.log(' response is: ', res);
+        // console.log(`${DEBUG_KEY}: response for uploading contacts is: `, res);
 
         /* TODO: load matched contacts */
         return fetchMatchedContacts(token, 0, matchedContacts.limit);
@@ -374,7 +373,6 @@ export const meetContactSync = (callback) => {
       .catch((err) => {
         console.warn('[ Action ContactSync Fail ]: ', err);
       });
-  };
 };
 
 
