@@ -158,7 +158,8 @@ const mapDispatchToProps = (dispatch) => {
   const debouncedSearch = _.debounce((value, type) => dispatch(handleSearch(value, type)), 400);
   return ({
     debouncedSearch,
-    searchSwitchTab: searchSwitchTab(dispatch),
+    // searchSwitchTab: searchSwitchTab(dispatch),
+    searchSwitchTab: (index) => dispatch(searchSwitchTab(index)),
     clearSearchState: clearSearchState(dispatch)
   });
 };

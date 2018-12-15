@@ -112,7 +112,7 @@ export const refreshSearchResult = (type) => (dispatch, getState) => {
   * Load more for search result
   * @param type: tab that needs to load more
   */
-export const onLoadMore = (type) =>(dispatch, getState) => {
+export const onLoadMore = (type) => (dispatch, getState) => {
   const { token } = getState().user;
   const { searchType, searchRes } = getState().suggestionSearch;
   const { skip, limit, queryId, searchContent, hasNextPage } = searchRes;

@@ -12,7 +12,8 @@ const INITIAL_STATE_EVENT = {
   loading: false,
   skip: 0,
   limit: 20,
-  hasNextPage: undefined
+  hasNextPage: undefined,
+  refreshing: false
 };
 
 const INITIAL_STATE_TRIBE = {
@@ -21,7 +22,8 @@ const INITIAL_STATE_TRIBE = {
   loading: false,
   skip: 0,
   limit: 20,
-  hasNextPage: undefined
+  hasNextPage: undefined,
+  refreshing: false
 };
 
 const INITIAL_STATE = {
@@ -44,7 +46,8 @@ const INITIAL_STATE = {
     loading: false,
     skip: 0,
     limit: 20,
-    hasNextPage: undefined
+    hasNextPage: undefined,
+    refreshing: false
   },
   tribes: { ...INITIAL_STATE_TRIBE },
   events: {
@@ -104,6 +107,7 @@ export default (state = INITIAL_STATE, action) => {
       const { searchContent, queryId, type } = action.payload;
       let newState = _.cloneDeep(state);
       newState[type].loading = true;
+      newState[type].refreshing = true;
       newState.queryId = queryId;
       newState.searchContent = searchContent;
       return { ...newState };
@@ -117,6 +121,7 @@ export default (state = INITIAL_STATE, action) => {
       if (queryId === state.queryId) {
         newState[type].data = data;
         newState[type].loading = false;
+        newState[type].refreshing = false;
         newState[type].skip = skip;
         newState[type].hasNextPage = hasNextPage;
       }

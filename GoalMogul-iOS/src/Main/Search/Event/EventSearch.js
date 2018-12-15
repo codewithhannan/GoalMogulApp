@@ -38,7 +38,7 @@ class EventSearch extends Component {
   }
 
   handleOnLoadMore = () => {
-    console.log(`${DEBUG_KEY} Loading more for search: `, key);
+    // console.log(`${DEBUG_KEY} Loading more for search: `, key);
     this.props.onLoadMore(key);
   }
 
