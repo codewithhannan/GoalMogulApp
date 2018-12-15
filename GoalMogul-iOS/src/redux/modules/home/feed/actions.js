@@ -63,6 +63,7 @@ export const loadMoreFeed = () => (dispatch, getState) => {
   const { categories, priority } = filter;
   loadFeed(skip, limit, token, priority, categories, (data) => {
     console.log(`${DEBUG_KEY}: load more activity with data length: ${data.length}`);
+    // console.log(`${DEBUG_KEY}: load more activity with data: `, data);
     dispatch({
       type: HOME_LOAD_GOAL_DONE,
       payload: {

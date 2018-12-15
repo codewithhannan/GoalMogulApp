@@ -106,6 +106,10 @@ class ProfilePostCard extends React.PureComponent {
       ? { backgroundColor: '#FAD6C8' }
       : { backgroundColor: 'white' };
 
+    // User shouldn't share a share. When Activity on a post which is a share,
+    // We disable the share button.
+    const isShare = item.postType !== 'General';
+
     return (
       <View style={{ ...styles.containerStyle, marginTop: 1 }}>
         <ActionButtonGroup>
@@ -129,6 +133,7 @@ class ProfilePostCard extends React.PureComponent {
             textStyle={{ color: '#a8e1a0' }}
             iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
             onPress={() => this.handleShareOnClick(item)}
+            disabled={isShare}
           />
           <ActionButton
             iconSource={BulbIcon}
@@ -160,7 +165,7 @@ class ProfilePostCard extends React.PureComponent {
           imageContainerStyle={styles.imageContainerStyle}
           userId={owner._id}
         />
-        
+
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
             name={owner.name || ''}

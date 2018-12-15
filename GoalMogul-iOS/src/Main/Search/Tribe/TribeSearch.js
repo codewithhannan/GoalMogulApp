@@ -38,7 +38,6 @@ class TribeSearch extends Component {
   }
 
   handleOnLoadMore = () => {
-    console.log(`${DEBUG_KEY} Loading more for search`);
     this.props.onLoadMore(key);
   }
 

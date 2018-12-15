@@ -19,13 +19,13 @@ import { Actions } from 'react-native-router-flux';
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import TabButtonGroup from '../../Common/TabButtonGroup';
 import About from './MyEventAbout';
-import StackedAvatars from '../../Common/StackedAvatars';
+import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
 import Dot from '../../Common/Dot';
 import MemberListCard from '../../Tribe/MemberListCard';
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
 import { MenuFactory } from '../../Common/MenuFactory';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
-import ParticipantFilterBar from '../../Event/ParticipantFilterBar';
+// import ParticipantFilterBar from '../../Event/ParticipantFilterBar';
 import EmptyResult from '../../Common/Text/EmptyResult';
 
 // Asset
@@ -34,6 +34,7 @@ import EditIcon from '../../../asset/utils/edit.png';
 import DefaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
 import plus from '../../../asset/utils/plus.png';
 import post from '../../../asset/utils/post.png';
+import invite from '../../../asset/utils/invite.png';
 
 // Actions
 import {
@@ -62,6 +63,9 @@ import {
 import {
   openPostDetail
 } from '../../../redux/modules/feed/post/PostActions';
+
+// Styles
+import { APP_BLUE_BRIGHT } from '../../../styles';
 
 const DEBUG_KEY = '[ UI MyEvent ]';
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
@@ -110,7 +114,7 @@ class MyEvent extends Component {
       },
       // button info for invite
       {
-        iconSource: post,
+        iconSource: invite,
         text: 'Invite',
         iconStyle: { height: 18, width: 18, marginLeft: 3 },
         textStyle: { marginLeft: 5 },
@@ -121,7 +125,13 @@ class MyEvent extends Component {
             showPlus: true
           });
           Actions.pop();
-          this.props.openEventInvitModal(_id);
+          this.props.openEventInvitModal(
+            {
+              eventId: _id,
+              cardIconSource: invite,
+              cardIconStyle: { tintColor: APP_BLUE_BRIGHT }
+            }
+          );
         }
       }
     ];
@@ -334,7 +344,7 @@ class MyEvent extends Component {
     const { item } = this.props;
     if (!item) return <View />;
 
-    const { start, durationHours } = item;
+    const { start, durationHours, participants } = item;
     const startDate = start ? new Date(start) : new Date();
     const date = `${months[startDate.getMonth() - 1]} ${startDate.getDate()}, ` +
       `${startDate.getFullYear()}`;
@@ -356,7 +366,7 @@ class MyEvent extends Component {
     const { eventInfoBasicTextStyle, eventContainerStyle } = styles;
     return (
       <View style={eventContainerStyle}>
-        <StackedAvatars imageSource={DefaultUserProfile} />
+        <StackedAvatarsV2 imageSource={DefaultUserProfile} participants={participants} />
         <Text style={{ ...eventInfoBasicTextStyle, color: '#4ec9f3' }}>
           {item.participantCount} going
         </Text>
@@ -489,7 +499,7 @@ class MyEvent extends Component {
     const { item, data } = this.props;
     if (!item) return <View />;
 
-    console.log(`${DEBUG_KEY}: rendering myevent with item: `, item);
+    // console.log(`${DEBUG_KEY}: rendering myevent with item: `, item);
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>

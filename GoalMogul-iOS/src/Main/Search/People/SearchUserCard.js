@@ -65,15 +65,19 @@ class SearchUserCard extends Component {
   }
 
   renderButton(_id) {
+    const { cardIconSource, cardIconStyle } = this.props;
+    const iconSource = cardIconSource || next;
+    const iconStyle = { ...styles.iconStyle, opacity: 0.8, ...cardIconStyle };
     return (
       <View style={styles.iconContainerStyle}>
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity
+          activeOpacity={0.85}
           onPress={this.onButtonClicked.bind(this, _id)}
           style={{ padding: 15 }}
         >
           <Image
-            source={next}
-            style={{ ...styles.iconStyle, opacity: 0.8 }}
+            source={iconSource}
+            style={iconStyle}
           />
         </TouchableOpacity>
       </View>

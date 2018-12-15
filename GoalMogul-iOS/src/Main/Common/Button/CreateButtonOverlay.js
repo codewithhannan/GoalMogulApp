@@ -78,7 +78,8 @@ class CreateButtonOverlay extends Component {
 
   renderCancelButton() {
     return (
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity
+        activeOpacity={0.85}
         style={{ ...styles.iconContainerStyle, backgroundColor: 'transparent' }}
         onPress={this.handleCancel}
       >

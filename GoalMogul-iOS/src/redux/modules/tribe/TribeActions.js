@@ -107,12 +107,13 @@ export const editTribe = (tribe) => (dispatch, getState) => {
   Actions.push('createTribeModal', { initializeFromState: true, tribe });
 };
 
-export const openTribeInvitModal = (tribeId) => (dispatch) => {
+export const openTribeInvitModal = ({ tribeId, cardIconSource, cardIconStyle }) =>
+(dispatch) => {
   const searchFor = {
     type: 'tribe',
     id: tribeId
   };
-  Actions.push('searchPeopleLightBox', { searchFor });
+  Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle });
 };
 
 export const inviteUserToTribe = (tribeId, inviteeId) => (dispatch, getState) => {

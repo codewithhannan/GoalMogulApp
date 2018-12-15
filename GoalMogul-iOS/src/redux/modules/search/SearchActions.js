@@ -33,7 +33,6 @@ export const searchChangeFilter = (type, value) => {
    * @param type: one of ['people', 'events', 'tribes']
 	 */
 const searchWithId = (searchContent, queryId, type) => (dispatch, getState) => {
-  console.log('dispatch is: ', dispatch);
   const { token } = getState().user;
   const { skip, limit } = getState().search[type];
   console.log(`${DEBUG_KEY} with text: ${searchContent} and queryId: ${queryId}`);
@@ -116,8 +115,8 @@ export const refreshSearchResult = curry((type) => (dispatch, getState) => {
   */
 export const onLoadMore = (type) => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, queryId, searchContent, hasNextPage } = getState().search[type];
-  if (hasNextPage !== undefined && !hasNextPage) {
+  const { skip, limit, queryId, searchContent, hasNextPage, refreshing } = getState().search[type];
+  if ((hasNextPage !== undefined && !hasNextPage) || refreshing) {
     return;
   }
 
@@ -133,6 +132,7 @@ export const onLoadMore = (type) => (dispatch, getState) => {
     }
   });
 
+  console.log(`${DEBUG_KEY}: loading more for search type: ${type}`);
   fetchData(searchContent, type, skip, limit, token, (res) => {
     const data = res.data ? res.data : [];
     dispatch({
@@ -163,13 +163,16 @@ export const hashCode = function (text) {
 };
 
 // Actions to switch tab index for search overlay
-export const searchSwitchTab = curry((dispatch, index) => {
-  console.log('index in action is: ', index);
+export const searchSwitchTab = (index) => (dispatch, getState) => {
+  const { navigationState } = getState().search;
+  const key = navigationState.routes[index].key;
   dispatch({
     type: SEARCH_SWITCH_TAB,
     payload: index
   });
-});
+
+  refreshSearchResult(key)(dispatch, getState);
+};
 
 // Clear search state on cancel
 export const clearSearchState = curry((dispatch) => (tab) => {

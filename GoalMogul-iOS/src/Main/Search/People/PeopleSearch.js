@@ -16,26 +16,6 @@ import {
 const key = 'people';
 const DEBUG_KEY = '[ Component PeopleSearch ]';
 
-/* TODO: delete the test data */
-const testDataSuggested = [
-  {
-    _id: 1,
-    name: 'Jia Zeng',
-    profile: {
-      occupation: 'student'
-    },
-    status: 'Invited'
-  },
-  {
-    _id: 3,
-    name: 'Jay Patel',
-    profile: {
-      occupaton: 'Typist at Typeform.com'
-    },
-    status: 'Accepted'
-  }
-];
-
 class PeopleSearch extends Component {
   _keyExtractor = (item) => item._id;
 
@@ -50,7 +30,14 @@ class PeopleSearch extends Component {
   }
 
   renderItem = ({ item }) => {
-    return <SearchUserCard item={item} onSelect={this.props.onSelect} type={this.props.type} />;
+    return (
+      <SearchUserCard
+        {...this.props}
+        item={item}
+        onSelect={this.props.onSelect}
+        type={this.props.type}
+      />  
+    );
   };
 
   render() {

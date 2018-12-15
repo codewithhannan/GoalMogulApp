@@ -6,6 +6,8 @@ import {
   View
 } from 'react-native';
 
+const DEBUG_KEY = '[ UI ActionButton ]';
+
 class ActionButton extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -15,33 +17,43 @@ class ActionButton extends React.PureComponent {
   }
 
   handleOnPress = () => {
+    if (this.state.buttonDisabled) return '';
     this.setState({
       ...this.state,
       buttonDisabled: true
     });
     this.props.onPress();
+    // console.log(`${DEBUG_KEY}: set timeout`);
     setTimeout(() => {
       this.setState({
         ...this.state,
         buttonDisabled: false
       });
-    }, 500);
+    }, 800);
+    // console.log(`${DEBUG_KEY}: enable button`);
   }
 
   render() {
-    const { containerStyle, count } = this.props;
+    const { containerStyle, count, disabled } = this.props;
     const countText = !count || count === 0
       ? ''
       : <Text style={{ ...styles.textStyle, ...this.props.textStyle }}>{this.props.count}</Text>;
 
+    const buttonDisabled = disabled === true;
     return (
       <TouchableOpacity
         activeOpacity={0.85}
         style={{ ...styles.containerStyle, ...containerStyle }}
         onPress={this.handleOnPress}
-        disabled={this.state.buttonDisabled}
+        disabled={(this.state.buttonDisabled || buttonDisabled)}
       >
-        <View style={{ ...styles.iconContainerStyle, ...this.props.iconContainerStyle }}>
+        <View
+          style={{
+            ...styles.iconContainerStyle,
+            ...this.props.iconContainerStyle,
+            opacity: buttonDisabled ? 0.4 : 1
+          }}
+        >
           <Image
             source={this.props.iconSource}
             style={{ ...styles.iconStyle, ...this.props.iconStyle }}

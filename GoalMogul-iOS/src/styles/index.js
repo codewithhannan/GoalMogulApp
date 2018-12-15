@@ -3,7 +3,8 @@
  */
 
 export const BACKGROUND_COLOR = '#f8f8f8';
-export const APP_BLUE = '#17B3EC';
+export const APP_BLUE_BRIGHT = '#17B3EC';
+export const APP_BLUE = '#46C8F5';
 export const APP_DEEP_BLUE = '#0397CB';
 
 export const imagePreviewContainerStyle = {

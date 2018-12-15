@@ -167,7 +167,7 @@ class RouterComponent extends Component {
                 contentComponent={Menu}
                 drawerWidth={240}
               >
-              <Scene hideNavBar>
+              <Scene hideNavBar drawerLockMode="locked-closed">
                 <Tabs
                   key="mainTabs"
                   hideNavBar
@@ -239,8 +239,8 @@ class RouterComponent extends Component {
                     hideNavBar
                   >
                     <Scene key="explore" component={Explore} initial />
-                    <Scene key="tribeDetail" component={Tribe} />
-                    <Scene key="eventDetail" component={Event} />
+                    <Scene key="tribeDetail" component={Tribe} drawerLockMode="locked-closed" />
+                    <Scene key="eventDetail" component={Event} drawerLockMode="locked-closed" />
                     <Scene key="postExploreTab" component={PostDetailCard} />
                     <Scene key="goalExploreTab" component={GoalDetailCard} />
                     <Scene key="shareExploreTab" component={ShareDetailCard} />

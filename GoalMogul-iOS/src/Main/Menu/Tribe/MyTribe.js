@@ -30,6 +30,7 @@ import { switchCase } from '../../../redux/middleware/utils';
 import check from '../../../asset/utils/check.png';
 import plus from '../../../asset/utils/plus.png';
 import post from '../../../asset/utils/post.png';
+import invite from '../../../asset/utils/invite.png';
 
 import TestEventImage from '../../../asset/TestEventImage.png';
 
@@ -66,6 +67,9 @@ import {
 import {
   openPostDetail
 } from '../../../redux/modules/feed/post/PostActions';
+
+// Styles
+import { APP_BLUE_BRIGHT } from '../../../styles';
 
 const DEBUG_KEY = '[ UI MyTribe ]';
 const { width } = Dimensions.get('window');
@@ -155,7 +159,7 @@ class MyTribe extends Component {
       },
       // button info for invite
       {
-        iconSource: post,
+        iconSource: invite,
         text: 'Invite',
         iconStyle: { height: 18, width: 18, marginLeft: 3 },
         textStyle: { marginLeft: 5 },
@@ -166,7 +170,11 @@ class MyTribe extends Component {
             showPlus: true
           });
           Actions.pop();
-          this.props.openTribeInvitModal(_id);
+          this.props.openTribeInvitModal({
+            tribeId: _id,
+            cardIconSource: invite,
+            cardIconStyle: { tintColor: APP_BLUE_BRIGHT }
+          });
         }
       }
     ];
