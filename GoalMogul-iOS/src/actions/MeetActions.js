@@ -341,7 +341,7 @@ export const meetContactSync = (callback) => async (dispatch, getState) => {
 
     handleUploadContacts(token)
       .then((res) => {
-        // console.log(`${DEBUG_KEY}: response for uploading contacts is: `, res);
+        console.log(`${DEBUG_KEY}: response for uploading contacts is: `, res);
 
         /* TODO: load matched contacts */
         return fetchMatchedContacts(token, 0, matchedContacts.limit);

@@ -1,6 +1,6 @@
 import Expo from 'expo';
 
-const pageSize = 10;
+const pageSize = 3;
 const DEBUG_KEY = '[ Utils ContactUtils ]';
 
 const ContactUtils = {
@@ -13,7 +13,7 @@ const ContactUtils = {
     console.log('total number of contact is: ', total);
 
     // TODO: revert this change
-    for (pageOffset = 0; pageOffset < total; pageOffset += pageSize) {
+    // for (pageOffset = 0; pageOffset < 24; pageOffset += pageSize) {
       // console.log('page offset is: ', pageOffset);
       const contacts = await Expo.Contacts.getContactsAsync({
         fields: [
@@ -27,11 +27,11 @@ const ContactUtils = {
           Expo.Contacts.DATES,
         ],
         pageSize,
-        pageOffset,
+        pageOffset: total,
       });
       // console.log(`${DEBUG_KEY}: contacts load: `, contacts);
       uploadPromise.push(ContactUtils.uploadContacts(contacts.data, token));
-    }
+    // }
 
     return Promise.all(uploadPromise);
   },
@@ -66,7 +66,7 @@ const ContactUtils = {
     };
     // console.log(`${DEBUG_KEY}: [ Uploading contact ] header is: `, headers);
     // console.log(`${DEBUG_KEY}: contacts to upload is: `, contacts);
-    return ContactUtils.custumeFetch(url, headers, null);
+    return ContactUtils.custumeFetch(url, headers, contacts);
   },
 
   /**
@@ -117,12 +117,15 @@ const ContactUtils = {
           return resolve(res);
         }
 
+        console.log(`${DEBUG_KEY}: failed headers: `, headers);
+        console.log(`${DEBUG_KEY}: failed data: `, data);
         if (!res.message && res.success) {
           if (data) {
             return resolve(data);
           }
           return resolve(true);
         }
+
         // Update fails
         // reject(res.message);
         return resolve(res);
