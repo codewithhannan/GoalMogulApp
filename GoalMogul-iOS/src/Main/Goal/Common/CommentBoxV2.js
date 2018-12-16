@@ -1,18 +1,22 @@
+// This is new implementation of CommentBox to include tagging
 import React, { Component } from 'react';
 import {
+  ActivityIndicator,
   View,
   TextInput,
   Text,
   SafeAreaView,
   Image,
   TouchableOpacity,
-  Keyboard
+  Keyboard,
+  Dimensions
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import R from 'ramda';
 
 // Components
+import MentionsTextInput from './MentionsTextInput';
 import SuggestionPreview, { RemoveComponent } from '../GoalDetailCard/SuggestionPreview';
 import ProfileImage from '../../Common/ProfileImage';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
@@ -40,17 +44,31 @@ import {
 // Assets
 import PhotoIcon from '../../../asset/utils/photoIcon.png';
 import LightBulb from '../../../asset/utils/makeSuggestion.png';
+import DefaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
 
 // Consts
 const maxHeight = 120;
+const { height, width } = Dimensions.get('window');
+const DEBUG_KEY = '[ UI CommentBoxV2 ]';
 
-class CommentBox extends Component {
+class CommentBoxV2 extends Component {
   constructor(props) {
     super(props);
     this.state = {
       newValue: '',
       height: 34,
-      defaultValue: 'Write a Comment...'
+      defaultValue: 'Write a Comment...',
+      keyword: '',
+      testTaggingSuggestionData: [
+        {
+          name: 'Jay Patel',
+          _id: '123'
+        },
+        {
+          name: 'Jia Zeng',
+          _id: '1234'
+        }
+      ]
       // position: 'absolute'
     };
   }
@@ -63,6 +81,27 @@ class CommentBox extends Component {
       ...this.state,
       defaultValue: 'Write a Comment...'
     });
+  }
+
+  onTaggingSuggestionTap(name, hidePanel) {
+    hidePanel();
+    const { contentText, pageId } = this.props.newComment;
+    console.log(`${DEBUG_KEY}: contentText is: `, contentText);
+    const comment = contentText.slice(0, -this.state.keyword.length);
+    const newContentText = `${comment} @${name} `;
+    console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
+    this.props.newCommentOnTextChange(newContentText, pageId);
+  }
+
+  callback(keyword) {
+    if (this.reqTimer) {
+      clearTimeout(this.reqTimer);
+    }
+
+    this.reqTimer = setTimeout(() => {
+      // TODO: send search request
+      console.log(`${DEBUG_KEY}: requesting for keyword: `, keyword);
+    }, 200);
   }
 
   handleOnPost = (uploading) => {
@@ -241,6 +280,7 @@ class CommentBox extends Component {
       </TouchableOpacity>
     );
   }
+
   renderPost(newComment) {
     const { uploading, contentText, tmpSuggestion } = newComment;
     const disable = uploading ||
@@ -264,8 +304,7 @@ class CommentBox extends Component {
     );
   }
 
-  renderSuggestionPreview() {
-    const { pageId, newComment } = this.props;
+  renderSuggestionPreview(newComment, pageId) {
     const { showAttachedSuggestion, suggestion } = newComment;
 
     if (showAttachedSuggestion) {
@@ -285,6 +324,35 @@ class CommentBox extends Component {
     return '';
   }
 
+  /**
+   * This is to render tagging suggestion row
+   * @param hidePanel: lib passed in funct to close suggestion panel
+   * @param item: suggestion item to render
+   */
+  renderSuggestionsRow({ item }, hidePanel) {
+    const { name, profile } = item;
+    return (
+      <TouchableOpacity
+        onPress={() => this.onTaggingSuggestionTap(name, hidePanel)}
+        style={{
+          height: 50,
+          width: '100%',
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: 'white'
+        }}
+      >
+        <ProfileImage
+          imageContainerStyle={styles.imageContainerStyle}
+          imageUrl={profile && profile.image ? profile.image : undefined}
+          imageStyle={{ height: 27, width: 25, borderRadius: 3 }}
+          defaultImageSource={DefaultUserProfile}
+        />
+        <Text style={{ fontSize: 15, color: 'darkgray' }}>{name}</Text>
+      </TouchableOpacity>
+    );
+  }
+
   render() {
     const { pageId, newComment, hasSuggestion } = this.props;
     if (!newComment || !newComment.parentRef) return '';
@@ -302,38 +370,52 @@ class CommentBox extends Component {
     };
 
     return (
-      // SafeAreaView and View should have the same effect
       <SafeAreaView
         style={{
           backgroundColor: 'white',
           shadowColor: 'black',
           shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: 0.7,
+          shadowOpacity: 0.5,
           shadowRadius: 1,
-          elevation: 0.5
+          elevation: 0.3
         }}
       >
-        {this.renderSuggestionPreview()}
-        {this.renderMedia(newComment)}
-        <View style={{ flexDirection: 'row' }}>
-          {this.renderLeftIcons(newComment, pageId, hasSuggestion)}
-          <View style={inputContainerStyle}>
-            <TextInput
-              ref="textInput"
-              placeholder={this.state.defaultValue}
-              onChangeText={(val) => this.props.newCommentOnTextChange(val, pageId)}
-              style={inputStyle}
-              editable={!uploading}
-              maxHeight={maxHeight}
-              multiline
-              value={newComment.contentText}
-              defaultValue={this.state.defaultValue}
-              onBlur={() => this.handleOnBlur(newComment)}
-              onSubmitEditing={() => this.handleOnSubmitEditing(newComment)}
-            />
-          </View>
-          {this.renderPost(newComment)}
-        </View>
+        <MentionsTextInput
+          ref="textInput"
+          placeholder={this.state.defaultValue}
+          onChangeText={(val) => this.props.newCommentOnTextChange(val, pageId)}
+          editable={!uploading}
+          maxHeight={maxHeight}
+          multiline
+          value={newComment.contentText}
+          defaultValue={this.state.defaultValue}
+          onBlur={() => this.handleOnBlur(newComment)}
+          onSubmitEditing={() => this.handleOnSubmitEditing(newComment)}
+          renderSuggestionPreview={() => this.renderSuggestionPreview(newComment, pageId)}
+          renderMedia={() => this.renderMedia(newComment)}
+          renderLeftIcons={() => this.renderLeftIcons(newComment, pageId, hasSuggestion)}
+          renderPost={() => this.renderPost(newComment)}
+
+          textInputContainerStyle={inputContainerStyle}
+          textInputStyle={inputStyle}
+
+          suggestionsPanelStyle={{ backgroundColor: 'rgba(100,100,100,0.1)' }}
+          loadingComponent={() => (
+            <View style={{ flex: 1, width, justifyContent: 'center', alignItems: 'center' }}>
+              <ActivityIndicator />
+            </View>)}
+          textInputMinHeight={30}
+          textInputMaxHeight={80}
+          trigger={'@'}
+          triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
+          triggerCallback={this.callback.bind(this)}
+          renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
+          suggestionsData={this.state.testTaggingSuggestionData} // array of objects
+          keyExtractor={(item, index) => item._id}
+          suggestionRowHeight={50}
+          horizontal={false} // defaut is true, change the orientation of the list
+          MaxVisibleRowCount={4} // this is required if horizontal={false}
+        />
       </SafeAreaView>
     );
   }
@@ -385,7 +467,17 @@ const styles = {
     shadowOpacity: 0.15,
     shadowRadius: 1,
     elevation: 1
-  }
+  },
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 1.5,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 3,
+    alignSelf: 'center',
+    backgroundColor: 'white',
+    margin: 10
+  },
 };
 
 const mapStateToProps = (state, props) => {
@@ -407,4 +499,4 @@ export default connect(
     openCameraRoll,
     newCommentOnMediaRefChange
   }
-)(CommentBox);
+)(CommentBoxV2);
