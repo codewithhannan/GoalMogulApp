@@ -8,6 +8,9 @@ import {
   ViewPropTypes
 } from 'react-native';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
+
+const DEBUG_KEY = '[ UI MentionsTextInput ]';
 
 export default class MentionsTextInput extends Component {
   constructor() {
@@ -42,17 +45,61 @@ export default class MentionsTextInput extends Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    // Check if last deleted is a trigger (@), if so, then update the
+    this.checkTriggerDeleted(prevProps);
+
+    const prevContentTagsReg = prevProps.contentTagsReg;
+    const nextContentTagsReg = this.props.contentTagsReg;
+    if (!_.isEqual(prevContentTagsReg.sort(), nextContentTagsReg.sort())) {
+      // Update the tags to match
+    }
+  }
+
   onChangeText(val) {
     this.props.onChangeText(val); // pass changed text back
+    // TODO: Update the logic to start tracking
     const lastChar = val.substr(val.length - 1);
-    const wordBoundry = (this.props.triggerLocation === 'new-word-only') ? this.previousChar.trim().length === 0 : true;
-    if (lastChar === this.props.trigger && wordBoundry) {
+    const wordBoundry = (this.props.triggerLocation === 'new-word-only')
+      ? this.previousChar.trim().length === 0
+      : true;
+
+    // Or the cursor is at one of the tags
+    if ((lastChar === this.props.trigger && wordBoundry) || this.checkIfOnLastTag(val)) {
+      // console.log(`${DEBUG_KEY}: start tracking`);
       this.startTracking();
-    } else if (lastChar === ' ' && this.state.isTrackingStarted || val === "") {
+    } else if ((lastChar === ' ' && this.state.isTrackingStarted) || val === "") {
       this.stopTracking();
     }
     this.previousChar = lastChar;
     this.identifyKeyword(val);
+  }
+
+  // Check if the last group is a tag.
+  checkIfOnLastTag(val) {
+    const { contentTags } = this.props;
+    const lastTriggerIndex = val.lastIndexOf(this.props.trigger);
+    const lastTag = val.slice(lastTriggerIndex);
+    // console.log(`${DEBUG_KEY}: lastTag:`, lastTag);
+    // console.log(`${DEBUG_KEY}: lastTag:`, 1);
+    return contentTags.some((tag) => {
+      // console.log(`${DEBUG_KEY}: lastTriggerIndex: ${lastTriggerIndex} vs tag: ${tag.startIndex}`);
+      // console.log(`${DEBUG_KEY}: lastTag: ${lastTag} vs tag: ${tag.tagText}`);
+      return (
+        tag.tagText === lastTag && tag.startIndex === lastTriggerIndex
+      );
+    });
+  }
+
+  // If last deleted is trigger, user callback to clear the content tags and
+  // Content tags reg
+  checkTriggerDeleted(prevProps) {
+    const prevVal = prevProps.value;
+    const curVal = this.props.value;
+    if (prevVal && !!prevVal.length && curVal &&
+      prevVal.length > curVal.length && prevVal[prevVal.length - 1] === '@') {
+        this.props.validateTags();
+    }
   }
 
   updateSuggestions(lastKeyword) {
@@ -62,10 +109,20 @@ export default class MentionsTextInput extends Component {
   identifyKeyword(val) {
     if (this.isTrackingStarted) {
       const boundary = this.props.triggerLocation === 'new-word-only' ? 'B' : '';
+      let tagsReg = '';
+      this.props.contentTagsReg.forEach((reg) => {
+        tagsReg = `${reg}|${tagsReg}`;
+      });
       const pattern = new RegExp(
-        `\\${boundary}${this.props.trigger}[a-z0-9_-]+|\\${boundary}${this.props.trigger}`, `gi`
+        `${tagsReg}\\${boundary}${this.props.trigger}[a-z0-9_-]+|\\${boundary}${this.props.trigger}`,
+        `gi`
       );
       const keywordArray = val.match(pattern);
+      console.log(`${DEBUG_KEY}: pattern is: `, pattern);
+      console.log(`${DEBUG_KEY}: tagsReg is: `, tagsReg);
+      console.log(`${DEBUG_KEY}: val is: `, val);
+      console.log(`${DEBUG_KEY}: keywordArray is: `, keywordArray);
+
       if (keywordArray && !!keywordArray.length) {
         const lastKeyword = keywordArray[keywordArray.length - 1];
         this.updateSuggestions(lastKeyword);

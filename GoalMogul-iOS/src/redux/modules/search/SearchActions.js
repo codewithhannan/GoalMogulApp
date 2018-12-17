@@ -77,6 +77,31 @@ export const handleSearch = (searchContent, type) => {
 };
 
 /**
+ * Actions for user search when do tagging in comments / goal description / post / share
+ */
+export const searchUser = (searchContent, skip, limit, callback) => (dispatch, getState) => {
+  const { token } = getState().user;
+
+  API
+    .get(
+      `secure/user/profile/es?skip=${skip}&limit=${limit}&query=${searchContent}`,
+      token
+    )
+    .then((res) => {
+      if (res.status === 200) {
+        callback(res);
+        return;
+      }
+      callback({ data: [] });
+    })
+    .catch((err) => {
+      console.log(`${DEBUG_KEY}.searchUser search user with content
+        ${searchContent} fails with err: `, err);
+      callback({ data: [] });
+    });
+};
+
+/**
   * Refresh search result
   * @param type: tab that needs to refresh
   */

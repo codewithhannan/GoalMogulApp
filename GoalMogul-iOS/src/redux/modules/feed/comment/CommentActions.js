@@ -20,6 +20,8 @@ import {
   COMMENT_NEW_UPDATE,
   COMMENT_NEW_UPDATE_COMMENT_TYPE,
   COMMENT_NEW_TEXT_ON_CHANGE,
+  COMMENT_NEW_TAGS_ON_CHANGE,
+  COMMENT_NEW_TAGS_REG_ON_CHANGE,
   COMMENT_NEW_SUGGESTION_REMOVE,
   COMMENT_NEW_SUGGESTION_CREATE,
   COMMENT_NEW_SUGGESTION_ATTACH,
@@ -61,6 +63,34 @@ export const newCommentOnTextChange = (text, pageId) => (dispatch, getState) => 
     type: COMMENT_NEW_TEXT_ON_CHANGE,
     payload: {
       text,
+      tab,
+      pageId
+    }
+  });
+};
+
+export const newCommentOnTagsChange = (contentTags, pageId) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+  dispatch({
+    type: COMMENT_NEW_TAGS_ON_CHANGE,
+    payload: {
+      contentTags,
+      tab,
+      pageId
+    }
+  });
+};
+
+/**
+ * Update the tags regular expression array
+ * @param contentTagsReg: array of contentTagsReg
+ */
+export const newCommentOnTagsRegChange = (contentTagsReg, pageId) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+  dispatch({
+    type: COMMENT_NEW_TAGS_REG_ON_CHANGE,
+    payload: {
+      contentTagsReg,
       tab,
       pageId
     }
@@ -251,7 +281,7 @@ export const postComment = (pageId) => (dispatch, getState) => {
   const newComment = commentAdapter(getState(), pageId, tab);
   const { suggestion, mediaRef } = newComment;
   console.log(`${DEBUG_KEY}: new comment to submit is: `, newComment);
-
+  return;
   dispatch({
     type: COMMENT_NEW_POST_START,
     payload: {
@@ -396,6 +426,7 @@ const commentAdapter = (state, pageId, tab) => {
 
   const {
     contentText,
+    contentTags,
     // owner,
     parentType,
     parentRef,
@@ -412,7 +443,10 @@ const commentAdapter = (state, pageId, tab) => {
 
   const commentToReturn = {
     contentText,
-    contentTags: [],
+    contentTags: contentTags.map((t) => {
+      const { user, startIndex, endIndex } = t;
+      return { user, startIndex, endIndex };
+    }),
     parentType,
     parentRef,
     // content,

@@ -17,6 +17,7 @@ import {
 
 const NEW_COMMENT_INITIAL_STATE = {
   contentText: '',
+  contentTags: [], // { user, startIndex, endIndex, tagReg, tagText } //start index
   owner: undefined,
   // ["Goal", "Post"]
   parentType: undefined,
@@ -81,6 +82,8 @@ export const COMMENT_NEW = 'comment_new';
 export const COMMENT_NEW_UPDATE = 'comment_new_update';
 export const COMMENT_NEW_UPDATE_COMMENT_TYPE = 'comment_new_update_comment_type';
 export const COMMENT_NEW_TEXT_ON_CHANGE = 'comment_new_text_on_change';
+export const COMMENT_NEW_TAGS_ON_CHANGE = 'comment_new_tags_on_change';
+export const COMMENT_NEW_TAGS_REG_ON_CHANGE = 'comment_new_tags_reg_on_change';
 export const COMMENT_NEW_SUGGESTION_CREATE = 'comment_new_suggestion_create';
 export const COMMENT_NEW_SUGGESTION_ATTACH = 'comment_new_suggestion_attach';
 // Open suggestion modal
@@ -193,6 +196,22 @@ export default (state = INITIAL_STATE, action) => {
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       return _.set(newState, `${path}.contentText`, text);
+    }
+
+    case COMMENT_NEW_TAGS_ON_CHANGE: {
+      const newState = _.cloneDeep(state);
+      const { tab, contentTags, pageId } = action.payload;
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      return _.set(newState, `${path}.contentTags`, contentTags);
+    }
+
+    case COMMENT_NEW_TAGS_REG_ON_CHANGE: {
+      const newState = _.cloneDeep(state);
+      const { tab, contentTagsReg, pageId } = action.payload;
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      return _.set(newState, `${path}.contentTagsReg`, contentTagsReg);
     }
 
     case COMMENT_NEW: {

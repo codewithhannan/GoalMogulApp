@@ -23,13 +23,17 @@ import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactor
 
 // Actions
 import {
-  newCommentOnTextChange,
   openCurrentSuggestion,
   removeSuggestion,
   createSuggestion,
   postComment,
-  newCommentOnMediaRefChange
+  newCommentOnMediaRefChange,
+  newCommentOnTextChange,
+  newCommentOnTagsChange,
+  newCommentOnTagsRegChange,
 } from '../../../redux/modules/feed/comment/CommentActions';
+
+import { searchUser } from '../../../redux/modules/search/SearchActions';
 
 import {
   openCamera,
@@ -51,6 +55,13 @@ const maxHeight = 120;
 const { height, width } = Dimensions.get('window');
 const DEBUG_KEY = '[ UI CommentBoxV2 ]';
 
+const INITIAL_TAG_SEARCH = {
+  data: [],
+  skip: 0,
+  limit: 10,
+  loading: false
+};
+
 class CommentBoxV2 extends Component {
   constructor(props) {
     super(props);
@@ -59,6 +70,7 @@ class CommentBoxV2 extends Component {
       height: 34,
       defaultValue: 'Write a Comment...',
       keyword: '',
+      tagSearchData: { ...INITIAL_TAG_SEARCH },
       testTaggingSuggestionData: [
         {
           name: 'Jay Patel',
@@ -83,14 +95,73 @@ class CommentBoxV2 extends Component {
     });
   }
 
-  onTaggingSuggestionTap(name, hidePanel) {
+  onTaggingSuggestionTap(item, hidePanel) {
     hidePanel();
-    const { contentText, pageId } = this.props.newComment;
-    console.log(`${DEBUG_KEY}: contentText is: `, contentText);
+    const { name } = item;
+    const { pageId, newComment } = this.props;
+    const { contentText, contentTags } = newComment;
+    // console.log(`${DEBUG_KEY}: contentText is: `, contentText);
     const comment = contentText.slice(0, -this.state.keyword.length);
-    const newContentText = `${comment} @${name} `;
-    console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
+    const newContentText = `${comment}@${name} `;
+    // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
+    // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
     this.props.newCommentOnTextChange(newContentText, pageId);
+
+    // Check if this tags is already in the array
+    const containsTag = contentTags.some((t) => (
+      t.tagReg === `\\B@${name}` && t.startIndex === comment.length + 1
+    ));
+
+    const needReplceOldTag = contentTags.some((t) => (
+      t.startIndex === comment.length
+    ));
+
+    // Update comment contentTags regex and contentTags
+    if (!containsTag) {
+      const newContentTag = {
+        user: item,
+        startIndex: comment.length, // `${comment}@${name} `
+        endIndex: comment.length + 1 + name.length, // `${comment}@${name} `
+        tagReg: `\\B@${name}`,
+        tagText: `@${name}`
+      };
+
+      let newContentTags;
+      if (needReplceOldTag) {
+        newContentTags = contentTags.map((t) => {
+          if (t.startIndex === newContentTag.startIndex) {
+            return newContentTag;
+          }
+          return t;
+        });
+      } else {
+        newContentTags = [...contentTags, newContentTag];
+      }
+
+      this.props.newCommentOnTagsChange(newContentTags, pageId);
+    }
+
+    // Clear tag search data state
+    this.setState({
+      ...this.state,
+      tagSearchData: { ...INITIAL_TAG_SEARCH }
+    });
+  }
+
+  // This is triggered when a trigger (@) is removed. Verify if all tags
+  // are still valid.
+  validateContentTags = () => {
+    const { pageId, newComment } = this.props;
+    const { contentText, contentTags } = newComment;
+    const newContentTags = contentTags.filter((tag) => {
+      const { startIndex, endIndex, tagText } = tag;
+
+      const actualTag = contentText.slice(startIndex, endIndex);
+      // Verify if with the same startIndex and endIndex, we can still get the
+      // tag. If not, then we remove the tag.
+      return actualTag === tagText;
+    });
+    this.props.newCommentOnTagsChange(newContentTags, pageId);
   }
 
   callback(keyword) {
@@ -101,6 +172,18 @@ class CommentBoxV2 extends Component {
     this.reqTimer = setTimeout(() => {
       // TODO: send search request
       console.log(`${DEBUG_KEY}: requesting for keyword: `, keyword);
+      const { skip, limit } = this.state.tagSearchData;
+      this.props.searchUser(keyword, skip, limit, (res) => {
+        this.setState({
+          ...this.state,
+          keyword,
+          tagSearchData: {
+            ...this.state.tagSearchData,
+            skip: 0, //TODO: new skip
+            data: res.data
+          }
+        });
+      });
     }, 200);
   }
 
@@ -333,7 +416,7 @@ class CommentBoxV2 extends Component {
     const { name, profile } = item;
     return (
       <TouchableOpacity
-        onPress={() => this.onTaggingSuggestionTap(name, hidePanel)}
+        onPress={() => this.onTaggingSuggestionTap(item, hidePanel)}
         style={{
           height: 50,
           width: '100%',
@@ -388,6 +471,8 @@ class CommentBoxV2 extends Component {
           maxHeight={maxHeight}
           multiline
           value={newComment.contentText}
+          contentTags={newComment.contentTags}
+          contentTagsReg={newComment.contentTags.map((t) => t.tagReg)}
           defaultValue={this.state.defaultValue}
           onBlur={() => this.handleOnBlur(newComment)}
           onSubmitEditing={() => this.handleOnSubmitEditing(newComment)}
@@ -398,6 +483,7 @@ class CommentBoxV2 extends Component {
 
           textInputContainerStyle={inputContainerStyle}
           textInputStyle={inputStyle}
+          validateTags={() => this.validateContentTags()}
 
           suggestionsPanelStyle={{ backgroundColor: 'rgba(100,100,100,0.1)' }}
           loadingComponent={() => (
@@ -414,7 +500,7 @@ class CommentBoxV2 extends Component {
           keyExtractor={(item, index) => item._id}
           suggestionRowHeight={50}
           horizontal={false} // defaut is true, change the orientation of the list
-          MaxVisibleRowCount={4} // this is required if horizontal={false}
+          MaxVisibleRowCount={7} // this is required if horizontal={false}
         />
       </SafeAreaView>
     );
@@ -490,6 +576,7 @@ const mapStateToProps = (state, props) => {
 export default connect(
   mapStateToProps,
   {
+    searchUser,
     newCommentOnTextChange,
     openCurrentSuggestion,
     removeSuggestion,
@@ -497,6 +584,8 @@ export default connect(
     postComment,
     openCamera,
     openCameraRoll,
-    newCommentOnMediaRefChange
+    newCommentOnMediaRefChange,
+    newCommentOnTagsRegChange,
+    newCommentOnTagsChange
   }
 )(CommentBoxV2);
