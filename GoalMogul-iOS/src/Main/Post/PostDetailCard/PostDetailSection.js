@@ -67,6 +67,7 @@ import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactor
 import ProfileImage from '../../Common/ProfileImage';
 import RefPreview from '../../Common/RefPreview';
 import ImageModal from '../../Common/ImageModal';
+import RichText from '../../Common/Text/RichText';
 
 // Constants
 const DEBUG_KEY = '[ UI PostDetailCard.PostDetailSection ]';
@@ -141,16 +142,29 @@ class PostDetailSection extends Component {
             user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
-          <View style={{ flexDirection: 'row', marginTop: 10 }}>
-            <Text
-              style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
-              numberOfLines={3}
-              ellipsizeMode='tail'
-            >
-              {content.text}
-            </Text>
-          </View>
-
+          {/*
+            <View style={{ flexDirection: 'row', marginTop: 10 }}>
+              <Text
+                style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
+                numberOfLines={3}
+                ellipsizeMode='tail'
+              >
+                {content.text}
+              </Text>
+            </View>
+          */}
+          <RichText
+            contentText={content.text}
+            contentTags={content.tags}
+            textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
+            textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
+            numberOfLines={3}
+            ellipsizeMode='tail'
+            onUserTagPressed={(user) => {
+              console.log(`${DEBUG_KEY}: user tag press for user: `, user);
+              this.props.openProfile(user._id);
+            }}
+          />
         </View>
       </View>
     );
