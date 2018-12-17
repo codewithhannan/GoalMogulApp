@@ -178,64 +178,125 @@ export default class MentionsTextInput extends Component {
     );
   }
 
-  render() {
-    return (
-      <View style={{ flex: 1 }}>
-        <Animated.View
-          style={[{
-            ...this.props.suggestionsPanelStyle },
-            {
-              height: this.state.suggestionRowHeight,
-              borderBottomWidth: 0.5,
-              borderBottomColor: 'lightgray'
-            }
-          ]}
-        >
-          <FlatList
-            keyboardShouldPersistTaps={'always'}
-            horizontal={this.props.horizontal}
-            ListEmptyComponent={this.props.loadingComponent}
-            ItemSeparatorComponent={this.renderItemSeparator}
-            enableEmptySections
-            data={this.props.suggestionsData}
-            onLoadMore={this.triggerLoadMore}
-            keyExtractor={this.props.keyExtractor}
-            renderItem={(rowData) => {
-              return this.props.renderSuggestionsRow(rowData, this.stopTracking.bind(this));
-            }}
-          />
-        </Animated.View>
-        {this.props.renderSuggestionPreview() || ''}
-        {this.props.renderMedia() || ''}
+  renderTextInput() {
+    if (this.props.flexGrowDirection && this.props.flexGrowDirection === 'bottom') {
+      return (
         <View style={{ flexDirection: 'row' }}>
-          {this.props.renderLeftIcons() || ''}
+          {this.props.renderLeftIcons ? this.props.renderLeftIcons() : ''}
           <View style={{ ...this.props.textInputContainerStyle }}>
             <TextInput
               {...this.props}
-              onContentSizeChange={(event) => {
-                this.setState({
-                  textInputHeight: (
-                    this.props.textInputMinHeight >= event.nativeEvent.contentSize.height
-                    ? this.props.textInputMinHeight
-                    : event.nativeEvent.contentSize.height + 10
-                  ),
-                });
-              }}
               ref={component => this._textInput = component}
               onChangeText={this.onChangeText.bind(this)}
-              multiline={true}
+              multiline
               value={this.props.value}
-              style={
-                [
-                  { ...this.props.textInputStyle },
-                  { height: Math.min(this.props.textInputMaxHeight, this.state.textInputHeight) }
-                ]
-              }
+              style={[this.props.textInputStyle]}
               placeholder={this.props.placeholder ? this.props.placeholder : 'Write a comment...'}
             />
           </View>
-          {this.props.renderPost() || ''}
+          {this.props.renderPost ? this.props.renderPost() : ''}
         </View>
+      );
+    }
+    return (
+      <View style={{ flexDirection: 'row' }}>
+        {this.props.renderLeftIcons ? this.props.renderLeftIcons() : ''}
+        <View style={{ ...this.props.textInputContainerStyle }}>
+          <TextInput
+            {...this.props}
+            onContentSizeChange={(event) => {
+              this.setState({
+                textInputHeight: (
+                  this.props.textInputMinHeight >= event.nativeEvent.contentSize.height
+                  ? this.props.textInputMinHeight
+                  : event.nativeEvent.contentSize.height + 10
+                ),
+              });
+            }}
+            ref={component => this._textInput = component}
+            onChangeText={this.onChangeText.bind(this)}
+            multiline={true}
+            value={this.props.value}
+            style={
+              [
+                { ...this.props.textInputStyle },
+                { height: Math.min(this.props.textInputMaxHeight, this.state.textInputHeight) }
+              ]
+            }
+            placeholder={this.props.placeholder ? this.props.placeholder : 'Write a comment...'}
+          />
+        </View>
+        {this.props.renderPost ? this.props.renderPost() : ''}
+      </View>
+    );
+  }
+
+  render() {
+    return (
+      <View style={{ flex: 1 }}>
+        {
+          (this.props.suggestionPosition && this.props.suggestionPosition === 'bottom') ?
+          '' :
+          (
+            <Animated.View
+              style={[{
+                ...this.props.suggestionsPanelStyle },
+                {
+                  height: this.state.suggestionRowHeight,
+                  borderBottomWidth: _.isEmpty(this.props.suggestionsData) ? 0 : 0.5,
+                  borderBottomColor: 'lightgray'
+                }
+              ]}
+            >
+              <FlatList
+                keyboardShouldPersistTaps={'always'}
+                horizontal={this.props.horizontal}
+                ListEmptyComponent={this.props.loadingComponent}
+                ItemSeparatorComponent={this.renderItemSeparator}
+                enableEmptySections
+                data={this.props.suggestionsData}
+                onLoadMore={this.triggerLoadMore}
+                keyExtractor={this.props.keyExtractor}
+                renderItem={(rowData) => {
+                  return this.props.renderSuggestionsRow(rowData, this.stopTracking.bind(this));
+                }}
+              />
+            </Animated.View>
+          )
+        }
+
+        {this.props.renderSuggestionPreview ? this.props.renderSuggestionPreview() : ''}
+        {this.props.renderMedia ? this.props.renderMedia() : ''}
+        {this.renderTextInput()}
+        {
+          (this.props.suggestionPosition && this.props.suggestionPosition === 'bottom') ?
+          (
+            <Animated.View
+              style={[{
+                ...this.props.suggestionsPanelStyle },
+                {
+                  height: this.state.suggestionRowHeight,
+                  borderBottomWidth: _.isEmpty(this.props.suggestionsData) ? 0 : 0.5,
+                  borderBottomColor: 'lightgray'
+                }
+              ]}
+            >
+              <FlatList
+                keyboardShouldPersistTaps={'always'}
+                horizontal={this.props.horizontal}
+                ListEmptyComponent={this.props.loadingComponent}
+                ItemSeparatorComponent={this.renderItemSeparator}
+                enableEmptySections
+                data={this.props.suggestionsData}
+                onLoadMore={this.triggerLoadMore}
+                keyExtractor={this.props.keyExtractor}
+                renderItem={(rowData) => {
+                  return this.props.renderSuggestionsRow(rowData, this.stopTracking.bind(this));
+                }}
+              />
+            </Animated.View>
+          ) : ''
+        }
       </View>
     );
   }

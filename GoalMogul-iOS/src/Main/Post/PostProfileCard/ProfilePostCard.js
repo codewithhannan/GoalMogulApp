@@ -45,6 +45,7 @@ import ActionButtonGroup from '../../Goal/Common/ActionButtonGroup';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import ProfilePostBody from './ProfilePostBody';
 import ProfileImage from '../../Common/ProfileImage';
+import RichText from '../../Common/Text/RichText';
 import Headline from '../../Goal/Common/Headline';
 import Timestamp from '../../Goal/Common/Timestamp';
 
@@ -155,7 +156,7 @@ class ProfilePostCard extends React.PureComponent {
     const timeStamp = created || new Date();
 
     // TODO: TAG:
-    const content = item.content.text;
+    const { text, tags } = item.content;
 
     return (
       <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
@@ -175,14 +176,27 @@ class ProfilePostCard extends React.PureComponent {
             user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
-          <View style={{ flexDirection: 'row', marginTop: 10 }}>
-            <Text
-              style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
-            >
-              {content}
-            </Text>
-          </View>
-
+          <RichText
+            contentText={text}
+            contentTags={tags}
+            textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
+            textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
+            numberOfLines={3}
+            ellipsizeMode='tail'
+            onUserTagPressed={(user) => {
+              console.log(`${DEBUG_KEY}: user tag press for user: `, user);
+              this.props.openProfile(user._id);
+            }}
+          />
+          {/*
+            <View style={{ flexDirection: 'row', marginTop: 10 }}>
+              <Text
+                style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
+              >
+                {content}
+              </Text>
+            </View>
+          */}
         </View>
       </View>
     );

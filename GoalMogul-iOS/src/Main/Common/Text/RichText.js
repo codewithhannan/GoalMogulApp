@@ -48,10 +48,10 @@ class RichText extends React.PureComponent {
     const parsedTags = this.constructParsedUserTags(contentTags, contentText);
 
     return (
-      <View style={[...this.props.textContainerStyle]}>
+      <View style={[this.props.textContainerStyle]}>
         <ParsedText
           {...this.props}
-          style={[...this.props.textStyle]}
+          style={[this.props.textStyle]}
           parse={
             [
               { type: 'url', style: styles.url, onPress: this.handleUrlPress },

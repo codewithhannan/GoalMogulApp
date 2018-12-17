@@ -89,7 +89,7 @@ export const searchUser = (searchContent, skip, limit, callback) => (dispatch, g
     )
     .then((res) => {
       if (res.status === 200) {
-        callback(res);
+        callback(res, searchContent);
         return;
       }
       callback({ data: [] });

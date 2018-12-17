@@ -80,6 +80,7 @@ export const submitCreatingPost = (values, needUpload, needOpenProfile, callback
 (dispatch, getState) => {
     const { userId, token } = getState().user;
     const newPost = newPostAdaptor(values, userId);
+    console.log(`${DEBUG_KEY}: post to submit is: `, newPost);
 
     const onSuccess = (res) => {
       console.log('Creating post succeed with res: ', res);
@@ -209,14 +210,17 @@ const sendCreatePostRequest = (newPost, token, dispatch, onSuccess, onError) => 
  * Transform values in CreatePostModal to Server readable format
  */
 const newPostAdaptor = (values, userId) => {
-  const { viewableSetting, mediaRef, post, belongsToTribe, belongsToEvent } = values;
+  const { viewableSetting, mediaRef, post, belongsToTribe, belongsToEvent, tags } = values;
 
   return {
     owner: userId,
     privacy: viewableSetting === 'Private' ? 'self' : viewableSetting.toLowerCase(),
     content: {
       text: post,
-      tags: [],
+      tags: tags.map((t) => {
+        const { user, startIndex, endIndex } = t;
+        return { user, startIndex, endIndex };
+      }),
       // links: [] no link is needed for now
     },
     mediaRef,
