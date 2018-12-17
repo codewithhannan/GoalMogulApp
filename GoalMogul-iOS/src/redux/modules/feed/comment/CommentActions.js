@@ -281,7 +281,7 @@ export const postComment = (pageId) => (dispatch, getState) => {
   const newComment = commentAdapter(getState(), pageId, tab);
   const { suggestion, mediaRef } = newComment;
   console.log(`${DEBUG_KEY}: new comment to submit is: `, newComment);
-  return;
+
   dispatch({
     type: COMMENT_NEW_POST_START,
     payload: {
@@ -422,7 +422,7 @@ const commentAdapter = (state, pageId, tab) => {
   const page = pageId ? `${pageId}` : 'default';
   const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
   let newComment = _.get(state.newComment, `${path}`);
-  // console.log(`${DEBUG_KEY}: raw comment is: `, newComment);
+  console.log(`${DEBUG_KEY}: raw comment is: `, newComment);
 
   const {
     contentText,

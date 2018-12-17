@@ -118,10 +118,10 @@ export default class MentionsTextInput extends Component {
         `gi`
       );
       const keywordArray = val.match(pattern);
-      console.log(`${DEBUG_KEY}: pattern is: `, pattern);
-      console.log(`${DEBUG_KEY}: tagsReg is: `, tagsReg);
-      console.log(`${DEBUG_KEY}: val is: `, val);
-      console.log(`${DEBUG_KEY}: keywordArray is: `, keywordArray);
+      // console.log(`${DEBUG_KEY}: pattern is: `, pattern);
+      // console.log(`${DEBUG_KEY}: tagsReg is: `, tagsReg);
+      // console.log(`${DEBUG_KEY}: val is: `, val);
+      // console.log(`${DEBUG_KEY}: keywordArray is: `, keywordArray);
 
       if (keywordArray && !!keywordArray.length) {
         const lastKeyword = keywordArray[keywordArray.length - 1];
@@ -198,6 +198,7 @@ export default class MentionsTextInput extends Component {
             ItemSeparatorComponent={this.renderItemSeparator}
             enableEmptySections
             data={this.props.suggestionsData}
+            onLoadMore={this.triggerLoadMore}
             keyExtractor={this.props.keyExtractor}
             renderItem={(rowData) => {
               return this.props.renderSuggestionsRow(rowData, this.stopTracking.bind(this));

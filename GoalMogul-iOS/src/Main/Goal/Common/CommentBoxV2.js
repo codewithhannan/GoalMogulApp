@@ -20,6 +20,7 @@ import MentionsTextInput from './MentionsTextInput';
 import SuggestionPreview, { RemoveComponent } from '../GoalDetailCard/SuggestionPreview';
 import ProfileImage from '../../Common/ProfileImage';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import EmptyResult from '../../Common/Text/EmptyResult';
 
 // Actions
 import {
@@ -44,6 +45,9 @@ import {
 import {
   getNewCommentByTab
 } from '../../../redux/modules/feed/comment/CommentSelector';
+
+// Utils
+import { arrayUnique } from '../../../redux/middleware/utils';
 
 // Assets
 import PhotoIcon from '../../../asset/utils/photoIcon.png';
@@ -172,19 +176,54 @@ class CommentBoxV2 extends Component {
     this.reqTimer = setTimeout(() => {
       // TODO: send search request
       console.log(`${DEBUG_KEY}: requesting for keyword: `, keyword);
-      const { skip, limit } = this.state.tagSearchData;
-      this.props.searchUser(keyword, skip, limit, (res) => {
+      this.setState({
+        ...this.state,
+        tagSearchData: {
+          ...this.state.tagSearchData,
+          loading: true
+        }
+      });
+      const { limit } = this.state.tagSearchData;
+      this.props.searchUser(keyword, 0, limit, (res) => {
         this.setState({
           ...this.state,
           keyword,
           tagSearchData: {
             ...this.state.tagSearchData,
-            skip: 0, //TODO: new skip
-            data: res.data
+            skip: res.data.length, //TODO: new skip
+            data: res.data,
+            loading: false
           }
         });
       });
     }, 200);
+  }
+
+  handleTagSearchLoadMore = () => {
+    const { tagSearchData, keyword } = this.state;
+    const { skip, limit, data, loading } = tagSearchData;
+
+    if (loading) return;
+    this.setState({
+      ...this.state,
+      tagSearchData: {
+        ...this.state.tagSearchData,
+        loading: true
+      }
+    });
+
+    this.props.searchUser(keyword, skip, limit, (res) => {
+      this.setState({
+        ...this.state,
+        keyword,
+        tagSearchData: {
+          ...this.state.tagSearchData,
+          skip: skip + res.data.length, //TODO: new skip
+          data: arrayUnique([...data, ...res.data]),
+          loading: false
+        }
+      });
+    });
   }
 
   handleOnPost = (uploading) => {
@@ -428,10 +467,10 @@ class CommentBoxV2 extends Component {
         <ProfileImage
           imageContainerStyle={styles.imageContainerStyle}
           imageUrl={profile && profile.image ? profile.image : undefined}
-          imageStyle={{ height: 27, width: 25, borderRadius: 3 }}
+          imageStyle={{ height: 31, width: 30, borderRadius: 3 }}
           defaultImageSource={DefaultUserProfile}
         />
-        <Text style={{ fontSize: 15, color: 'darkgray' }}>{name}</Text>
+        <Text style={{ fontSize: 16, color: 'darkgray' }}>{name}</Text>
       </TouchableOpacity>
     );
   }
@@ -486,17 +525,26 @@ class CommentBoxV2 extends Component {
           validateTags={() => this.validateContentTags()}
 
           suggestionsPanelStyle={{ backgroundColor: 'rgba(100,100,100,0.1)' }}
-          loadingComponent={() => (
-            <View style={{ flex: 1, width, justifyContent: 'center', alignItems: 'center' }}>
-              <ActivityIndicator />
-            </View>)}
+          loadingComponent={() => {
+            if (this.state.tagSearchData.loading) {
+              return (
+                <View
+                  style={{ flex: 1, height: 50, width, justifyContent: 'center', alignItems: 'center' }}
+                >
+                  <ActivityIndicator />
+                </View>
+              );
+            }
+            return <EmptyResult text={'No User Found'} textStyle={{ paddingTop: 15, height: 50 }} />;
+          }}
           textInputMinHeight={30}
           textInputMaxHeight={80}
           trigger={'@'}
           triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
           triggerCallback={this.callback.bind(this)}
+          triggerLoadMore={this.handleTagSearchLoadMore}
           renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
-          suggestionsData={this.state.testTaggingSuggestionData} // array of objects
+          suggestionsData={this.state.tagSearchData.data} // array of objects
           keyExtractor={(item, index) => item._id}
           suggestionRowHeight={50}
           horizontal={false} // defaut is true, change the orientation of the list
@@ -556,13 +604,15 @@ const styles = {
   },
   imageContainerStyle: {
     borderWidth: 0.5,
-    padding: 1.5,
+    padding: 1,
     borderColor: 'lightgray',
     alignItems: 'center',
     borderRadius: 3,
     alignSelf: 'center',
     backgroundColor: 'white',
-    margin: 10
+    marginLeft: 10,
+    marginRight: 10,
+    margin: 5
   },
 };
 
