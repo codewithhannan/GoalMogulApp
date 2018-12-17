@@ -279,4 +279,4 @@ MentionsTextInput.defaultProps = {
   textInputMinHeight: 30,
   textInputMaxHeight: 80,
   horizontal: true,
-}
+};

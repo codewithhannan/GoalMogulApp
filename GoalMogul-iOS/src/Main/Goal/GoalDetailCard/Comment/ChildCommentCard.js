@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text
+  View
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -15,6 +14,7 @@ import ActionButton from '../../Common/ActionButton';
 import ActionButtonGroup from '../../Common/ActionButtonGroup';
 import CommentHeadline from './CommentHeadline';
 import ProfileImage from '../../../Common/ProfileImage';
+import RichText from '../../../Common/Text/RichText';
 
 // Actions
 import {
@@ -55,19 +55,33 @@ class ChildCommentCard extends Component {
   renderCardContent() {
     const { item } = this.props;
     let text;
+    let tags = [];
     if (item.commentType === 'Suggestion') {
       text = item.suggestion.suggestionText;
     } else {
       text = item.content.text;
+      tags = item.content.tags;
     }
+    // return (
+    //   <Text
+    //     style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 11 }}
+    //     numberOfLines={3}
+    //     ellipsizeMode='tail'
+    //   >
+    //     {text}
+    //   </Text>
+    // );
     return (
-      <Text
-        style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 11 }}
-        numberOfLines={3}
-        ellipsizeMode='tail'
-      >
-        {text}
-      </Text>
+      <RichText
+        contentText={text}
+        contentTags={tags}
+        textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 12, marginTop: 3 }}
+        multiline
+        onUserTagPressed={(user) => {
+          console.log(`${DEBUG_KEY}: user tag press for user: `, user);
+          this.props.openProfile(user._id);
+        }}
+      />
     );
   }
 
