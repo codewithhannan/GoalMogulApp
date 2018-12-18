@@ -99,14 +99,17 @@ class CommentBoxV2 extends Component {
     });
   }
 
-  onTaggingSuggestionTap(item, hidePanel) {
+  onTaggingSuggestionTap(item, hidePanel, cursorPosition) {
     hidePanel();
     const { name } = item;
     const { pageId, newComment } = this.props;
     const { contentText, contentTags } = newComment;
     // console.log(`${DEBUG_KEY}: contentText is: `, contentText);
-    const comment = contentText.slice(0, -this.state.keyword.length);
-    const newContentText = `${comment}@${name} `;
+
+    const postCursorContent = contentText.slice(cursorPosition);
+    const prevCursorContent = contentText.slice(0, cursorPosition);
+    const comment = prevCursorContent.slice(0, -this.state.keyword.length);
+    const newContentText = `${comment}@${name} ${postCursorContent.replace(/^\s+/g, '')}`;
     // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
     // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
     this.props.newCommentOnTextChange(newContentText, pageId);
@@ -192,6 +195,7 @@ class CommentBoxV2 extends Component {
       console.log(`${DEBUG_KEY}: requesting for keyword: `, keyword);
       this.setState({
         ...this.state,
+        keyword,
         tagSearchData: {
           ...this.state.tagSearchData,
           loading: true
@@ -456,11 +460,11 @@ class CommentBoxV2 extends Component {
    * @param hidePanel: lib passed in funct to close suggestion panel
    * @param item: suggestion item to render
    */
-  renderSuggestionsRow({ item }, hidePanel) {
+  renderSuggestionsRow({ item }, hidePanel, cursorPosition) {
     const { name, profile } = item;
     return (
       <TouchableOpacity
-        onPress={() => this.onTaggingSuggestionTap(item, hidePanel)}
+        onPress={() => this.onTaggingSuggestionTap(item, hidePanel, cursorPosition)}
         style={{
           height: 50,
           width: '100%',

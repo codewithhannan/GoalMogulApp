@@ -4,14 +4,12 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Image,
-  TextInput,
   Text,
   TouchableOpacity,
   ImageBackground,
   Dimensions,
   SafeAreaView,
   ActivityIndicator,
-  StyleSheet
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
@@ -75,13 +73,15 @@ class CreatePostModal extends Component {
   /**
    * Tag related functions
    */
-  onTaggingSuggestionTap(item, hidePanel) {
+  onTaggingSuggestionTap(item, hidePanel, cursorPosition) {
     hidePanel();
     const { name } = item;
     const { post, tags } = this.props;
-    // console.log(`${DEBUG_KEY}: contentText is: `, contentText);
-    const content = post.slice(0, -this.state.keyword.length);
-    const newContent = `${content}@${name} `;
+
+    const postCursorContent = post.slice(cursorPosition);
+    const prevCursorContent = post.slice(0, cursorPosition);
+    const content = prevCursorContent.slice(0, -this.state.keyword.length);
+    const newContent = `${content}@${name} ${postCursorContent.replace(/^\s+/g, '')}`;
     // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
     // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
     this.props.change('post', newContent);
@@ -156,7 +156,7 @@ class CreatePostModal extends Component {
     });
   }
 
-  callback(keyword) {
+  triggerCallback(keyword) {
     if (this.reqTimer) {
       clearTimeout(this.reqTimer);
     }
@@ -320,7 +320,7 @@ class CreatePostModal extends Component {
           textInputMaxHeight={200}
           trigger={'@'}
           triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
-          triggerCallback={(kw) => this.callback(kw, keyword)}
+          triggerCallback={(kw) => this.triggerCallback(kw)}
           triggerLoadMore={this.handleTagSearchLoadMore.bind(this)}
           renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
           suggestionsData={tagData} // array of objects
@@ -397,11 +397,11 @@ class CreatePostModal extends Component {
    * @param hidePanel: lib passed in funct to close suggestion panel
    * @param item: suggestion item to render
    */
-  renderSuggestionsRow({ item }, hidePanel) {
+  renderSuggestionsRow({ item }, hidePanel, cursorPosition) {
     const { name, profile } = item;
     return (
       <TouchableOpacity
-        onPress={() => this.onTaggingSuggestionTap(item, hidePanel)}
+        onPress={() => this.onTaggingSuggestionTap(item, hidePanel, cursorPosition)}
         style={{
           height: 50,
           width: '100%',

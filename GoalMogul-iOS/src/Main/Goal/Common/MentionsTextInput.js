@@ -68,7 +68,9 @@ export default class MentionsTextInput extends Component {
       : true;
 
     // Or the cursor is at one of the tags
-    if ((lastChar === this.props.trigger && wordBoundry) || this.checkIfOnLastTag(val)) {
+    if ((lastChar === this.props.trigger && wordBoundry) ||
+        this.checkIfOnLastTag(val) ||
+        this.checkIfOnTag(val)) {
       // console.log(`${DEBUG_KEY}: start tracking`);
       this.startTracking();
     // } else if (val === "" || (lastChar === ' ' && this.state.isTrackingStarted)) {
@@ -86,13 +88,29 @@ export default class MentionsTextInput extends Component {
     const { contentTags } = this.props;
     const lastTriggerIndex = val.lastIndexOf(this.props.trigger);
     const lastTag = val.slice(lastTriggerIndex);
+
+    return contentTags.some((tag) => {
+      return (
+        tag.tagText === lastTag && tag.startIndex === lastTriggerIndex
+      );
+    });
+  }
+
+  checkIfOnTag(val) {
+    const { contentTags } = this.props;
+
+    const focusContent = val.slice(0, this.cursorPosition);
+    const lastFocucsTriggerIndex = focusContent.lastIndexOf(this.props.trigger);
+    const lastFocusTag = focusContent.slice(lastFocucsTriggerIndex);
+
     // console.log(`${DEBUG_KEY}: lastTag:`, lastTag);
     // console.log(`${DEBUG_KEY}: lastTag:`, 1);
     return contentTags.some((tag) => {
       // console.log(`${DEBUG_KEY}: lastTriggerIndex: ${lastTriggerIndex} vs tag: ${tag.startIndex}`);
       // console.log(`${DEBUG_KEY}: lastTag: ${lastTag} vs tag: ${tag.tagText}`);
       return (
-        tag.tagText === lastTag && tag.startIndex === lastTriggerIndex
+        tag.tagText.slice(0, tag.tagText.length - 1) === lastFocusTag
+        && tag.startIndex === lastFocucsTriggerIndex
       );
     });
   }
@@ -108,23 +126,24 @@ export default class MentionsTextInput extends Component {
     }
   }
 
-  updateSuggestions(lastKeyword) {
-    this.props.triggerCallback(lastKeyword);
+  updateSuggestions(lastKeyword, cursorPosition) {
+    this.props.triggerCallback(lastKeyword, cursorPosition);
   }
 
   identifyKeyword(val) {
     if (this.isTrackingStarted) {
       const boundary = this.props.triggerLocation === 'new-word-only' ? 'B' : '';
-
-      const lastTriggerIndex = val.lastIndexOf(this.props.trigger);
-      const lastTag = val.slice(lastTriggerIndex);
-      const lastKW = lastTag.slice(1); // "@Jia Zeng" --> "Jia Zeng"
-      const hasMoreThan2Spaces = lastTag.split(' ').length - 1 >= 2;
-      let hasMatch;
+      // focusContent is the content before the cursor
+      const focusContent = val.slice(0, this.cursorPosition);
+      const lastFocucsTriggerIndex = focusContent.lastIndexOf(this.props.trigger);
+      const lastFocusTag = focusContent.slice(lastFocucsTriggerIndex);
+      const lastFocusKW = lastFocusTag.slice(1); // "@Jia Zeng" --> "Jia Zeng"
+      const focusContentHasMoreThan2Spaces = lastFocusTag.split(' ').length - 1 >= 2;
+      let focusContentHasMatch;
       this.props.tagSearchRes.forEach((res) => {
-        if (res.name.includes(lastKW)) hasMatch = true;
+        if (res.name.includes(lastFocusKW)) focusContentHasMatch = true;
       });
-      if (hasMoreThan2Spaces && !hasMatch) {
+      if (focusContentHasMoreThan2Spaces && !focusContentHasMatch) {
         this.stopTracking();
       }
 
@@ -140,17 +159,53 @@ export default class MentionsTextInput extends Component {
         `\\${boundary}${this.props.trigger}`,
         `gi`
       );
-      const keywordArray = val.match(pattern);
+      const keywordArray = focusContent.match(pattern);
       // console.log(`${DEBUG_KEY}: pattern is: `, pattern);
       // console.log(`${DEBUG_KEY}: tagsReg is: `, tagsReg);
       // console.log(`${DEBUG_KEY}: val is: `, val);
       // console.log(`${DEBUG_KEY}: keywordArray is: `, keywordArray);
 
       if ((keywordArray && !!keywordArray.length)) {
-        // console.log(`${DEBUG_KEY}: keyword array: `, keywordArray);
         const lastKeyword = keywordArray[keywordArray.length - 1];
-        this.updateSuggestions(lastKeyword);
+        // console.log(`${DEBUG_KEY}: last keyword: `, lastKeyword);
+        this.updateSuggestions(lastKeyword, this.cursorPosition);
       }
+
+      // const lastTriggerIndex = val.lastIndexOf(this.props.trigger);
+      // const lastTag = val.slice(lastTriggerIndex);
+      // const lastKW = lastTag.slice(1); // "@Jia Zeng" --> "Jia Zeng"
+      // const hasMoreThan2Spaces = lastTag.split(' ').length - 1 >= 2;
+      // let hasMatch;
+      // this.props.tagSearchRes.forEach((res) => {
+      //   if (res.name.includes(lastKW)) hasMatch = true;
+      // });
+      // if (hasMoreThan2Spaces && !hasMatch) {
+      //   this.stopTracking();
+      // }
+      //
+      // let tagsReg = '';
+      // this.props.contentTagsReg.forEach((reg) => {
+      //   tagsReg = `${reg}|${tagsReg}`;
+      // });
+      // const pattern = new RegExp(
+      //   `${tagsReg}` +
+      //   // Find the match for @Jia Zeng, name with spaces
+      //   `\\${boundary}${this.props.trigger}\\w+\\s\\w+|` +
+      //   `\\${boundary}${this.props.trigger}[a-z0-9_-]+|` +
+      //   `\\${boundary}${this.props.trigger}`,
+      //   `gi`
+      // );
+      // const keywordArray = val.match(pattern);
+      // // console.log(`${DEBUG_KEY}: pattern is: `, pattern);
+      // // console.log(`${DEBUG_KEY}: tagsReg is: `, tagsReg);
+      // // console.log(`${DEBUG_KEY}: val is: `, val);
+      // // console.log(`${DEBUG_KEY}: keywordArray is: `, keywordArray);
+      //
+      // if ((keywordArray && !!keywordArray.length)) {
+      //   // console.log(`${DEBUG_KEY}: keyword array: `, keywordArray);
+      //   const lastKeyword = keywordArray[keywordArray.length - 1];
+      //   this.updateSuggestions(lastKeyword);
+      // }
     }
   }
 
@@ -289,7 +344,11 @@ export default class MentionsTextInput extends Component {
                 onLoadMore={this.triggerLoadMore}
                 keyExtractor={this.props.keyExtractor}
                 renderItem={(rowData) => {
-                  return this.props.renderSuggestionsRow(rowData, this.stopTracking.bind(this));
+                  return this.props.renderSuggestionsRow(
+                    rowData,
+                    this.stopTracking.bind(this),
+                    this.cursorPosition
+                  );
                 }}
               />
             </Animated.View>
@@ -322,7 +381,11 @@ export default class MentionsTextInput extends Component {
                 onLoadMore={this.triggerLoadMore}
                 keyExtractor={this.props.keyExtractor}
                 renderItem={(rowData) => {
-                  return this.props.renderSuggestionsRow(rowData, this.stopTracking.bind(this));
+                  return this.props.renderSuggestionsRow(
+                    rowData,
+                    this.stopTracking.bind(this),
+                    this.cursorPosition
+                  );
                 }}
               />
             </Animated.View>
