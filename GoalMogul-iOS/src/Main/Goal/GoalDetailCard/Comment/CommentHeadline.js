@@ -34,7 +34,7 @@ const CommentHeadline = (props) => {
     ],
     (val) => caretOnPress(val),
     '',
-    { paddingBottom: 10, paddingLeft: 5, paddingRight: 5, paddingTop: 5 },
+    { paddingBottom: 8, paddingRight: 8, paddingLeft: 10, paddingTop: 1 },
     () => console.log('Report Modal is opened')
   ) :
   MenuFactory(
@@ -43,7 +43,8 @@ const CommentHeadline = (props) => {
     ],
     (val) => caretOnPress(val),
     '',
-    { paddingBottom: 10, paddingLeft: 5, paddingRight: 5, paddingTop: 5 },
+    // { paddingBottom: 10, paddingLeft: 5, paddingRight: 5, paddingTop: 5 },
+    { paddingBottom: 8, paddingRight: 8, paddingLeft: 10, paddingTop: 1 },
     () => console.log('Report Modal is opened')
   );
 

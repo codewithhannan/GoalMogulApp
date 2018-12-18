@@ -19,6 +19,8 @@ import Headline from '../Goal/Common/Headline';
 import Timestamp from '../Goal/Common/Timestamp';
 import ProfileImage from '../Common/ProfileImage';
 
+const DEBUG_KEY = '[ UI ActivityHeader ]';
+
 class ActivityHeader extends Component {
   // user basic information
   renderUserDetail({ postRef, goalRef, actedUponEntityType }) {
@@ -52,6 +54,7 @@ class ActivityHeader extends Component {
               this.props.createReport(_id, 'post', `${actedUponEntityType}`);
             }}
             user={owner}
+            isSelf={this.props.userId === owner._id}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
@@ -95,8 +98,15 @@ const styles = {
   }
 };
 
+const mapStateToProps = (state) => {
+  const { userId } = state.user;
+  return {
+    userId
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   {
     createReport
   }

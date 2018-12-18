@@ -37,6 +37,8 @@ import {
   BACKGROUND_COLOR
 } from '../../../styles';
 
+const DEBUG_KEY = '[ UI PostDetailCard ]';
+
 class PostDetailCard extends Component {
   constructor(props) {
     super(props);
@@ -97,7 +99,6 @@ class PostDetailCard extends Component {
   render() {
     const { comments, postDetail, pageId } = this.props;
     const data = comments;
-
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>

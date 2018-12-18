@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -77,7 +77,7 @@ const { width } = Dimensions.get('window');
 // Styles
 import { imagePreviewContainerStyle } from '../../../styles';
 
-class PostDetailSection extends Component {
+class PostDetailSection extends React.PureComponent {
   state = {
     mediaModal: false
   }
@@ -135,7 +135,6 @@ class PostDetailSection extends Component {
             isSelf={this.props.userId === owner._id}
             caretOnDelete={() => this.props.deletePost(_id)}
             caretOnPress={() => {
-              console.log('I am pressed on PostDetailSEction');
               this.props.createReport(_id, 'postDetail', 'Post');
             }}
             user={owner}

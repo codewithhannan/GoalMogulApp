@@ -163,10 +163,9 @@ class CreateGoalModal extends Component {
       input: { onFocus, value, onChange, ...restInput },
       multiline,
       editable,
-      numberOfLines,
       placeholder,
+      numberOfLines,
       style,
-      maxHeight,
       meta: { touched, error },
       ...custom
     } = props;
@@ -178,9 +177,8 @@ class CreateGoalModal extends Component {
           onChangeText={(val) => onChange(val)}
           style={style}
           editable={editable}
-          maxHeight={maxHeight}
           multiline={multiline}
-          minHeight={70}
+          numberOfLines={numberOfLines}
           value={_.isEmpty(value) ? '' : value}
         />
       </View>
@@ -248,10 +246,17 @@ class CreateGoalModal extends Component {
             name={description}
             component={this.renderInput}
             editable={this.props.uploading}
-            style={styles.standardInputStyle}
+            style={{
+              ...styles.standardInputStyle,
+              paddingLeft: 15,
+              paddingRight: 15,
+              // Should approximately match numberOfLines * fontSize height + padding
+              maxHeight: 100,
+              minHeight: 80
+            }}
+            numberOfLines={5}
             placeholder="Decribe your goal"
             multiline
-            maxHeight={200}
           />
         );
       }) : '';

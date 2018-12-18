@@ -75,24 +75,26 @@ const styles = {
   },
   menuOptionsStyles: {
     optionsContainer: {
-      // flex: 1
+      width: width / 3,
+      paddingTop: 5,
+      paddingBottom: 5,
+      paddingLeft: 10,
+      paddingRight: 10
     },
     optionsWrapper: {
 
     },
     optionWrapper: {
-      // margin: 3
+      flex: 1,
     },
     optionTouchable: {
       underlayColor: 'lightgray',
       activeOpacity: 10,
     },
     optionText: {
-      // paddingTop: 5,
-      // paddingBottom: 5,
-      // paddingLeft: 10,
-      // paddingRight: 10,
-      // color: 'black',
-    },
+      paddingTop: 5,
+      paddingBottom: 5,
+      color: '#555'
+    }
   }
 };

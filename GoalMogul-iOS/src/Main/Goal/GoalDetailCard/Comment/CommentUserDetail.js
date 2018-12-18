@@ -65,8 +65,8 @@ class CommentUserDetail extends Component {
   renderCardContent() {
     const { item } = this.props;
     let text;
-    if (item.commentType === 'Suggestion' && 
-        item.suggestion && 
+    if (item.commentType === 'Suggestion' &&
+        item.suggestion &&
         item.suggestion.suggestionType === 'Link') {
       text = (item.suggestion && item.suggestion.suggestionText)
         ? item.suggestion.suggestionText
@@ -87,11 +87,12 @@ class CommentUserDetail extends Component {
   // user basic information
   renderUserDetail() {
     const { item, reportType, goalRef, userId } = this.props;
-    const { _id, suggestion } = item;
+    const { _id, suggestion, owner } = item;
 
     // User is comment owner if user is the creator of the goal or
     // user is the creator of the comment
-    const isCommentOwner = userId === _id || (goalRef && goalRef.owner._id === userId);
+    const isCommentOwner = userId === owner._id ||
+      (goalRef && goalRef.owner._id === userId);
     return (
         <View style={{ marginLeft: 15, flex: 1 }}>
           <CommentHeadline

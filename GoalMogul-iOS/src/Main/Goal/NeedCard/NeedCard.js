@@ -109,6 +109,7 @@ class NeedCard extends Component {
             category={category}
             caretOnPress={() => this.props.createReport(_id, 'goal', 'Goal')}
             user={owner}
+            isSelf={owner._id === this.props.userId}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
@@ -232,8 +233,8 @@ class NeedCard extends Component {
                   share a need
               </Text>
             </View>
-            <TouchableOpacity 
-              activeOpacity={0.85} 
+            <TouchableOpacity
+              activeOpacity={0.85}
               style={styles.containerStyle}
               onPress={() => this.props.onPress(this.props.item)}
             >
@@ -283,8 +284,15 @@ const styles = {
   }
 };
 
+const mapStateToProps = state => {
+  const { userId } = state.user;
+  return {
+    userId
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   {
     likeGoal,
     createReport,
