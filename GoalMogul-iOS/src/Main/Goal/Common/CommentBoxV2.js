@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import {
   ActivityIndicator,
   View,
-  TextInput,
   Text,
   SafeAreaView,
   Image,
@@ -87,6 +86,7 @@ class CommentBoxV2 extends Component {
       ]
       // position: 'absolute'
     };
+    this.updateSearchRes = this.updateSearchRes.bind(this);
   }
 
   componentDidMount() {
@@ -168,6 +168,20 @@ class CommentBoxV2 extends Component {
     this.props.newCommentOnTagsChange(newContentTags, pageId);
   }
 
+  updateSearchRes(res, searchContent) {
+    if (searchContent !== this.state.keyword) return '';
+    this.setState({
+      ...this.state,
+      // keyword,
+      tagSearchData: {
+        ...this.state.tagSearchData,
+        skip: res.data.length, //TODO: new skip
+        data: res.data,
+        loading: false
+      }
+    });
+  }
+
   callback(keyword) {
     if (this.reqTimer) {
       clearTimeout(this.reqTimer);
@@ -184,19 +198,10 @@ class CommentBoxV2 extends Component {
         }
       });
       const { limit } = this.state.tagSearchData;
-      this.props.searchUser(keyword, 0, limit, (res) => {
-        this.setState({
-          ...this.state,
-          keyword,
-          tagSearchData: {
-            ...this.state.tagSearchData,
-            skip: res.data.length, //TODO: new skip
-            data: res.data,
-            loading: false
-          }
-        });
+      this.props.searchUser(keyword, 0, limit, (res, searchContent) => {
+        this.updateSearchRes(res, searchContent);
       });
-    }, 200);
+    }, 150);
   }
 
   handleTagSearchLoadMore = () => {

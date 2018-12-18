@@ -65,6 +65,7 @@ class CreatePostModal extends Component {
       keyword: '',
       tagSearchData: { ...INITIAL_TAG_SEARCH },
     };
+    this.updateSearchRes = this.updateSearchRes.bind(this);
   }
 
   componentDidMount() {
@@ -141,13 +142,26 @@ class CreatePostModal extends Component {
     change('tags', newContentTags);
   }
 
-  callback(keyword, kw) {
+  updateSearchRes(res, searchContent) {
+    if (searchContent !== this.state.keyword) return '';
+    this.setState({
+      ...this.state,
+      // keyword,
+      tagSearchData: {
+        ...this.state.tagSearchData,
+        skip: res.data.length, //TODO: new skip
+        data: res.data,
+        loading: false
+      }
+    });
+  }
+
+  callback(keyword) {
     if (this.reqTimer) {
       clearTimeout(this.reqTimer);
     }
 
     this.reqTimer = setTimeout(() => {
-      // TODO: send search request
       console.log(`${DEBUG_KEY}: requesting for keyword: `, keyword);
       this.setState({
         ...this.state,
@@ -159,20 +173,9 @@ class CreatePostModal extends Component {
       });
       const { limit } = this.state.tagSearchData;
       this.props.searchUser(keyword, 0, limit, (res, searchContent) => {
-        // console.log(`${DEBUG_KEY}: tag search for kw: ${kw}, keyword: ${keyword},
-        // sc: ${searchContent}, return: `, res);
-        this.setState({
-          ...this.state,
-          keyword,
-          tagSearchData: {
-            ...this.state.tagSearchData,
-            skip: res.data.length, //TODO: new skip
-            data: res.data,
-            loading: false
-          }
-        });
+        this.updateSearchRes(res, searchContent);
       });
-    }, 350);
+    }, 150);
   }
 
   handleTagSearchLoadMore = () => {
