@@ -163,6 +163,7 @@ const formToGoalAdapter = (values, userId) => {
     needs,
     steps,
     details,
+    tags,
     priority,
     startTime,
     endTime
@@ -200,7 +201,7 @@ const formToGoalAdapter = (values, userId) => {
     shareToGoalFeed: shareToMastermind,
     needs: stepsNeedsAdapter(needs),
     steps: stepsNeedsAdapter(steps),
-    details: detailsAdapter(details),
+    details: detailsAdapter(details, tags),
     priority,
     start: startTime.date,
     end: endTime.date
@@ -240,6 +241,7 @@ export const goalToFormAdaptor = (values) => {
     // steps: stepsNeedsReverseAdapter(steps),
     // TODO: TAG:
     details: details ? [details.text] : [''],
+    tags: details ? [details.tags] : [''],
     priority,
     startTime: {
       date: start ? new Date(`${start}`) : undefined,
@@ -282,12 +284,12 @@ const stepsNeedsAdapter = values => {
   }).filter((val) => val !== '');
 };
 
-const detailsAdapter = (value) => {
+const detailsAdapter = (value, tags) => {
   if (!value || value.length === 0 || _.isEmpty(value[0])) return undefined;
 
   return {
     text: value[0],
-    tags: []
+    tags
   };
 };
 

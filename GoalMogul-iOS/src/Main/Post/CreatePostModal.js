@@ -205,6 +205,7 @@ class CreatePostModal extends Component {
       });
     });
   }
+  // Tagging related function ends
 
   initializeForm() {
     const { belongsToTribe, belongsToEvent } = this.props;
@@ -287,12 +288,10 @@ class CreatePostModal extends Component {
       editable,
       placeholder,
       style,
-      // maxHeight,
       meta: { touched, error },
       loading,
       tagData,
       change,
-      keyword,
       ...custom
     } = props;
 
@@ -320,7 +319,7 @@ class CreatePostModal extends Component {
           textInputMaxHeight={200}
           trigger={'@'}
           triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
-          triggerCallback={(kw) => this.triggerCallback(kw)}
+          triggerCallback={(keyword) => this.triggerCallback(keyword)}
           triggerLoadMore={this.handleTagSearchLoadMore.bind(this)}
           renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
           suggestionsData={tagData} // array of objects
