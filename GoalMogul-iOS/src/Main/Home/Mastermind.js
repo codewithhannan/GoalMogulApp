@@ -3,11 +3,14 @@ import {
   View,
   Image,
   TouchableOpacity,
-  Text
+  Text,
+  ActivityIndicator,
+  Platform
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
+import { Constants } from 'expo';
 
 // Components
 // import GoalFilterBar from '../Common/GoalFilterBar';
@@ -32,6 +35,12 @@ import {
   openGoalDetail,
   changeFilter
 } from '../../redux/modules/home/mastermind/actions';
+
+import { IPHONE_MODELS } from '../../Utils/Constants';
+
+const ITEM_HEIGHT = Platform.OS === 'ios' &&
+  IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+  ? 450 : 410;
 
 const TAB_KEY = 'mastermind';
 
@@ -184,6 +193,22 @@ class Mastermind extends Component {
     // );
   }
 
+  renderListFooter() {
+    const { loadingMore, data } = this.props;
+    // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
+    if (loadingMore && data.length > 4) {
+      return (
+        <View
+          style={{
+            paddingVertical: 0
+          }}
+        >
+          <ActivityIndicator size='large' />
+        </View>
+      );
+    }
+  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -193,8 +218,8 @@ class Mastermind extends Component {
           ref={(c) => { this._carousel = c; }}
           data={this.props.data}
           renderItem={this.renderItem}
-          sliderHeight={450}
-          itemHeight={450}
+          sliderHeight={ITEM_HEIGHT}
+          itemHeight={ITEM_HEIGHT}
           keyExtractor={this._keyExtractor}
           refreshing={this.props.loading}
           onRefresh={this.handleOnRefresh}
@@ -207,6 +232,7 @@ class Mastermind extends Component {
               textStyle={{ paddingTop: 100 }}
             />
           }
+          ListFooterComponent={this.renderListFooter()}
           vertical
           removeClippedSubviews
           initialNumToRender={4}
@@ -275,7 +301,7 @@ const styles = {
   },
   nextIconContainerStyle: {
     position: 'absolute',
-    bottom: 5,
+    bottom: 0,
     right: 50,
     left: 50,
     alignItems: 'center'
@@ -283,13 +309,14 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { showPlus, data, loading, filter } = state.home.mastermind;
+  const { showPlus, data, loading, filter, loadingMore } = state.home.mastermind;
 
   return {
     showPlus,
     data,
     loading,
-    filter
+    filter,
+    loadingMore
   };
 };
 
