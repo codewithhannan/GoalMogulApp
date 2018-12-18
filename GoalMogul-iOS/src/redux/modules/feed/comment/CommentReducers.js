@@ -27,6 +27,8 @@ import {
   COMMENT_NEW_POST_SUCCESS
 } from './NewCommentReducers';
 
+const DEBUG_KEY = '[ CommentReducers ]';
+
 const COMMENT_INITIAL_STATE = {
   data: [],
   transformedComments: [],
@@ -233,6 +235,15 @@ function updateLike(array, id, like) {
     let newItem = _.cloneDeep(item);
     if (item._id.toString() === id.toString()) {
       newItem = _.set(newItem, 'maybeLikeRef', like);
+      let newLikeCount = _.get(newItem, 'likeCount');
+      if (like) {
+        if (like === 'testId') {
+          newLikeCount += 1;
+        }
+      } else {
+        newLikeCount -= 1;
+      }
+      newItem = _.set(newItem, 'likeCount', newLikeCount);
     }
     return newItem;
   });
