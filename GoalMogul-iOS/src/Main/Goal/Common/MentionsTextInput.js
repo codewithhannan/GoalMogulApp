@@ -23,6 +23,7 @@ export default class MentionsTextInput extends Component {
     };
     this.isTrackingStarted = false;
     this.previousChar = ' ';
+    this.cursorPosition = 0;
   }
 
   componentWillMount() {
@@ -146,12 +147,10 @@ export default class MentionsTextInput extends Component {
       // console.log(`${DEBUG_KEY}: keywordArray is: `, keywordArray);
 
       if ((keywordArray && !!keywordArray.length)) {
-        console.log(`${DEBUG_KEY}: keyword array: `, keywordArray);
+        // console.log(`${DEBUG_KEY}: keyword array: `, keywordArray);
         const lastKeyword = keywordArray[keywordArray.length - 1];
         this.updateSuggestions(lastKeyword);
       }
-
-
     }
   }
 
@@ -160,6 +159,11 @@ export default class MentionsTextInput extends Component {
       toValue: height ? height : this.props.suggestionRowHeight,
       duration: 100,
     }).start();
+  }
+
+  handleOnSelectionChange(event) {
+    const { start, end } = event.nativeEvent.selection;
+    if (start === end) this.cursorPosition = start;
   }
 
   closeSuggestionsPanel() {
@@ -216,6 +220,7 @@ export default class MentionsTextInput extends Component {
               multiline
               value={this.props.value}
               style={[this.props.textInputStyle]}
+              onSelectionChange={this.handleOnSelectionChange.bind(this)}
               placeholder={this.props.placeholder ? this.props.placeholder : 'Write a comment...'}
             />
           </View>
@@ -240,6 +245,7 @@ export default class MentionsTextInput extends Component {
             }}
             ref={component => this._textInput = component}
             onChangeText={this.onChangeText.bind(this)}
+            onSelectionChange={this.handleOnSelectionChange.bind(this)}
             multiline={true}
             value={this.props.value}
             style={
