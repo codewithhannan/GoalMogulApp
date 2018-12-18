@@ -38,8 +38,9 @@ export const getLike = (parentId, parentType) => (dispatch, getState) => {
  * action to like a goal / post / comment
  * @params type: one of goal, post, comment
  * @params id: goal/post/comment id
+ * @params pageId: if post / comment, we need to provide pageId
  */
-export const likeGoal = (type, id) => (dispatch, getState) => {
+export const likeGoal = (type, id, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
   const { tab } = getState().navigation;
   const tmp = ((request) => {
@@ -104,7 +105,8 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
               id,
               likeId,
               tab,
-              type
+              type,
+              pageId
             }
           }),
           undoAction: () => dispatch({
@@ -113,7 +115,8 @@ export const likeGoal = (type, id) => (dispatch, getState) => {
               id,
               likeId: undefined,
               tab,
-              type
+              type,
+              pageId
             }
           })
         };

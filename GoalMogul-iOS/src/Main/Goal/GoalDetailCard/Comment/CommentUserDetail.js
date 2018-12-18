@@ -181,9 +181,9 @@ class CommentUserDetail extends Component {
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks like icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
-              return this.props.unLikeGoal('comment', _id, maybeLikeRef);
+              return this.props.unLikeGoal('comment', _id, maybeLikeRef, this.props.pageId);
             }
-            this.props.likeGoal('comment', _id);
+            this.props.likeGoal('comment', _id, this.props.pageId);
           }}
         />
         <ActionButton

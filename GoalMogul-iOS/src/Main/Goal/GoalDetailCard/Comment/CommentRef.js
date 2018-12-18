@@ -136,7 +136,10 @@ class CommentRef extends React.PureComponent {
 
     // if suggestionType is Custom and no suggestionText and suggestionLink,
     // then it's a suggestionComment for a step or a need
-    if (suggestionType === 'Custom' && (!suggestionText || _.isEmpty(suggestionText)) &&
+    // If suggestionText is {} which is an empty object, it means that it's
+    // a suggestion comment for a step / need
+    if (suggestionType === 'Custom' &&
+        (!suggestionText || _.isEmpty(suggestionText) || suggestionText === '{}') &&
         (!suggestionLink || _.isEmpty(suggestionLink))) {
       return '';
     }
