@@ -307,6 +307,7 @@ class CreatePostModal extends Component {
           value={_.isEmpty(value) ? '' : value}
           contentTags={tags || []}
           contentTagsReg={tags ? tags.map((t) => t.tagReg) : []}
+          tagSearchRes={this.state.tagSearchData.data}
           flexGrowDirection='bottom'
           suggestionPosition='bottom'
           textInputContainerStyle={{ ...styles.inputContainerStyle }}

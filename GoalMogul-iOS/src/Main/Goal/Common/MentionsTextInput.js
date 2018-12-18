@@ -46,8 +46,10 @@ export default class MentionsTextInput extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // Check if last deleted is a trigger (@), if so, then update the
+    // Check if last deleted is a trigger (@), if so, then update the tags
     this.checkTriggerDeleted(prevProps);
+
+    // Check if new tagSearchRes matches
 
     const prevContentTagsReg = prevProps.contentTagsReg;
     const nextContentTagsReg = this.props.contentTagsReg;
@@ -68,7 +70,10 @@ export default class MentionsTextInput extends Component {
     if ((lastChar === this.props.trigger && wordBoundry) || this.checkIfOnLastTag(val)) {
       // console.log(`${DEBUG_KEY}: start tracking`);
       this.startTracking();
-    } else if ((lastChar === ' ' && this.state.isTrackingStarted) || val === "") {
+    // } else if (val === "" || (lastChar === ' ' && this.state.isTrackingStarted)) {
+    // (lastChar === ' ' && this.state.isTrackingStarted) is moved to identifyKeyword
+    // to determine if we want to stop tracking
+    } else if (val === "") {
       this.stopTracking();
     }
     this.previousChar = lastChar;
@@ -109,12 +114,29 @@ export default class MentionsTextInput extends Component {
   identifyKeyword(val) {
     if (this.isTrackingStarted) {
       const boundary = this.props.triggerLocation === 'new-word-only' ? 'B' : '';
+
+      const lastTriggerIndex = val.lastIndexOf(this.props.trigger);
+      const lastTag = val.slice(lastTriggerIndex);
+      const lastKW = lastTag.slice(1); // "@Jia Zeng" --> "Jia Zeng"
+      const hasMoreThan2Spaces = lastTag.split(' ').length - 1 >= 2;
+      let hasMatch;
+      this.props.tagSearchRes.forEach((res) => {
+        if (res.name.includes(lastKW)) hasMatch = true;
+      });
+      if (hasMoreThan2Spaces && !hasMatch) {
+        this.stopTracking();
+      }
+
       let tagsReg = '';
       this.props.contentTagsReg.forEach((reg) => {
         tagsReg = `${reg}|${tagsReg}`;
       });
       const pattern = new RegExp(
-        `${tagsReg}\\${boundary}${this.props.trigger}[a-z0-9_-]+|\\${boundary}${this.props.trigger}`,
+        `${tagsReg}` +
+        // Find the match for @Jia Zeng, name with spaces
+        `\\${boundary}${this.props.trigger}\\w+\\s\\w+|` +
+        `\\${boundary}${this.props.trigger}[a-z0-9_-]+|` +
+        `\\${boundary}${this.props.trigger}`,
         `gi`
       );
       const keywordArray = val.match(pattern);
@@ -123,10 +145,13 @@ export default class MentionsTextInput extends Component {
       // console.log(`${DEBUG_KEY}: val is: `, val);
       // console.log(`${DEBUG_KEY}: keywordArray is: `, keywordArray);
 
-      if (keywordArray && !!keywordArray.length) {
+      if ((keywordArray && !!keywordArray.length)) {
+        console.log(`${DEBUG_KEY}: keyword array: `, keywordArray);
         const lastKeyword = keywordArray[keywordArray.length - 1];
         this.updateSuggestions(lastKeyword);
       }
+
+
     }
   }
 

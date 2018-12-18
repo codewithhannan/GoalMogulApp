@@ -517,6 +517,7 @@ class CommentBoxV2 extends Component {
           value={newComment.contentText}
           contentTags={newComment.contentTags}
           contentTagsReg={newComment.contentTags.map((t) => t.tagReg)}
+          tagSearchRes={this.state.tagSearchData.data}
           defaultValue={this.state.defaultValue}
           onBlur={() => this.handleOnBlur(newComment)}
           onSubmitEditing={() => this.handleOnSubmitEditing(newComment)}
