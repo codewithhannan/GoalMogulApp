@@ -205,7 +205,8 @@ const newShareAdaptor = (newShare, formVales) => {
 
   const {
     privacy, // needs to uncapitalize the first character and map Private to self
-    content
+    content,
+    tags
   } = formVales;
 
   const transformedPrivacy = privacy === 'Private' ? 'self' : privacy.toLowerCase();
@@ -222,7 +223,7 @@ const newShareAdaptor = (newShare, formVales) => {
     belongsToEvent,
     content: {
       text: content,
-      tags: []
+      tags
     },
     privacy: transformedPrivacy
   };

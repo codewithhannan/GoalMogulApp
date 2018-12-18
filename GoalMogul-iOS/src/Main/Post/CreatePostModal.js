@@ -205,7 +205,7 @@ class CreatePostModal extends Component {
       });
     });
   }
-  // Tagging related function ends
+  /* Tagging related function ends */
 
   initializeForm() {
     const { belongsToTribe, belongsToEvent } = this.props;
