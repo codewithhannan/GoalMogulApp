@@ -218,7 +218,10 @@ class GoalDetailCardV3 extends Component {
     const { focusType } = navigationState;
     if (focusType) return '';
     return (
-      <View style={{ paddingTop: 10, backgroundColor: BACKGROUND_COLOR }}>
+      <TouchableOpacity
+        style={{ paddingTop: 10, backgroundColor: BACKGROUND_COLOR }}
+        onPress={this.onViewCommentPress}
+      >
         <View
           style={{
             alignItems: 'center',
@@ -243,7 +246,7 @@ class GoalDetailCardV3 extends Component {
             <Image source={next} style={[styles.nextIconStyle, { opacity: 0.8 }]} />
           </TouchableOpacity>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 
