@@ -7,8 +7,12 @@ import {
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 
+import {
+  APP_BLUE
+} from '../../../styles';
+
 const TabButton = (props) => {
-  const backgroundColor = props.selected ? '#17B3EC' : 'white';
+  const backgroundColor = props.selected ? APP_BLUE : 'white';
   const tintColor = props.selected ? 'white' : '#616161';
   const color = props.selected ? 'white' : '#616161';
   const fontWeight = props.selected ? '700' : '600';
@@ -30,7 +34,8 @@ const TabButton = (props) => {
     );
 
   return (
-    <TouchableOpacity activeOpacity={0.85}
+    <TouchableOpacity
+      activeOpacity={0.85}
       style={{ ...styles.containerStyle, backgroundColor }}
       onPress={props.onPress}
     >
