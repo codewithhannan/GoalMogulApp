@@ -21,6 +21,11 @@ import {
   switchCaseF
 } from '../../../middleware/utils';
 
+// Actions
+import {
+  refreshComments
+} from '../../feed/comment/CommentActions';
+
 import { api as API } from '../../../middleware/api';
 
 const DEBUG_KEY = '[ Action Share ]';
@@ -45,8 +50,10 @@ export const openShareDetail = (share) => (dispatch, getState) => {
     },
   });
 
+  const { _id } = share;
+  refreshComments('Post', _id, tab, pageId)(dispatch, getState);
 
-  Actions.push(`${scene}`);
+  Actions.push(`${scene}`, { pageId });
 };
 
 // close share detail

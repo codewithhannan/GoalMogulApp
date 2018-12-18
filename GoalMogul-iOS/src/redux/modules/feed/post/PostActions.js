@@ -19,6 +19,11 @@ import {
   openProfile
 } from '../../../../actions';
 
+// Actions
+import {
+  refreshComments
+} from '../../feed/comment/CommentActions';
+
 import { api as API } from '../../../middleware/api';
 import { capitalizeWord } from '../../../middleware/utils';
 import ImageUtils from '../../../../Utils/ImageUtils';
@@ -47,7 +52,9 @@ export const openPostDetail = (post) => (dispatch, getState) => {
     },
   });
 
-  Actions.push(`${scene}`);
+  const { _id } = post;
+  refreshComments('Post', _id, tab, pageId)(dispatch, getState);
+  Actions.push(`${scene}`, { pageId });
 };
 
 // close post detail

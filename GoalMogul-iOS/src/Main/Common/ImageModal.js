@@ -13,7 +13,7 @@ import cancel from '../../asset/utils/cancel_no_background.png';
 // Constants
 const { width, height } = Dimensions.get('window');
 
-class ImageModal extends React.Component {
+class ImageModal extends React.PureComponent {
   render() {
     if (!this.props.mediaRef) return '';
     return (
