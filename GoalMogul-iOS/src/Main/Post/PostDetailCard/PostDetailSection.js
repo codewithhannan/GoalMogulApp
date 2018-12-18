@@ -135,7 +135,6 @@ class PostDetailSection extends React.PureComponent {
             isSelf={this.props.userId === owner._id}
             caretOnDelete={() => this.props.deletePost(_id)}
             caretOnPress={() => {
-              console.log('I am pressed on PostDetailSEction');
               this.props.createReport(_id, 'postDetail', 'Post');
             }}
             user={owner}

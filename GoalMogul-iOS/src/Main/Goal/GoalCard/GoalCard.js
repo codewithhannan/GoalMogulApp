@@ -212,6 +212,7 @@ class GoalCard extends React.PureComponent {
             category={category}
             caretOnPress={() => this.props.createReport(_id, 'goal', 'Goal')}
             user={owner}
+            isSelf={owner._id === this.props.userId}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
@@ -397,8 +398,15 @@ const styles = {
   }
 };
 
+const mapStateToProps = state => {
+  const { userId } = state.user;
+  return {
+    userId
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   {
     createReport,
     likeGoal,

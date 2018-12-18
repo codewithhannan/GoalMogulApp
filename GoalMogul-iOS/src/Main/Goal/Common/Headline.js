@@ -41,7 +41,7 @@ import UndoIcon from '../../../asset/utils/undo.png';
 import TrashIcon from '../../../asset/utils/trash.png';
 
 const { width } = Dimensions.get('window');
-
+const DEBUG_KEY = '[ UI Headline ]';
 /**
  * category:
  * name:
@@ -82,18 +82,17 @@ class Headline extends React.PureComponent {
   }
 
   renderDeleteOptionOnly() {
-    return (
-      MenuFactory(
-        [
-          'Delete',
-        ],
-        () => this.props.caretOnDelete(),
-        '',
-        { ...styles.caretContainer },
-        () => console.log('Report Modal is opened'),
-        false
-      )
+    const caret = MenuFactory(
+      [
+        { option: 'Delete' },
+      ],
+      () => this.props.caretOnDelete(),
+      '',
+      { ...styles.caretContainer },
+      () => console.log('Report Modal is opened'),
+      false
     );
+    return caret;
   }
 
   renderSelfCaret(item) {
