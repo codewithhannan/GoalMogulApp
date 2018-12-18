@@ -4,6 +4,7 @@ import {
   HOME_MASTERMIND_OPEN_CREATE_OVERLAY,
   HOME_REFRESH_GOAL,
   HOME_REFRESH_GOAL_DONE,
+  HOME_LOAD_GOAL,
   HOME_LOAD_GOAL_DONE,
   HOME_SET_GOAL_INDEX,
   HOME_UPDATE_FILTER
@@ -127,10 +128,17 @@ export const refreshGoals = () => (dispatch, getState) => {
 // Load more goal for mastermind tab
 export const loadMoreGoals = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, filter, hasNextPage, refreshing } = getState().home.mastermind;
-  if (hasNextPage === false || refreshing) {
+  const { skip, limit, filter, hasNextPage, refreshing, loadingMore } = getState().home.mastermind;
+  if (hasNextPage === false || refreshing || loadingMore) {
     return;
   }
+
+  dispatch({
+    type: HOME_LOAD_GOAL,
+    payload: {
+      type: 'mastermind'
+    }
+  });
   const { categories, priorities, sortBy } = filter;
   loadGoals(skip, limit, token, { priorities, categories, sortBy }, (data) => {
     console.log(`${DEBUG_KEY}: load more goals with data length: `, data.length);

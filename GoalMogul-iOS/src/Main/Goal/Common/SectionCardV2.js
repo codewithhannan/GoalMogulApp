@@ -113,7 +113,8 @@ class SectionCardV2 extends Component {
   }
 
   // Render Suggestion icon and number of comments
-  renderStats() {
+  renderStats(type) {
+    if (type === 'comment') return '';
     const commentCount = this.props.count === undefined ? 15 : this.props.count;
     return (
       <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, paddingBottom: 4 }}>
@@ -167,7 +168,8 @@ class SectionCardV2 extends Component {
     }
 
     const { description, isCompleted } = itemToRender;
-    const sectionText = type === 'comment' ? 'Back to mastermind' : description;
+    const isCommentFocused = type === 'comment';
+    const sectionText = isCommentFocused ? 'Back to mastermind' : description;
 
     return (
       <TouchableOpacity
@@ -175,7 +177,8 @@ class SectionCardV2 extends Component {
         style={{
           ...styles.sectionContainerStyle,
           backgroundColor: isCompleted ? '#fcfcfc' : 'white',
-          opacity: isCompleted ? 0.8 : 1
+          opacity: isCompleted ? 0.8 : 1,
+          minHeight: 54
         }}
         onPress={this.props.onCardPress || this.props.onBackPress}
       >
@@ -190,14 +193,14 @@ class SectionCardV2 extends Component {
           >
             {this.renderCheckBox(isCompleted, type)}
             <Text
-              style={{ ...styles.sectionTextStyle }}
+              style={{ ...styles.sectionTextStyle, paddingTop: isCommentFocused ? 0 : 4 }}
               numberOfLines={2}
               ellipsizeMode='tail'
             >
               {sectionText === undefined ? 'No content' : sectionText}
             </Text>
           </View>
-          {this.renderStats()}
+          {this.renderStats(type)}
         </View>
         {this.renderActionIcons(type)}
       </TouchableOpacity>

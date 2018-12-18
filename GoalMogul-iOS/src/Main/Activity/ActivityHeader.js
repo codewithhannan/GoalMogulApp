@@ -57,6 +57,7 @@ class ActivityHeader extends Component {
               this.props.createReport(_id, 'post', `${actedUponEntityType}`);
             }}
             user={owner}
+            isSelf={this.props.userId === owner._id}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           {/*
@@ -114,8 +115,15 @@ const styles = {
   }
 };
 
+const mapStateToProps = (state) => {
+  const { userId } = state.user;
+  return {
+    userId
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   {
     createReport
   }

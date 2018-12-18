@@ -44,8 +44,9 @@ const INITIAL_STATE = {
       priorities: ''
     },
     hasNextPage: undefined,
-    loading: false,
-    refreshing: false
+    loading: false, // Set to true when refreshing
+    loadingMore: false, // Set to true when loading more
+    refreshing: false // Set to true when refreshing
   },
   activityfeed: {
     showPlus: true,
