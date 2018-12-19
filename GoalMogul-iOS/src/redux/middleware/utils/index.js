@@ -69,3 +69,57 @@ export const capitalizeWord = (word) => {
   if (!word) return '';
   return word.replace(/^\w/, c => c.toUpperCase());
 };
+
+/**
+ * Reassign startIndex for tags.
+ * If newTag is empty, then we don't do comparison to skip.
+ */
+export const clearTags = (newContent, newTag, tags) => {
+  let tagTextToStartIndexMap = {};
+  const newTags = tags
+    .sort((a, b) => a.startIndex - b.startIndex)
+    .map((t) => {
+      const { startIndex, tagText, tagReg, user } = t;
+      let position = 1; // Get the first occurane of the index
+      if (tagText in tagTextToStartIndexMap) {
+        position = tagTextToStartIndexMap[`${tagText}`] + 1;
+      }
+      // Update map
+      tagTextToStartIndexMap[`${tagText}`] = position;
+
+      // Get the new startIndex
+      let newStartIndex = getPosition(newContent, tagText, position);
+
+      // It means that we match to the new tag for an old one.
+      // Then we need to increase the position by 1
+      if (newTag && !_.isEmpty(newTag) && newStartIndex === newTag.startIndex) {
+        position += 1;
+        tagTextToStartIndexMap[`${tagText}`] = position;
+        newStartIndex = getPosition(newContent, tagText, position);
+      }
+
+      if (newStartIndex >= newContent.length) {
+        // This should never happen unless there is some problem
+        console.warn(`Failed to match for tag ${tagText} in content: ${newContent} at ` +
+          `position: ${position}`);
+          return t;
+      }
+
+      return {
+        startIndex: newStartIndex,
+        endIndex: newStartIndex + tagText.length,
+        user,
+        tagReg,
+        tagText
+      };
+    });
+  return newTags;
+};
+
+/**
+ * Get the position of nth ocurrance of a substring
+ * if no nth occurances found, then it will return the length of the parent string
+ */
+function getPosition(string, subString, index) {
+   return string.split(subString, index).join(subString).length;
+}

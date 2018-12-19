@@ -36,7 +36,7 @@ import imageOverlay from '../../asset/utils/imageOverlay.png';
 import expand from '../../asset/utils/expand.png';
 
 // Utils
-import { arrayUnique } from '../../redux/middleware/utils';
+import { arrayUnique, clearTags } from '../../redux/middleware/utils';
 
 // Actions
 import { openCameraRoll, openCamera } from '../../actions';
@@ -86,38 +86,44 @@ class CreatePostModal extends Component {
     // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
     this.props.change('post', newContent);
 
+    const newContentTag = {
+      user: item,
+      startIndex: content.length, // `${comment}@${name} `
+      endIndex: content.length + 1 + name.length, // `${comment}@${name} `
+      tagReg: `\\B@${name}`,
+      tagText: `@${name}`
+    };
+
+    // Clean up tags position before comparing
+    const newTags = clearTags(newContent, newContentTag, tags);
+
     // Check if this tags is already in the array
-    const containsTag = tags.some((t) => (
+    const containsTag = newTags.some((t) => (
       t.tagReg === `\\B@${name}` && t.startIndex === content.length + 1
     ));
 
-    const needReplceOldTag = tags.some((t) => (
+    const needReplceOldTag = newTags.some((t) => (
       t.startIndex === content.length
     ));
 
     // Update comment contentTags regex and contentTags
     if (!containsTag) {
-      const newContentTag = {
-        user: item,
-        startIndex: content.length, // `${comment}@${name} `
-        endIndex: content.length + 1 + name.length, // `${comment}@${name} `
-        tagReg: `\\B@${name}`,
-        tagText: `@${name}`
-      };
-
       let newContentTags;
       if (needReplceOldTag) {
-        newContentTags = tags.map((t) => {
+        newContentTags = newTags.map((t) => {
           if (t.startIndex === newContentTag.startIndex) {
             return newContentTag;
           }
           return t;
         });
       } else {
-        newContentTags = [...tags, newContentTag];
+        newContentTags = [...newTags, newContentTag];
       }
-
-      this.props.change('tags', newContentTags);
+      // TODO: sort newContentTags by startIndex
+      this.props.change(
+        'tags',
+        newContentTags.sort((a, b) => a.startIndex - b.startIndex)
+      );
     }
 
     // Clear tag search data state

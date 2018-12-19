@@ -17,7 +17,7 @@ import R from 'ramda';
 import _ from 'lodash';
 
 // Utils
-import { switchCase, arrayUnique } from '../../redux/middleware/utils';
+import { switchCase, arrayUnique, clearTags } from '../../redux/middleware/utils';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
@@ -78,38 +78,44 @@ class ShareModal extends React.Component {
     // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
     this.props.change('content', newContent);
 
+    const newContentTag = {
+      user: item,
+      startIndex: prevTagContent.length, // `${comment}@${name} `
+      endIndex: prevTagContent.length + 1 + name.length, // `${comment}@${name} `
+      tagReg: `\\B@${name}`,
+      tagText: `@${name}`
+    };
+
+    // Clean up tags position before comparing
+    const newTags = clearTags(newContent, newContentTag, tags);
+
     // Check if this tags is already in the array
-    const containsTag = tags.some((t) => (
+    const containsTag = newTags.some((t) => (
       t.tagReg === `\\B@${name}` && t.startIndex === prevTagContent.length + 1
     ));
 
-    const needReplceOldTag = tags.some((t) => (
+    const needReplceOldTag = newTags.some((t) => (
       t.startIndex === prevTagContent.length
     ));
 
     // Update comment contentTags regex and contentTags
     if (!containsTag) {
-      const newContentTag = {
-        user: item,
-        startIndex: prevTagContent.length, // `${comment}@${name} `
-        endIndex: prevTagContent.length + 1 + name.length, // `${comment}@${name} `
-        tagReg: `\\B@${name}`,
-        tagText: `@${name}`
-      };
-
       let newContentTags;
       if (needReplceOldTag) {
-        newContentTags = tags.map((t) => {
+        newContentTags = newTags.map((t) => {
           if (t.startIndex === newContentTag.startIndex) {
             return newContentTag;
           }
           return t;
         });
       } else {
-        newContentTags = [...tags, newContentTag];
+        newContentTags = [...newTags, newContentTag];
       }
 
-      this.props.change('tags', newContentTags);
+      this.props.change(
+        'tags',
+        newContentTags.sort((a, b) => a.startIndex - b.startIndex)
+      );
     }
 
     // Clear tag search data state

@@ -18,7 +18,8 @@ import {
 } from './ShareReducers';
 
 import {
-  switchCaseF
+  switchCaseF,
+  clearTags
 } from '../../../middleware/utils';
 
 // Actions
@@ -210,6 +211,7 @@ const newShareAdaptor = (newShare, formVales) => {
   } = formVales;
 
   const transformedPrivacy = privacy === 'Private' ? 'self' : privacy.toLowerCase();
+  const tagsToUse = clearTags(content, {}, tags);
 
   return {
     owner,
@@ -223,7 +225,7 @@ const newShareAdaptor = (newShare, formVales) => {
     belongsToEvent,
     content: {
       text: content,
-      tags
+      tags: tagsToUse
     },
     privacy: transformedPrivacy
   };

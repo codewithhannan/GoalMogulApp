@@ -62,14 +62,18 @@ export default class MentionsTextInput extends Component {
   onChangeText(val) {
     this.props.onChangeText(val); // pass changed text back
     // TODO: Update the logic to start tracking
-    const lastChar = val.substr(val.length - 1);
+    const lastChar = val.substr(val.length - 1); // This is the char at the end of the content
     const wordBoundry = (this.props.triggerLocation === 'new-word-only')
       ? this.previousChar.trim().length === 0
       : true;
 
+    const curInputChar = val.slice(this.cursorPosition - 1, this.cursorPosition);
+    const prevInputChar = val.slice(this.cursorPosition - 2, this.cursorPosition - 1);
+    const nextCharChar = val.slice(this.cursorPosition, this.cursorPosition + 1);
     // Or the cursor is at one of the tags
     if ((lastChar === this.props.trigger && wordBoundry) ||
         this.checkIfOnLastTag(val) ||
+        (curInputChar === this.props.trigger && prevInputChar.trim().length === 0 && nextCharChar.trim().length === 0) ||
         this.checkIfOnTag(val)) {
       // console.log(`${DEBUG_KEY}: start tracking`);
       this.startTracking();

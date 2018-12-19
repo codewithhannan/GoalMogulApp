@@ -50,7 +50,7 @@ import {
 } from './SuggestionSearchReducers';
 
 import { api as API } from '../../../middleware/api';
-import { queryBuilder, switchCase } from '../../../middleware/utils';
+import { queryBuilder, switchCase, clearTags } from '../../../middleware/utils';
 import ImageUtils from '../../../../Utils/ImageUtils';
 
 const DEBUG_KEY = '[ Action Comment ]';
@@ -441,9 +441,11 @@ const commentAdapter = (state, pageId, tab) => {
     ? 'Suggestion'
     : 'Comment';
 
+  const contentTagsToUser = clearTags(contentText, {}, contentTags);
+
   const commentToReturn = {
     contentText,
-    contentTags: contentTags.map((t) => {
+    contentTags: contentTagsToUser.map((t) => {
       const { user, startIndex, endIndex } = t;
       return { user, startIndex, endIndex };
     }),

@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 import _ from 'lodash';
 import moment from 'moment';
 import { api as API } from '../../middleware/api';
+import { clearTags } from '../../middleware/utils';
 
 import {
   GOAL_CREATE_SUBMIT,
@@ -287,9 +288,10 @@ const stepsNeedsAdapter = values => {
 const detailsAdapter = (value, tags) => {
   if (!value || value.length === 0 || _.isEmpty(value[0])) return undefined;
 
+  const tagsToUse = clearTags(value, {}, tags);
   return {
     text: value[0],
-    tags
+    tags: tagsToUse
   };
 };
 
