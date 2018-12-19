@@ -34,11 +34,13 @@ class Menu extends React.PureComponent {
       IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
     ) ? 40 : 30;
 
+    const { name } = this.props.user;
+
     return (
       <View style={{ flex: 1 }}>
         <View style={{ ...styles.headerStyle, paddingTop }}>
           <View style={{ flex: 1, height: 30, flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ fontSize: 16 }}>Jia Zeng</Text>
+            <Text style={{ fontSize: 16 }}>{name}</Text>
           </View>
         </View>
         <Button
@@ -100,8 +102,16 @@ const styles = {
   }
 };
 
+const mapStateToProps = state => {
+  const { user } = state.user;
+
+  return {
+    user
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   {
     openMyEventTab,
     openMyTribeTab
