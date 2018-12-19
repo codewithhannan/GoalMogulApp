@@ -92,7 +92,7 @@ class RefPreview extends Component {
             flex: 1,
             justifyContent: 'center',
             paddingLeft: 0,
-            paddingTop: 7,
+            paddingTop: 8,
             paddingBottom: 7,
             paddingRight: 12,
           }}
@@ -171,7 +171,7 @@ const styles = {
     marginTop: 4,
     marginBottom: 4,
     borderWidth: 1,
-    borderRadius: 2,
+    borderRadius: 5,
     borderColor: '#f2f2f2',
     borderBottomWidth: 0,
     backgroundColor: '#fff',

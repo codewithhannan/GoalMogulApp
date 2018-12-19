@@ -84,10 +84,8 @@ class MyEventTab extends React.Component {
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
           <ModalHeader
             title='My Events'
-            actionText='Create'
-            cancelText='Close'
+            back
             onCancel={() => this.props.closeMyEventTab()}
-            onAction={() => this.props.openNewEventModal()}
           />
           {
             this.renderTabs({
