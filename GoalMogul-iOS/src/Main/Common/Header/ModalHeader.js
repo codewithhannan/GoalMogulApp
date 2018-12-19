@@ -1,18 +1,36 @@
 import React from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, Image } from 'react-native';
+import {
+  APP_BLUE
+} from '../../../styles';
+
+import BackButton from '../../../asset/utils/back.png';
 
 /* Icon */
 
 const ModalHeader = (props) => {
-  const { title, actionText, onCancel, onAction, cancelText } = props;
+  const { title, actionText, onCancel, onAction, cancelText, back } = props;
   const cancel = cancelText === null ? cancelText : 'Cancel'
+
+  const leftComponent = back
+    ? (
+      <Image
+        source={BackButton}
+        style={{ height: 25, width: 25, tintColor: APP_BLUE, marginRight: 20 }}
+      />
+    )
+    : (
+      <Text style={styles.cancelTextStyle}>{cancel}</Text>
+    );
+
   return (
     <View style={styles.containerStyle}>
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity
+        activeOpacity={0.85}
         style={{ alignItems: 'center', flex: 1 }}
         onPress={onCancel}
       >
-          <Text style={styles.cancelTextStyle}>{cancel}</Text>
+        {leftComponent}
       </TouchableOpacity>
 
       <TouchableOpacity activeOpacity={0.85} style={{ alignItems: 'center', flex: 3 }}>
@@ -20,7 +38,8 @@ const ModalHeader = (props) => {
 
       </TouchableOpacity>
 
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity
+        activeOpacity={0.85}
         style={{ alignItems: 'center', flex: 1 }}
         onPress={onAction}
       >
@@ -49,7 +68,8 @@ const styles = {
   },
   actionTextStyle: {
     fontSize,
-    color: '#17B3EC',
+    // color: '#17B3EC',
+    color: APP_BLUE,
     fontWeight: '800',
     paddingTop: padding,
     paddingBottom: padding,
@@ -64,7 +84,8 @@ const styles = {
     paddingTop: padding,
     paddingBottom: padding,
     fontSize,
-    color: '#17B3EC'
+    // color: '#17B3EC'
+    color: APP_BLUE,
   }
 };
 
