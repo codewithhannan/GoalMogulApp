@@ -89,7 +89,6 @@ export const submitCreatingPost = (values, needUpload, needOpenProfile, callback
     const newPost = newPostAdaptor(values, userId);
     console.log(`${DEBUG_KEY}: post to submit is: `, newPost);
 
-    return;
     const onSuccess = (res) => {
       console.log('Creating post succeed with res: ', res);
       dispatch({
