@@ -178,6 +178,14 @@ class CreatePostModal extends Component {
         }
       });
       const { limit } = this.state.tagSearchData;
+      // Use the customized search if there is one
+      if (this.props.tagSearch) {
+        this.props.tagSearch(keyword, (res, searchContent) => {
+          this.updateSearchRes(res, searchContent);
+        });
+        return;
+      }
+
       this.props.searchUser(keyword, 0, limit, (res, searchContent) => {
         this.updateSearchRes(res, searchContent);
       });
@@ -187,6 +195,11 @@ class CreatePostModal extends Component {
   handleTagSearchLoadMore = () => {
     const { tagSearchData, keyword } = this.state;
     const { skip, limit, data, loading } = tagSearchData;
+
+    // Disable load more if customized search is provided
+    if (this.props.tagSearch) {
+      return;
+    }
 
     if (loading) return;
     this.setState({

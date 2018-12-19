@@ -14,6 +14,7 @@ import {
 } from 'react-native-popup-menu';
 import R from 'ramda';
 import { Actions } from 'react-native-router-flux';
+import Fuse from 'fuse.js';
 
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
@@ -72,6 +73,17 @@ const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
 const CANCEL_INDEX = 4;
 const { width } = Dimensions.get('window');
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const TAG_SEARCH_OPTIONS = {
+  shouldSort: true,
+  threshold: 0.6,
+  location: 0,
+  distance: 100,
+  maxPatternLength: 32,
+  minMatchCharLength: 1,
+  keys: [
+    'name',
+  ]
+};
 /**
  * This is the UI file for a single event.
  */
@@ -95,6 +107,14 @@ class MyEvent extends Component {
       this._handleIndexChange(indexToGo);
       this.props.refreshMyEventDetail(_id);
     };
+
+    const participants = item.participants.map(p => p.participantRef);
+    const fuse = new Fuse(participants, TAG_SEARCH_OPTIONS);
+    const tagSearch = (keyword, callback) => {
+      const result = fuse.search(keyword.replace('@', ''));
+      callback({ data: result }, keyword);
+    };
+
     const buttons = [
       // button info for creating a post
       {
@@ -109,7 +129,11 @@ class MyEvent extends Component {
             showPlus: true
           });
           Actions.pop();
-          Actions.createPostModal({ belongsToEvent: _id, callback: postCallback });
+          Actions.createPostModal({
+            belongsToEvent: _id,
+            callback: postCallback,
+            tagSearch
+          });
         }
       },
       // button info for invite

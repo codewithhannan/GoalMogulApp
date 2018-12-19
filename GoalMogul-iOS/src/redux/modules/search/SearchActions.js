@@ -81,6 +81,9 @@ export const handleSearch = (searchContent, type) => {
  */
 export const searchUser = (searchContent, skip, limit, callback) => (dispatch, getState) => {
   const { token } = getState().user;
+  if (searchContent.replace('@', '').trim().length === 0) {
+    return callback({ data: [] });
+  }
 
   API
     .get(
