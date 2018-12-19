@@ -85,10 +85,8 @@ class MyTribeTab extends React.Component {
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
           <ModalHeader
             title='My Tribes'
-            actionText='Create'
-            cancelText='Close'
+            back
             onCancel={() => this.props.closeMyTribeTab()}
-            onAction={() => this.props.openNewTribeModal()}
           />
           {
             this.renderTabs({

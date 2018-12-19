@@ -52,7 +52,7 @@ export const refreshGoalDetailById = (goalId) => (dispatch, getState) => {
   });
 
   const onError = (err) => {
-    console.log(`${DEBUG_KEY}: refresh goal error: `, err);
+    console.warn(`${DEBUG_KEY}: refresh goal error: `, err);
     dispatch({
       type: GOAL_DETAIL_FETCH_ERROR,
       payload: {
@@ -65,6 +65,7 @@ export const refreshGoalDetailById = (goalId) => (dispatch, getState) => {
   };
 
   const onSuccess = (res) => {
+    console.log(`${DEBUG_KEY}: refresh goal done with res: `, res);
     dispatch({
       type: GOAL_DETAIL_FETCH_DONE,
       payload: {

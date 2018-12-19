@@ -183,7 +183,8 @@ class ShareDetailSection extends Component {
               />
             </View>
 
-            <TouchableOpacity activeOpacity={0.85}
+            <TouchableOpacity
+              activeOpacity={0.85}
               onPress={() => this.setState({ mediaModal: true })}
               style={{
                 position: 'absolute',

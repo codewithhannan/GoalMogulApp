@@ -206,7 +206,7 @@ class GoalDetailSection extends Component {
     // if (this.props.isSelf) {
     //   return this.renderSelfActionButtons(item);
     // }
-
+    console.log(`${DEBUG_KEY}: item is: `, item);
     const likeCount = item.likeCount ? item.likeCount : 0;
     const commentCount = item.commentCount ? item.commentCount : 0;
     const shareCount = item.shareCount ? item.shareCount : 0;
