@@ -19,6 +19,10 @@ import {
   refreshComments
 } from '../../feed/comment/CommentActions';
 
+import {
+  refreshGoalDetailById
+} from '../../goal/GoalDetailActions';
+
 import { api as API } from '../../../middleware/api';
 import { queryBuilder } from '../../../middleware/utils';
 
@@ -46,6 +50,7 @@ export const openGoalDetail = goal => (dispatch, getState) => {
     }
   });
 
+  refreshGoalDetailById(_id)(dispatch, getState);
   refreshComments('Goal', _id, tab, undefined)(dispatch, getState);
   // TODO: create new stack using Actions.create(React.Element) if needed
   Actions.goal();
