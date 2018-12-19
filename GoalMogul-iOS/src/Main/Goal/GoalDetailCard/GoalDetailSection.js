@@ -42,6 +42,8 @@ import BulbIcon from '../../../asset/utils/bulb.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 import EditIcon from '../../../asset/utils/edit.png';
 import CheckIcon from '../../../asset/utils/check.png';
+import ProgressBarMedium from '../../../asset/utils/progressBar_medium.png';
+import ProgressBarMediumCounter from '../../../asset/utils/progressBar_counter_medium.png';
 
 // Components
 import ProgressBar from '../Common/ProgressBar';
@@ -145,6 +147,10 @@ class GoalDetailSection extends Component {
           steps={steps}
           needs={needs}
           goalRef={item}
+          iconSource={ProgressBarMedium}
+          edgeIconSource={ProgressBarMediumCounter}
+          height={13}
+          width={260}
         />
       </View>
     );
