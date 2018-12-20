@@ -12,6 +12,10 @@ import {
   createReport
 } from '../../redux/modules/report/ReportActions';
 
+import {
+  openProfile
+} from '../../actions';
+
 // Assets
 
 // Components
@@ -80,7 +84,7 @@ class ActivityHeader extends Component {
             ellipsizeMode='tail'
             onUserTagPressed={(user) => {
               console.log(`${DEBUG_KEY}: user tag press for user: `, user);
-              this.props.openProfile(user._id);
+              this.props.openProfile(user);
             }}
           />
 
@@ -125,6 +129,7 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps,
   {
-    createReport
+    createReport,
+    openProfile
   }
 )(ActivityHeader);
