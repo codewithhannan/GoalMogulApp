@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Image, ImageBackground } from 'react-native';
+import { Text, View, Image, StyleSheet } from 'react-native';
 
 /* Icon */
 import Bar from '../../../asset/utils/progressBar.png';
@@ -15,7 +15,14 @@ const formatDate = (date) => {
 };
 
 const ProgressBar = (props) => {
-  const { startTime, endTime, steps, needs, goalRef } = props;
+  const {
+    startTime,
+    endTime,
+    steps,
+    needs,
+    goalRef,
+    marginRight
+  } = props;
   let progressPercentage = getProgress(steps || [], needs || []);
   if (goalRef && goalRef.isCompleted) {
     progressPercentage = 1;
@@ -30,24 +37,43 @@ const ProgressBar = (props) => {
 
   return (
     <View style={styles.containerStyle}>
-      <Text style={styles.textStyle}>
-        {startTimeText === 'undefined NaN' ? 'Jan 2018' : startTimeText}
-      </Text>
+      <View style={{ zIndex: 2, marginRight }}>
+        <Text style={styles.textStyle}>
+          {startTimeText === 'undefined NaN' ? 'Jan 2018' : startTimeText}
+        </Text>
+      </View>
       {/* <Image source={Bar} style={styles.imageStyle} /> */}
-      {renderProgressBar(progressPercentage)}
-      <Text style={styles.textStyle}>
-        {endTimeText === 'undefined NaN' ? 'Aug 2019' : endTimeText}
-      </Text>
+      <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', zIndex: 2 }}>
+        {renderProgressBar({ percentage: progressPercentage, ...props })}
+      </View>
+
+      <View style={{ zIndex: 2 }}>
+        <Text style={styles.textStyle}>
+          {endTimeText === 'undefined NaN' ? 'Aug 2019' : endTimeText}
+        </Text>
+      </View>
     </View>
   );
 };
 
-const renderProgressBar = (percentage) => {
+const renderProgressBar = (props) => {
+  const { percentage } = props;
+  const { height, width, edgeIconSource, iconSource } = props;
+
   const colorFlex = Math.round(percentage * 10);
   const layerFlex = Math.round((1 - percentage) * 10);
   // console.log(`percentage is: ${percentage}, colorFlex is: ${colorFlex}, layerFlex is: ${layerFlex}`);
   return (
-    <View style={{ ...styles.imageStyle, flexDirection: 'row', justifyContent: 'center' }}>
+    <View
+      style={{
+        ...styles.imageStyle,
+        // flexDirection: 'row',
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        width,
+        height
+      }}
+    >
       <View
         style={{
           left: 0,
@@ -59,38 +85,40 @@ const renderProgressBar = (percentage) => {
         }}
       >
         <Image
-          source={OpacBar}
-          resizeMode='stretch'
-          style={{ flex: 1 }}
+          source={iconSource || OpacBar}
+          style={{ flex: 1, width, height, tintColor: 'white' }}
         />
       </View>
 
       <View
         style={{
           backgroundColor: PROGRESSBAR_COLOR,
-          flex: 1,
-          height: 11
+          height: height || 11,
+          width: width || 260,
+          paddingRight: 2
         }}
       />
       <View
         style={{
-          height: 11,
+          height: height || 11,
+          width: width || 260,
           // flex: 1,
           zIndex: 1,
           flexDirection: 'row',
           position: 'absolute',
           left: 0,
-          right: 0
+          right: 0,
+          top: 0,
+          bottom: 0
         }}
       >
         <View style={{ flex: colorFlex }} />
         <View style={{ flex: layerFlex, flexDirection: 'row' }}>
           <Image
-            source={CounterBar}
-            resizeMode='stretch'
-            style={{ tintColor: '#f2f2f2', height: 11 }}
+            source={edgeIconSource || CounterBar}
+            style={{ tintColor: '#f2f2f2', height: height || 11 }}
           />
-          <View style={{ flex: 1, backgroundColor: '#f2f2f2' }} />
+          <View style={{ flex: 1, backgroundColor: '#f2f2f2', width, height }} />
         </View>
       </View>
     </View>
@@ -129,7 +157,7 @@ const styles = {
     alignItems: 'center'
   },
   imageStyle: {
-    flex: 1,
+    flex: 1
     // marginLeft: 2,
     // marginRight: 2
   },

@@ -54,6 +54,8 @@ import BulbIcon from '../../../asset/utils/bulb.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 import HelpIcon from '../../../asset/utils/help.png';
 import StepIcon from '../../../asset/utils/steps.png';
+import ProgressBarLarge from '../../../asset/utils/progressBar_large.png';
+import ProgressBarLargeCounter from '../../../asset/utils/progressBar_counter_large.png';
 
 // Constants
 import { IPHONE_MODELS } from '../../../Utils/Constants';
@@ -186,6 +188,10 @@ class GoalCard extends React.PureComponent {
           steps={steps}
           needs={needs}
           goalRef={item}
+          iconSource={ProgressBarLarge}
+          edgeIconSource={ProgressBarLargeCounter}
+          height={13}
+          width={268}
         />
       </View>
     );
