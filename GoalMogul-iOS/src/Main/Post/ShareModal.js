@@ -36,7 +36,11 @@ import {
 
 // Assets
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
-import { searchUser } from '../../redux/modules/search/SearchActions';
+import {
+  searchUser,
+  searchTribeMember,
+  searchEventParticipants
+} from '../../redux/modules/search/SearchActions';
 
 // Constants
 const DEBUG_KEY = '[ UI ShareModal ]';
@@ -69,38 +73,10 @@ class ShareModal extends React.Component {
       tagSearchData: { ...INITIAL_TAG_SEARCH },
     };
     this.updateSearchRes = this.updateSearchRes.bind(this);
-    this.tagSearch = undefined;
   }
 
   componentDidMount() {
     this.initializeForm();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { shareTo } = this.props;
-    const { name, item } = shareTo;
-    if (name === 'Feed') {
-       this.tagSearch = undefined;
-       return;
-    }
-    let pool = [];
-    if (name === 'Event') {
-      pool = item.participants.map(p => p.participantRef);
-    }
-
-    if (name === 'Tribe') {
-      pool = item.members
-        .filter(m => m.category === 'Admin' || m.category === 'Member')
-        .map(m => m.memberRef);
-    }
-
-    console.log(`${DEBUG_KEY}: pool is: `, pool);
-    console.log(`${DEBUG_KEY}: item is: `, item);
-    const fuse = new Fuse(pool, TAG_SEARCH_OPTIONS);
-    this.tagSearch = (keyword, callback) => {
-      const result = fuse.search(keyword.replace('@', ''));
-      callback({ data: result }, keyword);
-    };
   }
 
   /**
@@ -212,8 +188,19 @@ class ShareModal extends React.Component {
       });
       const { limit } = this.state.tagSearchData;
       // Use the customized search if there is one
-      if (this.tagSearch) {
-        this.tagSearch(keyword, (res, searchContent) => {
+      const { shareTo } = this.props;
+      const { name, item } = shareTo;
+      const { _id } = item;
+
+      if (name === 'Event') {
+        this.props.searchEventParticipants(keyword, _id, 0, 10, (res, searchContent) => {
+          this.updateSearchRes(res, searchContent);
+        });
+        return;
+      }
+
+      if (name === 'Tribe') {
+        this.props.searchTribeMember(keyword, _id, 0, 10, (res, searchContent) => {
           this.updateSearchRes(res, searchContent);
         });
         return;
@@ -640,6 +627,8 @@ export default connect(
   {
     cancelShare,
     submitShare,
-    searchUser
+    searchUser,
+    searchTribeMember,
+    searchEventParticipants
   }
 )(ShareModal);

@@ -39,7 +39,7 @@ class ActivitySummary extends React.Component {
             return `${val.action.toLowerCase()}d a ${val.actedWith} ` +
               `${val.belongsToEvent || val.belongsToTribe ? 'in' : ''}`;
           }
-          return `shared a ${switchPostType(val.postRef.postType)}` +
+          return `shared a ${switchPostType(val.postRef.postType)} ` +
             `${val.belongsToEvent || val.belongsToTribe ? 'to' : ''}`;
         },
         Comment: (val) => `commented on ${val.actedUponEntityType}`,
