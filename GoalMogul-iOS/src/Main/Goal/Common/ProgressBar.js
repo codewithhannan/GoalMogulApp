@@ -62,6 +62,17 @@ const renderProgressBar = (props) => {
 
   const colorFlex = Math.round(percentage * 10);
   const layerFlex = Math.round((1 - percentage) * 10);
+
+  const layerComponent = layerFlex ?
+  (
+    <View style={{ flex: layerFlex, flexDirection: 'row' }}>
+      <Image
+        source={edgeIconSource || CounterBar}
+        style={{ tintColor: '#f2f2f2', height: height || 11 }}
+      />
+      <View style={{ flex: 1, backgroundColor: '#f2f2f2', width, height }} />
+    </View>
+  ) : '';
   // console.log(`percentage is: ${percentage}, colorFlex is: ${colorFlex}, layerFlex is: ${layerFlex}`);
   return (
     <View
@@ -113,13 +124,7 @@ const renderProgressBar = (props) => {
         }}
       >
         <View style={{ flex: colorFlex }} />
-        <View style={{ flex: layerFlex, flexDirection: 'row' }}>
-          <Image
-            source={edgeIconSource || CounterBar}
-            style={{ tintColor: '#f2f2f2', height: height || 11 }}
-          />
-          <View style={{ flex: 1, backgroundColor: '#f2f2f2', width, height }} />
-        </View>
+        {layerComponent}
       </View>
     </View>
   );

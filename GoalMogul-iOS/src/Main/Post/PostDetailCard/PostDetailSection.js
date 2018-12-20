@@ -161,7 +161,7 @@ class PostDetailSection extends React.PureComponent {
             ellipsizeMode='tail'
             onUserTagPressed={(user) => {
               console.log(`${DEBUG_KEY}: user tag press for user: `, user);
-              this.props.openProfile(user._id);
+              this.props.openProfile(user);
             }}
           />
         </View>

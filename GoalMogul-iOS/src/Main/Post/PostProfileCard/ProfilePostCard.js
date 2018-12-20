@@ -32,7 +32,7 @@ import {
 
 } from '../../../redux/modules/home/mastermind/actions';
 
-import { deletePost } from '../../../actions';
+import { deletePost, openProfile } from '../../../actions';
 
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
@@ -185,7 +185,7 @@ class ProfilePostCard extends React.PureComponent {
             ellipsizeMode='tail'
             onUserTagPressed={(user) => {
               console.log(`${DEBUG_KEY}: user tag press for user: `, user);
-              this.props.openProfile(user._id);
+              this.props.openProfile(user);
             }}
           />
           {/*
@@ -283,6 +283,7 @@ export default connect(
     createCommentFromSuggestion,
     chooseShareDest,
     openPostDetail,
-    deletePost
+    deletePost,
+    openProfile
   }
 )(ProfilePostCard);
