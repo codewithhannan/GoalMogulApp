@@ -11,9 +11,7 @@ import {
   DatePickerIOS,
   Modal,
   Alert,
-  TextInput,
-  SafeAreaView,
-  Animated
+  ActivityIndicator
 } from 'react-native';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -46,6 +44,9 @@ import ModalHeader from '../Common/Header/ModalHeader';
 import Button from './Button';
 import InputField from '../Common/TextInput/InputField';
 import ViewableSettingMenu from './ViewableSettingMenu';
+import MentionsTextInput from './Common/MentionsTextInput';
+import ProfileImage from '../Common/ProfileImage';
+import EmptyResult from '../Common/Text/EmptyResult';
 
 // assets
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
@@ -60,17 +61,28 @@ import {
   submitGoal,
   goalToFormAdaptor
 } from '../../redux/modules/goal/CreateGoalActions';
+import { searchUser } from '../../redux/modules/search/SearchActions';
 
 // Selector
 import {
   getGoalDetailByTab
 } from '../../redux/modules/goal/selector';
 
+// Utils
+import { arrayUnique, clearTags } from '../../redux/middleware/utils';
+
 const { Popover } = renderers;
 const { width } = Dimensions.get('window');
 
 const STEP_PLACE_HOLDER = 'Add an important step to achieving your goal...';
 const NEED_PLACE_HOLDER = 'Something you\'re specifically looking for help with';
+const INITIAL_TAG_SEARCH = {
+  data: [],
+  skip: 0,
+  limit: 10,
+  loading: false
+};
+const DEBUG_KEY = '[ UI CreateGoalModal ]';
 
 class CreateGoalModal extends Component {
   constructor(props) {
@@ -78,12 +90,164 @@ class CreateGoalModal extends Component {
     this.initializeForm();
     this.state = {
       scrollEnabled: true,
+      keyword: '',
+      tagSearchData: { ...INITIAL_TAG_SEARCH },
     };
+    this.updateSearchRes = this.updateSearchRes.bind(this);
   }
 
   componentDidMount() {
     this.initializeForm();
   }
+
+  /* Tag related functions */
+  onTaggingSuggestionTap(item, hidePanel, cursorPosition) {
+    hidePanel();
+    const { name } = item;
+    const { details, tags } = this.props;
+    if (!details || _.isEmpty(details)) return '';
+    const detail = details[0];
+
+    const postCursorContent = detail.slice(cursorPosition);
+    const prevCursorContent = detail.slice(0, cursorPosition);
+    const content = prevCursorContent.slice(0, -this.state.keyword.length);
+    const newContent = `${content}@${name} ${postCursorContent.replace(/^\s+/g, '')}`;
+    // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
+    // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
+    this.props.change('details[0]', newContent);
+
+    const newContentTag = {
+      user: item,
+      startIndex: content.length, // `${comment}@${name} `
+      endIndex: content.length + 1 + name.length, // `${comment}@${name} `
+      tagReg: `\\B@${name}`,
+      tagText: `@${name}`
+    };
+
+    // Clean up tags position before comparing
+    const newTags = clearTags(newContent, newContentTag, tags);
+
+    // Check if this tags is already in the array
+    const containsTag = newTags.some((t) => (
+      t.tagReg === `\\B@${name}` && t.startIndex === content.length + 1
+    ));
+
+    const needReplceOldTag = newTags.some((t) => (
+      t.startIndex === content.length
+    ));
+
+    // Update comment contentTags regex and contentTags
+    if (!containsTag) {
+      let newContentTags;
+      if (needReplceOldTag) {
+        newContentTags = newTags.map((t) => {
+          if (t.startIndex === newContentTag.startIndex) {
+            return newContentTag;
+          }
+          return t;
+        });
+      } else {
+        newContentTags = [...newTags, newContentTag];
+      }
+
+      this.props.change(
+        'tags',
+        newContentTags.sort((a, b) => a.startIndex - b.startIndex)
+      );
+    }
+
+    // Clear tag search data state
+    this.setState({
+      ...this.state,
+      tagSearchData: { ...INITIAL_TAG_SEARCH }
+    });
+  }
+
+  // This is triggered when a trigger (@) is removed. Verify if all tags
+  // are still valid.
+  validateContentTags = (change) => {
+    const { tags, details } = this.props;
+    console.log(`${DEBUG_KEY}: details are: `, details);
+    if (!details || _.isEmpty(details)) return;
+    const content = details[0];
+    const newContentTags = tags.filter((tag) => {
+      const { startIndex, endIndex, tagText } = tag;
+
+      const actualTag = content.slice(startIndex, endIndex);
+      // Verify if with the same startIndex and endIndex, we can still get the
+      // tag. If not, then we remove the tag.
+      return actualTag === tagText;
+    });
+    change('tags', newContentTags);
+  }
+
+  updateSearchRes(res, searchContent) {
+    // console.log(`${DEBUG_KEY}: res is: `, res);
+    // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
+    // console.log(`${DEBUG_KEY}: searchContent is: `, searchContent);
+    if (searchContent !== this.state.keyword) return '';
+    this.setState({
+      ...this.state,
+      // keyword,
+      tagSearchData: {
+        ...this.state.tagSearchData,
+        skip: res.data.length, //TODO: new skip
+        data: res.data,
+        loading: false
+      }
+    });
+  }
+
+  triggerCallback(keyword) {
+    if (this.reqTimer) {
+      clearTimeout(this.reqTimer);
+    }
+
+    this.reqTimer = setTimeout(() => {
+      console.log(`${DEBUG_KEY}: requesting for keyword: `, keyword);
+      this.setState({
+        ...this.state,
+        keyword,
+        tagSearchData: {
+          ...this.state.tagSearchData,
+          loading: true
+        }
+      });
+      const { limit } = this.state.tagSearchData;
+      this.props.searchUser(keyword, 0, limit, (res, searchContent) => {
+        this.updateSearchRes(res, searchContent);
+      });
+    }, 150);
+  }
+
+  handleTagSearchLoadMore = () => {
+    const { tagSearchData, keyword } = this.state;
+    const { skip, limit, data, loading } = tagSearchData;
+
+    if (loading) return;
+    this.setState({
+      ...this.state,
+      keyword,
+      tagSearchData: {
+        ...this.state.tagSearchData,
+        loading: true
+      }
+    });
+
+    this.props.searchUser(keyword, skip, limit, (res) => {
+      this.setState({
+        ...this.state,
+        keyword,
+        tagSearchData: {
+          ...this.state.tagSearchData,
+          skip: skip + res.data.length, //TODO: new skip
+          data: arrayUnique([...data, ...res.data]),
+          loading: false
+        }
+      });
+    });
+  }
+  /* Tag related functions end */
 
   initializeForm() {
     const values = [{}];
@@ -97,7 +261,8 @@ class CreateGoalModal extends Component {
       hasTimeline: false,
       startTime: { date: undefined, picker: false },
       endTime: { date: undefined, picker: false },
-      title: ''
+      title: '',
+      tags: []
     };
 
     // Initialize based on the props, if it's opened through edit button
@@ -155,34 +320,111 @@ class CreateGoalModal extends Component {
     );
   }
 
+  renderTagSearchLoadingComponent(loading) {
+    if (loading) {
+      return (
+        <View style={styles.activityIndicatorStyle}>
+          <ActivityIndicator />
+        </View>
+      );
+    }
+    return <EmptyResult text={'No User Found'} textStyle={{ paddingTop: 15, height: 50 }} />;
+  }
+
+  /**
+   * This is to render tagging suggestion row
+   * @param hidePanel: lib passed in funct to close suggestion panel
+   * @param item: suggestion item to render
+   */
+  renderSuggestionsRow({ item }, hidePanel, cursorPosition) {
+    const { name, profile } = item;
+    return (
+      <TouchableOpacity
+        onPress={() => this.onTaggingSuggestionTap(item, hidePanel, cursorPosition)}
+        style={{
+          height: 50,
+          width: '100%',
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: 'white'
+        }}
+      >
+        <ProfileImage
+          imageContainerStyle={styles.imageContainerStyle}
+          imageUrl={profile && profile.image ? profile.image : undefined}
+          imageStyle={{ height: 31, width: 30, borderRadius: 3 }}
+          defaultImageSource={defaultUserProfile}
+        />
+        <Text style={{ fontSize: 16, color: 'darkgray' }}>{name}</Text>
+      </TouchableOpacity>
+    );
+  }
+
   /**
    * This is added on ms2 polish as a new way to render textinput
    */
   renderInput = (props) => {
     const {
       input: { onFocus, value, onChange, ...restInput },
-      multiline,
       editable,
       placeholder,
       numberOfLines,
       style,
+      loading,
+      tagData,
+      change,
       meta: { touched, error },
       ...custom
     } = props;
 
+    const { tags } = this.props;
+
     return (
-      <View style={styles.inputContainerStyle}>
-        <TextInput
+      <View style={{ zIndex: 3 }}>
+        <MentionsTextInput
           placeholder={placeholder}
           onChangeText={(val) => onChange(val)}
-          style={style}
           editable={editable}
-          multiline={multiline}
-          numberOfLines={numberOfLines}
           value={_.isEmpty(value) ? '' : value}
+          contentTags={tags || []}
+          contentTagsReg={tags ? tags.map((t) => t.tagReg) : []}
+          tagSearchRes={this.state.tagSearchData.data}
+          flexGrowDirection='bottom'
+          suggestionPosition='bottom'
+          textInputContainerStyle={{ ...styles.inputContainerStyle }}
+          textInputStyle={style}
+          validateTags={() => this.validateContentTags(change)}
+          autoCorrect
+          suggestionsPanelStyle={{ backgroundColor: '#f8f8f8' }}
+          loadingComponent={() => this.renderTagSearchLoadingComponent(loading)}
+          textInputMinHeight={80}
+          textInputMaxHeight={200}
+          trigger={'@'}
+          triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
+          triggerCallback={(keyword) => this.triggerCallback(keyword)}
+          triggerLoadMore={this.handleTagSearchLoadMore.bind(this)}
+          renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
+          suggestionsData={tagData} // array of objects
+          keyExtractor={(item, index) => item._id}
+          suggestionRowHeight={50}
+          horizontal={false} // defaut is true, change the orientation of the list
+          MaxVisibleRowCount={4} // this is required if horizontal={false}
         />
       </View>
     );
+    // return (
+    //   <View style={styles.inputContainerStyle}>
+    //     <TextInput
+    //       placeholder={placeholder}
+    //       onChangeText={(val) => onChange(val)}
+    //       style={style}
+    //       editable={editable}
+    //       multiline={multiline}
+    //       numberOfLines={numberOfLines}
+    //       value={_.isEmpty(value) ? '' : value}
+    //     />
+    //   </View>
+    // );
   }
 
   renderUserInfo(user) {
@@ -232,7 +474,14 @@ class CreateGoalModal extends Component {
     );
   }
 
-  renderGoalDescription = ({ fields, meta: { error, submitFailed } }) => {
+  renderGoalDescription = ({
+    fields,
+    meta: { error, submitFailed },
+    loading,
+    data,
+    keyword
+  }) => {
+    console.log(`${DEBUG_KEY}: loading: ${loading}, data: ${data}, keyword: ${keyword}`);
     const button = fields.length > 0 ?
       <Button text='remove description' source={cancel} onPress={() => fields.remove(0)} />
       :
@@ -257,6 +506,10 @@ class CreateGoalModal extends Component {
             numberOfLines={5}
             placeholder="Decribe your goal"
             multiline
+            loading={this.state.tagSearchData.loading}
+            tagData={this.state.tagSearchData.data}
+            keyword={this.state.keyword}
+            change={(type, val) => this.props.change(type, val)}
           />
         );
       }) : '';
@@ -691,7 +944,13 @@ class CreateGoalModal extends Component {
             <View style={{ flex: 1, padding: 20 }}>
               {this.renderUserInfo(user)}
               {this.renderGoal()}
-              <FieldArray name="details" component={this.renderGoalDescription} />
+              <FieldArray
+                name="details"
+                component={this.renderGoalDescription}
+                loading={this.state.tagSearchData.loading}
+                tagData={this.state.tagSearchData.data}
+                keyword={this.state.keyword}
+              />
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flex: 1, marginRight: 8 }}>
                   {this.renderCategory()}
@@ -715,17 +974,34 @@ class CreateGoalModal extends Component {
 
 const validateTime = (start, end) => {
   if (!start || !end) return true;
-  if (moment(start) > moment(end)) return false
+  if (moment(start) > moment(end)) return false;
   return true;
-}
+};
 
 const styles = {
+  activityIndicatorStyle: {
+    flex: 1, height: 50, width: '100%', justifyContent: 'center', alignItems: 'center'
+  },
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 1,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 3,
+    alignSelf: 'center',
+    backgroundColor: 'white',
+    marginLeft: 10,
+    marginRight: 10,
+    margin: 5
+  },
   sectionMargin: {
     marginTop: 20
   },
   inputContainerStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flex: 1,
+    // flexDirection: 'row',
+    justifyContent: 'center',
+    // alignItems: 'center',
     marginTop: 5,
     borderWidth: 1,
     borderRadius: 5,
@@ -846,6 +1122,8 @@ const mapStateToProps = state => {
     endTime: selector(state, 'endTime'),
     needs: selector(state, 'needs'),
     steps: selector(state, 'steps'),
+    tags: selector(state, 'tags'),
+    details: selector(state, 'details'),
     formVals: state.form.createGoalModal,
     goalDetail: getGoalDetailByTab(state),
     uploading
@@ -855,7 +1133,8 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    submitGoal
+    submitGoal,
+    searchUser
   }
 )(CreateGoalModal);
 

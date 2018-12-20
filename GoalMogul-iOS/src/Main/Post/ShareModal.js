@@ -7,18 +7,26 @@ import {
   Text,
   TextInput,
   SafeAreaView,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
-import { Actions, Stack, Scene } from 'react-native-router-flux';
+import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import R from 'ramda';
-import { switchCase } from '../../redux/middleware/utils';
+import _ from 'lodash';
+import Fuse from 'fuse.js';
+
+// Utils
+import { switchCase, arrayUnique, clearTags } from '../../redux/middleware/utils';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
 import ViewableSettingMenu from '../Goal/ViewableSettingMenu';
 import RefPreview from '../Common/RefPreview';
+import EmptyResult from '../Common/Text/EmptyResult';
+import ProfileImage from '../Common/ProfileImage';
+import MentionsTextInput from '../Goal/Common/MentionsTextInput';
 
 // Actions
 import {
@@ -28,26 +36,218 @@ import {
 
 // Assets
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
+import {
+  searchUser,
+  searchTribeMember,
+  searchEventParticipants
+} from '../../redux/modules/search/SearchActions';
 
 // Constants
 const DEBUG_KEY = '[ UI ShareModal ]';
 const maxHeight = 200;
+const INITIAL_TAG_SEARCH = {
+  data: [],
+  skip: 0,
+  limit: 10,
+  loading: false
+};
+
+const TAG_SEARCH_OPTIONS = {
+  shouldSort: true,
+  threshold: 0.6,
+  location: 0,
+  distance: 100,
+  maxPatternLength: 32,
+  minMatchCharLength: 1,
+  keys: [
+    'name',
+  ]
+};
 
 class ShareModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      height: 34
+      height: 34,
+      keyword: '',
+      tagSearchData: { ...INITIAL_TAG_SEARCH },
     };
+    this.updateSearchRes = this.updateSearchRes.bind(this);
   }
 
   componentDidMount() {
     this.initializeForm();
   }
 
+  /**
+   * Tag related functions
+   */
+  onTaggingSuggestionTap(item, hidePanel, cursorPosition) {
+    hidePanel();
+    const { name } = item;
+    const { content, tags } = this.props;
+
+    const postCursorContent = content.slice(cursorPosition);
+    const prevCursorContent = content.slice(0, cursorPosition);
+    const prevTagContent = prevCursorContent.slice(0, -this.state.keyword.length);
+    const newContent = `${prevTagContent}@${name} ${postCursorContent.replace(/^\s+/g, '')}`;
+    // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
+    // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
+    this.props.change('content', newContent);
+
+    const newContentTag = {
+      user: item,
+      startIndex: prevTagContent.length, // `${comment}@${name} `
+      endIndex: prevTagContent.length + 1 + name.length, // `${comment}@${name} `
+      tagReg: `\\B@${name}`,
+      tagText: `@${name}`
+    };
+
+    // Clean up tags position before comparing
+    const newTags = clearTags(newContent, newContentTag, tags);
+
+    // Check if this tags is already in the array
+    const containsTag = newTags.some((t) => (
+      t.tagReg === `\\B@${name}` && t.startIndex === prevTagContent.length + 1
+    ));
+
+    const needReplceOldTag = newTags.some((t) => (
+      t.startIndex === prevTagContent.length
+    ));
+
+    // Update comment contentTags regex and contentTags
+    if (!containsTag) {
+      let newContentTags;
+      if (needReplceOldTag) {
+        newContentTags = newTags.map((t) => {
+          if (t.startIndex === newContentTag.startIndex) {
+            return newContentTag;
+          }
+          return t;
+        });
+      } else {
+        newContentTags = [...newTags, newContentTag];
+      }
+
+      this.props.change(
+        'tags',
+        newContentTags.sort((a, b) => a.startIndex - b.startIndex)
+      );
+    }
+
+    // Clear tag search data state
+    this.setState({
+      ...this.state,
+      tagSearchData: { ...INITIAL_TAG_SEARCH }
+    });
+  }
+
+  // This is triggered when a trigger (@) is removed. Verify if all tags
+  // are still valid.
+  validateContentTags = (change) => {
+    const { tags, content } = this.props;
+    const newContentTags = tags.filter((tag) => {
+      const { startIndex, endIndex, tagText } = tag;
+
+      const actualTag = content.slice(startIndex, endIndex);
+      // Verify if with the same startIndex and endIndex, we can still get the
+      // tag. If not, then we remove the tag.
+      return actualTag === tagText;
+    });
+    change('tags', newContentTags);
+  }
+
+  updateSearchRes(res, searchContent) {
+    if (searchContent !== this.state.keyword) return '';
+    this.setState({
+      ...this.state,
+      // keyword,
+      tagSearchData: {
+        ...this.state.tagSearchData,
+        skip: res.data.length, //TODO: new skip
+        data: res.data,
+        loading: false
+      }
+    });
+  }
+
+  triggerCallback(keyword) {
+    if (this.reqTimer) {
+      clearTimeout(this.reqTimer);
+    }
+
+    this.reqTimer = setTimeout(() => {
+      console.log(`${DEBUG_KEY}: requesting for keyword: `, keyword);
+      this.setState({
+        ...this.state,
+        keyword,
+        tagSearchData: {
+          ...this.state.tagSearchData,
+          loading: true
+        }
+      });
+      const { limit } = this.state.tagSearchData;
+      // Use the customized search if there is one
+      const { shareTo } = this.props;
+      const { name, item } = shareTo;
+      const { _id } = item;
+
+      if (name === 'Event') {
+        this.props.searchEventParticipants(keyword, _id, 0, 10, (res, searchContent) => {
+          this.updateSearchRes(res, searchContent);
+        });
+        return;
+      }
+
+      if (name === 'Tribe') {
+        this.props.searchTribeMember(keyword, _id, 0, 10, (res, searchContent) => {
+          this.updateSearchRes(res, searchContent);
+        });
+        return;
+      }
+
+      this.props.searchUser(keyword, 0, limit, (res, searchContent) => {
+        this.updateSearchRes(res, searchContent);
+      });
+    }, 150);
+  }
+
+  handleTagSearchLoadMore = () => {
+    const { tagSearchData, keyword } = this.state;
+    const { skip, limit, data, loading } = tagSearchData;
+
+    // Disable load more if customized search is provided
+    if (this.tagSearch) return '';
+
+    if (loading) return;
+    this.setState({
+      ...this.state,
+      keyword,
+      tagSearchData: {
+        ...this.state.tagSearchData,
+        loading: true
+      }
+    });
+
+    this.props.searchUser(keyword, skip, limit, (res) => {
+      this.setState({
+        ...this.state,
+        keyword,
+        tagSearchData: {
+          ...this.state.tagSearchData,
+          skip: skip + res.data.length, //TODO: new skip
+          data: arrayUnique([...data, ...res.data]),
+          loading: false
+        }
+      });
+    });
+  }
+  /* Tagging related function ends */
+
   initializeForm() {
     this.props.initialize({
-      privacy: 'Friends'
+      privacy: 'Friends',
+      tags: []
     });
   }
 
@@ -62,37 +262,116 @@ class ShareModal extends React.Component {
     });
   }
 
+  renderTagSearchLoadingComponent(loading) {
+    if (loading) {
+      return (
+        <View style={styles.activityIndicatorStyle}>
+          <ActivityIndicator />
+        </View>
+      );
+    }
+    return <EmptyResult text={'No User Found'} textStyle={{ paddingTop: 15, height: 50 }} />;
+  }
+
+  /**
+   * This is to render tagging suggestion row
+   * @param hidePanel: lib passed in funct to close suggestion panel
+   * @param item: suggestion item to render
+   */
+  renderSuggestionsRow({ item }, hidePanel, cursorPosition) {
+    const { name, profile } = item;
+    return (
+      <TouchableOpacity
+        onPress={() => this.onTaggingSuggestionTap(item, hidePanel, cursorPosition)}
+        style={{
+          height: 50,
+          width: '100%',
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: 'white'
+        }}
+      >
+        <ProfileImage
+          imageContainerStyle={styles.imageContainerStyle}
+          imageUrl={profile && profile.image ? profile.image : undefined}
+          imageStyle={{ height: 31, width: 30, borderRadius: 3 }}
+          defaultImageSource={defaultUserProfile}
+        />
+        <Text style={{ fontSize: 16, color: 'darkgray' }}>{name}</Text>
+      </TouchableOpacity>
+    );
+  }
+
+
   renderInput = ({
     input: { onChange, onFocus, value, ...restInput },
     editable,
     meta: { touched, error },
     placeholder,
+    loading,
+    tagData,
+    change,
     ...custom
   }) => {
     const inputStyle = {
       ...styles.inputStyle,
     };
 
+    const { tags } = this.props;
+
     return (
-      <SafeAreaView
-        style={{
-          backgroundColor: 'white',
-          borderBottomWidth: 0.5,
-          margin: 5,
-          borderColor: 'lightgray'
-        }}
-      >
-        <TextInput
+      <View style={{ zIndex: 3 }}>
+        <MentionsTextInput
           placeholder={placeholder}
-          onChangeText={onChange}
-          style={inputStyle}
+          onChangeText={(val) => onChange(val)}
           editable={editable}
-          maxHeight={150}
-          multiline
-          value={value}
+          value={_.isEmpty(value) ? '' : value}
+          contentTags={tags || []}
+          contentTagsReg={tags ? tags.map((t) => t.tagReg) : []}
+          tagSearchRes={this.state.tagSearchData.data}
+          flexGrowDirection='bottom'
+          suggestionPosition='bottom'
+          textInputContainerStyle={{ ...styles.inputContainerStyle }}
+          textInputStyle={inputStyle}
+          validateTags={() => this.validateContentTags(change)}
+          autoCorrect
+          suggestionsPanelStyle={{ backgroundColor: '#f8f8f8' }}
+          loadingComponent={() => this.renderTagSearchLoadingComponent(loading)}
+          textInputMinHeight={80}
+          textInputMaxHeight={200}
+          trigger={'@'}
+          triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
+          triggerCallback={(keyword) => this.triggerCallback(keyword)}
+          triggerLoadMore={this.handleTagSearchLoadMore.bind(this)}
+          renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
+          suggestionsData={tagData} // array of objects
+          keyExtractor={(item, index) => item._id}
+          suggestionRowHeight={50}
+          horizontal={false} // defaut is true, change the orientation of the list
+          MaxVisibleRowCount={4} // this is required if horizontal={false}
         />
-      </SafeAreaView>
+      </View>
     );
+    // return (
+    //   <SafeAreaView
+    //     style={{
+    //       backgroundColor: 'white',
+    //       borderBottomWidth: 0.5,
+    //       margin: 5,
+    //       borderColor: 'lightgray'
+    //     }}
+    //   >
+    //     <TextInput
+    //       placeholder={placeholder}
+    //       onChangeText={onChange}
+    //       style={inputStyle}
+    //       editable={editable}
+    //       maxHeight={150}
+    //       multiline
+    //       value={value}
+    //     />
+    //   </SafeAreaView>
+    // );
   }
   // onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
 
@@ -181,6 +460,10 @@ class ShareModal extends React.Component {
           numberOfLines={10}
           style={styles.goalInputStyle}
           placeholder='Say something about this share'
+          loading={this.state.tagSearchData.loading}
+          tagData={this.state.tagSearchData.data}
+          keyword={this.state.keyword}
+          change={(type, val) => this.props.change(type, val)}
         />
       </View>
     );
@@ -225,6 +508,8 @@ const mapStateToProps = state => {
     user,
     shareTo: getShareTo(state),
     privacy: selector(state, 'privacy'),
+    tags: selector(state, 'tags'),
+    content: selector(state, 'content'),
     itemToShare,
     postType,
     formVals: state.form.shareModal,
@@ -289,6 +574,15 @@ const styles = {
     padding: 13,
     backgroundColor: 'white',
     borderRadius: 22,
+    maxHeight: 120
+  },
+  inputContainerStyle: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    borderBottomWidth: 0.5,
+    margin: 5,
+    borderColor: 'lightgray',
   },
   shareToBasicTextStyle: {
     fontSize: 12,
@@ -305,6 +599,21 @@ const styles = {
     borderRadius: 4,
     maxWidth: 200,
     padding: 5
+  },
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 1,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 3,
+    alignSelf: 'center',
+    backgroundColor: 'white',
+    marginLeft: 10,
+    marginRight: 10,
+    margin: 5
+  },
+  activityIndicatorStyle: {
+    flex: 1, height: 50, width: '100%', justifyContent: 'center', alignItems: 'center'
   }
 };
 
@@ -317,6 +626,9 @@ export default connect(
   mapStateToProps,
   {
     cancelShare,
-    submitShare
+    submitShare,
+    searchUser,
+    searchTribeMember,
+    searchEventParticipants
   }
 )(ShareModal);

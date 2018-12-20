@@ -18,6 +18,7 @@ import {
 import Headline from '../Goal/Common/Headline';
 import Timestamp from '../Goal/Common/Timestamp';
 import ProfileImage from '../Common/ProfileImage';
+import RichText from '../Common/Text/RichText';
 
 const DEBUG_KEY = '[ UI ActivityHeader ]';
 
@@ -38,6 +39,8 @@ class ActivityHeader extends Component {
       ? item.content.text // Show content if entity type is post / share
       : item.title; // Show title if entity type is goal
 
+    const tags = actedUponEntityType === 'Post' ? item.content.tags : [];
+
     return (
       <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
         <ProfileImage
@@ -57,15 +60,29 @@ class ActivityHeader extends Component {
             isSelf={this.props.userId === owner._id}
           />
           <Timestamp time={timeago().format(timeStamp)} />
-          <View style={{ flexDirection: 'row', marginTop: 10 }}>
-            <Text
-              style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
-              numberOfLines={3}
-              ellipsizeMode='tail'
-            >
-              {content}
-            </Text>
-          </View>
+          {/*
+            <View style={{ flexDirection: 'row', marginTop: 10 }}>
+              <Text
+                style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
+                numberOfLines={3}
+                ellipsizeMode='tail'
+              >
+                {content}
+              </Text>
+            </View>
+          */}
+          <RichText
+            contentText={content}
+            contentTags={tags}
+            textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
+            textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
+            numberOfLines={3}
+            ellipsizeMode='tail'
+            onUserTagPressed={(user) => {
+              console.log(`${DEBUG_KEY}: user tag press for user: `, user);
+              this.props.openProfile(user._id);
+            }}
+          />
 
         </View>
       </View>

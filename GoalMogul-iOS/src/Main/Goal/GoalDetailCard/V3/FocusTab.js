@@ -11,7 +11,7 @@ import _ from 'lodash';
 
 // Components
 import EmptyResult from '../../../Common/Text/EmptyResult';
-import CommentBox from '../../Common/CommentBox';
+import CommentBox from '../../Common/CommentBoxV2';
 import CommentCard from '../Comment/CommentCard';
 
 // Assets
@@ -60,50 +60,6 @@ class FocusTab extends React.PureComponent {
     };
   }
 
-  componentDidMount() {
-    console.log(`${DEBUG_KEY}: did mount.`);
-    this.keyboardWillShowListener = Keyboard.addListener(
-      'keyboardWillShow', this.keyboardWillShow);
-    this.keyboardWillHideListener = Keyboard.addListener(
-      'keyboardWillHide', this.keyboardWillHide);
-  }
-
-  componentWillUnmount() {
-    console.log(`${DEBUG_KEY}: unmounting.`);
-    this.keyboardWillShowListener.remove();
-    this.keyboardWillHideListener.remove();
-  }
-
-  keyboardWillShow = (e) => {
-    // this.flatlist.getNode().scrollToOffset({
-    // // this.flatlist.scrollToOffset({
-    //   offset: e.endCoordinates.height - TOTAL_HEIGHT,
-    //   animated: true
-    // });
-    if (!this.state.keyboardDidShow) {
-      this.handleReplyTo();
-    }
-    const timeout = ((TOTAL_HEIGHT * 210) / e.endCoordinates.height);
-    Animated.sequence([
-      Animated.delay(timeout),
-      Animated.timing(this.state.commentBoxPadding, {
-        toValue: e.endCoordinates.height - TOTAL_HEIGHT,
-        duration: (210 - timeout)
-      })
-    ]).start();
-  }
-
-  keyboardWillHide = () => {
-    Animated.timing(this.state.commentBoxPadding, {
-      toValue: 0,
-      duration: 210
-    }).start();
-    this.setState({
-      ...this.state,
-      keyboardDidShow: false
-    });
-  }
-
   // Refresh goal detail and comments all together
   handleRefresh = () => {
     console.log(`${DEBUG_KEY}: user tries to refresh.`);
@@ -140,14 +96,6 @@ class FocusTab extends React.PureComponent {
 
   dialogOnFocus = () => this.commentBox.focus();
 
-  handleReplyTo = () => {
-    this.setState({
-      ...this.state,
-      keyboardDidShow: true
-    });
-    this.commentBox.focusForReply();
-  }
-
   renderItem = (props) => {
     const { goalDetail } = this.props;
     return (
@@ -158,7 +106,7 @@ class FocusTab extends React.PureComponent {
         commentDetail={{ parentType: 'Goal', parentRef: goalDetail._id }}
         goalRef={goalDetail}
         scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
-        onCommentClicked={() => this.handleReplyTo()}
+        onCommentClicked={() => this.props.handleReplyTo()}
         reportType='detail'
       />
     );
@@ -169,9 +117,9 @@ class FocusTab extends React.PureComponent {
     if (!focusType) return '';
     const emptyText = switchCaseEmptyText(focusType);
 
-    const resetCommentTypeFunc = focusType === 'comment'
-      ? () => this.props.resetCommentType('Comment', pageId)
-      : () => this.props.resetCommentType('Suggestion', pageId);
+    // const resetCommentTypeFunc = focusType === 'comment'
+    //   ? () => this.props.resetCommentType('Comment', pageId)
+    //   : () => this.props.resetCommentType('Suggestion', pageId);
 
     return (
       <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
@@ -195,34 +143,10 @@ class FocusTab extends React.PureComponent {
           contentContainerStyle={{ ...this.props.contentContainerStyle }}
           style={{ height: 200 }}
         />
-        <Animated.View
-          style={[
-            styles.composerContainer, {
-              position: this.state.position,
-              paddingBottom: this.state.commentBoxPadding,
-              backgroundColor: 'white'
-            }
-          ]}
-        >
-          <CommentBox
-            onRef={(ref) => { this.commentBox = ref; }}
-            hasSuggestion
-            onSubmitEditing={this.handleOnCommentSubmitEditing}
-            resetCommentType={resetCommentTypeFunc}
-          />
-        </Animated.View>
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  composerContainer: {
-    left: 0,
-    right: 0,
-    bottom: 0
-  }
-});
 
 const mapStateToProps = (state, props) => {
   const newComment = getNewCommentByTab(state, props.pageId);

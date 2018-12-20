@@ -77,6 +77,93 @@ export const handleSearch = (searchContent, type) => {
 };
 
 /**
+ * Actions for user search when do tagging in comments / goal description / post / share
+ */
+export const searchUser = (searchContent, skip, limit, callback) => (dispatch, getState) => {
+  const { token } = getState().user;
+  if (searchContent.replace('@', '').trim().length === 0) {
+    return callback({ data: [] });
+  }
+
+  API
+    .get(
+      `secure/user/profile/es?skip=${skip}&limit=${limit}&query=${searchContent}`,
+      token
+    )
+    .then((res) => {
+      if (res.status === 200) {
+        callback(res, searchContent);
+        return;
+      }
+      callback({ data: [] });
+    })
+    .catch((err) => {
+      console.log(`${DEBUG_KEY}.searchUser search user with content
+        ${searchContent} fails with err: `, err);
+      callback({ data: [] });
+    });
+};
+
+/**
+ *
+ */
+export const searchTribeMember = (searchContent, tribeId, skip, limit, callback) =>
+(dispatch, getState) => {
+  const { token } = getState().user;
+  if (searchContent.replace('@', '').trim().length === 0) {
+    return callback({ data: [] });
+  }
+
+  API
+    .get(
+      `secure/tribe/members/es?&query=${searchContent}&tribeId=${tribeId}`,
+      token
+    )
+    .then((res) => {
+      if (res.status === 200) {
+        callback(res, searchContent);
+        return;
+      }
+      callback({ data: [] });
+    })
+    .catch((err) => {
+      console.log(`${DEBUG_KEY}.searchUser search user with content
+        ${searchContent} fails with err: `, err);
+      callback({ data: [] });
+    });
+};
+
+/**
+ *
+ */
+export const searchEventParticipants = (searchContent, eventId, skip, limit, callback) =>
+(dispatch, getState) => {
+  const { token } = getState().user;
+  if (searchContent.replace('@', '').trim().length === 0) {
+    return callback({ data: [] });
+  }
+
+  API
+    .get(
+      `secure/event/participants/es?&query=${searchContent}&eventId=${eventId}`,
+      token
+    )
+    .then((res) => {
+      console.log(`${DEBUG_KEY}: search event participants with res: `, res);
+      if (res.status === 200) {
+        callback(res, searchContent);
+        return;
+      }
+      callback({ data: [] });
+    })
+    .catch((err) => {
+      console.log(`${DEBUG_KEY}.searchEvent search Participants with content
+        ${searchContent} fails with err: `, err);
+      callback({ data: [] });
+    });
+};
+
+/**
   * Refresh search result
   * @param type: tab that needs to refresh
   */

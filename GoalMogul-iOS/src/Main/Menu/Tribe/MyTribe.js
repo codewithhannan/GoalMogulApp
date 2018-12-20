@@ -12,6 +12,7 @@ import { Icon } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
 import R from 'ramda';
 import { Actions } from 'react-native-router-flux';
+import Fuse from 'fuse.js';
 
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
@@ -77,6 +78,17 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 const CANCEL_REQUEST_INDEX = 1;
 const CANCEL_REQUEST_OPTIONS = ['Cancel the request', 'Cancel'];
 const REQUEST_OPTIONS = ['Request to join', 'Cancel'];
+const TAG_SEARCH_OPTIONS = {
+  shouldSort: true,
+  threshold: 0.6,
+  location: 0,
+  distance: 100,
+  maxPatternLength: 32,
+  minMatchCharLength: 1,
+  keys: [
+    'name',
+  ]
+};
 /**
  * This is the UI file for a single event.
  */
@@ -140,6 +152,16 @@ class MyTribe extends Component {
       this._handleIndexChange(indexToGo);
       this.props.refreshMyTribeDetail(_id);
     };
+
+    const members = item.members
+      .filter(m => m.category === 'Admin' || m.category === 'Member')
+      .map(m => m.memberRef);
+    const fuse = new Fuse(members, TAG_SEARCH_OPTIONS);
+    const tagSearch = (keyword, callback) => {
+      const result = fuse.search(keyword.replace('@', ''));
+      callback({ data: result }, keyword);
+    };
+
     const buttons = [
       // button info for creating a post
       {
@@ -154,7 +176,11 @@ class MyTribe extends Component {
             showPlus: true
           });
           Actions.pop();
-          Actions.createPostModal({ belongsToTribe: _id, callback: postCallback });
+          Actions.createPostModal({
+            belongsToTribe: _id,
+            callback: postCallback,
+            tagSearch
+          });
         }
       },
       // button info for invite
