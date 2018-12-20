@@ -12,6 +12,7 @@ import { Icon } from 'react-native-elements';
 import R from 'ramda';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
+import Fuse from 'fuse.js';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
@@ -67,6 +68,17 @@ const { width } = Dimensions.get('window');
 const CANCEL_REQUEST_INDEX = 1;
 const CANCEL_REQUEST_OPTIONS = ['Cancel the request', 'Cancel'];
 const REQUEST_OPTIONS = ['Request to join', 'Cancel'];
+const TAG_SEARCH_OPTIONS = {
+  shouldSort: true,
+  threshold: 0.6,
+  location: 0,
+  distance: 100,
+  maxPatternLength: 32,
+  minMatchCharLength: 1,
+  keys: [
+    'name',
+  ]
+};
 /**
  * This is the UI file for a single event.
  */
@@ -84,6 +96,17 @@ class Tribe extends Component {
    */
   handlePlus = (item) => {
     const { _id } = item;
+
+    // Post creation tag search
+    const members = item.members
+      .filter(m => m.category === 'Admin' || m.category === 'Member')
+      .map(m => m.memberRef);
+    const fuse = new Fuse(members, TAG_SEARCH_OPTIONS);
+    const tagSearch = (keyword, callback) => {
+      const result = fuse.search(keyword.replace('@', ''));
+      callback({ data: result }, keyword);
+    };
+
     const buttons = [
       // button info for creating a post
       {
@@ -98,7 +121,7 @@ class Tribe extends Component {
             showPlus: true
           });
           Actions.pop();
-          Actions.createPostModal();
+          Actions.createPostModal({ tagSearch });
         }
       },
       // button info for invite

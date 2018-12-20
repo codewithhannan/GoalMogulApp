@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Image,
-  Text
+  View
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -17,6 +15,7 @@ import ActionButtonGroup from '../../Common/ActionButtonGroup';
 import CommentHeadline from './CommentHeadline';
 import CommentRef from './CommentRef';
 import ProfileImage from '../../../Common/ProfileImage';
+import RichText from '../../../Common/Text/RichText';
 
 // Actions
 import {
@@ -32,6 +31,10 @@ import {
 import {
   createReport
 } from '../../../../redux/modules/report/ReportActions';
+
+import {
+  openProfile
+} from '../../../../actions';
 
 // Constants
 const DEBUG_KEY = '[ UI CommentCard.CommentUserDetail ]';
@@ -65,6 +68,7 @@ class CommentUserDetail extends Component {
   renderCardContent() {
     const { item } = this.props;
     let text;
+    let tags = [];
     if (item.commentType === 'Suggestion' &&
         item.suggestion &&
         item.suggestion.suggestionType === 'Link') {
@@ -73,14 +77,28 @@ class CommentUserDetail extends Component {
         : '';
     } else {
       text = item.content.text;
+      tags = item.content.tags;
     }
+    // return (
+    //   <Text
+    //     style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 12, marginTop: 3 }}
+    //     multiline
+    //   >
+    //     {text}
+    //   </Text>
+    // );
+
     return (
-      <Text
-        style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 12, marginTop: 3 }}
+      <RichText
+        contentText={text}
+        contentTags={tags}
+        textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 12, marginTop: 3 }}
         multiline
-      >
-        {text}
-      </Text>
+        onUserTagPressed={(user) => {
+          console.log(`${DEBUG_KEY}: user tag press for user: `, user);
+          this.props.openProfile(user._id);
+        }}
+      />
     );
   }
 
@@ -255,6 +273,7 @@ export default connect(
     unLikeGoal,
     createComment,
     createReport,
-    deleteComment
+    deleteComment,
+    openProfile
   }
 )(CommentUserDetail);

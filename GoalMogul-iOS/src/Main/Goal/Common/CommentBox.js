@@ -56,10 +56,6 @@ class CommentBox extends Component {
   }
 
   componentDidMount() {
-    // this.keyboardDidShowListener = Keyboard.addListener(
-    //   'keyboardDidShow', this._keyboardDidShow);
-    // this.keyboardDidHideListener = Keyboard.addListener(
-    //   'keyboardDidHide', this._keyboardDidHide);
     if (this.props.onRef !== null) {
       this.props.onRef(this);
     }
@@ -68,29 +64,6 @@ class CommentBox extends Component {
       defaultValue: 'Write a Comment...'
     });
   }
-
-  // componentWillUnmount() {
-  //   this.keyboardDidShowListener.remove();
-  //   this.keyboardDidHideListener.remove();
-  // }
-
-  // _keyboardDidShow = () => {
-  //   if (this.state.position !== 'relative') {
-  //     this.setState({
-  //       ...this.state,
-  //       position: 'relative'
-  //     });
-  //   }
-  // }
-  //
-  // _keyboardDidHide = () => {
-  //   if (this.state.position !== 'absolute') {
-  //     this.setState({
-  //       ...this.state,
-  //       position: 'absolute'
-  //     });
-  //   }
-  // }
 
   handleOnPost = (uploading) => {
     // Ensure we only create comment once
@@ -225,7 +198,8 @@ class CommentBox extends Component {
     const disableButton =
       (suggestion !== undefined && suggestion.suggestionFor !== undefined);
     return (
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity
+        activeOpacity={0.85}
         style={styles.iconContainerStyle}
         onPress={this.handleImageIconOnClick}
         disabled={disableButton}
@@ -328,6 +302,7 @@ class CommentBox extends Component {
     };
 
     return (
+      // SafeAreaView and View should have the same effect
       <SafeAreaView
         style={{
           backgroundColor: 'white',

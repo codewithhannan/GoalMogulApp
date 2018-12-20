@@ -20,6 +20,8 @@ import {
   COMMENT_NEW_UPDATE,
   COMMENT_NEW_UPDATE_COMMENT_TYPE,
   COMMENT_NEW_TEXT_ON_CHANGE,
+  COMMENT_NEW_TAGS_ON_CHANGE,
+  COMMENT_NEW_TAGS_REG_ON_CHANGE,
   COMMENT_NEW_SUGGESTION_REMOVE,
   COMMENT_NEW_SUGGESTION_CREATE,
   COMMENT_NEW_SUGGESTION_ATTACH,
@@ -48,7 +50,7 @@ import {
 } from './SuggestionSearchReducers';
 
 import { api as API } from '../../../middleware/api';
-import { queryBuilder, switchCase } from '../../../middleware/utils';
+import { queryBuilder, switchCase, clearTags } from '../../../middleware/utils';
 import ImageUtils from '../../../../Utils/ImageUtils';
 
 const DEBUG_KEY = '[ Action Comment ]';
@@ -61,6 +63,34 @@ export const newCommentOnTextChange = (text, pageId) => (dispatch, getState) => 
     type: COMMENT_NEW_TEXT_ON_CHANGE,
     payload: {
       text,
+      tab,
+      pageId
+    }
+  });
+};
+
+export const newCommentOnTagsChange = (contentTags, pageId) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+  dispatch({
+    type: COMMENT_NEW_TAGS_ON_CHANGE,
+    payload: {
+      contentTags,
+      tab,
+      pageId
+    }
+  });
+};
+
+/**
+ * Update the tags regular expression array
+ * @param contentTagsReg: array of contentTagsReg
+ */
+export const newCommentOnTagsRegChange = (contentTagsReg, pageId) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+  dispatch({
+    type: COMMENT_NEW_TAGS_REG_ON_CHANGE,
+    payload: {
+      contentTagsReg,
       tab,
       pageId
     }
@@ -392,10 +422,11 @@ const commentAdapter = (state, pageId, tab) => {
   const page = pageId ? `${pageId}` : 'default';
   const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
   let newComment = _.get(state.newComment, `${path}`);
-  // console.log(`${DEBUG_KEY}: raw comment is: `, newComment);
+  console.log(`${DEBUG_KEY}: raw comment is: `, newComment);
 
   const {
     contentText,
+    contentTags,
     // owner,
     parentType,
     parentRef,
@@ -410,9 +441,14 @@ const commentAdapter = (state, pageId, tab) => {
     ? 'Suggestion'
     : 'Comment';
 
+  const contentTagsToUser = clearTags(contentText, {}, contentTags);
+
   const commentToReturn = {
     contentText,
-    contentTags: [],
+    contentTags: contentTagsToUser.map((t) => {
+      const { user, startIndex, endIndex } = t;
+      return { user, startIndex, endIndex };
+    }),
     parentType,
     parentRef,
     // content,

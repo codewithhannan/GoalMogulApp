@@ -46,7 +46,7 @@ import {
 } from '../../../redux/modules/feed/comment/CommentSelector';
 
 // Utils
-import { arrayUnique } from '../../../redux/middleware/utils';
+import { arrayUnique, clearTags } from '../../../redux/middleware/utils';
 
 // Assets
 import PhotoIcon from '../../../asset/utils/photoIcon.png';
@@ -114,38 +114,44 @@ class CommentBoxV2 extends Component {
     // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
     this.props.newCommentOnTextChange(newContentText, pageId);
 
+    const newContentTag = {
+      user: item,
+      startIndex: comment.length, // `${comment}@${name} `
+      endIndex: comment.length + 1 + name.length, // `${comment}@${name} `
+      tagReg: `\\B@${name}`,
+      tagText: `@${name}`
+    };
+
+    // Clean up tags position before comparing
+    const newTags = clearTags(newContentText, newContentTag, contentTags);
+
     // Check if this tags is already in the array
-    const containsTag = contentTags.some((t) => (
+    const containsTag = newTags.some((t) => (
       t.tagReg === `\\B@${name}` && t.startIndex === comment.length + 1
     ));
 
-    const needReplceOldTag = contentTags.some((t) => (
+    const needReplceOldTag = newTags.some((t) => (
       t.startIndex === comment.length
     ));
 
     // Update comment contentTags regex and contentTags
     if (!containsTag) {
-      const newContentTag = {
-        user: item,
-        startIndex: comment.length, // `${comment}@${name} `
-        endIndex: comment.length + 1 + name.length, // `${comment}@${name} `
-        tagReg: `\\B@${name}`,
-        tagText: `@${name}`
-      };
-
       let newContentTags;
       if (needReplceOldTag) {
-        newContentTags = contentTags.map((t) => {
+        newContentTags = newTags.map((t) => {
           if (t.startIndex === newContentTag.startIndex) {
             return newContentTag;
           }
           return t;
         });
       } else {
-        newContentTags = [...contentTags, newContentTag];
+        newContentTags = [...newTags, newContentTag];
       }
 
-      this.props.newCommentOnTagsChange(newContentTags, pageId);
+      this.props.newCommentOnTagsChange(
+        newContentTags.sort((a, b) => a.startIndex - b.startIndex),
+        pageId
+      );
     }
 
     // Clear tag search data state

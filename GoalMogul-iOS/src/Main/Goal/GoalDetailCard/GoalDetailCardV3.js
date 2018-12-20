@@ -7,7 +7,8 @@ import {
   StyleSheet,
   Image,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -29,7 +30,8 @@ import {
   cancelSuggestion,
   openSuggestionModal,
   removeSuggestion,
-  createCommentFromSuggestion
+  createCommentFromSuggestion,
+  resetCommentType
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 // selector
@@ -49,7 +51,7 @@ import Report from '../../../Main/Report/Report';
 import CentralTab from './V3/CentralTab';
 import FocusTab from './V3/FocusTab';
 import SectionCardV2 from '../Common/SectionCardV2';
-
+import CommentBox from '../Common/CommentBoxV2';
 import GoalDetailSection from './GoalDetailSection';
 
 // Assets
@@ -70,20 +72,35 @@ const HEADER_HEIGHT = 240; // Need to be calculated in the state later based on 
 const COLLAPSED_HEIGHT = 30 + Constants.statusBarHeight;
 const SCROLLABLE_HEIGHT = HEADER_HEIGHT - COLLAPSED_HEIGHT;
 const DEBUG_KEY = '[ UI GoalDetailCardV3 ]';
+const TABBAR_HEIGHT = 48.5;
+const COMMENTBOX_HEIGHT = 43;
+const TOTAL_HEIGHT = TABBAR_HEIGHT;
 
 class GoalDetailCardV3 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      scroll: new Animated.Value(0)
+      scroll: new Animated.Value(0),
+      // Following are state for CommentBox
+      position: 'absolute',
+      commentBoxPadding: new Animated.Value(0),
+      keyboardDidShow: false
     };
   }
 
   componentDidMount() {
     this.state.scroll.addListener(({ value }) => { this._value = value; });
+    console.log(`${DEBUG_KEY}: did mount.`);
+    this.keyboardWillShowListener = Keyboard.addListener(
+      'keyboardWillShow', this.keyboardWillShow);
+    this.keyboardWillHideListener = Keyboard.addListener(
+      'keyboardWillHide', this.keyboardWillHide);
   }
 
   componentWillUnmount() {
+    console.log(`${DEBUG_KEY}: unmounting.`);
+    this.keyboardWillShowListener.remove();
+    this.keyboardWillHideListener.remove();
     this.state.scroll.removeAllListeners();
   }
 
@@ -104,6 +121,39 @@ class GoalDetailCardV3 extends Component {
       }
     });
     return focusedItem;
+  }
+
+  keyboardWillShow = (e) => {
+    if (!this.state.keyboardDidShow) {
+      this.handleReplyTo();
+    }
+    const timeout = ((TOTAL_HEIGHT * 210) / e.endCoordinates.height);
+    Animated.sequence([
+      Animated.delay(timeout),
+      Animated.timing(this.state.commentBoxPadding, {
+        toValue: e.endCoordinates.height - TOTAL_HEIGHT,
+        duration: (210 - timeout)
+      })
+    ]).start();
+  }
+
+  keyboardWillHide = () => {
+    Animated.timing(this.state.commentBoxPadding, {
+      toValue: 0,
+      duration: 210
+    }).start();
+    this.setState({
+      ...this.state,
+      keyboardDidShow: false
+    });
+  }
+
+  handleReplyTo = () => {
+    this.setState({
+      ...this.state,
+      keyboardDidShow: true
+    });
+    this.commentBox.focusForReply();
   }
 
   // Tab related handlers
@@ -151,6 +201,7 @@ class GoalDetailCardV3 extends Component {
                 : this.state.scroll._value
             }}
             pageId={this.props.pageId}
+            handleReplyTo={() => this.handleReplyTo()}
           />
         );
 
@@ -172,7 +223,7 @@ class GoalDetailCardV3 extends Component {
     const { goalDetail } = this.props;
 
     return (
-      <Animated.View style={[styles.header, { transform: [{ translateY }] }]}>
+      <Animated.View style={[styles.header, { transform: [{ translateY }], zIndex: 2 }]}>
         <View style={{ height: HEADER_HEIGHT, backgroundColor: 'white' }}>
           <GoalDetailSection
             item={goalDetail}
@@ -199,15 +250,17 @@ class GoalDetailCardV3 extends Component {
     const focusedItem = this.getFocusedItem(focusType, focusRef);
 
     return (
-      <SectionCardV2
-        type={focusType}
-        item={focusedItem}
-        isFocusedItem
-        isSelf={this.props.isSelf}
-        onBackPress={() => this._handleIndexChange(0)}
-        onContentSizeChange={this.props.onContentSizeChange}
-        count={this.props.focusedItemCount}
-      />
+      <View style={{ zIndex: 2 }}>
+        <SectionCardV2
+          type={focusType}
+          item={focusedItem}
+          isFocusedItem
+          isSelf={this.props.isSelf}
+          onBackPress={() => this._handleIndexChange(0)}
+          onContentSizeChange={this.props.onContentSizeChange}
+          count={this.props.focusedItemCount}
+        />
+      </View>
     );
   }
 
@@ -251,8 +304,35 @@ class GoalDetailCardV3 extends Component {
     );
   }
 
+  renderCommentBox(focusType, pageId) {
+    if (!focusType) return '';
+    const resetCommentTypeFunc = focusType === 'comment'
+      ? () => this.props.resetCommentType('Comment', pageId)
+      : () => this.props.resetCommentType('Suggestion', pageId);
+
+    return (
+      <Animated.View
+        style={[
+          styles.composerContainer, {
+            position: this.state.position,
+            paddingBottom: this.state.commentBoxPadding,
+            backgroundColor: 'white',
+            zIndex: 3
+          }
+        ]}
+      >
+        <CommentBox
+          onRef={(ref) => { this.commentBox = ref; }}
+          hasSuggestion
+          onSubmitEditing={this.handleOnCommentSubmitEditing}
+          resetCommentType={resetCommentTypeFunc}
+        />
+      </Animated.View>
+    );
+  }
+
   render() {
-    const { goalDetail, navigationState } = this.props;
+    const { goalDetail, navigationState, pageId } = this.props;
     // console.log('transformed comments to render are: ', comments);
     if (!goalDetail || _.isEmpty(goalDetail)) return '';
     const { focusType, focusRef } = navigationState;
@@ -274,6 +354,7 @@ class GoalDetailCardV3 extends Component {
             onIndexChange={index => this._handleIndexChange(index)}
             swipeEnabled={navigationState.focusType !== undefined}
           />
+          {this.renderCommentBox(focusType, pageId)}
           <SuggestionModal
             visible={this.props.showSuggestionModal}
             onCancel={() => this.props.cancelSuggestion()}
@@ -291,6 +372,11 @@ class GoalDetailCardV3 extends Component {
 }
 
 const styles = StyleSheet.create({
+  composerContainer: {
+    left: 0,
+    right: 0,
+    bottom: 0
+  },
   containerStyle: {
     backgroundColor: 'white',
   },
@@ -626,6 +712,7 @@ export default connect(
     goalDetailSwitchTabV2,
     goalDetailSwitchTabV2ByKey,
     removeSuggestion,
-    createCommentFromSuggestion
+    createCommentFromSuggestion,
+    resetCommentType
   }
 )(GoalDetailCardV3);
