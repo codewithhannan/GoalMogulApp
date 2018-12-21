@@ -6,6 +6,10 @@ import {
 } from 'react-native';
 
 class ProgressBar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.animation = new Animated.Value(0);
+  }
 
   componentDidMount() {
     this.animation = new Animated.Value(this.props.progress);
@@ -61,8 +65,8 @@ class ProgressBar extends React.Component {
 
 ProgressBar.defaultPros = {
   height: 10,
-  fillColor: '#055c7a',
-  barColor: '#0297ce',
+  fillColor: '#0297ce',
+  barColor: '#055c7a',
   duration: 100
 };
 
