@@ -62,8 +62,8 @@ class Tutorial extends React.Component {
     }
   }
 
-  animate(extraAnimation = []) {
-    const animations = Animated.sequence([
+  animate(extraAnimation = [], extraDuration = 0) {
+    const sequenceAnimations = Animated.sequence([
       ...extraAnimation,
       Animated.delay(500),
       // Show challenge
@@ -95,7 +95,15 @@ class Tutorial extends React.Component {
         { duration: DURATION, toValue: 1 }
       )
     ]);
-    animations.start();
+
+    const parallelAnimation = Animated.parallel([
+      sequenceAnimations,
+      Animated.timing(this.progress, {
+        duration: ((7 * DURATION) + (4 * PAUSE) + extraDuration),
+        toValue: 1
+      }),
+    ]);
+    parallelAnimation.start();
   }
 
   handleContinue = () => {
@@ -103,11 +111,12 @@ class Tutorial extends React.Component {
   }
 
   handleReplay = () => {
+    this.progress.setValue(0);
     this.animate([
       Animated.timing(this.HostAnim,
         { duration: DURATION, toValue: 0 }
       )
-    ]);
+    ], DURATION);
   }
 
   // Header contains Logo with text
@@ -133,7 +142,11 @@ class Tutorial extends React.Component {
       <View style={styles.containerStyle}>
         {this.renderHeader()}
         <View style={{ height: 10, width: '100%' }}>
-          <ProgressBar progress={this.progress} fillColor='#055c7a' barColor='#0297ce' />
+          <ProgressBar
+            progress={this.progress}
+            fillColor='#0297ce'
+            barColor='#055c7a'
+          />
         </View>
 
         <View style={styles.subViewContainerStyle}>

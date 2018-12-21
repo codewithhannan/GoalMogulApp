@@ -32,7 +32,7 @@ class ProgressBar extends React.Component {
 
     } = this.props;
 
-    const widthInterpolated = this.animation.interpolate({
+    const widthInterpolated = this.props.progress.interpolate({
       inputRange: [0, 1],
       outputRange: ['0%', '100%'],
       extrapolate: 'clamp'
