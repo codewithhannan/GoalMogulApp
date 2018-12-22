@@ -156,7 +156,10 @@ class SplashScreen extends Component {
       }
     }).catch((err) => console.log(`${DEBUG_KEY}: log in user with err: `, err));
     console.log('finish loading keys');
-    Expo.SplashScreen.hide();
+    setTimeout(() => {
+      Expo.SplashScreen.hide();
+    }, 1000);
+
     return;
   }
 
@@ -216,7 +219,8 @@ class SplashScreen extends Component {
           </View>
 
           <View style={styles.highlightContainerStyle}>
-            <TouchableOpacity activeOpacity={0.85}
+            <TouchableOpacity
+              activeOpacity={0.85}
               style={styles.reactionContainerStyle}
               onPress={this.handleGetStartedOnPress.bind(this)}
             >
@@ -235,7 +239,8 @@ class SplashScreen extends Component {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity activeOpacity={0.85}
+          <TouchableOpacity
+            activeOpacity={0.85}
             style={styles.loginHighlightContainerStyle}
             onPress={this.handleLoginPress.bind(this)}
           >
