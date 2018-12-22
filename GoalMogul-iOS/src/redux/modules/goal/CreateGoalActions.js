@@ -60,10 +60,11 @@ export const submitGoal = (values, userId, isEdit, callback, goalId) => (dispatc
     dispatch({
       type: GOAL_CREATE_SUBMIT_SUCCESS
     });
-    Alert.alert(
-      'Success',
-      'You have successfully created a goal.'
-    );
+    // Alert.alert(
+    //   'Success',
+    //   'You have successfully created a goal.'
+    // );
+    callback();
     openProfile(userId, 'goals')(dispatch, getState);
   };
 
@@ -81,9 +82,8 @@ export const submitGoal = (values, userId, isEdit, callback, goalId) => (dispatc
         console.log(`${DEBUG_KEY}: creating goal success`);
         console.log(`${DEBUG_KEY}: result is`, res);
         // TODO: dispatch changes to feed and clear CreateGoalForm state
-        callback();
         onSuccess();
-        dispatch(reset('createGoalModal'));
+        // dispatch(reset('createGoalModal'));
         return;
       }
       console.log(`${DEBUG_KEY}: creating goal success without returning data, res is: `, res);

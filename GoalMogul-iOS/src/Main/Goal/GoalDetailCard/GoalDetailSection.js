@@ -128,7 +128,7 @@ class GoalDetailSection extends React.PureComponent {
   }
 
   renderSeeMore(text) {
-    if (text.length > 60) {
+    if (text && text.length > 60) {
       return (
         <TouchableOpacity
           activeOpacity={0.85}

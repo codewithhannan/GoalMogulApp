@@ -483,7 +483,7 @@ class CreateGoalModal extends Component {
     data,
     keyword
   }) => {
-    console.log(`${DEBUG_KEY}: loading: ${loading}, data: ${data}, keyword: ${keyword}`);
+    // console.log(`${DEBUG_KEY}: loading: ${loading}, data: ${data}, keyword: ${keyword}`);
     const button = fields.length > 0 ?
       <Button text='remove description' source={cancel} onPress={() => fields.remove(0)} />
       :

@@ -45,6 +45,8 @@ class RichText extends React.PureComponent {
       contentTags,
     } = this.props;
 
+    if (!contentText) return '';
+
     const parsedTags = this.constructParsedUserTags(contentTags, contentText);
 
     return (
@@ -87,7 +89,6 @@ export default connect(
 RichText.propTypes = {
   textContainerStyle: ViewPropTypes.style,
   textStyle: Text.propTypes.style,
-  contentText: PropTypes.string.isRequired,
   onUserTagPressed: PropTypes.func.isRequired
 };
 
