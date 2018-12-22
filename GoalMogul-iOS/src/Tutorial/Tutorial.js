@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 
 // Styles
-import { APP_BLUE_BRIGHT } from '../styles';
+import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../styles';
 
 // Assets
 import LOGO from '../../assets/logo.png';
@@ -150,6 +150,8 @@ class Tutorial extends React.Component {
     );
   }
 
+  // barColor='#055c7a'
+  // #007FAD
   render() {
     if (!this.state.fontLoaded) return '';
     return (
@@ -158,8 +160,8 @@ class Tutorial extends React.Component {
         <View style={{ height: 10, width: '100%' }}>
           <ProgressBar
             progress={this.progress}
-            fillColor='#0297ce'
-            barColor='#055c7a'
+            fillColor={`${APP_DEEP_BLUE}`}
+            barColor='#124562'
           />
         </View>
 

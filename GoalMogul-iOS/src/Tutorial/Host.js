@@ -16,6 +16,8 @@ import {
 
 // Assets
 import MoreIcon from '../../assets/tutorial/More.png';
+import RightArrow from '../../assets/tutorial/RightArrow.png';
+import Replay from '../../assets/tutorial/Replay.png';
 
 const { width } = Dimensions.get('window');
 
@@ -35,7 +37,7 @@ class Host extends React.PureComponent {
           { ...styles.containerStyle, opacity: this.props.opacity, flex: 1 }
         ]}
       >
-        <View style={[imageShadow, { flex: 1 }]}>
+        <View style={[{ flex: 1 }]}>
           <Image source={MoreIcon} style={styles.imageStyle} resizeMode='contain' />
         </View>
         <Text style={[subTitleTextStyle, { marginTop: 30 }]}>
@@ -53,15 +55,17 @@ class Host extends React.PureComponent {
           style={styles.buttonContainerStyle}
           onPress={this.props.continue}
         >
-          <Text style={[textStyle, { fontSize: 21 }]}>Continue</Text>
+          <Text style={[textStyle, { fontSize: 21, marginTop: 2 }]}>Continue</Text>
+          <Image source={RightArrow} style={{ height: 13, width: 20, marginLeft: 17 }} />
         </TouchableOpacity>
 
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={styles.replayIconContainerStyle}
           onPress={this.props.replay}
         >
-          <Text style={[textStyle]}>
+          <Image source={Replay} style={{ height: 15, width: 15, marginRight: 6 }} />
+          <Text style={[textStyle, { marginTop: 1 }]}>
             replay
           </Text>
         </TouchableOpacity>
@@ -82,13 +86,16 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
-    paddingLeft: 20,
-    paddingRight: 20
+    paddingLeft: 28,
+    paddingRight: 20,
+    flexDirection: 'row'
   },
   replayIconContainerStyle: {
     marginTop: 20,
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row',
+    opacity: 0.8
   },
   imageStyle: {
     width: (width * 4) / 7,
