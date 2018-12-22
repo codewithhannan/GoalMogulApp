@@ -181,7 +181,7 @@ class GoalCard extends React.PureComponent {
     const endDate = end || new Date();
 
     return (
-      <View style={{ marginTop: 20 }}>
+      <View style={{ marginTop: 16 }}>
         <ProgressBar
           startTime={startDate}
           endTime={endDate}
@@ -221,7 +221,7 @@ class GoalCard extends React.PureComponent {
             isSelf={owner._id === this.props.userId}
           />
           <Timestamp time={timeago().format(timeStamp)} />
-          <View style={{ flexDirection: 'row', marginTop: 10 }}>
+          <View style={{ flexDirection: 'row', marginTop: 5 }}>
             <Text
               style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 18 }}
               numberOfLines={2}
@@ -318,6 +318,7 @@ class GoalCard extends React.PureComponent {
     const { item } = this.props;
     if (!item) return;
 
+    const { steps, needs } = item;
     const tabHeight = getTabHeight(this.state.navigationState, item);
     return (
       <View style={{ height: 450, marginTop: 4 }}>
@@ -329,16 +330,20 @@ class GoalCard extends React.PureComponent {
               style={styles.containerStyle}
               onPress={() => this.props.onPress(this.props.item)}
             >
-              <View style={{ marginTop: 14, marginBottom: 12, marginRight: 12, marginLeft: 12 }}>
+              <View style={{ marginTop: 14, marginBottom: 15, marginRight: 12, marginLeft: 12 }}>
                 {this.renderUserDetail(item)}
                 {this.renderCardContent(item)}
               </View>
             </TouchableOpacity>
-
-            <View style={{ height: tabHeight }}>
-              {this.renderTabs()}
-            </View>
-
+            { // Disable tabs if neither needs or steps
+              _.isEmpty(steps) && _.isEmpty(needs)
+              ? ''
+              : (
+                <View style={{ height: tabHeight }}>
+                  {this.renderTabs()}
+                </View>
+              )
+            }
             <View style={styles.containerStyle}>
               {this.renderActionButtons(item)}
             </View>
