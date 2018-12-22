@@ -62,6 +62,8 @@ import {
 
 import { switchCase } from '../../redux/middleware/utils';
 
+import { APP_DEEP_BLUE } from '../../styles';
+
 const DEBUG_KEY = '[ UI Tribe ]';
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const { width } = Dimensions.get('window');
@@ -693,7 +695,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     // backgroundColor: '#17B3EC',
-    backgroundColor: '#4096c6',
+    backgroundColor: APP_DEEP_BLUE,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,

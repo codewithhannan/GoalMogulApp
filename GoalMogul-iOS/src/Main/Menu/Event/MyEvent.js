@@ -66,7 +66,7 @@ import {
 } from '../../../redux/modules/feed/post/PostActions';
 
 // Styles
-import { APP_BLUE_BRIGHT } from '../../../styles';
+import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../../../styles';
 
 const DEBUG_KEY = '[ UI MyEvent ]';
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
@@ -638,7 +638,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     // backgroundColor: '#17B3EC',
-    backgroundColor: '#4096c6',
+    backgroundColor: APP_DEEP_BLUE,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,

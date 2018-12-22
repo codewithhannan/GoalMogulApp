@@ -147,7 +147,7 @@ class Headline extends React.PureComponent {
       <View style={styles.containerStyle}>
         <Name text={name} onPress={() => this.handleNameOnPress(user)} />
         {/* <Image style={styles.imageStyle} source={badge} /> */}
-        <UserBanner user={user} />
+        <UserBanner user={user} iconStyle={{ marginTop: 1 }} />
         {categoryComponent}
         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
           {hasCaret === null ? '' : menu}
@@ -204,7 +204,10 @@ export const MenuFactory =
           renderItem={({ item }) => {
             const { iconSource, option } = item;
             return (
-              <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TouchableOpacity
+                style={{ flexDirection: 'row', alignItems: 'center' }}
+                onPress={() => callback(option)}
+              >
                 {
                   iconSource
                     ? (

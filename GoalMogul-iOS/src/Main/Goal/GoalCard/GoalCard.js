@@ -34,6 +34,10 @@ import {
   chooseShareDest
 } from '../../../redux/modules/feed/post/ShareActions';
 
+import {
+  deleteGoal,
+} from '../../../actions';
+
 // Components
 import Headline from '../Common/Headline';
 import Timestamp from '../Common/Timestamp';
@@ -88,8 +92,8 @@ class GoalCard extends React.PureComponent {
       navigationState: {
         index: 0,
         routes: [
-          { key: 'needs', title: 'Needs' },
           { key: 'steps', title: 'Steps' },
+          { key: 'needs', title: 'Needs' },
         ],
       }
     };
@@ -181,7 +185,7 @@ class GoalCard extends React.PureComponent {
     const endDate = end || new Date();
 
     return (
-      <View style={{ marginTop: 20 }}>
+      <View style={{ marginTop: 16 }}>
         <ProgressBar
           startTime={startDate}
           endTime={endDate}
@@ -219,12 +223,13 @@ class GoalCard extends React.PureComponent {
             caretOnPress={() => this.props.createReport(_id, 'goal', 'Goal')}
             user={owner}
             isSelf={owner._id === this.props.userId}
+            caretOnDelete={() => this.props.deleteGoal(_id)}
           />
           <Timestamp time={timeago().format(timeStamp)} />
-          <View style={{ flexDirection: 'row', marginTop: 10 }}>
+          <View style={{ flexDirection: 'row', marginTop: 5 }}>
             <Text
-              style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
-              numberOfLines={3}
+              style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 18 }}
+              numberOfLines={2}
               ellipsizeMode='tail'
             >
               {title}
@@ -318,6 +323,7 @@ class GoalCard extends React.PureComponent {
     const { item } = this.props;
     if (!item) return;
 
+    const { steps, needs } = item;
     const tabHeight = getTabHeight(this.state.navigationState, item);
     return (
       <View style={{ height: 450, marginTop: 4 }}>
@@ -329,16 +335,20 @@ class GoalCard extends React.PureComponent {
               style={styles.containerStyle}
               onPress={() => this.props.onPress(this.props.item)}
             >
-              <View style={{ marginTop: 14, marginBottom: 12, marginRight: 12, marginLeft: 12 }}>
+              <View style={{ marginTop: 14, marginBottom: 15, marginRight: 12, marginLeft: 12 }}>
                 {this.renderUserDetail(item)}
                 {this.renderCardContent(item)}
               </View>
             </TouchableOpacity>
-
-            <View style={{ height: tabHeight }}>
-              {this.renderTabs()}
-            </View>
-
+            { // Disable tabs if neither needs or steps
+              _.isEmpty(steps) && _.isEmpty(needs)
+              ? ''
+              : (
+                <View style={{ height: tabHeight }}>
+                  {this.renderTabs()}
+                </View>
+              )
+            }
             <View style={styles.containerStyle}>
               {this.renderActionButtons(item)}
             </View>
@@ -417,6 +427,7 @@ export default connect(
     createReport,
     likeGoal,
     unLikeGoal,
-    chooseShareDest
+    chooseShareDest,
+    deleteGoal
   }
 )(GoalCard);

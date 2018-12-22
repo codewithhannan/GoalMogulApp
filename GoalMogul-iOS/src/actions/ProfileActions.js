@@ -512,6 +512,7 @@ export const deleteGoal = (goalId) => (dispatch, getState) =>
     getState,
     // onSuccess
     () => {
+      console.log(`${DEBUG_KEY}: delete goal succeed.`);
       dispatch({
         type: PROFILE_GOAL_DELETE_SUCCESS,
         payload: goalId

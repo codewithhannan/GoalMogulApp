@@ -41,7 +41,8 @@ import {
 
 // styles
 import {
-  APP_BLUE
+  APP_BLUE,
+  APP_DEEP_BLUE
 } from '../../../styles';
 
 import {
@@ -173,7 +174,8 @@ class SearchBarHeader extends Component {
     let image = this.props.image;
     console.log('image is: ', image);
     let profileImage = (
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity
+        activeOpacity={0.85}
         style={styles.headerLeftImage}
         onPress={this.handleProfileOnClick.bind(this)}
       >
@@ -336,7 +338,7 @@ const styles = {
     borderRadius: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.4,
     shadowRadius: 2,
   },
   headerRightImage: {
@@ -349,7 +351,7 @@ const styles = {
     height: 30,
     width: 260,
     // backgroundColor: '#1998c9',
-    backgroundColor: '#0397CB',
+    backgroundColor: APP_DEEP_BLUE,
     borderRadius: 16,
     padding: 0,
     marginRight: 14,

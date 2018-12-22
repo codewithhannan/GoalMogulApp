@@ -3,6 +3,7 @@ import { CameraRoll, ImagePickerIOS } from 'react-native';
 import Expo from 'expo';
 import { SubmissionError } from 'redux-form';
 import { api as API } from '../redux/middleware/api';
+import { tutorial as Tutorial } from '../redux/modules/auth/Tutorial';
 
 import {
   REGISTRATION_BACK,
@@ -450,10 +451,16 @@ export const registrationNextContactSync = ({ skip }) => {
   const type = skip ? REGISTRATION_CONTACT_SYNC_SKIP : REGISTRATION_CONTACT_SYNC;
 
   if (skip) {
-    return (dispatch) => {
+    return (dispatch, getState) => {
+      const { userId } = getState().user;
+      const hasTutorialShown = Tutorial.getTutorialShown(userId);
       dispatch({
         type,
       });
+      if (!hasTutorialShown) {
+        Actions.tutorial();
+        return;
+      }
       Actions.mainTabs();
     };
   }
@@ -587,10 +594,17 @@ export const contactSyncRefresh = () => (dispatch, getState) => {
 export const registrationContactSyncDone = () => {
   // Passed in a list of contacts that user wants to add as friends
 
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { userId } = getState().user;
+    const hasTutorialShown = Tutorial.getTutorialShown(userId);
     dispatch({
       type: REGISTRATION_CONTACT_SYNC_DONE
     });
+
+    if (!hasTutorialShown) {
+      Actions.tutorial();
+      return;
+    }  
     Actions.mainTabs();
   };
 };

@@ -4,7 +4,7 @@ import { View, Text, TouchableWithoutFeedback } from 'react-native';
 const styles = {
   containerStyle: {
     fontSize: 15,
-    fontWeight: 'bold',
+    fontWeight: '600',
     maxWidth: 150,
   }
 };

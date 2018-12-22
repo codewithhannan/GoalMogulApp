@@ -60,10 +60,11 @@ export const submitGoal = (values, userId, isEdit, callback, goalId) => (dispatc
     dispatch({
       type: GOAL_CREATE_SUBMIT_SUCCESS
     });
-    Alert.alert(
-      'Success',
-      'You have successfully created a goal.'
-    );
+    // Alert.alert(
+    //   'Success',
+    //   'You have successfully created a goal.'
+    // );
+    callback();
     openProfile(userId, 'goals')(dispatch, getState);
   };
 
@@ -81,9 +82,8 @@ export const submitGoal = (values, userId, isEdit, callback, goalId) => (dispatc
         console.log(`${DEBUG_KEY}: creating goal success`);
         console.log(`${DEBUG_KEY}: result is`, res);
         // TODO: dispatch changes to feed and clear CreateGoalForm state
-        callback();
         onSuccess();
-        dispatch(reset('createGoalModal'));
+        // dispatch(reset('createGoalModal'));
         return;
       }
       console.log(`${DEBUG_KEY}: creating goal success without returning data, res is: `, res);
@@ -229,7 +229,7 @@ export const goalToFormAdaptor = (values) => {
   } = values;
 
   // console.log('values are: ', values);
-
+  const { tags, text } = details;
   return {
     title,
     category,
@@ -242,7 +242,7 @@ export const goalToFormAdaptor = (values) => {
     // steps: stepsNeedsReverseAdapter(steps),
     // TODO: TAG:
     details: details ? [details.text] : [''],
-    tags: details ? [details.tags] : [''],
+    tags: details ? constructTags(tags, text) : [],
     priority,
     startTime: {
       date: start ? new Date(`${start}`) : undefined,
@@ -253,6 +253,21 @@ export const goalToFormAdaptor = (values) => {
       picker: false
     }
   };
+};
+
+const constructTags = (tags, content) => {
+  return tags.map((t) => {
+    const { startIndex, endIndex, user } = t;
+    const tagText = content.slice(startIndex, endIndex);
+    const tagReg = `\\B@${tagText}`;
+    return {
+      tagText,
+      tagReg,
+      startIndex,
+      endIndex,
+      user
+    };
+  });
 };
 
 // Function to capitalize the first character
@@ -288,7 +303,7 @@ const stepsNeedsAdapter = values => {
 const detailsAdapter = (value, tags) => {
   if (!value || value.length === 0 || _.isEmpty(value[0])) return undefined;
 
-  const tagsToUse = clearTags(value, {}, tags);
+  const tagsToUse = clearTags(value[0], {}, tags);
   return {
     text: value[0],
     tags: tagsToUse

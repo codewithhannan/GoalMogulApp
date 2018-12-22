@@ -37,10 +37,11 @@ import {
 } from '../../redux/modules/home/mastermind/actions';
 
 import { IPHONE_MODELS } from '../../Utils/Constants';
+import { APP_DEEP_BLUE } from '../../styles';
 
 const ITEM_HEIGHT = Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
-  ? 450 : 410;
+  ? 450 : 420;
 
 const TAB_KEY = 'mastermind';
 
@@ -48,7 +49,8 @@ class Mastermind extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      infoModal: false
+      infoModal: false,
+      onListEndReached: false
     };
   }
 
@@ -75,7 +77,11 @@ class Mastermind extends Component {
     Actions.createGoalButtonOverlay({ tab: TAB_KEY });
   }
 
-  handleOnLoadMore = () => this.props.loadMoreGoals();
+  handleOnLoadMore = () => {
+    this.setState({ ...this.state, onListEndReached: true });
+    const callback = () => this.setState({ ...this.state, onListEndReached: false });
+    this.props.loadMoreGoals(callback);
+  };
 
   handleOnRefresh = () => this.props.refreshGoals();
 
@@ -171,15 +177,20 @@ class Mastermind extends Component {
   }
 
   renderNext() {
-    return (
-      <View style={styles.nextIconContainerStyle}>
-        <NextButton
-          onPress={() => {
-            this._carousel.snapToNext();
-          }}
-        />
-      </View>
-    );
+    if ((!this.state.onListEndReached &&
+        !this.props.loadingMore &&
+        !this.props.refreshing) || this.props.data.length < 5) {
+      return (
+        <View style={styles.nextIconContainerStyle}>
+          <NextButton
+            onPress={() => {
+              this._carousel.snapToNext();
+            }}
+          />
+        </View>
+      );
+    }
+    return '';
   }
 
   renderListHeader() {
@@ -221,6 +232,7 @@ class Mastermind extends Component {
           sliderHeight={ITEM_HEIGHT}
           itemHeight={ITEM_HEIGHT}
           keyExtractor={this._keyExtractor}
+          scrollsToTop
           refreshing={this.props.loading}
           onRefresh={this.handleOnRefresh}
           onEndReached={this.handleOnLoadMore}
@@ -238,7 +250,7 @@ class Mastermind extends Component {
           initialNumToRender={4}
           inactiveSlideOpacity={0.2}
           inactiveSlideScale={0.85}
-          onEndReachedThreshold={0.2}
+          onEndReachedThreshold={0}
         />
         {this.renderPlus()}
         {this.renderNext()}
@@ -284,7 +296,7 @@ const styles = {
     justifyContent: 'center',
     zIndex: 3,
     // backgroundColor: '#17B3EC',
-    backgroundColor: '#4096c6',
+    backgroundColor: APP_DEEP_BLUE,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
@@ -309,14 +321,15 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { showPlus, data, loading, filter, loadingMore } = state.home.mastermind;
+  const { showPlus, data, loading, filter, loadingMore, refreshing } = state.home.mastermind;
 
   return {
     showPlus,
     data,
     loading,
     filter,
-    loadingMore
+    loadingMore,
+    refreshing
   };
 };
 

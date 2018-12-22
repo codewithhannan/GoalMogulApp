@@ -37,7 +37,7 @@ const renderText = (item) => {
       <Text
         numberOfLines={1}
         ellipsizeMode='tail'
-        style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 11 }}
+        style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 9 }}
       >
         {nameComponent}
         {headerText}
@@ -51,7 +51,15 @@ const GoalCardHeader = (props) => {
   if (!item) return '';
 
   return (
-    <View style={{ marginBottom: 1, backgroundColor: 'white', padding: 5, marginLeft: 7, marginRight: 7 }}>
+    <View
+      style={{
+        marginBottom: 1,
+        backgroundColor: 'white',
+        padding: 5,
+        paddingLeft: 12,
+        marginRight: 12
+      }}
+    >
       {renderText(item)}
     </View>
   );
@@ -59,10 +67,12 @@ const GoalCardHeader = (props) => {
 
 const styles = {
   boldTextStyle: {
-    fontWeight: '700'
+    fontWeight: '700',
+    color: '#6d6d6d',
   },
   textStyle: {
-    fontSize: 11
+    fontSize: 9,
+    color: '#6d6d6d',
   }
 };
 

@@ -26,6 +26,8 @@ import {
   openPostDetail
 } from '../../redux/modules/feed/post/PostActions';
 
+import { APP_DEEP_BLUE } from '../../styles';
+
 const TAB_KEY = 'activityfeed';
 const DEBUG_KEY = '[ UI ActivityFeed ]';
 
@@ -147,7 +149,7 @@ const styles = {
     justifyContent: 'center',
     zIndex: 3,
     // backgroundColor: '#17B3EC',
-    backgroundColor: '#4096c6',
+    backgroundColor: APP_DEEP_BLUE,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,

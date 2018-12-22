@@ -102,9 +102,13 @@ class ViewableSettingMenu extends Component {
             source={shareIcon}
           />
           <Text style={{ fontSize: 10, marginLeft: 3, marginRight: 2, color }}>
-            Share to Mastermind
+            Share to 'Goals' Feed
           </Text>
-          <TouchableOpacity activeOpacity={0.85} style={{ padding: 5 }} onPress={this.handleInfoIcon}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            style={{ padding: 5 }}
+            onPress={this.handleInfoIcon}
+          >
             {icon}
           </TouchableOpacity>
         </TouchableOpacity>
@@ -116,18 +120,19 @@ class ViewableSettingMenu extends Component {
   render() {
     return (
       <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity
+          activeOpacity={0.85}
           style={{ ...styles.containerStyle, width: 80 }}
           onPress={this.handleOnClick}
         >
           <View style={{ padding: 5 }}>
-            <Image 
-              style={{ 
+            <Image
+              style={{
                 height: 13,
                 width: 13,
                 tintColor: 'rgb(155,155,155)'
-              }} 
-              source={profilePeople} 
+              }}
+              source={profilePeople}
             />
           </View>
           <Text style={{ fontSize: 10, flex: 1 }}>

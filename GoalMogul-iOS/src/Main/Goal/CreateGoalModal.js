@@ -270,7 +270,7 @@ class CreateGoalModal extends Component {
     const initialVals = initializeFromState
       ? { ...goalToFormAdaptor(goal) }
       : { ...defaulVals };
-
+    // console.log('initial values are: ', initialVals);
     this.props.initialize({
       ...initialVals
     });
@@ -299,7 +299,7 @@ class CreateGoalModal extends Component {
    */
   handleCreate = values => {
     const errors = validate(this.props.formVals.values);
-    console.log('values are: ', this.props.formVals.values);
+    console.log(`${DEBUG_KEY}: raw goal values are: `, this.props.formVals.values);
     if (!(Object.keys(errors).length === 0 && errors.constructor === Object)) {
       // throw new SubmissionError(errors);
       return Alert.alert('Error', 'You have incomplete fields.');
@@ -469,6 +469,8 @@ class CreateGoalModal extends Component {
           style={styles.goalInputStyle}
           placeholder='What are you trying to achieve?'
           autoCorrect
+          multiline={false}
+          numberOfLines={1}
         />
       </View>
     );
@@ -481,7 +483,7 @@ class CreateGoalModal extends Component {
     data,
     keyword
   }) => {
-    console.log(`${DEBUG_KEY}: loading: ${loading}, data: ${data}, keyword: ${keyword}`);
+    // console.log(`${DEBUG_KEY}: loading: ${loading}, data: ${data}, keyword: ${keyword}`);
     const button = fields.length > 0 ?
       <Button text='remove description' source={cancel} onPress={() => fields.remove(0)} />
       :

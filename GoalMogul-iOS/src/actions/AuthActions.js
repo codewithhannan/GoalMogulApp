@@ -18,6 +18,7 @@ import {
 } from '../reducers/User';
 
 import { auth as Auth } from '../redux/modules/auth/Auth';
+import { tutorial as Tutorial } from '../redux/modules/auth/Tutorial';
 
 import {
   refreshFeed,
@@ -67,7 +68,7 @@ export const loginUser = ({ username, password }) => {
     });
     const message = await API
       .post('pub/user/authenticate/', { ...data }, undefined)
-      .then((res) => {
+      .then(async (res) => {
         // console.log('login with message: ', res);
         // User Login Successfully
         if (res.token) {
@@ -83,7 +84,14 @@ export const loginUser = ({ username, password }) => {
           fetchUserProfile(res.token, res.userId, dispatch);
           refreshFeed()(dispatch, getState);
           refreshGoals()(dispatch, getState);
-          Actions.mainTabs();
+          const hasTutorialShown = await Tutorial.getTutorialShown(res.userId);
+          // User has watched the tutorial
+          if (hasTutorialShown) {
+            Actions.mainTabs();
+            return;
+          }
+          // Show tutorial
+          Actions.tutorial();
         } else {
           // User login fail
           return res.message;

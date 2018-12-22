@@ -113,6 +113,9 @@ export const refreshGoals = () => (dispatch, getState) => {
   loadGoals(0, limit, token, { priorities, categories, sortBy }, (data) => {
     console.log(`${DEBUG_KEY}: refreshed goals with length: ${data.length}`);
     // console.log(`${DEBUG_KEY}: refreshed goals are: `, data);
+    // data.forEach((d) => {
+    //   console.log(`${DEBUG_KEY}: item: ${d.title} created: `, d);
+    // });
     dispatch({
       type: HOME_REFRESH_GOAL_DONE,
       payload: {
@@ -131,7 +134,7 @@ export const refreshGoals = () => (dispatch, getState) => {
 };
 
 // Load more goal for mastermind tab
-export const loadMoreGoals = () => (dispatch, getState) => {
+export const loadMoreGoals = (callback) => (dispatch, getState) => {
   const { token } = getState().user;
   const { skip, limit, filter, hasNextPage, refreshing, loadingMore } = getState().home.mastermind;
   if (hasNextPage === false || refreshing || loadingMore) {
@@ -148,6 +151,9 @@ export const loadMoreGoals = () => (dispatch, getState) => {
   loadGoals(skip, limit, token, { priorities, categories, sortBy }, (data) => {
     console.log(`${DEBUG_KEY}: load more goals with data length: `, data.length);
     // console.log(`${DEBUG_KEY}: load more goals with data: `, data);
+    // data.forEach((d) => {
+    //   console.log(`${DEBUG_KEY}: item: ${d.title} created: `, d.created);
+    // });
     dispatch({
       type: HOME_LOAD_GOAL_DONE,
       payload: {
@@ -160,6 +166,7 @@ export const loadMoreGoals = () => (dispatch, getState) => {
         hasNextPage: !(data === undefined || data.length === 0)
       }
     });
+    if (callback) callback();
   }, () => {
     // TODO: implement for onError
   });

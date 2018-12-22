@@ -17,6 +17,8 @@ import SplashScreen from './SplashScreen';
 // import Login from './Login';
 import LoginPage from './LoginPage';
 
+import Tutorial from './Tutorial/Tutorial';
+
 /* Registration */
 // import RegistrationAccount from './Registration/Account';
 import RegistrationAccount from './Registration/RegistrationAccount';
@@ -124,6 +126,7 @@ class RouterComponent extends Component {
               <Scene key="auth" initial hideNavBar>
                 <Scene key="splash" component={SplashScreen} initial />
                 <Scene key="login" component={LoginPage} />
+                <Scene key="tutorial" component={Tutorial} />
               </Scene>
 
               {/* Registration screen stack*/}

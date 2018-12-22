@@ -70,7 +70,6 @@ const initialLayout = {
 
 const HEADER_HEIGHT = 240; // Need to be calculated in the state later based on content length
 const COLLAPSED_HEIGHT = 30 + Constants.statusBarHeight;
-const SCROLLABLE_HEIGHT = HEADER_HEIGHT - COLLAPSED_HEIGHT;
 const DEBUG_KEY = '[ UI GoalDetailCardV3 ]';
 const TABBAR_HEIGHT = 48.5;
 const COMMENTBOX_HEIGHT = 43;
@@ -84,8 +83,12 @@ class GoalDetailCardV3 extends Component {
       // Following are state for CommentBox
       position: 'absolute',
       commentBoxPadding: new Animated.Value(0),
-      keyboardDidShow: false
+      keyboardDidShow: false,
+      cardHeight: HEADER_HEIGHT
     };
+    this.onContentSizeChange = this.onContentSizeChange.bind(this);
+    this._renderScene = this._renderScene.bind(this);
+    this._renderTabBar = this._renderTabBar.bind(this);
   }
 
   componentDidMount() {
@@ -110,6 +113,15 @@ class GoalDetailCardV3 extends Component {
     this.props.goalDetailSwitchTabV2ByKey('focusTab', undefined, 'comment');
   }
 
+  // Handle on GoalDetailSection content size change to update the height
+  onContentSizeChange(cardHeight) {
+    // console.log('new card height: ', cardHeight);
+    this.setState({
+      ...this.state,
+      cardHeight: cardHeight + 48
+    });
+  }
+
   // Can be replaced by memorized selector
   getFocusedItem(focusType, focusRef) {
     const { goalDetail } = this.props;
@@ -124,6 +136,11 @@ class GoalDetailCardV3 extends Component {
   }
 
   keyboardWillShow = (e) => {
+    const { focusType } = this.props.navigationState;
+
+    // Keyboard listener will fire when goal edition modal is opened
+    if (focusType !== 'comment') return;
+
     if (!this.state.keyboardDidShow) {
       this.handleReplyTo();
     }
@@ -178,12 +195,13 @@ class GoalDetailCardV3 extends Component {
               [{ nativeEvent: { contentOffset: { y: this.state.scroll } } }],
               { useNativeDriver: true }
             )}
-            contentContainerStyle={{ paddingTop: HEADER_HEIGHT + 20, flexGrow: 1 }}
+            contentContainerStyle={{ paddingTop: this.state.cardHeight + 10, flexGrow: 1 }}
             contentOffset={{ y:
-              this.state.scroll._value > SCROLLABLE_HEIGHT
-                ? SCROLLABLE_HEIGHT
+              this.state.scroll._value > (this.state.cardHeight - COLLAPSED_HEIGHT)
+                ? (this.state.cardHeight - COLLAPSED_HEIGHT)
                 : this.state.scroll._value
             }}
+            isSelf={this.props.isSelf}
           />
         );
 
@@ -194,14 +212,15 @@ class GoalDetailCardV3 extends Component {
               [{ nativeEvent: { contentOffset: { y: this.state.scroll } } }],
               { useNativeDriver: true }
             )}
-            contentContainerStyle={{ paddingTop: HEADER_HEIGHT + 30, flexGrow: 1 }}
+            contentContainerStyle={{ paddingTop: this.state.cardHeight + 20, flexGrow: 1 }}
             contentOffset={{ y:
-              this.state.scroll._value > SCROLLABLE_HEIGHT
-                ? SCROLLABLE_HEIGHT
+              this.state.scroll._value > (this.state.cardHeight - COLLAPSED_HEIGHT)
+                ? (this.state.cardHeight - COLLAPSED_HEIGHT)
                 : this.state.scroll._value
             }}
             pageId={this.props.pageId}
             handleReplyTo={() => this.handleReplyTo()}
+            isSelf={this.props.isSelf}
           />
         );
 
@@ -215,8 +234,8 @@ class GoalDetailCardV3 extends Component {
   // })
   _renderTabBar = (props) => {
     const translateY = this.state.scroll.interpolate({
-      inputRange: [0, SCROLLABLE_HEIGHT],
-      outputRange: [0, -SCROLLABLE_HEIGHT],
+      inputRange: [0, (this.state.cardHeight - COLLAPSED_HEIGHT)],
+      outputRange: [0, -(this.state.cardHeight - COLLAPSED_HEIGHT)],
       extrapolate: 'clamp',
     });
 
@@ -224,7 +243,7 @@ class GoalDetailCardV3 extends Component {
 
     return (
       <Animated.View style={[styles.header, { transform: [{ translateY }], zIndex: 2 }]}>
-        <View style={{ height: HEADER_HEIGHT, backgroundColor: 'white' }}>
+        <View style={{ height: this.state.cardHeight, backgroundColor: 'white' }}>
           <GoalDetailSection
             item={goalDetail}
             onSuggestion={() => {
@@ -232,6 +251,7 @@ class GoalDetailCardV3 extends Component {
               this.props.goalDetailSwitchTabV2ByKey('focusTab', undefined, 'comment');
             }}
             isSelf={this.props.isSelf}
+            onContentSizeChange={this.onContentSizeChange}
           />
           <View style={{ borderBottomWidth: 0.5, borderColor: '#e5e5e5' }} />
           {this.renderFocusedItem()}
