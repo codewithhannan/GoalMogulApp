@@ -131,7 +131,7 @@ export const refreshGoals = () => (dispatch, getState) => {
 };
 
 // Load more goal for mastermind tab
-export const loadMoreGoals = () => (dispatch, getState) => {
+export const loadMoreGoals = (callback) => (dispatch, getState) => {
   const { token } = getState().user;
   const { skip, limit, filter, hasNextPage, refreshing, loadingMore } = getState().home.mastermind;
   if (hasNextPage === false || refreshing || loadingMore) {
@@ -160,6 +160,7 @@ export const loadMoreGoals = () => (dispatch, getState) => {
         hasNextPage: !(data === undefined || data.length === 0)
       }
     });
+    if (callback) callback();
   }, () => {
     // TODO: implement for onError
   });
