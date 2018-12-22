@@ -102,7 +102,7 @@ class ViewableSettingMenu extends Component {
             source={shareIcon}
           />
           <Text style={{ fontSize: 10, marginLeft: 3, marginRight: 2, color }}>
-            Share to 'Goals' Feed
+            Share to Goals feed
           </Text>
           <TouchableOpacity
             activeOpacity={0.85}
