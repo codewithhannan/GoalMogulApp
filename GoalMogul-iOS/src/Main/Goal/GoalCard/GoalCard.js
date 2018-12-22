@@ -223,8 +223,8 @@ class GoalCard extends React.PureComponent {
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text
-              style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 15 }}
-              numberOfLines={3}
+              style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 18 }}
+              numberOfLines={2}
               ellipsizeMode='tail'
             >
               {title}

@@ -28,7 +28,7 @@ import Host from './Host';
 
 const DEBUG_KEY = '[ UI Tutorial ]';
 const DURATION = 500;
-const PAUSE = 3200;
+const PAUSE = 6000;
 /**
  * This tutorial will show the animation with the sequence
  * 1. Challenge
