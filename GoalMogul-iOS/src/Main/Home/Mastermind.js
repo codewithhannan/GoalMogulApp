@@ -37,6 +37,7 @@ import {
 } from '../../redux/modules/home/mastermind/actions';
 
 import { IPHONE_MODELS } from '../../Utils/Constants';
+import { APP_DEEP_BLUE } from '../../styles';
 
 const ITEM_HEIGHT = Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
@@ -284,7 +285,7 @@ const styles = {
     justifyContent: 'center',
     zIndex: 3,
     // backgroundColor: '#17B3EC',
-    backgroundColor: '#4096c6',
+    backgroundColor: APP_DEEP_BLUE,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,

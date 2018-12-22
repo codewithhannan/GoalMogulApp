@@ -469,6 +469,8 @@ class CreateGoalModal extends Component {
           style={styles.goalInputStyle}
           placeholder='What are you trying to achieve?'
           autoCorrect
+          multiline={false}
+          numberOfLines={1}
         />
       </View>
     );
