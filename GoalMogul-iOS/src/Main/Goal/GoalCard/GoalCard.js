@@ -34,6 +34,10 @@ import {
   chooseShareDest
 } from '../../../redux/modules/feed/post/ShareActions';
 
+import {
+  deleteGoal,
+} from '../../../actions';
+
 // Components
 import Headline from '../Common/Headline';
 import Timestamp from '../Common/Timestamp';
@@ -219,6 +223,7 @@ class GoalCard extends React.PureComponent {
             caretOnPress={() => this.props.createReport(_id, 'goal', 'Goal')}
             user={owner}
             isSelf={owner._id === this.props.userId}
+            caretOnDelete={() => this.props.deleteGoal(_id)}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
@@ -422,6 +427,7 @@ export default connect(
     createReport,
     likeGoal,
     unLikeGoal,
-    chooseShareDest
+    chooseShareDest,
+    deleteGoal
   }
 )(GoalCard);

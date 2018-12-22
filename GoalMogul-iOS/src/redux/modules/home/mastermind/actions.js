@@ -151,9 +151,9 @@ export const loadMoreGoals = (callback) => (dispatch, getState) => {
   loadGoals(skip, limit, token, { priorities, categories, sortBy }, (data) => {
     console.log(`${DEBUG_KEY}: load more goals with data length: `, data.length);
     // console.log(`${DEBUG_KEY}: load more goals with data: `, data);
-    data.forEach((d) => {
-      console.log(`${DEBUG_KEY}: item: ${d.title} created: `, d.created);
-    });
+    // data.forEach((d) => {
+    //   console.log(`${DEBUG_KEY}: item: ${d.title} created: `, d.created);
+    // });
     dispatch({
       type: HOME_LOAD_GOAL_DONE,
       payload: {

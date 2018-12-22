@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   View,
   Text,
-  Alert
+  Alert,
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 import timeago from 'timeago.js';
@@ -33,10 +34,9 @@ import {
   markGoalAsComplete
 } from '../../../redux/modules/goal/GoalDetailActions';
 
-import { deleteGoal } from '../../../actions';
+import { deleteGoal, openProfile } from '../../../actions';
 
 // Assets
-import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
 import LoveIcon from '../../../asset/utils/love.png';
 import BulbIcon from '../../../asset/utils/bulb.png';
 import ShareIcon from '../../../asset/utils/forward.png';
@@ -54,13 +54,28 @@ import Timestamp from '../Common/Timestamp';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import ProfileImage from '../../Common/ProfileImage';
 import IndividualActionButton from '../Common/IndividualActionButton';
+import RichText from '../../Common/Text/RichText';
+
+import { APP_BLUE } from '../../../styles';
 
 // Constants
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 
-class GoalDetailSection extends Component {
+class GoalDetailSection extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      numberOfLines: 2,
+      seeMore: false
+    };
+  }
+
+  handleOnLayout = (event) => {
+    const { height } = event.nativeEvent.layout;
+    this.props.onContentSizeChange(height);
+  }
 
   handleShareOnClick = () => {
     const { item } = this.props;
@@ -94,13 +109,48 @@ class GoalDetailSection extends Component {
     return shareToActionSheet();
   };
 
+  handleSeeMore = () => {
+    if (this.state.seeMore) {
+      // See less
+      this.setState({
+        ...this.state,
+        numberOfLines: 2,
+        seeMore: false
+      });
+      return;
+    }
+    // See more
+    this.setState({
+      ...this.state,
+      numberOfLines: undefined,
+      seeMore: true
+    });
+  }
+
+  renderSeeMore(text) {
+    if (text.length > 60) {
+      return (
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={styles.seeMoreTextContainerStyle}
+          onPress={this.handleSeeMore}
+        >
+          <Text style={styles.seeMoreTextStyle}>
+            {this.state.seeMore && text.length > 100 ? 'See less' : 'See more'}
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+    return '';
+  }
+
   // user basic information
   renderUserDetail(item) {
-    const { _id, created, title, owner, category } = item;
+    const { _id, created, title, owner, category, details } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
-    // console.log('item is: ', item);
 
+    const { text, tags } = details || { text: '', tags: [] };
     return (
       <View style={{ flexDirection: 'row' }}>
         <ProfileImage
@@ -122,16 +172,28 @@ class GoalDetailSection extends Component {
             user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
-          <View style={{ flexDirection: 'row', marginTop: 10 }}>
+          <View style={{ flexDirection: 'row', marginTop: 5 }}>
             <Text
-              style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
+              style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 15 }}
               numberOfLines={3}
               ellipsizeMode='tail'
             >
               {title}
             </Text>
           </View>
-
+          <RichText
+            contentText={text}
+            contentTags={tags}
+            textContainerStyle={{ flexDirection: 'row' }}
+            textStyle={{ flex: 1, flexWrap: 'wrap', color: '#333', fontSize: 12, marginTop: 5 }}
+            multiline
+            onUserTagPressed={(user) => {
+              console.log(`${DEBUG_KEY}: user tag press for user: `, user);
+              this.props.openProfile(user);
+            }}
+            numberOfLines={this.state.numberOfLines}
+          />
+          {this.renderSeeMore(text)}
         </View>
       </View>
     );
@@ -212,7 +274,7 @@ class GoalDetailSection extends Component {
     // if (this.props.isSelf) {
     //   return this.renderSelfActionButtons(item);
     // }
-    console.log(`${DEBUG_KEY}: item is: `, item);
+    // console.log(`${DEBUG_KEY}: item is: `, item);
     const likeCount = item.likeCount ? item.likeCount : 0;
     const commentCount = item.commentCount ? item.commentCount : 0;
     const shareCount = item.shareCount ? item.shareCount : 0;
@@ -273,9 +335,9 @@ class GoalDetailSection extends Component {
     if (!item || _.isEmpty(item)) return '';
 
     return (
-      <View>
+      <View onLayout={this.handleOnLayout}>
         <View style={{ ...styles.containerStyle }}>
-          <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
+          <View style={{ marginTop: 12, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
             {this.renderUserDetail(item)}
             {this.renderCardContent(item)}
           </View>
@@ -314,6 +376,16 @@ const styles = {
     alignSelf: 'flex-start',
     backgroundColor: 'white'
   },
+  seeMoreTextContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginTop: 2
+  },
+  seeMoreTextStyle: {
+    fontSize: 12,
+    color: APP_BLUE
+  }
 };
 
 const mapStateToProps = state => {
@@ -334,6 +406,7 @@ export default connect(
     editGoal,
     shareGoalToMastermind,
     markGoalAsComplete,
-    deleteGoal
+    deleteGoal,
+    openProfile
   }
 )(GoalDetailSection);

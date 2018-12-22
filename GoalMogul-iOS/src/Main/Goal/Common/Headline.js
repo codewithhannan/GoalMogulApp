@@ -204,7 +204,10 @@ export const MenuFactory =
           renderItem={({ item }) => {
             const { iconSource, option } = item;
             return (
-              <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TouchableOpacity
+                style={{ flexDirection: 'row', alignItems: 'center' }}
+                onPress={() => callback(option)}
+              >
                 {
                   iconSource
                     ? (
