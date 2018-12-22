@@ -7,6 +7,8 @@ import {
   Animated
 } from 'react-native';
 import { Font } from 'expo';
+import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 
 // Styles
 import { APP_BLUE_BRIGHT } from '../styles';
@@ -15,6 +17,7 @@ import { APP_BLUE_BRIGHT } from '../styles';
 import LOGO from '../../assets/logo.png';
 
 // Actions
+import { tutorial as TutorialAction } from '../redux/modules/auth/Tutorial';
 
 // Components
 import ProgressBar from './ProgressBar';
@@ -23,6 +26,7 @@ import Learn from './Learn';
 import Tribe from './Tribe';
 import Host from './Host';
 
+const DEBUG_KEY = '[ UI Tutorial ]';
 const DURATION = 500;
 const PAUSE = 3200;
 /**
@@ -107,7 +111,17 @@ class Tutorial extends React.Component {
   }
 
   handleContinue = () => {
-
+    const { userId } = this.props;
+    const onSuccess = (change) => {
+      console.log(`${DEBUG_KEY}: setting tutorial success for user: ${userId},` +
+        `user prev tutorial status: ${change}`);
+    };
+    const onError = (err) => {
+      console.log(`${DEBUG_KEY}: error setting user tutorial shown: `, err);
+      return;
+    };
+    TutorialAction.setTutorialShown(userId, onSuccess, onError);
+    Actions.mainTabs();
   }
 
   handleReplay = () => {
@@ -215,4 +229,16 @@ const styles = StyleSheet.create({
   /* Header related styles end */
 });
 
-export default Tutorial;
+const mapStateToProps = state => {
+  const { userId } = state.user;
+  return {
+    userId
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  {
+
+  }
+)(Tutorial);
