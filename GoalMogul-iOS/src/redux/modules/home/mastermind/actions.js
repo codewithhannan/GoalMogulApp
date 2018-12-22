@@ -113,6 +113,9 @@ export const refreshGoals = () => (dispatch, getState) => {
   loadGoals(0, limit, token, { priorities, categories, sortBy }, (data) => {
     console.log(`${DEBUG_KEY}: refreshed goals with length: ${data.length}`);
     // console.log(`${DEBUG_KEY}: refreshed goals are: `, data);
+    // data.forEach((d) => {
+    //   console.log(`${DEBUG_KEY}: item: ${d.title} created: `, d);
+    // });
     dispatch({
       type: HOME_REFRESH_GOAL_DONE,
       payload: {
@@ -148,6 +151,9 @@ export const loadMoreGoals = (callback) => (dispatch, getState) => {
   loadGoals(skip, limit, token, { priorities, categories, sortBy }, (data) => {
     console.log(`${DEBUG_KEY}: load more goals with data length: `, data.length);
     // console.log(`${DEBUG_KEY}: load more goals with data: `, data);
+    data.forEach((d) => {
+      console.log(`${DEBUG_KEY}: item: ${d.title} created: `, d.created);
+    });
     dispatch({
       type: HOME_LOAD_GOAL_DONE,
       payload: {

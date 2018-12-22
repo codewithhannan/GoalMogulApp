@@ -128,6 +128,7 @@ class SectionCardV2 extends Component {
   }
 
   renderCheckBox(isCompleted, type) {
+    // console.log(`${DEBUG_KEY}: rendering checkbox: isSelf ${this.props.isSelf}, type: ${type}`);
     if (this.props.isSelf && type !== 'comment') {
       return this.renderSelfCheckBox(isCompleted);
     }

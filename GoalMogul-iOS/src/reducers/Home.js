@@ -104,7 +104,8 @@ export default (state = INITIAL_STATE, action) => {
         newState = _.set(newState, `${type}.skip`, skip);
       }
       newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
-      const sortedData = data.sort((a, b) => new Date(b.created) - new Date(a.created));
+      const sortedData = data.sort((a, b) =>
+        new Date(b.feedInfo.publishDate) - new Date(b.feedInfo.publishDate));
       return _.set(newState, `${type}.data`, sortedData);
     }
 
@@ -126,7 +127,7 @@ export default (state = INITIAL_STATE, action) => {
       newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
       const oldData = _.get(newState, `${type}.data`);
       const newData = arrayUnique(oldData.concat(data))
-        .sort((a, b) => new Date(b.created) - new Date(a.created));
+        .sort((a, b) => new Date(b.feedInfo.publishDate) - new Date(b.feedInfo.publishDate));
       return _.set(newState, `${type}.data`, newData);
     }
 

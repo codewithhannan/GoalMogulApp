@@ -184,6 +184,7 @@ class GoalDetailCardV3 extends Component {
                 ? SCROLLABLE_HEIGHT
                 : this.state.scroll._value
             }}
+            isSelf={this.props.isSelf}
           />
         );
 
@@ -202,6 +203,7 @@ class GoalDetailCardV3 extends Component {
             }}
             pageId={this.props.pageId}
             handleReplyTo={() => this.handleReplyTo()}
+            isSelf={this.props.isSelf}
           />
         );
 
