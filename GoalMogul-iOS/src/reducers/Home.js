@@ -10,6 +10,10 @@ import {
   UNLIKE_GOAL
 } from '../redux/modules/like/LikeReducers';
 
+import {
+  PROFILE_GOAL_DELETE_SUCCESS
+} from './Profile';
+
 export const HOME_MASTERMIND_OPEN_CREATE_OVERLAY = 'home_mastermind_open_create_overlay';
 export const HOME_CLOSE_CREATE_OVERLAY = 'home_mastermind_close_create_overlay';
 // Goal related constants
@@ -104,8 +108,16 @@ export default (state = INITIAL_STATE, action) => {
         newState = _.set(newState, `${type}.skip`, skip);
       }
       newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
-      const sortedData = data.sort((a, b) =>
-        new Date(b.feedInfo.publishDate) - new Date(b.feedInfo.publishDate));
+
+      let sortedData = [];
+      if (type === 'mastermind') {
+        sortedData = data.sort((a, b) =>
+          new Date(b.feedInfo.publishDate) - new Date(b.feedInfo.publishDate));
+      } else {
+        sortedData = data.sort((a, b) =>
+         new Date(b.created) - new Date(b.created));
+      }
+
       return _.set(newState, `${type}.data`, sortedData);
     }
 
@@ -126,14 +138,23 @@ export default (state = INITIAL_STATE, action) => {
       }
       newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
       const oldData = _.get(newState, `${type}.data`);
-      const newData = arrayUnique(oldData.concat(data))
-        .sort((a, b) => new Date(b.feedInfo.publishDate) - new Date(b.feedInfo.publishDate));
-      return _.set(newState, `${type}.data`, newData);
+      const newData = arrayUnique(oldData.concat(data));
+
+      let sortedData = [];
+      if (type === 'mastermind') {
+        sortedData = newData.sort((a, b) =>
+          new Date(b.feedInfo.publishDate) - new Date(b.feedInfo.publishDate));
+      } else {
+        sortedData = newData.sort((a, b) =>
+         new Date(b.created) - new Date(b.created));
+      }
+
+      return _.set(newState, `${type}.data`, sortedData);
     }
 
     case HOME_SET_GOAL_INDEX: {
       const { type, index } = action.payload;
-      let newState = _.cloneDeep(state);
+      const newState = _.cloneDeep(state);
       return _.set(newState, `${type}.currentIndex`, index);
     }
 
@@ -147,6 +168,17 @@ export default (state = INITIAL_STATE, action) => {
         return _.set(newState, `${tab}.filter.priorities`, newPriorities);
       }
       return _.set(newState, `${tab}.filter.${type}`, value);
+    }
+
+    // When user deletes his/her own goals from Goals Feed, remove the corresponding
+    // Item from the goal feed list
+    case PROFILE_GOAL_DELETE_SUCCESS: {
+      const goalId = action.payload;
+      const newState = _.cloneDeep(state);
+      const oldData = _.get(newState, 'mastermind.data');
+      // Filter out the goal
+      const newData = oldData.filter(({ _id }) => _id !== goalId);
+      return _.set(newState, 'mastermind.data', newData);
     }
 
     // Update like
