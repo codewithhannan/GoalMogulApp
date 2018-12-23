@@ -100,6 +100,10 @@ class CreateGoalModal extends Component {
     this.initializeForm();
   }
 
+  componentWillUnmount() {
+    console.log(`${DEBUG_KEY}: unmounting CreateGoalModal`);
+  }
+
   /* Tag related functions */
   onTaggingSuggestionTap(item, hidePanel, cursorPosition) {
     hidePanel();
@@ -314,6 +318,7 @@ class CreateGoalModal extends Component {
       this.props.user._id,
       initializeFromState,
       () => {
+        console.log(`${DEBUG_KEY}: poping the modal`);
         Actions.pop();
       },
       goalId
@@ -485,7 +490,14 @@ class CreateGoalModal extends Component {
   }) => {
     // console.log(`${DEBUG_KEY}: loading: ${loading}, data: ${data}, keyword: ${keyword}`);
     const button = fields.length > 0 ?
-      <Button text='remove description' source={cancel} onPress={() => fields.remove(0)} />
+      (<Button
+        text='remove description'
+        source={cancel}
+        onPress={() => {
+          fields.remove(0);
+          this.prop.change('tags', []);
+        }}
+      />)
       :
       <Button text='detailed description' source={plus} onPress={() => fields.push({})} />;
 
