@@ -64,7 +64,6 @@ export const submitGoal = (values, userId, isEdit, callback, goalId) => (dispatc
     //   'Success',
     //   'You have successfully created a goal.'
     // );
-    callback();
     openProfile(userId, 'goals')(dispatch, getState);
   };
 
@@ -80,8 +79,9 @@ export const submitGoal = (values, userId, isEdit, callback, goalId) => (dispatc
     .then((res) => {
       if (res.status === 200 || (res.data && !_.isEmpty(res.data))) {
         console.log(`${DEBUG_KEY}: creating goal success`);
-        console.log(`${DEBUG_KEY}: result is`, res);
+        // console.log(`${DEBUG_KEY}: result is`, res);
         // TODO: dispatch changes to feed and clear CreateGoalForm state
+        callback();
         onSuccess();
         // dispatch(reset('createGoalModal'));
         return;
