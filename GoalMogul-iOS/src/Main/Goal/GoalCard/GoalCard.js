@@ -97,6 +97,35 @@ class GoalCard extends React.PureComponent {
         ],
       }
     };
+    this.updateRoutes = this.updateRoutes.bind(this);
+  }
+
+  componentDidMount() {
+    const { item } = this.props;
+    this.updateRoutes(item);
+  }
+
+  updateRoutes(item) {
+    if (item && !_.isEmpty(item)) {
+      const { steps, needs } = item;
+      if (_.isEmpty(steps) && _.isEmpty(needs)) return;
+      let newRoutes = [];
+      let newNavigationState = {
+        index: 0,
+      };
+      if (steps && steps.length > 0 && !_.isEmpty(steps)) {
+        newRoutes = [...newRoutes, { key: 'steps', title: 'Steps' }];
+      }
+
+      if (needs && needs.length > 0 && !_.isEmpty(needs)) {
+        newRoutes = [...newRoutes, { key: 'needs', title: 'Needs' }];
+      }
+      newNavigationState = _.set(newNavigationState, 'routes', newRoutes);
+      this.setState({
+        ...this.state,
+        navigationState: { ...newNavigationState }
+      });
+    }
   }
 
   handleShareOnClick = () => {

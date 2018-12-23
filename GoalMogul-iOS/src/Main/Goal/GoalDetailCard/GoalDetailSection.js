@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import timeago from 'timeago.js';
 import _ from 'lodash';
 import R from 'ramda';
+import { Actions } from 'react-native-router-flux';
 
 // Actions
 import {
@@ -164,7 +165,10 @@ class GoalDetailSection extends React.PureComponent {
             name={owner.name || ''}
             category={category}
             isSelf={this.props.userId === owner._id}
-            caretOnDelete={() => this.props.deleteGoal(_id)}
+            caretOnDelete={() => {
+              this.props.deleteGoal(_id);
+              Actions.pop();
+            }}
             caretOnPress={() => {
               this.props.createReport(_id, 'detail', 'Goal');
             }}

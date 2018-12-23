@@ -17,7 +17,7 @@ const renderText = (item) => {
     : '';
 
   const goalHeaderText = (
-    <Text style={styles.textStyle}>shared a goal with you</Text>
+    <Text style={styles.textStyle}>shared a goal</Text>
   );
 
   const needHeaderText = (
