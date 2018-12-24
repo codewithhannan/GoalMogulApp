@@ -30,6 +30,7 @@ import {
   openSuggestionModal,
   removeSuggestion,
   createCommentFromSuggestion,
+  createCommentForSuggestion,
   resetCommentType
 } from '../../../redux/modules/feed/comment/CommentActions';
 
@@ -100,6 +101,22 @@ class GoalDetailCardV3 extends Component {
       'keyboardWillShow', this.keyboardWillShow);
     this.keyboardWillHideListener = Keyboard.addListener(
       'keyboardWillHide', this.keyboardWillHide);
+
+    const { initial, goalDetail } = this.props;
+    if (initial && !_.isEmpty(initial)) {
+      const { focusType, focusRef } = initial;
+      const newCommentParams = {
+        commentDetail: {
+          parentType: 'Goal',
+          parentRef: goalDetail._id, // Goal ref
+          commentType: 'Suggestion'
+        },
+        suggestionForRef: focusRef, // Need or Step ref
+        suggestionFor: focusType === 'need' ? 'Need' : 'Step'
+      };
+      this.props.goalDetailSwitchTabV2ByKey('focusTab', focusRef, focusType);
+      this.props.createCommentForSuggestion(newCommentParams);
+    }
   }
 
   componentWillUnmount() {
@@ -149,10 +166,11 @@ class GoalDetailCardV3 extends Component {
   }
 
   keyboardWillShow = (e) => {
+    // console.log('keyboard will show');
     const { focusType } = this.props.navigationState;
 
     // Keyboard listener will fire when goal edition modal is opened
-    if (focusType !== 'comment') return;
+    if (focusType === undefined) return;
 
     if (!this.state.keyboardDidShow) {
       this.handleReplyTo();
@@ -168,6 +186,7 @@ class GoalDetailCardV3 extends Component {
   }
 
   keyboardWillHide = () => {
+    // console.log('keyboard will hide');
     Animated.timing(this.state.commentBoxPadding, {
       toValue: 0,
       duration: 210
@@ -238,6 +257,7 @@ class GoalDetailCardV3 extends Component {
             pageId={this.props.pageId}
             handleReplyTo={() => this.handleReplyTo()}
             isSelf={this.props.isSelf}
+            initial={this.props.initial}
           />
         );
 
@@ -363,6 +383,7 @@ class GoalDetailCardV3 extends Component {
           hasSuggestion
           onSubmitEditing={this.handleOnCommentSubmitEditing}
           resetCommentType={resetCommentTypeFunc}
+          initial={this.props.initial}
         />
       </Animated.View>
     );
@@ -526,6 +547,7 @@ export default connect(
     goalDetailSwitchTabV2ByKey,
     removeSuggestion,
     createCommentFromSuggestion,
-    resetCommentType
+    resetCommentType,
+    createCommentForSuggestion
   }
 )(GoalDetailCardV3);

@@ -59,7 +59,7 @@ class FocusTab extends React.PureComponent {
       keyboardDidShow: false
     };
   }
-
+  
   // Refresh goal detail and comments all together
   handleRefresh = () => {
     console.log(`${DEBUG_KEY}: user tries to refresh.`);

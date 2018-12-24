@@ -180,7 +180,8 @@ class GoalCard extends React.PureComponent {
     needs: () => (
       <NeedTab
         item={this.props.item.needs}
-        onPress={() => this.props.onPress(this.props.item)}
+        onPress={(need) => this.props.onPress(this.props.item, need)}
+        onCardPress={(need) => this.props.onSectionCardPress(this.props.item, need)}
         goalRef={this.props.item}
         itemCount={ITEM_COUNT}
       />
@@ -188,7 +189,8 @@ class GoalCard extends React.PureComponent {
     steps: () => (
       <StepTab
         item={this.props.item.steps}
-        onPress={() => this.props.onPress(this.props.item)}
+        onPress={(step) => this.props.onPress(this.props.item, step)}
+        onCardPress={(step) => this.props.onSectionCardPress(this.props.item, step)}
         goalRef={this.props.item}
         itemCount={ITEM_COUNT}
       />

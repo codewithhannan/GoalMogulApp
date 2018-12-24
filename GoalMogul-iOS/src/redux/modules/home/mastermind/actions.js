@@ -39,7 +39,7 @@ export const closeCreateOverlay = (tab) => ({
 });
 
 // Open goal detail
-export const openGoalDetail = goal => (dispatch, getState) => {
+export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   const { _id } = goal;
   dispatch({
@@ -53,7 +53,7 @@ export const openGoalDetail = goal => (dispatch, getState) => {
   refreshGoalDetailById(_id)(dispatch, getState);
   refreshComments('Goal', _id, tab, undefined)(dispatch, getState);
   // TODO: create new stack using Actions.create(React.Element) if needed
-  Actions.goal();
+  Actions.push('goal', { initial: { ...initialProps } });
 };
 
 // set currentIndex to the prev one
