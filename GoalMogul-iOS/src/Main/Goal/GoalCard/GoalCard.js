@@ -253,6 +253,7 @@ class GoalCard extends React.PureComponent {
             user={owner}
             isSelf={owner._id === this.props.userId}
             caretOnDelete={() => this.props.deleteGoal(_id)}
+            deleteOnly
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
