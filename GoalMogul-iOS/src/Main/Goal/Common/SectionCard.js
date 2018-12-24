@@ -65,13 +65,14 @@ class SectionCard extends Component {
     return shareToActionSheet();
   };
 
-  renderActionIcons() {
+  renderActionIcons(item, type) {
     const suggestionButton = this.props.isSelf
       ? ''
       : (
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity
+          activeOpacity={0.85}
           style={styles.iconContainerStyle}
-          onPress={() => this.props.onPress()}
+          onPress={() => this.props.onPress({ ...item, type })}
         >
           <Image style={styles.iconStyle} source={bulb} />
         </TouchableOpacity>
@@ -81,7 +82,8 @@ class SectionCard extends Component {
     return (
       <View style={{ flex: flexSize, flexDirection: 'row' }}>
         {suggestionButton}
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity
+          activeOpacity={0.85}
           style={styles.iconContainerStyle}
           onPress={() => this.handleShareOnClick()}
         >
@@ -104,7 +106,8 @@ class SectionCard extends Component {
       : { ...styles.checkIconContainerStyle, backgroundColor: '#efefef' };
 
     return (
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity
+        activeOpacity={0.85}
         style={iconContainerStyle}
         onPress={onPress}
       >
@@ -149,10 +152,16 @@ class SectionCard extends Component {
     const { description, isCompleted } = itemToRender;
     const sectionText = description === undefined ? 'No content' : description;
 
+    const onCardPress = this.props.onCardPress
+      ? (i) => this.props.onCardPress({ ...i, type })
+      : () => console.log('[ UI SectionCard ]: card on press without function');
+
     return (
-      <View 
-        style={{ 
-          ...styles.sectionContainerStyle, 
+      <TouchableOpacity
+        activeOpacity={0.85}
+        onPress={() => onCardPress(item)}
+        style={{
+          ...styles.sectionContainerStyle,
           backgroundColor: isCompleted ? '#fcfcfc' : 'white',
           opacity: isCompleted ? 0.8 : 1
         }}
@@ -177,9 +186,9 @@ class SectionCard extends Component {
               {sectionText}
             </Text>
           </View>
-          {this.renderActionIcons()}
+          {this.renderActionIcons(item, type)}
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 }

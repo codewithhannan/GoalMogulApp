@@ -21,7 +21,12 @@ import {
 /* Styles */
 import { BACKGROUND_COLOR } from '../../styles';
 
+const DEBUG_KEY = '[ UI Profile ]';
+
 class Profile extends Component {
+  componentDidMount() {
+    console.log(`${DEBUG_KEY}: mounting Profile`);
+  }
 
   _handleIndexChange = (index) => {
     this.props.selectProfileTab(index);

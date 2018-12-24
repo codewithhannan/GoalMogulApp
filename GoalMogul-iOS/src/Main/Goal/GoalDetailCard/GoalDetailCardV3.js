@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   View,
-  KeyboardAvoidingView,
   Animated,
   Dimensions,
   StyleSheet,
@@ -31,6 +30,7 @@ import {
   openSuggestionModal,
   removeSuggestion,
   createCommentFromSuggestion,
+  createCommentForSuggestion,
   resetCommentType
 } from '../../../redux/modules/feed/comment/CommentActions';
 
@@ -84,11 +84,14 @@ class GoalDetailCardV3 extends Component {
       position: 'absolute',
       commentBoxPadding: new Animated.Value(0),
       keyboardDidShow: false,
-      cardHeight: HEADER_HEIGHT
+      cardHeight: HEADER_HEIGHT,
+      centralTabContentOffset: 0
     };
     this.onContentSizeChange = this.onContentSizeChange.bind(this);
     this._renderScene = this._renderScene.bind(this);
     this._renderTabBar = this._renderTabBar.bind(this);
+    this._handleIndexChange = this._handleIndexChange.bind(this);
+    this.onViewCommentPress = this.onViewCommentPress.bind(this);
   }
 
   componentDidMount() {
@@ -98,6 +101,22 @@ class GoalDetailCardV3 extends Component {
       'keyboardWillShow', this.keyboardWillShow);
     this.keyboardWillHideListener = Keyboard.addListener(
       'keyboardWillHide', this.keyboardWillHide);
+
+    const { initial, goalDetail } = this.props;
+    if (initial && !_.isEmpty(initial)) {
+      const { focusType, focusRef } = initial;
+      const newCommentParams = {
+        commentDetail: {
+          parentType: 'Goal',
+          parentRef: goalDetail._id, // Goal ref
+          commentType: 'Suggestion'
+        },
+        suggestionForRef: focusRef, // Need or Step ref
+        suggestionFor: focusType === 'need' ? 'Need' : 'Step'
+      };
+      this.props.goalDetailSwitchTabV2ByKey('focusTab', focusRef, focusType);
+      this.props.createCommentForSuggestion(newCommentParams);
+    }
   }
 
   componentWillUnmount() {
@@ -110,7 +129,18 @@ class GoalDetailCardV3 extends Component {
   // Switch tab to FocusTab and display all the comments
   onViewCommentPress = () => {
     console.log(`${DEBUG_KEY}: User opens all comments.`);
+
+    this.setState({
+      ...this.state,
+      centralTabContentOffset: this.state.scroll._value
+    });
+
     this.props.goalDetailSwitchTabV2ByKey('focusTab', undefined, 'comment');
+    Animated.timing(this.state.scroll, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true
+    }).start();
   }
 
   // Handle on GoalDetailSection content size change to update the height
@@ -136,10 +166,11 @@ class GoalDetailCardV3 extends Component {
   }
 
   keyboardWillShow = (e) => {
+    // console.log('keyboard will show');
     const { focusType } = this.props.navigationState;
 
     // Keyboard listener will fire when goal edition modal is opened
-    if (focusType !== 'comment') return;
+    if (focusType === undefined) return;
 
     if (!this.state.keyboardDidShow) {
       this.handleReplyTo();
@@ -155,6 +186,7 @@ class GoalDetailCardV3 extends Component {
   }
 
   keyboardWillHide = () => {
+    // console.log('keyboard will hide');
     Animated.timing(this.state.commentBoxPadding, {
       toValue: 0,
       duration: 210
@@ -180,10 +212,23 @@ class GoalDetailCardV3 extends Component {
     if (navigationState.routes[index].key === 'centralTab') {
       this.props.removeSuggestion(pageId);
       this.props.goalDetailSwitchTabV2ByKey('centralTab', undefined, undefined);
+      Animated.timing(this.state.scroll, {
+        toValue: this.state.centralTabContentOffset,
+        duration: 200,
+        useNativeDriver: true
+      }).start();
       return;
     }
 
+    this.setState({
+      ...this.state,
+      centralTabContentOffset: this.state.scroll._value
+    });
     this.props.goalDetailSwitchTabV2(index);
+    Animated.timing(this.state.scroll, {
+      toValue: new Animated.Value(0),
+      duration: 200
+    });
   };
 
   _renderScene = ({ route }) => {
@@ -196,11 +241,7 @@ class GoalDetailCardV3 extends Component {
               { useNativeDriver: true }
             )}
             contentContainerStyle={{ paddingTop: this.state.cardHeight + 10, flexGrow: 1 }}
-            contentOffset={{ y:
-              this.state.scroll._value > (this.state.cardHeight - COLLAPSED_HEIGHT)
-                ? (this.state.cardHeight - COLLAPSED_HEIGHT)
-                : this.state.scroll._value
-            }}
+            contentOffset={{ y: this.state.centralTabContentOffset }}
             isSelf={this.props.isSelf}
           />
         );
@@ -213,14 +254,10 @@ class GoalDetailCardV3 extends Component {
               { useNativeDriver: true }
             )}
             contentContainerStyle={{ paddingTop: this.state.cardHeight + 20, flexGrow: 1 }}
-            contentOffset={{ y:
-              this.state.scroll._value > (this.state.cardHeight - COLLAPSED_HEIGHT)
-                ? (this.state.cardHeight - COLLAPSED_HEIGHT)
-                : this.state.scroll._value
-            }}
             pageId={this.props.pageId}
             handleReplyTo={() => this.handleReplyTo()}
             isSelf={this.props.isSelf}
+            initial={this.props.initial}
           />
         );
 
@@ -346,6 +383,7 @@ class GoalDetailCardV3 extends Component {
           hasSuggestion
           onSubmitEditing={this.handleOnCommentSubmitEditing}
           resetCommentType={resetCommentTypeFunc}
+          initial={this.props.initial}
         />
       </Animated.View>
     );
@@ -435,231 +473,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const testData = {
-  __v: 0,
-  _id: '5b502211e500e3001afd1e20',
-  category: 'General',
-  created: '2018-07-19T05:30:57.531Z',
-  details: {
-    tags: [],
-    text: 'This is detail'
-  },
-  feedInfo: {
-    _id: '5b502211e500e3001afd1e18',
-    publishDate: '2018-07-19T05:30:57.531Z',
-  },
-  lastUpdated: '2018-07-19T05:30:57.531Z',
-  needs: [{
-    created: '2018-07-19T05:30:57.531Z',
-    description: 'introduction to someone from the Bill and Melinda Gates Foundation',
-    isCompleted: false,
-    order: 0,
-  },
-  {
-    created: '2018-07-19T05:30:57.531Z',
-    description: 'Get in contact with Nuclear experts',
-    isCompleted: false,
-    order: 1,
-  },
-  {
-    created: '2018-07-19T05:30:57.531Z',
-    description: 'Legal & Safety experts who have worked with the United States',
-    isCompleted: false,
-    order: 2,
-  }],
-  owner: {
-    _id: '5b17781ebec96d001a409960',
-    name: 'jia zeng',
-    profile: {
-      elevatorPitch: 'This is my elevatorPitch',
-      occupation: 'Software Engineer',
-      pointsEarned: 10,
-      views: 0,
-    },
-  },
-  priority: 3,
-  privacy: 'friends',
-  steps: [{
-    created: '2018-07-19T05:30:57.531Z',
-    description: 'This is my first step to complete the goal',
-    isCompleted: false,
-    order: 0,
-  }],
-  title: 'Establish a LMFBR near Westport, Connecticut by 2020',
-};
-
 const mapStateToProps = (state, props) => {
-  const testStepsAndNeeds = [
-    {
-      _id: '1',
-      sectionTitle: 'needs',
-      count: 3
-    },
-    {
-      _id: '2',
-      description: 'testneed1',
-      completed: 'false',
-      order: 1
-    },
-    {
-      _id: '3',
-      sectionTitle: 'steps',
-      count: 4
-    },
-    {
-      _id: '4',
-      description: 'testStep 1',
-      completed: 'false',
-      order: 1
-    }
-  ];
-
-  const testTransformedComments = [
-    {
-      _id: '1',
-      owner: {
-        name: 'Jia Zeng'
-      },
-      numberOfChildrenShowing: 1,
-      hasMoreToShow: true,
-      parentType: 'Goal',
-      commentType: 'Suggestion',
-      suggestion: {
-        suggestionType: 'User',
-        suggestionFor: 'Step',
-        suggestionForRef: {
-          order: 1,
-          description: 'Find good books tes testset adfasdf'
-        },
-        suggestionText:
-          'You should connect with Sharon! She\'s an avid reader and an incredible writer.',
-        userRef: {
-
-        }
-      },
-      parentRef: {
-
-      },
-      childComments: [{
-        _id: 'child1',
-        owner: {
-          name: 'Mike Zeng'
-        },
-        parentType: 'Goal',
-        commentType: 'Reply',
-        replyToRef: '',
-        content: {
-          text: 'There are a total of four children. This should be a child component 1'
-        },
-        parentRef: {
-
-        },
-      }, {
-        _id: 'child2',
-        owner: {
-          name: 'Super Andy'
-        },
-        parentType: 'Goal',
-        commentType: 'Reply',
-        replyToRef: '',
-        content: {
-          text: 'this should be a child component 2'
-        },
-        parentRef: {
-
-        },
-      }, {
-        _id: 'child3',
-        owner: {
-          name: 'This is super long nameeeeeee nameeeeee nameee'
-        },
-        parentType: 'Goal',
-        commentType: 'Reply',
-        replyToRef: '',
-        content: {
-          text: 'this should be a child component 3'
-        },
-        parentRef: {
-
-        },
-      }, {
-        owner: {
-          name: 'Wait a minute'
-        },
-        parentType: 'Goal',
-        commentType: 'Reply',
-        replyToRef: '',
-        content: {
-          text: 'this should be a child component 4'
-        },
-        parentRef: {
-
-        },
-      }]
-    },
-    {
-      _id: '2',
-      owner: {
-        name: 'Jay Patel'
-      },
-      numberOfChildrenShowing: 0,
-      hasMoreToShow: false,
-      parentType: 'Goal',
-      commentType: 'Suggestion',
-      suggestion: {
-        suggestionType: 'User',
-        suggestionFor: 'Step',
-        suggestionForRef: {
-          order: 2,
-          description: 'Find good books tes testset adfasdf'
-        },
-        suggestionText: 'This is a test comment with' +
-         'a lot of lines so that we can test if that function works out of box. ' +
-         'With this length, we can really tell it. ' +
-         'Need more lines to test this feature',
-        userRef: {
-
-        }
-      },
-      content: {
-
-      },
-      parentRef: {
-
-      },
-      childComments: []
-    },
-    {
-      _id: '3',
-      owner: {
-        name: 'Lydia'
-      },
-      numberOfChildrenShowing: 0,
-      hasMoreToShow: false,
-      content: {
-        text: 'This is a very simple comment by Lydia'
-      },
-      parentType: 'Goal',
-      commentType: 'Comment',
-      // suggestion: {
-      //   suggestionType: 'User',
-      //   suggestionFor: 'Step',
-      //   suggestionForRef: {
-      //     order: 2,
-      //     description: 'Find good books tes testset adfasdf'
-      //   },
-      //   suggestionText:
-      //     'You should connect with Sharon! She\'s an avid reader and an incredible writer.',
-      //   userRef: {
-      //
-      //   }
-      // },
-      parentRef: {
-
-      }
-    }
-  ];
-
   const newComment = getNewCommentByTab(state, props.pageId);
   const goalDetail = getGoalDetailByTab(state);
   const { goal, navigationStateV2 } = goalDetail;
@@ -733,6 +547,7 @@ export default connect(
     goalDetailSwitchTabV2ByKey,
     removeSuggestion,
     createCommentFromSuggestion,
-    resetCommentType
+    resetCommentType,
+    createCommentForSuggestion
   }
 )(GoalDetailCardV3);

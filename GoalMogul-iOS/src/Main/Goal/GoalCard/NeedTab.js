@@ -24,7 +24,7 @@ const testNeed = [
 
 class NeedTab extends Component {
   renderSections(needs) {
-    const { goalRef, onPress, itemCount } = this.props;
+    const { goalRef, onPress, itemCount, onCardPress } = this.props;
     const sections = needs.map((section, index) => {
       if (index < itemCount - 1) {
         return (
@@ -33,6 +33,7 @@ class NeedTab extends Component {
             item={section}
             goalRef={goalRef}
             onPress={onPress}
+            onCardPress={onCardPress}
             type='Need'
           />
         );
@@ -55,6 +56,7 @@ class NeedTab extends Component {
                 item={section}
                 goalRef={goalRef}
                 onPress={onPress}
+                onCardPress={onCardPress}
                 type='Need'
               />
             </MaskedViewIOS>

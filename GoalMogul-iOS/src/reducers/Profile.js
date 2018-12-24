@@ -467,7 +467,14 @@ export default (state = INITIAL_STATE, action) => {
 
       const currentGoals = _.get(newState, 'goals.data');
       const newGoals = currentGoals.map((oldGoal) => {
-        if (oldGoal._id === goal._id) return goal;
+        if (oldGoal._id === goal._id) {
+          const newGoalToReturn = {
+            ...goal,
+            owner: { ...oldGoal.owner }
+          };
+
+          return newGoalToReturn;
+        }
         return oldGoal;
       });
       return _.set(newState, 'goals.data', newGoals);

@@ -87,12 +87,20 @@ class CommentBoxV2 extends Component {
       // position: 'absolute'
     };
     this.updateSearchRes = this.updateSearchRes.bind(this);
+    this.focus = this.focus.bind(this);
+    this.focusForReply = this.focusForReply.bind(this);
   }
 
   componentDidMount() {
     if (this.props.onRef !== null) {
       this.props.onRef(this);
     }
+
+    const { initial } = this.props;
+    if (initial && initial.commentBox) {
+      this.focus();
+    }
+
     this.setState({
       ...this.state,
       defaultValue: 'Write a Comment...'

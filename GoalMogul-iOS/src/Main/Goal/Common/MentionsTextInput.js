@@ -26,7 +26,7 @@ export default class MentionsTextInput extends Component {
     this.cursorPosition = 0;
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setState({
       textInputHeight: this.props.textInputMinHeight
     });

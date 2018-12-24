@@ -115,13 +115,15 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
     type: PROFILE_OPEN_PROFILE,
     payload: userId
   });
-  Actions.push('profile');
 
   // Refresh goals on open
   if (tab) {
     selectProfileTabByName(`${tab}`)(dispatch, getState);
     resetFilterType(`${tab}`)(dispatch, getState);
   }
+
+  console.log(`${DEBUG_KEY}: pre for request`);
+  Actions.profile();
 
   const { token } = getState().user;
   const self = getState().profile.userId.toString() === getState().user.userId.toString();

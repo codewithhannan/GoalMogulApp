@@ -95,8 +95,8 @@ class Headline extends React.PureComponent {
     return caret;
   }
 
-  renderSelfCaret(item) {
-    if (!item) return this.renderDeleteOptionOnly();
+  renderSelfCaret(item, deleteOnly) {
+    if (!item || deleteOnly) return this.renderDeleteOptionOnly();
     const { isCompleted } = item;
 
     const caret = MenuFactory(
@@ -124,7 +124,8 @@ class Headline extends React.PureComponent {
       isSelf,
       hasCaret,
       user,
-      item
+      item,
+      deleteOnly
     } = this.props;
 
     // If item belongs to self, then caret displays delete
@@ -139,7 +140,7 @@ class Headline extends React.PureComponent {
           () => console.log('Report Modal is opened'),
           false
         )
-      : this.renderSelfCaret(item);
+      : this.renderSelfCaret(item, deleteOnly);
 
     const categoryComponent = category ? <Category text={category} /> : '';
 

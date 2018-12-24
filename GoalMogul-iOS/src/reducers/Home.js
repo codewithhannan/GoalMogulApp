@@ -11,7 +11,8 @@ import {
 } from '../redux/modules/like/LikeReducers';
 
 import {
-  PROFILE_GOAL_DELETE_SUCCESS
+  PROFILE_GOAL_DELETE_SUCCESS,
+  PROFILE_POST_DELETE_SUCCESS
 } from './Profile';
 
 export const HOME_MASTERMIND_OPEN_CREATE_OVERLAY = 'home_mastermind_open_create_overlay';
@@ -174,11 +175,29 @@ export default (state = INITIAL_STATE, action) => {
     // Item from the goal feed list
     case PROFILE_GOAL_DELETE_SUCCESS: {
       const goalId = action.payload;
-      const newState = _.cloneDeep(state);
-      const oldData = _.get(newState, 'mastermind.data');
+      let newState = _.cloneDeep(state);
+      const oldGoalData = _.get(newState, 'mastermind.data');
       // Filter out the goal
-      const newData = oldData.filter(({ _id }) => _id !== goalId);
-      return _.set(newState, 'mastermind.data', newData);
+      const newGoalData = oldGoalData.filter(({ _id }) => _id !== goalId);
+
+      // Filter out the goal from activity feed
+      const oldActivityData = _.get(newState, 'activityfeed.data');
+      const newActivityData = oldActivityData
+        .filter(({ actedUponEntityId }) => actedUponEntityId !== goalId);
+
+      newState = _.set(newState, 'activityfeed.data', newActivityData);
+      return _.set(newState, 'mastermind.data', newGoalData);
+    }
+
+    // When user deletes his/her own posts from activity Feed, remove the corresponding
+    // Item from the activity feed list
+    case PROFILE_POST_DELETE_SUCCESS: {
+      const postId = action.payload;
+      const newState = _.cloneDeep(state);
+      const oldData = _.get(newState, 'activityfeed.data');
+      // Filter out the activity feed that relates to this deleted post
+      const newData = oldData.filter(({ actedUponEntityId }) => actedUponEntityId !== postId);
+      return _.set(newState, 'activityfeed.data', newData);
     }
 
     // Update like

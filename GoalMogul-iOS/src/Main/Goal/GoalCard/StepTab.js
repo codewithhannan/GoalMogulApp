@@ -25,7 +25,7 @@ const testStep = [
 class StepTab extends Component {
 
   renderSections(steps) {
-    const { goalRef, onPress, itemCount } = this.props;
+    const { goalRef, onPress, itemCount, onCardPress } = this.props;
     const sections = steps.map((section, index) => {
       if (index < itemCount - 1) {
         return (
@@ -35,6 +35,7 @@ class StepTab extends Component {
             goalRef={goalRef}
             onPress={onPress}
             type='step'
+            onCardPress={onCardPress}
           />
         );
       }
@@ -58,6 +59,7 @@ class StepTab extends Component {
                 goalRef={goalRef}
                 onPress={onPress}
                 type='step'
+                onCardPress={onCardPress}
               />
             </MaskedViewIOS>
           </View>

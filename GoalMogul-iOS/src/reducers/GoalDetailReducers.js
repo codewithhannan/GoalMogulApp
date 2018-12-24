@@ -297,7 +297,12 @@ export default (state = INITIAL_STATE, action) => {
       const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
       const currentGoal = _.get(newState, `${path}.goal`);
       if (!currentGoal || currentGoal._id !== goal._id) return;
-      return _.set(newState, `${path}.goal`, goal);
+
+      const newGoalToPut = {
+        ...goal,
+        owner: { ...currentGoal.owner }
+      };
+      return _.set(newState, `${path}.goal`, newGoalToPut);
     }
 
     default:
