@@ -13,7 +13,9 @@ import {
 } from '../../redux/modules/report/ReportActions';
 
 import {
-  openProfile
+  openProfile,
+  deletePost,
+  deleteGoal,
 } from '../../actions';
 
 // Assets
@@ -28,13 +30,13 @@ const DEBUG_KEY = '[ UI ActivityHeader ]';
 
 class ActivityHeader extends Component {
   // user basic information
-  renderUserDetail({ postRef, goalRef, actedUponEntityType }) {
+  renderUserDetail({ postRef, goalRef, actedUponEntityType, actor }) {
     const item = actedUponEntityType === 'Post' ? postRef : goalRef;
 
     // If no ref is passed in, then render nothing
     if (!item) return '';
 
-    const { _id, created, owner, category } = item;
+    const { _id, created, category } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
 
@@ -45,23 +47,28 @@ class ActivityHeader extends Component {
 
     const tags = actedUponEntityType === 'Post' ? item.content.tags : [];
 
+    const onDelete = actedUponEntityType === 'Post'
+      ? () => this.props.deletePost(postRef._id)
+      : () => this.props.deleteGoal(goalRef._id);
+
     return (
       <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
         <ProfileImage
           imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
-          imageUrl={owner && owner.profile ? owner.profile.image : undefined}
+          imageUrl={actor && actor.profile ? actor.profile.image : undefined}
           imageContainerStyle={styles.imageContainerStyle}
-          userId={owner._id}
+          userId={actor._id}
         />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
-            name={owner.name || ''}
+            name={actor.name || ''}
             category={category}
             caretOnPress={() => {
               this.props.createReport(_id, 'post', `${actedUponEntityType}`);
             }}
-            user={owner}
-            isSelf={this.props.userId === owner._id}
+            user={actor}
+            isSelf={this.props.userId === actor._id}
+            caretOnDelete={onDelete}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           {/*
@@ -97,11 +104,11 @@ class ActivityHeader extends Component {
     const { item } = this.props;
     if (!item || _.isEmpty(item)) return '';
 
-    const { postRef, goalRef, actedUponEntityType } = item;
+    const { postRef, goalRef, actedUponEntityType, actor } = item;
 
     return (
       <View>
-        {this.renderUserDetail({ postRef, goalRef, actedUponEntityType })}
+        {this.renderUserDetail({ postRef, goalRef, actedUponEntityType, actor })}
       </View>
     );
   }
@@ -130,6 +137,8 @@ export default connect(
   mapStateToProps,
   {
     createReport,
-    openProfile
+    openProfile,
+    deletePost,
+    deleteGoal,
   }
 )(ActivityHeader);

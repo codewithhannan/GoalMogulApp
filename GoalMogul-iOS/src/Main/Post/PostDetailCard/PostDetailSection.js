@@ -12,6 +12,7 @@ import timeago from 'timeago.js';
 import _ from 'lodash';
 import R from 'ramda';
 import Modal from 'react-native-modal';
+import { Actions} from 'react-native-router-flux';
 
 import {
   switchCase
@@ -134,7 +135,10 @@ class PostDetailSection extends React.PureComponent {
             name={owner.name || ''}
             category={category}
             isSelf={this.props.userId === owner._id}
-            caretOnDelete={() => this.props.deletePost(_id)}
+            caretOnDelete={() => {
+              this.props.deletePost(_id);
+              Actions.pop();
+            }}
             caretOnPress={() => {
               this.props.createReport(_id, 'postDetail', 'Post');
             }}
