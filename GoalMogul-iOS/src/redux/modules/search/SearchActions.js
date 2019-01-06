@@ -1,6 +1,5 @@
 import curry from 'ramda/src/curry';
 import { api as API } from '../../middleware/api';
-import _ from 'lodash';
 import {
   SEARCH_CHANGE_FILTER,
   SEARCH_REQUEST,
@@ -16,15 +15,13 @@ import { switchCase } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Action Search ]';
 
-export const searchChangeFilter = (type, value) => {
-  return {
+export const searchChangeFilter = (type, value) => ({
     type: SEARCH_CHANGE_FILTER,
     payload: {
       type,
       value
     }
-  };
-};
+  });
 
 /**
 	 * Sends a search requests and update reducers
@@ -34,7 +31,7 @@ export const searchChangeFilter = (type, value) => {
 	 */
 const searchWithId = (searchContent, queryId, type) => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit } = getState().search[type];
+  const { limit } = getState().search[type];
   console.log(`${DEBUG_KEY} with text: ${searchContent} and queryId: ${queryId}`);
   dispatch({
     type: SEARCH_REQUEST,
@@ -77,7 +74,8 @@ export const handleSearch = (searchContent, type) => {
 };
 
 /**
- * Actions for user search when do tagging in comments / goal description / post / share
+ * Actions to search current user's friend  when do tagging in 
+ * comments / goal description / post / share
  */
 export const searchUser = (searchContent, skip, limit, callback) => (dispatch, getState) => {
   const { token } = getState().user;
@@ -87,7 +85,7 @@ export const searchUser = (searchContent, skip, limit, callback) => (dispatch, g
 
   API
     .get(
-      `secure/user/profile/es?skip=${skip}&limit=${limit}&query=${searchContent}`,
+      `secure/user/friendship/es?skip=${skip}&limit=${limit}&query=${searchContent}`,
       token
     )
     .then((res) => {
