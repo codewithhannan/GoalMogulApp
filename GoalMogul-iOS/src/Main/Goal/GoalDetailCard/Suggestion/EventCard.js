@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 
 // Assets
 // TODO: set default tribe picture
-import profilePic from '../../../../asset/utils/defaultUserProfile.png';
+import EventIcon from '../../../../asset/suggestion/event.png';
 
 // Components
 import Check from '../../../Common/Check';
@@ -52,7 +52,7 @@ class EventCard extends React.Component {
         <View
           style={styles.imageContainerStyle}
         >
-          <Image style={styles.imageStyle} source={profilePic} />
+          <Image style={styles.imageStyle} source={EventIcon} />
         </View>
       );
     }
@@ -62,7 +62,7 @@ class EventCard extends React.Component {
       <View
         style={styles.imageContainerStyle}
       >
-        <Image style={styles.imageStyle} source={profilePic} />
+        <Image style={styles.imageStyle} source={EventIcon} />
       </View>
     );
   }

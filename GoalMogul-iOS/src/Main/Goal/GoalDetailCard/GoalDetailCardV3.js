@@ -206,7 +206,7 @@ class GoalDetailCardV3 extends Component {
   }
 
   // Tab related handlers
-  _handleIndexChange = index => {
+  _handleIndexChange = (index, focusType, focusRef) => {
     // TODO: change to v2
     const { navigationState, pageId } = this.props;
     if (navigationState.routes[index].key === 'centralTab') {
@@ -214,7 +214,7 @@ class GoalDetailCardV3 extends Component {
       this.props.goalDetailSwitchTabV2ByKey('centralTab', undefined, undefined);
       Animated.timing(this.state.scroll, {
         toValue: this.state.centralTabContentOffset,
-        duration: 200,
+        duration: 300,
         useNativeDriver: true
       }).start();
       return;
@@ -224,11 +224,14 @@ class GoalDetailCardV3 extends Component {
       ...this.state,
       centralTabContentOffset: this.state.scroll._value
     });
-    this.props.goalDetailSwitchTabV2(index);
+    this.props.goalDetailSwitchTabV2ByKey(
+      'focusTab', focusRef, focusType
+    );
     Animated.timing(this.state.scroll, {
       toValue: new Animated.Value(0),
-      duration: 200
-    });
+      duration: 300,
+      useNativeDriver: true
+    }).start();
   };
 
   _renderScene = ({ route }) => {
@@ -243,6 +246,7 @@ class GoalDetailCardV3 extends Component {
             contentContainerStyle={{ paddingTop: this.state.cardHeight + 10, flexGrow: 1 }}
             contentOffset={{ y: this.state.centralTabContentOffset }}
             isSelf={this.props.isSelf}
+            handleIndexChange={this._handleIndexChange}
           />
         );
 
