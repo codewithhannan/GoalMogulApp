@@ -177,7 +177,12 @@ class SectionCard extends Component {
           }}
         >
           {this.renderCheckBox(isCompleted)}
-          <View style={styles.textContainerStyle}>
+          <View 
+            style={{ 
+              ...styles.textContainerStyle,
+              flexWrap: 'wrap'
+            }}
+          >
             <Text
               style={{ ...styles.sectionTextStyle }}
               numberOfLines={2}

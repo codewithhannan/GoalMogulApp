@@ -9,9 +9,11 @@ import timeago from 'timeago.js';
 import { connect } from 'react-redux';
 
 // Assets
-// TODO: set default tribe picture
-import profilePic from '../../../../asset/utils/defaultUserProfile.png';
+import TribeIcon from '../../../../asset/suggestion/flag.png';
+
+// Components
 import Check from '../../../Common/Check';
+import ProfileImage from '../../../Common/ProfileImage';
 
 // Actions
 
@@ -44,20 +46,28 @@ class TribeCard extends React.Component {
     if (picture && picture.length > 0) {
       // Render the corresponding image
       return (
-        <View
-          style={styles.imageContainerStyle}
-        >
-          <Image style={styles.imageStyle} source={profilePic} />
-        </View>
+        <ProfileImage 
+          resizeMode='cover'
+          imageContainerStyle={styles.imageContainerStyle}
+          imageStyle={styles.imageStyle}
+          imageUrl={picture}
+        />
       );
     }
 
     // Render default image
     return (
       <View
-        style={styles.imageContainerStyle}
+        style={{
+          ...styles.imageContainerStyle,
+          padding: 6
+        }}
       >
-        <Image style={styles.imageStyle} source={profilePic} />
+        <Image 
+          style={{ ...styles.imageStyle, height: 45, width: 45 }} 
+          source={TribeIcon} 
+          resizeMethod='contain' 
+        />
       </View>
     );
   }
@@ -143,7 +153,8 @@ const styles = {
   },
   // Image related styles
   imageContainerStyle: {
-    borderWidth: 1,
+    borderWidth: 0.5,
+    padding: 1.5,
     borderColor: 'lightgray',
     alignItems: 'center',
     borderRadius: 6,
@@ -153,9 +164,7 @@ const styles = {
   imageStyle: {
     width: ProfileImageWidth,
     height: ProfileImageWidth,
-    borderRadius: 4,
-    borderWidth: 2,
-    borderColor: 'white'
+    borderRadius: 5
   },
   // Timestamp style
   timeStampContainerStyle: {

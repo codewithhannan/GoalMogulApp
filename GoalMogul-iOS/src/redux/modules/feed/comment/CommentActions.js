@@ -801,7 +801,7 @@ export const loadComments = (skip, limit, token, params, callback, onError) => {
       console.log(`${DEBUG_KEY}: loading with res: `, res);
       if (res.data) {
         // Right now return test data
-        return callback(res.data);
+        return callback(res.data.filter((i) => !_.isEmpty(i)));
       }
       console.warn(`${DEBUG_KEY}: Loading comment with no res`);
       onError(res);

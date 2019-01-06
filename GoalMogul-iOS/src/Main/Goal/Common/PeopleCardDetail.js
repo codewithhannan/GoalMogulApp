@@ -77,6 +77,7 @@ class ContactDetail extends Component {
       <ProfileImage
         imageContainerStyle={{ height: 30, width: 30, borderRadius: 15 }}
         imageStyle={{ height: 30, width: 30, borderRadius: 15 }}
+        defaultImageStyle={{ height: 30, width: 26, borderRadius: 15 }}
         imageUrl={profile.image}
         userId={_id}
       />

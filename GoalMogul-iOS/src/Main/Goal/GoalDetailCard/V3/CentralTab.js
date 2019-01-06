@@ -76,10 +76,8 @@ class CentralTab extends React.Component<{}> {
         item={props.item}
         goalRef={goalDetail}
         onCardPress={() => {
-          // TODO: function to do should become
-          this.props.goalDetailSwitchTabV2ByKey(
-            'focusTab', props.item._id, props.item.type
-          );
+          // Use passed in function to handle tab switch with animation
+          this.props.handleIndexChange(1, props.item.type, props.item._id);
           this.props.createCommentForSuggestion(newCommentParams);
         }}
         isSelf={this.props.isSelf}
