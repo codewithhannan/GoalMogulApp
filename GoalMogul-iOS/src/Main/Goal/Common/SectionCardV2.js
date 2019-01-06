@@ -190,6 +190,7 @@ class SectionCardV2 extends Component {
               flexDirection: 'row',
               alignItems: 'flex-start',
               justifyContent: 'flex-start',
+              flexWrap: 'wrap'
             }}
           >
             {this.renderCheckBox(isCompleted, type)}
