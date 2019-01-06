@@ -495,7 +495,7 @@ class CreateGoalModal extends Component {
         source={cancel}
         onPress={() => {
           fields.remove(0);
-          this.prop.change('tags', []);
+          this.props.change('tags', []);
         }}
       />)
       :
