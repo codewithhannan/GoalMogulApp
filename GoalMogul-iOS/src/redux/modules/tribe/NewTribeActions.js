@@ -205,7 +205,7 @@ const formToTribeAdapter = (values, tribeId, isEdit) => {
       details: {
         membersCanInvite,
         isPubliclyVisible,
-        membershipLimit,
+        membershipLimit: membershipLimit || Number.MAX_SAFE_INTEGER,
         description,
         picture
       }
@@ -217,7 +217,7 @@ const formToTribeAdapter = (values, tribeId, isEdit) => {
     options: {
       membersCanInvite,
       isPubliclyVisible,
-      membershipLimit,
+      membershipLimit: membershipLimit || Number.MAX_SAFE_INTEGER,
       description,
       picture
     }
@@ -235,11 +235,16 @@ export const tribeToFormAdapter = (tribe) => {
     picture
   } = tribe;
 
+  // If membershipLimit is max safe, it means user hasn't defined the limit yet
+  const membershipLimitToShow = membershipLimit === Number.MAX_SAFE_INTEGER 
+    ? undefined 
+    : `${membershipLimit}`;
+
   return {
     name,
     membersCanInvite,
     isPubliclyVisible,
-    membershipLimit: `${membershipLimit}`,
+    membershipLimit: membershipLimitToShow,
     description,
     picture
   };
