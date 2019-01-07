@@ -43,6 +43,10 @@ class ReportModal extends Component {
           style={{ height: 60, padding: 12, paddingTop: 12, fontSize: 18 }}
           placeholder='Title of the report...'
           value={_.isEmpty(title) ? '' : title}
+          onEndEditing={() => {
+            if (!title || title.length < 10) Alert.alert('Title must be at least 10 characters');
+            if (title.length > 70) Alert.alert('Title cannot be longer than 70 characters');
+          }}
         />
       </View>
     );
@@ -71,6 +75,7 @@ class ReportModal extends Component {
   }
 
   render() {
+    const { title, details } = this.props;
     return (
       <KeyboardAvoidingView
         behavior='padding'
@@ -92,6 +97,7 @@ class ReportModal extends Component {
                   onAction={() => {
                     this.props.postingReport();
                   }}
+                  actionDisabled={!(title && details && title.length >= 10)}
                 />
                 <Text style={styles.subTitleTextStyle}>Title</Text>
                 {this.renderTitleInput()}
