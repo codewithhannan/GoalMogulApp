@@ -57,10 +57,12 @@ class ProfileImage extends React.PureComponent {
       defaultImageStyle = _.set(defaultImageStyle, 'borderRadius', 5);
     }
 
+    const defaultImageContainerStyle = this.props.defaultImageContainerStyle || imageContainerStyle;
+
     let profileImage = (
       <TouchableWithoutFeedback onPress={this.handleProfileImageOnPress}>
         <View
-          style={[imageContainerStyle || styles.imageContainerStyle]}
+          style={[defaultImageContainerStyle || styles.imageContainerStyle]}
         >
           <Image
             style={defaultImageStyle}
