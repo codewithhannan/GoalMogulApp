@@ -1,15 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   View,
-  Image,
   Text,
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import Expo, { WebBrowser } from 'expo';
 
 // Components
 import ProfileImage from '../../../Common/ProfileImage';
+import RichText from '../../../Common/Text/RichText';
 
 // Assets
 import badge from '../../../../asset/utils/badge.png';
@@ -46,6 +47,26 @@ import {
 const DEBUG_KEY = '[ UI CommentRef ]';
 
 class CommentRef extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.handleSuggestionLinkOnPress = this.handleSuggestionLinkOnPress.bind(this);
+    this.handleSuggestionLinkOnClose = this.handleSuggestionLinkOnClose.bind(this);
+  }
+
+  handleSuggestionLinkOnPress = async (url) => {
+    const returnUrl = Expo.Linking.makeUrl('/');
+    Expo.Linking.addEventListener('url', this.handleSuggestionLinkOnClose);
+    const result = await WebBrowser.openBrowserAsync(url);
+    Expo.Linking.removeEventListener('url', this.handleSuggestionLinkOnClose);
+    console.log(`${DEBUG_KEY}: close suggestion link with res: `, result);
+  } 
+
+  handleSuggestionLinkOnClose = (event) => {
+    WebBrowser.dismissBrowser();
+    // TODO: parse url and determine verification states
+    const { path, queryParams } = Expo.Linking.parse(event.url);
+    console.log(`${DEBUG_KEY}: suggestion link close with path: ${path} and param: `, queryParams);
+  }
 
   handleOnRefPress = (item) => {
     const {
@@ -54,8 +75,8 @@ class CommentRef extends React.PureComponent {
       eventRef,
       tribeRef,
       suggestionLink,
-      suggestionText,
-      goalRef,
+      // suggestionText,
+      // goalRef,
       userRef,
     } = item;
     if ((suggestionType === 'User' || suggestionType === 'Friend') && userRef) {
@@ -77,6 +98,10 @@ class CommentRef extends React.PureComponent {
       // TODO: update later
       console.log(`${DEBUG_KEY}: suggestion type is ChatConvoRoom, chatRoomRef is: `, chatRoomRef);
     }
+    if (suggestionType === 'Custom' && suggestionLink) {
+      this.handleSuggestionLinkOnPress(suggestionLink);
+      return;
+    }
   }
 
   // Render badge
@@ -96,8 +121,24 @@ class CommentRef extends React.PureComponent {
     const { title, content } = getTextContent(item);
     return (
       <View style={{ flex: 1, justifyContent: 'center' }}>
-        <Text style={styles.titleTextStyle}>{title}</Text>
-        <Text style={styles.headingTextStyle}>{content}</Text>
+        <Text 
+          style={styles.titleTextStyle}
+          numberOfLines={1}
+          ellipsizeMode='tail'
+        >
+          {title}
+        </Text>
+        <RichText
+          contentText={content}
+          textStyle={{ 
+            ...styles.headingTextStyle, flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 10 
+          }}
+          textContainerStyle={{ flexDirection: 'row' }}
+          numberOfLines={2}
+          ellipsizeMode='tail'
+          handleUrlPress={this.handleSuggestionLinkOnPress}
+          onUserTagPressed={() => console.log(`${DEBUG_KEY}: user tag pressed`)}
+        />
       </View>
     );
   }
@@ -146,7 +187,7 @@ class CommentRef extends React.PureComponent {
 
     return (
       <TouchableOpacity
-      activeOpacity={0.85}
+        activeOpacity={0.85}
         style={styles.containerStyle}
         onPress={() => this.handleOnRefPress(item)}
       >
@@ -259,6 +300,13 @@ const getTextContent = (item) => {
     ret = {
       title: chatRoomRef.title,
       content: ''
+    };
+  }
+
+  if (suggestionType === 'Custom') {
+    ret = {
+      title: suggestionText || 'Suggested Link',
+      content: suggestionLink
     };
   }
   return ret;

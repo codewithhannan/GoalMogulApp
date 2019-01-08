@@ -18,8 +18,12 @@ import {
 const DEBUG_KEY = '[ UI RichText ]';
 
 class RichText extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.handleUrlPress = this.handleUrlPress.bind(this);
+  }
 
-  constructParsedUserTags(contentTags, contentText) {
+  constructParsedUserTags(contentTags = [], contentText) {
     const ret = contentTags.map((tag) => {
       const { startIndex, endIndex, user } = tag;
       const tagText = contentText.slice(startIndex, endIndex);
@@ -36,6 +40,9 @@ class RichText extends React.PureComponent {
 
   handleUrlPress(url) {
     // TODO: open web url
+    if (this.props.handleUrlPress) {
+      return this.props.handleUrlPress(url);
+    }
     console.log(`${DEBUG_KEY}: url on pressed: `, url);
   }
 
