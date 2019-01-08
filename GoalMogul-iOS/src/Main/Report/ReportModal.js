@@ -75,7 +75,7 @@ class ReportModal extends Component {
   }
 
   render() {
-    const { title, details } = this.props;
+    const { title, details, loading } = this.props;
     return (
       <KeyboardAvoidingView
         behavior='padding'
@@ -97,7 +97,7 @@ class ReportModal extends Component {
                   onAction={() => {
                     this.props.postingReport();
                   }}
-                  actionDisabled={!(title && details && title.length >= 10)}
+                  actionDisabled={!(title && details && title.length >= 10 && !loading)}
                 />
                 <Text style={styles.subTitleTextStyle}>Title</Text>
                 {this.renderTitleInput()}
