@@ -9,8 +9,8 @@ import BackButton from '../../../asset/utils/back.png';
 /* Icon */
 
 const ModalHeader = (props) => {
-  const { title, actionText, onCancel, onAction, cancelText, back } = props;
-  const cancel = cancelText === null ? cancelText : 'Cancel'
+  const { title, actionText, onCancel, onAction, actionDisabled, cancelText, back } = props;
+  const cancel = cancelText === null ? cancelText : 'Cancel';
 
   const leftComponent = back
     ? (
@@ -22,6 +22,10 @@ const ModalHeader = (props) => {
     : (
       <Text style={styles.cancelTextStyle}>{cancel}</Text>
     );
+  
+  const actionTextStyle = actionDisabled
+    ? { ...styles.actionTextStyle, color: 'lightgray' }
+    : styles.actionTextStyle;
 
   return (
     <View style={styles.containerStyle}>
@@ -35,17 +39,15 @@ const ModalHeader = (props) => {
 
       <TouchableOpacity activeOpacity={0.85} style={{ alignItems: 'center', flex: 3 }}>
         <Text style={styles.titleTextStyle}>{title}</Text>
-
       </TouchableOpacity>
 
       <TouchableOpacity
         activeOpacity={0.85}
         style={{ alignItems: 'center', flex: 1 }}
         onPress={onAction}
+        disabled={actionDisabled}
       >
-
-        <Text style={styles.actionTextStyle}>{actionText}</Text>
-
+        <Text style={actionTextStyle}>{actionText}</Text>
       </TouchableOpacity>
 
     </View>

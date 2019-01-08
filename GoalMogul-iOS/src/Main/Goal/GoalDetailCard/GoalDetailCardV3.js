@@ -214,7 +214,7 @@ class GoalDetailCardV3 extends Component {
       this.props.goalDetailSwitchTabV2ByKey('centralTab', undefined, undefined);
       Animated.timing(this.state.scroll, {
         toValue: this.state.centralTabContentOffset,
-        duration: 300,
+        duration: 450,
         useNativeDriver: true
       }).start();
       return;

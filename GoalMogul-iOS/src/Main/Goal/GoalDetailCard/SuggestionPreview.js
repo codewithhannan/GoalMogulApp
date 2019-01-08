@@ -100,8 +100,9 @@ class SuggestionPreview extends Component {
         imageStyle={{ width: 50, height: 50, ...style }}
         defaultImageSource={source}
         defaultImageStyle={{ width: 30, height: 30, ...style }}
+        defaultImageContainerStyle={{ padding: 10, justifyContent: 'center' }}
         imageUrl={imageUrl}
-        imageContainerStyle={{ padding: 10, justifyContent: 'center' }}
+        imageContainerStyle={{ marginRight: 10, justifyContent: 'center' }}
       />
     );
   }
@@ -222,7 +223,7 @@ const styles = {
   titleTextStyle: {
     fontSize: 12,
     fontWeight: '600',
-    marginTop: 4,
+    marginTop: 8,
     flexWrap: 'wrap',
     flex: 1,
   },
@@ -230,6 +231,9 @@ const styles = {
     fontSize: 10,
     flexWrap: 'wrap',
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 3
   },
   iconContainerStyle: {
     width: 50,

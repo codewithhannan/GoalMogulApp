@@ -291,7 +291,7 @@ class CreateTribeModal extends React.Component {
   }
 
   renderTribeMemberLimit() {
-    const titleText = <Text style={styles.titleTextStyle}>Member Limit</Text>;
+    const titleText = <Text style={styles.titleTextStyle}>Member Limit (Optional)</Text>;
     return (
       <View style={{ marginBottom: 5 }}>
         {titleText}

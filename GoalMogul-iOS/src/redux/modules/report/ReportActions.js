@@ -61,6 +61,12 @@ export const postingReport = (callback) => (dispatch, getState) => {
   // Calling endpoint to post a report
   const { token } = getState().user;
   const report = reportAdapter(getState().report);
+  const { details } = report;
+  if (!details || details.length < 20) {
+    Alert.alert('Description must be at least 20 characters');
+    return;
+  } 
+
   dispatch({
     type: REPORT_POST
   });

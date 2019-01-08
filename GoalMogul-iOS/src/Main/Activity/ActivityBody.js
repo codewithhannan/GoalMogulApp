@@ -132,7 +132,7 @@ class ActivityBody extends React.Component {
       return this.renderPostImage(postRef.mediaRef);
     }
 
-    let item;
+    let item = goalRef;
     if (postType === 'ShareNeed') {
       item = getNeedFromRef(goalRef, needRef);
     }

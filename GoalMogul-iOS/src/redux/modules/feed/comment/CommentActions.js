@@ -505,7 +505,7 @@ const suggestionAdapter = (suggestion) => {
       suggestionLink,
       suggestionText: suggestionText || JSON.stringify({})
     },
-    Default: undefined
+    Default: {}
   })('Default')(suggestionType);
 
   if (ret && !_.isEmpty(ret)) {
