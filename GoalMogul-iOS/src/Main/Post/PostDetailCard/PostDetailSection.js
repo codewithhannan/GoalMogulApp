@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   View,
-  Text,
   TouchableOpacity,
   Image,
   ImageBackground,
@@ -12,7 +11,6 @@ import timeago from 'timeago.js';
 import _ from 'lodash';
 import R from 'ramda';
 import Modal from 'react-native-modal';
-import { Actions} from 'react-native-router-flux';
 
 import {
   switchCase

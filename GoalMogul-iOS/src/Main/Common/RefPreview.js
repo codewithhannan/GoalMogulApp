@@ -7,6 +7,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
+import Decode from 'unescape';
 
 import { switchCaseFWithVal } from '../../redux/middleware/utils';
 
@@ -103,7 +104,7 @@ class RefPreview extends Component {
               numberOfLines={1}
               ellipsizeMode='tail'
             >
-              {postType === 'ShareNeed' ? 'Need' : title}
+              {Decode(postType === 'ShareNeed' ? 'Need' : title)}
             </Text>
           </View>
 
@@ -113,7 +114,7 @@ class RefPreview extends Component {
               numberOfLines={1}
               ellipsizeMode='tail'
             >
-              {content}
+              {Decode(content)}
             </Text>
           </View>
 
