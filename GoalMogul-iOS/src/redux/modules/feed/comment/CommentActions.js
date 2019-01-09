@@ -129,7 +129,8 @@ export const updateComment = (commentId, updates) => {
 export const deleteComment = (commentId, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
   const { tab } = getState().navigation;
-  const onSuccess = () => {
+  const onSuccess = (res) => {
+    console.log(`${DEBUG_KEY}: comment delete success with res: `, res);
     dispatch({
       type: COMMENT_DELETE_SUCCESS,
       payload: {
@@ -150,7 +151,7 @@ export const deleteComment = (commentId, pageId) => (dispatch, getState) => {
     .delete(`${BASE_ROUTE}?commentId=${commentId}`, {}, token)
     .then((res) => {
       if (res.status === '200' || res.status === 200 || res.isSuccess) {
-        return onSuccess();
+        return onSuccess(res);
       }
       onError(res);
     })

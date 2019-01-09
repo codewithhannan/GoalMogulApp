@@ -8,6 +8,7 @@ import {
 import { connect } from 'react-redux';
 import ParsedText from 'react-native-parsed-text';
 import PropTypes from 'prop-types';
+import Decode from 'unescape';
 
 // Styles
 import {
@@ -55,6 +56,7 @@ class RichText extends React.PureComponent {
     if (!contentText) return '';
 
     const parsedTags = this.constructParsedUserTags(contentTags, contentText);
+    const convertedText = Decode(contentText);
 
     return (
       <View style={[this.props.textContainerStyle]}>
@@ -71,7 +73,7 @@ class RichText extends React.PureComponent {
           }
           childrenProps={{ allowFontScaling: false }}
         >
-          {contentText}
+          {convertedText}
         </ParsedText>
       </View>
     );

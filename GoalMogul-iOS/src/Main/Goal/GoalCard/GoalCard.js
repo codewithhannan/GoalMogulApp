@@ -19,6 +19,7 @@ import { TabView, SceneMap } from 'react-native-tab-view';
 import timeago from 'timeago.js';
 import R from 'ramda';
 import _ from 'lodash';
+import Decode from 'unescape';
 
 // Actions
 import {
@@ -264,7 +265,7 @@ class GoalCard extends React.PureComponent {
               numberOfLines={2}
               ellipsizeMode='tail'
             >
-              {title}
+              {Decode(title)}
             </Text>
           </View>
 

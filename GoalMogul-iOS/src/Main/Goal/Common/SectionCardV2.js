@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import R from 'ramda';
 import { connect } from 'react-redux';
+import Decode from 'unescape';
 
 // Asset
 import bulb from '../../../asset/utils/bulb.png';
@@ -199,7 +200,7 @@ class SectionCardV2 extends Component {
               numberOfLines={2}
               ellipsizeMode='tail'
             >
-              {sectionText === undefined ? 'No content' : sectionText}
+              {Decode(sectionText === undefined ? 'No content' : sectionText)}
             </Text>
           </View>
           {this.renderStats(type)}
