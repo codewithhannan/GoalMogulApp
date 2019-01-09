@@ -79,6 +79,7 @@ class GoalFeedInfoModal extends React.PureComponent {
   }
 
   renderHeader() {
+    const mdash = String.fromCharCode(8212);
     const headerText = (
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Text style={styles.headerBasicTextStyle}>
@@ -86,10 +87,7 @@ class GoalFeedInfoModal extends React.PureComponent {
             Goal feed{' '}
           </Text>
         </Text>
-        <View
-          style={{ height: 1.2, width: 15, marginRight: 4, marginTop: 2, backgroundColor: '#7d7d7d' }} 
-        />
-        <Text style={styles.headerBasicTextStyle}>Give help, get help</Text>
+        <Text style={styles.headerBasicTextStyle}>{mdash}{' '}Give help, get help</Text>
       </View>
     );
     const explainText = (

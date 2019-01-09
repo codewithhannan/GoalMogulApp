@@ -68,6 +68,7 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
     "timeago.js": "^3.0.2",
+    "unescape": "^1.0.1",
     "validate.js": "^0.12.0"
   }
 }
