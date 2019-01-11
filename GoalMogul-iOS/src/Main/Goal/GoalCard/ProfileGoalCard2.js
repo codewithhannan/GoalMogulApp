@@ -21,7 +21,8 @@ import PriorityBar from '../../Common/PriorityBar';
 
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
-import BulbIcon from '../../../asset/utils/bulb.png';
+// import BulbIcon from '../../../asset/utils/bulb.png';
+import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 import ProgressBarSmall from '../../../asset/utils/progressBar_small.png';
 import ProgressBarSmallCounter from '../../../asset/utils/progressBar_counter_small.png';
@@ -129,7 +130,7 @@ class ProfileGoalCard2 extends React.Component {
           textStyle={styles.shareTextStyle}
         />
         <StatsComponent
-          iconSource={BulbIcon}
+          iconSource={CommentIcon}
           iconStyle={styles.commentIconStyle}
           text={commentCount}
           textStyle={styles.commentTextStyle}

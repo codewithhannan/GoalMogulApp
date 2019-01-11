@@ -53,9 +53,9 @@ import ProfileImage from '../../Common/ProfileImage';
 import GoalCardHeader from '../Common/GoalCardHeader';
 
 // Asset
-import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
 import LoveIcon from '../../../asset/utils/love.png';
-import BulbIcon from '../../../asset/utils/bulb.png';
+// import BulbIcon from '../../../asset/utils/bulb.png';
+import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 import HelpIcon from '../../../asset/utils/help.png';
 import StepIcon from '../../../asset/utils/steps.png';
@@ -339,7 +339,7 @@ class GoalCard extends React.PureComponent {
           onPress={() => this.handleShareOnClick()}
         />
         <ActionButton
-          iconSource={BulbIcon}
+          iconSource={CommentIcon}
           count={commentCount}
           textStyle={{ color: '#FBDD0D' }}
           iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}

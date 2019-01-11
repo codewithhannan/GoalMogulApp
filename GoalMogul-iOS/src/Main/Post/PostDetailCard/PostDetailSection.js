@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import timeago from 'timeago.js';
 import _ from 'lodash';
 import R from 'ramda';
-import Modal from 'react-native-modal';
+// import Modal from 'react-native-modal';
 
 import {
   switchCase
@@ -49,7 +49,8 @@ import {
 
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
-import BulbIcon from '../../../asset/utils/bulb.png';
+// import BulbIcon from '../../../asset/utils/bulb.png';
+import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 import cancel from '../../../asset/utils/cancel_no_background.png';
 import photoIcon from '../../../asset/utils/photoIcon.png';
@@ -312,7 +313,7 @@ class PostDetailSection extends React.PureComponent {
           disabled={isShare}
         />
         <ActionButton
-          iconSource={BulbIcon}
+          iconSource={CommentIcon}
           count={commentCount}
           textStyle={{ color: '#FBDD0D' }}
           iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}

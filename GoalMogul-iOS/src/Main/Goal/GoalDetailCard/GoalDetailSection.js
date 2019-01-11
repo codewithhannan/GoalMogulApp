@@ -39,7 +39,8 @@ import { deleteGoal, openProfile } from '../../../actions';
 
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
-import BulbIcon from '../../../asset/utils/bulb.png';
+// import BulbIcon from '../../../asset/utils/bulb.png';
+import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 import EditIcon from '../../../asset/utils/edit.png';
 import CheckIcon from '../../../asset/utils/check.png';
@@ -311,7 +312,7 @@ class GoalDetailSection extends React.PureComponent {
           onPress={() => this.handleShareOnClick()}
         />
         <ActionButton
-          iconSource={BulbIcon}
+          iconSource={CommentIcon}
           count={commentCount}
           iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           textStyle={{ color: '#FBDD0D' }}
