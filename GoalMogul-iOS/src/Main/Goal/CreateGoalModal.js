@@ -462,10 +462,19 @@ class CreateGoalModal extends Component {
   }
 
   renderGoal() {
+    const { title } = this.props;
     const titleText = <Text style={styles.titleTextStyle}>Your Goal</Text>;
+    const titleCount = <Text style={styles.titleTextStyle}>{title ? title.length : 0}/90</Text>;
+    const header = (
+      <View style={{ flexDirection: 'row' }}>
+        {titleText}
+        <View style={{ flex: 1 }} />
+        {titleCount}
+      </View>
+    );
     return (
       <View>
-        {titleText}
+        {header}
         <Field
           name='title'
           label='title'
@@ -474,8 +483,10 @@ class CreateGoalModal extends Component {
           style={{ ...styles.goalInputStyle, paddingTop: 20, paddingBottom: 0 }}
           placeholder='What are you trying to achieve?'
           autoCorrect
+          autoCapitalize={'sentences'}
           multiline
           blurOnSubmit
+          maxLength={90}
         />
       </View>
     );
@@ -849,7 +860,7 @@ class CreateGoalModal extends Component {
           moveEnd={moveEnd}
           canDrag={canDrag}
           autoCorrect
-          autoCapitalize={'words'}
+          autoCapitalize={'sentences'}
           inputContainerStyle={{ flexDirection: 'row' }}
         />
       </View>
@@ -1142,6 +1153,7 @@ const mapStateToProps = state => {
     steps: selector(state, 'steps'),
     tags: selector(state, 'tags'),
     details: selector(state, 'details'),
+    title: selector(state, 'title'),
     formVals: state.form.createGoalModal,
     goalDetail: getGoalDetailByTab(state),
     uploading
