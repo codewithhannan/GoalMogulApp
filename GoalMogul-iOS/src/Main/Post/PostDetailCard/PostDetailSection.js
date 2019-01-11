@@ -52,7 +52,7 @@ import LoveIcon from '../../../asset/utils/love.png';
 // import BulbIcon from '../../../asset/utils/bulb.png';
 import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
-import cancel from '../../../asset/utils/cancel_no_background.png';
+// import cancel from '../../../asset/utils/cancel_no_background.png';
 import photoIcon from '../../../asset/utils/photoIcon.png';
 import expand from '../../../asset/utils/expand.png';
 

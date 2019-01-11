@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, TouchableOpacity, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
+import { Actions } from 'react-native-router-flux';
 
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup';
@@ -14,10 +15,17 @@ import ActivityFeed from './ActivityFeed';
 
 // Actions
 import { homeSwitchTab } from '../../actions';
+import {
+  openCreateOverlay
+} from '../../redux/modules/home/mastermind/actions';
 
 // Assets
 import Logo from '../../asset/header/logo.png';
 import Activity from '../../asset/utils/activity.png';
+import plus from '../../asset/utils/plus.png';
+
+// Styles
+import { APP_DEEP_BLUE } from '../../styles';
 
 const TabIconMap = {
   goals: {
@@ -50,6 +58,12 @@ class Home extends Component {
     };
   }
 
+  handleCreateGoal = () => {
+    this.props.openCreateOverlay();
+    // As we move the create option here, we no longer need to care about the tab
+    Actions.createGoalButtonOverlay({ tab: 'mastermind' });
+  }
+
   _handleIndexChange = index => {
     this.setState({
       ...this.state,
@@ -74,6 +88,21 @@ class Home extends Component {
 
   _keyExtractor = (item, index) => index;
 
+  renderPlus() {
+    if (this.props.showPlus) {
+      return (
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={styles.iconContainerStyle}
+          onPress={this.handleCreateGoal}
+        >
+          <Image style={styles.iconStyle} source={plus} />
+        </TouchableOpacity>
+      );
+    }
+    return '';
+  }
+
   render() {
     /*
       TODO:
@@ -92,6 +121,7 @@ class Home extends Component {
             onIndexChange={this._handleIndexChange}
             useNativeDriver
           />
+          {this.renderPlus()}
         </View>
       </MenuProvider>
     );
@@ -100,9 +130,11 @@ class Home extends Component {
 
 const mapStateToProps = state => {
   const { showingModal } = state.report;
+  const { showPlus } = state.home.mastermind;
 
   return {
-    showingModal
+    showingModal,
+    showPlus
   };
 };
 
@@ -125,12 +157,35 @@ const styles = {
   backdrop: {
     backgroundColor: 'gray',
     opacity: 0.5,
+  },
+  iconContainerStyle: {
+    position: 'absolute',
+    bottom: 20,
+    right: 15,
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 3,
+    // backgroundColor: '#17B3EC',
+    backgroundColor: APP_DEEP_BLUE,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 2,
+  },
+  iconStyle: {
+    height: 26,
+    width: 26,
+    tintColor: 'white',
   }
 };
 
 export default connect(
   mapStateToProps,
   {
-    homeSwitchTab
+    homeSwitchTab,
+    openCreateOverlay
   }
 )(Home);

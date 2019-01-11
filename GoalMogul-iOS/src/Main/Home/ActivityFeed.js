@@ -87,17 +87,19 @@ class ActivityFeed extends Component {
     return '';
   }
 
-  renderPlus() {
-    return (
-      <TouchableOpacity
-        activeOpacity={0.85}
-        style={styles.iconContainerStyle}
-        onPress={() => Actions.createPostModal()}
-      >
-        <Image style={styles.iconStyle} source={plus} />
-      </TouchableOpacity>
-    );
-  }
+  // This was used in V2 where user can only create Goal here. But we decide
+  // to move this function to Home component so that it won't scroll over
+  // renderPlus() {
+  //   return (
+  //     <TouchableOpacity
+  //       activeOpacity={0.85}
+  //       style={styles.iconContainerStyle}
+  //       onPress={() => Actions.createPostModal()}
+  //     >
+  //       <Image style={styles.iconStyle} source={plus} />
+  //     </TouchableOpacity>
+  //   );
+  // }
 
   render() {
     return (
@@ -118,7 +120,9 @@ class ActivityFeed extends Component {
           ListFooterComponent={this.renderListFooter()}
           onEndThreshold={0}
         />
-        {this.renderPlus()}
+        {
+          //this.renderPlus()
+        }
       </View>
     );
   }

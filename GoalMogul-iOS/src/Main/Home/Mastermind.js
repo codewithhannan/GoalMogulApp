@@ -188,17 +188,19 @@ class Mastermind extends Component {
   //   return '';
   // }
 
-  renderPlus() {
-    return (
-      <TouchableOpacity
-        activeOpacity={0.85}
-        style={styles.iconContainerStyle}
-        onPress={() => Actions.createGoalModal()}
-      >
-        <Image style={styles.iconStyle} source={plus} />
-      </TouchableOpacity>
-    );
-  }
+  // This was used in V2 where user can only create Goal here. But we decide
+  // to move this function to Home component so that it won't scroll over
+  // renderPlus() {
+  //   return (
+  //     <TouchableOpacity
+  //       activeOpacity={0.85}
+  //       style={styles.iconContainerStyle}
+  //       onPress={() => Actions.createGoalModal()}
+  //     >
+  //       <Image style={styles.iconStyle} source={plus} />
+  //     </TouchableOpacity>
+  //   );
+  // }
 
   renderNext() {
     if ((!this.state.onListEndReached &&
@@ -276,7 +278,9 @@ class Mastermind extends Component {
           inactiveSlideScale={0.85}
           onEndReachedThreshold={0}
         />
-        {this.renderPlus()}
+        {
+          //this.renderPlus()
+        }
         {this.renderNext()}
       </View>
     );
