@@ -70,6 +70,9 @@ class InputField extends Component {
       moveEnd,
       canDrag,
       autoCorrect,
+      autoCapitalize,
+      blurOnSubmit,
+      inputContainerStyle,
       meta: { touched, error },
       ...custom
     } = this.props;
@@ -91,16 +94,16 @@ class InputField extends Component {
     ) : '';
 
     return (
-      <View style={styles.inputContainerStyle}>
+      <View style={{ ...styles.inputContainerStyle, ...inputContainerStyle }}>
         {gestureHandler}
         <TextInput
           ref={this.updateRef}
           title={custom.title}
-          autoCapitalize={'none'}
+          autoCapitalize={autoCapitalize || 'none'}
           autoCorrect={autoCorrect || false}
           onChangeText={this.onChangeText}
+          blurOnSubmit={blurOnSubmit || false}
           onChange={this.onChange}
-          numberOfLines={numberOfLines || 1}
           returnKeyType='done'
           multiline={multiline || false}
           onFocus={onFocus}
@@ -108,7 +111,6 @@ class InputField extends Component {
           placeholder={placeholder}
           style={style}
           value={_.isEmpty(value) ? '' : value}
-          {...restInput}
           {...custom}
         />
         <TouchableOpacity
@@ -125,8 +127,8 @@ class InputField extends Component {
 
 const styles = {
   inputContainerStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    // flex: 1,
+    // alignItems: 'center',
     marginTop: 5,
     borderWidth: 1,
     borderRadius: 5,

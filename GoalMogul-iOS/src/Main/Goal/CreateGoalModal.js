@@ -471,11 +471,11 @@ class CreateGoalModal extends Component {
           label='title'
           component={InputField}
           editable={this.props.uploading}
-          style={styles.goalInputStyle}
+          style={{ ...styles.goalInputStyle, paddingTop: 20, paddingBottom: 0 }}
           placeholder='What are you trying to achieve?'
           autoCorrect
-          multiline={false}
-          numberOfLines={1}
+          multiline
+          blurOnSubmit
         />
       </View>
     );
@@ -625,7 +625,8 @@ class CreateGoalModal extends Component {
       return (
         <View style={{ ...styles.sectionMargin }}>
           {titleText}
-          <TouchableOpacity activeOpacity={0.85}
+          <TouchableOpacity 
+            activeOpacity={0.85}
             style={{
               height: 40,
               width: 90,
@@ -847,6 +848,9 @@ class CreateGoalModal extends Component {
           move={move}
           moveEnd={moveEnd}
           canDrag={canDrag}
+          autoCorrect
+          autoCapitalize={'words'}
+          inputContainerStyle={{ flexDirection: 'row' }}
         />
       </View>
     );
