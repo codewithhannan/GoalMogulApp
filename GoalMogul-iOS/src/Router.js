@@ -29,7 +29,7 @@ import ContactSync from './Registration/ContactSync';
 
 /* Main App */
 import TabIcon from './Main/Common/TabIcon';
-import MeetTab from './Main/MeetTab/MeetTab';
+import MeetTab from './Main/MeetTab/MeetTabV2';
 import SearchOverlay from './Main/Search/SearchOverlay';
 import EventSearchOverlay from './Main/Search/EventSearchOverlay';
 import TribeSearchOverlay from './Main/Search/TribeSearchOverlay';
