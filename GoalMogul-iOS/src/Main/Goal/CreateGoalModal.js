@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
-import _ from 'lodash';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
@@ -20,9 +19,9 @@ import TrendingGoalView from './NewGoal/TrendingGoalView';
 import {
   createGoalSwitchTab,
   submitGoal,
-  validate
+  validate,
+  refreshTrendingGoals,
 } from '../../redux/modules/goal/CreateGoalActions';
-import { State } from 'react-native-gesture-handler';
 
 const DEBUG_KEY = '[ UI CreateGoalModal ]';
 
@@ -31,6 +30,11 @@ class CreateGoalModal extends React.Component {
     super(props);
     this.handleCreate = this.handleCreate.bind(this);
     this.handleIndexChange = this.handleIndexChange.bind(this);
+  }
+
+  componentDidMount() {
+    // Loading trending goals on modal is opened
+    this.props.refreshTrendingGoals();
   }
 
   componentWillUnmount() {
@@ -130,6 +134,7 @@ export default connect(
   {
     createGoalSwitchTab,
     submitGoal,
-    validate
+    validate,
+    refreshTrendingGoals
   }
 )(CreateGoalModal);
