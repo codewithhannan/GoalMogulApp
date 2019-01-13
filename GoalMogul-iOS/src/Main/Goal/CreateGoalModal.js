@@ -20,7 +20,8 @@ import TrendingGoalView from './NewGoal/TrendingGoalView';
 import {
   createGoalSwitchTab,
   submitGoal,
-  validate
+  validate,
+  refreshTrendingGoals,
 } from '../../redux/modules/goal/CreateGoalActions';
 import { State } from 'react-native-gesture-handler';
 
@@ -31,6 +32,11 @@ class CreateGoalModal extends React.Component {
     super(props);
     this.handleCreate = this.handleCreate.bind(this);
     this.handleIndexChange = this.handleIndexChange.bind(this);
+  }
+
+  componentDidMount() {
+    // Loading trending goals on modal is opened
+    this.props.refreshTrendingGoals();
   }
 
   componentWillUnmount() {
@@ -130,6 +136,7 @@ export default connect(
   {
     createGoalSwitchTab,
     submitGoal,
-    validate
+    validate,
+    refreshTrendingGoals
   }
 )(CreateGoalModal);

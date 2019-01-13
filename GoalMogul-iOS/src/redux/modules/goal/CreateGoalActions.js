@@ -355,15 +355,19 @@ export const selectTrendingGoals = (title) => (dispatch) => {
   createGoalSwitchTab(0)(dispatch);
 };
 
-export const selectTrendingGoalsCategory = (category) => (dispatch) => dispatch({
-  type: GOAL_CREATE_TRENDING_SELECT_CATEGORY,
-  payload: {
-    category
-  }
-});
+export const selectTrendingGoalsCategory = (category) => (dispatch, getState) => {
+  dispatch({
+    type: GOAL_CREATE_TRENDING_SELECT_CATEGORY,
+    payload: {
+      category
+    }
+  });
+  refreshTrendingGoals()(dispatch, getState);
+};
 
 // Refresh trending goals
 export const refreshTrendingGoals = () => (dispatch, getState) => {
+  console.log(`${DEBUG_KEY}: refresh trending goal`);
   const { limit, category } = getState().createGoal.trendingGoals;
   dispatch({
     type: GOAL_CREATE_TRENDING_REFRESH
@@ -394,7 +398,7 @@ export const refreshTrendingGoals = () => (dispatch, getState) => {
     });
   };
 
-  fetchTrendingGoals(0, limit, category, onSuccess, onError);
+  fetchTrendingGoals(0, limit, category, onSuccess, onError)(dispatch, getState);
 };
 
 export const loadMoreTrendingGoals = () => (dispatch, getState) => {
@@ -430,7 +434,7 @@ export const loadMoreTrendingGoals = () => (dispatch, getState) => {
     });
   };
 
-  fetchTrendingGoals(skip, limit, category, onSuccess, onError);
+  fetchTrendingGoals(skip, limit, category, onSuccess, onError)(dispatch, getState);
 };
 
 const fetchTrendingGoals = (skip, limit, category, onSuccess, onError) => (dispatch, getState) => {
