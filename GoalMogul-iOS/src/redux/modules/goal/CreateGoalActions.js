@@ -1,4 +1,4 @@
-import { reset, SubmissionError } from 'redux-form';
+import { reset, SubmissionError, change } from 'redux-form';
 import { Alert } from 'react-native';
 import _ from 'lodash';
 import moment from 'moment';
@@ -9,7 +9,14 @@ import {
   GOAL_CREATE_SUBMIT,
   GOAL_CREATE_SUBMIT_SUCCESS,
   GOAL_CREATE_SUBMIT_FAIL,
-  GOAL_CREATE_EDIT_SUCCESS
+  GOAL_CREATE_EDIT_SUCCESS,
+  GOAL_CREATE_TRENDING_REFRESH,
+  GOAL_CREATE_TRENDING_REFRESH_DONE,
+  GOAL_CREATE_TRENDING_LOADING_MORE,
+  GOAL_CREATE_TRENDING_LOADING_MORE_DONE,
+  GOAL_CREATE_SWITCH_TAB_BY_INDEX,
+  GOAL_CREATE_TRENDING_SELECT_CATEGORY,
+  GOAL_CREATE_SWITCH_TAB_BY_KEY
 } from './CreateGoal';
 
 import {
@@ -329,4 +336,114 @@ const stepsNeedsReverseAdapter = values => {
       })
       .map((item) => item)
   );
+};
+
+/** Following are Trending goal related actions **/
+export const createGoalSwitchTab = (index) => (dispatch) => dispatch({
+  type: GOAL_CREATE_SWITCH_TAB_BY_INDEX,
+  payload: {
+    index
+  }
+});
+
+/**
+ * User select a trending Goal and title is populated to New Goal
+ * @param {*} title 
+ */
+export const selectTrendingGoals = (title) => (dispatch) => {
+  dispatch(change('createGoalModal', 'title', title));
+  createGoalSwitchTab(0)(dispatch);
+};
+
+export const selectTrendingGoalsCategory = (category) => (dispatch) => dispatch({
+  type: GOAL_CREATE_TRENDING_SELECT_CATEGORY,
+  payload: {
+    category
+  }
+});
+
+// Refresh trending goals
+export const refreshTrendingGoals = () => (dispatch, getState) => {
+  const { limit, category } = getState().createGoal.trendingGoals;
+  dispatch({
+    type: GOAL_CREATE_TRENDING_REFRESH
+  });
+
+  const onSuccess = (res) => {
+    console.log(`${DEBUG_KEY}: refresh trending goal success with res: `, res);
+    const { data } = res;
+    dispatch({
+      type: GOAL_CREATE_TRENDING_REFRESH_DONE,
+      payload: {
+        data,
+        skip: data ? data.length : 0,
+        hasNextPage: !(data === undefined || data.length === 0),
+      }
+    });
+  };
+
+  const onError = (res) => {
+    console.log(`${DEBUG_KEY}: refresh trending goal failed with Error: `, res);
+    dispatch({
+      type: GOAL_CREATE_TRENDING_REFRESH_DONE,
+      payload: {
+        data: [],
+        skip: 0,
+        hasNextPage: false,
+      }
+    });
+  };
+
+  fetchTrendingGoals(0, limit, category, onSuccess, onError);
+};
+
+export const loadMoreTrendingGoals = () => (dispatch, getState) => {
+  const { skip, limit, category, hasNextPage, refreshing } = getState().createGoal.trendingGoals;
+  if (hasNextPage === false || refreshing) return;
+  
+  dispatch({
+    type: GOAL_CREATE_TRENDING_LOADING_MORE
+  });
+
+  const onSuccess = (res) => {
+    console.log(`${DEBUG_KEY}: loading more trending goal success with res: `, res);
+    const { data } = res;
+    dispatch({
+      type: GOAL_CREATE_TRENDING_LOADING_MORE_DONE,
+      payload: {
+        data,
+        skip: skip + data ? data.length : 0,
+        hasNextPage: !(data === undefined || data.length === 0),
+      }
+    });
+  };
+
+  const onError = (res) => {
+    console.log(`${DEBUG_KEY}: loading more trending goal failed with Error: `, res);
+    dispatch({
+      type: GOAL_CREATE_TRENDING_LOADING_MORE_DONE,
+      payload: {
+        data: [],
+        skip,
+        hasNextPage: false,
+      }
+    });
+  };
+
+  fetchTrendingGoals(skip, limit, category, onSuccess, onError);
+};
+
+const fetchTrendingGoals = (skip, limit, category, onSuccess, onError) => (dispatch, getState) => {
+  const { token } = getState().user;
+  API
+    .get(`secure/goal/trending?skip=${skip}&limit=${limit}&category=${category}`, token)
+    .then((res) => {
+      if (res.status === 200) {
+        return onSuccess(res);
+      }
+      return onError(res);
+    })
+    .catch(err => {
+      onError(err);
+    });
 };
