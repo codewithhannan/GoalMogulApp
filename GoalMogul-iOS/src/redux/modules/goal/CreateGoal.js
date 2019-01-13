@@ -24,6 +24,8 @@ const INITIAL_STATE = {
   }
 };
 
+const DEBUG_KEY = '[ Reducers CreateGoal ]';
+
 export const GOAL_CREATE_SUBMIT = 'goal_create_submit';
 export const GOAL_CREATE_SUBMIT_SUCCESS = 'goal_create_submit_success';
 export const GOAL_CREATE_SUBMIT_FAIL = 'goal_create_submit_fail';
@@ -79,12 +81,15 @@ export default (state = INITIAL_STATE, action) => {
 
     case GOAL_CREATE_SWITCH_TAB_BY_INDEX: {
       const { index } = action.payload;
-      return _.set(state, 'navigationState.index', index);
+      console.log(`${DEBUG_KEY}: index is: `, index);
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'navigationState.index', index);
     }
 
     case GOAL_CREATE_TRENDING_SELECT_CATEGORY: {
       const { category } = action.payload;
-      return _.set(state, 'trendingGoals.category', category);
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'trendingGoals.category', category);
     }
 
     default:

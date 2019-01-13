@@ -351,7 +351,7 @@ export const createGoalSwitchTab = (index) => (dispatch) => dispatch({
  * @param {*} title 
  */
 export const selectTrendingGoals = (title) => (dispatch) => {
-  dispatch(change('createGoalModal', 'title', title));
+  change('createGoalModal', 'title', title);
   createGoalSwitchTab(0)(dispatch);
 };
 
