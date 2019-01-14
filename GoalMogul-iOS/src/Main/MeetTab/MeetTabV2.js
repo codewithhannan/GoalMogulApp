@@ -9,6 +9,7 @@ import {
     RefreshControl
 } from 'react-native';
 import { connect } from 'react-redux';
+import { Icon } from 'react-native-elements';
 
 /* Components */
 import FriendCardView from './V2/FriendCardView';
@@ -30,6 +31,11 @@ import {
     getIncomingUserFromFriendship,
     getOutgoingUserFromFriendship
 } from '../../redux/modules/meet/selector';
+
+/* Styles */
+import {
+    APP_BLUE
+} from '../../styles';
 
 const NumCardsToShow = 3;
 
@@ -71,7 +77,16 @@ class MeetTabV2 extends React.Component {
         return (
             <View>
                 <FriendInvitationCTR />
-                <View style={{ flexDirection: 'row', marginTop: 12, backgroundColor: 'white', ...styles.shadow, alignItems: 'center' }}>
+                <View 
+                    style={{ 
+                        flexDirection: 'row', 
+                        marginTop: 12, 
+                        marginBottom: 5,
+                        backgroundColor: 'white', 
+                        ...styles.shadow, 
+                        alignItems: 'center', 
+                    }}
+                >
                     <TouchableOpacity 
                         activeOpacity={0.85}
                         style={styles.CTRContainerStyle} 
@@ -103,6 +118,7 @@ class MeetTabV2 extends React.Component {
         );
     }
 
+    // Render compacted friend request cards
     renderRequests = (incomingRequests, outgoingRequests) => {
         // render FriendCardView or FriendRequestCardView based on item type
         const inLength = incomingRequests ? incomingRequests.length : 0;
@@ -114,23 +130,59 @@ class MeetTabV2 extends React.Component {
             NumCardsToShow
         );
 
-        const ret = dataToRender.map((d) => <FriendRequestCardView item={d} />);
+        const ret = dataToRender.map((d) => <FriendRequestCardView item={d} key={d._id} />);
         if (totalLength > NumCardsToShow) {
-            ret.push(this.renderSeeAll(totalLength, this.handleSeeAllRequests));
+            ret.push(this.renderSeeAll(totalLength, this.handleSeeAllRequests, 'request-see-all'));
         }
         return ret;
         // If total length is less than threshold, then don't render See All
     }
 
+    // Render compacted friend cards
     renderFriends = (friends, friendCount) => {
         const length = friends ? friends.length : 0;
         const dataToRender = length > NumCardsToShow ? friends.slice(0, NumCardsToShow) : friends;
-
-        const ret = dataToRender.map(d => <FriendCardView item={d} />);
+        let ret = [];
+        if (length > 0) {
+            ret.push(this.renderSectionTitle('Your Friends'));
+        }
+        ret = ret.concat(dataToRender.map((d) => <FriendCardView item={d} key={d._id} />));
         if (friendCount > NumCardsToShow) {
-            ret.push(this.renderSeeAll(friendCount, this.handleSeeAllRequests));
+            ret.push(this.renderSeeAll(friendCount, this.handleSeeAllRequests, 'friends-see-all'));
         }
         return ret;
+    }
+
+    renderSectionTitle = (title) => {
+        return (
+            <View style={{ padding: 13 }} key={`${title}`}>
+                <Text style={{ color: '#616161', fontWeight: '700', fontSize: 12 }}>
+                    {title}
+                </Text>
+            </View>
+        );
+    }
+
+    renderSeeAll = (count, onPress, key) => {
+        const { seeAllContainerStyle, seeAllTextStyle, shadow } = styles; 
+        return (
+            <TouchableOpacity 
+                style={{ ...seeAllContainerStyle, ...shadow }}
+                activeOpacity={0.85} 
+                onPress={onPress}
+                key={key}
+            >
+                <Text style={seeAllTextStyle}>See All ({count})</Text>
+                <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+                    <Icon
+                        name='ios-arrow-round-forward'
+                        type='ionicon'
+                        color='#17B3EC'
+                        iconStyle={styles.arrowIconStyle}
+                    />
+                </View>
+            </TouchableOpacity>
+        );
     }
 
     render() {
@@ -178,7 +230,26 @@ const styles = {
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
         shadowRadius: 2,
-    }
+    },
+    // See all related styles
+    seeAllContainerStyle: {
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 7
+    },
+    seeAllTextStyle: {
+        color: APP_BLUE,
+        fontSize: 12,
+        fontWeight: '700'
+    },
+    arrowIconStyle: {
+        alignSelf: 'center',
+        fontSize: 20,
+        marginLeft: 5,
+        marginTop: 2
+      },
 };
 
 const mapStateToProps = state => {

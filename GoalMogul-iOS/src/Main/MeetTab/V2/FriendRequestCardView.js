@@ -1,320 +1,157 @@
 /**
- * This component is the friend request card. If this is outgoing request, action button will be 
- * cancel. Otherwise, it's respond.
+ * This View is the Friend Card View
  */
-import React, { Component } from 'react';
+import React from 'react';
 import {
   View,
   Text,
+  TouchableOpacity,
   Image,
-  ActionSheetIOS,
-  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Button } from 'react-native-elements';
 
 // Components
 import Name from '../../Common/Name';
+import ProfileImage from '../../Common/ProfileImage';
 
-// Assets
-import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
+/* Assets */
+import next from '../../../asset/utils/next.png';
 
-// Actions
-import { updateFriendship, openProfile } from '../../../actions';
-
-// Styles
+/* Actions */
 import {
-  cardBoxShadow
-} from '../../../styles';
+  updateFriendship,
+  blockUser,
+  openProfile,
+  UserBanner
+} from '../../../actions';
 
-const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
-const WITHDRAW_INDEX = 0;
-const CANCEL_INDEX = 1;
-
-const ACCEPT_BUTTONS = ['Accept', 'Remove', 'Cancel'];
-const ACCPET_INDEX = 0;
-const ACCPET_REMOVE_INDEX = 1;
-const ACCEPT_CANCEL_INDEX = 2;
-
-const TAB_KEY_OUTGOING = 'requests.outgoing';
-const TAB_KEY_INCOMING = 'requests.incoming';
-
-class FriendRequestCardView extends Component {
+class FriendRequestCardView extends React.PureComponent {
   state = {
-    requested: true,
+    requested: false,
+    accpeted: false
   }
 
-  componentWillReceiveProps(props) {
-    // console.log('new props for meet card are: ', props);
-  }
-
-  onRespondClicked = (friendshipId, userId) => {
-    ActionSheetIOS.showActionSheetWithOptions({
-      options: ACCEPT_BUTTONS,
-      cancelButtonIndex: ACCEPT_CANCEL_INDEX,
-    },
-    (buttonIndex) => {
-      console.log('button clicked', ACCEPT_BUTTONS[buttonIndex]);
-      switch (buttonIndex) {
-        case ACCPET_INDEX:
-          this.props.updateFriendship(userId, friendshipId, 'acceptFriend', TAB_KEY_INCOMING, null);
-          break;
-        case ACCPET_REMOVE_INDEX:
-          this.props.updateFriendship(userId, friendshipId, 'deleteFriend', TAB_KEY_INCOMING, null);
-          break;
-        default:
-          return;
-      }
-    });
-  }
-
-  onInvitedClicked = (friendshipId, userId) => {
-    ActionSheetIOS.showActionSheetWithOptions({
-      options: FRIENDSHIP_BUTTONS,
-      cancelButtonIndex: CANCEL_INDEX,
-    },
-    (buttonIndex) => {
-      console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
-      switch (buttonIndex) {
-        case WITHDRAW_INDEX:
-          this.props.updateFriendship(
-            userId,
-            friendshipId,
-            'deleteFriend',
-            TAB_KEY_OUTGOING,
-            () => {
-              this.setState({ requested: false });
-            }
-          );
-          break;
-        default:
-          return;
-      }
-    });
+  handleOnOpenProfile = () => {
+    const { _id } = this.props.item;
+    if (_id) {
+      return this.props.openProfile(_id);
+    }
   }
 
   renderProfileImage(item) {
-    const { profile } = item.user;
-    if (!profile) return '';
-    const { image } = profile;
-    let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
-    if (image) {
-      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
-      profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
-    }
-    return profileImage;
-  }
-
-  renderButton(item) {
-    const { friendshipId, user } = item;
-    const userId = user._id;
-    switch (this.props.type) {
-      case 'outgoing': {
-        return (
-          <Button
-            title='Invited'
-            titleStyle={styles.buttonTextStyle}
-            clear
-            buttonStyle={styles.buttonStyle}
-            onPress={this.onInvitedClicked.bind(this, friendshipId, userId)}
-          />
-        );
-      }
-      case 'incoming': {
-        return (
-          <Button
-            title='Respond'
-            titleStyle={styles.buttonTextStyle}
-            clear
-            buttonStyle={styles.buttonStyle}
-            onPress={this.onRespondClicked.bind(this, friendshipId, userId)}
-          />
-        );
-      }
-
-      default:
-        return '';
-    }
-  }
-
-  renderInfo(item) {
-    const { user } = item;
-    const { name } = user;
     return (
-      <View style={styles.infoContainerStyle}>
-        <View style={{ flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
-          <Name text={name} />
-        </View>
-      </View>
+        <ProfileImage
+          imageStyle={{ height: 40, width: 40, borderRadius: 5 }}
+          imageContainerStyle={{ marginTop: 5 }}
+          imageUrl={item && item.profile ? item.profile.image : undefined}
+          imageContainerStyle={styles.imageContainerStyle}
+          userId={item._id}
+        />
     );
   }
 
-  // TODO: decide the final UI for additional info
-  renderAdditionalInfo(item) {
-    return '';
-    // const { profile } = this.props.item;
-    // let content = '';
-    // if (profile.elevatorPitch) {
-    //   content = profile.elevatorPitch;
-    // } else if (profile.about) {
-    //   content = profile.about;
-    // }
-    // return (
-    //   <View style={{ flex: 1 }}>
-    //     <Text
-    //       style={styles.titleTextStyle}
-    //       numberOfLines={1}
-    //       ellipsizeMode='tail'
-    //     >
-    //       <Text style={styles.detailTextStyle}>
-    //         {content}
-    //       </Text>
-    //     </Text>
-    //   </View>
-    // );
+  renderButton(item) {
+    return (
+        <TouchableOpacity 
+            onPress={() => this.props.openProfile(item._id)}
+            activeOpacity={0.85}
+            style={styles.nextButtonContainerStyle}
+        >
+            <Image
+                source={next}
+                style={{ ...styles.nextIconStyle, opacity: 0.8 }}
+            />
+
+        </TouchableOpacity>
+    );
   }
 
-  renderOccupation(item) {
-    const { profile } = item.user;
-    if (profile.occupation) {
-      return (
-        <View style={{ flex: 1 }}>
-          <Text
-            style={styles.titleTextStyle}
-            numberOfLines={1}
-            ellipsizeMode='tail'
-          >
-            <Text style={styles.detailTextStyle}>{profile.occupation}</Text>
-          </Text>
+  renderProfile(item) {
+    const { name, profile, headline } = item;
+    const detailText = headline || profile.occupation;
+    return (
+        <View style={{ flex: 1, marginLeft: 13 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Name text={name} />
+                <UserBanner 
+                    user={item} 
+                    iconStyle={{ marginTop: 1, marginLeft: 7, height: 18, width: 15 }} 
+                />
+            </View>
+            <View style={{ flexWrap: 'wrap', marginTop: 4 }}>
+                <Text 
+                    style={styles.infoTextStyle}
+                    numberOfLines={2}
+                    ellipsizeMode='tail'
+                >
+                    {detailText}
+                </Text>
+            </View>
+            
         </View>
-      );
-    }
-    return <View style={{ flex: 1 }} />;
+    );
   }
 
   render() {
-    const { item, userId } = this.props;
+    const { item } = this.props;
     if (!item) return '';
 
-    const { user } = item;
-    const { headline } = item;
     return (
-      <TouchableOpacity
-        activeOpacity={0.85}
-        style={[styles.containerStyle, cardBoxShadow]}
-        onPress={() => this.props.openProfile(user._id)}
-      >
+      <View style={[styles.containerStyle, styles.shadow]}>
         {this.renderProfileImage(item)}
-
-        <View style={styles.bodyContainerStyle}>
-          {this.renderInfo(item)}
-          {this.renderOccupation(item)}
-
-          <Text
-            style={styles.jobTitleTextStyle}
-            numberOfLines={1}
-            ellipsizeMode='tail'
-          >
-            {headline}
-          </Text>
-
-          {this.renderAdditionalInfo(item)}
-        </View>
-        <View style={styles.buttonContainerStyle}>
-          {this.renderButton(item)}
-        </View>
-      </TouchableOpacity>
+        {this.renderProfile(item)}
+        <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: 35 }} />
+        {this.renderButton(item)}
+      </View>
     );
   }
 }
 
 const styles = {
-  containerStyle: {
-    flexDirection: 'row',
-    marginTop: 5,
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 8,
-    paddingBottom: 8,
-    alignItems: 'center',
-    backgroundColor: '#ffffff'
-  },
-  bodyContainerStyle: {
-    marginLeft: 8,
-    flex: 1,
-  },
-  infoContainerStyle: {
-    flexDirection: 'row',
-  },
-  imageStyle: {
-    height: 48,
-    width: 48,
-    borderRadius: 5,
-  },
-  buttonContainerStyle: {
-    marginLeft: 8,
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
-  },
-  buttonStyle: {
-    width: 70,
-    height: 26,
-    borderWidth: 1,
-    borderColor: '#17B3EC',
-    borderRadius: 13,
-  },
-  buttonTextStyle: {
-    color: '#17B3EC',
-    fontSize: 11,
-    fontWeight: '700',
-    paddingLeft: 1,
-    padding: 0,
-    alignSelf: 'center'
-  },
-  buttonIconStyle: {
-    marginTop: 1
-  },
-  needContainerStyle: {
-
-  },
-  titleTextStyle: {
-    color: '#17B3EC',
-    fontSize: 11,
-    paddingTop: 1,
-    paddingBottom: 1,
-    marginTop: 3
-  },
-  detailTextStyle: {
-    color: '#000000',
-    paddingLeft: 3
-  },
-  jobTitleTextStyle: {
-    color: '#17B3EC',
-    fontSize: 11,
-    fontWeight: '800',
-    paddingTop: 5,
-    paddingBottom: 3
-  },
-  friendTextStyle: {
-    paddingLeft: 10,
-    color: '#17B3EC',
-    fontSize: 9,
-    fontWeight: '800',
-    maxWidth: 120
-  }
+    containerStyle: {
+        flexDirection: 'row',
+        paddingLeft: 13,
+        paddingTop: 8,
+        paddingBottom: 8,
+        alignItems: 'center',
+        backgroundColor: 'white'
+    },
+    // Button styles
+    nextButtonContainerStyle: {
+        width: 80,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    nextIconStyle: {
+        height: 25,
+        width: 26,
+        transform: [{ rotateY: '180deg' }],
+        tintColor: '#17B3EC'
+    },
+    // ProfileImage
+    imageContainerStyle: {
+        borderWidth: 0.5,
+        padding: 1.5,
+        borderColor: 'lightgray',
+        alignItems: 'center',
+        borderRadius: 6,
+        alignSelf: 'flex-start',
+        backgroundColor: 'white'
+    },
+    infoTextStyle: {
+        color: '#9c9c9c',
+        fontSize: 11
+    },
+    shadow: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+    },
 };
 
-const mapStateToProps = state => {
-  const { userId } = state.user;
-
-  return {
-    userId
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  {
-    updateFriendship,
-    openProfile
+export default connect(null, {
+  updateFriendship,
+  blockUser,
+  openProfile
 })(FriendRequestCardView);
