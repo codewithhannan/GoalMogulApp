@@ -14,10 +14,8 @@ import {
 import { APP_BLUE_BRIGHT, APP_BLUE } from '../../../styles';
 
 /* Assets */
-import People from '../../../asset/utils/People.png';
-import ContactSync from '../../../asset/utils/ContactSync.png';
 import Friends from '../../../asset/utils/Friends.png';
-import HelpBG2 from '../../../asset/utils/HelpBG2.png';
+import Suggest from '../../../asset/utils/Suggest.png';
 
 /* Constants */
 const { width } = Dimensions.get('window');
@@ -42,14 +40,25 @@ class FriendInvitationCTR extends React.PureComponent {
     renderBackgroundImage() {
         return (
             <View style={styles.backgroundImageContainerStyle}>
+                <Image 
+                    source={Suggest}
+                    style={{ 
+                        alignSelf: 'flex-end', 
+                        width: (3 * (width / 10)),
+                        height: (2 * (width / 10)), 
+                        marginBottom: 15
+                    }}
+                />
                 <View style={{ flex: 1 }} />
-                <View style={{ position: 'absolute', bottom: -17, right: 5 }}>
-                    <Image 
-                        source={Friends} 
-                        style={{ alignSelf: 'flex-end', height: 3 * (width / 10) }} 
-                        resizeMode='contain' 
-                    />
-                </View>
+                <Image 
+                    source={Friends} 
+                    style={{ 
+                        alignSelf: 'flex-end', 
+                        width: (3 * (width / 10)),
+                        height: (2 * (width / 10)) + 10,
+                        marginRight: 5
+                    }} 
+                />
             </View>
         );
     }
@@ -91,9 +100,9 @@ const styles = {
         marginBottom: 15,
         marginTop: 20,
         zIndex: 2,
-        padding: 10,
-        paddingLeft: 14,
-        paddingRight: 14
+        padding: 9,
+        paddingLeft: 12,
+        paddingRight: 12
     },
     buttonTextStyle: {
         fontSize: 11,
@@ -113,11 +122,13 @@ const styles = {
     // Background image styles
     backgroundImageContainerStyle: {
         zIndex: 1, 
+        flex: 1,
         position: 'absolute',
         top: 0,
         bottom: 0,
         left: 0,
-        right: 0
+        right: 0,
+        flexDirection: 'row'
     },
 };
 
