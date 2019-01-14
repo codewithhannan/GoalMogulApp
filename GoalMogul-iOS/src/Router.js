@@ -54,6 +54,10 @@ import MyTribe from './Main/Menu/Tribe/MyTribe';
 import CreateTribeModal from './Main/Tribe/CreateTribeModal';
 import Menu from './Main/Menu/Menu';
 
+// Meet
+import FriendTabView from './Main/MeetTab/V2/FriendTab/FriendTabView';
+import RequestTabView from './Main/MeetTab/V2/RequestTab/RequestTabView';
+
 // Profile
 import Profile from './Main/Profile/Profile';
 import ProfileDetail from './Main/Profile/ProfileDetail';
@@ -220,8 +224,10 @@ class RouterComponent extends Component {
                     icon={TabIcon}
                     hideNavBar
                   >
-                    <Scene key="goal" component={MeetTab} hideNavBar />
+                    <Scene key="meet" component={MeetTab} hideNavBar />
                     <Scene key="shareMeetTab" component={ShareDetailCard} />
+                    <Scene key="friendTabView" component={FriendTabView} />
+                    <Scene key="requestTabView" component={RequestTabView} />
                   </Stack>
 
                   <Stack

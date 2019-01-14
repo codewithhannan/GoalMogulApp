@@ -51,17 +51,16 @@ class FriendRequestCardView extends React.PureComponent {
   }
 
   renderButton(item) {
+    const buttonText = item.type === 'outgoing' ? 'Cancel' : 'Respond';
     return (
         <TouchableOpacity 
             onPress={() => this.props.openProfile(item._id)}
             activeOpacity={0.85}
-            style={styles.nextButtonContainerStyle}
+            style={styles.buttonContainerStyle}
         >
-            <Image
-                source={next}
-                style={{ ...styles.nextIconStyle, opacity: 0.8 }}
-            />
-
+            <View style={styles.buttonTextContainerStyle}>
+                <Text style={{ fontSize: 11, color: '#dedede' }}>{buttonText}</Text>
+            </View>
         </TouchableOpacity>
     );
   }
@@ -117,16 +116,22 @@ const styles = {
         backgroundColor: 'white'
     },
     // Button styles
-    nextButtonContainerStyle: {
-        width: 80,
+    buttonContainerStyle: {
+        width: 90,
         alignItems: 'center',
         justifyContent: 'center',
     },
-    nextIconStyle: {
-        height: 25,
-        width: 26,
-        transform: [{ rotateY: '180deg' }],
-        tintColor: '#17B3EC'
+    buttonTextContainerStyle: {
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 12,
+        paddingRight: 12,
+        borderRadius: 5, 
+        backgroundColor: '#f9f9f9', 
+        borderColor: '#dedede',
+        borderWidth: 0.5,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     // ProfileImage
     imageContainerStyle: {

@@ -36,6 +36,7 @@ import {
 import {
     APP_BLUE
 } from '../../styles';
+import { ActionConst, Actions } from 'react-native-router-flux';
 
 const NumCardsToShow = 3;
 
@@ -65,11 +66,11 @@ class MeetTabV2 extends React.Component {
     }
 
     handleSeeAllFriends = () => {
-
+        Actions.friendTabView();
     }
 
     handleSeeAllRequests = () => {
-
+        Actions.requestTabView();
     }
 
     // List header is the FriendInvitationCTR, Sync Conacts and Discover Friends option
@@ -148,7 +149,7 @@ class MeetTabV2 extends React.Component {
         }
         ret = ret.concat(dataToRender.map((d) => <FriendCardView item={d} key={d._id} />));
         if (friendCount > NumCardsToShow) {
-            ret.push(this.renderSeeAll(friendCount, this.handleSeeAllRequests, 'friends-see-all'));
+            ret.push(this.renderSeeAll(friendCount, this.handleSeeAllFriends, 'friends-see-all'));
         }
         return ret;
     }

@@ -1,4 +1,7 @@
 /**
+ * This component allows user to manage the relationship with this current friend
+ */
+/**
  * This View is the Friend Card View
  */
 import React from 'react';
@@ -7,16 +10,16 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  ActionSheetIOS
 } from 'react-native';
 import { connect } from 'react-redux';
 
 // Components
-import Name from '../../Common/Name';
-import ProfileImage from '../../Common/ProfileImage';
+import Name from '../../../Common/Name';
+import ProfileImage from '../../../Common/ProfileImage';
 
 /* Assets */
-import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
-import next from '../../../asset/utils/next.png';
+
 
 /* Actions */
 import {
@@ -24,12 +27,46 @@ import {
   blockUser,
   openProfile,
   UserBanner
-} from '../../../actions';
+} from '../../../../actions';
 
-class FriendCardView extends React.PureComponent {
+const FRIENDSHIP_BUTTONS = ['Block', 'Unfriend', 'Cancel'];
+const BLOCK_INDEX = 0;
+const UNFRIEND_INDEX = 1;
+const CANCEL_INDEX = 2;
+const TAB_KEY = 'friends';
+
+class FriendTabCardView extends React.PureComponent {
   state = {
     requested: false,
     accpeted: false
+  }
+
+  handleUpdateFriendship = () => {
+    const friendshipId = '';
+    ActionSheetIOS.showActionSheetWithOptions({
+        options: FRIENDSHIP_BUTTONS,
+        cancelButtonIndex: CANCEL_INDEX,
+    },
+    (buttonIndex) => {
+        console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
+        switch (buttonIndex) {
+            case BLOCK_INDEX:
+                // User chose to block user with id: _id
+                console.log('User blocks _id: ', friendshipId);
+                this.props.blockUser(friendshipId);
+                break;
+
+            case UNFRIEND_INDEX:
+                // User chose to unfriend
+                this.props.updateFriendship('', friendshipId, 'deleteFriend', TAB_KEY, () => {
+                    console.log('Successfully delete friend with friendshipId: ', friendshipId);
+                    this.setState({ requested: false });
+                });
+                break;
+            default:
+                return;
+        }
+    });
   }
 
   handleOnOpenProfile = () => {
@@ -54,15 +91,13 @@ class FriendCardView extends React.PureComponent {
   renderButton(item) {
     return (
         <TouchableOpacity 
-            onPress={() => this.props.openProfile(item._id)}
+            onPress={() => this.handleUpdateFriendship(item._id)}
             activeOpacity={0.85}
-            style={styles.nextButtonContainerStyle}
-        >
-            <Image
-                source={next}
-                style={{ ...styles.nextIconStyle, opacity: 0.8 }}
-            />
-
+            style={styles.buttonContainerStyle}
+        >   
+            <View style={styles.buttonTextContainerStyle}>
+                <Text style={{ fontSize: 11, color: '#868686' }}>Friend</Text>
+            </View>
         </TouchableOpacity>
     );
   }
@@ -118,16 +153,22 @@ const styles = {
         backgroundColor: 'white'
     },
     // Button styles
-    nextButtonContainerStyle: {
+    buttonContainerStyle: {
         width: 90,
         alignItems: 'center',
         justifyContent: 'center',
     },
-    nextIconStyle: {
-        height: 25,
-        width: 26,
-        transform: [{ rotateY: '180deg' }],
-        tintColor: '#17B3EC'
+    buttonTextContainerStyle: {
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 12,
+        paddingRight: 12,
+        borderRadius: 5, 
+        backgroundColor: '#f9f9f9', 
+        borderColor: '#dedede',
+        borderWidth: 0.5,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     // ProfileImage
     imageContainerStyle: {
@@ -155,4 +196,4 @@ export default connect(null, {
   updateFriendship,
   blockUser,
   openProfile
-})(FriendCardView);
+})(FriendTabCardView);

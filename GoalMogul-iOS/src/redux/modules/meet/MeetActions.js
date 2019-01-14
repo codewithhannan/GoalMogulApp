@@ -42,10 +42,25 @@ const DEBUG_KEY = '[ Actions MeetV2 ]';
  */
 export const handleRefresh = () => (dispatch, getState) => {
     // Refresh incoming/outgoing requests
-    refreshRequest('requests.outgoing', true)(dispatch, getState);
-    refreshRequest('requests.outgoing', true)(dispatch, getState);
-    refreshRequest('friends')(dispatch, getState);
+    handleRefreshRequests()(dispatch, getState);
+    // Refresh user friend
+    handleRefreshFriend()(dispatch, getState);
     getUserFriendCount()(dispatch, getState);
+};
+
+/**
+ * Refresh user friends
+ */
+export const handleRefreshFriend = () => (dispatch, getState) => {
+    refreshRequest('friends', true)(dispatch, getState);
+};
+
+/**
+ * Refresh incoming / outgoing requests
+ */
+export const handleRefreshRequests = () => (dispatch, getState) => {
+    refreshRequest('requests.outgoing')(dispatch, getState);
+    refreshRequest('requests.outgoing')(dispatch, getState);
 };
 
 const refreshRequest = (key, isPaginated) => (dispatch, getState) => {
