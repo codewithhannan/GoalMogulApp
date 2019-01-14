@@ -2,20 +2,36 @@
 import React from 'react';
 import {
     View,
-    FlatList,
     Text,
     Image,
-    TouchableOpacity
+    TouchableOpacity,
+    ScrollView,
+    RefreshControl
 } from 'react-native';
 import { connect } from 'react-redux';
 
 /* Components */
+import FriendCardView from './V2/FriendCardView';
+import FriendRequestCardView from './V2/FriendRequestCardView';
 import FriendInvitationCTR from './V2/FriendInvitationCTR';
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
+
+/* Actions */
+import {
+    handleRefresh
+} from '../../redux/modules/meet/MeetActions';
 
 /* Assets */
 import People from '../../asset/utils/People.png';
 import ContactSyncIcon from '../../asset/utils/ContactSync.png';
+
+/* Selectors */
+import {
+    getIncomingUserFromFriendship,
+    getOutgoingUserFromFriendship
+} from '../../redux/modules/meet/selector';
+
+const NumCardsToShow = 3;
 
 class MeetTabV2 extends React.Component {
     constructor(props) {
@@ -31,8 +47,7 @@ class MeetTabV2 extends React.Component {
 
     // MeetTab refresh
     handleOnRefresh = () => {
-        // Refresh incoming/outgoing request
-        // Refresh friend list
+        this.props.handleRefresh();
     }
 
     handleSyncContact = () => {
@@ -40,6 +55,14 @@ class MeetTabV2 extends React.Component {
     }
 
     handleDiscoverFriend = () => {
+
+    }
+
+    handleSeeAllFriends = () => {
+
+    }
+
+    handleSeeAllRequests = () => {
 
     }
 
@@ -80,24 +103,53 @@ class MeetTabV2 extends React.Component {
         );
     }
 
-    renderItem = ({ item }) => {
+    renderRequests = (incomingRequests, outgoingRequests) => {
         // render FriendCardView or FriendRequestCardView based on item type
+        const inLength = incomingRequests ? incomingRequests.length : 0;
+        const outLength = outgoingRequests ? outgoingRequests.length : 0;
+        const totalLength = inLength + outLength;
+        const dataToRender = requestDataToRender(
+            incomingRequests, 
+            outgoingRequests, 
+            NumCardsToShow
+        );
+
+        const ret = dataToRender.map((d) => <FriendRequestCardView item={d} />);
+        if (totalLength > NumCardsToShow) {
+            ret.push(this.renderSeeAll(totalLength, this.handleSeeAllRequests));
+        }
+        return ret;
+        // If total length is less than threshold, then don't render See All
+    }
+
+    renderFriends = (friends, friendCount) => {
+        const length = friends ? friends.length : 0;
+        const dataToRender = length > NumCardsToShow ? friends.slice(0, NumCardsToShow) : friends;
+
+        const ret = dataToRender.map(d => <FriendCardView item={d} />);
+        if (friendCount > NumCardsToShow) {
+            ret.push(this.renderSeeAll(friendCount, this.handleSeeAllRequests));
+        }
+        return ret;
     }
 
     render() {
-        const { refreshing } = this.props;
+        const { incomingRequests, outgoingRequests, friends, friendCount } = this.props;
         return (
             <View style={{ flex: 1, backgroundColor: 'white' }}>
                 <SearchBarHeader rightIcon='menu' />
-                <FlatList
-                    data={this.props.data || []}
-                    renderItem={this.renderItem}
-                    numColumns={1}
-                    keyExtractor={this.keyExtractor}
-                    refreshing={refreshing}
-                    onRefresh={this.handleOnRefresh}
-                    ListHeaderComponent={this.renderListHeader()}
-                />
+                <ScrollView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.props.refreshing}
+                            onRefresh={this.handleOnRefresh}
+                        />
+                    }
+                >
+                    {this.renderListHeader()}
+                    {this.renderRequests(incomingRequests, outgoingRequests)}
+                    {this.renderFriends(friends, friendCount)}
+                </ScrollView>
             </View>
         );
     }
@@ -131,14 +183,44 @@ const styles = {
 
 const mapStateToProps = state => {
     // Use new selector to cache the format the meettab data
+    const { requests, friends } = state.meet;
+    const { data, count } = friends;
+    const { incoming, outgoing } = requests;
+    const incomingRequests = getIncomingUserFromFriendship(state);
+    const outgoingRequests = getOutgoingUserFromFriendship(state);
     return {
-        refreshing: false
+        // Meet tab is on refreshing state if one of them is refreshing
+        refreshing: incoming.refreshing || outgoing.refreshing || friends.refreshing, 
+        incomingRequests,
+        outgoingRequests,
+        friends: data,
+        friendCount: count
     };
+};
+
+const requestDataToRender = (incomingRequests, outgoingRequests, threshold) => {
+    let dataToRender = [];
+    const inLength = incomingRequests ? incomingRequests.length : 0;
+    const outLength = outgoingRequests ? outgoingRequests.length : 0;
+    const totalLength = inLength + outLength;
+    if (totalLength <= threshold) {
+        dataToRender = [...incomingRequests, ...outgoingRequests];
+    } else if (inLength > threshold) {
+        // Render all incoming requests
+        dataToRender = incomingRequests.slice(0, threshold);
+    } else {
+        // Incoming request is not sufficient, use outgoing request to fulfill the length
+        dataToRender = [
+            ...incomingRequests, 
+            ...outgoingRequests.slice(0, threshold - inLength)
+        ];
+    }
+    return dataToRender;
 };
 
 export default connect(
     mapStateToProps,
     {
-
+        handleRefresh
     }
 )(MeetTabV2);
