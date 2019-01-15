@@ -172,6 +172,7 @@ class SectionCardV2 extends Component {
     const { description, isCompleted } = itemToRender;
     const isCommentFocused = type === 'comment';
     const sectionText = isCommentFocused ? 'Back to mastermind' : description;
+    const textToDisplay = Decode(sectionText === undefined ? 'No content' : sectionText);
 
     return (
       <TouchableOpacity
@@ -191,17 +192,18 @@ class SectionCardV2 extends Component {
               flexDirection: 'row',
               alignItems: 'flex-start',
               justifyContent: 'flex-start',
-              flexWrap: 'wrap'
             }}
           >
             {this.renderCheckBox(isCompleted, type)}
-            <Text
-              style={{ ...styles.sectionTextStyle, paddingTop: isCommentFocused ? 0 : 4 }}
-              numberOfLines={2}
-              ellipsizeMode='tail'
-            >
-              {Decode(sectionText === undefined ? 'No content' : sectionText)}
-            </Text>
+            <View style={{ flexWrap: 'wrap', flex: 1 }}>
+              <Text
+                style={{ ...styles.sectionTextStyle, paddingTop: textToDisplay && textToDisplay.length > 40 ? 0 : 4 }}
+                numberOfLines={2}
+                ellipsizeMode='tail'
+              >
+                {textToDisplay}
+              </Text>
+            </View>
           </View>
           {this.renderStats(type)}
         </View>
