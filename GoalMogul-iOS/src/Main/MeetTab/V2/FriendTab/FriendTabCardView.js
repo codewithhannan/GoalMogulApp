@@ -9,7 +9,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image,
   ActionSheetIOS
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -34,6 +33,7 @@ const BLOCK_INDEX = 0;
 const UNFRIEND_INDEX = 1;
 const CANCEL_INDEX = 2;
 const TAB_KEY = 'friends';
+const DEBUG_KEY = '[ UI FriendTabCardView ]';
 
 class FriendTabCardView extends React.PureComponent {
   state = {

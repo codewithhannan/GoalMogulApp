@@ -20,9 +20,8 @@ import {
   requestsSelectTab,
 } from '../../../../actions';
 
-/* Actions */
 import {
-    loadMoreRequest
+  loadMoreRequest
 } from '../../../../redux/modules/meet/MeetActions';
 
 // Selectors
@@ -71,7 +70,7 @@ class RequestTabView extends Component {
     this.props.loadMoreRequest(route);
   }
 
-  _keyExtractor = (item) => item.friendshipId;
+  keyExtractor = (item) => item.friendshipId;
 
   renderItem = ({ item }) => <FriendRequestCardView item={item} />;
 
@@ -109,7 +108,7 @@ class RequestTabView extends Component {
           <FlatList
             data={this.props.data}
             renderItem={this.renderItem}
-            keyExtractor={this._keyExtractor}
+            keyExtractor={this.keyExtractor}
             onRefresh={this.handleRefresh.bind(this)}
             refreshing={this.props.refreshing}
             onEndReached={this.handleOnLoadMore}

@@ -1,5 +1,6 @@
 /** 
- * This is Actions for meet tab redesign.
+ * This is Actions for meet tab redesign. There are duplicate functionalities with 
+ * actions in ../actions
  */ 
 import _ from 'lodash';
 import { api as API } from '../../middleware/api';
@@ -64,10 +65,10 @@ export const handleRefreshRequests = () => (dispatch, getState) => {
 };
 
 const refreshRequest = (key, isPaginated) => (dispatch, getState) => {
-    const { skip, limit } = _.get(getState().meet, `${key}`);
+    const { limit } = _.get(getState().meet, `${key}`);
     const route = _.get(requestMap, `${key}`);
     const url = isPaginated 
-        ? `${BASE_ROUTE}${route}?skip=${skip}&limit=${limit}` 
+        ? `${BASE_ROUTE}${route}?skip=0&limit=${limit}` 
         : `${BASE_ROUTE}${route}`;
 
     const onSuccess = (res) => {

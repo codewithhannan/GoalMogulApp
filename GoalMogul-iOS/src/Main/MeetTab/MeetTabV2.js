@@ -6,10 +6,13 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    RefreshControl
+    RefreshControl,
+    Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
+import { Constants } from 'expo';
+import { Actions } from 'react-native-router-flux';
 
 /* Components */
 import FriendCardView from './V2/FriendCardView';
@@ -19,8 +22,12 @@ import SearchBarHeader from '../Common/Header/SearchBarHeader';
 
 /* Actions */
 import {
-    handleRefresh
+    handleRefresh,
 } from '../../redux/modules/meet/MeetActions';
+
+import { 
+    meetContactSync
+} from '../../actions';
 
 /* Assets */
 import People from '../../asset/utils/People.png';
@@ -36,9 +43,14 @@ import {
 import {
     APP_BLUE
 } from '../../styles';
-import { ActionConst, Actions } from 'react-native-router-flux';
 
-const NumCardsToShow = 3;
+/* Constants */
+import { IPHONE_MODELS } from '../../Utils/Constants';
+
+const DEBUG_KEY = '[ UI MeetTabV2 ]'; 
+const NumCardsToShow = Platform.OS === 'ios' &&
+  IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+  ? 5 : 3;
 
 class MeetTabV2 extends React.Component {
     constructor(props) {
@@ -54,11 +66,12 @@ class MeetTabV2 extends React.Component {
 
     // MeetTab refresh
     handleOnRefresh = () => {
+        console.log(`${DEBUG_KEY}: refreshing`);
         this.props.handleRefresh();
     }
 
     handleSyncContact = () => {
-
+        this.props.meetContactSync(this.handleOnRefresh);
     }
 
     handleDiscoverFriend = () => {
@@ -293,6 +306,7 @@ const requestDataToRender = (incomingRequests, outgoingRequests, threshold) => {
 export default connect(
     mapStateToProps,
     {
-        handleRefresh
+        handleRefresh,
+        meetContactSync
     }
 )(MeetTabV2);
