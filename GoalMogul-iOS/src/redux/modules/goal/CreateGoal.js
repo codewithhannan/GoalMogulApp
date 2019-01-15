@@ -73,7 +73,9 @@ export default (state = INITIAL_STATE, action) => {
     case GOAL_CREATE_TRENDING_LOADING_MORE_DONE: {
       const { data, skip, hasNextPage } = action.payload;
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, 'trendingGoals.data', data);
+      const currentData = _.get(newState, 'trendingGoals.data');
+      const newData = currentData.concat(data);
+      newState = _.set(newState, 'trendingGoals.data', uniqueTrendingGoals(newData));
       newState = _.set(newState, 'trendingGoals.skip', skip);
       newState = _.set(newState, 'trendingGoals.hasNextPage', hasNextPage);
       return _.set(newState, 'trendingGoals.loading', false);
@@ -95,4 +97,17 @@ export default (state = INITIAL_STATE, action) => {
     default:
       return { ...state };
   }
+};
+
+const uniqueTrendingGoals = (array) => {
+  let a = array.concat();
+  for (let i = 0; i < a.length; ++i) {
+    for (let j = i + 1; j < a.length; ++j) {
+      if (a[i].title === a[j].title) {
+        a.splice(j--, 1);
+      }
+    }
+  }
+
+  return a;
 };

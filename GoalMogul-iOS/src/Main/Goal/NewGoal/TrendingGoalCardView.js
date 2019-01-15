@@ -30,9 +30,9 @@ class TrendingGoalCard extends React.PureComponent {
     renderStats(item) {
         const { frequency, title } = item;
         return (
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ color: APP_BLUE_BRIGHT }}>
-                    <Text style={{ fontWeight: '600' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 8 }}>
+                <Text style={{ color: APP_BLUE_BRIGHT, fontSize: 9 }}>
+                    <Text style={{ fontWeight: '700' }}>
                         {nFormatter(frequency)}
                     </Text>{' '}IN COMMON
                 </Text>
@@ -40,7 +40,7 @@ class TrendingGoalCard extends React.PureComponent {
                     style={styles.plusIconContainerStyle}
                     onPress={() => this.onPress(title)}
                 >
-                    <Image source={plus} style={{ width: 15, height: 15, tintColor: 'white' }} />
+                    <Image source={plus} style={{ width: 12, height: 12, tintColor: 'white' }} />
                 </TouchableOpacity>
             </View>
         );
@@ -49,11 +49,11 @@ class TrendingGoalCard extends React.PureComponent {
     renderTitle(item) {
         const { title } = item;
         return (
-            <View style={{ flexWrap: 'wrap', flex: 1, paddingTop: 10, paddingBottom: 10 }}>
+            <View style={{ flexWrap: 'wrap', flex: 1, paddingTop: 10, paddingBottom: 10, paddingRight: 5 }}>
                 <Text
-                    style={{ color: 'darkgray', fontSize: 12 }}
+                    style={{ color: '#6e6e6e', fontSize: 15 }}
                     ellipsizeMode='tail'
-                    numberOfLines={3}
+                    numberOfLines={4}
                 >
                     {title}
                 </Text>
@@ -64,7 +64,7 @@ class TrendingGoalCard extends React.PureComponent {
     renderRank(item, index) {
         return (
             <View style={{ padding: 15 }}>
-                <Text>#{index}</Text>
+                <Text style={{ fontWeight: '700' }}>#{index}</Text>
             </View>
         );
     }
@@ -76,6 +76,7 @@ class TrendingGoalCard extends React.PureComponent {
             <View style={styles.containerStyle}>
                 {this.renderRank(item, index)}
                 {this.renderTitle(item)}
+                <View style={{ height: 25, width: 0.5, backgroundColor: 'lightgray', opacity: 0.8 }} />
                 {this.renderStats(item)}
             </View>
         );
@@ -87,11 +88,15 @@ const styles = {
         flex: 1, 
         backgroundColor: 'white', 
         flexDirection: 'row', 
-        alignItems: 'center'
+        alignItems: 'center',
+        borderTopWidth: 0.5,
+        borderBottomWidth: 0.5,
+        borderColor: '#e9e9e9',
+        marginBottom: 5
     },
     plusIconContainerStyle: {
         backgroundColor: APP_BLUE_BRIGHT, 
-        margin: 10, 
+        margin: 8, 
         borderRadius: 15, 
         height: 30, 
         width: 30,
