@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 import _ from 'lodash';
 import moment from 'moment';
 import { api as API } from '../../middleware/api';
-import { clearTags } from '../../middleware/utils';
+import { clearTags, queryBuilderBasicBuilder } from '../../middleware/utils';
 
 import {
   GOAL_CREATE_SUBMIT,
@@ -351,7 +351,7 @@ export const createGoalSwitchTab = (index) => (dispatch) => dispatch({
  * @param {*} title 
  */
 export const selectTrendingGoals = (title) => (dispatch) => {
-  change('createGoalModal', 'title', title);
+  dispatch(change('createGoalModal', 'title', title));
   createGoalSwitchTab(0)(dispatch);
 };
 
@@ -402,8 +402,8 @@ export const refreshTrendingGoals = () => (dispatch, getState) => {
 };
 
 export const loadMoreTrendingGoals = () => (dispatch, getState) => {
-  const { skip, limit, category, hasNextPage, refreshing } = getState().createGoal.trendingGoals;
-  if (hasNextPage === false || refreshing) return;
+  const { skip, limit, category, hasNextPage, refreshing, loading } = getState().createGoal.trendingGoals;
+  if (hasNextPage === false || refreshing || loading) return;
   
   dispatch({
     type: GOAL_CREATE_TRENDING_LOADING_MORE
@@ -416,7 +416,7 @@ export const loadMoreTrendingGoals = () => (dispatch, getState) => {
       type: GOAL_CREATE_TRENDING_LOADING_MORE_DONE,
       payload: {
         data,
-        skip: skip + data ? data.length : 0,
+        skip: skip + (data ? data.length : 0),
         hasNextPage: !(data === undefined || data.length === 0),
       }
     });
@@ -440,7 +440,7 @@ export const loadMoreTrendingGoals = () => (dispatch, getState) => {
 const fetchTrendingGoals = (skip, limit, category, onSuccess, onError) => (dispatch, getState) => {
   const { token } = getState().user;
   API
-    .get(`secure/goal/trending?skip=${skip}&limit=${limit}&category=${category}`, token)
+    .get(`secure/goal/trending?${queryBuilderBasicBuilder({ skip, limit, category })}`, token)
     .then((res) => {
       if (res.status === 200) {
         return onSuccess(res);

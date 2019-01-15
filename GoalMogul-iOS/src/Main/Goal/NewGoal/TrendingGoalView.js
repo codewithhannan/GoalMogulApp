@@ -5,7 +5,8 @@ import {
     Text,
     Image,
     TouchableOpacity,
-    Dimensions
+    Dimensions,
+    ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 import {
@@ -39,7 +40,7 @@ class TrendingGoalView extends React.PureComponent {
         console.log(`${DEBUG_KEY}: component did mount`);
     }
 
-    keyExtractor = (item) => item._id;
+    keyExtractor = (item) => item.title;
 
     handleOnRefresh = () => {
         this.props.refreshTrendingGoals();
@@ -54,15 +55,17 @@ class TrendingGoalView extends React.PureComponent {
     }
 
     renderItem = ({ item, index }) => {
-        console.log(`${DEBUG_KEY}: index is: `, index);
         return <TrendingGoalCardView index={index} item={item} />;
     }
 
     render() {
         const { refreshing, loading, category } = this.props;
         return (
-            <View style={{ flex: 1, backgroundColor: 'white' }}>
-                <FilterBar handleOnMenuSelect={(val) => this.handleOnMenuSelect(val)} category={category} />
+            <View style={{ flex: 1, backgroundColor: '#f6f8fa' }}>
+                <FilterBar 
+                    handleOnMenuSelect={(val) => this.handleOnMenuSelect(val)} 
+                    category={category} 
+                />
                 <FlatList
                     data={this.props.data}
                     renderItem={this.renderItem}
@@ -76,6 +79,16 @@ class TrendingGoalView extends React.PureComponent {
                         <EmptyResult text={'No Trending'} textStyle={{ paddingTop: 150 }} />
                     }
                     onEndThreshold={0}
+                    ListFooterComponent={
+                        loading 
+                        ? (
+                            <View
+                                style={{ flex: 1, height: 50, width, justifyContent: 'center', alignItems: 'center' }}
+                            >
+                                <ActivityIndicator />
+                            </View>
+                        ) : ''
+                    }
                 />
             </View>
         );
@@ -138,6 +151,11 @@ const styles = {
       }
 };
 
+const options = [
+    'All', 'General', 'Learning/Education', 'Career/Business', 'Financial', 'Spiritual',
+    'Family/Personal', 'Physical', 'Charity/Philanthropy', 'Things'
+];
+
 const FilterBar = (props) => {
     const { category, handleOnMenuSelect } = props;
     const categoryText = category ? ` (${category})` : '';
@@ -159,23 +177,14 @@ const FilterBar = (props) => {
             </View>
           </MenuTrigger>
           <MenuOptions customStyles={styles.menuOptionsStyles}>
-            <MenuOption
-              text='Date Created'
-              value='created'
-            />
-            <MenuOption
-              text='Last Updated'
-              value='updated'
-            />
-            <MenuOption
-              text='Date Shared'
-              value='shared'
-            />
-            <MenuOption
-              text='Priority'
-              value='priority'
-            />
-
+                <FlatList
+                    data={options}
+                    renderItem={({ item }) => (
+                        <MenuOption value={item} text={item} />
+                    )}
+                    keyExtractor={(item, index) => index.toString()}
+                    style={{ height: 200 }}
+                />
           </MenuOptions>
         </Menu>
     );
