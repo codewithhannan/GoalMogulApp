@@ -57,6 +57,7 @@ import Menu from './Main/Menu/Menu';
 // Meet
 import FriendTabView from './Main/MeetTab/V2/FriendTab/FriendTabView';
 import RequestTabView from './Main/MeetTab/V2/RequestTab/RequestTabView';
+import DiscoverTabView from './Main/MeetTab/V2/DiscoverTab/DiscoverTabView';
 
 // Profile
 import Profile from './Main/Profile/Profile';
@@ -228,6 +229,7 @@ class RouterComponent extends Component {
                     <Scene key="shareMeetTab" component={ShareDetailCard} />
                     <Scene key="friendTabView" component={FriendTabView} />
                     <Scene key="requestTabView" component={RequestTabView} />
+                    <Scene key="discoverTabView" component={DiscoverTabView} />
                   </Stack>
 
                   <Stack

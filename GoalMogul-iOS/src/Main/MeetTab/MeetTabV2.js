@@ -75,7 +75,7 @@ class MeetTabV2 extends React.Component {
     }
 
     handleDiscoverFriend = () => {
-
+        Actions.discoverTabView();
     }
 
     handleSeeAllFriends = () => {

@@ -6,7 +6,7 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image,
+  ActionSheetIOS
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -14,10 +14,7 @@ import { connect } from 'react-redux';
 import Name from '../../Common/Name';
 import ProfileImage from '../../Common/ProfileImage';
 
-/* Assets */
-import next from '../../../asset/utils/next.png';
-
-/* Actions */
+// Actions
 import {
   updateFriendship,
   blockUser,
@@ -25,36 +22,120 @@ import {
   UserBanner
 } from '../../../actions';
 
+const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
+const WITHDRAW_INDEX = 0;
+const CANCEL_INDEX = 1;
+
+const ACCEPT_BUTTONS = ['Accept', 'Remove', 'Cancel'];
+const ACCPET_INDEX = 0;
+const ACCPET_REMOVE_INDEX = 1;
+const ACCEPT_CANCEL_INDEX = 2;
+
+const TAB_KEY_OUTGOING = 'requests.outgoing';
+const TAB_KEY_INCOMING = 'requests.incoming';
+const DEBUG_KEY = '[ UI FriendRequestCardView ]';
+
 class FriendRequestCardView extends React.PureComponent {
-  state = {
-    requested: false,
-    accpeted: false
-  }
-
-  handleOnOpenProfile = () => {
-    const { _id } = this.props.item;
-    if (_id) {
-      return this.props.openProfile(_id);
+    state = {
+        requested: false,
+        accpeted: false
     }
+
+    onRespondClicked = (friendshipId, userId) => {
+        ActionSheetIOS.showActionSheetWithOptions({
+            options: ACCEPT_BUTTONS,
+            cancelButtonIndex: ACCEPT_CANCEL_INDEX,
+        },
+        (buttonIndex) => {
+            console.log('button clicked', ACCEPT_BUTTONS[buttonIndex]);
+            switch (buttonIndex) {
+            case ACCPET_INDEX:
+                this.props.updateFriendship(
+                    userId, 
+                    friendshipId, 
+                    'acceptFriend', 
+                    TAB_KEY_INCOMING, 
+                    null
+                );
+                break;
+            case ACCPET_REMOVE_INDEX:
+                this.props.updateFriendship(
+                    userId, 
+                    friendshipId, 
+                    'deleteFriend', 
+                    TAB_KEY_INCOMING, 
+                    null
+                );
+                break;
+            default:
+                return;
+            }
+        });
+    }
+
+    onInvitedClicked = (friendshipId, userId) => {
+        ActionSheetIOS.showActionSheetWithOptions({
+            options: FRIENDSHIP_BUTTONS,
+            cancelButtonIndex: CANCEL_INDEX,
+        },
+        (buttonIndex) => {
+            console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
+            switch (buttonIndex) {
+            case WITHDRAW_INDEX:
+                this.props.updateFriendship(
+                userId,
+                friendshipId,
+                'deleteFriend',
+                TAB_KEY_OUTGOING,
+                () => {
+                    this.setState({ requested: false });
+                }
+                );
+                break;
+            default:
+                return;
+            }
+        });
+    }
+
+    handleButtonOnPress = (item) => {
+        if (item.type === 'outgoing') {
+            return this.onRespondClicked();
+        }
+
+        if (item.type === 'incoming') {
+            return this.onInvitedClicked();
+        }
+
+    console.log(`${DEBUG_KEY}: unknown type when button pressed: `, item);
   }
 
-  renderProfileImage(item) {
+    handleOnOpenProfile = () => {
+        const { _id } = this.props.item;
+        if (_id) {
+        return this.props.openProfile(_id);
+        }
+    }
+
+    renderProfileImage(item) {
     return (
         <ProfileImage
-          imageStyle={{ height: 40, width: 40, borderRadius: 5 }}
-          imageContainerStyle={{ marginTop: 5 }}
-          imageUrl={item && item.profile ? item.profile.image : undefined}
-          imageContainerStyle={styles.imageContainerStyle}
-          userId={item._id}
+            imageStyle={{ height: 40, width: 40, borderRadius: 5 }}
+            imageContainerStyle={{ marginTop: 5 }}
+            imageUrl={item && item.profile ? item.profile.image : undefined}
+            imageContainerStyle={styles.imageContainerStyle}
+            userId={item._id}
         />
     );
-  }
+    }
 
   renderButton(item) {
     const buttonText = item.type === 'outgoing' ? 'Cancel' : 'Respond';
+    const friendshipId = '';
+    const userId = '';
     return (
         <TouchableOpacity 
-            onPress={() => this.props.openProfile(item._id)}
+            onPress={() => this.handleButtonOnPress(friendshipId, userId, item)}
             activeOpacity={0.85}
             style={styles.buttonContainerStyle}
         >
@@ -96,12 +177,15 @@ class FriendRequestCardView extends React.PureComponent {
     if (!item) return '';
 
     return (
-      <View style={[styles.containerStyle, styles.shadow]}>
-        {this.renderProfileImage(item)}
-        {this.renderProfile(item)}
-        <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: 35 }} />
-        {this.renderButton(item)}
-      </View>
+        <TouchableOpacity 
+            style={[styles.containerStyle, styles.shadow]}
+            onPress={this.handleOnOpenProfile}
+        >
+            {this.renderProfileImage(item)}
+            {this.renderProfile(item)}
+            <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: 35 }} />
+            {this.renderButton(item)}
+        </TouchableOpacity>
     );
   }
 }
@@ -156,7 +240,7 @@ const styles = {
 };
 
 export default connect(null, {
-  updateFriendship,
-  blockUser,
-  openProfile
+    updateFriendship,
+    blockUser,
+    openProfile
 })(FriendRequestCardView);

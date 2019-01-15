@@ -115,8 +115,8 @@ const refreshRequest = (key, isPaginated) => (dispatch, getState) => {
  * @param {*} key 
  */
 export const loadMoreRequest = (key) => (dispatch, getState) => {
-    const { skip, limit, hasNextPage, refreshing } = _.get(getState().meet, `${key}`);
-    if (hasNextPage === false || refreshing) return;
+    const { skip, limit, hasNextPage, refreshing, loading } = _.get(getState().meet, `${key}`);
+    if (hasNextPage === false || refreshing || loading) return;
 
     // Start loading for one key
     dispatch({

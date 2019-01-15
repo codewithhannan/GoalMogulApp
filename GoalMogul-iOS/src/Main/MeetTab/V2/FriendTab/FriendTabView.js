@@ -20,6 +20,11 @@ import {
     handleRefreshFriend
 } from '../../../../redux/modules/meet/MeetActions';
 
+/* Styles */
+import {
+    BACKGROUND_COLOR
+} from '../../../../styles';
+
 const KEY = 'friends';
 const DEBUG_KEY = '[ UI FriendTabView ]';
 
