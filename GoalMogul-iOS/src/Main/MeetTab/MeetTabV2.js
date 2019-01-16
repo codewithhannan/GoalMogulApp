@@ -50,7 +50,7 @@ import { IPHONE_MODELS } from '../../Utils/Constants';
 const DEBUG_KEY = '[ UI MeetTabV2 ]'; 
 const NumCardsToShow = Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
-  ? 5 : 2;
+  ? 5 : 3;
 
 class MeetTabV2 extends React.Component {
     constructor(props) {

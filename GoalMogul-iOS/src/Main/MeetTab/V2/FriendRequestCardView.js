@@ -101,11 +101,11 @@ class FriendRequestCardView extends React.PureComponent {
     }
 
     handleButtonOnPress = (item) => {
-        if (item.type === 'outgoing') {
+        if (item.type === 'incoming') {
             return this.onRespondClicked(item);
         }
 
-        if (item.type === 'incoming') {
+        if (item.type === 'outgoing') {
             return this.onInvitedClicked(item);
         }
 
@@ -120,25 +120,23 @@ class FriendRequestCardView extends React.PureComponent {
     }
 
     renderProfileImage(item) {
-    return (
-        <ProfileImage
-            imageStyle={{ height: 40, width: 40, borderRadius: 5 }}
-            defaultImageStyle={{ height: 40, width: 37, borderRadius: 5, marginLeft: 1, marginRight: 1 }}
-            imageContainerStyle={{ marginTop: 5 }}
-            imageUrl={item && item.profile ? item.profile.image : undefined}
-            imageContainerStyle={styles.imageContainerStyle}
-            userId={item._id}
-        />
-    );
+        return (
+            <ProfileImage
+                imageStyle={{ height: 40, width: 40, borderRadius: 5 }}
+                defaultImageStyle={{ height: 40, width: 37, borderRadius: 5, marginLeft: 1, marginRight: 1 }}
+                imageContainerStyle={{ marginTop: 5 }}
+                imageUrl={item && item.profile ? item.profile.image : undefined}
+                imageContainerStyle={styles.imageContainerStyle}
+                userId={item._id}
+            />
+        );
     }
 
   renderButton(item) {
     const buttonText = item.type === 'outgoing' ? 'Cancel' : 'Respond';
-    const friendshipId = '';
-    const userId = '';
     return (
         <TouchableOpacity 
-            onPress={() => this.handleButtonOnPress(friendshipId, userId, item)}
+            onPress={() => this.handleButtonOnPress(item)}
             activeOpacity={0.85}
             style={styles.buttonContainerStyle}
         >
