@@ -42,7 +42,8 @@ class FriendCardView extends React.PureComponent {
   renderProfileImage(item) {
     return (
         <ProfileImage
-          imageStyle={{ height: 40, width: 40, borderRadius: 3 }}
+          imageStyle={{ height: 40, width: 40, borderRadius: 5 }}
+          defaultImageStyle={{ height: 40, width: 37, borderRadius: 5, marginLeft: 1, marginRight: 1 }}
           imageContainerStyle={{ marginTop: 5 }}
           imageUrl={item && item.profile ? item.profile.image : undefined}
           imageContainerStyle={styles.imageContainerStyle}

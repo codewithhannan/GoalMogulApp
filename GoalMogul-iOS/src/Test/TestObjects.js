@@ -197,3 +197,67 @@ const testGoal = {
   }],
   title: 'Establish a LMFBR near Westport, Connecticut by 2020',
 };
+
+export const incomingRequests = [
+  {
+    type: 'incoming',
+    user: {
+      name: 'Frank Wang',
+      headline: 'Strive to be the best photographer !~',
+      profile: {
+        about: 'This is about',
+        pointsEarned: 10,
+        image: undefined
+      }
+    },
+    friendshipId: 'friend1',
+    _id: 'friend1'
+  },
+  {
+    type: 'incoming',
+    user: {
+      name: 'Scott Miller',
+      headline: 'Discover the beauty of the world',
+      profile: {
+        about: 'This is about',
+        pointsEarned: 10,
+        image: undefined
+      }
+    },
+    friendshipId: 'friend2',
+    _id: 'friend2'
+  }
+];
+
+export const outgoingRequests = [
+  {
+    type: 'outgoing',
+    user: {
+      name: 'Jason Chen',
+      headline: 'Sing with heart',
+      profile: {
+        about: 'This is about',
+        pointsEarned: 10,
+        image: undefined
+      }
+    },
+    friendshipId: 'friend3',
+    _id: 'friend3'
+  },
+  {
+    type: 'outgoing',
+    user: {
+      name: 'Jing Zhang',
+      headline: 'Let\'s get it done!',
+      profile: {
+        about: 'This is about',
+        pointsEarned: 10,
+        image: undefined
+      }
+    },
+    friendshipId: 'friend4',
+    _id: 'friend4'
+  }
+];
+
+export const testFriendRequests = [...incomingRequests, ...outgoingRequests];

@@ -51,7 +51,7 @@ class FriendTabView extends React.Component {
         const { user } = this.props;
         const modalTitle = `${user.name}'s Friends`;
         return (
-            <View style={{ flex: 1, backgroundColor: 'white' }}>
+            <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
                 <SearchBarHeader backButton title={modalTitle} />
                 <FlatList
                     data={this.props.data}

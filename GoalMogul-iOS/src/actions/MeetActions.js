@@ -234,13 +234,13 @@ export const updateFriendship = (userId, friendshipId, type, tab, callback) =>
           url: baseUrl
         };
       case 'deleteFriend':
-      return {
-        type: 'DELETE',
-        data: {
-          friendshipId,
-        },
-        url: `${baseUrl}?friendshipId=${friendshipId}`
-      };
+        return {
+          type: 'DELETE',
+          data: {
+            friendshipId,
+          },
+          url: `${baseUrl}?friendshipId=${friendshipId}`
+        };
       default:
         return 'POST';
     }

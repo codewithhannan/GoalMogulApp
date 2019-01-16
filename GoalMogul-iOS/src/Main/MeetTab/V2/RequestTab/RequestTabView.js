@@ -30,6 +30,14 @@ import {
   getIncomingUserFromFriendship
 } from '../../../../redux/modules/meet/selector';
 
+// Styles
+import {
+  BACKGROUND_COLOR
+} from '../../../../styles';
+
+// Test Data
+import { testFriendRequests } from '../../../../Test/TestObjects';
+
 // tab key
 const routes = {
   outgoing: 'requests.outgoing',
@@ -70,7 +78,7 @@ class RequestTabView extends Component {
     this.props.loadMoreRequest(route);
   }
 
-  keyExtractor = (item) => item.friendshipId;
+  keyExtractor = (item) => item._id;
 
   renderItem = ({ item }) => <FriendRequestCardView item={item} />;
 
@@ -96,17 +104,16 @@ class RequestTabView extends Component {
   }
 
   render() {
-    const { user } = this.props;
-    const modalTitle = `${user.name}'s Friends`;
+    const modalTitle = 'Friend Requests';
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
         <SearchBarHeader backButton title={modalTitle} />
         <View style={{ flexDirection: 'row' }}>
           {this.renderTabs()}
         </View>
         <View style={{ flex: 1 }}>
           <FlatList
-            data={this.props.data}
+            data={[...testFriendRequests, ...this.props.data]}
             renderItem={this.renderItem}
             keyExtractor={this.keyExtractor}
             onRefresh={this.handleRefresh.bind(this)}

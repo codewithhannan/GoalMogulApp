@@ -41,7 +41,8 @@ class FriendRequestCardView extends React.PureComponent {
         accpeted: false
     }
 
-    onRespondClicked = (friendshipId, userId) => {
+    onRespondClicked = (item) => {
+        const { friendshipId } = item;
         ActionSheetIOS.showActionSheetWithOptions({
             options: ACCEPT_BUTTONS,
             cancelButtonIndex: ACCEPT_CANCEL_INDEX,
@@ -51,7 +52,7 @@ class FriendRequestCardView extends React.PureComponent {
             switch (buttonIndex) {
             case ACCPET_INDEX:
                 this.props.updateFriendship(
-                    userId, 
+                    undefined, 
                     friendshipId, 
                     'acceptFriend', 
                     TAB_KEY_INCOMING, 
@@ -60,7 +61,7 @@ class FriendRequestCardView extends React.PureComponent {
                 break;
             case ACCPET_REMOVE_INDEX:
                 this.props.updateFriendship(
-                    userId, 
+                    undefined, 
                     friendshipId, 
                     'deleteFriend', 
                     TAB_KEY_INCOMING, 
@@ -73,7 +74,8 @@ class FriendRequestCardView extends React.PureComponent {
         });
     }
 
-    onInvitedClicked = (friendshipId, userId) => {
+    onInvitedClicked = (item) => {
+        const { friendshipId } = item;
         ActionSheetIOS.showActionSheetWithOptions({
             options: FRIENDSHIP_BUTTONS,
             cancelButtonIndex: CANCEL_INDEX,
@@ -83,14 +85,14 @@ class FriendRequestCardView extends React.PureComponent {
             switch (buttonIndex) {
             case WITHDRAW_INDEX:
                 this.props.updateFriendship(
-                userId,
-                friendshipId,
-                'deleteFriend',
-                TAB_KEY_OUTGOING,
-                () => {
-                    this.setState({ requested: false });
-                }
-                );
+                    undefined,
+                    friendshipId,
+                    'deleteFriend',
+                    TAB_KEY_OUTGOING,
+                    () => {
+                        this.setState({ requested: false });
+                    }
+                    );
                 break;
             default:
                 return;
@@ -100,20 +102,20 @@ class FriendRequestCardView extends React.PureComponent {
 
     handleButtonOnPress = (item) => {
         if (item.type === 'outgoing') {
-            return this.onRespondClicked();
+            return this.onRespondClicked(item);
         }
 
         if (item.type === 'incoming') {
-            return this.onInvitedClicked();
+            return this.onInvitedClicked(item);
         }
 
-    console.log(`${DEBUG_KEY}: unknown type when button pressed: `, item);
-  }
+        console.log(`${DEBUG_KEY}: unknown type when button pressed: `, item);
+    }
 
     handleOnOpenProfile = () => {
         const { _id } = this.props.item;
         if (_id) {
-        return this.props.openProfile(_id);
+            return this.props.openProfile(_id);
         }
     }
 
@@ -121,6 +123,7 @@ class FriendRequestCardView extends React.PureComponent {
     return (
         <ProfileImage
             imageStyle={{ height: 40, width: 40, borderRadius: 5 }}
+            defaultImageStyle={{ height: 40, width: 37, borderRadius: 5, marginLeft: 1, marginRight: 1 }}
             imageContainerStyle={{ marginTop: 5 }}
             imageUrl={item && item.profile ? item.profile.image : undefined}
             imageContainerStyle={styles.imageContainerStyle}
@@ -140,14 +143,16 @@ class FriendRequestCardView extends React.PureComponent {
             style={styles.buttonContainerStyle}
         >
             <View style={styles.buttonTextContainerStyle}>
-                <Text style={{ fontSize: 11, color: '#dedede' }}>{buttonText}</Text>
+                <Text style={{ fontSize: 11, color: '#868686' }}>{buttonText}</Text>
             </View>
         </TouchableOpacity>
     );
   }
 
   renderProfile(item) {
-    const { name, profile, headline } = item;
+    const { user } = item;
+    const { name, profile, headline } = user;
+    console.log(`${DEBUG_KEY}: item is: `, item);
     const detailText = headline || profile.occupation;
     return (
         <View style={{ flex: 1, marginLeft: 13 }}>
@@ -206,8 +211,8 @@ const styles = {
         justifyContent: 'center',
     },
     buttonTextContainerStyle: {
-        paddingTop: 5,
-        paddingBottom: 5,
+        paddingTop: 6,
+        paddingBottom: 6,
         paddingLeft: 12,
         paddingRight: 12,
         borderRadius: 5, 
@@ -215,7 +220,7 @@ const styles = {
         borderColor: '#dedede',
         borderWidth: 0.5,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     // ProfileImage
     imageContainerStyle: {

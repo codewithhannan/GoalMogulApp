@@ -50,7 +50,7 @@ import { IPHONE_MODELS } from '../../Utils/Constants';
 const DEBUG_KEY = '[ UI MeetTabV2 ]'; 
 const NumCardsToShow = Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
-  ? 5 : 3;
+  ? 5 : 2;
 
 class MeetTabV2 extends React.Component {
     constructor(props) {
@@ -145,6 +145,8 @@ class MeetTabV2 extends React.Component {
         );
 
         const ret = dataToRender.map((d) => <FriendRequestCardView item={d} key={d._id} />);
+        // TODO: delete the following line
+        ret.push(this.renderSeeAll(totalLength, this.handleSeeAllRequests, 'request-see-all-test'));
         if (totalLength > NumCardsToShow) {
             ret.push(this.renderSeeAll(totalLength, this.handleSeeAllRequests, 'request-see-all'));
         }

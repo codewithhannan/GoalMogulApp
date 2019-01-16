@@ -41,8 +41,9 @@ class FriendTabCardView extends React.PureComponent {
     accpeted: false
   }
 
-  handleUpdateFriendship = () => {
-    const friendshipId = '';
+  handleUpdateFriendship = (item) => {
+    const { maybeFreindshipRef } = item;
+    const { friendshipId } = maybeFreindshipRef;
     ActionSheetIOS.showActionSheetWithOptions({
         options: FRIENDSHIP_BUTTONS,
         cancelButtonIndex: CANCEL_INDEX,
@@ -79,7 +80,8 @@ class FriendTabCardView extends React.PureComponent {
   renderProfileImage(item) {
     return (
         <ProfileImage
-          imageStyle={{ height: 40, width: 40, borderRadius: 3 }}
+          imageStyle={{ height: 40, width: 40, borderRadius: 5 }}
+          defaultImageStyle={{ height: 40, width: 37, borderRadius: 5, marginLeft: 1, marginRight: 1 }}
           imageContainerStyle={{ marginTop: 5 }}
           imageUrl={item && item.profile ? item.profile.image : undefined}
           imageContainerStyle={styles.imageContainerStyle}
@@ -91,7 +93,7 @@ class FriendTabCardView extends React.PureComponent {
   renderButton(item) {
     return (
         <TouchableOpacity 
-            onPress={() => this.handleUpdateFriendship(item._id)}
+            onPress={() => this.handleUpdateFriendship(item)}
             activeOpacity={0.85}
             style={styles.buttonContainerStyle}
         >   
@@ -159,8 +161,8 @@ const styles = {
         justifyContent: 'center',
     },
     buttonTextContainerStyle: {
-        paddingTop: 5,
-        paddingBottom: 5,
+        paddingTop: 6,
+        paddingBottom: 6,
         paddingLeft: 12,
         paddingRight: 12,
         borderRadius: 5, 
