@@ -61,7 +61,7 @@ export const handleRefreshFriend = () => (dispatch, getState) => {
  */
 export const handleRefreshRequests = () => (dispatch, getState) => {
     refreshRequest('requests.outgoing')(dispatch, getState);
-    refreshRequest('requests.outgoing')(dispatch, getState);
+    refreshRequest('requests.incoming')(dispatch, getState);
 };
 
 const refreshRequest = (key, isPaginated) => (dispatch, getState) => {
@@ -193,5 +193,25 @@ const getUserFriendCount = () => (dispatch, getState) => {
         console.log(`${DEBUG_KEY}: fetch friend count failed with err: `, err);
     };
     getOneType(url, onSuccess, onError)(getState);
+};
+
+/**
+ * RequestTabView change tab
+ * @param {*} index 
+ */
+export const handleRequestTabSwitchTab = (index) => (dispatch, getState) => {
+    dispatch({
+        type: MEET_REQUESTS_CHANGE_TAB,
+        payload: {
+            index
+        }
+    });
+    // Refresh tab if empty
+    const { requests } = getState().meet;
+    const { key } = requests.navigationState.routes[index];
+    const data = _.get(requests, `${key}.data`);
+    if (_.isEmpty(data)) {
+        refreshRequest(`requests.${key}`)(dispatch, getState);
+    }
 };
 

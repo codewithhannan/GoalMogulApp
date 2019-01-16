@@ -4,15 +4,17 @@
 import React, { Component } from 'react';
 import {
   View,
-  FlatList,
   TouchableOpacity,
   Text
 } from 'react-native';
 import { connect } from 'react-redux';
+import { TabView, SceneMap } from 'react-native-tab-view';
 
 // Components
-import FriendRequestCardView from '../FriendRequestCardView';
 import SearchBarHeader from '../../../Common/Header/SearchBarHeader';
+import TabButtonGroup from '../../../Common/TabButtonGroup';
+import IncomingRequestTabView from './IncomingRequestTabView';
+import OutgoingRequestTabView from './OutgoingRequestTabView';
 
 // actions
 import {
@@ -21,7 +23,8 @@ import {
 } from '../../../../actions';
 
 import {
-  loadMoreRequest
+  loadMoreRequest,
+  handleRequestTabSwitchTab
 } from '../../../../redux/modules/meet/MeetActions';
 
 // Selectors
@@ -35,15 +38,6 @@ import {
   BACKGROUND_COLOR
 } from '../../../../styles';
 
-// Test Data
-import { testFriendRequests } from '../../../../Test/TestObjects';
-
-// tab key
-const routes = {
-  outgoing: 'requests.outgoing',
-  incoming: 'requests.incoming'
-};
-
 const Tabs = [
   {
     name: 'Incoming',
@@ -55,125 +49,45 @@ const Tabs = [
   }
 ];
 
-const DEBUG_KEY = '[Component Requests]';
-
 class RequestTabView extends Component {
-  componentWillMount() {
-    this.props.handleRefresh('requests.incoming');
-    this.props.handleRefresh('requests.outgoing');
+  handleIndexChange = index => {
+    this.props.handleRequestTabSwitchTab(index);
   }
 
-  selectTab = tabKey => {
-    this.props.requestsSelectTab(tabKey);
-  }
+  renderScene = SceneMap({
+    incoming: IncomingRequestTabView,
+    outgoing: OutgoingRequestTabView,
+  });
 
-  handleRefresh = () => {
-    const route = routes[this.props.selectedTab];
-    console.log(`${DEBUG_KEY} Refreshing tab: `, route);
-    this.props.handleRefresh(route);
-  }
-
-  handleOnLoadMore = () => {
-    const route = routes[this.props.selectedTab];
-    this.props.loadMoreRequest(route);
-  }
-
-  keyExtractor = (item) => item._id;
-
-  renderItem = ({ item }) => <FriendRequestCardView item={item} />;
-
-  renderTabs() {
-    return Tabs.map((t, index) => {
-      let buttonContainerStyle = { ...styles.buttonContainerStyle };
-      let buttonTextStyle = { ...styles.buttonTextStyle };
-
-      if (t.key === this.props.selectedTab) {
-        buttonContainerStyle.backgroundColor = '#1aa0dd';
-      } else {
-        buttonContainerStyle.backgroundColor = 'white';
-        buttonTextStyle.color = '#696969';
-      }
-      return (
-        <View style={buttonContainerStyle} key={index}>
-          <TouchableOpacity activeOpacity={0.85} onPress={this.selectTab.bind(this, t.key)}>
-            <Text style={buttonTextStyle}>{t.name}</Text>
-          </TouchableOpacity>
-        </View>
-      );
-    });
-  }
+  renderHeader = props => {
+    return (
+      <TabButtonGroup buttons={props} />
+    );
+  };
 
   render() {
     const modalTitle = 'Friend Requests';
     return (
       <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
         <SearchBarHeader backButton title={modalTitle} />
-        <View style={{ flexDirection: 'row' }}>
-          {this.renderTabs()}
-        </View>
-        <View style={{ flex: 1 }}>
-          <FlatList
-            data={[...testFriendRequests, ...this.props.data]}
-            renderItem={this.renderItem}
-            keyExtractor={this.keyExtractor}
-            onRefresh={this.handleRefresh.bind(this)}
-            refreshing={this.props.refreshing}
-            onEndReached={this.handleOnLoadMore}
-            onEndReachedThreshold={0}
+          <TabView
+            navigationState={this.props.navigationState}
+            renderScene={this.renderScene}
+            renderTabBar={this.renderHeader}
+            onIndexChange={this.handleIndexChange.bind(this)}
+            useNativeDriver
           />
-        </View>
       </View>
     );
   }
 }
 
-const styles = {
-  buttonContainerStyle: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  buttonTextStyle: {
-    color: '#ffffff',
-    padding: 10,
-    fontWeight: '700'
-  }
-};
-
 const mapStateToProps = state => {
   const { requests } = state.meet;
-  const { outgoing, incoming, selectedTab } = requests;
-  const { user } = state.user;
-
-  const tab = ((id) => {
-    switch (id) {
-      case 'outgoing': {
-        let newOutgoing = { ...outgoing };
-        newOutgoing.data = getOutgoingUserFromFriendship(state);
-        return newOutgoing;
-        // return suggested
-      }
-
-      case 'incoming': {
-        let newIncoming = { ...incoming };
-        newIncoming.data = getIncomingUserFromFriendship(state);
-        return newIncoming;
-      }
-
-      default:
-        return outgoing;
-    }
-  })(selectedTab);
-
-  const { data, refreshing } = tab;
+  const { navigationState } = requests;
 
   return {
-    selectedTab,
-    requests,
-    data,
-    tab,
-    refreshing,
-    user
+    navigationState
   };
 };
 
@@ -181,7 +95,7 @@ export default connect(
   mapStateToProps,
   {
     handleRefresh,
-    requestsSelectTab,
-    loadMoreRequest
+    loadMoreRequest,
+    handleRequestTabSwitchTab
   }
 )(RequestTabView);

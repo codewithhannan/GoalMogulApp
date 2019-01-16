@@ -183,6 +183,7 @@ class FriendRequestCardView extends React.PureComponent {
 
     return (
         <TouchableOpacity 
+            activeOpacity={0.85}
             style={[styles.containerStyle, styles.shadow]}
             onPress={this.handleOnOpenProfile}
         >

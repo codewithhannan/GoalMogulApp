@@ -55,6 +55,13 @@ const INITIAL_STATE = {
   },
   requests: {
     selectedTab: 'incoming',
+    navigationState: {
+      index: 0,
+      routes: [
+        { key: 'incoming', title: 'Incoming' },
+        { key: 'outgoing', title: 'Outgoing' }
+      ]
+    },
     incoming: {
       data: [],
       loading: false,
@@ -241,9 +248,10 @@ export default (state = INITIAL_STATE, action) => {
 
     // Requests Tab actions
     case MEET_REQUESTS_CHANGE_TAB: {
-      const newRequests = { ...state.requests };
-      newRequests.selectedTab = action.payload;
-      return { ...state, requests: newRequests };
+      let newState = _.cloneDeep(state);
+      const { key, index } = action.payload;
+      newState = _.set(newState, 'requests.selectedTab', key);
+      return _.set(newState, 'requests.navigationState.index', index);
     }
 
     // User blocks a friend
