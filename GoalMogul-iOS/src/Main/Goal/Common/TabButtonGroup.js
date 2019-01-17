@@ -7,7 +7,7 @@ import TabButton from './TabButton';
 class TabButtonGroup extends React.PureComponent {
 
   renderTabs() {
-    const { buttons, tabIconMap } = this.props;
+    const { buttons, tabIconMap, buttonStyle } = this.props;
     const { navigationState, jumpToIndex, jumpTo, statsState } = buttons;
     const { index, routes } = navigationState;
 
@@ -15,9 +15,12 @@ class TabButtonGroup extends React.PureComponent {
       const selected = index === i;
       const iconSource = tabIconMap ? tabIconMap[b.key].iconSource : undefined;
       const iconStyle = tabIconMap ? tabIconMap[b.key].iconStyle : undefined;
+      const hasDivider = i > 0;
 
       return (
         <TabButton
+          buttonStyle={buttonStyle}
+          hasDivider={hasDivider}
           key={b.key}
           text={b.title}
           selected={selected}
