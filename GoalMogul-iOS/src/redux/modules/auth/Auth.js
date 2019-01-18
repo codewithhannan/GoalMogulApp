@@ -5,7 +5,15 @@ import {
   getGenericPassword,
   resetGenericPassword
 } from 'react-native-keychain';
-import { SecureStore } from 'expo';
+import { SecureStore, SplashScreen } from 'expo';
+
+import {
+  SPLASHSCREEN_HIDE
+} from '../../../reducers/AuthReducers';
+
+import {
+  subscribeNotification
+} from '../notification/NotificationActions';
 
 const USERNAME = 'username';
 const PASSWORD = 'password';
@@ -65,4 +73,14 @@ export const auth = {
       throw e;
     }
   }
+};
+
+export const hideSplashScreen = () => (dispatch, getState) => {
+  setTimeout(async () => {
+    SplashScreen.hide();
+    dispatch({
+      type: SPLASHSCREEN_HIDE
+    });
+    await subscribeNotification()(dispatch, getState);
+  }, 1000);
 };

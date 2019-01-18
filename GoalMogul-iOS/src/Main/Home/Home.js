@@ -18,6 +18,9 @@ import { homeSwitchTab } from '../../actions';
 import {
   openCreateOverlay
 } from '../../redux/modules/home/mastermind/actions';
+import {
+  subscribeNotification
+} from '../../redux/modules/notification/NotificationActions';
 
 // Assets
 import Logo from '../../asset/header/logo.png';
@@ -25,7 +28,7 @@ import Activity from '../../asset/utils/activity.png';
 import plus from '../../asset/utils/plus.png';
 
 // Styles
-import { APP_DEEP_BLUE } from '../../styles';
+import { APP_DEEP_BLUE, APP_BLUE } from '../../styles';
 
 const TabIconMap = {
   goals: {
@@ -77,7 +80,24 @@ class Home extends Component {
 
   _renderHeader = props => {
     return (
-      <TabButtonGroup buttons={props} tabIconMap={TabIconMap} />
+      <TabButtonGroup 
+        buttons={props} 
+        tabIconMap={TabIconMap} 
+        buttonStyle={{
+          selected: {
+            backgroundColor: APP_DEEP_BLUE,
+            tintColor: 'white',
+            color: 'white',
+            fontWeight: '700'
+          },
+          unselected: {
+            backgroundColor: 'white',
+            tintColor: '#616161',
+            color: '#616161',
+            fontWeight: '600'
+          }
+        }}  
+      />
     );
   };
 
@@ -186,6 +206,7 @@ export default connect(
   mapStateToProps,
   {
     homeSwitchTab,
-    openCreateOverlay
+    openCreateOverlay,
+    subscribeNotification
   }
 )(Home);
