@@ -8,14 +8,34 @@ import {
 import { Icon } from 'react-native-elements';
 
 import {
-  APP_BLUE
+  APP_BLUE,
+  BACKGROUND_COLOR
 } from '../../../styles';
 
+const defaultStyle = {
+  selected: {
+    backgroundColor: APP_BLUE,
+    tintColor: 'white',
+    color: 'white',
+    fontWeight: '700'
+  },
+  unselected: {
+    backgroundColor: 'white',
+    tintColor: '#616161',
+    color: '#616161',
+    fontWeight: '600'
+  }
+};
+
 const TabButton = (props) => {
-  const backgroundColor = props.selected ? APP_BLUE : 'white';
-  const tintColor = props.selected ? 'white' : '#616161';
-  const color = props.selected ? 'white' : '#616161';
-  const fontWeight = props.selected ? '700' : '600';
+  const buttonStyle = props.buttonStyle || defaultStyle;
+  const {
+    backgroundColor,
+    tintColor,
+    color,
+    fontWeight,
+    borderColor
+  } = props.selected ? buttonStyle.selected : buttonStyle.unselected;
 
   // Tab icon
   const image = props.iconSource ?
@@ -33,10 +53,18 @@ const TabButton = (props) => {
       </View>
     );
 
+  // divider if not the first button
+  const divider = props.hasDivider 
+      ? {
+        borderColor: borderColor || BACKGROUND_COLOR,
+        borderLeftWidth: 0.5
+      }
+      : {};
+
   return (
     <TouchableOpacity
       activeOpacity={0.85}
-      style={{ ...styles.containerStyle, backgroundColor }}
+      style={{ ...styles.containerStyle, backgroundColor, ...divider }}
       onPress={props.onPress}
     >
       {image}
