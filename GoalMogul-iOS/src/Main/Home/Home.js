@@ -18,6 +18,9 @@ import { homeSwitchTab } from '../../actions';
 import {
   openCreateOverlay
 } from '../../redux/modules/home/mastermind/actions';
+import {
+  subscribeNotification
+} from '../../redux/modules/notification/NotificationActions';
 
 // Assets
 import Logo from '../../asset/header/logo.png';
@@ -203,6 +206,7 @@ export default connect(
   mapStateToProps,
   {
     homeSwitchTab,
-    openCreateOverlay
+    openCreateOverlay,
+    subscribeNotification
   }
 )(Home);

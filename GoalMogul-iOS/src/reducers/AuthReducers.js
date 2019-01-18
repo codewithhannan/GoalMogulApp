@@ -1,4 +1,5 @@
 import { REHYDRATE } from 'redux-persist';
+import _ from 'lodash';
 import {
   USERNAME_CHANGED,
   PASSWORD_CHANGED,
@@ -16,8 +17,11 @@ const INITIAL_STATE = {
   username: '',
   password: '',
   error: '',
-  loading: false
+  loading: false,
+  splashScreen: true
 };
+
+export const SPLASHSCREEN_HIDE = 'splash_screen_hide';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -47,6 +51,11 @@ export default (state = INITIAL_STATE, action) => {
 
     case USER_LOG_OUT: {
       return { ...INITIAL_STATE };
+    }
+
+    case SPLASHSCREEN_HIDE: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'splashScreen', false);
     }
 
     default:
