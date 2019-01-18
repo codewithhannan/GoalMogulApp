@@ -173,7 +173,24 @@ class GoalCard extends React.PureComponent {
 
   _renderHeader = props => {
     return (
-      <TabButtonGroup buttons={props} tabIconMap={TabIconMap} />
+      <TabButtonGroup 
+        buttons={props} 
+        tabIconMap={TabIconMap} 
+        buttonStyle={{
+          selected: {
+            backgroundColor: '#f8f8f8',
+            tintColor: '#1998c9',
+            color: '#1998c9',
+            fontWeight: '700'
+          },
+          unselected: {
+            backgroundColor: 'white',
+            tintColor: '#696969',
+            color: '#696969',
+            fontWeight: '600'
+          }
+        }}  
+      />
     );
   };
 

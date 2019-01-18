@@ -2,8 +2,33 @@ import React from 'react';
 import { View, Text, Animated, Image } from 'react-native';
 import { Icon } from 'react-native-elements';
 
+// Default button style
+const defaultButtonStyle = {
+  selected: {
+    backgroundColor: '#f8f8f8', // container background style
+    tintColor: '#1998c9', // icon tintColor
+    color: '#1998c9', // text color
+    fontWeight: '700', // text fontWeight
+    statColor: 'white' // stat icon color
+  },
+  unselected: {
+    backgroundColor: 'white',
+    tintColor: '#696969',
+    color: '#696969',
+    fontWeight: '600',
+    statColor: '#696969'
+  }
+};
+
 const TabButton = (props) => {
-  const color = props.onSelect ? 'white' : '#696969';
+  const buttonStyle = props.buttonStyle || defaultButtonStyle;
+  const {
+    color,
+    backgroundColor,
+    tintColor,
+    fontWeight,
+    statColor
+  } = props.onSelect ? buttonStyle.selected : buttonStyle.unselected;
   const stat = !props.stat ? '' :
     (
       <View>
@@ -12,7 +37,7 @@ const TabButton = (props) => {
           type='entypo'
           color='#818181'
           size={18}
-          iconStyle={[styles.dotIconStyle, color]}
+          iconStyle={[styles.dotIconStyle, ...{ color: statColor }]}
           containerStyle={styles.iconContainerStyle}
         />
         <Text style={styles.textStyle}>
@@ -22,8 +47,8 @@ const TabButton = (props) => {
     );
 
   // Select iconStyle
-  const iconStyle = props.onSelect ? { ...styles.iconStyle, ...props.iconStyle }
-    : { ...styles.iconStyle, ...props.iconStyle, tintColor: '#696969' };
+  const iconStyle = props.onSelect ? { ...styles.iconStyle, ...props.iconStyle, tintColor }
+    : { ...styles.iconStyle, ...props.iconStyle, tintColor };
 
   const icon = !props.iconSource ? '' :
     (
@@ -35,9 +60,15 @@ const TabButton = (props) => {
 
   if (props.onSelect) {
     return (
-      <View style={styles.onSelectContainerStyle}>
+      <View style={{ ...styles.onSelectContainerStyle, backgroundColor }}>
         {icon}
-        <Animated.Text style={styles.onSelectTextStyle}>
+        <Animated.Text 
+          style={{
+            ...styles.onSelectTextStyle,
+            color,
+            fontWeight
+          }}
+        >
           {props.text}
         </Animated.Text>
         {stat}
@@ -45,9 +76,15 @@ const TabButton = (props) => {
     );
   }
   return (
-    <View style={styles.containerStyle}>
+    <View style={{ ...styles.containerStyle, backgroundColor }}>
       {icon}
-      <Animated.Text style={styles.textStyle}>
+      <Animated.Text 
+        style={{ 
+          ...styles.textStyle,
+          color,
+          fontWeight
+        }}
+      >
         {props.text}
       </Animated.Text>
       {stat}

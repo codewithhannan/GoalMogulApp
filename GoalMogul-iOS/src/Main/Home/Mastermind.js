@@ -103,7 +103,7 @@ class Mastermind extends Component {
       <GoalCard
         item={item}
         onPress={(goal, subItem) => {
-          console.log('[ UI Mastermind ]: onPress with subItem: ', subItem);
+          // console.log('[ UI Mastermind ]: onPress with subItem: ', subItem);
           if (subItem) {
             this.props.openGoalDetail(
               goal,
@@ -119,7 +119,7 @@ class Mastermind extends Component {
           this.props.openGoalDetail(goal);
         }}
         onSectionCardPress={(goal, subItem) => {
-          console.log('[ UI Mastermind ]: onSectionCardPress with subItem: ', subItem);
+          // console.log('[ UI Mastermind ]: onSectionCardPress with subItem: ', subItem);
           this.props.openGoalDetail(
             goal,
             {
