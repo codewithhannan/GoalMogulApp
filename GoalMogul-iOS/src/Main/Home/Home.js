@@ -25,7 +25,7 @@ import Activity from '../../asset/utils/activity.png';
 import plus from '../../asset/utils/plus.png';
 
 // Styles
-import { APP_DEEP_BLUE } from '../../styles';
+import { APP_DEEP_BLUE, APP_BLUE } from '../../styles';
 
 const TabIconMap = {
   goals: {
@@ -77,7 +77,24 @@ class Home extends Component {
 
   _renderHeader = props => {
     return (
-      <TabButtonGroup buttons={props} tabIconMap={TabIconMap} />
+      <TabButtonGroup 
+        buttons={props} 
+        tabIconMap={TabIconMap} 
+        buttonStyle={{
+          selected: {
+            backgroundColor: APP_DEEP_BLUE,
+            tintColor: 'white',
+            color: 'white',
+            fontWeight: '700'
+          },
+          unselected: {
+            backgroundColor: 'white',
+            tintColor: '#616161',
+            color: '#616161',
+            fontWeight: '600'
+          }
+        }}  
+      />
     );
   };
 

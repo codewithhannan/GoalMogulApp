@@ -56,7 +56,7 @@ const TabButton = (props) => {
   // divider if not the first button
   const divider = props.hasDivider 
       ? {
-        borderColor: borderColor || BACKGROUND_COLOR,
+        borderColor: borderColor || '#e5e5e5',
         borderLeftWidth: 0.5
       }
       : {};
