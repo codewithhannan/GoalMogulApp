@@ -28,7 +28,7 @@ export const seeMore = (type) => (dispatch, getState) => {
  * Ask user for notification token to send over to subscribe for notification
  */
 export const subscribeNotification = () => async (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
   const { status: existingStatus } = await Permissions.getAsync(
     Permissions.NOTIFICATIONS
   );
@@ -40,7 +40,10 @@ export const subscribeNotification = () => async (dispatch, getState) => {
     // Android remote notification permissions are granted during the app
     // install, so this will only ask on iOS
     console.log(`${DEBUG_KEY}: asking for notification permit status: `, existingStatus);
-    const hasShown = await SecureStore.getItemAsync(NOTIFICATION_ALERT_SHOWN, {});
+
+    // Every user should have his / her notification token set
+    const USER_NOTIFICATION_ALERT_SHOWN = `${userId}_${NOTIFICATION_ALERT_SHOWN}`;
+    const hasShown = await SecureStore.getItemAsync(USER_NOTIFICATION_ALERT_SHOWN, {});
     const hasShownNumber = hasShown ? parseInt(hasShown) : 0;
     if (hasShownNumber > 1) {
       // We have shown notification enabling for more than 2 times
@@ -63,7 +66,7 @@ export const subscribeNotification = () => async (dispatch, getState) => {
       ]
     );
     // Update alert count
-    await SecureStore.setItemAsync(NOTIFICATION_ALERT_SHOWN, `${hasShownNumber + 1}`, {});
+    await SecureStore.setItemAsync(USER_NOTIFICATION_ALERT_SHOWN, `${hasShownNumber + 1}`, {});
     return;
   }
 
