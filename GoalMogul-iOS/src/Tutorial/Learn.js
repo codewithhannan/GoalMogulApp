@@ -13,7 +13,8 @@ import {
 } from '../styles';
 
 // Assets
-import LearnFeed from '../../assets/tutorial/Learn.png';
+import LearnFeed from '../../assets/tutorial/Learn.png'; // Image used in version 1 tutorial 
+import CreateGoalScreenshot from '../../assets/tutorial/V2_2.png';
 
 const { width } = Dimensions.get('window');
 
@@ -33,18 +34,18 @@ class Learn extends React.PureComponent {
           { ...styles.containerStyle, opacity: this.props.opacity, flex: 1 }
         ]}
       >
-        <View style={[imageShadow, { flex: 1 }]}>
-          <Image source={LearnFeed} style={styles.imageStyle} resizeMode='contain' />
+        <View style={{ width: '100%', paddingLeft: 26, paddingRight: 26, marginTop: 20 }}>
+          <Text style={[subTitleTextStyle]}>
+            Set challenging goals.
+          </Text>
+          <Text style={[textStyle, { marginTop: 10, marginBottom: 15 }]}>
+            Your friends can help you achieve them
+          </Text>
         </View>
-        <Text style={[subTitleTextStyle, { marginTop: 30 }]}>
-          Learn what really matters.
-        </Text>
-        <Text style={[textStyle, { marginTop: 12 }]}>
-          The feed shows all your friends' goals.
-        </Text>
-        <Text style={[textStyle, { marginTop: 2 }]}>
-          Now you know what's important to them
-        </Text>
+
+        <View style={[imageShadow, { flex: 1 }]}>
+          <Image source={CreateGoalScreenshot} style={styles.imageStyle} resizeMode='contain' />
+        </View>
       </Animated.View>
     );
   }
@@ -53,10 +54,10 @@ class Learn extends React.PureComponent {
 const styles = {
   containerStyle: {
     paddingTop: 30,
-    paddingBottom: 50
+    paddingBottom: 30
   },
   imageStyle: {
-    width: (width * 2) / 3,
+    width: (width * 8) / 9,
     flex: 1,
     alignSelf: 'stretch',
   }

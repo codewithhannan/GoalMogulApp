@@ -4,7 +4,6 @@ import {
   Animated,
   Text,
   Image,
-  StyleSheet,
   Dimensions
 } from 'react-native';
 
@@ -14,7 +13,8 @@ import {
 } from '../styles';
 
 // Assets
-import SetGoals from '../../assets/tutorial/SetGoals.png';
+import SetGoals from '../../assets/tutorial/SetGoals.png'; // Image used in version 1 tutorial
+import ProfileScreenshot from '../../assets/tutorial/V2_1.png';
 
 const { width } = Dimensions.get('window');
 
@@ -34,15 +34,17 @@ class Challenge extends React.PureComponent {
           { ...styles.containerStyle, opacity: this.props.opacity, flex: 1 }
         ]}
       >
-        <Text style={[subTitleTextStyle]}>
-          Set Challenging Goals
-        </Text>
-        <Text style={[textStyle, { marginTop: 12 }]}>
-          Friends can help you achieve them
-        </Text>
+        <View style={[imageShadow, { flex: 1 }]}>
+          <Image source={ProfileScreenshot} style={styles.imageStyle} resizeMode='contain' />
+        </View>
 
-        <View style={[imageShadow, { paddingTop: 30, flex: 1 }]}>
-          <Image source={SetGoals} style={styles.imageStyle} resizeMode='contain' />
+        <View style={{ paddingLeft: 26, paddingRight: 26 }}>
+          <Text style={[subTitleTextStyle]}>
+            Stay up-to-date with what really matters to your friends
+          </Text>
+          <Text style={[textStyle, { marginTop: 8 }]}>
+            Build relationships by seeing the goals that are the most meaningful for people
+          </Text>
         </View>
       </Animated.View>
     );
@@ -51,8 +53,8 @@ class Challenge extends React.PureComponent {
 
 const styles = {
   containerStyle: {
-    paddingTop: 40,
-    paddingBottom: 60
+    paddingTop: 10,
+    paddingBottom: 50
   },
   imageStyle: {
     width: (width * 2) / 3,

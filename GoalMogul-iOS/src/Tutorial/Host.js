@@ -37,18 +37,24 @@ class Host extends React.PureComponent {
           { ...styles.containerStyle, opacity: this.props.opacity, flex: 1 }
         ]}
       >
-        <View style={[{ flex: 1 }]}>
+        <View style={[{ position: 'absolute', top: 0, left: 0, right: 0, alignItems: 'center' }]}>
           <Image source={MoreIcon} style={styles.imageStyle} resizeMode='contain' />
         </View>
-        <Text style={[subTitleTextStyle, { marginTop: 30 }]}>
-          Host Events, and more
-        </Text>
-        <Text style={[textStyle, { marginTop: 12 }]}>
-          Form mastermind groups to accomplish
-        </Text>
-        <Text style={[textStyle, { marginTop: 3 }]}>
-          your goals
-        </Text>
+
+        <View style={styles.textContainerStyle}>
+          <Text style={[subTitleTextStyle]}>
+            There's more...
+          </Text>
+          <Text style={[textStyle, { marginTop: 12 }]}>
+            {'\u2022'} Find your Tribe
+          </Text>
+          <Text style={[textStyle, { marginTop: 8 }]}>
+            {'\u2022'} Create Events, Live Chat Rooms
+          </Text>
+          <Text style={[textStyle, { marginTop: 8 }]}>
+            {'\u2022'} Form Mastermind Groups & More
+          </Text>
+        </View>
 
         <TouchableOpacity
           activeOpacity={0.85}
@@ -79,6 +85,13 @@ const styles = {
     paddingTop: 30,
     paddingBottom: 50
   },
+  textContainerStyle: {
+    width: '100%', 
+    paddingRight: 26, 
+    paddingLeft: 26, 
+    paddingTop: (width * 4) / 7,
+    marginBottom: 20
+  },
   buttonContainerStyle: {
     backgroundColor: APP_BLUE,
     borderRadius: 5,
@@ -98,9 +111,10 @@ const styles = {
     opacity: 0.8
   },
   imageStyle: {
-    width: (width * 4) / 7,
+    marginTop: 15,
+    width: (width * 9) / 12,
+    height: (width * 9) / 12,
     flex: 1,
-    alignSelf: 'stretch',
   }
 };
 

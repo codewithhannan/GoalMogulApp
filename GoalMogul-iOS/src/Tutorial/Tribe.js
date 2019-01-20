@@ -13,7 +13,8 @@ import {
 } from '../styles';
 
 // Assets
-import TribeIcon from '../../assets/tutorial/Tribe.png';
+import TribeIcon from '../../assets/tutorial/Tribe.png'; // Image used in version 1 tutorial
+import GoalCardScreenshot from '../../assets/tutorial/V2_3.png';
 
 const { width } = Dimensions.get('window');
 
@@ -34,14 +35,17 @@ class Tribe extends React.PureComponent {
         ]}
       >
         <View style={[imageShadow, { flex: 1 }]}>
-          <Image source={TribeIcon} style={styles.imageStyle} resizeMode='contain' />
+          <Image source={GoalCardScreenshot} style={styles.imageStyle} resizeMode='contain' />
         </View>
-        <Text style={[subTitleTextStyle, { marginTop: 30 }]}>
-          Find your tribe
-        </Text>
-        <Text style={[textStyle, { marginTop: 12 }]}>
-          Meet users who mesh with you
-        </Text>
+
+        <View style={{ paddingLeft: 26, paddingRight: 26 }}>
+          <Text style={[subTitleTextStyle, { marginTop: 20, fontSize: 23 }]}>
+            Breakdown Goals into Steps and Needs
+          </Text>
+          <Text style={[textStyle, { marginTop: 10 }]}>
+            So your friends know exactly how to help you achieve them.
+          </Text>
+        </View>
       </Animated.View>
     );
   }
@@ -50,7 +54,7 @@ class Tribe extends React.PureComponent {
 const styles = {
   containerStyle: {
     paddingTop: 30,
-    paddingBottom: 50
+    paddingBottom: 30
   },
   imageStyle: {
     width: (width * 5) / 7,
