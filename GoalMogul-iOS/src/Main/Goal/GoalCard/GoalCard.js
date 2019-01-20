@@ -181,7 +181,7 @@ class GoalCard extends React.PureComponent {
             backgroundColor: '#f8f8f8',
             tintColor: '#1998c9',
             color: '#1998c9',
-            fontWeight: '700'
+            fontWeight: '600'
           },
           unselected: {
             backgroundColor: 'white',
@@ -358,8 +358,8 @@ class GoalCard extends React.PureComponent {
         <ActionButton
           iconSource={CommentIcon}
           count={commentCount}
-          textStyle={{ color: '#FBDD0D' }}
-          iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
+          textStyle={{ color: '#fcf167' }}
+          iconStyle={{ tintColor: '#fcf167', height: 26, width: 26 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks suggest icon`);
             this.props.onPress(this.props.item);
@@ -368,6 +368,8 @@ class GoalCard extends React.PureComponent {
       </ActionButtonGroup>
     );
   }
+  // Original color picked for comment icon
+  // #FBDD0D
 
   render() {
     const { item } = this.props;

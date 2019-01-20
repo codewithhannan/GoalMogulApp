@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
-import Expo, {
+import {
   LinearGradient,
   Font,
   AppLoading,
@@ -18,7 +18,7 @@ import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
 
 // Actions
-import { auth as Auth } from './redux/modules/auth/Auth';
+import { auth as Auth, hideSplashScreen } from './redux/modules/auth/Auth';
 
 import {
   loginUser
@@ -161,9 +161,7 @@ class SplashScreen extends Component {
       }
     }).catch((err) => console.log(`${DEBUG_KEY}: log in user with err: `, err));
     console.log('finish loading keys');
-    setTimeout(() => {
-      Expo.SplashScreen.hide();
-    }, 1000);
+    this.props.hideSplashScreen();
 
     return;
   }
@@ -397,7 +395,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     registration: () => Actions.registration(),
     login: () => Actions.login(),
-    loginUser: (val) => dispatch(loginUser(val))
+    loginUser: (val) => dispatch(loginUser(val)),
+    hideSplashScreen: () => dispatch(hideSplashScreen())
   };
 };
 

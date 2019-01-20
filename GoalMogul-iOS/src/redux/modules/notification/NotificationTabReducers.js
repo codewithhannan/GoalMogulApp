@@ -32,6 +32,13 @@ export const NOTIFICATION_LOAD_FAIL = 'notification_load_fail';
 export const NOTIFICATION_SEE_MORE = 'notification_see_more';
 export const NOTIFICATION_SEE_LESS = 'notification_see_less';
 
+// User marks all notification as read
+export const NOTIFICATION_MARK_ALL_READ = 'notification_mark_all_read';
+// User subscribes to a notification
+export const NOTIFICATION_SUBSCRIBE = 'notification_subscribe';
+// User unsubscribe from a notification
+export const NOTIFICATION_UNSUBSCRIBE = 'notification_unsubscribe'; 
+
 export default (state = INITIAL_STATE, action) => {
   switch (state.type) {
     case NOTIFICATION_LOAD: {
@@ -97,6 +104,17 @@ export default (state = INITIAL_STATE, action) => {
       }
 
       return _.set(newState, `${type}.seeMoreCount`, newSeeMoreCount);
+    }
+
+    // Mark all notification as read
+    case NOTIFICATION_MARK_ALL_READ: {
+      const newState = _.cloneDeep(state);
+      const oldData = _.get(newState, 'notifications.data');
+      const newData = oldData.map(d => ({
+        ...d,
+        read: true
+      }));
+      return _.set(newState, 'notifications.data', newData);
     }
 
     default: return { ...state };

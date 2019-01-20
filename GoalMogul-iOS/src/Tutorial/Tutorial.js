@@ -42,12 +42,17 @@ class Tutorial extends React.Component {
     // Expo.SplashScreen.preventAutoHide();
     this.state = {
       fontLoaded: false,
+      hasShownComplete: false,
+      animationStart: false
     };
     this.challengeAnim = new Animated.Value(0);
     this.LearnAnim = new Animated.Value(0);
     this.TribeAnim = new Animated.Value(0);
     this.HostAnim = new Animated.Value(0);
     this.progress = new Animated.Value(0);
+
+    this.settingAccount = new Animated.Value(0.8);
+    this.setupComplete = new Animated.Value(0);
 
     this.animate = this.animate.bind(this);
   }
@@ -58,18 +63,13 @@ class Tutorial extends React.Component {
       'gotham-pro-bold': require('../../assets/fonts/GothamPro-Bold.ttf')
     });
     this.setState({ fontLoaded: true });
-  }
-
-  componentDidUpdate() {
-    if (this.state.fontLoaded) {
-      this.animate();
-    }
+    this.animate();
   }
 
   animate(extraAnimation = [], extraDuration = 0) {
     const sequenceAnimations = Animated.sequence([
       ...extraAnimation,
-      Animated.delay(500),
+      Animated.delay(DURATION),
       // Show challenge
       Animated.timing(this.challengeAnim,
         { duration: DURATION, toValue: 1 }
@@ -100,14 +100,42 @@ class Tutorial extends React.Component {
       )
     ]);
 
+    const { headerAnimation, callback } = this.animateHeader(
+      (6 * DURATION) + (3 * PAUSE) + extraDuration);
+
     const parallelAnimation = Animated.parallel([
+      headerAnimation,
       sequenceAnimations,
       Animated.timing(this.progress, {
-        duration: ((7 * DURATION) + (4 * PAUSE) + extraDuration),
+        duration: ((8 * DURATION) + (4 * PAUSE) + extraDuration),
         toValue: 1
       }),
     ]);
     parallelAnimation.start();
+
+    if (callback) callback();
+  }
+
+  animateHeader = (delay) => {
+    if (this.state.hasShownComplete) return {};
+
+    const headerAnimation = Animated.sequence([
+      Animated.delay(delay),
+      Animated.timing(this.settingAccount,
+        { duration: DURATION, toValue: 0 }
+      ),
+      Animated.timing(this.setupComplete,
+        { duration: DURATION, toValue: 0.8 }
+      ),
+    ]);
+     
+    return {
+      headerAnimation,
+      callback: () => this.setState({
+        ...this.state,
+        hasShownComplete: true
+      })
+    };
   }
 
   handleContinue = () => {
@@ -133,19 +161,76 @@ class Tutorial extends React.Component {
     ], DURATION);
   }
 
+  renderHeaderText = () => {
+    return (
+      <View style={{ width: '100%' }}>
+        {this.renderUnseenText()}
+        <View style={styles.headerTextContainerStyle}>
+          {this.renderSettingAccountText()}
+        </View>
+        <View style={styles.headerTextContainerStyle}>
+          {this.renderSettingCompleteText()}
+        </View>
+      </View>
+    );
+  }
+  
+  // This is the background to reserve space for header text
+  renderUnseenText = () => {
+    return (
+      <Animated.View style={{ opacity: 0, alignItems: 'center', width: '100%' }}>
+        <Text style={{ color: '#124562', fontSize: 15 }}>
+          We're done
+        </Text>
+        <Text style={{ color: '#124562', fontSize: 20, fontWeight: '600' }}>
+          Set up complete!
+        </Text>
+      </Animated.View>
+    );
+  }
+
+  renderSettingAccountText = () => {
+    return (
+      <Animated.View style={{ opacity: this.settingAccount, alignItems: 'center' }}>
+        <Text style={{ color: '#124562', fontSize: 15 }}>
+          Give us a second...
+        </Text>
+        <Text style={{ color: '#124562', fontSize: 20, fontWeight: '600' }}>
+          We are setting up your account
+        </Text>
+      </Animated.View>
+    );
+  }
+
+  renderSettingCompleteText = () => {
+    return (
+      <Animated.View style={{ opacity: this.setupComplete, alignItems: 'center' }}>
+        <Text style={{ color: '#124562', fontSize: 15 }}>
+          We're done
+        </Text>
+        <Text style={{ color: '#124562', fontSize: 20, fontWeight: '600' }}>
+          Set up complete!
+        </Text>
+      </Animated.View>
+    );
+  }
+
   // Header contains Logo with text
   renderHeader() {
     return (
       <View style={styles.headerContainerStyle}>
-        <Image source={LOGO} style={styles.logoImageStyle} />
-        {
-          this.state.fontLoaded ?
-            <View style={{ flexDirection: 'row' }}>
-              <Text style={styles.headerBoldTextStyle}>Goal</Text>
-              <Text style={styles.headerTextStyle}>Mogul</Text>
-            </View>
-          : null
-        }
+        <View style={styles.logoContainerStyle}>
+          <Image source={LOGO} style={styles.logoImageStyle} />
+          {
+            this.state.fontLoaded ?
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={styles.headerBoldTextStyle}>Goal</Text>
+                <Text style={styles.headerTextStyle}>Mogul</Text>
+              </View>
+            : null
+          }
+        </View>
+        {this.renderHeaderText()}
       </View>
     );
   }
@@ -184,7 +269,6 @@ class Tutorial extends React.Component {
             replay={this.handleReplay}
           />
         </View>
-
       </View>
     );
   }
@@ -205,25 +289,38 @@ const styles = StyleSheet.create({
   },
   /* Header related styles */
   headerContainerStyle: {
+    padding: 30,
+    paddingBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%'
+  },
+  logoContainerStyle: {
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
-    padding: 50,
-    paddingBottom: 30
+    marginBottom: 7
   },
   logoImageStyle: {
-    height: 50,
-    width: 50,
+    height: 45,
+    width: 45,
     marginRight: 10,
     marginBottom: 5
   },
+  headerTextContainerStyle: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0
+  },
   headerTextStyle: {
-    fontSize: 36,
+    fontSize: 32,
     color: '#ffffff',
     fontFamily: 'gotham-pro'
   },
   headerBoldTextStyle: {
-    fontSize: 36,
+    fontSize: 32,
     color: '#ffffff',
     fontWeight: '800',
     fontFamily: 'gotham-pro-bold'
