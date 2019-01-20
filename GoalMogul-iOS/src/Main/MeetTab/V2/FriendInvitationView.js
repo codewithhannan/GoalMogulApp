@@ -5,7 +5,8 @@ import React from 'react';
 import {
     View,
     ScrollView,
-    Clipboard
+    Clipboard,
+    Share
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -35,6 +36,8 @@ class FriendInvitationView extends React.PureComponent {
 
     handleMoreOptions = () => {
         console.log(`${DEBUG_KEY}: user chooses to see more options`);
+        const inviteLink = generateInvitationLink(this.props.inviteCode);
+        Share.share({ title: 'Test title', message: 'This is a message', url: inviteLink }, {});
     }
 
     render() {
