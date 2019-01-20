@@ -58,6 +58,7 @@ import Menu from './Main/Menu/Menu';
 import FriendTabView from './Main/MeetTab/V2/FriendTab/FriendTabView';
 import RequestTabView from './Main/MeetTab/V2/RequestTab/RequestTabView';
 import DiscoverTabView from './Main/MeetTab/V2/DiscoverTab/DiscoverTabView';
+import FriendInvitationView from './Main/MeetTab/V2/FriendInvitationView';
 
 // Profile
 import Profile from './Main/Profile/Profile';
@@ -230,6 +231,7 @@ class RouterComponent extends Component {
                     <Scene key="friendTabView" component={FriendTabView} />
                     <Scene key="requestTabView" component={RequestTabView} />
                     <Scene key="discoverTabView" component={DiscoverTabView} />
+                    <Scene key="friendInvitationView" component={FriendInvitationView} />
                   </Stack>
 
                   <Stack

@@ -86,11 +86,15 @@ class MeetTabV2 extends React.Component {
         Actions.requestTabView();
     }
 
+    handleInviteFriends = () => {
+        Actions.push('friendInvitationView');
+    }
+
     // List header is the FriendInvitationCTR, Sync Conacts and Discover Friends option
     renderListHeader() {
         return (
             <View>
-                <FriendInvitationCTR />
+                <FriendInvitationCTR handleInviteFriends={this.handleInviteFriends.bind(this)} />
                 <View 
                     style={{ 
                         flexDirection: 'row', 

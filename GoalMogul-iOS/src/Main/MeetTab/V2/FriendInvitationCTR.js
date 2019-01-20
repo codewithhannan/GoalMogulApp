@@ -22,7 +22,7 @@ const { width } = Dimensions.get('window');
 
 class FriendInvitationCTR extends React.PureComponent {
     handleOnPress = () => {
-
+        this.props.handleInviteFriends();
     }
 
     renderInvitationButton() {

@@ -87,7 +87,7 @@ export const subscribeNotification = () => async (dispatch, getState) => {
 
   // Get the token that an user has on this device
   const hasToken = await SecureStore.getItemAsync(NOTIFICATION_TOKEN_KEY, {});
-  
+
   if (hasToken && hasToken !== '' && _.isEqual(hasToken, notificationToken)) {
     // Only if user has a token stored and cuurent fetched token is the same as the previous one
     // We skip the check
@@ -103,21 +103,24 @@ export const subscribeNotification = () => async (dispatch, getState) => {
       'Success',
       'You have succesfully subscribed to the notification.'
     );
-    console.log(`${DEBUG_KEY}: subscribe to notification success with res: `, res);
+    console.log(`${DEBUG_KEY}: register notification succeed success with res: `, res);
   };
 
   const onError = (err) => {
-    console.log(`${DEBUG_KEY}: error subscribe to notification with err: `, err);
+    console.log(`${DEBUG_KEY}: register notification failed with err: `, err);
   };
 
   // POST the token to your backend server from
   // where you can retrieve it to send push notifications.
   return API
     .put(
-      'secure/user/setting/expo-token', { pushToken: notificationToken }, token
+      'secure/user/settings/expo-token', { pushToken: notificationToken }, token
     )
     .then((res) => {
-      onSuccess(res);
+      if (res.status === 200) {
+        return onSuccess(res);
+      }
+      return onError(res);
     })
     .catch((err) => {
       onError(err);
