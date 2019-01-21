@@ -249,6 +249,7 @@ export const updateFriendship = (userId, friendshipId, type, tab, callback) =>
   if (type === 'requestFriend' && requestType.data === undefined) {
     console.warn('[ Meet Actions ] sending friend request with userId: ', userId);
   }
+
   singleFetch(requestType.url, _.cloneDeep(requestType.data), requestType.type, token)
     .then((res) => {
       console.log(`response for ${type}: `, res);

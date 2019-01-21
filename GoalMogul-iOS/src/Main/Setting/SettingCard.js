@@ -4,9 +4,10 @@ import { Text, View, TouchableOpacity, Image } from 'react-native';
 class SettingCard extends Component {
 
   renderIcon() {
+    const iconStyle = this.props.iconStyle || styles.titleIconStyle;
     if (this.props.icon) {
       return (
-        <Image source={this.props.icon} style={styles.titleIconStyle} />
+        <Image source={this.props.icon} style={iconStyle} />
       );
     }
     return '';

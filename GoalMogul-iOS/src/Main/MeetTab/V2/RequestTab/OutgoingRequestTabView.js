@@ -78,7 +78,7 @@ class OutgoingRequestTabView extends Component {
         return (
             <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
                 <FlatList
-                    data={[...testFriendRequests, ...this.props.data]}
+                    data={this.props.data}
                     renderItem={this.renderItem}
                     keyExtractor={this.keyExtractor}
                     onRefresh={this.handleRefresh.bind(this)}

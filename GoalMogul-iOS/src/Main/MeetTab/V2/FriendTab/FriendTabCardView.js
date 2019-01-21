@@ -42,8 +42,10 @@ class FriendTabCardView extends React.PureComponent {
   }
 
   handleUpdateFriendship = (item) => {
-    const { maybeFreindshipRef } = item;
-    const { friendshipId } = maybeFreindshipRef;
+    const { maybeFriendshipRef } = item;
+
+    const friendUserId = getFriendUserId(maybeFriendshipRef, this.props.userId);
+    const friendshipId = maybeFriendshipRef._id;
     ActionSheetIOS.showActionSheetWithOptions({
         options: FRIENDSHIP_BUTTONS,
         cancelButtonIndex: CANCEL_INDEX,
@@ -53,8 +55,9 @@ class FriendTabCardView extends React.PureComponent {
         switch (buttonIndex) {
             case BLOCK_INDEX:
                 // User chose to block user with id: _id
-                console.log('User blocks _id: ', friendshipId);
-                this.props.blockUser(friendshipId);
+                console.log(`${DEBUG_KEY}: User blocks friend with id ${friendUserId}, 
+                    friendshipId: ${friendshipId}`);
+                this.props.blockUser(friendUserId);
                 break;
 
             case UNFRIEND_INDEX:
@@ -133,17 +136,38 @@ class FriendTabCardView extends React.PureComponent {
   render() {
     const { item } = this.props;
     if (!item) return '';
-
+    
+    // console.log(`${DEBUG_KEY}: item is: `, item);
     return (
-      <View style={[styles.containerStyle, styles.shadow]}>
-        {this.renderProfileImage(item)}
-        {this.renderProfile(item)}
-        <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: 35 }} />
-        {this.renderButton(item)}
-      </View>
+        <TouchableOpacity 
+            style={[styles.containerStyle, styles.shadow]}
+            onPress={() => this.props.openProfile(item._id)}
+            activeOpacity={0.85}
+        >
+            {this.renderProfileImage(item)}
+            {this.renderProfile(item)}
+            <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: 35 }} />
+            {this.renderButton(item)}
+        </TouchableOpacity>
     );
   }
 }
+
+/**
+ * Get current user's friend's userId from friendship object
+ * @param {*} maybeFriendshipRef friendship object
+ * @param {*} userId current userId
+ */
+const getFriendUserId = (maybeFriendshipRef, userId) => {
+    const { participants } = maybeFriendshipRef;
+    let ret;
+    participants.forEach((p) => {
+        if (p.users_id !== userId) {
+            ret = p.users_id;
+        }
+    });
+    return ret;
+};
 
 const styles = {
     containerStyle: {
@@ -194,7 +218,14 @@ const styles = {
     },
 };
 
-export default connect(null, {
+const mapStateToProps = state => {
+    const { userId } = state.user;
+    return {
+        userId
+    };
+};
+
+export default connect(mapStateToProps, {
   updateFriendship,
   blockUser,
   openProfile

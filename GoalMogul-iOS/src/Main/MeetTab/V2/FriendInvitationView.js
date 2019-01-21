@@ -22,6 +22,10 @@ import { BACKGROUND_COLOR } from '../../../styles';
 // Utils
 import { generateInvitationLink } from '../../../redux/middleware/utils';
 
+// Assets
+import SettingIcon from '../../../asset/utils/friendsSettingIcon.png';
+import ClipboardIcon from '../../../asset/utils/clipboard.png';
+
 // Constants
 const DEBUG_KEY = '[ UI FriendInvitationView ]';
 
@@ -36,8 +40,14 @@ class FriendInvitationView extends React.PureComponent {
 
     handleMoreOptions = () => {
         console.log(`${DEBUG_KEY}: user chooses to see more options`);
-        const inviteLink = generateInvitationLink(this.props.inviteCode);
-        Share.share({ title: 'Test title', message: 'This is a message', url: inviteLink }, {});
+        const { user, inviteCode } = this.props;
+        console.log(`${DEBUG_KEY}: user is: `, user);
+        const { name } = user;
+        const inviteLink = generateInvitationLink(inviteCode);
+        const title = `Your friend ${name} is asking you to help achieve his goals on GoalMogul`;
+        const message = `I’m trying to better myself and get accomplish more. 
+            Can you check out this link and suggest some ideas to help me reach my goals faster?`;
+        Share.share({ title, message, url: inviteLink }, {});
     }
 
     render() {
@@ -45,18 +55,32 @@ class FriendInvitationView extends React.PureComponent {
             <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
                 <SearchBarHeader backButton title='Invite Friends' />
                 <ScrollView>
-                <SettingCard
-                    title="Copy invitation link"
-                    key="copy_link"
-                    explanation="Click to copy invitation link"
-                    onPress={() => this.handleCopyOnClick()}
-                />
-                <SettingCard
-                    title="More options"
-                    key="more_options"
-                    explanation="See more options to share the invitation link"
-                    onPress={() => this.handleMoreOptions()}
-                />
+                    <SettingCard
+                        title="Copy invitation link"
+                        key="copy_link"
+                        explanation="Click to copy invitation link"
+                        onPress={() => this.handleCopyOnClick()}
+                        icon={ClipboardIcon}
+                        iconStyle={{
+                            height: 20,
+                            width: 20,
+                            marginRight: 7,
+                            marginLeft: 2
+                        }}
+                    />
+                    <SettingCard
+                        title="More options"
+                        key="more_options"
+                        explanation="See more ways to share the invitation link"
+                        onPress={() => this.handleMoreOptions()}
+                        icon={SettingIcon}
+                        iconStyle={{
+                            height: 20,
+                            width: 23,
+                            marginRight: 7,
+                            marginLeft: 2
+                        }}
+                    />
                 </ScrollView>
             </View>
         );
@@ -68,7 +92,8 @@ const mapStateToProps = state => {
     const { inviteCode } = user;
 
     return {
-        inviteCode
+        inviteCode,
+        user
     };
 };
 

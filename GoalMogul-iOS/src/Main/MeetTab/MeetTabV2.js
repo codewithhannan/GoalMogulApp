@@ -150,7 +150,7 @@ class MeetTabV2 extends React.Component {
 
         const ret = dataToRender.map((d) => <FriendRequestCardView item={d} key={d._id} />);
         // TODO: delete the following line
-        ret.push(this.renderSeeAll(totalLength, this.handleSeeAllRequests, 'request-see-all-test'));
+        // ret.push(this.renderSeeAll(totalLength, this.handleSeeAllRequests, 'request-see-all-test'));
         if (totalLength > NumCardsToShow) {
             ret.push(this.renderSeeAll(totalLength, this.handleSeeAllRequests, 'request-see-all'));
         }
