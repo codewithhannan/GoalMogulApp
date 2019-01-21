@@ -34,6 +34,11 @@ import {
 
 import { deletePost, openProfile } from '../../../actions';
 
+import {
+  subscribeEntityNotification,
+  unsubscribeEntityNotification
+} from '../../../redux/modules/notification/NotificationActions';
+
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
 import BulbIcon from '../../../asset/utils/bulb.png';
@@ -152,8 +157,32 @@ class ProfilePostCard extends React.PureComponent {
   }
 
   renderHeader(item) {
-    const { owner, _id, created } = item;
+    const { owner, _id, created, maybeIsSubscribed } = item;
     const timeStamp = created || new Date();
+
+    const caret = {
+      self: {
+        options: [{ option: 'Delete' }],
+        onPress: () => this.props.deletePost(_id)
+      },
+      others: {
+        options: [
+          { option: 'Report' }, 
+          { option: maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe' }
+        ],
+        onPress: (key) => {
+          if (key === 'Report') {
+            return this.props.createReport(_id, 'profile', 'Post');
+          }
+          if (key === 'Unsubscribe') {
+            return this.props.unsubscribeEntityNotification(_id, 'Post');
+          }
+          if (key === 'Subscribe') {
+            return this.props.subscribeEntityNotification(_id, 'Post');
+          }
+        },
+      }
+    };
 
     // TODO: TAG:
     const { text, tags } = item.content;
@@ -171,8 +200,7 @@ class ProfilePostCard extends React.PureComponent {
           <Headline
             name={owner.name || ''}
             isSelf={this.props.userId === owner._id}
-            caretOnDelete={() => this.props.deletePost(_id)}
-            caretOnPress={() => this.props.createReport(_id, 'profile', 'Goal')}
+            caret={caret}
             user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
@@ -284,6 +312,8 @@ export default connect(
     chooseShareDest,
     openPostDetail,
     deletePost,
-    openProfile
+    openProfile,
+    subscribeEntityNotification,
+    unsubscribeEntityNotification
   }
 )(ProfilePostCard);

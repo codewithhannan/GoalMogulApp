@@ -23,6 +23,11 @@ import {
   deleteGoal,
 } from '../../../actions';
 
+import {
+  subscribeEntityNotification,
+  unsubscribeEntityNotification
+} from '../../../redux/modules/notification/NotificationActions';
+
 class ProfileNeedCard extends React.Component {
 
   handleCardOnPress(item) {
@@ -54,9 +59,35 @@ class ProfileNeedCard extends React.Component {
 
   // user basic information
   renderUserDetail(item) {
-    const { title, owner, category, _id, created } = item;
+    const { title, owner, category, _id, created, maybeIsSubscribed } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
+
+    const caret = {
+      self: {
+        options: [{ option: 'Delete' }],
+        onPress: () => {
+          this.props.deleteGoal(_id);
+        }
+      },
+      others: {
+        options: [
+          { option: 'Report' }, 
+          { option: maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe' }
+        ],
+        onPress: (key) => {
+          if (key === 'Report') {
+            return this.props.createReport(_id, 'goal', 'Goal');
+          }
+          if (key === 'Unsubscribe') {
+            return this.props.unsubscribeEntityNotification(_id, 'Goal');
+          }
+          if (key === 'Subscribe') {
+            return this.props.subscribeEntityNotification(_id, 'Goal');
+          }
+        },
+      }
+    };
     // TODO: verify all the fields have data
     return (
       <View style={{ flexDirection: 'row' }}>
@@ -65,8 +96,7 @@ class ProfileNeedCard extends React.Component {
             name={owner.name}
             category={category}
             isSelf={this.props.userId === owner._id}
-            caretOnDelete={() => this.props.deleteGoal(_id)}
-            caretOnPress={() => this.props.createReport(_id, 'goal', 'Goal')}
+            caret={caret}
             user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
@@ -138,6 +168,8 @@ export default connect(
   mapStateToProps,
   {
     openGoalDetail,
-    deleteGoal
+    deleteGoal,
+    subscribeEntityNotification,
+    unsubscribeEntityNotification
   }
 )(ProfileNeedCard);

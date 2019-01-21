@@ -37,6 +37,11 @@ import {
 
 import { deleteGoal, openProfile } from '../../../actions';
 
+import {
+  subscribeEntityNotification,
+  unsubscribeEntityNotification
+} from '../../../redux/modules/notification/NotificationActions';
+
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
 // import BulbIcon from '../../../asset/utils/bulb.png';
@@ -46,6 +51,8 @@ import EditIcon from '../../../asset/utils/edit.png';
 import CheckIcon from '../../../asset/utils/check.png';
 import ProgressBarMedium from '../../../asset/utils/progressBar_medium.png';
 import ProgressBarMediumCounter from '../../../asset/utils/progressBar_counter_medium.png';
+import UndoIcon from '../../../asset/utils/undo.png';
+import TrashIcon from '../../../asset/utils/trash.png';
 
 // Components
 import ProgressBar from '../Common/ProgressBar';
@@ -148,9 +155,63 @@ class GoalDetailSection extends React.PureComponent {
 
   // user basic information
   renderUserDetail(item) {
-    const { _id, created, title, owner, category, details } = item;
+    const { _id, created, title, owner, category, details, isCompleted, maybeIsSubscribed } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
+
+    const caret = {
+      self: {
+        options: [
+          { option: 'Edit Goal', iconSource: EditIcon },
+          { option: 'Share to Goal Feed', iconSource: ShareIcon },
+          { option: isCompleted ? 'Unmark as Complete' : 'Mark as Complete',
+            iconSource: isCompleted ? UndoIcon : CheckIcon },
+          { option: 'Delete', iconSource: TrashIcon },
+        ],
+        onPress: (val) => {
+          const markCompleteOnPress = isCompleted
+            ? () => {
+              Alert.alert(
+                'Confirmation',
+                'Are you sure to mark this goal as incomplete?', [
+                { text: 'Cancel', onPress: () => console.log('user cancel unmark') },
+                { text: 'Confirm', onPress: () => this.props.markGoalAsComplete(_id, false) }]
+              );
+            }
+            : () => this.props.markGoalAsComplete(_id, true);
+
+          if (val === 'Delete') {
+            this.props.deleteGoal(_id);
+            Actions.pop();
+            return;
+          }
+          if (val === 'Edit Goal') return this.props.editGoal(item);
+          if (val === 'Share to Goal Feed') return this.props.shareGoalToMastermind(_id);
+          if (val === 'Unmark as Complete' || val === 'Mark as Complete') {
+            markCompleteOnPress();
+          }
+        },
+        shouldExtendOptionLength: true
+      },
+      others: {
+        options: [
+          { option: 'Report' }, 
+          { option: maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe' }
+        ],
+        onPress: (key) => {
+          if (key === 'Report') {
+            return this.props.createReport(_id, 'goal', 'Goal');
+          }
+          if (key === 'Unsubscribe') {
+            return this.props.unsubscribeEntityNotification(_id, 'Goal');
+          }
+          if (key === 'Subscribe') {
+            return this.props.subscribeEntityNotification(_id, 'Goal');
+          }
+        },
+        shouldExtendOptionLength: false
+      }
+    };
 
     const { text, tags } = details || { text: '', tags: [] };
     return (
@@ -166,13 +227,7 @@ class GoalDetailSection extends React.PureComponent {
             name={owner.name || ''}
             category={category}
             isSelf={this.props.userId === owner._id}
-            caretOnDelete={() => {
-              this.props.deleteGoal(_id);
-              Actions.pop();
-            }}
-            caretOnPress={() => {
-              this.props.createReport(_id, 'detail', 'Goal');
-            }}
+            caret={caret}
             item={item}
             user={owner}
           />
@@ -412,6 +467,8 @@ export default connect(
     shareGoalToMastermind,
     markGoalAsComplete,
     deleteGoal,
-    openProfile
+    openProfile,
+    subscribeEntityNotification,
+    unsubscribeEntityNotification
   }
 )(GoalDetailSection);

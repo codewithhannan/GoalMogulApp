@@ -18,6 +18,11 @@ import {
   deleteGoal,
 } from '../../actions';
 
+import {
+  subscribeEntityNotification,
+  unsubscribeEntityNotification
+} from '../../redux/modules/notification/NotificationActions';
+
 // Assets
 
 // Components
@@ -36,7 +41,7 @@ class ActivityHeader extends Component {
     // If no ref is passed in, then render nothing
     if (!item) return '';
 
-    const { _id, created, category } = item;
+    const { _id, created, category, maybeIsSubscribed } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
 
@@ -51,6 +56,30 @@ class ActivityHeader extends Component {
       ? () => this.props.deletePost(postRef._id)
       : () => this.props.deleteGoal(goalRef._id);
 
+    const caret = {
+      self: {
+        options: [{ option: 'Delete' }],
+        onPress: onDelete
+      },
+      others: {
+        options: [
+          { option: 'Report' }, 
+          { option: maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe' }
+        ],
+        onPress: (key) => {
+          if (key === 'Report') {
+            return this.props.createReport(_id, 'post', `${actedUponEntityType}`);
+          }
+          if (key === 'Unsubscribe') {
+            return this.props.unsubscribeEntityNotification(_id, 'Post');
+          }
+          if (key === 'Subscribe') {
+            return this.props.subscribeEntityNotification(_id, 'Post');
+          }
+        },
+      }
+    };
+
     return (
       <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
         <ProfileImage
@@ -63,12 +92,9 @@ class ActivityHeader extends Component {
           <Headline
             name={actor.name || ''}
             category={category}
-            caretOnPress={() => {
-              this.props.createReport(_id, 'post', `${actedUponEntityType}`);
-            }}
+            caret={caret}
             user={actor}
             isSelf={this.props.userId === actor._id}
-            caretOnDelete={onDelete}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           {/*
@@ -140,5 +166,7 @@ export default connect(
     openProfile,
     deletePost,
     deleteGoal,
+    subscribeEntityNotification,
+    unsubscribeEntityNotification
   }
 )(ActivityHeader);
