@@ -55,6 +55,13 @@ const INITIAL_STATE = {
   },
   requests: {
     selectedTab: 'incoming',
+    navigationState: {
+      index: 0,
+      routes: [
+        { key: 'incoming', title: 'Incoming' },
+        { key: 'outgoing', title: 'Outgoing' }
+      ]
+    },
     incoming: {
       data: [],
       loading: false,
@@ -127,8 +134,9 @@ export default (state = INITIAL_STATE, action) => {
       // _.set(newState, [action.payload.type, 'loading'], true)
       // console.log('new state is: ', newState);
       // return { state: newState };
-      let newState = _.cloneDeep(state);
-      return _.set(newState, `${action.payload.type}.loading`, true);
+      const { type } = action.payload;
+      const newState = _.cloneDeep(state);
+      return _.set(newState, `${type}.loading`, true);
     }
 
     // Loading suggested cards done
@@ -213,8 +221,7 @@ export default (state = INITIAL_STATE, action) => {
     // Handle tab refresh
     case MEET_TAB_REFRESH: {
       const { type } = action.payload;
-      let newState = _.cloneDeep(state);
-      newState = _.set(newState, `${type}.loading`, true);
+      const newState = _.cloneDeep(state);
       return _.set(newState, `${type}.refreshing`, true);
     }
 
@@ -222,7 +229,6 @@ export default (state = INITIAL_STATE, action) => {
     case MEET_TAB_REFRESH_DONE: {
       const { type, data } = action.payload;
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, `${type}.loading`, false);
       newState = _.set(newState, `${type}.refreshing`, false);
       newState = _.set(newState, `${type}.skip`, action.payload.skip);
       newState = _.set(newState, `${type}.data`, data);
@@ -242,9 +248,10 @@ export default (state = INITIAL_STATE, action) => {
 
     // Requests Tab actions
     case MEET_REQUESTS_CHANGE_TAB: {
-      const newRequests = { ...state.requests };
-      newRequests.selectedTab = action.payload;
-      return { ...state, requests: newRequests };
+      let newState = _.cloneDeep(state);
+      const { key, index } = action.payload;
+      newState = _.set(newState, 'requests.selectedTab', key);
+      return _.set(newState, 'requests.navigationState.index', index);
     }
 
     // User blocks a friend

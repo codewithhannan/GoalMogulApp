@@ -234,13 +234,13 @@ export const updateFriendship = (userId, friendshipId, type, tab, callback) =>
           url: baseUrl
         };
       case 'deleteFriend':
-      return {
-        type: 'DELETE',
-        data: {
-          friendshipId,
-        },
-        url: `${baseUrl}?friendshipId=${friendshipId}`
-      };
+        return {
+          type: 'DELETE',
+          data: {
+            friendshipId,
+          },
+          url: `${baseUrl}?friendshipId=${friendshipId}`
+        };
       default:
         return 'POST';
     }
@@ -249,6 +249,7 @@ export const updateFriendship = (userId, friendshipId, type, tab, callback) =>
   if (type === 'requestFriend' && requestType.data === undefined) {
     console.warn('[ Meet Actions ] sending friend request with userId: ', userId);
   }
+
   singleFetch(requestType.url, _.cloneDeep(requestType.data), requestType.type, token)
     .then((res) => {
       console.log(`response for ${type}: `, res);
@@ -314,11 +315,13 @@ export const meetChangeFilter = (tab, type, value) => (dispatch) => {
 };
 
 // Requesets tab actions
-export const requestsSelectTab = (key) => {
-  return {
+export const requestsSelectTab = (key) => (dispatch) => {
+  dispatch({
     type: MEET_REQUESTS_CHANGE_TAB,
-    payload: key
-  };
+    payload: {
+      key
+    }
+  });
 };
 
 // Contact sync

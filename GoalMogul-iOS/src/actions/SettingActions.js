@@ -323,6 +323,7 @@ export const blockUser = (userId, callback) => (dispatch, getState) => {
     payload: userId
   });
   const { token } = getState().user;
+
   API.post(`${BASE_ROUTE}/block`, { blockeeId: userId }, token).then((res) => {
     console.log(`${DEBUG_KEY}: block user with res: `, res);
     if (callback) {

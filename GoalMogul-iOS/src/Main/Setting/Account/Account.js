@@ -7,7 +7,7 @@ import {
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 
-/* Components */
+// Components
 import SettingCard from '../SettingCard';
 
 // Actions

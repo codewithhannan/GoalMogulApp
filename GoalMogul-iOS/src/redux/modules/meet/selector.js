@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import R from 'ramda';
+import _ from 'lodash';
 
 const getFriendsFilter = (state) => state.meet.friends.filter.sortBy;
 const getFriendsData = (state) => state.meet.friends.data;
@@ -34,7 +35,9 @@ const getOutgoingData = (state) => state.meet.requests.outgoing.data;
 const extractUser = R.map(
   d => ({
     user: R.pipe(R.prop('participants'), R.last, R.prop('users_id'))(d),
-    friendshipId: R.prop('_id', d)
+    friendshipId: R.prop('_id', d),
+    type: 'outgoing',
+    _id: R.prop('_id', d), // For standardizing keyExtractor function
   })
 );
 
@@ -53,10 +56,20 @@ const getIncomingData = (state) => state.meet.requests.incoming.data;
 //   })
 // );
 
+/**
+ * Transfor the [Friendship] to 
+ * {
+ *    user: userRef,
+ *    friendshipId: _id,
+ *    _id: _id
+ * }
+ */
 const extractIncomingUser = R.map(
   d => ({
     user: R.pipe(R.prop('participants'), R.head, R.prop('users_id'))(d),
-    friendshipId: R.prop('_id', d)
+    friendshipId: R.prop('_id', d),
+    type: 'incoming',
+    _id: R.prop('_id', d) // For standardizing keyExtractor function,
   })
 );
 

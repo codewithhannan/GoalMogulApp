@@ -92,7 +92,7 @@ class ContactSync extends Component {
         title='Sync contacts'
         actionText='Done'
         onAction={() => {
-          Actions.popTo('goal');
+          Actions.popTo('meet');
           actionCallback();
         }}
       />)

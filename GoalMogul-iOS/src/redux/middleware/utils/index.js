@@ -143,3 +143,8 @@ export const nFormatter = (num, digits) => {
   }
   return (num / si[i].value).toFixed(digits).replace(rx, '$1') + si[i].symbol;
 };
+
+export const generateInvitationLink = (inviteCode) => {
+  const BASE_CODE = 'https://web.goalmogul.com/invite?inviteCode=';
+  return `${BASE_CODE}${inviteCode}`;
+};
