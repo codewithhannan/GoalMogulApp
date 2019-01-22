@@ -203,20 +203,19 @@ class Mastermind extends Component {
   // }
 
   renderNext() {
-    if ((!this.state.onListEndReached &&
-        !this.props.loadingMore &&
-        !this.props.refreshing) || this.props.data.length < 5) {
-      return (
-        <View style={styles.nextIconContainerStyle}>
-          <NextButton
-            onPress={() => {
-              this._carousel.snapToNext();
-            }}
-          />
-        </View>
-      );
+    if (this.state.onListEndReached && this.props.loadingMore && this.props.data.length >= 4) {
+      return '';
     }
-    return '';
+    
+    return (
+      <View style={styles.nextIconContainerStyle}>
+        <NextButton
+          onPress={() => {
+            this._carousel.snapToNext();
+          }}
+        />
+      </View>
+    );
   }
 
   renderListHeader() {
@@ -233,7 +232,7 @@ class Mastermind extends Component {
   renderListFooter() {
     const { loadingMore, data } = this.props;
     // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
-    if (loadingMore && data.length > 4) {
+    if (loadingMore && data.length >= 4) {
       return (
         <View
           style={{
