@@ -52,6 +52,11 @@ import {
   openPostDetail
 } from '../../redux/modules/feed/post/PostActions';
 
+import {
+  subscribeEntityNotification,
+  unsubscribeEntityNotification
+} from '../../redux/modules/notification/NotificationActions';
+
 // Selector
 import {
   getUserStatus,
@@ -309,7 +314,7 @@ class Tribe extends Component {
    */
   renderCaret(item) {
     // If item belongs to self, then caret displays delete
-    const { creator, _id } = item;
+    const { creator, _id, maybeIsSubscribed } = item;
 
     // const isSelf = creator._id === this.props.userId;
     const isSelf = false;
@@ -317,8 +322,19 @@ class Tribe extends Component {
       ? MenuFactory(
           [
             'Report',
+            maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe'
           ],
-          () => this.props.reportTribe(_id),
+          (val) => {  
+            if (val === 'Report') {
+              return this.props.reportTribe(_id);
+            }
+            if (val === 'Unsubscribe') {
+              return this.props.unsubscribeEntityNotification(_id, 'Event');
+            }
+            if (val === 'Subscribe') {
+              return this.props.subscribeEntityNotification(_id, 'Event');
+            }
+          },
           '',
           { ...styles.caretContainer },
           () => console.log('User clicks on options for tribe')
@@ -798,6 +814,8 @@ export default connect(
     acceptTribeInvit,
     declineTribeInvit,
     openPostDetail,
-    tribeSelectMembersFilter
+    tribeSelectMembersFilter,
+    subscribeEntityNotification,
+    unsubscribeEntityNotification
   }
 )(Tribe);

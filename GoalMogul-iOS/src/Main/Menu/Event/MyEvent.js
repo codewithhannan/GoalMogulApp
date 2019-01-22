@@ -46,6 +46,11 @@ import {
   refreshMyEventDetail
 } from '../../../redux/modules/event/MyEventActions';
 
+import {
+  subscribeEntityNotification,
+  unsubscribeEntityNotification
+} from '../../../redux/modules/notification/NotificationActions';
+
 // Selector
 import {
   getMyEventUserStatus,
@@ -291,15 +296,26 @@ class MyEvent extends Component {
    */
   renderCaret(item) {
     // If item belongs to self, then caret displays delete
-    const { creator, _id } = item;
+    const { creator, _id, maybeIsSubscribed } = item;
 
     const isSelf = creator._id === this.props.userId;
     const menu = (!isSelf)
       ? MenuFactory(
           [
             'Report',
+            maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe'
           ],
-          () => this.props.reportEvent(_id),
+          (val) => {  
+            if (val === 'Report') {
+              return this.props.reportEvent(_id);
+            }
+            if (val === 'Unsubscribe') {
+              return this.props.unsubscribeEntityNotification(_id, 'Event');
+            }
+            if (val === 'Subscribe') {
+              return this.props.subscribeEntityNotification(_id, 'Event');
+            }
+          },
           '',
           { ...styles.caretContainer },
           () => console.log('User clicks on options for event')
@@ -350,7 +366,8 @@ class MyEvent extends Component {
       <View style={eventPropertyContainerStyle}>
         <Text style={eventPropertyTextStyle}>{eventProperty}</Text>
         <Dot />
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity 
+          activeOpacity={0.85}
           style={styles.rsvpBoxContainerStyle}
           onPress={this.handleRSVPOnPress}
         >
@@ -699,6 +716,8 @@ export default connect(
     myEventSelectMembersFilter,
     rsvpEvent,
     refreshMyEventDetail,
-    openPostDetail
+    openPostDetail,
+    subscribeEntityNotification,
+    unsubscribeEntityNotification
   }
 )(MyEvent);

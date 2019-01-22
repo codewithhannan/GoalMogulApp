@@ -49,6 +49,11 @@ import {
   openPostDetail
 } from '../../redux/modules/feed/post/PostActions';
 
+import {
+  subscribeEntityNotification,
+  unsubscribeEntityNotification
+} from '../../redux/modules/notification/NotificationActions';
+
 // Selector
 import {
   getUserStatus,
@@ -186,15 +191,26 @@ class Event extends Component {
    */
   renderCaret(item) {
     // If item belongs to self, then caret displays delete
-    const { creator, _id } = item;
+    const { creator, _id, maybeIsSubscribed } = item;
 
     const isSelf = creator._id === this.props.userId;
     const menu = (!isSelf)
       ? MenuFactory(
           [
             'Report',
+            maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe'
           ],
-          () => this.props.reportEvent(_id),
+          (val) => {  
+            if (val === 'Report') {
+              return this.props.reportEvent(_id);
+            }
+            if (val === 'Unsubscribe') {
+              return this.props.unsubscribeEntityNotification(_id, 'Event');
+            }
+            if (val === 'Subscribe') {
+              return this.props.subscribeEntityNotification(_id, 'Event');
+            }
+          },
           '',
           { ...styles.caretContainer },
           () => console.log('User clicks on options for event')
@@ -532,7 +548,9 @@ export default connect(
     deleteEvent,
     editEvent,
     reportEvent,
-    openPostDetail
+    openPostDetail,
+    subscribeEntityNotification,
+    unsubscribeEntityNotification
   }
 )(Event);
 

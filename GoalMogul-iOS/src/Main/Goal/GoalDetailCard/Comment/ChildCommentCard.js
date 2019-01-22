@@ -23,7 +23,8 @@ import {
 } from '../../../../redux/modules/like/LikeActions';
 
 import {
-  createComment
+  createComment,
+  deleteComment
 } from '../../../../redux/modules/feed/comment/CommentActions';
 
 import {
@@ -33,6 +34,11 @@ import {
 import {
   openProfile
 } from '../../../../actions';
+
+import {
+  subscribeEntityNotification,
+  unsubscribeEntityNotification
+} from '../../../../redux/modules/notification/NotificationActions';
 
 // Constants
 const DEBUG_KEY = '[ UI CommentCard.ChildCommentCard ]';
@@ -102,8 +108,20 @@ class ChildCommentCard extends Component {
             isCommentOwner={isCommentOwner}
             item={item}
             goalRef={goalRef}
-            caretOnPress={() => {
-              this.props.createReport(_id, reportType, 'Comment');
+            caretOnPress={(type) => {
+              console.log('Comment options type is: ', type);
+              if (type === 'Report') {
+                return this.props.createReport(_id, reportType || 'detail', 'Comment');
+              }
+              if (type === 'Delete') {
+                return this.props.deleteComment(_id);
+              }
+              if (type === 'Subscribe') {
+                return this.props.subscribeEntityNotification(_id, 'Comment');
+              }
+              if (type === 'Unsubscribe') {
+                return this.props.unsubscribeEntityNotification(_id, 'Comment');
+              }
             }}
           />
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
@@ -240,7 +258,10 @@ export default connect(
     likeGoal,
     unLikeGoal,
     createComment,
+    deleteComment,
     createReport,
-    openProfile
+    openProfile,
+    subscribeEntityNotification,
+    unsubscribeEntityNotification
   }
 )(ChildCommentCard);
