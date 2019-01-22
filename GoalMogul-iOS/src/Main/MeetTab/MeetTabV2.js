@@ -152,7 +152,7 @@ class MeetTabV2 extends React.Component {
 
         ret = ret.concat(dataToRender.map((d) => <FriendRequestCardView item={d} key={d._id} />));
         if (totalLength > 0) {
-            ret.push(this.renderSectionTitle('Friend requests'));
+            ret.push(this.renderSectionTitle('Friend Requests'));
         }
         // TODO: delete the following line
         // ret.push(this.renderSeeAll(totalLength, this.handleSeeAllRequests, 'request-see-all-test'));
