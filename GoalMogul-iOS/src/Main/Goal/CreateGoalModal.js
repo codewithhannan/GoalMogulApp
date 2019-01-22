@@ -1,7 +1,8 @@
 import React from 'react';
 import {
   View,
-  Alert
+  Alert,
+  Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
 import { TabView, SceneMap } from 'react-native-tab-view';
@@ -42,6 +43,7 @@ class CreateGoalModal extends React.Component {
   }
 
   handleIndexChange = (index) => {
+    Keyboard.dismiss();
     this.props.createGoalSwitchTab(index);
   }
 
