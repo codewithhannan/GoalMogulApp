@@ -205,16 +205,16 @@ export default (state = INITIAL_STATE, action) => {
     case UNLIKE_POST:
     case LIKE_GOAL:
     case LIKE_POST: {
-      const { id, likeId, type } = action.payload;
+      const { id, likeId, type, undo } = action.payload;
       let newState = _.cloneDeep(state);
       const oldGoalFeedData = _.get(newState, 'mastermind.data');
       const oldActivityData = _.get(newState, 'activityfeed.data');
 
       // Update activity feed
       newState =
-        _.set(newState, 'activityfeed.data', updateLike(oldActivityData, id, likeId, type));
+        _.set(newState, 'activityfeed.data', updateLike(oldActivityData, id, likeId, type, undo, action.type));
       // Update goal feed
-      return _.set(newState, 'mastermind.data', updateLike(oldGoalFeedData, id, likeId, type));
+      return _.set(newState, 'mastermind.data', updateLike(oldGoalFeedData, id, likeId, type, undo, action.type));
     }
 
     default:
@@ -222,7 +222,7 @@ export default (state = INITIAL_STATE, action) => {
   }
 };
 
-function updateLike(array, id, likeId, type) {
+function updateLike(array, id, likeId, type, undo, likeType) {
   return array.map((item) => {
     let newItem = _.cloneDeep(item);
     if (type === 'post') {
@@ -243,12 +243,19 @@ function updateLike(array, id, likeId, type) {
           // Update like Count
           const oldLikeCount = _.get(itemToUpdate, 'likeCount');
           let newLikeCount = oldLikeCount;
-          if (likeId) {
-            if (likeId === 'testId') {
+
+          if (likeType === LIKE_GOAL || likeType === LIKE_POST) {
+            if (undo) {
+              newLikeCount = oldLikeCount - 1;
+            } else if (likeId === 'testId') {
               newLikeCount = oldLikeCount + 1;
             }
-          } else {
-            newLikeCount = oldLikeCount - 1;
+          } else if (likeType === UNLIKE_GOAL || likeType === UNLIKE_POST) {
+            if (undo) {
+              newLikeCount = oldLikeCount + 1;
+            } else if (likeId === undefined) {
+              newLikeCount = oldLikeCount - 1;
+            }
           }
           itemToUpdate = _.set(
             itemToUpdate,
@@ -266,12 +273,19 @@ function updateLike(array, id, likeId, type) {
 
       const oldLikeCount = _.get(newItem, 'likeCount');
       let newLikeCount = oldLikeCount;
-      if (likeId) {
-        if (likeId === 'testId') {
+
+      if (likeType === LIKE_GOAL || likeType === LIKE_POST) {
+        if (undo) {
+          newLikeCount = oldLikeCount - 1;
+        } else if (likeId === 'testId') {
           newLikeCount = oldLikeCount + 1;
         }
-      } else {
-        newLikeCount = oldLikeCount - 1;
+      } else if (likeType === UNLIKE_GOAL || likeType === UNLIKE_POST) {
+        if (undo) {
+          newLikeCount = oldLikeCount + 1;
+        } else if (likeId === undefined) {
+          newLikeCount = oldLikeCount - 1;
+        }
       }
       newItem = _.set(
         newItem,

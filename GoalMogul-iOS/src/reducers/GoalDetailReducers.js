@@ -207,7 +207,7 @@ export default (state = INITIAL_STATE, action) => {
     case LIKE_GOAL:
     case UNLIKE_POST:
     case UNLIKE_GOAL: {
-      const { id, likeId, tab } = action.payload;
+      const { id, likeId, tab, undo } = action.payload;
       let newState = _.cloneDeep(state);
 
       const path = !tab || tab === 'homeTab' ? 'goal.goal' : `goal${capitalizeWord(tab)}.goal`;
@@ -215,13 +215,22 @@ export default (state = INITIAL_STATE, action) => {
       if (goal._id && goal._id.toString() === id.toString()) {
         newState = _.set(newState, `${path}.maybeLikeRef`, likeId);
         const oldLikeCount = _.get(newState, `${path}.likeCount`);
-        if (likeId) {
-          if (likeId === 'testId') {
-            newState = _.set(newState, `${path}.likeCount`, oldLikeCount + 1);
+        let newLikeCount = oldLikeCount;
+
+        if (action.type === LIKE_POST || action.type === LIKE_GOAL) {
+          if (undo) {
+            newLikeCount = oldLikeCount - 1;
+          } else if (likeId === 'testId') {
+            newLikeCount = oldLikeCount + 1;
           }
-        } else {
-          newState = _.set(newState, `${path}.likeCount`, oldLikeCount - 1);
+        } else if (action.type === UNLIKE_POST || action.type === UNLIKE_GOAL) {
+          if (undo) {
+            newLikeCount = oldLikeCount + 1;
+          } else if (likeId === undefined) {
+            newLikeCount = oldLikeCount - 1;
+          }
         }
+        newState = _.set(newState, `${path}.likeCount`, newLikeCount);
       }
       return newState;
     }

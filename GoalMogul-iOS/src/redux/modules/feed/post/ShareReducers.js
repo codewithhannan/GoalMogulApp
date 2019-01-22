@@ -86,28 +86,32 @@ export default (state = INITIAL_STATE, action) => {
     case UNLIKE_POST:
     case LIKE_SHARE:
     case UNLIKE_SHARE: {
-      const { id, likeId, tab } = action.payload;
+      const { id, likeId, tab, undo } = action.payload;
       let newState = _.cloneDeep(state);
 
       const path = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
       const share = _.get(newState, path);
 
       if (share._id && share._id.toString() === id.toString()) {
-        newState = _.set(newState, `${path}.maybeLikeRef`, likeId);
         const oldLikeCount = _.get(newState, `${path}.likeCount`);
         let newLikeCount = oldLikeCount;
-        if (likeId) {
-          if (likeId === 'testId') {
-            newLikeCount += 1;
+
+        if (action.type === LIKE_POST || action.type === LIKE_SHARE) {
+          if (undo) {
+            newLikeCount = oldLikeCount - 1;
+          } else if (likeId === 'testId') {
+            newLikeCount = oldLikeCount + 1;
           }
-        } else {
-          newLikeCount -= 1;
+        } else if (action.type === UNLIKE_POST || action.type === UNLIKE_SHARE) {
+          if (undo) {
+            newLikeCount = oldLikeCount + 1;
+          } else if (likeId === undefined) {
+            newLikeCount = oldLikeCount - 1;
+          }
         }
-        newState = _.set(
-          newState,
-          `${path}.likeCount`,
-          newLikeCount
-        );
+
+        newState = _.set(newState, `${path}.likeCount`, newLikeCount);
+        newState = _.set(newState, `${path}.maybeLikeRef`, likeId);
       }
       return newState;
     }

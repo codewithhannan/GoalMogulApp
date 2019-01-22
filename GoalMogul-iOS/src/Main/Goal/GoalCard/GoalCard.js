@@ -373,7 +373,7 @@ class GoalCard extends React.PureComponent {
           iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
-            if (maybeLikeRef && maybeLikeRef.length > 0) {
+            if (maybeLikeRef && maybeLikeRef.length > 0 && maybeLikeRef !== 'testId') {
               return this.props.unLikeGoal('goal', _id, maybeLikeRef);
             }
             this.props.likeGoal('goal', _id);
