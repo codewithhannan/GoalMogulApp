@@ -6,7 +6,8 @@ import {
     View,
     ScrollView,
     Clipboard,
-    Share
+    Share,
+    Alert
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -36,6 +37,7 @@ class FriendInvitationView extends React.PureComponent {
         console.log(`${DEBUG_KEY}: invite link generated is: `, inviteLink);
         Clipboard.setString(inviteLink);
         // TOOD: show message bar message
+        Alert.alert('Copied', 'Invitation link is copied to clipboard');
     }
 
     handleMoreOptions = () => {

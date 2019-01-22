@@ -125,11 +125,24 @@ class Headline extends React.PureComponent {
       hasCaret,
       user,
       item,
-      deleteOnly
+      deleteOnly,
+      caret
     } = this.props;
 
     // If item belongs to self, then caret displays delete
-    const menu = isSelf === undefined || !isSelf
+    let menu;
+    if (caret && !_.isEmpty(caret)) {
+      const { options, onPress, shouldExtendOptionLength = false } = isSelf ? caret.self : caret.others;
+      menu = MenuFactory(
+        options,
+        onPress,
+        '',
+        { ...styles.caretContainer },
+        () => console.log(`${DEBUG_KEY}: menu is opened for options: `, options),
+        shouldExtendOptionLength
+      );
+    } else {
+      menu = isSelf === undefined || !isSelf
       ? MenuFactory(
           [
             { option: 'Report' },
@@ -141,6 +154,7 @@ class Headline extends React.PureComponent {
           false
         )
       : this.renderSelfCaret(item, deleteOnly);
+    }
 
     const categoryComponent = category ? <Category text={category} /> : '';
 

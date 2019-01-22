@@ -230,20 +230,28 @@ const transformComments = (data) => data.filter(comment => !comment.replyToRef)
   return newComment;
 });
 
-function updateLike(array, id, like) {
+function updateLike(array, id, likeId, undo, likeType) {
   return array.map((item) => {
     let newItem = _.cloneDeep(item);
     if (item._id.toString() === id.toString()) {
-      newItem = _.set(newItem, 'maybeLikeRef', like);
-      let newLikeCount = _.get(newItem, 'likeCount');
-      if (like) {
-        if (like === 'testId') {
-          newLikeCount += 1;
+      const oldLikeCount = _.get(newItem, 'likeCount');
+      let newLikeCount = oldLikeCount;
+      if (likeType === LIKE_COMMENT) {
+        if (undo) {
+          newLikeCount = oldLikeCount - 1;
+        } else if (likeId === 'testId') {
+          newLikeCount = oldLikeCount + 1;
         }
-      } else {
-        newLikeCount -= 1;
+      } else if (likeType === UNLIKE_COMMENT) {
+        if (undo) {
+          newLikeCount = oldLikeCount + 1;
+        } else if (likeId === undefined) {
+          newLikeCount = oldLikeCount - 1;
+        }
       }
+
       newItem = _.set(newItem, 'likeCount', newLikeCount);
+      newItem = _.set(newItem, 'maybeLikeRef', likeId);
     }
     return newItem;
   });

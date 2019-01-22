@@ -33,6 +33,7 @@ import {
   PROFILE_FETCH_MUTUAL_FRIEND,
   PROFILE_FETCH_MUTUAL_FRIEND_DONE,
   // Profile load tabs constants
+  PROFILE_FETCH_TAB,
   PROFILE_FETCH_TAB_DONE,
   PROFILE_REFRESH_TAB_DONE,
   PROFILE_FETCH_TAB_FAIL,
@@ -370,10 +371,10 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
   const { token } = getState().user;
   const profile = getState().profile;
   const { user } = profile;
-  const { filter, limit } = _.get(profile, tab);
+  const { filter, limit, refreshing } = _.get(profile, tab);
   console.log(`${DEBUG_KEY}: refresh tab for user: `, user);
 
-  if (!user || !user._id) return;
+  if (!user || !user._id || refreshing) return;
   const userId = user._id;
 
   dispatch({
@@ -416,11 +417,25 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
  */
 export const handleProfileTabOnLoadMore = (tab) => (dispatch, getState) => {
   const { token, userId } = getState().user;
-  const { filter, skip, limit, hasNextPage } = _.get(getState().profile, tab);
+  const { 
+    filter, 
+    skip, 
+    limit, 
+    hasNextPage, 
+    refreshing, 
+    loading 
+  } = _.get(getState().profile, tab);
 
-  if (!hasNextPage && hasNextPage !== undefined) {
+  if (hasNextPage === false || refreshing || loading) {
     return;
   }
+
+  dispatch({
+    type: PROFILE_FETCH_TAB,
+    payload: {
+      type: tab
+    }
+  });
 
   const onSuccess = (data) => {
     dispatch({

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   FlatList,
+  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -27,6 +28,10 @@ class MyGoals extends Component {
     this.props.handleTabRefresh(key);
   }
 
+  handleOnLoadMore = () => {
+    this.props.handleProfileTabOnLoadMore(key);
+  }
+
   /**
    * @param type: ['sortBy', 'orderBy', 'categories', 'priorities']
    */
@@ -38,8 +43,24 @@ class MyGoals extends Component {
     return <ProfileGoalCard item={item} />;
   }
 
+  renderListFooter() {
+    const { loading, data } = this.props;
+    // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
+    if (loading && data.length >= 20) {
+      return (
+        <View
+          style={{
+            paddingVertical: 0
+          }}
+        >
+          <ActivityIndicator size='large' />
+        </View>
+      );
+    }
+  }
+
   render() {
-    const { data, loading } = this.props;
+    const { data } = this.props;
     return (
       <View style={{ flex: 1 }}>
         <GoalFilterBar
@@ -53,7 +74,10 @@ class MyGoals extends Component {
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
             onRefresh={this.handleRefresh.bind()}
-            refreshing={this.props.refreshing || loading}
+            onEndReached={this.handleOnLoadMore}
+            onEndReachedThreshold={0}
+            refreshing={this.props.refreshing}
+            ListFooterComponent={this.renderListFooter()}
           />
         </View>
         {/*
@@ -88,13 +112,14 @@ const styles = {
 
 const mapStateToProps = state => {
   const { selectedTab, goals } = state.profile;
-  const { data, loading, filter } = goals;
+  const { data, loading, refreshing, filter } = goals;
 
   return {
     selectedTab,
     data,
     loading,
-    filter
+    filter,
+    refreshing
   };
 };
 

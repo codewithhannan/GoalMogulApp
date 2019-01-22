@@ -183,26 +183,33 @@ export default (state = INITIAL_STATE, action) => {
     // Update the post
     case LIKE_POST:
     case UNLIKE_POST: {
-      const { id, likeId, tab } = action.payload;
+      const { id, likeId, tab, undo } = action.payload;
       let newState = _.cloneDeep(state);
 
       const oldTribeFeed = _.get(newState, 'feed');
       const newTribeFeed = oldTribeFeed.map((post) => {
         if (post._id === id) {
-          if (likeId === 'testId') {
-            return {
-              ...post,
-              maybeLikeRef: likeId,
-              likeCount: post.likeCount + 1
-            };
+          const oldLikeCount = _.get(post, 'likeCount');
+          let newLikeCount = oldLikeCount;
+          if (action.type === LIKE_POST) {
+            if (undo) {
+              newLikeCount = oldLikeCount - 1;
+            } else if (likeId === 'testId') {
+              newLikeCount = oldLikeCount + 1;
+            }
+          } else if (action.type === UNLIKE_POST) {
+            if (undo) {
+              newLikeCount = oldLikeCount + 1;
+            } else if (likeId === undefined) {
+              newLikeCount = oldLikeCount - 1;
+            }
           }
-          if (likeId === undefined) {
-            return {
-              ...post,
-              maybeLikeRef: likeId,
-              likeCount: post.likeCount - 1
-            };
-          }
+
+          return {
+            ...post,
+            maybeLikeRef: likeId,
+            likeCount: newLikeCount
+          };
         }
         return post;
       });

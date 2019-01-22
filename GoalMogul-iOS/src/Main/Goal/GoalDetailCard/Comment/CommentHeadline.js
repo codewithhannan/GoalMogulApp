@@ -23,7 +23,7 @@ import badge from '../../../../asset/utils/badge.png';
 const CommentHeadline = (props) => {
   // TODO: format time
   const { item, caretOnPress, goalRef, isCommentOwner } = props;
-  const { owner, commentType, suggestion, created } = item;
+  const { owner, commentType, suggestion, created, maybeIsSubscribed } = item;
   const timeStamp = (created === undefined || created.length === 0)
     ? new Date() : created;
 
@@ -31,6 +31,7 @@ const CommentHeadline = (props) => {
   MenuFactory(
     [
       'Report',
+      maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe'
     ],
     (val) => caretOnPress(val),
     '',

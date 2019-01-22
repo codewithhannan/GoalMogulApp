@@ -40,6 +40,15 @@ import {
   openGoalDetail
 } from '../../../redux/modules/home/mastermind/actions';
 
+import {
+  deleteGoal,
+} from '../../../actions';
+
+import {
+  subscribeEntityNotification,
+  unsubscribeEntityNotification
+} from '../../../redux/modules/notification/NotificationActions';
+
 const DEBUG_KEY = '[ UI NeedCard ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
@@ -91,10 +100,36 @@ class NeedCard extends Component {
 
   // user basic information
   renderUserDetail(item) {
-    const { created, needRequest, category, owner, _id } = item;
+    const { created, needRequest, category, owner, _id, maybeIsSubscribed } = item;
     const { description } = needRequest;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
+
+    const caret = {
+      self: {
+        options: [{ option: 'Delete' }],
+        onPress: () => {
+          this.props.deleteGoal(_id);
+        }
+      },
+      others: {
+        options: [
+          { option: 'Report' }, 
+          { option: maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe' }
+        ],
+        onPress: (key) => {
+          if (key === 'Report') {
+            return this.props.createReport(_id, 'goal', 'Goal');
+          }
+          if (key === 'Unsubscribe') {
+            return this.props.unsubscribeEntityNotification(_id, 'Goal');
+          }
+          if (key === 'Subscribe') {
+            return this.props.subscribeEntityNotification(_id, 'Goal');
+          }
+        },
+      }
+    };
 
     return (
       <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
@@ -107,7 +142,7 @@ class NeedCard extends Component {
           <Headline
             name={owner.name}
             category={category}
-            caretOnPress={() => this.props.createReport(_id, 'goal', 'Goal')}
+            caret={caret}
             user={owner}
             isSelf={owner._id === this.props.userId}
           />
@@ -148,7 +183,8 @@ class NeedCard extends Component {
 
   renderViewGoal(item) {
     return (
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity 
+        activeOpacity={0.85}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -297,6 +333,9 @@ export default connect(
     likeGoal,
     createReport,
     unLikeGoal,
-    openGoalDetail
+    openGoalDetail,
+    subscribeEntityNotification,
+    unsubscribeEntityNotification,
+    deleteGoal
   }
 )(NeedCard);

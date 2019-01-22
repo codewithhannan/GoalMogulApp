@@ -82,6 +82,7 @@ class Home extends Component {
     return (
       <TabButtonGroup 
         buttons={props} 
+        noBorder
         tabIconMap={TabIconMap} 
         buttonStyle={{
           selected: {

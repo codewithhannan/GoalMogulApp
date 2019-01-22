@@ -60,12 +60,13 @@ export const likeGoal = (type, id, pageId) => (dispatch, getState) => {
             }
           }),
           undoAction: () => dispatch({
-            type: UNLIKE_GOAL,
+            type: LIKE_GOAL,
             payload: {
               id,
               likeId: undefined,
               tab,
-              type
+              type,
+              undo: true
             }
           })
         };
@@ -84,12 +85,12 @@ export const likeGoal = (type, id, pageId) => (dispatch, getState) => {
             }
           }),
           undoAction: () => dispatch({
-            type: UNLIKE_POST,
+            type: LIKE_POST,
             payload: {
               id,
               likeId: undefined,
               tab,
-              type
+              undo: true
             }
           })
         };
@@ -110,13 +111,14 @@ export const likeGoal = (type, id, pageId) => (dispatch, getState) => {
             }
           }),
           undoAction: () => dispatch({
-            type: UNLIKE_COMMENT,
+            type: LIKE_COMMENT,
             payload: {
               id,
               likeId: undefined,
               tab,
               type,
-              pageId
+              pageId,
+              undo: true
             }
           })
         };
@@ -152,58 +154,60 @@ export const unLikeGoal = (type, id, likeId, pageId) => (dispatch, getState) => 
     switch (request) {
       case 'goal':
         return {
-          action: () => dispatch({
+          action: (unlikeId) => dispatch({
             type: UNLIKE_GOAL,
             payload: {
               id,
-              likeId: undefined,
+              likeId: unlikeId,
               tab,
               pageId,
               type
             }
           }),
           undoAction: () => dispatch({
-            type: LIKE_GOAL,
+            type: UNLIKE_GOAL,
             payload: {
               id,
               likeId,
               tab,
               pageId,
-              type
+              type,
+              undo: true
             }
           })
         };
       case 'post':
         return {
-          action: () => dispatch({
+          action: (unlikeId) => dispatch({
             type: UNLIKE_POST,
             payload: {
               id,
-              likeId: undefined,
+              likeId: unlikeId,
               tab,
               pageId,
               type
             }
           }),
           undoAction: () => dispatch({
-            type: LIKE_POST,
+            type: UNLIKE_POST,
             payload: {
               id,
               likeId,
               tab,
               pageId,
-              type
+              type,
+              undo: true
             }
           }),
         };
 
       default:
         return {
-          action: () => dispatch({
+          action: (unlikeId) => dispatch({
             type: UNLIKE_COMMENT,
             payload: {
               id,
-              likeId: undefined,
+              likeId: unlikeId,
               tab,
               pageId,
               type
@@ -216,7 +220,8 @@ export const unLikeGoal = (type, id, likeId, pageId) => (dispatch, getState) => 
               likeId,
               tab,
               pageId,
-              type
+              type,
+              undo: true
             }
           })
         };

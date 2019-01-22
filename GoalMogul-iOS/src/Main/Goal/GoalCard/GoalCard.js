@@ -39,6 +39,11 @@ import {
   deleteGoal,
 } from '../../../actions';
 
+import {
+  subscribeEntityNotification,
+  unsubscribeEntityNotification
+} from '../../../redux/modules/notification/NotificationActions';
+
 // Components
 import Headline from '../Common/Headline';
 import Timestamp from '../Common/Timestamp';
@@ -252,9 +257,37 @@ class GoalCard extends React.PureComponent {
 
   // user basic information
   renderUserDetail(item) {
-    const { title, owner, category, _id, created } = item;
+    const { title, owner, category, _id, created, maybeIsSubscribed } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
+
+    const caret = {
+      self: {
+        options: [{ option: 'Delete' }],
+        onPress: () => {
+          return this.props.deleteGoal(_id);
+        },
+        shouldExtendOptionLength: false
+      },
+      others: {
+        options: [
+          { option: 'Report' }, 
+          { option: maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe' }
+        ],
+        onPress: (key) => {
+          if (key === 'Report') {
+            return this.props.createReport(_id, 'goal', 'Goal');
+          }
+          if (key === 'Unsubscribe') {
+            return this.props.unsubscribeEntityNotification(_id, 'Goal');
+          }
+          if (key === 'Subscribe') {
+            return this.props.subscribeEntityNotification(_id, 'Goal');
+          }
+        },
+        shouldExtendOptionLength: false
+      }
+    };
 
     return (
       <View style={{ flexDirection: 'row' }}>
@@ -269,11 +302,9 @@ class GoalCard extends React.PureComponent {
           <Headline
             name={owner.name}
             category={category}
-            caretOnPress={() => this.props.createReport(_id, 'goal', 'Goal')}
             user={owner}
             isSelf={owner._id === this.props.userId}
-            caretOnDelete={() => this.props.deleteGoal(_id)}
-            deleteOnly
+            caret={caret}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
@@ -342,7 +373,7 @@ class GoalCard extends React.PureComponent {
           iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
-            if (maybeLikeRef && maybeLikeRef.length > 0) {
+            if (maybeLikeRef && maybeLikeRef.length > 0 && maybeLikeRef !== 'testId') {
               return this.props.unLikeGoal('goal', _id, maybeLikeRef);
             }
             this.props.likeGoal('goal', _id);
@@ -480,6 +511,8 @@ export default connect(
     likeGoal,
     unLikeGoal,
     chooseShareDest,
-    deleteGoal
+    deleteGoal,
+    subscribeEntityNotification,
+    unsubscribeEntityNotification
   }
 )(GoalCard);

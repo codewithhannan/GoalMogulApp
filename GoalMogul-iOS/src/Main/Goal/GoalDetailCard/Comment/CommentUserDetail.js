@@ -36,6 +36,11 @@ import {
   openProfile
 } from '../../../../actions';
 
+import {
+  subscribeEntityNotification,
+  unsubscribeEntityNotification
+} from '../../../../redux/modules/notification/NotificationActions';
+
 // Constants
 const DEBUG_KEY = '[ UI CommentCard.CommentUserDetail ]';
 
@@ -124,6 +129,12 @@ class CommentUserDetail extends Component {
               }
               if (type === 'Delete') {
                 return this.props.deleteComment(_id);
+              }
+              if (type === 'Subscribe') {
+                return this.props.subscribeEntityNotification(_id, 'Comment');
+              }
+              if (type === 'Unsubscribe') {
+                return this.props.unsubscribeEntityNotification(_id, 'Comment');
               }
             }}
           />
@@ -274,6 +285,8 @@ export default connect(
     createComment,
     createReport,
     deleteComment,
-    openProfile
+    openProfile,
+    subscribeEntityNotification,
+    unsubscribeEntityNotification
   }
 )(CommentUserDetail);

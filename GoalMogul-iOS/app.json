@@ -20,6 +20,9 @@
     "splash": {
       "image": "./assets/splash1.png",
       "resizeMode": "cover"
+    },
+    "notification": {
+      "icon": "./assets/logo.png"
     }
   }
 }

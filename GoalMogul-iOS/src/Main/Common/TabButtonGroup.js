@@ -77,8 +77,14 @@ class TabButtonGroup extends Component {
   }
 
   render() {
+    const containerStyle = this.props.noBorder
+      ? {
+        ...styles.containerStyle,
+        borderWidth: 0
+      }
+      : styles.containerStyle;
     return (
-      <View style={styles.containerStyle}>
+      <View style={containerStyle}>
         {this.renderButton()}
       </View>
     );

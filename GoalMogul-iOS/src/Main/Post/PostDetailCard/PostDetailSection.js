@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import timeago from 'timeago.js';
 import _ from 'lodash';
 import R from 'ramda';
+import { Actions } from 'react-native-router-flux';
 // import Modal from 'react-native-modal';
 
 import {
@@ -46,6 +47,11 @@ import {
 import {
   openGoalDetail
 } from '../../../redux/modules/home/mastermind/actions';
+
+import {
+  subscribeEntityNotification,
+  unsubscribeEntityNotification
+} from '../../../redux/modules/notification/NotificationActions';
 
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
@@ -117,9 +123,36 @@ class PostDetailSection extends React.PureComponent {
   // user basic information
   renderUserDetail(item) {
     // TODO: TAG: for content
-    const { _id, created, content, owner, category } = item;
+    const { _id, created, content, owner, category, maybeIsSubscribed } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
+
+    const caret = {
+      self: {
+        options: [{ option: 'Delete' }],
+        onPress: () => {
+          this.props.deletePost(_id);
+          Actions.pop();
+        }
+      },
+      others: {
+        options: [
+          { option: 'Report' }, 
+          { option: maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe' }
+        ],
+        onPress: (key) => {
+          if (key === 'Report') {
+            return this.props.createReport(_id, 'postDetail', 'Post');
+          }
+          if (key === 'Unsubscribe') {
+            return this.props.unsubscribeEntityNotification(_id, 'Post');
+          }
+          if (key === 'Subscribe') {
+            return this.props.subscribeEntityNotification(_id, 'Post');
+          }
+        },
+      }
+    };
     // console.log('item is: ', item);
     return (
       <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
@@ -134,13 +167,7 @@ class PostDetailSection extends React.PureComponent {
             name={owner.name || ''}
             category={category}
             isSelf={this.props.userId === owner._id}
-            caretOnDelete={() => {
-              this.props.deletePost(_id);
-              Actions.pop();
-            }}
-            caretOnPress={() => {
-              this.props.createReport(_id, 'postDetail', 'Post');
-            }}
+            caret={caret}
             user={owner}
           />
           <Timestamp time={timeago().format(timeStamp)} />
@@ -434,6 +461,8 @@ export default connect(
     openPostDetail,
     openProfile,
     openGoalDetail,
-    deletePost
+    deletePost,
+    subscribeEntityNotification,
+    unsubscribeEntityNotification
   }
 )(PostDetailSection);

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   FlatList,
+  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -28,11 +29,31 @@ class MyNeeds extends Component {
     this.props.handleTabRefresh(key);
   }
 
+  handleOnLoadMore = () => {
+    this.props.handleProfileTabOnLoadMore(key);
+  }
+
   /**
    * @param type: ['sortBy', 'orderBy', 'categories', 'priorities']
    */
   handleOnMenuChange = (type, value) => {
     this.props.changeFilter(key, type, value);
+  }
+
+  renderListFooter() {
+    const { loading, data } = this.props;
+    // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
+    if (loading && data.length >= 20) {
+      return (
+        <View
+          style={{
+            paddingVertical: 0
+          }}
+        >
+          <ActivityIndicator size='large' />
+        </View>
+      );
+    }
   }
 
   renderItem = ({ item }) => {
@@ -41,7 +62,7 @@ class MyNeeds extends Component {
   }
 
   render() {
-    const { loading, data } = this.props;
+    const { refreshing, data } = this.props;
     return (
       <View style={{ flex: 1 }}>
         <GoalFilterBar
@@ -55,7 +76,10 @@ class MyNeeds extends Component {
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
             onRefresh={this.handleRefresh.bind()}
-            refreshing={loading}
+            onEndReached={this.handleOnLoadMore}
+            onEndReachedThreshold={0}
+            refreshing={refreshing}
+            ListFooterComponent={this.renderListFooter()}
           />
         </View>
         {/*
@@ -90,13 +114,14 @@ const styles = {
 
 const mapStateToProps = state => {
   const { selectedTab, needs } = state.profile;
-  const { data, loading, filter } = needs;
+  const { data, loading, filter, refreshing } = needs;
 
   return {
     selectedTab,
     data,
     loading,
-    filter
+    filter,
+    refreshing
   };
 };
 

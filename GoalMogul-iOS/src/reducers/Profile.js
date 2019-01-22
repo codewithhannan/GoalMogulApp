@@ -36,6 +36,7 @@ export const PROFILE_FETCH_FRIEND_DONE = 'profile_fetch_friend_done';
 export const PROFILE_FETCH_FRIEND_COUNT_DONE = 'profile_fetch_friend_count_done';
 // Constants for profile fetching goals and posts
 export const PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE = 'profile_fetch_mutual_friend_count_done';
+export const PROFILE_FETCH_TAB = 'profile_fetch_tab';
 export const PROFILE_FETCH_TAB_DONE = 'profile_fetch_tab_done';
 export const PROFILE_FETCH_TAB_FAIL = 'profile_fetch_tab_fail';
 export const PROFILE_REFRESH_TAB_FAIL = 'profile_refresh_tab_fail';
@@ -133,7 +134,8 @@ const INITIAL_STATE = {
     skip: 0,
     hasNextPage: undefined,
     data: [],
-    loading: false
+    loading: false,
+    refreshing: false
   },
   needs: {
     filter: {
@@ -147,7 +149,8 @@ const INITIAL_STATE = {
     skip: 0,
     hasNextPage: undefined,
     data: [],
-    loading: false
+    loading: false,
+    refreshing: false
   },
   posts: {
     filter: {
@@ -161,7 +164,8 @@ const INITIAL_STATE = {
     skip: 0,
     hasNextPage: undefined,
     data: [],
-    loading: false
+    loading: false,
+    refreshing: false
   }
 };
 
@@ -284,6 +288,12 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, friendship: newFriendship };
     }
 
+    case PROFILE_FETCH_TAB: {
+      const { type } = action.payload;
+      const newState = _.cloneDeep(state);
+      return _.set(newState, `${type}.loading`, true);
+    }
+
     /**
      * Cases when loading/refreshing profile tabs
      * TODO: refactor the following three cases to abstract logic
@@ -319,7 +329,7 @@ export default (state = INITIAL_STATE, action) => {
     case PROFILE_REFRESH_TAB_DONE: {
       const { skip, data, hasNextPage, type } = action.payload;
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, `${type}.loading`, false);
+      newState = _.set(newState, `${type}.refreshing`, false);
 
       if (skip !== undefined) {
         newState = _.set(newState, `${type}.skip`, skip);
@@ -335,13 +345,13 @@ export default (state = INITIAL_STATE, action) => {
     case PROFILE_REFRESH_TAB: {
       const { type } = action.payload;
       let newState = _.cloneDeep(state);
-      return _.set(newState, `${type}.loading`, true);
+      return _.set(newState, `${type}.refreshing`, true);
     }
 
     case PROFILE_REFRESH_TAB_FAIL: {
       const { type } = action.payload;
       const newState = _.cloneDeep(state);
-      return _.set(newState, `${type}.loading`, false);
+      return _.set(newState, `${type}.refreshing`, false);
     }
 
     // Update one of filter within tab
