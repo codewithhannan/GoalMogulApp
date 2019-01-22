@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   FlatList,
+  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -128,11 +129,31 @@ class MyPosts extends Component {
     this.props.handleTabRefresh(key);
   }
 
+  handleOnLoadMore = () => {
+    this.props.handleProfileTabOnLoadMore(key);
+  }
+
   /**
    * @param type: ['sortBy', 'orderBy', 'categories', 'priorities']
    */
   handleOnMenuChange = (type, value) => {
     this.props.changeFilter(key, type, value);
+  }
+
+  renderListFooter() {
+    const { loading, data } = this.props;
+    // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
+    if (loading && data.length >= 20) {
+      return (
+        <View
+          style={{
+            paddingVertical: 0
+          }}
+        >
+          <ActivityIndicator size='large' />
+        </View>
+      );
+    }
   }
 
   renderItem = ({ item }) => {
@@ -141,7 +162,7 @@ class MyPosts extends Component {
   }
 
   render() {
-    const { loading, data } = this.props;
+    const { refreshing, data } = this.props;
     return (
       <View style={{ flex: 1 }}>
         {/*
@@ -157,7 +178,10 @@ class MyPosts extends Component {
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
             onRefresh={this.handleRefresh.bind()}
-            refreshing={loading}
+            refreshing={refreshing}
+            onEndReached={this.handleOnLoadMore}
+            onEndReachedThreshold={0}
+            ListFooterComponent={this.renderListFooter()}
           />
         </View>
         {/*
@@ -192,13 +216,14 @@ const styles = {
 
 const mapStateToProps = state => {
   const { selectedTab, posts } = state.profile;
-  const { data, loading, filter } = posts;
+  const { data, loading, filter, refreshing } = posts;
 
   return {
     selectedTab,
     data,
     loading,
-    filter
+    filter,
+    refreshing
   };
 };
 
