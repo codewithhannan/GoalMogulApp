@@ -61,7 +61,7 @@ class ActivitySummary extends React.Component {
         <Text
           numberOfLines={1}
           ellipsizeMode='tail'
-          style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 11 }}
+          style={{ flex: 1, flexWrap: 'wrap', color: '#6d6d6d', fontSize: 9 }}
         >
           {actorText}
           {text}
@@ -77,7 +77,7 @@ class ActivitySummary extends React.Component {
     if (!item) return '';
 
     return (
-      <View style={{ marginBottom: 0.5, backgroundColor: 'white', padding: 5, marginLeft: 10, marginRight: 10 }}>
+      <View style={{ marginBottom: 0.5, backgroundColor: 'white', padding: 5, paddingLeft: 15, paddingRight: 15 }}>
           {this.renderText(item)}
       </View>
     );
@@ -124,10 +124,12 @@ const switchPostType = (postType) => switchCase({
 
 const styles = {
   boldTextStyle: {
-    fontWeight: '700'
+    fontWeight: '700',
+    color: '#6d6d6d',
   },
   textStyle: {
-    fontSize: 11
+    fontSize: 9,
+    color: '#6d6d6d',
   }
 };
 

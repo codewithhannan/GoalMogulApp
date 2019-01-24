@@ -417,7 +417,7 @@ class GoalCard extends React.PureComponent {
     const { steps, needs } = item;
     const tabHeight = getTabHeight(this.state.navigationState, item);
     return (
-      <View style={{ height: 450, marginTop: 4 }}>
+      <View style={{ marginTop: 10 }}>
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <GoalCardHeader item={item} />
           <View style={{ backgroundColor: '#e5e5e5' }}>

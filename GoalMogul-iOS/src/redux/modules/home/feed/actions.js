@@ -89,7 +89,6 @@ const loadFeed = (skip, limit, token, priority, categories, callback, onError) =
       token
     )
     .then((res) => {
-      // console.log('loading feed with res: ', res);
       if (res && res.data) {
         // return callback([...res.data, ...testData]);
         return callback([...res.data]);
