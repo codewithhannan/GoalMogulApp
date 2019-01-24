@@ -102,10 +102,18 @@ class Home extends Component {
     );
   };
 
-  _renderScene = SceneMap({
-    goals: Mastermind,
-    activity: ActivityFeed,
-  });
+  _renderScene = ({ route }) => {
+    switch (route.key) {
+      case 'goals': 
+        return <Mastermind />;
+
+      case 'activity': 
+        return <ActivityFeed />;
+
+      default: 
+        return null;
+    }
+  };
 
   _keyExtractor = (item, index) => index;
 
