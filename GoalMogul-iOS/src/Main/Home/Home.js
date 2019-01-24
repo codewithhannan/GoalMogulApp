@@ -61,6 +61,10 @@ class Home extends Component {
     };
   }
 
+  scrollToTop = () => {
+    this.refs['mastermind'].scrollToTop();
+  }
+
   handleCreateGoal = () => {
     this.props.openCreateOverlay();
     // As we move the create option here, we no longer need to care about the tab
@@ -105,7 +109,7 @@ class Home extends Component {
   _renderScene = ({ route }) => {
     switch (route.key) {
       case 'goals': 
-        return <Mastermind />;
+        return <Mastermind ref='mastermind' />;
 
       case 'activity': 
         return <ActivityFeed />;

@@ -72,6 +72,13 @@ class Mastermind extends Component {
     });
   }
 
+  scrollsToTop = () => {
+    this._carousel.scrollToIndex({
+      animated: true,
+      index: 0
+    });
+  }
+
   handleCreateGoal = () => {
     this.props.openCreateOverlay();
     Actions.createGoalButtonOverlay({ tab: TAB_KEY });
