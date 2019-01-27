@@ -87,7 +87,7 @@ export const loginUser = ({ username, password }) => {
           const hasTutorialShown = await Tutorial.getTutorialShown(res.userId);
           // User has watched the tutorial
           if (hasTutorialShown) {
-            Actions.mainTabs();
+            Actions.replace('mainTabs');
             return;
           }
           // Show tutorial

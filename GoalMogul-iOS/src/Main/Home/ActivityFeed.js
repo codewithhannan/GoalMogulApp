@@ -1,20 +1,17 @@
 import React, { Component } from 'react';
 import {
   View,
-  Image,
   FlatList,
   ActivityIndicator,
-  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Actions } from 'react-native-router-flux';
 
 // Components
 import ActivityCard from '../Activity/ActivityCard';
 import EmptyResult from '../Common/Text/EmptyResult';
 
 // Assets
-import plus from '../../asset/utils/plus.png';
+// import plus from '../../asset/utils/plus.png';
 
 // actions
 import {
@@ -35,6 +32,16 @@ class ActivityFeed extends Component {
   handleOnLoadMore = () => this.props.loadMoreFeed();
 
   handleOnRefresh = () => this.props.refreshFeed();
+
+  /**
+   * Used by parent to scroll mastermind to top on tab pressed
+   */
+  scrollToTop = () => {
+    this.flatlist.scrollToIndex({
+      animated: true,
+      index: 0
+    });
+  }
 
   /**
    * @param type: ['sortBy', 'orderBy', 'categories', 'priorities']
@@ -61,7 +68,7 @@ class ActivityFeed extends Component {
   renderListFooter() {
     const { loadingMore, data } = this.props;
     // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
-    if (loadingMore && data.length > 4) {
+    if (loadingMore && data.length >= 4) {
       return (
         <View
           style={{
@@ -105,6 +112,7 @@ class ActivityFeed extends Component {
     return (
       <View style={{ flex: 1 }}>
         <FlatList
+          ref={f => (this.flatlist = f)}
           data={this.props.data}
           renderItem={this.renderItem}
           numColumns={1}
@@ -172,7 +180,9 @@ export default connect(
     loadMoreFeed,
     refreshFeed,
     openPostDetail
-  }
+  },
+  null,
+  { withRef: true }
 )(ActivityFeed);
 
 const testData = [

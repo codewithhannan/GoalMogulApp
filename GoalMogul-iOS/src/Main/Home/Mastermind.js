@@ -5,10 +5,12 @@ import {
   TouchableOpacity,
   Text,
   ActivityIndicator,
-  Platform
+  Platform,
+  FlatList
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
+// This is commented out as we switch back to the old implementation
 import Carousel from 'react-native-snap-carousel';
 import { Constants } from 'expo';
 
@@ -37,13 +39,14 @@ import {
 } from '../../redux/modules/home/mastermind/actions';
 
 import { IPHONE_MODELS } from '../../Utils/Constants';
-import { APP_DEEP_BLUE } from '../../styles';
+import { APP_DEEP_BLUE, BACKGROUND_COLOR } from '../../styles';
 
 const ITEM_HEIGHT = Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
   ? 450 : 420;
 
 const TAB_KEY = 'mastermind';
+const DEBUG_KEY = '[ UI Mastermind ]';
 
 class Mastermind extends Component {
   constructor(props) {
@@ -72,8 +75,11 @@ class Mastermind extends Component {
     });
   }
 
-  scrollsToTop = () => {
-    this._carousel.scrollToIndex({
+  /**
+   * Used by parent to scroll mastermind to top on tab pressed
+   */
+  scrollToTop = () => {
+    this.flatlist.scrollToIndex({
       animated: true,
       index: 0
     });
@@ -209,6 +215,9 @@ class Mastermind extends Component {
   //   );
   // }
 
+  /**
+   * This method is not used currently as we switch back to the old scrolling pattern
+   */
   renderNext() {
     if (this.state.onListEndReached && this.props.loadingMore && this.props.data.length >= 4) {
       return '';
@@ -243,7 +252,7 @@ class Mastermind extends Component {
       return (
         <View
           style={{
-            paddingVertical: 0
+            paddingVertical: 20
           }}
         >
           <ActivityIndicator size='large' />
@@ -253,52 +262,19 @@ class Mastermind extends Component {
   }
 
   render() {
-    return (
-      <View style={{ flex: 1 }}>
-        {this.renderInfoHeader()}
-        {this.renderInfoModal()}
-        <Carousel
-          ref={(c) => { this._carousel = c; }}
-          data={this.props.data}
-          renderItem={this.renderItem}
-          sliderHeight={ITEM_HEIGHT}
-          itemHeight={ITEM_HEIGHT}
-          keyExtractor={this._keyExtractor}
-          scrollsToTop
-          refreshing={this.props.loading}
-          onRefresh={this.handleOnRefresh}
-          onEndReached={this.handleOnLoadMore}
-          ListHeaderComponent={this.renderListHeader()}
-          ListEmptyComponent={
-            this.props.loading ? '' :
-            <EmptyResult
-              text={'No Goals have been shared'}
-              textStyle={{ paddingTop: 100 }}
-            />
-          }
-          ListFooterComponent={this.renderListFooter()}
-          vertical
-          removeClippedSubviews
-          initialNumToRender={4}
-          inactiveSlideOpacity={0.2}
-          inactiveSlideScale={0.85}
-          onEndReachedThreshold={0}
-        />
-        {
-          //this.renderPlus()
-        }
-        {this.renderNext()}
-      </View>
-    );
-    // Following is the old implementation
+    // We are switching back to infinite scroll with flatlist for now
     // return (
     //   <View style={{ flex: 1 }}>
-    //     <FlatList
-    //       ref='flatlist'
+    //     {this.renderInfoHeader()}
+    //     {this.renderInfoModal()}
+    //     <Carousel
+    //       ref={(c) => { this._carousel = c; }}
     //       data={this.props.data}
     //       renderItem={this.renderItem}
-    //       numColumns={1}
+    //       sliderHeight={ITEM_HEIGHT}
+    //       itemHeight={ITEM_HEIGHT}
     //       keyExtractor={this._keyExtractor}
+    //       scrollsToTop
     //       refreshing={this.props.loading}
     //       onRefresh={this.handleOnRefresh}
     //       onEndReached={this.handleOnLoadMore}
@@ -310,11 +286,46 @@ class Mastermind extends Component {
     //           textStyle={{ paddingTop: 100 }}
     //         />
     //       }
-    //       onEndThreshold={0}
+    //       ListFooterComponent={this.renderListFooter()}
+    //       vertical
+    //       removeClippedSubviews
+    //       initialNumToRender={4}
+    //       inactiveSlideOpacity={0.2}
+    //       inactiveSlideScale={0.85}
+    //       onEndReachedThreshold={0}
     //     />
-    //     {this.renderPlus()}
+    //     {
+    //       //this.renderPlus()
+    //     }
+    //     {this.renderNext()}
     //   </View>
     // );
+
+    // Following is the old implementation
+    return (
+      <View style={{ flex: 1 }}>
+        <FlatList
+          ref={f => (this.flatlist = f)}
+          data={this.props.data}
+          renderItem={this.renderItem}
+          numColumns={1}
+          keyExtractor={this._keyExtractor}
+          refreshing={this.props.loading}
+          onRefresh={this.handleOnRefresh}
+          onEndReached={this.handleOnLoadMore}
+          ListHeaderComponent={this.renderListHeader()}
+          ListFooterComponent={this.renderListFooter()}
+          ListEmptyComponent={
+            this.props.loading ? '' :
+            <EmptyResult
+              text={'No Goals have been shared'}
+              textStyle={{ paddingTop: 100 }}
+            />
+          }
+          onEndThreshold={0}
+        />
+      </View>
+    );
   }
 }
 
@@ -376,5 +387,7 @@ export default connect(
     refreshGoals,
     openGoalDetail,
     changeFilter
-  }
+  },
+  null,
+  { withRef: true }
 )(Mastermind);

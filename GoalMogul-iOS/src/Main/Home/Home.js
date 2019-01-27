@@ -59,10 +59,19 @@ class Home extends Component {
         ],
       }
     };
+    this.scrollToTop = this.scrollToTop.bind(this);
+    this._renderScene = this._renderScene.bind(this);
   }
 
   scrollToTop = () => {
-    this.refs['mastermind'].scrollToTop();
+    const { navigationState } = this.state;
+    const { index, routes } = navigationState;
+    if (routes[index].key === 'goals') {
+      return this.mastermind.getWrappedInstance().scrollToTop();
+    }
+    if (routes[index].key === 'activity') {
+      return this.activityFeed.getWrappedInstance().scrollToTop();
+    }
   }
 
   handleCreateGoal = () => {
@@ -84,7 +93,7 @@ class Home extends Component {
 
   _renderHeader = props => {
     return (
-      <TabButtonGroup 
+      <TabButtonGroup
         buttons={props} 
         noBorder
         tabIconMap={TabIconMap} 
@@ -109,10 +118,10 @@ class Home extends Component {
   _renderScene = ({ route }) => {
     switch (route.key) {
       case 'goals': 
-        return <Mastermind ref='mastermind' />;
+        return <Mastermind ref={m => (this.mastermind = m)} />;
 
       case 'activity': 
-        return <ActivityFeed />;
+        return <ActivityFeed ref={a => (this.activityFeed = a)} />;
 
       default: 
         return null;
@@ -148,6 +157,7 @@ class Home extends Component {
           <Report showing={this.props.showingModal} />
           <SearchBarHeader rightIcon='menu' />
           <TabView
+            ref={ref => (this.tab = ref)}
             navigationState={this.state.navigationState}
             renderScene={this._renderScene}
             renderTabBar={this._renderHeader}
@@ -221,5 +231,7 @@ export default connect(
     homeSwitchTab,
     openCreateOverlay,
     subscribeNotification
-  }
+  },
+  null,
+  { withRef: true }
 )(Home);

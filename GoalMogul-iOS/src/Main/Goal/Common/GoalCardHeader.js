@@ -57,7 +57,7 @@ const GoalCardHeader = (props) => {
         backgroundColor: 'white',
         padding: 5,
         paddingLeft: 12,
-        marginRight: 12
+        paddingRight: 12
       }}
     >
       {renderText(item)}

@@ -109,7 +109,7 @@ class ActivityCard extends React.PureComponent {
 
     // User shouldn't share a share. When Activity on a post which is a share,
     // We disable the share button.
-    const isShare = postRef.postType !== 'General';
+    const isShare = actedUponEntityType === 'Post' && postRef.postType !== 'General';
 
     return (
       <ActionButtonGroup>
@@ -154,7 +154,7 @@ class ActivityCard extends React.PureComponent {
     if (!item || _.isEmpty(item)) return '';
 
     return (
-      <View style={{ marginTop: 4, marginBottom: 4 }}>
+      <View style={{ marginTop: 10 }}>
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <ActivitySummary item={item} />
             <View style={{ ...styles.containerStyle, marginTop: 1 }}>

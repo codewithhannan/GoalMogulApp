@@ -101,7 +101,7 @@ const styles = {
     backgroundColor: '#fff',
     shadowColor: 'gray',
     shadowOffset: { width: 0, height: 1.5 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 1,
     elevation: 0.5
   },
