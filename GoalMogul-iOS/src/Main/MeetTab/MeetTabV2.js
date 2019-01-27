@@ -148,7 +148,14 @@ class MeetTabV2 extends React.Component {
     }
 
     renderEmptyRequestCard = () => {
-
+        const item = {
+            _id: 'friend-request-empty',
+            type: 'info',
+            info: 'You have no incoming request'
+        };
+        return (
+            <FriendRequestCardView item={item} key={item._id} />
+        );
     }
 
     // Render compacted friend request cards
@@ -165,20 +172,26 @@ class MeetTabV2 extends React.Component {
 
         let ret = [];
 
-        ret.push(this.renderSectionTitle('Friend Requests'));
+        ret.push(this.renderSectionTitle(
+            'Friend Requests',
+            inLength,
+            this.handleSeeAllRequests,
+        ));
         ret = ret.concat(dataToRender.map((d) => <FriendRequestCardView item={d} key={d._id} />));
-        if (inLength === 0) {
-            ret.push(this.renderEmptyRequestCard());
-        }
+
         // TODO: delete the following line
         // ret.push(this.renderSeeAll(totalLength, this.handleSeeAllRequests, 'request-see-all-test'));
-        ret.push(this.renderSeeAll(
-            inLength > 0 ? totalLength : 0, 
-            this.handleSeeAllRequests, 
-            'request-see-all'
-        ));
+        
+        // Only render See All if there are incoming requests
+        if (inLength > 0) {
+            ret.push(this.renderSeeAll(
+                inLength > 0 ? totalLength : 0, 
+                this.handleSeeAllRequests, 
+                'request-see-all'
+            ));
+        }
+
         return ret;
-        // If total length is less than threshold, then don't render See All
     }
 
     // Render compacted friend cards
@@ -200,12 +213,29 @@ class MeetTabV2 extends React.Component {
         return ret;
     }
 
-    renderSectionTitle = (title) => {
+    renderSectionTitle = (title, inLength, onPress) => {
+        let seeAll = '';
+        if (inLength !== undefined && inLength === 0) {
+            const { seeAllContainerStyle, seeAllTextStyle } = styles;
+            seeAll = (
+                <DelayedButton
+                    style={{ ...seeAllContainerStyle, padding: 13, paddingLeft: 5, alignSelf: 'flex-end' }}
+                    activeOpacity={0.85} 
+                    onPress={onPress}
+
+                >
+                    <Text style={seeAllTextStyle}>Manage All</Text>
+                </DelayedButton>
+            );
+        }
         return (
-            <View style={{ padding: 13 }} key={`${title}`}>
-                <Text style={{ color: '#616161', fontWeight: '700', fontSize: 12 }}>
-                    {title}
-                </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }} key={`${title}`}>
+                <View style={{ padding: 13 }}>
+                    <Text style={{ color: '#616161', fontWeight: '700', fontSize: 12 }}>
+                        {title}
+                    </Text>
+                </View>
+                {seeAll}
             </View>
         );
     }
