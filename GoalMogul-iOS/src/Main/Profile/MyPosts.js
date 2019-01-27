@@ -143,14 +143,14 @@ class MyPosts extends Component {
   renderListFooter() {
     const { loading, data } = this.props;
     // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
-    if (loading && data.length >= 20) {
+    if (loading && data.length >= 10) {
       return (
         <View
           style={{
-            paddingVertical: 0
+            paddingVertical: 12
           }}
         >
-          <ActivityIndicator size='large' />
+          <ActivityIndicator size='small' />
         </View>
       );
     }

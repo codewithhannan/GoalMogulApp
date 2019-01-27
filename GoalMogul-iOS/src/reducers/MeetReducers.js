@@ -22,7 +22,7 @@ import {
   USER_LOG_OUT
 } from './User';
 
-const limit = 20;
+const limit = 5;
 const filter = {
   friends: {
     sortBy: ['alphabetical', 'lastadd']
