@@ -385,6 +385,7 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
   });
 
   const onSuccess = (data) => {
+    console.log(`${DEBUG_KEY}: ${tab} refresh succeed with data length: `, data.length);
     dispatch({
       type: PROFILE_REFRESH_TAB_DONE,
       payload: {
@@ -398,6 +399,7 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
   };
 
   const onError = (err) => {
+    console.log(`${DEBUG_KEY}: ${tab} refresh failed with err: `, err);
     dispatch({
       type: PROFILE_REFRESH_TAB_FAIL,
       payload: {
@@ -438,6 +440,7 @@ export const handleProfileTabOnLoadMore = (tab) => (dispatch, getState) => {
   });
 
   const onSuccess = (data) => {
+    console.log(`${DEBUG_KEY}: ${tab} load more succeed with data length: `, data.length);
     dispatch({
       type: PROFILE_FETCH_TAB_DONE,
       payload: {
@@ -451,6 +454,7 @@ export const handleProfileTabOnLoadMore = (tab) => (dispatch, getState) => {
   };
 
   const onError = (err) => {
+    console.log(`${DEBUG_KEY}: ${tab} load more failed with err: `, err);
     dispatch({
       type: PROFILE_FETCH_TAB_FAIL,
       payload: {
@@ -504,8 +508,8 @@ const loadOneTab = (tab, skip, limit, filter, token, onSuccess, onError) => {
   API
     .get(route, token)
     .then((res) => {
-      console.log(`${DEBUG_KEY}: res for fetching for tab: ${tab}, is: `, res);
-      if (res && res.data) {
+      // console.log(`${DEBUG_KEY}: res for fetching for tab: ${tab}, is: `, res);
+      if (res.status === 200 || (res && res.data)) {
         // TODO: change this
         return onSuccess(res.data);
       }

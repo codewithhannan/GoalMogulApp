@@ -130,7 +130,7 @@ const INITIAL_STATE = {
       completedOnly: 'false',
       priorities: ''
     },
-    limit: 20,
+    limit: 10,
     skip: 0,
     hasNextPage: undefined,
     data: [],
@@ -145,7 +145,7 @@ const INITIAL_STATE = {
       completedOnly: 'false',
       priorities: ''
     },
-    limit: 20,
+    limit: 10,
     skip: 0,
     hasNextPage: undefined,
     data: [],
@@ -160,7 +160,7 @@ const INITIAL_STATE = {
       completedOnly: 'false',
       priorities: ''
     },
-    limit: 20,
+    limit: 10,
     skip: 0,
     hasNextPage: undefined,
     data: [],
