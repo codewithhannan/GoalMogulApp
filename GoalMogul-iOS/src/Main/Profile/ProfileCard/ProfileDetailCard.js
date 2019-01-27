@@ -304,7 +304,7 @@ class ProfileDetailCard extends Component {
 
     return (
       <View style={styles.cardContainerStyle}>
-        <View style={{ height: 90, backgroundColor: '#75d8fb' }} />
+        <View style={{ height: 90, backgroundColor: '#1998c9' }} />
         <View style={styles.imageWrapperStyle}>
           {this.renderProfileImage(profile)}
           {this.renderProfileActionButton()}
@@ -430,20 +430,3 @@ export default connect(
     updateFriendship
   }
 )(ProfileDetailCard);
-
-// const testData = {
-//   name: 'Jia Zeng',
-//   email: 'jz145@duke.edu',
-//   phone: '9194912504',
-//   headline: 'I predict market with mathematical models',
-//   privacy: {
-//     friends: 'Public'
-//   },
-//   profile: {
-//     pointsEarned: 10,
-//     about: 'This is a test page.',
-//     elevatorPitch: 'This is a profile elevator pitch',
-//     image: '',
-//     occupation: 'Quantative Analyst at Jane Street'
-//   }
-// };

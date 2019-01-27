@@ -19,6 +19,7 @@ import FriendCardView from './V2/FriendCardView';
 import FriendRequestCardView from './V2/FriendRequestCardView';
 import FriendInvitationCTR from './V2/FriendInvitationCTR';
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
+import DelayedButton from '../Common/Button/DelayedButton';
 
 /* Actions */
 import {
@@ -83,7 +84,17 @@ class MeetTabV2 extends React.Component {
     }
 
     handleSeeAllRequests = () => {
+        // this.setState({
+        //     ...this.state,
+        //     seeAllRequests: false
+        // });
         Actions.requestTabView();
+        // setTimeout(() => {
+        //     this.setState({
+        //         ...this.state,
+        //         seeAllRequests: true
+        //     });
+        // }, 500);
     }
 
     handleInviteFriends = () => {
@@ -105,7 +116,7 @@ class MeetTabV2 extends React.Component {
                         alignItems: 'center', 
                     }}
                 >
-                    <TouchableOpacity 
+                    <DelayedButton 
                         activeOpacity={0.85}
                         style={styles.CTRContainerStyle} 
                         onPress={this.handleSyncContact}
@@ -116,9 +127,9 @@ class MeetTabV2 extends React.Component {
                             resizeMode='contain' 
                         />
                         <Text style={styles.CTRTextStyle}>Sync Contacts</Text>
-                    </TouchableOpacity>
+                    </DelayedButton>
                     <View style={{ height: 25, width: 0.5, backgroundColor: 'lightgray' }} />
-                    <TouchableOpacity 
+                    <DelayedButton 
                         activeOpacity={0.85}
                         style={styles.CTRContainerStyle} 
                         onPress={this.handleDiscoverFriend}
@@ -129,11 +140,15 @@ class MeetTabV2 extends React.Component {
                             resizeMode='contain' 
                         />
                         <Text style={styles.CTRTextStyle}>Discover Friends</Text>
-                    </TouchableOpacity>
+                    </DelayedButton>
                 </View>
                 
             </View>
         );
+    }
+
+    renderEmptyRequestCard = () => {
+
     }
 
     // Render compacted friend request cards
@@ -150,15 +165,18 @@ class MeetTabV2 extends React.Component {
 
         let ret = [];
 
+        ret.push(this.renderSectionTitle('Friend Requests'));
         ret = ret.concat(dataToRender.map((d) => <FriendRequestCardView item={d} key={d._id} />));
-        if (inLength > 0) {
-            ret.push(this.renderSectionTitle('Friend Requests'));
+        if (inLength === 0) {
+            ret.push(this.renderEmptyRequestCard());
         }
         // TODO: delete the following line
         // ret.push(this.renderSeeAll(totalLength, this.handleSeeAllRequests, 'request-see-all-test'));
-        if (inLength > 2 && totalLength > NumCardsToShow) { // Make sure there is incoming request
-            ret.push(this.renderSeeAll(totalLength, this.handleSeeAllRequests, 'request-see-all'));
-        }
+        ret.push(this.renderSeeAll(
+            inLength > 0 ? totalLength : 0, 
+            this.handleSeeAllRequests, 
+            'request-see-all'
+        ));
         return ret;
         // If total length is less than threshold, then don't render See All
     }
@@ -173,7 +191,11 @@ class MeetTabV2 extends React.Component {
         }
         ret = ret.concat(dataToRender.map((d) => <FriendCardView item={d} key={d._id} />));
         if (friendCount > NumCardsToShow) {
-            ret.push(this.renderSeeAll(friendCount, this.handleSeeAllFriends, 'friends-see-all'));
+            ret.push(this.renderSeeAll(
+                friendCount, 
+                this.handleSeeAllFriends, 
+                'friends-see-all'
+            ));
         }
         return ret;
     }
@@ -189,15 +211,16 @@ class MeetTabV2 extends React.Component {
     }
 
     renderSeeAll = (count, onPress, key) => {
-        const { seeAllContainerStyle, seeAllTextStyle, shadow } = styles; 
+        const { seeAllContainerStyle, seeAllTextStyle, shadow } = styles;
+        const countToDisplay = count ? ` (${count})` : '';
         return (
-            <TouchableOpacity 
+            <DelayedButton
                 style={{ ...seeAllContainerStyle, ...shadow }}
                 activeOpacity={0.85} 
                 onPress={onPress}
                 key={key}
             >
-                <Text style={seeAllTextStyle}>See All ({count})</Text>
+                <Text style={seeAllTextStyle}>See All{countToDisplay}</Text>
                 <View style={{ alignSelf: 'center', alignItems: 'center' }}>
                     <Icon
                         name='ios-arrow-round-forward'
@@ -206,7 +229,7 @@ class MeetTabV2 extends React.Component {
                         iconStyle={styles.arrowIconStyle}
                     />
                 </View>
-            </TouchableOpacity>
+            </DelayedButton>
         );
     }
 

@@ -191,7 +191,7 @@ class RouterComponent extends Component {
                   tabBarOnPress={this.onTabPress}
                   lazy
                 >
-                  <Tab
+                  <Stack
                     key="homeTab"
                     initial
                     icon={TabIcon}
@@ -225,7 +225,7 @@ class RouterComponent extends Component {
                     <Scene key="friendsBlocked" component={FriendsBlocked} />
                     <Scene key="privacy" component={Privacy} />
                     <Scene key="friendsSetting" component={FriendsSetting} />
-                  </Tab>
+                  </Stack>
 
                   <Stack
                     key="meetTab"

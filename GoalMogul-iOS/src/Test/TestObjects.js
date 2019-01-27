@@ -261,3 +261,20 @@ export const outgoingRequests = [
 ];
 
 export const testFriendRequests = [...incomingRequests, ...outgoingRequests];
+
+export const profileTestData = {
+  name: 'Jia Zeng',
+  email: 'jz145@duke.edu',
+  phone: '9194912504',
+  headline: 'I predict market with mathematical models',
+  privacy: {
+    friends: 'Public'
+  },
+  profile: {
+    pointsEarned: 10,
+    about: 'This is a test page.',
+    elevatorPitch: 'This is a profile elevator pitch',
+    image: '',
+    occupation: 'Quantative Analyst at Jane Street'
+  }
+};

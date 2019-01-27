@@ -17,6 +17,9 @@ import { APP_BLUE_BRIGHT, APP_BLUE } from '../../../styles';
 import Friends from '../../../asset/utils/Friends.png';
 import Suggest from '../../../asset/utils/Suggest.png';
 
+/* Components */
+import DelayedButton from '../../Common/Button/DelayedButton';
+
 /* Constants */
 const { width } = Dimensions.get('window');
 
@@ -27,13 +30,13 @@ class FriendInvitationCTR extends React.PureComponent {
 
     renderInvitationButton() {
         return (
-            <TouchableOpacity
+            <DelayedButton
                 activeOpacity={0.85}
                 onPress={this.handleOnPress}
                 style={styles.buttonContainerStyle}
             >
                 <Text style={styles.buttonTextStyle}>Invite friends now</Text>
-            </TouchableOpacity>
+            </DelayedButton>
         );
     }
 
