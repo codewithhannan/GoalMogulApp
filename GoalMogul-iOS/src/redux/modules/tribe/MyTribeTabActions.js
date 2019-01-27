@@ -23,7 +23,7 @@ export const openMyTribeTab = () => (dispatch, getState) => {
     type: MYTRIBETAB_OPEN
   });
 
-  Actions.push('myTribeTab');
+  Actions.replace('myTribeTab');
   refreshTribe()(dispatch, getState);
 };
 

@@ -4,6 +4,7 @@ import {
   Router,
   Stack,
   Tabs,
+  Tab,
   Modal,
   Reducer,
   Lightbox,
@@ -103,6 +104,12 @@ class RouterComponent extends Component {
     if (state.key === 'homeTab' && isFocused() && state.routes.length > 1) {
       return Actions.popTo('home');
     }
+
+    if (state.key === 'homeTab' && isFocused()) {
+      if (Actions.refs.home !== undefined) {
+        Actions.refs.home.getWrappedInstance().scrollToTop();
+      }
+    }
     return Actions[state.key].call();
   }
 
@@ -126,9 +133,9 @@ class RouterComponent extends Component {
         createReducer={this.reducerCreate.bind(this)}
         onStateChange={this.stateHandler.bind(this)}
       >
-        <Modal>
-          <Lightbox hideNavBar>
-            <Scene key="root" hideNavBar>
+        <Modal key="modal" hideNavBar>
+          <Lightbox key="lightbox" hideNavBar>
+            <Stack key="root" hideNavBars>
               <Scene key="auth" initial hideNavBar>
                 <Scene key="splash" component={SplashScreen} initial />
                 <Scene key="login" component={LoginPage} />
@@ -166,12 +173,6 @@ class RouterComponent extends Component {
                 drawerType='push-screen'
                 hideNavBar
                 key="drawer"
-                onExit={() => {
-                  console.log('Drawer closed');
-                }}
-                onEnter={() => {
-                  console.log('Drawer opened');
-                }}
                 drawerPosition='right'
                 contentComponent={Menu}
                 drawerWidth={240}
@@ -179,6 +180,7 @@ class RouterComponent extends Component {
               <Scene hideNavBar drawerLockMode="locked-closed">
                 <Tabs
                   key="mainTabs"
+                  routeName="mainTabs"
                   hideNavBar
                   swipeEnabled={false}
                   tabBarStyle={styles.tabBarStyle}
@@ -189,13 +191,17 @@ class RouterComponent extends Component {
                   tabBarOnPress={this.onTabPress}
                   lazy
                 >
-                  <Stack
+                  <Tab
                     key="homeTab"
                     initial
                     icon={TabIcon}
                     hideNavBar
                   >
-                    <Scene key="home" component={Home} initial />
+                    <Scene 
+                      key="home" 
+                      initial
+                      component={Home}
+                    />
                     <Stack key="myEventTabRoot" hideNavBar>
                       <Scene key="myEventTab" component={MyEventTab} initial />
                       <Scene key="myEventDetail" component={MyEvent} />
@@ -219,7 +225,7 @@ class RouterComponent extends Component {
                     <Scene key="friendsBlocked" component={FriendsBlocked} />
                     <Scene key="privacy" component={Privacy} />
                     <Scene key="friendsSetting" component={FriendsSetting} />
-                  </Stack>
+                  </Tab>
 
                   <Stack
                     key="meetTab"
@@ -272,7 +278,7 @@ class RouterComponent extends Component {
               </Drawer>
 
 
-            </Scene>
+            </Stack>
             {/*
               This model is deprecated. Using ImagePickerIOS instead.
               Could potential later be used in Android.

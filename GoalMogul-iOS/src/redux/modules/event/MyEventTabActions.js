@@ -22,7 +22,7 @@ export const openMyEventTab = () => (dispatch, getState) => {
   dispatch({
     type: MYEVENTTAB_OPEN
   });
-  Actions.push('myEventTab');
+  Actions.replace('myEventTab');
   refreshEvent()(dispatch, getState);
 };
 
