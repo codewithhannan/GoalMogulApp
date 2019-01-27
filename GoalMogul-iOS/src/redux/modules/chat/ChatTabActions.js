@@ -3,16 +3,16 @@
  */
 
 import {
-  CHATTAB_SWITCH_TAB
+	CHATTAB_SWITCH_TAB
 } from './ChatTabReducers';
 
 export const chatTabSelectTab = (index) => (dispatch) => {
-  dispatch({
-    type: CHATTAB_SWITCH_TAB,
-    payload: {
-      index
-    }
-  });
+	dispatch({
+		type: CHATTAB_SWITCH_TAB,
+		payload: {
+			index
+		}
+	});
 };
 
 /* Following are actions to load chat tabs */
