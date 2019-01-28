@@ -9,9 +9,11 @@ import {
   Reducer,
   Lightbox,
   Actions,
-  Drawer
+  Drawer,
+  ActionConst
 } from 'react-native-router-flux';
 import { connect } from 'react-redux';
+import { Platform } from 'react-native';
 
 /* Auth */
 import SplashScreen from './SplashScreen';
@@ -98,11 +100,26 @@ import FriendsSetting from './Main/Setting/Privacy/FriendsSetting';
 import ShareModal from './Main/Post/ShareModal';
 import ReportModal from './Main/Report/ReportModal';
 
+// Navigation
+import { customPanHandlers, iosOnlyPanHandlers } from './redux/modules/navigation';
+
 class RouterComponent extends Component {
   onTabPress = (all) => {
     const { state, isFocused } = all.navigation;
+
+    // Back to initial for homeTab
     if (state.key === 'homeTab' && isFocused() && state.routes.length > 1) {
       return Actions.popTo('home');
+    }
+
+    // Back to initial for exploreTab
+    if (state.key === 'exploreTab' && isFocused() && state.routes.length > 1) {
+      return Actions.popTo('explore');
+    }
+
+    // Back to initial for friendTab
+    if (state.key === 'meetTab' && isFocused() && state.routes.length > 1) {
+      return Actions.popTo('meet');
     }
 
     if (state.key === 'homeTab' && isFocused()) {
@@ -136,11 +153,11 @@ class RouterComponent extends Component {
         <Modal key="modal" hideNavBar>
           <Lightbox key="lightbox" hideNavBar>
             <Stack key="root" hideNavBars>
-              <Scene key="auth" initial hideNavBar>
+              <Stack key="auth" initial hideNavBar>
                 <Scene key="splash" component={SplashScreen} initial />
                 <Scene key="login" component={LoginPage} />
                 <Scene key="tutorial" component={Tutorial} />
-              </Scene>
+              </Stack>
 
               {/* Registration screen stack*/}
               <Stack key="registration" hideNavBar>
@@ -169,112 +186,112 @@ class RouterComponent extends Component {
 
               {/* Main App */}
               <Drawer
-                panHandlers={null}
                 drawerType='push-screen'
                 hideNavBar
                 key="drawer"
                 drawerPosition='right'
                 contentComponent={Menu}
                 drawerWidth={240}
+                type={ActionConst.RESET}
               >
-              <Scene hideNavBar drawerLockMode="locked-closed">
-                <Tabs
-                  key="mainTabs"
-                  routeName="mainTabs"
-                  hideNavBar
-                  swipeEnabled={false}
-                  tabBarStyle={styles.tabBarStyle}
-                  activeTintColor="#4096c6"
-                  inactiveTintColor="#dde4e6"
-                  tabs
-                  showLabel={false}
-                  tabBarOnPress={this.onTabPress}
-                  lazy
-                >
-                  <Tab
-                    key="homeTab"
-                    initial
-                    icon={TabIcon}
+                <Scene key="main" hideNavBar drawerLockMode="locked-closed">
+                  <Tabs
+                    key="mainTabs"
+                    routeName="mainTabs"
                     hideNavBar
+                    swipeEnabled={false}
+                    tabBarStyle={styles.tabBarStyle}
+                    activeTintColor="#4096c6"
+                    inactiveTintColor="#dde4e6"
+                    tabs
+                    showLabel={false}
+                    tabBarOnPress={this.onTabPress}
+                    lazy
                   >
-                    <Scene 
-                      key="home" 
+                    <Stack
+                      key="homeTab"
                       initial
-                      component={Home}
-                    />
-                    <Stack key="myEventTabRoot" hideNavBar>
-                      <Scene key="myEventTab" component={MyEventTab} initial />
-                      <Scene key="myEventDetail" component={MyEvent} />
-                    </Stack>
-                    <Stack key="myTribeTabRoot" hideNavBar>
-                      <Scene key="myTribeTab" component={MyTribeTab} initial />
-                      <Scene key="myTribeDetail" component={MyTribe} />
-                    </Stack>
-                    <Scene key="goal" component={GoalDetailCard} />
-                    <Scene key="post" component={PostDetailCard} />
-                    <Scene key="share" component={ShareDetailCard} />
-                    <Scene key="profile" component={Profile} />
-                    <Scene key="profileDetail" component={ProfileDetail} />
-                    <Scene key="setting" component={Setting} />
-                    <Scene key="email" component={Email} />
-                    <Scene key="editEmailForm" component={EditEmailForm} />
-                    <Scene key="editPasswordForm" component={EditPasswordForm} />
-                    <Scene key="phone" component={Phone} path='/phone/verification' />
-                    <Scene key="addPhoneNumberForm" component={AddPhoneNumberForm} />
-                    <Scene key="editPhoneNumberForm" component={EditPhoneNumberForm} />
-                    <Scene key="friendsBlocked" component={FriendsBlocked} />
-                    <Scene key="privacy" component={Privacy} />
-                    <Scene key="friendsSetting" component={FriendsSetting} />
-                  </Tab>
-
-                  <Stack
-                    key="meetTab"
-                    icon={TabIcon}
-                    hideNavBar
-                  >
-                    <Scene key="meet" component={MeetTab} hideNavBar />
-                    <Scene key="shareMeetTab" component={ShareDetailCard} />
-                    <Scene key="friendTabView" component={FriendTabView} />
-                    <Scene key="requestTabView" component={RequestTabView} />
-                    <Scene key="discoverTabView" component={DiscoverTabView} />
-                    <Scene key="friendInvitationView" component={FriendInvitationView} />
-                  </Stack>
-
-                  <Stack
-                    key="notificationTab"
-                    icon={TabIcon}
-                    hideNavBar
-                  >
-                    <Scene
-                      key="notification"
-                      component={NotificationTab}
+                      icon={TabIcon}
                       hideNavBar
-                    />
-                  </Stack>
+                    >
+                      <Scene 
+                        key="home" 
+                        initial
+                        component={Home}
+                      />
+                      <Stack key="myEventTabRoot" hideNavBar>
+                        <Scene key="myEventTab" component={MyEventTab} initial />
+                        <Scene key="myEventDetail" component={MyEvent} />
+                      </Stack>
+                      <Stack key="myTribeTabRoot" hideNavBar>
+                        <Scene key="myTribeTab" component={MyTribeTab} initial />
+                        <Scene key="myTribeDetail" component={MyTribe} />
+                      </Stack>
+                      <Scene key="goal" component={GoalDetailCard} />
+                      <Scene key="post" component={PostDetailCard} />
+                      <Scene key="share" component={ShareDetailCard} />
+                      <Scene key="profile" component={Profile} />
+                      <Scene key="profileDetail" component={ProfileDetail} />
+                      <Scene key="setting" component={Setting} />
+                      <Scene key="email" component={Email} />
+                      <Scene key="editEmailForm" component={EditEmailForm} />
+                      <Scene key="editPasswordForm" component={EditPasswordForm} />
+                      <Scene key="phone" component={Phone} path='/phone/verification' />
+                      <Scene key="addPhoneNumberForm" component={AddPhoneNumberForm} />
+                      <Scene key="editPhoneNumberForm" component={EditPhoneNumberForm} />
+                      <Scene key="friendsBlocked" component={FriendsBlocked} />
+                      <Scene key="privacy" component={Privacy} />
+                      <Scene key="friendsSetting" component={FriendsSetting} />
+                    </Stack>
 
-                  <Stack
-                    key="exploreTab"
-                    icon={TabIcon}
-                    hideNavBar
-                  >
-                    <Scene key="explore" component={Explore} initial />
-                    <Scene key="tribeDetail" component={Tribe} drawerLockMode="locked-closed" />
-                    <Scene key="eventDetail" component={Event} drawerLockMode="locked-closed" />
-                    <Scene key="postExploreTab" component={PostDetailCard} />
-                    <Scene key="goalExploreTab" component={GoalDetailCard} />
-                    <Scene key="shareExploreTab" component={ShareDetailCard} />
-                  </Stack>
+                    <Stack
+                      key="meetTab"
+                      icon={TabIcon}
+                      hideNavBar
+                    >
+                      <Scene key="meet" component={MeetTab} hideNavBar initial />
+                      <Scene key="shareMeetTab" component={ShareDetailCard} />
+                      <Scene key="friendTabView" component={FriendTabView} />
+                      <Scene key="requestTabView" component={RequestTabView} />
+                      <Scene key="discoverTabView" component={DiscoverTabView} />
+                      <Scene key="friendInvitationView" component={FriendInvitationView} />
+                    </Stack>
 
-                  <Stack
-                    key="chatTab"
-                    icon={TabIcon}
-                    hideNavBar
-                  >
-                    <Scene key="chat" component={ChatTab} initial />
-                  </Stack>
+                    <Stack
+                      key="notificationTab"
+                      icon={TabIcon}
+                      hideNavBar
+                    >
+                      <Scene
+                        key="notification"
+                        component={NotificationTab}
+                        hideNavBar
+                      />
+                    </Stack>
 
-                </Tabs>
-              </Scene>
+                    <Stack
+                      key="exploreTab"
+                      icon={TabIcon}
+                      hideNavBar
+                    >
+                      <Scene key="explore" component={Explore} initial />
+                      <Scene key="tribeDetail" component={Tribe} drawerLockMode="locked-closed" />
+                      <Scene key="eventDetail" component={Event} drawerLockMode="locked-closed" />
+                      <Scene key="postExploreTab" component={PostDetailCard} />
+                      <Scene key="goalExploreTab" component={GoalDetailCard} />
+                      <Scene key="shareExploreTab" component={ShareDetailCard} />
+                    </Stack>
+
+                    <Stack
+                      key="chatTab"
+                      icon={TabIcon}
+                      hideNavBar
+                    >
+                      <Scene key="chat" component={ChatTab} initial />
+                    </Stack>
+
+                  </Tabs>
+                </Scene>
               </Drawer>
 
 

@@ -97,11 +97,12 @@ const styles = {
     height: 36,
     flexDirection: 'row',
     borderWidth: 0.5,
+    borderBottomWidth: 0.5,
     borderColor: '#ddd',
     backgroundColor: '#fff',
     shadowColor: 'gray',
     shadowOffset: { width: 0, height: 1.5 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
     shadowRadius: 1,
     elevation: 0.5
   },

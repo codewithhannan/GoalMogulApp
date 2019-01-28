@@ -48,7 +48,7 @@ class Profile extends Component {
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={styles.containerStyle}>
-          <SearchBarHeader backButton rightIcon='menu' />
+          <SearchBarHeader backButton setting />
           <ProfileSummaryCard />
           <TabView
             navigationState={this.props.navigationState}

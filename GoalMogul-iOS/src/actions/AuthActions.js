@@ -1,6 +1,5 @@
-import { Actions } from 'react-native-router-flux';
+import { Actions, ActionConst } from 'react-native-router-flux';
 import { SubmissionError } from 'redux-form';
-import { Alert } from 'react-native';
 import { api as API } from '../redux/middleware/api';
 
 import {
@@ -87,7 +86,7 @@ export const loginUser = ({ username, password }) => {
           const hasTutorialShown = await Tutorial.getTutorialShown(res.userId);
           // User has watched the tutorial
           if (hasTutorialShown) {
-            Actions.replace('mainTabs');
+            Actions.replace('drawer'); // Go to the main route and replace the auth stack
             return;
           }
           // Show tutorial
@@ -147,6 +146,6 @@ export const logout = () => (dispatch) => {
       console.log(`${DEBUG_KEY}: log out user with res: `, res);
     }
   };
-  Auth.reset(callback);
-  Actions.popTo('splash');
+  Auth.reset(callback); 
+  Actions.reset('root');
 };

@@ -22,6 +22,9 @@ import {
   UserBanner
 } from '../../../actions';
 
+// Assets
+import AddUserIcon from '../../../asset/utils/addUser.png';
+
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
 const WITHDRAW_INDEX = 0;
 const CANCEL_INDEX = 1;
@@ -134,6 +137,7 @@ class FriendRequestCardView extends React.PureComponent {
 
   renderButton(item) {
     const buttonText = item.type === 'outgoing' ? 'Cancel' : 'Respond';
+    if (!item.user || item.type === 'info') return '';
     return (
         <TouchableOpacity 
             onPress={() => this.handleButtonOnPress(item)}
@@ -148,9 +152,10 @@ class FriendRequestCardView extends React.PureComponent {
   }
 
   renderProfile(item) {
-    const { user } = item;
+    const { user, type } = item;
+    if (!user || type === 'info') return '';
     const { name, profile, headline } = user;
-    console.log(`${DEBUG_KEY}: item is: `, item);
+    // console.log(`${DEBUG_KEY}: item is: `, item);
     const detailText = headline || profile.occupation;
     return (
         <View style={{ flex: 1, marginLeft: 13 }}>
@@ -175,6 +180,18 @@ class FriendRequestCardView extends React.PureComponent {
     );
   }
 
+  // This is called when rendering No incoming friend request
+  renderInfoText(item) {
+      const { info } = item;
+    return (
+        <View style={{ marginLeft: 13, marginRight: 13 }}>
+            <Text style={{ fontSize: 15, paddingTop: 10, paddingBottom: 10, color: '#6d6d6d' }}>
+                {info}
+            </Text>
+        </View>
+    );
+  }
+
   render() {
     const { item } = this.props;
     if (!item) return '';
@@ -187,8 +204,13 @@ class FriendRequestCardView extends React.PureComponent {
         >
             {this.renderProfileImage(item)}
             {this.renderProfile(item)}
-            <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: 35 }} />
+            {
+                item.type !== 'info'
+                    ? <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: 35 }} />
+                    : ''
+            }
             {this.renderButton(item)}
+            {this.renderInfoText(item)}
         </TouchableOpacity>
     );
   }

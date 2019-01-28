@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 
 // Components
 import FriendRequestCardView from '../FriendRequestCardView';
+import EmptyResult from '../../../Common/Text/EmptyResult';
 
 // actions
 import {
@@ -76,6 +77,13 @@ class IncomingRequestTabView extends Component {
                     refreshing={this.props.refreshing}
                     onEndReached={this.handleOnLoadMore}
                     onEndReachedThreshold={0}
+                    ListEmptyComponent={
+                      this.props.refreshing ? '' :
+                      <EmptyResult
+                        text={'No incoming requests'}
+                        textStyle={{ paddingTop: 220 }}
+                      />
+                    }
                 />
             </View>
         );
