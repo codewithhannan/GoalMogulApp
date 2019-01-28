@@ -23,6 +23,9 @@ import profilePic from '../../../asset/utils/defaultUserProfile.png';
 
 import { actionSheet, switchByButtonIndex } from '../ActionSheetFactory';
 
+/* Component */
+import DelayedButton from '../Button/DelayedButton';
+
 /* Actions */
 import {
   back,
@@ -38,6 +41,10 @@ import {
 import {
   openMyTribeTab
 } from '../../../redux/modules/tribe/MyTribeTabActions';
+
+import {
+  createReport
+} from '../../../redux/modules/report/ReportActions';
 
 // styles
 import {
@@ -101,6 +108,7 @@ class SearchBarHeader extends Component {
       }],
       [R.equals(1), () => {
         console.log(`${DEBUG_KEY} User reports profile with _id: `, this.props.profileUserId);
+        this.props.createReport(this.props.profileUserId, 'User');
       }]
     ]);
     const friendsSettingActionSheet = actionSheet(
@@ -140,7 +148,7 @@ class SearchBarHeader extends Component {
       const backButtonTintColor = this.props.title ? 'white' : tintColor;
       return (
         <View style={{ height: 25, width: 25 }}>
-          <TouchableOpacity activeOpacity={0.85} onPress={this.handleBackOnClick.bind(this)}>
+          <DelayedButton activeOpacity={0.85} onPress={this.handleBackOnClick.bind(this)}>
             {/*<Icon
               type='entypo'
               name='chevron-thin-left'
@@ -153,7 +161,7 @@ class SearchBarHeader extends Component {
               source={BackButton}
               style={{ height: 25, width: 25, tintColor: backButtonTintColor }}
             />
-          </TouchableOpacity>
+          </DelayedButton>
         </View>
 
       );
@@ -174,7 +182,7 @@ class SearchBarHeader extends Component {
     let image = this.props.image;
     console.log('image is: ', image);
     let profileImage = (
-      <TouchableOpacity
+      <DelayedButton
         activeOpacity={0.85}
         style={styles.headerLeftImage}
         onPress={this.handleProfileOnClick.bind(this)}
@@ -184,13 +192,13 @@ class SearchBarHeader extends Component {
           resizeMode='contain'
           source={profilePic}
         />
-      </TouchableOpacity>
+      </DelayedButton>
 
     );
     if (image) {
       image = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
       profileImage = (
-        <TouchableOpacity
+        <DelayedButton
           activeOpacity={0.85}
           style={styles.headerLeftImage}
           onPress={this.handleProfileOnClick.bind(this)}
@@ -200,7 +208,7 @@ class SearchBarHeader extends Component {
             resizeMode='contain'
             source={{ uri: image }}
           />
-        </TouchableOpacity>
+        </DelayedButton>
       );
     }
     return profileImage;
@@ -219,14 +227,15 @@ class SearchBarHeader extends Component {
     // if (this.props.setting && true) {
       const { handlePageSetting } = this.props;
       return (
-        <TouchableWithoutFeedback
+        <DelayedButton
           onPress={handlePageSetting || this.handleFriendsSettingOnClick.bind(this)}
+          touchableWithoutFeedback
         >
           <Image
             style={{ ...styles.headerRightImage, tintColor, height: 21 }}
             source={FriendsSettingIcon}
           />
-        </TouchableWithoutFeedback>
+        </DelayedButton>
       );
     }
 
@@ -394,6 +403,7 @@ export default connect(
     openSetting,
     blockUser,
     openMyEventTab,
-    openMyTribeTab
+    openMyTribeTab,
+    createReport
   }
 )(SearchBarHeader);

@@ -31,7 +31,7 @@ export const createReport = (referenceId, type, category = 'User') => (dispatch,
       referenceId
     }
   });
-  Actions.push('createReport');
+  Actions.push('createReportStack');
 };
 
 // Updating a report detail

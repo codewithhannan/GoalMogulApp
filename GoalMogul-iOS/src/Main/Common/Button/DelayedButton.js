@@ -3,7 +3,8 @@
  */
 import React from 'react';
 import {
-    TouchableOpacity
+    TouchableOpacity,
+    TouchableWithoutFeedback
 } from 'react-native';
 
 class DelayedButton extends React.PureComponent {
@@ -31,6 +32,18 @@ class DelayedButton extends React.PureComponent {
     }
 
     render() {
+        const { touchableWithoutFeedback } = this.props;
+        if (touchableWithoutFeedback) {
+            return (
+                <TouchableWithoutFeedback 
+                    {...this.props}
+                    onPress={this.handleOnPress}
+                    disabled={this.state.disabled}
+                >
+                    {this.props.children}
+                </TouchableWithoutFeedback>
+            );
+        }
         return (
             <TouchableOpacity 
                 {...this.props}
