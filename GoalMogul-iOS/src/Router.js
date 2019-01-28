@@ -106,8 +106,20 @@ import { customPanHandlers, iosOnlyPanHandlers } from './redux/modules/navigatio
 class RouterComponent extends Component {
   onTabPress = (all) => {
     const { state, isFocused } = all.navigation;
+
+    // Back to initial for homeTab
     if (state.key === 'homeTab' && isFocused() && state.routes.length > 1) {
       return Actions.popTo('home');
+    }
+
+    // Back to initial for exploreTab
+    if (state.key === 'exploreTab' && isFocused() && state.routes.length > 1) {
+      return Actions.popTo('explore');
+    }
+
+    // Back to initial for friendTab
+    if (state.key === 'meetTab' && isFocused() && state.routes.length > 1) {
+      return Actions.popTo('meet');
     }
 
     if (state.key === 'homeTab' && isFocused()) {
@@ -237,7 +249,7 @@ class RouterComponent extends Component {
                       icon={TabIcon}
                       hideNavBar
                     >
-                      <Scene key="meet" component={MeetTab} hideNavBar />
+                      <Scene key="meet" component={MeetTab} hideNavBar initial />
                       <Scene key="shareMeetTab" component={ShareDetailCard} />
                       <Scene key="friendTabView" component={FriendTabView} />
                       <Scene key="requestTabView" component={RequestTabView} />
