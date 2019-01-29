@@ -63,6 +63,10 @@ class Tutorial extends React.Component {
       'gotham-pro-bold': require('../../assets/fonts/GothamPro-Bold.ttf')
     });
     this.setState({ fontLoaded: true });
+    if (this.props.initial === false) {
+      this.settingAccount.setValue(0);
+    }
+
     this.animate();
   }
 
@@ -117,7 +121,7 @@ class Tutorial extends React.Component {
   }
 
   animateHeader = (delay) => {
-    if (this.state.hasShownComplete) return {};
+    if (this.state.hasShownComplete || this.props.initial === false) return {};
 
     const headerAnimation = Animated.sequence([
       Animated.delay(delay),
@@ -171,7 +175,29 @@ class Tutorial extends React.Component {
         <View style={styles.headerTextContainerStyle}>
           {this.renderSettingCompleteText()}
         </View>
+        <View style={styles.headerTextContainerStyle}>
+          {this.renderNonSettingText()}
+        </View>
       </View>
+    );
+  }
+
+  // This is rendered when User chooses to see tutorial from menu
+  renderNonSettingText = () => {
+    const { initial } = this.props;
+    return (
+      <Animated.View 
+        style={{ 
+          opacity: initial === false ? 1 : 0, 
+          alignItems: 'center',
+          zIndex: initial === false ? 2 : 0,
+          paddingTop: 10
+        }}
+      >
+        <Text style={{ color: '#124562', fontSize: 20, fontWeight: '600' }}>
+          Achieve more with GoalMogul
+        </Text>
+      </Animated.View>
     );
   }
   
@@ -267,6 +293,7 @@ class Tutorial extends React.Component {
             opacity={this.HostAnim}
             continue={this.handleContinue}
             replay={this.handleReplay}
+            {...this.props}
           />
         </View>
       </View>
