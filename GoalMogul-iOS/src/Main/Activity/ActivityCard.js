@@ -92,7 +92,7 @@ class ActivityCard extends React.PureComponent {
     return shareToActionSheet();
   };
 
-  renderActionButtons({ postRef, goalRef, actedUponEntityType }) {
+  renderActionButtons({ postRef, goalRef, actedUponEntityType, actedWith }) {
     const item = actedUponEntityType === 'Post' ? postRef : goalRef;
     // Sanity check if ref exists
     if (!item) return '';
@@ -142,7 +142,10 @@ class ActivityCard extends React.PureComponent {
           iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks suggest icon`);
-            this.props.onPress(item);
+            this.props.onPress(
+              item, 
+              (actedWith === 'Comment' || actedWith === 'Like') && actedUponEntityType === 'Goal'
+            );
           }}
         />
       </ActionButtonGroup>

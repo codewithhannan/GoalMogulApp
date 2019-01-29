@@ -35,11 +35,16 @@ const DEBUG_KEY = '[ UI ActivityHeader ]';
 
 class ActivityHeader extends Component {
   // user basic information
-  renderUserDetail({ postRef, goalRef, actedUponEntityType, actor }) {
+  renderUserDetail({ postRef, goalRef, actedUponEntityType, actor, actedWith }) {
     const item = actedUponEntityType === 'Post' ? postRef : goalRef;
 
     // If no ref is passed in, then render nothing
     if (!item) return '';
+
+    // If it's a comment, we are rendering the goal/post owner's info rather than actor's info
+    const userToRender = actedWith === 'Comment' || actedWith === 'Like' ? item.owner : actor;
+    // console.log(`${DEBUG_KEY}: actedUponEntityType: ${actedUponEntityType}, 
+    //   userToRender: `, userToRender);
 
     const { _id, created, category, maybeIsSubscribed } = item;
     const timeStamp = (created === undefined || created.length === 0)
@@ -78,23 +83,23 @@ class ActivityHeader extends Component {
           }
         },
       }
-    };
+    }; 
 
     return (
       <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
         <ProfileImage
           imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
-          imageUrl={actor && actor.profile ? actor.profile.image : undefined}
+          imageUrl={userToRender && userToRender.profile ? userToRender.profile.image : undefined}
           imageContainerStyle={styles.imageContainerStyle}
-          userId={actor._id}
+          userId={userToRender._id}
         />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
-            name={actor.name || ''}
+            name={userToRender.name || ''}
             category={category}
             caret={caret}
-            user={actor}
-            isSelf={this.props.userId === actor._id}
+            user={userToRender}
+            isSelf={this.props.userId === userToRender._id}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           {/*
@@ -130,11 +135,11 @@ class ActivityHeader extends Component {
     const { item } = this.props;
     if (!item || _.isEmpty(item)) return '';
 
-    const { postRef, goalRef, actedUponEntityType, actor } = item;
+    const { postRef, goalRef, actedUponEntityType, actor, actedWith } = item;
 
     return (
       <View>
-        {this.renderUserDetail({ postRef, goalRef, actedUponEntityType, actor })}
+        {this.renderUserDetail({ postRef, goalRef, actedUponEntityType, actor, actedWith })}
       </View>
     );
   }
