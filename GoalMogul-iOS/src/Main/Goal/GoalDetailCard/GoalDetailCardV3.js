@@ -92,6 +92,7 @@ class GoalDetailCardV3 extends Component {
     this._renderTabBar = this._renderTabBar.bind(this);
     this._handleIndexChange = this._handleIndexChange.bind(this);
     this.onViewCommentPress = this.onViewCommentPress.bind(this);
+    this.handleReplyTo = this.handleReplyTo.bind(this);
   }
 
   componentDidMount() {
@@ -118,6 +119,10 @@ class GoalDetailCardV3 extends Component {
       this.props.createCommentForSuggestion(newCommentParams);
     }
   }
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   console.log(`${DEBUG_KEY}: next props are: `, nextProps);
+  // }
 
   componentWillUnmount() {
     console.log(`${DEBUG_KEY}: unmounting.`);
@@ -259,7 +264,7 @@ class GoalDetailCardV3 extends Component {
             )}
             contentContainerStyle={{ paddingTop: this.state.cardHeight + 20, flexGrow: 1 }}
             pageId={this.props.pageId}
-            handleReplyTo={() => this.handleReplyTo()}
+            handleReplyTo={this.handleReplyTo}
             isSelf={this.props.isSelf}
             initial={this.props.initial}
           />

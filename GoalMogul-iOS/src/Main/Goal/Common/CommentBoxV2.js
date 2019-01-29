@@ -312,7 +312,7 @@ class CommentBoxV2 extends Component {
   }
 
   focusForReply() {
-    this.refs['textInput'].focus();
+    this.textInput.focus();
     this.setState({
       ...this.state,
       defaultValue: 'Reply to...'
@@ -320,7 +320,7 @@ class CommentBoxV2 extends Component {
   }
 
   focus() {
-    this.refs['textInput'].focus();
+    this.textInput.focus();
   }
 
   updateSize = (height) => {
@@ -526,7 +526,7 @@ class CommentBoxV2 extends Component {
         }}
       >
         <MentionsTextInput
-          ref="textInput"
+          ref={r => (this.textInput = r)}
           placeholder={this.state.defaultValue}
           onChangeText={(val) => this.props.newCommentOnTextChange(val, pageId)}
           editable={!uploading}

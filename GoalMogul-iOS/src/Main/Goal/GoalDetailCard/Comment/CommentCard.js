@@ -148,7 +148,8 @@ class CommentCard extends React.Component {
 
     if (childComments.length > numberOfChildrenShowing) {
       childCommentCards.push(
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity 
+          activeOpacity={0.85}
           key={childComments.length}
           onPress={this.showMoreChildComments}
           style={{ marginTop: 0.5 }}
