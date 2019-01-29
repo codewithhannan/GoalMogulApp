@@ -23,6 +23,10 @@ import {
   openPostDetail
 } from '../../redux/modules/feed/post/PostActions';
 
+import {
+  openGoalDetail
+} from '../../redux/modules/home/mastermind/actions';
+
 import { APP_DEEP_BLUE } from '../../styles';
 
 const TAB_KEY = 'activityfeed';
@@ -58,7 +62,10 @@ class ActivityFeed extends Component {
     return (
       <ActivityCard
         item={item}
-        onPress={(curItem) => {
+        onPress={(curItem, isGoal) => {
+          if (isGoal) {
+            return this.props.openGoalDetail({ ...curItem });
+          }
           this.props.openPostDetail(curItem);
         }}
       />
@@ -179,7 +186,8 @@ export default connect(
   {
     loadMoreFeed,
     refreshFeed,
-    openPostDetail
+    openPostDetail,
+    openGoalDetail
   },
   null,
   { withRef: true }

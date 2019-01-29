@@ -15,7 +15,7 @@ import ImageRow from './Common/ImageRow';
 
 class cameraRollModal extends Component {
 
-  componentWillMount() {
+  componentDidMount() {
     // this.props.registrationCameraRollLoadPhoto();
   }
 

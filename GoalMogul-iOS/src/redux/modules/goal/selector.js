@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect';
 import _ from 'lodash';
 
+const DEBUG_KEY = '[ Selector Goal ]';
+
 const getNeeds = (state) => state.goalDetail.goal.needs;
 const getSteps = (state) => state.goalDetail.goal.steps;
 
@@ -35,14 +37,26 @@ export const getGoalStepsAndNeeds = createSelector(
     let newSteps = [];
     if (steps && steps.length !== 0) {
       newSteps = steps.map((step) => {
-        const count = comments.data.filter((c) => {
+        const stepComments = comments.transformedComments.filter((c) => {
           if (c.suggestion &&
               c.suggestion.suggestionForRef &&
               c.suggestion.suggestionForRef === step._id) {
                 return true;
           }
           return false;
-        }).length;
+        });
+        
+        let count = 0;
+        stepComments.forEach(c => {
+          if (c.childComments && c.childComments.length > 0) {
+            // Count all the childComments
+            count += c.childComments.length;
+          }
+          // Count the current comment
+          count += 1;
+        });
+
+        // console.log(`${DEBUG_KEY}: count is: `, count);
         return {
           ...step,
           type: 'step',
@@ -60,14 +74,25 @@ export const getGoalStepsAndNeeds = createSelector(
     let newNeeds = [];
     if (needs && needs.length !== 0) {
       newNeeds = needs.map((need) => {
-        const count = comments.data.filter((c) => {
+        const needComments = comments.transformedComments.filter((c) => {
           if (c.suggestion &&
               c.suggestion.suggestionForRef &&
               c.suggestion.suggestionForRef === need._id) {
                 return true;
           }
           return false;
-        }).length;
+        });
+
+        let count = 0;
+        needComments.forEach(c => {
+          if (c.childComments && c.childComments.length > 0) {
+            // Count all the childComments
+            count += c.childComments.length;
+          }
+          // Count the current comment
+          count += 1;
+        });
+
         return {
           ...need,
           type: 'need',

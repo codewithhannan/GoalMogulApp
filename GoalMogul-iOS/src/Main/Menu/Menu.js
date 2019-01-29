@@ -8,6 +8,10 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Constants } from 'expo';
+import { Actions } from 'react-native-router-flux';
+
+// Components
+import DelayedButton from '../Common/Button/DelayedButton';
 
 // Actions
 import {
@@ -21,6 +25,7 @@ import {
 // Assets
 import TribeIcon from '../../asset/explore/tribe.png';
 import EventIcon from '../../asset/suggestion/event.png';
+import TutorialIcon from '../../asset/utils/tutorial.png';
 
 import {
   IPHONE_MODELS
@@ -43,16 +48,30 @@ class Menu extends React.PureComponent {
             <Text style={{ fontSize: 16 }}>{name}</Text>
           </View>
         </View>
-        <Button
-          iconSource={TribeIcon}
-          onPress={() => this.props.openMyTribeTab()}
-          title='My Tribes'
-        />
-        <Button
-          iconSource={EventIcon}
+        <DelayedButton
+          activeOpacity={0.85}
           onPress={() => this.props.openMyEventTab()}
-          title='My Events'
-        />
+          style={styles.buttonStyle}
+        >
+          <Image source={TribeIcon} style={styles.iconStyle} />
+          <Text style={styles.titleTextStyle}>My Tribes</Text>
+        </DelayedButton>
+        <DelayedButton
+          activeOpacity={0.85}
+          onPress={() => this.props.openMyEventTab()}
+          style={styles.buttonStyle}
+        >
+          <Image source={EventIcon} style={styles.iconStyle} />
+          <Text style={styles.titleTextStyle}>My Events</Text>
+        </DelayedButton>
+        <DelayedButton
+          activeOpacity={0.85}
+          onPress={() => Actions.push('myTutorial', { initial: false })}
+          style={styles.buttonStyle}
+        >
+          <Image source={TutorialIcon} style={styles.iconStyle} />
+          <Text style={styles.titleTextStyle}>My Tutorials</Text>
+        </DelayedButton>
       </View>
     );
   }

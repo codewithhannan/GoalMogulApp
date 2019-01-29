@@ -7,6 +7,7 @@ import {
   Dimensions,
   TouchableOpacity
 } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 
 // Styles
 import {
@@ -27,8 +28,13 @@ class Host extends React.PureComponent {
       subTitleTextStyle,
       textStyle,
       imageShadow,
-      containerStyle
+      containerStyle,
     } = tutorial;
+
+    const { initial } = this.props;
+
+    const buttonText = initial === false ? 'Start' : 'Continue';
+    const buttonAction = initial === false ? () => Actions.pop() : this.props.continue;
 
     return (
       <Animated.View
@@ -59,9 +65,9 @@ class Host extends React.PureComponent {
         <TouchableOpacity
           activeOpacity={0.85}
           style={styles.buttonContainerStyle}
-          onPress={this.props.continue}
+          onPress={buttonAction}
         >
-          <Text style={[textStyle, { fontSize: 21, marginTop: 2 }]}>Continue</Text>
+          <Text style={[textStyle, { fontSize: 21, marginTop: 2 }]}>{buttonText}</Text>
           <Image source={RightArrow} style={{ height: 13, width: 20, marginLeft: 17 }} />
         </TouchableOpacity>
 

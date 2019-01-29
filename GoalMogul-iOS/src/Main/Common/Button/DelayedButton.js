@@ -13,6 +13,33 @@ class DelayedButton extends React.PureComponent {
         this.state = {
             disabled: false
         };
+        this.clearTimer = this.clearTimer.bind(this);
+        this.setTimer = this.setTimer.bind(this);
+    }
+    
+    componentWillUnmount = () => {
+        this.clearTimer();
+    }
+
+    setTimer = (timeout) => {
+        if (this.timerHandle) {
+          return;
+        }
+        // Remember the timer handle
+        this.timerHandle = setTimeout(() => {
+            this.setState({ 
+                ...this.state,
+                disabled: false 
+            });
+            this.timerHandle = 0;
+        }, timeout);
+    }
+    
+    clearTimer = () => {
+        if (this.timerHandle) {
+            clearTimeout(this.timerHandle);
+            this.timerHandle = 0;
+        }
     }
 
     handleOnPress = () => {
@@ -23,13 +50,8 @@ class DelayedButton extends React.PureComponent {
             ...this.state,
             disabled: true
         });
-        setTimeout(() => {
-            this.setState({
-                ...this.state,
-                disabled: false
-            });
-        }, delay);
-    }
+        this.setTimer(delay); 
+    } 
 
     render() {
         const { touchableWithoutFeedback } = this.props;
