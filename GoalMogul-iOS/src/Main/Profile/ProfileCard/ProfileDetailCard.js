@@ -52,7 +52,7 @@ class ProfileDetailCard extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { image } = this.props.user.profile;
     // console.log(`${DEBUG_KEY}: prefetch image: ${image}`);
     if (image) {

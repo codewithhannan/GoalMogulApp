@@ -45,7 +45,7 @@ const DEBUG_KEY = '[Component Requests]';
 
 class Requests extends Component {
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.handleRefresh('requests.incoming');
     this.props.handleRefresh('requests.outgoing');
   }

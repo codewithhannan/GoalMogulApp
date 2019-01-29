@@ -35,7 +35,7 @@ class DiscoverTabView extends Component {
     this.handleRefresh = this.handleRefresh.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.handleRefresh();
   }
 

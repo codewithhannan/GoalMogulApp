@@ -30,7 +30,7 @@ import {
 
 class MeetTab extends Component {
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.preloadMeet();
   }
 
