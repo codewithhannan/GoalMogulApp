@@ -66,6 +66,10 @@ class RefPreview extends Component {
 
     // TODO: add a postType ShareStep
     const { title, content, defaultPicture, picture } = switchCaseItem(item, postType);
+    const titleToDisplay = postType === 'ShareNeed' || postType === 'ShareStep'
+      ? goalRef.owner.name : title;
+
+
     const imageContainerstyle = picture ?
     {
       justifyContent: 'center',
@@ -104,7 +108,7 @@ class RefPreview extends Component {
               numberOfLines={1}
               ellipsizeMode='tail'
             >
-              {Decode(postType === 'ShareNeed' ? 'Need' : title)}
+              {Decode(titleToDisplay)}
             </Text>
           </View>
 
@@ -146,20 +150,23 @@ const switchCaseItem = (val, type) => switchCaseFWithVal(val)({
     defaultPicture: postIcon,
   }),
   ShareGoal: (item) => ({
-    title: 'Goal',
+    title: item.owner ? item.owner.name : 'Goal', // We decide to replace title with owner's name
+    // title: 'Goal',
     // TODO: TAG: convert this to string later on
     content: item.title,
-    // picture: item.owner.profile ? item.owner.profile.image : undefined,
+    // picture: item.profile ? item.owner.profile.image : undefined,
     defaultPicture: goalIcon,
   }),
   ShareNeed: (item) => ({
-    title: undefined,
+    title: item.owner ? item.owner.name : 'Need', // We decide to replace title with owner's name
+    // title: undefined,
     content: item.description,
     // picture: item.profile ? item.profile.image : undefined,
     defaultPicture: helpIcon
   }),
   ShareStep: (item) => ({
-    title: 'Step',
+    title: item.owner ? item.owner.name : 'Step', // We decide to replace title with owner's name
+    // title: 'Step',
     content: item.description,
     defaultPicture: stepIcon
   })
