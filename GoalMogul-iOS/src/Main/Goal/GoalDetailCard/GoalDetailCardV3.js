@@ -120,9 +120,10 @@ class GoalDetailCardV3 extends Component {
     }
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   console.log(`${DEBUG_KEY}: next props are: `, nextProps);
-  // }
+  shouldComponentUpdate(nextProps, nextState) {
+    // console.log(`${DEBUG_KEY}: next props are: `, nextProps);
+    return !_.isEqual(this.props, nextProps);
+  }
 
   componentWillUnmount() {
     console.log(`${DEBUG_KEY}: unmounting.`);
