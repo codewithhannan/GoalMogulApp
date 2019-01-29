@@ -14,7 +14,7 @@ import { Actions } from 'react-native-router-flux';
 import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../styles';
 
 // Assets
-import LOGO from '../../assets/logo.png';
+import LOGO from '../../assets/tutorial/logo.png';
 
 // Actions
 import { tutorial as TutorialAction } from '../redux/modules/auth/Tutorial';
