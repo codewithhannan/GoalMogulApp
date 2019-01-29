@@ -61,7 +61,7 @@ const INITIAL_STATE = {
 const INITIAL_SUGGESETION = {
   // ["ChatConvoRoom", "Event", "Tribe", "Link", "Reading",
   // "Step", "Need", "Friend", "User", "Custom"]
-  suggestionType: 'Friend',
+  suggestionType: 'Custom',
   // ["Goal", "Need", "Step"]
   suggestionFor: undefined,
   suggestionForRef: undefined,
