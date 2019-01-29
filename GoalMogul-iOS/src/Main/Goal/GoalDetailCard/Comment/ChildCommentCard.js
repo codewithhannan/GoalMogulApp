@@ -98,9 +98,9 @@ class ChildCommentCard extends Component {
   // user basic information
   renderUserDetail() {
     const { item, reportType, goalRef, userId } = this.props;
-    const { _id } = item;
+    const { _id, owner } = item;
 
-    const isCommentOwner = userId === _id || (goalRef && goalRef.owner._id === userId);
+    const isCommentOwner = userId === owner._id || (goalRef && goalRef.owner._id === userId);
     return (
         <View style={{ marginLeft: 15, flex: 1 }}>
           <CommentHeadline
