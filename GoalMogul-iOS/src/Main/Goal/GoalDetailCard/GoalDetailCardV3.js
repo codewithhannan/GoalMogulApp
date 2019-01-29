@@ -530,7 +530,15 @@ const getFocusedItemCount = (comments, focusType, focusRef) => {
       }
       return false;
     });
-    focusedItemCount = rawComments.length;
+
+    rawComments.forEach(c => {
+      if (c.childComments && c.childComments.length > 0) {
+        // Count all the childComments
+        focusedItemCount += c.childComments.length;
+      }
+      // Count the current comment
+      focusedItemCount += 1;
+    });
   }
 
   if (focusType === 'comment') {
