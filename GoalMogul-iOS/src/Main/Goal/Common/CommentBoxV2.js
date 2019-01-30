@@ -312,12 +312,17 @@ class CommentBoxV2 extends Component {
     this.handleOnBlur(newComment);
   }
 
-  focusForReply() {
+  focusForReply(type) {
+    console.log(`${DEBUG_KEY}: i am here`);
     this.textInput.focus();
-    this.setState({
-      ...this.state,
-      defaultValue: 'Reply to...'
-    });
+
+    // Only update the defaultValue if comment button is clicked through comment card / child comment card
+    if (type === 'Reply') {
+      this.setState({
+        ...this.state,
+        defaultValue: 'Reply to...'
+      });
+    }
   }
 
   focus() {

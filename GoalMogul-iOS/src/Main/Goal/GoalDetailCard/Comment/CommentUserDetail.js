@@ -206,7 +206,7 @@ class CommentUserDetail extends Component {
             // Update the position for FlatList
             scrollToIndex(index, viewOffset);
             // Focus the comment box
-            onCommentClicked();
+            onCommentClicked('Reply');
             // Update new comment reducer
             this.props.createComment({
               ...commentDetail,

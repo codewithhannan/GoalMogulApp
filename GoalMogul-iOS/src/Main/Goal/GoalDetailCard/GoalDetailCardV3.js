@@ -31,7 +31,8 @@ import {
   removeSuggestion,
   createCommentFromSuggestion,
   createCommentForSuggestion,
-  resetCommentType
+  resetCommentType,
+  updateNewComment
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 // selector
@@ -118,6 +119,7 @@ class GoalDetailCardV3 extends Component {
       };
       this.props.goalDetailSwitchTabV2ByKey('focusTab', focusRef, focusType);
       this.props.createCommentForSuggestion(newCommentParams);
+      this.handleOnCommentSubmitEditing = this.handleOnCommentSubmitEditing.bind(this);
     }
   }
 
@@ -216,12 +218,27 @@ class GoalDetailCardV3 extends Component {
     });
   }
 
-  handleReplyTo = () => {
+  handleReplyTo = (type) => {
     this.setState({
       ...this.state,
       keyboardDidShow: true
     });
-    this.commentBox.focusForReply();
+    this.commentBox.focusForReply(type);
+  }
+
+  handleOnCommentSubmitEditing = () => {
+    const { focusType } = this.props.navigationState;
+    const { newComment } = this.props;
+    if (newComment && newComment.contentText && !_.isEmpty(newComment.contentText)) {
+      return;
+    }
+    // Since the contentText is empty, reset the replyToRef and commentType
+    // Update new comment
+    const newCommentType = focusType === 'comment' ? 'Comment' : 'Suggestion';
+    let commentToReturn = _.cloneDeep(newComment);
+    commentToReturn = _.set(commentToReturn, 'replyToRef', undefined);
+    commentToReturn = _.set(commentToReturn, 'commentType', newCommentType);
+    this.props.updateNewComment(commentToReturn, this.props.pageId);
   }
 
   // Tab related handlers
@@ -393,6 +410,7 @@ class GoalDetailCardV3 extends Component {
 
   renderCommentBox(focusType, pageId) {
     if (!focusType) return '';
+
     const resetCommentTypeFunc = focusType === 'comment'
       ? () => this.props.resetCommentType('Comment', pageId)
       : () => this.props.resetCommentType('Suggestion', pageId);
@@ -586,6 +604,7 @@ export default connect(
     removeSuggestion,
     createCommentFromSuggestion,
     resetCommentType,
+    updateNewComment,
     createCommentForSuggestion
   }
 )(GoalDetailCardV3);

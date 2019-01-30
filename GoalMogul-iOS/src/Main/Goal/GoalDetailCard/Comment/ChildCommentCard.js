@@ -193,7 +193,7 @@ class ChildCommentCard extends Component {
           onPress={() => {
             console.log(`${DEBUG_KEY}: user replies to comment`);
             scrollToIndex(index, viewOffset);
-            onCommentClicked();
+            onCommentClicked('Reply');
             this.props.createComment({
               ...commentDetail,
               commentType: 'Reply',
