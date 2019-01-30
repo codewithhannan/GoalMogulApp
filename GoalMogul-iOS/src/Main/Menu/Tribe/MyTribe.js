@@ -5,7 +5,9 @@ import {
   Dimensions,
   Text,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator,
+  Platform
  } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
@@ -13,6 +15,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 import R from 'ramda';
 import { Actions } from 'react-native-router-flux';
 import Fuse from 'fuse.js';
+import { Constants } from 'expo';
 
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
@@ -77,6 +80,11 @@ import {
 // Styles
 import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../../../styles';
 
+// Constants
+import {
+  IPHONE_MODELS
+} from '../../../Utils/Constants';
+
 const DEBUG_KEY = '[ UI MyTribe ]';
 const { width } = Dimensions.get('window');
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -94,6 +102,14 @@ const TAG_SEARCH_OPTIONS = {
     'name',
   ]
 };
+
+const SEARCHBAR_HEIGHT = Platform.OS === 'ios' &&
+      IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+      ? 40 : 30;
+
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+const PADDING = SCREEN_HEIGHT - 48.5 - SEARCHBAR_HEIGHT;
+
 /**
  * This is the UI file for a single event.
  */
@@ -558,7 +574,7 @@ class MyTribe extends Component {
       ? this.renderMemberTabs()
       : '';
 
-    const emptyState = this.props.tab === 'posts' && data.length === 0
+    const emptyState = this.props.tab === 'posts' && data.length === 0 && !this.props.feedLoading
       ? <EmptyResult text={'No Posts'} textStyle={{ paddingTop: 100 }} />
     : '';
 
@@ -601,7 +617,12 @@ class MyTribe extends Component {
         </View>
         {
           this._renderHeader({
-            jumpToIndex: (i) => this._handleIndexChange(i),
+            jumpToIndex: (i) => {
+              this._handleIndexChange(i);
+              this.refs['flatList'].scrollToOffset({
+                offset: 250
+              });
+            },
             navigationState: this.props.navigationState
           })
         }
@@ -668,6 +689,29 @@ class MyTribe extends Component {
     return '';
   }
 
+  // render padding
+  renderPadding() {
+    const { navigationState, feedLoading, data } = this.props;
+    const { routes, index } = navigationState;
+    
+    if (feedLoading && routes[index].key === 'posts') {
+      return (
+        <View style={{ height: PADDING }}>
+          <View
+            style={{
+              paddingVertical: 12
+            }}
+          >
+            <ActivityIndicator size='large' />
+          </View>
+        </View>
+      );
+    }
+    return (
+      <View style={{ height: PADDING }} />
+    );
+  }
+
   render() {
     const { item, data } = this.props;
     if (!item) return <View />;
@@ -691,6 +735,7 @@ class MyTribe extends Component {
             ListHeaderComponent={this.renderTribeOverview(item, data)}
             onRefresh={() => this.props.refreshMyTribeDetail(item._id)}
             refreshing={this.props.loading}
+            ListFooterComponent={this.renderPadding()}
           />
           {this.renderPlus(item)}
         </View>
@@ -811,7 +856,7 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { item, feed, hasRequested, tribeLoading } = state.myTribe;
+  const { item, feed, hasRequested, tribeLoading, feedLoading } = state.myTribe;
   const { userId } = state.user;
   const navigationState = getMyTribeNavigationState(state);
   const memberNavigationState = getMyTribeMemberNavigationState(state);
@@ -843,7 +888,8 @@ const mapStateToProps = state => {
     userId,
     isUserAdmin: checkIsAdmin(item ? item.members : [], userId),
     memberNavigationState,
-    loading: tribeLoading
+    loading: tribeLoading,
+    feedLoading
   };
 };
 
