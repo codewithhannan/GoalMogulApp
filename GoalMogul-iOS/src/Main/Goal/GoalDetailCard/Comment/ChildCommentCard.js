@@ -44,11 +44,6 @@ import {
 const DEBUG_KEY = '[ UI CommentCard.ChildCommentCard ]';
 
 class ChildCommentCard extends Component {
-  constructor(props) {
-    super(props);
-    this.handleReply = this.handleReply.bind(this);
-  }
-
   onLayout = (e) => {
     this.setState({
       layout: {
@@ -62,16 +57,6 @@ class ChildCommentCard extends Component {
 
   getLayout = () => this.state.layout;
 
-  handleReply = () => {
-    const { item, index, scrollToIndex, onCommentClicked, viewOffset, createComment } = this.props;
-    console.log(`${DEBUG_KEY}: user replies to comment`);
-    scrollToIndex(index, viewOffset);
-    onCommentClicked();
-    // createComment({
-    //   commentType: 'Reply',
-    //   replyToRef: item._id
-    // }, this.props.pageId);
-  }
   /*
    * Render card content based on scenario
    * 1. If Suggestion, render suggestion.suggestionText
@@ -113,9 +98,10 @@ class ChildCommentCard extends Component {
   // user basic information
   renderUserDetail() {
     const { item, reportType, goalRef, userId } = this.props;
-    const { _id, owner } = item;
+    const { _id, owner, parentRef, parentType } = item;
 
     const isCommentOwner = userId === owner._id || (goalRef && goalRef.owner._id === userId);
+
     return (
         <View style={{ marginLeft: 15, flex: 1 }}>
           <CommentHeadline
@@ -129,7 +115,7 @@ class ChildCommentCard extends Component {
                 return this.props.createReport(_id, reportType || 'detail', 'Comment');
               }
               if (type === 'Delete') {
-                return this.props.deleteComment(_id);
+                return this.props.deleteComment(_id, this.props.pageId, parentRef, parentType);
               }
               if (type === 'Subscribe') {
                 return this.props.subscribeEntityNotification(_id, 'Comment');
@@ -164,7 +150,15 @@ class ChildCommentCard extends Component {
   }
 
   renderActionButtons() {
-    const { item, index, scrollToIndex, onCommentClicked, viewOffset } = this.props;
+    const { 
+      item, 
+      index, 
+      scrollToIndex, 
+      onCommentClicked, 
+      viewOffset,
+      parentCommentId,
+      commentDetail
+    } = this.props;
     const { childComments, maybeLikeRef, _id } = item;
     const commentCounts = childComments && childComments.length > 0
       ? childComments.length
@@ -197,7 +191,16 @@ class ChildCommentCard extends Component {
           count={commentCounts}
           textStyle={{ color: '#cbd6d8' }}
           iconStyle={{ tintColor: '#cbd6d8', height: 25, width: 25 }}
-          onPress={this.handleReply}
+          onPress={() => {
+            console.log(`${DEBUG_KEY}: user replies to comment`);
+            scrollToIndex(index, viewOffset);
+            onCommentClicked('Reply');
+            this.props.createComment({
+              ...commentDetail,
+              commentType: 'Reply',
+              replyToRef: parentCommentId
+            }, this.props.pageId);
+          }}
         />
       </ActionButtonGroup>
     );

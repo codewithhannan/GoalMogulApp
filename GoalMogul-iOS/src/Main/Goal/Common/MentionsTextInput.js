@@ -48,6 +48,7 @@ export default class MentionsTextInput extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     // Check if last deleted is a trigger (@), if so, then update the tags
+    // console.log(`${DEBUG_KEY}: componentDidUpdate`);
     this.checkTriggerDeleted(prevProps);
 
     // Check if new tagSearchRes matches
@@ -58,6 +59,10 @@ export default class MentionsTextInput extends Component {
       // Update the tags to match
     }
   }
+
+  // componentWillUnmount() {
+  //   console.log(`${DEBUG_KEY}: componentWillUnmount`);
+  // }
 
   onChangeText(val) {
     this.props.onChangeText(val); // pass changed text back
@@ -322,6 +327,7 @@ export default class MentionsTextInput extends Component {
   }
 
   render() {
+    // console.log(`${DEBUG_KEY}: rendering MentionsTextInput`);
     return (
       <View style={{ flex: 1 }}>
         {

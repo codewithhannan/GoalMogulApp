@@ -11,6 +11,14 @@ import {
 } from '../redux/modules/like/LikeReducers';
 
 import {
+  COMMENT_DELETE_SUCCESS
+} from '../redux/modules/feed/comment/CommentReducers';
+
+import {
+  COMMENT_NEW_POST_SUCCESS
+} from '../redux/modules/feed/comment/NewCommentReducers';
+
+import {
   PROFILE_GOAL_DELETE_SUCCESS,
   PROFILE_POST_DELETE_SUCCESS
 } from './Profile';
@@ -215,6 +223,76 @@ export default (state = INITIAL_STATE, action) => {
         _.set(newState, 'activityfeed.data', updateLike(oldActivityData, id, likeId, type, undo, action.type));
       // Update goal feed
       return _.set(newState, 'mastermind.data', updateLike(oldGoalFeedData, id, likeId, type, undo, action.type));
+    }
+
+    // Comment delete success to update goalcard / activitycard commentCount
+    case COMMENT_DELETE_SUCCESS: {
+      let newState = _.cloneDeep(state);
+      const { parentRef, parentType } = action.payload;
+
+      const oldMastermindData = _.get(newState, 'mastermind.data');
+      const newMastermindData = oldMastermindData.map(d => {
+        if (parentType === 'Goal' && d._id === parentRef) {
+          const oldCommentCount = d.commentCount;
+          return {
+            ...d,
+            commentCount: oldCommentCount - 1
+          };
+        }
+        return d;
+      });
+      newState = _.set(newState, 'mastermind.data', newMastermindData);
+
+      const oldActivityData = _.get(newState, 'activityfeed.data');
+      const newActivityData = oldActivityData.map(d => {
+        if ((d.goalRef && d.goalRef._id === parentRef && parentType === 'Goal') ||
+            (d.postRef && d.postRef._id === parentRef && parentType === 'Post')) {
+          const oldCommentCount = d.commentCount;
+          return {
+            ...d,
+            commentCount: oldCommentCount - 1
+          };
+        }
+        return d;
+      });
+
+      newState = _.set(newState, 'activityfeed.data', newActivityData);
+      return newState;
+    }
+
+    case COMMENT_NEW_POST_SUCCESS: {
+      const { comment } = action.payload;
+      const { parentRef, parentType } = comment;
+      let newState = _.cloneDeep(state);
+
+      const oldMastermindData = _.get(newState, 'mastermind.data');
+      const newMastermindData = oldMastermindData.map(d => {
+        if (parentType === 'Goal' && d._id === parentRef) {
+          const oldCommentCount = d.commentCount;
+          return {
+            ...d,
+            commentCount: oldCommentCount + 1
+          };
+        }
+        return d;
+      });
+      newState = _.set(newState, 'mastermind.data', newMastermindData);
+
+      const oldActivityData = _.get(newState, 'activityfeed.data');
+      const newActivityData = oldActivityData.map(d => {
+        if ((d.goalRef && d.goalRef._id === parentRef && parentType === 'Goal') ||
+            (d.postRef && d.postRef._id === parentRef && parentType === 'Post')) {
+          const oldCommentCount = d.commentCount;
+          return {
+            ...d,
+            commentCount: oldCommentCount + 1
+          };
+        }
+        return d;
+      });
+
+      newState = _.set(newState, 'activityfeed.data', newActivityData);
+      return newState;
     }
 
     default:

@@ -2,16 +2,14 @@ import React from 'react';
 import {
   View,
   FlatList,
-  Animated,
-  StyleSheet,
-  Keyboard
+  Animated
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
 // Components
 import EmptyResult from '../../../Common/Text/EmptyResult';
-import CommentBox from '../../Common/CommentBoxV2';
+// import CommentBox from '../../Common/CommentBoxV2';
 import CommentCard from '../Comment/CommentCard';
 
 // Assets
@@ -65,20 +63,6 @@ class FocusTab extends React.PureComponent {
     console.log(`${DEBUG_KEY}: user tries to refresh.`);
   }
 
-  handleOnCommentSubmitEditing = () => {
-    const { newComment } = this.props;
-    if (newComment && newComment.contentText && !_.isEmpty(newComment.contentText)) {
-      return;
-    }
-    // Since the contentText is empty, reset the replyToRef and commentType
-    // Update new comment
-    const newCommentType = this.props.focusType === 'comment' ? 'Comment' : 'Suggestion';
-    let commentToReturn = _.cloneDeep(newComment);
-    commentToReturn = _.set(commentToReturn, 'replyToRef', undefined);
-    commentToReturn = _.set(commentToReturn, 'commentType', newCommentType);
-    this.props.updateNewComment(commentToReturn, this.props.pageId);
-  }
-
   scrollToIndex = (index, viewOffset = 0) => {
     this.flatlist.getNode().scrollToIndex({
     // this.flatlist.scrollToIndex({
@@ -106,7 +90,7 @@ class FocusTab extends React.PureComponent {
         commentDetail={{ parentType: 'Goal', parentRef: goalDetail._id }}
         goalRef={goalDetail}
         scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
-        onCommentClicked={() => this.props.handleReplyTo()}
+        onCommentClicked={this.props.handleReplyTo}
         reportType='detail'
       />
     );
@@ -143,6 +127,7 @@ class FocusTab extends React.PureComponent {
           contentContainerStyle={{ ...this.props.contentContainerStyle }}
           style={{ height: 200 }}
         />
+        <Animated.View style={{ height: this.props.paddingBottom }} />
       </View>
     );
   }

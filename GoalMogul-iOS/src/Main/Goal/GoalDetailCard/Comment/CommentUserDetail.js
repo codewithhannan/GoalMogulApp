@@ -110,12 +110,13 @@ class CommentUserDetail extends Component {
   // user basic information
   renderUserDetail() {
     const { item, reportType, goalRef, userId } = this.props;
-    const { _id, suggestion, owner } = item;
+    const { _id, suggestion, owner, parentRef, parentType } = item;
 
     // User is comment owner if user is the creator of the goal or
     // user is the creator of the comment
     const isCommentOwner = userId === owner._id ||
       (goalRef && goalRef.owner._id === userId);
+
     return (
         <View style={{ marginLeft: 15, flex: 1 }}>
           <CommentHeadline
@@ -128,7 +129,7 @@ class CommentUserDetail extends Component {
                 return this.props.createReport(_id, reportType || 'detail', 'Comment');
               }
               if (type === 'Delete') {
-                return this.props.deleteComment(_id);
+                return this.props.deleteComment(_id, this.props.pageId, parentRef, parentType);
               }
               if (type === 'Subscribe') {
                 return this.props.subscribeEntityNotification(_id, 'Comment');
@@ -206,7 +207,7 @@ class CommentUserDetail extends Component {
             // Update the position for FlatList
             scrollToIndex(index, viewOffset);
             // Focus the comment box
-            onCommentClicked();
+            onCommentClicked('Reply');
             // Update new comment reducer
             this.props.createComment({
               ...commentDetail,

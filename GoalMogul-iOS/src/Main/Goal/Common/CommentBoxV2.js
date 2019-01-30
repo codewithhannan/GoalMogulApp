@@ -105,6 +105,7 @@ class CommentBoxV2 extends Component {
       ...this.state,
       defaultValue: 'Write a Comment...'
     });
+    // console.log(`${DEBUG_KEY}: this.textInput in componentDidMount: `, this.textInput);
   }
 
   onTaggingSuggestionTap(item, hidePanel, cursorPosition) {
@@ -311,12 +312,17 @@ class CommentBoxV2 extends Component {
     this.handleOnBlur(newComment);
   }
 
-  focusForReply() {
+  focusForReply(type) {
+    console.log(`${DEBUG_KEY}: i am here`);
     this.textInput.focus();
-    this.setState({
-      ...this.state,
-      defaultValue: 'Reply to...'
-    });
+
+    // Only update the defaultValue if comment button is clicked through comment card / child comment card
+    if (type === 'Reply') {
+      this.setState({
+        ...this.state,
+        defaultValue: 'Reply to...'
+      });
+    }
   }
 
   focus() {
@@ -500,6 +506,7 @@ class CommentBoxV2 extends Component {
 
   render() {
     const { pageId, newComment, hasSuggestion } = this.props;
+    // console.log(`${DEBUG_KEY}: new comment in commentbox: `, newComment);
     if (!newComment || !newComment.parentRef) return '';
 
     const { uploading } = newComment;
