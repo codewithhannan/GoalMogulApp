@@ -83,6 +83,7 @@ class GoalDetailCardV3 extends Component {
       // Following are state for CommentBox
       position: 'absolute',
       commentBoxPadding: new Animated.Value(0),
+      focusTabBottomPadding: new Animated.Value(0),
       keyboardDidShow: false,
       cardHeight: HEADER_HEIGHT,
       centralTabContentOffset: 0
@@ -184,19 +185,31 @@ class GoalDetailCardV3 extends Component {
     const timeout = ((TOTAL_HEIGHT * 210) / e.endCoordinates.height);
     Animated.sequence([
       Animated.delay(timeout),
-      Animated.timing(this.state.commentBoxPadding, {
-        toValue: e.endCoordinates.height - TOTAL_HEIGHT,
-        duration: (210 - timeout)
-      })
+      Animated.parallel([
+        Animated.timing(this.state.commentBoxPadding, {
+          toValue: e.endCoordinates.height - TOTAL_HEIGHT,
+          duration: (210 - timeout)
+        }),
+        Animated.timing(this.state.focusTabBottomPadding, {
+          toValue: e.endCoordinates.height - TOTAL_HEIGHT,
+          duration: (210 - timeout)
+        })
+      ])
     ]).start();
   }
 
   keyboardWillHide = () => {
     // console.log('keyboard will hide');
-    Animated.timing(this.state.commentBoxPadding, {
-      toValue: 0,
-      duration: 210
-    }).start();
+    Animated.parallel([
+      Animated.timing(this.state.commentBoxPadding, {
+        toValue: 0,
+        duration: 210
+      }),
+      Animated.timing(this.state.focusTabBottomPadding, {
+        toValue: 0,
+        duration: 210
+      })
+    ]).start();
     this.setState({
       ...this.state,
       keyboardDidShow: false
@@ -249,7 +262,10 @@ class GoalDetailCardV3 extends Component {
               [{ nativeEvent: { contentOffset: { y: this.state.scroll } } }],
               { useNativeDriver: true }
             )}
-            contentContainerStyle={{ paddingTop: this.state.cardHeight + 10, flexGrow: 1 }}
+            contentContainerStyle={{ 
+              paddingTop: this.state.cardHeight + 10, 
+              flexGrow: 1,
+            }}
             contentOffset={{ y: this.state.centralTabContentOffset }}
             isSelf={this.props.isSelf}
             handleIndexChange={this._handleIndexChange}
@@ -263,7 +279,11 @@ class GoalDetailCardV3 extends Component {
               [{ nativeEvent: { contentOffset: { y: this.state.scroll } } }],
               { useNativeDriver: true }
             )}
-            contentContainerStyle={{ paddingTop: this.state.cardHeight + 20, flexGrow: 1 }}
+            contentContainerStyle={{ 
+              paddingTop: this.state.cardHeight + 20, 
+              flexGrow: 1
+            }}
+            paddingBottom={this.state.focusTabBottomPadding}
             pageId={this.props.pageId}
             handleReplyTo={this.handleReplyTo}
             isSelf={this.props.isSelf}

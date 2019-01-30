@@ -143,6 +143,7 @@ class FocusTab extends React.PureComponent {
           contentContainerStyle={{ ...this.props.contentContainerStyle }}
           style={{ height: 200 }}
         />
+        <Animated.View style={{ height: this.props.paddingBottom }} />
       </View>
     );
   }
