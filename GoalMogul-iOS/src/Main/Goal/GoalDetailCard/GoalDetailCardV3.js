@@ -199,7 +199,7 @@ class GoalDetailCardV3 extends Component {
   }
 
   keyboardWillHide = () => {
-    // console.log('keyboard will hide');
+    console.log('keyboard will hide');
     Animated.parallel([
       Animated.timing(this.state.commentBoxPadding, {
         toValue: 0,

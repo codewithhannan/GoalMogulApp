@@ -78,6 +78,8 @@ const INITIAL_SUGGESETION = {
   selectedItem: undefined
 };
 
+const DEBUG_KEY = '[ Reducers NewComment ]';
+
 export const COMMENT_NEW = 'comment_new';
 export const COMMENT_NEW_UPDATE = 'comment_new_update';
 export const COMMENT_NEW_UPDATE_COMMENT_TYPE = 'comment_new_update_comment_type';
@@ -242,6 +244,7 @@ export default (state = INITIAL_STATE, action) => {
       newState = setState(newState, `${path}.replyToRef`, replyToRef);
       newState = setState(newState, `${path}.owner`, owner);
 
+      // console.log(`${DEBUG_KEY}: new state for newcomment: `, newState);
       return newState;
     }
 

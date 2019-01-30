@@ -50,7 +50,7 @@ class Menu extends React.PureComponent {
         </View>
         <DelayedButton
           activeOpacity={0.85}
-          onPress={() => this.props.openMyEventTab()}
+          onPress={() => this.props.openMyTribeTab()}
           style={styles.buttonStyle}
         >
           <Image source={TribeIcon} style={styles.iconStyle} />

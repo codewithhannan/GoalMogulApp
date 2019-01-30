@@ -63,15 +63,19 @@ class CommentCard extends React.Component {
   }
 
   showMoreChildComments = () => {
-    const { commentLength, numberOfChildrenShowing, showMoreCount } = this.state;
+    const { numberOfChildrenShowing, showMoreCount } = this.state;
+    const { item } = this.props;
+    const currentChildCommentLength = item.childComments ? item.childComments.length : 0;
+
     let newNumberOfChildrenShowing = numberOfChildrenShowing;
-    if (numberOfChildrenShowing >= commentLength - showMoreCount) {
-      newNumberOfChildrenShowing = commentLength;
+    if (numberOfChildrenShowing >= currentChildCommentLength - showMoreCount) {
+      newNumberOfChildrenShowing = currentChildCommentLength;
     } else {
       newNumberOfChildrenShowing += showMoreCount;
     }
     this.setState({
       ...this.state,
+      commentLength: currentChildCommentLength,
       numberOfChildrenShowing: newNumberOfChildrenShowing
     });
   }
@@ -117,7 +121,8 @@ class CommentCard extends React.Component {
 
   // Render child comments if there are some.
   renderChildComments() {
-    const { childComments } = this.props.item;
+    const { item } = this.props;
+    const { childComments } = item;
     if (!childComments || childComments.length === 0) return '';
 
     const { numberOfChildrenShowing } = this.state;
@@ -137,6 +142,7 @@ class CommentCard extends React.Component {
               <ChildCommentCard
                 {...this.props}
                 item={comment}
+                parentCommentId={item._id}
                 viewOffset={viewOffset}
                 userId={this.props.userId}
               />

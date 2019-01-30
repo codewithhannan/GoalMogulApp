@@ -105,6 +105,7 @@ class CommentBoxV2 extends Component {
       ...this.state,
       defaultValue: 'Write a Comment...'
     });
+    // console.log(`${DEBUG_KEY}: this.textInput in componentDidMount: `, this.textInput);
   }
 
   onTaggingSuggestionTap(item, hidePanel, cursorPosition) {
@@ -500,6 +501,7 @@ class CommentBoxV2 extends Component {
 
   render() {
     const { pageId, newComment, hasSuggestion } = this.props;
+    // console.log(`${DEBUG_KEY}: new comment in commentbox: `, newComment);
     if (!newComment || !newComment.parentRef) return '';
 
     const { uploading } = newComment;
