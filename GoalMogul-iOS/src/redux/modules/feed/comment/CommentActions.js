@@ -126,7 +126,7 @@ export const updateComment = (commentId, updates) => {
  * action to delete a comment for a goal / post
  * @params commentId: id of the comment
  */
-export const deleteComment = (commentId, pageId) => (dispatch, getState) => {
+export const deleteComment = (commentId, pageId, parentRef, parentType) => (dispatch, getState) => {
   const { token } = getState().user;
   const { tab } = getState().navigation;
   const onSuccess = (res) => {
@@ -136,7 +136,9 @@ export const deleteComment = (commentId, pageId) => (dispatch, getState) => {
       payload: {
         pageId,
         tab,
-        commentId
+        commentId,
+        parentRef, 
+        parentType
       }
     });
     Alert.alert('Success', 'Comment deleted successfully');
