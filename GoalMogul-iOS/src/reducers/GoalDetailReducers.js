@@ -51,7 +51,8 @@ const INITIAL_STATE = {
     },
     goal: {
 
-    }
+    },
+    updating: false
   },
   goalExploreTab: {
     navigationStateV2: { ...INITIAL_NAVIGATION_STATE_V2 },
@@ -60,7 +61,8 @@ const INITIAL_STATE = {
     },
     goal: {
 
-    }
+    },
+    updating: false
   },
   goalMeetTab: {
     navigationStateV2: { ...INITIAL_NAVIGATION_STATE_V2 },
@@ -69,7 +71,8 @@ const INITIAL_STATE = {
     },
     goal: {
 
-    }
+    },
+    updating: false
   },
   goalNotificationTab: {
     navigationStateV2: { ...INITIAL_NAVIGATION_STATE_V2 },
@@ -78,7 +81,8 @@ const INITIAL_STATE = {
     },
     goal: {
 
-    }
+    },
+    updating: false
   },
   goalChatTab: {
     navigationStateV2: { ...INITIAL_NAVIGATION_STATE_V2 },
@@ -87,7 +91,8 @@ const INITIAL_STATE = {
     },
     goal: {
 
-    }
+    },
+    updating: false
   }
 };
 
@@ -114,6 +119,10 @@ export const GOAL_DETAIL_DELETE_COMMENT = 'goal_detail_create_comment';
 export const GOAL_DETAIL_GET_LIKE = 'goal_detail_get_like';
 export const GOAL_DETAIL_CREATE_LIKE = 'goal_detail_create_like';
 export const GOAL_DETAIL_DELETE_LIKE = 'goal_detail_create_like';
+
+// Goal Updating constants
+export const GOAL_DETAIL_UPDATE = 'goal_detail_update';
+export const GOAL_DETAIL_UPDATE_DONE = 'goal_detail_update_done';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -166,6 +175,7 @@ export default (state = INITIAL_STATE, action) => {
       let newState = _.cloneDeep(state);
       newState = _.set(newState, `${path}.navigationState`, { ...INITIAL_NAVIGATION_STATE });
       newState = _.set(newState, `${path}.navigationStateV2`, { ...INITIAL_NAVIGATION_STATE_V2 });
+      newState = _.set(newState, `${path}.updating`, false);
       return _.set(newState, `${path}.goal`, {});
     }
 
@@ -312,6 +322,29 @@ export default (state = INITIAL_STATE, action) => {
         owner: { ...currentGoal.owner }
       };
       return _.set(newState, `${path}.goal`, newGoalToPut);
+    }
+
+    // Update goal updating status
+    case GOAL_DETAIL_UPDATE: {
+      const { tab, type, goalId } = action.payload;
+      const newState = _.cloneDeep(state);
+      const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
+      const currentGoal = _.get(newState, `${path}.goal`);
+      if (!currentGoal || _.isEmpty(currentGoal) || currentGoal._id !== goalId) {
+        return newState;
+      }
+      return _.set(newState, `${path}.updating`, true);
+    }
+
+    case GOAL_DETAIL_UPDATE_DONE: {
+      const { tab, type, goalId } = action.payload;
+      const newState = _.cloneDeep(state);
+      const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
+      const currentGoal = _.get(newState, `${path}.goal`);
+      if (!currentGoal || _.isEmpty(currentGoal) || currentGoal._id !== goalId) {
+        return newState;
+      }
+      return _.set(newState, `${path}.updating`, false);
     }
 
     default:

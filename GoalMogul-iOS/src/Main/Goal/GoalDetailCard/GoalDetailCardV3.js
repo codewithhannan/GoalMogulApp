@@ -16,6 +16,9 @@ import {
 } from 'react-native-popup-menu';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { Constants } from 'expo';
+import {
+  DotIndicator
+} from 'react-native-indicators';
 
 // Actions
 import {
@@ -46,7 +49,8 @@ import {
 } from '../../../redux/modules/feed/comment/CommentSelector';
 
 // Component
-import SearchBarHeader from '../../../Main/Common/Header/SearchBarHeader';
+import SearchBarHeader from '../../Common/Header/SearchBarHeader';
+import LoadingModal from '../../Common/Modal/LoadingModal';
 import SuggestionModal from './SuggestionModal3';
 import Report from '../../../Main/Report/Report';
 import CentralTab from './V3/CentralTab';
@@ -61,7 +65,8 @@ import allComments from '../../../asset/utils/allComments.png';
 
 // Styles
 import {
-  BACKGROUND_COLOR
+  BACKGROUND_COLOR,
+  APP_BLUE
 } from '../../../styles';
 
 const initialLayout = {
@@ -446,6 +451,10 @@ class GoalDetailCardV3 extends Component {
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={{ backgroundColor: BACKGROUND_COLOR, flex: 1 }}>
+          <LoadingModal 
+            visible={this.props.updating} 
+            customIndicator={<DotIndicator size={12} color='white' />}  
+          />
           <SearchBarHeader
             backButton
             title='Goal'
@@ -524,7 +533,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state, props) => {
   const newComment = getNewCommentByTab(state, props.pageId);
   const goalDetail = getGoalDetailByTab(state);
-  const { goal, navigationStateV2 } = goalDetail;
+  const { goal, navigationStateV2, updating } = goalDetail;
 
   const { showingModalInDetail } = state.report;
   const { userId } = state.user;
@@ -554,7 +563,8 @@ const mapStateToProps = (state, props) => {
     // isSelf: true,
     tab: state.navigation.tab,
     // When on focusTab, show the count for focusedItem
-    focusedItemCount
+    focusedItemCount,
+    updating
   };
 };
 

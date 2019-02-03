@@ -8,6 +8,8 @@ import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
 import {
+  GOAL_DETAIL_UPDATE,
+  GOAL_DETAIL_UPDATE_DONE,
   GOAL_DETAIL_FETCH,
   GOAL_DETAIL_FETCH_DONE,
   GOAL_DETAIL_FETCH_ERROR,
@@ -165,6 +167,17 @@ export const markStepAsComplete = (stepId, goal) => (dispatch, getState) => {
 
   const onSuccess = (res) => {
     console.log(`${DEBUG_KEY}: mark step complete succeed with res: `, res);
+
+    dispatch({
+      type: GOAL_DETAIL_UPDATE_DONE,
+      payload: {
+        isCompleted,
+        tab,
+        goalId: _id,
+        type: 'markStepAsComplete'
+      }
+    });
+
     dispatch({
       type: GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS,
       payload: {
@@ -176,12 +189,32 @@ export const markStepAsComplete = (stepId, goal) => (dispatch, getState) => {
     });
   };
   const onError = (err) => {
+    dispatch({
+      type: GOAL_DETAIL_UPDATE_DONE,
+      payload: {
+        isCompleted,
+        tab,
+        goalId: _id,
+        type: 'markStepAsComplete'
+      }
+    });
+
     Alert.alert(
       'Update step status failed',
       'Please try again later.'
     );
     console.warn(`${DEBUG_KEY}: update step status failed with error: `, err);
   };
+
+  dispatch({
+    type: GOAL_DETAIL_UPDATE,
+    payload: {
+      isCompleted,
+      tab,
+      goalId: _id,
+      type: 'markStepAsComplete'
+    }
+  });
 
   updateGoalWithFields(_id, { steps: stepToUpdate }, token, onSuccess, onError);
 };
@@ -207,6 +240,16 @@ export const markNeedAsComplete = (needId, goal) => (dispatch, getState) => {
   const onSuccess = (res) => {
     console.log(`${DEBUG_KEY}: mark need complete succeed with res: `, res);
     dispatch({
+      type: GOAL_DETAIL_UPDATE_DONE,
+      payload: {
+        isCompleted,
+        tab,
+        goalId: _id,
+        type: 'markNeedAsComplete'
+      }
+    });
+
+    dispatch({
       type: GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS,
       payload: {
         id: needId,
@@ -216,13 +259,34 @@ export const markNeedAsComplete = (needId, goal) => (dispatch, getState) => {
       }
     });
   };
+
   const onError = (err) => {
+    dispatch({
+      type: GOAL_DETAIL_UPDATE_DONE,
+      payload: {
+        isCompleted,
+        tab,
+        goalId: _id,
+        type: 'markNeedAsComplete'
+      }
+    });
+
     Alert.alert(
       'Update need status failed',
       'Please try again later.'
     );
     console.warn(`${DEBUG_KEY}: update need status failed with error: `, err);
   };
+
+  dispatch({
+    type: GOAL_DETAIL_UPDATE,
+    payload: {
+      isCompleted,
+      tab,
+      goalId: _id,
+      type: 'markNeedAsComplete'
+    }
+  });
 
   updateGoalWithFields(_id, { needs: needToUpdate }, token, onSuccess, onError);
 };
@@ -233,6 +297,16 @@ export const markGoalAsComplete = (goalId, complete) => (dispatch, getState) => 
   const { tab } = getState().navigation;
 
   const onSuccess = (data) => {
+    dispatch({
+      type: GOAL_DETAIL_UPDATE_DONE,
+      payload: {
+        complete,
+        tab,
+        goalId,
+        type: 'markGoalAsComplete'
+      }
+    });
+
     dispatch({
       type: GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
       payload: {
@@ -252,6 +326,16 @@ export const markGoalAsComplete = (goalId, complete) => (dispatch, getState) => 
   };
 
   const onError = (err) => {
+    dispatch({
+      type: GOAL_DETAIL_UPDATE_DONE,
+      payload: {
+        complete,
+        tab,
+        goalId,
+        type: 'markGoalAsComplete'
+      }
+    });
+
     Alert.alert(
       `Failed to mark goal as ${complete ? 'complete' : 'incomplete'}.`,
       'Please try again later.'
@@ -261,6 +345,16 @@ export const markGoalAsComplete = (goalId, complete) => (dispatch, getState) => 
       ${complete ? 'complete' : 'incomplete'}
       failed with err: `, err);
   };
+
+  dispatch({
+    type: GOAL_DETAIL_UPDATE,
+    payload: {
+      complete,
+      tab,
+      goalId,
+      type: 'markGoalAsComplete'
+    }
+  });
 
   updateGoalWithFields(goalId, { isCompleted: complete }, token, onSuccess, onError);
 };
@@ -304,23 +398,50 @@ const shareToMastermind = (goalId, dispatch, getState) => {
 
   const onSuccess = (res) => {
     dispatch({
+      type: GOAL_DETAIL_UPDATE_DONE,
+      payload: {
+        tab,
+        goalId,
+        type: 'shareToMastermind'
+      }
+    });
+
+    dispatch({
       type: GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS,
       payload: {
         goalId,
         tab
       }
     });
-    Alert.alert('Success', 'You have successfully shared this goal to mastermind.');
+    // Alert.alert('Success', 'You have successfully shared this goal to mastermind.');
     console.log(`${DEBUG_KEY}: shareToMastermind succeed with res: `, res);
   };
 
   const onError = (err) => {
+    dispatch({
+      type: GOAL_DETAIL_UPDATE_DONE,
+      payload: {
+        tab,
+        goalId,
+        type: 'shareToMastermind'
+      }
+    });
+
     Alert.alert(
       'Share to mastermind failed',
       'Please try again later'
     );
     console.warn(`${DEBUG_KEY}: share to mastermind failed with error: `, err);
   };
+
+  dispatch({
+    type: GOAL_DETAIL_UPDATE,
+    payload: {
+      tab,
+      goalId,
+      type: 'shareToMastermind'
+    }
+  });
   updateGoalWithFields(goalId, { shareToGoalFeed: true }, token, onSuccess, onError);
 };
 
