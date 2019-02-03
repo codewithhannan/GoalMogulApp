@@ -11,7 +11,7 @@ import R from 'ramda';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import { Constants } from 'expo';
+import Expo, { Constants } from 'expo';
 
 /* Asset */
 // import Logo from '../../../asset/header/logo.png';
@@ -297,7 +297,8 @@ class SearchBarHeader extends Component {
     const paddingTop = (
       Platform.OS === 'ios' &&
       IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
-    ) ? 40 : 30;
+    ) ? 30 : 40;
+
     return (
       <View style={{ ...styles.headerStyle, paddingTop }}>
         {this.renderSearchBarLeftIcon()}

@@ -37,7 +37,7 @@ class Menu extends React.PureComponent {
     const paddingTop = (
       Platform.OS === 'ios' &&
       IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
-    ) ? 40 : 30;
+    ) ? 30 : 40;
 
     const { name } = this.props.user;
 

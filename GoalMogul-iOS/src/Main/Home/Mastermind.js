@@ -43,7 +43,7 @@ import { APP_DEEP_BLUE, BACKGROUND_COLOR } from '../../styles';
 
 const ITEM_HEIGHT = Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
-  ? 450 : 420;
+  ? 420 : 450;
 
 const TAB_KEY = 'mastermind';
 const DEBUG_KEY = '[ UI Mastermind ]';
