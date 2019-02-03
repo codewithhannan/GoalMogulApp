@@ -55,7 +55,7 @@ class TrendingGoalView extends React.PureComponent {
     }
 
     renderItem = ({ item, index }) => {
-        return <TrendingGoalCardView index={index} item={item} />;
+        return <TrendingGoalCardView index={index + 1} item={item} />;
     }
 
     render() {
