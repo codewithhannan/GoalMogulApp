@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Image } from 'react-native';
+import { View, TouchableOpacity, Image, AppState } from 'react-native';
 import { connect } from 'react-redux';
-import { TabView, SceneMap } from 'react-native-tab-view';
+import { TabView } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
+import _ from 'lodash';
 
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup';
@@ -14,7 +15,7 @@ import Mastermind from './Mastermind';
 import ActivityFeed from './ActivityFeed';
 
 // Actions
-import { homeSwitchTab } from '../../actions';
+import { homeSwitchTab, fetchAppUserProfile } from '../../actions';
 import {
   openCreateOverlay
 } from '../../redux/modules/home/mastermind/actions';
@@ -28,7 +29,7 @@ import Activity from '../../asset/utils/activity.png';
 import plus from '../../asset/utils/plus.png';
 
 // Styles
-import { APP_DEEP_BLUE, APP_BLUE } from '../../styles';
+import { APP_DEEP_BLUE } from '../../styles';
 
 const TabIconMap = {
   goals: {
@@ -47,6 +48,8 @@ const TabIconMap = {
   }
 };
 
+const DEBUG_KEY = '[ UI Home ]';
+
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -57,10 +60,20 @@ class Home extends Component {
           { key: 'goals', title: 'GOALS' },
           { key: 'activity', title: 'ACTIVITY' },
         ],
-      }
+      },
+      appState: AppState.currentState
     };
     this.scrollToTop = this.scrollToTop.bind(this);
     this._renderScene = this._renderScene.bind(this);
+  }
+
+
+  componentDidMount() {
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
   scrollToTop = () => {
@@ -78,6 +91,20 @@ class Home extends Component {
     this.props.openCreateOverlay();
     // As we move the create option here, we no longer need to care about the tab
     Actions.createGoalButtonOverlay({ tab: 'mastermind' });
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+      console.log(`${DEBUG_KEY}: [handleAppStateChange] App has come to the foreground!`);
+      const user = this.props.user;
+      if (user === undefined || _.isEmpty(user) || !user.profile) {
+        this.props.fetchAppUserProfile({ navigate: false });
+      }
+    }
+
+    this.setState({
+      appState: nextAppState
+    });
   }
 
   _handleIndexChange = index => {
@@ -174,10 +201,12 @@ class Home extends Component {
 const mapStateToProps = state => {
   const { showingModal } = state.report;
   const { showPlus } = state.home.mastermind;
+  const { user } = state.user;
 
   return {
     showingModal,
-    showPlus
+    showPlus,
+    user
   };
 };
 
@@ -228,6 +257,7 @@ const styles = {
 export default connect(
   mapStateToProps,
   {
+    fetchAppUserProfile,
     homeSwitchTab,
     openCreateOverlay,
     subscribeNotification
