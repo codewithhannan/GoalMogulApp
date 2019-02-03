@@ -393,6 +393,7 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
         data,
         skip: data.length,
         limit,
+        userId,
         hasNextPage: !(data === undefined || data.length === 0)
       }
     });

@@ -1,5 +1,6 @@
-import { Actions, ActionConst } from 'react-native-router-flux';
+import { Actions } from 'react-native-router-flux';
 import { SubmissionError } from 'redux-form';
+import { AppState } from 'react-native';
 import { api as API } from '../redux/middleware/api';
 
 import {
@@ -47,7 +48,7 @@ const validateEmail = (email) => {
    return re.test(String(email).toLowerCase());
 };
 
-export const loginUser = ({ username, password }) => {
+export const loginUser = ({ username, password, navigate }) => {
   // Call the endpoint to use username and password to signin
   // Obtain the credential
 
@@ -62,6 +63,19 @@ export const loginUser = ({ username, password }) => {
   };
 
   return async (dispatch, getState) => {
+    console.log(`${DEBUG_KEY}: current app state is: `, AppState.currentState);
+    // Do not reload data when on background or inactive
+    if (AppState.currentState === 'inactive' || AppState.currentState === 'background') {
+      return;
+    }
+
+    const { loading } = getState().auth;
+
+    if (loading) {
+      // If user loading is already triggerred, do nothing
+      // Potential place to trigger loading is at Router
+      return;
+    }
     dispatch({
       type: LOGIN_USER_LOADING
     });
@@ -80,10 +94,18 @@ export const loginUser = ({ username, password }) => {
             payload
           });
           Auth.saveKey(username, password);
-          fetchUserProfile(res.token, res.userId, dispatch);
+          // Fetch user profile using returned token and userId
+          fetchAppUserProfile(res.token, res.userId)(dispatch, getState);
           refreshFeed()(dispatch, getState);
           refreshGoals()(dispatch, getState);
           const hasTutorialShown = await Tutorial.getTutorialShown(res.userId);
+
+          // If navigate is set to false, it means user has already opened up the home page
+          // We only need to reload the profile and feed data
+          if (navigate === false) {
+            return;
+          }
+
           // User has watched the tutorial
           if (hasTutorialShown) {
             Actions.replace('drawer'); // Go to the main route and replace the auth stack
@@ -110,9 +132,19 @@ export const loginUser = ({ username, password }) => {
 };
 
 // We have the same action in Profile.js
-const fetchUserProfile = (token, userId, dispatch) => {
+export const fetchAppUserProfile = (token, userId) => (dispatch, getState) => {
+  let tokenToUse = token;
+  let userIdToUse = userId;
+  if (!token) {
+    tokenToUse = getState().user.token;
+  }
+
+  if (!userId) {
+    userIdToUse = getState().user.userId;
+  }
+
   API
-    .get(`secure/user/profile?userId=${userId}`, token)
+    .get(`secure/user/profile?userId=${userIdToUse}`, tokenToUse)
     .then((res) => {
       if (res.data) {
         dispatch({

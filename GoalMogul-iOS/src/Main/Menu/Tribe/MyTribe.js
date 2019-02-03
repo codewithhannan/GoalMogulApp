@@ -105,7 +105,7 @@ const TAG_SEARCH_OPTIONS = {
 
 const SEARCHBAR_HEIGHT = Platform.OS === 'ios' &&
       IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
-      ? 40 : 30;
+      ? 30 : 40;
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const PADDING = SCREEN_HEIGHT - 48.5 - SEARCHBAR_HEIGHT;

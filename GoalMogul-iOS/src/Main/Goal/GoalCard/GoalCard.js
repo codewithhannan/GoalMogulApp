@@ -74,7 +74,7 @@ const { height } = Dimensions.get('window');
 const CardHeight = height * 0.7;
 const ITEM_COUNT = Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
-  ? 3 : 2;
+  ? 2 : 3;
 
 const TabIconMap = {
   steps: {
@@ -467,6 +467,10 @@ const getTabHeight = (navigationState, item) => {
   if (dataToRender.length < ITEM_COUNT || ITEM_COUNT < 3) {
     return ((Math.min(dataToRender.length, ITEM_COUNT) * SECTION_CARD_HEIGHT)
       + VIEW_GOAL_HEIGHT);
+  }
+
+  if (dataToRender.length >= ITEM_COUNT && ITEM_COUNT > 2) {
+    return (ITEM_COUNT * SECTION_CARD_HEIGHT) + VIEW_GOAL_HEIGHT;
   }
   return CardHeight * 0.51;
 };

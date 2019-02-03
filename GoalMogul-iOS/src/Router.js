@@ -4,7 +4,6 @@ import {
   Router,
   Stack,
   Tabs,
-  Tab,
   Modal,
   Reducer,
   Lightbox,
@@ -13,7 +12,7 @@ import {
   ActionConst
 } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import { Platform } from 'react-native';
+import { Platform, AppState } from 'react-native';
 
 /* Auth */
 import SplashScreen from './SplashScreen';
