@@ -327,8 +327,13 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case PROFILE_REFRESH_TAB_DONE: {
-      const { skip, data, hasNextPage, type } = action.payload;
+      const { skip, data, hasNextPage, type, userId } = action.payload;
       let newState = _.cloneDeep(state);
+      const currentUser = _.get(newState, 'user');
+
+      // This state update is no longer valid
+      if (currentUser._id !== userId) return newState;
+
       newState = _.set(newState, `${type}.refreshing`, false);
 
       if (skip !== undefined) {
