@@ -23,6 +23,7 @@ import {
 // Actions
 import {
   closeGoalDetail,
+  closeGoalDetailWithoutPoping,
   goalDetailSwitchTabV2,
   goalDetailSwitchTabV2ByKey
 } from '../../../redux/modules/goal/GoalDetailActions';
@@ -138,6 +139,7 @@ class GoalDetailCardV3 extends Component {
     this.keyboardWillShowListener.remove();
     this.keyboardWillHideListener.remove();
     this.state.scroll.removeAllListeners();
+    this.props.closeGoalDetailWithoutPoping();
   }
 
   // Switch tab to FocusTab and display all the comments
@@ -606,6 +608,7 @@ export default connect(
   mapStateToProps,
   {
     closeGoalDetail,
+    closeGoalDetailWithoutPoping,
     attachSuggestion,
     cancelSuggestion,
     openSuggestionModal,

@@ -130,9 +130,14 @@ export const goalDetailSwitchTab = (index) => (dispatch, getState) => {
 };
 
 export const closeGoalDetail = () => (dispatch, getState) => {
-  const { tab } = getState().navigation;
   // Return to previous page
   Actions.pop();
+  // Clear the state
+  closeGoalDetailWithoutPoping()(dispatch, getState);
+};
+
+export const closeGoalDetailWithoutPoping = () => (dispatch, getState) => {
+  const { tab } = getState().navigation;
   // Clear the state
   dispatch({
     type: GOAL_DETAIL_CLOSE,
