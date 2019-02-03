@@ -17,11 +17,13 @@ import ActivityFeed from './ActivityFeed';
 // Actions
 import { homeSwitchTab, fetchAppUserProfile } from '../../actions';
 import {
-  openCreateOverlay
+  openCreateOverlay,
+  refreshGoals
 } from '../../redux/modules/home/mastermind/actions';
-import {
-  subscribeNotification
-} from '../../redux/modules/notification/NotificationActions';
+
+import { refreshFeed } from '../../redux/modules/home/feed/actions';
+
+import { subscribeNotification } from '../../redux/modules/notification/NotificationActions';
 
 // Assets
 import Logo from '../../asset/header/logo.png';
@@ -96,9 +98,18 @@ class Home extends Component {
   handleAppStateChange = (nextAppState) => {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       console.log(`${DEBUG_KEY}: [handleAppStateChange] App has come to the foreground!`);
-      const user = this.props.user;
+
+      const { needRefreshActivity, needRefreshMastermind, user } = this.props;
       if (user === undefined || _.isEmpty(user) || !user.profile) {
         this.props.fetchAppUserProfile({ navigate: false });
+      }
+
+      if (needRefreshMastermind) {
+        this.props.refreshGoals();
+      }
+
+      if (needRefreshActivity) {
+        this.props.refreshFeed();
       }
     }
 
@@ -200,13 +211,17 @@ class Home extends Component {
 
 const mapStateToProps = state => {
   const { showingModal } = state.report;
-  const { showPlus } = state.home.mastermind;
+  const { showPlus, data } = state.home.mastermind;
+  const needRefreshMastermind = _.isEmpty(state.home.mastermind.data);
+  const needRefreshActivity = _.isEmpty(state.home.activityfeed.data);
   const { user } = state.user;
 
   return {
     showingModal,
     showPlus,
-    user
+    user,
+    needRefreshActivity,
+    needRefreshMastermind
   };
 };
 
@@ -260,7 +275,9 @@ export default connect(
     fetchAppUserProfile,
     homeSwitchTab,
     openCreateOverlay,
-    subscribeNotification
+    subscribeNotification,
+    refreshGoals,
+    refreshFeed
   },
   null,
   { withRef: true }
