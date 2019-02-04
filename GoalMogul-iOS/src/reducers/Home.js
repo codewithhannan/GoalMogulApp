@@ -23,6 +23,10 @@ import {
   PROFILE_POST_DELETE_SUCCESS
 } from './Profile';
 
+import {
+  USER_LOG_OUT
+} from './User';
+
 export const HOME_MASTERMIND_OPEN_CREATE_OVERLAY = 'home_mastermind_open_create_overlay';
 export const HOME_CLOSE_CREATE_OVERLAY = 'home_mastermind_close_create_overlay';
 // Goal related constants
@@ -293,6 +297,10 @@ export default (state = INITIAL_STATE, action) => {
 
       newState = _.set(newState, 'activityfeed.data', newActivityData);
       return newState;
+    }
+
+    case USER_LOG_OUT: {
+      return _.cloneDeep(INITIAL_STATE);
     }
 
     default:

@@ -65,9 +65,16 @@ class CreateGoalModal extends React.Component {
       initializeFromState,
       () => {
         console.log(`${DEBUG_KEY}: poping the modal`);
+        if (this.props.onClose) {
+          this.props.onClose();
+        } 
         Actions.pop();
       },
-      goalId
+      goalId,
+      {
+        needOpenProfile: this.props.openProfile === undefined || this.props.openProfile === true,
+        needRefreshProfile: this.props.openProfile === false
+      }
     );
   }
 
@@ -97,7 +104,12 @@ class CreateGoalModal extends React.Component {
           <ModalHeader
             title={titleText}
             actionText={actionText}
-            onCancel={() => Actions.pop()}
+            onCancel={() => {
+              if (this.props.onClose) {
+                this.props.onClose();
+              }
+              Actions.pop();
+            }}
             onAction={this.handleCreate}
           />
           <TabView

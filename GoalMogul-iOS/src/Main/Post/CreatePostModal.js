@@ -273,16 +273,22 @@ class CreatePostModal extends Component {
    * Synchronize validate form values, contains simple check
    */
   handleCreate = (values) => {
-    const { initializeFromState, post, mediaRef, belongsToTribe, belongsToEvent } = this.props;
+    const { initializeFromState, post, mediaRef, belongsToTribe, belongsToEvent, openProfile } = this.props;
     const needUpload =
       (initializeFromState && post.mediaRef && post.mediaRef !== mediaRef)
       || (!initializeFromState && mediaRef);
 
-    const needOpenProfile = belongsToTribe === undefined && belongsToEvent === undefined;
+    const needOpenProfile = (belongsToTribe === undefined && belongsToEvent === undefined) &&
+      (openProfile === undefined || openProfile === true);
+
+    const needRefreshProfile = openProfile === false;
     return this.props.submitCreatingPost(
       this.props.formVals.values,
       needUpload,
-      needOpenProfile,
+      { 
+        needOpenProfile, // Open user profile page and refresh the profile
+        needRefreshProfile // Only refresh the profile page with given tab and filter
+      },
       this.props.callback
     );
   }
@@ -635,7 +641,12 @@ class CreatePostModal extends Component {
         <ModalHeader
           title='New Post'
           actionText='Create'
-          onCancel={() => Actions.pop()}
+          onCancel={() => {
+            if (this.props.onClose) {
+              this.props.onClose();
+            }
+            Actions.pop();
+          }}
           onAction={handleSubmit(this.handleCreate)}
         />
         <ScrollView style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}>

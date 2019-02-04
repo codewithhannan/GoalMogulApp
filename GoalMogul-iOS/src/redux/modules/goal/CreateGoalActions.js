@@ -20,7 +20,9 @@ import {
 } from './CreateGoal';
 
 import {
-  openProfile
+  openProfile,
+  handleTabRefresh,
+  selectProfileTab
 } from '../../../actions';
 
 const DEBUG_KEY = '[ Action CreateGoal ]';
@@ -38,7 +40,17 @@ export const validate = values => {
 };
 
 // Submit values
-export const submitGoal = (values, userId, isEdit, callback, goalId) => (dispatch, getState) => {
+export const submitGoal = (
+  values, 
+  userId, 
+  isEdit, 
+  callback, 
+  goalId, 
+  {
+    needOpenProfile,
+    needRefreshProfile
+  }
+) => (dispatch, getState) => {
   const { token } = getState().user;
   const { tab } = getState().navigation;
   const goal = formToGoalAdapter(values, userId);
@@ -71,6 +83,14 @@ export const submitGoal = (values, userId, isEdit, callback, goalId) => (dispatc
     //   'Success',
     //   'You have successfully created a goal.'
     // );
+    if (needOpenProfile === false) {
+      if (needRefreshProfile) {
+        selectProfileTab(0)(dispatch, getState);
+        handleTabRefresh('goals')(dispatch, getState);
+      }
+      return;
+    }
+
     openProfile(userId, 'goals')(dispatch, getState);
   };
 

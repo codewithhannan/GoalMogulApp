@@ -45,6 +45,9 @@ import {
 
   PROFILE_GOAL_DELETE_SUCCESS,
   PROFILE_POST_DELETE_SUCCESS,
+  // Profile Create overlay
+  PROFILE_OPEN_CREATE_OVERLAY,
+  PROFILE_CLOSE_CREATE_OVERLAY
 } from '../reducers/Profile';
 
 const DEBUG_KEY = '[ Action Profile ]';
@@ -599,6 +602,19 @@ export const UserBanner = (props) => {
   return (
     <Image source={source} style={{ ...defaultIconStyle, ...iconStyle }} />
   );
+};
+
+export const openCreateOverlay = () => (dispatch) => {
+  dispatch({
+    type: PROFILE_OPEN_CREATE_OVERLAY
+  });
+};
+
+
+export const closeCreateOverlay = () => (dispatch) => {
+  dispatch({
+    type: PROFILE_CLOSE_CREATE_OVERLAY
+  });
 };
 
 const switchCaseBannerSource = (points) => {
