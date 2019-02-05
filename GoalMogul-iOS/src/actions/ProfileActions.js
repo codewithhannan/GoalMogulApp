@@ -422,7 +422,11 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
  * @params tab: one of ['goals', 'posts', 'needs']
  */
 export const handleProfileTabOnLoadMore = (tab) => (dispatch, getState) => {
-  const { token, userId } = getState().user;
+  const { token } = getState().user;
+  const { user } = getState().profile;
+  if (!user || _.isEmpty(user)) return;
+  const { _id } = user;
+
   const { 
     filter, 
     skip, 
@@ -468,7 +472,7 @@ export const handleProfileTabOnLoadMore = (tab) => (dispatch, getState) => {
     console.log(`${DEBUG_KEY}: tab: ${tab} on load more fail with err: `, err);
   };
 
-  loadOneTab(tab, skip, limit, { ...profileFilterAdapter(filter), userId },
+  loadOneTab(tab, skip, limit, { ...profileFilterAdapter(filter), userId: _id },
     token, onSuccess, onError);
 };
 
