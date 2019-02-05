@@ -50,6 +50,9 @@ export const PROFILE_RESET_FILTER = 'profile_reset_filter';
 export const PROFILE_GOAL_DELETE_SUCCESS = 'profile_goal_delete_success';
 export const PROFILE_POST_DELETE_SUCCESS = 'profile_post_delete_success';
 
+export const PROFILE_OPEN_CREATE_OVERLAY = 'profile_open_create_overlay';
+export const PROFILE_CLOSE_CREATE_OVERLAY = 'profile_close_create_overlay';
+
 export const PROFILE_GOAL_FILTER_CONST = {
   sortBy: ['created', 'updated', 'shared', 'priority'],
   orderBy: {
@@ -89,6 +92,9 @@ const INITIAL_STATE = {
 
     }
   },
+  // Profile page plus icon for goal / post creation
+  showPlus: true,
+
   // Me Page mutual friends count
   mutualFriends: {
     loading: false,
@@ -493,6 +499,16 @@ export default (state = INITIAL_STATE, action) => {
         return oldGoal;
       });
       return _.set(newState, 'goals.data', newGoals);
+    }
+
+    case PROFILE_OPEN_CREATE_OVERLAY: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'showPlus', false);
+    }
+
+    case PROFILE_CLOSE_CREATE_OVERLAY: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'showPlus', true);
     }
 
     default:

@@ -20,6 +20,8 @@ import {
   closeCreateOverlay
 } from '../../../redux/modules/home/mastermind/actions';
 
+const DEBUG_KEY = '[ UI CreateGoalButtonOverlay ]';
+
 class CreateGoalButtonOverlay extends Component {
   constructor(...args) {
     super(...args);
@@ -38,7 +40,12 @@ class CreateGoalButtonOverlay extends Component {
       duration: 100,
       toValue: 0,
     }).start(() => {
-      this.props.closeCreateOverlay(this.props.tab);
+      if (this.props.onClose) {
+        console.log(`${DEBUG_KEY}: iam here`);
+        this.props.onClose();
+      } else {
+        this.props.closeCreateOverlay(this.props.tab);
+      }
       Actions.pop();
     });
   }
@@ -51,7 +58,11 @@ class CreateGoalButtonOverlay extends Component {
     }).start(() => {
       this.props.closeCreateOverlay(this.props.tab);
       Actions.pop();
-      Actions.createPostModal();
+      Actions.createPostModal({ 
+        callback: this.props.onClose,
+        onClose: this.props.onClose,
+        openProfile: this.props.openProfile
+      });
     });
   }
 
@@ -63,13 +74,18 @@ class CreateGoalButtonOverlay extends Component {
     }).start(() => {
       this.props.closeCreateOverlay(this.props.tab);
       Actions.pop();
-      Actions.createGoalModal();
+      Actions.createGoalModal({ 
+        onCreate: this.props.onCreate, 
+        onClose: this.props.onClose,
+        openProfile: this.props.openProfile
+      });
     });
   }
 
   renderCancelButton() {
     return (
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity 
+        activeOpacity={0.85}
         style={{ ...styles.iconContainerStyle, backgroundColor: 'transparent' }}
         onPress={this.handleCancel}
       >

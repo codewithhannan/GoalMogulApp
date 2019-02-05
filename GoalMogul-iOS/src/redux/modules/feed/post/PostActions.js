@@ -16,7 +16,9 @@ import {
 } from './ShareActions';
 
 import {
-  openProfile
+  openProfile,
+  handleTabRefresh,
+  selectProfileTab
 } from '../../../../actions';
 
 // Actions
@@ -83,8 +85,14 @@ export const editPost = (post) => (dispatch, getState) => {
 /**
  * @param needOpenProfile: if true, then open profile with post tab
  */
-export const submitCreatingPost = (values, needUpload, needOpenProfile, callback) =>
-(dispatch, getState) => {
+export const submitCreatingPost = (
+  values, 
+  needUpload, 
+  { 
+    needOpenProfile, 
+    needRefreshProfile 
+  }, 
+  callback) => (dispatch, getState) => {
     const { userId, token } = getState().user;
     const newPost = newPostAdaptor(values, userId);
     console.log(`${DEBUG_KEY}: post to submit is: `, newPost);
@@ -101,7 +109,15 @@ export const submitCreatingPost = (values, needUpload, needOpenProfile, callback
       }
 
       if (needOpenProfile) {
+        // Open profile and then refresh
         openProfile(userId, 'posts')(dispatch, getState);
+        return;
+      }
+
+      if (needRefreshProfile) {
+        // Change to post tab and then refresh the page
+        selectProfileTab(1)(dispatch, getState);
+        handleTabRefresh('posts')(dispatch, getState);
       }
     };
 

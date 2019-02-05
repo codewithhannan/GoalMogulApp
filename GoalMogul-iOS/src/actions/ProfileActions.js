@@ -45,6 +45,9 @@ import {
 
   PROFILE_GOAL_DELETE_SUCCESS,
   PROFILE_POST_DELETE_SUCCESS,
+  // Profile Create overlay
+  PROFILE_OPEN_CREATE_OVERLAY,
+  PROFILE_CLOSE_CREATE_OVERLAY
 } from '../reducers/Profile';
 
 const DEBUG_KEY = '[ Action Profile ]';
@@ -419,7 +422,11 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
  * @params tab: one of ['goals', 'posts', 'needs']
  */
 export const handleProfileTabOnLoadMore = (tab) => (dispatch, getState) => {
-  const { token, userId } = getState().user;
+  const { token } = getState().user;
+  const { user } = getState().profile;
+  if (!user || _.isEmpty(user)) return;
+  const { _id } = user;
+
   const { 
     filter, 
     skip, 
@@ -465,7 +472,7 @@ export const handleProfileTabOnLoadMore = (tab) => (dispatch, getState) => {
     console.log(`${DEBUG_KEY}: tab: ${tab} on load more fail with err: `, err);
   };
 
-  loadOneTab(tab, skip, limit, { ...profileFilterAdapter(filter), userId },
+  loadOneTab(tab, skip, limit, { ...profileFilterAdapter(filter), userId: _id },
     token, onSuccess, onError);
 };
 
@@ -599,6 +606,19 @@ export const UserBanner = (props) => {
   return (
     <Image source={source} style={{ ...defaultIconStyle, ...iconStyle }} />
   );
+};
+
+export const openCreateOverlay = () => (dispatch) => {
+  dispatch({
+    type: PROFILE_OPEN_CREATE_OVERLAY
+  });
+};
+
+
+export const closeCreateOverlay = () => (dispatch) => {
+  dispatch({
+    type: PROFILE_CLOSE_CREATE_OVERLAY
+  });
 };
 
 const switchCaseBannerSource = (points) => {
