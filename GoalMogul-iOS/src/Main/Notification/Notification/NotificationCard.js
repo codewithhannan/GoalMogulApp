@@ -90,7 +90,7 @@ class NotificationCard extends React.Component {
       <TouchableOpacity 
         activeOpacity={0.85}
         onPress={() => this.handleOptionsOnPress()}
-        style={{ alignSelf: 'center', justifyContent: 'center' }}
+        style={{ alignSelf: 'center', justifyContent: 'center', padding: 5, paddingTop: 10, paddingBottom: 10 }}
       >
         <Image
           style={{ width: 23, height: 19, tintColor: '#33485e' }}
