@@ -46,7 +46,8 @@ class NotificationCard extends React.Component {
 
     return (
       <ProfileImage
-        imageStyle={{ height: 50, width: 50 }}
+        imageStyle={{ height: 50, width: 50, borderRadius: 5 }}
+        defaultImageStyle={{ width: 46, height: 50, borderRadius: 5, marginLeft: 2, marginRight: 2 }}
         imageUrl={imageUrl}
         rounded
         imageContainerStyle={styles.imageContainerStyle}
@@ -64,14 +65,14 @@ class NotificationCard extends React.Component {
     return (
       <View style={{ flex: 1, marginLeft: 10 }}>
         <Text
-          style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13, marginTop: 2 }}
+          style={{ flexWrap: 'wrap', color: 'black', fontSize: 13, marginTop: 2 }}
           numberOfLines={2}
           ellipsizeMode='tail'
         >
           <Text style={{ fontWeight: '700' }}>{name}{': '}</Text>
           {text}
         </Text>
-        <View style={{ marginBottom: 3 }}>
+        <View style={{ marginBottom: 3, marginTop: 1 }}>
           <Timestamp time={timeago().format(created)} />
         </View>
       </View>
@@ -127,11 +128,13 @@ const styles = {
   cardContainerStyle: {
     flexDirection: 'row',
     padding: 12,
+    paddingTop: 10,
+    paddingBottom: 10,
     alignItems: 'center'
   },
   imageContainerStyle: {
     borderWidth: 0.5,
-    padding: 1.5,
+    padding: 0.5,
     borderColor: 'lightgray',
     alignItems: 'center',
     borderRadius: 6,

@@ -70,9 +70,10 @@ class NotificationCard extends React.Component {
     return (
       <ProfileImage
         imageStyle={{ height: 50, width: 50, borderRadius: 5 }}
+        defaultImageStyle={{ width: 46, height: 50, borderRadius: 5, marginLeft: 2, marginRight: 2 }}
         imageUrl={imageUrl}
         rounded
-        imageContainerStyle={styles.imageContainerStyle}
+        imageContainerStyle={styles.imageContainerStyle}  
         userId=''
       />
     );
@@ -140,11 +141,13 @@ const styles = {
   cardContainerStyle: {
     flexDirection: 'row',
     padding: 12,
+    paddingTop: 10,
+    paddingBottom: 10,
     alignItems: 'center'
   },
   imageContainerStyle: {
     borderWidth: 0.5,
-    padding: 1.5,
+    padding: 0.5,
     borderColor: 'lightgray',
     alignItems: 'center',
     borderRadius: 6,
