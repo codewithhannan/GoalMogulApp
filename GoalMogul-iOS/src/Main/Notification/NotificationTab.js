@@ -35,9 +35,15 @@ const DEBUG_KEY = '[ UI NotificationTab ]';
 class NotificationTab extends Component {
   componentDidMount() {
     // Refresh notification tab 
+    console.log(`${DEBUG_KEY}: component did mount`);
     if (!this.props.data || _.isEmpty(this.props.data.length)) {
       this.props.refreshNotificationTab();
     }
+  }
+
+  onEnter = () => {
+    console.log(`${DEBUG_KEY}: onEnter`);
+    this.props.refreshNotificationTab();
   }
 
   keyExtractor = (item) => item._id;

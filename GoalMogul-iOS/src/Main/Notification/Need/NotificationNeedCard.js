@@ -13,7 +13,7 @@ import Timestamp from '../../Goal/Common/Timestamp';
 
 // Assets
 import bulb from '../../../asset/utils/bulb.png';
-import forward from '../../../asset/utils/forward.png';
+import forward from '../../../asset/utils/right_arrow.png';
 
 // Constants
 const DEBUG_KEY = '[ UI NotificationNeedCard ]';
@@ -47,7 +47,7 @@ class NotificationCard extends React.Component {
     return (
       <ProfileImage
         imageStyle={{ height: 50, width: 50, borderRadius: 5 }}
-        defaultImageStyle={{ width: 46, height: 50, borderRadius: 5, marginLeft: 2, marginRight: 2 }}
+        defaultImageStyle={styles.defaultImageStyle}
         imageUrl={imageUrl}
         rounded
         imageContainerStyle={styles.imageContainerStyle}
@@ -151,9 +151,18 @@ const styles = {
   },
   iconStyle: {
     height: 16,
-    width: 16,
+    width: 18,
     borderRadius: 8,
   },
+  defaultImageStyle: {
+    width: 44, 
+    height: 48, 
+    borderRadius: 5, 
+    marginLeft: 3, 
+    marginRight: 3, 
+    marginTop: 1, 
+    marginBottom: 1
+  }
 };
 
 export default NotificationCard;

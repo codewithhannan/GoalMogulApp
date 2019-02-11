@@ -72,7 +72,7 @@ class NotificationListView extends React.PureComponent {
                     onEndReachedThreshold={0}
                     ListEmptyComponent={
                     this.props.refreshing ? '' :
-                        <EmptyResult text={'You have no notifications'} />
+                        <EmptyResult text={'You have no notifications'} textStyle={{ paddingTop: 200 }} />
                     }
                     ListFooterComponent={this.renderListFooter()}
                 />
