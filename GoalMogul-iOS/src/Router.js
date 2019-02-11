@@ -79,6 +79,8 @@ import Tribe from './Main/Tribe/Tribe';
 
 // Notification
 import NotificationTab from './Main/Notification/NotificationTab';
+import NotificationListView from './Main/Notification/Notification/NotificationListView';
+import NotificationNeedListView from './Main/Notification/Need/NotificationNeedListView';
 
 // Chat
 import ChatTab from './Main/Chat/ChatTab';
@@ -260,6 +262,16 @@ class RouterComponent extends Component {
                       <Scene
                         key="notification"
                         component={NotificationTab}
+                        hideNavBar
+                      />
+                      <Scene
+                        key="notificationList"
+                        component={NotificationListView}
+                        hideNavBar
+                      />
+                      <Scene
+                        key="notificationNeedList"
+                        component={NotificationNeedListView}
                         hideNavBar
                       />
                     </Stack>

@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   notifications: {
     data: [],
     loading: false,
+    refreshing: false,
     skip: 0,
     limit: 10,
     hasNextPage: undefined,
@@ -17,6 +18,7 @@ const INITIAL_STATE = {
   needs: {
     data: [],
     loading: false,
+    refreshing: false,
     skip: 0,
     limit: 10,
     hasNextPage: undefined,
@@ -25,7 +27,11 @@ const INITIAL_STATE = {
   }
 };
 
+const DEBUG_KEY = '[ Reducers NotificationTab ]';
+
+export const NOTIFICATION_REFRESH = 'notification_refresh';
 export const NOTIFICATION_REFRESH_SUCCESS = 'notification_refresh_success';
+export const NOTIFICATION_REFRESH_FAIL = 'notification_refresh_fail';
 export const NOTIFICATION_LOAD = 'notification_load';
 export const NOTIFICATION_LOAD_SUCCESS = 'notification_load_done';
 export const NOTIFICATION_LOAD_FAIL = 'notification_load_fail';
@@ -40,7 +46,7 @@ export const NOTIFICATION_SUBSCRIBE = 'notification_subscribe';
 export const NOTIFICATION_UNSUBSCRIBE = 'notification_unsubscribe'; 
 
 export default (state = INITIAL_STATE, action) => {
-  switch (state.type) {
+  switch (action.type) {
     case NOTIFICATION_LOAD: {
       const { type } = action.payload;
       const newState = _.cloneDeep(state);
@@ -66,16 +72,29 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, `${type}.data`, arrayUnique(oldData.concat(data)));
     }
 
+    case NOTIFICATION_REFRESH: {
+      const { type } = action.payload;
+      const newState = _.cloneDeep(state);
+      return _.set(newState, `${type}.refreshing`, true);
+    }
+
+    case NOTIFICATION_REFRESH_FAIL: {
+      const { type } = action.payload;
+      const newState = _.cloneDeep(state);
+      return _.set(newState, `${type}.refreshing`, false);
+    }
+
     case NOTIFICATION_REFRESH_SUCCESS: {
       const { skip, data, hasNextPage, type } = action.payload;
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, `${type}.loading`, false);
+      newState = _.set(newState, `${type}.refreshing`, false);
 
       if (skip !== undefined) {
         newState = _.set(newState, `${type}.skip`, skip);
       }
       newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
-      return _.set(newState, `${type}.data`, data);
+      newState = _.set(newState, `${type}.data`, data);
+      return newState;
     }
 
     case NOTIFICATION_SEE_MORE: {

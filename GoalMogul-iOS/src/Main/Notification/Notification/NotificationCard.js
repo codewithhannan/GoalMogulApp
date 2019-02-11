@@ -9,12 +9,12 @@ import R from 'ramda';
 import timeago from 'timeago.js';
 
 // Component
-import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
-import ProfileImage from '../Common/ProfileImage';
-import Timestamp from '../Goal/Common/Timestamp';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import ProfileImage from '../../Common/ProfileImage';
+import Timestamp from '../../Goal/Common/Timestamp';
 
 // Asset
-import FriendsSettingIcon from '../../asset/utils/friendsSettingIcon.png';
+import FriendsSettingIcon from '../../../asset/utils/friendsSettingIcon.png';
 
 // Constants
 const DEBUG_KEY = '[ UI NotificationCard ]';

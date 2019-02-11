@@ -8,12 +8,12 @@ import {
 import timeago from 'timeago.js';
 
 // Components
-import ProfileImage from '../Common/ProfileImage';
-import Timestamp from '../Goal/Common/Timestamp';
+import ProfileImage from '../../Common/ProfileImage';
+import Timestamp from '../../Goal/Common/Timestamp';
 
 // Assets
-import bulb from '../../asset/utils/bulb.png';
-import forward from '../../asset/utils/forward.png';
+import bulb from '../../../asset/utils/bulb.png';
+import forward from '../../../asset/utils/forward.png';
 
 // Constants
 const DEBUG_KEY = '[ UI NotificationNeedCard ]';
@@ -36,10 +36,18 @@ class NotificationCard extends React.Component {
   }
 
   renderProfileImage(item) {
+    const { goalRef } = item;
+
+    // TODO: user object (owner) sanity check
+    let imageUrl;
+    if (goalRef && goalRef.owner && goalRef.owner.profile) {
+      imageUrl = goalRef.owner.profile.image;
+    }
+
     return (
       <ProfileImage
         imageStyle={{ height: 50, width: 50 }}
-        imageUrl={undefined}
+        imageUrl={imageUrl}
         rounded
         imageContainerStyle={styles.imageContainerStyle}
       />
@@ -47,10 +55,11 @@ class NotificationCard extends React.Component {
   }
 
   renderNeed(item) {
-    const { created } = item;
+    const { created, description, goalRef } = item;
+
     // TODO: use the actual content
-    const text = 'Introduction to some experts on mindfullness and meditation field.';
-    const name = 'Tim Draper';
+    const text = description;
+    const name = goalRef.owner.name;
 
     return (
       <View style={{ flex: 1, marginLeft: 10 }}>
@@ -72,7 +81,8 @@ class NotificationCard extends React.Component {
   renderActionIcons(item) {
     return (
       <View style={{ flexDirection: 'row', borderLeftWidth: 0.5, borderColor: '#dbdbdb' }}>
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity 
+          activeOpacity={0.85}
           style={{ ...styles.iconContainerStyle, backgroundColor: '#fdf9e5' }}
           onPress={() => this.handleOnSuggestion(item)}
         >
@@ -81,7 +91,8 @@ class NotificationCard extends React.Component {
             source={bulb}
           />
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity 
+          activeOpacity={0.85}
           style={{ ...styles.iconContainerStyle, backgroundColor: '#ebf9fe' }}
           onPress={() => this.handleOnOpen(item)}
         >
@@ -97,6 +108,10 @@ class NotificationCard extends React.Component {
   render() {
     const { item } = this.props;
     if (!item) return null;
+    const { description, goalRef } = item;
+    if (!description || !goalRef) {
+      console.warn(`${DEBUG_KEY}: no description or goalRef for need feed: `, item);
+    }
 
     return (
       <View style={styles.cardContainerStyle}>
