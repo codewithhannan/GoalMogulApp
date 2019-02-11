@@ -19,6 +19,9 @@ import {
 
 import { auth as Auth } from '../redux/modules/auth/Auth';
 import { tutorial as Tutorial } from '../redux/modules/auth/Tutorial';
+import {
+  saveUnreadNotification
+} from '../redux/modules/notification/NotificationActions';
 
 import {
   refreshFeed,
@@ -167,7 +170,10 @@ export const registerUser = () => (dispatch) => {
   Actions.registration();
 };
 
-export const logout = () => (dispatch) => {
+export const logout = () => async (dispatch, getState) => {
+  // Store the unread notification first as USER_LOG_OUT will clear its state
+  await saveUnreadNotification()(dispatch, getState);
+
   dispatch({
     type: USER_LOG_OUT
   });

@@ -11,15 +11,15 @@ import _ from 'lodash';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
-import NotificationCard from './NotificationCard';
-import NotificationNeedCard from './NotificationNeedCard';
+import NotificationCard from './Notification/NotificationCard';
+import NotificationNeedCard from './Need/NotificationNeedCard';
 import EmptyResult from '../Common/Text/EmptyResult';
 
 // Actions
 import {
   seeMoreNotification,
   seeLessNotification,
-  refreshNotifications
+  refreshNotificationTab
 } from '../../redux/modules/notification/NotificationTabActions';
 
 // Selectors
@@ -27,22 +27,40 @@ import {
   getNotifications,
   getNotificationNeeds
 } from '../../redux/modules/notification/NotificationSelector';
+import { Actions } from 'react-native-router-flux';
 
 // Constants
 const DEBUG_KEY = '[ UI NotificationTab ]';
 
 class NotificationTab extends Component {
+  componentDidMount() {
+    // Refresh notification tab 
+    console.log(`${DEBUG_KEY}: component did mount`);
+    if (!this.props.data || _.isEmpty(this.props.data.length)) {
+      this.props.refreshNotificationTab();
+    }
+  }
+
+  onEnter = () => {
+    console.log(`${DEBUG_KEY}: onEnter`);
+    this.props.refreshNotificationTab();
+  }
+
   keyExtractor = (item) => item._id;
 
   handleRefresh = () => {
-    this.props.refreshNotifications();
+    this.props.refreshNotificationTab();
   }
 
   renderSeeMore = (item) => {
-    const onPress = item.type === 'seemore'
-      ? () => this.props.seeMoreNotification()
-      : () => this.props.seeLessNotification();
+    // const onPress = item.type === 'seemore'
+    //   ? () => this.props.seeMoreNotification()
+    //   : () => this.props.seeLessNotification();
+    if (item.type !== 'seemore') return;
 
+    const onPress = item.notificationType === 'notification'
+      ? () => Actions.push('notificationList')
+      : () => Actions.push('notificationNeedList');
     return <SeeMoreButton text={item.text} onPress={onPress} />;
   }
 
@@ -65,7 +83,7 @@ class NotificationTab extends Component {
       return <NotificationNeedCard item={item} />;
     }
     if (item.type === 'empty') {
-      return <EmptyResult text='You have no notifications' />;
+      return <EmptyResult text='You have no notifications' textStyle={{ paddingTop: 260 }} />;
     }
     return (
       <NotificationCard item={item} />
@@ -87,11 +105,11 @@ class NotificationTab extends Component {
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <SearchBarHeader rightIcon='menu' />
         <FlatList
-          data={TestData}
+          data={dataToRender}
           renderItem={this.renderItem}
           keyExtractor={this.keyExtractor}
           onRefresh={this.handleRefresh}
-          refreshing={this.props.loading}
+          refreshing={this.props.refreshing}
           ListHeaderComponent={this.renderListHeader}
         />
       </View>
@@ -103,7 +121,7 @@ const TestData = [
   { _id: '0', type: 'header', text: 'Notifications' },
   { _id: '1' },
   { _id: '2' },
-  { _id: '3', type: 'seemore' },
+  { _id: '3', type: 'seemore', text: 'See More' },
   { _id: '4', type: 'header', text: 'Friend\'s Needs' },
   { _id: '5', type: 'need' }
 ];
@@ -111,7 +129,8 @@ const TestData = [
 const SeeMoreButton = (props) => {
   const { onPress, text } = props;
   return (
-    <TouchableOpacity activeOpacity={0.85}
+    <TouchableOpacity 
+      activeOpacity={0.85}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -154,7 +173,7 @@ const mapStateToProps = (state) => {
   const { needs, notifications } = state.notification;
 
   return {
-    refreshing: false,
+    refreshing: needs.refreshing || notifications.refreshing,
     data: [...notificationData, ...notificationNeedData],
     loading: needs.loading || notifications.loading
   };
@@ -184,7 +203,7 @@ const styles = {
 export default connect(
   mapStateToProps,
   {
-    refreshNotifications,
+    refreshNotificationTab,
     seeMoreNotification,
     seeLessNotification,
   }

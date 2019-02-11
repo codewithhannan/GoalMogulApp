@@ -23,7 +23,10 @@ import {
 
 import { refreshFeed } from '../../redux/modules/home/feed/actions';
 
-import { subscribeNotification } from '../../redux/modules/notification/NotificationActions';
+import { 
+  subscribeNotification, 
+  saveUnreadNotification 
+} from '../../redux/modules/notification/NotificationActions';
 
 // Assets
 import Logo from '../../asset/header/logo.png';
@@ -97,7 +100,7 @@ class Home extends Component {
 
   handleAppStateChange = (nextAppState) => {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-      console.log(`${DEBUG_KEY}: [handleAppStateChange] App has come to the foreground!`);
+      console.log(`${DEBUG_KEY}: [handleAppStateChange] App has become active!`);
 
       const { needRefreshActivity, needRefreshMastermind, user } = this.props;
       if (user === undefined || _.isEmpty(user) || !user.profile) {
@@ -111,6 +114,11 @@ class Home extends Component {
       if (needRefreshActivity) {
         this.props.refreshFeed();
       }
+    }
+
+    if (this.state.appState === 'active' && nextAppState === 'inactive') {
+      console.log(`${DEBUG_KEY}: [handleAppStateChange] App has become inactive!`);
+      this.props.saveUnreadNotification();
     }
 
     this.setState({
@@ -276,6 +284,7 @@ export default connect(
     homeSwitchTab,
     openCreateOverlay,
     subscribeNotification,
+    saveUnreadNotification,
     refreshGoals,
     refreshFeed
   },

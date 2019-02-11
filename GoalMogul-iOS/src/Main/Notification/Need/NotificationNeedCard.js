@@ -8,12 +8,12 @@ import {
 import timeago from 'timeago.js';
 
 // Components
-import ProfileImage from '../Common/ProfileImage';
-import Timestamp from '../Goal/Common/Timestamp';
+import ProfileImage from '../../Common/ProfileImage';
+import Timestamp from '../../Goal/Common/Timestamp';
 
 // Assets
-import bulb from '../../asset/utils/bulb.png';
-import forward from '../../asset/utils/forward.png';
+import bulb from '../../../asset/utils/bulb.png';
+import forward from '../../../asset/utils/right_arrow.png';
 
 // Constants
 const DEBUG_KEY = '[ UI NotificationNeedCard ]';
@@ -36,10 +36,19 @@ class NotificationCard extends React.Component {
   }
 
   renderProfileImage(item) {
+    const { goalRef } = item;
+
+    // TODO: user object (owner) sanity check
+    let imageUrl;
+    if (goalRef && goalRef.owner && goalRef.owner.profile) {
+      imageUrl = goalRef.owner.profile.image;
+    }
+
     return (
       <ProfileImage
-        imageStyle={{ height: 50, width: 50 }}
-        imageUrl={undefined}
+        imageStyle={{ height: 50, width: 50, borderRadius: 5 }}
+        defaultImageStyle={styles.defaultImageStyle}
+        imageUrl={imageUrl}
         rounded
         imageContainerStyle={styles.imageContainerStyle}
       />
@@ -47,22 +56,23 @@ class NotificationCard extends React.Component {
   }
 
   renderNeed(item) {
-    const { created } = item;
+    const { created, description, goalRef } = item;
+
     // TODO: use the actual content
-    const text = 'Introduction to some experts on mindfullness and meditation field.';
-    const name = 'Tim Draper';
+    const text = description;
+    const name = goalRef.owner.name;
 
     return (
       <View style={{ flex: 1, marginLeft: 10 }}>
         <Text
-          style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13, marginTop: 2 }}
+          style={{ flexWrap: 'wrap', color: 'black', fontSize: 13, marginTop: 2 }}
           numberOfLines={2}
           ellipsizeMode='tail'
         >
           <Text style={{ fontWeight: '700' }}>{name}{': '}</Text>
           {text}
         </Text>
-        <View style={{ marginBottom: 3 }}>
+        <View style={{ marginBottom: 3, marginTop: 1 }}>
           <Timestamp time={timeago().format(created)} />
         </View>
       </View>
@@ -72,7 +82,8 @@ class NotificationCard extends React.Component {
   renderActionIcons(item) {
     return (
       <View style={{ flexDirection: 'row', borderLeftWidth: 0.5, borderColor: '#dbdbdb' }}>
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity 
+          activeOpacity={0.85}
           style={{ ...styles.iconContainerStyle, backgroundColor: '#fdf9e5' }}
           onPress={() => this.handleOnSuggestion(item)}
         >
@@ -81,7 +92,8 @@ class NotificationCard extends React.Component {
             source={bulb}
           />
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity 
+          activeOpacity={0.85}
           style={{ ...styles.iconContainerStyle, backgroundColor: '#ebf9fe' }}
           onPress={() => this.handleOnOpen(item)}
         >
@@ -97,6 +109,10 @@ class NotificationCard extends React.Component {
   render() {
     const { item } = this.props;
     if (!item) return null;
+    const { description, goalRef } = item;
+    if (!description || !goalRef) {
+      console.warn(`${DEBUG_KEY}: no description or goalRef for need feed: `, item);
+    }
 
     return (
       <View style={styles.cardContainerStyle}>
@@ -112,11 +128,13 @@ const styles = {
   cardContainerStyle: {
     flexDirection: 'row',
     padding: 12,
+    paddingTop: 10,
+    paddingBottom: 10,
     alignItems: 'center'
   },
   imageContainerStyle: {
     borderWidth: 0.5,
-    padding: 1.5,
+    padding: 0.5,
     borderColor: 'lightgray',
     alignItems: 'center',
     borderRadius: 6,
@@ -133,9 +151,18 @@ const styles = {
   },
   iconStyle: {
     height: 16,
-    width: 16,
+    width: 18,
     borderRadius: 8,
   },
+  defaultImageStyle: {
+    width: 44, 
+    height: 48, 
+    borderRadius: 5, 
+    marginLeft: 3, 
+    marginRight: 3, 
+    marginTop: 1, 
+    marginBottom: 1
+  }
 };
 
 export default NotificationCard;
