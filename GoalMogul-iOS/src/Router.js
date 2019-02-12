@@ -263,6 +263,11 @@ class RouterComponent extends Component {
                         key="notification"
                         component={NotificationTab}
                         hideNavBar
+                        onEnter={() => {
+                          if (Actions.refs.notification !== undefined) {
+                            Actions.refs.notification.getWrappedInstance().refreshNotification();
+                          }
+                        }}
                       />
                       <Scene
                         key="notificationList"

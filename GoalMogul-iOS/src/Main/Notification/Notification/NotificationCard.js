@@ -26,8 +26,7 @@ import {
 // Constants
 const DEBUG_KEY = '[ UI NotificationCard ]';
 
-class NotificationCard extends React.Component {
-
+class NotificationCard extends React.PureComponent {
   handleNotificationCardOnPress = (item) => {
     const { parsedNoti, _id } = item;
     if (!parsedNoti || !parsedNoti.path) {
@@ -176,7 +175,7 @@ const styles = {
 const mapStateToProps = (state, props) => {
   const { data } = state.notification.unread;
   const { item } = props;
-  let read = false;
+  let read = true;
   if (item && item._id) {
     read = !data.some(a => a._id === item._id);
   }

@@ -19,7 +19,10 @@ import EmptyResult from '../Common/Text/EmptyResult';
 import {
   seeMoreNotification,
   seeLessNotification,
-  refreshNotificationTab
+  refreshNotificationTab,
+  fetchUnreadCount,
+  clearUnreadCount,
+  markAllNotificationAsRead
 } from '../../redux/modules/notification/NotificationTabActions';
 
 // Selectors
@@ -33,17 +36,38 @@ import { Actions } from 'react-native-router-flux';
 const DEBUG_KEY = '[ UI NotificationTab ]';
 
 class NotificationTab extends Component {
+  constructor(props) {
+    super(props);
+    this.setTimer = this.setTimer.bind(this);
+  }
+
   componentDidMount() {
     // Refresh notification tab 
     console.log(`${DEBUG_KEY}: component did mount`);
     if (!this.props.data || _.isEmpty(this.props.data.length)) {
       this.props.refreshNotificationTab();
     }
+    this.setTimer();
   }
 
-  onEnter = () => {
-    console.log(`${DEBUG_KEY}: onEnter`);
+  componentWillUnmount() {
+    if (this.timer !== undefined) {
+      clearInterval(this.timer);
+    }
+  }
+
+  setTimer() {
+    this.timer = setInterval(() => {
+      console.log(`${DEBUG_KEY}: [ Timer firing ] Fetching unread count.`);
+      this.props.fetchUnreadCount();
+    }, 3000);
+  }
+
+  refreshNotification() {
+    console.log(`${DEBUG_KEY}: refreshing notification`);
     this.props.refreshNotificationTab();
+    this.props.markAllNotificationAsRead();
+    this.props.clearUnreadCount();
   }
 
   keyExtractor = (item) => item._id;
@@ -206,5 +230,10 @@ export default connect(
     refreshNotificationTab,
     seeMoreNotification,
     seeLessNotification,
-  }
+    fetchUnreadCount,
+    clearUnreadCount,
+    markAllNotificationAsRead
+  },
+  null,
+  { withRef: true }
 )(NotificationTab);

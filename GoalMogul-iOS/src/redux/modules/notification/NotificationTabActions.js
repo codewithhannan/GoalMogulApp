@@ -83,15 +83,19 @@ const TestData = [
   }
 ];
 
-export const refreshNotifications = () => (dispatch, getState) => {
-  const { limit } = getState().notification.notifications;
+export const refreshNotifications = (params) => 
+(dispatch, getState) => {
+  const { limit, refreshing } = getState().notification.notifications;
 
-  dispatch({
-    type: NOTIFICATION_REFRESH,
-    payload: {
-      type: 'notifications'
-    }
-  });
+  if (refreshing) return; // Do not refresh again if already refreshing
+  if (params === undefined || params.showIndicator === undefined || params.showIndicator === true) {
+    dispatch({
+      type: NOTIFICATION_REFRESH,
+      payload: {
+        type: 'notifications'
+      }
+    });
+  }
 
   const onSuccess = (res) => {
     console.log(`${DEBUG_KEY}: refresh notifications succeed with res: `, res);
@@ -300,18 +304,37 @@ export const markAllNotificationAsRead = () => (dispatch, getState) => {
     });
 };
 
+// User opens notification tab and clears the notification count
+export const clearUnreadCount = () => (dispatch, getState) => {
+  dispatch({
+    type: NOTIFICATION_UNREAD_COUNT_UPDATE,
+    payload: {
+      data: 0
+    }
+  });
+};
+
 // Fetch notification unread count
 export const fetchUnreadCount = () => (dispatch, getState) => {
   const { token } = getState().user;
+  const { unreadCount } = getState().notification.unread;
 
   const onSuccess = (res) => {
     console.log(`${DEBUG_KEY}: fetch unread count success: `, res);
     dispatch({
       type: NOTIFICATION_UNREAD_COUNT_UPDATE,
       payload: {
-        data: res.data
+        data: res.count
       }
     });
+
+    console.log(`${DEBUG_KEY}: prev unreadCount: ${unreadCount}, new unreadCount: ${res.count},` +
+      `should refresh: ${(res.data > unreadCount)}`);
+    // refresh data quietly
+    if (res.count > unreadCount) {
+      console.log(`${DEBUG_KEY}: refresh notification quietly`);
+      refreshNotifications({ showIndicator: false })(dispatch, getState);
+    }
   };
 
   const onError = (err) => {
