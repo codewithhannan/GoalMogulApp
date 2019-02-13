@@ -39,6 +39,7 @@ class NotificationTab extends Component {
   constructor(props) {
     super(props);
     this.setTimer = this.setTimer.bind(this);
+    this.stopTimer = this.stopTimer.bind(this);
   }
 
   componentDidMount() {
@@ -51,23 +52,35 @@ class NotificationTab extends Component {
   }
 
   componentWillUnmount() {
+    // Remove timer before exiting to prevent app from crashing
+    this.stopTimer();
+  }
+
+  setTimer() {
+    this.stopTimer(); // Clear the previous timer if there is one
+
+    console.log(`${DEBUG_KEY}: [ Setting New Timer ] for refreshing unread count`);
+    this.timer = setInterval(() => {
+      console.log(`${DEBUG_KEY}: [ Timer firing ] Fetching unread count.`);
+      this.props.fetchUnreadCount();
+    }, 10000);
+  }
+
+  stopTimer() {
     if (this.timer !== undefined) {
       clearInterval(this.timer);
     }
   }
 
-  setTimer() {
-    this.timer = setInterval(() => {
-      console.log(`${DEBUG_KEY}: [ Timer firing ] Fetching unread count.`);
-      this.props.fetchUnreadCount();
-    }, 3000);
-  }
-
   refreshNotification() {
     console.log(`${DEBUG_KEY}: refreshing notification`);
+    // Stop timer before sending the mark all notification as read to prevent race condition
+    this.stopTimer();
     this.props.refreshNotificationTab();
-    this.props.markAllNotificationAsRead();
     this.props.clearUnreadCount();
+    this.props.markAllNotificationAsRead();
+    // Reset timer after we successfully mark all current notification as read
+    this.setTimer();
   }
 
   keyExtractor = (item) => item._id;
