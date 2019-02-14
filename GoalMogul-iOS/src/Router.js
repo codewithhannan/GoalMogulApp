@@ -81,7 +81,9 @@ import Tribe from './Main/Tribe/Tribe';
 import NotificationTab from './Main/Notification/NotificationTab';
 
 // Chat
-import ChatTab from './Main/Chat/ChatTab';
+import Chat from './Main/Chat/Chat';
+import CreateChatroomModal from './Main/Chat/Modals/CreateChatroomModal';
+import CreateDirectMessageModal from './Main/Chat/Chat/Modals/CreateDirectMessageModal';
 
 // Account
 import Setting from './Main/Setting/Setting';
@@ -282,7 +284,7 @@ class RouterComponent extends Component {
                       icon={TabIcon}
                       hideNavBar
                     >
-                      <Scene key="chat" component={ChatTab} initial />
+                      <Scene key="chat" component={Chat} initial />
                     </Stack>
 
                   </Tabs>
@@ -322,6 +324,16 @@ class RouterComponent extends Component {
           <Scene
             key="createPostModal"
             component={CreatePostModal}
+            hideNavBar
+          />
+          <Scene
+            key="createDirectMessageModal"
+            component={CreateDirectMessageModal}
+            hideNavBar
+          />
+          <Scene
+            key="createChatroomModal"
+            component={CreateChatroomModal}
             hideNavBar
           />
           <Stack key="createTribeStack" hideNavBar>
