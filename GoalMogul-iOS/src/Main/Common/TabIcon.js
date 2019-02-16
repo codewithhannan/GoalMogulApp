@@ -40,7 +40,7 @@ class TabIcon extends React.PureComponent {
         return (
           <View style={styles.iconContainerStyle}>
             {
-              !(notificationCount && notificationCount > 0)
+              (notificationCount && notificationCount > 0)
               ? (
                 <View style={styles.notificationCountContainerStyle} zIndex={2}>
                   <Text style={styles.notificationCountTextStyle}>{notificationCount}</Text>
