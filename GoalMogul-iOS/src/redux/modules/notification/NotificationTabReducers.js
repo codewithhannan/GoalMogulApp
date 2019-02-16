@@ -33,7 +33,8 @@ const INITIAL_STATE = {
   unread: {
     data: [], // Unread notification FIFO queue, limit up to 50 items
     limit: 50,
-    unreadCount: undefined // This is fetched through periodic task getting unread count
+    unreadCount: undefined, // This is fetched through periodic task getting unread count
+    shouldUpdateUnreadCount: undefined
   }
 };
 
@@ -224,9 +225,25 @@ export default (state = INITIAL_STATE, action) => {
     case NOTIFICATION_UNREAD_COUNT_UPDATE: {
       const { data } = action.payload;
       const newState = _.cloneDeep(state);
+      const shouldUpdateUnreadCount = _.get(newState, 'unread.shouldUpdateUnreadCount');
+      // User is currently on notification tab
+      if (!shouldUpdateUnreadCount && shouldUpdateUnreadCount !== undefined) {
+        return newState;
+      }
+      console.log(`${DEBUG_KEY}: new count is: ${data}`);
       return _.set(newState, 'unread.unreadCount', data);
     }
     
+    case 'Navigation/NAVIGATE': {
+      const newState = _.cloneDeep(state);
+      const { routeName } = action;
+      if (!routeName || routeName !== 'notificationTab') {
+        return _.set(newState, 'unread.shouldUpdateUnreadCount', true);
+      }
+
+      return _.set(newState, 'unread.shouldUpdateUnreadCount', false);
+    }
+
     // Reset notification on user logout
     case USER_LOG_OUT: {
       return { ...INITIAL_STATE };

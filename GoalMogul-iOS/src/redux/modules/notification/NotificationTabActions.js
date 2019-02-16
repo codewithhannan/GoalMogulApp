@@ -98,9 +98,9 @@ export const refreshNotifications = (params) =>
   }
 
   const onSuccess = (res) => {
-    console.log(`${DEBUG_KEY}: refresh notifications succeed with res: `, res);
-    // const data = res.notis;
-    const data = TestData;
+    console.log(`${DEBUG_KEY}: refresh notifications succeed with res length: `, res);
+    const data = res.notis;
+    // const data = TestData;
     dispatch({
       type: NOTIFICATION_REFRESH_SUCCESS,
       payload: {
@@ -328,10 +328,11 @@ export const fetchUnreadCount = () => (dispatch, getState) => {
       }
     });
 
-    console.log(`${DEBUG_KEY}: prev unreadCount: ${unreadCount}, new unreadCount: ${res.count},` +
-      `should refresh: ${(res.data > unreadCount)}`);
+    const preUnreadCount = unreadCount || 0;
+    console.log(`${DEBUG_KEY}: prev unreadCount: ${preUnreadCount}, new unreadCount: ${res.count},` +
+      `should refresh: ${(res.count > unreadCount)}`);
     // refresh data quietly
-    if (res.count > unreadCount) {
+    if (res.count > preUnreadCount) {
       console.log(`${DEBUG_KEY}: refresh notification quietly`);
       refreshNotifications({ showIndicator: false })(dispatch, getState);
     }

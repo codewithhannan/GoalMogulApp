@@ -68,6 +68,7 @@ class NotificationTab extends Component {
 
   stopTimer() {
     if (this.timer !== undefined) {
+      console.log(`${DEBUG_KEY}: [ Timer clearing ]`);
       clearInterval(this.timer);
     }
   }
