@@ -70,7 +70,7 @@ class Menu extends React.PureComponent {
           style={styles.buttonStyle}
         >
           <Image source={TutorialIcon} style={styles.iconStyle} />
-          <Text style={styles.titleTextStyle}>My Tutorials</Text>
+          <Text style={styles.titleTextStyle}>Tutorial</Text>
         </DelayedButton>
       </View>
     );
