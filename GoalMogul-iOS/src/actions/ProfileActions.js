@@ -126,8 +126,8 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
     resetFilterType(`${tab}`)(dispatch, getState);
   }
 
-  console.log(`${DEBUG_KEY}: pre for request`);
-  Actions.profile();
+  // console.log(`${DEBUG_KEY}: pre for request`);
+  Actions.push('profile', { pageId: new Date() });
 
   const { token } = getState().user;
   const self = getState().profile.userId.toString() === getState().user.userId.toString();
