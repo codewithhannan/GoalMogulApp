@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Dimensions, FlatList } from 'react-native';
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger,
-  renderers
+  renderers,
 } from 'react-native-popup-menu';
 import { CheckBox } from 'react-native-elements';
 
@@ -13,6 +13,11 @@ import { CheckBox } from 'react-native-elements';
 import dropDown from '../../asset/utils/dropDown.png';
 
 import { switchCase } from '../../redux/middleware/utils';
+
+import {
+  SORT_BY_OPTIONS,
+  CATEGORY_OPTIONS
+} from '../../Utils/Constants';
 
 const { Popover } = renderers;
 const { width } = Dimensions.get('window');
@@ -71,23 +76,17 @@ class GoalFilterBar extends Component {
             </View>
           </MenuTrigger>
           <MenuOptions customStyles={styles.menuOptionsStyles}>
-            <MenuOption
-              text='Date Created'
-              value='created'
+            <FlatList
+              data={SORT_BY_OPTIONS}
+              renderItem={({ item }) => {
+                const { value, text } = item;
+                return (
+                    <MenuOption value={value} text={text} />
+                );
+              }}
+              keyExtractor={(item, index) => index.toString()}
+              style={{ height: 37 * SORT_BY_OPTIONS.length }}
             />
-            <MenuOption
-              text='Last Updated'
-              value='updated'
-            />
-            <MenuOption
-              text='Date Shared'
-              value='shared'
-            />
-            <MenuOption
-              text='Priority'
-              value='priority'
-            />
-
           </MenuOptions>
         </Menu>
         </View>
@@ -147,49 +146,16 @@ class GoalFilterBar extends Component {
             </View>
           </MenuTrigger>
           <MenuOptions customStyles={styles.menuOptionsStyles}>
-            <MenuOption
-              text='All'
-              value='All'
-            />
-            <MenuOption
-              text='General'
-              value='General'
-            />
-            <MenuOption
-              text='Learning/Education'
-              value='Learning/Education'
-            />
-            <MenuOption
-              text='Career/Business'
-              value='Career/Business'
-            />
-            <MenuOption
-              text='Financial'
-              value='Financial'
-            />
-            <MenuOption
-              text='Spiritual'
-              value='Spiritual'
-            />
-            <MenuOption
-              text='Family/Personal'
-              value='Family/Personal'
-            />
-            <MenuOption
-              text='Physical'
-              value='Physical'
-            />
-            <MenuOption
-              text='Charity/Philanthropy'
-              value='Charity/Philanthropy'
-            />
-            <MenuOption
-              text='Travel'
-              value='Travel'
-            />
-            <MenuOption
-              text='Things'
-              value='Things'
+            <FlatList
+              data={CATEGORY_OPTIONS}
+              renderItem={({ item }) => {
+                const { value, text } = item;
+                return (
+                    <MenuOption value={value} text={text} />
+                );
+              }}
+              keyExtractor={(item, index) => index.toString()}
+              style={{ height: Math.min(37 * CATEGORY_OPTIONS.length, 250) }}
             />
           </MenuOptions>
         </Menu>

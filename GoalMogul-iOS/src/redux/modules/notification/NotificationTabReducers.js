@@ -33,7 +33,8 @@ const INITIAL_STATE = {
   unread: {
     data: [], // Unread notification FIFO queue, limit up to 50 items
     limit: 50,
-    unreadCount: undefined // This is fetched through periodic task getting unread count
+    unreadCount: undefined, // This is fetched through periodic task getting unread count
+    shouldUpdateUnreadCount: undefined
   }
 };
 
@@ -175,13 +176,14 @@ export default (state = INITIAL_STATE, action) => {
 
     // Mark all notification as read. This is used for server side. No need to mark on our end.
     case NOTIFICATION_MARK_ALL_READ: {
-      const newState = _.cloneDeep(state);
+      let newState = _.cloneDeep(state);
       const oldData = _.get(newState, 'notifications.data');
       const newData = oldData.map(d => ({
         ...d,
         read: true
       }));
-      return _.set(newState, 'notifications.data', newData);
+      newState = _.set(newState, 'notifications.data', newData);
+      return _.set(newState, 'unread.unreadCount', 0);
     }
 
     case NOTIFICATION_DELETE: {
@@ -224,9 +226,25 @@ export default (state = INITIAL_STATE, action) => {
     case NOTIFICATION_UNREAD_COUNT_UPDATE: {
       const { data } = action.payload;
       const newState = _.cloneDeep(state);
+      const shouldUpdateUnreadCount = _.get(newState, 'unread.shouldUpdateUnreadCount');
+      // User is currently on notification tab
+      if (!shouldUpdateUnreadCount && shouldUpdateUnreadCount !== undefined) {
+        return newState;
+      }
+      console.log(`${DEBUG_KEY}: new count is: ${data}`);
       return _.set(newState, 'unread.unreadCount', data);
     }
     
+    case 'Navigation/NAVIGATE': {
+      const newState = _.cloneDeep(state);
+      const { routeName } = action;
+      if (!routeName || routeName !== 'notificationTab') {
+        return _.set(newState, 'unread.shouldUpdateUnreadCount', true);
+      }
+
+      return _.set(newState, 'unread.shouldUpdateUnreadCount', false);
+    }
+
     // Reset notification on user logout
     case USER_LOG_OUT: {
       return { ...INITIAL_STATE };

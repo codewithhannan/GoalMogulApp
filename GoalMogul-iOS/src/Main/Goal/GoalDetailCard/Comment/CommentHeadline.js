@@ -22,7 +22,7 @@ import badge from '../../../../asset/utils/badge.png';
  */
 const CommentHeadline = (props) => {
   // TODO: format time
-  const { item, caretOnPress, goalRef, isCommentOwner } = props;
+  const { item, caretOnPress, goalRef, isCommentOwner, onNamePress } = props;
   const { owner, commentType, suggestion, created, maybeIsSubscribed } = item;
   const timeStamp = (created === undefined || created.length === 0)
     ? new Date() : created;
@@ -67,7 +67,11 @@ const CommentHeadline = (props) => {
     default:
       return (
         <View style={styles.containerStyle}>
-          <Name text={owner.name} textStyle={{ fontSize: 12 }} />
+          <Name 
+            text={owner.name} 
+            textStyle={{ fontSize: 12 }} 
+            onPress={onNamePress}  
+          />
           <UserBanner user={owner} />
           <Timestamp time={timeago().format(timeStamp)} />
             <View style={styles.caretContainer}>

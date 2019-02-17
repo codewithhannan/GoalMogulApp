@@ -31,7 +31,7 @@ const DEBUG_KEY = '[ UI Profile ]';
 
 class Profile extends Component {
   componentDidMount() {
-    console.log(`${DEBUG_KEY}: mounting Profile`);
+    console.log(`${DEBUG_KEY}: mounting Profile with pageId: ${this.props.pageId}`);
   }
 
   handleCreateGoal = () => {

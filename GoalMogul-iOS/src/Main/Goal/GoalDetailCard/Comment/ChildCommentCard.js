@@ -108,6 +108,11 @@ class ChildCommentCard extends Component {
             reportType={reportType}
             isCommentOwner={isCommentOwner}
             item={item}
+            onNamePress={() => {
+              if (item && item.owner && item.owner._id) {
+                this.props.openProfile(item.owner._id);
+              }
+            }}
             goalRef={goalRef}
             caretOnPress={(type) => {
               console.log('Comment options type is: ', type);

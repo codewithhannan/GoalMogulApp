@@ -19,7 +19,10 @@ import EmptyResult from '../Common/Text/EmptyResult';
 import {
   seeMoreNotification,
   seeLessNotification,
-  refreshNotificationTab
+  refreshNotificationTab,
+  fetchUnreadCount,
+  clearUnreadCount,
+  markAllNotificationAsRead
 } from '../../redux/modules/notification/NotificationTabActions';
 
 // Selectors
@@ -33,17 +36,64 @@ import { Actions } from 'react-native-router-flux';
 const DEBUG_KEY = '[ UI NotificationTab ]';
 
 class NotificationTab extends Component {
+  constructor(props) {
+    super(props);
+    this.setTimer = this.setTimer.bind(this);
+    this.stopTimer = this.stopTimer.bind(this);
+  }
+
   componentDidMount() {
     // Refresh notification tab 
     console.log(`${DEBUG_KEY}: component did mount`);
     if (!this.props.data || _.isEmpty(this.props.data.length)) {
       this.props.refreshNotificationTab();
     }
+    this.setTimer();
   }
 
-  onEnter = () => {
-    console.log(`${DEBUG_KEY}: onEnter`);
+  componentDidUpdate(prevProps) {
+    // When notification finishes refreshing and 
+    // user is at the notification tab. 
+    // Then send mark all as read
+    const justFinishRefreshing = prevProps.refreshing === true && this.props.refreshing === false;
+    const userOnNotificationPage = this.props.shouldUpdateUnreadCount === false;
+
+    if (justFinishRefreshing && userOnNotificationPage) {
+      this.props.markAllNotificationAsRead();
+    }
+  }
+
+  componentWillUnmount() {
+    // Remove timer before exiting to prevent app from crashing
+    this.stopTimer();
+  }
+
+  setTimer() {
+    this.stopTimer(); // Clear the previous timer if there is one
+
+    console.log(`${DEBUG_KEY}: [ Setting New Timer ] for refreshing unread count`);
+    this.timer = setInterval(() => {
+      console.log(`${DEBUG_KEY}: [ Timer firing ] Fetching unread count.`);
+      this.props.fetchUnreadCount();
+    }, 10000);
+  }
+
+  stopTimer() {
+    if (this.timer !== undefined) {
+      console.log(`${DEBUG_KEY}: [ Timer clearing ]`);
+      clearInterval(this.timer);
+    }
+  }
+
+  refreshNotification() {
+    console.log(`${DEBUG_KEY}: refreshing notification`);
+    // Stop timer before sending the mark all notification as read to prevent race condition
+    this.stopTimer();
     this.props.refreshNotificationTab();
+    this.props.clearUnreadCount();
+    this.props.markAllNotificationAsRead();
+    // Reset timer after we successfully mark all current notification as read
+    this.setTimer();
   }
 
   keyExtractor = (item) => item._id;
@@ -170,12 +220,14 @@ const TitleComponent = (props) => {
 const mapStateToProps = (state) => {
   const notificationData = getNotifications(state);
   const notificationNeedData = getNotificationNeeds(state);
-  const { needs, notifications } = state.notification;
+  const { needs, notifications, unread } = state.notification;
+  const { shouldUpdateUnreadCount } = unread;
 
   return {
     refreshing: needs.refreshing || notifications.refreshing,
     data: [...notificationData, ...notificationNeedData],
-    loading: needs.loading || notifications.loading
+    loading: needs.loading || notifications.loading,
+    shouldUpdateUnreadCount
   };
 };
 
@@ -206,5 +258,10 @@ export default connect(
     refreshNotificationTab,
     seeMoreNotification,
     seeLessNotification,
-  }
+    fetchUnreadCount,
+    clearUnreadCount,
+    markAllNotificationAsRead
+  },
+  null,
+  { withRef: true }
 )(NotificationTab);

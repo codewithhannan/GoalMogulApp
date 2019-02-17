@@ -123,6 +123,11 @@ class CommentUserDetail extends Component {
             item={item}
             isCommentOwner={isCommentOwner}
             goalRef={goalRef}
+            onNamePress={() => {
+              if (item && item.owner && item.owner._id) {
+                this.props.openProfile(item.owner._id);
+              }
+            }}
             caretOnPress={(type) => {
               console.log('Comment options type is: ', type);
               if (type === 'Report') {
