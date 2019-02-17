@@ -51,6 +51,18 @@ class NotificationTab extends Component {
     this.setTimer();
   }
 
+  componentDidUpdate(prevProps) {
+    // When notification finishes refreshing and 
+    // user is at the notification tab. 
+    // Then send mark all as read
+    const justFinishRefreshing = prevProps.refreshing === true && this.props.refreshing === false;
+    const userOnNotificationPage = this.props.shouldUpdateUnreadCount === false;
+
+    if (justFinishRefreshing && userOnNotificationPage) {
+      this.props.markAllNotificationAsRead();
+    }
+  }
+
   componentWillUnmount() {
     // Remove timer before exiting to prevent app from crashing
     this.stopTimer();
@@ -208,12 +220,14 @@ const TitleComponent = (props) => {
 const mapStateToProps = (state) => {
   const notificationData = getNotifications(state);
   const notificationNeedData = getNotificationNeeds(state);
-  const { needs, notifications } = state.notification;
+  const { needs, notifications, unread } = state.notification;
+  const { shouldUpdateUnreadCount } = unread;
 
   return {
     refreshing: needs.refreshing || notifications.refreshing,
     data: [...notificationData, ...notificationNeedData],
-    loading: needs.loading || notifications.loading
+    loading: needs.loading || notifications.loading,
+    shouldUpdateUnreadCount
   };
 };
 
