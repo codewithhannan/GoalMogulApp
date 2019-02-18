@@ -67,7 +67,8 @@ class MyNeeds extends Component {
 
   renderItem = ({ item }) => {
     // TODO: render item
-    return <ProfileNeedCard item={item} />;
+    // Pass down the pageId from Profile component to ProfileNeedCard
+    return <ProfileNeedCard item={item} pageId={this.props.pageId} />;
   }
 
   render() {

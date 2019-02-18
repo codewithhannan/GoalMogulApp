@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import timeago from 'timeago.js';
 import R from 'ramda';
+import _ from 'lodash';
 
 // Component
 import Headline from '../Common/Headline';
@@ -43,6 +44,8 @@ import {
 import {
   deleteGoal,
 } from '../../../actions';
+
+import { PAGE_TYPE_MAP } from '../../../redux/middleware/utils';
 
 import {
   subscribeEntityNotification,
@@ -105,11 +108,13 @@ class NeedCard extends Component {
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
 
+    const pageId = _.get(PAGE_TYPE_MAP, 'goalFeed');
+
     const caret = {
       self: {
         options: [{ option: 'Delete' }],
         onPress: () => {
-          this.props.deleteGoal(_id);
+          this.props.deleteGoal(_id, pageId);
         }
       },
       others: {

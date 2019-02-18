@@ -181,7 +181,7 @@ class GoalDetailSection extends React.PureComponent {
             : () => this.props.markGoalAsComplete(_id, true);
 
           if (val === 'Delete') {
-            this.props.deleteGoal(_id);
+            this.props.deleteGoal(_id, this.props.pageId); // TODO: profile reducer redesign to change here.
             Actions.pop();
             return;
           }
