@@ -39,6 +39,8 @@ import {
   deleteGoal,
 } from '../../../actions';
 
+import { PAGE_TYPE_MAP } from '../../../redux/middleware/utils';
+
 import {
   subscribeEntityNotification,
   unsubscribeEntityNotification
@@ -269,11 +271,13 @@ class GoalCard extends React.PureComponent {
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
 
+    const pageId = _.get(PAGE_TYPE_MAP, 'goalFeed');
+
     const caret = {
       self: {
         options: [{ option: 'Delete' }],
         onPress: () => {
-          return this.props.deleteGoal(_id);
+          return this.props.deleteGoal(_id, pageId);
         },
         shouldExtendOptionLength: false
       },

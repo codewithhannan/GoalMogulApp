@@ -50,7 +50,8 @@ class MyGoals extends Component {
   }
 
   renderItem = ({ item }) => {
-    return <ProfileGoalCard item={item} />;
+    // Pass down the pageId from the profile component to the ProfileGoalCard
+    return <ProfileGoalCard item={item} pageId={this.props.pageId} />;
   }
 
   renderListFooter() {

@@ -130,12 +130,23 @@ export const fetchUserProfile = (userId, pageId) => (dispatch, getState) => {
 };
 
 export const closeProfile = (userId, pageId) => (dispatch, getState) => {
+  // Obtain the list of goals and posts that are referenced by this profile page
+  const user = _.get(getState().users, `${userId}`);
+  let goalList = [];
+  let postList = [];
+  if (_.has(user, `${pageId}`)) {
+    goalList = _.get(user, `${pageId}.goals.data`);
+    postList = _.get(user, `${pageId}.posts.data`);
+  }
+  
   Actions.pop();
   dispatch({
     type: PROFILE_CLOSE_PROFILE,
     payload: {
       userId,
-      pageId
+      pageId,
+      goalList,
+      postList
     }
   });
 };
@@ -632,8 +643,8 @@ const loadOneTab = (tab, skip, limit, filter, token, onSuccess, onError) => {
 /**
  * Delete a goal in profile tab
  */
-// TODO: profile reducer redesign to change here
-export const deleteGoal = (goalId) => (dispatch, getState) => {
+// TODO: profile reducer redesign to change here. Add pageId
+export const deleteGoal = (goalId, pageId) => (dispatch, getState) => {
   const { userId } = getState().user;
   deleteItem(
     {
@@ -649,7 +660,8 @@ export const deleteGoal = (goalId) => (dispatch, getState) => {
         type: PROFILE_GOAL_DELETE_SUCCESS,
         payload: {
           goalId,
-          userId
+          userId,
+          pageId
         }
       });
     },

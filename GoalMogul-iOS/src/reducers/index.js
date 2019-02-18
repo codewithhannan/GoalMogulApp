@@ -9,6 +9,7 @@ import AuthReducers from './AuthReducers';
 import RegReducers from './RegReducers';
 import CameraRollReducers from './CameraRollReducers';
 import User from './User';
+import Users from '../redux/modules/User/Users';
 import Profile from './Profile';
 import Setting from './Setting';
 import NavigationReducers from './NavigationReducers';
@@ -16,6 +17,7 @@ import MeetReducers from './MeetReducers';
 import Home from './Home';
 import Search from '../redux/modules/search/Search';
 import GoalDetailReducers from './GoalDetailReducers';
+import Goals from '../redux/modules/goal/Goals';
 import CreateGoal from '../redux/modules/goal/CreateGoal';
 import PostReducers from '../redux/modules/feed/post/PostReducers';
 import ShareReducers from '../redux/modules/feed/post/ShareReducers';
@@ -53,6 +55,7 @@ const reducers = combineReducers({
   registration: RegReducers,
   cameraRoll: CameraRollReducers,
   user: User,
+  users: Users,
   profile: Profile,
   form: formReducer,
   setting: Setting,
@@ -61,6 +64,7 @@ const reducers = combineReducers({
   home: Home,
   search: Search,
   goalDetail: GoalDetailReducers,
+  goals: Goals,
   createGoal: CreateGoal,
   postDetail: PostReducers,
   shareDetail: ShareReducers,

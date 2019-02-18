@@ -173,6 +173,8 @@ export const PAGE_TYPE_MAP = {
   post: 'POST',
   event: 'EVENT',
   tribe: 'TRIBE',
+  goalFeed: 'GOAL_FEED',
+  activity: 'ACTIVITY'
 };
 
 export const constructPageId = (type, DEBUG_KEY = '[ Utils constructPageId ]') => {
