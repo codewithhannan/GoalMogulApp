@@ -252,6 +252,21 @@ class RouterComponent extends Component {
                       <Scene key="requestTabView" component={RequestTabView} />
                       <Scene key="discoverTabView" component={DiscoverTabView} />
                       <Scene key="friendInvitationView" component={FriendInvitationView} />
+                      <Scene key="meetTab_goal" component={GoalDetailCard} />
+                      <Scene key="meetTab_post" component={PostDetailCard} />
+                      <Scene key="meetTab_share" component={ShareDetailCard} />
+                      <Scene key="meetTab_profile" component={Profile} />
+                      <Scene key="meetTab_profileDetail" component={ProfileDetail} />
+                      <Scene key="meetTab_setting" component={Setting} />
+                      <Scene key="meetTab_email" component={Email} />
+                      <Scene key="meetTab_editEmailForm" component={EditEmailForm} />
+                      <Scene key="meetTab_editPasswordForm" component={EditPasswordForm} />
+                      <Scene key="meetTab_phone" component={Phone} path='/phone/verification' />
+                      <Scene key="meetTab_addPhoneNumberForm" component={AddPhoneNumberForm} />
+                      <Scene key="meetTab_editPhoneNumberForm" component={EditPhoneNumberForm} />
+                      <Scene key="meetTab_friendsBlocked" component={FriendsBlocked} />
+                      <Scene key="meetTab_privacy" component={Privacy} />
+                      <Scene key="meetTab_friendsSetting" component={FriendsSetting} />
                     </Stack>
 
                     <Stack

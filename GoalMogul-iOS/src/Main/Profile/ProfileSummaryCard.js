@@ -30,11 +30,13 @@ class ProfileSummaryCard extends Component {
 
   onButtonClicked = (_id) => {
     console.log(`${DEBUG_KEY} open profile detail for id: ${_id}`);
-    this.props.openProfileDetail();
+    // TODO: profile reducer redesign to change here
+    this.props.openProfileDetail(this.props.userId, this.props.pageId);
   }
 
   handleOpenProfileDetail() {
-    this.props.openProfileDetail();
+    // TODO: profile reducer redesign to change here
+    this.props.openProfileDetail(this.props.userId, this.props.pageId);
   }
 
   renderStats() {
@@ -204,6 +206,7 @@ const styles = {
 };
 
 const mapStateToProps = state => {
+  // TODO: profile reducer redesign to change here
   const { userId, user, mutualFriends, loading } = state.profile;
   const friendsCount = state.meet.friends.count;
   const isSelf = state.profile.userId.toString() === state.user.userId.toString();

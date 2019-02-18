@@ -178,7 +178,7 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case PROFILE_OPEN_PROFILE: {
-      const userId = action.payload;
+      const { userId, pageId } = action.payload;
       let newState;
       if (userId === state.userId || userId === state.user._id) {
         newState = _.cloneDeep(state);
@@ -195,26 +195,32 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, loading: false };
 
     case PROFILE_FETCHING_SUCCESS: {
-      return { ...state, user: action.payload, loading: false };
+      let newState = _.cloneDeep(state);
+      const { user } = action.payload;
+      newState = _.set(newState, 'loading', false);
+      return _.set(newState, 'user', user);
     }
 
     case PROFILE_IMAGE_UPLOAD_SUCCESS: {
       let user = _.cloneDeep(state.user);
-      user.profile.tmpImage = action.payload;
+      user.profile.tmpImage = action.payload.data;
       return { ...state, user };
     }
 
-    case PROFILE_SUBMIT_UPDATE:
-      return { ...state, uploading: true };
+    case PROFILE_SUBMIT_UPDATE: {
+      return { ...state, uploading: true }; 
+    }
 
     case PROFILE_UPDATE_SUCCESS: {
-      return { ...state, user: action.payload, uploading: false };
+      const { user } = action.payload;
+      return { ...state, user, uploading: false };
     }
 
     // Update navigation state when new tab is selected
     case PROFILE_SWITCH_TAB: {
       const newNavigationState = { ...state.navigationState };
-      newNavigationState.index = action.payload;
+      const { index } = action.payload;
+      newNavigationState.index = index;
 
       return {
         ...state,
@@ -248,17 +254,22 @@ export default (state = INITIAL_STATE, action) => {
 
     case PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE: {
       const newState = _.cloneDeep(state);
+      const { userId, data } = action.payload;
       let newMutualFriends = _.get(newState, 'mutualFriends');
 
-      newMutualFriends = _.set(newMutualFriends, 'count', action.payload);
+      const currentUser = _.get(newState, 'user');
+      if (!currentUser || currentUser._id !== userId) return newState;
+
+      newMutualFriends = _.set(newMutualFriends, 'count', data);
       return _.set(newState, 'mutualFriends', newMutualFriends);
     }
 
     // profile fetch friendship request done
     case PROFILE_FETCH_FRIENDSHIP_DONE: {
       let newFriendship = _.cloneDeep(state.friendship);
-      if (action.payload !== undefined && action.payload !== null) {
-        newFriendship = action.payload;
+      const { data } = action.payload;
+      if (data !== undefined && data !== null) {
+        newFriendship = data;
       }
       return { ...state, friendship: newFriendship };
     }
@@ -410,13 +421,15 @@ export default (state = INITIAL_STATE, action) => {
     case PROFILE_GOAL_DELETE_SUCCESS: {
       const newState = _.cloneDeep(state);
       const oldData = newState.goals.data;
-      return _.set(newState, 'goals.data', removeItem(action.payload, oldData));
+      const { goalId } = action.payload;
+      return _.set(newState, 'goals.data', removeItem(goalId, oldData));
     }
 
     case PROFILE_POST_DELETE_SUCCESS: {
       const newState = _.cloneDeep(state);
       const oldData = newState.posts.data;
-      return _.set(newState, 'posts.data', removeItem(action.payload, oldData));
+      const { postId } = action.payload;
+      return _.set(newState, 'posts.data', removeItem(postId, oldData));
     }
 
     // Update the status of a step within a goal
@@ -560,7 +573,7 @@ function arrayUnique(array) {
   return a;
 }
 
-function updatePriorities(priorities, newPriority) {
+export function updatePriorities(priorities, newPriority) {
   let newPriorities = [];
   const oldPriorities = priorities === '' ? [] : priorities.split(',').sort();
 

@@ -4,6 +4,7 @@ import Expo, { WebBrowser, Permissions, Notifications } from 'expo';
 import { Alert } from 'react-native';
 
 import { api as API } from '../redux/middleware/api';
+import { componentKeyByTab } from '../redux/middleware/utils';
 
 import {
   SETTING_OPEN_SETTING,
@@ -27,13 +28,13 @@ import {
 const DEBUG_KEY = '[ Setting Action ]';
 const BASE_ROUTE = 'secure/user/settings';
 
-export const openSetting = () => {
-  return (dispatch) => {
-    dispatch({
-      type: SETTING_OPEN_SETTING
-    });
-    Actions.setting();
-  };
+export const openSetting = () => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+  const componentKeyToOpen = componentKeyByTab(tab, 'setting');
+  dispatch({
+    type: SETTING_OPEN_SETTING
+  });
+  Actions.push(`${componentKeyToOpen}`);
 };
 
 // When setting tab bar on press
@@ -80,6 +81,8 @@ export const onUpdateEmailSubmit = (values, callback) => {
         email: values.email
       })
     };
+    const { tab } = getState().navigation;
+    const componentToPopTo = componentKeyByTab(tab, 'setting');
     const message = await fetch(url, headers)
       .then((res) => res.json())
       .then((res) => {
@@ -89,7 +92,7 @@ export const onUpdateEmailSubmit = (values, callback) => {
             type: SETTING_EMAIL_UPDATE_SUCCESS,
             payload: values.email
           });
-          Actions.popTo('setting');
+          Actions.popTo(`${componentToPopTo}`); // It was setting
           if (callback) {
             callback('Your email has been updated. We\'ll send you a verification email shortly.');
           }

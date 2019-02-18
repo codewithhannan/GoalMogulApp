@@ -49,7 +49,8 @@ export const submitGoal = (
   {
     needOpenProfile,
     needRefreshProfile
-  }
+  },
+  pageId // TODO: profile reducer redesign to change here
 ) => (dispatch, getState) => {
   const { token } = getState().user;
   const { tab } = getState().navigation;
@@ -85,8 +86,9 @@ export const submitGoal = (
     // );
     if (needOpenProfile === false) {
       if (needRefreshProfile) {
-        selectProfileTab(0)(dispatch, getState);
-        handleTabRefresh('goals')(dispatch, getState);
+        // User is already on profile page thus there should be pageId
+        selectProfileTab(0, userId, pageId)(dispatch, getState);
+        handleTabRefresh('goals', userId, pageId)(dispatch, getState);
       }
       return;
     }

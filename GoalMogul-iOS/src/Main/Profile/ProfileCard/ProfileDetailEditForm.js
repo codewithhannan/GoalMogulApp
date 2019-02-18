@@ -392,66 +392,12 @@ ProfileDetailEditForm = reduxForm({
   enableReinitialize: true
 })(ProfileDetailEditForm);
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
+  const { userId } = props;
   return {
     uploading: state.profile.uploading,
-    initialValues: state.profile.user
+    initialValues: state.profile.user // TODO: profile reducer redesign to change here.
   };
-};
-
-/**
- * This class to verify the idea of onNextPress
- *
- */
-class TestInputField extends Component {
-
-  focus = () => {
-    this.input.focus();
-  }
-
-  render() {
-     const {
-      input: { onChange, onFocus, ...restInput },
-      label,
-      secure,
-      limitation,
-      multiline,
-      disabled,
-      clearButtonMode,
-      enablesReturnKeyAutomatically,
-      forFocus,
-      onEndEditing,
-      autoCorrect,
-      meta: { error },
-      returnKeyType,
-      ...custom
-    } = this.props;
-
-    return (
-      <View style={styles.inputContainerStyle}>
-        <TextField
-          ref={ref => this.input = ref}
-          label={label}
-          title={custom.title}
-          autoCapitalize={'none'}
-          autoCorrect={autoCorrect || true}
-          onChangeText={onChange}
-          error={error}
-          enablesReturnKeyAutomatically={enablesReturnKeyAutomatically}
-          returnKeyType={returnKeyType || 'done'}
-          secureTextEntry={secure}
-          characterRestriction={limitation}
-          multiline={multiline}
-          clearButtonMode={clearButtonMode}
-          onFocus={forFocus}
-          disabled={disabled}
-          onSubmitEditing={onEndEditing}
-          {...custom}
-          {...restInput}
-        />
-      </View>
-    );
-  }
 };
 
 export default connect(

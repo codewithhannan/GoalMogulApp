@@ -13,8 +13,12 @@ import SettingCard from '../SettingCard';
 // Actions
 import { fetchProfile, logout } from '../../../actions';
 
+// Utils
+import { componentKeyByTab } from '../../../redux/middleware/utils';
+
 class Account extends Component {
   render() {
+    const { tab } = this.props;
     return (
       <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
         <ScrollView>
@@ -22,25 +26,37 @@ class Account extends Component {
             title="Email address"
             key="emailaddress"
             explanation="Add or remove email addresses"
-            onPress={() => this.props.fetchProfile(this.props.userId, Actions.email())}
+            onPress={() => {
+              const componentKeyToOpen = componentKeyByTab(tab, 'email');
+              this.props.fetchProfile(this.props.userId, Actions.push(`${componentKeyToOpen}`));
+            }}
           />
           <SettingCard
             title="Phone numbers"
             key="phonenumbers"
             explanation="Manage your phone numbers"
-            onPress={() => Actions.phone()}
+            onPress={() => {
+              const componentKeyToOpen = componentKeyByTab(tab, 'phone');
+              Actions.push(`${componentKeyToOpen}`);
+            }}
           />
           <SettingCard
             title="Password"
             key="password"
             explanation="Update your passwords"
-            onPress={() => Actions.editPasswordForm()}
+            onPress={() => {
+              const componentKeyToOpen = componentKeyByTab(tab, 'editPasswordForm');
+              Actions.push(`${componentKeyToOpen}`);
+            }}
           />
           <SettingCard
             title="Blocked Users"
             key="blockedusers"
             explanation="Manage blocked users"
-            onPress={() => Actions.friendsBlocked()}
+            onPress={() => {
+              const componentKeyToOpen = componentKeyByTab(tab, 'friendsBlocked');
+              Actions.push(`${componentKeyToOpen}`);
+            }}
           />
           <SettingCard
             title="Log out"
@@ -62,9 +78,11 @@ class Account extends Component {
 
 const mapStateToProps = state => {
   const { userId } = state.user;
+  const { tab } = state.navigation;
 
   return {
-    userId
+    userId,
+    tab
   };
 };
 

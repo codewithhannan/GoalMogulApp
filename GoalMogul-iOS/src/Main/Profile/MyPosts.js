@@ -19,6 +19,7 @@ import {
 
 // tab key
 const key = 'posts';
+const DEBUG_KEY = '[ UI Profile Posts ]';
 
 /* TODO: delete the test data */
 const testData = [
@@ -121,23 +122,31 @@ const testData = [
 ];
 
 class MyPosts extends Component {
+  constructor(props) {
+    super(props);
+    this.handleOnLoadMore = this.handleOnLoadMore.bind(this);
+    this.handleRefresh = this.handleRefresh.bind(this);
+  }
 
   _keyExtractor = (item) => item._id
 
   handleRefresh = () => {
-    console.log('Refreshing tab: ', key);
-    this.props.handleTabRefresh(key);
+    const { userId, pageId } = this.props;
+    console.log(`${DEBUG_KEY}: refreshing tab`, key);
+    this.props.handleTabRefresh(key, userId, pageId);
   }
 
   handleOnLoadMore = () => {
-    this.props.handleProfileTabOnLoadMore(key);
+    const { userId, pageId } = this.props;
+    this.props.handleProfileTabOnLoadMore(key, userId, pageId);
   }
 
   /**
    * @param type: ['sortBy', 'orderBy', 'categories', 'priorities']
    */
   handleOnMenuChange = (type, value) => {
-    this.props.changeFilter(key, type, value);
+    const { userId, pageId } = this.props;
+    this.props.changeFilter(key, type, value, { userId, pageId });
   }
 
   renderListFooter() {
@@ -177,7 +186,7 @@ class MyPosts extends Component {
             data={[...data]}
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
-            onRefresh={this.handleRefresh.bind()}
+            onRefresh={this.handleRefresh}
             refreshing={refreshing}
             onEndReached={this.handleOnLoadMore}
             onEndReachedThreshold={0}

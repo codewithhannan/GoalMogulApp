@@ -21,6 +21,10 @@ import {
   openCreateOverlay
 } from '../../actions';
 
+import {
+  closeProfile
+} from '../../actions/ProfileActions';
+
 /* Styles */
 import { BACKGROUND_COLOR, APP_DEEP_BLUE } from '../../styles';
 
@@ -30,23 +34,35 @@ import plus from '../../asset/utils/plus.png';
 const DEBUG_KEY = '[ UI Profile ]';
 
 class Profile extends Component {
+  constructor(props) {
+    super(props);
+    this._handleIndexChange = this._handleIndexChange.bind(this);
+    this.handleOnBackPress = this.handleOnBackPress.bind(this);
+  }
+
   componentDidMount() {
     console.log(`${DEBUG_KEY}: mounting Profile with pageId: ${this.props.pageId}`);
   }
 
+  handleOnBackPress = () => {
+    this.props.closeProfile();
+  }
+
   handleCreateGoal = () => {
-    this.props.openCreateOverlay();
+    const { userId, pageId } = this.props;
+    this.props.openCreateOverlay(userId, pageId);
     // As we move the create option here, we no longer need to care about the tab
     Actions.createGoalButtonOverlay({ 
       tab: 'mastermind', 
-      onCreate: () => this.props.openCreateOverlay(),
-      onClose: () => this.props.closeCreateOverlay(),
+      onCreate: () => this.props.openCreateOverlay(userId, pageId),
+      onClose: () => this.props.closeCreateOverlay(userId, pageId),
       openProfile: false
     });
   }
 
   _handleIndexChange = (index) => {
-    this.props.selectProfileTab(index);
+    const { pageId, userId } = this.props;
+    this.props.selectProfileTab(index, userId, pageId);
   };
 
   _renderHeader = props => {
@@ -55,11 +71,18 @@ class Profile extends Component {
     );
   };
 
-  _renderScene = SceneMap({
-    goals: MyGoals,
-    posts: MyPosts,
-    needs: MyNeeds,
-  });
+  _renderScene = ({ route }) => {
+    switch (route.key) {
+      case 'goals':
+        return <MyGoals pageId={this.props.pageId} userId={this.props.userId} />;
+      case 'posts':
+        return <MyPosts pageId={this.props.pageId} userId={this.props.userId} />;
+      case 'needs':
+        return <MyNeeds pageId={this.props.pageId} userId={this.props.userId} />;
+      default:
+        return null;
+    }
+  }
 
   renderPlus() {
     if (this.props.showPlus && this.props.isSelf) {
@@ -80,8 +103,8 @@ class Profile extends Component {
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={styles.containerStyle}>
-          <SearchBarHeader backButton setting />
-          <ProfileSummaryCard />
+          <SearchBarHeader backButton setting onBackPress={this.handleOnBackPress} />
+          <ProfileSummaryCard pageId={this.props.pageId} userId={this.props.userId} />
           <TabView
             navigationState={this.props.navigationState}
             renderScene={this._renderScene}
@@ -151,6 +174,7 @@ export default connect(
   {
     selectProfileTab,
     closeCreateOverlay,
-    openCreateOverlay
+    openCreateOverlay,
+    closeProfile
   }
 )(Profile);

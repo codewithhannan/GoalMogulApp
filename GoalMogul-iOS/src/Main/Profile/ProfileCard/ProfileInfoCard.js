@@ -18,6 +18,7 @@ import briefcase from '../../../asset/utils/briefcase.png';
 import profileStyles from './Styles';
 
 // TODO: use redux instead of passed in props
+// TODO: profile reducer redesign to change here. Evaluate all the components used
 class ProfileInfoCard extends Component {
 
   handleEditOnPressed() {
@@ -73,6 +74,8 @@ class ProfileInfoCard extends Component {
   }
 
   render() {
+    // TODO: profile reducer redesign to change here.
+    // Refactor to use userId to fetch the corresponding profile from the source of truth reducer
     const { elevatorPitch, occupation, about } = this.props.data.profile;
     if (!occupation && !elevatorPitch) {
       return '';
@@ -145,7 +148,10 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
+  const { userId } = props;
+
+  // TODO: change to use userId passed down
   const canEdit = state.profile.userId.toString() === state.user.userId.toString();
 
   return {

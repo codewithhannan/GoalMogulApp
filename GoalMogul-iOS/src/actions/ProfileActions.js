@@ -6,7 +6,7 @@ import _ from 'lodash';
 import ImageUtils from '../Utils/ImageUtils';
 import { updateAccount, updateProfile, updatePassword } from '../Utils/ProfileUtils';
 import { api as API } from '../redux/middleware/api';
-import { queryBuilder, switchCase } from '../redux/middleware/utils';
+import { queryBuilder, constructPageId } from '../redux/middleware/utils';
 
 import BronzeBanner from '../asset/banner/bronze.png';
 import GreenBanner from '../asset/banner/green.png';
@@ -23,7 +23,10 @@ import {
   PROFILE_UPDATE_SUCCESS,
   PROFILE_UPDATE_FAIL,
   PROFILE_IMAGE_UPLOAD_SUCCESS,
-  PROFILE_SWITCH_TAB
+  PROFILE_SWITCH_TAB,
+  PROFILE_CLOSE_PROFILE,
+  PROFILE_OPEN_PROFILE_DETAIL,
+  PROFILE_CLOSE_PROFILE_DETAIL
 } from './types';
 
 import {
@@ -59,36 +62,48 @@ const prefetchImage = (imageUrl) => {
   }
 };
 
-const fetchFriendshipSucceed = (res, dispatch) => {
+const fetchFriendshipSucceed = (userId, res, dispatch) => {
   console.log(`${DEBUG_KEY} fetchFriendshipSucceed with res: `, res);
   dispatch({
     type: PROFILE_FETCH_FRIENDSHIP_DONE,
-    payload: res.data
+    payload: {
+      data: res.data,
+      userId
+    }
   });
 };
 
-const fetchFriendsCountSucceed = (res, self, dispatch) => {
+const fetchFriendsCountSucceed = (userId, res, self, dispatch) => {
   console.log(`${DEBUG_KEY} fetchMutualFriendSucceed with res: `, res);
   const type = self ? PROFILE_FETCH_FRIEND_COUNT_DONE : PROFILE_FETCH_MUTUAL_FRIEND_COUNT_DONE;
   dispatch({
     type,
-    payload: self ? res.count : res.data
+    payload: {
+      data: self ? res.count : res.data,
+      userId
+    }
   });
 };
 
-const fetchProfileSucceed = (res, dispatch) => {
+const fetchProfileSucceed = (pageId, res, dispatch) => {
   console.log(`${DEBUG_KEY} fetch profile succeed with res: `, res);
   dispatch({
     type: PROFILE_FETCHING_SUCCESS,
-    payload: res.data
+    payload: {
+      user: res.data,
+      pageId
+    }
   });
 };
 
-const fetchProfileFail = (res, dispatch) => {
+const fetchProfileFail = (pageId, userId, res, dispatch) => {
   console.log(`${DEBUG_KEY} fetch profile failed with res: `, res);
   dispatch({
     type: PROFILE_FETCHING_FAIL,
-    payload: res
+    payload: {
+      res,
+      pageId
+    }
   });
 };
 
@@ -96,38 +111,60 @@ const fetchProfileFail = (res, dispatch) => {
  * This method only fetches user profile. It is primarily used after user updates
  * the profile. Need to update the profile page
  */
-export const fetchUserProfile = (userId) => (dispatch, getState) => {
+export const fetchUserProfile = (userId, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
   API
     .get(`secure/user/profile?userId=${userId}`, token)
     .then((res) => {
       if (res.status === 200) {
-        fetchProfileSucceed(res, dispatch);
+        fetchProfileSucceed(pageId, res, dispatch);
         // Prefetch profile image
         prefetchImage(res.data.profile.image);
         return;
       }
-      fetchProfileFail(res, dispatch);
+      fetchProfileFail(pageId, userId, res, dispatch);
     })
     .catch((err) => {
-      fetchProfileFail(err, dispatch);
+      fetchProfileFail(pageId, userId, err, dispatch);
     });
 };
 
+export const closeProfile = (userId, pageId) => (dispatch, getState) => {
+  Actions.pop();
+  dispatch({
+    type: PROFILE_CLOSE_PROFILE,
+    payload: {
+      userId,
+      pageId
+    }
+  });
+};
+
 export const openProfile = (userId, tab) => (dispatch, getState) => {
+  const pageId = constructPageId('user');
   dispatch({
     type: PROFILE_OPEN_PROFILE,
-    payload: userId
+    payload: {
+      userId,
+      pageId
+    }
   });
 
   // Refresh goals on open
   if (tab) {
     selectProfileTabByName(`${tab}`)(dispatch, getState);
-    resetFilterType(`${tab}`)(dispatch, getState);
+    resetFilterType(`${tab}`, userId, pageId)(dispatch, getState);
   }
 
   // console.log(`${DEBUG_KEY}: pre for request`);
-  Actions.push('profile', { pageId: new Date() });
+  const mainNavigationTab = getState().navigation.tab;
+  let componentKeyToOpen = 'profile';
+  if (mainNavigationTab !== 'homeTab') {
+    componentKeyToOpen = `${mainNavigationTab}_profile`;
+  }
+  console.log(`${DEBUG_KEY}: componentKeyToOpen is: ${componentKeyToOpen}`);
+  Actions.push(`${componentKeyToOpen}`, { pageId, userId });
+  // Actions[`${componentKeyToOpen}`].call({ pageId, userId });
 
   const { token } = getState().user;
   const self = getState().profile.userId.toString() === getState().user.userId.toString();
@@ -153,10 +190,10 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
 
       if (profileRes.message) {
         /* TODO: error handling */
-        return fetchProfileFail(profileRes, dispatch);
+        return fetchProfileFail(pageId, userId, profileRes, dispatch);
       }
-      fetchProfileSucceed(profileRes, dispatch);
-      handleCurrentTabRefresh()(dispatch, getState);
+      fetchProfileSucceed(pageId, profileRes, dispatch);
+      handleCurrentTabRefresh({ userId, pageId })(dispatch, getState);
       // Prefetch profile image
       prefetchImage(profileRes.data.profile.image);
 
@@ -164,7 +201,7 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
         /* TODO: error handling for failing to fetch friends */
         console.log(`${DEBUG_KEY} fetch friends count fails: `, friendsCountRes.message);
       } else {
-        fetchFriendsCountSucceed(friendsCountRes, self, dispatch);
+        fetchFriendsCountSucceed(userId, friendsCountRes, self, dispatch);
       }
 
 
@@ -172,7 +209,7 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
         /* TODO: error handling for failing to fetch friends */
         console.log(`${DEBUG_KEY} fetch friendship fails: `, friendshipRes);
       } else {
-        fetchFriendshipSucceed(friendshipRes, dispatch);
+        fetchFriendshipSucceed(userId, friendshipRes, dispatch);
       }
     })
     .catch((err) => {
@@ -192,7 +229,10 @@ export const fetchMutualFriends = (userId, refresh) => (dispatch, getState) => {
   const newSkip = refresh ? 0 : skip;
   if ((hasNextPage === undefined || hasNextPage) && !loading) {
     dispatch({
-      type: PROFILE_FETCH_MUTUAL_FRIEND
+      type: PROFILE_FETCH_MUTUAL_FRIEND,
+      payload: {
+        userId
+      }
     });
 
     API
@@ -210,7 +250,8 @@ export const fetchMutualFriends = (userId, refresh) => (dispatch, getState) => {
               skip: newSkip + res.data.length,
               hasNextPage: !(data === undefined || data.length === 0 || data.length < skip),
               data: data === null || data === undefined ? [] : data,
-              refresh
+              refresh,
+              userId
             }
           });
         }
@@ -223,18 +264,45 @@ export const fetchMutualFriends = (userId, refresh) => (dispatch, getState) => {
             skip,
             hasNextPage,
             data: [],
-            refresh: false
+            refresh: false,
+            userId
           }
         });
       });
   }
 };
 
-export const openProfileDetail = () => (dispatch) => {
+export const openProfileDetail = (userId, pageId) => (dispatch, getState) => {
+  // pageId here should be created when a profile component is opened.
+  // We append the detail to the end of pageId to create a new one
+  const newPageId = `${pageId}_DETAIL`;
   dispatch({
-    type: ''
+    type: PROFILE_OPEN_PROFILE_DETAIL,
+    payload: {
+      userId,
+      pageId: newPageId
+    }
   });
-  Actions.profileDetail();
+  // Whether a new pageId or reuse the one that is generated when user opens the 
+  // Profile component doesn't seem to be much of a difference. 
+  // Go with appending to create a new pageId first
+  const { tab } = getState().navigation;
+  const componentKeyToOpen = `${tab}_profileDetail`;
+  Actions.push(`${componentKeyToOpen}`, { userId, pageId: newPageId });
+};
+
+export const closeProfileDetail = (userId, pageId) => (dispatch) => {
+  // Pop the profile detail page
+  Actions.pop();
+
+  // Clear related component reference
+  dispatch({
+    type: PROFILE_CLOSE_PROFILE_DETAIL,
+    payload: {
+      userId,
+      pageId
+    }
+  });
 };
 
 export const openProfileDetailEditForm = () => {
@@ -246,7 +314,8 @@ export const openProfileDetailEditForm = () => {
   };
 };
 
-export const submitUpdatingProfile = ({ values, hasImageModified }) => {
+// TODO: profile reducer redesign to change here. The method signature. Search for usage
+export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
   return (dispatch, getState) => {
     const { headline, name, oldPassword, newPassword } = values;
     const { about, occupation, elevatorPitch } = values.profile;
@@ -256,13 +325,18 @@ export const submitUpdatingProfile = ({ values, hasImageModified }) => {
 
     // Start updaing process
     dispatch({
-      type: PROFILE_SUBMIT_UPDATE
+      type: PROFILE_SUBMIT_UPDATE,
+      payload: {
+        userId,
+        pageId
+      }
     });
 
     const updateAccountPromise = updateAccount({ name, headline, token });
     const updateProfilePromise = ImageUtils
-      .upload(hasImageModified, imageUri, token, PROFILE_IMAGE_UPLOAD_SUCCESS, dispatch)
+      .upload(hasImageModified, imageUri, token, PROFILE_IMAGE_UPLOAD_SUCCESS, dispatch, userId)
       .then(() => {
+        // TODO: profile reducer redesign to change here
         const image = getState().profile.user.profile.tmpImage;
         return updateProfile({
           image,
@@ -287,10 +361,14 @@ export const submitUpdatingProfile = ({ values, hasImageModified }) => {
 
         dispatch({
           type: PROFILE_UPDATE_SUCCESS,
-          payload: user
+          payload: {
+            user,
+            userId,
+            pageId
+          }
         });
         Actions.pop();
-        fetchUserProfile(userId)(dispatch, getState);
+        fetchUserProfile(userId, pageId)(dispatch, getState);
         console.log('Update profile succeed: ', res);
       })
       .catch((err) => {
@@ -306,7 +384,9 @@ export const submitUpdatingProfile = ({ values, hasImageModified }) => {
 /**
  * select a tab by tab name
  */
-export const selectProfileTabByName = (tab) => (dispatch, getState) => {
+// TODO: profile reducer redesign to change here
+export const selectProfileTabByName = (tab, userId, pageId) => (dispatch, getState) => {
+  // TODO: profile reducer redesign to change here
   const routes = getState().profile.navigationState.routes;
   let index = 0;
   routes.forEach((route, i) => {
@@ -314,16 +394,21 @@ export const selectProfileTabByName = (tab) => (dispatch, getState) => {
       index = i;
     }
   });
-  selectProfileTab(index)(dispatch, getState);
+  selectProfileTab(index, userId, pageId)(dispatch, getState);
 };
 
 /**
  * Select a tab by index
  */
-export const selectProfileTab = (index) => (dispatch, getState) => {
+// TODO: profile reducer redesign to change here
+export const selectProfileTab = (index, userId, pageId) => (dispatch, getState) => {
   dispatch({
     type: PROFILE_SWITCH_TAB,
-    payload: index
+    payload: {
+      index,
+      userId,
+      pageId
+    }
   });
 
   const tab = getState().profile.navigationState.routes[index].key;
@@ -331,37 +416,42 @@ export const selectProfileTab = (index) => (dispatch, getState) => {
 
   // Only attempt to load if there is no data
   if (!data || data.length === 0) {
-    handleTabRefresh(tab)(dispatch, getState);
+    handleTabRefresh(tab, userId, pageId)(dispatch, getState);
   }
 };
 
 // Reset filter state for a tab to have All for categories
-export const resetFilterType = (tab) => (dispatch, getState) => {
+export const resetFilterType = (tab, userId, pageId) => (dispatch, getState) => {
   dispatch({
     type: PROFILE_RESET_FILTER,
     payload: {
       tab,
+      userId,
+      pageId
     }
   });
 };
 
 // User update filter for specific tab
-export const changeFilter = (tab, filterType, value) => (dispatch, getState) => {
+export const changeFilter = (tab, filterType, value, { userId, pageId }) => 
+(dispatch, getState) => {
   dispatch({
     type: PROFILE_UPDATE_FILTER,
     payload: {
       tab,
       type: filterType,
-      value
+      value,
+      pageId,
+      userId
     }
   });
-  handleTabRefresh(tab)(dispatch, getState);
+  handleTabRefresh(tab, userId, pageId)(dispatch, getState);
 };
 
-export const handleCurrentTabRefresh = () => (dispatch, getState) => {
+export const handleCurrentTabRefresh = ({ userId, pageId }) => (dispatch, getState) => {
   const { navigationState } = getState().profile;
   const { routes, index } = navigationState;
-  handleTabRefresh(routes[index].key)(dispatch, getState);
+  handleTabRefresh(routes[index].key, userId, pageId)(dispatch, getState);
 };
 
 /**
@@ -370,20 +460,23 @@ export const handleCurrentTabRefresh = () => (dispatch, getState) => {
  * Refresh for profile tab
  * @params tab: one of ['goals', 'posts', 'needs']
  */
-export const handleTabRefresh = (tab) => (dispatch, getState) => {
+// TODO: profile reducer redesign to change here
+export const handleTabRefresh = (tab, userId, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
-  const profile = getState().profile;
-  const { user } = profile;
+  const profile = getState().profile; // TODO: profile reducer redesign to change here
+  const { user } = profile; // TODO: profile reducer redesign to change here
   const { filter, limit, refreshing } = _.get(profile, tab);
   console.log(`${DEBUG_KEY}: refresh tab for user: `, user);
 
   if (!user || !user._id || refreshing) return;
-  const userId = user._id;
+  const userIdToUser = user._id; // TODO: profile reducer redesign to change here. Replace with userId 
 
   dispatch({
     type: PROFILE_REFRESH_TAB,
     payload: {
-      type: tab
+      type: tab,
+      pageId,
+      userId
     }
   });
 
@@ -396,8 +489,9 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
         data,
         skip: data.length,
         limit,
-        userId,
-        hasNextPage: !(data === undefined || data.length === 0)
+        userId: userIdToUser,
+        hasNextPage: !(data === undefined || data.length === 0),
+        pageId
       }
     });
   };
@@ -413,7 +507,7 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
     console.log(`${DEBUG_KEY}: refresh tab: ${tab} failed with err: `, err);
   };
 
-  loadOneTab(tab, 0, limit, { ...profileFilterAdapter(filter), userId },
+  loadOneTab(tab, 0, limit, { ...profileFilterAdapter(filter), userId: userIdToUser },
     token, onSuccess, onError);
 };
 
@@ -421,7 +515,8 @@ export const handleTabRefresh = (tab) => (dispatch, getState) => {
  * Load more for profile tab
  * @params tab: one of ['goals', 'posts', 'needs']
  */
-export const handleProfileTabOnLoadMore = (tab) => (dispatch, getState) => {
+// TODO: profile reducer redesign to change here
+export const handleProfileTabOnLoadMore = (tab, userId, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
   const { user } = getState().profile;
   if (!user || _.isEmpty(user)) return;
@@ -443,7 +538,9 @@ export const handleProfileTabOnLoadMore = (tab) => (dispatch, getState) => {
   dispatch({
     type: PROFILE_FETCH_TAB,
     payload: {
-      type: tab
+      type: tab,
+      userId,
+      pageId
     }
   });
 
@@ -456,7 +553,9 @@ export const handleProfileTabOnLoadMore = (tab) => (dispatch, getState) => {
         data,
         skip: skip + data.length,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        pageId,
+        userId
       }
     });
   };
@@ -466,13 +565,15 @@ export const handleProfileTabOnLoadMore = (tab) => (dispatch, getState) => {
     dispatch({
       type: PROFILE_FETCH_TAB_FAIL,
       payload: {
-        type: tab
+        type: tab,
+        pageId,
+        userId
       }
     });
     console.log(`${DEBUG_KEY}: tab: ${tab} on load more fail with err: `, err);
   };
 
-  loadOneTab(tab, skip, limit, { ...profileFilterAdapter(filter), userId: _id },
+  loadOneTab(tab, skip, limit, { ...profileFilterAdapter(filter), userId: _id }, // TODO: profile reducer redesign to change here _id ==> userId
     token, onSuccess, onError);
 };
 
@@ -531,7 +632,9 @@ const loadOneTab = (tab, skip, limit, filter, token, onSuccess, onError) => {
 /**
  * Delete a goal in profile tab
  */
-export const deleteGoal = (goalId) => (dispatch, getState) =>
+// TODO: profile reducer redesign to change here
+export const deleteGoal = (goalId) => (dispatch, getState) => {
+  const { userId } = getState().user;
   deleteItem(
     {
       param: { goalId },
@@ -544,7 +647,10 @@ export const deleteGoal = (goalId) => (dispatch, getState) =>
       console.log(`${DEBUG_KEY}: delete goal succeed.`);
       dispatch({
         type: PROFILE_GOAL_DELETE_SUCCESS,
-        payload: goalId
+        payload: {
+          goalId,
+          userId
+        }
       });
     },
     // onError
@@ -558,11 +664,14 @@ export const deleteGoal = (goalId) => (dispatch, getState) =>
       );
     }
   );
+};
+
 /**
  * Delete a post in profile tab
  */
 
-export const deletePost = (postId) => (dispatch, getState) =>
+export const deletePost = (postId) => (dispatch, getState) => {
+  const { userId } = getState().user;
   deleteItem(
     {
       param: { postId },
@@ -573,7 +682,10 @@ export const deletePost = (postId) => (dispatch, getState) =>
     () => {
       dispatch({
         type: PROFILE_POST_DELETE_SUCCESS,
-        payload: postId
+        payload: {
+          postId,
+          userId
+        }
       });
     },
     ({ message }) => {
@@ -586,6 +698,7 @@ export const deletePost = (postId) => (dispatch, getState) =>
       );
     }
   );
+};
 
 // By pass in user object, return corresponding banner
 export const UserBanner = (props) => {
@@ -608,16 +721,22 @@ export const UserBanner = (props) => {
   );
 };
 
-export const openCreateOverlay = () => (dispatch) => {
+export const openCreateOverlay = (userId, pageId) => (dispatch) => {
   dispatch({
-    type: PROFILE_OPEN_CREATE_OVERLAY
+    type: PROFILE_OPEN_CREATE_OVERLAY,
+    payload: {
+      userId, pageId
+    }
   });
 };
 
 
-export const closeCreateOverlay = () => (dispatch) => {
+export const closeCreateOverlay = (userId, pageId) => (dispatch) => {
   dispatch({
-    type: PROFILE_CLOSE_CREATE_OVERLAY
+    type: PROFILE_CLOSE_CREATE_OVERLAY,
+    payload: {
+      userId, pageId
+    }
   });
 };
 

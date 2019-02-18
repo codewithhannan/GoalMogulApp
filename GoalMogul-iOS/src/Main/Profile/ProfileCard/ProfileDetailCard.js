@@ -404,9 +404,11 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
+  const { userId } = props;
+  // TODO: profile reducer redesign to change here.
   const self = state.profile.userId.toString() === state.user.userId.toString();
-  const { user, friendship, userId, mutualFriends } = state.profile;
+  const { user, friendship, mutualFriends } = state.profile;
   const friendsCount = state.meet.friends.count;
   const needRespond = friendship.initiator_id
     && (friendship.initiator_id !== state.user.userId)
@@ -416,7 +418,7 @@ const mapStateToProps = state => {
     self,
     user,
     friendship,
-    userId,
+    userId: state.profile.userId, // TODO: profile reducer redesign to change here.
     friendsCount,
     mutualFriends,
     needRespond
