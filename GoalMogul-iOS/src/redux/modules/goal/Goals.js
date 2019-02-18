@@ -10,11 +10,11 @@ import {
     PROFILE_FETCH_TAB_DONE,
     PROFILE_REFRESH_TAB_DONE,
     PROFILE_GOAL_DELETE_SUCCESS
-} from '../User/Users';
+} from '../../../reducers/Profile';
 
 import {
     PROFILE_CLOSE_PROFILE
-} from '../../../reducers/User';
+} from '../../../actions/types';
 
 /**
  * List of const to add 
@@ -42,6 +42,8 @@ import {
  * 
  */
 
+const DEBUG_KEY = '[ Reducer Goals ]';
+
 // Sample goal object in the map
 const INITIAL_GOAL = {
     goal: {},
@@ -49,7 +51,6 @@ const INITIAL_GOAL = {
         refreshing: false
     },
     reference: [],
-
 };
 
 const INITIAL_GOAL_PAGE = {

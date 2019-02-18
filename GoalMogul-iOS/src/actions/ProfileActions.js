@@ -170,7 +170,7 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
   // console.log(`${DEBUG_KEY}: pre for request`);
   const mainNavigationTab = getState().navigation.tab;
   let componentKeyToOpen = 'profile';
-  if (mainNavigationTab !== 'homeTab') {
+  if (mainNavigationTab !== 'homeTab' && mainNavigationTab !== undefined) {
     componentKeyToOpen = `${mainNavigationTab}_profile`;
   }
   console.log(`${DEBUG_KEY}: componentKeyToOpen is: ${componentKeyToOpen}`);

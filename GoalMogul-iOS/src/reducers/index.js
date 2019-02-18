@@ -20,6 +20,7 @@ import GoalDetailReducers from './GoalDetailReducers';
 import Goals from '../redux/modules/goal/Goals';
 import CreateGoal from '../redux/modules/goal/CreateGoal';
 import PostReducers from '../redux/modules/feed/post/PostReducers';
+import Posts from '../redux/modules/feed/post/Posts';
 import ShareReducers from '../redux/modules/feed/post/ShareReducers';
 import TribeReducers from '../redux/modules/tribe/TribeReducers';
 import EventReducers from '../redux/modules/event/EventReducers';
@@ -67,6 +68,7 @@ const reducers = combineReducers({
   goals: Goals,
   createGoal: CreateGoal,
   postDetail: PostReducers,
+  posts: Posts,
   shareDetail: ShareReducers,
   tribe: TribeReducers,
   event: EventReducers,

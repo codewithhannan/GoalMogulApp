@@ -460,7 +460,7 @@ export default (state = INITIAL_STATE, action) => {
             }
             newData = transformData(newData); // only keep an array of ids
             
-            newState = _.set(newState, `${path}.data`, arrayUnique(oldData.concat(newData)));
+            newState = _.set(newState, `${path}.data`, _.uniq(oldData.concat(newData)));
             newState = _.set(newState, `${path}.refreshing`, false);
             newState = _.set(newState, `${path}.skip`, skip);
             newState = _.set(newState, `${path}.hasNextPage`, hasNextPage);

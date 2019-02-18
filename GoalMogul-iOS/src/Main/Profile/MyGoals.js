@@ -17,6 +17,11 @@ import {
   changeFilter
 } from '../../actions';
 
+// Selector
+import {
+  makeGetUserGoals
+} from '../../redux/modules/User/Selector';
+
 // tab key
 const key = 'goals';
 const DEBUG_KEY = '[ UI Profile Goals ]';
@@ -121,17 +126,30 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  const { selectedTab, goals } = state.profile;
-  const { data, loading, refreshing, filter } = goals;
+const makeMapStateToProps = () => {
+  const getUserGoals = makeGetUserGoals();
 
-  return {
-    selectedTab,
-    data,
-    loading,
-    filter,
-    refreshing
+  const mapStateToProps = (state, props) => {
+    const { selectedTab, goals } = state.profile;
+    const { data, loading, refreshing, filter } = goals;
+    const { pageId, userId } = props;
+    const userGoals = getUserGoals(state, userId, pageId);
+
+    console.log(`${DEBUG_KEY}: user goals composed: `, userGoals.length);
+    // console.log(`${DEBUG_KEY}: goals are: `, state.goals);
+    // console.log(`${DEBUG_KEY}: user object is: `, state.users[`${userId}`]);
+  
+    return {
+      selectedTab,
+      data,
+      loading,
+      filter,
+      refreshing,
+      goals: userGoals
+    };
   };
+
+  return mapStateToProps;
 };
 
 // Currently disable test data
@@ -148,7 +166,7 @@ const testData = [
 ];
 
 export default connect(
-  mapStateToProps,
+  makeMapStateToProps,
   {
     handleTabRefresh,
     handleProfileTabOnLoadMore,
