@@ -39,7 +39,7 @@ import MyEventReducers from '../redux/modules/event/MyEventReducers';
 import MyTribeTabReducers from '../redux/modules/tribe/MyTribeTabReducers';
 import MyTribeReducers from '../redux/modules/tribe/MyTribeReducers';
 // Chat related reducers
-import ChatTabReducers from '../redux/modules/chat/ChatTabReducers';
+import ChatReducers from '../redux/modules/chat/ChatReducers';
 
 const rootPersistConfig = {
   key: 'root',
@@ -82,7 +82,7 @@ const reducers = combineReducers({
   newTribe: NewTribeReducers,
   newEvent: NewEventReducers,
   notification: NotificationTabReducers,
-  chat: ChatTabReducers
+  chat: ChatReducers
 });
 
 export default persistReducer(rootPersistConfig, reducers);

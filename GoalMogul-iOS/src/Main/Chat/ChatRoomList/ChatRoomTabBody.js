@@ -1,10 +1,14 @@
 import React from 'react';
+import { Constants } from 'expo';
 import {
 	View,
 	FlatList,
-	ActivityIndicator
+	ActivityIndicator,
+	Dimensions,
+	Platform
 } from 'react-native';
 import { connect } from 'react-redux';
+import { SearchBar } from 'react-native-elements';
 
 // Components
 import ChatRoomCard from './ChatRoomCard';
@@ -15,6 +19,16 @@ import {
 	loadMoreChatRooms,
 	loadChatRooms,
 } from '../../../redux/modules/chat/ChatActions';
+
+
+const CHATROOM_AUTO_SEARCH_DELAY_MS = 500;
+
+const SEARCHBAR_HEIGHT = Platform.OS === 'ios' &&
+      IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+      ? 30 : 40;
+
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+const BODY_HEIGHT = SCREEN_HEIGHT - 48.5 - SEARCHBAR_HEIGHT;
 
 
 class ChatRoomTab extends React.Component {
@@ -32,11 +46,26 @@ class ChatRoomTab extends React.Component {
 	}
 
 	renderItem = ({ item }) => {
-		return <ChatRoomCard item={item} />;
+		return (
+			<ChatRoomCard item={item} />
+		);
+	}
+
+	handleSearchUpdate() {
+		if (this.chatroomSearchTimer) {
+			clearInterval(this.chatroomSearchTimer);
+		};
+		this.chatroomSearchTimer = setInterval(this.handleOnRefresh.bind(this), CHATROOM_AUTO_SEARCH_DELAY_MS);
 	}
 
 	renderListHeader() {
-		/* TODO: Add a chatroom filter here */
+		return (
+			<SearchBar
+				placeholder={`Search ${this.props.route.key == 'chatrooms' ? 'Chat Rooms' : 'Direct Messages'}`}
+				onChangeText={this.handleSearchUpdate}
+				value={this.props.searchQuery}
+			/>
+		);
 	}
 
 	renderListFooter() {
@@ -54,9 +83,27 @@ class ChatRoomTab extends React.Component {
 		);
 	}
 
-	renderEmptyState() {
-		if (!this.props.loading && !this.props.refreshing && !this.props.data.length) {
-			/* TODO: Render empty state text */
+	renderListEmptyState() {
+		if (!this.props.loading && !this.props.refreshing) {
+			return (
+				<View
+					style={{
+						justifyContent: "center",
+						alignItems: "center",
+						height: BODY_HEIGHT,
+					}}
+				>
+					<Text
+						style={{
+							justifyContent: "center",
+							alignItems: "center",
+							fontSize: 21
+						}}
+					>
+						Create a Chat Room to get started.
+					</Text>
+				</View>
+			);
 		};
 		return '';
 	}
@@ -73,10 +120,10 @@ class ChatRoomTab extends React.Component {
 					onRefresh={this.handleOnRefresh}
 					ListHeaderComponent={this.renderListHeader}
 					ListFooterComponent={this.renderListFooter}
+					ListEmptyComponent={this.renderListEmptyState}
 					onEndThreshold={0}
 					onEndReached={this.handleOnLoadMore}
 				/>
-				{this.renderEmptyState()}
 			</View>
 		);
 	}

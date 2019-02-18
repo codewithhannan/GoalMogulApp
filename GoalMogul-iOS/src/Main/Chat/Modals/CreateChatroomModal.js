@@ -27,23 +27,23 @@ import {
 } from 'react-native-popup-menu';
 
 // Components
-import ModalHeader from '../Common/Header/ModalHeader';
-import ImageModal from '../Common/ImageModal';
+import ModalHeader from '../../Common/Header/ModalHeader';
+import ImageModal from '../../Common/ImageModal';
 
 // Actions
 import {
   cancelCreateOrUpdateChatroom,
   createOrUpdateChatroom,
   chatroomToFormAdapter
-} from '../../redux/modules/chat/CreateChatroomActions';
-import { openCameraRoll, openCamera } from '../../actions';
+} from '../../../redux/modules/chat/CreateChatroomActions';
+import { openCameraRoll, openCamera } from '../../../actions';
 
 // assets
-import cancel from '../../asset/utils/cancel_no_background.png';
-import camera from '../../asset/utils/camera.png';
-import cameraRoll from '../../asset/utils/cameraRoll.png';
-import imageOverlay from '../../asset/utils/imageOverlay.png';
-import expand from '../../asset/utils/expand.png';
+import cancel from '../../../asset/utils/cancel_no_background.png';
+import camera from '../../../asset/utils/camera.png';
+import cameraRoll from '../../../asset/utils/cameraRoll.png';
+import imageOverlay from '../../../asset/utils/imageOverlay.png';
+import expand from '../../../asset/utils/expand.png';
 
 
 class CreateChatroomModal extends React.Component {

@@ -83,7 +83,7 @@ import NotificationTab from './Main/Notification/NotificationTab';
 // Chat
 import Chat from './Main/Chat/Chat';
 import CreateChatroomModal from './Main/Chat/Modals/CreateChatroomModal';
-import CreateDirectMessageModal from './Main/Chat/Chat/Modals/CreateDirectMessageModal';
+import CreateDirectMessageModal from './Main/Chat/Modals/CreateDirectMessageModal';
 
 // Account
 import Setting from './Main/Setting/Setting';

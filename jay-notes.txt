@@ -9,9 +9,6 @@ TODO:
 - ChatRoomTab component
     - Requests for: Load, refresh and loadmore by tab
         - Instead of regular endpoint, use search endpoint if 'searchQuery' prop is defined
-    - Set up search input
-        - Update searchQuery state prop in real time
-        - Auto trigger 'refresh' action on keyup with timeout + trigger refresh on 'done' key pressed
 - Create Direct Message modal
     - Search user input
     - Tap single result to create chatroom and open convo

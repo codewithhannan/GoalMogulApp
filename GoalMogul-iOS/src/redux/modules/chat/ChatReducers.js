@@ -17,7 +17,7 @@ const INITIAL_STATE = {
 	showPlus: true,
 	directMessages: {
 		data: [],
-		searchQuery: undefined,
+		searchQuery: '',
 		hasNextPage: undefined,
 		limit: 5,
 		skip: 0,
@@ -26,7 +26,7 @@ const INITIAL_STATE = {
 	},
 	chatrooms: {
 		data: [],
-		searchQuery: undefined,
+		searchQuery: '',
 		hasNextPage: undefined,
 		limit: 5,
 		skip: 0,
