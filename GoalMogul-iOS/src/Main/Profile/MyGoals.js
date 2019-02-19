@@ -19,7 +19,8 @@ import {
 
 // Selector
 import {
-  makeGetUserGoals
+  makeGetUserGoals,
+  makeGetUserPageInfoByType
 } from '../../redux/modules/User/Selector';
 
 // tab key
@@ -128,14 +129,17 @@ const styles = {
 
 const makeMapStateToProps = () => {
   const getUserGoals = makeGetUserGoals();
+  const getPageInfo = makeGetUserPageInfoByType();
 
   const mapStateToProps = (state, props) => {
-    const { selectedTab, goals } = state.profile;
-    const { data, loading, refreshing, filter } = goals;
     const { pageId, userId } = props;
-    const userGoals = getUserGoals(state, userId, pageId);
+    const data = getUserGoals(state, userId, pageId);
 
-    console.log(`${DEBUG_KEY}: user goals composed: `, userGoals.length);
+    const { 
+      loading, refreshing, filter, selectedTab 
+    } = getPageInfo(state, userId, pageId, 'goals');
+
+    // console.log(`${DEBUG_KEY}: user goals composed: `, userGoals);
     // console.log(`${DEBUG_KEY}: goals are: `, state.goals);
     // console.log(`${DEBUG_KEY}: user object is: `, state.users[`${userId}`]);
   
@@ -145,25 +149,11 @@ const makeMapStateToProps = () => {
       loading,
       filter,
       refreshing,
-      goals: userGoals
     };
   };
 
   return mapStateToProps;
 };
-
-// Currently disable test data
-const testData = [
-  {
-    _id: '128039187294',
-    owner: {
-      _id: '12937109823',
-      name: 'Jia Zeng'
-    },
-    title: 'This is a test goal for Jia',
-    category: 'General'
-  }
-];
 
 export default connect(
   makeMapStateToProps,

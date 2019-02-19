@@ -80,12 +80,15 @@ export default (state = INITIAL_STATE, action) => {
                 }
 
                 const oldReference = _.get(newState, `${goalId}.reference`);
+                // console.log(`${DEBUG_KEY}: old reference is: `, oldReference);
                 const hasPageReference = (oldReference !== undefined && oldReference.some(r => r === pageId));
                 // Update reference
                 let newReference = [pageId];
-                if (!hasPageReference) {
+                if (oldReference !== undefined && !hasPageReference) {
                     newReference = newReference.concat(oldReference);
                 }
+
+                // console.log(`${DEBUG_KEY}: new reference is: `, newReference);
                 newState = _.set(newState, `${goalId}.reference`, newReference);
             });
 
@@ -123,8 +126,11 @@ export default (state = INITIAL_STATE, action) => {
 
         case PROFILE_CLOSE_PROFILE: {
             const { goalList, pageId } = action.payload;
+            // console.log(`${DEBUG_KEY}: closing profile with pageId: ${pageId} and goalList:`, goalList);
             let newState = _.cloneDeep(state);
             if (!goalList || _.isEmpty(goalList)) return newState;
+
+            // console.log(`${DEBUG_KEY}: profile close before state: `, newState);
 
             goalList.forEach(goalId => {
                 // Check if goalId in the Goals
@@ -154,6 +160,7 @@ export default (state = INITIAL_STATE, action) => {
                 newState = _.set(newState, `${goalId}`, goalToUpdate);
             });
 
+            // console.log(`${DEBUG_KEY}: profile close with newState: `, newState);
             return newState;
         }
 

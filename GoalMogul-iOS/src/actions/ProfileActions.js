@@ -139,7 +139,6 @@ export const closeProfile = (userId, pageId) => (dispatch, getState) => {
     postList = _.get(user, `${pageId}.posts.data`);
   }
   
-  Actions.pop();
   dispatch({
     type: PROFILE_CLOSE_PROFILE,
     payload: {

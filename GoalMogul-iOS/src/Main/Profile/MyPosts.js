@@ -17,6 +17,12 @@ import {
   changeFilter
 } from '../../actions';
 
+// Selectors
+import { 
+  makeGetUserPosts,
+  makeGetUserPageInfoByType
+} from '../../redux/modules/User/Selector';
+
 // tab key
 const key = 'posts';
 const DEBUG_KEY = '[ UI Profile Posts ]';
@@ -221,23 +227,36 @@ const styles = {
     color: '#17B3EC',
     fontSize: 11
   }
+
 };
 
-const mapStateToProps = state => {
-  const { selectedTab, posts } = state.profile;
-  const { data, loading, filter, refreshing } = posts;
+const makeMapStateToProps = () => {
+  const getUserPosts = makeGetUserPosts();
+  const getPageInfo = makeGetUserPageInfoByType();
 
-  return {
-    selectedTab,
-    data,
-    loading,
-    filter,
-    refreshing
+  const mapStateToProps = (state, props) => {
+    const { pageId, userId } = props;
+    const data = getUserPosts(state, userId, pageId);
+    const { 
+      loading, refreshing, filter, selectedTab 
+    } = getPageInfo(state, userId, pageId, 'posts');
+
+    // console.log(`${DEBUG_KEY}: user posts composed: `, userPosts.length);
+  
+    return {
+      selectedTab,
+      data,
+      loading,
+      filter,
+      refreshing
+    };
   };
+
+  return mapStateToProps;
 };
 
 export default connect(
-  mapStateToProps,
+  makeMapStateToProps,
   {
     handleTabRefresh,
     handleProfileTabOnLoadMore,

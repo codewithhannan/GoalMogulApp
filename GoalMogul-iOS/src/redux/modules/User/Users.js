@@ -430,8 +430,13 @@ export default (state = INITIAL_STATE, action) => {
                 return newState;
             }
 
+            let newData = data;
+            if (type === 'needs') {
+                newData = newData.filter((item) => item.needs && item.needs.length !== 0);
+            }
+
             const path = `${userId}.${pageId}.${type}`;
-            newState = _.set(newState, `${path}.data`, transformData(data)); // only keep an array of ids
+            newState = _.set(newState, `${path}.data`, transformData(newData)); // only keep an array of ids
             newState = _.set(newState, `${path}.refreshing`, false);
             newState = _.set(newState, `${path}.skip`, skip);
             newState = _.set(newState, `${path}.hasNextPage`, hasNextPage);
@@ -461,7 +466,7 @@ export default (state = INITIAL_STATE, action) => {
             newData = transformData(newData); // only keep an array of ids
             
             newState = _.set(newState, `${path}.data`, _.uniq(oldData.concat(newData)));
-            newState = _.set(newState, `${path}.refreshing`, false);
+            newState = _.set(newState, `${path}.loading`, false);
             newState = _.set(newState, `${path}.skip`, skip);
             newState = _.set(newState, `${path}.hasNextPage`, hasNextPage);
 

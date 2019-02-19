@@ -224,7 +224,7 @@ export default (state = INITIAL_STATE, action) => {
 
       return {
         ...state,
-        selectedTab: newNavigationState.routes[action.payload].key,
+        selectedTab: newNavigationState.routes[index].key,
         navigationState: newNavigationState
       };
     }

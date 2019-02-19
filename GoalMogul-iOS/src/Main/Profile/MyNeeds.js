@@ -17,6 +17,12 @@ import {
   changeFilter
 } from '../../actions';
 
+// Selector
+import { 
+  makeGetUserNeeds,
+  makeGetUserPageInfoByType
+} from '../../redux/modules/User/Selector';
+
 // tab key
 const key = 'needs';
 const DEBUG_KEY = '[ UI Profile Needs ]';
@@ -119,21 +125,34 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  const { selectedTab, needs } = state.profile;
-  const { data, loading, filter, refreshing } = needs;
+const makeMapStateToProps = () => {
+  const getUserNeeds = makeGetUserNeeds();
+  const getPageInfo = makeGetUserPageInfoByType();
 
-  return {
-    selectedTab,
-    data,
-    loading,
-    filter,
-    refreshing
+  const mapStateToProps = (state, props) => {
+    const { userId, pageId } = props;
+    const data = getUserNeeds(state, userId, pageId);
+    const { 
+      loading, refreshing, filter, selectedTab 
+    } = getPageInfo(state, userId, pageId, 'needs');
+
+    // console.log(`${DEBUG_KEY}: user needs composed: `, userNeeds.length);
+  
+    return {
+      selectedTab,
+      data,
+      loading,
+      filter,
+      refreshing
+    };
   };
+
+  return mapStateToProps;
 };
 
+
 export default connect(
-  mapStateToProps,
+  makeMapStateToProps,
   {
     handleTabRefresh,
     handleProfileTabOnLoadMore,

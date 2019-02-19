@@ -44,8 +44,13 @@ class Profile extends Component {
     console.log(`${DEBUG_KEY}: mounting Profile with pageId: ${this.props.pageId}`);
   }
 
+  componentWillUnmount() {
+    const { pageId, userId } = this.props;
+    this.props.closeProfile(userId, pageId);
+  }
+
   handleOnBackPress = () => {
-    this.props.closeProfile();
+    Actions.pop();
   }
 
   handleCreateGoal = () => {
