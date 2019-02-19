@@ -1,10 +1,13 @@
 import React from 'react';
 import {
-	View
+	View,
+	TouchableOpacity,
+	Image
 } from 'react-native';
 import { connect } from 'react-redux';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
+import { Actions } from 'react-native-router-flux';
 
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup';
@@ -73,7 +76,7 @@ class ChatTab extends React.Component {
 				<TouchableOpacity
 					activeOpacity={0.85}
 					style={styles.iconContainerStyle}
-					onPress={this.openCreateChatMenu}
+					onPress={this.openCreateChatMenu.bind(this)}
 				>
 					<Image style={styles.iconStyle} source={plus_image} />
 				</TouchableOpacity>
