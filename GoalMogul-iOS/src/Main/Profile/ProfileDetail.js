@@ -13,6 +13,11 @@ import {
   closeProfileDetail
 } from '../../actions/ProfileActions';
 
+// Selector
+import {
+  getUserData
+} from '../../redux/modules/User/Selector';
+
 class ProfileDetail extends Component {
   constructor(props) {
     super(props);
@@ -35,8 +40,8 @@ class ProfileDetail extends Component {
       <View style={styles.containerStyle}>
         <SearchBarHeader backButton setting onBackPress={this.handleOnBackPress} />
         <ScrollView style={{ backgroundColor }}>
-          <ProfileDetailCard />
-          <ProfileInfoCard data={this.props.user} userId={this.props.userId} />
+          <ProfileDetailCard pageId={this.props.pageId} />
+          <ProfileInfoCard data={this.props.user} userId={this.props.userId} pageId={this.props.pageId} />
         </ScrollView>
       </View>
     );
@@ -52,10 +57,11 @@ const styles = {
 // TODO: profile reducer redesign to change here.
 const mapStateToProps = (state, props) => {
   const { userId } = props;
-  const { user } = state.profile;
+  const userObject = getUserData(state, userId, '');
+  const { user } = userObject;
 
   return {
-    userId: state.profile.userId, // TODO: change to userId
+    userId,
     user
   };
 };

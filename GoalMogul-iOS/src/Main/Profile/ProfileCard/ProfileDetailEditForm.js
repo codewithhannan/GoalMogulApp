@@ -28,6 +28,12 @@ import profilePic from '../../../asset/utils/defaultUserProfile.png';
 /* Actions */
 import { submitUpdatingProfile, openCamera, openCameraRoll } from '../../../actions';
 
+// Selectors
+import {
+  getUserDataByPageId,
+  getUserData
+} from '../../../redux/modules/User/Selector';
+
 const BUTTONS = ['Taking Pictures', 'Camera Roll', 'Cancel'];
 const TAKING_PICTURE_INDEX = 0;
 const CAMERA_ROLL_INDEX = 1;
@@ -44,7 +50,7 @@ class ProfileDetailEditForm extends Component {
   submit = values => {
     const hasImageModified = JSON.stringify(this.props.initialValues.profile.image) !==
       JSON.stringify(values.profile.image);
-    this.props.submitUpdatingProfile({ values, hasImageModified });
+    this.props.submitUpdatingProfile({ values, hasImageModified }, this.props.pageId);
   };
 
   _scrollToInput (reactNode: any) {
@@ -393,10 +399,16 @@ ProfileDetailEditForm = reduxForm({
 })(ProfileDetailEditForm);
 
 const mapStateToProps = (state, props) => {
-  const { userId } = props;
+  const { userId, pageId } = props;
+
+  const uploading = getUserDataByPageId(state, userId, pageId, 'uploading');
+  const user = getUserData(state, userId, 'user');
+
   return {
-    uploading: state.profile.uploading,
-    initialValues: state.profile.user // TODO: profile reducer redesign to change here.
+    // uploading: state.profile.uploading,
+    // initialValues: state.profile.user // This is before reducer redesign way
+    uploading,
+    initialValues: user
   };
 };
 

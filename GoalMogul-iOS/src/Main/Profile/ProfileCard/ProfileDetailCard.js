@@ -50,6 +50,7 @@ class ProfileDetailCard extends Component {
     this.state = {
       imageUrl: ''
     };
+    this.handleEditOnPressed = this.handleEditOnPressed.bind(this);
   }
 
   componentDidMount() {
@@ -85,7 +86,8 @@ class ProfileDetailCard extends Component {
   }
 
   handleEditOnPressed() {
-    this.props.openProfileDetailEditForm();
+    const { userId, pageId } = this.props;
+    this.props.openProfileDetailEditForm(userId, pageId);
   }
 
   // type: ['unfriend', 'deleteFriend', 'requestFriend']
@@ -405,7 +407,7 @@ const styles = {
 };
 
 const mapStateToProps = (state, props) => {
-  const { userId } = props;
+  const { userId, pageId } = props;
   // TODO: profile reducer redesign to change here.
   const self = state.profile.userId.toString() === state.user.userId.toString();
   const { user, friendship, mutualFriends } = state.profile;

@@ -8,6 +8,11 @@ import { updateAccount, updateProfile, updatePassword } from '../Utils/ProfileUt
 import { api as API } from '../redux/middleware/api';
 import { queryBuilder, constructPageId } from '../redux/middleware/utils';
 
+import { 
+  getUserData,
+  getUserDataByPageId
+} from '../redux/modules/User/Selector';
+
 import BronzeBanner from '../asset/banner/bronze.png';
 import GreenBanner from '../asset/banner/green.png';
 import PurpleBanner from '../asset/banner/purple.png';
@@ -162,7 +167,7 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
 
   // Refresh goals on open
   if (tab) {
-    selectProfileTabByName(`${tab}`)(dispatch, getState);
+    selectProfileTabByName(`${tab}`, userId, pageId)(dispatch, getState);
     resetFilterType(`${tab}`, userId, pageId)(dispatch, getState);
   }
 
@@ -177,7 +182,7 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
   // Actions[`${componentKeyToOpen}`].call({ pageId, userId });
 
   const { token } = getState().user;
-  const self = getState().profile.userId.toString() === getState().user.userId.toString();
+  const self = userId.toString() === getState().user.userId.toString();
 
   const profilePromise =
     API.get(`secure/user/profile?userId=${userId}`, token);
@@ -235,13 +240,20 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
 // Fetch mutual friends
 export const fetchMutualFriends = (userId, refresh) => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, hasNextPage, loading } = getState().profile.mutualFriends;
+  const mutualFriends = getUserData(getState(), userId, 'mutualFriends');
+
+  if (!mutualFriends || _.isEmpty(mutualFriends)) {
+    console.err(`${DEBUG_KEY}: no mutual friend object found for user: ${userId}`);
+    return;
+  }
+
+  const { skip, limit, hasNextPage, loading } = mutualFriends;
   const newSkip = refresh ? 0 : skip;
   if ((hasNextPage === undefined || hasNextPage) && !loading) {
     dispatch({
       type: PROFILE_FETCH_MUTUAL_FRIEND,
       payload: {
-        userId
+        userId,
       }
     });
 
@@ -285,7 +297,7 @@ export const fetchMutualFriends = (userId, refresh) => (dispatch, getState) => {
 export const openProfileDetail = (userId, pageId) => (dispatch, getState) => {
   // pageId here should be created when a profile component is opened.
   // We append the detail to the end of pageId to create a new one
-  const newPageId = `${pageId}_DETAIL`;
+  const newPageId = `${pageId}`;
   dispatch({
     type: PROFILE_OPEN_PROFILE_DETAIL,
     payload: {
@@ -315,12 +327,12 @@ export const closeProfileDetail = (userId, pageId) => (dispatch) => {
   });
 };
 
-export const openProfileDetailEditForm = () => {
+export const openProfileDetailEditForm = (userId, pageId) => {
   return (dispatch) => {
     dispatch({
       type: ''
     });
-    Actions.profileDetailEditForm();
+    Actions.profileDetailEditForm({ userId, pageId });
   };
 };
 
@@ -346,8 +358,7 @@ export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
     const updateProfilePromise = ImageUtils
       .upload(hasImageModified, imageUri, token, PROFILE_IMAGE_UPLOAD_SUCCESS, dispatch, userId)
       .then(() => {
-        // TODO: profile reducer redesign to change here
-        const image = getState().profile.user.profile.tmpImage;
+        const image = getUserData(getState(), userId, 'user.profile.tmpImage');
         return updateProfile({
           image,
           about,
@@ -394,10 +405,9 @@ export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
 /**
  * select a tab by tab name
  */
-// TODO: profile reducer redesign to change here
 export const selectProfileTabByName = (tab, userId, pageId) => (dispatch, getState) => {
-  // TODO: profile reducer redesign to change here
-  const routes = getState().profile.navigationState.routes;
+  const routes = getUserDataByPageId(getState(), userId, pageId, 'navigationState.routes');
+  
   let index = 0;
   routes.forEach((route, i) => {
     if (route.key === tab) {
@@ -410,7 +420,6 @@ export const selectProfileTabByName = (tab, userId, pageId) => (dispatch, getSta
 /**
  * Select a tab by index
  */
-// TODO: profile reducer redesign to change here
 export const selectProfileTab = (index, userId, pageId) => (dispatch, getState) => {
   dispatch({
     type: PROFILE_SWITCH_TAB,
@@ -421,8 +430,11 @@ export const selectProfileTab = (index, userId, pageId) => (dispatch, getState) 
     }
   });
 
-  const tab = getState().profile.navigationState.routes[index].key;
-  const { data } = _.get(getState().profile, tab);
+  // const tab = getState().profile.navigationState.routes[index].key; // Original implementation
+  // const { data } = _.get(getState().profile, tab);
+  const routes = getUserDataByPageId(getState(), userId, pageId, 'navigationState.routes');
+  const tab = routes[index].key;
+  const { data } = getUserDataByPageId(getState(), userId, pageId, `${tab}.data`);
 
   // Only attempt to load if there is no data
   if (!data || data.length === 0) {
@@ -459,7 +471,7 @@ export const changeFilter = (tab, filterType, value, { userId, pageId }) =>
 };
 
 export const handleCurrentTabRefresh = ({ userId, pageId }) => (dispatch, getState) => {
-  const { navigationState } = getState().profile;
+  const navigationState = getUserDataByPageId(getState(), userId, pageId, 'navigationState');
   const { routes, index } = navigationState;
   handleTabRefresh(routes[index].key, userId, pageId)(dispatch, getState);
 };
@@ -470,16 +482,20 @@ export const handleCurrentTabRefresh = ({ userId, pageId }) => (dispatch, getSta
  * Refresh for profile tab
  * @params tab: one of ['goals', 'posts', 'needs']
  */
-// TODO: profile reducer redesign to change here
 export const handleTabRefresh = (tab, userId, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
-  const profile = getState().profile; // TODO: profile reducer redesign to change here
-  const { user } = profile; // TODO: profile reducer redesign to change here
-  const { filter, limit, refreshing } = _.get(profile, tab);
+
+  // Get user by userId
+  const user = getUserData(getState(), userId, 'user');
+
+  // Get page info for this user by userId and pageId
+  const page = getUserDataByPageId(getState(), userId, pageId, `${tab}`);
+  const { filter, limit, refreshing } = page;
+  
   console.log(`${DEBUG_KEY}: refresh tab for user: `, user);
 
   if (!user || !user._id || refreshing) return;
-  const userIdToUser = user._id; // TODO: profile reducer redesign to change here. Replace with userId 
+  const userIdToUser = user._id;
 
   dispatch({
     type: PROFILE_REFRESH_TAB,
@@ -525,21 +541,17 @@ export const handleTabRefresh = (tab, userId, pageId) => (dispatch, getState) =>
  * Load more for profile tab
  * @params tab: one of ['goals', 'posts', 'needs']
  */
-// TODO: profile reducer redesign to change here
 export const handleProfileTabOnLoadMore = (tab, userId, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
-  const { user } = getState().profile;
+
+  // Get user by userId
+  const user = getUserData(getState(), userId, 'user');
   if (!user || _.isEmpty(user)) return;
   const { _id } = user;
 
-  const { 
-    filter, 
-    skip, 
-    limit, 
-    hasNextPage, 
-    refreshing, 
-    loading 
-  } = _.get(getState().profile, tab);
+  // Get page info for this user by userId and pageId
+  const page = getUserDataByPageId(getState(), userId, pageId, `${tab}`);
+  const { filter, limit, hasNextPage, skip, loading, refreshing } = page;
 
   if (hasNextPage === false || refreshing || loading) {
     return;
@@ -583,7 +595,7 @@ export const handleProfileTabOnLoadMore = (tab, userId, pageId) => (dispatch, ge
     console.log(`${DEBUG_KEY}: tab: ${tab} on load more fail with err: `, err);
   };
 
-  loadOneTab(tab, skip, limit, { ...profileFilterAdapter(filter), userId: _id }, // TODO: profile reducer redesign to change here _id ==> userId
+  loadOneTab(tab, skip, limit, { ...profileFilterAdapter(filter), userId: _id },
     token, onSuccess, onError);
 };
 

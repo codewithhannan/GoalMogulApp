@@ -49,14 +49,23 @@ import {
 
 const DEBUG_KEY = '[ Reducer Users ]';
 
-// Sample user object
+/**
+ * Sample userId --> user object mapping
+ * Call getUserData(state, userId, '') will return the following data
+ * Call getUserData(state, userId, 'user') will return the actual user object
+ */
 const INITIAL_USER = {
     user: {
         
     },
     mutualFriends: {
+        data: [],
+        skip: 0,
+        limit: 10,
         count: 0,
-        loading: false
+        refreshing: false,
+        loading: false,
+        hasNextPage: undefined
     },
     /**
      * Friendship between current user and current profile fetched
@@ -86,13 +95,24 @@ const INITIAL_MUTUAL_FRIENDS = {
     hasNextPage: undefined
 };
 
+const INITIAL_USER_PROFILE_DETAIL_PAGE = {
+    // uploading user profile changes
+    uploading: false,
+};
+
+/**
+ * Sample userPage object in userId --> user object mapping
+ * Call getUserDataByPageId(state, userId, pageId, '') will return the following data
+ * Call getUserDataByPageId(state, userId, pageId, 'navigationState') 
+ * will return navigationState object
+ */
 const INITIAL_USER_PAGE = {
     // Profile page plus icon for goal / post creation
     showPlus: true,
     // Overall loading status
     loading: false,
-    // uploading user profile changes
-    uploading: false,
+    // uploading user profile changes, this might be unused due to the INITIAL_USER_PROFILE_DETAIL_PAGE
+    uploading: false, 
     // navigation state
     selectedTab: 'goals',
     navigationState: {
@@ -171,6 +191,7 @@ export default (state = INITIAL_STATE, action) => {
 
             // Set user related initial state
             newState = _.set(newState, `${userId}.friendship`, { ...INITIAL_FRIENDSHIP });
+            newState = _.set(newState, `${userId}.userId`, userId);
             newState = _.set(newState, `${userId}.mutualFriends`, { ...INITIAL_MUTUAL_FRIENDS });
 
             // Set page related initial state
@@ -181,7 +202,7 @@ export default (state = INITIAL_STATE, action) => {
             return _.set(newState, `${userId}.reference`, reference);
         }
 
-        case PROFILE_CLOSE_PROFILE_DETAIL:
+        // case PROFILE_CLOSE_PROFILE_DETAIL: we don't want to update on PROFILE_DETAIL_CLOSE
         case PROFILE_CLOSE_PROFILE: {
             let newState = _.cloneDeep(state);
             const { pageId, userId } = action.payload;
@@ -205,7 +226,7 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         case PROFILE_OPEN_PROFILE_DETAIL: {
-            const newState = _.cloneDeep(state);
+            let newState = _.cloneDeep(state);
             const { userId, pageId } = action.payload;
             let reference = [];
             if (userId in newState) {
@@ -216,6 +237,9 @@ export default (state = INITIAL_STATE, action) => {
                 console.warn(`${DEBUG_KEY}: page ${pageId} already opened`);
                 return newState;
             }
+
+            newState = _.set(newState, `${userId}.${pageId}`, { ...INITIAL_USER_PROFILE_DETAIL_PAGE });
+
             return _.set(newState, `${userId}.reference`, reference);
         }
 

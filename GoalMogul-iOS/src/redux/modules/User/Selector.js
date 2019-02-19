@@ -9,16 +9,31 @@ import _ from 'lodash';
 const DEBUG_KEY = '[ Selector Users ]';
 
 // Get goal list by userId and pageId
-const getUserGoals = (state, userId, pageId) => getUserData(state, userId, pageId, 'goals.data');
+const getUserGoals = (state, userId, pageId) => 
+getUserDataByPageId(state, userId, pageId, 'goals.data');
 // Get post list by userId and pageId
-const getUserPosts = (state, userId, pageId) => getUserData(state, userId, pageId, 'posts.data');
+const getUserPosts = (state, userId, pageId) => 
+getUserDataByPageId(state, userId, pageId, 'posts.data');
 // Get need list by userId and pageId
-const getUserNeeds = (state, userId, pageId) => getUserData(state, userId, pageId, 'needs.data');
+const getUserNeeds = (state, userId, pageId) => 
+getUserDataByPageId(state, userId, pageId, 'needs.data');
 
 const getGoals = (state) => state.goals;
 const getPosts = (state) => state.posts;
 
-const getUserData = (state, userId, pageId, path) => {
+export const getUserData = (state, userId, path) => {
+    const users = state.users;
+    const pathToCheck = path && path.trim() !== ''
+        ? `${userId}.${path}`
+        : `${userId}`;
+    if (!_.has(users, pathToCheck)) {
+        console.warn(`${DEBUG_KEY}: no data for userId: ${userId} with path:`, path);
+        return {};
+    }
+    return _.get(users, pathToCheck);
+};
+
+export const getUserDataByPageId = (state, userId, pageId, path) => {
     // console.log(`${DEBUG_KEY}: userId: ${userId}, pageId: ${pageId}, type: ${type}`);
     let ret = [];
     const users = state.users;
@@ -33,7 +48,10 @@ const getUserData = (state, userId, pageId, path) => {
         return ret;
     }
 
-    ret = _.get(user, `${pageId}.${path}`);
+    const pathToGet = path && path.trim() !== ''
+        ? `${pageId}.${path}`
+        : `${pageId}`;
+    ret = _.get(user, `${pathToGet}`);
     return ret;
 };
 
@@ -49,10 +67,10 @@ const getEntityByIds = (ids, entities, type) => {
 };
 
 const getPageInfoByType = (state, userId, pageId, type) => 
-getUserData(state, userId, pageId, `${type}`);
+getUserDataByPageId(state, userId, pageId, `${type}`);
 
 const getPageSelectedTab = (state, userId, pageId) => 
-getUserData(state, userId, pageId, 'selectedTab');
+getUserDataByPageId(state, userId, pageId, 'selectedTab');
 
 
 export const makeGetUserGoals = () => {
