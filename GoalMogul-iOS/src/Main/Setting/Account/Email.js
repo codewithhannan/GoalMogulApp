@@ -22,7 +22,7 @@ class Email extends Component {
 
   handleOnResendPress() {
     console.log('user tries to resend email');
-    this.props.onResendEmailPress((message) => alert(message));
+    this.props.onResendEmailPress((message) => alert(message), this.props.userId);
   }
 
   handleOnEditEmailPress() {

@@ -5,6 +5,9 @@ import { Alert } from 'react-native';
 
 import { api as API } from '../redux/middleware/api';
 import { componentKeyByTab } from '../redux/middleware/utils';
+import {
+  getUserData 
+} from '../redux/modules/User/Selector';
 
 import {
   SETTING_OPEN_SETTING,
@@ -48,12 +51,13 @@ export const onTabPress = tabId => {
 };
 
 /* Account actions */
-export const onResendEmailPress = (callback) => (dispatch, getState) => {
+export const onResendEmailPress = (callback, userId) => (dispatch, getState) => {
   dispatch({
     type: SETTING_RESENT_EMAIL_VERIFICATION
   });
   const { token } = getState().user;
-  const { email } = getState().profile.user;
+  
+  const email = getUserData(getState(), userId, 'user.email');
   API.post('secure/user/account/verification', { for: 'email' }, token).then((res) => {
     if (callback) {
       callback(`We\'ve resent a verification email to ${email.address}`);

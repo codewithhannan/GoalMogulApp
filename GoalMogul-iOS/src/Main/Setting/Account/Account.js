@@ -28,7 +28,10 @@ class Account extends Component {
             explanation="Add or remove email addresses"
             onPress={() => {
               const componentKeyToOpen = componentKeyByTab(tab, 'email');
-              this.props.fetchProfile(this.props.userId, Actions.push(`${componentKeyToOpen}`));
+              this.props.fetchProfile(
+                this.props.userId, 
+                Actions.push(`${componentKeyToOpen}`, { userId: this.props.userId })
+              );
             }}
           />
           <SettingCard
