@@ -184,7 +184,7 @@ class SearchBarHeader extends Component {
   // This is to replace logo image with user profile preview
   renderProfileImage() {
     let image = this.props.image;
-    console.log('image is: ', image);
+    // console.log('image is: ', image);
     let profileImage = (
       <DelayedButton
         activeOpacity={0.85}

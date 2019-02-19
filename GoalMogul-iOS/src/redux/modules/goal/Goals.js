@@ -16,6 +16,16 @@ import {
     PROFILE_CLOSE_PROFILE
 } from '../../../actions/types';
 
+import {
+    USER_LOG_OUT
+} from '../../../reducers/User';
+
+import {
+    GOAL_DETAIL_OPEN,
+    GOAL_DETAIL_FETCH_DONE,
+    GOAL_DETAIL_CLOSE
+} from '../../../reducers/GoalDetailReducers';
+
 /**
  * List of const to add 
  * 
@@ -28,6 +38,15 @@ import {
  * GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS,
  * GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS,
  * GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS
+ * GOAL_DETAIL_UPDATE,
+ * GOAL_DETAIL_UPDATE_DONE,
+ * GOAL_DETAIL_FETCH,
+ * GOAL_DETAIL_FETCH_DONE,
+ * GOAL_DETAIL_FETCH_ERROR,
+ * GOAL_DETAIL_OPEN
+ * GOAL_DETAIL_CLOSE,
+ * GOAL_DETAIL_SWITCH_TAB,
+ * GOAL_DETAIL_SWITCH_TAB_V2,
  * 
  * Profile related (done)
  * PROFILE_FETCH_TAB_DONE (done)
@@ -37,15 +56,25 @@ import {
  * 
  * Comment related
  * The ones that need to increase / decrease comment count
+ * COMMENT_DELETE_SUCCESS
  * 
  * Home related (Goal Feed)
+ * 
+ * Like related
+ * LIKE_POST,
+ * LIKE_GOAL,
+ * UNLIKE_POST,
+ * UNLIKE_GOAL
+ * 
+ * User related
+ * USER_LOG_OUT (done)
  * 
  */
 
 const DEBUG_KEY = '[ Reducer Goals ]';
 
 // Sample goal object in the map
-const INITIAL_GOAL = {
+const INITIAL_GOAL_OBJECT = {
     goal: {},
     pageId: {
         refreshing: false
@@ -64,6 +93,32 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
+        /* Goal Detail related */
+        case GOAL_DETAIL_FETCH_DONE:
+        case GOAL_DETAIL_OPEN: {
+            const { goal, goalId, pageId, tab } = action.payload;
+            const newState = _.cloneDeep(state);
+            let reference = [pageId];
+            let goalObjectToUpdate = _.has(newState, goalId)
+                ? _.get(newState, 'goalId')
+                : { ...INITIAL_GOAL_OBJECT };
+            
+            // Set the goal to the latest
+            if (goal !== undefined) {
+                goalObjectToUpdate = _.set(goalObjectToUpdate, 'goal', goal);
+            }
+
+            const oldReference = _.get(goalObjectToUpdate, 'reference');
+            if (oldReference !== undefined && !oldReference.some(r => r === pageId)) {
+                reference = reference.concat(oldReference);
+            }
+
+            // Update the reference
+            goalObjectToUpdate = _.set(goalObjectToUpdate, 'reference', reference);
+            
+            return _.set(newState, `${goalId}`, goalObjectToUpdate);
+        }
+
         /* Profile related */
         case PROFILE_REFRESH_TAB_DONE:
         case PROFILE_FETCH_TAB_DONE: {
@@ -95,6 +150,7 @@ export default (state = INITIAL_STATE, action) => {
             return newState;
         }
 
+        case GOAL_DETAIL_CLOSE:
         case PROFILE_GOAL_DELETE_SUCCESS: {
             const { pageId, goalId } = action.payload;
             let newState = _.cloneDeep(state);
@@ -162,6 +218,10 @@ export default (state = INITIAL_STATE, action) => {
 
             // console.log(`${DEBUG_KEY}: profile close with newState: `, newState);
             return newState;
+        }
+
+        case USER_LOG_OUT: {
+            return { ...INITIAL_STATE };
         }
 
         default: 

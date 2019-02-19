@@ -24,7 +24,7 @@ import {
 } from '../../goal/GoalDetailActions';
 
 import { api as API } from '../../../middleware/api';
-import { queryBuilder } from '../../../middleware/utils';
+import { queryBuilder, constructPageId } from '../../../middleware/utils';
 
 const DEBUG_KEY = '[ Action Home Mastermind ]';
 const BASE_ROUTE = 'secure/goal/';
@@ -42,18 +42,24 @@ export const closeCreateOverlay = (tab) => ({
 export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   const { _id } = goal;
+
+  // Generate pageId on open
+  const pageId = constructPageId('goal');
   dispatch({
     type: GOAL_DETAIL_OPEN,
     payload: {
       goal,
-      tab
+      tab,
+      pageId,
+      goalId: _id
     }
   });
 
-  refreshGoalDetailById(_id)(dispatch, getState);
+  refreshGoalDetailById(_id, pageId)(dispatch, getState);
   refreshComments('Goal', _id, tab, undefined)(dispatch, getState);
   // TODO: create new stack using Actions.create(React.Element) if needed
-  Actions.push('goal', { initial: { ...initialProps } });
+
+  Actions.push('goal', { initial: { ...initialProps }, goalId: _id, pageId });
 };
 
 // set currentIndex to the prev one
