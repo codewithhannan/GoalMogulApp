@@ -294,6 +294,21 @@ class RouterComponent extends Component {
                         component={NotificationNeedListView}
                         hideNavBar
                       />
+                      <Scene key="notificationTab_goal" component={GoalDetailCard} />
+                      <Scene key="notificationTab_post" component={PostDetailCard} />
+                      <Scene key="notificationTab_share" component={ShareDetailCard} />
+                      <Scene key="notificationTab_profile" component={Profile} />
+                      <Scene key="notificationTab_profileDetail" component={ProfileDetail} />
+                      <Scene key="notificationTab_setting" component={Setting} />
+                      <Scene key="notificationTab_email" component={Email} />
+                      <Scene key="notificationTab_editEmailForm" component={EditEmailForm} />
+                      <Scene key="notificationTab_editPasswordForm" component={EditPasswordForm} />
+                      <Scene key="notificationTab_phone" component={Phone} path='/phone/verification' />
+                      <Scene key="notificationTab_addPhoneNumberForm" component={AddPhoneNumberForm} />
+                      <Scene key="notificationTab_editPhoneNumberForm" component={EditPhoneNumberForm} />
+                      <Scene key="notificationTab_friendsBlocked" component={FriendsBlocked} />
+                      <Scene key="notificationTab_privacy" component={Privacy} />
+                      <Scene key="notificationTab_friendsSetting" component={FriendsSetting} />
                     </Stack>
 
                     <Stack
@@ -307,6 +322,22 @@ class RouterComponent extends Component {
                       <Scene key="postExploreTab" component={PostDetailCard} />
                       <Scene key="goalExploreTab" component={GoalDetailCard} />
                       <Scene key="shareExploreTab" component={ShareDetailCard} />
+
+                      <Scene key="exploreTab_goal" component={GoalDetailCard} />
+                      <Scene key="exploreTab_post" component={PostDetailCard} />
+                      <Scene key="exploreTab_share" component={ShareDetailCard} />
+                      <Scene key="exploreTab_profile" component={Profile} />
+                      <Scene key="exploreTab_profileDetail" component={ProfileDetail} />
+                      <Scene key="exploreTab_setting" component={Setting} />
+                      <Scene key="exploreTab_email" component={Email} />
+                      <Scene key="exploreTab_editEmailForm" component={EditEmailForm} />
+                      <Scene key="exploreTab_editPasswordForm" component={EditPasswordForm} />
+                      <Scene key="exploreTab_phone" component={Phone} path='/phone/verification' />
+                      <Scene key="exploreTab_addPhoneNumberForm" component={AddPhoneNumberForm} />
+                      <Scene key="exploreTab_editPhoneNumberForm" component={EditPhoneNumberForm} />
+                      <Scene key="exploreTab_friendsBlocked" component={FriendsBlocked} />
+                      <Scene key="exploreTab_privacy" component={Privacy} />
+                      <Scene key="exploreTab_friendsSetting" component={FriendsSetting} />
                     </Stack>
 
                     <Stack
