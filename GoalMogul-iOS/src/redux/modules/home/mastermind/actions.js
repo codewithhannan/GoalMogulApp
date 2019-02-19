@@ -50,7 +50,7 @@ export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
     payload: {
       goal,
       tab,
-      // pageId,
+      pageId,
       goalId: _id
     }
   });
@@ -59,7 +59,7 @@ export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
   refreshComments('Goal', _id, tab, undefined)(dispatch, getState);
   // TODO: create new stack using Actions.create(React.Element) if needed
 
-  Actions.push('goal', { initial: { ...initialProps }, goalId: _id });
+  Actions.push('goal', { initial: { ...initialProps }, goalId: _id, pageId });
 };
 
 // set currentIndex to the prev one
@@ -131,7 +131,8 @@ export const refreshGoals = () => (dispatch, getState) => {
         data,
         skip: data.length,
         limit: 20,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        pageId: 'HOME'
       }
     });
   }, () => {
@@ -169,7 +170,8 @@ export const loadMoreGoals = (callback) => (dispatch, getState) => {
         data,
         skip: skip + (data === undefined ? 0 : data.length),
         limit: 20,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        pageId: 'HOME'
       }
     });
     if (callback) callback();
