@@ -30,7 +30,7 @@ class Account extends Component {
               const componentKeyToOpen = componentKeyByTab(tab, 'email');
               this.props.fetchProfile(
                 this.props.userId, 
-                Actions.push(`${componentKeyToOpen}`, { userId: this.props.userId })
+                () => Actions.push(`${componentKeyToOpen}`, { userId: this.props.userId })
               );
             }}
           />
@@ -40,7 +40,7 @@ class Account extends Component {
             explanation="Manage your phone numbers"
             onPress={() => {
               const componentKeyToOpen = componentKeyByTab(tab, 'phone');
-              Actions.push(`${componentKeyToOpen}`);
+              Actions.push(`${componentKeyToOpen}`, { userId: this.props.userId });
             }}
           />
           <SettingCard
@@ -49,7 +49,7 @@ class Account extends Component {
             explanation="Update your passwords"
             onPress={() => {
               const componentKeyToOpen = componentKeyByTab(tab, 'editPasswordForm');
-              Actions.push(`${componentKeyToOpen}`);
+              Actions.push(`${componentKeyToOpen}`, { userId: this.props.userId });
             }}
           />
           <SettingCard
@@ -58,7 +58,7 @@ class Account extends Component {
             explanation="Manage blocked users"
             onPress={() => {
               const componentKeyToOpen = componentKeyByTab(tab, 'friendsBlocked');
-              Actions.push(`${componentKeyToOpen}`);
+              Actions.push(`${componentKeyToOpen}`, { userId: this.props.userId });
             }}
           />
           <SettingCard

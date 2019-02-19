@@ -34,6 +34,8 @@ const BASE_ROUTE = 'secure/user/settings';
 export const openSetting = () => (dispatch, getState) => {
   const { tab } = getState().navigation;
   const componentKeyToOpen = componentKeyByTab(tab, 'setting');
+  
+  console.log(`${DEBUG_KEY}: componentKeyToOpen: ${componentKeyToOpen}`);
   dispatch({
     type: SETTING_OPEN_SETTING
   });
@@ -72,7 +74,7 @@ export const onResendEmailPress = (callback, userId) => (dispatch, getState) => 
 // Update user email
 export const onUpdateEmailSubmit = (values, callback) => {
   return async (dispatch, getState) => {
-    const { token } = getState().user;
+    const { token, userId } = getState().user;
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
     const headers = {
       method: 'PUT',
@@ -94,7 +96,10 @@ export const onUpdateEmailSubmit = (values, callback) => {
         if (res.success) {
           dispatch({
             type: SETTING_EMAIL_UPDATE_SUCCESS,
-            payload: values.email
+            payload: {
+              email: values.email,
+              userId
+            }
           });
           Actions.popTo(`${componentToPopTo}`); // It was setting
           if (callback) {
@@ -122,7 +127,7 @@ export const onUpdateEmailSubmit = (values, callback) => {
 // update user phone number
 export const onUpdatePhoneNumberSubmit = (values, callback) => {
   return async (dispatch, getState) => {
-    const { token } = getState().user;
+    const { token, userId } = getState().user;
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
     const headers = {
       method: 'PUT',
@@ -142,7 +147,10 @@ export const onUpdatePhoneNumberSubmit = (values, callback) => {
         if (res.success) {
           dispatch({
             type: SETTING_PHONE_UPDATE_SUCCESS,
-            payload: values.phone
+            payload: {
+              phone: values.phone,
+              userId
+            }
           });
           Actions.pop();
           if (callback) {
@@ -246,10 +254,14 @@ const removeLinkingListener = (handleRedirect) => {
   Expo.Linking.removeEventListener('url', handleRedirect);
 };
 
-export const verifyPhoneNumberSuccess = () => {
-  return {
-    type: SETTING_PHONE_VERIFICATION_SUCCESS
-  };
+export const verifyPhoneNumberSuccess = () => (dispatch, getState) => {
+  const { userId } = getState().user;
+  dispatch({
+    type: SETTING_PHONE_VERIFICATION_SUCCESS,
+    payload: {
+      userId
+    }
+  });
 };
 
 /* Privacy actions */

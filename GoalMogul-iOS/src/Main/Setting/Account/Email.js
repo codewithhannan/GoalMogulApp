@@ -28,7 +28,7 @@ class Email extends Component {
   handleOnEditEmailPress() {
     const { tab } = this.props;
     const componentKeyToOpen = componentKeyByTab(tab, 'editEmailForm');
-    Actions.push(`${componentKeyToOpen}`);
+    Actions.push(`${componentKeyToOpen}`, { userId: this.props.userId });
   }
 
   renderEmailDetailText() {

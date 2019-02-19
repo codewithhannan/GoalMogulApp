@@ -13,8 +13,6 @@ import {
     PROFILE_FETCH_MUTUAL_FRIEND_DONE,
     PROFILE_FETCH_MUTUAL_FRIEND,
     PROFILE_FETCH_FRIENDSHIP_DONE,
-    PROFILE_FETCHING_SUCCESS,
-    PROFILE_FETCHING_FAIL,
     PROFILE_REFRESH_TAB,
     PROFILE_REFRESH_TAB_DONE,
     PROFILE_REFRESH_TAB_FAIL,
@@ -32,22 +30,35 @@ import {
 } from '../../../reducers/Profile';
 
 import {
-    USER_LOG_OUT
+    USER_LOG_OUT,
+    USER_LOAD_PROFILE_DONE
   } from '../../../reducers/User';
 
 import {
     PROFILE_OPEN_PROFILE,
     PROFILE_CLOSE_PROFILE,
     PROFILE_OPEN_PROFILE_DETAIL,
-    PROFILE_CLOSE_PROFILE_DETAIL,
+    PROFILE_CLOSE_PROFILE_DETAIL, // Not to update state for now
     PROFILE_IMAGE_UPLOAD_SUCCESS,
     PROFILE_SUBMIT_UPDATE,
     PROFILE_UPDATE_SUCCESS,
+    PROFILE_FETCHING_SUCCESS,
+    PROFILE_FETCHING_FAIL,
     PROFILE_SWITCH_TAB,
     MEET_UPDATE_FRIENDSHIP_DONE,
+    SETTING_EMAIL_UPDATE_SUCCESS,
+    SETTING_PHONE_UPDATE_SUCCESS,
+    SETTING_PHONE_VERIFICATION_SUCCESS
 } from '../../../actions/types';
 
 const DEBUG_KEY = '[ Reducer Users ]';
+
+const INITIAL_DUMMY_USER = {
+    name: '',
+    profile: {
+        image: undefined
+    },
+};
 
 /**
  * Sample userId --> user object mapping
@@ -181,10 +192,15 @@ export default (state = INITIAL_STATE, action) => {
             const { userId, pageId } = action.payload;
             let reference = [];
             if (userId in newState) {
-                reference = _.get(newState, `${userId}.reference`);
+                const prevReference = _.get(newState, `${userId}.reference`);
+                if (prevReference !== undefined && !_.isEmpty(prevReference)) {
+                    reference = prevReference;
+                }
+            } else {
+                newState = _.set(newState, `${userId}.user`, { ...INITIAL_DUMMY_USER });
             }
 
-            if (reference.some(r => r === pageId)) {
+            if (reference !== undefined && reference.some(r => r === pageId)) {
                 console.warn(`${DEBUG_KEY}: page ${pageId} already opened`);
                 return newState;
             }
@@ -233,7 +249,7 @@ export default (state = INITIAL_STATE, action) => {
                 reference = _.get(newState, `${userId}.reference`);
             }
 
-            if (reference.some(r => r === pageId)) {
+            if (reference !== undefined && reference.some(r => r === pageId)) {
                 console.warn(`${DEBUG_KEY}: page ${pageId} already opened`);
                 return newState;
             }
@@ -244,11 +260,13 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         /* Profile fetching */
+        case USER_LOAD_PROFILE_DONE:
         case PROFILE_FETCHING_SUCCESS: {
             let newState = _.cloneDeep(state);
             const { user, pageId } = action.payload;
 
             let userToUpdate = {};
+            // We need to use user._id otherwise, it will break USER_LOAD_PROFILE_DONE
             const path = `${user._id}.user`;
             if (_.has(newState, `${user._id}`)) {
                 userToUpdate = _.get(newState, path);
@@ -551,7 +569,7 @@ export default (state = INITIAL_STATE, action) => {
             if (!shouldUpdate) return newState;
 
             const user = _.get(newState, `${userId}`);
-            const updatedUser = removeItem(goalId, 'goals', user);
+            const updatedUser = removeItem(goalId, 'goals', 'goal', user);
             return _.set(newState, `${userId}`, updatedUser);
         }
     
@@ -562,7 +580,7 @@ export default (state = INITIAL_STATE, action) => {
             if (!shouldUpdate) return newState;
 
             const user = _.get(newState, `${userId}`);
-            const updatedUser = removeItem(goalId, 'posts', user);
+            const updatedUser = removeItem(goalId, 'posts', 'post', user);
             return _.set(newState, `${userId}`, updatedUser);
         }
 
@@ -595,6 +613,45 @@ export default (state = INITIAL_STATE, action) => {
             }
 
             return _.set(newState, `${userId}.${pageId}.showPlus`, true);
+        }
+
+        /* Profile setting (for app user only) */
+        case SETTING_EMAIL_UPDATE_SUCCESS: {
+            const { userId, email } = action.payload;
+            let newState = _.cloneDeep(state);
+            const shouldUpdate = sanityCheck(newState, userId, SETTING_EMAIL_UPDATE_SUCCESS);
+            if (!shouldUpdate) {
+                return newState;
+            }
+
+            newState = _.set(newState, `${userId}.user.email.address`, email);
+            newState = _.set(newState, `${userId}.user.email.isVerified`, false);
+            return newState;
+        }
+
+        case SETTING_PHONE_UPDATE_SUCCESS: {
+            const { userId, phone } = action.payload;
+            let newState = _.cloneDeep(state);
+            const shouldUpdate = sanityCheck(newState, userId, SETTING_PHONE_UPDATE_SUCCESS);
+            if (!shouldUpdate) {
+                return newState;
+            }
+
+            newState = _.set(newState, `${userId}.user.phone.number`, phone);
+            newState = _.set(newState, `${userId}.user.phone.isVerified`, false);
+            return newState;
+        }
+
+        case SETTING_PHONE_VERIFICATION_SUCCESS: {
+            const { userId } = action.payload;
+            let newState = _.cloneDeep(state);
+            const shouldUpdate = sanityCheck(newState, userId, SETTING_PHONE_UPDATE_SUCCESS);
+            if (!shouldUpdate) {
+                return newState;
+            }
+
+            newState = _.set(newState, `${userId}.user.phone.isVerified`, true);
+            return newState;
         }
 
         /* User log out */
@@ -630,7 +687,7 @@ const sanityCheckPageId = (state, userId, pageId, type) => {
     }
 
     const user = _.get(state, `${userId}`);
-    const isPageIdInReference = user.reference.some(r => r === pageId);
+    const isPageIdInReference = user.reference !== undefined && user.reference.some(r => r === pageId);
 
     if (!_.has(user, `${pageId}`)) {
         if (isPageIdInReference) {
@@ -651,12 +708,13 @@ const sanityCheckPageId = (state, userId, pageId, type) => {
 
 /**
  * Remove a post / goal id from related user's profile page.
+ * prefixType: ['goal', 'post']
  * type: ['goals', 'posts']
  */
-const removeItem = (id, type, user) => {
+const removeItem = (id, type, prefixType, user) => {
     let userToReturn = _.cloneDeep(user);
     Object.keys(userToReturn).forEach(k => {
-        if (hasTypePrefix(type, k)) { // Check if key k has type prefix
+        if (hasTypePrefix(prefixType, k)) { // Check if key k has type prefix
             // This is a page for type
             const oldData = _.get(userToReturn, `${k}.${type}.data`);
             const newData = oldData.filter(d => d !== id);

@@ -105,7 +105,7 @@ export default (state = INITIAL_STATE, action) => {
             // Update reference
             const oldReference = _.get(goalToUpdate, 'reference');
             let newReference = oldReference;
-            if (oldReference && oldReference.some(r => r === pageId)) {
+            if (oldReference !== undefined && oldReference.some(r => r === pageId)) {
                 newReference = newReference.filter(r => r !== pageId);
             }
 

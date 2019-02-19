@@ -149,6 +149,16 @@ export const generateInvitationLink = (inviteCode) => {
   return `${BASE_CODE}${inviteCode}`;
 };
 
+export const PAGE_TYPE_MAP = {
+  user: 'USER',
+  goal: 'GOAL',
+  post: 'POST',
+  event: 'EVENT',
+  tribe: 'TRIBE',
+  goalFeed: 'GOAL_FEED',
+  activity: 'ACTIVITY'
+};
+
 export const hasTypePrefix = (type, key) => {
   if (key === undefined || _.isEmpty(key) || !isString(key)) {
     return false;
@@ -167,16 +177,6 @@ function isString (value) {
   return typeof value === 'string' || value instanceof String;
 }
 
-export const PAGE_TYPE_MAP = {
-  user: 'USER',
-  goal: 'GOAL',
-  post: 'POST',
-  event: 'EVENT',
-  tribe: 'TRIBE',
-  goalFeed: 'GOAL_FEED',
-  activity: 'ACTIVITY'
-};
-
 export const constructPageId = (type, DEBUG_KEY = '[ Utils constructPageId ]') => {
   const prefix = _.get(PAGE_TYPE_MAP, `${type}`);
   if (prefix === undefined || _.isEmpty(prefix)) {
@@ -189,7 +189,7 @@ export const constructPageId = (type, DEBUG_KEY = '[ Utils constructPageId ]') =
 
 export const componentKeyByTab = (tab, key) => {
   let ret = key;
-  if (tab !== 'homeTab') {
+  if (tab !== 'homeTab' && tab !== undefined) {
     ret = `${tab}_${key}`;
   }
   return ret;

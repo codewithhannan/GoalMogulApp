@@ -91,7 +91,7 @@ const fetchFriendsCountSucceed = (userId, res, self, dispatch) => {
 };
 
 const fetchProfileSucceed = (pageId, res, dispatch) => {
-  console.log(`${DEBUG_KEY} fetch profile succeed with res: `, res);
+  console.log(`${DEBUG_KEY} fetch profile for pageId: ${pageId} succeed with res: `, res);
   dispatch({
     type: PROFILE_FETCHING_SUCCESS,
     payload: {
@@ -309,7 +309,10 @@ export const openProfileDetail = (userId, pageId) => (dispatch, getState) => {
   // Profile component doesn't seem to be much of a difference. 
   // Go with appending to create a new pageId first
   const { tab } = getState().navigation;
-  const componentKeyToOpen = `${tab}_profileDetail`;
+  let componentKeyToOpen = 'profileDetail';
+  if (tab !== 'homeTab' && tab !== undefined) {
+    componentKeyToOpen = `${tab}_profileDetail`;
+  }
   Actions.push(`${componentKeyToOpen}`, { userId, pageId: newPageId });
 };
 
@@ -491,10 +494,9 @@ export const handleTabRefresh = (tab, userId, pageId) => (dispatch, getState) =>
   // Get page info for this user by userId and pageId
   const page = getUserDataByPageId(getState(), userId, pageId, `${tab}`);
   const { filter, limit, refreshing } = page;
-  
-  console.log(`${DEBUG_KEY}: refresh tab for user: `, user);
 
   if (!user || !user._id || refreshing) return;
+  console.log(`${DEBUG_KEY}: refresh tab for user with name ${user.name} and id: ${user._id}`);
   const userIdToUser = user._id;
 
   dispatch({

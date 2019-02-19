@@ -55,6 +55,7 @@ import {
 import {
   IPHONE_MODELS
 } from '../../../Utils/Constants';
+import { getUserData } from '../../../redux/modules/User/Selector';
 
 const tintColor = '#33485e';
 
@@ -86,7 +87,7 @@ class SearchBarHeader extends Component {
   }
 
   handleProfileOnClick() {
-    this.props.openProfile(this.props.userId);
+    this.props.openProfile(this.props.appUserId);
   }
 
   handleSettingOnClick() {
@@ -380,19 +381,23 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  const { userId } = state.user;
-  const profileUserId = state.profile.userId;
-  const profileUserName = state.profile.user.name;
-  const { image } = state.user.user.profile;
-  const haveSetting = state.profile.userId.toString() === state.user.userId.toString();
+const mapStateToProps = (state, props) => {
+  const appUserId = state.user.userId;
+  const { image } = state.user.user.profile; // Image is app user image
+
+  // If no userId passed in, then we assume it's app userId
+  const profileUserId = props.userId || appUserId; 
+  const user = getUserData(state, profileUserId, 'user');
+  const profileUserName = user.name;
+  
+  const haveSetting = appUserId.toString() === profileUserId.toString();
 
   return {
-    userId,
     haveSetting,
     profileUserId,
     profileUserName,
-    image
+    image,
+    appUserId
   };
 };
 

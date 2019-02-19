@@ -1,9 +1,11 @@
 import _ from 'lodash';
 import {
-  LOGIN_USER_SUCCESS,
-  REGISTRATION_ACCOUNT_SUCCESS,
   REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS,
-  SETTING_EMAIL_UPDATE_SUCCESS
+  REGISTRATION_ACCOUNT_SUCCESS,
+  PROFILE_FETCHING_SUCCESS,
+  PROFILE_UPDATE_SUCCESS,
+  LOGIN_USER_SUCCESS,
+  SETTING_EMAIL_UPDATE_SUCCESS,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -26,10 +28,20 @@ export const USER_LOG_OUT = 'user_log_out';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case PROFILE_UPDATE_SUCCESS:
+    case PROFILE_FETCHING_SUCCESS: {
+      const newState = _.cloneDeep(state);
+      const { user } = action.payload;
+      if (user._id !== _.get(newState, 'userId')) {
+        return newState;
+      }
+
+      return _.set(newState, 'user', user);
+    } 
 
     // TODO: verify if this behavior is necessary
     case SETTING_EMAIL_UPDATE_SUCCESS:
-      return { ...state, email: action.payload };
+      return { ...state, email: action.payload.email };
 
     case LOGIN_USER_SUCCESS:
     case REGISTRATION_ACCOUNT_SUCCESS: {

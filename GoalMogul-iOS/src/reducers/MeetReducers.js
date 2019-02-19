@@ -269,9 +269,10 @@ export default (state = INITIAL_STATE, action) => {
     // fetch friends count when opening profile
     case PROFILE_FETCH_FRIEND_COUNT_DONE: {
       // console.log('payload is: ', action.payload);
+      const { userId, data } = action.payload;
       const newState = _.cloneDeep(state);
       let newFriends = _.get(newState, 'friends');
-      newFriends = _.set(newFriends, 'count', action.payload);
+      newFriends = _.set(newFriends, 'count', data);
       return _.set(newState, 'friends', newFriends);
     }
 

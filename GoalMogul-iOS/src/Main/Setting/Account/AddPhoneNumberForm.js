@@ -26,6 +26,11 @@ import {
   onAddVerifyPhone
 } from '../../../actions';
 
+// Selector
+import { 
+  getUserData 
+} from '../../../redux/modules/User/Selector';
+
 class AddPhoneNumberForm extends Component {
 
   handleOnAddPress = values => {
@@ -146,12 +151,13 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  const { user } = state.profile;
-  const { email } = user;
+const mapStateToProps = (state, props) => {
+  // const { userId } = props;
+  // const user = getUserData(state, userId, 'user');
+  // const { email } = user;
 
   return {
-    email
+    // email
   };
 };
 

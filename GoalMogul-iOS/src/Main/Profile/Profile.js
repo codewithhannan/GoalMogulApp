@@ -31,6 +31,12 @@ import { BACKGROUND_COLOR, APP_DEEP_BLUE } from '../../styles';
 /* Assets */
 import plus from '../../asset/utils/plus.png';
 
+// Selector
+import {
+  getUserDataByPageId,
+  getUserData
+} from '../../redux/modules/User/Selector';
+
 const DEBUG_KEY = '[ UI Profile ]';
 
 class Profile extends Component {
@@ -108,7 +114,12 @@ class Profile extends Component {
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={styles.containerStyle}>
-          <SearchBarHeader backButton setting onBackPress={this.handleOnBackPress} />
+          <SearchBarHeader 
+            backButton 
+            setting 
+            onBackPress={this.handleOnBackPress} 
+            userId={this.props.userId}  
+          />
           <ProfileSummaryCard pageId={this.props.pageId} userId={this.props.userId} />
           <TabView
             navigationState={this.props.navigationState}
@@ -162,14 +173,19 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  const { selectedTab, navigationState, user, showPlus } = state.profile;
+const mapStateToProps = (state, props) => {
+  const { userId, pageId } = props;
+
+  const user = getUserData(state, userId, 'user');
+  const userPage = getUserDataByPageId(state, userId, pageId, '');
+  const { selectedTab, navigationState, showPlus } = userPage;
+  
   const appUser = state.user.user;
 
   return {
     selectedTab,
     navigationState,
-    isSelf: user && appUser && user._id === appUser._id,
+    isSelf: user && appUser && userId === appUser._id,
     showPlus
   };
 };

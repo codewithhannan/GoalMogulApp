@@ -25,6 +25,12 @@ import {
   UserBanner
 } from '../../../actions/';
 
+// Selector
+import {
+  getUserDataByPageId,
+  getUserData
+} from '../../../redux/modules/User/Selector';
+
 /* Components */
 import Card from './Card';
 import ButtonArrow from '../../Common/Button/ButtonArrow';
@@ -408,9 +414,12 @@ const styles = {
 
 const mapStateToProps = (state, props) => {
   const { userId, pageId } = props;
-  // TODO: profile reducer redesign to change here.
-  const self = state.profile.userId.toString() === state.user.userId.toString();
-  const { user, friendship, mutualFriends } = state.profile;
+
+  const self = userId === state.user.userId;
+
+  const userObject = getUserData(state, userId, '');
+  const { user, mutualFriends, friendship } = userObject;
+
   const friendsCount = state.meet.friends.count;
   const needRespond = friendship.initiator_id
     && (friendship.initiator_id !== state.user.userId)
@@ -420,7 +429,7 @@ const mapStateToProps = (state, props) => {
     self,
     user,
     friendship,
-    userId: state.profile.userId, // TODO: profile reducer redesign to change here.
+    userId,
     friendsCount,
     mutualFriends,
     needRespond

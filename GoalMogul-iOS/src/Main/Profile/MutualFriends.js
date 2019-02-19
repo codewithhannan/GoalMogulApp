@@ -15,6 +15,12 @@ import FriendCard from '../MeetTab/Friends/FriendCard';
 // actions
 import { fetchMutualFriends } from '../../actions';
 
+// Selectors
+import { 
+  getUserData,
+  getUserDataByPageId
+} from '../../redux/modules/User/Selector';
+
 class MutualFriends extends Component {
   state = {
     modalVisible: false
@@ -86,10 +92,13 @@ class MutualFriends extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  const { mutualFriends, userId, user } = state.profile;
+const mapStateToProps = (state, props) => {
+  const { userId } = props;
+  const userObject = getUserData(state, userId, '');
+  const { user, mutualFriends } = userObject;
   const { data, loading, count } = mutualFriends;
-  const isSelf = state.profile.userId.toString() === state.user.userId.toString();
+
+  const isSelf = userId.toString() === state.user.userId.toString();
 
   return {
     count,

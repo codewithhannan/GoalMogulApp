@@ -38,9 +38,14 @@ class ProfileDetail extends Component {
     }
     return (
       <View style={styles.containerStyle}>
-        <SearchBarHeader backButton setting onBackPress={this.handleOnBackPress} />
+        <SearchBarHeader 
+          backButton 
+          setting 
+          onBackPress={this.handleOnBackPress} 
+          userId={this.props.userId}
+        />
         <ScrollView style={{ backgroundColor }}>
-          <ProfileDetailCard pageId={this.props.pageId} />
+          <ProfileDetailCard pageId={this.props.pageId} userId={this.props.userId} />
           <ProfileInfoCard data={this.props.user} userId={this.props.userId} pageId={this.props.pageId} />
         </ScrollView>
       </View>

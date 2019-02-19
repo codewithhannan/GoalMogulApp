@@ -21,6 +21,9 @@ import Styles from '../Styles';
 /* TODO: update actions needed */
 import { onUpdateEmailSubmit } from '../../../actions';
 
+// Selector
+import { getUserData } from '../../../redux/modules/User/Selector';
+
 const validateEmail = value =>
   value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
     ? 'Invalid email address'
@@ -123,8 +126,9 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  const { user } = state.profile;
+const mapStateToProps = (state, props) => {
+  const { userId } = props;
+  const user = getUserData(state, userId, 'user');
   const { email } = user;
 
   return {

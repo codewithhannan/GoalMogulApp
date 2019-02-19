@@ -150,9 +150,7 @@ const styles = {
 
 const mapStateToProps = (state, props) => {
   const { userId } = props;
-
-  // TODO: change to use userId passed down
-  const canEdit = state.profile.userId.toString() === state.user.userId.toString();
+  const canEdit = userId === state.user.userId;
 
   return {
     canEdit
