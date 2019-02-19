@@ -133,7 +133,7 @@ const styles = {
     fontSize: 13
   },
   headerContainerStyle: {
-    marginTop: 15,
+    marginTop: 45,
     justifyContent: 'center',
     alignItems: 'center'
   },

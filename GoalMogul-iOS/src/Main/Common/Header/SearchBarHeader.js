@@ -11,7 +11,7 @@ import R from 'ramda';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import Expo, { Constants } from 'expo';
+import { Constants } from 'expo';
 
 /* Asset */
 // import Logo from '../../../asset/header/logo.png';
@@ -25,6 +25,9 @@ import { actionSheet, switchByButtonIndex } from '../ActionSheetFactory';
 
 /* Component */
 import DelayedButton from '../Button/DelayedButton';
+
+// Utils
+import { componentKeyByTab } from '../../../redux/middleware/utils';
 
 /* Actions */
 import {
@@ -276,7 +279,13 @@ class SearchBarHeader extends Component {
       );
     }
     return (
-      <TouchableOpacity activeOpacity={0.85} onPress={() => Actions.push('searchLightBox')}>
+      <TouchableOpacity 
+        activeOpacity={0.85} 
+        onPress={() => {
+          const componentKeyToOpen = componentKeyByTab(this.props.navigationTab, 'searchLightBox');
+          Actions.push(`${componentKeyToOpen}`);
+        }}
+      >
         <View style={styles.searchButtonContainerStyle}>
           <View style={{ marginBottom: 3 }}>
             <Icon
@@ -384,6 +393,7 @@ const styles = {
 const mapStateToProps = (state, props) => {
   const appUserId = state.user.userId;
   const { image } = state.user.user.profile; // Image is app user image
+  const navigationTab = state.navigation.tab;
 
   // If no userId passed in, then we assume it's app userId
   const profileUserId = props.userId || appUserId; 
@@ -397,7 +407,8 @@ const mapStateToProps = (state, props) => {
     profileUserId,
     profileUserName,
     image,
-    appUserId
+    appUserId,
+    navigationTab
   };
 };
 

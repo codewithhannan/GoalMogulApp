@@ -12,7 +12,7 @@ import {
   ActionConst
 } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import { Platform, AppState } from 'react-native';
+import CardStackStyleInterpolator from "react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator";
 
 /* Auth */
 import SplashScreen from './SplashScreen';
@@ -214,6 +214,22 @@ class RouterComponent extends Component {
                       initial
                       icon={TabIcon}
                       hideNavBar
+                      transitionConfig={() => ({
+                          screenInterpolator: (props) => {
+                            const { scene } = props;
+                            switch (scene.route.routeName) {
+                              /* case yourKeyScene:
+                              return theAnimationYouWant(props)*/
+                              case 'home': 
+                                return CardStackStyleInterpolator.forInitial;
+                              case 'searchLightBox':
+                                return CardStackStyleInterpolator.forFade(props);
+                              default:
+                                return CardStackStyleInterpolator.forHorizontal(props);
+                            }
+                          }
+                        })
+                      }
                     >
                       <Scene key="home" initial component={Home} />
                       <Stack key="myEventTabRoot" hideNavBar>
@@ -224,6 +240,7 @@ class RouterComponent extends Component {
                         <Scene key="myTribeTab" component={MyTribeTab} initial />
                         <Scene key="myTribeDetail" component={MyTribe} />
                       </Stack>
+                      
                       <Scene key="goal" component={GoalDetailCard} />
                       <Scene key="post" component={PostDetailCard} />
                       <Scene key="share" component={ShareDetailCard} />
@@ -239,12 +256,30 @@ class RouterComponent extends Component {
                       <Scene key="friendsBlocked" component={FriendsBlocked} />
                       <Scene key="privacy" component={Privacy} />
                       <Scene key="friendsSetting" component={FriendsSetting} />
+
+                      <Scene key="searchLightBox" component={SearchOverlay} />
                     </Stack>
 
                     <Stack
                       key="meetTab"
                       icon={TabIcon}
                       hideNavBar
+                      transitionConfig={() => ({
+                          screenInterpolator: (props) => {
+                            const { scene } = props;
+                            switch (scene.route.routeName) {
+                              /* case yourKeyScene:
+                              return theAnimationYouWant(props)*/
+                              case 'meet': 
+                                return CardStackStyleInterpolator.forInitial;
+                              case 'meetTab_searchLightBox':
+                                return CardStackStyleInterpolator.forFade(props);
+                              default:
+                                return CardStackStyleInterpolator.forHorizontal(props);
+                            }
+                          }
+                        })
+                      }
                     >
                       <Scene key="meet" component={MeetTab} hideNavBar initial />
                       <Scene key="shareMeetTab" component={ShareDetailCard} />
@@ -267,12 +302,30 @@ class RouterComponent extends Component {
                       <Scene key="meetTab_friendsBlocked" component={FriendsBlocked} />
                       <Scene key="meetTab_privacy" component={Privacy} />
                       <Scene key="meetTab_friendsSetting" component={FriendsSetting} />
+
+                      <Scene key="meetTab_searchLightBox" component={SearchOverlay} hideNavBar />
                     </Stack>
 
                     <Stack
                       key="notificationTab"
                       icon={TabIcon}
                       hideNavBar
+                      transitionConfig={() => ({
+                          screenInterpolator: (props) => {
+                            const { scene } = props;
+                            switch (scene.route.routeName) {
+                              /* case yourKeyScene:
+                              return theAnimationYouWant(props)*/
+                              case 'notification': 
+                                return CardStackStyleInterpolator.forInitial;
+                              case 'notificationTab_searchLightBox':
+                                return CardStackStyleInterpolator.forFade(props);
+                              default:
+                                return CardStackStyleInterpolator.forHorizontal(props);
+                            }
+                          }
+                        })
+                      }
                     >
                       <Scene
                         key="notification"
@@ -309,12 +362,30 @@ class RouterComponent extends Component {
                       <Scene key="notificationTab_friendsBlocked" component={FriendsBlocked} />
                       <Scene key="notificationTab_privacy" component={Privacy} />
                       <Scene key="notificationTab_friendsSetting" component={FriendsSetting} />
+
+                      <Scene key="notificationTab_searchLightBox" component={SearchOverlay} hideNavBar />
                     </Stack>
 
                     <Stack
                       key="exploreTab"
                       icon={TabIcon}
                       hideNavBar
+                      transitionConfig={() => ({
+                          screenInterpolator: (props) => {
+                            const { scene } = props;
+                            switch (scene.route.routeName) {
+                              /* case yourKeyScene:
+                              return theAnimationYouWant(props)*/
+                              case 'explore': 
+                                return CardStackStyleInterpolator.forInitial;
+                              case 'exploreTab_searchLightBox':
+                                return CardStackStyleInterpolator.forFade(props);
+                              default:
+                                return CardStackStyleInterpolator.forHorizontal(props);
+                            }
+                          }
+                        })
+                      }
                     >
                       <Scene key="explore" component={Explore} initial />
                       <Scene key="tribeDetail" component={Tribe} drawerLockMode="locked-closed" />
@@ -338,14 +409,33 @@ class RouterComponent extends Component {
                       <Scene key="exploreTab_friendsBlocked" component={FriendsBlocked} />
                       <Scene key="exploreTab_privacy" component={Privacy} />
                       <Scene key="exploreTab_friendsSetting" component={FriendsSetting} />
+
+                      <Scene key="exploreTab_searchLightBox" component={SearchOverlay} hideNavBar />
                     </Stack>
 
                     <Stack
                       key="chatTab"
                       icon={TabIcon}
                       hideNavBar
+                      transitionConfig={() => ({
+                          screenInterpolator: (props) => {
+                            const { scene } = props;
+                            switch (scene.route.routeName) {
+                              /* case yourKeyScene:
+                              return theAnimationYouWant(props)*/
+                              case 'chat': 
+                                return CardStackStyleInterpolator.forInitial;
+                              case 'chatTab_searchLightBox':
+                                return CardStackStyleInterpolator.forFade(props);
+                              default:
+                                return CardStackStyleInterpolator.forHorizontal(props);
+                            }
+                          }
+                        })
+                      }
                     >
                       <Scene key="chat" component={ChatTab} initial />
+                      <Scene key="chatTab_searchLightBox" component={SearchOverlay} hideNavBar />
                     </Stack>
 
                   </Tabs>
@@ -359,7 +449,7 @@ class RouterComponent extends Component {
               Could potential later be used in Android.
               <Scene key="photolib" component={CameraRollModal} />
             */}
-            <Scene key="searchLightBox" component={SearchOverlay} hideNavBar />
+            
             <Scene
               key="createGoalButtonOverlay"
               component={CreateGoalButtonOverlay}
