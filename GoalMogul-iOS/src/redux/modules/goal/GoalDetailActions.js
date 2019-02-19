@@ -147,7 +147,7 @@ export const closeGoalDetailWithoutPoping = (goalId, pageId) => (dispatch, getSt
     payload: {
       tab,
       goalId, 
-      pageId
+      // pageId
     }
   });
 };

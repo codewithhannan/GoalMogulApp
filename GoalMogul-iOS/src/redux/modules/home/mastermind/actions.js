@@ -50,7 +50,7 @@ export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
     payload: {
       goal,
       tab,
-      pageId,
+      // pageId,
       goalId: _id
     }
   });
@@ -59,7 +59,7 @@ export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
   refreshComments('Goal', _id, tab, undefined)(dispatch, getState);
   // TODO: create new stack using Actions.create(React.Element) if needed
 
-  Actions.push('goal', { initial: { ...initialProps }, goalId: _id, pageId });
+  Actions.push('goal', { initial: { ...initialProps }, goalId: _id });
 };
 
 // set currentIndex to the prev one
