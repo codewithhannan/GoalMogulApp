@@ -15,15 +15,20 @@ import Styles from '../Styles';
 /* Actions */
 import { onResendEmailPress } from '../../../actions';
 
+/* Utils */
+import { componentKeyByTab } from '../../../redux/middleware/utils';
+
 class Email extends Component {
 
   handleOnResendPress() {
     console.log('user tries to resend email');
-    this.props.onResendEmailPress((message) => alert(message));
+    this.props.onResendEmailPress((message) => alert(message), this.props.userId);
   }
 
   handleOnEditEmailPress() {
-    Actions.editEmailForm();
+    const { tab } = this.props;
+    const componentKeyToOpen = componentKeyByTab(tab, 'editEmailForm');
+    Actions.push(`${componentKeyToOpen}`, { userId: this.props.userId });
   }
 
   renderEmailDetailText() {
@@ -89,9 +94,11 @@ class Email extends Component {
 
 const mapStateToProps = state => {
   const { email } = state.setting;
+  const { tab } = state.navigation;
 
   return {
-    email
+    email,
+    tab
   };
 };
 

@@ -148,3 +148,49 @@ export const generateInvitationLink = (inviteCode) => {
   const BASE_CODE = 'https://web.goalmogul.com/invite?inviteCode=';
   return `${BASE_CODE}${inviteCode}`;
 };
+
+export const PAGE_TYPE_MAP = {
+  user: 'USER',
+  goal: 'GOAL',
+  post: 'POST',
+  event: 'EVENT',
+  tribe: 'TRIBE',
+  goalFeed: 'GOAL_FEED',
+  activity: 'ACTIVITY'
+};
+
+export const hasTypePrefix = (type, key) => {
+  if (key === undefined || _.isEmpty(key) || !isString(key)) {
+    return false;
+  }
+
+  if (Object.keys(PAGE_TYPE_MAP).some(t => t === type)) {
+    return false;
+  }
+  const typePrefix = _.get(PAGE_TYPE_MAP, type);
+
+  const keys = key.split('_');
+  return (keys[0] === typePrefix);
+};
+
+function isString (value) {
+  return typeof value === 'string' || value instanceof String;
+}
+
+export const constructPageId = (type, DEBUG_KEY = '[ Utils constructPageId ]') => {
+  const prefix = _.get(PAGE_TYPE_MAP, `${type}`);
+  if (prefix === undefined || _.isEmpty(prefix)) {
+    console.warn(`${DEBUG_KEY}: fail to construct page Id for type: ${type}`);
+  }
+  
+  const currentTime = new Date();
+  return `${prefix}_${currentTime.getTime()}`;
+};
+
+export const componentKeyByTab = (tab, key) => {
+  let ret = key;
+  if (tab !== 'homeTab' && tab !== undefined) {
+    ret = `${tab}_${key}`;
+  }
+  return ret;
+};

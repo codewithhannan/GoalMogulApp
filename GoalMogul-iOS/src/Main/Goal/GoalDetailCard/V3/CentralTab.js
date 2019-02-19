@@ -47,7 +47,7 @@ class CentralTab extends React.Component<{}> {
   // Refresh goal content and comment
   handleRefresh = () => {
     if (this.props.goalDetail) {
-      this.props.refreshGoalDetailById(this.props.goalDetail._id);
+      this.props.refreshGoalDetailById(this.props.goalDetail._id, this.props.pageId);
     }
   }
 

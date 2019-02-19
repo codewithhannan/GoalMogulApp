@@ -20,6 +20,12 @@ import Name from '../Common/Name';
 import Position from '../Common/Position';
 import Stats from '../Common/Text/Stats';
 
+// Selector
+import {
+  getUserDataByPageId,
+  getUserData
+} from '../../redux/modules/User/Selector';
+
 const DEBUG_KEY = '[ Component ProfileSummaryCard ]';
 
 class ProfileSummaryCard extends Component {
@@ -30,11 +36,11 @@ class ProfileSummaryCard extends Component {
 
   onButtonClicked = (_id) => {
     console.log(`${DEBUG_KEY} open profile detail for id: ${_id}`);
-    this.props.openProfileDetail();
+    this.props.openProfileDetail(this.props.userId, this.props.pageId);
   }
 
   handleOpenProfileDetail() {
-    this.props.openProfileDetail();
+    this.props.openProfileDetail(this.props.userId, this.props.pageId);
   }
 
   renderStats() {
@@ -68,6 +74,7 @@ class ProfileSummaryCard extends Component {
   render() {
     const { user } = this.props;
     if (!user) return '';
+
     const { name, headline, profile } = user;
     let imageUrl = profile.image;
     // let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
@@ -203,10 +210,16 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  const { userId, user, mutualFriends, loading } = state.profile;
+const mapStateToProps = (state, props) => {
+  const { userId, pageId } = props;
+
+  const userObject = getUserData(state, userId, '');
+  const { user, mutualFriends } = userObject;
+
+  const loading = getUserDataByPageId(state, userId, pageId, 'loading');
+
   const friendsCount = state.meet.friends.count;
-  const isSelf = state.profile.userId.toString() === state.user.userId.toString();
+  const isSelf = userId.toString() === state.user.userId.toString();
 
   return {
     userId,

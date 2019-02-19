@@ -17,30 +17,47 @@ import {
   changeFilter
 } from '../../actions';
 
+// Selector
+import {
+  makeGetUserGoals,
+  makeGetUserPageInfoByType
+} from '../../redux/modules/User/Selector';
+
 // tab key
 const key = 'goals';
+const DEBUG_KEY = '[ UI Profile Goals ]';
 
 class MyGoals extends Component {
+  constructor(props) {
+    super(props);
+    this.handleOnLoadMore = this.handleOnLoadMore.bind(this);
+    this.handleRefresh = this.handleRefresh.bind(this);
+  }
+  
   _keyExtractor = (item) => item._id
 
   handleRefresh = () => {
-    console.log('Refreshing tab: ', key);
-    this.props.handleTabRefresh(key);
+    const { userId, pageId } = this.props;
+    console.log(`${DEBUG_KEY}: refreshing tab`, key);
+    this.props.handleTabRefresh(key, userId, pageId);
   }
 
   handleOnLoadMore = () => {
-    this.props.handleProfileTabOnLoadMore(key);
+    const { userId, pageId } = this.props;
+    this.props.handleProfileTabOnLoadMore(key, userId, pageId);
   }
 
   /**
    * @param type: ['sortBy', 'orderBy', 'categories', 'priorities']
    */
   handleOnMenuChange = (type, value) => {
-    this.props.changeFilter(key, type, value);
+    const { userId, pageId } = this.props;
+    this.props.changeFilter(key, type, value, { userId, pageId });
   }
 
   renderItem = ({ item }) => {
-    return <ProfileGoalCard item={item} />;
+    // Pass down the pageId from the profile component to the ProfileGoalCard
+    return <ProfileGoalCard item={item} pageId={this.props.pageId} />;
   }
 
   renderListFooter() {
@@ -61,6 +78,7 @@ class MyGoals extends Component {
 
   render() {
     const { data } = this.props;
+
     return (
       <View style={{ flex: 1 }}>
         <GoalFilterBar
@@ -70,10 +88,10 @@ class MyGoals extends Component {
         />
         <View style={{ flex: 1 }}>
           <FlatList
-            data={[...data]}
+            data={data}
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
-            onRefresh={this.handleRefresh.bind()}
+            onRefresh={this.handleRefresh}
             onEndReached={this.handleOnLoadMore}
             onEndReachedThreshold={0}
             refreshing={this.props.refreshing}
@@ -110,34 +128,36 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  const { selectedTab, goals } = state.profile;
-  const { data, loading, refreshing, filter } = goals;
+const makeMapStateToProps = () => {
+  const getUserGoals = makeGetUserGoals();
+  const getPageInfo = makeGetUserPageInfoByType();
 
-  return {
-    selectedTab,
-    data,
-    loading,
-    filter,
-    refreshing
+  const mapStateToProps = (state, props) => {
+    const { pageId, userId } = props;
+    const data = getUserGoals(state, userId, pageId);
+
+    const { 
+      loading, refreshing, filter, selectedTab 
+    } = getPageInfo(state, userId, pageId, 'goals');
+
+    // console.log(`${DEBUG_KEY}: user goals composed: `, userGoals);
+    // console.log(`${DEBUG_KEY}: goals are: `, state.goals);
+    // console.log(`${DEBUG_KEY}: user object is: `, state.users[`${userId}`]);
+  
+    return {
+      selectedTab,
+      data,
+      loading,
+      filter,
+      refreshing,
+    };
   };
+
+  return mapStateToProps;
 };
 
-// Currently disable test data
-const testData = [
-  {
-    _id: '128039187294',
-    owner: {
-      _id: '12937109823',
-      name: 'Jia Zeng'
-    },
-    title: 'This is a test goal for Jia',
-    category: 'General'
-  }
-];
-
 export default connect(
-  mapStateToProps,
+  makeMapStateToProps,
   {
     handleTabRefresh,
     handleProfileTabOnLoadMore,

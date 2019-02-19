@@ -14,6 +14,7 @@ import {
   onFriendsSettingSelection,
   updateFriendsSetting
 } from '../../../actions';
+import { Actions } from 'react-native-router-flux';
 
 /*
   TODO: export this const file
@@ -38,6 +39,9 @@ const friendsSettingList = [
 ];
 
 class FriendsSetting extends Component {
+  componentWillUnmount() {
+    this.props.updateFriendsSetting();
+  }
 
   handleOnSelectedPress(id) {
     this.props.onFriendsSettingSelection(id);
@@ -60,7 +64,8 @@ class FriendsSetting extends Component {
   renderPrivacySettingDetail() {
     return friendsSettingList.map((info) => {
       return (
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity 
+          activeOpacity={0.85}
           onPress={this.handleOnSelectedPress.bind(this, info.title)}
           key={info.title}
         >
@@ -87,7 +92,7 @@ class FriendsSetting extends Component {
           backButton
           rightIcon='empty'
           title="Friends"
-          onBackPress={() => this.props.updateFriendsSetting()}
+          onBackPress={() => Actions.pop()}
         />
         <View style={Styles.titleSectionStyle}>
           <Text style={Styles.titleTextStyle}>

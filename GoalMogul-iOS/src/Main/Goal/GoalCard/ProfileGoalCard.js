@@ -57,7 +57,7 @@ class ProfileGoalCard extends React.Component {
             name={owner.name}
             category={category}
             isSelf={this.props.userId === owner._id}
-            caretOnDelete={() => this.props.deleteGoal(_id)}
+            caretOnDelete={() => this.props.deleteGoal(_id, this.props.pageId)}
             caretOnPress={() => this.props.createReport(_id, 'goal', 'Goal')}
             user={owner}
           />

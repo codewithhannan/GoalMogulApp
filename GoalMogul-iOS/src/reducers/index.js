@@ -9,6 +9,7 @@ import AuthReducers from './AuthReducers';
 import RegReducers from './RegReducers';
 import CameraRollReducers from './CameraRollReducers';
 import User from './User';
+import Users from '../redux/modules/User/Users';
 import Profile from './Profile';
 import Setting from './Setting';
 import NavigationReducers from './NavigationReducers';
@@ -16,8 +17,10 @@ import MeetReducers from './MeetReducers';
 import Home from './Home';
 import Search from '../redux/modules/search/Search';
 import GoalDetailReducers from './GoalDetailReducers';
+import Goals from '../redux/modules/goal/Goals';
 import CreateGoal from '../redux/modules/goal/CreateGoal';
 import PostReducers from '../redux/modules/feed/post/PostReducers';
+import Posts from '../redux/modules/feed/post/Posts';
 import ShareReducers from '../redux/modules/feed/post/ShareReducers';
 import TribeReducers from '../redux/modules/tribe/TribeReducers';
 import EventReducers from '../redux/modules/event/EventReducers';
@@ -53,6 +56,7 @@ const reducers = combineReducers({
   registration: RegReducers,
   cameraRoll: CameraRollReducers,
   user: User,
+  users: Users,
   profile: Profile,
   form: formReducer,
   setting: Setting,
@@ -61,8 +65,10 @@ const reducers = combineReducers({
   home: Home,
   search: Search,
   goalDetail: GoalDetailReducers,
+  goals: Goals,
   createGoal: CreateGoal,
   postDetail: PostReducers,
+  posts: Posts,
   shareDetail: ShareReducers,
   tribe: TribeReducers,
   event: EventReducers,

@@ -27,12 +27,12 @@ class Phone extends Component {
 
   handleOnAddPhoneNumberPress() {
     console.log('user tries to verify');
-    Actions.addPhoneNumberForm();
+    Actions.push('addPhoneNumberForm', { userId: this.props.userId });
   }
 
   handleOnEditPhonePress() {
     console.log('user tries to edit phone number');
-    Actions.editPhoneNumberForm();
+    Actions.push('editPhoneNumberForm', { userId: this.props.userId });
   }
 
   async handleOnVerifyPress() {

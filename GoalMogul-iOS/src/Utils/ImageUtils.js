@@ -122,7 +122,7 @@ const ImageUtils = {
 	 * @param(required) path
 	 * @return
 	 */
-  upload(hasImageModified, imageUri, token, type, dispatch) {
+  upload(hasImageModified, imageUri, token, type, dispatch, userId) {
     return new Promise((resolve, reject) => {
       if (!hasImageModified) {
         return resolve();
@@ -137,7 +137,10 @@ const ImageUtils = {
           return ImageUtils.getPresignedUrl(image.uri, token, (objectKey) => {
             dispatch({
               type,
-              payload: objectKey
+              payload: {
+                data: objectKey,
+                userId
+              }
             });
           });
         })
@@ -154,6 +157,7 @@ const ImageUtils = {
         });
     });
   },
+
   async checkPermission(permissions) {
     const promises = permissions.map((value) => Permissions.getAsync(value));
     const status = await Promise.all(promises);

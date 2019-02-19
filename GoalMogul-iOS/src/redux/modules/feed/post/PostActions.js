@@ -92,7 +92,9 @@ export const submitCreatingPost = (
     needOpenProfile, 
     needRefreshProfile 
   }, 
-  callback) => (dispatch, getState) => {
+  callback,
+  pageId // TODO: profile reducer redesign to change here
+) => (dispatch, getState) => {
     const { userId, token } = getState().user;
     const newPost = newPostAdaptor(values, userId);
     console.log(`${DEBUG_KEY}: post to submit is: `, newPost);
@@ -116,8 +118,8 @@ export const submitCreatingPost = (
 
       if (needRefreshProfile) {
         // Change to post tab and then refresh the page
-        selectProfileTab(1)(dispatch, getState);
-        handleTabRefresh('posts')(dispatch, getState);
+        selectProfileTab(1, userId, pageId)(dispatch, getState);
+        handleTabRefresh('posts', userId, pageId)(dispatch, getState);
       }
     };
 

@@ -135,11 +135,12 @@ class GoalDetailCardV3 extends Component {
   }
 
   componentWillUnmount() {
-    console.log(`${DEBUG_KEY}: unmounting.`);
+    const { goalId, pageId } = this.props;
+    console.log(`${DEBUG_KEY}: unmounting goal: ${goalId}, page: ${pageId}`);
     this.keyboardWillShowListener.remove();
     this.keyboardWillHideListener.remove();
     this.state.scroll.removeAllListeners();
-    this.props.closeGoalDetailWithoutPoping();
+    this.props.closeGoalDetailWithoutPoping(goalId, pageId);
   }
 
   // Switch tab to FocusTab and display all the comments
@@ -293,6 +294,8 @@ class GoalDetailCardV3 extends Component {
             contentOffset={{ y: this.state.centralTabContentOffset }}
             isSelf={this.props.isSelf}
             handleIndexChange={this._handleIndexChange}
+            pageId={this.props.pageId}
+            goalId={this.props.goalId}
           />
         );
 
@@ -445,7 +448,7 @@ class GoalDetailCardV3 extends Component {
   }
 
   render() {
-    const { goalDetail, navigationState, pageId } = this.props;
+    const { goalDetail, navigationState, pageId, goalId } = this.props;
     // console.log('transformed comments to render are: ', comments);
     if (!goalDetail || _.isEmpty(goalDetail)) return '';
     const { focusType, focusRef } = navigationState;
@@ -460,7 +463,7 @@ class GoalDetailCardV3 extends Component {
           <SearchBarHeader
             backButton
             title='Goal'
-            onBackPress={() => this.props.closeGoalDetail()}
+            onBackPress={() => this.props.closeGoalDetail(goalId, pageId)}
           />
           <TabView
             style={{ flex: 1 }}

@@ -18,6 +18,8 @@ import {
   deleteGoal,
 } from '../../actions';
 
+import { PAGE_TYPE_MAP } from '../../redux/middleware/utils';
+
 import {
   subscribeEntityNotification,
   unsubscribeEntityNotification
@@ -57,9 +59,10 @@ class ActivityHeader extends Component {
 
     const tags = actedUponEntityType === 'Post' ? item.content.tags : [];
 
+    const pageId = _.get(PAGE_TYPE_MAP, 'activity');
     const onDelete = actedUponEntityType === 'Post'
-      ? () => this.props.deletePost(postRef._id)
-      : () => this.props.deleteGoal(goalRef._id);
+      ? () => this.props.deletePost(postRef._id, pageId)
+      : () => this.props.deleteGoal(goalRef._id, pageId);
 
     const caret = {
       self: {

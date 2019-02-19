@@ -41,7 +41,7 @@ const GOAL_BASE_ROUTE = 'secure/goal';
 /**
  * Refresh goal detail and comments by goal Id
  */
-export const refreshGoalDetailById = (goalId) => (dispatch, getState) => {
+export const refreshGoalDetailById = (goalId, pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   const { token } = getState().user;
 
@@ -49,7 +49,8 @@ export const refreshGoalDetailById = (goalId) => (dispatch, getState) => {
     type: GOAL_DETAIL_FETCH,
     payload: {
       goalId,
-      tab
+      tab,
+      pageId
     }
   });
 
@@ -60,6 +61,7 @@ export const refreshGoalDetailById = (goalId) => (dispatch, getState) => {
       payload: {
         goal: undefined,
         goalId,
+        pageId,
         tab,
         error: err
       }
@@ -73,7 +75,8 @@ export const refreshGoalDetailById = (goalId) => (dispatch, getState) => {
       payload: {
         goal: res.data,
         goalId,
-        tab
+        tab,
+        pageId
       }
     });
   };
@@ -129,20 +132,22 @@ export const goalDetailSwitchTab = (index) => (dispatch, getState) => {
   });
 };
 
-export const closeGoalDetail = () => (dispatch, getState) => {
+export const closeGoalDetail = (goalId, pageId) => (dispatch, getState) => {
   // Return to previous page
   Actions.pop();
   // Clear the state
-  closeGoalDetailWithoutPoping()(dispatch, getState);
+  closeGoalDetailWithoutPoping(goalId, pageId)(dispatch, getState);
 };
 
-export const closeGoalDetailWithoutPoping = () => (dispatch, getState) => {
+export const closeGoalDetailWithoutPoping = (goalId, pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   // Clear the state
   dispatch({
     type: GOAL_DETAIL_CLOSE,
     payload: {
-      tab
+      tab,
+      goalId, 
+      pageId
     }
   });
 };

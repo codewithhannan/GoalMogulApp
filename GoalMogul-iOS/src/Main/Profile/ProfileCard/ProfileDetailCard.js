@@ -25,6 +25,12 @@ import {
   UserBanner
 } from '../../../actions/';
 
+// Selector
+import {
+  getUserDataByPageId,
+  getUserData
+} from '../../../redux/modules/User/Selector';
+
 /* Components */
 import Card from './Card';
 import ButtonArrow from '../../Common/Button/ButtonArrow';
@@ -50,6 +56,7 @@ class ProfileDetailCard extends Component {
     this.state = {
       imageUrl: ''
     };
+    this.handleEditOnPressed = this.handleEditOnPressed.bind(this);
   }
 
   componentDidMount() {
@@ -85,7 +92,8 @@ class ProfileDetailCard extends Component {
   }
 
   handleEditOnPressed() {
-    this.props.openProfileDetailEditForm();
+    const { userId, pageId } = this.props;
+    this.props.openProfileDetailEditForm(userId, pageId);
   }
 
   // type: ['unfriend', 'deleteFriend', 'requestFriend']
@@ -404,9 +412,14 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  const self = state.profile.userId.toString() === state.user.userId.toString();
-  const { user, friendship, userId, mutualFriends } = state.profile;
+const mapStateToProps = (state, props) => {
+  const { userId, pageId } = props;
+
+  const self = userId === state.user.userId;
+
+  const userObject = getUserData(state, userId, '');
+  const { user, mutualFriends, friendship } = userObject;
+
   const friendsCount = state.meet.friends.count;
   const needRespond = friendship.initiator_id
     && (friendship.initiator_id !== state.user.userId)
