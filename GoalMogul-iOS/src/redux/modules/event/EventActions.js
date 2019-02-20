@@ -325,7 +325,8 @@ export const refreshEventFeed = (eventId, dispatch, getState) => {
         data,
         skip: data.length,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        pageId: 'EVENT' // TODO: event reducer redesign to change here
       }
     });
   }, () => {
@@ -350,7 +351,8 @@ export const loadMoreEventFeed = (eventId) => (dispatch, getState) => {
         data,
         skip: data.length,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        pageId: 'EVENT' // TODO: event reducer redesign to change here
       }
     });
   }, () => {

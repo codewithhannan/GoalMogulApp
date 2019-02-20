@@ -289,7 +289,8 @@ class CreatePostModal extends Component {
         needOpenProfile, // Open user profile page and refresh the profile
         needRefreshProfile // Only refresh the profile page with given tab and filter
       },
-      this.props.callback
+      this.props.callback,
+      this.props.pageId
     );
   }
 

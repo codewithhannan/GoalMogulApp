@@ -236,7 +236,7 @@ class MyTribe extends Component {
         showPlus: true
       });
     };
-    Actions.push('createButtonOverlay', { buttons, callback });
+    Actions.push('createButtonOverlay', { buttons, callback, pageId: this.props.pageId });
   }
 
   handleTribeOptionsOnSelect = (value) => {

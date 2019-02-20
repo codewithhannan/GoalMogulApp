@@ -15,50 +15,262 @@ import {
     PROFILE_CLOSE_PROFILE
 } from '../../../../actions/types';
 
+import {
+    HOME_REFRESH_GOAL_DONE,
+    HOME_LOAD_GOAL_DONE
+} from '../../../../reducers/Home';
+
+import {
+    POST_DETAIL_OPEN,
+    POST_DETAIL_CLOSE,
+    POST_NEW_POST_UPDATE_MEDIA,
+    POST_NEW_POST_SUBMIT_SUCCESS,
+    POST_NEW_POST_SUBMIT,
+} from './PostReducers';
+
+import {
+    SHARE_DETAIL_OPEN,
+    SHARE_DETAIL_CLOSE
+} from './ShareReducers';
+
+import {
+    USER_LOG_OUT
+} from '../../../../reducers/User';
+
+import {
+    LIKE_POST,
+    UNLIKE_POST,
+} from '../../like/LikeReducers';
+
+import {
+    COMMENT_DELETE_SUCCESS
+} from '../comment/CommentReducers';
+
+import {
+    COMMENT_NEW_POST_SUCCESS
+} from '../comment/NewCommentReducers';
+
+/* Tribe related */
+import {
+    MYTRIBE_FEED_FETCH_DONE,
+    MYTRIBE_FEED_REFRESH_DONE
+} from '../../tribe/MyTribeReducers';
+
+import {
+    TRIBE_FEED_FETCH_DONE,
+    TRIBE_FEED_REFRESH_DONE
+} from '../../tribe/TribeReducers';
+import {
+    MYEVENT_FEED_FETCH_DONE,
+    MYEVENT_FEED_REFRESH_DONE
+} from '../../event/MyEventReducers';
+
+import {
+    EVENT_FEED_FETCH_DONE,
+    EVENT_FEED_REFRESH_DONE
+} from '../../event/EventReducers';
+
+/* Event related */
+
 /**
  * Related consts to add
  * 
  * Post related
+ * POST_DETAIL_OPEN (done)
+ * POST_DETAIL_CLOSE (done)
+ * POST_DETAIL_FETCH (no action implemented)
+ * POST_DETAIL_FETCH_DONE (no action implemented)
  * 
+ * New post related
+ * POST_NEW_POST_UPDATE_MEDIA (done)
+ * POST_NEW_POST_SUBMIT (done)
+ * POST_NEW_POST_SUBMIT_SUCCESS (done)
+ * 
+ * Share related
+ * SHARE_DETAIL_OPEN (done)
+ * SHARE_DETAIL_CLOSE (done)
+ * SHARE_DETAIL_FETCH (no action implemented)
+ * SHARE_DETAIL_FETCH_DONE (no action implemented)
  * 
  * Profile related
- * PROFILE_FETCH_TAB_DONE
- * PROFILE_REFRESH_TAB_DONE
- * PROFILE_CLOSE_PROFILE
- * PROFILE_POST_DELETE_SUCCESS
+ * PROFILE_FETCH_TAB_DONE (done)
+ * PROFILE_REFRESH_TAB_DONE (done)
+ * PROFILE_CLOSE_PROFILE (done)
+ * PROFILE_POST_DELETE_SUCCESS (done)
  * 
  * Comment related
- * The ones that need to increase / decrease comment count
+ * COMMENT_DELETE_SUCCESS (done)
+ * COMMENT_NEW_POST_SUCCESS (done)
  * 
- * Home related (Activity Feed)
+ * Home related (activityfeed)
+ * HOME_REFRESH_GOAL_DONE (done)
+ * HOME_LOAD_GOAL_DONE (done)
  * 
  * Tribe related
+ * MYTRIBE_FEED_FETCH_DONE (done)
+ * MYTRIBE_FEED_REFRESH_DONE (done)
+ * TRIBE_FEED_REFRESH_DONE (done)
+ * TRIBE_FEED_REFRESH_DONE (done)
  * 
  * Event related
+ * MYEVENT_FEED_FETCH_DONE (done)
+ * MYEVENT_FEED_REFRESH_DONE (done)
+ * EVENT_FEED_REFRESH_DONE (done)
+ * EVENT_FEED_REFRESH_DONE (done)
  * 
+ * Like related
+ * LIKE_POST (done)
+ * UNLIKE_POST (done)
+ * 
+ * User related
+ * USER_LOG_OUT (done)
  */
 
 // Sample goal object in the map
-const INITIAL_POST = {
+export const INITIAL_POST_OBJECT = {
     post: {},
-    pageId: {
-        refreshing: false
-    },
+    // pageId: {
+    //     refreshing: false
+    // },
     reference: [],
 };
 
-const INITIAL_STATE = {
-
+export const INITIAL_POST_PAGE = {
+    refreshing: false, 
+    loading: false, // Indicator if goal on this page is loading
+    updating: false, // Indicator if goal on this page is updating
 };
+
+const NEW_POST_INITIAL_STATE = {
+    mediaRef: undefined,
+    uploading: false
+  };
+
+const INITIAL_STATE = {
+    // This will replace the newPost in PostReducers for simplicity
+    // There should be only one newPost at a time, so we don't need
+    // Seperate it by page
+    newPost: { ...NEW_POST_INITIAL_STATE }
+};
+
+const DEBUG_KEY = '[ Reducers Posts ]';
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
-        /* Profile related */
+        case SHARE_DETAIL_OPEN:
+        case POST_DETAIL_OPEN: {
+            const { post, postId, pageId } = action.payload;
+            let newState = _.cloneDeep(state);
+            let reference = [pageId];
+            let postObjectToUpdate = _.has(newState, postId)
+                ? _.get(newState, `${postId}`)
+                : { ...INITIAL_POST_OBJECT };
+            
+            if (pageId === undefined) {
+                // Abort something is wrong
+                console.warn(`${DEBUG_KEY}: [ ${POST_DETAIL_OPEN} ] with pageId: ${pageId}`);
+                return newState;
+            }
+            
+            // Set the goal to the latest
+            if (post !== undefined) {
+                postObjectToUpdate = _.set(postObjectToUpdate, 'post', post);
+            }
+
+            // Setup goal page for pageId if not initially setup
+            if (!_.has(postObjectToUpdate, pageId)) {
+                postObjectToUpdate = _.set(postObjectToUpdate, pageId, { ...INITIAL_POST_PAGE });
+            }
+ 
+            // Update the reference
+            const oldReference = _.get(postObjectToUpdate, 'reference');
+            if (oldReference !== undefined) {
+                if (!oldReference.some(r => r === pageId)) {
+                    reference = reference.concat(oldReference);
+                } else {
+                    reference = oldReference;
+                }
+            }
+
+            postObjectToUpdate = _.set(postObjectToUpdate, 'reference', reference);
+            
+            // Update goal object
+            newState = _.set(newState, `${postId}`, postObjectToUpdate);
+            return newState;
+        }
+
+        case SHARE_DETAIL_CLOSE:
+        case POST_DETAIL_CLOSE: {
+            const { pageId, postId } = action.payload;
+            let newState = _.cloneDeep(state);
+            if (!_.has(newState, postId)) return newState; // no reference to remove
+
+            let postToUpdate = _.get(newState, `${postId}`);
+
+            // Update reference
+            const oldReference = _.get(postToUpdate, 'reference');
+            let newReference = oldReference;
+            if (oldReference !== undefined && oldReference.some(r => r === pageId)) {
+                newReference = newReference.filter(r => r !== pageId);
+            }
+
+            // Remove pageId reference object
+            postToUpdate = _.omit(postToUpdate, `${pageId}`);
+
+            // Remove this post if it's no longer referenced
+            if (!newReference || _.isEmpty(newReference)) {
+                newState = _.omit(newState, `${postId}`);
+                return newState;
+            }
+
+            // Update the goal by goalId
+            postToUpdate = _.set(postToUpdate, 'reference', newReference);
+            newState = _.set(newState, `${postId}`, postToUpdate);
+            return newState;
+        }
+
+        /* New post related */
+        case POST_NEW_POST_UPDATE_MEDIA: {
+            const newState = _.cloneDeep(state);
+            return _.set(newState, 'newPost.mediaRef', action.payload);
+        }
+
+        case POST_NEW_POST_SUBMIT: {
+            const newState = _.cloneDeep(state);
+            return _.set(newState, 'newPost.uploading', true);
+        }
+
+        case POST_NEW_POST_SUBMIT_SUCCESS: {
+            const newState = _.cloneDeep(state);
+            return _.set(newState, 'newPost', { ...NEW_POST_INITIAL_STATE });
+        }
+
+        /* Profile, Home, Event and Tribe related */
+        case MYTRIBE_FEED_FETCH_DONE:
+        case MYTRIBE_FEED_REFRESH_DONE:
+        case TRIBE_FEED_REFRESH_DONE:
+        case TRIBE_FEED_FETCH_DONE:
+        case MYEVENT_FEED_FETCH_DONE:
+        case MYEVENT_FEED_REFRESH_DONE:
+        case EVENT_FEED_FETCH_DONE:
+        case EVENT_FEED_REFRESH_DONE:
+        case HOME_REFRESH_GOAL_DONE:
+        case HOME_LOAD_GOAL_DONE:
         case PROFILE_REFRESH_TAB_DONE:
         case PROFILE_FETCH_TAB_DONE: {
             const { pageId, data, type } = action.payload;
             let newState = _.cloneDeep(state);
-            if (type !== 'posts') return newState;
+
+            // Customized logics
+            if (action.type === PROFILE_REFRESH_TAB_DONE || action.type === PROFILE_FETCH_TAB_DONE) {
+                if (type !== 'posts') return newState;
+            }
+
+            // Customized logics
+            if (action.type === HOME_REFRESH_GOAL_DONE || action.type === HOME_LOAD_GOAL_DONE) {
+                if (type !== 'activityfeed') return newState;
+            }
+
             if (!data || _.isEmpty(data)) return newState;
 
             data.forEach(post => {
@@ -69,12 +281,18 @@ export default (state = INITIAL_STATE, action) => {
                 }
 
                 const oldReference = _.get(newState, `${postId}.reference`);
+                // console.log(`${DEBUG_KEY}: old reference is: `, oldReference);
                 const hasPageReference = (oldReference !== undefined && oldReference.some(r => r === pageId));
                 // Update reference
                 let newReference = [pageId];
-                if (!hasPageReference) {
-                    newReference = newReference.concat(oldReference);
+                if (oldReference !== undefined) {
+                    if (!hasPageReference) {
+                        newReference = newReference.concat(oldReference);
+                    } else {
+                        newReference = oldReference;
+                    }
                 }
+
                 newState = _.set(newState, `${postId}.reference`, newReference);
             });
 
@@ -144,6 +362,104 @@ export default (state = INITIAL_STATE, action) => {
             });
 
             return newState;
+        }    
+        
+        /* Comment related */
+        case COMMENT_DELETE_SUCCESS: {
+            const {
+                pageId,
+                tab,
+                commentId,
+                parentRef, 
+                parentType // ['Goal', 'Post']
+            } = action.payload;
+            let newState = _.cloneDeep(state);
+            // check parentType to determine to proceed
+            if (parentType !== 'Post') {
+                return newState;
+            }
+            // Check if post of concerned is in the Posts
+            if (!_.has(newState, parentRef)) return newState;
+            if (!_.has(newState, `${parentRef}.post`)) {
+                console.warn(
+                    `${DEBUG_KEY}: post is not in ${parentRef}: `, 
+                    _.get(newState, `${parentRef}`)
+                );
+                return newState;
+            }
+            // Decrease comment count
+            const oldCommentCount = _.get(newState, `${parentRef}.post.commentCount`) || 0;
+            const newCommentCount = (oldCommentCount - 1) < 0 ? 0 : oldCommentCount - 1;
+
+            newState = _.set(newState, `${parentRef}.post.commentCount`, newCommentCount);
+            return newState;
+        }
+
+        case COMMENT_NEW_POST_SUCCESS: {
+            let newState = _.cloneDeep(state);
+            const { comment } = action.payload;
+            const { parentType, parentRef } = comment;
+            // check parentType to determine to proceed
+            if (parentType !== 'Post') {
+                return newState;
+            }
+
+            // Check if post of concerned is in the Posts
+            if (!_.has(newState, parentRef)) return newState;
+
+            if (!_.has(newState, `${parentRef}.post`)) {
+                console.warn(
+                    `${DEBUG_KEY}: post is not in ${parentRef}: `, 
+                    _.get(newState, `${parentRef}`)
+                );
+                return newState;
+            }
+
+            // Increase comment count
+            const oldCommentCount = _.get(newState, `${parentRef}.post.commentCount`) || 0;
+            const newCommentCount = (oldCommentCount + 1);
+
+            newState = _.set(newState, `${parentRef}.post.commentCount`, newCommentCount);
+            return newState;
+        }
+        
+        /* Like related */
+        case LIKE_POST:
+        case UNLIKE_POST: {
+            const { id, likeId, undo } = action.payload;
+            let newState = _.cloneDeep(state);
+            const postId = id;
+
+            // No corresponding post exits
+            if (!_.has(newState, `${postId}.post`)) return newState;
+
+            let postToUpdate = _.get(newState, `${postId}.post`);
+            postToUpdate = _.set(postToUpdate, 'maybeLikeRef', likeId);
+
+            const oldLikeCount = _.get(postToUpdate, 'likeCount');
+            let newLikeCount = oldLikeCount;
+            if (action.type === LIKE_POST) {
+                if (undo) {
+                    newLikeCount = oldLikeCount - 1;
+                } else if (likeId === 'testId') {
+                    newLikeCount = oldLikeCount + 1;
+                }
+            } else if (action.type === UNLIKE_POST) {
+                if (undo) {
+                    newLikeCount = oldLikeCount + 1;
+                } else if (likeId === undefined) {
+                    newLikeCount = oldLikeCount - 1;
+                }
+            }
+
+            postToUpdate = _.set(postToUpdate, 'likeCount', newLikeCount);
+            newState = _.set(newState, `${postId}.post`, postToUpdate);
+            return newState;
+        }
+
+        /* User related */
+        case USER_LOG_OUT: {
+            return { ...INITIAL_STATE };
         }
 
         default: 

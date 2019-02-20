@@ -68,7 +68,7 @@ import RichText from '../../Common/Text/RichText';
 import { APP_BLUE } from '../../../styles';
 
 // Constants
-const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
+const DEBUG_KEY = '[ UI GoalDetailCardV3.GoalDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 
@@ -173,20 +173,25 @@ class GoalDetailSection extends React.PureComponent {
             ? () => {
               Alert.alert(
                 'Confirmation',
-                'Are you sure to mark this goal as incomplete?', [
-                { text: 'Cancel', onPress: () => console.log('user cancel unmark') },
-                { text: 'Confirm', onPress: () => this.props.markGoalAsComplete(_id, false) }]
+                'Are you sure to mark this goal as incomplete?', 
+                [
+                  { text: 'Cancel', onPress: () => console.log('user cancel unmark') },
+                  { 
+                    text: 'Confirm', 
+                    onPress: () => this.props.markGoalAsComplete(_id, false, this.props.pageId) 
+                  }
+                ]
               );
             }
-            : () => this.props.markGoalAsComplete(_id, true);
+            : () => this.props.markGoalAsComplete(_id, true, this.props.pageId);
 
           if (val === 'Delete') {
             this.props.deleteGoal(_id, this.props.pageId); // TODO: profile reducer redesign to change here.
             Actions.pop();
             return;
           }
-          if (val === 'Edit Goal') return this.props.editGoal(item);
-          if (val === 'Share to Goal Feed') return this.props.shareGoalToMastermind(_id);
+          if (val === 'Edit Goal') return this.props.editGoal(item, this.props.pageId);
+          if (val === 'Share to Goal Feed') return this.props.shareGoalToMastermind(_id, this.props.pageId);
           if (val === 'Unmark as Complete' || val === 'Mark as Complete') {
             markCompleteOnPress();
           }
@@ -230,6 +235,8 @@ class GoalDetailSection extends React.PureComponent {
             caret={caret}
             item={item}
             user={owner}
+            pageId={this.props.pageId}
+            goalId={this.props.goalId}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
@@ -295,12 +302,17 @@ class GoalDetailSection extends React.PureComponent {
       ? () => {
         Alert.alert(
           'Confirmation',
-          'Are you sure to mark this goal as incomplete?', [
-          { text: 'Cancel', onPress: () => console.log('user cancel unmark') },
-          { text: 'Confirm', onPress: () => this.props.markGoalAsComplete(_id, false) }]
+          'Are you sure to mark this goal as incomplete?', 
+          [
+            { text: 'Cancel', onPress: () => console.log('user cancel unmark') },
+            { 
+              text: 'Confirm', 
+              onPress: () => this.props.markGoalAsComplete(_id, false, this.props.pageId) 
+            }
+          ]
         );
       }
-      : () => this.props.markGoalAsComplete(_id, true);
+      : () => this.props.markGoalAsComplete(_id, true, this.props.pageId);
 
     return (
       <View style={styles.selfActionButtonsContainerStyle}>

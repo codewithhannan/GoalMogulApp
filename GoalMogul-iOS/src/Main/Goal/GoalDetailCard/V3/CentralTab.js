@@ -31,8 +31,10 @@ import {
 
 // Selectors
 import {
-  getGoalStepsAndNeeds,
-  getGoalDetailByTab
+  // getGoalStepsAndNeeds, // These are used before refactoring
+  // getGoalDetailByTab, // These are used before refactoring
+  makeGetGoalPageDetailByPageId,
+  makeGetGoalStepsAndNeedsV2
 } from '../../../../redux/modules/goal/selector';
 
 // Styles
@@ -57,7 +59,7 @@ class CentralTab extends React.Component<{}> {
   }
 
   renderItem = (props) => {
-    const { goalDetail } = this.props;
+    const { goalDetail, pageId, goalId } = this.props;
     if (!goalDetail) return '';
 
     const newCommentParams = {
@@ -82,6 +84,8 @@ class CentralTab extends React.Component<{}> {
         }}
         isSelf={this.props.isSelf}
         count={props.item.count}
+        pageId={pageId}
+        goalId={goalId}
       />
     );
   }
@@ -115,23 +119,34 @@ CentralTab.defaultPros = {
   isSelf: false
 };
 
-const mapStateToProps = (state, props) => {
-  const goalDetail = getGoalDetailByTab(state);
-  const { goal } = goalDetail;
-  let loading = false;
-  if (goal) {
-    loading = goal.loading;
-  }
+const makeMapStateToProps = () => {
+  const getGoalPageDetailByPageId = makeGetGoalPageDetailByPageId();
+  const getGoalStepsAndNeedsV2 = makeGetGoalStepsAndNeedsV2();
 
-  return {
-    goalDetail: goal,
-    loading,
-    data: getGoalStepsAndNeeds(state, props.pageId),
+  const mapStateToProps = (state, props) => {
+    const { pageId, goalId } = props;
+    const goalDetail = getGoalPageDetailByPageId(state, goalId, pageId);
+    // const goalDetail = getGoalDetailByTab(state); // These are used before refactoring
+    const { goal, goalPage } = goalDetail;
+    let loading = false;
+    if (goalPage) {
+      loading = goalPage.loading;
+    }
+  
+    return {
+      goalDetail: goal,
+      loading,
+      // data: getGoalStepsAndNeeds(state, props.pageId), // These are used before refactoring
+      data: getGoalStepsAndNeedsV2(state, goalId, pageId)
+    };
   };
+
+  return mapStateToProps;
 };
 
+
 export default connect(
-  mapStateToProps,
+  makeMapStateToProps,
   {
     goalDetailSwitchTabV2,
     goalDetailSwitchTabV2ByKey,

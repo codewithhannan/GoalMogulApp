@@ -19,7 +19,8 @@ import {
 
 import {
   switchCaseF,
-  clearTags
+  clearTags,
+  componentKeyByTab
 } from '../../../middleware/utils';
 
 // Actions
@@ -36,39 +37,43 @@ const DEBUG_KEY = '[ Action Share ]';
 /*
  * open share detail
  */
-export const openShareDetail = (share) => (dispatch, getState) => {
+export const openShareDetail = (share, pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
 
-  const scene = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
-  const { pageId } = _.get(getState().shareDetail, `${scene}`);
+  // const scene = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
+  // const { pageId } = _.get(getState().shareDetail, `${scene}`);
+  const postId = share._id;
 
   dispatch({
     type: SHARE_DETAIL_OPEN,
     payload: {
       share,
+      post: share,
+      postId,
       tab,
       pageId
     },
   });
 
-  const { _id } = share;
-  refreshComments('Post', _id, tab, pageId)(dispatch, getState);
+  refreshComments('Post', postId, tab, pageId)(dispatch, getState);
 
-  Actions.push(`${scene}`, { pageId });
+  const componentToOpen = componentKeyByTab(tab, 'share');
+  Actions.push(`${componentToOpen}`, { pageId, postId });
 };
 
 // close share detail
-export const closeShareDetail = () => (dispatch, getState) => {
+export const closeShareDetail = (postId, pageId) => (dispatch, getState) => {
   Actions.pop();
 
   const { tab } = getState().navigation;
-  const path = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
-  const { pageId } = _.get(getState().shareDetail, `${path}`);
+  // const path = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
+  // const { pageId } = _.get(getState().shareDetail, `${path}`);
 
   dispatch({
     type: SHARE_DETAIL_CLOSE,
     payload: {
       tab,
+      postId,
       pageId
     }
   });
@@ -118,6 +123,7 @@ const switchShareToAction = (dest) => switchCaseF({
 })('feed')(dest);
 
 // User chooses a share destination
+// No need for refactoring since there could be only one newShare at a time
 export const chooseShareDest = (postType, ref, dest, itemToShare, goalRef) =>
 (dispatch, getState) => {
   const { userId } = getState().user;

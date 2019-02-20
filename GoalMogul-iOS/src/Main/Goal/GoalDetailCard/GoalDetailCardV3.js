@@ -42,11 +42,16 @@ import {
 // selector
 import {
   getGoalStepsAndNeeds,
-  getGoalDetailByTab
+  getGoalDetailByTab,
+  makeGetGoalDetailById,
+  makeGetGoalPageDetailByPageId,
+  makeGetGoalStepsAndNeedsV2
 } from '../../../redux/modules/goal/selector';
+
 import {
   getCommentByTab,
-  getNewCommentByTab
+  getNewCommentByTab,
+  makeGetCommentByEntityId
 } from '../../../redux/modules/feed/comment/CommentSelector';
 
 // Component
@@ -104,14 +109,14 @@ class GoalDetailCardV3 extends Component {
   }
 
   componentDidMount() {
-    this.state.scroll.addListener(({ value }) => { this._value = value; });
-    console.log(`${DEBUG_KEY}: did mount.`);
+    this.state.scroll.addListener(({ value }) => { this._value = value; });    
     this.keyboardWillShowListener = Keyboard.addListener(
       'keyboardWillShow', this.keyboardWillShow);
     this.keyboardWillHideListener = Keyboard.addListener(
       'keyboardWillHide', this.keyboardWillHide);
 
-    const { initial, goalDetail } = this.props;
+    const { initial, goalDetail, goalId, pageId } = this.props;
+    console.log(`${DEBUG_KEY}: did mount with goalId: ${goalId}, pageId: ${pageId}`);
     if (initial && !_.isEmpty(initial)) {
       const { focusType, focusRef } = initial;
       const newCommentParams = {
@@ -123,7 +128,7 @@ class GoalDetailCardV3 extends Component {
         suggestionForRef: focusRef, // Need or Step ref
         suggestionFor: focusType === 'need' ? 'Need' : 'Step'
       };
-      this.props.goalDetailSwitchTabV2ByKey('focusTab', focusRef, focusType);
+      this.props.goalDetailSwitchTabV2ByKey('focusTab', focusRef, focusType, goalId, pageId);
       this.props.createCommentForSuggestion(newCommentParams);
       this.handleOnCommentSubmitEditing = this.handleOnCommentSubmitEditing.bind(this);
     }
@@ -146,13 +151,13 @@ class GoalDetailCardV3 extends Component {
   // Switch tab to FocusTab and display all the comments
   onViewCommentPress = () => {
     console.log(`${DEBUG_KEY}: User opens all comments.`);
-
+    const { goalId, pageId } = this.props;
     this.setState({
       ...this.state,
       centralTabContentOffset: this.state.scroll._value
     });
 
-    this.props.goalDetailSwitchTabV2ByKey('focusTab', undefined, 'comment');
+    this.props.goalDetailSwitchTabV2ByKey('focusTab', undefined, 'comment', goalId, pageId);
     Animated.timing(this.state.scroll, {
       toValue: 0,
       duration: 200,
@@ -252,10 +257,10 @@ class GoalDetailCardV3 extends Component {
   // Tab related handlers
   _handleIndexChange = (index, focusType, focusRef) => {
     // TODO: change to v2
-    const { navigationState, pageId } = this.props;
+    const { navigationState, pageId, goalId } = this.props;
     if (navigationState.routes[index].key === 'centralTab') {
       this.props.removeSuggestion(pageId);
-      this.props.goalDetailSwitchTabV2ByKey('centralTab', undefined, undefined);
+      this.props.goalDetailSwitchTabV2ByKey('centralTab', undefined, undefined, goalId, pageId);
       Animated.timing(this.state.scroll, {
         toValue: this.state.centralTabContentOffset,
         duration: 450,
@@ -269,7 +274,7 @@ class GoalDetailCardV3 extends Component {
       centralTabContentOffset: this.state.scroll._value
     });
     this.props.goalDetailSwitchTabV2ByKey(
-      'focusTab', focusRef, focusType
+      'focusTab', focusRef, focusType, goalId, pageId
     );
     Animated.timing(this.state.scroll, {
       toValue: new Animated.Value(0),
@@ -312,6 +317,7 @@ class GoalDetailCardV3 extends Component {
             }}
             paddingBottom={this.state.focusTabBottomPadding}
             pageId={this.props.pageId}
+            goalId={this.props.goalId}
             handleReplyTo={this.handleReplyTo}
             isSelf={this.props.isSelf}
             initial={this.props.initial}
@@ -333,7 +339,7 @@ class GoalDetailCardV3 extends Component {
       extrapolate: 'clamp',
     });
 
-    const { goalDetail } = this.props;
+    const { goalDetail, goalId, pageId } = this.props;
 
     return (
       <Animated.View style={[styles.header, { transform: [{ translateY }], zIndex: 2 }]}>
@@ -342,10 +348,14 @@ class GoalDetailCardV3 extends Component {
             item={goalDetail}
             onSuggestion={() => {
               // Goes to central tab by opening all comments
-              this.props.goalDetailSwitchTabV2ByKey('focusTab', undefined, 'comment');
+              this.props.goalDetailSwitchTabV2ByKey(
+                'focusTab', undefined, 'comment', goalId, pageId
+              );
             }}
             isSelf={this.props.isSelf}
             onContentSizeChange={this.onContentSizeChange}
+            pageId={pageId}
+            goalId={goalId}
           />
           <View style={{ borderBottomWidth: 0.5, borderColor: '#e5e5e5' }} />
           {this.renderFocusedItem()}
@@ -373,6 +383,8 @@ class GoalDetailCardV3 extends Component {
           onBackPress={() => this._handleIndexChange(0)}
           onContentSizeChange={this.props.onContentSizeChange}
           count={this.props.focusedItemCount}
+          pageId={this.props.pageId}
+          goalId={this.props.goalId}
         />
       </View>
     );
@@ -442,6 +454,7 @@ class GoalDetailCardV3 extends Component {
           onSubmitEditing={this.handleOnCommentSubmitEditing}
           resetCommentType={resetCommentTypeFunc}
           initial={this.props.initial}
+          pageId={this.props.pageId}
         />
       </Animated.View>
     );
@@ -535,42 +548,52 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = (state, props) => {
-  const newComment = getNewCommentByTab(state, props.pageId);
-  const goalDetail = getGoalDetailByTab(state);
-  const { goal, navigationStateV2, updating } = goalDetail;
+const makeMapStateToProps = () => {
+  const getGoalPageDetailByPageId = makeGetGoalPageDetailByPageId();
+  const getCommentByEntityId = makeGetCommentByEntityId();
+  const getGoalStepsAndNeedsV2 = makeGetGoalStepsAndNeedsV2();
 
-  const { showingModalInDetail } = state.report;
-  const { userId } = state.user;
-  const comments = getCommentByTab(state, props.pageId);
-  const { transformedComments, loading } = comments || {
-    transformedComments: [],
-    loading: false
+  const mapStateToProps = (state, props) => {
+    const { pageId, goalId } = props;
+    const newComment = getNewCommentByTab(state, pageId);
+    // Following two lines are used before refactoring
+    // const goalDetail = getGoalDetailByTab(state);
+    // const comments = getCommentByTab(state, pageId);
+    const goalDetail = getGoalPageDetailByPageId(state, goalId, pageId);
+    const { goal, goalPage } = goalDetail;
+
+    const { navigationStateV2, updating } = goalPage;
+
+  
+    const { showingModalInDetail } = state.report;
+    const { userId } = state.user;
+    const comments = getCommentByEntityId(state, goalId, pageId);
+    const { transformedComments, loading } = comments || {
+      transformedComments: [],
+      loading: false
+    };
+  
+    const { focusType, focusRef } = navigationStateV2;
+    const focusedItemCount = getFocusedItemCount(transformedComments, focusType, focusRef);
+    const isSelf = userId === (!goal || _.isEmpty(goal) ? '' : goal.owner._id);
+  
+    return {
+      commentLoading: loading,
+      stepsAndNeeds: getGoalStepsAndNeedsV2(state, goalId, pageId),
+      comments: transformedComments,
+      goalDetail: goal,
+      navigationState: navigationStateV2,
+      showingModalInDetail,
+      showSuggestionModal: newComment ? newComment.showSuggestionModal : false,
+      isSelf,
+      tab: state.navigation.tab,
+      // When on focusTab, show the count for focusedItem
+      focusedItemCount,
+      updating
+    };
   };
 
-  const { focusType, focusRef } = navigationStateV2;
-  const focusedItemCount = getFocusedItemCount(transformedComments, focusType, focusRef);
-  // console.log('focusedItemCount is: ', focusedItemCount);
-  const isSelf = userId === (!goal || _.isEmpty(goal) ? '' : goal.owner._id);
-
-  return {
-    commentLoading: loading,
-    stepsAndNeeds: getGoalStepsAndNeeds(state),
-    // stepsAndNeeds: testStepsAndNeeds,
-    // comments: [...transformedComments, ...testTransformedComments],
-    comments: transformedComments,
-    goalDetail: goal,
-    navigationState: navigationStateV2,
-    showingModalInDetail,
-    showSuggestionModal: newComment ? newComment.showSuggestionModal : false,
-    isSelf,
-    // TODO: delete
-    // isSelf: true,
-    tab: state.navigation.tab,
-    // When on focusTab, show the count for focusedItem
-    focusedItemCount,
-    updating
-  };
+  return mapStateToProps;
 };
 
 const getFocusedItemCount = (comments, focusType, focusRef) => {
@@ -608,7 +631,7 @@ const getFocusedItemCount = (comments, focusType, focusRef) => {
 };
 
 export default connect(
-  mapStateToProps,
+  makeMapStateToProps,
   {
     closeGoalDetail,
     closeGoalDetailWithoutPoping,

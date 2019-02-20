@@ -61,7 +61,8 @@ class CreateGoalButtonOverlay extends Component {
       Actions.createPostModal({ 
         callback: this.props.onClose,
         onClose: this.props.onClose,
-        openProfile: this.props.openProfile
+        openProfile: this.props.openProfile,
+        pageId: this.props.pageId
       });
     });
   }
@@ -77,7 +78,8 @@ class CreateGoalButtonOverlay extends Component {
       Actions.createGoalModal({ 
         onCreate: this.props.onCreate, 
         onClose: this.props.onClose,
-        openProfile: this.props.openProfile
+        openProfile: this.props.openProfile,
+        pageId: this.props.pageId
       });
     });
   }

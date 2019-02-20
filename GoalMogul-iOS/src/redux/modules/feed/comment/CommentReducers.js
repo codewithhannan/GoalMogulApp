@@ -64,7 +64,7 @@ export const COMMENT_LOAD = 'comment_load';
 export const COMMENT_REFRESH_DONE = 'comment_refresh_done';
 export const COMMENT_LOAD_DONE = 'comment_load';
 export const COMMENT_LOAD_MORE_REPLIES = 'comment_load_more_replies';
-export const COMMEND_LOAD_ERROR = 'comment_load_error';
+export const COMMENT_LOAD_ERROR = 'comment_load_error';
 export const COMMENT_DELETE_SUCCESS = 'comment_delete_success';
 
 // New comment related constants
@@ -81,7 +81,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
 
-    case COMMEND_LOAD_ERROR: {
+    case COMMENT_LOAD_ERROR: {
       const { tab, pageId } = action.payload;
       const newState = _.cloneDeep(state);
 
@@ -170,11 +170,13 @@ export default (state = INITIAL_STATE, action) => {
     case SHARE_DETAIL_OPEN:
     case POST_DETAIL_OPEN:
     case GOAL_DETAIL_OPEN: {
+      let newState = _.cloneDeep(state);
       const { tab, pageId } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
 
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
-      return _.set(state, `${path}`, { ...COMMENT_INITIAL_STATE });
+      newState = _.set(newState, `${path}`, { ...COMMENT_INITIAL_STATE });
+      return newState;
     }
 
     case SHARE_DETAIL_CLOSE:

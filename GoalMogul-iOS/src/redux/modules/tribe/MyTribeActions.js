@@ -411,7 +411,8 @@ export const refreshTribeFeed = (tribeId, dispatch, getState, callback) => {
         data,
         skip: data.length,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        pageId: 'MYTRIBE' // TODO: tribe reducer redesign to change here
       }
     });
 
@@ -441,7 +442,8 @@ export const loadMoreTribeFeed = (tribeId) => (dispatch, getState) => {
         data,
         skip: data.length,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        pageId: 'MYTRIBE' // TODO: tribe reducer redesign to change here
       }
     });
   }, () => {

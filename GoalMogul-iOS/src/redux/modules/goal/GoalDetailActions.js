@@ -92,10 +92,12 @@ export const refreshGoalDetailById = (goalId, pageId) => (dispatch, getState) =>
     .catch((err) => {
       onError(err);
     });
-  refreshComments('Goal', goalId, tab, undefined)(dispatch, getState);
+    
+    refreshComments('Goal', goalId, tab, pageId)(dispatch, getState);
 };
 
-export const goalDetailSwitchTabV2ByKey = (key, focusRef, focusType) => (dispatch, getState) => {
+export const goalDetailSwitchTabV2ByKey = (key, focusRef, focusType, goalId, pageId) => 
+(dispatch, getState) => {
   const { tab } = getState().navigation;
   dispatch({
     type: GOAL_DETAIL_SWITCH_TAB_V2,
@@ -103,12 +105,15 @@ export const goalDetailSwitchTabV2ByKey = (key, focusRef, focusType) => (dispatc
       tab,
       key,
       focusRef,
-      focusType
+      focusType,
+      goalId, 
+      pageId
     }
   });
 };
 
-export const goalDetailSwitchTabV2 = (index, focusRef, focusType) => (dispatch, getState) => {
+export const goalDetailSwitchTabV2 = (index, focusRef, focusType, goalId, pageId) => 
+(dispatch, getState) => {
   const { tab } = getState().navigation;
   dispatch({
     type: GOAL_DETAIL_SWITCH_TAB_V2,
@@ -116,18 +121,23 @@ export const goalDetailSwitchTabV2 = (index, focusRef, focusType) => (dispatch, 
       tab,
       index,
       focusRef,
-      focusType
+      focusType,
+      goalId, 
+      pageId
     }
   });
 };
 
-export const goalDetailSwitchTab = (index) => (dispatch, getState) => {
+// This is used in GoalDetailCardV2 which is currently deprecated so no need to update for now
+export const goalDetailSwitchTab = (index, goalId, pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   dispatch({
     type: GOAL_DETAIL_SWITCH_TAB,
     payload: {
       tab,
-      index
+      index,
+      goalId, 
+      pageId
     }
   });
 };
@@ -147,7 +157,7 @@ export const closeGoalDetailWithoutPoping = (goalId, pageId) => (dispatch, getSt
     payload: {
       tab,
       goalId, 
-      // pageId
+      pageId
     }
   });
 };
@@ -157,7 +167,7 @@ export const closeGoalDetailWithoutPoping = (goalId, pageId) => (dispatch, getSt
  * @param goal: if it's in the need card, then goal is passed in. Otherwise, goal is
  *              undefined
  */
-export const markStepAsComplete = (stepId, goal) => (dispatch, getState) => {
+export const markStepAsComplete = (stepId, goal, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
   const goalToUpdate = goal || getGoalDetailByTab(getState()).goal;
 
@@ -184,6 +194,7 @@ export const markStepAsComplete = (stepId, goal) => (dispatch, getState) => {
         isCompleted,
         tab,
         goalId: _id,
+        pageId,
         type: 'markStepAsComplete'
       }
     });
@@ -194,7 +205,8 @@ export const markStepAsComplete = (stepId, goal) => (dispatch, getState) => {
         id: stepId,
         isCompleted,
         goalId: _id,
-        tab
+        tab,
+        pageId
       }
     });
   };
@@ -205,7 +217,8 @@ export const markStepAsComplete = (stepId, goal) => (dispatch, getState) => {
         isCompleted,
         tab,
         goalId: _id,
-        type: 'markStepAsComplete'
+        type: 'markStepAsComplete',
+        pageId
       }
     });
 
@@ -222,7 +235,8 @@ export const markStepAsComplete = (stepId, goal) => (dispatch, getState) => {
       isCompleted,
       tab,
       goalId: _id,
-      type: 'markStepAsComplete'
+      type: 'markStepAsComplete',
+      pageId
     }
   });
 
@@ -230,7 +244,7 @@ export const markStepAsComplete = (stepId, goal) => (dispatch, getState) => {
 };
 
 // If a need is already mark as completed, then it will change its state to incomplete
-export const markNeedAsComplete = (needId, goal) => (dispatch, getState) => {
+export const markNeedAsComplete = (needId, goal, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
   const goalToUpdate = goal || getGoalDetailByTab(getState()).goal;
   // const { goal } = getState().goalDetail;
@@ -255,6 +269,7 @@ export const markNeedAsComplete = (needId, goal) => (dispatch, getState) => {
         isCompleted,
         tab,
         goalId: _id,
+        pageId,
         type: 'markNeedAsComplete'
       }
     });
@@ -265,6 +280,7 @@ export const markNeedAsComplete = (needId, goal) => (dispatch, getState) => {
         id: needId,
         isCompleted,
         goalId: _id,
+        pageId,
         tab
       }
     });
@@ -277,7 +293,8 @@ export const markNeedAsComplete = (needId, goal) => (dispatch, getState) => {
         isCompleted,
         tab,
         goalId: _id,
-        type: 'markNeedAsComplete'
+        type: 'markNeedAsComplete',
+        pageId
       }
     });
 
@@ -294,7 +311,8 @@ export const markNeedAsComplete = (needId, goal) => (dispatch, getState) => {
       isCompleted,
       tab,
       goalId: _id,
-      type: 'markNeedAsComplete'
+      type: 'markNeedAsComplete',
+      pageId
     }
   });
 
@@ -302,7 +320,7 @@ export const markNeedAsComplete = (needId, goal) => (dispatch, getState) => {
 };
 
 // User marks a goal as completed
-export const markGoalAsComplete = (goalId, complete) => (dispatch, getState) => {
+export const markGoalAsComplete = (goalId, complete, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
   const { tab } = getState().navigation;
 
@@ -313,7 +331,8 @@ export const markGoalAsComplete = (goalId, complete) => (dispatch, getState) => 
         complete,
         tab,
         goalId,
-        type: 'markGoalAsComplete'
+        type: 'markGoalAsComplete',
+        pageId
       }
     });
 
@@ -322,7 +341,8 @@ export const markGoalAsComplete = (goalId, complete) => (dispatch, getState) => 
       payload: {
         goalId,
         tab,
-        complete
+        complete,
+        pageId
       }
     });
     // Alert.alert(
@@ -342,7 +362,8 @@ export const markGoalAsComplete = (goalId, complete) => (dispatch, getState) => 
         complete,
         tab,
         goalId,
-        type: 'markGoalAsComplete'
+        type: 'markGoalAsComplete',
+        pageId
       }
     });
 
@@ -362,7 +383,8 @@ export const markGoalAsComplete = (goalId, complete) => (dispatch, getState) => 
       complete,
       tab,
       goalId,
-      type: 'markGoalAsComplete'
+      type: 'markGoalAsComplete',
+      pageId
     }
   });
 
@@ -383,14 +405,14 @@ export const editGoalDone = () => (dispatch, getState) => {
 }
 
 // Show a popup to confirm if user wants to share this goal to mastermind
-export const shareGoalToMastermind = (goalId) => (dispatch, getState) => {
+export const shareGoalToMastermind = (goalId, pageId) => (dispatch, getState) => {
   Alert.alert(
     'Are you sure you want to share this to the Goal Feed?',
     '',
     [
       {
         text: 'Confirm',
-        onPress: () => shareToMastermind(goalId, dispatch, getState)
+        onPress: () => shareToMastermind(goalId, pageId, dispatch, getState)
       },
       {
         text: 'Cancel',
@@ -401,7 +423,7 @@ export const shareGoalToMastermind = (goalId) => (dispatch, getState) => {
   );
 };
 
-const shareToMastermind = (goalId, dispatch, getState) => {
+const shareToMastermind = (goalId, pageId, dispatch, getState) => {
   console.log('user pressed confirm ');
   const { token } = getState().user;
   const { tab } = getState().navigation;
@@ -412,7 +434,8 @@ const shareToMastermind = (goalId, dispatch, getState) => {
       payload: {
         tab,
         goalId,
-        type: 'shareToMastermind'
+        type: 'shareToMastermind',
+        pageId
       }
     });
 
@@ -420,7 +443,8 @@ const shareToMastermind = (goalId, dispatch, getState) => {
       type: GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS,
       payload: {
         goalId,
-        tab
+        tab,
+        pageId
       }
     });
     // Alert.alert('Success', 'You have successfully shared this goal to mastermind.');
@@ -433,7 +457,8 @@ const shareToMastermind = (goalId, dispatch, getState) => {
       payload: {
         tab,
         goalId,
-        type: 'shareToMastermind'
+        type: 'shareToMastermind',
+        pageId
       }
     });
 
@@ -449,7 +474,8 @@ const shareToMastermind = (goalId, dispatch, getState) => {
     payload: {
       tab,
       goalId,
-      type: 'shareToMastermind'
+      type: 'shareToMastermind',
+      pageId
     }
   });
   updateGoalWithFields(goalId, { shareToGoalFeed: true }, token, onSuccess, onError);

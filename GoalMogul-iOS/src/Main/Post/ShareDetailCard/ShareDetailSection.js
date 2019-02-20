@@ -170,6 +170,7 @@ class ShareDetailSection extends Component {
             isSelf={this.props.userId === owner._id}
             caret={caret}
             user={owner}
+            pageId={this.props.pageId}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           {/*

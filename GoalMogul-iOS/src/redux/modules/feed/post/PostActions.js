@@ -27,7 +27,13 @@ import {
 } from '../../feed/comment/CommentActions';
 
 import { api as API } from '../../../middleware/api';
-import { capitalizeWord, clearTags } from '../../../middleware/utils';
+import { 
+  capitalizeWord, 
+  clearTags, 
+  constructPageId,
+  componentKeyByTab 
+} from '../../../middleware/utils';
+
 import ImageUtils from '../../../../Utils/ImageUtils';
 
 const DEBUG_KEY = '[ Action Post ]';
@@ -37,47 +43,55 @@ const DEBUG_KEY = '[ Action Post ]';
  */
 export const openPostDetail = (post) => (dispatch, getState) => {
   // Open share detail if not a general post
+  const postId = post._id;
+
+  // Generate pageId on open
+  const pageId = constructPageId('post');
   if (post.postType !== 'General') {
-    return openShareDetail(post)(dispatch, getState);
+    return openShareDetail(post, pageId)(dispatch, getState);
   }
 
   const { tab } = getState().navigation;
-  const scene = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
-  const { pageId } = _.get(getState().postDetail, `${scene}`);
+  // const scene = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
+  // const { pageId } = _.get(getState().postDetail, `${scene}`);
 
   dispatch({
     type: POST_DETAIL_OPEN,
     payload: {
       post,
       tab,
+      postId,
       pageId
     },
   });
 
-  const { _id } = post;
-  refreshComments('Post', _id, tab, pageId)(dispatch, getState);
-  Actions.push(`${scene}`, { pageId });
+  refreshComments('Post', postId, tab, pageId)(dispatch, getState);
+
+  const componentToOpen = componentKeyByTab(tab, 'post');
+  Actions.push(`${componentToOpen}`, { pageId, postId });
 };
 
 // close post detail
-export const closePostDetail = () => (dispatch, getState) => {
+export const closePostDetail = (postId, pageId) => (dispatch, getState) => {
   Actions.pop();
 
   const { tab } = getState().navigation;
-  const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
-  const { pageId } = _.get(getState().postDetail, `${path}`);
+  // const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
+  // const { pageId } = _.get(getState().postDetail, `${path}`);
 
   dispatch({
     type: POST_DETAIL_CLOSE,
     payload: {
       tab,
-      pageId
+      pageId,
+      postId
     }
   });
 };
 
 // open edit modal for post given post belongs to current user
 export const editPost = (post) => (dispatch, getState) => {
+  // We don't need to pass pageId since the pageId is for profile in this case
   Actions.push('createPostModal', { initializeFromState: true, post });
 };
 
