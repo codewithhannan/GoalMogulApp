@@ -174,9 +174,6 @@ export const logout = () => async (dispatch, getState) => {
   // Store the unread notification first as USER_LOG_OUT will clear its state
   await saveUnreadNotification()(dispatch, getState);
 
-  dispatch({
-    type: USER_LOG_OUT
-  });
   const callback = (res) => {
     if (res instanceof Error) {
       console.log(`${DEBUG_KEY}: log out user error: `, res);
@@ -186,4 +183,7 @@ export const logout = () => async (dispatch, getState) => {
   };
   Auth.reset(callback); 
   Actions.reset('root');
+  dispatch({
+    type: USER_LOG_OUT
+  });
 };
