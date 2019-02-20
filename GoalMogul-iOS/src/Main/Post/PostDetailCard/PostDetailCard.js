@@ -19,9 +19,14 @@ import {
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 // Selectors
-import { getCommentByTab } from '../../../redux/modules/feed/comment/CommentSelector';
+import { 
+  getCommentByTab,
+  makeGetCommentByEntityId
+} from '../../../redux/modules/feed/comment/CommentSelector';
+
 import {
-  getPostDetailByTab
+  getPostDetailByTab,
+  makeGetPostById
 } from '../../../redux/modules/feed/post/PostSelector';
 
 // Component
@@ -80,6 +85,7 @@ class PostDetailCard extends Component {
         onReportPressed={() => console.log('post detail report clicked')}
         reportType='postDetail'
         pageId={this.props.pageId}
+        entityId={this.props.postId}
       />
     );
   }
@@ -91,6 +97,7 @@ class PostDetailCard extends Component {
           item={postDetail}
           onSuggestion={() => this.dialogOnFocus()}
           pageId={this.props.pageId}
+          postId={this.props.postId}
         />
       </View>
     );
@@ -178,27 +185,41 @@ const testData = [
   }
 ];
 
-const mapStateToProps = (state, props) => {
-  // TODO: uncomment
-  const comments = getCommentByTab(state, props.pageId);
-  const { transformedComments, loading } = comments || {
-    transformedComments: [],
-    loading: false
-  };
-  const getPostDetail = getPostDetailByTab();
-  const postDetail = getPostDetail(state);
-  const { pageId } = postDetail;
+const makeMapStateToProps = () => {
+  const getPostById = makeGetPostById();
+  const getCommentByEntityId = makeGetCommentByEntityId();
 
-  return {
-    commentLoading: loading,
-    comments: transformedComments,
-    postDetail,
-    pageId
+  const mapStateToProps = (state, props) => {
+    // TODO: uncomment
+    // const comments = getCommentByTab(state, props.pageId);
+    // const getPostDetail = getPostDetailByTab();
+    // const postDetail = getPostDetail(state);
+    // const { pageId } = postDetail;
+
+    const { pageId, postId } = props;
+    const { post } = getPostById(state, postId);
+    const postDetail = post;
+
+    const comments = getCommentByEntityId(state, postId, pageId);
+    
+    const { transformedComments, loading } = comments || {
+      transformedComments: [],
+      loading: false
+    };
+  
+    return {
+      commentLoading: loading,
+      comments: transformedComments,
+      postDetail,
+      pageId
+    };
   };
+
+  return mapStateToProps;
 };
 
 export default connect(
-  mapStateToProps,
+  makeMapStateToProps,
   {
     closePostDetail,
     refreshComments

@@ -20,9 +20,14 @@ import {
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 // Selectors
-import { getCommentByTab } from '../../../redux/modules/feed/comment/CommentSelector';
+import { 
+  getCommentByTab,
+  makeGetCommentByEntityId
+} from '../../../redux/modules/feed/comment/CommentSelector';
+
 import {
-  getShareDetailByTab
+  getShareDetailByTab,
+  makeGetPostById
 } from '../../../redux/modules/feed/post/PostSelector';
 
 // Component
@@ -155,24 +160,35 @@ const styles = {
   },
 };
 
-const mapStateToProps = (state, props) => {
-  const getShareDetail = getShareDetailByTab();
-  const shareDetail = getShareDetail(state);
-  const { pageId } = shareDetail;
-  // TODO: uncomment
-  const comments = getCommentByTab(state, props.pageId);
-  const { transformedComments, loading } = comments || {
-    transformedComments: [],
-    loading: false
-  };
+const makeMapStateToProps = () => {
+  const getPostById = makeGetPostById();
+  const getCommentByEntityId = makeGetCommentByEntityId();
 
-  return {
-    commentLoading: loading,
-    comments: transformedComments,
-    shareDetail,
-    pageId,
+  const mapStateToProps = (state, props) => {
+    // const getShareDetail = getShareDetailByTab();
+    // const shareDetail = getShareDetail(state);
+    // const { pageId } = shareDetail;
+    // const comments = getCommentByTab(state, props.pageId);
 
+    const { pageId, postId } = props;
+    const { post } = getPostById(state, postId);
+    const shareDetail = post;
+
+    const comments = getCommentByEntityId(state, postId, pageId);    
+    const { transformedComments, loading } = comments || {
+      transformedComments: [],
+      loading: false
+    };
+  
+    return {
+      commentLoading: loading,
+      comments: transformedComments,
+      shareDetail,
+      pageId,
+  
+    };
   };
+  return mapStateToProps;
 };
 
 const switchCaseTitle = (postType) => switchCase({
@@ -181,10 +197,10 @@ const switchCaseTitle = (postType) => switchCase({
   ShareGoal: 'Shared Goal',
   ShareNeed: 'Shared Need',
   ShareStep: 'Shared Step'
-})('SharePost')(postType)
+})('SharePost')(postType);
 
 export default connect(
-  mapStateToProps,
+  makeMapStateToProps,
   {
     closeShareDetail,
     createCommentFromSuggestion,

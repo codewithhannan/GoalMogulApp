@@ -127,7 +127,7 @@ import {
  */
 
 // Sample goal object in the map
-const INITIAL_POST_OBJECT = {
+export const INITIAL_POST_OBJECT = {
     post: {},
     // pageId: {
     //     refreshing: false
@@ -135,7 +135,7 @@ const INITIAL_POST_OBJECT = {
     reference: [],
 };
 
-const INITIAL_POST_PAGE = {
+export const INITIAL_POST_PAGE = {
     refreshing: false, 
     loading: false, // Indicator if goal on this page is loading
     updating: false, // Indicator if goal on this page is updating
