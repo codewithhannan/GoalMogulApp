@@ -21,12 +21,12 @@ import {
 
 // Selectors
 import { 
-  getCommentByTab,
+  // getCommentByTab,
   makeGetCommentByEntityId
 } from '../../../redux/modules/feed/comment/CommentSelector';
 
 import {
-  getShareDetailByTab,
+  // getShareDetailByTab,
   makeGetPostById
 } from '../../../redux/modules/feed/post/PostSelector';
 
@@ -34,7 +34,7 @@ import {
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import CommentBox from '../../Goal/Common/CommentBox';
 import CommentCard from '../../Goal/GoalDetailCard/Comment/CommentCard';
-import Report from '../../Report/Report';
+// import Report from '../../Report/Report';
 
 import ShareDetailSection from './ShareDetailSection';
 
