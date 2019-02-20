@@ -5,6 +5,33 @@
 
 import _ from 'lodash';
 
+import {
+    EVENT_DETAIL_OPEN,
+    EVENT_DETAIL_CLOSE
+} from './EventReducers';
+
+import {
+
+} from './EventTabReducers';
+
+/**
+ * Related Consts
+ * 
+ * Explore related
+ * EVENT_DETAIL_OPEN
+ * EVENT_DETAIL_CLOSE
+ * EVENTTAB_REFRESH_DONE,
+ * EVENTTAB_LOAD_DONE,
+ * EVENTTAB_LOAD,
+ * EVENT_SWITCH_TAB,
+ * EVENT_FEED_FETCH,
+ * EVENT_FEED_FETCH_DONE,
+ * EVENT_FEED_REFRESH_DONE,
+ * EVENT_EDIT_SUCCESS,
+ * 
+ * Own event related
+ * 
+ */
 
 const INITIAL_STATE = {
 
