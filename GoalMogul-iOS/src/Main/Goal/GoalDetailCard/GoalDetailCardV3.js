@@ -42,11 +42,15 @@ import {
 // selector
 import {
   getGoalStepsAndNeeds,
-  getGoalDetailByTab
+  getGoalDetailByTab,
+  makeGetGoalDetailById,
+  makeGetGoalPageDetailByPageId,
+  makeGetGoalStepsAndNeedsV2
 } from '../../../redux/modules/goal/selector';
 import {
   getCommentByTab,
-  getNewCommentByTab
+  getNewCommentByTab,
+  makeGetCommentByEntityId
 } from '../../../redux/modules/feed/comment/CommentSelector';
 
 // Component
@@ -104,14 +108,14 @@ class GoalDetailCardV3 extends Component {
   }
 
   componentDidMount() {
-    this.state.scroll.addListener(({ value }) => { this._value = value; });
-    console.log(`${DEBUG_KEY}: did mount.`);
+    this.state.scroll.addListener(({ value }) => { this._value = value; });    
     this.keyboardWillShowListener = Keyboard.addListener(
       'keyboardWillShow', this.keyboardWillShow);
     this.keyboardWillHideListener = Keyboard.addListener(
       'keyboardWillHide', this.keyboardWillHide);
 
     const { initial, goalDetail, goalId, pageId } = this.props;
+    console.log(`${DEBUG_KEY}: did mount with goalId: ${goalId}, pageId: ${pageId}`);
     if (initial && !_.isEmpty(initial)) {
       const { focusType, focusRef } = initial;
       const newCommentParams = {
@@ -448,6 +452,7 @@ class GoalDetailCardV3 extends Component {
           onSubmitEditing={this.handleOnCommentSubmitEditing}
           resetCommentType={resetCommentTypeFunc}
           initial={this.props.initial}
+          pageId={this.props.pageId}
         />
       </Animated.View>
     );
@@ -541,43 +546,52 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = (state, props) => {
-  const { pageId, goalId } = props;
-  const newComment = getNewCommentByTab(state, pageId);
-  const goalDetail = getGoalDetailByTab(state);
-  const { goal, navigationStateV2, updating } = goalDetail;
+const makeMapStateToProps = () => {
+  const getGoalPageDetailByPageId = makeGetGoalPageDetailByPageId();
+  const getCommentByEntityId = makeGetCommentByEntityId();
+  const getGoalStepsAndNeedsV2 = makeGetGoalStepsAndNeedsV2();
 
-  const { showingModalInDetail } = state.report;
-  const { userId } = state.user;
-  const comments = getCommentByTab(state, pageId);
-  const { transformedComments, loading } = comments || {
-    transformedComments: [],
-    loading: false
+  const mapStateToProps = (state, props) => {
+    const { pageId, goalId } = props;
+    const newComment = getNewCommentByTab(state, pageId);
+    // Following two lines are used before refactoring
+    // const goalDetail = getGoalDetailByTab(state);
+    // const comments = getCommentByTab(state, pageId);
+    const goalDetail = getGoalPageDetailByPageId(state, goalId, pageId);
+    const { goal, goalPage } = goalDetail;
+
+    const { navigationStateV2, updating } = goalPage;
+
+  
+    const { showingModalInDetail } = state.report;
+    const { userId } = state.user;
+    const comments = getCommentByEntityId(state, goalId, pageId);
+    const { transformedComments, loading } = comments || {
+      transformedComments: [],
+      loading: false
+    };
+  
+    const { focusType, focusRef } = navigationStateV2;
+    const focusedItemCount = getFocusedItemCount(transformedComments, focusType, focusRef);
+    const isSelf = userId === (!goal || _.isEmpty(goal) ? '' : goal.owner._id);
+  
+    return {
+      commentLoading: loading,
+      stepsAndNeeds: getGoalStepsAndNeedsV2(state, goalId, pageId),
+      comments: transformedComments,
+      goalDetail: goal,
+      navigationState: navigationStateV2,
+      showingModalInDetail,
+      showSuggestionModal: newComment ? newComment.showSuggestionModal : false,
+      isSelf,
+      tab: state.navigation.tab,
+      // When on focusTab, show the count for focusedItem
+      focusedItemCount,
+      updating
+    };
   };
 
-  const { focusType, focusRef } = navigationStateV2;
-  const focusedItemCount = getFocusedItemCount(transformedComments, focusType, focusRef);
-  // console.log('focusedItemCount is: ', focusedItemCount);
-  const isSelf = userId === (!goal || _.isEmpty(goal) ? '' : goal.owner._id);
-
-  return {
-    commentLoading: loading,
-    stepsAndNeeds: getGoalStepsAndNeeds(state, pageId),
-    // stepsAndNeeds: testStepsAndNeeds,
-    // comments: [...transformedComments, ...testTransformedComments],
-    comments: transformedComments,
-    goalDetail: goal,
-    navigationState: navigationStateV2,
-    showingModalInDetail,
-    showSuggestionModal: newComment ? newComment.showSuggestionModal : false,
-    isSelf,
-    // TODO: delete
-    // isSelf: true,
-    tab: state.navigation.tab,
-    // When on focusTab, show the count for focusedItem
-    focusedItemCount,
-    updating
-  };
+  return mapStateToProps;
 };
 
 const getFocusedItemCount = (comments, focusType, focusRef) => {
@@ -615,7 +629,7 @@ const getFocusedItemCount = (comments, focusType, focusRef) => {
 };
 
 export default connect(
-  mapStateToProps,
+  makeMapStateToProps,
   {
     closeGoalDetail,
     closeGoalDetailWithoutPoping,

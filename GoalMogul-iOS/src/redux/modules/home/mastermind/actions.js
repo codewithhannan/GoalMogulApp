@@ -24,7 +24,7 @@ import {
 } from '../../goal/GoalDetailActions';
 
 import { api as API } from '../../../middleware/api';
-import { queryBuilder, constructPageId } from '../../../middleware/utils';
+import { queryBuilder, constructPageId, componentKeyByTab } from '../../../middleware/utils';
 
 const DEBUG_KEY = '[ Action Home Mastermind ]';
 const BASE_ROUTE = 'secure/goal/';
@@ -58,8 +58,8 @@ export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
   refreshGoalDetailById(_id, pageId)(dispatch, getState);
   refreshComments('Goal', _id, tab, pageId)(dispatch, getState);
   // TODO: create new stack using Actions.create(React.Element) if needed
-
-  Actions.push('goal', { initial: { ...initialProps }, goalId: _id, pageId });
+  const componentToOpen = componentKeyByTab(tab, 'goal');
+  Actions.push(`${componentToOpen}`, { initial: { ...initialProps }, goalId: _id, pageId });
 };
 
 // set currentIndex to the prev one

@@ -68,7 +68,7 @@ import RichText from '../../Common/Text/RichText';
 import { APP_BLUE } from '../../../styles';
 
 // Constants
-const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
+const DEBUG_KEY = '[ UI GoalDetailCardV3.GoalDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 

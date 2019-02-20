@@ -127,7 +127,7 @@ const INITIAL_NAVIGATION_STATE_V2 = {
     focusRef: undefined
   };
 
-const INITIAL_GOAL_PAGE = {
+export const INITIAL_GOAL_PAGE = {
     refreshing: false, 
     loading: false, // Indicator if goal on this page is loading
     updating: false, // Indicator if goal on this page is updating
@@ -162,8 +162,12 @@ export default (state = INITIAL_STATE, action) => {
  
             // Update the reference
             const oldReference = _.get(goalObjectToUpdate, 'reference');
-            if (oldReference !== undefined && !oldReference.some(r => r === pageId)) {
-                reference = reference.concat(oldReference);
+            if (oldReference !== undefined) {
+                if (!oldReference.some(r => r === pageId)) {
+                    reference = reference.concat(oldReference);
+                } else {
+                    reference = oldReference;
+                }
             }
 
             goalObjectToUpdate = _.set(goalObjectToUpdate, `${pageId}.loading`, false);
@@ -199,8 +203,14 @@ export default (state = INITIAL_STATE, action) => {
  
             // Update the reference
             const oldReference = _.get(goalObjectToUpdate, 'reference');
-            if (oldReference !== undefined && !oldReference.some(r => r === pageId)) {
-                reference = reference.concat(oldReference);
+            if (oldReference !== undefined) {
+                if (!oldReference.some(r => r === pageId)) {
+                    // Add new pageId to reference
+                    reference = reference.concat(oldReference);
+                } else {
+                    // No ops since reference is already there
+                    reference = oldReference;
+                }
             }
             goalObjectToUpdate = _.set(goalObjectToUpdate, 'reference', reference);
             
@@ -391,8 +401,12 @@ export default (state = INITIAL_STATE, action) => {
                 const hasPageReference = (oldReference !== undefined && oldReference.some(r => r === pageId));
                 // Update reference
                 let newReference = [pageId];
-                if (oldReference !== undefined && !hasPageReference) {
-                    newReference = newReference.concat(oldReference);
+                if (oldReference !== undefined) {
+                    if (!hasPageReference) {
+                        newReference = newReference.concat(oldReference);
+                    } else {
+                        newReference = oldReference;
+                    }
                 }
 
                 // console.log(`${DEBUG_KEY}: new reference is: `, newReference);

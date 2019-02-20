@@ -97,7 +97,7 @@ class PostDetailCard extends Component {
   }
 
   render() {
-    const { comments, postDetail, pageId } = this.props;
+    const { comments, postDetail, pageId, postId } = this.props;
     const data = comments;
 
     return (
@@ -106,7 +106,7 @@ class PostDetailCard extends Component {
           <SearchBarHeader
             backButton
             title='Post'
-            onBackPress={() => this.props.closePostDetail()}
+            onBackPress={() => this.props.closePostDetail(postId, pageId)}
           />
             <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
               <FlatList

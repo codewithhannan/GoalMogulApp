@@ -491,7 +491,8 @@ export const refreshTribeFeed = (tribeId, dispatch, getState) => {
         data,
         skip: data.length,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        pageId: 'TRIBE'
       }
     });
   }, () => {
@@ -516,7 +517,8 @@ export const loadMoreTribeFeed = (tribeId) => (dispatch, getState) => {
         data,
         skip: data.length,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        pageId: 'TRIBE'
       }
     });
   }, () => {

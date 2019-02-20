@@ -67,7 +67,9 @@ class Profile extends Component {
       tab: 'mastermind', 
       onCreate: () => this.props.openCreateOverlay(userId, pageId),
       onClose: () => this.props.closeCreateOverlay(userId, pageId),
-      openProfile: false
+      openProfile: false,
+      userId,
+      pageId
     });
   }
 

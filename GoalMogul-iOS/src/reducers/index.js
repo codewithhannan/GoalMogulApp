@@ -25,6 +25,7 @@ import ShareReducers from '../redux/modules/feed/post/ShareReducers';
 import TribeReducers from '../redux/modules/tribe/TribeReducers';
 import EventReducers from '../redux/modules/event/EventReducers';
 import CommentReducers from '../redux/modules/feed/comment/CommentReducers';
+import Comments from '../redux/modules/feed/comment/Comments';
 import NewCommentReducers from '../redux/modules/feed/comment/NewCommentReducers';
 import SuggestionSearchReducers from '../redux/modules/feed/comment/SuggestionSearchReducers';
 import ReportReducers from '../redux/modules/report/ReportReducers';
@@ -74,6 +75,7 @@ const reducers = combineReducers({
   event: EventReducers,
   comment: CommentReducers,
   newComment: NewCommentReducers,
+  comments: Comments,
   report: ReportReducers,
   explore: ExploreReducers,
   eventTab: EventTabReducers,

@@ -100,7 +100,7 @@ class ShareDetailCard extends Component {
   }
 
   render() {
-    const { comments, shareDetail, pageId } = this.props;
+    const { comments, shareDetail, pageId, postId } = this.props;
     const data = comments;
     if (!shareDetail || !shareDetail.created) return '';
     const title = switchCaseTitle(shareDetail.postType);
@@ -111,7 +111,7 @@ class ShareDetailCard extends Component {
           <SearchBarHeader
             backButton
             title={title}
-            onBackPress={() => this.props.closeShareDetail()}
+            onBackPress={() => this.props.closeShareDetail(postId, pageId)}
           />
             <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
               <FlatList

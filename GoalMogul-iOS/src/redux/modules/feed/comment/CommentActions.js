@@ -11,7 +11,7 @@ import {
   COMMENT_LOAD,
   COMMENT_REFRESH_DONE,
   COMMENT_LOAD_DONE,
-  COMMEND_LOAD_ERROR,
+  COMMENT_LOAD_ERROR,
   COMMENT_DELETE_SUCCESS
 } from './CommentReducers';
 
@@ -712,7 +712,8 @@ export const refreshComments = (parentType, parentId, tab, pageId) => (dispatch,
     type: COMMENT_LOAD,
     payload: {
       tab,
-      pageId
+      pageId,
+      parentId
     }
   });
   const onSuccess = (data) => {
@@ -725,7 +726,8 @@ export const refreshComments = (parentType, parentId, tab, pageId) => (dispatch,
         limit,
         hasNextPage: !(data === undefined || data.length === 0),
         tab,
-        pageId
+        pageId,
+        parentId
       }
     });
     console.log(`${DEBUG_KEY}: refresh comment success with data: `, data);
@@ -734,10 +736,11 @@ export const refreshComments = (parentType, parentId, tab, pageId) => (dispatch,
   const onError = (err) => {
     console.log(`${DEBUG_KEY}: refresh comment failed with err: `, err);
     dispatch({
-      type: COMMEND_LOAD_ERROR,
+      type: COMMENT_LOAD_ERROR,
       payload: {
         tab,
-        pageId
+        pageId,
+        parentId
       }
     });
   };
@@ -758,7 +761,8 @@ export const loadMoreComments = (parentType, parentId, tab, pageId) => (dispatch
     type: COMMENT_LOAD,
     payload: {
       tab,
-      pageId
+      pageId,
+      parentId
     }
   });
 
@@ -772,7 +776,8 @@ export const loadMoreComments = (parentType, parentId, tab, pageId) => (dispatch
         limit,
         hasNextPage: !(data === undefined || data.length === 0),
         tab,
-        pageId
+        pageId,
+        parentId
       }
     });
     console.log(`${DEBUG_KEY}: load more comments succeeds with data: `, data);
@@ -781,10 +786,11 @@ export const loadMoreComments = (parentType, parentId, tab, pageId) => (dispatch
   const onError = (err) => {
     console.log(`${DEBUG_KEY}: load more comments failed with err: `, err);
     dispatch({
-      type: COMMEND_LOAD_ERROR,
+      type: COMMENT_LOAD_ERROR,
       payload: {
         tab,
-        pageId
+        pageId,
+        parentId
       }
     });
   };
