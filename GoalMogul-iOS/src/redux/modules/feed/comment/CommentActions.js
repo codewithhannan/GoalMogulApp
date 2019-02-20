@@ -703,7 +703,7 @@ export const refreshComments = (parentType, parentId, tab, pageId) => (dispatch,
   const { token } = getState().user;
   const page = pageId ? `${pageId}` : 'default';
   const path = tab ? `${tab}.${page}` : `homeTab.${page}`;
-  // console.log(`${DEBUG_KEY}: path is: `, getState().comment);
+  console.log(`${DEBUG_KEY}: path is: `, path);
   const { limit, hasNextPage } = _.get(getState().comment, path);
   if (hasNextPage === false) {
     return;

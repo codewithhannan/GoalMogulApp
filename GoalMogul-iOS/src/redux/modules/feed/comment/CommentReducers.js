@@ -170,11 +170,13 @@ export default (state = INITIAL_STATE, action) => {
     case SHARE_DETAIL_OPEN:
     case POST_DETAIL_OPEN:
     case GOAL_DETAIL_OPEN: {
+      let newState = _.cloneDeep(state);
       const { tab, pageId } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
 
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
-      return _.set(state, `${path}`, { ...COMMENT_INITIAL_STATE });
+      newState = _.set(newState, `${path}`, { ...COMMENT_INITIAL_STATE });
+      return newState;
     }
 
     case SHARE_DETAIL_CLOSE:

@@ -92,10 +92,12 @@ export const refreshGoalDetailById = (goalId, pageId) => (dispatch, getState) =>
     .catch((err) => {
       onError(err);
     });
-  refreshComments('Goal', goalId, tab, undefined)(dispatch, getState);
+    
+    refreshComments('Goal', goalId, tab, pageId)(dispatch, getState);
 };
 
-export const goalDetailSwitchTabV2ByKey = (key, focusRef, focusType) => (dispatch, getState) => {
+export const goalDetailSwitchTabV2ByKey = (key, focusRef, focusType, goalId, pageId) => 
+(dispatch, getState) => {
   const { tab } = getState().navigation;
   dispatch({
     type: GOAL_DETAIL_SWITCH_TAB_V2,
@@ -103,12 +105,15 @@ export const goalDetailSwitchTabV2ByKey = (key, focusRef, focusType) => (dispatc
       tab,
       key,
       focusRef,
-      focusType
+      focusType,
+      goalId, 
+      pageId
     }
   });
 };
 
-export const goalDetailSwitchTabV2 = (index, focusRef, focusType) => (dispatch, getState) => {
+export const goalDetailSwitchTabV2 = (index, focusRef, focusType, goalId, pageId) => 
+(dispatch, getState) => {
   const { tab } = getState().navigation;
   dispatch({
     type: GOAL_DETAIL_SWITCH_TAB_V2,
@@ -116,18 +121,23 @@ export const goalDetailSwitchTabV2 = (index, focusRef, focusType) => (dispatch, 
       tab,
       index,
       focusRef,
-      focusType
+      focusType,
+      goalId, 
+      pageId
     }
   });
 };
 
-export const goalDetailSwitchTab = (index) => (dispatch, getState) => {
+// This is used in GoalDetailCardV2 which is currently deprecated so no need to update for now
+export const goalDetailSwitchTab = (index, goalId, pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   dispatch({
     type: GOAL_DETAIL_SWITCH_TAB,
     payload: {
       tab,
-      index
+      index,
+      goalId, 
+      pageId
     }
   });
 };

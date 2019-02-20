@@ -56,7 +56,7 @@ export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
   });
 
   refreshGoalDetailById(_id, pageId)(dispatch, getState);
-  refreshComments('Goal', _id, tab, undefined)(dispatch, getState);
+  refreshComments('Goal', _id, tab, pageId)(dispatch, getState);
   // TODO: create new stack using Actions.create(React.Element) if needed
 
   Actions.push('goal', { initial: { ...initialProps }, goalId: _id, pageId });

@@ -169,6 +169,7 @@ class PostDetailSection extends React.PureComponent {
             isSelf={this.props.userId === owner._id}
             caret={caret}
             user={owner}
+            pageId={this.props.pageId}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           {/*

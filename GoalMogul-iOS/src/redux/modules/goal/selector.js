@@ -115,6 +115,42 @@ export const getGoalDetailByTab = createSelector(
   }
 );
 
+const getGoal = (state, goalId) => {
+  const goals = state.goals;
+  if (_.has(goals, goalId)) {
+    return _.get(goals, goalId);
+  }
+  return {};
+};
+
+const getGoalPage = (state, goalId, pageId) => {
+  const goals = state.goals;
+  if (_.has(goals, `${goalId}.${pageId}`)) {
+    return _.get(goals, `${goalId}.${pageId}`);
+  }
+  return {};
+};
+
+export const makeGetGoalDetailById = () => {
+  return createSelector(
+    [getGoal],
+    (goal) => goal
+  );
+};
+
+export const makeGetGoalPageDetailByPageId = () => {
+  return createSelector(
+    [getGoal, getGoalPage],
+    (goal, goalPage) => {
+      return {
+        goal,
+        goalPage
+      };
+    }
+  );
+};
+  
+
 const capitalizeWord = (word) => {
   if (!word) return '';
   return word.replace(/^\w/, c => c.toUpperCase());

@@ -31,19 +31,39 @@ import {
     GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS,
     GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS,
     GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS,
-    GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS
+    GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
+    GOAL_DETAIL_SWITCH_TAB_V2
 } from '../../../reducers/GoalDetailReducers';
+
+import {
+    GOAL_CREATE_EDIT_SUCCESS
+} from '../goal/CreateGoal';
 
 import {
     HOME_REFRESH_GOAL_DONE,
     HOME_LOAD_GOAL_DONE
 } from '../../../reducers/Home';
 
+import {
+    COMMENT_DELETE_SUCCESS
+} from '../feed/comment/CommentReducers';
+
+import {
+    COMMENT_NEW_POST_SUCCESS
+} from '../feed/comment/NewCommentReducers';
+
+import {
+    LIKE_POST,
+    LIKE_GOAL,
+    UNLIKE_POST,
+    UNLIKE_GOAL
+} from '../like/LikeReducers';
+
 /**
  * List of const to add 
  * 
  * Create Goal
- * GOAL_CREATE_EDIT_SUCCESS
+ * GOAL_CREATE_EDIT_SUCCESS (done)
  * 
  * Goal Detail related
  * GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS, (done)
@@ -57,8 +77,8 @@ import {
  * GOAL_DETAIL_FETCH_ERROR, (done)
  * GOAL_DETAIL_OPEN (done)
  * GOAL_DETAIL_CLOSE, (done)
- * GOAL_DETAIL_SWITCH_TAB,
- * GOAL_DETAIL_SWITCH_TAB_V2,
+ * GOAL_DETAIL_SWITCH_TAB, (no need)// This is used in GoalDetailCardV2 which is deprecated
+ * GOAL_DETAIL_SWITCH_TAB_V2, (done)
  * 
  * Profile related (done)
  * PROFILE_FETCH_TAB_DONE (done)
@@ -68,7 +88,8 @@ import {
  * 
  * Comment related
  * The ones that need to increase / decrease comment count
- * COMMENT_DELETE_SUCCESS
+ * COMMENT_DELETE_SUCCESS, (done)
+ * COMMENT_NEW_POST_SUCCESS (done)
  * 
  * Home related (Goal Feed)
  * HOME_REFRESH_GOAL_DONE (done)
@@ -96,11 +117,22 @@ const INITIAL_GOAL_OBJECT = {
     reference: [],
 };
 
+const INITIAL_NAVIGATION_STATE_V2 = {
+    index: 0,
+    routes: [
+      { key: 'centralTab', title: 'CentralTab' },
+      { key: 'focusTab', title: 'FocusTab' },
+    ],
+    focusType: undefined, // ['need', 'step', 'comment']
+    focusRef: undefined
+  };
+
 const INITIAL_GOAL_PAGE = {
     refreshing: false, 
     loading: false, // Indicator if goal on this page is loading
     updating: false, // Indicator if goal on this page is updating
     // Potential navigation state and etc. First focus on integration with Profile
+    navigationStateV2: { ...INITIAL_NAVIGATION_STATE_V2 }
 };
 
 const INITIAL_STATE = {
@@ -110,14 +142,50 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         /* Goal Detail related */
-        case GOAL_DETAIL_FETCH_DONE:
+        case GOAL_DETAIL_FETCH_DONE: {
+            const { goal, goalId, pageId } = action.payload;
+            let newState = _.cloneDeep(state);
+            let reference = pageId !== undefined ? [pageId] : [];
+            let goalObjectToUpdate = _.has(newState, goalId)
+                ? _.get(newState, `${goalId}`)
+                : { ...INITIAL_GOAL_OBJECT };
+            
+            // Page should already exist for fetching a goal detail otherwise abort
+            if (pageId === undefined || !_.has(state, `${goalId}.${pageId}`)) {
+                return newState;
+            }
+
+            // Set the goal to the latest
+            if (goal !== undefined) {
+                goalObjectToUpdate = _.set(goalObjectToUpdate, 'goal', goal);
+            }
+ 
+            // Update the reference
+            const oldReference = _.get(goalObjectToUpdate, 'reference');
+            if (oldReference !== undefined && !oldReference.some(r => r === pageId)) {
+                reference = reference.concat(oldReference);
+            }
+
+            goalObjectToUpdate = _.set(goalObjectToUpdate, `${pageId}.loading`, false);
+            goalObjectToUpdate = _.set(goalObjectToUpdate, 'reference', reference);
+            
+            newState = _.set(newState, `${goalId}`, goalObjectToUpdate);
+            return newState;
+        }
+
         case GOAL_DETAIL_OPEN: {
-            const { goal, goalId, pageId, tab } = action.payload;
+            const { goal, goalId, pageId } = action.payload;
             let newState = _.cloneDeep(state);
             let reference = [pageId];
             let goalObjectToUpdate = _.has(newState, goalId)
-                ? _.get(newState, 'goalId')
+                ? _.get(newState, `${goalId}`)
                 : { ...INITIAL_GOAL_OBJECT };
+            
+            if (pageId === undefined) {
+                // Abort something is wrong
+                console.warn(`${DEBUG_KEY}: [ ${GOAL_DETAIL_OPEN} ] with pageId: ${pageId}`);
+                return newState;
+            }
             
             // Set the goal to the latest
             if (goal !== undefined) {
@@ -125,25 +193,35 @@ export default (state = INITIAL_STATE, action) => {
             }
 
             // Setup goal page for pageId if not initially setup
-            if (_.has(goalObjectToUpdate, pageId)) {
+            if (!_.has(goalObjectToUpdate, pageId)) {
                 goalObjectToUpdate = _.set(goalObjectToUpdate, pageId, { ...INITIAL_GOAL_PAGE });
             }
  
+            // Update the reference
             const oldReference = _.get(goalObjectToUpdate, 'reference');
             if (oldReference !== undefined && !oldReference.some(r => r === pageId)) {
                 reference = reference.concat(oldReference);
             }
-
-            // Update the reference
             goalObjectToUpdate = _.set(goalObjectToUpdate, 'reference', reference);
             
+            // Update goal object
             newState = _.set(newState, `${goalId}`, goalObjectToUpdate);
+            return newState;
+        }
 
-            // Customized actions
-            if (action.type === GOAL_DETAIL_FETCH_DONE) {
-                _.set(newState, `${goalId}.${pageId}.loading`, false);
+        case GOAL_CREATE_EDIT_SUCCESS: {
+            const { goal } = action.payload;
+            let newState = _.cloneDeep(state);
+            if (goal === undefined) return newState;
+
+            const goalId = goal._id;
+            if (!_.has(newState, goalId)) {
+                // We don't update if no goal is already opened
+                // Or not in any of the list
+                return newState;
             }
-            
+
+            newState = _.set(newState, `${goalId}.goal`, goal);
             return newState;
         }
 
@@ -248,6 +326,36 @@ export default (state = INITIAL_STATE, action) => {
                 return newState;
             }
             newState = _.set(newState, `${goalId}.goal.isCompleted`, complete);
+            return newState;
+        }
+
+        case GOAL_DETAIL_SWITCH_TAB_V2: {
+            const { 
+                tab, index, key, focusType, 
+                focusRef, goalId, pageId
+            } = action.payload;
+
+            const path = `${goalId}.${pageId}.navigationStateV2`;
+            let newState = _.cloneDeep(state);
+            // Sanity check by pageId because we need pageId to be present
+            const shouldUpdate = sanityCheckByPageId(
+                newState, goalId, pageId, GOAL_DETAIL_SWITCH_TAB_V2
+            );
+            if (!shouldUpdate) return newState;
+
+            const navigationStateV2 = _.get(newState, path);
+            let newIndex = index || 0;
+            if (key) {
+                navigationStateV2.routes.forEach((route, i) => {
+                if (route.key === key) {
+                    newIndex = i;
+                }
+                });
+            }
+            newState = _.set(newState, `${path}.focusRef`, focusRef);
+            newState = _.set(newState, `${path}.focusType`, focusType);
+            newState = _.set(newState, `${path}.index`, newIndex);
+
             return newState;
         }
 
@@ -361,6 +469,100 @@ export default (state = INITIAL_STATE, action) => {
             });
 
             // console.log(`${DEBUG_KEY}: profile close with newState: `, newState);
+            return newState;
+        }
+
+        /* Comment related */
+        case COMMENT_DELETE_SUCCESS: {
+            const {
+                pageId,
+                tab,
+                commentId,
+                parentRef, 
+                parentType // ['Goal', 'Post']
+            } = action.payload;
+            let newState = _.cloneDeep(state);
+            // check parentType to determine to proceed
+            if (parentType !== 'Goal') {
+                return newState;
+            }
+            // Check if goal of concerned is in the Goals
+            if (!_.has(newState, parentRef)) return newState;
+            if (!_.has(newState, `${parentRef}.goal`)) {
+                console.warn(
+                    `${DEBUG_KEY}: goal is not in ${parentRef}: `, 
+                    _.get(newState, `${parentRef}`)
+                );
+                return newState;
+            }
+            // Decrease comment count
+            const oldCommentCount = _.get(newState, `${parentRef}.goal.commentCount`) || 0;
+            const newCommentCount = (oldCommentCount - 1) < 0 ? 0 : oldCommentCount - 1;
+
+            newState = _.set(newState, `${parentRef}.goal.commentCount`, newCommentCount);
+            return newState;
+        }
+
+        case COMMENT_NEW_POST_SUCCESS: {
+            let newState = _.cloneDeep(state);
+            const { comment } = action.payload;
+            const { parentType, parentRef } = comment;
+            // check parentType to determine to proceed
+            if (parentType !== 'Goal') {
+                return newState;
+            }
+
+            // Check if goal of concerned is in the Goals
+            if (!_.has(newState, parentRef)) return newState;
+
+            if (!_.has(newState, `${parentRef}.goal`)) {
+                console.warn(
+                    `${DEBUG_KEY}: goal is not in ${parentRef}: `, 
+                    _.get(newState, `${parentRef}`)
+                );
+                return newState;
+            }
+
+            // Increase comment count
+            const oldCommentCount = _.get(newState, `${parentRef}.goal.commentCount`) || 0;
+            const newCommentCount = (oldCommentCount + 1);
+
+            newState = _.set(newState, `${parentRef}.goal.commentCount`, newCommentCount);
+            return newState;
+        }
+
+        /* Like related */
+        case LIKE_POST:
+        case LIKE_GOAL:
+        case UNLIKE_POST:
+        case UNLIKE_GOAL: {
+            const { id, likeId, tab, undo } = action.payload;
+            let newState = _.cloneDeep(state);
+            const goalId = id;
+
+            if (!_.has(newState, `${goalId}.goal`)) return newState;
+
+            let goalToUpdate = _.get(newState, `${goalId}.goal`);
+            goalToUpdate = _.set(goalToUpdate, 'maybeLikeRef', likeId);
+
+            const oldLikeCount = _.get(goalToUpdate, 'likeCount');
+            let newLikeCount = oldLikeCount;
+
+            if (action.type === LIKE_POST || action.type === LIKE_GOAL) {
+                if (undo) {
+                    newLikeCount = oldLikeCount - 1;
+                } else if (likeId === 'testId') {
+                    newLikeCount = oldLikeCount + 1;
+                }
+            } else if (action.type === UNLIKE_POST || action.type === UNLIKE_GOAL) {
+                if (undo) {
+                    newLikeCount = oldLikeCount + 1;
+                } else if (likeId === undefined) {
+                    newLikeCount = oldLikeCount - 1;
+                }
+            }
+            goalToUpdate = _.set(goalToUpdate, 'likeCount', newLikeCount);
+            newState = _.set(newState, `${goalId}.goal`, goalToUpdate);
             return newState;
         }
 

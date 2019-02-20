@@ -57,7 +57,7 @@ class CentralTab extends React.Component<{}> {
   }
 
   renderItem = (props) => {
-    const { goalDetail } = this.props;
+    const { goalDetail, pageId, goalId } = this.props;
     if (!goalDetail) return '';
 
     const newCommentParams = {
@@ -82,6 +82,8 @@ class CentralTab extends React.Component<{}> {
         }}
         isSelf={this.props.isSelf}
         count={props.item.count}
+        pageId={pageId}
+        goalId={goalId}
       />
     );
   }

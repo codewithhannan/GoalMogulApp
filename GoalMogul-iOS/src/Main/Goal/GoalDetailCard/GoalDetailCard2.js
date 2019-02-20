@@ -75,7 +75,8 @@ class GoalDetailCard2 extends Component {
 
   // Tab related handlers
   _handleIndexChange = index => {
-    this.props.goalDetailSwitchTab(index);
+    const { pageId, goalId } = this.props;
+    this.props.goalDetailSwitchTab(index, goalId, pageId);
     // this.setState({
     //   ...this.state,
     //   navigationState: {
