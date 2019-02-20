@@ -25,7 +25,11 @@ import {
 } from '../report/ReportReducers';
 
 import { api as API } from '../../middleware/api';
-import { queryBuilder, switchCase } from '../../middleware/utils';
+import { 
+  queryBuilder, 
+  constructPageId,
+  componentKeyByTab
+} from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Event Actions ]';
 const BASE_ROUTE = 'secure/event';
@@ -229,7 +233,11 @@ export const eventDetailOpenWithId = (eventId) => (dispatch, getState) => {
  */
 export const eventDetailOpen = (event) => (dispatch, getState) => {
   const { userId } = getState().user;
+  const { tab } = getState().navigation;
   const { _id } = event;
+  const eventId = _id;
+  const pageId = constructPageId('event');
+  const componentToOpen = componentKeyByTab(tab, 'eventDetail');
 
   // If user is not a member nor an invitee and event is not public visible,
   // Show not found for this tribe
@@ -247,7 +255,7 @@ export const eventDetailOpen = (event) => (dispatch, getState) => {
           event: res.data
         }
       });
-      Actions.eventDetail();
+      Actions.push(`${componentToOpen}`, { eventId, pageId });
     };
     fetchEventDetail(_id, callback)(dispatch, getState);
     return;
@@ -257,10 +265,12 @@ export const eventDetailOpen = (event) => (dispatch, getState) => {
   dispatch({
     type: EVENT_DETAIL_OPEN,
     payload: {
-      event: _.set(newEvent, 'participants', [])
+      event: _.set(newEvent, 'participants', []),
+      pageId,
+      eventId
     }
   });
-  Actions.eventDetail();
+  Actions.push(`${componentToOpen}`, { eventId, pageId });
   fetchEventDetail(_id)(dispatch, getState);
   refreshEventFeed(_id, dispatch, getState);
 };
