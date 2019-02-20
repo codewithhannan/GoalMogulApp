@@ -47,6 +47,7 @@ import {
   makeGetGoalPageDetailByPageId,
   makeGetGoalStepsAndNeedsV2
 } from '../../../redux/modules/goal/selector';
+
 import {
   getCommentByTab,
   getNewCommentByTab,
@@ -316,6 +317,7 @@ class GoalDetailCardV3 extends Component {
             }}
             paddingBottom={this.state.focusTabBottomPadding}
             pageId={this.props.pageId}
+            goalId={this.props.goalId}
             handleReplyTo={this.handleReplyTo}
             isSelf={this.props.isSelf}
             initial={this.props.initial}
