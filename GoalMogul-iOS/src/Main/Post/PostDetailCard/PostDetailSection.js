@@ -280,13 +280,16 @@ class PostDetailSection extends React.PureComponent {
       return this.renderPostImage(mediaRef);
     }
     const refPreview = switchItem(item, postType);
-    const onPress = switchCase({
-      SharePost: () => this.props.openPostDetail(refPreview),
-      ShareUser: () => this.props.openProfile(refPreview._id),
-      ShareGoal: () => this.props.openGoalDetail(goalRef),
-      ShareNeed: () => this.props.openGoalDetail(goalRef),
-      ShareStep: () => this.props.openGoalDetail(goalRef)
-    })('SharePost')(postType);
+    let onPress;
+    if (refPreview !== null && !_.isEmpty(refPreview)) {
+      onPress = switchCase({
+        SharePost: () => this.props.openPostDetail(refPreview),
+        ShareUser: () => this.props.openProfile(refPreview._id),
+        ShareGoal: () => this.props.openGoalDetail(goalRef),
+        ShareNeed: () => this.props.openGoalDetail(goalRef),
+        ShareStep: () => this.props.openGoalDetail(goalRef)
+      })(() => console.warn(`${DEBUG_KEY}: invalid item:`, item))(postType);
+    }
 
     return (
       <View style={{ marginTop: 20 }}>

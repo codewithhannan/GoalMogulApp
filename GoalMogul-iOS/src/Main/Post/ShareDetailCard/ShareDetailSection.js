@@ -286,7 +286,7 @@ class ShareDetailSection extends Component {
         ShareGoal: () => this.props.openGoalDetail(goalRef),
         ShareNeed: () => this.props.openGoalDetail(goalRef),
         ShareStep: () => this.props.openGoalDetail(goalRef)
-      })(() => console.log(`${DEBUG_KEY}: invalid item:`, item))(postType);
+      })(() => console.warn(`${DEBUG_KEY}: invalid item:`, item))(postType);
     }
     
     return (
