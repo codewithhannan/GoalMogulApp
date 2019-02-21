@@ -232,10 +232,10 @@ class RouterComponent extends Component {
                       }
                     >
                       <Scene key="home" initial component={Home} />
-                      <Stack key="myEventTabRoot" hideNavBar>
-                        <Scene key="myEventTab" component={MyEventTab} initial />
-                        <Scene key="myEventDetail" component={MyEvent} />
-                      </Stack>
+                      
+                      <Scene key="myEventTab" component={MyEventTab} />
+                      <Scene key="myEventDetail" component={MyEvent} />
+                      
                       <Stack key="myTribeTabRoot" hideNavBar>
                         <Scene key="myTribeTab" component={MyTribeTab} initial />
                         <Scene key="myTribeDetail" component={MyTribe} />

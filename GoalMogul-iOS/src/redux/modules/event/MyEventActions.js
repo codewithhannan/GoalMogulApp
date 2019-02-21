@@ -125,6 +125,7 @@ export const eventDetailOpen = (event) => (dispatch, getState) => {
   // If user is not a member nor an invitee and event is not public visible,
   // Show not found for this tribe
   if (event.isInviteOnly && userId !== event.creator) {
+    console.log(`${DEBUG_KEY}: i am here`);
     dispatch({
       type: MYEVENT_DETAIL_OPEN,
       payload: {
@@ -152,6 +153,8 @@ export const eventDetailOpen = (event) => (dispatch, getState) => {
     fetchEventDetail(_id, callback, pageId)(dispatch, getState);
     return;
   }
+
+  console.log(`${DEBUG_KEY}: componentToOpen: `, componentToOpen);
 
   const newEvent = _.cloneDeep(event);
   dispatch({
