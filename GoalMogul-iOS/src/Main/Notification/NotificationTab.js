@@ -8,12 +8,14 @@ import {
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import _ from 'lodash';
+import { Actions } from 'react-native-router-flux';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
 import NotificationCard from './Notification/NotificationCard';
 import NotificationNeedCard from './Need/NotificationNeedCard';
 import EmptyResult from '../Common/Text/EmptyResult';
+import DelayedButton from '../Common/Button/DelayedButton';
 
 // Actions
 import {
@@ -30,7 +32,11 @@ import {
   getNotifications,
   getNotificationNeeds
 } from '../../redux/modules/notification/NotificationSelector';
-import { Actions } from 'react-native-router-flux';
+
+// Styles
+import {
+  APP_BLUE
+} from '../../styles';
 
 // Constants
 const DEBUG_KEY = '[ UI NotificationTab ]';
@@ -115,8 +121,9 @@ class NotificationTab extends Component {
   }
 
   renderHeader = (item) => {
-    const { text } = item;
-    return <TitleComponent text={text} />;
+    return (
+        <TitleComponent item={item} />
+    );
   }
 
   renderItem = (props) => {
@@ -206,13 +213,28 @@ const SeeMoreButton = (props) => {
  * Title component at the start of each notification type
  */
 const TitleComponent = (props) => {
-  const { text } = props;
+  const { text, notificationType, length } = props.item;
+  let seeAll = '';
+  if (length !== undefined && length === 0 && notificationType === 'notification') {
+      const { seeAllContainerStyle, seeAllTextStyle } = styles;
+      const onPress = () => Actions.push('notificationList');
+      seeAll = (
+          <DelayedButton
+              style={{ ...seeAllContainerStyle, paddingLeft: 5, alignSelf: 'flex-end' }}
+              activeOpacity={0.85} 
+              onPress={onPress}
+          >
+              <Text style={seeAllTextStyle}>Manage All</Text>
+          </DelayedButton>
+      );
+  }
 
   return (
     <View style={styles.titleComponentContainerStyle}>
       <Text style={{ fontSize: 11, color: '#6d6d6d', fontWeight: '600' }}>
         {text}
       </Text>
+      {seeAll}
     </View>
   );
 };
@@ -246,10 +268,24 @@ const styles = {
   },
   titleComponentContainerStyle: {
     paddingLeft: 12, // Needs to be aligned with NotificationCard padding
+    paddingTop: 10,
     padding: 6,
     borderColor: 'lightgray',
-    borderBottomWidth: 0.5
-  }
+    borderBottomWidth: 0.5,
+    flexDirection: 'row', 
+    alignItems: 'center'
+  },
+  seeAllContainerStyle: {
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  seeAllTextStyle: {
+      color: APP_BLUE,
+      fontSize: 12,
+      fontWeight: '700'
+  },
 };
 
 export default connect(

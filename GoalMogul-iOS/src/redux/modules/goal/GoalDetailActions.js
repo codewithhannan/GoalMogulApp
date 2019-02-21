@@ -56,6 +56,18 @@ export const refreshGoalDetailById = (goalId, pageId) => (dispatch, getState) =>
 
   const onError = (err) => {
     console.warn(`${DEBUG_KEY}: refresh goal error: `, err);
+    if (err.status === 400 || err.status === 404) {
+      Alert.alert(
+        'Content not found',
+        'This goal has been removed', 
+        [
+          { 
+            text: 'Cancel', 
+            onPress: () => Actions.pop()
+          }
+        ]
+      );
+    }
     dispatch({
       type: GOAL_DETAIL_FETCH_ERROR,
       payload: {

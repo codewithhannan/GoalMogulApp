@@ -160,9 +160,13 @@ export default (state = INITIAL_STATE, action) => {
 
     case GOAL_DETAIL_OPEN: {
       const { tab, goal } = action.payload;
-      const path = !tab || tab === 'homeTab' ? 'goal.goal' : `goal${capitalizeWord(tab)}.goal`;
-      const newState = _.cloneDeep(state);
-      return _.set(newState, `${path}`, { ...goal });
+      let newState = _.cloneDeep(state);
+
+      if (goal !== undefined && goal !== null && !_.isEmpty(goal)) {
+        const path = !tab || tab === 'homeTab' ? 'goal.goal' : `goal${capitalizeWord(tab)}.goal`;
+        newState = _.set(newState, `${path}`, { ...goal }); 
+      }
+      return newState;
     }
 
     /**

@@ -14,7 +14,7 @@ const INITIAL_STATE = {
     loading: false,
     refreshing: false,
     skip: 0,
-    limit: 10,
+    limit: 7,
     hasNextPage: undefined,
     deleting: false,
     seeMoreSkip: 5, // Every time shows 5 more notifications
@@ -25,7 +25,7 @@ const INITIAL_STATE = {
     loading: false,
     refreshing: false,
     skip: 0,
-    limit: 10,
+    limit: 7,
     hasNextPage: undefined,
     seeMoreSkip: 5, // Every time shows 5 more notifications
     seeMoreCount: 5 // how many items are shown currently
@@ -95,7 +95,9 @@ export default (state = INITIAL_STATE, action) => {
       }
       newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
       const oldData = _.get(newState, `${type}.data`);
-      return _.set(newState, `${type}.data`, arrayUnique(oldData.concat(data)));
+      const dataToPut = arrayUnique(oldData.concat(data))
+        .sort((a, b) => new Date(b.created) - new Date(a.created));
+      return _.set(newState, `${type}.data`, dataToPut);
     }
 
     case NOTIFICATION_REFRESH: {
@@ -111,22 +113,27 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case NOTIFICATION_REFRESH_SUCCESS: {
-      const { skip, data, hasNextPage, type } = action.payload;
+      const { skip, data, hasNextPage, type, refresh } = action.payload;
       let newState = _.cloneDeep(state);
       newState = _.set(newState, `${type}.refreshing`, false);
+      // const oldData = _.get(newState, `${type}.data`);
 
       if (skip !== undefined) {
         newState = _.set(newState, `${type}.skip`, skip);
       }
       newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
-      newState = _.set(newState, `${type}.data`, data);
+
+      // Only reset data if there is data
+      if (data && data !== null && data.length > 0) {
+        newState = _.set(newState, `${type}.data`, data);
+      }
 
       // Following section is to update the unread notification
       let oldUnread = _.get(newState, 'unread.data');
       let newUnreadToAdd = [];
       const limit = _.get(newState, 'unread.limit');
       data
-        // .sort((a, b) => new Date(a.created) - new Date(b.created)) // Put the latest to the top
+        .sort((a, b) => new Date(b.created) - new Date(a.created)) // Put the latest to the top
         .forEach((d) => {
           // Check if this notification is unread and this notification is already in the queue
           if (d.read === false && !oldUnread.some(o => o._id === d._id)) {

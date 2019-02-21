@@ -439,7 +439,7 @@ const getNeedFromRef = (goal, needRef) => getItemFromGoal(goal, 'needs', needRef
 
 const getItemFromGoal = (goal, type, ref) => {
   let ret;
-  if (goal) {
+  if (goal && typeof goal === 'object') {
     _.get(goal, `${type}`).forEach((item) => {
       if (item._id === ref) {
         ret = item;

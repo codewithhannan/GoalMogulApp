@@ -26,6 +26,9 @@ import {
     POST_NEW_POST_UPDATE_MEDIA,
     POST_NEW_POST_SUBMIT_SUCCESS,
     POST_NEW_POST_SUBMIT,
+    POST_DETAIL_FETCH,
+    POST_DETAIL_FETCH_DONE,
+    POST_DETAIL_FETCH_ERROR
 } from './PostReducers';
 
 import {
@@ -78,8 +81,9 @@ import {
  * Post related
  * POST_DETAIL_OPEN (done)
  * POST_DETAIL_CLOSE (done)
- * POST_DETAIL_FETCH (no action implemented)
+ * POST_DETAIL_FETCH 
  * POST_DETAIL_FETCH_DONE (no action implemented)
+ * POST_DETAIL_FETCH_ERROR
  * 
  * New post related
  * POST_NEW_POST_UPDATE_MEDIA (done)
@@ -197,6 +201,60 @@ export default (state = INITIAL_STATE, action) => {
             // Update goal object
             newState = _.set(newState, `${postId}`, postObjectToUpdate);
             return newState;
+        }
+
+        /* Goal Detail related */
+        case POST_DETAIL_FETCH_DONE: {
+            const { postId, post, pageId } = action.payload;
+            let newState = _.cloneDeep(state);
+            let reference = pageId !== undefined ? [pageId] : [];
+            let postObjectToUpdate = _.has(newState, postId)
+                ? _.get(newState, `${postId}`)
+                : { ...INITIAL_POST_OBJECT };
+            
+            // Page should already exist for fetching a post detail otherwise abort
+            if (pageId === undefined || !_.has(state, `${postId}.${pageId}`)) {
+                return newState;
+            }
+
+            // Set the post to the latest
+            if (post !== undefined && post !== null) {
+                postObjectToUpdate = _.set(postObjectToUpdate, 'post', post);
+            }
+ 
+            // Update the reference
+            const oldReference = _.get(postObjectToUpdate, 'reference');
+            if (oldReference !== undefined) {
+                if (!oldReference.some(r => r === pageId)) {
+                    reference = reference.concat(oldReference);
+                } else {
+                    reference = oldReference;
+                }
+            }
+
+            postObjectToUpdate = _.set(postObjectToUpdate, `${pageId}.loading`, false);
+            postObjectToUpdate = _.set(postObjectToUpdate, 'reference', reference);
+            
+            newState = _.set(newState, `${postId}`, postObjectToUpdate);
+            return newState;
+        }
+        
+        case POST_DETAIL_FETCH: {
+            const { postId, pageId } = action.payload;
+            const newState = _.cloneDeep(state);
+            const shouldUpdate = sanityCheckByPageId(newState, postId, pageId, action.type);
+            if (!shouldUpdate) return newState;
+            return _.set(newState, `${postId}.${pageId}.loading`, true);
+        }
+
+        case POST_DETAIL_FETCH_ERROR: {
+            const { postId, pageId } = action.payload;
+            const newState = _.cloneDeep(state);
+            const shouldUpdate = sanityCheckByPageId(
+                newState, postId, pageId, action.type
+            );
+            if (!shouldUpdate) return newState;
+            return _.set(newState, `${postId}.${pageId}.loading`, false);
         }
 
         case SHARE_DETAIL_CLOSE:
@@ -465,4 +523,18 @@ export default (state = INITIAL_STATE, action) => {
         default: 
             return { ...state };
     }
+};
+
+const sanityCheckByPageId = (state, postId, pageId, type) => {
+    if (!_.has(state, postId)) {
+        console.warn(`${DEBUG_KEY}: [ ${type} ]: expecting postId: ${postId} but not found`);
+        return false;
+    }
+    if (!_.has(state, `${postId}.${pageId}`)) {
+        console.warn(`${DEBUG_KEY}: [ ${type} ]: expecting postId: ${postId} and ` + 
+        `pageId: ${pageId} but not found`);
+        return false;
+    }
+
+    return true;
 };

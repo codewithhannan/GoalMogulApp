@@ -19,6 +19,7 @@ import FriendsSettingIcon from '../../../asset/utils/friendsSettingIcon.png';
 
 // Actions
 import {
+  openNotificationDetail,
   removeNotification,
   markNotifAsRead
 } from '../../../redux/modules/notification/NotificationActions';
@@ -41,7 +42,7 @@ class NotificationCard extends React.PureComponent {
 
     // TODO: open detail based on the path;
     console.log(`${DEBUG_KEY}: open notification detail for item: `, item);
-    this.props.openNotificationDetail(parsedNoti);
+    this.props.openNotificationDetail(item);
   }
 
   handleOptionsOnPress() {
@@ -50,7 +51,7 @@ class NotificationCard extends React.PureComponent {
     const options = switchByButtonIndex([
       [R.equals(0), () => {
         console.log(`${DEBUG_KEY} User chooses to remove notification`);
-        return this.props.removeNotification();
+        return this.props.removeNotification(_id);
       }]      
     ]);
 
@@ -189,6 +190,7 @@ export default connect(
   mapStateToProps,
   {
     removeNotification,
-    markNotifAsRead
+    markNotifAsRead,
+    openNotificationDetail
   }
 )(NotificationCard);
