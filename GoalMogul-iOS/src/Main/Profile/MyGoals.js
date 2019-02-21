@@ -63,7 +63,7 @@ class MyGoals extends Component {
   renderListFooter() {
     const { loading, data } = this.props;
     // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
-    if (loading && data.length >= 10) {
+    if (loading && data.length >= 7) {
       return (
         <View
           style={{

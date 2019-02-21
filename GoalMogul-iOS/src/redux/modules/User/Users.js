@@ -72,7 +72,7 @@ const INITIAL_USER = {
     mutualFriends: {
         data: [],
         skip: 0,
-        limit: 10,
+        limit: 7,
         count: 0,
         refreshing: false,
         loading: false,
@@ -99,7 +99,7 @@ const INITIAL_FRIENDSHIP = {
 const INITIAL_MUTUAL_FRIENDS = {
     data: [],
     skip: 0,
-    limit: 10,
+    limit: 7,
     count: 0,
     refreshing: false,
     loading: false,
@@ -137,7 +137,7 @@ const INITIAL_USER_PAGE = {
     goals: {
         data: [],
         skip: 0,
-        limit: 10,
+        limit: 7,
         filter: {
             sortBy: 'created',
             orderBy: 'descending',
@@ -156,7 +156,7 @@ const INITIAL_USER_PAGE = {
             completedOnly: 'false',
             priorities: ''
         },
-        limit: 10,
+        limit: 7,
         skip: 0,
         hasNextPage: undefined,
         data: [],
@@ -171,7 +171,7 @@ const INITIAL_USER_PAGE = {
             completedOnly: 'false',
             priorities: ''
         },
-        limit: 10,
+        limit: 7,
         skip: 0,
         hasNextPage: undefined,
         data: [],
