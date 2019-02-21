@@ -50,6 +50,7 @@ import plus from '../../asset/utils/plus.png';
 
 // const { Popover } = renderers;
 const { width } = Dimensions.get('window');
+const DEBUG_KEY = '[ UI CreateEventModal ]';
 
 class CreateEventModal extends React.Component {
   constructor(props) {
@@ -77,6 +78,8 @@ class CreateEventModal extends React.Component {
 
     // Initialize based on the props, if it's opened through edit button
     const { initializeFromState, event } = this.props;
+    // console.log(`${DEBUG_KEY}: initializeFromState: `, initializeFromState);
+    // console.log(`${DEBUG_KEY}: event: `, event);
     const initialVals = initializeFromState
       ? { ...eventToFormAdapter(event) }
       : { ...defaulVals };
@@ -156,32 +159,34 @@ class CreateEventModal extends React.Component {
   // Renderer for timeline
   renderTimeline = () => {
     const titleText = <Text style={styles.titleTextStyle}>Timeline</Text>;
-    if (!this.props.hasTimeline) {
-      return (
-        <View style={{ ...styles.sectionMargin }}>
-          {titleText}
-          <TouchableOpacity activeOpacity={0.85}
-            style={{
-              height: 40,
-              width: 90,
-              backgroundColor: '#fafafa',
-              borderRadius: 4,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: 8,
-              flexDirection: 'row',
-              padding: 10
-            }}
-            onPress={() => this.props.change('hasTimeline', true)}
-          >
-            <Image source={plus} style={{ height: 11, width: 11 }} />
-            <Text style={{ fontSize: 14, fontWeight: '600', marginLeft: 4 }}>
-              timeline
-            </Text>
-          </TouchableOpacity>
-        </View>
-      );
-    }
+    // Timeline is required to create an event
+    // if (!this.props.hasTimeline) {
+    //   return (
+    //     <View style={{ ...styles.sectionMargin }}>
+    //       {titleText}
+    //       <TouchableOpacity activeOpacity={0.85}
+    //         style={{
+    //           height: 40,
+    //           width: 90,
+    //           backgroundColor: '#fafafa',
+    //           borderRadius: 4,
+    //           alignItems: 'center',
+    //           justifyContent: 'center',
+    //           marginTop: 8,
+    //           flexDirection: 'row',
+    //           padding: 10
+    //         }}
+    //         onPress={() => this.props.change('hasTimeline', true)}
+    //       >
+    //         <Image source={plus} style={{ height: 11, width: 11 }} />
+    //         <Text style={{ fontSize: 14, fontWeight: '600', marginLeft: 4 }}>
+    //           timeline
+    //         </Text>
+    //       </TouchableOpacity>
+    //     </View>
+    //   );
+    // }
+    if (this.props.startTime === undefined) return '';
 
     const newPicker = true;
     const startDatePicker = newPicker ? 
@@ -192,7 +197,7 @@ class CreateEventModal extends React.Component {
           onConfirm={(date) => {
             if (validateTime(date, this.props.endTime.date)) {
               this.props.change('startTime', { date, picker: false });
-              return
+              return;
             }
             alert('Start time should not be later than start time');
           }}
@@ -297,8 +302,9 @@ class CreateEventModal extends React.Component {
     return (
       <View style={{ ...styles.sectionMargin }}>
         {titleText}
-        <View style={{ marginTop: 8, flexDirection: 'row' }}>
-          <TouchableOpacity activeOpacity={0.85}
+        <View style={{ marginTop: 8, marginLeft: 10, flexDirection: 'row' }}>
+          <TouchableOpacity 
+            activeOpacity={0.85}
             style={{
               height: 50,
               width: 130,
@@ -316,7 +322,8 @@ class CreateEventModal extends React.Component {
             {startTime}
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.85}
+          <TouchableOpacity 
+            activeOpacity={0.85}
             style={{
               height: 50,
               width: 130,
@@ -408,7 +415,8 @@ class CreateEventModal extends React.Component {
               />
             </View>
 
-            <TouchableOpacity activeOpacity={0.85}
+            <TouchableOpacity 
+              activeOpacity={0.85}
               onPress={() => this.setState({ mediaModal: true })}
               style={{
                 position: 'absolute',
@@ -534,20 +542,25 @@ class CreateEventModal extends React.Component {
   }
 
   renderOptions() {
-    return (
-      <View>
+    const participantOptions = this.props.isInviteOnly
+      ? (
         <CheckBox
-          title='Participants can invite'
+          title='Participants can invite others'
           checked={this.props.participantsCanInvite}
           onPress={() =>
             this.props.change('participantsCanInvite', !this.props.participantsCanInvite)
           }
         />
+      )
+      : '';
+    return (
+      <View>
         <CheckBox
           title='Invite only'
           checked={this.props.isInviteOnly}
           onPress={() => this.props.change('isInviteOnly', !this.props.isInviteOnly)}
         />
+        {participantOptions}
       </View>
     );
   }
