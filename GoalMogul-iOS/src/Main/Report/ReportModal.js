@@ -97,7 +97,7 @@ class ReportModal extends Component {
                   onAction={() => {
                     this.props.postingReport();
                   }}
-                  actionDisabled={!(title && details && title.length >= 10 && !loading)}
+                  actionDisabled={!(title && details && title.length >= 7 && !loading)}
                 />
                 <Text style={styles.subTitleTextStyle}>Title</Text>
                 {this.renderTitleInput()}

@@ -730,7 +730,7 @@ export const refreshComments = (parentType, parentId, tab, pageId) => (dispatch,
         parentId
       }
     });
-    console.log(`${DEBUG_KEY}: refresh comment success with data: `, data);
+    console.log(`${DEBUG_KEY}: refresh comment success with data length: `, data.length);
   };
 
   const onError = (err) => {
@@ -798,19 +798,20 @@ export const loadMoreComments = (parentType, parentId, tab, pageId) => (dispatch
   loadComments(skip, limit, token, { parentId, parentType }, onSuccess, onError);
 };
 
-export const loadComments = (skip, limit, token, params, callback, onError) => {
+export const loadComments = (skip, limit, token, { parentId, parentType }, callback, onError) => {
   API
     .get(
-      `${BASE_ROUTE}?${queryBuilder(skip, limit, { ...params })}`,
+      `${BASE_ROUTE}?parentId=${parentId}&parentType=${parentType}`,
       // `${BASE_ROUTE}?parentId=5bc81da9d4f72c0019bb0cdb&parentType=Goal`,
       token
     )
     .then((res) => {
-      console.log(`${DEBUG_KEY}: loading with res: `, res);
       if (res.data) {
+        console.log(`${DEBUG_KEY}: loading with res data length: `, res.data.length);
         // Right now return test data
         return callback(res.data.filter((i) => !_.isEmpty(i)));
       }
+      console.log(`${DEBUG_KEY}: loading with res: `, res);
       console.warn(`${DEBUG_KEY}: Loading comment with no res`);
       onError(res);
     })
