@@ -52,11 +52,12 @@ class MyEventTab extends React.Component {
   }
 
   renderListHeader() {
-    return (
-      <View>
-        <MyEventFilterBar />
-      </View>
-    );
+    return '';
+    // return (
+    //   <View>
+    //     <MyEventFilterBar />
+    //   </View>
+    // );
   }
 
   renderCreateEventButton() {
@@ -93,6 +94,7 @@ class MyEventTab extends React.Component {
               navigationState: this.props.navigationState
             })
           }
+          <MyEventFilterBar />
           <FlatList
             data={this.props.data}
             renderItem={this.renderItem}
