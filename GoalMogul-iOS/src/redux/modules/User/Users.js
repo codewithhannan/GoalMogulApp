@@ -569,12 +569,12 @@ export default (state = INITIAL_STATE, action) => {
         // When a goal or a post is deleted by user
         case PROFILE_GOAL_DELETE_SUCCESS: {
             const newState = _.cloneDeep(state);
-            const { userId, goalId } = action.payload;
+            const { userId, pageId, goalId } = action.payload;
             const shouldUpdate = sanityCheck(newState, userId, PROFILE_GOAL_DELETE_SUCCESS);
             if (!shouldUpdate) return newState;
 
             const user = _.get(newState, `${userId}`);
-            const updatedUser = removeItem(goalId, 'goals', 'goal', user);
+            const updatedUser = removeItem(goalId, 'goals', 'user', user);
             return _.set(newState, `${userId}`, updatedUser);
         }
     
@@ -585,7 +585,7 @@ export default (state = INITIAL_STATE, action) => {
             if (!shouldUpdate) return newState;
 
             const user = _.get(newState, `${userId}`);
-            const updatedUser = removeItem(goalId, 'posts', 'post', user);
+            const updatedUser = removeItem(goalId, 'posts', 'user', user);
             return _.set(newState, `${userId}`, updatedUser);
         }
 
@@ -719,7 +719,9 @@ const sanityCheckPageId = (state, userId, pageId, type) => {
 const removeItem = (id, type, prefixType, user) => {
     let userToReturn = _.cloneDeep(user);
     Object.keys(userToReturn).forEach(k => {
+        // console.log(`${DEBUG_KEY}: checking prefixType: ${prefixType} with key: ${k}`);
         if (hasTypePrefix(prefixType, k)) { // Check if key k has type prefix
+            // console.log(`${DEBUG_KEY}: checking prefixType: ${prefixType} with key: ${k} result is true`);
             // This is a page for type
             const oldData = _.get(userToReturn, `${k}.${type}.data`);
             const newData = oldData.filter(d => d !== id);
@@ -732,6 +734,6 @@ const removeItem = (id, type, prefixType, user) => {
             }
         }
     });
-
+    // console.log(`${DEBUG_KEY}: finish removing: userToReturn is: `, userToReturn);
     return userToReturn;
 };
