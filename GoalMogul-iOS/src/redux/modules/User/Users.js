@@ -306,7 +306,7 @@ export default (state = INITIAL_STATE, action) => {
             const path = refresh 
                 ? `${userId}.mutualFriends.refreshing` 
                 : `${userId}.mutualFriends.loading`;
-            newState = _.set(newState, path, true);
+            newState = _.set(newState, path, false);
             let newMutualFriends = _.get(newState, `${userId}.mutualFriends`);
             if (refresh) {
                 newMutualFriends = _.set(newMutualFriends, 'data', data);

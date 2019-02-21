@@ -189,7 +189,8 @@ class ProfileDetailCard extends Component {
   }
 
   handleMutualFriendOnPressed = () => {
-    Actions.push('mutualFriends');
+    const { pageId, userId } = this.props;
+    Actions.push('mutualFriends', { userId, pageId });
   }
 
   renderProfileActionButton() {

@@ -254,6 +254,7 @@ export const fetchMutualFriends = (userId, refresh) => (dispatch, getState) => {
       type: PROFILE_FETCH_MUTUAL_FRIEND,
       payload: {
         userId,
+        refresh
       }
     });
 
