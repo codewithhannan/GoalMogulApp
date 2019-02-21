@@ -8,7 +8,8 @@ import {
   POST_DETAIL_CLOSE,
   POST_NEW_POST_UPDATE_MEDIA,
   POST_NEW_POST_SUBMIT_SUCCESS,
-  POST_NEW_POST_SUBMIT_FAIL
+  POST_NEW_POST_SUBMIT_FAIL,
+  POST_NEW_POST_SUBMIT
 } from './PostReducers';
 
 import {
@@ -140,6 +141,9 @@ export const submitCreatingPost = (
     const { userId, token } = getState().user;
     const newPost = newPostAdaptor(values, userId);
     console.log(`${DEBUG_KEY}: post to submit is: `, newPost);
+    dispatch({
+      type: POST_NEW_POST_SUBMIT
+    });
 
     const onSuccess = (res) => {
       console.log('Creating post succeed with res: ', res);
