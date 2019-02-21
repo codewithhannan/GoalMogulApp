@@ -9,7 +9,10 @@ import {
   POST_NEW_POST_UPDATE_MEDIA,
   POST_NEW_POST_SUBMIT_SUCCESS,
   POST_NEW_POST_SUBMIT_FAIL,
-  POST_NEW_POST_SUBMIT
+  POST_NEW_POST_SUBMIT,
+  POST_DETAIL_FETCH,
+  POST_DETAIL_FETCH_DONE,
+  POST_DETAIL_FETCH_ERROR
 } from './PostReducers';
 
 import {
@@ -38,7 +41,6 @@ import {
 import ImageUtils from '../../../../Utils/ImageUtils';
 
 const DEBUG_KEY = '[ Action Post ]';
-
 /**
  * Open a post by postId
  * @param {} postId 
@@ -61,6 +63,7 @@ export const openPostDetailById = (postId) => (dispatch, getState) => {
     },
   });
 
+  fetchPostDetail(postId, pageId)(dispatch, getState);
   refreshComments('Post', postId, tab, pageId)(dispatch, getState);
 
   const componentToOpen = componentKeyByTab(tab, 'post');
@@ -94,10 +97,76 @@ export const openPostDetail = (post) => (dispatch, getState) => {
     },
   });
 
+  fetchPostDetail(postId, pageId)(dispatch, getState);
   refreshComments('Post', postId, tab, pageId)(dispatch, getState);
 
   const componentToOpen = componentKeyByTab(tab, 'post');
   Actions.push(`${componentToOpen}`, { pageId, postId });
+};
+
+export const fetchPostDetail = (postId, pageId) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+  const { token } = getState().user;
+
+  dispatch({
+    type: POST_DETAIL_FETCH,
+    payload: {
+      postId,
+      tab,
+      pageId
+    }
+  });
+
+  const onError = (err) => {
+    console.warn(`${DEBUG_KEY}: refresh post error: `, err);
+    if (err.status === 400 || err.status === 404) {
+      Alert.alert(
+        'Content not found',
+        'This post has been removed', 
+        [
+          { 
+            text: 'Cancel', 
+            onPress: () => Actions.pop()
+          }
+        ]
+      );
+    }
+    dispatch({
+      type: POST_DETAIL_FETCH_ERROR,
+      payload: {
+        post: undefined,
+        postId,
+        pageId,
+        tab,
+        error: err
+      }
+    });
+  };
+
+  const onSuccess = (res) => {
+    console.log(`${DEBUG_KEY}: refresh post done with res: `, res);
+    dispatch({
+      type: POST_DETAIL_FETCH_DONE,
+      payload: {
+        post: res.data,
+        postId,
+        tab,
+        pageId
+      }
+    });
+  };
+
+  API
+    .get(`secure/feed/post?postId=${postId}`, token)
+    .then((res) => {
+      if (res.status === 200) {
+        return onSuccess(res);
+      }
+      onError(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
 };
 
 // close post detail

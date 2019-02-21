@@ -103,6 +103,19 @@ const fetchProfileSucceed = (pageId, res, dispatch) => {
 
 const fetchProfileFail = (pageId, userId, res, dispatch) => {
   console.log(`${DEBUG_KEY} fetch profile failed with res: `, res);
+  if (res.status === 400 || res.status === 404) {
+    Alert.alert(
+      'Content not found',
+      'This user does not exist', 
+      [
+        { 
+          text: 'Cancel', 
+          onPress: () => Actions.pop()
+        }
+      ]
+    );
+  }
+
   dispatch({
     type: PROFILE_FETCHING_FAIL,
     payload: {
@@ -203,7 +216,7 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
     .then((res) => {
       const [profileRes, friendsCountRes, friendshipRes] = res;
 
-      if (profileRes.message) {
+      if (profileRes.message || profileRes.status !== 200) {
         /* TODO: error handling */
         return fetchProfileFail(pageId, userId, profileRes, dispatch);
       }

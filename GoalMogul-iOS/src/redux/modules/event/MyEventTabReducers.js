@@ -15,8 +15,8 @@ const INITIAL_STATE = {
   // ['start', 'created', 'title']
   sortBy: 'created',
   filterOptions: {
-    // ['Invited', 'Interested', 'Going', 'Maybe', 'NotGoing']
-    rsvp: 'Invited',
+    // ['All', 'Invited', 'Interested', 'Going', 'Maybe', 'NotGoing']
+    rsvp: 'All',
     // boolean
     isCreator: false,
     // ['Past', 'Upcoming']

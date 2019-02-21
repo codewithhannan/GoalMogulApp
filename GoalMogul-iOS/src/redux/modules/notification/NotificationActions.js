@@ -13,11 +13,13 @@ import {
 } from '../../../actions';
 
 import {
-  openGoalDetailById
+  openGoalDetailById,
+  openGoalDetail
 } from '../home/mastermind/actions';
 
 import {
-  openPostDetailById
+  openPostDetailById,
+  openPostDetail
 } from '../feed/post/PostActions';
 
 import {
@@ -48,12 +50,14 @@ const NOTIFICATION_TOKEN_KEY = 'notification_token_key';
 const NOTIFICATION_ALERT_SHOWN = 'notification_alert_shown';
 const NOTIFICATION_UNREAD_QUEUE_PREFIX = 'notification_unread_queue_prefix';
 
+const isValidItem = (item) => item !== undefined && item !== null && !_.isEmpty(item);
 /**
  * 
  * @param {*} parsedNoti:{notificationMessage, icon, path} 
  */
-export const openNotificationDetail = (parsedNoti) => (dispatch, getState) => {
+export const openNotificationDetail = (item) => (dispatch, getState) => {
   // TODO: use the parsedNoti.path to determine which detail to open
+  const { parsedNoti } = item;
   const { path } = parsedNoti;
   if (!isString(path)) {
     console.warn(`${DEBUG_KEY}: path in parsedNoti is not string: `, path);
@@ -67,11 +71,22 @@ export const openNotificationDetail = (parsedNoti) => (dispatch, getState) => {
 
   const entityType = p[0];
   const entityId = p[1];
+
+  if (entityType === 'user') {
+    return openProfile(entityId)(dispatch, getState);
+  }
+
   if (entityType === 'post') {
+    if (isValidItem(item.postRef)) {
+      return openPostDetail(item.postRef)(dispatch, getState);  
+    }
     return openPostDetailById(entityId)(dispatch, getState);
   }
 
   if (entityType === 'goal') {
+    if (isValidItem(item.goalRef)) {
+      return openGoalDetail(item.goalRef)(dispatch, getState);  
+    }
     return openGoalDetailById(entityId)(dispatch, getState);
   }
 

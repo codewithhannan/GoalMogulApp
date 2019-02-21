@@ -221,7 +221,6 @@ class MeetTabV2 extends React.Component {
                     style={{ ...seeAllContainerStyle, padding: 13, paddingLeft: 5, alignSelf: 'flex-end' }}
                     activeOpacity={0.85} 
                     onPress={onPress}
-
                 >
                     <Text style={seeAllTextStyle}>Manage All</Text>
                 </DelayedButton>

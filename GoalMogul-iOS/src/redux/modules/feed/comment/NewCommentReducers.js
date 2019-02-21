@@ -114,12 +114,12 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case GOAL_DETAIL_OPEN: {
       let newState = _.cloneDeep(state);
-      const { tab, goal, pageId } = action.payload;
+      const { tab, goal, pageId, goalId } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       newState = _.set(newState, `${path}`, { ...NEW_COMMENT_INITIAL_STATE });
       newState = _.set(newState, `${path}.parentType`, 'Goal');
-      return _.set(newState, `${path}.parentRef`, goal._id);
+      return _.set(newState, `${path}.parentRef`, goal ? goal._id : goalId);
     }
 
     case SHARE_DETAIL_OPEN: {

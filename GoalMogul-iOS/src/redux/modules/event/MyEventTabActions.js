@@ -1,5 +1,6 @@
 // This stores informations for events under my events
 import { Actions } from 'react-native-router-flux';
+import _ from 'lodash';
 import {
   MYEVENTTAB_REFRESH_DONE,
   MYEVENTTAB_LOAD_DONE,
@@ -135,6 +136,11 @@ export const loadMoreEvent = () => (dispatch, getState) => {
  * Basic API to load goals based on skip and limit
  */
 const loadEvent = (skip, limit, token, sortBy, filterOptions, callback, onError) => {
+  // const filterOptionsToUse = _.cloneDeep(filterOptions);
+  // if (filterOptionsToUse.rsvp === 'All') {
+    
+  // }
+
   API
     .get(
       `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, filterOptions })}`,

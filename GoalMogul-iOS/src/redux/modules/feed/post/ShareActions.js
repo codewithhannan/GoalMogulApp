@@ -23,6 +23,10 @@ import {
   componentKeyByTab
 } from '../../../middleware/utils';
 
+import {
+  fetchPostDetail
+} from '../post/PostActions';
+
 // Actions
 import {
   refreshComments
@@ -55,6 +59,7 @@ export const openShareDetail = (share, pageId) => (dispatch, getState) => {
     },
   });
 
+  fetchPostDetail(postId, pageId)(dispatch, getState);
   refreshComments('Post', postId, tab, pageId)(dispatch, getState);
 
   const componentToOpen = componentKeyByTab(tab, 'share');

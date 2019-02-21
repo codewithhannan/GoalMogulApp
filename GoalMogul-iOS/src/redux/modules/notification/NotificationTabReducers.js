@@ -111,15 +111,30 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case NOTIFICATION_REFRESH_SUCCESS: {
-      const { skip, data, hasNextPage, type } = action.payload;
+      const { skip, data, hasNextPage, type, refresh } = action.payload;
       let newState = _.cloneDeep(state);
       newState = _.set(newState, `${type}.refreshing`, false);
+      const oldData = _.get(newState, `${type}.data`);
 
       if (skip !== undefined) {
-        newState = _.set(newState, `${type}.skip`, skip);
+        // When refresh is true, it only pulls in the new notifications
+        // So we need to prepend to the list of notifications that we have
+        // Add the skip number to the original data length
+        let skipToSet = skip;
+        if (refresh && type === 'notifications') {
+          skipToSet += oldData.length;
+        }
+        newState = _.set(newState, `${type}.skip`, skipToSet);
       }
       newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
-      newState = _.set(newState, `${type}.data`, data);
+
+      let dataToSet = data;
+      if (refresh && type === 'notifications') {
+        // When refresh is true, it only pulls in the new notifications
+        // So we need to prepend to the list of notifications that we have
+        dataToSet = dataToSet.concat(oldData);
+      }
+      newState = _.set(newState, `${type}.data`, dataToSet);
 
       // Following section is to update the unread notification
       let oldUnread = _.get(newState, 'unread.data');

@@ -86,7 +86,7 @@ class CommentRef extends React.PureComponent {
       return this.props.myTribeDetailOpenWithId(tribeRef._id);
     }
     if (suggestionType === 'Event' && eventRef) {
-      return this.props.eventDetailOpenWithId(eventRef._id);
+      return this.props.myEventDetailOpenWithId(eventRef._id);
     }
     if (suggestionType === 'NewNeed') {
       return;
@@ -120,7 +120,7 @@ class CommentRef extends React.PureComponent {
   renderTextContent(item) {
     const { title, content } = getTextContent(item);
     return (
-      <View style={{ flex: 1, justifyContent: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center', marginLeft: 10 }}>
         <Text 
           style={styles.titleTextStyle}
           numberOfLines={1}

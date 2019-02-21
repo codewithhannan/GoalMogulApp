@@ -96,6 +96,10 @@ class MyEventFilterBar extends Component {
           </MenuTrigger>
           <MenuOptions customStyles={styles.menuOptionsStyles}>
             <MenuOption
+              text='All'
+              value='All'
+            />
+            <MenuOption
               text='Invited'
               value='Invited'
             />

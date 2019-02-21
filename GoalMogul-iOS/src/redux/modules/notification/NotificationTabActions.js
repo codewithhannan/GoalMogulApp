@@ -49,7 +49,7 @@ export const seeLessNotification = (type) => (dispatch) => {
  * Refresh notifications and needs
  */
 export const refreshNotificationTab = () => (dispatch, getState) => {
-  refreshNotifications()(dispatch, getState);
+  refreshNotifications({ refreshForUnreadNotif: false })(dispatch, getState);
   refreshNeeds()(dispatch, getState);
 };
 
@@ -98,12 +98,13 @@ export const refreshNotifications = (params) =>
   }
 
   const onSuccess = (res) => {
-    console.log(`${DEBUG_KEY}: refresh notifications succeed with res length: `, res);
+    console.log(`${DEBUG_KEY}: refresh notifications succeed with res length: `, res.notis.length);
     const data = res.notis;
     // const data = TestData;
     dispatch({
       type: NOTIFICATION_REFRESH_SUCCESS,
       payload: {
+        refresh: refreshForUnreadNotif,
         type: 'notifications',
         data,
         skip: data.length,
@@ -123,7 +124,11 @@ export const refreshNotifications = (params) =>
     });
   };
 
-  loadNotifications(0, limit, { refresh: true }, onSuccess, onError)(dispatch, getState);
+  // Because for server, refresh: true will only pull in new notifications
+  const { refreshForUnreadNotif } = params;
+  const paramsToPass = refreshForUnreadNotif ? { refresh: true } : {};
+
+  loadNotifications(0, limit, paramsToPass, onSuccess, onError)(dispatch, getState);
 };
 
 /**
@@ -141,7 +146,7 @@ export const loadMoreNotifications = () => (dispatch, getState) => {
   });
 
   const onSuccess = (data) => {
-    console.log(`${DEBUG_KEY}: load more notifications succeed with data: `, data);
+    console.log(`${DEBUG_KEY}: load more notifications succeed with data length: `, data.length);
     dispatch({
       type: NOTIFICATION_LOAD_SUCCESS,
       payload: {
@@ -334,7 +339,7 @@ export const fetchUnreadCount = () => (dispatch, getState) => {
     // refresh data quietly
     if (res.count > preUnreadCount) {
       console.log(`${DEBUG_KEY}: refresh notification quietly`);
-      refreshNotifications({ showIndicator: false })(dispatch, getState);
+      refreshNotifications({ showIndicator: false, refreshForUnreadNotif: true })(dispatch, getState);
     }
   };
 
