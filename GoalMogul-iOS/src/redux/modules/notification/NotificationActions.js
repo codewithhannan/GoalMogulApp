@@ -5,7 +5,32 @@ import { Permissions, Notifications, SecureStore, Linking } from 'expo';
 import { Alert } from 'react-native';
 import _ from 'lodash';
 
+import { isString } from '../../middleware/utils';
 import { api as API, queryBuilderBasicBuilder } from '../../middleware/api';
+
+import {
+  openProfile
+} from '../../../actions';
+
+import {
+  openGoalDetailById
+} from '../home/mastermind/actions';
+
+import {
+  openPostDetailById
+} from '../feed/post/PostActions';
+
+import {
+  openShareDetail
+} from '../feed/post/ShareActions';
+
+import {
+  myTribeDetailOpenWithId
+} from '../tribe/MyTribeActions'
+
+import {
+  myEventDetailOpenWithId
+} from '../event/MyEventActions';
 
 import {
   NOTIFICATION_UNSUBSCRIBE,
@@ -23,9 +48,50 @@ const NOTIFICATION_TOKEN_KEY = 'notification_token_key';
 const NOTIFICATION_ALERT_SHOWN = 'notification_alert_shown';
 const NOTIFICATION_UNREAD_QUEUE_PREFIX = 'notification_unread_queue_prefix';
 
-export const openNotificationDetail = (item) => (dispatch, getState) => {
-  // TODO: use the item.parsedNoti.path to determine which detail to open
+/**
+ * 
+ * @param {*} parsedNoti:{notificationMessage, icon, path} 
+ */
+export const openNotificationDetail = (parsedNoti) => (dispatch, getState) => {
+  // TODO: use the parsedNoti.path to determine which detail to open
+  const { path } = parsedNoti;
+  if (!isString(path)) {
+    console.warn(`${DEBUG_KEY}: path in parsedNoti is not string: `, path);
+    return;
+  }
+  const p = path.split('/');
+  if (p.length < 2) {
+    console.warn(`${DEBUG_KEY}: malformatted path:`, path);
+    return;
+  }
 
+  const entityType = p[0];
+  const entityId = p[1];
+  if (entityType === 'post') {
+    return openPostDetailById(entityId)(dispatch, getState);
+  }
+
+  if (entityType === 'goal') {
+    return openGoalDetailById(entityId)(dispatch, getState);
+  }
+
+  // if (entityType === 'share') {
+  //   return openShareDetail(entityId)(dispatch, getState);
+  // }
+
+  if (entityType === 'event') {
+    return myEventDetailOpenWithId(entityId)(dispatch, getState);
+  }
+
+  if (entityType === 'tribe') {
+    return myTribeDetailOpenWithId(entityId)(dispatch, getState);
+  }
+
+  if (entityType === 'chat') {
+    // TODO: Chat
+    // return this.props.openPostDetailById(entityId)(dispatch, getState);
+    return;
+  }
 };
 
 /**

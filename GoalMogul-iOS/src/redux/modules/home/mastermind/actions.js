@@ -38,6 +38,27 @@ export const closeCreateOverlay = (tab) => ({
   payload: tab
 });
 
+export const openGoalDetailById = (goalId, initialProps) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+
+  // Generate pageId on open
+  const pageId = constructPageId('goal');
+  dispatch({
+    type: GOAL_DETAIL_OPEN,
+    payload: {
+      tab,
+      pageId,
+      goalId
+    }
+  });
+
+  refreshGoalDetailById(goalId, pageId)(dispatch, getState);
+  refreshComments('Goal', goalId, tab, pageId)(dispatch, getState);
+  // TODO: create new stack using Actions.create(React.Element) if needed
+  const componentToOpen = componentKeyByTab(tab, 'goal');
+  Actions.push(`${componentToOpen}`, { initial: { ...initialProps }, goalId, pageId });
+};
+
 // Open goal detail
 export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
   const { tab } = getState().navigation;

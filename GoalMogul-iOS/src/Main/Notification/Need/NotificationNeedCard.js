@@ -6,6 +6,8 @@ import {
   TouchableOpacity
 } from 'react-native';
 import timeago from 'timeago.js';
+import _ from 'lodash';
+import { connect } from 'react-redux';
 
 // Components
 import ProfileImage from '../../Common/ProfileImage';
@@ -14,6 +16,11 @@ import Timestamp from '../../Goal/Common/Timestamp';
 // Assets
 import bulb from '../../../asset/utils/bulb.png';
 import forward from '../../../asset/utils/right_arrow.png';
+
+// Actions
+import {
+  openGoalDetail
+} from '../../../redux/modules/home/mastermind/actions';
 
 // Constants
 const DEBUG_KEY = '[ UI NotificationNeedCard ]';
@@ -25,14 +32,20 @@ class NotificationCard extends React.Component {
    * Opens suggestion modal
    */
   handleOnSuggestion = (item) => {
-
+    if (item !== null && !_.isEmpty(item) && item.goalRef !== null && !_.isEmpty(item.goalRef)) {
+      return this.props.openGoalDetail(item.goalRef);
+    }
+    console.warn(`${DEBUG_KEY}: invalid item: `, item);
   }
 
   /**
    * When light bulb icon is clicked, it opens goal details
    */
   handleOnOpen = (item) => {
-
+    if (item !== null && !_.isEmpty(item) && item.goalRef !== null && !_.isEmpty(item.goalRef)) {
+      return this.props.openGoalDetail(item.goalRef);
+    }
+    console.warn(`${DEBUG_KEY}: invalid item: `, item);
   }
 
   renderProfileImage(item) {
@@ -165,4 +178,9 @@ const styles = {
   }
 };
 
-export default NotificationCard;
+export default connect(
+  null,
+  {
+    openGoalDetail
+  }
+)(NotificationCard);

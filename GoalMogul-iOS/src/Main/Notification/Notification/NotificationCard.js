@@ -39,9 +39,9 @@ class NotificationCard extends React.PureComponent {
       return;
     }
 
-    this.props.markNotifAsRead(_id);
     // TODO: open detail based on the path;
-    // this.props.openNotificationDetail(item);
+    console.log(`${DEBUG_KEY}: open notification detail for item: `, item);
+    this.props.openNotificationDetail(parsedNoti);
   }
 
   handleOptionsOnPress() {

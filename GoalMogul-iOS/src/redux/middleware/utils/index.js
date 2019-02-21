@@ -177,7 +177,7 @@ export const hasTypePrefix = (type, key) => {
   return (keys[0] === typePrefix);
 };
 
-function isString(value) {
+export function isString(value) {
   return typeof value === 'string' || value instanceof String;
 }
 
