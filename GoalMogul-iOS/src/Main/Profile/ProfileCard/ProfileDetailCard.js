@@ -190,6 +190,11 @@ class ProfileDetailCard extends Component {
 
   handleMutualFriendOnPressed = () => {
     const { pageId, userId } = this.props;
+    if (this.props.self) {
+      // Jump to meetTab
+      Actions.jump('meetTab');
+      return;  
+    }
     Actions.push('mutualFriends', { userId, pageId });
   }
 
