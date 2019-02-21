@@ -49,7 +49,7 @@ export const seeLessNotification = (type) => (dispatch) => {
  * Refresh notifications and needs
  */
 export const refreshNotificationTab = () => (dispatch, getState) => {
-  refreshNotifications({ refreshForUnreadNotif: false })(dispatch, getState);
+  refreshNotifications({ refreshForUnreadNotif: true })(dispatch, getState);
   refreshNeeds()(dispatch, getState);
 };
 
@@ -85,7 +85,10 @@ const TestData = [
 
 export const refreshNotifications = (params) => 
 (dispatch, getState) => {
-  const { limit, refreshing } = getState().notification.notifications;
+  const { skip, limit, refreshing } = getState().notification.notifications;
+
+  const { refreshForUnreadNotif } = params;
+  const skipToUse = refreshForUnreadNotif ? 0 : skip;
 
   if (refreshing) return; // Do not refresh again if already refreshing
   if (params === undefined || params.showIndicator === undefined || params.showIndicator === true) {
@@ -107,11 +110,16 @@ export const refreshNotifications = (params) =>
         refresh: refreshForUnreadNotif,
         type: 'notifications',
         data,
-        skip: data.length,
+        skip: (skipToUse + data.length), // The first refresh we use 0, but the next refresh we use the skip
         limit,
         hasNextPage: !(data === undefined || data.length === 0 || data.length < limit)
       }
     });
+
+    if (refreshForUnreadNotif && data.length <= limit) {
+      console.log(`${DEBUG_KEY}: refresh notification again since data.length ${data.length} is smaller than limit ${limit}`);
+      refreshNotifications({ refreshForUnreadNotif: false })(dispatch, getState);
+    }
   };
 
   const onError = (err) => {
@@ -125,10 +133,9 @@ export const refreshNotifications = (params) =>
   };
 
   // Because for server, refresh: true will only pull in new notifications
-  const { refreshForUnreadNotif } = params;
   const paramsToPass = refreshForUnreadNotif ? { refresh: true } : {};
 
-  loadNotifications(0, limit, paramsToPass, onSuccess, onError)(dispatch, getState);
+  loadNotifications(skipToUse, limit, paramsToPass, onSuccess, onError)(dispatch, getState);
 };
 
 /**
@@ -145,7 +152,8 @@ export const loadMoreNotifications = () => (dispatch, getState) => {
     }
   });
 
-  const onSuccess = (data) => {
+  const onSuccess = (res) => {
+    const data = res.notis;
     console.log(`${DEBUG_KEY}: load more notifications succeed with data length: `, data.length);
     dispatch({
       type: NOTIFICATION_LOAD_SUCCESS,

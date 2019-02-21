@@ -51,7 +51,7 @@ class NotificationCard extends React.PureComponent {
     const options = switchByButtonIndex([
       [R.equals(0), () => {
         console.log(`${DEBUG_KEY} User chooses to remove notification`);
-        return this.props.removeNotification();
+        return this.props.removeNotification(_id);
       }]      
     ]);
 

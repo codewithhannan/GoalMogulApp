@@ -136,14 +136,16 @@ export const loadMoreEvent = () => (dispatch, getState) => {
  * Basic API to load goals based on skip and limit
  */
 const loadEvent = (skip, limit, token, sortBy, filterOptions, callback, onError) => {
-  // const filterOptionsToUse = _.cloneDeep(filterOptions);
-  // if (filterOptionsToUse.rsvp === 'All') {
-    
-  // }
+  let filterOptionsToUse = _.cloneDeep(filterOptions);
+  console.log(`${DEBUG_KEY}: filterOptionsToUse is:`, filterOptionsToUse);
+  if (filterOptionsToUse.rsvp === 'All') {
+    filterOptionsToUse = _.omit(filterOptionsToUse, 'rsvp');
+    console.log(`${DEBUG_KEY}: filterOptionsToUse after removal:`, filterOptionsToUse);
+  }
 
   API
     .get(
-      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, filterOptions })}`,
+      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, filterOptions: { ...filterOptionsToUse } })}`,
       token
     )
     .then((res) => {

@@ -29,7 +29,7 @@ import {
 class NotificationListView extends React.PureComponent {
 
     handleRefresh = () => {
-        this.props.refreshNotifications({ refreshForUnreadNotif: false });
+        this.props.refreshNotifications({ refreshForUnreadNotif: true });
     }
 
     handleOnLoadMore = () => {
