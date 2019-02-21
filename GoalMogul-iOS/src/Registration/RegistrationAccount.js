@@ -59,7 +59,7 @@ class Account extends Component {
 
   handleLogInPressed() {
     console.log('login pressed');
-    Actions.login();
+    Actions.push('login');
   }
 
   handleNextPressed = values => {
@@ -75,13 +75,14 @@ class Account extends Component {
   }
 
   renderSplitter() {
-    return (
-      <View style={styles.splitterStyle}>
-        <Divider horizontal width={80} />
-        <Text style={styles.splitterTextStyle}>OR</Text>
-        <Divider horizontal width={80} />
-      </View>
-    );
+    return '';
+    // return (
+    //   <View style={styles.splitterStyle}>
+    //     <Divider horizontal width={80} />
+    //     <Text style={styles.splitterTextStyle}>OR</Text>
+    //     <Divider horizontal width={80} />
+    //   </View>
+    // );
   }
 
   renderError(error) {
@@ -93,13 +94,14 @@ class Account extends Component {
   }
 
   renderLogIn() {
-    return (
-      <TouchableOpacity activeOpacity={0.85} onPress={this.handleLogInPressed.bind(this)}>
-        <View>
-          <Button text='Log In to your account' arrow />
-        </View>
-      </TouchableOpacity>
-    );
+    return '';
+    // return (
+    //   <TouchableOpacity activeOpacity={0.85} onPress={this.handleLogInPressed.bind(this)}>
+    //     <View>
+    //       <Button text='Log In to your account' arrow />
+    //     </View>
+    //   </TouchableOpacity>
+    // );
   }
 
   render() {

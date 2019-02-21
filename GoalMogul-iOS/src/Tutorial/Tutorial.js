@@ -153,7 +153,8 @@ class Tutorial extends React.Component {
       return;
     };
     TutorialAction.setTutorialShown(userId, onSuccess, onError);
-    Actions.mainTabs();
+    // Actions.mainTabs();
+    Actions.replace('drawer');
   }
 
   handleReplay = () => {

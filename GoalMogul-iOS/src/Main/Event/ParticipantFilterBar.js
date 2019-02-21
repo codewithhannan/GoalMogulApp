@@ -36,11 +36,13 @@ class ParticipantFilterBar extends Component {
       standardTextStyle,
       caretStyle
     } = styles;
+
+    const { pageId, eventId } = this.props;
     return (
       <View style={containerStyle}>
 
         <Menu
-          onSelect={(value) => this.props.eventSelectParticipantsFilter(value)}
+          onSelect={(value) => this.props.eventSelectParticipantsFilter(value, eventId, pageId)}
           rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
           renderer={Popover}
         >

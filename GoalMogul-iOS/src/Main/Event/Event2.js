@@ -26,12 +26,17 @@ import {
   eventSelectTab,
   eventDetailClose
 } from '../../redux/modules/event/EventActions';
+import { Actions } from 'react-native-router-flux';
 
 const { width } = Dimensions.get('window');
 /**
  * This is the UI file for a single event.
  */
 class Event2 extends Component {
+  componentWillUnmount() {
+    const { pageId, eventId } = pageId;
+    this.props.eventDetailClose(eventId, pageId);
+  }
 
   // Tab related functions
   _handleIndexChange = (index) => {
@@ -109,13 +114,19 @@ class Event2 extends Component {
   }
 
   render() {
-    const { item } = this.props;
+    const { item, eventId, pageId } = this.props;
     if (!item) return <View />;
 
     const { title } = item;
     return (
       <View style={{ flex: 1 }}>
-        <SearchBarHeader setting backButton onBackPress={() => this.props.eventDetailClose()} />
+        <SearchBarHeader 
+          setting 
+          backButton 
+          onBackPress={() => {
+            Actions.pop();
+          }}   
+        />
         {this.renderEventImage()}
         <View style={styles.generalInfoContainerStyle}>
           <Text style={styles.eventTitleTextStyle}>

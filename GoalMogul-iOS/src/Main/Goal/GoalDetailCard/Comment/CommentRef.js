@@ -107,7 +107,7 @@ class CommentRef extends React.PureComponent {
   // Render badge
   renderEndImage(item) {
     const { suggestionType, userRef } = item;
-    if (suggestionType === 'User' || suggestionType === 'Friend') {
+    if ((suggestionType === 'User' || suggestionType === 'Friend') && userRef !== null && userRef !== undefined) {
       return (
         <View style={styles.iconContainerStyle}>
           <UserBanner user={userRef} iconStyle={{ height: 24, width: 22 }} />
@@ -263,8 +263,8 @@ const getTextContent = (item) => {
   } = item;
 
   let ret = {
-    title: 'Sharon Warren',
-    content: 'Editor at The Atlantic'
+    title: 'Content deleted',
+    content: ''
   };
   if ((suggestionType === 'User' || suggestionType === 'Friend') && userRef) {
     ret = {

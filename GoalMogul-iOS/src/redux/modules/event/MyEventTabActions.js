@@ -22,7 +22,7 @@ export const openMyEventTab = () => (dispatch, getState) => {
   dispatch({
     type: MYEVENTTAB_OPEN
   });
-  Actions.replace('myEventTab');
+  Actions.push('myEventTab');
   refreshEvent()(dispatch, getState);
 };
 
@@ -78,7 +78,7 @@ export const myEventSelectTab = (index) => (dispatch, getState) => {
  * input on type field
  */
 
-//Refresh feed for activity tab
+// refresh for my event tab
 export const refreshEvent = () => (dispatch, getState) => {
   const { token } = getState().user;
   const { limit, filterOptions, sortBy } = getState().myEventTab;
@@ -94,6 +94,7 @@ export const refreshEvent = () => (dispatch, getState) => {
         data,
         skip: data.length,
         limit: 20,
+        pageId: 'MYEVENTTAB',
         hasNextPage: !(data === undefined || data.length === 0 || data.length < limit)
       }
     });
@@ -102,7 +103,7 @@ export const refreshEvent = () => (dispatch, getState) => {
   });
 };
 
-// Load more goal for mastermind tab
+// Load more for my event tab
 export const loadMoreEvent = () => (dispatch, getState) => {
   const { token } = getState().user;
   const { skip, limit, sortBy, filterOptions, hasNextPage } = getState().myEventTab;
@@ -119,6 +120,7 @@ export const loadMoreEvent = () => (dispatch, getState) => {
       payload: {
         type: 'myeventtab',
         data,
+        pageId: 'MYEVENTTAB',
         skip: data.length,
         limit: 20,
         hasNextPage: !(data === undefined || data.length === 0 || data.length < limit)

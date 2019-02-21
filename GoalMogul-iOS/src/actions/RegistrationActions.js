@@ -594,17 +594,18 @@ export const contactSyncRefresh = () => (dispatch, getState) => {
 export const registrationContactSyncDone = () => {
   // Passed in a list of contacts that user wants to add as friends
 
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const { userId } = getState().user;
-    const hasTutorialShown = Tutorial.getTutorialShown(userId);
+    const hasTutorialShown = await Tutorial.getTutorialShown(userId);
     dispatch({
       type: REGISTRATION_CONTACT_SYNC_DONE
     });
 
     if (!hasTutorialShown) {
-      Actions.tutorial();
+      Actions.push('tutorial');
       return;
     }  
-    Actions.mainTabs();
+    // Actions.mainTabs();
+    Actions.replace('drawer');
   };
 };

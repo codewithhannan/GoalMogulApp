@@ -62,12 +62,13 @@ export const MYEVENT_MEMBER_SELECT_FILTER = 'myevent_member_select_filter';
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case MYEVENT_SWITCH_TAB: {
+      const { index } = action.payload;
       const newNavigationState = { ...state.navigationState };
-      newNavigationState.index = action.payload;
+      newNavigationState.index = index;
 
       return {
         ...state,
-        selectedTab: newNavigationState.routes[action.payload].key,
+        selectedTab: newNavigationState.routes[index].key,
         navigationState: newNavigationState
       };
     }

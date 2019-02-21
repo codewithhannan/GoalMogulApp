@@ -74,7 +74,8 @@ class CreateGoalModal extends React.Component {
       {
         needOpenProfile: this.props.openProfile === undefined || this.props.openProfile === true,
         needRefreshProfile: this.props.openProfile === false
-      }
+      },
+      this.props.pageId
     );
   }
 

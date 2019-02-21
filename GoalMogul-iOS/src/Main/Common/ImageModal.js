@@ -13,6 +13,8 @@ import cancel from '../../asset/utils/cancel_no_background.png';
 // Constants
 const { width, height } = Dimensions.get('window');
 
+const DEBUG_KEY = '[ UI ImageModal ]';
+
 class ImageModal extends React.PureComponent {
   render() {
     if (!this.props.mediaRef) return '';
@@ -35,8 +37,10 @@ class ImageModal extends React.PureComponent {
         >
           <TouchableOpacity
             activeOpacity={0.85}
-            onPress={() => this.props.closeModal()}
-            style={{ position: 'absolute', top: 5, left: 5, padding: 10 }}
+            onPress={() => {
+              this.props.closeModal();
+            }}
+            style={{ position: 'absolute', top: 5, left: 5, padding: 10, zIndex: 2 }}
           >
             <Image
               source={cancel}

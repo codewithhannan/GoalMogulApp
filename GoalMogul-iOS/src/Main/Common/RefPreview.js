@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import Decode from 'unescape';
+import _ from 'lodash';
 
 import { switchCaseFWithVal } from '../../redux/middleware/utils';
 
@@ -34,11 +35,15 @@ import ProfileImage from './ProfileImage';
 class RefPreview extends Component {
   handleOnPress(item, postType, goalRef) {
     // console.log('goalref is : ', goalRef);
+    if (item === null) return;
     if (postType === 'ShareGoal' || postType === 'ShareNeed' || postType === 'ShareStep') {
       return this.props.openGoalDetail(goalRef);
     }
 
     if (postType === 'ShareUser') {
+      if (this.props.onPress) {
+        this.props.onPress();
+      }
       return;
     }
 
@@ -66,8 +71,12 @@ class RefPreview extends Component {
 
     // TODO: add a postType ShareStep
     const { title, content, defaultPicture, picture } = switchCaseItem(item, postType);
-    const titleToDisplay = postType === 'ShareNeed' || postType === 'ShareStep'
-      ? goalRef.owner.name : title;
+    const titleToDisplay = postType === ('ShareNeed' || postType === 'ShareStep') 
+      && goalRef 
+      && goalRef.owner 
+      && goalRef.owner.name
+        ? goalRef.owner.name 
+        : title;
 
 
     const imageContainerstyle = picture ?
@@ -136,41 +145,92 @@ const switchCaseItem = (val, type) => switchCaseFWithVal(val)({
   General: () => ({
     title: undefined, // This case will never happen since it's creating a post
   }),
-  ShareUser: (item) => ({
-    title: item.name,
-    content: item.profile ? item.profile.about : undefined,
-    picture: item.profile ? item.profile.image : undefined,
-    defaultPicture: profilePic,
-  }),
-  SharePost: (item) => ({
-    title: item.owner ? item.owner.name : undefined,
-    // TODO: TAG: convert this to string later on
-    content: item.content ? item.content.text : undefined,
-    picture: item.media ? item.media : undefined,
-    defaultPicture: postIcon,
-  }),
-  ShareGoal: (item) => ({
-    title: item.owner ? item.owner.name : 'Goal', // We decide to replace title with owner's name
-    // title: 'Goal',
-    // TODO: TAG: convert this to string later on
-    content: item.title,
-    // picture: item.profile ? item.owner.profile.image : undefined,
-    defaultPicture: goalIcon,
-  }),
-  ShareNeed: (item) => ({
-    title: item.owner ? item.owner.name : 'Need', // We decide to replace title with owner's name
-    // title: undefined,
-    content: item.description,
-    // picture: item.profile ? item.profile.image : undefined,
-    defaultPicture: helpIcon
-  }),
-  ShareStep: (item) => ({
-    title: item.owner ? item.owner.name : 'Step', // We decide to replace title with owner's name
-    // title: 'Step',
-    content: item.description,
-    defaultPicture: stepIcon
-  })
+  ShareUser: (item) => {
+    if (invalidItem(item)) {
+      return {
+        title: 'User',
+        content: 'Content deleted',
+        defaultPicture: profilePic,
+      };
+    }
+    return {
+      title: item.name,
+      content: item.profile ? item.profile.about : undefined,
+      picture: item.profile ? item.profile.image : undefined,
+      defaultPicture: profilePic,
+    };
+  },
+  SharePost: (item) => {
+    if (invalidItem(item)) {
+      return {
+        title: 'Post',
+        content: 'Content deleted',
+        defaultPicture: postIcon,
+      };
+    }
+
+    return {
+      title: item.owner ? item.owner.name : undefined,
+      // TODO: TAG: convert this to string later on
+      content: item.content ? item.content.text : undefined,
+      picture: item.media ? item.media : undefined,
+      defaultPicture: postIcon,
+    };
+  },
+  ShareGoal: (item) => {
+    if (invalidItem(item)) {
+      return {
+        title: 'Goal',
+        content: 'Content deleted',
+        defaultPicture: goalIcon,
+      };
+    }
+
+    return {
+      title: item.owner ? item.owner.name : 'Goal', // We decide to replace title with owner's name
+      // title: 'Goal',
+      // TODO: TAG: convert this to string later on
+      content: item.title,
+      // picture: item.profile ? item.owner.profile.image : undefined,
+      defaultPicture: goalIcon,
+    };
+  },
+  ShareNeed: (item) => {
+    if (invalidItem(item)) {
+      return {
+        title: 'Need',
+        content: 'Content deleted',
+        defaultPicture: helpIcon
+      };
+    }
+
+    return {
+      title: item.owner ? item.owner.name : 'Need', // We decide to replace title with owner's name
+      // title: undefined,
+      content: item.description,
+      // picture: item.profile ? item.profile.image : undefined,
+      defaultPicture: helpIcon
+    };
+  },
+  ShareStep: (item) => {
+    if (invalidItem(item)) {
+      return {
+        title: 'Step',
+        content: 'Content deleted',
+        defaultPicture: stepIcon
+      };
+    }
+
+    return {
+      title: item.owner ? item.owner.name : 'Step', // We decide to replace title with owner's name
+      // title: 'Step',
+      content: item.description,
+      defaultPicture: stepIcon
+    };
+  }
 })('General')(type);
+
+const invalidItem = (item) => (item === undefined || item === null || _.isEmpty(item));
 
 const styles = {
   containerStyle: {

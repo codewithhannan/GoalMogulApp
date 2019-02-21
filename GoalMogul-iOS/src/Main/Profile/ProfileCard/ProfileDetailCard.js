@@ -189,7 +189,13 @@ class ProfileDetailCard extends Component {
   }
 
   handleMutualFriendOnPressed = () => {
-    Actions.push('mutualFriends');
+    const { pageId, userId } = this.props;
+    if (this.props.self) {
+      // Jump to meetTab
+      Actions.jump('meetTab');
+      return;  
+    }
+    Actions.push('mutualFriends', { userId, pageId });
   }
 
   renderProfileActionButton() {
@@ -420,8 +426,10 @@ const mapStateToProps = (state, props) => {
   const userObject = getUserData(state, userId, '');
   const { user, mutualFriends, friendship } = userObject;
 
+  // console.log(`${DEBUG_KEY}: userObject is: `, userObject);
+  // console.log(`${DEBUG_KEY}: friendship is: `, friendship);
   const friendsCount = state.meet.friends.count;
-  const needRespond = friendship.initiator_id
+  const needRespond = friendship && friendship.initiator_id
     && (friendship.initiator_id !== state.user.userId)
     && (friendship.status === 'Invited');
 

@@ -159,6 +159,9 @@ class ActivityBody extends React.Component {
   // Render Activity Card body
   renderCardContent(item) {
     const { postRef, goalRef, actedUponEntityType } = item;
+    if (goalRef === null) {
+      console.log(`${DEBUG_KEY}: rendering card content: `, item);
+    }
 
     if (actedUponEntityType === 'Post') {
       return this.renderPostBody(postRef);

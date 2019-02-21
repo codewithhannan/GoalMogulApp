@@ -159,21 +159,25 @@ export const PAGE_TYPE_MAP = {
   activity: 'ACTIVITY'
 };
 
+// const DEBUG_KEY = '[ Utils ]';
 export const hasTypePrefix = (type, key) => {
-  if (key === undefined || _.isEmpty(key) || !isString(key)) {
+  // console.log(`${DEBUG_KEY}: [ hasTypePrefix ] isString: ${isString(key)}`);
+  if (key === undefined || !isString(key)) {
     return false;
   }
 
-  if (Object.keys(PAGE_TYPE_MAP).some(t => t === type)) {
+  if (!Object.keys(PAGE_TYPE_MAP).some(t => t === type)) {
     return false;
   }
   const typePrefix = _.get(PAGE_TYPE_MAP, type);
+  // console.log(`${DEBUG_KEY}: [ hasTypePrefix ] typePrefix: ${typePrefix}`);
 
   const keys = key.split('_');
+  // console.log(`${DEBUG_KEY}: [ hasTypePrefix ] keys: `, keys);
   return (keys[0] === typePrefix);
 };
 
-function isString (value) {
+function isString(value) {
   return typeof value === 'string' || value instanceof String;
 }
 

@@ -17,6 +17,10 @@ import {
   eventDetailOpen
 } from '../../redux/modules/event/EventActions';
 
+// import {
+//   eventDetailOpen
+// } from '../../redux/modules/event/MyEventActions';
+
 const DEBUG_KEY = '[UI Event Card] ';
 
 class EventCard extends React.Component {

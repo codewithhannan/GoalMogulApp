@@ -101,7 +101,7 @@ export const loginUser = ({ username, password, navigate }) => {
           fetchAppUserProfile(res.token, res.userId)(dispatch, getState);
           refreshFeed()(dispatch, getState);
           refreshGoals()(dispatch, getState);
-          const hasTutorialShown = await Tutorial.getTutorialShown(res.userId);
+          const hasTutorialShown = await Tutorial.getTutorialShown(res.userId); 
 
           // If navigate is set to false, it means user has already opened up the home page
           // We only need to reload the profile and feed data
@@ -167,7 +167,7 @@ export const registerUser = () => (dispatch) => {
   dispatch({
     type: REGISTRATION_ACCOUNT
   });
-  Actions.registration();
+  Actions.registrationAccount();
 };
 
 export const logout = () => async (dispatch, getState) => {

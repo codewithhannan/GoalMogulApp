@@ -19,7 +19,7 @@ import next from '../../../asset/utils/next.png';
 import { selectEvent } from '../../../redux/modules/feed/post/ShareActions';
 import {
   eventDetailOpen
-} from '../../../redux/modules/event/EventActions';
+} from '../../../redux/modules/event/MyEventActions';
 
 const DEBUG_KEY = '[ Component SearchEventCard ]';
 
