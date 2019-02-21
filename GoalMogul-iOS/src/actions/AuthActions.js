@@ -167,7 +167,7 @@ export const registerUser = () => (dispatch) => {
   dispatch({
     type: REGISTRATION_ACCOUNT
   });
-  Actions.registration();
+  Actions.registrationAccount();
 };
 
 export const logout = () => async (dispatch, getState) => {

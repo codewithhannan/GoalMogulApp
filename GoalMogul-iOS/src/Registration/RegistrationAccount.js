@@ -59,7 +59,7 @@ class Account extends Component {
 
   handleLogInPressed() {
     console.log('login pressed');
-    Actions.login();
+    Actions.push('login');
   }
 
   handleNextPressed = values => {

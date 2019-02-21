@@ -397,8 +397,8 @@ function cacheFonts(fonts) {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    registration: () => Actions.registration(),
-    login: () => Actions.login(),
+    registration: () => Actions.push('registrationAccount'),
+    login: () => Actions.push('login'),
     loginUser: (val) => dispatch(loginUser(val)),
     hideSplashScreen: () => dispatch(hideSplashScreen())
   };
