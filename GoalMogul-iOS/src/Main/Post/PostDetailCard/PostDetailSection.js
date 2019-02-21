@@ -4,7 +4,8 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
-  Dimensions
+  Dimensions,
+  Text
 } from 'react-native';
 import { connect } from 'react-redux';
 import timeago from 'timeago.js';
@@ -75,18 +76,20 @@ import RefPreview from '../../Common/RefPreview';
 import ImageModal from '../../Common/ImageModal';
 import RichText from '../../Common/Text/RichText';
 
+// Styles
+import { imagePreviewContainerStyle, APP_BLUE } from '../../../styles';
+
 // Constants
 const DEBUG_KEY = '[ UI PostDetailCard.PostDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 const { width } = Dimensions.get('window');
 
-// Styles
-import { imagePreviewContainerStyle } from '../../../styles';
-
 class PostDetailSection extends React.PureComponent {
   state = {
-    mediaModal: false
+    mediaModal: false,
+    numberOfLines: 2,
+    seeMore: false
   }
 
   handleShareOnClick = () => {
@@ -119,6 +122,41 @@ class PostDetailSection extends React.PureComponent {
     );
     return shareToActionSheet();
   };
+
+  handleSeeMore = () => {
+    if (this.state.seeMore) {
+      // See less
+      this.setState({
+        ...this.state,
+        numberOfLines: 2,
+        seeMore: false
+      });
+      return;
+    }
+    // See more
+    this.setState({
+      ...this.state,
+      numberOfLines: undefined,
+      seeMore: true
+    });
+  }
+
+  renderSeeMore(text) {
+    if (text && text.length > 60) {
+      return (
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={styles.seeMoreTextContainerStyle}
+          onPress={this.handleSeeMore}
+        >
+          <Text style={styles.seeMoreTextStyle}>
+            {this.state.seeMore && text.length > 100 ? 'See less' : 'See more'}
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+    return '';
+  }
 
   // user basic information
   renderUserDetail(item) {
@@ -188,13 +226,14 @@ class PostDetailSection extends React.PureComponent {
             contentTags={content.tags}
             textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
             textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
-            numberOfLines={3}
             ellipsizeMode='tail'
             onUserTagPressed={(user) => {
               console.log(`${DEBUG_KEY}: user tag press for user: `, user);
               this.props.openProfile(user);
             }}
+            numberOfLines={this.state.numberOfLines}
           />
+          {this.renderSeeMore(content.text)}
         </View>
       </View>
     );
@@ -280,13 +319,16 @@ class PostDetailSection extends React.PureComponent {
       return this.renderPostImage(mediaRef);
     }
     const refPreview = switchItem(item, postType);
-    const onPress = switchCase({
-      SharePost: () => this.props.openPostDetail(refPreview),
-      ShareUser: () => this.props.openProfile(refPreview._id),
-      ShareGoal: () => this.props.openGoalDetail(goalRef),
-      ShareNeed: () => this.props.openGoalDetail(goalRef),
-      ShareStep: () => this.props.openGoalDetail(goalRef)
-    })('SharePost')(postType);
+    let onPress;
+    if (refPreview !== null && !_.isEmpty(refPreview)) {
+      onPress = switchCase({
+        SharePost: () => this.props.openPostDetail(refPreview),
+        ShareUser: () => this.props.openProfile(refPreview._id),
+        ShareGoal: () => this.props.openGoalDetail(goalRef),
+        ShareNeed: () => this.props.openGoalDetail(goalRef),
+        ShareStep: () => this.props.openGoalDetail(goalRef)
+      })(() => console.warn(`${DEBUG_KEY}: invalid item:`, item))(postType);
+    }
 
     return (
       <View style={{ marginTop: 20 }}>
@@ -442,6 +484,16 @@ const styles = {
     alignSelf: 'flex-start',
     backgroundColor: 'white'
   },
+  seeMoreTextContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginTop: 2
+  },
+  seeMoreTextStyle: {
+    fontSize: 12,
+    color: APP_BLUE
+  }
 };
 
 const mapStateToProps = state => {

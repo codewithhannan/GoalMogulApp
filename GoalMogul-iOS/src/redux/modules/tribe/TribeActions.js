@@ -104,7 +104,7 @@ export const deleteTribe = (tribeId) => (dispatch, getState) => {
 
 // User edits a tribe. Open the create tribe modal with pre-populated item.
 export const editTribe = (tribe) => (dispatch, getState) => {
-  Actions.push('createTribeModal', { initializeFromState: true, tribe });
+  Actions.push('createTribeStack', { initializeFromState: true, tribe });
 };
 
 export const openTribeInvitModal = ({ tribeId, cardIconSource, cardIconStyle }) =>

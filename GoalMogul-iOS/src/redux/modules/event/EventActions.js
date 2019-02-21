@@ -91,7 +91,7 @@ export const deleteEvent = (eventId) => (dispatch, getState) => {
 
 // User edits an event. Open the create event page with pre-populated item.
 export const editEvent = (event) => (dispatch, getState) => {
-  Actions.push('createEventModal', { initializeFromState: true, event });
+  Actions.push('createEventStack', { initializeFromState: true, event });
 };
 
 export const openEventInvitModal = ({ eventId, cardIconSource, cardIconStyle }) =>

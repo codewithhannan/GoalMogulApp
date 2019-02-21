@@ -433,12 +433,12 @@ class CommentBoxV2 extends Component {
   }
 
   renderPost(newComment) {
-    const { uploading, contentText, tmpSuggestion } = newComment;
+    const { uploading, contentText, tmpSuggestion, suggestion } = newComment;
     const disable = uploading ||
       ((contentText === undefined || contentText === '' || contentText.trim() === '')
-      && _.isEmpty(tmpSuggestion));
+      && _.isEmpty(tmpSuggestion) && _.isEmpty(suggestion));
 
-    const color = '#17B3EC';
+    const color = disable ? '#cbd6d8' : '#17B3EC';
     return (
       <TouchableOpacity
         activeOpacity={0.85}

@@ -39,6 +39,34 @@ import ImageUtils from '../../../../Utils/ImageUtils';
 const DEBUG_KEY = '[ Action Post ]';
 
 /**
+ * Open a post by postId
+ * @param {} postId 
+ */
+export const openPostDetailById = (postId) => (dispatch, getState) => {
+  // Open share detail if not a general post
+  // Generate pageId on open
+  const pageId = constructPageId('post');
+
+  const { tab } = getState().navigation;
+  // const scene = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
+  // const { pageId } = _.get(getState().postDetail, `${scene}`);
+
+  dispatch({
+    type: POST_DETAIL_OPEN,
+    payload: {
+      tab,
+      postId,
+      pageId
+    },
+  });
+
+  refreshComments('Post', postId, tab, pageId)(dispatch, getState);
+
+  const componentToOpen = componentKeyByTab(tab, 'post');
+  Actions.push(`${componentToOpen}`, { pageId, postId });
+};
+
+/**
  * If post is a share, then open share detail. Otherwise, open post detail
  */
 export const openPostDetail = (post) => (dispatch, getState) => {
