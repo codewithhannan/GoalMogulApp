@@ -580,12 +580,12 @@ export default (state = INITIAL_STATE, action) => {
     
         case PROFILE_POST_DELETE_SUCCESS: {
             const newState = _.cloneDeep(state);
-            const { userId, goalId } = action.payload;
+            const { userId, postId } = action.payload;
             const shouldUpdate = sanityCheck(newState, userId, PROFILE_POST_DELETE_SUCCESS);
             if (!shouldUpdate) return newState;
 
             const user = _.get(newState, `${userId}`);
-            const updatedUser = removeItem(goalId, 'posts', 'user', user);
+            const updatedUser = removeItem(postId, 'posts', 'user', user);
             return _.set(newState, `${userId}`, updatedUser);
         }
 

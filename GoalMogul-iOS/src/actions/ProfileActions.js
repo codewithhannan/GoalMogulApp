@@ -496,7 +496,7 @@ export const handleTabRefresh = (tab, userId, pageId) => (dispatch, getState) =>
   const { filter, limit, refreshing } = page;
 
   if (!user || !user._id || refreshing) return;
-  console.log(`${DEBUG_KEY}: refresh tab for user with name ${user.name} and id: ${user._id}`);
+  console.log(`${DEBUG_KEY}: refresh tab for user with name ${user.name} and id: ${user._id} and pageId: ${pageId}`);
   const userIdToUser = user._id;
 
   dispatch({
@@ -704,7 +704,8 @@ export const deletePost = (postId) => (dispatch, getState) => {
     },
     dispatch,
     getState,
-    () => {
+    (res) => {
+      console.log(`${DEBUG_KEY}: delete post success with res: `, res);
       dispatch({
         type: PROFILE_POST_DELETE_SUCCESS,
         payload: {
@@ -791,7 +792,7 @@ const deleteItem = (item, dispatch, getState, onSuccess, onError) => {
     .delete(item.route, { ...item.param }, token)
     .then((res) => {
       if (res.status === 200 || res.isSuccess) {
-        return onSuccess();
+        return onSuccess(res);
       }
       console.warn('Delete item fail in profile err with res: ', res);
       return onError({ message: res.message });
