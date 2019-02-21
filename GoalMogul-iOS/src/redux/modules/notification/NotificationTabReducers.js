@@ -95,7 +95,9 @@ export default (state = INITIAL_STATE, action) => {
       }
       newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
       const oldData = _.get(newState, `${type}.data`);
-      return _.set(newState, `${type}.data`, arrayUnique(oldData.concat(data)));
+      const dataToPut = arrayUnique(oldData.concat(data))
+        .sort((a, b) => new Date(b.created) - new Date(a.created));
+      return _.set(newState, `${type}.data`, dataToPut);
     }
 
     case NOTIFICATION_REFRESH: {
@@ -141,7 +143,7 @@ export default (state = INITIAL_STATE, action) => {
       let newUnreadToAdd = [];
       const limit = _.get(newState, 'unread.limit');
       data
-        // .sort((a, b) => new Date(a.created) - new Date(b.created)) // Put the latest to the top
+        .sort((a, b) => new Date(b.created) - new Date(a.created)) // Put the latest to the top
         .forEach((d) => {
           // Check if this notification is unread and this notification is already in the queue
           if (d.read === false && !oldUnread.some(o => o._id === d._id)) {
