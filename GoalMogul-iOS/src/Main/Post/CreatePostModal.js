@@ -765,7 +765,7 @@ const mapStateToProps = state => {
     tags: selector(state, 'tags'),
     mediaRef: selector(state, 'mediaRef'),
     formVals: state.form.createPostModal,
-    uploading: state.postDetail.newPost.uploading
+    uploading: state.posts.newPost.uploading
   };
 };
 
