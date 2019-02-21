@@ -391,9 +391,17 @@ export default (state = INITIAL_STATE, action) => {
 
             data.forEach(goal => {
                 const goalId = goal._id;
+
+                let goalToUpdate = { ...INITIAL_GOAL_OBJECT };
                 // Update goal
-                if (!_.has(newState, goalId)) {
-                    newState = _.set(newState, `${goalId}.goal`, goal);
+                if (_.has(newState, goalId)) {
+                    goalToUpdate = _.get(newState, `${goalId}`);
+                    // newState = _.set(newState, `${goalId}.goal`, goal);
+                }
+
+                // TODO: perform schema check
+                if (goal !== undefined) {
+                    goalToUpdate = _.set(goalToUpdate, 'goal', goal);
                 }
 
                 const oldReference = _.get(newState, `${goalId}.reference`);
@@ -409,8 +417,8 @@ export default (state = INITIAL_STATE, action) => {
                     }
                 }
 
-                // console.log(`${DEBUG_KEY}: new reference is: `, newReference);
-                newState = _.set(newState, `${goalId}.reference`, newReference);
+                goalToUpdate = _.set(goalToUpdate, 'reference', newReference);
+                newState = _.set(newState, `${goalId}`, goalToUpdate);
             });
 
             return newState;

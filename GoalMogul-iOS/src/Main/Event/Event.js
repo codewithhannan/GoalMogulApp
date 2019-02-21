@@ -13,6 +13,7 @@ import R from 'ramda';
 import {
   MenuProvider
 } from 'react-native-popup-menu';
+import { Actions } from 'react-native-router-flux';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
@@ -70,6 +71,10 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
  * This is the UI file for a single event.
  */
 class Event extends Component {
+  componentWillUnmount() {
+    const { pageId, eventId } = pageId;
+    this.props.eventDetailClose(eventId, pageId);
+  }
 
   handleInvite = (_id) => {
     return this.props.openEventInvitModal(_id);
@@ -93,26 +98,26 @@ class Event extends Component {
   }
 
   handleRSVPOnPress = () => {
-    const { item } = this.props;
+    const { item, pageId } = this.props;
     if (!item) return;
     const { _id } = item;
 
     const switchCases = switchByButtonIndex([
       [R.equals(0), () => {
         console.log(`${DEBUG_KEY} User chooses: Intereseted`);
-        this.props.rsvpEvent('Interested', _id);
+        this.props.rsvpEvent('Interested', _id, pageId);
       }],
       [R.equals(1), () => {
         console.log(`${DEBUG_KEY} User chooses: Going`);
-        this.props.rsvpEvent('Going', _id);
+        this.props.rsvpEvent('Going', _id, pageId);
       }],
       [R.equals(2), () => {
         console.log(`${DEBUG_KEY} User chooses: Maybe`);
-        this.props.rsvpEvent('Maybe', _id);
+        this.props.rsvpEvent('Maybe', _id, pageId);
       }],
       [R.equals(3), () => {
         console.log(`${DEBUG_KEY} User chooses: Not Going`);
-        this.props.rsvpEvent('NotGoing', _id);
+        this.props.rsvpEvent('NotGoing', _id, pageId);
       }],
     ]);
     const rsvpActionSheet = actionSheet(
@@ -125,7 +130,8 @@ class Event extends Component {
 
   // Tab related functions
   _handleIndexChange = (index) => {
-    this.props.eventSelectTab(index);
+    const { pageId, eventId } = this.props;
+    this.props.eventSelectTab(index, eventId, pageId);
   };
 
   /**
@@ -398,7 +404,7 @@ class Event extends Component {
   }
 
   render() {
-    const { item, data } = this.props;
+    const { item, data, pageId, eventId } = this.props;
     if (!item) return <View />;
 
     return (
@@ -406,7 +412,7 @@ class Event extends Component {
         <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
           <SearchBarHeader
             backButton
-            onBackPress={() => this.props.eventDetailClose()}
+            onBackPress={() => Actions.pop()}
             pageSetting
             handlePageSetting={() => this.handlePageSetting(item)}
           />
