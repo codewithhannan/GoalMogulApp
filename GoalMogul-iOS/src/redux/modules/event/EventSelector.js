@@ -114,7 +114,7 @@ export const makeGetEventParticipantSelector = () => createSelector(
   [getEventById, getParticipantsFilterById],
   (event, participantsFilter) => {
     if (!event || _.isEmpty(event)) return '';
-    const participants = _.get(event, participants);
+    const participants = _.get(event, 'participants');
 
     if (!participants || _.isEmpty(participants)) return '';
     return participants.filter((participant) => participant.rsvp === participantsFilter);
@@ -129,6 +129,34 @@ export const myEventParticipantSelector = createSelector(
     return participants.filter((participant) => participant.rsvp === filter);
   }
 );
+
+// For tribe reference
+// export const makeGetEventMemberNavigationState = () => createSelector(
+//   [getEventById, getEventPage, getUserId],
+//   (event, eventPage, userId) => {
+//     const { memberNavigationState, memberDefaultRoutes } = eventPage;
+//     const navigationStateToReturn = _.cloneDeep(memberNavigationState);
+
+//     if (!event || _.isEmpty(event)) return navigationStateToReturn;
+//     const { participants } = event;
+
+//     if (!participants || participants.length === 0) {
+//       return _.set(navigationStateToReturn, 'routes', memberDefaultRoutes);
+//     }
+
+//     let isAdmin;
+//     participants.forEach((participant) => {
+//       if (participant.memberRef._id === userId
+//         && (participant.category === 'Admin')) {
+//         isAdmin = true;
+//       }
+//     });
+
+//     return isAdmin
+//       ? navigationStateToReturn
+//       : _.set(navigationStateToReturn, 'routes', memberDefaultRoutes);
+//   }
+// );
 
 // This function currently is not used since people can see all participants
 export const getMyEventMemberNavigationState = createSelector(

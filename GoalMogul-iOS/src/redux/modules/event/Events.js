@@ -330,6 +330,7 @@ export default (state = INITIAL_STATE, action) => {
             // Update the goal by goalId
             eventToUpdate = _.set(eventToUpdate, 'reference', newReference);
             newState = _.set(newState, `${eventId}`, eventToUpdate);
+            console.log(`${DEBUG_KEY}: newState after event closing is: `, newState);
             return newState;
         }
 

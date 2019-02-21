@@ -154,7 +154,7 @@ class ActivityCard extends React.PureComponent {
 
   render() {
     const { item } = this.props;
-    if (!item || _.isEmpty(item)) return '';
+    if (!item || _.isEmpty(item) || !isValidActivity(item)) return '';
 
     return (
       <View style={{ marginTop: 10 }}>
@@ -198,6 +198,19 @@ const styles = {
     shadowRadius: 3,
     elevation: 1,
   }
+};
+
+const isValidActivity = (item) => {
+  if (!item || _.isEmpty(item)) return false;
+  const { actedUponEntityType, goalRef, postRef } = item;
+  if (actedUponEntityType === 'Goal' && (!goalRef || goalRef === null)) {
+    return false;
+  }
+
+  if (actedUponEntityType === 'Post' && (!postRef || postRef === null)) {
+    return false;
+  }
+  return true;
 };
 
 export default connect(

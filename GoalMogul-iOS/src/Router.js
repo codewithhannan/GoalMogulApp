@@ -287,6 +287,8 @@ class RouterComponent extends Component {
                       <Scene key="requestTabView" component={RequestTabView} />
                       <Scene key="discoverTabView" component={DiscoverTabView} />
                       <Scene key="friendInvitationView" component={FriendInvitationView} />
+
+                      <Scene key="meetTab_myEventDetail" component={MyEvent} />
                       <Scene key="meetTab_goal" component={GoalDetailCard} />
                       <Scene key="meetTab_post" component={PostDetailCard} />
                       <Scene key="meetTab_share" component={ShareDetailCard} />
@@ -347,6 +349,8 @@ class RouterComponent extends Component {
                         component={NotificationNeedListView}
                         hideNavBar
                       />
+
+                      <Scene key="notificationTab_myEventDetail" component={MyEvent} />
                       <Scene key="notificationTab_goal" component={GoalDetailCard} />
                       <Scene key="notificationTab_post" component={PostDetailCard} />
                       <Scene key="notificationTab_share" component={ShareDetailCard} />
@@ -388,12 +392,13 @@ class RouterComponent extends Component {
                       }
                     >
                       <Scene key="explore" component={Explore} initial />
-                      <Scene key="tribeDetail" component={Tribe} drawerLockMode="locked-closed" />
-                      <Scene key="eventDetail" component={Event} drawerLockMode="locked-closed" />
+                      <Scene key="tribeDetail" component={Tribe} />
+                      <Scene key="eventDetail" component={Event} />
                       <Scene key="postExploreTab" component={PostDetailCard} />
                       <Scene key="goalExploreTab" component={GoalDetailCard} />
                       <Scene key="shareExploreTab" component={ShareDetailCard} />
 
+                      <Scene key="exploreTab_myEventDetail" component={MyEvent} />
                       <Scene key="exploreTab_goal" component={GoalDetailCard} />
                       <Scene key="exploreTab_post" component={PostDetailCard} />
                       <Scene key="exploreTab_share" component={ShareDetailCard} />
@@ -436,6 +441,22 @@ class RouterComponent extends Component {
                     >
                       <Scene key="chat" component={ChatTab} initial />
                       <Scene key="chatTab_searchLightBox" component={SearchOverlay} hideNavBar />
+                      <Scene key="chatTab_myEventDetail" component={MyEvent} />
+                      <Scene key="chatTab_goal" component={GoalDetailCard} />
+                      <Scene key="chatTab_post" component={PostDetailCard} />
+                      <Scene key="chatTab_share" component={ShareDetailCard} />
+                      <Scene key="chatTab_profile" component={Profile} />
+                      <Scene key="chatTab_profileDetail" component={ProfileDetail} />
+                      <Scene key="chatTab_setting" component={Setting} />
+                      <Scene key="chatTab_email" component={Email} />
+                      <Scene key="chatTab_editEmailForm" component={EditEmailForm} />
+                      <Scene key="chatTab_editPasswordForm" component={EditPasswordForm} />
+                      <Scene key="chatTab_phone" component={Phone} path='/phone/verification' />
+                      <Scene key="chatTab_addPhoneNumberForm" component={AddPhoneNumberForm} />
+                      <Scene key="chatTab_editPhoneNumberForm" component={EditPhoneNumberForm} />
+                      <Scene key="chatTab_friendsBlocked" component={FriendsBlocked} />
+                      <Scene key="chatTab_privacy" component={Privacy} />
+                      <Scene key="chatTab_friendsSetting" component={FriendsSetting} />
                     </Stack>
 
                   </Tabs>

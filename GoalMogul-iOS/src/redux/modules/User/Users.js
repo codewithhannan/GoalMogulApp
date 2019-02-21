@@ -341,6 +341,11 @@ export default (state = INITIAL_STATE, action) => {
                 return newState;
             }
 
+            // Do not update since it's invalid
+            if (data === null || data === undefined || _.isEmpty(data)) {
+                return newState;
+            }
+
             return _.set(newState, `${userId}.friendship`, data);
         }
 

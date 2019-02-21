@@ -278,14 +278,17 @@ class ShareDetailSection extends Component {
       return this.renderPostImage(mediaRef);
     }
     const refPreview = switchItem(item, postType);
-    const onPress = switchCase({
-      SharePost: () => this.props.openPostDetail(refPreview),
-      ShareUser: () => this.props.openProfile(refPreview._id),
-      ShareGoal: () => this.props.openGoalDetail(goalRef),
-      ShareNeed: () => this.props.openGoalDetail(goalRef),
-      ShareStep: () => this.props.openGoalDetail(goalRef)
-    })('SharePost')(postType);
-
+    let onPress;
+    if (refPreview !== null && !_.isEmpty(refPreview)) {
+      onPress = switchCase({
+        SharePost: () => this.props.openPostDetail(refPreview),
+        ShareUser: () => this.props.openProfile(refPreview._id),
+        ShareGoal: () => this.props.openGoalDetail(goalRef),
+        ShareNeed: () => this.props.openGoalDetail(goalRef),
+        ShareStep: () => this.props.openGoalDetail(goalRef)
+      })(() => console.log(`${DEBUG_KEY}: invalid item:`, item))(postType);
+    }
+    
     return (
       <View style={{ marginTop: 20 }}>
         <RefPreview
@@ -389,7 +392,7 @@ const switchItem = (item, postType) => switchCase({
   ShareGoal: item.goalRef,
   ShareNeed: getNeedFromRef(item.goalRef, item.needRef),
   ShareStep: getStepFromGoal(item.goalRef, item.stepRef)
-})('SharePost')(postType);
+})({})(postType);
 
 const getStepFromGoal = (goal, stepRef) => getItemFromGoal(goal, 'steps', stepRef);
 
