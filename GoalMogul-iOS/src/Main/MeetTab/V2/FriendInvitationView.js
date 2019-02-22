@@ -72,7 +72,7 @@ class FriendInvitationView extends React.PureComponent {
                         }}
                     />
                     <SettingCard
-                        title="More options"
+                        title="Send invitation via..."
                         key="more_options"
                         explanation="See more ways to share the invitation link"
                         onPress={() => this.handleMoreOptions()}
