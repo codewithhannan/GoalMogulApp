@@ -21,7 +21,7 @@ const DEBUG_KEY = '[UI Tribe Card] ';
 
 class MyTribeCard extends React.Component {
   onCardPress = () => {
-    console.log(`${DEBUG_KEY} open Tribe Detail`);
+    // console.log(`${DEBUG_KEY} open Tribe Detail with item: `, this.props.item);
     this.props.tribeDetailOpen(this.props.item);
   }
 

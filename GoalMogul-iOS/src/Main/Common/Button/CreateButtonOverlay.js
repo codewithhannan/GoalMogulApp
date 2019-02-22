@@ -64,7 +64,9 @@ class CreateButtonOverlay extends Component {
       // pageId is for event or tribe so that we know when we refresh,
       // which tribe / event page to get list of items
       // Currently this is only invoked in tribe and event
-      Actions.createPostModal({ pageId: this.props.pageId });
+      Actions.createPostModal({ 
+        pageId: this.props.pageId, 
+      });
     });
   }
 
@@ -80,7 +82,9 @@ class CreateButtonOverlay extends Component {
       // pageId is for event or tribe so that we know when we refresh,
       // which tribe / event page to get list of items
       // Currently this is only invoked in tribe and event
-      Actions.createGoalModal({ pageId: this.props.pageId });
+      Actions.createGoalModal({ 
+        pageId: this.props.pageId, 
+      });
     });
   }
 

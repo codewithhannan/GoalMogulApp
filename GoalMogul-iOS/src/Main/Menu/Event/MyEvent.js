@@ -119,7 +119,7 @@ class MyEvent extends Component {
     const indexToGo = routes.map((route) => route.key).indexOf('posts');
     const postCallback = () => {
       this._handleIndexChange(indexToGo);
-      this.props.refreshMyEventDetail(_id);
+      this.props.refreshMyEventDetail(_id, undefined, this.props.pageId);
     };
 
     const participants = item.participants.map(p => p.participantRef);
@@ -143,7 +143,7 @@ class MyEvent extends Component {
             showPlus: true
           });
           Actions.pop();
-          Actions.createPostModal({
+          Actions.push('createPostModal', {
             belongsToEvent: _id,
             callback: postCallback,
             tagSearch
@@ -293,7 +293,15 @@ class MyEvent extends Component {
   renderFooter = () => {
     const { routes, index } = this.props.navigationState;
     if (this.props.feedLoading && routes[index].key === 'posts') {
-      return <ActivityIndicator size='small' color='#17B3EC' />;
+      return (
+        <View
+          style={{
+            paddingVertical: 20
+          }}
+        >
+          <ActivityIndicator size='small' color='#17B3EC' />
+        </View>
+      );
     }
 
     return '';
@@ -495,6 +503,7 @@ class MyEvent extends Component {
           })
         }
         {filterBar}
+        {this.renderFooter()}
         {emptyState}
       </View>
     );
@@ -566,10 +575,9 @@ class MyEvent extends Component {
             data={data}
             renderItem={this.renderItem}
             keyExtractor={(i) => i._id}
-            onRefresh={() => this.props.refreshMyEventDetail(item._id)}
+            onRefresh={() => this.props.refreshMyEventDetail(item._id, undefined, this.props.pageId)}
             refreshing={this.props.loading}
             ListHeaderComponent={this.renderEventOverview(item, data)}
-            ListFooterComponent={this.renderFooter}
           />
           {this.renderPlus(item)}
         </View>
