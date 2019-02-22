@@ -5,7 +5,8 @@ import {
   Image,
   ImageBackground,
   Dimensions,
-  Text
+  Text,
+  TouchableWithoutFeedback
 } from 'react-native';
 import { connect } from 'react-redux';
 import timeago from 'timeago.js';
@@ -247,6 +248,9 @@ class PostDetailSection extends React.PureComponent {
     }
     const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${url}`;
       return (
+        <TouchableWithoutFeedback
+          onPress={() => this.setState({ mediaModal: true })}
+        >
         <View style={{ marginTop: 10 }}>
           <ImageBackground
             style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle }}
@@ -266,7 +270,8 @@ class PostDetailSection extends React.PureComponent {
               />
             </View>
 
-            <TouchableOpacity activeOpacity={0.85}
+            <TouchableOpacity 
+              activeOpacity={0.85}
               onPress={() => this.setState({ mediaModal: true })}
               style={{
                 position: 'absolute',
@@ -294,6 +299,7 @@ class PostDetailSection extends React.PureComponent {
           </ImageBackground>
           {this.renderPostImageModal(imageUrl)}
         </View>
+        </TouchableWithoutFeedback>
       );
   }
 

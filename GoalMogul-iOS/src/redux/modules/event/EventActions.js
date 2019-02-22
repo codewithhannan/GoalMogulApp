@@ -94,16 +94,16 @@ export const editEvent = (event) => (dispatch, getState) => {
   Actions.push('createEventStack', { initializeFromState: true, event });
 };
 
-export const openEventInvitModal = ({ eventId, cardIconSource, cardIconStyle }) =>
+export const openEventInvitModal = ({ eventId, cardIconSource, cardIconStyle, callback }) =>
 (dispatch) => {
   const searchFor = {
     type: 'event',
     id: eventId
   };
-  Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle });
+  Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle, callback });
 };
 
-export const inviteParticipantToEvent = (eventId, inviteeId) => (dispatch, getState) => {
+export const inviteParticipantToEvent = (eventId, inviteeId, callback) => (dispatch, getState) => {
   const { token } = getState().user;
 
   const onSuccess = (res) => {
@@ -112,6 +112,10 @@ export const inviteParticipantToEvent = (eventId, inviteeId) => (dispatch, getSt
     });
     console.log(`${DEBUG_KEY}: invite user success: `, res);
     Actions.pop();
+    if (callback) {
+      // console.log(`${DEBUG_KEY}: invite user success with callback `, callback);
+      callback();
+    }
     Alert.alert(
       'Success',
       'You have successfully invited the user.'
@@ -132,8 +136,8 @@ export const inviteParticipantToEvent = (eventId, inviteeId) => (dispatch, getSt
   API
     .post(`${BASE_ROUTE}/participant`, { eventId, inviteeId }, token)
     .then((res) => {
-      if (res && res.success) {
-        return onSuccess(res.data);
+      if ((res && res.success) || res.status === 200) {
+        return onSuccess(res);
       }
       return onError(res);
     })

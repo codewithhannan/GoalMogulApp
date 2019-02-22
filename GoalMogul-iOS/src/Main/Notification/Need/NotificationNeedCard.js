@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 // Components
 import ProfileImage from '../../Common/ProfileImage';
 import Timestamp from '../../Goal/Common/Timestamp';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Assets
 import bulb from '../../../asset/utils/bulb.png';
@@ -128,11 +129,14 @@ class NotificationCard extends React.Component {
     }
 
     return (
-      <View style={styles.cardContainerStyle}>
+      <DelayedButton 
+        style={styles.cardContainerStyle}
+        onPress={() => this.handleOnOpen(item)}
+      >
         {this.renderProfileImage(item)}
         {this.renderNeed(item)}
         {this.renderActionIcons(item)}
-      </View>
+      </DelayedButton>
     );
   }
 }

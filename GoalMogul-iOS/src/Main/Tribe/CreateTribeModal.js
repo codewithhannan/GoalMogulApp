@@ -372,6 +372,7 @@ class CreateTribeModal extends React.Component {
             actionText={actionText}
             onCancel={() => this.props.cancelCreatingNewTribe()}
             onAction={handleSubmit(this.handleCreate)}
+            actionDisabled={this.props.uploading}
           />
           <ScrollView
             style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}

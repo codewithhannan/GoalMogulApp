@@ -22,6 +22,10 @@ import {
   UserBanner
 } from '../../../actions';
 
+import {
+    handleRefresh
+} from '../../../redux/modules/meet/MeetActions';
+
 // Assets
 import AddUserIcon from '../../../asset/utils/addUser.png';
 
@@ -59,7 +63,7 @@ class FriendRequestCardView extends React.PureComponent {
                     friendshipId, 
                     'acceptFriend', 
                     TAB_KEY_INCOMING, 
-                    null
+                    () => this.props.handleRefresh()
                 );
                 break;
             case ACCPET_REMOVE_INDEX:
@@ -68,7 +72,7 @@ class FriendRequestCardView extends React.PureComponent {
                     friendshipId, 
                     'deleteFriend', 
                     TAB_KEY_INCOMING, 
-                    null
+                    () => this.props.handleRefresh()
                 );
                 break;
             default:
@@ -123,12 +127,14 @@ class FriendRequestCardView extends React.PureComponent {
     }
 
     renderProfileImage(item) {
+        const { user, type } = item;
+        if (!user || type === 'info') return '';
         return (
             <ProfileImage
                 imageStyle={{ height: 40, width: 40, borderRadius: 5 }}
                 defaultImageStyle={{ height: 40, width: 37, borderRadius: 5, marginLeft: 1, marginRight: 1 }}
                 imageContainerStyle={{ marginTop: 5 }}
-                imageUrl={item && item.profile ? item.profile.image : undefined}
+                imageUrl={user && user.profile ? user.profile.image : undefined}
                 imageContainerStyle={styles.imageContainerStyle}
                 userId={item._id}
             />
@@ -155,7 +161,6 @@ class FriendRequestCardView extends React.PureComponent {
     const { user, type } = item;
     if (!user || type === 'info') return '';
     const { name, profile, headline } = user;
-    // console.log(`${DEBUG_KEY}: item is: `, item);
     const detailText = headline || profile.occupation;
     return (
         <View style={{ flex: 1, marginLeft: 13 }}>
@@ -268,5 +273,6 @@ const styles = {
 export default connect(null, {
     updateFriendship,
     blockUser,
-    openProfile
+    openProfile,
+    handleRefresh
 })(FriendRequestCardView);

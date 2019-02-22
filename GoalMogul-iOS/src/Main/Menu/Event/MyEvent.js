@@ -116,10 +116,17 @@ class MyEvent extends Component {
   handlePlus = (item, navigationState) => {
     const { _id } = item;
     const { routes } = navigationState;
-    const indexToGo = routes.map((route) => route.key).indexOf('posts');
+    const indexToGoForPost = routes.map((route) => route.key).indexOf('posts');
+    const indexToGoForInvite = routes.map((route) => route.key).indexOf('attendees');
+
     const postCallback = () => {
-      this._handleIndexChange(indexToGo);
-      this.props.refreshMyEventDetail(_id);
+      this._handleIndexChange(indexToGoForPost);
+      this.props.refreshMyEventDetail(_id, undefined, this.props.pageId);
+    };
+
+    const inviteCallback = () => {
+      this._handleIndexChange(indexToGoForInvite);
+      this.props.refreshMyEventDetail(_id, undefined, this.props.pageId);
     };
 
     const participants = item.participants.map(p => p.participantRef);
@@ -143,7 +150,7 @@ class MyEvent extends Component {
             showPlus: true
           });
           Actions.pop();
-          Actions.createPostModal({
+          Actions.push('createPostModal', {
             belongsToEvent: _id,
             callback: postCallback,
             tagSearch
@@ -167,7 +174,8 @@ class MyEvent extends Component {
             {
               eventId: _id,
               cardIconSource: invite,
-              cardIconStyle: { tintColor: APP_BLUE_BRIGHT }
+              cardIconStyle: { tintColor: APP_BLUE_BRIGHT },
+              callback: inviteCallback
             }
           );
         }
@@ -293,7 +301,15 @@ class MyEvent extends Component {
   renderFooter = () => {
     const { routes, index } = this.props.navigationState;
     if (this.props.feedLoading && routes[index].key === 'posts') {
-      return <ActivityIndicator size='small' color='#17B3EC' />;
+      return (
+        <View
+          style={{
+            paddingVertical: 20
+          }}
+        >
+          <ActivityIndicator size='small' color='#17B3EC' />
+        </View>
+      );
     }
 
     return '';
@@ -495,6 +511,7 @@ class MyEvent extends Component {
           })
         }
         {filterBar}
+        {this.renderFooter()}
         {emptyState}
       </View>
     );
@@ -566,10 +583,9 @@ class MyEvent extends Component {
             data={data}
             renderItem={this.renderItem}
             keyExtractor={(i) => i._id}
-            onRefresh={() => this.props.refreshMyEventDetail(item._id)}
+            onRefresh={() => this.props.refreshMyEventDetail(item._id, undefined, this.props.pageId)}
             refreshing={this.props.loading}
             ListHeaderComponent={this.renderEventOverview(item, data)}
-            ListFooterComponent={this.renderFooter}
           />
           {this.renderPlus(item)}
         </View>
@@ -625,7 +641,9 @@ const styles = {
   // RSVP related styles
   rsvpBoxContainerStyle: {
     height: 25,
-    width: 60,
+    // width: 60,
+    paddingLeft: 5,
+    paddingRight: 5,
     borderRadius: 5,
     backgroundColor: '#efefef',
     alignItems: 'center',

@@ -543,7 +543,7 @@ export default (state = INITIAL_STATE, action) => {
         // Update one of filter within tab
         case PROFILE_UPDATE_FILTER: {
             const { tab, type, value, userId, pageId } = action.payload;
-            const newState = _.cloneDeep(state);
+            let newState = _.cloneDeep(state);
             const shouldUpdate = sanityCheckPageId(newState, userId, pageId, PROFILE_UPDATE_FILTER);
             if (!shouldUpdate) return newState;
 
@@ -551,9 +551,14 @@ export default (state = INITIAL_STATE, action) => {
             if (type === 'priorities') {
                 const oldPriorities = _.get(newState, `${path}.priorities`);
                 const newPriorities = updatePriorities(oldPriorities, value);
-                return _.set(newState, `${tab}.priorities`, newPriorities);
+                newState = _.set(newState, `${path}.priorities`, newPriorities);
+                console.log(`${DEBUG_KEY}: new priority is: `, newPriorities);
+                console.log(`${DEBUG_KEY}: new state is: `, newState);
+                return newState;
             }
-            return _.set(newState, `${path}.${type}`, value);
+            newState = _.set(newState, `${path}.${type}`, value);
+            console.log(`${DEBUG_KEY}: new state is: `, newState);
+            return newState;
         }
 
         case PROFILE_RESET_FILTER: {

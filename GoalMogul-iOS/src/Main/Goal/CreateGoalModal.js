@@ -112,6 +112,7 @@ class CreateGoalModal extends React.Component {
               Actions.pop();
             }}
             onAction={this.handleCreate}
+            actionDisabled={!this.props.uploading}
           />
           <TabView
             navigationState={this.props.navigationState}

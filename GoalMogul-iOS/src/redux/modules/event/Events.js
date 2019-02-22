@@ -41,6 +41,11 @@ import {
     MYEVENT_MEMBER_SELECT_FILTER
 } from './MyEventReducers';
 
+import {
+    PROFILE_POST_DELETE_SUCCESS
+} from '../../../reducers/Profile';
+import { hasTypePrefix } from '../../middleware/utils';
+
 /**
  * Related Consts
  * 
@@ -331,6 +336,24 @@ export default (state = INITIAL_STATE, action) => {
             eventToUpdate = _.set(eventToUpdate, 'reference', newReference);
             newState = _.set(newState, `${eventId}`, eventToUpdate);
             console.log(`${DEBUG_KEY}: newState after event closing is: `, newState);
+            return newState;
+        }
+
+        case PROFILE_POST_DELETE_SUCCESS: {
+            const { postId } = action.payload;
+            // Brute force to remove all related postId
+            let newState = _.cloneDeep(state);
+            Object.keys(newState).forEach(eventId => {
+                let eventObject = _.get(newState, eventId);
+                Object.keys(eventObject).forEach(objectKey => {
+                    if (hasTypePrefix('event', objectKey)) {
+                        const newFeed = _.get(eventObject, `${objectKey}.feed`).filter(f => f !== postId);
+                        eventObject = _.set(eventObject, `${objectKey}.feed`, newFeed);
+                    }
+                });
+                newState = _.set(newState, `${eventId}`, eventObject);
+            });
+
             return newState;
         }
 
