@@ -459,7 +459,9 @@ const styles = {
   // RSVP related styles
   rsvpBoxContainerStyle: {
     height: 25,
-    width: 80,
+    // width: 80,
+    paddingLeft: 5,
+    paddingRight: 5,
     borderRadius: 5,
     backgroundColor: '#efefef',
     alignItems: 'center',
