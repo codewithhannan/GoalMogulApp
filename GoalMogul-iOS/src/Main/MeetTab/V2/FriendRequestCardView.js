@@ -49,7 +49,8 @@ class FriendRequestCardView extends React.PureComponent {
     }
 
     onRespondClicked = (item) => {
-        const { friendshipId } = item;
+        const { friendshipId, user } = item;
+        const userId = user._id;
         ActionSheetIOS.showActionSheetWithOptions({
             options: ACCEPT_BUTTONS,
             cancelButtonIndex: ACCEPT_CANCEL_INDEX,
@@ -59,7 +60,7 @@ class FriendRequestCardView extends React.PureComponent {
             switch (buttonIndex) {
             case ACCPET_INDEX:
                 this.props.updateFriendship(
-                    undefined, 
+                    userId, 
                     friendshipId, 
                     'acceptFriend', 
                     TAB_KEY_INCOMING, 
@@ -68,7 +69,7 @@ class FriendRequestCardView extends React.PureComponent {
                 break;
             case ACCPET_REMOVE_INDEX:
                 this.props.updateFriendship(
-                    undefined, 
+                    userId, 
                     friendshipId, 
                     'deleteFriend', 
                     TAB_KEY_INCOMING, 
@@ -201,6 +202,7 @@ class FriendRequestCardView extends React.PureComponent {
     const { item } = this.props;
     if (!item) return '';
 
+    console.log(`${DEBUG_KEY}: item is: `, item);
     return (
         <TouchableOpacity 
             activeOpacity={0.85}
