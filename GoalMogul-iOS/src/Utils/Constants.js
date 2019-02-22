@@ -17,7 +17,7 @@ export const SORT_BY_OPTIONS = [
     },
     {
         text: 'Priority',
-        value: 'Priority'
+        value: 'priority'
     },
 ];
       

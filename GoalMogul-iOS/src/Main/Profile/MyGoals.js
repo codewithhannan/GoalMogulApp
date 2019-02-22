@@ -144,6 +144,7 @@ const makeMapStateToProps = () => {
     // console.log(`${DEBUG_KEY}: goals are: `, state.goals);
     // console.log(`${DEBUG_KEY}: user object is: `, state.users[`${userId}`]);
   
+    // console.log(`${DEBUG_KEY}: filter object is: `, filter);
     return {
       selectedTab,
       data,
