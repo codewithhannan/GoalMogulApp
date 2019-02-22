@@ -244,6 +244,16 @@ export default (state = INITIAL_STATE, action) => {
         }
       }
 
+      if (type === 'requestFriend') {
+        if (tab === 'requests.outgoing') {
+          // Add the data.data to the requests.outgoing.data and dedup
+          const oldData = _.get(newState, 'requests.outgoing.data');
+          const newData = oldData.concat(data.data);
+          newState = _.set(newState, 'requests.outgoing.data', arrayUnique(newData));
+          return newState;
+        }
+      }
+
       // Following is the old implementation
       // newState = ((updateType) => {
       //   switch (updateType) {
