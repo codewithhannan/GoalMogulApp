@@ -153,7 +153,8 @@ export const fetchAppUserProfile = (token, userId) => (dispatch, getState) => {
         dispatch({
           type: USER_LOAD_PROFILE_DONE,
           payload: {
-            user: res.data
+            user: res.data,
+            pageId: 'LOGIN'
           }
         });
       }

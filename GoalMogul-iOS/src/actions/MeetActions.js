@@ -252,8 +252,9 @@ export const updateFriendship = (userId, friendshipId, type, tab, callback) =>
 
   singleFetch(requestType.url, _.cloneDeep(requestType.data), requestType.type, token)
     .then((res) => {
-      console.log(`response for ${type}: `, res);
-      if (res.status === 200 || (res.message && !res.message.toLowerCase().trim().includes('success'))) {
+      console.log(`${DEBUG_KEY}: response for ${type}: `, res);
+      if (res.status !== 200 || (res.message && !res.message.toLowerCase().trim().includes('success'))) {
+        console.log(`${DEBUG_KEY}: update friendship failed for request type: with res: `, res);
         // TODO: error handling
         return;
       }

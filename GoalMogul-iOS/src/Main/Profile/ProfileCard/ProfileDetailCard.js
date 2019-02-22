@@ -116,7 +116,7 @@ class ProfileDetailCard extends Component {
           console.log(`${DEBUG_KEY} User withdraw request _id: `, this.props.friendship._id);
           // this.props.blockUser(this.props.profileUserId);
           this.props.updateFriendship(
-            '',
+            this.props.userId,
             this.props.friendship._id,
             'deleteFriend',
             'requests.outgoing',
@@ -138,7 +138,7 @@ class ProfileDetailCard extends Component {
         [R.equals(0), () => {
           console.log(`${DEBUG_KEY} User unfriend _id: `, this.props.friendship._id);
           this.props.updateFriendship(
-            '',
+            this.props.userId,
             this.props.friendship._id,
             'deleteFriend',
             'friends',
@@ -160,7 +160,7 @@ class ProfileDetailCard extends Component {
         [R.equals(1), () => {
           console.log(`${DEBUG_KEY} User refuse _id: `, this.props.friendship._id);
           this.props.updateFriendship(
-            '',
+            this.props.userId,
             this.props.friendship._id,
             'deleteFriend',
             'requests.incoming',
@@ -170,7 +170,7 @@ class ProfileDetailCard extends Component {
         [R.equals(0), () => {
           console.log(`${DEBUG_KEY} User accpet _id: `, this.props.friendship._id);
           this.props.updateFriendship(
-            '',
+            this.props.userId,
             this.props.friendship._id,
             'acceptFriend',
             'requests.incoming',

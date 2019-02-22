@@ -15,7 +15,7 @@ import Mastermind from './Mastermind';
 import ActivityFeed from './ActivityFeed';
 
 // Actions
-import { homeSwitchTab, fetchAppUserProfile } from '../../actions';
+import { homeSwitchTab, fetchAppUserProfile, fetchProfile } from '../../actions';
 import {
   openCreateOverlay,
   refreshGoals
@@ -70,15 +70,40 @@ class Home extends Component {
     };
     this.scrollToTop = this.scrollToTop.bind(this);
     this._renderScene = this._renderScene.bind(this);
+    this.setTimer = this.setTimer.bind(this);
+    this.stopTimer = this.stopTimer.bind(this);
   }
 
 
   componentDidMount() {
     AppState.addEventListener('change', this.handleAppStateChange);
+
+    // Set timer to fetch profile again if previously failed
+    this.setTimer();
   }
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.handleAppStateChange);
+    
+    // Remove timer in case app crash
+    this.stopTimer();
+  }
+
+  setTimer() {
+    this.stopTimer(); // Clear the previous timer if there is one
+
+    console.log(`${DEBUG_KEY}: [ Setting New Timer ] for fetching profile after 5s`);
+    this.timer = setTimeout(() => {
+      console.log(`${DEBUG_KEY}: [ Timer firing ] fetching profile again.`);
+      this.props.fetchProfile(this.props.userId);
+    }, 5000);
+  }
+
+  stopTimer() {
+    if (this.timer !== undefined) {
+      console.log(`${DEBUG_KEY}: [ Timer clearing ] for fetching profile 5s after mounted`);
+      clearInterval(this.timer);
+    }
   }
 
   scrollToTop = () => {
@@ -218,6 +243,7 @@ class Home extends Component {
 }
 
 const mapStateToProps = state => {
+  const { userId } = state.user;
   const { showingModal } = state.report;
   const { showPlus, data } = state.home.mastermind;
   const needRefreshMastermind = _.isEmpty(state.home.mastermind.data);
@@ -229,7 +255,8 @@ const mapStateToProps = state => {
     showPlus,
     user,
     needRefreshActivity,
-    needRefreshMastermind
+    needRefreshMastermind,
+    userId
   };
 };
 
@@ -286,7 +313,8 @@ export default connect(
     subscribeNotification,
     saveUnreadNotification,
     refreshGoals,
-    refreshFeed
+    refreshFeed,
+    fetchProfile
   },
   null,
   { withRef: true }
