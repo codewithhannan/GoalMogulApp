@@ -352,9 +352,17 @@ const sendCreatePostRequest = (newPost, token, dispatch, onSuccess, onError) => 
 const newPostAdaptor = (values, userId) => {
   const { viewableSetting, mediaRef, post, belongsToTribe, belongsToEvent, tags } = values;
   const tagsToUser = clearTags(post, {}, tags); // Update the index before submitting
+
+  const shouldBePublic = belongsToTribe !== undefined || belongsToEvent !== undefined;
+  let privacySetting;
+  if (shouldBePublic) {
+    privacySetting = 'public';
+  } else {
+    privacySetting = viewableSetting === 'Private' ? 'self' : viewableSetting.toLowerCase();
+  }
   return {
     owner: userId,
-    privacy: viewableSetting === 'Private' ? 'self' : viewableSetting.toLowerCase(),
+    privacy: privacySetting,
     content: {
       text: post,
       tags: tagsToUser.map((t) => {
