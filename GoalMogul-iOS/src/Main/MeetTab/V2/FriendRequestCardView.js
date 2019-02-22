@@ -22,6 +22,10 @@ import {
   UserBanner
 } from '../../../actions';
 
+import {
+    handleRefresh
+} from '../../../redux/modules/meet/MeetActions';
+
 // Assets
 import AddUserIcon from '../../../asset/utils/addUser.png';
 
@@ -59,7 +63,7 @@ class FriendRequestCardView extends React.PureComponent {
                     friendshipId, 
                     'acceptFriend', 
                     TAB_KEY_INCOMING, 
-                    null
+                    () => this.props.handleRefresh()
                 );
                 break;
             case ACCPET_REMOVE_INDEX:
@@ -68,7 +72,7 @@ class FriendRequestCardView extends React.PureComponent {
                     friendshipId, 
                     'deleteFriend', 
                     TAB_KEY_INCOMING, 
-                    null
+                    () => this.props.handleRefresh()
                 );
                 break;
             default:
@@ -269,5 +273,6 @@ const styles = {
 export default connect(null, {
     updateFriendship,
     blockUser,
-    openProfile
+    openProfile,
+    handleRefresh
 })(FriendRequestCardView);
