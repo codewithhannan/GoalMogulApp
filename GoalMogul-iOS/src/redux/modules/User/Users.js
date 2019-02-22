@@ -255,7 +255,6 @@ export default (state = INITIAL_STATE, action) => {
             }
 
             newState = _.set(newState, `${userId}.${pageId}`, { ...INITIAL_USER_PROFILE_DETAIL_PAGE });
-
             return _.set(newState, `${userId}.reference`, reference);
         }
 
@@ -270,28 +269,50 @@ export default (state = INITIAL_STATE, action) => {
         case PROFILE_FETCHING_SUCCESS: {
             let newState = _.cloneDeep(state);
             const { user, pageId } = action.payload;
+            console.log(`${DEBUG_KEY}: payload is: `, action.payload);
 
-            const shouldUpdate = sanityCheckPageId(newState, user._.id, pageId, action.type);
+            const shouldUpdate = sanityCheckPageId(newState, user._id, pageId, action.type);
             if (!shouldUpdate && pageId !== 'HOME' && pageId !== 'LOGIN') return newState;
             let userToUpdate = {};
             // We need to use user._id otherwise, it will break USER_LOAD_PROFILE_DONE
+
+            if (!user || !user._id) return newState;
             const path = `${user._id}.user`;
             if (_.has(newState, `${user._id}`)) {
                 userToUpdate = _.get(newState, path);
             }
             // Update the user
             newState = _.set(newState, path, { ...userToUpdate, ...user });
+            console.log(`${DEBUG_KEY}: newState is: `, newState);
 
             // Set loading for pageId to false
             if (pageId) {
                 newState = _.set(newState, `${user._id}.${pageId}.loading`, false);
             }
+
+            // Update the reference
+            if (pageId === 'HOME' || pageId === 'LOGIN') {
+                // Adding 'HOME' and 'LOGIN' to user reference
+                const reference = [pageId];
+                const oldReference = _.get(newState, `${user._id}.reference`);
+                if (oldReference !== undefined) {
+                    if (!oldReference.some(r => r === pageId)) {
+                        reference = reference.concat(oldReference);
+                    } else {
+                        reference = oldReference;
+                    }
+                }
+                newState = _.set(newState, `${user._id}.reference`, reference);
+            }
+
             return newState;
         }
 
         case PROFILE_FETCHING_FAIL: {
             let newState = _.cloneDeep(state);
             const { pageId, res, userId } = action.payload;
+            const shouldUpdate = sanityCheckPageId(newState, userId, pageId, action.type);
+            if (!shouldUpdate) return newState;
             if (pageId) {
                 newState = _.set(newState, `${userId}.${pageId}.loading`, false);
             }

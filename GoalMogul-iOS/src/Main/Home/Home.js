@@ -15,7 +15,7 @@ import Mastermind from './Mastermind';
 import ActivityFeed from './ActivityFeed';
 
 // Actions
-import { homeSwitchTab, fetchAppUserProfile } from '../../actions';
+import { homeSwitchTab, fetchAppUserProfile, fetchProfile } from '../../actions';
 import {
   openCreateOverlay,
   refreshGoals
@@ -95,7 +95,7 @@ class Home extends Component {
     console.log(`${DEBUG_KEY}: [ Setting New Timer ] for fetching profile after 5s`);
     this.timer = setTimeout(() => {
       console.log(`${DEBUG_KEY}: [ Timer firing ] fetching profile again.`);
-      this.props.fetchProfile();
+      this.props.fetchProfile(this.props.userId);
     }, 5000);
   }
 
@@ -243,6 +243,7 @@ class Home extends Component {
 }
 
 const mapStateToProps = state => {
+  const { userId } = state.user;
   const { showingModal } = state.report;
   const { showPlus, data } = state.home.mastermind;
   const needRefreshMastermind = _.isEmpty(state.home.mastermind.data);
@@ -254,7 +255,8 @@ const mapStateToProps = state => {
     showPlus,
     user,
     needRefreshActivity,
-    needRefreshMastermind
+    needRefreshMastermind,
+    userId
   };
 };
 
@@ -311,7 +313,8 @@ export default connect(
     subscribeNotification,
     saveUnreadNotification,
     refreshGoals,
-    refreshFeed
+    refreshFeed,
+    fetchProfile
   },
   null,
   { withRef: true }
