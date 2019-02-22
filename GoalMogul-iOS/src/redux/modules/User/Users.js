@@ -259,12 +259,20 @@ export default (state = INITIAL_STATE, action) => {
             return _.set(newState, `${userId}.reference`, reference);
         }
 
-        /* Profile fetching */
+        /**
+         * Profile fetching
+         * Special cases: 
+         * HOME is used for home fetching current app user profile
+         * LOGIN is used for login auth fetching current app user profile
+         * so we can skip the check for these two cases
+         */
         case USER_LOAD_PROFILE_DONE:
         case PROFILE_FETCHING_SUCCESS: {
             let newState = _.cloneDeep(state);
             const { user, pageId } = action.payload;
 
+            const shouldUpdate = sanityCheckPageId(newState, user._.id, pageId, action.type);
+            if (!shouldUpdate && pageId !== 'HOME' && pageId !== 'LOGIN') return newState;
             let userToUpdate = {};
             // We need to use user._id otherwise, it will break USER_LOAD_PROFILE_DONE
             const path = `${user._id}.user`;
