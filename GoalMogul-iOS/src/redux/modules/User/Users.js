@@ -362,8 +362,14 @@ export default (state = INITIAL_STATE, action) => {
             const resData = data.data;
             const newState = _.cloneDeep(state);
 
+            console.log(`${DEBUG_KEY}: [ ${action.type} ]: meet is updating` + 
+                    ` a user with userId ${userId} and action payload:`, action.payload);
+
             if (!_.has(newState, userId)) {
-                // meet is updating a user that has been opened profile yet
+                // meet is updating a user that hasn't been opened profile yet
+                console.log(`${DEBUG_KEY}: [ ${action.type} ]: meet is updating` + 
+                    ` a user that hasn't been opened profile yet with userId ${userId} ` + 
+                    'and action payload:', action.payload);
                 return newState;
             }
 
@@ -382,6 +388,7 @@ export default (state = INITIAL_STATE, action) => {
                     newFriendship.status = 'Accepted';
                 }
             }
+            console.log(`${DEBUG_KEY}: newFriendshpi status is: `, newFriendship);
 
             return _.set(newState, `${userId}.friendship`, newFriendship);
         }

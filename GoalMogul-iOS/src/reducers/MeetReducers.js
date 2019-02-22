@@ -22,6 +22,7 @@ import {
   USER_LOG_OUT
 } from './User';
 
+const DEBUG_KEY = '[ Reducer Meet ]';
 const limit = 5;
 const filter = {
   friends: {
@@ -190,6 +191,7 @@ export default (state = INITIAL_STATE, action) => {
     case MEET_UPDATE_FRIENDSHIP_DONE: {
       let newState = _.cloneDeep(state);
       const { data, type, tab, message } = action.payload;
+      console.log(`${DEBUG_KEY}: [ ${action.type}]: payload is: `, action.payload);
       const { friendshipId, userId } = data;
       if (message) {
         return { ...newState };
@@ -214,7 +216,7 @@ export default (state = INITIAL_STATE, action) => {
             return { ...newState };
         }
       })(type);
-      // console.log('new state is: ', newState);
+      console.log(`${DEBUG_KEY}: new state is:`, newState);
       return { ...newState };
     }
 
