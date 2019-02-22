@@ -447,7 +447,8 @@ class CreatePostModal extends Component {
   }
 
   renderUserInfo() {
-    const { profile, name } = this.props.user;
+    const { belongsToTribe, belongsToEvent, user } = this.props;
+    const { profile, name } = user;
     let imageUrl = profile.image;
     let profileImage = (
       <Image style={styles.imageStyle} resizeMode='cover' source={defaultUserProfile} />
@@ -470,6 +471,8 @@ class CreatePostModal extends Component {
             viewableSetting={this.props.viewableSetting}
             callback={callback}
             shareToMastermind={null}
+            belongsToTribe={belongsToTribe}
+            belongsToEvent={belongsToEvent}
           />
         </View>
       </View>
