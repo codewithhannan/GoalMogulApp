@@ -36,7 +36,7 @@ import { openProfile } from '../../actions';
 
  class PeopleSearchOverlay extends Component {
     handleOnResSelect = (_id) => {
-      const { searchFor } = this.props;
+      const { searchFor, callback } = this.props;
       if (!searchFor) return this.props.openProfile(_id);
       const {
         type, // event or tribe
@@ -44,10 +44,10 @@ import { openProfile } from '../../actions';
       } = searchFor;
       if (type === 'tribe' || type === 'myTribe') {
         // _id is invitee id
-        return this.props.inviteUserToTribe(id, _id);
+        return this.props.inviteUserToTribe(id, _id, callback);
       }
       if (type === 'event' || type === 'myEvent') {
-        return this.props.inviteParticipantToEvent(id, _id);
+        return this.props.inviteParticipantToEvent(id, _id, callback);
       }
     }
 
@@ -149,8 +149,8 @@ import { openProfile } from '../../actions';
    return ({
      debouncedSearch,
      clearSearchState: clearSearchState(dispatch),
-     inviteParticipantToEvent: (eventId, inviteeId) =>
-      dispatch(inviteParticipantToEvent(eventId, inviteeId)),
+     inviteParticipantToEvent: (eventId, inviteeId, callback) =>
+      dispatch(inviteParticipantToEvent(eventId, inviteeId, callback)),
      openProfile: (userId) =>
       dispatch(openProfile(userId)),
      inviteUserToTribe: (tribeId, inviteeId) =>

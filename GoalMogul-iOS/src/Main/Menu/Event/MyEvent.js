@@ -116,9 +116,16 @@ class MyEvent extends Component {
   handlePlus = (item, navigationState) => {
     const { _id } = item;
     const { routes } = navigationState;
-    const indexToGo = routes.map((route) => route.key).indexOf('posts');
+    const indexToGoForPost = routes.map((route) => route.key).indexOf('posts');
+    const indexToGoForInvite = routes.map((route) => route.key).indexOf('attendees');
+
     const postCallback = () => {
-      this._handleIndexChange(indexToGo);
+      this._handleIndexChange(indexToGoForPost);
+      this.props.refreshMyEventDetail(_id, undefined, this.props.pageId);
+    };
+
+    const inviteCallback = () => {
+      this._handleIndexChange(indexToGoForInvite);
       this.props.refreshMyEventDetail(_id, undefined, this.props.pageId);
     };
 
@@ -167,7 +174,8 @@ class MyEvent extends Component {
             {
               eventId: _id,
               cardIconSource: invite,
-              cardIconStyle: { tintColor: APP_BLUE_BRIGHT }
+              cardIconStyle: { tintColor: APP_BLUE_BRIGHT },
+              callback: inviteCallback
             }
           );
         }
