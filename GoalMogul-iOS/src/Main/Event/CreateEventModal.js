@@ -593,6 +593,7 @@ class CreateEventModal extends React.Component {
             actionText={actionText}
             onCancel={() => this.props.cancelCreatingNewEvent()}
             onAction={handleSubmit(this.handleCreate)}
+            actionDisabled={this.props.uploading}
           />
           <ScrollView
             style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
@@ -615,9 +616,9 @@ class CreateEventModal extends React.Component {
 
 const validateTime = (start, end) => {
   if (!start || !end) return true;
-  if (moment(start) > moment(end)) return false
+  if (moment(start) > moment(end)) return false;
   return true;
-}
+};
 
 CreateEventModal = reduxForm({
   form: 'createEventModal',
@@ -628,7 +629,7 @@ const mapStateToProps = state => {
   const selector = formValueSelector('createEventModal');
   const { user } = state.user;
   const { profile } = user;
-  const { uploading } = state.newTribe;
+  const { uploading } = state.newEvent;
 
   return {
     user,
