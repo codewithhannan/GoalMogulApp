@@ -342,7 +342,8 @@ class CreateEventModal extends React.Component {
             {endTime}
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.85}
+          <TouchableOpacity 
+            activeOpacity={0.85}
             style={{ justifyContent: 'center', padding: 10 }}
             onPress={() => {
               this.props.change('hasTimeline', false);
@@ -371,7 +372,8 @@ class CreateEventModal extends React.Component {
         <TouchableOpacity activeOpacity={0.85} style={actionIconWrapperStyle} onPress={this.handleOpenCamera}>
           <Image style={actionIconStyle} source={camera} />
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity 
+          activeOpacity={0.85}
           style={{ ...actionIconWrapperStyle, marginLeft: 5 }}
           onPress={this.handleOpenCameraRoll}
         >

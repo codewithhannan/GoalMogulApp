@@ -131,7 +131,7 @@ export default (state = INITIAL_STATE, action) => {
         if (refresh || skip === 0) {
           newState.block.data = data;
         } else {
-          console.log('payload is: ', action.payload);
+          console.log(`${DEBUG_KEY}: [ ${action.type}]: payload is`, action.payload);
           newState.block.data = newState.block.data.concat(data);
         }
         newState.block.skip = skip;

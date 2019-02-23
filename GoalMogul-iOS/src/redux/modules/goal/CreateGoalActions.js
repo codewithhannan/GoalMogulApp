@@ -54,7 +54,14 @@ export const submitGoal = (
 ) => (dispatch, getState) => {
   const { token } = getState().user;
   const { tab } = getState().navigation;
-  const goal = formToGoalAdapter(values, userId);
+  let goal = {};
+  try {
+    goal = formToGoalAdapter(values, userId);
+  } catch (error) {
+    console.log(`${DEBUG_KEY}: transform goal error: `, error);
+    return;
+  }
+  
   console.log('Transformed goal is: ', goal);
 
   dispatch({
