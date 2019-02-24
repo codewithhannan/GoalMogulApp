@@ -36,6 +36,11 @@ import {
     COMMENT_NEW_POST_SUCCESS
 } from './NewCommentReducers';
 
+import {
+    LIKE_COMMENT,
+    UNLIKE_COMMENT
+} from '../../like/LikeReducers';
+
 export const INITIAL_COMMENT_OBJECT = {
     data: [],
     transformedComments: [],
@@ -68,6 +73,10 @@ const DEBUG_KEY = '[ Reducer Comments ]';
  * COMMENT_POST (no action implemented)
  * COMMENT_POST_DONE (no action implemented)
  * COMMENT_LOAD_MORE_REPLIES (no action implemented)
+ * 
+ * Like related
+ * LIKE_COMMENT,
+ * UNLIKE_COMMENT
  * 
  * New comment related
  * COMMENT_NEW_POST_SUCCESS
@@ -261,6 +270,27 @@ export default (state = INITIAL_STATE, action) => {
             return newState;
         }
 
+        /* Like related */
+        case UNLIKE_COMMENT:
+        case LIKE_COMMENT: {
+            let newState = _.cloneDeep(state);
+            const { id, likeId, tab, pageId, parentId, undo } = action.payload;
+            // console.log(`${DEBUG_KEY}: [ ${action.type} ]: payload is:`, action.payload);
+            const commentId = id;
+
+            const shouldUpdate = sanityCheck(newState, parentId, action.type);
+            if (!shouldUpdate) return newState;
+
+            // Update original comments
+            const oldData = _.get(newState, `${parentId}.data`);
+            const newData = updateLike(oldData, commentId, likeId, undo, action.type);
+            // Update transformed comments
+            const transformedComments = transformComments(newData);
+            newState = _.set(newState, `${parentId}.data`, newData);
+            newState = _.set(newState, `${parentId}.transformedComments`, transformedComments);
+            return newState;
+        }
+
         /* User related */
         case USER_LOG_OUT: {
             return { ...INITIAL_STATE };
@@ -310,3 +340,32 @@ const transformComments = (data) => data.filter(comment => !comment.replyToRef)
   };
   return newComment;
 });
+
+function updateLike(array, id, likeId, undo, likeType) {
+    return array.map((item) => {
+        let newItem = _.cloneDeep(item);
+        if (item._id.toString() === id.toString()) {
+            const oldLikeCount = _.get(newItem, 'likeCount');
+            // console.log(`${DEBUG_KEY}: oldLikeCount for comment is: `, oldLikeCount);
+            let newLikeCount = oldLikeCount;
+            if (likeType === LIKE_COMMENT) {
+                if (undo) {
+                    newLikeCount = oldLikeCount - 1;
+                } else if (likeId === 'testId') {
+                    newLikeCount = oldLikeCount + 1;
+                }
+            } else if (likeType === UNLIKE_COMMENT) {
+                if (undo) {
+                    newLikeCount = oldLikeCount + 1;
+                } else if (likeId === undefined) {
+                    newLikeCount = oldLikeCount - 1;
+                }
+            }
+
+            newItem = _.set(newItem, 'likeCount', newLikeCount);
+            newItem = _.set(newItem, 'maybeLikeRef', likeId);
+            // console.log(`${DEBUG_KEY}: newLikeCount for comment is: `, newLikeCount);
+        }
+        return newItem;
+    });
+}

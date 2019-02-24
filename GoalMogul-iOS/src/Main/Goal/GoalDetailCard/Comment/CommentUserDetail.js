@@ -176,7 +176,7 @@ class CommentUserDetail extends Component {
 
   renderActionButtons() {
     const { item, index, scrollToIndex, onCommentClicked, viewOffset, commentDetail } = this.props;
-    const { childComments, _id, maybeLikeRef } = item;
+    const { childComments, _id, maybeLikeRef, parentRef } = item;
     const commentCounts = childComments && childComments.length > 0
       ? childComments.length
       : undefined;
@@ -198,9 +198,9 @@ class CommentUserDetail extends Component {
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks like icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
-              return this.props.unLikeGoal('comment', _id, maybeLikeRef, this.props.pageId);
+              return this.props.unLikeGoal('comment', _id, maybeLikeRef, this.props.pageId, parentRef);
             }
-            this.props.likeGoal('comment', _id, this.props.pageId);
+            this.props.likeGoal('comment', _id, this.props.pageId, parentRef);
           }}
         />
         <ActionButton

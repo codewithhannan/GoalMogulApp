@@ -455,6 +455,7 @@ class GoalDetailCardV3 extends Component {
           resetCommentType={resetCommentTypeFunc}
           initial={this.props.initial}
           pageId={this.props.pageId}
+          goalId={this.props.goalId}
         />
       </Animated.View>
     );
@@ -492,9 +493,10 @@ class GoalDetailCardV3 extends Component {
             visible={this.props.showSuggestionModal}
             onCancel={() => this.props.cancelSuggestion()}
             onAttach={() => {
-              this.props.attachSuggestion(goalDetail, focusType, focusRef);
+              this.props.attachSuggestion(goalDetail, focusType, focusRef, pageId);
             }}
-            pageId={undefined}
+            pageId={this.props.pageId}
+            goalId={this.props.goalId}
             item={goalDetail}
           />
           <Report showing={this.props.showingModalInDetail} />

@@ -336,7 +336,7 @@ class CommentBoxV2 extends Component {
   }
 
   //tintColor: '#f5d573'
-  renderSuggestionIcon(newComment, pageId) {
+  renderSuggestionIcon(newComment, pageId, goalId) {
     const { mediaRef, commentType } = newComment;
     const disableButton = mediaRef !== undefined && mediaRef !== '';
     if (commentType === 'Reply') return '';
@@ -348,7 +348,7 @@ class CommentBoxV2 extends Component {
         onPress={() => {
           console.log('suggestion on click in comment box');
           Keyboard.dismiss();
-          this.props.createSuggestion(pageId);
+          this.props.createSuggestion(goalId, pageId);
         }}
         disabled={disableButton}
       >
@@ -364,9 +364,9 @@ class CommentBoxV2 extends Component {
     );
   }
 
-  renderLeftIcons(newComment, pageId, hasSuggestion) {
+  renderLeftIcons(newComment, pageId, hasSuggestion, goalId) {
     const suggestionIcon = hasSuggestion
-      ? this.renderSuggestionIcon(newComment, pageId)
+      ? this.renderSuggestionIcon(newComment, pageId, goalId)
       : '';
     return (
       <View
@@ -505,7 +505,7 @@ class CommentBoxV2 extends Component {
   }
 
   render() {
-    const { pageId, newComment, hasSuggestion } = this.props;
+    const { pageId, newComment, hasSuggestion, goalId } = this.props;
     // console.log(`${DEBUG_KEY}: new comment in commentbox: `, newComment);
     if (!newComment || !newComment.parentRef) return '';
 
@@ -548,7 +548,7 @@ class CommentBoxV2 extends Component {
           onSubmitEditing={() => this.handleOnSubmitEditing(newComment)}
           renderSuggestionPreview={() => this.renderSuggestionPreview(newComment, pageId)}
           renderMedia={() => this.renderMedia(newComment)}
-          renderLeftIcons={() => this.renderLeftIcons(newComment, pageId, hasSuggestion)}
+          renderLeftIcons={() => this.renderLeftIcons(newComment, pageId, hasSuggestion, goalId)}
           renderPost={() => this.renderPost(newComment)}
 
           textInputContainerStyle={inputContainerStyle}

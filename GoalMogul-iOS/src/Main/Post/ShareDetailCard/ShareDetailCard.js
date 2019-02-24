@@ -88,6 +88,7 @@ class ShareDetailCard extends Component {
         onReportPressed={() => console.log('share detail report clicked')}
         reportType='shareDetail'
         pageId={this.props.pageId}
+        entityId={this.props.postId}
       />
     );
   }

@@ -207,7 +207,7 @@ export const getGoalDetailByTab = createSelector(
   }
 );
 
-const getGoal = (state, goalId) => {
+export const getGoal = (state, goalId) => {
   const goals = state.goals;
   if (_.has(goals, `${goalId}.goal`)) {
     return _.get(goals, `${goalId}.goal`);
