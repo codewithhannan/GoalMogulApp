@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import {
-  View
+  View,
+  TouchableWithoutFeedback,
+  ImageBackground,
+  Image,
+  TouchableOpacity,
+  Dimensions
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -15,6 +20,7 @@ import ActionButtonGroup from '../../Common/ActionButtonGroup';
 import CommentHeadline from './CommentHeadline';
 import CommentRef from './CommentRef';
 import ProfileImage from '../../../Common/ProfileImage';
+import ImageModal from '../../../Common/ImageModal';
 import RichText from '../../../Common/Text/RichText';
 
 // Actions
@@ -41,14 +47,30 @@ import {
   unsubscribeEntityNotification
 } from '../../../../redux/modules/notification/NotificationActions';
 
+// Styles
+import {
+  imagePreviewContainerStyle
+} from '../../../../styles';
+
+// Assets
+import photoIcon from '../../../../asset/utils/photoIcon.png';
+import expand from '../../../../asset/utils/expand.png';
+
+// Constants
+import {
+  IMAGE_BASE_URL
+} from '../../../../Utils/Constants';
+
 // Constants
 const DEBUG_KEY = '[ UI CommentCard.CommentUserDetail ]';
+const { width } = Dimensions.get('window');
 
 class CommentUserDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      layout: {}
+      layout: {},
+      mediaModal: false,
     };
   }
 
@@ -65,6 +87,77 @@ class CommentUserDetail extends Component {
 
   getLayout = () => this.state.layout;
 
+  /**
+   * Render Image user attached to the comment.
+   * Comment type should be "commentType": "Comment"
+   * @param {commentObject} item 
+   */
+  renderCommentMedia(item) {
+    const { mediaRef } = item;
+    if (!mediaRef) return null;
+
+    const url = mediaRef;
+    const imageUrl = `${IMAGE_BASE_URL}${url}`;
+    return (
+      <TouchableWithoutFeedback
+        onPress={() => this.setState({ mediaModal: true })}
+      >
+      <View style={{ marginTop: 10 }}>
+        <ImageBackground
+          style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle }}
+          source={{ uri: imageUrl }}
+          imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
+        >
+          <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
+            <Image
+              source={photoIcon}
+              style={{
+                alignSelf: 'center',
+                justifyContent: 'center',
+                height: 40,
+                width: 50,
+                tintColor: '#fafafa'
+              }}
+            />
+          </View>
+
+          <TouchableOpacity 
+            activeOpacity={0.85}
+            onPress={() => this.setState({ mediaModal: true })}
+            style={{
+              position: 'absolute',
+              top: 10,
+              right: 15,
+              width: 24,
+              height: 24,
+              borderRadius: 12,
+              padding: 2,
+              backgroundColor: 'rgba(0,0,0,0.3)',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <Image
+              source={expand}
+              style={{
+                width: 16,
+                height: 16,
+                tintColor: '#fafafa',
+                borderRadius: 4,
+              }}
+            />
+          </TouchableOpacity>
+        </ImageBackground>
+        <ImageModal
+          mediaRef={imageUrl}
+          mediaModal={this.state.mediaModal}
+          closeModal={() => this.setState({ mediaModal: false })}
+        />
+      </View>
+      </TouchableWithoutFeedback>
+    );
+  }
+
   /*
    * Render card content based on scenario
    * 1. If Suggestion, render suggestion.suggestionText
@@ -72,6 +165,9 @@ class CommentUserDetail extends Component {
    */
   renderCardContent() {
     const { item } = this.props;
+    if (item.mediaRef) {
+      console.log(`${DEBUG_KEY}: comment with mediaRef: `, item);
+    }
     let text;
     let tags = [];
     if (item.commentType === 'Suggestion' &&
@@ -147,6 +243,7 @@ class CommentUserDetail extends Component {
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
             {this.renderCardContent()}
           </View>
+          {this.renderCommentMedia(item)}
           {this.renderCommentRef(suggestion)}
         </View>
     );
@@ -280,7 +377,12 @@ const styles = {
     alignItems: 'center',
     borderRadius: (ImageHeight + 4) / 2,
     alignSelf: 'flex-start'
-  }
+  },
+  mediaStyle: {
+    height: width / 2,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
 };
 
 export default connect(

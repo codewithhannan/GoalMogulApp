@@ -2,6 +2,10 @@ export const IPHONE_MODELS_2 = ['iphone 7 plus', 'iphone x', 'iPhone xs', 'iphon
 export const IPHONE_MODELS = ['iphone 7', 'iphone 6', 
     'iphone 5', 'iphone 6 plus', 'iphone 4', 'iphone 5s'];
 
+// Base url for image location. Should concat with the mediaRef or image to form the 
+// full image location
+export const IMAGE_BASE_URL = 'https://s3.us-west-2.amazonaws.com/goalmogul-v1/';
+
 export const SORT_BY_OPTIONS = [
     {
         text: 'Date Created',

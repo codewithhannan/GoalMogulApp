@@ -56,7 +56,8 @@ import {
 } from '../../../styles';
 
 import {
-  IPHONE_MODELS
+  IPHONE_MODELS,
+  IMAGE_BASE_URL
 } from '../../../Utils/Constants';
 import { getUserData } from '../../../redux/modules/User/Selector';
 
@@ -200,7 +201,7 @@ class SearchBarHeader extends Component {
 
     );
     if (image) {
-      image = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+      image = `${IMAGE_BASE_URL}${image}`;
       profileImage = (
         <DelayedButton
           activeOpacity={0.85}

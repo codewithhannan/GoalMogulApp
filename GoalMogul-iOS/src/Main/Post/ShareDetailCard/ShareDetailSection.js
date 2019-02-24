@@ -79,6 +79,10 @@ import RichText from '../../Common/Text/RichText';
 import { imagePreviewContainerStyle, APP_BLUE } from '../../../styles';
 
 // Constants
+import {
+  IMAGE_BASE_URL
+} from '../../../Utils/Constants';
+
 const DEBUG_KEY = '[ UI ShareDetailCard.ShareDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
@@ -246,7 +250,7 @@ class ShareDetailSection extends Component {
     if (!url) {
       return '';
     }
-    const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${url}`;
+    const imageUrl = `${IMAGE_BASE_URL}${url}`;
       return (
         <View style={{ marginTop: 10 }}>
           <ImageBackground

@@ -58,11 +58,16 @@ import {
   PROFILE_CLOSE_CREATE_OVERLAY
 } from '../reducers/Profile';
 
+// Constants
+import {
+  IMAGE_BASE_URL
+} from '../Utils/Constants';
+
 const DEBUG_KEY = '[ Action Profile ]';
 
 const prefetchImage = (imageUrl) => {
   if (imageUrl) {
-    const fullImageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
+    const fullImageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
     Image.prefetch(fullImageUrl);
   }
 };

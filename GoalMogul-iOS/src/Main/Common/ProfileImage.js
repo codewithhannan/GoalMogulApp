@@ -15,6 +15,11 @@ import {
   openProfile
 } from '../../actions';
 
+// Constants
+import {
+  IMAGE_BASE_URL
+} from '../../Utils/Constants';
+
 const styles = {
   imageContainerStyle: {
 
@@ -73,7 +78,7 @@ class ProfileImage extends React.PureComponent {
       </TouchableWithoutFeedback>
     );
     if (imageUrl) {
-      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
+      imageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
       profileImage = (
         <TouchableWithoutFeedback onPress={this.handleProfileImageOnPress}>
           <View
