@@ -22,6 +22,10 @@ import RefPreview from '../Common/RefPreview';
 import { imagePreviewContainerStyle } from '../../styles';
 
 // Constants
+import {
+  IMAGE_BASE_URL
+} from '../../Utils/Constants';
+
 const DEBUG_KEY = '[ UI ActivityCard.ActivityBody ]';
 const { width } = Dimensions.get('window');
 
@@ -56,7 +60,7 @@ class ActivityBody extends React.Component {
     if (!url) {
       return '';
     }
-    const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${url}`;
+    const imageUrl = `${IMAGE_BASE_URL}${url}`;
       return (
         <TouchableWithoutFeedback
           onPress={() => this.setState({ mediaModal: true })}

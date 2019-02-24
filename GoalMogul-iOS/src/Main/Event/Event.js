@@ -19,7 +19,7 @@ import { Actions } from 'react-native-router-flux';
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import About from './About';
-import StackedAvatars, { StackedAvatarsV2 } from '../Common/StackedAvatars';
+import { StackedAvatarsV2 } from '../Common/StackedAvatars';
 import Dot from '../Common/Dot';
 import MemberListCard from '../Tribe/MemberListCard';
 import ParticipantFilterBar from './ParticipantFilterBar';
@@ -60,6 +60,11 @@ import {
   getUserStatus,
   participantSelector
 } from '../../redux/modules/event/EventSelector';
+
+// Constants
+import {
+  IMAGE_BASE_URL
+} from '../../Utils/Constants';
 
 
 const DEBUG_KEY = '[ UI Event ]';
@@ -242,7 +247,7 @@ class Event extends Component {
     let imageUrl;
     let eventImage = (<Image source={TestEventImage} style={styles.coverImageStyle} />);
     if (picture) {
-      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
+      imageUrl = `${IMAGE_BASE_URL}${picture}`;
       eventImage = (
         <Image
           onLoadStart={() => this.setState({ imageLoading: true })}
