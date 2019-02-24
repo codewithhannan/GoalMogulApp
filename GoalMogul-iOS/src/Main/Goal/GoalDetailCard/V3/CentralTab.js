@@ -10,6 +10,7 @@ import {
   Animated
 } from 'react-native';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 // Components
 import EmptyResult from '../../../Common/Text/EmptyResult';
@@ -62,15 +63,22 @@ class CentralTab extends React.Component<{}> {
     const { goalDetail, pageId, goalId } = this.props;
     if (!goalDetail) return '';
 
-    const newCommentParams = {
+    let newCommentParams = {
       commentDetail: {
         parentType: 'Goal',
         parentRef: goalDetail._id, // Goal ref
-        commentType: 'Suggestion'
+        commentType: 'Suggestion',
       },
       suggestionForRef: props.item._id, // Need or Step ref
       suggestionFor: props.item.type === 'need' ? 'Need' : 'Step'
     };
+
+    if (props.item.type === 'need') {
+      newCommentParams = _.set(newCommentParams, 'commentDetail.needRef', props.item._id);
+    }
+    if (props.item.type === 'step') {
+      newCommentParams = _.set(newCommentParams, 'commentDetail.stepRef', props.item._id);
+    }
 
     return (
       <StepAndNeedCardV3

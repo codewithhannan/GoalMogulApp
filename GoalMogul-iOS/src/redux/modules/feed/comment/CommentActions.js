@@ -211,6 +211,7 @@ export const createCommentForSuggestion = ({
     }
   });
 
+  // We don't pass in suggestionType because we want user to choose
   dispatch({
     type: COMMENT_NEW_SUGGESTION_CREATE,
     payload: {

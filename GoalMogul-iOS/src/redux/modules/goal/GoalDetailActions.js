@@ -104,8 +104,8 @@ export const refreshGoalDetailById = (goalId, pageId) => (dispatch, getState) =>
     .catch((err) => {
       onError(err);
     });
-    
-    refreshComments('Goal', goalId, tab, pageId)(dispatch, getState);
+
+  refreshComments('Goal', goalId, tab, pageId)(dispatch, getState);
 };
 
 export const goalDetailSwitchTabV2ByKey = (key, focusRef, focusType, goalId, pageId) => 

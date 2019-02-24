@@ -2,7 +2,8 @@
 import _ from 'lodash';
 import {
   GOAL_DETAIL_OPEN,
-  GOAL_DETAIL_CLOSE
+  GOAL_DETAIL_CLOSE,
+  GOAL_DETAIL_SWITCH_TAB_V2
 } from '../../../../reducers/GoalDetailReducers';
 
 import {
@@ -227,7 +228,9 @@ export default (state = INITIAL_STATE, action) => {
         pageId,
         suggestionFor,
         suggestionForRef,
-        suggestionType
+        suggestionType,
+        needRef, // Added to differentiate if this is a comment for a need
+        stepRef // Added to differentiate if this is a comment for a need
       } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
@@ -243,6 +246,14 @@ export default (state = INITIAL_STATE, action) => {
       newState = setState(newState, `${path}.commentType`, commentType);
       newState = setState(newState, `${path}.replyToRef`, replyToRef);
       newState = setState(newState, `${path}.owner`, owner);
+
+      if (needRef) {
+        newState = setState(newState, `${path}.needRef`, needRef);
+      }
+
+      if (stepRef) {
+        newState = setState(newState, `${path}.stepRef`, stepRef);
+      }
 
       // console.log(`${DEBUG_KEY}: new state for newcomment: `, newState);
       return newState;
@@ -423,6 +434,42 @@ export default (state = INITIAL_STATE, action) => {
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       return _.set(newState, `${path}.mediaPresignedUrl`, objectKey);
+    }
+
+    /**
+     * User switches tab from focus to central
+     */
+    case GOAL_DETAIL_SWITCH_TAB_V2: {
+      let newState = _.cloneDeep(state);
+      const { 
+        tab,
+        key,
+        focusRef,
+        focusType,
+        goalId, 
+        pageId 
+      } = action.payload;
+      
+      // Currently we don't consider if user goes from central to focus
+      if (key !== 'centralTab') {
+        return newState;
+      }
+
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      let commentToUpdate = _.get(newState, `${path}`);
+
+      // We need to remove any stepRef and needRef from the comment object because 
+      // user already exit that context
+      commentToUpdate = _.omit(commentToUpdate, 'stepRef');
+      commentToUpdate = _.omit(commentToUpdate, 'needRef');
+
+      // Reset the commentType to comment
+      commentToUpdate = _.set(commentToUpdate, 'commentType', 'Comment');
+
+      // Update the state to use the new comment
+      newState = _.set(newState, `${path}`, commentToUpdate);
+      return newState;
     }
 
     default: return { ...state };

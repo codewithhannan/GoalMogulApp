@@ -36,20 +36,21 @@ import {
   createCommentFromSuggestion,
   createCommentForSuggestion,
   resetCommentType,
-  updateNewComment
+  updateNewComment,
+  createSuggestion
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 // selector
 import {
-  getGoalStepsAndNeeds,
-  getGoalDetailByTab,
-  makeGetGoalDetailById,
+  // getGoalStepsAndNeeds,
+  // getGoalDetailByTab,
+  // makeGetGoalDetailById,
   makeGetGoalPageDetailByPageId,
   makeGetGoalStepsAndNeedsV2
 } from '../../../redux/modules/goal/selector';
 
 import {
-  getCommentByTab,
+  // getCommentByTab,
   getNewCommentByTab,
   makeGetCommentByEntityId
 } from '../../../redux/modules/feed/comment/CommentSelector';
@@ -72,7 +73,7 @@ import allComments from '../../../asset/utils/allComments.png';
 // Styles
 import {
   BACKGROUND_COLOR,
-  APP_BLUE
+  // APP_BLUE
 } from '../../../styles';
 
 const initialLayout = {
@@ -84,7 +85,7 @@ const HEADER_HEIGHT = 240; // Need to be calculated in the state later based on 
 const COLLAPSED_HEIGHT = 30 + Constants.statusBarHeight;
 const DEBUG_KEY = '[ UI GoalDetailCardV3 ]';
 const TABBAR_HEIGHT = 48.5;
-const COMMENTBOX_HEIGHT = 43;
+// const COMMENTBOX_HEIGHT = 43;
 const TOTAL_HEIGHT = TABBAR_HEIGHT;
 
 class GoalDetailCardV3 extends Component {
@@ -118,8 +119,8 @@ class GoalDetailCardV3 extends Component {
     const { initial, goalDetail, goalId, pageId } = this.props;
     console.log(`${DEBUG_KEY}: did mount with goalId: ${goalId}, pageId: ${pageId}`);
     if (initial && !_.isEmpty(initial)) {
-      const { focusType, focusRef } = initial;
-      const newCommentParams = {
+      const { focusType, focusRef, initialShowSuggestionModal } = initial;
+      let newCommentParams = {
         commentDetail: {
           parentType: 'Goal',
           parentRef: goalDetail._id, // Goal ref
@@ -128,8 +129,23 @@ class GoalDetailCardV3 extends Component {
         suggestionForRef: focusRef, // Need or Step ref
         suggestionFor: focusType === 'need' ? 'Need' : 'Step'
       };
+
+      // Add needRef and stepRef for item
+      if (focusType === 'need') {
+        newCommentParams = _.set(newCommentParams, 'commentDetail.needRef', focusRef);
+      }
+      if (focusType === 'step') {
+        newCommentParams = _.set(newCommentParams, 'commentDetail.stepRef', focusRef);
+      }
       this.props.goalDetailSwitchTabV2ByKey('focusTab', focusRef, focusType, goalId, pageId);
       this.props.createCommentForSuggestion(newCommentParams);
+      if (initialShowSuggestionModal) {
+        // Show suggestion modal if initialShowSuggestionModal is true
+        // Current source is NotificationNeedCard on suggestion pressed
+        setTimeout(() => {
+          this.props.createSuggestion(goalId, pageId);
+        }, 500);
+      }
       this.handleOnCommentSubmitEditing = this.handleOnCommentSubmitEditing.bind(this);
     }
   }
@@ -259,6 +275,7 @@ class GoalDetailCardV3 extends Component {
     // TODO: change to v2
     const { navigationState, pageId, goalId } = this.props;
     if (navigationState.routes[index].key === 'centralTab') {
+      // Remove suggestion for the previous focused item
       this.props.removeSuggestion(pageId);
       this.props.goalDetailSwitchTabV2ByKey('centralTab', undefined, undefined, goalId, pageId);
       Animated.timing(this.state.scroll, {
@@ -491,7 +508,7 @@ class GoalDetailCardV3 extends Component {
           {this.renderCommentBox(focusType, pageId)}
           <SuggestionModal
             visible={this.props.showSuggestionModal}
-            onCancel={() => this.props.cancelSuggestion()}
+            onCancel={() => this.props.cancelSuggestion(pageId)}
             onAttach={() => {
               this.props.attachSuggestion(goalDetail, focusType, focusRef, pageId);
             }}
@@ -646,6 +663,7 @@ export default connect(
     createCommentFromSuggestion,
     resetCommentType,
     updateNewComment,
-    createCommentForSuggestion
+    createCommentForSuggestion,
+    createSuggestion
   }
 )(GoalDetailCardV3);
