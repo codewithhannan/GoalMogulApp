@@ -13,7 +13,6 @@ import ProfileImage from '../../../Common/ProfileImage';
 import RichText from '../../../Common/Text/RichText';
 
 // Assets
-import badge from '../../../../asset/utils/badge.png';
 import stepIcon from '../../../../asset/utils/steps.png'
 import needIcon from '../../../../asset/utils/help.png';
 import eventIcon from '../../../../asset/suggestion/event.png';
@@ -79,10 +78,12 @@ class CommentRef extends React.PureComponent {
       // goalRef,
       userRef,
     } = item;
+    // console.log(`${DEBUG_KEY}: handle ref on press for item: `, item);
     if ((suggestionType === 'User' || suggestionType === 'Friend') && userRef) {
       return this.props.openProfile(userRef._id);
     }
     if (suggestionType === 'Tribe' && tribeRef) {
+      // console.log(`${DEBUG_KEY}: open my tribe detail`)
       return this.props.myTribeDetailOpenWithId(tribeRef._id);
     }
     if (suggestionType === 'Event' && eventRef) {

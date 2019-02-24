@@ -450,7 +450,7 @@ const commentAdapter = (state, pageId, tab) => {
 
   const contentTagsToUser = clearTags(contentText, {}, contentTags);
 
-  const commentToReturn = {
+  let commentToReturn = {
     contentText,
     contentTags: contentTagsToUser.map((t) => {
       const { user, startIndex, endIndex } = t;
@@ -465,6 +465,9 @@ const commentAdapter = (state, pageId, tab) => {
     suggestion: suggestionAdapter(suggestion)
   };
   // console.log(`${DEBUG_KEY}: adapted comment is: `, commentToReturn.suggestion);
+  if (replyToRef === undefined) {
+    commentToReturn = _.omit(commentToReturn, 'replyToRef');
+  }
 
   if (_.isEmpty(suggestion)) {
     delete commentToReturn.suggestion;

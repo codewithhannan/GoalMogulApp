@@ -240,10 +240,10 @@ class RouterComponent extends Component {
                       <Scene key="myEventTab" component={MyEventTab} />
                       <Scene key="myEventDetail" component={MyEvent} />
                       
-                      <Stack key="myTribeTabRoot" hideNavBar>
-                        <Scene key="myTribeTab" component={MyTribeTab} initial />
-                        <Scene key="myTribeDetail" component={MyTribe} />
-                      </Stack>
+                      
+                      <Scene key="myTribeTab" component={MyTribeTab} />
+                      <Scene key="myTribeDetail" component={MyTribe} />
+                      
                       
                       <Scene key="goal" component={GoalDetailCard} />
                       <Scene key="post" component={PostDetailCard} />
