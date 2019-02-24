@@ -342,6 +342,12 @@ export default (state = INITIAL_STATE, action) => {
         );
         tmpSuggestion = _.set(tmpSuggestion, 'suggestionForRef', focusRef);
       }
+
+      if (tmpSuggestion.suggestionType === 'Custom' && 
+          tmpSuggestion.suggestionLink && 
+          !tmpSuggestion.suggestionText) {
+            tmpSuggestion = _.set(tmpSuggestion, 'suggestionText', 'Suggestion');
+      }
       newState = _.set(newState, `${path}.suggestion`, tmpSuggestion);
       newState = _.set(newState, `${path}.showAttachedSuggestion`, true);
       // Close suggestion modal

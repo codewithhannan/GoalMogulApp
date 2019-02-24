@@ -7,6 +7,7 @@ import {
   Keyboard
 } from 'react-native';
 import _ from 'lodash';
+import validator from 'validator';
 import {
   COMMENT_LOAD,
   COMMENT_REFRESH_DONE,
@@ -513,7 +514,8 @@ const suggestionAdapter = (suggestion) => {
     },
     Custom: {
       suggestionLink,
-      suggestionText: suggestionText || JSON.stringify({})
+      suggestionText: suggestionText === '' || suggestionText === undefined 
+        ? 'Suggestion' : suggestionText
     },
   })({})(suggestionType);
 
@@ -656,7 +658,13 @@ focusRef, pageId) => (dispatch, getState) => {
 
   // If nothing is selected, then we show an error
   if (!suggestionText && !suggestionLink && !selectedItem) {
-    return Alert.alert('Error', 'You need to suggest something.');
+    return Alert.alert('Error', 'Make sure you suggest something to your friend');
+  }
+
+  const isUrl = validator.isURL(suggestionLink);
+  console.log(`${DEBUG_KEY}: isURL: `, isUrl);
+  if (!selectedItem && suggestionLink && !isUrl) {
+    return Alert.alert('Invalid link', 'Make sure you have the correct format for URL');
   }
 
   dispatch({
