@@ -164,7 +164,7 @@ class ChildCommentCard extends Component {
       parentCommentId,
       commentDetail
     } = this.props;
-    const { childComments, maybeLikeRef, _id } = item;
+    const { childComments, maybeLikeRef, _id, parentRef } = item;
     const commentCounts = childComments && childComments.length > 0
       ? childComments.length
       : undefined;
@@ -186,9 +186,9 @@ class ChildCommentCard extends Component {
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks like icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
-              return this.props.unLikeGoal('comment', _id, maybeLikeRef);
+              return this.props.unLikeGoal('comment', _id, maybeLikeRef, this.props.pageId, parentRef);
             }
-            this.props.likeGoal('comment', _id);
+            this.props.likeGoal('comment', _id, this.props.pageId, parentRef);
           }}
         />
         <ActionButton

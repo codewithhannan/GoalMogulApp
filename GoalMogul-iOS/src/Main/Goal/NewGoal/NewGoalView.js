@@ -632,33 +632,35 @@ class NewGoalView extends Component {
   // Renderer for timeline
   renderTimeline = () => {
     const titleText = <Text style={styles.titleTextStyle}>Timeline</Text>;
-    if (!this.props.hasTimeline) {
-      return (
-        <View style={{ ...styles.sectionMargin }}>
-          {titleText}
-          <TouchableOpacity 
-            activeOpacity={0.85}
-            style={{
-              height: 40,
-              width: 90,
-              backgroundColor: '#fafafa',
-              borderRadius: 4,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: 8,
-              flexDirection: 'row',
-              padding: 10
-            }}
-            onPress={() => this.props.change('hasTimeline', true)}
-          >
-            <Image source={plus} style={{ height: 11, width: 11 }} />
-            <Text style={{ fontSize: 14, fontWeight: '600', marginLeft: 4 }}>
-              Timeline
-            </Text>
-          </TouchableOpacity>
-        </View>
-      );
-    }
+    // if (!this.props.hasTimeline) {
+    //   return (
+    //     <View style={{ ...styles.sectionMargin }}>
+    //       {titleText}
+    //       <TouchableOpacity 
+    //         activeOpacity={0.85}
+    //         style={{
+    //           height: 40,
+    //           width: 90,
+    //           backgroundColor: '#fafafa',
+    //           borderRadius: 4,
+    //           alignItems: 'center',
+    //           justifyContent: 'center',
+    //           marginTop: 8,
+    //           flexDirection: 'row',
+    //           padding: 10
+    //         }}
+    //         onPress={() => this.props.change('hasTimeline', true)}
+    //       >
+    //         <Image source={plus} style={{ height: 11, width: 11 }} />
+    //         <Text style={{ fontSize: 14, fontWeight: '600', marginLeft: 4 }}>
+    //           Timeline
+    //         </Text>
+    //       </TouchableOpacity>
+    //     </View>
+    //   );
+    // }
+    if (this.props.startTime === undefined) return '';
+
     const newPicker = true;
     const startDatePicker = newPicker ?
       (
@@ -667,7 +669,7 @@ class NewGoalView extends Component {
           onConfirm={(date) => {
             if (validateTime(date, this.props.endTime.date)) {
               this.props.change('startTime', { date, picker: false });
-              return
+              return;
             }
             alert('Start time should not be later than start time');
           }}
@@ -718,7 +720,7 @@ class NewGoalView extends Component {
             onConfirm={(date) => {
               if (validateTime(this.props.startTime.date, date)) {
                 this.props.change('endTime', { date, picker: false });
-                return
+                return;
               }
               alert('End time should not be early than start time');
             }}

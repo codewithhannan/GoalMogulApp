@@ -59,7 +59,7 @@ class NeedStepSuggestion extends React.Component {
         {titleText}
         <TextInput
           placeholder={placeholderText}
-          onChangeText={(val) => this.props.onSuggestionTextChange(val)}
+          onChangeText={(val) => this.props.onSuggestionTextChange(val, this.props.pageId)}
           style={styles.inputStyle}
           maxHeight={100}
           keyboardType={'default'}

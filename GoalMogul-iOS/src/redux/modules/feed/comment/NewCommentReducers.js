@@ -363,12 +363,15 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case COMMENT_NEW_SUGGESTION_OPEN_MODAL: {
-      const newState = _.cloneDeep(state);
+      let newState = _.cloneDeep(state);
+      // console.log(`${DEBUG_KEY}: old state is: `, newState);
       const { tab, pageId } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
 
-      return _.set(newState, `${path}.showSuggestionModal`, true);
+      newState = _.set(newState, `${path}.showSuggestionModal`, true);
+      // console.log(`${DEBUG_KEY}: new state is: `, newState);
+      return newState;
     }
 
     // Update suggestion text

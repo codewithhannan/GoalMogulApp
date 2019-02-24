@@ -94,6 +94,8 @@ class FocusTab extends React.PureComponent {
         scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
         onCommentClicked={this.props.handleReplyTo}
         reportType='detail'
+        pageId={this.props.pageId}
+        entityId={this.props.goalId}
       />
     );
   }

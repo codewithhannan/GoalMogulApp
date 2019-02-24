@@ -49,6 +49,10 @@ import {
   SUGGESTION_SEARCH_CLEAR_STATE
 } from './SuggestionSearchReducers';
 
+import {
+  getGoal
+} from '../../goal/selector';
+
 import { api as API } from '../../../middleware/api';
 import { queryBuilder, switchCase, clearTags } from '../../../middleware/utils';
 import ImageUtils from '../../../../Utils/ImageUtils';
@@ -526,18 +530,20 @@ const suggestionAdapter = (suggestion) => {
 };
 
 /* Actions for suggestion modal */
-export const openSuggestionModal = () => (dispatch, getState) => {
+export const openSuggestionModal = (pageId) => (dispatch, getState) => {
+  console.log(`${DEBUG_KEY}: [ openSuggestionModal ]`);
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_SUGGESTION_OPEN_MODAL,
     payload: {
-      tab
+      tab,
+      pageId
     }
   });
 };
 
 // When user clicks on the suggestion icon on the comment box
-export const createSuggestion = (pageId) => (dispatch, getState) => {
+export const createSuggestion = (goalId, pageId) => (dispatch, getState) => {
   //check if suggestionFor and suggestionRef have assignment,
   //If not then we assign the current goal ref and 'Goal'
   const { tab } = getState().navigation;
@@ -545,7 +551,13 @@ export const createSuggestion = (pageId) => (dispatch, getState) => {
   const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
 
   const { suggestion, tmpSuggestion } = _.get(getState().newComment, `${path}`);
-  const { _id } = getState().goalDetail;
+  const goal = getGoal(getState(), goalId);
+  // const { _id } = getState().goalDetail;
+  if (!goal || _.isEmpty(goal)) {
+    console.warn(`${DEBUG_KEY}: fetch to get goal for creating suggestion: ${goalId}`);
+    return;
+  }
+  const { _id } = goal;
   // Already have a suggestion. Open the current one
   if (suggestion.suggestionFor &&
       suggestion.suggestionForRef &&
@@ -569,7 +581,7 @@ export const createSuggestion = (pageId) => (dispatch, getState) => {
     });
   }
 
-  openSuggestionModal()(dispatch, getState);
+  openSuggestionModal(pageId)(dispatch, getState);
 };
 
 // Cancel creating a suggestion

@@ -40,7 +40,7 @@ export const getLike = (parentId, parentType) => (dispatch, getState) => {
  * @params id: goal/post/comment id
  * @params pageId: if post / comment, we need to provide pageId
  */
-export const likeGoal = (type, id, pageId) => (dispatch, getState) => {
+export const likeGoal = (type, id, pageId, parentId) => (dispatch, getState) => {
   const { token } = getState().user;
   const { tab } = getState().navigation;
   const tmp = ((request) => {
@@ -103,27 +103,30 @@ export const likeGoal = (type, id, pageId) => (dispatch, getState) => {
           action: (likeId) => dispatch({
             type: LIKE_COMMENT,
             payload: {
-              id,
+              id, // commentId
               likeId,
               tab,
               type,
-              pageId
+              pageId,
+              parentId // comment parentRef
             }
           }),
           undoAction: () => dispatch({
             type: LIKE_COMMENT,
             payload: {
-              id,
+              id, // commentId
               likeId: undefined,
               tab,
               type,
               pageId,
-              undo: true
+              undo: true,
+              parentId // comment parentRef
             }
           })
         };
     }
   })(type);
+  console.log(`${DEBUG_KEY}: tmp.requestBody: `, tmp.requestBody);
   tmp.action('testId');
 
   API
@@ -144,10 +147,12 @@ export const likeGoal = (type, id, pageId) => (dispatch, getState) => {
 
 /**
  * action to unlike a goal / post / comment
- * @params id: LikeId
+ * @params id: entityId
+ * @params parentId: for comment usage. We need parentId to identify in Comments reducer
  */
-export const unLikeGoal = (type, id, likeId, pageId) => (dispatch, getState) => {
-  console.log('[ Action Like ]: id passed in is: ', id);
+export const unLikeGoal = (type, id, likeId, pageId, parentId) => (dispatch, getState) => {
+  console.log(`[ Action Unlike ]: type: ${type} with id: ${id}. ` + 
+    `Like id: ${likeId}, pageId: ${pageId}, parentId: ${parentId}`);
   const { token } = getState().user;
   const { tab } = getState().navigation;
   const tmp = ((request) => {
@@ -210,13 +215,15 @@ export const unLikeGoal = (type, id, likeId, pageId) => (dispatch, getState) => 
               likeId: unlikeId,
               tab,
               pageId,
-              type
+              type,
+              parentId, // comment parentId
             }
           }),
           undoAction: () => dispatch({
             type: UNLIKE_COMMENT,
             payload: {
-              id,
+              id, // commentId
+              parentId, // comment parentId
               likeId,
               tab,
               pageId,

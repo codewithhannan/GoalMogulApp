@@ -154,7 +154,7 @@ export default (state = INITIAL_STATE, action) => {
     case UNLIKE_COMMENT:
     case LIKE_COMMENT: {
       const { id, likeId, tab, pageId } = action.payload;
-      // console.log(`${action.type} comment, id is: ${id}, likeId is: ${likeId}`);
+      // console.log(`${DEBUG_KEY}: [ ${action.type} ]: payload is:`, action.payload);
       const page = pageId ? `${pageId}` : 'default';
 
       let newState = _.cloneDeep(state);

@@ -269,7 +269,7 @@ export default (state = INITIAL_STATE, action) => {
         case PROFILE_FETCHING_SUCCESS: {
             let newState = _.cloneDeep(state);
             const { user, pageId } = action.payload;
-            console.log(`${DEBUG_KEY}: payload is: `, action.payload);
+            // console.log(`${DEBUG_KEY}: payload is: `, action.payload);
 
             const shouldUpdate = sanityCheckPageId(newState, user._id, pageId, action.type);
             if (!shouldUpdate && pageId !== 'HOME' && pageId !== 'LOGIN') return newState;
@@ -283,7 +283,6 @@ export default (state = INITIAL_STATE, action) => {
             }
             // Update the user
             newState = _.set(newState, path, { ...userToUpdate, ...user });
-            console.log(`${DEBUG_KEY}: newState is: `, newState);
 
             // Set loading for pageId to false
             if (pageId) {
