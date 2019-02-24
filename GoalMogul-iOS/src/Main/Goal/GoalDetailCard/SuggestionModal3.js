@@ -13,8 +13,6 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  ScrollView,
-  KeyboardAvoidingView,
   Animated
 } from 'react-native';
 import { connect } from 'react-redux';
