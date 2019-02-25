@@ -677,7 +677,7 @@ focusRef, pageId) => (dispatch, getState) => {
     return Alert.alert('Error', 'Make sure you suggest something to your friend');
   }
 
-  const isUrl = validator.isURL(suggestionLink);
+  const isUrl = validator.isURL(suggestionLink, { require_protocol: true });
   console.log(`${DEBUG_KEY}: isURL: `, isUrl);
   if (!selectedItem && suggestionLink && !isUrl) {
     return Alert.alert('Invalid link', 'Make sure you have the correct format for URL');
