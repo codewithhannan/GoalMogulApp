@@ -785,7 +785,7 @@ export const closeCreateOverlay = (userId, pageId) => (dispatch) => {
   });
 };
 
-const switchCaseBannerSource = (points) => {
+export const switchCaseBannerSource = (points) => {
   let source;
   if (!points || points < 49) {
     source = GreenBanner;

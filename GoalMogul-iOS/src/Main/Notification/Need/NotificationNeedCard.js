@@ -20,7 +20,8 @@ import forward from '../../../asset/utils/right_arrow.png';
 
 // Actions
 import {
-  openGoalDetail
+  openGoalDetail,
+  openGoalDetailById
 } from '../../../redux/modules/home/mastermind/actions';
 
 // Constants
@@ -34,7 +35,14 @@ class NotificationCard extends React.Component {
    */
   handleOnSuggestion = (item) => {
     if (item !== null && !_.isEmpty(item) && item.goalRef !== null && !_.isEmpty(item.goalRef)) {
-      return this.props.openGoalDetail(item.goalRef);
+      const initialProps = {
+        focusType: 'need',
+        focusRef: item._id,
+        // commentBox is passed in to GoalDetailCardV3 as initial
+        commentBox: true,
+        initialShowSuggestionModal: true
+      };
+      return this.props.openGoalDetailById(item.goalRef._id, initialProps);
     }
     console.warn(`${DEBUG_KEY}: invalid item: `, item);
   }
@@ -185,6 +193,7 @@ const styles = {
 export default connect(
   null,
   {
-    openGoalDetail
+    openGoalDetail,
+    openGoalDetailById
   }
 )(NotificationCard);

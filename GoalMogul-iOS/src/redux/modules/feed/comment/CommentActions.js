@@ -211,6 +211,7 @@ export const createCommentForSuggestion = ({
     }
   });
 
+  // We don't pass in suggestionType because we want user to choose
   dispatch({
     type: COMMENT_NEW_SUGGESTION_CREATE,
     payload: {
@@ -442,7 +443,9 @@ const commentAdapter = (state, pageId, tab) => {
     commentType,
     replyToRef,
     suggestion,
-    mediaRef
+    mediaRef,
+    needRef,
+    stepRef
   } = newComment;
 
   const tmpCommentType = suggestion && suggestion.suggestionFor && suggestion.suggestionForRef
@@ -472,6 +475,19 @@ const commentAdapter = (state, pageId, tab) => {
 
   if (_.isEmpty(suggestion)) {
     delete commentToReturn.suggestion;
+  }
+
+  if (stepRef) {
+    commentToReturn = _.set(commentToReturn, 'stepRef', stepRef);
+  }
+
+  if (needRef) {
+    commentToReturn = _.set(commentToReturn, 'needRef', needRef);
+  }
+
+  if (commentType === 'Comment') {
+    // This is a comment, remove any suggestion related stuff
+    commentToReturn = _.omit(commentToReturn, 'suggestion');
   }
 
   return commentToReturn;
@@ -661,7 +677,7 @@ focusRef, pageId) => (dispatch, getState) => {
     return Alert.alert('Error', 'Make sure you suggest something to your friend');
   }
 
-  const isUrl = validator.isURL(suggestionLink);
+  const isUrl = validator.isURL(suggestionLink, { require_protocol: true });
   console.log(`${DEBUG_KEY}: isURL: `, isUrl);
   if (!selectedItem && suggestionLink && !isUrl) {
     return Alert.alert('Invalid link', 'Make sure you have the correct format for URL');
