@@ -126,6 +126,11 @@ class NotificationCard extends React.PureComponent {
   render() {
     const { item } = this.props;
     if (!item) return null;
+    if (!item.parsedNoti) return null;
+    if (item.parsedNoti.error) {
+      console.warn(`${DEBUG_KEY}: invalid notification with error: `, item.parsedNoti.error);
+      return null;
+    }
     // If read, backgroundColor is: '#eef8fb'
     const read = this.props.read;
     const cardContainerStyle = read

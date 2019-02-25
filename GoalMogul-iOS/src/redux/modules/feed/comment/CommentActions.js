@@ -666,18 +666,23 @@ export const openCurrentSuggestion = (pageId) => (dispatch, getState) => {
 export const attachSuggestion = (goalDetail, focusType,
 focusRef, pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
+  console.log(`${DEBUG_KEY}: i am here at attachSuggestion`);
   const page = pageId ? `${pageId}` : 'default';
   const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
   const { tmpSuggestion } = _.get(getState().newComment, `${path}`);
 
-  const { suggestionText, suggestionLink, selectedItem } = tmpSuggestion;
+  const { suggestionText, suggestionLink, selectedItem, suggestionType } = tmpSuggestion;
 
   // If nothing is selected, then we show an error
   if (!suggestionText && !suggestionLink && !selectedItem) {
     return Alert.alert('Error', 'Make sure you suggest something to your friend');
   }
 
-  const isUrl = validator.isURL(suggestionLink, { require_protocol: true });
+  let isUrl = true;
+  if (suggestionType === 'Custom') {
+    isUrl = validator.isURL(suggestionLink, { require_protocol: true });
+  }
+
   console.log(`${DEBUG_KEY}: isURL: `, isUrl);
   if (!selectedItem && suggestionLink && !isUrl) {
     return Alert.alert('Invalid link', 'Make sure you have the correct format for URL');
