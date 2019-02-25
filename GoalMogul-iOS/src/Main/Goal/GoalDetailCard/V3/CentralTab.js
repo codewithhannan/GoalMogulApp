@@ -45,7 +45,7 @@ import { BACKGROUND_COLOR } from '../../../../styles';
 const DEBUG_KEY = '[ UI CentralTab ]';
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
-class CentralTab extends React.Component<{}> {
+class CentralTab extends React.PureComponent<{}> {
 
   // Refresh goal content and comment
   handleRefresh = () => {
