@@ -37,7 +37,7 @@ const DEBUG_KEY = '[ UI ActivityHeader ]';
 
 class ActivityHeader extends Component {
   // user basic information
-  renderUserDetail({ postRef, goalRef, actedUponEntityType, actor, actedWith }) {
+  renderUserDetail({ postRef, goalRef, actedUponEntityType, actor, actedWith, created }) {
     const item = actedUponEntityType === 'Post' ? postRef : goalRef;
 
     // If no ref is passed in, then render nothing
@@ -48,7 +48,7 @@ class ActivityHeader extends Component {
     // console.log(`${DEBUG_KEY}: actedUponEntityType: ${actedUponEntityType}, 
     //   userToRender: `, userToRender);
 
-    const { _id, created, category, maybeIsSubscribed } = item;
+    const { _id, category, maybeIsSubscribed } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
 
@@ -138,11 +138,11 @@ class ActivityHeader extends Component {
     const { item } = this.props;
     if (!item || _.isEmpty(item)) return '';
 
-    const { postRef, goalRef, actedUponEntityType, actor, actedWith } = item;
+    const { postRef, goalRef, actedUponEntityType, actor, actedWith, created } = item;
 
     return (
       <View>
-        {this.renderUserDetail({ postRef, goalRef, actedUponEntityType, actor, actedWith })}
+        {this.renderUserDetail({ postRef, goalRef, actedUponEntityType, actor, actedWith, created })}
       </View>
     );
   }

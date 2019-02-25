@@ -433,10 +433,17 @@ class CommentBoxV2 extends Component {
   }
 
   renderPost(newComment) {
-    const { uploading, contentText, tmpSuggestion, suggestion } = newComment;
-    const disable = uploading ||
-      ((contentText === undefined || contentText === '' || contentText.trim() === '')
-      && _.isEmpty(tmpSuggestion) && _.isEmpty(suggestion));
+    const { uploading, contentText, tmpSuggestion, suggestion, commentType } = newComment;
+
+    const isInValidComment = commentType === 'Comment' && 
+      (contentText === undefined || contentText === '' || contentText.trim() === '');
+
+    const isValidSuggestion = validSuggestion(newComment);
+
+    // const disable = uploading ||
+    //   ((contentText === undefined || contentText === '' || contentText.trim() === '')
+    //   && _.isEmpty(tmpSuggestion) && _.isEmpty(suggestion));
+    const disable = uploading || isInValidComment || !isValidSuggestion;
 
     const color = disable ? '#cbd6d8' : '#17B3EC';
     return (
@@ -585,6 +592,47 @@ class CommentBoxV2 extends Component {
     );
   }
 }
+
+const validSuggestion = (newComment) => {
+  const { commentType, suggestion } = newComment;
+  if (commentType === 'Comment') return true;
+  if (isInvalidObject(suggestion)) return false;
+  const { 
+    suggestionFor, 
+    suggestionForRef, 
+    suggestionType, 
+    suggestionText, 
+    suggestionLink,
+    selectedItem
+  } = suggestion;
+  // console.log(`${DEBUG_KEY}: suggestion is:`, suggestion);
+  if (isInvalidObject(suggestionFor) || isInvalidObject(suggestionForRef) || isInvalidObject(suggestionType)) {
+    return false;
+  }
+
+  if (suggestionType !== 'Custom' && isInvalidObject(selectedItem)) {
+    return false;
+  }
+
+  if (suggestionType === 'Custom') {
+    if (isInvalidObject(suggestionText) && isInvalidObject(suggestionLink)) {
+      return false;
+    }
+  }
+  return true;
+};
+
+
+const isInvalidObject = (o) => {
+  if (o === null) return true;
+  if (typeof o === 'object') {
+    return _.isEmpty(o) || o === undefined;
+  }
+  if (typeof o === 'string') {
+    return o === '' || o.trim() === '';
+  }
+  return false;
+};
 // onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
 
 const styles = {

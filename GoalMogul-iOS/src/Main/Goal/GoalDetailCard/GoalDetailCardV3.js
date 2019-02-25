@@ -594,7 +594,7 @@ const makeMapStateToProps = () => {
     };
   
     const { focusType, focusRef } = navigationStateV2;
-    const focusedItemCount = getFocusedItemCount(data, focusType, focusRef);
+    const focusedItemCount = getFocusedItemCount(transformedComments, focusType, focusRef);
     const isSelf = userId === (!goal || _.isEmpty(goal) ? '' : goal.owner._id);
   
     return {

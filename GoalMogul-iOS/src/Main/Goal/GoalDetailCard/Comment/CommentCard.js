@@ -20,6 +20,8 @@ import {
   cardBoxBorder
 } from '../../../../styles';
 
+const DEBUG_KEY = '[ UI CommentCard ]';
+
 class CommentCard extends React.Component {
   constructor(props) {
     super(props);
@@ -180,6 +182,7 @@ class CommentCard extends React.Component {
 
   render() {
     const viewOffset = getTotalPrevHeight(this.state) - this.state.keyboardHeight;
+    // console.log(`${DEBUG_KEY} item is: `, this.props.item);
     return (
       <View style={styles.cardContainerStyle}>
         <CommentUserDetail
