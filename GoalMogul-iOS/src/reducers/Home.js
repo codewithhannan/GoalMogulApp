@@ -125,10 +125,10 @@ export default (state = INITIAL_STATE, action) => {
       let sortedData = [];
       if (type === 'mastermind') {
         sortedData = data.sort((a, b) =>
-          new Date(b.feedInfo.publishDate) - new Date(b.feedInfo.publishDate));
+          new Date(b.feedInfo.publishDate) - new Date(a.feedInfo.publishDate));
       } else {
         sortedData = data.sort((a, b) =>
-         new Date(b.created) - new Date(b.created));
+         new Date(b.created) - new Date(a.created));
       }
 
       return _.set(newState, `${type}.data`, sortedData);
@@ -156,10 +156,10 @@ export default (state = INITIAL_STATE, action) => {
       let sortedData = [];
       if (type === 'mastermind') {
         sortedData = newData.sort((a, b) =>
-          new Date(b.feedInfo.publishDate) - new Date(b.feedInfo.publishDate));
+          new Date(b.feedInfo.publishDate) - new Date(a.feedInfo.publishDate));
       } else {
         sortedData = newData.sort((a, b) =>
-         new Date(b.created) - new Date(b.created));
+         new Date(b.created) - new Date(a.created));
       }
 
       return _.set(newState, `${type}.data`, sortedData);
