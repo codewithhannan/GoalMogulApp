@@ -179,16 +179,20 @@ export default (state = INITIAL_STATE, action) => {
       const { tab, pageId } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab || tab === 'homeTab' ? `homeTab.${page}` : `${tab}.${page}`;
-      const parentType = _.get(newState, `${path}.parentType`);
-      const parentRef = _.get(newState, `${path}.parentRef`);
 
-      const newTabState = {
-        ...NEW_COMMENT_INITIAL_STATE,
-        parentType,
-        parentRef
-      };
+      // We need to preserve parentType, parentRef, needRef, stepRef, 
+      const oldComment = _.get(newState, `${path}`);
+      const resetComment = resetNewComment(oldComment);
+      // const parentType = _.get(newState, `${path}.parentType`);
+      // const parentRef = _.get(newState, `${path}.parentRef`);
 
-      return _.set(newState, `${path}`, newTabState);
+      // const newTabState = {
+      //   ...NEW_COMMENT_INITIAL_STATE,
+      //   parentType,
+      //   parentRef
+      // };
+      console.log(`${DEBUG_KEY}: [ COMMENT_NEW_POST_SUCCESS ]: resetComment:`, resetComment);
+      return _.set(newState, `${path}`, resetComment);
     }
 
     // cases related to new comment
@@ -255,7 +259,7 @@ export default (state = INITIAL_STATE, action) => {
         newState = setState(newState, `${path}.stepRef`, stepRef);
       }
 
-      // console.log(`${DEBUG_KEY}: new state for newcomment: `, newState);
+      console.log(`${DEBUG_KEY}: new state for newcomment: `, newState);
       return newState;
     }
 
@@ -307,7 +311,13 @@ export default (state = INITIAL_STATE, action) => {
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       newState = _.set(newState, `${path}.showAttachedSuggestion`, false);
-      newState = _.set(newState, `${path}.tmpSuggestion`, { ...INITIAL_SUGGESETION });
+
+      // Since suggestion is removed, reset commentType to Comment
+      newState = _.set(newState, `${path}.commentType`, 'Comment');
+
+      const oldTmpSuggestion = _.get(newState, `${path}.tmpSuggestion`);
+      const resetTmpSuggestion = resetTmpSuggestionFromState(oldTmpSuggestion);
+      newState = _.set(newState, `${path}.tmpSuggestion`, resetTmpSuggestion);
       return _.set(newState, `${path}.suggestion`, { ...INITIAL_SUGGESETION });
     }
 
@@ -361,6 +371,8 @@ export default (state = INITIAL_STATE, action) => {
       }
       newState = _.set(newState, `${path}.suggestion`, tmpSuggestion);
       newState = _.set(newState, `${path}.showAttachedSuggestion`, true);
+      // Only set the commentType to suggestion if something is attached
+      newState = _.set(newState, `${path}.commentType`, 'Suggestion');
       // Close suggestion modal
       return _.set(newState, `${path}.showSuggestionModal`, false);
     }
@@ -480,6 +492,43 @@ const setState = (newState, path, data) => {
   // If data exists or original field is set, then we set explicitly.
   if (data || _.get(newState, `${path}`)) return _.set(newState, `${path}`, data);
   return newState;
+};
+
+// Reset tmpSuggestion and keep suggestionFor and suggestionForRef after attaching
+const resetTmpSuggestionFromState = (tmpSuggestion) => {
+  const copyTmpSuggestion = _.cloneDeep(tmpSuggestion);
+  let ret = _.cloneDeep(INITIAL_SUGGESETION);
+  if (copyTmpSuggestion.suggestionFor !== undefined) {
+    ret = _.set(ret, 'suggestionFor', copyTmpSuggestion.suggestionFor);
+  }
+
+  if (copyTmpSuggestion.suggestionForRef !== undefined) {
+    ret = _.set(ret, 'suggestionForRef', copyTmpSuggestion.suggestionForRef);
+  }
+  return ret;
+};
+
+// Reset comment object after submission and keep corresponding field after posting
+const resetNewComment = (comment) => {
+  const copyComment = _.cloneDeep(comment);
+  let ret = _.cloneDeep(NEW_COMMENT_INITIAL_STATE);
+  const oldTmpSuggestion = _.get(copyComment, 'tmpSuggestion');
+  const tmpSuggestion = resetTmpSuggestionFromState(oldTmpSuggestion);
+  const oldParentRef = _.get(copyComment, 'parentRef');
+  const oldParentType = _.get(copyComment, 'parentType');
+
+  ret = _.set(ret, 'parentRef', oldParentRef);
+  ret = _.set(ret, 'parentType', oldParentType);
+  ret = _.set(ret, 'tmpSuggestion', tmpSuggestion);
+  if (copyComment.needRef) {
+    ret = _.set(ret, 'needRef', copyComment.needRef);  
+  }
+
+  if (copyComment.stepRef) {
+    ret = _.set(ret, 'stepRef', copyComment.stepRef);  
+  }
+
+  return ret;
 };
 
 /**

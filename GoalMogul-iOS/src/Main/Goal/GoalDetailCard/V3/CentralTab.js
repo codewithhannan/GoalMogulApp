@@ -67,7 +67,7 @@ class CentralTab extends React.Component<{}> {
       commentDetail: {
         parentType: 'Goal',
         parentRef: goalDetail._id, // Goal ref
-        commentType: 'Suggestion',
+        commentType: 'Comment',
       },
       suggestionForRef: props.item._id, // Need or Step ref
       suggestionFor: props.item.type === 'need' ? 'Need' : 'Step'
@@ -88,7 +88,7 @@ class CentralTab extends React.Component<{}> {
         onCardPress={() => {
           // Use passed in function to handle tab switch with animation
           this.props.handleIndexChange(1, props.item.type, props.item._id);
-          this.props.createCommentForSuggestion(newCommentParams);
+          this.props.createCommentForSuggestion(newCommentParams, pageId);
         }}
         isSelf={this.props.isSelf}
         count={props.item.count}

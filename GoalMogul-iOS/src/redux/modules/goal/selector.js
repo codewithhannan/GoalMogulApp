@@ -130,9 +130,15 @@ export const makeGetGoalStepsAndNeedsV2 = () => createSelector(
     if (steps && steps.length !== 0) {
       newSteps = steps.map((step) => {
         const stepComments = comments.transformedComments.filter((c) => {
-          if (c.suggestion &&
-              c.suggestion.suggestionForRef &&
-              c.suggestion.suggestionForRef === step._id) {
+
+          const isSuggestionForStep = (
+            c.suggestion &&
+            c.suggestion.suggestionForRef &&
+            c.suggestion.suggestionForRef === step._id
+          );
+
+          const isCommentForStep = c.stepRef === step._id;
+          if (isCommentForStep || isSuggestionForStep) {
                 return true;
           }
           return false;
@@ -167,9 +173,14 @@ export const makeGetGoalStepsAndNeedsV2 = () => createSelector(
     if (needs && needs.length !== 0) {
       newNeeds = needs.map((need) => {
         const needComments = comments.transformedComments.filter((c) => {
-          if (c.suggestion &&
-              c.suggestion.suggestionForRef &&
-              c.suggestion.suggestionForRef === need._id) {
+          const isSuggestionForNeed = (
+            c.suggestion &&
+            c.suggestion.suggestionForRef &&
+            c.suggestion.suggestionForRef === need._id
+          );
+
+          const isCommentForNeed = c.needRef === need._id;
+          if (isSuggestionForNeed || isCommentForNeed) {
                 return true;
           }
           return false;

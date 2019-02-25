@@ -164,9 +164,17 @@ const makeMapStateToProps = () => {
     if (focusType === 'step' || focusType === 'need') {
       // TODO: grab comments by step, filter by typeRef
       data = data.filter((comment) => {
-        if (comment.suggestion &&
-            comment.suggestion.suggestionForRef &&
-            comment.suggestion.suggestionForRef === focusRef) {
+        const isSuggestionForFocusRef = (
+          comment.suggestion &&
+          comment.suggestion.suggestionForRef &&
+          comment.suggestion.suggestionForRef === focusRef
+        );
+        const isCommentForFocusRef = (
+          _.get(comment, `${focusType}Ref`) === focusRef
+        );
+
+
+        if (isSuggestionForFocusRef || isCommentForFocusRef) {
               return true;
         }
         return false;

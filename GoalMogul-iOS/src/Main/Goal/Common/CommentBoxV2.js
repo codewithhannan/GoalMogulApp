@@ -313,7 +313,7 @@ class CommentBoxV2 extends Component {
   }
 
   focusForReply(type) {
-    console.log(`${DEBUG_KEY}: i am here`);
+    console.log(`${DEBUG_KEY}: focused for replay`);
     this.textInput.focus();
 
     // Only update the defaultValue if comment button is clicked through comment card / child comment card

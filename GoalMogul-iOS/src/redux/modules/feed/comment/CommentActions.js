@@ -443,7 +443,9 @@ const commentAdapter = (state, pageId, tab) => {
     commentType,
     replyToRef,
     suggestion,
-    mediaRef
+    mediaRef,
+    needRef,
+    stepRef
   } = newComment;
 
   const tmpCommentType = suggestion && suggestion.suggestionFor && suggestion.suggestionForRef
@@ -473,6 +475,19 @@ const commentAdapter = (state, pageId, tab) => {
 
   if (_.isEmpty(suggestion)) {
     delete commentToReturn.suggestion;
+  }
+
+  if (stepRef) {
+    commentToReturn = _.set(commentToReturn, 'stepRef', stepRef);
+  }
+
+  if (needRef) {
+    commentToReturn = _.set(commentToReturn, 'needRef', needRef);
+  }
+
+  if (commentType === 'Comment') {
+    // This is a comment, remove any suggestion related stuff
+    commentToReturn = _.omit(commentToReturn, 'suggestion');
   }
 
   return commentToReturn;

@@ -124,7 +124,7 @@ class GoalDetailCardV3 extends Component {
         commentDetail: {
           parentType: 'Goal',
           parentRef: goalDetail._id, // Goal ref
-          commentType: 'Suggestion'
+          commentType: 'Comment'
         },
         suggestionForRef: focusRef, // Need or Step ref
         suggestionFor: focusType === 'need' ? 'Need' : 'Step'
@@ -137,6 +137,7 @@ class GoalDetailCardV3 extends Component {
       if (focusType === 'step') {
         newCommentParams = _.set(newCommentParams, 'commentDetail.stepRef', focusRef);
       }
+
       this.props.goalDetailSwitchTabV2ByKey('focusTab', focusRef, focusType, goalId, pageId);
       this.props.createCommentForSuggestion(newCommentParams);
       if (initialShowSuggestionModal) {
@@ -587,13 +588,13 @@ const makeMapStateToProps = () => {
     const { showingModalInDetail } = state.report;
     const { userId } = state.user;
     const comments = getCommentByEntityId(state, goalId, pageId);
-    const { transformedComments, loading } = comments || {
+    const { data, transformedComments, loading } = comments || {
       transformedComments: [],
       loading: false
     };
   
     const { focusType, focusRef } = navigationStateV2;
-    const focusedItemCount = getFocusedItemCount(transformedComments, focusType, focusRef);
+    const focusedItemCount = getFocusedItemCount(data, focusType, focusRef);
     const isSelf = userId === (!goal || _.isEmpty(goal) ? '' : goal.owner._id);
   
     return {
@@ -618,15 +619,22 @@ const makeMapStateToProps = () => {
 const getFocusedItemCount = (comments, focusType, focusRef) => {
   // Initialize data by all comments
   // console.log(`type is: ${focusType}, ref is: ${focusRef}, count is: ${comments.length}`);
+  const refPath = focusType === 'need' ? 'needRef' : 'stepRef';
   let rawComments = comments;
   let focusedItemCount = 0;
   // console.log(`${DEBUG_KEY}: focusType is: ${focusType}, ref is: ${focusRef}`);
   if (focusType === 'step' || focusType === 'need') {
     // TODO: grab comments by step, filter by typeRef
     rawComments = rawComments.filter((comment) => {
-      if (comment.suggestion &&
-          comment.suggestion.suggestionForRef &&
-          comment.suggestion.suggestionForRef === focusRef) {
+
+      // Check if a comment is a suggestion for a step or a need
+      const isSuggestionForFocusRef = (comment.suggestion &&
+        comment.suggestion.suggestionForRef &&
+        comment.suggestion.suggestionForRef === focusRef);
+      
+      // Check if a comment is a comment for a step or a need
+      const isCommentForFocusRef = (_.get(comment, `${refPath}`) === focusRef); 
+      if (isCommentForFocusRef || isSuggestionForFocusRef) {
             return true;
       }
       return false;
