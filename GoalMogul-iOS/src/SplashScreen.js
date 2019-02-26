@@ -245,7 +245,14 @@ class SplashScreen extends Component {
                 : null
               }
 
-              <RightArrowIcon iconStyle={{ ...styles.iconStyle, color: '#ffffff' }} />
+              <RightArrowIcon 
+                iconStyle={{ 
+                  ...styles.iconStyle, 
+                  tintColor: '#ffffff',
+                  height: 15,
+                  width: 30
+                }} 
+              />
               {/** 
                 <Icon
                 name='ios-arrow-round-forward'
@@ -388,7 +395,7 @@ const styles = {
   },
   iconStyle: {
     alignSelf: 'center',
-    fontSize: 26,
+    // fontSize: 26,
     marginLeft: 5,
     marginTop: 3
   }

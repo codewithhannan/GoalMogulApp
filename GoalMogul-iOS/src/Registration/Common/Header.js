@@ -8,6 +8,7 @@ import HeaderImage from '../../asset/header/header-logo.png';
 import HeaderLogo from '../../asset/header/header-logo-white.png';
 
 import Pagination from './Pagination';
+import { BackIcon } from '../../Utils/Icons';
 
 import { registrationBack, registrationLogin } from '../../actions';
 
@@ -62,12 +63,20 @@ class Header extends Component {
     return (
       <TouchableWithoutFeedback onPress={this.handleBackOnClick.bind(this)}>
         <View style={styles.navBarStyle}>
-          <Icon
+          <BackIcon 
+            iconStyle={{
+              ...styles.iconStyle,
+              tintColor: 'white',
+            }}
+          />
+          {/**
+            <Icon
             type='entypo'
             name='chevron-thin-left'
             containerStyle={styles.iconStyle}
             color='white'
           />
+           */}
         </View>
       </TouchableWithoutFeedback>
     );
@@ -122,11 +131,11 @@ class Header extends Component {
       <View style={headerStyle}>
         <TouchableWithoutFeedback onPress={this.handleLoginBackOnClick.bind(this)}>
           <View style={styles.navBarStyle}>
-            <Icon
-              type='entypo'
-              name='chevron-thin-left'
-              containerStyle={styles.iconStyle}
-              color='white'
+            <BackIcon 
+              iconStyle={{
+                ...styles.iconStyle,
+                tintColor: 'white',
+              }}
             />
           </View>
         </TouchableWithoutFeedback>
@@ -154,7 +163,7 @@ const styles = {
     flexDirection: 'row'
   },
   iconStyle: {
-    justifyContent: 'flex-start'
+    // justifyContent: 'flex-start'
   },
   imageStyle: {
     height: 38,
