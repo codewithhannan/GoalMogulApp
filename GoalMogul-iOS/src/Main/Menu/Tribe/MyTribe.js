@@ -10,7 +10,6 @@ import {
   Platform
  } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
 import R from 'ramda';
 import { Actions } from 'react-native-router-flux';
@@ -26,6 +25,9 @@ import MemberListCard from '../../Tribe/MemberListCard';
 import { MenuFactory } from '../../Common/MenuFactory';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import EmptyResult from '../../Common/Text/EmptyResult';
+import {
+  DotIcon
+} from '../../../Utils/Icons';
 
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
 import { switchCase } from '../../../redux/middleware/utils';
@@ -539,7 +541,10 @@ class MyTribe extends Component {
           <Text style={styles.tribeCountTextStyle}>{count} </Text>
             members
         </Text>
-        <Icon name='dot-single' type='entypo' color="#616161" size={16} />
+        <DotIcon 
+          iconStyle={{ tintColor: '#616161', width: 4, height: 4, marginLeft: 4, marginRight: 4 }}
+        />
+        {/* <Icon name='dot-single' type='entypo' color="#616161" size={16} /> */}
         <Text style={{ ...styles.tribeSizeTextStyle }}>
           Created {date}
         </Text>

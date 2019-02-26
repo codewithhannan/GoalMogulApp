@@ -8,8 +8,6 @@ import {
  } from 'react-native';
 import { connect } from 'react-redux';
 import { TabView, SceneMap } from 'react-native-tab-view';
-import { MenuProvider } from 'react-native-popup-menu';
-import { Icon } from 'react-native-elements';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
@@ -17,6 +15,9 @@ import TabButtonGroup from '../Common/TabButtonGroup';
 import Divider from '../Common/Divider';
 import About from './About';
 import MemberList from './MemberList';
+import {
+  DotIcon
+} from '../../Utils/Icons';
 
 // Asset
 import check from '../../asset/utils/check.png';
@@ -127,7 +128,10 @@ class Tribe2 extends Component {
           <Text style={styles.tribeCountTextStyle}>{count} </Text>
             members
         </Text>
-        <Icon name='dot-single' type='entypo' color="#616161" size={16} />
+        <DotIcon 
+          iconStyle={{ tintColor: '#616161', width: 4, height: 4, marginLeft: 4, marginRight: 4 }}
+        />
+        {/* <Icon name='dot-single' type='entypo' color="#616161" size={16} /> */}
         <Text style={{ ...styles.tribeSizeTextStyle }}>
           Created {date}
         </Text>

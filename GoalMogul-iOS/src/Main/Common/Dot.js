@@ -1,7 +1,6 @@
 import React from 'react';
-import {
-  Icon
-} from 'react-native-elements';
+
+import { DotIcon } from '../../Utils/Icons';
 
 const Dot = (props) => {
   const iconContainerStyle = props.iconContainerStyle ?
@@ -11,17 +10,20 @@ const Dot = (props) => {
   const dotSize = props.dotSize ? props.dotSize : 16;
 
   return (
-    <Icon
+    <DotIcon 
+      iconContainerStyle={{ ...iconContainerStyle }}
+      iconStyle={{ tintColor: color, width: 4, height: 4, marginLeft: 4, marginRight: 4 }}
+    />
+  );
+};
+{/* <Icon
       name='dot-single'
       type='entypo'
       color='#818181'
       size={dotSize}
       iconStyle={{ color }}
       containerStyle={iconContainerStyle}
-    />
-);
-};
-
+    /> */}
 const styles = {
   iconContainerStyle: {
     justifyContent: 'center',
