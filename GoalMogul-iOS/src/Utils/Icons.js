@@ -33,7 +33,7 @@ export const DotIcon =  (props) => {
 
     return (
         <View style={iconContainerStyle}>
-            <Image source={right_arrow_icon} style={iconStyle} />
+            <Image source={dot_icon} style={iconStyle} />
         </View>
     );
 };

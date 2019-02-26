@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, ActionSheetIOS } from 'react-native';
 import { connect } from 'react-redux';
-import { Avatar, Icon } from 'react-native-elements';
 
 // Components
 import ProfileImage from '../../Common/ProfileImage';
