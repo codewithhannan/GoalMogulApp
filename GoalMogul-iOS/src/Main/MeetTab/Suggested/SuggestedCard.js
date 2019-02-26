@@ -168,7 +168,7 @@ class SuggestedCard extends Component {
             <Text style={styles.bodyTextStyle}>{topGoalText}</Text>
           </Text>
           <Text numberOfLines={1} ellipsizeMode='tail'>
-            <Text style={styles.subTitleTextStyle}>Geeds: </Text>
+            <Text style={styles.subTitleTextStyle}>Needs: </Text>
             <Text style={styles.bodyTextStyle}>{topNeedText}</Text>
           </Text>
         </View>
