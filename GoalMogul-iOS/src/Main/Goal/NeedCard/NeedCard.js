@@ -6,7 +6,6 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements';
 import timeago from 'timeago.js';
 import R from 'ramda';
 import _ from 'lodash';
@@ -20,6 +19,7 @@ import SectionCard from '../Common/SectionCard';
 import NextButton from '../Common/NextButton';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import ProfileImage from '../../Common/ProfileImage';
+import { RightArrowIcon } from '../../../Utils/Icons';
 
 // Asset
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
@@ -199,14 +199,18 @@ class NeedCard extends Component {
         onPress={() => this.props.onPress(item)}
       >
         <Text style={styles.viewGoalTextStyle}>View Goal</Text>
-        <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+        <RightArrowIcon 
+          iconStyle={{ tintColor: '#17B3EC', ...styles.iconStyle, height: 12, width: 18 }}
+          iconContainerStyle={{ alignSelf: 'center', alignItems: 'center', marginLeft: 5 }}
+        />
+        {/* <View style={{ alignSelf: 'center', alignItems: 'center' }}>
           <Icon
             name='ios-arrow-round-forward'
             type='ionicon'
             color='#17B3EC'
             iconStyle={styles.iconStyle}
           />
-        </View>
+        </View> */}
       </TouchableOpacity>
     );
   }
@@ -312,9 +316,9 @@ const styles = {
   },
   iconStyle: {
     alignSelf: 'center',
-    fontSize: 20,
-    marginLeft: 5,
-    marginTop: 2
+    // fontSize: 20,
+    // marginLeft: 5,
+    // marginTop: 2
   },
   borderShadow: {
     shadowColor: 'lightgray',

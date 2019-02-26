@@ -1,20 +1,22 @@
 import React from 'react';
 import { View, Text, Animated, Image } from 'react-native';
-import { Icon } from 'react-native-elements';
 
 const SubTabButton = (props) => {
   const color = props.onSelect ? '#1aa0dd' : 'white';
   const stat = !props.stat ? '' :
     (
       <View>
-        <Icon
+        <DotIcon 
+          iconStyle={{ tintColor: color, width: 3, height: 3, marginLeft: 4, marginRight: 4 }}
+        />
+        {/* <Icon
           name='dot-single'
           type='entypo'
           color='#818181'
           size={18}
           iconStyle={[styles.dotIconStyle, color]}
           containerStyle={styles.iconContainerStyle}
-        />
+        /> */}
         <Text style={styles.textStyle}>
           {props.stat}
         </Text>
