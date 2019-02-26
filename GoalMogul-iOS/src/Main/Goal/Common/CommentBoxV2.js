@@ -440,6 +440,8 @@ class CommentBoxV2 extends Component {
 
     const isValidSuggestion = validSuggestion(newComment);
 
+    // console.log(`${DEBUG_KEY}: invalid comment: `, isInValidComment);
+    // console.log(`${DEBUG_KEY}: comment is: `, newComment);
     // const disable = uploading ||
     //   ((contentText === undefined || contentText === '' || contentText.trim() === '')
     //   && _.isEmpty(tmpSuggestion) && _.isEmpty(suggestion));
