@@ -64,10 +64,10 @@ class DiscoverTabView extends Component {
           onEndReached={this.handleOnLoadMore}
           onEndReachedThreshold={0}
           onRefresh={this.handleRefresh}
-          refreshing={this.props.loading}
+          refreshing={this.props.refreshing}
           ListEmptyComponent={
-            this.props.loading ? '' :
-            <EmptyResult text={'No Recommendations'} />
+            this.props.loading || this.props.refreshing ? '' :
+            <EmptyResult text={'No Recommendations'} textStyle={{ paddingTop: 230 }} />
           }
         />
       </View>

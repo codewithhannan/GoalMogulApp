@@ -7,7 +7,6 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements';
 import R from 'ramda';
 import { Actions } from 'react-native-router-flux';
 
@@ -36,6 +35,9 @@ import Card from './Card';
 import ButtonArrow from '../../Common/Button/ButtonArrow';
 import ProfileActionButton from '../../Common/Button/ProfileActionButton';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import {
+  DotIcon
+} from '../../../Utils/Icons';
 
 const { width } = Dimensions.get('window');
 const DEBUG_KEY = '[ Copmonent ProfileDetailCard ]';
@@ -267,7 +269,12 @@ class ProfileDetailCard extends Component {
           <Text style={{ fontWeight: 'bold' }}>{data === undefined ? 0 : data} </Text>
           {title}
         </Text>
-        <View>
+        <DotIcon 
+          iconContainerStyle={{ ...styles.dotIconContainerStyle }}
+          iconStyle={{ tintColor: '#818181', ...styles.dotIconStyle, height: 5, width: 5 }}
+        />
+        {/**
+          <View>
           <Icon
             name='dot-single'
             type='entypo'
@@ -277,6 +284,7 @@ class ProfileDetailCard extends Component {
             containerStyle={styles.dotIconContainerStyle}
           />
         </View>
+         */}
         <TouchableOpacity activeOpacity={0.85} onPress={this.handleMutualFriendOnPressed}>
           <ButtonArrow text='View friends' arrow />
         </TouchableOpacity>
@@ -411,8 +419,9 @@ const styles = {
 
   },
   dotIconContainerStyle: {
-    width: 15,
-    marginRight: 2,
+    width: 4,
+    marginLeft: 4,
+    marginRight: 5,
     alignSelf: 'center',
     justifyContent: 'center'
   }

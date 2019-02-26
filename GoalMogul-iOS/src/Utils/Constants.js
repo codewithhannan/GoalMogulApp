@@ -5,6 +5,7 @@ export const IPHONE_MODELS = ['iphone 7', 'iphone 6',
 // Base url for image location. Should concat with the mediaRef or image to form the 
 // full image location
 export const IMAGE_BASE_URL = 'https://s3.us-west-2.amazonaws.com/goalmogul-v1/';
+export const BUG_REPORT_URL = 'https://goo.gl/forms/zfhrCXeLPz3QCKi03';
 
 export const SORT_BY_OPTIONS = [
     {

@@ -1,6 +1,9 @@
 // This stores events information for events under explore
 import _ from 'lodash';
 import { arrayUnique } from '../../middleware/utils';
+import {
+  EVENT_DELETE_SUCCESS
+} from './EventReducers';
 
 const INITIAL_STATE = {
   data: [],
@@ -23,6 +26,15 @@ export const EVENTTAB_UPDATE_FILTEROPTIONS = 'eventtab_update_filteroptions';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    // One event is deleted
+    case EVENT_DELETE_SUCCESS: {
+      const { eventId } = action.payload;
+      const newState = _.cloneDeep(state);
+      const oldData = _.get(newState, 'data');
+      const newData = oldData.filter(e => e._id !== eventId);
+      return _.set(newState, 'data', newData);
+    }
+
     // Event refresh done
     case EVENTTAB_REFRESH_DONE: {
       const { skip, data, hasNextPage, type } = action.payload;

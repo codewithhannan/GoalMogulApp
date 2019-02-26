@@ -59,7 +59,10 @@ export const deleteEvent = (eventId) => (dispatch, getState) => {
   const onSuccess = (res) => {
     Actions.pop();
     dispatch({
-      type: EVENT_DELETE_SUCCESS
+      type: EVENT_DELETE_SUCCESS,
+      payload: {
+        eventId
+      }
     });
     console.log(`${DEBUG_KEY}: event with id: ${eventId}, is deleted with res: `, res);
     Alert.alert(

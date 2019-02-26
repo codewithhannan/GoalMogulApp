@@ -23,14 +23,14 @@ export const openMyTribeTab = () => (dispatch, getState) => {
     type: MYTRIBETAB_OPEN
   });
 
-  Actions.replace('myTribeTab');
+  Actions.push('myTribeTab');
   refreshTribe()(dispatch, getState);
 };
 
 // Close my tribe modal
 export const closeMyTribeTab = () => (dispatch) => {
   console.log('closing my tribe tab');
-  Actions.popTo('home');
+  Actions.pop();
   dispatch({
     type: MYTRIBETAB_CLOSE
   });

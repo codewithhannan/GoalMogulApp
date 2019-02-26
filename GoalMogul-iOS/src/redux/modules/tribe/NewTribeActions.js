@@ -49,6 +49,7 @@ export const cancelCreatingNewTribe = () => (dispatch) => {
 export const createNewTribe = (values, needUpload, isEdit, tribeId) => (dispatch, getState) => {
   const { token } = getState().user;
   const newTribe = formToTribeAdapter(values, tribeId, isEdit);
+  // console.log(`${DEBUG_KEY}: newTribe to submit is; `, newTribe);
 
   dispatch({
     type: TRIBE_NEW_SUBMIT
@@ -61,7 +62,8 @@ export const createNewTribe = (values, needUpload, isEdit, tribeId) => (dispatch
     });
 
     if (isEdit) {
-      console.log(`${DEBUG_KEY}: tribe edit success with res: `, res);
+      // console.log(`${DEBUG_KEY}: tribe edit success with res: `, res);
+      // console.log(`${DEBUG_KEY}: tribe edit success with new tribe: `, tribe);
       dispatch({
         type: TRIBE_EDIT_SUCCESS,
         payload: {
@@ -207,7 +209,8 @@ const formToTribeAdapter = (values, tribeId, isEdit) => {
         isPubliclyVisible,
         membershipLimit: membershipLimit || Number.MAX_SAFE_INTEGER,
         description,
-        picture
+        picture,
+        name
       }
     };
   }

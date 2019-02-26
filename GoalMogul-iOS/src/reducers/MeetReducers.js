@@ -229,7 +229,7 @@ export default (state = INITIAL_STATE, action) => {
           newState = _.set(newState, 'friends.data', newData);
           
           const oldCount = _.get(newState, 'friends.count');
-          newState = _.set(newState, 'friends.count', oldCount + 1);
+          newState = _.set(newState, 'friends.count', oldCount - 1);
           return newState;
         }
         // 'requests.outgoing': remove object from 'requests.outgoing.data' where _id = friendshipId

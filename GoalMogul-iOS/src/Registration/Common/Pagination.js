@@ -1,6 +1,9 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Icon } from 'react-native-elements';
+
+import {
+  DotIcon
+} from '../../Utils/Icons';
 
 const Pagination = (props) => {
   const { total, current } = props;
@@ -17,7 +20,15 @@ const Pagination = (props) => {
 
     const key = `registration-pagination-${i}`;
     pagination.push(
-      <Icon
+      <DotIcon 
+        key={key}
+        iconContainerStyle={{ ...styles.iconContainerStyle }}
+        iconStyle={{ tintColor: color, height: 10, width: 10 }}
+      />
+    );
+  }
+  {/**
+        <Icon
         name='primitive-dot'
         type='octicon'
         color={color}
@@ -25,8 +36,7 @@ const Pagination = (props) => {
         key={key}
         containerStyle={styles.iconContainerStyle}
       />
-    );
-  }
+      */}
 
   return (
     <View style={styles.containerStyle}>

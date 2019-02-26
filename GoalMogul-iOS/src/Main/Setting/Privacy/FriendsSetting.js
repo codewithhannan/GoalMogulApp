@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements';
 
 /* Components */
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
+import {
+  CheckIcon
+} from '../../../Utils/Icons';
 
 /* Styles */
 import Styles from '../Styles';
@@ -50,16 +52,21 @@ class FriendsSetting extends Component {
   renderTick(info) {
     if (info.title === this.props.privacy.friends) {
       return (
-        <View style={{ height: 20, width: 20 }} >
-          <Icon
-            type='entypo'
-            name='check'
-            size={22}
-          />
-        </View>
+        <CheckIcon 
+          iconContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}
+          iconStyle={{ tintColor: 'black', height: 18, width: 24 }}
+        />
       );
     }
   }
+
+  // <View style={{ height: 20, width: 20 }} >
+  //   <Icon
+  //     type='entypo'
+  //     name='check'
+  //     size={22}
+  //   />
+  // </View>
 
   renderPrivacySettingDetail() {
     return friendsSettingList.map((info) => {

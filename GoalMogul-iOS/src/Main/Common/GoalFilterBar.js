@@ -7,7 +7,6 @@ import {
   MenuTrigger,
   renderers,
 } from 'react-native-popup-menu';
-import { CheckBox } from 'react-native-elements';
 
 /* asset */
 import dropDown from '../../asset/utils/dropDown.png';

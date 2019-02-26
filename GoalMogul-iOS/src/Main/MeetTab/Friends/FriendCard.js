@@ -7,7 +7,6 @@ import {
   ActionSheetIOS
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Button, Icon } from 'react-native-elements';
 
 // Components
 import Name from '../../Common/Name';

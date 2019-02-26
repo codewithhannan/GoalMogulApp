@@ -524,6 +524,8 @@ const resetNewComment = (comment) => {
     ret = _.set(ret, 'needRef', copyComment.needRef);  
   }
 
+  ret = _.set(ret, 'commentType', 'Comment');
+
   if (copyComment.stepRef) {
     ret = _.set(ret, 'stepRef', copyComment.stepRef);  
   }

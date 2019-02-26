@@ -6,7 +6,6 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements';
 import _ from 'lodash';
 import { Actions } from 'react-native-router-flux';
 
@@ -16,6 +15,9 @@ import NotificationCard from './Notification/NotificationCard';
 import NotificationNeedCard from './Need/NotificationNeedCard';
 import EmptyResult from '../Common/Text/EmptyResult';
 import DelayedButton from '../Common/Button/DelayedButton';
+import {
+  RightArrowIcon
+} from '../../Utils/Icons';
 
 // Actions
 import {
@@ -197,14 +199,18 @@ const SeeMoreButton = (props) => {
       onPress={() => onPress()}
     >
       <Text style={styles.seeMoreTextStyle}>{text}</Text>
-      <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+      <RightArrowIcon 
+        iconContainerStyle={{ alignSelf: 'center', alignItems: 'center' }}
+        iconStyle={{ tintColor: '#17B3EC', ...styles.iconStyle }}
+      />
+      {/* <View style={{ alignSelf: 'center', alignItems: 'center' }}>
         <Icon
           name='ios-arrow-round-forward'
           type='ionicon'
           color='#17B3EC'
           iconStyle={styles.iconStyle}
         />
-      </View>
+      </View> */}
     </TouchableOpacity>
   );
 };
@@ -262,9 +268,10 @@ const styles = {
   },
   iconStyle: {
     alignSelf: 'center',
-    fontSize: 20,
+    // fontSize: 20,
+    height: 15,
+    width: 20,
     marginLeft: 5,
-    marginTop: 2
   },
   titleComponentContainerStyle: {
     paddingLeft: 12, // Needs to be aligned with NotificationCard padding
