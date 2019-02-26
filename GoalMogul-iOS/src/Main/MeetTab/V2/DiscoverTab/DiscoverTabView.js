@@ -67,7 +67,7 @@ class DiscoverTabView extends Component {
           refreshing={this.props.refreshing}
           ListEmptyComponent={
             this.props.loading || this.props.refreshing ? '' :
-            <EmptyResult text={'No Recommendations'} textStyle={{ paddingTop: 200 }} />
+            <EmptyResult text={'No Recommendations'} textStyle={{ paddingTop: 230 }} />
           }
         />
       </View>
