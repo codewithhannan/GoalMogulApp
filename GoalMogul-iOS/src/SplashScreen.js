@@ -7,7 +7,6 @@ import {
   Dimensions,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements';
 import {
   LinearGradient,
   Font,
@@ -27,6 +26,11 @@ import {
 /* Asset */
 import HeaderLogo from './asset/header/header-logo-white.png';
 import Helpfulness from './asset/utils/help.png';
+
+// Components
+import {
+  RightArrowIcon
+} from './Utils/Icons';
 
 const width = Dimensions.get('window').width
 const DEBUG_KEY = '[ UI SplashScreen ]';
@@ -104,6 +108,7 @@ class SplashScreen extends Component {
       require('./asset/utils/invite.png'),
       require('./asset/utils/tutorial.png'),
       require('./asset/utils/right_arrow.png'),
+      require('./asset/utils/search.png'),
       // Friends Tab images
       require('./asset/utils/Friends.png'),
       require('./asset/utils/ContactSync.png'),
@@ -239,12 +244,16 @@ class SplashScreen extends Component {
                 : null
               }
 
-              <Icon
+              <RightArrowIcon iconStyle={{ ...styles.iconStyle, color: '#ffffff' }} />
+              {/** 
+                <Icon
                 name='ios-arrow-round-forward'
                 type='ionicon'
                 color='#ffffff'
                 iconStyle={styles.iconStyle}
-              />
+                />
+              */}
+              
             </TouchableOpacity>
           </View>
 
