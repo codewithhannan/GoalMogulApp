@@ -34,7 +34,7 @@ import {
   getUserData
 } from '../../../redux/modules/User/Selector';
 
-const BUTTONS = ['Taking a Picture', 'Camera Roll', 'Cancel'];
+const BUTTONS = ['Take a Picture', 'Camera Roll', 'Cancel'];
 const TAKING_PICTURE_INDEX = 0;
 const CAMERA_ROLL_INDEX = 1;
 const CANCEL_INDEX = 2;
