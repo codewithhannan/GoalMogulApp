@@ -52,7 +52,7 @@ export const submitGoal = (
   },
   pageId // TODO: profile reducer redesign to change here
 ) => (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, user } = getState().user;
   const { tab } = getState().navigation;
   let goal = {};
   try {
@@ -70,7 +70,7 @@ export const submitGoal = (
 
   // If user is editing the goal, then call another endpoint
   if (isEdit) {
-    return submitEditGoal(goal, goalId, token, callback, dispatch, tab);
+    return submitEditGoal(goal, goalId, token, callback, dispatch, tab, user);
   }
 
   const onError = () => {
@@ -132,7 +132,7 @@ export const submitGoal = (
 };
 
 // Submit editting a goal
-const submitEditGoal = (goal, goalId, token, callback, dispatch, tab) => {
+const submitEditGoal = (goal, goalId, token, callback, dispatch, tab, owner) => {
   const onError = () => {
     dispatch({
       type: GOAL_CREATE_SUBMIT_FAIL
@@ -152,10 +152,17 @@ const submitEditGoal = (goal, goalId, token, callback, dispatch, tab) => {
       type: GOAL_CREATE_SUBMIT_SUCCESS
     });
 
+    const goalToReturn = {
+      ...data,
+      owner
+    };
+
+    // console.log(`${DEBUG_KEY}: goal to return is: `, goalToReturn);
+
     dispatch({
       type: GOAL_CREATE_EDIT_SUCCESS,
       payload: {
-        goal: data,
+        goal: goalToReturn,
         tab
       }
     });
