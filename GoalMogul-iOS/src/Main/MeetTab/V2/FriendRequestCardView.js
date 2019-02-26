@@ -121,9 +121,9 @@ class FriendRequestCardView extends React.PureComponent {
     }
 
     handleOnOpenProfile = () => {
-        const { _id } = this.props.item;
-        if (_id) {
-            return this.props.openProfile(_id);
+        const { user } = this.props.item;
+        if (user && user._id) {
+            return this.props.openProfile(user._id);
         }
     }
 

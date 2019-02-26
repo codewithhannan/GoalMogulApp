@@ -121,6 +121,19 @@ const fetchProfileFail = (pageId, userId, res, dispatch) => {
     );
   }
 
+  if (res.status === 500) {
+    Alert.alert(
+      'Error loading user profile',
+      `${res.message}`, 
+      [
+        { 
+          text: 'Cancel', 
+          onPress: () => Actions.pop()
+        }
+      ]
+    );
+  }
+
   dispatch({
     type: PROFILE_FETCHING_FAIL,
     payload: {
