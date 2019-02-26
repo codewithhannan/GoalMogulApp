@@ -29,7 +29,7 @@ export const openMyEventTab = () => (dispatch, getState) => {
 
 // Close my event tab
 export const closeMyEventTab = () => (dispatch) => {
-  Actions.popTo('home');
+  Actions.pop();
   dispatch({
     type: MYEVENTTAB_CLOSE
   });
