@@ -6,9 +6,11 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { LinearGradient } from 'expo';
-import { Icon } from 'react-native-elements';
 
 import SectionCard from '../Common/SectionCard';
+import {
+  RightArrowIcon
+} from '../../../Utils/Icons';
 
 const testStep = [
   {
@@ -106,7 +108,12 @@ class StepTab extends Component {
         onPress={() => this.props.onPress()}
       >
         <Text style={styles.viewGoalTextStyle}>View Goal</Text>
-        <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+        <RightArrowIcon 
+          iconContainerStyle={{ alignSelf: 'center', alignItems: 'center', marginBottom: 3 }}
+          iconStyle={{ tintColor: '#17B3EC', ...styles.iconStyle, height: 15, width: 18 }}
+        />
+        {/**
+          <View style={{ alignSelf: 'center', alignItems: 'center' }}>
           <Icon
             name='ios-arrow-round-forward'
             type='ionicon'
@@ -114,6 +121,7 @@ class StepTab extends Component {
             iconStyle={styles.iconStyle}
           />
         </View>
+         */}
       </TouchableOpacity>
     );
   }
@@ -141,7 +149,7 @@ const styles = {
   },
   iconStyle: {
     alignSelf: 'center',
-    fontSize: 20,
+    // fontSize: 20,
     marginLeft: 5,
     marginTop: 2
   },

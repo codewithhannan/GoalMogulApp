@@ -8,7 +8,6 @@ import {
   Platform
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements';
 import { Constants } from 'expo';
 // import {
 //   FlingGestureHandler,
@@ -58,6 +57,9 @@ import StepTab from './StepTab';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import ProfileImage from '../../Common/ProfileImage';
 import GoalCardHeader from '../Common/GoalCardHeader';
+import {
+  RightArrowIcon
+} from '../../../Utils/Icons';
 
 // Asset
 import LoveIcon from '../../../asset/utils/love.png';
@@ -352,7 +354,12 @@ class GoalCard extends React.PureComponent {
         onPress={() => this.props.onPress}
       >
         <Text style={styles.viewGoalTextStyle}>View Goal</Text>
-        <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+        <RightArrowIcon 
+          iconContainerStyle={{ alignSelf: 'center', alignItems: 'center' }}
+          iconStyle={{ tintColor: '#17B3EC', ...styles.iconStyle, height: 15, width: 18 }}
+        />
+        {/**
+          <View style={{ alignSelf: 'center', alignItems: 'center' }}>
           <Icon
             name='ios-arrow-round-forward'
             type='ionicon'
@@ -360,6 +367,7 @@ class GoalCard extends React.PureComponent {
             iconStyle={styles.iconStyle}
           />
         </View>
+         */}
       </TouchableOpacity>
     );
   }
