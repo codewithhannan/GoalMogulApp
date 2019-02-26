@@ -957,10 +957,43 @@ class NewGoalView extends Component {
     const titleText = this.props.initializeFromState ? 'Edit Goal' : 'New Goal';
 
     return (
-        <KeyboardAvoidingView
-          behavior='padding'
-          style={{ flex: 1, backgroundColor: '#ffffff' }}
-        >
+      <ScrollView
+        style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
+        scrollEnabled={this.state.scrollEnabled}
+      >
+        <View style={{ flex: 1, padding: 20 }}>
+          {this.renderUserInfo(user)}
+          {this.renderGoal()}
+          <FieldArray
+            name="details"
+            component={this.renderGoalDescription}
+            loading={this.state.tagSearchData.loading}
+            tagData={this.state.tagSearchData.data}
+            keyword={this.state.keyword}
+          />
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ flex: 1, marginRight: 8 }}>
+              {this.renderCategory()}
+            </View>
+            <View style={{ flex: 1 }}>
+              {this.renderPriority()}
+            </View>
+          </View>
+
+          {this.renderTimeline()}
+          <FieldArray name="steps" component={this.renderSteps} />
+          <FieldArray name="needs" component={this.renderNeeds} />
+        </View>
+
+      </ScrollView>
+    );
+  }
+}
+
+//<KeyboardAvoidingView
+        //   behavior='padding'
+        //   style={{ flex: 1, backgroundColor: '#ffffff' }}
+        // >
         {/** 
           <ModalHeader
             title={titleText}
@@ -969,39 +1002,9 @@ class NewGoalView extends Component {
             onAction={handleSubmit(this.handleCreate)}
           />
         */}
-          <ScrollView
-            style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
-            scrollEnabled={this.state.scrollEnabled}
-          >
-            <View style={{ flex: 1, padding: 20 }}>
-              {this.renderUserInfo(user)}
-              {this.renderGoal()}
-              <FieldArray
-                name="details"
-                component={this.renderGoalDescription}
-                loading={this.state.tagSearchData.loading}
-                tagData={this.state.tagSearchData.data}
-                keyword={this.state.keyword}
-              />
-              <View style={{ flexDirection: 'row' }}>
-                <View style={{ flex: 1, marginRight: 8 }}>
-                  {this.renderCategory()}
-                </View>
-                <View style={{ flex: 1 }}>
-                  {this.renderPriority()}
-                </View>
-              </View>
+       //</KeyboardAvoidingView> 
+      
 
-              {this.renderTimeline()}
-              <FieldArray name="steps" component={this.renderSteps} />
-              <FieldArray name="needs" component={this.renderNeeds} />
-            </View>
-
-          </ScrollView>
-        </KeyboardAvoidingView>
-    );
-  }
-}
 
 const validateTime = (start, end) => {
   if (!start || !end) return true;

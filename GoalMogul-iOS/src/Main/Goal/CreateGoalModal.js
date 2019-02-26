@@ -2,7 +2,8 @@ import React from 'react';
 import {
   View,
   Alert,
-  Keyboard
+  Keyboard,
+  KeyboardAvoidingView
 } from 'react-native';
 import { connect } from 'react-redux';
 import { TabView, SceneMap } from 'react-native-tab-view';
@@ -101,27 +102,32 @@ class CreateGoalModal extends React.Component {
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <View style={{ flex: 1, backgroundColor: 'white' }}>
-          <ModalHeader
-            title={titleText}
-            actionText={actionText}
-            onCancel={() => {
-              if (this.props.onClose) {
-                this.props.onClose();
-              }
-              Actions.pop();
-            }}
-            onAction={this.handleCreate}
-            actionDisabled={!this.props.uploading}
-          />
-          <TabView
-            navigationState={this.props.navigationState}
-            renderScene={this.renderScene}
-            renderTabBar={this.renderHeader}
-            onIndexChange={this.handleIndexChange.bind(this)}
-            useNativeDriver
-          />
-        </View>
+        <KeyboardAvoidingView
+            behavior='padding'
+            style={{ flex: 1, backgroundColor: '#ffffff' }}
+          >
+          <View style={{ flex: 1, backgroundColor: 'white' }}>
+            <ModalHeader
+              title={titleText}
+              actionText={actionText}
+              onCancel={() => {
+                if (this.props.onClose) {
+                  this.props.onClose();
+                }
+                Actions.pop();
+              }}
+              onAction={this.handleCreate}
+              actionDisabled={!this.props.uploading}
+            />
+            <TabView
+              navigationState={this.props.navigationState}
+              renderScene={this.renderScene}
+              renderTabBar={this.renderHeader}
+              onIndexChange={this.handleIndexChange.bind(this)}
+              useNativeDriver
+            />
+          </View>
+        </KeyboardAvoidingView>
       </MenuProvider>
     );
   }
