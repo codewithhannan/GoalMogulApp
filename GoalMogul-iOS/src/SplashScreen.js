@@ -109,6 +109,7 @@ class SplashScreen extends Component {
       require('./asset/utils/tutorial.png'),
       require('./asset/utils/right_arrow.png'),
       require('./asset/utils/search.png'),
+      require('./asset/utils/dot.png'),
       // Friends Tab images
       require('./asset/utils/Friends.png'),
       require('./asset/utils/ContactSync.png'),
