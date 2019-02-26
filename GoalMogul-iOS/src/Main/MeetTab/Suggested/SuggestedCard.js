@@ -164,11 +164,11 @@ class SuggestedCard extends Component {
       <View style={styles.infoContainerStyle}>
         <View style={{ flex: 1, marginRight: 6 }}>
           <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginBottom: 2 }}>
-            <Text style={styles.subTitleTextStyle}>Top goals: </Text>
+            <Text style={styles.subTitleTextStyle}>Goals: </Text>
             <Text style={styles.bodyTextStyle}>{topGoalText}</Text>
           </Text>
           <Text numberOfLines={1} ellipsizeMode='tail'>
-            <Text style={styles.subTitleTextStyle}>Top needs: </Text>
+            <Text style={styles.subTitleTextStyle}>Geeds: </Text>
             <Text style={styles.bodyTextStyle}>{topNeedText}</Text>
           </Text>
         </View>
