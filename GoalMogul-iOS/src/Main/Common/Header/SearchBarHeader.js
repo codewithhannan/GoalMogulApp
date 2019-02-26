@@ -8,7 +8,6 @@ import {
   Platform
 } from 'react-native';
 import R from 'ramda';
-import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { Constants } from 'expo';
@@ -25,6 +24,9 @@ import { actionSheet, switchByButtonIndex } from '../ActionSheetFactory';
 
 /* Component */
 import DelayedButton from '../Button/DelayedButton';
+import {
+  SearchIcon
+} from '../../../Utils/Icons';
 
 // Utils
 import { componentKeyByTab } from '../../../redux/middleware/utils';
@@ -288,14 +290,10 @@ class SearchBarHeader extends Component {
         }}
       >
         <View style={styles.searchButtonContainerStyle}>
-          <View style={{ marginBottom: 3 }}>
-            <Icon
-              type='font-awesome'
-              name='search'
-              size={17}
-              color='#4ec9f3'
-            />
-          </View>
+          <SearchIcon 
+            iconContainerStyle={{ marginBottom: 3, marginTop: 1 }} 
+            iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
+          />
           <Text style={styles.searchPlaceHolderTextStyle}>
             Search GoalMogul
           </Text>
