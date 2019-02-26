@@ -18,6 +18,9 @@ import {
 import TribeCard from './TribeCard';
 import UserCard from './UserCard';
 import EventCard from './EventCard';
+import {
+  SearchIcon
+} from '../../../../Utils/Icons';
 
 // Actions
 import {
@@ -104,6 +107,7 @@ class SearchSuggestion extends React.Component {
       <SearchBar
         platform='ios'
         round
+        noIcon
         autoFocus={false}
         inputStyle={styles.searchInputStyle}
         inputContainerStyle={styles.searchInputContainerStyle}
@@ -116,6 +120,13 @@ class SearchSuggestion extends React.Component {
         showLoading={this.props.loading}
         onClear={this.handleSearchClear}
         value={this.props.searchContent}
+        clearIcon={null}
+        searchIcon={() => (
+          <SearchIcon 
+            iconContainerStyle={{ marginBottom: 3, marginTop: 1 }} 
+            iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
+          />
+        )}
       />
     );
   }

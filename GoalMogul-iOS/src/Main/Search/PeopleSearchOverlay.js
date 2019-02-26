@@ -8,7 +8,7 @@ import {
   Text
 } from 'react-native';
 import { connect } from 'react-redux';
-import { SearchBar, Icon } from 'react-native-elements';
+import { SearchBar } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
 import _ from 'lodash';
 
@@ -84,6 +84,7 @@ import { openProfile } from '../../actions';
                platform='ios'
                round
                autoFocus
+               noIcon
                inputStyle={styles.searchInputStyle}
                inputContainerStyle={styles.searchInputContainerStyle}
                containerStyle={styles.searchContainerStyle}
