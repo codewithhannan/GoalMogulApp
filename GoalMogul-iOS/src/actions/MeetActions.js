@@ -74,7 +74,7 @@ export const preloadMeet = () => (dispatch, getState) => {
 @param dispatch:
 @param callback:
 */
-const loadOneTab = (type, skip, limit, token, dispatch, callback) => {
+const loadOneTab = (type, skip, limit, token, dispatch, callback, onError) => {
   const route = _.get(requestMap, type);
   API
     .get(`${BASE_ROUTE}${route}?limit=${limit}&skip=${skip}`, token)
@@ -96,6 +96,9 @@ const loadOneTab = (type, skip, limit, token, dispatch, callback) => {
           data: []
         }
       });
+      if (onError) {
+        onError(res);
+      }
     })
     .catch((err) => {
       console.log(`fetching friendship for type: ${type}, fails with error: ${err}`);
@@ -106,6 +109,9 @@ const loadOneTab = (type, skip, limit, token, dispatch, callback) => {
           data: []
         }
       });
+      if (onError) {
+        onError(err);
+      }
     });
 
   // const url = `https://goalmogul-api-dev.herokuapp.com/api/secure/user/${route}?limit=${limit}&skip=${skip}`;
@@ -160,6 +166,21 @@ export const handleRefresh = (key) => (dispatch, getState) => {
       type: key
     }
   });
+
+  const onError = (err) => {
+    dispatch({
+      type: MEET_TAB_REFRESH_DONE,
+      payload: {
+        type: key,
+        data: [],
+        skip: 0,
+        limit: 20,
+        hasNextPage: undefined
+      }
+    });
+  };
+
+
   loadOneTab(key, 0, limit, token, dispatch, (data) => {
     dispatch({
       type: MEET_TAB_REFRESH_DONE,
@@ -171,7 +192,7 @@ export const handleRefresh = (key) => (dispatch, getState) => {
         hasNextPage: !(data === undefined || data.length === 0)
       }
     });
-  });
+  }, onError);
 };
 
 // Load more data
@@ -179,8 +200,8 @@ export const meetOnLoadMore = (key) => (dispatch, getState) => {
   // TODO: dispatch onLoadMore start
   console.log(`${DEBUG_KEY} Loading more for ${key}`);
   const tabState = _.get(getState().meet, key);
-  const { skip, limit, hasNextPage } = tabState;
-  if (hasNextPage || hasNextPage === undefined) {
+  const { skip, limit, hasNextPage, refreshing } = tabState;
+  if ((hasNextPage || hasNextPage === undefined) && !refreshing) {
     const { token } = getState().user;
     loadOneTab(key, skip, limit, token, dispatch, (data) => {
       const newSkip = data.length === 0 ? skip : skip + data.length;
