@@ -72,7 +72,10 @@ export const deleteTribe = (tribeId) => (dispatch, getState) => {
   const onSuccess = (res) => {
     Actions.pop();
     dispatch({
-      type: TRIBE_DELETE_SUCCESS
+      type: TRIBE_DELETE_SUCCESS,
+      payload: {
+        tribeId      
+      }
     });
     console.log(`${DEBUG_KEY}: tribe with id: ${tribeId}, is deleted with res: `, res);
     Alert.alert(
