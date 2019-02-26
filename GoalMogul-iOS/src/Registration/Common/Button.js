@@ -1,6 +1,9 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { Icon } from 'react-native-elements';
+
+import {
+  RightArrowIcon
+} from '../../Utils/Icons';
 
 const Button = (props) => {
   const containerStyle = { ...styles.containerStyle };
@@ -14,14 +17,10 @@ const Button = (props) => {
     return (
       <View style={containerStyle}>
         <Text style={textStyle}>{props.text}</Text>
-        <View style={{ alignSelf: 'center', alignItems: 'center' }}>
-          <Icon
-            name='ios-arrow-round-forward'
-            type='ionicon'
-            color='#34c0dd'
-            iconStyle={styles.iconStyle}
-          />
-        </View>
+        <RightArrowIcon 
+          iconContainerStyle={{ alignSelf: 'center', alignItems: 'center' }}
+          iconStyle={{ tintColor: '#34c0dd', ...styles.iconStyle, height: 15, width: 20 }}
+        />
       </View>
     );
   }
@@ -52,7 +51,7 @@ const styles = {
   },
   iconStyle: {
     alignSelf: 'center',
-    fontSize: 26,
+    // fontSize: 26,
     marginLeft: 5
   }
 };
