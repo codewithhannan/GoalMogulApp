@@ -110,6 +110,7 @@ const SEARCHBAR_HEIGHT = Platform.OS === 'ios' &&
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const PADDING = SCREEN_HEIGHT - 48.5 - SEARCHBAR_HEIGHT;
 
+
 /**
  * This is the UI file for a single event.
  */
