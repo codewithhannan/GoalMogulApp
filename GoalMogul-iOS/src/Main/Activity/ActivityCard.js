@@ -37,6 +37,7 @@ import {
 import LoveIcon from '../../asset/utils/love.png';
 import BulbIcon from '../../asset/utils/bulb.png';
 import ShareIcon from '../../asset/utils/forward.png';
+import CommentIcon from '../../asset/utils/comment.png';
 
 // Components
 import ActionButton from '../Goal/Common/ActionButton';
@@ -151,7 +152,7 @@ class ActivityCard extends React.PureComponent {
           disabled={isShare}
         />
         <ActionButton
-          iconSource={BulbIcon}
+          iconSource={CommentIcon}
           count={commentCount}
           textStyle={{ color: '#FBDD0D' }}
           iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}

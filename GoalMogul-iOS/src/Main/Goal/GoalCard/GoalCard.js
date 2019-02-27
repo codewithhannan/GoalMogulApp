@@ -409,8 +409,8 @@ class GoalCard extends React.PureComponent {
         <ActionButton
           iconSource={CommentIcon}
           count={commentCount}
-          textStyle={{ color: '#fcf167' }}
-          iconStyle={{ tintColor: '#fcf167', height: 26, width: 26 }}
+          textStyle={{ color: '#FBDD0D' }}
+          iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks suggest icon`);
             this.props.onPress(this.props.item);
