@@ -28,7 +28,7 @@ const NEW_COMMENT_INITIAL_STATE = {
   mediaPresignedUrl: undefined,
   mediaRef: undefined,
   // ["Comment", "Reply", "Suggestion"]
-  commentType: undefined,
+  commentType: 'Comment',
   replyToRef: undefined,
   tmpSuggestion: { ...INITIAL_SUGGESETION },
   suggestion: { ...INITIAL_SUGGESETION },
