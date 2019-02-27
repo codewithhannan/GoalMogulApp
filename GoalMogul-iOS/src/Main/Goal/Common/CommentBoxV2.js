@@ -434,7 +434,7 @@ class CommentBoxV2 extends Component {
 
   renderPost(newComment) {
     const { uploading, contentText, tmpSuggestion, suggestion, commentType } = newComment;
-    // console.log(`${DEBUG_KEY}: new comment is: `, newComment);
+    console.log(`${DEBUG_KEY}: new comment is: `, newComment);
 
     const isInValidComment = (commentType === 'Comment' || commentType === 'Reply') && 
       (contentText === undefined || contentText === '' || contentText.trim() === '');

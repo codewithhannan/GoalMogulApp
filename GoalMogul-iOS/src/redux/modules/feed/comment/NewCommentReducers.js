@@ -176,6 +176,7 @@ export default (state = INITIAL_STATE, action) => {
     // when comment posts succeed, delete everything but parent type and ref
     case COMMENT_NEW_POST_SUCCESS: {
       const newState = _.cloneDeep(state);
+      console.log(`${DEBUG_KEY}: payload is: `, action.payload);
       const { tab, pageId } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab || tab === 'homeTab' ? `homeTab.${page}` : `${tab}.${page}`;

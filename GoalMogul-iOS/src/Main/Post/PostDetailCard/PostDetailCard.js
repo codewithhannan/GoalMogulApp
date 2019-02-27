@@ -129,6 +129,7 @@ class PostDetailCard extends Component {
               <CommentBox
                 onRef={(ref) => { this.commentBox = ref; }}
                 pageId={pageId}
+                entityId={postId}
               />
 
             </KeyboardAvoidingView>

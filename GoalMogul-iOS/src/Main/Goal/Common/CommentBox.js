@@ -43,6 +43,7 @@ import LightBulb from '../../../asset/utils/makeSuggestion.png';
 
 // Consts
 const maxHeight = 120;
+const DEBUG_KEY = '[ UI CommentBox ]';
 
 class CommentBox extends Component {
   constructor(props) {
@@ -242,12 +243,23 @@ class CommentBox extends Component {
     );
   }
   renderPost(newComment) {
-    const { uploading, contentText, tmpSuggestion } = newComment;
-    const disable = uploading ||
-      ((contentText === undefined || contentText === '' || contentText.trim() === '')
-      && _.isEmpty(tmpSuggestion));
+    const { uploading, contentText, tmpSuggestion, commentType } = newComment;
 
-    const color = '#17B3EC';
+    // This is old and buggy implementation
+    // const disable = uploading ||
+    //   ((contentText === undefined || contentText === '' || contentText.trim() === '')
+    //   && _.isEmpty(tmpSuggestion));
+
+    const isInValidComment = (commentType === 'Comment' || commentType === 'Reply') && 
+      (contentText === undefined || contentText === '' || contentText.trim() === '');
+
+    const isValidSuggestion = validSuggestion(newComment);
+
+    // console.log(`${DEBUG_KEY}: invalid comment: `, isInValidComment);
+    // console.log(`${DEBUG_KEY}: comment is: `, newComment);
+    const disable = uploading || isInValidComment || !isValidSuggestion;
+
+    const color = disable ? '#cbd6d8' : '#17B3EC';
     return (
       <TouchableOpacity
         activeOpacity={0.85}
@@ -386,6 +398,35 @@ const styles = {
     shadowRadius: 1,
     elevation: 1
   }
+};
+
+const validSuggestion = (newComment) => {
+  const { commentType, suggestion } = newComment;
+  if (commentType === 'Comment' || commentType === 'Reply') return true;
+  if (isInvalidObject(suggestion)) return false;
+  const { 
+    suggestionFor, 
+    suggestionForRef, 
+    suggestionType, 
+    suggestionText, 
+    suggestionLink,
+    selectedItem
+  } = suggestion;
+  // console.log(`${DEBUG_KEY}: suggestion is:`, suggestion);
+  if (isInvalidObject(suggestionFor) || isInvalidObject(suggestionForRef) || isInvalidObject(suggestionType)) {
+    return false;
+  }
+
+  if (suggestionType !== 'Custom' && isInvalidObject(selectedItem)) {
+    return false;
+  }
+
+  if (suggestionType === 'Custom') {
+    if (isInvalidObject(suggestionText) && isInvalidObject(suggestionLink)) {
+      return false;
+    }
+  }
+  return true;
 };
 
 const mapStateToProps = (state, props) => {
