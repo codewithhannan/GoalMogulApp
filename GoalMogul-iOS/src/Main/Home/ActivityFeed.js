@@ -68,6 +68,7 @@ class ActivityFeed extends Component {
           }
           this.props.openPostDetail(curItem);
         }}
+        onShareCallback={() => this.scrollToTop()}
       />
     );
   }

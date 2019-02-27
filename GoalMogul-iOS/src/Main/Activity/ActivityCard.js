@@ -79,13 +79,18 @@ class ActivityCard extends React.PureComponent {
     const callback = () => {
       this.props.refreshFeed();
     };
+
+    const shareToFeedCallback = () => {
+      this.props.onShareCallback();
+      this.props.refreshFeed();
+    };
     // Share ref is the id of the item to share
     const { _id } = itemToShare;
     const shareToSwitchCases = switchByButtonIndex([
       [R.equals(0), () => {
         // User choose to share to feed
         console.log(`${DEBUG_KEY} User choose destination: Feed `);
-        this.props.chooseShareDest(shareType, _id, 'feed', itemToShare, undefined, callback);
+        this.props.chooseShareDest(shareType, _id, 'feed', itemToShare, undefined, shareToFeedCallback);
         // TODO: update reducer state
       }],
       [R.equals(1), () => {
