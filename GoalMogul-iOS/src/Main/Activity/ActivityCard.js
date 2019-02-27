@@ -29,6 +29,10 @@ import {
   openGoalDetail
 } from '../../redux/modules/home/mastermind/actions';
 
+import {
+  refreshFeed
+} from '../../redux/modules/home/feed/actions';
+
 // Assets
 import LoveIcon from '../../asset/utils/love.png';
 import BulbIcon from '../../asset/utils/bulb.png';
@@ -62,25 +66,36 @@ class ActivityCard extends React.PureComponent {
 
   handleShareOnClick = (actedUponEntityType) => {
     const { item } = this.props;
-    const { _id } = item;
+    const { goalRef, postRef } = item;
     const shareType = `Share${actedUponEntityType}`;
 
+    const itemToShare = actedUponEntityType === 'Post' ? postRef : goalRef;
+    if (itemToShare === null) {
+      console.warn(`${DEBUG_KEY}: invalid shared item: `, item);
+      return;
+    }
+
+    const callback = () => {
+      this.props.refreshFeed();
+    };
+    // Share ref is the id of the item to share
+    const { _id } = itemToShare;
     const shareToSwitchCases = switchByButtonIndex([
       [R.equals(0), () => {
         // User choose to share to feed
         console.log(`${DEBUG_KEY} User choose destination: Feed `);
-        this.props.chooseShareDest(shareType, _id, 'feed', item);
+        this.props.chooseShareDest(shareType, _id, 'feed', itemToShare, undefined, callback);
         // TODO: update reducer state
       }],
       [R.equals(1), () => {
         // User choose to share to an event
         console.log(`${DEBUG_KEY} User choose destination: Event `);
-        this.props.chooseShareDest(shareType, _id, 'event', item);
+        this.props.chooseShareDest(shareType, _id, 'event', itemToShare, undefined, callback);
       }],
       [R.equals(2), () => {
         // User choose to share to a tribe
         console.log(`${DEBUG_KEY} User choose destination: Tribe `);
-        this.props.chooseShareDest(shareType, _id, 'tribe', item);
+        this.props.chooseShareDest(shareType, _id, 'tribe', itemToShare, undefined, callback);
       }],
     ]);
 
@@ -220,6 +235,7 @@ export default connect(
     unLikeGoal,
     chooseShareDest,
     openPostDetail,
-    openGoalDetail
+    openGoalDetail,
+    refreshFeed
   }
 )(ActivityCard);

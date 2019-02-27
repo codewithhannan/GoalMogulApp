@@ -116,20 +116,20 @@ const switchPostType = (postType, ref, goalRef) => switchCaseF({
   }
 })('General')(postType);
 
-const switchShareToAction = (dest) => switchCaseF({
+const switchShareToAction = (dest, callback) => switchCaseF({
   // Open modal directly if share to feed
   feed: () => {
     console.log('feed also pushes');
-    Actions.push('shareModal');
+    Actions.push('shareModal', { callback });
   },
   // Open search overlay if share to either tribe or event
-  tribe: () => Actions.searchTribeLightBox(),
-  event: () => Actions.push('searchEventLightBox')
+  tribe: () => Actions.searchTribeLightBox({ callback }),
+  event: () => Actions.push('searchEventLightBox', { callback })
 })('feed')(dest);
 
 // User chooses a share destination
 // No need for refactoring since there could be only one newShare at a time
-export const chooseShareDest = (postType, ref, dest, itemToShare, goalRef) =>
+export const chooseShareDest = (postType, ref, dest, itemToShare, goalRef, callback) =>
 (dispatch, getState) => {
   const { userId } = getState().user;
   const postDetail = switchPostType(postType, ref, goalRef);
@@ -144,7 +144,7 @@ export const chooseShareDest = (postType, ref, dest, itemToShare, goalRef) =>
     }
   });
 
-  switchShareToAction(dest);
+  switchShareToAction(dest, callback);
 };
 
 // Cancel a share
@@ -157,7 +157,7 @@ export const cancelShare = () => (dispatch) => {
 };
 
 // User submit the share modal form
-export const submitShare = (values) => (dispatch, getState) => {
+export const submitShare = (values, callback) => (dispatch, getState) => {
   dispatch({
     type: SHARE_NEW_POST
   });
@@ -182,6 +182,10 @@ export const submitShare = (values) => (dispatch, getState) => {
           payload: res.data
         });
         Actions.pop();
+        // Callback passed down from the trigger
+        if (callback) {
+          callback();
+        }
         console.log(`${DEBUG_KEY}: creating share successfully with data: `, res.data);
         return dispatch(reset('shareModal'));
       }
@@ -242,7 +246,7 @@ const newShareAdaptor = (newShare, formVales) => {
   };
 };
 
-export const selectEvent = (event) => (dispatch) => {
+export const selectEvent = (event, callback) => (dispatch) => {
   dispatch({
     type: SHARE_NEW_SELECT_DEST,
     payload: {
@@ -253,10 +257,10 @@ export const selectEvent = (event) => (dispatch) => {
 
   // Open share modal
   Actions.pop();
-  Actions.shareModal();
+  Actions.shareModal({ callback });
 };
 
-export const selectTribe = (tribe) => (dispatch) => {
+export const selectTribe = (tribe, callback) => (dispatch) => {
   dispatch({
     type: SHARE_NEW_SELECT_DEST,
     payload: {
@@ -267,7 +271,7 @@ export const selectTribe = (tribe) => (dispatch) => {
 
   // Open share modal
   Actions.pop();
-  Actions.shareModal();
+  Actions.shareModal({ callback });
 };
 
 /**

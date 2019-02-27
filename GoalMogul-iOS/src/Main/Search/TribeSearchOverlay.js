@@ -78,7 +78,7 @@ class TribeSearchOverlay extends Component {
               showLoading={this.props.loading}
             />
           </View>
-          <TribeSearch />
+          <TribeSearch callback={this.props.callback} />
         </MenuProvider>
       </BaseOverlay>
     );

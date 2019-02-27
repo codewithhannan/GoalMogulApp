@@ -252,7 +252,7 @@ class ShareModal extends React.Component {
   }
 
   handleCreate = (values) => {
-    this.props.submitShare(this.props.formVals.values);
+    this.props.submitShare(this.props.formVals.values, this.props.callback);
   }
 
   updateSize = (height) => {

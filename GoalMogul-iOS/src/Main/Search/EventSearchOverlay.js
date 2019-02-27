@@ -77,7 +77,7 @@ class EventSearchOverlay extends Component {
               showLoading={this.props.loading}
             />
           </View>
-          <EventSearch />
+          <EventSearch callback={this.props.callback} />
         </MenuProvider>
       </BaseOverlay>
     );

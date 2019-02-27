@@ -35,7 +35,7 @@ class SearchTribeCard extends Component {
   onButtonClicked = (item, type) => {
     if (!type || type === 'SearchSuggestion') {
       console.log(`${DEBUG_KEY} select tribe: `, item);
-      this.props.selectTribe(item);
+      this.props.selectTribe(item, this.props.callback);
       return;
     }
     if (type === 'GeneralSearch') {
