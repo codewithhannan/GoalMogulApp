@@ -186,7 +186,7 @@ export default (state = INITIAL_STATE, action) => {
     // When user deletes his/her own goals from Goals Feed, remove the corresponding
     // Item from the goal feed list
     case PROFILE_GOAL_DELETE_SUCCESS: {
-      const goalId = action.payload;
+      const { goalId } = action.payload;
       let newState = _.cloneDeep(state);
       const oldGoalData = _.get(newState, 'mastermind.data');
       // Filter out the goal
@@ -204,7 +204,7 @@ export default (state = INITIAL_STATE, action) => {
     // When user deletes his/her own posts from activity Feed, remove the corresponding
     // Item from the activity feed list
     case PROFILE_POST_DELETE_SUCCESS: {
-      const postId = action.payload;
+      const { postId } = action.payload;
       const newState = _.cloneDeep(state);
       const oldData = _.get(newState, 'activityfeed.data');
       // Filter out the activity feed that relates to this deleted post
