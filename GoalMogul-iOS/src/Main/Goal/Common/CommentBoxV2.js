@@ -339,7 +339,7 @@ class CommentBoxV2 extends Component {
   renderSuggestionIcon(newComment, pageId, goalId) {
     const { mediaRef, commentType } = newComment;
     const disableButton = mediaRef !== undefined && mediaRef !== '';
-    if (commentType === 'Reply') return '';
+    if (commentType === 'Reply') return null;
 
     return (
       <TouchableOpacity
@@ -367,7 +367,7 @@ class CommentBoxV2 extends Component {
   renderLeftIcons(newComment, pageId, hasSuggestion, goalId) {
     const suggestionIcon = hasSuggestion
       ? this.renderSuggestionIcon(newComment, pageId, goalId)
-      : '';
+      : null;
     return (
       <View
         style={{
@@ -434,8 +434,9 @@ class CommentBoxV2 extends Component {
 
   renderPost(newComment) {
     const { uploading, contentText, tmpSuggestion, suggestion, commentType } = newComment;
+    // console.log(`${DEBUG_KEY}: new comment is: `, newComment);
 
-    const isInValidComment = commentType === 'Comment' && 
+    const isInValidComment = (commentType === 'Comment' || commentType === 'Reply') && 
       (contentText === undefined || contentText === '' || contentText.trim() === '');
 
     const isValidSuggestion = validSuggestion(newComment);
@@ -597,7 +598,7 @@ class CommentBoxV2 extends Component {
 
 const validSuggestion = (newComment) => {
   const { commentType, suggestion } = newComment;
-  if (commentType === 'Comment') return true;
+  if (commentType === 'Comment' || commentType === 'Reply') return true;
   if (isInvalidObject(suggestion)) return false;
   const { 
     suggestionFor, 
