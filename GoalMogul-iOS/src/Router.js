@@ -123,6 +123,12 @@ class RouterComponent extends Component {
       return Actions.popTo('meet');
     }
 
+    // Back to initial for notificationTab
+    if (state.key === 'notificationTab' && isFocused() && state.routes.length > 1) {
+      return Actions.popTo('notification');
+    }
+
+
     if (state.key === 'homeTab' && isFocused()) {
       if (Actions.refs.home !== undefined) {
         Actions.refs.home.getWrappedInstance().scrollToTop();
