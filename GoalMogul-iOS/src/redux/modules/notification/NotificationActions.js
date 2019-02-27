@@ -5,8 +5,8 @@ import { Permissions, Notifications, SecureStore, Linking } from 'expo';
 import { Alert } from 'react-native';
 import _ from 'lodash';
 
-import { isString } from '../../middleware/utils';
-import { api as API, queryBuilderBasicBuilder } from '../../middleware/api';
+import { isString, queryBuilderBasicBuilder } from '../../middleware/utils';
+import { api as API } from '../../middleware/api';
 
 import {
   openProfile
