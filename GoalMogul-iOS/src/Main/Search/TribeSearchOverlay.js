@@ -13,6 +13,7 @@ import _ from 'lodash';
 // Component
 import BaseOverlay from './BaseOverlay';
 import TribeSearch from './Tribe/TribeSearch';
+import { SearchIcon } from '../../Utils/Icons';
 
 import {
   handleSearch,
@@ -76,6 +77,12 @@ class TribeSearchOverlay extends Component {
               clearIcon={null}
               cancelButtonProps={{ color: '#17B3EC' }}
               showLoading={this.props.loading}
+              searchIcon={() => (
+                <SearchIcon 
+                  iconContainerStyle={{ marginBottom: 1, marginTop: 1 }} 
+                  iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
+                />
+              )}
             />
           </View>
           <TribeSearch callback={this.props.callback} />

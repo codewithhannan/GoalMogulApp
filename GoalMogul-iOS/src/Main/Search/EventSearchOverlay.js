@@ -13,6 +13,7 @@ import _ from 'lodash';
 // Component
 import BaseOverlay from './BaseOverlay';
 import EventSearch from './Event/EventSearch';
+import { SearchIcon } from '../../Utils/Icons';
 
 import {
   handleSearch,
@@ -75,6 +76,12 @@ class EventSearchOverlay extends Component {
               clearIcon={null}
               cancelButtonProps={{ color: '#17B3EC' }}
               showLoading={this.props.loading}
+              searchIcon={() => (
+                <SearchIcon 
+                  iconContainerStyle={{ marginBottom: 1, marginTop: 1 }} 
+                  iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
+                />
+              )}
             />
           </View>
           <EventSearch callback={this.props.callback} />
