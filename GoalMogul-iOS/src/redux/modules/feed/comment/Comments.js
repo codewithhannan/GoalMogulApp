@@ -149,7 +149,7 @@ export default (state = INITIAL_STATE, action) => {
             const oldData = _.get(newState, `${parentRef}.data`);
 
             // Filter the removed comment
-            const newData = oldData.filter((item) => item._id !== commentId);
+            const newData = oldData.filter((item) => (item._id !== commentId) && (item.replyToRef !== commentId));
 
             // Update the transformed comment
             const transformedComments = transformComments(newData);

@@ -396,8 +396,7 @@ const styles = {
   iconStyle: {
     alignSelf: 'center',
     // fontSize: 26,
-    marginLeft: 5,
-    marginTop: 3
+    marginLeft: 5
   }
 };
 
