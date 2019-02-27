@@ -100,7 +100,8 @@ export const registrationNextAddProfile = (value) => {
           type: REGISTRATION_ACCOUNT_SUCCESS,
           payload
         });
-        Actions.registrationProfile();
+        Actions.replace('registration');
+        // Actions.reset('auth');
       })
       // TODO: error handling
       .catch((err) => console.log(err));
@@ -458,10 +459,10 @@ export const registrationNextContactSync = ({ skip }) => {
         type,
       });
       if (!hasTutorialShown) {
-        Actions.tutorial();
+        Actions.replace('tutorial');
         return;
       }
-      Actions.mainTabs();
+      Actions.replace('drawer');
     };
   }
 
@@ -602,7 +603,7 @@ export const registrationContactSyncDone = () => {
     });
 
     if (!hasTutorialShown) {
-      Actions.push('tutorial');
+      Actions.replace('tutorial');
       return;
     }  
     // Actions.mainTabs();

@@ -115,7 +115,7 @@ export const loginUser = ({ username, password, navigate }) => {
             return;
           }
           // Show tutorial
-          Actions.tutorial();
+          Actions.replace('tutorial');
         } else {
           // User login fail
           return res.message;
