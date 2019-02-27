@@ -129,8 +129,8 @@ class ActivityFeed extends Component {
           onEndReached={this.handleOnLoadMore}
           ListHeaderComponent={this.renderListHeader()}
           ListEmptyComponent={
-            this.props.loading ? '' :
-            <EmptyResult text={'No Activity'} />
+            this.props.loading ? null :
+            <EmptyResult text={'No Activity'} textStyle={{ paddingTop: 230 }} />
           }
           ListFooterComponent={this.renderListFooter()}
           onEndThreshold={0}
