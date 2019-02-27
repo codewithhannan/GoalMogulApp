@@ -94,12 +94,11 @@ class SearchOverlay extends Component {
               onCancel={this.handleCancel}
               onChangeText={this.handleChangeText}
               clearIcon={null}
-              noIcon
               cancelButtonProps={{ color: '#17B3EC' }}
               showLoading={this.props.loading}
               searchIcon={() => (
                 <SearchIcon 
-                  iconContainerStyle={{ marginBottom: 3, marginTop: 1 }} 
+                  iconContainerStyle={{ marginBottom: 1, marginTop: 1 }} 
                   iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
                 />
               )}
