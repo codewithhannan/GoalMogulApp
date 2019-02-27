@@ -5,6 +5,7 @@
     "sdkVersion": "30.0.0",
     "version": "0.1.6",
     "slug": "goalmogul",
+    "orientation": "portrait",
     "ios": {
       "bundleIdentifier": "com.goalmogul.goalmogulbeta",
       "infoPlist": {
