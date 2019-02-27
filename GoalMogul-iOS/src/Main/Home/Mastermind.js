@@ -316,10 +316,10 @@ class Mastermind extends Component {
           ListHeaderComponent={this.renderListHeader()}
           ListFooterComponent={this.renderListFooter()}
           ListEmptyComponent={
-            this.props.loading ? '' :
+            this.props.loading ? null :
             <EmptyResult
               text={'No Goals have been shared'}
-              textStyle={{ paddingTop: 100 }}
+              textStyle={{ paddingTop: 230 }}
             />
           }
           onEndThreshold={0}
