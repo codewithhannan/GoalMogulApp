@@ -11,7 +11,8 @@ import {
   DatePickerIOS,
   Modal,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  Animated
 } from 'react-native';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -20,14 +21,11 @@ import {
   FieldArray,
   Field,
   reduxForm,
-  formValueSelector,
-  SubmissionError,
-  reset
+  formValueSelector
 } from 'redux-form';
 import R from 'ramda';
 import moment from 'moment';
 import {
-  MenuProvider,
   Menu,
   MenuOptions,
   MenuOption,
@@ -94,6 +92,8 @@ class NewGoalView extends Component {
       tagSearchData: { ...INITIAL_TAG_SEARCH },
     };
     this.updateSearchRes = this.updateSearchRes.bind(this);
+    this.scrollTo = this.scrollTo.bind(this);
+    this.handleLayoutChange = this.handleLayoutChange.bind(this);
   }
 
   componentDidMount() {
@@ -102,6 +102,31 @@ class NewGoalView extends Component {
 
   componentWillUnmount() {
     console.log(`${DEBUG_KEY}: unmounting NewGoalView`);
+  }
+
+  /**
+   * y: calculated height to move based on the screen
+   * type: ['step', 'need']
+   * index: index in the type array starting from 0
+   */
+  scrollTo = (y, type, index) => {
+    // console.log(`${DEBUG_KEY}: scrollTo is called to scroll to y: ${y}`);
+    // console.log(`${DEBUG_KEY}: need length: `, this.props.steps.length);
+    // console.log(`${DEBUG_KEY}: index is: `, index);
+    let extraNumber = 0;
+    if (type === 'step') {
+      extraNumber = index;
+    }
+
+    if (type === 'need') {
+      extraNumber = (this.props.steps.length) + index;
+    }
+    const extraScrollToHeight = extraNumber * 50;
+    this.scrollView.scrollTo({ y: y + extraScrollToHeight, animated: true });
+  }
+
+  handleLayoutChange = ({ nativeEvent }) => {
+    console.log(`${DEBUG_KEY}: [ handleLayoutChange ]: layout: `, nativeEvent.layout);
   }
 
   /* Tag related functions */
@@ -837,7 +862,10 @@ class NewGoalView extends Component {
     );
   }
 
-  renderFieldArrayItem = (props, placeholder, fields, canDrag) => {
+  /**
+   * type: ['step', 'need']
+   */
+  renderFieldArrayItem = (props, placeholder, fields, canDrag, type) => {
     const { item, index, move, moveEnd, isActive } = props;
     const iconOnPress = index === 0 ?
       undefined
@@ -859,11 +887,15 @@ class NewGoalView extends Component {
           iconStyle={styles.cancelIconStyle}
           iconOnPress={iconOnPress}
           move={move}
+          blurOnSubmit
           moveEnd={moveEnd}
           canDrag={canDrag}
           autoCorrect
           autoCapitalize={'sentences'}
           inputContainerStyle={{ flexDirection: 'row' }}
+          scrollTo={this.scrollTo}
+          index={index}
+          type={type}
         />
       </View>
     );
@@ -884,7 +916,7 @@ class NewGoalView extends Component {
     const fieldsComponent = fields.length > 0 ?
       (
         <DraggableFlatlist
-          renderItem={(props) => this.renderFieldArrayItem(props, placeholder, fields, true)}
+          renderItem={(props) => this.renderFieldArrayItem(props, placeholder, fields, true, buttonText)}
           data={dataToRender}
           keyExtractor={item => `${item.index}`}
           scrollPercent={5}
@@ -926,10 +958,12 @@ class NewGoalView extends Component {
       //     />
       //   );
       // })
-      : '';
+      : null;
 
     return (
-      <View style={{ ...styles.sectionMargin }}>
+      <View 
+        style={{ ...styles.sectionMargin }} 
+      >
         {titleText}
         {fieldsComponent}
         {button}
@@ -960,6 +994,7 @@ class NewGoalView extends Component {
       <ScrollView
         style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
         scrollEnabled={this.state.scrollEnabled}
+        ref={r => { this.scrollView = r; }}
       >
         <View style={{ flex: 1, padding: 20 }}>
           {this.renderUserInfo(user)}
@@ -982,7 +1017,10 @@ class NewGoalView extends Component {
 
           {this.renderTimeline()}
           <FieldArray name="steps" component={this.renderSteps} />
-          <FieldArray name="needs" component={this.renderNeeds} />
+          <FieldArray 
+            name="needs" 
+            component={this.renderNeeds} 
+          />
         </View>
 
       </ScrollView>

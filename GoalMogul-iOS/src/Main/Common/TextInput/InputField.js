@@ -3,21 +3,61 @@ import {
   TextInput,
   View,
   TouchableOpacity,
-  Image
+  Image,
+  Dimensions,
+  Keyboard
 } from 'react-native';
 import _ from 'lodash';
 
 // Assets
 import menu from '../../../asset/header/menu.png';
+const DEBUG_KEY = '[ UI InputField ]';
 
 class InputField extends Component {
 
   constructor(props) {
-   super(props);
-   this.updateRef = this.updateRef.bind(this, 'input');
-   this.onChange = this.onChange.bind(this);
-   this.onChangeText = this.onChangeText.bind(this);
-   this.onIconPress = this.onIconPress.bind(this);
+    super(props);
+    this.updateRef = this.updateRef.bind(this, 'input');
+    this.onChange = this.onChange.bind(this);
+    this.onChangeText = this.onChangeText.bind(this);
+    this.onIconPress = this.onIconPress.bind(this);
+    this.handleOnLayout = this.handleOnLayout.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+    this.keyboardDidShow = this.keyboardDidShow.bind(this);
+    this.keyboardDidHide = this.keyboardDidHide.bind(this);
+    this.state = {
+      keyboardHeight: 0
+    }
+  }
+
+ componentDidMount() {
+   console.log(`${DEBUG_KEY}: mounting input field`);
+   this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this.keyboardDidShow);
+   this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
+ }
+
+  componentWillUnmount() {
+    Keyboard.removeListener('keyboardDidShow', this.keyboardDidShow);
+    Keyboard.removeListener('keyboardDidHide', this.keyboardDidHide);
+  }
+
+  keyboardDidShow(e) {
+    this.setState({
+      ...this.state,
+      keyboardHeight: e.endCoordinates.height,
+    }); 
+  }
+
+  keyboardDidHide(e) {
+    this.setState({
+      ...this.state,
+      keyboardHeight: 0,
+    }); 
+  }
+
+ handleOnLayout = ({ nativeEvent }) => {
+  const { layout } = nativeEvent;
+  // console.log(`${DEBUG_KEY}: nativeEvent with layout is: `, layout);
  }
 
  onChange(event) {
@@ -43,6 +83,31 @@ class InputField extends Component {
     } else {
       this.clear();
     }
+  }
+
+  onFocus() {
+    const { input, scrollTo, type, index } = this.props;
+    const { onFocus } = input;
+    if (onFocus) onFocus();
+    const screenHeight = Dimensions.get('window').height;
+    this.view.measure( (fx, fy, width, height, px, py) => {
+      // console.log('Component width is: ' + width);
+      // console.log('Component height is: ' + height);
+      // console.log('X offset to page: ' + px);
+      // console.log('Y offset to page: ' + py);
+      // console.log('fy is: ' + fy);
+      // console.log('screen height is: ', screenHeight);
+      if ((py + this.state.keyboardHeight + 50) > screenHeight) {
+        const scrollToHeight = (py - (screenHeight / 2)) + 46 + 10;
+        console.log('scrollToHeight is: ', scrollToHeight);
+        setTimeout(() => {
+          scrollTo(scrollToHeight, type, index);
+        }, 50);
+      } else {
+        console.log(`${DEBUG_KEY}: keyboardHeight: `, this.state.keyboardHeight);
+      }
+    })
+    // console.log(`${DEBUG_KEY}: nativeEvent with layout is: `, this.view.measure());
   }
 
   updateRef(name, ref) {
@@ -94,7 +159,10 @@ class InputField extends Component {
     ) : '';
 
     return (
-      <View style={{ ...styles.inputContainerStyle, ...inputContainerStyle }}>
+      <View 
+        style={{ ...styles.inputContainerStyle, ...inputContainerStyle }} 
+        ref={v => { this.view = v; }}
+      >
         {gestureHandler}
         <TextInput
           ref={this.updateRef}
@@ -106,7 +174,7 @@ class InputField extends Component {
           onChange={this.onChange}
           returnKeyType='done'
           multiline={multiline || false}
-          onFocus={onFocus}
+          onFocus={this.onFocus}
           editable={editable}
           placeholder={placeholder}
           style={style}
