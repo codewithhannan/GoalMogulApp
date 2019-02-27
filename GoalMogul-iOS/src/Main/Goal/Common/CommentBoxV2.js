@@ -105,7 +105,7 @@ class CommentBoxV2 extends Component {
       ...this.state,
       defaultValue: 'Write a Comment...'
     });
-    // console.log(`${DEBUG_KEY}: this.textInput in componentDidMount: `, this.textInput);
+    console.log(`${DEBUG_KEY}: componentDidMount: `);
   }
 
   onTaggingSuggestionTap(item, hidePanel, cursorPosition) {

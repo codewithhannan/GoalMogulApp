@@ -123,8 +123,9 @@ class Mastermind extends Component {
               {
                 focusType: subItem.type,
                 focusRef: subItem._id,
+                initialShowSuggestionModal: true
                 // commentBox is passed in to GoalDetailCardV3 as initial
-                commentBox: true
+                // commentBox: true
               }
             );
             return;

@@ -39,7 +39,7 @@ class NotificationCard extends React.Component {
         focusType: 'need',
         focusRef: item._id,
         // commentBox is passed in to GoalDetailCardV3 as initial
-        commentBox: true,
+        // commentBox: true,
         initialShowSuggestionModal: true
       };
       return this.props.openGoalDetailById(item.goalRef._id, initialProps);

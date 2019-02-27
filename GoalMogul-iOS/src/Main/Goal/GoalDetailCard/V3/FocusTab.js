@@ -59,6 +59,10 @@ class FocusTab extends React.PureComponent {
       keyboardDidShow: false
     };
   }
+
+  componentDidMount() {
+    console.log(`${DEBUG_KEY}: component did mount`);
+  }
   
   // Refresh goal detail and comments all together
   handleRefresh = () => {
