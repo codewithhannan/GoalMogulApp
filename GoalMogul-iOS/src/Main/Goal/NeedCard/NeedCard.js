@@ -115,7 +115,8 @@ class NeedCard extends Component {
         options: [{ option: 'Delete' }],
         onPress: () => {
           this.props.deleteGoal(_id, pageId);
-        }
+        },
+        shouldExtendOptionLength: false
       },
       others: {
         options: [
@@ -133,6 +134,7 @@ class NeedCard extends Component {
             return this.props.subscribeEntityNotification(_id, 'Goal');
           }
         },
+        shouldExtendOptionLength: false
       }
     };
 
