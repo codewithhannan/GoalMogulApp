@@ -75,7 +75,7 @@ class Account extends Component {
   }
 
   renderSplitter() {
-    return '';
+    return null;
     // return (
     //   <View style={styles.splitterStyle}>
     //     <Divider horizontal width={80} />
@@ -94,7 +94,7 @@ class Account extends Component {
   }
 
   renderLogIn() {
-    return '';
+    return null;
     // return (
     //   <TouchableOpacity activeOpacity={0.85} onPress={this.handleLogInPressed.bind(this)}>
     //     <View>

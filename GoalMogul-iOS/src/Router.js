@@ -157,16 +157,17 @@ class RouterComponent extends Component {
               <Stack key="auth" initial hideNavBar>
                 <Scene key="splash" component={SplashScreen} initial />
                 <Scene key="login" component={LoginPage} />
-                
-                <Scene key="tutorial" component={Tutorial} />
-
                 <Scene 
                   key="registrationAccount" 
                   component={RegistrationAccount}   
                 />
+              </Stack>
+
+              <Stack key="registration" hideNavBar type={ActionConst.RESET}>
                 <Scene
                   key="registrationProfile"
                   component={AddProfilePic}
+                  initial
                 />
                 <Scene
                   key="registrationIntro"
@@ -181,6 +182,7 @@ class RouterComponent extends Component {
                   component={ContactSync}
                 />
               </Stack>
+              <Scene key="tutorial" component={Tutorial} hideNavBar />
 
               {/* Registration screen stack*/}
              {/** 

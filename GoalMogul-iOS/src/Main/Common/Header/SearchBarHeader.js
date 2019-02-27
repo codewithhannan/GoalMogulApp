@@ -195,7 +195,7 @@ class SearchBarHeader extends Component {
         onPress={this.handleProfileOnClick.bind(this)}
       >
         <Image
-          style={{ ...styles.headerLeftImage, tintColor }}
+          style={{ ...styles.headerLeftImage }}
           resizeMode='contain'
           source={profilePic}
         />

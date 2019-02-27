@@ -32,7 +32,7 @@ class AddProfilePic extends Component {
   render() {
     return (
       <View style={Styles.containerStyle}>
-        <Header name={this.props.name || 'John Doe'} type='profile' />
+        <Header name={this.props.name || 'John Doe'} type='profile' hasBackButton={false} />
         <View style={Styles.bodyContainerStyle}>
           <Text style={Styles.titleTextStyle}>Upload a picture</Text>
           <View style={{ alignSelf: 'center' }}>

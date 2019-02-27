@@ -59,6 +59,10 @@ class Header extends Component {
   }
 
   renderBackButton() {
+    const { hasBackButton } = this.props;
+    if (hasBackButton === false) {
+      return null;
+    }
     return (
       <TouchableWithoutFeedback onPress={this.handleBackOnClick.bind(this)}>
         <View style={styles.navBarStyle}>
@@ -96,6 +100,7 @@ class Header extends Component {
 
   render() {
     const headerStyle = { ...styles.containerStyle }
+    const { hasBackButton } = this.props;
 
     const pagination = this.props.type ? this.renderPagination(this.props.type) : '';
 
@@ -122,6 +127,15 @@ class Header extends Component {
           <Image style={styles.imageStyle} source={HeaderLogo} />
           <Text style={styles.introTextStyle}>Contacts on GoalMogul,</Text>
           {pagination}
+        </View>
+      );
+    }
+    
+    // Added this case for uploading image should not go back to account creation
+    if (hasBackButton === false) {
+      return (
+        <View style={headerStyle}>
+          <Image source={HeaderImage} />
         </View>
       );
     }
