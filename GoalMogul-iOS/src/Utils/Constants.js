@@ -7,6 +7,9 @@ export const IPHONE_MODELS = ['iphone 7', 'iphone 6',
 export const IMAGE_BASE_URL = 'https://s3.us-west-2.amazonaws.com/goalmogul-v1/';
 export const BUG_REPORT_URL = 'https://goo.gl/forms/zfhrCXeLPz3QCKi03';
 
+const expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+export const URL_REGEX = new RegExp(expression);
+
 export const SORT_BY_OPTIONS = [
     {
         text: 'Date Created',

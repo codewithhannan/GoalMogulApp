@@ -44,7 +44,7 @@ class ReportModal extends Component {
           placeholder='Title of the report...'
           value={_.isEmpty(title) ? '' : title}
           onEndEditing={() => {
-            if (!title || title.length < 10) Alert.alert('Title must be at least 10 characters');
+            if (!title || title.length < 5) Alert.alert('Title must be at least 5 characters');
             if (title.length > 70) Alert.alert('Title cannot be longer than 70 characters');
           }}
         />
@@ -88,7 +88,7 @@ class ReportModal extends Component {
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
               <View style={{ flex: 1 }}>
                 <ModalHeader
-                  title='Report'
+                  title='Report abuse'
                   actionText='Submit'
                   onCancel={() => {
                     Actions.pop();
@@ -97,7 +97,7 @@ class ReportModal extends Component {
                   onAction={() => {
                     this.props.postingReport();
                   }}
-                  actionDisabled={!(title && details && title.length >= 7 && !loading)}
+                  actionDisabled={!(title && details && title.length >= 5 && !loading)}
                 />
                 <Text style={styles.subTitleTextStyle}>Title</Text>
                 {this.renderTitleInput()}

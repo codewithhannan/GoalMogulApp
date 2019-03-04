@@ -4,7 +4,8 @@
 import React from 'react';
 import {
     FlatList,
-    View
+    View,
+    ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -19,6 +20,11 @@ import {
     loadMoreRequest,
     handleRefreshFriend
 } from '../../../../redux/modules/meet/MeetActions';
+
+// Constants
+import {
+    MEET_REQUEST_LIMIT
+} from '../../../../reducers/MeetReducers';
 
 /* Styles */
 import {
@@ -47,6 +53,22 @@ class FriendTabView extends React.Component {
         return <FriendTabCardView item={item} />;
     }
 
+    renderListFooter() {
+        const { loading, data } = this.props;
+        // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
+        if (loading && data.length >= MEET_REQUEST_LIMIT) {
+            return (
+            <View
+                style={{
+                paddingVertical: 20
+                }}
+            >
+                <ActivityIndicator size='small' />
+            </View>
+            );
+        }
+    }
+
     render() {
         const { user } = this.props;
         const modalTitle = `${user.name}'s Friends`;
@@ -62,9 +84,10 @@ class FriendTabView extends React.Component {
                     onEndReached={this.handleOnLoadMore}
                     onEndReachedThreshold={0}
                     ListEmptyComponent={
-                    this.props.refreshing ? '' :
+                    this.props.refreshing ? null :
                         <EmptyResult text={'You haven\'t added any friends'} />
                     }
+                    ListFooterComponent={this.renderListFooter()}
                 />
             </View>
         );

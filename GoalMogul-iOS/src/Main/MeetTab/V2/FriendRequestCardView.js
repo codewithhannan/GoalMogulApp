@@ -129,7 +129,7 @@ class FriendRequestCardView extends React.PureComponent {
 
     renderProfileImage(item) {
         const { user, type } = item;
-        if (!user || type === 'info') return '';
+        if (!user || type === 'info') return null;
         return (
             <ProfileImage
                 imageStyle={{ height: 40, width: 40, borderRadius: 5 }}
@@ -144,7 +144,7 @@ class FriendRequestCardView extends React.PureComponent {
 
   renderButton(item) {
     const buttonText = item.type === 'outgoing' ? 'Cancel' : 'Respond';
-    if (!item.user || item.type === 'info') return '';
+    if (!item.user || item.type === 'info') return null;
     return (
         <TouchableOpacity 
             onPress={() => this.handleButtonOnPress(item)}
@@ -160,7 +160,7 @@ class FriendRequestCardView extends React.PureComponent {
 
   renderProfile(item) {
     const { user, type } = item;
-    if (!user || type === 'info') return '';
+    if (!user || type === 'info') return null;
     const { name, profile, headline } = user;
     const detailText = headline || profile.occupation;
     return (
@@ -200,7 +200,7 @@ class FriendRequestCardView extends React.PureComponent {
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     console.log(`${DEBUG_KEY}: item is: `, item);
     return (
@@ -214,7 +214,7 @@ class FriendRequestCardView extends React.PureComponent {
             {
                 item.type !== 'info'
                     ? <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: 35 }} />
-                    : ''
+                    : null
             }
             {this.renderButton(item)}
             {this.renderInfoText(item)}

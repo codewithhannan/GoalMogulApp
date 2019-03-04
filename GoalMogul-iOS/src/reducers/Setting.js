@@ -35,8 +35,9 @@ const INITIAL_STATE = {
   block: {
     data: [],
     skip: 0,
-    limit: 20,
+    limit: 10,
     refreshing: false,
+    loading: false,
     hasNextPage: undefined
   },
   notificationToken: undefined
@@ -121,8 +122,18 @@ export default (state = INITIAL_STATE, action) => {
     3. block user
     TODO: implement block, unblock, refresh and load more logic
     */
-    case SETTING_BLOCK_FETCH_ALL:
-      return { ...state, block: { ...state.block, fetching: true } };
+    case SETTING_BLOCK_FETCH_ALL: {
+      let newState = _.cloneDeep(state);
+      const { refresh } = action.payload;
+      if (refresh) {
+        newState = _.set(newState, 'block.refreshing', true);
+      } else {
+        newState = _.set(newState, 'block.loading', true);
+      }
+
+      return newState;
+      // return { ...state, block: { ...state.block, fetching: true } };
+    }
 
     case SETTING_BLOCK_FETCH_ALL_DONE: {
       const { data, refresh, skip, hasNextPage, message } = action.payload;
@@ -136,7 +147,12 @@ export default (state = INITIAL_STATE, action) => {
         }
         newState.block.skip = skip;
         newState.block.hasNextPage = hasNextPage;
-        newState.block.refreshing = false;
+
+        if (refresh) {
+          newState.block.refreshing = false;
+        } else {
+          newState.block.loading = false;
+        }
       }
 
       return { ...newState };

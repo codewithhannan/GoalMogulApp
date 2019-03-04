@@ -388,7 +388,7 @@ class GoalDetailCardV3 extends Component {
    */
   renderFocusedItem() {
     const { focusType, focusRef } = this.props.navigationState;
-    if (!focusType) return '';
+    if (!focusType) return null;
     const focusedItem = this.getFocusedItem(focusType, focusRef);
 
     return (
@@ -413,7 +413,7 @@ class GoalDetailCardV3 extends Component {
     const { goalDetail, navigationState } = this.props;
     const { commentCount } = goalDetail;
     const { focusType } = navigationState;
-    if (focusType) return '';
+    if (focusType) return null;
     return (
       <TouchableOpacity
         activeOpacity={0.85}
@@ -449,7 +449,7 @@ class GoalDetailCardV3 extends Component {
   }
 
   renderCommentBox(focusType, pageId) {
-    if (!focusType) return '';
+    if (!focusType) return null;
 
     const resetCommentTypeFunc = focusType === 'comment'
       ? () => this.props.resetCommentType('Comment', pageId)
@@ -482,7 +482,7 @@ class GoalDetailCardV3 extends Component {
   render() {
     const { goalDetail, navigationState, pageId, goalId } = this.props;
     // console.log('transformed comments to render are: ', comments);
-    if (!goalDetail || _.isEmpty(goalDetail)) return '';
+    if (!goalDetail || _.isEmpty(goalDetail)) return null;
     const { focusType, focusRef } = navigationState;
 
     return (

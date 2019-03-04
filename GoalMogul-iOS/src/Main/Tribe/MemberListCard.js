@@ -174,7 +174,7 @@ class MemberListCard extends Component {
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     const { headline } = item;
     return (

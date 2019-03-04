@@ -384,9 +384,12 @@ class CommentBoxV2 extends Component {
   }
 
   renderImageIcon(newComment) {
-    const { suggestion } = newComment;
-    const disableButton =
-      (suggestion !== undefined && suggestion.suggestionFor !== undefined);
+    const { suggestion, commentType } = newComment;
+    // Disable image icon if there is a valid suggestion
+    const disableButton = commentType === 'Suggestion';
+    // console.log(`${DEBUG_KEY}: image button disabled: `, disableButton);
+    // console.log(`${DEBUG_KEY}: suggestion is: `, suggestion);
+      // (suggestion !== undefined && suggestion.suggestionFor !== undefined);
     return (
       <TouchableOpacity
         activeOpacity={0.85}
@@ -433,11 +436,12 @@ class CommentBoxV2 extends Component {
   }
 
   renderPost(newComment) {
-    const { uploading, contentText, tmpSuggestion, suggestion, commentType } = newComment;
+    const { uploading, contentText, tmpSuggestion, suggestion, commentType, mediaRef } = newComment;
     // console.log(`${DEBUG_KEY}: new comment is: `, newComment);
 
     const isInValidComment = (commentType === 'Comment' || commentType === 'Reply') && 
-      (contentText === undefined || contentText === '' || contentText.trim() === '');
+      (contentText === undefined || contentText === '' || contentText.trim() === '') && 
+      mediaRef === undefined;
 
     const isValidSuggestion = validSuggestion(newComment);
 
@@ -618,7 +622,7 @@ const validSuggestion = (newComment) => {
   }
 
   if (suggestionType === 'Custom') {
-    if (isInvalidObject(suggestionText) && isInvalidObject(suggestionLink)) {
+    if (isInvalidObject(suggestionText) || isInvalidObject(suggestionLink)) {
       return false;
     }
   }

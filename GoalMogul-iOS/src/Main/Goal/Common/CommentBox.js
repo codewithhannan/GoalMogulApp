@@ -150,7 +150,7 @@ class CommentBox extends Component {
   renderSuggestionIcon(newComment, pageId) {
     const { mediaRef, commentType } = newComment;
     const disableButton = mediaRef !== undefined && mediaRef !== '';
-    if (commentType === 'Reply') return '';
+    if (commentType === 'Reply') return null;
 
     return (
       <TouchableOpacity
@@ -178,7 +178,7 @@ class CommentBox extends Component {
   renderLeftIcons(newComment, pageId, hasSuggestion) {
     const suggestionIcon = hasSuggestion
       ? this.renderSuggestionIcon(newComment, pageId)
-      : '';
+      : null;
     return (
       <View
         style={{
@@ -218,7 +218,7 @@ class CommentBox extends Component {
 
   renderMedia(newComment) {
     const { mediaRef } = newComment;
-    if (!mediaRef) return '';
+    if (!mediaRef) return null;
     const onPress = () => console.log('Media on Pressed');
     const onRemove = () => this.props.newCommentOnMediaRefChange(undefined, this.props.pageId);
 
@@ -243,7 +243,7 @@ class CommentBox extends Component {
     );
   }
   renderPost(newComment) {
-    const { uploading, contentText, tmpSuggestion, commentType } = newComment;
+    const { uploading, contentText, tmpSuggestion, commentType, mediaRef } = newComment;
 
     // This is old and buggy implementation
     // const disable = uploading ||
@@ -251,7 +251,8 @@ class CommentBox extends Component {
     //   && _.isEmpty(tmpSuggestion));
 
     const isInValidComment = (commentType === 'Comment' || commentType === 'Reply') && 
-      (contentText === undefined || contentText === '' || contentText.trim() === '');
+      (contentText === undefined || contentText === '' || contentText.trim() === '') &&
+      mediaRef === undefined;
 
     const isValidSuggestion = validSuggestion(newComment);
 
@@ -294,12 +295,12 @@ class CommentBox extends Component {
       );
     }
 
-    return '';
+    return null;
   }
 
   render() {
     const { pageId, newComment, hasSuggestion } = this.props;
-    if (!newComment || !newComment.parentRef) return '';
+    if (!newComment || !newComment.parentRef) return null;
 
     const { uploading } = newComment;
 

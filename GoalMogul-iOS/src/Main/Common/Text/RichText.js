@@ -16,6 +16,11 @@ import {
   APP_DEEP_BLUE
 } from '../../../styles';
 
+// Utils
+import {
+  URL_REGEX
+} from '../../../Utils/Constants';
+
 const DEBUG_KEY = '[ UI RichText ]';
 
 class RichText extends React.PureComponent {
@@ -66,6 +71,11 @@ class RichText extends React.PureComponent {
           parse={
             [
               { type: 'url', style: styles.url, onPress: this.handleUrlPress },
+              { 
+                pattern: URL_REGEX, // Additional regex to match without HTTP protocal
+                style: styles.url,
+                onPress: this.handleUrlPress
+              },
               // { type: 'phone', style: styles.phone, onPress: this.handlePhonePress },
               // { type: 'email', style: styles.email, onPress: this.handleEmailPress },
               ...parsedTags

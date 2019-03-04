@@ -61,13 +61,13 @@ class RefPreview extends Component {
         </View>
       );
     }
-    return '';
+    return null;
   }
 
   // Currently this is a dummy component
   render() {
     const { item, postType, goalRef } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     // TODO: add a postType ShareStep
     const { title, content, defaultPicture, picture } = switchCaseItem(item, postType);

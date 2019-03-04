@@ -81,7 +81,7 @@ export const getUserStatus = createSelector(
     let status;
     members.map((member) => {
       const { memberRef, category } = member;
-      if (memberRef._id === userId) {
+      if (memberRef && memberRef._id === userId) {
         status = category;
       }
       return '';
@@ -113,7 +113,7 @@ export const getTribeNavigationState = createSelector(
 
     let isMember;
     members.forEach((member) => {
-      if (member.memberRef._id === userId
+      if (member.memberRef && member.memberRef._id === userId
         && (member.category === 'Admin'
         || member.category === 'Member'
         || member.category === 'Invitee')) {
@@ -144,7 +144,7 @@ export const getTribeMemberNavigationState = createSelector(
     let isAdmin;
     let isMember;
     members.forEach((member) => {
-      if (member.memberRef._id === userId) {
+      if (member.memberRef && member.memberRef._id === userId) {
         if (member.category === 'Admin') {
           isAdmin = true;
         }
@@ -175,7 +175,7 @@ export const getMyTribeUserStatus = createSelector(
     let status;
     members.map((member) => {
       const { memberRef, category } = member;
-      if (memberRef._id === userId) {
+      if (memberRef && memberRef._id === userId) {
         status = category;
       }
       return '';
@@ -207,7 +207,7 @@ export const getMyTribeNavigationState = createSelector(
 
     let isMember;
     members.forEach((member) => {
-      if (member.memberRef._id === userId
+      if (member.memberRef && member.memberRef._id === userId
         && (member.category === 'Admin'
         || member.category === 'Member'
         || member.category === 'Invitee')) {
@@ -238,7 +238,7 @@ export const getMyTribeMemberNavigationState = createSelector(
     let isAdmin;
     let isMember;
     members.forEach((member) => {
-      if (member.memberRef._id === userId) {
+      if (member.memberRef && member.memberRef._id === userId) {
         if (member.category === 'Admin') {
           isAdmin = true;
         }

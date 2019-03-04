@@ -48,7 +48,7 @@ import {
 } from '../../../redux/modules/feed/comment/CommentSelector';
 
 // Utils function
-import { capitalizeWord } from '../../../redux/middleware/utils';
+import { capitalizeWord, switchCase } from '../../../redux/middleware/utils';
 
 const OPTIONS_HEIGHT = 120;
 const OPTIONS_OPACITY = 0.001;
@@ -143,11 +143,14 @@ class SuggestionModal extends Component {
 
   renderSuggestionFor(newComment, goal) {
     const { suggestionFor, suggestionForRef } = newComment.tmpSuggestion;
+    const { stepRef, needRef } = newComment;
     return (
       <SuggestedItem
         type={suggestionFor}
         suggestionForRef={suggestionForRef}
         goal={goal}
+        stepRef={stepRef}
+        needRef={needRef}
       />
     );
   }
@@ -174,7 +177,7 @@ class SuggestionModal extends Component {
           <Text style={styles.optionsCollapsedTextStyle}>Back</Text>
         </TouchableOpacity>
       )
-      : '';
+      : null;
       // (
       //   <TouchableOpacity activeOpacity={0.85}
       //     style={{ width: 50, justifyContent: 'center' }}
@@ -183,6 +186,9 @@ class SuggestionModal extends Component {
       //     <Text style={styles.optionsCollapsedTextStyle}>Collapse</Text>
       //   </TouchableOpacity>
       // );
+
+
+    const suggestionForText = switchCaseForSuggestionForText(suggestionType);
 
     return (
       <View
@@ -201,10 +207,10 @@ class SuggestionModal extends Component {
                 marginBottom: 10
               }}
             >
-              Suggest a...
+              Suggest {`${suggestionForText}`}
             </Text>
           </View>
-          {optionsCollapsed ? <View style={{ width: 50 }} /> : ''}
+          {optionsCollapsed ? <View style={{ width: 50 }} /> : null}
         </View>
 
         <Animated.View
@@ -219,7 +225,7 @@ class SuggestionModal extends Component {
 
   renderSuggestionBody(newComment) {
     const { suggestionType } = newComment.tmpSuggestion;
-    if (!this.state.optionsCollapsed) return '';
+    if (!this.state.optionsCollapsed) return null;
     if (suggestionType === 'User' || suggestionType === 'Friend' ||
       suggestionType === 'Event' || suggestionType === 'Tribe' ||
       suggestionType === 'ChatConvoRoom'
@@ -238,12 +244,12 @@ class SuggestionModal extends Component {
         <GeneralSuggestion pageId={this.props.pageId} opacity={this.suggestionOpacity} />
       );
     }
-    return '';
+    return null;
   }
 
   render() {
     const { newComment, item } = this.props;
-    if (!newComment || !item) return '';
+    if (!newComment || !item) return null;
 
     return (
       <Modal
@@ -278,6 +284,8 @@ class SuggestionModal extends Component {
     );
   }
 }
+
+
 
 // Legacy usage of KeyboardAvoidingView
 // <ScrollView>
@@ -323,6 +331,15 @@ const styles = {
     paddingBottom: 5,
   }
 };
+
+const switchCaseForSuggestionForText = (suggestionType) => switchCase({
+  'User': 'an user',
+  'ChatConvoRoom': 'a chat room',
+  'NewNeed': 'a new need',
+  'NewStep': 'a new step',
+  'Event': 'an event',
+  'Tribe': 'a tribe'
+})('a...')(suggestionType);
 
 // IconMapLeft: ["Person", "ChatConvoRoom", "Step or Need"],
 // IconMapRight: ["Event", "Tribe", "Custom"]
@@ -454,21 +471,37 @@ const Options = (props) => {
  * Step 3: Find a reading buddy
  */
 const SuggestedItem = (props) => {
-  const { goal, type, suggestionForRef } = props;
+  const { goal, type, suggestionForRef, stepRef, needRef } = props;
+  let refToSearchFor = suggestionForRef;
+
 
   let items = [];
-  if (type === 'Step') {
+  if (type === 'Step' || stepRef) {
     items = _.get(goal, 'steps');
+
+    // Use stepRef if suggestionForRef is undefined
+    // This could be due to entering suggestion modal through goal card or 
+    // NotificationNeedCard directly through suggestion button
+    if (suggestionForRef === undefined && stepRef !== undefined) {
+      refToSearchFor = stepRef;
+    }
   }
-  if (type === 'Need') {
+  if (type === 'Need' || needRef) {
     items = _.get(goal, 'needs');
+
+    // Use needRef if suggestionForRef is undefined
+    // This could be due to entering suggestion modal through goal card or 
+    // NotificationNeedCard directly through suggestion button
+    if (suggestionForRef === undefined && needRef !== undefined) {
+      refToSearchFor = needRef;
+    }
   }
 
-  if (!items || _.isEmpty(items)) return '';
-  const index = items.findIndex((temp) => temp._id === suggestionForRef);
+  if (!items || _.isEmpty(items)) return null;
+  const index = items.findIndex((temp) => temp._id === refToSearchFor);
 
-  if (index === -1) return '';
-  const item = items.find((temp) => temp._id === suggestionForRef);
+  if (index === -1) return null;
+  const item = items.find((temp) => temp._id === refToSearchFor);
 
   return (
     <View
