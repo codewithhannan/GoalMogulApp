@@ -4,6 +4,8 @@ import {
   INITIAL_EVENT_PAGE
 } from './Events';
 
+const DEBUG_KEY = '[ Selector Event ]';
+
 const getEventParticipants = (state) => {
   if (state.event.item) {
     return state.event.item.participants;
@@ -54,7 +56,8 @@ export const getUserStatus = createSelector(
 
     let status;
     participants.map((participant) => {
-      if (participant.participantRef._id === userId) {
+      // Participant can be null
+      if (participant.participantRef && participant.participantRef._id === userId) {
         status = participant.rsvp;
       }
       return '';
@@ -70,7 +73,9 @@ export const makeGetEventUserStatusById = () => createSelector(
 
     let status;
     participants.map((participant) => {
-      if (participant.participantRef._id === userId) {
+      // console.log(`${DEBUG_KEY}: partiipant is: `, participant);
+      // Participant can be null
+      if (participant.participantRef && participant.participantRef._id === userId) {
         status = participant.rsvp;
       }
       return '';
