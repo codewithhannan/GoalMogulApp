@@ -73,7 +73,7 @@ class Menu extends React.PureComponent {
           style={styles.buttonStyle}
         >
           <Image source={TribeIcon} style={styles.iconStyle} />
-          <Text style={styles.titleTextStyle}>My Tribes</Text>
+          <Text style={styles.titleTextStyle}>My tribes</Text>
         </DelayedButton>
         <DelayedButton
           activeOpacity={0.85}
@@ -81,7 +81,7 @@ class Menu extends React.PureComponent {
           style={styles.buttonStyle}
         >
           <Image source={EventIcon} style={styles.iconStyle} />
-          <Text style={styles.titleTextStyle}>My Events</Text>
+          <Text style={styles.titleTextStyle}>My events</Text>
         </DelayedButton>
         <DelayedButton
           activeOpacity={0.85}
@@ -89,7 +89,7 @@ class Menu extends React.PureComponent {
           style={styles.buttonStyle}
         >
           <Image source={TutorialIcon} style={styles.iconStyle} />
-          <Text style={styles.titleTextStyle}>Tutorial</Text>
+          <Text style={styles.titleTextStyle}>Tutorial video</Text>
         </DelayedButton>
         <DelayedButton
           activeOpacity={0.85}
