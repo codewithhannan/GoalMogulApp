@@ -295,7 +295,10 @@ export const updateFriendsSetting = () => (dispatch, getState) => {
 // Setting account get blocked users with skip and limit
 export const getBlockedUsers = (refresh) => (dispatch, getState) => {
   dispatch({
-    type: SETTING_BLOCK_FETCH_ALL
+    type: SETTING_BLOCK_FETCH_ALL,
+    payload: {
+      refresh
+    }
   });
   const { token } = getState().user;
   const { skip, limit, hasNextPage } = getState().setting.block;

@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import {
-  Text,
   View,
-  TouchableOpacity,
-  FlatList
+  FlatList,
+  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
@@ -46,6 +45,21 @@ class FriendsBlocked extends Component {
 
   renderItem = ({ item }) => <FriendCard item={item} />;
 
+  renderListFooter() {
+    const { loading, data } = this.props;
+    if (loading && data.length >= 10) {
+      return (
+        <View
+          style={{
+            paddingVertical: 20
+          }}
+        >
+          <ActivityIndicator size='small' />
+        </View>
+      );
+    }
+  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -65,6 +79,7 @@ class FriendsBlocked extends Component {
             this.props.refreshing ? null :
             <EmptyResult text={'No blocked users'} textStyle={{ paddingTop: 200 }} />
           }
+          ListFooterComponent={this.renderListFooter()}
         />
       </View>
     );
