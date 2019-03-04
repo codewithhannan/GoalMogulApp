@@ -48,7 +48,7 @@ import {
 } from '../../../redux/modules/feed/comment/CommentSelector';
 
 // Utils function
-import { capitalizeWord } from '../../../redux/middleware/utils';
+import { capitalizeWord, switchCase } from '../../../redux/middleware/utils';
 
 const OPTIONS_HEIGHT = 120;
 const OPTIONS_OPACITY = 0.001;
@@ -177,7 +177,7 @@ class SuggestionModal extends Component {
           <Text style={styles.optionsCollapsedTextStyle}>Back</Text>
         </TouchableOpacity>
       )
-      : '';
+      : null;
       // (
       //   <TouchableOpacity activeOpacity={0.85}
       //     style={{ width: 50, justifyContent: 'center' }}
@@ -186,6 +186,9 @@ class SuggestionModal extends Component {
       //     <Text style={styles.optionsCollapsedTextStyle}>Collapse</Text>
       //   </TouchableOpacity>
       // );
+
+
+    const suggestionForText = switchCaseForSuggestionForText(suggestionType);
 
     return (
       <View
@@ -204,10 +207,10 @@ class SuggestionModal extends Component {
                 marginBottom: 10
               }}
             >
-              Suggest a...
+              Suggest {`${suggestionForText}`}
             </Text>
           </View>
-          {optionsCollapsed ? <View style={{ width: 50 }} /> : ''}
+          {optionsCollapsed ? <View style={{ width: 50 }} /> : null}
         </View>
 
         <Animated.View
@@ -282,6 +285,8 @@ class SuggestionModal extends Component {
   }
 }
 
+
+
 // Legacy usage of KeyboardAvoidingView
 // <ScrollView>
 //   <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
@@ -326,6 +331,15 @@ const styles = {
     paddingBottom: 5,
   }
 };
+
+const switchCaseForSuggestionForText = (suggestionType) => switchCase({
+  'User': 'an user',
+  'ChatConvoRoom': 'a chat room',
+  'NewNeed': 'a new need',
+  'NewStep': 'a new step',
+  'Event': 'an event',
+  'Tribe': 'a tribe'
+})('a...')(suggestionType);
 
 // IconMapLeft: ["Person", "ChatConvoRoom", "Step or Need"],
 // IconMapRight: ["Event", "Tribe", "Custom"]
