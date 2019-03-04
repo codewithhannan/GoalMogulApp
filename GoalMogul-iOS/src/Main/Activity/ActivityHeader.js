@@ -41,7 +41,7 @@ class ActivityHeader extends Component {
     const item = actedUponEntityType === 'Post' ? postRef : goalRef;
 
     // If no ref is passed in, then render nothing
-    if (!item) return '';
+    if (!item) return null;
 
     // If it's a comment, we are rendering the goal/post owner's info rather than actor's info
     const userToRender = actedWith === 'Comment' || actedWith === 'Like' ? item.owner : actor;
@@ -136,7 +136,7 @@ class ActivityHeader extends Component {
 
   render() {
     const { item } = this.props;
-    if (!item || _.isEmpty(item)) return '';
+    if (!item || _.isEmpty(item)) return null;
 
     const { postRef, goalRef, actedUponEntityType, actor, actedWith, created } = item;
 
@@ -151,7 +151,7 @@ class ActivityHeader extends Component {
 const styles = {
   imageContainerStyle: {
     borderWidth: 0.5,
-    padding: 1.5,
+    padding: 0.5,
     borderColor: 'lightgray',
     alignItems: 'center',
     borderRadius: 6,

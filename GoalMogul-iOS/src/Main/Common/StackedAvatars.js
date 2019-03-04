@@ -34,11 +34,11 @@ const StackedAvatars = (props) => {
 
 export const StackedAvatarsV2 = (props) => {
   const { participants } = props;
-  if (!participants) return '';
+  if (!participants) return null;
   const participantPictures = participants
     .filter((participant) => participant.rsvp === 'Going' || participant.rsvp === 'Interested')
     .map((participant, index) => {
-      if (index > 1) return '';
+      if (index > 1) return null;
       const { participantRef } = participant;
       return (
         <ProfileImage

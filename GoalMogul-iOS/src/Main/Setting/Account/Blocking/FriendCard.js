@@ -2,50 +2,55 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  Image
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 
 // Components
-import { Button } from 'react-native-elements';
+import ProfileImage from '../../../Common/ProfileImage';
 
 // Styles
 import Styles from './Styles';
 
 // Actions
-import { unblockUser } from '../../../../actions';
-
-// Assets
-import profilePic from '../../../../asset/utils/defaultUserProfile.png';
+import { unblockUser, getBlockedUsers } from '../../../../actions';
 
 class FriendCard extends Component {
   onUnBlocked = (blockId) => {
     console.log('[ Unblock user ]: ', blockId);
     this.props.unblockUser(
       blockId,
-      () => alert(
-        `You have successfully unblock ${this.props.item.user.name}. Please pull to refresh.`
-      )
+      () => {
+        // Refresh blocked users
+        this.props.getBlockedUsers(true);
+        alert(
+          `You have successfully unblock ${this.props.item.user.name}. Please pull to refresh.`
+        );
+      }
     );
   };
 
   renderProfileImage = (url) => {
-    if (url) {
-      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${url}`
-      return <Image style={Styles.imageStyle} source={{ uri: imageUrl }} />;
-    }
-    return <Image style={Styles.imageStyle} source={profilePic} />;
+    return (
+      <ProfileImage
+        imageStyle={Styles.imageStyle}
+        imageUrl={url}
+        imageContainerStyle={styles.imageContainerStyle}
+      />
+    );
   };
 
   renderButton = (blockId) => {
     return (
-      <Button
-        title='Unblock'
-        titleStyle={Styles.buttonTextStyle}
-        clear
-        buttonStyle={Styles.buttonStyle}
+      <TouchableOpacity
+        activeOpacity={0.85}
         onPress={() => this.onUnBlocked(blockId)}
-      />
+        style={[Styles.buttonStyle, { justifyContent: 'center', alignSelf: 'center' }]}
+      >
+        <Text style={Styles.buttonTextStyle}>
+          Unblock
+        </Text>
+      </TouchableOpacity>
     );
   };
 
@@ -74,10 +79,23 @@ class FriendCard extends Component {
         </View>
       );
     }
-    return '';
+    return null;
   }
 }
 
+const styles = {
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 0.5,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+    backgroundColor: 'white'
+  }
+};
+
 export default connect(null, {
-  unblockUser
+  unblockUser,
+  getBlockedUsers
 })(FriendCard);
