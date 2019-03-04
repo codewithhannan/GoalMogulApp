@@ -243,7 +243,7 @@ class CommentBox extends Component {
     );
   }
   renderPost(newComment) {
-    const { uploading, contentText, tmpSuggestion, commentType } = newComment;
+    const { uploading, contentText, tmpSuggestion, commentType, mediaRef } = newComment;
 
     // This is old and buggy implementation
     // const disable = uploading ||
@@ -251,7 +251,8 @@ class CommentBox extends Component {
     //   && _.isEmpty(tmpSuggestion));
 
     const isInValidComment = (commentType === 'Comment' || commentType === 'Reply') && 
-      (contentText === undefined || contentText === '' || contentText.trim() === '');
+      (contentText === undefined || contentText === '' || contentText.trim() === '') &&
+      mediaRef === undefined;
 
     const isValidSuggestion = validSuggestion(newComment);
 
