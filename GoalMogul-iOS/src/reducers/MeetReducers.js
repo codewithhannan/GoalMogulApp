@@ -23,7 +23,7 @@ import {
 } from './User';
 
 const DEBUG_KEY = '[ Reducer Meet ]';
-const limit = 5;
+export const MEET_REQUEST_LIMIT = 6;
 const filter = {
   friends: {
     sortBy: ['alphabetical', 'lastadd']
@@ -51,7 +51,7 @@ const INITIAL_STATE = {
     loading: false,
     refreshing: false,
     hasNextPage: undefined,
-    limit,
+    limit: MEET_REQUEST_LIMIT,
     skip: 0
   },
   requests: {
@@ -68,7 +68,7 @@ const INITIAL_STATE = {
       loading: false,
       refreshing: false,
       hasNextPage: undefined,
-      limit,
+      limit: MEET_REQUEST_LIMIT,
       skip: 0
     },
     outgoing: {
@@ -76,7 +76,7 @@ const INITIAL_STATE = {
       loading: false,
       refreshing: false,
       hasNextPage: undefined,
-      limit,
+      limit: MEET_REQUEST_LIMIT,
       skip: 0
     }
   },
@@ -88,7 +88,7 @@ const INITIAL_STATE = {
     loading: false,
     refreshing: false,
     hasNextPage: undefined,
-    limit,
+    limit: MEET_REQUEST_LIMIT,
     skip: 0,
     count: undefined
   },
@@ -97,12 +97,12 @@ const INITIAL_STATE = {
     loading: false,
     refreshing: false,
     hasNextPage: undefined,
-    limit,
+    limit: MEET_REQUEST_LIMIT,
     skip: 0
   },
   matchedContacts: {
     data: [],
-    limit: 30,
+    limit: MEET_REQUEST_LIMIT,
     skip: 0,
     refreshing: true,
     hasNextPage: undefined

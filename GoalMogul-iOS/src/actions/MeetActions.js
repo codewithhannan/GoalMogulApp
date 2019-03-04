@@ -201,7 +201,7 @@ export const meetOnLoadMore = (key) => (dispatch, getState) => {
   console.log(`${DEBUG_KEY} Loading more for ${key}`);
   const tabState = _.get(getState().meet, key);
   const { skip, limit, hasNextPage, refreshing } = tabState;
-  if ((hasNextPage || hasNextPage === undefined) && !refreshing) {
+  if ((hasNextPage || hasNextPage === undefined)) {
     const { token } = getState().user;
     loadOneTab(key, skip, limit, token, dispatch, (data) => {
       const newSkip = data.length === 0 ? skip : skip + data.length;

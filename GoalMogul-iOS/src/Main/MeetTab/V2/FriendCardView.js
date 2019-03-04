@@ -96,7 +96,7 @@ class FriendCardView extends React.PureComponent {
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     return (
       <View style={[styles.containerStyle, styles.shadow]}>
