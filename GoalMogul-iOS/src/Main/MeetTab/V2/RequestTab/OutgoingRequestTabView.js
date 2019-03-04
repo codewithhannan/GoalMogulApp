@@ -87,9 +87,9 @@ class OutgoingRequestTabView extends Component {
                     onEndReached={this.handleOnLoadMore}
                     onEndReachedThreshold={0}
                     ListEmptyComponent={
-                      this.props.refreshing ? '' :
+                      this.props.refreshing ? null :
                       <EmptyResult
-                        text={'No incoming requests'}
+                        text={'No outgoing requests'}
                         textStyle={{ paddingTop: 220 }}
                       />
                     }
