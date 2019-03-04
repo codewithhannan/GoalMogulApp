@@ -33,6 +33,7 @@ class GeneralSuggestion extends React.Component {
           style={styles.inputStyle}
           maxHeight={MaxHeight}
           multiline
+          autoCapitalize='none'
           value={this.props.suggestionLink}
         />
       </View>

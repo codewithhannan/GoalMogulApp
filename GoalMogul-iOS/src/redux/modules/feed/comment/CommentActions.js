@@ -680,7 +680,7 @@ focusRef, pageId) => (dispatch, getState) => {
 
   let isUrl = true;
   if (suggestionType === 'Custom') {
-    isUrl = validator.isURL(suggestionLink, { require_protocol: true });
+    isUrl = validator.isURL(suggestionLink);
   }
 
   console.log(`${DEBUG_KEY}: isURL: `, isUrl);
