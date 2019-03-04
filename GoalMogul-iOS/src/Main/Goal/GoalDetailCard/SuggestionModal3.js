@@ -143,11 +143,14 @@ class SuggestionModal extends Component {
 
   renderSuggestionFor(newComment, goal) {
     const { suggestionFor, suggestionForRef } = newComment.tmpSuggestion;
+    const { stepRef, needRef } = newComment;
     return (
       <SuggestedItem
         type={suggestionFor}
         suggestionForRef={suggestionForRef}
         goal={goal}
+        stepRef={stepRef}
+        needRef={needRef}
       />
     );
   }
@@ -219,7 +222,7 @@ class SuggestionModal extends Component {
 
   renderSuggestionBody(newComment) {
     const { suggestionType } = newComment.tmpSuggestion;
-    if (!this.state.optionsCollapsed) return '';
+    if (!this.state.optionsCollapsed) return null;
     if (suggestionType === 'User' || suggestionType === 'Friend' ||
       suggestionType === 'Event' || suggestionType === 'Tribe' ||
       suggestionType === 'ChatConvoRoom'
@@ -238,12 +241,12 @@ class SuggestionModal extends Component {
         <GeneralSuggestion pageId={this.props.pageId} opacity={this.suggestionOpacity} />
       );
     }
-    return '';
+    return null;
   }
 
   render() {
     const { newComment, item } = this.props;
-    if (!newComment || !item) return '';
+    if (!newComment || !item) return null;
 
     return (
       <Modal
@@ -454,21 +457,37 @@ const Options = (props) => {
  * Step 3: Find a reading buddy
  */
 const SuggestedItem = (props) => {
-  const { goal, type, suggestionForRef } = props;
+  const { goal, type, suggestionForRef, stepRef, needRef } = props;
+  let refToSearchFor = suggestionForRef;
+
 
   let items = [];
-  if (type === 'Step') {
+  if (type === 'Step' || stepRef) {
     items = _.get(goal, 'steps');
+
+    // Use stepRef if suggestionForRef is undefined
+    // This could be due to entering suggestion modal through goal card or 
+    // NotificationNeedCard directly through suggestion button
+    if (suggestionForRef === undefined && stepRef !== undefined) {
+      refToSearchFor = stepRef;
+    }
   }
-  if (type === 'Need') {
+  if (type === 'Need' || needRef) {
     items = _.get(goal, 'needs');
+
+    // Use needRef if suggestionForRef is undefined
+    // This could be due to entering suggestion modal through goal card or 
+    // NotificationNeedCard directly through suggestion button
+    if (suggestionForRef === undefined && needRef !== undefined) {
+      refToSearchFor = needRef;
+    }
   }
 
-  if (!items || _.isEmpty(items)) return '';
-  const index = items.findIndex((temp) => temp._id === suggestionForRef);
+  if (!items || _.isEmpty(items)) return null;
+  const index = items.findIndex((temp) => temp._id === refToSearchFor);
 
-  if (index === -1) return '';
-  const item = items.find((temp) => temp._id === suggestionForRef);
+  if (index === -1) return null;
+  const item = items.find((temp) => temp._id === refToSearchFor);
 
   return (
     <View
