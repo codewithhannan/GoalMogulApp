@@ -282,7 +282,7 @@ class SearchBarHeader extends Component {
       );
     }
     return (
-      <TouchableOpacity 
+      <DelayedButton 
         activeOpacity={0.85} 
         onPress={() => {
           const componentKeyToOpen = componentKeyByTab(this.props.navigationTab, 'searchLightBox');
@@ -298,7 +298,7 @@ class SearchBarHeader extends Component {
             Search GoalMogul
           </Text>
         </View>
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 
