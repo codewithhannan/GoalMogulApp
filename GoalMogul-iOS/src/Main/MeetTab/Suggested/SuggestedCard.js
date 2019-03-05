@@ -151,13 +151,25 @@ class SuggestedCard extends Component {
     let topGoalText = 'None shared';
     if (topGoals !== null && topGoals !== undefined && topGoals.length !== 0) {
       topGoalText = '';
-      topGoals.forEach(g => { topGoalText = `${topGoalText}, ${g}`; });
+      topGoals.forEach((g, index) => {
+        if (index !== 0) {
+          topGoalText = `${topGoalText}, ${g}`; 
+        } else {
+          topGoalText = `${g}`; 
+        }
+      });
     }
 
     let topNeedText = 'None shared';
     if (topNeeds !== null && topNeeds !== undefined && topNeeds.length !== 0) {
       topNeedText = '';
-      topNeeds.forEach(n => { topNeedText = `${topNeedText}, ${n}`; });
+      topNeeds.forEach((n, index) => {
+        if (index !== 0) {
+          topNeedText = `${topNeedText}, ${n}`; 
+        } else {
+          topNeedText = `${n}`; 
+        }
+      });
     }
 
     return (

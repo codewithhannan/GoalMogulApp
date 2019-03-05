@@ -188,7 +188,16 @@ class SuggestionModal extends Component {
       // );
 
 
-    const suggestionForText = switchCaseForSuggestionForText(suggestionType);
+    const suggestionForTextArray = switchCaseForSuggestionForText(suggestionType);
+    let suggestionForText = [];
+    suggestionForTextArray.forEach((w, index) => {
+      if (index === suggestionForTextArray.length - 1 && suggestionForTextArray.length > 1) {
+        // console.log(`${DEBUG_KEY}: i am here`);
+        suggestionForText.push(<Text style={{ fontWeight: '700' }}>{w}</Text>);
+      } else {
+        suggestionForText.push(<Text>{w}{' '}</Text>);
+      }
+    })
 
     return (
       <View
@@ -200,14 +209,14 @@ class SuggestionModal extends Component {
             <Text
               style={{
                 fontSize: 14,
-                fontWeight: '700',
+                fontWeight: '500',
                 alignSelf: 'center',
                 justifyContent: 'center',
                 marginTop: 10,
                 marginBottom: 10
               }}
             >
-              Suggest {`${suggestionForText}`}
+              Suggest {suggestionForText}
             </Text>
           </View>
           {optionsCollapsed ? <View style={{ width: 50 }} /> : null}
@@ -333,13 +342,13 @@ const styles = {
 };
 
 const switchCaseForSuggestionForText = (suggestionType) => switchCase({
-  'User': 'an user',
-  'ChatConvoRoom': 'a chat room',
-  'NewNeed': 'a new need',
-  'NewStep': 'a new step',
-  'Event': 'an event',
-  'Tribe': 'a tribe'
-})('a...')(suggestionType);
+  'User': ['an', 'User'],
+  'ChatConvoRoom': ['a', 'Chat room'],
+  'NewNeed': ['a', 'Need'],
+  'NewStep': ['a', 'Step'],
+  'Event': ['an', 'Event'],
+  'Tribe': ['a', 'Tribe']
+})(['a...'])(suggestionType);
 
 // IconMapLeft: ["Person", "ChatConvoRoom", "Step or Need"],
 // IconMapRight: ["Event", "Tribe", "Custom"]
