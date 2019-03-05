@@ -102,7 +102,7 @@ class MutualFriends extends Component {
             onEndReachedThreshold={0.5}
             ListFooterComponent={this.renderListFooter()}
             ListEmptyComponent={
-              this.props.loading ? '' :
+              this.props.loading ? null :
               <EmptyResult text={emptyText} />
             }
           />
