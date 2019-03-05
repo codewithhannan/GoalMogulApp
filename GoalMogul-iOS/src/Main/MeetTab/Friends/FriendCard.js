@@ -68,7 +68,7 @@ class FriendCard extends Component {
   handleOnOpenProfile = (item) => {
     const { _id } = item;
     if (_id) {
-      return this.props.openProfile(_id);
+      // return this.props.openProfile(_id);
     }
     // TODO: showToast
   }

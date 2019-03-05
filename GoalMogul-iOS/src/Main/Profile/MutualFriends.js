@@ -90,6 +90,7 @@ class MutualFriends extends Component {
             this.closeModal();
             Actions.pop();
           }}
+          cancelText='Close'
         />
         <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
           <FlatList
