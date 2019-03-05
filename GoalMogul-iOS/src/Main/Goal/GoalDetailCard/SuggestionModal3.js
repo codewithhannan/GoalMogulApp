@@ -50,6 +50,7 @@ import {
 // Utils function
 import { capitalizeWord, switchCase } from '../../../redux/middleware/utils';
 
+const DEBUG_KEY = '[ UI SuggestionModal3 ]';
 const OPTIONS_HEIGHT = 120;
 const OPTIONS_OPACITY = 0.001;
 
@@ -482,7 +483,6 @@ const Options = (props) => {
 const SuggestedItem = (props) => {
   const { goal, type, suggestionForRef, stepRef, needRef } = props;
   let refToSearchFor = suggestionForRef;
-
 
   let items = [];
   if (type === 'Step' || stepRef) {

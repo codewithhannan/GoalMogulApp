@@ -139,7 +139,7 @@ class GoalDetailCardV3 extends Component {
       }
 
       this.props.goalDetailSwitchTabV2ByKey('focusTab', focusRef, focusType, goalId, pageId);
-      this.props.createCommentForSuggestion(newCommentParams);
+      this.props.createCommentForSuggestion(newCommentParams, pageId);
       if (initialShowSuggestionModal) {
         // Show suggestion modal if initialShowSuggestionModal is true
         // Current source is NotificationNeedCard on suggestion pressed
