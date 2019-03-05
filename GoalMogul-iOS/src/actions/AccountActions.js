@@ -7,6 +7,7 @@ import { SubmissionError } from 'redux-form';
 
 import { updatePassword } from '../Utils/ProfileUtils';
 
+const DEBUG_KEY = '[ Action Account ]';
 /* Registration Account Actions */
 export const handleOnFormChange = (value, prop) => {
   return {
@@ -21,15 +22,9 @@ export const handleUpdatePassword = values => {
     const { token } = getState().user;
     const { oldPassword, newPassword, confirmPassword } = values;
 
-    if (oldPassword === newPassword) {
-      throw new SubmissionError({
-        _error: 'Password does\'t change.'
-      });
-    }
-
     if (newPassword !== confirmPassword) {
       throw new SubmissionError({
-        _error: 'New passwords does\'t match.'
+        _error: 'New passwords does\'t match'
       });
     }
 

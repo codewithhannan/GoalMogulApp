@@ -21,6 +21,7 @@ import Styles from '../Styles';
 import { handleUpdatePassword } from '../../../actions';
 
 /* TODO: abstract this validation fuction */
+const DEBUG_KEY = '[ UI EditPasswordForm ]';
 const minLength = min => value =>
   value && value.length < min ? `Must be ${min} characters or more` : undefined;
 
@@ -78,8 +79,9 @@ class EidtPasswordForm extends Component {
 
   /* Refactor error function out */
   renderError(error) {
+    console.log(`${DEBUG_KEY}: i am here with err`, error);
     return error ? (
-      <View style={{ height: 15 }}>
+      <View style={{ marginTop: 15, marginBottom: 10 }}>
         <Text style={styles.errorStyle}>{error}</Text>
       </View>
     ) : null;
@@ -142,11 +144,10 @@ class EidtPasswordForm extends Component {
 
 const styles = {
   errorStyle: {
-    marginTop: 15,
     color: '#ff0033',
     justifyContent: 'center',
-    marginBottom: 4,
-    alignSelf: 'center'
+    alignSelf: 'center',
+    fontSize: 15
   }
 };
 
