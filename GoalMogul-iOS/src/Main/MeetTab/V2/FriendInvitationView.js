@@ -47,7 +47,7 @@ class FriendInvitationView extends React.PureComponent {
         const { name } = user;
         const inviteLink = generateInvitationLink(inviteCode);
         // const title = `Your friend ${name} is asking you to help achieve his goals on GoalMogul`;
-        const message = 'Hey, I’m using GoalMogul to get more stuff done and better myself.' + 
+        const message = 'Hey, I’m using GoalMogul to get more stuff done and better myself. ' + 
         'Can you check out this link and suggest ways to help me achieve my goals faster? Thanks! \n';
 
         Share.share({ title: undefined, message, url: inviteLink }, {});
