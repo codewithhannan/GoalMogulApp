@@ -517,7 +517,7 @@ class GoalDetailCardV3 extends Component {
             goalId={this.props.goalId}
             item={goalDetail}
           />
-          <Report showing={this.props.showingModalInDetail} />
+          {/** <Report showing={this.props.showingModalInDetail} /> */}
         </View>
       </MenuProvider>
     );
