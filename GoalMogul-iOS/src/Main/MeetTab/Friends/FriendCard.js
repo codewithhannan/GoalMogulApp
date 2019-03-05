@@ -2,18 +2,16 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
-  Image,
-  ActionSheetIOS
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 
 // Components
 import Name from '../../Common/Name';
+import ProfileImage from '../../Common/ProfileImage';
 
 // Assets
 import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
-// import meetSetting from '../../../asset/utils/meetSetting.png';
 
 // Actions
 import {
@@ -32,15 +30,12 @@ const BLOCK_INDEX = 0;
 const UNFRIEND_INDEX = 1;
 const CANCEL_INDEX = 2;
 const TAB_KEY = 'friends';
+const DEBUG_KEY = '[ UI FriendCard ]';
 
 class FriendCard extends Component {
   state = {
     requested: false,
     accpeted: false
-  }
-
-  componentWillReceiveProps(props) {
-    // console.log('new props for meet card are: ', props);
   }
 
   // onButtonClicked = (friendshipId) => {
@@ -70,31 +65,40 @@ class FriendCard extends Component {
   //   });
   // }
 
-  handleOnOpenProfile = () => {
-    const { _id } = this.props.item;
+  handleOnOpenProfile = (item) => {
+    const { _id } = item;
     if (_id) {
-      return this.props.openProfile(_id);
+      // return this.props.openProfile(_id);
     }
     // TODO: showToast
   }
 
-  renderProfileImage() {
-    const { image } = this.props.item.profile;
-    let profileImage = (
-      <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />
-    );
-    if (image) {
-      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
-      profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
-    }
-    return profileImage;
+  renderProfileImage(item) {
+    const { profile, _id } = item;
+    
+    // let profileImage = (
+    //   <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />
+    // );
+    // if (image) {
+    //   const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+    //   profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
+    // }
+    // return profileImage;
+    return (
+      <ProfileImage 
+        imageStyle={styles.imageStyle}
+        imageUrl={profile && profile.image ? profile.image : undefined}
+        imageContainerStyle={styles.imageContainerStyle}
+        userId={_id}
+      />
+    )
   }
 
   /*
   NOTE: friends card doesn't have any button. only on profile page
   */
   renderButton(_id) {
-    return '';
+    return;
     // return (
     //   <TouchableOpacity activeOpacity={0.85} onPress={this.onButtonClicked.bind(this, _id)}>
     //     <Image source={meetSetting} style={styles.settingIconStyle} />
@@ -102,8 +106,8 @@ class FriendCard extends Component {
     // );
   }
 
-  renderInfo() {
-    const { name } = this.props.item;
+  renderInfo(item) {
+    const { name } = item;
     return (
       <View style={styles.infoContainerStyle}>
         <View style={{ flex: 1, flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
@@ -119,7 +123,7 @@ class FriendCard extends Component {
 
   // TODO: decide the final UI for additional info
   renderAdditionalInfo() {
-    return '';
+    return null;
     // const { profile } = this.props.item;
     // let content = '';
     // if (profile.elevatorPitch) {
@@ -142,9 +146,10 @@ class FriendCard extends Component {
     // );
   }
 
-  renderOccupation() {
-    const { profile } = this.props.item;
-    if (profile.occupation) {
+  renderOccupation(item) {
+    // console.log(`${DEBUG_KEY}: item is: `, item);
+    const { profile } = item;
+    if (profile && profile.occupation) {
       return (
         <Text
           style={styles.titleTextStyle}
@@ -155,25 +160,25 @@ class FriendCard extends Component {
         </Text>
       );
     }
-    return '';
+    return;
   }
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     const { headline } = item;
     return (
       <TouchableOpacity
         activeOpacity={0.85}
         style={[styles.containerStyle, cardBoxShadow]}
-        onPress={this.handleOnOpenProfile}
+        onPress={() => this.handleOnOpenProfile(item)}
       >
-        {this.renderProfileImage()}
+        {this.renderProfileImage(item)}
 
         <View style={styles.bodyContainerStyle}>
-          {this.renderInfo()}
-          {this.renderOccupation()}
+          {this.renderInfo(item)}
+          {this.renderOccupation(item)}
           <Text
             style={styles.jobTitleTextStyle}
             numberOfLines={1}
@@ -211,6 +216,15 @@ const styles = {
     height: 48,
     width: 48,
     borderRadius: 5,
+  },
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 0.5,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+    backgroundColor: 'white'
   },
   buttonContainerStyle: {
     marginLeft: 8,

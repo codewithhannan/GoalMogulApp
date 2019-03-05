@@ -20,7 +20,7 @@ const renderStats = (props) => props.data.map((c, index) => {
 
       <DotIcon 
         iconContainerStyle={{ ...styles.iconContainerStyle }}
-        iconStyle={{ tintColor: '#CCCCC', ...styles.iconStyle, height: 3, width: 3 }}
+        iconStyle={{ tintColor: '#CCCCCC', ...styles.iconStyle, height: 3, width: 3 }}
       />
       {/* <View>
         <Icon

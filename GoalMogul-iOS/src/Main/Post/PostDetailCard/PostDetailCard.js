@@ -33,7 +33,6 @@ import {
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import CommentBox from '../../Goal/Common/CommentBox';
 import CommentCard from '../../Goal/GoalDetailCard/Comment/CommentCard';
-import Report from '../../Report/Report';
 
 import PostDetailSection from './PostDetailSection';
 

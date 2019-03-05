@@ -100,7 +100,7 @@ class ProfilePostCard extends React.PureComponent {
 
   renderActionButtons(item, hasActionButton) {
     // Sanity check if ref exists
-    if (!item || !hasActionButton) return '';
+    if (!item || !hasActionButton) return null;
 
     const { maybeLikeRef, _id } = item;
 
@@ -232,7 +232,7 @@ class ProfilePostCard extends React.PureComponent {
 
   render() {
     const { item, hasActionButton } = this.props;
-    if (!item || _.isEmpty(item)) return '';
+    if (!item || _.isEmpty(item)) return null;
 
     return (
       <View style={{ marginTop: 3, marginBottom: 3 }}>

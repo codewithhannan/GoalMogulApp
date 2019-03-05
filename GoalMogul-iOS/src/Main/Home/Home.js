@@ -9,7 +9,6 @@ import _ from 'lodash';
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup';
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
-import Report from '../Report/Report';
 
 import Mastermind from './Mastermind';
 import ActivityFeed from './ActivityFeed';
@@ -213,7 +212,7 @@ class Home extends Component {
         </TouchableOpacity>
       );
     }
-    return '';
+    return nul;
   }
 
   render() {
@@ -225,7 +224,6 @@ class Home extends Component {
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={styles.homeContainerStyle}>
-          <Report showing={this.props.showingModal} />
           <SearchBarHeader rightIcon='menu' />
           <TabView
             ref={ref => (this.tab = ref)}

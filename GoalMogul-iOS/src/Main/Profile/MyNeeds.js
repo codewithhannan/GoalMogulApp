@@ -62,10 +62,10 @@ class MyNeeds extends Component {
       return (
         <View
           style={{
-            paddingVertical: 0
+            paddingVertical: 14
           }}
         >
-          <ActivityIndicator size='large' />
+          <ActivityIndicator size='small' />
         </View>
       );
     }

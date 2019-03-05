@@ -59,7 +59,6 @@ import {
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import LoadingModal from '../../Common/Modal/LoadingModal';
 import SuggestionModal from './SuggestionModal3';
-import Report from '../../../Main/Report/Report';
 import CentralTab from './V3/CentralTab';
 import FocusTab from './V3/FocusTab';
 import SectionCardV2 from '../Common/SectionCardV2';
@@ -139,7 +138,7 @@ class GoalDetailCardV3 extends Component {
       }
 
       this.props.goalDetailSwitchTabV2ByKey('focusTab', focusRef, focusType, goalId, pageId);
-      this.props.createCommentForSuggestion(newCommentParams);
+      this.props.createCommentForSuggestion(newCommentParams, pageId);
       if (initialShowSuggestionModal) {
         // Show suggestion modal if initialShowSuggestionModal is true
         // Current source is NotificationNeedCard on suggestion pressed
@@ -517,7 +516,7 @@ class GoalDetailCardV3 extends Component {
             goalId={this.props.goalId}
             item={goalDetail}
           />
-          <Report showing={this.props.showingModalInDetail} />
+          {/** <Report showing={this.props.showingModalInDetail} /> */}
         </View>
       </MenuProvider>
     );

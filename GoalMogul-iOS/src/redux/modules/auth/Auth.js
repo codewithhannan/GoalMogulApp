@@ -14,6 +14,7 @@ import {
 import {
   subscribeNotification
 } from '../notification/NotificationActions';
+import { handleUpdatePassword } from '../../../actions';
 
 const USERNAME = 'username';
 const PASSWORD = 'password';
@@ -56,6 +57,16 @@ export const auth = {
         return callback(err);
       }
       throw err;
+    }
+  },
+  async updatePassword(password) {
+    try {
+      const username = await SecureStore.getItemAsync(USERNAME);
+      await saveKey(username, password);
+      return true;
+    } catch (err) {
+      console.log(`${DEBUG_KEY}: err updating password is: `, err);
+      return false;
     }
   },
   async reset(callback) {

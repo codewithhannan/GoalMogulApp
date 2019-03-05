@@ -10,7 +10,7 @@ import BackButton from '../../../asset/utils/back.png';
 
 const ModalHeader = (props) => {
   const { title, actionText, onCancel, onAction, actionDisabled, cancelText, back } = props;
-  const cancel = cancelText === null ? cancelText : 'Cancel';
+  const cancel = cancelText !== null && cancelText !== undefined ? cancelText : 'Cancel';
 
   const leftComponent = back
     ? (

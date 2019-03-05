@@ -6,6 +6,8 @@ import {
   PROFILE_UPDATE_SUCCESS,
   LOGIN_USER_SUCCESS,
   SETTING_EMAIL_UPDATE_SUCCESS,
+  ACCOUNT_UPDATE_PASSWORD_DONE,
+  ACCOUNT_UPDATE_PASSWORD
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -20,7 +22,8 @@ const INITIAL_STATE = {
 
     }
   },
-  profile: {}
+  profile: {},
+  updatingPassword: false
 };
 
 export const USER_LOAD_PROFILE_DONE = 'user_load_profile_done';
@@ -63,6 +66,16 @@ export default (state = INITIAL_STATE, action) => {
 
     case USER_LOG_OUT: {
       return { ...INITIAL_STATE };
+    }
+
+    case ACCOUNT_UPDATE_PASSWORD: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'updatingPassword', true);
+    }
+
+    case ACCOUNT_UPDATE_PASSWORD_DONE: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'updatingPassword', false);
     }
 
     default:

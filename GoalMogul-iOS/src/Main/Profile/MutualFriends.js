@@ -90,6 +90,7 @@ class MutualFriends extends Component {
             this.closeModal();
             Actions.pop();
           }}
+          cancelText='Close'
         />
         <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
           <FlatList
@@ -102,7 +103,7 @@ class MutualFriends extends Component {
             onEndReachedThreshold={0.5}
             ListFooterComponent={this.renderListFooter()}
             ListEmptyComponent={
-              this.props.loading ? '' :
+              this.props.loading ? null :
               <EmptyResult text={emptyText} />
             }
           />
