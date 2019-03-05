@@ -17,6 +17,8 @@ export const REGISTRATION_ACCOUNT = 'registration_account';
 export const REGISTRATION_ACCOUNT_LOADING = 'registration_account_loading';
 export const REGISTRATION_ACCOUNT_SUCCESS = 'registration_account_success';
 export const REGISTRATION_ACCOUNT_FORM_CHANGE = 'registration_account_form_change';
+export const ACCOUNT_UPDATE_PASSWORD = 'account_update_password';
+export const ACCOUNT_UPDATE_PASSWORD_DONE = 'account_update_password_done';
 
 export const REGISTRATION_LOGIN = 'registration_login';
 export const REGISTRATION_ADDPROFILE = 'registration_addprofile';

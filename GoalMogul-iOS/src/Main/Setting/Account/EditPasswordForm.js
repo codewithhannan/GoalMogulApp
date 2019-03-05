@@ -9,10 +9,14 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
+import {
+  DotIndicator
+} from 'react-native-indicators';
 
 /* Components */
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import Input from '../../Common/Text/Input';
+import LoadingModal from '../../Common/Modal/LoadingModal';
 
 /* Styles */
 import Styles from '../Styles';
@@ -79,7 +83,6 @@ class EidtPasswordForm extends Component {
 
   /* Refactor error function out */
   renderError(error) {
-    console.log(`${DEBUG_KEY}: i am here with err`, error);
     return error ? (
       <View style={{ marginTop: 15, marginBottom: 10 }}>
         <Text style={styles.errorStyle}>{error}</Text>
@@ -117,6 +120,10 @@ class EidtPasswordForm extends Component {
 
     return (
       <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
+        <LoadingModal 
+          visible={this.props.updatingPassword} 
+          customIndicator={<DotIndicator size={12} color='white' />}  
+        />
         <SearchBarHeader backButton rightIcon='empty' title="Password" />
         <KeyboardAvoidingView
           behavior='padding'
@@ -153,9 +160,11 @@ const styles = {
 
 const mapStateToProps = state => {
   const { email } = state.setting;
+  const { updatingPassword } = state.user;
 
   return {
-    email
+    email,
+    updatingPassword
   };
 };
 
