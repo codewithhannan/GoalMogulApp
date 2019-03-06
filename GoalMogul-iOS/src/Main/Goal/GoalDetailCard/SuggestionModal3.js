@@ -13,7 +13,8 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  Animated
+  Animated,
+  Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -27,15 +28,15 @@ import NeedStepSuggestion from './Suggestion/NeedStepSuggestion';
 import SuggestionGoalPreview from './Suggestion/SuggestionGoalPreview';
 
 // Asset
-import Book from '../../../asset/suggestion/book.png';
+// import Book from '../../../asset/suggestion/book.png';
 import Chat from '../../../asset/suggestion/chat.png';
 import Event from '../../../asset/suggestion/event.png';
 import Flag from '../../../asset/suggestion/flag.png';
 import Friend from '../../../asset/suggestion/friend.png';
-import Group from '../../../asset/suggestion/group.png';
-import Link from '../../../asset/suggestion/link.png';
+// import Group from '../../../asset/suggestion/group.png';
+// import Link from '../../../asset/suggestion/link.png';
 import Other from '../../../asset/suggestion/other.png';
-import HelpIcon from '../../../asset/utils/help.png';
+// import HelpIcon from '../../../asset/utils/help.png';
 import StepIcon from '../../../asset/utils/steps.png';
 
 // Actions
@@ -241,7 +242,19 @@ class SuggestionModal extends Component {
       suggestionType === 'ChatConvoRoom'
     ) {
       return (
-        <SearchSuggestion pageId={this.props.pageId} opacity={this.suggestionOpacity} />
+        <SearchSuggestion 
+          pageId={this.props.pageId} 
+          opacity={this.suggestionOpacity} 
+          onCancel={() => {
+            Keyboard.dismiss();
+          }}
+          onSelect={() => {
+            this.scrollview.props.scrollToPosition(0, 0);
+          }}
+          onFocus={() => {
+            this.scrollview.props.scrollToPosition(0, 120);
+          }}
+        />
       );
     }
     if (suggestionType === 'NewNeed' || suggestionType === 'NewStep') {
@@ -281,6 +294,12 @@ class SuggestionModal extends Component {
             contentContainerStyle={{
               backgroundColor: 'white',
               flexGrow: 1 // this will fix scrollview scroll issue by passing parent view width and height to it
+            }}
+            onKeyboardWillShow={() => {
+              this.scrollview.props.scrollToPosition(0, 120);
+            }}
+            onKeyboardWillHide={() => {
+              this.scrollview.props.scrollToPosition(0, 0);
             }}
           >
             <View style={{ flex: 1 }}>

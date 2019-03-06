@@ -4,6 +4,7 @@ import { api as API } from '../../../middleware/api';
 import {
   SUGGESTION_SEARCH_REQUEST,
   SUGGESTION_SEARCH_REQUEST_DONE,
+  SUGGESTION_SEARCH_REFRESH,
   SUGGESTION_SEARCH_REFRESH_DONE,
   SUGGESTION_SEARCH_ON_LOADMORE_DONE,
   SUGGESTION_SEARCH_CLEAR_STATE,
@@ -35,7 +36,7 @@ const searchWithId = (searchContent, queryId, type) => (dispatch, getState) => {
   const { limit } = searchRes;
   console.log(`${DEBUG_KEY} with text: ${searchContent} and queryId: ${queryId}`);
   dispatch({
-    type: SUGGESTION_SEARCH_REQUEST,
+    type: SUGGESTION_SEARCH_REFRESH,
     payload: {
       queryId,
       searchContent,
@@ -46,7 +47,7 @@ const searchWithId = (searchContent, queryId, type) => (dispatch, getState) => {
   fetchData(searchContent, type, 0, limit, token, searchType, (res) => {
     const data = res.data ? res.data : [];
     dispatch({
-      type: SUGGESTION_SEARCH_REQUEST_DONE,
+      type: SUGGESTION_SEARCH_REFRESH_DONE,
       payload: {
         queryId,
         data,
@@ -85,7 +86,7 @@ export const refreshSearchResult = (type) => (dispatch, getState) => {
   const { searchContent, searchType, searchRes } = getState().suggestionSearch;
   const { skip, limit, queryId } = searchRes;
   dispatch({
-    type: SUGGESTION_SEARCH_REQUEST,
+    type: SUGGESTION_SEARCH_REFRESH,
     payload: {
       queryId,
       searchContent,

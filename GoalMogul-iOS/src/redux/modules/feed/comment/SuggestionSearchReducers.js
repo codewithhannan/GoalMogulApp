@@ -9,12 +9,24 @@ import {
   arrayUnique
 } from '../../../middleware/utils';
 
+export const SUGGESTION_SEARCH_LIMIT = 10;
+
 const INITIAL_STATE_SEARCH = {
   data: [],
   queryId: undefined,
   loading: false,
+  refreshing: false,
   skip: 0,
-  limit: 40,
+  limit: SUGGESTION_SEARCH_LIMIT,
+  hasNextPage: undefined
+};
+
+const INITIAL_STATE_PRELOAD_DATA = {
+  data: [],
+  loading: false,
+  refreshing: false,
+  skip: 0,
+  limit: SUGGESTION_SEARCH_LIMIT,
   hasNextPage: undefined
 };
 
@@ -26,6 +38,9 @@ const INITIAL_STATE = {
   },
   searchRes: {
     ...INITIAL_STATE_SEARCH
+  },
+  preloadData: {
+    ...INITIAL_STATE_PRELOAD_DATA
   },
   searchContent: ''
 };
@@ -58,12 +73,15 @@ const dotPath = R.useWith(R.path, [R.split('.')]);
 // Constants for search reducers
 export const SUGGESTION_SEARCH_CHANGE_FILTER = 'suggestion_search_change_filter';
 export const SUGGESTION_SEARCH_REQUEST = 'suggestion_search_request';
+export const SUGGESTION_SEARCH_REFRESH = 'suggestion_search_refresh';
 export const SUGGESTION_SEARCH_REQUEST_DONE = 'suggestion_search_request_done';
 export const SUGGESTION_SEARCH_REFRESH_DONE = 'suggestion_search_refresh_done';
 export const SUGGESTION_SEARCH_SWITCH_TAB = 'suggestion_search_switch_tab';
 export const SUGGESTION_SEARCH_ON_LOADMORE_DONE = 'suggestion_search_on_loadmore_done';
 export const SUGGESTION_SEARCH_CLEAR_STATE = 'suggestion_search_clear_state';
 
+
+const DEBUG_KEY = '[ Reducer SuggestionSearch ]';
 /*
   TODO:
   1. populate initial set on profile fetch successfully
@@ -78,6 +96,16 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     // Initiate suggestion_search request
+    case SUGGESTION_SEARCH_REFRESH: {
+      console.log(`${DEBUG_KEY}: i ma here`);
+      const { searchContent, queryId, type } = action.payload;
+      let newState = _.cloneDeep(state);
+      newState.searchRes.refreshing = true;
+      newState.queryId = queryId;
+      newState.searchContent = searchContent;
+      return { ...newState };
+    }
+
     case SUGGESTION_SEARCH_REQUEST: {
       const { searchContent, queryId, type } = action.payload;
       let newState = _.cloneDeep(state);
@@ -88,7 +116,18 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     // Search refresh and request done
-    case SUGGESTION_SEARCH_REFRESH_DONE:
+    case SUGGESTION_SEARCH_REFRESH_DONE: {
+      const { queryId, skip, data, type, hasNextPage } = action.payload;
+      let newState = _.cloneDeep(state);
+      if (queryId === state.queryId) {
+        newState.searchRes.data = data;
+        newState.searchRes.refreshing = false;
+        newState.searchRes.skip = skip;
+        newState.searchRes.hasNextPage = hasNextPage;
+      }
+      return { ...newState };
+    }
+
     case SUGGESTION_SEARCH_REQUEST_DONE: {
       const { queryId, skip, data, type, hasNextPage } = action.payload;
       let newState = _.cloneDeep(state);
