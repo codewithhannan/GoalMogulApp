@@ -40,7 +40,18 @@ const INITIAL_STATE = {
     ...INITIAL_STATE_SEARCH
   },
   preloadData: {
-    ...INITIAL_STATE_PRELOAD_DATA
+    User: {
+      ...INITIAL_STATE_PRELOAD_DATA
+    },
+    Event: {
+      ...INITIAL_STATE_PRELOAD_DATA
+    },
+    Tribe: {
+      ...INITIAL_STATE_PRELOAD_DATA
+    },
+    ChatConvoRoom: {
+      ...INITIAL_STATE_PRELOAD_DATA
+    }
   },
   searchContent: ''
 };
@@ -79,6 +90,10 @@ export const SUGGESTION_SEARCH_REFRESH_DONE = 'suggestion_search_refresh_done';
 export const SUGGESTION_SEARCH_SWITCH_TAB = 'suggestion_search_switch_tab';
 export const SUGGESTION_SEARCH_ON_LOADMORE_DONE = 'suggestion_search_on_loadmore_done';
 export const SUGGESTION_SEARCH_CLEAR_STATE = 'suggestion_search_clear_state';
+export const SUGGESTION_SEARCH_PRELOAD_REFRESH = 'suggestion_search_preload_refresh';
+export const SUGGESTION_SEARCH_PRELOAD_REFRESH_DONE = 'suggestion_search_preload_refresh_done';
+export const SUGGESTION_SEARCH_PRELOAD_LOAD = 'suggestion_search_preload_load';
+export const SUGGESTION_SEARCH_PRELOAD_LOAD_DONE = 'suggestion_search_preload_load_done';
 
 
 const DEBUG_KEY = '[ Reducer SuggestionSearch ]';
@@ -176,6 +191,60 @@ export default (state = INITIAL_STATE, action) => {
         pageId
       } = action.payload;
       return _.set(newState, 'searchType', suggestionType);
+    }
+
+    case SUGGESTION_SEARCH_PRELOAD_REFRESH: {
+      let newState = _.cloneDeep(state);
+      const { searchType } = action.payload;
+      if (!_.has(newState, `preloadData.${searchType}`)) {
+        console.log(`${DEBUG_KEY}: [ ${action.type } ]: invalid searchType: `, searchType);
+        return newState;
+      }
+
+      newState = _.set(newState, `preloadData.${searchType}.refreshing`, true);
+      return newState;
+    }
+
+    case SUGGESTION_SEARCH_PRELOAD_REFRESH_DONE: {
+      let newState = _.cloneDeep(state);
+      const { searchType, data, skip } = action.payload;
+      if (!_.has(newState, `preloadData.${searchType}`)) {
+        console.log(`${DEBUG_KEY}: [ ${action.type } ]: invalid searchType:`, searchType);
+        return newState;
+      }
+
+      newState = _.set(newState, `preloadData.${searchType}.refreshing`, false);
+      newState = _.set(newState, `preloadData.${searchType}.data`, data);
+      newState = _.set(newState, `preloadData.${searchType}.skip`, skip);
+      return newState;
+    }
+
+    case SUGGESTION_SEARCH_PRELOAD_LOAD: {
+      let newState = _.cloneDeep(state);
+      const { searchType } = action.payload;
+      if (!_.has(newState, `preloadData.${searchType}`)) {
+        console.log(`${DEBUG_KEY}: [ ${action.type } ]: invalid searchType:`, searchType);
+        return newState;
+      }
+
+      newState = _.set(newState, `preloadData.${searchType}.loading`, true);
+      return newState;
+    }
+
+    case SUGGESTION_SEARCH_PRELOAD_LOAD_DONE: {
+      let newState = _.cloneDeep(state);
+      const { searchType, data, skip } = action.payload;
+      if (!_.has(newState, `preloadData.${searchType}`)) {
+        console.log(`${DEBUG_KEY}: [ ${action.type } ]: invalid searchType:`, searchType);
+        return newState;
+      }
+
+      newState = _.set(newState, `preloadData.${searchType}.loading`, false);
+
+      const oldData = _.get(newState, `preloadData.${searchType}.data`);
+      newState = _.set(newState, `preloadData.${searchType}.data`, arrayUnique(oldData.concat(data)));
+      newState = _.set(newState, `preloadData.${searchType}.skip`, skip);
+      return newState;
     }
 
     default:

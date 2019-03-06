@@ -4,16 +4,14 @@ import React from 'react';
 import {
   View,
   FlatList,
-  Animated,
-  TouchableWithoutFeedback,
-  Keyboard
+  Animated
 } from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar } from 'react-native-elements';
 import _ from 'lodash';
 
 import {
-  switchCaseF
+  switchCaseF, switchCase
 } from '../../../../redux/middleware/utils';
 
 // Components
@@ -31,6 +29,8 @@ import {
   clearSearchState,
   refreshSearchResult,
   onLoadMore,
+  refreshPreloadData,
+  loadMorePreloadData
 } from '../../../../redux/modules/feed/comment/SuggestionSearchActions';
 
 import {
@@ -45,6 +45,7 @@ import {
 import {
   SUGGESTION_SEARCH_LIMIT
 } from '../../../../redux/modules/feed/comment/SuggestionSearchReducers';
+import { arrayUnique } from '../../../../reducers/MeetReducers';
 
 const DEBUG_KEY = '[ UI SearchSuggestion ]';
 
@@ -77,6 +78,24 @@ class SearchSuggestion extends React.Component {
       return;
     }
     this.props.debouncedSearch(query.trim(), this.props.selectedTab);
+  }
+
+  handleRefresh = () => {
+    const { searchType, searchContent } = this.props;
+    // If there is no search input and user refresh, we refresh the preload data
+    if (searchContent === undefined || searchContent.trim() === '') {
+      return this.props.refreshPreloadData(searchType);
+    }
+    this.props.refreshSearchResult();
+  }
+
+  handleLoadMore = () => {
+    const { searchType, hasNextPage } = this.props;
+    if (hasNextPage === false) {
+      this.props.loadMorePreloadData(searchType);
+      return;
+    }
+    this.props.onLoadMore();
   }
 
   renderItem = ({ item }) => {
@@ -186,7 +205,7 @@ class SearchSuggestion extends React.Component {
   }
 
   render() {
-    const { opacity } = this.props;
+    const { opacity, searchType } = this.props;
     return (
       <Animated.View style={{ opacity }}>
         {this.renderSearch()}
@@ -195,14 +214,14 @@ class SearchSuggestion extends React.Component {
             data={this.props.data}
             renderItem={this.renderItem}
             keyExtractor={(item) => item._id}
-            onEndReached={() => this.props.onLoadMore()}
+            onEndReached={() => this.handleLoadMore()}
             onEndReachedThreshold={0}
-            onRefresh={() => this.props.refreshSearchResult()}
+            onRefresh={() => this.handleRefresh()}
             refreshing={this.props.refreshing}
             ListFooterComponent={this.renderListFooter()}
             ListEmptyComponent={
               this.props.refreshing ? null :
-              <EmptyResult text={'No found'} textStyle={{ paddingTop: 130 }} />
+              <EmptyResult text={switchEmptyText(searchType)} textStyle={{ paddingTop: 130 }} />
             }
           />
         </View>
@@ -210,6 +229,13 @@ class SearchSuggestion extends React.Component {
     );
   }
 }
+
+const switchEmptyText = (searchType) => switchCase({
+  User: 'No user found',
+  Event: 'No event found',
+  Tribe: 'No tribe found',
+  ChatConvoRoom: 'No chat room found'
+})('No search result')(searchType);
 
 const styles = {
   // search related styles
@@ -246,22 +272,47 @@ const mapDispatchToProps = (dispatch) => {
     clearSearchState: clearSearchState(dispatch),
     refreshSearchResult: () => dispatch(refreshSearchResult()),
     onLoadMore: () => dispatch(onLoadMore()),
-    onSuggestionItemSelect: (val, pageId) => dispatch(onSuggestionItemSelect(val, pageId))
+    onSuggestionItemSelect: (val, pageId) => dispatch(onSuggestionItemSelect(val, pageId)),
+    refreshPreloadData: (searchType) => dispatch(refreshPreloadData(searchType)),
+    loadMorePreloadData: (searchType) => dispatch(loadMorePreloadData(searchType))
   });
 };
 
 const mapStateToProps = (state, props) => {
   const { suggestionType, selectedItem } = getNewCommentByTab(state, props.pageId).tmpSuggestion;
-  const { searchRes, searchContent } = state.suggestionSearch;
-  const { data, loading, refreshing } = searchRes;
+  const { searchRes, searchContent, preloadData, searchType } = state.suggestionSearch;
+  const { data, loading, refreshing, hasNextPage } = searchRes;
+
+  let dataToRender = data;
+  let refreshingToUse = refreshing;
+  let loadingToUse = loading;
+  if (_.has(preloadData, searchType)) {
+    // Get the preloaded data with the right path
+    // e.g. User.data, Event.data...
+    const preloadDataToRender = _.get(preloadData, `${searchType}.data`);
+    const preloadDataLoadingState = _.get(preloadData, `${searchType}.loading`);
+    const preloadDataRefreshingState = _.get(preloadData, `${searchType}.refreshing`);
+
+    if (searchContent === undefined || searchContent.trim() === '') {
+      // Use preload data when searchContent is empty
+      dataToRender = preloadDataToRender;
+      refreshingToUse = preloadDataRefreshingState;
+    } else if (hasNextPage === false) {
+      // Data concat with preload data when hasNextPage is false
+      dataToRender = arrayUnique([...data, ...preloadDataToRender]);
+      loadingToUse = preloadDataLoadingState;
+    }
+  }
 
   return {
     suggestionType,
-    data,
-    loading,
-    refreshing,
+    data: dataToRender,
+    loading: loadingToUse,
+    refreshing: refreshingToUse,
     searchContent,
-    selectedItem
+    selectedItem,
+    searchType,
+    hasNextPage // For handleLoadMore to determine whether to load more preload data or search data 
   };
 };
 

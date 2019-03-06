@@ -48,6 +48,10 @@ import {
   getNewCommentByTab
 } from '../../../redux/modules/feed/comment/CommentSelector';
 
+import {
+  refreshPreloadData
+} from '../../../redux/modules/feed/comment/SuggestionSearchActions';
+
 // Utils function
 import { capitalizeWord, switchCase } from '../../../redux/middleware/utils';
 
@@ -68,6 +72,13 @@ class SuggestionModal extends Component {
       optionsCollapsed: false,
       optionsHeight: 150
     };
+  }
+
+  componentDidMount() {
+    // Sending request to fetch pre-populated data
+    this.props.refreshPreloadData('User');
+    this.props.refreshPreloadData('Event');
+    this.props.refreshPreloadData('Tribe');
   }
 
   handleExpand = () => {
@@ -249,7 +260,8 @@ class SuggestionModal extends Component {
             Keyboard.dismiss();
           }}
           onSelect={() => {
-            this.scrollview.props.scrollToPosition(0, 0);
+            // Right now don't turn on this
+            // this.scrollview.props.scrollToPosition(0, 0);
           }}
           onFocus={() => {
             this.scrollview.props.scrollToPosition(0, 120);
@@ -564,6 +576,7 @@ const mapStateToProps = (state, props) => {
 export default connect(
   mapStateToProps,
   {
-    updateSuggestionType
+    updateSuggestionType,
+    refreshPreloadData
   }
 )(SuggestionModal);
