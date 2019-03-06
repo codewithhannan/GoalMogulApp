@@ -4,12 +4,17 @@ import { api as API } from '../../../middleware/api';
 import {
   SUGGESTION_SEARCH_REQUEST,
   SUGGESTION_SEARCH_REQUEST_DONE,
+  SUGGESTION_SEARCH_REFRESH,
   SUGGESTION_SEARCH_REFRESH_DONE,
   SUGGESTION_SEARCH_ON_LOADMORE_DONE,
   SUGGESTION_SEARCH_CLEAR_STATE,
-  SearchRouteMap
+  SearchRouteMap,
+  SUGGESTION_SEARCH_PRELOAD_REFRESH,
+  SUGGESTION_SEARCH_PRELOAD_REFRESH_DONE,
+  SUGGESTION_SEARCH_PRELOAD_LOAD,
+  SUGGESTION_SEARCH_PRELOAD_LOAD_DONE
 } from './SuggestionSearchReducers';
-import { switchCaseF } from '../../../middleware/utils';
+import { switchCaseF, switchCase, queryBuilder } from '../../../middleware/utils';
 
 const DEBUG_KEY = '[ Action Suggestion Search ]';
 
@@ -35,7 +40,7 @@ const searchWithId = (searchContent, queryId, type) => (dispatch, getState) => {
   const { limit } = searchRes;
   console.log(`${DEBUG_KEY} with text: ${searchContent} and queryId: ${queryId}`);
   dispatch({
-    type: SUGGESTION_SEARCH_REQUEST,
+    type: SUGGESTION_SEARCH_REFRESH,
     payload: {
       queryId,
       searchContent,
@@ -46,7 +51,7 @@ const searchWithId = (searchContent, queryId, type) => (dispatch, getState) => {
   fetchData(searchContent, type, 0, limit, token, searchType, (res) => {
     const data = res.data ? res.data : [];
     dispatch({
-      type: SUGGESTION_SEARCH_REQUEST_DONE,
+      type: SUGGESTION_SEARCH_REFRESH_DONE,
       payload: {
         queryId,
         data,
@@ -85,7 +90,7 @@ export const refreshSearchResult = (type) => (dispatch, getState) => {
   const { searchContent, searchType, searchRes } = getState().suggestionSearch;
   const { skip, limit, queryId } = searchRes;
   dispatch({
-    type: SUGGESTION_SEARCH_REQUEST,
+    type: SUGGESTION_SEARCH_REFRESH,
     payload: {
       queryId,
       searchContent,
@@ -203,3 +208,128 @@ curry((searchContent, type, skip, limit, token, searchType, callback, forceRefre
       }
     });
 });
+
+/**
+ * Preload data related functions
+ */
+export const refreshPreloadData = (searchType) => (dispatch, getState) => {
+  const { token, userId } = getState().user;
+  const { preloadData } = getState().suggestionSearch;
+  const { limit, refreshing } = _.get(preloadData, `${searchType}`);
+
+  if (refreshing) return;
+
+  const onSuccess = (res) => {
+    const { data } = res;
+    console.warn(`${DEBUG_KEY}: refresh preload type: ${searchType} succeed with data: `, data.length);
+    dispatch({
+      type: SUGGESTION_SEARCH_PRELOAD_REFRESH_DONE,
+      payload: {
+        data,
+        skip: data.length,
+        searchType,
+        hasNextPage: (data && data.length >= limit),
+      }
+    })
+  }
+
+  const onError = (res) => {
+    console.warn(`${DEBUG_KEY}: refresh preload type: ${searchType} failed with err: `, res);
+    dispatch({
+      type: SUGGESTION_SEARCH_PRELOAD_REFRESH_DONE,
+      payload: {
+        data: [],
+        skip: 0,
+        searchType,
+        hasNextPage: false
+      }
+    })
+  }
+
+  const route = switchCaseRoute(searchType, userId, 0, limit);
+  if (route === '') {
+    console.warn(`${DEBUG_KEY}: incorrect searchType: `, searchType);
+    return;
+  }
+
+  dispatch({
+    type: SUGGESTION_SEARCH_PRELOAD_REFRESH,
+    payload: {
+      searchType
+    }
+  });
+
+  loadData(token, route, onSuccess, onError);
+};
+
+export const loadMorePreloadData = (searchType) => (dispatch, getState) => {
+  const { token, userId } = getState().user;
+  const { preloadData } = getState().suggestionSearch;
+  const { skip, limit, hasNextPage } = _.get(preloadData, `${searchType}`);
+
+  if (hasNextPage === false) return;
+
+  const onSuccess = (res) => {
+    const { data } = res;
+    console.warn(`${DEBUG_KEY}: load more preload type: ${searchType} succeed with data: `, data.length);
+    dispatch({
+      type: SUGGESTION_SEARCH_PRELOAD_LOAD_DONE,
+      payload: {
+        data,
+        skip: skip + data.length,
+        hasNextPage: (data && data.length >= limit),
+        searchType
+      }
+    })
+  }
+
+  const onError = (res) => {
+    console.warn(`${DEBUG_KEY}: load more preload type: ${searchType} failed with err: `, res);
+    dispatch({
+      type: SUGGESTION_SEARCH_PRELOAD_LOAD_DONE,
+      payload: {
+        data: [],
+        skip,
+        searchType,
+        hasNextPage: false
+      }
+    })
+  }
+
+  const route = switchCaseRoute(searchType, userId, skip, limit);
+  if (route === '') {
+    console.warn(`${DEBUG_KEY}: incorrect searchType: `, searchType);
+    return;
+  }
+
+  dispatch({
+    type: SUGGESTION_SEARCH_PRELOAD_LOAD,
+    payload: {
+      searchType
+    }
+  });
+
+  loadData(token, route, onSuccess, onError);
+}
+
+const switchCaseRoute = (searchType, userId, skip, limit) => switchCase({
+  // User: `secure/user/friendship?${queryBuilder(skip, limit, { userId })}`,
+  // Event: `secure/event?${queryBuilder(skip, limit, {})}`,
+  // Tribe: `secure/tribe?${queryBuilder(skip, limit, {})}`,
+  User: `secure/user/friendship?userId=${userId}`,
+  Tribe: `secure/tribe`,
+  Event: `secure/event`,
+  ChatConvoRoom: ''
+})('')(searchType);
+
+const loadData = (token, route, onSuccess, onError) => {
+  API
+    .get(route, token)
+    .then((res) => {
+      if (res.status === 200) {
+        return onSuccess(res);
+      }
+      return onError(err);
+    })
+    .catch(err => onError(err));
+};

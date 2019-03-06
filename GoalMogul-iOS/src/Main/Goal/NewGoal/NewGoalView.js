@@ -134,7 +134,7 @@ class NewGoalView extends Component {
     hidePanel();
     const { name } = item;
     const { details, tags } = this.props;
-    if (!details || _.isEmpty(details)) return '';
+    if (!details || _.isEmpty(details)) return;
     const detail = details[0];
 
     const postCursorContent = detail.slice(cursorPosition);
@@ -214,7 +214,7 @@ class NewGoalView extends Component {
     // console.log(`${DEBUG_KEY}: res is: `, res);
     // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
     // console.log(`${DEBUG_KEY}: searchContent is: `, searchContent);
-    if (searchContent !== this.state.keyword) return '';
+    if (searchContent !== this.state.keyword) return;
     this.setState({
       ...this.state,
       // keyword,
@@ -458,7 +458,7 @@ class NewGoalView extends Component {
   }
 
   renderUserInfo(user) {
-    if (!user) return '';
+    if (!user) return null;
     let imageUrl = user.profile.image;
     let profileImage =
       <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />;
@@ -562,7 +562,7 @@ class NewGoalView extends Component {
             change={(type, val) => this.props.change(type, val)}
           />
         );
-      }) : '';
+      }) : null;
     return (
       <View style={{ marginTop: 10 }}>
         {fieldsComponet}
@@ -684,7 +684,7 @@ class NewGoalView extends Component {
     //     </View>
     //   );
     // }
-    if (this.props.startTime === undefined) return '';
+    if (this.props.startTime === undefined) return;
 
     const newPicker = true;
     const startDatePicker = newPicker ?
@@ -696,7 +696,7 @@ class NewGoalView extends Component {
               this.props.change('startTime', { date, picker: false });
               return;
             }
-            alert('Start time should not be later than start time');
+            alert('Start time cannot be later than end time');
           }}
           onCancel={() =>
             this.props.change('startTime', {
@@ -747,7 +747,7 @@ class NewGoalView extends Component {
                 this.props.change('endTime', { date, picker: false });
                 return;
               }
-              alert('End time should not be early than start time');
+              alert('End time cannot be early than start time');
             }}
             onCancel={() =>
               this.props.change('endTime', {
@@ -790,12 +790,34 @@ class NewGoalView extends Component {
         );
 
     const startTime = this.props.startTime.date ?
-      <Text>{moment(this.props.startTime.date).format('DD/MM/YYYY')}</Text> :
-      <Text style={{ fontSize: 9 }}>Start</Text>;
+      <Text>{moment(this.props.startTime.date).format('ll')}</Text> :
+      <Text style={{ fontSize: 15 }}>Start date</Text>;
 
     const endTime = this.props.endTime.date ?
-      <Text>{moment(this.props.endTime.date).format('DD/MM/YYYY')}</Text> :
-      <Text style={{ fontSize: 9 }}>End</Text>;
+      <Text>{moment(this.props.endTime.date).format('ll')}</Text> :
+      <Text style={{ fontSize: 15 }}>End date</Text>;
+
+    // Show cancel button if there is date set
+    const cancelButton = this.props.endTime.date || this.props.startTime.date 
+      ? 
+      (
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={{ justifyContent: 'center', padding: 10, marginLeft: 5 }}
+          onPress={() => {
+            this.props.change('hasTimeline', false);
+            this.props.change('endTime', {
+              date: undefined, picker: false
+            });
+            this.props.change('startTime', {
+              date: undefined, picker: false
+            });
+          }}
+        >
+          <Image source={cancel} style={{ ...styles.cancelIconStyle }} />
+        </TouchableOpacity>
+      )
+      : null;
 
     return (
       <View style={{ ...styles.sectionMargin }}>
@@ -840,21 +862,7 @@ class NewGoalView extends Component {
             {endTime}
           </TouchableOpacity>
 
-          <TouchableOpacity
-            activeOpacity={0.85}
-            style={{ justifyContent: 'center', padding: 10 }}
-            onPress={() => {
-              this.props.change('hasTimeline', false);
-              this.props.change('endTime', {
-                date: undefined, picker: false
-              });
-              this.props.change('startTime', {
-                date: undefined, picker: false
-              });
-            }}
-          >
-            <Image source={cancel} style={{ ...styles.cancelIconStyle }} />
-          </TouchableOpacity>
+          {cancelButton}
         </View>
         {startDatePicker}
         {endDatePicker}

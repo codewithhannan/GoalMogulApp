@@ -212,7 +212,7 @@ class Home extends Component {
         </TouchableOpacity>
       );
     }
-    return nul;
+    return null;
   }
 
   render() {
