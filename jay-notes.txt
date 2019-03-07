@@ -1,6 +1,0 @@
-- use proptypes
-- use stylesheets --> styles/index
-- use utils (ex. ImageUtils to upload image)
-- use constants
-- use react-native-router-flux's Modal and LightBox
-- add routes to Router.js
