@@ -131,7 +131,8 @@ class Headline extends React.PureComponent {
       user,
       item,
       deleteOnly,
-      caret
+      caret,
+      textStyle
     } = this.props;
 
     // If item belongs to self, then caret displays delete
@@ -161,16 +162,16 @@ class Headline extends React.PureComponent {
       : this.renderSelfCaret(item, deleteOnly);
     }
 
-    const categoryComponent = category ? <Category text={category} /> : '';
+    const categoryComponent = category ? <Category text={category} /> : null;
 
     return (
       <View style={styles.containerStyle}>
-        <Name text={name} onPress={() => this.handleNameOnPress(user)} />
+        <Name text={name} onPress={() => this.handleNameOnPress(user)} textStyle={textStyle} />
         {/* <Image style={styles.imageStyle} source={badge} /> */}
         <UserBanner user={user} iconStyle={{ marginTop: 1 }} />
         {categoryComponent}
         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
-          {hasCaret === null ? '' : menu}
+          {hasCaret === null || hasCaret === false ? null : menu}
         </View>
       </View>
     );

@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
 import {
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  ImageBackground,
+  TouchableWithoutFeedback,
+  Dimensions
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import R from 'ramda';
 
 // Actions
+import {
+  openProfile
+} from '../../actions';
+
 import {
   likeGoal,
   unLikeGoal
@@ -46,22 +53,42 @@ import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 import ActivityHeader from './ActivityHeader';
 import ActivityBody from './ActivityBody';
 import ActivitySummary from './ActivitySummary';
+import ProfileImage from '../Common/ProfileImage';
+import Headline from '../Goal/Common/Headline';
+import ImageModal from '../Common/ImageModal';
+import RichText from '../Common/Text/RichText';
+
+// Styles
+import { imagePreviewContainerStyle } from '../../styles';
 
 // Constants
+import {
+  IMAGE_BASE_URL
+} from '../../Utils/Constants';
+
+
 const DEBUG_KEY = '[ UI ActivityCard ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
+const { width } = Dimensions.get('window');
 
 class ActivityCard extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mediaModal: false
+    };
+  }
 
-  handleCardOnPress = (item) => {
+  handleCardOnPress = (item, props) => {
     const { goalRef, postRef, actedUponEntityType } = item;
+    const propsToPass = props ? props : {};
     if (actedUponEntityType === 'Post') {
       return this.props.openPostDetail({ ...postRef });
     }
 
     if (actedUponEntityType === 'Goal') {
-      return this.props.openGoalDetail({ ...goalRef });
+      return this.props.openGoalDetail({ ...goalRef }, propsToPass);
     }
   }
 
@@ -116,7 +143,7 @@ class ActivityCard extends React.PureComponent {
   renderActionButtons({ postRef, goalRef, actedUponEntityType, actedWith }) {
     const item = actedUponEntityType === 'Post' ? postRef : goalRef;
     // Sanity check if ref exists
-    if (!item) return '';
+    if (!item) return null;
 
     const { maybeLikeRef, _id } = item;
 
@@ -173,9 +200,100 @@ class ActivityCard extends React.PureComponent {
     );
   }
 
+  // If this is a comment activity, render comment summary
+  renderCommentRef(item) {
+    // CommentRef shouldn't be null as we already sanity check the activity card
+    const { actedWith, commentRef, actor } = item;
+    if (actedWith !== 'Comment') return null;
+
+    console.log(`${DEBUG_KEY}: commentRef: `, commentRef);
+    const { content, mediaRef } = commentRef;
+    const {
+      text,
+      tags
+    } = content;
+
+    const { profile, _id, name } = actor;
+    return (
+      <View style={{ flexDirection: 'row', padding: 15 }}>
+        <ProfileImage 
+          imageStyle={{ height: 35, width: 35, borderRadius: 4 }}
+          imageUrl={profile ? profile.image : undefined}
+          imageContainerStyle={{ ...styles.imageContainerStyle, marginTop: 2 }}
+          userId={_id}
+        />
+        <TouchableOpacity
+          activeOpacity={0.85} 
+          style={{ 
+            backgroundColor: 'white', 
+            padding: 8, 
+            borderRadius: 10, 
+            borderWidth: 0.5,
+            borderColor: '#f2f2f2',
+            marginLeft: 10, flex: 1
+          }}
+          onPress={() => this.handleCardOnPress(item, { focusType: 'comment' })}
+        >
+          <Headline
+            name={name || ''}
+            user={actor}
+            hasCaret={false}
+            isSelf={this.props.userId === _id}
+            textStyle={{ fontSize: 12 }}
+          />
+          <RichText
+            contentText={text}
+            contentTags={tags}
+            textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 12 }}
+            textContainerStyle={{ flexDirection: 'row', marginTop: 5, }}
+            numberOfLines={2}
+            ellipsizeMode='tail'
+            onUserTagPressed={(user) => {
+              console.log(`${DEBUG_KEY}: user tag press for user: `, user);
+              this.props.openProfile(user);
+            }}
+          />
+          {this.renderMedia(mediaRef)}
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  renderMedia(url) {
+    if (!url) {
+      return null;
+    }
+    const imageUrl = `${IMAGE_BASE_URL}${url}`;
+      return (
+        <TouchableWithoutFeedback
+          onPress={() => this.setState({ mediaModal: true })}
+        >
+          <View style={{ marginTop: 5 }}>
+            <ImageBackground
+              style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle }}
+              source={{ uri: imageUrl }}
+              imageStyle={{ borderRadius: 8, resizeMode: 'cover' }}
+            >
+            </ImageBackground>
+            {this.renderPostImageModal(imageUrl)}
+          </View>
+        </TouchableWithoutFeedback>
+      );
+  }
+
+  renderPostImageModal(imageUrl) {
+    return (
+      <ImageModal
+        mediaRef={imageUrl}
+        mediaModal={this.state.mediaModal}
+        closeModal={() => this.setState({ mediaModal: false })}
+      />
+    );
+  }
+
   render() {
     const { item } = this.props;
-    if (!item || _.isEmpty(item) || !isValidActivity(item)) return '';
+    if (!item || _.isEmpty(item) || !isValidActivity(item)) return null;
 
     return (
       <View style={{ marginTop: 10 }}>
@@ -195,7 +313,8 @@ class ActivityCard extends React.PureComponent {
           <View style={{ ...styles.containerStyle, marginTop: 1 }}>
             {this.renderActionButtons(item)}
           </View>
-          </View>
+          {this.renderCommentRef(item)}
+        </View>
       </View>
     );
   }
@@ -205,6 +324,21 @@ const styles = {
   containerStyle: {
     backgroundColor: 'white',
 
+  },
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 0.5,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 5,
+    alignSelf: 'flex-start',
+    backgroundColor: 'white'
+  },
+  mediaStyle: {
+    height: width / 3,
+    width: width / 3,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   iconStyle: {
     alignSelf: 'center',
@@ -223,7 +357,7 @@ const styles = {
 
 const isValidActivity = (item) => {
   if (!item || _.isEmpty(item)) return false;
-  const { actedUponEntityType, goalRef, postRef } = item;
+  const { actedUponEntityType, goalRef, postRef, actedWith, commentRef, actor } = item;
   if (actedUponEntityType === 'Goal' && (!goalRef || goalRef === null)) {
     return false;
   }
@@ -231,17 +365,32 @@ const isValidActivity = (item) => {
   if (actedUponEntityType === 'Post' && (!postRef || postRef === null)) {
     return false;
   }
+
+  if (actedWith === 'Comment' && commentRef === null) {
+    return false;
+  }
+
+  if (actor === null) return false;
   return true;
 };
 
+const mapStateToProps = state => {
+  const { userId } = state.user;
+
+  return {
+    userId
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   {
     likeGoal,
     unLikeGoal,
     chooseShareDest,
     openPostDetail,
     openGoalDetail,
-    refreshFeed
+    refreshFeed,
+    openProfile
   }
 )(ActivityCard);
