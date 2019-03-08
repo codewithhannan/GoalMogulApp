@@ -25,6 +25,7 @@ import {
 
 // Actions
 import { updateFriendship, openProfile } from '../../../actions';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
 const WITHDRAW_INDEX = 0;
@@ -87,7 +88,7 @@ class SuggestedCard extends Component {
   renderButton(_id) {
     return (
       <View style={styles.iconContainerStyle}>
-        <TouchableOpacity
+        <DelayedButton
           activeOpacity={0.85}
           onPress={this.onButtonClicked.bind(this, _id)}
           style={{ padding: 15 }}
@@ -96,7 +97,7 @@ class SuggestedCard extends Component {
             source={next}
             style={{ ...styles.iconStyle, opacity: 0.8 }}
           />
-        </TouchableOpacity>
+        </DelayedButton>
       </View>
     );
   }
@@ -201,16 +202,16 @@ class SuggestedCard extends Component {
         </Text>
       );
     }
-    return '';
+    return null;
   }
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     const { headline, _id } = item;
     return (
-      <TouchableOpacity
+      <DelayedButton
         activeOpacity={0.85}
         style={[styles.containerStyle, cardBoxShadow]}
         onPress={() => this.props.openProfile(_id)}
@@ -230,7 +231,7 @@ class SuggestedCard extends Component {
           </View>
         */}
 
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 }

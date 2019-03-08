@@ -233,6 +233,7 @@ class ProfileDetailCard extends Component {
             source={addUser}
             onPress={this.handleButtonOnPress.bind(this, 'requestFriend')}
             style={{ height: 14, width: 15 }}
+            containerStyle={{ backgroundColor: '#E2F0F8' }}
           />
         );
 
@@ -256,7 +257,7 @@ class ProfileDetailCard extends Component {
         );
 
       default:
-        return '';
+        return null;
     }
   }
 
@@ -319,7 +320,7 @@ class ProfileDetailCard extends Component {
   }
 
   render() {
-    if (!this.props.user) return '';
+    if (!this.props.user) return null;
     const { name, headline, profile } = this.props.user;
     // const { name, headline, profile } = testData;
     // console.log(`${DEBUG_KEY}: rerender with profile: `, profile);
