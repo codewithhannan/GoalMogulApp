@@ -58,7 +58,7 @@ class ActivityBody extends React.Component {
   renderPostImage(url) {
     // TODO: update this to be able to load image
     if (!url) {
-      return '';
+      return null;
     }
     const imageUrl = `${IMAGE_BASE_URL}${url}`;
       return (
@@ -130,7 +130,7 @@ class ActivityBody extends React.Component {
   }
 
   renderPostBody(postRef) {
-    if (!postRef) return '';
+    if (!postRef) return null;
     const { postType, goalRef, needRef, stepRef, userRef } = postRef;
     if (postType === 'General') {
       return this.renderPostImage(postRef.mediaRef);
@@ -177,12 +177,12 @@ class ActivityBody extends React.Component {
 
     // Incorrect acteduponEntityType
     console.warn(`${DEBUG_KEY}: incorrect actedUponEntityType: ${actedUponEntityType}`);
-    return '';
+    return null;
   }
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     return (
       <View style={{ marginTop: 10 }}>
