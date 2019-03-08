@@ -5,7 +5,6 @@ import React from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   ActionSheetIOS
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -13,6 +12,7 @@ import { connect } from 'react-redux';
 // Components
 import Name from '../../Common/Name';
 import ProfileImage from '../../Common/ProfileImage';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Actions
 import {
@@ -146,7 +146,7 @@ class FriendRequestCardView extends React.PureComponent {
     const buttonText = item.type === 'outgoing' ? 'Cancel' : 'Respond';
     if (!item.user || item.type === 'info') return null;
     return (
-        <TouchableOpacity 
+        <DelayedButton 
             onPress={() => this.handleButtonOnPress(item)}
             activeOpacity={0.85}
             style={styles.buttonContainerStyle}
@@ -154,7 +154,7 @@ class FriendRequestCardView extends React.PureComponent {
             <View style={styles.buttonTextContainerStyle}>
                 <Text style={{ fontSize: 11, color: '#868686' }}>{buttonText}</Text>
             </View>
-        </TouchableOpacity>
+        </DelayedButton>
     );
   }
 
@@ -204,7 +204,7 @@ class FriendRequestCardView extends React.PureComponent {
 
     console.log(`${DEBUG_KEY}: item is: `, item);
     return (
-        <TouchableOpacity 
+        <DelayedButton 
             activeOpacity={0.85}
             style={[styles.containerStyle, styles.shadow]}
             onPress={this.handleOnOpenProfile}
@@ -218,7 +218,7 @@ class FriendRequestCardView extends React.PureComponent {
             }
             {this.renderButton(item)}
             {this.renderInfoText(item)}
-        </TouchableOpacity>
+        </DelayedButton>
     );
   }
 }

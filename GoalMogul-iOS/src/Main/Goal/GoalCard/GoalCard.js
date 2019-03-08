@@ -413,7 +413,14 @@ class GoalCard extends React.PureComponent {
           iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks suggest icon`);
-            this.props.onPress(this.props.item);
+            this.props.onPress(
+              this.props.item, 
+              // { 
+              //   type: 'Comment', 
+              //   _id: undefined,
+              //   initialShowSuggestionModal: false
+              // }
+            );
           }}
         />
       </ActionButtonGroup>

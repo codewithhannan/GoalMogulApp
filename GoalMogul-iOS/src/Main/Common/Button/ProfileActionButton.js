@@ -6,8 +6,9 @@ import {
   Text
 } from 'react-native';
 
+const DEBUG_KEY = '[ UI ProfileActionButton ]';
 const ProfileActionButton = (props) => {
-  let image = '';
+  let image = null;
   if (props.source) {
     image = (
       <Image
@@ -16,6 +17,8 @@ const ProfileActionButton = (props) => {
       />
     );
   }
+
+  console.log(`${DEBUG_KEY}: containerStyle: `, props.containerStyle);
   return (
     <TouchableOpacity activeOpacity={0.85} onPress={props.onPress}>
       <View
@@ -26,11 +29,12 @@ const ProfileActionButton = (props) => {
           marginRight: 8,
           padding: 7,
           borderRadius: 5,
-          backgroundColor: '#f3f3f3'
+          backgroundColor: '#f3f3f3',
+          ...props.containerStyle
         }}
       >
         {image}
-      <Text style={{ fontSize: 9.5, marginLeft: 5, alignSelf: 'center' }}>
+        <Text style={{ fontSize: 9.5, marginLeft: 5, alignSelf: 'center' }}>
           {props.text}
         </Text>
       </View>

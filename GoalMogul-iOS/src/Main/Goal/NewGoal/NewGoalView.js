@@ -981,7 +981,7 @@ class NewGoalView extends Component {
 
   renderSteps = ({ fields, meta: { error, submitFailed } }) => {
     return this.renderFieldArray(
-      'Steps',
+      'Steps (optional)',
       'step',
       STEP_PLACE_HOLDER,
       fields,
