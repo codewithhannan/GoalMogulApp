@@ -556,12 +556,31 @@ class MyTribe extends Component {
     const { memberNavigationState } = this.props;
     const { routes } = memberNavigationState;
 
+    const buttonStyle = {
+      selected: {
+        backgroundColor: 'white', // container background style
+        tintColor: '#696969', // icon tintColor
+        color: '#696969', // text color
+        fontWeight: '800', // text fontWeight
+        statColor: 'white' // stat icon color
+      },
+      unselected: {
+        backgroundColor: 'white',
+        tintColor: '#696969',
+        color: '#b2b2b2',
+        fontWeight: '600',
+        statColor: '#696969'
+      }
+    };
     const props = {
       jumpToIndex: (i) => this.props.myTribeSelectMembersFilter(routes[i].key, i),
       navigationState: this.props.memberNavigationState
     };
+
     return (
-      <TabButtonGroup buttons={props} subTab />
+      <View style={{ marginTop: 5 }}>
+        <TabButtonGroup buttons={props} subTab buttonStyle={buttonStyle} noVerticalDivider />
+      </View> 
     );
   }
 
@@ -578,11 +597,11 @@ class MyTribe extends Component {
 
     const filterBar = this.props.tab === 'members'
       ? this.renderMemberTabs()
-      : '';
+      : null;
 
     const emptyState = this.props.tab === 'posts' && data.length === 0 && !this.props.feedLoading
       ? <EmptyResult text={'No Posts'} textStyle={{ paddingTop: 100 }} />
-    : '';
+      : null;
 
     // Invite button is replaced by renderPlus
     const inviteButton = this.props.tab === 'members'
@@ -595,7 +614,7 @@ class MyTribe extends Component {
           <Text>Invite</Text>
         </TouchableOpacity>
       )
-      : '';
+      : null;
 
 
     return (
@@ -692,7 +711,7 @@ class MyTribe extends Component {
         </TouchableOpacity>
       );
     }
-    return '';
+    return null;
   }
 
   // render padding

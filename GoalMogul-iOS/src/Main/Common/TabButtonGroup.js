@@ -8,7 +8,7 @@ import SubTabButton from './Button/SubTabButton';
 class TabButtonGroup extends Component {
 
   renderButton() {
-    const { buttons, tabIconMap, subTab, buttonStyle } = this.props;
+    const { buttons, tabIconMap, subTab, buttonStyle, noVerticalDivider } = this.props;
     const { navigationState, jumpTo, jumpToIndex } = buttons;
 
     const { index, routes } = navigationState;
@@ -24,6 +24,7 @@ class TabButtonGroup extends Component {
             stat={b.stat}
             iconSource={iconSource}
             iconStyle={iconStyle}
+            buttonStyle={buttonStyle}
           />
         )
         : (
@@ -38,6 +39,7 @@ class TabButtonGroup extends Component {
         );
       if (i !== 0) {
         // render divider to the left
+        const divider = noVerticalDivider ? null : (<Divider />);
         return (
           <TouchableOpacity 
             activeOpacity={0.85}
@@ -51,7 +53,7 @@ class TabButtonGroup extends Component {
               }
             }}
           >
-            <Divider />
+            {divider}
             {button}
           </TouchableOpacity>
         );
