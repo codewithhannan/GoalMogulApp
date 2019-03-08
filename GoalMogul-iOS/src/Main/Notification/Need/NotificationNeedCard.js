@@ -52,7 +52,16 @@ class NotificationCard extends React.Component {
    */
   handleOnOpen = (item) => {
     if (item !== null && !_.isEmpty(item) && item.goalRef !== null && !_.isEmpty(item.goalRef)) {
-      return this.props.openGoalDetail(item.goalRef);
+      const { _id } = item;
+      // console.log(`${DEBUG_KEY}: i am here with item:`, item);
+      return this.props.openGoalDetail(
+        item.goalRef, 
+        // {
+        //   focusType: 'Need', 
+        //   focusRef: _id, 
+        //   initialShowSuggestionModal: false 
+        // }
+      );
     }
     console.warn(`${DEBUG_KEY}: invalid item: `, item);
   }

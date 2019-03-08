@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import ProfileImage from '../../Common/ProfileImage';
 import Timestamp from '../../Goal/Common/Timestamp';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Asset
 import FriendsSettingIcon from '../../../asset/utils/friendsSettingIcon.png';
@@ -137,7 +138,7 @@ class NotificationCard extends React.PureComponent {
       ? { ...styles.cardContainerStyle }
       : { ...styles.cardContainerStyle, backgroundColor: '#eef8fb' };
     return (
-      <TouchableOpacity 
+      <DelayedButton 
         activeOpacity={0.85}
         style={cardContainerStyle}
         onPress={() => this.handleNotificationCardOnPress(item)}
@@ -145,7 +146,7 @@ class NotificationCard extends React.PureComponent {
         {this.renderProfileImage(item)}
         {this.renderContent(item)}
         {this.renderOptions(item)}
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 }
