@@ -579,7 +579,7 @@ class MyTribe extends Component {
 
     return (
       <View>
-        <TabButtonGroup buttons={props} subTab buttonStyle={buttonStyle} noVerticalDivider />
+        <TabButtonGroup buttons={props} subTab buttonStyle={buttonStyle} noVerticalDivider noBorder />
       </View> 
     );
   }

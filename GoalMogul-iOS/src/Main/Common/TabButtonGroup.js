@@ -106,7 +106,7 @@ const styles = {
     shadowOffset: { width: 0, height: 1.5 },
     shadowOpacity: 0.1,
     shadowRadius: 1,
-    elevation: 0.5
+    // elevation: 0.5
   },
   dividerContainerStyle: {
     flexDirection: 'row',
