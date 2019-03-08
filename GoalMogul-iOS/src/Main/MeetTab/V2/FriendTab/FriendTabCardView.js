@@ -8,7 +8,6 @@ import React from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   ActionSheetIOS
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -16,6 +15,7 @@ import { connect } from 'react-redux';
 // Components
 import Name from '../../../Common/Name';
 import ProfileImage from '../../../Common/ProfileImage';
+import DelayedButton from '../../../Common/Button/DelayedButton';
 
 /* Assets */
 
@@ -95,7 +95,7 @@ class FriendTabCardView extends React.PureComponent {
 
   renderButton(item) {
     return (
-        <TouchableOpacity 
+        <DelayedButton 
             onPress={() => this.handleUpdateFriendship(item)}
             activeOpacity={0.85}
             style={styles.buttonContainerStyle}
@@ -103,7 +103,7 @@ class FriendTabCardView extends React.PureComponent {
             <View style={styles.buttonTextContainerStyle}>
                 <Text style={{ fontSize: 11, color: '#868686' }}>Friend</Text>
             </View>
-        </TouchableOpacity>
+        </DelayedButton>
     );
   }
 
@@ -135,11 +135,11 @@ class FriendTabCardView extends React.PureComponent {
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
     
     // console.log(`${DEBUG_KEY}: item is: `, item);
     return (
-        <TouchableOpacity 
+        <DelayedButton 
             style={[styles.containerStyle, styles.shadow]}
             onPress={() => this.props.openProfile(item._id)}
             activeOpacity={0.85}
@@ -148,7 +148,7 @@ class FriendTabCardView extends React.PureComponent {
             {this.renderProfile(item)}
             <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: 35 }} />
             {this.renderButton(item)}
-        </TouchableOpacity>
+        </DelayedButton>
     );
   }
 }
