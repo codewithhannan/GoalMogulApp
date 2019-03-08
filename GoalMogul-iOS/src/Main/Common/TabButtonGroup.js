@@ -24,6 +24,7 @@ class TabButtonGroup extends Component {
             stat={b.stat}
             iconSource={iconSource}
             iconStyle={iconStyle}
+            buttonStyle={buttonStyle}
           />
         )
         : (

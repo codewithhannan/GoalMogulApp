@@ -578,11 +578,11 @@ class MyTribe extends Component {
 
     const filterBar = this.props.tab === 'members'
       ? this.renderMemberTabs()
-      : '';
+      : null;
 
     const emptyState = this.props.tab === 'posts' && data.length === 0 && !this.props.feedLoading
       ? <EmptyResult text={'No Posts'} textStyle={{ paddingTop: 100 }} />
-    : '';
+      : null;
 
     // Invite button is replaced by renderPlus
     const inviteButton = this.props.tab === 'members'
@@ -595,7 +595,7 @@ class MyTribe extends Component {
           <Text>Invite</Text>
         </TouchableOpacity>
       )
-      : '';
+      : null;
 
 
     return (
@@ -692,7 +692,7 @@ class MyTribe extends Component {
         </TouchableOpacity>
       );
     }
-    return '';
+    return null;
   }
 
   // render padding
