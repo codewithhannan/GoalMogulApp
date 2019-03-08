@@ -578,7 +578,7 @@ class MyTribe extends Component {
     };
 
     return (
-      <View style={{ marginTop: 5 }}>
+      <View>
         <TabButtonGroup buttons={props} subTab buttonStyle={buttonStyle} noVerticalDivider />
       </View> 
     );
@@ -861,9 +861,9 @@ const styles = {
     position: 'absolute',
     bottom: 20,
     right: 15,
-    height: 50,
-    width: 50,
-    borderRadius: 25,
+    height: 54,
+    width: 54,
+    borderRadius: 27,
     alignItems: 'center',
     justifyContent: 'center',
     // backgroundColor: '#17B3EC',
