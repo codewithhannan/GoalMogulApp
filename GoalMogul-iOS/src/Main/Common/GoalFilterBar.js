@@ -154,7 +154,7 @@ class GoalFilterBar extends Component {
                 );
               }}
               keyExtractor={(item, index) => index.toString()}
-              style={{ height: Math.min(37 * CATEGORY_OPTIONS.length, 250) }}
+              style={{ height: Math.min(37 * CATEGORY_OPTIONS.length, 390) }}
             />
           </MenuOptions>
         </Menu>

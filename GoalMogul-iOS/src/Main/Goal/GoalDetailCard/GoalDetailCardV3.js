@@ -106,6 +106,7 @@ class GoalDetailCardV3 extends Component {
     this._handleIndexChange = this._handleIndexChange.bind(this);
     this.onViewCommentPress = this.onViewCommentPress.bind(this);
     this.handleReplyTo = this.handleReplyTo.bind(this);
+    this.getFocusedItem = this.getFocusedItem.bind(this);
   }
 
   componentDidMount() {
