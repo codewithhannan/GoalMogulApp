@@ -258,8 +258,15 @@ class NeedCard extends Component {
           textStyle={{ color: '#FBDD0D' }}
           iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           onPress={() => {
-            console.log(`${DEBUG_KEY}: user clicks suggest icon`);
-            this.props.onPress(this.props.item);
+            console.log(`${DEBUG_KEY}: user clicks comment icon`);
+            this.props.onPress(
+              this.props.item, 
+              { 
+                type: 'comment', 
+                _id: undefined,
+                initialShowSuggestionModal: false
+              }
+            );
           }}
         />
       </ActionButtonGroup>
