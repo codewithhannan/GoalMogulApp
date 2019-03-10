@@ -57,6 +57,7 @@ const isValidItem = (item) => item !== undefined && item !== null && !_.isEmpty(
  */
 export const openNotificationDetail = (item) => (dispatch, getState) => {
   // TODO: use the parsedNoti.path to determine which detail to open
+  // console.log(`${DEBUG_KEY}: item is:`, item);
   const { parsedNoti } = item;
   const { path } = parsedNoti;
   if (!isString(path)) {
@@ -85,7 +86,15 @@ export const openNotificationDetail = (item) => (dispatch, getState) => {
 
   if (entityType === 'goal') {
     if (isValidItem(item.goalRef)) {
-      return openGoalDetail(item.goalRef)(dispatch, getState);  
+      let initialProps = {};
+      if (item.commentRef) {
+        initialProps = {
+          focusType: 'comment',
+          focusRef: undefined,
+          initialShowSuggestionModal: false
+        }
+      }
+      return openGoalDetail(item.goalRef, initialProps)(dispatch, getState);  
     }
     return openGoalDetailById(entityId)(dispatch, getState);
   }

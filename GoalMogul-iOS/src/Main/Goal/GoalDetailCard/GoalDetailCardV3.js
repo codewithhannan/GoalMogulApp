@@ -196,11 +196,13 @@ class GoalDetailCardV3 extends Component {
     const { goalDetail } = this.props;
     const type = focusType === 'step' ? 'steps' : 'needs';
     let focusedItem = { description: '', isCompleted: false };
-    _.get(goalDetail, `${type}`).forEach((item) => {
-      if (item._id === focusRef) {
-        focusedItem = _.cloneDeep(item);
-      }
-    });
+    if (_.has(goalDetail, `${type}`)) {
+      _.get(goalDetail, `${type}`).forEach((item) => {
+        if (item._id === focusRef) {
+          focusedItem = _.cloneDeep(item);
+        }
+      });
+    }
     return focusedItem;
   }
 
