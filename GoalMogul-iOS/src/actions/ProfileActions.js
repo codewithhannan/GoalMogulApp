@@ -527,16 +527,19 @@ export const handleTabRefresh = (tab, userId, pageId) => (dispatch, getState) =>
   const page = getUserDataByPageId(getState(), userId, pageId, `${tab}`);
   const { filter, limit, refreshing } = page;
 
-  if (!user || !user._id || refreshing) return;
+  if (!user || !user._id) return;
   console.log(`${DEBUG_KEY}: refresh tab for user with name ${user.name} and id: ${user._id} and pageId: ${pageId}`);
   const userIdToUser = user._id;
+  const filterToUse = profileFilterAdapter(filter, tab);
+
 
   dispatch({
     type: PROFILE_REFRESH_TAB,
     payload: {
       type: tab,
       pageId,
-      userId
+      userId,
+      filterToUse
     }
   });
 
@@ -551,7 +554,8 @@ export const handleTabRefresh = (tab, userId, pageId) => (dispatch, getState) =>
         limit,
         userId: userIdToUser,
         hasNextPage: !(data === undefined || data.length === 0),
-        pageId
+        pageId,
+        filterToUse
       }
     });
   };
@@ -569,7 +573,7 @@ export const handleTabRefresh = (tab, userId, pageId) => (dispatch, getState) =>
     console.log(`${DEBUG_KEY}: refresh tab: ${tab} failed with err: `, err);
   };
 
-  loadOneTab(tab, 0, limit, { ...profileFilterAdapter(filter, tab), userId: userIdToUser },
+  loadOneTab(tab, 0, limit, { ...filterToUse, userId: userIdToUser },
     token, onSuccess, onError);
 };
 
@@ -650,15 +654,15 @@ const profileFilterAdapter = (filter, tab) => {
   }
 
   // Create special filter for needs
-  if (tab === 'needs') {
-    newFilter = _.omit(newFilter, 'categories');
-    newFilter = _.omit(newFilter, 'orderBy');
-    newFilter = _.omit(newFilter, 'sortBy');
-    newFilter = _.omit(newFilter, 'completedOnly');
-    newFilter = _.set(newFilter, 'withNeeds', true);
-    console.log(`${DEBUG_KEY}: filter is:`, newFilter);
-    return newFilter
-  }
+  // if (tab === 'needs') {
+  //   newFilter = _.omit(newFilter, 'categories');
+  //   newFilter = _.omit(newFilter, 'orderBy');
+  //   newFilter = _.omit(newFilter, 'sortBy');
+  //   newFilter = _.omit(newFilter, 'completedOnly');
+  //   newFilter = _.set(newFilter, 'withNeeds', true);
+  //   console.log(`${DEBUG_KEY}: filter is:`, newFilter);
+  //   return newFilter
+  // }
   delete newFilter.orderBy;
   // delete newFilter.catergory;
   delete newFilter.completedOnly;

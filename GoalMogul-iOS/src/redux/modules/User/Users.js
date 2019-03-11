@@ -490,25 +490,33 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         case PROFILE_REFRESH_TAB: {
-            const { type, userId, pageId } = action.payload;
+            const { type, userId, pageId, filterToUse } = action.payload;
             let newState = _.cloneDeep(state);
             const shouldUpdate = sanityCheckPageId(newState, userId, pageId, PROFILE_REFRESH_TAB);
             if (shouldUpdate) {
                 newState = _.set(newState, `${userId}.${pageId}.${type}.refreshing`, true);
+                newState = _.set(newState, `${userId}.${pageId}.${type}.filterToUse`, filterToUse);
             }
             return newState;
         }
 
         case PROFILE_REFRESH_TAB_DONE: {
-            const { type, userId, pageId, data, skip, hasNextPage } = action.payload;
+            const { type, userId, pageId, data, skip, hasNextPage, filterToUse } = action.payload;
             let newState = _.cloneDeep(state);
             const shouldUpdate = sanityCheckPageId(
                 newState, 
                 userId, 
                 pageId, 
-                PROFILE_REFRESH_TAB_DONE
+                PROFILE_REFRESH_TAB_DONE,
             );
             if (!shouldUpdate) {
+                return newState;
+            }
+
+            const lastFilterToUse = _.get(newState, `${userId}.${pageId}.${type}.filterToUse`);
+            // Check if user update the filter
+            if (!_.isEqual(lastFilterToUse, filterToUse)) {
+                console.log(`${DEBUG_KEY}: [ ${action.type} ]: filter is different so don't update the state.`);
                 return newState;
             }
 
@@ -522,6 +530,7 @@ export default (state = INITIAL_STATE, action) => {
             newState = _.set(newState, `${path}.refreshing`, false);
             newState = _.set(newState, `${path}.skip`, skip);
             newState = _.set(newState, `${path}.hasNextPage`, hasNextPage);
+            newState = _.set(newState, `${path}.filterToUse`, undefined); // Reset filterToUse state
 
             return newState; 
         }
@@ -592,7 +601,7 @@ export default (state = INITIAL_STATE, action) => {
                 return newState;
             }
             newState = _.set(newState, `${path}.${type}`, value);
-            console.log(`${DEBUG_KEY}: new state is: `, newState);
+            // console.log(`${DEBUG_KEY}: new state is: `, newState);
             return newState;
         }
 
