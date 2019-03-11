@@ -36,8 +36,18 @@ class RefPreview extends Component {
   handleOnPress(item, postType, goalRef) {
     // console.log('goalref is : ', goalRef);
     if (item === null) return;
-    if (postType === 'ShareGoal' || postType === 'ShareNeed' || postType === 'ShareStep') {
+
+    if (postType === 'ShareGoal') {
       return this.props.openGoalDetail(goalRef);
+    }
+
+    if (postType === 'ShareNeed' || postType === 'ShareStep') {
+      const initialProps = {
+        focusType: postType === 'ShareNeed' ? 'need' : 'step',
+        focusRef: item._id,
+        initialShowSuggestionModal: false
+      };
+      return this.props.openGoalDetail(goalRef, initialProps);
     }
 
     if (postType === 'ShareUser') {
