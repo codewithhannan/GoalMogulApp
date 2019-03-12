@@ -14,7 +14,7 @@ import Mastermind from './Mastermind';
 import ActivityFeed from './ActivityFeed';
 
 // Actions
-import { homeSwitchTab, fetchAppUserProfile, fetchProfile } from '../../actions';
+import { homeSwitchTab, fetchAppUserProfile, fetchProfile, checkIfNewlyCreated } from '../../actions';
 import {
   openCreateOverlay,
   refreshGoals
@@ -79,6 +79,9 @@ class Home extends Component {
 
     // Set timer to fetch profile again if previously failed
     this.setTimer();
+    setTimeout(() => {
+      this.props.checkIfNewlyCreated();
+    }, 500);
   }
 
   componentWillUnmount() {
@@ -312,7 +315,8 @@ export default connect(
     saveUnreadNotification,
     refreshGoals,
     refreshFeed,
-    fetchProfile
+    fetchProfile,
+    checkIfNewlyCreated
   },
   null,
   { withRef: true }

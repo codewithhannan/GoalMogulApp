@@ -31,6 +31,9 @@ import {
   refreshGoals
 } from '../redux/modules/home/mastermind/actions';
 
+// Components
+import { DropDownHolder } from '../Main/Common/Modal/DropDownModal';
+
 const DEBUG_KEY = '[ Action Auth ]';
 export const userNameChanged = (username) => {
   return {
@@ -187,4 +190,66 @@ export const logout = () => async (dispatch, getState) => {
   dispatch({
     type: USER_LOG_OUT
   });
+};
+
+const NEWLY_CREATED_KEY = 'newly_created_key';
+const makeTitleWithName = (name) => `You\'ve accepted ${name}\'s invite!`;
+const makeMessage = () => 'Visit their profile and help them with their goals.';
+export const checkIfNewlyCreated = () => async (dispatch, getState) => {
+  const { token, userId } = getState().user;
+  // Check if we already show toast
+  const hasShownToast = await Auth.getByKey(`${userId}_${NEWLY_CREATED_KEY}`);
+  if (hasShownToast) {
+    console.log(`${DEBUG_KEY}: user shown toast state:`, hasShownToast);
+    // TODO: uncomment
+    // return;
+  }
+
+  // Check if user is newly invited
+  const onSuccess = async (res) => {
+    const { isNewlyInvited, inviter } = res;
+    // Show toast
+    if (!isNewlyInvited) {
+      console.log(`${DEBUG_KEY}: [ checkIfNewlyCreated ] user is no longer newly invited`);
+      // TODO: uncomment
+      // return;
+    }
+    
+    if (!inviter) {
+      console.warn(`${DEBUG_KEY}: [ checkIfNewlyCreated ] invalid inviter:`, inviter);
+      return;
+    } 
+    
+    const { profile, name } = inviter;
+    if (profile && profile.image) {
+      DropDownHolder.setDropDownImage(profile.image);
+    }
+    
+    console.log(`${DEBUG_KEY}: [ checkIfNewlyCreated ]: showing alert`);
+    DropDownHolder.alert('random', makeTitleWithName(name), makeMessage());
+    // Save the response
+    await Auth.saveByKey(`${userId}_${NEWLY_CREATED_KEY}`, 'true');
+  };
+
+  const onError = (res) => {
+    console.warn(`${DEBUG_KEY}: endpoint fetch user/account/is-newly-invited failed with err:`, res);
+    return;
+  };
+
+  API
+    .get('secure/user/account/is-newly-invited', token)
+    .then((res) => {
+      if (res.status === 200) {
+        onSuccess(res);
+        return;
+      }
+      // TODO: uncomment
+      // onError(res);
+      onSuccess({});
+    })
+    .catch((err) => {
+      onError(err)
+      // TODO: comment out
+      onSuccess({});
+    });
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Linking, Image } from 'react-native';
+import DropdownAlert from 'react-native-dropdownalert-jia';
 // import { AppLoading, Font, Asset } from 'expo';
 
 /* State management */
@@ -10,6 +11,9 @@ import { PersistGate } from 'redux-persist/lib/integration/react';
 /* Reducers */
 // import reducers from './src/reducers';
 import { persistor, store } from './src/store';
+
+// Components
+import { DropDownHolder } from './src//Main/Common/Modal/DropDownModal';
 
 /* Router */
 import Router from './src/Router';
@@ -115,6 +119,7 @@ export default class App extends React.Component {
           <View style={styles.container}>
             <Router />
           </View>
+          <DropdownAlert ref={ref => DropDownHolder.setDropDown(ref)} closeInterval={6000}/>
         </PersistGate>
       </Provider>
     );

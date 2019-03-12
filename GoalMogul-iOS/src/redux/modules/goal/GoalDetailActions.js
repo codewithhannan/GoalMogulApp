@@ -7,6 +7,8 @@ import {
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
+import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal';
+
 import {
   GOAL_DETAIL_UPDATE,
   GOAL_DETAIL_UPDATE_DONE,
@@ -461,6 +463,7 @@ const shareToMastermind = (goalId, pageId, dispatch, getState) => {
     });
     // Alert.alert('Success', 'You have successfully shared this goal to mastermind.');
     console.log(`${DEBUG_KEY}: shareToMastermind succeed with res: `, res);
+    DropDownHolder.alert('success', 'Successfully shared Goal to Feed', '');
   };
 
   const onError = (err) => {
