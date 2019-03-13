@@ -58,7 +58,7 @@ const isValidItem = (item) => item !== undefined && item !== null && !_.isEmpty(
 export const openNotificationDetail = (item) => (dispatch, getState) => {
   // TODO: use the parsedNoti.path to determine which detail to open
   // console.log(`${DEBUG_KEY}: item is:`, item);
-  const { parsedNoti } = item;
+  const { parsedNoti, _id } = item;
   const { path } = parsedNoti;
   if (!isString(path)) {
     console.warn(`${DEBUG_KEY}: path in parsedNoti is not string: `, path);
@@ -72,6 +72,9 @@ export const openNotificationDetail = (item) => (dispatch, getState) => {
 
   const entityType = p[0];
   const entityId = p[1];
+
+  // Mark this notification as read
+  markNotifAsRead(_id)(dispatch, getState);
 
   if (entityType === 'user') {
     return openProfile(entityId)(dispatch, getState);

@@ -149,10 +149,6 @@ class NotificationTab extends Component {
     );
   }
 
-  renderListHeader = () => {
-    return null;
-  }
-
   render() {
     const { data } = this.props;
     let dataToRender = data;
@@ -169,7 +165,6 @@ class NotificationTab extends Component {
           keyExtractor={this.keyExtractor}
           onRefresh={this.handleRefresh}
           refreshing={this.props.refreshing}
-          ListHeaderComponent={this.renderListHeader}
         />
       </View>
     );

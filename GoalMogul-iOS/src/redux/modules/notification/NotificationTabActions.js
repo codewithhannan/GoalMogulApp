@@ -91,7 +91,7 @@ export const refreshNotifications = (params) =>
   const { refreshForUnreadNotif } = params;
   const skipToUse = refreshForUnreadNotif ? 0 : skip;
 
-  if (refreshing) return; // Do not refresh again if already refreshing
+  // if (refreshing) return; // Do not refresh again if already refreshing
   if (params === undefined || params.showIndicator === undefined || params.showIndicator === true) {
     dispatch({
       type: NOTIFICATION_REFRESH,
