@@ -688,7 +688,7 @@ const styles = {
     paddingTop: 20,
     padding: 20,
     width: '100%',
-    textAlign: 'justify',
+    // textAlign: 'justify',
     height: 'auto',
     maxHeight: 200,
     minHeight: 80
