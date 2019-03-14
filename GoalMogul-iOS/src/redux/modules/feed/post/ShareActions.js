@@ -214,6 +214,15 @@ export const submitShare = (values, callback) => (dispatch, getState) => {
     });
 };
 
+const transformPrivacy = (privacy, belongsToTribe, belongsToEvent) => {
+  let ret = privacy === 'Private' ? 'self' : privacy.toLowerCase();
+  // Set privacy to public if it's a share to event or tribe
+  if (belongsToTribe || belongsToEvent) {
+    ret = 'public';
+  }
+  return ret;
+}
+
 const newShareAdaptor = (newShare, formVales) => {
   const {
     owner,
@@ -233,7 +242,6 @@ const newShareAdaptor = (newShare, formVales) => {
     tags
   } = formVales;
 
-  const transformedPrivacy = privacy === 'Private' ? 'self' : privacy.toLowerCase();
   const tagsToUse = clearTags(content, {}, tags);
 
   return {
@@ -250,7 +258,7 @@ const newShareAdaptor = (newShare, formVales) => {
       text: content,
       tags: tagsToUse
     },
-    privacy: transformedPrivacy
+    privacy: transformPrivacy(privacy, belongsToTribe, belongsToEvent)
   };
 };
 
