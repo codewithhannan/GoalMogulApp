@@ -13,6 +13,24 @@ export class DropDownHolder {
   static getDropDown() {
     return this.dropDown;
   }
+
+  /**
+   * Set drop down image style
+   * Will only be valid for one time
+   * @param {*} style 
+   */
+  static setDropDownImageStyle(style) {
+    return this.dropDown.setImageStyle(style);
+  }
+
+  /**
+   * Set drop down image container style
+   * Will only be valid for one time
+   * @param {*} style 
+   */
+  static setDropDownImageContainerStyle(style) {
+    return this.dropDown.setImageContainerStyle(style);
+  }
   
   /**
    * Show alert toast

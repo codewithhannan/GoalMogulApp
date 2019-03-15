@@ -119,7 +119,11 @@ export default class App extends React.Component {
           <View style={styles.container}>
             <Router />
           </View>
-          <DropdownAlert ref={ref => DropDownHolder.setDropDown(ref)} closeInterval={6000}/>
+          <DropdownAlert 
+            ref={ref => DropDownHolder.setDropDown(ref)} 
+            closeInterval={6000} 
+            containerStyle={styles.toastCustomContainerStyle} 
+          />
         </PersistGate>
       </Provider>
     );
@@ -144,5 +148,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff'
+  },
+  toastCustomContainerStyle: {
+    backgroundColor: '#2B73B6'
   }
 });

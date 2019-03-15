@@ -74,6 +74,9 @@ import ProgressBarLargeCounter from '../../../asset/utils/progressBar_counter_la
 // Constants
 import { IPHONE_MODELS } from '../../../Utils/Constants';
 
+// Styles
+import { APP_BLUE } from '../../../styles';
+
 const { height } = Dimensions.get('window');
 const CardHeight = height * 0.7;
 const ITEM_COUNT = Platform.OS === 'ios' &&
@@ -180,6 +183,37 @@ class GoalCard extends React.PureComponent {
     });
   };
 
+  // Original style 1 currently used
+  // buttonStyle={{
+  //   selected: {
+  //     backgroundColor: '#f8f8f8',
+  //     tintColor: '#1998c9',
+  //     color: '#1998c9',
+  //     fontWeight: '600'
+  //   },
+  //   unselected: {
+  //     backgroundColor: 'white',
+  //     tintColor: '#696969',
+  //     color: '#696969',
+  //     fontWeight: '600'
+  //   }
+  // }} 
+
+  // Original style 2
+  // buttonStyle={{
+  //   selected: {
+  //     backgroundColor: APP_BLUE,
+  //     tintColor: 'white',
+  //     color: 'white',
+  //     fontWeight: '700'
+  //   },
+  //   unselected: {
+  //     backgroundColor: 'white',
+  //     tintColor: '#616161',
+  //     color: '#616161',
+  //     fontWeight: '600'
+  //   }
+  // }}   
   _renderHeader = props => {
     return (
       <TabButtonGroup 
@@ -198,7 +232,7 @@ class GoalCard extends React.PureComponent {
             color: '#696969',
             fontWeight: '600'
           }
-        }}  
+        }} 
       />
     );
   };
@@ -452,7 +486,7 @@ class GoalCard extends React.PureComponent {
             </TouchableOpacity>
             { // Disable tabs if neither needs or steps
               _.isEmpty(steps) && _.isEmpty(needs)
-              ? ''
+              ? null
               : (
                 <View style={{ height: tabHeight }}>
                   {this.renderTabs()}
