@@ -43,7 +43,7 @@
     "react-native": "^0.55",
     "react-native-draggable-flatlist": "^1.1.5",
     "react-native-dropdownalert": "^3.9.2",
-    "react-native-dropdownalert-jia": "0.0.3",
+    "react-native-dropdownalert-jia": "0.0.6",
     "react-native-elements": "^1.1.0",
     "react-native-gesture-handler": "^1.0.9",
     "react-native-image-resizer": "^1.0.0",

@@ -19,6 +19,7 @@ import {
 
 import { auth as Auth } from '../redux/modules/auth/Auth';
 import { tutorial as Tutorial } from '../redux/modules/auth/Tutorial';
+import { openProfile } from '../actions';
 import {
   saveUnreadNotification
 } from '../redux/modules/notification/NotificationActions';
@@ -219,8 +220,7 @@ export const checkIfNewlyCreated = () => async (dispatch, getState) => {
   const hasShownToast = await Auth.getByKey(`${userId}_${NEWLY_CREATED_KEY}`);
   if (hasShownToast) {
     console.log(`${DEBUG_KEY}: user shown toast state:`, hasShownToast);
-    // TODO: uncomment
-    // return;
+    return; // comment out to test
   }
 
   // Check if user is newly invited
@@ -230,23 +230,27 @@ export const checkIfNewlyCreated = () => async (dispatch, getState) => {
     // Show toast
     if (!isNewlyInvited) {
       console.log(`${DEBUG_KEY}: [ checkIfNewlyCreated ] user is no longer newly invited`);
-      // TODO: uncomment
-      // return;
+      return; // comment out to test
     }
     
     if (!inviter) {
       console.warn(`${DEBUG_KEY}: [ checkIfNewlyCreated ] invalid inviter:`, inviter);
-      return;
+      return; // comment out to test
     } 
     
-    const { profile, name } = inviter;
+    const { profile, name, _id } = inviter;
     if (profile && profile.image) {
       const urlToSet = `${IMAGE_BASE_URL}${profile.image}`;
+      const onCloseFunc = () => {
+        console.log(`${DEBUG_KEY}: I am here`);
+        openProfile(_id)(dispatch, getState)
+      };
       Image.prefetch(urlToSet);
       // Set image, image style and image container style
       DropDownHolder.setDropDownImage(urlToSet);
       DropDownHolder.setDropDownImageStyle(TOAST_IMAGE_STYLE);
       DropDownHolder.setDropDownImageContainerStyle(TOAST_IMAGE_CONTAINER_STYLE);
+      DropDownHolder.setOnClose(onCloseFunc);
     }
     
     // Wait for image to preload

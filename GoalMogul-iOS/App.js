@@ -120,9 +120,9 @@ export default class App extends React.Component {
             <Router />
           </View>
           <DropdownAlert 
-            ref={ref => DropDownHolder.setDropDown(ref)} 
-            closeInterval={6000} 
-            containerStyle={styles.toastCustomContainerStyle} 
+            ref={ref => DropDownHolder.setDropDown(ref)}
+            closeInterval={7500}
+            containerStyle={styles.toastCustomContainerStyle}
           />
         </PersistGate>
       </Provider>
@@ -151,5 +151,12 @@ const styles = StyleSheet.create({
   },
   toastCustomContainerStyle: {
     backgroundColor: '#2B73B6'
-  }
+  },
+  // cancel button is currently not used
+  cancelBtnImageStyle: {
+    padding: 6,
+    width: 30,
+    height: 30,
+    alignSelf: 'center'
+  },
 });

@@ -31,6 +31,14 @@ export class DropDownHolder {
   static setDropDownImageContainerStyle(style) {
     return this.dropDown.setImageContainerStyle(style);
   }
+
+  /**
+   * Set one time onClose function
+   * @param {*} func 
+   */
+  static setOnClose(func) {
+    return this.dropDown.setOnClose(func);
+  }
   
   /**
    * Show alert toast
