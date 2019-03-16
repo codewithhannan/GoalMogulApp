@@ -258,13 +258,14 @@ class NeedCard extends Component {
           textStyle={{ color: '#FBDD0D' }}
           iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           onPress={() => {
-            console.log(`${DEBUG_KEY}: user clicks comment icon`);
+            console.log(`${DEBUG_KEY}: user clicks comment icon on NeedCard`);
             this.props.onPress(
               this.props.item, 
               { 
                 type: 'comment', 
                 _id: undefined,
-                initialShowSuggestionModal: false
+                initialShowSuggestionModal: false,
+                initialFocusCommentBox: true
               }
             );
           }}

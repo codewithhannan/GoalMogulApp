@@ -452,7 +452,8 @@ class GoalCard extends React.PureComponent {
               { 
                 type: 'comment', 
                 _id: undefined,
-                initialShowSuggestionModal: false
+                initialShowSuggestionModal: false,
+                initialFocusCommentBox: true
               }
             );
           }}

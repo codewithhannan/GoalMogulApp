@@ -119,7 +119,12 @@ class GoalDetailCardV3 extends Component {
     const { initial, goalDetail, goalId, pageId } = this.props;
     console.log(`${DEBUG_KEY}: did mount with goalId: ${goalId}, pageId: ${pageId}`);
     if (initial && !_.isEmpty(initial)) {
-      const { focusType, focusRef, initialShowSuggestionModal } = initial;
+      const { 
+        focusType, 
+        focusRef, 
+        initialShowSuggestionModal, // Boolean to determine if we show suggestion modal on open
+        initialFocusCommentBox // Boolean to determine if we focus on comment box initially
+      } = initial;
       let newCommentParams = {
         commentDetail: {
           parentType: 'Goal',
@@ -146,6 +151,16 @@ class GoalDetailCardV3 extends Component {
         setTimeout(() => {
           this.props.createSuggestion(goalId, pageId);
         }, 500);
+      }
+
+      console.log(`${DEBUG_KEY}: initial is: `, initial);
+      if (initialFocusCommentBox) {
+        // Focus on comment box if initialFocusCommentBox is true
+        // To reduce taps to enable comment functions
+        setTimeout(() => {
+          console.log(`${DEBUG_KEY}: calling handleReplyTo`);
+          this.handleReplyTo();
+        }, 500);        
       }
       this.handleOnCommentSubmitEditing = this.handleOnCommentSubmitEditing.bind(this);
     }
@@ -255,7 +270,11 @@ class GoalDetailCardV3 extends Component {
       ...this.state,
       keyboardDidShow: true
     });
-    this.commentBox.focusForReply(type);
+    if (this.commentBox !== undefined) {
+      this.commentBox.focusForReply(type);
+    } else {
+      console.warn(`${DEBUG_KEY}: [ handleReplyTo ] this.commentBox is undefined!`);
+    }
   }
 
   handleOnCommentSubmitEditing = () => {
@@ -371,6 +390,10 @@ class GoalDetailCardV3 extends Component {
               this.props.goalDetailSwitchTabV2ByKey(
                 'focusTab', undefined, 'comment', goalId, pageId
               );
+              setTimeout(() => {
+                console.log(`${DEBUG_KEY}: [ UI GoalDetailSectoin ]: calling handleReplyTo from onSuggestion`);
+                this.handleReplyTo();
+              }, 500);  
             }}
             isSelf={this.props.isSelf}
             onContentSizeChange={this.onContentSizeChange}

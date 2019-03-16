@@ -165,9 +165,6 @@ class CommentUserDetail extends Component {
    */
   renderCardContent() {
     const { item } = this.props;
-    if (item.mediaRef) {
-      console.log(`${DEBUG_KEY}: comment with mediaRef: `, item);
-    }
     let text;
     let tags = [];
     if (item.commentType === 'Suggestion' &&
