@@ -150,7 +150,7 @@ class GoalDetailSection extends React.PureComponent {
         </TouchableOpacity>
       );
     }
-    return '';
+    return null;
   }
 
   // user basic information
@@ -404,7 +404,7 @@ class GoalDetailSection extends React.PureComponent {
 
   render() {
     const { item } = this.props;
-    if (!item || _.isEmpty(item)) return '';
+    if (!item || _.isEmpty(item)) return null;
 
     return (
       <View onLayout={this.handleOnLayout}>

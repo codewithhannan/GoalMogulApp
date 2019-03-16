@@ -38,7 +38,8 @@ import {
 } from '../../../redux/modules/feed/post/ShareActions';
 
 import {
-  openPostDetail
+  openPostDetail,
+  editPost
 } from '../../../redux/modules/feed/post/PostActions';
 
 import {
@@ -160,7 +161,7 @@ class PostDetailSection extends React.PureComponent {
         </TouchableOpacity>
       );
     }
-    return '';
+    return null;
   }
 
   // user basic information
@@ -172,11 +173,23 @@ class PostDetailSection extends React.PureComponent {
 
     const caret = {
       self: {
-        options: [{ option: 'Delete' }],
-        onPress: () => {
-          this.props.deletePost(_id);
-          Actions.pop();
-        }
+        options: [
+          { option: 'Delete' },
+          { option: 'Edit Post' }
+        ],
+        onPress: (key) => {
+          if (key === 'Delete') {
+            this.props.deletePost(_id);
+            Actions.pop();
+            return;
+          }
+          if (key === 'Edit Post') {
+            // TODO: open edit modal
+            this.props.editPost(item);
+            return;
+          }
+        },
+        shouldExtendOptionLength: false
       },
       others: {
         options: [
@@ -423,7 +436,7 @@ class PostDetailSection extends React.PureComponent {
     // { postExploreTab: { pageId, pageIdCount, post-pageId: { //Here is the real object }}}
     // Currently, it's the following structure
     // { postExploreTab: { pageId, pageIdCount, // all the fileds for the real object }}
-    if (!item || _.isEmpty(item) || !item.created) return '';
+    if (!item || _.isEmpty(item) || !item.created) return null;
 
     return (
       <View>
@@ -526,6 +539,7 @@ export default connect(
     openGoalDetail,
     deletePost,
     subscribeEntityNotification,
-    unsubscribeEntityNotification
+    unsubscribeEntityNotification,
+    editPost
   }
 )(PostDetailSection);

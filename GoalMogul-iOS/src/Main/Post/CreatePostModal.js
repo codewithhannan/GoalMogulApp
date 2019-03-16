@@ -238,9 +238,9 @@ class CreatePostModal extends Component {
     };
 
     // Initialize based on the props, if it's opened through edit button
-    const { initializeFromState, post } = this.props;
+    const { initializeFromState, initialPost } = this.props;
     const initialVals = initializeFromState
-      ? { ...postToFormAdapter(post) }
+      ? { ...postToFormAdapter(initialPost) }
       : { ...defaulVals };
 
     this.props.initialize({
@@ -273,13 +273,13 @@ class CreatePostModal extends Component {
    * Synchronize validate form values, contains simple check
    */
   handleCreate = (values) => {
-    const { initializeFromState, post, mediaRef, belongsToTribe, belongsToEvent, openProfile } = this.props;
+    const { initializeFromState, post, mediaRef, belongsToTribe, belongsToEvent, openProfile, initialPost } = this.props;
     const needUpload =
       (initializeFromState && post.mediaRef && post.mediaRef !== mediaRef)
       || (!initializeFromState && mediaRef);
 
     const needOpenProfile = (belongsToTribe === undefined && belongsToEvent === undefined) &&
-      (openProfile === undefined || openProfile === true);
+      (openProfile === undefined || openProfile === true) && !initializeFromState;
 
     const needRefreshProfile = openProfile === false;
     return this.props.submitCreatingPost(
@@ -289,6 +289,8 @@ class CreatePostModal extends Component {
         needOpenProfile, // Open user profile page and refresh the profile
         needRefreshProfile // Only refresh the profile page with given tab and filter
       },
+      initializeFromState,
+      initialPost,
       this.props.callback,
       this.props.pageId
     );
@@ -492,6 +494,21 @@ class CreatePostModal extends Component {
       }
     }
 
+    // Do not render cancel button if editing since we 
+    // don't allow editing image
+    const cancelButton = initializeFromState ? null : (
+      <TouchableOpacity
+        activeOpacity={0.85}
+        onPress={() => this.props.change('mediaRef', false)}
+        style={{ position: 'absolute', top: 10, left: 15 }}
+      >
+        <Image
+          source={cancel}
+          style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+        />
+      </TouchableOpacity>
+    );
+
     if (this.props.mediaRef) {
       return (
         <View style={{ backgroundColor: 'gray', borderRadius: 8 }}>
@@ -524,21 +541,12 @@ class CreatePostModal extends Component {
               />
             </TouchableOpacity>
 
-            <TouchableOpacity
-              activeOpacity={0.85}
-              onPress={() => this.props.change('mediaRef', false)}
-              style={{ position: 'absolute', top: 10, left: 15 }}
-            >
-              <Image
-                source={cancel}
-                style={{ width: 15, height: 15, tintColor: '#fafafa' }}
-              />
-            </TouchableOpacity>
+            {cancelButton}
           </ImageBackground>
         </View>
       );
     }
-    return '';
+    return null;
   }
 
   renderImageModal() {
@@ -636,7 +644,9 @@ class CreatePostModal extends Component {
   // }
 
   render() {
-    const { handleSubmit, errors } = this.props;
+    const { handleSubmit, errors, initializeFromState } = this.props;
+    const modalActionText = initializeFromState ? 'Update' : 'Create';
+
     return (
       <KeyboardAvoidingView
         behavior='padding'
@@ -644,7 +654,7 @@ class CreatePostModal extends Component {
       >
         <ModalHeader
           title='New Post'
-          actionText='Create'
+          actionText={modalActionText}
           onCancel={() => {
             if (this.props.onClose) {
               this.props.onClose();

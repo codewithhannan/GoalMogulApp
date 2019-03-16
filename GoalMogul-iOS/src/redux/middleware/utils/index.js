@@ -74,7 +74,7 @@ export const capitalizeWord = (word) => {
  * Reassign startIndex for tags.
  * If newTag is empty, then we don't do comparison to skip.
  */
-export const clearTags = (newContent, newTag, tags) => {
+export const clearTags = (newContent, newTag, tags = []) => {
   let tagTextToStartIndexMap = {};
   const newTags = tags
     .sort((a, b) => a.startIndex - b.startIndex)

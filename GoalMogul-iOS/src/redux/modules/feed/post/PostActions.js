@@ -73,7 +73,7 @@ export const openPostDetailById = (postId) => (dispatch, getState) => {
 /**
  * If post is a share, then open share detail. Otherwise, open post detail
  */
-export const openPostDetail = (post) => (dispatch, getState) => {
+export const openPostDetail = (post, initial) => (dispatch, getState) => {
   // Open share detail if not a general post
   const postId = post._id;
 
@@ -101,7 +101,8 @@ export const openPostDetail = (post) => (dispatch, getState) => {
   refreshComments('Post', postId, tab, pageId)(dispatch, getState);
 
   const componentToOpen = componentKeyByTab(tab, 'post');
-  Actions.push(`${componentToOpen}`, { pageId, postId });
+  // Initial is used to manipulate the post
+  Actions.push(`${componentToOpen}`, { pageId, postId, initial });
 };
 
 export const fetchPostDetail = (postId, pageId) => (dispatch, getState) => {
@@ -190,7 +191,8 @@ export const closePostDetail = (postId, pageId) => (dispatch, getState) => {
 // open edit modal for post given post belongs to current user
 export const editPost = (post) => (dispatch, getState) => {
   // We don't need to pass pageId since the pageId is for profile in this case
-  Actions.push('createPostModal', { initializeFromState: true, post });
+  console.log(`${DEBUG_KEY}: [ editPost ]: post is:`, post);
+  Actions.push('createPostModal', { initializeFromState: true, initialPost: post });
 };
 
 // Submit creating new post
@@ -203,13 +205,16 @@ export const submitCreatingPost = (
   { 
     needOpenProfile, 
     needRefreshProfile 
-  }, 
+  },
+  initializeFromState, // initializeFromState means it's an update
+  initialPost,
   callback,
   pageId // TODO: profile reducer redesign to change here
 ) => (dispatch, getState) => {
-    const { userId, token } = getState().user;
+    const { userId, token, user } = getState().user;
     const newPost = newPostAdaptor(values, userId);
     console.log(`${DEBUG_KEY}: post to submit is: `, newPost);
+    // console.log(`${DEBUG_KEY}: initializeFromState is: `, initializeFromState);
     dispatch({
       type: POST_NEW_POST_SUBMIT
     });
@@ -218,7 +223,13 @@ export const submitCreatingPost = (
       console.log('Creating post succeed with res: ', res);
       dispatch({
         type: POST_NEW_POST_SUBMIT_SUCCESS,
-        payload: { ...res.data }
+        payload: {
+          post: { 
+            ...res.data,
+            owner: user
+          },
+          update: initializeFromState
+        }
       });
 
       if (callback) {
@@ -236,12 +247,14 @@ export const submitCreatingPost = (
         selectProfileTab(1, userId, pageId)(dispatch, getState);
         handleTabRefresh('posts', userId, pageId)(dispatch, getState);
       }
+
+      Actions.pop();
     };
 
     const imageUri = newPost.mediaRef;
     if (!needUpload) {
       // If no mediaRef then directly submit the post
-      sendCreatePostRequest(newPost, token, dispatch, onSuccess);
+      sendCreatePostRequest(newPost, token, dispatch, onSuccess, null, initializeFromState, initialPost);
     } else {
       ImageUtils.getImageSize(imageUri)
         .then(({ width, height }) => {
@@ -278,7 +291,10 @@ export const submitCreatingPost = (
             { ...newPost, mediaRef: image },
             token,
             dispatch,
-            onSuccess
+            onSuccess,
+            null,
+            initializeFromState,
+            initialPost
           );
         })
         .catch((err) => {
@@ -300,9 +316,6 @@ export const submitCreatingPost = (
           });
         });
     }
-
-    // After request being executed successfully, pop the modal and clear the form
-    Actions.pop();
 };
 
 /**
@@ -312,8 +325,9 @@ export const submitCreatingPost = (
  * @param token: current user token
  * @param dispatch: function to update store
  * @param needOpenProfile: if creating post from home page, then open profile post type
+ * @param update: if update, use put request
  */
-const sendCreatePostRequest = (newPost, token, dispatch, onSuccess, onError) => {
+const sendCreatePostRequest = (newPost, token, dispatch, onSuccess, onError, update, initialPost) => {
   const handleError = onError || (() => {
     Alert.alert(
       'Create post failed',
@@ -323,6 +337,31 @@ const sendCreatePostRequest = (newPost, token, dispatch, onSuccess, onError) => 
       type: POST_NEW_POST_SUBMIT_FAIL
     });
   });
+
+  if (update) {
+    API
+      .put(
+        'secure/feed/post',
+        {
+          postId: initialPost._id,
+          updates: JSON.stringify(postToUpdateAdaptor(newPost))
+        },
+        token
+      )
+      .then((res) => {
+        if ((!res.message && res.data) || res.status === 200) {
+          onSuccess(res);
+          return;
+        }
+        console.log('Creating post failed with message: ', res);
+        handleError();
+      })
+      .catch((err) => {
+        console.log(`${DEBUG_KEY}: Error creating post in submitting the values: `, err);
+        handleError();
+      });
+    return;
+  }
 
   API
     .post(
@@ -344,6 +383,18 @@ const sendCreatePostRequest = (newPost, token, dispatch, onSuccess, onError) => 
       console.log(`${DEBUG_KEY}: Error creating post in submitting the values: `, err);
       handleError();
     });
+};
+
+/**
+ * Transform a post to only update
+ * @param {} post 
+ */
+const postToUpdateAdaptor = (post) => {
+  const { content, privacy } = post;
+  return {
+    content,
+    privacy
+  };
 };
 
 /**
@@ -381,6 +432,7 @@ const newPostAdaptor = (values, userId) => {
  * Transform a post to CreatePostModal initial values
  */
 export const postToFormAdapter = (values) => {
+  console.log(`${DEBUG_KEY}: values are:`, values);
   const {
     privacy,
     content,

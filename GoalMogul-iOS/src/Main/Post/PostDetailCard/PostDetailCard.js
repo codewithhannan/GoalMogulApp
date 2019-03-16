@@ -11,7 +11,8 @@ import {
 
 // Actions
 import {
-  closePostDetail
+  closePostDetail,
+  editPost
 } from '../../../redux/modules/feed/post/PostActions';
 
 import {
@@ -47,6 +48,21 @@ class PostDetailCard extends Component {
   constructor(props) {
     super(props);
     this.commentBox = {};
+  }
+
+  componentDidMount() {
+    const { initial, postDetail } = this.props;
+    console.log(`${DEBUG_KEY}: [ componentDidMount ]: initial is:`, initial);
+
+    // Check if there is any initial operations
+    if (initial) {
+      const { initialShowPostModal } = initial;
+      if (initialShowPostModal) { 
+        setTimeout(() => {
+          this.props.editPost(postDetail);  
+        }, 750);
+      }
+    }
   }
 
   handleRefresh = () => {
@@ -222,7 +238,8 @@ export default connect(
   makeMapStateToProps,
   {
     closePostDetail,
-    refreshComments
+    refreshComments,
+    editPost
   }
 )(PostDetailCard);
 

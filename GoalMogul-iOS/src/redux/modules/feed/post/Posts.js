@@ -25,6 +25,7 @@ import {
     POST_DETAIL_CLOSE,
     POST_NEW_POST_UPDATE_MEDIA,
     POST_NEW_POST_SUBMIT_SUCCESS,
+    POST_NEW_POST_SUBMIT_FAIL,
     POST_NEW_POST_SUBMIT,
     POST_DETAIL_FETCH,
     POST_DETAIL_FETCH_DONE,
@@ -299,8 +300,20 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         case POST_NEW_POST_SUBMIT_SUCCESS: {
-            const newState = _.cloneDeep(state);
+            const { post, update } = action.payload;
+            console.log(`${DEBUG_KEY}: payload is:`, action.payload);
+            let newState = _.cloneDeep(state);
+
+            // If it's an update, update the post
+            if (update && post && post._id && _.has(newState, `${post._id}`)) {
+                newState = _.set(newState, `${post._id}.post`, post);
+            }
             return _.set(newState, 'newPost', { ...NEW_POST_INITIAL_STATE });
+        }
+
+        case POST_NEW_POST_SUBMIT_FAIL: {
+            const newState = _.cloneDeep(state);
+            return _.set(newState, 'newPost.uploading', false);
         }
 
         /* Profile, Home, Event and Tribe related */
