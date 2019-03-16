@@ -94,11 +94,11 @@ class FriendCard extends Component {
     )
   }
 
-  /*
-  NOTE: friends card doesn't have any button. only on profile page
-  */
+  /**
+   * NOTE: friends card doesn't have any button. only on profile page
+   */
   renderButton(_id) {
-    return;
+    return null;
     // return (
     //   <TouchableOpacity activeOpacity={0.85} onPress={this.onButtonClicked.bind(this, _id)}>
     //     <Image source={meetSetting} style={styles.settingIconStyle} />
@@ -121,29 +121,64 @@ class FriendCard extends Component {
     );
   }
 
-  // TODO: decide the final UI for additional info
-  renderAdditionalInfo() {
-    return null;
-    // const { profile } = this.props.item;
-    // let content = '';
-    // if (profile.elevatorPitch) {
-    //   content = profile.elevatorPitch;
-    // } else if (profile.about) {
-    //   content = profile.about;
-    // }
-    // return (
-    //   <View style={{ flex: 1 }}>
-    //     <Text
-    //       style={styles.titleTextStyle}
-    //       numberOfLines={1}
-    //       ellipsizeMode='tail'
-    //     >
-    //       <Text style={styles.detailTextStyle}>
-    //         {content}
-    //       </Text>
-    //     </Text>
-    //   </View>
-    // );
+  /**
+   * Render user top goals and needs
+   * @param {} item 
+   */
+  renderGoals(item) {
+    const { topGoals, topNeeds } = item;
+
+    let topGoalText = 'None shared';
+    if (topGoals !== null && topGoals !== undefined && topGoals.length !== 0) {
+      topGoalText = '';
+      topGoals.forEach((g, index) => {
+        if (index !== 0) {
+          topGoalText = `${topGoalText}, ${g}`; 
+        } else {
+          topGoalText = `${g}`; 
+        }
+      });
+    }
+
+    let topNeedText = 'None shared';
+    if (topNeeds !== null && topNeeds !== undefined && topNeeds.length !== 0) {
+      topNeedText = '';
+      topNeeds.forEach((n, index) => {
+        if (index !== 0) {
+          topNeedText = `${topNeedText}, ${n}`; 
+        } else {
+          topNeedText = `${n}`; 
+        }
+      });
+    }
+
+    return (
+      <View style={styles.infoContainerStyle}>
+        <View style={{ flex: 1, marginRight: 6 }}>
+          <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginBottom: 2 }}>
+            <Text style={styles.subTitleTextStyle}>Goals: </Text>
+            <Text style={styles.bodyTextStyle}>{topGoalText}</Text>
+          </Text>
+          <Text numberOfLines={1} ellipsizeMode='tail'>
+            <Text style={styles.subTitleTextStyle}>Needs: </Text>
+            <Text style={styles.bodyTextStyle}>{topNeedText}</Text>
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
+  renderHeadline(item) {
+    const { headline } = item;
+    return (
+      <Text
+        style={styles.jobTitleTextStyle}
+        numberOfLines={1}
+        ellipsizeMode='tail'
+      >
+        {headline}
+      </Text>
+    );
   }
 
   renderOccupation(item) {
@@ -178,15 +213,11 @@ class FriendCard extends Component {
 
         <View style={styles.bodyContainerStyle}>
           {this.renderInfo(item)}
-          {this.renderOccupation(item)}
-          <Text
-            style={styles.jobTitleTextStyle}
-            numberOfLines={1}
-            ellipsizeMode='tail'
-          >
-            {headline}
-          </Text>
-          {this.renderAdditionalInfo()}
+          {/* 
+            {this.renderOccupation(item)}
+            {this.renderHeadline(item)}
+          */}
+          {this.renderGoals(item)}
         </View>
       </TouchableOpacity>
     );
@@ -231,30 +262,19 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'flex-end'
   },
-  buttonStyle: {
-    width: 70,
-    height: 26,
-    borderWidth: 1,
-    borderColor: '#17B3EC',
-    borderRadius: 13,
-  },
-  buttonTextStyle: {
-    color: '#17B3EC',
-    fontSize: 11,
-    fontWeight: '700',
-    paddingLeft: 1,
-    padding: 0,
-    alignSelf: 'center'
-  },
   settingIconStyle: {
     height: 20,
     width: 20
   },
-  buttonIconStyle: {
-    marginTop: 1
+  // Top goals and needs text style
+  subTitleTextStyle: {
+    color: '#17B3EC',
+    fontSize: 12,
+    fontWeight: '600'
   },
-  needContainerStyle: {
-
+  bodyTextStyle: {
+    fontSize: 12,
+    color: '#9B9B9B'
   },
   titleTextStyle: {
     color: '#17B3EC',
@@ -272,13 +292,6 @@ const styles = {
     fontWeight: '800',
     paddingTop: 5,
     paddingBottom: 3
-  },
-  friendTextStyle: {
-    paddingLeft: 10,
-    color: '#17B3EC',
-    fontSize: 9,
-    fontWeight: '800',
-    maxWidth: 120
   }
 };
 
