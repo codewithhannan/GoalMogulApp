@@ -175,7 +175,7 @@ class ProfilePostCard extends React.PureComponent {
             const initial = {
               initialShowPostModal: true
             };
-            return this.props.openPostDetail(item, initial)
+            return this.props.openPostDetail(item, initial);
           }
         },
         shouldExtendOptionLength: false

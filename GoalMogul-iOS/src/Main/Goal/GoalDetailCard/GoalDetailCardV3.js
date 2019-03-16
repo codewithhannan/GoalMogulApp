@@ -25,7 +25,9 @@ import {
   closeGoalDetail,
   closeGoalDetailWithoutPoping,
   goalDetailSwitchTabV2,
-  goalDetailSwitchTabV2ByKey
+  goalDetailSwitchTabV2ByKey,
+  editGoal,
+  markGoalAsComplete
 } from '../../../redux/modules/goal/GoalDetailActions';
 
 import {
@@ -123,7 +125,10 @@ class GoalDetailCardV3 extends Component {
         focusType, 
         focusRef, 
         initialShowSuggestionModal, // Boolean to determine if we show suggestion modal on open
-        initialFocusCommentBox // Boolean to determine if we focus on comment box initially
+        initialFocusCommentBox, // Boolean to determine if we focus on comment box initially
+        initialShowGoalModal, // Boolean to determine if we open goal edition modal
+        initialUnMarkGoalAsComplete, // Boolean to determine if we unmark a goal as complete
+        initialMarkGoalAsComplete // Boolean to determine if we mark a goal as complete
       } = initial;
       let newCommentParams = {
         commentDetail: {
@@ -134,6 +139,24 @@ class GoalDetailCardV3 extends Component {
         suggestionForRef: focusRef, // Need or Step ref
         suggestionFor: focusType === 'need' ? 'Need' : 'Step'
       };
+
+      // Open Create Goal Modal for edition
+      if (initialShowGoalModal) {
+        setTimeout(() => {
+          this.props.editGoal(goalDetail, pageId);
+        }, 500);
+        return;
+      }
+
+      if (initialMarkGoalAsComplete) {
+        this.props.markGoalAsComplete(goalId, true, pageId);
+        return;
+      }
+
+      if (initialUnMarkGoalAsComplete) {
+        this.props.markGoalAsComplete(goalId, false, pageId);
+        return;
+      }
 
       // Add needRef and stepRef for item
       if (focusType === 'need') {
@@ -697,6 +720,8 @@ export default connect(
     resetCommentType,
     updateNewComment,
     createCommentForSuggestion,
-    createSuggestion
+    createSuggestion,
+    editGoal,
+    markGoalAsComplete
   }
 )(GoalDetailCardV3);

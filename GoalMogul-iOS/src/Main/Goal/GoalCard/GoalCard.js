@@ -71,8 +71,17 @@ import StepIcon from '../../../asset/utils/steps.png';
 import ProgressBarLarge from '../../../asset/utils/progressBar_large.png';
 import ProgressBarLargeCounter from '../../../asset/utils/progressBar_counter_large.png';
 
+// Actions
+import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions';
+import {
+  shareGoalToMastermind
+} from '../../../redux/modules/goal/GoalDetailActions';
+
 // Constants
 import { IPHONE_MODELS } from '../../../Utils/Constants';
+
+// Utils
+import { makeCaretOptions } from '../../../redux/middleware/utils';
 
 // Styles
 import { APP_BLUE } from '../../../styles';
@@ -309,13 +318,39 @@ class GoalCard extends React.PureComponent {
 
     const pageId = _.get(PAGE_TYPE_MAP, 'goalFeed');
 
+    const selfOptions = makeCaretOptions('Goal', item);
+
     const caret = {
       self: {
-        options: [{ option: 'Delete' }],
-        onPress: () => {
-          return this.props.deleteGoal(_id, pageId);
+        options: selfOptions,
+        onPress: (key) => {
+          if (key === 'Delete') {
+            return this.props.deleteGoal(_id, pageId);
+          }
+
+          let initialProps = {};
+          if (key === 'Edit Goal') {
+            initialProps = { initialShowGoalModal: true };
+            this.props.openGoalDetail(item, initialProps);
+            return;
+          }
+          if (key === 'Share to Goal Feed') {
+            // It has no pageId so it won't have loading animation
+            return this.props.shareGoalToMastermind(_id);
+          }
+          if (key === 'Mark as Complete') {
+            initialProps = { initialMarkGoalAsComplete: true };
+            this.props.openGoalDetail(item, initialProps);
+            return;
+          }
+
+          if (key === 'Unmark as Complete') {
+            initialProps = { initialUnMarkGoalAsComplete: true };
+            this.props.openGoalDetail(item, initialProps);
+            return;
+          }
         },
-        shouldExtendOptionLength: false
+        shouldExtendOptionLength: owner._id === this.props.userId
       },
       others: {
         options: [
@@ -579,6 +614,8 @@ export default connect(
     chooseShareDest,
     deleteGoal,
     subscribeEntityNotification,
-    unsubscribeEntityNotification
+    unsubscribeEntityNotification,
+    openGoalDetail,
+    shareGoalToMastermind
   }
 )(GoalCard);

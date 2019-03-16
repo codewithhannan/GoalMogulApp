@@ -15,8 +15,16 @@ import {
 import {
   openProfile,
   deletePost,
-  deleteGoal,
+  deleteGoal
 } from '../../actions';
+
+import { openPostDetail } from '../../redux/modules/feed/post/PostActions';
+
+import { openGoalDetail } from '../../redux/modules/home/mastermind/actions';
+
+import {
+  shareGoalToMastermind
+} from '../../redux/modules/goal/GoalDetailActions';
 
 import { PAGE_TYPE_MAP } from '../../redux/middleware/utils';
 
@@ -32,6 +40,9 @@ import Headline from '../Goal/Common/Headline';
 import Timestamp from '../Goal/Common/Timestamp';
 import ProfileImage from '../Common/ProfileImage';
 import RichText from '../Common/Text/RichText';
+
+// Utils
+import { makeCaretOptions } from '../../redux/middleware/utils';
 
 const DEBUG_KEY = '[ UI ActivityHeader ]';
 
@@ -64,10 +75,51 @@ class ActivityHeader extends Component {
       ? () => this.props.deletePost(postRef._id, pageId)
       : () => this.props.deleteGoal(goalRef._id, pageId);
 
+    // COnstruct caret options
+    const selfOptions = makeCaretOptions(actedUponEntityType, goalRef, postRef);
+
+    // Construct caret onPress functions
+    const selfOnPress = (key) => {
+      if (key === 'Delete') {
+        return onDelete();
+      }
+      if (key === 'Edit Post') {
+        const initial = {
+          initialShowPostModal: true
+        };
+        return this.props.openPostDetail(postRef, initial);
+      }
+      
+      // Goal related situations
+      let initialProps = {};
+      if (key === 'Edit Goal') {
+        initialProps = { initialShowGoalModal: true };
+        this.props.openGoalDetail(goalRef, initialProps);
+        return;
+      }
+      if (key === 'Share to Goal Feed') {
+        // It has no pageId so it won't have loading animation
+        return this.props.shareGoalToMastermind(_id);
+      }
+      if (key === 'Mark as Complete') {
+        initialProps = { initialMarkGoalAsComplete: true };
+        this.props.openGoalDetail(goalRef, initialProps);
+        return;
+      }
+
+      if (key === 'Unmark as Complete') {
+        initialProps = { initialUnMarkGoalAsComplete: true };
+        this.props.openGoalDetail(goalRef, initialProps);
+        return;
+      }
+
+    };
+
     const caret = {
       self: {
-        options: [{ option: 'Delete' }],
-        onPress: onDelete
+        options: [...selfOptions],
+        onPress: selfOnPress,
+        shouldExtendOptionLength: actedUponEntityType === 'Goal'
       },
       others: {
         options: [
@@ -175,6 +227,9 @@ export default connect(
     deletePost,
     deleteGoal,
     subscribeEntityNotification,
-    unsubscribeEntityNotification
+    unsubscribeEntityNotification,
+    openPostDetail,
+    openGoalDetail,
+    shareGoalToMastermind
   }
 )(ActivityHeader);

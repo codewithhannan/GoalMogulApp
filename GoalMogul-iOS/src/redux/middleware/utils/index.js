@@ -1,6 +1,13 @@
 // This is a utils functions
 import _ from 'lodash';
 
+// Assets
+import ShareIcon from '../../../asset/utils/forward.png';
+import EditIcon from '../../../asset/utils/edit.png';
+import CheckIcon from '../../../asset/utils/check.png';
+import UndoIcon from '../../../asset/utils/undo.png';
+import TrashIcon from '../../../asset/utils/trash.png';
+
 /**
  * Url query builder to query URL based on params
  */
@@ -181,6 +188,11 @@ export function isString(value) {
   return typeof value === 'string' || value instanceof String;
 }
 
+/**
+ * Contruct pageId based on page type
+ * @param {*} type 
+ * @param {*} DEBUG_KEY 
+ */
 export const constructPageId = (type, DEBUG_KEY = '[ Utils constructPageId ]') => {
   const prefix = _.get(PAGE_TYPE_MAP, `${type}`);
   if (prefix === undefined || _.isEmpty(prefix)) {
@@ -191,10 +203,60 @@ export const constructPageId = (type, DEBUG_KEY = '[ Utils constructPageId ]') =
   return `${prefix}_${currentTime.getTime()}`;
 };
 
+/**
+ * Construct component key by tab and base key
+ * @param {*} tab 
+ * @param {*} key 
+ */
 export const componentKeyByTab = (tab, key) => {
   let ret = key;
   if (tab !== 'homeTab' && tab !== undefined) {
     ret = `${tab}_${key}`;
   }
   return ret;
+};
+
+/**
+ * 
+ */
+export const makeCaretOptions = (type, goalRef, postRef) => {
+  if (type === 'Post') {
+    if (!postRef) {
+      // Invalid postRef
+      console.warn(`[ Utils ]: [ makeCaretOptions ]: invalid postRef`, postRef);
+      return [];
+    }
+
+    // This is a post
+    if (postRef.postType === 'General') {
+      return [
+        { option: 'Delete' },
+        { option: 'Edit Post' }
+      ];
+    }
+    
+    // This is a share
+    return [
+      { option: 'Delete' },
+    ];
+  }
+
+  if (type === 'Goal') {
+    if (!goalRef) {
+      // Invalid goalRef
+      console.warn(`[ Utils ]: [ makeCaretOptions ]: invalid goalRef`, goalRef);
+      return [];
+    } 
+    const { isCompleted } = goalRef;
+    return [
+      { option: 'Edit Goal', iconSource: EditIcon },
+      { option: 'Share to Goal Feed', iconSource: ShareIcon },
+      { option: isCompleted ? 'Unmark as Complete' : 'Mark as Complete',
+        iconSource: isCompleted ? UndoIcon : CheckIcon },
+      { option: 'Delete', iconSource: TrashIcon },
+    ];
+  }
+
+  console.warn(`[ Utils ]: [ makeCaretOptions ]: invalid type`, type);
+  return [];
 };
