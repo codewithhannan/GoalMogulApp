@@ -106,7 +106,7 @@ class FocusTab extends React.PureComponent {
 
   render() {
     const { data, focusType, pageId } = this.props;
-    if (!focusType) return '';
+    if (!focusType) return null;
     const emptyText = switchCaseEmptyText(focusType);
 
     // const resetCommentTypeFunc = focusType === 'comment'
@@ -123,7 +123,7 @@ class FocusTab extends React.PureComponent {
           refreshing={this.props.loading || false}
           onRefresh={this.handleRefresh}
           ListEmptyComponent={
-            this.props.loading ? '' :
+            this.props.loading ? null :
             <EmptyResult
               text={emptyText}
               textStyle={{ paddingTop: 110 }}

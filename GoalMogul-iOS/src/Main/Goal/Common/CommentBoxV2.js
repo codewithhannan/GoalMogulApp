@@ -410,7 +410,7 @@ class CommentBoxV2 extends Component {
 
   renderMedia(newComment) {
     const { mediaRef } = newComment;
-    if (!mediaRef) return '';
+    if (!mediaRef) return null;
     const onPress = () => console.log('Media on Pressed');
     const onRemove = () => this.props.newCommentOnMediaRefChange(undefined, this.props.pageId);
 
@@ -486,7 +486,7 @@ class CommentBoxV2 extends Component {
       );
     }
 
-    return '';
+    return null;
   }
 
   /**
@@ -521,7 +521,7 @@ class CommentBoxV2 extends Component {
   render() {
     const { pageId, newComment, hasSuggestion, goalId } = this.props;
     // console.log(`${DEBUG_KEY}: new comment in commentbox: `, newComment);
-    if (!newComment || !newComment.parentRef) return '';
+    if (!newComment || !newComment.parentRef) return null;
 
     const { uploading } = newComment;
 

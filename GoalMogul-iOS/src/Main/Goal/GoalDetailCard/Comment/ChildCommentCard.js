@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import {
-  View
+  View,
+  Image,
+  Dimensions,
+  ImageBackground,
+  TouchableOpacity,
+  TouchableWithoutFeedback
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -8,6 +13,8 @@ import { connect } from 'react-redux';
 import defaultProfilePic from '../../../../asset/utils/defaultUserProfile.png';
 import LikeIcon from '../../../../asset/utils/like.png';
 import CommentIcon from '../../../../asset/utils/comment.png';
+import photoIcon from '../../../../asset/utils/photoIcon.png';
+import expand from '../../../../asset/utils/expand.png';
 
 // Components
 import ActionButton from '../../Common/ActionButton';
@@ -15,6 +22,7 @@ import ActionButtonGroup from '../../Common/ActionButtonGroup';
 import CommentHeadline from './CommentHeadline';
 import ProfileImage from '../../../Common/ProfileImage';
 import RichText from '../../../Common/Text/RichText';
+import ImageModal from '../../../Common/ImageModal';
 
 // Actions
 import {
@@ -40,10 +48,28 @@ import {
   unsubscribeEntityNotification
 } from '../../../../redux/modules/notification/NotificationActions';
 
+// Styles
+import {
+  imagePreviewContainerStyle
+} from '../../../../styles';
+
 // Constants
+// Constants
+import {
+  IMAGE_BASE_URL
+} from '../../../../Utils/Constants';
+
 const DEBUG_KEY = '[ UI CommentCard.ChildCommentCard ]';
+const { width } = Dimensions.get('window');
 
 class ChildCommentCard extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mediaModal: false
+    };
+  }
+
   onLayout = (e) => {
     this.setState({
       layout: {
@@ -72,15 +98,6 @@ class ChildCommentCard extends Component {
       text = item.content.text;
       tags = item.content.tags;
     }
-    // return (
-    //   <Text
-    //     style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 11 }}
-    //     numberOfLines={3}
-    //     ellipsizeMode='tail'
-    //   >
-    //     {text}
-    //   </Text>
-    // );
     return (
       <RichText
         contentText={text}
@@ -92,6 +109,77 @@ class ChildCommentCard extends Component {
           this.props.openProfile(user);
         }}
       />
+    );
+  }
+
+  /**
+   * Render Image user attached to the comment.
+   * Comment type should be "commentType": "Comment"
+   * @param {commentObject} item 
+   */
+  renderCommentMedia(item) {
+    const { mediaRef } = item;
+    if (!mediaRef) return null;
+
+    const url = mediaRef;
+    const imageUrl = `${IMAGE_BASE_URL}${url}`;
+    return (
+      <TouchableWithoutFeedback
+        onPress={() => this.setState({ mediaModal: true })}
+      >
+      <View style={{ marginTop: 10 }}>
+        <ImageBackground
+          style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle }}
+          source={{ uri: imageUrl }}
+          imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
+        >
+          <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
+            <Image
+              source={photoIcon}
+              style={{
+                alignSelf: 'center',
+                justifyContent: 'center',
+                height: 40,
+                width: 50,
+                tintColor: '#fafafa'
+              }}
+            />
+          </View>
+
+          <TouchableOpacity 
+            activeOpacity={0.85}
+            onPress={() => this.setState({ mediaModal: true })}
+            style={{
+              position: 'absolute',
+              top: 10,
+              right: 15,
+              width: 24,
+              height: 24,
+              borderRadius: 12,
+              padding: 2,
+              backgroundColor: 'rgba(0,0,0,0.3)',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <Image
+              source={expand}
+              style={{
+                width: 16,
+                height: 16,
+                tintColor: '#fafafa',
+                borderRadius: 4,
+              }}
+            />
+          </TouchableOpacity>
+        </ImageBackground>
+        <ImageModal
+          mediaRef={imageUrl}
+          mediaModal={this.state.mediaModal}
+          closeModal={() => this.setState({ mediaModal: false })}
+        />
+      </View>
+      </TouchableWithoutFeedback>
     );
   }
 
@@ -133,6 +221,7 @@ class ChildCommentCard extends Component {
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
             {this.renderCardContent()}
           </View>
+          {this.renderCommentMedia(item)}
         </View>
     );
   }
@@ -264,7 +353,12 @@ const styles = {
     alignItems: 'center',
     borderRadius: (ImageHeight + 4) / 2,
     alignSelf: 'flex-start'
-  }
+  },
+  mediaStyle: {
+    height: width / 2,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
 };
 
 export default connect(

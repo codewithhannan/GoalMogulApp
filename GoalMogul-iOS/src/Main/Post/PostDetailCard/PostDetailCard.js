@@ -3,6 +3,8 @@ import {
   View,
   FlatList,
   KeyboardAvoidingView,
+  Animated,
+  Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
 import {
@@ -32,7 +34,7 @@ import {
 
 // Component
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
-import CommentBox from '../../Goal/Common/CommentBox';
+import CommentBox from '../../Goal/Common/CommentBoxV2';
 import CommentCard from '../../Goal/GoalDetailCard/Comment/CommentCard';
 
 import PostDetailSection from './PostDetailSection';
@@ -43,14 +45,27 @@ import {
 } from '../../../styles';
 
 const DEBUG_KEY = '[ UI PostDetailCard ]';
+const TABBAR_HEIGHT = 48.5;
+const TOTAL_HEIGHT = TABBAR_HEIGHT;
 
 class PostDetailCard extends Component {
   constructor(props) {
     super(props);
-    this.commentBox = {};
+    this.commentBox = undefined;
+    this.state = {
+      position: 'absolute',
+      commentBoxPadding: new Animated.Value(0),
+      keyboardDidShow: false
+    }
   }
 
   componentDidMount() {
+    // Add listeners for keyboard
+    this.keyboardWillShowListener = Keyboard.addListener(
+      'keyboardWillShow', this.keyboardWillShow);
+    this.keyboardWillHideListener = Keyboard.addListener(
+      'keyboardWillHide', this.keyboardWillHide);
+
     const { initialProps, postDetail } = this.props;
     console.log(`${DEBUG_KEY}: [ componentDidMount ]: initialProps is:`, initialProps);
 
@@ -74,6 +89,42 @@ class PostDetailCard extends Component {
         return;
       }
     }
+  }
+
+  componentWillUnmount() {
+    this.keyboardWillShowListener.remove();
+    this.keyboardWillHideListener.remove();
+  }
+
+  keyboardWillShow = (e) => {
+    console.log(`${DEBUG_KEY}: [ keyboardWillShow ]`);
+    if (!this.state.keyboardDidShow) {
+      this.dialogOnFocus();
+    }
+    const timeout = ((TOTAL_HEIGHT * 210) / e.endCoordinates.height);
+    Animated.sequence([
+      Animated.delay(timeout),
+      Animated.parallel([
+        Animated.timing(this.state.commentBoxPadding, {
+          toValue: e.endCoordinates.height - TOTAL_HEIGHT,
+          duration: (210 - timeout)
+        }),
+      ])
+    ]).start();
+  }
+
+  keyboardWillHide = () => {
+    console.log(`${DEBUG_KEY}: [ keyboardWillHide ]`);
+    Animated.parallel([
+      Animated.timing(this.state.commentBoxPadding, {
+        toValue: 0,
+        duration: 210
+      }),
+    ]).start();
+    this.setState({
+      ...this.state,
+      keyboardDidShow: false
+    });
   }
 
   handleRefresh = () => {
@@ -100,6 +151,10 @@ class PostDetailCard extends Component {
       console.warn(`${DEBUG_KEY}: [ dialogOnFocus ]: this.commentBox is undefined`);
       return;
     }
+    this.setState({
+      ...this.state,
+      keyboardDidShow: true
+    });
     this.commentBox.focus();
   }
 
@@ -156,13 +211,26 @@ class PostDetailCard extends Component {
                 ListHeaderComponent={() => this.renderPostDetailSection(postDetail)}
                 refreshing={this.props.commentLoading}
                 onRefresh={this.handleRefresh}
+                ListFooterComponent={<View style={{ height: 43, backgroundColor: 'transparent' }} />}
               />
 
-              <CommentBox
-                onRef={(ref) => { this.commentBox = ref; }}
-                pageId={pageId}
-                entityId={postId}
-              />
+              <Animated.View
+                style={[
+                  styles.composerContainer, {
+                    position: this.state.position,
+                    paddingBottom: this.state.commentBoxPadding,
+                    backgroundColor: 'white',
+                    zIndex: 3
+                  }
+                ]}
+              >
+                <CommentBox
+                  onRef={(ref) => { this.commentBox = ref; }}
+                  hasSuggestion={false}
+                  pageId={pageId}
+                  entityId={postId}
+                />
+              </Animated.View>
 
             </KeyboardAvoidingView>
         </View>
@@ -170,6 +238,9 @@ class PostDetailCard extends Component {
     );
   }
 }
+// onSubmitEditing={this.handleOnCommentSubmitEditing}
+// resetCommentType={resetCommentTypeFunc}
+
 
 // onRefresh={this.handleRefresh.bind()}
 // refreshing={this.props.refreshing}
@@ -187,6 +258,11 @@ const styles = {
   backdrop: {
     backgroundColor: 'gray',
     opacity: 0.5
+  },
+  composerContainer: {
+    left: 0,
+    right: 0,
+    bottom: 0
   },
 };
 

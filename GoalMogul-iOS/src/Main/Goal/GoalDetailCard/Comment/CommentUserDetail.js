@@ -13,6 +13,8 @@ import { connect } from 'react-redux';
 import defaultProfilePic from '../../../../asset/utils/defaultUserProfile.png';
 import LikeIcon from '../../../../asset/utils/like.png';
 import CommentIcon from '../../../../asset/utils/comment.png';
+import photoIcon from '../../../../asset/utils/photoIcon.png';
+import expand from '../../../../asset/utils/expand.png';
 
 // Components
 import ActionButton from '../../Common/ActionButton';
@@ -51,10 +53,6 @@ import {
 import {
   imagePreviewContainerStyle
 } from '../../../../styles';
-
-// Assets
-import photoIcon from '../../../../asset/utils/photoIcon.png';
-import expand from '../../../../asset/utils/expand.png';
 
 // Constants
 import {
