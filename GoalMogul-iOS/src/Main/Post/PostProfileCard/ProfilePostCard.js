@@ -162,8 +162,23 @@ class ProfilePostCard extends React.PureComponent {
 
     const caret = {
       self: {
-        options: [{ option: 'Delete' }],
-        onPress: () => this.props.deletePost(_id)
+        options: [
+          { option: 'Delete' },
+          { option: 'Edit Post' }
+        ],
+        onPress: (key) => {
+          if (key === 'Delete') {
+            return this.props.deletePost(_id);
+          }
+          if (key === 'Edit Post') {
+            // Open post detail with a callback to open post edition
+            const initial = {
+              initialShowPostModal: true
+            };
+            return this.props.openPostDetail(item, initial);
+          }
+        },
+        shouldExtendOptionLength: false
       },
       others: {
         options: [

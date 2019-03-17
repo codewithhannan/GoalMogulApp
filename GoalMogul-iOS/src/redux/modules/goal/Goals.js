@@ -329,13 +329,16 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         case GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS: {
-            const { goalId, complete } = action.payload;
+            const { goalId, complete, data } = action.payload;
             let newState = _.cloneDeep(state);
             const shouldUpdate = sanityCheck(newState, goalId, GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS);
             if (!shouldUpdate) {
                 return newState;
             }
-            newState = _.set(newState, `${goalId}.goal.isCompleted`, complete);
+            const owner = _.get(newState, `${goalId}.goal.owner`);
+            newState = _.set(newState, `${goalId}.goal`, data);
+            // Reset owner since returned data doesn't populate owner
+            newState = _.set(newState, `${goalId}.goal.owner`, owner);
             return newState;
         }
 

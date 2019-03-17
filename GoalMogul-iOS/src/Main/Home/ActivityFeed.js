@@ -64,9 +64,20 @@ class ActivityFeed extends Component {
         item={item}
         onPress={(curItem, isGoal) => {
           if (isGoal) {
-            return this.props.openGoalDetail({ ...curItem });
+            // Open goal and focus on comment 
+            const initialProps = { 
+              focusType: 'comment',
+              focusRef: undefined,
+              initialShowSuggestionModal: false,
+              initialFocusCommentBox: true
+            };
+            return this.props.openGoalDetail({ ...curItem }, initialProps);
           }
-          this.props.openPostDetail(curItem);
+
+          const initialProps = {
+            initialFocusCommentBox: true
+          };
+          this.props.openPostDetail(curItem, initialProps);
         }}
         onShareCallback={() => this.scrollToTop()}
       />

@@ -206,7 +206,7 @@ class ActivityCard extends React.PureComponent {
     const { actedWith, commentRef, actor } = item;
     if (actedWith !== 'Comment') return null;
 
-    console.log(`${DEBUG_KEY}: commentRef: `, commentRef);
+    // console.log(`${DEBUG_KEY}: commentRef: `, commentRef);
     const { content, mediaRef } = commentRef;
     const {
       text,

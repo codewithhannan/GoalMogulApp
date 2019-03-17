@@ -27,6 +27,10 @@ import {
   USER_LOG_OUT
 } from './User';
 
+import {
+  GOAL_DETAIL_UPDATE_DONE
+} from '../reducers/GoalDetailReducers';
+
 export const HOME_MASTERMIND_OPEN_CREATE_OVERLAY = 'home_mastermind_open_create_overlay';
 export const HOME_CLOSE_CREATE_OVERLAY = 'home_mastermind_close_create_overlay';
 // Goal related constants
@@ -296,6 +300,47 @@ export default (state = INITIAL_STATE, action) => {
       });
 
       newState = _.set(newState, 'activityfeed.data', newActivityData);
+      return newState;
+    }
+
+    /**
+     * Update goal in goal feed and activity feed after its status for completeness is updated
+     */
+    case GOAL_DETAIL_UPDATE_DONE: {
+      const { type, goalId, complete } = action.payload;
+      let newState = _.cloneDeep(state);
+      // Only handle mark goal as complete case
+      if (type !== 'markGoalAsComplete') {
+        return newState;
+      }
+
+      // Update goal feed
+      const oldGoalFeed = _.get(newState, 'mastermind.data');
+      const newGoalFeed = oldGoalFeed.map((goal) => {
+        if (goal._id === goalId) {
+          return {
+            ...goal,
+            isCompleted: complete
+          }
+        }
+        return goal;
+      });
+
+      newState = _.set(newState, 'mastermind.data', newGoalFeed);
+
+      // Update activity feed
+      const oldActivityFeed = _.get(newState, 'activityfeed.data');
+      const newActivityFeed = oldActivityFeed.map((activity) => {
+        const { actedUponEntityType, goalRef } = activity; 
+        let newActivity = _.cloneDeep(activity);
+        if (actedUponEntityType === 'Goal' && goalRef && goalRef._id === goalId) {
+          newActivity = _.set(newActivity, 'goalRef.isCompleted', complete);
+        }
+
+        return newActivity;
+      });
+
+      newState = _.set(newState, 'activityfeed.data', newActivityFeed);
       return newState;
     }
 

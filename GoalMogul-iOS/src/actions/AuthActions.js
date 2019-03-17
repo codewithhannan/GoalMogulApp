@@ -1,6 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import { SubmissionError } from 'redux-form';
-import { AppState } from 'react-native';
+import { AppState, Image } from 'react-native';
 import { api as API } from '../redux/middleware/api';
 
 import {
@@ -19,6 +19,7 @@ import {
 
 import { auth as Auth } from '../redux/modules/auth/Auth';
 import { tutorial as Tutorial } from '../redux/modules/auth/Tutorial';
+import { openProfile } from '../actions';
 import {
   saveUnreadNotification
 } from '../redux/modules/notification/NotificationActions';
@@ -30,6 +31,13 @@ import {
 import {
   refreshGoals
 } from '../redux/modules/home/mastermind/actions';
+
+import {
+  IMAGE_BASE_URL
+} from '../Utils/Constants';
+
+// Components
+import { DropDownHolder } from '../Main/Common/Modal/DropDownModal';
 
 const DEBUG_KEY = '[ Action Auth ]';
 export const userNameChanged = (username) => {
@@ -187,4 +195,91 @@ export const logout = () => async (dispatch, getState) => {
   dispatch({
     type: USER_LOG_OUT
   });
+};
+
+const TOAST_IMAGE_STYLE = {
+  height: 36, 
+  width: 36, 
+  borderRadius: 4
+};
+const TOAST_IMAGE_CONTAINER_STYLE = {
+  borderWidth: 0.5,
+  padding: 0.5,
+  borderColor: 'lightgray',
+  alignItems: 'center',
+  borderRadius: 5,
+  alignSelf: 'center',
+  backgroundColor: 'transparent'
+};
+const NEWLY_CREATED_KEY = 'newly_created_key';
+const makeTitleWithName = (name) => `You\'ve accepted ${name}\'s invite!`;
+const makeMessage = () => 'Tap here to visit their profile and help them with their goals.';
+export const checkIfNewlyCreated = () => async (dispatch, getState) => {
+  const { token, userId } = getState().user;
+  // Check if we already show toast
+  const hasShownToast = await Auth.getByKey(`${userId}_${NEWLY_CREATED_KEY}`);
+  if (hasShownToast) {
+    console.log(`${DEBUG_KEY}: user shown toast state:`, hasShownToast);
+    return; // comment out to test
+  }
+
+  // Check if user is newly invited
+  const onSuccess = async (res) => {
+    console.log(`${DEBUG_KEY}: [ checkIfNewlyCreated ] res is:`, res);
+    const { isNewlyInvited, inviter } = res;
+    // Show toast
+    if (!isNewlyInvited) {
+      console.log(`${DEBUG_KEY}: [ checkIfNewlyCreated ] user is no longer newly invited`);
+      return; // comment out to test
+    }
+    
+    if (!inviter) {
+      console.warn(`${DEBUG_KEY}: [ checkIfNewlyCreated ] invalid inviter:`, inviter);
+      return; // comment out to test
+    } 
+    
+    const { profile, name, _id } = inviter;
+    if (profile && profile.image) {
+      const urlToSet = `${IMAGE_BASE_URL}${profile.image}`;
+      const onCloseFunc = () => {
+        console.log(`${DEBUG_KEY}: I am here`);
+        openProfile(_id)(dispatch, getState)
+      };
+      Image.prefetch(urlToSet);
+      // Set image, image style and image container style
+      DropDownHolder.setDropDownImage(urlToSet);
+      DropDownHolder.setDropDownImageStyle(TOAST_IMAGE_STYLE);
+      DropDownHolder.setDropDownImageContainerStyle(TOAST_IMAGE_CONTAINER_STYLE);
+      DropDownHolder.setOnClose(onCloseFunc);
+    }
+    
+    // Wait for image to preload
+    console.log(`${DEBUG_KEY}: [ checkIfNewlyCreated ]: scheduled showing alert`);
+
+    setTimeout(() => {
+      console.log(`${DEBUG_KEY}: [ checkIfNewlyCreated ]: showing alert`);
+      DropDownHolder.alert('custom', makeTitleWithName(name), makeMessage());
+    }, 1000);
+    
+    // Save the response
+    await Auth.saveByKey(`${userId}_${NEWLY_CREATED_KEY}`, 'true');
+  };
+
+  const onError = (res) => {
+    console.warn(`${DEBUG_KEY}: endpoint fetch user/account/is-newly-invited failed with err:`, res);
+    return;
+  };
+
+  API
+    .get('secure/user/account/is-newly-invited', token)
+    .then((res) => {
+      if (res.status === 200) {
+        onSuccess(res);
+        return;
+      }
+      onError(res);
+    })
+    .catch((err) => {
+      onError(err)
+    });
 };

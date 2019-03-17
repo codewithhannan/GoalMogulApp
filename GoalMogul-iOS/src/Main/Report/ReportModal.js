@@ -15,9 +15,13 @@ import {
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import {
+  DotIndicator
+} from 'react-native-indicators';
 
 // Components
-import ModalHeader from '../../Main/Common/Header/ModalHeader';
+import ModalHeader from '../Common/Header/ModalHeader';
+import LoadingModal from '../Common/Modal/LoadingModal';
 
 // Actions
 import {
@@ -81,6 +85,10 @@ class ReportModal extends Component {
         behavior='padding'
         style={{ flex: 1, backgroundColor: '#ffffff' }}
       >
+        <LoadingModal 
+          visible={this.props.loading} 
+          customIndicator={<DotIndicator size={12} color='white' />}  
+        />
         <ScrollView
           style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
         >

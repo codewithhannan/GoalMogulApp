@@ -6,8 +6,7 @@ import {
   Image,
   Text,
   FlatList,
-  Dimensions,
-  TouchableWithoutFeedback
+  Dimensions
 } from 'react-native';
 import {
   Menu,
@@ -138,13 +137,13 @@ class Headline extends React.PureComponent {
     // If item belongs to self, then caret displays delete
     let menu;
     if (caret && !_.isEmpty(caret)) {
-      const { options, onPress, shouldExtendOptionLength = false } = isSelf ? caret.self : caret.others;
+      const { options, onPress, shouldExtendOptionLength } = isSelf ? caret.self : caret.others;
       menu = MenuFactory(
         options,
         onPress,
         '',
         { ...styles.caretContainer },
-        () => console.log(`${DEBUG_KEY}: menu is opened for options: `, options),
+        () => console.log(`${DEBUG_KEY}: menu is opened for options with shouldExtendOptionLength: ${shouldExtendOptionLength}. `, options),
         shouldExtendOptionLength
       );
     } else {
@@ -197,11 +196,15 @@ export const MenuFactory =
           {triggerText}
         </Text>
       )
-    : '';
+    : null;
 
-  const menuOptionsStyles = shouldExtendOptionLength
+  // console.log(`${DEBUG_KEY}: shouldExtendOptionLength:`, shouldExtendOptionLength);
+  const menuOptionsStyles = shouldExtendOptionLength === true
     ? getUpdatedStyles()
-    : _.cloneDeep(styles.menuOptionsStyles);
+    : styles.menuOptionsStyles;
+
+  // console.log(`${DEBUG_KEY}: styles.menuOptionsStyles is:`, styles.menuOptionsStyles);
+  // console.log(`${DEBUG_KEY}: shouldExtendOptionLength: ${shouldExtendOptionLength}, menuOptionsStyles:`, menuOptionsStyles);
   return (
     <Menu
       onSelect={value => callback(value)}
@@ -259,9 +262,9 @@ export const MenuFactory =
 
 const getUpdatedStyles = () => {
   let ret = _.cloneDeep(styles.menuOptionsStyles);
-  ret = _.set(styles.menuOptionsStyles, 'optionsContainer.width', 200);
-  ret = _.set(styles.menuOptionsStyles, 'optionsContainer.paddingLeft', 0);
-  ret = _.set(styles.menuOptionsStyles, 'optionsContainer.paddingRight', 0);
+  ret = _.set(ret, 'optionsContainer.width', 200);
+  ret = _.set(ret, 'optionsContainer.paddingLeft', 0);
+  ret = _.set(ret, 'optionsContainer.paddingRight', 0);
   return ret;
 };
 

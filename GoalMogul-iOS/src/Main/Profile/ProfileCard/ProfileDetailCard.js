@@ -233,7 +233,7 @@ class ProfileDetailCard extends Component {
             source={addUser}
             onPress={this.handleButtonOnPress.bind(this, 'requestFriend')}
             style={{ height: 14, width: 15 }}
-            containerStyle={{ backgroundColor: '#E2F0F8' }}
+            containerStyle={{ backgroundColor: '#E3F3FA' }}
           />
         );
 
@@ -244,6 +244,7 @@ class ProfileDetailCard extends Component {
             source={love}
             onPress={this.handleButtonOnPress.bind(this, 'unfriend')}
             style={{ width: 15, height: 13 }}
+            containerStyle={{ backgroundColor: '#E3F3FA' }}
           />
         );
 
@@ -253,6 +254,7 @@ class ProfileDetailCard extends Component {
             text='Cancel request'
             source={cancel}
             onPress={this.handleButtonOnPress.bind(this, 'deleteFriend')}
+            containerStyle={{ backgroundColor: '#E3F3FA' }}
           />
         );
 

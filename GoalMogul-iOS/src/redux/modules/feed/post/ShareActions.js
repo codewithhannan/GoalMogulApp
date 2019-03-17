@@ -33,6 +33,7 @@ import {
 } from '../../feed/comment/CommentActions';
 
 import { api as API } from '../../../middleware/api';
+import { DropDownHolder } from '../../../../Main/Common/Modal/DropDownModal';
 
 const DEBUG_KEY = '[ Action Share ]';
 
@@ -41,7 +42,7 @@ const DEBUG_KEY = '[ Action Share ]';
 /*
  * open share detail
  */
-export const openShareDetail = (share, pageId) => (dispatch, getState) => {
+export const openShareDetail = (share, pageId, initialProps) => (dispatch, getState) => {
   const { tab } = getState().navigation;
 
   // const scene = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
@@ -63,7 +64,7 @@ export const openShareDetail = (share, pageId) => (dispatch, getState) => {
   refreshComments('Post', postId, tab, pageId)(dispatch, getState);
 
   const componentToOpen = componentKeyByTab(tab, 'share');
-  Actions.push(`${componentToOpen}`, { pageId, postId });
+  Actions.push(`${componentToOpen}`, { pageId, postId, initialProps });
 };
 
 // close share detail
@@ -186,7 +187,14 @@ export const submitShare = (values, callback) => (dispatch, getState) => {
         if (callback) {
           callback();
         }
-        console.log(`${DEBUG_KEY}: creating share successfully with data: `, res.data);
+
+        // Timeout is set to wait for actions finished in callback
+        setTimeout(() => {
+          console.log(`${DEBUG_KEY}: [ submitShare ]: showing alert`);
+          DropDownHolder.alert('success', makeShareSuccessMessage(newShare), '');
+        }, 300);
+
+        console.log(`${DEBUG_KEY}: [ submitShare ] create succeed with data:`, res.data);
         return dispatch(reset('shareModal'));
       }
       console.warn(`${DEBUG_KEY}: creating share failed with message: `, res);
@@ -205,6 +213,15 @@ export const submitShare = (values, callback) => (dispatch, getState) => {
       console.log(`${DEBUG_KEY}: creating share failed with exception: `, err);
     });
 };
+
+const transformPrivacy = (privacy, belongsToTribe, belongsToEvent) => {
+  let ret = privacy === 'Private' ? 'self' : privacy.toLowerCase();
+  // Set privacy to public if it's a share to event or tribe
+  if (belongsToTribe || belongsToEvent) {
+    ret = 'public';
+  }
+  return ret;
+}
 
 const newShareAdaptor = (newShare, formVales) => {
   const {
@@ -225,7 +242,6 @@ const newShareAdaptor = (newShare, formVales) => {
     tags
   } = formVales;
 
-  const transformedPrivacy = privacy === 'Private' ? 'self' : privacy.toLowerCase();
   const tagsToUse = clearTags(content, {}, tags);
 
   return {
@@ -242,8 +258,53 @@ const newShareAdaptor = (newShare, formVales) => {
       text: content,
       tags: tagsToUse
     },
-    privacy: transformedPrivacy
+    privacy: transformPrivacy(privacy, belongsToTribe, belongsToEvent)
   };
+};
+
+const makeShareSuccessMessage = (newShare) => {
+  const {
+    userRef,
+    postRef,
+    goalRef,
+    needRef,
+    stepRef,
+    belongsToTribe,
+    belongsToEvent
+  } = newShare;
+
+  let type = '';
+  let destination = 'Activity Feed';
+
+  if (belongsToEvent) {
+    destination = 'Event'; 
+  }
+
+  if (belongsToTribe) {
+    destination = 'Tribe'; 
+  }
+
+  if (userRef) {
+    type = 'User';
+  }
+
+  if (postRef) {
+    type = 'Post';
+  }
+
+  if (goalRef) {
+    type = 'Goal';
+  }
+
+  if (needRef) {
+    type = 'Need';
+  }
+
+  if (stepRef) {
+    type = 'Step';
+  }
+
+  return `Successfully shared ${type} to ${destination}`;
 };
 
 export const selectEvent = (event, callback) => (dispatch) => {

@@ -5,7 +5,6 @@ import {
   ScrollView,
   Image,
   Text,
-  TextInput,
   SafeAreaView,
   TouchableOpacity,
   ActivityIndicator
@@ -217,7 +216,7 @@ class ShareModal extends React.Component {
     const { skip, limit, data, loading } = tagSearchData;
 
     // Disable load more if customized search is provided
-    if (this.tagSearch) return '';
+    if (this.tagSearch) return;
 
     if (loading) return;
     this.setState({
@@ -410,7 +409,7 @@ class ShareModal extends React.Component {
     const { item, name } = shareTo;
     const { shareToBasicTextStyle } = styles;
     // If share to event or tribe, item must not be null
-    if (!item && name !== 'Feed') return '';
+    if (!item && name !== 'Feed') return null;
 
     // Select the item namef
     let nameToRender = '';

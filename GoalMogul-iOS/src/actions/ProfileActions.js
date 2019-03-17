@@ -527,16 +527,19 @@ export const handleTabRefresh = (tab, userId, pageId) => (dispatch, getState) =>
   const page = getUserDataByPageId(getState(), userId, pageId, `${tab}`);
   const { filter, limit, refreshing } = page;
 
-  if (!user || !user._id || refreshing) return;
+  if (!user || !user._id) return;
   console.log(`${DEBUG_KEY}: refresh tab for user with name ${user.name} and id: ${user._id} and pageId: ${pageId}`);
   const userIdToUser = user._id;
+  const filterToUse = profileFilterAdapter(filter, tab);
+
 
   dispatch({
     type: PROFILE_REFRESH_TAB,
     payload: {
       type: tab,
       pageId,
-      userId
+      userId,
+      filterToUse
     }
   });
 
@@ -551,7 +554,8 @@ export const handleTabRefresh = (tab, userId, pageId) => (dispatch, getState) =>
         limit,
         userId: userIdToUser,
         hasNextPage: !(data === undefined || data.length === 0),
-        pageId
+        pageId,
+        filterToUse
       }
     });
   };
@@ -561,13 +565,15 @@ export const handleTabRefresh = (tab, userId, pageId) => (dispatch, getState) =>
     dispatch({
       type: PROFILE_REFRESH_TAB_FAIL,
       payload: {
-        type: tab
+        type: tab,
+        userId,
+        pageId
       }
     });
     console.log(`${DEBUG_KEY}: refresh tab: ${tab} failed with err: `, err);
   };
 
-  loadOneTab(tab, 0, limit, { ...profileFilterAdapter(filter), userId: userIdToUser },
+  loadOneTab(tab, 0, limit, { ...filterToUse, userId: userIdToUser },
     token, onSuccess, onError);
 };
 
@@ -629,7 +635,7 @@ export const handleProfileTabOnLoadMore = (tab, userId, pageId) => (dispatch, ge
     console.log(`${DEBUG_KEY}: tab: ${tab} on load more fail with err: `, err);
   };
 
-  loadOneTab(tab, skip, limit, { ...profileFilterAdapter(filter), userId: _id },
+  loadOneTab(tab, skip, limit, { ...profileFilterAdapter(filter, tab), userId: _id },
     token, onSuccess, onError);
 };
 
@@ -637,8 +643,8 @@ export const handleProfileTabOnLoadMore = (tab, userId, pageId) => (dispatch, ge
  * Original field for orderBy should be ['ascending', 'descending'],
  * server accpeted types are ['asc', 'desc']
  */
-const profileFilterAdapter = (filter) => {
-  const newFilter = _.cloneDeep(filter);
+const profileFilterAdapter = (filter, tab) => {
+  let newFilter = _.cloneDeep(filter);
   // const sortOrder = _.clone(newFilter.orderBy);
   const sortOrder = PROFILE_GOAL_FILTER_CONST.orderBy[filter.orderBy];
   // const categories = filter.catergory;
@@ -646,6 +652,17 @@ const profileFilterAdapter = (filter) => {
   if (newFilter.categories === 'All') {
     delete newFilter.categories;
   }
+
+  // Create special filter for needs
+  // if (tab === 'needs') {
+  //   newFilter = _.omit(newFilter, 'categories');
+  //   newFilter = _.omit(newFilter, 'orderBy');
+  //   newFilter = _.omit(newFilter, 'sortBy');
+  //   newFilter = _.omit(newFilter, 'completedOnly');
+  //   newFilter = _.set(newFilter, 'withNeeds', true);
+  //   console.log(`${DEBUG_KEY}: filter is:`, newFilter);
+  //   return newFilter
+  // }
   delete newFilter.orderBy;
   // delete newFilter.catergory;
   delete newFilter.completedOnly;

@@ -14,7 +14,7 @@ const INITIAL_STATE = {
     loading: false,
     refreshing: false,
     skip: 0,
-    limit: 7,
+    limit: 13,
     hasNextPage: undefined,
     deleting: false,
     seeMoreSkip: 5, // Every time shows 5 more notifications
@@ -115,8 +115,14 @@ export default (state = INITIAL_STATE, action) => {
     case NOTIFICATION_REFRESH_SUCCESS: {
       const { skip, data, hasNextPage, type, refresh } = action.payload;
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, `${type}.refreshing`, false);
-      // const oldData = _.get(newState, `${type}.data`);
+
+      if (refresh && !hasNextPage) {
+        // Don't set refreshing to false if it's initial refresh and there is more to load
+        console.log(`${DEBUG_KEY}: [ ${action.type} ]: don't update refreshing` +
+          ` since it's a refresh with no next page. Payload is:`);  
+      } else {
+        newState = _.set(newState, `${type}.refreshing`, false);
+      }
 
       if (skip !== undefined) {
         newState = _.set(newState, `${type}.skip`, skip);
@@ -124,9 +130,19 @@ export default (state = INITIAL_STATE, action) => {
       newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
 
       // Only reset data if there is data
-      if (data && data !== null && data.length > 0) {
-        newState = _.set(newState, `${type}.data`, data);
+      const oldData = _.get(newState, `${type}.data`);
+      const hasNewData = data && data !== null && data.length > 0;
+      let dataToPut = oldData;
+      if (refresh && hasNewData) {
+        // Use the latest data since it's new unread data
+        dataToPut = data;
+      } else if (hasNewData) {
+        // Concat the previously loaded unread data
+        dataToPut = [...oldData, ...data];
       }
+      
+      dataToPut = arrayUnique(dataToPut).sort((a, b) => new Date(b.created) - new Date(a.created));
+      newState = _.set(newState, `${type}.data`, dataToPut);
 
       // Following section is to update the unread notification
       let oldUnread = _.get(newState, 'unread.data');

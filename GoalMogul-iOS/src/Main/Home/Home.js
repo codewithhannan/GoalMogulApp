@@ -14,7 +14,7 @@ import Mastermind from './Mastermind';
 import ActivityFeed from './ActivityFeed';
 
 // Actions
-import { homeSwitchTab, fetchAppUserProfile, fetchProfile } from '../../actions';
+import { homeSwitchTab, fetchAppUserProfile, fetchProfile, checkIfNewlyCreated } from '../../actions';
 import {
   openCreateOverlay,
   refreshGoals
@@ -79,6 +79,7 @@ class Home extends Component {
 
     // Set timer to fetch profile again if previously failed
     this.setTimer();
+    this.props.checkIfNewlyCreated();
   }
 
   componentWillUnmount() {
@@ -161,6 +162,37 @@ class Home extends Component {
     this.props.homeSwitchTab(index);
   };
 
+  // style 1 currently used
+  // buttonStyle={{
+  //   selected: {
+  //     backgroundColor: APP_DEEP_BLUE,
+  //     tintColor: 'white',
+  //     color: 'white',
+  //     fontWeight: '700'
+  //   },
+  //   unselected: {
+  //     backgroundColor: 'white',
+  //     tintColor: '#616161',
+  //     color: '#616161',
+  //     fontWeight: '600'
+  //   }
+  // }}  
+
+  // Style 2
+  // buttonStyle={{
+  //   selected: {
+  //     backgroundColor: '#f8f8f8',
+  //     tintColor: '#1998c9',
+  //     color: '#1998c9',
+  //     fontWeight: '600'
+  //   },
+  //   unselected: {
+  //     backgroundColor: 'white',
+  //     tintColor: '#696969',
+  //     color: '#696969',
+  //     fontWeight: '600'
+  //   }
+  // }}    
   _renderHeader = props => {
     return (
       <TabButtonGroup
@@ -180,7 +212,7 @@ class Home extends Component {
             color: '#616161',
             fontWeight: '600'
           }
-        }}  
+        }}    
       />
     );
   };
@@ -312,7 +344,8 @@ export default connect(
     saveUnreadNotification,
     refreshGoals,
     refreshFeed,
-    fetchProfile
+    fetchProfile,
+    checkIfNewlyCreated
   },
   null,
   { withRef: true }

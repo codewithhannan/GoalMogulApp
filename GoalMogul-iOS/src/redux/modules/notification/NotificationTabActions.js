@@ -7,7 +7,8 @@ import {
   NOTIFICATION_SEE_MORE,
   NOTIFICATION_SEE_LESS,
   NOTIFICATION_UNREAD_COUNT_UPDATE,
-  NOTIFICATION_MARK_ALL_READ
+  NOTIFICATION_MARK_ALL_READ,
+  NOTIFICATION_REFRESH_FAIL
 } from './NotificationTabReducers';
 
 import { queryBuilder } from '../../middleware/utils';
@@ -90,7 +91,7 @@ export const refreshNotifications = (params) =>
   const { refreshForUnreadNotif } = params;
   const skipToUse = refreshForUnreadNotif ? 0 : skip;
 
-  if (refreshing) return; // Do not refresh again if already refreshing
+  // if (refreshing) return; // Do not refresh again if already refreshing
   if (params === undefined || params.showIndicator === undefined || params.showIndicator === true) {
     dispatch({
       type: NOTIFICATION_REFRESH,
@@ -223,9 +224,13 @@ export const refreshNeeds = () => (dispatch, getState) => {
   const onError = (err) => {
     console.log(`${DEBUG_KEY}: refresh needs failed with err: `, err);
     dispatch({
-      type: NOTIFICATION_LOAD_FAIL,
+      type: NOTIFICATION_REFRESH_FAIL,
       payload: {
-        type: 'needs'
+        type: 'needs',
+        data: [],
+        skip: 0,
+        limit,
+        hasNextPage: false
       }
     });
   };
@@ -279,7 +284,7 @@ export const loadNeeds = (skip, limit, onSuccess, onError) => (dispatch, getStat
   API
     .get(`secure/goal/needs/feed?${queryBuilder(skip, limit, {})}`, token)
     .then((res) => {
-      if (res && res.data) {
+      if (res.status === 200 || (res && res.data)) {
         return onSuccess(res.data);
       }
       onError(res);

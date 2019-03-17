@@ -7,6 +7,8 @@ import {
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
+import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal';
+
 import {
   GOAL_DETAIL_UPDATE,
   GOAL_DETAIL_UPDATE_DONE,
@@ -354,7 +356,8 @@ export const markGoalAsComplete = (goalId, complete, pageId) => (dispatch, getSt
         goalId,
         tab,
         complete,
-        pageId
+        pageId,
+        data
       }
     });
     // Alert.alert(
@@ -362,9 +365,9 @@ export const markGoalAsComplete = (goalId, complete, pageId) => (dispatch, getSt
     //   `You have successfully marked this goal as ${complete ? 'complete' : 'incomplete'}.`
     // );
     console.log(
-      `${DEBUG_KEY}: mark goal as
-      ${complete ? 'complete' : 'incomplete'}
-      succeed with data: `, data);
+      `${DEBUG_KEY}: mark goal as ` +
+      `${complete ? 'complete' : 'incomplete'} ` +
+      `succeed with data: `, data);
   };
 
   const onError = (err) => {
@@ -461,6 +464,7 @@ const shareToMastermind = (goalId, pageId, dispatch, getState) => {
     });
     // Alert.alert('Success', 'You have successfully shared this goal to mastermind.');
     console.log(`${DEBUG_KEY}: shareToMastermind succeed with res: `, res);
+    DropDownHolder.alert('success', 'Successfully shared Goal to Feed', '');
   };
 
   const onError = (err) => {

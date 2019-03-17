@@ -128,6 +128,11 @@ class RouterComponent extends Component {
       return Actions.popTo('notification');
     }
 
+    if (state.key === 'notificationTab') {
+      if (Actions.refs.notification !== undefined) {
+        Actions.refs.notification.getWrappedInstance().refreshNotification();
+      }
+    }
 
     if (state.key === 'homeTab' && isFocused()) {
       if (Actions.refs.home !== undefined) {
@@ -347,7 +352,7 @@ class RouterComponent extends Component {
                         hideNavBar
                         onEnter={() => {
                           if (Actions.refs.notification !== undefined) {
-                            Actions.refs.notification.getWrappedInstance().refreshNotification();
+                            // Actions.refs.notification.getWrappedInstance().refreshNotification();
                           }
                         }}
                       />

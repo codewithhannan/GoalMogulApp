@@ -26,6 +26,8 @@ import {
     BACKGROUND_COLOR
 } from '../../../styles';
 
+const DEBUG_KEY = '[ UI NotificationListView ]';
+
 class NotificationListView extends React.PureComponent {
 
     handleRefresh = () => {
@@ -71,7 +73,7 @@ class NotificationListView extends React.PureComponent {
                     onEndReached={this.handleOnLoadMore}
                     onEndReachedThreshold={0}
                     ListEmptyComponent={
-                    this.props.refreshing ? '' :
+                    this.props.refreshing ? null :
                         <EmptyResult text={'You have no notifications'} textStyle={{ paddingTop: 200 }} />
                     }
                     ListFooterComponent={this.renderListFooter()}
