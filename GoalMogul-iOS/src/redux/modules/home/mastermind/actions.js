@@ -76,7 +76,12 @@ export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
     }
   });
 
-  refreshGoalDetailById(_id, pageId)(dispatch, getState);
+  if (initialProps && initialProps.refreshGoal === false) {
+    // Do not refresh goal if it's set to false
+  } else {
+    refreshGoalDetailById(_id, pageId)(dispatch, getState);
+  }
+
   refreshComments('Goal', _id, tab, pageId)(dispatch, getState);
   // TODO: create new stack using Actions.create(React.Element) if needed
   const componentToOpen = componentKeyByTab(tab, 'goal');

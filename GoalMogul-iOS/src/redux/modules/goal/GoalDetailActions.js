@@ -356,7 +356,8 @@ export const markGoalAsComplete = (goalId, complete, pageId) => (dispatch, getSt
         goalId,
         tab,
         complete,
-        pageId
+        pageId,
+        data
       }
     });
     // Alert.alert(
@@ -364,9 +365,9 @@ export const markGoalAsComplete = (goalId, complete, pageId) => (dispatch, getSt
     //   `You have successfully marked this goal as ${complete ? 'complete' : 'incomplete'}.`
     // );
     console.log(
-      `${DEBUG_KEY}: mark goal as
-      ${complete ? 'complete' : 'incomplete'}
-      succeed with data: `, data);
+      `${DEBUG_KEY}: mark goal as ` +
+      `${complete ? 'complete' : 'incomplete'} ` +
+      `succeed with data: `, data);
   };
 
   const onError = (err) => {

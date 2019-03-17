@@ -339,13 +339,19 @@ class GoalCard extends React.PureComponent {
             return this.props.shareGoalToMastermind(_id);
           }
           if (key === 'Mark as Complete') {
-            initialProps = { initialMarkGoalAsComplete: true };
+            initialProps = { 
+              initialMarkGoalAsComplete: true,
+              refreshGoal: false
+            };
             this.props.openGoalDetail(item, initialProps);
             return;
           }
 
           if (key === 'Unmark as Complete') {
-            initialProps = { initialUnMarkGoalAsComplete: true };
+            initialProps = { 
+              initialUnMarkGoalAsComplete: true,
+              refreshGoal: false
+            };
             this.props.openGoalDetail(item, initialProps);
             return;
           }
