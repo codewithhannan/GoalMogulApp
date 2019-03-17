@@ -51,16 +51,27 @@ class PostDetailCard extends Component {
   }
 
   componentDidMount() {
-    const { initial, postDetail } = this.props;
-    console.log(`${DEBUG_KEY}: [ componentDidMount ]: initial is:`, initial);
+    const { initialProps, postDetail } = this.props;
+    console.log(`${DEBUG_KEY}: [ componentDidMount ]: initialProps is:`, initialProps);
 
     // Check if there is any initial operations
-    if (initial) {
-      const { initialShowPostModal } = initial;
+    if (initialProps) {
+      const { initialShowPostModal, initialFocusCommentBox } = initialProps;
+
+      // Display CreatePostModal
       if (initialShowPostModal) { 
         setTimeout(() => {
           this.props.editPost(postDetail);  
         }, 750);
+        return;
+      }
+
+      // Focus comment box
+      if (initialFocusCommentBox) {
+        setTimeout(() => {
+          this.dialogOnFocus();
+        }, 700);
+        return;
       }
     }
   }
@@ -84,7 +95,13 @@ class PostDetailCard extends Component {
     });
   }
 
-  dialogOnFocus = () => this.commentBox.focus();
+  dialogOnFocus = () => {
+    if (!this.commentBox) {
+      console.warn(`${DEBUG_KEY}: [ dialogOnFocus ]: this.commentBox is undefined`);
+      return;
+    }
+    this.commentBox.focus();
+  }
 
   renderItem = (props) => {
     const { postDetail } = this.props;

@@ -73,14 +73,14 @@ export const openPostDetailById = (postId) => (dispatch, getState) => {
 /**
  * If post is a share, then open share detail. Otherwise, open post detail
  */
-export const openPostDetail = (post, initial) => (dispatch, getState) => {
+export const openPostDetail = (post, initialProps) => (dispatch, getState) => {
   // Open share detail if not a general post
   const postId = post._id;
 
   // Generate pageId on open
   const pageId = constructPageId('post');
   if (post.postType !== 'General') {
-    return openShareDetail(post, pageId)(dispatch, getState);
+    return openShareDetail(post, pageId, initialProps)(dispatch, getState);
   }
 
   const { tab } = getState().navigation;
@@ -102,7 +102,7 @@ export const openPostDetail = (post, initial) => (dispatch, getState) => {
 
   const componentToOpen = componentKeyByTab(tab, 'post');
   // Initial is used to manipulate the post
-  Actions.push(`${componentToOpen}`, { pageId, postId, initial });
+  Actions.push(`${componentToOpen}`, { pageId, postId, initialProps });
 };
 
 export const fetchPostDetail = (postId, pageId) => (dispatch, getState) => {

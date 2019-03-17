@@ -45,10 +45,30 @@ import {
   BACKGROUND_COLOR
 } from '../../../styles';
 
+const DEBUG_KEY = '[ UI ShareDetailCard ]';
+
 class ShareDetailCard extends Component {
   constructor(props) {
     super(props);
     this.commentBox = {};
+  }
+
+  componentDidMount() {
+    const { initialProps } = this.props;
+    console.log(`${DEBUG_KEY}: [ componentDidMount ]: initialProps is:`, initialProps);
+
+    // Check if there is any initial operations
+    if (initialProps) {
+      const { initialFocusCommentBox } = initialProps;
+
+      // Focus comment box
+      if (initialFocusCommentBox) {
+        setTimeout(() => {
+          this.dialogOnFocus();
+        }, 700);
+        return;
+      }
+    }
   }
 
   handleRefresh = () => {
@@ -70,7 +90,13 @@ class ShareDetailCard extends Component {
     });
   }
 
-  dialogOnFocus = () => this.commentBox.focus();
+  dialogOnFocus = () => {
+    if (!this.commentBox) {
+      console.warn(`${DEBUG_KEY}: [ dialogOnFocus ]: this.commentBox is undefined`);
+      return;
+    }
+    this.commentBox.focus();
+  }
 
   renderItem = (props) => {
     // const { routes, index } = this.state.navigationState;

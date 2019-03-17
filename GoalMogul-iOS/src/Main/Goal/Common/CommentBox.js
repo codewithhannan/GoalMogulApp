@@ -28,6 +28,10 @@ import {
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 import {
+  isInvalidObject
+} from './CommentBoxV2';
+
+import {
   openCamera,
   openCameraRoll
 } from '../../../actions';

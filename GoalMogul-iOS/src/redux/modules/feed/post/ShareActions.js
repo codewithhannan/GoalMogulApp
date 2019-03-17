@@ -42,7 +42,7 @@ const DEBUG_KEY = '[ Action Share ]';
 /*
  * open share detail
  */
-export const openShareDetail = (share, pageId) => (dispatch, getState) => {
+export const openShareDetail = (share, pageId, initialProps) => (dispatch, getState) => {
   const { tab } = getState().navigation;
 
   // const scene = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
@@ -64,7 +64,7 @@ export const openShareDetail = (share, pageId) => (dispatch, getState) => {
   refreshComments('Post', postId, tab, pageId)(dispatch, getState);
 
   const componentToOpen = componentKeyByTab(tab, 'share');
-  Actions.push(`${componentToOpen}`, { pageId, postId });
+  Actions.push(`${componentToOpen}`, { pageId, postId, initialProps });
 };
 
 // close share detail

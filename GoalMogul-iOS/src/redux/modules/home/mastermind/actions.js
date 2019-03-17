@@ -76,6 +76,7 @@ export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
     }
   });
 
+  // console.log(`${DEBUG_KEY}: initialProps:`, initialProps);
   if (initialProps && initialProps.refreshGoal === false) {
     // Do not refresh goal if it's set to false
   } else {

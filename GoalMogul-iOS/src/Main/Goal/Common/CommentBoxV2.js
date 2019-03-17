@@ -630,7 +630,7 @@ const validSuggestion = (newComment) => {
 };
 
 
-const isInvalidObject = (o) => {
+export const isInvalidObject = (o) => {
   if (o === null) return true;
   if (typeof o === 'object') {
     return _.isEmpty(o) || o === undefined;
