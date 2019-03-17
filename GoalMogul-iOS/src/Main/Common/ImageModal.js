@@ -20,7 +20,15 @@ const { width, height } = Dimensions.get('window');
 
 const DEBUG_KEY = '[ UI ImageModal ]';
 
-class ImageModal extends React.PureComponent {
+class ImageModal extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    if (this.props.mediaRef !== nextProps.mediaRef) {
+      return true;
+    }
+    // No need to re-render if mediaRef is the same
+    return false;
+  }
+
   render() {
     if (!this.props.mediaRef) return null;
 

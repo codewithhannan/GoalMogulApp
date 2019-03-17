@@ -33,10 +33,18 @@ const styles = {
   },
 };
 
+const DEBUG_KEY = '[ UI ProfileImage ]';
 /*
  * props: imageUrl, resizeMode, imageContainerStyle, imageStyle
  */
-class ProfileImage extends React.PureComponent {
+class ProfileImage extends React.Component {
+
+  shouldComponentUpdate(nextProps) {
+    if (this.props.imageUrl !== nextProps.imageUrl) {
+      return true;
+    }
+    return false;
+  }
 
   handleProfileImageOnPress = () => {
     const { userId } = this.props;
