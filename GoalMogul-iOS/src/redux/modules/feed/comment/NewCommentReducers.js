@@ -260,7 +260,7 @@ export default (state = INITIAL_STATE, action) => {
         newState = setState(newState, `${path}.stepRef`, stepRef);
       }
 
-      console.log(`${DEBUG_KEY}: new state for newcomment: `, newState);
+      // console.log(`${DEBUG_KEY}: new state for newcomment: `, newState);
       return newState;
     }
 

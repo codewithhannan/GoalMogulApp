@@ -141,7 +141,10 @@ class ShareDetailCard extends Component {
     });
   }
 
-  dialogOnFocus = () => {
+  /**
+   * Only pass in 'Reply' as type if it's a reply
+   */
+  dialogOnFocus = (type) => {
     if (!this.commentBox) {
       console.warn(`${DEBUG_KEY}: [ dialogOnFocus ]: this.commentBox is undefined`);
       return;
@@ -150,12 +153,12 @@ class ShareDetailCard extends Component {
       ...this.state,
       keyboardDidShow: true
     });
-    this.commentBox.focus();
+    this.commentBox.focusForReply(type);
   }
 
   renderItem = (props) => {
     // const { routes, index } = this.state.navigationState;
-    const { shareDetail } = this.props;
+    const { shareDetail, pageId, postId } = this.props;
     const parentRef = shareDetail ? shareDetail._id : undefined;
     return (
       <CommentCard
@@ -164,11 +167,11 @@ class ShareDetailCard extends Component {
         index={props.index}
         scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
         commentDetail={{ parentType: 'Post', parentRef }}
-        onCommentClicked={() => this.dialogOnFocus()}
+        onCommentClicked={this.dialogOnFocus}
         onReportPressed={() => console.log('share detail report clicked')}
         reportType='shareDetail'
-        pageId={this.props.pageId}
-        entityId={this.props.postId}
+        pageId={pageId}
+        entityId={postId}
       />
     );
   }
