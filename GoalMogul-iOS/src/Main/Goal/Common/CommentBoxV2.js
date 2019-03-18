@@ -121,6 +121,16 @@ class CommentBoxV2 extends Component {
     const newContentText = `${comment}@${name} ${postCursorContent.replace(/^\s+/g, '')}`;
     // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
     // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
+
+
+    console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
+    console.log(`${DEBUG_KEY}: keyword length is: `, this.state.keyword.length);
+    console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: prevCursorContent is: `, prevCursorContent);
+    console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: prevCursorContent length is: `, prevCursorContent.length);
+    console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: postCursorContent is: `, postCursorContent);
+    console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: comment is: `, comment);
+    console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: newContentText is: `, newContentText);
+
     this.props.newCommentOnTextChange(newContentText, pageId);
 
     const newContentTag = {

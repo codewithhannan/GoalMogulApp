@@ -19,7 +19,7 @@ import {
 
 import {
   switchCaseF,
-  clearTags,
+  sanitizeTags,
   componentKeyByTab
 } from '../../../middleware/utils';
 
@@ -242,7 +242,9 @@ const newShareAdaptor = (newShare, formVales) => {
     tags
   } = formVales;
 
-  const tagsToUse = clearTags(content, {}, tags);
+  // const tagsToUse = clearTags(content, {}, tags);
+  // Tags sanitization will reassign index as well as removing the unused tags
+  const tagsToUse = sanitizeTags(content, tags);
 
   return {
     owner,
