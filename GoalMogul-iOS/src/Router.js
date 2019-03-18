@@ -322,6 +322,7 @@ class RouterComponent extends Component {
                       <Scene key="meetTab_privacy" component={Privacy} />
                       <Scene key="meetTab_friendsSetting" component={FriendsSetting} />
 
+                      <Scene key="meetTab_meetContactSync" component={ContactSync} />
                       <Scene key="meetTab_searchLightBox" component={SearchOverlay} hideNavBar />
                     </Stack>
 

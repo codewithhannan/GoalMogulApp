@@ -2,13 +2,16 @@ import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, ActionSheetIOS } from 'react-native';
 import { connect } from 'react-redux';
 
+// Components
+import ProfileImage from '../Main/Common/ProfileImage';
+
 // Assets
 import badge from '../asset/utils/badge.png';
 import addUser from '../asset/utils/addUser.png';
 import check from '../asset/utils/check.png';
 
 // Actions
-import { updateFriendship } from '../actions';
+import { updateFriendship, openProfile } from '../actions';
 
 const checkIconColor = '#2dca4a';
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
@@ -24,23 +27,24 @@ class ContactDetail extends Component {
 
   onFriendRequest = (_id) => {
     if (this.state.requested) {
-      ActionSheetIOS.showActionSheetWithOptions({
-        options: FRIENDSHIP_BUTTONS,
-        cancelButtonIndex: CANCEL_INDEX,
-      },
-      (buttonIndex) => {
-        console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
-        switch (buttonIndex) {
-          case WITHDRAW_INDEX:
-            this.props.updateFriendship(_id, '', 'deleteFriend', TAB_KEY, () => {
-              this.setState({ requested: false });
-            });
-            break;
-          default:
-            return;
-        }
-      });
+      // Currently we don't allow user to withdraw invitation on this page
       return;
+      // ActionSheetIOS.showActionSheetWithOptions({
+      //   options: FRIENDSHIP_BUTTONS,
+      //   cancelButtonIndex: CANCEL_INDEX,
+      // },
+      // (buttonIndex) => {
+      //   console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
+      //   switch (buttonIndex) {
+      //     case WITHDRAW_INDEX:
+      //       this.props.updateFriendship(_id, '', 'deleteFriend', TAB_KEY, () => {
+      //         this.setState({ requested: false });
+      //       });
+      //       break;
+      //     default:
+      //       return;
+      //   }
+      // });
     }
     this.props.updateFriendship(_id, '', 'requestFriend', TAB_KEY, () => {
       this.setState({ requested: true });
@@ -70,18 +74,28 @@ class ContactDetail extends Component {
   }
 
   render() {
-    console.log('item is: ', this.props.item.item);
-    const { name, headline, _id } = this.props.item.item;
+    // console.log('item is: ', this.props.item.item);
+    const { name, headline, _id, profile } = this.props.item;
     return (
       <View style={styles.containerStyle}>
-        <View
+        <ProfileImage 
+          imageStyle={{ height: 30, width: 30, borderRadius: 4 }}
+          imageUrl={profile ? profile.image : undefined}
+          imageContainerStyle={{ ...styles.imageContainerStyle }}
+          userId={_id}
+        />
+        {/* <View
           style={{
             ...styles.addUserIconContainerStyle,
             backgroundColor: '#d8d8d8',
             borderWidth: 0
           }}
-        />
-      <View style={styles.bodyContainerStyle}>
+        /> */}
+        <TouchableOpacity 
+          style={styles.bodyContainerStyle}
+          activeOpacity={0.85}
+          onPress={() => this.props.openProfile(_id)}
+        >
           <Text
             style={styles.nameTextStyle}
             numberOfLines={1}
@@ -97,11 +111,14 @@ class ContactDetail extends Component {
           >
             {headline}
           </Text>
-        </View>
+        </TouchableOpacity>
         <View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
-          <TouchableOpacity activeOpacity={0.85} onPress={this.onFriendRequest.bind(this, _id)}>
-            {this.renderButton()}
-          </TouchableOpacity>
+        <TouchableOpacity 
+          activeOpacity={0.85} 
+          onPress={this.onFriendRequest.bind(this, _id)}
+        >
+          {this.renderButton()}
+        </TouchableOpacity>
         </View>
       </View>
     );
@@ -114,8 +131,8 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 10,
-    marginRight: 10,
+    marginLeft: 15,
+    marginRight: 15,
     marginTop: 10,
     marginBottom: 10
   },
@@ -123,7 +140,7 @@ const styles = {
      flexDirection: 'row',
      justifyContent: 'flex-start',
      alignItems: 'center',
-     width: 290,
+     flex: 1,
      marginLeft: 5,
      marginRight: 5
   },
@@ -150,6 +167,15 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center'
   },
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 0.5,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 5,
+    alignSelf: 'flex-start',
+    backgroundColor: 'white'
+  },
   checkIconContainerStyle: {
     height: 30,
     width: 30,
@@ -169,6 +195,7 @@ const styles = {
 export default connect(
   null,
   {
-    updateFriendship
+    updateFriendship,
+    openProfile
   }
 )(ContactDetail);

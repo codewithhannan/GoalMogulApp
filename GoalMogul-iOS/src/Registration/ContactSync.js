@@ -27,21 +27,6 @@ import {
   meetContactSyncLoadMore
 } from '../actions';
 
-const testData = [
-  {
-    name: 'Jia Zeng',
-    headline: 'Students at Duke University',
-    request: false,
-    _id: '120937109287091'
-  },
-  {
-    name: 'Peter Kushner',
-    headline: 'CEO at start industries',
-    request: false,
-    _id: '019280980248303'
-  }
-];
-
 class ContactSync extends Component {
   state = {
     type: 'registration'
@@ -74,7 +59,7 @@ class ContactSync extends Component {
 
   _keyExtractor = (item) => item._id;
 
-  renderItem(item) {
+  renderItem({ item }) {
     return (
       <ContactCard>
         <ContactDetail item={item} />
@@ -94,6 +79,7 @@ class ContactSync extends Component {
         </View>
       );
     }
+    return null;
   }
 
   // TODO: replace data with this.props.data

@@ -71,7 +71,7 @@ class MeetTabV2 extends React.Component {
     }
 
     handleSyncContact = () => {
-        this.props.meetContactSync(this.handleOnRefresh);
+        this.props.meetContactSync(this.handleOnRefresh, 'meetTab_meetContactSync');
     }
 
     handleDiscoverFriend = () => {

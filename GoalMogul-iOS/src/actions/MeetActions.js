@@ -347,7 +347,7 @@ export const requestsSelectTab = (key) => (dispatch) => {
 };
 
 // Contact sync
-export const meetContactSync = (callback) => async (dispatch, getState) => {
+export const meetContactSync = (callback, componentKey) => async (dispatch, getState) => {
     const permission = await Expo.Permissions.askAsync(Expo.Permissions.CONTACTS);
     if (permission.status !== 'granted') {
     // Permission was denied and dispatch an action
@@ -366,7 +366,8 @@ export const meetContactSync = (callback) => async (dispatch, getState) => {
       }
     });
 
-    Actions.push('meetContactSync', { type: 'meet', actionCallback: callback });
+    const componentKeyToUse = componentKey ? componentKey : 'meetContactSync';
+    Actions.push(`${componentKeyToUse}`, { type: 'meet', actionCallback: callback });
 
     handleUploadContacts(token)
       .then((res) => {

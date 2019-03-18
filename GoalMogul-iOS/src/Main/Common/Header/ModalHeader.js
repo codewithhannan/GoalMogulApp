@@ -7,6 +7,23 @@ import {
 import BackButton from '../../../asset/utils/back.png';
 
 /* Icon */
+const renderLeftComponent = (cancelText, back) => {
+  if (cancelText === null) return null;
+  const cancel = cancelText !== undefined ? cancelText : 'Cancel';
+
+  const leftComponent = back
+    ? (
+      <Image
+        source={BackButton}
+        style={{ height: 25, width: 25, tintColor: APP_BLUE, marginRight: 20 }}
+      />
+    )
+    : (
+      <Text style={styles.cancelTextStyle}>{cancel}</Text>
+    );
+  
+  return leftComponent;
+};
 
 const ModalHeader = (props) => {
   const { title, actionText, onCancel, onAction, actionDisabled, cancelText, back } = props;
@@ -33,8 +50,9 @@ const ModalHeader = (props) => {
         activeOpacity={0.85}
         style={{ alignItems: 'center', flex: 1 }}
         onPress={onCancel}
+        disabled={actionDisabled}
       >
-        {leftComponent}
+        {renderLeftComponent(cancelText, back)}
       </TouchableOpacity>
 
       <TouchableOpacity activeOpacity={0.85} style={{ alignItems: 'center', flex: 3 }}>
