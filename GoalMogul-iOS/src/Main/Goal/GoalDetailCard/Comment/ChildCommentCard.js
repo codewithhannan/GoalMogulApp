@@ -346,16 +346,19 @@ const styles = {
   profileImageStyle: {
     height: ImageHeight,
     width: ImageHeight,
-    borderRadius: ImageHeight / 2
+    borderRadius: 4,
+    // borderRadius: ImageHeight / 2
   },
   profileImageContianerStyle: {
-    height: ImageHeight + 6,
-    width: ImageHeight + 6,
+    // height: ImageHeight + 6,
+    // width: ImageHeight + 6,
+    padding: 0.5,
     borderWidth: 0.5,
-    borderColor: 'gray',
+    borderColor: 'lightgray',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: (ImageHeight + 4) / 2,
+    // borderRadius: (ImageHeight + 4) / 2,
+    borderRadius: 5,
     alignSelf: 'flex-start'
   },
   mediaStyle: {
