@@ -137,12 +137,12 @@ const styles = {
     marginBottom: 10
   },
   bodyContainerStyle: {
-     flexDirection: 'row',
-     justifyContent: 'flex-start',
-     alignItems: 'center',
-     flex: 1,
-     marginLeft: 5,
-     marginRight: 5
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flex: 1,
+    marginLeft: 5,
+    marginRight: 5
   },
   nameTextStyle: {
     marginLeft: 8,
