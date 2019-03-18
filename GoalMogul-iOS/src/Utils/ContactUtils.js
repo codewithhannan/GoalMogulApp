@@ -8,6 +8,7 @@ const ContactUtils = {
   async handleUploadContacts(token) {
     let pageOffset = 0;
     let uploadPromise = [];
+    console.log(`${DEBUG_KEY}: [ handleUploadContacts ]`);
 
     const total = await ContactUtils.getContactSize();
     console.log('total number of contact is: ', total);
@@ -15,21 +16,21 @@ const ContactUtils = {
     // TODO: revert this change
     // for (pageOffset = 0; pageOffset < 24; pageOffset += pageSize) {
       // console.log('page offset is: ', pageOffset);
-      const contacts = await Expo.Contacts.getContactsAsync({
-        fields: [
-          Expo.Contacts.PHONE_NUMBERS,
-          Expo.Contacts.EMAILS,
-          Expo.Contacts.ADDRESSES,
-          // Expo.Contacts.NONGREGORIANBIRTHDAY,
-          Expo.Contacts.SOCIAL_PROFILES,
-          Expo.Contacts.IM_ADDRESSES,
-          // Expo.Contacts.URLS,
-          Expo.Contacts.DATES,
-        ],
-        pageSize,
-        pageOffset: total,
-      });
-      // console.log(`${DEBUG_KEY}: contacts load: `, contacts);
+      // const contacts = await Expo.Contacts.getContactsAsync({
+      //   fields: [
+      //     Expo.Contacts.PHONE_NUMBERS,
+      //     Expo.Contacts.EMAILS,
+      //     Expo.Contacts.ADDRESSES,
+      //     // Expo.Contacts.NONGREGORIANBIRTHDAY,
+      //     Expo.Contacts.SOCIAL_PROFILES,
+      //     Expo.Contacts.IM_ADDRESSES,
+      //     // Expo.Contacts.URLS,
+      //     Expo.Contacts.DATES,
+      //   ]
+      // });
+      const contacts = await Expo.Contacts.getContactsAsync();
+      console.log(`${DEBUG_KEY}: [ handleUploadContacts ] contacts load with length: `, 
+        contacts && contacts.data ? contacts.data.length : 0);
       uploadPromise.push(ContactUtils.uploadContacts(contacts.data, token));
     // }
 
@@ -51,7 +52,8 @@ const ContactUtils = {
   @return update result promise
   */
   uploadContacts(contacts, token) {
-    const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/contactSync/';
+    const url = 'https://api.goalmogul.com/api/secure/user/contactSync/';
+    // const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/contactSync/';
     // const url = 'http://192.168.0.3:8081/api/secure/user/contactSync/';
     const headers = {
       method: 'POST',
@@ -64,8 +66,8 @@ const ContactUtils = {
         contactList: contacts
       })
     };
-    // console.log(`${DEBUG_KEY}: [ Uploading contact ] header is: `, headers);
-    // console.log(`${DEBUG_KEY}: contacts to upload is: `, contacts);
+    // console.log(`${DEBUG_KEY}: [ uploadContacts ] header is: `, headers);
+    // console.log(`${DEBUG_KEY}: [ uploadContacts ] contacts is: `, contacts);
     return ContactUtils.custumeFetch(url, headers, contacts);
   },
 
@@ -75,7 +77,8 @@ const ContactUtils = {
   */
   async fetchMatchedContacts(token, skip, limit) {
     console.log('fetching matched contacts');
-    const url = `https://goalmogul-api-dev.herokuapp.com/api/secure/user/contactSync/stored-matches?limit=${limit}&skip=${skip}`;
+    const url = `https://api.goalmogul.com/api/secure/user/contactSync/stored-matches?limit=${limit}&skip=${skip}`;
+    // const url = `https://goalmogul-api-dev.herokuapp.com/api/secure/user/contactSync/stored-matches?limit=${limit}&skip=${skip}`;
     // const url = `http://192.168.0.3:8081/api/secure/user/contactSync/stored-matches?limit=${limit}&skip=${skip}`;
     const headers = {
       method: 'GET',
