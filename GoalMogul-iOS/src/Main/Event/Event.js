@@ -192,7 +192,7 @@ class Event extends Component {
       return <ActivityIndicator size='small' color='46C8F5' />;
     }
 
-    return '';
+    return null;
   }
 
   /**

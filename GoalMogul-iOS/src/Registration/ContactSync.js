@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   View,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
@@ -54,8 +55,8 @@ class ContactSync extends Component {
 
   onLoadMore = () => {
     if (this.state.type === 'meet') {
+      // No need since it will load all at once
       // return this.props.meetContactSyncLoadMore(false);
-      return;
     }
     this.props.contactSyncLoadMore();
   }
@@ -81,6 +82,20 @@ class ContactSync extends Component {
     );
   }
 
+  renderListFooter(loading, data) {
+    if (loading && data.length >= 4) {
+      return (
+        <View
+          style={{
+            paddingVertical: 20
+          }}
+        >
+          <ActivityIndicator size='large' />
+        </View>
+      );
+    }
+  }
+
   // TODO: replace data with this.props.data
   render() {
     const { type, actionCallback } = this.props;
@@ -101,7 +116,7 @@ class ContactSync extends Component {
 
     // Assign actionable buttons
     const button = (type !== undefined && type === 'meet') ?
-    '' :
+    null :
     (<TouchableOpacity activeOpacity={0.85} onPress={this.handleDoneOnPressed.bind(this)}>
       <View style={styles.footer}>
         <Button text='Done' />
@@ -113,6 +128,9 @@ class ContactSync extends Component {
 
     const refreshing = (type !== undefined && type === 'meet') ?
       this.props.meetMatchedContacts.refreshing : this.props.registrationMatchedContacts.refreshing;
+
+    const loading = (type !== undefined && type === 'meet') ?
+    this.props.meetMatchedContacts.loading : this.props.registrationMatchedContacts.loading;
 
     return (
       <View style={Styles.containerStyle}>
@@ -129,9 +147,10 @@ class ContactSync extends Component {
             onRefresh={this.handleRefresh}
             onEndReached={this.onLoadMore}
             ListEmptyComponent={
-              refreshing ? '' :
+              refreshing ? null :
               <EmptyResult text={'No contacts found'} />
             }
+            ListFooterComponent={() => this.renderListFooter(loading, data)}
             onEndThreshold={0}
           />
           {button}

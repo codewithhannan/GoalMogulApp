@@ -76,8 +76,8 @@ const ContactUtils = {
   @return [user object]
   */
   async fetchMatchedContacts(token, skip, limit) {
-    console.log('fetching matched contacts');
-    const url = `https://api.goalmogul.com/api/secure/user/contactSync/stored-matches?limit=${limit}&skip=${skip}`;
+    console.log(`${DEBUG_KEY}: [ fetchMatchedContacts ]`);
+    const url = `https://api.goalmogul.com/api/secure/user/contactSync/stored-matches`;
     // const url = `https://goalmogul-api-dev.herokuapp.com/api/secure/user/contactSync/stored-matches?limit=${limit}&skip=${skip}`;
     // const url = `http://192.168.0.3:8081/api/secure/user/contactSync/stored-matches?limit=${limit}&skip=${skip}`;
     const headers = {

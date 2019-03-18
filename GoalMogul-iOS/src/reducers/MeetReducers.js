@@ -347,22 +347,42 @@ export default (state = INITIAL_STATE, action) => {
     case MEET_CONTACT_SYNC_FETCH_DONE: {
       let newState = _.cloneDeep(state);
       let newMatchedContacts = _.cloneDeep(state.matchedContacts);
-      const { data, skip, hasNextPage } = action.payload;
-      newMatchedContacts.data = arrayUnique(newMatchedContacts.data.concat(data));
-      newMatchedContacts.skip = skip;
-      newMatchedContacts.refreshing = false;
-      newMatchedContacts.hasNextPage = hasNextPage;
-      console.log('contact sync fetch done.');
-      newState.matchedContacts = newMatchedContacts;
-      console.log('new state is: ', newState.matchedContacts);
-      return { ...newState };
+      const { data, skip, hasNextPage, refresh } = action.payload;
+
+      newMatchedContacts = _.set(newMatchedContacts, 'skip', skip);
+      if (refresh) {
+        newMatchedContacts = _.set(newMatchedContacts, 'refreshing', false);
+        // Override the data since it's a refresh
+        newMatchedContacts = _.set(newMatchedContacts, 'data', data);
+      } else {
+        newMatchedContacts = _.set(newMatchedContacts, 'loading', false);
+        // Concat with old data and dedup
+        const oldData = _.get(newMatchedContacts, 'data');
+        newMatchedContacts = _.set(newMatchedContacts, 'data', arrayUnique(oldData.concat(data)));
+      }
+      
+      newMatchedContacts = _.set(newMatchedContacts, 'hasNextPage', hasNextPage);
+      newState = _.set(newState, 'matchedContacts', newMatchedContacts);
+
+      // newMatchedContacts.data = arrayUnique(newMatchedContacts.data.concat(data));
+      // newMatchedContacts.skip = skip;
+      // newMatchedContacts.refreshing = false;
+      // newMatchedContacts.hasNextPage = hasNextPage;
+      // newState.matchedContacts = newMatchedContacts;
+      return newState;
     }
 
     // Contact Sync requests
     case MEET_CONTACT_SYNC: {
-      let newMatchedContacts = _.cloneDeep(state.matchedContacts);
-      newMatchedContacts.refreshing = true;
-      return { ...state, matchedContacts: newMatchedContacts };
+      const newState = _.cloneDeep(state);
+      let newMatchedContacts = _.get(newState, 'matchedContacts');
+      const { refresh } = action.payload;
+      if (refresh) {
+        newMatchedContacts = _.set(newMatchedContacts, 'refreshing', true);
+      } else {
+        newMatchedContacts = _.set(newMatchedContacts, 'loading', true);
+      }
+      return _.set(newState, 'matchedContacts', newMatchedContacts);
     }
 
     // Refresh contact sync cards done
