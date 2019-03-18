@@ -3,22 +3,30 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text
+  Platform
 } from 'react-native';
 import { connect } from 'react-redux';
-import { SearchBar, Icon } from 'react-native-elements';
+import { SearchBar } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
+import { Constants } from 'expo';
 import _ from 'lodash';
+
 
 // Component
 import BaseOverlay from './BaseOverlay';
 import TribeSearch from './Tribe/TribeSearch';
 import { SearchIcon } from '../../Utils/Icons';
 
+// Actions
 import {
   handleSearch,
   clearSearchState
 } from '../../redux/modules/search/SearchActions';
+
+// Constants
+import {
+  IPHONE_MODELS
+} from '../../Utils/Constants';
 
 const DEBUG_KEY = '[ Tribe Search ]';
 const SEARCH_TYPE = 'tribes';
@@ -43,26 +51,31 @@ class TribeSearchOverlay extends Component {
     this.props.debouncedSearch(value.trim(), SEARCH_TYPE);
   }
 
-  searchIcon = () => (
-    <View style={{ flexDirection: 'row' }}>
-      <Icon
-        type='font-awesome'
-        name='search'
-        style={styles.searchIconStyle}
-      />
-      <Text>Search GoalMogul</Text>
-    </View>
-  );
+  // searchIcon = () => (
+  //   <View style={{ flexDirection: 'row' }}>
+  //     <Icon
+  //       type='font-awesome'
+  //       name='search'
+  //       style={styles.searchIconStyle}
+  //     />
+  //     <Text>Search GoalMogul</Text>
+  //   </View>
+  // );
 
   render() {
     const searchPlaceHolder = this.props.searchPlaceHolder
       ? this.props.searchPlaceHolder
       : 'Search a tribe';
 
+    const marginTop = (
+      Platform.OS === 'ios' &&
+      IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+    ) ? 20 : 30;
+
     return (
       <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-          <View style={styles.headerContainerStyle}>
+          <View style={{ ...styles.headerContainerStyle, marginTop }}>
             <SearchBar
               platform='ios'
               round

@@ -3,12 +3,14 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
+  Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar, Icon } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import { MenuProvider } from 'react-native-popup-menu';
 import _ from 'lodash';
+import { Constants } from 'expo';
 import { TabView, SceneMap } from 'react-native-tab-view';
 
 // Component
@@ -20,11 +22,17 @@ import EventSearch from './Event/EventSearch';
 import TribeSearch from './Tribe/TribeSearch';
 import { SearchIcon } from '../../Utils/Icons';
 
+// Actions
 import {
   handleSearch,
   searchSwitchTab,
   clearSearchState
 } from '../../redux/modules/search/SearchActions';
+
+// Constants
+import {
+  IPHONE_MODELS
+} from '../../Utils/Constants';
 
 const DEBUG_KEY = '[ Component Search ]';
 
@@ -78,10 +86,15 @@ class SearchOverlay extends Component {
   });
 
   render() {
+    const marginTop = (
+      Platform.OS === 'ios' &&
+      IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+    ) ? 45 : 55;
+
     return (
       <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-          <View style={styles.headerContainerStyle}>
+          <View style={{ ...styles.headerContainerStyle, marginTop }}>
             <SearchBar
               platform='ios'
               round
