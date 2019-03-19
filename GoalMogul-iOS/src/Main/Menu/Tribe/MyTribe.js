@@ -84,7 +84,9 @@ import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../../../styles';
 
 // Constants
 import {
-  IPHONE_MODELS
+  IPHONE_MODELS,
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
 
 const DEBUG_KEY = '[ UI MyTribe ]';
@@ -404,16 +406,16 @@ class MyTribe extends Component {
       ? MenuFactory(
           [
             'Report',
-            maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe'
+            maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE
           ],
           (val) => {  
             if (val === 'Report') {
               return this.props.reportTribe(_id);
             }
-            if (val === 'Unsubscribe') {
+            if (val === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
               return this.props.unsubscribeEntityNotification(_id, 'Event');
             }
-            if (val === 'Subscribe') {
+            if (val === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
               return this.props.subscribeEntityNotification(_id, 'Event');
             }
           },

@@ -56,7 +56,9 @@ import {
 // Constants
 // Constants
 import {
-  IMAGE_BASE_URL
+  IMAGE_BASE_URL,
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../../Utils/Constants';
 
 const DEBUG_KEY = '[ UI CommentCard.ChildCommentCard ]';
@@ -214,10 +216,10 @@ class ChildCommentCard extends Component {
               if (type === 'Delete') {
                 return this.props.deleteComment(_id, this.props.pageId, parentRef, parentType);
               }
-              if (type === 'Subscribe') {
+              if (type === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
                 return this.props.subscribeEntityNotification(_id, 'Comment');
               }
-              if (type === 'Unsubscribe') {
+              if (type === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
                 return this.props.unsubscribeEntityNotification(_id, 'Comment');
               }
             }}

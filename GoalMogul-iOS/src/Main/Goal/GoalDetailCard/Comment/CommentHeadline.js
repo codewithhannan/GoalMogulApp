@@ -12,6 +12,12 @@ import { switchCaseBannerSource } from '../../../../actions';
 /* Asset */
 import badge from '../../../../asset/utils/badge.png';
 
+// Constants
+import { 
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
+} from '../../../../Utils/Constants';
+
 /**
  * Props passed in are:
  * @param reportType={reportType}
@@ -31,7 +37,7 @@ const CommentHeadline = (props) => {
   MenuFactory(
     [
       'Report',
-      maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe'
+      maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE
     ],
     (val) => caretOnPress(val),
     '',

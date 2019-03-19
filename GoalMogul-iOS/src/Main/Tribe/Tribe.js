@@ -67,9 +67,17 @@ import {
   getTribeMemberNavigationState
 } from '../../redux/modules/tribe/TribeSelector';
 
+// Utils
 import { switchCase } from '../../redux/middleware/utils';
 
+// Styles
 import { APP_DEEP_BLUE } from '../../styles';
+
+// Constants
+import {
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
+} from '../../Utils/Constants';
 
 const DEBUG_KEY = '[ UI Tribe ]';
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -324,16 +332,16 @@ class Tribe extends Component {
       ? MenuFactory(
           [
             'Report',
-            maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe'
+            maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE
           ],
           (val) => {  
             if (val === 'Report') {
               return this.props.reportTribe(_id);
             }
-            if (val === 'Unsubscribe') {
+            if (val === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
               return this.props.unsubscribeEntityNotification(_id, 'Event');
             }
-            if (val === 'Subscribe') {
+            if (val === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
               return this.props.subscribeEntityNotification(_id, 'Event');
             }
           },
@@ -495,11 +503,11 @@ class Tribe extends Component {
 
     const filterBar = this.props.tab === 'members'
       ? this.renderMemberTabs()
-      : '';
+      : null;
 
     const emptyState = this.props.tab === 'posts' && data.length === 0
       ? <EmptyResult text={'No Posts'} textStyle={{ paddingTop: 100 }} />
-    : '';
+      : null;
     // Currently it's not in sync with MyTribe
     const inviteButton = this.props.tab === 'members'
       ? (
@@ -511,7 +519,7 @@ class Tribe extends Component {
           <Text>Invite</Text>
         </TouchableOpacity>
       )
-      : '';
+      : null;
 
     return (
       <View>
@@ -589,7 +597,7 @@ class Tribe extends Component {
         </TouchableOpacity>
       );
     }
-    return '';
+    return null;
   }
 
   render() {
