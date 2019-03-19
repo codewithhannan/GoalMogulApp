@@ -7,29 +7,29 @@ import {
 import BackButton from '../../../asset/utils/back.png';
 
 /* Icon */
-const renderLeftComponent = (cancelText, back) => {
-  if (cancelText === null) return null;
-  const cancel = cancelText !== undefined ? cancelText : 'Cancel';
+// const renderLeftComponent = (cancelText, back) => {
+//   if (cancelText === null) return null;
+//   const cancel = cancelText !== undefined ? cancelText : 'Cancel';
 
-  const leftComponent = back
-    ? (
-      <Image
-        source={BackButton}
-        style={{ height: 25, width: 25, tintColor: APP_BLUE, marginRight: 20 }}
-      />
-    )
-    : (
-      <Text style={styles.cancelTextStyle}>{cancel}</Text>
-    );
+//   const leftComponent = back
+//     ? (
+//       <Image
+//         source={BackButton}
+//         style={{ height: 25, width: 25, tintColor: APP_BLUE, marginRight: 20 }}
+//       />
+//     )
+//     : (
+//       <Text style={styles.cancelTextStyle}>{cancel}</Text>
+//     );
   
-  return leftComponent;
-};
+//   return leftComponent;
+// };
 
 const ModalHeader = (props) => {
   const { title, actionText, onCancel, onAction, actionDisabled, cancelText, back } = props;
   const cancel = cancelText !== null && cancelText !== undefined ? cancelText : 'Cancel';
 
-  const leftComponent = back
+  let leftComponent = back
     ? (
       <Image
         source={BackButton}
@@ -40,6 +40,10 @@ const ModalHeader = (props) => {
       <Text style={styles.cancelTextStyle}>{cancel}</Text>
     );
   
+  if (cancelText === null) {
+    leftComponent = null;
+  }
+
   const actionTextStyle = actionDisabled
     ? { ...styles.actionTextStyle, color: 'lightgray' }
     : styles.actionTextStyle;
@@ -50,9 +54,8 @@ const ModalHeader = (props) => {
         activeOpacity={0.85}
         style={{ alignItems: 'center', flex: 1 }}
         onPress={onCancel}
-        disabled={actionDisabled}
       >
-        {renderLeftComponent(cancelText, back)}
+        {leftComponent}
       </TouchableOpacity>
 
       <TouchableOpacity activeOpacity={0.85} style={{ alignItems: 'center', flex: 3 }}>

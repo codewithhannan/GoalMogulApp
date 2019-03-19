@@ -228,9 +228,8 @@ export const MenuFactory =
           renderItem={({ item }) => {
             const { iconSource, option } = item;
             return (
-              <TouchableOpacity
+              <View
                 style={{ flexDirection: 'row', alignItems: 'center' }}
-                onPress={() => callback(option)}
               >
                 {
                   iconSource
@@ -248,8 +247,10 @@ export const MenuFactory =
                     )
                     : null
                 }
-                <MenuOption value={option} text={option} />
-              </TouchableOpacity>
+                <View style={{ flex: 1 }}>
+                  <MenuOption value={option} text={option} />
+                </View>
+              </View>
             );
           }}
           keyExtractor={(item, index) => index.toString()}
@@ -322,10 +323,12 @@ const styles = {
     },
     optionWrapper: {
       flex: 1,
+      width: '100%'
     },
     optionTouchable: {
       underlayColor: 'lightgray',
       activeOpacity: 10,
+      flex: 1
     },
     optionText: {
       paddingTop: 5,
