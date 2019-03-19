@@ -235,7 +235,7 @@ class GoalDetailCard2 extends Component {
               refreshing={this.props.commentLoading}
               onRefresh={this.handleRefresh}
               ListEmptyComponent={
-                this.props.commentLoading ? '' :
+                this.props.commentLoading ? null :
                 <EmptyResult
                   text={emptyResult}
                   textStyle={{ paddingTop: 100 }}

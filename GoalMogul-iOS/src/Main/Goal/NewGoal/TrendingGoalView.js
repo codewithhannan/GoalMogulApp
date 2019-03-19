@@ -75,7 +75,7 @@ class TrendingGoalView extends React.PureComponent {
                     onRefresh={this.handleOnRefresh}
                     onEndReached={this.handleOnLoadMore}
                     ListEmptyComponent={
-                        loading || refreshing ? '' :
+                        loading || refreshing ? null :
                         <EmptyResult text={'No Trending'} textStyle={{ paddingTop: 150 }} />
                     }
                     onEndThreshold={0}

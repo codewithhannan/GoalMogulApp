@@ -45,7 +45,7 @@ const TabButton = (props) => {
     />)
     : null;
 
-  const stat = !props.count ? '' :
+  const stat = !props.count ? null :
     (
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <DotIcon 
