@@ -156,7 +156,7 @@ class InputField extends Component {
         >
           <Image source={menu} style={{ height: 20, width: 22 }} />
         </TouchableOpacity>
-    ) : '';
+    ) : null;
 
     return (
       <View 

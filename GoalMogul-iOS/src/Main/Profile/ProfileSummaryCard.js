@@ -120,7 +120,7 @@ class ProfileSummaryCard extends Component {
     //     iconLeft
     //     buttonStyle={styles.buttonStyle}
     //   />
-    // ) : '';
+    // ) : null;
 
     return (
       <TouchableWithoutFeedback onPress={this.handleOpenProfileDetail.bind(this)}>

@@ -330,11 +330,11 @@ class Event extends Component {
     const { title, _id, picture } = item;
     const filterBar = this.props.tab === 'attendees'
       ? <ParticipantFilterBar />
-      : '';
+      : null;
 
     const emptyState = this.props.tab === 'posts' && data.length === 0
       ? <EmptyResult text={'No Posts'} textStyle={{ paddingTop: 100 }} />
-    : '';
+      : null;
 
     // Currently, explored events is not synced with my events
     const inviteButton = this.props.tab === 'attendees'
@@ -346,7 +346,7 @@ class Event extends Component {
           <Text>Invite</Text>
         </TouchableOpacity>
       )
-      : '';
+      : null;
 
     return (
       <View>

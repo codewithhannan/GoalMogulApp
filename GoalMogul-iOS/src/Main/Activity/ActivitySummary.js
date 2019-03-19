@@ -25,10 +25,10 @@ class ActivitySummary extends React.Component {
 
     const tribeText = belongsToTribe
       ? <Text><Text style={{ ...boldTextStyle }}>{' '}{belongsToTribe.name}</Text>{' '}Tribe</Text>
-      : '';
+      : null;
     const eventText = belongsToEvent
       ? <Text><Text style={{ ...boldTextStyle }}>{' '}{belongsToEvent.title}</Text>{' '}Event</Text>
-      : '';
+      : null;
     const actorText = <Text style={{ ...boldTextStyle, ...textStyle }}>{actor.name} </Text>;
     const text = getSummaryText({
       Create: {

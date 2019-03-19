@@ -595,7 +595,7 @@ class MyTribe extends Component {
     //       onSelect={(option) => this.props.myTribeSelectMembersFilter(option)}
     //     />
     //   )
-    //   : '';
+    //   : null;
 
     const filterBar = this.props.tab === 'members'
       ? this.renderMemberTabs()

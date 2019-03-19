@@ -499,7 +499,7 @@ class Tribe extends Component {
     // Following method is replaced by renderMemberTabs
     // const filterBar = this.props.tab === 'members'
     //   ? <MemberFilterBar />
-    //   : '';
+    //   : null;
 
     const filterBar = this.props.tab === 'members'
       ? this.renderMemberTabs()

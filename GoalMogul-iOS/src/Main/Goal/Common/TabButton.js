@@ -43,7 +43,7 @@ const TabButton = (props) => {
       source={props.iconSource}
       style={{ ...styles.iconStyle, ...props.iconStyle, tintColor }}
     />)
-    : '';
+    : null;
 
   const stat = !props.count ? '' :
     (

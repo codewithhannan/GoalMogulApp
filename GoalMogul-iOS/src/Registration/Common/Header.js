@@ -102,7 +102,7 @@ class Header extends Component {
     const headerStyle = { ...styles.containerStyle }
     const { hasBackButton } = this.props;
 
-    const pagination = this.props.type ? this.renderPagination(this.props.type) : '';
+    const pagination = this.props.type ? this.renderPagination(this.props.type) : null;
 
     if (this.props.name) {
       headerStyle.height = 170;
