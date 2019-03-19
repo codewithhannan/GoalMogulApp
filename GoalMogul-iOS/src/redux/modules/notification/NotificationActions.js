@@ -5,6 +5,9 @@ import { Permissions, Notifications, SecureStore, Linking } from 'expo';
 import { Alert } from 'react-native';
 import _ from 'lodash';
 
+// Components
+import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal';
+
 import { isString, queryBuilderBasicBuilder } from '../../middleware/utils';
 import { api as API } from '../../middleware/api';
 
@@ -242,6 +245,11 @@ export const subscribeEntityNotification = (entityId, entityKind) => (dispatch, 
         entityKind
       }
     });
+
+    setTimeout(() => {
+      console.log(`${DEBUG_KEY}: [ subscribeEntityNotification ]: showing alert`);
+      DropDownHolder.alert('success', 'Successfully subscribe to notification', '');
+    }, 200);
   };
 
   const onError = (err) => {
@@ -284,6 +292,10 @@ export const unsubscribeEntityNotification = (entityId, entityKind) => (dispatch
         entityKind
       }
     });
+    setTimeout(() => {
+      console.log(`${DEBUG_KEY}: [ unsubscribeEntityNotification ]: showing alert`);
+      DropDownHolder.alert('success', 'Successfully unsubscribe notification', '');
+    }, 200);
   };
 
   const onError = (err) => {
