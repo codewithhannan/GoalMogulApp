@@ -87,7 +87,7 @@ class TrendingGoalView extends React.PureComponent {
                             >
                                 <ActivityIndicator />
                             </View>
-                        ) : ''
+                        ) : null
                     }
                 />
             </View>

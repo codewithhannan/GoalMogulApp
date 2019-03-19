@@ -334,7 +334,7 @@ export default class MentionsTextInput extends Component {
       <View style={{ flex: 1 }}>
         {
           (this.props.suggestionPosition && this.props.suggestionPosition === 'bottom') ?
-          '' :
+          null :
           (
             <Animated.View
               style={[{

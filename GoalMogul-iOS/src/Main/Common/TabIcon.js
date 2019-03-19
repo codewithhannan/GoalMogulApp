@@ -45,7 +45,7 @@ class TabIcon extends React.PureComponent {
                 <View style={styles.notificationCountContainerStyle} zIndex={2}>
                   <Text style={styles.notificationCountTextStyle}>{notificationCount}</Text>
                 </View>
-              ) : ''
+              ) : null
             }
             <Image source={IconBell} style={style} zIndex={1} />
           </View>

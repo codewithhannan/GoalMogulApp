@@ -144,8 +144,7 @@ class InputField extends Component {
 
     const icon = iconSource ?
       <Image source={iconSource} style={{ ...iconStyle }} />
-      :
-      '';
+      : null;
 
     const gestureHandler = canDrag
       ? (
