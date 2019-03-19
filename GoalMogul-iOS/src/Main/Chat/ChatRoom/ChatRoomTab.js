@@ -28,7 +28,7 @@ class ChatRoomTab extends React.Component {
   }
 
   renderListHeader() {
-    return '';
+    return null;
   }
 
   render() {

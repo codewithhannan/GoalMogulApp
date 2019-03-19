@@ -58,7 +58,7 @@ class RichText extends React.PureComponent {
       contentTags,
     } = this.props;
 
-    if (!contentText) return '';
+    if (!contentText) return null;
 
     const parsedTags = this.constructParsedUserTags(contentTags, contentText);
     const convertedText = Decode(contentText);

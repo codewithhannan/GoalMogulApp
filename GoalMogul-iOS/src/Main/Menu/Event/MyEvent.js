@@ -469,10 +469,10 @@ class MyEvent extends Component {
     const { title, _id, picture } = item;
     // const filterBar = this.props.tab === 'attendees'
     //   ? <ParticipantFilterBar />
-    //   : '';
+    //   : null;
     const filterBar = this.props.tab === 'attendees'
       ? this.renderMemberTabs()
-      : '';
+      : null;
 
     // Invite button is replaced by renderPlus
     const inviteButton = this.props.tab === 'attendees'
@@ -484,11 +484,11 @@ class MyEvent extends Component {
           <Text>Invite</Text>
         </TouchableOpacity>
       )
-      : '';
+      : null;
 
     const emptyState = this.props.tab === 'posts' && data.length === 0
       ? <EmptyResult text={'No Posts'} textStyle={{ paddingTop: 100 }} />
-    : '';
+      : null;
 
     return (
       <View>
@@ -566,7 +566,7 @@ class MyEvent extends Component {
         </TouchableOpacity>
       );
     }
-    return '';
+    return null;
   }
 
   render() {

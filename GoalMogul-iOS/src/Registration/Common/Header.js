@@ -94,7 +94,7 @@ class Header extends Component {
       case 'contact':
         return <Pagination total={3} current={2} />;
       default:
-        return '';
+        return null;
     }
   }
 

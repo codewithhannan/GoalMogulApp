@@ -52,7 +52,7 @@ const DEBUG_KEY = '[ UI Headline ]';
 class Headline extends React.PureComponent {
   handleSelfCaretOnPress = (val) => {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     const { isCompleted, _id } = item;
     const markCompleteOnPress = isCompleted
@@ -246,7 +246,7 @@ export const MenuFactory =
                         <Image source={iconSource} style={styles.iconStyle} />
                       </View>
                     )
-                    : ''
+                    : null
                 }
                 <MenuOption value={option} text={option} />
               </TouchableOpacity>

@@ -779,7 +779,7 @@ export const deletePost = (postId) => (dispatch, getState) => {
 export const UserBanner = (props) => {
   const { user, iconStyle } = props;
 
-  if (!user || !user.profile || user.profile.pointsEarned === undefined) return '';
+  if (!user || !user.profile || user.profile.pointsEarned === undefined) return null;
   const { profile } = user;
   const { pointsEarned } = profile;
   const source = switchCaseBannerSource(pointsEarned);

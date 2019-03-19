@@ -204,7 +204,7 @@ class GoalDetailCard2 extends Component {
         : 'No needs and steps';
     }
     // console.log('transformed comments to render are: ', comments);
-    if (!goalDetail || _.isEmpty(goalDetail)) return '';
+    if (!goalDetail || _.isEmpty(goalDetail)) return null;
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>

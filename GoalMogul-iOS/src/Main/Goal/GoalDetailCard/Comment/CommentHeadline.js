@@ -169,7 +169,7 @@ const CommentHead = (props) => {
 const UserBanner = (props) => {
   const { user, iconStyle } = props;
 
-  if (!user || !user.profile || user.profile.pointsEarned === undefined) return '';
+  if (!user || !user.profile || user.profile.pointsEarned === undefined) return null;
   const { profile } = user;
   const { pointsEarned } = profile;
   const source = switchCaseBannerSource(pointsEarned);
@@ -189,7 +189,7 @@ const UserBanner = (props) => {
 const SuggestionHeadline = (props) => {
   const { goalRef, item, timeStamp, menu, onNamePress } = props;
   const { owner, suggestion } = item;
-  if (!goalRef) return '';
+  if (!goalRef) return null;
 
   const { suggestionFor, suggestionForRef } = suggestion;
   const text = suggestionFor === 'Goal'

@@ -52,7 +52,7 @@ class MyEventTab extends React.Component {
   }
 
   renderListHeader() {
-    return '';
+    return null;
     // return (
     //   <View>
     //     <MyEventFilterBar />

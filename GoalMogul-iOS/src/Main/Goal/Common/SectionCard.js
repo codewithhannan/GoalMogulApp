@@ -122,7 +122,7 @@ class SectionCard extends Component {
       return this.renderSelfCheckBox(isCompleted);
     }
 
-    if (!isCompleted) return '';
+    if (!isCompleted) return null;
     return (
       <View style={styles.checkIconContainerStyle}>
         <Image source={checkIcon} style={styles.checkIconStyle} />

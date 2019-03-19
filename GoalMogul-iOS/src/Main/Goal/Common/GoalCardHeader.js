@@ -48,7 +48,7 @@ const renderText = (item) => {
 
 const GoalCardHeader = (props) => {
   const { item } = props;
-  if (!item) return '';
+  if (!item) return null;
 
   return (
     <View

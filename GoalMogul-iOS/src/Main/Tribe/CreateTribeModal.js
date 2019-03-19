@@ -258,7 +258,7 @@ class CreateTribeModal extends React.Component {
         </View>
       );
     }
-    return '';
+    return null;
   }
 
   renderImageModal(imageUrl) {

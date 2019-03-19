@@ -96,7 +96,7 @@ class ChatRoomCard extends React.Component {
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     return (
       <TouchableOpacity activeOpacity={0.85}

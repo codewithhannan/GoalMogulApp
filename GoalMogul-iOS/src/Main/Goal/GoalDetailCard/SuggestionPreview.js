@@ -40,7 +40,7 @@ class SuggestionPreview extends Component {
         </View>
       );
     }
-    return '';
+    return null;
   }
 
   // Render suggestion preview when suggesting a Link, Reading, Custom
@@ -111,7 +111,7 @@ class SuggestionPreview extends Component {
   render() {
     const { item, onPress, onRemove } = this.props;
     const { suggestionType, selectedItem } = item;
-    if (!item) return '';
+    if (!item) return null;
 
     return (
       <TouchableOpacity activeOpacity={0.85} style={styles.containerStyle} onPress={onPress}>

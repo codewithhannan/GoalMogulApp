@@ -87,7 +87,7 @@ class MastermindTab extends Component {
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
     return (
       <View style={{ flex: 1 }}>
         {this.renderMastermind(item)}

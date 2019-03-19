@@ -61,7 +61,7 @@ class CentralTab extends React.PureComponent<{}> {
 
   renderItem = (props) => {
     const { goalDetail, pageId, goalId } = this.props;
-    if (!goalDetail) return '';
+    if (!goalDetail) return null;
 
     let newCommentParams = {
       commentDetail: {

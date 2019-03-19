@@ -125,7 +125,7 @@ class CommentCard extends React.Component {
   renderChildComments() {
     const { item } = this.props;
     const { childComments } = item;
-    if (!childComments || childComments.length === 0) return '';
+    if (!childComments || childComments.length === 0) return null;
 
     const { numberOfChildrenShowing } = this.state;
 

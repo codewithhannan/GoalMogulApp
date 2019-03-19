@@ -197,7 +197,7 @@ class CommentBoxV2 extends Component {
   }
 
   updateSearchRes(res, searchContent) {
-    if (searchContent !== this.state.keyword) return '';
+    if (searchContent !== this.state.keyword) return;
     this.setState({
       ...this.state,
       // keyword,

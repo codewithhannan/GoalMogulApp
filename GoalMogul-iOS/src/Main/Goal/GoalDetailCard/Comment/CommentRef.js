@@ -115,7 +115,7 @@ class CommentRef extends React.PureComponent {
         </View>
       );
     }
-    return '';
+    return null;
   }
 
   renderTextContent(item) {
@@ -173,7 +173,7 @@ class CommentRef extends React.PureComponent {
   // Currently this is a dummy component
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
     const { suggestionType, suggestionText, suggestionLink } = item;
 
     // if suggestionType is Custom and no suggestionText and suggestionLink,
@@ -183,7 +183,7 @@ class CommentRef extends React.PureComponent {
     if (suggestionType === 'Custom' &&
         (!suggestionText || _.isEmpty(suggestionText) || suggestionText === '{}') &&
         (!suggestionLink || _.isEmpty(suggestionLink))) {
-      return '';
+      return null;
     }
 
     return (

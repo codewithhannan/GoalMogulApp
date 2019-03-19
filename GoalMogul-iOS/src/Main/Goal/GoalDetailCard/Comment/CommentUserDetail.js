@@ -325,7 +325,7 @@ class CommentUserDetail extends Component {
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     return (
       <View onLayout={this.onLayout}>

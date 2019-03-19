@@ -121,7 +121,7 @@ class ProfileNeedCard extends React.Component {
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     return (
       <View style={{ marginTop: 3 }}>
