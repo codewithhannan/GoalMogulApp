@@ -75,3 +75,7 @@ export const CATEGORY_OPTIONS = [
         value: 'Things'
     }
 ];
+
+/** Caret related constants */
+export const CARET_OPTION_NOTIFICATION_SUBSCRIBE = 'Follow';
+export const CARET_OPTION_NOTIFICATION_UNSUBSCRIBE = 'Unfollow';

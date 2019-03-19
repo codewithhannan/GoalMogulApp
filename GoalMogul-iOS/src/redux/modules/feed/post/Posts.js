@@ -74,6 +74,11 @@ import {
     EVENT_FEED_REFRESH_DONE
 } from '../../event/EventReducers';
 
+import {
+    NOTIFICATION_SUBSCRIBE,
+    NOTIFICATION_UNSUBSCRIBE
+} from '../../notification/NotificationTabReducers';
+
 /* Event related */
 
 /**
@@ -528,6 +533,31 @@ export default (state = INITIAL_STATE, action) => {
             return newState;
         }
 
+        // Notification to update maybeIsSubscribe state for goal
+        case NOTIFICATION_UNSUBSCRIBE: {
+            let newState = _.cloneDeep(state);
+            const { entityId, entityKind } = action.payload;
+            if (entityKind !== 'Post') return newState;
+            const shouldUpdate = sanityCheck(newState, entityId, action.type);
+
+            if (shouldUpdate) {
+                newState = _.set(newState, `${entityId}.post.maybeIsSubscribed`, false);
+            }
+            return newState;
+        }
+
+        case NOTIFICATION_SUBSCRIBE: {
+            let newState = _.cloneDeep(state);
+            const { entityId, entityKind } = action.payload;
+            if (entityKind !== 'Post') return newState;
+            const shouldUpdate = sanityCheck(newState, entityId, action.type);
+
+            if (shouldUpdate) {
+                newState = _.set(newState, `${entityId}.post.maybeIsSubscribed`, true);
+            }
+            return newState;
+        }
+
         /* User related */
         case USER_LOG_OUT: {
             return { ...INITIAL_STATE };
@@ -536,6 +566,14 @@ export default (state = INITIAL_STATE, action) => {
         default: 
             return { ...state };
     }
+};
+
+const sanityCheck = (state, postId, type) => {
+    if (!_.has(state, postId)) {
+        console.warn(`${DEBUG_KEY}: [ ${type} ]: expecting postId: ${postId} but not found`);
+        return false;
+    }
+    return true;
 };
 
 const sanityCheckByPageId = (state, postId, pageId, type) => {

@@ -68,6 +68,12 @@ import RichText from '../../Common/Text/RichText';
 import { APP_BLUE } from '../../../styles';
 
 // Constants
+// Constants
+import { 
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
+} from '../../../Utils/Constants';
+
 const DEBUG_KEY = '[ UI GoalDetailCardV3.GoalDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
@@ -201,16 +207,16 @@ class GoalDetailSection extends React.PureComponent {
       others: {
         options: [
           { option: 'Report' }, 
-          { option: maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe' }
+          { option: maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE }
         ],
         onPress: (key) => {
           if (key === 'Report') {
             return this.props.createReport(_id, 'goal', 'Goal');
           }
-          if (key === 'Unsubscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
             return this.props.unsubscribeEntityNotification(_id, 'Goal');
           }
-          if (key === 'Subscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
             return this.props.subscribeEntityNotification(_id, 'Goal');
           }
         },

@@ -14,7 +14,7 @@ const renderText = (item) => {
   const { boldTextStyle, textStyle } = styles;
   const nameComponent = owner && owner.name
     ? <Text style={{ ...boldTextStyle, ...textStyle }}>{owner.name} </Text>
-    : '';
+    : null;
 
   const goalHeaderText = (
     <Text style={styles.textStyle}>shared a goal</Text>
@@ -48,7 +48,7 @@ const renderText = (item) => {
 
 const GoalCardHeader = (props) => {
   const { item } = props;
-  if (!item) return '';
+  if (!item) return null;
 
   return (
     <View

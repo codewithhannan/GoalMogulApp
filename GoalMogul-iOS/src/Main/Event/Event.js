@@ -63,9 +63,10 @@ import {
 
 // Constants
 import {
-  IMAGE_BASE_URL
+  IMAGE_BASE_URL,
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../Utils/Constants';
-
 
 const DEBUG_KEY = '[ UI Event ]';
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
@@ -192,7 +193,7 @@ class Event extends Component {
       return <ActivityIndicator size='small' color='46C8F5' />;
     }
 
-    return '';
+    return null;
   }
 
   /**
@@ -209,16 +210,16 @@ class Event extends Component {
       ? MenuFactory(
           [
             'Report',
-            maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe'
+            maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE
           ],
           (val) => {  
             if (val === 'Report') {
               return this.props.reportEvent(_id);
             }
-            if (val === 'Unsubscribe') {
+            if (val === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
               return this.props.unsubscribeEntityNotification(_id, 'Event');
             }
-            if (val === 'Subscribe') {
+            if (val === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
               return this.props.subscribeEntityNotification(_id, 'Event');
             }
           },
@@ -329,11 +330,11 @@ class Event extends Component {
     const { title, _id, picture } = item;
     const filterBar = this.props.tab === 'attendees'
       ? <ParticipantFilterBar />
-      : '';
+      : null;
 
     const emptyState = this.props.tab === 'posts' && data.length === 0
       ? <EmptyResult text={'No Posts'} textStyle={{ paddingTop: 100 }} />
-    : '';
+      : null;
 
     // Currently, explored events is not synced with my events
     const inviteButton = this.props.tab === 'attendees'
@@ -345,7 +346,7 @@ class Event extends Component {
           <Text>Invite</Text>
         </TouchableOpacity>
       )
-      : '';
+      : null;
 
     return (
       <View>

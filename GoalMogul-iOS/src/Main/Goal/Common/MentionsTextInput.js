@@ -164,6 +164,7 @@ export default class MentionsTextInput extends Component {
         `${tagsReg}` +
         // Find the match for @Jia Zeng, name with spaces
         `\\${boundary}${this.props.trigger}\\w+\\s\\w+|` +
+        `\\${boundary}${this.props.trigger}\\w+\\s|` +
         `\\${boundary}${this.props.trigger}[a-z0-9_-]+|` +
         `\\${boundary}${this.props.trigger}`,
         `gi`
@@ -176,7 +177,8 @@ export default class MentionsTextInput extends Component {
 
       if ((keywordArray && !!keywordArray.length)) {
         const lastKeyword = keywordArray[keywordArray.length - 1];
-        // console.log(`${DEBUG_KEY}: last keyword: `, lastKeyword);
+        // console.log(`${DEBUG_KEY}: [ identifyKeyword ]: last keyword: `, lastKeyword);
+        // console.log(`${DEBUG_KEY}: [ identifyKeyword ]: last keyword length: `, lastKeyword.length);
         this.updateSuggestions(lastKeyword, this.cursorPosition);
       }
 
@@ -275,7 +277,7 @@ export default class MentionsTextInput extends Component {
     if (this.props.flexGrowDirection && this.props.flexGrowDirection === 'bottom') {
       return (
         <View style={{ flexDirection: 'row' }}>
-          {this.props.renderLeftIcons ? this.props.renderLeftIcons() : ''}
+          {this.props.renderLeftIcons ? this.props.renderLeftIcons() : null}
           <View style={{ ...this.props.textInputContainerStyle }}>
             <TextInput
               {...this.props}
@@ -288,13 +290,13 @@ export default class MentionsTextInput extends Component {
               placeholder={this.props.placeholder ? this.props.placeholder : 'Write a comment...'}
             />
           </View>
-          {this.props.renderPost ? this.props.renderPost() : ''}
+          {this.props.renderPost ? this.props.renderPost() : null}
         </View>
       );
     }
     return (
       <View style={{ flexDirection: 'row' }}>
-        {this.props.renderLeftIcons ? this.props.renderLeftIcons() : ''}
+        {this.props.renderLeftIcons ? this.props.renderLeftIcons() : null}
         <View style={{ ...this.props.textInputContainerStyle }}>
           <TextInput
             {...this.props}
@@ -321,7 +323,7 @@ export default class MentionsTextInput extends Component {
             placeholder={this.props.placeholder ? this.props.placeholder : 'Write a comment...'}
           />
         </View>
-        {this.props.renderPost ? this.props.renderPost() : ''}
+        {this.props.renderPost ? this.props.renderPost() : null}
       </View>
     );
   }
@@ -332,7 +334,7 @@ export default class MentionsTextInput extends Component {
       <View style={{ flex: 1 }}>
         {
           (this.props.suggestionPosition && this.props.suggestionPosition === 'bottom') ?
-          '' :
+          null :
           (
             <Animated.View
               style={[{
@@ -365,8 +367,8 @@ export default class MentionsTextInput extends Component {
           )
         }
 
-        {this.props.renderSuggestionPreview ? this.props.renderSuggestionPreview() : ''}
-        {this.props.renderMedia ? this.props.renderMedia() : ''}
+        {this.props.renderSuggestionPreview ? this.props.renderSuggestionPreview() : null}
+        {this.props.renderMedia ? this.props.renderMedia() : null}
         {this.renderTextInput()}
         {
           (this.props.suggestionPosition && this.props.suggestionPosition === 'bottom') ?
@@ -399,7 +401,7 @@ export default class MentionsTextInput extends Component {
                 }}
               />
             </Animated.View>
-          ) : ''
+          ) : null
         }
       </View>
     );

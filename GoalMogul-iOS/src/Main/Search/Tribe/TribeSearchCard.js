@@ -111,7 +111,7 @@ class SearchTribeCard extends Component {
         </Text>
       );
     }
-    return '';
+    return null;
   }
 
   render() {

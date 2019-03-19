@@ -25,7 +25,7 @@ class About extends Component {
     const memberPictures = members
       .filter((member) => member.category === 'Admin' || member.category === 'Member')
       .map((member, index) => {
-        if (index > 1) return '';
+        if (index > 1) return null;
         const { memberRef } = member;
         return (
           <ProfileImage

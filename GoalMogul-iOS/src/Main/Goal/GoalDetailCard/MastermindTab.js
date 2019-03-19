@@ -87,7 +87,7 @@ class MastermindTab extends Component {
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
     return (
       <View style={{ flex: 1 }}>
         {this.renderMastermind(item)}
@@ -140,7 +140,7 @@ const SectionTitle = (props) => {
       source={props.iconSource}
       style={{ ...sectionTitleStyle.iconStyle, ...props.iconStyle }}
     />)
-    : '';
+    : null;
 
   return (
     <View style={{ ...sectionTitleStyle.containerStyle }}>

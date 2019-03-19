@@ -43,9 +43,9 @@ const TabButton = (props) => {
       source={props.iconSource}
       style={{ ...styles.iconStyle, ...props.iconStyle, tintColor }}
     />)
-    : '';
+    : null;
 
-  const stat = !props.count ? '' :
+  const stat = !props.count ? null :
     (
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <DotIcon 

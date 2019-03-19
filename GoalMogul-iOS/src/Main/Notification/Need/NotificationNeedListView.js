@@ -70,7 +70,7 @@ class NotificationNeedListView extends React.PureComponent {
                     onEndReached={this.handleOnLoadMore}
                     onEndReachedThreshold={0}
                     ListEmptyComponent={
-                    this.props.refreshing ? '' :
+                    this.props.refreshing ? null :
                         <EmptyResult text={'You have no need feed'} textStyle={{ paddingTop: 200 }} />
                     }
                     ListFooterComponent={this.renderListFooter()}

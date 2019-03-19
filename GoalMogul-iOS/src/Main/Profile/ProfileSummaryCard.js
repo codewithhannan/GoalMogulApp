@@ -73,7 +73,7 @@ class ProfileSummaryCard extends Component {
 
   render() {
     const { user } = this.props;
-    if (!user) return '';
+    if (!user) return null;
 
     const { name, headline, profile } = user;
     let imageUrl = profile.image;
@@ -120,7 +120,7 @@ class ProfileSummaryCard extends Component {
     //     iconLeft
     //     buttonStyle={styles.buttonStyle}
     //   />
-    // ) : '';
+    // ) : null;
 
     return (
       <TouchableWithoutFeedback onPress={this.handleOpenProfileDetail.bind(this)}>

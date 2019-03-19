@@ -72,7 +72,7 @@ const renderProgressBar = (props) => {
       />
       <View style={{ flex: 1, backgroundColor: '#f2f2f2', width, height }} />
     </View>
-  ) : '';
+  ) : null;
   // console.log(`percentage is: ${percentage}, colorFlex is: ${colorFlex}, layerFlex is: ${layerFlex}`);
   return (
     <View

@@ -61,7 +61,7 @@ class CentralTab extends React.PureComponent<{}> {
 
   renderItem = (props) => {
     const { goalDetail, pageId, goalId } = this.props;
-    if (!goalDetail) return '';
+    if (!goalDetail) return null;
 
     let newCommentParams = {
       commentDetail: {
@@ -108,7 +108,7 @@ class CentralTab extends React.PureComponent<{}> {
         refreshing={this.props.loading || false}
         onRefresh={this.handleRefresh}
         ListEmptyComponent={
-          this.props.loading ? '' :
+          this.props.loading ? null :
           <EmptyResult
             text='No needs and steps'
             textStyle={{ paddingTop: 100 }}

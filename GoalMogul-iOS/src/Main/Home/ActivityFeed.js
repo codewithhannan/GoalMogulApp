@@ -110,7 +110,7 @@ class ActivityFeed extends Component {
     //     onMenuChange={this.handleOnMenuChange}
     //   />
     // );
-    return '';
+    return null;
   }
 
   // This was used in V2 where user can only create Goal here. But we decide

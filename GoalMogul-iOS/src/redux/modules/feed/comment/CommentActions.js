@@ -55,7 +55,7 @@ import {
 } from '../../goal/selector';
 
 import { api as API } from '../../../middleware/api';
-import { queryBuilder, switchCase, clearTags } from '../../../middleware/utils';
+import { queryBuilder, switchCase, sanitizeTags } from '../../../middleware/utils';
 import ImageUtils from '../../../../Utils/ImageUtils';
 
 const DEBUG_KEY = '[ Action Comment ]';
@@ -452,7 +452,8 @@ const commentAdapter = (state, pageId, tab) => {
     ? 'Suggestion'
     : 'Comment';
 
-  const contentTagsToUser = clearTags(contentText, {}, contentTags);
+  // Tags sanitization will reassign index as well as removing the unused tags
+  const contentTagsToUser = sanitizeTags(contentText, contentTags);
 
   let commentToReturn = {
     contentText,

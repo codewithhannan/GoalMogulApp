@@ -33,7 +33,7 @@ import {
 import { api as API } from '../../../middleware/api';
 import { 
   capitalizeWord, 
-  clearTags, 
+  sanitizeTags, 
   constructPageId,
   componentKeyByTab 
 } from '../../../middleware/utils';
@@ -402,7 +402,9 @@ const postToUpdateAdaptor = (post) => {
  */
 const newPostAdaptor = (values, userId) => {
   const { viewableSetting, mediaRef, post, belongsToTribe, belongsToEvent, tags } = values;
-  const tagsToUser = clearTags(post, {}, tags); // Update the index before submitting
+  // Tags sanitization will reassign index as well as removing the unused tags
+  const tagsToUser = sanitizeTags(post, tags);
+  // const tagsToUser = clearTags(post, {}, tags); // Update the index before submitting
 
   const shouldBePublic = belongsToTribe !== undefined || belongsToEvent !== undefined;
   let privacySetting;

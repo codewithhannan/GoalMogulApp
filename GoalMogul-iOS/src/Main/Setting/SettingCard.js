@@ -12,7 +12,7 @@ class SettingCard extends Component {
         <Image source={this.props.icon} style={iconStyle} />
       );
     }
-    return '';
+    return null;
   }
 
   render() {

@@ -30,7 +30,7 @@ class ProfileDetail extends Component {
 
   render() {
     const { user } = this.props;
-    if (!user) return '';
+    if (!user) return null;
     const { elevatorPitch, occupation } = user.profile;
     let backgroundColor = '#f8f8f8';
     if (occupation || elevatorPitch) {

@@ -59,6 +59,11 @@ import {
     UNLIKE_GOAL
 } from '../like/LikeReducers';
 
+import { 
+    NOTIFICATION_SUBSCRIBE,
+    NOTIFICATION_UNSUBSCRIBE
+} from '../notification/NotificationTabReducers';
+
 /**
  * List of const to add 
  * 
@@ -588,6 +593,31 @@ export default (state = INITIAL_STATE, action) => {
             }
             goalToUpdate = _.set(goalToUpdate, 'likeCount', newLikeCount);
             newState = _.set(newState, `${goalId}.goal`, goalToUpdate);
+            return newState;
+        }
+
+        // Notification to update maybeIsSubscribe state for goal
+        case NOTIFICATION_UNSUBSCRIBE: {
+            let newState = _.cloneDeep(state);
+            const { entityId, entityKind } = action.payload;
+            if (entityKind !== 'Goal') return newState;
+            const shouldUpdate = sanityCheck(newState, entityId, action.type);
+
+            if (shouldUpdate) {
+                newState = _.set(newState, `${entityId}.goal.maybeIsSubscribed`, false);
+            }
+            return newState;
+        }
+
+        case NOTIFICATION_SUBSCRIBE: {
+            let newState = _.cloneDeep(state);
+            const { entityId, entityKind } = action.payload;
+            if (entityKind !== 'Goal') return newState;
+            const shouldUpdate = sanityCheck(newState, entityId, action.type);
+
+            if (shouldUpdate) {
+                newState = _.set(newState, `${entityId}.goal.maybeIsSubscribed`, true);
+            }
             return newState;
         }
 

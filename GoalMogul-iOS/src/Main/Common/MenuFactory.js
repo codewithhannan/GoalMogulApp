@@ -23,7 +23,7 @@ export const MenuFactory =
           {triggerText}
         </Text>
       )
-    : '';
+    : null;
   return (
     <Menu
       onSelect={value => callback(value)}
