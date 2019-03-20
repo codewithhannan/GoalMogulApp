@@ -149,7 +149,7 @@ class CreatePostModal extends Component {
   }
 
   updateSearchRes(res, searchContent) {
-    if (searchContent !== this.state.keyword) return '';
+    if (searchContent !== this.state.keyword) return;
     this.setState({
       ...this.state,
       // keyword,
@@ -584,7 +584,7 @@ class CreatePostModal extends Component {
   renderActionIcons() {
     // If user already has the image, they need to delete the image and then
     // these icons would show up to attach another image
-    if (this.props.mediaRef) return '';
+    if (this.props.mediaRef) return null;
     const actionIconStyle = { ...styles.actionIconStyle };
     const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
     return (

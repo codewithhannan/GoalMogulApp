@@ -66,7 +66,7 @@ class ViewableSettingMenu extends Component {
 
   renderShareToMSButton() {
     if (this.props.shareToMastermind === null) {
-      return '';
+      return null;
     }
     const containerStyle = this.props.shareToMastermind ?
       {
@@ -124,7 +124,7 @@ class ViewableSettingMenu extends Component {
 
     // Don't show caret if belongs to event or tribe
     const caret = settingDisabled
-      ? ''
+      ? null
       : (
           <View style={{ padding: 5 }}>
             <Image style={styles.caretStyle} source={dropDown} />

@@ -26,8 +26,6 @@ import {
   shareGoalToMastermind
 } from '../../redux/modules/goal/GoalDetailActions';
 
-import { PAGE_TYPE_MAP } from '../../redux/middleware/utils';
-
 import {
   subscribeEntityNotification,
   unsubscribeEntityNotification
@@ -42,7 +40,13 @@ import ProfileImage from '../Common/ProfileImage';
 import RichText from '../Common/Text/RichText';
 
 // Utils
-import { makeCaretOptions } from '../../redux/middleware/utils';
+import { makeCaretOptions, PAGE_TYPE_MAP } from '../../redux/middleware/utils';
+
+// Constants
+import {
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
+} from '../../Utils/Constants';
 
 const DEBUG_KEY = '[ UI ActivityHeader ]';
 
@@ -130,16 +134,16 @@ class ActivityHeader extends Component {
       others: {
         options: [
           { option: 'Report' }, 
-          { option: maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe' }
+          { option: maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE }
         ],
         onPress: (key) => {
           if (key === 'Report') {
             return this.props.createReport(_id, 'post', `${actedUponEntityType}`);
           }
-          if (key === 'Unsubscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
             return this.props.unsubscribeEntityNotification(_id, 'Post');
           }
-          if (key === 'Subscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
             return this.props.subscribeEntityNotification(_id, 'Post');
           }
         },

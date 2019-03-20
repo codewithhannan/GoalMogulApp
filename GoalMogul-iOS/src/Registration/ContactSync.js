@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   View,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
@@ -26,21 +27,6 @@ import {
   meetContactSyncLoadMore
 } from '../actions';
 
-const testData = [
-  {
-    name: 'Jia Zeng',
-    headline: 'Students at Duke University',
-    request: false,
-    _id: '120937109287091'
-  },
-  {
-    name: 'Peter Kushner',
-    headline: 'CEO at start industries',
-    request: false,
-    _id: '019280980248303'
-  }
-];
-
 class ContactSync extends Component {
   state = {
     type: 'registration'
@@ -54,8 +40,8 @@ class ContactSync extends Component {
 
   onLoadMore = () => {
     if (this.state.type === 'meet') {
+      // No need since it will load all at once
       // return this.props.meetContactSyncLoadMore(false);
-      return;
     }
     this.props.contactSyncLoadMore();
   }
@@ -73,12 +59,27 @@ class ContactSync extends Component {
 
   _keyExtractor = (item) => item._id;
 
-  renderItem(item) {
+  renderItem({ item }) {
     return (
       <ContactCard>
         <ContactDetail item={item} />
       </ContactCard>
     );
+  }
+
+  renderListFooter(loading, data) {
+    if (loading && data.length >= 4) {
+      return (
+        <View
+          style={{
+            paddingVertical: 20
+          }}
+        >
+          <ActivityIndicator size='large' />
+        </View>
+      );
+    }
+    return null;
   }
 
   // TODO: replace data with this.props.data
@@ -101,7 +102,7 @@ class ContactSync extends Component {
 
     // Assign actionable buttons
     const button = (type !== undefined && type === 'meet') ?
-    '' :
+    null :
     (<TouchableOpacity activeOpacity={0.85} onPress={this.handleDoneOnPressed.bind(this)}>
       <View style={styles.footer}>
         <Button text='Done' />
@@ -113,6 +114,9 @@ class ContactSync extends Component {
 
     const refreshing = (type !== undefined && type === 'meet') ?
       this.props.meetMatchedContacts.refreshing : this.props.registrationMatchedContacts.refreshing;
+
+    const loading = (type !== undefined && type === 'meet') ?
+    this.props.meetMatchedContacts.loading : this.props.registrationMatchedContacts.loading;
 
     return (
       <View style={Styles.containerStyle}>
@@ -129,9 +133,10 @@ class ContactSync extends Component {
             onRefresh={this.handleRefresh}
             onEndReached={this.onLoadMore}
             ListEmptyComponent={
-              refreshing ? '' :
+              refreshing ? null :
               <EmptyResult text={'No contacts found'} />
             }
+            ListFooterComponent={() => this.renderListFooter(loading, data)}
             onEndThreshold={0}
           />
           {button}

@@ -35,7 +35,7 @@ class ProfilePostBody extends React.Component {
   renderPostImage(url) {
     // TODO: update this to be able to load image
     if (!url) {
-      return '';
+      return null;
     }
     const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${url}`;
       return (
@@ -106,7 +106,7 @@ class ProfilePostBody extends React.Component {
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     return (
       <View style={{ marginTop: 8 }}>

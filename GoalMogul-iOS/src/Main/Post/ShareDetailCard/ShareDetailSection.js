@@ -80,7 +80,9 @@ import { imagePreviewContainerStyle, APP_BLUE } from '../../../styles';
 
 // Constants
 import {
-  IMAGE_BASE_URL
+  IMAGE_BASE_URL,
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
 
 const DEBUG_KEY = '[ UI ShareDetailCard.ShareDetailSection ]';
@@ -158,7 +160,7 @@ class ShareDetailSection extends Component {
         </TouchableOpacity>
       );
     }
-    return '';
+    return null;
   }
 
   // user basic information
@@ -180,16 +182,16 @@ class ShareDetailSection extends Component {
       others: {
         options: [
           { option: 'Report' }, 
-          { option: maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe' }
+          { option: maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE }
         ],
         onPress: (key) => {
           if (key === 'Report') {
             return this.props.createReport(_id, 'postDetail', 'Post');
           }
-          if (key === 'Unsubscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
             return this.props.unsubscribeEntityNotification(_id, 'Post');
           }
-          if (key === 'Subscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
             return this.props.subscribeEntityNotification(_id, 'Post');
           }
         },
@@ -248,7 +250,7 @@ class ShareDetailSection extends Component {
   renderPostImage(url) {
     // TODO: update this to be able to load image
     if (!url) {
-      return '';
+      return null;
     }
     const imageUrl = `${IMAGE_BASE_URL}${url}`;
       return (
@@ -410,7 +412,7 @@ class ShareDetailSection extends Component {
 
   render() {
     const { item } = this.props;
-    if (!item || _.isEmpty(item) || !item.created) return '';
+    if (!item || _.isEmpty(item) || !item.created) return null;
 
     return (
       <View>

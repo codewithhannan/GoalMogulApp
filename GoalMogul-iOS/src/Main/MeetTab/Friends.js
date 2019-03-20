@@ -61,7 +61,7 @@ class Friends extends Component {
             onEndReached={this.handleOnLoadMore}
             onEndReachedThreshold={0}
             ListEmptyComponent={
-              this.props.refreshing ? '' :
+              this.props.refreshing ? null :
               <EmptyResult text={'You haven\'t added any friends'} />
             }
           />

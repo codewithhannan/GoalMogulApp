@@ -5,17 +5,19 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text
+  Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
+import { Constants } from 'expo';
 import _ from 'lodash';
 
 // Component
 import BaseOverlay from './BaseOverlay';
 import PeopleSearch from './People/PeopleSearch';
 
+// Actions
 import {
   handleSearch,
   clearSearchState,
@@ -30,6 +32,11 @@ import {
 } from '../../redux/modules/event/EventActions';
 
 import { openProfile } from '../../actions';
+
+// Constants
+import {
+  IPHONE_MODELS
+} from '../../Utils/Constants';
 
  const DEBUG_KEY = '[ People Search ]';
  const SEARCH_TYPE = 'people';
@@ -76,10 +83,15 @@ import { openProfile } from '../../actions';
         ? this.props.searchPlaceHolder
         : 'Search a person';
 
+      const marginTop = (
+        Platform.OS === 'ios' &&
+        IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+      ) ? 20 : 30;
+
      return (
        <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>
          <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-           <View style={styles.headerContainerStyle}>
+           <View style={{ ...styles.headerContainerStyle, marginTop }}>
              <SearchBar
                platform='ios'
                round

@@ -56,7 +56,9 @@ import {
 
 // Constants
 import {
-  IMAGE_BASE_URL
+  IMAGE_BASE_URL,
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../../Utils/Constants';
 
 // Constants
@@ -192,7 +194,11 @@ class CommentUserDetail extends Component {
         multiline
         onUserTagPressed={(user) => {
           console.log(`${DEBUG_KEY}: user tag press for user: `, user);
-          this.props.openProfile(user);
+          let userId = user;
+          if (typeof user !== 'string') {
+            userId = user._id;
+          }
+          this.props.openProfile(userId);
         }}
       />
     );
@@ -227,10 +233,10 @@ class CommentUserDetail extends Component {
               if (type === 'Delete') {
                 return this.props.deleteComment(_id, this.props.pageId, parentRef, parentType);
               }
-              if (type === 'Subscribe') {
+              if (type === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
                 return this.props.subscribeEntityNotification(_id, 'Comment');
               }
-              if (type === 'Unsubscribe') {
+              if (type === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
                 return this.props.unsubscribeEntityNotification(_id, 'Comment');
               }
             }}
@@ -319,7 +325,7 @@ class CommentUserDetail extends Component {
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     return (
       <View onLayout={this.onLayout}>
@@ -361,16 +367,19 @@ const styles = {
   profileImageStyle: {
     height: ImageHeight,
     width: ImageHeight,
-    borderRadius: ImageHeight / 2
+    borderRadius: 4
+    // borderRadius: ImageHeight / 2
   },
   profileImageContianerStyle: {
-    height: ImageHeight + 6,
-    width: ImageHeight + 6,
+    // height: ImageHeight + 6,
+    // width: ImageHeight + 6,
+    padding: 0.5,
     borderWidth: 0.5,
-    borderColor: 'gray',
+    borderColor: 'lightgray',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: (ImageHeight + 4) / 2,
+    // borderRadius: (ImageHeight + 4) / 2,
+    borderRadius: 5,
     alignSelf: 'flex-start'
   },
   mediaStyle: {

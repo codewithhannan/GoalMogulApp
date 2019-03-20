@@ -202,7 +202,7 @@ class FriendRequestCardView extends React.PureComponent {
     const { item } = this.props;
     if (!item) return null;
 
-    console.log(`${DEBUG_KEY}: item is: `, item);
+    // console.log(`${DEBUG_KEY}: item is: `, item);
     return (
         <DelayedButton 
             activeOpacity={0.85}

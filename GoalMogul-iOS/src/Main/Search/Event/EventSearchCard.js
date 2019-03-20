@@ -112,7 +112,7 @@ class SearchEventCard extends Component {
         </Text>
       );
     }
-    return '';
+    return null;
   }
 
   render() {

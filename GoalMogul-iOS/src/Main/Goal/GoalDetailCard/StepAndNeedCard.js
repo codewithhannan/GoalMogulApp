@@ -103,7 +103,7 @@ const SectionTitle = (props) => {
       source={props.iconSource}
       style={{ ...sectionTitleStyle.iconStyle, ...props.iconStyle }}
     />)
-    : '';
+    : null;
 
   return (
     <View style={{ ...sectionTitleStyle.containerStyle }}>

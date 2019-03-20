@@ -67,7 +67,7 @@ class StepTab extends Component {
           </View>
         );
       }
-      return '';
+      return null;
     });
     if (steps.length === 0) {
       sections.push(

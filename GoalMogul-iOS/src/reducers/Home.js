@@ -31,6 +31,11 @@ import {
   GOAL_DETAIL_UPDATE_DONE
 } from '../reducers/GoalDetailReducers';
 
+import {
+  NOTIFICATION_SUBSCRIBE,
+  NOTIFICATION_UNSUBSCRIBE
+} from '../redux/modules/notification/NotificationTabReducers';
+
 export const HOME_MASTERMIND_OPEN_CREATE_OVERLAY = 'home_mastermind_open_create_overlay';
 export const HOME_CLOSE_CREATE_OVERLAY = 'home_mastermind_close_create_overlay';
 // Goal related constants
@@ -344,6 +349,87 @@ export default (state = INITIAL_STATE, action) => {
       return newState;
     }
 
+    // Notification to update maybeIsSubscribe state for goal
+    case NOTIFICATION_UNSUBSCRIBE: {
+      let newState = _.cloneDeep(state);
+      const { entityId, entityKind } = action.payload;
+
+      // Update goal feed
+      if (entityKind === 'Goal') {
+        const oldGoalFeedData = _.get(newState, 'mastermind.data');
+        const newGoalFeedData = oldGoalFeedData.map(g => {
+          if (g._id === entityId) {
+            return {
+              ...g,
+              maybeIsSubscribed: false
+            };
+          }
+          return g;
+        });
+        newState = _.set(newState, 'mastermind.data', newGoalFeedData);
+      }
+
+      // Update activity feed
+      const oldActivityFeed = _.get(newState, 'activityfeed.data');
+      const newActivityFeed = oldActivityFeed.map(a => {
+        let ret = _.cloneDeep(a);
+        const { actedUponEntityType, postRef, goalRef } = ret;
+        if (actedUponEntityType === 'Post' && postRef) {
+          ret = _.set(ret, 'postRef.maybeIsSubscribed', false);
+        }
+
+        if (actedUponEntityType === 'Goal' && goalRef) {
+          ret = _.set(ret, 'goalRef.maybeIsSubscribed', false);
+        }
+
+        return ret;
+      })
+      newState = _.set(newState, 'activityfeed.data', newActivityFeed);
+
+      return newState;
+    }
+
+    case NOTIFICATION_SUBSCRIBE: {
+      let newState = _.cloneDeep(state);
+      const { entityId, entityKind } = action.payload;
+      // Update goal feed
+      if (entityKind === 'Goal') {
+        const oldGoalFeedData = _.get(newState, 'mastermind.data');
+        const newGoalFeedData = oldGoalFeedData.map(g => {
+          if (g._id === entityId) {
+            return {
+              ...g,
+              maybeIsSubscribed: true
+            };
+          }
+          return g;
+        });
+        newState = _.set(newState, 'mastermind.data', newGoalFeedData);
+      }
+
+      // Update activity feed
+      const oldActivityFeed = _.get(newState, 'activityfeed.data');
+      const newActivityFeed = oldActivityFeed.map(a => {
+        let ret = _.cloneDeep(a);
+        const { actedUponEntityType, postRef, goalRef } = ret;
+        if (actedUponEntityType === 'Post' && postRef) {
+          ret = _.set(ret, 'postRef.maybeIsSubscribed', true);
+        }
+
+        if (actedUponEntityType === 'Goal' && goalRef) {
+          ret = _.set(ret, 'goalRef.maybeIsSubscribed', true);
+        }
+
+        return ret;
+      })
+      newState = _.set(newState, 'activityfeed.data', newActivityFeed);
+
+      return newState;
+    }
+
+    /**
+     * User related
+     */
     case USER_LOG_OUT: {
       return _.cloneDeep(INITIAL_STATE);
     }

@@ -7,7 +7,7 @@ import {
 
 const renderStats = (props) => props.data.map((c, index) => {
   if (c.stat === undefined || c.stat === null || c.stat === 0) {
-    return '';
+    return null;
   }
   return (
     <View

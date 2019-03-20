@@ -57,7 +57,7 @@ class FriendCard extends Component {
   render() {
     const { item } = this.props;
     const { user, blockId } = item;
-    console.log('item is: ', item);
+    // console.log('item is: ', item);
     if (user) {
       const { name, profile } = user;
       return (

@@ -116,7 +116,7 @@ class MeetCard extends Component {
 
   // TODO: decide the final UI for additional info
   renderAdditionalInfo() {
-    return '';
+    return null;
     // const { profile } = this.props.item;
     // let content = '';
     // if (profile.elevatorPitch) {
@@ -152,12 +152,12 @@ class MeetCard extends Component {
         </Text>
       );
     }
-    return '';
+    return null;
   }
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     const { headline } = item;
     return (

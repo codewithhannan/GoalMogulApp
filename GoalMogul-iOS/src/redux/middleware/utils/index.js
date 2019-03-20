@@ -81,7 +81,11 @@ export const capitalizeWord = (word) => {
  * Reassign startIndex for tags.
  * If newTag is empty, then we don't do comparison to skip.
  */
+const DEBUG_KEY = '[ Utils index ]';
 export const clearTags = (newContent, newTag, tags = []) => {
+  // console.log(`${DEBUG_KEY}: [ clearTags ]: newContent:`, newContent);
+  // console.log(`${DEBUG_KEY}: [ clearTags ]: newTag:`, newTag);
+  // console.log(`${DEBUG_KEY}: [ clearTags ]: tags:`, tags);
   let tagTextToStartIndexMap = {};
   const newTags = tags
     .sort((a, b) => a.startIndex - b.startIndex)
@@ -96,6 +100,7 @@ export const clearTags = (newContent, newTag, tags = []) => {
 
       // Get the new startIndex
       let newStartIndex = getPosition(newContent, tagText, position);
+      // console.log(`${DEBUG_KEY}: [ clearTags ]: startIndex is:`, newStartIndex);
 
       // It means that we match to the new tag for an old one.
       // Then we need to increase the position by 1
@@ -106,7 +111,9 @@ export const clearTags = (newContent, newTag, tags = []) => {
       }
 
       if (newStartIndex >= newContent.length) {
-        // This should never happen unless there is some problem
+        // This might happen if we reselect the same tag at the same position after we backspace 
+        // to trigger suggestion search again
+        // Otherwise This should never happen unless there is some problem
         console.warn(`Failed to match for tag ${tagText} in content: ${newContent} at ` +
           `position: ${position}`);
           return t;
@@ -121,6 +128,39 @@ export const clearTags = (newContent, newTag, tags = []) => {
       };
     });
   return newTags;
+};
+
+/**
+ * Given content and its tags, we sanitize the tags to make sure all tags have its
+ * corresponding text in content.
+ * 
+ * This is created to handle the corner case where use back space from the middle of 
+ * a tag like {@Jia Zeng} starting from Jia and system will fail to remove the tag 
+ * for Jia Zeng at that position.
+ * 
+ * Since trigger text @ no longer exists for that tag, we should sanitize to remove that
+ * tag from the list
+ * @param {*} content 
+ * @param {*} tags 
+ */
+export const sanitizeTags = (content, tags) => {
+  // We need to reassign position since this is triggered after deletion
+  const tagsToSanitize = clearTags(content, {}, tags);
+
+  const tagToReturn = tagsToSanitize
+    .map((t) => {
+      const { startIndex, tagText, endIndex } = t;
+      const textInContent = content.slice(startIndex, endIndex);
+      if (textInContent !== tagText) {
+        // This is good since we filter the unwanted / dangling tags
+        console.warn(`${DEBUG_KEY}: [ sanitizeTags ]: can't find tag in content: ${content}. Tag:`, t);
+        return {};
+      }
+      return t;
+    })
+    .filter((t) => !_.isEmpty(t));
+
+  return tagToReturn;
 };
 
 /**

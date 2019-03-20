@@ -106,7 +106,7 @@ class SearchUserCard extends Component {
         </Text>
       );
     }
-    return '';
+    return null;
   }
 
   render() {

@@ -40,7 +40,7 @@ class ProfileInfoCard extends Component {
         </View>
       );
     }
-    return '';
+    return null;
   }
 
   renderElevatorPitch(elevatorPitch) {
@@ -52,7 +52,7 @@ class ProfileInfoCard extends Component {
         </View>
       );
     }
-    return '';
+    return null;
   }
 
   renderAbout(about) {
@@ -64,7 +64,7 @@ class ProfileInfoCard extends Component {
         </View>
       );
     }
-    return '';
+    return null;
   }
 
   renderProfileActionButton() {
@@ -78,7 +78,7 @@ class ProfileInfoCard extends Component {
     // Refactor to use userId to fetch the corresponding profile from the source of truth reducer
     const { elevatorPitch, occupation, about } = this.props.data.profile;
     if (!occupation && !elevatorPitch) {
-      return '';
+      return null;
     }
     const divider = elevatorPitch || about ?
       (<View style={profileStyles.dividerStyle} />)

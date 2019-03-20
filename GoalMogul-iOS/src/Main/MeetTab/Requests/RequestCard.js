@@ -91,7 +91,7 @@ class RequestCard extends Component {
 
   renderProfileImage(item) {
     const { profile } = item.user;
-    if (!profile) return '';
+    if (!profile) return null;
     const { image } = profile;
     let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
     if (image) {
@@ -129,7 +129,7 @@ class RequestCard extends Component {
       }
 
       default:
-        return '';
+        return null;
     }
   }
 
@@ -147,7 +147,7 @@ class RequestCard extends Component {
 
   // TODO: decide the final UI for additional info
   renderAdditionalInfo(item) {
-    return '';
+    return null;
     // const { profile } = this.props.item;
     // let content = '';
     // if (profile.elevatorPitch) {
@@ -189,8 +189,8 @@ class RequestCard extends Component {
   }
 
   render() {
-    const { item, userId } = this.props;
-    if (!item) return '';
+    const { item } = this.props;
+    if (!item) return null;
 
     const { user } = item;
     const { headline } = item;

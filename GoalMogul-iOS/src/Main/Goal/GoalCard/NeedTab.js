@@ -66,7 +66,7 @@ class NeedTab extends Component {
           </View>
         );
       }
-      return '';
+      return null;
     });
     if (needs.length === 0) {
       sections.push(

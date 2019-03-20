@@ -158,7 +158,7 @@ class Mastermind extends Component {
         />
       );
     }
-    return '';
+    return null;
   }
 
   renderInfoHeader() {
@@ -200,7 +200,7 @@ class Mastermind extends Component {
   //       </TouchableOpacity>
   //     );
   //   }
-  //   return '';
+  //   return null;
   // }
 
   // This was used in V2 where user can only create Goal here. But we decide
@@ -222,7 +222,7 @@ class Mastermind extends Component {
    */
   renderNext() {
     if (this.state.onListEndReached && this.props.loadingMore && this.props.data.length >= 4) {
-      return '';
+      return null;
     }
     
     return (
@@ -237,7 +237,7 @@ class Mastermind extends Component {
   }
 
   renderListHeader() {
-    return '';
+    return null;
     // return (
     //   <GoalFeedFilterBar
     //     selectedTab={this.props.selectedTab}
@@ -282,7 +282,7 @@ class Mastermind extends Component {
     //       onEndReached={this.handleOnLoadMore}
     //       ListHeaderComponent={this.renderListHeader()}
     //       ListEmptyComponent={
-    //         this.props.loading ? '' :
+    //         this.props.loading ? null :
     //         <EmptyResult
     //           text={'No Goals have been shared'}
     //           textStyle={{ paddingTop: 100 }}

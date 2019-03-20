@@ -109,7 +109,7 @@ class Profile extends Component {
         </TouchableOpacity>
       );
     }
-    return '';
+    return null;
   }
 
   render() {

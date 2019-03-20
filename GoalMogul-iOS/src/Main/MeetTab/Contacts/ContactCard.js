@@ -53,7 +53,7 @@ class ContactCard extends Component {
   NOTE: friends card doesn't have any button. only on profile page
   */
   renderButton(_id) {
-    return '';
+    return null;
     // return (
     //   <TouchableOpacity activeOpacity={0.85} onPress={this.onButtonClicked.bind(this, _id)}>
     //     <Image source={meetSetting} style={styles.settingIconStyle} />
@@ -89,12 +89,12 @@ class ContactCard extends Component {
         </Text>
       );
     }
-    return '';
+    return null;
   }
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     const { headline } = item;
     return (
