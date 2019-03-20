@@ -1,5 +1,11 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, Image } from 'react-native';
+import { 
+  Text, 
+  View, 
+  TouchableOpacity, 
+  Image,
+  StatusBar
+} from 'react-native';
 import {
   APP_BLUE
 } from '../../../styles';
@@ -49,28 +55,33 @@ const ModalHeader = (props) => {
     : styles.actionTextStyle;
 
   return (
-    <View style={styles.containerStyle}>
-      <TouchableOpacity
-        activeOpacity={0.85}
-        style={{ alignItems: 'center', flex: 1 }}
-        onPress={onCancel}
-      >
-        {leftComponent}
-      </TouchableOpacity>
+    <View>
+      <StatusBar
+        barStyle="dark-content"
+      />
+      <View style={styles.containerStyle}>
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={{ alignItems: 'center', flex: 1 }}
+          onPress={onCancel}
+        >
+          {leftComponent}
+        </TouchableOpacity>
 
-      <TouchableOpacity activeOpacity={0.85} style={{ alignItems: 'center', flex: 3 }}>
-        <Text style={styles.titleTextStyle}>{title}</Text>
-      </TouchableOpacity>
+        <TouchableOpacity activeOpacity={0.85} style={{ alignItems: 'center', flex: 3 }}>
+          <Text style={styles.titleTextStyle}>{title}</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        activeOpacity={0.85}
-        style={{ alignItems: 'center', flex: 1 }}
-        onPress={onAction}
-        disabled={actionDisabled}
-      >
-        <Text style={actionTextStyle}>{actionText}</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={{ alignItems: 'center', flex: 1 }}
+          onPress={onAction}
+          disabled={actionDisabled}
+        >
+          <Text style={actionTextStyle}>{actionText}</Text>
+        </TouchableOpacity>
 
+      </View>
     </View>
   );
 };
@@ -82,7 +93,7 @@ const styles = {
   containerStyle: {
     flexDirection: 'row',
     backgroundColor: '#ffffff',
-    paddingTop: 30,
+    paddingTop: 25,
     paddingLeft: 12,
     paddingRight: 12,
     paddingBottom: 10,
