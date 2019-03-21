@@ -100,7 +100,8 @@ const ContactUtils = {
         if (!res.ok || !res.status === 200) {
           console.log(`${DEBUG_KEY}: [ custumeFetch ] header:`, headers);
           console.log(`${DEBUG_KEY}: [ custumeFetch ] url:`, url);
-          console.log(`${DEBUG_KEY}: [ custumeFetch ] fetch failed status: ${res.status}.`);
+          console.log(`${DEBUG_KEY}: [ custumeFetch ] fetch failed with status:`, res.status);
+          console.log(`${DEBUG_KEY}: [ custumeFetch ] fetch failed with res:`, res);
         }
         return new Promise(
           async (resol, rej) => {
