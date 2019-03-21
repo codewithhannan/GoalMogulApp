@@ -109,7 +109,7 @@ class MyEvent extends Component {
     this.state = {
       imageLoading: false,
       showPlus: true,
-      infoCardHeight: new Animated.Value(0)
+      infoCardHeight: new Animated.Value(242)
     };
   }
 
@@ -511,7 +511,7 @@ class MyEvent extends Component {
 
     return (
       <View>
-        <Animated.View>
+        <Animated.View style={{ height: this.state.infoCardHeight }}>
           {this.renderEventImage(picture)}
           <View style={styles.generalInfoContainerStyle}>
             {/* {this.renderCaret(item)} */}
