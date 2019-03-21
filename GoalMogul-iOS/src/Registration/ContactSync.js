@@ -120,9 +120,16 @@ class ContactSync extends Component {
 
     return (
       <View style={Styles.containerStyle}>
-        {header}
-        <View style={Styles.bodyContainerStyle}>
-
+        <View 
+          style={{
+            shadowColor: 'lightgray',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.3,
+          }}
+        >
+          {header}
+        </View>
+        <View style={{ flex: 1, display: 'flex' }}>
           <FlatList
             enableEmptySections
             data={data}
