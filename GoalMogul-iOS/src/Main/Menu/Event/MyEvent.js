@@ -100,6 +100,9 @@ const TAG_SEARCH_OPTIONS = {
     'name',
   ]
 };
+
+const INFO_CARD_HEIGHT = 242;
+
 /**
  * This is the UI file for a single event.
  */
@@ -109,8 +112,10 @@ class MyEvent extends Component {
     this.state = {
       imageLoading: false,
       showPlus: true,
-      infoCardHeight: new Animated.Value(242)
+      infoCardHeight: new Animated.Value(INFO_CARD_HEIGHT),
+      infoCardOpacity: new Animated.Value(1)
     };
+    this._handleIndexChange = this._handleIndexChange.bind(this);
   }
 
   componentWillUnmount() {
@@ -243,8 +248,36 @@ class MyEvent extends Component {
 
   // Tab related functions
   _handleIndexChange = (index) => {
-    const { pageId, eventId } = this.props;
+    const { pageId, eventId, navigationState } = this.props;
+    const { routes } = navigationState;
+
     this.props.eventSelectTab(index, eventId, pageId);
+
+    if (routes[index].key !== 'about') {
+      // Animated to hide the infoCard if not on about tab
+      Animated.parallel([
+        Animated.timing(this.state.infoCardHeight, {
+          duration: 200,
+          toValue: 0,
+        }),
+        Animated.timing(this.state.infoCardOpacity, {
+          duration: 200,
+          toValue: 0,
+        }),
+      ]).start();
+    } else {
+      // Animated to open the infoCard if on about tab
+      Animated.parallel([
+        Animated.timing(this.state.infoCardHeight, {
+          duration: 200,
+          toValue: INFO_CARD_HEIGHT,
+        }),
+        Animated.timing(this.state.infoCardOpacity, {
+          duration: 200,
+          toValue: 1,
+        }),
+      ]).start();
+    }
   };
 
   // This function is deprecated
@@ -510,8 +543,13 @@ class MyEvent extends Component {
       : null;
 
     return (
-      <View>
-        <Animated.View style={{ height: this.state.infoCardHeight }}>
+      <View style={{ flex: 1 }}>
+        <Animated.View 
+          style={{ 
+            height: this.state.infoCardHeight,
+            opacity: this.state.infoCardOpacity
+          }}
+        >
           {this.renderEventImage(picture)}
           <View style={styles.generalInfoContainerStyle}>
             {/* {this.renderCaret(item)} */}
