@@ -484,12 +484,29 @@ class Tribe extends Component {
     const { memberNavigationState } = this.props;
     const { routes } = memberNavigationState;
 
+    const buttonStyle = {
+      selected: {
+        backgroundColor: 'white', // container background style
+        tintColor: '#696969', // icon tintColor
+        color: '#696969', // text color
+        fontWeight: '800', // text fontWeight
+        statColor: 'white' // stat icon color
+      },
+      unselected: {
+        backgroundColor: 'white',
+        tintColor: '#696969',
+        color: '#b2b2b2',
+        fontWeight: '600',
+        statColor: '#696969'
+      }
+    };
+
     const props = {
       jumpToIndex: (i) => this.props.tribeSelectMembersFilter(routes[i].key, i),
       navigationState: this.props.memberNavigationState
     };
     return (
-      <TabButtonGroup buttons={props} subTab />
+      <TabButtonGroup buttons={props} subTab buttonStyle={buttonStyle} noVerticalDivider noBorder />
     );
   }
 

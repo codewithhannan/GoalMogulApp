@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Animated,
   View,
   Image,
   Dimensions,
@@ -107,7 +108,8 @@ class MyEvent extends Component {
     super(props);
     this.state = {
       imageLoading: false,
-      showPlus: true
+      showPlus: true,
+      infoCardHeight: new Animated.Value(0)
     };
   }
 
@@ -456,12 +458,29 @@ class MyEvent extends Component {
     const { memberNavigationState, eventId, pageId } = this.props;
     const { routes } = memberNavigationState;
 
+    const buttonStyle = {
+      selected: {
+        backgroundColor: 'white', // container background style
+        tintColor: '#696969', // icon tintColor
+        color: '#696969', // text color
+        fontWeight: '800', // text fontWeight
+        statColor: 'white' // stat icon color
+      },
+      unselected: {
+        backgroundColor: 'white',
+        tintColor: '#696969',
+        color: '#b2b2b2',
+        fontWeight: '600',
+        statColor: '#696969'
+      }
+    };
+
     const props = {
       jumpToIndex: (i) => this.props.myEventSelectMembersFilter(routes[i].key, i, eventId, pageId),
       navigationState: this.props.memberNavigationState
     };
     return (
-      <TabButtonGroup buttons={props} subTab />
+      <TabButtonGroup buttons={props} subTab buttonStyle={buttonStyle} noVerticalDivider noBorder />
     );
   }
 
@@ -492,23 +511,25 @@ class MyEvent extends Component {
 
     return (
       <View>
-        {this.renderEventImage(picture)}
-        <View style={styles.generalInfoContainerStyle}>
-          {/* {this.renderCaret(item)} */}
-          <Text style={styles.eventTitleTextStyle}>
-            {title}
-          </Text>
-          {this.renderEventStatus()}
-          <View
-            style={{
-              width: width * 0.75,
-              borderColor: '#dcdcdc',
-              borderWidth: 0.5
-            }}
-          />
-          {this.renderEventInfo()}
+        <Animated.View>
+          {this.renderEventImage(picture)}
+          <View style={styles.generalInfoContainerStyle}>
+            {/* {this.renderCaret(item)} */}
+            <Text style={styles.eventTitleTextStyle}>
+              {title}
+            </Text>
+            {this.renderEventStatus()}
+            <View
+              style={{
+                width: width * 0.75,
+                borderColor: '#dcdcdc',
+                borderWidth: 0.5
+              }}
+            />
+            {this.renderEventInfo()}
 
-        </View>
+          </View>
+        </Animated.View>
         {
           // Render tabs
           this._renderHeader({
