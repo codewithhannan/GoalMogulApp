@@ -10,6 +10,7 @@ import SearchBarHeader from '../Common/Header/SearchBarHeader';
 
 import TribeTab from './TribeTab';
 import EventTab from './EventTab';
+import PeopleTab from './People/PeopleTab';
 
 // Actions
 import { exploreSelectTab } from '../../redux/modules/explore/ExploreActions';
