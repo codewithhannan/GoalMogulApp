@@ -1,5 +1,7 @@
 import Expo from 'expo';
 
+import { api as API } from '../redux/middleware/api';
+
 const pageSize = 3;
 const DEBUG_KEY = '[ Utils ContactUtils ]';
 
@@ -96,7 +98,9 @@ const ContactUtils = {
       fetch(url, headers)
       .then((res) => {
         if (!res.ok || !res.status === 200) {
-          console.log(`Fetch failed with error status: ${res.status}.`);
+          console.log(`${DEBUG_KEY}: [ custumeFetch ] header:`, headers);
+          console.log(`${DEBUG_KEY}: [ custumeFetch ] url:`, url);
+          console.log(`${DEBUG_KEY}: [ custumeFetch ] fetch failed status: ${res.status}.`);
         }
         return new Promise(
           async (resol, rej) => {
