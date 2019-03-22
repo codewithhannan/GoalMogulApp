@@ -59,7 +59,7 @@ const CommentHeadline = (props) => {
     case 'Suggestion': {
       if (!suggestion || _.isEmpty(suggestion)) return null;
       return (
-        <SuggestionHeadline
+        <SuggestionHeadlineV2
           goalRef={goalRef}
           item={item}
           timeStamp={timeStamp}
@@ -213,6 +213,66 @@ const SuggestionHeadline = (props) => {
             {text}
           </Text>
         </Text>
+        <View style={styles.caretContainer}>
+          {menu}
+        </View>
+      </View>
+      <Timestamp time={timeago().format(timeStamp)} />
+    </View>
+  );
+};
+
+const SuggestionHeadlineV2 = (props) => {
+  const { goalRef, item, timeStamp, menu, onNamePress } = props;
+  const { owner, suggestion } = item;
+  if (!goalRef) return null;
+
+  const { suggestionFor, suggestionForRef, suggestionType } = suggestion;
+  const text = suggestionFor === 'Goal'
+    ? suggestionForGoalText(goalRef)
+    : suggestionForNeedStepText(goalRef, suggestionFor, suggestionForRef);
+
+  const suggestionTypeText = makeSuggestionTypeText(suggestionType);
+
+  return (
+    <View>
+      <View style={styles.containerStyle}>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode='tail'
+        >
+          <Text
+            style={{ 
+              fontSize: 12,
+              fontWeight: '600',
+              maxWidth: 150,
+            }}
+          >
+            {owner.name}
+          </Text>
+          <Text
+            style={styles.suggestionTextStyle}
+            numberOfLines={1}
+            ellipsizeMode='tail'
+          >
+            suggested {suggestionTypeText}for
+            <Text style={styles.suggestionDetailTextStyle}>
+              {text}
+            </Text>
+          </Text>
+        </Text>
+        {/* <Name text={owner.name} textStyle={{ fontSize: 12 }} onPress={onNamePress} /> */}
+        <Image style={styles.imageStyle} source={badge} />
+        {/* <Text
+          style={styles.suggestionTextStyle}
+          numberOfLines={1}
+          ellipsizeMode='tail'
+        >
+          suggested {suggestionTypeText}for
+          <Text style={styles.suggestionDetailTextStyle}>
+            {text}
+          </Text>
+        </Text> */}
         <View style={styles.caretContainer}>
           {menu}
         </View>
