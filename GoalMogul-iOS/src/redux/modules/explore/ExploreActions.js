@@ -9,6 +9,8 @@ import {
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
+const DEBUG_KEY = '[ Actions Explore ]';
+
 export const exploreSelectTab = (index) => (dispatch) => {
   dispatch({
     type: EXPLORE_SWITCH_TAB,
@@ -21,8 +23,8 @@ export const exploreSelectTab = (index) => (dispatch) => {
  */
 export const exploreRefreshPeople = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { limit } = getState.explore.people;
-  const oldData = getState.explore.people.data;
+  const { limit } = getState().explore.people;
+  const oldData = getState().explore.people.data;
 
   const onSuccess = (res) => {
     const { data } = res;
@@ -64,8 +66,8 @@ export const exploreRefreshPeople = () => (dispatch, getState) => {
  */
 export const exploreLoadMorePeople = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, hasNextPage, refreshing } = getState.explore.people;
-  const oldData = getState.explore.people.data;
+  const { skip, limit, hasNextPage, refreshing } = getState().explore.people;
+  const oldData = getState().explore.people.data;
 
   if (hasNextPage === false || refreshing) return;
 
@@ -105,9 +107,11 @@ export const exploreLoadMorePeople = () => (dispatch, getState) => {
 };
 
 export const exploreGetRequest = (url, token, onSuccess, onError) => {
+  // console.log(`${DEBUG_KEY}: [ exploreGetRequest ]: url:`, url);
   API
     .get(url, token)
     .then((res) => {
+      // console.log(`${DEBUG_KEY}: [ exploreGetRequest ]: res:`, res);
       if (res.status === 200) {
         return onSuccess(res);
       }

@@ -22,7 +22,7 @@ const INITIAL_STATE = {
   people: {
     data: [], // a list of user ids
     skip: 0,
-    limit: 20,
+    limit: 10,
     hasNextPage: undefined,
     refreshing: false, // Boolean to determine refreshing status
     loading: false // Boolean to determine loading more status
@@ -90,7 +90,7 @@ export default (state = INITIAL_STATE, action) => {
       // Transform new data to only keep user id
       const transformedNewData = data.map((d) => d._id);
       // Concat old and new user ids and dedup
-      const dataToStore = _.uniq(prevData.concat(newData));
+      const dataToStore = _.uniq(prevData.concat(transformedNewData));
 
       newState = _.set(newState, 'people.data', dataToStore);
       newState = _.set(newState, 'people.skip', skip);

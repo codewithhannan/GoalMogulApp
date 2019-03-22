@@ -3,80 +3,93 @@
  */
 import React from 'react';
 import {
-  View,
-  FlatList
+    View,
+    FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
 // Actions
 import {
-  refreshEvent,
-  loadMoreEvent
-} from '../../../redux/modules/event/EventTabActions';
+    exploreRefreshPeople,
+    exploreLoadMorePeople
+} from '../../../redux/modules/explore/ExploreActions';
+
+// Selectors
+import {
+    makeGetUsers
+} from '../../../redux/modules/explore/selector';
 
 // Components
 import EmptyResult from '../../Common/Text/EmptyResult';
+import FriendCardView from '../../MeetTab/V2/FriendCardView';
 
 class PeopleTab extends React.Component {
-  componentDidMount() {
-    if (!this.props.data || _.isEmpty(this.props.data)) {
-      this.handleOnRefresh();
+    componentDidMount() {
+        if (!this.props.data || _.isEmpty(this.props.data)) {
+            this.handleOnRefresh();
+        }
     }
-  }
-  
-  _keyExtractor = (item) => item._id;
 
-  handleOnRefresh = () => this.props.refreshEvent();
+    _keyExtractor = (item) => item._id;
 
-  handleOnLoadMore = () => this.props.loadMoreEvent();
+    handleOnRefresh = () => this.props.exploreRefreshPeople();
 
-  renderItem = ({ item }) => {
-    return <View />;
-  }
+    handleOnLoadMore = () => this.props.exploreLoadMorePeople();
 
-  renderListHeader() {
-    // return <EventTabFilterBar value={{ sortBy: this.props.sortBy }}/>;
-    return null;
-  }
+    renderItem = ({ item }) => {
+        return <FriendCardView item={item} />;
+    }
 
-  render() {
+    renderListHeader() {
+        // return <EventTabFilterBar value={{ sortBy: this.props.sortBy }}/>;
+        return null;
+    }
+
+    render() {
     return (
-      <View style={{ flex: 1 }}>
-        <FlatList
-          data={this.props.data}
-          renderItem={this.renderItem}
-          numColumns={1}
-          keyExtractor={this._keyExtractor}
-          refreshing={this.props.loading}
-          onRefresh={this.handleOnRefresh}
-          onEndReached={this.handleOnLoadMore}
-          ListHeaderComponent={this.renderListHeader()}
-          ListEmptyComponent={
-            this.props.loading ? null :
-            <EmptyResult text={'No Recommendations'} />
-          }
-          onEndThreshold={0}
-        />
-      </View>
+        <View style={{ flex: 1 }}>
+            <FlatList
+                data={this.props.data}
+                renderItem={this.renderItem}
+                numColumns={1}
+                keyExtractor={this._keyExtractor}
+                refreshing={this.props.refreshing}
+                onRefresh={this.handleOnRefresh}
+                onEndReached={this.handleOnLoadMore}
+                ListHeaderComponent={this.renderListHeader()}
+                ListEmptyComponent={
+                    this.props.refreshing ? null :
+                    <EmptyResult text={'No Recommendations'} />
+                }
+                onEndThreshold={0}
+            />
+        </View>
     );
-  }
+    }
 }
 
-const mapStateToProps = state => {
-  const { data, loading, sortBy } = state.eventTab;
+const makeMapStateToProps = () => {
+    const getUsers = makeGetUsers();
 
-  return {
-    data,
-    loading,
-    sortBy
-  };
+    const mapStateToProps = (state, props) => {
+        const { refreshing, loading } = state.explore.people;
+        
+    
+        return {
+            data: getUsers(state), // Selector to transform ids to user objects
+            loading,
+            refreshing
+        };
+    };
+    return mapStateToProps;
 };
 
+
 export default connect(
-  mapStateToProps,
-  {
-    refreshEvent,
-    loadMoreEvent
-  }
+    makeMapStateToProps,
+    {
+        exploreRefreshPeople,
+        exploreLoadMorePeople
+    }
 )(PeopleTab);
