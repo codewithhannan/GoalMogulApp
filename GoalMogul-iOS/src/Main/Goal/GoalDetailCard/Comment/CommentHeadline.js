@@ -191,10 +191,12 @@ const SuggestionHeadline = (props) => {
   const { owner, suggestion } = item;
   if (!goalRef) return null;
 
-  const { suggestionFor, suggestionForRef } = suggestion;
+  const { suggestionFor, suggestionForRef, suggestionType } = suggestion;
   const text = suggestionFor === 'Goal'
     ? suggestionForGoalText(goalRef)
     : suggestionForNeedStepText(goalRef, suggestionFor, suggestionForRef);
+
+  const suggestionTypeText = makeSuggestionTypeText(suggestionType);
 
   return (
     <View>
@@ -206,7 +208,7 @@ const SuggestionHeadline = (props) => {
           numberOfLines={1}
           ellipsizeMode='tail'
         >
-          suggested for
+          suggested {suggestionTypeText}for
           <Text style={styles.suggestionDetailTextStyle}>
             {text}
           </Text>
@@ -220,6 +222,21 @@ const SuggestionHeadline = (props) => {
   );
 };
 
+const makeSuggestionTypeText = (suggestionType) => {
+  if (suggestionType === 'User') {
+    return 'an User ';
+  }
+  if (suggestionType === 'Event') {
+    return 'an Event ';
+  }
+  if (suggestionType === 'Tribe') {
+    return 'a Tribe ';
+  }
+  if (suggestionType === 'ChatConvoRoom') {
+    return 'a Chat room ';
+  }
+  return '';
+};
 const suggestionForGoalText = (goalRef) => ` Goal: ${goalRef.title}`;
 const suggestionForNeedStepText = (goalRef, suggestionFor, suggestionForRef) => {
   let ret = '';
@@ -259,7 +276,8 @@ const styles = {
     flexWrap: 'wrap',
     alignSelf: 'center',
     color: '#767676',
-    paddingRight: 15
+    paddingRight: 15,
+    marginBottom: 2
   },
   suggestionDetailTextStyle: {
     fontWeight: '700',

@@ -22,7 +22,7 @@ const DEBUG_KEY = '[ UI ImageModal ]';
 
 class ImageModal extends React.Component {
   shouldComponentUpdate(nextProps) {
-    if (this.props.mediaRef !== nextProps.mediaRef) {
+    if (this.props.mediaRef !== nextProps.mediaRef || this.props.mediaModal !== nextProps.mediaModal) {
       return true;
     }
     // No need to re-render if mediaRef is the same
