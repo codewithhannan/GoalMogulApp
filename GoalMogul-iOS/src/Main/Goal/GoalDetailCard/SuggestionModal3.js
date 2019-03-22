@@ -206,9 +206,9 @@ class SuggestionModal extends Component {
     suggestionForTextArray.forEach((w, index) => {
       if (index === suggestionForTextArray.length - 1 && suggestionForTextArray.length > 1) {
         // console.log(`${DEBUG_KEY}: i am here`);
-        suggestionForText.push(<Text style={{ fontWeight: '700' }}>{w}</Text>);
+        suggestionForText.push(<Text style={{ fontWeight: '700' }} key={`${index}_${w}`}>{w}</Text>);
       } else {
-        suggestionForText.push(<Text>{w}{' '}</Text>);
+        suggestionForText.push(<Text key={`${index}`}>{w}{' '}</Text>);
       }
     })
 
