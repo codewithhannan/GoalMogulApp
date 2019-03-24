@@ -53,7 +53,7 @@ class CommentTab extends Component {
           </View>
         );
       }
-      return '';
+      return null;
     });
     if (needs.length < 3) {
       sections.push(

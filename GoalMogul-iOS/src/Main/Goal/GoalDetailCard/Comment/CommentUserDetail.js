@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import {
-  View
+  View,
+  TouchableWithoutFeedback,
+  ImageBackground,
+  Image,
+  TouchableOpacity,
+  Dimensions
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -8,6 +13,8 @@ import { connect } from 'react-redux';
 import defaultProfilePic from '../../../../asset/utils/defaultUserProfile.png';
 import LikeIcon from '../../../../asset/utils/like.png';
 import CommentIcon from '../../../../asset/utils/comment.png';
+import photoIcon from '../../../../asset/utils/photoIcon.png';
+import expand from '../../../../asset/utils/expand.png';
 
 // Components
 import ActionButton from '../../Common/ActionButton';
@@ -15,6 +22,7 @@ import ActionButtonGroup from '../../Common/ActionButtonGroup';
 import CommentHeadline from './CommentHeadline';
 import CommentRef from './CommentRef';
 import ProfileImage from '../../../Common/ProfileImage';
+import ImageModal from '../../../Common/ImageModal';
 import RichText from '../../../Common/Text/RichText';
 
 // Actions
@@ -41,14 +49,28 @@ import {
   unsubscribeEntityNotification
 } from '../../../../redux/modules/notification/NotificationActions';
 
+// Styles
+import {
+  imagePreviewContainerStyle
+} from '../../../../styles';
+
+// Constants
+import {
+  IMAGE_BASE_URL,
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
+} from '../../../../Utils/Constants';
+
 // Constants
 const DEBUG_KEY = '[ UI CommentCard.CommentUserDetail ]';
+const { width } = Dimensions.get('window');
 
 class CommentUserDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      layout: {}
+      layout: {},
+      mediaModal: false,
     };
   }
 
@@ -64,6 +86,77 @@ class CommentUserDetail extends Component {
   }
 
   getLayout = () => this.state.layout;
+
+  /**
+   * Render Image user attached to the comment.
+   * Comment type should be "commentType": "Comment"
+   * @param {commentObject} item 
+   */
+  renderCommentMedia(item) {
+    const { mediaRef } = item;
+    if (!mediaRef) return null;
+
+    const url = mediaRef;
+    const imageUrl = `${IMAGE_BASE_URL}${url}`;
+    return (
+      <TouchableWithoutFeedback
+        onPress={() => this.setState({ mediaModal: true })}
+      >
+      <View style={{ marginTop: 10 }}>
+        <ImageBackground
+          style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle }}
+          source={{ uri: imageUrl }}
+          imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
+        >
+          <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
+            <Image
+              source={photoIcon}
+              style={{
+                alignSelf: 'center',
+                justifyContent: 'center',
+                height: 40,
+                width: 50,
+                tintColor: '#fafafa'
+              }}
+            />
+          </View>
+
+          <TouchableOpacity 
+            activeOpacity={0.85}
+            onPress={() => this.setState({ mediaModal: true })}
+            style={{
+              position: 'absolute',
+              top: 10,
+              right: 15,
+              width: 24,
+              height: 24,
+              borderRadius: 12,
+              padding: 2,
+              backgroundColor: 'rgba(0,0,0,0.3)',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <Image
+              source={expand}
+              style={{
+                width: 16,
+                height: 16,
+                tintColor: '#fafafa',
+                borderRadius: 4,
+              }}
+            />
+          </TouchableOpacity>
+        </ImageBackground>
+        <ImageModal
+          mediaRef={imageUrl}
+          mediaModal={this.state.mediaModal}
+          closeModal={() => this.setState({ mediaModal: false })}
+        />
+      </View>
+      </TouchableWithoutFeedback>
+    );
+  }
 
   /*
    * Render card content based on scenario
@@ -101,7 +194,11 @@ class CommentUserDetail extends Component {
         multiline
         onUserTagPressed={(user) => {
           console.log(`${DEBUG_KEY}: user tag press for user: `, user);
-          this.props.openProfile(user);
+          let userId = user;
+          if (typeof user !== 'string') {
+            userId = user._id;
+          }
+          this.props.openProfile(userId);
         }}
       />
     );
@@ -123,6 +220,11 @@ class CommentUserDetail extends Component {
             item={item}
             isCommentOwner={isCommentOwner}
             goalRef={goalRef}
+            onNamePress={() => {
+              if (item && item.owner && item.owner._id) {
+                this.props.openProfile(item.owner._id);
+              }
+            }}
             caretOnPress={(type) => {
               console.log('Comment options type is: ', type);
               if (type === 'Report') {
@@ -131,10 +233,10 @@ class CommentUserDetail extends Component {
               if (type === 'Delete') {
                 return this.props.deleteComment(_id, this.props.pageId, parentRef, parentType);
               }
-              if (type === 'Subscribe') {
+              if (type === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
                 return this.props.subscribeEntityNotification(_id, 'Comment');
               }
-              if (type === 'Unsubscribe') {
+              if (type === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
                 return this.props.unsubscribeEntityNotification(_id, 'Comment');
               }
             }}
@@ -142,6 +244,7 @@ class CommentUserDetail extends Component {
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
             {this.renderCardContent()}
           </View>
+          {this.renderCommentMedia(item)}
           {this.renderCommentRef(suggestion)}
         </View>
     );
@@ -171,7 +274,7 @@ class CommentUserDetail extends Component {
 
   renderActionButtons() {
     const { item, index, scrollToIndex, onCommentClicked, viewOffset, commentDetail } = this.props;
-    const { childComments, _id, maybeLikeRef } = item;
+    const { childComments, _id, maybeLikeRef, parentRef } = item;
     const commentCounts = childComments && childComments.length > 0
       ? childComments.length
       : undefined;
@@ -193,9 +296,9 @@ class CommentUserDetail extends Component {
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks like icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
-              return this.props.unLikeGoal('comment', _id, maybeLikeRef, this.props.pageId);
+              return this.props.unLikeGoal('comment', _id, maybeLikeRef, this.props.pageId, parentRef);
             }
-            this.props.likeGoal('comment', _id, this.props.pageId);
+            this.props.likeGoal('comment', _id, this.props.pageId, parentRef);
           }}
         />
         <ActionButton
@@ -222,7 +325,7 @@ class CommentUserDetail extends Component {
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     return (
       <View onLayout={this.onLayout}>
@@ -264,18 +367,26 @@ const styles = {
   profileImageStyle: {
     height: ImageHeight,
     width: ImageHeight,
-    borderRadius: ImageHeight / 2
+    borderRadius: 4
+    // borderRadius: ImageHeight / 2
   },
   profileImageContianerStyle: {
-    height: ImageHeight + 6,
-    width: ImageHeight + 6,
+    // height: ImageHeight + 6,
+    // width: ImageHeight + 6,
+    padding: 0.5,
     borderWidth: 0.5,
-    borderColor: 'gray',
+    borderColor: 'lightgray',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: (ImageHeight + 4) / 2,
+    // borderRadius: (ImageHeight + 4) / 2,
+    borderRadius: 5,
     alignSelf: 'flex-start'
-  }
+  },
+  mediaStyle: {
+    height: width / 2,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
 };
 
 export default connect(

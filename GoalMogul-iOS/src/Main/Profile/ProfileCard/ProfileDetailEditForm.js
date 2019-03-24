@@ -28,7 +28,13 @@ import profilePic from '../../../asset/utils/defaultUserProfile.png';
 /* Actions */
 import { submitUpdatingProfile, openCamera, openCameraRoll } from '../../../actions';
 
-const BUTTONS = ['Taking Pictures', 'Camera Roll', 'Cancel'];
+// Selectors
+import {
+  getUserDataByPageId,
+  getUserData
+} from '../../../redux/modules/User/Selector';
+
+const BUTTONS = ['Take a Picture', 'Camera Roll', 'Cancel'];
 const TAKING_PICTURE_INDEX = 0;
 const CAMERA_ROLL_INDEX = 1;
 const CANCEL_INDEX = 2;
@@ -44,7 +50,7 @@ class ProfileDetailEditForm extends Component {
   submit = values => {
     const hasImageModified = JSON.stringify(this.props.initialValues.profile.image) !==
       JSON.stringify(values.profile.image);
-    this.props.submitUpdatingProfile({ values, hasImageModified });
+    this.props.submitUpdatingProfile({ values, hasImageModified }, this.props.pageId);
   };
 
   _scrollToInput (reactNode: any) {
@@ -392,66 +398,18 @@ ProfileDetailEditForm = reduxForm({
   enableReinitialize: true
 })(ProfileDetailEditForm);
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
+  const { userId, pageId } = props;
+
+  const uploading = getUserDataByPageId(state, userId, pageId, 'uploading');
+  const user = getUserData(state, userId, 'user');
+
   return {
-    uploading: state.profile.uploading,
-    initialValues: state.profile.user
+    // uploading: state.profile.uploading,
+    // initialValues: state.profile.user // This is before reducer redesign way
+    uploading,
+    initialValues: user
   };
-};
-
-/**
- * This class to verify the idea of onNextPress
- *
- */
-class TestInputField extends Component {
-
-  focus = () => {
-    this.input.focus();
-  }
-
-  render() {
-     const {
-      input: { onChange, onFocus, ...restInput },
-      label,
-      secure,
-      limitation,
-      multiline,
-      disabled,
-      clearButtonMode,
-      enablesReturnKeyAutomatically,
-      forFocus,
-      onEndEditing,
-      autoCorrect,
-      meta: { error },
-      returnKeyType,
-      ...custom
-    } = this.props;
-
-    return (
-      <View style={styles.inputContainerStyle}>
-        <TextField
-          ref={ref => this.input = ref}
-          label={label}
-          title={custom.title}
-          autoCapitalize={'none'}
-          autoCorrect={autoCorrect || true}
-          onChangeText={onChange}
-          error={error}
-          enablesReturnKeyAutomatically={enablesReturnKeyAutomatically}
-          returnKeyType={returnKeyType || 'done'}
-          secureTextEntry={secure}
-          characterRestriction={limitation}
-          multiline={multiline}
-          clearButtonMode={clearButtonMode}
-          onFocus={forFocus}
-          disabled={disabled}
-          onSubmitEditing={onEndEditing}
-          {...custom}
-          {...restInput}
-        />
-      </View>
-    );
-  }
 };
 
 export default connect(

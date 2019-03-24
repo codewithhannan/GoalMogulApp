@@ -55,6 +55,7 @@ const INITIAL_STATE = {
 
 export const POST_DETAIL_FETCH = 'post_detail_fetch';
 export const POST_DETAIL_FETCH_DONE = 'post_detail_fetch_done';
+export const POST_DETAIL_FETCH_ERROR = 'post_detail_fetch_error';
 export const POST_DETAIL_OPEN = 'post_detail_open';
 export const POST_DETAIL_CLOSE = 'post_detail_close';
 // Comment related constants

@@ -1,5 +1,10 @@
 import { createSelector } from 'reselect';
 import _ from 'lodash';
+import {
+  INITIAL_EVENT_PAGE
+} from './Events';
+
+const DEBUG_KEY = '[ Selector Event ]';
 
 const getEventParticipants = (state) => {
   if (state.event.item) {
@@ -27,6 +32,19 @@ const getMyEventMemberNavigationStates = (state) => {
   };
 };
 
+/**
+ * Get event participants by eventId
+ * @param {*} state 
+ * @param {*} eventId 
+ */
+const getEventParticipantsById = (state, eventId) => {
+  const events = state.events;
+  if (_.has(events, eventId)) {
+    return _.get(events, `${eventId}.event.participants`);
+  }
+  return [];
+};
+
 /*
  * Transform a goal's need and step to become
  * [ {needTitle: 'needs'}, ..., {stepTitle: 'steps'}, ...]
@@ -38,7 +56,26 @@ export const getUserStatus = createSelector(
 
     let status;
     participants.map((participant) => {
-      if (participant.participantRef._id === userId) {
+      // Participant can be null
+      if (participant.participantRef && participant.participantRef._id === userId) {
+        status = participant.rsvp;
+      }
+      return '';
+    });
+    return status;
+  }
+);
+
+export const makeGetEventUserStatusById = () => createSelector(
+  [getEventParticipantsById, getUserId],
+  (participants, userId) => {
+    if (!participants) return '';
+
+    let status;
+    participants.map((participant) => {
+      // console.log(`${DEBUG_KEY}: partiipant is: `, participant);
+      // Participant can be null
+      if (participant.participantRef && participant.participantRef._id === userId) {
         status = participant.rsvp;
       }
       return '';
@@ -73,6 +110,22 @@ export const participantSelector = createSelector(
   }
 );
 
+export const getParticipantsFilterById = (state, eventId, pageId) => {
+  const item = getEventPageItem(state, eventId, pageId, 'participantsFilter');
+  return item;
+};
+
+export const makeGetEventParticipantSelector = () => createSelector(
+  [getEventById, getParticipantsFilterById],
+  (event, participantsFilter) => {
+    if (!event || _.isEmpty(event)) return '';
+    const participants = _.get(event, 'participants');
+
+    if (!participants || _.isEmpty(participants)) return '';
+    return participants.filter((participant) => participant.rsvp === participantsFilter);
+  }
+);
+
 export const myEventParticipantSelector = createSelector(
   [getMyParticipantsFilter, getMyEventParticipants],
   (filter, participants) => {
@@ -81,6 +134,34 @@ export const myEventParticipantSelector = createSelector(
     return participants.filter((participant) => participant.rsvp === filter);
   }
 );
+
+// For tribe reference
+// export const makeGetEventMemberNavigationState = () => createSelector(
+//   [getEventById, getEventPage, getUserId],
+//   (event, eventPage, userId) => {
+//     const { memberNavigationState, memberDefaultRoutes } = eventPage;
+//     const navigationStateToReturn = _.cloneDeep(memberNavigationState);
+
+//     if (!event || _.isEmpty(event)) return navigationStateToReturn;
+//     const { participants } = event;
+
+//     if (!participants || participants.length === 0) {
+//       return _.set(navigationStateToReturn, 'routes', memberDefaultRoutes);
+//     }
+
+//     let isAdmin;
+//     participants.forEach((participant) => {
+//       if (participant.memberRef._id === userId
+//         && (participant.category === 'Admin')) {
+//         isAdmin = true;
+//       }
+//     });
+
+//     return isAdmin
+//       ? navigationStateToReturn
+//       : _.set(navigationStateToReturn, 'routes', memberDefaultRoutes);
+//   }
+// );
 
 // This function currently is not used since people can see all participants
 export const getMyEventMemberNavigationState = createSelector(
@@ -104,5 +185,81 @@ export const getMyEventMemberNavigationState = createSelector(
     return isAdmin
       ? navigationStateToReturn
       : _.set(navigationStateToReturn, 'routes', memberDefaultRoutes);
+  }
+);
+
+const getEventById = (state, eventId) => {
+  const events = state.events;
+  if (_.has(events, eventId)) {
+    return _.get(events, `${eventId}.event`);
+  }
+  return {};
+};
+
+const getEventPage = (state, eventId, pageId) => {
+  const events = state.events;
+  if (!_.has(events, `${eventId}.${pageId}`)) {
+    return {
+      ...INITIAL_EVENT_PAGE
+    };
+  }
+  return _.get(events, `${eventId}.${pageId}`);
+};
+
+const getEntityByIds = (ids, entities, type) => {
+  let ret = [];
+  ret = _.uniq(ids).map((id) => {
+      if (_.has(entities, id)) {
+          return _.get(entities, `${id}.${type}`);
+      }
+      return {};
+  }).filter(g => !_.isEmpty(g));
+  return ret;
+};
+
+const getFeed = (state) => state.posts;
+const getEventFeed = (state, eventId, pageId) => {
+  const events = state.events;
+  if (!_.has(events, `${eventId}`)) {
+    return [];
+  }
+
+  if (!_.has(events, `${eventId}.${pageId}`)) {
+    return [];
+  }
+
+  const item = getEventPageItem(state, eventId, pageId, 'feed');
+  return item || [];
+};
+
+const getEventPageItem = (state, eventId, pageId, path) => {
+  const events = state.events;
+  if (!_.has(events, `${eventId}`)) {
+    return undefined;
+  }
+
+  if (!_.has(events, `${eventId}.${pageId}`)) {
+    return undefined;
+  }
+
+  const pathToGet = path 
+    ? `${eventId}.${pageId}.${path}`
+    : `${eventId}.${pageId}`;
+
+  return _.get(events, `${pathToGet}`);
+};
+
+export const makeGetEventFeed = () => createSelector(
+  [getEventFeed, getFeed],
+  (feedIds, feed) => getEntityByIds(feedIds, feed, 'post')
+);
+
+export const makeGetEventPageById = () => createSelector(
+  [getEventById, getEventPage],
+  (event, eventPage) => {
+    return {
+      event,
+      eventPage
+    }
   }
 );

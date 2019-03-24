@@ -6,9 +6,9 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements';
 import timeago from 'timeago.js';
 import R from 'ramda';
+import _ from 'lodash';
 
 // Component
 import Headline from '../Common/Headline';
@@ -19,6 +19,7 @@ import SectionCard from '../Common/SectionCard';
 import NextButton from '../Common/NextButton';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import ProfileImage from '../../Common/ProfileImage';
+import { RightArrowIcon } from '../../../Utils/Icons';
 
 // Asset
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
@@ -44,10 +45,18 @@ import {
   deleteGoal,
 } from '../../../actions';
 
+import { PAGE_TYPE_MAP } from '../../../redux/middleware/utils';
+
 import {
   subscribeEntityNotification,
   unsubscribeEntityNotification
 } from '../../../redux/modules/notification/NotificationActions';
+
+// Constants
+import { 
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
+} from '../../../Utils/Constants';
 
 const DEBUG_KEY = '[ UI NeedCard ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
@@ -105,29 +114,33 @@ class NeedCard extends Component {
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
 
+    const pageId = _.get(PAGE_TYPE_MAP, 'goalFeed');
+
     const caret = {
       self: {
         options: [{ option: 'Delete' }],
         onPress: () => {
-          this.props.deleteGoal(_id);
-        }
+          this.props.deleteGoal(_id, pageId);
+        },
+        shouldExtendOptionLength: false
       },
       others: {
         options: [
           { option: 'Report' }, 
-          { option: maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe' }
+          { option: maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE }
         ],
         onPress: (key) => {
           if (key === 'Report') {
             return this.props.createReport(_id, 'goal', 'Goal');
           }
-          if (key === 'Unsubscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
             return this.props.unsubscribeEntityNotification(_id, 'Goal');
           }
-          if (key === 'Subscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
             return this.props.subscribeEntityNotification(_id, 'Goal');
           }
         },
+        shouldExtendOptionLength: false
       }
     };
 
@@ -194,14 +207,18 @@ class NeedCard extends Component {
         onPress={() => this.props.onPress(item)}
       >
         <Text style={styles.viewGoalTextStyle}>View Goal</Text>
-        <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+        <RightArrowIcon 
+          iconStyle={{ tintColor: '#17B3EC', ...styles.iconStyle, height: 12, width: 18 }}
+          iconContainerStyle={{ alignSelf: 'center', alignItems: 'center', marginLeft: 5 }}
+        />
+        {/* <View style={{ alignSelf: 'center', alignItems: 'center' }}>
           <Icon
             name='ios-arrow-round-forward'
             type='ionicon'
             color='#17B3EC'
             iconStyle={styles.iconStyle}
           />
-        </View>
+        </View> */}
       </TouchableOpacity>
     );
   }
@@ -247,8 +264,16 @@ class NeedCard extends Component {
           textStyle={{ color: '#FBDD0D' }}
           iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           onPress={() => {
-            console.log(`${DEBUG_KEY}: user clicks suggest icon`);
-            this.props.onPress(this.props.item);
+            console.log(`${DEBUG_KEY}: user clicks comment icon on NeedCard`);
+            this.props.onPress(
+              this.props.item, 
+              { 
+                type: 'comment', 
+                _id: undefined,
+                initialShowSuggestionModal: false,
+                initialFocusCommentBox: true
+              }
+            );
           }}
         />
       </ActionButtonGroup>
@@ -307,9 +332,9 @@ const styles = {
   },
   iconStyle: {
     alignSelf: 'center',
-    fontSize: 20,
-    marginLeft: 5,
-    marginTop: 2
+    // fontSize: 20,
+    // marginLeft: 5,
+    // marginTop: 2
   },
   borderShadow: {
     shadowColor: 'lightgray',

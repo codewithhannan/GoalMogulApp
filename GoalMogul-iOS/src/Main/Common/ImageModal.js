@@ -11,11 +11,32 @@ import Modal from 'react-native-modal';
 import cancel from '../../asset/utils/cancel_no_background.png';
 
 // Constants
+// Constants
+import {
+  IMAGE_BASE_URL
+} from '../../Utils/Constants';
+
 const { width, height } = Dimensions.get('window');
 
-class ImageModal extends React.PureComponent {
+const DEBUG_KEY = '[ UI ImageModal ]';
+
+class ImageModal extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    if (this.props.mediaRef !== nextProps.mediaRef) {
+      return true;
+    }
+    // No need to re-render if mediaRef is the same
+    return false;
+  }
+
   render() {
-    if (!this.props.mediaRef) return '';
+    if (!this.props.mediaRef) return null;
+
+    let urlToRender = this.props.mediaRef;
+    if (!urlToRender.includes(IMAGE_BASE_URL)) {
+      urlToRender = `${IMAGE_BASE_URL}${urlToRender}`;
+    }
+
     return (
       <Modal
         backdropColor={'black'}
@@ -35,8 +56,10 @@ class ImageModal extends React.PureComponent {
         >
           <TouchableOpacity
             activeOpacity={0.85}
-            onPress={() => this.props.closeModal()}
-            style={{ position: 'absolute', top: 5, left: 5, padding: 10 }}
+            onPress={() => {
+              this.props.closeModal();
+            }}
+            style={{ position: 'absolute', top: 5, left: 5, padding: 10, zIndex: 2 }}
           >
             <Image
               source={cancel}
@@ -47,7 +70,7 @@ class ImageModal extends React.PureComponent {
             />
           </TouchableOpacity>
           <Image
-            source={{ uri: this.props.mediaRef }}
+            source={{ uri: urlToRender }}
             style={{ width, height }}
             resizeMode='contain'
           />

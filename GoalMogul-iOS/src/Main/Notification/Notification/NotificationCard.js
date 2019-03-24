@@ -7,52 +7,59 @@ import {
 } from 'react-native';
 import R from 'ramda';
 import timeago from 'timeago.js';
+import { connect } from 'react-redux';
 
 // Component
-import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
-import ProfileImage from '../Common/ProfileImage';
-import Timestamp from '../Goal/Common/Timestamp';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import ProfileImage from '../../Common/ProfileImage';
+import Timestamp from '../../Goal/Common/Timestamp';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Asset
-import FriendsSettingIcon from '../../asset/utils/friendsSettingIcon.png';
+import FriendsSettingIcon from '../../../asset/utils/friendsSettingIcon.png';
+
+// Actions
+import {
+  openNotificationDetail,
+  removeNotification,
+  markNotifAsRead
+} from '../../../redux/modules/notification/NotificationActions';
 
 // Constants
 const DEBUG_KEY = '[ UI NotificationCard ]';
 
-class NotificationCard extends React.Component {
-
+class NotificationCard extends React.PureComponent {
   handleNotificationCardOnPress = (item) => {
-    const { parsedNoti } = item;
+    const { parsedNoti, _id } = item;
     if (!parsedNoti || !parsedNoti.path) {
-      console.log(`${DEBUG_KEY}: no parsedNoti or path is in notification: `, item);
+      console.log(`${DEBUG_KEY}: no parsedNoti or path is in notification:`, item);
       return;
     }
+
+    if (!_id) {
+      console.warn(`${DEBUG_KEY}: missing notification id for item:`, item);
+      return;
+    }
+
     // TODO: open detail based on the path;
-    // this.props.openNotificationDetail(item);
+    console.log(`${DEBUG_KEY}: open notification detail for item: `, item);
+    this.props.openNotificationDetail(item);
   }
 
   handleOptionsOnPress() {
-    const { onRemoveUser, onPromoteUser, onDemoteUser, item, category } = this.props;
+    const { item } = this.props;
     const { _id } = item;
     const options = switchByButtonIndex([
       [R.equals(0), () => {
-        console.log(`${DEBUG_KEY} User chooses option 1`);
-        return onRemoveUser(_id) || console.log(`${DEBUG_KEY}:
-           No remove user function is supplied.`);
-      }],
-      [R.equals(1), () => {
-        console.log(`${DEBUG_KEY} User chooses option2`);
-        return onDemoteUser(_id) || console.log(`${DEBUG_KEY}:
-           No demote user function is supplied.`);
-      }],
+        console.log(`${DEBUG_KEY} User chooses to remove notification`);
+        return this.props.removeNotification(_id);
+      }]      
     ]);
 
 
-    const requestOptions = category === 'Admin'
-      ? ['Remove User', 'Demote User', 'Cancel']
-      : ['Remove User', 'Promote User', 'Cancel'];
+    const requestOptions = ['Remove this notification', 'Cancel'];
 
-    const cancelIndex = 2;
+    const cancelIndex = 1;
 
     const adminActionSheet = actionSheet(
       requestOptions,
@@ -70,9 +77,10 @@ class NotificationCard extends React.Component {
     return (
       <ProfileImage
         imageStyle={{ height: 50, width: 50, borderRadius: 5 }}
+        defaultImageStyle={styles.defaultImageStyle}
         imageUrl={imageUrl}
         rounded
-        imageContainerStyle={styles.imageContainerStyle}
+        imageContainerStyle={styles.imageContainerStyle}  
         userId=''
       />
     );
@@ -80,9 +88,10 @@ class NotificationCard extends React.Component {
 
   renderOptions() {
     return (
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity 
+        activeOpacity={0.85}
         onPress={() => this.handleOptionsOnPress()}
-        style={{ alignSelf: 'center', justifyContent: 'center' }}
+        style={{ alignSelf: 'center', justifyContent: 'center', padding: 5, paddingTop: 10, paddingBottom: 10 }}
       >
         <Image
           style={{ width: 23, height: 19, tintColor: '#33485e' }}
@@ -102,7 +111,7 @@ class NotificationCard extends React.Component {
     return (
       <View style={{ flex: 1, marginLeft: 10, marginRight: 18 }}>
         <Text
-          style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13, marginTop: 2 }}
+          style={{ flexWrap: 'wrap', color: 'black', fontSize: 13, marginTop: 2 }}
           numberOfLines={2}
           ellipsizeMode='tail'
         >
@@ -118,20 +127,26 @@ class NotificationCard extends React.Component {
   render() {
     const { item } = this.props;
     if (!item) return null;
+    if (!item.parsedNoti) return null;
+    if (item.parsedNoti.error) {
+      console.warn(`${DEBUG_KEY}: invalid notification with error: `, item.parsedNoti.error);
+      return null;
+    }
     // If read, backgroundColor is: '#eef8fb'
-    const read = false;
+    const read = this.props.read;
     const cardContainerStyle = read
       ? { ...styles.cardContainerStyle }
       : { ...styles.cardContainerStyle, backgroundColor: '#eef8fb' };
     return (
-      <TouchableOpacity activeOpacity={0.85}
+      <DelayedButton 
+        activeOpacity={0.85}
         style={cardContainerStyle}
         onPress={() => this.handleNotificationCardOnPress(item)}
       >
         {this.renderProfileImage(item)}
         {this.renderContent(item)}
         {this.renderOptions(item)}
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 }
@@ -140,17 +155,48 @@ const styles = {
   cardContainerStyle: {
     flexDirection: 'row',
     padding: 12,
+    paddingTop: 10,
+    paddingBottom: 10,
     alignItems: 'center'
   },
   imageContainerStyle: {
     borderWidth: 0.5,
-    padding: 1.5,
+    padding: 0.5,
     borderColor: 'lightgray',
     alignItems: 'center',
     borderRadius: 6,
     alignSelf: 'center',
     backgroundColor: 'white'
   },
+  defaultImageStyle: {
+    width: 44, 
+    height: 48, 
+    borderRadius: 5, 
+    marginLeft: 3, 
+    marginRight: 3, 
+    marginTop: 1, 
+    marginBottom: 1
+  }
 };
 
-export default NotificationCard;
+const mapStateToProps = (state, props) => {
+  const { data } = state.notification.unread;
+  const { item } = props;
+  let read = true;
+  if (item && item._id) {
+    read = !data.some(a => a._id === item._id);
+  }
+
+  return {
+    read
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  {
+    removeNotification,
+    markNotifAsRead,
+    openNotificationDetail
+  }
+)(NotificationCard);

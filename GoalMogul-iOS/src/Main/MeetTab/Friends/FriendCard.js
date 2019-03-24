@@ -2,19 +2,16 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
-  Image,
-  ActionSheetIOS
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Button, Icon } from 'react-native-elements';
 
 // Components
 import Name from '../../Common/Name';
+import ProfileImage from '../../Common/ProfileImage';
 
 // Assets
 import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
-// import meetSetting from '../../../asset/utils/meetSetting.png';
 
 // Actions
 import {
@@ -33,15 +30,12 @@ const BLOCK_INDEX = 0;
 const UNFRIEND_INDEX = 1;
 const CANCEL_INDEX = 2;
 const TAB_KEY = 'friends';
+const DEBUG_KEY = '[ UI FriendCard ]';
 
 class FriendCard extends Component {
   state = {
     requested: false,
     accpeted: false
-  }
-
-  componentWillReceiveProps(props) {
-    // console.log('new props for meet card are: ', props);
   }
 
   // onButtonClicked = (friendshipId) => {
@@ -71,31 +65,40 @@ class FriendCard extends Component {
   //   });
   // }
 
-  handleOnOpenProfile = () => {
-    const { _id } = this.props.item;
+  handleOnOpenProfile = (item) => {
+    const { _id } = item;
     if (_id) {
-      return this.props.openProfile(_id);
+      // return this.props.openProfile(_id);
     }
     // TODO: showToast
   }
 
-  renderProfileImage() {
-    const { image } = this.props.item.profile;
-    let profileImage = (
-      <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />
-    );
-    if (image) {
-      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
-      profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
-    }
-    return profileImage;
+  renderProfileImage(item) {
+    const { profile, _id } = item;
+    
+    // let profileImage = (
+    //   <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />
+    // );
+    // if (image) {
+    //   const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+    //   profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
+    // }
+    // return profileImage;
+    return (
+      <ProfileImage 
+        imageStyle={styles.imageStyle}
+        imageUrl={profile && profile.image ? profile.image : undefined}
+        imageContainerStyle={styles.imageContainerStyle}
+        userId={_id}
+      />
+    )
   }
 
-  /*
-  NOTE: friends card doesn't have any button. only on profile page
-  */
+  /**
+   * NOTE: friends card doesn't have any button. only on profile page
+   */
   renderButton(_id) {
-    return '';
+    return null;
     // return (
     //   <TouchableOpacity activeOpacity={0.85} onPress={this.onButtonClicked.bind(this, _id)}>
     //     <Image source={meetSetting} style={styles.settingIconStyle} />
@@ -103,8 +106,8 @@ class FriendCard extends Component {
     // );
   }
 
-  renderInfo() {
-    const { name } = this.props.item;
+  renderInfo(item) {
+    const { name } = item;
     return (
       <View style={styles.infoContainerStyle}>
         <View style={{ flex: 1, flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
@@ -118,34 +121,70 @@ class FriendCard extends Component {
     );
   }
 
-  // TODO: decide the final UI for additional info
-  renderAdditionalInfo() {
-    return '';
-    // const { profile } = this.props.item;
-    // let content = '';
-    // if (profile.elevatorPitch) {
-    //   content = profile.elevatorPitch;
-    // } else if (profile.about) {
-    //   content = profile.about;
-    // }
-    // return (
-    //   <View style={{ flex: 1 }}>
-    //     <Text
-    //       style={styles.titleTextStyle}
-    //       numberOfLines={1}
-    //       ellipsizeMode='tail'
-    //     >
-    //       <Text style={styles.detailTextStyle}>
-    //         {content}
-    //       </Text>
-    //     </Text>
-    //   </View>
-    // );
+  /**
+   * Render user top goals and needs
+   * @param {} item 
+   */
+  renderGoals(item) {
+    const { topGoals, topNeeds } = item;
+
+    let topGoalText = 'None shared';
+    if (topGoals !== null && topGoals !== undefined && topGoals.length !== 0) {
+      topGoalText = '';
+      topGoals.forEach((g, index) => {
+        if (index !== 0) {
+          topGoalText = `${topGoalText}, ${g}`; 
+        } else {
+          topGoalText = `${g}`; 
+        }
+      });
+    }
+
+    let topNeedText = 'None shared';
+    if (topNeeds !== null && topNeeds !== undefined && topNeeds.length !== 0) {
+      topNeedText = '';
+      topNeeds.forEach((n, index) => {
+        if (index !== 0) {
+          topNeedText = `${topNeedText}, ${n}`; 
+        } else {
+          topNeedText = `${n}`; 
+        }
+      });
+    }
+
+    return (
+      <View style={styles.infoContainerStyle}>
+        <View style={{ flex: 1, marginRight: 6 }}>
+          <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginBottom: 2 }}>
+            <Text style={styles.subTitleTextStyle}>Goals: </Text>
+            <Text style={styles.bodyTextStyle}>{topGoalText}</Text>
+          </Text>
+          <Text numberOfLines={1} ellipsizeMode='tail'>
+            <Text style={styles.subTitleTextStyle}>Needs: </Text>
+            <Text style={styles.bodyTextStyle}>{topNeedText}</Text>
+          </Text>
+        </View>
+      </View>
+    );
   }
 
-  renderOccupation() {
-    const { profile } = this.props.item;
-    if (profile.occupation) {
+  renderHeadline(item) {
+    const { headline } = item;
+    return (
+      <Text
+        style={styles.jobTitleTextStyle}
+        numberOfLines={1}
+        ellipsizeMode='tail'
+      >
+        {headline}
+      </Text>
+    );
+  }
+
+  renderOccupation(item) {
+    // console.log(`${DEBUG_KEY}: item is: `, item);
+    const { profile } = item;
+    if (profile && profile.occupation) {
       return (
         <Text
           style={styles.titleTextStyle}
@@ -156,33 +195,29 @@ class FriendCard extends Component {
         </Text>
       );
     }
-    return '';
+    return;
   }
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     const { headline } = item;
     return (
       <TouchableOpacity
         activeOpacity={0.85}
         style={[styles.containerStyle, cardBoxShadow]}
-        onPress={this.handleOnOpenProfile}
+        onPress={() => this.handleOnOpenProfile(item)}
       >
-        {this.renderProfileImage()}
+        {this.renderProfileImage(item)}
 
         <View style={styles.bodyContainerStyle}>
-          {this.renderInfo()}
-          {this.renderOccupation()}
-          <Text
-            style={styles.jobTitleTextStyle}
-            numberOfLines={1}
-            ellipsizeMode='tail'
-          >
-            {headline}
-          </Text>
-          {this.renderAdditionalInfo()}
+          {this.renderInfo(item)}
+          {/* 
+            {this.renderOccupation(item)}
+            {this.renderHeadline(item)}
+          */}
+          {this.renderGoals(item)}
         </View>
       </TouchableOpacity>
     );
@@ -213,35 +248,33 @@ const styles = {
     width: 48,
     borderRadius: 5,
   },
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 0.5,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+    backgroundColor: 'white'
+  },
   buttonContainerStyle: {
     marginLeft: 8,
     flexDirection: 'row',
     justifyContent: 'flex-end'
   },
-  buttonStyle: {
-    width: 70,
-    height: 26,
-    borderWidth: 1,
-    borderColor: '#17B3EC',
-    borderRadius: 13,
-  },
-  buttonTextStyle: {
-    color: '#17B3EC',
-    fontSize: 11,
-    fontWeight: '700',
-    paddingLeft: 1,
-    padding: 0,
-    alignSelf: 'center'
-  },
   settingIconStyle: {
     height: 20,
     width: 20
   },
-  buttonIconStyle: {
-    marginTop: 1
+  // Top goals and needs text style
+  subTitleTextStyle: {
+    color: '#17B3EC',
+    fontSize: 12,
+    fontWeight: '600'
   },
-  needContainerStyle: {
-
+  bodyTextStyle: {
+    fontSize: 12,
+    color: '#9B9B9B'
   },
   titleTextStyle: {
     color: '#17B3EC',
@@ -259,13 +292,6 @@ const styles = {
     fontWeight: '800',
     paddingTop: 5,
     paddingBottom: 3
-  },
-  friendTextStyle: {
-    paddingLeft: 10,
-    color: '#17B3EC',
-    fontSize: 9,
-    fontWeight: '800',
-    maxWidth: 120
   }
 };
 

@@ -5,22 +5,123 @@ import { Permissions, Notifications, SecureStore, Linking } from 'expo';
 import { Alert } from 'react-native';
 import _ from 'lodash';
 
-import { api as API, queryBuilderBasicBuilder } from '../../middleware/api';
+// Components
+import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal';
+
+import { isString, queryBuilderBasicBuilder } from '../../middleware/utils';
+import { api as API } from '../../middleware/api';
 
 import {
-  NOTIFICATION_MARK_ALL_READ,
+  openProfile
+} from '../../../actions';
+
+import {
+  openGoalDetailById,
+  openGoalDetail
+} from '../home/mastermind/actions';
+
+import {
+  openPostDetailById,
+  openPostDetail
+} from '../feed/post/PostActions';
+
+import {
+  openShareDetail
+} from '../feed/post/ShareActions';
+
+import {
+  myTribeDetailOpenWithId
+} from '../tribe/MyTribeActions'
+
+import {
+  myEventDetailOpenWithId
+} from '../event/MyEventActions';
+
+import {
   NOTIFICATION_UNSUBSCRIBE,
-  NOTIFICATION_SUBSCRIBE
+  NOTIFICATION_SUBSCRIBE,
+  NOTIFICATION_DELETE,
+  NOTIFICATION_DELETE_SUCCESS,
+  NOTIFICATION_DELETE_FAIL,
+  NOTIFICATION_UNREAD_LOAD,
+  NOTIFICATION_UNREAD_MARK_AS_READ,
 } from './NotificationTabReducers';
 
 const BASE_ROUTE = 'secure/notification';
 const DEBUG_KEY = '[ Action Notification ]';
 const NOTIFICATION_TOKEN_KEY = 'notification_token_key';
 const NOTIFICATION_ALERT_SHOWN = 'notification_alert_shown';
+const NOTIFICATION_UNREAD_QUEUE_PREFIX = 'notification_unread_queue_prefix';
 
+const isValidItem = (item) => item !== undefined && item !== null && !_.isEmpty(item);
+/**
+ * 
+ * @param {*} parsedNoti:{notificationMessage, icon, path} 
+ */
 export const openNotificationDetail = (item) => (dispatch, getState) => {
-  // TODO: use the item.parsedNoti.path to determine which detail to open
+  // TODO: use the parsedNoti.path to determine which detail to open
+  // console.log(`${DEBUG_KEY}: item is:`, item);
+  const { parsedNoti, _id } = item;
+  const { path } = parsedNoti;
+  if (!isString(path)) {
+    console.warn(`${DEBUG_KEY}: path in parsedNoti is not string: `, path);
+    return;
+  }
+  const p = path.split('/');
+  if (p.length < 2) {
+    console.warn(`${DEBUG_KEY}: malformatted path:`, path);
+    return;
+  }
 
+  const entityType = p[0];
+  const entityId = p[1];
+
+  // Mark this notification as read
+  markNotifAsRead(_id)(dispatch, getState);
+
+  if (entityType === 'user') {
+    return openProfile(entityId)(dispatch, getState);
+  }
+
+  if (entityType === 'post') {
+    if (isValidItem(item.postRef)) {
+      return openPostDetail(item.postRef)(dispatch, getState);  
+    }
+    return openPostDetailById(entityId)(dispatch, getState);
+  }
+
+  if (entityType === 'goal') {
+    if (isValidItem(item.goalRef)) {
+      let initialProps = {};
+      if (item.commentRef) {
+        initialProps = {
+          focusType: 'comment',
+          focusRef: undefined,
+          initialShowSuggestionModal: false
+        }
+      }
+      return openGoalDetail(item.goalRef, initialProps)(dispatch, getState);  
+    }
+    return openGoalDetailById(entityId)(dispatch, getState);
+  }
+
+  // if (entityType === 'share') {
+  //   return openShareDetail(entityId)(dispatch, getState);
+  // }
+
+  if (entityType === 'event') {
+    return myEventDetailOpenWithId(entityId)(dispatch, getState);
+  }
+
+  if (entityType === 'tribe') {
+    return myTribeDetailOpenWithId(entityId)(dispatch, getState);
+  }
+
+  if (entityType === 'chat') {
+    // TODO: Chat
+    // return this.props.openPostDetailById(entityId)(dispatch, getState);
+    return;
+  }
 };
 
 /**
@@ -144,6 +245,11 @@ export const subscribeEntityNotification = (entityId, entityKind) => (dispatch, 
         entityKind
       }
     });
+
+    setTimeout(() => {
+      console.log(`${DEBUG_KEY}: [ subscribeEntityNotification ]: showing alert`);
+      DropDownHolder.alert('success', 'Successfully subscribe to notification', '');
+    }, 200);
   };
 
   const onError = (err) => {
@@ -186,6 +292,10 @@ export const unsubscribeEntityNotification = (entityId, entityKind) => (dispatch
         entityKind
       }
     });
+    setTimeout(() => {
+      console.log(`${DEBUG_KEY}: [ unsubscribeEntityNotification ]: showing alert`);
+      DropDownHolder.alert('success', 'Successfully unsubscribe notification', '');
+    }, 200);
   };
 
   const onError = (err) => {
@@ -240,31 +350,106 @@ const unsubscribeNotification = (requestBody, onSuccess, onError) => (dispatch, 
 };
 
 /**
- * User marks all of the notifications as read
+ * User deletes a notification
  */
-export const markAllNotificationAsRead = () => (dispatch, getState) => {
+export const removeNotification = (notificationId) => (dispatch, getState) => {
   const { token } = getState().user;
 
+  dispatch({
+    type: NOTIFICATION_DELETE,
+    payload: {
+      type: 'notifications',
+      notificationId
+    }
+  });
+
   const onSuccess = (res) => {
-    console.log(`${DEBUG_KEY}: mark all notification read succeed with res:`, res);
+    console.log(`${DEBUG_KEY}: delete notification with id: ${notificationId} 
+      success with res: `, res);
     dispatch({
-      type: NOTIFICATION_MARK_ALL_READ
+      type: NOTIFICATION_DELETE_SUCCESS,
+      payload: {
+        type: 'notifications',
+        notificationId
+      }
     });
   };
 
   const onError = (err) => {
-    console.log(`${DEBUG_KEY}: mark all notification read failed with err:`, err);
+    console.log(`${DEBUG_KEY}: delete notification with id: ${notificationId} 
+      failed with err: `, err);
+    dispatch({
+      type: NOTIFICATION_DELETE_FAIL,
+      payload: {
+        type: 'notifications',
+        notificationId
+      }
+    });
   };
 
   API
-    .post(`${BASE_ROUTE}/entity/read`, {}, token)
+    .delete(`${BASE_ROUTE}/entity/${notificationId}`, {}, token)
     .then((res) => {
       if (res.status === 200) {
         return onSuccess(res);
       }
-      return onError(res);
+      onError(res);
     })
     .catch(err => {
       onError(err);
     });
+};
+
+/* Actions related to unread notification */
+export const loadUnreadNotification = () => async (dispatch, getState) => {
+  const { userId } = getState().user;
+  const unReadNotificationKey = `${NOTIFICATION_UNREAD_QUEUE_PREFIX}_${userId}`;
+
+  const unreadQueue = await SecureStore.getItemAsync(unReadNotificationKey, {});
+
+  // Deserialize the json serialized object
+  const parsedUnreadQueue = JSON.parse(unreadQueue);
+  console.log(`${DEBUG_KEY}: get unread notification queue with res:`, parsedUnreadQueue);
+
+  if (!parsedUnreadQueue || _.isEmpty(parsedUnreadQueue)) {
+    console.log(`${DEBUG_KEY}: [ Load Unread Queue ] abort as queue empty:`, parsedUnreadQueue);
+    return;
+  }
+
+  dispatch({
+    type: NOTIFICATION_UNREAD_LOAD,
+    payload: {
+      data: parsedUnreadQueue
+    }
+  });
+};
+
+// User opens up one notification and mark it as read
+export const markNotifAsRead = (notificationId) => (dispatch, getState) => {
+  dispatch({
+    type: NOTIFICATION_UNREAD_MARK_AS_READ,
+    payload: {
+      notificationId
+    }
+  });
+};
+
+// On user logout or app state change, we store the unread notification
+export const saveUnreadNotification = () => async (dispatch, getState) => {
+  const { userId } = getState().user;
+  const { data } = getState().notification.unread;
+  const unReadNotificationKey = `${NOTIFICATION_UNREAD_QUEUE_PREFIX}_${userId}`;
+
+  if (!data || data.length === 0) {
+    console.log(`${DEBUG_KEY}: [Save Unread Notification] abort as no data to save`);
+    return;
+  }
+
+  const dataToStore = JSON.stringify(data);
+  console.log(`${DEBUG_KEY}: [Save Unread Notification] data to store is:`, dataToStore);
+  const res = await SecureStore.setItemAsync(
+    unReadNotificationKey, dataToStore, {}
+  );
+  console.log(`${DEBUG_KEY}: [Save Unread Notification] done with res: `, res);
+  return;
 };

@@ -11,13 +11,17 @@ import { SearchBar } from 'react-native-elements';
 import _ from 'lodash';
 
 import {
-  switchCaseF
+  switchCaseF, switchCase
 } from '../../../../redux/middleware/utils';
 
 // Components
 import TribeCard from './TribeCard';
 import UserCard from './UserCard';
 import EventCard from './EventCard';
+import {
+  SearchIcon
+} from '../../../../Utils/Icons';
+import EmptyResult from '../../../Common/Text/EmptyResult';
 
 // Actions
 import {
@@ -25,6 +29,8 @@ import {
   clearSearchState,
   refreshSearchResult,
   onLoadMore,
+  refreshPreloadData,
+  loadMorePreloadData
 } from '../../../../redux/modules/feed/comment/SuggestionSearchActions';
 
 import {
@@ -35,6 +41,14 @@ import {
   getNewCommentByTab
 } from '../../../../redux/modules/feed/comment/CommentSelector';
 
+// Constants
+import {
+  SUGGESTION_SEARCH_LIMIT
+} from '../../../../redux/modules/feed/comment/SuggestionSearchReducers';
+import { arrayUnique } from '../../../../reducers/MeetReducers';
+
+const DEBUG_KEY = '[ UI SearchSuggestion ]';
+
 class SearchSuggestion extends React.Component {
   state = {
     query: ''
@@ -42,9 +56,16 @@ class SearchSuggestion extends React.Component {
 
   // Search Query handler
   handleSearchCancel = () => {
+    console.log(`${DEBUG_KEY}: search cancel`);
     this.handleQueryChange('');
     this.props.clearSearchState();
+
+    // This is a hacky way to work around SearchBar bug
+    // We have to trigger focus again before calling blur
+    this.searchBar.focus();
+    this.searchBar.blur();
   };
+
   handleSearchClear = () => this.handleQueryChange('');
 
   handleQueryChange = query => {
@@ -54,8 +75,27 @@ class SearchSuggestion extends React.Component {
     }
     if (query === '') {
       this.props.clearSearchState(this.props.selectedTab);
+      return;
     }
     this.props.debouncedSearch(query.trim(), this.props.selectedTab);
+  }
+
+  handleRefresh = () => {
+    const { searchType, searchContent } = this.props;
+    // If there is no search input and user refresh, we refresh the preload data
+    if (searchContent === undefined || searchContent.trim() === '') {
+      return this.props.refreshPreloadData(searchType);
+    }
+    this.props.refreshSearchResult();
+  }
+
+  handleLoadMore = () => {
+    const { searchType, hasNextPage } = this.props;
+    if (hasNextPage === false) {
+      this.props.loadMorePreloadData(searchType);
+      return;
+    }
+    this.props.onLoadMore();
   }
 
   renderItem = ({ item }) => {
@@ -66,28 +106,48 @@ class SearchSuggestion extends React.Component {
       User: (
         <UserCard
           item={item}
-          onCardPress={(val) => this.props.onSuggestionItemSelect(val, pageId)}
+          onCardPress={(val) => {
+            this.props.onSuggestionItemSelect(val, pageId);
+            if (this.props.onSelect) {
+              this.props.onSelect();
+            }
+          }}
           selected={selected}
         />
       ),
       Tribe: (
         <TribeCard
           item={item}
-          onCardPress={(val) => this.props.onSuggestionItemSelect(val, pageId)}
+          onCardPress={(val) => {
+            this.props.onSuggestionItemSelect(val, pageId);
+            if (this.props.onSelect) {
+              this.props.onSelect();
+            }
+          }}
           selected={selected}
         />
       ),
       Event: (
         <EventCard
           item={item}
-          onCardPress={(val) => this.props.onSuggestionItemSelect(val, pageId)}
+          onCardPress={(val) => {
+            this.props.onSuggestionItemSelect(val, pageId);
+            if (this.props.onSelect) {
+              this.props.onSelect();
+            }
+          }}
           selected={selected}
         />
       ),
       Friend: (
         <UserCard
           item={item}
-          onCardPress={(val) => this.props.onSuggestionItemSelect(val, pageId)}
+          onCardPress={(val) => {
+            this.props.onSuggestionItemSelect(val, pageId);
+            if (this.props.onSelect) {
+              this.props.onSelect();
+            }
+          }}
           selected={selected}
         />
       ),
@@ -102,6 +162,7 @@ class SearchSuggestion extends React.Component {
       : `Search ${this.props.suggestionType}`;
     return (
       <SearchBar
+        ref={(ref) => { this.searchBar = ref; }}
         platform='ios'
         round
         autoFocus={false}
@@ -116,12 +177,35 @@ class SearchSuggestion extends React.Component {
         showLoading={this.props.loading}
         onClear={this.handleSearchClear}
         value={this.props.searchContent}
+        clearIcon={null}
+        searchIcon={() => (
+          <SearchIcon 
+            iconContainerStyle={{ marginBottom: 3, marginTop: 1 }} 
+            iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
+          />
+        )}
       />
     );
   }
 
+  renderListFooter() {
+    const { loading, data } = this.props;
+    // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
+    if (loading && data.length >= SUGGESTION_SEARCH_LIMIT) {
+      return (
+        <View
+          style={{
+            paddingVertical: 20
+          }}
+        >
+          <ActivityIndicator size='small' />
+        </View>
+      );
+    }
+  }
+
   render() {
-    const { opacity } = this.props;
+    const { opacity, searchType } = this.props;
     return (
       <Animated.View style={{ opacity }}>
         {this.renderSearch()}
@@ -130,20 +214,28 @@ class SearchSuggestion extends React.Component {
             data={this.props.data}
             renderItem={this.renderItem}
             keyExtractor={(item) => item._id}
-            onEndReached={() => this.props.onLoadMore()}
+            onEndReached={() => this.handleLoadMore()}
             onEndReachedThreshold={0}
-            onRefresh={() => this.props.refreshSearchResult()}
-            refreshing={this.props.loading}
+            onRefresh={() => this.handleRefresh()}
+            refreshing={this.props.refreshing}
+            ListFooterComponent={this.renderListFooter()}
+            ListEmptyComponent={
+              this.props.refreshing ? null :
+              <EmptyResult text={switchEmptyText(searchType)} textStyle={{ paddingTop: 130 }} />
+            }
           />
         </View>
       </Animated.View>
     );
-    // data={[...this.props.data, ...testData[this.props.suggestionType]]}
-    // onRefresh={this.handleRefresh}
-    // refreshing={this.props.refreshing}
-    // ListEmptyComponent={<EmptyResult text={'You haven\'t added any friends'} />}
   }
 }
+
+const switchEmptyText = (searchType) => switchCase({
+  User: 'No user found',
+  Event: 'No event found',
+  Tribe: 'No tribe found',
+  ChatConvoRoom: 'No chat room found'
+})('No search result')(searchType);
 
 const styles = {
   // search related styles
@@ -172,164 +264,6 @@ const styles = {
   },
 };
 
-const testData = {
-  User: [
-    {
-      name: 'Jia Zeng',
-      headline: 'Students at Duke University',
-      request: false,
-      _id: '120937109287091',
-      profile: {
-        about: 'this is about for jia zeng',
-      }
-    },
-    {
-      name: 'Peter Kushner',
-      headline: 'CEO at start industries',
-      request: false,
-      _id: '019280980248303',
-      profile: {
-        about: 'this is about for jia zeng',
-      }
-    }
-  ],
-  Friend: [
-    {
-      name: 'Jia Zeng',
-      headline: 'Students at Duke University',
-      request: false,
-      _id: '120937109287091',
-      profile: {
-        about: 'this is about for jia zeng',
-      }
-    },
-    {
-      name: 'Peter Kushner',
-      headline: 'CEO at start industries',
-      request: false,
-      _id: '019280980248303',
-      profile: {
-        about: 'this is about for jia zeng',
-      }
-    }
-  ],
-  Tribe: [
-    {
-      _id: '123170293817024',
-      created: '',
-      name: 'SoHo Artists',
-      membersCanInvite: true,
-      isPubliclyVisible: true,
-      membershipLimit: 100,
-      description: 'This group is for all artists currently living in or working out of ' +
-      'SoHo, NY. We exchange ideas, get feedback from each other and help each other ' +
-      'organize exhiits for our work!',
-      picture: '',
-      members: [
-        {
-          _id: '1203798700',
-          name: 'Jia Zeng',
-          profile: {
-            image: undefined
-          }
-        }
-      ],
-      memberCount: 10,
-    },
-    {
-      _id: '123170293817023',
-      created: '',
-      name: 'Comic fans',
-      membersCanInvite: true,
-      isPubliclyVisible: true,
-      membershipLimit: 20,
-      description: 'This group is dedicated to the fan of comics in LA!',
-      picture: '',
-      members: [
-        {
-          _id: '1203798705',
-          name: 'Super Andy',
-          profile: {
-            image: undefined
-          }
-        }
-      ],
-      memberCount: 19,
-    }
-  ],
-  Event: [
-    {
-      _id: '980987230941',
-      created: '2018-09-03T05:46:44.038Z',
-      creator: {
-        // User ref
-        name: 'Jia Zeng'
-      },
-      title: 'Jay\'s end of internship party',
-      start: '2018-09-05T05:46:44.038Z',
-      durationHours: 2,
-      participantsCanInvite: true,
-      isInviteOnly: true,
-      participantLimit: 100,
-      location: '100 event ave, NY',
-      description: 'Let\'s get together to celebrate Jay\'s birthday',
-      picture: '',
-      participants: [
-        {
-          _id: '123698172691',
-          name: 'Super Andy',
-          profile: {
-            image: undefined
-          }
-        },
-        {
-          _id: '123698172692',
-          name: 'Mike Gai',
-          profile: {
-            image: undefined
-          }
-        }
-      ],
-      participantCount: 2,
-    },
-    {
-      _id: '980987230942',
-      created: '2018-6-03T05:46:44.038Z',
-      creator: {
-        // User ref
-        name: 'David Bogger'
-      },
-      title: 'Back to school party',
-      start: '2018-09-10T05:46:44.038Z',
-      durationHours: 3,
-      participantsCanInvite: false,
-      isInviteOnly: true,
-      participantLimit: 30,
-      location: 'TBD',
-      description: 'We do nothing and simple enjoy life',
-      picture: '',
-      participants: [
-        {
-          _id: '123698172693',
-          name: 'Batman',
-          profile: {
-            image: undefined
-          }
-        },
-        {
-          _id: '123698172694',
-          name: 'Captain America',
-          profile: {
-            image: undefined
-          }
-        }
-      ],
-      participantCount: 2,
-    }
-  ],
-  ChatConvoRoom: []
-};
-
 const mapDispatchToProps = (dispatch) => {
   const debouncedSearch = _.debounce((value, type) => dispatch(handleSearch(value, type)), 400);
 
@@ -338,21 +272,47 @@ const mapDispatchToProps = (dispatch) => {
     clearSearchState: clearSearchState(dispatch),
     refreshSearchResult: () => dispatch(refreshSearchResult()),
     onLoadMore: () => dispatch(onLoadMore()),
-    onSuggestionItemSelect: (val, pageId) => dispatch(onSuggestionItemSelect(val, pageId))
+    onSuggestionItemSelect: (val, pageId) => dispatch(onSuggestionItemSelect(val, pageId)),
+    refreshPreloadData: (searchType) => dispatch(refreshPreloadData(searchType)),
+    loadMorePreloadData: (searchType) => dispatch(loadMorePreloadData(searchType))
   });
 };
 
 const mapStateToProps = (state, props) => {
   const { suggestionType, selectedItem } = getNewCommentByTab(state, props.pageId).tmpSuggestion;
-  const { searchRes, searchContent } = state.suggestionSearch;
-  const { data, loading } = searchRes;
+  const { searchRes, searchContent, preloadData, searchType } = state.suggestionSearch;
+  const { data, loading, refreshing, hasNextPage } = searchRes;
+
+  let dataToRender = data;
+  let refreshingToUse = refreshing;
+  let loadingToUse = loading;
+  if (_.has(preloadData, searchType)) {
+    // Get the preloaded data with the right path
+    // e.g. User.data, Event.data...
+    const preloadDataToRender = _.get(preloadData, `${searchType}.data`);
+    const preloadDataLoadingState = _.get(preloadData, `${searchType}.loading`);
+    const preloadDataRefreshingState = _.get(preloadData, `${searchType}.refreshing`);
+
+    if (searchContent === undefined || searchContent.trim() === '') {
+      // Use preload data when searchContent is empty
+      dataToRender = preloadDataToRender;
+      refreshingToUse = preloadDataRefreshingState;
+    } else if (hasNextPage === false) {
+      // Data concat with preload data when hasNextPage is false
+      dataToRender = arrayUnique([...data, ...preloadDataToRender]);
+      loadingToUse = preloadDataLoadingState;
+    }
+  }
 
   return {
     suggestionType,
-    data,
-    loading,
+    data: dataToRender,
+    loading: loadingToUse,
+    refreshing: refreshingToUse,
     searchContent,
-    selectedItem
+    selectedItem,
+    searchType,
+    hasNextPage // For handleLoadMore to determine whether to load more preload data or search data 
   };
 };
 

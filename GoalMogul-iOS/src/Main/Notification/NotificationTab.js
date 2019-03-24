@@ -6,20 +6,27 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements';
 import _ from 'lodash';
+import { Actions } from 'react-native-router-flux';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
-import NotificationCard from './NotificationCard';
-import NotificationNeedCard from './NotificationNeedCard';
+import NotificationCard from './Notification/NotificationCard';
+import NotificationNeedCard from './Need/NotificationNeedCard';
 import EmptyResult from '../Common/Text/EmptyResult';
+import DelayedButton from '../Common/Button/DelayedButton';
+import {
+  RightArrowIcon
+} from '../../Utils/Icons';
 
 // Actions
 import {
   seeMoreNotification,
   seeLessNotification,
-  refreshNotifications
+  refreshNotificationTab,
+  fetchUnreadCount,
+  clearUnreadCount,
+  markAllNotificationAsRead
 } from '../../redux/modules/notification/NotificationTabActions';
 
 // Selectors
@@ -28,27 +35,97 @@ import {
   getNotificationNeeds
 } from '../../redux/modules/notification/NotificationSelector';
 
+// Styles
+import {
+  APP_BLUE
+} from '../../styles';
+
 // Constants
 const DEBUG_KEY = '[ UI NotificationTab ]';
 
 class NotificationTab extends Component {
+  constructor(props) {
+    super(props);
+    this.setTimer = this.setTimer.bind(this);
+    this.stopTimer = this.stopTimer.bind(this);
+  }
+
+  componentDidMount() {
+    // Refresh notification tab 
+    console.log(`${DEBUG_KEY}: component did mount`);
+    if (!this.props.data || _.isEmpty(this.props.data.length)) {
+      this.props.refreshNotificationTab();
+    }
+    this.setTimer();
+  }
+
+  componentDidUpdate(prevProps) {
+    // When notification finishes refreshing and 
+    // user is at the notification tab. 
+    // Then send mark all as read
+    const justFinishRefreshing = prevProps.refreshing === true && this.props.refreshing === false;
+    const userOnNotificationPage = this.props.shouldUpdateUnreadCount === false;
+
+    if (justFinishRefreshing && userOnNotificationPage) {
+      this.props.markAllNotificationAsRead();
+    }
+  }
+
+  componentWillUnmount() {
+    // Remove timer before exiting to prevent app from crashing
+    this.stopTimer();
+  }
+
+  setTimer() {
+    this.stopTimer(); // Clear the previous timer if there is one
+
+    console.log(`${DEBUG_KEY}: [ Setting New Timer ] for refreshing unread count`);
+    this.timer = setInterval(() => {
+      console.log(`${DEBUG_KEY}: [ Timer firing ] Fetching unread count.`);
+      this.props.fetchUnreadCount();
+    }, 10000);
+  }
+
+  stopTimer() {
+    if (this.timer !== undefined) {
+      console.log(`${DEBUG_KEY}: [ Timer clearing ]`);
+      clearInterval(this.timer);
+    }
+  }
+
+  refreshNotification() {
+    console.log(`${DEBUG_KEY}: refreshing notification`);
+    // Stop timer before sending the mark all notification as read to prevent race condition
+    this.stopTimer();
+    this.props.refreshNotificationTab();
+    this.props.clearUnreadCount();
+    this.props.markAllNotificationAsRead();
+    // Reset timer after we successfully mark all current notification as read
+    this.setTimer();
+  }
+
   keyExtractor = (item) => item._id;
 
   handleRefresh = () => {
-    this.props.refreshNotifications();
+    this.props.refreshNotificationTab();
   }
 
   renderSeeMore = (item) => {
-    const onPress = item.type === 'seemore'
-      ? () => this.props.seeMoreNotification()
-      : () => this.props.seeLessNotification();
+    // const onPress = item.type === 'seemore'
+    //   ? () => this.props.seeMoreNotification()
+    //   : () => this.props.seeLessNotification();
+    if (item.type !== 'seemore') return;
 
+    const onPress = item.notificationType === 'notification'
+      ? () => Actions.push('notificationList')
+      : () => Actions.push('notificationNeedList');
     return <SeeMoreButton text={item.text} onPress={onPress} />;
   }
 
   renderHeader = (item) => {
-    const { text } = item;
-    return <TitleComponent text={text} />;
+    return (
+        <TitleComponent item={item} />
+    );
   }
 
   renderItem = (props) => {
@@ -65,15 +142,11 @@ class NotificationTab extends Component {
       return <NotificationNeedCard item={item} />;
     }
     if (item.type === 'empty') {
-      return <EmptyResult text='You have no notifications' />;
+      return <EmptyResult text='You have no notifications' textStyle={{ paddingTop: 260 }} />;
     }
     return (
       <NotificationCard item={item} />
     );
-  }
-
-  renderListHeader = () => {
-    return null;
   }
 
   render() {
@@ -87,12 +160,11 @@ class NotificationTab extends Component {
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <SearchBarHeader rightIcon='menu' />
         <FlatList
-          data={TestData}
+          data={dataToRender}
           renderItem={this.renderItem}
           keyExtractor={this.keyExtractor}
           onRefresh={this.handleRefresh}
-          refreshing={this.props.loading}
-          ListHeaderComponent={this.renderListHeader}
+          refreshing={this.props.refreshing}
         />
       </View>
     );
@@ -103,7 +175,7 @@ const TestData = [
   { _id: '0', type: 'header', text: 'Notifications' },
   { _id: '1' },
   { _id: '2' },
-  { _id: '3', type: 'seemore' },
+  { _id: '3', type: 'seemore', text: 'See More' },
   { _id: '4', type: 'header', text: 'Friend\'s Needs' },
   { _id: '5', type: 'need' }
 ];
@@ -111,7 +183,8 @@ const TestData = [
 const SeeMoreButton = (props) => {
   const { onPress, text } = props;
   return (
-    <TouchableOpacity activeOpacity={0.85}
+    <TouchableOpacity 
+      activeOpacity={0.85}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -121,14 +194,18 @@ const SeeMoreButton = (props) => {
       onPress={() => onPress()}
     >
       <Text style={styles.seeMoreTextStyle}>{text}</Text>
-      <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+      <RightArrowIcon 
+        iconContainerStyle={{ alignSelf: 'center', alignItems: 'center' }}
+        iconStyle={{ tintColor: '#17B3EC', ...styles.iconStyle }}
+      />
+      {/* <View style={{ alignSelf: 'center', alignItems: 'center' }}>
         <Icon
           name='ios-arrow-round-forward'
           type='ionicon'
           color='#17B3EC'
           iconStyle={styles.iconStyle}
         />
-      </View>
+      </View> */}
     </TouchableOpacity>
   );
 };
@@ -137,13 +214,28 @@ const SeeMoreButton = (props) => {
  * Title component at the start of each notification type
  */
 const TitleComponent = (props) => {
-  const { text } = props;
+  const { text, notificationType, length } = props.item;
+  let seeAll = '';
+  if (length !== undefined && length === 0 && notificationType === 'notification') {
+      const { seeAllContainerStyle, seeAllTextStyle } = styles;
+      const onPress = () => Actions.push('notificationList');
+      seeAll = (
+          <DelayedButton
+              style={{ ...seeAllContainerStyle, paddingLeft: 5, alignSelf: 'flex-end' }}
+              activeOpacity={0.85} 
+              onPress={onPress}
+          >
+              <Text style={seeAllTextStyle}>Manage All</Text>
+          </DelayedButton>
+      );
+  }
 
   return (
     <View style={styles.titleComponentContainerStyle}>
       <Text style={{ fontSize: 11, color: '#6d6d6d', fontWeight: '600' }}>
         {text}
       </Text>
+      {seeAll}
     </View>
   );
 };
@@ -151,12 +243,14 @@ const TitleComponent = (props) => {
 const mapStateToProps = (state) => {
   const notificationData = getNotifications(state);
   const notificationNeedData = getNotificationNeeds(state);
-  const { needs, notifications } = state.notification;
+  const { needs, notifications, unread } = state.notification;
+  const { shouldUpdateUnreadCount } = unread;
 
   return {
-    refreshing: false,
+    refreshing: needs.refreshing || notifications.refreshing,
     data: [...notificationData, ...notificationNeedData],
-    loading: needs.loading || notifications.loading
+    loading: needs.loading || notifications.loading,
+    shouldUpdateUnreadCount
   };
 };
 
@@ -169,23 +263,43 @@ const styles = {
   },
   iconStyle: {
     alignSelf: 'center',
-    fontSize: 20,
+    // fontSize: 20,
+    height: 15,
+    width: 20,
     marginLeft: 5,
-    marginTop: 2
   },
   titleComponentContainerStyle: {
     paddingLeft: 12, // Needs to be aligned with NotificationCard padding
+    paddingTop: 10,
     padding: 6,
     borderColor: 'lightgray',
-    borderBottomWidth: 0.5
-  }
+    borderBottomWidth: 0.5,
+    flexDirection: 'row', 
+    alignItems: 'center'
+  },
+  seeAllContainerStyle: {
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  seeAllTextStyle: {
+      color: APP_BLUE,
+      fontSize: 12,
+      fontWeight: '700'
+  },
 };
 
 export default connect(
   mapStateToProps,
   {
-    refreshNotifications,
+    refreshNotificationTab,
     seeMoreNotification,
     seeLessNotification,
-  }
+    fetchUnreadCount,
+    clearUnreadCount,
+    markAllNotificationAsRead
+  },
+  null,
+  { withRef: true }
 )(NotificationTab);

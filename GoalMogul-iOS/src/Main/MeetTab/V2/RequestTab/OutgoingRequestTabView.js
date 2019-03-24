@@ -4,7 +4,8 @@
 import React, { Component } from 'react';
 import {
   View,
-  FlatList
+  FlatList,
+  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -33,6 +34,11 @@ import {
 
 // Test Data
 import { testFriendRequests } from '../../../../Test/TestObjects';
+
+// Constants
+import {
+  MEET_REQUEST_LIMIT
+} from '../../../../reducers/MeetReducers';
 
 // tab key
 const routes = {
@@ -75,6 +81,22 @@ class OutgoingRequestTabView extends Component {
 
     renderItem = ({ item }) => <FriendRequestCardView item={item} />;
 
+    renderListFooter() {
+      const { loading, data } = this.props;
+      // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
+      if (loading && data.length >= MEET_REQUEST_LIMIT) {
+        return (
+          <View
+              style={{
+              paddingVertical: 20
+              }}
+          >
+              <ActivityIndicator size='small' />
+          </View>
+        );
+      }
+    }
+
     render() {
         return (
             <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
@@ -87,12 +109,13 @@ class OutgoingRequestTabView extends Component {
                     onEndReached={this.handleOnLoadMore}
                     onEndReachedThreshold={0}
                     ListEmptyComponent={
-                      this.props.refreshing ? '' :
+                      this.props.refreshing ? null :
                       <EmptyResult
-                        text={'No incoming requests'}
+                        text={'No outgoing requests'}
                         textStyle={{ paddingTop: 220 }}
                       />
                     }
+                    ListFooterComponent={this.renderListFooter()}
                 />
             </View>
         );

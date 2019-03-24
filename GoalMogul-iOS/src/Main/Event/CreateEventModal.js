@@ -20,7 +20,6 @@ import {
   Field,
   reduxForm,
   formValueSelector,
-  SubmissionError
 } from 'redux-form';
 import R from 'ramda';
 import {
@@ -46,10 +45,15 @@ import camera from '../../asset/utils/camera.png';
 import cameraRoll from '../../asset/utils/cameraRoll.png';
 import imageOverlay from '../../asset/utils/imageOverlay.png';
 import expand from '../../asset/utils/expand.png';
-import plus from '../../asset/utils/plus.png';
+
+// Constants
+import {
+  IMAGE_BASE_URL
+} from '../../Utils/Constants';
 
 // const { Popover } = renderers;
 const { width } = Dimensions.get('window');
+const DEBUG_KEY = '[ UI CreateEventModal ]';
 
 class CreateEventModal extends React.Component {
   constructor(props) {
@@ -77,6 +81,8 @@ class CreateEventModal extends React.Component {
 
     // Initialize based on the props, if it's opened through edit button
     const { initializeFromState, event } = this.props;
+    // console.log(`${DEBUG_KEY}: initializeFromState: `, initializeFromState);
+    // console.log(`${DEBUG_KEY}: event: `, event);
     const initialVals = initializeFromState
       ? { ...eventToFormAdapter(event) }
       : { ...defaulVals };
@@ -156,32 +162,34 @@ class CreateEventModal extends React.Component {
   // Renderer for timeline
   renderTimeline = () => {
     const titleText = <Text style={styles.titleTextStyle}>Timeline</Text>;
-    if (!this.props.hasTimeline) {
-      return (
-        <View style={{ ...styles.sectionMargin }}>
-          {titleText}
-          <TouchableOpacity activeOpacity={0.85}
-            style={{
-              height: 40,
-              width: 90,
-              backgroundColor: '#fafafa',
-              borderRadius: 4,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: 8,
-              flexDirection: 'row',
-              padding: 10
-            }}
-            onPress={() => this.props.change('hasTimeline', true)}
-          >
-            <Image source={plus} style={{ height: 11, width: 11 }} />
-            <Text style={{ fontSize: 14, fontWeight: '600', marginLeft: 4 }}>
-              timeline
-            </Text>
-          </TouchableOpacity>
-        </View>
-      );
-    }
+    // Timeline is required to create an event
+    // if (!this.props.hasTimeline) {
+    //   return (
+    //     <View style={{ ...styles.sectionMargin }}>
+    //       {titleText}
+    //       <TouchableOpacity activeOpacity={0.85}
+    //         style={{
+    //           height: 40,
+    //           width: 90,
+    //           backgroundColor: '#fafafa',
+    //           borderRadius: 4,
+    //           alignItems: 'center',
+    //           justifyContent: 'center',
+    //           marginTop: 8,
+    //           flexDirection: 'row',
+    //           padding: 10
+    //         }}
+    //         onPress={() => this.props.change('hasTimeline', true)}
+    //       >
+    //         <Image source={plus} style={{ height: 11, width: 11 }} />
+    //         <Text style={{ fontSize: 14, fontWeight: '600', marginLeft: 4 }}>
+    //           timeline
+    //         </Text>
+    //       </TouchableOpacity>
+    //     </View>
+    //   );
+    // }
+    if (this.props.startTime === undefined) return;
 
     const newPicker = true;
     const startDatePicker = newPicker ? 
@@ -192,9 +200,9 @@ class CreateEventModal extends React.Component {
           onConfirm={(date) => {
             if (validateTime(date, this.props.endTime.date)) {
               this.props.change('startTime', { date, picker: false });
-              return
+              return;
             }
-            alert('Start time should not be later than start time');
+            alert('Start time cannot be later than end time');
           }}
           onCancel={() => 
             this.props.change('startTime', { 
@@ -245,7 +253,7 @@ class CreateEventModal extends React.Component {
                 this.props.change('endTime', { date, picker: false });
                 return
               }
-              alert('End time should not be early than start time');
+              alert('End time cannot be early than start time');
             }}
             onCancel={() => 
               this.props.change('endTime', { 
@@ -287,18 +295,41 @@ class CreateEventModal extends React.Component {
         );
 
     const startTime = this.props.startTime.date ?
-      <Text>{moment(this.props.startTime.date).format('DD/MM/YYYY')}</Text> :
+      <Text>{moment(this.props.startTime.date).format('ll')}</Text> :
       <Text style={{ fontSize: 9 }}>Start</Text>;
 
     const endTime = this.props.endTime.date ?
-      <Text>{moment(this.props.endTime.date).format('DD/MM/YYYY')}</Text> :
+      <Text>{moment(this.props.endTime.date).format('ll')}</Text> :
       <Text style={{ fontSize: 9 }}>End</Text>;
+
+    // Show cancel button if there is date set
+    const cancelButton = this.props.endTime.date || this.props.startTime.date 
+      ? 
+      (
+        <TouchableOpacity 
+          activeOpacity={0.85}
+          style={{ justifyContent: 'center', padding: 10, marginLeft: 5 }}
+          onPress={() => {
+            this.props.change('hasTimeline', false);
+            this.props.change('endTime', {
+              date: undefined, picker: false
+            });
+            this.props.change('startTime', {
+              date: undefined, picker: false
+            });
+          }}
+        >
+          <Image source={cancel} style={{ ...styles.cancelIconStyle }} />
+        </TouchableOpacity>
+      )
+      : null;
 
     return (
       <View style={{ ...styles.sectionMargin }}>
         {titleText}
-        <View style={{ marginTop: 8, flexDirection: 'row' }}>
-          <TouchableOpacity activeOpacity={0.85}
+        <View style={{ marginTop: 8, marginLeft: 10, flexDirection: 'row' }}>
+          <TouchableOpacity 
+            activeOpacity={0.85}
             style={{
               height: 50,
               width: 130,
@@ -316,7 +347,8 @@ class CreateEventModal extends React.Component {
             {startTime}
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.85}
+          <TouchableOpacity 
+            activeOpacity={0.85}
             style={{
               height: 50,
               width: 130,
@@ -335,20 +367,7 @@ class CreateEventModal extends React.Component {
             {endTime}
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.85}
-            style={{ justifyContent: 'center', padding: 10 }}
-            onPress={() => {
-              this.props.change('hasTimeline', false);
-              this.props.change('endTime', {
-                date: undefined, picker: false
-              });
-              this.props.change('startTime', {
-                date: undefined, picker: false
-              });
-            }}
-          >
-            <Image source={cancel} style={{ ...styles.cancelIconStyle }} />
-          </TouchableOpacity>
+          {cancelButton}
         </View>
         {startDatePicker}
         {endDatePicker}
@@ -364,7 +383,8 @@ class CreateEventModal extends React.Component {
         <TouchableOpacity activeOpacity={0.85} style={actionIconWrapperStyle} onPress={this.handleOpenCamera}>
           <Image style={actionIconStyle} source={camera} />
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity 
+          activeOpacity={0.85}
           style={{ ...actionIconWrapperStyle, marginLeft: 5 }}
           onPress={this.handleOpenCameraRoll}
         >
@@ -383,7 +403,7 @@ class CreateEventModal extends React.Component {
       if (!hasImageModified) {
         // If editing a tribe and image hasn't changed, then image source should
         // be from server
-        imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
+        imageUrl = `${IMAGE_BASE_URL}${picture}`;
       }
     }
 
@@ -408,7 +428,8 @@ class CreateEventModal extends React.Component {
               />
             </View>
 
-            <TouchableOpacity activeOpacity={0.85}
+            <TouchableOpacity 
+              activeOpacity={0.85}
               onPress={() => this.setState({ mediaModal: true })}
               style={{
                 position: 'absolute',
@@ -464,7 +485,7 @@ class CreateEventModal extends React.Component {
         </View>
       );
     }
-    return '';
+    return null;
   }
 
   renderImageModal(imageUrl) {
@@ -534,20 +555,25 @@ class CreateEventModal extends React.Component {
   }
 
   renderOptions() {
-    return (
-      <View>
+    const participantOptions = this.props.isInviteOnly
+      ? (
         <CheckBox
-          title='Participants can invite'
+          title='Participants can invite others'
           checked={this.props.participantsCanInvite}
           onPress={() =>
             this.props.change('participantsCanInvite', !this.props.participantsCanInvite)
           }
         />
+      )
+      : null;
+    return (
+      <View>
         <CheckBox
           title='Invite only'
           checked={this.props.isInviteOnly}
           onPress={() => this.props.change('isInviteOnly', !this.props.isInviteOnly)}
         />
+        {participantOptions}
       </View>
     );
   }
@@ -580,6 +606,7 @@ class CreateEventModal extends React.Component {
             actionText={actionText}
             onCancel={() => this.props.cancelCreatingNewEvent()}
             onAction={handleSubmit(this.handleCreate)}
+            actionDisabled={this.props.uploading}
           />
           <ScrollView
             style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
@@ -602,9 +629,9 @@ class CreateEventModal extends React.Component {
 
 const validateTime = (start, end) => {
   if (!start || !end) return true;
-  if (moment(start) > moment(end)) return false
+  if (moment(start) > moment(end)) return false;
   return true;
-}
+};
 
 CreateEventModal = reduxForm({
   form: 'createEventModal',
@@ -615,7 +642,7 @@ const mapStateToProps = state => {
   const selector = formValueSelector('createEventModal');
   const { user } = state.user;
   const { profile } = user;
-  const { uploading } = state.newTribe;
+  const { uploading } = state.newEvent;
 
   return {
     user,

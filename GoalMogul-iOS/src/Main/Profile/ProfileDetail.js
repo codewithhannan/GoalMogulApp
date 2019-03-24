@@ -8,10 +8,29 @@ import ProfileInfoCard from './ProfileCard/ProfileInfoCard';
 import ProfileAboutMeCard from './ProfileCard/ProfileAboutMeCard';
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
 
+// Actions
+import {
+  closeProfileDetail
+} from '../../actions/ProfileActions';
+
+// Selector
+import {
+  getUserData
+} from '../../redux/modules/User/Selector';
+
 class ProfileDetail extends Component {
+  constructor(props) {
+    super(props);
+    this.handleOnBackPress = this.handleOnBackPress.bind(this);
+  }
+
+  handleOnBackPress = () => {
+    this.props.closeProfileDetail();
+  }
+
   render() {
     const { user } = this.props;
-    if (!user) return '';
+    if (!user) return null;
     const { elevatorPitch, occupation } = user.profile;
     let backgroundColor = '#f8f8f8';
     if (occupation || elevatorPitch) {
@@ -19,10 +38,15 @@ class ProfileDetail extends Component {
     }
     return (
       <View style={styles.containerStyle}>
-        <SearchBarHeader backButton setting />
+        <SearchBarHeader 
+          backButton 
+          setting 
+          onBackPress={this.handleOnBackPress} 
+          userId={this.props.userId}
+        />
         <ScrollView style={{ backgroundColor }}>
-          <ProfileDetailCard />
-          <ProfileInfoCard data={this.props.user} />
+          <ProfileDetailCard pageId={this.props.pageId} userId={this.props.userId} />
+          <ProfileInfoCard data={this.props.user} userId={this.props.userId} pageId={this.props.pageId} />
         </ScrollView>
       </View>
     );
@@ -35,8 +59,11 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  const { userId, user } = state.profile;
+// TODO: profile reducer redesign to change here.
+const mapStateToProps = (state, props) => {
+  const { userId } = props;
+  const userObject = getUserData(state, userId, '');
+  const { user } = userObject;
 
   return {
     userId,
@@ -44,4 +71,9 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, null)(ProfileDetail);
+export default connect(
+  mapStateToProps, 
+  {
+    closeProfileDetail
+  }
+)(ProfileDetail);

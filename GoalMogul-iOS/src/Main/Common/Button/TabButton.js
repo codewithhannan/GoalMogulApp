@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Animated, Image } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { DotIcon } from '../../../Utils/Icons';
 
 // Default button style
 const defaultButtonStyle = {
@@ -29,17 +29,12 @@ const TabButton = (props) => {
     fontWeight,
     statColor
   } = props.onSelect ? buttonStyle.selected : buttonStyle.unselected;
-  const stat = !props.stat ? '' :
+  const stat = !props.stat ? null :
     (
       <View>
-        <Icon
-          name='dot-single'
-          type='entypo'
-          color='#818181'
-          size={18}
-          iconStyle={[styles.dotIconStyle, ...{ color: statColor }]}
-          containerStyle={styles.iconContainerStyle}
-        />
+        <DotIcon 
+          iconStyle={{ tintColor: '#818181', width: 3, height: 3, marginLeft: 4, marginRight: 4 }}
+        />       
         <Text style={styles.textStyle}>
           {props.stat}
         </Text>
@@ -50,7 +45,7 @@ const TabButton = (props) => {
   const iconStyle = props.onSelect ? { ...styles.iconStyle, ...props.iconStyle, tintColor }
     : { ...styles.iconStyle, ...props.iconStyle, tintColor };
 
-  const icon = !props.iconSource ? '' :
+  const icon = !props.iconSource ? null :
     (
       <Image
         source={props.iconSource}

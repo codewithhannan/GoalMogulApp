@@ -6,10 +6,12 @@ import {
   TouchableOpacity
 } from 'react-native';
 import R from 'ramda';
+import { connect } from 'react-redux';
 
 // Components
 import Name from '../Common/Name';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
+import ProfileImage from '../Common/ProfileImage';
 
 // Assets
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
@@ -22,6 +24,9 @@ import {
 } from '../../redux/middleware/utils';
 
 // Actions
+import {
+  openProfile
+} from '../../actions';
 
 // Constants
 const DEBUG_KEY = '[ UI MemberListCard ]';
@@ -90,15 +95,15 @@ class MemberListCard extends Component {
   }
 
   renderProfileImage(item) {
-    const { image } = item.profile;
-    let profileImage = (
-      <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />
+    const { _id } = item;
+    return (
+      <ProfileImage 
+        imageStyle={styles.imageStyle}
+        imageUrl={item && item.profile ? item.profile.image : undefined}
+        imageContainerStyle={styles.imageContainerStyle}
+        userId={_id}
+      />
     );
-    if (image) {
-      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
-      profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
-    }
-    return profileImage;
   }
 
   renderInfo(item) {
@@ -114,7 +119,7 @@ class MemberListCard extends Component {
 
   // TODO: decide the final UI for additional info
   renderAdditionalInfo() {
-    return '';
+    return null;
     // const { profile } = this.props.item;
     // let content = '';
     // if (profile.elevatorPitch) {
@@ -139,7 +144,7 @@ class MemberListCard extends Component {
 
   renderOccupation(item) {
     const { profile } = item;
-    if (profile.occupation) {
+    if (profile && profile.occupation) {
       return (
         <Text
           style={styles.titleTextStyle}
@@ -150,7 +155,7 @@ class MemberListCard extends Component {
         </Text>
       );
     }
-    return '';
+    return null;
   }
 
   // If user is admin, then he can click to remove / promote a user
@@ -169,19 +174,23 @@ class MemberListCard extends Component {
         </TouchableOpacity>
       );
     }
-    return '';
+    return null;
   }
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
-    const { headline } = item;
+    const { headline, _id } = item;
     return (
       <View style={styles.containerStyle}>
         {this.renderProfileImage(item)}
 
-        <View style={styles.bodyContainerStyle}>
+        <TouchableOpacity 
+          style={styles.bodyContainerStyle}
+          activeOpacity={0.85}
+          onPress={() => this.props.openProfile(_id)}
+        >
           {this.renderInfo(item)}
           {this.renderOccupation(item)}
           <Text
@@ -192,7 +201,7 @@ class MemberListCard extends Component {
             {headline}
           </Text>
           {this.renderAdditionalInfo(item)}
-        </View>
+        </TouchableOpacity>
         {this.renderSettingIcon()}
       </View>
     );
@@ -222,6 +231,15 @@ const styles = {
     height: 48,
     width: 48,
     borderRadius: 5,
+  },
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 0.5,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+    backgroundColor: 'white'
   },
   buttonContainerStyle: {
     marginLeft: 8,
@@ -266,4 +284,9 @@ const switchSettingOptions = (category) => switchCase({
   }
 })('Admin')(category);
 
-export default MemberListCard;
+export default connect(
+  null,
+  {
+    openProfile
+  }
+)(MemberListCard);

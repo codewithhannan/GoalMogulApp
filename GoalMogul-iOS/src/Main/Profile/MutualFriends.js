@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   View,
   Modal,
-  FlatList
+  FlatList,
+  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
@@ -14,6 +15,14 @@ import FriendCard from '../MeetTab/Friends/FriendCard';
 
 // actions
 import { fetchMutualFriends } from '../../actions';
+
+// Selectors
+import { 
+  getUserData,
+  getUserDataByPageId
+} from '../../redux/modules/User/Selector';
+
+const DEBUG_KEY = '[ UI MutualFriends ]';
 
 class MutualFriends extends Component {
   state = {
@@ -50,6 +59,22 @@ class MutualFriends extends Component {
     return <FriendCard item={item} />;
   }
 
+  renderListFooter() {
+    const { loading, data } = this.props;
+    // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
+    if (loading && data.length >= 4) {
+      return (
+        <View
+          style={{
+            paddingVertical: 20
+          }}
+        >
+          <ActivityIndicator size='small' />
+        </View>
+      );
+    }
+  }
+
   render() {
     const emptyText = this.props.isSelf ? 'You have no friends.' : 'You have no mutual friends.';
     return (
@@ -65,6 +90,7 @@ class MutualFriends extends Component {
             this.closeModal();
             Actions.pop();
           }}
+          cancelText='Close'
         />
         <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
           <FlatList
@@ -72,11 +98,12 @@ class MutualFriends extends Component {
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
             onRefresh={this.handleRefresh.bind()}
-            refreshing={this.props.loading}
+            refreshing={this.props.refreshing}
             onEndReached={this.handleOnLoadMore}
             onEndReachedThreshold={0.5}
+            ListFooterComponent={this.renderListFooter()}
             ListEmptyComponent={
-              this.props.loading ? '' :
+              this.props.loading ? null :
               <EmptyResult text={emptyText} />
             }
           />
@@ -86,15 +113,20 @@ class MutualFriends extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  const { mutualFriends, userId, user } = state.profile;
-  const { data, loading, count } = mutualFriends;
-  const isSelf = state.profile.userId.toString() === state.user.userId.toString();
+const mapStateToProps = (state, props) => {
+  const { userId } = props;
+  const userObject = getUserData(state, userId, '');
+  const { user, mutualFriends } = userObject;
+  
+  console.log(`${DEBUG_KEY}: mutual friend is: `, mutualFriends);
+  const { data, loading, count, refreshing } = mutualFriends;
+  const isSelf = userId.toString() === state.user.userId.toString();
 
   return {
     count,
     data,
     loading,
+    refreshing,
     userId,
     isSelf,
     user

@@ -10,6 +10,7 @@ import {
   Animated
 } from 'react-native';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 // Components
 import EmptyResult from '../../../Common/Text/EmptyResult';
@@ -31,8 +32,10 @@ import {
 
 // Selectors
 import {
-  getGoalStepsAndNeeds,
-  getGoalDetailByTab
+  // getGoalStepsAndNeeds, // These are used before refactoring
+  // getGoalDetailByTab, // These are used before refactoring
+  makeGetGoalPageDetailByPageId,
+  makeGetGoalStepsAndNeedsV2
 } from '../../../../redux/modules/goal/selector';
 
 // Styles
@@ -42,12 +45,12 @@ import { BACKGROUND_COLOR } from '../../../../styles';
 const DEBUG_KEY = '[ UI CentralTab ]';
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
-class CentralTab extends React.Component<{}> {
+class CentralTab extends React.PureComponent<{}> {
 
   // Refresh goal content and comment
   handleRefresh = () => {
     if (this.props.goalDetail) {
-      this.props.refreshGoalDetailById(this.props.goalDetail._id);
+      this.props.refreshGoalDetailById(this.props.goalDetail._id, this.props.pageId);
     }
   }
 
@@ -57,18 +60,25 @@ class CentralTab extends React.Component<{}> {
   }
 
   renderItem = (props) => {
-    const { goalDetail } = this.props;
-    if (!goalDetail) return '';
+    const { goalDetail, pageId, goalId } = this.props;
+    if (!goalDetail) return null;
 
-    const newCommentParams = {
+    let newCommentParams = {
       commentDetail: {
         parentType: 'Goal',
         parentRef: goalDetail._id, // Goal ref
-        commentType: 'Suggestion'
+        commentType: 'Comment',
       },
       suggestionForRef: props.item._id, // Need or Step ref
       suggestionFor: props.item.type === 'need' ? 'Need' : 'Step'
     };
+
+    if (props.item.type === 'need') {
+      newCommentParams = _.set(newCommentParams, 'commentDetail.needRef', props.item._id);
+    }
+    if (props.item.type === 'step') {
+      newCommentParams = _.set(newCommentParams, 'commentDetail.stepRef', props.item._id);
+    }
 
     return (
       <StepAndNeedCardV3
@@ -78,10 +88,12 @@ class CentralTab extends React.Component<{}> {
         onCardPress={() => {
           // Use passed in function to handle tab switch with animation
           this.props.handleIndexChange(1, props.item.type, props.item._id);
-          this.props.createCommentForSuggestion(newCommentParams);
+          this.props.createCommentForSuggestion(newCommentParams, pageId);
         }}
         isSelf={this.props.isSelf}
         count={props.item.count}
+        pageId={pageId}
+        goalId={goalId}
       />
     );
   }
@@ -96,7 +108,7 @@ class CentralTab extends React.Component<{}> {
         refreshing={this.props.loading || false}
         onRefresh={this.handleRefresh}
         ListEmptyComponent={
-          this.props.loading ? '' :
+          this.props.loading ? null :
           <EmptyResult
             text='No needs and steps'
             textStyle={{ paddingTop: 100 }}
@@ -115,23 +127,34 @@ CentralTab.defaultPros = {
   isSelf: false
 };
 
-const mapStateToProps = (state, props) => {
-  const goalDetail = getGoalDetailByTab(state);
-  const { goal } = goalDetail;
-  let loading = false;
-  if (goal) {
-    loading = goal.loading;
-  }
+const makeMapStateToProps = () => {
+  const getGoalPageDetailByPageId = makeGetGoalPageDetailByPageId();
+  const getGoalStepsAndNeedsV2 = makeGetGoalStepsAndNeedsV2();
 
-  return {
-    goalDetail: goal,
-    loading,
-    data: getGoalStepsAndNeeds(state, props.pageId),
+  const mapStateToProps = (state, props) => {
+    const { pageId, goalId } = props;
+    const goalDetail = getGoalPageDetailByPageId(state, goalId, pageId);
+    // const goalDetail = getGoalDetailByTab(state); // These are used before refactoring
+    const { goal, goalPage } = goalDetail;
+    let loading = false;
+    if (goalPage) {
+      loading = goalPage.loading;
+    }
+  
+    return {
+      goalDetail: goal,
+      loading,
+      // data: getGoalStepsAndNeeds(state, props.pageId), // These are used before refactoring
+      data: getGoalStepsAndNeedsV2(state, goalId, pageId)
+    };
   };
+
+  return mapStateToProps;
 };
 
+
 export default connect(
-  mapStateToProps,
+  makeMapStateToProps,
   {
     goalDetailSwitchTabV2,
     goalDetailSwitchTabV2ByKey,

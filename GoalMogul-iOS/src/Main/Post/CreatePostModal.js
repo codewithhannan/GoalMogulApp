@@ -149,7 +149,7 @@ class CreatePostModal extends Component {
   }
 
   updateSearchRes(res, searchContent) {
-    if (searchContent !== this.state.keyword) return '';
+    if (searchContent !== this.state.keyword) return;
     this.setState({
       ...this.state,
       // keyword,
@@ -238,9 +238,9 @@ class CreatePostModal extends Component {
     };
 
     // Initialize based on the props, if it's opened through edit button
-    const { initializeFromState, post } = this.props;
+    const { initializeFromState, initialPost } = this.props;
     const initialVals = initializeFromState
-      ? { ...postToFormAdapter(post) }
+      ? { ...postToFormAdapter(initialPost) }
       : { ...defaulVals };
 
     this.props.initialize({
@@ -273,13 +273,13 @@ class CreatePostModal extends Component {
    * Synchronize validate form values, contains simple check
    */
   handleCreate = (values) => {
-    const { initializeFromState, post, mediaRef, belongsToTribe, belongsToEvent, openProfile } = this.props;
+    const { initializeFromState, post, mediaRef, belongsToTribe, belongsToEvent, openProfile, initialPost } = this.props;
     const needUpload =
       (initializeFromState && post.mediaRef && post.mediaRef !== mediaRef)
       || (!initializeFromState && mediaRef);
 
     const needOpenProfile = (belongsToTribe === undefined && belongsToEvent === undefined) &&
-      (openProfile === undefined || openProfile === true);
+      (openProfile === undefined || openProfile === true) && !initializeFromState;
 
     const needRefreshProfile = openProfile === false;
     return this.props.submitCreatingPost(
@@ -289,7 +289,10 @@ class CreatePostModal extends Component {
         needOpenProfile, // Open user profile page and refresh the profile
         needRefreshProfile // Only refresh the profile page with given tab and filter
       },
-      this.props.callback
+      initializeFromState,
+      initialPost,
+      this.props.callback,
+      this.props.pageId
     );
   }
 
@@ -446,7 +449,8 @@ class CreatePostModal extends Component {
   }
 
   renderUserInfo() {
-    const { profile, name } = this.props.user;
+    const { belongsToTribe, belongsToEvent, user } = this.props;
+    const { profile, name } = user;
     let imageUrl = profile.image;
     let profileImage = (
       <Image style={styles.imageStyle} resizeMode='cover' source={defaultUserProfile} />
@@ -469,6 +473,8 @@ class CreatePostModal extends Component {
             viewableSetting={this.props.viewableSetting}
             callback={callback}
             shareToMastermind={null}
+            belongsToTribe={belongsToTribe}
+            belongsToEvent={belongsToEvent}
           />
         </View>
       </View>
@@ -487,6 +493,21 @@ class CreatePostModal extends Component {
         imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${mediaRef}`;
       }
     }
+
+    // Do not render cancel button if editing since we 
+    // don't allow editing image
+    const cancelButton = initializeFromState ? null : (
+      <TouchableOpacity
+        activeOpacity={0.85}
+        onPress={() => this.props.change('mediaRef', false)}
+        style={{ position: 'absolute', top: 10, left: 15 }}
+      >
+        <Image
+          source={cancel}
+          style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+        />
+      </TouchableOpacity>
+    );
 
     if (this.props.mediaRef) {
       return (
@@ -520,21 +541,12 @@ class CreatePostModal extends Component {
               />
             </TouchableOpacity>
 
-            <TouchableOpacity
-              activeOpacity={0.85}
-              onPress={() => this.props.change('mediaRef', false)}
-              style={{ position: 'absolute', top: 10, left: 15 }}
-            >
-              <Image
-                source={cancel}
-                style={{ width: 15, height: 15, tintColor: '#fafafa' }}
-              />
-            </TouchableOpacity>
+            {cancelButton}
           </ImageBackground>
         </View>
       );
     }
-    return '';
+    return null;
   }
 
   renderImageModal() {
@@ -572,7 +584,7 @@ class CreatePostModal extends Component {
   renderActionIcons() {
     // If user already has the image, they need to delete the image and then
     // these icons would show up to attach another image
-    if (this.props.mediaRef) return '';
+    if (this.props.mediaRef) return null;
     const actionIconStyle = { ...styles.actionIconStyle };
     const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
     return (
@@ -632,7 +644,9 @@ class CreatePostModal extends Component {
   // }
 
   render() {
-    const { handleSubmit, errors } = this.props;
+    const { handleSubmit, errors, initializeFromState } = this.props;
+    const modalActionText = initializeFromState ? 'Update' : 'Create';
+
     return (
       <KeyboardAvoidingView
         behavior='padding'
@@ -640,7 +654,7 @@ class CreatePostModal extends Component {
       >
         <ModalHeader
           title='New Post'
-          actionText='Create'
+          actionText={modalActionText}
           onCancel={() => {
             if (this.props.onClose) {
               this.props.onClose();
@@ -648,6 +662,7 @@ class CreatePostModal extends Component {
             Actions.pop();
           }}
           onAction={handleSubmit(this.handleCreate)}
+          actionDisabled={this.props.uploading}
         />
         <ScrollView style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}>
           <View style={{ flex: 1, padding: 20 }}>
@@ -683,7 +698,7 @@ const styles = {
     paddingTop: 20,
     padding: 20,
     width: '100%',
-    textAlign: 'justify',
+    // textAlign: 'justify',
     height: 'auto',
     maxHeight: 200,
     minHeight: 80
@@ -764,7 +779,7 @@ const mapStateToProps = state => {
     tags: selector(state, 'tags'),
     mediaRef: selector(state, 'mediaRef'),
     formVals: state.form.createPostModal,
-    uploading: state.postDetail.newPost.uploading
+    uploading: state.posts.newPost.uploading
   };
 };
 

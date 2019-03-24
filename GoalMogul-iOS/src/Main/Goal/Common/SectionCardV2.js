@@ -76,7 +76,7 @@ class SectionCardV2 extends Component {
   };
 
   renderActionIcons(type) {
-    if (type === 'comment') return '';
+    if (type === 'comment') return null;
     return (
       <View style={{ alignItems: 'center', justifyContent: 'center' }}>
         <TouchableOpacity
@@ -92,11 +92,11 @@ class SectionCardV2 extends Component {
 
   // If owner is self, user can click to mark a step / need as complete
   renderSelfCheckBox(isCompleted) {
-    const { type, item, goalRef } = this.props;
+    const { type, item, goalRef, pageId } = this.props;
     const { _id } = item;
     const onPress = type === 'need' || type === 'Need'
-      ? () => this.props.markNeedAsComplete(_id, goalRef)
-      : () => this.props.markStepAsComplete(_id, goalRef);
+      ? () => this.props.markNeedAsComplete(_id, goalRef, pageId)
+      : () => this.props.markStepAsComplete(_id, goalRef, pageId);
 
     const iconContainerStyle = isCompleted
       ? { ...styles.checkIconContainerStyle }
@@ -115,7 +115,7 @@ class SectionCardV2 extends Component {
 
   // Render Suggestion icon and number of comments
   renderStats(type) {
-    if (type === 'comment') return '';
+    if (type === 'comment') return null;
     const commentCount = this.props.count === undefined ? 15 : this.props.count;
     return (
       <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, paddingBottom: 4 }}>
@@ -134,7 +134,7 @@ class SectionCardV2 extends Component {
       return this.renderSelfCheckBox(isCompleted);
     }
 
-    if (!isCompleted) return '';
+    if (!isCompleted) return null;
     return (
       <View style={styles.checkIconContainerStyle}>
         <Image source={checkIcon} style={styles.checkIconStyle} />
@@ -144,7 +144,7 @@ class SectionCardV2 extends Component {
 
   renderBackIcon() {
     const { isFocusedItem } = this.props;
-    if (!isFocusedItem) return '';
+    if (!isFocusedItem) return null;
 
     return (
       <TouchableOpacity

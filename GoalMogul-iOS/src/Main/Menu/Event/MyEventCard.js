@@ -21,7 +21,7 @@ const DEBUG_KEY = '[UI My Event Card] ';
 
 class MyEventCard extends React.Component {
   onCardPress = () => {
-    console.log(`${DEBUG_KEY} open Event Detail.`);
+    console.log(`${DEBUG_KEY} open Event Detail with item: `, this.props.item);
     this.props.eventDetailOpen(this.props.item);
   }
 

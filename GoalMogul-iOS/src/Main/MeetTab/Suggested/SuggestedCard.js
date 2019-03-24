@@ -1,19 +1,21 @@
+/**
+ * This is currently used in the DiscoverTabView for friend discovery
+ */
 import React, { Component } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   Image,
-  ActionSheetIOS
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Button, Icon } from 'react-native-elements';
 
 // Components
 import Name from '../../Common/Name';
+import ProfileImage from '../../Common/ProfileImage';
 
 // Assets
-import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
+// import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
 import next from '../../../asset/utils/next.png';
 
 // Styles
@@ -23,6 +25,7 @@ import {
 
 // Actions
 import { updateFriendship, openProfile } from '../../../actions';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
 const WITHDRAW_INDEX = 0;
@@ -62,20 +65,30 @@ class SuggestedCard extends Component {
     // });
   }
 
-  renderProfileImage() {
-    const { image } = this.props.item.profile;
-    let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
-    if (image) {
-      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
-      profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
-    }
-    return profileImage;
+  renderProfileImage(item) {
+    const { profile, _id } = item;
+    const { image } = profile;
+    // let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
+    // if (image) {
+    //   const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+    //   profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
+    // }
+    // return profileImage;
+
+    return (
+      <ProfileImage
+        imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
+        imageUrl={image}
+        imageContainerStyle={styles.imageContainerStyle}
+        userId={_id}
+      />
+    );
   }
 
   renderButton(_id) {
     return (
       <View style={styles.iconContainerStyle}>
-        <TouchableOpacity
+        <DelayedButton
           activeOpacity={0.85}
           onPress={this.onButtonClicked.bind(this, _id)}
           style={{ padding: 15 }}
@@ -84,7 +97,7 @@ class SuggestedCard extends Component {
             source={next}
             style={{ ...styles.iconStyle, opacity: 0.8 }}
           />
-        </TouchableOpacity>
+        </DelayedButton>
       </View>
     );
   }
@@ -133,6 +146,49 @@ class SuggestedCard extends Component {
     );
   }
 
+  renderUserInfo(item) {
+    const { topGoals, topNeeds } = item;
+
+    let topGoalText = 'None shared';
+    if (topGoals !== null && topGoals !== undefined && topGoals.length !== 0) {
+      topGoalText = '';
+      topGoals.forEach((g, index) => {
+        if (index !== 0) {
+          topGoalText = `${topGoalText}, ${g}`; 
+        } else {
+          topGoalText = `${g}`; 
+        }
+      });
+    }
+
+    let topNeedText = 'None shared';
+    if (topNeeds !== null && topNeeds !== undefined && topNeeds.length !== 0) {
+      topNeedText = '';
+      topNeeds.forEach((n, index) => {
+        if (index !== 0) {
+          topNeedText = `${topNeedText}, ${n}`; 
+        } else {
+          topNeedText = `${n}`; 
+        }
+      });
+    }
+
+    return (
+      <View style={styles.infoContainerStyle}>
+        <View style={{ flex: 1, marginRight: 6 }}>
+          <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginBottom: 2 }}>
+            <Text style={styles.subTitleTextStyle}>Goals: </Text>
+            <Text style={styles.bodyTextStyle}>{topGoalText}</Text>
+          </Text>
+          <Text numberOfLines={1} ellipsizeMode='tail'>
+            <Text style={styles.subTitleTextStyle}>Needs: </Text>
+            <Text style={styles.bodyTextStyle}>{topNeedText}</Text>
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
   renderOccupation() {
     const { profile } = this.props.item;
     if (profile.occupation) {
@@ -146,32 +202,25 @@ class SuggestedCard extends Component {
         </Text>
       );
     }
-    return '';
+    return null;
   }
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     const { headline, _id } = item;
     return (
-      <TouchableOpacity
+      <DelayedButton
         activeOpacity={0.85}
         style={[styles.containerStyle, cardBoxShadow]}
         onPress={() => this.props.openProfile(_id)}
       >
-        {this.renderProfileImage()}
+        {this.renderProfileImage(item)}
 
         <View style={styles.bodyContainerStyle}>
           {this.renderInfo()}
-          {this.renderOccupation()}
-          <Text
-            style={{ ...styles.jobTitleTextStyle, fontWeight: '600' }}
-            numberOfLines={1}
-            ellipsizeMode='tail'
-          >
-            {headline}
-          </Text>
+          {this.renderUserInfo(item)}
         </View>
 
         {this.renderButton(_id)}
@@ -182,10 +231,20 @@ class SuggestedCard extends Component {
           </View>
         */}
 
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 }
+
+// This was original implementation
+// {this.renderOccupation()}
+// <Text
+//   style={{ ...styles.jobTitleTextStyle, fontWeight: '600' }}
+//   numberOfLines={1}
+//   ellipsizeMode='tail'
+// >
+//   {headline}
+// </Text>
 
 const styles = {
   containerStyle: {
@@ -198,6 +257,15 @@ const styles = {
     alignItems: 'center',
     backgroundColor: '#ffffff'
   },
+  imageContainerStyle: {
+    borderWidth: 0.5,
+    padding: 1.5,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+    backgroundColor: 'white'
+  },
   bodyContainerStyle: {
     marginLeft: 10,
     flex: 1,
@@ -205,6 +273,15 @@ const styles = {
   infoContainerStyle: {
     flexDirection: 'row',
     flex: 1
+  },
+  subTitleTextStyle: {
+    color: '#17B3EC',
+    fontSize: 12,
+    fontWeight: '600'
+  },
+  bodyTextStyle: {
+    fontSize: 12,
+    color: '#9B9B9B'
   },
   imageStyle: {
     height: 48,

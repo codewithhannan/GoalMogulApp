@@ -131,7 +131,7 @@ class SuggestionModal extends Component {
 
   render() {
     const { newComment } = this.props;
-    if (!newComment) return '';
+    if (!newComment) return null;
 
     return (
       <Modal

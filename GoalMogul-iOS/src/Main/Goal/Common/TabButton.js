@@ -5,7 +5,7 @@ import {
   Text,
   View
 } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { DotIcon } from '../../../Utils/Icons';
 
 import {
   APP_BLUE,
@@ -43,12 +43,15 @@ const TabButton = (props) => {
       source={props.iconSource}
       style={{ ...styles.iconStyle, ...props.iconStyle, tintColor }}
     />)
-    : '';
+    : null;
 
-  const stat = !props.count ? '' :
+  const stat = !props.count ? null :
     (
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Icon name='dot-single' type='entypo' color={color} size={20} />
+        <DotIcon 
+          iconStyle={{ tintColor: color, width: 4, height: 4, marginLeft: 4, marginRight: 4 }}
+        />
+        {/* <Icon name='dot-single' type='entypo' color={color} size={20} /> */}
         <Text style={{ ...styles.countTextStyle, color }}>{props.count}</Text>
       </View>
     );

@@ -24,7 +24,7 @@ import {
 } from '../../goal/GoalDetailActions';
 
 import { api as API } from '../../../middleware/api';
-import { queryBuilder } from '../../../middleware/utils';
+import { queryBuilder, constructPageId, componentKeyByTab } from '../../../middleware/utils';
 
 const DEBUG_KEY = '[ Action Home Mastermind ]';
 const BASE_ROUTE = 'secure/goal/';
@@ -38,22 +38,55 @@ export const closeCreateOverlay = (tab) => ({
   payload: tab
 });
 
+export const openGoalDetailById = (goalId, initialProps) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+
+  // Generate pageId on open
+  const pageId = constructPageId('goal');
+  dispatch({
+    type: GOAL_DETAIL_OPEN,
+    payload: {
+      tab,
+      pageId,
+      goalId
+    }
+  });
+
+  refreshGoalDetailById(goalId, pageId)(dispatch, getState);
+  refreshComments('Goal', goalId, tab, pageId)(dispatch, getState);
+  // TODO: create new stack using Actions.create(React.Element) if needed
+  const componentToOpen = componentKeyByTab(tab, 'goal');
+  Actions.push(`${componentToOpen}`, { initial: { ...initialProps }, goalId, pageId });
+};
+
 // Open goal detail
 export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   const { _id } = goal;
+
+  // Generate pageId on open
+  const pageId = constructPageId('goal');
   dispatch({
     type: GOAL_DETAIL_OPEN,
     payload: {
       goal,
-      tab
+      tab,
+      pageId,
+      goalId: _id
     }
   });
 
-  refreshGoalDetailById(_id)(dispatch, getState);
-  refreshComments('Goal', _id, tab, undefined)(dispatch, getState);
+  // console.log(`${DEBUG_KEY}: initialProps:`, initialProps);
+  if (initialProps && initialProps.refreshGoal === false) {
+    // Do not refresh goal if it's set to false
+  } else {
+    refreshGoalDetailById(_id, pageId)(dispatch, getState);
+  }
+
+  refreshComments('Goal', _id, tab, pageId)(dispatch, getState);
   // TODO: create new stack using Actions.create(React.Element) if needed
-  Actions.push('goal', { initial: { ...initialProps } });
+  const componentToOpen = componentKeyByTab(tab, 'goal');
+  Actions.push(`${componentToOpen}`, { initial: { ...initialProps }, goalId: _id, pageId });
 };
 
 // set currentIndex to the prev one
@@ -125,7 +158,8 @@ export const refreshGoals = () => (dispatch, getState) => {
         data,
         skip: data.length,
         limit: 20,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        pageId: 'HOME'
       }
     });
   }, () => {
@@ -163,7 +197,8 @@ export const loadMoreGoals = (callback) => (dispatch, getState) => {
         data,
         skip: skip + (data === undefined ? 0 : data.length),
         limit: 20,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        pageId: 'HOME'
       }
     });
     if (callback) callback();

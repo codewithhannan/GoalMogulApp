@@ -7,6 +7,10 @@ import {
   MYTRIBE_DETAIL_CLOSE
 } from './MyTribeReducers';
 
+import {
+  TRIBE_DELETE_SUCCESS
+} from './TribeReducers';
+
 const INITIAL_STATE = {
   data: [],
   hasNextPage: undefined,
@@ -54,6 +58,15 @@ export default (state = INITIAL_STATE, action) => {
     case MYTRIBETAB_CLOSE: {
       const newState = _.cloneDeep(state);
       return _.set(newState, 'showModal', false);
+    }
+
+    // One tribe is deleted
+    case TRIBE_DELETE_SUCCESS: {
+      const { tribeId } = action.payload;
+      const newState = _.cloneDeep(state);
+      const oldData = _.get(newState, 'data');
+      const newData = oldData.filter(t => t._id !== tribeId);
+      return _.set(newState, 'data', newData);
     }
 
     // Tribe refresh done

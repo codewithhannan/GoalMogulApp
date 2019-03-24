@@ -1,19 +1,40 @@
 import React from 'react';
 import { View, Text, Animated, Image } from 'react-native';
-import { Icon } from 'react-native-elements';
+
+// Default button style
+const defaultButtonStyle = {
+  selected: {
+    backgroundColor: '#1aa0dd', // container background style
+    tintColor: '#1aa0dd', // icon tintColor
+    color: 'white', // text color
+    fontWeight: '700', // text fontWeight
+    statColor: 'white' // stat icon color
+  },
+  unselected: {
+    backgroundColor: 'white',
+    tintColor: '#696969',
+    color: '#696969',
+    fontWeight: '600',
+    statColor: '#696969'
+  }
+};
 
 const SubTabButton = (props) => {
-  const color = props.onSelect ? '#1aa0dd' : 'white';
-  const stat = !props.stat ? '' :
+  const buttonStyle = props.buttonStyle || defaultButtonStyle;
+  const {
+    color,
+    backgroundColor,
+    tintColor,
+    fontWeight,
+    statColor
+  } = props.onSelect ? buttonStyle.selected : buttonStyle.unselected;
+
+  // const color = props.onSelect ? '#1aa0dd' : 'white';
+  const stat = !props.stat ? null :
     (
       <View>
-        <Icon
-          name='dot-single'
-          type='entypo'
-          color='#818181'
-          size={18}
-          iconStyle={[styles.dotIconStyle, color]}
-          containerStyle={styles.iconContainerStyle}
+        <DotIcon 
+          iconStyle={{ tintColor: tintColor, width: 3, height: 3, marginLeft: 4, marginRight: 4 }}
         />
         <Text style={styles.textStyle}>
           {props.stat}
@@ -23,22 +44,28 @@ const SubTabButton = (props) => {
 
   // Select iconStyle
   const iconStyle = props.onSelect
-    ? { ...styles.iconStyle, ...props.iconStyle, tintColor: '#1aa0dd' }
-    : { ...styles.iconStyle, ...props.iconStyle, tintColor: 'white' };
+    ? { ...styles.iconStyle, ...props.iconStyle, tintColor }
+    : { ...styles.iconStyle, ...props.iconStyle, tintColor };
 
-  const icon = !props.iconSource ? '' :
+  const icon = !props.iconSource ? null :
     (
       <Image
         source={props.iconSource}
         style={iconStyle}
       />
-  );
+    );
 
   if (props.onSelect) {
     return (
-      <View style={styles.onSelectContainerStyle}>
+      <View style={{ ...styles.onSelectContainerStyle, backgroundColor }}>
         {icon}
-        <Animated.Text style={styles.onSelectTextStyle}>
+        <Animated.Text 
+          style={{ 
+            ...styles.onSelectTextStyle,
+            color,
+            fontWeight
+          }}
+        >
           {props.text}
         </Animated.Text>
         {stat}
@@ -46,9 +73,15 @@ const SubTabButton = (props) => {
     );
   }
   return (
-    <View style={styles.containerStyle}>
+    <View style={{ ...styles.containerStyle, backgroundColor }}>
       {icon}
-      <Animated.Text style={styles.textStyle}>
+      <Animated.Text 
+        style={{ 
+          ...styles.textStyle,
+          color,
+          fontWeight
+        }}
+      >
         {props.text}
       </Animated.Text>
       {stat}

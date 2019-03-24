@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, Text, TabBarIOS, Image } from 'react-native';
-import { SearchBar } from 'react-native-elements';
 
 /* Import Icons */
 import Icon from './asset/icons/like-icon.png';
@@ -86,6 +85,7 @@ class Home extends Component {
       <View style={styles.homeContainerStyle}>
         <View style={styles.headerStyle}>
           <Image style={styles.headerLeftImage} source={Logo} />
+          {/**
             <SearchBar
               round
               inputStyle={styles.searchInputStyle}
@@ -93,6 +93,7 @@ class Home extends Component {
               icon={{ type: 'font-awesome', name: 'search', style: styles.searchIconStyle }}
               placeholder='Search GoalMogul'
             />
+           */}
           <Image style={styles.headerRightImage} source={IconMenu} />
         </View>
 

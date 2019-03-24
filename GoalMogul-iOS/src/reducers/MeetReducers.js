@@ -22,7 +22,8 @@ import {
   USER_LOG_OUT
 } from './User';
 
-const limit = 5;
+const DEBUG_KEY = '[ Reducer Meet ]';
+export const MEET_REQUEST_LIMIT = 6;
 const filter = {
   friends: {
     sortBy: ['alphabetical', 'lastadd']
@@ -50,7 +51,7 @@ const INITIAL_STATE = {
     loading: false,
     refreshing: false,
     hasNextPage: undefined,
-    limit,
+    limit: MEET_REQUEST_LIMIT,
     skip: 0
   },
   requests: {
@@ -67,7 +68,7 @@ const INITIAL_STATE = {
       loading: false,
       refreshing: false,
       hasNextPage: undefined,
-      limit,
+      limit: MEET_REQUEST_LIMIT,
       skip: 0
     },
     outgoing: {
@@ -75,7 +76,7 @@ const INITIAL_STATE = {
       loading: false,
       refreshing: false,
       hasNextPage: undefined,
-      limit,
+      limit: MEET_REQUEST_LIMIT,
       skip: 0
     }
   },
@@ -87,7 +88,7 @@ const INITIAL_STATE = {
     loading: false,
     refreshing: false,
     hasNextPage: undefined,
-    limit,
+    limit: MEET_REQUEST_LIMIT,
     skip: 0,
     count: undefined
   },
@@ -96,12 +97,12 @@ const INITIAL_STATE = {
     loading: false,
     refreshing: false,
     hasNextPage: undefined,
-    limit,
+    limit: MEET_REQUEST_LIMIT,
     skip: 0
   },
   matchedContacts: {
     data: [],
-    limit: 30,
+    limit: MEET_REQUEST_LIMIT,
     skip: 0,
     refreshing: true,
     hasNextPage: undefined
@@ -182,40 +183,101 @@ export default (state = INITIAL_STATE, action) => {
       2. accept friend request
       3. delete friend request, remove corresponding user from the array
       payload: {
-        data: userId,
+        data: { userId, friendshipId, data: new friendship object or undefined },
         type: ['acceptFriend', 'deleteFriend', 'requestFriend'],
         tab: ['suggsted', 'friends', 'requests.outgoing', 'requests.incoming', 'contacts']
       }
+      Note: requestFriend won't happen at the meet tab so it's fine not to have that. We need to 
+            add that later on
     */
     case MEET_UPDATE_FRIENDSHIP_DONE: {
       let newState = _.cloneDeep(state);
       const { data, type, tab, message } = action.payload;
+      console.log(`${DEBUG_KEY}: [ ${action.type}]: payload is: `, action.payload);
       const { friendshipId, userId } = data;
       if (message) {
         return { ...newState };
       }
-      newState = ((updateType) => {
-        switch (updateType) {
-          case 'acceptFriend':
-          case 'deleteFriend': {
-            // console.log('tab is: ', tab);
-            // console.log('new state is: ', newState);
-            // console.log(
-            //   'data before update is: ',
-            //   R.path(R.split('.', `${tab}.data`))(newState)
-            // );
-            const filterFunction = filterFactory(tab);
-            const newData = updateFriendshipData(tab, userId, filterFunction)(newState);
-            // console.log('new data is: ', newData);
-            return _.set(newState, `${tab}.data`, newData);
-          }
 
-          default:
-            return { ...newState };
+      if (type === 'acceptFriend') {
+        // Step 1: Remove the friendship object with _id = friendshipId 
+        //         from the queue with path 'requests.incoming.data'
+        const oldData = _.get(newState, 'requests.incoming.data');
+        // console.log(`${DEBUG_KEY}: old data is: `, oldData);
+        // console.log(`${DEBUG_KEY}: friendshpId is: ${friendshipId}`);
+        const newData = oldData.filter(d => d._id !== friendshipId);
+        newState = _.set(newState, 'requests.incoming.data', newData);
+        // Step 2: increase friend count
+        const oldCount = _.get(newState, 'friends.count');
+        newState = _.set(newState, 'friends.count', oldCount + 1);
+        // Step 3: Add the user from the new Friendship object with users_id._id  = userId
+        //         to the friends tab. We could ignore this step for now since refresh
+        //         will pull in the data
+        return newState;
+      }
+
+      if (type === 'deleteFriend') {
+        // possible tab are 'friends' and 'requests.outgoing' and 'requests.incoming'
+        // 'friends': remove object from 'friends.data' where maybeFriendshipRef._id = friendshipId
+        // And then decrease friend count
+        if (tab === 'friends') {
+          const oldData = _.get(newState, 'friends.data');
+          console.log(`${DEBUG_KEY}: new data is: `, oldData);
+          const newData = oldData.filter((d) => 
+            _.has(d, 'maybeFriendshipRef._id') && _.get(d, 'maybeFriendshipRef._id') !== friendshipId);
+          console.log(`${DEBUG_KEY}: new data is: `, oldData);
+          newState = _.set(newState, 'friends.data', newData);
+          
+          const oldCount = _.get(newState, 'friends.count');
+          newState = _.set(newState, 'friends.count', oldCount - 1);
+          return newState;
         }
-      })(type);
-      // console.log('new state is: ', newState);
-      return { ...newState };
+        // 'requests.outgoing': remove object from 'requests.outgoing.data' where _id = friendshipId
+        // 'requests.incoming': remove object from 'requests.incoming.data' where _id = friendshipId
+        if (tab === 'requests.outgoing' || tab === 'requests.incoming') {
+          const oldData = _.get(newState, `${tab}.data`);
+          console.log(`${DEBUG_KEY}: new data is: `, oldData);
+          const newData = oldData.filter(d => _.has(d, '_id') && d._id !== friendshipId);
+          console.log(`${DEBUG_KEY}: new data is: `, oldData);
+          newState = _.set(newState, `${tab}.data`, newData);
+          return newState;
+        }
+      }
+
+      if (type === 'requestFriend') {
+        if (tab === 'requests.outgoing') {
+          // Add the data.data to the requests.outgoing.data and dedup
+          const oldData = _.get(newState, 'requests.outgoing.data');
+          const newData = oldData.concat(data.data);
+          newState = _.set(newState, 'requests.outgoing.data', arrayUnique(newData));
+          return newState;
+        }
+      }
+
+      // Following is the old implementation
+      // newState = ((updateType) => {
+      //   switch (updateType) {
+      //     case 'acceptFriend':
+      //     case 'deleteFriend': {
+      //       // console.log('tab is: ', tab);
+      //       // console.log('new state is: ', newState);
+      //       // console.log(
+      //       //   'data before update is: ',
+      //       //   R.path(R.split('.', `${tab}.data`))(newState)
+      //       // );
+      //       const filterFunction = filterFactory(tab);
+      //       const newData = updateFriendshipData(tab, userId, filterFunction)(newState);
+      //       // console.log('new data is: ', newData);
+      //       return _.set(newState, `${tab}.data`, newData);
+      //     }
+
+      //     default:
+      //       return { ...newState };
+      //   }
+      // })(type);
+      // console.log(`${DEBUG_KEY}: new state is:`, newState);
+      // return { ...newState };
+      return newState;
     }
 
     // Handle tab refresh
@@ -269,9 +331,10 @@ export default (state = INITIAL_STATE, action) => {
     // fetch friends count when opening profile
     case PROFILE_FETCH_FRIEND_COUNT_DONE: {
       // console.log('payload is: ', action.payload);
+      const { userId, data } = action.payload;
       const newState = _.cloneDeep(state);
       let newFriends = _.get(newState, 'friends');
-      newFriends = _.set(newFriends, 'count', action.payload);
+      newFriends = _.set(newFriends, 'count', data);
       return _.set(newState, 'friends', newFriends);
     }
 
@@ -284,22 +347,42 @@ export default (state = INITIAL_STATE, action) => {
     case MEET_CONTACT_SYNC_FETCH_DONE: {
       let newState = _.cloneDeep(state);
       let newMatchedContacts = _.cloneDeep(state.matchedContacts);
-      const { data, skip, hasNextPage } = action.payload;
-      newMatchedContacts.data = arrayUnique(newMatchedContacts.data.concat(data));
-      newMatchedContacts.skip = skip;
-      newMatchedContacts.refreshing = false;
-      newMatchedContacts.hasNextPage = hasNextPage;
-      console.log('contact sync fetch done.');
-      newState.matchedContacts = newMatchedContacts;
-      console.log('new state is: ', newState.matchedContacts);
-      return { ...newState };
+      const { data, skip, hasNextPage, refresh } = action.payload;
+
+      newMatchedContacts = _.set(newMatchedContacts, 'skip', skip);
+      if (refresh) {
+        newMatchedContacts = _.set(newMatchedContacts, 'refreshing', false);
+        // Override the data since it's a refresh
+        newMatchedContacts = _.set(newMatchedContacts, 'data', data);
+      } else {
+        newMatchedContacts = _.set(newMatchedContacts, 'loading', false);
+        // Concat with old data and dedup
+        const oldData = _.get(newMatchedContacts, 'data');
+        newMatchedContacts = _.set(newMatchedContacts, 'data', arrayUnique(oldData.concat(data)));
+      }
+      
+      newMatchedContacts = _.set(newMatchedContacts, 'hasNextPage', hasNextPage);
+      newState = _.set(newState, 'matchedContacts', newMatchedContacts);
+
+      // newMatchedContacts.data = arrayUnique(newMatchedContacts.data.concat(data));
+      // newMatchedContacts.skip = skip;
+      // newMatchedContacts.refreshing = false;
+      // newMatchedContacts.hasNextPage = hasNextPage;
+      // newState.matchedContacts = newMatchedContacts;
+      return newState;
     }
 
     // Contact Sync requests
     case MEET_CONTACT_SYNC: {
-      let newMatchedContacts = _.cloneDeep(state.matchedContacts);
-      newMatchedContacts.refreshing = true;
-      return { ...state, matchedContacts: newMatchedContacts };
+      const newState = _.cloneDeep(state);
+      let newMatchedContacts = _.get(newState, 'matchedContacts');
+      const { refresh } = action.payload;
+      if (refresh) {
+        newMatchedContacts = _.set(newMatchedContacts, 'refreshing', true);
+      } else {
+        newMatchedContacts = _.set(newMatchedContacts, 'loading', true);
+      }
+      return _.set(newState, 'matchedContacts', newMatchedContacts);
     }
 
     // Refresh contact sync cards done

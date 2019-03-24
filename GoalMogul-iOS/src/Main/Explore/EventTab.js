@@ -51,7 +51,7 @@ class EventTab extends React.Component {
           onEndReached={this.handleOnLoadMore}
           ListHeaderComponent={this.renderListHeader()}
           ListEmptyComponent={
-            this.props.loading ? '' :
+            this.props.loading ? null :
             <EmptyResult text={'No Recommendations'} />
           }
           onEndThreshold={0}

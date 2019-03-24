@@ -60,18 +60,23 @@ export const tribeDetailClose = () => (dispatch) => {
 export const myTribeDetailOpenWithId = (tribeId) => (dispatch, getState) => {
   const callback = (res) => {
     console.log(`${DEBUG_KEY}: res for verifying user identify: `, res);
-    if (!res.data) {
+    if (!res.data || res.status === 400 || res.status === 404) {
       return Alert.alert(
         'Tribe not found'
       );
     }
-    dispatch({
-      type: MYTRIBE_DETAIL_LOAD_SUCCESS,
-      payload: {
-        tribe: res.data
-      }
-    });
-    Actions.push('myTribeDetail');
+    // Only if status is 200, we open the detail
+    if (res.status === 200) {
+      dispatch({
+        type: MYTRIBE_DETAIL_LOAD_SUCCESS,
+        payload: {
+          tribe: res.data
+        }
+      });
+      Actions.push('myTribeDetail');
+      return;
+    }
+    return;
   };
 
   fetchTribeDetail(tribeId, callback)(dispatch, getState);
@@ -120,7 +125,7 @@ export const refreshMyTribeDetail = (tribeId, callback) => (dispatch, getState) 
 /**
  * Fetch tribe detail for a tribe
  */
-export const fetchTribeDetail = (tribeId) => (dispatch, getState) => {
+export const fetchTribeDetail = (tribeId, callback) => (dispatch, getState) => {
   const { token } = getState().user;
 
   dispatch({
@@ -147,13 +152,23 @@ export const fetchTribeDetail = (tribeId) => (dispatch, getState) => {
   API
     .get(`${BASE_ROUTE}/documents/${tribeId}`, token)
     .then((res) => {
-      if (res.data) {
-        return onSuccess(res.data);
+      if (res.status === 200 || res.data) {
+        onSuccess(res.data);
+        if (callback) {
+          callback(res);
+        }
+        return;
       }
       onError(res);
+      if (callback) {
+        callback(res);
+      }
     })
     .catch((err) => {
       onError(err);
+      if (callback) {
+        callback(err);
+      }
     });
 };
 
@@ -411,7 +426,8 @@ export const refreshTribeFeed = (tribeId, dispatch, getState, callback) => {
         data,
         skip: data.length,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        pageId: 'MYTRIBE' // TODO: tribe reducer redesign to change here
       }
     });
 
@@ -441,7 +457,8 @@ export const loadMoreTribeFeed = (tribeId) => (dispatch, getState) => {
         data,
         skip: data.length,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        pageId: 'MYTRIBE' // TODO: tribe reducer redesign to change here
       }
     });
   }, () => {

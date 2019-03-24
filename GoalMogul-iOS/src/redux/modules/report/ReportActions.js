@@ -62,8 +62,8 @@ export const postingReport = (callback) => (dispatch, getState) => {
   const { token } = getState().user;
   const report = reportAdapter(getState().report);
   const { details } = report;
-  if (!details || details.length < 20) {
-    Alert.alert('Description must be at least 20 characters');
+  if (!details || details.length < 5) {
+    Alert.alert('Description must be at least 5 characters');
     return;
   } 
 
@@ -77,11 +77,14 @@ export const postingReport = (callback) => (dispatch, getState) => {
       callback();
       // alert('You have successfully created a report');
     }
-    Actions.pop();
     dispatch({
       type: REPORT_POST_SUCCESS
     });
+    Actions.pop();
     console.log(`${DEBUG_KEY}: submit report success with return data: `, data);
+    setTimeout(() => {
+      Alert.alert('Thanks for the report. Our team will look into this.');
+    }, 400);
   };
 
   const onError = (err) => {

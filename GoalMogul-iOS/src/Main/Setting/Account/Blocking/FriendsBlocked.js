@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import {
-  Text,
   View,
-  TouchableOpacity,
-  FlatList
+  FlatList,
+  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
@@ -11,6 +10,7 @@ import { Actions } from 'react-native-router-flux';
 /* Components */
 import SearchBarHeader from '../../../Common/Header/SearchBarHeader';
 import FriendCard from './FriendCard';
+import EmptyResult from '../../../Common/Text/EmptyResult';
 
 // Actions
 import { getBlockedUsers } from '../../../../actions';
@@ -20,25 +20,17 @@ import { getBlockees } from '../../../../redux/modules/setting/selector';
 
 const DEBUG_KEY = '[ Component FriendsBlocked ]';
 
-const testData = [
-  {
-    name: 'Qiongjia Xu',
-    status: 'blocked',
-    _id: '1928301970191'
-  },
-  {
-    name: 'David Zheng alsd;jafl;ksjdfl;kajsl;dkfjl;kjl;kjl;j;lkj',
-    status: 'friend',
-    _id: '1928301970192'
-  },
-  {
-    name: 'Alice Yang',
-    status: 'blocked',
-    _id: '1928301970193'
-  }
-];
-
 class FriendsBlocked extends Component {
+  constructor(props) {
+    super(props);
+    this.handleRefresh = this.handleRefresh.bind(this);
+  }
+
+  componentDidMount() {
+    // Refresh on mounting
+    this.handleRefresh();
+  }
+
   handleOnLoadMore = () => {
     console.log(`${DEBUG_KEY} load more`);
     this.props.getBlockedUsers(false);
@@ -52,6 +44,21 @@ class FriendsBlocked extends Component {
   _keyExtractor = (item) => item.blockId;
 
   renderItem = ({ item }) => <FriendCard item={item} />;
+
+  renderListFooter() {
+    const { loading, data } = this.props;
+    if (loading && data.length >= 10) {
+      return (
+        <View
+          style={{
+            paddingVertical: 20
+          }}
+        >
+          <ActivityIndicator size='small' />
+        </View>
+      );
+    }
+  }
 
   render() {
     return (
@@ -68,6 +75,11 @@ class FriendsBlocked extends Component {
           keyExtractor={this._keyExtractor}
           onRefresh={this.handleRefresh.bind()}
           refreshing={this.props.refreshing}
+          ListEmptyComponent={
+            this.props.refreshing ? null :
+            <EmptyResult text={'No blocked users'} textStyle={{ paddingTop: 200 }} />
+          }
+          ListFooterComponent={this.renderListFooter()}
         />
       </View>
     );

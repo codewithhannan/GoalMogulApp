@@ -12,7 +12,7 @@ const Position = (props) => {
       </Text>
     );
   }
-  return '';
+  return null;
 };
 
 const styles = {

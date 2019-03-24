@@ -17,137 +17,52 @@ import {
   changeFilter
 } from '../../actions';
 
+// Selectors
+import { 
+  makeGetUserPosts,
+  makeGetUserPageInfoByType
+} from '../../redux/modules/User/Selector';
+
 // tab key
 const key = 'posts';
-
-/* TODO: delete the test data */
-const testData = [
-  {
-    _id: '5b5677e2e2f7ceccddb56067',
-    created: '2018-07-24T00:50:42.534Z',
-    lastUpdated: '2018-07-24T00:50:42.534Z',
-    owner: {
-        _id: '5b17781ebec96d001a409960',
-        name: 'jia zeng',
-        profile: {
-            views: 0,
-            pointsEarned: 0,
-            elevatorPitch: '',
-            occupation: 'test'
-        }
-    },
-    postType: 'ShareGoal',
-    privacy: 'friends',
-    __v: 0,
-    content: {
-      text: 'This is a test post.',
-      links: [],
-      tags: []
-    },
-    needRef: {
-
-    },
-    goalRef: {
-      __v: 0,
-      _id: '5b502211e500e3001afd1e20',
-      category: 'General',
-      created: '2018-07-19T05:30:57.531Z',
-      details: {
-        tags: [],
-        text: 'This is detail'
-      },
-      feedInfo: {
-        _id: '5b502211e500e3001afd1e18',
-        publishDate: '2018-07-19T05:30:57.531Z',
-      },
-      lastUpdated: '2018-07-19T05:30:57.531Z',
-      needs: [{
-        created: '2018-07-19T05:30:57.531Z',
-        description: 'introduction to someone from the Bill and Melinda Gates Foundation',
-        isCompleted: false,
-        order: 0,
-      },
-      {
-        created: '2018-07-19T05:30:57.531Z',
-        description: 'Get in contact with Nuclear experts',
-        isCompleted: false,
-        order: 1,
-      },
-      {
-        created: '2018-07-19T05:30:57.531Z',
-        description: 'Legal & Safety experts who have worked with the United States',
-        isCompleted: false,
-        order: 2,
-      }],
-      owner: {
-        _id: '5b17781ebec96d001a409960',
-        name: 'jia zeng',
-        profile: {
-          elevatorPitch: 'This is my elevatorPitch',
-          occupation: 'Software Engineer',
-          pointsEarned: 10,
-          views: 0,
-        },
-      },
-      priority: 3,
-      privacy: 'friends',
-      steps: [],
-      title: 'Establish a LMFBR near Westport, Connecticut by 2020',
-    }
-  },
-  {
-    _id: '5b5677e2e2f7ceccddb56068',
-    created: '2018-07-24T00:50:42.534Z',
-    lastUpdated: '2018-07-24T00:50:42.534Z',
-    owner: {
-        _id: '5b17781ebec96d001a409960',
-        name: 'jia zeng',
-        profile: {
-            views: 0,
-            pointsEarned: 0,
-            elevatorPitch: '',
-            occupation: 'test'
-        }
-    },
-    postType: 'General',
-    privacy: 'friends',
-    __v: 0,
-    content: {
-      text: 'This is a test post with content.',
-      links: [],
-      tags: []
-    }
-  }
-];
+const DEBUG_KEY = '[ UI Profile Posts ]';
 
 class MyPosts extends Component {
+  constructor(props) {
+    super(props);
+    this.handleOnLoadMore = this.handleOnLoadMore.bind(this);
+    this.handleRefresh = this.handleRefresh.bind(this);
+  }
 
   _keyExtractor = (item) => item._id
 
   handleRefresh = () => {
-    console.log('Refreshing tab: ', key);
-    this.props.handleTabRefresh(key);
+    const { userId, pageId } = this.props;
+    console.log(`${DEBUG_KEY}: refreshing tab`, key);
+    this.props.handleTabRefresh(key, userId, pageId);
   }
 
   handleOnLoadMore = () => {
-    this.props.handleProfileTabOnLoadMore(key);
+    const { userId, pageId } = this.props;
+    this.props.handleProfileTabOnLoadMore(key, userId, pageId);
   }
 
   /**
    * @param type: ['sortBy', 'orderBy', 'categories', 'priorities']
    */
   handleOnMenuChange = (type, value) => {
-    this.props.changeFilter(key, type, value);
+    const { userId, pageId } = this.props;
+    this.props.changeFilter(key, type, value, { userId, pageId });
   }
 
   renderListFooter() {
     const { loading, data } = this.props;
     // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
-    if (loading && data.length >= 10) {
+    if (loading && data.length >= 7) {
       return (
         <View
           style={{
-            paddingVertical: 12
+            paddingVertical: 15
           }}
         >
           <ActivityIndicator size='small' />
@@ -177,7 +92,7 @@ class MyPosts extends Component {
             data={[...data]}
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
-            onRefresh={this.handleRefresh.bind()}
+            onRefresh={this.handleRefresh}
             refreshing={refreshing}
             onEndReached={this.handleOnLoadMore}
             onEndReachedThreshold={0}
@@ -212,23 +127,36 @@ const styles = {
     color: '#17B3EC',
     fontSize: 11
   }
+
 };
 
-const mapStateToProps = state => {
-  const { selectedTab, posts } = state.profile;
-  const { data, loading, filter, refreshing } = posts;
+const makeMapStateToProps = () => {
+  const getUserPosts = makeGetUserPosts();
+  const getPageInfo = makeGetUserPageInfoByType();
 
-  return {
-    selectedTab,
-    data,
-    loading,
-    filter,
-    refreshing
+  const mapStateToProps = (state, props) => {
+    const { pageId, userId } = props;
+    const data = getUserPosts(state, userId, pageId);
+    const { 
+      loading, refreshing, filter, selectedTab 
+    } = getPageInfo(state, userId, pageId, 'posts');
+
+    // console.log(`${DEBUG_KEY}: user posts composed: `, userPosts.length);
+  
+    return {
+      selectedTab,
+      data,
+      loading,
+      filter,
+      refreshing
+    };
   };
+
+  return mapStateToProps;
 };
 
 export default connect(
-  mapStateToProps,
+  makeMapStateToProps,
   {
     handleTabRefresh,
     handleProfileTabOnLoadMore,

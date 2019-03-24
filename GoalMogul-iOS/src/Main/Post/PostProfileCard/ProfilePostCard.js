@@ -55,6 +55,11 @@ import Headline from '../../Goal/Common/Headline';
 import Timestamp from '../../Goal/Common/Timestamp';
 
 // Constants
+import { 
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
+} from '../../../Utils/Constants';
+
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
@@ -100,7 +105,7 @@ class ProfilePostCard extends React.PureComponent {
 
   renderActionButtons(item, hasActionButton) {
     // Sanity check if ref exists
-    if (!item || !hasActionButton) return '';
+    if (!item || !hasActionButton) return null;
 
     const { maybeLikeRef, _id } = item;
 
@@ -162,22 +167,37 @@ class ProfilePostCard extends React.PureComponent {
 
     const caret = {
       self: {
-        options: [{ option: 'Delete' }],
-        onPress: () => this.props.deletePost(_id)
+        options: [
+          { option: 'Delete' },
+          { option: 'Edit Post' }
+        ],
+        onPress: (key) => {
+          if (key === 'Delete') {
+            return this.props.deletePost(_id);
+          }
+          if (key === 'Edit Post') {
+            // Open post detail with a callback to open post edition
+            const initial = {
+              initialShowPostModal: true
+            };
+            return this.props.openPostDetail(item, initial);
+          }
+        },
+        shouldExtendOptionLength: false
       },
       others: {
         options: [
           { option: 'Report' }, 
-          { option: maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe' }
+          { option: maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE }
         ],
         onPress: (key) => {
           if (key === 'Report') {
             return this.props.createReport(_id, 'profile', 'Post');
           }
-          if (key === 'Unsubscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
             return this.props.unsubscribeEntityNotification(_id, 'Post');
           }
-          if (key === 'Subscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
             return this.props.subscribeEntityNotification(_id, 'Post');
           }
         },
@@ -232,7 +252,7 @@ class ProfilePostCard extends React.PureComponent {
 
   render() {
     const { item, hasActionButton } = this.props;
-    if (!item || _.isEmpty(item)) return '';
+    if (!item || _.isEmpty(item)) return null;
 
     return (
       <View style={{ marginTop: 3, marginBottom: 3 }}>

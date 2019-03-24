@@ -9,6 +9,7 @@ import AuthReducers from './AuthReducers';
 import RegReducers from './RegReducers';
 import CameraRollReducers from './CameraRollReducers';
 import User from './User';
+import Users from '../redux/modules/User/Users';
 import Profile from './Profile';
 import Setting from './Setting';
 import NavigationReducers from './NavigationReducers';
@@ -16,12 +17,17 @@ import MeetReducers from './MeetReducers';
 import Home from './Home';
 import Search from '../redux/modules/search/Search';
 import GoalDetailReducers from './GoalDetailReducers';
+import Goals from '../redux/modules/goal/Goals';
 import CreateGoal from '../redux/modules/goal/CreateGoal';
 import PostReducers from '../redux/modules/feed/post/PostReducers';
+import Posts from '../redux/modules/feed/post/Posts';
 import ShareReducers from '../redux/modules/feed/post/ShareReducers';
 import TribeReducers from '../redux/modules/tribe/TribeReducers';
+import Tribes from '../redux/modules/tribe/Tribes';
 import EventReducers from '../redux/modules/event/EventReducers';
+import Events from '../redux/modules/event/Events';
 import CommentReducers from '../redux/modules/feed/comment/CommentReducers';
+import Comments from '../redux/modules/feed/comment/Comments';
 import NewCommentReducers from '../redux/modules/feed/comment/NewCommentReducers';
 import SuggestionSearchReducers from '../redux/modules/feed/comment/SuggestionSearchReducers';
 import ReportReducers from '../redux/modules/report/ReportReducers';
@@ -53,6 +59,7 @@ const reducers = combineReducers({
   registration: RegReducers,
   cameraRoll: CameraRollReducers,
   user: User,
+  users: Users,
   profile: Profile,
   form: formReducer,
   setting: Setting,
@@ -61,13 +68,18 @@ const reducers = combineReducers({
   home: Home,
   search: Search,
   goalDetail: GoalDetailReducers,
+  goals: Goals,
   createGoal: CreateGoal,
   postDetail: PostReducers,
+  posts: Posts,
   shareDetail: ShareReducers,
   tribe: TribeReducers,
+  tribes: Tribes,
   event: EventReducers,
+  events: Events,
   comment: CommentReducers,
   newComment: NewCommentReducers,
+  comments: Comments,
   report: ReportReducers,
   explore: ExploreReducers,
   eventTab: EventTabReducers,

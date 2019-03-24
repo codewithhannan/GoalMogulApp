@@ -1,6 +1,13 @@
 import { createSelector } from 'reselect';
 import _ from 'lodash';
 
+import { 
+  INITIAL_COMMENT_OBJECT,
+  INITIAL_COMMENT_PAGE
+} from './Comments';
+
+const DEBUG_KEY = '[ Selector Comments ]';
+
 const getNavigationTab = (state) => {
   const { tab } = state.navigation;
   return tab;
@@ -31,3 +38,37 @@ export const getNewCommentByTab = createSelector(
     return _.get(newComment, `${path}`);
   }
 );
+
+const getCommentByEntityId = (state, entityId) => {
+  const comments = state.comments;
+  if (!_.has(comments, entityId)) {
+    console.warn(`${DEBUG_KEY}: no comments for entityId: ${entityId}`);
+    return { ...INITIAL_COMMENT_OBJECT };
+  }
+  return _.get(comments, entityId);
+};
+
+export const getCommentWithPageInfo = (state, entityId, pageId) => {
+  const commentObject = getCommentByEntityId(state, entityId);
+  let commentPage = { ...INITIAL_COMMENT_PAGE };
+  if (!_.has(commentObject, pageId)) {
+    console.warn(`${DEBUG_KEY}: no comments page for entityId: ${entityId}`); 
+  } else {
+    commentPage = _.get(commentObject, pageId);
+  }
+
+  const { data, transformedComments } = commentObject;
+
+  return {
+    data,
+    transformedComments,
+    ...commentPage
+  };
+};
+
+export const makeGetCommentByEntityId = () => {
+  return createSelector(
+    [getCommentWithPageInfo],
+    (comments) => comments
+  );
+};

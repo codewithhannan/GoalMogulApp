@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 import _ from 'lodash';
 import moment from 'moment';
 import { api as API } from '../../middleware/api';
-import { clearTags, queryBuilderBasicBuilder } from '../../middleware/utils';
+import { sanitizeTags, queryBuilderBasicBuilder } from '../../middleware/utils';
 
 import {
   GOAL_CREATE_SUBMIT,
@@ -49,11 +49,19 @@ export const submitGoal = (
   {
     needOpenProfile,
     needRefreshProfile
-  }
+  },
+  pageId // TODO: profile reducer redesign to change here
 ) => (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, user } = getState().user;
   const { tab } = getState().navigation;
-  const goal = formToGoalAdapter(values, userId);
+  let goal = {};
+  try {
+    goal = formToGoalAdapter(values, userId);
+  } catch (error) {
+    console.log(`${DEBUG_KEY}: transform goal error: `, error);
+    return;
+  }
+  
   console.log('Transformed goal is: ', goal);
 
   dispatch({
@@ -62,7 +70,7 @@ export const submitGoal = (
 
   // If user is editing the goal, then call another endpoint
   if (isEdit) {
-    return submitEditGoal(goal, goalId, token, callback, dispatch, tab);
+    return submitEditGoal(goal, goalId, token, callback, dispatch, tab, user);
   }
 
   const onError = () => {
@@ -85,8 +93,9 @@ export const submitGoal = (
     // );
     if (needOpenProfile === false) {
       if (needRefreshProfile) {
-        selectProfileTab(0)(dispatch, getState);
-        handleTabRefresh('goals')(dispatch, getState);
+        // User is already on profile page thus there should be pageId
+        selectProfileTab(0, userId, pageId)(dispatch, getState);
+        handleTabRefresh('goals', userId, pageId)(dispatch, getState);
       }
       return;
     }
@@ -123,7 +132,7 @@ export const submitGoal = (
 };
 
 // Submit editting a goal
-const submitEditGoal = (goal, goalId, token, callback, dispatch, tab) => {
+const submitEditGoal = (goal, goalId, token, callback, dispatch, tab, owner) => {
   const onError = () => {
     dispatch({
       type: GOAL_CREATE_SUBMIT_FAIL
@@ -143,10 +152,17 @@ const submitEditGoal = (goal, goalId, token, callback, dispatch, tab) => {
       type: GOAL_CREATE_SUBMIT_SUCCESS
     });
 
+    const goalToReturn = {
+      ...data,
+      owner
+    };
+
+    // console.log(`${DEBUG_KEY}: goal to return is: `, goalToReturn);
+
     dispatch({
       type: GOAL_CREATE_EDIT_SUCCESS,
       payload: {
-        goal: data,
+        goal: goalToReturn,
         tab
       }
     });
@@ -330,7 +346,9 @@ const stepsNeedsAdapter = values => {
 const detailsAdapter = (value, tags) => {
   if (!value || value.length === 0 || _.isEmpty(value[0])) return undefined;
 
-  const tagsToUse = clearTags(value[0], {}, tags);
+  // const tagsToUse = clearTags(value[0], {}, tags);
+  // Tags sanitization will reassign index as well as removing the unused tags
+  const tagsToUse = sanitizeTags(value[0], tags);
   return {
     text: value[0],
     tags: tagsToUse

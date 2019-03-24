@@ -7,11 +7,12 @@ import {
   Keyboard
 } from 'react-native';
 import _ from 'lodash';
+import validator from 'validator';
 import {
   COMMENT_LOAD,
   COMMENT_REFRESH_DONE,
   COMMENT_LOAD_DONE,
-  COMMEND_LOAD_ERROR,
+  COMMENT_LOAD_ERROR,
   COMMENT_DELETE_SUCCESS
 } from './CommentReducers';
 
@@ -49,8 +50,12 @@ import {
   SUGGESTION_SEARCH_CLEAR_STATE
 } from './SuggestionSearchReducers';
 
+import {
+  getGoal
+} from '../../goal/selector';
+
 import { api as API } from '../../../middleware/api';
-import { queryBuilder, switchCase, clearTags } from '../../../middleware/utils';
+import { queryBuilder, switchCase, sanitizeTags } from '../../../middleware/utils';
 import ImageUtils from '../../../../Utils/ImageUtils';
 
 const DEBUG_KEY = '[ Action Comment ]';
@@ -206,6 +211,7 @@ export const createCommentForSuggestion = ({
     }
   });
 
+  // We don't pass in suggestionType because we want user to choose
   dispatch({
     type: COMMENT_NEW_SUGGESTION_CREATE,
     payload: {
@@ -437,16 +443,19 @@ const commentAdapter = (state, pageId, tab) => {
     commentType,
     replyToRef,
     suggestion,
-    mediaRef
+    mediaRef,
+    needRef,
+    stepRef
   } = newComment;
 
   const tmpCommentType = suggestion && suggestion.suggestionFor && suggestion.suggestionForRef
     ? 'Suggestion'
     : 'Comment';
 
-  const contentTagsToUser = clearTags(contentText, {}, contentTags);
+  // Tags sanitization will reassign index as well as removing the unused tags
+  const contentTagsToUser = sanitizeTags(contentText, contentTags);
 
-  const commentToReturn = {
+  let commentToReturn = {
     contentText,
     contentTags: contentTagsToUser.map((t) => {
       const { user, startIndex, endIndex } = t;
@@ -461,9 +470,25 @@ const commentAdapter = (state, pageId, tab) => {
     suggestion: suggestionAdapter(suggestion)
   };
   // console.log(`${DEBUG_KEY}: adapted comment is: `, commentToReturn.suggestion);
+  if (replyToRef === undefined) {
+    commentToReturn = _.omit(commentToReturn, 'replyToRef');
+  }
 
   if (_.isEmpty(suggestion)) {
     delete commentToReturn.suggestion;
+  }
+
+  if (stepRef) {
+    commentToReturn = _.set(commentToReturn, 'stepRef', stepRef);
+  }
+
+  if (needRef) {
+    commentToReturn = _.set(commentToReturn, 'needRef', needRef);
+  }
+
+  if (commentType === 'Comment') {
+    // This is a comment, remove any suggestion related stuff
+    commentToReturn = _.omit(commentToReturn, 'suggestion');
   }
 
   return commentToReturn;
@@ -506,7 +531,8 @@ const suggestionAdapter = (suggestion) => {
     },
     Custom: {
       suggestionLink,
-      suggestionText: suggestionText || JSON.stringify({})
+      suggestionText: suggestionText === '' || suggestionText === undefined 
+        ? 'Suggestion' : suggestionText
     },
   })({})(suggestionType);
 
@@ -526,18 +552,20 @@ const suggestionAdapter = (suggestion) => {
 };
 
 /* Actions for suggestion modal */
-export const openSuggestionModal = () => (dispatch, getState) => {
+export const openSuggestionModal = (pageId) => (dispatch, getState) => {
+  console.log(`${DEBUG_KEY}: [ openSuggestionModal ]`);
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_SUGGESTION_OPEN_MODAL,
     payload: {
-      tab
+      tab,
+      pageId
     }
   });
 };
 
 // When user clicks on the suggestion icon on the comment box
-export const createSuggestion = (pageId) => (dispatch, getState) => {
+export const createSuggestion = (goalId, pageId) => (dispatch, getState) => {
   //check if suggestionFor and suggestionRef have assignment,
   //If not then we assign the current goal ref and 'Goal'
   const { tab } = getState().navigation;
@@ -545,7 +573,13 @@ export const createSuggestion = (pageId) => (dispatch, getState) => {
   const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
 
   const { suggestion, tmpSuggestion } = _.get(getState().newComment, `${path}`);
-  const { _id } = getState().goalDetail;
+  const goal = getGoal(getState(), goalId);
+  // const { _id } = getState().goalDetail;
+  if (!goal || _.isEmpty(goal)) {
+    console.warn(`${DEBUG_KEY}: fetch to get goal for creating suggestion: ${goalId}`);
+    return;
+  }
+  const { _id } = goal;
   // Already have a suggestion. Open the current one
   if (suggestion.suggestionFor &&
       suggestion.suggestionForRef &&
@@ -569,7 +603,7 @@ export const createSuggestion = (pageId) => (dispatch, getState) => {
     });
   }
 
-  openSuggestionModal()(dispatch, getState);
+  openSuggestionModal(pageId)(dispatch, getState);
 };
 
 // Cancel creating a suggestion
@@ -633,15 +667,26 @@ export const openCurrentSuggestion = (pageId) => (dispatch, getState) => {
 export const attachSuggestion = (goalDetail, focusType,
 focusRef, pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
+  console.log(`${DEBUG_KEY}: i am here at attachSuggestion`);
   const page = pageId ? `${pageId}` : 'default';
   const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
   const { tmpSuggestion } = _.get(getState().newComment, `${path}`);
 
-  const { suggestionText, suggestionLink, selectedItem } = tmpSuggestion;
+  const { suggestionText, suggestionLink, selectedItem, suggestionType } = tmpSuggestion;
 
   // If nothing is selected, then we show an error
   if (!suggestionText && !suggestionLink && !selectedItem) {
-    return Alert.alert('Error', 'You need to suggest something.');
+    return Alert.alert('Error', 'Make sure you suggest something to your friend');
+  }
+
+  let isUrl = true;
+  if (suggestionType === 'Custom') {
+    isUrl = validator.isURL(suggestionLink);
+  }
+
+  console.log(`${DEBUG_KEY}: isURL: `, isUrl);
+  if (!selectedItem && suggestionLink && !isUrl) {
+    return Alert.alert('Invalid link', 'Make sure you have the correct format for URL');
   }
 
   dispatch({
@@ -703,7 +748,7 @@ export const refreshComments = (parentType, parentId, tab, pageId) => (dispatch,
   const { token } = getState().user;
   const page = pageId ? `${pageId}` : 'default';
   const path = tab ? `${tab}.${page}` : `homeTab.${page}`;
-  // console.log(`${DEBUG_KEY}: path is: `, getState().comment);
+  console.log(`${DEBUG_KEY}: path is: `, path);
   const { limit, hasNextPage } = _.get(getState().comment, path);
   if (hasNextPage === false) {
     return;
@@ -712,7 +757,8 @@ export const refreshComments = (parentType, parentId, tab, pageId) => (dispatch,
     type: COMMENT_LOAD,
     payload: {
       tab,
-      pageId
+      pageId,
+      parentId
     }
   });
   const onSuccess = (data) => {
@@ -725,19 +771,21 @@ export const refreshComments = (parentType, parentId, tab, pageId) => (dispatch,
         limit,
         hasNextPage: !(data === undefined || data.length === 0),
         tab,
-        pageId
+        pageId,
+        parentId
       }
     });
-    console.log(`${DEBUG_KEY}: refresh comment success with data: `, data);
+    console.log(`${DEBUG_KEY}: refresh comment success with data length: `, data.length);
   };
 
   const onError = (err) => {
     console.log(`${DEBUG_KEY}: refresh comment failed with err: `, err);
     dispatch({
-      type: COMMEND_LOAD_ERROR,
+      type: COMMENT_LOAD_ERROR,
       payload: {
         tab,
-        pageId
+        pageId,
+        parentId
       }
     });
   };
@@ -758,7 +806,8 @@ export const loadMoreComments = (parentType, parentId, tab, pageId) => (dispatch
     type: COMMENT_LOAD,
     payload: {
       tab,
-      pageId
+      pageId,
+      parentId
     }
   });
 
@@ -772,7 +821,8 @@ export const loadMoreComments = (parentType, parentId, tab, pageId) => (dispatch
         limit,
         hasNextPage: !(data === undefined || data.length === 0),
         tab,
-        pageId
+        pageId,
+        parentId
       }
     });
     console.log(`${DEBUG_KEY}: load more comments succeeds with data: `, data);
@@ -781,10 +831,11 @@ export const loadMoreComments = (parentType, parentId, tab, pageId) => (dispatch
   const onError = (err) => {
     console.log(`${DEBUG_KEY}: load more comments failed with err: `, err);
     dispatch({
-      type: COMMEND_LOAD_ERROR,
+      type: COMMENT_LOAD_ERROR,
       payload: {
         tab,
-        pageId
+        pageId,
+        parentId
       }
     });
   };
@@ -792,19 +843,20 @@ export const loadMoreComments = (parentType, parentId, tab, pageId) => (dispatch
   loadComments(skip, limit, token, { parentId, parentType }, onSuccess, onError);
 };
 
-export const loadComments = (skip, limit, token, params, callback, onError) => {
+export const loadComments = (skip, limit, token, { parentId, parentType }, callback, onError) => {
   API
     .get(
-      `${BASE_ROUTE}?${queryBuilder(skip, limit, { ...params })}`,
+      `${BASE_ROUTE}?parentId=${parentId}&parentType=${parentType}`,
       // `${BASE_ROUTE}?parentId=5bc81da9d4f72c0019bb0cdb&parentType=Goal`,
       token
     )
     .then((res) => {
-      console.log(`${DEBUG_KEY}: loading with res: `, res);
       if (res.data) {
+        console.log(`${DEBUG_KEY}: loading with res data length: `, res.data.length);
         // Right now return test data
         return callback(res.data.filter((i) => !_.isEmpty(i)));
       }
+      console.log(`${DEBUG_KEY}: loading with res: `, res);
       console.warn(`${DEBUG_KEY}: Loading comment with no res`);
       onError(res);
     })

@@ -5,7 +5,6 @@ import {
   ScrollView,
   Image,
   Text,
-  TextInput,
   SafeAreaView,
   TouchableOpacity,
   ActivityIndicator
@@ -92,7 +91,6 @@ class ShareModal extends React.Component {
     const prevTagContent = prevCursorContent.slice(0, -this.state.keyword.length);
     const newContent = `${prevTagContent}@${name} ${postCursorContent.replace(/^\s+/g, '')}`;
     // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
-    // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
     this.props.change('content', newContent);
 
     const newContentTag = {
@@ -158,7 +156,7 @@ class ShareModal extends React.Component {
   }
 
   updateSearchRes(res, searchContent) {
-    if (searchContent !== this.state.keyword) return '';
+    if (searchContent !== this.state.keyword) return;
     this.setState({
       ...this.state,
       // keyword,
@@ -190,9 +188,9 @@ class ShareModal extends React.Component {
       // Use the customized search if there is one
       const { shareTo } = this.props;
       const { name, item } = shareTo;
-      const { _id } = item;
 
       if (name === 'Event') {
+        const { _id } = item; // Search using eventId
         this.props.searchEventParticipants(keyword, _id, 0, 10, (res, searchContent) => {
           this.updateSearchRes(res, searchContent);
         });
@@ -200,6 +198,7 @@ class ShareModal extends React.Component {
       }
 
       if (name === 'Tribe') {
+        const { _id } = item; // Search using tribeId
         this.props.searchTribeMember(keyword, _id, 0, 10, (res, searchContent) => {
           this.updateSearchRes(res, searchContent);
         });
@@ -217,7 +216,7 @@ class ShareModal extends React.Component {
     const { skip, limit, data, loading } = tagSearchData;
 
     // Disable load more if customized search is provided
-    if (this.tagSearch) return '';
+    if (this.tagSearch) return;
 
     if (loading) return;
     this.setState({
@@ -252,7 +251,7 @@ class ShareModal extends React.Component {
   }
 
   handleCreate = (values) => {
-    this.props.submitShare(this.props.formVals.values);
+    this.props.submitShare(this.props.formVals.values, this.props.callback);
   }
 
   updateSize = (height) => {
@@ -410,7 +409,7 @@ class ShareModal extends React.Component {
     const { item, name } = shareTo;
     const { shareToBasicTextStyle } = styles;
     // If share to event or tribe, item must not be null
-    if (!item && name !== 'Feed') return '';
+    if (!item && name !== 'Feed') return null;
 
     // Select the item namef
     let nameToRender = '';

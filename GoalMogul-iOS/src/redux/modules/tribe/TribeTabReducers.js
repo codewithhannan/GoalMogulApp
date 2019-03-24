@@ -2,6 +2,10 @@
 import _ from 'lodash';
 import { arrayUnique } from '../../middleware/utils';
 
+import {
+  TRIBE_DELETE_SUCCESS
+} from './TribeReducers';
+
 const INITIAL_STATE = {
   data: [],
   hasNextPage: undefined,
@@ -47,6 +51,15 @@ export default (state = INITIAL_STATE, action) => {
       newState = _.set(newState, 'hasNextPage', hasNextPage);
       const oldData = _.get(newState, 'data');
       return _.set(newState, 'data', arrayUnique(oldData.concat(data)));
+    }
+
+    // One tribe is deleted
+    case TRIBE_DELETE_SUCCESS: {
+      const { tribeId } = action.payload;
+      const newState = _.cloneDeep(state);
+      const oldData = _.get(newState, 'data');
+      const newData = oldData.filter(t => t._id !== tribeId);
+      return _.set(newState, 'data', newData);
     }
 
     // Tribe tab starts any type of loading

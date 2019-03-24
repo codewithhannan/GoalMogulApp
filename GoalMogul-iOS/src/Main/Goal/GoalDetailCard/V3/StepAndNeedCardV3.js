@@ -4,10 +4,10 @@ import {
   Image,
   Text
 } from 'react-native';
-import { Icon } from 'react-native-elements';
 
 // Components
 import SectionCardV2 from '../../Common/SectionCardV2';
+import { DotIcon } from '../../../../Utils/Icons';
 
 // Assets
 import HelpIcon from '../../../../asset/utils/help.png';
@@ -97,7 +97,7 @@ const SectionTitle = (props) => {
       source={props.iconSource}
       style={{ ...sectionTitleStyle.iconStyle, ...props.iconStyle }}
     />)
-    : '';
+    : null;
 
   return (
     <View style={{ ...sectionTitleStyle.containerStyle }}>
@@ -105,7 +105,10 @@ const SectionTitle = (props) => {
       <Text style={{ ...sectionTitleStyle.textStyle, ...props.textStyle }}>
         {props.text}
       </Text>
-      <Icon name='dot-single' type='entypo' color='#616161' size={20} />
+      <DotIcon 
+        iconStyle={{ tintColor: '#616161', width: 3, height: 3, marginLeft: 4, marginRight: 4 }}
+      />
+      {/* <Icon name='dot-single' type='entypo' color='#616161' size={20} /> */}
       <Text style={sectionTitleStyle.countTextStyle}>{props.count}</Text>
     </View>
   );

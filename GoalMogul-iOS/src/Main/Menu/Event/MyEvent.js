@@ -54,7 +54,11 @@ import {
 // Selector
 import {
   getMyEventUserStatus,
-  myEventParticipantSelector
+  myEventParticipantSelector,
+  makeGetEventFeed,
+  makeGetEventPageById,
+  makeGetEventUserStatusById,
+  makeGetEventParticipantSelector
   // getMyEventMemberNavigationState
 } from '../../../redux/modules/event/EventSelector';
 
@@ -72,6 +76,12 @@ import {
 
 // Styles
 import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../../../styles';
+
+// Constants
+import { 
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
+} from '../../../Utils/Constants';
 
 const DEBUG_KEY = '[ UI MyEvent ]';
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
@@ -100,6 +110,11 @@ class MyEvent extends Component {
       showPlus: true
     };
   }
+
+  componentWillUnmount() {
+    const { pageId, eventId } = this.props;
+    this.props.eventDetailClose(eventId, pageId);
+  }
   /**
    * On plus clicked, show two icons. Post and Invite
    * const { textStyle, iconStyle, iconSource, text, onPress } = button;
@@ -107,10 +122,17 @@ class MyEvent extends Component {
   handlePlus = (item, navigationState) => {
     const { _id } = item;
     const { routes } = navigationState;
-    const indexToGo = routes.map((route) => route.key).indexOf('posts');
+    const indexToGoForPost = routes.map((route) => route.key).indexOf('posts');
+    const indexToGoForInvite = routes.map((route) => route.key).indexOf('attendees');
+
     const postCallback = () => {
-      this._handleIndexChange(indexToGo);
-      this.props.refreshMyEventDetail(_id);
+      this._handleIndexChange(indexToGoForPost);
+      this.props.refreshMyEventDetail(_id, undefined, this.props.pageId);
+    };
+
+    const inviteCallback = () => {
+      this._handleIndexChange(indexToGoForInvite);
+      this.props.refreshMyEventDetail(_id, undefined, this.props.pageId);
     };
 
     const participants = item.participants.map(p => p.participantRef);
@@ -134,7 +156,7 @@ class MyEvent extends Component {
             showPlus: true
           });
           Actions.pop();
-          Actions.createPostModal({
+          Actions.push('createPostModal', {
             belongsToEvent: _id,
             callback: postCallback,
             tagSearch
@@ -158,7 +180,8 @@ class MyEvent extends Component {
             {
               eventId: _id,
               cardIconSource: invite,
-              cardIconStyle: { tintColor: APP_BLUE_BRIGHT }
+              cardIconStyle: { tintColor: APP_BLUE_BRIGHT },
+              callback: inviteCallback
             }
           );
         }
@@ -186,26 +209,26 @@ class MyEvent extends Component {
   }
 
   handleRSVPOnPress = () => {
-    const { item } = this.props;
+    const { item, pageId } = this.props;
     if (!item) return;
     const { _id } = item;
 
     const switchCases = switchByButtonIndex([
       [R.equals(0), () => {
         console.log(`${DEBUG_KEY} User chooses: Intereseted`);
-        this.props.rsvpEvent('Interested', _id);
+        this.props.rsvpEvent('Interested', _id, pageId);
       }],
       [R.equals(1), () => {
         console.log(`${DEBUG_KEY} User chooses: Going`);
-        this.props.rsvpEvent('Going', _id);
+        this.props.rsvpEvent('Going', _id, pageId);
       }],
       [R.equals(2), () => {
         console.log(`${DEBUG_KEY} User chooses: Maybe`);
-        this.props.rsvpEvent('Maybe', _id);
+        this.props.rsvpEvent('Maybe', _id, pageId);
       }],
       [R.equals(3), () => {
         console.log(`${DEBUG_KEY} User chooses: Not Going`);
-        this.props.rsvpEvent('NotGoing', _id);
+        this.props.rsvpEvent('NotGoing', _id, pageId);
       }],
     ]);
     const rsvpActionSheet = actionSheet(
@@ -218,7 +241,8 @@ class MyEvent extends Component {
 
   // Tab related functions
   _handleIndexChange = (index) => {
-    this.props.eventSelectTab(index);
+    const { pageId, eventId } = this.props;
+    this.props.eventSelectTab(index, eventId, pageId);
   };
 
   // This function is deprecated
@@ -283,10 +307,18 @@ class MyEvent extends Component {
   renderFooter = () => {
     const { routes, index } = this.props.navigationState;
     if (this.props.feedLoading && routes[index].key === 'posts') {
-      return <ActivityIndicator size='small' color='#17B3EC' />;
+      return (
+        <View
+          style={{
+            paddingVertical: 20
+          }}
+        >
+          <ActivityIndicator size='small' color='#17B3EC' />
+        </View>
+      );
     }
 
-    return '';
+    return null;
   }
 
   /**
@@ -303,16 +335,16 @@ class MyEvent extends Component {
       ? MenuFactory(
           [
             'Report',
-            maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe'
+            maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE
           ],
           (val) => {  
             if (val === 'Report') {
               return this.props.reportEvent(_id);
             }
-            if (val === 'Unsubscribe') {
+            if (val === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
               return this.props.unsubscribeEntityNotification(_id, 'Event');
             }
-            if (val === 'Subscribe') {
+            if (val === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
               return this.props.subscribeEntityNotification(_id, 'Event');
             }
           },
@@ -421,11 +453,11 @@ class MyEvent extends Component {
   }
 
   renderMemberTabs() {
-    const { memberNavigationState } = this.props;
+    const { memberNavigationState, eventId, pageId } = this.props;
     const { routes } = memberNavigationState;
 
     const props = {
-      jumpToIndex: (i) => this.props.myEventSelectMembersFilter(routes[i].key, i),
+      jumpToIndex: (i) => this.props.myEventSelectMembersFilter(routes[i].key, i, eventId, pageId),
       navigationState: this.props.memberNavigationState
     };
     return (
@@ -437,10 +469,10 @@ class MyEvent extends Component {
     const { title, _id, picture } = item;
     // const filterBar = this.props.tab === 'attendees'
     //   ? <ParticipantFilterBar />
-    //   : '';
+    //   : null;
     const filterBar = this.props.tab === 'attendees'
       ? this.renderMemberTabs()
-      : '';
+      : null;
 
     // Invite button is replaced by renderPlus
     const inviteButton = this.props.tab === 'attendees'
@@ -452,11 +484,11 @@ class MyEvent extends Component {
           <Text>Invite</Text>
         </TouchableOpacity>
       )
-      : '';
+      : null;
 
     const emptyState = this.props.tab === 'posts' && data.length === 0
       ? <EmptyResult text={'No Posts'} textStyle={{ paddingTop: 100 }} />
-    : '';
+      : null;
 
     return (
       <View>
@@ -485,6 +517,7 @@ class MyEvent extends Component {
           })
         }
         {filterBar}
+        {this.renderFooter()}
         {emptyState}
       </View>
     );
@@ -533,7 +566,7 @@ class MyEvent extends Component {
         </TouchableOpacity>
       );
     }
-    return '';
+    return null;
   }
 
   render() {
@@ -546,7 +579,9 @@ class MyEvent extends Component {
         <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
           <SearchBarHeader
             backButton
-            onBackPress={() => this.props.eventDetailClose()}
+            onBackPress={() => {
+              Actions.pop();
+            }}
             pageSetting
             handlePageSetting={() => this.handlePageSetting(item)}
           />
@@ -554,10 +589,9 @@ class MyEvent extends Component {
             data={data}
             renderItem={this.renderItem}
             keyExtractor={(i) => i._id}
-            onRefresh={() => this.props.refreshMyEventDetail(item._id)}
+            onRefresh={() => this.props.refreshMyEventDetail(item._id, undefined, this.props.pageId)}
             refreshing={this.props.loading}
             ListHeaderComponent={this.renderEventOverview(item, data)}
-            ListFooterComponent={this.renderFooter}
           />
           {this.renderPlus(item)}
         </View>
@@ -613,7 +647,9 @@ const styles = {
   // RSVP related styles
   rsvpBoxContainerStyle: {
     height: 25,
-    width: 60,
+    // width: 60,
+    paddingLeft: 5,
+    paddingRight: 5,
     borderRadius: 5,
     backgroundColor: '#efefef',
     alignItems: 'center',
@@ -649,9 +685,9 @@ const styles = {
     position: 'absolute',
     bottom: 20,
     right: 15,
-    height: 50,
-    width: 50,
-    borderRadius: 25,
+    height: 54,
+    width: 54,
+    borderRadius: 27,
     alignItems: 'center',
     justifyContent: 'center',
     // backgroundColor: '#17B3EC',
@@ -668,43 +704,61 @@ const styles = {
   },
 };
 
-const mapStateToProps = state => {
-  const {
-    navigationState, item, feed, feedLoading, memberNavigationState, eventLoading
-  } = state.myEvent;
-  // const memberNavigationState = getMyEventMemberNavigationState(state);
+const makeMapStateToProps = () => {
+  const getEventFeed = makeGetEventFeed();
+  const getEventPageById = makeGetEventPageById();
+  const getEventUserStatus = makeGetEventUserStatusById();
+  const getEventParticipantSelector = makeGetEventParticipantSelector();
 
-  const { routes, index } = navigationState;
-  const data = ((key) => {
-    switch (key) {
-      case 'about':
-        return [item];
+  const mapStateToProps = (state, props) => {
+    const { eventId, pageId } = props;
+    const feed = getEventFeed(state, eventId, pageId);
+    const { event, eventPage } = getEventPageById(state, eventId, pageId);
+    const userStatus = getEventUserStatus(state, eventId);
 
-      case 'attendees':
-        return myEventParticipantSelector(state);
+    const {
+      navigationState, feedLoading, memberNavigationState, eventLoading
+    } = eventPage;
 
-      case 'posts':
-        return feed;
-
-      default: return [];
-    }
-  })(routes[index].key);
-
-  return {
-    navigationState,
-    item,
-    data,
-    feedLoading,
-    status: getMyEventUserStatus(state),
-    memberNavigationState,
-    tab: routes[index].key,
-    loading: eventLoading || false
+    // const {
+    //   navigationState, item, feed, feedLoading, memberNavigationState, eventLoading
+    // } = state.myEvent;
+    // const memberNavigationState = getMyEventMemberNavigationState(state);
+  
+    const { routes, index } = navigationState;
+    const data = ((key) => {
+      switch (key) {
+        case 'about':
+          return [event];
+  
+        case 'attendees':
+          // return myEventParticipantSelector(state);
+          return getEventParticipantSelector(state, eventId, pageId);
+  
+        case 'posts':
+          return feed;
+  
+        default: return [];
+      }
+    })(routes[index].key);
+  
+    return {
+      navigationState,
+      item: event,
+      data,
+      feedLoading,
+      status: userStatus,
+      memberNavigationState,
+      tab: routes[index].key,
+      loading: eventLoading || false
+    };
   };
+
+  return mapStateToProps;
 };
 
-
 export default connect(
-  mapStateToProps,
+  makeMapStateToProps,
   {
     eventSelectTab,
     eventDetailClose,

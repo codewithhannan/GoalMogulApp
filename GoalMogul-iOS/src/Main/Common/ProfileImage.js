@@ -15,6 +15,11 @@ import {
   openProfile
 } from '../../actions';
 
+// Constants
+import {
+  IMAGE_BASE_URL
+} from '../../Utils/Constants';
+
 const styles = {
   imageContainerStyle: {
 
@@ -28,10 +33,18 @@ const styles = {
   },
 };
 
+const DEBUG_KEY = '[ UI ProfileImage ]';
 /*
  * props: imageUrl, resizeMode, imageContainerStyle, imageStyle
  */
-class ProfileImage extends React.PureComponent {
+class ProfileImage extends React.Component {
+
+  shouldComponentUpdate(nextProps) {
+    if (this.props.imageUrl !== nextProps.imageUrl) {
+      return true;
+    }
+    return false;
+  }
 
   handleProfileImageOnPress = () => {
     const { userId } = this.props;
@@ -73,7 +86,7 @@ class ProfileImage extends React.PureComponent {
       </TouchableWithoutFeedback>
     );
     if (imageUrl) {
-      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
+      imageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
       profileImage = (
         <TouchableWithoutFeedback onPress={this.handleProfileImageOnPress}>
           <View

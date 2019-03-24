@@ -15,9 +15,13 @@ import {
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import {
+  DotIndicator
+} from 'react-native-indicators';
 
 // Components
-import ModalHeader from '../../Main/Common/Header/ModalHeader';
+import ModalHeader from '../Common/Header/ModalHeader';
+import LoadingModal from '../Common/Modal/LoadingModal';
 
 // Actions
 import {
@@ -44,7 +48,7 @@ class ReportModal extends Component {
           placeholder='Title of the report...'
           value={_.isEmpty(title) ? '' : title}
           onEndEditing={() => {
-            if (!title || title.length < 10) Alert.alert('Title must be at least 10 characters');
+            if (!title || title.length < 5) Alert.alert('Title must be at least 5 characters');
             if (title.length > 70) Alert.alert('Title cannot be longer than 70 characters');
           }}
         />
@@ -81,6 +85,10 @@ class ReportModal extends Component {
         behavior='padding'
         style={{ flex: 1, backgroundColor: '#ffffff' }}
       >
+        <LoadingModal 
+          visible={this.props.loading} 
+          customIndicator={<DotIndicator size={12} color='white' />}  
+        />
         <ScrollView
           style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
         >
@@ -88,7 +96,7 @@ class ReportModal extends Component {
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
               <View style={{ flex: 1 }}>
                 <ModalHeader
-                  title='Report'
+                  title='Report abuse'
                   actionText='Submit'
                   onCancel={() => {
                     Actions.pop();
@@ -97,7 +105,7 @@ class ReportModal extends Component {
                   onAction={() => {
                     this.props.postingReport();
                   }}
-                  actionDisabled={!(title && details && title.length >= 10 && !loading)}
+                  actionDisabled={!(title && details && title.length >= 5 && !loading)}
                 />
                 <Text style={styles.subTitleTextStyle}>Title</Text>
                 {this.renderTitleInput()}

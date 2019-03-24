@@ -74,7 +74,7 @@ export const preloadMeet = () => (dispatch, getState) => {
 @param dispatch:
 @param callback:
 */
-const loadOneTab = (type, skip, limit, token, dispatch, callback) => {
+const loadOneTab = (type, skip, limit, token, dispatch, callback, onError) => {
   const route = _.get(requestMap, type);
   API
     .get(`${BASE_ROUTE}${route}?limit=${limit}&skip=${skip}`, token)
@@ -96,6 +96,9 @@ const loadOneTab = (type, skip, limit, token, dispatch, callback) => {
           data: []
         }
       });
+      if (onError) {
+        onError(res);
+      }
     })
     .catch((err) => {
       console.log(`fetching friendship for type: ${type}, fails with error: ${err}`);
@@ -106,6 +109,9 @@ const loadOneTab = (type, skip, limit, token, dispatch, callback) => {
           data: []
         }
       });
+      if (onError) {
+        onError(err);
+      }
     });
 
   // const url = `https://goalmogul-api-dev.herokuapp.com/api/secure/user/${route}?limit=${limit}&skip=${skip}`;
@@ -160,6 +166,21 @@ export const handleRefresh = (key) => (dispatch, getState) => {
       type: key
     }
   });
+
+  const onError = (err) => {
+    dispatch({
+      type: MEET_TAB_REFRESH_DONE,
+      payload: {
+        type: key,
+        data: [],
+        skip: 0,
+        limit: 20,
+        hasNextPage: undefined
+      }
+    });
+  };
+
+
   loadOneTab(key, 0, limit, token, dispatch, (data) => {
     dispatch({
       type: MEET_TAB_REFRESH_DONE,
@@ -171,7 +192,7 @@ export const handleRefresh = (key) => (dispatch, getState) => {
         hasNextPage: !(data === undefined || data.length === 0)
       }
     });
-  });
+  }, onError);
 };
 
 // Load more data
@@ -179,8 +200,8 @@ export const meetOnLoadMore = (key) => (dispatch, getState) => {
   // TODO: dispatch onLoadMore start
   console.log(`${DEBUG_KEY} Loading more for ${key}`);
   const tabState = _.get(getState().meet, key);
-  const { skip, limit, hasNextPage } = tabState;
-  if (hasNextPage || hasNextPage === undefined) {
+  const { skip, limit, hasNextPage, refreshing } = tabState;
+  if ((hasNextPage || hasNextPage === undefined)) {
     const { token } = getState().user;
     loadOneTab(key, skip, limit, token, dispatch, (data) => {
       const newSkip = data.length === 0 ? skip : skip + data.length;
@@ -252,8 +273,9 @@ export const updateFriendship = (userId, friendshipId, type, tab, callback) =>
 
   singleFetch(requestType.url, _.cloneDeep(requestType.data), requestType.type, token)
     .then((res) => {
-      console.log(`response for ${type}: `, res);
-      if (res.message && !res.message.toLowerCase().trim().includes('success')) {
+      console.log(`${DEBUG_KEY}: response for ${type}: `, res);
+      if (res.status !== 200 || (res.message && !res.message.toLowerCase().trim().includes('success'))) {
+        console.log(`${DEBUG_KEY}: update friendship failed for request type: with res: `, res);
         // TODO: error handling
         return;
       }
@@ -325,7 +347,7 @@ export const requestsSelectTab = (key) => (dispatch) => {
 };
 
 // Contact sync
-export const meetContactSync = (callback) => async (dispatch, getState) => {
+export const meetContactSync = (callback, componentKey) => async (dispatch, getState) => {
     const permission = await Expo.Permissions.askAsync(Expo.Permissions.CONTACTS);
     if (permission.status !== 'granted') {
     // Permission was denied and dispatch an action
@@ -335,41 +357,52 @@ export const meetContactSync = (callback) => async (dispatch, getState) => {
     const { token } = getState().user;
     // Skip and limit for fetching matched contacts
     const { matchedContacts } = getState().meet;
+    const { limit } = matchedContacts;
 
     dispatch({
-      type: MEET_CONTACT_SYNC
+      type: MEET_CONTACT_SYNC,
+      payload: {
+        refresh: true
+      }
     });
 
-    Actions.push('meetContactSync', { type: 'meet', actionCallback: callback });
+    const componentKeyToUse = componentKey ? componentKey : 'meetContactSync';
+    Actions.push(`${componentKeyToUse}`, { type: 'meet', actionCallback: callback });
 
     handleUploadContacts(token)
       .then((res) => {
         console.log(`${DEBUG_KEY}: response for uploading contacts is: `, res);
 
         /* TODO: load matched contacts */
-        return fetchMatchedContacts(token, 0, matchedContacts.limit);
+        return fetchMatchedContacts(token, 0, limit);
       })
       .then((res) => {
-        console.log('matched contacts are: ', res);
-        if (res.data) {
+        console.log(`${DEBUG_KEY}: [ meetContactSync ]: [ fetchMatchedContacts ]: matched ` + 
+          `contacts with res data length`, res && res.data ? res.data.length : 0);
+        const { data } = res;
+        if (data) {
           // User finish fetching
           return dispatch({
             type: MEET_CONTACT_SYNC_FETCH_DONE,
             payload: {
-              data: res.data, // TODO: replaced with res
-              skip: matchedContacts.skip + res.data.length,
-              limit: matchedContacts.limit
+              data: data, // TODO: replaced with res
+              skip: data.length,
+              hasNextPage: data.length && data.length === limit,
+              refresh: true
             }
           });
         }
         // TODO: error handling for fail to fetch contact cards
         // TODO: show toast for user to refresh
+        console.warn('[ Action ContactSync ]: failed with res', res);
         dispatch({
           type: MEET_CONTACT_SYNC_FETCH_DONE,
           payload: {
             data: [], // TODO: replaced with res
-            skip: matchedContacts.skip,
-            limit: matchedContacts.limit
+            skip: 0,
+            limit,
+            hasNextPage: false,
+            refresh: true
           }
         });
       })
@@ -382,7 +415,10 @@ export const meetContactSync = (callback) => async (dispatch, getState) => {
 // Load more matched contacts for contact sync
 export const meetContactSyncLoadMore = (refresh) => (dispatch, getState) => {
   dispatch({
-    type: MEET_CONTACT_SYNC
+    type: MEET_CONTACT_SYNC,
+    payload: {
+      refresh
+    }
   });
 
   const { token } = getState().user;
@@ -392,6 +428,7 @@ export const meetContactSyncLoadMore = (refresh) => (dispatch, getState) => {
   const type = refresh ? MEET_CONTACT_SYNC_REFRESH_DONE : MEET_CONTACT_SYNC_FETCH_DONE;
 
   if (hasNextPage === undefined || hasNextPage) {
+    // newSkip and limit is not needed since it will fetch all at once
     fetchMatchedContacts(token, newSkip, limit).then((res) => {
       if (res.data) {
         dispatch({
@@ -400,7 +437,8 @@ export const meetContactSyncLoadMore = (refresh) => (dispatch, getState) => {
             data: res.data, // TODO: replaced with res
             skip: newSkip + res.data.length,
             limit,
-            hasNextPage: res.data.length !== 0 && res.data !== undefined
+            hasNextPage: res.data.length !== 0 && res.data !== undefined,
+            refresh
           }
         });
       } else {
@@ -410,7 +448,8 @@ export const meetContactSyncLoadMore = (refresh) => (dispatch, getState) => {
             data: [], // TODO: replaced with res
             skip: newSkip,
             limit,
-            hasNextPage: res.data !== undefined && res.data.length !== 0
+            hasNextPage: res.data !== undefined && res.data.length !== 0,
+            refresh
           }
         });
       }

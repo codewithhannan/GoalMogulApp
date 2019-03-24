@@ -75,6 +75,42 @@ class CreateButtonOverlay extends Component {
 		);
 	}
 
+	// This function is not being called
+	handleCreatePost = () => {
+		console.log('User trying to create post');
+		Animated.timing(this.fadeAnim, {
+			duration: 100,
+			toValue: 0,
+		}).start(() => {
+			this.props.closeCreateOverlay(this.props.tab);
+			Actions.pop();
+			// pageId is for event or tribe so that we know when we refresh,
+			// which tribe / event page to get list of items
+			// Currently this is only invoked in tribe and event
+			Actions.createPostModal({ 
+				pageId: this.props.pageId, 
+			});
+		});
+	}
+
+  // This function is not being called
+  handleCreateGoal = () => {
+    console.log('User trying to create goal');
+    Animated.timing(this.fadeAnim, {
+      duration: 100,
+      toValue: 0,
+    }).start(() => {
+      this.props.closeCreateOverlay(this.props.tab);
+      Actions.pop();
+      // pageId is for event or tribe so that we know when we refresh,
+      // which tribe / event page to get list of items
+      // Currently this is only invoked in tribe and event
+      Actions.createGoalModal({ 
+        pageId: this.props.pageId, 
+      });
+    });
+  }
+
 	renderActionButtons() {
 		const { buttons } = this.props;
 		const actionsButtons = buttons.map((button, index) => {

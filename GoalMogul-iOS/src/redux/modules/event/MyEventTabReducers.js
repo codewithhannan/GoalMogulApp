@@ -6,6 +6,10 @@ import {
   MYEVENT_DETAIL_CLOSE
 } from './MyEventReducers';
 
+import {
+  EVENT_DELETE_SUCCESS
+} from './EventReducers';
+
 const INITIAL_STATE = {
   data: [],
   hasNextPage: false,
@@ -15,8 +19,8 @@ const INITIAL_STATE = {
   // ['start', 'created', 'title']
   sortBy: 'created',
   filterOptions: {
-    // ['Invited', 'Interested', 'Going', 'Maybe', 'NotGoing']
-    rspv: 'Invited',
+    // ['All', 'Invited', 'Interested', 'Going', 'Maybe', 'NotGoing']
+    rsvp: 'All',
     // boolean
     isCreator: false,
     // ['Past', 'Upcoming']
@@ -45,6 +49,15 @@ export const MYEVENTTAB_UPDATE_TAB = 'myeventtab_update_tab';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    // One event is deleted
+    case EVENT_DELETE_SUCCESS: {
+      const { eventId } = action.payload;
+      const newState = _.cloneDeep(state);
+      const oldData = _.get(newState, 'data');
+      const newData = oldData.filter(e => e._id !== eventId);
+      return _.set(newState, 'data', newData);
+    }
+
     // Open the modal
     case MYEVENT_DETAIL_CLOSE:
     case MYEVENTTAB_OPEN: {

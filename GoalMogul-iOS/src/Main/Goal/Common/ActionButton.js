@@ -17,7 +17,7 @@ class ActionButton extends React.PureComponent {
   }
 
   handleOnPress = () => {
-    if (this.state.buttonDisabled) return '';
+    if (this.state.buttonDisabled) return;
     this.setState({
       ...this.state,
       buttonDisabled: true
@@ -36,7 +36,7 @@ class ActionButton extends React.PureComponent {
   render() {
     const { containerStyle, count, disabled } = this.props;
     const countText = !count || count === 0
-      ? ''
+      ? null
       : <Text style={{ ...styles.textStyle, ...this.props.textStyle }}>{this.props.count}</Text>;
 
     const buttonDisabled = disabled === true;

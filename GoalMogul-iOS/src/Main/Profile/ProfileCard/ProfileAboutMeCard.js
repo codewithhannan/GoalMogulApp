@@ -14,7 +14,7 @@ class ProfileAboutMeCard extends Component {
   render() {
     const { about } = this.props.data.profile;
     if (!about) {
-      return '';
+      return null;
     }
     return (
       <Card>

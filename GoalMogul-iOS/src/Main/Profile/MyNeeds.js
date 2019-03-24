@@ -17,27 +17,42 @@ import {
   changeFilter
 } from '../../actions';
 
+// Selector
+import { 
+  makeGetUserNeeds,
+  makeGetUserPageInfoByType
+} from '../../redux/modules/User/Selector';
+
 // tab key
 const key = 'needs';
+const DEBUG_KEY = '[ UI Profile Needs ]';
 
 class MyNeeds extends Component {
+  constructor(props) {
+    super(props);
+    this.handleOnLoadMore = this.handleOnLoadMore.bind(this);
+    this.handleRefresh = this.handleRefresh.bind(this);
+  }
 
   _keyExtractor = (item) => item._id
 
   handleRefresh = () => {
-    console.log('Refreshing tab: ', key);
-    this.props.handleTabRefresh(key);
+    const { userId, pageId } = this.props;
+    console.log(`${DEBUG_KEY}: refreshing tab`, key);
+    this.props.handleTabRefresh(key, userId, pageId);
   }
 
   handleOnLoadMore = () => {
-    this.props.handleProfileTabOnLoadMore(key);
+    const { userId, pageId } = this.props;
+    this.props.handleProfileTabOnLoadMore(key, userId, pageId);
   }
 
   /**
    * @param type: ['sortBy', 'orderBy', 'categories', 'priorities']
    */
   handleOnMenuChange = (type, value) => {
-    this.props.changeFilter(key, type, value);
+    const { userId, pageId } = this.props;
+    this.props.changeFilter(key, type, value, { userId, pageId });
   }
 
   renderListFooter() {
@@ -47,10 +62,10 @@ class MyNeeds extends Component {
       return (
         <View
           style={{
-            paddingVertical: 0
+            paddingVertical: 14
           }}
         >
-          <ActivityIndicator size='large' />
+          <ActivityIndicator size='small' />
         </View>
       );
     }
@@ -58,7 +73,8 @@ class MyNeeds extends Component {
 
   renderItem = ({ item }) => {
     // TODO: render item
-    return <ProfileNeedCard item={item} />;
+    // Pass down the pageId from Profile component to ProfileNeedCard
+    return <ProfileNeedCard item={item} pageId={this.props.pageId} />;
   }
 
   render() {
@@ -75,16 +91,13 @@ class MyNeeds extends Component {
             data={[...data]}
             renderItem={this.renderItem}
             keyExtractor={this._keyExtractor}
-            onRefresh={this.handleRefresh.bind()}
+            onRefresh={this.handleRefresh}
             onEndReached={this.handleOnLoadMore}
             onEndReachedThreshold={0}
             refreshing={refreshing}
             ListFooterComponent={this.renderListFooter()}
           />
         </View>
-        {/*
-          onEndReached={() => this.props.handleProfileTabOnLoadMore(key)}
-        */}
       </View>
     );
   }
@@ -112,21 +125,34 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  const { selectedTab, needs } = state.profile;
-  const { data, loading, filter, refreshing } = needs;
+const makeMapStateToProps = () => {
+  const getUserNeeds = makeGetUserNeeds();
+  const getPageInfo = makeGetUserPageInfoByType();
 
-  return {
-    selectedTab,
-    data,
-    loading,
-    filter,
-    refreshing
+  const mapStateToProps = (state, props) => {
+    const { userId, pageId } = props;
+    const data = getUserNeeds(state, userId, pageId);
+    const { 
+      loading, refreshing, filter, selectedTab 
+    } = getPageInfo(state, userId, pageId, 'needs');
+
+    // console.log(`${DEBUG_KEY}: user needs composed: `, userNeeds.length);
+  
+    return {
+      selectedTab,
+      data,
+      loading,
+      filter,
+      refreshing
+    };
   };
+
+  return mapStateToProps;
 };
 
+
 export default connect(
-  mapStateToProps,
+  makeMapStateToProps,
   {
     handleTabRefresh,
     handleProfileTabOnLoadMore,

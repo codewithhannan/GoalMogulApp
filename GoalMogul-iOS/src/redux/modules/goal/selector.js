@@ -1,5 +1,12 @@
 import { createSelector } from 'reselect';
 import _ from 'lodash';
+import {
+  INITIAL_GOAL_PAGE
+} from './Goals';
+
+import { 
+  getCommentWithPageInfo
+} from '../feed/comment/CommentSelector';
 
 const DEBUG_KEY = '[ Selector Goal ]';
 
@@ -7,6 +14,9 @@ const getNeeds = (state) => state.goalDetail.goal.needs;
 const getSteps = (state) => state.goalDetail.goal.steps;
 
 const getComments = (state) => state.comment;
+
+const getCommentsV2 = (state, goalId, pageId) => getCommentWithPageInfo(state, goalId, pageId);
+
 const getPageId = (state, pageId) => pageId;
 
 const getTab = (state) => state.navigation.tab;
@@ -106,6 +116,99 @@ export const getGoalStepsAndNeeds = createSelector(
   }
 );
 
+export const makeGetGoalStepsAndNeedsV2 = () => createSelector(
+  [getGoal, getCommentsV2],
+  (goal, comments) => {
+    const { needs, steps } = goal;
+    let res = [];
+    if (steps && steps.length > 0) {
+      res.push({ sectionTitle: 'steps', count: steps.length, _id: 'step-title' });
+    }
+
+    // Transform needs to have a type
+    let newSteps = [];
+    if (steps && steps.length !== 0) {
+      newSteps = steps.map((step) => {
+        const stepComments = comments.transformedComments.filter((c) => {
+
+          const isSuggestionForStep = (
+            c.suggestion &&
+            c.suggestion.suggestionForRef &&
+            c.suggestion.suggestionForRef === step._id
+          );
+
+          const isCommentForStep = c.stepRef === step._id;
+          if (isCommentForStep || isSuggestionForStep) {
+                return true;
+          }
+          return false;
+        });
+        
+        let count = 0;
+        stepComments.forEach(c => {
+          if (c.childComments && c.childComments.length > 0) {
+            // Count all the childComments
+            count += c.childComments.length;
+          }
+          // Count the current comment
+          count += 1;
+        });
+
+        // console.log(`${DEBUG_KEY}: count is: `, count);
+        return {
+          ...step,
+          type: 'step',
+          count
+        };
+      });
+    }
+
+    res = res.concat(newSteps);
+
+    if (needs && needs.length > 0) {
+      res.push({ sectionTitle: 'needs', count: needs.length, _id: 'need-title' });
+    }
+    // Transform needs to have a type
+    let newNeeds = [];
+    if (needs && needs.length !== 0) {
+      newNeeds = needs.map((need) => {
+        const needComments = comments.transformedComments.filter((c) => {
+          const isSuggestionForNeed = (
+            c.suggestion &&
+            c.suggestion.suggestionForRef &&
+            c.suggestion.suggestionForRef === need._id
+          );
+
+          const isCommentForNeed = c.needRef === need._id;
+          if (isSuggestionForNeed || isCommentForNeed) {
+                return true;
+          }
+          return false;
+        });
+
+        let count = 0;
+        needComments.forEach(c => {
+          if (c.childComments && c.childComments.length > 0) {
+            // Count all the childComments
+            count += c.childComments.length;
+          }
+          // Count the current comment
+          count += 1;
+        });
+
+        return {
+          ...need,
+          type: 'need',
+          count
+        };
+      });
+    }
+
+    res = res.concat(newNeeds);
+    return res;
+  }
+);
+
 // Get goal detail by tabs
 export const getGoalDetailByTab = createSelector(
   [getState, getTab],
@@ -114,6 +217,42 @@ export const getGoalDetailByTab = createSelector(
     return _.get(goalDetails, `${path}`);
   }
 );
+
+export const getGoal = (state, goalId) => {
+  const goals = state.goals;
+  if (_.has(goals, `${goalId}.goal`)) {
+    return _.get(goals, `${goalId}.goal`);
+  }
+  return {};
+};
+
+const getGoalPage = (state, goalId, pageId) => {
+  const goals = state.goals;
+  if (_.has(goals, `${goalId}.${pageId}`)) {
+    return _.get(goals, `${goalId}.${pageId}`);
+  }
+  return { ...INITIAL_GOAL_PAGE };
+};
+
+export const makeGetGoalDetailById = () => {
+  return createSelector(
+    [getGoal],
+    (goal) => goal
+  );
+};
+
+export const makeGetGoalPageDetailByPageId = () => {
+  return createSelector(
+    [getGoal, getGoalPage],
+    (goal, goalPage) => {
+      return {
+        goal,
+        goalPage
+      };
+    }
+  );
+};
+  
 
 const capitalizeWord = (word) => {
   if (!word) return '';

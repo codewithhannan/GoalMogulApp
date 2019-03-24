@@ -105,7 +105,7 @@ class CommentBoxV2 extends Component {
       ...this.state,
       defaultValue: 'Write a Comment...'
     });
-    // console.log(`${DEBUG_KEY}: this.textInput in componentDidMount: `, this.textInput);
+    console.log(`${DEBUG_KEY}: componentDidMount: `);
   }
 
   onTaggingSuggestionTap(item, hidePanel, cursorPosition) {
@@ -121,6 +121,16 @@ class CommentBoxV2 extends Component {
     const newContentText = `${comment}@${name} ${postCursorContent.replace(/^\s+/g, '')}`;
     // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
     // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
+
+
+    console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
+    console.log(`${DEBUG_KEY}: keyword length is: `, this.state.keyword.length);
+    console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: prevCursorContent is: `, prevCursorContent);
+    console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: prevCursorContent length is: `, prevCursorContent.length);
+    console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: postCursorContent is: `, postCursorContent);
+    console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: comment is: `, comment);
+    console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: newContentText is: `, newContentText);
+
     this.props.newCommentOnTextChange(newContentText, pageId);
 
     const newContentTag = {
@@ -187,7 +197,7 @@ class CommentBoxV2 extends Component {
   }
 
   updateSearchRes(res, searchContent) {
-    if (searchContent !== this.state.keyword) return '';
+    if (searchContent !== this.state.keyword) return;
     this.setState({
       ...this.state,
       // keyword,
@@ -313,7 +323,7 @@ class CommentBoxV2 extends Component {
   }
 
   focusForReply(type) {
-    console.log(`${DEBUG_KEY}: i am here`);
+    console.log(`${DEBUG_KEY}: focused for reply with type: ${type}`);
     this.textInput.focus();
 
     // Only update the defaultValue if comment button is clicked through comment card / child comment card
@@ -336,10 +346,10 @@ class CommentBoxV2 extends Component {
   }
 
   //tintColor: '#f5d573'
-  renderSuggestionIcon(newComment, pageId) {
+  renderSuggestionIcon(newComment, pageId, goalId) {
     const { mediaRef, commentType } = newComment;
     const disableButton = mediaRef !== undefined && mediaRef !== '';
-    if (commentType === 'Reply') return '';
+    if (commentType === 'Reply') return null;
 
     return (
       <TouchableOpacity
@@ -348,7 +358,7 @@ class CommentBoxV2 extends Component {
         onPress={() => {
           console.log('suggestion on click in comment box');
           Keyboard.dismiss();
-          this.props.createSuggestion(pageId);
+          this.props.createSuggestion(goalId, pageId);
         }}
         disabled={disableButton}
       >
@@ -364,10 +374,10 @@ class CommentBoxV2 extends Component {
     );
   }
 
-  renderLeftIcons(newComment, pageId, hasSuggestion) {
+  renderLeftIcons(newComment, pageId, hasSuggestion, goalId) {
     const suggestionIcon = hasSuggestion
-      ? this.renderSuggestionIcon(newComment, pageId)
-      : '';
+      ? this.renderSuggestionIcon(newComment, pageId, goalId)
+      : null;
     return (
       <View
         style={{
@@ -384,9 +394,12 @@ class CommentBoxV2 extends Component {
   }
 
   renderImageIcon(newComment) {
-    const { suggestion } = newComment;
-    const disableButton =
-      (suggestion !== undefined && suggestion.suggestionFor !== undefined);
+    const { suggestion, commentType } = newComment;
+    // Disable image icon if there is a valid suggestion
+    const disableButton = commentType === 'Suggestion';
+    // console.log(`${DEBUG_KEY}: image button disabled: `, disableButton);
+    // console.log(`${DEBUG_KEY}: suggestion is: `, suggestion);
+      // (suggestion !== undefined && suggestion.suggestionFor !== undefined);
     return (
       <TouchableOpacity
         activeOpacity={0.85}
@@ -407,7 +420,7 @@ class CommentBoxV2 extends Component {
 
   renderMedia(newComment) {
     const { mediaRef } = newComment;
-    if (!mediaRef) return '';
+    if (!mediaRef) return null;
     const onPress = () => console.log('Media on Pressed');
     const onRemove = () => this.props.newCommentOnMediaRefChange(undefined, this.props.pageId);
 
@@ -433,12 +446,23 @@ class CommentBoxV2 extends Component {
   }
 
   renderPost(newComment) {
-    const { uploading, contentText, tmpSuggestion } = newComment;
-    const disable = uploading ||
-      ((contentText === undefined || contentText === '' || contentText.trim() === '')
-      && _.isEmpty(tmpSuggestion));
+    const { uploading, contentText, tmpSuggestion, suggestion, commentType, mediaRef } = newComment;
+    // console.log(`${DEBUG_KEY}: new comment is: `, newComment);
 
-    const color = '#17B3EC';
+    const isInValidComment = (commentType === 'Comment' || commentType === 'Reply') && 
+      (contentText === undefined || contentText === '' || contentText.trim() === '') && 
+      mediaRef === undefined;
+
+    const isValidSuggestion = validSuggestion(newComment);
+
+    // console.log(`${DEBUG_KEY}: invalid comment: `, isInValidComment);
+    // console.log(`${DEBUG_KEY}: comment is: `, newComment);
+    // const disable = uploading ||
+    //   ((contentText === undefined || contentText === '' || contentText.trim() === '')
+    //   && _.isEmpty(tmpSuggestion) && _.isEmpty(suggestion));
+    const disable = uploading || isInValidComment || !isValidSuggestion;
+
+    const color = disable ? '#cbd6d8' : '#17B3EC';
     return (
       <TouchableOpacity
         activeOpacity={0.85}
@@ -472,7 +496,7 @@ class CommentBoxV2 extends Component {
       );
     }
 
-    return '';
+    return null;
   }
 
   /**
@@ -505,9 +529,9 @@ class CommentBoxV2 extends Component {
   }
 
   render() {
-    const { pageId, newComment, hasSuggestion } = this.props;
+    const { pageId, newComment, hasSuggestion, goalId } = this.props;
     // console.log(`${DEBUG_KEY}: new comment in commentbox: `, newComment);
-    if (!newComment || !newComment.parentRef) return '';
+    if (!newComment || !newComment.parentRef) return null;
 
     const { uploading } = newComment;
 
@@ -548,7 +572,7 @@ class CommentBoxV2 extends Component {
           onSubmitEditing={() => this.handleOnSubmitEditing(newComment)}
           renderSuggestionPreview={() => this.renderSuggestionPreview(newComment, pageId)}
           renderMedia={() => this.renderMedia(newComment)}
-          renderLeftIcons={() => this.renderLeftIcons(newComment, pageId, hasSuggestion)}
+          renderLeftIcons={() => this.renderLeftIcons(newComment, pageId, hasSuggestion, goalId)}
           renderPost={() => this.renderPost(newComment)}
 
           textInputContainerStyle={inputContainerStyle}
@@ -585,6 +609,47 @@ class CommentBoxV2 extends Component {
     );
   }
 }
+
+const validSuggestion = (newComment) => {
+  const { commentType, suggestion } = newComment;
+  if (commentType === 'Comment' || commentType === 'Reply') return true;
+  if (isInvalidObject(suggestion)) return false;
+  const { 
+    suggestionFor, 
+    suggestionForRef, 
+    suggestionType, 
+    suggestionText, 
+    suggestionLink,
+    selectedItem
+  } = suggestion;
+  // console.log(`${DEBUG_KEY}: suggestion is:`, suggestion);
+  if (isInvalidObject(suggestionFor) || isInvalidObject(suggestionForRef) || isInvalidObject(suggestionType)) {
+    return false;
+  }
+
+  if (suggestionType !== 'Custom' && isInvalidObject(selectedItem)) {
+    return false;
+  }
+
+  if (suggestionType === 'Custom') {
+    if (isInvalidObject(suggestionText) || isInvalidObject(suggestionLink)) {
+      return false;
+    }
+  }
+  return true;
+};
+
+
+export const isInvalidObject = (o) => {
+  if (o === null) return true;
+  if (typeof o === 'object') {
+    return _.isEmpty(o) || o === undefined;
+  }
+  if (typeof o === 'string') {
+    return o === '' || o.trim() === '';
+  }
+  return false;
+};
 // onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
 
 const styles = {

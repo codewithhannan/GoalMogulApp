@@ -66,7 +66,7 @@ class ViewableSettingMenu extends Component {
 
   renderShareToMSButton() {
     if (this.props.shareToMastermind === null) {
-      return '';
+      return null;
     }
     const containerStyle = this.props.shareToMastermind ?
       {
@@ -118,12 +118,25 @@ class ViewableSettingMenu extends Component {
   }
 
   render() {
+    const { belongsToTribe, belongsToEvent } = this.props;
+
+    const settingDisabled = belongsToTribe !== undefined || belongsToEvent !== undefined;
+
+    // Don't show caret if belongs to event or tribe
+    const caret = settingDisabled
+      ? null
+      : (
+          <View style={{ padding: 5 }}>
+            <Image style={styles.caretStyle} source={dropDown} />
+          </View>
+      );
     return (
       <View style={{ flexDirection: 'row' }}>
         <TouchableOpacity
           activeOpacity={0.85}
-          style={{ ...styles.containerStyle, width: 80 }}
+          style={{ ...styles.containerStyle, width: 80, opacity: settingDisabled ? 0 : 95 }}
           onPress={this.handleOnClick}
+          disabled={settingDisabled}
         >
           <View style={{ padding: 5 }}>
             <Image
@@ -138,9 +151,7 @@ class ViewableSettingMenu extends Component {
           <Text style={{ fontSize: 10, flex: 1 }}>
             {this.props.viewableSetting}
           </Text>
-          <View style={{ padding: 5 }}>
-            <Image style={styles.caretStyle} source={dropDown} />
-          </View>
+          {caret}
         </TouchableOpacity>
         {this.renderShareToMSButton()}
       </View>

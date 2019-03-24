@@ -52,11 +52,12 @@ class MyEventTab extends React.Component {
   }
 
   renderListHeader() {
-    return (
-      <View>
-        <MyEventFilterBar />
-      </View>
-    );
+    return null;
+    // return (
+    //   <View>
+    //     <MyEventFilterBar />
+    //   </View>
+    // );
   }
 
   renderCreateEventButton() {
@@ -93,6 +94,7 @@ class MyEventTab extends React.Component {
               navigationState: this.props.navigationState
             })
           }
+          <MyEventFilterBar />
           <FlatList
             data={this.props.data}
             renderItem={this.renderItem}
@@ -103,7 +105,7 @@ class MyEventTab extends React.Component {
             onEndReached={this.handleOnLoadMore}
             ListHeaderComponent={this.renderListHeader()}
             ListEmptyComponent={
-              this.props.loading ? '' :
+              this.props.loading ? null :
               <EmptyResult text={'No Events found'} />
             }
             onEndThreshold={0}

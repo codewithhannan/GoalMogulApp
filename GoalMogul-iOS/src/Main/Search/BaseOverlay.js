@@ -25,7 +25,7 @@ export default class BaseLightbox extends Component {
 
   closeModal = () => {
     Animated.timing(this.state.opacity, {
-      duration: 150,
+      duration: 100,
       toValue: 0,
     }).start(Actions.pop);
   }

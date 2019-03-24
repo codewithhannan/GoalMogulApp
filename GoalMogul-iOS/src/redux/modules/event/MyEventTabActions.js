@@ -1,5 +1,6 @@
 // This stores informations for events under my events
 import { Actions } from 'react-native-router-flux';
+import _ from 'lodash';
 import {
   MYEVENTTAB_REFRESH_DONE,
   MYEVENTTAB_LOAD_DONE,
@@ -22,13 +23,13 @@ export const openMyEventTab = () => (dispatch, getState) => {
   dispatch({
     type: MYEVENTTAB_OPEN
   });
-  Actions.replace('myEventTab');
+  Actions.push('myEventTab');
   refreshEvent()(dispatch, getState);
 };
 
 // Close my event tab
 export const closeMyEventTab = () => (dispatch) => {
-  Actions.popTo('home');
+  Actions.pop();
   dispatch({
     type: MYEVENTTAB_CLOSE
   });
@@ -78,7 +79,7 @@ export const myEventSelectTab = (index) => (dispatch, getState) => {
  * input on type field
  */
 
-//Refresh feed for activity tab
+// refresh for my event tab
 export const refreshEvent = () => (dispatch, getState) => {
   const { token } = getState().user;
   const { limit, filterOptions, sortBy } = getState().myEventTab;
@@ -94,6 +95,7 @@ export const refreshEvent = () => (dispatch, getState) => {
         data,
         skip: data.length,
         limit: 20,
+        pageId: 'MYEVENTTAB',
         hasNextPage: !(data === undefined || data.length === 0 || data.length < limit)
       }
     });
@@ -102,7 +104,7 @@ export const refreshEvent = () => (dispatch, getState) => {
   });
 };
 
-// Load more goal for mastermind tab
+// Load more for my event tab
 export const loadMoreEvent = () => (dispatch, getState) => {
   const { token } = getState().user;
   const { skip, limit, sortBy, filterOptions, hasNextPage } = getState().myEventTab;
@@ -119,6 +121,7 @@ export const loadMoreEvent = () => (dispatch, getState) => {
       payload: {
         type: 'myeventtab',
         data,
+        pageId: 'MYEVENTTAB',
         skip: data.length,
         limit: 20,
         hasNextPage: !(data === undefined || data.length === 0 || data.length < limit)
@@ -133,9 +136,16 @@ export const loadMoreEvent = () => (dispatch, getState) => {
  * Basic API to load goals based on skip and limit
  */
 const loadEvent = (skip, limit, token, sortBy, filterOptions, callback, onError) => {
+  let filterOptionsToUse = _.cloneDeep(filterOptions);
+  console.log(`${DEBUG_KEY}: filterOptionsToUse is:`, filterOptionsToUse);
+  if (filterOptionsToUse.rsvp === 'All') {
+    filterOptionsToUse = _.omit(filterOptionsToUse, 'rsvp');
+    console.log(`${DEBUG_KEY}: filterOptionsToUse after removal:`, filterOptionsToUse);
+  }
+
   API
     .get(
-      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, filterOptions })}`,
+      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, filterOptions: { ...filterOptionsToUse } })}`,
       token
     )
     .then((res) => {

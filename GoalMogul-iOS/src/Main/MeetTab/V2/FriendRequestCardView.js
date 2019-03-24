@@ -5,7 +5,6 @@ import React from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   ActionSheetIOS
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -13,6 +12,7 @@ import { connect } from 'react-redux';
 // Components
 import Name from '../../Common/Name';
 import ProfileImage from '../../Common/ProfileImage';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Actions
 import {
@@ -21,6 +21,10 @@ import {
   openProfile,
   UserBanner
 } from '../../../actions';
+
+import {
+    handleRefresh
+} from '../../../redux/modules/meet/MeetActions';
 
 // Assets
 import AddUserIcon from '../../../asset/utils/addUser.png';
@@ -45,7 +49,8 @@ class FriendRequestCardView extends React.PureComponent {
     }
 
     onRespondClicked = (item) => {
-        const { friendshipId } = item;
+        const { friendshipId, user } = item;
+        const userId = user._id;
         ActionSheetIOS.showActionSheetWithOptions({
             options: ACCEPT_BUTTONS,
             cancelButtonIndex: ACCEPT_CANCEL_INDEX,
@@ -55,20 +60,20 @@ class FriendRequestCardView extends React.PureComponent {
             switch (buttonIndex) {
             case ACCPET_INDEX:
                 this.props.updateFriendship(
-                    undefined, 
+                    userId, 
                     friendshipId, 
                     'acceptFriend', 
                     TAB_KEY_INCOMING, 
-                    null
+                    () => this.props.handleRefresh()
                 );
                 break;
             case ACCPET_REMOVE_INDEX:
                 this.props.updateFriendship(
-                    undefined, 
+                    userId, 
                     friendshipId, 
                     'deleteFriend', 
                     TAB_KEY_INCOMING, 
-                    null
+                    () => this.props.handleRefresh()
                 );
                 break;
             default:
@@ -116,19 +121,21 @@ class FriendRequestCardView extends React.PureComponent {
     }
 
     handleOnOpenProfile = () => {
-        const { _id } = this.props.item;
-        if (_id) {
-            return this.props.openProfile(_id);
+        const { user } = this.props.item;
+        if (user && user._id) {
+            return this.props.openProfile(user._id);
         }
     }
 
     renderProfileImage(item) {
+        const { user, type } = item;
+        if (!user || type === 'info') return null;
         return (
             <ProfileImage
                 imageStyle={{ height: 40, width: 40, borderRadius: 5 }}
                 defaultImageStyle={{ height: 40, width: 37, borderRadius: 5, marginLeft: 1, marginRight: 1 }}
                 imageContainerStyle={{ marginTop: 5 }}
-                imageUrl={item && item.profile ? item.profile.image : undefined}
+                imageUrl={user && user.profile ? user.profile.image : undefined}
                 imageContainerStyle={styles.imageContainerStyle}
                 userId={item._id}
             />
@@ -137,9 +144,9 @@ class FriendRequestCardView extends React.PureComponent {
 
   renderButton(item) {
     const buttonText = item.type === 'outgoing' ? 'Cancel' : 'Respond';
-    if (!item.user || item.type === 'info') return '';
+    if (!item.user || item.type === 'info') return null;
     return (
-        <TouchableOpacity 
+        <DelayedButton 
             onPress={() => this.handleButtonOnPress(item)}
             activeOpacity={0.85}
             style={styles.buttonContainerStyle}
@@ -147,15 +154,14 @@ class FriendRequestCardView extends React.PureComponent {
             <View style={styles.buttonTextContainerStyle}>
                 <Text style={{ fontSize: 11, color: '#868686' }}>{buttonText}</Text>
             </View>
-        </TouchableOpacity>
+        </DelayedButton>
     );
   }
 
   renderProfile(item) {
     const { user, type } = item;
-    if (!user || type === 'info') return '';
+    if (!user || type === 'info') return null;
     const { name, profile, headline } = user;
-    // console.log(`${DEBUG_KEY}: item is: `, item);
     const detailText = headline || profile.occupation;
     return (
         <View style={{ flex: 1, marginLeft: 13 }}>
@@ -194,10 +200,11 @@ class FriendRequestCardView extends React.PureComponent {
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
+    // console.log(`${DEBUG_KEY}: item is: `, item);
     return (
-        <TouchableOpacity 
+        <DelayedButton 
             activeOpacity={0.85}
             style={[styles.containerStyle, styles.shadow]}
             onPress={this.handleOnOpenProfile}
@@ -207,11 +214,11 @@ class FriendRequestCardView extends React.PureComponent {
             {
                 item.type !== 'info'
                     ? <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: 35 }} />
-                    : ''
+                    : null
             }
             {this.renderButton(item)}
             {this.renderInfoText(item)}
-        </TouchableOpacity>
+        </DelayedButton>
     );
   }
 }
@@ -268,5 +275,6 @@ const styles = {
 export default connect(null, {
     updateFriendship,
     blockUser,
-    openProfile
+    openProfile,
+    handleRefresh
 })(FriendRequestCardView);

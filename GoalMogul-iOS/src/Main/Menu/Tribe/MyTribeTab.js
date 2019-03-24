@@ -104,7 +104,7 @@ class MyTribeTab extends React.Component {
             onEndReached={this.handleOnLoadMore}
             ListHeaderComponent={this.renderListHeader()}
             ListEmptyComponent={
-              this.props.loading ? '' :
+              this.props.loading ? null :
               <EmptyResult text={'No Tribes found'} />
             }
             onEndThreshold={0}

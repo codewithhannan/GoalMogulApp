@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, ActionSheetIOS } from 'react-native';
 import { connect } from 'react-redux';
-import { Avatar, Icon } from 'react-native-elements';
 
 // Components
 import ProfileImage from '../../Common/ProfileImage';
@@ -86,7 +85,7 @@ class ContactDetail extends Component {
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
     const { name, headline, _id, profile } = item;
     return (
       <View style={styles.containerStyle}>

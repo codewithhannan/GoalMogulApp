@@ -151,7 +151,7 @@ class ProfileGoalCard2 extends React.Component {
 
   render() {
     const { item } = this.props;
-    if (!item || _.isEmpty(item)) return '';
+    if (!item || _.isEmpty(item)) return null;
 
     return (
       <TouchableOpacity activeOpacity={0.85}

@@ -28,6 +28,10 @@ import {
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 import {
+  isInvalidObject
+} from './CommentBoxV2';
+
+import {
   openCamera,
   openCameraRoll
 } from '../../../actions';
@@ -43,6 +47,7 @@ import LightBulb from '../../../asset/utils/makeSuggestion.png';
 
 // Consts
 const maxHeight = 120;
+const DEBUG_KEY = '[ UI CommentBox ]';
 
 class CommentBox extends Component {
   constructor(props) {
@@ -149,7 +154,7 @@ class CommentBox extends Component {
   renderSuggestionIcon(newComment, pageId) {
     const { mediaRef, commentType } = newComment;
     const disableButton = mediaRef !== undefined && mediaRef !== '';
-    if (commentType === 'Reply') return '';
+    if (commentType === 'Reply') return null;
 
     return (
       <TouchableOpacity
@@ -177,7 +182,7 @@ class CommentBox extends Component {
   renderLeftIcons(newComment, pageId, hasSuggestion) {
     const suggestionIcon = hasSuggestion
       ? this.renderSuggestionIcon(newComment, pageId)
-      : '';
+      : null;
     return (
       <View
         style={{
@@ -217,7 +222,7 @@ class CommentBox extends Component {
 
   renderMedia(newComment) {
     const { mediaRef } = newComment;
-    if (!mediaRef) return '';
+    if (!mediaRef) return null;
     const onPress = () => console.log('Media on Pressed');
     const onRemove = () => this.props.newCommentOnMediaRefChange(undefined, this.props.pageId);
 
@@ -242,12 +247,24 @@ class CommentBox extends Component {
     );
   }
   renderPost(newComment) {
-    const { uploading, contentText, tmpSuggestion } = newComment;
-    const disable = uploading ||
-      ((contentText === undefined || contentText === '' || contentText.trim() === '')
-      && _.isEmpty(tmpSuggestion));
+    const { uploading, contentText, tmpSuggestion, commentType, mediaRef } = newComment;
 
-    const color = '#17B3EC';
+    // This is old and buggy implementation
+    // const disable = uploading ||
+    //   ((contentText === undefined || contentText === '' || contentText.trim() === '')
+    //   && _.isEmpty(tmpSuggestion));
+
+    const isInValidComment = (commentType === 'Comment' || commentType === 'Reply') && 
+      (contentText === undefined || contentText === '' || contentText.trim() === '') &&
+      mediaRef === undefined;
+
+    const isValidSuggestion = validSuggestion(newComment);
+
+    // console.log(`${DEBUG_KEY}: invalid comment: `, isInValidComment);
+    // console.log(`${DEBUG_KEY}: comment is: `, newComment);
+    const disable = uploading || isInValidComment || !isValidSuggestion;
+
+    const color = disable ? '#cbd6d8' : '#17B3EC';
     return (
       <TouchableOpacity
         activeOpacity={0.85}
@@ -282,12 +299,12 @@ class CommentBox extends Component {
       );
     }
 
-    return '';
+    return null;
   }
 
   render() {
     const { pageId, newComment, hasSuggestion } = this.props;
-    if (!newComment || !newComment.parentRef) return '';
+    if (!newComment || !newComment.parentRef) return null;
 
     const { uploading } = newComment;
 
@@ -386,6 +403,35 @@ const styles = {
     shadowRadius: 1,
     elevation: 1
   }
+};
+
+const validSuggestion = (newComment) => {
+  const { commentType, suggestion } = newComment;
+  if (commentType === 'Comment' || commentType === 'Reply') return true;
+  if (isInvalidObject(suggestion)) return false;
+  const { 
+    suggestionFor, 
+    suggestionForRef, 
+    suggestionType, 
+    suggestionText, 
+    suggestionLink,
+    selectedItem
+  } = suggestion;
+  // console.log(`${DEBUG_KEY}: suggestion is:`, suggestion);
+  if (isInvalidObject(suggestionFor) || isInvalidObject(suggestionForRef) || isInvalidObject(suggestionType)) {
+    return false;
+  }
+
+  if (suggestionType !== 'Custom' && isInvalidObject(selectedItem)) {
+    return false;
+  }
+
+  if (suggestionType === 'Custom') {
+    if (isInvalidObject(suggestionText) && isInvalidObject(suggestionLink)) {
+      return false;
+    }
+  }
+  return true;
 };
 
 const mapStateToProps = (state, props) => {

@@ -72,7 +72,10 @@ export const deleteTribe = (tribeId) => (dispatch, getState) => {
   const onSuccess = (res) => {
     Actions.pop();
     dispatch({
-      type: TRIBE_DELETE_SUCCESS
+      type: TRIBE_DELETE_SUCCESS,
+      payload: {
+        tribeId      
+      }
     });
     console.log(`${DEBUG_KEY}: tribe with id: ${tribeId}, is deleted with res: `, res);
     Alert.alert(
@@ -104,7 +107,7 @@ export const deleteTribe = (tribeId) => (dispatch, getState) => {
 
 // User edits a tribe. Open the create tribe modal with pre-populated item.
 export const editTribe = (tribe) => (dispatch, getState) => {
-  Actions.push('createTribeModal', { initializeFromState: true, tribe });
+  Actions.push('createTribeStack', { initializeFromState: true, tribe });
 };
 
 export const openTribeInvitModal = ({ tribeId, cardIconSource, cardIconStyle }) =>
@@ -491,7 +494,8 @@ export const refreshTribeFeed = (tribeId, dispatch, getState) => {
         data,
         skip: data.length,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        pageId: 'TRIBE'
       }
     });
   }, () => {
@@ -516,7 +520,8 @@ export const loadMoreTribeFeed = (tribeId) => (dispatch, getState) => {
         data,
         skip: data.length,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        pageId: 'TRIBE'
       }
     });
   }, () => {

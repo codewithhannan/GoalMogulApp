@@ -4,10 +4,11 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  Platform
+  Platform,
+  Alert
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Constants } from 'expo';
+import { Linking, Constants, WebBrowser } from 'expo';
 import { Actions } from 'react-native-router-flux';
 
 // Components
@@ -22,16 +23,34 @@ import {
   openMyTribeTab
 } from '../../redux/modules/tribe/MyTribeTabActions';
 
+import {
+  logout
+} from '../../actions';
+
 // Assets
 import TribeIcon from '../../asset/explore/tribe.png';
 import EventIcon from '../../asset/suggestion/event.png';
 import TutorialIcon from '../../asset/utils/tutorial.png';
+import BugReportIcon from '../../asset/utils/bug_report.png';
+import LogoutIcon from '../../asset/utils/logout.png';
 
 import {
-  IPHONE_MODELS
+  IPHONE_MODELS,
+  BUG_REPORT_URL
 } from '../../Utils/Constants';
 
+const DEBUG_KEY = '[ UI Menu ]';
+
 class Menu extends React.PureComponent {
+
+  handleBugReportOnPress = async () => {
+    const url = BUG_REPORT_URL;
+    const returnUrl = Linking.makeUrl('/');
+    Linking.addEventListener('url', this.handleSuggestionLinkOnClose);
+    const result = await WebBrowser.openBrowserAsync(url);
+    Linking.removeEventListener('url', this.handleSuggestionLinkOnClose);
+    console.log(`${DEBUG_KEY}: close bug report link with res: `, result);
+  } 
 
   render() {
     const paddingTop = (
@@ -54,7 +73,7 @@ class Menu extends React.PureComponent {
           style={styles.buttonStyle}
         >
           <Image source={TribeIcon} style={styles.iconStyle} />
-          <Text style={styles.titleTextStyle}>My Tribes</Text>
+          <Text style={styles.titleTextStyle}>My tribes</Text>
         </DelayedButton>
         <DelayedButton
           activeOpacity={0.85}
@@ -62,7 +81,7 @@ class Menu extends React.PureComponent {
           style={styles.buttonStyle}
         >
           <Image source={EventIcon} style={styles.iconStyle} />
-          <Text style={styles.titleTextStyle}>My Events</Text>
+          <Text style={styles.titleTextStyle}>My events</Text>
         </DelayedButton>
         <DelayedButton
           activeOpacity={0.85}
@@ -70,7 +89,31 @@ class Menu extends React.PureComponent {
           style={styles.buttonStyle}
         >
           <Image source={TutorialIcon} style={styles.iconStyle} />
-          <Text style={styles.titleTextStyle}>My Tutorials</Text>
+          <Text style={styles.titleTextStyle}>Tutorial video</Text>
+        </DelayedButton>
+        <DelayedButton
+          activeOpacity={0.85}
+          onPress={() => this.handleBugReportOnPress()}
+          style={styles.buttonStyle}
+        >
+          <Image source={BugReportIcon} style={styles.iconStyle} />
+          <Text style={styles.titleTextStyle}>Report bug</Text>
+        </DelayedButton>
+        <DelayedButton
+          activeOpacity={0.85}
+          onPress={() => {
+            Alert.alert('Log out', 'Are you sure to log out?', [
+                { text: 'Cancel', onPress: () => console.log('user cancel logout') },
+                { text: 'Confirm', onPress: () => this.props.logout() }
+              ]
+            );
+          }}
+          style={styles.buttonStyle}
+        >
+          <View style={{ padding: 2.5 }}>
+            <Image source={LogoutIcon} style={{ ...styles.iconStyle, height: 20, width: 20 }} />
+          </View>
+          <Text style={styles.titleTextStyle}>Log out</Text>
         </DelayedButton>
       </View>
     );
@@ -133,6 +176,8 @@ export default connect(
   mapStateToProps,
   {
     openMyEventTab,
-    openMyTribeTab
+    openMyTribeTab,
+    logout
+
   }
 )(Menu);

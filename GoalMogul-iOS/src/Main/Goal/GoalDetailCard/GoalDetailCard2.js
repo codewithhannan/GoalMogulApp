@@ -75,7 +75,8 @@ class GoalDetailCard2 extends Component {
 
   // Tab related handlers
   _handleIndexChange = index => {
-    this.props.goalDetailSwitchTab(index);
+    const { pageId, goalId } = this.props;
+    this.props.goalDetailSwitchTab(index, goalId, pageId);
     // this.setState({
     //   ...this.state,
     //   navigationState: {
@@ -203,7 +204,7 @@ class GoalDetailCard2 extends Component {
         : 'No needs and steps';
     }
     // console.log('transformed comments to render are: ', comments);
-    if (!goalDetail || _.isEmpty(goalDetail)) return '';
+    if (!goalDetail || _.isEmpty(goalDetail)) return null;
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -234,7 +235,7 @@ class GoalDetailCard2 extends Component {
               refreshing={this.props.commentLoading}
               onRefresh={this.handleRefresh}
               ListEmptyComponent={
-                this.props.commentLoading ? '' :
+                this.props.commentLoading ? null :
                 <EmptyResult
                   text={emptyResult}
                   textStyle={{ paddingTop: 100 }}

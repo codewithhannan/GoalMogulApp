@@ -13,12 +13,13 @@ import R from 'ramda';
 import {
   MenuProvider
 } from 'react-native-popup-menu';
+import { Actions } from 'react-native-router-flux';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import About from './About';
-import StackedAvatars, { StackedAvatarsV2 } from '../Common/StackedAvatars';
+import { StackedAvatarsV2 } from '../Common/StackedAvatars';
 import Dot from '../Common/Dot';
 import MemberListCard from '../Tribe/MemberListCard';
 import ParticipantFilterBar from './ParticipantFilterBar';
@@ -60,6 +61,12 @@ import {
   participantSelector
 } from '../../redux/modules/event/EventSelector';
 
+// Constants
+import {
+  IMAGE_BASE_URL,
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
+} from '../../Utils/Constants';
 
 const DEBUG_KEY = '[ UI Event ]';
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
@@ -70,6 +77,10 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
  * This is the UI file for a single event.
  */
 class Event extends Component {
+  componentWillUnmount() {
+    const { pageId, eventId } = pageId;
+    this.props.eventDetailClose(eventId, pageId);
+  }
 
   handleInvite = (_id) => {
     return this.props.openEventInvitModal(_id);
@@ -93,26 +104,26 @@ class Event extends Component {
   }
 
   handleRSVPOnPress = () => {
-    const { item } = this.props;
+    const { item, pageId } = this.props;
     if (!item) return;
     const { _id } = item;
 
     const switchCases = switchByButtonIndex([
       [R.equals(0), () => {
         console.log(`${DEBUG_KEY} User chooses: Intereseted`);
-        this.props.rsvpEvent('Interested', _id);
+        this.props.rsvpEvent('Interested', _id, pageId);
       }],
       [R.equals(1), () => {
         console.log(`${DEBUG_KEY} User chooses: Going`);
-        this.props.rsvpEvent('Going', _id);
+        this.props.rsvpEvent('Going', _id, pageId);
       }],
       [R.equals(2), () => {
         console.log(`${DEBUG_KEY} User chooses: Maybe`);
-        this.props.rsvpEvent('Maybe', _id);
+        this.props.rsvpEvent('Maybe', _id, pageId);
       }],
       [R.equals(3), () => {
         console.log(`${DEBUG_KEY} User chooses: Not Going`);
-        this.props.rsvpEvent('NotGoing', _id);
+        this.props.rsvpEvent('NotGoing', _id, pageId);
       }],
     ]);
     const rsvpActionSheet = actionSheet(
@@ -125,7 +136,8 @@ class Event extends Component {
 
   // Tab related functions
   _handleIndexChange = (index) => {
-    this.props.eventSelectTab(index);
+    const { pageId, eventId } = this.props;
+    this.props.eventSelectTab(index, eventId, pageId);
   };
 
   /**
@@ -181,7 +193,7 @@ class Event extends Component {
       return <ActivityIndicator size='small' color='46C8F5' />;
     }
 
-    return '';
+    return null;
   }
 
   /**
@@ -198,16 +210,16 @@ class Event extends Component {
       ? MenuFactory(
           [
             'Report',
-            maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe'
+            maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE
           ],
           (val) => {  
             if (val === 'Report') {
               return this.props.reportEvent(_id);
             }
-            if (val === 'Unsubscribe') {
+            if (val === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
               return this.props.unsubscribeEntityNotification(_id, 'Event');
             }
-            if (val === 'Subscribe') {
+            if (val === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
               return this.props.subscribeEntityNotification(_id, 'Event');
             }
           },
@@ -236,7 +248,7 @@ class Event extends Component {
     let imageUrl;
     let eventImage = (<Image source={TestEventImage} style={styles.coverImageStyle} />);
     if (picture) {
-      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
+      imageUrl = `${IMAGE_BASE_URL}${picture}`;
       eventImage = (
         <Image
           onLoadStart={() => this.setState({ imageLoading: true })}
@@ -318,11 +330,11 @@ class Event extends Component {
     const { title, _id, picture } = item;
     const filterBar = this.props.tab === 'attendees'
       ? <ParticipantFilterBar />
-      : '';
+      : null;
 
     const emptyState = this.props.tab === 'posts' && data.length === 0
       ? <EmptyResult text={'No Posts'} textStyle={{ paddingTop: 100 }} />
-    : '';
+      : null;
 
     // Currently, explored events is not synced with my events
     const inviteButton = this.props.tab === 'attendees'
@@ -334,7 +346,7 @@ class Event extends Component {
           <Text>Invite</Text>
         </TouchableOpacity>
       )
-      : '';
+      : null;
 
     return (
       <View>
@@ -398,7 +410,7 @@ class Event extends Component {
   }
 
   render() {
-    const { item, data } = this.props;
+    const { item, data, pageId, eventId } = this.props;
     if (!item) return <View />;
 
     return (
@@ -406,7 +418,7 @@ class Event extends Component {
         <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
           <SearchBarHeader
             backButton
-            onBackPress={() => this.props.eventDetailClose()}
+            onBackPress={() => Actions.pop()}
             pageSetting
             handlePageSetting={() => this.handlePageSetting(item)}
           />
@@ -453,7 +465,9 @@ const styles = {
   // RSVP related styles
   rsvpBoxContainerStyle: {
     height: 25,
-    width: 80,
+    // width: 80,
+    paddingLeft: 5,
+    paddingRight: 5,
     borderRadius: 5,
     backgroundColor: '#efefef',
     alignItems: 'center',

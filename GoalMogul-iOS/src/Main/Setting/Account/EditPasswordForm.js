@@ -9,10 +9,14 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
+import {
+  DotIndicator
+} from 'react-native-indicators';
 
 /* Components */
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import Input from '../../Common/Text/Input';
+import LoadingModal from '../../Common/Modal/LoadingModal';
 
 /* Styles */
 import Styles from '../Styles';
@@ -21,6 +25,7 @@ import Styles from '../Styles';
 import { handleUpdatePassword } from '../../../actions';
 
 /* TODO: abstract this validation fuction */
+const DEBUG_KEY = '[ UI EditPasswordForm ]';
 const minLength = min => value =>
   value && value.length < min ? `Must be ${min} characters or more` : undefined;
 
@@ -79,7 +84,7 @@ class EidtPasswordForm extends Component {
   /* Refactor error function out */
   renderError(error) {
     return error ? (
-      <View style={{ height: 15 }}>
+      <View style={{ marginTop: 15, marginBottom: 10 }}>
         <Text style={styles.errorStyle}>{error}</Text>
       </View>
     ) : null;
@@ -115,6 +120,10 @@ class EidtPasswordForm extends Component {
 
     return (
       <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
+        <LoadingModal 
+          visible={this.props.updatingPassword} 
+          customIndicator={<DotIndicator size={12} color='white' />}  
+        />
         <SearchBarHeader backButton rightIcon='empty' title="Password" />
         <KeyboardAvoidingView
           behavior='padding'
@@ -142,19 +151,20 @@ class EidtPasswordForm extends Component {
 
 const styles = {
   errorStyle: {
-    marginTop: 15,
     color: '#ff0033',
     justifyContent: 'center',
-    marginBottom: 4,
-    alignSelf: 'center'
+    alignSelf: 'center',
+    fontSize: 15
   }
 };
 
 const mapStateToProps = state => {
   const { email } = state.setting;
+  const { updatingPassword } = state.user;
 
   return {
-    email
+    email,
+    updatingPassword
   };
 };
 

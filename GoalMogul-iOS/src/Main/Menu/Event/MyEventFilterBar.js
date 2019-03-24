@@ -34,7 +34,15 @@ class MyEventFilterBar extends Component {
 
   render() {
     const { containerStyle, textStyle, detailContainerStyle, standardTextStyle, caretStyle } = styles;
-    const { sortBy } = this.props;
+    const { sortBy, filterOptions } = this.props;
+    const {
+      rsvp,
+      isCreator
+    } = filterOptions;
+
+    const isCreatorText = isCreator ? 'My Events' : 'All Events';
+    const rsvpText = rsvp === 'NotGoing' ? 'Not Going' : rsvp;
+
     return (
       <View style={containerStyle}>
 
@@ -49,7 +57,7 @@ class MyEventFilterBar extends Component {
             }}
           >
             <View style={detailContainerStyle}>
-              <Text style={textStyle}>Sort By</Text>
+              <Text style={textStyle}>Sort By {`(${capitalizeWord(sortBy)})`}</Text>
               <Image style={styles.caretStyle} source={dropDown} />
             </View>
           </MenuTrigger>
@@ -81,12 +89,16 @@ class MyEventFilterBar extends Component {
           >
             <View style={detailContainerStyle}>
               <Text style={textStyle}>
-                RSVP
+                RSVP {`(${rsvpText})`}
               </Text>
               <Image style={caretStyle} source={dropDown} />
             </View>
           </MenuTrigger>
           <MenuOptions customStyles={styles.menuOptionsStyles}>
+            <MenuOption
+              text='All'
+              value='All'
+            />
             <MenuOption
               text='Invited'
               value='Invited'
@@ -124,7 +136,7 @@ class MyEventFilterBar extends Component {
           >
             <View style={detailContainerStyle}>
               <Text style={textStyle}>
-                Filter By
+                Filter By {`(${isCreatorText})`}
               </Text>
               <Image style={caretStyle} source={dropDown} />
             </View>
@@ -210,9 +222,10 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { sortBy } = state.myEventTab;
+  const { sortBy, filterOptions } = state.myEventTab;
   return {
-    sortBy
+    sortBy,
+    filterOptions
   };
 };
 

@@ -15,8 +15,16 @@ import {
 import {
   openProfile,
   deletePost,
-  deleteGoal,
+  deleteGoal
 } from '../../actions';
+
+import { openPostDetail } from '../../redux/modules/feed/post/PostActions';
+
+import { openGoalDetail } from '../../redux/modules/home/mastermind/actions';
+
+import {
+  shareGoalToMastermind
+} from '../../redux/modules/goal/GoalDetailActions';
 
 import {
   subscribeEntityNotification,
@@ -31,22 +39,31 @@ import Timestamp from '../Goal/Common/Timestamp';
 import ProfileImage from '../Common/ProfileImage';
 import RichText from '../Common/Text/RichText';
 
+// Utils
+import { makeCaretOptions, PAGE_TYPE_MAP } from '../../redux/middleware/utils';
+
+// Constants
+import {
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
+} from '../../Utils/Constants';
+
 const DEBUG_KEY = '[ UI ActivityHeader ]';
 
 class ActivityHeader extends Component {
   // user basic information
-  renderUserDetail({ postRef, goalRef, actedUponEntityType, actor, actedWith }) {
+  renderUserDetail({ postRef, goalRef, actedUponEntityType, actor, actedWith, created }) {
     const item = actedUponEntityType === 'Post' ? postRef : goalRef;
 
     // If no ref is passed in, then render nothing
-    if (!item) return '';
+    if (!item) return null;
 
     // If it's a comment, we are rendering the goal/post owner's info rather than actor's info
     const userToRender = actedWith === 'Comment' || actedWith === 'Like' ? item.owner : actor;
     // console.log(`${DEBUG_KEY}: actedUponEntityType: ${actedUponEntityType}, 
     //   userToRender: `, userToRender);
 
-    const { _id, created, category, maybeIsSubscribed } = item;
+    const { _id, category, maybeIsSubscribed } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
 
@@ -57,28 +74,76 @@ class ActivityHeader extends Component {
 
     const tags = actedUponEntityType === 'Post' ? item.content.tags : [];
 
+    const pageId = _.get(PAGE_TYPE_MAP, 'activity');
     const onDelete = actedUponEntityType === 'Post'
-      ? () => this.props.deletePost(postRef._id)
-      : () => this.props.deleteGoal(goalRef._id);
+      ? () => this.props.deletePost(postRef._id, pageId)
+      : () => this.props.deleteGoal(goalRef._id, pageId);
+
+    // COnstruct caret options
+    const selfOptions = makeCaretOptions(actedUponEntityType, goalRef, postRef);
+
+    // Construct caret onPress functions
+    const selfOnPress = (key) => {
+      if (key === 'Delete') {
+        return onDelete();
+      }
+      if (key === 'Edit Post') {
+        const initial = {
+          initialShowPostModal: true
+        };
+        return this.props.openPostDetail(postRef, initial);
+      }
+      
+      // Goal related situations
+      let initialProps = {};
+      if (key === 'Edit Goal') {
+        initialProps = { initialShowGoalModal: true };
+        this.props.openGoalDetail(goalRef, initialProps);
+        return;
+      }
+      if (key === 'Share to Goal Feed') {
+        // It has no pageId so it won't have loading animation
+        return this.props.shareGoalToMastermind(_id);
+      }
+      if (key === 'Mark as Complete') {
+        initialProps = { 
+          initialMarkGoalAsComplete: true,
+          refreshGoal: false
+        };
+        this.props.openGoalDetail(goalRef, initialProps);
+        return;
+      }
+
+      if (key === 'Unmark as Complete') {
+        initialProps = { 
+          initialUnMarkGoalAsComplete: true,
+          refreshGoal: false
+        };
+        this.props.openGoalDetail(goalRef, initialProps);
+        return;
+      }
+
+    };
 
     const caret = {
       self: {
-        options: [{ option: 'Delete' }],
-        onPress: onDelete
+        options: [...selfOptions],
+        onPress: selfOnPress,
+        shouldExtendOptionLength: actedUponEntityType === 'Goal'
       },
       others: {
         options: [
           { option: 'Report' }, 
-          { option: maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe' }
+          { option: maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE }
         ],
         onPress: (key) => {
           if (key === 'Report') {
             return this.props.createReport(_id, 'post', `${actedUponEntityType}`);
           }
-          if (key === 'Unsubscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
             return this.props.unsubscribeEntityNotification(_id, 'Post');
           }
-          if (key === 'Subscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
             return this.props.subscribeEntityNotification(_id, 'Post');
           }
         },
@@ -133,13 +198,13 @@ class ActivityHeader extends Component {
 
   render() {
     const { item } = this.props;
-    if (!item || _.isEmpty(item)) return '';
+    if (!item || _.isEmpty(item)) return null;
 
-    const { postRef, goalRef, actedUponEntityType, actor, actedWith } = item;
+    const { postRef, goalRef, actedUponEntityType, actor, actedWith, created } = item;
 
     return (
       <View>
-        {this.renderUserDetail({ postRef, goalRef, actedUponEntityType, actor, actedWith })}
+        {this.renderUserDetail({ postRef, goalRef, actedUponEntityType, actor, actedWith, created })}
       </View>
     );
   }
@@ -148,7 +213,7 @@ class ActivityHeader extends Component {
 const styles = {
   imageContainerStyle: {
     borderWidth: 0.5,
-    padding: 1.5,
+    padding: 0.5,
     borderColor: 'lightgray',
     alignItems: 'center',
     borderRadius: 6,
@@ -172,6 +237,9 @@ export default connect(
     deletePost,
     deleteGoal,
     subscribeEntityNotification,
-    unsubscribeEntityNotification
+    unsubscribeEntityNotification,
+    openPostDetail,
+    openGoalDetail,
+    shareGoalToMastermind
   }
 )(ActivityHeader);

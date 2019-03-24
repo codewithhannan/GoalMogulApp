@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements';
 
 /* Components */
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
+import {
+  CheckIcon
+} from '../../../Utils/Icons';
 
 /* Styles */
 import Styles from '../Styles';
@@ -14,6 +16,7 @@ import {
   onFriendsSettingSelection,
   updateFriendsSetting
 } from '../../../actions';
+import { Actions } from 'react-native-router-flux';
 
 /*
   TODO: export this const file
@@ -38,6 +41,9 @@ const friendsSettingList = [
 ];
 
 class FriendsSetting extends Component {
+  componentWillUnmount() {
+    this.props.updateFriendsSetting();
+  }
 
   handleOnSelectedPress(id) {
     this.props.onFriendsSettingSelection(id);
@@ -46,21 +52,27 @@ class FriendsSetting extends Component {
   renderTick(info) {
     if (info.title === this.props.privacy.friends) {
       return (
-        <View style={{ height: 20, width: 20 }} >
-          <Icon
-            type='entypo'
-            name='check'
-            size={22}
-          />
-        </View>
+        <CheckIcon 
+          iconContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}
+          iconStyle={{ tintColor: 'black', height: 18, width: 24 }}
+        />
       );
     }
   }
 
+  // <View style={{ height: 20, width: 20 }} >
+  //   <Icon
+  //     type='entypo'
+  //     name='check'
+  //     size={22}
+  //   />
+  // </View>
+
   renderPrivacySettingDetail() {
     return friendsSettingList.map((info) => {
       return (
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity 
+          activeOpacity={0.85}
           onPress={this.handleOnSelectedPress.bind(this, info.title)}
           key={info.title}
         >
@@ -87,7 +99,7 @@ class FriendsSetting extends Component {
           backButton
           rightIcon='empty'
           title="Friends"
-          onBackPress={() => this.props.updateFriendsSetting()}
+          onBackPress={() => Actions.pop()}
         />
         <View style={Styles.titleSectionStyle}>
           <Text style={Styles.titleTextStyle}>

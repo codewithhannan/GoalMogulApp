@@ -3,6 +3,8 @@ import {
   View,
   FlatList,
   KeyboardAvoidingView,
+  Animated,
+  Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
 import {
@@ -20,16 +22,20 @@ import {
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 // Selectors
-import { getCommentByTab } from '../../../redux/modules/feed/comment/CommentSelector';
+import { 
+  // getCommentByTab,
+  makeGetCommentByEntityId
+} from '../../../redux/modules/feed/comment/CommentSelector';
+
 import {
-  getShareDetailByTab
+  // getShareDetailByTab,
+  makeGetPostById
 } from '../../../redux/modules/feed/post/PostSelector';
 
 // Component
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
-import CommentBox from '../../Goal/Common/CommentBox';
+import CommentBox from '../../Goal/Common/CommentBoxV2';
 import CommentCard from '../../Goal/GoalDetailCard/Comment/CommentCard';
-import Report from '../../Report/Report';
 
 import ShareDetailSection from './ShareDetailSection';
 
@@ -41,10 +47,79 @@ import {
   BACKGROUND_COLOR
 } from '../../../styles';
 
+const DEBUG_KEY = '[ UI ShareDetailCard ]';
+const TABBAR_HEIGHT = 48.5;
+const TOTAL_HEIGHT = TABBAR_HEIGHT;
+
 class ShareDetailCard extends Component {
   constructor(props) {
     super(props);
-    this.commentBox = {};
+    this.commentBox = undefined;
+    this.state = {
+      position: 'absolute',
+      commentBoxPadding: new Animated.Value(0),
+      keyboardDidShow: false
+    }
+  }
+
+  componentDidMount() {
+    // Add listeners for keyboard
+    this.keyboardWillShowListener = Keyboard.addListener(
+      'keyboardWillShow', this.keyboardWillShow);
+    this.keyboardWillHideListener = Keyboard.addListener(
+      'keyboardWillHide', this.keyboardWillHide);
+
+    const { initialProps } = this.props;
+    console.log(`${DEBUG_KEY}: [ componentDidMount ]: initialProps is:`, initialProps);
+
+    // Check if there is any initial operations
+    if (initialProps) {
+      const { initialFocusCommentBox } = initialProps;
+
+      // Focus comment box
+      if (initialFocusCommentBox) {
+        setTimeout(() => {
+          this.dialogOnFocus();
+        }, 700);
+        return;
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    this.keyboardWillShowListener.remove();
+    this.keyboardWillHideListener.remove();
+  }
+
+  keyboardWillShow = (e) => {
+    console.log(`${DEBUG_KEY}: [ keyboardWillShow ]`);
+    if (!this.state.keyboardDidShow) {
+      this.dialogOnFocus();
+    }
+    const timeout = ((TOTAL_HEIGHT * 210) / e.endCoordinates.height);
+    Animated.sequence([
+      Animated.delay(timeout),
+      Animated.parallel([
+        Animated.timing(this.state.commentBoxPadding, {
+          toValue: e.endCoordinates.height - TOTAL_HEIGHT,
+          duration: (210 - timeout)
+        }),
+      ])
+    ]).start();
+  }
+
+  keyboardWillHide = () => {
+    console.log(`${DEBUG_KEY}: [ keyboardWillHide ]`);
+    Animated.parallel([
+      Animated.timing(this.state.commentBoxPadding, {
+        toValue: 0,
+        duration: 210
+      }),
+    ]).start();
+    this.setState({
+      ...this.state,
+      keyboardDidShow: false
+    });
   }
 
   handleRefresh = () => {
@@ -66,11 +141,24 @@ class ShareDetailCard extends Component {
     });
   }
 
-  dialogOnFocus = () => this.commentBox.focus();
+  /**
+   * Only pass in 'Reply' as type if it's a reply
+   */
+  dialogOnFocus = (type) => {
+    if (!this.commentBox) {
+      console.warn(`${DEBUG_KEY}: [ dialogOnFocus ]: this.commentBox is undefined`);
+      return;
+    }
+    this.setState({
+      ...this.state,
+      keyboardDidShow: true
+    });
+    this.commentBox.focusForReply(type);
+  }
 
   renderItem = (props) => {
     // const { routes, index } = this.state.navigationState;
-    const { shareDetail } = this.props;
+    const { shareDetail, pageId, postId } = this.props;
     const parentRef = shareDetail ? shareDetail._id : undefined;
     return (
       <CommentCard
@@ -79,10 +167,11 @@ class ShareDetailCard extends Component {
         index={props.index}
         scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
         commentDetail={{ parentType: 'Post', parentRef }}
-        onCommentClicked={() => this.dialogOnFocus()}
+        onCommentClicked={this.dialogOnFocus}
         onReportPressed={() => console.log('share detail report clicked')}
         reportType='shareDetail'
-        pageId={this.props.pageId}
+        pageId={pageId}
+        entityId={postId}
       />
     );
   }
@@ -100,9 +189,9 @@ class ShareDetailCard extends Component {
   }
 
   render() {
-    const { comments, shareDetail, pageId } = this.props;
+    const { comments, shareDetail, pageId, postId } = this.props;
     const data = comments;
-    if (!shareDetail || !shareDetail.created) return '';
+    if (!shareDetail || !shareDetail.created) return null;
     const title = switchCaseTitle(shareDetail.postType);
 
     return (
@@ -111,7 +200,7 @@ class ShareDetailCard extends Component {
           <SearchBarHeader
             backButton
             title={title}
-            onBackPress={() => this.props.closeShareDetail()}
+            onBackPress={() => this.props.closeShareDetail(postId, pageId)}
           />
             <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
               <FlatList
@@ -122,12 +211,26 @@ class ShareDetailCard extends Component {
                 ListHeaderComponent={() => this.renderShareDetailSection(shareDetail)}
                 refreshing={this.props.commentLoading}
                 onRefresh={this.handleRefresh}
+                ListFooterComponent={<View style={{ height: 43, backgroundColor: 'transparent' }} />}
               />
 
-              <CommentBox
-                onRef={(ref) => { this.commentBox = ref; }}
-                pageId={pageId}
-              />
+              <Animated.View
+                style={[
+                  styles.composerContainer, {
+                    position: this.state.position,
+                    paddingBottom: this.state.commentBoxPadding,
+                    backgroundColor: 'white',
+                    zIndex: 3
+                  }
+                ]}
+              >
+                <CommentBox
+                  onRef={(ref) => { this.commentBox = ref; }}
+                  hasSuggestion={false}
+                  pageId={pageId}
+                  entityId={postId}
+                />
+              </Animated.View>
 
             </KeyboardAvoidingView>
         </View>
@@ -153,26 +256,42 @@ const styles = {
     backgroundColor: 'gray',
     opacity: 0.5
   },
+  composerContainer: {
+    left: 0,
+    right: 0,
+    bottom: 0
+  },
 };
 
-const mapStateToProps = (state, props) => {
-  const getShareDetail = getShareDetailByTab();
-  const shareDetail = getShareDetail(state);
-  const { pageId } = shareDetail;
-  // TODO: uncomment
-  const comments = getCommentByTab(state, props.pageId);
-  const { transformedComments, loading } = comments || {
-    transformedComments: [],
-    loading: false
-  };
+const makeMapStateToProps = () => {
+  const getPostById = makeGetPostById();
+  const getCommentByEntityId = makeGetCommentByEntityId();
 
-  return {
-    commentLoading: loading,
-    comments: transformedComments,
-    shareDetail,
-    pageId,
+  const mapStateToProps = (state, props) => {
+    // const getShareDetail = getShareDetailByTab();
+    // const shareDetail = getShareDetail(state);
+    // const { pageId } = shareDetail;
+    // const comments = getCommentByTab(state, props.pageId);
 
+    const { pageId, postId } = props;
+    const { post } = getPostById(state, postId);
+    const shareDetail = post;
+
+    const comments = getCommentByEntityId(state, postId, pageId);    
+    const { transformedComments, loading } = comments || {
+      transformedComments: [],
+      loading: false
+    };
+  
+    return {
+      commentLoading: loading,
+      comments: transformedComments,
+      shareDetail,
+      pageId,
+  
+    };
   };
+  return mapStateToProps;
 };
 
 const switchCaseTitle = (postType) => switchCase({
@@ -181,10 +300,10 @@ const switchCaseTitle = (postType) => switchCase({
   ShareGoal: 'Shared Goal',
   ShareNeed: 'Shared Need',
   ShareStep: 'Shared Step'
-})('SharePost')(postType)
+})('SharePost')(postType);
 
 export default connect(
-  mapStateToProps,
+  makeMapStateToProps,
   {
     closeShareDetail,
     createCommentFromSuggestion,

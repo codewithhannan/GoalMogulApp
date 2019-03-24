@@ -342,7 +342,7 @@ class SortableFlatList extends Component {
     return (
       <View
         onLayout={e => {
-          console.log('layout', e.nativeEvent)
+          // console.log('layout', e.nativeEvent)
         }}
         ref={this.measureContainer}
         {...this._panResponder.panHandlers}

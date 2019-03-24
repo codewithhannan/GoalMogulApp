@@ -154,17 +154,8 @@ const styles = {
   }
 };
 
-// const mapStateToProps = state => {
-//   const { user } = state.profile;
-//   const { email } = user;
-//
-//   return {
-//     email
-//   };
-// };
-
 EditPhoneNumberForm = reduxForm({
-  form: 'addPhoneNumberForm',
+  form: 'editPhoneNumberForm',
   enableReinitialize: true
 })(EditPhoneNumberForm);
 

@@ -13,7 +13,6 @@ import ProfileImage from '../../../Common/ProfileImage';
 import RichText from '../../../Common/Text/RichText';
 
 // Assets
-import badge from '../../../../asset/utils/badge.png';
 import stepIcon from '../../../../asset/utils/steps.png'
 import needIcon from '../../../../asset/utils/help.png';
 import eventIcon from '../../../../asset/suggestion/event.png';
@@ -79,14 +78,16 @@ class CommentRef extends React.PureComponent {
       // goalRef,
       userRef,
     } = item;
+    // console.log(`${DEBUG_KEY}: handle ref on press for item: `, item);
     if ((suggestionType === 'User' || suggestionType === 'Friend') && userRef) {
       return this.props.openProfile(userRef._id);
     }
     if (suggestionType === 'Tribe' && tribeRef) {
+      // console.log(`${DEBUG_KEY}: open my tribe detail`)
       return this.props.myTribeDetailOpenWithId(tribeRef._id);
     }
     if (suggestionType === 'Event' && eventRef) {
-      return this.props.eventDetailOpenWithId(eventRef._id);
+      return this.props.myEventDetailOpenWithId(eventRef._id);
     }
     if (suggestionType === 'NewNeed') {
       return;
@@ -107,20 +108,20 @@ class CommentRef extends React.PureComponent {
   // Render badge
   renderEndImage(item) {
     const { suggestionType, userRef } = item;
-    if (suggestionType === 'User' || suggestionType === 'Friend') {
+    if ((suggestionType === 'User' || suggestionType === 'Friend') && userRef !== null && userRef !== undefined) {
       return (
         <View style={styles.iconContainerStyle}>
           <UserBanner user={userRef} iconStyle={{ height: 24, width: 22 }} />
         </View>
       );
     }
-    return '';
+    return null;
   }
 
   renderTextContent(item) {
     const { title, content } = getTextContent(item);
     return (
-      <View style={{ flex: 1, justifyContent: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center', marginLeft: 10 }}>
         <Text 
           style={styles.titleTextStyle}
           numberOfLines={1}
@@ -172,7 +173,7 @@ class CommentRef extends React.PureComponent {
   // Currently this is a dummy component
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
     const { suggestionType, suggestionText, suggestionLink } = item;
 
     // if suggestionType is Custom and no suggestionText and suggestionLink,
@@ -182,7 +183,7 @@ class CommentRef extends React.PureComponent {
     if (suggestionType === 'Custom' &&
         (!suggestionText || _.isEmpty(suggestionText) || suggestionText === '{}') &&
         (!suggestionLink || _.isEmpty(suggestionLink))) {
-      return '';
+      return null;
     }
 
     return (
@@ -263,8 +264,8 @@ const getTextContent = (item) => {
   } = item;
 
   let ret = {
-    title: 'Sharon Warren',
-    content: 'Editor at The Atlantic'
+    title: 'Content deleted',
+    content: ''
   };
   if ((suggestionType === 'User' || suggestionType === 'Friend') && userRef) {
     ret = {

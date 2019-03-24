@@ -6,8 +6,7 @@ import {
   Image,
   Text,
   FlatList,
-  Dimensions,
-  TouchableWithoutFeedback
+  Dimensions
 } from 'react-native';
 import {
   Menu,
@@ -53,23 +52,28 @@ const DEBUG_KEY = '[ UI Headline ]';
 class Headline extends React.PureComponent {
   handleSelfCaretOnPress = (val) => {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     const { isCompleted, _id } = item;
     const markCompleteOnPress = isCompleted
       ? () => {
         Alert.alert(
           'Confirmation',
-          'Are you sure to mark this goal as incomplete?', [
-          { text: 'Cancel', onPress: () => console.log('user cancel unmark') },
-          { text: 'Confirm', onPress: () => this.props.markGoalAsComplete(_id, false) }]
+          'Are you sure to mark this goal as incomplete?', 
+          [
+            { text: 'Cancel', onPress: () => console.log('user cancel unmark') },
+            { 
+              text: 'Confirm', 
+              onPress: () => this.props.markGoalAsComplete(_id, false, this.props.pageId) 
+            }
+          ]
         );
       }
-      : () => this.props.markGoalAsComplete(_id, true);
+      : () => this.props.markGoalAsComplete(_id, true, this.props.pageId);
 
     if (val === 'Delete') return this.props.caretOnDelete();
     if (val === 'Edit Goal') return this.props.editGoal(item);
-    if (val === 'Share to Goal Feed') return this.props.shareGoalToMastermind(_id);
+    if (val === 'Share to Goal Feed') return this.props.shareGoalToMastermind(_id, this.props.pageId);
     if (val === 'Unmark as Complete' || val === 'Mark as Complete') {
       markCompleteOnPress();
     }
@@ -126,19 +130,20 @@ class Headline extends React.PureComponent {
       user,
       item,
       deleteOnly,
-      caret
+      caret,
+      textStyle
     } = this.props;
 
     // If item belongs to self, then caret displays delete
     let menu;
     if (caret && !_.isEmpty(caret)) {
-      const { options, onPress, shouldExtendOptionLength = false } = isSelf ? caret.self : caret.others;
+      const { options, onPress, shouldExtendOptionLength } = isSelf ? caret.self : caret.others;
       menu = MenuFactory(
         options,
         onPress,
         '',
         { ...styles.caretContainer },
-        () => console.log(`${DEBUG_KEY}: menu is opened for options: `, options),
+        () => console.log(`${DEBUG_KEY}: menu is opened for options with shouldExtendOptionLength: ${shouldExtendOptionLength}. `, options),
         shouldExtendOptionLength
       );
     } else {
@@ -156,16 +161,16 @@ class Headline extends React.PureComponent {
       : this.renderSelfCaret(item, deleteOnly);
     }
 
-    const categoryComponent = category ? <Category text={category} /> : '';
+    const categoryComponent = category ? <Category text={category} /> : null;
 
     return (
       <View style={styles.containerStyle}>
-        <Name text={name} onPress={() => this.handleNameOnPress(user)} />
+        <Name text={name} onPress={() => this.handleNameOnPress(user)} textStyle={textStyle} />
         {/* <Image style={styles.imageStyle} source={badge} /> */}
         <UserBanner user={user} iconStyle={{ marginTop: 1 }} />
         {categoryComponent}
         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
-          {hasCaret === null ? '' : menu}
+          {hasCaret === null || hasCaret === false ? null : menu}
         </View>
       </View>
     );
@@ -191,11 +196,15 @@ export const MenuFactory =
           {triggerText}
         </Text>
       )
-    : '';
+    : null;
 
-  const menuOptionsStyles = shouldExtendOptionLength
+  // console.log(`${DEBUG_KEY}: shouldExtendOptionLength:`, shouldExtendOptionLength);
+  const menuOptionsStyles = shouldExtendOptionLength === true
     ? getUpdatedStyles()
-    : _.cloneDeep(styles.menuOptionsStyles);
+    : styles.menuOptionsStyles;
+
+  // console.log(`${DEBUG_KEY}: styles.menuOptionsStyles is:`, styles.menuOptionsStyles);
+  // console.log(`${DEBUG_KEY}: shouldExtendOptionLength: ${shouldExtendOptionLength}, menuOptionsStyles:`, menuOptionsStyles);
   return (
     <Menu
       onSelect={value => callback(value)}
@@ -219,9 +228,8 @@ export const MenuFactory =
           renderItem={({ item }) => {
             const { iconSource, option } = item;
             return (
-              <TouchableOpacity
+              <View
                 style={{ flexDirection: 'row', alignItems: 'center' }}
-                onPress={() => callback(option)}
               >
                 {
                   iconSource
@@ -237,10 +245,12 @@ export const MenuFactory =
                         <Image source={iconSource} style={styles.iconStyle} />
                       </View>
                     )
-                    : ''
+                    : null
                 }
-                <MenuOption value={option} text={option} />
-              </TouchableOpacity>
+                <View style={{ flex: 1 }}>
+                  <MenuOption value={option} text={option} />
+                </View>
+              </View>
             );
           }}
           keyExtractor={(item, index) => index.toString()}
@@ -253,9 +263,9 @@ export const MenuFactory =
 
 const getUpdatedStyles = () => {
   let ret = _.cloneDeep(styles.menuOptionsStyles);
-  ret = _.set(styles.menuOptionsStyles, 'optionsContainer.width', 200);
-  ret = _.set(styles.menuOptionsStyles, 'optionsContainer.paddingLeft', 0);
-  ret = _.set(styles.menuOptionsStyles, 'optionsContainer.paddingRight', 0);
+  ret = _.set(ret, 'optionsContainer.width', 200);
+  ret = _.set(ret, 'optionsContainer.paddingLeft', 0);
+  ret = _.set(ret, 'optionsContainer.paddingRight', 0);
   return ret;
 };
 
@@ -313,10 +323,12 @@ const styles = {
     },
     optionWrapper: {
       flex: 1,
+      width: '100%'
     },
     optionTouchable: {
       underlayColor: 'lightgray',
       activeOpacity: 10,
+      flex: 1
     },
     optionText: {
       paddingTop: 5,

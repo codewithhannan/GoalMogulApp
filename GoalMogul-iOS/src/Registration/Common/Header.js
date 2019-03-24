@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, Image, Text, TouchableWithoutFeedback } from 'react-native';
-import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 /* Asset */
@@ -8,6 +7,7 @@ import HeaderImage from '../../asset/header/header-logo.png';
 import HeaderLogo from '../../asset/header/header-logo-white.png';
 
 import Pagination from './Pagination';
+import { BackIcon } from '../../Utils/Icons';
 
 import { registrationBack, registrationLogin } from '../../actions';
 
@@ -59,15 +59,27 @@ class Header extends Component {
   }
 
   renderBackButton() {
+    const { hasBackButton } = this.props;
+    if (hasBackButton === false) {
+      return null;
+    }
     return (
       <TouchableWithoutFeedback onPress={this.handleBackOnClick.bind(this)}>
         <View style={styles.navBarStyle}>
-          <Icon
+          <BackIcon 
+            iconStyle={{
+              ...styles.iconStyle,
+              tintColor: 'white',
+            }}
+          />
+          {/**
+            <Icon
             type='entypo'
             name='chevron-thin-left'
             containerStyle={styles.iconStyle}
             color='white'
           />
+           */}
         </View>
       </TouchableWithoutFeedback>
     );
@@ -82,14 +94,15 @@ class Header extends Component {
       case 'contact':
         return <Pagination total={3} current={2} />;
       default:
-        return '';
+        return null;
     }
   }
 
   render() {
     const headerStyle = { ...styles.containerStyle }
+    const { hasBackButton } = this.props;
 
-    const pagination = this.props.type ? this.renderPagination(this.props.type) : '';
+    const pagination = this.props.type ? this.renderPagination(this.props.type) : null;
 
     if (this.props.name) {
       headerStyle.height = 170;
@@ -117,16 +130,25 @@ class Header extends Component {
         </View>
       );
     }
+    
+    // Added this case for uploading image should not go back to account creation
+    if (hasBackButton === false) {
+      return (
+        <View style={headerStyle}>
+          <Image source={HeaderImage} />
+        </View>
+      );
+    }
 
     return (
       <View style={headerStyle}>
         <TouchableWithoutFeedback onPress={this.handleLoginBackOnClick.bind(this)}>
           <View style={styles.navBarStyle}>
-            <Icon
-              type='entypo'
-              name='chevron-thin-left'
-              containerStyle={styles.iconStyle}
-              color='white'
+            <BackIcon 
+              iconStyle={{
+                ...styles.iconStyle,
+                tintColor: 'white',
+              }}
             />
           </View>
         </TouchableWithoutFeedback>
@@ -154,7 +176,7 @@ const styles = {
     flexDirection: 'row'
   },
   iconStyle: {
-    justifyContent: 'flex-start'
+    // justifyContent: 'flex-start'
   },
   imageStyle: {
     height: 38,

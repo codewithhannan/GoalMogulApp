@@ -7,7 +7,6 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements';
 import R from 'ramda';
 import { Actions } from 'react-native-router-flux';
 
@@ -25,11 +24,20 @@ import {
   UserBanner
 } from '../../../actions/';
 
+// Selector
+import {
+  getUserDataByPageId,
+  getUserData
+} from '../../../redux/modules/User/Selector';
+
 /* Components */
 import Card from './Card';
 import ButtonArrow from '../../Common/Button/ButtonArrow';
 import ProfileActionButton from '../../Common/Button/ProfileActionButton';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import {
+  DotIcon
+} from '../../../Utils/Icons';
 
 const { width } = Dimensions.get('window');
 const DEBUG_KEY = '[ Copmonent ProfileDetailCard ]';
@@ -50,6 +58,7 @@ class ProfileDetailCard extends Component {
     this.state = {
       imageUrl: ''
     };
+    this.handleEditOnPressed = this.handleEditOnPressed.bind(this);
   }
 
   componentDidMount() {
@@ -85,7 +94,8 @@ class ProfileDetailCard extends Component {
   }
 
   handleEditOnPressed() {
-    this.props.openProfileDetailEditForm();
+    const { userId, pageId } = this.props;
+    this.props.openProfileDetailEditForm(userId, pageId);
   }
 
   // type: ['unfriend', 'deleteFriend', 'requestFriend']
@@ -108,7 +118,7 @@ class ProfileDetailCard extends Component {
           console.log(`${DEBUG_KEY} User withdraw request _id: `, this.props.friendship._id);
           // this.props.blockUser(this.props.profileUserId);
           this.props.updateFriendship(
-            '',
+            this.props.userId,
             this.props.friendship._id,
             'deleteFriend',
             'requests.outgoing',
@@ -130,7 +140,7 @@ class ProfileDetailCard extends Component {
         [R.equals(0), () => {
           console.log(`${DEBUG_KEY} User unfriend _id: `, this.props.friendship._id);
           this.props.updateFriendship(
-            '',
+            this.props.userId,
             this.props.friendship._id,
             'deleteFriend',
             'friends',
@@ -152,7 +162,7 @@ class ProfileDetailCard extends Component {
         [R.equals(1), () => {
           console.log(`${DEBUG_KEY} User refuse _id: `, this.props.friendship._id);
           this.props.updateFriendship(
-            '',
+            this.props.userId,
             this.props.friendship._id,
             'deleteFriend',
             'requests.incoming',
@@ -162,7 +172,7 @@ class ProfileDetailCard extends Component {
         [R.equals(0), () => {
           console.log(`${DEBUG_KEY} User accpet _id: `, this.props.friendship._id);
           this.props.updateFriendship(
-            '',
+            this.props.userId,
             this.props.friendship._id,
             'acceptFriend',
             'requests.incoming',
@@ -181,7 +191,13 @@ class ProfileDetailCard extends Component {
   }
 
   handleMutualFriendOnPressed = () => {
-    Actions.push('mutualFriends');
+    const { pageId, userId } = this.props;
+    if (this.props.self) {
+      // Jump to meetTab
+      Actions.jump('meetTab');
+      return;  
+    }
+    Actions.push('mutualFriends', { userId, pageId });
   }
 
   renderProfileActionButton() {
@@ -217,6 +233,7 @@ class ProfileDetailCard extends Component {
             source={addUser}
             onPress={this.handleButtonOnPress.bind(this, 'requestFriend')}
             style={{ height: 14, width: 15 }}
+            containerStyle={{ backgroundColor: '#E3F3FA' }}
           />
         );
 
@@ -227,6 +244,7 @@ class ProfileDetailCard extends Component {
             source={love}
             onPress={this.handleButtonOnPress.bind(this, 'unfriend')}
             style={{ width: 15, height: 13 }}
+            containerStyle={{ backgroundColor: '#E3F3FA' }}
           />
         );
 
@@ -236,11 +254,12 @@ class ProfileDetailCard extends Component {
             text='Cancel request'
             source={cancel}
             onPress={this.handleButtonOnPress.bind(this, 'deleteFriend')}
+            containerStyle={{ backgroundColor: '#E3F3FA' }}
           />
         );
 
       default:
-        return '';
+        return null;
     }
   }
 
@@ -253,7 +272,12 @@ class ProfileDetailCard extends Component {
           <Text style={{ fontWeight: 'bold' }}>{data === undefined ? 0 : data} </Text>
           {title}
         </Text>
-        <View>
+        <DotIcon 
+          iconContainerStyle={{ ...styles.dotIconContainerStyle }}
+          iconStyle={{ tintColor: '#818181', ...styles.dotIconStyle, height: 5, width: 5 }}
+        />
+        {/**
+          <View>
           <Icon
             name='dot-single'
             type='entypo'
@@ -263,6 +287,7 @@ class ProfileDetailCard extends Component {
             containerStyle={styles.dotIconContainerStyle}
           />
         </View>
+         */}
         <TouchableOpacity activeOpacity={0.85} onPress={this.handleMutualFriendOnPressed}>
           <ButtonArrow text='View friends' arrow />
         </TouchableOpacity>
@@ -297,7 +322,7 @@ class ProfileDetailCard extends Component {
   }
 
   render() {
-    if (!this.props.user) return '';
+    if (!this.props.user) return null;
     const { name, headline, profile } = this.props.user;
     // const { name, headline, profile } = testData;
     // console.log(`${DEBUG_KEY}: rerender with profile: `, profile);
@@ -397,18 +422,26 @@ const styles = {
 
   },
   dotIconContainerStyle: {
-    width: 15,
-    marginRight: 2,
+    width: 4,
+    marginLeft: 4,
+    marginRight: 5,
     alignSelf: 'center',
     justifyContent: 'center'
   }
 };
 
-const mapStateToProps = state => {
-  const self = state.profile.userId.toString() === state.user.userId.toString();
-  const { user, friendship, userId, mutualFriends } = state.profile;
+const mapStateToProps = (state, props) => {
+  const { userId, pageId } = props;
+
+  const self = userId === state.user.userId;
+
+  const userObject = getUserData(state, userId, '');
+  const { user, mutualFriends, friendship } = userObject;
+
+  // console.log(`${DEBUG_KEY}: userObject is: `, userObject);
+  // console.log(`${DEBUG_KEY}: friendship is: `, friendship);
   const friendsCount = state.meet.friends.count;
-  const needRespond = friendship.initiator_id
+  const needRespond = friendship && friendship.initiator_id
     && (friendship.initiator_id !== state.user.userId)
     && (friendship.status === 'Invited');
 

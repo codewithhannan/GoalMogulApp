@@ -16,6 +16,7 @@ import {
   EVENT_PARTICIPANT_INVITE_FAIL,
   EVENT_DELETE_SUCCESS,
   EVENT_EDIT,
+  EVENT_DETAIL_LOAD,
   EVENT_DETAIL_LOAD_SUCCESS,
   EVENT_DETAIL_LOAD_FAIL
 } from './EventReducers';
@@ -25,7 +26,11 @@ import {
 } from '../report/ReportReducers';
 
 import { api as API } from '../../middleware/api';
-import { queryBuilder, switchCase } from '../../middleware/utils';
+import { 
+  queryBuilder, 
+  constructPageId,
+  componentKeyByTab
+} from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Event Actions ]';
 const BASE_ROUTE = 'secure/event';
@@ -54,7 +59,10 @@ export const deleteEvent = (eventId) => (dispatch, getState) => {
   const onSuccess = (res) => {
     Actions.pop();
     dispatch({
-      type: EVENT_DELETE_SUCCESS
+      type: EVENT_DELETE_SUCCESS,
+      payload: {
+        eventId
+      }
     });
     console.log(`${DEBUG_KEY}: event with id: ${eventId}, is deleted with res: `, res);
     Alert.alert(
@@ -86,19 +94,19 @@ export const deleteEvent = (eventId) => (dispatch, getState) => {
 
 // User edits an event. Open the create event page with pre-populated item.
 export const editEvent = (event) => (dispatch, getState) => {
-  Actions.push('createEventModal', { initializeFromState: true, event });
+  Actions.push('createEventStack', { initializeFromState: true, event });
 };
 
-export const openEventInvitModal = ({ eventId, cardIconSource, cardIconStyle }) =>
+export const openEventInvitModal = ({ eventId, cardIconSource, cardIconStyle, callback }) =>
 (dispatch) => {
   const searchFor = {
     type: 'event',
     id: eventId
   };
-  Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle });
+  Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle, callback });
 };
 
-export const inviteParticipantToEvent = (eventId, inviteeId) => (dispatch, getState) => {
+export const inviteParticipantToEvent = (eventId, inviteeId, callback) => (dispatch, getState) => {
   const { token } = getState().user;
 
   const onSuccess = (res) => {
@@ -107,6 +115,10 @@ export const inviteParticipantToEvent = (eventId, inviteeId) => (dispatch, getSt
     });
     console.log(`${DEBUG_KEY}: invite user success: `, res);
     Actions.pop();
+    if (callback) {
+      // console.log(`${DEBUG_KEY}: invite user success with callback `, callback);
+      callback();
+    }
     Alert.alert(
       'Success',
       'You have successfully invited the user.'
@@ -127,8 +139,8 @@ export const inviteParticipantToEvent = (eventId, inviteeId) => (dispatch, getSt
   API
     .post(`${BASE_ROUTE}/participant`, { eventId, inviteeId }, token)
     .then((res) => {
-      if (res && res.success) {
-        return onSuccess(res.data);
+      if ((res && res.success) || res.status === 200) {
+        return onSuccess(res);
       }
       return onError(res);
     })
@@ -138,7 +150,7 @@ export const inviteParticipantToEvent = (eventId, inviteeId) => (dispatch, getSt
 };
 
 // User updates his rsvp status for an event
-export const rsvpEvent = (option, eventId) => (dispatch, getState) => {
+export const rsvpEvent = (option, eventId, pageId) => (dispatch, getState) => {
   const { token, user } = getState().user;
 
   const onSuccess = (res) => {
@@ -149,7 +161,8 @@ export const rsvpEvent = (option, eventId) => (dispatch, getState) => {
         participantRef: {
           ...user
         },
-        rsvp: option
+        rsvp: option,
+        pageId
       }
     });
     console.log(`${DEBUG_KEY}: rsvp success with res: `, res);
@@ -157,7 +170,11 @@ export const rsvpEvent = (option, eventId) => (dispatch, getState) => {
 
   const onError = (err) => {
     dispatch({
-      type: EVENT_UPDATE_RSVP_STATUS_FAIL
+      type: EVENT_UPDATE_RSVP_STATUS_FAIL,
+      payload: {
+        eventId,
+        pageId
+      }
     });
     Alert.alert(
       'RSVP failed',
@@ -179,10 +196,14 @@ export const rsvpEvent = (option, eventId) => (dispatch, getState) => {
     });
 };
 
-export const eventSelectParticipantsFilter = (option) => (dispatch) => {
+export const eventSelectParticipantsFilter = (option, eventId, pageId) => (dispatch) => {
   dispatch({
     type: EVENT_PARTICIPANT_SELECT_FILTER,
-    payload: option
+    payload: {
+      option,
+      eventId,
+      pageId
+    }
   });
 };
 
@@ -193,10 +214,12 @@ export const eventSelectTab = (index) => (dispatch) => {
   });
 };
 
-export const eventDetailClose = () => (dispatch) => {
-  Actions.pop();
+export const eventDetailClose = (eventId, pageId) => (dispatch) => {
   dispatch({
-    type: EVENT_DETAIL_CLOSE
+    type: EVENT_DETAIL_CLOSE,
+    payload: {
+      eventId, pageId
+    }
   });
 };
 
@@ -205,9 +228,27 @@ export const eventDetailClose = () => (dispatch) => {
  * and then open event detail with id
  */
 export const eventDetailOpenWithId = (eventId) => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+  const pageId = constructPageId('event');
+  const componentToOpen = componentKeyByTab(tab, 'eventDetail');
+
+  dispatch({
+    type: EVENT_DETAIL_LOAD,
+    payload: {
+      pageId,
+      eventId
+    }
+  });
   const callback = (res) => {
     console.log(`${DEBUG_KEY}: res for verifying user identify: `, res);
     if (!res.data) {
+      dispatch({
+        type: EVENT_DETAIL_LOAD_FAIL,
+        payload: {
+          eventId,
+          pageId
+        }
+      });
       return Alert.alert(
         'Event not found'
       );
@@ -215,13 +256,22 @@ export const eventDetailOpenWithId = (eventId) => (dispatch, getState) => {
     dispatch({
       type: EVENT_DETAIL_LOAD_SUCCESS,
       payload: {
-        tribe: res.data
+        event: res.data,
+        eventId,
+        pageId
       }
     });
-    Actions.eventDetail();
+    Actions.push(`${componentToOpen}`, { eventId, pageId });
   };
 
-  fetchEventDetail(eventId, callback)(dispatch, getState);
+  dispatch({
+    type: EVENT_DETAIL_OPEN,
+    payload: {
+      eventId,
+      pageId
+    }
+  });
+  fetchEventDetail(eventId, callback, pageId)(dispatch, getState);
 };
 
 /**
@@ -229,7 +279,11 @@ export const eventDetailOpenWithId = (eventId) => (dispatch, getState) => {
  */
 export const eventDetailOpen = (event) => (dispatch, getState) => {
   const { userId } = getState().user;
+  const { tab } = getState().navigation;
   const { _id } = event;
+  const eventId = _id;
+  const pageId = constructPageId('event');
+  const componentToOpen = componentKeyByTab(tab, 'eventDetail');
 
   // If user is not a member nor an invitee and event is not public visible,
   // Show not found for this tribe
@@ -244,12 +298,14 @@ export const eventDetailOpen = (event) => (dispatch, getState) => {
       dispatch({
         type: EVENT_DETAIL_LOAD_SUCCESS,
         payload: {
-          event: res.data
+          event: res.data,
+          pageId,
+          eventId
         }
       });
-      Actions.eventDetail();
+      Actions.push(`${componentToOpen}`, { eventId, pageId });
     };
-    fetchEventDetail(_id, callback)(dispatch, getState);
+    fetchEventDetail(_id, callback, pageId)(dispatch, getState);
     return;
   }
 
@@ -257,24 +313,28 @@ export const eventDetailOpen = (event) => (dispatch, getState) => {
   dispatch({
     type: EVENT_DETAIL_OPEN,
     payload: {
-      event: _.set(newEvent, 'participants', [])
+      event: _.set(newEvent, 'participants', []),
+      pageId,
+      eventId
     }
   });
-  Actions.eventDetail();
-  fetchEventDetail(_id)(dispatch, getState);
-  refreshEventFeed(_id, dispatch, getState);
+  Actions.push(`${componentToOpen}`, { eventId, pageId });
+  fetchEventDetail(_id, undefined, pageId)(dispatch, getState);
+  refreshEventFeed(_id, pageId)(dispatch, getState);
 };
 
 /**
  * Fetch event detail for an event
  */
-export const fetchEventDetail = (eventId, callback) => (dispatch, getState) => {
+export const fetchEventDetail = (eventId, callback, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
   const onSuccess = (data) => {
     dispatch({
       type: EVENT_DETAIL_LOAD_SUCCESS,
       payload: {
-        event: data
+        event: data,
+        pageId,
+        eventId
       }
     });
     console.log(`${DEBUG_KEY}: load event detail success with data: `, data);
@@ -282,7 +342,11 @@ export const fetchEventDetail = (eventId, callback) => (dispatch, getState) => {
 
   const onError = (err) => {
     dispatch({
-      type: EVENT_DETAIL_LOAD_FAIL
+      type: EVENT_DETAIL_LOAD_FAIL,
+      payload: {
+        pageId,
+        eventId
+      }
     });
     console.log(`${DEBUG_KEY}: failed to load event detail with err: `, err);
   };
@@ -310,12 +374,16 @@ export const fetchEventDetail = (eventId, callback) => (dispatch, getState) => {
  * NOTE: goal feed and activity feed share the same constants with different
  * input on type field
  */
-export const refreshEventFeed = (eventId, dispatch, getState) => {
+export const refreshEventFeed = (eventId, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
   const { limit } = getState().event;
 
   dispatch({
-    type: EVENT_FEED_FETCH
+    type: EVENT_FEED_FETCH,
+    payload: {
+      eventId,
+      pageId
+    }
   });
   loadEventFeed(0, limit, token, { eventId }, (data) => {
     dispatch({
@@ -324,8 +392,10 @@ export const refreshEventFeed = (eventId, dispatch, getState) => {
         type: 'eventfeed',
         data,
         skip: data.length,
+        pageId,
+        eventId,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
       }
     });
   }, () => {
@@ -333,14 +403,18 @@ export const refreshEventFeed = (eventId, dispatch, getState) => {
   });
 };
 
-export const loadMoreEventFeed = (eventId) => (dispatch, getState) => {
+export const loadMoreEventFeed = (eventId, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
   const { skip, limit, hasNextPage } = getState().event;
   if (hasNextPage === false) {
     return;
   }
   dispatch({
-    type: EVENT_FEED_FETCH
+    type: EVENT_FEED_FETCH,
+    payload: {
+      eventId,
+      pageId
+    }
   });
   loadEventFeed(skip, limit, token, { eventId }, (data) => {
     dispatch({
@@ -350,7 +424,9 @@ export const loadMoreEventFeed = (eventId) => (dispatch, getState) => {
         data,
         skip: data.length,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0)
+        hasNextPage: !(data === undefined || data.length === 0),
+        pageId,
+        eventId
       }
     });
   }, () => {

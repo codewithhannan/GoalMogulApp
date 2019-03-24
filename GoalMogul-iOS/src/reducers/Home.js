@@ -27,6 +27,15 @@ import {
   USER_LOG_OUT
 } from './User';
 
+import {
+  GOAL_DETAIL_UPDATE_DONE
+} from '../reducers/GoalDetailReducers';
+
+import {
+  NOTIFICATION_SUBSCRIBE,
+  NOTIFICATION_UNSUBSCRIBE
+} from '../redux/modules/notification/NotificationTabReducers';
+
 export const HOME_MASTERMIND_OPEN_CREATE_OVERLAY = 'home_mastermind_open_create_overlay';
 export const HOME_CLOSE_CREATE_OVERLAY = 'home_mastermind_close_create_overlay';
 // Goal related constants
@@ -125,10 +134,10 @@ export default (state = INITIAL_STATE, action) => {
       let sortedData = [];
       if (type === 'mastermind') {
         sortedData = data.sort((a, b) =>
-          new Date(b.feedInfo.publishDate) - new Date(b.feedInfo.publishDate));
+          new Date(b.feedInfo.publishDate) - new Date(a.feedInfo.publishDate));
       } else {
         sortedData = data.sort((a, b) =>
-         new Date(b.created) - new Date(b.created));
+         new Date(b.created) - new Date(a.created));
       }
 
       return _.set(newState, `${type}.data`, sortedData);
@@ -156,10 +165,10 @@ export default (state = INITIAL_STATE, action) => {
       let sortedData = [];
       if (type === 'mastermind') {
         sortedData = newData.sort((a, b) =>
-          new Date(b.feedInfo.publishDate) - new Date(b.feedInfo.publishDate));
+          new Date(b.feedInfo.publishDate) - new Date(a.feedInfo.publishDate));
       } else {
         sortedData = newData.sort((a, b) =>
-         new Date(b.created) - new Date(b.created));
+         new Date(b.created) - new Date(a.created));
       }
 
       return _.set(newState, `${type}.data`, sortedData);
@@ -186,7 +195,7 @@ export default (state = INITIAL_STATE, action) => {
     // When user deletes his/her own goals from Goals Feed, remove the corresponding
     // Item from the goal feed list
     case PROFILE_GOAL_DELETE_SUCCESS: {
-      const goalId = action.payload;
+      const { goalId } = action.payload;
       let newState = _.cloneDeep(state);
       const oldGoalData = _.get(newState, 'mastermind.data');
       // Filter out the goal
@@ -204,7 +213,7 @@ export default (state = INITIAL_STATE, action) => {
     // When user deletes his/her own posts from activity Feed, remove the corresponding
     // Item from the activity feed list
     case PROFILE_POST_DELETE_SUCCESS: {
-      const postId = action.payload;
+      const { postId } = action.payload;
       const newState = _.cloneDeep(state);
       const oldData = _.get(newState, 'activityfeed.data');
       // Filter out the activity feed that relates to this deleted post
@@ -299,6 +308,128 @@ export default (state = INITIAL_STATE, action) => {
       return newState;
     }
 
+    /**
+     * Update goal in goal feed and activity feed after its status for completeness is updated
+     */
+    case GOAL_DETAIL_UPDATE_DONE: {
+      const { type, goalId, complete } = action.payload;
+      let newState = _.cloneDeep(state);
+      // Only handle mark goal as complete case
+      if (type !== 'markGoalAsComplete') {
+        return newState;
+      }
+
+      // Update goal feed
+      const oldGoalFeed = _.get(newState, 'mastermind.data');
+      const newGoalFeed = oldGoalFeed.map((goal) => {
+        if (goal._id === goalId) {
+          return {
+            ...goal,
+            isCompleted: complete
+          }
+        }
+        return goal;
+      });
+
+      newState = _.set(newState, 'mastermind.data', newGoalFeed);
+
+      // Update activity feed
+      const oldActivityFeed = _.get(newState, 'activityfeed.data');
+      const newActivityFeed = oldActivityFeed.map((activity) => {
+        const { actedUponEntityType, goalRef } = activity; 
+        let newActivity = _.cloneDeep(activity);
+        if (actedUponEntityType === 'Goal' && goalRef && goalRef._id === goalId) {
+          newActivity = _.set(newActivity, 'goalRef.isCompleted', complete);
+        }
+
+        return newActivity;
+      });
+
+      newState = _.set(newState, 'activityfeed.data', newActivityFeed);
+      return newState;
+    }
+
+    // Notification to update maybeIsSubscribe state for goal
+    case NOTIFICATION_UNSUBSCRIBE: {
+      let newState = _.cloneDeep(state);
+      const { entityId, entityKind } = action.payload;
+
+      // Update goal feed
+      if (entityKind === 'Goal') {
+        const oldGoalFeedData = _.get(newState, 'mastermind.data');
+        const newGoalFeedData = oldGoalFeedData.map(g => {
+          if (g._id === entityId) {
+            return {
+              ...g,
+              maybeIsSubscribed: false
+            };
+          }
+          return g;
+        });
+        newState = _.set(newState, 'mastermind.data', newGoalFeedData);
+      }
+
+      // Update activity feed
+      const oldActivityFeed = _.get(newState, 'activityfeed.data');
+      const newActivityFeed = oldActivityFeed.map(a => {
+        let ret = _.cloneDeep(a);
+        const { actedUponEntityType, postRef, goalRef } = ret;
+        if (actedUponEntityType === 'Post' && postRef) {
+          ret = _.set(ret, 'postRef.maybeIsSubscribed', false);
+        }
+
+        if (actedUponEntityType === 'Goal' && goalRef) {
+          ret = _.set(ret, 'goalRef.maybeIsSubscribed', false);
+        }
+
+        return ret;
+      })
+      newState = _.set(newState, 'activityfeed.data', newActivityFeed);
+
+      return newState;
+    }
+
+    case NOTIFICATION_SUBSCRIBE: {
+      let newState = _.cloneDeep(state);
+      const { entityId, entityKind } = action.payload;
+      // Update goal feed
+      if (entityKind === 'Goal') {
+        const oldGoalFeedData = _.get(newState, 'mastermind.data');
+        const newGoalFeedData = oldGoalFeedData.map(g => {
+          if (g._id === entityId) {
+            return {
+              ...g,
+              maybeIsSubscribed: true
+            };
+          }
+          return g;
+        });
+        newState = _.set(newState, 'mastermind.data', newGoalFeedData);
+      }
+
+      // Update activity feed
+      const oldActivityFeed = _.get(newState, 'activityfeed.data');
+      const newActivityFeed = oldActivityFeed.map(a => {
+        let ret = _.cloneDeep(a);
+        const { actedUponEntityType, postRef, goalRef } = ret;
+        if (actedUponEntityType === 'Post' && postRef) {
+          ret = _.set(ret, 'postRef.maybeIsSubscribed', true);
+        }
+
+        if (actedUponEntityType === 'Goal' && goalRef) {
+          ret = _.set(ret, 'goalRef.maybeIsSubscribed', true);
+        }
+
+        return ret;
+      })
+      newState = _.set(newState, 'activityfeed.data', newActivityFeed);
+
+      return newState;
+    }
+
+    /**
+     * User related
+     */
     case USER_LOG_OUT: {
       return _.cloneDeep(INITIAL_STATE);
     }

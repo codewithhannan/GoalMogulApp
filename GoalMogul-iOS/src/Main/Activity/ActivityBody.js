@@ -22,6 +22,10 @@ import RefPreview from '../Common/RefPreview';
 import { imagePreviewContainerStyle } from '../../styles';
 
 // Constants
+import {
+  IMAGE_BASE_URL
+} from '../../Utils/Constants';
+
 const DEBUG_KEY = '[ UI ActivityCard.ActivityBody ]';
 const { width } = Dimensions.get('window');
 
@@ -54,9 +58,9 @@ class ActivityBody extends React.Component {
   renderPostImage(url) {
     // TODO: update this to be able to load image
     if (!url) {
-      return '';
+      return null;
     }
-    const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${url}`;
+    const imageUrl = `${IMAGE_BASE_URL}${url}`;
       return (
         <TouchableWithoutFeedback
           onPress={() => this.setState({ mediaModal: true })}
@@ -126,7 +130,7 @@ class ActivityBody extends React.Component {
   }
 
   renderPostBody(postRef) {
-    if (!postRef) return '';
+    if (!postRef) return null;
     const { postType, goalRef, needRef, stepRef, userRef } = postRef;
     if (postType === 'General') {
       return this.renderPostImage(postRef.mediaRef);
@@ -159,6 +163,9 @@ class ActivityBody extends React.Component {
   // Render Activity Card body
   renderCardContent(item) {
     const { postRef, goalRef, actedUponEntityType } = item;
+    if (goalRef === null) {
+      console.log(`${DEBUG_KEY}: rendering card content: `, item);
+    }
 
     if (actedUponEntityType === 'Post') {
       return this.renderPostBody(postRef);
@@ -170,12 +177,12 @@ class ActivityBody extends React.Component {
 
     // Incorrect acteduponEntityType
     console.warn(`${DEBUG_KEY}: incorrect actedUponEntityType: ${actedUponEntityType}`);
-    return '';
+    return null;
   }
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     return (
       <View style={{ marginTop: 10 }}>

@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import _ from 'lodash';
 
+const DEBUG_KEY = '[ Selector Notification ]';
 const getNotificationData = (state) => state.notification.notifications;
 const getNotificationFeed = (state) => state.notification.needs;
 
@@ -9,16 +10,19 @@ export const getNotifications = createSelector(
   (notifications) => {
     const { seeMoreCount, data } = notifications;
 
-    if (_.isEmpty(data) || data.length === 0) return [];
-
-    const header = [{ type: 'header', text: 'Notifications', _id: 'notification' }];
-    const seeMore = [{ type: 'seemore', text: 'See More', _id: 'notification_see_more' }];
-    const seeLess = [{ type: 'seeless', text: 'See Less', _id: 'notification_see_less' }];
+    const header = [{ 
+      type: 'header', 
+      text: 'Notifications', 
+      _id: 'notification', 
+      notificationType: 'notification',
+      length: data.length
+    }];
+    const seeMore = [{ type: 'seemore', text: 'See More', _id: 'notification_see_more', notificationType: 'notification' }];
+    // const seeLess = [{ type: 'seeless', text: 'See Less', _id: 'notification_see_less' }];
+    if (_.isEmpty(data) || data.length === 0) return header;
 
     let dataToReturn = [];
-    if (seeMoreCount === data.length) {
-      dataToReturn = [...data, ...seeLess];
-    } else if (seeMoreCount > data.length) {
+    if (seeMoreCount >= data.length) {
       dataToReturn = data;
     } else {
       dataToReturn = [...data.slice(0, seeMoreCount), ...seeMore];
@@ -41,16 +45,15 @@ export const getNotificationNeeds = createSelector(
   [getNotificationFeed],
   (notificationNeeds) => {
     const { seeMoreCount, data } = notificationNeeds;
+
     if (_.isEmpty(data) || data.length === 0) return [];
 
     const header = [{ type: 'header', text: 'Friend\'s Needs', _id: 'notification_feed' }];
-    const seeMore = [{ type: 'seemore', text: 'See More', _id: 'notification_feed_see_more' }];
-    const seeLess = [{ type: 'seeless', text: 'See Less', _id: 'notification_feed_see_less' }];
+    const seeMore = [{ type: 'seemore', text: 'See More', _id: 'notification_feed_see_more', notificationType: 'feed' }];
+    // const seeLess = [{ type: 'seeless', text: 'See Less', _id: 'notification_feed_see_less' }];
 
     let dataToReturn = [];
     if (seeMoreCount >= data.length) {
-      dataToReturn = [...data, ...seeLess];
-    } else if (seeMoreCount > data.length) {
       dataToReturn = data;
     } else {
       dataToReturn = [...data.slice(0, seeMoreCount), ...seeMore];

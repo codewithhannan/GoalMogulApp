@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import { Image, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { Image, View, Text } from 'react-native';
+import { connect } from 'react-redux';
 
 /* Assets */
 import IconHome from '../../asset/footer/navigation/home.png';
@@ -8,11 +9,17 @@ import IconMeet from '../../asset/footer/navigation/meet.png';
 import IconChat from '../../asset/footer/navigation/chat.png';
 import IconStar from '../../asset/footer/navigation/star.png';
 
-class TabIcon extends React.Component {
+class TabIcon extends React.PureComponent {
   render() {
     // console.log('key is: ', this.props)
     // console.log('title is: ', this.props.title)
-    const { activeTintColor, inactiveTintColor, navigation, focused } = this.props;
+    const { 
+      activeTintColor, 
+      inactiveTintColor, 
+      navigation, 
+      focused,
+      notificationCount
+    } = this.props;
     const tintColor = focused ? activeTintColor : inactiveTintColor;
     const style = {
       tintColor,
@@ -31,7 +38,17 @@ class TabIcon extends React.Component {
         );
       case 'notificationTab':
         return (
-          <Image source={IconBell} style={style} />
+          <View style={styles.iconContainerStyle}>
+            {
+              (notificationCount && notificationCount > 0)
+              ? (
+                <View style={styles.notificationCountContainerStyle} zIndex={2}>
+                  <Text style={styles.notificationCountTextStyle}>{notificationCount}</Text>
+                </View>
+              ) : null
+            }
+            <Image source={IconBell} style={style} zIndex={1} />
+          </View>
         );
       case 'chatTab':
         return (
@@ -58,7 +75,41 @@ const styles = {
     height: 25,
     width: 25,
     alignSelf: 'center'
+  },
+  iconContainerStyle: {
+    height: 48,
+    width: 48,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  notificationCountContainerStyle: {
+    backgroundColor: '#fa5052',
+    height: 16,
+    minWidth: 16,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 2,
+    right: 1
+  },
+  notificationCountTextStyle: {
+    fontSize: 10,
+    color: 'white',
+    marginLeft: 4,
+    marginRight: 3,
+    alignSelf: 'center'
   }
 };
 
-export default TabIcon;
+const mapStateToProps = state => {
+  const { unreadCount } = state.notification.unread;
+  return {
+    notificationCount: unreadCount
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  null
+)(TabIcon);

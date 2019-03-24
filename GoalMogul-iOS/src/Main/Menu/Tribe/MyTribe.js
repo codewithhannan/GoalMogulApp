@@ -10,7 +10,6 @@ import {
   Platform
  } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
 import R from 'ramda';
 import { Actions } from 'react-native-router-flux';
@@ -26,6 +25,9 @@ import MemberListCard from '../../Tribe/MemberListCard';
 import { MenuFactory } from '../../Common/MenuFactory';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import EmptyResult from '../../Common/Text/EmptyResult';
+import {
+  DotIcon
+} from '../../../Utils/Icons';
 
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
 import { switchCase } from '../../../redux/middleware/utils';
@@ -82,7 +84,9 @@ import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../../../styles';
 
 // Constants
 import {
-  IPHONE_MODELS
+  IPHONE_MODELS,
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
 
 const DEBUG_KEY = '[ UI MyTribe ]';
@@ -109,6 +113,7 @@ const SEARCHBAR_HEIGHT = Platform.OS === 'ios' &&
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const PADDING = SCREEN_HEIGHT - 48.5 - SEARCHBAR_HEIGHT;
+
 
 /**
  * This is the UI file for a single event.
@@ -236,7 +241,7 @@ class MyTribe extends Component {
         showPlus: true
       });
     };
-    Actions.push('createButtonOverlay', { buttons, callback });
+    Actions.push('createButtonOverlay', { buttons, callback, pageId: this.props.pageId });
   }
 
   handleTribeOptionsOnSelect = (value) => {
@@ -401,16 +406,16 @@ class MyTribe extends Component {
       ? MenuFactory(
           [
             'Report',
-            maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe'
+            maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE
           ],
           (val) => {  
             if (val === 'Report') {
               return this.props.reportTribe(_id);
             }
-            if (val === 'Unsubscribe') {
+            if (val === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
               return this.props.unsubscribeEntityNotification(_id, 'Event');
             }
-            if (val === 'Subscribe') {
+            if (val === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
               return this.props.subscribeEntityNotification(_id, 'Event');
             }
           },
@@ -538,7 +543,10 @@ class MyTribe extends Component {
           <Text style={styles.tribeCountTextStyle}>{count} </Text>
             members
         </Text>
-        <Icon name='dot-single' type='entypo' color="#616161" size={16} />
+        <DotIcon 
+          iconStyle={{ tintColor: '#616161', width: 4, height: 4, marginLeft: 4, marginRight: 4 }}
+        />
+        {/* <Icon name='dot-single' type='entypo' color="#616161" size={16} /> */}
         <Text style={{ ...styles.tribeSizeTextStyle }}>
           Created {date}
         </Text>
@@ -550,12 +558,31 @@ class MyTribe extends Component {
     const { memberNavigationState } = this.props;
     const { routes } = memberNavigationState;
 
+    const buttonStyle = {
+      selected: {
+        backgroundColor: 'white', // container background style
+        tintColor: '#696969', // icon tintColor
+        color: '#696969', // text color
+        fontWeight: '800', // text fontWeight
+        statColor: 'white' // stat icon color
+      },
+      unselected: {
+        backgroundColor: 'white',
+        tintColor: '#696969',
+        color: '#b2b2b2',
+        fontWeight: '600',
+        statColor: '#696969'
+      }
+    };
     const props = {
       jumpToIndex: (i) => this.props.myTribeSelectMembersFilter(routes[i].key, i),
       navigationState: this.props.memberNavigationState
     };
+
     return (
-      <TabButtonGroup buttons={props} subTab />
+      <View>
+        <TabButtonGroup buttons={props} subTab buttonStyle={buttonStyle} noVerticalDivider noBorder />
+      </View> 
     );
   }
 
@@ -568,15 +595,15 @@ class MyTribe extends Component {
     //       onSelect={(option) => this.props.myTribeSelectMembersFilter(option)}
     //     />
     //   )
-    //   : '';
+    //   : null;
 
     const filterBar = this.props.tab === 'members'
       ? this.renderMemberTabs()
-      : '';
+      : null;
 
     const emptyState = this.props.tab === 'posts' && data.length === 0 && !this.props.feedLoading
       ? <EmptyResult text={'No Posts'} textStyle={{ paddingTop: 100 }} />
-    : '';
+      : null;
 
     // Invite button is replaced by renderPlus
     const inviteButton = this.props.tab === 'members'
@@ -589,7 +616,7 @@ class MyTribe extends Component {
           <Text>Invite</Text>
         </TouchableOpacity>
       )
-      : '';
+      : null;
 
 
     return (
@@ -686,7 +713,7 @@ class MyTribe extends Component {
         </TouchableOpacity>
       );
     }
-    return '';
+    return null;
   }
 
   // render padding
@@ -836,9 +863,9 @@ const styles = {
     position: 'absolute',
     bottom: 20,
     right: 15,
-    height: 50,
-    width: 50,
-    borderRadius: 25,
+    height: 54,
+    width: 54,
+    borderRadius: 27,
     alignItems: 'center',
     justifyContent: 'center',
     // backgroundColor: '#17B3EC',

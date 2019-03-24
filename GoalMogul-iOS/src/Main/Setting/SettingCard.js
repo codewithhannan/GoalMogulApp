@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, Image } from 'react-native';
 
+import DelayedButton from '../Common/Button/DelayedButton';
+
 class SettingCard extends Component {
 
   renderIcon() {
@@ -10,12 +12,12 @@ class SettingCard extends Component {
         <Image source={this.props.icon} style={iconStyle} />
       );
     }
-    return '';
+    return null;
   }
 
   render() {
     return (
-      <TouchableOpacity activeOpacity={0.85} onPress={this.props.onPress}>
+      <DelayedButton activeOpacity={0.85} onPress={this.props.onPress} delay={700}>
         <View style={styles.containerStyle}>
           <View style={styles.titleContainerStyle}>
             {this.renderIcon()}
@@ -27,7 +29,7 @@ class SettingCard extends Component {
             {this.props.explanation}
           </Text>
         </View>
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 }

@@ -17,6 +17,8 @@ export const REGISTRATION_ACCOUNT = 'registration_account';
 export const REGISTRATION_ACCOUNT_LOADING = 'registration_account_loading';
 export const REGISTRATION_ACCOUNT_SUCCESS = 'registration_account_success';
 export const REGISTRATION_ACCOUNT_FORM_CHANGE = 'registration_account_form_change';
+export const ACCOUNT_UPDATE_PASSWORD = 'account_update_password';
+export const ACCOUNT_UPDATE_PASSWORD_DONE = 'account_update_password_done';
 
 export const REGISTRATION_LOGIN = 'registration_login';
 export const REGISTRATION_ADDPROFILE = 'registration_addprofile';
@@ -52,6 +54,8 @@ export const HOME_SWITCH_TAB = 'home_switch_tab';
 
 /* Profile actions */
 export const PROFILE_OPEN_PROFILE = 'profile_open_profile'; // User tries to open a profile
+export const PROFILE_CLOSE_PROFILE_DETAIL = 'profile_open_profile_detail';
+export const PROFILE_CLOSE_PROFILE = 'profile_close_profile'; // User closes a profile
 export const PROFILE_FETCHING_SUCCESS = 'profile_fetching_success'; // Loading profile succeed
 export const PROFILE_FETCHING_FAIL = 'profile_fetching_fail'; // Loading profile fails
 export const PROFILE_OPEN_PROFILE_DETAIL

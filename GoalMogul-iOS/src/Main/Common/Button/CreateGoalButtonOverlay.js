@@ -25,23 +25,23 @@ const DEBUG_KEY = '[ UI CreateGoalButtonOverlay ]';
 class CreateGoalButtonOverlay extends Component {
   constructor(...args) {
     super(...args);
-    this.fadeAnim = new Animated.Value(0.001);
+    this.fadeAnim = new Animated.Value(0);
   }
 
   componentDidMount() {
     Animated.timing(this.fadeAnim, {
-      duration: 100,
+      duration: 10,
       toValue: 1,
     }).start();
   }
 
   handleCancel = () => {
     Animated.timing(this.fadeAnim, {
-      duration: 100,
+      duration: 10,
       toValue: 0,
     }).start(() => {
       if (this.props.onClose) {
-        console.log(`${DEBUG_KEY}: iam here`);
+        // console.log(`${DEBUG_KEY}: iam here`);
         this.props.onClose();
       } else {
         this.props.closeCreateOverlay(this.props.tab);
@@ -53,7 +53,7 @@ class CreateGoalButtonOverlay extends Component {
   handleCreatePost = () => {
     console.log('User trying to create post');
     Animated.timing(this.fadeAnim, {
-      duration: 100,
+      duration: 50,
       toValue: 0,
     }).start(() => {
       this.props.closeCreateOverlay(this.props.tab);
@@ -61,7 +61,8 @@ class CreateGoalButtonOverlay extends Component {
       Actions.createPostModal({ 
         callback: this.props.onClose,
         onClose: this.props.onClose,
-        openProfile: this.props.openProfile
+        openProfile: this.props.openProfile,
+        pageId: this.props.pageId
       });
     });
   }
@@ -69,7 +70,7 @@ class CreateGoalButtonOverlay extends Component {
   handleCreateGoal = () => {
     console.log('User trying to create goal');
     Animated.timing(this.fadeAnim, {
-      duration: 100,
+      duration: 50,
       toValue: 0,
     }).start(() => {
       this.props.closeCreateOverlay(this.props.tab);
@@ -77,7 +78,8 @@ class CreateGoalButtonOverlay extends Component {
       Actions.createGoalModal({ 
         onCreate: this.props.onCreate, 
         onClose: this.props.onClose,
-        openProfile: this.props.openProfile
+        openProfile: this.props.openProfile,
+        pageId: this.props.pageId
       });
     });
   }
@@ -179,14 +181,15 @@ const styles = {
   },
   containerStyle: {
     position: 'absolute',
-    bottom: 70,
-    right: 30,
-    alignItems: 'flex-end'
+    bottom: 80,
+    right: 18,
+    alignItems: 'center'
   },
   iconContainerStyle: {
     height: 40,
     width: 40,
     borderRadius: 20,
+    alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#17B3EC',

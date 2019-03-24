@@ -11,7 +11,8 @@ import {
   DatePickerIOS,
   Modal,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  Animated
 } from 'react-native';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -20,14 +21,11 @@ import {
   FieldArray,
   Field,
   reduxForm,
-  formValueSelector,
-  SubmissionError,
-  reset
+  formValueSelector
 } from 'redux-form';
 import R from 'ramda';
 import moment from 'moment';
 import {
-  MenuProvider,
   Menu,
   MenuOptions,
   MenuOption,
@@ -94,6 +92,8 @@ class NewGoalView extends Component {
       tagSearchData: { ...INITIAL_TAG_SEARCH },
     };
     this.updateSearchRes = this.updateSearchRes.bind(this);
+    this.scrollTo = this.scrollTo.bind(this);
+    this.handleLayoutChange = this.handleLayoutChange.bind(this);
   }
 
   componentDidMount() {
@@ -104,12 +104,37 @@ class NewGoalView extends Component {
     console.log(`${DEBUG_KEY}: unmounting NewGoalView`);
   }
 
+  /**
+   * y: calculated height to move based on the screen
+   * type: ['step', 'need']
+   * index: index in the type array starting from 0
+   */
+  scrollTo = (y, type, index) => {
+    // console.log(`${DEBUG_KEY}: scrollTo is called to scroll to y: ${y}`);
+    // console.log(`${DEBUG_KEY}: need length: `, this.props.steps.length);
+    // console.log(`${DEBUG_KEY}: index is: `, index);
+    let extraNumber = 0;
+    if (type === 'step') {
+      extraNumber = index;
+    }
+
+    if (type === 'need') {
+      extraNumber = (this.props.steps.length) + index;
+    }
+    const extraScrollToHeight = extraNumber * 50;
+    this.scrollView.scrollTo({ y: y + extraScrollToHeight, animated: true });
+  }
+
+  handleLayoutChange = ({ nativeEvent }) => {
+    console.log(`${DEBUG_KEY}: [ handleLayoutChange ]: layout: `, nativeEvent.layout);
+  }
+
   /* Tag related functions */
   onTaggingSuggestionTap(item, hidePanel, cursorPosition) {
     hidePanel();
     const { name } = item;
     const { details, tags } = this.props;
-    if (!details || _.isEmpty(details)) return '';
+    if (!details || _.isEmpty(details)) return;
     const detail = details[0];
 
     const postCursorContent = detail.slice(cursorPosition);
@@ -189,7 +214,7 @@ class NewGoalView extends Component {
     // console.log(`${DEBUG_KEY}: res is: `, res);
     // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
     // console.log(`${DEBUG_KEY}: searchContent is: `, searchContent);
-    if (searchContent !== this.state.keyword) return '';
+    if (searchContent !== this.state.keyword) return;
     this.setState({
       ...this.state,
       // keyword,
@@ -433,7 +458,7 @@ class NewGoalView extends Component {
   }
 
   renderUserInfo(user) {
-    if (!user) return '';
+    if (!user) return null;
     let imageUrl = user.profile.image;
     let profileImage =
       <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />;
@@ -537,7 +562,7 @@ class NewGoalView extends Component {
             change={(type, val) => this.props.change(type, val)}
           />
         );
-      }) : '';
+      }) : null;
     return (
       <View style={{ marginTop: 10 }}>
         {fieldsComponet}
@@ -632,33 +657,35 @@ class NewGoalView extends Component {
   // Renderer for timeline
   renderTimeline = () => {
     const titleText = <Text style={styles.titleTextStyle}>Timeline</Text>;
-    if (!this.props.hasTimeline) {
-      return (
-        <View style={{ ...styles.sectionMargin }}>
-          {titleText}
-          <TouchableOpacity 
-            activeOpacity={0.85}
-            style={{
-              height: 40,
-              width: 90,
-              backgroundColor: '#fafafa',
-              borderRadius: 4,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: 8,
-              flexDirection: 'row',
-              padding: 10
-            }}
-            onPress={() => this.props.change('hasTimeline', true)}
-          >
-            <Image source={plus} style={{ height: 11, width: 11 }} />
-            <Text style={{ fontSize: 14, fontWeight: '600', marginLeft: 4 }}>
-              Timeline
-            </Text>
-          </TouchableOpacity>
-        </View>
-      );
-    }
+    // if (!this.props.hasTimeline) {
+    //   return (
+    //     <View style={{ ...styles.sectionMargin }}>
+    //       {titleText}
+    //       <TouchableOpacity 
+    //         activeOpacity={0.85}
+    //         style={{
+    //           height: 40,
+    //           width: 90,
+    //           backgroundColor: '#fafafa',
+    //           borderRadius: 4,
+    //           alignItems: 'center',
+    //           justifyContent: 'center',
+    //           marginTop: 8,
+    //           flexDirection: 'row',
+    //           padding: 10
+    //         }}
+    //         onPress={() => this.props.change('hasTimeline', true)}
+    //       >
+    //         <Image source={plus} style={{ height: 11, width: 11 }} />
+    //         <Text style={{ fontSize: 14, fontWeight: '600', marginLeft: 4 }}>
+    //           Timeline
+    //         </Text>
+    //       </TouchableOpacity>
+    //     </View>
+    //   );
+    // }
+    if (this.props.startTime === undefined) return;
+
     const newPicker = true;
     const startDatePicker = newPicker ?
       (
@@ -667,9 +694,9 @@ class NewGoalView extends Component {
           onConfirm={(date) => {
             if (validateTime(date, this.props.endTime.date)) {
               this.props.change('startTime', { date, picker: false });
-              return
+              return;
             }
-            alert('Start time should not be later than start time');
+            alert('Start time cannot be later than end time');
           }}
           onCancel={() =>
             this.props.change('startTime', {
@@ -718,9 +745,9 @@ class NewGoalView extends Component {
             onConfirm={(date) => {
               if (validateTime(this.props.startTime.date, date)) {
                 this.props.change('endTime', { date, picker: false });
-                return
+                return;
               }
-              alert('End time should not be early than start time');
+              alert('End time cannot be early than start time');
             }}
             onCancel={() =>
               this.props.change('endTime', {
@@ -763,12 +790,34 @@ class NewGoalView extends Component {
         );
 
     const startTime = this.props.startTime.date ?
-      <Text>{moment(this.props.startTime.date).format('DD/MM/YYYY')}</Text> :
-      <Text style={{ fontSize: 9 }}>Start</Text>;
+      <Text>{moment(this.props.startTime.date).format('ll')}</Text> :
+      <Text style={{ fontSize: 15 }}>Start date</Text>;
 
     const endTime = this.props.endTime.date ?
-      <Text>{moment(this.props.endTime.date).format('DD/MM/YYYY')}</Text> :
-      <Text style={{ fontSize: 9 }}>End</Text>;
+      <Text>{moment(this.props.endTime.date).format('ll')}</Text> :
+      <Text style={{ fontSize: 15 }}>End date</Text>;
+
+    // Show cancel button if there is date set
+    const cancelButton = this.props.endTime.date || this.props.startTime.date 
+      ? 
+      (
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={{ justifyContent: 'center', padding: 10, marginLeft: 5 }}
+          onPress={() => {
+            this.props.change('hasTimeline', false);
+            this.props.change('endTime', {
+              date: undefined, picker: false
+            });
+            this.props.change('startTime', {
+              date: undefined, picker: false
+            });
+          }}
+        >
+          <Image source={cancel} style={{ ...styles.cancelIconStyle }} />
+        </TouchableOpacity>
+      )
+      : null;
 
     return (
       <View style={{ ...styles.sectionMargin }}>
@@ -813,21 +862,7 @@ class NewGoalView extends Component {
             {endTime}
           </TouchableOpacity>
 
-          <TouchableOpacity
-            activeOpacity={0.85}
-            style={{ justifyContent: 'center', padding: 10 }}
-            onPress={() => {
-              this.props.change('hasTimeline', false);
-              this.props.change('endTime', {
-                date: undefined, picker: false
-              });
-              this.props.change('startTime', {
-                date: undefined, picker: false
-              });
-            }}
-          >
-            <Image source={cancel} style={{ ...styles.cancelIconStyle }} />
-          </TouchableOpacity>
+          {cancelButton}
         </View>
         {startDatePicker}
         {endDatePicker}
@@ -835,7 +870,10 @@ class NewGoalView extends Component {
     );
   }
 
-  renderFieldArrayItem = (props, placeholder, fields, canDrag) => {
+  /**
+   * type: ['step', 'need']
+   */
+  renderFieldArrayItem = (props, placeholder, fields, canDrag, type) => {
     const { item, index, move, moveEnd, isActive } = props;
     const iconOnPress = index === 0 ?
       undefined
@@ -857,11 +895,15 @@ class NewGoalView extends Component {
           iconStyle={styles.cancelIconStyle}
           iconOnPress={iconOnPress}
           move={move}
+          blurOnSubmit
           moveEnd={moveEnd}
           canDrag={canDrag}
           autoCorrect
           autoCapitalize={'sentences'}
           inputContainerStyle={{ flexDirection: 'row' }}
+          scrollTo={this.scrollTo}
+          index={index}
+          type={type}
         />
       </View>
     );
@@ -882,7 +924,7 @@ class NewGoalView extends Component {
     const fieldsComponent = fields.length > 0 ?
       (
         <DraggableFlatlist
-          renderItem={(props) => this.renderFieldArrayItem(props, placeholder, fields, true)}
+          renderItem={(props) => this.renderFieldArrayItem(props, placeholder, fields, true, buttonText)}
           data={dataToRender}
           keyExtractor={item => `${item.index}`}
           scrollPercent={5}
@@ -924,10 +966,12 @@ class NewGoalView extends Component {
       //     />
       //   );
       // })
-      : '';
+      : null;
 
     return (
-      <View style={{ ...styles.sectionMargin }}>
+      <View 
+        style={{ ...styles.sectionMargin }} 
+      >
         {titleText}
         {fieldsComponent}
         {button}
@@ -937,7 +981,7 @@ class NewGoalView extends Component {
 
   renderSteps = ({ fields, meta: { error, submitFailed } }) => {
     return this.renderFieldArray(
-      'Steps',
+      'Steps (optional)',
       'step',
       STEP_PLACE_HOLDER,
       fields,
@@ -955,10 +999,47 @@ class NewGoalView extends Component {
     const titleText = this.props.initializeFromState ? 'Edit Goal' : 'New Goal';
 
     return (
-        <KeyboardAvoidingView
-          behavior='padding'
-          style={{ flex: 1, backgroundColor: '#ffffff' }}
-        >
+      <ScrollView
+        style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
+        scrollEnabled={this.state.scrollEnabled}
+        ref={r => { this.scrollView = r; }}
+      >
+        <View style={{ flex: 1, padding: 20 }}>
+          {this.renderUserInfo(user)}
+          {this.renderGoal()}
+          <FieldArray
+            name="details"
+            component={this.renderGoalDescription}
+            loading={this.state.tagSearchData.loading}
+            tagData={this.state.tagSearchData.data}
+            keyword={this.state.keyword}
+          />
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ flex: 1, marginRight: 8 }}>
+              {this.renderCategory()}
+            </View>
+            <View style={{ flex: 1 }}>
+              {this.renderPriority()}
+            </View>
+          </View>
+
+          {this.renderTimeline()}
+          <FieldArray name="steps" component={this.renderSteps} />
+          <FieldArray 
+            name="needs" 
+            component={this.renderNeeds} 
+          />
+        </View>
+
+      </ScrollView>
+    );
+  }
+}
+
+//<KeyboardAvoidingView
+        //   behavior='padding'
+        //   style={{ flex: 1, backgroundColor: '#ffffff' }}
+        // >
         {/** 
           <ModalHeader
             title={titleText}
@@ -967,39 +1048,9 @@ class NewGoalView extends Component {
             onAction={handleSubmit(this.handleCreate)}
           />
         */}
-          <ScrollView
-            style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
-            scrollEnabled={this.state.scrollEnabled}
-          >
-            <View style={{ flex: 1, padding: 20 }}>
-              {this.renderUserInfo(user)}
-              {this.renderGoal()}
-              <FieldArray
-                name="details"
-                component={this.renderGoalDescription}
-                loading={this.state.tagSearchData.loading}
-                tagData={this.state.tagSearchData.data}
-                keyword={this.state.keyword}
-              />
-              <View style={{ flexDirection: 'row' }}>
-                <View style={{ flex: 1, marginRight: 8 }}>
-                  {this.renderCategory()}
-                </View>
-                <View style={{ flex: 1 }}>
-                  {this.renderPriority()}
-                </View>
-              </View>
+       //</KeyboardAvoidingView> 
+      
 
-              {this.renderTimeline()}
-              <FieldArray name="steps" component={this.renderSteps} />
-              <FieldArray name="needs" component={this.renderNeeds} />
-            </View>
-
-          </ScrollView>
-        </KeyboardAvoidingView>
-    );
-  }
-}
 
 const validateTime = (start, end) => {
   if (!start || !end) return true;

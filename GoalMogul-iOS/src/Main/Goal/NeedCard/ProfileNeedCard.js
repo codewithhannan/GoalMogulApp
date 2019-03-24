@@ -11,7 +11,6 @@ import { connect } from 'react-redux';
 // Components
 import Headline from '../Common/Headline';
 import Timestamp from '../Common/Timestamp';
-import ProgressBar from '../Common/ProgressBar';
 import SectionCard from '../Common/SectionCard';
 
 // Actions
@@ -27,6 +26,12 @@ import {
   subscribeEntityNotification,
   unsubscribeEntityNotification
 } from '../../../redux/modules/notification/NotificationActions';
+
+// Constants
+import { 
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
+} from '../../../Utils/Constants';
 
 class ProfileNeedCard extends React.Component {
 
@@ -73,16 +78,16 @@ class ProfileNeedCard extends React.Component {
       others: {
         options: [
           { option: 'Report' }, 
-          { option: maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe' }
+          { option: maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE }
         ],
         onPress: (key) => {
           if (key === 'Report') {
             return this.props.createReport(_id, 'goal', 'Goal');
           }
-          if (key === 'Unsubscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
             return this.props.unsubscribeEntityNotification(_id, 'Goal');
           }
-          if (key === 'Subscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
             return this.props.subscribeEntityNotification(_id, 'Goal');
           }
         },
@@ -116,7 +121,7 @@ class ProfileNeedCard extends React.Component {
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
 
     return (
       <View style={{ marginTop: 3 }}>

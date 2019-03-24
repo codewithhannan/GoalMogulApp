@@ -1,10 +1,13 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { Icon } from 'react-native-elements';
+
+import {
+  DotIcon
+} from '../../../Utils/Icons';
 
 const renderStats = (props) => props.data.map((c, index) => {
   if (c.stat === undefined || c.stat === null || c.stat === 0) {
-    return '';
+    return null;
   }
   return (
     <View
@@ -14,7 +17,12 @@ const renderStats = (props) => props.data.map((c, index) => {
       <Text style={styles.titleStyle}>
         {c.name}
       </Text>
-      <View>
+
+      <DotIcon 
+        iconContainerStyle={{ ...styles.iconContainerStyle }}
+        iconStyle={{ tintColor: '#CCCCCC', ...styles.iconStyle, height: 3, width: 3 }}
+      />
+      {/* <View>
         <Icon
           name='dot-single'
           type='entypo'
@@ -23,7 +31,7 @@ const renderStats = (props) => props.data.map((c, index) => {
           iconStyle={styles.iconStyle}
           containerStyle={styles.iconContainerStyle}
         />
-      </View>
+      </View> */}
       <Text style={styles.numberStyle}>
         {c.stat}
       </Text>
@@ -60,8 +68,7 @@ const styles = {
   },
   iconContainerStyle: {
     width: 10,
-    paddingTop: 2,
-    marginRight: 2,
+    // paddingTop: 2,
     justifyContent: 'center',
     alignItems: 'center'
   }

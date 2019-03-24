@@ -2,7 +2,8 @@
 import _ from 'lodash';
 import {
   GOAL_DETAIL_OPEN,
-  GOAL_DETAIL_CLOSE
+  GOAL_DETAIL_CLOSE,
+  GOAL_DETAIL_SWITCH_TAB_V2
 } from '../../../../reducers/GoalDetailReducers';
 
 import {
@@ -27,7 +28,7 @@ const NEW_COMMENT_INITIAL_STATE = {
   mediaPresignedUrl: undefined,
   mediaRef: undefined,
   // ["Comment", "Reply", "Suggestion"]
-  commentType: undefined,
+  commentType: 'Comment',
   replyToRef: undefined,
   tmpSuggestion: { ...INITIAL_SUGGESETION },
   suggestion: { ...INITIAL_SUGGESETION },
@@ -114,12 +115,12 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case GOAL_DETAIL_OPEN: {
       let newState = _.cloneDeep(state);
-      const { tab, goal, pageId } = action.payload;
+      const { tab, goal, pageId, goalId } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       newState = _.set(newState, `${path}`, { ...NEW_COMMENT_INITIAL_STATE });
       newState = _.set(newState, `${path}.parentType`, 'Goal');
-      return _.set(newState, `${path}.parentRef`, goal._id);
+      return _.set(newState, `${path}.parentRef`, goal ? goal._id : goalId);
     }
 
     case SHARE_DETAIL_OPEN: {
@@ -175,19 +176,24 @@ export default (state = INITIAL_STATE, action) => {
     // when comment posts succeed, delete everything but parent type and ref
     case COMMENT_NEW_POST_SUCCESS: {
       const newState = _.cloneDeep(state);
+      console.log(`${DEBUG_KEY}: payload is: `, action.payload);
       const { tab, pageId } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab || tab === 'homeTab' ? `homeTab.${page}` : `${tab}.${page}`;
-      const parentType = _.get(newState, `${path}.parentType`);
-      const parentRef = _.get(newState, `${path}.parentRef`);
 
-      const newTabState = {
-        ...NEW_COMMENT_INITIAL_STATE,
-        parentType,
-        parentRef
-      };
+      // We need to preserve parentType, parentRef, needRef, stepRef, 
+      const oldComment = _.get(newState, `${path}`);
+      const resetComment = resetNewComment(oldComment);
+      // const parentType = _.get(newState, `${path}.parentType`);
+      // const parentRef = _.get(newState, `${path}.parentRef`);
 
-      return _.set(newState, `${path}`, newTabState);
+      // const newTabState = {
+      //   ...NEW_COMMENT_INITIAL_STATE,
+      //   parentType,
+      //   parentRef
+      // };
+      console.log(`${DEBUG_KEY}: [ COMMENT_NEW_POST_SUCCESS ]: resetComment:`, resetComment);
+      return _.set(newState, `${path}`, resetComment);
     }
 
     // cases related to new comment
@@ -227,7 +233,9 @@ export default (state = INITIAL_STATE, action) => {
         pageId,
         suggestionFor,
         suggestionForRef,
-        suggestionType
+        suggestionType,
+        needRef, // Added to differentiate if this is a comment for a need
+        stepRef // Added to differentiate if this is a comment for a need
       } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
@@ -243,6 +251,14 @@ export default (state = INITIAL_STATE, action) => {
       newState = setState(newState, `${path}.commentType`, commentType);
       newState = setState(newState, `${path}.replyToRef`, replyToRef);
       newState = setState(newState, `${path}.owner`, owner);
+
+      if (needRef) {
+        newState = setState(newState, `${path}.needRef`, needRef);
+      }
+
+      if (stepRef) {
+        newState = setState(newState, `${path}.stepRef`, stepRef);
+      }
 
       // console.log(`${DEBUG_KEY}: new state for newcomment: `, newState);
       return newState;
@@ -296,7 +312,13 @@ export default (state = INITIAL_STATE, action) => {
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       newState = _.set(newState, `${path}.showAttachedSuggestion`, false);
-      newState = _.set(newState, `${path}.tmpSuggestion`, { ...INITIAL_SUGGESETION });
+
+      // Since suggestion is removed, reset commentType to Comment
+      newState = _.set(newState, `${path}.commentType`, 'Comment');
+
+      const oldTmpSuggestion = _.get(newState, `${path}.tmpSuggestion`);
+      const resetTmpSuggestion = resetTmpSuggestionFromState(oldTmpSuggestion);
+      newState = _.set(newState, `${path}.tmpSuggestion`, resetTmpSuggestion);
       return _.set(newState, `${path}.suggestion`, { ...INITIAL_SUGGESETION });
     }
 
@@ -342,8 +364,16 @@ export default (state = INITIAL_STATE, action) => {
         );
         tmpSuggestion = _.set(tmpSuggestion, 'suggestionForRef', focusRef);
       }
+
+      if (tmpSuggestion.suggestionType === 'Custom' && 
+          tmpSuggestion.suggestionLink && 
+          !tmpSuggestion.suggestionText) {
+            tmpSuggestion = _.set(tmpSuggestion, 'suggestionText', 'Suggestion');
+      }
       newState = _.set(newState, `${path}.suggestion`, tmpSuggestion);
       newState = _.set(newState, `${path}.showAttachedSuggestion`, true);
+      // Only set the commentType to suggestion if something is attached
+      newState = _.set(newState, `${path}.commentType`, 'Suggestion');
       // Close suggestion modal
       return _.set(newState, `${path}.showSuggestionModal`, false);
     }
@@ -363,12 +393,15 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case COMMENT_NEW_SUGGESTION_OPEN_MODAL: {
-      const newState = _.cloneDeep(state);
+      let newState = _.cloneDeep(state);
+      // console.log(`${DEBUG_KEY}: old state is: `, newState);
       const { tab, pageId } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
 
-      return _.set(newState, `${path}.showSuggestionModal`, true);
+      newState = _.set(newState, `${path}.showSuggestionModal`, true);
+      // console.log(`${DEBUG_KEY}: new state is: `, newState);
+      return newState;
     }
 
     // Update suggestion text
@@ -416,6 +449,42 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, `${path}.mediaPresignedUrl`, objectKey);
     }
 
+    /**
+     * User switches tab from focus to central
+     */
+    case GOAL_DETAIL_SWITCH_TAB_V2: {
+      let newState = _.cloneDeep(state);
+      const { 
+        tab,
+        key,
+        focusRef,
+        focusType,
+        goalId, 
+        pageId 
+      } = action.payload;
+      
+      // Currently we don't consider if user goes from central to focus
+      if (key !== 'centralTab') {
+        return newState;
+      }
+
+      const page = pageId ? `${pageId}` : 'default';
+      const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
+      let commentToUpdate = _.get(newState, `${path}`);
+
+      // We need to remove any stepRef and needRef from the comment object because 
+      // user already exit that context
+      commentToUpdate = _.omit(commentToUpdate, 'stepRef');
+      commentToUpdate = _.omit(commentToUpdate, 'needRef');
+
+      // Reset the commentType to comment
+      commentToUpdate = _.set(commentToUpdate, 'commentType', 'Comment');
+
+      // Update the state to use the new comment
+      newState = _.set(newState, `${path}`, commentToUpdate);
+      return newState;
+    }
+
     default: return { ...state };
   }
 };
@@ -424,6 +493,45 @@ const setState = (newState, path, data) => {
   // If data exists or original field is set, then we set explicitly.
   if (data || _.get(newState, `${path}`)) return _.set(newState, `${path}`, data);
   return newState;
+};
+
+// Reset tmpSuggestion and keep suggestionFor and suggestionForRef after attaching
+const resetTmpSuggestionFromState = (tmpSuggestion) => {
+  const copyTmpSuggestion = _.cloneDeep(tmpSuggestion);
+  let ret = _.cloneDeep(INITIAL_SUGGESETION);
+  if (copyTmpSuggestion.suggestionFor !== undefined) {
+    ret = _.set(ret, 'suggestionFor', copyTmpSuggestion.suggestionFor);
+  }
+
+  if (copyTmpSuggestion.suggestionForRef !== undefined) {
+    ret = _.set(ret, 'suggestionForRef', copyTmpSuggestion.suggestionForRef);
+  }
+  return ret;
+};
+
+// Reset comment object after submission and keep corresponding field after posting
+const resetNewComment = (comment) => {
+  const copyComment = _.cloneDeep(comment);
+  let ret = _.cloneDeep(NEW_COMMENT_INITIAL_STATE);
+  const oldTmpSuggestion = _.get(copyComment, 'tmpSuggestion');
+  const tmpSuggestion = resetTmpSuggestionFromState(oldTmpSuggestion);
+  const oldParentRef = _.get(copyComment, 'parentRef');
+  const oldParentType = _.get(copyComment, 'parentType');
+
+  ret = _.set(ret, 'parentRef', oldParentRef);
+  ret = _.set(ret, 'parentType', oldParentType);
+  ret = _.set(ret, 'tmpSuggestion', tmpSuggestion);
+  if (copyComment.needRef) {
+    ret = _.set(ret, 'needRef', copyComment.needRef);  
+  }
+
+  ret = _.set(ret, 'commentType', 'Comment');
+
+  if (copyComment.stepRef) {
+    ret = _.set(ret, 'stepRef', copyComment.stepRef);  
+  }
+
+  return ret;
 };
 
 /**

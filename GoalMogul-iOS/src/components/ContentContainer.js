@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { SearchBar } from 'react-native-elements';
 
 /* Component */
 import Content from './Content';

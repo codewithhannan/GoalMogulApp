@@ -5,17 +5,19 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text
+  Platform
 } from 'react-native';
 import { connect } from 'react-redux';
-import { SearchBar, Icon } from 'react-native-elements';
+import { SearchBar } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
+import { Constants } from 'expo';
 import _ from 'lodash';
 
 // Component
 import BaseOverlay from './BaseOverlay';
 import PeopleSearch from './People/PeopleSearch';
 
+// Actions
 import {
   handleSearch,
   clearSearchState,
@@ -31,12 +33,17 @@ import {
 
 import { openProfile } from '../../actions';
 
+// Constants
+import {
+  IPHONE_MODELS
+} from '../../Utils/Constants';
+
  const DEBUG_KEY = '[ People Search ]';
  const SEARCH_TYPE = 'people';
 
  class PeopleSearchOverlay extends Component {
     handleOnResSelect = (_id) => {
-      const { searchFor } = this.props;
+      const { searchFor, callback } = this.props;
       if (!searchFor) return this.props.openProfile(_id);
       const {
         type, // event or tribe
@@ -44,10 +51,10 @@ import { openProfile } from '../../actions';
       } = searchFor;
       if (type === 'tribe' || type === 'myTribe') {
         // _id is invitee id
-        return this.props.inviteUserToTribe(id, _id);
+        return this.props.inviteUserToTribe(id, _id, callback);
       }
       if (type === 'event' || type === 'myEvent') {
-        return this.props.inviteParticipantToEvent(id, _id);
+        return this.props.inviteParticipantToEvent(id, _id, callback);
       }
     }
 
@@ -76,14 +83,20 @@ import { openProfile } from '../../actions';
         ? this.props.searchPlaceHolder
         : 'Search a person';
 
+      const marginTop = (
+        Platform.OS === 'ios' &&
+        IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+      ) ? 20 : 30;
+
      return (
        <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>
          <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-           <View style={styles.headerContainerStyle}>
+           <View style={{ ...styles.headerContainerStyle, marginTop }}>
              <SearchBar
                platform='ios'
                round
                autoFocus
+               noIcon
                inputStyle={styles.searchInputStyle}
                inputContainerStyle={styles.searchInputContainerStyle}
                containerStyle={styles.searchContainerStyle}
@@ -149,8 +162,8 @@ import { openProfile } from '../../actions';
    return ({
      debouncedSearch,
      clearSearchState: clearSearchState(dispatch),
-     inviteParticipantToEvent: (eventId, inviteeId) =>
-      dispatch(inviteParticipantToEvent(eventId, inviteeId)),
+     inviteParticipantToEvent: (eventId, inviteeId, callback) =>
+      dispatch(inviteParticipantToEvent(eventId, inviteeId, callback)),
      openProfile: (userId) =>
       dispatch(openProfile(userId)),
      inviteUserToTribe: (tribeId, inviteeId) =>

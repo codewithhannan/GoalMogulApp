@@ -29,13 +29,21 @@ export const fetchProfile = (userId, callback) => {
         console.log('error fetching user profile: ', res);
         dispatch({
           type: PROFILE_FETCHING_FAIL,
-          payload: res.message
+          payload: {
+            res: res.message,
+            userId,
+            pageId: 'HOME'
+          }
         });
         return;
       }
       dispatch({
         type: PROFILE_FETCHING_SUCCESS,
-        payload: res.data
+        payload: {
+          user: res.data,
+          userId,
+          pageId: 'HOME'
+        }
       });
       if (callback) {
         callback();

@@ -1,5 +1,9 @@
 import { createSelector } from 'reselect';
 import _ from 'lodash';
+import {
+  INITIAL_POST_OBJECT,
+  INITIAL_POST_PAGE
+} from './Posts';
 
 const getNavigationTab = (state) => {
   const { tab } = state.navigation;
@@ -34,3 +38,29 @@ const capitalizeWord = (word) => {
   if (!word) return '';
   return word.replace(/^\w/, c => c.toUpperCase());
 };
+
+const getPostById = (state, postId) => {
+  const posts = state.posts;
+  if (_.has(posts, `${postId}.post`)) {
+    return _.get(posts, `${postId}.post`);
+  }
+  return { ...INITIAL_POST_OBJECT };
+};
+
+const getPostPage = (state, postId, pageId) => {
+  const posts = state.posts;
+  if (_.has(posts, `${postId}.${pageId}`)) {
+    return _.get(posts, `${postId}.${pageId}`);
+  }
+  return { ...INITIAL_POST_PAGE };
+};
+
+export const makeGetPostById = () => createSelector(
+  [getPostById, getPostPage],
+  (post, postPage) => {
+    return {
+      post,
+      postPage
+    };
+  }
+);

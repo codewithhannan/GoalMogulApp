@@ -31,12 +31,14 @@ import { switchCase } from '../../../../redux/middleware/utils';
 
 // Selectors
 import {
-  getGoalDetailByTab
+  getGoalDetailByTab,
+  makeGetGoalPageDetailByPageId,
 } from '../../../../redux/modules/goal/selector';
 
 import {
   getCommentByTab,
-  getNewCommentByTab
+  getNewCommentByTab,
+  makeGetCommentByEntityId
 } from '../../../../redux/modules/feed/comment/CommentSelector';
 
 // Constants
@@ -56,6 +58,10 @@ class FocusTab extends React.PureComponent {
       commentBoxPadding: new Animated.Value(0),
       keyboardDidShow: false
     };
+  }
+
+  componentDidMount() {
+    console.log(`${DEBUG_KEY}: component did mount`);
   }
   
   // Refresh goal detail and comments all together
@@ -92,13 +98,15 @@ class FocusTab extends React.PureComponent {
         scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
         onCommentClicked={this.props.handleReplyTo}
         reportType='detail'
+        pageId={this.props.pageId}
+        entityId={this.props.goalId}
       />
     );
   }
 
   render() {
     const { data, focusType, pageId } = this.props;
-    if (!focusType) return '';
+    if (!focusType) return null;
     const emptyText = switchCaseEmptyText(focusType);
 
     // const resetCommentTypeFunc = focusType === 'comment'
@@ -115,7 +123,7 @@ class FocusTab extends React.PureComponent {
           refreshing={this.props.loading || false}
           onRefresh={this.handleRefresh}
           ListEmptyComponent={
-            this.props.loading ? '' :
+            this.props.loading ? null :
             <EmptyResult
               text={emptyText}
               textStyle={{ paddingTop: 110 }}
@@ -132,41 +140,62 @@ class FocusTab extends React.PureComponent {
     );
   }
 }
+const makeMapStateToProps = () => {
+  const getGoalPageDetailByPageId = makeGetGoalPageDetailByPageId();
+  const getCommentByEntityId = makeGetCommentByEntityId();
 
-const mapStateToProps = (state, props) => {
-  const newComment = getNewCommentByTab(state, props.pageId);
-  const goalDetail = getGoalDetailByTab(state);
-  const { goal, navigationStateV2 } = goalDetail;
-  const { focusType, focusRef } = navigationStateV2;
-  const comments = getCommentByTab(state, props.pageId);
-  const { transformedComments, loading } = comments || {
-    transformedComments: [],
-    loading: false
-  };
-  // Initialize data by all comments
-  let data = transformedComments;
+  const mapStateToProps = (state, props) => {
+    const { pageId, goalId } = props;
+    const newComment = getNewCommentByTab(state, pageId);
+    // const goalDetail = getGoalDetailByTab(state);
+    // const { goal, navigationStateV2 } = goalDetail;
+    // const comments = getCommentByTab(state, props.pageId);
 
-  // console.log(`${DEBUG_KEY}: focusType is: ${focusType}, ref is: ${focusRef}`);
-  if (focusType === 'step' || focusType === 'need') {
-    // TODO: grab comments by step, filter by typeRef
-    data = data.filter((comment) => {
-      if (comment.suggestion &&
+    const goalDetail = getGoalPageDetailByPageId(state, goalId, pageId);
+    const { goal, goalPage } = goalDetail;
+    const { navigationStateV2 } = goalPage;
+
+    const { focusType, focusRef } = navigationStateV2;
+    const comments = getCommentByEntityId(state, goalId, pageId);
+    const { transformedComments, loading } = comments || {
+      transformedComments: [],
+      loading: false
+    };
+    // Initialize data by all comments
+    let data = transformedComments;
+  
+    // console.log(`${DEBUG_KEY}: focusType is: ${focusType}, ref is: ${focusRef}`);
+    if (focusType === 'step' || focusType === 'need') {
+      // TODO: grab comments by step, filter by typeRef
+      data = data.filter((comment) => {
+        const isSuggestionForFocusRef = (
+          comment.suggestion &&
           comment.suggestion.suggestionForRef &&
-          comment.suggestion.suggestionForRef === focusRef) {
-            return true;
-      }
-      return false;
-    });
-  }
+          comment.suggestion.suggestionForRef === focusRef
+        );
+        const isCommentForFocusRef = (
+          _.get(comment, `${focusType}Ref`) === focusRef
+        );
 
-  return {
-    newComment,
-    data, // Comments of interest
-    // loading: loading || goal.loading,
-    focusType,
-    focusRef,
-    goalDetail: goal
+
+        if (isSuggestionForFocusRef || isCommentForFocusRef) {
+              return true;
+        }
+        return false;
+      });
+    }
+  
+    return {
+      newComment,
+      data, // Comments of interest
+      // loading: loading || goal.loading,
+      focusType,
+      focusRef,
+      goalDetail: goal
+    };
   };
+
+  return mapStateToProps;
 };
 
 const switchCaseEmptyText = (type) => switchCase({
@@ -183,7 +212,7 @@ FocusTab.defaultPros = {
 };
 
 export default connect(
-  mapStateToProps,
+  makeMapStateToProps,
   {
     goalDetailSwitchTabV2ByKey,
     resetCommentType

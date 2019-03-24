@@ -3,7 +3,7 @@
  * duplicate to Suggested.
  */
 import React, { Component } from 'react';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 
 // Components
@@ -24,6 +24,11 @@ import {
 import {
     BACKGROUND_COLOR
 } from '../../../../styles';
+
+// Constants
+import {
+  MEET_REQUEST_LIMIT
+} from '../../../../reducers/MeetReducers';
 
 // tab key
 const key = 'suggested';
@@ -53,6 +58,22 @@ class DiscoverTabView extends Component {
 
   renderItem = ({ item }) => <SuggestedCard item={item} />;
 
+  renderListFooter() {
+    const { loading, data } = this.props;
+    // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
+    if (loading && data.length >= MEET_REQUEST_LIMIT) {
+      return (
+        <View
+          style={{
+            paddingVertical: 20
+          }}
+        >
+          <ActivityIndicator size='small' />
+        </View>
+      );
+    }
+  }
+
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
@@ -64,11 +85,12 @@ class DiscoverTabView extends Component {
           onEndReached={this.handleOnLoadMore}
           onEndReachedThreshold={0}
           onRefresh={this.handleRefresh}
-          refreshing={this.props.loading}
+          refreshing={this.props.refreshing}
           ListEmptyComponent={
-            this.props.loading ? '' :
-            <EmptyResult text={'No Recommendations'} />
+            this.props.loading || this.props.refreshing ? null :
+            <EmptyResult text={'No Recommendations'} textStyle={{ paddingTop: 230 }} />
           }
+          ListFooterComponent={this.renderListFooter()}
         />
       </View>
     );

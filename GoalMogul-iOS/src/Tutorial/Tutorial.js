@@ -4,7 +4,8 @@ import {
   Text,
   Image,
   StyleSheet,
-  Animated
+  Animated,
+  TouchableOpacity
 } from 'react-native';
 import { Font } from 'expo';
 import { connect } from 'react-redux';
@@ -15,6 +16,7 @@ import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../styles';
 
 // Assets
 import LOGO from '../../assets/tutorial/logo.png';
+import cancel from '../asset/utils/cancel_no_background.png';
 
 // Actions
 import { tutorial as TutorialAction } from '../redux/modules/auth/Tutorial';
@@ -28,7 +30,7 @@ import Host from './Host';
 
 const DEBUG_KEY = '[ UI Tutorial ]';
 const DURATION = 500;
-const PAUSE = 4200;
+const PAUSE = 3500;
 /**
  * This tutorial will show the animation with the sequence
  * 1. Challenge
@@ -43,18 +45,40 @@ class Tutorial extends React.Component {
     this.state = {
       fontLoaded: false,
       hasShownComplete: false,
-      animationStart: false
+      animationStart: false,
+      onLastPage: false
     };
     this.challengeAnim = new Animated.Value(0);
     this.LearnAnim = new Animated.Value(0);
     this.TribeAnim = new Animated.Value(0);
     this.HostAnim = new Animated.Value(0);
+    this.animationCallback = this.animationCallback.bind(this);
+    this.HostAnim.addListener(({value}) => {
+      this._value = value;
+      this.animationCallback(value);
+    });
     this.progress = new Animated.Value(0);
 
     this.settingAccount = new Animated.Value(0.8);
     this.setupComplete = new Animated.Value(0);
 
     this.animate = this.animate.bind(this);
+  }
+
+  animationCallback = (value) => {
+    if (value !== 0 && this.state.onLastPage === false) {
+      this.setState({
+        ...this.state,
+        onLastPage: true
+      });
+    }
+    
+    if (value !== 1 && this.state.onLastPage === true) {
+      this.setState({
+        ...this.state,
+        onLastPage: false
+      });
+    }
   }
 
   async componentDidMount() {
@@ -153,7 +177,8 @@ class Tutorial extends React.Component {
       return;
     };
     TutorialAction.setTutorialShown(userId, onSuccess, onError);
-    Actions.mainTabs();
+    // Actions.mainTabs();
+    Actions.replace('drawer');
   }
 
   handleReplay = () => {
@@ -261,12 +286,22 @@ class Tutorial extends React.Component {
     );
   }
 
+  renderCancelButton() {
+    // Don't render if it's initial
+    if (this.props.initial !== false) return null;
+
+    return (
+      <CancelButton hostAnim={this.HostAnim} onLastPage={this.state.onLastPage} />
+    );
+  }
+
   // barColor='#055c7a'
   // #007FAD
   render() {
-    if (!this.state.fontLoaded) return '';
+    if (!this.state.fontLoaded) return null;
     return (
       <View style={styles.containerStyle}>
+        {this.renderCancelButton()}
         {this.renderHeader()}
         <View style={{ height: 10, width: '100%' }}>
           <ProgressBar
@@ -293,6 +328,7 @@ class Tutorial extends React.Component {
             opacity={this.HostAnim}
             continue={this.handleContinue}
             replay={this.handleReplay}
+            buttonDisabled={!this.state.onLastPage}
             {...this.props}
           />
         </View>
@@ -300,6 +336,32 @@ class Tutorial extends React.Component {
     );
   }
 }
+
+const CancelButton = (props) => {
+  // Don't render if we are on the last page
+  if (props.onLastPage) return null;
+
+  return (
+    <TouchableOpacity 
+      style={{
+        padding: 10,
+        paddingBottom: 15,
+        paddingLeft: 15,
+        position: 'absolute',
+        top: 15,
+        right: 0,
+        zIndex: 3
+      }}
+      activeOpacity={0.85}
+      onPress={() => {
+          
+        Actions.replace('drawer');
+      }}
+    >
+      <Image source={cancel} style={{ height: 18, width: 18, tintColor: 'white' }}/>
+    </TouchableOpacity>
+  )
+};
 
 const styles = StyleSheet.create({
   containerStyle: {

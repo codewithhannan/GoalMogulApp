@@ -8,10 +8,9 @@ import {
   Platform
 } from 'react-native';
 import R from 'ramda';
-import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import Expo, { Constants } from 'expo';
+import { Constants } from 'expo';
 
 /* Asset */
 // import Logo from '../../../asset/header/logo.png';
@@ -25,6 +24,12 @@ import { actionSheet, switchByButtonIndex } from '../ActionSheetFactory';
 
 /* Component */
 import DelayedButton from '../Button/DelayedButton';
+import {
+  SearchIcon
+} from '../../../Utils/Icons';
+
+// Utils
+import { componentKeyByTab } from '../../../redux/middleware/utils';
 
 /* Actions */
 import {
@@ -53,8 +58,10 @@ import {
 } from '../../../styles';
 
 import {
-  IPHONE_MODELS
+  IPHONE_MODELS,
+  IMAGE_BASE_URL
 } from '../../../Utils/Constants';
+import { getUserData } from '../../../redux/modules/User/Selector';
 
 const tintColor = '#33485e';
 
@@ -86,7 +93,7 @@ class SearchBarHeader extends Component {
   }
 
   handleProfileOnClick() {
-    this.props.openProfile(this.props.userId);
+    this.props.openProfile(this.props.appUserId);
   }
 
   handleSettingOnClick() {
@@ -180,7 +187,7 @@ class SearchBarHeader extends Component {
   // This is to replace logo image with user profile preview
   renderProfileImage() {
     let image = this.props.image;
-    console.log('image is: ', image);
+    // console.log('image is: ', image);
     let profileImage = (
       <DelayedButton
         activeOpacity={0.85}
@@ -188,7 +195,7 @@ class SearchBarHeader extends Component {
         onPress={this.handleProfileOnClick.bind(this)}
       >
         <Image
-          style={{ ...styles.headerLeftImage, tintColor }}
+          style={{ ...styles.headerLeftImage }}
           resizeMode='contain'
           source={profilePic}
         />
@@ -196,7 +203,7 @@ class SearchBarHeader extends Component {
 
     );
     if (image) {
-      image = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+      image = `${IMAGE_BASE_URL}${image}`;
       profileImage = (
         <DelayedButton
           activeOpacity={0.85}
@@ -275,21 +282,23 @@ class SearchBarHeader extends Component {
       );
     }
     return (
-      <TouchableOpacity activeOpacity={0.85} onPress={() => Actions.push('searchLightBox')}>
+      <DelayedButton 
+        activeOpacity={0.85} 
+        onPress={() => {
+          const componentKeyToOpen = componentKeyByTab(this.props.navigationTab, 'searchLightBox');
+          Actions.push(`${componentKeyToOpen}`);
+        }}
+      >
         <View style={styles.searchButtonContainerStyle}>
-          <View style={{ marginBottom: 3 }}>
-            <Icon
-              type='font-awesome'
-              name='search'
-              size={17}
-              color='#4ec9f3'
-            />
-          </View>
+          <SearchIcon 
+            iconContainerStyle={{ marginBottom: 3, marginTop: 1 }} 
+            iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
+          />
           <Text style={styles.searchPlaceHolderTextStyle}>
             Search GoalMogul
           </Text>
         </View>
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 
@@ -380,19 +389,25 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  const { userId } = state.user;
-  const profileUserId = state.profile.userId;
-  const profileUserName = state.profile.user.name;
-  const { image } = state.user.user.profile;
-  const haveSetting = state.profile.userId.toString() === state.user.userId.toString();
+const mapStateToProps = (state, props) => {
+  const appUserId = state.user.userId;
+  const { image } = state.user.user.profile; // Image is app user image
+  const navigationTab = state.navigation.tab;
+
+  // If no userId passed in, then we assume it's app userId
+  const profileUserId = props.userId || appUserId; 
+  const user = getUserData(state, profileUserId, 'user');
+  const profileUserName = user.name;
+  
+  const haveSetting = appUserId.toString() === profileUserId.toString();
 
   return {
-    userId,
     haveSetting,
     profileUserId,
     profileUserName,
-    image
+    image,
+    appUserId,
+    navigationTab
   };
 };
 

@@ -186,7 +186,10 @@ const getUserFriendCount = () => (dispatch, getState) => {
         console.log(`${DEBUG_KEY}: fetch friend count succeed with res: `, res);
         dispatch({
             type: PROFILE_FETCH_FRIEND_COUNT_DONE,
-            payload: res.count
+            payload: {
+                data: res.count,
+                userId
+            }
         });
     };
     const onError = (err) => {

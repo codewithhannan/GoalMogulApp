@@ -19,8 +19,13 @@ import {
 
 import {
   switchCaseF,
-  clearTags
+  sanitizeTags,
+  componentKeyByTab
 } from '../../../middleware/utils';
+
+import {
+  fetchPostDetail
+} from '../post/PostActions';
 
 // Actions
 import {
@@ -28,6 +33,7 @@ import {
 } from '../../feed/comment/CommentActions';
 
 import { api as API } from '../../../middleware/api';
+import { DropDownHolder } from '../../../../Main/Common/Modal/DropDownModal';
 
 const DEBUG_KEY = '[ Action Share ]';
 
@@ -36,39 +42,44 @@ const DEBUG_KEY = '[ Action Share ]';
 /*
  * open share detail
  */
-export const openShareDetail = (share) => (dispatch, getState) => {
+export const openShareDetail = (share, pageId, initialProps) => (dispatch, getState) => {
   const { tab } = getState().navigation;
 
-  const scene = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
-  const { pageId } = _.get(getState().shareDetail, `${scene}`);
+  // const scene = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
+  // const { pageId } = _.get(getState().shareDetail, `${scene}`);
+  const postId = share._id;
 
   dispatch({
     type: SHARE_DETAIL_OPEN,
     payload: {
       share,
+      post: share,
+      postId,
       tab,
       pageId
     },
   });
 
-  const { _id } = share;
-  refreshComments('Post', _id, tab, pageId)(dispatch, getState);
+  fetchPostDetail(postId, pageId)(dispatch, getState);
+  refreshComments('Post', postId, tab, pageId)(dispatch, getState);
 
-  Actions.push(`${scene}`, { pageId });
+  const componentToOpen = componentKeyByTab(tab, 'share');
+  Actions.push(`${componentToOpen}`, { pageId, postId, initialProps });
 };
 
 // close share detail
-export const closeShareDetail = () => (dispatch, getState) => {
+export const closeShareDetail = (postId, pageId) => (dispatch, getState) => {
   Actions.pop();
 
   const { tab } = getState().navigation;
-  const path = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
-  const { pageId } = _.get(getState().shareDetail, `${path}`);
+  // const path = (!tab || tab === 'homeTab') ? 'share' : `share${capitalizeWord(tab)}`;
+  // const { pageId } = _.get(getState().shareDetail, `${path}`);
 
   dispatch({
     type: SHARE_DETAIL_CLOSE,
     payload: {
       tab,
+      postId,
       pageId
     }
   });
@@ -106,19 +117,20 @@ const switchPostType = (postType, ref, goalRef) => switchCaseF({
   }
 })('General')(postType);
 
-const switchShareToAction = (dest) => switchCaseF({
+const switchShareToAction = (dest, callback) => switchCaseF({
   // Open modal directly if share to feed
   feed: () => {
     console.log('feed also pushes');
-    Actions.push('shareModal');
+    Actions.push('shareModal', { callback });
   },
   // Open search overlay if share to either tribe or event
-  tribe: () => Actions.searchTribeLightBox(),
-  event: () => Actions.push('searchEventLightBox')
+  tribe: () => Actions.searchTribeLightBox({ callback }),
+  event: () => Actions.push('searchEventLightBox', { callback })
 })('feed')(dest);
 
 // User chooses a share destination
-export const chooseShareDest = (postType, ref, dest, itemToShare, goalRef) =>
+// No need for refactoring since there could be only one newShare at a time
+export const chooseShareDest = (postType, ref, dest, itemToShare, goalRef, callback) =>
 (dispatch, getState) => {
   const { userId } = getState().user;
   const postDetail = switchPostType(postType, ref, goalRef);
@@ -133,7 +145,7 @@ export const chooseShareDest = (postType, ref, dest, itemToShare, goalRef) =>
     }
   });
 
-  switchShareToAction(dest);
+  switchShareToAction(dest, callback);
 };
 
 // Cancel a share
@@ -146,7 +158,7 @@ export const cancelShare = () => (dispatch) => {
 };
 
 // User submit the share modal form
-export const submitShare = (values) => (dispatch, getState) => {
+export const submitShare = (values, callback) => (dispatch, getState) => {
   dispatch({
     type: SHARE_NEW_POST
   });
@@ -171,7 +183,18 @@ export const submitShare = (values) => (dispatch, getState) => {
           payload: res.data
         });
         Actions.pop();
-        console.log(`${DEBUG_KEY}: creating share successfully with data: `, res.data);
+        // Callback passed down from the trigger
+        if (callback) {
+          callback();
+        }
+
+        // Timeout is set to wait for actions finished in callback
+        setTimeout(() => {
+          console.log(`${DEBUG_KEY}: [ submitShare ]: showing alert`);
+          DropDownHolder.alert('success', makeShareSuccessMessage(newShare), '');
+        }, 300);
+
+        console.log(`${DEBUG_KEY}: [ submitShare ] create succeed with data:`, res.data);
         return dispatch(reset('shareModal'));
       }
       console.warn(`${DEBUG_KEY}: creating share failed with message: `, res);
@@ -190,6 +213,15 @@ export const submitShare = (values) => (dispatch, getState) => {
       console.log(`${DEBUG_KEY}: creating share failed with exception: `, err);
     });
 };
+
+const transformPrivacy = (privacy, belongsToTribe, belongsToEvent) => {
+  let ret = privacy === 'Private' ? 'self' : privacy.toLowerCase();
+  // Set privacy to public if it's a share to event or tribe
+  if (belongsToTribe || belongsToEvent) {
+    ret = 'public';
+  }
+  return ret;
+}
 
 const newShareAdaptor = (newShare, formVales) => {
   const {
@@ -210,8 +242,9 @@ const newShareAdaptor = (newShare, formVales) => {
     tags
   } = formVales;
 
-  const transformedPrivacy = privacy === 'Private' ? 'self' : privacy.toLowerCase();
-  const tagsToUse = clearTags(content, {}, tags);
+  // const tagsToUse = clearTags(content, {}, tags);
+  // Tags sanitization will reassign index as well as removing the unused tags
+  const tagsToUse = sanitizeTags(content, tags);
 
   return {
     owner,
@@ -227,11 +260,56 @@ const newShareAdaptor = (newShare, formVales) => {
       text: content,
       tags: tagsToUse
     },
-    privacy: transformedPrivacy
+    privacy: transformPrivacy(privacy, belongsToTribe, belongsToEvent)
   };
 };
 
-export const selectEvent = (event) => (dispatch) => {
+const makeShareSuccessMessage = (newShare) => {
+  const {
+    userRef,
+    postRef,
+    goalRef,
+    needRef,
+    stepRef,
+    belongsToTribe,
+    belongsToEvent
+  } = newShare;
+
+  let type = '';
+  let destination = 'Activity Feed';
+
+  if (belongsToEvent) {
+    destination = 'Event'; 
+  }
+
+  if (belongsToTribe) {
+    destination = 'Tribe'; 
+  }
+
+  if (userRef) {
+    type = 'User';
+  }
+
+  if (postRef) {
+    type = 'Post';
+  }
+
+  if (goalRef) {
+    type = 'Goal';
+  }
+
+  if (needRef) {
+    type = 'Need';
+  }
+
+  if (stepRef) {
+    type = 'Step';
+  }
+
+  return `Successfully shared ${type} to ${destination}`;
+};
+
+export const selectEvent = (event, callback) => (dispatch) => {
   dispatch({
     type: SHARE_NEW_SELECT_DEST,
     payload: {
@@ -242,10 +320,10 @@ export const selectEvent = (event) => (dispatch) => {
 
   // Open share modal
   Actions.pop();
-  Actions.shareModal();
+  Actions.shareModal({ callback });
 };
 
-export const selectTribe = (tribe) => (dispatch) => {
+export const selectTribe = (tribe, callback) => (dispatch) => {
   dispatch({
     type: SHARE_NEW_SELECT_DEST,
     payload: {
@@ -256,7 +334,7 @@ export const selectTribe = (tribe) => (dispatch) => {
 
   // Open share modal
   Actions.pop();
-  Actions.shareModal();
+  Actions.shareModal({ callback });
 };
 
 /**

@@ -4,6 +4,10 @@ import Expo, { WebBrowser, Permissions, Notifications } from 'expo';
 import { Alert } from 'react-native';
 
 import { api as API } from '../redux/middleware/api';
+import { componentKeyByTab } from '../redux/middleware/utils';
+import {
+  getUserData 
+} from '../redux/modules/User/Selector';
 
 import {
   SETTING_OPEN_SETTING,
@@ -27,13 +31,15 @@ import {
 const DEBUG_KEY = '[ Setting Action ]';
 const BASE_ROUTE = 'secure/user/settings';
 
-export const openSetting = () => {
-  return (dispatch) => {
-    dispatch({
-      type: SETTING_OPEN_SETTING
-    });
-    Actions.setting();
-  };
+export const openSetting = () => (dispatch, getState) => {
+  const { tab } = getState().navigation;
+  const componentKeyToOpen = componentKeyByTab(tab, 'setting');
+  
+  console.log(`${DEBUG_KEY}: componentKeyToOpen: ${componentKeyToOpen}`);
+  dispatch({
+    type: SETTING_OPEN_SETTING
+  });
+  Actions.push(`${componentKeyToOpen}`);
 };
 
 // When setting tab bar on press
@@ -47,12 +53,13 @@ export const onTabPress = tabId => {
 };
 
 /* Account actions */
-export const onResendEmailPress = (callback) => (dispatch, getState) => {
+export const onResendEmailPress = (callback, userId) => (dispatch, getState) => {
   dispatch({
     type: SETTING_RESENT_EMAIL_VERIFICATION
   });
   const { token } = getState().user;
-  const { email } = getState().profile.user;
+  
+  const email = getUserData(getState(), userId, 'user.email');
   API.post('secure/user/account/verification', { for: 'email' }, token).then((res) => {
     if (callback) {
       callback(`We\'ve resent a verification email to ${email.address}`);
@@ -67,7 +74,7 @@ export const onResendEmailPress = (callback) => (dispatch, getState) => {
 // Update user email
 export const onUpdateEmailSubmit = (values, callback) => {
   return async (dispatch, getState) => {
-    const { token } = getState().user;
+    const { token, userId } = getState().user;
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
     const headers = {
       method: 'PUT',
@@ -80,6 +87,8 @@ export const onUpdateEmailSubmit = (values, callback) => {
         email: values.email
       })
     };
+    const { tab } = getState().navigation;
+    const componentToPopTo = componentKeyByTab(tab, 'setting');
     const message = await fetch(url, headers)
       .then((res) => res.json())
       .then((res) => {
@@ -87,9 +96,12 @@ export const onUpdateEmailSubmit = (values, callback) => {
         if (res.success) {
           dispatch({
             type: SETTING_EMAIL_UPDATE_SUCCESS,
-            payload: values.email
+            payload: {
+              email: values.email,
+              userId
+            }
           });
-          Actions.popTo('setting');
+          Actions.popTo(`${componentToPopTo}`); // It was setting
           if (callback) {
             callback('Your email has been updated. We\'ll send you a verification email shortly.');
           }
@@ -115,7 +127,7 @@ export const onUpdateEmailSubmit = (values, callback) => {
 // update user phone number
 export const onUpdatePhoneNumberSubmit = (values, callback) => {
   return async (dispatch, getState) => {
-    const { token } = getState().user;
+    const { token, userId } = getState().user;
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
     const headers = {
       method: 'PUT',
@@ -135,7 +147,10 @@ export const onUpdatePhoneNumberSubmit = (values, callback) => {
         if (res.success) {
           dispatch({
             type: SETTING_PHONE_UPDATE_SUCCESS,
-            payload: values.phone
+            payload: {
+              phone: values.phone,
+              userId
+            }
           });
           Actions.pop();
           if (callback) {
@@ -239,10 +254,14 @@ const removeLinkingListener = (handleRedirect) => {
   Expo.Linking.removeEventListener('url', handleRedirect);
 };
 
-export const verifyPhoneNumberSuccess = () => {
-  return {
-    type: SETTING_PHONE_VERIFICATION_SUCCESS
-  };
+export const verifyPhoneNumberSuccess = () => (dispatch, getState) => {
+  const { userId } = getState().user;
+  dispatch({
+    type: SETTING_PHONE_VERIFICATION_SUCCESS,
+    payload: {
+      userId
+    }
+  });
 };
 
 /* Privacy actions */
@@ -276,7 +295,10 @@ export const updateFriendsSetting = () => (dispatch, getState) => {
 // Setting account get blocked users with skip and limit
 export const getBlockedUsers = (refresh) => (dispatch, getState) => {
   dispatch({
-    type: SETTING_BLOCK_FETCH_ALL
+    type: SETTING_BLOCK_FETCH_ALL,
+    payload: {
+      refresh
+    }
   });
   const { token } = getState().user;
   const { skip, limit, hasNextPage } = getState().setting.block;

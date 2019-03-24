@@ -8,7 +8,6 @@ import React from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   ActionSheetIOS
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -16,6 +15,7 @@ import { connect } from 'react-redux';
 // Components
 import Name from '../../../Common/Name';
 import ProfileImage from '../../../Common/ProfileImage';
+import DelayedButton from '../../../Common/Button/DelayedButton';
 
 /* Assets */
 
@@ -95,7 +95,7 @@ class FriendTabCardView extends React.PureComponent {
 
   renderButton(item) {
     return (
-        <TouchableOpacity 
+        <DelayedButton 
             onPress={() => this.handleUpdateFriendship(item)}
             activeOpacity={0.85}
             style={styles.buttonContainerStyle}
@@ -103,7 +103,7 @@ class FriendTabCardView extends React.PureComponent {
             <View style={styles.buttonTextContainerStyle}>
                 <Text style={{ fontSize: 11, color: '#868686' }}>Friend</Text>
             </View>
-        </TouchableOpacity>
+        </DelayedButton>
     );
   }
 
@@ -119,27 +119,78 @@ class FriendTabCardView extends React.PureComponent {
                     iconStyle={{ marginTop: 1, marginLeft: 7, height: 18, width: 15 }} 
                 />
             </View>
-            <View style={{ flexWrap: 'wrap', marginTop: 4 }}>
-                <Text 
-                    style={styles.infoTextStyle}
-                    numberOfLines={2}
-                    ellipsizeMode='tail'
-                >
-                    {detailText}
+            
+            {/* 
+            // Disabled this detailText and replaced it with top goals and needs
+                <View style={{ flexWrap: 'wrap', marginTop: 4 }}>
+                    <Text 
+                        style={styles.infoTextStyle}
+                        numberOfLines={2}
+                        ellipsizeMode='tail'
+                    >
+                        {detailText}
+                    </Text>
+                </View> 
+            */}
+            {this.renderGoals(item)}
+        </View>
+    );
+  }
+
+  /**
+   * Render user top goals and needs
+   * @param {} item 
+   */
+  renderGoals(item) {
+    const { topGoals, topNeeds } = item;
+
+    let topGoalText = 'None shared';
+    if (topGoals !== null && topGoals !== undefined && topGoals.length !== 0) {
+        topGoalText = '';
+        topGoals.forEach((g, index) => {
+            if (index !== 0) {
+                topGoalText = `${topGoalText}, ${g}`; 
+            } else {
+                topGoalText = `${g}`; 
+            }
+        });
+    }
+
+    let topNeedText = 'None shared';
+    if (topNeeds !== null && topNeeds !== undefined && topNeeds.length !== 0) {
+        topNeedText = '';
+        topNeeds.forEach((n, index) => {
+            if (index !== 0) {
+                topNeedText = `${topNeedText}, ${n}`; 
+            } else {
+                topNeedText = `${n}`; 
+            }
+        });
+    }
+
+    return (
+        <View style={styles.infoContainerStyle}>
+            <View style={{ flex: 1, marginRight: 6 }}>
+                <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginBottom: 2 }}>
+                    <Text style={styles.subTitleTextStyle}>Goals: </Text>
+                    <Text style={styles.bodyTextStyle}>{topGoalText}</Text>
+                </Text>
+                <Text numberOfLines={1} ellipsizeMode='tail'>
+                    <Text style={styles.subTitleTextStyle}>Needs: </Text>
+                    <Text style={styles.bodyTextStyle}>{topNeedText}</Text>
                 </Text>
             </View>
-            
         </View>
     );
   }
 
   render() {
     const { item } = this.props;
-    if (!item) return '';
+    if (!item) return null;
     
     // console.log(`${DEBUG_KEY}: item is: `, item);
     return (
-        <TouchableOpacity 
+        <DelayedButton 
             style={[styles.containerStyle, styles.shadow]}
             onPress={() => this.props.openProfile(item._id)}
             activeOpacity={0.85}
@@ -148,7 +199,7 @@ class FriendTabCardView extends React.PureComponent {
             {this.renderProfile(item)}
             <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: 35 }} />
             {this.renderButton(item)}
-        </TouchableOpacity>
+        </DelayedButton>
     );
   }
 }
@@ -215,6 +266,21 @@ const styles = {
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
         shadowRadius: 2,
+    },
+    // Top goals and need related styles
+    infoContainerStyle: {
+        flexDirection: 'row',
+        flex: 1,
+        marginTop: 2
+    },
+    subTitleTextStyle: {
+        color: '#17B3EC',
+        fontSize: 12,
+        fontWeight: '600'
+    },
+    bodyTextStyle: {
+        fontSize: 12,
+        color: '#9B9B9B'
     },
 };
 

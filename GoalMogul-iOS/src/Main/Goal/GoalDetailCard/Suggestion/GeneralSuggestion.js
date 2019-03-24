@@ -33,6 +33,7 @@ class GeneralSuggestion extends React.Component {
           style={styles.inputStyle}
           maxHeight={MaxHeight}
           multiline
+          autoCapitalize='none'
           value={this.props.suggestionLink}
         />
       </View>
@@ -61,8 +62,8 @@ class GeneralSuggestion extends React.Component {
     const { pageId, opacity } = this.props;
     return (
       <Animated.View style={{ ...styles.containerStyle, opacity }}>
-        {this.renderLinkInput(pageId)}
         {this.renderSuggestionText(pageId)}
+        {this.renderLinkInput(pageId)}
       </Animated.View>
     );
   }

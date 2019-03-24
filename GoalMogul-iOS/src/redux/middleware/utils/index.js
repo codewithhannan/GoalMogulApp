@@ -1,6 +1,13 @@
 // This is a utils functions
 import _ from 'lodash';
 
+// Assets
+import ShareIcon from '../../../asset/utils/forward.png';
+import EditIcon from '../../../asset/utils/edit.png';
+import CheckIcon from '../../../asset/utils/check.png';
+import UndoIcon from '../../../asset/utils/undo.png';
+import TrashIcon from '../../../asset/utils/trash.png';
+
 /**
  * Url query builder to query URL based on params
  */
@@ -74,7 +81,11 @@ export const capitalizeWord = (word) => {
  * Reassign startIndex for tags.
  * If newTag is empty, then we don't do comparison to skip.
  */
-export const clearTags = (newContent, newTag, tags) => {
+const DEBUG_KEY = '[ Utils index ]';
+export const clearTags = (newContent, newTag, tags = []) => {
+  // console.log(`${DEBUG_KEY}: [ clearTags ]: newContent:`, newContent);
+  // console.log(`${DEBUG_KEY}: [ clearTags ]: newTag:`, newTag);
+  // console.log(`${DEBUG_KEY}: [ clearTags ]: tags:`, tags);
   let tagTextToStartIndexMap = {};
   const newTags = tags
     .sort((a, b) => a.startIndex - b.startIndex)
@@ -89,6 +100,7 @@ export const clearTags = (newContent, newTag, tags) => {
 
       // Get the new startIndex
       let newStartIndex = getPosition(newContent, tagText, position);
+      // console.log(`${DEBUG_KEY}: [ clearTags ]: startIndex is:`, newStartIndex);
 
       // It means that we match to the new tag for an old one.
       // Then we need to increase the position by 1
@@ -99,7 +111,9 @@ export const clearTags = (newContent, newTag, tags) => {
       }
 
       if (newStartIndex >= newContent.length) {
-        // This should never happen unless there is some problem
+        // This might happen if we reselect the same tag at the same position after we backspace 
+        // to trigger suggestion search again
+        // Otherwise This should never happen unless there is some problem
         console.warn(`Failed to match for tag ${tagText} in content: ${newContent} at ` +
           `position: ${position}`);
           return t;
@@ -114,6 +128,39 @@ export const clearTags = (newContent, newTag, tags) => {
       };
     });
   return newTags;
+};
+
+/**
+ * Given content and its tags, we sanitize the tags to make sure all tags have its
+ * corresponding text in content.
+ * 
+ * This is created to handle the corner case where use back space from the middle of 
+ * a tag like {@Jia Zeng} starting from Jia and system will fail to remove the tag 
+ * for Jia Zeng at that position.
+ * 
+ * Since trigger text @ no longer exists for that tag, we should sanitize to remove that
+ * tag from the list
+ * @param {*} content 
+ * @param {*} tags 
+ */
+export const sanitizeTags = (content, tags) => {
+  // We need to reassign position since this is triggered after deletion
+  const tagsToSanitize = clearTags(content, {}, tags);
+
+  const tagToReturn = tagsToSanitize
+    .map((t) => {
+      const { startIndex, tagText, endIndex } = t;
+      const textInContent = content.slice(startIndex, endIndex);
+      if (textInContent !== tagText) {
+        // This is good since we filter the unwanted / dangling tags
+        console.warn(`${DEBUG_KEY}: [ sanitizeTags ]: can't find tag in content: ${content}. Tag:`, t);
+        return {};
+      }
+      return t;
+    })
+    .filter((t) => !_.isEmpty(t));
+
+  return tagToReturn;
 };
 
 /**
@@ -147,4 +194,109 @@ export const nFormatter = (num, digits) => {
 export const generateInvitationLink = (inviteCode) => {
   const BASE_CODE = 'https://web.goalmogul.com/invite?inviteCode=';
   return `${BASE_CODE}${inviteCode}`;
+};
+
+export const PAGE_TYPE_MAP = {
+  user: 'USER',
+  goal: 'GOAL',
+  post: 'POST',
+  event: 'EVENT',
+  tribe: 'TRIBE',
+  goalFeed: 'GOAL_FEED',
+  activity: 'ACTIVITY'
+};
+
+// const DEBUG_KEY = '[ Utils ]';
+export const hasTypePrefix = (type, key) => {
+  // console.log(`${DEBUG_KEY}: [ hasTypePrefix ] isString: ${isString(key)}`);
+  if (key === undefined || !isString(key)) {
+    return false;
+  }
+
+  if (!Object.keys(PAGE_TYPE_MAP).some(t => t === type)) {
+    return false;
+  }
+  const typePrefix = _.get(PAGE_TYPE_MAP, type);
+  // console.log(`${DEBUG_KEY}: [ hasTypePrefix ] typePrefix: ${typePrefix}`);
+
+  const keys = key.split('_');
+  // console.log(`${DEBUG_KEY}: [ hasTypePrefix ] keys: `, keys);
+  return (keys[0] === typePrefix);
+};
+
+export function isString(value) {
+  return typeof value === 'string' || value instanceof String;
+}
+
+/**
+ * Contruct pageId based on page type
+ * @param {*} type 
+ * @param {*} DEBUG_KEY 
+ */
+export const constructPageId = (type, DEBUG_KEY = '[ Utils constructPageId ]') => {
+  const prefix = _.get(PAGE_TYPE_MAP, `${type}`);
+  if (prefix === undefined || _.isEmpty(prefix)) {
+    console.warn(`${DEBUG_KEY}: fail to construct page Id for type: ${type}`);
+  }
+  
+  const currentTime = new Date();
+  return `${prefix}_${currentTime.getTime()}`;
+};
+
+/**
+ * Construct component key by tab and base key
+ * @param {*} tab 
+ * @param {*} key 
+ */
+export const componentKeyByTab = (tab, key) => {
+  let ret = key;
+  if (tab !== 'homeTab' && tab !== undefined) {
+    ret = `${tab}_${key}`;
+  }
+  return ret;
+};
+
+/**
+ * 
+ */
+export const makeCaretOptions = (type, goalRef, postRef) => {
+  if (type === 'Post') {
+    if (!postRef) {
+      // Invalid postRef
+      console.warn(`[ Utils ]: [ makeCaretOptions ]: invalid postRef`, postRef);
+      return [];
+    }
+
+    // This is a post
+    if (postRef.postType === 'General') {
+      return [
+        { option: 'Delete' },
+        { option: 'Edit Post' }
+      ];
+    }
+    
+    // This is a share
+    return [
+      { option: 'Delete' },
+    ];
+  }
+
+  if (type === 'Goal') {
+    if (!goalRef) {
+      // Invalid goalRef
+      console.warn(`[ Utils ]: [ makeCaretOptions ]: invalid goalRef`, goalRef);
+      return [];
+    } 
+    const { isCompleted } = goalRef;
+    return [
+      { option: 'Edit Goal', iconSource: EditIcon },
+      { option: 'Share to Goal Feed', iconSource: ShareIcon },
+      { option: isCompleted ? 'Unmark as Complete' : 'Mark as Complete',
+        iconSource: isCompleted ? UndoIcon : CheckIcon },
+      { option: 'Delete', iconSource: TrashIcon },
+    ];
+  }
+
+  console.warn(`[ Utils ]: [ makeCaretOptions ]: invalid type`, type);
+  return [];
 };

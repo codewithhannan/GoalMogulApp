@@ -9,7 +9,6 @@ import {
     Platform
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements';
 import { Constants } from 'expo';
 import { Actions } from 'react-native-router-flux';
 
@@ -19,6 +18,7 @@ import FriendRequestCardView from './V2/FriendRequestCardView';
 import FriendInvitationCTR from './V2/FriendInvitationCTR';
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
 import DelayedButton from '../Common/Button/DelayedButton';
+import { RightArrowIcon } from '../../Utils/Icons';
 
 /* Actions */
 import {
@@ -71,7 +71,7 @@ class MeetTabV2 extends React.Component {
     }
 
     handleSyncContact = () => {
-        this.props.meetContactSync(this.handleOnRefresh);
+        this.props.meetContactSync(this.handleOnRefresh, 'meetTab_meetContactSync');
     }
 
     handleDiscoverFriend = () => {
@@ -221,7 +221,6 @@ class MeetTabV2 extends React.Component {
                     style={{ ...seeAllContainerStyle, padding: 13, paddingLeft: 5, alignSelf: 'flex-end' }}
                     activeOpacity={0.85} 
                     onPress={onPress}
-
                 >
                     <Text style={seeAllTextStyle}>Manage All</Text>
                 </DelayedButton>
@@ -250,14 +249,18 @@ class MeetTabV2 extends React.Component {
                 key={key}
             >
                 <Text style={seeAllTextStyle}>See All{countToDisplay}</Text>
-                <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+                <RightArrowIcon 
+                    iconStyle={{ tintColor: '#17B3EC', ...styles.arrowIconStyle, height: 12, width: 18 }}
+                    iconContainerStyle={{ alignSelf: 'center', alignItems: 'center', marginLeft: 5 }}
+                />
+                {/* <View style={{ alignSelf: 'center', alignItems: 'center' }}>
                     <Icon
                         name='ios-arrow-round-forward'
                         type='ionicon'
                         color='#17B3EC'
                         iconStyle={styles.arrowIconStyle}
                     />
-                </View>
+                </View> */}
             </DelayedButton>
         );
     }
@@ -323,9 +326,7 @@ const styles = {
     },
     arrowIconStyle: {
         alignSelf: 'center',
-        fontSize: 20,
-        marginLeft: 5,
-        marginTop: 2
+        // fontSize: 20,
       },
 };
 

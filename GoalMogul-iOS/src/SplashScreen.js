@@ -7,7 +7,6 @@ import {
   Dimensions,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements';
 import {
   LinearGradient,
   Font,
@@ -27,6 +26,11 @@ import {
 /* Asset */
 import HeaderLogo from './asset/header/header-logo-white.png';
 import Helpfulness from './asset/utils/help.png';
+
+// Components
+import {
+  RightArrowIcon
+} from './Utils/Icons';
 
 const width = Dimensions.get('window').width
 const DEBUG_KEY = '[ UI SplashScreen ]';
@@ -103,12 +107,17 @@ class SplashScreen extends Component {
       require('./asset/utils/trash.png'),
       require('./asset/utils/invite.png'),
       require('./asset/utils/tutorial.png'),
+      require('./asset/utils/right_arrow.png'),
+      require('./asset/utils/search.png'),
+      require('./asset/utils/dot.png'),
       // Friends Tab images
       require('./asset/utils/Friends.png'),
       require('./asset/utils/ContactSync.png'),
       require('./asset/utils/People.png'),
       require('./asset/utils/Suggest.png'),
       require('./asset/utils/clipboard.png'),
+      require('./asset/utils/logout.png'),
+      require('./asset/utils/bug_report.png'),
       // Suggestion Modal Icons
       require('./asset/suggestion/book.png'),
       require('./asset/suggestion/chat.png'),
@@ -236,12 +245,23 @@ class SplashScreen extends Component {
                 : null
               }
 
-              <Icon
+              <RightArrowIcon 
+                iconStyle={{ 
+                  ...styles.iconStyle, 
+                  tintColor: '#ffffff',
+                  height: 15,
+                  width: 30
+                }} 
+              />
+              {/** 
+                <Icon
                 name='ios-arrow-round-forward'
                 type='ionicon'
                 color='#ffffff'
                 iconStyle={styles.iconStyle}
-              />
+                />
+              */}
+              
             </TouchableOpacity>
           </View>
 
@@ -375,9 +395,8 @@ const styles = {
   },
   iconStyle: {
     alignSelf: 'center',
-    fontSize: 26,
-    marginLeft: 5,
-    marginTop: 3
+    // fontSize: 26,
+    marginLeft: 5
   }
 };
 
@@ -396,8 +415,8 @@ function cacheFonts(fonts) {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    registration: () => Actions.registration(),
-    login: () => Actions.login(),
+    registration: () => Actions.push('registrationAccount'),
+    login: () => Actions.push('login'),
     loginUser: (val) => dispatch(loginUser(val)),
     hideSplashScreen: () => dispatch(hideSplashScreen())
   };

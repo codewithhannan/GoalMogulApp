@@ -100,7 +100,8 @@ export const registrationNextAddProfile = (value) => {
           type: REGISTRATION_ACCOUNT_SUCCESS,
           payload
         });
-        Actions.registrationProfile();
+        Actions.replace('registration');
+        // Actions.reset('auth');
       })
       // TODO: error handling
       .catch((err) => console.log(err));
@@ -458,10 +459,10 @@ export const registrationNextContactSync = ({ skip }) => {
         type,
       });
       if (!hasTutorialShown) {
-        Actions.tutorial();
+        Actions.replace('tutorial');
         return;
       }
-      Actions.mainTabs();
+      Actions.replace('drawer');
     };
   }
 
@@ -594,17 +595,18 @@ export const contactSyncRefresh = () => (dispatch, getState) => {
 export const registrationContactSyncDone = () => {
   // Passed in a list of contacts that user wants to add as friends
 
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const { userId } = getState().user;
-    const hasTutorialShown = Tutorial.getTutorialShown(userId);
+    const hasTutorialShown = await Tutorial.getTutorialShown(userId);
     dispatch({
       type: REGISTRATION_CONTACT_SYNC_DONE
     });
 
     if (!hasTutorialShown) {
-      Actions.tutorial();
+      Actions.replace('tutorial');
       return;
     }  
-    Actions.mainTabs();
+    // Actions.mainTabs();
+    Actions.replace('drawer');
   };
 };

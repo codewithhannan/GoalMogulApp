@@ -4,7 +4,8 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
-  Dimensions
+  Dimensions,
+  Text
 } from 'react-native';
 import { connect } from 'react-redux';
 import timeago from 'timeago.js';
@@ -74,18 +75,26 @@ import RefPreview from '../../Common/RefPreview';
 import ImageModal from '../../Common/ImageModal';
 import RichText from '../../Common/Text/RichText';
 
+// Styles
+import { imagePreviewContainerStyle, APP_BLUE } from '../../../styles';
+
 // Constants
+import {
+  IMAGE_BASE_URL,
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
+} from '../../../Utils/Constants';
+
 const DEBUG_KEY = '[ UI ShareDetailCard.ShareDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 const { width } = Dimensions.get('window');
 
-// Styles
-import { imagePreviewContainerStyle } from '../../../styles';
-
 class ShareDetailSection extends Component {
   state = {
-    mediaModal: false
+    mediaModal: false,
+    numberOfLines: 2,
+    seeMore: false
   }
 
   handleShareOnClick = () => {
@@ -119,6 +128,41 @@ class ShareDetailSection extends Component {
     return shareToActionSheet();
   };
 
+  handleSeeMore = () => {
+    if (this.state.seeMore) {
+      // See less
+      this.setState({
+        ...this.state,
+        numberOfLines: 2,
+        seeMore: false
+      });
+      return;
+    }
+    // See more
+    this.setState({
+      ...this.state,
+      numberOfLines: undefined,
+      seeMore: true
+    });
+  }
+
+  renderSeeMore(text) {
+    if (text && text.length > 60) {
+      return (
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={styles.seeMoreTextContainerStyle}
+          onPress={this.handleSeeMore}
+        >
+          <Text style={styles.seeMoreTextStyle}>
+            {this.state.seeMore && text.length > 100 ? 'See less' : 'See more'}
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+    return null;
+  }
+
   // user basic information
   renderUserDetail(item) {
     // TODO: TAG: for content
@@ -138,16 +182,16 @@ class ShareDetailSection extends Component {
       others: {
         options: [
           { option: 'Report' }, 
-          { option: maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe' }
+          { option: maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE }
         ],
         onPress: (key) => {
           if (key === 'Report') {
             return this.props.createReport(_id, 'postDetail', 'Post');
           }
-          if (key === 'Unsubscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
             return this.props.unsubscribeEntityNotification(_id, 'Post');
           }
-          if (key === 'Subscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
             return this.props.subscribeEntityNotification(_id, 'Post');
           }
         },
@@ -170,6 +214,7 @@ class ShareDetailSection extends Component {
             isSelf={this.props.userId === owner._id}
             caret={caret}
             user={owner}
+            pageId={this.props.pageId}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           {/*
@@ -188,13 +233,14 @@ class ShareDetailSection extends Component {
             contentTags={content.tags}
             textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
             textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
-            numberOfLines={3}
+            numberOfLines={this.state.numberOfLines}
             ellipsizeMode='tail'
             onUserTagPressed={(user) => {
               console.log(`${DEBUG_KEY}: user tag press for user: `, user);
               this.props.openProfile(user);
             }}
           />
+          {this.renderSeeMore(content.text)}
         </View>
       </View>
     );
@@ -204,9 +250,9 @@ class ShareDetailSection extends Component {
   renderPostImage(url) {
     // TODO: update this to be able to load image
     if (!url) {
-      return '';
+      return null;
     }
-    const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${url}`;
+    const imageUrl = `${IMAGE_BASE_URL}${url}`;
       return (
         <View style={{ marginTop: 10 }}>
           <ImageBackground
@@ -277,14 +323,17 @@ class ShareDetailSection extends Component {
       return this.renderPostImage(mediaRef);
     }
     const refPreview = switchItem(item, postType);
-    const onPress = switchCase({
-      SharePost: () => this.props.openPostDetail(refPreview),
-      ShareUser: () => this.props.openProfile(refPreview._id),
-      ShareGoal: () => this.props.openGoalDetail(goalRef),
-      ShareNeed: () => this.props.openGoalDetail(goalRef),
-      ShareStep: () => this.props.openGoalDetail(goalRef)
-    })('SharePost')(postType);
-
+    let onPress;
+    if (refPreview !== null && !_.isEmpty(refPreview)) {
+      onPress = switchCase({
+        SharePost: () => this.props.openPostDetail(refPreview),
+        ShareUser: () => this.props.openProfile(refPreview._id),
+        ShareGoal: () => this.props.openGoalDetail(goalRef),
+        ShareNeed: () => this.props.openGoalDetail(goalRef),
+        ShareStep: () => this.props.openGoalDetail(goalRef)
+      })(() => console.warn(`${DEBUG_KEY}: invalid item:`, item))(postType);
+    }
+    
     return (
       <View style={{ marginTop: 20 }}>
         <RefPreview
@@ -363,7 +412,7 @@ class ShareDetailSection extends Component {
 
   render() {
     const { item } = this.props;
-    if (!item || _.isEmpty(item) || !item.created) return '';
+    if (!item || _.isEmpty(item) || !item.created) return null;
 
     return (
       <View>
@@ -388,7 +437,7 @@ const switchItem = (item, postType) => switchCase({
   ShareGoal: item.goalRef,
   ShareNeed: getNeedFromRef(item.goalRef, item.needRef),
   ShareStep: getStepFromGoal(item.goalRef, item.stepRef)
-})('SharePost')(postType);
+})({})(postType);
 
 const getStepFromGoal = (goal, stepRef) => getItemFromGoal(goal, 'steps', stepRef);
 
@@ -396,7 +445,7 @@ const getNeedFromRef = (goal, needRef) => getItemFromGoal(goal, 'needs', needRef
 
 const getItemFromGoal = (goal, type, ref) => {
   let ret;
-  if (goal) {
+  if (goal && typeof goal === 'object') {
     _.get(goal, `${type}`).forEach((item) => {
       if (item._id === ref) {
         ret = item;
@@ -435,6 +484,16 @@ const styles = {
     alignSelf: 'flex-start',
     backgroundColor: 'white'
   },
+  seeMoreTextContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginTop: 2
+  },
+  seeMoreTextStyle: {
+    fontSize: 12,
+    color: APP_BLUE
+  }
 };
 
 const mapStateToProps = state => {

@@ -13,9 +13,8 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  ScrollView,
-  KeyboardAvoidingView,
-  Animated
+  Animated,
+  Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -29,15 +28,15 @@ import NeedStepSuggestion from './Suggestion/NeedStepSuggestion';
 import SuggestionGoalPreview from './Suggestion/SuggestionGoalPreview';
 
 // Asset
-import Book from '../../../asset/suggestion/book.png';
+// import Book from '../../../asset/suggestion/book.png';
 import Chat from '../../../asset/suggestion/chat.png';
 import Event from '../../../asset/suggestion/event.png';
 import Flag from '../../../asset/suggestion/flag.png';
 import Friend from '../../../asset/suggestion/friend.png';
-import Group from '../../../asset/suggestion/group.png';
-import Link from '../../../asset/suggestion/link.png';
+// import Group from '../../../asset/suggestion/group.png';
+// import Link from '../../../asset/suggestion/link.png';
 import Other from '../../../asset/suggestion/other.png';
-import HelpIcon from '../../../asset/utils/help.png';
+// import HelpIcon from '../../../asset/utils/help.png';
 import StepIcon from '../../../asset/utils/steps.png';
 
 // Actions
@@ -49,9 +48,14 @@ import {
   getNewCommentByTab
 } from '../../../redux/modules/feed/comment/CommentSelector';
 
-// Utils function
-import { capitalizeWord } from '../../../redux/middleware/utils';
+import {
+  refreshPreloadData
+} from '../../../redux/modules/feed/comment/SuggestionSearchActions';
 
+// Utils function
+import { capitalizeWord, switchCase } from '../../../redux/middleware/utils';
+
+const DEBUG_KEY = '[ UI SuggestionModal3 ]';
 const OPTIONS_HEIGHT = 120;
 const OPTIONS_OPACITY = 0.001;
 
@@ -68,6 +72,13 @@ class SuggestionModal extends Component {
       optionsCollapsed: false,
       optionsHeight: 150
     };
+  }
+
+  componentDidMount() {
+    // Sending request to fetch pre-populated data
+    this.props.refreshPreloadData('User');
+    this.props.refreshPreloadData('Event');
+    this.props.refreshPreloadData('Tribe');
   }
 
   handleExpand = () => {
@@ -145,11 +156,14 @@ class SuggestionModal extends Component {
 
   renderSuggestionFor(newComment, goal) {
     const { suggestionFor, suggestionForRef } = newComment.tmpSuggestion;
+    const { stepRef, needRef } = newComment;
     return (
       <SuggestedItem
         type={suggestionFor}
         suggestionForRef={suggestionForRef}
         goal={goal}
+        stepRef={stepRef}
+        needRef={needRef}
       />
     );
   }
@@ -176,7 +190,7 @@ class SuggestionModal extends Component {
           <Text style={styles.optionsCollapsedTextStyle}>Back</Text>
         </TouchableOpacity>
       )
-      : '';
+      : null;
       // (
       //   <TouchableOpacity activeOpacity={0.85}
       //     style={{ width: 50, justifyContent: 'center' }}
@@ -185,6 +199,18 @@ class SuggestionModal extends Component {
       //     <Text style={styles.optionsCollapsedTextStyle}>Collapse</Text>
       //   </TouchableOpacity>
       // );
+
+
+    const suggestionForTextArray = switchCaseForSuggestionForText(suggestionType);
+    let suggestionForText = [];
+    suggestionForTextArray.forEach((w, index) => {
+      if (index === suggestionForTextArray.length - 1 && suggestionForTextArray.length > 1) {
+        // console.log(`${DEBUG_KEY}: i am here`);
+        suggestionForText.push(<Text style={{ fontWeight: '700' }}>{w}</Text>);
+      } else {
+        suggestionForText.push(<Text>{w}{' '}</Text>);
+      }
+    })
 
     return (
       <View
@@ -196,17 +222,17 @@ class SuggestionModal extends Component {
             <Text
               style={{
                 fontSize: 14,
-                fontWeight: '700',
+                fontWeight: '500',
                 alignSelf: 'center',
                 justifyContent: 'center',
                 marginTop: 10,
                 marginBottom: 10
               }}
             >
-              Suggest a...
+              Suggest {suggestionForText}
             </Text>
           </View>
-          {optionsCollapsed ? <View style={{ width: 50 }} /> : ''}
+          {optionsCollapsed ? <View style={{ width: 50 }} /> : null}
         </View>
 
         <Animated.View
@@ -221,13 +247,26 @@ class SuggestionModal extends Component {
 
   renderSuggestionBody(newComment) {
     const { suggestionType } = newComment.tmpSuggestion;
-    if (!this.state.optionsCollapsed) return '';
+    if (!this.state.optionsCollapsed) return null;
     if (suggestionType === 'User' || suggestionType === 'Friend' ||
       suggestionType === 'Event' || suggestionType === 'Tribe' ||
       suggestionType === 'ChatConvoRoom'
     ) {
       return (
-        <SearchSuggestion pageId={this.props.pageId} opacity={this.suggestionOpacity} />
+        <SearchSuggestion 
+          pageId={this.props.pageId} 
+          opacity={this.suggestionOpacity} 
+          onCancel={() => {
+            Keyboard.dismiss();
+          }}
+          onSelect={() => {
+            // Right now don't turn on this
+            // this.scrollview.props.scrollToPosition(0, 0);
+          }}
+          onFocus={() => {
+            this.scrollview.props.scrollToPosition(0, 120);
+          }}
+        />
       );
     }
     if (suggestionType === 'NewNeed' || suggestionType === 'NewStep') {
@@ -240,12 +279,12 @@ class SuggestionModal extends Component {
         <GeneralSuggestion pageId={this.props.pageId} opacity={this.suggestionOpacity} />
       );
     }
-    return '';
+    return null;
   }
 
   render() {
     const { newComment, item } = this.props;
-    if (!newComment || !item) return '';
+    if (!newComment || !item) return null;
 
     return (
       <Modal
@@ -268,6 +307,12 @@ class SuggestionModal extends Component {
               backgroundColor: 'white',
               flexGrow: 1 // this will fix scrollview scroll issue by passing parent view width and height to it
             }}
+            onKeyboardWillShow={() => {
+              this.scrollview.props.scrollToPosition(0, 120);
+            }}
+            onKeyboardWillHide={() => {
+              this.scrollview.props.scrollToPosition(0, 0);
+            }}
           >
             <View style={{ flex: 1 }}>
               {this.renderGoalPreview(item)}
@@ -280,6 +325,8 @@ class SuggestionModal extends Component {
     );
   }
 }
+
+
 
 // Legacy usage of KeyboardAvoidingView
 // <ScrollView>
@@ -325,6 +372,15 @@ const styles = {
     paddingBottom: 5,
   }
 };
+
+const switchCaseForSuggestionForText = (suggestionType) => switchCase({
+  'User': ['an', 'User'],
+  'ChatConvoRoom': ['a', 'Chat room'],
+  'NewNeed': ['a', 'Need'],
+  'NewStep': ['a', 'Step'],
+  'Event': ['an', 'Event'],
+  'Tribe': ['a', 'Tribe']
+})(['a...'])(suggestionType);
 
 // IconMapLeft: ["Person", "ChatConvoRoom", "Step or Need"],
 // IconMapRight: ["Event", "Tribe", "Custom"]
@@ -456,21 +512,36 @@ const Options = (props) => {
  * Step 3: Find a reading buddy
  */
 const SuggestedItem = (props) => {
-  const { goal, type, suggestionForRef } = props;
+  const { goal, type, suggestionForRef, stepRef, needRef } = props;
+  let refToSearchFor = suggestionForRef;
 
   let items = [];
-  if (type === 'Step') {
+  if (type === 'Step' || stepRef) {
     items = _.get(goal, 'steps');
+
+    // Use stepRef if suggestionForRef is undefined
+    // This could be due to entering suggestion modal through goal card or 
+    // NotificationNeedCard directly through suggestion button
+    if (suggestionForRef === undefined && stepRef !== undefined) {
+      refToSearchFor = stepRef;
+    }
   }
-  if (type === 'Need') {
+  if (type === 'Need' || needRef) {
     items = _.get(goal, 'needs');
+
+    // Use needRef if suggestionForRef is undefined
+    // This could be due to entering suggestion modal through goal card or 
+    // NotificationNeedCard directly through suggestion button
+    if (suggestionForRef === undefined && needRef !== undefined) {
+      refToSearchFor = needRef;
+    }
   }
 
-  if (!items || _.isEmpty(items)) return '';
-  const index = items.findIndex((temp) => temp._id === suggestionForRef);
+  if (!items || _.isEmpty(items)) return null;
+  const index = items.findIndex((temp) => temp._id === refToSearchFor);
 
-  if (index === -1) return '';
-  const item = items.find((temp) => temp._id === suggestionForRef);
+  if (index === -1) return null;
+  const item = items.find((temp) => temp._id === refToSearchFor);
 
   return (
     <View
@@ -505,6 +576,7 @@ const mapStateToProps = (state, props) => {
 export default connect(
   mapStateToProps,
   {
-    updateSuggestionType
+    updateSuggestionType,
+    refreshPreloadData
   }
 )(SuggestionModal);

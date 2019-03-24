@@ -9,13 +9,12 @@ import _ from 'lodash';
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup';
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
-import Report from '../Report/Report';
 
 import Mastermind from './Mastermind';
 import ActivityFeed from './ActivityFeed';
 
 // Actions
-import { homeSwitchTab, fetchAppUserProfile } from '../../actions';
+import { homeSwitchTab, fetchAppUserProfile, fetchProfile, checkIfNewlyCreated } from '../../actions';
 import {
   openCreateOverlay,
   refreshGoals
@@ -23,7 +22,10 @@ import {
 
 import { refreshFeed } from '../../redux/modules/home/feed/actions';
 
-import { subscribeNotification } from '../../redux/modules/notification/NotificationActions';
+import { 
+  subscribeNotification, 
+  saveUnreadNotification 
+} from '../../redux/modules/notification/NotificationActions';
 
 // Assets
 import Logo from '../../asset/header/logo.png';
@@ -67,15 +69,41 @@ class Home extends Component {
     };
     this.scrollToTop = this.scrollToTop.bind(this);
     this._renderScene = this._renderScene.bind(this);
+    this.setTimer = this.setTimer.bind(this);
+    this.stopTimer = this.stopTimer.bind(this);
   }
 
 
   componentDidMount() {
     AppState.addEventListener('change', this.handleAppStateChange);
+
+    // Set timer to fetch profile again if previously failed
+    this.setTimer();
+    this.props.checkIfNewlyCreated();
   }
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.handleAppStateChange);
+    
+    // Remove timer in case app crash
+    this.stopTimer();
+  }
+
+  setTimer() {
+    this.stopTimer(); // Clear the previous timer if there is one
+
+    console.log(`${DEBUG_KEY}: [ Setting New Timer ] for fetching profile after 5s`);
+    this.timer = setTimeout(() => {
+      console.log(`${DEBUG_KEY}: [ Timer firing ] fetching profile again.`);
+      this.props.fetchProfile(this.props.userId);
+    }, 5000);
+  }
+
+  stopTimer() {
+    if (this.timer !== undefined) {
+      console.log(`${DEBUG_KEY}: [ Timer clearing ] for fetching profile 5s after mounted`);
+      clearInterval(this.timer);
+    }
   }
 
   scrollToTop = () => {
@@ -97,7 +125,7 @@ class Home extends Component {
 
   handleAppStateChange = (nextAppState) => {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-      console.log(`${DEBUG_KEY}: [handleAppStateChange] App has come to the foreground!`);
+      console.log(`${DEBUG_KEY}: [handleAppStateChange] App has become active!`);
 
       const { needRefreshActivity, needRefreshMastermind, user } = this.props;
       if (user === undefined || _.isEmpty(user) || !user.profile) {
@@ -111,6 +139,11 @@ class Home extends Component {
       if (needRefreshActivity) {
         this.props.refreshFeed();
       }
+    }
+
+    if (this.state.appState === 'active' && nextAppState === 'inactive') {
+      console.log(`${DEBUG_KEY}: [handleAppStateChange] App has become inactive!`);
+      this.props.saveUnreadNotification();
     }
 
     this.setState({
@@ -129,6 +162,37 @@ class Home extends Component {
     this.props.homeSwitchTab(index);
   };
 
+  // style 1 currently used
+  // buttonStyle={{
+  //   selected: {
+  //     backgroundColor: APP_DEEP_BLUE,
+  //     tintColor: 'white',
+  //     color: 'white',
+  //     fontWeight: '700'
+  //   },
+  //   unselected: {
+  //     backgroundColor: 'white',
+  //     tintColor: '#616161',
+  //     color: '#616161',
+  //     fontWeight: '600'
+  //   }
+  // }}  
+
+  // Style 2
+  // buttonStyle={{
+  //   selected: {
+  //     backgroundColor: '#f8f8f8',
+  //     tintColor: '#1998c9',
+  //     color: '#1998c9',
+  //     fontWeight: '600'
+  //   },
+  //   unselected: {
+  //     backgroundColor: 'white',
+  //     tintColor: '#696969',
+  //     color: '#696969',
+  //     fontWeight: '600'
+  //   }
+  // }}    
   _renderHeader = props => {
     return (
       <TabButtonGroup
@@ -148,7 +212,7 @@ class Home extends Component {
             color: '#616161',
             fontWeight: '600'
           }
-        }}  
+        }}    
       />
     );
   };
@@ -180,7 +244,7 @@ class Home extends Component {
         </TouchableOpacity>
       );
     }
-    return '';
+    return null;
   }
 
   render() {
@@ -192,7 +256,6 @@ class Home extends Component {
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={styles.homeContainerStyle}>
-          <Report showing={this.props.showingModal} />
           <SearchBarHeader rightIcon='menu' />
           <TabView
             ref={ref => (this.tab = ref)}
@@ -210,6 +273,7 @@ class Home extends Component {
 }
 
 const mapStateToProps = state => {
+  const { userId } = state.user;
   const { showingModal } = state.report;
   const { showPlus, data } = state.home.mastermind;
   const needRefreshMastermind = _.isEmpty(state.home.mastermind.data);
@@ -221,7 +285,8 @@ const mapStateToProps = state => {
     showPlus,
     user,
     needRefreshActivity,
-    needRefreshMastermind
+    needRefreshMastermind,
+    userId
   };
 };
 
@@ -248,10 +313,10 @@ const styles = {
   iconContainerStyle: {
     position: 'absolute',
     bottom: 20,
-    right: 15,
-    height: 50,
-    width: 50,
-    borderRadius: 25,
+    right: 29,
+    height: 54,
+    width: 54,
+    borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 3,
@@ -276,8 +341,11 @@ export default connect(
     homeSwitchTab,
     openCreateOverlay,
     subscribeNotification,
+    saveUnreadNotification,
     refreshGoals,
-    refreshFeed
+    refreshFeed,
+    fetchProfile,
+    checkIfNewlyCreated
   },
   null,
   { withRef: true }

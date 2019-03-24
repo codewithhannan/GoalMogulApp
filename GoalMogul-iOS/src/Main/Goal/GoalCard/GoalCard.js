@@ -8,7 +8,6 @@ import {
   Platform
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements';
 import { Constants } from 'expo';
 // import {
 //   FlingGestureHandler,
@@ -39,6 +38,8 @@ import {
   deleteGoal,
 } from '../../../actions';
 
+import { PAGE_TYPE_MAP } from '../../../redux/middleware/utils';
+
 import {
   subscribeEntityNotification,
   unsubscribeEntityNotification
@@ -56,6 +57,9 @@ import StepTab from './StepTab';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import ProfileImage from '../../Common/ProfileImage';
 import GoalCardHeader from '../Common/GoalCardHeader';
+import {
+  RightArrowIcon
+} from '../../../Utils/Icons';
 
 // Asset
 import LoveIcon from '../../../asset/utils/love.png';
@@ -67,8 +71,24 @@ import StepIcon from '../../../asset/utils/steps.png';
 import ProgressBarLarge from '../../../asset/utils/progressBar_large.png';
 import ProgressBarLargeCounter from '../../../asset/utils/progressBar_counter_large.png';
 
+// Actions
+import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions';
+import {
+  shareGoalToMastermind
+} from '../../../redux/modules/goal/GoalDetailActions';
+
 // Constants
-import { IPHONE_MODELS } from '../../../Utils/Constants';
+import { 
+  IPHONE_MODELS,
+  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
+} from '../../../Utils/Constants';
+
+// Utils
+import { makeCaretOptions } from '../../../redux/middleware/utils';
+
+// Styles
+import { APP_BLUE } from '../../../styles';
 
 const { height } = Dimensions.get('window');
 const CardHeight = height * 0.7;
@@ -176,6 +196,37 @@ class GoalCard extends React.PureComponent {
     });
   };
 
+  // Original style 1 currently used
+  // buttonStyle={{
+  //   selected: {
+  //     backgroundColor: '#f8f8f8',
+  //     tintColor: '#1998c9',
+  //     color: '#1998c9',
+  //     fontWeight: '600'
+  //   },
+  //   unselected: {
+  //     backgroundColor: 'white',
+  //     tintColor: '#696969',
+  //     color: '#696969',
+  //     fontWeight: '600'
+  //   }
+  // }} 
+
+  // Original style 2
+  // buttonStyle={{
+  //   selected: {
+  //     backgroundColor: APP_BLUE,
+  //     tintColor: 'white',
+  //     color: 'white',
+  //     fontWeight: '700'
+  //   },
+  //   unselected: {
+  //     backgroundColor: 'white',
+  //     tintColor: '#616161',
+  //     color: '#616161',
+  //     fontWeight: '600'
+  //   }
+  // }}   
   _renderHeader = props => {
     return (
       <TabButtonGroup 
@@ -194,7 +245,7 @@ class GoalCard extends React.PureComponent {
             color: '#696969',
             fontWeight: '600'
           }
-        }}  
+        }} 
       />
     );
   };
@@ -269,27 +320,61 @@ class GoalCard extends React.PureComponent {
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
 
+    const pageId = _.get(PAGE_TYPE_MAP, 'goalFeed');
+
+    const selfOptions = makeCaretOptions('Goal', item);
+
     const caret = {
       self: {
-        options: [{ option: 'Delete' }],
-        onPress: () => {
-          return this.props.deleteGoal(_id);
+        options: selfOptions,
+        onPress: (key) => {
+          if (key === 'Delete') {
+            return this.props.deleteGoal(_id, pageId);
+          }
+
+          let initialProps = {};
+          if (key === 'Edit Goal') {
+            initialProps = { initialShowGoalModal: true };
+            this.props.openGoalDetail(item, initialProps);
+            return;
+          }
+          if (key === 'Share to Goal Feed') {
+            // It has no pageId so it won't have loading animation
+            return this.props.shareGoalToMastermind(_id);
+          }
+          if (key === 'Mark as Complete') {
+            initialProps = { 
+              initialMarkGoalAsComplete: true,
+              refreshGoal: false
+            };
+            this.props.openGoalDetail(item, initialProps);
+            return;
+          }
+
+          if (key === 'Unmark as Complete') {
+            initialProps = { 
+              initialUnMarkGoalAsComplete: true,
+              refreshGoal: false
+            };
+            this.props.openGoalDetail(item, initialProps);
+            return;
+          }
         },
-        shouldExtendOptionLength: false
+        shouldExtendOptionLength: owner._id === this.props.userId
       },
       others: {
         options: [
           { option: 'Report' }, 
-          { option: maybeIsSubscribed ? 'Unsubscribe' : 'Subscribe' }
+          { option: maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE }
         ],
         onPress: (key) => {
           if (key === 'Report') {
             return this.props.createReport(_id, 'goal', 'Goal');
           }
-          if (key === 'Unsubscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
             return this.props.unsubscribeEntityNotification(_id, 'Goal');
           }
-          if (key === 'Subscribe') {
+          if (key === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
             return this.props.subscribeEntityNotification(_id, 'Goal');
           }
         },
@@ -348,7 +433,12 @@ class GoalCard extends React.PureComponent {
         onPress={() => this.props.onPress}
       >
         <Text style={styles.viewGoalTextStyle}>View Goal</Text>
-        <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+        <RightArrowIcon 
+          iconContainerStyle={{ alignSelf: 'center', alignItems: 'center' }}
+          iconStyle={{ tintColor: '#17B3EC', ...styles.iconStyle, height: 15, width: 18 }}
+        />
+        {/**
+          <View style={{ alignSelf: 'center', alignItems: 'center' }}>
           <Icon
             name='ios-arrow-round-forward'
             type='ionicon'
@@ -356,6 +446,7 @@ class GoalCard extends React.PureComponent {
             iconStyle={styles.iconStyle}
           />
         </View>
+         */}
       </TouchableOpacity>
     );
   }
@@ -397,11 +488,19 @@ class GoalCard extends React.PureComponent {
         <ActionButton
           iconSource={CommentIcon}
           count={commentCount}
-          textStyle={{ color: '#fcf167' }}
-          iconStyle={{ tintColor: '#fcf167', height: 26, width: 26 }}
+          textStyle={{ color: '#FBDD0D' }}
+          iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           onPress={() => {
-            console.log(`${DEBUG_KEY}: user clicks suggest icon`);
-            this.props.onPress(this.props.item);
+            console.log(`${DEBUG_KEY}: user clicks comment icon`);
+            this.props.onPress(
+              this.props.item, 
+              { 
+                type: 'comment', 
+                _id: undefined,
+                initialShowSuggestionModal: false,
+                initialFocusCommentBox: true
+              }
+            );
           }}
         />
       </ActionButtonGroup>
@@ -433,7 +532,7 @@ class GoalCard extends React.PureComponent {
             </TouchableOpacity>
             { // Disable tabs if neither needs or steps
               _.isEmpty(steps) && _.isEmpty(needs)
-              ? ''
+              ? null
               : (
                 <View style={{ height: tabHeight }}>
                   {this.renderTabs()}
@@ -525,6 +624,8 @@ export default connect(
     chooseShareDest,
     deleteGoal,
     subscribeEntityNotification,
-    unsubscribeEntityNotification
+    unsubscribeEntityNotification,
+    openGoalDetail,
+    shareGoalToMastermind
   }
 )(GoalCard);

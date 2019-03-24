@@ -19,7 +19,7 @@ import next from '../../../asset/utils/next.png';
 import { selectEvent } from '../../../redux/modules/feed/post/ShareActions';
 import {
   eventDetailOpen
-} from '../../../redux/modules/event/EventActions';
+} from '../../../redux/modules/event/MyEventActions';
 
 const DEBUG_KEY = '[ Component SearchEventCard ]';
 
@@ -35,7 +35,7 @@ class SearchEventCard extends Component {
   onButtonClicked = (item, type) => {
     if (!type || type === 'SearchSuggestion') {
       console.log(`${DEBUG_KEY} select event: `, item);
-      this.props.selectEvent(item);
+      this.props.selectEvent(item, this.props.callback);
       return;
     }
     if (type === 'GeneralSearch') {
@@ -112,7 +112,7 @@ class SearchEventCard extends Component {
         </Text>
       );
     }
-    return '';
+    return null;
   }
 
   render() {

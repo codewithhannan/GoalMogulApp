@@ -21,6 +21,8 @@ import RightArrow from '../../assets/tutorial/RightArrow.png';
 import Replay from '../../assets/tutorial/Replay.png';
 
 const { width } = Dimensions.get('window');
+const DEBUG_KEY = '[ UI Tutorial.Host ]';
+const ZERO_ANIMATED_VAL = new Animated.Value(0);
 
 class Host extends React.PureComponent {
   render() {
@@ -66,6 +68,7 @@ class Host extends React.PureComponent {
           activeOpacity={0.85}
           style={styles.buttonContainerStyle}
           onPress={buttonAction}
+          disabled={this.props.buttonDisabled}
         >
           <Text style={[textStyle, { fontSize: 21, marginTop: 2 }]}>{buttonText}</Text>
           <Image source={RightArrow} style={{ height: 13, width: 20, marginLeft: 17 }} />
@@ -75,6 +78,7 @@ class Host extends React.PureComponent {
           activeOpacity={0.6}
           style={styles.replayIconContainerStyle}
           onPress={this.props.replay}
+          disabled={this.props.buttonDisabled}
         >
           <Image source={Replay} style={{ height: 15, width: 15, marginRight: 6 }} />
           <Text style={[textStyle, { marginTop: 1 }]}>
