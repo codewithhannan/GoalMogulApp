@@ -1,6 +1,5 @@
 import React from 'react';
 import { Constants } from 'expo';
-import { Actions } from 'react-native-router-flux';
 import {
 	View,
 	FlatList,
@@ -11,6 +10,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar } from 'react-native-elements';
+import { MaterialIcons } from '@expo/vector-icons';
 
 // Components
 import ChatRoomCard from './ChatRoomCard';
@@ -19,8 +19,12 @@ import ChatRoomCard from './ChatRoomCard';
 import {
 	refreshChatRooms,
 	loadMoreChatRooms,
-	loadChatRooms,
+	searchQueryUpdated
 } from '../../../redux/modules/chat/ChatActions';
+
+import {
+	SearchIcon
+  } from '../../../Utils/Icons';
 
 import { IPHONE_MODELS } from '../../../Utils/Constants';
 
@@ -32,21 +36,24 @@ const SEARCHBAR_HEIGHT = Platform.OS === 'ios' &&
       ? 30 : 40;
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-const BODY_HEIGHT = SCREEN_HEIGHT - 48.5 - SEARCHBAR_HEIGHT;
+const BODY_HEIGHT = SCREEN_HEIGHT - 48.5 - SEARCHBAR_HEIGHT - 150;
 
 
 class ChatRoomTab extends React.Component {
+
 	_keyExtractor = (item) => item._id;
 
 	componentDidMount() {
-		this.props.loadChatRooms(Actions.currentScene, this.props.limit);
+		this.props.refreshChatRooms(this.props.currentTabKey, this.props.limit, '');
 	}
 
-	handleOnRefresh = () => this.props.refreshChatRooms(Actions.currentScene, this.props.limit, this.props.searchQuery);
+	handleOnRefresh = () => {
+		this.props.refreshChatRooms(this.props.currentTabKey, this.props.limit, this.props.searchQuery);
+	}
 
 	handleOnLoadMore = () => {
 		if (!this.props.hasNextPage) return;
-		this.props.loadMoreChatRooms(Actions.currentScene, this.props.limit, this.props.skip, this.props.searchQuery);
+		this.props.loadMoreChatRooms(this.props.currentTabKey, this.props.limit, this.props.skip, this.props.searchQuery);
 	}
 
 	renderItem = ({ item }) => {
@@ -55,20 +62,47 @@ class ChatRoomTab extends React.Component {
 		);
 	}
 
-	handleSearchUpdate() {
+	handleSearchUpdate(newText) {
 		if (this.chatroomSearchTimer) {
 			clearInterval(this.chatroomSearchTimer);
 		};
-		this.chatroomSearchTimer = setInterval(this.handleOnRefresh.bind(this), CHATROOM_AUTO_SEARCH_DELAY_MS);
+		if (newText.trim().length) {
+			this.chatroomSearchTimer = setTimeout(this.handleOnRefresh.bind(this), CHATROOM_AUTO_SEARCH_DELAY_MS);
+		} else {
+			this.handleOnRefresh();
+		}
+		this.props.searchQueryUpdated(this.props.currentTabKey, newText);
 	}
 
-	renderListHeader() {
+	renderListHeader = () => {
 		const { searchQuery } = this.props;
 		return (
 			<SearchBar
-				placeholder={`Search ${Actions.currentScene == 'chatrooms' ? 'Chat Rooms' : 'Direct Messages'}`}
+				platform="default"
+				clearIcon={<MaterialIcons
+					name="clear"
+					color="#777"
+					size={21}
+				/>}
+				containerStyle={{
+					backgroundColor: '#F9F9F9',
+					padding: 6,
+					borderColor: '#EEE',
+				}}
+				inputContainerStyle={{
+					backgroundColor: '#EEE',
+				}}
+				inputStyle={{
+					fontSize: 15
+				}}
+				placeholder={`Search...`}
 				onChangeText={this.handleSearchUpdate.bind(this)}
+				searchIcon={<SearchIcon 
+					iconContainerStyle={{ marginBottom: 3, marginTop: 1 }} 
+					iconStyle={{ tintColor: '#777', height: 15, width: 15 }}
+				  />}
 				value={searchQuery}
+				lightTheme={true}
 			/>
 		);
 	}
@@ -102,15 +136,16 @@ class ChatRoomTab extends React.Component {
 						style={{
 							justifyContent: "center",
 							alignItems: "center",
-							fontSize: 21
+							fontSize: 18,
+							color: '#999',
 						}}
 					>
-						Create a Chat Room to get started.
+						Tap the + button to start a conversation.
 					</Text>
 				</View>
 			);
 		};
-		return '';
+		return null;
 	}
 
 	render() {
@@ -123,7 +158,7 @@ class ChatRoomTab extends React.Component {
 					keyExtractor={this._keyExtractor}
 					refreshing={this.props.refreshing}
 					onRefresh={this.handleOnRefresh.bind(this)}
-					ListHeaderComponent={this.renderListHeader.bind(this)}
+					ListHeaderComponent={this.renderListHeader}
 					ListFooterComponent={this.renderListFooter.bind(this)}
 					ListEmptyComponent={this.renderListEmptyState.bind(this)}
 					onEndThreshold={0}
@@ -147,6 +182,7 @@ const mapStateToProps = state => {
 		hasNextPage,
 		data,
 		searchQuery,
+		currentTabKey,
 	};
 };
 
@@ -155,6 +191,6 @@ export default connect(
 	{
 		refreshChatRooms,
 		loadMoreChatRooms,
-		loadChatRooms,
+		searchQueryUpdated,
 	}
 )(ChatRoomTab);

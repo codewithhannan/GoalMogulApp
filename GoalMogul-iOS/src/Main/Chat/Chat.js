@@ -12,7 +12,7 @@ import { Actions } from 'react-native-router-flux';
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup';
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
-import ChatRoomTabBody from './ChatRoomList/ChatRoomTabBody';
+import ChatRoomTab from './ChatRoomList/ChatRoomTab';
 
 // Actions
 import {
@@ -24,6 +24,7 @@ import {
 import plus_image from '../../asset/utils/plus.png';
 import direct_message_image from '../../asset/utils/direct_message.png';
 import profile_people_image from '../../asset/utils/profile_people.png';
+import { APP_DEEP_BLUE } from '../../styles';
 
 class ChatTab extends React.Component {
 
@@ -34,22 +35,25 @@ class ChatTab extends React.Component {
 	};
 
 	_renderScene = SceneMap({
-		directMessages: ChatRoomTabBody,
-		chatrooms: ChatRoomTabBody,
+		directMessages: ChatRoomTab,
+		chatRooms: ChatRoomTab,
 	});
 
 	openCreateChatMenu() {
 		this.props.plusPressed();
-		Actions.createButtonOverlay({
+		Actions.push('createButtonOverlay', {
 			onCancel: () => this.props.plusUnpressed(),
 			onActionSelect: () => this.props.plusUnpressed(),
 			buttons: [
 				{
 					name: 'createDirectMessage',
-					textStyle: {},
-					iconStyle: {},
+					iconStyle: { height: 18, width: 18, marginLeft: 3 },
+					textStyle: { marginLeft: 5 },
+					customContainerStyle: {
+						width: 90,
+					},
 					iconSource: direct_message_image,
-					text: 'Direct Message',
+					text: 'Direct',
 					onPress: () => {
 						Actions.pop(); // remove the overlay from the stack
 						Actions.createDirectMessageModal();
@@ -57,10 +61,13 @@ class ChatTab extends React.Component {
 				},
 				{
 					name: 'createChatroom',
-					textStyle: {},
-					iconStyle: {},
+					iconStyle: { height: 18, width: 18, marginLeft: 3 },
+					textStyle: { marginLeft: 5 },
+					customContainerStyle: {
+						width: 90,
+					},
 					iconSource: profile_people_image,
-					text: 'Group Chatroom',
+					text: 'Group',
 					onPress: () => {
 						Actions.pop(); // remove the overlay from the stack
 						Actions.createChatroomModal();
@@ -82,7 +89,7 @@ class ChatTab extends React.Component {
 				</TouchableOpacity>
 			);
 		};
-		return '';
+		return null;
 	}
 
 	render() {
@@ -132,7 +139,29 @@ const styles = {
 	backdrop: {
 		backgroundColor: 'gray',
 		opacity: 0.5,
-	}
+	},
+
+	// Styles for plus icon
+	iconContainerStyle: {
+		position: 'absolute',
+		bottom: 20,
+		right: 15,
+		height: 54,
+		width: 54,
+		borderRadius: 27,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: APP_DEEP_BLUE,
+		shadowColor: '#000',
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.4,
+		shadowRadius: 2,
+	},
+	iconStyle: {
+		height: 26,
+		width: 26,
+		tintColor: 'white',
+	},
 };
 
 export default connect(

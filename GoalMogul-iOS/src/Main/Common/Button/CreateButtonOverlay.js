@@ -114,14 +114,18 @@ class CreateButtonOverlay extends Component {
 	renderActionButtons() {
 		const { buttons } = this.props;
 		const actionsButtons = buttons.map((button, index) => {
-			const { name, textStyle, iconStyle, iconSource, text, onPress } = button;
+			let { name, textStyle, iconStyle, iconSource, text, onPress, customContainerStyle } = button;
+			if (!customContainerStyle) {
+				customContainerStyle = {};
+			};
 			return (
 				<ActionButton
 					text={text}
 					source={iconSource}
 					style={{
 						iconStyle,
-						textStyle
+						textStyle,
+						customContainerStyle,
 					}}
 					onPress={() => {
 						onPress();
@@ -156,7 +160,7 @@ const ActionButton = (props) => {
 	const { text, source, style, onPress } = props;
 	const { containerStyle, iconStyle, textStyle } = actionButtonStyles;
 	return (
-		<TouchableOpacity activeOpacity={0.85} style={containerStyle} onPress={onPress}>
+		<TouchableOpacity activeOpacity={0.85} style={{...containerStyle, ...style.customContainerStyle}} onPress={onPress}>
 			<Image style={{ ...iconStyle, ...style.iconStyle }} source={source} />
 			<Text style={{ ...textStyle, ...style.textStyle }}>{text}</Text>
 		</TouchableOpacity>

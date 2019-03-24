@@ -10,7 +10,7 @@ const INITIAL_STATE = {
 		index: 0,
 		routes: [
 			{ key: 'directMessages', title: 'DIRECT MESSAGES' },
-			{ key: 'chatrooms', title: 'CHATROOMS' },
+			{ key: 'chatRooms', title: 'GROUP CHATS' },
 		]
 	},
 	selectedTab: 'directMessages',
@@ -24,7 +24,7 @@ const INITIAL_STATE = {
 		loading: false,
 		refreshing: false,
 	},
-	chatrooms: {
+	chatRooms: {
 		data: [],
 		searchQuery: '',
 		hasNextPage: undefined,
@@ -43,10 +43,11 @@ export const CHAT_REFRESH_DONE = 'chat_refresh_done';
 export const CHAT_LOAD_DONE = 'chat_load_done';
 export const PLUS_PRESSED = 'chat_plus_pressed'
 export const PLUS_UNPRESSED = 'chat_plus_unpressed';
+export const SEARCH_QUERY_UPDATED = 'chat_search_query_updated';
 
 export const CHAT_LOAD_TYPES = {
-	directMessages: 'direct_messages',
-	chatrooms: 'chatrooms',
+	directMessages: 'directMessages',
+	chatRooms: 'chatRooms',
 };
 
 export default (state=INITIAL_STATE, action) => {
@@ -62,24 +63,24 @@ export default (state=INITIAL_STATE, action) => {
 
 		case CHAT_LOAD: {
 			const { type } = action.payload;
-			if (! (type in CHAT_LOAD_TYPES)) throw new Error();
+			if (! (type in CHAT_LOAD_TYPES)) throw new Error('Invalid load type: ' + type);
 			const newState = _.cloneDeep(state);
 			return _.set(newState, `${type}.loading`, true);
 		}
 
 		case CHAT_REFRESH: {
 			const { type } = action.payload;
-			if (! (type in CHAT_LOAD_TYPES)) throw new Error();
+			if (! (type in CHAT_LOAD_TYPES)) throw new Error('Invalid load type: ' + type);
 			const newState = _.cloneDeep(state);
 			return _.set(newState, `${type}.refreshing`, true);
 		}
 
 		/**
-		 * @param type: CHAT_LOAD_TYPES#{directMessages, chatrooms}
+		 * @param type: CHAT_LOAD_TYPES#{directMessages, chatRooms}
 		 */
 		case CHAT_REFRESH_DONE: {
 			const { data, type } = action.payload;
-			if (! (type in CHAT_LOAD_TYPES)) throw new Error();
+			if (! (type in CHAT_LOAD_TYPES)) throw new Error('Invalid load type: ' + type);
 			let newState = _.cloneDeep(state);
 			newState = _.set(newState, `${type}.refreshing`, false);
 
@@ -88,14 +89,16 @@ export default (state=INITIAL_STATE, action) => {
 
 		case CHAT_LOAD_DONE: {
 			const { skip, data, hasNextPage, type } = action.payload;
-			if (! (type in CHAT_LOAD_TYPES)) throw new Error();
+			if (! (type in CHAT_LOAD_TYPES)) throw new Error('Invalid load type: ' + type);
 			let newState = _.cloneDeep(state);
 			newState = _.set(newState, `${type}.loading`, false);
 
 			if (skip !== undefined) {
 				newState = _.set(newState, `${type}.skip`, skip);
 			}
-			newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
+			if (hasNextPage !== undefined) {
+				newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
+			};
 			const oldData = _.get(newState, `${type}.data`);
 			return _.set(newState, `${type}.data`, arrayUnique(oldData.concat(data)));
 		}
@@ -108,6 +111,12 @@ export default (state=INITIAL_STATE, action) => {
 		case PLUS_UNPRESSED: {
 			let newState = _.cloneDeep(state);
 			return _.set(newState, 'showPlus', true);
+		}
+
+		case SEARCH_QUERY_UPDATED: {
+			let newState = _.cloneDeep(state);
+			const {type, query} = action.payload;
+			return _.set(newState, `${type}.searchQuery`, query);
 		}
 
 		default: {
