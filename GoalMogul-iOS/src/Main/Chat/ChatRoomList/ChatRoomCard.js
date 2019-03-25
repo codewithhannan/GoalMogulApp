@@ -34,7 +34,7 @@ class ChatRoomCard extends React.Component {
 	renderTitle(item) {
 		let title = item.name;
 		if (!title && item.isChatRoom) {
-			title = item.members.find(memDoc => memDoc.memberRef._id.toString() != this.props.currentUser._id.toString());
+			title = item.members.find(memDoc => memDoc.memberRef._id.toString() != this.props.currentUserId);
 			title = title && title.memberRef.name;
 		};
 		const lastUpdated = item.lastActive || new Date();
@@ -152,7 +152,7 @@ const styles = {
 
 export default connect(
 	(state) => ({
-		currentUser: state.user
+		currentUserId: state.user.userId,
 	}),
 	null
 )(ChatRoomCard);

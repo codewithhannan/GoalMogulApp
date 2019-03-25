@@ -56,7 +56,7 @@ class ChatTab extends React.Component {
 					text: 'Direct',
 					onPress: () => {
 						Actions.pop(); // remove the overlay from the stack
-						Actions.createDirectMessageModal();
+						Actions.push('createDirectMessageModal');
 					},
 				},
 				{
@@ -70,7 +70,7 @@ class ChatTab extends React.Component {
 					text: 'Group',
 					onPress: () => {
 						Actions.pop(); // remove the overlay from the stack
-						Actions.createChatroomModal();
+						Actions.push('createChatroomModal');
 					},
 				}
 			],

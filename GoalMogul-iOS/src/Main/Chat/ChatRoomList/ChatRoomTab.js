@@ -85,12 +85,12 @@ class ChatRoomTab extends React.Component {
 					size={21}
 				/>}
 				containerStyle={{
-					backgroundColor: '#F9F9F9',
+					backgroundColor: '#EEE',
 					padding: 6,
-					borderColor: '#EEE',
+					borderColor: 'transparent',
 				}}
 				inputContainerStyle={{
-					backgroundColor: '#EEE',
+					backgroundColor: '#FAFAFA',
 				}}
 				inputStyle={{
 					fontSize: 15

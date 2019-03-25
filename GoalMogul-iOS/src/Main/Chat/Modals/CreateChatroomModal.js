@@ -61,11 +61,12 @@ class CreateChatroomModal extends React.Component {
   initializeForm() {
     const defaulVals = {
       name: undefined,
-      membersCanInvite: false,
-      isPubliclyVisible: false,
-      membershipLimit: undefined,
-      description: '',
+      roomType: 'Group',
+      isPublic: true,
+      membersCanAdd: true,
+      memberLimit: undefined,
       picture: undefined,
+      membersToAdd: [],
     };
 
     // Initialize based on the props, if it's opened through edit button
@@ -179,7 +180,7 @@ class CreateChatroomModal extends React.Component {
       }
     }
 
-    if (this.props.picture) {
+    if (picture) {
       return (
         <View style={{ backgroundColor: 'gray' }}>
           <ImageBackground
@@ -282,20 +283,20 @@ class CreateChatroomModal extends React.Component {
           numberOfLines={1}
           multiline
           style={styles.goalInputStyle}
-          placeholder='Enter the name...'
+          placeholder='Enter a name for this room...'
         />
       </View>
     );
   }
 
-  renderTribeMemberLimit() {
+  renderChatRoomMemberLimit() {
     const titleText = <Text style={styles.titleTextStyle}>Member Limit (Optional)</Text>;
     return (
       <View style={{ marginBottom: 5 }}>
         {titleText}
         <Field
-          name='membershipLimit'
-          label='membershipLimit'
+          name='memberLimit'
+          label='memberLimit'
           component={this.renderInput}
           editable={!this.props.uploading}
           numberOfLines={1}
@@ -307,7 +308,7 @@ class CreateChatroomModal extends React.Component {
     );
   }
 
-  renderTribeDescription() {
+  renderChatroomDescription() {
     const titleText = <Text style={styles.titleTextStyle}>Description</Text>;
     return (
       <View style={{ marginBottom: 5 }}>
@@ -319,7 +320,7 @@ class CreateChatroomModal extends React.Component {
           editable={!this.props.uploading}
           numberOfLines={5}
           style={styles.goalInputStyle}
-          placeholder='Describe your tribe...'
+          placeholder='Describe your chat room...'
         />
       </View>
     );
@@ -329,14 +330,14 @@ class CreateChatroomModal extends React.Component {
     return (
       <View>
         <CheckBox
-          title='Members can invite new members'
-          checked={this.props.membersCanInvite}
-          onPress={() => this.props.change('membersCanInvite', !this.props.membersCanInvite)}
+          title='Members can add their friends'
+          checked={this.props.membersCanAdd}
+          onPress={() => this.props.change('membersCanAdd', !this.props.membersCanAdd)}
         />
         <CheckBox
           title='Publicly visible'
-          checked={this.props.isPubliclyVisible}
-          onPress={() => this.props.change('isPubliclyVisible', !this.props.isPubliclyVisible)}
+          checked={this.props.isPublic}
+          onPress={() => this.props.change('isPublic', !this.props.isPublic)}
         />
       </View>
     );
@@ -375,9 +376,9 @@ class CreateChatroomModal extends React.Component {
             style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
           >
             <View style={{ flex: 1, padding: 20 }}>
-              {this.renderTribeName()}
-              {this.renderTribeDescription()}
-              {this.renderTribeMemberLimit()}
+              {this.renderChatroomName()}
+              {this.renderChatroomDescription()}
+              {this.renderChatRoomMemberLimit()}
               {this.renderOptions()}
               {this.renderImageSelection()}
             </View>
@@ -402,11 +403,12 @@ const mapStateToProps = state => {
   return {
     user,
     name: selector(state, 'name'),
-    membersCanInvite: selector(state, 'membersCanInvite'),
-    isPubliclyVisible: selector(state, 'isPubliclyVisible'),
-    membershipLimit: selector(state, 'membershipLimit'),
+    membersCanAdd: selector(state, 'membersCanAdd'),
+    isPublic: selector(state, 'isPublic'),
+    memberLimit: selector(state, 'memberLimit'),
     description: selector(state, 'description'),
     picture: selector(state, 'picture'),
+    roomType: selector(state, 'roomType'),
     formVals: state.form.CreateChatroomModal,
     uploading
   };
