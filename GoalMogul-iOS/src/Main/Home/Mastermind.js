@@ -55,6 +55,7 @@ class Mastermind extends Component {
       infoModal: false,
       onListEndReached: false
     };
+    this.scrollToTop = this.scrollToTop.bind(this);
   }
 
   componentWillUnmount() {
@@ -79,6 +80,8 @@ class Mastermind extends Component {
    * Used by parent to scroll mastermind to top on tab pressed
    */
   scrollToTop = () => {
+    const { data } = this.props;
+    if (!data || data.length === 0) return;
     this.flatlist.scrollToIndex({
       animated: true,
       index: 0
