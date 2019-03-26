@@ -1,0 +1,68 @@
+--------------------------------------------------------
+TODO
+--------------------------------------------------------
+- ChatRoom component
+    - Use GiftedChat
+    - Upon opening up, reset the local (chatRoomId -> unreadCount) map to indicate that the pending messages have been read
+    - Globally emit an event letting {LiveChatService} know that the user is currently viewing this chatroom (so it doesn't update the unread count)
+    - Listen to global event 'newMessagesRecieved'
+        - For all new messages related to current chat, append to displayed messages list
+        - If latest new message unrelated to current chat exists, display preview from above for 1s
+            - Tapping this preview replaces current view with the chatroom belonging to the tapped message
+- ChatRoomDetails component
+    - IF Group:
+        - ChatRoom Image and Name preview with edit button to the right
+            - Edit button opens up {CreateChatRoom}(Edit ChatRoom mode)
+      ELSE:
+        - Other participant image, name with right arrow button on right to open user's profile
+    - List of Links to:
+        - Unmute/Mute chat button toggle
+        - {ManageMembers} IF Group
+        - {AddFriendModal} IF Group AND [currentUser is Admin OR membersCanAdd]
+        - {ChatMessageSearch}
+- ManageMembers component
+    - Tabs: Admin, Members, JoinRequesters(if currentUser is Admin)
+    - FlatList of members by tab
+        - Card:
+            - Picture, name, badge, headline (Tap to view profile)
+            - IF currentUser is Admin:
+                - IF member is not JoinRequester
+                    - Promote/Demote
+                  ELSE
+                    - Accept Request
+                - Remove
+- AddFriendModal component
+    - Search friend(s) not in current chat
+    - Multi-select and confirm to add to chat
+        - Return to main chatroom screen after success
+- {LiveChatService} Set up system of connecting to socket server to listen for new messages when app is open
+    - Fetch all messages in queue after connecting
+    - Write all new messages to local storage
+        - For each message, IF user is currently not viewing the associated chatroom, update the local (chatRoomId -> unreadCount) map to indicate that there are pending messages in a given chatroom
+    - Emit 'newMessagesRecieved' to global event listener (use 'react-native-event-listeners')
+        - ChatRoom list will catch this event and update in real-time accordingly
+            - This update will be cancelled by refresh action (search or pull down to refresh)
+            - While updating, load more is disabled
+        - ChatRoomCard recieves this to update the 'latestMessage' preview in real-time
+        - Navigation tab bar will catch this and increment chat unread badge count accordingly
+            - Once the ChatRoom tab has been opened, this unread badge count will reset to 0
+
+
+----------------------------------------------------------------------
+STRETCH
+----------------------------------------------------------------------
+
+- ChatMessageSearch component
+    - Search bar at the top
+    - List of results as FlatList using {ChatRoomMessageResultCard}
+    - ChatRoomMessageResultCard component
+        - Picture, name
+        - Message + media
+        - Jump to message button on bottom of card
+            - Tapping opens overlay {ChatMessageSnapshot}
+- ChatMessageSnapshot
+    - Accepts a message and chatroom (to display member profile in message previews) as a prop
+    - Flatlist displaying a few messages before and after the message as well
+    - Scrolling down loads more after the message
+    - Scrollling up loads more before the message 
+- add PropTypes checks to all components

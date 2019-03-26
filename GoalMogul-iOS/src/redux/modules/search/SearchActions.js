@@ -65,7 +65,7 @@ const generateQueryId = (text) => hashCode(text);
 
 // Functions to handle search
 /**
- * @param type: ['people', 'tribes', 'events', 'chatrooms']
+ * @param type: ['people', 'tribes', 'events', 'chatRooms']
  */
 export const handleSearch = (searchContent, type) => {
   console.log('searchContent is: ', searchContent);

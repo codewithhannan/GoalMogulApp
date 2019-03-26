@@ -39,13 +39,14 @@ import ExploreReducers from '../redux/modules/explore/ExploreReducers';
 import NewShareReducers from '../redux/modules/feed/post/NewShareReducers';
 import NewTribeReducers from '../redux/modules/tribe/NewTribeReducers';
 import NewEventReducers from '../redux/modules/event/NewEventReducers';
+import NewChatRoomReducers from '../redux/modules/chat/NewChatRoomReducers';
 // Menu related reducers
 import MyEventTabReducers from '../redux/modules/event/MyEventTabReducers';
 import MyEventReducers from '../redux/modules/event/MyEventReducers';
 import MyTribeTabReducers from '../redux/modules/tribe/MyTribeTabReducers';
 import MyTribeReducers from '../redux/modules/tribe/MyTribeReducers';
 // Chat related reducers
-import ChatTabReducers from '../redux/modules/chat/ChatTabReducers';
+import ChatReducers from '../redux/modules/chat/ChatReducers';
 
 const rootPersistConfig = {
   key: 'root',
@@ -93,8 +94,9 @@ const reducers = combineReducers({
   myTribe: MyTribeReducers,
   newTribe: NewTribeReducers,
   newEvent: NewEventReducers,
+  newChatRoom: NewChatRoomReducers,
   notification: NotificationTabReducers,
-  chat: ChatTabReducers
+  chat: ChatReducers
 });
 
 export default persistReducer(rootPersistConfig, reducers);
