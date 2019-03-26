@@ -59,7 +59,7 @@ const CommentHeadline = (props) => {
     case 'Suggestion': {
       if (!suggestion || _.isEmpty(suggestion)) return null;
       return (
-        <SuggestionHeadlineV2
+        <SuggestionHeadline
           goalRef={goalRef}
           item={item}
           timeStamp={timeStamp}
@@ -222,6 +222,11 @@ const SuggestionHeadline = (props) => {
   );
 };
 
+/**
+ * This is new version of suggestion headline and is still in progress. Once done, it should replace
+ * SuggestionHeadline. 
+ * @param {} props 
+ */
 const SuggestionHeadlineV2 = (props) => {
   const { goalRef, item, timeStamp, menu, onNamePress } = props;
   const { owner, suggestion } = item;
@@ -238,8 +243,9 @@ const SuggestionHeadlineV2 = (props) => {
     <View>
       <View style={styles.containerStyle}>
         <Text
-          numberOfLines={1}
+          numberOfLines={2}
           ellipsizeMode='tail'
+          style={{ marginRight: 8 }}
         >
           <Text
             style={{ 
@@ -247,11 +253,16 @@ const SuggestionHeadlineV2 = (props) => {
               fontWeight: '600',
               maxWidth: 150,
             }}
+            onPress={onNamePress}
           >
             {owner.name}
           </Text>
+          <View style={{ width: 15, height: 13 }}>
+            <Image style={styles.imageStyleV2} source={badge} resizeMode='contain' />
+          </View>
+          
           <Text
-            style={styles.suggestionTextStyle}
+            style={styles.suggestionTextStyleV2}
             numberOfLines={1}
             ellipsizeMode='tail'
           >
@@ -262,7 +273,7 @@ const SuggestionHeadlineV2 = (props) => {
           </Text>
         </Text>
         {/* <Name text={owner.name} textStyle={{ fontSize: 12 }} onPress={onNamePress} /> */}
-        <Image style={styles.imageStyle} source={badge} />
+        
         {/* <Text
           style={styles.suggestionTextStyle}
           numberOfLines={1}
@@ -338,6 +349,23 @@ const styles = {
     color: '#767676',
     paddingRight: 15,
     marginBottom: 2
+  },
+  // For suggestion text stlye V2
+  suggestionTextStyleV2: {
+    fontSize: 10,
+    flex: 1,
+    flexWrap: 'wrap',
+    alignSelf: 'center',
+    color: '#767676',
+    paddingRight: 15,
+    marginBottom: 2,
+    textAlignVertical: 'center'
+  },
+  imageStyleV2: {
+    marginLeft: 2,
+    marginRight: 2,
+    height: 15,
+    width: 13
   },
   suggestionDetailTextStyle: {
     fontWeight: '700',

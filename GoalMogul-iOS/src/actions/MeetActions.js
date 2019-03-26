@@ -408,6 +408,16 @@ export const meetContactSync = (callback, componentKey) => async (dispatch, getS
       })
       .catch((err) => {
         console.warn('[ Action ContactSync Fail ]: ', err);
+        dispatch({
+          type: MEET_CONTACT_SYNC_FETCH_DONE,
+          payload: {
+            data: [], // TODO: replaced with res
+            skip: 0,
+            limit,
+            hasNextPage: false,
+            refresh: true
+          }
+        });
       });
 };
 
