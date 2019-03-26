@@ -57,7 +57,7 @@ class FriendCardView extends React.PureComponent {
     return (
         <TouchableOpacity 
             onPress={() => this.props.openProfile(item._id)}
-            activeOpacity={0.85}
+            activeOpacity={0.6}
             style={styles.nextButtonContainerStyle}
         >
             <Image

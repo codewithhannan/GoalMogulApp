@@ -120,7 +120,7 @@ class ActivityFeed extends Component {
   // renderPlus() {
   //   return (
   //     <TouchableOpacity
-  //       activeOpacity={0.85}
+  //       activeOpacity={0.6}
   //       style={styles.iconContainerStyle}
   //       onPress={() => Actions.createPostModal()}
   //     >

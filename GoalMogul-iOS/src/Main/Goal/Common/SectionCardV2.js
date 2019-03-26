@@ -80,7 +80,7 @@ class SectionCardV2 extends Component {
     return (
       <View style={{ alignItems: 'center', justifyContent: 'center' }}>
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={styles.iconContainerStyle}
           onPress={() => this.handleShareOnClick()}
         >
@@ -104,7 +104,7 @@ class SectionCardV2 extends Component {
 
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={iconContainerStyle}
         onPress={onPress}
       >
@@ -149,7 +149,7 @@ class SectionCardV2 extends Component {
     return (
       <TouchableOpacity
         onPress={this.props.onBackPress}
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={{ paddingRight: 17 }}
       >
         <Image source={next} style={styles.nextIconStyle} />
@@ -176,7 +176,7 @@ class SectionCardV2 extends Component {
 
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={{
           ...styles.sectionContainerStyle,
           backgroundColor: isCompleted ? '#fcfcfc' : 'white',

@@ -124,7 +124,7 @@ class EditPhoneNumberForm extends Component {
             component={this.renderInput}
           />
 
-          <TouchableOpacity activeOpacity={0.85} onPress={handleSubmit(this.handleOnSubmitPress)}>
+          <TouchableOpacity activeOpacity={0.6} onPress={handleSubmit(this.handleOnSubmitPress)}>
             <Button text="Submit" />
           </TouchableOpacity>
 

@@ -4,11 +4,18 @@ import {
   View, 
   TouchableOpacity, 
   Image,
-  StatusBar
+  StatusBar,
+  Platform
 } from 'react-native';
+import { Constants } from 'expo';
 import {
   APP_BLUE
 } from '../../../styles';
+
+import {
+  IPHONE_MODELS,
+  IMAGE_BASE_URL
+} from '../../../Utils/Constants';
 
 import BackButton from '../../../asset/utils/back.png';
 
@@ -30,6 +37,11 @@ import BackButton from '../../../asset/utils/back.png';
   
 //   return leftComponent;
 // };
+
+const paddingTop = (
+  Platform.OS === 'ios' &&
+  IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+) ? 25 : 43;
 
 const ModalHeader = (props) => {
   const { title, actionText, onCancel, onAction, actionDisabled, cancelText, back } = props;
@@ -59,21 +71,21 @@ const ModalHeader = (props) => {
       <StatusBar
         barStyle="dark-content"
       />
-      <View style={styles.containerStyle}>
+      <View style={[styles.containerStyle, { paddingTop }]}>
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={{ alignItems: 'center', flex: 1 }}
           onPress={onCancel}
         >
           {leftComponent}
         </TouchableOpacity>
 
-        <TouchableOpacity activeOpacity={0.85} style={{ alignItems: 'center', flex: 3 }}>
+        <TouchableOpacity activeOpacity={0.6} style={{ alignItems: 'center', flex: 3 }}>
           <Text style={styles.titleTextStyle}>{title}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={{ alignItems: 'center', flex: 1 }}
           onPress={onAction}
           disabled={actionDisabled}

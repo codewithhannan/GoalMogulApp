@@ -146,7 +146,7 @@ class GoalDetailSection extends React.PureComponent {
     if (text && text.length > 60) {
       return (
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={styles.seeMoreTextContainerStyle}
           onPress={this.handleSeeMore}
         >

@@ -55,7 +55,7 @@ class ImageModal extends React.Component {
           }}
         >
           <TouchableOpacity
-            activeOpacity={0.85}
+            activeOpacity={0.6}
             onPress={() => {
               this.props.closeModal();
             }}

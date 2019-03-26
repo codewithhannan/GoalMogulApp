@@ -103,7 +103,7 @@ class ContactSync extends Component {
     // Assign actionable buttons
     const button = (type !== undefined && type === 'meet') ?
     null :
-    (<TouchableOpacity activeOpacity={0.85} onPress={this.handleDoneOnPressed.bind(this)}>
+    (<TouchableOpacity activeOpacity={0.6} onPress={this.handleDoneOnPressed.bind(this)}>
       <View style={styles.footer}>
         <Button text='Done' />
       </View>

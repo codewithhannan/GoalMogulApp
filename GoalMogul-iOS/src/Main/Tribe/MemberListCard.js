@@ -163,7 +163,7 @@ class MemberListCard extends Component {
     const { isAdmin, onRemoveUser, onPromoteUser } = this.props;
     if (isAdmin) {
       return (
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity activeOpacity={0.6}
           onPress={() => this.handleAdminUpdateUserStatus()}
           style={{ alignSelf: 'center', justifyContent: 'center' }}
         >
@@ -188,7 +188,7 @@ class MemberListCard extends Component {
 
         <TouchableOpacity 
           style={styles.bodyContainerStyle}
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           onPress={() => this.props.openProfile(_id)}
         >
           {this.renderInfo(item)}

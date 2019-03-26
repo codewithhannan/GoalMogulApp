@@ -54,7 +54,7 @@ class GoalFeedInfoModal extends React.PureComponent {
   renderCancelButton() {
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={styles.cancelIconContainerStyle}
         onPress={this.handleCancelOnPress}
       >
@@ -68,7 +68,7 @@ class GoalFeedInfoModal extends React.PureComponent {
       <View style={styles.buttonTextContainerStyle}>
         <Text style={styles.basicTextStyle}>Try it out: </Text>
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={styles.buttonContainerStyle}
           onPress={this.handleCreateGoalOnPress}
         >

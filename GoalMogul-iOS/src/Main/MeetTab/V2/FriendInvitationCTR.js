@@ -31,7 +31,7 @@ class FriendInvitationCTR extends React.PureComponent {
     renderInvitationButton() {
         return (
             <DelayedButton
-                activeOpacity={0.85}
+                activeOpacity={0.6}
                 onPress={this.handleOnPress}
                 style={styles.buttonContainerStyle}
             >

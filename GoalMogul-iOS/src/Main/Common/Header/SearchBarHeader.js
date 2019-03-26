@@ -155,7 +155,7 @@ class SearchBarHeader extends Component {
       const backButtonTintColor = this.props.title ? 'white' : tintColor;
       return (
         <View style={{ height: 25, width: 25 }}>
-          <DelayedButton activeOpacity={0.85} onPress={this.handleBackOnClick.bind(this)}>
+          <DelayedButton activeOpacity={0.6} onPress={this.handleBackOnClick.bind(this)}>
             {/*<Icon
               type='entypo'
               name='chevron-thin-left'
@@ -175,7 +175,7 @@ class SearchBarHeader extends Component {
     }
     return this.renderProfileImage();
     // return (
-    //   <TouchableOpacity activeOpacity={0.85}
+    //   <TouchableOpacity activeOpacity={0.6}
     //     style={styles.headerLeftImage}
     //     onPress={this.handleProfileOnClick.bind(this)}
     //   >
@@ -190,7 +190,7 @@ class SearchBarHeader extends Component {
     // console.log('image is: ', image);
     let profileImage = (
       <DelayedButton
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={styles.headerLeftImage}
         onPress={this.handleProfileOnClick.bind(this)}
       >
@@ -206,7 +206,7 @@ class SearchBarHeader extends Component {
       image = `${IMAGE_BASE_URL}${image}`;
       profileImage = (
         <DelayedButton
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={styles.headerLeftImage}
           onPress={this.handleProfileOnClick.bind(this)}
         >
@@ -259,7 +259,7 @@ class SearchBarHeader extends Component {
     const { menuOnPress } = this.props;
     if (this.props.rightIcon === 'menu') {
       return (
-        <TouchableOpacity activeOpacity={0.85} onPress={menuOnPress || this.handleMenuIconOnClick}>
+        <TouchableOpacity activeOpacity={0.6} onPress={menuOnPress || this.handleMenuIconOnClick}>
           <Image style={{ ...styles.headerRightImage, tintColor }} source={IconMenu} />
         </TouchableOpacity>
       );
@@ -283,7 +283,7 @@ class SearchBarHeader extends Component {
     }
     return (
       <DelayedButton 
-        activeOpacity={0.85} 
+        activeOpacity={0.6} 
         onPress={() => {
           const componentKeyToOpen = componentKeyByTab(this.props.navigationTab, 'searchLightBox');
           Actions.push(`${componentKeyToOpen}`);

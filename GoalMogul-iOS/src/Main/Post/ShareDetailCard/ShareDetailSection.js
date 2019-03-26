@@ -150,7 +150,7 @@ class ShareDetailSection extends Component {
     if (text && text.length > 60) {
       return (
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={styles.seeMoreTextContainerStyle}
           onPress={this.handleSeeMore}
         >
@@ -274,7 +274,7 @@ class ShareDetailSection extends Component {
             </View>
 
             <TouchableOpacity
-              activeOpacity={0.85}
+              activeOpacity={0.6}
               onPress={() => this.setState({ mediaModal: true })}
               style={{
                 position: 'absolute',

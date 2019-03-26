@@ -24,7 +24,7 @@ class FormHeader extends Component {
     return (
       <View style={styles.headerStyle}>
         <View style={{ flex: 2, alignItems: 'flex-start' }}>
-        <TouchableOpacity activeOpacity={0.85} onPress={this.onCancelPress}>
+        <TouchableOpacity activeOpacity={0.6} onPress={this.onCancelPress}>
 
             <Text style={cancelTextStyle}>Cancel</Text>
 
@@ -35,7 +35,7 @@ class FormHeader extends Component {
           <Text style={titleTextStyle}>{this.props.title}</Text>
         </View>
         <View style={{ flex: 2, alignItems: 'flex-end' }}>
-        <TouchableOpacity activeOpacity={0.85} onPress={this.onSavePress}>
+        <TouchableOpacity activeOpacity={0.6} onPress={this.onSavePress}>
 
             <Text style={saveTextStyle}>Save</Text>
 

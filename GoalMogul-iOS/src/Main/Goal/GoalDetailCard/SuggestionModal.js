@@ -70,7 +70,7 @@ class SuggestionModal extends Component {
           marginLeft: 10
         }}
       >
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity activeOpacity={0.6}
           onPress={() => this.props.updateSuggestionType(item.key, this.props.pageId)}
         >
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>

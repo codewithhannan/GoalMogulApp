@@ -116,7 +116,7 @@ class MeetTabV2 extends React.Component {
                     }}
                 >
                     <DelayedButton 
-                        activeOpacity={0.85}
+                        activeOpacity={0.6}
                         style={styles.CTRContainerStyle} 
                         onPress={this.handleSyncContact}
                     >
@@ -129,7 +129,7 @@ class MeetTabV2 extends React.Component {
                     </DelayedButton>
                     <View style={{ height: 25, width: 0.5, backgroundColor: 'lightgray' }} />
                     <DelayedButton 
-                        activeOpacity={0.85}
+                        activeOpacity={0.6}
                         style={styles.CTRContainerStyle} 
                         onPress={this.handleDiscoverFriend}
                     >
@@ -219,7 +219,7 @@ class MeetTabV2 extends React.Component {
             seeAll = (
                 <DelayedButton
                     style={{ ...seeAllContainerStyle, padding: 13, paddingLeft: 5, alignSelf: 'flex-end' }}
-                    activeOpacity={0.85} 
+                    activeOpacity={0.6} 
                     onPress={onPress}
                 >
                     <Text style={seeAllTextStyle}>Manage All</Text>
@@ -244,7 +244,7 @@ class MeetTabV2 extends React.Component {
         return (
             <DelayedButton
                 style={{ ...seeAllContainerStyle, ...shadow }}
-                activeOpacity={0.85} 
+                activeOpacity={0.6} 
                 onPress={onPress}
                 key={key}
             >

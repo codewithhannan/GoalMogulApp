@@ -369,7 +369,7 @@ const CancelButton = (props) => {
         zIndex: 3,
         paddingTop
       }}
-      activeOpacity={0.85}
+      activeOpacity={0.6}
       onPress={() => {
           
         Actions.replace('drawer');

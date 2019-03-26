@@ -99,7 +99,7 @@ class ChatRoomCard extends React.Component {
     if (!item) return null;
 
     return (
-      <TouchableOpacity activeOpacity={0.85}
+      <TouchableOpacity activeOpacity={0.6}
         style={styles.cardContainerStyle}
         onPress={this.handleCardOnPress}
       >

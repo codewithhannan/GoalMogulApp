@@ -520,7 +520,7 @@ class MyTribe extends Component {
       const { text, icon } = switchCaseMemberStatus(isMember);
       return (
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8, height: 23 }}
           onPress={() => this.handleStatusChange(isMember, item)}
         >
@@ -548,7 +548,7 @@ class MyTribe extends Component {
     const requestText = hasRequested ? 'Cancel Request' : 'Request to Join';
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={styles.memberStatusContainerStyle}
         onPress={this.handleRequestOnPress}
       >
@@ -642,7 +642,7 @@ class MyTribe extends Component {
     const inviteButton = this.props.tab === 'members'
       ? (
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           onPress={() => this.handleInvite(_id)}
           style={styles.inviteButtonContainerStyle}
         >
@@ -745,7 +745,7 @@ class MyTribe extends Component {
     if (this.state.showPlus && (isMember === 'Admin' || isMember === 'Member')) {
       return (
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={styles.iconContainerStyle}
           onPress={() => this.handlePlus(item, navigationState)}
         >

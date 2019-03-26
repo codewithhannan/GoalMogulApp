@@ -464,7 +464,7 @@ class GoalDetailCardV3 extends Component {
     if (focusType) return null;
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={{ paddingTop: 10, backgroundColor: BACKGROUND_COLOR }}
         onPress={this.onViewCommentPress}
       >
@@ -485,7 +485,7 @@ class GoalDetailCardV3 extends Component {
             </Text>
           </View>
           <TouchableOpacity
-            activeOpacity={0.85}
+            activeOpacity={0.6}
             onPress={this.onViewCommentPress}
             style={styles.iconContainerStyle}
           >

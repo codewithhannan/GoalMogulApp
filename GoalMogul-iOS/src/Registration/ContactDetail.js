@@ -93,7 +93,7 @@ class ContactDetail extends Component {
         /> */}
         <TouchableOpacity 
           style={styles.bodyContainerStyle}
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           onPress={() => this.props.openProfile(_id)}
         >
           <Text
@@ -114,7 +114,7 @@ class ContactDetail extends Component {
         </TouchableOpacity>
         <View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
         <TouchableOpacity 
-          activeOpacity={0.85} 
+          activeOpacity={0.6} 
           onPress={this.onFriendRequest.bind(this, _id)}
         >
           {this.renderButton()}

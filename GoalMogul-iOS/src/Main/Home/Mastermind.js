@@ -172,7 +172,7 @@ class Mastermind extends Component {
           alignItems: 'center',
           padding: 12
         }}
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         onPress={this.openInfoModal}
       >
         <Image
@@ -195,7 +195,7 @@ class Mastermind extends Component {
   //   if (this.props.showPlus) {
   //     return (
   //       <TouchableOpacity
-  //         activeOpacity={0.85}
+  //         activeOpacity={0.6}
   //         style={styles.iconContainerStyle}
   //         onPress={this.handleCreateGoal}
   //       >
@@ -211,7 +211,7 @@ class Mastermind extends Component {
   // renderPlus() {
   //   return (
   //     <TouchableOpacity
-  //       activeOpacity={0.85}
+  //       activeOpacity={0.6}
   //       style={styles.iconContainerStyle}
   //       onPress={() => Actions.createGoalModal()}
   //     >
@@ -296,7 +296,7 @@ class Mastermind extends Component {
     //       removeClippedSubviews
     //       initialNumToRender={4}
     //       inactiveSlideOpacity={0.2}
-    //       inactiveSlideScale={0.85}
+    //       inactiveSlideScale={0.6}
     //       onEndReachedThreshold={0}
     //     />
     //     {

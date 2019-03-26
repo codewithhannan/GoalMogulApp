@@ -410,7 +410,7 @@ class CreatePostModal extends Component {
   //         {...restInput}
   //         {...custom}
   //       />
-  //       <TouchableOpacity activeOpacity={0.85}
+  //       <TouchableOpacity activeOpacity={0.6}
   //         style={{ padding: 15, alignItems: 'flex-end', alignSelf: 'center' }}
   //         onPress={iconOnPress}
   //       >
@@ -498,7 +498,7 @@ class CreatePostModal extends Component {
     // don't allow editing image
     const cancelButton = initializeFromState ? null : (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         onPress={() => this.props.change('mediaRef', false)}
         style={{ position: 'absolute', top: 10, left: 15 }}
       >
@@ -531,7 +531,7 @@ class CreatePostModal extends Component {
             </View>
 
             <TouchableOpacity
-              activeOpacity={0.85}
+              activeOpacity={0.6}
               onPress={() => this.setState({ mediaModal: true })}
               style={{ position: 'absolute', top: 10, right: 15 }}
             >
@@ -590,14 +590,14 @@ class CreatePostModal extends Component {
     return (
       <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10 }}>
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={actionIconWrapperStyle}
           onPress={this.handleOpenCamera}
         >
           <Image style={actionIconStyle} source={camera} />
         </TouchableOpacity>
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={{ ...actionIconWrapperStyle, marginLeft: 5 }}
           onPress={this.handleOpenCameraRoll}
         >

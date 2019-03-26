@@ -42,7 +42,7 @@ class ActionButton extends React.PureComponent {
     const buttonDisabled = disabled === true;
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={{ ...styles.containerStyle, ...containerStyle }}
         onPress={this.handleOnPress}
         disabled={(this.state.buttonDisabled || buttonDisabled)}
