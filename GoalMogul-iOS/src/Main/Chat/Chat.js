@@ -70,7 +70,7 @@ class ChatTab extends React.Component {
 					},
 				},
 				{
-					name: 'createChatroom',
+					name: 'createChatRoom',
 					iconStyle: { height: 18, width: 18, marginLeft: 3 },
 					textStyle: { marginLeft: 5 },
 					customContainerStyle: {
