@@ -79,7 +79,7 @@ const loadOneTab = (type, skip, limit, token, dispatch, callback, onError) => {
   API
     .get(`${BASE_ROUTE}${route}?limit=${limit}&skip=${skip}`, token)
     .then((res) => {
-      console.log(`loading type: ${type} with res: `, res);
+      console.log(`loading type: ${type} with res length: `, res.data ? res.data.length : 0);
 
       // TODO: update failure condition
       if (res.data) {
