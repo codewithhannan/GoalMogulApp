@@ -39,6 +39,7 @@ import ExploreReducers from '../redux/modules/explore/ExploreReducers';
 import NewShareReducers from '../redux/modules/feed/post/NewShareReducers';
 import NewTribeReducers from '../redux/modules/tribe/NewTribeReducers';
 import NewEventReducers from '../redux/modules/event/NewEventReducers';
+import NewChatRoomReducers from '../redux/modules/chat/NewChatRoomReducers';
 // Menu related reducers
 import MyEventTabReducers from '../redux/modules/event/MyEventTabReducers';
 import MyEventReducers from '../redux/modules/event/MyEventReducers';
@@ -93,6 +94,7 @@ const reducers = combineReducers({
   myTribe: MyTribeReducers,
   newTribe: NewTribeReducers,
   newEvent: NewEventReducers,
+  newChatRoom: NewChatRoomReducers,
   notification: NotificationTabReducers,
   chat: ChatReducers
 });

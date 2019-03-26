@@ -97,7 +97,7 @@ export const editEvent = (event) => (dispatch, getState) => {
   Actions.push('createEventStack', { initializeFromState: true, event });
 };
 
-export const openEventInvitModal = ({ eventId, cardIconSource, cardIconStyle, callback }) =>
+export const openEventInviteModal = ({ eventId, cardIconSource, cardIconStyle, callback }) =>
 (dispatch) => {
   const searchFor = {
     type: 'event',

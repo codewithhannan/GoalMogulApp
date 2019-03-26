@@ -51,6 +51,8 @@ class CreateButtonOverlay extends Component {
 	}
 
 	handleActionSelect = (selectedButtonName) => {
+		// remove overlay
+		Actions.pop();
 		const { onActionSelect } = this.props;
 		Animated.timing(this.fadeAnim, {
 			duration: 100,
@@ -59,7 +61,6 @@ class CreateButtonOverlay extends Component {
 			if (onActionSelect) {
 				onActionSelect(selectedButtonName);
 			};
-			Actions.pop();
 		});
 	}
 
@@ -128,8 +129,8 @@ class CreateButtonOverlay extends Component {
 						customContainerStyle,
 					}}
 					onPress={() => {
-						onPress();
 						this.handleActionSelect(name);
+						onPress();
 					}}
 					key={index}
 				/>

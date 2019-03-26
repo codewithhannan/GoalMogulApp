@@ -19,7 +19,8 @@ import ChatRoomCard from './ChatRoomCard';
 import {
 	refreshChatRooms,
 	loadMoreChatRooms,
-	searchQueryUpdated
+	searchQueryUpdated,
+	createOrGetDirectMessage,
 } from '../../../redux/modules/chat/ChatActions';
 
 import {
@@ -27,7 +28,6 @@ import {
   } from '../../../Utils/Icons';
 
 import { IPHONE_MODELS } from '../../../Utils/Constants';
-
 
 const CHATROOM_AUTO_SEARCH_DELAY_MS = 500;
 
@@ -47,8 +47,9 @@ class ChatRoomTab extends React.Component {
 		this.props.refreshChatRooms(this.props.currentTabKey, this.props.limit, '');
 	}
 
-	handleOnRefresh = () => {
-		this.props.refreshChatRooms(this.props.currentTabKey, this.props.limit, this.props.searchQuery);
+	handleOnRefresh = (maybeQuery) => {
+		const query = typeof maybeQuery == "string" ? maybeQuery : this.props.searchQuery;
+		this.props.refreshChatRooms(this.props.currentTabKey, this.props.limit, query);
 	}
 
 	handleOnLoadMore = () => {
@@ -56,28 +57,36 @@ class ChatRoomTab extends React.Component {
 		this.props.loadMoreChatRooms(this.props.currentTabKey, this.props.limit, this.props.skip, this.props.searchQuery);
 	}
 
+	handleItemSelect = (item) => {
+		if (item.isFriend) {
+			this.props.createOrGetDirectMessage(item._id);
+			this.search.clear();
+		};
+	}
+
 	renderItem = ({ item }) => {
 		return (
-			<ChatRoomCard item={item} />
+			<ChatRoomCard item={item} onItemSelect={this.handleItemSelect} />
 		);
 	}
 
-	handleSearchUpdate(newText) {
+	handleSearchUpdate = (newText='') => {
 		if (this.chatroomSearchTimer) {
 			clearInterval(this.chatroomSearchTimer);
 		};
+		this.props.searchQueryUpdated(this.props.currentTabKey, newText);
 		if (newText.trim().length) {
 			this.chatroomSearchTimer = setTimeout(this.handleOnRefresh.bind(this), CHATROOM_AUTO_SEARCH_DELAY_MS);
 		} else {
-			this.handleOnRefresh();
+			this.handleOnRefresh('');
 		}
-		this.props.searchQueryUpdated(this.props.currentTabKey, newText);
 	}
 
 	renderListHeader = () => {
 		const { searchQuery } = this.props;
 		return (
 			<SearchBar
+				ref={search => this.search = search}
 				platform="default"
 				clearIcon={<MaterialIcons
 					name="clear"
@@ -97,6 +106,7 @@ class ChatRoomTab extends React.Component {
 				}}
 				placeholder={`Search...`}
 				onChangeText={this.handleSearchUpdate.bind(this)}
+				onClear={this.handleSearchUpdate}
 				searchIcon={<SearchIcon 
 					iconContainerStyle={{ marginBottom: 3, marginTop: 1 }} 
 					iconStyle={{ tintColor: '#777', height: 15, width: 15 }}
@@ -192,5 +202,6 @@ export default connect(
 		refreshChatRooms,
 		loadMoreChatRooms,
 		searchQueryUpdated,
+		createOrGetDirectMessage,
 	}
 )(ChatRoomTab);

@@ -83,6 +83,7 @@ export default (state=INITIAL_STATE, action) => {
 			if (! (type in CHAT_LOAD_TYPES)) throw new Error('Invalid load type: ' + type);
 			let newState = _.cloneDeep(state);
 			newState = _.set(newState, `${type}.refreshing`, false);
+			newState = _.set(newState, `${type}.skip`, 0);
 
 			return _.set(newState, `${type}.data`, data);
 		}

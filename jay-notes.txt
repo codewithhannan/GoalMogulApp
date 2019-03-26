@@ -1,14 +1,6 @@
 --------------------------------------------------------
 TODO
 --------------------------------------------------------
-
-- (In progress) Create Direct Message modal
-    - Search user input
-    - Tap single result to create chatroom and open convo
-- (In progress) Create Chatroom modal (make this reusable for edit chatroom)
-    - Customize form to match create and update endpoints
-    - Search user input, select multiple users
-    - Submit to create chat room and open convo
 - ChatRoom component
     - Use GiftedChat
     - Upon opening up, reset the local (chatRoomId -> unreadCount) map to indicate that the pending messages have been read

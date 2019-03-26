@@ -48,6 +48,24 @@ export const searchQueryUpdated = (tab, query) => (dispatch) => {
 	});
 }
 
+export const createOrGetDirectMessage = (userId) => (dispatch, getState) => {
+	const { token } = getState().user;
+	const body = {
+		roomType: 'Direct',
+		membersToAdd: userId,
+	};
+	API.post(`secure/chat/room`, body, token).then(resp => {
+		if (resp.status != 200) {
+			throw new Error('Could not create Chat Room');
+		};
+		const chatRoom = resp.data;
+		// TODO(Jay): open up chat conversation with given _id
+		Alert.alert('Success');
+	}).catch(err => {
+		Alert.alert('Error', 'Could not create a conversation with specified user.');
+	});
+};
+
 /* Following are actions to load chat rooms */
 export const refreshChatRooms = (tab, pageSize, maybeSearchQuery) => (dispatch, getState) => {
 	dispatch({

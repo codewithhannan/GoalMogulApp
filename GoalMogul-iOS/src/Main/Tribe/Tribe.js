@@ -137,7 +137,6 @@ class Tribe extends Component {
             ...this.state,
             showPlus: true
           });
-          Actions.pop();
           Actions.createPostModal({ tagSearch });
         }
       },
@@ -153,7 +152,6 @@ class Tribe extends Component {
             ...this.state,
             showPlus: true
           });
-          Actions.pop();
           this.props.openTribeInvitModal(_id);
         }
       }

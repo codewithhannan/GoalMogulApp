@@ -63,7 +63,7 @@ import {
 } from '../../../redux/modules/event/EventSelector';
 
 import {
-  openEventInvitModal,
+  openEventInviteModal,
   deleteEvent,
   editEvent,
   reportEvent,
@@ -155,7 +155,6 @@ class MyEvent extends Component {
             ...this.state,
             showPlus: true
           });
-          Actions.pop();
           Actions.push('createPostModal', {
             belongsToEvent: _id,
             callback: postCallback,
@@ -175,8 +174,7 @@ class MyEvent extends Component {
             ...this.state,
             showPlus: true
           });
-          Actions.pop();
-          this.props.openEventInvitModal(
+          this.props.openEventInviteModal(
             {
               eventId: _id,
               cardIconSource: invite,
@@ -205,7 +203,7 @@ class MyEvent extends Component {
    * This method is deprecated by the renderPlus
    */
   handleInvite = (_id) => {
-    return this.props.openEventInvitModal(_id);
+    return this.props.openEventInviteModal(_id);
   }
 
   handleRSVPOnPress = () => {
@@ -763,7 +761,7 @@ export default connect(
     eventSelectTab,
     eventDetailClose,
     loadMoreEventFeed,
-    openEventInvitModal,
+    openEventInviteModal,
     deleteEvent,
     editEvent,
     reportEvent,

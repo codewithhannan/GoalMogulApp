@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
+import { Alert } from 'react-native';
 
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup';
@@ -18,13 +19,15 @@ import ChatRoomTab from './ChatRoomList/ChatRoomTab';
 import {
 	selectChatTab,
 	plusPressed,
-	plusUnpressed
+	plusUnpressed,
+	createOrGetDirectMessage,
 } from '../../redux/modules/chat/ChatActions';
 
 import plus_image from '../../asset/utils/plus.png';
 import direct_message_image from '../../asset/utils/direct_message.png';
 import profile_people_image from '../../asset/utils/profile_people.png';
-import { APP_DEEP_BLUE } from '../../styles';
+import { APP_DEEP_BLUE, APP_BLUE_BRIGHT } from '../../styles';
+import next from '../../asset/utils/next.png';
 
 class ChatTab extends React.Component {
 
@@ -55,8 +58,15 @@ class ChatTab extends React.Component {
 					iconSource: direct_message_image,
 					text: 'Direct',
 					onPress: () => {
-						Actions.pop(); // remove the overlay from the stack
-						Actions.push('createDirectMessageModal');
+						const searchFor = {
+						  type: 'directChat',
+						};
+						const cardIconStyle = { tintColor: APP_BLUE_BRIGHT };
+						const cardIconSource = next;
+						const callback = (selectedUserId) => {
+							this.props.createOrGetDirectMessage(selectedUserId);
+						};
+						Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle, callback });
 					},
 				},
 				{
@@ -69,8 +79,7 @@ class ChatTab extends React.Component {
 					iconSource: profile_people_image,
 					text: 'Group',
 					onPress: () => {
-						Actions.pop(); // remove the overlay from the stack
-						Actions.push('createChatroomModal');
+						Actions.push('createChatRoomStack');
 					},
 				}
 			],
@@ -169,6 +178,7 @@ export default connect(
 	{
 		selectChatTab,
 		plusPressed,
-		plusUnpressed
+		plusUnpressed,
+		createOrGetDirectMessage,
 	}
 )(ChatTab);
