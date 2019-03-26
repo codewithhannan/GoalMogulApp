@@ -43,7 +43,7 @@ import {
 	refreshFriendsSearch,
 	loadMoreFriendsSearch,
 	searchQueryUpdated,
-} from '../../../redux/modules/chat/CreateChatRoomActions';
+} from '../../../redux/modules/chat/CreateChatroomActions';
 import { openCameraRoll, openCamera } from '../../../actions';
 
 // assets
