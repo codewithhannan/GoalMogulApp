@@ -40,7 +40,7 @@ import {
   eventDetailClose,
   loadMoreEventFeed,
   rsvpEvent,
-  openEventInvitModal,
+  openEventInviteModal,
   deleteEvent,
   editEvent,
   reportEvent
@@ -83,7 +83,7 @@ class Event extends Component {
   }
 
   handleInvite = (_id) => {
-    return this.props.openEventInvitModal(_id);
+    return this.props.openEventInviteModal(_id);
   }
 
   /**
@@ -558,7 +558,7 @@ export default connect(
     eventDetailClose,
     loadMoreEventFeed,
     rsvpEvent,
-    openEventInvitModal,
+    openEventInviteModal,
     deleteEvent,
     editEvent,
     reportEvent,

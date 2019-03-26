@@ -182,7 +182,7 @@ export const registrationNextIntro = (skip) => {
         })
         .then((image) => {
           // Upload image to S3 server
-          console.log('image to uplaod is: ', image);
+          console.log('image to upload is: ', image);
           return ImageUtils.getPresignedUrl(image.uri, token, (objectKey) => {
             dispatch({
               type: REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS,

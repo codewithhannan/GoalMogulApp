@@ -15,7 +15,7 @@ import _ from 'lodash';
 
 // Component
 import BaseOverlay from './BaseOverlay';
-import PeopleSearch from './People/PeopleSearch';
+import FriendsSearch from './People/FriendsSearch';
 
 // Actions
 import {
@@ -37,9 +37,10 @@ import { openProfile } from '../../actions';
 import {
   IPHONE_MODELS
 } from '../../Utils/Constants';
+import { SearchIcon } from '../../Utils/Icons';
 
  const DEBUG_KEY = '[ People Search ]';
- const SEARCH_TYPE = 'people';
+ const SEARCH_TYPE = 'friends';
 
  class PeopleSearchOverlay extends Component {
     handleOnResSelect = (_id) => {
@@ -56,6 +57,11 @@ import {
       if (type === 'event' || type === 'myEvent') {
         return this.props.inviteParticipantToEvent(id, _id, callback);
       }
+      if (type === 'directChat') {
+        callback(_id);
+        this.handleCancel();
+        return;
+      };
     }
 
    // Search bar functions
@@ -96,7 +102,10 @@ import {
                platform='ios'
                round
                autoFocus
-               noIcon
+               searchIcon={<SearchIcon
+                iconContainerStyle={{ marginBottom: 3, marginTop: 1 }} 
+                iconStyle={{ tintColor: '#17B3EC', height: 15, width: 15 }}
+               />}
                inputStyle={styles.searchInputStyle}
                inputContainerStyle={styles.searchInputContainerStyle}
                containerStyle={styles.searchContainerStyle}
@@ -109,7 +118,7 @@ import {
                showLoading={this.props.loading}
              />
            </View>
-           <PeopleSearch reducerPath='' onSelect={this.handleOnResSelect} {...this.props} />
+           <FriendsSearch reducerPath='' onSelect={this.handleOnResSelect} {...this.props} />
          </MenuProvider>
        </BaseOverlay>
      );
@@ -147,7 +156,7 @@ import {
 
  const mapStateToProps = state => {
    const { selectedTab, navigationState } = state.search;
-   const { loading } = state.search.people;
+   const { loading } = state.search.friends;
 
    return {
      selectedTab,

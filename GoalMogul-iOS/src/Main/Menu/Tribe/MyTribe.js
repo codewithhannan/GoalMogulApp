@@ -201,7 +201,6 @@ class MyTribe extends Component {
             ...this.state,
             showPlus: true
           });
-          Actions.pop();
           Actions.createPostModal({
             belongsToTribe: _id,
             callback: postCallback,
@@ -221,7 +220,6 @@ class MyTribe extends Component {
             ...this.state,
             showPlus: true
           });
-          Actions.pop();
           this.props.openTribeInvitModal({
             tribeId: _id,
             cardIconSource: invite,

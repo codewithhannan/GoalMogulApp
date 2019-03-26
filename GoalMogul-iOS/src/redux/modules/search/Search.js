@@ -26,6 +26,16 @@ const INITIAL_STATE_TRIBE = {
   refreshing: false
 };
 
+const INITIAL_STATE_FRIENDS = {
+  data: [],
+  queryId: undefined,
+  loading: false,
+  skip: 0,
+  limit: 20,
+  hasNextPage: undefined,
+  refreshing: false
+};
+
 const INITIAL_STATE = {
   selectedTab: 'people',
   navigationState: {
@@ -48,6 +58,9 @@ const INITIAL_STATE = {
     limit: 20,
     hasNextPage: undefined,
     refreshing: false
+  },
+  friends: {
+    ...INITIAL_STATE_FRIENDS
   },
   tribes: { ...INITIAL_STATE_TRIBE },
   events: {
@@ -78,13 +91,16 @@ export const SearchRouteMap = {
   people: {
     route: `${BASE_ROUTE}/user/profile/es`
   },
+  friends: {
+    route: `${BASE_ROUTE}/user/friendship/es`
+  },
   events: {
     route: `${BASE_ROUTE}/event/es`
   },
   tribes: {
     route: `${BASE_ROUTE}/tribe/es`
   },
-  chatrooms: {
+  chatRooms: {
     route: ''
   }
 };

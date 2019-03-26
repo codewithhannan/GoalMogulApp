@@ -33,7 +33,7 @@ class ImageModal extends React.Component {
     if (!this.props.mediaRef) return null;
 
     let urlToRender = this.props.mediaRef;
-    if (!urlToRender.includes(IMAGE_BASE_URL)) {
+    if (!urlToRender.includes(IMAGE_BASE_URL) && !this.props.isLocalFile) {
       urlToRender = `${IMAGE_BASE_URL}${urlToRender}`;
     }
 

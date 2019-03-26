@@ -83,7 +83,8 @@ import NotificationListView from './Main/Notification/Notification/NotificationL
 import NotificationNeedListView from './Main/Notification/Need/NotificationNeedListView';
 
 // Chat
-import ChatTab from './Main/Chat/ChatTab';
+import Chat from './Main/Chat/Chat';
+import CreateChatroomModal from './Main/Chat/Modals/CreateChatroomModal';
 
 // Account
 import Setting from './Main/Setting/Setting';
@@ -126,6 +127,11 @@ class RouterComponent extends Component {
     // Back to initial for notificationTab
     if (state.key === 'notificationTab' && isFocused() && state.routes.length > 1) {
       return Actions.popTo('notification');
+    }
+
+    // Back to initial for chatTab
+    if (state.key === 'chatTab' && isFocused() && state.routes.length > 1) {
+      return Actions.popTo('chat');
     }
 
     if (state.key === 'notificationTab') {
@@ -457,7 +463,7 @@ class RouterComponent extends Component {
                         })
                       }
                     >
-                      <Scene key="chat" component={ChatTab} initial />
+                      <Scene key="chat" component={Chat} initial />
                       <Scene key="chatTab_searchLightBox" component={SearchOverlay} hideNavBar />
                       <Scene key="chatTab_myEventDetail" component={MyEvent} />
                       <Scene key="chatTab_goal" component={GoalDetailCard} />
@@ -516,6 +522,14 @@ class RouterComponent extends Component {
             component={CreatePostModal}
             hideNavBar
           />
+          <Stack key="createChatRoomStack" hideNavBar>
+            <Scene
+              key="createChatroomModal"
+              component={CreateChatroomModal}
+              initial
+              hideNavBar
+            />
+          </Stack>
           <Stack key="createTribeStack" hideNavBar>
             <Scene key="createTribeModal" component={CreateTribeModal} initial hideNavBar />
           </Stack>
