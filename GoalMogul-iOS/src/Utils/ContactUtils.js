@@ -54,7 +54,7 @@ const ContactUtils = {
   @return update result promise
   */
   uploadContacts(contacts, token) {
-    const url = 'https://api.goalmogul.com/api/secure/user/contactSync/';
+    const url = 'https://api.goalmogul.com/api/secure/user/contactsync/';
     // const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/contactSync/';
     // const url = 'http://192.168.0.3:8081/api/secure/user/contactSync/';
 
@@ -62,13 +62,15 @@ const ContactUtils = {
     const contactListBlob = new Blob([contactListJSONString], {type: 'text/plain'});
 
     // console.log(`${DEBUG_KEY}: contact list blob:`, contactListJSONString);
-    const formData = new FormData();
-    formData.append('contactList', contactListBlob);
+    var formData = new FormData();
+    formData.append('contactList', contactListBlob, 'contactList.txt');
 
     const headers = {
       method: 'POST',
       headers: {
         // Accept: 'application/json',
+        // 'content-type': 'application/x-www-form-urlencoded',
+        // 'content-type': 'multipart/form-data',
         'x-access-token': token
       },
       body: formData
@@ -76,33 +78,37 @@ const ContactUtils = {
       //   contactList: contacts
       // })
     };
+
+    console.log(`${DEBUG_KEY}: [ uploadContacts ]: blob is:`, contactListBlob);
     
     // Original method
-    // return ContactUtils.custumeFetch(url, headers, contacts);
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            // Successfully uploaded the file.
-            console.log(`${DEBUG_KEY}: [ uploadContacts ]: Successfully uploading the file with res:`, xhr);
-            resolve(xhr.responseText);
-          } else {
-            // The file could not be uploaded.
-            reject(
-              new Error(
-                `Request failed. Status: ${xhr.status}. Content: ${xhr.responseText}`
-              )
-            );
-          }
-        }
-      };
-      xhr.open('POST', url);
-      // xhr.setRequestHeader('X-Amz-ACL', 'public-read');
-      // xhr.setRequestHeader('Content-Type', 'image/jpeg');
-      xhr.setRequestHeader('x-access-token', token);
-      xhr.send(formData);
-    });
+    return ContactUtils.custumeFetch(url, headers, contacts);
+    // return new Promise((resolve, reject) => {
+    //   const xhr = new XMLHttpRequest();
+    //   xhr.onreadystatechange = function () {
+    //     if (xhr.readyState === 4) {
+    //       if (xhr.status === 200) {
+    //         // Successfully uploaded the file.
+    //         console.log(`${DEBUG_KEY}: [ uploadContacts ]: Successfully uploading the file with res:`, xhr);
+    //         resolve(xhr.responseText);
+    //       } else {
+    //         // The file could not be uploaded.
+    //         console.log(`${DEBUG_KEY}: [ uploadContacts ]: failed uploading the file with res:`, xhr);
+    //         reject(
+    //           new Error(
+    //             `Request failed. Status: ${xhr.status}. Content: ${xhr.responseText}.`
+    //           )
+    //         );
+    //       }
+    //     }
+    //   };
+    //   xhr.open('POST', url);
+    //   // xhr.setRequestHeader('X-Amz-ACL', 'public-read');
+    //   // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    //   // xhr.setRequestHeader('Content-Type', 'multipart/form-data');
+    //   xhr.setRequestHeader('x-access-token', token);
+    //   xhr.send(formData);
+    // });
   },
 
   /**
