@@ -42,6 +42,25 @@ class ChatTab extends React.Component {
 		chatRooms: ChatRoomTab,
 	});
 
+	_renderScene = ({ route }) => {
+		switch (route.key) {
+			case 'directMessages': {
+				return (
+					<ChatRoomTab tabKey='directMessages' />
+				);
+			}
+
+			case 'chatRooms': {
+				return (
+					<ChatRoomTab tabKey='chatRooms' />
+				);
+			}
+			
+			default: 
+				return null;
+		}
+	}
+
 	openCreateChatMenu() {
 		this.props.plusPressed();
 		Actions.push('createButtonOverlay', {
