@@ -1,10 +1,5 @@
 // Authantication actions
 import { AsyncStorage } from 'react-native';
-import {
-  setGenericPassword,
-  getGenericPassword,
-  resetGenericPassword
-} from 'react-native-keychain';
 import { SecureStore, SplashScreen } from 'expo';
 
 import {
