@@ -83,7 +83,7 @@ class Requests extends Component {
       }
       return (
         <View style={buttonContainerStyle} key={index}>
-          <TouchableOpacity activeOpacity={0.85} onPress={this.selectTab.bind(this, t.key)}>
+          <TouchableOpacity activeOpacity={0.6} onPress={this.selectTab.bind(this, t.key)}>
             <Text style={buttonTextStyle}>{t.name}</Text>
           </TouchableOpacity>
         </View>

@@ -89,7 +89,7 @@ class SuggestedCard extends Component {
     return (
       <View style={styles.iconContainerStyle}>
         <DelayedButton
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           onPress={this.onButtonClicked.bind(this, _id)}
           style={{ padding: 15 }}
         >
@@ -212,7 +212,7 @@ class SuggestedCard extends Component {
     const { headline, _id } = item;
     return (
       <DelayedButton
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={[styles.containerStyle, cardBoxShadow]}
         onPress={() => this.props.openProfile(_id)}
       >

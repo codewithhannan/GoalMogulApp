@@ -419,7 +419,7 @@ class GoalCard extends React.PureComponent {
   renderViewGoal() {
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -521,7 +521,7 @@ class GoalCard extends React.PureComponent {
           <GoalCardHeader item={item} />
           <View style={{ backgroundColor: '#e5e5e5' }}>
             <TouchableOpacity
-              activeOpacity={0.85}
+              activeOpacity={0.6}
               style={styles.containerStyle}
               onPress={() => this.props.onPress(this.props.item)}
             >

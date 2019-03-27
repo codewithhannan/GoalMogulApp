@@ -236,7 +236,7 @@ class Home extends Component {
     if (this.props.showPlus) {
       return (
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={styles.iconContainerStyle}
           onPress={this.handleCreateGoal}
         >

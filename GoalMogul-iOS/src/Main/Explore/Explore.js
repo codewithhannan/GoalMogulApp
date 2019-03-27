@@ -10,6 +10,7 @@ import SearchBarHeader from '../Common/Header/SearchBarHeader';
 
 import TribeTab from './TribeTab';
 import EventTab from './EventTab';
+import PeopleTab from './People/PeopleTab';
 
 // Actions
 import { exploreSelectTab } from '../../redux/modules/explore/ExploreActions';
@@ -17,6 +18,7 @@ import { exploreSelectTab } from '../../redux/modules/explore/ExploreActions';
 // Assets
 import TribeIcon from '../../asset/explore/tribe.png';
 import EventIcon from '../../asset/suggestion/event.png';
+import PeopleIcon from '../../asset/suggestion/group.png';
 
 const TabIconMap = {
   events: {
@@ -32,6 +34,13 @@ const TabIconMap = {
       height: 15,
       width: 15
     }
+  },
+  people: {
+    iconSource: PeopleIcon,
+    iconStyle: {
+      height: 15,
+      width: 17
+    }
   }
 };
 
@@ -43,6 +52,7 @@ class Explore extends Component {
   };
 
   _renderScene = SceneMap({
+    people: PeopleTab,
     tribes: TribeTab,
     events: EventTab,
   });

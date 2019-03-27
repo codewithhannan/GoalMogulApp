@@ -71,7 +71,7 @@ class SectionCard extends Component {
       ? null
       : (
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={styles.iconContainerStyle}
           onPress={() => this.props.onPress({ ...item, type })}
         >
@@ -84,7 +84,7 @@ class SectionCard extends Component {
       <View style={{ flex: flexSize, flexDirection: 'row' }}>
         {suggestionButton}
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={styles.iconContainerStyle}
           onPress={() => this.handleShareOnClick()}
         >
@@ -108,7 +108,7 @@ class SectionCard extends Component {
 
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={iconContainerStyle}
         onPress={onPress}
       >
@@ -159,7 +159,7 @@ class SectionCard extends Component {
 
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         onPress={() => onCardPress(item)}
         style={{
           ...styles.sectionContainerStyle,

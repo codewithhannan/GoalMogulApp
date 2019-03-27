@@ -100,7 +100,7 @@ class RefPreview extends Component {
     };
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={styles.containerStyle}
         onPress={() => this.handleOnPress(item, postType, goalRef)}
       >

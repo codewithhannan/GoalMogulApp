@@ -79,7 +79,7 @@ const loadOneTab = (type, skip, limit, token, dispatch, callback, onError) => {
   API
     .get(`${BASE_ROUTE}${route}?limit=${limit}&skip=${skip}`, token)
     .then((res) => {
-      console.log(`loading type: ${type} with res: `, res);
+      console.log(`loading type: ${type} with res length: `, res.data ? res.data.length : 0);
 
       // TODO: update failure condition
       if (res.data) {
@@ -377,6 +377,7 @@ export const meetContactSync = (callback, componentKey) => async (dispatch, getS
         return fetchMatchedContacts(token, 0, limit);
       })
       .then((res) => {
+        // console.log(`${DEBUG_KEY}: [ meetContactSync ]: [ fetchMatchedContacts ]: res is:`, res);
         console.log(`${DEBUG_KEY}: [ meetContactSync ]: [ fetchMatchedContacts ]: matched ` + 
           `contacts with res data length`, res && res.data ? res.data.length : 0);
         const { data } = res;
@@ -408,6 +409,16 @@ export const meetContactSync = (callback, componentKey) => async (dispatch, getS
       })
       .catch((err) => {
         console.warn('[ Action ContactSync Fail ]: ', err);
+        dispatch({
+          type: MEET_CONTACT_SYNC_FETCH_DONE,
+          payload: {
+            data: [], // TODO: replaced with res
+            skip: 0,
+            limit,
+            hasNextPage: false,
+            refresh: true
+          }
+        });
       });
 };
 

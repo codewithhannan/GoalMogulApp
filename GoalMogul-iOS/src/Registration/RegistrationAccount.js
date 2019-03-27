@@ -96,7 +96,7 @@ class Account extends Component {
   renderLogIn() {
     return null;
     // return (
-    //   <TouchableOpacity activeOpacity={0.85} onPress={this.handleLogInPressed.bind(this)}>
+    //   <TouchableOpacity activeOpacity={0.6} onPress={this.handleLogInPressed.bind(this)}>
     //     <View>
     //       <Button text='Log In to your account' arrow />
     //     </View>
@@ -160,7 +160,7 @@ class Account extends Component {
               onSubmitEditing={handleSubmit(this.handleNextPressed)}
             />
 
-            <TouchableOpacity activeOpacity={0.85} onPress={handleSubmit(this.handleNextPressed)}>
+            <TouchableOpacity activeOpacity={0.6} onPress={handleSubmit(this.handleNextPressed)}>
               <View>
                 <Button text='Next' />
               </View>
@@ -229,7 +229,7 @@ class Account extends Component {
     //               onDonePress={handleSubmit(this.handleNextPressed)}
     //             />
     // 
-    //             <TouchableOpacity activeOpacity={0.85} onPress={handleSubmit(this.handleNextPressed)}>
+    //             <TouchableOpacity activeOpacity={0.6} onPress={handleSubmit(this.handleNextPressed)}>
     //               <View>
     //                 <Button text='Next' />
     //               </View>

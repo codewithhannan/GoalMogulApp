@@ -89,7 +89,7 @@ class SearchOverlay extends Component {
     const marginTop = (
       Platform.OS === 'ios' &&
       IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
-    ) ? 45 : 55;
+    ) ? 45 : 70;
 
     return (
       <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>

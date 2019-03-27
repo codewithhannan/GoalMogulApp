@@ -84,7 +84,7 @@ import NotificationNeedListView from './Main/Notification/Need/NotificationNeedL
 
 // Chat
 import Chat from './Main/Chat/Chat';
-import CreateChatroomModal from './Main/Chat/Modals/CreateChatroomModal';
+import CreateChatRoomModal from './Main/Chat/Modals/CreateChatRoomModal';
 
 // Account
 import Setting from './Main/Setting/Setting';
@@ -524,8 +524,8 @@ class RouterComponent extends Component {
           />
           <Stack key="createChatRoomStack" hideNavBar>
             <Scene
-              key="createChatroomModal"
-              component={CreateChatroomModal}
+              key="createChatRoomModal"
+              component={CreateChatRoomModal}
               initial
               hideNavBar
             />

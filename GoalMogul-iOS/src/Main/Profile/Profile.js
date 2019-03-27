@@ -101,7 +101,7 @@ class Profile extends Component {
     if (this.props.showPlus && this.props.isSelf) {
       return (
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={styles.iconContainerStyle}
           onPress={this.handleCreateGoal}
         >

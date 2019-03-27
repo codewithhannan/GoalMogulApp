@@ -181,7 +181,7 @@ class InputField extends Component {
           {...custom}
         />
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={{ padding: 12, paddingLeft: 6, alignItems: 'flex-end', alignSelf: 'center' }}
           onPress={this.onIconPress}
         >

@@ -11,7 +11,7 @@ const NextButton = props => {
   const { onPress } = props;
   return (
     <TouchableOpacity
-      activeOpacity={0.85}
+      activeOpacity={0.6}
       style={{ ...styles.containerStyle, ...styles.borderShadow }}
       onPress={onPress}
     >

@@ -57,7 +57,6 @@ class PostDetailCard extends Component {
       commentBoxPadding: new Animated.Value(0),
       keyboardDidShow: false
     };
-    this.handleOnCommentSubmitEditing = this.handleOnCommentSubmitEditing.bind(this);
   }
 
   componentDidMount() {

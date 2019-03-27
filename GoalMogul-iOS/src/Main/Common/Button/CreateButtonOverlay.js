@@ -161,7 +161,7 @@ const ActionButton = (props) => {
 	const { text, source, style, onPress } = props;
 	const { containerStyle, iconStyle, textStyle } = actionButtonStyles;
 	return (
-		<TouchableOpacity activeOpacity={0.85} style={{...containerStyle, ...style.customContainerStyle}} onPress={onPress}>
+		<TouchableOpacity activeOpacity={0.6} style={{...containerStyle, ...style.customContainerStyle}} onPress={onPress}>
 			<Image style={{ ...iconStyle, ...style.iconStyle }} source={source} />
 			<Text style={{ ...textStyle, ...style.textStyle }}>{text}</Text>
 		</TouchableOpacity>

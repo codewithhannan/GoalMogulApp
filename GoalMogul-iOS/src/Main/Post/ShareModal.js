@@ -546,7 +546,7 @@ const getShareTo = (state) => {
 const ShareToComponent = (props) => {
   const { name, onPress } = props;
   return (
-    <TouchableOpacity activeOpacity={0.85}
+    <TouchableOpacity activeOpacity={0.6}
       style={styles.shareToContainerStyler}
       onPress={onPress}
     >

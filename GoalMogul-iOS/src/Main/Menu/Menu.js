@@ -68,7 +68,7 @@ class Menu extends React.PureComponent {
           </View>
         </View>
         <DelayedButton
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           onPress={() => this.props.openMyTribeTab()}
           style={styles.buttonStyle}
         >
@@ -76,7 +76,7 @@ class Menu extends React.PureComponent {
           <Text style={styles.titleTextStyle}>My tribes</Text>
         </DelayedButton>
         <DelayedButton
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           onPress={() => this.props.openMyEventTab()}
           style={styles.buttonStyle}
         >
@@ -84,7 +84,7 @@ class Menu extends React.PureComponent {
           <Text style={styles.titleTextStyle}>My events</Text>
         </DelayedButton>
         <DelayedButton
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           onPress={() => Actions.push('myTutorial', { initial: false })}
           style={styles.buttonStyle}
         >
@@ -92,7 +92,7 @@ class Menu extends React.PureComponent {
           <Text style={styles.titleTextStyle}>Tutorial video</Text>
         </DelayedButton>
         <DelayedButton
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           onPress={() => this.handleBugReportOnPress()}
           style={styles.buttonStyle}
         >
@@ -100,7 +100,7 @@ class Menu extends React.PureComponent {
           <Text style={styles.titleTextStyle}>Report bug</Text>
         </DelayedButton>
         <DelayedButton
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           onPress={() => {
             Alert.alert('Log out', 'Are you sure to log out?', [
                 { text: 'Cancel', onPress: () => console.log('user cancel logout') },
@@ -125,7 +125,7 @@ const Button = (props) => {
 
   return (
     <TouchableOpacity
-      activeOpacity={0.85}
+      activeOpacity={0.6}
       onPress={onPress}
       style={styles.buttonStyle}
     >

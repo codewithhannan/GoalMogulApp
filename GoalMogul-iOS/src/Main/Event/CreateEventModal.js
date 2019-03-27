@@ -167,7 +167,7 @@ class CreateEventModal extends React.Component {
     //   return (
     //     <View style={{ ...styles.sectionMargin }}>
     //       {titleText}
-    //       <TouchableOpacity activeOpacity={0.85}
+    //       <TouchableOpacity activeOpacity={0.6}
     //         style={{
     //           height: 40,
     //           width: 90,
@@ -307,7 +307,7 @@ class CreateEventModal extends React.Component {
       ? 
       (
         <TouchableOpacity 
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={{ justifyContent: 'center', padding: 10, marginLeft: 5 }}
           onPress={() => {
             this.props.change('hasTimeline', false);
@@ -329,7 +329,7 @@ class CreateEventModal extends React.Component {
         {titleText}
         <View style={{ marginTop: 8, marginLeft: 10, flexDirection: 'row' }}>
           <TouchableOpacity 
-            activeOpacity={0.85}
+            activeOpacity={0.6}
             style={{
               height: 50,
               width: 130,
@@ -348,7 +348,7 @@ class CreateEventModal extends React.Component {
           </TouchableOpacity>
 
           <TouchableOpacity 
-            activeOpacity={0.85}
+            activeOpacity={0.6}
             style={{
               height: 50,
               width: 130,
@@ -380,11 +380,11 @@ class CreateEventModal extends React.Component {
     const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
     return (
       <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10 }}>
-        <TouchableOpacity activeOpacity={0.85} style={actionIconWrapperStyle} onPress={this.handleOpenCamera}>
+        <TouchableOpacity activeOpacity={0.6} style={actionIconWrapperStyle} onPress={this.handleOpenCamera}>
           <Image style={actionIconStyle} source={camera} />
         </TouchableOpacity>
         <TouchableOpacity 
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={{ ...actionIconWrapperStyle, marginLeft: 5 }}
           onPress={this.handleOpenCameraRoll}
         >
@@ -429,7 +429,7 @@ class CreateEventModal extends React.Component {
             </View>
 
             <TouchableOpacity 
-              activeOpacity={0.85}
+              activeOpacity={0.6}
               onPress={() => this.setState({ mediaModal: true })}
               style={{
                 position: 'absolute',
@@ -455,7 +455,7 @@ class CreateEventModal extends React.Component {
               />
             </TouchableOpacity>
 
-            <TouchableOpacity activeOpacity={0.85}
+            <TouchableOpacity activeOpacity={0.6}
               onPress={() => this.props.change('picture', false)}
               style={{
                 position: 'absolute',

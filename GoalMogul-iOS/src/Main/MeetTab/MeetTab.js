@@ -76,7 +76,7 @@ class MeetTab extends Component {
       }
       return (
         <View style={buttonContainerStyle} key={index}>
-          <TouchableOpacity activeOpacity={0.85} onPress={this.selectTab.bind(this, t.name)}>
+          <TouchableOpacity activeOpacity={0.6} onPress={this.selectTab.bind(this, t.name)}>
             <Text style={buttonTextStyle}>{t.name}</Text>
           </TouchableOpacity>
         </View>

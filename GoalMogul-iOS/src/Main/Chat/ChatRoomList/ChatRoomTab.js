@@ -37,7 +37,7 @@ const SEARCHBAR_HEIGHT = Platform.OS === 'ios' &&
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const BODY_HEIGHT = SCREEN_HEIGHT - 48.5 - SEARCHBAR_HEIGHT - 150;
-
+const DEBUG_KEY = '[ UI ChatRoomTab ]';
 
 class ChatRoomTab extends React.Component {
 
@@ -179,9 +179,11 @@ class ChatRoomTab extends React.Component {
 	}
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
 	const { navigationState } = state.chat;
-	const currentTabKey = navigationState.routes[navigationState.index].key;
+	// const currentTabKey = navigationState.routes[navigationState.index].key;
+	// TODO: make tabKey as a required props
+	const currentTabKey = props.tabKey;
 	const { loading, refreshing, limit, skip, hasNextPage, data, searchQuery } = state.chat[currentTabKey];
 
 	return {

@@ -53,7 +53,7 @@ class ProfileSummaryCard extends Component {
   renderButton(_id) {
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         onPress={this.onButtonClicked.bind(this, _id)}
         style={{
           padding: 20,

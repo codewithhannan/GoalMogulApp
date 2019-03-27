@@ -89,7 +89,7 @@ class NotificationCard extends React.PureComponent {
   renderOptions() {
     return (
       <TouchableOpacity 
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         onPress={() => this.handleOptionsOnPress()}
         style={{ alignSelf: 'center', justifyContent: 'center', padding: 5, paddingTop: 10, paddingBottom: 10 }}
       >
@@ -139,7 +139,7 @@ class NotificationCard extends React.PureComponent {
       : { ...styles.cardContainerStyle, backgroundColor: '#eef8fb' };
     return (
       <DelayedButton 
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={cardContainerStyle}
         onPress={() => this.handleNotificationCardOnPress(item)}
       >

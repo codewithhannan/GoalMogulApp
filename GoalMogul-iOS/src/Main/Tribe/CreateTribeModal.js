@@ -155,10 +155,10 @@ class CreateTribeModal extends React.Component {
     const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
     return (
       <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10 }}>
-        <TouchableOpacity activeOpacity={0.85} style={actionIconWrapperStyle} onPress={this.handleOpenCamera}>
+        <TouchableOpacity activeOpacity={0.6} style={actionIconWrapperStyle} onPress={this.handleOpenCamera}>
           <Image style={actionIconStyle} source={camera} />
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity activeOpacity={0.6}
           style={{ ...actionIconWrapperStyle, marginLeft: 5 }}
           onPress={this.handleOpenCameraRoll}
         >
@@ -202,7 +202,7 @@ class CreateTribeModal extends React.Component {
               />
             </View>
 
-            <TouchableOpacity activeOpacity={0.85}
+            <TouchableOpacity activeOpacity={0.6}
               onPress={() => this.setState({ mediaModal: true })}
               style={{
                 position: 'absolute',
@@ -228,7 +228,7 @@ class CreateTribeModal extends React.Component {
               />
             </TouchableOpacity>
 
-            <TouchableOpacity activeOpacity={0.85}
+            <TouchableOpacity activeOpacity={0.6}
               onPress={() => this.props.change('picture', false)}
               style={{
                 position: 'absolute',

@@ -15,7 +15,6 @@ import Name from '../../Common/Name';
 import ProfileImage from '../../Common/ProfileImage';
 
 /* Assets */
-import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
 import next from '../../../asset/utils/next.png';
 
 /* Actions */
@@ -25,6 +24,8 @@ import {
   openProfile,
   UserBanner
 } from '../../../actions';
+
+const DEBUG_KEY = '[ UI FriendCardView ]';
 
 class FriendCardView extends React.PureComponent {
   state = {
@@ -56,7 +57,7 @@ class FriendCardView extends React.PureComponent {
     return (
         <TouchableOpacity 
             onPress={() => this.props.openProfile(item._id)}
-            activeOpacity={0.85}
+            activeOpacity={0.6}
             style={styles.nextButtonContainerStyle}
         >
             <Image
@@ -117,7 +118,7 @@ class FriendCardView extends React.PureComponent {
 
   renderProfile(item) {
     const { name, profile, headline } = item;
-    const detailText = headline || profile.occupation;
+    // const detailText = headline || profile.occupation;
     return (
         <View style={{ flex: 1, marginLeft: 13 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>

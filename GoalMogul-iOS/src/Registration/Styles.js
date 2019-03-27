@@ -17,7 +17,7 @@ export default StyleSheet.create({
     backgroundColor: '#ffffff',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.3,
   },
   titleTextStyle: {
     fontSize: 25,

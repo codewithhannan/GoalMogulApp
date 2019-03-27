@@ -83,7 +83,7 @@ class DiscoverTabView extends Component {
           renderItem={this.renderItem}
           keyExtractor={this._keyExtractor}
           onEndReached={this.handleOnLoadMore}
-          onEndReachedThreshold={0}
+          onEndReachedThreshold={10}
           onRefresh={this.handleRefresh}
           refreshing={this.props.refreshing}
           ListEmptyComponent={

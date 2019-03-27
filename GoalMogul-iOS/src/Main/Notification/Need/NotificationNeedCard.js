@@ -114,7 +114,7 @@ class NotificationCard extends React.Component {
     return (
       <View style={{ flexDirection: 'row', borderLeftWidth: 0.5, borderColor: '#dbdbdb' }}>
         <TouchableOpacity 
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={{ ...styles.iconContainerStyle, backgroundColor: '#fdf9e5' }}
           onPress={() => this.handleOnSuggestion(item)}
         >
@@ -124,7 +124,7 @@ class NotificationCard extends React.Component {
           />
         </TouchableOpacity>
         <TouchableOpacity 
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={{ ...styles.iconContainerStyle, backgroundColor: '#ebf9fe' }}
           onPress={() => this.handleOnOpen(item)}
         >

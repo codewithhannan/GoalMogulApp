@@ -12,7 +12,7 @@ const UserCard = (props) => {
   const { item, onCardPress, selected } = props;
   return (
     <TouchableOpacity 
-      activeOpacity={0.85}
+      activeOpacity={0.6}
       onPress={() => onCardPress(item)}
       style={{
         flexDirection: 'row',

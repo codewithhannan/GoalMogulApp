@@ -63,7 +63,7 @@ class MyEventTab extends React.Component {
   renderCreateEventButton() {
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={styles.iconContainerStyle}
         onPress={() => this.props.openNewEventModal()}
       >

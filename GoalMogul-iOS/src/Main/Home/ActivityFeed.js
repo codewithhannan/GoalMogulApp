@@ -41,6 +41,8 @@ class ActivityFeed extends Component {
    * Used by parent to scroll mastermind to top on tab pressed
    */
   scrollToTop = () => {
+    const { data } = this.props;
+    if (!data || data.length === 0) return;
     this.flatlist.scrollToIndex({
       animated: true,
       index: 0
@@ -118,7 +120,7 @@ class ActivityFeed extends Component {
   // renderPlus() {
   //   return (
   //     <TouchableOpacity
-  //       activeOpacity={0.85}
+  //       activeOpacity={0.6}
   //       style={styles.iconContainerStyle}
   //       onPress={() => Actions.createPostModal()}
   //     >

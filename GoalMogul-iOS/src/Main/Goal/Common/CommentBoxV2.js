@@ -353,7 +353,7 @@ class CommentBoxV2 extends Component {
 
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={styles.iconContainerStyle}
         onPress={() => {
           console.log('suggestion on click in comment box');
@@ -402,7 +402,7 @@ class CommentBoxV2 extends Component {
       // (suggestion !== undefined && suggestion.suggestionFor !== undefined);
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={styles.iconContainerStyle}
         onPress={this.handleImageIconOnClick}
         disabled={disableButton}
@@ -425,7 +425,7 @@ class CommentBoxV2 extends Component {
     const onRemove = () => this.props.newCommentOnMediaRefChange(undefined, this.props.pageId);
 
     return (
-      <TouchableOpacity activeOpacity={0.85} style={styles.mediaContainerStyle} onPress={onPress}>
+      <TouchableOpacity activeOpacity={0.6} style={styles.mediaContainerStyle} onPress={onPress}>
         <ProfileImage
           imageStyle={{ width: 50, height: 50 }}
           defaultImageSource={{ uri: mediaRef }}
@@ -465,7 +465,7 @@ class CommentBoxV2 extends Component {
     const color = disable ? '#cbd6d8' : '#17B3EC';
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={styles.postContainerStyle}
         onPress={() => this.handleOnPost(uploading)}
         disabled={disable}
