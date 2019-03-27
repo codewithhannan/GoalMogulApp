@@ -1,5 +1,4 @@
 // Authantication actions
-import { AsyncStorage } from 'react-native';
 import { SecureStore, SplashScreen } from 'expo';
 
 import {
