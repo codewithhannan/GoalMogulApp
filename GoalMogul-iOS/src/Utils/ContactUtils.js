@@ -108,7 +108,7 @@ const ContactUtils = {
         'x-access-token': token
       }
     };
-    // return ContactUtils.custumeFetch(url, headers, null);
+    return ContactUtils.custumeFetch(url, headers, null);
   },
 
   custumeFetch(url, headers, data) {
