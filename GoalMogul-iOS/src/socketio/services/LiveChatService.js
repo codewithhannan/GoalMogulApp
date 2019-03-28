@@ -11,7 +11,6 @@ class LiveChatService {
     mountedUser = {
         userId: null,
         authToken: null,
-        user: null,
     };
 
     /**
@@ -25,7 +24,7 @@ class LiveChatService {
 
     /**
      * Mounts a user onto the service for credential use
-     * @param {Object} userState: {userId, authToken, user}
+     * @param {Object} userState: {userId, authToken}
      */
     mountUser(userState) {
         const { authToken } = userState;
@@ -33,6 +32,7 @@ class LiveChatService {
             OUTGOING_EVENT_NAMES.authenticate,
             { authToken },
             (resp) => {
+                console.log(DEBUG_KEY, resp);
                 if (resp.success) {
                     this.isUserMounted = true;
                     this.mountedUser = userState;
@@ -47,17 +47,16 @@ class LiveChatService {
      */
     unMountUser() {
         this.isUserMounted = false;
-        this.mountUser = {
+        this.mountedUser = {
             authToken: null,
             userId: null,
-            user: null,
         };
     }
 
     /**
      * Emits an event via socket
      * @param {String} eventName: the name of the event to emit
-     * @param {*} data: the data to emit
+     * @param {Object} data: the data to emit
      * @param {Function} onResponse: the function to handle the server's response
      */
     emitEvent(eventName, data, onResponse) {
@@ -70,7 +69,7 @@ class LiveChatService {
      * Emits data to a specified event when the socket connects/reconnects
      * @param {String} identifier: a unique identifier for this emission task
      * @param {String} eventName: the event to emit to
-     * @param {*} data: the data to emit
+     * @param {Object} data: the data to emit
      * @param {Function} onResponse: to handle the server's response
      */
     emitOnConnect(identifier, eventName, data, onResponse) {
@@ -123,10 +122,9 @@ class LiveChatService {
     _initializeListenerForEvent(eventName) {
         if (!this.isInitialized) throw new Error('Must initialize live chat service first.');
         this.eventListenerMap[eventName] = {};
-        socket.on(eventName, (...args) => {
+        this.socket.on(eventName, (...args) => {
             const listeners = this.eventListenerMap[eventName];
-            for (let listenerIdentifier in listeners) {
-                const listener = listeners[listenerIdentifier];
+            for (let listener of listeners) {
                 if (typeof listener != "function") continue;
                 try {
                     listener(...args);

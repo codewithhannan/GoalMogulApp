@@ -20,7 +20,7 @@ import Router from './src/Router';
 
 import SocketIOManager from './src/socketio/SocketIOManager';
 import LiveChatService from './src/socketio/services/LiveChatService';
-import ChatMessagesService from './src/services/chat/ChatMessagesService';
+import MessageStorageService from './src/services/chat/MessageStorageService';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -32,7 +32,7 @@ export default class App extends React.Component {
     // must be initialized in this order as each depends on the previous
     SocketIOManager.initialize();
     LiveChatService.initialize();
-    ChatMessagesService.initialize();
+    MessageStorageService.initialize();
   }
   // TODO: in ComponentWillMount set up dependencies for verification and
   // Persist app state. Check if AuthReducers' user token is null and valid.

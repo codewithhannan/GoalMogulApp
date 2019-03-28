@@ -2,12 +2,17 @@ import SocketIOClient from 'socket.io-client';
 import { config } from '../redux/middleware/api/config';
 
 const SERVER_URL = config.socketIOUrl;
-
+const SOCKET_CONFIG = {
+    transports: ['websocket'],
+    jsonp: false,
+    reconnectionAttempts: Infinity, // just in case default behavior changes
+    autoConnect: true, // same as above
+};
 const DEBUG_KEY = '[SOCKET_IO_MANAGER]';
 
 class SocketIOManager {
     isInitialized = false;
-    socket = null;
+    socketManager = null;
     tasksOnSocketConnect = {}; // these fire on connect and reconnect
     socketsByNamespace = {};
 
@@ -15,26 +20,21 @@ class SocketIOManager {
      * Initializes the manager. Must be called for other methods to work.
      */
     initialize() {
-        this.socket = SocketIOClient(SERVER_URL, {
-            transports: ['websocket'],
-            jsonp: false,
-            reconnectionAttempts: Infinity, // just in case default behavior changes
-            autoConnect: true, // same as above
-        });
-        this.socket.on('connect', () => {
+        this.socketManager = new SocketIOClient.Manager(SERVER_URL, SOCKET_CONFIG);
+        this.socketManager.on('connect', () => {
             const tasksToRun = this.tasksOnSocketConnect;
-            for (let taskName in tasksToRun) {
-                if (typeof tasksToRun[taskName] != "function") {
+            for (let task of tasksToRun) {
+                if (typeof task != "function") {
                     continue;
                 };
                 try {
-                    tasksToRun[taskName]();
+                    task();
                 } catch (e) {
                     console.log(`${DEBUG_KEY}: Error running task with name: ${taskName}`, e);
                 };
             };
         });
-        this.socket.on('connect_error', (err) => {
+        this.socketManager.on('connect_error', (err) => {
             console.log(`${DEBUG_KEY}: Error connecting SocketIO`, err);
         });          
         this.isInitialized = true;
@@ -48,7 +48,7 @@ class SocketIOManager {
     initializeNamespaceAndGet(nsp) {
         if (!this.isInitialized) throw new Error('Must initialize socket manager first.');
         if (!this.socketsByNamespace[nsp]) {
-            this.socketsByNamespace[nsp] = this.socket(nsp);
+            this.socketsByNamespace[nsp] = this.socketManager.socket(nsp, SOCKET_CONFIG);
         };
         return this.socketsByNamespace[nsp];
     }
@@ -62,7 +62,7 @@ class SocketIOManager {
         if (maybeNsp) {
             return this.socketsByNamespace[maybeNsp];
         } else {
-            return this.socket;
+            return this.socketManager;
         };
     }
     /**
@@ -72,7 +72,7 @@ class SocketIOManager {
      */
     reconnectSocketAndGet(maybeNsp) {
         if (!this.isInitialized) throw new Error('Must initialize socket manager first.');
-        let socket = maybeNsp ? this.socketsByNamespace[maybeNsp] : this.socket;
+        let socket = maybeNsp ? this.socketsByNamespace[maybeNsp] : this.socketManager;
         if (socket && !socket.connected) {
             socket.connect();
         };
@@ -89,7 +89,7 @@ class SocketIOManager {
         if (typeof taskeName != "string" || typeof task != "function") {
             throw new Error('taskPayload must contain a taskName string and a task function');
         };
-        let socket = this.socket;
+        let socket = this.socketManager;
         if (maybeNsp) {
             socket = this.socketsByNamespace[maybeNsp];
         };
