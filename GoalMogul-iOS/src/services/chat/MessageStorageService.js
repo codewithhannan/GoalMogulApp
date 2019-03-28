@@ -28,6 +28,7 @@ const localDb = new MongoDatastore({ filename: CHAT_MESSAGES_COLLECTION_NAME, au
 // index the fields we will most commonly query by
 localDb.ensureIndex({ fieldName: 'chatRoomRef' });
 localDb.ensureIndex({ fieldName: 'recipient' });
+localDb.ensureIndex({ fieldName: '_id' });
 
 class MessageStorageService {
     isInitialized = false;
@@ -36,7 +37,9 @@ class MessageStorageService {
         userId: null,
         authToken: null,
     };
-    incomingMessageListeners = {};
+    currentlyActiveChatRoomId = null;
+    incomingMessageListeners = {}; // listens to incoming messages via sockets
+    pulledMessageListeners = {}; // listens to new messages via pull
 
     // -------------------------------- Initializations -------------------------------- //
 
@@ -60,21 +63,11 @@ class MessageStorageService {
      */
     mountUser = (userState) => {
         const { authToken } = userState;
-        this._pullMessageQueue(authToken).then(resp => {
-            if (resp.status == 200) {
-                this.isUserMounted = true;
-                this.mountedUser = userState;
-                const messages = resp.data;
-                messages.forEach(messageDoc => {
-                    localDb.insert(this._transformMessageForLocalStorage(messageDoc));
-                });
-                this._beginMessageQueuePolling();
-            } else {
-                console.log(`${DEBUG_KEY}: Error mounting user with authToken: ${authToken}`, resp.message);
-            }
-        }).catch(err => {
-            console.log(`${DEBUG_KEY}: Error mounting user with authToken: ${authToken}`, err);
-        });
+        // mount the user
+        this.isUserMounted = true;
+        this.mountedUser = userState;
+        // pull the message queue
+        this._beginMessageQueuePolling();
     }
     /**
      * Unmounts the currently mounted user
@@ -85,6 +78,22 @@ class MessageStorageService {
         this.mountedUser = {
             authToken: null,
             userId: null,
+        };
+    }
+    /**
+     * Sets the currently active chatroom so incoming messages for that room are marked as read
+     * @param {String} chatRoomId 
+     */
+    setActiveChatRoom = (chatRoomId) => {
+        this.currentlyActiveChatRoomId = chatRoomId;
+    }
+    /**
+     * Unsets the currently active chatroom
+     * @param {String} chatRoomId
+     */
+    unsetActiveChatRoom = (chatRoomId) => {
+        if (chatRoomId == this.currentlyActiveChatRoomId) {
+            this.currentlyActiveChatRoomId = null;
         };
     }
 
@@ -102,12 +111,31 @@ class MessageStorageService {
         this.incomingMessageListeners[listenerIdentifier] = listener;
     }
     /**
-     * Removes a listener to the message store event
+     * Removes a listener to the incoming message store event
      * @param {String} listenerIdentifier 
      */
     offIncomingMessageStored = (listenerIdentifier) => {
         this.incomingMessageListeners[listenerIdentifier] = undefined;
         delete this.incomingMessageListeners[listenerIdentifier];
+    }
+    /**
+     * Adds a listener that fires when pulled messages are inserted into the local store
+     * @param {String} listenerIdentifier 
+     * @param {Function} listener: fn(dataObj:{messageDoc, senderName, chatRoomName})
+     */
+    onPulledMessageStored = (listenerIdentifier, listener) => {
+        if (typeof listenerIdentifier != "string" || typeof listener != "function") {
+            throw new Error('Listener identifier must be a string and listener must be a function.');
+        }
+        this.pulledMessageListeners[listenerIdentifier] = listener;
+    }
+    /**
+     * Removes a listener to the pulled message store event
+     * @param {String} listenerIdentifier 
+     */
+    offPulledMessageStored = (listenerIdentifier) => {
+        this.pulledMessageListeners[listenerIdentifier] = undefined;
+        delete this.pulledMessageListeners[listenerIdentifier];
     }
 
     // -------------------------------- Modifiers -------------------------------- //
@@ -116,7 +144,7 @@ class MessageStorageService {
      * Marks all messages in a conversation as read
      * @param {String} conversationId
      */
-    markMessagesInConvoAsRead = (conversationId) => {
+    markConversationMessagesAsRead = (conversationId) => {
         localDb.update({
             recipient: this.mountedUser.userId,
             chatRoomRef: conversationId,
@@ -132,6 +160,16 @@ class MessageStorageService {
      */
     storeLocallyCreatedMessage = (messageDoc) => {
         localDb.insert(messageDoc);
+    }
+    /**
+     * Deletes a message from the store
+     * @param {String} messageId: id of the message to delete
+     */
+    deleteMessage = (messageId) => {
+        localDb.remove({
+            recipient: this.mountedUser.userId,
+            _id: messageId,
+        });
     }
 
     // -------------------------------- Getters -------------------------------- //
@@ -191,6 +229,23 @@ class MessageStorageService {
             recipient: this.mountedUser.userId,
             chatRoomRef: conversationId,
         }).sort({ created: -1 }).limit(limit).skip(skip).exec(callback);
+    }
+    /**
+     * Gets all messages created after a specified message
+     * @param conversationId
+     * @param messageId
+     * @param {Function} callback: fn(err, docs)
+     */
+    getAllMessagesAfterMessage = (conversationId, messageId, callback) => {
+        localDb.findOne({
+            _id: messageId
+        }, (err, markerMessage) => {
+            const oldestDate = markerMessage.created;
+            localDb.find({
+                chatRoomRef: conversationId,
+                created: { $gte: oldestDate },
+            }).sort({ created: -1 }).exec(callback);
+        });
     }
     /**
      * Gets messages from a conversation within a date range 
@@ -272,18 +327,32 @@ class MessageStorageService {
      */
     _beginMessageQueuePolling = () => {
         const { authToken } = this.mountedUser;
-        this._messageQueuePoller = setInterval(() => {
-            this._pullMessageQueue(authToken).then(resp => {
-                if (resp.status == 200) {
-                    const messages = resp.data;
-                    messages.forEach(messageDoc => {
-                        localDb.insert(this._transformMessageForLocalStorage(messageDoc));
+        this._messageQueuePoller = setInterval(() => this._pollMessageQueue(authToken), MESSAGE_QUEUE_POLLING_INTERVAL_SECONDS * 1000);
+    }
+    _pollMessageQueue = (authToken) => {
+        this._pullMessageQueueRequest(authToken).then(resp => {
+            if (resp.status == 200) {
+                const messages = resp.data;
+                messages.forEach(messageDoc => {
+                    localDb.insert(this._transformMessageForLocalStorage(messageDoc), (err) => {
+                        if (err) return;
+                        // fire listeners to this event
+                        const listeners = this.pulledMessageListeners;
+                        for (let listener of listeners) {
+                            if (typeof listener != "function") continue;
+                            try {
+                                listener(data.data);
+                            } catch(e) {
+                                console.log(
+                                    `${DEBUG_KEY}: Error running incomingMessage listener with listener identifier as: '${listenerIdentifier}'`,
+                                    e
+                                );
+                            };
+                        };
                     });
-                };
-            }).catch(err => {
-                /* We tried */
-            });
-        }, MESSAGE_QUEUE_POLLING_INTERVAL_SECONDS * 1000);
+                });
+            };
+        }).catch(err => { /* We tried */ });
     }
     /**
      * Stops the message queue polling
@@ -298,7 +367,7 @@ class MessageStorageService {
      * @param {Number} maybeLimit 
      * @returns [Promise]
      */
-    _pullMessageQueue = (authToken, maybeLimit) => {
+    _pullMessageQueueRequest = (authToken, maybeLimit) => {
         let body = {};
         if (maybeLimit) {
             body.limit = maybeLimit;
