@@ -20,6 +20,9 @@ import TribeIcon from '../../asset/explore/tribe.png';
 import EventIcon from '../../asset/suggestion/event.png';
 import PeopleIcon from '../../asset/suggestion/group.png';
 
+// Styles
+import { APP_DEEP_BLUE } from '../../styles';
+
 const TabIconMap = {
   events: {
     iconSource: EventIcon,
@@ -47,7 +50,25 @@ const TabIconMap = {
 class Explore extends Component {
   _renderHeader = props => {
     return (
-      <TabButtonGroup buttons={props} tabIconMap={TabIconMap} />
+      <TabButtonGroup 
+        buttons={props} 
+        tabIconMap={TabIconMap} 
+        noBorder
+        buttonStyle={{
+          selected: {
+            backgroundColor: APP_DEEP_BLUE,
+            tintColor: 'white',
+            color: 'white',
+            fontWeight: '700'
+          },
+          unselected: {
+            backgroundColor: 'white',
+            tintColor: '#616161',
+            color: '#616161',
+            fontWeight: '600'
+          }
+        }}
+      />
     );
   };
 

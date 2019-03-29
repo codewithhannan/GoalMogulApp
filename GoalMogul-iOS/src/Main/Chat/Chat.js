@@ -33,7 +33,24 @@ class ChatTab extends React.Component {
 
 	_renderHeader = props => {
 		return (
-			<TabButtonGroup buttons={props} />
+			<TabButtonGroup 
+				buttons={props} 
+				noBorder
+				buttonStyle={{
+					selected: {
+						backgroundColor: APP_DEEP_BLUE,
+						tintColor: 'white',
+						color: 'white',
+						fontWeight: '700'
+					},
+					unselected: {
+						backgroundColor: 'white',
+						tintColor: '#616161',
+						color: '#616161',
+						fontWeight: '600'
+					}
+				}}
+			/>
 		);
 	};
 
