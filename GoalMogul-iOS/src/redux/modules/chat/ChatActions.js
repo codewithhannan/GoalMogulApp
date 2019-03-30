@@ -1,7 +1,10 @@
 /**
  * Actions for Chat tab
  */
+import _ from 'lodash';
 import { Alert } from 'react-native';
+
+import Bluebird from 'bluebird';
 
 import {
 	CHAT_SWITCH_TAB,
@@ -16,6 +19,7 @@ import {
 } from './ChatReducers';
 
 import {api as API} from '../../middleware/api';
+import MessageStorageService from '../../../services/chat/MessageStorageService';
 
 export const selectChatTab = (index) => (dispatch) => {
 	dispatch({
@@ -66,6 +70,37 @@ export const createOrGetDirectMessage = (userId) => (dispatch, getState) => {
 	});
 };
 
+export const updateCurrentChatRoomsList = (tab, currentChatRoomsList, minPageSize, maybeSearchQuery) => (dispatch, getState) => {
+	if (maybeSearchQuery || maybeSearchQuery.trim().length) {
+		return;
+	};
+	const pageSize = Math.max(currentChatRoomsList.length, minPageSize);
+	const { token } = getState().user;
+	switch (tab) {
+		case CHAT_LOAD_TYPES.directMessages:
+			API.get(`secure/chat/room/latest?roomType=Direct&limit=${pageSize}&skip=0`, token).then(res => {
+				const chatRooms = res.data;
+				transformChatRoomResultsAndDispatch(CHAT_REFRESH_DONE, {
+					type: tab,
+					data: chatRooms,
+				}, dispatch);
+			}).catch(err =>  console.log(`Error live updating chat room list`, err));
+			break;
+		case CHAT_LOAD_TYPES.chatRooms:
+			API.get(`secure/chat/room/latest?roomType=Group&limit=${pageSize}&skip=0`, token).then(res => {
+				const chatRooms = res.data;
+				transformChatRoomResultsAndDispatch(CHAT_REFRESH_DONE, {
+					type: tab,
+					data: chatRooms.map(chatDoc => {
+						chatDoc.isChatRoom = true;
+						return chatDoc;
+					}),
+				}, dispatch);
+			}).catch(err =>  console.log(`Error live updating chat room list`, err));
+			break;
+	}
+};
+
 /* Following are actions to load chat rooms */
 export const refreshChatRooms = (tab, pageSize, maybeSearchQuery) => (dispatch, getState) => {
 	dispatch({
@@ -104,16 +139,10 @@ export const refreshChatRooms = (tab, pageSize, maybeSearchQuery) => (dispatch, 
 			} else {
 				API.get(`secure/chat/room/latest?roomType=Direct&limit=${pageSize}&skip=0`, token).then(res => {
 					const chatRooms = res.data;
-					dispatch({
-						type: CHAT_REFRESH_DONE,
-						payload: {
-							type: tab,
-							data: chatRooms.map(chatDoc => {
-								chatDoc.isChatRoom = true;
-								return chatDoc;
-							}),
-						},
-					});
+					transformChatRoomResultsAndDispatch(CHAT_REFRESH_DONE, {
+						type: tab,
+						data: chatRooms,
+					}, dispatch);
 				}).catch(err =>  {
 					Alert.alert(
 						'Error',
@@ -131,16 +160,10 @@ export const refreshChatRooms = (tab, pageSize, maybeSearchQuery) => (dispatch, 
 			if (maybeSearchQuery && maybeSearchQuery.trim().length) {
 				API.get(`secure/chat/room/es?query=${maybeSearchQuery}&limit=${pageSize}&skip=0&forceRefresh=true`, token).then(res => {
 					const chatRooms = res.data;
-					dispatch({
-						type: CHAT_REFRESH_DONE,
-						payload: {
-							type: tab,
-							data: chatRooms.map(chatDoc => {
-								chatDoc.isChatRoom = true;
-								return chatDoc;
-							}),
-						},
-					});
+					transformChatRoomResultsAndDispatch(CHAT_REFRESH_DONE, {
+						type: tab,
+						data: chatRooms,
+					}, dispatch);
 				}).catch(err =>  {
 					Alert.alert(
 						'Error',
@@ -155,16 +178,10 @@ export const refreshChatRooms = (tab, pageSize, maybeSearchQuery) => (dispatch, 
 			} else {
 				API.get(`secure/chat/room/latest?roomType=Group&limit=${pageSize}&skip=0`, token).then(res => {
 					const chatRooms = res.data;
-					dispatch({
-						type: CHAT_REFRESH_DONE,
-						payload: {
-							type: tab,
-							data: chatRooms.map(chatDoc => {
-								chatDoc.isChatRoom = true;
-								return chatDoc;
-							}),
-						},
-					});
+					transformChatRoomResultsAndDispatch(CHAT_REFRESH_DONE, {
+						type: tab,
+						data: chatRooms,
+					}, dispatch);
 				}).catch(err =>  {
 					Alert.alert(
 						'Error',
@@ -221,18 +238,12 @@ export const loadMoreChatRooms = (tab, pageSize, prevResultsOffset, maybeSearchQ
 			} else {
 				API.get(`secure/chat/room/latest?roomType=Direct&limit=${pageSize}&skip=${resultsOffset}`, token).then(res => {
 					const chatRooms = res.data;
-					dispatch({
-						type: CHAT_LOAD_DONE,
-						payload: {
-							type: tab,
-							data: chatRooms.map(chatDoc => {
-								chatDoc.isChatRoom = true;
-								return chatDoc;
-							}),
-							skip: resultsOffset,
-							hasNextPage: !!chatRooms.length,
-						},
-					});
+					transformChatRoomResultsAndDispatch(CHAT_LOAD_DONE, {
+						type: tab,
+						data: chatRooms,
+						skip: resultsOffset,
+						hasNextPage: !!chatRooms.length,
+					}, dispatch);
 				}).catch(err =>  {
 					Alert.alert(
 						'Error',
@@ -250,18 +261,12 @@ export const loadMoreChatRooms = (tab, pageSize, prevResultsOffset, maybeSearchQ
 			if (maybeSearchQuery && maybeSearchQuery.trim().length) {
 				API.get(`secure/chat/room/es?query=${maybeSearchQuery}&limit=${pageSize}&skip=${resultsOffset}`, token).then(res => {
 					const chatRooms = res.data;
-					dispatch({
-						type: CHAT_LOAD_DONE,
-						payload: {
-							type: tab,
-							data: chatRooms.map(chatDoc => {
-								chatDoc.isChatRoom = true;
-								return chatDoc;
-							}),
-							skip: resultsOffset,
-							hasNextPage: !!chatRooms.length,
-						},
-					});
+					transformChatRoomResultsAndDispatch(CHAT_LOAD_DONE, {
+						type: tab,
+						data: chatRooms,
+						skip: resultsOffset,
+						hasNextPage: !!chatRooms.length,
+					}, dispatch);
 				}).catch(err =>  {
 					Alert.alert(
 						'Error',
@@ -276,18 +281,12 @@ export const loadMoreChatRooms = (tab, pageSize, prevResultsOffset, maybeSearchQ
 			} else {
 				API.get(`secure/chat/room/latest?roomType=Group&limit=${pageSize}&skip=${resultsOffset}`, token).then(res => {
 					const chatRooms = res.data;
-					dispatch({
-						type: CHAT_LOAD_DONE,
-						payload: {
-							type: tab,
-							data: chatRooms.map(chatDoc => {
-								chatDoc.isChatRoom = true;
-								return chatDoc;
-							}),
-							skip: resultsOffset,
-							hasNextPage: !!chatRooms.length,
-						},
-					});
+					transformChatRoomResultsAndDispatch(CHAT_LOAD_DONE, {
+						type: tab,
+						data: chatRooms,
+						skip: resultsOffset,
+						hasNextPage: !!chatRooms.length,
+					}, dispatch);
 				}).catch(err =>  {
 					Alert.alert(
 						'Error',
@@ -302,3 +301,30 @@ export const loadMoreChatRooms = (tab, pageSize, prevResultsOffset, maybeSearchQ
 			break;
 	}
 };
+
+const getUnreadMessageCountByConversations = Bluebird.promisify(MessageStorageService.getUnreadMessageCountByConversations);
+const getLatestMessagesByConversation = Bluebird.promisify(MessageStorageService.getLatestMessagesByConversation);
+async function transformChatRoomResultsAndDispatch(dispatchType, dispatchPayload, dispatch) {
+	let transformedPayload = _.cloneDeep(dispatchPayload);
+	const chatRooms = dispatchPayload.data;
+	let unreadMessageCountByConversationMap = {};
+	try {
+		unreadMessageCountByConversationMap = await getUnreadMessageCountByConversations(chatRooms.map(doc => doc._id));
+	} catch (e) { /* we tried */ };
+
+	try {
+		transformedPayload.data = await Promise.all(chatRooms.map(async chatRoom => {
+			chatRoom.isChatRoom = true;
+			chatRoom.unreadMessageCount = unreadMessageCountByConversationMap[chatRoom._id];
+			try {
+				chatRoom.latestMessage = (await getLatestMessagesByConversation(chatRoom._id, 1, 0))[0];
+			} catch (e) { /* we tried */ };
+			return chatRoom;
+		}));
+	} catch(e) { /* should never happen */ }
+
+	dispatch({
+		type: dispatchType,
+		payload: transformedPayload,
+	});
+}

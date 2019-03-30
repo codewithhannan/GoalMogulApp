@@ -94,7 +94,9 @@ class ChatRoomCard extends React.Component {
 	}
 
 	renderCardContent(item) {
-		const content = item.isFriend ? 'Tap to start a conversation...' : 'Latest message will appear here';
+		const content = item.isFriend ? 'Tap to start a conversation...' : (
+			item.latestMessage && item.latestMessage.content.message ? item.latestMessage.content.message : 'No messages in this conversation...'
+		);
 		// TODO(Jay): automatically populate latest message from local async storage
 
 		return (
@@ -129,11 +131,15 @@ class ChatRoomCard extends React.Component {
 			};
 		} else {
 			profileToRender = item;
-		}
+		};
+
+		const maybeUnreadHighlight = item.unreadMessageCount > 0 ? {
+			backgroundColor: '#E0F0FF',
+		} : { };
 
 		return (
 			<TouchableOpacity activeOpacity={0.85}
-				style={styles.cardContainerStyle}
+				style={{...styles.cardContainerStyle, ...maybeUnreadHighlight }}
 				onPress={() => this.handleCardOnPress(item)}
 			>
 				{this.renderProfileImage(profileToRender)}

@@ -15,12 +15,15 @@ import { MaterialIcons } from '@expo/vector-icons';
 // Components
 import ChatRoomCard from './ChatRoomCard';
 
+import MessageStorageService from '../../../services/chat/MessageStorageService';
+
 // Actions
 import {
 	refreshChatRooms,
 	loadMoreChatRooms,
 	searchQueryUpdated,
 	createOrGetDirectMessage,
+	updateCurrentChatRoomsList,
 } from '../../../redux/modules/chat/ChatActions';
 
 import {
@@ -45,6 +48,23 @@ class ChatRoomTab extends React.Component {
 
 	componentDidMount() {
 		this.props.refreshChatRooms(this.props.currentTabKey, this.props.limit, '');
+
+		// try to update the chat room list every time a new message comes in our application
+		const listenerKey = `ChatRoomTab:${this.props.currentTabKey}`;
+		const listener = (incomingMessageInfo) => this.props.updateCurrentChatRoomsList(
+			this.props.currentTabKey,
+			this.props.data,
+			this.props.limit,
+			this.props.searchQuery
+		);
+		MessageStorageService.onIncomingMessageStored(listenerKey, listener);
+		MessageStorageService.onPulledMessageStored(listenerKey, listener);
+	}
+
+	componentWillUnmount() {
+		const listenerKey = `ChatRoomTab:${this.props.currentTabKey}`;
+		MessageStorageService.offIncomingMessageStored(listenerKey);
+		MessageStorageService.offPulledMessageStored(listenerKey);
 	}
 
 	handleOnRefresh = (maybeQuery) => {
@@ -205,5 +225,6 @@ export default connect(
 		loadMoreChatRooms,
 		searchQueryUpdated,
 		createOrGetDirectMessage,
+		updateCurrentChatRoomsList,
 	}
 )(ChatRoomTab);
