@@ -45,7 +45,18 @@ import { BACKGROUND_COLOR } from '../../../../styles';
 const DEBUG_KEY = '[ UI CentralTab ]';
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
-class CentralTab extends React.PureComponent<{}> {
+class CentralTab extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.scrollToOffset = this.scrollToOffset.bind(this);
+  }
+
+  scrollToOffset = (offset) => {
+    this.flatlist.getNode().scrollToOffset({
+      offset,
+      animated: true
+    });
+  }
 
   // Refresh goal content and comment
   handleRefresh = () => {
@@ -102,6 +113,7 @@ class CentralTab extends React.PureComponent<{}> {
     const { data } = this.props;
     return (
       <AnimatedFlatList
+        ref={ref => (this.flatlist = ref)}
         data={data}
         renderItem={this.renderItem}
         keyExtractor={this.keyExtractor}
@@ -161,5 +173,7 @@ export default connect(
     refreshGoalDetailById,
     createCommentFromSuggestion,
     createCommentForSuggestion
-  }
+  },
+  null,
+  { withRef: true }
 )(CentralTab);

@@ -114,7 +114,7 @@ class FocusTab extends React.PureComponent {
     //   : () => this.props.resetCommentType('Suggestion', pageId);
 
     return (
-      <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
+      <View style={{ flex: 1, backgroundColor: 'transparent' }}>
         <AnimatedFlatList
           ref={ref => { this.flatlist = ref; }}
           data={data}
