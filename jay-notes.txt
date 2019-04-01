@@ -1,8 +1,6 @@
 --------------------------------------------------------
 TODO
 --------------------------------------------------------
-- ChatRoom component
-    - send message action
 - ChatRoomDetails component
     - IF Group:
         - ChatRoom Image and Name preview with edit button to the right

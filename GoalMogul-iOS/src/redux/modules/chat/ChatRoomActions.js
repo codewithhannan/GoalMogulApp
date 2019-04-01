@@ -107,10 +107,76 @@ export const deleteMessage = (messageId, chatRoom, currentMessageList) => (dispa
 };
 
 export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMessageList) => (dispatch, getState) => {
-	// iterate through each messagesToSend:
-		// POST {chatRoomRef, content{message,tags[]}, media} to '/secure/chat/message'
-		// transform message and insert into MessageStorageService
-		// updateMessageList(chatRoom, currentMessageList)
+	if (!chatRoom) return;
+	const { token } = getState().user;
+
+	let uploadedMediaRef = null;
+	// upload the image if a file's mounted
+	if (mountedMediaRef) {
+		// Resize image
+		ImageUtils.getImageSize(mountedMediaRef).then(({ width, height }) => {
+			return ImageUtils.resizeImage(mountedMediaRef, width, height);
+		}).then((image) => {
+			// Get image ref and a presigned url
+			return ImageUtils.getPresignedUrl(image.uri, token, (objectKey) => {
+				uploadedMediaRef = objectKey;
+			}, 'ChatFile');
+		}).then(({ signedRequest, file }) => {
+			// upload to s3
+			return ImageUtils.uploadImage(file, signedRequest);
+		}).then((res) => {
+			if (res instanceof Error) {
+				console.log('error uploading image to s3 with res: ', res);
+				Alert.alert('Error', 'Could not upload image. Please try again later.');
+				return;
+			};
+			sendMessages();
+		}).catch(err => {
+			console.log('Internal error uploading image to s3 with error: ', err);
+			Alert.alert('Error', 'Could not upload image.');
+		});
+	} else {
+		sendMessages();
+	};
+
+	function sendMessages() {
+		// iterate over each message to be sent (usually should only be 1)
+		messagesToSend.forEach(messageToSend => {
+			// insert message into local storage
+			const messageToInsert = _transformMessageFromGiftedChat(messageToSend, uploadedMediaRef, chatRoom);
+			MessageStorageService.storeLocallyCreatedMessage(messageToInsert, (err, insertedDoc) => {
+				if (err) {
+					return Alert.alert('Error', 'Could not store message locally. Please try again later.');
+				};
+				// update state to show newly inserted message
+				updateMessageList(chatRoom, currentMessageList)(dispatch, getState);
+
+				// send the message
+				const { text } = messageToSend;
+				let body = {
+					chatRoomRef: chatRoom._id,
+					content: {
+						message: text,
+					},
+				};
+				if (uploadedMediaRef) {
+					body.media = uploadedMediaRef;
+				};
+				const handleRequestFailure = (failure) => {
+					Alert.alert('Error', 'Could not send message to others.');
+					MessageStorageService.deleteMessage(insertedDoc._id, (err) => {
+						if (err) return;
+						updateMessageList(chatRoom, currentMessageList)(dispatch, getState);
+					});
+				};
+				API.post(`secure/chat/message`, body, token).then(resp => {
+					if (resp.status != 200) {
+						handleRequestFailure();
+					};
+				}).catch(handleRequestFailure);
+			});
+		});
+	};
 };
 
 export const messageMediaRefChanged = (mediaRef) => (dispatch, getState) => {
@@ -121,9 +187,23 @@ export const messageMediaRefChanged = (mediaRef) => (dispatch, getState) => {
 };
 // --------------------------- utils --------------------------- //
 
-function _transformMessageFromGiftedChat(messageDoc, mountedMediaRef, chatRoom) {
-	// TODO(Jay)
-}
+function _transformMessageFromGiftedChat(messageDoc, uploadedMediaRef, chatRoom) {
+	const { _id, createdAt, text, user } = messageDoc;
+	let transformedDoc = {
+		_id,
+		created: createdAt,
+		creator: user._id,
+		recipient: user._id,
+		content: {
+			message: text,
+		},
+		chatRoomRef: chatRoom._id,
+	};
+	if (uploadedMediaRef) {
+		transformedDoc.media = uploadedMediaRef;
+	};
+	return transformedDoc;
+};
 
 function _transformMessagesForGiftedChat(messages, chatRoom) {
 	let chatRoomMemberMap = {};
@@ -134,12 +214,12 @@ function _transformMessagesForGiftedChat(messages, chatRoom) {
 		}, {});
 	};
 	return messages.map(messageDoc => {
-		const { _id, creator, created, content, media } = messageDoc;
+		const { _id, created, creator, content, media } = messageDoc;
 		return {
 			_id,
+			createdAt: created,
 			image: media && `${IMAGE_BASE_URL}${media}`,
 			text: content.message,
-			createdAt: created,
 			user: chatRoomMemberMap[creator]
 		};
 	});

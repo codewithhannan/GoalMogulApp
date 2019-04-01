@@ -316,6 +316,7 @@ class ChatRoomConversation extends React.Component {
     }
 
 	render() {
+        const { _id, name, profile } = this.props.user;
 		return (
 			<MenuProvider customStyles={{ backdrop: styles.backdrop }}>
 				<View style={styles.homeContainerStyle}>
@@ -328,6 +329,10 @@ class ChatRoomConversation extends React.Component {
                     />
                     <GiftedChat
                         messages={this.props.messages}
+                        user={{
+                            _id, name,
+                            avatar: profile && profile.image,
+                        }}
                         placeholder={`Send a message to ${this.props.chatRoomName}...`}
                         isAnimated={true}
                         loadEarlier={this.props.hasNextPage}
@@ -348,7 +353,7 @@ class ChatRoomConversation extends React.Component {
 }
 
 const mapStateToProps = (state, props) => {
-    const { userId } = state.user;
+    const { userId, user } = state.user;
     const {
         initializing,
         chatRoomsMap, activeChatRoomId,
@@ -377,6 +382,7 @@ const mapStateToProps = (state, props) => {
 	return {
         initializing,
         userId,
+        user,
         chatRoom,
         chatRoomName,
         chatRoomMembersMap,
