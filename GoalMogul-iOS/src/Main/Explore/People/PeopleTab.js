@@ -38,7 +38,13 @@ class PeopleTab extends React.Component {
     handleOnLoadMore = () => this.props.exploreLoadMorePeople();
 
     renderItem = ({ item }) => {
-        return <FriendCardView item={item} />;
+        return (
+            <FriendCardView 
+                item={item}
+                shouldRenderNextButton={false}
+                enableCardOnPress
+            />
+        );
     }
 
     renderListHeader() {
