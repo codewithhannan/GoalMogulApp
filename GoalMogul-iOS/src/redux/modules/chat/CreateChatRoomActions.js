@@ -96,12 +96,17 @@ export const createOrUpdateChatroom = (values, membersToAdd, chatId, isEdit, nee
 			payload: result,
 		});
 
+        const createdChat = result.data;
+        if (!createdChat) {
+            return;
+        };
 		if (isEdit) {
             // handle necessary changes
-            
+		    Actions.pop();
+        } else {
+            Actions.pop();
+            Actions.push('chatRoomConversation', { chatRoomId: createdChat._id });
         };
-        // TODO(jay) redirect to created chat
-		Actions.pop();
     };
 	const onError = (err) => {
 		dispatch({

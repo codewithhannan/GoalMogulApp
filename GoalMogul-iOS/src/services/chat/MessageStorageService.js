@@ -102,7 +102,7 @@ class MessageStorageService {
     /**
      * Adds a listener that fires when incoming messages are inserted into the local store
      * @param {String} listenerIdentifier 
-     * @param {Function} listener: fn(dataObj:{messageDoc, senderName, chatRoomName})
+     * @param {Function} listener: fn(dataObj:{messageDoc, senderName, chatRoomName, chatRoomType, chatRoomPicture})
      */
     onIncomingMessageStored = (listenerIdentifier, listener) => {
         if (typeof listenerIdentifier != "string" || typeof listener != "function") {
@@ -121,7 +121,7 @@ class MessageStorageService {
     /**
      * Adds a listener that fires when pulled messages are inserted into the local store
      * @param {String} listenerIdentifier 
-     * @param {Function} listener: fn(dataObj:{messageDoc, senderName, chatRoomName})
+     * @param {Function} listener: fn(dataObj:{messageDoc, senderName, chatRoomName, chatRoomType, chatRoomPicture})
      */
     onPulledMessageStored = (listenerIdentifier, listener) => {
         if (typeof listenerIdentifier != "string" || typeof listener != "function") {
@@ -292,7 +292,7 @@ class MessageStorageService {
      * @param data: the incoming message from socketio
      */
     _onIncomingMessage = (data) => {
-        const { messageAckId, messageDoc, senderName, chatRoomName } = data.data;
+        const { messageAckId, messageDoc, senderName, chatRoomName, chatRoomType, chatRoomPicture } = data.data;
         // store message doc
         localDb.insert(this._transformMessageForLocalStorage(messageDoc), (err) => {
             // if error, the message will go to the server's message queue and we can try reinserting on a later pull

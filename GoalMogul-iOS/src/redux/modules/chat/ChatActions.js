@@ -20,6 +20,7 @@ import {
 
 import {api as API} from '../../middleware/api';
 import MessageStorageService from '../../../services/chat/MessageStorageService';
+import { Actions } from 'react-native-router-flux';
 
 export const selectChatTab = (index) => (dispatch) => {
 	dispatch({
@@ -63,7 +64,7 @@ export const createOrGetDirectMessage = (userId) => (dispatch, getState) => {
 			throw new Error('Could not create Chat Room');
 		};
 		const chatRoom = resp.data;
-		// TODO(Jay): open up chat conversation with given _id
+		Actions.push('chatRoomConversation', { chatRoomId: chatRoom._id });
 		Alert.alert('Success');
 	}).catch(err => {
 		Alert.alert('Error', 'Could not create a conversation with specified user.');
