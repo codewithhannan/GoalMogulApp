@@ -2,7 +2,7 @@
 TODO
 --------------------------------------------------------
 - ChatRoom component
-    - complete actions
+    - send message action
 - ChatRoomDetails component
     - IF Group:
         - ChatRoom Image and Name preview with edit button to the right

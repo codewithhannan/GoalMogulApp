@@ -164,12 +164,13 @@ class MessageStorageService {
     /**
      * Deletes a message from the store
      * @param {String} messageId: id of the message to delete
+     * @param {Function} callback: (err, numRemoved)
      */
-    deleteMessage = (messageId) => {
+    deleteMessage = (messageId, callback) => {
         localDb.remove({
             recipient: this.mountedUser.userId,
             _id: messageId,
-        });
+        }, callback);
     }
 
     // -------------------------------- Getters -------------------------------- //

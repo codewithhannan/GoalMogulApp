@@ -1,4 +1,4 @@
-import { CHAT_ROOM_LOAD_INITIAL_BEGIN, CHAT_ROOM_LOAD_INITIAL, CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS, CHAT_ROOM_UPDATE_MEDIA_REF } from "./ChatRoomReducers";
+import { CHAT_ROOM_LOAD_INITIAL_BEGIN, CHAT_ROOM_LOAD_INITIAL, CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS, CHAT_ROOM_UPDATE_MEDIA_REF, CHAT_ROOM_UPDATE_MESSAGES, CHAT_ROOM_LOAD_MORE_MESSAGES_BEGIN, CHAT_ROOM_LOAD_MORE_MESSAGES } from "./ChatRoomReducers";
 import { api as API } from "../../middleware/api";
 import { Alert } from 'react-native';
 
@@ -24,7 +24,7 @@ export const initialLoad = (currentChatRoomId, pageSize) => (dispatch, getState)
 						type: CHAT_ROOM_LOAD_INITIAL,
 						payload: { messages: [], chatRoom: null },
 					});
-				} else if (messages) {
+				} else {
 					const giftedChatMessages = _transformMessagesForGiftedChat(messages, chatRoom);
 					dispatch({
 						type: CHAT_ROOM_LOAD_INITIAL,
@@ -55,21 +55,63 @@ export const updateTypingStatus = (userId, updatedTypingStatus, currentlyTypingU
 	})
 };
 
-export const updateMessageList = (currentMessageList) => (dispatch, getState) => {
+export const updateMessageList = (chatRoom, currentMessageList) => (dispatch, getState) => {
+	const oldestMessage = currentMessageList[currentMessageList.length - 1];
+	if (oldestMessage) {
+		MessageStorageService.getAllMessagesAfterMessage(chatRoom, oldestMessage, (err, messages) => {
+			if (err || !messages) {
+				Alert.alert('Error', 'Could not auto-update messages. Please try re-opening this conversation.');
+			} else {
+				const giftedChatMessages = _transformMessagesForGiftedChat(currentMessageList, chatRoom);
+				dispatch({
+					type: CHAT_ROOM_UPDATE_MESSAGES,
+					payload: giftedChatMessages,
+				});
+			};
+		});
+	} else {
+		// if no messages in convo, load the first 10
+		return loadOlderMessages(10, 0);
+	};
+};
 
-}
+export const loadOlderMessages = (chatRoom, pageSize, pageOffset) => (dispatch, getState) => {
+	const { token } = getState().user;
+	dispatch({
+		type: CHAT_ROOM_LOAD_MORE_MESSAGES_BEGIN,
+		payload: {},
+	});
+	MessageStorageService.getLatestMessagesByConversation(currentChatRoomId, pageSize, pageOffset, (err, messages) => {
+		if (err || !messages) {
+			Alert.alert('Error', 'Could not load more messages for selected chat room.');
+			dispatch({
+				type: CHAT_ROOM_LOAD_MORE_MESSAGES,
+				payload: [],
+			});
+		} else {
+			const giftedChatMessages = _transformMessagesForGiftedChat(messages, chatRoom);
+			dispatch({
+				type: CHAT_ROOM_LOAD_MORE_MESSAGES,
+				payload: giftedChatMessages,
+			});
+		};
+	});
+};
 
-export const loadOlderMessages = (pageSize, pageOffset) => (dispatch, getState) => {
+export const deleteMessage = (messageId, chatRoom, currentMessageList) => (dispatch, getState) => {
+	MessageStorageService.deleteMessage(messageId, (err, numRemoved) => {
+		if (numRemoved) {
+			updateMessageList(chatRoom, currentMessageList.filter(messageDoc => messageDoc._id != messageId))(dispatch, getState);
+		};
+	});
+};
 
-}
-
-export const deleteMessage = (messageId, currentMessageList) => (dispatch, getState) => {
-
-}
-
-export const sendMessage = (messages, chatRoomId) => (dispatch, getState) => {
-
-}
+export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMessageList) => (dispatch, getState) => {
+	// iterate through each messagesToSend:
+		// POST {chatRoomRef, content{message,tags[]}, media} to '/secure/chat/message'
+		// transform message and insert into MessageStorageService
+		// updateMessageList(chatRoom, currentMessageList)
+};
 
 export const messageMediaRefChanged = (mediaRef) => (dispatch, getState) => {
 	dispatch({
@@ -78,6 +120,10 @@ export const messageMediaRefChanged = (mediaRef) => (dispatch, getState) => {
 	});
 };
 // --------------------------- utils --------------------------- //
+
+function _transformMessageFromGiftedChat(messageDoc, mountedMediaRef, chatRoom) {
+	// TODO(Jay)
+}
 
 function _transformMessagesForGiftedChat(messages, chatRoom) {
 	let chatRoomMemberMap = {};
