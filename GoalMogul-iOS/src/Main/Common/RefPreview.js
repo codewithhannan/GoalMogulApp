@@ -34,10 +34,12 @@ import ProfileImage from './ProfileImage';
 
 class RefPreview extends Component {
   handleOnPress(item, postType, goalRef) {
-    // console.log('goalref is : ', goalRef);
+    // console.log('item is : ', item);
     if (item === null) return;
 
-    if (postType === 'ShareGoal') {
+    // When RefPreview is rendered from ShareModal and it's a share of Goal
+    // goalRef will be undefined.
+    if (postType === 'ShareGoal' && goalRef) {
       return this.props.openGoalDetail(goalRef);
     }
 
