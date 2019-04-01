@@ -30,8 +30,6 @@ export default (state = INITIAL_STATE, action) => {
       const newState = _.cloneDeep(state);
       return _.set(newState, 'uploading', false);
     }
-
-    case TRIBE_NEW_CANCEL:
     case TRIBE_NEW_SUBMIT_SUCCESS: {
       let newState = _.cloneDeep(state);
       newState = _.set(newState, 'picture', undefined);

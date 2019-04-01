@@ -100,7 +100,8 @@ class GoalDetailCardV3 extends Component {
       focusTabBottomPadding: new Animated.Value(0),
       keyboardDidShow: false,
       cardHeight: HEADER_HEIGHT,
-      centralTabContentOffset: 0
+      centralTabContentOffset: 0,
+      goalCardzIndex: 2
     };
     this.onContentSizeChange = this.onContentSizeChange.bind(this);
     this._renderScene = this._renderScene.bind(this);
@@ -109,6 +110,8 @@ class GoalDetailCardV3 extends Component {
     this.onViewCommentPress = this.onViewCommentPress.bind(this);
     this.handleReplyTo = this.handleReplyTo.bind(this);
     this.getFocusedItem = this.getFocusedItem.bind(this);
+    this.keyboardWillShow = this.keyboardWillShow.bind(this);
+    this.keyboardWillHide = this.keyboardWillHide.bind(this);
   }
 
   componentDidMount() {
@@ -254,6 +257,14 @@ class GoalDetailCardV3 extends Component {
     if (!this.state.keyboardDidShow) {
       this.handleReplyTo();
     }
+
+    this.setState({
+      ...this.state,
+      goalCardzIndex: 0 // set the zIndex to enable scroll on the goal card
+    });
+
+    this.forceUpdate(); // Force update to re-render
+
     const timeout = ((TOTAL_HEIGHT * 210) / e.endCoordinates.height);
     Animated.sequence([
       Animated.delay(timeout),
@@ -272,6 +283,16 @@ class GoalDetailCardV3 extends Component {
 
   keyboardWillHide = () => {
     console.log('keyboard will hide');
+    this.setState({
+      ...this.state,
+      keyboardDidShow: false,
+      goalCardzIndex: 2 // reset the zIndex to enable buttons on the goal card
+    });
+
+    // Force update to re-render
+    // We should find a better way to solve this triggering reupdate
+    this.forceUpdate();
+    
     Animated.parallel([
       Animated.timing(this.state.commentBoxPadding, {
         toValue: 0,
@@ -282,10 +303,6 @@ class GoalDetailCardV3 extends Component {
         duration: 210
       })
     ]).start();
-    this.setState({
-      ...this.state,
-      keyboardDidShow: false
-    });
   }
 
   handleReplyTo = (type) => {
@@ -350,13 +367,14 @@ class GoalDetailCardV3 extends Component {
       case 'centralTab':
         return (
           <CentralTab
+            ref={(ref) => (this.centralTabScrollView = ref)}
             onScroll={Animated.event(
               [{ nativeEvent: { contentOffset: { y: this.state.scroll } } }],
               { useNativeDriver: true }
             )}
             contentContainerStyle={{ 
               paddingTop: this.state.cardHeight + 10, 
-              flexGrow: 1,
+              flexGrow: 1
             }}
             contentOffset={{ y: this.state.centralTabContentOffset }}
             isSelf={this.props.isSelf}
@@ -402,9 +420,10 @@ class GoalDetailCardV3 extends Component {
     });
 
     const { goalDetail, goalId, pageId } = this.props;
-
     return (
-      <Animated.View style={[styles.header, { transform: [{ translateY }], zIndex: 2 }]}>
+      <Animated.View 
+        style={[styles.header, { transform: [{ translateY }], zIndex: this.state.goalCardzIndex }]}
+      >
         <View style={{ height: this.state.cardHeight, backgroundColor: 'white' }}>
           <GoalDetailSection
             item={goalDetail}
@@ -464,7 +483,7 @@ class GoalDetailCardV3 extends Component {
     if (focusType) return null;
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={{ paddingTop: 10, backgroundColor: BACKGROUND_COLOR }}
         onPress={this.onViewCommentPress}
       >
@@ -485,7 +504,7 @@ class GoalDetailCardV3 extends Component {
             </Text>
           </View>
           <TouchableOpacity
-            activeOpacity={0.85}
+            activeOpacity={0.6}
             onPress={this.onViewCommentPress}
             style={styles.iconContainerStyle}
           >

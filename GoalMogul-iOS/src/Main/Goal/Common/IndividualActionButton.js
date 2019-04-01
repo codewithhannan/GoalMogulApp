@@ -17,7 +17,7 @@ const IndividualActionButton = (props) => {
   } = props;
 
   return (
-    <TouchableOpacity activeOpacity={0.85}
+    <TouchableOpacity activeOpacity={0.6}
       style={{ ...styles.containerDefaultStyle, ...containerStyle }}
       onPress={onPress}
     >

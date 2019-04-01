@@ -73,7 +73,7 @@ const refreshRequest = (key, isPaginated) => (dispatch, getState) => {
 
     const onSuccess = (res) => {
         const { data } = res;
-        console.log(`${DEBUG_KEY}: refresh ${key} success with res: `, res);
+        console.log(`${DEBUG_KEY}: refresh ${key} success with res: `, data ? data.length : 0);
         dispatch({
             type: MEET_TAB_REFRESH_DONE,
             payload: {

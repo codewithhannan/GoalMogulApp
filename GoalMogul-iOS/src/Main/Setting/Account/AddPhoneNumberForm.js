@@ -122,7 +122,7 @@ class AddPhoneNumberForm extends Component {
 
           <Field name='phone' label='Phone number' component={this.renderInput} />
 
-          <TouchableOpacity activeOpacity={0.85} onPress={handleSubmit(this.handleOnAddPress)}>
+          <TouchableOpacity activeOpacity={0.6} onPress={handleSubmit(this.handleOnAddPress)}>
             <Button text="Add" />
           </TouchableOpacity>
 

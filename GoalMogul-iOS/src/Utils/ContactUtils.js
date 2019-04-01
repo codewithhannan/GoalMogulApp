@@ -1,5 +1,7 @@
 import Expo from 'expo';
 
+import { api as API } from '../redux/middleware/api';
+
 const pageSize = 3;
 const DEBUG_KEY = '[ Utils ContactUtils ]';
 
@@ -28,10 +30,10 @@ const ContactUtils = {
       //     Expo.Contacts.DATES,
       //   ]
       // });
-      const contacts = await Expo.Contacts.getContactsAsync();
-      console.log(`${DEBUG_KEY}: [ handleUploadContacts ] contacts load with length: `, 
-        contacts && contacts.data ? contacts.data.length : 0);
-      uploadPromise.push(ContactUtils.uploadContacts(contacts.data, token));
+    const contacts = await Expo.Contacts.getContactsAsync();
+    console.log(`${DEBUG_KEY}: [ handleUploadContacts ] contacts load with length: `, 
+      contacts && contacts.data ? contacts.data.length : 0);
+    uploadPromise.push(ContactUtils.uploadContacts(contacts.data, token));
     // }
 
     return Promise.all(uploadPromise);
@@ -52,23 +54,41 @@ const ContactUtils = {
   @return update result promise
   */
   uploadContacts(contacts, token) {
-    const url = 'https://api.goalmogul.com/api/secure/user/contactSync/';
-    // const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/contactSync/';
-    // const url = 'http://192.168.0.3:8081/api/secure/user/contactSync/';
-    const headers = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'x-access-token': token
-      },
-      body: JSON.stringify({
-        contactList: contacts
-      })
-    };
-    // console.log(`${DEBUG_KEY}: [ uploadContacts ] header is: `, headers);
-    // console.log(`${DEBUG_KEY}: [ uploadContacts ] contacts is: `, contacts);
-    return ContactUtils.custumeFetch(url, headers, contacts);
+    const url = 'https://api.goalmogul.com/api/secure/user/contactsync/';
+
+    const contactListJSONString = JSON.stringify(contacts);
+    const contactListBlob = new Blob([contactListJSONString], {type: 'text/plain'});
+
+    var formData = new FormData();
+    formData.append('contactList', {
+      uri: URL.createObjectURL(contactListBlob),
+      type: 'text/plain',
+      name: 'contactList.txt',
+    }, 'contactList.txt');
+
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            // Successfully uploaded the file.
+            console.log(`${DEBUG_KEY}: [ uploadContacts ]: Successfully uploading the file with res:`, xhr);
+            resolve(xhr.responseText);
+          } else {
+            // The file could not be uploaded.
+            console.log(`${DEBUG_KEY}: [ uploadContacts ]: failed uploading the file with res:`, xhr);
+            reject(
+              new Error(
+                `Request failed. Status: ${xhr.status}. Content: ${xhr.responseText}.`
+              )
+            );
+          }
+        }
+      };
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader('x-access-token', token);
+      xhr.send(formData);
+    });
   },
 
   /**
@@ -96,7 +116,10 @@ const ContactUtils = {
       fetch(url, headers)
       .then((res) => {
         if (!res.ok || !res.status === 200) {
-          console.log(`Fetch failed with error status: ${res.status}.`);
+          console.log(`${DEBUG_KEY}: [ custumeFetch ] header:`, headers);
+          console.log(`${DEBUG_KEY}: [ custumeFetch ] url:`, url);
+          console.log(`${DEBUG_KEY}: [ custumeFetch ] fetch failed with status:`, res.status);
+          console.log(`${DEBUG_KEY}: [ custumeFetch ] fetch failed with res:`, res);
         }
         return new Promise(
           async (resol, rej) => {

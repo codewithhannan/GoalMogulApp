@@ -6,6 +6,9 @@ import {
   View
 } from 'react-native';
 
+// Components
+import DelayedButton from '../../Common/Button/DelayedButton';
+
 const DEBUG_KEY = '[ UI ActionButton ]';
 
 class ActionButton extends React.PureComponent {
@@ -41,8 +44,8 @@ class ActionButton extends React.PureComponent {
 
     const buttonDisabled = disabled === true;
     return (
-      <TouchableOpacity
-        activeOpacity={0.85}
+      <DelayedButton
+        activeOpacity={0.6}
         style={{ ...styles.containerStyle, ...containerStyle }}
         onPress={this.handleOnPress}
         disabled={(this.state.buttonDisabled || buttonDisabled)}
@@ -60,7 +63,7 @@ class ActionButton extends React.PureComponent {
           />
         </View>
         {countText}
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 }

@@ -288,7 +288,7 @@ class ProfileDetailCard extends Component {
           />
         </View>
          */}
-        <TouchableOpacity activeOpacity={0.85} onPress={this.handleMutualFriendOnPressed}>
+        <TouchableOpacity activeOpacity={0.6} onPress={this.handleMutualFriendOnPressed}>
           <ButtonArrow text='View friends' arrow />
         </TouchableOpacity>
       </View>

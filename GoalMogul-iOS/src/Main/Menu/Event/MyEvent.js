@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Animated,
   View,
   Image,
   Dimensions,
@@ -63,7 +64,7 @@ import {
 } from '../../../redux/modules/event/EventSelector';
 
 import {
-  openEventInvitModal,
+  openEventInviteModal,
   deleteEvent,
   editEvent,
   reportEvent,
@@ -99,6 +100,9 @@ const TAG_SEARCH_OPTIONS = {
     'name',
   ]
 };
+
+const INFO_CARD_HEIGHT = 242;
+
 /**
  * This is the UI file for a single event.
  */
@@ -107,8 +111,11 @@ class MyEvent extends Component {
     super(props);
     this.state = {
       imageLoading: false,
-      showPlus: true
+      showPlus: true,
+      infoCardHeight: new Animated.Value(INFO_CARD_HEIGHT),
+      infoCardOpacity: new Animated.Value(1)
     };
+    this._handleIndexChange = this._handleIndexChange.bind(this);
   }
 
   componentWillUnmount() {
@@ -155,7 +162,6 @@ class MyEvent extends Component {
             ...this.state,
             showPlus: true
           });
-          Actions.pop();
           Actions.push('createPostModal', {
             belongsToEvent: _id,
             callback: postCallback,
@@ -175,8 +181,7 @@ class MyEvent extends Component {
             ...this.state,
             showPlus: true
           });
-          Actions.pop();
-          this.props.openEventInvitModal(
+          this.props.openEventInviteModal(
             {
               eventId: _id,
               cardIconSource: invite,
@@ -205,7 +210,7 @@ class MyEvent extends Component {
    * This method is deprecated by the renderPlus
    */
   handleInvite = (_id) => {
-    return this.props.openEventInvitModal(_id);
+    return this.props.openEventInviteModal(_id);
   }
 
   handleRSVPOnPress = () => {
@@ -241,8 +246,36 @@ class MyEvent extends Component {
 
   // Tab related functions
   _handleIndexChange = (index) => {
-    const { pageId, eventId } = this.props;
+    const { pageId, eventId, navigationState } = this.props;
+    const { routes } = navigationState;
+
     this.props.eventSelectTab(index, eventId, pageId);
+
+    if (routes[index].key !== 'about') {
+      // Animated to hide the infoCard if not on about tab
+      Animated.parallel([
+        Animated.timing(this.state.infoCardHeight, {
+          duration: 200,
+          toValue: 0,
+        }),
+        Animated.timing(this.state.infoCardOpacity, {
+          duration: 200,
+          toValue: 0,
+        }),
+      ]).start();
+    } else {
+      // Animated to open the infoCard if on about tab
+      Animated.parallel([
+        Animated.timing(this.state.infoCardHeight, {
+          duration: 200,
+          toValue: INFO_CARD_HEIGHT,
+        }),
+        Animated.timing(this.state.infoCardOpacity, {
+          duration: 200,
+          toValue: 1,
+        }),
+      ]).start();
+    }
   };
 
   // This function is deprecated
@@ -399,7 +432,7 @@ class MyEvent extends Component {
         <Text style={eventPropertyTextStyle}>{eventProperty}</Text>
         <Dot />
         <TouchableOpacity 
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={styles.rsvpBoxContainerStyle}
           onPress={this.handleRSVPOnPress}
         >
@@ -456,12 +489,29 @@ class MyEvent extends Component {
     const { memberNavigationState, eventId, pageId } = this.props;
     const { routes } = memberNavigationState;
 
+    const buttonStyle = {
+      selected: {
+        backgroundColor: 'white', // container background style
+        tintColor: '#696969', // icon tintColor
+        color: '#696969', // text color
+        fontWeight: '800', // text fontWeight
+        statColor: 'white' // stat icon color
+      },
+      unselected: {
+        backgroundColor: 'white',
+        tintColor: '#696969',
+        color: '#b2b2b2',
+        fontWeight: '600',
+        statColor: '#696969'
+      }
+    };
+
     const props = {
       jumpToIndex: (i) => this.props.myEventSelectMembersFilter(routes[i].key, i, eventId, pageId),
       navigationState: this.props.memberNavigationState
     };
     return (
-      <TabButtonGroup buttons={props} subTab />
+      <TabButtonGroup buttons={props} subTab buttonStyle={buttonStyle} noVerticalDivider noBorder />
     );
   }
 
@@ -477,7 +527,7 @@ class MyEvent extends Component {
     // Invite button is replaced by renderPlus
     const inviteButton = this.props.tab === 'attendees'
       ? (
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity activeOpacity={0.6}
           onPress={() => this.handleInvite(_id)}
           style={styles.inviteButtonContainerStyle}
         >
@@ -491,24 +541,31 @@ class MyEvent extends Component {
       : null;
 
     return (
-      <View>
-        {this.renderEventImage(picture)}
-        <View style={styles.generalInfoContainerStyle}>
-          {/* {this.renderCaret(item)} */}
-          <Text style={styles.eventTitleTextStyle}>
-            {title}
-          </Text>
-          {this.renderEventStatus()}
-          <View
-            style={{
-              width: width * 0.75,
-              borderColor: '#dcdcdc',
-              borderWidth: 0.5
-            }}
-          />
-          {this.renderEventInfo()}
+      <View style={{ flex: 1 }}>
+        <Animated.View 
+          style={{ 
+            height: this.state.infoCardHeight,
+            opacity: this.state.infoCardOpacity
+          }}
+        >
+          {this.renderEventImage(picture)}
+          <View style={styles.generalInfoContainerStyle}>
+            {/* {this.renderCaret(item)} */}
+            <Text style={styles.eventTitleTextStyle}>
+              {title}
+            </Text>
+            {this.renderEventStatus()}
+            <View
+              style={{
+                width: width * 0.75,
+                borderColor: '#dcdcdc',
+                borderWidth: 0.5
+              }}
+            />
+            {this.renderEventInfo()}
 
-        </View>
+          </View>
+        </Animated.View>
         {
           // Render tabs
           this._renderHeader({
@@ -558,7 +615,7 @@ class MyEvent extends Component {
     if (this.state.showPlus) {
       return (
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={styles.iconContainerStyle}
           onPress={() => this.handlePlus(item, navigationState)}
         >
@@ -763,7 +820,7 @@ export default connect(
     eventSelectTab,
     eventDetailClose,
     loadMoreEventFeed,
-    openEventInvitModal,
+    openEventInviteModal,
     deleteEvent,
     editEvent,
     reportEvent,

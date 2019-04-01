@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import {
+  Animated,
+  ActivityIndicator,
   View,
   Image,
   Dimensions,
@@ -96,6 +98,8 @@ const TAG_SEARCH_OPTIONS = {
     'name',
   ]
 };
+
+const INFO_CARD_HEIGHT = (width * 0.95) / 3 + 30 + 106.5;
 /**
  * This is the UI file for a single event.
  */
@@ -103,8 +107,12 @@ class Tribe extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showPlus: true
+      imageLoading: false,
+      showPlus: true,
+      infoCardHeight: new Animated.Value(INFO_CARD_HEIGHT),
+      infoCardOpacity: new Animated.Value(1)
     };
+    this._handleIndexChange = this._handleIndexChange.bind(this);
   }
 
   /**
@@ -137,7 +145,6 @@ class Tribe extends Component {
             ...this.state,
             showPlus: true
           });
-          Actions.pop();
           Actions.createPostModal({ tagSearch });
         }
       },
@@ -153,7 +160,6 @@ class Tribe extends Component {
             ...this.state,
             showPlus: true
           });
-          Actions.pop();
           this.props.openTribeInvitModal(_id);
         }
       }
@@ -308,7 +314,36 @@ class Tribe extends Component {
 
   // Tab related functions
   _handleIndexChange = (index) => {
+    const { navigationState } = this.props;
+    const { routes } = navigationState;
+
     this.props.tribeSelectTab(index);
+
+    if (routes[index].key !== 'about') {
+      // Animated to hide the infoCard if not on about tab
+      Animated.parallel([
+        Animated.timing(this.state.infoCardHeight, {
+          duration: 200,
+          toValue: 0,
+        }),
+        Animated.timing(this.state.infoCardOpacity, {
+          duration: 200,
+          toValue: 0,
+        }),
+      ]).start();
+    } else {
+      // Animated to open the infoCard if on about tab
+      Animated.parallel([
+        Animated.timing(this.state.infoCardHeight, {
+          duration: 200,
+          toValue: INFO_CARD_HEIGHT,
+        }),
+        Animated.timing(this.state.infoCardOpacity, {
+          duration: 200,
+          toValue: 1,
+        }),
+      ]).start();
+    }
   };
 
   _renderHeader = props => {
@@ -326,8 +361,8 @@ class Tribe extends Component {
     // If item belongs to self, then caret displays delete
     const { creator, _id, maybeIsSubscribed } = item;
 
-    // const isSelf = creator._id === this.props.userId;
-    const isSelf = false;
+    const isSelf = creator._id === this.props.userId;
+    // const isSelf = false;
     const menu = (!isSelf)
       ? MenuFactory(
           [
@@ -395,7 +430,7 @@ class Tribe extends Component {
       : 'Private Tribe';
 
     return (
-      <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 10, alignItems: 'center' }}>
+      <View style={{ flexDirection: 'row', marginTop: 8, marginBottom: 8, alignItems: 'center' }}>
         <Text style={styles.tribeStatusTextStyle}>{tribeVisibility}</Text>
         <Divider orthogonal height={12} borderColor='gray' />
         {this.renderMemberStatus(item)}
@@ -412,8 +447,8 @@ class Tribe extends Component {
       const { text } = switchCaseMemberStatus(isMember);
       return (
         <TouchableOpacity
-          activeOpacity={0.85}
-          style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}
+          activeOpacity={0.6}
+          style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8, height: 23 }}
           onPress={() => this.handleStatusChange(isMember, item)}
         >
           <Image
@@ -441,7 +476,7 @@ class Tribe extends Component {
 
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={styles.memberStatusContainerStyle}
         onPress={this.handleRequestOnPress}
       >
@@ -484,12 +519,29 @@ class Tribe extends Component {
     const { memberNavigationState } = this.props;
     const { routes } = memberNavigationState;
 
+    const buttonStyle = {
+      selected: {
+        backgroundColor: 'white', // container background style
+        tintColor: '#696969', // icon tintColor
+        color: '#696969', // text color
+        fontWeight: '800', // text fontWeight
+        statColor: 'white' // stat icon color
+      },
+      unselected: {
+        backgroundColor: 'white',
+        tintColor: '#696969',
+        color: '#b2b2b2',
+        fontWeight: '600',
+        statColor: '#696969'
+      }
+    };
+
     const props = {
       jumpToIndex: (i) => this.props.tribeSelectMembersFilter(routes[i].key, i),
       navigationState: this.props.memberNavigationState
     };
     return (
-      <TabButtonGroup buttons={props} subTab />
+      <TabButtonGroup buttons={props} subTab buttonStyle={buttonStyle} noVerticalDivider noBorder />
     );
   }
 
@@ -512,7 +564,7 @@ class Tribe extends Component {
     const inviteButton = this.props.tab === 'members'
       ? (
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           onPress={() => this.handleInvite(_id)}
           style={styles.inviteButtonContainerStyle}
         >
@@ -523,27 +575,34 @@ class Tribe extends Component {
 
     return (
       <View>
-        <View style={{ height: 70, backgroundColor: '#1998c9' }} />
-        <View style={styles.imageWrapperStyle}>
-          {this.renderTribeImage(picture)}
-        </View>
-        <View style={styles.generalInfoContainerStyle}>
-          {/* {this.renderCaret(item)} */}
-          <Text
-            style={{ fontSize: 22, fontWeight: '300' }}
-          >
-            {name}
-          </Text>
-          {this.renderVisibilityAndStatus(item)}
-          <View
-            style={{
-              width: width * 0.75,
-              borderColor: '#dcdcdc',
-              borderWidth: 0.5
-            }}
-          />
-          {this.renderTribeInfo(item)}
-        </View>
+        <Animated.View 
+          style={{
+            height: this.state.infoCardHeight,
+            opacity: this.state.infoCardOpacity
+          }}
+        >
+          <View style={styles.imagePaddingContainerStyle} />
+          <View style={styles.imageWrapperStyle}>
+            {this.renderTribeImage(picture)}
+          </View>
+          <View style={styles.generalInfoContainerStyle}>
+            {/* {this.renderCaret(item)} */}
+            <Text
+              style={{ fontSize: 22, fontWeight: '300' }}
+            >
+              {name}
+            </Text>
+            {this.renderVisibilityAndStatus(item)}
+            <View
+              style={{
+                width: width * 0.75,
+                borderColor: '#dcdcdc',
+                borderWidth: 0.5
+              }}
+            />
+            {this.renderTribeInfo(item)}
+          </View>
+        </Animated.View>
         {
           this._renderHeader({
             jumpToIndex: (i) => this._handleIndexChange(i),
@@ -589,7 +648,7 @@ class Tribe extends Component {
     if (this.state.showPlus && (isMember === 'Admin' || isMember === 'Member')) {
       return (
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={styles.iconContainerStyle}
           onPress={() => this.handlePlus(item)}
         >
@@ -598,6 +657,41 @@ class Tribe extends Component {
       );
     }
     return null;
+  }
+
+  // render padding has been changed to render loading indicator
+  renderPadding() {
+    const { navigationState, feedLoading } = this.props;
+    const { routes, index } = navigationState;
+    
+    if (feedLoading && routes[index].key === 'posts') {
+      return (
+        <View
+          style={{
+            paddingVertical: 12
+          }}
+        >
+          <ActivityIndicator size='large' />
+        </View>
+      );
+      // Original padding was added for scroll up animation
+      // return (
+      //   <View style={{ height: PADDING }}>
+      //     <View
+      //       style={{
+      //         paddingVertical: 12
+      //       }}
+      //     >
+      //       <ActivityIndicator size='large' />
+      //     </View>
+      //   </View>
+      // );
+    }
+    // Original padding was added for scroll up animation
+    // return (
+    //   <View style={{ height: PADDING }} />
+    // );
+    return null
   }
 
   render() {
@@ -618,6 +712,7 @@ class Tribe extends Component {
             renderItem={this.renderItem}
             keyExtractor={(i) => i._id}
             ListHeaderComponent={this.renderTribeOverview(item, data)}
+            ListFooterComponent={this.renderPadding()}
           />
           {this.renderPlus(item)}
         </View>
@@ -637,6 +732,11 @@ const styles = {
     alignSelf: 'center',
     backgroundColor: 'white'
   },
+  // Style for the empty view for image top
+  imagePaddingContainerStyle: {
+    height: ((width * 0.95) / 3 + 30 - 10) / 2,
+    backgroundColor: '#1998c9'
+  },
   imageStyle: {
     width: (width * 1.1) / 3,
     height: (width * 0.95) / 3,
@@ -649,7 +749,8 @@ const styles = {
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
-    height: 80,
+    height: ((width * 0.95) / 3 + 30 + 10) / 2,
+    // height: 80,
     backgroundColor: 'white'
   },
   // This is the style for general info container
@@ -672,7 +773,7 @@ const styles = {
     alignItems: 'center',
     marginLeft: 8,
     width: 100,
-    height: 25,
+    height: 23,
     justifyContent: 'center',
     borderRadius: 5,
     backgroundColor: '#efefef',
@@ -738,7 +839,7 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { item, feed, hasRequested } = state.tribe;
+  const { item, feed, hasRequested, feedLoading, tribeLoading } = state.tribe;
   const { userId } = state.user;
 
   const navigationState = getTribeNavigationState(state);
@@ -769,7 +870,9 @@ const mapStateToProps = state => {
     hasRequested,
     tab: routes[index].key,
     userId,
-    memberNavigationState
+    memberNavigationState,
+    loading: tribeLoading,
+    feedLoading
   };
 };
 

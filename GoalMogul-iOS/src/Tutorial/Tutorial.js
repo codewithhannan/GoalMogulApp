@@ -5,9 +5,10 @@ import {
   Image,
   StyleSheet,
   Animated,
-  TouchableOpacity
+  TouchableOpacity,
+  Platform
 } from 'react-native';
-import { Font } from 'expo';
+import { Font, Constants } from 'expo';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 
@@ -27,6 +28,11 @@ import Challenge from './Challenge';
 import Learn from './Learn';
 import Tribe from './Tribe';
 import Host from './Host';
+
+// Constants
+import {
+  IPHONE_MODELS
+} from '../Utils/Constants';
 
 const DEBUG_KEY = '[ UI Tutorial ]';
 const DURATION = 500;
@@ -268,8 +274,13 @@ class Tutorial extends React.Component {
 
   // Header contains Logo with text
   renderHeader() {
+    const paddingTop = (
+      Platform.OS === 'ios' &&
+      IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+    ) ? 30 : 50;
+
     return (
-      <View style={styles.headerContainerStyle}>
+      <View style={[styles.headerContainerStyle, { paddingTop }]}>
         <View style={styles.logoContainerStyle}>
           <Image source={LOGO} style={styles.logoImageStyle} />
           {
@@ -341,6 +352,11 @@ const CancelButton = (props) => {
   // Don't render if we are on the last page
   if (props.onLastPage) return null;
 
+  const paddingTop = (
+    Platform.OS === 'ios' &&
+    IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+  ) ? 10 : 30;
+
   return (
     <TouchableOpacity 
       style={{
@@ -350,9 +366,10 @@ const CancelButton = (props) => {
         position: 'absolute',
         top: 15,
         right: 0,
-        zIndex: 3
+        zIndex: 3,
+        paddingTop
       }}
-      activeOpacity={0.85}
+      activeOpacity={0.6}
       onPress={() => {
           
         Actions.replace('drawer');

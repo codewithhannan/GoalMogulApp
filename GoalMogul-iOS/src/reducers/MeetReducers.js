@@ -289,11 +289,12 @@ export default (state = INITIAL_STATE, action) => {
 
     // Handle tab refresh
     case MEET_TAB_REFRESH_DONE: {
-      const { type, data } = action.payload;
+      const { type, data, hasNextPage } = action.payload;
       let newState = _.cloneDeep(state);
       newState = _.set(newState, `${type}.refreshing`, false);
       newState = _.set(newState, `${type}.skip`, action.payload.skip);
       newState = _.set(newState, `${type}.data`, data);
+      newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
       return { ...newState };
     }
 

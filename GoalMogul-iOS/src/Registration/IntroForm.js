@@ -94,7 +94,7 @@ class IntroForm extends Component {
                       <Button text='Next' />
                     </View>
                   </TouchableWithoutFeedback>
-                  <TouchableOpacity activeOpacity={0.85} onPress={this.handleSkipOnPressed.bind(this)}>
+                  <TouchableOpacity activeOpacity={0.6} onPress={this.handleSkipOnPressed.bind(this)}>
                     <View>
                       <Button text='Skip' arrow />
                     </View>

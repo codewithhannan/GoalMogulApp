@@ -60,6 +60,7 @@ import GoalCardHeader from '../Common/GoalCardHeader';
 import {
   RightArrowIcon
 } from '../../../Utils/Icons';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Asset
 import LoveIcon from '../../../asset/utils/love.png';
@@ -418,8 +419,8 @@ class GoalCard extends React.PureComponent {
   // Note: deprecated
   renderViewGoal() {
     return (
-      <TouchableOpacity
-        activeOpacity={0.85}
+      <DelayedButton
+        activeOpacity={0.6}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -447,7 +448,7 @@ class GoalCard extends React.PureComponent {
           />
         </View>
          */}
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 
@@ -520,8 +521,8 @@ class GoalCard extends React.PureComponent {
         <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
           <GoalCardHeader item={item} />
           <View style={{ backgroundColor: '#e5e5e5' }}>
-            <TouchableOpacity
-              activeOpacity={0.85}
+            <DelayedButton
+              activeOpacity={0.6}
               style={styles.containerStyle}
               onPress={() => this.props.onPress(this.props.item)}
             >
@@ -529,7 +530,7 @@ class GoalCard extends React.PureComponent {
                 {this.renderUserDetail(item)}
                 {this.renderCardContent(item)}
               </View>
-            </TouchableOpacity>
+            </DelayedButton>
             { // Disable tabs if neither needs or steps
               _.isEmpty(steps) && _.isEmpty(needs)
               ? null

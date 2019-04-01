@@ -93,7 +93,7 @@ class NeedTab extends Component {
   renderViewGoal() {
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={{
           flexDirection: 'row',
           alignItems: 'center',

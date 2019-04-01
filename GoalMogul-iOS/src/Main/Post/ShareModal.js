@@ -469,6 +469,7 @@ class ShareModal extends React.Component {
   }
 
   render() {
+    // NOTE: currently there is postType passed in to ShareModal
     const { handleSubmit, errors, user, shareTo, itemToShare, postType } = this.props;
     const modalTitle = shareTo.name !== 'feed'
       ? `Share to ${shareTo.name}`
@@ -546,7 +547,7 @@ const getShareTo = (state) => {
 const ShareToComponent = (props) => {
   const { name, onPress } = props;
   return (
-    <TouchableOpacity activeOpacity={0.85}
+    <TouchableOpacity activeOpacity={0.6}
       style={styles.shareToContainerStyler}
       onPress={onPress}
     >

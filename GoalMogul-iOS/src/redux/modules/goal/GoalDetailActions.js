@@ -83,7 +83,7 @@ export const refreshGoalDetailById = (goalId, pageId) => (dispatch, getState) =>
   };
 
   const onSuccess = (res) => {
-    console.log(`${DEBUG_KEY}: refresh goal done with res: `, res);
+    console.log(`${DEBUG_KEY}: refresh goal done with res`);
     dispatch({
       type: GOAL_DETAIL_FETCH_DONE,
       payload: {

@@ -662,7 +662,7 @@ class NewGoalView extends Component {
     //     <View style={{ ...styles.sectionMargin }}>
     //       {titleText}
     //       <TouchableOpacity 
-    //         activeOpacity={0.85}
+    //         activeOpacity={0.6}
     //         style={{
     //           height: 40,
     //           width: 90,
@@ -802,7 +802,7 @@ class NewGoalView extends Component {
       ? 
       (
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={{ justifyContent: 'center', padding: 10, marginLeft: 5 }}
           onPress={() => {
             this.props.change('hasTimeline', false);
@@ -824,7 +824,7 @@ class NewGoalView extends Component {
         {titleText}
         <View style={{ marginTop: 8, flexDirection: 'row' }}>
           <TouchableOpacity
-            activeOpacity={0.85}
+            activeOpacity={0.6}
             style={{
               height: 50,
               width: 130,
@@ -843,7 +843,7 @@ class NewGoalView extends Component {
           </TouchableOpacity>
 
           <TouchableOpacity
-            activeOpacity={0.85}
+            activeOpacity={0.6}
             style={{
               height: 50,
               width: 130,

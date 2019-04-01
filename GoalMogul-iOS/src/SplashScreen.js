@@ -235,7 +235,7 @@ class SplashScreen extends Component {
 
           <View style={styles.highlightContainerStyle}>
             <TouchableOpacity
-              activeOpacity={0.85}
+              activeOpacity={0.6}
               style={styles.reactionContainerStyle}
               onPress={this.handleGetStartedOnPress.bind(this)}
             >
@@ -266,7 +266,7 @@ class SplashScreen extends Component {
           </View>
 
           <TouchableOpacity
-            activeOpacity={0.85}
+            activeOpacity={0.6}
             style={styles.loginHighlightContainerStyle}
             onPress={this.handleLoginPress.bind(this)}
           >
@@ -278,7 +278,7 @@ class SplashScreen extends Component {
               : null
             }
 
-            <TouchableOpacity activeOpacity={0.85} onPress={this.handleLoginPress.bind(this)}>
+            <TouchableOpacity activeOpacity={0.6} onPress={this.handleLoginPress.bind(this)}>
               {
                 this.state.fontLoaded ?
                   <Text style={styles.loginTextStyle}>Log In</Text>

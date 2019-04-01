@@ -77,7 +77,7 @@ class SearchEventCard extends Component {
   renderButton(item, type) {
     return (
       <View style={styles.iconContainerStyle}>
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity activeOpacity={0.6}
           onPress={() => this.onButtonClicked(item, type)}
           style={{ padding: 15 }}
         >
@@ -119,7 +119,7 @@ class SearchEventCard extends Component {
     const { item, type } = this.props;
 
     return (
-      <TouchableOpacity activeOpacity={0.85}>
+      <TouchableOpacity activeOpacity={0.6}>
         <View style={styles.containerStyle}>
           {this.renderEventImage()}
 

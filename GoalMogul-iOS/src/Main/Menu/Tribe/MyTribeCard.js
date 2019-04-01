@@ -142,7 +142,8 @@ const styles = {
   },
   // Image related styles
   imageContainerStyle: {
-    borderWidth: 1,
+    borderWidth: 0.5,
+    padding: 1,
     borderColor: 'lightgray',
     alignItems: 'center',
     borderRadius: 6,
@@ -152,9 +153,7 @@ const styles = {
   imageStyle: {
     width: ProfileImageWidth,
     height: ProfileImageWidth,
-    borderRadius: 4,
-    borderWidth: 2,
-    borderColor: 'white'
+    borderRadius: 5
   },
   // Timestamp style
   timeStampContainerStyle: {

@@ -40,7 +40,7 @@ import {
   eventDetailClose,
   loadMoreEventFeed,
   rsvpEvent,
-  openEventInvitModal,
+  openEventInviteModal,
   deleteEvent,
   editEvent,
   reportEvent
@@ -83,7 +83,7 @@ class Event extends Component {
   }
 
   handleInvite = (_id) => {
-    return this.props.openEventInvitModal(_id);
+    return this.props.openEventInviteModal(_id);
   }
 
   /**
@@ -273,7 +273,7 @@ class Event extends Component {
       <View style={eventPropertyContainerStyle}>
         <Text style={eventPropertyTextStyle}>{eventProperty}</Text>
         <Dot />
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity activeOpacity={0.6}
           style={styles.rsvpBoxContainerStyle}
           onPress={this.handleRSVPOnPress}
         >
@@ -339,7 +339,7 @@ class Event extends Component {
     // Currently, explored events is not synced with my events
     const inviteButton = this.props.tab === 'attendees'
       ? (
-        <TouchableOpacity activeOpacity={0.85}
+        <TouchableOpacity activeOpacity={0.6}
           onPress={() => this.handleInvite(_id)}
           style={styles.inviteButtonContainerStyle}
         >
@@ -558,7 +558,7 @@ export default connect(
     eventDetailClose,
     loadMoreEventFeed,
     rsvpEvent,
-    openEventInvitModal,
+    openEventInviteModal,
     deleteEvent,
     editEvent,
     reportEvent,

@@ -323,8 +323,12 @@ class CommentBoxV2 extends Component {
   }
 
   focusForReply(type) {
-    console.log(`${DEBUG_KEY}: focused for reply with type: ${type}`);
-    this.textInput.focus();
+    console.log(`${DEBUG_KEY}: [ focusForReply ]: with type: ${type}`);
+    if (this.textInput !== undefined) {
+      this.textInput.focus();
+    } else {
+      console.warn(`${DEBUG_KEY}: [ focusForReply ]: textInput is undefined`);
+    }
 
     // Only update the defaultValue if comment button is clicked through comment card / child comment card
     if (type === 'Reply') {
@@ -353,7 +357,7 @@ class CommentBoxV2 extends Component {
 
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={styles.iconContainerStyle}
         onPress={() => {
           console.log('suggestion on click in comment box');
@@ -402,7 +406,7 @@ class CommentBoxV2 extends Component {
       // (suggestion !== undefined && suggestion.suggestionFor !== undefined);
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={styles.iconContainerStyle}
         onPress={this.handleImageIconOnClick}
         disabled={disableButton}
@@ -425,7 +429,7 @@ class CommentBoxV2 extends Component {
     const onRemove = () => this.props.newCommentOnMediaRefChange(undefined, this.props.pageId);
 
     return (
-      <TouchableOpacity activeOpacity={0.85} style={styles.mediaContainerStyle} onPress={onPress}>
+      <TouchableOpacity activeOpacity={0.6} style={styles.mediaContainerStyle} onPress={onPress}>
         <ProfileImage
           imageStyle={{ width: 50, height: 50 }}
           defaultImageSource={{ uri: mediaRef }}
@@ -465,7 +469,7 @@ class CommentBoxV2 extends Component {
     const color = disable ? '#cbd6d8' : '#17B3EC';
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={styles.postContainerStyle}
         onPress={() => this.handleOnPost(uploading)}
         disabled={disable}

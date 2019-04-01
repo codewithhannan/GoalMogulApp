@@ -191,10 +191,12 @@ const SuggestionHeadline = (props) => {
   const { owner, suggestion } = item;
   if (!goalRef) return null;
 
-  const { suggestionFor, suggestionForRef } = suggestion;
+  const { suggestionFor, suggestionForRef, suggestionType } = suggestion;
   const text = suggestionFor === 'Goal'
     ? suggestionForGoalText(goalRef)
     : suggestionForNeedStepText(goalRef, suggestionFor, suggestionForRef);
+
+  const suggestionTypeText = makeSuggestionTypeText(suggestionType);
 
   return (
     <View>
@@ -206,7 +208,7 @@ const SuggestionHeadline = (props) => {
           numberOfLines={1}
           ellipsizeMode='tail'
         >
-          suggested for
+          suggested {suggestionTypeText}for
           <Text style={styles.suggestionDetailTextStyle}>
             {text}
           </Text>
@@ -220,6 +222,92 @@ const SuggestionHeadline = (props) => {
   );
 };
 
+/**
+ * This is new version of suggestion headline and is still in progress. Once done, it should replace
+ * SuggestionHeadline. 
+ * @param {} props 
+ */
+const SuggestionHeadlineV2 = (props) => {
+  const { goalRef, item, timeStamp, menu, onNamePress } = props;
+  const { owner, suggestion } = item;
+  if (!goalRef) return null;
+
+  const { suggestionFor, suggestionForRef, suggestionType } = suggestion;
+  const text = suggestionFor === 'Goal'
+    ? suggestionForGoalText(goalRef)
+    : suggestionForNeedStepText(goalRef, suggestionFor, suggestionForRef);
+
+  const suggestionTypeText = makeSuggestionTypeText(suggestionType);
+
+  return (
+    <View>
+      <View style={styles.containerStyle}>
+        <Text
+          numberOfLines={2}
+          ellipsizeMode='tail'
+          style={{ marginRight: 8 }}
+        >
+          <Text
+            style={{ 
+              fontSize: 12,
+              fontWeight: '600',
+              maxWidth: 150,
+            }}
+            onPress={onNamePress}
+          >
+            {owner.name}
+          </Text>
+          <View style={{ width: 15, height: 13 }}>
+            <Image style={styles.imageStyleV2} source={badge} resizeMode='contain' />
+          </View>
+          
+          <Text
+            style={styles.suggestionTextStyleV2}
+            numberOfLines={1}
+            ellipsizeMode='tail'
+          >
+            suggested {suggestionTypeText}for
+            <Text style={styles.suggestionDetailTextStyle}>
+              {text}
+            </Text>
+          </Text>
+        </Text>
+        {/* <Name text={owner.name} textStyle={{ fontSize: 12 }} onPress={onNamePress} /> */}
+        
+        {/* <Text
+          style={styles.suggestionTextStyle}
+          numberOfLines={1}
+          ellipsizeMode='tail'
+        >
+          suggested {suggestionTypeText}for
+          <Text style={styles.suggestionDetailTextStyle}>
+            {text}
+          </Text>
+        </Text> */}
+        <View style={styles.caretContainer}>
+          {menu}
+        </View>
+      </View>
+      <Timestamp time={timeago().format(timeStamp)} />
+    </View>
+  );
+};
+
+const makeSuggestionTypeText = (suggestionType) => {
+  if (suggestionType === 'User') {
+    return 'an User ';
+  }
+  if (suggestionType === 'Event') {
+    return 'an Event ';
+  }
+  if (suggestionType === 'Tribe') {
+    return 'a Tribe ';
+  }
+  if (suggestionType === 'ChatConvoRoom') {
+    return 'a Chat room ';
+  }
+  return '';
+};
 const suggestionForGoalText = (goalRef) => ` Goal: ${goalRef.title}`;
 const suggestionForNeedStepText = (goalRef, suggestionFor, suggestionForRef) => {
   let ret = '';
@@ -259,7 +347,25 @@ const styles = {
     flexWrap: 'wrap',
     alignSelf: 'center',
     color: '#767676',
-    paddingRight: 15
+    paddingRight: 15,
+    marginBottom: 2
+  },
+  // For suggestion text stlye V2
+  suggestionTextStyleV2: {
+    fontSize: 10,
+    flex: 1,
+    flexWrap: 'wrap',
+    alignSelf: 'center',
+    color: '#767676',
+    paddingRight: 15,
+    marginBottom: 2,
+    textAlignVertical: 'center'
+  },
+  imageStyleV2: {
+    marginLeft: 2,
+    marginRight: 2,
+    height: 15,
+    width: 13
   },
   suggestionDetailTextStyle: {
     fontWeight: '700',

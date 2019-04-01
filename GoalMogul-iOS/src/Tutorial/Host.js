@@ -65,7 +65,7 @@ class Host extends React.PureComponent {
         </View>
 
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={styles.buttonContainerStyle}
           onPress={buttonAction}
           disabled={this.props.buttonDisabled}

@@ -93,7 +93,7 @@ class ViewableSettingMenu extends Component {
     return (
       <View style={{ ...styles.containerStyle, backgroundColor: 'transparent', borderWidth: 0 }}>
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={{ ...containerStyle }}
           onPress={() => this.props.shareToMastermindCallback(!this.props.shareToMastermind)}
         >
@@ -105,7 +105,7 @@ class ViewableSettingMenu extends Component {
             Share to Goals feed
           </Text>
           <TouchableOpacity
-            activeOpacity={0.85}
+            activeOpacity={0.6}
             style={{ padding: 5 }}
             onPress={this.handleInfoIcon}
           >
@@ -133,7 +133,7 @@ class ViewableSettingMenu extends Component {
     return (
       <View style={{ flexDirection: 'row' }}>
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.6}
           style={{ ...styles.containerStyle, width: 80, opacity: settingDisabled ? 0 : 95 }}
           onPress={this.handleOnClick}
           disabled={settingDisabled}

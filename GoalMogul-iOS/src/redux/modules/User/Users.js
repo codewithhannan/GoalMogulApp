@@ -51,6 +51,13 @@ import {
     SETTING_PHONE_VERIFICATION_SUCCESS
 } from '../../../actions/types';
 
+// Explore tab
+import {
+    EXPLORE_PEOPLE_REFRESH_DONE, // (not yet)
+    EXPLORE_PEOPLE_LOAD_MORE_DONE, // (not yet)
+    EXPLORE_REFRENCE_KEY
+} from '../explore/ExploreReducers';
+
 const DEBUG_KEY = '[ Reducer Users ]';
 
 const INITIAL_DUMMY_USER = {
@@ -705,6 +712,80 @@ export default (state = INITIAL_STATE, action) => {
             }
 
             newState = _.set(newState, `${userId}.user.phone.isVerified`, true);
+            return newState;
+        }
+
+        /** Explore tab related */
+        case EXPLORE_PEOPLE_LOAD_MORE_DONE:
+        case EXPLORE_PEOPLE_REFRESH_DONE: {
+            let newState = _.cloneDeep(state);
+            const { data, oldData } = action.payload;
+
+            data.forEach((d) => {
+                const { _id } = d;
+                
+                let userToUpdate;
+                if (!_.has(newState, `${_id}`)) { 
+                    // User is not in the list, instantiate a new one
+                    userToUpdate = _.cloneDeep(INITIAL_USER);
+                    userToUpdate = _.set(userToUpdate, 'user', d);
+                } else {
+                    // User is in the list, use the old one
+                    userToUpdate = _.get(newState, `${_id}`);
+                }
+
+                // EXPLORE is the reference for people in explore tab
+                const oldReference = _.get(userToUpdate, 'reference');
+                let newReference = oldReference;
+
+                // Check if not already referenced, add reference
+                if (!oldReference.some(r => r === EXPLORE_REFRENCE_KEY)) {
+                    newReference = newReference.concat(EXPLORE_REFRENCE_KEY);
+                }
+
+                // Set new reference
+                userToUpdate = _.set(userToUpdate, 'reference', newReference);
+
+                // Update the user object
+                newState = _.set(newState, `${_id}`, userToUpdate);
+            });
+
+            // TODO: for each oldData not in data, we clean up the reference.
+            // If no longer referenced, we remove the object
+            // But this might not be needed
+            if (action.type === EXPLORE_PEOPLE_REFRESH_DONE) {
+                const transformedNewData = data.map((d) => d._id);
+                const idsToClean = oldData.filter((d) => {
+                    // Only keep ids that are not in the new data
+                    if (transformedNewData.some(newD => newD === d)) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                });
+                idsToClean.forEach((userId) => {
+                    if (!_.has(newState, userId)) return;
+                    let userToClean = _.get(newState, userId);
+
+                    const oldReference = _.get(userToClean, 'reference');
+                    let newReference = oldReference;
+                    if (oldReference.some(r => r === EXPLORE_REFRENCE_KEY)) {
+                        newReference = newReference.filter(r => r !== EXPLORE_REFRENCE_KEY);
+                    }
+
+                    if (_.isEmpty(newReference)) {
+                        // This user is no longer referenced so we remove it
+                        newState = _.omit(newState, userId);
+                        return;
+                    }
+
+                    // Update reference in user object 
+                    userToClean = _.set(userToClean, 'reference', newReference);
+                    // Update user object in the newState
+                    newState = _.set(newState, userId, userToClean);
+                });
+            }
+
             return newState;
         }
 

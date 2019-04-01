@@ -103,7 +103,7 @@ class ContactSync extends Component {
     // Assign actionable buttons
     const button = (type !== undefined && type === 'meet') ?
     null :
-    (<TouchableOpacity activeOpacity={0.85} onPress={this.handleDoneOnPressed.bind(this)}>
+    (<TouchableOpacity activeOpacity={0.6} onPress={this.handleDoneOnPressed.bind(this)}>
       <View style={styles.footer}>
         <Button text='Done' />
       </View>
@@ -120,9 +120,16 @@ class ContactSync extends Component {
 
     return (
       <View style={Styles.containerStyle}>
-        {header}
-        <View style={Styles.bodyContainerStyle}>
-
+        <View 
+          style={{
+            shadowColor: 'lightgray',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.3,
+          }}
+        >
+          {header}
+        </View>
+        <View style={{ flex: 1, display: 'flex' }}>
           <FlatList
             enableEmptySections
             data={data}

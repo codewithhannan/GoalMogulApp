@@ -188,7 +188,7 @@ class CommentRef extends React.PureComponent {
 
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={styles.containerStyle}
         onPress={() => this.handleOnRefPress(item)}
       >

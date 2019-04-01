@@ -197,7 +197,7 @@ class NeedCard extends Component {
   renderViewGoal(item) {
     return (
       <TouchableOpacity 
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -295,7 +295,7 @@ class NeedCard extends Component {
               </Text>
             </View>
             <TouchableOpacity
-              activeOpacity={0.85}
+              activeOpacity={0.6}
               style={styles.containerStyle}
               onPress={() => this.props.onPress(this.props.item)}
             >

@@ -43,7 +43,7 @@ class FriendCard extends Component {
   renderButton = (blockId) => {
     return (
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.6}
         onPress={() => this.onUnBlocked(blockId)}
         style={[Styles.buttonStyle, { justifyContent: 'center', alignSelf: 'center' }]}
       >

@@ -66,7 +66,7 @@ const TabButton = (props) => {
 
   return (
     <TouchableOpacity
-      activeOpacity={0.85}
+      activeOpacity={0.6}
       style={{ ...styles.containerStyle, backgroundColor, ...divider }}
       onPress={props.onPress}
     >

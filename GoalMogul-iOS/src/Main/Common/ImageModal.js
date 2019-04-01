@@ -22,7 +22,7 @@ const DEBUG_KEY = '[ UI ImageModal ]';
 
 class ImageModal extends React.Component {
   shouldComponentUpdate(nextProps) {
-    if (this.props.mediaRef !== nextProps.mediaRef) {
+    if (this.props.mediaRef !== nextProps.mediaRef || this.props.mediaModal !== nextProps.mediaModal) {
       return true;
     }
     // No need to re-render if mediaRef is the same
@@ -33,7 +33,7 @@ class ImageModal extends React.Component {
     if (!this.props.mediaRef) return null;
 
     let urlToRender = this.props.mediaRef;
-    if (!urlToRender.includes(IMAGE_BASE_URL)) {
+    if (!urlToRender.includes(IMAGE_BASE_URL) && !this.props.isLocalFile) {
       urlToRender = `${IMAGE_BASE_URL}${urlToRender}`;
     }
 
@@ -55,7 +55,7 @@ class ImageModal extends React.Component {
           }}
         >
           <TouchableOpacity
-            activeOpacity={0.85}
+            activeOpacity={0.6}
             onPress={() => {
               this.props.closeModal();
             }}

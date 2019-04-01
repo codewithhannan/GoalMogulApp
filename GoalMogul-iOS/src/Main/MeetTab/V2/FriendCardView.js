@@ -15,7 +15,6 @@ import Name from '../../Common/Name';
 import ProfileImage from '../../Common/ProfileImage';
 
 /* Assets */
-import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
 import next from '../../../asset/utils/next.png';
 
 /* Actions */
@@ -25,6 +24,8 @@ import {
   openProfile,
   UserBanner
 } from '../../../actions';
+
+const DEBUG_KEY = '[ UI FriendCardView ]';
 
 class FriendCardView extends React.PureComponent {
   state = {
@@ -52,11 +53,14 @@ class FriendCardView extends React.PureComponent {
     );
   }
 
-  renderButton(item) {
+  renderButton(item, shouldRenderNextButton) {
+    if (shouldRenderNextButton === false) {
+      return null;
+    }
     return (
         <TouchableOpacity 
             onPress={() => this.props.openProfile(item._id)}
-            activeOpacity={0.85}
+            activeOpacity={0.6}
             style={styles.nextButtonContainerStyle}
         >
             <Image
@@ -117,7 +121,7 @@ class FriendCardView extends React.PureComponent {
 
   renderProfile(item) {
     const { name, profile, headline } = item;
-    const detailText = headline || profile.occupation;
+    // const detailText = headline || profile.occupation;
     return (
         <View style={{ flex: 1, marginLeft: 13 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -149,13 +153,20 @@ class FriendCardView extends React.PureComponent {
     const { item } = this.props;
     if (!item) return null;
 
+    const { enableCardOnPress, shouldRenderNextButton } = this.props;
+
     return (
-      <View style={[styles.containerStyle, styles.shadow]}>
+      <TouchableOpacity 
+        style={[styles.containerStyle, styles.shadow]}
+        activeOpacity={0.6}
+        disabled={enableCardOnPress === undefined || enableCardOnPress === false}
+        onPress={() => this.props.openProfile(item._id)}
+      >
         {this.renderProfileImage(item)}
         {this.renderProfile(item)}
         <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: 35 }} />
-        {this.renderButton(item)}
-      </View>
+        {this.renderButton(item, shouldRenderNextButton)}
+      </TouchableOpacity>
     );
   }
 }

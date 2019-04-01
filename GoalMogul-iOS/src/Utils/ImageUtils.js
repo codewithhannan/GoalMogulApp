@@ -3,7 +3,7 @@ import { Image, ImageEditor } from 'react-native';
 import Expo, { Permissions } from 'expo';
 import _ from 'lodash';
 
-const ImageTypes = ['ProfileImage', 'FeedImage', 'PageImage', 'GoalImage'];
+const ImageTypes = ['ProfileImage', 'FeedImage', 'PageImage', 'GoalImage', 'ChatFile'];
 const getImageUrl = (type) => {
   let imageType;
   if (!type) {
@@ -13,7 +13,7 @@ const getImageUrl = (type) => {
   } else {
     throw new Error(`Image type: ${type} is not included`);
   }
-  return `https://goalmogul-api-dev.herokuapp.com/api/secure/s3/${imageType}/signature`;
+  return `https://api.goalmogul.com/api/secure/s3/${imageType}/signature`;
 };
 
 const ImageUtils = {
@@ -31,17 +31,18 @@ const ImageUtils = {
       axios(param)
       .then((res) => {
         const { objectKey, signedRequest } = res.data;
-        dispatch(objectKey);
-        resolve({ signedRequest, file });
-      })
-      .catch((err) => {
+        if (dispatch) {
+          dispatch(objectKey);
+        };
+        resolve({ signedRequest, file, objectKey });
+      }).catch((err) => {
         console.log('error uploading: ', err);
         reject(err);
       });
     });
   },
 
-  uploadImage(file, presignedUrl) {
+  uploadImage(file, presignedUrl, objectKey) {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.onreadystatechange = function () {
@@ -49,7 +50,7 @@ const ImageUtils = {
           if (xhr.status === 200) {
             // Successfully uploaded the file.
             console.log('Successfully uploading the file');
-            resolve(xhr.responseText);
+            resolve({resp: xhr.responseText, objectKey});
           } else {
             // The file could not be uploaded.
             reject(

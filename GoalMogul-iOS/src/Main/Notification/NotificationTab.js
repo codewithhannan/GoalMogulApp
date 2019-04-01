@@ -184,7 +184,7 @@ const SeeMoreButton = (props) => {
   const { onPress, text } = props;
   return (
     <TouchableOpacity 
-      activeOpacity={0.85}
+      activeOpacity={0.6}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -222,7 +222,7 @@ const TitleComponent = (props) => {
       seeAll = (
           <DelayedButton
               style={{ ...seeAllContainerStyle, paddingLeft: 5, alignSelf: 'flex-end' }}
-              activeOpacity={0.85} 
+              activeOpacity={0.6} 
               onPress={onPress}
           >
               <Text style={seeAllTextStyle}>Manage All</Text>
