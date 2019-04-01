@@ -157,9 +157,10 @@ class MessageStorageService {
     /**
      * Stores a message created locally to the storage
      * @param {Object} messageDoc
+     * @param {Function} callback: (err, storedDoc)
      */
-    storeLocallyCreatedMessage = (messageDoc) => {
-        localDb.insert(messageDoc);
+    storeLocallyCreatedMessage = (messageDoc, callback) => {
+        localDb.insert(messageDoc, callback);
     }
     /**
      * Deletes a message from the store
