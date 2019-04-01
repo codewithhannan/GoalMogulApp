@@ -25,6 +25,11 @@ import { MenuProvider } from 'react-native-popup-menu';
 import {
     initialLoad,
     updateTypingStatus,
+    updateMessageList,
+    loadOlderMessages,
+    deleteMessage,
+    sendMessage,
+    messageMediaRefChanged,
 } from '../../../redux/modules/chat/ChatRoomActions';
 import ModalHeader from '../../Common/Header/ModalHeader';
 import { GiftedChat } from 'react-native-gifted-chat';
@@ -104,9 +109,10 @@ class ChatRoomConversation extends React.Component {
         this.props.updateTypingStatus(userId, typingStatus, currentlyTypingUserIds);
     }
     _handleIncomingMessage(messageInfo) {
+        const { chatRoom, messages } = this.props;
         const { messageDoc, chatRoomName, chatRoomPicture } = messageInfo;
-        if (messageDoc.chatRoomRef == this.props.chatRoomId) {
-            this.props.updateMessageList(this.props.messages);
+        if (messageDoc.chatRoomRef == chatRoomId) {
+            this.props.updateMessageList(chatRoom, messages);
             return;
         };
         // do not show alert if we already displayed it
@@ -147,9 +153,9 @@ class ChatRoomConversation extends React.Component {
         Actions.pop();
     }
     loadEarlierMessages() {
-        const { hasNextPage, limit, skip } = this.props;
+        const { chatRoom, hasNextPage, limit, skip } = this.props;
         if (hasNextPage) {
-            this.props.loadOlderMessages(limit, skip);
+            this.props.loadOlderMessages(chatRoom, limit, skip);
         };
     }
     openUserProfile(user) {
@@ -157,10 +163,13 @@ class ChatRoomConversation extends React.Component {
         this.props.openProfile(userId);
     }
     deleteMessage(message) {
-        this.props.deleteMessage(message._id, this.props.messages);
+        const { chatRoom, messages } = this.props;
+        if (!chatRoom) return;
+        this.props.deleteMessage(message._id, chatRoom, messages);
     }
-    sendMessage(messages) {
-        this.props.sendMessage(messages, this.props.chatRoom._id);
+    sendMessage(messagesToSend) {
+        const { messageMediaRef, chatRoom, messages } = this.props;
+        this.props.sendMessage(messagesToSend, messageMediaRef, chatRoom, messages);
     }
 
     onSendImageButtonPress() {
@@ -386,6 +395,12 @@ export default connect(
 	{
         initialLoad,
         updateTypingStatus,
+        updateMessageList,
+        loadOlderMessages,
+        deleteMessage,
+        sendMessage,
+        messageMediaRefChanged,
+
         openProfile,
         openCamera,
         openCameraRoll,
