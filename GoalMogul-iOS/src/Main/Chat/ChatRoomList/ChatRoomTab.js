@@ -31,6 +31,7 @@ import {
   } from '../../../Utils/Icons';
 
 import { IPHONE_MODELS } from '../../../Utils/Constants';
+import { Actions } from 'react-native-router-flux';
 
 const CHATROOM_AUTO_SEARCH_DELAY_MS = 500;
 
@@ -81,6 +82,8 @@ class ChatRoomTab extends React.Component {
 		if (item.isFriend) {
 			this.props.createOrGetDirectMessage(item._id);
 			this.search.clear();
+		} else {
+			Actions.push('chatRoomConversation', { chatRoomId: item._id, });
 		};
 	}
 
