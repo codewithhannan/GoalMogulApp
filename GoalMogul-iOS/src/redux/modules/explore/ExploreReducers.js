@@ -26,7 +26,8 @@ const INITIAL_STATE = {
     hasNextPage: undefined,
     refreshing: false, // Boolean to determine refreshing status
     loading: false // Boolean to determine loading more status
-  }
+  },
+  showPlus: true // This is no longer being used
 };
 
 export const EXPLORE_SWITCH_TAB = 'explore_switch_tab';
@@ -37,6 +38,9 @@ export const EXPLORE_PEOPLE_REFRESH_DONE = 'explore_people_refresh_done';
 export const EXPLORE_PEOPLE_LOAD_MORE = 'explore_people_load_more';
 export const EXPLORE_PEOPLE_LOAD_MORE_DONE = 'explore_people_load_more_done';
 export const EXPLORE_REFRENCE_KEY = 'explore';
+
+export const EXPLORE_PLUS_PRESSED = 'explore_press_pressed';
+export const EXPLORE_PLUS_UNPRESSED = 'explore_press_unpressed';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -98,6 +102,16 @@ export default (state = INITIAL_STATE, action) => {
       newState = _.set(newState, 'people.loading', false);
 
       return newState;
+    }
+
+    case EXPLORE_PLUS_PRESSED: {
+      let newState = _.cloneDeep(state);
+      return _.set(newState, 'showPlus', false);
+    }
+
+    case EXPLORE_PLUS_UNPRESSED: {
+      let newState = _.cloneDeep(state);
+      return _.set(newState, 'showPlus', true);
     }
 
     default: {

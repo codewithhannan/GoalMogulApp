@@ -53,7 +53,10 @@ class FriendCardView extends React.PureComponent {
     );
   }
 
-  renderButton(item) {
+  renderButton(item, shouldRenderNextButton) {
+    if (shouldRenderNextButton === false) {
+      return null;
+    }
     return (
         <TouchableOpacity 
             onPress={() => this.props.openProfile(item._id)}
@@ -150,13 +153,20 @@ class FriendCardView extends React.PureComponent {
     const { item } = this.props;
     if (!item) return null;
 
+    const { enableCardOnPress, shouldRenderNextButton } = this.props;
+
     return (
-      <View style={[styles.containerStyle, styles.shadow]}>
+      <TouchableOpacity 
+        style={[styles.containerStyle, styles.shadow]}
+        activeOpacity={0.6}
+        disabled={enableCardOnPress === undefined || enableCardOnPress === false}
+        onPress={() => this.props.openProfile(item._id)}
+      >
         {this.renderProfileImage(item)}
         {this.renderProfile(item)}
         <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: 35 }} />
-        {this.renderButton(item)}
-      </View>
+        {this.renderButton(item, shouldRenderNextButton)}
+      </TouchableOpacity>
     );
   }
 }

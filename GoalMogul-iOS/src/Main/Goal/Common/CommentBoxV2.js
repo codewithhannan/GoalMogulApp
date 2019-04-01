@@ -323,8 +323,12 @@ class CommentBoxV2 extends Component {
   }
 
   focusForReply(type) {
-    console.log(`${DEBUG_KEY}: focused for reply with type: ${type}`);
-    this.textInput.focus();
+    console.log(`${DEBUG_KEY}: [ focusForReply ]: with type: ${type}`);
+    if (this.textInput !== undefined) {
+      this.textInput.focus();
+    } else {
+      console.warn(`${DEBUG_KEY}: [ focusForReply ]: textInput is undefined`);
+    }
 
     // Only update the defaultValue if comment button is clicked through comment card / child comment card
     if (type === 'Reply') {
