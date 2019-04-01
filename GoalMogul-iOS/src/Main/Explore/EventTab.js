@@ -1,10 +1,13 @@
 import React from 'react';
 import {
   View,
-  FlatList
+  FlatList,
+  Text,
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { Actions } from 'react-native-router-flux';
 
 // Actions
 import {
@@ -38,6 +41,49 @@ class EventTab extends React.Component {
     return <EventTabFilterBar value={{ sortBy: this.props.sortBy }}/>;
   }
 
+  renderListEmptyComponent() {
+    if (this.props.loading) {
+        return null;
+    }
+    return (
+      <View style={{ flex: 1, alignItems: 'center' }}>
+        <Text 
+          style={{
+              paddingTop: 150,
+              fontSize: 17,
+              fontWeight: '600',
+              color: '#818181'
+          }}
+        >
+          No Recommendations
+        </Text>
+        <TouchableOpacity
+          onPress={() => Actions.push('myEventTab', { initial: { openNewEventModal: true }})}
+          style={{ 
+            height: 40,
+            width: 'auto',
+            padding: 10,
+            marginTop: 20,
+            borderRadius: 5,
+            borderWidth: 0.5,
+            borderColor: 'lightgray'
+          }}
+          activeOpacity={0.6}
+        >
+          <Text
+            style={{
+              color: 'gray',
+              fontSize: 13,
+              fontWeight: '600'
+            }}
+          >
+            Create a Tribe
+          </Text>
+        </TouchableOpacity>
+      </View>
+    )
+}
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -50,10 +96,7 @@ class EventTab extends React.Component {
           onRefresh={this.handleOnRefresh}
           onEndReached={this.handleOnLoadMore}
           ListHeaderComponent={this.renderListHeader()}
-          ListEmptyComponent={
-            this.props.loading ? null :
-            <EmptyResult text={'No Recommendations'} />
-          }
+          ListEmptyComponent={this.renderListEmptyComponent()}
           onEndThreshold={0}
         />
       </View>
@@ -63,104 +106,10 @@ class EventTab extends React.Component {
 
 const mapStateToProps = state => {
   const { data, loading, sortBy } = state.eventTab;
-
-  // const loading = false;
-  const testData = [
-    {
-      _id: '980987230941',
-      created: '2018-09-03T05:46:44.038Z',
-      creator: {
-        // User ref
-        name: 'Jia Zeng'
-      },
-      title: 'Jay\'s end of internship party',
-      start: '2018-09-05T05:46:44.038Z',
-      durationHours: 2,
-      participantsCanInvite: true,
-      isInviteOnly: true,
-      participantLimit: 100,
-      location: '100 event ave, NY',
-      description: 'Let\'s get together to celebrate Jay\'s birthday',
-      picture: '',
-      participants: [
-        {
-          participantRef: {
-            _id: '123698172691',
-            name: 'Super Andy',
-            profile: {
-              image: undefined
-            }
-          },
-          rsvp: 'Interested'
-        },
-        {
-          participantRef: {
-            _id: '123698172692',
-            name: 'Mike Gai',
-            profile: {
-              image: undefined
-            }
-          },
-          rsvp: 'Going'
-        },
-        {
-          participantRef: {
-            _id: '1236981798190287',
-            name: 'Maybe',
-            profile: {
-              image: undefined
-            }
-          },
-          rsvp: 'Maybe'
-        },
-      ],
-      participantCount: 2,
-    },
-    {
-      _id: '980987230942',
-      created: '2018-6-03T05:46:44.038Z',
-      creator: {
-        // User ref
-        name: 'David Bogger'
-      },
-      title: 'Back to school party',
-      start: '2018-09-10T05:46:44.038Z',
-      durationHours: 3,
-      participantsCanInvite: false,
-      isInviteOnly: true,
-      participantLimit: 30,
-      location: 'TBD',
-      description: 'We do nothing and simple enjoy life',
-      picture: '',
-      participants: [
-        {
-          participantRef: {
-            _id: '123698172693',
-            name: 'Batman',
-            profile: {
-              image: undefined
-            }
-          },
-          rsvp: 'Interested'
-        },
-        {
-          participantRef: {
-            _id: '123698172694',
-            name: 'Captain America',
-            profile: {
-              image: undefined
-            }
-          },
-          rsvp: 'Going'
-        }
-      ],
-      participantCount: 2,
-    }
-  ];
-
+  
   return {
-    // data: [...data, ...testData],
     data,
+    // data: [],
     loading,
     sortBy
   };

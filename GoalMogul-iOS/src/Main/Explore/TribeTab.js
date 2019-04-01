@@ -1,10 +1,13 @@
 import React from 'react';
 import {
   View,
-  FlatList
+  FlatList,
+  TouchableOpacity,
+  Text
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash'
+import { Actions } from 'react-native-router-flux';
 
 // Actions
 import {
@@ -38,6 +41,49 @@ class TribeTab extends React.Component {
     return <TribeTabFilterBar value={{ sortBy: this.props.sortBy }}/>;
   }
 
+  renderListEmptyComponent() {
+    if (this.props.loading) {
+        return null;
+    }
+    return (
+        <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text 
+                style={{
+                    paddingTop: 150,
+                    fontSize: 17,
+                    fontWeight: '600',
+                    color: '#818181'
+                }}
+            >
+                No Recommendations
+            </Text>
+            <TouchableOpacity
+                onPress={() => Actions.push('myTribeTab', { initial: { openNewTribeModal: true }})}
+                style={{ 
+                    height: 40,
+                    width: 'auto',
+                    padding: 10,
+                    marginTop: 20,
+                    borderRadius: 5,
+                    borderWidth: 0.5,
+                    borderColor: 'lightgray'
+                }}
+                activeOpacity={0.6}
+            >
+                <Text
+                    style={{
+                        color: 'gray',
+                        fontSize: 13,
+                        fontWeight: '600'
+                    }}
+                >
+                    Create a Tribe
+                </Text>
+            </TouchableOpacity>
+        </View>
+    )
+}
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -50,10 +96,7 @@ class TribeTab extends React.Component {
           onRefresh={this.handleOnRefresh}
           onEndReached={this.handleOnLoadMore}
           ListHeaderComponent={this.renderListHeader()}
-          ListEmptyComponent={
-            this.props.loading ? null :
-            <EmptyResult text={'No Recommendations'} />
-          }
+          ListEmptyComponent={this.renderListEmptyComponent()}
           onEndThreshold={0}
         />
       </View>
@@ -64,81 +107,10 @@ class TribeTab extends React.Component {
 const mapStateToProps = state => {
   const { data, loading, sortBy } = state.tribeTab;
 
-  // const loading = false;
-  const testData = [
-    {
-      _id: '123170293817024',
-      created: '',
-      name: 'SoHo Artists',
-      membersCanInvite: true,
-      isPubliclyVisible: true,
-      membershipLimit: 100,
-      description: 'This group is for all artists currently living in or working out of ' +
-      'SoHo, NY. We exchange ideas, get feedback from each other and help each other ' +
-      'organize exhiits for our work!',
-      picture: '',
-      members: [
-        {
-          memberRef: {
-            _id: '1203798700',
-            name: 'Jia Zeng',
-            profile: {
-              image: undefined
-            }
-          },
-          category: 'Member'
-        },
-        {
-          memberRef: {
-            _id: '1203798701',
-            name: 'Aditya Zheng',
-            profile: {
-              image: undefined
-            }
-          },
-          category: 'Admin'
-        },
-        {
-          memberRef: {
-            _id: '1203798703',
-            name: 'Requester',
-            profile: {
-              image: undefined
-            }
-          },
-          category: 'JoinRequester'
-        }
-      ],
-      memberCount: 3,
-    },
-    {
-      _id: '123170293817023',
-      created: '',
-      name: 'Comic fans',
-      membersCanInvite: true,
-      isPubliclyVisible: true,
-      membershipLimit: 20,
-      description: 'This group is dedicated to the fan of comics in LA!',
-      picture: '',
-      members: [
-        {
-          memberRef: {
-            _id: '1203798705',
-            name: 'Super Andy',
-            profile: {
-              image: undefined
-            }
-          },
-          category: 'Member'
-        }
-      ],
-      memberCount: 19,
-    }
-  ];
-
   return {
     // data: [...data, ...testData],
     data,
+    // data: [],
     loading,
     sortBy
   };

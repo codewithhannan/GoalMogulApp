@@ -30,7 +30,18 @@ import EmptyResult from '../../Common/Text/EmptyResult';
 // Assets
 import plus from '../../../asset/utils/plus.png';
 
+const DEBUG_KEY = '[ UI MyTribeTab ]';
+
 class MyTribeTab extends React.Component {
+  componentDidMount() {
+    const { initial } = this.props;
+    if (initial && initial.openNewTribeModal) {
+      setTimeout(() => {
+        this.props.openNewTribeModal();
+      }, 300);
+    }
+  }
+
   _keyExtractor = (item) => item._id;
 
   handleOnRefresh = () => this.props.refreshTribe();
@@ -120,59 +131,8 @@ class MyTribeTab extends React.Component {
 const mapStateToProps = state => {
   const { showModal, loading, data, navigationState } = state.myTribeTab;
 
-  const testData = [
-    {
-      _id: '123170293817024',
-      created: '',
-      name: 'SoHo Artists',
-      membersCanInvite: true,
-      isPubliclyVisible: true,
-      membershipLimit: 100,
-      description: 'This group is for all artists currently living in or working out of ' +
-      'SoHo, NY. We exchange ideas, get feedback from each other and help each other ' +
-      'organize exhiits for our work!',
-      picture: '',
-      members: [
-        {
-          memberRef: {
-            _id: '1203798700',
-            name: 'Jia Zeng',
-            profile: {
-              image: undefined
-            }
-          },
-          category: 'JoinRequester'
-        }
-      ],
-      memberCount: 10,
-    },
-    {
-      _id: '123170293817023',
-      created: '',
-      name: 'Comic fans',
-      membersCanInvite: true,
-      isPubliclyVisible: true,
-      membershipLimit: 20,
-      description: 'This group is dedicated to the fan of comics in LA!',
-      picture: '',
-      members: [
-        {
-          memberRef: {
-            _id: '1203798705',
-            name: 'Super Andy',
-            profile: {
-              image: undefined
-            }
-          },
-          category: 'Member'
-        }
-      ],
-      memberCount: 1,
-    }
-  ];
-
   return {
-    data: [...data],
+    data,
     loading,
     showModal,
     navigationState

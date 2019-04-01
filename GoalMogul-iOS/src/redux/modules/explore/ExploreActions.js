@@ -4,6 +4,8 @@ import {
   EXPLORE_PEOPLE_REFRESH_DONE,
   EXPLORE_PEOPLE_LOAD_MORE,
   EXPLORE_PEOPLE_LOAD_MORE_DONE,
+  EXPLORE_PLUS_PRESSED,
+  EXPLORE_PLUS_UNPRESSED
 } from './ExploreReducers';
 
 import { api as API } from '../../middleware/api';

@@ -439,6 +439,8 @@ class RouterComponent extends Component {
                       <Scene key="exploreTab_privacy" component={Privacy} />
                       <Scene key="exploreTab_friendsSetting" component={FriendsSetting} />
 
+                      <Scene key="exploreTab_friendInvitationView" component={FriendInvitationView} />
+
                       <Scene key="exploreTab_searchLightBox" component={SearchOverlay} hideNavBar />
                     </Stack>
 

@@ -13,7 +13,9 @@ import EventTab from './EventTab';
 import PeopleTab from './People/PeopleTab';
 
 // Actions
-import { exploreSelectTab } from '../../redux/modules/explore/ExploreActions';
+import { 
+  exploreSelectTab
+} from '../../redux/modules/explore/ExploreActions';
 
 // Assets
 import TribeIcon from '../../asset/explore/tribe.png';

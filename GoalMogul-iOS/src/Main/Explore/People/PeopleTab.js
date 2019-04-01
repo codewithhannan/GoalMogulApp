@@ -4,10 +4,13 @@
 import React from 'react';
 import {
     View,
-    FlatList
+    FlatList,
+    Text,
+    TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { Actions } from 'react-native-router-flux';
 
 // Actions
 import {
@@ -47,6 +50,49 @@ class PeopleTab extends React.Component {
         );
     }
 
+    renderListEmptyComponent() {
+        if (this.props.refreshing) {
+            return null;
+        }
+        return (
+            <View style={{ flex: 1, alignItems: 'center' }}>
+                <Text 
+                    style={{
+                        paddingTop: 150,
+                        fontSize: 17,
+                        fontWeight: '600',
+                        color: '#818181'
+                    }}
+                >
+                    No Recommendations
+                </Text>
+                <TouchableOpacity
+                    onPress={() => Actions.push('exploreTab_friendInvitationView')}
+                    style={{ 
+                        height: 40,
+                        width: 'auto',
+                        padding: 10,
+                        marginTop: 20,
+                        borderRadius: 5,
+                        borderWidth: 0.5,
+                        borderColor: 'lightgray'
+                    }}
+                    activeOpacity={0.6}
+                >
+                    <Text
+                        style={{
+                            color: 'gray',
+                            fontSize: 13,
+                            fontWeight: '600'
+                        }}
+                    >
+                        Invite your friends
+                    </Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
     renderListHeader() {
         // return <EventTabFilterBar value={{ sortBy: this.props.sortBy }}/>;
         return null;
@@ -64,10 +110,7 @@ class PeopleTab extends React.Component {
                 onRefresh={this.handleOnRefresh}
                 onEndReached={this.handleOnLoadMore}
                 ListHeaderComponent={this.renderListHeader()}
-                ListEmptyComponent={
-                    this.props.refreshing ? null :
-                    <EmptyResult text={'No Recommendations'} />
-                }
+                ListEmptyComponent={this.renderListEmptyComponent()}
                 onEndThreshold={0}
             />
         </View>
@@ -84,6 +127,7 @@ const makeMapStateToProps = () => {
     
         return {
             data: getUsers(state), // Selector to transform ids to user objects
+            // data: [],
             loading,
             refreshing
         };
