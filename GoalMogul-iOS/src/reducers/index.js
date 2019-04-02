@@ -48,6 +48,7 @@ import MyTribeReducers from '../redux/modules/tribe/MyTribeReducers';
 import ChatReducers from '../redux/modules/chat/ChatReducers';
 import NewChatRoomReducers from '../redux/modules/chat/NewChatRoomReducers';
 import ChatRoomReducers from '../redux/modules/chat/ChatRoomReducers';
+import TabIconReducers from '../redux/modules/navigation/TabIconReducers';
 
 const rootPersistConfig = {
   key: 'root',
@@ -99,6 +100,7 @@ const reducers = combineReducers({
   notification: NotificationTabReducers,
   chat: ChatReducers,
   chatRoom: ChatRoomReducers,
+  navigationTabBadging: TabIconReducers,
 });
 
 export default persistReducer(rootPersistConfig, reducers);

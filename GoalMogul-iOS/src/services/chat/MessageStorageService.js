@@ -391,5 +391,4 @@ class MessageStorageService {
     }
 }
 
-const serviceInstance = new MessageStorageService();
-export default serviceInstance;
+export default new MessageStorageService();

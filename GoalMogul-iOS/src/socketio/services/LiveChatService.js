@@ -139,8 +139,7 @@ class LiveChatService {
     }
 };
 
-const serviceInstance = new LiveChatService();
-export default serviceInstance;
+export default new LiveChatService();
 export const INCOMING_EVENT_NAMES = {
     incomingMessage: 'incomingmessage',
     typingIndicator: 'typingindicator',

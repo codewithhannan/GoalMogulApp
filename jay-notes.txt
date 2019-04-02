@@ -27,7 +27,6 @@ TODO
     - Search friend(s) not in current chat
     - Select and confirm to add to chat
         - Return to main chatroom screen after success
-- Get navbar to listen to incoming messages & auto-update
 ----------------------------------------------------------------------
 STRETCH
 ----------------------------------------------------------------------

@@ -8,17 +8,33 @@ import IconBell from '../../asset/footer/navigation/bell.png';
 import IconMeet from '../../asset/footer/navigation/meet.png';
 import IconChat from '../../asset/footer/navigation/chat.png';
 import IconStar from '../../asset/footer/navigation/star.png';
+import { updateChatCount } from '../../redux/modules/navigation/TabIconActions';
+
+const CHAT_COUNT_UPDATE_INTERVAL = 1000;
 
 class TabIcon extends React.PureComponent {
+
+  componentDidMount() {
+    // chat count updater
+    this.props.updateChatCount();
+    this.refreshChatInterval = setInterval(() => {
+      this.props.updateChatCount();
+    }, CHAT_COUNT_UPDATE_INTERVAL);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.refreshChatInterval);
+  }
+
+
   render() {
-    // console.log('key is: ', this.props)
-    // console.log('title is: ', this.props.title)
     const { 
       activeTintColor, 
       inactiveTintColor, 
       navigation, 
       focused,
-      notificationCount
+      notificationCount,
+      chatCount,
     } = this.props;
     const tintColor = focused ? activeTintColor : inactiveTintColor;
     const style = {
@@ -52,7 +68,17 @@ class TabIcon extends React.PureComponent {
         );
       case 'chatTab':
         return (
-          <Image source={IconChat} style={style} />
+          <View style={styles.iconContainerStyle}>
+            {
+              (chatCount && chatCount > 0)
+              ? (
+                <View style={styles.notificationCountContainerStyle} zIndex={2}>
+                  <Text style={styles.notificationCountTextStyle}>{chatCount}</Text>
+                </View>
+              ) : null
+            }
+            <Image source={IconChat} style={style} zIndex={1} />
+          </View>
         );
       case 'exploreTab':
         return (
@@ -104,12 +130,16 @@ const styles = {
 
 const mapStateToProps = state => {
   const { unreadCount } = state.notification.unread;
+  const { chatCount } = state.navigationTabBadging;
   return {
-    notificationCount: unreadCount
+    notificationCount: unreadCount,
+    chatCount,
   };
 };
 
 export default connect(
   mapStateToProps,
-  null
+  {
+    updateChatCount,
+  }
 )(TabIcon);
