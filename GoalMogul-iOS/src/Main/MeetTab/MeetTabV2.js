@@ -213,7 +213,7 @@ class MeetTabV2 extends React.Component {
     }
 
     renderSectionTitle = (title, inLength, onPress) => {
-        let seeAll = '';
+        let seeAll = null;
         if (inLength !== undefined && inLength === 0) {
             const { seeAllContainerStyle, seeAllTextStyle } = styles;
             seeAll = (
