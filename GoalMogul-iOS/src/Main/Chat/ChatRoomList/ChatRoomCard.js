@@ -88,7 +88,7 @@ class ChatRoomCard extends React.Component {
 						</Text>
 						&nbsp;members
 					</Text>
-				: ''}
+				: null}
 			</View>
 		);
 	}
