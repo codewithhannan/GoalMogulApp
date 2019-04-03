@@ -7,6 +7,8 @@ import {
   HOME_SWITCH_TAB
 } from './types';
 
+const DEBUG_KEY = '[ HomeActions ]';
+
 // Fetching profile
 export const fetchProfile = (userId, callback) => {
   return (dispatch, getState) => {
@@ -26,7 +28,7 @@ export const fetchProfile = (userId, callback) => {
       /* If message, it means error */
       if (res.message) {
         /* TODO: error handling */
-        console.log('error fetching user profile: ', res);
+        console.log(`${DEBUG_KEY}: error fetching user profile: `, res);
         dispatch({
           type: PROFILE_FETCHING_FAIL,
           payload: {
@@ -45,13 +47,14 @@ export const fetchProfile = (userId, callback) => {
           pageId: 'HOME'
         }
       });
+
       if (callback) {
         callback();
         return;
       }
     })
     /* TODO: error handling */
-    .catch((err) => console.log('err in loading user profile', err));
+    .catch((err) => console.log(`${DEBUG_KEY}: exception in loading user profile`, err));
   };
 };
 

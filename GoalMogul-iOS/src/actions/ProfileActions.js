@@ -259,7 +259,7 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
       }
     })
     .catch((err) => {
-      console.log('err in loading user profile', err);
+      console.log(`${DEBUG_KEY}: err in loading user profile`, err);
       dispatch({
         type: PROFILE_FETCHING_FAIL,
         payload: `Error loading user profile: ${err}`

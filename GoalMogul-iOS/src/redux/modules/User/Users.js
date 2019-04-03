@@ -299,7 +299,7 @@ export default (state = INITIAL_STATE, action) => {
             // Update the reference
             if (pageId === 'HOME' || pageId === 'LOGIN') {
                 // Adding 'HOME' and 'LOGIN' to user reference
-                const reference = [pageId];
+                let reference = [pageId];
                 const oldReference = _.get(newState, `${user._id}.reference`);
                 if (oldReference !== undefined) {
                     if (!oldReference.some(r => r === pageId)) {
