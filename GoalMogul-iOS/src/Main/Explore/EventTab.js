@@ -77,7 +77,7 @@ class EventTab extends React.Component {
               fontWeight: '600'
             }}
           >
-            Create a Tribe
+            Create an Event
           </Text>
         </TouchableOpacity>
       </View>
