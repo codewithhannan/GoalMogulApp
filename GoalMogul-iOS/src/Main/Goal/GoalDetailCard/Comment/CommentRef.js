@@ -193,7 +193,7 @@ class CommentRef extends React.PureComponent {
         onPress={() => this.handleOnRefPress(item)}
       >
         {this.renderImage(item)}
-        {this.renderTextContent(item)}}
+        {this.renderTextContent(item)}
         {this.renderEndImage(item)}
       </TouchableOpacity>
     );
