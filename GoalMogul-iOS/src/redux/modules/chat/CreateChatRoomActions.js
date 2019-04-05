@@ -3,6 +3,7 @@ import { Actions } from "react-native-router-flux";
 import ImageUtils from "../../../Utils/ImageUtils";
 import { api as API } from "../../middleware/api";
 import { CHAT_NEW_MODAL_PAGE_CHANGE, CHAT_NEW_UPDATE_SELECTED_MEMBERS, CHAT_NEW_REFRESH_FRIENDS_SEARCH, CHAT_NEW_LOAD_MORE_FRIENDS_SEARCH, CHAT_NEW_SEARCH_QUERY_UPDATED, CHAT_NEW_REFRESH_FRIENDS_SEARCH_BEGIN, CHAT_NEW_LOAD_MORE_FRIENDS_SEARCH_BEGIN, CHAT_NEW_SUBMIT_FAIL, CHAT_NEW_RESET_COMPONENT, CHAT_NEW_SUBMIT_SUCCESS } from "./NewChatRoomReducers";
+import { refreshChatRoom } from "./ChatRoomActions";
 
 const DEBUG_KEY = '[CreateChatRoomActions]';
 
@@ -96,16 +97,16 @@ export const createOrUpdateChatroom = (values, membersToAdd, chatId, isEdit, nee
 			payload: result,
 		});
 
-        const createdChat = result.data;
-        if (!createdChat) {
+        const createdOrUpdatedChat = result.data;
+        if (!createdOrUpdatedChat) {
             return;
         };
 		if (isEdit) {
-            // handle necessary changes
+            refreshChatRoom(createdOrUpdatedChat._id)(dispatch, getState);
 		    Actions.pop();
         } else {
             Actions.pop();
-            Actions.push('chatRoomConversation', { chatRoomId: createdChat._id });
+            Actions.push('chatRoomConversation', { chatRoomId: createdOrUpdatedChat._id });
         };
     };
 	const onError = (err) => {
@@ -175,18 +176,18 @@ const sendCreateChatRequest = (newChat, token, isEdit, onSuccess, onError) => {
 };
 const formToChatRoomAdapter = (values, membersToAdd, chatId, isEdit) => {
     const {
-        name, roomType, isPublic, membersCanAdd, memberLimit, picture,
+        name, roomType, isPublic, membersCanAdd, memberLimit, picture, description
     } = values;
     if (isEdit) {
 		return {
 			chatRoomId: chatId,
 			changes: {
-				name, roomType, isPublic, membersCanAdd, memberLimit, picture,
+				name, roomType, isPublic, membersCanAdd, memberLimit, picture, description,
 			}
 		};
 	}
 
 	return {
-		name, roomType, isPublic, membersCanAdd, memberLimit, picture, membersToAdd,
+		name, roomType, isPublic, membersCanAdd, memberLimit, picture, membersToAdd, description,
 	};
 };

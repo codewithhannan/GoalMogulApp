@@ -39,8 +39,9 @@ import { Actions } from 'react-native-router-flux';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import ProfileImage from '../../Common/ProfileImage';
 import { openCamera, openCameraRoll, openProfile } from '../../../actions';
-import { APP_DEEP_BLUE } from '../../../styles';
+import profilePic from '../../../asset/utils/defaultUserProfile.png';
 import { Image } from 'react-native-elements';
+import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Constants';
 
 const DEBUG_KEY = '[ UI ChatRoomConversation ]';
 const LISTENER_KEY = 'ChatRoomConversation';
@@ -322,6 +323,7 @@ class ChatRoomConversation extends React.Component {
 				<View style={styles.homeContainerStyle}>
 					<ModalHeader
                         title={this.props.chatRoomName}
+                        titleIcon={this.props.chatRoomImage}
                         actionText={`\u2026` /* ellipsis */}
                         onAction={this.openOptions}
                         back={true}
@@ -363,15 +365,21 @@ const mapStateToProps = (state, props) => {
     const chatRoom = activeChatRoomId && chatRoomsMap[activeChatRoomId];
     
     let chatRoomName = 'Loading...';
+    let chatRoomImage = null;
     let chatRoomMembersMap = {};
     if (chatRoom) {
         if (chatRoom.roomType == 'Direct') {
             let otherUser = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id != userId);
             if (otherUser) {
-                chatRoomName = otherUser.memberRef.name;
+                otherUser = otherUser.memberRef;
+                chatRoomName = otherUser.name;
+                chatRoomImage = (otherUser.profile && otherUser.profile.image) ? {
+                    uri: `${IMAGE_BASE_URL}${otherUser.profile.image}`
+                } : profilePic;
             };
         } else {
             chatRoomName = chatRoom.name;
+            chatRoomImage = { uri: chatRoom.picture ? `${IMAGE_BASE_URL}${chatRoom.picture}` : GROUP_CHAT_DEFAULT_ICON_URL };
         };
         chatRoomMembersMap = chatRoom.members && chatRoom.members.reduce((map, memberDoc) => {
             map[memberDoc.memberRef._id] = memberDoc.memberRef;
@@ -385,6 +393,7 @@ const mapStateToProps = (state, props) => {
         user,
         chatRoom,
         chatRoomName,
+        chatRoomImage,
         chatRoomMembersMap,
         messages,
         limit,

@@ -44,7 +44,7 @@ const paddingTop = (
 ) ? 25 : 43;
 
 const ModalHeader = (props) => {
-  const { title, actionText, onCancel, onAction, actionDisabled, cancelText, back, actionHidden } = props;
+  const { title, actionText, onCancel, onAction, actionDisabled, cancelText, back, actionHidden, titleIcon } = props;
   const cancel = cancelText !== null && cancelText !== undefined ? cancelText : 'Cancel';
 
   let leftComponent = back
@@ -81,19 +81,23 @@ const ModalHeader = (props) => {
         </TouchableOpacity>
 
         <TouchableOpacity activeOpacity={0.6} style={{ alignItems: 'center', flex: 3 }}>
-          <Text style={styles.titleTextStyle}>{title}</Text>
+          <View style={styles.titleTextContainerStyle}>
+            {titleIcon && <Image
+              style={styles.titleTextIconStyle}
+              source={titleIcon}
+            />}
+            <Text style={styles.titleTextStyle}>{title}</Text>
+          </View>
         </TouchableOpacity>
 
-        {actionHidden ? null :
-          <TouchableOpacity
-            activeOpacity={0.6}
-            style={{ alignItems: 'center', flex: 1 }}
-            onPress={onAction}
-            disabled={actionDisabled}
-          >
-            <Text style={actionTextStyle}>{actionText}</Text>
-          </TouchableOpacity>
-        }
+        <TouchableOpacity
+          activeOpacity={0.6}
+          style={{ alignItems: 'center', flex: 1, opacity: actionHidden ? 0 : 1 }}
+          onPress={onAction}
+          disabled={actionDisabled}
+        >
+          <Text style={actionTextStyle}>{actionText}</Text>
+        </TouchableOpacity>
 
       </View>
     </View>
@@ -124,9 +128,23 @@ const styles = {
   },
   titleTextStyle: {
     fontSize,
-    alignSelf: 'center',
     paddingTop: padding,
     paddingBottom: padding,
+    textAlign: 'center',
+  },
+  titleTextIconStyle: {
+    borderRadius: 5,
+    height: 24,
+    width: 24,
+    marginTop: 4,
+    marginRight: 6,
+    padding: 1,
+    border: '1px solid #F1F1F1',
+  },
+  titleTextContainerStyle: {
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   cancelTextStyle: {
     paddingTop: padding,

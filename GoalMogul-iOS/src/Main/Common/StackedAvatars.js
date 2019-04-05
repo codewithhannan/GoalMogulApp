@@ -33,34 +33,80 @@ const StackedAvatars = (props) => {
 };
 
 export const StackedAvatarsV2 = (props) => {
-  const { participants } = props;
-  if (!participants) return null;
-  const participantPictures = participants
-    .filter((participant) => participant.rsvp === 'Going' || participant.rsvp === 'Interested')
-    .map((participant, index) => {
-      if (index > 1) return null;
-      const { participantRef } = participant;
-      return (
-        <ProfileImage
-          key={index}
-          imageContainerStyle={{
-            ...styles.bottomPictureContainerStyle,
-            left: ((index * 13))
-          }}
-          imageUrl={participantRef.profile.image}
-          imageStyle={{ ...styles.pictureStyle }}
-          defaultImageSource={DefaultUserProfile}
-        />
-      );
-    });
-
-  const count = participantPictures.length;
-  const participantPicturesWidth = count < 2 ? 45 : 50;
-  return (
-    <View style={{ ...styles.memberPicturesContainerStyle, width: participantPicturesWidth }}>
-      {participantPictures}
-    </View>
-  );
+  const { participants, chatMembers } = props;
+  if (participants) {
+    const participantPictures = participants
+      .filter((participant) => participant.rsvp === 'Going' || participant.rsvp === 'Interested')
+      .map((participant, index) => {
+        if (index > 1) return null;
+        const { participantRef } = participant;
+        return (
+          <ProfileImage
+            key={index}
+            imageContainerStyle={{
+              ...styles.bottomPictureContainerStyle,
+              left: ((index * 13)), zIndex: index + 1
+            }}
+            imageUrl={participantRef.profile.image}
+            imageStyle={{ ...styles.pictureStyle }}
+            defaultImageSource={DefaultUserProfile}
+          />
+        );
+      });
+  
+    const count = participantPictures.length;
+    const participantPicturesWidth = count < 2 ? 45 : 50;
+    return (
+      <View style={{ ...styles.memberPicturesContainerStyle, width: participantPicturesWidth }}>
+        {participantPictures}
+      </View>
+    );
+  } else if(chatMembers) {
+    const realMembers = chatMembers.filter((memberDoc) => memberDoc.status != 'JoinRequester');
+    let pictures = realMembers
+      .filter(memberDoc => memberDoc.memberRef && memberDoc.memberRef.profile && memberDoc.memberRef.profile.image)
+      .map((memberDoc, index) => {
+        if (index > 1) return null;
+        const { memberRef } = memberDoc;
+        return (
+          <ProfileImage
+            key={index}
+            imageContainerStyle={{
+              ...styles.bottomPictureContainerStyle,
+              right: ((index * 13)), zIndex: index + 1
+            }}
+            imageUrl={memberRef.profile.image}
+            imageStyle={{ ...styles.pictureStyle }}
+            defaultImageSource={DefaultUserProfile}
+          />
+        );
+      });
+    if (pictures.length < 2) {
+      const numToAdd = 2 - pictures.length;
+      for (let i = 0; i < numToAdd; i++) {
+        const index = pictures.length;
+        pictures.push((
+          <ProfileImage
+            key={index}
+            imageContainerStyle={{
+              ...styles.bottomPictureContainerStyle,
+              left: ((index * 13))
+            }}
+            imageUrl={DefaultUserProfile}
+            imageStyle={{ ...styles.pictureStyle }}
+          />
+        ));
+      };
+    };
+  
+    const count = pictures.length;
+    const picturesWidth = count < 2 ? 45 : 50;
+    return (
+      <View style={{ ...styles.memberPicturesContainerStyle, width: picturesWidth }}>
+        {pictures}
+      </View>
+    );
+  };
 };
 
 const PictureDimension = 24;
@@ -78,6 +124,7 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
+    border: '1px solid #FDFDFD',
     left: 2
   },
   bottomPictureContainerStyle: {
@@ -87,7 +134,9 @@ const styles = {
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 15
+    border: '1px solid #CCC',
+    position: 'absolute',
+    marginRight: 5
   },
   pictureStyle: {
     height: PictureDimension,

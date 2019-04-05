@@ -13,6 +13,9 @@ export const initialLoad = (currentChatRoomId, pageSize) => (dispatch, getState)
 	});
 	API.get(`secure/chat/room/documents/${currentChatRoomId}`, token)
 		.then(resp => {
+			if (resp.status != 200) {
+				return Alert.alert('Error', 'Could not fetch chat room. Please try again later.');
+			};
 			const chatRoom = resp.data;
 			if (!chatRoom) {
 				throw new Error('Invalid chat room.');
@@ -38,6 +41,26 @@ export const initialLoad = (currentChatRoomId, pageSize) => (dispatch, getState)
 				type: CHAT_ROOM_LOAD_INITIAL,
 				payload: { messages: [], chatRoom: null },
 			});
+		});
+};
+
+export const refreshChatRoom = (currentChatRoomId) => (dispatch, getState) => {
+	const { token } = getState().user;
+	API.get(`secure/chat/room/documents/${currentChatRoomId}`, token)
+		.then(resp => {
+			if (resp.status != 200) {
+				return Alert.alert('Error', 'Could not refresh chat room. Please try again later.');
+			};
+			const chatRoom = resp.data;
+			if (!chatRoom) {
+				throw new Error('Invalid chat room.');
+			};
+			dispatch({
+				type: CHAT_ROOM_LOAD_INITIAL,
+				payload: { chatRoom },
+			});
+		}).catch(err => {
+			Alert.alert('Error', 'Could not refresh chat room.');
 		});
 };
 

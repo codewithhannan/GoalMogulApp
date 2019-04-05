@@ -10,22 +10,19 @@ import { connect } from 'react-redux';
 // Components
 import ProfileImage from '../../Common/ProfileImage';
 import Timestamp from '../../Goal/Common/Timestamp';
-import Dot from '../../Common/Dot';
 
-const GROUP_CHAT_DEFAULT_URL = 'https://i.imgur.com/dP71It0.png';
+import profilePic from '../../../asset/utils/defaultUserProfile.png';
+import { GROUP_CHAT_DEFAULT_ICON_URL } from '../../../Utils/Constants';
 
 class ChatRoomCard extends React.Component {
 	handleCardOnPress = (item) => {
 		this.props.onItemSelect(item);
 	}
 
-	renderProfileImage(item) {
-		// TODO: change to the real path
-		if (!item) {
+	renderCardImage(imageUrl) {
+		if (!imageUrl) {
 			return null;
 		}
-		const imageUrl = item.image ? item.image : item.picture ? item.picture : GROUP_CHAT_DEFAULT_URL;
-
 		return (
 			<ProfileImage
 				imageStyle={{ height: 55, width: 55, borderRadius: 5 }}
@@ -121,16 +118,18 @@ class ChatRoomCard extends React.Component {
 		if (!item) return null;
 
 		// extract profile
-		let profileToRender;
+		let cardImage;
 		if (item.isFriend || item.roomType == 'Direct') {
-			profileToRender = item.isFriend ?
+			cardImage = item.isFriend ?
 				item :
 				item.members && item.members.find(memDoc => memDoc.memberRef._id.toString() != this.props.currentUserId);
-			if (profileToRender) {
-				profileToRender = profileToRender.profile || profileToRender.memberRef.profile;
+			if (cardImage) {
+				cardImage = cardImage.profile || cardImage.memberRef.profile;
 			};
+			cardImage = (cardImage && cardImage.image) || profilePic;
 		} else {
-			profileToRender = item;
+			cardImage = (item && item.picture) || GROUP_CHAT_DEFAULT_ICON_URL;
+
 		};
 
 		const maybeUnreadHighlight = item.unreadMessageCount > 0 ? {
@@ -142,7 +141,7 @@ class ChatRoomCard extends React.Component {
 				style={{...styles.cardContainerStyle, ...maybeUnreadHighlight }}
 				onPress={() => this.handleCardOnPress(item)}
 			>
-				{this.renderProfileImage(profileToRender)}
+				{this.renderCardImage(cardImage)}
 				{this.renderCardContent(item)}
 			</TouchableOpacity>
 		);

@@ -1,17 +1,6 @@
 --------------------------------------------------------
 TODO
 --------------------------------------------------------
-- ChatRoomDetails component
-    - IF Group:
-        - ChatRoom Image and Name preview with edit button to the right
-            - Edit button opens up {CreateChatRoom}(Edit ChatRoom mode)
-      ELSE:
-        - Other participant image, name with right arrow button on right to open user's profile
-    - List of Links to:
-        - Unmute/Mute chat button toggle
-        - {ManageMembers} IF Group
-        - {AddFriendModal} IF Group AND [currentUser is Admin OR membersCanAdd]
-        - {ChatMessageSearch}
 - ManageMembers component
     - Tabs: Admin, Members, JoinRequesters(if currentUser is Admin)
     - FlatList of members by tab
