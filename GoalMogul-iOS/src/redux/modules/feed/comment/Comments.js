@@ -230,7 +230,7 @@ export default (state = INITIAL_STATE, action) => {
         case POST_DETAIL_CLOSE:
         case GOAL_DETAIL_CLOSE: {
             let entityId = '';
-            const pageId = action.payload.pagId;
+            const pageId = action.payload.pageId;
             if (action.type === GOAL_DETAIL_CLOSE) {
                 entityId = action.payload.goalId;
             }
@@ -240,13 +240,14 @@ export default (state = INITIAL_STATE, action) => {
             }
 
             let newState = _.cloneDeep(state);
+            let commentToUpdate = { ...INITIAL_COMMENT_OBJECT };
 
             if (!_.has(newState, entityId)) {
                 // Nothing to remove as the reference is gone already
                 return newState;
+            } else {
+                commentToUpdate = _.get(newState, entityId);
             }
-
-            let commentToUpdate = { ...INITIAL_COMMENT_OBJECT };
 
             // Update reference
             const oldReference = _.get(commentToUpdate, 'reference');
@@ -266,7 +267,7 @@ export default (state = INITIAL_STATE, action) => {
 
             commentToUpdate = _.omit(commentToUpdate, entityId); // Remove associated comment page
             commentToUpdate = _.set(commentToUpdate, 'reference', newReference);
-            newState = _.set(newState, entityId, newReference);
+            newState = _.set(newState, entityId, commentToUpdate);
             return newState;
         }
 
