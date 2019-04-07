@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar, Icon } from 'react-native-elements';
-import { Actions } from 'react-native-router-flux';
 import { MenuProvider } from 'react-native-popup-menu';
 import _ from 'lodash';
 import { Constants } from 'expo';
@@ -15,7 +14,7 @@ import { TabView, SceneMap } from 'react-native-tab-view';
 
 // Component
 import BaseOverlay from './BaseOverlay';
-import SearchFilterBar from './SearchFilterBar';
+// import SearchFilterBar from './SearchFilterBar';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import PeopleSearch from './People/PeopleSearch';
 import EventSearch from './Event/EventSearch';
@@ -37,6 +36,12 @@ import {
 const DEBUG_KEY = '[ Component Search ]';
 
 class SearchOverlay extends Component {
+  constructor(props) {
+    super(props);
+    this.handleCancel = this.handleCancel.bind(this);
+    this.handleOnEndSubmitting = this.handleOnEndSubmitting.bind(this);
+  }
+
   // Search bar functions
   handleCancel = () => {
     //TODO: potentially clear search state
@@ -54,6 +59,14 @@ class SearchOverlay extends Component {
       this.props.clearSearchState(this.props.selectedTab);
     }
     this.props.debouncedSearch(value.trim(), this.props.selectedTab);
+  }
+
+  handleOnEndSubmitting = ({ nativeEvent }) => {
+    const { text, eventCount, taget } = nativeEvent;
+    // Close the search modal if nothing is entered
+    if (text === undefined || text === null || text === '' || text.trim() === '') {
+      this.handleCancel();
+    }
   }
 
   searchIcon = () => (
@@ -115,6 +128,7 @@ class SearchOverlay extends Component {
                   iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
                 />
               )}
+              onSubmitEditing={this.handleOnEndSubmitting}
             />
           </View>
           <TabView
