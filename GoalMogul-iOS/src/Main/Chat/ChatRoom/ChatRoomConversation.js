@@ -30,6 +30,7 @@ import {
     deleteMessage,
     sendMessage,
     messageMediaRefChanged,
+    refreshChatRoom,
 } from '../../../redux/modules/chat/ChatRoomActions';
 import ModalHeader from '../../Common/Header/ModalHeader';
 import { GiftedChat } from 'react-native-gifted-chat';
@@ -46,6 +47,7 @@ import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Cons
 const DEBUG_KEY = '[ UI ChatRoomConversation ]';
 const LISTENER_KEY = 'ChatRoomConversation';
 const MAX_TYPING_INDICATORS_TO_DISPLAY = 3;
+const CHAT_ROOM_DOCUMENT_REFRESH_INTERVAL = 1500; // milliseconds
 
 /**
  * @prop {String} chatRoomId: required
@@ -59,6 +61,7 @@ class ChatRoomConversation extends React.Component {
 
 	componentDidMount() {
         const { chatRoomId, limit } = this.props;
+        this._pollChatRoomDocument();
         MessageStorageService.markConversationMessagesAsRead(chatRoomId);
         MessageStorageService.setActiveChatRoom(chatRoomId);
         MessageStorageService.onIncomingMessageStored(LISTENER_KEY, this._handleIncomingMessage.bind(this));
@@ -95,6 +98,7 @@ class ChatRoomConversation extends React.Component {
         const chatRoomId = chatRoom && chatRoom._id;
         if (!chatRoomId) return;
 
+        this._unpollChatRoomDocument();
         MessageStorageService.markConversationMessagesAsRead(chatRoomId);
         MessageStorageService.unsetActiveChatRoom(chatRoomId);
         MessageStorageService.offIncomingMessageStored(LISTENER_KEY);
@@ -102,6 +106,18 @@ class ChatRoomConversation extends React.Component {
         LiveChatService.emitEvent('leaveroom', {
             chatRoomId,
         }, (resp) => {/* nothing to do */});
+    }
+    _pollChatRoomDocument() {
+        this.chatRoomDocumentPoll = setInterval(this._refreshChatRoom.bind(this), CHAT_ROOM_DOCUMENT_REFRESH_INTERVAL);
+    }
+    _unpollChatRoomDocument() {
+        clearInterval(this.chatRoomDocumentPoll);
+    }
+    _refreshChatRoom() {
+        const { chatRoom } = this.props;
+        if (chatRoom) {
+            this.props.refreshChatRoom(chatRoom._id);
+        };
     }
     _handleIncomingTypingStatusUpdate(data) {
         const updateInfo = data.data;
@@ -415,13 +431,12 @@ export default connect(
         deleteMessage,
         sendMessage,
         messageMediaRefChanged,
-
+        refreshChatRoom,
         openProfile,
         openCamera,
         openCameraRoll,
 	}
 )(ChatRoomConversation);
-
 
 const styles = {
 	homeContainerStyle: {

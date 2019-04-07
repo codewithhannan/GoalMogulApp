@@ -31,10 +31,11 @@ import { MenuProvider } from 'react-native-popup-menu';
 import SettingCard from '../../Setting/SettingCard';
 import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Constants';
 import { openProfile } from '../../../actions';
-import { changeChatRoomMute } from '../../../redux/modules/chat/ChatRoomOptionsActions';
+import { changeChatRoomMute, addMemberToChatRoom } from '../../../redux/modules/chat/ChatRoomOptionsActions';
 import { ScrollView } from 'react-native-gesture-handler';
-import StackedAvatars, { StackedAvatarsV2 } from '../../Common/StackedAvatars';
+import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
 import { Image, Text, Divider } from 'react-native-elements';
+import { APP_BLUE_BRIGHT } from '../../../styles';
 
 const DEBUG_KEY = '[ UI ChatRoomOptions ]';
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -60,7 +61,15 @@ class ChatRoomOptions extends React.Component {
 
     }
     openAddMember() {
-
+        const searchFor = {
+            type: 'addChatMember',
+        };
+        const cardIconStyle = { tintColor: APP_BLUE_BRIGHT };
+        const cardIconSource = plusIcon;
+        const callback = (selectedUserId) => {
+            this.props.addMemberToChatRoom(selectedUserId);
+        };
+        Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle, callback });
     }
     openMessageSearch() {
 
@@ -284,6 +293,7 @@ export default connect(
 	{
         openProfile,
         changeChatRoomMute,
+        addMemberToChatRoom,
 	}
 )(ChatRoomOptions);
 
