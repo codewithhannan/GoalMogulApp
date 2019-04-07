@@ -39,146 +39,161 @@ import {
 } from '../../Utils/Constants';
 import { SearchIcon } from '../../Utils/Icons';
 
- const DEBUG_KEY = '[ People Search ]';
- const SEARCH_TYPE = 'friends';
+const DEBUG_KEY = '[ People Search ]';
+const SEARCH_TYPE = 'friends';
 
- class PeopleSearchOverlay extends Component {
-    handleOnResSelect = (_id) => {
-      const { searchFor, callback } = this.props;
-      if (!searchFor) return this.props.openProfile(_id);
-      const {
-        type, // event or tribe
-        id // eventId or TribeId
-      } = searchFor;
-      if (type === 'tribe' || type === 'myTribe') {
-        // _id is invitee id
-        return this.props.inviteUserToTribe(id, _id, callback);
-      }
-      if (type === 'event' || type === 'myEvent') {
-        return this.props.inviteParticipantToEvent(id, _id, callback);
-      }
-      if (type === 'directChat') {
-        callback(_id);
-        this.handleCancel();
-        return;
-      };
+class PeopleSearchOverlay extends Component {
+  constructor(props) {
+    super(props);
+    this.handleCancel = this.handleCancel.bind(this);
+    this.handleOnEndSubmitting = this.handleOnEndSubmitting.bind(this);
+  }
+
+  handleOnResSelect = (_id) => {
+    const { searchFor, callback } = this.props;
+    if (!searchFor) return this.props.openProfile(_id);
+    const {
+      type, // event or tribe
+      id // eventId or TribeId
+    } = searchFor;
+    if (type === 'tribe' || type === 'myTribe') {
+      // _id is invitee id
+      return this.props.inviteUserToTribe(id, _id, callback);
     }
+    if (type === 'event' || type === 'myEvent') {
+      return this.props.inviteParticipantToEvent(id, _id, callback);
+    }
+    if (type === 'directChat') {
+      callback(_id);
+      this.handleCancel();
+      return;
+    };
+  }
 
-   // Search bar functions
-   handleCancel = () => {
-     //TODO: potentially clear search state
-     console.log(`${DEBUG_KEY} handle cancel`);
-     this.props.clearSearchState();
-     // Actions.pop();
-     this.refs.baseOverlay.closeModal();
-   }
+  handleOnEndSubmitting = ({ nativeEvent }) => {
+    const { text, eventCount, taget } = nativeEvent;
+    // Close the search modal if nothing is entered
+    if (text === undefined || text === null || text === '' || text.trim() === '') {
+      this.handleCancel();
+    }
+  }
+
+  // Search bar functions
+  handleCancel = () => {
+    //TODO: potentially clear search state
+    console.log(`${DEBUG_KEY} handle cancel`);
+    this.props.clearSearchState();
+    // Actions.pop();
+    this.refs.baseOverlay.closeModal();
+  }
 
   handleChangeText = (value) => {
     if (value === undefined) {
       return;
     }
-     if (value === '') {
+      if (value === '') {
       return this.props.clearSearchState(SEARCH_TYPE);
     }
     console.log('debouced serach is: ', this.props.debouncedSearch);
     this.props.debouncedSearch(value.trim(), SEARCH_TYPE);
   }
 
-   render() {
-      const searchPlaceHolder = this.props.searchPlaceHolder
-        ? this.props.searchPlaceHolder
-        : 'Search a person';
+  render() {
+    const searchPlaceHolder = this.props.searchPlaceHolder
+      ? this.props.searchPlaceHolder
+      : 'Search a person';
 
-      const marginTop = (
-        Platform.OS === 'ios' &&
-        IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
-      ) ? 20 : 30;
+    const marginTop = (
+      Platform.OS === 'ios' &&
+      IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+    ) ? 20 : 30;
 
-     return (
-       <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>
-         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-           <View style={{ ...styles.headerContainerStyle, marginTop }}>
-             <SearchBar
-               platform='ios'
-               round
-               autoFocus
-               searchIcon={<SearchIcon
-                iconContainerStyle={{ marginBottom: 3, marginTop: 1 }} 
-                iconStyle={{ tintColor: '#17B3EC', height: 15, width: 15 }}
-               />}
-               inputStyle={styles.searchInputStyle}
-               inputContainerStyle={styles.searchInputContainerStyle}
-               containerStyle={styles.searchContainerStyle}
-               placeholder={searchPlaceHolder}
-               cancelButtonTitle='Cancel'
-               onCancel={this.handleCancel}
-               onChangeText={this.handleChangeText}
-               clearIcon={null}
-               cancelButtonProps={{ color: '#17B3EC' }}
-               showLoading={this.props.loading}
-             />
-           </View>
-           <FriendsSearch reducerPath='' onSelect={this.handleOnResSelect} {...this.props} />
-         </MenuProvider>
-       </BaseOverlay>
-     );
-   }
- }
+    return (
+      <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>
+        <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+          <View style={{ ...styles.headerContainerStyle, marginTop }}>
+            <SearchBar
+              platform='ios'
+              round
+              autoFocus
+              searchIcon={<SearchIcon
+              iconContainerStyle={{ marginBottom: 3, marginTop: 1 }} 
+              iconStyle={{ tintColor: '#17B3EC', height: 15, width: 15 }}
+              />}
+              inputStyle={styles.searchInputStyle}
+              inputContainerStyle={styles.searchInputContainerStyle}
+              containerStyle={styles.searchContainerStyle}
+              placeholder={searchPlaceHolder}
+              cancelButtonTitle='Cancel'
+              onCancel={this.handleCancel}
+              onChangeText={this.handleChangeText}
+              clearIcon={null}
+              cancelButtonProps={{ color: '#17B3EC' }}
+              showLoading={this.props.loading}
+              onSubmitEditing={this.handleOnEndSubmitting}
+            />
+          </View>
+          <FriendsSearch reducerPath='' onSelect={this.handleOnResSelect} {...this.props} />
+        </MenuProvider>
+      </BaseOverlay>
+    );
+  }
+}
 
- const styles = {
-   searchContainerStyle: {
-     padding: 0,
-     marginRight: 3,
-     backgroundColor: '#ffffff',
-     borderTopColor: '#ffffff',
-     borderBottomColor: '#ffffff',
-     alignItems: 'center',
+const styles = {
+  searchContainerStyle: {
+    padding: 0,
+    marginRight: 3,
+    backgroundColor: '#ffffff',
+    borderTopColor: '#ffffff',
+    borderBottomColor: '#ffffff',
+    alignItems: 'center',
 
-   },
-   searchInputContainerStyle: {
-     backgroundColor: '#f3f4f6',
-     alignItems: 'center',
-     justifyContent: 'center',
-   },
-   searchInputStyle: {
-     fontSize: 15,
-   },
-   headerContainerStyle: {
-     marginTop: 15,
-     justifyContent: 'center',
-     alignItems: 'center'
-   },
-   backdrop: {
-     backgroundColor: 'gray',
-     opacity: 0.7,
-   }
- };
+  },
+  searchInputContainerStyle: {
+    backgroundColor: '#f3f4f6',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  searchInputStyle: {
+    fontSize: 15,
+  },
+  headerContainerStyle: {
+    marginTop: 15,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  backdrop: {
+    backgroundColor: 'gray',
+    opacity: 0.7,
+  }
+};
 
- const mapStateToProps = state => {
-   const { selectedTab, navigationState } = state.search;
-   const { loading } = state.search.friends;
+const mapStateToProps = state => {
+  const { selectedTab, navigationState } = state.search;
+  const { loading } = state.search.friends;
 
-   return {
-     selectedTab,
-     navigationState,
-     loading
-   };
- };
+  return {
+    selectedTab,
+    navigationState,
+    loading
+  };
+};
 
- const mapDispatchToProps = (dispatch) => {
-   const debouncedSearch = _.debounce((value, type) => dispatch(handleSearch(value, type)), 400);
+const mapDispatchToProps = (dispatch) => {
+  const debouncedSearch = _.debounce((value, type) => dispatch(handleSearch(value, type)), 400);
 
-   return ({
-     debouncedSearch,
-     clearSearchState: clearSearchState(dispatch),
-     inviteParticipantToEvent: (eventId, inviteeId, callback) =>
-      dispatch(inviteParticipantToEvent(eventId, inviteeId, callback)),
-     openProfile: (userId) =>
-      dispatch(openProfile(userId)),
-     inviteUserToTribe: (tribeId, inviteeId) =>
-      dispatch(inviteUserToTribe(tribeId, inviteeId))
-   });
- };
+  return ({
+    debouncedSearch,
+    clearSearchState: clearSearchState(dispatch),
+    inviteParticipantToEvent: (eventId, inviteeId, callback) =>
+    dispatch(inviteParticipantToEvent(eventId, inviteeId, callback)),
+    openProfile: (userId) =>
+    dispatch(openProfile(userId)),
+    inviteUserToTribe: (tribeId, inviteeId) =>
+    dispatch(inviteUserToTribe(tribeId, inviteeId))
+  });
+};
 
 export default connect(
   mapStateToProps,
