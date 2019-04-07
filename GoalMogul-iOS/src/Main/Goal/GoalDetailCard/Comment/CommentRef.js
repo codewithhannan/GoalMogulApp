@@ -155,7 +155,7 @@ class CommentRef extends React.PureComponent {
 
     return (
       <ProfileImage
-        imageStyle={{ width: 50, height: 50, ...style }}
+        imageStyle={{ width: 50, height: 50, ...style, borderRadius: 4 }}
         defaultImageSource={source}
         defaultImageStyle={{ width: 30, height: 30, ...style }}
         imageUrl={imageUrl}
@@ -164,7 +164,8 @@ class CommentRef extends React.PureComponent {
           justifyContent: 'center',
           width: 50,
           height: 50,
-          padding: 10
+          padding: 10,
+          
         }}
       />
     );
@@ -319,9 +320,10 @@ const styles = {
     height: 50,
     marginTop: 12,
     marginBottom: 8,
-    borderWidth: 1,
-    borderRadius: 2,
-    borderColor: '#ddd',
+    borderWidth: 0.5,
+    borderRadius: 5,
+    // borderColor: '#ddd',
+    borderColor: 'lightgray',
     borderBottomWidth: 0,
     backgroundColor: '#fff',
     shadowColor: '#000',
