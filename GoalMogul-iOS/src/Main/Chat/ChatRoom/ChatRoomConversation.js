@@ -47,7 +47,7 @@ import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Cons
 const DEBUG_KEY = '[ UI ChatRoomConversation ]';
 const LISTENER_KEY = 'ChatRoomConversation';
 const MAX_TYPING_INDICATORS_TO_DISPLAY = 3;
-const CHAT_ROOM_DOCUMENT_REFRESH_INTERVAL = 1500; // milliseconds
+const CHAT_ROOM_DOCUMENT_REFRESH_INTERVAL = 3000; // milliseconds
 
 /**
  * @prop {String} chatRoomId: required

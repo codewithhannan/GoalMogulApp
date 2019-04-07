@@ -12,10 +12,6 @@ TODO
                   ELSE
                     - Accept Request
                 - Remove
-- AddFriendModal component
-    - Search friend(s) not in current chat
-    - Select and confirm to add to chat
-        - Return to main chatroom screen after success
 ----------------------------------------------------------------------
 STRETCH
 ----------------------------------------------------------------------

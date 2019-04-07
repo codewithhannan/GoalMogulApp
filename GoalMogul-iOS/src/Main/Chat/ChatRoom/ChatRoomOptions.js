@@ -61,13 +61,15 @@ class ChatRoomOptions extends React.Component {
 
     }
     openAddMember() {
+        const { chatRoom } = this.props;
+        if (!chatRoom) return;
         const searchFor = {
             type: 'addChatMember',
         };
         const cardIconStyle = { tintColor: APP_BLUE_BRIGHT };
         const cardIconSource = plusIcon;
         const callback = (selectedUserId) => {
-            this.props.addMemberToChatRoom(selectedUserId);
+            this.props.addMemberToChatRoom(chatRoom._id, selectedUserId);
         };
         Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle, callback });
     }

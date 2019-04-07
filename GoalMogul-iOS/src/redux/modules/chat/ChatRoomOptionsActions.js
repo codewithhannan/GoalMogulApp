@@ -38,7 +38,7 @@ export const changeChatRoomMute = (chatRoomId, isMutedTargetState) => (dispatch,
 
 export const addMemberToChatRoom = (chatRoomId, addeeId) => (dispatch, getState) => {
     const { token } = getState().user;
-    API.post('/secure/chat/room/members', {
+    API.post('secure/chat/room/members', {
         chatRoomId, addeeId,
     }, token).then(resp => {
         if (resp.status == 200) {
