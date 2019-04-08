@@ -472,7 +472,7 @@ class RouterComponent extends Component {
                       <Scene key="chatRoomConversation" component={ChatRoomConversation} />
                       <Scene key="chatRoomOptions" component={ChatRoomOptions} />
                       <Scene key="chatRoomMembers" component={ChatRoomMembers} />
-                      <Scene key="chatTab_searchLightBox" component={SearchOverlay} hideNavBar />
+                      <Scene key="chatTab_searchLightBox" component={SearchOverlay} />
                       <Scene key="chatTab_myEventDetail" component={MyEvent} />
                       <Scene key="chatTab_goal" component={GoalDetailCard} />
                       <Scene key="chatTab_post" component={PostDetailCard} />

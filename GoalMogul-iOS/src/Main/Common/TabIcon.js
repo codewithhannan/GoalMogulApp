@@ -15,11 +15,14 @@ const CHAT_COUNT_UPDATE_INTERVAL = 1000;
 class TabIcon extends React.PureComponent {
 
   componentDidMount() {
-    // chat count updater
-    this.props.updateChatCount();
-    this.refreshChatInterval = setInterval(() => {
+    const { navigation } = this.props;
+    if (navigation.state.key == 'chatTab') {
+      // chat count updater
       this.props.updateChatCount();
-    }, CHAT_COUNT_UPDATE_INTERVAL);
+      this.refreshChatInterval = setInterval(() => {
+        this.props.updateChatCount();
+      }, CHAT_COUNT_UPDATE_INTERVAL);
+    }
   }
 
   componentWillUnmount() {
@@ -35,7 +38,10 @@ class TabIcon extends React.PureComponent {
       focused,
       notificationCount,
       chatCount,
+      chatConversationOpen,
     } = this.props;
+    // if (chatConversationOpen) return null;
+
     const tintColor = focused ? activeTintColor : inactiveTintColor;
     const style = {
       tintColor,
@@ -131,9 +137,11 @@ const styles = {
 const mapStateToProps = state => {
   const { unreadCount } = state.notification.unread;
   const { chatCount } = state.navigationTabBadging;
+  const { activeChatRoomId } = state.chatRoom;
   return {
     notificationCount: unreadCount,
     chatCount,
+    chatConversationOpen: activeChatRoomId,
   };
 };
 

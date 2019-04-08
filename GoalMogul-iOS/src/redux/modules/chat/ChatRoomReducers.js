@@ -11,6 +11,7 @@ const INITIAL_STATE = {
     currentlyTypingUserIds: [],
     activeChatRoomId: null,
     messages: [],
+    ghostMessages: null,
     limit: 10,
     skip: 0,
     hasNextPage: false,
@@ -31,12 +32,21 @@ export const CHAT_ROOM_SEARCH_MESSAGES_CLEAR = 'chat_room_search_messages_clear'
 export const CHAT_ROOM_SEARCH_MESSAGES = 'chat_room_search_messages';
 export const CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS = 'chat_room_update_currently_typing_users';
 export const CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF = 'chat_room_update_message_media_ref';
+export const CHAT_ROOM_UPDATE_GHOST_MESSAGES = 'chat_room_update_ghost_messages';
+export const CHAT_ROOM_CLOSE_ACTIVE_ROOM = 'chat_room_close_active_room';
 
 export default (state=INITIAL_STATE, action) => {
 	switch (action.type) {
         case CHAT_ROOM_LOAD_INITIAL_BEGIN: {
             let newState = _.cloneDeep(state);
             newState = _.set(newState, 'activeChatRoomId', null);
+            newState = _.set(newState, 'currentlyTypingUserIds', []);
+            newState = _.set(newState, 'messages', []);
+            newState = _.set(newState, 'ghostMessages', null);
+            newState = _.set(newState, 'loading', false);
+            newState = _.set(newState, 'searchResults', []);
+            newState = _.set(newState, 'searching', false);
+            newState = _.set(newState, 'messageMediaRef', null);
             return _.set(newState, 'initializing', true);
         }
         case CHAT_ROOM_LOAD_INITIAL: {
@@ -66,6 +76,22 @@ export default (state=INITIAL_STATE, action) => {
             };
             return newState;
         }
+        case CHAT_ROOM_CLOSE_ACTIVE_ROOM: {
+            let newState = _.cloneDeep(state);
+            newState = _.set(newState, 'activeChatRoomId', null);
+            newState = _.set(newState, 'currentlyTypingUserIds', []);
+            newState = _.set(newState, 'messages', []);
+            newState = _.set(newState, 'ghostMessages', null);
+            newState = _.set(newState, 'loading', false);
+            newState = _.set(newState, 'searchResults', []);
+            newState = _.set(newState, 'searching', false);
+            newState = _.set(newState, 'messageMediaRef', null);
+            return newState;
+        }
+        case CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF: {
+            let newState = _.cloneDeep(state);
+            return _.set(newState, 'messageMediaRef', action.payload);
+        }
         case CHAT_ROOM_LOAD_MORE_MESSAGES_BEGIN: {
             let newState = _.cloneDeep(state);
             return _.set(newState, 'loading', true);
@@ -86,28 +112,28 @@ export default (state=INITIAL_STATE, action) => {
             newState = _.set(newState, 'skip', messages.length);
 			return _.set(newState, `messages`, messages);
         }
+        case CHAT_ROOM_UPDATE_GHOST_MESSAGES: {
+            let newState = _.cloneDeep(state);
+            const ghostMessages = action.payload;
+            return _.set(newState, 'ghostMessages', ghostMessages);
+        }
         case CHAT_ROOM_SEARCH_MESSAGES_BEGIN: {
             let newState = _.cloneDeep(state);
             return _.set(newState, `searching`, true);
         }
         case CHAT_ROOM_SEARCH_MESSAGES_CLEAR: {
             let newState = _.cloneDeep(state);
-            newState = _.set(newState, 'searchResults', []);
+            newState = _.set(newState, 'searchResults', ['swag']);
             return _.set(newState, `searching`, false);
         }
         case CHAT_ROOM_SEARCH_MESSAGES: {
             let newState = _.cloneDeep(state);
-            newState = _.set(newState, 'searchResults', actions.payload);
+            newState = _.set(newState, 'searchResults', action.payload);
             return _.set(newState, `searching`, false);
         }
         case CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS: {
             let newState = _.cloneDeep(state);
-            return _.set(newState, `currentlyTypingUserIds`, actions.payload);
-        }
-        case CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF: {
-            let newState = _.cloneDeep(state);
-            console.log('Updating media reff', actions.payload)
-            return _.set(newState, 'messageMediaRef', actions.payload);
+            return _.set(newState, `currentlyTypingUserIds`, action.payload);
         }
 		default: {
 			return { ...state };

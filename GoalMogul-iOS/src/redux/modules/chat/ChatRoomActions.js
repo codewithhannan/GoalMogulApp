@@ -1,9 +1,12 @@
-import { CHAT_ROOM_LOAD_INITIAL_BEGIN, CHAT_ROOM_LOAD_INITIAL, CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS, CHAT_ROOM_UPDATE_MEDIA_REF, CHAT_ROOM_UPDATE_MESSAGES, CHAT_ROOM_LOAD_MORE_MESSAGES_BEGIN, CHAT_ROOM_LOAD_MORE_MESSAGES, CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF } from "./ChatRoomReducers";
+import { CHAT_ROOM_LOAD_INITIAL_BEGIN, CHAT_ROOM_LOAD_INITIAL, CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS, CHAT_ROOM_UPDATE_MESSAGES, CHAT_ROOM_LOAD_MORE_MESSAGES_BEGIN, CHAT_ROOM_LOAD_MORE_MESSAGES, CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF, CHAT_ROOM_UPDATE_GHOST_MESSAGES, CHAT_ROOM_CLOSE_ACTIVE_ROOM } from "./ChatRoomReducers";
 import { api as API } from "../../middleware/api";
 import { Alert } from 'react-native';
 
 import MessageStorageService from '../../../services/chat/MessageStorageService';
 import { IMAGE_BASE_URL } from "../../../Utils/Constants";
+import ImageUtils from "../../../Utils/ImageUtils";
+
+const LOADING_RIPPLE_URL = "https://i.imgur.com/EhwxDDf.gif";
 
 export const initialLoad = (currentChatRoomId, pageSize) => (dispatch, getState) => {
 	const state = getState();
@@ -92,6 +95,13 @@ export const refreshChatRoom = (currentChatRoomId, maybeCallback) => (dispatch, 
 		});
 };
 
+export const closeActiveChatRoom = () => (dispatch, getState) => {
+	dispatch({
+		type: CHAT_ROOM_CLOSE_ACTIVE_ROOM,
+		payload: {}
+	});
+}
+
 export const updateTypingStatus = (userId, updatedTypingStatus, currentlyTypingUserIds) => (dispatch, getState) => {
 	let updatedUserIds = currentlyTypingUserIds;
 	if (updatedTypingStatus) {
@@ -109,11 +119,11 @@ export const updateTypingStatus = (userId, updatedTypingStatus, currentlyTypingU
 export const updateMessageList = (chatRoom, currentMessageList) => (dispatch, getState) => {
 	const oldestMessage = currentMessageList[currentMessageList.length - 1];
 	if (oldestMessage) {
-		MessageStorageService.getAllMessagesAfterMessage(chatRoom, oldestMessage, (err, messages) => {
+		MessageStorageService.getAllMessagesAfterMessage(chatRoom._id, oldestMessage._id, (err, messages) => {
 			if (err || !messages) {
 				Alert.alert('Error', 'Could not auto-update messages. Please try re-opening this conversation.');
 			} else {
-				const giftedChatMessages = _transformMessagesForGiftedChat(currentMessageList, chatRoom);
+				const giftedChatMessages = _transformMessagesForGiftedChat(messages, chatRoom);
 				dispatch({
 					type: CHAT_ROOM_UPDATE_MESSAGES,
 					payload: giftedChatMessages,
@@ -163,6 +173,13 @@ export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMe
 	let uploadedMediaRef = null;
 	// upload the image if a file's mounted
 	if (mountedMediaRef) {
+		// clear the state for it
+		changeMessageMediaRef(undefined)(dispatch, getState);
+		const ghostMessage = buildSendingImageGhostMessage(messagesToSend[0]);
+		dispatch({
+			type: CHAT_ROOM_UPDATE_GHOST_MESSAGES,
+			payload: [ghostMessage],
+		});
 		// Resize image
 		ImageUtils.getImageSize(mountedMediaRef).then(({ width, height }) => {
 			return ImageUtils.resizeImage(mountedMediaRef, width, height);
@@ -182,6 +199,11 @@ export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMe
 			};
 			sendMessages();
 		}).catch(err => {
+			// clear ghost message
+			dispatch({
+				type: CHAT_ROOM_UPDATE_GHOST_MESSAGES,
+				payload: null,
+			});
 			console.log('Internal error uploading image to s3 with error: ', err);
 			Alert.alert('Error', 'Could not upload image.');
 		});
@@ -190,11 +212,15 @@ export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMe
 	};
 
 	function sendMessages() {
+		// clear ghost message
+		dispatch({
+			type: CHAT_ROOM_UPDATE_GHOST_MESSAGES,
+			payload: null,
+		});
 		// iterate over each message to be sent (usually should only be 1)
 		messagesToSend.forEach(messageToSend => {
 			// insert message into local storage
 			const messageToInsert = _transformMessageFromGiftedChat(messageToSend, uploadedMediaRef, chatRoom);
-			console.log(messageToInsert, uploadedMediaRef, mountedMediaRef)
 			MessageStorageService.storeLocallyCreatedMessage({...messageToInsert, isRead: true}, (err, insertedDoc) => {
 				if (err) {
 					return Alert.alert('Error', 'Could not store message locally. Please try again later.');
@@ -230,13 +256,20 @@ export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMe
 	};
 };
 
-export const messageMediaRefChanged = (mediaRef) => (dispatch, getState) => {
+export const changeMessageMediaRef = (mediaRef) => (dispatch, getState) => {
 	dispatch({
 		type: CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF,
 		payload: mediaRef,
 	});
-};
+}
+
 // --------------------------- utils --------------------------- //
+
+function buildSendingImageGhostMessage(messageToSend) {
+	let tempMessage = { ...messageToSend };
+	tempMessage.image = LOADING_RIPPLE_URL;
+	return tempMessage;
+}
 
 function _transformMessageFromGiftedChat(messageDoc, uploadedMediaRef, chatRoom) {
 	const { _id, createdAt, text, user } = messageDoc;

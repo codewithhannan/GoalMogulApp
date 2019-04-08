@@ -19,7 +19,7 @@ import LiveChatService from '../../../socketio/services/LiveChatService';
 
 // Components
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal';
-
+import { RemoveComponent } from '../../Goal/GoalDetailCard/SuggestionPreview';
 
 import { Octicons } from '@expo/vector-icons';
 
@@ -32,8 +32,9 @@ import {
     loadOlderMessages,
     deleteMessage,
     sendMessage,
-    messageMediaRefChanged,
     refreshChatRoom,
+    changeMessageMediaRef,
+    closeActiveChatRoom,
 } from '../../../redux/modules/chat/ChatRoomActions';
 import ModalHeader from '../../Common/Header/ModalHeader';
 import { GiftedChat } from 'react-native-gifted-chat';
@@ -43,7 +44,7 @@ import { Actions } from 'react-native-router-flux';
 import ProfileImage from '../../Common/ProfileImage';
 import { openCamera, openCameraRoll, openProfile } from '../../../actions';
 import profilePic from '../../../asset/utils/defaultUserProfile.png';
-import { Image } from 'react-native-elements';
+import { Image, Text } from 'react-native-elements';
 import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Constants';
 
 const DEBUG_KEY = '[ UI ChatRoomConversation ]';
@@ -62,6 +63,7 @@ class ChatRoomConversation extends React.Component {
 	_keyExtractor = (item) => item._id;
 
 	componentDidMount() {
+        // initialize
         const { chatRoomId, limit } = this.props;
         this._pollChatRoomDocument();
         MessageStorageService.markConversationMessagesAsRead(chatRoomId);
@@ -100,6 +102,7 @@ class ChatRoomConversation extends React.Component {
         const chatRoomId = chatRoom && chatRoom._id;
         if (!chatRoomId) return;
 
+        this.props.closeActiveChatRoom();
         this._unpollChatRoomDocument();
         MessageStorageService.markConversationMessagesAsRead(chatRoomId);
         MessageStorageService.unsetActiveChatRoom(chatRoomId);
@@ -181,10 +184,10 @@ class ChatRoomConversation extends React.Component {
         const userId = user._id;
         this.props.openProfile(userId);
     }
-    deleteMessage(message) {
+    deleteMessage(messageId) {
         const { chatRoom, messages } = this.props;
         if (!chatRoom) return;
-        this.props.deleteMessage(message._id, chatRoom, messages);
+        this.props.deleteMessage(messageId, chatRoom, messages);
     }
     sendMessage(messagesToSend) {
         const { messageMediaRef, chatRoom, messages } = this.props;
@@ -210,13 +213,12 @@ class ChatRoomConversation extends React.Component {
     }
     handleOpenCamera = () => {
         this.props.openCamera((result) => {
-            this.props.messageMediaRefChanged(result.uri);
+            this.props.changeMessageMediaRef(result.uri);
         });
     }
     handleOpenCameraRoll = () => {
         const callback = R.curry((result) => {
-            console.log(typeof result.uri)
-            this.props.messageMediaRefChanged(result.uri);
+            this.props.changeMessageMediaRef(result.uri);
         });
         this.props.openCameraRoll(callback);
     }
@@ -312,25 +314,22 @@ class ChatRoomConversation extends React.Component {
         const { messageMediaRef } = this.props;
         if (!messageMediaRef) return null;
         const onPress = () => console.log('Media pressed.');
-        const onRemove = () => this.props.messageMediaRefChanged(undefined);
-
+        const onRemove = () => this.props.changeMessageMediaRef(undefined);
         return (
             <TouchableOpacity activeOpacity={0.6} style={styles.mediaContainerStyle} onPress={onPress}>
-            <ProfileImage
-                imageStyle={{ width: 50, height: 50 }}
-                defaultImageSource={{ uri: messageMediaRef }}
-                imageContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}
-            />
-            <View style={{ flex: 1, marginLeft: 12, marginRight: 12, justifyContent: 'center' }}>
-                <Text
-                style={styles.headingTextStyle}
-                numberOfLines={2}
-                ellipsizeMode='tail'
-                >
-                Attached image
-                </Text>
-            </View>
-            <RemoveComponent onRemove={onRemove} />
+                <ProfileImage
+                    imageStyle={{ width: 50, height: 50 }}
+                    defaultImageSource={{ uri: messageMediaRef }}
+                    imageContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}
+                />
+                <View style={{ flex: 1, marginLeft: 12, marginRight: 12, height: 50, flexGrow: 1 }}>
+                    <Text
+                        style={styles.attachedImageTextStyle}
+                    >
+                        Attached image
+                    </Text>
+                </View>
+                <RemoveComponent onRemove={onRemove} />
             </TouchableOpacity>
         );
     }
@@ -349,7 +348,7 @@ class ChatRoomConversation extends React.Component {
                         onCancel={this.closeConversation}
                     />
                     <GiftedChat
-                        messages={this.props.messages}
+                        messages={(this.props.ghostMessages || []).concat(this.props.messages)}
                         user={{
                             _id, name,
                             avatar: profile && profile.image,
@@ -380,6 +379,7 @@ const mapStateToProps = (state, props) => {
         chatRoomsMap, activeChatRoomId,
         messages, limit, skip, hasNextPage, loading,
         currentlyTypingUserIds, messageMediaRef,
+        ghostMessages
     } = state.chatRoom;
     const chatRoom = activeChatRoomId && chatRoomsMap[activeChatRoomId];
     
@@ -421,6 +421,7 @@ const mapStateToProps = (state, props) => {
         loading,
         currentlyTypingUserIds,
         messageMediaRef,
+        ghostMessages
 	};
 };
 
@@ -433,8 +434,9 @@ export default connect(
         loadOlderMessages,
         deleteMessage,
         sendMessage,
-        messageMediaRefChanged,
+        changeMessageMediaRef,
         refreshChatRoom,
+        closeActiveChatRoom,
         openProfile,
         openCamera,
         openCameraRoll,
@@ -481,11 +483,12 @@ const styles = {
     },
     mediaContainerStyle: {
         flexDirection: 'row',
+        alignItems: 'flex-start',
         height: 50,
-        marginBottom: 8,
+        marginBottom: 9,
         borderWidth: 1,
         borderRadius: 2,
-        borderColor: '#ddd',
+        borderColor: '#EEE',
         borderBottomWidth: 0,
         backgroundColor: '#fff',
         shadowColor: '#000',
@@ -494,12 +497,11 @@ const styles = {
         shadowRadius: 1,
         elevation: 1
       },
-      headingTextStyle: {
-        fontSize: 10,
-        flexWrap: 'wrap',
+      attachedImageTextStyle: {
+        fontSize: 15,
+        color: '#999',
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 3
+        marginTop: 12,
+        marginLeft: 9,
       },
 };
