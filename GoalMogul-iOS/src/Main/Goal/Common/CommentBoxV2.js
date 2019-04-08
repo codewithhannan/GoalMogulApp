@@ -108,6 +108,10 @@ class CommentBoxV2 extends Component {
     console.log(`${DEBUG_KEY}: componentDidMount: `);
   }
 
+  componentWillUnmount() {
+    // console.log(`${DEBUG_KEY}: [ ${this.props.pageId} ]: componentWillUnmount`);
+  }
+
   onTaggingSuggestionTap(item, hidePanel, cursorPosition) {
     hidePanel();
     const { name } = item;
