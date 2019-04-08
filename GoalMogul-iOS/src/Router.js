@@ -106,6 +106,7 @@ import ReportModal from './Main/Report/ReportModal';
 import { customPanHandlers, iosOnlyPanHandlers } from './redux/modules/navigation';
 import ChatRoomConversation from './Main/Chat/ChatRoom/ChatRoomConversation';
 import ChatRoomOptions from './Main/Chat/ChatRoom/ChatRoomOptions';
+import ChatRoomMembers from './Main/Chat/ChatRoom/ChatRoomMembers';
 
 class RouterComponent extends Component {
   onTabPress = (all) => {
@@ -470,6 +471,7 @@ class RouterComponent extends Component {
                       <Scene key="chat" component={Chat} initial />
                       <Scene key="chatRoomConversation" component={ChatRoomConversation} />
                       <Scene key="chatRoomOptions" component={ChatRoomOptions} />
+                      <Scene key="chatRoomMembers" component={ChatRoomMembers} />
                       <Scene key="chatTab_searchLightBox" component={SearchOverlay} hideNavBar />
                       <Scene key="chatTab_myEventDetail" component={MyEvent} />
                       <Scene key="chatTab_goal" component={GoalDetailCard} />

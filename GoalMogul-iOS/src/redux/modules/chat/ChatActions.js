@@ -61,7 +61,8 @@ export const createOrGetDirectMessage = (userId) => (dispatch, getState) => {
 	};
 	API.post(`secure/chat/room`, body, token).then(resp => {
 		if (resp.status != 200) {
-			throw new Error('Could not create Chat Room');
+			Alert.alert('Error', 'Could not create Chat Room. Please try again later.');
+			return;
 		};
 		const chatRoom = resp.data;
 		Actions.push('chatRoomConversation', { chatRoomId: chatRoom._id });

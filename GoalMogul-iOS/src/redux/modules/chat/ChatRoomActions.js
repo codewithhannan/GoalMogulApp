@@ -1,4 +1,4 @@
-import { CHAT_ROOM_LOAD_INITIAL_BEGIN, CHAT_ROOM_LOAD_INITIAL, CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS, CHAT_ROOM_UPDATE_MEDIA_REF, CHAT_ROOM_UPDATE_MESSAGES, CHAT_ROOM_LOAD_MORE_MESSAGES_BEGIN, CHAT_ROOM_LOAD_MORE_MESSAGES } from "./ChatRoomReducers";
+import { CHAT_ROOM_LOAD_INITIAL_BEGIN, CHAT_ROOM_LOAD_INITIAL, CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS, CHAT_ROOM_UPDATE_MEDIA_REF, CHAT_ROOM_UPDATE_MESSAGES, CHAT_ROOM_LOAD_MORE_MESSAGES_BEGIN, CHAT_ROOM_LOAD_MORE_MESSAGES, CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF } from "./ChatRoomReducers";
 import { api as API } from "../../middleware/api";
 import { Alert } from 'react-native';
 
@@ -6,11 +6,32 @@ import MessageStorageService from '../../../services/chat/MessageStorageService'
 import { IMAGE_BASE_URL } from "../../../Utils/Constants";
 
 export const initialLoad = (currentChatRoomId, pageSize) => (dispatch, getState) => {
-	const { token } = getState().user;
-	dispatch({
-		type: CHAT_ROOM_LOAD_INITIAL_BEGIN,
-		payload: {},
-	});
+	const state = getState();
+	const { token } = state.user;
+
+	// load chat room if it already exists in the state
+    const { chatRoomsMap, activeChatRoomId } = state.chatRoom;
+	const maybeChatRoom = activeChatRoomId && chatRoomsMap[activeChatRoomId];
+	if (maybeChatRoom) {
+		dispatch({
+			type: CHAT_ROOM_LOAD_INITIAL,
+			payload: { messages: [], chatRoom: maybeChatRoom },
+		});
+		MessageStorageService.getLatestMessagesByConversation(currentChatRoomId, pageSize, 0, (err, messages) => {
+			if (!messages) return;
+			dispatch({
+				type: CHAT_ROOM_LOAD_INITIAL,
+				payload: { messages: _transformMessagesForGiftedChat(messages, maybeChatRoom) },
+			});
+		});
+	} else { // if no chat room already in state, show loader
+		dispatch({
+			type: CHAT_ROOM_LOAD_INITIAL_BEGIN,
+			payload: {},
+		});
+	};
+
+	// fetch a fresh copy of the chat room, regardless of if we have it in the state already
 	API.get(`secure/chat/room/documents/${currentChatRoomId}`, token)
 		.then(resp => {
 			if (resp.status != 200) {
@@ -18,20 +39,24 @@ export const initialLoad = (currentChatRoomId, pageSize) => (dispatch, getState)
 			};
 			const chatRoom = resp.data;
 			if (!chatRoom) {
-				throw new Error('Invalid chat room.');
+				dispatch({
+					type: CHAT_ROOM_LOAD_INITIAL,
+					payload: { messages: [], chatRoom: null },
+				});
+				return Alert.alert('Error', 'Invalid chat room.');
 			};
 			MessageStorageService.getLatestMessagesByConversation(currentChatRoomId, pageSize, 0, (err, messages) => {
 				if (err || !messages) {
 					Alert.alert('Error', 'Could not load messages for selected chat room.');
 					dispatch({
 						type: CHAT_ROOM_LOAD_INITIAL,
-						payload: { messages: [], chatRoom: null },
+						payload: { messages: [], chatRoom },
 					});
 				} else {
 					const giftedChatMessages = _transformMessagesForGiftedChat(messages, chatRoom);
 					dispatch({
 						type: CHAT_ROOM_LOAD_INITIAL,
-						payload: { giftedChatMessages, chatRoom },
+						payload: { messages: giftedChatMessages, chatRoom },
 					});
 				};
 			});
@@ -44,22 +69,25 @@ export const initialLoad = (currentChatRoomId, pageSize) => (dispatch, getState)
 		});
 };
 
-export const refreshChatRoom = (currentChatRoomId) => (dispatch, getState) => {
+export const refreshChatRoom = (currentChatRoomId, maybeCallback) => (dispatch, getState) => {
 	const { token } = getState().user;
 	API.get(`secure/chat/room/documents/${currentChatRoomId}`, token)
 		.then(resp => {
 			if (resp.status != 200) {
+				maybeCallback && maybeCallback(new Error('Server error refreshing chat room'));
 				return Alert.alert('Error', 'Could not refresh chat room. Please try again later.');
 			};
 			const chatRoom = resp.data;
+			maybeCallback && maybeCallback(null, chatRoom);
 			if (!chatRoom) {
-				throw new Error('Invalid chat room.');
+				return Alert.alert('Error', 'Invalid chat room.');
 			};
 			dispatch({
 				type: CHAT_ROOM_LOAD_INITIAL,
 				payload: { chatRoom },
 			});
 		}).catch(err => {
+			maybeCallback && maybeCallback(err);
 			Alert.alert('Error', 'Could not refresh chat room.');
 		});
 };
@@ -99,12 +127,11 @@ export const updateMessageList = (chatRoom, currentMessageList) => (dispatch, ge
 };
 
 export const loadOlderMessages = (chatRoom, pageSize, pageOffset) => (dispatch, getState) => {
-	const { token } = getState().user;
 	dispatch({
 		type: CHAT_ROOM_LOAD_MORE_MESSAGES_BEGIN,
 		payload: {},
 	});
-	MessageStorageService.getLatestMessagesByConversation(currentChatRoomId, pageSize, pageOffset, (err, messages) => {
+	MessageStorageService.getLatestMessagesByConversation(chatRoom._id, pageSize, pageOffset, (err, messages) => {
 		if (err || !messages) {
 			Alert.alert('Error', 'Could not load more messages for selected chat room.');
 			dispatch({
@@ -167,7 +194,8 @@ export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMe
 		messagesToSend.forEach(messageToSend => {
 			// insert message into local storage
 			const messageToInsert = _transformMessageFromGiftedChat(messageToSend, uploadedMediaRef, chatRoom);
-			MessageStorageService.storeLocallyCreatedMessage(messageToInsert, (err, insertedDoc) => {
+			console.log(messageToInsert, uploadedMediaRef, mountedMediaRef)
+			MessageStorageService.storeLocallyCreatedMessage({...messageToInsert, isRead: true}, (err, insertedDoc) => {
 				if (err) {
 					return Alert.alert('Error', 'Could not store message locally. Please try again later.');
 				};
@@ -242,7 +270,7 @@ function _transformMessagesForGiftedChat(messages, chatRoom) {
 			_id,
 			createdAt: created,
 			image: media && `${IMAGE_BASE_URL}${media}`,
-			text: content.message,
+			text: content && content.message,
 			user: chatRoomMemberMap[creator]
 		};
 	});

@@ -8,6 +8,7 @@ import React from 'react';
 import {
 	View,
     Dimensions,
+    ScrollView,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -32,7 +33,6 @@ import SettingCard from '../../Setting/SettingCard';
 import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Constants';
 import { openProfile } from '../../../actions';
 import { changeChatRoomMute, addMemberToChatRoom } from '../../../redux/modules/chat/ChatRoomOptionsActions';
-import { ScrollView } from 'react-native-gesture-handler';
 import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
 import { Image, Text, Divider } from 'react-native-elements';
 import { APP_BLUE_BRIGHT } from '../../../styles';
@@ -58,7 +58,7 @@ class ChatRoomOptions extends React.Component {
         });
     }
     openMembers() {
-
+        Actions.push('chatRoomMembers');
     }
     openAddMember() {
         const { chatRoom } = this.props;

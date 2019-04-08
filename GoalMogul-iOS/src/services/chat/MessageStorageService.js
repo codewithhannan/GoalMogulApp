@@ -242,9 +242,13 @@ class MessageStorageService {
         localDb.findOne({
             _id: messageId
         }, (err, markerMessage) => {
+            if (!markerMessage) {
+                return callback(null, []);
+            };
             const oldestDate = markerMessage.created;
             localDb.find({
                 chatRoomRef: conversationId,
+                recipient: this.mountedUser.userId,
                 created: { $gte: oldestDate },
             }).sort({ created: -1 }).exec(callback);
         });

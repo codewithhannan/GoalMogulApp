@@ -5,9 +5,12 @@
     - fetch the full chat document with members populated
 */
 import React from 'react';
+import R from 'ramda';
 import {
 	View,
     Clipboard,
+    FlatList,
+    TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -34,10 +37,9 @@ import {
 } from '../../../redux/modules/chat/ChatRoomActions';
 import ModalHeader from '../../Common/Header/ModalHeader';
 import { GiftedChat } from 'react-native-gifted-chat';
-
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import PhotoIcon from '../../../asset/utils/photoIcon.png';
 import { Actions } from 'react-native-router-flux';
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import ProfileImage from '../../Common/ProfileImage';
 import { openCamera, openCameraRoll, openProfile } from '../../../actions';
 import profilePic from '../../../asset/utils/defaultUserProfile.png';
@@ -189,7 +191,7 @@ class ChatRoomConversation extends React.Component {
         this.props.sendMessage(messagesToSend, messageMediaRef, chatRoom, messages);
     }
 
-    onSendImageButtonPress() {
+    onSendImageButtonPress = () => {
         const mediaRefCases = switchByButtonIndex([
           [R.equals(0), () => {
             this.handleOpenCameraRoll();
@@ -213,6 +215,7 @@ class ChatRoomConversation extends React.Component {
     }
     handleOpenCameraRoll = () => {
         const callback = R.curry((result) => {
+            console.log(typeof result.uri)
             this.props.messageMediaRefChanged(result.uri);
         });
         this.props.openCameraRoll(callback);
@@ -397,10 +400,10 @@ const mapStateToProps = (state, props) => {
             chatRoomName = chatRoom.name;
             chatRoomImage = { uri: chatRoom.picture ? `${IMAGE_BASE_URL}${chatRoom.picture}` : GROUP_CHAT_DEFAULT_ICON_URL };
         };
-        chatRoomMembersMap = chatRoom.members && chatRoom.members.reduce((map, memberDoc) => {
+        chatRoomMembersMap = chatRoom.members ? chatRoom.members.reduce((map, memberDoc) => {
             map[memberDoc.memberRef._id] = memberDoc.memberRef;
             return map;
-        }, {})
+        }, {}) : chatRoomMembersMap;
     };
 
 	return {

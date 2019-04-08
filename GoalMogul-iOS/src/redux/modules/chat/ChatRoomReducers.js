@@ -40,7 +40,7 @@ export default (state=INITIAL_STATE, action) => {
             return _.set(newState, 'initializing', true);
         }
         case CHAT_ROOM_LOAD_INITIAL: {
-            const  { messages, chatRoom } = action.payload;
+            const { messages, chatRoom } = action.payload;
             let newState = _.cloneDeep(state);
             newState = _.set(newState, 'initializing', false);
             if (messages) {
@@ -106,6 +106,7 @@ export default (state=INITIAL_STATE, action) => {
         }
         case CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF: {
             let newState = _.cloneDeep(state);
+            console.log('Updating media reff', actions.payload)
             return _.set(newState, 'messageMediaRef', actions.payload);
         }
 		default: {

@@ -11,6 +11,7 @@ import {
 	Text,
 	TouchableOpacity,
 	ImageBackground,
+	FlatList,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { CheckBox, SearchBar } from 'react-native-elements';
@@ -50,7 +51,6 @@ import { openCameraRoll, openCamera } from '../../../actions';
 import cancel from '../../../asset/utils/cancel_no_background.png';
 import camera from '../../../asset/utils/camera.png';
 import cameraRoll from '../../../asset/utils/cameraRoll.png';
-import { FlatList } from 'react-native-gesture-handler';
 import SearchUserCard from '../../Search/People/SearchUserCard';
 import { SearchIcon } from '../../../Utils/Icons';
 

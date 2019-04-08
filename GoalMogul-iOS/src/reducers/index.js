@@ -49,6 +49,7 @@ import ChatReducers from '../redux/modules/chat/ChatReducers';
 import NewChatRoomReducers from '../redux/modules/chat/NewChatRoomReducers';
 import ChatRoomReducers from '../redux/modules/chat/ChatRoomReducers';
 import TabIconReducers from '../redux/modules/navigation/TabIconReducers';
+import ChatRoomMembersReducers from '../redux/modules/chat/ChatRoomMembersReducers';
 
 const rootPersistConfig = {
   key: 'root',
@@ -100,6 +101,7 @@ const reducers = combineReducers({
   notification: NotificationTabReducers,
   chat: ChatReducers,
   chatRoom: ChatRoomReducers,
+  chatRoomMembers: ChatRoomMembersReducers,
   navigationTabBadging: TabIconReducers,
 });
 
