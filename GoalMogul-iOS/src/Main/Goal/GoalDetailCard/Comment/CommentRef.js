@@ -2,7 +2,8 @@ import React from 'react';
 import {
   View,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  Linking
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -53,10 +54,18 @@ class CommentRef extends React.PureComponent {
   }
 
   handleSuggestionLinkOnPress = async (url) => {
-    const returnUrl = Expo.Linking.makeUrl('/');
-    Expo.Linking.addEventListener('url', this.handleSuggestionLinkOnClose);
-    const result = await WebBrowser.openBrowserAsync(url);
-    Expo.Linking.removeEventListener('url', this.handleSuggestionLinkOnClose);
+    // Below is the original expo webbrowser way of opening but it doesn't work in real
+    // build environment
+    // const returnUrl = Expo.Linking.makeUrl('/');
+    // Expo.Linking.addEventListener('url', this.handleSuggestionLinkOnClose);
+    // const result = await WebBrowser.openBrowserAsync(url);
+    // Expo.Linking.removeEventListener('url', this.handleSuggestionLinkOnClose);
+
+    // Se we switch to the new react native way
+    const canOpen = await Linking.canOpenURL(url);
+    if (canOpen) {
+      await Linking.openURL(url);
+    }
     console.log(`${DEBUG_KEY}: close suggestion link with res: `, result);
   } 
 
