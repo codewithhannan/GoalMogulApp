@@ -81,6 +81,10 @@ class Headline extends React.PureComponent {
 
   handleNameOnPress = (user) => {
     if (!user || !user._id) return;
+
+    const { disabled } = this.props;
+    if (disabled) return;
+
     const { _id } = user;
     this.props.openProfile(_id);
   }

@@ -98,6 +98,15 @@ class CreateEventModal extends React.Component {
     const needUpload =
       (initializeFromState && event.picture && event.picture !== picture)
       || (!initializeFromState && picture);
+
+    const { startTime, endTime } = this.props.formVals.values;
+    const { isValid, callback } = isTimeValid(startTime.date, endTime.date);
+
+    if (!isValid) {
+      callback();
+      return;
+    }
+
     this.props.createNewEvent(
       this.props.formVals.values,
       needUpload,
@@ -198,11 +207,12 @@ class CreateEventModal extends React.Component {
           isVisible={this.props.startTime.picker}
           mode='datetime'
           onConfirm={(date) => {
-            if (validateTime(date, this.props.endTime.date)) {
-              this.props.change('startTime', { date, picker: false });
-              return;
-            }
-            alert('Start time cannot be later than end time');
+            // if (validateTime(date, this.props.endTime.date)) {
+            //   this.props.change('startTime', { date, picker: false });
+            //   return;
+            // }
+            // alert('Start time cannot be later than end time');
+            this.props.change('startTime', { date, picker: false });
           }}
           onCancel={() => 
             this.props.change('startTime', { 
@@ -249,11 +259,12 @@ class CreateEventModal extends React.Component {
             isVisible={this.props.endTime.picker}
             mode='datetime'
             onConfirm={(date) => {
-              if (validateTime(this.props.startTime.date, date)) {
-                this.props.change('endTime', { date, picker: false });
-                return
-              }
-              alert('End time cannot be early than start time');
+              // if (validateTime(this.props.startTime.date, date)) {
+              //   this.props.change('endTime', { date, picker: false });
+              //   return
+              // }
+              // alert('End time cannot be early than start time');
+              this.props.change('endTime', { date, picker: false });
             }}
             onCancel={() => 
               this.props.change('endTime', { 
@@ -295,11 +306,21 @@ class CreateEventModal extends React.Component {
         );
 
     const startTime = this.props.startTime.date ?
-      <Text>{moment(this.props.startTime.date).format('ll')}</Text> :
+      (
+        <View>
+          <Text>{moment(this.props.startTime.date).format('LL')}</Text>
+          <Text>{moment(this.props.startTime.date).format('LT')}</Text>
+        </View>
+      ) :
       <Text style={{ fontSize: 9 }}>Start</Text>;
 
     const endTime = this.props.endTime.date ?
-      <Text>{moment(this.props.endTime.date).format('ll')}</Text> :
+      (
+        <View>
+          <Text>{moment(this.props.endTime.date).format('LL')}</Text>
+          <Text>{moment(this.props.endTime.date).format('LT')}</Text>
+        </View>
+      ) :
       <Text style={{ fontSize: 9 }}>End</Text>;
 
     // Show cancel button if there is date set
@@ -631,6 +652,35 @@ const validateTime = (start, end) => {
   if (!start || !end) return true;
   if (moment(start) > moment(end)) return false;
   return true;
+};
+
+const isTimeValid = (start, end) => {
+  let ret = { isValid: true };
+
+  if (!start) {
+    ret = { isValid: false, callback: () => {
+      alert("Missing start time");
+    }};
+    return ret;
+  }
+
+  if (!end) {
+    ret = { isValid: false, callback: () => {
+      alert("Missing end time");
+    }};
+    return ret;
+  }
+
+  if (moment(start) > moment(end)) {
+    ret = { isValid: false, callback: () => {
+      alert("End time should be early than start time");
+    }};
+    return ret;
+  }
+
+  return {
+    isValid: true
+  };
 };
 
 CreateEventModal = reduxForm({

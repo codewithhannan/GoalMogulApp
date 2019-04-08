@@ -41,18 +41,25 @@ export const StackedAvatarsV2 = (props) => {
       if (index > 1) return null;
       const { participantRef } = participant;
       return (
-        <ProfileImage
-          key={index}
-          imageContainerStyle={{
-            ...styles.bottomPictureContainerStyle,
-            left: ((index * 13))
+        <View
+          style={{ 
+            left: ((index * 13)),
+            position: 'absolute'
           }}
-          imageUrl={participantRef.profile.image}
-          imageStyle={{ ...styles.pictureStyle }}
-          defaultImageSource={DefaultUserProfile}
-        />
+          key={index}
+        >
+          <ProfileImage
+            imageContainerStyle={{
+              ...styles.bottomPictureContainerStyle,
+            }}
+            imageUrl={participantRef.profile.image}
+            imageStyle={{ ...styles.pictureStyle }}
+            defaultImageSource={DefaultUserProfile}
+          />
+        </View>
       );
-    });
+    })
+    .filter((r) => r !== null);
 
   const count = participantPictures.length;
   const participantPicturesWidth = count < 2 ? 45 : 50;
@@ -68,7 +75,8 @@ const styles = {
   // Style for member pictures
   memberPicturesContainerStyle: {
     height: 25,
-    width: 50
+    width: 50,
+    marginRight: 10
   },
   topPictureContainerStyle: {
     height: PictureDimension + 2,

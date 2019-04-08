@@ -12,12 +12,12 @@ const INITIAL_STATE = {
     routes: [
       { key: 'about', title: 'About' },
       { key: 'posts', title: 'Posts' },
-      { key: 'members', title: 'Members' }
+      { key: 'members', title: 'Participants' }
     ],
   },
   defaultRoutes: [
     { key: 'about', title: 'About' },
-    { key: 'members', title: 'Members' }
+    { key: 'members', title: 'Participants' }
   ],
   selectedTab: 'about',
   item: undefined,
