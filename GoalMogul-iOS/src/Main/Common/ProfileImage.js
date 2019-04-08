@@ -47,8 +47,8 @@ class ProfileImage extends React.Component {
   }
 
   handleProfileImageOnPress = () => {
-    const { userId } = this.props;
-    if (!userId || _.isEmpty(userId)) return;
+    const { userId, disabled } = this.props;
+    if (!userId || _.isEmpty(userId) || disabled) return;
     this.props.openProfile(userId);
   }
 
