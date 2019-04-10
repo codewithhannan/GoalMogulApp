@@ -11,6 +11,7 @@ import {
 	Text,
 	TouchableOpacity,
 	ImageBackground,
+	FlatList,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { CheckBox, SearchBar } from 'react-native-elements';
@@ -50,7 +51,6 @@ import { openCameraRoll, openCamera } from '../../../actions';
 import cancel from '../../../asset/utils/cancel_no_background.png';
 import camera from '../../../asset/utils/camera.png';
 import cameraRoll from '../../../asset/utils/cameraRoll.png';
-import { FlatList } from 'react-native-gesture-handler';
 import SearchUserCard from '../../Search/People/SearchUserCard';
 import { SearchIcon } from '../../../Utils/Icons';
 
@@ -109,10 +109,13 @@ class CreateChatroomModal extends React.Component {
 	}
 
 	handleNext = () => {
+		const isEdit = this.props.initializeFromState;
 		if (!this.props.name.trim().length) {
 			return Alert.alert('Warning', 'You must enter a Name.');
 		};
-		if (this.props.modalPageNumber == 1) {
+		if (isEdit) {
+			this.handleSubmit();
+		} else if (this.props.modalPageNumber == 1) {
 			this.props.changeModalPage(2);
 		} else if(this.props.modalPageNumber == 2) {
 			if (this.props.selectedMembers.length == 0) {
@@ -122,7 +125,7 @@ class CreateChatroomModal extends React.Component {
 				return Alert.alert('Warning', 'You\'ve added more members than the specified member limit for this chat');
 			};
 			this.handleSubmit();
-		}
+		};
 	}
 
 	handleOpenCamera = () => {

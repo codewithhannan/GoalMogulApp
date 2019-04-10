@@ -20,7 +20,8 @@ const INITIAL_STATE = {
     },
     email: {
 
-    }
+    },
+    chatNotificationPreferences: undefined,
   },
   profile: {},
   updatingPassword: false
