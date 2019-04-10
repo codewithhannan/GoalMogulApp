@@ -117,13 +117,14 @@ export const updateTypingStatus = (userId, updatedTypingStatus, currentlyTypingU
 };
 
 export const updateMessageList = (chatRoom, currentMessageList) => (dispatch, getState) => {
-	const oldestMessage = currentMessageList[currentMessageList.length - 1];
+	const oldestMessage = currentMessageList.sort((doc1, doc2) => doc1.createdAt - doc2.createdAt)[0];
 	if (oldestMessage) {
 		MessageStorageService.getAllMessagesAfterMessage(chatRoom._id, oldestMessage._id, (err, messages) => {
 			if (err || !messages) {
 				Alert.alert('Error', 'Could not auto-update messages. Please try re-opening this conversation.');
 			} else {
 				const giftedChatMessages = _transformMessagesForGiftedChat(messages, chatRoom);
+				MessageStorageService.markConversationMessagesAsRead(chatRoom._id);
 				dispatch({
 					type: CHAT_ROOM_UPDATE_MESSAGES,
 					payload: giftedChatMessages,
@@ -132,7 +133,7 @@ export const updateMessageList = (chatRoom, currentMessageList) => (dispatch, ge
 		});
 	} else {
 		// if no messages in convo, load the first 10
-		return loadOlderMessages(10, 0);
+		return initialLoad(chatRoom._id, 10)(dispatch, getState);
 	};
 };
 
@@ -275,7 +276,7 @@ function _transformMessageFromGiftedChat(messageDoc, uploadedMediaRef, chatRoom)
 	const { _id, createdAt, text, user } = messageDoc;
 	let transformedDoc = {
 		_id,
-		created: createdAt,
+		created: new Date(createdAt),
 		creator: user._id,
 		recipient: user._id,
 		content: {
@@ -301,7 +302,7 @@ function _transformMessagesForGiftedChat(messages, chatRoom) {
 		const { _id, created, creator, content, media } = messageDoc;
 		return {
 			_id,
-			createdAt: created,
+			createdAt: new Date(created),
 			image: media && `${IMAGE_BASE_URL}${media}`,
 			text: content && content.message,
 			user: chatRoomMemberMap[creator]
@@ -310,6 +311,6 @@ function _transformMessagesForGiftedChat(messages, chatRoom) {
 };
 function _transformUserForGiftedChat(userDoc) {
 	const {_id, name, profile} = userDoc;
-	const profileImage = profile && profile.image;
+	const profileImage = profile && profile.image && `${IMAGE_BASE_URL}${profile.image}`;
 	return { _id, name, avatar: profileImage };
 };

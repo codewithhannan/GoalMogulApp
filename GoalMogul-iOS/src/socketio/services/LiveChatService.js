@@ -123,14 +123,14 @@ class LiveChatService {
         if (!this.isInitialized) throw new Error('Must initialize live chat service first.');
         this.eventListenerMap[eventName] = {};
         this.socket.on(eventName, (...args) => {
-            const listeners = this.eventListenerMap[eventName];
+            const listeners = Object.values(this.eventListenerMap[eventName]);
             for (let listener of listeners) {
                 if (typeof listener != "function") continue;
                 try {
                     listener(...args);
                 } catch(e) {
                     console.log(
-                        `${DEBUG_KEY}: Error running listener for event: '${eventName}', with listener identifier as: '${listenerIdentifier}'`,
+                        `${DEBUG_KEY}: Error running listener for event: '${eventName}'`,
                         e
                     );
                 };

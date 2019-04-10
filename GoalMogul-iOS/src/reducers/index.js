@@ -46,7 +46,7 @@ import MyTribeTabReducers from '../redux/modules/tribe/MyTribeTabReducers';
 import MyTribeReducers from '../redux/modules/tribe/MyTribeReducers';
 // Chat related reducers
 import ChatReducers from '../redux/modules/chat/ChatReducers';
-import NewChatRoomReducers from '../redux/modules/chat/NewChatRoomReducers';
+import CreateChatRoomReducers from '../redux/modules/chat/CreateChatRoomReducers';
 import ChatRoomReducers from '../redux/modules/chat/ChatRoomReducers';
 import TabIconReducers from '../redux/modules/navigation/TabIconReducers';
 import ChatRoomMembersReducers from '../redux/modules/chat/ChatRoomMembersReducers';
@@ -97,7 +97,7 @@ const reducers = combineReducers({
   myTribe: MyTribeReducers,
   newTribe: NewTribeReducers,
   newEvent: NewEventReducers,
-  newChatRoom: NewChatRoomReducers,
+  newChatRoom: CreateChatRoomReducers,
   notification: NotificationTabReducers,
   chat: ChatReducers,
   chatRoom: ChatRoomReducers,

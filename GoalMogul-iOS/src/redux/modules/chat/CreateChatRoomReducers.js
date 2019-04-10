@@ -1,4 +1,3 @@
-// New Tribe will mainly store in NewTribeModalForm. This reducer is called newTribe
 import _ from 'lodash';
 import { arrayUnique } from '../../middleware/utils';
 

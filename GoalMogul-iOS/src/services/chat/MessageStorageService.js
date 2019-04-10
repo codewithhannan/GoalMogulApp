@@ -245,7 +245,7 @@ class MessageStorageService {
             if (!markerMessage) {
                 return callback(null, []);
             };
-            const oldestDate = markerMessage.created;
+            const oldestDate = new Date(markerMessage.created);
             localDb.find({
                 chatRoomRef: conversationId,
                 recipient: this.mountedUser.userId,
@@ -314,14 +314,14 @@ class MessageStorageService {
                 }
             );
             // fire listeners to this event
-            const listeners = this.incomingMessageListeners;
+            const listeners = Object.values(this.incomingMessageListeners);
             for (let listener of listeners) {
                 if (typeof listener != "function") continue;
                 try {
                     listener(data.data);
                 } catch(e) {
                     console.log(
-                        `${DEBUG_KEY}: Error running incomingMessage listener with listener identifier as: '${listenerIdentifier}'`,
+                        `${DEBUG_KEY}: Error running incomingMessage listener`,
                         e
                     );
                 };
@@ -343,14 +343,14 @@ class MessageStorageService {
                     localDb.insert(this._transformMessageForLocalStorage(messageDoc), (err) => {
                         if (err) return;
                         // fire listeners to this event
-                        const listeners = this.pulledMessageListeners;
+                        const listeners = Object.keys(this.pulledMessageListeners);
                         for (let listener of listeners) {
                             if (typeof listener != "function") continue;
                             try {
                                 listener(data.data);
                             } catch(e) {
                                 console.log(
-                                    `${DEBUG_KEY}: Error running incomingMessage listener with listener identifier as: '${listenerIdentifier}'`,
+                                    `${DEBUG_KEY}: Error running incomingMessage listener`,
                                     e
                                 );
                             };
@@ -388,6 +388,7 @@ class MessageStorageService {
      */
     _transformMessageForLocalStorage = (messageDoc) => {
         let transformedDoc = { ...messageDoc };
+        transformedDoc.created = new Date(transformedDoc.created);
         if (messageDoc.creator.toString() == this.mountedUser.userId) {
             transformedDoc.isRead = true;
         };
