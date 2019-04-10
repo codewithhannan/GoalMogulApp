@@ -22,7 +22,7 @@ class SocketIOManager {
     initialize() {
         this.socketManager = new SocketIOClient.Manager(SERVER_URL, SOCKET_CONFIG);
         this.socketManager.on('connect', () => {
-            const tasksToRun = this.tasksOnSocketConnect;
+            const tasksToRun = Object.values(this.tasksOnSocketConnect);
             for (let task of tasksToRun) {
                 if (typeof task != "function") {
                     continue;

@@ -11,6 +11,7 @@ import {
     Clipboard,
     FlatList,
     TouchableOpacity,
+    Linking,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -39,7 +40,7 @@ import {
 import ModalHeader from '../../Common/Header/ModalHeader';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
-import PhotoIcon from '../../../asset/utils/photoIcon.png';
+import PhotoIcon from '../../../asset/utils/cameraRoll.png';
 import { Actions } from 'react-native-router-flux';
 import ProfileImage from '../../Common/ProfileImage';
 import { openCamera, openCameraRoll, openProfile } from '../../../actions';
@@ -133,7 +134,7 @@ class ChatRoomConversation extends React.Component {
     _handleIncomingMessage(messageInfo) {
         const { chatRoom, messages } = this.props;
         const { messageDoc, chatRoomName, chatRoomPicture } = messageInfo;
-        if (messageDoc.chatRoomRef == chatRoomId) {
+        if (messageDoc.chatRoomRef == chatRoom._id) {
             this.props.updateMessageList(chatRoom, messages);
             return;
         };
@@ -306,6 +307,7 @@ class ChatRoomConversation extends React.Component {
                   ...styles.iconStyle,
                   tintColor: '#cbd6d8'
                 }}
+                resizeMode='contain'
               />
             </TouchableOpacity>
           );
@@ -354,6 +356,9 @@ class ChatRoomConversation extends React.Component {
                             avatar: profile && profile.image,
                         }}
                         placeholder={`Send a message to ${this.props.chatRoomName}...`}
+                        parsePatterns={(linkStyle) => [
+                            { type: 'url', style: { color: 'blue', textDecoration: 'underline' }, onPress: (url) => Linking.openURL(url) },
+                        ]}
                         isAnimated={true}
                         loadEarlier={this.props.hasNextPage}
                         isLoadingEarlier={this.props.loading}
@@ -473,13 +478,13 @@ const styles = {
     },
 
     iconContainerStyle: {
-        alignItems: 'flex-end',
-        justifyContent: 'flex-end'
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 39,
     },
     iconStyle: {
-        height: 24,
-        width: 24,
-        margin: 5
+        height: 27,
+        width: 27,
     },
     mediaContainerStyle: {
         flexDirection: 'row',
