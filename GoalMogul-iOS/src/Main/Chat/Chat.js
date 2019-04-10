@@ -54,11 +54,6 @@ class ChatTab extends React.Component {
 		);
 	};
 
-	_renderScene = SceneMap({
-		directMessages: ChatRoomTab,
-		chatRooms: ChatRoomTab,
-	});
-
 	_renderScene = ({ route }) => {
 		switch (route.key) {
 			case 'directMessages': {

@@ -203,7 +203,8 @@ export const PAGE_TYPE_MAP = {
   event: 'EVENT',
   tribe: 'TRIBE',
   goalFeed: 'GOAL_FEED',
-  activity: 'ACTIVITY'
+  activity: 'ACTIVITY',
+  chat: 'CHAT',
 };
 
 // const DEBUG_KEY = '[ Utils ]';

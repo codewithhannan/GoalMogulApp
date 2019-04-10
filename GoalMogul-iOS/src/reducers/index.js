@@ -39,7 +39,6 @@ import ExploreReducers from '../redux/modules/explore/ExploreReducers';
 import NewShareReducers from '../redux/modules/feed/post/NewShareReducers';
 import NewTribeReducers from '../redux/modules/tribe/NewTribeReducers';
 import NewEventReducers from '../redux/modules/event/NewEventReducers';
-import NewChatRoomReducers from '../redux/modules/chat/NewChatRoomReducers';
 // Menu related reducers
 import MyEventTabReducers from '../redux/modules/event/MyEventTabReducers';
 import MyEventReducers from '../redux/modules/event/MyEventReducers';
@@ -47,6 +46,10 @@ import MyTribeTabReducers from '../redux/modules/tribe/MyTribeTabReducers';
 import MyTribeReducers from '../redux/modules/tribe/MyTribeReducers';
 // Chat related reducers
 import ChatReducers from '../redux/modules/chat/ChatReducers';
+import NewChatRoomReducers from '../redux/modules/chat/NewChatRoomReducers';
+import ChatRoomReducers from '../redux/modules/chat/ChatRoomReducers';
+import TabIconReducers from '../redux/modules/navigation/TabIconReducers';
+import ChatRoomMembersReducers from '../redux/modules/chat/ChatRoomMembersReducers';
 
 const rootPersistConfig = {
   key: 'root',
@@ -96,7 +99,10 @@ const reducers = combineReducers({
   newEvent: NewEventReducers,
   newChatRoom: NewChatRoomReducers,
   notification: NotificationTabReducers,
-  chat: ChatReducers
+  chat: ChatReducers,
+  chatRoom: ChatRoomReducers,
+  chatRoomMembers: ChatRoomMembersReducers,
+  navigationTabBadging: TabIconReducers,
 });
 
 export default persistReducer(rootPersistConfig, reducers);

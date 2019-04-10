@@ -7,9 +7,10 @@ class SettingCard extends Component {
 
   renderIcon() {
     const iconStyle = this.props.iconStyle || styles.titleIconStyle;
-    if (this.props.icon) {
+    const { icon } = this.props;
+    if (icon) {
       return (
-        <Image source={this.props.icon} style={iconStyle} />
+        <Image source={icon} style={iconStyle} />
       );
     }
     return null;
@@ -42,7 +43,7 @@ const styles = {
     marginLeft: 15,
     marginRight: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#e6e6e6'
+    borderBottomColor: '#e6e6e6',
   },
   titleContainerStyle: {
     flexDirection: 'row',
@@ -54,13 +55,15 @@ const styles = {
     marginRight: 5
   },
   titleStyle: {
-    fontSize: 17,
-    fontWeight: '700'
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
   },
   explanationTextStyle: {
     fontSize: 12,
-    marginTop: 3,
-    marginLeft: 3
+    marginTop: 6,
+    marginLeft: 3,
+    color: '#AAA',
   }
 };
 

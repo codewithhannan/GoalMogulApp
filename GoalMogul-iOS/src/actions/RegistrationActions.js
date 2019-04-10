@@ -36,6 +36,9 @@ import {
 import ImageUtils from '../Utils/ImageUtils';
 import { handleUploadContacts, fetchMatchedContacts } from '../Utils/ContactUtils';
 
+import LiveChatService from '../socketio/services/LiveChatService';
+import MessageStorageService from '../services/chat/MessageStorageService';
+
 const DEBUG_KEY = '[ Action Registration ]';
 export const registrationLogin = () => {
   return (dispatch) => {
@@ -101,6 +104,16 @@ export const registrationNextAddProfile = (value) => {
           payload
         });
         Actions.replace('registration');
+
+        // set up chat listeners
+        LiveChatService.mountUser({
+          userId: res.userId,
+          authToken: res.token,
+        });
+        MessageStorageService.mountUser({
+          userId: res.userId,
+          authToken: res.token,
+        });
         // Actions.reset('auth');
       })
       // TODO: error handling

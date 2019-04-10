@@ -58,7 +58,7 @@ export default (state=INITIAL_STATE, action) => {
 			newState = _.set(newState, 'navigationState.index', index);
 
 			const selectedTab = state.navigationState.routes[index].key;
-			return _.set(newState, 'navigationState.selectedTab', selectedTab);
+			return _.set(newState, 'selectedTab', selectedTab);
 		}
 
 		case CHAT_LOAD: {

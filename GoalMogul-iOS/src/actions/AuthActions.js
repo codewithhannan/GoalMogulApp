@@ -39,6 +39,9 @@ import {
 // Components
 import { DropDownHolder } from '../Main/Common/Modal/DropDownModal';
 
+import LiveChatService from '../socketio/services/LiveChatService';
+import MessageStorageService from '../services/chat/MessageStorageService';
+
 const DEBUG_KEY = '[ Action Auth ]';
 export const userNameChanged = (username) => {
   return {
@@ -105,6 +108,17 @@ export const loginUser = ({ username, password, navigate }) => {
             payload
           });
           Auth.saveKey(username, password);
+
+          // set up chat listeners
+          LiveChatService.mountUser({
+            userId: res.userId,
+            authToken: res.token,
+          });
+          MessageStorageService.mountUser({
+            userId: res.userId,
+            authToken: res.token,
+          });
+
           // Fetch user profile using returned token and userId
           fetchAppUserProfile(res.token, res.userId)(dispatch, getState);
           refreshFeed()(dispatch, getState);
@@ -192,6 +206,9 @@ export const logout = () => async (dispatch, getState) => {
   };
   Auth.reset(callback); 
   Actions.reset('root');
+  // clear chat service details
+  LiveChatService.unMountUser();
+  MessageStorageService.unMountUser();
   dispatch({
     type: USER_LOG_OUT
   });
