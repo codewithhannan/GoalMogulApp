@@ -116,7 +116,7 @@ export const updateTypingStatus = (userId, updatedTypingStatus, currentlyTypingU
 	})
 };
 
-export const updateMessageList = (chatRoom, currentMessageList) => (dispatch, getState) => {
+export const updateMessageList = (chatRoom, currentMessageList, clearGhostMessages) => (dispatch, getState) => {
 	const oldestMessage = currentMessageList.sort((doc1, doc2) => doc1.createdAt - doc2.createdAt)[0];
 	if (oldestMessage) {
 		MessageStorageService.getAllMessagesAfterMessage(chatRoom._id, oldestMessage._id, (err, messages) => {
@@ -128,6 +128,12 @@ export const updateMessageList = (chatRoom, currentMessageList) => (dispatch, ge
 				dispatch({
 					type: CHAT_ROOM_UPDATE_MESSAGES,
 					payload: giftedChatMessages,
+				});
+			};
+			if (clearGhostMessages) {
+				dispatch({
+					type: CHAT_ROOM_UPDATE_GHOST_MESSAGES,
+					payload: null,
 				});
 			};
 		});
@@ -213,21 +219,21 @@ export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMe
 	};
 
 	function sendMessages() {
-		// clear ghost message
-		dispatch({
-			type: CHAT_ROOM_UPDATE_GHOST_MESSAGES,
-			payload: null,
-		});
 		// iterate over each message to be sent (usually should only be 1)
 		messagesToSend.forEach(messageToSend => {
 			// insert message into local storage
 			const messageToInsert = _transformMessageFromGiftedChat(messageToSend, uploadedMediaRef, chatRoom);
 			MessageStorageService.storeLocallyCreatedMessage({...messageToInsert, isRead: true}, (err, insertedDoc) => {
 				if (err) {
+					// clear ghost message
+					dispatch({
+						type: CHAT_ROOM_UPDATE_GHOST_MESSAGES,
+						payload: null,
+					});
 					return Alert.alert('Error', 'Could not store message locally. Please try again later.');
 				};
-				// update state to show newly inserted message
-				updateMessageList(chatRoom, currentMessageList)(dispatch, getState);
+				// update state to show newly inserted message and clear the ghost message
+				updateMessageList(chatRoom, currentMessageList, true)(dispatch, getState);
 
 				// send the message
 				const { text } = messageToSend;
