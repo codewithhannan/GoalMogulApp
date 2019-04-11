@@ -41,7 +41,7 @@ import {
     closeActiveChatRoom,
 } from '../../../redux/modules/chat/ChatRoomActions';
 import ModalHeader from '../../Common/Header/ModalHeader';
-import { GiftedChat, Send, Message, Bubble, MessageText, Time } from 'react-native-gifted-chat';
+import { GiftedChat, Send, Message, Bubble, MessageText, Time, MessageImage, MessageVideo, Avatar } from 'react-native-gifted-chat';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import PhotoIcon from '../../../asset/utils/cameraRoll.png';
 import { Actions } from 'react-native-router-flux';
@@ -376,6 +376,10 @@ class ChatRoomConversation extends React.Component {
                     ref={inputComponent => this._textInput = inputComponent}
                     onChange={props.onInputTextChanged}
                     onChangeText={(text) => props.onTextChanged(text)}
+                    onContentSizeChange={(e) => props.onInputSizeChanged({
+                        ...e.nativeEvent.contentSize,
+                        height: e.nativeEvent.contentSize.height + 12, // account for input padding
+                    })}
                     value={props.text}
                     placeholder={props.placeholder}
                     style={{
@@ -410,7 +414,7 @@ class ChatRoomConversation extends React.Component {
                             shadowOpacity: 0.1,
                             shadowRadius: 3,
                             borderRadius: 9,
-                            borderColor: 'rgba(0,0,0,0.1)',
+                            borderColor: '#EDEDED',
                             borderWidth: 1,
                         },
                         right: {
@@ -421,7 +425,7 @@ class ChatRoomConversation extends React.Component {
                             shadowOpacity: 0.1,
                             shadowRadius: 3,
                             borderRadius: 9,
-                            borderColor: 'rgba(0,0,0,0.1)',
+                            borderColor: '#D1ECF6',
                             borderWidth: 1,
                         }
                     }}
@@ -452,9 +456,34 @@ class ChatRoomConversation extends React.Component {
                             },
                         }}
                     />}
+                    renderMessageImage={props => <MessageImage
+                        {...props}
+                        imageStyle={{
+                            borderRadius: 9,
+                        }}
+                    />}
+                    renderMessageVideo={props => <MessageVideo
+                        {...props}
+                        videoStyle={{
+                            borderRadius: 9,
+                        }}
+                    />}
                 />}
             />
         );
+    }
+    renderAvatar(props) {
+        return (<Avatar
+            {...props}
+            imageStyle={{
+                left: {
+                    borderRadius: 6,
+                },
+                right: {
+                    borderRadius: 6,
+                },
+            }}
+        />);
     }
 
 	render() {
@@ -486,6 +515,7 @@ class ChatRoomConversation extends React.Component {
                         placeholder={`Send a message to ${this.props.chatRoomName}...`}
                         isAnimated={true}
                         alwaysShowSend={true}
+                        renderAvatarOnTop={true}
                         loadEarlier={this.props.hasNextPage}
                         isLoadingEarlier={this.props.loading}
                         onLoadEarlier={this.loadEarlierMessages.bind(this)}
@@ -498,8 +528,10 @@ class ChatRoomConversation extends React.Component {
                         renderAccessory={this.renderMedia.bind(this)}
                         renderSend={this.renderSendButton}
                         renderComposer={this.renderComposer.bind(this)}
+                        maxComposerHeight={120 - 18} // padding
                         renderMessage={this.renderMessage}
                         renderInputToolbar={this.renderInputToolbar}
+                        renderAvatar={this.renderAvatar}
                         bottomOffset={this.props.messageMediaRef ? 18 : 75}
                     />
 				</View>
