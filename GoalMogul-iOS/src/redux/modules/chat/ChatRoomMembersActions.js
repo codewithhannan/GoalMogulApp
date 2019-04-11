@@ -88,17 +88,20 @@ export const acceptChatMemberJoinRequest = (memberId, chatRoomId) => (dispatch, 
         console.log(`${ChatRoomMembersActions} error accepting member request`, err);
     });
 }
-export const removeChatMember = (memberId, chatRoomId) => (dispatch, getState) => {
+export const removeChatMember = (memberId, chatRoomId, maybeCallback) => (dispatch, getState) => {
     const { token } = getState().user;
     API.delete(`secure/chat/room/members?chatRoomId=${chatRoomId}&removeeId=${memberId}` , {}, token).then(resp => {
         if (resp.status != 200) {
             Alert.alert('Error', 'Could not remove member. Please try again later.');
             console.log(`${ChatRoomMembersActions} error removing member`, res.message);
+            maybeCallback && maybeCallback(new Error(resp.message));
         } else {
+            maybeCallback && maybeCallback(null, true);
             refreshChatMembersTab(chatRoomId)(dispatch, getState);
         };
     }).catch(err => {
         Alert.alert('Error', 'Could not remove member. Please try again later.');
         console.log(`${ChatRoomMembersActions} error removing member`, err);
+        maybeCallback && maybeCallback(err);
     });
 }

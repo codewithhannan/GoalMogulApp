@@ -9,6 +9,7 @@ import {
 	View,
     Dimensions,
     ScrollView,
+    Alert,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -23,6 +24,7 @@ import membersIcon from '../../../asset/utils/profile_people_black.png';
 import plusIcon from '../../../asset/utils/plus.png';
 import muteIcon from '../../../asset/utils/mute.png';
 import editIcon from '../../../asset/utils/edit.png';
+import leaveIcon from '../../../asset/utils/logout.png';
 import searchIcon from '../../../asset/utils/search.png';
 import { MenuProvider } from 'react-native-popup-menu';
 import SettingCard from '../../Setting/SettingCard';
@@ -32,6 +34,7 @@ import { changeChatRoomMute, addMemberToChatRoom } from '../../../redux/modules/
 import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
 import { Image, Text, Divider } from 'react-native-elements';
 import { APP_BLUE_BRIGHT } from '../../../styles';
+import { removeChatMember } from '../../../redux/modules/chat/ChatRoomMembersActions';
 
 const DEBUG_KEY = '[ UI ChatRoomOptions ]';
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -76,6 +79,17 @@ class ChatRoomOptions extends React.Component {
     toggleMute() {
         const { chatRoom, isMuted } = this.props;
         this.props.changeChatRoomMute(chatRoom._id, !isMuted);
+    }
+    leaveConversation() {
+        const { isAdmin, user, chatRoom } = this.props;
+        if (isAdmin) {
+            return Alert.alert('Forbidden.', 'Admins cannot leave their own conversations.');
+        };
+        this.props.removeChatMember(user._id, chatRoom._id, (err, isSuccess) => {
+            if (isSuccess) {
+                Actions.popTo('chat');
+            };
+        });
     }
 
     renderChatRoomStatus() {
@@ -223,6 +237,14 @@ class ChatRoomOptions extends React.Component {
                                     onPress={this.openMembers.bind(this)}
                                 />
                             )}
+                            {chatRoom.roomType != 'Direct' && (
+                                <SettingCard
+                                    title={'Leave Conversation'}
+                                    icon={leaveIcon}
+                                    explanation={'Leave this group conversation'}
+                                    onPress={this.leaveConversation.bind(this)}
+                                />
+                            )}
                             <SettingCard
                                 title="Search Messages"
                                 icon={searchIcon}
@@ -292,6 +314,7 @@ export default connect(
         openProfile,
         changeChatRoomMute,
         addMemberToChatRoom,
+        removeChatMember,
 	}
 )(ChatRoomOptions);
 
