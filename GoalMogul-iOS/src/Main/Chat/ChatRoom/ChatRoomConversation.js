@@ -248,7 +248,7 @@ class ChatRoomConversation extends React.Component {
         (buttonIndex) => {
             switch (buttonIndex) {
                 case 0:
-                    Clipboard.setString(this.props.currentMessage.text);
+                    Clipboard.setString(message.text);
                     break;
                 case 1:
                     this.deleteMessage(message._id);
@@ -460,12 +460,16 @@ class ChatRoomConversation extends React.Component {
                         {...props}
                         imageStyle={{
                             borderRadius: 9,
+                            width: 'auto',
+                            minWidth: 150,
                         }}
                     />}
                     renderMessageVideo={props => <MessageVideo
                         {...props}
                         videoStyle={{
                             borderRadius: 9,
+                            width: 'auto',
+                            minWidth: 150,
                         }}
                     />}
                 />}
