@@ -12,6 +12,7 @@ import {
     FlatList,
     TouchableOpacity,
     Linking,
+    Keyboard,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -21,8 +22,10 @@ import LiveChatService from '../../../socketio/services/LiveChatService';
 // Components
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal';
 import { RemoveComponent } from '../../Goal/GoalDetailCard/SuggestionPreview';
+import {AutoGrowingTextInput} from 'react-native-autogrow-textinput';
 
 import { Octicons } from '@expo/vector-icons';
+import SendButton from '../../../asset/utils/sendButton.png';
 
 import { MenuProvider } from 'react-native-popup-menu';
 // Actions
@@ -38,7 +41,7 @@ import {
     closeActiveChatRoom,
 } from '../../../redux/modules/chat/ChatRoomActions';
 import ModalHeader from '../../Common/Header/ModalHeader';
-import { GiftedChat } from 'react-native-gifted-chat';
+import { GiftedChat, Send, Message, Bubble, MessageText, Time } from 'react-native-gifted-chat';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import PhotoIcon from '../../../asset/utils/cameraRoll.png';
 import { Actions } from 'react-native-router-flux';
@@ -47,6 +50,8 @@ import { openCamera, openCameraRoll, openProfile } from '../../../actions';
 import profilePic from '../../../asset/utils/defaultUserProfile.png';
 import { Image, Text } from 'react-native-elements';
 import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Constants';
+import { TextInput } from 'react-native-gesture-handler';
+import ChatRoomConversationInputToolbar from './ChatRoomConversationInputToolbar';
 
 const DEBUG_KEY = '[ UI ChatRoomConversation ]';
 const LISTENER_KEY = 'ChatRoomConversation';
@@ -150,23 +155,26 @@ class ChatRoomConversation extends React.Component {
         DropDownHolder.setDropDownImageContainerStyle(TOAST_IMAGE_CONTAINER_STYLE);
 
         // action: Enum['automatic', 'programmatic', 'tap', 'pan', 'cancel']
-        DropDownHolder.setOnClose(({type, title, message, action, payload}) => {
-            const { chatRoomId } = payload;
+        DropDownHolder.setOnClose(({action}) => {
             this.setState({
                 lastAlertedChatRoomId: null,
             });
             if (action == 'tap') {
                 Actions.refresh({
-                    chatRoomId,
+                    chatRoomId: messageDoc.chatRoomRef,
                 });
             };
         });
-        DropDownHolder.alert('custom', titleToDisplay, messageToDisplay, {
-            chatRoomId: messageDoc.chatRoomRef,
-        });
+        DropDownHolder.alert('custom', titleToDisplay, messageToDisplay);
         this.setState({
             lastAlertedChatRoomId: messageDoc.chatRoomRef,
         });
+        clearInterval(this.clearLastAlertedChatRoomIdInterval);
+        this.clearLastAlertedChatRoomIdInterval = setInterval(() => {
+            this.setState({
+                lastAlertedChatRoomId: null,
+            }); 
+        }, 1000);
     }
 
     openOptions() {
@@ -192,6 +200,7 @@ class ChatRoomConversation extends React.Component {
     }
     sendMessage(messagesToSend) {
         const { messageMediaRef, chatRoom, messages } = this.props;
+        if (!messagesToSend[0].text.trim().length && !messageMediaRef) return;
         this.props.sendMessage(messagesToSend, messageMediaRef, chatRoom, messages);
     }
 
@@ -199,10 +208,12 @@ class ChatRoomConversation extends React.Component {
         const mediaRefCases = switchByButtonIndex([
           [R.equals(0), () => {
             this.handleOpenCameraRoll();
+            this._textInput.blur();
           }],
           [R.equals(1), () => {
             this.handleOpenCamera();
-          }],
+            this._textInput.blur();
+          }]
         ]);
     
         const addMediaRefActionSheet = actionSheet(
@@ -221,7 +232,7 @@ class ChatRoomConversation extends React.Component {
         const callback = R.curry((result) => {
             this.props.changeMessageMediaRef(result.uri);
         });
-        this.props.openCameraRoll(callback);
+        this.props.openCameraRoll(callback, { disableEditing: true });
     }
     onMessageLongPress(context, message) {
         const options = [
@@ -278,7 +289,7 @@ class ChatRoomConversation extends React.Component {
                     data={currentlyTypingUserIds.slice(0, MAX_TYPING_INDICATORS_TO_DISPLAY)
                             .map(userId => chatRoomMembersMap[userId])
                             .filter(docExists => docExists)}
-                    renderItem={({item}) => (<View>
+                    renderItem={({item}) => (<View style={{width: '100%', minHeight: 42}}>
                         <ProfileImage
                             imageStyle={{ height: 35, width: 35, borderRadius: 4 }}
                             imageUrl={item.profile && item.profile.image}
@@ -299,7 +310,7 @@ class ChatRoomConversation extends React.Component {
             <TouchableOpacity
               activeOpacity={0.6}
               style={styles.iconContainerStyle}
-              onPress={this.onSendImageButtonPress}
+              onPress={this.onSendImageButtonPress.bind(this)}
             >
               <Image
                 source={PhotoIcon}
@@ -335,6 +346,116 @@ class ChatRoomConversation extends React.Component {
             </TouchableOpacity>
         );
     }
+    renderSendButton(props) {
+        return (
+            <Send
+                {...props}
+            >
+                <View style={{paddingRight: 15, paddingBottom: 15, position: 'relative' }}>
+                    <Image
+                        style={{height: 27, width: 27}}
+                        source={SendButton}
+                        resizeMode="contain"
+                    />
+                </View>
+            </Send>
+        );
+    }
+    renderComposer(props) {
+        return(
+            <View
+                style={{
+                    flexGrow: 2,
+                    paddingLeft: 6,
+                    paddingRight: 12,
+                    paddingTop: 9,
+                    paddingBottom: 9,
+                }}
+            >
+                <AutoGrowingTextInput
+                    ref={inputComponent => this._textInput = inputComponent}
+                    onChange={props.onInputTextChanged}
+                    onChangeText={(text) => props.onTextChanged(text)}
+                    value={props.text}
+                    placeholder={props.placeholder}
+                    style={{
+                        fontSize: 15,
+                        padding: 9,
+                        paddingTop: 12,
+                        borderColor: '#F1F1F1',
+                        borderRadius: 6,
+                        borderWidth: 1,
+                        maxHeight: 120,
+                        minHeight: 42,
+                    }}
+                />
+            </View>
+        );
+    }
+    renderInputToolbar(props) {
+        return (<ChatRoomConversationInputToolbar {...props} />);
+    }
+    renderMessage(props) {
+        return (
+            <Message
+                {...props}
+                renderBubble={props => <Bubble
+                    {...props}
+                    wrapperStyle={{
+                        left: {
+                            backgroundColor: '#FCFCFC',
+                            elevation: 1,
+                            shadowColor: '#999',
+                            shadowOffset: { width: 0, height: 1, },
+                            shadowOpacity: 0.1,
+                            shadowRadius: 3,
+                            borderRadius: 9,
+                            borderColor: 'rgba(0,0,0,0.1)',
+                            borderWidth: 1,
+                        },
+                        right: {
+                            backgroundColor: '#F5F9FA',
+                            elevation: 1,
+                            shadowColor: '#999',
+                            shadowOffset: { width: 0, height: 1, },
+                            shadowOpacity: 0.1,
+                            shadowRadius: 3,
+                            borderRadius: 9,
+                            borderColor: 'rgba(0,0,0,0.1)',
+                            borderWidth: 1,
+                        }
+                    }}
+                    renderMessageText={props => <MessageText
+                        {...props}
+                        linkStyle={{
+                            right: {
+                                color: '#46C8F5',
+                            },
+                            left: {
+                                color: '#46C8F5',
+                            },
+                        }}
+                        textStyle={{
+                            right: {
+                                color: '#262626',
+                            },
+                            left: {
+                                color: '#262626',
+                            },
+                        }}
+                    />}
+                    renderTime={props => <Time
+                        {...props}
+                        textStyle={{
+                            right: {
+                                color: '#aaa',
+                            },
+                        }}
+                    />}
+                />}
+            />
+        );
+    }
 
 	render() {
         const { _id, name, profile } = this.props.user;
@@ -348,6 +469,13 @@ class ChatRoomConversation extends React.Component {
                         onAction={this.openOptions}
                         back={true}
                         onCancel={this.closeConversation}
+                        containerStyles={{
+                            elevation: 3,
+                            shadowColor: '#666',
+                            shadowOffset: { width: 0, height: 1, },
+                            shadowOpacity: 0.3,
+                            shadowRadius: 1,
+                        }}
                     />
                     <GiftedChat
                         messages={(this.props.ghostMessages || []).concat(this.props.messages)}
@@ -356,10 +484,8 @@ class ChatRoomConversation extends React.Component {
                             avatar: profile && profile.image,
                         }}
                         placeholder={`Send a message to ${this.props.chatRoomName}...`}
-                        parsePatterns={(linkStyle) => [
-                            { type: 'url', style: { color: 'blue', textDecoration: 'underline' }, onPress: (url) => Linking.openURL(url) },
-                        ]}
                         isAnimated={true}
+                        alwaysShowSend={true}
                         loadEarlier={this.props.hasNextPage}
                         isLoadingEarlier={this.props.loading}
                         onLoadEarlier={this.loadEarlierMessages.bind(this)}
@@ -370,6 +496,11 @@ class ChatRoomConversation extends React.Component {
                         onSend={this.sendMessage.bind(this)}
                         onInputTextChanged={this.onChatTextInputChanged.bind(this)}
                         renderAccessory={this.renderMedia.bind(this)}
+                        renderSend={this.renderSendButton}
+                        renderComposer={this.renderComposer.bind(this)}
+                        renderMessage={this.renderMessage}
+                        renderInputToolbar={this.renderInputToolbar}
+                        bottomOffset={this.props.messageMediaRef ? 18 : 75}
                     />
 				</View>
 			</MenuProvider>
@@ -480,11 +611,12 @@ const styles = {
     iconContainerStyle: {
         alignItems: 'center',
         justifyContent: 'center',
-        width: 39,
+        width: 42,
+        paddingBottom: 15,
     },
     iconStyle: {
-        height: 27,
-        width: 27,
+        height: 30,
+        width: 30,
     },
     mediaContainerStyle: {
         flexDirection: 'row',
@@ -509,4 +641,19 @@ const styles = {
         marginTop: 12,
         marginLeft: 9,
       },
+};
+
+const TOAST_IMAGE_STYLE = {
+    height: 36, 
+    width: 36, 
+    borderRadius: 4
+};
+const TOAST_IMAGE_CONTAINER_STYLE = {
+    borderWidth: 0.5,
+    padding: 0.5,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    borderRadius: 5,
+    alignSelf: 'center',
+    backgroundColor: 'transparent'
 };

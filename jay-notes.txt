@@ -1,21 +1,7 @@
 --------------------------------------------------------
 TODO
 --------------------------------------------------------
-- ManageMembers component
-    - Tabs: Admin, Members, JoinRequesters(if currentUser is Admin)
-    - FlatList of members by tab
-        - Card:
-            - Picture, name, badge, headline (Tap to view profile)
-            - IF currentUser is Admin:
-                - IF member is not JoinRequester
-                    - Promote/Demote
-                  ELSE
-                    - Accept Request
-                - Remove
-----------------------------------------------------------------------
-STRETCH
-----------------------------------------------------------------------
-
+- Make it so messages can fallback on a query for user profile if the member doc isn't already preloaded
 - ChatMessageSearch component
     - Search bar at the top
     - List of results as FlatList using {ChatRoomMessageResultCard}
@@ -25,8 +11,11 @@ STRETCH
         - Jump to message button on bottom of card
             - Tapping opens overlay {ChatMessageSnapshot}
 - ChatMessageSnapshot
-    - Accepts a message and chatroom (to display member profile in message previews) as a prop
+    - Accepts a messageId as a prop as a prop
     - Flatlist displaying a few messages before and after the message as well
-    - Scrolling down loads more after the message
-    - Scrollling up loads more before the message 
-- add PropTypes checks to all components
+
+--------------------------------------------------------
+BLOCKED
+--------------------------------------------------------
+- Show unread badge by ChatRoomList tab
+- Test typing indicator & style it

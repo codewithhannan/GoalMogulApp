@@ -44,7 +44,7 @@ const paddingTop = (
 ) ? 25 : 43;
 
 const ModalHeader = (props) => {
-  const { title, actionText, onCancel, onAction, actionDisabled, cancelText, back, actionHidden, titleIcon } = props;
+  const { title, actionText, onCancel, onAction, actionDisabled, cancelText, back, actionHidden, titleIcon, containerStyles } = props;
   const cancel = cancelText !== null && cancelText !== undefined ? cancelText : 'Cancel';
 
   let leftComponent = back
@@ -66,12 +66,13 @@ const ModalHeader = (props) => {
     ? { ...styles.actionTextStyle, color: 'lightgray' }
     : styles.actionTextStyle;
 
+  const extraContainerStyles = containerStyles || {};
   return (
     <View>
       <StatusBar
         barStyle="dark-content"
       />
-      <View style={[styles.containerStyle, { paddingTop }]}>
+      <View style={[styles.containerStyle, { paddingTop, ...extraContainerStyles  }]}>
         <TouchableOpacity
           activeOpacity={0.6}
           style={{ alignItems: 'center', flex: 1 }}

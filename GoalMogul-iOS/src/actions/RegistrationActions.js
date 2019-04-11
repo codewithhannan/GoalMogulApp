@@ -293,7 +293,7 @@ export const openCamera = (callback) => async (dispatch) => {
 };
 
 // Action to open camera roll modal
-export const openCameraRoll = (callback) => async (dispatch) => {
+export const openCameraRoll = (callback, maybeOptions) => async (dispatch) => {
   const { Permissions } = Expo;
   const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL];
 
@@ -301,10 +301,12 @@ export const openCameraRoll = (callback) => async (dispatch) => {
   if (!permissionGranted) {
     return;
   }
+  const disableEditing = maybeOptions && maybeOptions.disableEditing;
 
-  const result = await Expo.ImagePicker.launchImageLibraryAsync({
+  const result = await Expo.ImagePicker.launchImageLibraryAsync(disableEditing ? {} : {
     allowsEditing: true,
     aspect: [4, 3],
+    quality: 0.7,
   });
 
   if (!result.cancelled) {
