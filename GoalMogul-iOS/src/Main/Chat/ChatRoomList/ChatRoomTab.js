@@ -64,7 +64,7 @@ class ChatRoomTab extends React.Component {
 		this._refreshOnInterval();
 	}
 	_refreshOnInterval() {
-		this.refreshInterval = setInterval(() => this.props.updateCurrentChatRoomsList(
+		this.refreshInterval = setInterval(() => !this.props.searchQuery.trim().length && this.props.updateCurrentChatRoomsList(
 			this.props.currentTabKey,
 			this.props.data,
 			this.props.limit,
