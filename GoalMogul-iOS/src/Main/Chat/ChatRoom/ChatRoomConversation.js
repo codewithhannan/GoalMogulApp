@@ -11,8 +11,7 @@ import {
     Clipboard,
     FlatList,
     TouchableOpacity,
-    Linking,
-    Keyboard,
+    Dimensions,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -370,6 +369,7 @@ class ChatRoomConversation extends React.Component {
                     paddingRight: 12,
                     paddingTop: 9,
                     paddingBottom: 9,
+                    width: Dimensions.get('window').width - 81, // icons and padding
                 }}
             >
                 <AutoGrowingTextInput
@@ -479,6 +479,11 @@ class ChatRoomConversation extends React.Component {
     renderAvatar(props) {
         return (<Avatar
             {...props}
+            containerStyle={{
+                left: {
+                    marginRight: 0,
+                },
+            }}
             imageStyle={{
                 left: {
                     borderRadius: 6,
