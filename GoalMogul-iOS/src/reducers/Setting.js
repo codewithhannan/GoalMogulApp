@@ -59,14 +59,19 @@ export default (state = INITIAL_STATE, action) => {
     case PROFILE_UPDATE_SUCCESS:
     case PROFILE_FETCHING_SUCCESS: {
       const { user, userId } = action.payload;
-      const newState = _.cloneDeep(state);
+      let newState = _.cloneDeep(state);
 
       if (_.get(newState, 'userId') !== userId) {
         // Do not update if not current user
         return newState;
       }
       const { privacy, email, phone } = user;
-      return { ...state, privacy, email, phone };
+
+      newState = _.set(newState, 'privacy', privacy);
+      newState = _.set(newState, 'email', email);
+      newState = _.set(newState, 'phone', phone);
+
+      return newState;
     }
 
     case SETTING_FRIEND_SETTING_SELECTION: {

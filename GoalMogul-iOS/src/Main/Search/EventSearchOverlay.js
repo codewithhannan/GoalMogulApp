@@ -6,7 +6,7 @@ import {
   Platform
 } from 'react-native';
 import { connect } from 'react-redux';
-import { SearchBar, Icon } from 'react-native-elements';
+import { SearchBar } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Constants } from 'expo';
 import _ from 'lodash';
@@ -31,6 +31,12 @@ const DEBUG_KEY = '[ Event Search ]';
 const SEARCH_TYPE = 'events';
 
 class EventSearchOverlay extends Component {
+  constructor(props) {
+    super(props);
+    this.handleCancel = this.handleCancel.bind(this);
+    this.handleOnEndSubmitting = this.handleOnEndSubmitting.bind(this);
+  }
+
   // Search bar functions
   handleCancel = () => {
     //TODO: potentially clear search state
@@ -38,6 +44,14 @@ class EventSearchOverlay extends Component {
     this.props.clearSearchState();
     // Actions.pop();
     this.refs.baseOverlay.closeModal();
+  }
+
+  handleOnEndSubmitting = ({ nativeEvent }) => {
+    const { text, eventCount, taget } = nativeEvent;
+    // Close the search modal if nothing is entered
+    if (text === undefined || text === null || text === '' || text.trim() === '') {
+      this.handleCancel();
+    }
   }
 
   handleChangeText = (value) => {
@@ -84,6 +98,7 @@ class EventSearchOverlay extends Component {
                   iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
                 />
               )}
+              onSubmitEditing={this.handleOnEndSubmitting}
             />
           </View>
           <EventSearch callback={this.props.callback} />

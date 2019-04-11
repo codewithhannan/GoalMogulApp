@@ -2,7 +2,8 @@ import React from 'react';
 import {
   View,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  Linking
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -53,10 +54,18 @@ class CommentRef extends React.PureComponent {
   }
 
   handleSuggestionLinkOnPress = async (url) => {
-    const returnUrl = Expo.Linking.makeUrl('/');
-    Expo.Linking.addEventListener('url', this.handleSuggestionLinkOnClose);
-    const result = await WebBrowser.openBrowserAsync(url);
-    Expo.Linking.removeEventListener('url', this.handleSuggestionLinkOnClose);
+    // Below is the original expo webbrowser way of opening but it doesn't work in real
+    // build environment
+    // const returnUrl = Expo.Linking.makeUrl('/');
+    // Expo.Linking.addEventListener('url', this.handleSuggestionLinkOnClose);
+    // const result = await WebBrowser.openBrowserAsync(url);
+    // Expo.Linking.removeEventListener('url', this.handleSuggestionLinkOnClose);
+
+    // Se we switch to the new react native way
+    const canOpen = await Linking.canOpenURL(url);
+    if (canOpen) {
+      await Linking.openURL(url);
+    }
     console.log(`${DEBUG_KEY}: close suggestion link with res: `, result);
   } 
 
@@ -155,7 +164,7 @@ class CommentRef extends React.PureComponent {
 
     return (
       <ProfileImage
-        imageStyle={{ width: 50, height: 50, ...style }}
+        imageStyle={{ width: 50, height: 50, ...style, borderRadius: 4 }}
         defaultImageSource={source}
         defaultImageStyle={{ width: 30, height: 30, ...style }}
         imageUrl={imageUrl}
@@ -164,7 +173,8 @@ class CommentRef extends React.PureComponent {
           justifyContent: 'center',
           width: 50,
           height: 50,
-          padding: 10
+          padding: 10,
+          
         }}
       />
     );
@@ -193,7 +203,7 @@ class CommentRef extends React.PureComponent {
         onPress={() => this.handleOnRefPress(item)}
       >
         {this.renderImage(item)}
-        {this.renderTextContent(item)}}
+        {this.renderTextContent(item)}
         {this.renderEndImage(item)}
       </TouchableOpacity>
     );
@@ -319,9 +329,10 @@ const styles = {
     height: 50,
     marginTop: 12,
     marginBottom: 8,
-    borderWidth: 1,
-    borderRadius: 2,
-    borderColor: '#ddd',
+    borderWidth: 0.5,
+    borderRadius: 5,
+    // borderColor: '#ddd',
+    borderColor: 'lightgray',
     borderBottomWidth: 0,
     backgroundColor: '#fff',
     shadowColor: '#000',

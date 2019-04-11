@@ -299,7 +299,7 @@ export default (state = INITIAL_STATE, action) => {
             // Update the reference
             if (pageId === 'HOME' || pageId === 'LOGIN') {
                 // Adding 'HOME' and 'LOGIN' to user reference
-                const reference = [pageId];
+                let reference = [pageId];
                 const oldReference = _.get(newState, `${user._id}.reference`);
                 if (oldReference !== undefined) {
                     if (!oldReference.some(r => r === pageId)) {
@@ -834,7 +834,7 @@ const sanityCheckPageId = (state, userId, pageId, type) => {
     }
 
     if (!isPageIdInReference) {
-        console.error(`${DEBUG_KEY}: pageId ${pageId} is not in reference but is part of the object. ` +
+        console.warn(`${DEBUG_KEY}: pageId ${pageId} is not in reference but is part of the object. ` +
         'Potential memory leak');
         return false;
     }

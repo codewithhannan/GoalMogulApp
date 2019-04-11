@@ -19,6 +19,7 @@ import { Constants } from 'expo';
 import {
   DotIndicator
 } from 'react-native-indicators';
+import { Actions } from 'react-native-router-flux';
 
 // Actions
 import {
@@ -174,6 +175,7 @@ class GoalDetailCardV3 extends Component {
       if (initialShowSuggestionModal) {
         // Show suggestion modal if initialShowSuggestionModal is true
         // Current source is NotificationNeedCard on suggestion pressed
+        console.log(`${DEBUG_KEY}: i am opening suggestion modal`);
         setTimeout(() => {
           this.props.createSuggestion(goalId, pageId);
         }, 500);
@@ -248,15 +250,12 @@ class GoalDetailCardV3 extends Component {
   }
 
   keyboardWillShow = (e) => {
-    // console.log('keyboard will show');
+    // console.log(`${DEBUG_KEY}: [ ${this.props.pageId} ]: keyboard will show`);
+    // console.log(`${DEBUG_KEY}: [ ${this.props.pageId} ]: ${Actions.currentScene}`);
     const { focusType } = this.props.navigationState;
 
     // Keyboard listener will fire when goal edition modal is opened
     if (focusType === undefined) return;
-
-    if (!this.state.keyboardDidShow) {
-      this.handleReplyTo();
-    }
 
     this.setState({
       ...this.state,
@@ -282,7 +281,7 @@ class GoalDetailCardV3 extends Component {
   }
 
   keyboardWillHide = () => {
-    console.log('keyboard will hide');
+    // console.log(`${DEBUG_KEY}: [ ${this.props.pageId} ]: keyboard will hide`);
     this.setState({
       ...this.state,
       keyboardDidShow: false,
@@ -311,6 +310,7 @@ class GoalDetailCardV3 extends Component {
       keyboardDidShow: true
     });
     if (this.commentBox !== undefined) {
+      console.log(`${DEBUG_KEY}: [ ${this.props.pageId} ]: [ handleReplyTo ]`);
       this.commentBox.focusForReply(type);
     } else {
       console.warn(`${DEBUG_KEY}: [ handleReplyTo ] this.commentBox is undefined!`);
@@ -516,6 +516,7 @@ class GoalDetailCardV3 extends Component {
   }
 
   renderCommentBox(focusType, pageId) {
+    // console.log(`${DEBUG_KEY}: [ ${this.props.pageId} ]: focusType is: `, focusType);
     if (!focusType) return null;
 
     const resetCommentTypeFunc = focusType === 'comment'

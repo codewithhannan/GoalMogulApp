@@ -215,7 +215,7 @@ const SeeMoreButton = (props) => {
  */
 const TitleComponent = (props) => {
   const { text, notificationType, length } = props.item;
-  let seeAll = '';
+  let seeAll = null;
   if (length !== undefined && length === 0 && notificationType === 'notification') {
       const { seeAllContainerStyle, seeAllTextStyle } = styles;
       const onPress = () => Actions.push('notificationList');

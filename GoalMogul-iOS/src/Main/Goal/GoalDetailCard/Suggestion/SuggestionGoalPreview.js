@@ -20,12 +20,13 @@ class SuggestionGoalPreview extends React.Component {
       ? item.owner.profile.image
       : undefined;
 
+    // Not passing in userId since we don't want to user profile here
     return (
       <ProfileImage
         imageStyle={{ width: 55, height: 55, borderRadius: 4 }}
         imageUrl={imageUrl}
         imageContainerStyle={styles.imageContainerStyle}
-        userId={item.owner._id}
+        disabled
       />
     );
   }
@@ -44,6 +45,7 @@ class SuggestionGoalPreview extends React.Component {
             category={category}
             hasCaret={null}
             user={owner}
+            disabled
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 10 }}>

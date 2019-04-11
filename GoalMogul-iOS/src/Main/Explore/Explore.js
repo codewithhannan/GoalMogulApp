@@ -64,7 +64,7 @@ class Explore extends Component {
             fontWeight: '700'
           },
           unselected: {
-            backgroundColor: 'white',
+            backgroundColor: '#FCFCFC',
             tintColor: '#616161',
             color: '#616161',
             fontWeight: '600'

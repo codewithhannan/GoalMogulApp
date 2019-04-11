@@ -32,6 +32,20 @@ const DEBUG_KEY = '[ Tribe Search ]';
 const SEARCH_TYPE = 'tribes';
 
 class TribeSearchOverlay extends Component {
+  constructor(props) {
+    super(props);
+    this.handleCancel = this.handleCancel.bind(this);
+    this.handleOnEndSubmitting = this.handleOnEndSubmitting.bind(this);
+  }
+
+  handleOnEndSubmitting = ({ nativeEvent }) => {
+    const { text, eventCount, taget } = nativeEvent;
+    // Close the search modal if nothing is entered
+    if (text === undefined || text === null || text === '' || text.trim() === '') {
+      this.handleCancel();
+    }
+  }
+
   // Search bar functions
   handleCancel = () => {
     //TODO: potentially clear search state
@@ -96,6 +110,7 @@ class TribeSearchOverlay extends Component {
                   iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
                 />
               )}
+              onSubmitEditing={this.handleOnEndSubmitting}
             />
           </View>
           <TribeSearch callback={this.props.callback} />

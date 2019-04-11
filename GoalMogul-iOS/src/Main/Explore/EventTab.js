@@ -66,7 +66,8 @@ class EventTab extends React.Component {
             marginTop: 20,
             borderRadius: 5,
             borderWidth: 0.5,
-            borderColor: 'lightgray'
+            borderColor: 'lightgray',
+            justifyContent: 'center'
           }}
           activeOpacity={0.6}
         >
@@ -77,7 +78,7 @@ class EventTab extends React.Component {
               fontWeight: '600'
             }}
           >
-            Create a Tribe
+            Create an Event
           </Text>
         </TouchableOpacity>
       </View>

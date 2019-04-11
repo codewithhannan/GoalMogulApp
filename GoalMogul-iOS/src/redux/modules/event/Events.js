@@ -509,7 +509,7 @@ const sanityCheckPageId = (state, entityId, pageId, type) => {
     }
 
     if (!isPageIdInReference) {
-        console.error(`${DEBUG_KEY}: pageId ${pageId} is not in reference but is part of the object. ` +
+        console.warn(`${DEBUG_KEY}: pageId ${pageId} is not in reference but is part of the object. ` +
         'Potential memory leak');
         return false;
     }

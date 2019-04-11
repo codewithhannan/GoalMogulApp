@@ -45,6 +45,7 @@ export const StackedAvatarsV2 = (props) => {
             key={index}
             imageContainerStyle={{
               ...styles.bottomPictureContainerStyle,
+              marginRight: 0,
               left: ((index * 13)), zIndex: index + 1
             }}
             imageUrl={participantRef.profile.image}
@@ -55,7 +56,7 @@ export const StackedAvatarsV2 = (props) => {
       });
   
     const count = participantPictures.length;
-    const participantPicturesWidth = count < 2 ? 45 : 50;
+    const participantPicturesWidth = count < 2 ? 40 : 50;
     return (
       <View style={{ ...styles.memberPicturesContainerStyle, width: participantPicturesWidth }}>
         {participantPictures}
@@ -114,7 +115,8 @@ const styles = {
   // Style for member pictures
   memberPicturesContainerStyle: {
     height: 25,
-    width: 50
+    width: 50,
+    marginRight: 2
   },
   topPictureContainerStyle: {
     height: PictureDimension + 2,

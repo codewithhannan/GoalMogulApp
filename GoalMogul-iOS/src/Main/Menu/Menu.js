@@ -5,10 +5,11 @@ import {
   Text,
   TouchableOpacity,
   Platform,
-  Alert
+  Alert,
+  Linking
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Linking, Constants, WebBrowser } from 'expo';
+import { Constants, WebBrowser } from 'expo';
 import { Actions } from 'react-native-router-flux';
 
 // Components
@@ -45,10 +46,11 @@ class Menu extends React.PureComponent {
 
   handleBugReportOnPress = async () => {
     const url = BUG_REPORT_URL;
-    const returnUrl = Linking.makeUrl('/');
-    Linking.addEventListener('url', this.handleSuggestionLinkOnClose);
-    const result = await WebBrowser.openBrowserAsync(url);
-    Linking.removeEventListener('url', this.handleSuggestionLinkOnClose);
+    // const result = await WebBrowser.openBrowserAsync(url);
+    const canOpen = await Linking.canOpenURL(url);
+    if (canOpen) {
+      await Linking.openURL(url);
+    }
     console.log(`${DEBUG_KEY}: close bug report link with res: `, result);
   } 
 

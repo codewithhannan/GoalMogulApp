@@ -34,7 +34,7 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case PROFILE_UPDATE_SUCCESS:
     case PROFILE_FETCHING_SUCCESS: {
-      const newState = _.cloneDeep(state);
+      let newState = _.cloneDeep(state);
       const { user } = action.payload;
       if (user._id !== _.get(newState, 'userId')) {
         return newState;

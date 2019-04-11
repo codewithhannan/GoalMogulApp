@@ -116,12 +116,29 @@ class MyEvent extends Component {
       infoCardOpacity: new Animated.Value(1)
     };
     this._handleIndexChange = this._handleIndexChange.bind(this);
+    this.handleGoingOnPress = this.handleGoingOnPress.bind(this);
   }
 
   componentWillUnmount() {
     const { pageId, eventId } = this.props;
     this.props.eventDetailClose(eventId, pageId);
   }
+
+  /**
+   * User clicks on the number of participants going
+   * this should redirect to participants page with 
+   * subtab going
+   */
+  handleGoingOnPress = () => {
+    // 3 is the participant index
+    this._handleIndexChange(2);
+    const { memberNavigationState, pageId, eventId } = this.props;
+    const { routes } = memberNavigationState;
+
+    // 0 is the Going index
+    this.props.myEventSelectMembersFilter(routes[0].key, 0, eventId, pageId);
+  }
+
   /**
    * On plus clicked, show two icons. Post and Invite
    * const { textStyle, iconStyle, iconSource, text, onPress } = button;
@@ -473,9 +490,16 @@ class MyEvent extends Component {
     return (
       <View style={eventContainerStyle}>
         <StackedAvatarsV2 imageSource={DefaultUserProfile} participants={participants} />
-        <Text style={{ ...eventInfoBasicTextStyle, color: '#4ec9f3' }}>
-          {item.participantCount} going
-        </Text>
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={this.handleGoingOnPress}
+        >
+          <Text style={{ ...eventInfoBasicTextStyle, color: '#4ec9f3' }}
+          >
+            {item.participantCount} going
+          </Text>
+        </TouchableOpacity>
+        
         <Dot />
         <Text style={{ ...eventInfoBasicTextStyle }}>{date}, </Text>
         <Text style={{ ...eventInfoBasicTextStyle, fontWeight: '600' }}>
