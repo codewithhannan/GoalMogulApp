@@ -2,6 +2,7 @@ import { default as LiveChatService, INCOMING_EVENT_NAMES, OUTGOING_EVENT_NAMES 
 import MongoDatastore from 'react-native-local-mongodb';
 import Fuse from 'fuse.js';
 import { api as API } from '../../redux/middleware/api';
+import { arrayUnique } from '../../reducers/MeetReducers';
 
 const LISTENER_BASE_IDENTIFIER = 'chatmessageservice';
 const CHAT_MESSAGES_COLLECTION_NAME = 'chatmessages';
@@ -12,7 +13,7 @@ const DB_QUERY_RESULTS_CAP = 25000000;
 const FUSE_MESSAGE_SEARCH_OPTIONS = {
     shouldSort: true,
     tokenize: true,
-    minMatchCharLength: 3,
+    minMatchCharLength: 2,
     maxPatternLength: 32,
     keys: [{
         name: 'content.message',
@@ -258,7 +259,7 @@ class MessageStorageService {
      * @param {String} conversationId
      * @param {Date} startDate,
      * @param {Date} endDate
-     * @param {Function} callback: fn(err, docs)
+     * @param {Function} callback: fn(err, [Message])
      */
     getMessagesInTimestampRange = (conversationId, startDate, endDate, callback) => {
         localDb.find({
@@ -268,10 +269,39 @@ class MessageStorageService {
         }).limit(DB_RESULTS_RESPONSE_CAP).sort({ created: -1 }).exec(callback);
     }
     /**
+     * Gets a few messages before and after a specified marker message
+     * @param conversationId
+     * @param markerMessage
+     * @param beforeAndAfterLimit
+     * @param callback (error, [Message])
+     */
+    getMessagesBeforeAndAfterMarker = (conversationId, markerMessage, beforeAndAfterLimit, callback) => {
+        const markerDate = new Date(markerMessage.created);
+        localDb.find({
+            recipient: this.mountedUser.userId,
+            chatRoomRef: conversationId,
+            created: { $gte: markerDate },
+        }).limit(DB_RESULTS_RESPONSE_CAP).sort({ created: -1 }).limit(beforeAndAfterLimit).exec((err, messagesAfter) => {
+            if (err) {
+                return callback(err);
+            };
+            localDb.find({
+                recipient: this.mountedUser.userId,
+                chatRoomRef: conversationId,
+                created: { $lt: markerDate },
+            }).limit(DB_RESULTS_RESPONSE_CAP).sort({ created: -1 }).limit(beforeAndAfterLimit).exec((err, messagesBefore) => {
+                if (err) {
+                    return callback(err);
+                };
+                callback(null, arrayUnique(messagesAfter.concat(messagesBefore)).sort((doc1, doc2) => doc2.created - doc1.created));
+            });
+        });
+    }
+    /**
      * Searches the last {@link DB_QUERY_RESULTS_CAP} messages in a conversation
      * @param {String} conversationId
      * @param {String} searchQuery
-     * @param {Function} callback: fn(err, docs)
+     * @param {Function} callback: fn(err, [Message])
      */
     searchMessagesInConversation = (conversationId, searchQuery, callback) => {
         if (searchQuery.length < FUSE_MESSAGE_SEARCH_OPTIONS.minMatchCharLength || searchQuery.length > FUSE_MESSAGE_SEARCH_OPTIONS.maxPatternLength) {

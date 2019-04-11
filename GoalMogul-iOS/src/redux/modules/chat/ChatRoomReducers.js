@@ -17,6 +17,7 @@ const INITIAL_STATE = {
     hasNextPage: false,
     loading: false,
     searchResults: [],
+    searchResultPreviewMessages: [],
     searching: false,
     messageMediaRef: null,
 };
@@ -34,6 +35,7 @@ export const CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS = 'chat_room_update_current
 export const CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF = 'chat_room_update_message_media_ref';
 export const CHAT_ROOM_UPDATE_GHOST_MESSAGES = 'chat_room_update_ghost_messages';
 export const CHAT_ROOM_CLOSE_ACTIVE_ROOM = 'chat_room_close_active_room';
+export const CHAT_ROOM_SEARCH_MESSAGES_UPDATE_PREVIEW = 'chat_room_search_messages_update_preview';
 
 export default (state=INITIAL_STATE, action) => {
 	switch (action.type) {
@@ -123,13 +125,17 @@ export default (state=INITIAL_STATE, action) => {
         }
         case CHAT_ROOM_SEARCH_MESSAGES_CLEAR: {
             let newState = _.cloneDeep(state);
-            newState = _.set(newState, 'searchResults', ['swag']);
+            newState = _.set(newState, 'searchResults', []);
             return _.set(newState, `searching`, false);
         }
         case CHAT_ROOM_SEARCH_MESSAGES: {
             let newState = _.cloneDeep(state);
             newState = _.set(newState, 'searchResults', action.payload);
             return _.set(newState, `searching`, false);
+        }
+        case CHAT_ROOM_SEARCH_MESSAGES_UPDATE_PREVIEW: {
+            let newState = _.cloneDeep(state);
+            return _.set(newState, 'searchResultPreviewMessages', action.payload);
         }
         case CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS: {
             let newState = _.cloneDeep(state);

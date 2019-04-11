@@ -14,10 +14,6 @@ import { connect } from 'react-redux';
 
 const { windowWidth } = Dimensions.get('window');
 
-// Actions
-import {
-    
-} from '../../../redux/modules/chat/ChatRoomActions';
 import ModalHeader from '../../Common/Header/ModalHeader';
 import Dot from '../../Common/Dot';
 import { Actions } from 'react-native-router-flux';
