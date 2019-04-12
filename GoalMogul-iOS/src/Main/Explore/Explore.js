@@ -100,12 +100,12 @@ class Explore extends Component {
               Discover
             </Text>
             <Text
-              style={{ fontSize: 13, marginTop: 6, color: '#5b5a5a' }}
+              style={{ fontSize: 13, marginTop: 7, color: '#5b5a5a' }}
             >
               Find Members, Tribes and Events to help you
             </Text>
             <Text
-              style={{ fontSize: 13, marginTop: 7, color: '#5b5a5a' }}
+              style={{ fontSize: 13, marginTop: 5, color: '#5b5a5a' }}
             >
               achieve your goal even faster.
             </Text>
