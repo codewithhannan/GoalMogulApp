@@ -10,6 +10,7 @@ import {
     Dimensions,
     FlatList,
     TouchableOpacity,
+    Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Constants } from 'expo';

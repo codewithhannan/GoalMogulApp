@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { 
+  View,
+  Animated,
+  Dimensions,
+  Image,
+  Text
+} from 'react-native';
 import { connect } from 'react-redux';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
@@ -21,9 +27,13 @@ import {
 import TribeIcon from '../../asset/explore/tribe.png';
 import EventIcon from '../../asset/suggestion/event.png';
 import PeopleIcon from '../../asset/suggestion/group.png';
+import explore_image from '../../asset/explore/ExploreImage.png';
+import people_globe from '../../asset/explore/PeopleGlobe.png';
 
 // Styles
 import { APP_DEEP_BLUE } from '../../styles';
+
+const { width } = Dimensions.get('window');
 
 const TabIconMap = {
   events: {
@@ -50,27 +60,76 @@ const TabIconMap = {
 };
 
 class Explore extends Component {
+  _renderHeaderBackgroundImage = () => {
+    return (
+      <View style={styles.backgroundImageContainerStyle}>
+          <Image 
+              source={explore_image}
+              style={{ 
+                  alignSelf: 'flex-end', 
+                  height: ((width / 4.7)),
+                  width: ((width / 2.5)), 
+                  marginLeft: 10
+              }}
+              resizeMode='cover'
+          />
+          <View style={{ flex: 1 }} />
+          <View style={{ padding: 10 }}>
+            <Image 
+                source={people_globe} 
+                style={{
+                  width: (width / 4.6),
+                  height: (width / 4.6),
+                }}
+                resizeMode='cover'
+            />
+          </View>
+      </View>
+    );
+  }
+
   _renderHeader = props => {
     return (
-      <TabButtonGroup 
-        buttons={props} 
-        tabIconMap={TabIconMap} 
-        noBorder
-        buttonStyle={{
-          selected: {
-            backgroundColor: APP_DEEP_BLUE,
-            tintColor: 'white',
-            color: 'white',
-            fontWeight: '700'
-          },
-          unselected: {
-            backgroundColor: '#FCFCFC',
-            tintColor: '#616161',
-            color: '#616161',
-            fontWeight: '600'
-          }
-        }}
-      />
+      <Animated.View>
+        <View style={{ alignItems: 'center', height: (width) / 4.2 + 20, justifyContent: 'center' }}>
+          {this._renderHeaderBackgroundImage()}
+          <View style={{ flex: 1, zIndex: 2, alignItems: 'center', justifyContent: 'center' }}>
+            <Text
+              style={{ fontSize: 19, fontWeight: '800', color: '#606060' }}
+            >
+              Discover
+            </Text>
+            <Text
+              style={{ fontSize: 13, marginTop: 6, color: '#5b5a5a' }}
+            >
+              Find Members, Tribes and Events to help you
+            </Text>
+            <Text
+              style={{ fontSize: 13, marginTop: 7, color: '#5b5a5a' }}
+            >
+              achieve your goal even faster.
+            </Text>
+          </View>
+        </View>
+        <TabButtonGroup 
+          buttons={props} 
+          tabIconMap={TabIconMap} 
+          buttonStyle={{
+            selected: {
+              backgroundColor: APP_DEEP_BLUE,
+              tintColor: 'white',
+              color: 'white',
+              fontWeight: '700'
+            },
+            unselected: {
+              backgroundColor: '#FCFCFC',
+              tintColor: '#616161',
+              color: '#616161',
+              fontWeight: '600'
+            }
+          }}
+        />
+      </Animated.View>
     );
   };
 
@@ -124,7 +183,39 @@ const styles = {
   backdrop: {
     backgroundColor: 'gray',
     opacity: 0.5,
-  }
+  },
+  // Header images style
+  globeImageContainerStyle: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    padding: 10,
+    height: (width) / 4,
+  },
+  globeImageStyle: {
+    height: (width) / 4
+  },
+  exploreImageContainerStyle: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    height: (width) / 4,
+    flex: 1
+  },
+  exploreImageStyle: {
+    
+  },
+  backgroundImageContainerStyle: {
+    zIndex: 1, 
+    flex: 1,
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    backgroundColor: 'white'
+  },
 };
 
 const mapStateToProps = state => {
