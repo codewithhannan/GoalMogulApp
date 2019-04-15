@@ -11,8 +11,7 @@ import {
     Clipboard,
     FlatList,
     TouchableOpacity,
-    Linking,
-    Keyboard,
+    Dimensions,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -41,7 +40,7 @@ import {
     closeActiveChatRoom,
 } from '../../../redux/modules/chat/ChatRoomActions';
 import ModalHeader from '../../Common/Header/ModalHeader';
-import { GiftedChat, Send, Message, Bubble, MessageText, Time } from 'react-native-gifted-chat';
+import { GiftedChat, Send, Message, Bubble, MessageText, Time, MessageImage, MessageVideo, Avatar } from 'react-native-gifted-chat';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import PhotoIcon from '../../../asset/utils/cameraRoll.png';
 import { Actions } from 'react-native-router-flux';
@@ -248,7 +247,7 @@ class ChatRoomConversation extends React.Component {
         (buttonIndex) => {
             switch (buttonIndex) {
                 case 0:
-                    Clipboard.setString(this.props.currentMessage.text);
+                    Clipboard.setString(message.text);
                     break;
                 case 1:
                     this.deleteMessage(message._id);
@@ -370,12 +369,17 @@ class ChatRoomConversation extends React.Component {
                     paddingRight: 12,
                     paddingTop: 9,
                     paddingBottom: 9,
+                    width: Dimensions.get('window').width - 81, // icons and padding
                 }}
             >
                 <AutoGrowingTextInput
                     ref={inputComponent => this._textInput = inputComponent}
                     onChange={props.onInputTextChanged}
                     onChangeText={(text) => props.onTextChanged(text)}
+                    onContentSizeChange={(e) => props.onInputSizeChanged({
+                        ...e.nativeEvent.contentSize,
+                        height: e.nativeEvent.contentSize.height + 12, // account for input padding
+                    })}
                     value={props.text}
                     placeholder={props.placeholder}
                     style={{
@@ -410,7 +414,7 @@ class ChatRoomConversation extends React.Component {
                             shadowOpacity: 0.1,
                             shadowRadius: 3,
                             borderRadius: 9,
-                            borderColor: 'rgba(0,0,0,0.1)',
+                            borderColor: '#EDEDED',
                             borderWidth: 1,
                         },
                         right: {
@@ -421,7 +425,7 @@ class ChatRoomConversation extends React.Component {
                             shadowOpacity: 0.1,
                             shadowRadius: 3,
                             borderRadius: 9,
-                            borderColor: 'rgba(0,0,0,0.1)',
+                            borderColor: '#D1ECF6',
                             borderWidth: 1,
                         }
                     }}
@@ -452,9 +456,43 @@ class ChatRoomConversation extends React.Component {
                             },
                         }}
                     />}
+                    renderMessageImage={props => <MessageImage
+                        {...props}
+                        imageStyle={{
+                            borderRadius: 9,
+                            width: 'auto',
+                            minWidth: 150,
+                        }}
+                    />}
+                    renderMessageVideo={props => <MessageVideo
+                        {...props}
+                        videoStyle={{
+                            borderRadius: 9,
+                            width: 'auto',
+                            minWidth: 150,
+                        }}
+                    />}
                 />}
             />
         );
+    }
+    renderAvatar(props) {
+        return (<Avatar
+            {...props}
+            containerStyle={{
+                left: {
+                    marginRight: 0,
+                },
+            }}
+            imageStyle={{
+                left: {
+                    borderRadius: 6,
+                },
+                right: {
+                    borderRadius: 6,
+                },
+            }}
+        />);
     }
 
 	render() {
@@ -486,6 +524,7 @@ class ChatRoomConversation extends React.Component {
                         placeholder={`Send a message to ${this.props.chatRoomName}...`}
                         isAnimated={true}
                         alwaysShowSend={true}
+                        renderAvatarOnTop={true}
                         loadEarlier={this.props.hasNextPage}
                         isLoadingEarlier={this.props.loading}
                         onLoadEarlier={this.loadEarlierMessages.bind(this)}
@@ -498,8 +537,10 @@ class ChatRoomConversation extends React.Component {
                         renderAccessory={this.renderMedia.bind(this)}
                         renderSend={this.renderSendButton}
                         renderComposer={this.renderComposer.bind(this)}
+                        maxComposerHeight={120 - 18} // padding
                         renderMessage={this.renderMessage}
                         renderInputToolbar={this.renderInputToolbar}
+                        renderAvatar={this.renderAvatar}
                         bottomOffset={this.props.messageMediaRef ? 18 : 75}
                     />
 				</View>

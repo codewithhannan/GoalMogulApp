@@ -10,6 +10,7 @@ import {
     Dimensions,
     FlatList,
     TouchableOpacity,
+    Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Constants } from 'expo';
@@ -72,9 +73,9 @@ class ChatRoomMembers extends React.Component {
 
     _renderItem = (data) => {
         const memberDoc = data.item;
-        const { isAdmin } = this.props;
+        const { isAdmin, userId } = this.props;
         const userDoc = memberDoc.memberRef;
-        console.log(memberDoc)
+
         if (!userDoc) return null;
         const memberStatus = memberDoc.status;
         
@@ -92,22 +93,22 @@ class ChatRoomMembers extends React.Component {
                 />
                 <Text style={{fontSize: 18, marginLeft: 6, marginTop: 6, color: '#666' }}>{userDoc.name}</Text>
             </TouchableOpacity>
-            {isAdmin && (<View style={styles.memberCardActionsStyle}>
-                {memberStatus == 'Member' && <TouchableOpacity
+            <View style={styles.memberCardActionsStyle}>
+                {isAdmin && memberStatus == 'Member' && userId != userDoc._id && <TouchableOpacity
                     activeOpacity={0.6}
                     onPress={() => this.promoteMember(userDoc._id)}
                     style={{backgroundColor: '#F1F1F1', borderRadius: 3, padding: 6}}
                 >
                     <Text style={{fontSize: 10, color: '#AAA'}}>Make admin</Text>
                 </TouchableOpacity>}
-                {memberStatus == 'Admin' && <TouchableOpacity
+                {isAdmin && memberStatus == 'Admin' && userId != userDoc._id && <TouchableOpacity
                     activeOpacity={0.6}
                     onPress={() => this.demoteMember(userDoc._id)}
                     style={{backgroundColor: '#F1F1F1', borderRadius: 3, padding: 6}}
                 >
                     <Text style={{fontSize: 10, color: '#AAA'}}>Demote admin</Text>
                 </TouchableOpacity>}
-                {memberStatus == 'JoinRequester' && <TouchableOpacity
+                {isAdmin && memberStatus == 'JoinRequester' && userId != userDoc._id && <TouchableOpacity
                     activeOpacity={0.6}
                     onPress={() => this.acceptJoinRequest(userDoc._id)}
                 >
@@ -117,7 +118,7 @@ class ChatRoomMembers extends React.Component {
                         color='#61BA68'
                     />
                 </TouchableOpacity>}
-                <TouchableOpacity
+                {isAdmin && userId != userDoc._id && <TouchableOpacity
                     activeOpacity={0.6}
                     onPress={() => this.removeMember(userDoc._id)}
                     style={{marginLeft: 9}}
@@ -127,8 +128,8 @@ class ChatRoomMembers extends React.Component {
                         size={27}
                         color='#F47474'
                     />
-                </TouchableOpacity>
-            </View>)}
+                </TouchableOpacity>}
+            </View>
         </View>)
     }
     _renderListEmptyState = () => {
@@ -256,10 +257,7 @@ const mapStateToProps = (state, props) => {
         isAdmin,
         refreshing,
         navigationState,
-        promoteChatMember,
-        demoteChatMember,
-        acceptChatMemberJoinRequest,
-        removeChatMember,
+        userId,
 	};
 };
 
@@ -269,6 +267,10 @@ export default connect(
         openProfile,
         selectChatMembersTab,
         refreshChatMembersTab,
+        promoteChatMember,
+        demoteChatMember,
+        acceptChatMemberJoinRequest,
+        removeChatMember,
 	}
 )(ChatRoomMembers);
 

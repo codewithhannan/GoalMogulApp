@@ -9,7 +9,7 @@ const INITIAL_STATE = {
 	navigationState: {
 		index: 0,
 		routes: [
-			{ key: 'directMessages', title: 'DIRECT MESSAGES' },
+			{ key: 'directMessages', title: 'PRIVATE MESSAGES' },
 			{ key: 'chatRooms', title: 'GROUP CHATS' },
 		]
 	},

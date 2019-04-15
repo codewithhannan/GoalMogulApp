@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Animated, Image } from 'react-native';
+import _ from 'lodash';
 import { DotIcon } from '../../../Utils/Icons';
 
 // Default button style
@@ -20,7 +21,22 @@ const defaultButtonStyle = {
   }
 };
 
+const renderNotificationIndicator = (props) => {
+  const { tabNotificationMap, tabKey } = props;
+  if (!tabNotificationMap) return null;
+  if (!tabNotificationMap.hasOwnProperty(tabKey) || !_.has(tabNotificationMap, tabKey)) return null;
+
+  const { hasNotification, style, containerStyle } = _.get(tabNotificationMap, tabKey);
+  if (!hasNotification) return null;
+  return (
+    <View style={containerStyle}>
+      <View style={style} />
+    </View>
+  )
+};
+
 const TabButton = (props) => {
+  const { tabNotificationMap, tabKey } = props;
   const buttonStyle = props.buttonStyle || defaultButtonStyle;
   const {
     color,
@@ -29,6 +45,7 @@ const TabButton = (props) => {
     fontWeight,
     statColor
   } = props.onSelect ? buttonStyle.selected : buttonStyle.unselected;
+
   const stat = !props.stat ? null :
     (
       <View>
@@ -67,6 +84,7 @@ const TabButton = (props) => {
           {props.text}
         </Animated.Text>
         {stat}
+        {renderNotificationIndicator({tabNotificationMap, tabKey})}
       </View>
     );
   }
@@ -83,6 +101,7 @@ const TabButton = (props) => {
         {props.text}
       </Animated.Text>
       {stat}
+      {renderNotificationIndicator({tabNotificationMap, tabKey})}
     </View>
   );
 };

@@ -34,7 +34,7 @@ import { IPHONE_MODELS } from '../../../Utils/Constants';
 import { Actions } from 'react-native-router-flux';
 
 const CHATROOM_AUTO_SEARCH_DELAY_MS = 500;
-const CHATROOM_LIST_REFRESH_INTERVAL = 2000; // ms
+const CHATROOM_LIST_REFRESH_INTERVAL = 3000; // ms
 
 const SEARCHBAR_HEIGHT = Platform.OS === 'ios' &&
       IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
@@ -64,7 +64,7 @@ class ChatRoomTab extends React.Component {
 		this._refreshOnInterval();
 	}
 	_refreshOnInterval() {
-		this.refreshInterval = setInterval(() => this.props.updateCurrentChatRoomsList(
+		this.refreshInterval = setInterval(() => !this.props.searchQuery.trim().length && this.props.updateCurrentChatRoomsList(
 			this.props.currentTabKey,
 			this.props.data,
 			this.props.limit,

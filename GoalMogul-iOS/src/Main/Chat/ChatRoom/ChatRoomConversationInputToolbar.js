@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet, View, Keyboard, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, Keyboard, ViewPropTypes, Dimensions, } from 'react-native';
 
 export default class ChatRoomConversationInputToolbar extends React.Component {
 
@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    width: Dimensions.get('window').width,
   },
   primary: {
     flexDirection: 'row',
