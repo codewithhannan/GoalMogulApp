@@ -130,6 +130,8 @@ class SplashScreen extends Component {
       // Explore related icons
       require('./asset/explore/explore.png'),
       require('./asset/explore/tribe.png'),
+      require('./asset/explore/PeopleGlobe.png'),
+      require('./asset/explore/ExploreImage.png'),
       // Navigation Icons
       require('./asset/footer/navigation/home.png'),
       require('./asset/footer/navigation/bell.png'),

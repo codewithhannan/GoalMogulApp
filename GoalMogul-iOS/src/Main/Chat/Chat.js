@@ -32,6 +32,33 @@ import next from '../../asset/utils/next.png';
 class ChatTab extends React.Component {
 
 	_renderHeader = props => {
+		const tabNotificationMap = {
+			'directMessages': {
+				hasNotification: false, // TODO: connect with props to identify if there is notification for this tab
+				style: {
+					backgroundColor: '#fa5052',
+					height: 8,
+					width: 8,
+					borderRadius: 4
+				},
+				containerStyle: {
+					marginLeft: 5
+				}
+			},
+			'chatRooms': {
+				hasNotification: true, // TODO: connect with props to identify if there is notification for this tab
+				style: {
+					backgroundColor: '#fa5052',
+					height: 8,
+					width: 8,
+					borderRadius: 4
+				},
+				containerStyle: {
+					marginLeft: 5
+				}
+			}
+		};
+
 		return (
 			<TabButtonGroup 
 				buttons={props} 
@@ -50,6 +77,7 @@ class ChatTab extends React.Component {
 						fontWeight: '600'
 					}
 				}}
+				tabNotificationMap={tabNotificationMap}
 			/>
 		);
 	};
