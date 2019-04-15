@@ -5,10 +5,20 @@ import Divider from './Divider';
 import TabButton from './Button/TabButton';
 import SubTabButton from './Button/SubTabButton';
 
+/**
+ * Note: stat shouldn't be provided together with tabNotificationMap
+ */
 class TabButtonGroup extends Component {
 
   renderButton() {
-    const { buttons, tabIconMap, subTab, buttonStyle, noVerticalDivider } = this.props;
+    const { 
+      buttons, 
+      tabIconMap, 
+      subTab, 
+      buttonStyle, 
+      noVerticalDivider, // Vertical border between two tabs
+      tabNotificationMap // Map between tab key and if there is notification and its style, not required
+    } = this.props;
     const { navigationState, jumpTo, jumpToIndex } = buttons;
 
     const { index, routes } = navigationState;
@@ -19,22 +29,26 @@ class TabButtonGroup extends Component {
       const button = subTab
         ? (
           <SubTabButton
+            key={b.key}
             text={b.title}
             onSelect={selected}
             stat={b.stat}
             iconSource={iconSource}
             iconStyle={iconStyle}
             buttonStyle={buttonStyle}
+            tabNotificationMap={tabNotificationMap}
           />
         )
         : (
           <TabButton
+            tabKey={b.key}
             text={b.title}
             onSelect={selected}
             stat={b.stat}
             iconSource={iconSource}
             iconStyle={iconStyle}
             buttonStyle={buttonStyle}
+            tabNotificationMap={tabNotificationMap}
           />
         );
       if (i !== 0) {
