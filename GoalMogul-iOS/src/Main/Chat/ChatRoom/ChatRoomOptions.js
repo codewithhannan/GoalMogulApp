@@ -73,7 +73,7 @@ class ChatRoomOptions extends React.Component {
         Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle, callback });
     }
     openMessageSearch() {
-
+        Actions.push('chatRoomMessageSearch');
     }
 
     toggleMute() {
@@ -262,10 +262,7 @@ class ChatRoomOptions extends React.Component {
 const mapStateToProps = (state, props) => {
     const { userId, user } = state.user;
     const {
-        initializing,
         chatRoomsMap, activeChatRoomId,
-        messages, limit, skip, hasNextPage, loading,
-        currentlyTypingUserIds, messageMediaRef,
     } = state.chatRoom;
 
     const chatRoom = chatRoomsMap[activeChatRoomId];

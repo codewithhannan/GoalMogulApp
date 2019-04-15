@@ -41,6 +41,7 @@ import { DropDownHolder } from '../Main/Common/Modal/DropDownModal';
 
 import LiveChatService from '../socketio/services/LiveChatService';
 import MessageStorageService from '../services/chat/MessageStorageService';
+import { MemberDocumentFetcher } from '../Utils/UserUtils';
 
 const DEBUG_KEY = '[ Action Auth ]';
 export const userNameChanged = (username) => {
@@ -209,6 +210,9 @@ export const logout = () => async (dispatch, getState) => {
   // clear chat service details
   LiveChatService.unMountUser();
   MessageStorageService.unMountUser();
+  // clear caches
+  MemberDocumentFetcher.clearMemberCache();
+
   dispatch({
     type: USER_LOG_OUT
   });

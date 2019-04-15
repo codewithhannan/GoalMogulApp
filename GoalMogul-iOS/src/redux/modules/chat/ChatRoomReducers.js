@@ -10,16 +10,17 @@ const INITIAL_STATE = {
     chatRoomsMap: {},
     currentlyTypingUserIds: [],
     activeChatRoomId: null,
+    messageMediaRef: null, // for attaching media to message to send
     messages: [],
     ghostMessages: null,
     limit: 10,
     skip: 0,
     hasNextPage: false,
     loading: false,
+    searchQuery: '',
     searchResults: [],
     searchResultPreviewMessages: [],
     searching: false,
-    messageMediaRef: null,
 };
 
 export const CHAT_ROOM_LOAD_INITIAL_BEGIN = 'chat_room_load_initial_begin';
@@ -28,13 +29,14 @@ export const CHAT_ROOM_UPDATE_CHAT_ROOM = 'chat_room_update_chat_room';
 export const CHAT_ROOM_LOAD_MORE_MESSAGES_BEGIN = 'chat_room_load_more_messages_begin';
 export const CHAT_ROOM_LOAD_MORE_MESSAGES = 'chat_room_load_more_messages';
 export const CHAT_ROOM_UPDATE_MESSAGES = 'chat_room_update_messages'; // we update the entire message list when a new message comes in for consistency purposes
-export const CHAT_ROOM_SEARCH_MESSAGES_BEGIN = 'chat_room_search_messages_begin';
-export const CHAT_ROOM_SEARCH_MESSAGES_CLEAR = 'chat_room_search_messages_clear';
-export const CHAT_ROOM_SEARCH_MESSAGES = 'chat_room_search_messages';
 export const CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS = 'chat_room_update_currently_typing_users';
 export const CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF = 'chat_room_update_message_media_ref';
 export const CHAT_ROOM_UPDATE_GHOST_MESSAGES = 'chat_room_update_ghost_messages';
 export const CHAT_ROOM_CLOSE_ACTIVE_ROOM = 'chat_room_close_active_room';
+export const CHAT_ROOM_SEARCH_MESSAGES_BEGIN = 'chat_room_search_messages_begin';
+export const CHAT_ROOM_SEARCH_MESSAGES_CLEAR = 'chat_room_search_messages_clear';
+export const CHAT_ROOM_SEARCH_MESSAGES = 'chat_room_search_messages';
+export const CHAT_ROOM_SEARCH_MESSAGES_UPDATE_QUERY = 'chat_room_search_messages_update_query';
 export const CHAT_ROOM_SEARCH_MESSAGES_UPDATE_PREVIEW = 'chat_room_search_messages_update_preview';
 
 export default (state=INITIAL_STATE, action) => {
@@ -136,6 +138,10 @@ export default (state=INITIAL_STATE, action) => {
         case CHAT_ROOM_SEARCH_MESSAGES_UPDATE_PREVIEW: {
             let newState = _.cloneDeep(state);
             return _.set(newState, 'searchResultPreviewMessages', action.payload);
+        }
+        case CHAT_ROOM_SEARCH_MESSAGES_UPDATE_QUERY: {
+            let newState = _.cloneDeep(state);
+            return _.set(newState, 'searchQuery', action.payload);
         }
         case CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS: {
             let newState = _.cloneDeep(state);

@@ -1,21 +1,8 @@
 --------------------------------------------------------
 TODO
 --------------------------------------------------------
-- Make it so messages can fallback on a query for user profile if the member doc isn't already preloaded
-- ChatMessageSearch component
-    - Search bar at the top
-    - List of results as FlatList using {ChatRoomMessageResultCard}
-    - ChatRoomMessageResultCard component
-        - Picture, name
-        - Message + media
-        - Jump to message button on bottom of card
-            - Tapping opens overlay {ChatMessageSnapshot}
-- ChatMessageSnapshot
-    - Accepts a messageId as a prop as a prop
-    - Flatlist displaying a few messages before and after the message as well
-
+- Show unread badge by ChatRoomList tab
 --------------------------------------------------------
 BLOCKED
 --------------------------------------------------------
-- Show unread badge by ChatRoomList tab
 - Test typing indicator & style it

@@ -280,8 +280,12 @@ class MessageStorageService {
         localDb.find({
             recipient: this.mountedUser.userId,
             chatRoomRef: conversationId,
-            created: { $gte: markerDate },
-        }).limit(DB_RESULTS_RESPONSE_CAP).sort({ created: -1 }).limit(beforeAndAfterLimit).exec((err, messagesAfter) => {
+            $or: [{
+                created: { $gte: markerDate },
+            }, {
+                _id: markerMessage._id,
+            }],
+        }).limit(DB_RESULTS_RESPONSE_CAP).sort({ created: 1 }).limit(beforeAndAfterLimit).exec((err, messagesAfter) => {
             if (err) {
                 return callback(err);
             };
