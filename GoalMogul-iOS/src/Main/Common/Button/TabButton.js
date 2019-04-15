@@ -22,15 +22,15 @@ const defaultButtonStyle = {
 };
 
 const renderNotificationIndicator = (props) => {
-  const { tabNotificationMap, tabKey } = props;
+  const { tabNotificationMap, tabKey, isSelected } = props;
   if (!tabNotificationMap) return null;
   if (!tabNotificationMap.hasOwnProperty(tabKey) || !_.has(tabNotificationMap, tabKey)) return null;
 
-  const { hasNotification, style, containerStyle } = _.get(tabNotificationMap, tabKey);
+  const { hasNotification, style, containerStyle, selectedStyle, selectedContainerStyle } = _.get(tabNotificationMap, tabKey);
   if (!hasNotification) return null;
   return (
-    <View style={containerStyle}>
-      <View style={style} />
+    <View style={{...containerStyle, ...(isSelected ? selectedContainerStyle : {})}}>
+      <View style={{...style, ...(isSelected ? selectedStyle : {})}} />
     </View>
   )
 };
@@ -84,7 +84,7 @@ const TabButton = (props) => {
           {props.text}
         </Animated.Text>
         {stat}
-        {renderNotificationIndicator({tabNotificationMap, tabKey})}
+        {renderNotificationIndicator({tabNotificationMap, tabKey, isSelected: props.onSelect})}
       </View>
     );
   }
@@ -101,7 +101,7 @@ const TabButton = (props) => {
         {props.text}
       </Animated.Text>
       {stat}
-      {renderNotificationIndicator({tabNotificationMap, tabKey})}
+      {renderNotificationIndicator({tabNotificationMap, tabKey, isSelected: props.onSelect})}
     </View>
   );
 };

@@ -15,7 +15,8 @@ import {
 	CHAT_REFRESH_DONE,
 	CHAT_LOAD,
 	CHAT_LOAD_DONE,
-	SEARCH_QUERY_UPDATED
+	SEARCH_QUERY_UPDATED,
+	CHAT_UPDATE_TAB_UNREAD_COUNT
 } from './ChatReducers';
 
 import {api as API} from '../../middleware/api';
@@ -303,6 +304,27 @@ export const loadMoreChatRooms = (tab, pageSize, prevResultsOffset, maybeSearchQ
 			break;
 	}
 };
+
+export const refreshUnreadCountForTabs = () => (dispatch, getState) => {
+	MessageStorageService.getUnreadMessageCountByRoomType('Direct', (err, directCount) => {
+		dispatch({
+			type: CHAT_UPDATE_TAB_UNREAD_COUNT,
+			payload: {
+				type: CHAT_LOAD_TYPES.directMessages,
+				count: directCount,
+			},
+		});
+	});
+	MessageStorageService.getUnreadMessageCountByRoomType('Group', (err, groupCount) => {
+		dispatch({
+			type: CHAT_UPDATE_TAB_UNREAD_COUNT,
+			payload: {
+				type: CHAT_LOAD_TYPES.chatRooms,
+				count: groupCount,
+			},
+		});
+	});
+}
 
 const getUnreadMessageCountByConversations = Bluebird.promisify(MessageStorageService.getUnreadMessageCountByConversations);
 const getLatestMessagesByConversation = Bluebird.promisify(MessageStorageService.getLatestMessagesByConversation);

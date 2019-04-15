@@ -21,6 +21,7 @@ import {
 	plusPressed,
 	plusUnpressed,
 	createOrGetDirectMessage,
+	refreshUnreadCountForTabs,
 } from '../../redux/modules/chat/ChatActions';
 
 import plus_image from '../../asset/utils/plus.png';
@@ -29,33 +30,57 @@ import profile_people_image from '../../asset/utils/profile_people.png';
 import { APP_DEEP_BLUE, APP_BLUE_BRIGHT } from '../../styles';
 import next from '../../asset/utils/next.png';
 
-class ChatTab extends React.Component {
+const UNREAD_BADGE_COUNT_REFRESH_INTERVAL_MS = 3000;
 
+class ChatTab extends React.Component {
+	componentDidMount() {
+		this._refreshUnreadBadgeCount();
+		this.unreadBadgeRefreshInterval = setInterval(this._refreshUnreadBadgeCount, UNREAD_BADGE_COUNT_REFRESH_INTERVAL_MS);
+	}
+	componentWillUnmount() {
+		clearInterval(this.unreadBadgeRefreshInterval);
+	}
+
+	_refreshUnreadBadgeCount = () => {
+		this.props.refreshUnreadCountForTabs();
+	}
 	_renderHeader = props => {
 		const tabNotificationMap = {
 			'directMessages': {
-				hasNotification: false, // TODO: connect with props to identify if there is notification for this tab
+				hasNotification: this.props.directMessagesUnread,
 				style: {
 					backgroundColor: '#fa5052',
 					height: 8,
 					width: 8,
 					borderRadius: 4
 				},
+				selectedStyle: {
+					backgroundColor: '#fff',
+				},
 				containerStyle: {
 					marginLeft: 5
-				}
+				},
+				selectedContainerStyle: {
+
+				},
 			},
 			'chatRooms': {
-				hasNotification: true, // TODO: connect with props to identify if there is notification for this tab
+				hasNotification: this.props.chatRoomsUnread,
 				style: {
 					backgroundColor: '#fa5052',
 					height: 8,
 					width: 8,
 					borderRadius: 4
 				},
+				selectedStyle: {
+					backgroundColor: '#fff',
+				},
 				containerStyle: {
 					marginLeft: 5
-				}
+				},
+				selectedContainerStyle: {
+
+				},
 			}
 		};
 
@@ -180,11 +205,13 @@ class ChatTab extends React.Component {
 }
 
 const mapStateToProps = state => {
-	const { navigationState, showPlus } = state.chat;
+	const { navigationState, showPlus, directMessages, chatRooms } = state.chat;
 
 	return {
 		navigationState,
 		showPlus,
+		directMessagesUnread: directMessages.unreadCount,
+		chatRoomsUnread: chatRooms.unreadCount,
 	};
 };
 
@@ -239,5 +266,6 @@ export default connect(
 		plusPressed,
 		plusUnpressed,
 		createOrGetDirectMessage,
+		refreshUnreadCountForTabs,
 	}
 )(ChatTab);

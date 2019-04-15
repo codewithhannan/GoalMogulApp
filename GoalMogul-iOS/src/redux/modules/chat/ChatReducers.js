@@ -16,6 +16,7 @@ const INITIAL_STATE = {
 	selectedTab: 'directMessages',
 	showPlus: true,
 	directMessages: {
+		unreadCount: 0,
 		data: [],
 		searchQuery: '',
 		hasNextPage: undefined,
@@ -25,6 +26,7 @@ const INITIAL_STATE = {
 		refreshing: false,
 	},
 	chatRooms: {
+		unreadCount: 0,
 		data: [],
 		searchQuery: '',
 		hasNextPage: undefined,
@@ -44,6 +46,7 @@ export const CHAT_LOAD_DONE = 'chat_load_done';
 export const PLUS_PRESSED = 'chat_plus_pressed'
 export const PLUS_UNPRESSED = 'chat_plus_unpressed';
 export const SEARCH_QUERY_UPDATED = 'chat_search_query_updated';
+export const CHAT_UPDATE_TAB_UNREAD_COUNT = 'chat_update_tab_unread_count';
 
 export const CHAT_LOAD_TYPES = {
 	directMessages: 'directMessages',
@@ -118,6 +121,12 @@ export default (state=INITIAL_STATE, action) => {
 			let newState = _.cloneDeep(state);
 			const {type, query} = action.payload;
 			return _.set(newState, `${type}.searchQuery`, query);
+		}
+
+		case CHAT_UPDATE_TAB_UNREAD_COUNT: {
+			let newState = _.cloneDeep(state);
+			const { type, count } = action.payload;
+			return _.set(newState, `${type}.unreadCount`, count);
 		}
 
 		default: {

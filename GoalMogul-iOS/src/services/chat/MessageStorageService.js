@@ -192,6 +192,22 @@ class MessageStorageService {
         }, callback);
     }
     /**
+     * Gets the unread message count for the current user by room type
+     * @param roomType: 'Direct' or 'Group'
+     * @returns total unread message count
+     */
+    getUnreadMessageCountByRoomType = (roomType, callback) => {
+        localDb.count({
+            isDirectMessage: roomType == 'Direct',
+            recipient: this.mountedUser.userId,
+            $or: [{
+                isRead: {$exists: false},
+            }, {
+                isRead: {$ne: true},
+            }],
+        }, callback);
+    }
+    /**
      * @param {[String]} conversationIds: the conversations to get unread counts for
      * @returns {{conversationId -> unreadCount}} - an object that maps conversationId to unreadCount
      */
