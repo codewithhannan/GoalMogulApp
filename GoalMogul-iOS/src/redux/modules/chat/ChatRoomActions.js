@@ -5,6 +5,7 @@ import { Alert } from 'react-native';
 import MessageStorageService from '../../../services/chat/MessageStorageService';
 import { IMAGE_BASE_URL } from "../../../Utils/Constants";
 import ImageUtils from "../../../Utils/ImageUtils";
+import { MemberDocumentFetcher } from "../../../Utils/UserUtils";
 
 const LOADING_RIPPLE_URL = "https://i.imgur.com/EhwxDDf.gif";
 
@@ -20,11 +21,17 @@ export const initialLoad = (currentChatRoomId, pageSize) => (dispatch, getState)
 			type: CHAT_ROOM_LOAD_INITIAL,
 			payload: { messages: [], chatRoom: maybeChatRoom },
 		});
-		MessageStorageService.getLatestMessagesByConversation(currentChatRoomId, pageSize, 0, (err, messages) => {
+		MessageStorageService.getLatestMessagesByConversation(currentChatRoomId, pageSize, 0, async (err, messages) => {
 			if (!messages) return;
+			let transformedMessages = [];
+			try {
+				transformedMessages = await _transformMessagesForGiftedChat(messages, maybeChatRoom, token);
+			} catch(e) { /* best attempt */ }
 			dispatch({
 				type: CHAT_ROOM_LOAD_INITIAL,
-				payload: { messages: _transformMessagesForGiftedChat(messages, maybeChatRoom) },
+				payload: {
+					messages: transformedMessages,
+				},
 			});
 		});
 	} else { // if no chat room already in state, show loader
@@ -48,7 +55,7 @@ export const initialLoad = (currentChatRoomId, pageSize) => (dispatch, getState)
 				});
 				return Alert.alert('Error', 'Invalid chat room.');
 			};
-			MessageStorageService.getLatestMessagesByConversation(currentChatRoomId, pageSize, 0, (err, messages) => {
+			MessageStorageService.getLatestMessagesByConversation(currentChatRoomId, pageSize, 0, async (err, messages) => {
 				if (err || !messages) {
 					Alert.alert('Error', 'Could not load messages for selected chat room.');
 					dispatch({
@@ -56,7 +63,10 @@ export const initialLoad = (currentChatRoomId, pageSize) => (dispatch, getState)
 						payload: { messages: [], chatRoom },
 					});
 				} else {
-					const giftedChatMessages = _transformMessagesForGiftedChat(messages, chatRoom);
+					let giftedChatMessages = [];
+					try {
+						giftedChatMessages = await _transformMessagesForGiftedChat(messages, chatRoom, token);
+					} catch(e) {/* best attempt */}
 					dispatch({
 						type: CHAT_ROOM_LOAD_INITIAL,
 						payload: { messages: giftedChatMessages, chatRoom },
@@ -117,13 +127,17 @@ export const updateTypingStatus = (userId, updatedTypingStatus, currentlyTypingU
 };
 
 export const updateMessageList = (chatRoom, currentMessageList) => (dispatch, getState) => {
+	const { token } = getState().user;
 	const oldestMessage = currentMessageList.sort((doc1, doc2) => doc1.createdAt - doc2.createdAt)[0];
 	if (oldestMessage) {
-		MessageStorageService.getAllMessagesAfterMessage(chatRoom._id, oldestMessage._id, (err, messages) => {
+		MessageStorageService.getAllMessagesAfterMessage(chatRoom._id, oldestMessage._id, async (err, messages) => {
 			if (err || !messages) {
 				Alert.alert('Error', 'Could not auto-update messages. Please try re-opening this conversation.');
 			} else {
-				const giftedChatMessages = _transformMessagesForGiftedChat(messages, chatRoom);
+				let giftedChatMessages = [];
+				try {
+					giftedChatMessages = await _transformMessagesForGiftedChat(messages, chatRoom, token);
+				} catch(e) {/* best attempt */};
 				MessageStorageService.markConversationMessagesAsRead(chatRoom._id);
 				dispatch({
 					type: CHAT_ROOM_UPDATE_MESSAGES,
@@ -138,11 +152,12 @@ export const updateMessageList = (chatRoom, currentMessageList) => (dispatch, ge
 };
 
 export const loadOlderMessages = (chatRoom, pageSize, pageOffset) => (dispatch, getState) => {
+	const { token } = getState().user;
 	dispatch({
 		type: CHAT_ROOM_LOAD_MORE_MESSAGES_BEGIN,
 		payload: {},
 	});
-	MessageStorageService.getLatestMessagesByConversation(chatRoom._id, pageSize, pageOffset, (err, messages) => {
+	MessageStorageService.getLatestMessagesByConversation(chatRoom._id, pageSize, pageOffset, async (err, messages) => {
 		if (err || !messages) {
 			Alert.alert('Error', 'Could not load more messages for selected chat room.');
 			dispatch({
@@ -150,7 +165,10 @@ export const loadOlderMessages = (chatRoom, pageSize, pageOffset) => (dispatch, 
 				payload: [],
 			});
 		} else {
-			const giftedChatMessages = _transformMessagesForGiftedChat(messages, chatRoom);
+			let giftedChatMessages = [];
+			try {
+				giftedChatMessages = await _transformMessagesForGiftedChat(messages, chatRoom, token);
+			} catch(e) {/* best attempt */};
 			dispatch({
 				type: CHAT_ROOM_LOAD_MORE_MESSAGES,
 				payload: giftedChatMessages,
@@ -290,24 +308,24 @@ function _transformMessageFromGiftedChat(messageDoc, uploadedMediaRef, chatRoom)
 	return transformedDoc;
 };
 
-function _transformMessagesForGiftedChat(messages, chatRoom) {
-	let chatRoomMemberMap = {};
-	if (chatRoom.members) {
+export async function _transformMessagesForGiftedChat(messages, chatRoom, token, maybeMembersMap) {
+	let chatRoomMemberMap = maybeMembersMap || {};
+	if (chatRoom && chatRoom.members) {
 		chatRoomMemberMap = chatRoom.members.reduce((map, memberDoc) => {
 			map[memberDoc.memberRef._id] = _transformUserForGiftedChat(memberDoc.memberRef);
 			return map;
 		}, {});
 	};
-	return messages.map(messageDoc => {
+	return await Promise.all(messages.map(async messageDoc => {
 		const { _id, created, creator, content, media } = messageDoc;
 		return {
 			_id,
 			createdAt: new Date(created),
 			image: media && `${IMAGE_BASE_URL}${media}`,
 			text: content && content.message,
-			user: chatRoomMemberMap[creator]
+			user: await MemberDocumentFetcher.getUserDocument(creator, token, chatRoomMemberMap),
 		};
-	});
+	}));
 };
 function _transformUserForGiftedChat(userDoc) {
 	const {_id, name, profile} = userDoc;

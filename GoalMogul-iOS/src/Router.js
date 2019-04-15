@@ -107,6 +107,8 @@ import { customPanHandlers, iosOnlyPanHandlers } from './redux/modules/navigatio
 import ChatRoomConversation from './Main/Chat/ChatRoom/ChatRoomConversation';
 import ChatRoomOptions from './Main/Chat/ChatRoom/ChatRoomOptions';
 import ChatRoomMembers from './Main/Chat/ChatRoom/ChatRoomMembers';
+import ChatRoomMessageSearch from './Main/Chat/ChatRoom/ChatRoomMessageSearch';
+import ChatMessageSnapshotModal from './Main/Chat/Modals/ChatMessageSnapshotModal';
 
 class RouterComponent extends Component {
   onTabPress = (all) => {
@@ -472,6 +474,8 @@ class RouterComponent extends Component {
                       <Scene key="chatRoomConversation" component={ChatRoomConversation} />
                       <Scene key="chatRoomOptions" component={ChatRoomOptions} />
                       <Scene key="chatRoomMembers" component={ChatRoomMembers} />
+                      <Scene key="chatRoomMessageSearch" component={ChatRoomMessageSearch} />
+                      <Scene key="chatMessageSnapshotModal" component={ChatMessageSnapshotModal} />
                       <Scene key="chatTab_searchLightBox" component={SearchOverlay} />
                       <Scene key="chatTab_myEventDetail" component={MyEvent} />
                       <Scene key="chatTab_goal" component={GoalDetailCard} />

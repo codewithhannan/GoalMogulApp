@@ -4,15 +4,17 @@
     - connect to live chat service for typing indicator
     - fetch the full chat document with members populated
 */
+import moment from 'moment';
 import React from 'react';
 import {
-	View,
-    Dimensions,
-    ScrollView,
+    View,
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    TouchableOpacity,
+    FlatList,
 } from 'react-native';
 import { connect } from 'react-redux';
-
-const { windowWidth } = Dimensions.get('window');
+import { MaterialIcons } from  '@expo/vector-icons';
 
 // Actions
 import {
@@ -32,248 +34,264 @@ import { MenuProvider } from 'react-native-popup-menu';
 import SettingCard from '../../Setting/SettingCard';
 import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Constants';
 import { openProfile } from '../../../actions';
-import { changeChatRoomMute, addMemberToChatRoom } from '../../../redux/modules/chat/ChatRoomOptionsActions';
+import { refreshChatMessageSearch, searchQueryUpdated } from '../../../redux/modules/chat/ChatRoomMessageSearchActions';
 import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
-import { Image, Text, Divider } from 'react-native-elements';
+import { Image, Text, Divider, SearchBar } from 'react-native-elements';
 import { APP_BLUE_BRIGHT } from '../../../styles';
+import ProfileImage from '../../Common/ProfileImage';
+import { getUserDocument, MemberDocumentFetcher } from '../../../Utils/UserUtils';
+import { SearchIcon } from '../../../Utils/Icons';
 
-const DEBUG_KEY = '[ UI ChatRoomOptions ]';
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const LISTENER_KEY = 'ChatRoomOptions';
-class ChatRoomOptions extends React.Component {
+const MESSAGE_SEARCH_AUTO_SEARCH_DELAY_MS = 500;
 
+const DEBUG_KEY = '[ UI ChatRoomMessageSearch ]';
+const LISTENER_KEY = 'ChatRoomMessageSearch';
+class ChatRoomMessageSearch extends React.Component {
+    state = {
+        pageSize: 10,
+    }
+    constructor(props) {
+		super(props);
+	}
 	_keyExtractor = (item) => item._id;
 
-    closeOptions() {
+	componentWillUnmount() {
+        this.handleOnRefresh('');
+	}
+
+    closeSearch = () => {
         Actions.pop();
     }
-    openUserProfile(user) {
-        const userId = user._id;
-        this.props.openProfile(userId);
-    }
-    openChatRoomEdit() {
-        Actions.push('createChatRoomStack', {
-            initializeFromState: true,
-            chat: this.props.chatRoom,
+	onSearchResultSelect = (messageDoc) => {
+        Actions.push('chatMessageSnapshotModal', { mountedMessage: messageDoc });
+	}
+	handleOnRefresh = (maybeQuery) => {
+        const { searchQuery, chatRoom, chatRoomMembersMap } = this.props;
+        const query = typeof maybeQuery == "string" ? maybeQuery : searchQuery;
+        this.props.refreshChatMessageSearch(chatRoom._id, query, chatRoomMembersMap);
+        this.setState({
+            pageSize: 10,
+        });
+	}
+	handleOnLoadMore = () => {
+        if (this.state.pageSize > this.props.searchResults) return;
+        this.setState({
+            pageSize: this.state.pageSize + 10,
         });
     }
-    openMembers() {
-        Actions.push('chatRoomMembers');
-    }
-    openAddMember() {
-        const { chatRoom } = this.props;
-        if (!chatRoom) return;
-        const searchFor = {
-            type: 'addChatMember',
-        };
-        const cardIconStyle = { tintColor: APP_BLUE_BRIGHT };
-        const cardIconSource = plusIcon;
-        const callback = (selectedUserId) => {
-            this.props.addMemberToChatRoom(chatRoom._id, selectedUserId);
-        };
-        Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle, callback });
-    }
-    openMessageSearch() {
+	handleSearchUpdate(newText='') {
+		if (this.messageSearchTimer) {
+			clearInterval(this.messageSearchTimer);
+		};
+		this.props.searchQueryUpdated(newText);
+		if (newText.trim().length) {
+			this.messageSearchTimer = setTimeout(this.handleOnRefresh.bind(this), MESSAGE_SEARCH_AUTO_SEARCH_DELAY_MS);
+		} else {
+			this.handleOnRefresh('');
+		};
+	}
+	renderSearchResult = (item) => {
+        const resultMessage = item.item;
+        const userDocument = resultMessage.creator;
+        if (!userDocument) return null;
 
-    }
-
-    toggleMute() {
-        const { chatRoom, isMuted } = this.props;
-        this.props.changeChatRoomMute(chatRoom._id, !isMuted);
-    }
-
-    renderChatRoomStatus() {
-        const {chatRoom, user} = this.props;
-        const memberDoc = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id == user._id);
-        const memberStatus = memberDoc && memberDoc.status;
-        const tintColor = '#2dca4a';
-        if (!memberStatus) return;
-        return (
-            <View
-              activeOpacity={0.6}
-              style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8, height: 23 }}
+		return (
+            <TouchableOpacity
+                activeOpacity={0.6}
+                onPress={() => this.onSearchResultSelect(resultMessage)}
+                style={{
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    height: 60,
+                    marginTop: 9,
+                    marginBottom: 9,
+                }}
             >
-              <Image
-                source={check}
-                style={{
-                  height: 10,
-                  width: 13,
-                  tintColor
-                }}
-              />
-              <Text
-                style={{
-                  ...styles.tribeStatusTextStyle,
-                  color: tintColor
-                }}
-              >
-                {memberStatus}
-              </Text>
-            </View>
-          );
-    }
-
-    renderChatRoomDetails() {
-        const { chatRoom, chatRoomName, chatRoomImage } = this.props;
-        if (!chatRoom) return;
-        const newDate = chatRoom.created ? new Date(chatRoom.created) : new Date();
-        const date = `${months[newDate.getMonth() - 1]} ${newDate.getDate()}, ${newDate.getFullYear()}`;
-        return (
-            <View>
-                <View style={styles.imagePaddingContainerStyle} />
-                <View style={styles.imageWrapperStyle}>
-                    <View style={styles.imageContainerStyle}>
-                        <Image
-                        onLoadStart={() => this.setState({ imageLoading: true })}
-                        onLoadEnd={() => this.setState({ imageLoading: false })}
-                        style={styles.imageStyle}
-                        source={chatRoomImage}
-                        />
-                    </View>
-                </View>
-                <View style={styles.generalInfoContainerStyle}>
-                    <Text
-                        style={{ fontSize: 22, fontWeight: '300' }}
-                    >
-                        {chatRoomName}
+                <ProfileImage
+                    userId={userDocument._id}
+                    imageContainerStyle={{ ...styles.imageContainerStyle, order: 1 }}
+                    imageStyle={{ height: 35, width: 35, borderRadius: 5 }}
+                    imageUrl={userDocument.profile && userDocument.profile.image}
+                />
+                <View
+                    style={{
+                        flexGrow: 1,
+                        order: 2,
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        justifyContent: 'flex-start'
+                    }}
+                >
+                    <Text style={{
+                        fontSize: 15,
+                        fontWeight: '600',
+                    }}>
+                        {userDocument.name}
                     </Text>
-                    {chatRoom.roomType == 'Direct' ? null : (
-                        <View style={{ flexDirection: 'row', marginTop: 8, marginBottom: 8, alignItems: 'center' }}>
-                            <Text style={styles.tribeStatusTextStyle}>{chatRoom.isPublic ? 'Public' : 'Private'}</Text>
-                            <Divider orthogonal height={12} borderColor='gray' />
-                            {this.renderChatRoomStatus()}
-                        </View>
-                    )}
-                    <View
-                        style={{
-                            width: windowWidth * 0.75,
-                            borderColor: '#dcdcdc',
-                            borderWidth: 0.5
-                        }}
-                    />
-                    <View style={styles.eventContainerStyle}>
-                        <StackedAvatarsV2 chatMembers={chatRoom.members} />
-                        <Text style={{ ...styles.eventInfoBasicTextStyle }}>
-                            {chatRoom.members.length} members
+                    <View style={{
+                        marginTop: 3,
+                    }}>
+                        <Text style={{
+                            fontSize: 13,
+                        }}>
+                            {resultMessage.content.message}
                         </Text>
-                        <Dot
-                            iconStyle={{ tintColor: '#616161', width: 4, height: 4, marginLeft: 4, marginRight: 4 }}
-                        />
-                        <Text style={{ ...styles.eventInfoBasicTextStyle }}>Created: {date} </Text>
+                        <Text style={{
+                            fontSize: 11,
+                            color: '#CCC'
+                        }}>
+                            {moment(resultMessage.created).format("h:mm a, MMM Do YYYY")}
+                        </Text>
                     </View>
                 </View>
-            </View>
+            </TouchableOpacity>
+		);
+	}
+	renderListHeader = () => {
+        return (
+            <SearchBar
+                autoFocus={true}
+                platform="default"
+                clearIcon={<MaterialIcons
+                    name="clear"
+                    color="#777"
+                    size={21}
+                />}
+                containerStyle={{
+                    backgroundColor: 'transparent',
+                    padding: 6,
+                    borderColor: 'white',
+                    borderWidth: 0,
+                }}
+                inputContainerStyle={{
+                    backgroundColor: '#FAFAFA',
+                }}
+                inputStyle={{
+                    fontSize: 15
+                }}
+                placeholder={`Search ${this.props.chatRoomName}...`}
+                onChangeText={this.handleSearchUpdate.bind(this)}
+                onClear={this.handleSearchUpdate.bind(this)}
+                searchIcon={<SearchIcon 
+                    iconContainerStyle={{ marginBottom: 3, marginTop: 1 }} 
+                    iconStyle={{ tintColor: '#777', height: 15, width: 15 }}
+                    />}
+                value={this.props.searchQuery}
+                lightTheme={true}
+            />
         );
     }
-
+	renderListFooter() {
+		if (!this.props.searching) return null;
+		return (
+			<View
+				style={{
+					paddingVertical: 20,
+					borderTopWidth: 1,
+					borderColor: "#CED0CE"
+				}}
+			>
+				<ActivityIndicator animating size="large" />
+			</View>
+		);
+	}
+	renderListEmptyState() {
+		if (!this.props.searching) {
+			return (
+				<View
+					style={{
+						justifyContent: "center",
+						alignItems: "center",
+						height: 100,
+					}}
+				>
+					<Text
+						style={{
+							justifyContent: "center",
+							alignItems: "center",
+							fontSize: 18,
+							color: '#999',
+						}}
+					>
+						{this.props.searchQuery.trim().length ? 'No messages found' : 'Search Messages...'}
+					</Text>
+				</View>
+			);
+		};
+		return null;
+	}
 	render() {
-        const { otherUser, chatRoom, chatRoomName, chatRoomImage, isMuted, isAdmin } = this.props;
+        const { chatRoom, chatRoomName, searchQuery } = this.props;
         if (!chatRoom) {
             return null;
         };
 		return (
 			<MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-				<View style={styles.homeContainerStyle}>
+				<KeyboardAvoidingView
+					behavior='padding'
+					style={{ flex: 1, backgroundColor: '#ffffff' }}
+				>
 					<ModalHeader
-                        title={'Details'}
-                        actionHidden={true}
+						title={searchQuery.trim().length ? `Searching for "${searchQuery}"` : `Search ${chatRoomName}`}
+                        onCancel={() => this.closeSearch()}
                         back={true}
-                        onCancel={this.closeOptions}
+                        actionDisabled={true}
+                        actionHidden={true}
+					/>
+                    <FlatList
+                        data={this.props.searchResults.slice(0, this.state.pageSize)}
+                        renderItem={this.renderSearchResult}
+                        numColumns={1}
+                        keyExtractor={this._keyExtractor}
+                        refreshing={this.props.searching}
+                        ListHeaderComponent={this.renderListHeader}
+                        ListFooterComponent={this.renderListFooter.bind(this)}
+                        ListEmptyComponent={this.renderListEmptyState.bind(this)}
+                        onEndThreshold={0}
+                        onEndReached={this.handleOnLoadMore}
                     />
-                    <View style={{ flex: 1, backgroundColor: '#ffffff' }}>}
-                        <ScrollView>
-                            {/* insert chat room details preview card here */}
-                            {this.renderChatRoomDetails()}
-                            {chatRoom.roomType == 'Direct' ? (
-                                <SettingCard
-                                    title="View profile"
-                                    key="openuserprofile"
-                                    icon={chatRoomImage}
-                                    iconStyle={styles.chatIconStyle}
-                                    explanation={`Open ${otherUser.name.trim()}'s profile`}
-                                    onPress={() => {
-                                        this.openUserProfile(otherUser);
-                                    }}
-                                />
-                            ): (isAdmin &&
-                                <SettingCard
-                                    title={`Edit Conversation`}
-                                    key="editchatroom"
-                                    icon={editIcon}
-                                    iconStyle={styles.chatIconStyle}
-                                    explanation="Edit the conversation's details"
-                                    onPress={this.openChatRoomEdit.bind(this)}
-                                />
-                            )}
-                            <SettingCard
-                                title={isMuted ? 'Unmute Conversation' : 'Mute Conversation'}
-                                icon={muteIcon}
-                                explanation={isMuted ? 'Conversation is currently muted' : 'Mute push notifications from this conversation'}
-                                onPress={this.toggleMute.bind(this)}
-                            />
-                            {chatRoom.roomType != 'Direct' && (isAdmin || chatRoom.membersCanAdd) && (
-                                <SettingCard
-                                    title="Add Member"
-                                    icon={plusIcon}
-                                    explanation={`${isAdmin ? 'Manage' : 'View'} Conversation Members`}
-                                    onPress={this.openAddMember.bind(this)}
-                                />
-                            )}
-                            {chatRoom.roomType != 'Direct' && (
-                                <SettingCard
-                                    title={`${isAdmin ? 'Manage' : 'View'} Members`}
-                                    icon={membersIcon}
-                                    explanation={`${isAdmin ? 'Manage' : 'View'} this conversation's members`}
-                                    onPress={this.openMembers.bind(this)}
-                                />
-                            )}
-                            <SettingCard
-                                title="Search Messages"
-                                icon={searchIcon}
-                                explanation="Search messages in thes conversation"
-                                onPress={this.openMessageSearch.bind(this)}
-                            />
-                        </ScrollView>
-                    </View>
-				</View>
-			</MenuProvider>
+                </KeyboardAvoidingView>
+            </MenuProvider>
 		);
 	}
 }
 
 const mapStateToProps = (state, props) => {
-    const { userId, user } = state.user;
+    const { user, userId } = state.user;
     const {
         chatRoomsMap, activeChatRoomId,
-        searchResults, searching,
+        searchResults, searching, searchQuery,
     } = state.chatRoom;
 
     const chatRoom = chatRoomsMap[activeChatRoomId];
     
     // extract details from the chat room
     let chatRoomName = 'Loading...';
-    let chatRoomImage = null;
-    let otherUser = null;
+    let chatRoomMembersMap = {};
     if (chatRoom) {
         if (chatRoom.roomType == 'Direct') {
-            otherUser = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id != userId);
+            const otherUser = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id != userId);
             if (otherUser) {
                 otherUser = otherUser.memberRef;
                 chatRoomName = otherUser.name;
-                chatRoomImage = (otherUser.profile && otherUser.profile.image) ?
-                    {uri: `${IMAGE_BASE_URL}${otherUser.profile.image}` }
-                    : profilePic;
             };
         } else {
             chatRoomName = chatRoom.name;
-            chatRoomImage = {uri: chatRoom.picture ? `${IMAGE_BASE_URL}${chatRoom.picture}` : GROUP_CHAT_DEFAULT_ICON_URL };
         };
+        chatRoomMembersMap = chatRoom.members ? chatRoom.members.reduce((map, memberDoc) => {
+            map[memberDoc.memberRef._id] = memberDoc.memberRef;
+            return map;
+        }, {}) : chatRoomMembersMap;
     };
 
 	return {
         chatRoom,
         chatRoomName,
-        chatRoomImage,
+        chatRoomMembersMap,
+        searchResults,
+        searching,
+        searchQuery,
         user,
 	};
 };
@@ -281,15 +299,24 @@ const mapStateToProps = (state, props) => {
 export default connect(
 	mapStateToProps,
 	{
-        openProfile,
-        changeChatRoomMute,
-        addMemberToChatRoom,
+        refreshChatMessageSearch,
+        searchQueryUpdated,
 	}
-)(ChatRoomOptions);
+)(ChatRoomMessageSearch);
 
 const styles = {
 	homeContainerStyle: {
 		backgroundColor: '#f8f8f8',
 		flex: 1
+    },
+    imageContainerStyle: {
+        height: 35,
+        width: 35,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#f4f4f4',
+        padding: 2,
+        marginRight: 12,
+        marginLeft: 12,
     },
 };
