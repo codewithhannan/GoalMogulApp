@@ -57,8 +57,8 @@ class ChatMessageSnapshotModal extends React.Component {
 	_keyExtractor = (item) => item._id;
 
 	componentDidMount() {
-        const { mountedMessage, activeChatRoomId, chatRoomMembersMap } = this.props;
-		this.props.getMessageSnapshots(mountedMessage, activeChatRoomId, chatRoomMembersMap);
+        const { mountedMessage, chatRoom } = this.props;
+		this.props.getMessageSnapshots(mountedMessage, chatRoom);
     }
     componentWillUnmount() {
         this.props.clearMessageSnapshots();
@@ -72,8 +72,8 @@ class ChatMessageSnapshotModal extends React.Component {
         this.props.openProfile(userId);
     }
     deleteMessage(messageId) {
-        const { mountedMessage, activeChatRoomId, chatRoomMembersMap } = this.props;
-        this.props.deleteMessageFromSnapshots(messageId, mountedMessage, activeChatRoomId, chatRoomMembersMap);
+        const { mountedMessage, chatRoom } = this.props;
+        this.props.deleteMessageFromSnapshots(messageId, mountedMessage, chatRoom);
     }
     onMessageLongPress(context, message) {
         const options = [
@@ -97,7 +97,7 @@ class ChatMessageSnapshotModal extends React.Component {
             };
         });
     }
-    renderMessage(props) {
+    renderMessage = (props) => {
         return (
             <Message
                 {...props}
@@ -105,7 +105,7 @@ class ChatMessageSnapshotModal extends React.Component {
                     {...props}
                     wrapperStyle={{
                         left: {
-                            backgroundColor: '#FCFCFC',
+                            backgroundColor: props.currentMessage._id == this.props.mountedMessage._id ? '#F1C91F' : '#FCFCFC',
                             elevation: 1,
                             shadowColor: '#999',
                             shadowOffset: { width: 0, height: 1, },
@@ -116,7 +116,7 @@ class ChatMessageSnapshotModal extends React.Component {
                             borderWidth: 1,
                         },
                         right: {
-                            backgroundColor: '#F5F9FA',
+                            backgroundColor: props.currentMessage._id == this.props.mountedMessage._id ? '#F1C91F' : '#F5F9FA',
                             elevation: 1,
                             shadowColor: '#999',
                             shadowOffset: { width: 0, height: 1, },
@@ -150,7 +150,10 @@ class ChatMessageSnapshotModal extends React.Component {
                         {...props}
                         textStyle={{
                             right: {
-                                color: '#aaa',
+                                color: props.currentMessage._id == this.props.mountedMessage._id ? '#BF860B' : '#aaa',
+                            },
+                            left: {
+                                color: props.currentMessage._id == this.props.mountedMessage._id ? '#BF860B' : '#aaa',
                             },
                         }}
                     />}
@@ -180,7 +183,7 @@ class ChatMessageSnapshotModal extends React.Component {
                         messages={searchResultPreviewMessages}
                         user={{
                             ...user,
-                            avatar: user.profile && user.profile.image,
+                            avatar: user.profile && user.profile.image && `${IMAGE_BASE_URL}${user.profile.image}`,
                         }}
                         onPressAvatar={this.openUserProfile.bind(this)}
                         onLongPress={this.onMessageLongPress.bind(this)}
@@ -202,20 +205,9 @@ const mapStateToProps = (state, props) => {
     } = state.chatRoom;
 
     const chatRoom = chatRoomsMap[activeChatRoomId];
-    
-    // extract details from the chat room
-    let chatRoomMembersMap = {};
-    if (chatRoom) {
-        chatRoomMembersMap = chatRoom.members ? chatRoom.members.reduce((map, memberDoc) => {
-            map[memberDoc.memberRef._id] = memberDoc.memberRef;
-            return map;
-        }, {}) : chatRoomMembersMap;
-    };
 
 	return {
         chatRoom,
-        activeChatRoomId,
-        chatRoomMembersMap,
         searchResultPreviewMessages,
         user,
 	};

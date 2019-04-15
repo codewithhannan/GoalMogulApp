@@ -46,15 +46,15 @@ export const searchQueryUpdated = (query) => (dispatch, getState) => {
 };
 
 const SNAPSHOT_LIMIT = 5;
-export const getMessageSnapshots = (markerMessage, chatRoomId, chatRoomMembersMap) => (dispatch, getState) => {
+export const getMessageSnapshots = (markerMessage, chatRoom) => (dispatch, getState) => {
     const { token } = getState().user;
-    MessageStorageService.getMessagesBeforeAndAfterMarker(chatRoomId, markerMessage, SNAPSHOT_LIMIT, async (err, messages) => {
+    MessageStorageService.getMessagesBeforeAndAfterMarker(chatRoom._id, markerMessage, SNAPSHOT_LIMIT, async (err, messages) => {
         if (err || !messages) {
             Alert.alert('Error', 'Could not get preview for message. Please try again later.');
         } else {
             let giftedChatMessages = [];
             try {
-                giftedChatMessages = await _transformMessagesForGiftedChat(messages, null, token, chatRoomMembersMap);
+                giftedChatMessages = await _transformMessagesForGiftedChat(messages, chatRoom, token);
             } catch(e) {/* best attempt */};
             dispatch({
                 type: CHAT_ROOM_SEARCH_MESSAGES_UPDATE_PREVIEW,
@@ -71,8 +71,8 @@ export const clearMessageSnapshots = () => (dispatch, getState) => {
     });
 };
 
-export const deleteMessageFromSnapshots = (messageToDeleteId, markerMessage, chatRoomId, chatRoomMembersMap) => (dispatch, getState) => {
+export const deleteMessageFromSnapshots = (messageToDeleteId, markerMessage, chatRoom) => (dispatch, getState) => {
     MessageStorageService.deleteMessage(messageToDeleteId, (err, succ) => {
-        getMessageSnapshots(markerMessage, chatRoomId, chatRoomMembersMap)(dispatch, getState);
+        getMessageSnapshots(markerMessage, chatRoom)(dispatch, getState);
     })
 }

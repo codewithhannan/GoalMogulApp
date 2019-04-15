@@ -314,8 +314,8 @@ function _transformMessageFromGiftedChat(messageDoc, uploadedMediaRef, chatRoom)
 	return transformedDoc;
 };
 
-export async function _transformMessagesForGiftedChat(messages, chatRoom, token, maybeMembersMap) {
-	let chatRoomMemberMap = maybeMembersMap || {};
+export async function _transformMessagesForGiftedChat(messages, chatRoom, token) {
+	let chatRoomMemberMap = {};
 	if (chatRoom && chatRoom.members) {
 		chatRoomMemberMap = chatRoom.members.reduce((map, memberDoc) => {
 			map[memberDoc.memberRef._id] = _transformUserForGiftedChat(memberDoc.memberRef);

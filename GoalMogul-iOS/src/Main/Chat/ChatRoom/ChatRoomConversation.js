@@ -519,7 +519,7 @@ class ChatRoomConversation extends React.Component {
                         messages={(this.props.ghostMessages || []).concat(this.props.messages)}
                         user={{
                             _id, name,
-                            avatar: profile && profile.image,
+                            avatar: profile && profile.image && `${IMAGE_BASE_URL}${profile.image}`,
                         }}
                         placeholder={`Send a message to ${this.props.chatRoomName}...`}
                         isAnimated={true}

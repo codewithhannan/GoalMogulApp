@@ -57,6 +57,7 @@ class ChatRoomMessageSearch extends React.Component {
 
 	componentWillUnmount() {
         this.handleOnRefresh('');
+        this.searchBar.clear();
 	}
 
     closeSearch = () => {
@@ -151,6 +152,7 @@ class ChatRoomMessageSearch extends React.Component {
 	renderListHeader = () => {
         return (
             <SearchBar
+                ref={searchBar => this.searchBar = searchBar}
                 autoFocus={true}
                 platform="default"
                 clearIcon={<MaterialIcons
