@@ -236,6 +236,8 @@ export const submitCreatingPost = (
         callback();
       }
 
+      Actions.pop(); // This is needed for all the actions below
+
       if (needOpenProfile) {
         // Open profile and then refresh
         openProfile(userId, 'posts')(dispatch, getState);
@@ -247,8 +249,6 @@ export const submitCreatingPost = (
         selectProfileTab(1, userId, pageId)(dispatch, getState);
         handleTabRefresh('posts', userId, pageId)(dispatch, getState);
       }
-
-      Actions.pop();
     };
 
     const imageUri = newPost.mediaRef;

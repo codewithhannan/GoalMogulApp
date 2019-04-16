@@ -207,10 +207,11 @@ class CreateEventModal extends React.Component {
           isVisible={this.props.startTime.picker}
           mode='datetime'
           onConfirm={(date) => {
-            // if (validateTime(date, this.props.endTime.date)) {
-            //   this.props.change('startTime', { date, picker: false });
-            //   return;
-            // }
+            if (!validateTime(date, this.props.endTime.date)) {
+              // If start date is later than end date, set the end date to 
+              // be the same as start date
+              this.props.change('endTime', { date, picker: false });
+            }
             // alert('Start time cannot be later than end time');
             this.props.change('startTime', { date, picker: false });
           }}
@@ -259,10 +260,11 @@ class CreateEventModal extends React.Component {
             isVisible={this.props.endTime.picker}
             mode='datetime'
             onConfirm={(date) => {
-              // if (validateTime(this.props.startTime.date, date)) {
-              //   this.props.change('endTime', { date, picker: false });
-              //   return
-              // }
+              if (!validateTime(this.props.startTime.date, date)) {
+              // If end date is early than start date, set the start date to 
+              // be the same as end date
+                this.props.change('startTime', { date, picker: false });
+              }
               // alert('End time cannot be early than start time');
               this.props.change('endTime', { date, picker: false });
             }}
@@ -312,7 +314,7 @@ class CreateEventModal extends React.Component {
           <Text>{moment(this.props.startTime.date).format('LT')}</Text>
         </View>
       ) :
-      <Text style={{ fontSize: 9 }}>Start</Text>;
+      <Text style={{ fontSize: 15 }}>Start</Text>;
 
     const endTime = this.props.endTime.date ?
       (
@@ -321,7 +323,7 @@ class CreateEventModal extends React.Component {
           <Text>{moment(this.props.endTime.date).format('LT')}</Text>
         </View>
       ) :
-      <Text style={{ fontSize: 9 }}>End</Text>;
+      <Text style={{ fontSize: 15 }}>End</Text>;
 
     // Show cancel button if there is date set
     const cancelButton = this.props.endTime.date || this.props.startTime.date 
