@@ -93,8 +93,8 @@ const { width } = Dimensions.get('window');
 class ShareDetailSection extends Component {
   state = {
     mediaModal: false,
-    numberOfLines: 2,
-    seeMore: false
+    numberOfLines: undefined,
+    seeMore: true
   }
 
   handleShareOnClick = () => {

@@ -96,8 +96,8 @@ const { width } = Dimensions.get('window');
 class PostDetailSection extends React.PureComponent {
   state = {
     mediaModal: false,
-    numberOfLines: 2,
-    seeMore: false
+    numberOfLines: undefined,
+    seeMore: true
   }
 
   handleShareOnClick = () => {
