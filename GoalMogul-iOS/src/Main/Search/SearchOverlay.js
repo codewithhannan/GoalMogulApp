@@ -28,6 +28,11 @@ import {
   clearSearchState
 } from '../../redux/modules/search/SearchActions';
 
+// Styles
+import {
+  APP_DEEP_BLUE
+} from '../../styles';
+
 // Constants
 import {
   IPHONE_MODELS
@@ -125,7 +130,7 @@ class SearchOverlay extends Component {
               searchIcon={() => (
                 <SearchIcon 
                   iconContainerStyle={{ marginBottom: 1, marginTop: 1 }} 
-                  iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
+                  iconStyle={{ tintColor: APP_DEEP_BLUE, height: 15, width: 15 }}
                 />
               )}
               onSubmitEditing={this.handleOnEndSubmitting}
