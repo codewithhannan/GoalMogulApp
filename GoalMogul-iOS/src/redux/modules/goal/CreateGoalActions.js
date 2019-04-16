@@ -196,6 +196,26 @@ const submitEditGoal = (goal, goalId, token, callback, dispatch, tab, owner) => 
     });
 };
 
+/**
+ * Validate when user sets both startTime and endTime, make sure startTime is always 
+ * less than or equal to endTime. StartTime and endTime are both optional.
+ * @param {Object} startTime 
+ * @param {Object} endTime 
+ */
+const validateDates = (startTime, endTime) => {
+  if (!startTime || !endTime) return true;
+  if (!startTime.date || !endTime.date) return true;
+
+  const startMoment = moment(startTime.date);
+  const endMoment = moment(endTime.date);
+  const duration = moment.duration(endMoment.diff(startMoment));
+
+  if (duration < 0) {
+    return false;
+  }
+  return true;
+};
+
 // Transform values from Goal form to server accepted format
 const formToGoalAdapter = (values, userId) => {
   const {
@@ -213,7 +233,7 @@ const formToGoalAdapter = (values, userId) => {
     endTime
   } = values;
 
-  if (!title || !startTime.date || !endTime.date || !category) {
+  if (!title || !category) { // Start and end date are optional
     Alert.alert(
       'Missing field',
       'Please check all the fields are filled in.'
@@ -223,11 +243,7 @@ const formToGoalAdapter = (values, userId) => {
     });
   }
 
-  const startMoment = moment(startTime.date);
-  const endMoment = moment(endTime.date);
-  const duration = moment.duration(endMoment.diff(startMoment));
-
-  if (duration <= 0) {
+  if (!validateDates(startTime, endTime)) {
     Alert.alert(
       'Incorrect format',
       'Start time should be early than the end time.'

@@ -35,12 +35,18 @@ const ProgressBar = (props) => {
     ? formatDate(endTime)
     : formatDate(new Date(endTime));
 
+  const startTimeTextView = startTimeText === 'undefined NaN'
+    ? (<Text style={{ ...styles.textStyle, opacity: 0 }}>Jan 2018</Text>)
+    : (<Text style={styles.textStyle}>{startTimeText}</Text>);
+
+  const endTimeTextView = endTimeText === 'undefined NaN'
+  ? (<Text style={{ ...styles.textStyle, opacity: 0 }}>Aug 2019</Text>)
+  : (<Text style={styles.textStyle}>{endTimeText}</Text>);
+
   return (
     <View style={styles.containerStyle}>
       <View style={{ zIndex: 2, marginRight }}>
-        <Text style={styles.textStyle}>
-          {startTimeText === 'undefined NaN' ? 'Jan 2018' : startTimeText}
-        </Text>
+        {startTimeTextView}
       </View>
       {/* <Image source={Bar} style={styles.imageStyle} /> */}
       <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', zIndex: 2 }}>
@@ -48,9 +54,7 @@ const ProgressBar = (props) => {
       </View>
 
       <View style={{ zIndex: 2 }}>
-        <Text style={styles.textStyle}>
-          {endTimeText === 'undefined NaN' ? 'Aug 2019' : endTimeText}
-        </Text>
+        {endTimeTextView}
       </View>
     </View>
   );
