@@ -30,7 +30,8 @@ import {
 
 // Styles
 import {
-  APP_DEEP_BLUE
+  APP_DEEP_BLUE,
+  APP_BLUE
 } from '../../styles';
 
 // Constants
@@ -93,7 +94,24 @@ class SearchOverlay extends Component {
 
   _renderHeader = props => {
     return (
-      <TabButtonGroup buttons={props} />
+      <TabButtonGroup 
+        buttons={props} 
+        noBorder
+        buttonStyle={{
+          selected: {
+            backgroundColor: APP_DEEP_BLUE,
+            tintColor: 'white',
+            color: 'white',
+            fontWeight: '700'
+          },
+          unselected: {
+            backgroundColor: '#FCFCFC',
+            tintColor: '#616161',
+            color: '#616161',
+            fontWeight: '600'
+          }
+        }}   
+      />
     );
   };
 
@@ -112,7 +130,7 @@ class SearchOverlay extends Component {
     return (
       <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-          <View style={{ ...styles.headerContainerStyle, marginTop }}>
+          <View style={{ ...styles.headerContainerStyle, paddingTop: marginTop }}>
             <SearchBar
               platform='ios'
               round
@@ -127,10 +145,16 @@ class SearchOverlay extends Component {
               clearIcon={null}
               cancelButtonProps={{ color: '#17B3EC' }}
               showLoading={this.props.loading}
+              placeholderTextColor={APP_BLUE}
+              cancelButtonProps={{
+                buttonTextStyle: {
+                  color: APP_DEEP_BLUE
+                }
+              }}
               searchIcon={() => (
                 <SearchIcon 
                   iconContainerStyle={{ marginBottom: 1, marginTop: 1 }} 
-                  iconStyle={{ tintColor: APP_DEEP_BLUE, height: 15, width: 15 }}
+                  iconStyle={{ tintColor: APP_BLUE, height: 15, width: 15 }}
                 />
               )}
               onSubmitEditing={this.handleOnEndSubmitting}
@@ -150,31 +174,54 @@ class SearchOverlay extends Component {
 }
 
 const styles = {
+  // searchContainerStyle: {
+  //   padding: 0,
+  //   marginRight: 3,
+  //   backgroundColor: '#ffffff',
+  //   borderTopColor: '#ffffff',
+  //   borderBottomColor: '#ffffff',
+  //   alignItems: 'center',
+  // },
+  // searchInputContainerStyle: {
+  //   backgroundColor: '#f3f4f6',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
+  // searchInputStyle: {
+  //   fontSize: 15,
+  // },
+  // headerContainerStyle: {
+  //   marginTop: 45,
+  //   justifyContent: 'center',
+  //   alignItems: 'center'
+  // },
+  headerContainerStyle: {
+    paddingTop: 45,
+    backgroundColor: APP_BLUE,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   searchContainerStyle: {
     padding: 0,
     marginRight: 3,
-    backgroundColor: '#ffffff',
+    backgroundColor: APP_BLUE,
     borderTopColor: '#ffffff',
     borderBottomColor: '#ffffff',
     alignItems: 'center',
-
   },
   searchInputContainerStyle: {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: '#0397CB',
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 20
   },
   searchInputStyle: {
     fontSize: 15,
+    color: APP_BLUE
   },
   searchIconStyle: {
     top: 15,
     fontSize: 13
-  },
-  headerContainerStyle: {
-    marginTop: 45,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   backdrop: {
     backgroundColor: 'gray',
