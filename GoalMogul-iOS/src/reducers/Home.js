@@ -28,7 +28,9 @@ import {
 } from './User';
 
 import {
-  GOAL_DETAIL_UPDATE_DONE
+  GOAL_DETAIL_UPDATE_DONE,
+  GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS,
+  GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS
 } from '../reducers/GoalDetailReducers';
 
 import {
@@ -346,6 +348,130 @@ export default (state = INITIAL_STATE, action) => {
       });
 
       newState = _.set(newState, 'activityfeed.data', newActivityFeed);
+      return newState;
+    }
+
+    /**
+     * Update goal feed and activity feed after user marks a need as complete
+     */
+    case GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS: {
+      const { id, goalId, pageId, isCompleted } = action.payload;
+      let newState = _.cloneDeep(state);
+      // Update goal feed
+      const oldGoalFeed = _.get(newState, 'mastermind.data');
+      const newGoalFeed = oldGoalFeed.map((goal) => {
+        if (goal._id === goalId) {
+          let goalToUpdate = _.cloneDeep(goal);
+          let oldNeeds = _.get(goalToUpdate, 'needs');
+          if (!oldNeeds || oldNeeds.length === 0) {
+            return goalToUpdate;
+          }
+          // Iterate to update needs
+          const newNeeds = oldNeeds.map((n) => {
+            if (n._id === id) {
+              return {
+                ...n,
+                isCompleted
+              };
+            }
+            return n;
+          });
+          // Update the goal
+          return _.set(goalToUpdate, 'needs', newNeeds);
+        }
+        return goal;
+      });
+
+      newState = _.set(newState, 'mastermind.data', newGoalFeed);
+
+      const oldActivityFeed = _.get(newState, 'activityfeed.data');
+      const newActivityFeed = oldActivityFeed.map((activity) => {
+        const { actedUponEntityType, goalRef } = activity; 
+        let newActivity = _.cloneDeep(activity);
+        if (actedUponEntityType === 'Goal' && goalRef && goalRef._id === goalId) {
+          let goalToUpdate = _.get(newActivity, 'goalRef');
+          let oldNeeds = _.get(goalToUpdate, 'needs');
+          if (!oldNeeds || oldNeeds.length === 0) return newActivity; // Nothing to update
+          const newNeeds = oldNeeds.map((n) => {
+            if (n._id === id) {
+              return {
+                ...n,
+                isCompleted
+              };
+            }
+            return n;
+          });
+          // Update the goal with new needs
+          goalToUpdate = _.set(goalToUpdate, 'needs', newNeeds);
+          // Update the activity with the updated goal
+          newActivity = _.set(newActivity, 'goalRef', goalToUpdate);
+        }
+        return newActivity;
+      });
+
+      newState = _.set(newState, 'activityfeed.data', newActivityFeed);
+
+      return newState;
+    }
+
+    /**
+     * Update goal feed and activity feed after user marks a need as complete
+     */
+    case GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS: {
+      const { id, goalId, pageId, isCompleted } = action.payload;
+      let newState = _.cloneDeep(state);
+      // Update goal feed
+      const oldGoalFeed = _.get(newState, 'mastermind.data');
+      const newGoalFeed = oldGoalFeed.map((goal) => {
+        if (goal._id === goalId) {
+          let goalToUpdate = _.cloneDeep(goal);
+          let oldSteps = _.get(goalToUpdate, 'steps');
+          if (!oldSteps || oldSteps.length === 0) return goalToUpdate; // Nothing to update
+          // Iterate to update needs
+          const newSteps = oldSteps.map((n) => {
+            if (n._id === id) {
+              return {
+                ...n,
+                isCompleted
+              };
+            }
+            return n;
+          });
+          // Update the goal
+          return _.set(goalToUpdate, 'steps', newSteps);
+        }
+        return goal;
+      });
+
+      newState = _.set(newState, 'mastermind.data', newGoalFeed);
+
+      const oldActivityFeed = _.get(newState, 'activityfeed.data');
+      const newActivityFeed = oldActivityFeed.map((activity) => {
+        const { actedUponEntityType, goalRef } = activity; 
+        let newActivity = _.cloneDeep(activity);
+        if (actedUponEntityType === 'Goal' && goalRef && goalRef._id === goalId) {
+          let goalToUpdate = _.get(newActivity, 'goalRef');
+          let oldSteps = _.get(goalToUpdate, 'steps');
+          if (!oldSteps || oldSteps.length === 0) return newActivity; // Nothing to update
+          const newSteps = oldSteps.map((n) => {
+            if (n._id === id) {
+              return {
+                ...n,
+                isCompleted
+              };
+            }
+            return n;
+          });
+          // Update the goal with new needs
+          goalToUpdate = _.set(goalToUpdate, 'steps', newSteps);
+          // Update the activity with the updated goal
+          newActivity = _.set(newActivity, 'goalRef', goalToUpdate);
+        }
+        return newActivity;
+      });
+
+      newState = _.set(newState, 'activityfeed.data', newActivityFeed);
+
       return newState;
     }
 

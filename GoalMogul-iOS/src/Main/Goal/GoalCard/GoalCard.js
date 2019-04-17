@@ -295,14 +295,12 @@ class GoalCard extends React.PureComponent {
   // Card central content. Progressbar for goal card
   renderCardContent(item) {
     const { start, end, needs, steps } = item;
-    const startDate = start || new Date();
-    const endDate = end || new Date();
 
     return (
       <View style={{ marginTop: 16 }}>
         <ProgressBar
-          startTime={startDate}
-          endTime={endDate}
+          startTime={start}
+          endTime={end}
           steps={steps}
           needs={needs}
           goalRef={item}

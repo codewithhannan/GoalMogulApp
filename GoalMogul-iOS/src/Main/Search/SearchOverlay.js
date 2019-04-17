@@ -233,7 +233,7 @@ const styles = {
   },
   searchInputStyle: {
     fontSize: 15,
-    color: APP_BLUE
+    color: 'white'
   },
   searchIconStyle: {
     top: 15,
