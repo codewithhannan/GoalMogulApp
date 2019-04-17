@@ -49,7 +49,7 @@ import {
 import { arrayUnique, clearTags } from '../../../redux/middleware/utils';
 
 // Assets
-import PhotoIcon from '../../../asset/utils/photoIcon.png';
+import PhotoIcon from '../../../asset/utils/cameraRoll.png';
 import LightBulb from '../../../asset/utils/makeSuggestion.png';
 import DefaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
 
@@ -421,6 +421,7 @@ class CommentBoxV2 extends Component {
             ...styles.iconStyle,
             tintColor: '#cbd6d8'
           }}
+          
         />
       </TouchableOpacity>
     );
@@ -666,7 +667,7 @@ const styles = {
     borderRadius: 18,
     marginTop: 5,
     marginBottom: 5,
-    borderColor: '#cbd6d8',
+    borderColor: '#F1F1F1',
     borderWidth: 1,
     flex: 1
   },
@@ -682,9 +683,10 @@ const styles = {
     justifyContent: 'flex-end'
   },
   iconStyle: {
-    height: 24,
-    width: 24,
-    margin: 5
+    height: 21,
+    width: 25,
+    margin: 4,
+    marginBottom: 6
   },
   iconContainerStyle: {
     alignItems: 'flex-end',

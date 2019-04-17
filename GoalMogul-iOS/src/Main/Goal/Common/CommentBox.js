@@ -42,7 +42,7 @@ import {
 } from '../../../redux/modules/feed/comment/CommentSelector';
 
 // Assets
-import PhotoIcon from '../../../asset/utils/photoIcon.png';
+import PhotoIcon from '../../../asset/utils/cameraRoll.png';
 import LightBulb from '../../../asset/utils/makeSuggestion.png';
 
 // Consts
@@ -363,7 +363,8 @@ const styles = {
     borderRadius: 18,
     marginTop: 5,
     marginBottom: 5,
-    borderColor: '#cbd6d8',
+    // borderColor: '#cbd6d8',
+    borderColor: '#F1F1F1',
     borderWidth: 1,
     flex: 1
   },
