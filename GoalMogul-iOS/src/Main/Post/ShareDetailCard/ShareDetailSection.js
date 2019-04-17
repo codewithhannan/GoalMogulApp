@@ -258,9 +258,9 @@ class ShareDetailSection extends Component {
           <ImageBackground
             style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle }}
             source={{ uri: imageUrl }}
-            imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
+            imageStyle={{ borderRadius: 8, resizeMode: 'cover' }}
           >
-            <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
+            {/* <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
               <Image
                 source={photoIcon}
                 style={{
@@ -271,7 +271,7 @@ class ShareDetailSection extends Component {
                   tintColor: '#fafafa'
                 }}
               />
-            </View>
+            </View> */}
 
             <TouchableOpacity
               activeOpacity={0.6}
