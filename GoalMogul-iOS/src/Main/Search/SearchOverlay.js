@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  Platform
+  Platform,
+  Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar, Icon } from 'react-native-elements';
@@ -46,6 +47,21 @@ class SearchOverlay extends Component {
     super(props);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleOnEndSubmitting = this.handleOnEndSubmitting.bind(this);
+    this.keyboardWillHide = this.keyboardWillHide.bind(this);
+  }
+
+  componentWillMount() {
+    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
+  }
+
+  componentWillUnmount() {
+    this.keyboardWillHideListener.remove();
+  }
+
+  keyboardWillHide() {
+    if (!this.props.searchContent || this.props.searchContent.trim() === '') {
+      this.handleCancel();
+    }
   }
 
   // Search bar functions
@@ -230,13 +246,14 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { selectedTab, navigationState } = state.search;
+  const { selectedTab, navigationState, searchContent } = state.search;
   const { loading } = state.search[selectedTab];
 
   return {
     selectedTab,
     navigationState,
-    loading
+    loading,
+    searchContent
   };
 };
 
