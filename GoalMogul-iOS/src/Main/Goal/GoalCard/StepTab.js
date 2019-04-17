@@ -24,6 +24,8 @@ const testStep = [
   },
 ];
 
+const DEBUG_KEY = '[ UI StepTab ]';
+
 class StepTab extends Component {
 
   renderSections(steps) {

@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  Platform
+  Platform,
+  Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar, Icon } from 'react-native-elements';
@@ -28,6 +29,12 @@ import {
   clearSearchState
 } from '../../redux/modules/search/SearchActions';
 
+// Styles
+import {
+  APP_DEEP_BLUE,
+  APP_BLUE
+} from '../../styles';
+
 // Constants
 import {
   IPHONE_MODELS
@@ -40,6 +47,21 @@ class SearchOverlay extends Component {
     super(props);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleOnEndSubmitting = this.handleOnEndSubmitting.bind(this);
+    this.keyboardWillHide = this.keyboardWillHide.bind(this);
+  }
+
+  componentWillMount() {
+    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
+  }
+
+  componentWillUnmount() {
+    this.keyboardWillHideListener.remove();
+  }
+
+  keyboardWillHide() {
+    if (!this.props.searchContent || this.props.searchContent.trim() === '') {
+      this.handleCancel();
+    }
   }
 
   // Search bar functions
@@ -88,7 +110,24 @@ class SearchOverlay extends Component {
 
   _renderHeader = props => {
     return (
-      <TabButtonGroup buttons={props} />
+      <TabButtonGroup 
+        buttons={props} 
+        noBorder
+        buttonStyle={{
+          selected: {
+            backgroundColor: APP_DEEP_BLUE,
+            tintColor: 'white',
+            color: 'white',
+            fontWeight: '700'
+          },
+          unselected: {
+            backgroundColor: '#FCFCFC',
+            tintColor: '#616161',
+            color: '#616161',
+            fontWeight: '600'
+          }
+        }}   
+      />
     );
   };
 
@@ -107,7 +146,7 @@ class SearchOverlay extends Component {
     return (
       <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-          <View style={{ ...styles.headerContainerStyle, marginTop }}>
+          <View style={{ ...styles.headerContainerStyle, paddingTop: marginTop }}>
             <SearchBar
               platform='ios'
               round
@@ -122,10 +161,16 @@ class SearchOverlay extends Component {
               clearIcon={null}
               cancelButtonProps={{ color: '#17B3EC' }}
               showLoading={this.props.loading}
+              placeholderTextColor={APP_BLUE}
+              cancelButtonProps={{
+                buttonTextStyle: {
+                  color: APP_DEEP_BLUE
+                }
+              }}
               searchIcon={() => (
                 <SearchIcon 
                   iconContainerStyle={{ marginBottom: 1, marginTop: 1 }} 
-                  iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
+                  iconStyle={{ tintColor: APP_BLUE, height: 15, width: 15 }}
                 />
               )}
               onSubmitEditing={this.handleOnEndSubmitting}
@@ -145,31 +190,54 @@ class SearchOverlay extends Component {
 }
 
 const styles = {
+  // searchContainerStyle: {
+  //   padding: 0,
+  //   marginRight: 3,
+  //   backgroundColor: '#ffffff',
+  //   borderTopColor: '#ffffff',
+  //   borderBottomColor: '#ffffff',
+  //   alignItems: 'center',
+  // },
+  // searchInputContainerStyle: {
+  //   backgroundColor: '#f3f4f6',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
+  // searchInputStyle: {
+  //   fontSize: 15,
+  // },
+  // headerContainerStyle: {
+  //   marginTop: 45,
+  //   justifyContent: 'center',
+  //   alignItems: 'center'
+  // },
+  headerContainerStyle: {
+    paddingTop: 45,
+    backgroundColor: APP_BLUE,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   searchContainerStyle: {
     padding: 0,
     marginRight: 3,
-    backgroundColor: '#ffffff',
+    backgroundColor: APP_BLUE,
     borderTopColor: '#ffffff',
     borderBottomColor: '#ffffff',
     alignItems: 'center',
-
   },
   searchInputContainerStyle: {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: '#0397CB',
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 20
   },
   searchInputStyle: {
     fontSize: 15,
+    color: 'white'
   },
   searchIconStyle: {
     top: 15,
     fontSize: 13
-  },
-  headerContainerStyle: {
-    marginTop: 45,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   backdrop: {
     backgroundColor: 'gray',
@@ -178,13 +246,14 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { selectedTab, navigationState } = state.search;
+  const { selectedTab, navigationState, searchContent } = state.search;
   const { loading } = state.search[selectedTab];
 
   return {
     selectedTab,
     navigationState,
-    loading
+    loading,
+    searchContent
   };
 };
 
