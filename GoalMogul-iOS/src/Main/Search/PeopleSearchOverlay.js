@@ -64,7 +64,7 @@ class PeopleSearchOverlay extends Component {
       return this.props.inviteParticipantToEvent(id, _id, callback);
     }
 
-    if (type === 'directChat') {
+    if (type === 'directChat' || type == 'addChatMember') {
       callback(_id);
       this.handleCancel();
       return;

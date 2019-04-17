@@ -237,6 +237,12 @@ class ChatRoomOptions extends React.Component {
                                     onPress={this.openMembers.bind(this)}
                                 />
                             )}
+                            <SettingCard
+                                title="Search Messages"
+                                icon={searchIcon}
+                                explanation="Search messages in thes conversation"
+                                onPress={this.openMessageSearch.bind(this)}
+                            />
                             {chatRoom.roomType != 'Direct' && (
                                 <SettingCard
                                     title={'Leave Conversation'}
@@ -245,12 +251,6 @@ class ChatRoomOptions extends React.Component {
                                     onPress={this.leaveConversation.bind(this)}
                                 />
                             )}
-                            <SettingCard
-                                title="Search Messages"
-                                icon={searchIcon}
-                                explanation="Search messages in thes conversation"
-                                onPress={this.openMessageSearch.bind(this)}
-                            />
                         </ScrollView>
                     </View>
 				</View>
