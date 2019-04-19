@@ -16,6 +16,7 @@ import {
 import { connect } from 'react-redux';
 import { CheckBox } from 'react-native-elements';
 import moment from 'moment';
+import { MaterialIcons } from '@expo/vector-icons';
 import {
   Field,
   reduxForm,
@@ -581,21 +582,43 @@ class CreateEventModal extends React.Component {
     const participantOptions = this.props.isInviteOnly
       ? (
         <CheckBox
-          title='Participants can invite others'
-          checked={this.props.participantsCanInvite}
-          onPress={() =>
+					title='Participants can invite others'
+					textStyle={{fontWeight: 'normal'}}
+					checked={this.props.participantsCanInvite}
+					checkedIcon={<MaterialIcons
+						name="done"
+						color="#111"
+						size={21}
+					/>}
+					uncheckedIcon={<MaterialIcons
+						name="done"
+						color="#CCC"
+						size={21}
+					/>}
+					onPress={() =>
             this.props.change('participantsCanInvite', !this.props.participantsCanInvite)
           }
-        />
+				/>
       )
       : null;
     return (
       <View>
         <CheckBox
-          title='Invite only'
-          checked={this.props.isInviteOnly}
-          onPress={() => this.props.change('isInviteOnly', !this.props.isInviteOnly)}
-        />
+					title='Invite only'
+					textStyle={{fontWeight: 'normal'}}
+					checked={this.props.isInviteOnly}
+					checkedIcon={<MaterialIcons
+						name="done"
+						color="#111"
+						size={21}
+					/>}
+					uncheckedIcon={<MaterialIcons
+						name="done"
+						color="#CCC"
+						size={21}
+					/>}
+					onPress={() => this.props.change('isInviteOnly', !this.props.isInviteOnly)}
+				/>
         {participantOptions}
       </View>
     );
