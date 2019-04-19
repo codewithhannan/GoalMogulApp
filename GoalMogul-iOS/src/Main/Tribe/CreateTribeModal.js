@@ -13,8 +13,8 @@ import {
   Modal
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Actions } from 'react-native-router-flux';
 import { CheckBox } from 'react-native-elements';
+import { MaterialIcons } from '@expo/vector-icons';
 import {
   Field,
   reduxForm,
@@ -331,15 +331,37 @@ class CreateTribeModal extends React.Component {
     return (
       <View>
         <CheckBox
-          title='Members can invite new members'
-          checked={this.props.membersCanInvite}
-          onPress={() => this.props.change('membersCanInvite', !this.props.membersCanInvite)}
-        />
+					title='Members can invite new members'
+					textStyle={{fontWeight: 'normal'}}
+					checked={this.props.membersCanInvite}
+					checkedIcon={<MaterialIcons
+						name="done"
+						color="#111"
+						size={21}
+					/>}
+					uncheckedIcon={<MaterialIcons
+						name="done"
+						color="#CCC"
+						size={21}
+					/>}
+					onPress={() => this.props.change('membersCanInvite', !this.props.membersCanInvite)}
+				/>
         <CheckBox
-          title='Publicly visible'
-          checked={this.props.isPubliclyVisible}
-          onPress={() => this.props.change('isPubliclyVisible', !this.props.isPubliclyVisible)}
-        />
+					title='Publicly visible'
+					textStyle={{fontWeight: 'normal'}}
+					checked={this.props.isPubliclyVisible}
+					checkedIcon={<MaterialIcons
+						name="done"
+						color="#111"
+						size={21}
+					/>}
+					uncheckedIcon={<MaterialIcons
+						name="done"
+						color="#CCC"
+						size={21}
+					/>}
+					onPress={() => this.props.change('isPubliclyVisible', !this.props.isPubliclyVisible)}
+				/>
       </View>
     );
   }

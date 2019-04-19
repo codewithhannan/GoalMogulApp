@@ -21,7 +21,10 @@ class PeopleSearch extends Component {
 
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing tab: `, key);
-    this.props.refreshSearchResult(key);
+    // Only refresh if there is content
+    if (this.props.searchContent && this.props.searchContent.trim() !== '') {
+      this.props.refreshSearchResult(key);
+    }
   }
 
   handleOnLoadMore = () => {
