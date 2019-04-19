@@ -64,7 +64,7 @@ class SearchOverlay extends Component {
 
   keyboardWillHide() {
     if ((!this.props.searchContent || this.props.searchContent.trim() === '') && 
-        (this.state.searchContent === '' || this.state.searchContent.trim() === '' || this.state.searchContent === undefined)) {
+        (!this.state.searchContent || this.state.searchContent === '' || this.state.searchContent.trim() === '')) {
       this.handleCancel();
     }
   }
@@ -174,7 +174,8 @@ class SearchOverlay extends Component {
               placeholderTextColor={APP_BLUE}
               cancelButtonProps={{
                 buttonTextStyle: {
-                  color: APP_DEEP_BLUE
+                  // color: APP_DEEP_BLUE
+                  color: '#33485e'
                 }
               }}
               searchIcon={() => (
@@ -239,7 +240,8 @@ const styles = {
     backgroundColor: '#0397CB',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 20
+    borderRadius: 16,
+    height: 32
   },
   searchInputStyle: {
     fontSize: 15,
