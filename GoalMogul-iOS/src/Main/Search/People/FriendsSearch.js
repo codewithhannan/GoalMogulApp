@@ -21,7 +21,7 @@ class FriendsSearch extends Component {
 
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing tab: `, key);
-    this.props.refreshSearchResult(key);
+    this.props.refreshSearchResult(key, true);
   }
 
   handleOnLoadMore = () => {

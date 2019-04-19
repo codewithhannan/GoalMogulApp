@@ -193,6 +193,7 @@ class SearchOverlay extends Component {
             renderTabBar={this._renderHeader}
             onIndexChange={this._handleIndexChange}
             useNativeDriver
+            swipeEnabled={false}
           />
         </MenuProvider>
       </BaseOverlay>

@@ -73,6 +73,7 @@ const INITIAL_STATE = {
 const dotPath = R.useWith(R.path, [R.split('.')]);
 const propsDotPath = R.useWith(R.ap, [R.map(dotPath), R.of]);
 const BASE_ROUTE = 'secure';
+const DEBUG_KEY = '[ Reducer Search ]';
 
 // Constants for search reducers
 export const SEARCH_CHANGE_FILTER = 'search_change_filter';
@@ -149,12 +150,16 @@ export default (state = INITIAL_STATE, action) => {
       const { queryId, skip, data, type, hasNextPage } = action.payload;
       let newState = _.cloneDeep(state);
       if (queryId === state.queryId) {
-        newState[type].data = newState[type].data.concat(data);
-        newState[type].loading = false;
-        newState[type].skip = skip;
-        newState[type].hasNextPage = hasNextPage;
+        const oldData = _.get(newState, `${type}.data`);
+        const newData = oldData.concat(data);
+        newState = _.set(newState, `${type}.data`, newData);
+        newState = _.set(newState, `${type}.loading`, false);
+        newState = _.set(newState, `${type}.skip`, skip);
+        newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
+        
+        // console.log(`${DEBUG_KEY}: new data is: `, newData);
       }
-      return { ...newState };
+      return newState;
     }
 
     // Search switch tab
@@ -177,8 +182,10 @@ export default (state = INITIAL_STATE, action) => {
       }
       // Clear state for specific tab
       const tabInitialState = dotPath(tab, INITIAL_STATE);
-      const newState = _.cloneDeep(state);
-      return _.set(newState, tab, tabInitialState);
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, tab, tabInitialState);
+      newState = _.set(newState, 'searchContent', '');
+      return newState;
     }
 
     /* Following cases is related to search for share */

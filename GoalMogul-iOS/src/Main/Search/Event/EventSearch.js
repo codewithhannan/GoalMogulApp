@@ -34,11 +34,14 @@ class EventSearch extends Component {
 
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing search: `, key);
-    this.props.refreshSearchResult(key);
+    // Only refresh if there is content
+    if (this.props.searchContent && this.props.searchContent.trim() !== '') {
+      this.props.refreshSearchResult(key);
+    }
   }
 
   handleOnLoadMore = () => {
-    // console.log(`${DEBUG_KEY} Loading more for search: `, key);
+    console.log(`${DEBUG_KEY} Loading more for search: `, key);
     this.props.onLoadMore(key);
   }
 

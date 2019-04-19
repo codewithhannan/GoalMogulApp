@@ -34,7 +34,10 @@ class TribeSearch extends Component {
 
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing search`);
-    this.props.refreshSearchResult(key);
+    // Only refresh if there is content
+    if (this.props.searchContent && this.props.searchContent.trim() !== '') {
+      this.props.refreshSearchResult(key);
+    }
   }
 
   handleOnLoadMore = () => {

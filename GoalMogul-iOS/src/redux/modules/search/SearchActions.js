@@ -169,7 +169,7 @@ export const refreshSearchResult = curry((type) => (dispatch, getState) => {
   console.log(`${DEBUG_KEY} refresh tab: ${type}`);
   const { token } = getState().user;
   const { searchContent } = getState().search;
-  const { skip, limit, queryId } = getState().search[type];
+  const { limit, queryId } = getState().search[type];
   dispatch({
     type: SEARCH_REQUEST,
     payload: {
@@ -179,7 +179,7 @@ export const refreshSearchResult = curry((type) => (dispatch, getState) => {
     }
   });
 
-  fetchData(searchContent, type, skip, limit, token, (res) => {
+  fetchData(searchContent, type, 0, limit, token, (res) => {
     const data = res.data ? res.data : [];
     dispatch({
       type: SEARCH_REFRESH_DONE,
@@ -249,14 +249,17 @@ export const hashCode = function (text) {
 
 // Actions to switch tab index for search overlay
 export const searchSwitchTab = (index) => (dispatch, getState) => {
-  const { navigationState } = getState().search;
+  const { navigationState, searchContent } = getState().search;
   const key = navigationState.routes[index].key;
   dispatch({
     type: SEARCH_SWITCH_TAB,
     payload: index
   });
 
-  refreshSearchResult(key)(dispatch, getState);
+  // Only refresh if there is content
+  if (searchContent && searchContent.trim() !== '') {
+    refreshSearchResult(key, false)(dispatch, getState);
+  }
 };
 
 // Clear search state on cancel
