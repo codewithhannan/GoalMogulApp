@@ -48,6 +48,10 @@ class SearchOverlay extends Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.handleOnEndSubmitting = this.handleOnEndSubmitting.bind(this);
     this.keyboardWillHide = this.keyboardWillHide.bind(this);
+    this.state = {
+      // We keep a local copy since debounced search takes a while to fire event to update reducer
+      searchContent: undefined 
+    };
   }
 
   componentWillMount() {
@@ -59,7 +63,8 @@ class SearchOverlay extends Component {
   }
 
   keyboardWillHide() {
-    if (!this.props.searchContent || this.props.searchContent.trim() === '') {
+    if ((!this.props.searchContent || this.props.searchContent.trim() === '') && 
+        (this.state.searchContent === '' || this.state.searchContent.trim() === '' || this.state.searchContent === undefined)) {
       this.handleCancel();
     }
   }
@@ -77,10 +82,15 @@ class SearchOverlay extends Component {
     if (value === undefined) {
       return;
     }
-    if (value === '') {
-      this.props.clearSearchState(this.props.selectedTab);
-    }
-    this.props.debouncedSearch(value.trim(), this.props.selectedTab);
+    this.setState({
+      ...this.state,
+      searchContent: value 
+    }, () => {
+      if (value === '') {
+        this.props.clearSearchState(this.props.selectedTab);
+      }
+      this.props.debouncedSearch(value.trim(), this.props.selectedTab);
+    });
   }
 
   handleOnEndSubmitting = ({ nativeEvent }) => {
