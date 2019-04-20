@@ -34,6 +34,7 @@ const INITIAL_STATE = {
   friends: { ...INITIAL_SEARCH_STATE },
   tribes: { ...INITIAL_SEARCH_STATE },
   events: { ...INITIAL_SEARCH_STATE },
+  chatRooms: { ...INITIAL_SEARCH_STATE },
   searchContent: ''
 };
 
