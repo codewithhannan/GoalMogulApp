@@ -70,7 +70,7 @@ export const SearchRouteMap = {
     route: `${BASE_ROUTE}/tribe/es`
   },
   chatRooms: {
-    route: ''
+    route: `${BASE_ROUTE}/chat/room/es`
   }
 };
 

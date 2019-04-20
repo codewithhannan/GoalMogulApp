@@ -5,6 +5,15 @@
 import _ from 'lodash';
 import { arrayUnique } from '../../../reducers/MeetReducers';
 
+const INITIAL_EXPLORE_CHAT_STATE = {
+  data: [], // a list of user ids
+  skip: 0,
+  limit: 10,
+  hasNextPage: undefined,
+  refreshing: false, // Boolean to determine refreshing status
+  loading: false // Boolean to determine loading more status
+};
+
 /**
  * Note: Currently. event and tribe have separated reducer due to previous design choice. 
  * Starting from people, we are standardizing the way we store data
@@ -27,6 +36,7 @@ const INITIAL_STATE = {
     refreshing: false, // Boolean to determine refreshing status
     loading: false // Boolean to determine loading more status
   },
+  chatRooms: { ...INITIAL_EXPLORE_CHAT_STATE },
   showPlus: true // This is no longer being used
 };
 
@@ -37,10 +47,46 @@ export const EXPLORE_PEOPLE_REFRESH = 'explore_people_refresh';
 export const EXPLORE_PEOPLE_REFRESH_DONE = 'explore_people_refresh_done';
 export const EXPLORE_PEOPLE_LOAD_MORE = 'explore_people_load_more';
 export const EXPLORE_PEOPLE_LOAD_MORE_DONE = 'explore_people_load_more_done';
+
+export const EXPLORE_CHAT_REFRESH = 'explore_chat_refresh';
+export const EXPLORE_CHAT_REFRESH_DONE = 'explore_chat_refresh_done';
+export const EXPLORE_CHAT_LOAD_MORE = 'explore_chat_load_more';
+export const EXPLORE_CHAT_LOAD_MORE_DONE = 'explore_chat_load_more_done';
+
 export const EXPLORE_REFRENCE_KEY = 'explore';
 
 export const EXPLORE_PLUS_PRESSED = 'explore_press_pressed';
 export const EXPLORE_PLUS_UNPRESSED = 'explore_press_unpressed';
+
+
+// Note: Search has different route map than SuggestionSearch
+const BASE_ROUTE = 'secure';
+export const RecommendationRouteMap = {
+  people: {
+    route: `${BASE_ROUTE}/user/friendship/recommendations`,
+    actions: {
+      refresh: EXPLORE_PEOPLE_REFRESH,
+      refresh_done: EXPLORE_PEOPLE_REFRESH_DONE,
+      load_more: EXPLORE_PEOPLE_LOAD_MORE,
+      load_more_done: EXPLORE_PEOPLE_LOAD_MORE_DONE
+    }
+  },
+  events: {
+    route: `${BASE_ROUTE}/event/recommendations`
+  },
+  tribes: {
+    route: `${BASE_ROUTE}/tribe/recommendations`
+  },
+  chatRooms: {
+    route: `${BASE_ROUTE}/chat/room/recommendations`,
+    actions: {
+      refresh: EXPLORE_CHAT_REFRESH,
+      refresh_done: EXPLORE_CHAT_REFRESH_DONE,
+      load_more: EXPLORE_CHAT_LOAD_MORE,
+      load_more_done: EXPLORE_CHAT_LOAD_MORE_DONE
+    }
+  }
+};
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -101,6 +147,41 @@ export default (state = INITIAL_STATE, action) => {
       newState = _.set(newState, 'people.hasNextPage', hasNextPage);
       newState = _.set(newState, 'people.loading', false);
 
+      return newState;
+    }
+
+    /* Chat related reducers */
+    case EXPLORE_CHAT_REFRESH: {
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'chatRooms.refreshing', true);
+      return newState;
+    }
+    
+    case EXPLORE_CHAT_REFRESH_DONE: {
+      const { data, hasNextPage, skip } = action.payload;
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'chatRooms.refreshing', false);
+      newState = _.set(newState, 'chatRooms.data', data);
+      newState = _.set(newState, 'chatRooms.hasNextPage', hasNextPage);
+      newState = _.set(newState, 'chatRooms.skip', skip);
+      return newState;
+    }
+
+    case EXPLORE_CHAT_LOAD_MORE: {
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'chatRooms.loading', true);
+      return newState;
+    }
+
+    case EXPLORE_CHAT_LOAD_MORE_DONE: {
+      let newState = _.cloneDeep(state);
+      const { data, hasNextPage, skip } = action.payload;
+      newState = _.set(newState, 'chatRooms.loading', false);
+
+      // TODO: de-duplicate of chat rooms
+      newState = _.set(newState, 'chatRooms.data', data);
+      newState = _.set(newState, 'chatRooms.hasNextPage', hasNextPage);
+      newState = _.set(newState, 'chatRooms.skip', skip);
       return newState;
     }
 
