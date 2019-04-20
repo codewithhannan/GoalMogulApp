@@ -341,9 +341,10 @@ class MyTribe extends Component {
     }
 
     const requestOptions = switchCasesMemberStatusChangeText(isMember);
+    const cancelIndex = switchCasesCancelIndex(isMember);
     const statusActionSheet = actionSheet(
       requestOptions,
-      CANCEL_REQUEST_INDEX,
+      cancelIndex,
       options
     );
     statusActionSheet();
@@ -1039,4 +1040,11 @@ const switchCasesMemberStatusChangeText = (status) => switchCase({
   Member: ['Leave tribe', 'Cancel'],
   JoinRequester: ['Cancel Request', 'Cancel'],
   Invitee: ['Accept', 'Decline', 'Cancel']
-})('Member')(status);
+})(['Cancel'])(status);
+
+const switchCasesCancelIndex = (status) => switchCase({
+  Admin: 0,
+  Member: 1,
+  JoinRequester: 1,
+  Invitee: 2
+})(0)(status);
