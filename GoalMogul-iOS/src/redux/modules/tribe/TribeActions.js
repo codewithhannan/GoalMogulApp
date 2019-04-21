@@ -17,7 +17,8 @@ import {
   TRIBE_MEMBER_REMOVE_SUCCESS,
   TRIBE_MEMBER_ACCEPT_SUCCESS,
   TRIBE_DETAIL_LOAD_SUCCESS,
-  TRIBE_DETAIL_LOAD_FAIL
+  TRIBE_DETAIL_LOAD_FAIL,
+  TRIBE_RESET
 } from './TribeReducers';
 
 import {
@@ -46,6 +47,13 @@ import { queryBuilder } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Tribe Actions ]';
 const BASE_ROUTE = 'secure/tribe';
+
+// Reset tribe page
+export const tribeReset = () => (dispatch) => {
+  dispatch({
+    type: TRIBE_RESET
+  });
+};
 
 // Creating a new report
 // category: ['General', 'User', 'Post', 'Goal', 'Comment', 'Tribe', 'Event']

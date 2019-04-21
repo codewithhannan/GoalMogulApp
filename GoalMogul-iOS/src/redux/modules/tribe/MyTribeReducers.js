@@ -79,6 +79,8 @@ export const MYTRIBE_ACCEPT_MEMBER_SUCCESS = 'mytribe_accept_member_success';
 // user accept invitation
 export const MYTRIBE_MEMBER_ACCEPT_SUCCESS = 'mytribe_member_accept_success';
 
+export const MYTRIBE_RESET = 'mytribe_reset';
+
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case MYTRIBE_SWITCH_TAB: {
@@ -276,6 +278,10 @@ export default (state = INITIAL_STATE, action) => {
       });
 
       return _.set(newState, 'feed', newTribeFeed);
+    }
+
+    case MYTRIBE_RESET: {
+      return { ...INITIAL_STATE };
     }
 
     default:

@@ -38,6 +38,7 @@ import check from '../../../asset/utils/check.png';
 import plus from '../../../asset/utils/plus.png';
 import post from '../../../asset/utils/post.png';
 import invite from '../../../asset/utils/invite.png';
+import envelope from '../../../asset/utils/envelope.png';
 
 import TestEventImage from '../../../asset/TestEventImage.png';
 
@@ -50,7 +51,8 @@ import {
   myTribeAdminDemoteUser,
   myTribeSelectMembersFilter,
   refreshMyTribeDetail,
-  myTribeAdminAcceptUser
+  myTribeAdminAcceptUser,
+  myTribeReset
 } from '../../../redux/modules/tribe/MyTribeActions';
 import {
   openTribeInvitModal,
@@ -129,6 +131,10 @@ class MyTribe extends Component {
       infoCardOpacity: new Animated.Value(1)
     };
     this._handleIndexChange = this._handleIndexChange.bind(this);
+  }
+
+  componentWillUnmount() {
+    this.props.myTribeReset();
   }
 
   /**
@@ -526,7 +532,7 @@ class MyTribe extends Component {
     const tintColor = isMember ? '#2dca4a' : 'gray';
 
     if (isMember) {
-      const { text, icon } = switchCaseMemberStatus(isMember);
+      const { text, iconSource, iconStyle } = switchCaseMemberStatus(isMember);
       return (
         <TouchableOpacity
           activeOpacity={0.6}
@@ -534,12 +540,8 @@ class MyTribe extends Component {
           onPress={() => this.handleStatusChange(isMember, item)}
         >
           <Image
-            source={check}
-            style={{
-              height: 10,
-              width: 13,
-              tintColor
-            }}
+            source={iconSource}
+            style={iconStyle}
           />
           <Text
             style={{
@@ -1020,6 +1022,7 @@ export default connect(
     myTribeAdminDemoteUser,
     myTribeSelectMembersFilter,
     myTribeAdminAcceptUser,
+    myTribeReset,
     openPostDetail,
     subscribeEntityNotification,
     unsubscribeEntityNotification
@@ -1029,21 +1032,39 @@ export default connect(
 const switchCaseMemberStatus = (status) => switchCase({
   Admin: {
     text: 'Admin',
-    icon: undefined
+    iconSource: check,
+    iconStyle: {
+      height: 10,
+      width: 13,
+      tintColor: '#2dca4a'
+    }
   },
   Member: {
     text: 'Member',
-    icon: undefined
+    iconSource: check,
+    iconStyle: {
+      height: 10,
+      width: 13,
+      tintColor: '#2dca4a'
+    }
   },
   JoinRequester: {
     text: 'Requested',
-    icon: undefined
+    iconSource: envelope,
+    iconStyle: {
+      height: 12,
+      width: 15
+    }
   },
   Invitee: {
     text: 'Respond to Invitation',
-    icon: undefined
+    iconSource: envelope,
+    iconStyle: {
+      height: 12,
+      width: 15
+    }
   }
-})('Member')(status);
+})({ text: 'Unknown', iconSource: check })(status);
 
 const switchCasesMemberStatusChangeText = (status) => switchCase({
   Admin: ['Cancel'],

@@ -68,6 +68,8 @@ export const TRIBE_MEMBER_ACCEPT_SUCCESS = 'tribe_member_accept_succes';
 export const TRIBE_DETAIL_LOAD_SUCCESS = 'tribe_detail_load_success';
 export const TRIBE_DETAIL_LOAD_FAIL = 'tribe_detail_load_fail';
 
+export const TRIBE_RESET = 'tribe_reset';
+
 
 // If a tribe is edited successfully and its _id is the same as the item._id
 // Replace the event with information updated. TribeTab, MyTribeTab should also listen to the change
@@ -75,6 +77,10 @@ export const TRIBE_EDIT_SUCCESS = 'tribe_edit_success';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case TRIBE_RESET: {
+      return { ...INITIAL_STATE };
+    }
+    
     case TRIBE_SWITCH_TAB: {
       const newNavigationState = { ...state.navigationState };
       newNavigationState.index = action.payload;
