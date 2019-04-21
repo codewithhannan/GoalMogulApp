@@ -35,6 +35,8 @@ import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 import check from '../../asset/utils/check.png';
 import plus from '../../asset/utils/plus.png';
 import post from '../../asset/utils/post.png';
+import envelope from '../../asset/utils/envelope.png';
+
 import TestEventImage from '../../asset/TestEventImage.png';
 
 // Actions
@@ -49,7 +51,8 @@ import {
   leaveTribe,
   acceptTribeInvit,
   declineTribeInvit,
-  tribeSelectMembersFilter
+  tribeSelectMembersFilter,
+  tribeReset
 } from '../../redux/modules/tribe/TribeActions';
 
 import {
@@ -115,6 +118,10 @@ class Tribe extends Component {
     this._handleIndexChange = this._handleIndexChange.bind(this);
   }
 
+  componentWillUnmount() {
+    this.props.tribeReset();
+  }
+
   /**
    * On plus clicked, show two icons. Post and Invite
    * const { textStyle, iconStyle, iconSource, text, onPress } = button;
@@ -175,7 +182,17 @@ class Tribe extends Component {
         showPlus: true
       });
     };
-    Actions.push('createButtonOverlay', { buttons, callback, pageId: this.props.pageId });
+    Actions.push('createButtonOverlay', { 
+      buttons, 
+      callback, 
+      pageId: this.props.pageId,
+      onCancel: () => {
+        this.setState({
+          ...this.state,
+          showPlus: true
+        });
+      }
+    });
   }
 
   handleTribeOptionsOnSelect = (value) => {
@@ -232,9 +249,10 @@ class Tribe extends Component {
     }
 
     const requestOptions = switchCasesMemberStatusChangeText(isMember);
+    const cancelIndex = switchCasesCancelIndex(isMember);
     const statusActionSheet = actionSheet(
       requestOptions,
-      CANCEL_REQUEST_INDEX,
+      cancelIndex,
       options
     );
     statusActionSheet();
@@ -444,7 +462,7 @@ class Tribe extends Component {
     const tintColor = isMember ? '#2dca4a' : 'gray';
 
     if (isMember) {
-      const { text } = switchCaseMemberStatus(isMember);
+      const { text, iconSource, iconStyle } = switchCaseMemberStatus(isMember);
       return (
         <TouchableOpacity
           activeOpacity={0.6}
@@ -452,12 +470,8 @@ class Tribe extends Component {
           onPress={() => this.handleStatusChange(isMember, item)}
         >
           <Image
-            source={check}
-            style={{
-              height: 10,
-              width: 13,
-              tintColor
-            }}
+            source={iconSource}
+            style={iconStyle}
           />
           <Text
             style={{
@@ -893,21 +907,39 @@ const checkIsAdmin = (members, userId) => {
 const switchCaseMemberStatus = (status) => switchCase({
   Admin: {
     text: 'Admin',
-    icon: undefined
+    iconSource: check,
+    iconStyle: {
+      height: 10,
+      width: 13,
+      tintColor: '#2dca4a'
+    }
   },
   Member: {
     text: 'Member',
-    icon: undefined
+    iconSource: check,
+    iconStyle: {
+      height: 10,
+      width: 13,
+      tintColor: '#2dca4a'
+    }
   },
   JoinRequester: {
-    text: 'requsted',
-    icon: undefined
+    text: 'Requested',
+    iconSource: envelope,
+    iconStyle: {
+      height: 12,
+      width: 15
+    }
   },
   Invitee: {
-    text: 'accept',
-    icon: undefined
+    text: 'Respond to Invitation',
+    iconSource: envelope,
+    iconStyle: {
+      height: 12,
+      width: 15
+    }
   }
-})('Member')(status);
+})({ text: 'Unknown', iconSource: check })(status);
 
 const switchCasesMemberStatusChangeText = (status) => switchCase({
   Admin: ['Cancel'],
@@ -915,6 +947,13 @@ const switchCasesMemberStatusChangeText = (status) => switchCase({
   JoinRequester: ['Cancel Request', 'Cancel'],
   Invitee: ['Accept', 'Decline', 'Cancel']
 })('Member')(status);
+
+const switchCasesCancelIndex = (status) => switchCase({
+  Admin: 0,
+  Member: 1,
+  JoinRequester: 1,
+  Invitee: 2
+})(0)(status);
 
 export default connect(
   mapStateToProps,
@@ -932,6 +971,7 @@ export default connect(
     openPostDetail,
     tribeSelectMembersFilter,
     subscribeEntityNotification,
-    unsubscribeEntityNotification
+    unsubscribeEntityNotification,
+    tribeReset
   }
 )(Tribe);

@@ -14,8 +14,8 @@ import { Actions } from 'react-native-router-flux';
 
 // Actions
 import {
-    exploreRefreshPeople,
-    exploreLoadMorePeople
+    exploreRefreshTab,
+    exploreLoadMoreTab
 } from '../../../redux/modules/explore/ExploreActions';
 
 // Selectors
@@ -27,6 +27,8 @@ import {
 import EmptyResult from '../../Common/Text/EmptyResult';
 import FriendCardView from '../../MeetTab/V2/FriendCardView';
 
+const TAB_KEY = 'people';
+
 class PeopleTab extends React.Component {
     componentDidMount() {
         if (!this.props.data || _.isEmpty(this.props.data)) {
@@ -36,9 +38,9 @@ class PeopleTab extends React.Component {
 
     _keyExtractor = (item) => item._id;
 
-    handleOnRefresh = () => this.props.exploreRefreshPeople();
+    handleOnRefresh = () => this.props.exploreRefreshTab(TAB_KEY);
 
-    handleOnLoadMore = () => this.props.exploreLoadMorePeople();
+    handleOnLoadMore = () => this.props.exploreLoadMoreTab(TAB_KEY);
 
     renderItem = ({ item }) => {
         return (
@@ -140,7 +142,7 @@ const makeMapStateToProps = () => {
 export default connect(
     makeMapStateToProps,
     {
-        exploreRefreshPeople,
-        exploreLoadMorePeople
+        exploreRefreshTab,
+        exploreLoadMoreTab
     }
 )(PeopleTab);

@@ -15,7 +15,8 @@ import {
   MYTRIBE_PROMOTE_MEMBER_SUCCESS,
   MYTRIBE_MEMBER_SELECT_FILTER,
   MYTRIBE_ACCEPT_MEMBER_SUCCESS,
-  MYTRIBE_DEMOTE_MEMBER_SUCCESS
+  MYTRIBE_DEMOTE_MEMBER_SUCCESS,
+  MYTRIBE_RESET
 } from './MyTribeReducers';
 
 // Selectors
@@ -28,6 +29,13 @@ import { queryBuilder } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Tribe Actions ]';
 const BASE_ROUTE = 'secure/tribe';
+
+// Reset myTribe page
+export const myTribeReset = () => (dispatch) => {
+  dispatch({
+    type: MYTRIBE_RESET
+  });
+};
 
 export const tribeSelectTab = (index) => (dispatch) => {
   dispatch({

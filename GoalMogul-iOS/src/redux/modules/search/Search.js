@@ -6,27 +6,7 @@ import {
   SHARE_NEW_POST_SUCCESS
 } from '../feed/post/NewShareReducers';
 
-const INITIAL_STATE_EVENT = {
-  data: [],
-  queryId: undefined,
-  loading: false,
-  skip: 0,
-  limit: 20,
-  hasNextPage: undefined,
-  refreshing: false
-};
-
-const INITIAL_STATE_TRIBE = {
-  data: [],
-  queryId: undefined,
-  loading: false,
-  skip: 0,
-  limit: 20,
-  hasNextPage: undefined,
-  refreshing: false
-};
-
-const INITIAL_STATE_FRIENDS = {
+const INITIAL_SEARCH_STATE = {
   data: [],
   queryId: undefined,
   loading: false,
@@ -50,22 +30,11 @@ const INITIAL_STATE = {
     sortBy: 'relevance',
     category: 'people'
   },
-  people: {
-    data: [],
-    queryId: undefined,
-    loading: false,
-    skip: 0,
-    limit: 20,
-    hasNextPage: undefined,
-    refreshing: false
-  },
-  friends: {
-    ...INITIAL_STATE_FRIENDS
-  },
-  tribes: { ...INITIAL_STATE_TRIBE },
-  events: {
-    ...INITIAL_STATE_EVENT
-  },
+  people: { ...INITIAL_SEARCH_STATE },
+  friends: { ...INITIAL_SEARCH_STATE },
+  tribes: { ...INITIAL_SEARCH_STATE },
+  events: { ...INITIAL_SEARCH_STATE },
+  chatRooms: { ...INITIAL_SEARCH_STATE },
   searchContent: ''
 };
 
@@ -102,7 +71,7 @@ export const SearchRouteMap = {
     route: `${BASE_ROUTE}/tribe/es`
   },
   chatRooms: {
-    route: ''
+    route: `${BASE_ROUTE}/chat/room/es`
   }
 };
 
@@ -184,7 +153,16 @@ export default (state = INITIAL_STATE, action) => {
       const tabInitialState = dotPath(tab, INITIAL_STATE);
       let newState = _.cloneDeep(state);
       newState = _.set(newState, tab, tabInitialState);
+
+      // User clears search content
       newState = _.set(newState, 'searchContent', '');
+
+      // Clear the search result for all tabs
+      newState = _.set(newState, 'people', { ...INITIAL_SEARCH_STATE });
+      newState = _.set(newState, 'events', { ...INITIAL_SEARCH_STATE });
+      newState = _.set(newState, 'tribes', { ...INITIAL_SEARCH_STATE });
+      newState = _.set(newState, 'friends', { ...INITIAL_SEARCH_STATE });
+
       return newState;
     }
 
