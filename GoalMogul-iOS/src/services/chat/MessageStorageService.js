@@ -174,6 +174,17 @@ class MessageStorageService {
             _id: messageId,
         }, callback);
     }
+    /**
+     * Deletes all messages in a conversation from the store
+     * @param {String} conversationId: id of the conversation to delete messages from
+     * @param {Function} callback: (err, numRemoved)
+     */
+    deleteConversationMessages = (conversationId, callback) => {
+        localDb.remove({
+            recipient: this.mountedUser.userId,
+            chatRoomRef: conversationId,
+        }, { multi: true }, callback);
+    }
 
     // -------------------------------- Getters -------------------------------- //
 

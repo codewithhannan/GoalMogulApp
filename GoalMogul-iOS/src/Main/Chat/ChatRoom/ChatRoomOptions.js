@@ -26,6 +26,7 @@ import muteIcon from '../../../asset/utils/mute.png';
 import editIcon from '../../../asset/utils/edit.png';
 import leaveIcon from '../../../asset/utils/logout.png';
 import searchIcon from '../../../asset/utils/search.png';
+import deleteIcon from '../../../asset/utils/trash.png';
 import { MenuProvider } from 'react-native-popup-menu';
 import SettingCard from '../../Setting/SettingCard';
 import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Constants';
@@ -35,6 +36,7 @@ import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
 import { Image, Text, Divider } from 'react-native-elements';
 import { APP_BLUE_BRIGHT } from '../../../styles';
 import { removeChatMember } from '../../../redux/modules/chat/ChatRoomMembersActions';
+import { deleteConversationMessages } from '../../../redux/modules/chat/ChatRoomActions';
 
 const DEBUG_KEY = '[ UI ChatRoomOptions ]';
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -85,11 +87,41 @@ class ChatRoomOptions extends React.Component {
         if (isAdmin) {
             return Alert.alert('Forbidden.', 'Admins cannot leave their own conversations.');
         };
-        this.props.removeChatMember(user._id, chatRoom._id, (err, isSuccess) => {
-            if (isSuccess) {
-                Actions.popTo('chat');
-            };
+        Alert.alert('Are you sure?', 'You will not be able to send or recieve messages from this conversation after you leave...', [{
+            text: 'Leave conversation',
+            onPress: () => this.props.removeChatMember(user._id, chatRoom._id, (err, isSuccess) => {
+                if (!isSuccess) {
+                    Alert.alert('Error', 'Could not leave chat room. Please try again later.');
+                } else {
+                    Actions.popTo('chat');
+                };
+            }),
+        }, {
+            text: 'Cancel',
+            style: 'cancel',
+        }], {
+            cancelable: false,
         });
+    }
+    deleteConversationMessages() {
+        const { chatRoom } = this.props;
+        if (!chatRoom) return;
+        Alert.alert(
+            'Are you sure?',
+            'This will delete all your copies of this conversation\'s messages',
+            [
+                {
+                    text: 'Delete all',
+                    onPress: () => this.props.deleteConversationMessages(chatRoom, [])
+                },
+                {
+                    text: 'Cancel',
+                    onPress: () => {/* let it close */},
+                    style: 'cancel',
+                },
+            ],
+            { cancelable: false },
+        );
     }
 
     renderChatRoomStatus() {
@@ -243,6 +275,12 @@ class ChatRoomOptions extends React.Component {
                                 explanation="Search messages in thes conversation"
                                 onPress={this.openMessageSearch.bind(this)}
                             />
+                            <SettingCard
+                                title="Delete all messages"
+                                icon={deleteIcon}
+                                explanation="Delete all your copies of this conversation's messages"
+                                onPress={this.deleteConversationMessages.bind(this)}
+                            />
                             {chatRoom.roomType != 'Direct' && (
                                 <SettingCard
                                     title={'Leave Conversation'}
@@ -312,6 +350,7 @@ export default connect(
         changeChatRoomMute,
         addMemberToChatRoom,
         removeChatMember,
+        deleteConversationMessages,
 	}
 )(ChatRoomOptions);
 

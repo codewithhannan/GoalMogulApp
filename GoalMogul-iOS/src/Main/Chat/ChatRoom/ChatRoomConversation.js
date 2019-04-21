@@ -16,7 +16,7 @@ import {
 import { connect } from 'react-redux';
 
 import MessageStorageService from '../../../services/chat/MessageStorageService';
-import LiveChatService from '../../../socketio/services/LiveChatService';
+import LiveChatService, { OUTGOING_EVENT_NAMES } from '../../../socketio/services/LiveChatService';
 
 // Components
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal';
@@ -77,7 +77,12 @@ class ChatRoomConversation extends React.Component {
         LiveChatService.addListenerToEvent('typingindicator', LISTENER_KEY, this._handleIncomingTypingStatusUpdate.bind(this));
         if (chatRoomId) {
             this.props.initialLoad(chatRoomId, limit);
-            LiveChatService.emitEvent('joinroom', { chatRoomId, }, (resp) => {
+            LiveChatService.emitEvent(OUTGOING_EVENT_NAMES.joinRoom, { chatRoomId, }, (resp) => {
+                if (resp.error) {
+                    console.log(`${DEBUG_KEY} Error running joinroom socket event`, resp.message);
+                };
+            });
+            LiveChatService.emitOnConnect(LISTENER_KEY, OUTGOING_EVENT_NAMES.joinRoom, { chatRoomId, }, (resp) => {
                 if (resp.error) {
                     console.log(`${DEBUG_KEY} Error running joinroom socket event`, resp.message);
                 };
@@ -93,9 +98,15 @@ class ChatRoomConversation extends React.Component {
             MessageStorageService.markConversationMessagesAsRead(newChatRoomId);
             MessageStorageService.setActiveChatRoom(newChatRoomId);
             // leave old chat room
-            LiveChatService.emitEvent('leaveroom', { chatRoomId: oldChatRoomId, }, (resp) => {/* nothing to do */});
+            LiveChatService.emitEvent(OUTGOING_EVENT_NAMES.leaveRoom, { chatRoomId: oldChatRoomId, }, (resp) => {/* nothing to do */});
+            LiveChatService.cancelEmitOnConnect(LISTENER_KEY);
             // join new chat room
-            LiveChatService.emitEvent('joinroom', { chatRoomId: newChatRoomId, }, (resp) => {
+            LiveChatService.emitEvent(OUTGOING_EVENT_NAMES.joinRoom, { chatRoomId: newChatRoomId, }, (resp) => {
+                if (resp.error) {
+                    console.log(`${DEBUG_KEY} Error running joinroom socket event`, resp.message);
+                };
+            });
+            LiveChatService.emitOnConnect(LISTENER_KEY, OUTGOING_EVENT_NAMES.joinRoom, { chatRoomId: newChatRoomId, }, (resp) => {
                 if (resp.error) {
                     console.log(`${DEBUG_KEY} Error running joinroom socket event`, resp.message);
                 };
@@ -103,7 +114,7 @@ class ChatRoomConversation extends React.Component {
         };
     }
 	componentWillUnmount() {
-        const { chatRoom } = this.props;
+        const { chatRoom, userId } = this.props;
         const chatRoomId = chatRoom && chatRoom._id;
         if (!chatRoomId) return;
 
@@ -113,9 +124,14 @@ class ChatRoomConversation extends React.Component {
         MessageStorageService.unsetActiveChatRoom(chatRoomId);
         MessageStorageService.offIncomingMessageStored(LISTENER_KEY);
         LiveChatService.removeListenerFromEvent('typingindicator', LISTENER_KEY);
-        LiveChatService.emitEvent('leaveroom', {
+        LiveChatService.emitEvent(OUTGOING_EVENT_NAMES.updateTypingStatus, {
+            userId, chatRoomId,
+            typingStatus: false,
+        }, (resp) => { });
+        LiveChatService.emitEvent(OUTGOING_EVENT_NAMES.leaveRoom, {
             chatRoomId,
         }, (resp) => {/* nothing to do */});
+        LiveChatService.cancelEmitOnConnect(LISTENER_KEY);
     }
     _pollChatRoomDocument() {
         this.chatRoomDocumentPoll = setInterval(this._refreshChatRoom.bind(this), CHAT_ROOM_DOCUMENT_REFRESH_INTERVAL);
@@ -255,29 +271,18 @@ class ChatRoomConversation extends React.Component {
             };
         });
     }
-    onChatTextInputChanged() {
+    onChatTextInputChanged(text) {
         const { userId, chatRoom } = this.props;
-        LiveChatService.emitEvent('updatetypingstatus', {
+        LiveChatService.emitEvent(OUTGOING_EVENT_NAMES.updateTypingStatus, {
             userId,
             chatRoomId: chatRoom && chatRoom._id,
-            typingStatus: true,
+            typingStatus: text.length != 0,
         }, (resp) => {
+            console.log(resp)
             if (resp.error) {
                 console.log(`${DEBUG_KEY} error setting user's typing status.`, resp.message);
             };
         });
-        clearTimeout(this.clearTypingStatusTimeout);
-        this.clearTypingStatusTimeout = setTimeout(() => {
-            LiveChatService.emitEvent('updatetypingstatus', {
-                userId,
-                chatRoomId: chatRoom && chatRoom._id,
-                typingStatus: false,
-            }, (resp) => {
-                if (resp.error) {
-                    console.log(`${DEBUG_KEY} error clearing user's typing status.`, resp.message);
-                };
-            });
-        }, 1000);
     }
     renderTypingIndicatorFooter() {
         const { currentlyTypingUserIds, chatRoomMembersMap } = this.props;
@@ -288,15 +293,16 @@ class ChatRoomConversation extends React.Component {
                     data={currentlyTypingUserIds.slice(0, MAX_TYPING_INDICATORS_TO_DISPLAY)
                             .map(userId => chatRoomMembersMap[userId])
                             .filter(docExists => docExists)}
-                    renderItem={({item}) => (<View style={{width: '100%', minHeight: 42}}>
+                    renderItem={({item}) => (<View style={{width: '100%', minHeight: 42, flexDirection: 'row', alignItems: 'center', marginTop: 6}}>
                         <ProfileImage
-                            imageStyle={{ height: 35, width: 35, borderRadius: 4 }}
+                            imageStyle={{ height: 39, width: 39, borderRadius: 4, flex: 1 }}
                             imageUrl={item.profile && item.profile.image}
-                            imageContainerStyle={{ ...styles.imageContainerStyle, marginTop: 2 }}
+                            imageContainerStyle={{ ...styles.imageContainerStyle, height: 42, width: 42, marginLeft: 3 }}
                         />
                         <Octicons
                             name='ellipsis'
-                            style={{color: '#CCC'}}
+                            size={48}
+                            style={{color: '#CCC', flex: 2, marginLeft: 12}}
                         />
                     </View>)}
                 />
@@ -374,8 +380,10 @@ class ChatRoomConversation extends React.Component {
             >
                 <AutoGrowingTextInput
                     ref={inputComponent => this._textInput = inputComponent}
-                    onChange={props.onInputTextChanged}
-                    onChangeText={(text) => props.onTextChanged(text)}
+                    onChangeText={(text) => {
+                        props.onTextChanged(text);
+                        props.onInputTextChanged(text);
+                    }}
                     onContentSizeChange={(e) => props.onInputSizeChanged({
                         ...e.nativeEvent.contentSize,
                         height: e.nativeEvent.contentSize.height + 12, // account for input padding

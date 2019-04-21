@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { CHAT_ROOM_LOAD_INITIAL_BEGIN, CHAT_ROOM_LOAD_INITIAL, CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS, CHAT_ROOM_UPDATE_MESSAGES, CHAT_ROOM_LOAD_MORE_MESSAGES_BEGIN, CHAT_ROOM_LOAD_MORE_MESSAGES, CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF, CHAT_ROOM_UPDATE_GHOST_MESSAGES, CHAT_ROOM_CLOSE_ACTIVE_ROOM } from "./ChatRoomReducers";
 import { api as API } from "../../middleware/api";
 import { Alert } from 'react-native';
@@ -53,7 +55,7 @@ export const initialLoad = (currentChatRoomId, pageSize) => (dispatch, getState)
 					type: CHAT_ROOM_LOAD_INITIAL,
 					payload: { messages: [], chatRoom: null },
 				});
-				return Alert.alert('Error', 'Invalid chat room.');
+				return; // Alert.alert('Error', 'Invalid chat room.');
 			};
 			MessageStorageService.getLatestMessagesByConversation(currentChatRoomId, pageSize, 0, async (err, messages) => {
 				if (err || !messages) {
@@ -88,12 +90,12 @@ export const refreshChatRoom = (currentChatRoomId, maybeCallback) => (dispatch, 
 		.then(resp => {
 			if (resp.status != 200) {
 				maybeCallback && maybeCallback(new Error('Server error refreshing chat room'));
-				return Alert.alert('Error', 'Could not refresh chat room. Please try again later.');
+				return// Alert.alert('Error', 'Could not refresh chat room. Please try again later.');
 			};
 			const chatRoom = resp.data;
 			maybeCallback && maybeCallback(null, chatRoom);
 			if (!chatRoom) {
-				return Alert.alert('Error', 'Invalid chat room.');
+				return; // Alert.alert('Error', 'Invalid chat room.');
 			};
 			dispatch({
 				type: CHAT_ROOM_LOAD_INITIAL,
@@ -118,7 +120,7 @@ export const updateTypingStatus = (userId, updatedTypingStatus, currentlyTypingU
 		updatedUserIds.push(userId.toString());
 		updatedUserIds = _.uniq(updatedUserIds);
 	} else {
-		updatedUserIds = _.remove(updatedUserIds, (memberId) => memberId == userId);
+		_.remove(updatedUserIds, (memberId) => memberId == userId);
 	};
 	dispatch({
 		type: CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS,
@@ -186,6 +188,15 @@ export const loadOlderMessages = (chatRoom, pageSize, pageOffset) => (dispatch, 
 export const deleteMessage = (messageId, chatRoom, currentMessageList) => (dispatch, getState) => {
 	MessageStorageService.deleteMessage(messageId, (err, numRemoved) => {
 		if (numRemoved) {
+			updateMessageList(chatRoom, currentMessageList.filter(messageDoc => messageDoc._id != messageId))(dispatch, getState);
+		};
+	});
+};
+
+export const deleteConversationMessages = (chatRoom, currentMessageList) => (dispatch, getState) => {
+	MessageStorageService.deleteConversationMessages(chatRoom._id, (err, numRemoved) => {
+		if (numRemoved) {
+			Alert.alert('Success', 'All messages from this conversation have been purged.');
 			updateMessageList(chatRoom, currentMessageList.filter(messageDoc => messageDoc._id != messageId))(dispatch, getState);
 		};
 	});
