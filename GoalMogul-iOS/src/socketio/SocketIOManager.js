@@ -21,7 +21,7 @@ class SocketIOManager {
      */
     initialize() {
         this.socketManager = new SocketIOClient.Manager(SERVER_URL, SOCKET_CONFIG);
-        this.socketManager.on('connect', () => {
+        this.socketManager.on('reconnect', () => {
             const tasksToRun = Object.values(this.tasksOnSocketConnect);
             for (let task of tasksToRun) {
                 if (typeof task != "function") {
@@ -85,23 +85,23 @@ class SocketIOManager {
      */
     addTaskToOnConnect(taskPayload, maybeNsp) {
         if (!this.isInitialized) throw new Error('Must initialize socket manager first.');
-        const { taskeName, task } = taskPayload;
-        if (typeof taskeName != "string" || typeof task != "function") {
+        const { taskName, task } = taskPayload;
+        if (typeof taskName != "string" || typeof task != "function") {
             throw new Error('taskPayload must contain a taskName string and a task function');
         };
         let socket = this.socketManager;
         if (maybeNsp) {
             socket = this.socketsByNamespace[maybeNsp];
         };
-        this.tasksOnSocketConnect[taskeName] = () => task(socket);
+        this.tasksOnSocketConnect[taskName] = () => task(socket);
     }
     /**
      * Removes a task that was originally queued to fire on a connection or reconnection event
      * @param {String} taskName
      */
     removeTaskFromOnConnect(taskName) {
-        this.tasksOnSocketConnect[taskeName] = undefined;
-        delete this.tasksOnSocketConnect[taskeName];
+        this.tasksOnSocketConnect[taskName] = undefined;
+        delete this.tasksOnSocketConnect[taskName];
     }
 };
 

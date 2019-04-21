@@ -1,4 +1,1 @@
---------------------------------------------------------
-BLOCKED
---------------------------------------------------------
-- Test typing indicator & style it
+- add 'save to camera roll' for image longpress
