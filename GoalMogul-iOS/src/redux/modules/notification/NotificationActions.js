@@ -37,6 +37,9 @@ import {
   myEventDetailOpenWithId
 } from '../event/MyEventActions';
 
+/* Utils */
+import { Logger } from '../../middleware/utils/Logger';
+
 import {
   NOTIFICATION_UNSUBSCRIBE,
   NOTIFICATION_SUBSCRIBE,
@@ -54,6 +57,61 @@ const NOTIFICATION_ALERT_SHOWN = 'notification_alert_shown';
 const NOTIFICATION_UNREAD_QUEUE_PREFIX = 'notification_unread_queue_prefix';
 
 const isValidItem = (item) => item !== undefined && item !== null && !_.isEmpty(item);
+
+
+/**
+ * Handle when push notification is selected
+ * @param {Object} notification 
+ */
+export const handlePushNotification = (notification) => (dispatch, getState) => {
+  Logger.log(`${DEBUG_KEY}: notification is:`, notification, 5);
+  const { data, origin, remote } = notification;
+
+  if (!data || !data.path) {
+    console.warn(`${DEBUG_KEY}: [ _handleNotification ]: Invalid notification data:`, data);
+    return;
+  }
+  const path = data.path.split('/').filter(a => a !== '');
+  const entityType = path[0];
+  const entityId = path[1];
+
+  if (!entityId || !entityType || entityId.trim() === '' || entityType.trim() === '') {
+    console.warn(`${DEBUG_KEY}: [ _handleNotification ]: Invalid notification data path:`, data);
+    return;
+  }
+
+  // When user pressed on notification. origin is marked as selected.
+  if (origin !== 'selected') {
+    Logger.log(`${DEBUG_KEY}: [ handlePushNotification ]: unselected notification`, notification, 5);
+    return;
+  }
+
+  if (entityType === 'goal') {
+    return openGoalDetailById(entityId)(dispatch, getState);
+  }
+
+  if (entityType === 'user') {
+    return openProfile(entityId)(dispatch, getState);
+  }
+
+  if (entityType === 'post') {
+    return openPostDetailById(entityId)(dispatch, getState);
+  }
+
+  if (entityType === 'event') {
+    return myEventDetailOpenWithId(entityId)(dispatch, getState);
+  }
+
+  if (entityType === 'tribe') {
+    return myTribeDetailOpenWithId(entityId)(dispatch, getState);
+  }
+
+  if (entityType === 'chat') {
+    // TODO: Chat
+    return;
+  }
+};
+
 /**
  * 
  * @param {*} parsedNoti:{notificationMessage, icon, path} 
@@ -119,7 +177,6 @@ export const openNotificationDetail = (item) => (dispatch, getState) => {
 
   if (entityType === 'chat') {
     // TODO: Chat
-    // return this.props.openPostDetailById(entityId)(dispatch, getState);
     return;
   }
 };
