@@ -106,8 +106,8 @@ export const handlePushNotification = (notification) => (dispatch, getState) => 
     return myTribeDetailOpenWithId(entityId)(dispatch, getState);
   }
 
-  if (entityType === 'chat') {
-    // TODO: Chat
+  if (entityType === 'chatroom') {
+    Actions.push('chatRoomConversation', { chatRoomId: entityId });
     return;
   }
 };
@@ -175,8 +175,8 @@ export const openNotificationDetail = (item) => (dispatch, getState) => {
     return myTribeDetailOpenWithId(entityId)(dispatch, getState);
   }
 
-  if (entityType === 'chat') {
-    // TODO: Chat
+  if (entityType === 'chatroom') {
+    Actions.push('chatRoomConversation', { chatRoomId: entityId });
     return;
   }
 };
