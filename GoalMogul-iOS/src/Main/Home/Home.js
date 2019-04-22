@@ -5,6 +5,7 @@ import { TabView } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
+import { Notifications } from 'expo';
 
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup';
@@ -24,7 +25,8 @@ import { refreshFeed } from '../../redux/modules/home/feed/actions';
 
 import { 
   subscribeNotification, 
-  saveUnreadNotification 
+  saveUnreadNotification,
+  handlePushNotification
 } from '../../redux/modules/notification/NotificationActions';
 
 // Assets
@@ -34,6 +36,9 @@ import plus from '../../asset/utils/plus.png';
 
 // Styles
 import { APP_DEEP_BLUE } from '../../styles';
+
+// Utils
+import { Logger } from '../../redux/middleware/utils/Logger';
 
 const TabIconMap = {
   goals: {
@@ -71,11 +76,14 @@ class Home extends Component {
     this._renderScene = this._renderScene.bind(this);
     this.setTimer = this.setTimer.bind(this);
     this.stopTimer = this.stopTimer.bind(this);
+    this._handleNotification = this._handleNotification.bind(this);
+    this._notificationSubscription = undefined;
   }
 
 
   componentDidMount() {
     AppState.addEventListener('change', this.handleAppStateChange);
+    this._notificationSubscription = Notifications.addListener(this._handleNotification);
 
     // Set timer to fetch profile again if previously failed
     this.setTimer();
@@ -84,7 +92,7 @@ class Home extends Component {
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.handleAppStateChange);
-    
+    this._notificationSubscription.remove();
     // Remove timer in case app crash
     this.stopTimer();
   }
@@ -115,6 +123,10 @@ class Home extends Component {
     if (routes[index].key === 'activity') {
       return this.activityFeed.getWrappedInstance().scrollToTop();
     }
+  }
+
+  _handleNotification(notification) {
+    this.props.handlePushNotification(notification);
   }
 
   handleCreateGoal = () => {
@@ -340,8 +352,11 @@ export default connect(
     fetchAppUserProfile,
     homeSwitchTab,
     openCreateOverlay,
+    /* Notification related */
     subscribeNotification,
     saveUnreadNotification,
+    handlePushNotification,
+    /* Feed related */
     refreshGoals,
     refreshFeed,
     fetchProfile,
