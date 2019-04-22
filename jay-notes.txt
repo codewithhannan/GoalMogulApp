@@ -1,1 +1,1 @@
-- add 'save to camera roll' for image longpress
+- set up ad hoc profile for building the app

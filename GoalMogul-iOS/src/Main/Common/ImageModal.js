@@ -3,9 +3,18 @@ import {
   View,
   TouchableOpacity,
   Image,
-  Dimensions
+  Dimensions,
+  CameraRoll,
+  Platform,
+  Alert,
 } from 'react-native';
 import Modal from 'react-native-modal';
+
+import {
+  FileSystem, 
+  Permissions,
+} from 'expo';
+
 
 // Assets
 import cancel from '../../asset/utils/cancel_no_background.png';
@@ -21,12 +30,38 @@ const { width, height } = Dimensions.get('window');
 const DEBUG_KEY = '[ UI ImageModal ]';
 
 class ImageModal extends React.Component {
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
     if (this.props.mediaRef !== nextProps.mediaRef || this.props.mediaModal !== nextProps.mediaModal) {
       return true;
     }
     // No need to re-render if mediaRef is the same
     return false;
+  }
+  async saveToCameraRoll() {
+		const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+		if (status !== 'granted') {
+			return Alert.alert('Denied', 'Enable sharing photos in your phone\'s settings to continue...');
+    };
+
+    let urlToRender = this.props.mediaRef;
+    if (!urlToRender.includes(IMAGE_BASE_URL) && !this.props.isLocalFile) {
+      urlToRender = `${IMAGE_BASE_URL}${urlToRender}`;
+    };
+    if (Platform.OS === 'android') {
+      
+		FileSystem.downloadAsync(urlToRender, `${FileSystem.cacheDirectory}saveChatImage/${toHashCode(urlToRender)}`)
+        .then((res) => {
+          CameraRoll.saveToCameraRoll(res.path())
+            .then(Alert.alert('Saved', 'Photo saved to camera roll'))
+        })
+    } else {
+        CameraRoll.saveToCameraRoll(urlToRender)
+          .then(Alert.alert('Saved', 'Photo saved to camera roll'))
+    };
+  }
+
+  closeModal() {
+    this.props.closeModal && this.props.closeModal();
   }
 
   render() {
@@ -35,14 +70,14 @@ class ImageModal extends React.Component {
     let urlToRender = this.props.mediaRef;
     if (!urlToRender.includes(IMAGE_BASE_URL) && !this.props.isLocalFile) {
       urlToRender = `${IMAGE_BASE_URL}${urlToRender}`;
-    }
+    };
 
     return (
       <Modal
         backdropColor={'black'}
         isVisible={this.props.mediaModal}
         backdropOpacity={1}
-        onSwipe={() => this.props.closeModal()}
+        onSwipe={() => this.closeModal()}
         swipeDirection='down'
         style={{ flex: 1 }}
         deviceWidth={width}
@@ -57,7 +92,7 @@ class ImageModal extends React.Component {
           <TouchableOpacity
             activeOpacity={0.6}
             onPress={() => {
-              this.props.closeModal();
+              this.closeModal();
             }}
             style={{ position: 'absolute', top: 5, left: 5, padding: 10, zIndex: 2 }}
           >
@@ -69,11 +104,16 @@ class ImageModal extends React.Component {
               }}
             />
           </TouchableOpacity>
-          <Image
-            source={{ uri: urlToRender }}
-            style={{ width, height }}
-            resizeMode='contain'
-          />
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onLongPress={this.saveToCameraRoll.bind(this)}
+          >
+            <Image
+              source={{ uri: urlToRender }}
+              style={{ width, height }}
+              resizeMode='contain'
+            />
+          </TouchableOpacity>
         </View>
       </Modal>
     );
