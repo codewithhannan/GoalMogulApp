@@ -41,7 +41,7 @@ class EditEmailForm extends Component {
   /* Refactor error function out */
   renderError(error) {
     return error ? (
-      <View style={{ height: 15 }}>
+      <View style={{ marginTop: 5 }}>
         <Text style={styles.errorStyle}>{error}</Text>
       </View>
     ) : null;
@@ -123,6 +123,12 @@ const styles = {
     paddingLeft: 20,
     paddingRight: 20,
     marginBottom: 5,
+  },
+  errorStyle: {
+    color: '#ff0033',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    fontSize: 15
   }
 };
 
