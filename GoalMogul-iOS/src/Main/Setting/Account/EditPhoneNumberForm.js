@@ -63,7 +63,8 @@ class EditPhoneNumberForm extends Component {
   /* Refactor error function out */
   renderError(error) {
     return error ? (
-      <View style={{ height: 15 }}>
+      <View style={{ marginTop: 5 }}>
+      {/* <View style={{ height: 20 }}> */}
         <Text style={styles.errorStyle}>{error}</Text>
       </View>
     ) : null;
@@ -149,7 +150,7 @@ const styles = {
     marginTop: 15,
     color: '#ff0033',
     justifyContent: 'center',
-    marginBottom: 4,
+    // marginBottom: 4,
     alignSelf: 'center'
   }
 };
