@@ -1,8 +1,9 @@
+import { AsyncStorage } from 'react-native';
 /**
  * Actions for notification tab and general notification like subscribe
  */
 import { Permissions, Notifications, SecureStore, Linking } from 'expo';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import _ from 'lodash';
 
 // Components
@@ -55,6 +56,7 @@ const DEBUG_KEY = '[ Action Notification ]';
 const NOTIFICATION_TOKEN_KEY = 'notification_token_key';
 const NOTIFICATION_ALERT_SHOWN = 'notification_alert_shown';
 const NOTIFICATION_UNREAD_QUEUE_PREFIX = 'notification_unread_queue_prefix';
+const HAS_RUN_BEFORE = '@global:hasRunBefore';
 
 const isValidItem = (item) => item !== undefined && item !== null && !_.isEmpty(item);
 
@@ -197,47 +199,57 @@ export const subscribeNotification = () => async (dispatch, getState) => {
   const { status: existingStatus } = await Permissions.getAsync(
     Permissions.NOTIFICATIONS
   );
-  let finalStatus = existingStatus;
 
   // only ask if permissions have not already been determined, because
   // iOS won't necessarily prompt the user a second time.
   if (existingStatus !== 'granted') {
+    let finalStatus = existingStatus;
     // Android remote notification permissions are granted during the app
     // install, so this will only ask on iOS
     console.log(`${DEBUG_KEY}: asking for notification permit status: `, existingStatus);
 
     // Every user should have his / her notification token set
     const USER_NOTIFICATION_ALERT_SHOWN = `${userId}_${NOTIFICATION_ALERT_SHOWN}`;
-    const hasShown = await SecureStore.getItemAsync(USER_NOTIFICATION_ALERT_SHOWN, {});
-    const hasShownNumber = hasShown ? parseInt(hasShown) : 0;
-    if (hasShownNumber > 1) {
-      // We have shown notification enabling for more than 2 times
-      return;
+
+    // request again for iOS
+    if (Platform.OS == 'ios') {
+      finalStatus = await Permissions.askAsync(Permissions.NOTIFICATIONS);
     }
 
-    Alert.alert(
-      'Notification',
-      'To subscribe to notification, you can go the app setting or click enable',
-      [
-        {
-          text: 'Enable',
-          onPress: () => Linking.openURL('app-settings:')
-        },
-        {
-          text: 'Cancel',
-          onPress: () => console.log('User cancel share to enable'),
-          style: 'cancel'
-        }
-      ]
-    );
-    // Update alert count
-    await SecureStore.setItemAsync(USER_NOTIFICATION_ALERT_SHOWN, `${hasShownNumber + 1}`, {});
-    return;
-  }
+    // Stop here if the user did not grant permissions
+    if (finalStatus !== 'granted') {
+      // we use AsyncStorage so that we can clear SecureStore every time the app is reinstalled (otherwise SecureStore persists on the keychain forever)
+      if (!(await AsyncStorage.getItem(HAS_RUN_BEFORE))) {
+        AsyncStorage.setItem(HAS_RUN_BEFORE, 'true');
+        await SecureStore.setItemAsync(USER_NOTIFICATION_ALERT_SHOWN, `0`, {});
+      };
 
-  // Stop here if the user did not grant permissions
-  if (finalStatus !== 'granted') {
-    return;
+      // try and let the user know to update their settings
+      const hasShown = await SecureStore.getItemAsync(USER_NOTIFICATION_ALERT_SHOWN, {});
+      const hasShownNumber = hasShown ? parseInt(hasShown) : 0;
+      if (hasShownNumber > 1) {
+        // We have shown notification enabling for more than 2 times
+        return;
+      }
+      Alert.alert(
+        'Notifications',
+        'To subscribe to notifications, change your app settings',
+        [
+          {
+            text: 'Settings',
+            onPress: () => Linking.openURL('app-settings:')
+          },
+          {
+            text: 'Cancel',
+            onPress: () => console.log('User cancel share to enable'),
+            style: 'cancel'
+          }
+        ]
+      );
+      // Update alert count
+      await SecureStore.setItemAsync(USER_NOTIFICATION_ALERT_SHOWN, `${hasShownNumber + 1}`, {});
+      return;
+    }
   }
 
   // Get the token that uniquely identifies this device
@@ -259,7 +271,7 @@ export const subscribeNotification = () => async (dispatch, getState) => {
     );
     Alert.alert(
       'Success',
-      'You have succesfully subscribed to the notification.'
+      'You have subscribed to app notifications.'
     );
     console.log(`${DEBUG_KEY}: register notification succeed success with res: `, res);
   };
@@ -305,7 +317,7 @@ export const subscribeEntityNotification = (entityId, entityKind) => (dispatch, 
 
     setTimeout(() => {
       console.log(`${DEBUG_KEY}: [ subscribeEntityNotification ]: showing alert`);
-      DropDownHolder.alert('success', 'Successfully subscribe to notification', '');
+      DropDownHolder.alert('success', 'Successfully subscribe to notifications', '');
     }, 200);
   };
 

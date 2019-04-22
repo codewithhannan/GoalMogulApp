@@ -1,7 +1,7 @@
 import { Actions } from 'react-native-router-flux';
 import { SubmissionError } from 'redux-form';
 import Expo, { WebBrowser, Permissions, Notifications } from 'expo';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 
 import { api as API } from '../redux/middleware/api';
 import { componentKeyByTab } from '../redux/middleware/utils';
@@ -400,14 +400,12 @@ export const unblockUser = (blockId, callback) => (dispatch, getState) => {
 // Push notification token to server
 export const registerForPushNotificationsAsync = () => async (dispatch, getState) => {
   const { token } = getState().user;
-  const { status: existingStatus } = await Permissions.getAsync(
-    Permissions.NOTIFICATIONS
-  );
+  const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
   let finalStatus = existingStatus;
 
   // only ask if permissions have not already been determined, because
   // iOS won't necessarily prompt the user a second time.
-  if (existingStatus !== 'granted') {
+  if (existingStatus !== 'granted' && Platform.OS == 'ios') {
     // Android remote notification permissions are granted during the app
     // install, so this will only ask on iOS
     const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);

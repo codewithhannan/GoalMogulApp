@@ -49,10 +49,12 @@ export default class ChatMessageImage extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-      height: 100,
+      height: 108,
+      width: 'auto',
   },
   image: {
-    width: 150,
+    width: 'auto',
+    minWidth: 150,
     height: 100,
     borderRadius: 13,
     margin: 3,
