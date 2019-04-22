@@ -91,6 +91,7 @@ class Home extends Component {
   }
 
   componentWillUnmount() {
+    console.log(`${DEBUG_KEY}: [ componentWillUnmount ]`);
     AppState.removeEventListener('change', this.handleAppStateChange);
     this._notificationSubscription.remove();
     // Remove timer in case app crash
