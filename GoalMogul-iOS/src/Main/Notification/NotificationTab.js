@@ -48,7 +48,7 @@ class NotificationTab extends Component {
 
   componentDidMount() {
     // Clear app badge count
-    MessageStorageService.getUnreadMessageCount((err, count) => Notifications.setBadgeNumberAsync(count));
+    Notifications.setBadgeNumberAsync(0);
     // Refresh notification tab 
     console.log(`${DEBUG_KEY}: component did mount`);
     if (!this.props.data || _.isEmpty(this.props.data.length)) {
