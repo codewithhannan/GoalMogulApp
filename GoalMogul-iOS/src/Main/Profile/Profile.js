@@ -156,7 +156,11 @@ class Profile extends Component {
 const styles = {
   containerStyle: {
     flex: 1,
-    backgroundColor: BACKGROUND_COLOR
+    backgroundColor: BACKGROUND_COLOR,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   tabContainerStyle: {
     display: 'flex',

@@ -555,7 +555,7 @@ class GoalDetailCardV3 extends Component {
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <View style={{ backgroundColor: BACKGROUND_COLOR, flex: 1 }}>
+        <View style={styles.containerStyle}>
           <LoadingModal 
             visible={this.props.updating} 
             customIndicator={<DotIndicator size={12} color='white' />}  
@@ -599,7 +599,11 @@ const styles = StyleSheet.create({
     bottom: 0
   },
   containerStyle: {
-    backgroundColor: 'white',
+    backgroundColor: BACKGROUND_COLOR, 
+    flex: 1,
+    borderLeftWidth: 0.5,
+    borderRightWidth: 0.5,
+    borderColor: 'lightgray'
   },
   iconContainerStyle: {
     padding: 10,
