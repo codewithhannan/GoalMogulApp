@@ -8,9 +8,17 @@ import IconBell from '../../asset/footer/navigation/bell.png';
 import IconMeet from '../../asset/footer/navigation/meet.png';
 import IconChat from '../../asset/footer/navigation/chat.png';
 import IconStar from '../../asset/footer/navigation/star.png';
+
+/* Actions */
 import { updateChatCount } from '../../redux/modules/navigation/TabIconActions';
+import { fetchUnreadCount } from '../../redux/modules/notification/NotificationTabActions';
+
+/* Utils */
+import { Logger } from '../../redux/middleware/utils/Logger';
 
 const CHAT_COUNT_UPDATE_INTERVAL = 1000;
+const NOTIFICATION_COUNT_UPDATE_INTERVAL = 10000;
+const DEBUG_KEY = '[ UI TabIcon ]';
 
 class TabIcon extends React.PureComponent {
 
@@ -23,12 +31,25 @@ class TabIcon extends React.PureComponent {
         this.props.updateChatCount();
       }, CHAT_COUNT_UPDATE_INTERVAL);
     }
+
+    if (navigation.state.key === 'notificationTab') {
+      // notification count updater
+      this.refreshNotificationInterval = setInterval(() => {
+        Logger.log(`${DEBUG_KEY}: [ Timer firing ] Fetching unread count.`, undefined, 3);
+        this.props.fetchUnreadCount();
+      }, NOTIFICATION_COUNT_UPDATE_INTERVAL);
+    }
   }
 
   componentWillUnmount() {
     clearInterval(this.refreshChatInterval);
-  }
 
+    // Clearn notification refresh interval
+    if (this.refreshNotificationInterval !== undefined) {
+      Logger.log(`${DEBUG_KEY}: [ Notification timer clearing ]`, undefined, 3);
+      clearInterval(this.refreshNotificationInterval);
+    }
+  }
 
   render() {
     const { 
@@ -149,5 +170,6 @@ export default connect(
   mapStateToProps,
   {
     updateChatCount,
+    fetchUnreadCount
   }
 )(TabIcon);

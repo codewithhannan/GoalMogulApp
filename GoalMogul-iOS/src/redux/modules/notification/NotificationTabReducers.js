@@ -3,6 +3,7 @@
  */
 import _ from 'lodash';
 import { arrayUnique } from '../../middleware/utils';
+import { Logger } from '../../middleware/utils/Logger';
 
 import {
   USER_LOG_OUT
@@ -254,7 +255,7 @@ export default (state = INITIAL_STATE, action) => {
       if (!shouldUpdateUnreadCount && shouldUpdateUnreadCount !== undefined) {
         return newState;
       }
-      console.log(`${DEBUG_KEY}: new count is: ${data}`);
+      Logger.log(`${DEBUG_KEY}: new count is: `, data, 3);
       return _.set(newState, 'unread.unreadCount', data);
     }
     

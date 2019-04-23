@@ -24,7 +24,6 @@ import {
   seeMoreNotification,
   seeLessNotification,
   refreshNotificationTab,
-  fetchUnreadCount,
   clearUnreadCount,
   markAllNotificationAsRead
 } from '../../redux/modules/notification/NotificationTabActions';
@@ -44,11 +43,6 @@ import {
 const DEBUG_KEY = '[ UI NotificationTab ]';
 
 class NotificationTab extends Component {
-  constructor(props) {
-    super(props);
-    this.setTimer = this.setTimer.bind(this);
-    this.stopTimer = this.stopTimer.bind(this);
-  }
 
   componentDidMount() {
     // Refresh notification tab 
@@ -56,7 +50,6 @@ class NotificationTab extends Component {
     if (!this.props.data || _.isEmpty(this.props.data.length)) {
       this.props.refreshNotificationTab();
     }
-    this.setTimer();
   }
 
   componentDidUpdate(prevProps) {
@@ -73,26 +66,12 @@ class NotificationTab extends Component {
 
   componentWillUnmount() {
     // Remove timer before exiting to prevent app from crashing
-    this.stopTimer();
   }
 
-  setTimer() {
-    this.stopTimer(); // Clear the previous timer if there is one
-
-    console.log(`${DEBUG_KEY}: [ Setting New Timer ] for refreshing unread count`);
-    this.timer = setInterval(() => {
-      console.log(`${DEBUG_KEY}: [ Timer firing ] Fetching unread count.`);
-      this.props.fetchUnreadCount();
-    }, 10000);
-  }
-
-  stopTimer() {
-    if (this.timer !== undefined) {
-      console.log(`${DEBUG_KEY}: [ Timer clearing ]`);
-      clearInterval(this.timer);
-    }
-  }
-
+  /**
+   * This function is no longer in used since we refresh the tab through when
+   * we see there is unread count
+   */
   refreshNotification() {
     console.log(`${DEBUG_KEY}: refreshing notification`);
     // Stop timer before sending the mark all notification as read to prevent race condition
@@ -296,7 +275,6 @@ export default connect(
     refreshNotificationTab,
     seeMoreNotification,
     seeLessNotification,
-    fetchUnreadCount,
     clearUnreadCount,
     markAllNotificationAsRead
   },
