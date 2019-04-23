@@ -406,12 +406,10 @@ export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
   const isMember = getUserStatus(getState());
   const { _id } = tribe;
 
-  // If user is not a member nor an invitee and tribe is not public visible,
-  // Show not found for this tribe
   if ((!isMember || isMember === 'JoinRequester') && !tribe.isPubliclyVisible) {
     const callback = (res) => {
       console.log(`${DEBUG_KEY}: res for verifying user identify: `, res);
-      if (!res.data) {
+      if (!res.data || res.status === 400 || res.status === 404) {
         return Alert.alert(
           'Tribe not found'
         );

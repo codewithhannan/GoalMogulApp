@@ -12,6 +12,9 @@ import { connect } from 'react-redux';
 // TODO: set default tribe picture
 import tribeDefaultIcon from '../../../asset/explore/tribe.png';
 
+/* Components */
+import DelayedButton from '../../Common/Button/DelayedButton';
+
 // Actions
 import {
   tribeDetailOpen
@@ -114,7 +117,7 @@ class MyTribeCard extends React.Component {
 
   render() {
     return (
-      <TouchableWithoutFeedback onPress={this.onCardPress}>
+      <DelayedButton onPress={this.onCardPress} delay={2000}>
         <View style={styles.containerStyle}>
           {this.renderTribeImage()}
           {this.renderTimeStamp()}
@@ -124,7 +127,7 @@ class MyTribeCard extends React.Component {
             {this.renderTribeInfo()}
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </DelayedButton>
     );
   }
 }
