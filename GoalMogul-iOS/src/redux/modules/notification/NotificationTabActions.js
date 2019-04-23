@@ -339,7 +339,7 @@ export const fetchUnreadCount = () => (dispatch, getState) => {
   const { unreadCount } = getState().notification.unread;
 
   const onSuccess = (res) => {
-    Logger.log(`${DEBUG_KEY}: fetch unread count success: `, res, 3);
+    Logger.log(`${DEBUG_KEY}: fetch unread count success: `, res, 4);
     dispatch({
       type: NOTIFICATION_UNREAD_COUNT_UPDATE,
       payload: {
@@ -349,10 +349,10 @@ export const fetchUnreadCount = () => (dispatch, getState) => {
 
     const preUnreadCount = unreadCount || 0;
     Logger.log(`${DEBUG_KEY}: prev unreadCount: ${preUnreadCount}, new unreadCount: ${res.count},` +
-      `should refresh: ${(res.count > unreadCount)}`, null, 3);
+      `should refresh: ${(res.count > unreadCount)}`, null, 4);
     // refresh data quietly
     if (res.count > preUnreadCount) {
-      Logger.log(`${DEBUG_KEY}: refresh notification quietly`, null, 3);
+      Logger.log(`${DEBUG_KEY}: refresh notification quietly`, null, 4);
       refreshNotifications({ showIndicator: false, refreshForUnreadNotif: true })(dispatch, getState);
     }
   };
@@ -362,7 +362,7 @@ export const fetchUnreadCount = () => (dispatch, getState) => {
   };
 
   API
-    .get('secure/notification/entity/unread-count', token)
+    .get('secure/notification/entity/unread-count', token, 4)
     .then((res) => {
       if (res.status === 200) {
         return onSuccess(res);

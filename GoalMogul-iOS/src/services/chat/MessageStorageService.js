@@ -439,7 +439,7 @@ class MessageStorageService {
         if (maybeLimit) {
             body.limit = maybeLimit;
         };
-        return API.post(`secure/chat/message/queue/pull`, body, authToken);
+        return API.post(`secure/chat/message/queue/pull`, body, authToken, 4);
     }
 
     /**

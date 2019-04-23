@@ -255,7 +255,7 @@ export default (state = INITIAL_STATE, action) => {
       if (!shouldUpdateUnreadCount && shouldUpdateUnreadCount !== undefined) {
         return newState;
       }
-      Logger.log(`${DEBUG_KEY}: new count is: `, data, 3);
+      Logger.log(`${DEBUG_KEY}: new count is: `, data, 4);
       return _.set(newState, 'unread.unreadCount', data);
     }
     
