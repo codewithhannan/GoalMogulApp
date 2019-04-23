@@ -15,8 +15,13 @@ import Calendar from '../../../asset/utils/calendar.png';
 
 const { width } = Dimensions.get('window');
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const DEBUG_KEY = '[ UI MyTribeAbout ]';
 
 class MyTribeAbout extends Component {
+  /**
+   * Note: Tribe.js has its member pictures moved to StackedAvatars
+   * @param {*} item 
+   */
   renderMemberStatus(item) {
     const { members, memberCount } = item;
     const count = memberCount || 0;
@@ -52,20 +57,9 @@ class MyTribeAbout extends Component {
     );
   }
 
-  // <View style={styles.bottomPictureContainerStyle}>
-  //   <Image source={DefaultUserProfile} style={styles.pictureStyle} />
-  // </View>
-  //
-  // <View style={styles.topPictureContainerStyle}>
-  //   <Image
-  //     source={DefaultUserProfile}
-  //     style={styles.pictureStyle}
-  //   />
-  // </View>
-
   renderCreated(item) {
     const newDate = item.created ? new Date(item.created) : new Date();
-    const date = `${months[newDate.getMonth() - 1]} ${newDate.getDate()}, ${newDate.getFullYear()}`;
+    const date = `${months[newDate.getMonth()]} ${newDate.getDate()}, ${newDate.getFullYear()}`;
 
     return (
       <View

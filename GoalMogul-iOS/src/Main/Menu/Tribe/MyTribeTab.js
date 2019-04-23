@@ -22,13 +22,16 @@ import {
 
 // Components
 import MyTribeCard from './MyTribeCard';
-import ModalHeader from '../../Common/Header/ModalHeader';
+import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import MyTribeFilterBar from './MyTribeFilterBar';
 import TabButtonGroup from '../../Common/TabButtonGroup';
 import EmptyResult from '../../Common/Text/EmptyResult';
 
 // Assets
 import plus from '../../../asset/utils/plus.png';
+
+// Styles
+import { APP_DEEP_BLUE } from '../../../styles';
 
 const DEBUG_KEY = '[ UI MyTribeTab ]';
 
@@ -58,7 +61,24 @@ class MyTribeTab extends React.Component {
 
   renderTabs = props => {
     return (
-      <TabButtonGroup buttons={props} />
+      <TabButtonGroup 
+        buttons={props} 
+        noBorder
+        buttonStyle={{
+          selected: {
+            backgroundColor: APP_DEEP_BLUE,
+            tintColor: 'white',
+            color: 'white',
+            fontWeight: '700'
+          },
+          unselected: {
+            backgroundColor: '#FCFCFC',
+            tintColor: '#616161',
+            color: '#616161',
+            fontWeight: '600'
+          }
+        }}  
+      />
     );
   }
 
@@ -94,10 +114,10 @@ class MyTribeTab extends React.Component {
         style={{ flex: 1, backgroundColor: 'white' }}
       >
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-          <ModalHeader
-            title='My Tribes'
-            back
-            onCancel={() => this.props.closeMyTribeTab()}
+          <SearchBarHeader 
+            backButton 
+            title='My Tribes' 
+            onBackPress={() => this.props.closeMyTribeTab()}
           />
           {
             this.renderTabs({

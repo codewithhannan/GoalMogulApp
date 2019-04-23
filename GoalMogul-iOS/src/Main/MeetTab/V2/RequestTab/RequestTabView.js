@@ -35,7 +35,8 @@ import {
 
 // Styles
 import {
-  BACKGROUND_COLOR
+  BACKGROUND_COLOR,
+  APP_DEEP_BLUE
 } from '../../../../styles';
 
 const Tabs = [
@@ -61,7 +62,24 @@ class RequestTabView extends Component {
 
   renderHeader = props => {
     return (
-      <TabButtonGroup buttons={props} />
+      <TabButtonGroup 
+        buttons={props} 
+        noBorder
+        buttonStyle={{
+          selected: {
+            backgroundColor: APP_DEEP_BLUE,
+            tintColor: 'white',
+            color: 'white',
+            fontWeight: '700'
+          },
+          unselected: {
+            backgroundColor: '#FCFCFC',
+            tintColor: '#616161',
+            color: '#616161',
+            fontWeight: '600'
+          }
+        }}
+      />
     );
   };
 

@@ -26,6 +26,7 @@ import {
 
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
+import { Logger } from '../../middleware/utils/Logger';
 
 const DEBUG_KEY = '[ Tribe Actions ]';
 const BASE_ROUTE = 'secure/tribe';
@@ -96,27 +97,33 @@ export const myTribeDetailOpenWithId = (tribeId) => (dispatch, getState) => {
  * Fetch tribe detail
  */
 export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
-  const isMember = getMyTribeUserStatus(getState());
+  Logger.log(`${DEBUG_KEY}: [ tribeDetailOpen ]: tribe is:`, tribe, 3);
+  const { _id } = tribe;
+  const callback = (res) => {
+    if (!res.data || res.status === 400 || res.status === 404) {
+      // If user is not a member nor an invitee and tribe is not public visible,
+      // Show not found for this tribe
+      return Alert.alert(
+        'Tribe not found'
+      );
+    }
 
-  // If user is not a member nor an invitee and tribe is not public visible,
-  // Show not found for this tribe
-  if ((!isMember || isMember === 'JoinRequester') && !tribe.isPubliclyVisible) {
-    return Alert.alert(
-      'Tribe not found'
-    );
+    // Only if status is 200, we open the detail
+    if (res.status === 200) {
+      Actions.push('myTribeDetail');
+      dispatch({
+        type: MYTRIBE_DETAIL_LOAD_SUCCESS,
+        payload: {
+          tribe: res.data
+        }
+      });
+      refreshTribeFeed(_id, dispatch, getState);
+      return;
+    }
+
   }
 
-  const newTribe = _.cloneDeep(tribe);
-  dispatch({
-    type: MYTRIBE_DETAIL_OPEN,
-    payload: {
-      tribe: _.set(newTribe, 'members', [])
-    }
-  });
-  Actions.push('myTribeDetail');
-  const { _id } = tribe;
-  fetchTribeDetail(_id)(dispatch, getState);
-  refreshTribeFeed(_id, dispatch, getState);
+  fetchTribeDetail(_id, callback)(dispatch, getState);
 };
 
 /**

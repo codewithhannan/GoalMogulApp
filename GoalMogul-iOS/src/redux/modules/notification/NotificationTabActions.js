@@ -13,6 +13,7 @@ import {
 
 import { queryBuilder } from '../../middleware/utils';
 import { api as API } from '../../middleware/api';
+import { Logger } from '../../middleware/utils/Logger';
 
 // Constants
 const DEBUG_KEY = '[ Actions NotificationTab ]';
@@ -338,7 +339,7 @@ export const fetchUnreadCount = () => (dispatch, getState) => {
   const { unreadCount } = getState().notification.unread;
 
   const onSuccess = (res) => {
-    console.log(`${DEBUG_KEY}: fetch unread count success: `, res);
+    Logger.log(`${DEBUG_KEY}: fetch unread count success: `, res, 4);
     dispatch({
       type: NOTIFICATION_UNREAD_COUNT_UPDATE,
       payload: {
@@ -347,11 +348,11 @@ export const fetchUnreadCount = () => (dispatch, getState) => {
     });
 
     const preUnreadCount = unreadCount || 0;
-    console.log(`${DEBUG_KEY}: prev unreadCount: ${preUnreadCount}, new unreadCount: ${res.count},` +
-      `should refresh: ${(res.count > unreadCount)}`);
+    Logger.log(`${DEBUG_KEY}: prev unreadCount: ${preUnreadCount}, new unreadCount: ${res.count},` +
+      `should refresh: ${(res.count > unreadCount)}`, null, 4);
     // refresh data quietly
     if (res.count > preUnreadCount) {
-      console.log(`${DEBUG_KEY}: refresh notification quietly`);
+      Logger.log(`${DEBUG_KEY}: refresh notification quietly`, null, 4);
       refreshNotifications({ showIndicator: false, refreshForUnreadNotif: true })(dispatch, getState);
     }
   };
@@ -361,7 +362,7 @@ export const fetchUnreadCount = () => (dispatch, getState) => {
   };
 
   API
-    .get('secure/notification/entity/unread-count', token)
+    .get('secure/notification/entity/unread-count', token, 4)
     .then((res) => {
       if (res.status === 200) {
         return onSuccess(res);

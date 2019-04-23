@@ -48,9 +48,10 @@ class SearchOverlay extends Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.handleOnEndSubmitting = this.handleOnEndSubmitting.bind(this);
     this.keyboardWillHide = this.keyboardWillHide.bind(this);
+    this.isCanceled = false;
     this.state = {
       // We keep a local copy since debounced search takes a while to fire event to update reducer
-      searchContent: undefined 
+      searchContent: undefined,
     };
   }
 
@@ -64,7 +65,8 @@ class SearchOverlay extends Component {
 
   keyboardWillHide() {
     if ((!this.props.searchContent || this.props.searchContent.trim() === '') && 
-        (!this.state.searchContent || this.state.searchContent === '' || this.state.searchContent.trim() === '')) {
+        (!this.state.searchContent || this.state.searchContent === '' || this.state.searchContent.trim() === '') &&
+        !this.isCanceled) {
       this.handleCancel();
     }
   }
@@ -73,6 +75,7 @@ class SearchOverlay extends Component {
   handleCancel = () => {
     //TODO: potentially clear search state
     console.log(`${DEBUG_KEY} handle cancel`);
+    this.isCanceled = true;
     this.props.clearSearchState();
     // Actions.pop();
     this.refs.baseOverlay.closeModal();
@@ -169,7 +172,6 @@ class SearchOverlay extends Component {
               onCancel={this.handleCancel}
               onChangeText={this.handleChangeText}
               clearIcon={null}
-              cancelButtonProps={{ color: '#17B3EC' }}
               showLoading={this.props.loading}
               placeholderTextColor={APP_BLUE}
               cancelButtonProps={{

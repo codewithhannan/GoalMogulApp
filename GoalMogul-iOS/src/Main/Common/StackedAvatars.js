@@ -32,8 +32,9 @@ const StackedAvatars = (props) => {
   );
 };
 
+const DEBUG_KEY = '[ UI StackedAvatarsV2 ]';
 export const StackedAvatarsV2 = (props) => {
-  const { participants, chatMembers } = props;
+  const { participants, chatMembers, tribeMembers } = props;
   if (participants) {
     const participantPictures = participants
       .filter((participant) => participant.rsvp === 'Going' || participant.rsvp === 'Interested')
@@ -105,6 +106,31 @@ export const StackedAvatarsV2 = (props) => {
     return (
       <View style={{ ...styles.memberPicturesContainerStyle, width: picturesWidth }}>
         {pictures}
+      </View>
+    );
+  } else if (tribeMembers) {
+    const memberPictures = tribeMembers
+      .filter((member) => member.category === 'Admin' || member.category === 'Member')
+      .map((member, index) => {
+        if (index > 1) return null;
+        const { memberRef } = member;
+        return (
+          <ProfileImage
+            key={index}
+            imageContainerStyle={{
+              ...styles.bottomPictureContainerStyle,
+              left: ((index * 13)), zIndex: index + 1
+            }}
+            imageUrl={memberRef.profile.image}
+            imageStyle={{ ...styles.pictureStyle }}
+          />
+        );
+      });
+    const count = memberPictures.length;
+    const participantPicturesWidth = count < 2 ? 40 : 50;
+    return (
+      <View style={{ ...styles.memberPicturesContainerStyle, marginRight: 0, width: participantPicturesWidth }}>
+        {memberPictures}
       </View>
     );
   };
