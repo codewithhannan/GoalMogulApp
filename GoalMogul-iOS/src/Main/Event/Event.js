@@ -430,7 +430,7 @@ class Event extends Component {
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
+        <View style={styles.containerStyle}>
           <SearchBarHeader
             backButton
             onBackPress={() => Actions.pop()}
@@ -452,6 +452,14 @@ class Event extends Component {
 }
 
 const styles = {
+  containerStyle: {
+    flex: 1, 
+    backgroundColor: '#f8f8f8',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+  },
   coverImageStyle: {
     height: 110,
     width

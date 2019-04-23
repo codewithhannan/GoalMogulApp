@@ -507,7 +507,7 @@ class CreateChatroomModal extends React.Component {
 			<MenuProvider customStyles={{ backdrop: styles.backdrop }}>
 				<KeyboardAvoidingView
 					behavior='padding'
-					style={{ flex: 1, backgroundColor: '#ffffff' }}
+					style={{ ...styles.homeContainerStyle, flex: 1, backgroundColor: '#ffffff' }}
 				>
 					<ModalHeader
 						title={titleText}
@@ -609,6 +609,14 @@ export default connect(
 )(CreateChatroomModal);
 
 const styles = {
+	homeContainerStyle: {
+		backgroundColor: '#f8f8f8',
+		flex: 1,
+		shadowColor: '#000',
+		shadowOffset: { width: 0, height: 1 },
+		shadowOpacity: 0.3,
+		shadowRadius: 6,
+    },
 	sectionMargin: {
 		marginTop: 20
 	},
