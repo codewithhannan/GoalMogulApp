@@ -1,3 +1,4 @@
+import { Notifications } from 'expo';
 import { default as LiveChatService, INCOMING_EVENT_NAMES, OUTGOING_EVENT_NAMES } from '../../socketio/services/LiveChatService';
 import MongoDatastore from 'react-native-local-mongodb';
 import Fuse from 'fuse.js';
@@ -394,6 +395,16 @@ class MessageStorageService {
      */
     _beginMessageQueuePolling = () => {
         const { authToken } = this.mountedUser;
+        // Update app badge count now that we're going to pull from message queue
+        API.get('secure/notification/entity/unread-count', authToken).then(res => {
+            if (res.status === 200) {
+                let notiCount = parseInt(res.count);
+                notiCount = isNaN(notiCount) ? 0 : notiCount;
+                Notifications.setBadgeNumberAsync(notiCount);
+                return;
+            };
+            Notifications.setBadgeNumberAsync(0);
+        }).catch(err => Notifications.setBadgeNumberAsync(0));
         this._messageQueuePoller = setInterval(() => this._pollMessageQueue(authToken), MESSAGE_QUEUE_POLLING_INTERVAL_SECONDS * 1000);
     }
     _pollMessageQueue = (authToken) => {

@@ -39,12 +39,16 @@ import {
   APP_BLUE
 } from '../../styles';
 
+import { Notifications } from 'expo';
+import MessageStorageService from '../../services/chat/MessageStorageService';
 // Constants
 const DEBUG_KEY = '[ UI NotificationTab ]';
 
 class NotificationTab extends Component {
 
   componentDidMount() {
+    // Clear app badge count
+    MessageStorageService.getUnreadMessageCount((err, count) => Notifications.setBadgeNumberAsync(count));
     // Refresh notification tab 
     console.log(`${DEBUG_KEY}: component did mount`);
     if (!this.props.data || _.isEmpty(this.props.data.length)) {
