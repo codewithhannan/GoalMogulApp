@@ -213,7 +213,8 @@ export const subscribeNotification = () => async (dispatch, getState) => {
 
     // request again for iOS
     if (Platform.OS == 'ios') {
-      finalStatus = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
     }
 
     // Stop here if the user did not grant permissions
