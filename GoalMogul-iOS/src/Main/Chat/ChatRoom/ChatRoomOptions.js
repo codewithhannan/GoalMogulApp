@@ -357,7 +357,11 @@ export default connect(
 const styles = {
 	homeContainerStyle: {
 		backgroundColor: '#f8f8f8',
-		flex: 1
+        flex: 1,
+		shadowColor: '#000',
+		shadowOffset: { width: 0, height: 1 },
+		shadowOpacity: 0.3,
+		shadowRadius: 6,
     },
     chatIconStyle: {
         height: 21,
