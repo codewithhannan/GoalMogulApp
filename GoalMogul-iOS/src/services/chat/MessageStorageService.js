@@ -108,7 +108,7 @@ class MessageStorageService {
      */
     onIncomingMessageStored = (listenerIdentifier, listener) => {
         if (typeof listenerIdentifier != "string" || typeof listener != "function") {
-            throw new Error('Listener identifier must be a string and listener must be a function.');
+            return console.log('Listener identifier must be a string and listener must be a function.');
         }
         this.incomingMessageListeners[listenerIdentifier] = listener;
     }
@@ -123,11 +123,11 @@ class MessageStorageService {
     /**
      * Adds a listener that fires when pulled messages are inserted into the local store
      * @param {String} listenerIdentifier 
-     * @param {Function} listener: fn(dataObj:{messageDoc, senderName, chatRoomName, chatRoomType, chatRoomPicture})
+     * @param {Function} listener: fn([MessageDoc])
      */
     onPulledMessageStored = (listenerIdentifier, listener) => {
         if (typeof listenerIdentifier != "string" || typeof listener != "function") {
-            throw new Error('Listener identifier must be a string and listener must be a function.');
+            return console.log('Listener identifier must be a string and listener must be a function.');
         }
         this.pulledMessageListeners[listenerIdentifier] = listener;
     }
@@ -419,7 +419,7 @@ class MessageStorageService {
                         for (let listener of listeners) {
                             if (typeof listener != "function") continue;
                             try {
-                                listener(data.data);
+                                listener(resp.data);
                             } catch(e) {
                                 console.log(
                                     `${DEBUG_KEY}: Error running incomingMessage listener`,

@@ -15,5 +15,5 @@ export const config = {
 	 * When log level is set to 5, it means to show all log messages we have
 	 * TODO: wrap console.log with such a logger
 	 */
-	logLevel: 3
+	logLevel: 1
 };

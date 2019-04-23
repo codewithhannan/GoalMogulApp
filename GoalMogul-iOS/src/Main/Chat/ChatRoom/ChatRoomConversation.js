@@ -15,7 +15,7 @@ import {
 	CameraRoll,
 	Platform,
 	Alert,
-	TouchableWithoutFeedback,
+	TextInput,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -61,6 +61,7 @@ import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Cons
 import ChatRoomConversationInputToolbar from './ChatRoomConversationInputToolbar';
 import { toHashCode } from '../../../Utils/ImageUtils';
 import ChatMessageImage from '../Modals/ChatMessageImage';
+import ChatRoomConversationBubble from './ChatRoomConversationBubble';
 
 const DEBUG_KEY = '[ UI ChatRoomConversation ]';
 const LISTENER_KEY = 'ChatRoomConversation';
@@ -73,6 +74,7 @@ const CHAT_ROOM_DOCUMENT_REFRESH_INTERVAL = 3000; // milliseconds
 class ChatRoomConversation extends React.Component {
 	state = {
 		lastAlertedChatRoomId: null,
+		composerHeight: 'auto'
 	}
 
 	_keyExtractor = (item) => item._id;
@@ -84,6 +86,7 @@ class ChatRoomConversation extends React.Component {
 		MessageStorageService.markConversationMessagesAsRead(chatRoomId);
 		MessageStorageService.setActiveChatRoom(chatRoomId);
 		MessageStorageService.onIncomingMessageStored(LISTENER_KEY, this._handleIncomingMessage.bind(this));
+		MessageStorageService.onPulledMessageStored(LISTENER_KEY, this._handlePulledMessages.bind(this));
 		LiveChatService.addListenerToEvent('typingindicator', LISTENER_KEY, this._handleIncomingTypingStatusUpdate.bind(this));
 		if (chatRoomId) {
 			this.props.initialLoad(chatRoomId, limit);
@@ -160,6 +163,16 @@ class ChatRoomConversation extends React.Component {
 		const { userId, typingStatus } = updateInfo;
 		const { currentlyTypingUserIds } = this.props;
 		this.props.updateTypingStatus(userId, typingStatus, currentlyTypingUserIds);
+	}
+	_handlePulledMessages(pulledMessages) {
+		if (!pulledMessages) return;
+		const { chatRoom, messages } = this.props;
+		for (let messageDoc of pulledMessages) {
+			if (messageDoc.chatRoomRef == chatRoom._id) {
+				this.props.updateMessageList(chatRoom, messages);
+				return;
+			};
+		};
 	}
 	_handleIncomingMessage(messageInfo) {
 		const { chatRoom, messages } = this.props;
@@ -340,7 +353,7 @@ class ChatRoomConversation extends React.Component {
 	renderMedia() {
 		const { messageMediaRef } = this.props;
 		if (!messageMediaRef) return null;
-		const onPress = () => console.log('Media pressed.');
+		const onPress = () => {};
 		const onRemove = () => this.props.changeMessageMediaRef(undefined);
 		return (
 			<TouchableOpacity activeOpacity={0.6} style={styles.mediaContainerStyle} onPress={onPress}>
@@ -375,6 +388,11 @@ class ChatRoomConversation extends React.Component {
 			</Send>
 		);
 	}
+	onComposerHeightChanged = (contentSize) => {
+		this.setState({
+			composerHeight: Math.min(120, Math.max(42, contentSize.height + 18)),
+		})
+	}
 	renderComposer(props) {
 		return(
 			<View
@@ -387,17 +405,21 @@ class ChatRoomConversation extends React.Component {
 					width: Dimensions.get('window').width - 81, // icons and padding
 				}}
 			>
-				<AutoGrowingTextInput
+				<TextInput
 					ref={inputComponent => this._textInput = inputComponent}
 					onChangeText={(text) => {
 						props.onTextChanged(text);
 						props.onInputTextChanged(text);
 					}}
-					onContentSizeChange={(e) => props.onInputSizeChanged({
-						...e.nativeEvent.contentSize,
-						height: e.nativeEvent.contentSize.height + 12, // account for input padding
-					})}
+					onContentSizeChange={(e) => {
+						this.onComposerHeightChanged(e.nativeEvent.contentSize);
+						props.onInputSizeChanged({
+							...e.nativeEvent.contentSize,
+							height: e.nativeEvent.contentSize.height + 9, // account for padding
+						});
+					}}
 					value={props.text}
+					multiline={true}
 					placeholder={props.placeholder}
 					style={{
 						fontSize: 15,
@@ -406,8 +428,7 @@ class ChatRoomConversation extends React.Component {
 						borderColor: '#F1F1F1',
 						borderRadius: 6,
 						borderWidth: 1,
-						maxHeight: 120,
-						minHeight: 42,
+						height: this.state.composerHeight
 					}}
 				/>
 			</View>
@@ -440,69 +461,7 @@ class ChatRoomConversation extends React.Component {
 		return (
 			<Message
 				{...props}
-				renderBubble={props => <Bubble
-					{...props}
-					wrapperStyle={{
-						left: {
-							backgroundColor: '#FCFCFC',
-							elevation: 1,
-							shadowColor: '#999',
-							shadowOffset: { width: 0, height: 1, },
-							shadowOpacity: 0.1,
-							shadowRadius: 3,
-							borderRadius: 9,
-							borderColor: '#EDEDED',
-							borderWidth: 1,
-						},
-						right: {
-							backgroundColor: '#F5F9FA',
-							elevation: 1,
-							shadowColor: '#999',
-							shadowOffset: { width: 0, height: 1, },
-							shadowOpacity: 0.1,
-							shadowRadius: 3,
-							borderRadius: 9,
-							borderColor: '#D1ECF6',
-							borderWidth: 1,
-						}
-					}}
-					renderMessageText={props => <MessageText
-						{...props}
-						linkStyle={{
-							right: {
-								color: '#46C8F5',
-							},
-							left: {
-								color: '#46C8F5',
-							},
-						}}
-						textStyle={{
-							right: {
-								color: '#262626',
-							},
-							left: {
-								color: '#262626',
-							},
-						}}
-					/>}
-					renderTime={props => <Time
-						{...props}
-						textStyle={{
-							right: {
-								color: '#aaa',
-							},
-						}}
-					/>}
-					renderMessageImage={props => <ChatMessageImage {...props} />}
-					renderMessageVideo={props => <MessageVideo
-						{...props}
-						videoStyle={{
-							borderRadius: 9,
-							width: 'auto',
-							minWidth: 150,
-						}}
-					/>}
-				/>}
+				renderBubble={props =><ChatRoomConversationBubble {...props} />}
 			/>
 		);
 	}

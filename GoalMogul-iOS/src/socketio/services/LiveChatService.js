@@ -60,7 +60,7 @@ class LiveChatService {
      * @param {Function} onResponse: the function to handle the server's response
      */
     emitEvent(eventName, data, onResponse) {
-        if (!this.isUserMounted) throw new Error('Must initialize live chat service first.');
+        if (!this.isUserMounted) return console.log('Must initialize live chat service first.');
         const authToken = this.mountedUser.authToken;
         this.socket.emit(eventName, { ...data, authToken }, onResponse);
     }
@@ -73,7 +73,7 @@ class LiveChatService {
      * @param {Function} onResponse: to handle the server's response
      */
     emitOnConnect(identifier, eventName, data, onResponse) {
-        if (!this.isUserMounted) throw new Error('Must initialize live chat service first.');
+        if (!this.isUserMounted) return console.log('Must initialize live chat service first.');
         const authToken = this.mountedUser.authToken;
         SocketIOManager.addTaskToOnConnect({
             taskName: identifier,
@@ -87,7 +87,7 @@ class LiveChatService {
      * @param {String} identifier: the unique identifier for the emission task
      */
     cancelEmitOnConnect(identifier) {
-        if (!this.isInitialized) throw new Error('Must initialize live chat service first.');
+        if (!this.isInitialized) return console.log('Must initialize live chat service first.');
         SocketIOManager.removeTaskFromOnConnect(identifier);
     }
 
@@ -98,7 +98,7 @@ class LiveChatService {
      * @param {Function} listener: The function to fire when the event occurs
      */
     addListenerToEvent(eventName, listenerIdentifier, listener) {
-        if (!this.isInitialized) throw new Error('Must initialize live chat service first.');
+        if (!this.isInitialized) return console.log('Must initialize live chat service first.');
         if (!this.eventListenerMap[eventName]) {
             this._initializeListenerForEvent(eventName);
         };
@@ -110,7 +110,7 @@ class LiveChatService {
      * @param {String} listenerIdentifier: A unique identifier for this listener
      */
     removeListenerFromEvent(eventName, listenerIdentifier) {
-        if (!this.isInitialized) throw new Error('Must initialize live chat service first.');
+        if (!this.isInitialized) return console.log('Must initialize live chat service first.');
         this.eventListenerMap[eventName][listenerIdentifier] = undefined;
         delete this.eventListenerMap[eventName][listenerIdentifier];
     }
@@ -120,7 +120,7 @@ class LiveChatService {
      * NOTE: We are currently assuming that reconnecting doesn't affect the registered socket.on's
      */
     _initializeListenerForEvent(eventName) {
-        if (!this.isInitialized) throw new Error('Must initialize live chat service first.');
+        if (!this.isInitialized) return console.log('Must initialize live chat service first.');
         this.eventListenerMap[eventName] = {};
         this.socket.on(eventName, (...args) => {
             const listeners = Object.values(this.eventListenerMap[eventName]);
