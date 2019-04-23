@@ -34,6 +34,7 @@ const UNREAD_BADGE_COUNT_REFRESH_INTERVAL_MS = 3000;
 
 class ChatTab extends React.Component {
 	componentDidMount() {
+		// refresh badge count
 		this._refreshUnreadBadgeCount();
 		this.unreadBadgeRefreshInterval = setInterval(this._refreshUnreadBadgeCount, UNREAD_BADGE_COUNT_REFRESH_INTERVAL_MS);
 	}
