@@ -1053,7 +1053,8 @@ const switchCaseMemberStatus = (status) => switchCase({
     iconSource: envelope,
     iconStyle: {
       height: 12,
-      width: 15
+      width: 15,
+      tintColor: '#2dca4a'
     }
   },
   Invitee: {
@@ -1061,7 +1062,8 @@ const switchCaseMemberStatus = (status) => switchCase({
     iconSource: envelope,
     iconStyle: {
       height: 12,
-      width: 15
+      width: 15,
+      tintColor: '#2dca4a'
     }
   }
 })({ text: 'Unknown', iconSource: check })(status);
