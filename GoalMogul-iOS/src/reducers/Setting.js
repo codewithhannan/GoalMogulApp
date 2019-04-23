@@ -23,6 +23,7 @@ import {
 } from './User';
 
 export const SETTING_NOTIFICATION_TOKEN_PUSH_SUCCESS = 'setting_notification_token_push_success';
+export const SETTING_SWITCH_TAB = 'setting_switch_tab';
 
 const INITIAL_STATE = {
   userId: undefined,
@@ -40,7 +41,14 @@ const INITIAL_STATE = {
     loading: false,
     hasNextPage: undefined
   },
-  notificationToken: undefined
+  notificationToken: undefined,
+  navigationState: {
+    index: 0,
+    routes: [
+      { key: 'account', title: 'Account' },
+      { key: 'privacy', title: 'Privacy' },
+    ]
+  },
 };
 
 const DEBUG_KEY = '[ Reducer Setting ]';
@@ -54,6 +62,13 @@ export default (state = INITIAL_STATE, action) => {
       const { userId } = action.payload;
       const newState = _.cloneDeep(state);
       return _.set(newState, 'userId', userId);
+    }
+
+    case SETTING_SWITCH_TAB: {
+      let newState = _.cloneDeep(state);
+      const { index } = action.payload;
+      newState = _.set(newState, 'navigationState.index', index);
+      return newState;
     }
 
     case PROFILE_UPDATE_SUCCESS:
