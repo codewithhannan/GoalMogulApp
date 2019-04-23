@@ -73,7 +73,7 @@ class FriendTabView extends React.Component {
         const { user } = this.props;
         const modalTitle = `${user.name}'s Friends`;
         return (
-            <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
+            <View style={styles.containerStyle}>
                 <SearchBarHeader backButton title={modalTitle} />
                 <FlatList
                     data={this.props.data}
@@ -93,6 +93,18 @@ class FriendTabView extends React.Component {
         );
     }
 }
+
+const styles = {
+    containerStyle: {
+      flex: 1, 
+      backgroundColor: BACKGROUND_COLOR,
+      backgroundColor: '#f8f8f8',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.3,
+      shadowRadius: 6,
+    },
+  }
 
 const mapStateToProps = state => {
     const { friends } = state.meet;

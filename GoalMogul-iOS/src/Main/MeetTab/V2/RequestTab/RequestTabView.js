@@ -86,7 +86,7 @@ class RequestTabView extends Component {
   render() {
     const modalTitle = 'Friend Requests';
     return (
-      <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
+      <View style={styles.containerStyle}>
         <SearchBarHeader backButton title={modalTitle} />
           <TabView
             navigationState={this.props.navigationState}
@@ -98,6 +98,18 @@ class RequestTabView extends Component {
       </View>
     );
   }
+}
+
+const styles = {
+  containerStyle: {
+    flex: 1, 
+    backgroundColor: BACKGROUND_COLOR,
+    backgroundColor: '#f8f8f8',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+  },
 }
 
 const mapStateToProps = state => {

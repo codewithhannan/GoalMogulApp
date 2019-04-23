@@ -601,9 +601,10 @@ const styles = StyleSheet.create({
   containerStyle: {
     backgroundColor: BACKGROUND_COLOR, 
     flex: 1,
-    borderLeftWidth: 0.5,
-    borderRightWidth: 0.5,
-    borderColor: 'lightgray'
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
   iconContainerStyle: {
     padding: 10,

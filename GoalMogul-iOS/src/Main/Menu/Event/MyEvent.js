@@ -666,7 +666,7 @@ class MyEvent extends Component {
     // console.log(`${DEBUG_KEY}: rendering myevent with item: `, item);
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
+        <View style={styles.containerStyle}>
           <SearchBarHeader
             backButton
             onBackPress={() => {
@@ -691,6 +691,14 @@ class MyEvent extends Component {
 }
 
 const styles = {
+  containerStyle: {
+    flex: 1, 
+    backgroundColor: '#f8f8f8',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+  },
   coverImageStyle: {
     height: 110,
     width

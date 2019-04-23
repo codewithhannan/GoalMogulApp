@@ -196,7 +196,7 @@ class ShareDetailCard extends Component {
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <View style={{ backgroundColor: BACKGROUND_COLOR, flex: 1 }}>
+        <View style={styles.containerStyle}>
           <SearchBarHeader
             backButton
             title={title}
@@ -244,7 +244,12 @@ class ShareDetailCard extends Component {
 
 const styles = {
   containerStyle: {
-    backgroundColor: 'white',
+    backgroundColor: BACKGROUND_COLOR, 
+    flex: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
   iconStyle: {
     alignSelf: 'center',

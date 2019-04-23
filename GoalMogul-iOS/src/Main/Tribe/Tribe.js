@@ -714,7 +714,7 @@ class Tribe extends Component {
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-        <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
+        <View style={styles.containerStyle}>
           <SearchBarHeader
             backButton
             onBackPress={() => this.props.tribeDetailClose()}
@@ -736,6 +736,14 @@ class Tribe extends Component {
 }
 
 const styles = {
+  containerStyle: {
+    flex: 1, 
+    backgroundColor: '#f8f8f8',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+  },
   imageContainerStyle: {
     borderWidth: 1,
     borderColor: '#646464',

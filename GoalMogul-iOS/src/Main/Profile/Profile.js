@@ -159,8 +159,8 @@ const styles = {
     backgroundColor: BACKGROUND_COLOR,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
   tabContainerStyle: {
     display: 'flex',
