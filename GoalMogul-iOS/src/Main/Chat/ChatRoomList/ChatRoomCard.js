@@ -137,7 +137,7 @@ class ChatRoomCard extends React.Component {
 		} : { };
 
 		return (
-			<TouchableOpacity activeOpacity={0.85}
+			<TouchableOpacity activeOpacity={0.6}
 				style={{...styles.cardContainerStyle, ...maybeUnreadHighlight }}
 				onPress={() => this.handleCardOnPress(item)}
 			>
