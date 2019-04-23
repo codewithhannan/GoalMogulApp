@@ -334,13 +334,14 @@ export async function _transformMessagesForGiftedChat(messages, chatRoom, token)
 		}, {});
 	};
 	return await Promise.all(messages.map(async messageDoc => {
-		const { _id, created, creator, content, media } = messageDoc;
+		const { _id, created, creator, content, media, isSystemMessage } = messageDoc;
 		return {
 			_id,
 			createdAt: new Date(created),
 			image: media && `${IMAGE_BASE_URL}${media}`,
 			text: content && content.message,
 			user: await MemberDocumentFetcher.getUserDocument(creator, token, chatRoomMemberMap),
+			system: !!isSystemMessage,
 		};
 	}));
 };
