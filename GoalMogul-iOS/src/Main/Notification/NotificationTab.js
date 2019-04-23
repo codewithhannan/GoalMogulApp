@@ -75,12 +75,12 @@ class NotificationTab extends Component {
   refreshNotification() {
     console.log(`${DEBUG_KEY}: refreshing notification`);
     // Stop timer before sending the mark all notification as read to prevent race condition
-    this.stopTimer();
-    this.props.refreshNotificationTab();
-    this.props.clearUnreadCount();
-    this.props.markAllNotificationAsRead();
-    // Reset timer after we successfully mark all current notification as read
-    this.setTimer();
+    // this.stopTimer();
+    // this.props.refreshNotificationTab();
+    // this.props.clearUnreadCount();
+    // this.props.markAllNotificationAsRead();
+    // // Reset timer after we successfully mark all current notification as read
+    // this.setTimer();
   }
 
   keyExtractor = (item) => item._id;
