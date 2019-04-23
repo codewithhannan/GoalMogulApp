@@ -5,6 +5,7 @@ import { AsyncStorage } from 'react-native';
 import { Permissions, Notifications, SecureStore, Linking } from 'expo';
 import { Alert, Platform } from 'react-native';
 import _ from 'lodash';
+import { Actions } from 'react-native-router-flux';
 
 // Components
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal';
@@ -270,10 +271,10 @@ export const subscribeNotification = () => async (dispatch, getState) => {
     await SecureStore.setItemAsync(
       NOTIFICATION_TOKEN_KEY, notificationToken, {}
     );
-    Alert.alert(
-      'Success',
-      'You have subscribed to app notifications.'
-    );
+    // Alert.alert(
+    //   'Success',
+    //   'You have subscribed to app notifications.'
+    // );
     console.log(`${DEBUG_KEY}: register notification succeed success with res: `, res);
   };
 
