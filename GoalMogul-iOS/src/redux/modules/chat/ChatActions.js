@@ -67,7 +67,6 @@ export const createOrGetDirectMessage = (userId) => (dispatch, getState) => {
 		};
 		const chatRoom = resp.data;
 		Actions.push('chatRoomConversation', { chatRoomId: chatRoom._id });
-		Alert.alert('Success');
 	}).catch(err => {
 		Alert.alert('Error', 'Could not create a conversation with specified user.');
 	});

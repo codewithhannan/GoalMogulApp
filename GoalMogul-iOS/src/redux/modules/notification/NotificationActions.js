@@ -195,7 +195,7 @@ export const seeMore = (type) => (dispatch, getState) => {
  * Ask user for notification token to send over to subscribe for notification
  */
 export const subscribeNotification = () => async (dispatch, getState) => {
-  const { token, userId } = getState().user;
+  const { token, userId, user } = getState().user;
   const { status: existingStatus } = await Permissions.getAsync(
     Permissions.NOTIFICATIONS
   );
