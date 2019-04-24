@@ -17,7 +17,6 @@ import {
 } from '../../../redux/modules/feed/post/ShareActions';
 
 import {
-  createCommentFromSuggestion,
   refreshComments
 } from '../../../redux/modules/feed/comment/CommentActions';
 
@@ -311,7 +310,6 @@ export default connect(
   makeMapStateToProps,
   {
     closeShareDetail,
-    createCommentFromSuggestion,
     refreshComments
   }
 )(ShareDetailCard);
