@@ -414,16 +414,16 @@ class PostDetailSection extends React.PureComponent {
           iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks suggestion icon.`);
-            this.props.createCommentFromSuggestion({
-              commentDetail: {
-                parentType: 'Post',
-                parentRef: _id,
-                commentType: 'Suggestion',
-                replyToRef: undefined
-              },
-              suggestionForRef: _id,
-              suggestionFor: 'Post'
-            }, this.props.pageId);
+            // this.props.createCommentFromSuggestion({
+            //   commentDetail: {
+            //     parentType: 'Post',
+            //     parentRef: _id,
+            //     commentType: 'Suggestion',
+            //     replyToRef: undefined
+            //   },
+            //   suggestionForRef: _id,
+            //   suggestionFor: 'Post'
+            // }, this.props.pageId);
             this.props.onSuggestion();
           }}
         />

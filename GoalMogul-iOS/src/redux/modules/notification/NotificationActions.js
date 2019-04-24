@@ -121,7 +121,7 @@ export const handlePushNotification = (notification) => (dispatch, getState) => 
  */
 export const openNotificationDetail = (item) => (dispatch, getState) => {
   // TODO: use the parsedNoti.path to determine which detail to open
-  // console.log(`${DEBUG_KEY}: item is:`, item);
+  // console.log(`${DEBUG_KEY}: [ openNotificationDetail ]: item is:`, item);
   const { parsedNoti, _id } = item;
   const { path } = parsedNoti;
   if (!isString(path)) {

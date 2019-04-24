@@ -125,22 +125,22 @@ export default (state = INITIAL_STATE, action) => {
 
     case SHARE_DETAIL_OPEN: {
       let newState = _.cloneDeep(state);
-      const { tab, share, pageId } = action.payload;
+      const { tab, share, pageId, postId } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       newState = _.set(newState, `${path}`, { ...NEW_COMMENT_INITIAL_STATE });
       newState = _.set(newState, `${path}.parentType`, 'Post');
-      return _.set(newState, `${path}.parentRef`, share._id);
+      return _.set(newState, `${path}.parentRef`, postId);
     }
 
     case POST_DETAIL_OPEN: {
       let newState = _.cloneDeep(state);
-      const { tab, post, pageId } = action.payload;
+      const { tab, post, pageId, postId } = action.payload;
       const page = pageId ? `${pageId}` : 'default';
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
       newState = _.set(newState, `${path}`, { ...NEW_COMMENT_INITIAL_STATE });
       newState = _.set(newState, `${path}.parentType`, 'Post');
-      return _.set(newState, `${path}.parentRef`, post._id);
+      return _.set(newState, `${path}.parentRef`, postId);
     }
 
     // When user exits the GoalDetailCard, we need to reset the state

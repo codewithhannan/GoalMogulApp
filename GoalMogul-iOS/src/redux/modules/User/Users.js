@@ -146,7 +146,7 @@ const INITIAL_USER_PAGE = {
         skip: 0,
         limit: 7,
         filter: {
-            sortBy: 'created',
+            sortBy: 'priority',
             orderBy: 'descending',
             categories: 'All',
             completedOnly: 'false',
@@ -157,7 +157,7 @@ const INITIAL_USER_PAGE = {
     },
     needs: {
         filter: {
-            sortBy: 'created',
+            sortBy: 'priority',
             orderBy: 'descending',
             categories: 'All',
             completedOnly: 'false',
