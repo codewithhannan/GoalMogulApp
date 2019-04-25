@@ -25,6 +25,7 @@ import {
   constructPageId,
   componentKeyByTab
 } from '../../middleware/utils';
+import { Logger } from '../../middleware/utils/Logger';
 
 const DEBUG_KEY = '[ Event Actions ]';
 const BASE_ROUTE = 'secure/event';
@@ -197,7 +198,7 @@ export const fetchEventDetail = (eventId, callback, pageId) => (dispatch, getSta
         eventId
       }
     });
-    console.log(`${DEBUG_KEY}: load event detail success with data: `, data);
+    Logger.log(`${DEBUG_KEY}: load event detail success with data: `, data, 3);
   };
 
   const onError = (err) => {
@@ -208,7 +209,7 @@ export const fetchEventDetail = (eventId, callback, pageId) => (dispatch, getSta
         eventId
       }
     });
-    console.log(`${DEBUG_KEY}: failed to load event detail with err: `, err);
+    Logger.log(`${DEBUG_KEY}: failed to load event detail with err: `, err, 1);
   };
 
   API

@@ -14,6 +14,7 @@ import {
 
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
+import { Logger } from '../../middleware/utils/Logger';
 
 const DEBUG_KEY = '[ Action MyEventTab ]';
 const BASE_ROUTE = 'secure/event';
@@ -149,7 +150,7 @@ const loadEvent = (skip, limit, token, sortBy, filterOptions, callback, onError)
       token
     )
     .then((res) => {
-      console.log('loading events with res: ', res);
+      Logger.log('loading events with res: ', res, 3);
       if (res && res.data) {
         // Right now return test data
         return callback(res.data);
