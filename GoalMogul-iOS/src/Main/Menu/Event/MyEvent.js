@@ -627,7 +627,7 @@ class MyEvent extends Component {
               jumpToIndex: (i) => this._handleIndexChange(i),
               navigationState: this.props.navigationState
             },
-            this.props.tab === 'attendees'
+            this.props.tab !== 'about'
           )
         }
         {filterBar}

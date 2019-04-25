@@ -724,7 +724,7 @@ class MyTribe extends Component {
               },
               navigationState: this.props.navigationState
             }, 
-            this.props.tab === 'members'
+            this.props.tab !== 'about'
           )
         }
         {filterBar}

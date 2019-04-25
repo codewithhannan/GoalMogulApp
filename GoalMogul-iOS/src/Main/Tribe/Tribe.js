@@ -644,7 +644,7 @@ class Tribe extends Component {
             jumpToIndex: (i) => this._handleIndexChange(i),
             navigationState: this.props.navigationState
             },
-            this.props.tab === 'members'
+            this.props.tab !== 'about'
           )
         }
         {filterBar}
