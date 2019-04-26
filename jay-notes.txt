@@ -1,0 +1,2 @@
+- Look into gm chatroom options bug
+- Make gm comment icon clearer
