@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Image, AppState } from 'react-native';
+import { View, TouchableWithoutFeedback, Image, AppState, Animated } from 'react-native';
 import { connect } from 'react-redux';
 import { TabView } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
@@ -18,7 +18,8 @@ import ActivityFeed from './ActivityFeed';
 import { homeSwitchTab, fetchAppUserProfile, fetchProfile, checkIfNewlyCreated } from '../../actions';
 import {
   openCreateOverlay,
-  refreshGoals
+  refreshGoals,
+  closeCreateOverlay
 } from '../../redux/modules/home/mastermind/actions';
 
 import { refreshFeed } from '../../redux/modules/home/feed/actions';
@@ -32,13 +33,13 @@ import {
 // Assets
 import Logo from '../../asset/header/logo.png';
 import Activity from '../../asset/utils/activity.png';
-import plus from '../../asset/utils/plus.png';
 
 // Styles
 import { APP_DEEP_BLUE } from '../../styles';
 
 // Utils
 import { Logger } from '../../redux/middleware/utils/Logger';
+import PlusButton from '../Common/Button/PlusButton';
 
 const TabIconMap = {
   goals: {
@@ -70,7 +71,7 @@ class Home extends Component {
           { key: 'activity', title: 'ACTIVITY' },
         ],
       },
-      appState: AppState.currentState
+      appState: AppState.currentState,
     };
     this.scrollToTop = this.scrollToTop.bind(this);
     this._renderScene = this._renderScene.bind(this);
@@ -133,7 +134,9 @@ class Home extends Component {
   handleCreateGoal = () => {
     this.props.openCreateOverlay();
     // As we move the create option here, we no longer need to care about the tab
-    Actions.createGoalButtonOverlay({ tab: 'mastermind' });
+    Actions.createGoalButtonOverlay({ tab: 'mastermind', onClose: () => {
+      this.props.closeCreateOverlay('mastermind');
+    } });
   }
 
   handleAppStateChange = (nextAppState) => {
@@ -246,18 +249,12 @@ class Home extends Component {
   _keyExtractor = (item, index) => index;
 
   renderPlus() {
-    if (this.props.showPlus) {
-      return (
-        <TouchableOpacity
-          activeOpacity={0.6}
-          style={styles.iconContainerStyle}
-          onPress={this.handleCreateGoal}
-        >
-          <Image style={styles.iconStyle} source={plus} />
-        </TouchableOpacity>
-      );
-    }
-    return null;
+    return (
+      <PlusButton
+        plusActivated={this.props.showPlus}
+        onPress={this.handleCreateGoal}
+      />
+    );
   }
 
   render() {
@@ -276,7 +273,6 @@ class Home extends Component {
             renderScene={this._renderScene}
             renderTabBar={this._renderHeader}
             onIndexChange={this._handleIndexChange}
-            useNativeDriver
           />
           {this.renderPlus()}
         </View>
@@ -361,7 +357,8 @@ export default connect(
     refreshGoals,
     refreshFeed,
     fetchProfile,
-    checkIfNewlyCreated
+    checkIfNewlyCreated,
+    closeCreateOverlay
   },
   null,
   { withRef: true }

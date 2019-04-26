@@ -14,6 +14,7 @@ import { Alert } from 'react-native';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
 import ChatRoomTab from './ChatRoomList/ChatRoomTab';
+import PlusButton from '../Common/Button/PlusButton';
 
 // Actions
 import {
@@ -137,9 +138,6 @@ class ChatTab extends React.Component {
 					name: 'createDirectMessage',
 					iconStyle: { height: 18, width: 18, marginLeft: 3 },
 					textStyle: { marginLeft: 5 },
-					customContainerStyle: {
-						width: 90,
-					},
 					iconSource: direct_message_image,
 					text: 'Direct',
 					onPress: () => {
@@ -158,9 +156,6 @@ class ChatTab extends React.Component {
 					name: 'createChatRoom',
 					iconStyle: { height: 18, width: 18, marginLeft: 3 },
 					textStyle: { marginLeft: 5 },
-					customContainerStyle: {
-						width: 90,
-					},
 					iconSource: profile_people_image,
 					text: 'Group',
 					onPress: () => {
@@ -172,18 +167,10 @@ class ChatTab extends React.Component {
 	}
 
 	renderPlus() {
-		if (this.props.showPlus) {
-			return (
-				<TouchableOpacity
-					activeOpacity={0.85}
-					style={styles.iconContainerStyle}
-					onPress={this.openCreateChatMenu.bind(this)}
-				>
-					<Image style={styles.iconStyle} source={plus_image} />
-				</TouchableOpacity>
-			);
-		};
-		return null;
+		return <PlusButton
+			onPress={this.openCreateChatMenu.bind(this)}
+			plusActivated={this.props.showPlus}
+		/>
 	}
 
 	render() {
