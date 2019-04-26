@@ -60,7 +60,7 @@ class PeopleTab extends React.Component {
             <View style={{ flex: 1, alignItems: 'center' }}>
                 <Text 
                     style={{
-                        paddingTop: 150,
+                        paddingTop: 100,
                         fontSize: 17,
                         fontWeight: '600',
                         color: '#818181'

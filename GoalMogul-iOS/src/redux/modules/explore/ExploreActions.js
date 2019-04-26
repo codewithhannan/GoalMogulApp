@@ -1,16 +1,6 @@
 import _ from 'lodash';
 import {
   EXPLORE_SWITCH_TAB,
-  EXPLORE_PEOPLE_REFRESH,
-  EXPLORE_PEOPLE_REFRESH_DONE,
-  EXPLORE_PEOPLE_LOAD_MORE,
-  EXPLORE_PEOPLE_LOAD_MORE_DONE,
-  EXPLORE_PLUS_PRESSED,
-  EXPLORE_PLUS_UNPRESSED,
-  EXPLORE_CHAT_REFRESH,
-  EXPLORE_CHAT_REFRESH_DONE,
-  EXPLORE_CHAT_LOAD_MORE,
-  EXPLORE_CHAT_LOAD_MORE_DONE,
   RecommendationRouteMap
 } from './ExploreReducers';
 
@@ -18,25 +8,6 @@ import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Actions Explore ]';
-const REFRESH_DONE_ACTION_MAP = {
-  people: EXPLORE_PEOPLE_REFRESH_DONE,
-  chatRooms: EXPLORE_CHAT_REFRESH_DONE
-};
-
-const REFRESH_ACTION_MAP = {
-  people: EXPLORE_PEOPLE_REFRESH,
-  chatRooms: EXPLORE_CHAT_REFRESH
-};
-
-const LOAD_MORE_ACTION_MAP = {
-  people: EXPLORE_PEOPLE_LOAD_MORE_DONE,
-  chatRooms: EXPLORE_CHAT_LOAD_MORE_DONE
-};
-
-const LOAD_MORE_DONE_ACTION_MAP = {
-  people: EXPLORE_PEOPLE_LOAD_MORE,
-  chatRooms: EXPLORE_CHAT_LOAD_MORE
-};
 
 export const exploreSelectTab = (index) => (dispatch) => {
   dispatch({
@@ -84,7 +55,7 @@ export const exploreRefreshTab = (tab) => (dispatch, getState) => {
       payload: {
         data: [],
         hasNextPage: false,
-        skip,
+        skip: 0,
         oldData
       }
     });
@@ -159,7 +130,7 @@ export const exploreLoadMoreTab = (tab) => (dispatch, getState) => {
 export const exploreGetRequest = (url, token, onSuccess, onError) => {
   // console.log(`${DEBUG_KEY}: [ exploreGetRequest ]: url:`, url);
   API
-    .get(url, token)
+    .get(url, token, 1)
     .then((res) => {
       // console.log(`${DEBUG_KEY}: [ exploreGetRequest ]: res:`, res);
       if (res.status === 200) {
