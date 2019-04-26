@@ -17,6 +17,9 @@ import {
   eventDetailOpen
 } from '../../redux/modules/event/EventActions';
 
+// Components
+import DelayedButton from '../Common/Button/DelayedButton';
+
 // import {
 //   eventDetailOpen
 // } from '../../redux/modules/event/MyEventActions';
@@ -122,7 +125,7 @@ class EventCard extends React.Component {
     const { item } = this.props;
     if (!item) return <View />;
     return (
-      <TouchableWithoutFeedback onPress={this.onCardPress}>
+      <DelayedButton onPress={this.onCardPress} touchableWithoutFeedback>
         <View style={styles.containerStyle}>
           {this.renderEventImage(item)}
           {this.renderTimeStamp(item)}
@@ -132,7 +135,7 @@ class EventCard extends React.Component {
             {this.renderEventInfo(item)}
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </DelayedButton>
     );
   }
 }
