@@ -288,7 +288,7 @@ class SuggestionModal extends Component {
 
     return (
       <Modal
-        animationType="fade"
+        animationType="slide"
         transparent={false}
         visible={this.props.visible}
         onDismiss={this.resetIconMap}

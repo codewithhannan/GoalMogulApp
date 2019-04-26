@@ -57,7 +57,7 @@ class Report extends Component {
   render() {
     return (
       <Modal
-        animationType="fade"
+        animationType="slide"
         transparent={false}
         visible={this.props.showing}
         onDismiss={
