@@ -777,12 +777,15 @@ class MyTribe extends Component {
 
   renderPlus(item) {
     const { isMember, navigationState } = this.props;
-    return (
-      <PlusButton
-        plusActivated={this.state.showPlus && (isMember === 'Admin' || isMember === 'Member')}
-        onPress={() => this.handlePlus(item, navigationState)}
-      />
-    );
+    if (this.state.showPlus && (isMember === 'Admin' || isMember === 'Member')) {
+      return (
+        <PlusButton
+          plusActivated={this.state.showPlus}
+          onPress={() => this.handlePlus(item, navigationState)}
+        />
+      );
+    }
+    return null;
   }
 
   // render padding has been changed to render loading indicator

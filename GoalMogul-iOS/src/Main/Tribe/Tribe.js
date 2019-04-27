@@ -27,6 +27,7 @@ import EmptyResult from '../Common/Text/EmptyResult';
 import {
   DotIcon
 } from '../../Utils/Icons';
+import PlusButton from '../Common/Button/PlusButton';
 
 import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
@@ -684,15 +685,10 @@ class Tribe extends Component {
   renderPlus(item) {
     const { isMember } = this.props;
     if (this.state.showPlus && (isMember === 'Admin' || isMember === 'Member')) {
-      return (
-        <TouchableOpacity
-          activeOpacity={0.6}
-          style={styles.iconContainerStyle}
-          onPress={() => this.handlePlus(item)}
-        >
-          <Image style={styles.iconStyle} source={plus} />
-        </TouchableOpacity>
-      );
+      <PlusButton
+        plusActivated={this.state.showPlus}
+        onPress={() => this.handlePlus(item)}
+      />
     }
     return null;
   }
