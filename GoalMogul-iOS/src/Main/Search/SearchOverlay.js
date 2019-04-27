@@ -148,6 +148,7 @@ class SearchOverlay extends Component {
     people: () => <PeopleSearch type='GeneralSearch' />,
     tribes: () => <TribeSearch type='GeneralSearch' />,
     events: () => <EventSearch type='GeneralSearch' />
+    // chatRooms: () => <ChatSearch type='GeneralSearch' />
   });
 
   render() {
