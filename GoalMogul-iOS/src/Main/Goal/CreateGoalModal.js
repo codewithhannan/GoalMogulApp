@@ -25,6 +25,12 @@ import {
   refreshTrendingGoals,
 } from '../../redux/modules/goal/CreateGoalActions';
 
+// Styles
+import {
+  APP_DEEP_BLUE,
+  APP_BLUE
+} from '../../styles';
+
 const DEBUG_KEY = '[ UI CreateGoalModal ]';
 
 class CreateGoalModal extends React.Component {
@@ -82,7 +88,23 @@ class CreateGoalModal extends React.Component {
 
   renderHeader = props => {
     return (
-      <TabButtonGroup buttons={props} />
+      <TabButtonGroup 
+        buttons={props}
+        buttonStyle={{
+          selected: {
+            backgroundColor: APP_DEEP_BLUE,
+            tintColor: 'white',
+            color: 'white',
+            fontWeight: '700'
+          },
+          unselected: {
+            backgroundColor: '#FCFCFC',
+            tintColor: '#616161',
+            color: '#616161',
+            fontWeight: '600'
+          }
+        }}   
+      />
     );
   };
 

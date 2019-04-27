@@ -29,6 +29,7 @@ import { MenuFactory } from '../../Common/MenuFactory';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 // import ParticipantFilterBar from '../../Event/ParticipantFilterBar';
 import EmptyResult from '../../Common/Text/EmptyResult';
+import PlusButton from '../../Common/Button/PlusButton';
 
 // Asset
 import TestEventImage from '../../../asset/TestEventImage.png';
@@ -668,19 +669,12 @@ class MyEvent extends Component {
 
   renderPlus(item) {
     const { isMember, navigationState } = this.props;
-    // if (this.state.showPlus && (isMember === 'Admin' || isMember === 'Member')) {
-    if (this.state.showPlus) {
-      return (
-        <TouchableOpacity
-          activeOpacity={0.6}
-          style={styles.iconContainerStyle}
-          onPress={() => this.handlePlus(item, navigationState)}
-        >
-          <Image style={styles.iconStyle} source={plus} />
-        </TouchableOpacity>
-      );
-    }
-    return null;
+    return (
+      <PlusButton
+        plusActivated={this.state.showPlus}
+        onPress={() => this.handlePlus(item, navigationState)}
+      />
+    );
   }
 
   render() {
