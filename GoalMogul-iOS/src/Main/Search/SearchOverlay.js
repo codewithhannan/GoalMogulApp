@@ -245,11 +245,10 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
-    height: 32
   },
   searchInputStyle: {
     fontSize: 15,
-    color: 'white'
+    color: 'white',
   },
   searchIconStyle: {
     top: 15,

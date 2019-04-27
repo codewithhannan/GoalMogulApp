@@ -152,8 +152,8 @@ class GoalDetailCard extends Component {
         <ActionButton
           iconSource={BulbIcon}
           count={45}
-          textStyle={{ color: '#FBDD0D' }}
-          iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
+          textStyle={{ color: '#FCB110' }}
+          iconStyle={{ tintColor: '#FCB110', height: 26, width: 26 }}
           onPress={() => console.log('suggest')}
         />
       </ActionButtonGroup>

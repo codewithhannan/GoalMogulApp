@@ -36,6 +36,7 @@ import {
   getUserDataByPageId,
   getUserData
 } from '../../redux/modules/User/Selector';
+import PlusButton from '../Common/Button/PlusButton';
 
 const DEBUG_KEY = '[ UI Profile ]';
 
@@ -114,18 +115,13 @@ class Profile extends Component {
   }
 
   renderPlus() {
-    if (this.props.showPlus && this.props.isSelf) {
-      return (
-        <TouchableOpacity
-          activeOpacity={0.6}
-          style={styles.iconContainerStyle}
-          onPress={this.handleCreateGoal}
-        >
-          <Image style={styles.iconStyle} source={plus} />
-        </TouchableOpacity>
-      );
+    if (!this.props.isSelf) {
+      return null;
     }
-    return null;
+    return (<PlusButton
+      onPress={this.handleCreateGoal}
+      plusActivated={this.props.showPlus}
+    />);
   }
 
   render() {

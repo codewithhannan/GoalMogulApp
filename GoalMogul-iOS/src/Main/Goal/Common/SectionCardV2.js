@@ -121,7 +121,7 @@ class SectionCardV2 extends Component {
       <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, paddingBottom: 4 }}>
         <Image
           source={bulb}
-          style={{ tintColor: '#FBDD0D', height: 10, width: 10, marginRight: 5 }}
+          style={{ tintColor: '#FCB110', height: 10, width: 10, marginRight: 5 }}
         />
         <Text style={styles.statsTextStyle}>{commentCount} comments</Text>
       </View>

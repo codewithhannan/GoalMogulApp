@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Animated, Text, Clipboard, StyleSheet, TouchableWithoutFeedback, View, ViewPropTypes } from 'react-native';
+import { Animated, Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes } from 'react-native';
 
 import { MessageText, MessageVideo } from 'react-native-gifted-chat';
 import ChatMessageImage from '../Modals/ChatMessageImage';
@@ -255,7 +255,8 @@ export default class ChatRoomConversationBubble extends React.Component {
 				styles[this.props.position].container,
 				this.props.containerStyle[this.props.position]
 			]}>
-				<TouchableWithoutFeedback
+				<TouchableOpacity
+					activeOpacity={0.6}
 					onLongPress={this.onLongPress}
 					onPress={this.toggleContainerStyle.bind(this)}
 					{...this.props.touchableProps}
@@ -285,7 +286,7 @@ export default class ChatRoomConversationBubble extends React.Component {
 							</View>
 						</View>
 					</Animated.View>
-				</TouchableWithoutFeedback>
+				</TouchableOpacity>
 			</View>
 		);
 	}

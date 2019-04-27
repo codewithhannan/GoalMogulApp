@@ -387,8 +387,8 @@ class GoalDetailSection extends React.PureComponent {
         <ActionButton
           iconSource={CommentIcon}
           count={commentCount}
-          iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
-          textStyle={{ color: '#FBDD0D' }}
+          iconStyle={{ tintColor: '#FCB110', height: 26, width: 26 }}
+          textStyle={{ color: '#FCB110' }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks suggestion icon.`);
             this.props.createCommentFromSuggestion({

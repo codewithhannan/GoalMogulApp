@@ -26,37 +26,65 @@ class CreateGoalButtonOverlay extends Component {
   constructor(...args) {
     super(...args);
     this.fadeAnim = new Animated.Value(0);
+    this.spinAnim = new Animated.Value(0);
   }
 
   componentDidMount() {
-    Animated.timing(this.fadeAnim, {
-      duration: 10,
-      toValue: 1,
-    }).start();
+    Animated.parallel([
+      Animated.timing(this.fadeAnim, {
+        duration: 400,
+        toValue: 1,
+        useNativeDriver: true,
+      }),
+      Animated.timing(this.spinAnim, {
+        toValue: 0.5,
+        duration: 400,
+        useNativeDriver: true,
+      })
+    ]).start();
   }
 
   handleCancel = () => {
-    Animated.timing(this.fadeAnim, {
-      duration: 10,
-      toValue: 0,
-    }).start(() => {
-      if (this.props.onClose) {
-        // console.log(`${DEBUG_KEY}: iam here`);
-        this.props.onClose();
-      } else {
-        this.props.closeCreateOverlay(this.props.tab);
-      }
+    if (this.props.onClose) {
+      this.props.onClose();
+    } else {
+      this.props.closeCreateOverlay(this.props.tab);
+    };
+    Animated.parallel([
+      Animated.timing(this.fadeAnim, {
+        duration: 400,
+        toValue: 0,
+        useNativeDriver: true,
+      }),
+      Animated.timing(this.spinAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      })
+    ]).start(() => {
       Actions.pop();
     });
   }
 
   handleCreatePost = () => {
     console.log('User trying to create post');
-    Animated.timing(this.fadeAnim, {
-      duration: 50,
-      toValue: 0,
-    }).start(() => {
+    if (this.props.onClose) {
+      this.props.onClose();
+    } else {
       this.props.closeCreateOverlay(this.props.tab);
+    };
+    Animated.parallel([
+      Animated.timing(this.fadeAnim, {
+        duration: 400,
+        toValue: 0,
+        useNativeDriver: true,
+      }),
+      Animated.timing(this.spinAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      })
+    ]).start(() => {
       Actions.pop();
       Actions.createPostModal({ 
         callback: this.props.onClose,
@@ -68,12 +96,24 @@ class CreateGoalButtonOverlay extends Component {
   }
 
   handleCreateGoal = () => {
-    console.log('User trying to create goal');
-    Animated.timing(this.fadeAnim, {
-      duration: 50,
-      toValue: 0,
-    }).start(() => {
+    if (this.props.onClose) {
+      this.props.onClose();
+    } else {
       this.props.closeCreateOverlay(this.props.tab);
+    };
+    console.log('User trying to create goal');
+    Animated.parallel([
+      Animated.timing(this.fadeAnim, {
+        duration: 400,
+        toValue: 0,
+        useNativeDriver: true,
+      }),
+      Animated.timing(this.spinAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      })
+    ]).start(() => {
       Actions.pop();
       Actions.createGoalModal({ 
         onCreate: this.props.onCreate, 
@@ -86,48 +126,88 @@ class CreateGoalButtonOverlay extends Component {
 
   renderCancelButton() {
     return (
-      <TouchableOpacity 
-        activeOpacity={0.6}
-        style={{ ...styles.iconContainerStyle, backgroundColor: 'transparent' }}
+      <TouchableWithoutFeedback 
+        style={{ ...styles.iconContainerStyle,
+          backgroundColor: 'transparent',
+        }}
         onPress={this.handleCancel}
       >
-        <Image style={{ ...styles.iconStyle }} source={cancel} />
-      </TouchableOpacity>
+        <Animated.Image
+          style={{ ...styles.iconStyle,
+            transform: [{
+              rotate: this.spinAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: ['0deg', '180deg']
+              })
+            }],
+            opacity: this.fadeAnim,
+          }}
+          source={cancel}
+        />
+      </TouchableWithoutFeedback>
     );
   }
 
   render() {
     return (
-      <Animated.View style={{ ...styles.wrapperStyle, opacity: this.fadeAnim }}>
+      <View style={{ ...styles.wrapperStyle }}>
         <TouchableWithoutFeedback onPress={this.handleCancel}>
-          <Animated.View style={[styles.fullscreen, { opacity: this.fadeAnim }]}>
-            <View style={[styles.fullscreen, { opacity: 0.3, backgroundColor: '#000' }]} />
-          </Animated.View>
+          <Animated.View style={[styles.fullscreen, {
+             backgroundColor: '#000',
+             opacity: this.fadeAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 0.3],
+            })
+          }]} />
         </TouchableWithoutFeedback>
         <View style={styles.containerStyle}>
-          <ActionButton
-            text='Post'
-            source={post}
+          <Animated.View
             style={{
-              iconStyle: { height: 18, width: 18, marginLeft: 3 },
-              textStyle: { marginLeft: 5 }
+              opacity: this.fadeAnim,
+              position: 'relative',
+              transform: [{translateY: this.fadeAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [72, 0],
+              })}],
+              right: 18,
             }}
-            onPress={this.handleCreatePost}
-            key={0}
-          />
-          <ActionButton
-            text='Goal'
-            source={goal}
+          >
+            <ActionButton
+              text='Post'
+              source={post}
+              style={{
+                iconStyle: { height: 18, width: 18, marginLeft: 3 },
+                textStyle: { marginLeft: 5 }
+              }}
+              onPress={this.handleCreatePost}
+              key={0}
+            />
+          </Animated.View>
+          <Animated.View
             style={{
-              iconStyle: { height: 25, width: 25 },
-              textStyle: { marginLeft: 5, marginRight: 3 }
+              opacity: this.fadeAnim,
+              position: 'relative',
+              transform: [{translateY: this.fadeAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [30, 0],
+              })}],
+              right: 18,
             }}
-            onPress={this.handleCreateGoal}
-            key={1}
-          />
+          >
+            <ActionButton
+              text='Goal'
+              source={goal}
+              style={{
+                iconStyle: { height: 25, width: 25 },
+                textStyle: { marginLeft: 5, marginRight: 3 }
+              }}
+              onPress={this.handleCreateGoal}
+              key={1}
+            />
+          </Animated.View>
           {this.renderCancelButton()}
         </View>
-      </Animated.View>
+      </View>
     );
   }
 }
@@ -181,8 +261,8 @@ const styles = {
   },
   containerStyle: {
     position: 'absolute',
-    bottom: 80,
-    right: 18,
+    bottom: 84,
+    right: 15,
     alignItems: 'center'
   },
   iconContainerStyle: {
