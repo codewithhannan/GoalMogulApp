@@ -2,7 +2,7 @@
  * Actions for Chat tab
  */
 import _ from 'lodash';
-import { Alert } from 'react-native';
+import { Alert, AsyncStorage } from 'react-native';
 
 import Bluebird from 'bluebird';
 
@@ -22,8 +22,10 @@ import {
 import {api as API} from '../../middleware/api';
 import MessageStorageService from '../../../services/chat/MessageStorageService';
 import { Actions } from 'react-native-router-flux';
+import { CHAT_TAB_LAST_INDEX } from '../../../Main/Chat/Chat';
 
 export const selectChatTab = (index) => (dispatch) => {
+	AsyncStorage.setItem(CHAT_TAB_LAST_INDEX, index.toString());
 	dispatch({
 		type: CHAT_SWITCH_TAB,
 		payload: {

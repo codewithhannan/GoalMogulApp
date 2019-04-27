@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
-import { Alert } from 'react-native';
+import { AsyncStorage } from 'react-native';
 
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup';
@@ -31,6 +31,7 @@ import profile_people_image from '../../asset/utils/profile_people.png';
 import { APP_DEEP_BLUE, APP_BLUE_BRIGHT } from '../../styles';
 import next from '../../asset/utils/next.png';
 
+export const CHAT_TAB_LAST_INDEX = 'chat_tab_last_index';
 const UNREAD_BADGE_COUNT_REFRESH_INTERVAL_MS = 3000;
 
 class ChatTab extends React.Component {
@@ -38,6 +39,12 @@ class ChatTab extends React.Component {
 		// refresh badge count
 		this._refreshUnreadBadgeCount();
 		this.unreadBadgeRefreshInterval = setInterval(this._refreshUnreadBadgeCount, UNREAD_BADGE_COUNT_REFRESH_INTERVAL_MS);
+
+		AsyncStorage.getItem(CHAT_TAB_LAST_INDEX).then(maybeLastIndex => {
+			if (parseInt(maybeLastIndex)) {
+				this.props.selectChatTab(parseInt(maybeLastIndex));
+			};
+		})
 	}
 	componentWillUnmount() {
 		clearInterval(this.unreadBadgeRefreshInterval);
