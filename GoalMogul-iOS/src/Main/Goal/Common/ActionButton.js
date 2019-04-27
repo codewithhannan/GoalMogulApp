@@ -89,7 +89,8 @@ const styles = {
   },
   textStyle: {
     fontSize: 11,
-    marginLeft: 8
+    marginLeft: 8,
+    fontWeight: '600'
   }
 };
 

@@ -16,6 +16,7 @@ import tribeDefaultIcon from '../../asset/explore/tribe.png';
 import {
   tribeDetailOpen
 } from '../../redux/modules/tribe/TribeActions';
+import DelayedButton from '../Common/Button/DelayedButton';
 
 const DEBUG_KEY = '[UI Tribe Card] ';
 
@@ -114,7 +115,7 @@ class TribeCard extends React.Component {
 
   render() {
     return (
-      <TouchableWithoutFeedback onPress={this.onCardPress}>
+      <DelayedButton onPress={this.onCardPress} touchableWithoutFeedback>
         <View style={styles.containerStyle}>
           {this.renderTribeImage()}
           {this.renderTimeStamp()}
@@ -124,7 +125,7 @@ class TribeCard extends React.Component {
             {this.renderTribeInfo()}
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </DelayedButton>
     );
   }
 }

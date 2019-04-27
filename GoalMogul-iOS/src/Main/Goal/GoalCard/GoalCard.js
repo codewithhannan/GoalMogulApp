@@ -487,8 +487,8 @@ class GoalCard extends React.PureComponent {
         <ActionButton
           iconSource={CommentIcon}
           count={commentCount}
-          textStyle={{ color: '#FBDD0D' }}
-          iconStyle={{ tintColor: '#FBDD0D', height: 26, width: 26 }}
+          textStyle={{ color: '#FCB110' }}
+          iconStyle={{ tintColor: '#FCB110', height: 26, width: 26 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks comment icon`);
             this.props.onPress(
@@ -506,7 +506,7 @@ class GoalCard extends React.PureComponent {
     );
   }
   // Original color picked for comment icon
-  // #FBDD0D
+  // #FCB110
 
   render() {
     const { item } = this.props;

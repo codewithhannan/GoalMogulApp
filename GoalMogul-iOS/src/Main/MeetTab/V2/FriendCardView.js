@@ -24,6 +24,7 @@ import {
   openProfile,
   UserBanner
 } from '../../../actions';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 const DEBUG_KEY = '[ UI FriendCardView ]';
 
@@ -43,8 +44,8 @@ class FriendCardView extends React.PureComponent {
   renderProfileImage(item) {
     return (
         <ProfileImage
-          imageStyle={{ height: 40, width: 40, borderRadius: 5 }}
-          defaultImageStyle={{ height: 40, width: 37, borderRadius: 5, marginLeft: 1, marginRight: 1 }}
+          imageStyle={{ height: 56, width: 56, borderRadius: 5 }}
+          defaultImageStyle={{ height: 56, width: 53, borderRadius: 5, marginLeft: 1, marginRight: 1 }}
           imageContainerStyle={{ marginTop: 5 }}
           imageUrl={item && item.profile ? item.profile.image : undefined}
           imageContainerStyle={styles.imageContainerStyle}
@@ -156,7 +157,7 @@ class FriendCardView extends React.PureComponent {
     const { enableCardOnPress, shouldRenderNextButton } = this.props;
 
     return (
-      <TouchableOpacity 
+      <DelayedButton 
         style={[styles.containerStyle, styles.shadow]}
         activeOpacity={0.6}
         disabled={enableCardOnPress === undefined || enableCardOnPress === false}
@@ -166,7 +167,7 @@ class FriendCardView extends React.PureComponent {
         {this.renderProfile(item)}
         <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: 35 }} />
         {this.renderButton(item, shouldRenderNextButton)}
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 }

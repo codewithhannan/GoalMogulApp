@@ -1,3 +1,6 @@
+/**
+ * After Event reducer refactoring, this class is no longer in use. It's replaced by MyEvent.js
+ */
 import React, { Component } from 'react';
 import {
   View,
@@ -67,6 +70,9 @@ import {
   CARET_OPTION_NOTIFICATION_SUBSCRIBE,
   CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../Utils/Constants';
+
+// Styles
+import { APP_DEEP_BLUE } from '../../styles';
 
 const DEBUG_KEY = '[ UI Event ]';
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
@@ -193,9 +199,26 @@ class Event extends Component {
     eventActionSheet();
   }
 
-  _renderHeader = props => {
+  _renderHeader = (props, noBorder) => {
     return (
-      <TabButtonGroup buttons={props} />
+      <TabButtonGroup 
+        buttons={props}
+        noBorder={noBorder} 
+        buttonStyle={{
+          selected: {
+            backgroundColor: APP_DEEP_BLUE,
+            tintColor: 'white',
+            color: 'white',
+            fontWeight: '700'
+          },
+          unselected: {
+            backgroundColor: '#FCFCFC',
+            tintColor: '#616161',
+            color: '#616161',
+            fontWeight: '600'
+          }
+        }}
+      />
     );
   };
 
@@ -384,10 +407,13 @@ class Event extends Component {
         </View>
         {
           // Render tabs
-          this._renderHeader({
-            jumpToIndex: (i) => this._handleIndexChange(i),
-            navigationState: this.props.navigationState
-          })
+          this._renderHeader(
+            {
+              jumpToIndex: (i) => this._handleIndexChange(i),
+              navigationState: this.props.navigationState
+            },
+            this.props.tab === 'attendees'
+          )
         }
         {filterBar}
         {emptyState}

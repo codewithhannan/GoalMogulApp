@@ -26,26 +26,42 @@ import {
 class CreateButtonOverlay extends Component {
 	constructor(...args) {
 		super(...args);
-		this.fadeAnim = new Animated.Value(0.001);
+		this.fadeAnim = new Animated.Value(0);
+		this.spinAnim = new Animated.Value(0);
 	}
 
 	componentDidMount() {
-		Animated.timing(this.fadeAnim, {
-			duration: 100,
+		Animated.parallel([
+		  Animated.timing(this.fadeAnim, {
+			duration: 400,
 			toValue: 1,
-		}).start();
+			useNativeDriver: true,
+		  }),
+		  Animated.timing(this.spinAnim, {
+			toValue: 0.5,
+			duration: 400,
+			useNativeDriver: true,
+		  })
+		]).start();
 	}
 
 	handleCancel = () => {
 		const { onCancel } = this.props;
-		Animated.timing(this.fadeAnim, {
-			duration: 100,
+		if (onCancel) {
+			onCancel();
+		};
+		Animated.parallel([
+		  Animated.timing(this.fadeAnim, {
+			duration: 400,
 			toValue: 0,
-		}).start(() => {
-			if (onCancel) {
-				onCancel();
-			}
-			// this.props.closeCreateOverlay(this.props.tab);
+			useNativeDriver: true,
+		  }),
+		  Animated.timing(this.spinAnim, {
+			toValue: 1,
+			duration: 400,
+			useNativeDriver: true,
+		  })
+		]).start(() => {
 			Actions.pop();
 		});
 	}
@@ -54,10 +70,18 @@ class CreateButtonOverlay extends Component {
 		// remove overlay
 		Actions.pop();
 		const { onActionSelect } = this.props;
-		Animated.timing(this.fadeAnim, {
-			duration: 100,
+		Animated.parallel([
+		  Animated.timing(this.fadeAnim, {
+			duration: 400,
 			toValue: 0,
-		}).start(() => {
+			useNativeDriver: true,
+		  }),
+		  Animated.timing(this.spinAnim, {
+			toValue: 1,
+			duration: 400,
+			useNativeDriver: true,
+		  })
+		]).start(() => {
 			if (onActionSelect) {
 				onActionSelect(selectedButtonName);
 			};
@@ -66,51 +90,28 @@ class CreateButtonOverlay extends Component {
 
 	renderCancelButton() {
 		return (
-			<TouchableOpacity
+			<TouchableWithoutFeedback
 				activeOpacity={0.85}
-				style={{ ...styles.iconContainerStyle, backgroundColor: 'transparent' }}
+				style={{ ...styles.iconContainerStyle,
+					backgroundColor: 'transparent'
+				}}
 				onPress={this.handleCancel}
 			>
-				<Image style={{ ...styles.iconStyle }} source={cancel} />
-			</TouchableOpacity>
+				<Animated.Image
+					style={{ ...styles.iconStyle,
+						transform: [{
+							rotate: this.spinAnim.interpolate({
+								inputRange: [0, 1],
+								outputRange: ['0deg', '180deg']
+							})
+						}],
+						opacity: this.fadeAnim,
+					}}
+					source={cancel}
+				/>
+			</TouchableWithoutFeedback>
 		);
 	}
-
-	// This function is not being called
-	handleCreatePost = () => {
-		console.log('User trying to create post');
-		Animated.timing(this.fadeAnim, {
-			duration: 100,
-			toValue: 0,
-		}).start(() => {
-			this.props.closeCreateOverlay(this.props.tab);
-			Actions.pop();
-			// pageId is for event or tribe so that we know when we refresh,
-			// which tribe / event page to get list of items
-			// Currently this is only invoked in tribe and event
-			Actions.createPostModal({ 
-				pageId: this.props.pageId, 
-			});
-		});
-	}
-
-  // This function is not being called
-  handleCreateGoal = () => {
-    console.log('User trying to create goal');
-    Animated.timing(this.fadeAnim, {
-      duration: 100,
-      toValue: 0,
-    }).start(() => {
-      this.props.closeCreateOverlay(this.props.tab);
-      Actions.pop();
-      // pageId is for event or tribe so that we know when we refresh,
-      // which tribe / event page to get list of items
-      // Currently this is only invoked in tribe and event
-      Actions.createGoalModal({ 
-        pageId: this.props.pageId, 
-      });
-    });
-  }
 
 	renderActionButtons() {
 		const { buttons } = this.props;
@@ -120,20 +121,32 @@ class CreateButtonOverlay extends Component {
 				customContainerStyle = {};
 			};
 			return (
-				<ActionButton
-					text={text}
-					source={iconSource}
+				<Animated.View
 					style={{
-						iconStyle,
-						textStyle,
-						customContainerStyle,
+						opacity: this.fadeAnim,
+						position: 'relative',
+						transform: [{translateY: this.fadeAnim.interpolate({
+						  inputRange: [0, 1],
+						  outputRange: [((buttons.length - index) * 30), 0],
+						})}],
+						right: 18,
 					}}
-					onPress={() => {
-						this.handleActionSelect(name);
-						onPress();
-					}}
-					key={index}
-				/>
+				>
+					<ActionButton
+						text={text}
+						source={iconSource}
+						style={{
+							iconStyle,
+							textStyle,
+							customContainerStyle,
+						}}
+						onPress={() => {
+							this.handleActionSelect(name);
+							onPress();
+						}}
+						key={index}
+					/>
+				</Animated.View>
 			);
 		});
 
@@ -142,17 +155,22 @@ class CreateButtonOverlay extends Component {
 
 	render() {
 		return (
-			<Animated.View style={{ ...styles.wrapperStyle, opacity: this.fadeAnim }}>
+			<View style={{ ...styles.wrapperStyle }}>
 				<TouchableWithoutFeedback onPress={this.handleCancel}>
-					<Animated.View style={[styles.fullscreen, { opacity: this.fadeAnim }]}>
-						<View style={[styles.fullscreen, { opacity: 0.3, backgroundColor: '#000' }]} />
+					<Animated.View style={[styles.fullscreen, {
+						opacity: this.fadeAnim.interpolate({
+							inputRange: [0, 1],
+							outputRange: [0, 0.3],
+						}),
+						backgroundColor: '#000',
+					}]}>
 					</Animated.View>
 				</TouchableWithoutFeedback>
 				<View style={styles.containerStyle}>
 					{this.renderActionButtons()}
 					{this.renderCancelButton()}
 				</View>
-			</Animated.View>
+			</View>
 		);
 	}
 }
@@ -206,9 +224,9 @@ const styles = {
 	},
 	containerStyle: {
 		position: 'absolute',
-		bottom: 70,
-		right: 30,
-		alignItems: 'flex-end'
+		bottom: 84,
+		right: 15,
+		alignItems: 'center'
 	},
 	iconContainerStyle: {
 		height: 40,

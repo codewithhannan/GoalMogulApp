@@ -364,9 +364,26 @@ class Tribe extends Component {
     }
   };
 
-  _renderHeader = props => {
+  _renderHeader = (props, noBorder) => {
     return (
-      <TabButtonGroup buttons={props} />
+      <TabButtonGroup 
+        buttons={props} 
+        noBorder={noBorder} 
+        buttonStyle={{
+          selected: {
+            backgroundColor: APP_DEEP_BLUE,
+            tintColor: 'white',
+            color: 'white',
+            fontWeight: '700'
+          },
+          unselected: {
+            backgroundColor: '#FCFCFC',
+            tintColor: '#616161',
+            color: '#616161',
+            fontWeight: '600'
+          }
+        }}
+      />
     );
   };
 
@@ -533,29 +550,33 @@ class Tribe extends Component {
     const { memberNavigationState } = this.props;
     const { routes } = memberNavigationState;
 
-    const buttonStyle = {
-      selected: {
-        backgroundColor: 'white', // container background style
-        tintColor: '#696969', // icon tintColor
-        color: '#696969', // text color
-        fontWeight: '800', // text fontWeight
-        statColor: 'white' // stat icon color
-      },
-      unselected: {
-        backgroundColor: 'white',
-        tintColor: '#696969',
-        color: '#b2b2b2',
-        fontWeight: '600',
-        statColor: '#696969'
-      }
-    };
+    // Button style 1
+    // const buttonStyle = {
+    //   selected: {
+    //     backgroundColor: 'white', // container background style
+    //     tintColor: '#696969', // icon tintColor
+    //     color: '#696969', // text color
+    //     fontWeight: '800', // text fontWeight
+    //     statColor: 'white' // stat icon color
+    //   },
+    //   unselected: {
+    //     backgroundColor: 'white',
+    //     tintColor: '#696969',
+    //     color: '#b2b2b2',
+    //     fontWeight: '600',
+    //     statColor: '#696969'
+    //   }
+    // };
 
     const props = {
       jumpToIndex: (i) => this.props.tribeSelectMembersFilter(routes[i].key, i),
       navigationState: this.props.memberNavigationState
     };
     return (
-      <TabButtonGroup buttons={props} subTab buttonStyle={buttonStyle} noVerticalDivider noBorder />
+      <View>
+        {/* <TabButtonGroup buttons={props} subTab buttonStyle={buttonStyle} noVerticalDivider noBorder /> */}
+        <TabButtonGroup buttons={props} noVerticalDivider />
+      </View>
     );
   }
 
@@ -618,10 +639,13 @@ class Tribe extends Component {
           </View>
         </Animated.View>
         {
-          this._renderHeader({
+          this._renderHeader(
+            {
             jumpToIndex: (i) => this._handleIndexChange(i),
             navigationState: this.props.navigationState
-          })
+            },
+            this.props.tab !== 'about'
+          )
         }
         {filterBar}
         {emptyState}

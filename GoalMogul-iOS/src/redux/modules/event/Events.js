@@ -45,6 +45,7 @@ import {
     PROFILE_POST_DELETE_SUCCESS
 } from '../../../reducers/Profile';
 import { hasTypePrefix } from '../../middleware/utils';
+import { Logger } from '../../middleware/utils/Logger';
 
 /**
  * Related Consts
@@ -335,7 +336,7 @@ export default (state = INITIAL_STATE, action) => {
             // Update the goal by goalId
             eventToUpdate = _.set(eventToUpdate, 'reference', newReference);
             newState = _.set(newState, `${eventId}`, eventToUpdate);
-            console.log(`${DEBUG_KEY}: newState after event closing is: `, newState);
+            Logger.log(`${DEBUG_KEY}: newState after event closing is: `, newState, 4);
             return newState;
         }
 

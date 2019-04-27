@@ -103,7 +103,7 @@ export const refreshNotifications = (params) =>
   }
 
   const onSuccess = (res) => {
-    console.log(`${DEBUG_KEY}: refresh notifications succeed with res length: `, res.notis.length);
+    Logger.log(`${DEBUG_KEY}: refresh notifications succeed with res length: `, res.notis.length, 3);
     const data = res.notis;
     // const data = TestData;
     dispatch({
