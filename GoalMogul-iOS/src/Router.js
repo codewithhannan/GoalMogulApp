@@ -175,18 +175,40 @@ class RouterComponent extends Component {
         easing: Easing.out(Easing.poly(4)),
         timing: Animated.timing
       },
-      screenInterpolator: sceneProps => {      
-        const { layout, position, scene } = sceneProps;
+      screenInterpolator: sceneProps => {
+        const { layout, position, scene, index, scenes } = sceneProps;
 
         const thisSceneIndex = scene.index;
+        const toIndex = index;
+        const lastSceneIndex = scenes[scenes.length - 1].index;
         const width = layout.initWidth;
-  
+
         const translateX = position.interpolate({
           inputRange: [thisSceneIndex - 1, thisSceneIndex],
           outputRange: [width, 0],
         });
+        const fadeOut = position.interpolate({
+          inputRange: [thisSceneIndex, thisSceneIndex + 1],
+          outputRange: [1, 0.5],
+        });
+ 
+        // if we're going back several screens
+        if (lastSceneIndex - toIndex > 1) {
+          // if it's the base scene or topmost, animate it sliding
+          if (thisSceneIndex == toIndex || thisSceneIndex == lastSceneIndex) {
+            return {
+              transform: [ { translateX } ],
+            };
+          } else { // hide all screens in between
+            return { opacity: 0, };
+          };
+
+        };
   
-        return { transform: [ { translateX } ] };
+        return {
+          transform: [ { translateX } ],
+          opacity: scene.isActive ? 1 : fadeOut,
+        };
       },
     }
   }
@@ -202,7 +224,7 @@ class RouterComponent extends Component {
             <Stack
               key="root"
               hideNavBars
-              transitionConfig={this.rootTransitionConfig}
+              transitionConfig={this.rootTransitionConfig().screenInterpolator}
             >
               <Stack key="auth" initial hideNavBar>
                 <Scene key="splash" component={SplashScreen} initial />
@@ -277,11 +299,11 @@ class RouterComponent extends Component {
                               /* case yourKeyScene:
                               return theAnimationYouWant(props)*/
                               case 'home': 
-                                return CardStackStyleInterpolator.forHorizontal(props);
+                                return this.rootTransitionConfig().screenInterpolator(props);
                               case 'searchLightBox':
-                                return CardStackStyleInterpolator.forHorizontal(props);
+                                return this.rootTransitionConfig().screenInterpolator(props);
                               default:
-                                return CardStackStyleInterpolator.forHorizontal(props);
+                                return this.rootTransitionConfig().screenInterpolator(props);
                             }
                           }
                         })
@@ -327,11 +349,11 @@ class RouterComponent extends Component {
                               /* case yourKeyScene:
                               return theAnimationYouWant(props)*/
                               case 'meet': 
-                                return CardStackStyleInterpolator.forHorizontal(props);
+                                return this.rootTransitionConfig().screenInterpolator(props);
                               case 'meetTab_searchLightBox':
-                                return CardStackStyleInterpolator.forHorizontal(props);
+                                return this.rootTransitionConfig().screenInterpolator(props);
                               default:
-                                return CardStackStyleInterpolator.forHorizontal(props);
+                                return this.rootTransitionConfig().screenInterpolator(props);
                             }
                           }
                         })
@@ -376,11 +398,11 @@ class RouterComponent extends Component {
                               /* case yourKeyScene:
                               return theAnimationYouWant(props)*/
                               case 'notification': 
-                                return CardStackStyleInterpolator.forHorizontal(props);
+                                return this.rootTransitionConfig().screenInterpolator(props);
                               case 'notificationTab_searchLightBox':
-                                return CardStackStyleInterpolator.forHorizontal(props);
+                                return this.rootTransitionConfig().screenInterpolator(props);
                               default:
-                                return CardStackStyleInterpolator.forHorizontal(props);
+                                return this.rootTransitionConfig().screenInterpolator(props);
                             }
                           }
                         })
@@ -438,11 +460,11 @@ class RouterComponent extends Component {
                               /* case yourKeyScene:
                               return theAnimationYouWant(props)*/
                               case 'explore': 
-                                return CardStackStyleInterpolator.forHorizontal(props);
+                                return this.rootTransitionConfig().screenInterpolator(props);
                               case 'exploreTab_searchLightBox':
-                                return CardStackStyleInterpolator.forHorizontal(props);
+                                return this.rootTransitionConfig().screenInterpolator(props);
                               default:
-                                return CardStackStyleInterpolator.forHorizontal(props);
+                                return this.rootTransitionConfig().screenInterpolator(props);
                             }
                           }
                         })
@@ -488,11 +510,11 @@ class RouterComponent extends Component {
                               /* case yourKeyScene:
                               return theAnimationYouWant(props)*/
                               case 'chat': 
-                                return CardStackStyleInterpolator.forHorizontal(props);
+                                return this.rootTransitionConfig().screenInterpolator(props);
                               case 'chatTab_searchLightBox':
-                                return CardStackStyleInterpolator.forHorizontal(props);
+                                return this.rootTransitionConfig().screenInterpolator(props);
                               default:
-                                return CardStackStyleInterpolator.forHorizontal(props);
+                                return this.rootTransitionConfig().screenInterpolator(props);
                             }
                           }
                         })
