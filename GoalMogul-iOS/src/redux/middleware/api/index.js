@@ -85,3 +85,5 @@ export const api = {
     return singleFetch(path, payload, 'delete', token, logLevel);
   }
 };
+
+export const BASE_API_URL = config.url;

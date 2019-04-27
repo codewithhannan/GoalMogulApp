@@ -1,6 +1,6 @@
 import Expo from 'expo';
 
-import { api as API } from '../redux/middleware/api';
+import { api as API, BASE_API_URL } from '../redux/middleware/api';
 
 const pageSize = 3;
 const DEBUG_KEY = '[ Utils ContactUtils ]';
@@ -54,14 +54,15 @@ const ContactUtils = {
   @return update result promise
   */
   uploadContacts(contacts, token) {
-    const url = 'https://api.goalmogul.com/api/secure/user/contactsync/';
+    const url = `${BASE_API_URL}secure/user/contactsync/`;
 
     const contactListJSONString = JSON.stringify(contacts);
     const contactListBlob = new Blob([contactListJSONString], {type: 'text/plain'});
+    const contactListObjectURL = URL.createObjectURL(contactListBlob);
 
     var formData = new FormData();
     formData.append('contactList', {
-      uri: URL.createObjectURL(contactListBlob),
+      uri: contactListObjectURL,
       type: 'text/plain',
       name: 'contactList.txt',
     }, 'contactList.txt');
@@ -83,6 +84,7 @@ const ContactUtils = {
               )
             );
           }
+          URL.revokeObjectURL(contactListObjectURL);
         }
       };
       xhr.open('POST', url, true);
