@@ -84,8 +84,8 @@ class ChatRoomOptions extends React.Component {
     }
     leaveConversation() {
         const { isAdmin, user, chatRoom } = this.props;
-        if (isAdmin) {
-            return Alert.alert('Forbidden.', 'Admins cannot leave their own conversations.');
+        if (isAdmin && chatRoom.members.length > 1 && chatRoom.members.filter(memberDoc =>  memberDoc.status == 'Admin').length == 1) {
+            return Alert.alert('Forbidden.', 'You\'re the only admin in this conversation.');
         };
         Alert.alert('Are you sure?', 'You will not be able to send or recieve messages from this conversation after you leave...', [{
             text: 'Leave conversation',
