@@ -17,6 +17,7 @@ import SearchBarHeader from '../Common/Header/SearchBarHeader';
 import TribeTab from './TribeTab';
 import EventTab from './EventTab';
 import PeopleTab from './People/PeopleTab';
+import ChatTab from './Chat/ChatTab';
 
 // Actions
 import { 
@@ -29,6 +30,7 @@ import EventIcon from '../../asset/suggestion/event.png';
 import PeopleIcon from '../../asset/suggestion/group.png';
 import explore_image from '../../asset/explore/ExploreImage.png';
 import people_globe from '../../asset/explore/PeopleGlobe.png';
+import IconChat from '../../asset/footer/navigation/chat.png';
 
 // Styles
 import { APP_DEEP_BLUE } from '../../styles';
@@ -52,6 +54,13 @@ const TabIconMap = {
   },
   people: {
     iconSource: PeopleIcon,
+    iconStyle: {
+      height: 15,
+      width: 17
+    }
+  },
+  chatRooms: {
+    iconSource: IconChat,
     iconStyle: {
       height: 15,
       width: 17
@@ -137,6 +146,7 @@ class Explore extends Component {
     people: PeopleTab,
     tribes: TribeTab,
     events: EventTab,
+    // chatRooms: ChatTab
   });
 
   _keyExtractor = (item, index) => index;
