@@ -24,6 +24,7 @@ import {
 
 export const SETTING_NOTIFICATION_TOKEN_PUSH_SUCCESS = 'setting_notification_token_push_success';
 export const SETTING_SWITCH_TAB = 'setting_switch_tab';
+export const SETTING_BLOCK_PAGE_CLOSE = 'setting_block_page_close';
 
 const INITIAL_STATE = {
   userId: undefined,
@@ -68,6 +69,14 @@ export default (state = INITIAL_STATE, action) => {
       let newState = _.cloneDeep(state);
       const { index } = action.payload;
       newState = _.set(newState, 'navigationState.index', index);
+      return newState;
+    }
+
+    // Reset skip and hasNext page
+    case SETTING_BLOCK_PAGE_CLOSE: {
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'block.skip', 0);
+      newState = _.set(newState, 'block.hasNextPage', undefined);
       return newState;
     }
 

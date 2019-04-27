@@ -28,6 +28,10 @@ import {
   SETTING_NOTIFICATION_TOKEN_PUSH_SUCCESS
 } from './types';
 
+import {
+  SETTING_BLOCK_PAGE_CLOSE
+} from '../reducers/Setting';
+
 const DEBUG_KEY = '[ Setting Action ]';
 const BASE_ROUTE = 'secure/user/settings';
 
@@ -289,6 +293,15 @@ export const updateFriendsSetting = () => (dispatch, getState) => {
   })
   .catch((err) => {
     console.log('error updating privacy setting: ', err);
+  });
+};
+
+/**
+ * Reset block page status on close
+ */
+export const friendsBlockedOnClose = () => (dispatch, getState) => {
+  dispatch({
+    type: SETTING_BLOCK_PAGE_CLOSE
   });
 };
 

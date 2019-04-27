@@ -13,10 +13,11 @@ import FriendCard from './FriendCard';
 import EmptyResult from '../../../Common/Text/EmptyResult';
 
 // Actions
-import { getBlockedUsers } from '../../../../actions';
+import { getBlockedUsers, friendsBlockedOnClose } from '../../../../actions';
 
 // selectors
 import { getBlockees } from '../../../../redux/modules/setting/selector';
+import { Logger } from '../../../../redux/middleware/utils/Logger';
 
 const DEBUG_KEY = '[ Component FriendsBlocked ]';
 
@@ -28,7 +29,12 @@ class FriendsBlocked extends Component {
 
   componentDidMount() {
     // Refresh on mounting
+    Logger.log(`${DEBUG_KEY}: [ componentDidMount ]`, null, 2);
     this.handleRefresh();
+  }
+
+  componentWillUnmount() {
+    this.props.friendsBlockedOnClose();
   }
 
   handleOnLoadMore = () => {
@@ -98,5 +104,6 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps, {
-  getBlockedUsers
+  getBlockedUsers,
+  friendsBlockedOnClose
 })(FriendsBlocked);
