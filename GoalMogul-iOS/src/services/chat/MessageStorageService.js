@@ -395,7 +395,10 @@ class MessageStorageService {
      */
     _beginMessageQueuePolling = () => {
         const { authToken } = this.mountedUser;
-        // Update app badge count now that we're going to pull from message queue
+        this._messageQueuePoller = setInterval(() => this._pollMessageQueue(authToken), MESSAGE_QUEUE_POLLING_INTERVAL_SECONDS * 1000);
+    }
+    _resetAppNotificationsBadge = () => {
+        const { authToken } = this.mountedUser;
         API.get('secure/notification/entity/unread-count', authToken).then(res => {
             if (res.status === 200) {
                 let notiCount = parseInt(res.count);
@@ -405,12 +408,15 @@ class MessageStorageService {
             };
             Notifications.setBadgeNumberAsync(0);
         }).catch(err => Notifications.setBadgeNumberAsync(0));
-        this._messageQueuePoller = setInterval(() => this._pollMessageQueue(authToken), MESSAGE_QUEUE_POLLING_INTERVAL_SECONDS * 1000);
     }
     _pollMessageQueue = (authToken) => {
         this._pullMessageQueueRequest(authToken).then(resp => {
             if (resp.status == 200) {
                 const messages = resp.data;
+                // Update app badge count now that we've pulled from message queue
+                if (messages.length) {
+                    this._resetAppNotificationsBadge();
+                };
                 messages.forEach(messageDoc => {
                     localDb.insert(this._transformMessageForLocalStorage(messageDoc), (err) => {
                         if (err) return;

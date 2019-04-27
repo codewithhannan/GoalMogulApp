@@ -103,6 +103,9 @@ export const refreshNotifications = (params) =>
   }
 
   const onSuccess = (res) => {
+    // Clear app badge count
+    Notifications.setBadgeNumberAsync(0);
+
     Logger.log(`${DEBUG_KEY}: refresh notifications succeed with res length: `, res.notis.length, 3);
     const data = res.notis;
     // const data = TestData;

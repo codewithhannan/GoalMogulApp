@@ -18,6 +18,7 @@ import {
 	TextInput,
 } from 'react-native';
 import { connect } from 'react-redux';
+import EmojiSelector from 'react-native-emoji-selector';
 
 import {
 	Permissions,
@@ -52,6 +53,7 @@ import ModalHeader from '../../Common/Header/ModalHeader';
 import { GiftedChat, Send, Message, Bubble, MessageText, Time, MessageImage, MessageVideo, Avatar } from 'react-native-gifted-chat';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import PhotoIcon from '../../../asset/utils/cameraRoll.png';
+import EmojiIcon from '../../../asset/utils/emoji.png';
 import { Actions } from 'react-native-router-flux';
 import ProfileImage from '../../Common/ProfileImage';
 import { openCamera, openCameraRoll, openProfile } from '../../../actions';
@@ -261,6 +263,19 @@ class ChatRoomConversation extends React.Component {
 		);
 		return addMediaRefActionSheet();
 	}
+	onOpenEmojiKeyboard() {
+		this._textInput.blur();
+		this.setState({
+			showEmojiSelector: !this.state.showEmojiSelector,
+		});
+	}
+	onEmojiSelected(emoji) {
+		this.setState({
+			showEmojiSelector: false,
+		});
+		this._giftedChat.onInputTextChanged(this._giftedChat.state.text + emoji);
+		this._textInput.focus();
+	}
 	handleOpenCamera = () => {
 		this.props.openCamera((result) => {
 			this.props.changeMessageMediaRef(result.uri);
@@ -350,6 +365,35 @@ class ChatRoomConversation extends React.Component {
 			</TouchableOpacity>
 		  );
 	}
+	renderEmojiSelector() {
+		return (<View>
+			<TouchableOpacity
+			  activeOpacity={0.6}
+			  style={styles.iconContainerStyle}
+			  onPress={this.onOpenEmojiKeyboard.bind(this)}
+			>
+			  <Image
+				source={EmojiIcon}
+				style={{
+				  ...styles.iconStyle,
+				  tintColor: '#cbd6d8'
+				}}
+				resizeMode='contain'
+			  />
+			</TouchableOpacity>
+		  </View>);
+	}
+	renderExtraActions() {
+		return (<View
+			style={{
+				flexDirection: 'row',
+				alignItems: 'center'
+			}}
+		>
+			{this.renderSendImageButton()}
+			{this.renderEmojiSelector()}
+		</View>)
+	}
 	renderMedia() {
 		const { messageMediaRef } = this.props;
 		if (!messageMediaRef) return null;
@@ -402,7 +446,7 @@ class ChatRoomConversation extends React.Component {
 					paddingRight: 12,
 					paddingTop: 9,
 					paddingBottom: 9,
-					width: Dimensions.get('window').width - 81, // icons and padding
+					width: Dimensions.get('window').width - 108, // icons and padding
 				}}
 			>
 				<TextInput
@@ -505,6 +549,7 @@ class ChatRoomConversation extends React.Component {
 						}}
 					/>
 					<GiftedChat
+						ref={chatRef => this._giftedChat = chatRef}
 						messages={(this.props.ghostMessages || []).concat(this.props.messages)}
 						user={{
 							_id, name,
@@ -520,7 +565,7 @@ class ChatRoomConversation extends React.Component {
 						onPressAvatar={this.openUserProfile.bind(this)}
 						onLongPress={this.onMessageLongPress.bind(this)}
 						renderFooter={this.renderTypingIndicatorFooter.bind(this)}
-						renderActions={this.renderSendImageButton.bind(this)}
+						renderActions={this.renderExtraActions.bind(this)}
 						onSend={this.sendMessage.bind(this)}
 						onInputTextChanged={this.onChatTextInputChanged.bind(this)}
 						renderAccessory={this.renderMedia.bind(this)}
@@ -532,6 +577,43 @@ class ChatRoomConversation extends React.Component {
 						renderAvatar={this.renderAvatar}
 						bottomOffset={this.props.messageMediaRef ? 18 : 75}
 					/>
+					{this.state.showEmojiSelector &&
+						<View
+							style={{
+								position: 'absolute',
+								width: Dimensions.get('window').width,
+								height: Dimensions.get('window').height,
+								backgroundColor: '#fff',
+								zIndex: 5,
+							}}
+						>
+							<ModalHeader
+								actionDisabled={true}
+								actionHidden={true}
+								title={'Select an Emoji'}
+								cancelText={'Close'}
+								onCancel={this.onOpenEmojiKeyboard.bind(this)}
+								containerStyles={{
+									elevation: 3,
+									shadowColor: '#666',
+									shadowOffset: { width: 0, height: 1, },
+									shadowOpacity: 0.3,
+									shadowRadius: 1,
+								}}
+							/>
+							<View
+								style={{
+									paddingTop: 18,
+									paddingBottom: 24,
+									flexGrow: 1,
+								}}
+							>
+								<EmojiSelector
+									onEmojiSelected={this.onEmojiSelected.bind(this)}
+								/>
+							</View>
+						</View>
+					}
 				</View>
 			</MenuProvider>
 		);
@@ -652,12 +734,12 @@ const styles = {
 	iconContainerStyle: {
 		alignItems: 'center',
 		justifyContent: 'center',
-		width: 42,
+		width: 33,
 		paddingBottom: 15,
 	},
 	iconStyle: {
-		height: 30,
-		width: 30,
+		height: 27,
+		width: 27,
 	},
 	mediaContainerStyle: {
 		flexDirection: 'row',

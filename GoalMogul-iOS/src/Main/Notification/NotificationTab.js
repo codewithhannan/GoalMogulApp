@@ -47,8 +47,6 @@ const DEBUG_KEY = '[ UI NotificationTab ]';
 class NotificationTab extends Component {
 
   componentDidMount() {
-    // Clear app badge count
-    Notifications.setBadgeNumberAsync(0);
     // Refresh notification tab 
     console.log(`${DEBUG_KEY}: component did mount`);
     if (!this.props.data || _.isEmpty(this.props.data.length)) {
