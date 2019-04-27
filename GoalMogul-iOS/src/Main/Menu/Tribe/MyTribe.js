@@ -29,6 +29,7 @@ import EmptyResult from '../../Common/Text/EmptyResult';
 import {
   DotIcon
 } from '../../../Utils/Icons';
+import PlusButton from '../../Common/Button/PlusButton';
 
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
 import { switchCase } from '../../../redux/middleware/utils';
@@ -776,18 +777,12 @@ class MyTribe extends Component {
 
   renderPlus(item) {
     const { isMember, navigationState } = this.props;
-    if (this.state.showPlus && (isMember === 'Admin' || isMember === 'Member')) {
-      return (
-        <TouchableOpacity
-          activeOpacity={0.6}
-          style={styles.iconContainerStyle}
-          onPress={() => this.handlePlus(item, navigationState)}
-        >
-          <Image style={styles.iconStyle} source={plus} />
-        </TouchableOpacity>
-      );
-    }
-    return null;
+    return (
+      <PlusButton
+        plusActivated={this.state.showPlus && (isMember === 'Admin' || isMember === 'Member')}
+        onPress={() => this.handlePlus(item, navigationState)}
+      />
+    );
   }
 
   // render padding has been changed to render loading indicator
