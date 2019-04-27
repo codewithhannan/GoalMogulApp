@@ -1,4 +1,5 @@
 import Expo from 'expo';
+import { FileSystem } from 'expo';
 
 import { api as API, BASE_API_URL } from '../redux/middleware/api';
 
@@ -54,42 +55,43 @@ const ContactUtils = {
   @return update result promise
   */
   uploadContacts(contacts, token) {
-    const url = `${BASE_API_URL}secure/user/contactsync/`;
-
-    const contactListJSONString = JSON.stringify(contacts);
-    const contactListBlob = new Blob([contactListJSONString], {type: 'text/plain'});
-    const contactListObjectURL = URL.createObjectURL(contactListBlob);
-
-    var formData = new FormData();
-    formData.append('contactList', {
-      uri: contactListObjectURL,
-      type: 'text/plain',
-      name: 'contactList.txt',
-    }, 'contactList.txt');
-
     return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            // Successfully uploaded the file.
-            console.log(`${DEBUG_KEY}: [ uploadContacts ]: Successfully uploading the file with res:`, xhr);
-            resolve(xhr.responseText);
-          } else {
-            // The file could not be uploaded.
-            console.log(`${DEBUG_KEY}: [ uploadContacts ]: failed uploading the file with res:`, xhr);
-            reject(
-              new Error(
-                `Request failed. Status: ${xhr.status}. Content: ${xhr.responseText}.`
-              )
-            );
+      const url = `${BASE_API_URL}secure/user/contactsync`;
+  
+      const contactListJSONString = JSON.stringify(contacts);
+      const uri = `${FileSystem.documentDirectory}contactsList.txt`;
+
+      FileSystem.writeAsStringAsync(uri, contactListJSONString).then(() => {
+        var formData = new FormData();
+        formData.append('contactList', {
+          uri,
+          name: 'contactsList.txt',
+          type: 'text/plain',
+        });
+
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              // Successfully uploaded the file.
+              console.log(`${DEBUG_KEY}: [ uploadContacts ]: Successfully uploading the file with res:`, xhr);
+              resolve(xhr.responseText);
+            } else {
+              // The file could not be uploaded.
+              console.log(`${DEBUG_KEY}: [ uploadContacts ]: failed uploading the file with res:`, xhr);
+              reject(
+                new Error(
+                  `Request failed. Status: ${xhr.status}. Content: ${xhr.responseText}.`
+                )
+              );
+            }
           }
-          URL.revokeObjectURL(contactListObjectURL);
-        }
-      };
-      xhr.open('POST', url, true);
-      xhr.setRequestHeader('x-access-token', token);
-      xhr.send(formData);
+        };
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('x-access-token', token);
+        xhr.setRequestHeader('Content-Type', 'multipart/form-data');
+        xhr.send(formData);
+      }).catch(err => reject(err));
     });
   },
 
@@ -99,7 +101,7 @@ const ContactUtils = {
   */
   async fetchMatchedContacts(token, skip, limit) {
     console.log(`${DEBUG_KEY}: [ fetchMatchedContacts ]`);
-    const url = `https://api.goalmogul.com/api/secure/user/contactSync/stored-matches`;
+    const url = `${BASE_API_URL}secure/user/contactSync/stored-matches`;
     // const url = `https://goalmogul-api-dev.herokuapp.com/api/secure/user/contactSync/stored-matches?limit=${limit}&skip=${skip}`;
     // const url = `http://192.168.0.3:8081/api/secure/user/contactSync/stored-matches?limit=${limit}&skip=${skip}`;
     const headers = {
