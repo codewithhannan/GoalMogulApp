@@ -61,7 +61,7 @@ class ActivitySummary extends React.Component {
         <Text
           numberOfLines={1}
           ellipsizeMode='tail'
-          style={{ flex: 1, flexWrap: 'wrap', color: '#6d6d6d', fontSize: 9 }}
+          style={{ flex: 1, flexWrap: 'wrap', color: '#6d6d6d', fontSize: 10 }}
         >
           {actorText}
           {text}
