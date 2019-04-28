@@ -37,7 +37,7 @@ const renderText = (item) => {
       <Text
         numberOfLines={1}
         ellipsizeMode='tail'
-        style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 9 }}
+        style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 10 }}
       >
         {nameComponent}
         {headerText}
