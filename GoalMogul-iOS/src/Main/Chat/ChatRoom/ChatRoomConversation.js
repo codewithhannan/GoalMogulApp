@@ -16,6 +16,7 @@ import {
 	Platform,
 	Alert,
 	TextInput,
+	Animated,
 } from 'react-native';
 import { connect } from 'react-redux';
 import EmojiSelector from 'react-native-emoji-selector';
@@ -102,6 +103,10 @@ class ChatRoomConversation extends React.Component {
 					console.log(`${DEBUG_KEY} Error running joinroom socket event`, resp.message);
 				};
 			});
+		};
+
+		this.animations = {
+			emojiSelectorSlideAnim: new Animated.Value(Dimensions.get('window').height),
 		};
 	}
 	componentDidUpdate(prevPros) {
@@ -264,17 +269,37 @@ class ChatRoomConversation extends React.Component {
 		return addMediaRefActionSheet();
 	}
 	onOpenEmojiKeyboard() {
-		this._textInput.blur();
-		this.setState({
-			showEmojiSelector: !this.state.showEmojiSelector,
-		});
+		const showEmojiSelector = !this.state.showEmojiSelector;
+		if (showEmojiSelector) {
+			this._textInput.blur();
+			this.setState({ showEmojiSelector }, () => {
+				Animated.timing(this.animations.emojiSelectorSlideAnim, {
+					toValue: 0,
+					duration: 400,
+					useNativeDriver: true,
+				}).start();
+			});
+		} else {
+			Animated.timing(this.animations.emojiSelectorSlideAnim, {
+				toValue: Dimensions.get('window').height,
+				duration: 400,
+				useNativeDriver: true,
+			}).start(() => {
+				this._textInput.focus();
+				this.setState({ showEmojiSelector });
+			});
+		};
 	}
 	onEmojiSelected(emoji) {
-		this.setState({
-			showEmojiSelector: false,
-		});
 		this._giftedChat.onInputTextChanged(this._giftedChat.state.text + emoji);
-		this._textInput.focus();
+		Animated.timing(this.animations.emojiSelectorSlideAnim, {
+			toValue: Dimensions.get('window').height,
+			duration: 400,
+			useNativeDriver: true,
+		}).start(() => {
+			this._textInput.focus();
+			this.setState({ showEmojiSelector: false });
+		});
 	}
 	handleOpenCamera = () => {
 		this.props.openCamera((result) => {
@@ -578,13 +603,16 @@ class ChatRoomConversation extends React.Component {
 						bottomOffset={this.props.messageMediaRef ? 18 : 75}
 					/>
 					{this.state.showEmojiSelector &&
-						<View
+						<Animated.View
 							style={{
 								position: 'absolute',
 								width: Dimensions.get('window').width,
 								height: Dimensions.get('window').height,
 								backgroundColor: '#fff',
 								zIndex: 5,
+								transform: [{
+									translateY: this.animations.emojiSelectorSlideAnim
+								}]
 							}}
 						>
 							<ModalHeader
@@ -594,9 +622,9 @@ class ChatRoomConversation extends React.Component {
 								cancelText={'Close'}
 								onCancel={this.onOpenEmojiKeyboard.bind(this)}
 								containerStyles={{
-									elevation: 3,
+									elevation: 1,
 									shadowColor: '#666',
-									shadowOffset: { width: 0, height: 1, },
+									shadowOffset: { width: 0, height: -3, },
 									shadowOpacity: 0.3,
 									shadowRadius: 1,
 								}}
@@ -612,7 +640,7 @@ class ChatRoomConversation extends React.Component {
 									onEmojiSelected={this.onEmojiSelected.bind(this)}
 								/>
 							</View>
-						</View>
+						</Animated.View>
 					}
 				</View>
 			</MenuProvider>
