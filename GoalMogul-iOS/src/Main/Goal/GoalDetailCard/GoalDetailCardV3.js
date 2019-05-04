@@ -77,6 +77,7 @@ import {
   BACKGROUND_COLOR,
   // APP_BLUE
 } from '../../../styles';
+import { Logger } from '../../../redux/middleware/utils/Logger';
 
 const initialLayout = {
   height: 0,
@@ -318,10 +319,15 @@ class GoalDetailCardV3 extends Component {
   }
 
   handleOnCommentSubmitEditing = () => {
+    Logger.log(`${DEBUG_KEY}: [ handleOnCommentSubmitEditing ]`, null, 2);
     const { focusType } = this.props.navigationState;
     const { newComment } = this.props;
     if (newComment && newComment.contentText && !_.isEmpty(newComment.contentText)) {
       return;
+    }
+
+    if (!newComment) {
+      console.warn(`${DEBUG_KEY}: [ handleOnCommentSubmitEditing ]: newComment is undefined. Something is wrong.`);
     }
     // Since the contentText is empty, reset the replyToRef and commentType
     // Update new comment
@@ -516,7 +522,7 @@ class GoalDetailCardV3 extends Component {
   }
 
   renderCommentBox(focusType, pageId) {
-    // console.log(`${DEBUG_KEY}: [ ${this.props.pageId} ]: focusType is: `, focusType);
+    Logger.log(`${DEBUG_KEY}: [ renderCommentBox ]: for [ ${this.props.pageId} ]: focusType is: `, focusType, 2);
     if (!focusType) return null;
 
     const resetCommentTypeFunc = focusType === 'comment'
@@ -549,7 +555,7 @@ class GoalDetailCardV3 extends Component {
 
   render() {
     const { goalDetail, navigationState, pageId, goalId } = this.props;
-    // console.log('transformed comments to render are: ', comments);
+    // Logger.log('transformed comments to render are: ', comments);
     if (!goalDetail || _.isEmpty(goalDetail)) return null;
     const { focusType, focusRef } = navigationState;
 
@@ -682,7 +688,8 @@ const makeMapStateToProps = () => {
       tab: state.navigation.tab,
       // When on focusTab, show the count for focusedItem
       focusedItemCount,
-      updating
+      updating,
+      newComment
     };
   };
 

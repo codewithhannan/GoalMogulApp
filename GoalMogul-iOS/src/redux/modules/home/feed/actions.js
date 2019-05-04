@@ -7,6 +7,7 @@ import {
 
 import { api as API } from '../../../middleware/api';
 import { queryBuilder } from '../../../middleware/utils';
+import { Logger } from '../../../middleware/utils/Logger';
 
 const DEBUG_KEY = '[ Action Home Activity ]';
 const BASE_ROUTE = 'secure/feed/activity';
@@ -30,7 +31,7 @@ export const refreshFeed = () => (dispatch, getState) => {
     }
   });
   loadFeed(0, limit, token, priority, categories, (data) => {
-    console.log(`${DEBUG_KEY}: refresh activity with data length: ${data.length}`);
+    Logger.log(`${DEBUG_KEY}: refresh activity with data length: `, data.length, 2);
     // console.log(`${DEBUG_KEY}: refresh activity with data: `, data);
     dispatch({
       type: HOME_REFRESH_GOAL_DONE,
@@ -62,7 +63,7 @@ export const loadMoreFeed = () => (dispatch, getState) => {
   });
   const { categories, priority } = filter;
   loadFeed(skip, limit, token, priority, categories, (data) => {
-    console.log(`${DEBUG_KEY}: load more activity with data length: ${data.length}`);
+    Logger.log(`${DEBUG_KEY}: load more activity with data length: `, data.length, 2);
     // console.log(`${DEBUG_KEY}: load more activity with data: `, data);
     dispatch({
       type: HOME_LOAD_GOAL_DONE,

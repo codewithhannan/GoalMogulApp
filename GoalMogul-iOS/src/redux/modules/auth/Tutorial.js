@@ -1,5 +1,6 @@
 // Tutorial actions
 import { SecureStore } from 'expo';
+import { Logger } from '../../middleware/utils/Logger';
 
 const TUTORIAL_KEY = 'tutorial';
 const DEBUG_KEY = '[ Action Tutorial ]';
@@ -11,7 +12,7 @@ export const tutorial = {
           return false;
         }
         const allUsers = status.split(',');
-        console.log(`${DEBUG_KEY}: all users shown are: `, allUsers);
+        Logger.log(`${DEBUG_KEY}: all users shown are: `, allUsers, 2);
         return allUsers.includes(userId);
       } catch (err) {
         console.log(`${DEBUG_KEY}: err getting key is: `, err);
