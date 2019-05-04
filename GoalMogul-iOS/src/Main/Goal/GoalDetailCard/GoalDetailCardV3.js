@@ -555,7 +555,7 @@ class GoalDetailCardV3 extends Component {
 
   render() {
     const { goalDetail, navigationState, pageId, goalId } = this.props;
-    // Logger.log('transformed comments to render are: ', comments);
+    // Logger.log('transformed comments to render are: ', goalDetail, 1);
     if (!goalDetail || _.isEmpty(goalDetail)) return null;
     const { focusType, focusRef } = navigationState;
 
