@@ -107,6 +107,7 @@ import ReportModal from './Main/Report/ReportModal';
 import { customPanHandlers, iosOnlyPanHandlers } from './redux/modules/navigation';
 import ChatRoomConversation from './Main/Chat/ChatRoom/ChatRoomConversation';
 import ChatRoomOptions from './Main/Chat/ChatRoom/ChatRoomOptions';
+import ChatRoomPubicView from './Main/Chat/ChatRoom/ChatRoomPublicView';
 import ChatRoomMembers from './Main/Chat/ChatRoom/ChatRoomMembers';
 import ChatRoomMessageSearch from './Main/Chat/ChatRoom/ChatRoomMessageSearch';
 import ChatMessageSnapshotModal from './Main/Chat/Modals/ChatMessageSnapshotModal';
@@ -523,6 +524,7 @@ class RouterComponent extends Component {
                       <Scene key="chat" component={Chat} initial />
                       <Scene key="chatRoomConversation" component={ChatRoomConversation} />
                       <Scene key="chatRoomOptions" component={ChatRoomOptions} />
+                      <Scene key="chatRoomPublicView" component={ChatRoomPubicView} />
                       <Scene key="chatRoomMembers" component={ChatRoomMembers} />
                       <Scene key="chatRoomMessageSearch" component={ChatRoomMessageSearch} />
                       <Scene key="chatMessageSnapshotModal" component={ChatMessageSnapshotModal} />
