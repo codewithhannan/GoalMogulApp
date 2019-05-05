@@ -91,9 +91,16 @@ class ChatRoomCard extends React.Component {
 	}
 
 	renderCardContent(item) {
-		const content = item.isFriend ? 'Tap to start a conversation...' : (
-			item.latestMessage && item.latestMessage.content.message ? item.latestMessage.content.message : 'No messages in this conversation...'
-		);
+		let content;
+		if (this.props.renderDescription && item.description) {
+			content = item.description;
+		} else if (item.isFriend) {
+			content = 'Tap to start a conversation...';
+		} else if (item.latestMessage && item.latestMessage.content.message) {
+			content = item.latestMessage.content.message;
+		} else {
+			content = 'No messages in this conversation...';
+		}
 		// TODO(Jay): automatically populate latest message from local async storage
 
 		return (

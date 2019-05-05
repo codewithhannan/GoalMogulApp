@@ -34,6 +34,7 @@ class TabIcon extends React.PureComponent {
 
     if (navigation.state.key === 'notificationTab') {
       // notification count updater
+      this.props.fetchUnreadCount();
       this.refreshNotificationInterval = setInterval(() => {
         Logger.log(`${DEBUG_KEY}: [ Timer firing ] Fetching unread count.`, '', 4);
         this.props.fetchUnreadCount();

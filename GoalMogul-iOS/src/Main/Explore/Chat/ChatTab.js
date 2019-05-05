@@ -25,6 +25,7 @@ import {
 
 // Components
 import ChatRoomCard from '../../Chat/ChatRoomList/ChatRoomCard';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 const TAB_KEY = 'chatRooms';
 
@@ -42,17 +43,13 @@ class ChatTab extends React.Component {
     handleOnLoadMore = () => this.props.exploreLoadMoreTab(TAB_KEY);
 
     handleItemSelect = (item) => {
+        // TODO: open the ChatRoomOptions with props
         return;
-		// if (item.isFriend) {
-		// 	this.props.createOrGetDirectMessage(item._id);
-		// } else {
-		// 	Actions.push('chatRoomConversation', { chatRoomId: item._id, });
-		// };
 	}
 
     renderItem = ({ item }) => {
         return (
-            <ChatRoomCard item={item} onItemSelect={this.handleItemSelect} />
+            <ChatRoomCard item={item} onItemSelect={this.handleItemSelect} renderDescription />
         );
     }
 
@@ -72,7 +69,7 @@ class ChatTab extends React.Component {
                 >
                     No Recommendations
                 </Text>
-                <TouchableOpacity
+                <DelayedButton
                     onPress={() => {
                         Actions.jump('chatTab');
                         setTimeout(() => {
@@ -100,13 +97,12 @@ class ChatTab extends React.Component {
                     >
                         Create a group chat
                     </Text>
-                </TouchableOpacity>
+                </DelayedButton>
             </View>
         );
     }
 
     renderListHeader() {
-        // return <EventTabFilterBar value={{ sortBy: this.props.sortBy }}/>;
         return null;
     }
 

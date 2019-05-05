@@ -8,6 +8,7 @@ import {
 
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
+import { Logger } from '../../middleware/utils/Logger';
 
 const DEBUG_KEY = '[ Action Explore Tribe Tab ]';
 const BASE_ROUTE = 'secure/tribe/recommendations';
@@ -94,7 +95,7 @@ const loadTribe = (skip, limit, token, sortBy, filterForMembershipCategory, call
       token
     )
     .then((res) => {
-      console.log(`${DEBUG_KEY}: loading tribe feed with res: `, res);
+      Logger.log(`${DEBUG_KEY}: loading tribe feed with res: `, res, 2);
       if (res && res.data) {
         // Right now return test data
         return callback(res.data);
@@ -102,7 +103,7 @@ const loadTribe = (skip, limit, token, sortBy, filterForMembershipCategory, call
       console.warn(`${DEBUG_KEY}: Loading tribe with no res`);
     })
     .catch((err) => {
-      console.log(`${DEBUG_KEY} load tribe error: ${err}`);
+      console.warn(`${DEBUG_KEY} load tribe error: ${err}`);
       if (skip === 0) {
         callback([]);
       } else {

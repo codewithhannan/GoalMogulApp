@@ -15,6 +15,8 @@ import { queryBuilder } from '../../middleware/utils';
 import { api as API } from '../../middleware/api';
 import { Logger } from '../../middleware/utils/Logger';
 
+import { Notifications } from 'expo';
+
 // Constants
 const DEBUG_KEY = '[ Actions NotificationTab ]';
 const BASE_ROUTE = 'secure/notification';
