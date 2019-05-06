@@ -6,8 +6,10 @@ import _ from 'lodash';
 import { arrayUnique } from '../../../reducers/MeetReducers';
 import {
   CHAT_MEMBERS_CANCEL_JOIN_REQUEST,
+  CHAT_MEMBERS_CANCEL_JOIN_REQUEST_ERROR,
   CHAT_MEMBERS_CANCEL_JOIN_REQUEST_DONE,
   CHAT_MEMBERS_SEND_JOIN_REQUEST,
+  CHAT_MEMBERS_SEND_JOIN_REQUEST_ERROR,
   CHAT_MEMBERS_SEND_JOIN_REQUEST_DONE
 } from '../chat/ChatRoomMembersReducers';
 
@@ -212,6 +214,24 @@ export default (state = INITIAL_STATE, action) => {
           return {
             ...c,
             updating: true // Setting the updating bit for this chat room
+          };
+        }
+        return c;
+      });
+      newState = _.set(newState, 'chatRooms.data', newData);
+      return newState;
+    }
+
+    case CHAT_MEMBERS_SEND_JOIN_REQUEST_ERROR:
+    case CHAT_MEMBERS_CANCEL_JOIN_REQUEST_ERROR: {
+      const { chatRoomId } = action.payload;
+      let newState = _.cloneDeep(state);
+      const oldData = _.get(newState, 'chatRooms.data');
+      const newData = oldData.map(c => {
+        if (c._id === chatRoomId) {
+          return {
+            ...c,
+            updating: false // Setting the updating bit for this chat room
           };
         }
         return c;

@@ -24,8 +24,10 @@ export const CHAT_MEMBERS_REFRESH_BEGIN = 'chat_members_refresh_begin';
 export const CHAT_MEMBERS_REFRESH_COMPLETE = 'chat_members_refresh_complete';
 export const CHAT_MEMBERS_SEND_JOIN_REQUEST = 'chat_members_send_join_request';
 export const CHAT_MEMBERS_SEND_JOIN_REQUEST_DONE = 'chat_members_send_join_request_done';
+export const CHAT_MEMBERS_SEND_JOIN_REQUEST_ERROR = 'chat_members_send_join_request_error';
 export const CHAT_MEMBERS_CANCEL_JOIN_REQUEST = 'chat_members_cancel_join_request';
 export const CHAT_MEMBERS_CANCEL_JOIN_REQUEST_DONE = 'chat_members_cancel_join_request_done';
+export const CHAT_MEMBERS_CANCEL_JOIN_REQUEST_ERROR = 'chat_members_cancel_join_request_error';
 
 export default (state=INITIAL_STATE, action) => {
 	switch (action.type) {
