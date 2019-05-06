@@ -14,13 +14,14 @@ import EventIcon from '../../../../asset/suggestion/event.png';
 // Components
 import Check from '../../../Common/Check';
 import ProfileImage from '../../../Common/ProfileImage';
+import DelayedButton from '../../../Common/Button/DelayedButton';
 
 // Actions
 import {
 
 } from '../../../../redux/modules/feed/comment/CommentActions';
 
-const DEBUG_KEY = '[UI Event Card] ';
+const DEBUG_KEY = '[ UI SearchSuggestion.EventCard ] ';
 
 class EventCard extends React.Component {
   onCardPress = () => {
@@ -128,7 +129,7 @@ class EventCard extends React.Component {
     const { item, selected } = this.props;
     if (!item) return <View />;
     return (
-      <TouchableOpacity activeOpacity={0.6} onPress={this.onCardPress}>
+      <DelayedButton activeOpacity={0.6} onPress={this.onCardPress}>
         <View style={styles.containerStyle}>
           <Check selected={selected} />;
           {this.renderEventImage(item)}
@@ -139,7 +140,7 @@ class EventCard extends React.Component {
             {this.renderEventInfo(item)}
           </View>
         </View>
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 }
