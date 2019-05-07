@@ -335,6 +335,7 @@ class RouterComponent extends Component {
                       <Scene key="friendsBlocked" component={FriendsBlocked} />
                       <Scene key="privacy" component={Privacy} />
                       <Scene key="friendsSetting" component={FriendsSetting} />
+                      <Scene key="chatRoomPublicView" component={ChatRoomPubicView} />
 
                       <Scene key="searchLightBox" component={SearchOverlay} />
                     </Stack>
@@ -383,6 +384,8 @@ class RouterComponent extends Component {
                       <Scene key="meetTab_friendsBlocked" component={FriendsBlocked} />
                       <Scene key="meetTab_privacy" component={Privacy} />
                       <Scene key="meetTab_friendsSetting" component={FriendsSetting} />
+
+                      <Scene key="meetTab_chatRoomPublicView" component={ChatRoomPubicView} />
 
                       <Scene key="meetTab_meetContactSync" component={ContactSync} />
                       <Scene key="meetTab_searchLightBox" component={SearchOverlay} hideNavBar />
@@ -446,7 +449,7 @@ class RouterComponent extends Component {
                       <Scene key="notificationTab_friendsBlocked" component={FriendsBlocked} />
                       <Scene key="notificationTab_privacy" component={Privacy} />
                       <Scene key="notificationTab_friendsSetting" component={FriendsSetting} />
-
+                      <Scene key="notificationTab_chatRoomPublicView" component={ChatRoomPubicView} />
                       <Scene key="notificationTab_searchLightBox" component={SearchOverlay} hideNavBar />
                     </Stack>
 
@@ -477,7 +480,8 @@ class RouterComponent extends Component {
                       <Scene key="postExploreTab" component={PostDetailCard} />
                       <Scene key="goalExploreTab" component={GoalDetailCard} />
                       <Scene key="shareExploreTab" component={ShareDetailCard} />
-
+                      
+                      <Scene key="exploreTab_chatRoomPublicView" component={ChatRoomPubicView} />
                       <Scene key="exploreTab_myEventDetail" component={MyEvent} />
                       <Scene key="exploreTab_goal" component={GoalDetailCard} />
                       <Scene key="exploreTab_post" component={PostDetailCard} />
@@ -524,10 +528,10 @@ class RouterComponent extends Component {
                       <Scene key="chat" component={Chat} initial />
                       <Scene key="chatRoomConversation" component={ChatRoomConversation} />
                       <Scene key="chatRoomOptions" component={ChatRoomOptions} />
-                      <Scene key="chatRoomPublicView" component={ChatRoomPubicView} />
                       <Scene key="chatRoomMembers" component={ChatRoomMembers} />
                       <Scene key="chatRoomMessageSearch" component={ChatRoomMessageSearch} />
                       <Scene key="chatMessageSnapshotModal" component={ChatMessageSnapshotModal} />
+                      <Scene key="chatTab_chatRoomPublicView" component={ChatRoomPubicView} />
                       <Scene key="chatTab_searchLightBox" component={SearchOverlay} />
                       <Scene key="chatTab_myEventDetail" component={MyEvent} />
                       <Scene key="chatTab_goal" component={GoalDetailCard} />

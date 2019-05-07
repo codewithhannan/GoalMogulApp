@@ -26,6 +26,7 @@ import {
 // Components
 import ChatRoomCard from '../../Chat/ChatRoomList/ChatRoomCard';
 import DelayedButton from '../../Common/Button/DelayedButton';
+import { componentKeyByTab } from '../../../redux/middleware/utils';
 
 const TAB_KEY = 'chatRooms';
 const DEBUG_KEY = '[ UI Explore.ChatTab ]';
@@ -44,7 +45,7 @@ class ChatTab extends React.Component {
     handleOnLoadMore = () => this.props.exploreLoadMoreTab(TAB_KEY);
 
     handleItemSelect = (item) => {
-        const { userId } = this.props;
+        const { userId, tab } = this.props;
         if (!item) {
             console.warn(`${DEBUG_KEY}: [ handleItemSelect ]: Invalid item: `, item);
         }
@@ -63,7 +64,8 @@ class ChatTab extends React.Component {
         }
 
         // User is a non-member. Open ChatRoomPublicView
-        Actions.push('exploreTab_chatRoomPublicView', { chatRoom: item });
+        const componentKey = componentKeyByTab(tab, 'chatRoomPublicView');
+        Actions.push(`${componentKey}`, { chatRoom: item });
 	}
 
     renderItem = ({ item }) => {
@@ -148,13 +150,15 @@ class ChatTab extends React.Component {
 const makeMapStateToProps = () => {
     const mapStateToProps = (state, props) => {
         const { refreshing, loading, data } = state.explore.chatRooms;
+        const { tab } = state.navigation;
         const { userId } = state.user;
     
         return {
             data,            
             loading,
             refreshing,
-            userId
+            userId,
+            tab
         };
     };
     return mapStateToProps;
