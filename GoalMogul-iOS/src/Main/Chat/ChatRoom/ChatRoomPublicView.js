@@ -1,9 +1,7 @@
-/*
-    On load we need to:
-    - subscribe to messages service for new message info
-    - connect to live chat service for typing indicator
-    - fetch the full chat document with members populated
-*/
+/**
+ * Chat room public view is only for non members. It gives member an overview of what this chat 
+ * room is about
+ */
 import React from 'react';
 import {
 	View,
@@ -22,106 +20,44 @@ import check from '../../../asset/utils/check.png';
 import profilePic from '../../../asset/utils/defaultUserProfile.png';
 import membersIcon from '../../../asset/utils/profile_people_black.png';
 import plusIcon from '../../../asset/utils/plus.png';
-import muteIcon from '../../../asset/utils/mute.png';
-import editIcon from '../../../asset/utils/edit.png';
 import leaveIcon from '../../../asset/utils/logout.png';
-import searchIcon from '../../../asset/utils/search.png';
 import deleteIcon from '../../../asset/utils/trash.png';
 import { MenuProvider } from 'react-native-popup-menu';
 import SettingCard from '../../Setting/SettingCard';
 import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Constants';
 import { openProfile } from '../../../actions';
-import { changeChatRoomMute, addMemberToChatRoom } from '../../../redux/modules/chat/ChatRoomOptionsActions';
+import { cancelJoinRequest, sendJoinRequest } from '../../../redux/modules/chat/ChatRoomOptionsActions';
 import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
 import { Image, Text, Divider } from 'react-native-elements';
 import { APP_BLUE_BRIGHT } from '../../../styles';
-import { removeChatMember } from '../../../redux/modules/chat/ChatRoomMembersActions';
-import { deleteConversationMessages } from '../../../redux/modules/chat/ChatRoomActions';
 
 const DEBUG_KEY = '[ UI ChatRoomOptions ]';
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const LISTENER_KEY = 'ChatRoomOptions';
-class ChatRoomOptions extends React.Component {
+class ChatRoomPublicView extends React.Component {
 
 	_keyExtractor = (item) => item._id;
 
     closeOptions() {
         Actions.pop();
     }
-    openUserProfile(user) {
-        const userId = user._id;
-        this.props.openProfile(userId);
-    }
-    openChatRoomEdit() {
-        Actions.push('createChatRoomStack', {
-            initializeFromState: true,
-            chat: this.props.chatRoom,
-        });
-    }
+
     openMembers() {
         Actions.push('chatRoomMembers');
     }
-    openAddMember() {
+
+    // Sent join request for the chat room
+    sendJoinRequest() {
         const { chatRoom } = this.props;
         if (!chatRoom) return;
-        const searchFor = {
-            type: 'addChatMember',
-        };
-        const cardIconStyle = { tintColor: APP_BLUE_BRIGHT };
-        const cardIconSource = plusIcon;
-        const callback = (selectedUserId) => {
-            this.props.addMemberToChatRoom(chatRoom._id, selectedUserId);
-        };
-        Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle, callback });
-    }
-    openMessageSearch() {
-        Actions.push('chatRoomMessageSearch');
+        this.props.sendJoinRequest(chatRoom._id);
     }
 
-    toggleMute() {
-        const { chatRoom, isMuted } = this.props;
-        this.props.changeChatRoomMute(chatRoom._id, !isMuted);
-    }
-    leaveConversation() {
-        const { isAdmin, user, chatRoom } = this.props;
-        if (isAdmin && chatRoom.members.length > 1 && chatRoom.members.filter(memberDoc =>  memberDoc.status == 'Admin').length == 1) {
-            return Alert.alert('Forbidden.', 'You\'re the only admin in this conversation.');
-        };
-        Alert.alert('Are you sure?', 'You will not be able to send or recieve messages from this conversation after you leave...', [{
-            text: 'Leave conversation',
-            onPress: () => this.props.removeChatMember(user._id, chatRoom._id, (err, isSuccess) => {
-                if (!isSuccess) {
-                    Alert.alert('Error', 'Could not leave chat room. Please try again later.');
-                } else {
-                    Actions.popTo('chat');
-                };
-            }),
-        }, {
-            text: 'Cancel',
-            style: 'cancel',
-        }], {
-            cancelable: false,
-        });
-    }
-    deleteConversationMessages() {
+    // Withdraw the join request
+    cancelJoinRequest() {
         const { chatRoom } = this.props;
         if (!chatRoom) return;
-        Alert.alert(
-            'Are you sure?',
-            'This will delete all your copies of this conversation\'s messages',
-            [
-                {
-                    text: 'Delete all',
-                    onPress: () => this.props.deleteConversationMessages(chatRoom, [])
-                },
-                {
-                    text: 'Cancel',
-                    onPress: () => {/* let it close */},
-                    style: 'cancel',
-                },
-            ],
-            { cancelable: false },
-        );
+        this.props.cancelJoinRequest(chatRoom._id);
     }
 
     renderChatRoomStatus() {
@@ -157,7 +93,7 @@ class ChatRoomOptions extends React.Component {
 
     renderChatRoomDetails() {
         const { chatRoom, chatRoomName, chatRoomImage } = this.props;
-        if (!chatRoom) return;
+        if (!chatRoom) return null;
         const newDate = chatRoom.created ? new Date(chatRoom.created) : new Date();
         const date = `${months[newDate.getMonth() - 1]} ${newDate.getDate()}, ${newDate.getFullYear()}`;
         return (
@@ -196,7 +132,7 @@ class ChatRoomOptions extends React.Component {
                     <View style={styles.eventContainerStyle}>
                         <StackedAvatarsV2 chatMembers={chatRoom.members} />
                         <Text style={{ ...styles.eventInfoBasicTextStyle }}>
-                            {chatRoom.members.length} members
+                            {chatRoom.memberCount} members
                         </Text>
                         <Dot
                             iconStyle={{ tintColor: '#616161', width: 4, height: 4, marginLeft: 4, marginRight: 4 }}
@@ -209,10 +145,11 @@ class ChatRoomOptions extends React.Component {
     }
 
 	render() {
-        const { otherUser, chatRoom, chatRoomName, chatRoomImage, isMuted, isAdmin } = this.props;
+        const { chatRoom, isJoinRequester } = this.props;
         if (!chatRoom) {
             return null;
         };
+
 		return (
 			<MenuProvider customStyles={{ backdrop: styles.backdrop }}>
 				<View style={styles.homeContainerStyle}>
@@ -226,67 +163,27 @@ class ChatRoomOptions extends React.Component {
                         <ScrollView>
                             {/* insert chat room details preview card here */}
                             {this.renderChatRoomDetails()}
-                            {chatRoom.roomType == 'Direct' ? (
+                            {isJoinRequester ? (
                                 <SettingCard
-                                    title="View profile"
-                                    key="openuserprofile"
-                                    icon={chatRoomImage}
-                                    iconStyle={styles.chatIconStyle}
-                                    explanation={`Open ${otherUser.name.trim()}'s profile`}
-                                    onPress={() => {
-                                        this.openUserProfile(otherUser);
-                                    }}
-                                />
-                            ): (isAdmin &&
-                                <SettingCard
-                                    title={`Edit Conversation`}
-                                    key="editchatroom"
-                                    icon={editIcon}
-                                    iconStyle={styles.chatIconStyle}
-                                    explanation="Edit the conversation's details"
-                                    onPress={this.openChatRoomEdit.bind(this)}
-                                />
-                            )}
-                            <SettingCard
-                                title={isMuted ? 'Unmute Conversation' : 'Mute Conversation'}
-                                icon={muteIcon}
-                                explanation={isMuted ? 'Conversation is currently muted' : 'Mute push notifications from this conversation'}
-                                onPress={this.toggleMute.bind(this)}
-                            />
-                            {chatRoom.roomType != 'Direct' && (isAdmin || chatRoom.membersCanAdd) && (
-                                <SettingCard
-                                    title="Add Member"
-                                    icon={plusIcon}
-                                    explanation={`${isAdmin ? 'Manage' : 'View'} Conversation Members`}
-                                    onPress={this.openAddMember.bind(this)}
-                                />
-                            )}
-                            {chatRoom.roomType != 'Direct' && (
-                                <SettingCard
-                                    title={`${isAdmin ? 'Manage' : 'View'} Members`}
-                                    icon={membersIcon}
-                                    explanation={`${isAdmin ? 'Manage' : 'View'} this conversation's members`}
-                                    onPress={this.openMembers.bind(this)}
-                                />
-                            )}
-                            <SettingCard
-                                title="Search Messages"
-                                icon={searchIcon}
-                                explanation="Search messages in thes conversation"
-                                onPress={this.openMessageSearch.bind(this)}
-                            />
-                            <SettingCard
-                                title="Delete all messages"
-                                icon={deleteIcon}
-                                explanation="Delete all your copies of this conversation's messages"
-                                onPress={this.deleteConversationMessages.bind(this)}
-                            />
-                            {chatRoom.roomType != 'Direct' && (
-                                <SettingCard
-                                    title={'Leave Conversation'}
+                                    title="Cancel join request"
                                     icon={leaveIcon}
-                                    explanation={'Leave this group conversation'}
-                                    onPress={this.leaveConversation.bind(this)}
+                                    explanation={"Click to cancel the join request"}
+                                    onPress={this.cancelJoinRequest.bind(this)}
+                                />
+                            ) : (
+                                <SettingCard
+                                    title="Join the conversation"
+                                    icon={plusIcon}
+                                    explanation={"Click to send join request"}
+                                    onPress={this.sendJoinRequest.bind(this)}
+                                />
+                            )}
+                            {chatRoom.roomType != 'Direct' && (
+                                <SettingCard
+                                    title={`View Members`}
+                                    icon={membersIcon}
+                                    explanation={`View this conversation's members`}
+                                    onPress={this.openMembers.bind(this)}
                                 />
                             )}
                         </ScrollView>
@@ -299,17 +196,13 @@ class ChatRoomOptions extends React.Component {
 
 const mapStateToProps = (state, props) => {
     const { userId, user } = state.user;
-    const {
-        chatRoomsMap, activeChatRoomId,
-    } = state.chatRoom;
-
-    const chatRoom = chatRoomsMap[activeChatRoomId];
+    const chatRoom = props.chatRoom;
     
     // extract details from the chat room
     let chatRoomName = 'Loading...';
     let chatRoomImage = null;
     let otherUser = null;
-    let isAdmin = false;
+    let isJoinRequester;
     if (chatRoom) {
         if (chatRoom.roomType == 'Direct') {
             otherUser = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id != userId);
@@ -323,14 +216,9 @@ const mapStateToProps = (state, props) => {
         } else {
             chatRoomName = chatRoom.name;
             chatRoomImage = {uri: chatRoom.picture ? `${IMAGE_BASE_URL}${chatRoom.picture}` : GROUP_CHAT_DEFAULT_ICON_URL };
-            isAdmin = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id == userId && memberDoc.status == 'Admin');
+            isJoinRequester = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id == userId && memberDoc.status == 'JoinRequester');
         };
     };
-
-    // extract details from the user object
-    const notificationPrefs = user.chatNotificationPreferences;
-    const mutedChatRooms = notificationPrefs && notificationPrefs.mutedChatRoomRefs;
-    const isMuted = mutedChatRooms && mutedChatRooms.find(id => id.toString() == chatRoom._id.toString());
 
 	return {
         chatRoom,
@@ -338,8 +226,7 @@ const mapStateToProps = (state, props) => {
         chatRoomImage,
         otherUser,
         user,
-        isMuted,
-        isAdmin,
+        isJoinRequester
 	};
 };
 
@@ -347,12 +234,10 @@ export default connect(
 	mapStateToProps,
 	{
         openProfile,
-        changeChatRoomMute,
-        addMemberToChatRoom,
-        removeChatMember,
-        deleteConversationMessages,
+        cancelJoinRequest, 
+        sendJoinRequest
 	}
-)(ChatRoomOptions);
+)(ChatRoomPublicView);
 
 const styles = {
 	homeContainerStyle: {

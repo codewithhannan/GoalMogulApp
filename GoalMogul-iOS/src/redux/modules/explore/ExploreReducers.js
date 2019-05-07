@@ -243,7 +243,6 @@ export default (state = INITIAL_STATE, action) => {
     case CHAT_MEMBERS_CANCEL_JOIN_REQUEST_DONE: {
       let newState = _.cloneDeep(state);
       const { chatRoomId, removeeId } = action.payload;
-      let newState = _.cloneDeep(state);
       const oldData = _.get(newState, 'chatRooms.data');
       const newData = oldData.map(c => {
         let dataToReturn = _.cloneDeep(c);
@@ -266,7 +265,6 @@ export default (state = INITIAL_STATE, action) => {
     case CHAT_MEMBERS_SEND_JOIN_REQUEST_DONE: {
       let newState = _.cloneDeep(state);
       const { chatRoomId, userId } = action.payload;
-      let newState = _.cloneDeep(state);
       const oldData = _.get(newState, 'chatRooms.data');
       const userToAdd = {
         memberRef: userId,

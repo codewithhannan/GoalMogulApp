@@ -28,6 +28,7 @@ import ChatRoomCard from '../../Chat/ChatRoomList/ChatRoomCard';
 import DelayedButton from '../../Common/Button/DelayedButton';
 
 const TAB_KEY = 'chatRooms';
+const DEBUG_KEY = '[ UI Explore.ChatTab ]';
 
 class ChatTab extends React.Component {
     componentDidMount() {
@@ -43,8 +44,26 @@ class ChatTab extends React.Component {
     handleOnLoadMore = () => this.props.exploreLoadMoreTab(TAB_KEY);
 
     handleItemSelect = (item) => {
-        // TODO: open the ChatRoomOptions with props
-        return;
+        const { userId } = this.props;
+        if (!item) {
+            console.warn(`${DEBUG_KEY}: [ handleItemSelect ]: Invalid item: `, item);
+        }
+
+        if (item.roomType === 'Direct') {
+            // TODO: @Jay to add transition to open direct chat
+            return;
+        }
+
+        const isMember = item.members && 
+            chatRoom.members.find(memberDoc => 
+                memberDoc.memberRef._id == userId && (memberDoc.status == 'Admin' || memberDoc.status == 'Member'));
+        if (isMember) {
+            // TODO: @Jay to add transition to open group chat
+           return;
+        }
+
+        // User is a non-member. Open ChatRoomPublicView
+        Actions.push('exploreTab_chatRoomPublicView', { chatRoom: item });
 	}
 
     renderItem = ({ item }) => {
@@ -129,12 +148,13 @@ class ChatTab extends React.Component {
 const makeMapStateToProps = () => {
     const mapStateToProps = (state, props) => {
         const { refreshing, loading, data } = state.explore.chatRooms;
-        
+        const { userId } = state.user;
     
         return {
             data,            
             loading,
-            refreshing
+            refreshing,
+            userId
         };
     };
     return mapStateToProps;
