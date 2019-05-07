@@ -10,6 +10,8 @@ import {
     Alert,
 } from 'react-native';
 import { connect } from 'react-redux';
+import { Image, Text, Divider } from 'react-native-elements';
+import { DotIndicator } from 'react-native-indicators';
 
 const { windowWidth } = Dimensions.get('window');
 
@@ -28,8 +30,9 @@ import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Cons
 import { openProfile } from '../../../actions';
 import { cancelJoinRequest, sendJoinRequest } from '../../../redux/modules/chat/ChatRoomOptionsActions';
 import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
-import { Image, Text, Divider } from 'react-native-elements';
 import { APP_BLUE_BRIGHT } from '../../../styles';
+import LoadingModal from '../../Common/Modal/LoadingModal';
+
 
 const DEBUG_KEY = '[ UI ChatRoomOptions ]';
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -153,6 +156,10 @@ class ChatRoomPublicView extends React.Component {
 		return (
 			<MenuProvider customStyles={{ backdrop: styles.backdrop }}>
 				<View style={styles.homeContainerStyle}>
+                    <LoadingModal 
+                        visible={this.props.chatRoom.updating} 
+                        customIndicator={<DotIndicator size={12} color='white' />}  
+                    />
 					<ModalHeader
                         title={'Details'}
                         actionHidden={true}
