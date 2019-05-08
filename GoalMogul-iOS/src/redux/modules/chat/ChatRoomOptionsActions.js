@@ -52,13 +52,13 @@ export const changeChatRoomMute = (chatRoomId, isMutedTargetState) => (dispatch,
  * @param {string} chatRoomId 
  */
 export const sendJoinRequest = (chatRoomId) => (dispatch, getState) => {
-    const { token, userId } = getState().user;
+    const { token, userId, user } = getState().user;
     const onSuccess = (res) => {
         Logger.log(`${DEBUG_KEY}: [ sendJointRequest ]: succeed with res:`, res, 2);
         DropDownHolder.alert('success', 'Request sent', 'Your join request has been sent to the admin.');
         dispatch({
             type: CHAT_MEMBERS_SEND_JOIN_REQUEST_DONE,
-            payload: { chatRoomId, userId }
+            payload: { chatRoomId, userId, user }
         });
     };
 
@@ -93,7 +93,7 @@ export const sendJoinRequest = (chatRoomId) => (dispatch, getState) => {
 export const cancelJoinRequest = (chatRoomId) => (dispatch, getState) => {
     const { token, userId } = getState().user;
     const onSuccess = (res) => {
-        Logger.log(`${DEBUG_KEY}: [ cancelJoinRequest ]: succeed with res:`, res, 2);
+        Logger.log(`${DEBUG_KEY}: [ cancelJoinRequest ]: succeed for user ${userId}: with res:`, res, 2);
         DropDownHolder.alert('success', 'Request canceled', 'Your join request has been canceled.');
         dispatch({
             type: CHAT_MEMBERS_CANCEL_JOIN_REQUEST_DONE,

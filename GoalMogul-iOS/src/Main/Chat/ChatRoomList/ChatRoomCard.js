@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 // Components
 import ProfileImage from '../../Common/ProfileImage';
 import Timestamp from '../../Goal/Common/Timestamp';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 import profilePic from '../../../asset/utils/defaultUserProfile.png';
 import { GROUP_CHAT_DEFAULT_ICON_URL } from '../../../Utils/Constants';
@@ -144,13 +145,14 @@ class ChatRoomCard extends React.Component {
 		} : { };
 
 		return (
-			<TouchableOpacity activeOpacity={0.6}
+			<DelayedButton 
+				activeOpacity={0.6}
 				style={{...styles.cardContainerStyle, ...maybeUnreadHighlight }}
 				onPress={() => this.handleCardOnPress(item)}
 			>
 				{this.renderCardImage(cardImage)}
 				{this.renderCardContent(item)}
-			</TouchableOpacity>
+			</DelayedButton>
 		);
 	}
 }

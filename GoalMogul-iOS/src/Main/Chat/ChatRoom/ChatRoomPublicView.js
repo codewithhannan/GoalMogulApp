@@ -33,6 +33,8 @@ import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
 import { APP_BLUE_BRIGHT } from '../../../styles';
 import LoadingModal from '../../Common/Modal/LoadingModal';
 
+// Selector
+import { makeGetChatRoom } from '../../../redux/modules/chat/ChatSelector';
 
 const DEBUG_KEY = '[ UI ChatRoomOptions ]';
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -105,10 +107,10 @@ class ChatRoomPublicView extends React.Component {
                 <View style={styles.imageWrapperStyle}>
                     <View style={styles.imageContainerStyle}>
                         <Image
-                        onLoadStart={() => this.setState({ imageLoading: true })}
-                        onLoadEnd={() => this.setState({ imageLoading: false })}
-                        style={styles.imageStyle}
-                        source={chatRoomImage}
+                            onLoadStart={() => this.setState({ imageLoading: true })}
+                            onLoadEnd={() => this.setState({ imageLoading: false })}
+                            style={styles.imageStyle}
+                            source={chatRoomImage}
                         />
                     </View>
                 </View>
@@ -185,14 +187,6 @@ class ChatRoomPublicView extends React.Component {
                                     onPress={this.sendJoinRequest.bind(this)}
                                 />
                             )}
-                            {chatRoom.roomType != 'Direct' && (
-                                <SettingCard
-                                    title={`View Members`}
-                                    icon={membersIcon}
-                                    explanation={`View this conversation's members`}
-                                    onPress={this.openMembers.bind(this)}
-                                />
-                            )}
                         </ScrollView>
                     </View>
 				</View>
@@ -201,44 +195,51 @@ class ChatRoomPublicView extends React.Component {
 	}
 }
 
-const mapStateToProps = (state, props) => {
-    const { userId, user } = state.user;
-    const chatRoom = props.chatRoom;
-    
-    // extract details from the chat room
-    let chatRoomName = 'Loading...';
-    let chatRoomImage = null;
-    let otherUser = null;
-    let isJoinRequester;
-    if (chatRoom) {
-        if (chatRoom.roomType == 'Direct') {
-            otherUser = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id != userId);
-            if (otherUser) {
-                otherUser = otherUser.memberRef;
-                chatRoomName = otherUser.name;
-                chatRoomImage = (otherUser.profile && otherUser.profile.image) ?
-                    {uri: `${IMAGE_BASE_URL}${otherUser.profile.image}` }
-                    : profilePic;
+const makeMapStateToProps = () => {
+    const getChatRoom = makeGetChatRoom();
+
+    const mapStateToProps = (state, props) => {
+        const { userId, user } = state.user;
+        const { chatRoomId, path } = props;
+        const chatRoom = getChatRoom(state, chatRoomId, path);
+        
+        // extract details from the chat room
+        let chatRoomName = 'Loading...';
+        let chatRoomImage = null;
+        let otherUser = null;
+        let isJoinRequester;
+        if (chatRoom) {
+            if (chatRoom.roomType == 'Direct') {
+                otherUser = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id != userId);
+                if (otherUser) {
+                    otherUser = otherUser.memberRef;
+                    chatRoomName = otherUser.name;
+                    chatRoomImage = (otherUser.profile && otherUser.profile.image) ?
+                        {uri: `${IMAGE_BASE_URL}${otherUser.profile.image}` }
+                        : profilePic;
+                };
+            } else {
+                chatRoomName = chatRoom.name;
+                chatRoomImage = {uri: chatRoom.picture ? `${IMAGE_BASE_URL}${chatRoom.picture}` : GROUP_CHAT_DEFAULT_ICON_URL };
+                isJoinRequester = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id == userId && memberDoc.status == 'JoinRequester');
             };
-        } else {
-            chatRoomName = chatRoom.name;
-            chatRoomImage = {uri: chatRoom.picture ? `${IMAGE_BASE_URL}${chatRoom.picture}` : GROUP_CHAT_DEFAULT_ICON_URL };
-            isJoinRequester = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id == userId && memberDoc.status == 'JoinRequester');
+        };
+    
+        return {
+            chatRoom,
+            chatRoomName,
+            chatRoomImage,
+            otherUser,
+            user,
+            isJoinRequester
         };
     };
 
-	return {
-        chatRoom,
-        chatRoomName,
-        chatRoomImage,
-        otherUser,
-        user,
-        isJoinRequester
-	};
+    return mapStateToProps;
 };
 
 export default connect(
-	mapStateToProps,
+	makeMapStateToProps,
 	{
         openProfile,
         cancelJoinRequest, 

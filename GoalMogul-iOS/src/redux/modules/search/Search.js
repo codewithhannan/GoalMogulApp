@@ -33,6 +33,7 @@ const INITIAL_STATE = {
       { key: 'people', title: 'People' },
       { key: 'tribes', title: 'Tribes' },
       { key: 'events', title: 'Events' },
+      { key: 'chatRooms', title: 'Chat' },
     ],
   },
   filterBar: {
@@ -228,7 +229,6 @@ export default (state = INITIAL_STATE, action) => {
     case CHAT_MEMBERS_CANCEL_JOIN_REQUEST_DONE: {
       let newState = _.cloneDeep(state);
       const { chatRoomId, removeeId } = action.payload;
-      let newState = _.cloneDeep(state);
       const oldData = _.get(newState, 'chatRooms.data');
       const newData = oldData.map(c => {
         let dataToReturn = _.cloneDeep(c);
@@ -237,7 +237,7 @@ export default (state = INITIAL_STATE, action) => {
           // Get old members and remove the removee from the list
           const oldMembers = _.get(dataToReturn, 'members');
           if (!oldMembers) return dataToReturn;
-          const newMembers = oldMembers.filter(m => m.memberRef === removeeId && m.status === 'JoinRequester');
+          const newMembers = oldMembers.filter(m => !(m.memberRef._id === removeeId && m.status === 'JoinRequester'));
           // Update the member list
           dataToReturn = _.set(dataToReturn, 'members', newMembers);
           dataToReturn = _.set(dataToReturn, 'updating', false);
@@ -249,12 +249,11 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case CHAT_MEMBERS_SEND_JOIN_REQUEST_DONE: {
-      let newState = _.cloneDeep(state);
-      const { chatRoomId, userId } = action.payload;
+      const { chatRoomId, userId, user } = action.payload;
       let newState = _.cloneDeep(state);
       const oldData = _.get(newState, 'chatRooms.data');
       const userToAdd = {
-        memberRef: userId,
+        memberRef: user,
         status: 'JoinRequester'
       };
       const newData = oldData.map(c => {
@@ -266,7 +265,7 @@ export default (state = INITIAL_STATE, action) => {
           const oldMembers = _.get(dataToReturn, 'members');
           if (!oldMembers) {
             newMembers = [userToAdd];
-          } else {
+          } else if (!oldMembers.find(m => m._id === userId)) {
             newMembers = oldMembers.concat(userToAdd);
           }
           

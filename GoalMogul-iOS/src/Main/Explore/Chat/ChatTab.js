@@ -6,7 +6,6 @@ import {
     View,
     FlatList,
     Text,
-    TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -56,7 +55,7 @@ class ChatTab extends React.Component {
         }
 
         const isMember = item.members && 
-            chatRoom.members.find(memberDoc => 
+            item.members.find(memberDoc => 
                 memberDoc.memberRef._id == userId && (memberDoc.status == 'Admin' || memberDoc.status == 'Member'));
         if (isMember) {
             // TODO: @Jay to add transition to open group chat
@@ -65,7 +64,7 @@ class ChatTab extends React.Component {
 
         // User is a non-member. Open ChatRoomPublicView
         const componentKey = componentKeyByTab(tab, 'chatRoomPublicView');
-        Actions.push(`${componentKey}`, { chatRoom: item });
+        Actions.push(`${componentKey}`, { chatRoomId: item._id, path: 'explore.chatRooms.data' });
 	}
 
     renderItem = ({ item }) => {
@@ -128,45 +127,41 @@ class ChatTab extends React.Component {
     }
 
     render() {
-    return (
-        <View style={{ flex: 1 }}>
-            <FlatList
-                data={this.props.data}
-                renderItem={this.renderItem}
-                numColumns={1}
-                keyExtractor={this._keyExtractor}
-                refreshing={this.props.refreshing}
-                onRefresh={this.handleOnRefresh}
-                onEndReached={this.handleOnLoadMore}
-                ListHeaderComponent={this.renderListHeader()}
-                ListEmptyComponent={this.renderListEmptyComponent()}
-                onEndThreshold={0}
-            />
-        </View>
-    );
+        return (
+            <View style={{ flex: 1 }}>
+                <FlatList
+                    data={this.props.data}
+                    renderItem={this.renderItem}
+                    numColumns={1}
+                    keyExtractor={this._keyExtractor}
+                    refreshing={this.props.refreshing}
+                    onRefresh={this.handleOnRefresh}
+                    onEndReached={this.handleOnLoadMore}
+                    ListHeaderComponent={this.renderListHeader()}
+                    ListEmptyComponent={this.renderListEmptyComponent()}
+                    onEndThreshold={0}
+                />
+            </View>
+        );
     }
 }
 
-const makeMapStateToProps = () => {
-    const mapStateToProps = (state, props) => {
-        const { refreshing, loading, data } = state.explore.chatRooms;
-        const { tab } = state.navigation;
-        const { userId } = state.user;
-    
-        return {
-            data,            
-            loading,
-            refreshing,
-            userId,
-            tab
-        };
+const mapStateToProps = (state, props) => {
+    const { refreshing, loading, data } = state.explore.chatRooms;
+    const { tab } = state.navigation;
+    const { userId } = state.user;
+
+    return {
+        data,            
+        loading,
+        refreshing,
+        userId,
+        tab
     };
-    return mapStateToProps;
 };
 
-
 export default connect(
-    makeMapStateToProps,
+    mapStateToProps,
     {
         exploreRefreshTab,
         exploreLoadMoreTab
