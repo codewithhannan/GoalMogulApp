@@ -319,7 +319,7 @@ const switchCaseRoute = (searchType, userId, skip, limit) => switchCase({
   User: `secure/user/friendship?userId=${userId}`,
   Tribe: `secure/tribe`,
   Event: `secure/event`,
-  ChatConvoRoom: 'secure/chat/room/latest'
+  ChatConvoRoom: 'secure/chat/room/latest?roomType=Group'
 })('')(searchType);
 
 const loadData = (token, route, onSuccess, onError) => {
