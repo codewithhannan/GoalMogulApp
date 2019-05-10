@@ -653,7 +653,10 @@ class MyEvent extends Component {
             item={props.item}
             key={props.index}
             hasActionButton
-            onPress={(item) => this.props.openPostDetail(item)}
+            onPress={(item) => {
+              // onPress is called by CommentIcon
+              this.props.openPostDetail(item, { initialFocusCommentBox: true });
+            }}
           />
         );
       }
