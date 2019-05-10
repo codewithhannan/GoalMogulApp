@@ -54,6 +54,7 @@ import {
 
 // Utils function
 import { capitalizeWord, switchCase } from '../../../redux/middleware/utils';
+import { Logger } from '../../../redux/middleware/utils/Logger';
 
 const DEBUG_KEY = '[ UI SuggestionModal3 ]';
 const OPTIONS_HEIGHT = 120;
@@ -76,9 +77,11 @@ class SuggestionModal extends Component {
 
   componentDidMount() {
     // Sending request to fetch pre-populated data
+    Logger.log(`${DEBUG_KEY}: [ componentDidMount ]`, {}, 2);
     this.props.refreshPreloadData('User');
     this.props.refreshPreloadData('Event');
     this.props.refreshPreloadData('Tribe');
+    this.props.refreshPreloadData('ChatConvoRoom');
   }
 
   handleExpand = () => {

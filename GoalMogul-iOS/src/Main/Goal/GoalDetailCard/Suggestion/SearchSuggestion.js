@@ -18,6 +18,7 @@ import {
 import TribeCard from './TribeCard';
 import UserCard from './UserCard';
 import EventCard from './EventCard';
+import ChatCard from './ChatCard';
 import {
   SearchIcon
 } from '../../../../Utils/Icons';
@@ -151,6 +152,18 @@ class SearchSuggestion extends React.Component {
           selected={selected}
         />
       ),
+      ChatConvoRoom: (
+        <ChatCard
+          item={item}
+          selected={selected}
+          onCardPress={(val) => {
+            this.props.onSuggestionItemSelect(val, pageId);
+            if (this.props.onSelect) {
+              this.props.onSelect();
+            }
+          }}
+        />
+      ),
       Default: <View />
     })('Default')(this.props.suggestionType);
   }
@@ -158,7 +171,7 @@ class SearchSuggestion extends React.Component {
   renderSearch() {
     const { suggestionType } = this.props;
     const placeholder = suggestionType === 'ChatConvoRoom'
-      ? 'Search Chatroom'
+      ? 'Search Chat Room'
       : `Search ${this.props.suggestionType}`;
     return (
       <SearchBar

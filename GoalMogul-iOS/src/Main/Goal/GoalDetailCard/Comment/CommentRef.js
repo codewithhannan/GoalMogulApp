@@ -105,7 +105,7 @@ class CommentRef extends React.PureComponent {
       return;
     }
     if (suggestionType === 'ChatConvoRoom' && chatRoomRef) {
-      // TODO: update later
+      // TODO: @Jay open chat convo room based on suggestion chatRoomRef
       console.log(`${DEBUG_KEY}: suggestion type is ChatConvoRoom, chatRoomRef is: `, chatRoomRef);
     }
     if (suggestionType === 'Custom' && suggestionLink) {
@@ -160,13 +160,13 @@ class CommentRef extends React.PureComponent {
   renderImage(item) {
     const { suggestionType } = item;
     const defaultImage = switchDefaultImageType(suggestionType, item);
-    const { source, style, imageUrl } = defaultImage;
+    const { source, style, imageUrl, defaultImageStyle } = defaultImage;
 
     return (
       <ProfileImage
         imageStyle={{ width: 50, height: 50, ...style, borderRadius: 4 }}
         defaultImageSource={source}
-        defaultImageStyle={{ width: 30, height: 30, ...style }}
+        defaultImageStyle={{ width: 30, height: 30, ...defaultImageStyle }}
         imageUrl={imageUrl}
         imageContainerStyle={{
           alignItems: 'center',
@@ -213,8 +213,12 @@ class CommentRef extends React.PureComponent {
 const switchDefaultImageType = (type, item) => switchCaseFWithVal(item)({
   ChatConvoRoom: val => ({
     source: chatIcon,
+    defaultImageStyle: {
+      width: 30,
+      height: 28
+    },
     style: undefined,
-    imageUrl: undefined
+    imageUrl: item.picture ? item.picture : undefined
   }),
   Event: val => {
     const { eventRef } = val;
@@ -309,8 +313,8 @@ const getTextContent = (item) => {
   }
   if (suggestionType === 'ChatConvoRoom' && chatRoomRef) {
     ret = {
-      title: chatRoomRef.title,
-      content: ''
+      title: chatRoomRef.name || 'Chat room',
+      content: chatRoomRef.description || 'No description for this chat room..'
     };
   }
 

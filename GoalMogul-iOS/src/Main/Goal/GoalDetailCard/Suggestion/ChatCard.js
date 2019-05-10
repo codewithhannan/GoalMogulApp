@@ -4,25 +4,15 @@
 import React from 'react';
 import {
   View,
-  Image,
   Text,
-  TouchableOpacity,
 } from 'react-native';
 import timeago from 'timeago.js';
 import { connect } from 'react-redux';
-
-// Assets
-import EventIcon from '../../../../asset/suggestion/event.png';
 
 // Components
 import Check from '../../../Common/Check';
 import ProfileImage from '../../../Common/ProfileImage';
 import DelayedButton from '../../../Common/Button/DelayedButton';
-
-// Actions
-import {
-
-} from '../../../../redux/modules/feed/comment/CommentActions';
 
 // Constants
 import { GROUP_CHAT_DEFAULT_ICON_URL } from '../../../../Utils/Constants';
@@ -121,7 +111,7 @@ class ChatCard extends React.Component {
 
     render() {
         const { item, selected } = this.props;
-        if (!item) return <View />;
+        if (!item) return null;
         return (
             <DelayedButton activeOpacity={0.6} onPress={this.onCardPress}>
                 <View style={styles.containerStyle}>
@@ -204,9 +194,4 @@ const styles = {
   }
 };
 
-export default connect(
-  null,
-  {
-
-  }
-)(ChatCard);
+export default connect(null, {})(ChatCard);

@@ -71,7 +71,7 @@ export const SearchRouteMap = {
     route: `${BASE_ROUTE}/tribe/es`
   },
   ChatConvoRoom: {
-    route: ''
+    route: `${BASE_ROUTE}/chat/room/es`
   },
   Default: {
     route: ''
