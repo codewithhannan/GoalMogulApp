@@ -112,7 +112,7 @@ class NotificationCard extends React.Component {
 
   renderActionIcons(item) {
     return (
-      <View style={{ flexDirection: 'row', borderLeftWidth: 0.5, borderColor: '#dbdbdb' }}>
+      <View style={{ flexDirection: 'row', borderLeftWidth: 0.5, borderColor: '#dbdbdb', marginLeft: 2 }}>
         <TouchableOpacity 
           activeOpacity={0.6}
           style={{ ...styles.iconContainerStyle, backgroundColor: '#fdf9e5' }}
@@ -123,16 +123,19 @@ class NotificationCard extends React.Component {
             source={bulb}
           />
         </TouchableOpacity>
-        <TouchableOpacity 
-          activeOpacity={0.6}
-          style={{ ...styles.iconContainerStyle, backgroundColor: '#ebf9fe' }}
-          onPress={() => this.handleOnOpen(item)}
-        >
-          <Image
-            style={{ ...styles.iconStyle, tintColor: '#3aa5ce' }}
-            source={forward}
-          />
-        </TouchableOpacity>
+        {/* 
+          // Removed for version 0.3.4
+          <TouchableOpacity 
+            activeOpacity={0.6}
+            style={{ ...styles.iconContainerStyle, backgroundColor: '#ebf9fe' }}
+            onPress={() => this.handleOnOpen(item)}
+          >
+            <Image
+              style={{ ...styles.iconStyle, tintColor: '#3aa5ce' }}
+              source={forward}
+            />
+          </TouchableOpacity> 
+        */}
       </View>
     );
   }
@@ -181,7 +184,7 @@ const styles = {
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 8
+    marginLeft: 12
   },
   iconStyle: {
     height: 16,
