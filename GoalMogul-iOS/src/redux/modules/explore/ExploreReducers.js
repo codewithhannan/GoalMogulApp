@@ -4,6 +4,14 @@
 
 import _ from 'lodash';
 import { arrayUnique } from '../../../reducers/MeetReducers';
+import {
+  CHAT_MEMBERS_CANCEL_JOIN_REQUEST,
+  CHAT_MEMBERS_CANCEL_JOIN_REQUEST_ERROR,
+  CHAT_MEMBERS_CANCEL_JOIN_REQUEST_DONE,
+  CHAT_MEMBERS_SEND_JOIN_REQUEST,
+  CHAT_MEMBERS_SEND_JOIN_REQUEST_ERROR,
+  CHAT_MEMBERS_SEND_JOIN_REQUEST_DONE
+} from '../chat/ChatRoomMembersReducers';
 
 const INITIAL_EXPLORE_CHAT_STATE = {
   data: [], // a list of user ids
@@ -25,7 +33,7 @@ const INITIAL_STATE = {
       { key: 'people', title: 'People' },
       { key: 'tribes', title: 'Tribes' },
       { key: 'events', title: 'Events' },
-      // { key: 'chatRooms', title: 'Chat'}
+      { key: 'chatRooms', title: 'Chat'}
     ]
   },
   selectedTab: 'events',
@@ -62,6 +70,7 @@ export const EXPLORE_PLUS_UNPRESSED = 'explore_press_unpressed';
 
 // Note: Search has different route map than SuggestionSearch
 const BASE_ROUTE = 'secure';
+const DEBUG_KEY = '[ Reducer Explore ]';
 export const RecommendationRouteMap = {
   people: {
     route: `${BASE_ROUTE}/user/friendship/recommendations`,
@@ -151,6 +160,16 @@ export default (state = INITIAL_STATE, action) => {
       return newState;
     }
 
+    case EXPLORE_PLUS_PRESSED: {
+      let newState = _.cloneDeep(state);
+      return _.set(newState, 'showPlus', false);
+    }
+
+    case EXPLORE_PLUS_UNPRESSED: {
+      let newState = _.cloneDeep(state);
+      return _.set(newState, 'showPlus', true);
+    }
+
     /* Chat related reducers */
     case EXPLORE_CHAT_REFRESH: {
       let newState = _.cloneDeep(state);
@@ -186,14 +205,93 @@ export default (state = INITIAL_STATE, action) => {
       return newState;
     }
 
-    case EXPLORE_PLUS_PRESSED: {
+    case CHAT_MEMBERS_SEND_JOIN_REQUEST:
+    case CHAT_MEMBERS_CANCEL_JOIN_REQUEST: {
+      const { chatRoomId } = action.payload;
       let newState = _.cloneDeep(state);
-      return _.set(newState, 'showPlus', false);
+      const oldData = _.get(newState, 'chatRooms.data');
+      const newData = oldData.map(c => {
+        if (c._id === chatRoomId) {
+          return {
+            ...c,
+            updating: true // Setting the updating bit for this chat room
+          };
+        }
+        return c;
+      });
+      newState = _.set(newState, 'chatRooms.data', newData);
+      return newState;
     }
 
-    case EXPLORE_PLUS_UNPRESSED: {
+    case CHAT_MEMBERS_SEND_JOIN_REQUEST_ERROR:
+    case CHAT_MEMBERS_CANCEL_JOIN_REQUEST_ERROR: {
+      const { chatRoomId } = action.payload;
       let newState = _.cloneDeep(state);
-      return _.set(newState, 'showPlus', true);
+      const oldData = _.get(newState, 'chatRooms.data');
+      const newData = oldData.map(c => {
+        if (c._id === chatRoomId) {
+          return {
+            ...c,
+            updating: false // Setting the updating bit for this chat room
+          };
+        }
+        return c;
+      });
+      newState = _.set(newState, 'chatRooms.data', newData);
+      return newState;
+    }
+
+    case CHAT_MEMBERS_CANCEL_JOIN_REQUEST_DONE: {
+      let newState = _.cloneDeep(state);
+      const { chatRoomId, removeeId } = action.payload;
+      const oldData = _.get(newState, 'chatRooms.data');
+      const newData = oldData.map(c => {
+        let dataToReturn = _.cloneDeep(c);
+        // Find the matching chat room
+        if (c._id === chatRoomId) {
+          // Get old members and remove the removee from the list
+          const oldMembers = _.get(dataToReturn, 'members');
+          if (!oldMembers) return dataToReturn;
+          const newMembers = oldMembers.filter(m => !(m.memberRef._id === removeeId && m.status === 'JoinRequester'));
+          // Update the member list
+          dataToReturn = _.set(dataToReturn, 'members', newMembers);
+          dataToReturn = _.set(dataToReturn, 'updating', false);
+        }
+        return dataToReturn;
+      });
+      newState = _.set(newState, 'chatRooms.data', newData);
+      return newState;
+    }
+
+    case CHAT_MEMBERS_SEND_JOIN_REQUEST_DONE: {
+      let newState = _.cloneDeep(state);
+      const { chatRoomId, userId, user } = action.payload;
+      const oldData = _.get(newState, 'chatRooms.data');
+      const userToAdd = {
+        memberRef: user,
+        status: 'JoinRequester'
+      };
+      const newData = oldData.map(c => {
+        let dataToReturn = _.cloneDeep(c);
+        // Find the matching chat room
+        if (c._id === chatRoomId) {
+          // Get old members and add the current user as the JoinRequester
+          let newMembers;
+          const oldMembers = _.get(dataToReturn, 'members');
+          if (!oldMembers) {
+            newMembers = [userToAdd];
+          } else if (!oldMembers.find(m => m._id === userId)) {
+            newMembers = oldMembers.concat(userToAdd);
+          }
+          
+          // Update the member list
+          dataToReturn = _.set(dataToReturn, 'members', newMembers);
+          dataToReturn = _.set(dataToReturn, 'updating', false);
+        }
+        return dataToReturn;
+      });
+      newState = _.set(newState, 'chatRooms.data', newData);
+      return newState;
     }
 
     default: {

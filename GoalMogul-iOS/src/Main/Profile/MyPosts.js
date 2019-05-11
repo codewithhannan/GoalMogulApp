@@ -17,6 +17,10 @@ import {
   changeFilter
 } from '../../actions';
 
+import {
+  openPostDetail
+} from '../../redux/modules/feed/post/PostActions';
+
 // Selectors
 import { 
   makeGetUserPosts,
@@ -73,7 +77,18 @@ class MyPosts extends Component {
 
   renderItem = ({ item }) => {
     // TODO: render item
-    return <ProfilePostCard item={item} />
+    return (
+      <ProfilePostCard 
+        item={item} 
+        onPress={(item) => {
+          const initialProps = {
+            initialFocusCommentBox: true
+          };
+          this.props.openPostDetail(item, initialProps);
+        }}
+        hasActionButton
+      />
+    );
   }
 
   render() {
@@ -160,6 +175,7 @@ export default connect(
   {
     handleTabRefresh,
     handleProfileTabOnLoadMore,
-    changeFilter
+    changeFilter,
+    openPostDetail
   }
 )(MyPosts);

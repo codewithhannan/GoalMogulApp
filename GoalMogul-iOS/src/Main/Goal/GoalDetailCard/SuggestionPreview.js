@@ -93,13 +93,13 @@ class SuggestionPreview extends Component {
 
   renderImage(suggestionType, selectedItem) {
     const defaultImage = switchDefaultImageType(suggestionType, selectedItem);
-    const { source, style, imageUrl } = defaultImage;
+    const { source, style, imageUrl, defaultImageStyle } = defaultImage;
 
     return (
       <ProfileImage
         imageStyle={{ width: 50, height: 50, ...style }}
         defaultImageSource={source}
-        defaultImageStyle={{ width: 30, height: 30, ...style }}
+        defaultImageStyle={{ width: 30, height: 30, ...defaultImageStyle }}
         defaultImageContainerStyle={{ padding: 10, justifyContent: 'center' }}
         imageUrl={imageUrl}
         imageContainerStyle={{ marginRight: 10, justifyContent: 'center' }}
@@ -139,9 +139,9 @@ export const RemoveComponent = (props) => {
 // "Step", "Need", "Friend", "User", "Custom"]
 const switchSearchItem = (val, type) => switchCaseFWithVal(val)({
   ChatConvoRoom: (item) => ({
-    title: 'Chatroom',
-    content: 'Chatroom description',
-    picture: undefined
+    title: item.name || 'Chatroom',
+    content: item.description || 'No description for this chat room..',
+    picture: item.picture
   }),
   Event: (item) => ({
     title: item.title,
@@ -169,7 +169,11 @@ const switchDefaultImageType = (type, item) => switchCaseFWithVal(item)({
   ChatConvoRoom: val => ({
     source: chatIcon,
     style: undefined,
-    imageUrl: undefined
+    imageUrl: undefined,
+    defaultImageStyle: {
+      height: 28,
+      width: 30
+    }
   }),
   Event: val => ({
     source: eventIcon,

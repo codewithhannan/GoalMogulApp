@@ -25,6 +25,7 @@ import {
 
 import { api as API } from '../../../middleware/api';
 import { queryBuilder, constructPageId, componentKeyByTab } from '../../../middleware/utils';
+import { Logger } from '../../../middleware/utils/Logger';
 
 const DEBUG_KEY = '[ Action Home Mastermind ]';
 const BASE_ROUTE = 'secure/goal/';
@@ -144,7 +145,7 @@ export const refreshGoals = () => (dispatch, getState) => {
     }
   });
   loadGoals(0, limit, token, { priorities, categories, sortBy }, (data) => {
-    console.log(`${DEBUG_KEY}: refreshed goals with length: ${data.length}`);
+    Logger.log(`${DEBUG_KEY}: refreshed goals with length: `, data.length, 2);
     // console.log(`${DEBUG_KEY}: refreshed goals are: `, data);
     // data.forEach((d) => {
     //   console.log(`${DEBUG_KEY}: item: ${d.title} created: `, d);
@@ -183,7 +184,7 @@ export const loadMoreGoals = (callback) => (dispatch, getState) => {
   });
   const { categories, priorities, sortBy } = filter;
   loadGoals(skip, limit, token, { priorities, categories, sortBy }, (data) => {
-    console.log(`${DEBUG_KEY}: load more goals with data length: `, data.length);
+    Logger.log(`${DEBUG_KEY}: load more goals with data length: `, data.length, 2);
     // console.log(`${DEBUG_KEY}: load more goals with data: `, data);
     // data.forEach((d) => {
     //   console.log(`${DEBUG_KEY}: item: ${d.title} created: `, d.created);

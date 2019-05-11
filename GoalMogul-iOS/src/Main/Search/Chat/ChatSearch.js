@@ -2,22 +2,29 @@
 import React, { Component } from 'react';
 import { View, FlatList } from 'react-native';
 import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 
 // Components
-import EventSearchCard from './EventSearchCard';
 import EmptyResult from '../../Common/Text/EmptyResult';
+import ChatRoomCard from '../../Chat/ChatRoomList/ChatRoomCard';
 
 // actions
 import {
   refreshSearchResult,
   onLoadMore
 } from '../../../redux/modules/search/SearchActions';
+import { componentKeyByTab } from '../../../redux/middleware/utils';
 
 // tab key
 const key = 'chatRooms';
 const DEBUG_KEY = '[ UI ChatSearch ]';
 
 class ChatSearch extends Component {
+  constructor(props) {
+    super(props);
+    this.renderItem = this.renderItem.bind(this);
+  }
+
   _keyExtractor = (item) => item._id;
 
   handleRefresh = () => {
@@ -28,6 +35,30 @@ class ChatSearch extends Component {
     }
   }
 
+  handleItemSelect = (item) => {
+    const { userId, tab } = this.props;
+    if (!item) {
+        console.warn(`${DEBUG_KEY}: [ handleItemSelect ]: Invalid item: `, item);
+    }
+
+    if (item.roomType === 'Direct') {
+        // TODO: @Jay to add transition to open direct chat
+        return;
+    }
+
+    const isMember = item.members && 
+      item.members.find(memberDoc => 
+        memberDoc.memberRef._id == userId && (memberDoc.status == 'Admin' || memberDoc.status == 'Member'));
+    if (isMember) {
+        // TODO: @Jay to add transition to open group chat
+        return;
+    }
+
+    // User is a non-member. Open ChatRoomPublicView
+    const componentKey = componentKeyByTab(tab, 'chatRoomPublicView');
+    Actions.push(`${componentKey}`, { chatRoomId: item._id, path: 'search.chatRooms.data' });
+  }
+
   handleOnLoadMore = () => {
     console.log(`${DEBUG_KEY} Loading more for search: `, key);
     this.props.onLoadMore(key);
@@ -35,8 +66,10 @@ class ChatSearch extends Component {
 
   renderItem = ({ item }) => {
     // TODO: add ChatSearchCard here
-    return <EventSearchCard item={item} type={this.props.type} callback={this.props.callback} />;
-  };
+    return (
+      <ChatRoomCard item={item} onItemSelect={this.handleItemSelect} renderDescription />
+    );
+  }
 
   render() {
     return (
@@ -61,15 +94,17 @@ class ChatSearch extends Component {
 }
 
 const mapStateToProps = state => {
-  const { events, searchContent } = state.search;
-  const { data, refreshing, loading } = events;
+  const { chatRooms, searchContent } = state.search;
+  const { tab } = state.navigation;
+  const { data, refreshing, loading } = chatRooms;
 
   return {
-    events,
+    chatRooms,
     data,
     refreshing,
     loading,
-    searchContent
+    searchContent,
+    tab
   };
 };
 

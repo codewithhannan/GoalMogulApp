@@ -41,7 +41,7 @@ import {
 
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
-import BulbIcon from '../../../asset/utils/bulb.png';
+import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 
 // Components
@@ -147,7 +147,7 @@ class ProfilePostCard extends React.PureComponent {
             disabled={isShare}
           />
           <ActionButton
-            iconSource={BulbIcon}
+            iconSource={CommentIcon}
             count={commentCount}
             textStyle={{ color: '#FCB110' }}
             iconStyle={{ tintColor: '#FCB110', height: 26, width: 26 }}

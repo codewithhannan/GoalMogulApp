@@ -134,6 +134,8 @@ export const StackedAvatarsV2 = (props) => {
       </View>
     );
   };
+
+  return null;
 };
 
 const PictureDimension = 24;

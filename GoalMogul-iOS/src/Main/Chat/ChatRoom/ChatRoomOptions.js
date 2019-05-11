@@ -129,7 +129,7 @@ class ChatRoomOptions extends React.Component {
         const memberDoc = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id == user._id);
         const memberStatus = memberDoc && memberDoc.status;
         const tintColor = '#2dca4a';
-        if (!memberStatus) return;
+        if (!memberStatus) return null;
         return (
             <View
               activeOpacity={0.6}

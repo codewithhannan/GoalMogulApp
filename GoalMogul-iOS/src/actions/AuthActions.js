@@ -42,6 +42,7 @@ import { DropDownHolder } from '../Main/Common/Modal/DropDownModal';
 import LiveChatService from '../socketio/services/LiveChatService';
 import MessageStorageService from '../services/chat/MessageStorageService';
 import { MemberDocumentFetcher } from '../Utils/UserUtils';
+import { Logger } from '../redux/middleware/utils/Logger';
 
 const DEBUG_KEY = '[ Action Auth ]';
 export const userNameChanged = (username) => {
@@ -240,17 +241,17 @@ export const checkIfNewlyCreated = () => async (dispatch, getState) => {
   // Check if we already show toast
   const hasShownToast = await Auth.getByKey(`${userId}_${NEWLY_CREATED_KEY}`);
   if (hasShownToast) {
-    console.log(`${DEBUG_KEY}: user shown toast state:`, hasShownToast);
+    Logger.log(`${DEBUG_KEY}: user shown toast state:`, hasShownToast, 2);
     return; // comment out to test
   }
 
   // Check if user is newly invited
   const onSuccess = async (res) => {
-    console.log(`${DEBUG_KEY}: [ checkIfNewlyCreated ] res is:`, res);
+    Logger.log(`${DEBUG_KEY}: [ checkIfNewlyCreated ] res is:`, res, 2);
     const { isNewlyInvited, inviter } = res;
     // Show toast
     if (!isNewlyInvited) {
-      console.log(`${DEBUG_KEY}: [ checkIfNewlyCreated ] user is no longer newly invited`);
+      Logger.log(`${DEBUG_KEY}: [ checkIfNewlyCreated ] user is no longer newly invited`, null, 2);
       return; // comment out to test
     }
     

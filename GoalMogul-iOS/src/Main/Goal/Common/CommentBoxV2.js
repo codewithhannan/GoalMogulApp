@@ -306,6 +306,7 @@ class CommentBoxV2 extends Component {
   }
 
   handleOnBlur = (newComment) => {
+    console.log(`${DEBUG_KEY}: [ handleOnBlur ]`);
     const { resetCommentType } = this.props;
     const { contentText, tmpSuggestion } = newComment;
     // On Blur if no content then set default value to comment the goal / post

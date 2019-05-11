@@ -6,7 +6,6 @@ import {
     View,
     FlatList,
     Text,
-    TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -25,8 +24,11 @@ import {
 
 // Components
 import ChatRoomCard from '../../Chat/ChatRoomList/ChatRoomCard';
+import DelayedButton from '../../Common/Button/DelayedButton';
+import { componentKeyByTab } from '../../../redux/middleware/utils';
 
 const TAB_KEY = 'chatRooms';
+const DEBUG_KEY = '[ UI Explore.ChatTab ]';
 
 class ChatTab extends React.Component {
     componentDidMount() {
@@ -42,17 +44,32 @@ class ChatTab extends React.Component {
     handleOnLoadMore = () => this.props.exploreLoadMoreTab(TAB_KEY);
 
     handleItemSelect = (item) => {
-        return;
-		// if (item.isFriend) {
-		// 	this.props.createOrGetDirectMessage(item._id);
-		// } else {
-		// 	Actions.push('chatRoomConversation', { chatRoomId: item._id, });
-		// };
+        const { userId, tab } = this.props;
+        if (!item) {
+            console.warn(`${DEBUG_KEY}: [ handleItemSelect ]: Invalid item: `, item);
+        }
+
+        if (item.roomType === 'Direct') {
+            // TODO: @Jay to add transition to open direct chat
+            return;
+        }
+
+        const isMember = item.members && 
+            item.members.find(memberDoc => 
+                memberDoc.memberRef._id == userId && (memberDoc.status == 'Admin' || memberDoc.status == 'Member'));
+        if (isMember) {
+            // TODO: @Jay to add transition to open group chat
+           return;
+        }
+
+        // User is a non-member. Open ChatRoomPublicView
+        const componentKey = componentKeyByTab(tab, 'chatRoomPublicView');
+        Actions.push(`${componentKey}`, { chatRoomId: item._id, path: 'explore.chatRooms.data' });
 	}
 
     renderItem = ({ item }) => {
         return (
-            <ChatRoomCard item={item} onItemSelect={this.handleItemSelect} />
+            <ChatRoomCard item={item} onItemSelect={this.handleItemSelect} renderDescription />
         );
     }
 
@@ -72,7 +89,7 @@ class ChatTab extends React.Component {
                 >
                     No Recommendations
                 </Text>
-                <TouchableOpacity
+                <DelayedButton
                     onPress={() => {
                         Actions.jump('chatTab');
                         setTimeout(() => {
@@ -100,53 +117,51 @@ class ChatTab extends React.Component {
                     >
                         Create a group chat
                     </Text>
-                </TouchableOpacity>
+                </DelayedButton>
             </View>
         );
     }
 
     renderListHeader() {
-        // return <EventTabFilterBar value={{ sortBy: this.props.sortBy }}/>;
         return null;
     }
 
     render() {
-    return (
-        <View style={{ flex: 1 }}>
-            <FlatList
-                data={this.props.data}
-                renderItem={this.renderItem}
-                numColumns={1}
-                keyExtractor={this._keyExtractor}
-                refreshing={this.props.refreshing}
-                onRefresh={this.handleOnRefresh}
-                onEndReached={this.handleOnLoadMore}
-                ListHeaderComponent={this.renderListHeader()}
-                ListEmptyComponent={this.renderListEmptyComponent()}
-                onEndThreshold={0}
-            />
-        </View>
-    );
+        return (
+            <View style={{ flex: 1 }}>
+                <FlatList
+                    data={this.props.data}
+                    renderItem={this.renderItem}
+                    numColumns={1}
+                    keyExtractor={this._keyExtractor}
+                    refreshing={this.props.refreshing}
+                    onRefresh={this.handleOnRefresh}
+                    onEndReached={this.handleOnLoadMore}
+                    ListHeaderComponent={this.renderListHeader()}
+                    ListEmptyComponent={this.renderListEmptyComponent()}
+                    onEndThreshold={0}
+                />
+            </View>
+        );
     }
 }
 
-const makeMapStateToProps = () => {
-    const mapStateToProps = (state, props) => {
-        const { refreshing, loading, data } = state.explore.chatRooms;
-        
-    
-        return {
-            data,            
-            loading,
-            refreshing
-        };
+const mapStateToProps = (state, props) => {
+    const { refreshing, loading, data } = state.explore.chatRooms;
+    const { tab } = state.navigation;
+    const { userId } = state.user;
+
+    return {
+        data,            
+        loading,
+        refreshing,
+        userId,
+        tab
     };
-    return mapStateToProps;
 };
 
-
 export default connect(
-    makeMapStateToProps,
+    mapStateToProps,
     {
         exploreRefreshTab,
         exploreLoadMoreTab

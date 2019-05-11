@@ -50,6 +50,7 @@ import {
   NOTIFICATION_DELETE_FAIL,
   NOTIFICATION_UNREAD_LOAD,
   NOTIFICATION_UNREAD_MARK_AS_READ,
+  NOTIFICATION_UNREAD_MARK_AS_READ_BY_PARSEDNOTI
 } from './NotificationTabReducers';
 
 const BASE_ROUTE = 'secure/notification';
@@ -67,7 +68,7 @@ const isValidItem = (item) => item !== undefined && item !== null && !_.isEmpty(
  * @param {Object} notification 
  */
 export const handlePushNotification = (notification) => (dispatch, getState) => {
-  Logger.log(`${DEBUG_KEY}: notification is:`, notification, 5);
+  Logger.log(`${DEBUG_KEY}: notification is:`, notification, 2);
   const { data, origin, remote } = notification;
 
   if (!data || !data.path) {
@@ -87,6 +88,13 @@ export const handlePushNotification = (notification) => (dispatch, getState) => 
   if (origin !== 'selected') {
     Logger.log(`${DEBUG_KEY}: [ handlePushNotification ]: unselected notification`, notification, 5);
     return;
+  }
+
+  // Mark this notification as read
+  if (data && data._id) {
+    markNotifAsReadById(data._id)(dispatch, getState);
+  } else {
+    markNotifAsReadByEntity({ parsedNoti: data })(dispatch, getState);
   }
 
   if (entityType === 'goal') {
@@ -138,7 +146,7 @@ export const openNotificationDetail = (item) => (dispatch, getState) => {
   const entityId = p[1];
 
   // Mark this notification as read
-  markNotifAsRead(_id)(dispatch, getState);
+  markNotifAsReadById(_id)(dispatch, getState);
 
   if (entityType === 'user') {
     return openProfile(entityId)(dispatch, getState);
@@ -495,8 +503,22 @@ export const loadUnreadNotification = () => async (dispatch, getState) => {
   });
 };
 
+/**
+ * Mark a notification as read by comparing its parsedNoti.
+ * This is used by push notification given that it's only passing parsedNoti
+ * @param {object} parsedNoti 
+ */
+export const markNotifAsReadByEntity = ({ parsedNoti }) => (dispatch, getState) => {
+  dispatch({
+    type: NOTIFICATION_UNREAD_MARK_AS_READ_BY_PARSEDNOTI,
+    payload: {
+      parsedNoti
+    }
+  });
+};
+
 // User opens up one notification and mark it as read
-export const markNotifAsRead = (notificationId) => (dispatch, getState) => {
+export const markNotifAsReadById = (notificationId) => (dispatch, getState) => {
   dispatch({
     type: NOTIFICATION_UNREAD_MARK_AS_READ,
     payload: {

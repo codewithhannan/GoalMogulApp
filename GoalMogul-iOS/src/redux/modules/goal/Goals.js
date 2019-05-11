@@ -341,7 +341,15 @@ export default (state = INITIAL_STATE, action) => {
                 return newState;
             }
             const owner = _.get(newState, `${goalId}.goal.owner`);
-            newState = _.set(newState, `${goalId}.goal`, data);
+
+            const oldGoal = _.get(newState, `${goalId}.goal`);
+
+            // Combine oldGoal and new returned goal as returned goal doesn't have comment count and other stuff
+            const newGoal = {
+                ...oldGoal,
+                ...data
+            }; 
+            newState = _.set(newState, `${goalId}.goal`, newGoal);
             // Reset owner since returned data doesn't populate owner
             newState = _.set(newState, `${goalId}.goal.owner`, owner);
             return newState;

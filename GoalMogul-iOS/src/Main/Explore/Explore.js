@@ -146,7 +146,7 @@ class Explore extends Component {
     people: PeopleTab,
     tribes: TribeTab,
     events: EventTab,
-    // chatRooms: ChatTab
+    chatRooms: ChatTab
   });
 
   _keyExtractor = (item, index) => index;

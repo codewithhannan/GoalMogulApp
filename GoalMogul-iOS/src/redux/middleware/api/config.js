@@ -7,10 +7,10 @@ export const config = {
 	/**
 	 * Print out all log with level that is smaller than the logLevel setting here
 	 * 1. Most important message that we shouldn' miss
-	 * 2. 
+	 * 2. Typical debugging message
 	 * 3. API request should go here
 	 * 4. 
-	 * 5. Debugging messages
+	 * 5. Timer firing message
 	 * 
 	 * When log level is set to 5, it means to show all log messages we have
 	 * TODO: wrap console.log with such a logger

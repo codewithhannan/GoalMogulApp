@@ -6,6 +6,15 @@ import {
   SHARE_NEW_POST_SUCCESS
 } from '../feed/post/NewShareReducers';
 
+import {
+  CHAT_MEMBERS_CANCEL_JOIN_REQUEST,
+  CHAT_MEMBERS_CANCEL_JOIN_REQUEST_DONE,
+  CHAT_MEMBERS_CANCEL_JOIN_REQUEST_ERROR,
+  CHAT_MEMBERS_SEND_JOIN_REQUEST,
+  CHAT_MEMBERS_SEND_JOIN_REQUEST_DONE,
+  CHAT_MEMBERS_SEND_JOIN_REQUEST_ERROR
+} from '../chat/ChatRoomMembersReducers';
+
 const INITIAL_SEARCH_STATE = {
   data: [],
   queryId: undefined,
@@ -24,6 +33,7 @@ const INITIAL_STATE = {
       { key: 'people', title: 'People' },
       { key: 'tribes', title: 'Tribes' },
       { key: 'events', title: 'Events' },
+      { key: 'chatRooms', title: 'Chat' },
     ],
   },
   filterBar: {
@@ -176,6 +186,96 @@ export default (state = INITIAL_STATE, action) => {
       if (action.payload === 'tribe') {
         newState = _.set(newState, 'tribe', { ...INITIAL_STATE_TRIBE });
       }
+      return newState;
+    }
+
+    /* Chat related reducers to update search result state. Note: this is the same the ones in ExploreReducers */
+    case CHAT_MEMBERS_SEND_JOIN_REQUEST:
+    case CHAT_MEMBERS_CANCEL_JOIN_REQUEST: {
+      const { chatRoomId } = action.payload;
+      let newState = _.cloneDeep(state);
+      const oldData = _.get(newState, 'chatRooms.data');
+      const newData = oldData.map(c => {
+        if (c._id === chatRoomId) {
+          return {
+            ...c,
+            updating: true // Setting the updating bit for this chat room
+          };
+        }
+        return c;
+      });
+      newState = _.set(newState, 'chatRooms.data', newData);
+      return newState;
+    }
+
+    case CHAT_MEMBERS_SEND_JOIN_REQUEST_ERROR:
+    case CHAT_MEMBERS_CANCEL_JOIN_REQUEST_ERROR: {
+      const { chatRoomId } = action.payload;
+      let newState = _.cloneDeep(state);
+      const oldData = _.get(newState, 'chatRooms.data');
+      const newData = oldData.map(c => {
+        if (c._id === chatRoomId) {
+          return {
+            ...c,
+            updating: false // Setting the updating bit for this chat room
+          };
+        }
+        return c;
+      });
+      newState = _.set(newState, 'chatRooms.data', newData);
+      return newState;
+    }
+
+    case CHAT_MEMBERS_CANCEL_JOIN_REQUEST_DONE: {
+      let newState = _.cloneDeep(state);
+      const { chatRoomId, removeeId } = action.payload;
+      const oldData = _.get(newState, 'chatRooms.data');
+      const newData = oldData.map(c => {
+        let dataToReturn = _.cloneDeep(c);
+        // Find the matching chat room
+        if (c._id === chatRoomId) {
+          // Get old members and remove the removee from the list
+          const oldMembers = _.get(dataToReturn, 'members');
+          if (!oldMembers) return dataToReturn;
+          const newMembers = oldMembers.filter(m => !(m.memberRef._id === removeeId && m.status === 'JoinRequester'));
+          // Update the member list
+          dataToReturn = _.set(dataToReturn, 'members', newMembers);
+          dataToReturn = _.set(dataToReturn, 'updating', false);
+        }
+        return dataToReturn;
+      });
+      newState = _.set(newState, 'chatRooms.data', newData);
+      return newState;
+    }
+
+    case CHAT_MEMBERS_SEND_JOIN_REQUEST_DONE: {
+      const { chatRoomId, userId, user } = action.payload;
+      let newState = _.cloneDeep(state);
+      const oldData = _.get(newState, 'chatRooms.data');
+      const userToAdd = {
+        memberRef: user,
+        status: 'JoinRequester'
+      };
+      const newData = oldData.map(c => {
+        let dataToReturn = _.cloneDeep(c);
+        // Find the matching chat room
+        if (c._id === chatRoomId) {
+          // Get old members and add the current user as the JoinRequester
+          let newMembers;
+          const oldMembers = _.get(dataToReturn, 'members');
+          if (!oldMembers) {
+            newMembers = [userToAdd];
+          } else if (!oldMembers.find(m => m._id === userId)) {
+            newMembers = oldMembers.concat(userToAdd);
+          }
+          
+          // Update the member list
+          dataToReturn = _.set(dataToReturn, 'members', newMembers);
+          dataToReturn = _.set(dataToReturn, 'updating', false);
+        }
+        return dataToReturn;
+      });
+      newState = _.set(newState, 'chatRooms.data', newData);
       return newState;
     }
 

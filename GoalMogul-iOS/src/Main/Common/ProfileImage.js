@@ -85,7 +85,7 @@ class ProfileImage extends React.Component {
         </View>
       </TouchableWithoutFeedback>
     );
-    if (imageUrl) {
+    if (imageUrl && typeof imageUrl !== "number") {
       imageUrl = typeof imageUrl == "string" && imageUrl.indexOf('https://') != 0 ? `${IMAGE_BASE_URL}${imageUrl}` : imageUrl;
       profileImage = (
         <TouchableWithoutFeedback onPress={this.handleProfileImageOnPress}>

@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 // Components
 import ProfileImage from '../../Common/ProfileImage';
 import Timestamp from '../../Goal/Common/Timestamp';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 import profilePic from '../../../asset/utils/defaultUserProfile.png';
 import { GROUP_CHAT_DEFAULT_ICON_URL } from '../../../Utils/Constants';
@@ -91,9 +92,16 @@ class ChatRoomCard extends React.Component {
 	}
 
 	renderCardContent(item) {
-		const content = item.isFriend ? 'Tap to start a conversation...' : (
-			item.latestMessage && item.latestMessage.content.message ? item.latestMessage.content.message : 'No messages in this conversation...'
-		);
+		let content;
+		if (this.props.renderDescription && item.description) {
+			content = item.description;
+		} else if (item.isFriend) {
+			content = 'Tap to start a conversation...';
+		} else if (item.latestMessage && item.latestMessage.content.message) {
+			content = item.latestMessage.content.message;
+		} else {
+			content = 'No messages in this conversation...';
+		}
 		// TODO(Jay): automatically populate latest message from local async storage
 
 		return (
@@ -137,13 +145,14 @@ class ChatRoomCard extends React.Component {
 		} : { };
 
 		return (
-			<TouchableOpacity activeOpacity={0.6}
+			<DelayedButton 
+				activeOpacity={0.6}
 				style={{...styles.cardContainerStyle, ...maybeUnreadHighlight }}
 				onPress={() => this.handleCardOnPress(item)}
 			>
 				{this.renderCardImage(cardImage)}
 				{this.renderCardContent(item)}
-			</TouchableOpacity>
+			</DelayedButton>
 		);
 	}
 }

@@ -14,6 +14,7 @@ import TribeIcon from '../../../../asset/suggestion/flag.png';
 // Components
 import Check from '../../../Common/Check';
 import ProfileImage from '../../../Common/ProfileImage';
+import DelayedButton from '../../../Common/Button/DelayedButton';
 
 // Actions
 
@@ -126,7 +127,7 @@ class TribeCard extends React.Component {
 
   render() {
     return (
-      <TouchableOpacity activeOpacity={0.6} onPress={this.onCardPress}>
+      <DelayedButton activeOpacity={0.6} onPress={this.onCardPress}>
         <View style={styles.containerStyle}>
           {this.renderCheck()}
           {this.renderTribeImage()}
@@ -137,7 +138,7 @@ class TribeCard extends React.Component {
             {this.renderTribeInfo()}
           </View>
         </View>
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 }

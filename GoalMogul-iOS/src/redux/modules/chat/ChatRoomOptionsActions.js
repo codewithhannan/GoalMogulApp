@@ -2,6 +2,16 @@ import { Alert } from 'react-native';
 import { api as API } from "../../middleware/api";
 import { fetchUserProfile } from '../../../actions';
 import { refreshChatRoom } from './ChatRoomActions';
+import { Logger } from '../../middleware/utils/Logger';
+import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal';
+import {
+    CHAT_MEMBERS_CANCEL_JOIN_REQUEST,
+    CHAT_MEMBERS_CANCEL_JOIN_REQUEST_DONE,
+    CHAT_MEMBERS_CANCEL_JOIN_REQUEST_ERROR,
+    CHAT_MEMBERS_SEND_JOIN_REQUEST,
+    CHAT_MEMBERS_SEND_JOIN_REQUEST_DONE,
+    CHAT_MEMBERS_SEND_JOIN_REQUEST_ERROR
+} from './ChatRoomMembersReducers';
 
 const DEBUG_KEY = '[ChatRoomOptionsActions]';
 
@@ -34,6 +44,92 @@ export const changeChatRoomMute = (chatRoomId, isMutedTargetState) => (dispatch,
             console.log(`${DEBUG_KEY} error unmuting chat room`, err);
         });
     };
+};
+
+
+/**
+ * Send join request for a chat room
+ * @param {string} chatRoomId 
+ */
+export const sendJoinRequest = (chatRoomId) => (dispatch, getState) => {
+    const { token, userId, user } = getState().user;
+    const onSuccess = (res) => {
+        Logger.log(`${DEBUG_KEY}: [ sendJointRequest ]: succeed with res:`, res, 2);
+        DropDownHolder.alert('success', 'Request sent', 'Your join request has been sent to the admin.');
+        dispatch({
+            type: CHAT_MEMBERS_SEND_JOIN_REQUEST_DONE,
+            payload: { chatRoomId, userId, user }
+        });
+    };
+
+    const onError = (res) => {
+        Logger.log(`${DEBUG_KEY}: [ sendJoinRequest ]: failed with res:`, res, 2);
+        DropDownHolder.alert('error', 'Error', 'We\'re sorry that some error happened. Please try again later.');
+        dispatch({
+            type: CHAT_MEMBERS_SEND_JOIN_REQUEST_ERROR,
+            payload: { chatRoomId }
+        });
+    };
+
+    // For loading indicator
+    dispatch({
+        type: CHAT_MEMBERS_SEND_JOIN_REQUEST,
+        payload: { chatRoomId }
+    });
+
+    API
+        .post('secure/chat/room/members/request', { chatRoomId }, token)
+        .then(res => {
+            if (res.status === 200) return onSuccess(res);
+            return onError(res);
+        })
+        .catch(err => onError(err));
+};
+
+/**
+ * Cancel join request for user
+ * @param {string} chatRoomId 
+ */
+export const cancelJoinRequest = (chatRoomId) => (dispatch, getState) => {
+    const { token, userId } = getState().user;
+    const onSuccess = (res) => {
+        Logger.log(`${DEBUG_KEY}: [ cancelJoinRequest ]: succeed for user ${userId}: with res:`, res, 2);
+        DropDownHolder.alert('success', 'Request canceled', 'Your join request has been canceled.');
+        dispatch({
+            type: CHAT_MEMBERS_CANCEL_JOIN_REQUEST_DONE,
+            payload: {
+                chatRoomId,
+                removeeId: userId
+            }
+        });
+        // TODO: show toaster
+    };
+
+    const onError = (res) => {
+        Logger.log(`${DEBUG_KEY}: [ cancelJoinRequest ]: failed with res:`, res, 2);
+        DropDownHolder.alert('error', 'Error', 'We\'re sorry that some error happened. Please try again later.');
+        dispatch({
+            type: CHAT_MEMBERS_CANCEL_JOIN_REQUEST_ERROR,
+            payload: { chatRoomId }
+        });
+    };
+
+    // For loading indicator
+    dispatch({
+        type: CHAT_MEMBERS_CANCEL_JOIN_REQUEST,
+        payload: {
+            chatRoomId,
+            removeeId: userId
+        }
+    });
+
+    API
+        .delete(`secure/chat/room/members?chatRoomId=${chatRoomId}&removeeId=${userId}`, {}, token)
+        .then(res => {
+            if (res.status === 200) return onSuccess(res);
+            return onError(res);
+        })
+        .catch(err => onError(err));
 };
 
 export const addMemberToChatRoom = (chatRoomId, addeeId) => (dispatch, getState) => {

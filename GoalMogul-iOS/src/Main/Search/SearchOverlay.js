@@ -20,6 +20,7 @@ import TabButtonGroup from '../Common/TabButtonGroup';
 import PeopleSearch from './People/PeopleSearch';
 import EventSearch from './Event/EventSearch';
 import TribeSearch from './Tribe/TribeSearch';
+import ChatSearch from './Chat/ChatSearch';
 import { SearchIcon } from '../../Utils/Icons';
 
 // Actions
@@ -147,8 +148,8 @@ class SearchOverlay extends Component {
   _renderScene = SceneMap({
     people: () => <PeopleSearch type='GeneralSearch' />,
     tribes: () => <TribeSearch type='GeneralSearch' />,
-    events: () => <EventSearch type='GeneralSearch' />
-    // chatRooms: () => <ChatSearch type='GeneralSearch' />
+    events: () => <EventSearch type='GeneralSearch' />,
+    chatRooms: () => <ChatSearch type='GeneralSearch' />
   });
 
   render() {
