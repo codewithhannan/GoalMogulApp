@@ -21,8 +21,7 @@ import FriendsSettingIcon from '../../../asset/utils/friendsSettingIcon.png';
 // Actions
 import {
   openNotificationDetail,
-  removeNotification,
-  markNotifAsRead
+  removeNotification
 } from '../../../redux/modules/notification/NotificationActions';
 
 // Constants
@@ -196,7 +195,6 @@ export default connect(
   mapStateToProps,
   {
     removeNotification,
-    markNotifAsRead,
     openNotificationDetail
   }
 )(NotificationCard);

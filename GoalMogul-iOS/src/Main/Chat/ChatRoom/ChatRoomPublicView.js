@@ -7,7 +7,6 @@ import {
 	View,
     Dimensions,
     ScrollView,
-    Alert,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Image, Text, Divider } from 'react-native-elements';
@@ -67,33 +66,35 @@ class ChatRoomPublicView extends React.Component {
 
     renderChatRoomStatus() {
         const {chatRoom, user} = this.props;
-        const memberDoc = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id == user._id);
+        const memberDoc = chatRoom.members && 
+            chatRoom.members.find(memberDoc => memberDoc.memberRef._id == user._id && memberDoc.status === 'JoinRequester');
         const memberStatus = memberDoc && memberDoc.status;
         const tintColor = '#2dca4a';
         if (!memberStatus) return null;
+        // If there is memberStatus, it means user is a JoinRequest. So display "Join Request Sent"
         return (
             <View
-              activeOpacity={0.6}
-              style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8, height: 23 }}
+                activeOpacity={0.6}
+                style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8, height: 23 }}
             >
-              <Image
-                source={check}
-                style={{
-                  height: 10,
-                  width: 13,
-                  tintColor
-                }}
-              />
-              <Text
-                style={{
-                  ...styles.tribeStatusTextStyle,
-                  color: tintColor
-                }}
-              >
-                {memberStatus}
-              </Text>
+                <Image
+                    source={check}
+                    style={{
+                    height: 10,
+                    width: 13,
+                    tintColor
+                    }}
+                />
+                <Text
+                    style={{
+                    ...styles.tribeStatusTextStyle,
+                    color: tintColor
+                    }}
+                >
+                    Join Request Sent
+                </Text>
             </View>
-          );
+        );
     }
 
     renderChatRoomDetails() {

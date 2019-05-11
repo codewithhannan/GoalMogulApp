@@ -69,6 +69,8 @@ export const NOTIFICATION_DELETE_FAIL = 'notification_delete_fail';
 export const NOTIFICATION_UNREAD_LOAD = 'notification_unread_load';
 // Mark one notification as read and remove from unread FIFO queue
 export const NOTIFICATION_UNREAD_MARK_AS_READ = 'notification_unread_mark_as_read';
+// Mark one notification as read and remove from unread FIFO queue by comparing the parsedNoti
+export const NOTIFICATION_UNREAD_MARK_AS_READ_BY_PARSEDNOTI = 'notification_unread_mark_as_read_by_parsednofi';
 // Fetch unread count
 export const NOTIFICATION_UNREAD_COUNT_UPDATE = 'notification_unread_count_update';
 
@@ -240,10 +242,37 @@ export default (state = INITIAL_STATE, action) => {
 
     case NOTIFICATION_UNREAD_MARK_AS_READ: {
       const { notificationId } = action.payload;
-      const newState = _.cloneDeep(state);
+      let newState = _.cloneDeep(state);
       const oldData = _.get(newState, 'unread.data');
+      
+      // Update unread count if needed
+      if (oldData.some((d) => d._id === notificationId)) {
+        const oldCount = _.get(newState, 'unread.unreadCount');
+        const newCount = oldCount > 0 ? oldCount - 1 : 0;
+        newState = _.set(newState, 'unread.unreadCount', newCount);
+      }
+
+      // Update the notification queue
       const newData = oldData.filter((d) => d._id !== notificationId);
       return _.set(newState, 'unread.data', newData);
+    }
+
+    case NOTIFICATION_UNREAD_MARK_AS_READ_BY_PARSEDNOTI: {
+      const { parsedNoti } = action.payload;
+      let newState = _.cloneDeep(state);
+
+      // Remove the notification from the unread FIFO queue
+      const oldData = _.get(newState, 'unread.data');
+      const newData = oldData.filter((d) => !_.isEqual(d.parsedNoti, parsedNoti));
+      newState = _.set(newState, 'unread.data', newData);
+
+      // Update unread count if needed
+      if (oldData.some((d) => _.isEqual(d.parsedNoti, parsedNoti))) {
+        const oldCount = _.get(newState, 'unread.unreadCount');
+        const newCount = oldCount > 0 ? oldCount - 1 : 0;
+        newState = _.set(newState, 'unread.unreadCount', newCount);
+      }
+      return newState;
     }
 
     // Update unread count
