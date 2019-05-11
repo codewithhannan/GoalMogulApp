@@ -15,6 +15,7 @@ import {
   SUGGESTION_SEARCH_PRELOAD_LOAD_DONE
 } from './SuggestionSearchReducers';
 import { switchCaseF, switchCase, queryBuilder } from '../../../middleware/utils';
+import { Logger } from '../../../middleware/utils/Logger';
 
 const DEBUG_KEY = '[ Action Suggestion Search ]';
 
@@ -57,7 +58,7 @@ const searchWithId = (searchContent, queryId, type) => (dispatch, getState) => {
         data,
         skip: data.length,
         type,
-        hasNextPage: data.length !== 0
+        hasNextPage: data && data.length >= limit
       }
     });
   }, false);
@@ -107,7 +108,7 @@ export const refreshSearchResult = (type) => (dispatch, getState) => {
         data,
         skip: data.length,
         type,
-        hasNextPage: data.length !== 0
+        hasNextPage: data && data.length >= limit
       }
     });
   }, true);
@@ -146,7 +147,7 @@ export const onLoadMore = (type) => (dispatch, getState) => {
         data,
         skip: skip + data.length,
         type,
-        hasNextPage: data.length !== 0
+        hasNextPage: data && data.length >= limit
       }
     });
   }, false);
