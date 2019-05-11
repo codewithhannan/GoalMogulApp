@@ -189,7 +189,6 @@ class SearchSuggestion extends React.Component {
         cancelButtonProps={{ color: '#17B3EC' }}
         showLoading={this.props.loading}
         onClear={this.handleSearchClear}
-        value={this.props.searchContent}
         clearIcon={null}
         searchIcon={() => (
           <SearchIcon 
@@ -312,7 +311,7 @@ const mapStateToProps = (state, props) => {
       refreshingToUse = preloadDataRefreshingState;
     } else if (hasNextPage === false) {
       // Data concat with preload data when hasNextPage is false
-      dataToRender = arrayUnique([...data, ...preloadDataToRender]);
+      dataToRender = arrayUnique(data.concat(preloadDataToRender));
       loadingToUse = preloadDataLoadingState;
     }
   }

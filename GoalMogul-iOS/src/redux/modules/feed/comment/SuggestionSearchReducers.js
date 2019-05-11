@@ -112,7 +112,6 @@ export default (state = INITIAL_STATE, action) => {
 
     // Initiate suggestion_search request
     case SUGGESTION_SEARCH_REFRESH: {
-      console.log(`${DEBUG_KEY}: i ma here`);
       const { searchContent, queryId, type } = action.payload;
       let newState = _.cloneDeep(state);
       newState.searchRes.refreshing = true;
