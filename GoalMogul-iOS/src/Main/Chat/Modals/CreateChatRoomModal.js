@@ -101,7 +101,7 @@ class CreateChatroomModal extends React.Component {
 
 		this.props.createOrUpdateChatroom(
 			formVals.values,
-			membersToAdd,
+			membersToAdd || '',
 			chatId, // chatId
 			initializeFromState, // isEdit
 			needUpload,
@@ -118,9 +118,9 @@ class CreateChatroomModal extends React.Component {
 		} else if (this.props.modalPageNumber == 1) {
 			this.props.changeModalPage(2);
 		} else if(this.props.modalPageNumber == 2) {
-			if (this.props.selectedMembers.length == 0) {
-				return Alert.alert('Warning', 'You must select at least one other person to add to the conversation.');
-			};
+			// if (this.props.selectedMembers.length == 0) {
+			// 	return Alert.alert('Warning', 'You must select at least one other person to add to the conversation.');
+			// };
 			if (this.props.selectedMembers.length > this.props.memberLimit - 1) {
 				return Alert.alert('Warning', 'You\'ve added more members than the specified member limit for this chat');
 			};
