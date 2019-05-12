@@ -91,8 +91,8 @@ export const handlePushNotification = (notification) => (dispatch, getState) => 
   }
 
   // Mark this notification as read
-  if (data && data._id) {
-    markNotifAsReadById(data._id)(dispatch, getState);
+  if (data && data.notificationId) {
+    markNotifAsReadById(data.notificationId)(dispatch, getState);
   } else {
     markNotifAsReadByEntity({ parsedNoti: data })(dispatch, getState);
   }
