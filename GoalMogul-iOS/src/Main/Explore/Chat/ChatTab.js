@@ -50,7 +50,7 @@ class ChatTab extends React.Component {
         }
 
         if (item.roomType === 'Direct') {
-            // TODO: @Jay to add transition to open direct chat
+            Actions.push('chatRoomConversation', { chatRoomId: item._id, });
             return;
         }
 
@@ -58,7 +58,7 @@ class ChatTab extends React.Component {
             item.members.find(memberDoc => 
                 memberDoc.memberRef._id == userId && (memberDoc.status == 'Admin' || memberDoc.status == 'Member'));
         if (isMember) {
-            // TODO: @Jay to add transition to open group chat
+            Actions.push('chatRoomConversation', { chatRoomId: item._id, });
            return;
         }
 

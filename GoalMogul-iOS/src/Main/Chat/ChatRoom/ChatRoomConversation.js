@@ -32,7 +32,6 @@ import LiveChatService, { OUTGOING_EVENT_NAMES } from '../../../socketio/service
 // Components
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal';
 import { RemoveComponent } from '../../Goal/GoalDetailCard/SuggestionPreview';
-import {AutoGrowingTextInput} from 'react-native-autogrow-textinput';
 
 import { Octicons } from '@expo/vector-icons';
 import SendButton from '../../../asset/utils/sendButton.png';
@@ -481,7 +480,8 @@ class ChatRoomConversation extends React.Component {
 						props.onInputTextChanged(text);
 					}}
 					onContentSizeChange={(e) => {
-						this.onComposerHeightChanged(e.nativeEvent.contentSize);
+						// RN bug where e.nativeEvent.contentSize is 36 when input is empty, so we reset it to 18
+						this.onComposerHeightChanged((props.text && props.text.length) ? e.nativeEvent.contentSize : 18);
 						props.onInputSizeChanged({
 							...e.nativeEvent.contentSize,
 							height: e.nativeEvent.contentSize.height + 9, // account for padding
@@ -489,7 +489,7 @@ class ChatRoomConversation extends React.Component {
 					}}
 					value={props.text}
 					multiline={true}
-					placeholder={props.placeholder}
+					placeholder={`${props.placeholder.slice(0, 27)}...`}
 					style={{
 						fontSize: 15,
 						padding: 9,
@@ -497,7 +497,7 @@ class ChatRoomConversation extends React.Component {
 						borderColor: '#F1F1F1',
 						borderRadius: 6,
 						borderWidth: 1,
-						height: this.state.composerHeight
+						height: this.state.composerHeight,
 					}}
 				/>
 			</View>
@@ -580,7 +580,7 @@ class ChatRoomConversation extends React.Component {
 							_id, name,
 							avatar: profile && profile.image && `${IMAGE_BASE_URL}${profile.image}`,
 						}}
-						placeholder={`Send a message to ${this.props.chatRoomName}...`}
+						placeholder={`Send a message to '${this.props.chatRoomName}'`}
 						isAnimated={true}
 						alwaysShowSend={true}
 						renderAvatarOnTop={true}

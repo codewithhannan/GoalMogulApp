@@ -105,7 +105,7 @@ class CommentRef extends React.PureComponent {
       return;
     }
     if (suggestionType === 'ChatConvoRoom' && chatRoomRef) {
-      // TODO: @Jay open chat convo room based on suggestion chatRoomRef
+      Actions.push('chatRoomConversation', { chatRoomId: chatRoomRef._id, });
       console.log(`${DEBUG_KEY}: suggestion type is ChatConvoRoom, chatRoomRef is: `, chatRoomRef);
     }
     if (suggestionType === 'Custom' && suggestionLink) {

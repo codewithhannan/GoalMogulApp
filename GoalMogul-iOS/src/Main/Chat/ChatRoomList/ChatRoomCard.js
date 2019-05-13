@@ -101,8 +101,7 @@ class ChatRoomCard extends React.Component {
 			content = item.latestMessage.content.message;
 		} else {
 			content = 'No messages in this conversation...';
-		}
-		// TODO(Jay): automatically populate latest message from local async storage
+		};
 
 		return (
 			<View style={{ justifyContent: 'flex-start', flex: 1, marginLeft: 10 }}>
