@@ -295,7 +295,8 @@ export const postComment = (pageId) => (dispatch, getState) => {
     type: COMMENT_NEW_POST_START,
     payload: {
       tab,
-      pageId
+      pageId,
+      entityId: newComment.parentRef // This is for post/share/goal to set the loading indicator
     }
   });
 
@@ -307,7 +308,8 @@ export const postComment = (pageId) => (dispatch, getState) => {
       type: COMMENT_NEW_POST_FAIL,
       payload: {
         pageId,
-        tab
+        tab,
+        entityId: newComment.parentRef // This is for post/share/goal to remove the loading indicator
       }
     });
     Alert.alert('Error', 'Failed to submit comment. Please try again later.');
@@ -327,7 +329,8 @@ export const postComment = (pageId) => (dispatch, getState) => {
           }
         },
         tab,
-        pageId
+        pageId,
+        entityId: newComment.parentRef // This is for post/share/goal to remove the loading indicator
       }
     });
     // If succeed and comment type is suggestionFor a need or a step, switch to

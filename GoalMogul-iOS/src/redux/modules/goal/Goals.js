@@ -49,7 +49,9 @@ import {
 } from '../feed/comment/CommentReducers';
 
 import {
-    COMMENT_NEW_POST_SUCCESS
+    COMMENT_NEW_POST_SUCCESS,
+    COMMENT_NEW_POST_FAIL,
+    COMMENT_NEW_POST_START
 } from '../feed/comment/NewCommentReducers';
 
 import {
@@ -95,6 +97,9 @@ import {
  * The ones that need to increase / decrease comment count
  * COMMENT_DELETE_SUCCESS, (done)
  * COMMENT_NEW_POST_SUCCESS (done)
+ * COMMENT_NEW_POST_START
+ * COMMENT_NEW_POST_FAIL
+ * 
  * 
  * Home related (Goal Feed)
  * HOME_REFRESH_GOAL_DONE (done)
@@ -541,9 +546,42 @@ export default (state = INITIAL_STATE, action) => {
             return newState;
         }
 
+        // Temporarily disabled
+        // case COMMENT_NEW_POST_START: {
+        //     let newState = _.cloneDeep(state);
+        //     const { pageId, entityId } = action.payload;
+        //     if (!_.has(newState, entityId)) return newState;
+
+        //     // Set the updating status for comment
+        //     if (!_.has(newState, `${entityId}.${pageId}`)) {
+        //         console.warn(`${DEBUG_KEY}: [ ${action.type} ]: comment starts to post on a non-referenced page:`, pageId);
+        //     } else {
+        //         // Set the updating status to false as we finished posting a comment
+        //         newState = _.set(newState, `${entityId}.${pageId}.updating`, true);
+        //     }
+
+        //     return newState;
+        // }
+
+        // case COMMENT_NEW_POST_FAIL: {
+        //     let newState = _.cloneDeep(state);
+        //     const { pageId, entityId } = action.payload;
+        //     if (!_.has(newState, entityId)) return newState;
+
+        //     // Set the updating status for comment
+        //     if (!_.has(newState, `${entityId}.${pageId}`)) {
+        //         console.warn(`${DEBUG_KEY}: [ ${action.type} ]: comment failed to post on a non-referenced page:`, pageId);
+        //     } else {
+        //         // Set the updating status to false as we finished posting a comment
+        //         newState = _.set(newState, `${entityId}.${pageId}.updating`, false);
+        //     }
+
+        //     return newState;
+        // }
+
         case COMMENT_NEW_POST_SUCCESS: {
             let newState = _.cloneDeep(state);
-            const { comment } = action.payload;
+            const { comment, pageId } = action.payload;
             const { parentType, parentRef } = comment;
             // check parentType to determine to proceed
             if (parentType !== 'Goal') {
@@ -566,6 +604,15 @@ export default (state = INITIAL_STATE, action) => {
             const newCommentCount = (oldCommentCount + 1);
 
             newState = _.set(newState, `${parentRef}.goal.commentCount`, newCommentCount);
+
+            // Reset the updating status for comment
+            if (!_.has(newState, `${parentRef}.${pageId}`)) {
+                console.warn(`${DEBUG_KEY}: [ COMMENT_NEW_POST_SUCCESS ]: comment is posted on a non-referenced page:`, pageId);
+            } else {
+                // Set the updating status to false as we finished posting a comment
+                newState = _.set(newState, `${parentRef}.${pageId}.updating`, false);
+            }
+
             return newState;
         }
 
