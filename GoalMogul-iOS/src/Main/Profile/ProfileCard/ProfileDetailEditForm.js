@@ -9,17 +9,17 @@ import {
   ActionSheetIOS,
   Dimensions,
   SafeAreaView,
-  Platform,
-  findNodeHandle,
   Keyboard
 } from 'react-native';
 import { Field, reduxForm } from 'redux-form';
 import { TextField } from 'react-native-material-textfield';
 import { connect } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { DotIndicator } from 'react-native-indicators';
 
 /* Component */
 import FormHeader from '../../Common/Header/FormHeader';
+import LoadingModal from '../../Common/Modal/LoadingModal';
 
 /* Asset */
 import editImage from '../../../asset/utils/edit.png';
@@ -40,6 +40,7 @@ const CAMERA_ROLL_INDEX = 1;
 const CANCEL_INDEX = 2;
 
 const { width, height } = Dimensions.get('window');
+const DEBUG_KEY = '[ UI ProfileDetailEditForm ]';
 
 class ProfileDetailEditForm extends Component {
 
@@ -53,7 +54,7 @@ class ProfileDetailEditForm extends Component {
     this.props.submitUpdatingProfile({ values, hasImageModified }, this.props.pageId);
   };
 
-  _scrollToInput (reactNode: any) {
+  _scrollToInput (reactNode) {
   // Add a 'scroll' ref to your ScrollView
   this.scrollview.props.scrollToFocusedInput(reactNode)
 }
@@ -201,6 +202,10 @@ class ProfileDetailEditForm extends Component {
           Keyboard.dismiss()
         }}
       >
+        <LoadingModal 
+          visible={this.props.uploading} 
+          customIndicator={<DotIndicator size={12} color='white' />}  
+        />
         <FormHeader
           title='Profile'
           onSubmit={handleSubmit(this.submit)}
@@ -214,7 +219,7 @@ class ProfileDetailEditForm extends Component {
             flexGrow: 1 // this will fix scrollview scroll issue by passing parent view width and height to it
           }}
         >
-          <Field name='profile.image' label='Profile Picture' component={this.renderImage} />
+          <Field name='profile.image' label='Profile Picture' component={this.renderImage.bind(this)} />
           <Field
             name='name'
             label='Name'

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 const ProfileUtils = {
   updateAccount(values) {
     const {
@@ -37,12 +38,15 @@ const ProfileUtils = {
       token
     } = values;
 
-    const profile = {
+    let profile = {
       image,
       about,
       occupation,
       elevatorPitch
     };
+
+    Object.keys(profile).forEach((key) => 
+      (profile[key] == undefined || profile[key] == null || _.isEmpty(profile[key])) && delete profile[key]);
 
     const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/profile';
     const headers = {
@@ -52,10 +56,7 @@ const ProfileUtils = {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        image,
-        about,
-        occupation,
-        elevatorPitch,
+        ...profile,
         token
       })
     };

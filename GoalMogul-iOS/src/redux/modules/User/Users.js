@@ -434,7 +434,7 @@ export default (state = INITIAL_STATE, action) => {
             const newState = _.cloneDeep(state);
             sanityCheck(newState, userId, PROFILE_IMAGE_UPLOAD_SUCCESS);
 
-            return _.set(newState, `${userId}.user.profile.tmpImage`, data);
+            return _.set(newState, `${userId}.tmpImage`, data);
         }
 
         case PROFILE_SUBMIT_UPDATE: {

@@ -18,7 +18,6 @@ const ProfileActionButton = (props) => {
     );
   }
 
-  console.log(`${DEBUG_KEY}: containerStyle: `, props.containerStyle);
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={props.onPress}>
       <View

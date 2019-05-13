@@ -309,7 +309,7 @@ class ProfileDetailCard extends Component {
       // if (imageUrl !== this.state.imageUrl) {
       //   this.prefetchImage(image);
       // }
-      console.log(`${DEBUG_KEY}: image url is: `, imageUrl);
+      // console.log(`${DEBUG_KEY}: image url is: `, imageUrl);
       profileImage = (
         <View
           style={styles.imageContainerStyle}
