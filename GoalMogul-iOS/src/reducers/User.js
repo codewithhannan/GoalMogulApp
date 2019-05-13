@@ -29,6 +29,7 @@ const INITIAL_STATE = {
 
 export const USER_LOAD_PROFILE_DONE = 'user_load_profile_done';
 export const USER_LOG_OUT = 'user_log_out';
+const DEBUG_KEY = '[ Reducer User ]';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -40,7 +41,12 @@ export default (state = INITIAL_STATE, action) => {
         return newState;
       }
 
-      return _.set(newState, 'user', user);
+      const oldUser = _.get(newState, 'user');
+      const newUser = {
+        ...oldUser,
+        ...user
+      };
+      return _.set(newState, 'user', newUser);
     } 
 
     // TODO: verify if this behavior is necessary

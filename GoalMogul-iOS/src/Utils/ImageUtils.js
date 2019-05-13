@@ -135,6 +135,7 @@ const ImageUtils = {
         })
         .then((image) => {
           // Upload image to S3 server
+          console.log('[ ImageUtils ]: Finish resizing and start to getPresignedUrl');
           return ImageUtils.getPresignedUrl(image.uri, token, (objectKey) => {
             dispatch({
               type,
@@ -146,6 +147,7 @@ const ImageUtils = {
           });
         })
         .then(({ signedRequest, file }) => {
+          console.log('[ ImageUtils ]: Uploading image');
           return ImageUtils.uploadImage(file, signedRequest);
         })
         .then((res) => {

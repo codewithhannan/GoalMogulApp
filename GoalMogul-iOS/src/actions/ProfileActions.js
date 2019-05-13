@@ -62,6 +62,7 @@ import {
 import {
   IMAGE_BASE_URL
 } from '../Utils/Constants';
+import { Logger } from '../redux/middleware/utils/Logger';
 
 const DEBUG_KEY = '[ Action Profile ]';
 
@@ -393,7 +394,7 @@ export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
     const updateProfilePromise = ImageUtils
       .upload(hasImageModified, imageUri, token, PROFILE_IMAGE_UPLOAD_SUCCESS, dispatch, userId)
       .then(() => {
-        const image = getUserData(getState(), userId, 'user.profile.tmpImage');
+        const image = getUserData(getState(), userId, 'tmpImage');
         return updateProfile({
           image,
           about,
@@ -412,8 +413,7 @@ export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
       .all([updateAccountPromise, updateProfilePromise, updatePasswordPromise])
       .then((res) => {
         const [accountUpdateRes, profileUpdateRes, passwordUpdateRes] = res;
-        const profile = { ...profileUpdateRes };
-        const user = { ...accountUpdateRes, profile };
+        const user = { ...accountUpdateRes, profile: { ...profileUpdateRes } };
 
         dispatch({
           type: PROFILE_UPDATE_SUCCESS,
@@ -425,7 +425,7 @@ export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
         });
         Actions.pop();
         fetchUserProfile(userId, pageId)(dispatch, getState);
-        console.log('Update profile succeed: ', res);
+        Logger.log(`${DEBUG_KEY}: submitUpdatingProfile done with new user:`, user, 2);
       })
       .catch((err) => {
         dispatch({

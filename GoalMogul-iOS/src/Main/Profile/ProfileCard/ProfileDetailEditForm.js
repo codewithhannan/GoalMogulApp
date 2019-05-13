@@ -40,6 +40,7 @@ const CAMERA_ROLL_INDEX = 1;
 const CANCEL_INDEX = 2;
 
 const { width, height } = Dimensions.get('window');
+const DEBUG_KEY = '[ UI ProfileDetailEditForm ]';
 
 class ProfileDetailEditForm extends Component {
 
@@ -218,7 +219,7 @@ class ProfileDetailEditForm extends Component {
             flexGrow: 1 // this will fix scrollview scroll issue by passing parent view width and height to it
           }}
         >
-          <Field name='profile.image' label='Profile Picture' component={this.renderImage} />
+          <Field name='profile.image' label='Profile Picture' component={this.renderImage.bind(this)} />
           <Field
             name='name'
             label='Name'
