@@ -130,8 +130,14 @@ class CommentRef extends React.PureComponent {
 
   renderTextContent(item) {
     const { title, content } = getTextContent(item);
+
+    const { suggestionType } = item;
+    const defaultImage = switchDefaultImageType(suggestionType, item);
+    const { imageUrl } = defaultImage;
+    const marginLeft = imageUrl ? 10 : 0; // There is only margin left if it's not default icon
+
     return (
-      <View style={{ flex: 1, justifyContent: 'center', marginLeft: 10 }}>
+      <View style={{ flex: 1, justifyContent: 'center', marginLeft }}>
         <Text 
           style={styles.titleTextStyle}
           numberOfLines={1}
