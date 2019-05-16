@@ -96,7 +96,7 @@ class ActivityFeed extends Component {
             paddingVertical: 20
           }}
         >
-          <ActivityIndicator size='large' />
+          <ActivityIndicator size='small' />
         </View>
       );
     }

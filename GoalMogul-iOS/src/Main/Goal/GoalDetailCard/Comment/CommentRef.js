@@ -107,7 +107,7 @@ class CommentRef extends React.PureComponent {
     }
     if (suggestionType === 'ChatConvoRoom' && chatRoomRef) {
       Actions.push('chatRoomConversation', { chatRoomId: chatRoomRef._id, });
-      console.log(`${DEBUG_KEY}: suggestion type is ChatConvoRoom, chatRoomRef is: `, chatRoomRef);
+      console.log(`${DEBUG_KEY}: suggestion type is ChatConvoRoom, chatRoomId is: ${chatRoomRef._id}, chatRoomRef is: `, chatRoomRef);
     }
     if (suggestionType === 'Custom' && suggestionLink) {
       this.handleSuggestionLinkOnPress(suggestionLink);
