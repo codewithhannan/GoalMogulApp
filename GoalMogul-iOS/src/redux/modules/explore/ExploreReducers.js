@@ -33,7 +33,7 @@ const INITIAL_STATE = {
       { key: 'people', title: 'People' },
       { key: 'tribes', title: 'Tribes' },
       { key: 'events', title: 'Events' },
-      { key: 'chatRooms', title: 'Chat'}
+      { key: 'chatRooms', title: 'Chats'}
     ]
   },
   selectedTab: 'events',
