@@ -6,7 +6,8 @@ import {
     View,
     FlatList,
     Text,
-    TouchableOpacity
+    TouchableOpacity,
+    ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -101,6 +102,21 @@ class PeopleTab extends React.Component {
         return null;
     }
 
+    renderListFooter() {
+		if (!this.props.loading) return null;
+		return (
+			<View
+				style={{
+					paddingVertical: 20,
+					borderTopWidth: 1,
+					borderColor: "#CED0CE"
+				}}
+			>
+				<ActivityIndicator animating size="small" />
+			</View>
+		);
+	}
+
     render() {
     return (
         <View style={{ flex: 1 }}>
@@ -112,8 +128,9 @@ class PeopleTab extends React.Component {
                 refreshing={this.props.refreshing}
                 onRefresh={this.handleOnRefresh}
                 onEndReached={this.handleOnLoadMore}
-                ListHeaderComponent={this.renderListHeader()}
-                ListEmptyComponent={this.renderListEmptyComponent()}
+                ListHeaderComponent={this.renderListHeader.bind(this)}
+                ListEmptyComponent={this.renderListEmptyComponent.bind(this)}
+                ListFooterComponent={this.renderListFooter.bind(this)}
                 onEndThreshold={0}
             />
         </View>
