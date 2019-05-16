@@ -1,4 +1,5 @@
 import {
+  EVENTTAB_REFRESH,
   EVENTTAB_REFRESH_DONE,
   EVENTTAB_LOAD_DONE,
   EVENTTAB_LOAD,
@@ -9,7 +10,7 @@ import {
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 
-const DEBUG_KEY = '[ Action Explore Event Tab ]';
+const DEBUG_KEY = '[ Action Explore.EventTab ]';
 const BASE_ROUTE = 'secure/event/recommendations';
 
 
@@ -46,9 +47,11 @@ export const refreshEvent = () => (dispatch, getState) => {
   const { limit, sortBy } = getState().eventTab;
 
   dispatch({
-    type: EVENTTAB_LOAD
+    type: EVENTTAB_REFRESH
   });
+
   loadEvent(0, limit, token, sortBy, { refresh: true }, (data) => {
+    console.log(`${DEBUG_KEY}: [ refreshEvent ] with res: `, data.length);
     dispatch({
       type: EVENTTAB_REFRESH_DONE,
       payload: {
@@ -61,31 +64,57 @@ export const refreshEvent = () => (dispatch, getState) => {
       }
     });
   }, () => {
-    // TODO: implement for onError
+    console.warn(`${DEBUG_KEY}: [ refreshEvent ] error: `, err);
+    dispatch({
+      type: EVENTTAB_REFRESH_DONE,
+      payload: {
+        type: 'eventtab',
+        data,
+        skip: 0,
+        limit: 20,
+        hasNextPage: undefined
+      }
+    });
   });
 };
 
 // Load more goal for mastermind tab
 export const loadMoreEvent = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, sortBy, hasNextPage } = getState().eventTab;
-  if (hasNextPage === false) {
+  const { skip, limit, sortBy, hasNextPage, loading } = getState().eventTab;
+  if (hasNextPage === false || loading) {
     return;
   }
+
+  dispatch({
+    type: EVENTTAB_LOAD
+  });
+
   loadEvent(skip, limit, token, sortBy, {}, (data) => {
+    console.log(`${DEBUG_KEY}: [ loadMoreEvent ] with res: `, data.length);
     dispatch({
       type: EVENTTAB_LOAD_DONE,
       payload: {
         type: 'eventtab',
         data,
-        skip: data.length,
+        skip: data ? data.length + skip : skip,
         limit: 20,
         pageId: 'EVENTTAB',
         hasNextPage: !(data === undefined || data.length === 0)
       }
     });
   }, () => {
-    // TODO: implement for onError
+    console.warn(`${DEBUG_KEY}: [ loadMoreEvent ] error: `, err);
+    dispatch({
+      type: EVENTTAB_LOAD_DONE,
+      payload: {
+        type: 'eventtab',
+        data,
+        skip,
+        limit: 20,
+        hasNextPage: false
+      }
+    });
   });
 };
 
@@ -99,19 +128,13 @@ const loadEvent = (skip, limit, token, sortBy, filterOptions, callback, onError)
       token
     )
     .then((res) => {
-      console.log('loading events feed with res: ', res);
       if (res && res.data) {
         // Right now return test data
         return callback(res.data);
       }
-      console.warn(`${DEBUG_KEY}: Loading event feed with no res`);
+      onError(res);
     })
     .catch((err) => {
-      console.log(`${DEBUG_KEY} load event feed error: ${err}`);
-      if (skip === 0) {
-        callback([]);
-      } else {
-        callback([]);
-      }
+      onError(err);
     });
 };

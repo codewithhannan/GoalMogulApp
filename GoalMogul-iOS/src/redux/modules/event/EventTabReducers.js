@@ -11,14 +11,15 @@ const INITIAL_STATE = {
   limit: 20,
   skip: 0,
   loading: false,
+  refreshing: false,
   // ['Popular', 'RecentlyCreated', 'Random']
   sortBy: 'Popular'
-
 };
 
 const sortByList = ['Popular', 'RecentlyCreated', 'Random'];
 
 export const EVENTTAB_REFRESH_DONE = 'eventtab_refresh_done';
+export const EVENTTAB_REFRESH = 'eventtab_refresh';
 export const EVENTTAB_LOAD_DONE = 'eventtab_load_done';
 export const EVENTTAB_LOAD = 'eventtab_load';
 export const EVENTTAB_SORTBY = 'eventtab_sortby';
@@ -35,11 +36,17 @@ export default (state = INITIAL_STATE, action) => {
       return _.set(newState, 'data', newData);
     }
 
+    case EVENTTAB_REFRESH: {
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'refreshing', true);
+      return newState;
+    }
+
     // Event refresh done
     case EVENTTAB_REFRESH_DONE: {
       const { skip, data, hasNextPage, type } = action.payload;
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, 'loading', false);
+      newState = _.set(newState, 'refreshing', false);
 
       if (skip !== undefined) {
         newState = _.set(newState, 'skip', skip);

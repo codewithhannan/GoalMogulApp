@@ -3,14 +3,15 @@ import {
   TRIBETAB_LOAD_DONE,
   TRIBETAB_LOAD,
   TRIBETAB_SORTBY,
-  TRIBETAB_UPDATE_FILTEROPTIONS
+  TRIBETAB_UPDATE_FILTEROPTIONS,
+  TRIBETAB_REFRESH
 } from './TribeTabReducers';
 
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 import { Logger } from '../../middleware/utils/Logger';
 
-const DEBUG_KEY = '[ Action Explore Tribe Tab ]';
+const DEBUG_KEY = '[ Action Explore.TribeTab ]';
 const BASE_ROUTE = 'secure/tribe/recommendations';
 
 
@@ -44,9 +45,11 @@ export const refreshTribe = () => (dispatch, getState) => {
   const { limit, sortBy } = getState().tribeTab;
 
   dispatch({
-    type: TRIBETAB_LOAD
+    type: TRIBETAB_REFRESH
   });
+
   loadTribe(0, limit, token, sortBy, { refresh: true }, (data) => {
+    console.log(`${DEBUG_KEY}: [ refreshTribe ] with res: `, data.length);
     dispatch({
       type: TRIBETAB_REFRESH_DONE,
       payload: {
@@ -57,31 +60,57 @@ export const refreshTribe = () => (dispatch, getState) => {
         hasNextPage: !(data === undefined || data.length === 0)
       }
     });
-  }, () => {
-    // TODO: implement for onError
+  }, (err) => {
+    console.warn(`${DEBUG_KEY}: [ refreshTribe ] error: `, err);
+    dispatch({
+      type: TRIBETAB_REFRESH_DONE,
+      payload: {
+        type: 'tribetab',
+        data,
+        skip: 0,
+        limit: 20,
+        hasNextPage: undefined
+      }
+    });
   });
 };
 
 // Load more goal for mastermind tab
 export const loadMoreTribe = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, sortBy, hasNextPage } = getState().tribeTab;
-  if (hasNextPage === false) {
+  const { skip, limit, sortBy, hasNextPage, loading } = getState().tribeTab;
+  if (hasNextPage === false || loading) {
     return;
   }
+
+  dispatch({
+    type: TRIBETAB_LOAD
+  });
+
   loadTribe(skip, limit, token, sortBy, {}, (data) => {
+    console.log(`${DEBUG_KEY}: [ loadMoreTribe ] with res: `, data.length);
     dispatch({
       type: TRIBETAB_LOAD_DONE,
       payload: {
         type: 'tribetab',
         data,
-        skip: data.length,
+        skip: data ? data.length + skip : skip,
         limit: 20,
         hasNextPage: !(data === undefined || data.length === 0)
       }
     });
-  }, () => {
-    // TODO: implement for onError
+  }, (err) => {
+    console.warn(`${DEBUG_KEY}: [ loadMoreTribe ] error: `, err);
+    dispatch({
+      type: TRIBETAB_LOAD_DONE,
+      payload: {
+        type: 'tribetab',
+        data,
+        skip,
+        limit: 20,
+        hasNextPage: false
+      }
+    });
   });
 };
 
@@ -95,19 +124,13 @@ const loadTribe = (skip, limit, token, sortBy, filterForMembershipCategory, call
       token
     )
     .then((res) => {
-      Logger.log(`${DEBUG_KEY}: loading tribe feed with res: `, res, 2);
       if (res && res.data) {
         // Right now return test data
         return callback(res.data);
       }
-      console.warn(`${DEBUG_KEY}: Loading tribe with no res`);
+      onError(res);
     })
     .catch((err) => {
-      console.warn(`${DEBUG_KEY} load tribe error: ${err}`);
-      if (skip === 0) {
-        callback([]);
-      } else {
-        callback([]);
-      }
+      onError(err);
     });
 };
