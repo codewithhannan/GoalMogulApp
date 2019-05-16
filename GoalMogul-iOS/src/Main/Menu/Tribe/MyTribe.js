@@ -803,7 +803,7 @@ class MyTribe extends Component {
             paddingVertical: 12
           }}
         >
-          <ActivityIndicator size='large' />
+          <ActivityIndicator size='small' />
         </View>
       );
       // Original padding was added for scroll up animation

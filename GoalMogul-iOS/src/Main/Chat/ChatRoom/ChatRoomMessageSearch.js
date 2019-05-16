@@ -194,7 +194,7 @@ class ChatRoomMessageSearch extends React.Component {
 					borderColor: "#CED0CE"
 				}}
 			>
-				<ActivityIndicator animating size="large" />
+				<ActivityIndicator animating size="small" />
 			</View>
 		);
 	}

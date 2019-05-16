@@ -54,7 +54,7 @@ class NotificationListView extends React.PureComponent {
                         paddingVertical: 12
                     }}
                 >
-                    <ActivityIndicator size='large' />
+                    <ActivityIndicator size='small' />
                 </View>
             );
         }
