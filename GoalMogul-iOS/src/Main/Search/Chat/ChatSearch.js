@@ -39,6 +39,7 @@ class ChatSearch extends Component {
     const { userId, tab } = this.props;
     if (!item) {
         console.warn(`${DEBUG_KEY}: [ handleItemSelect ]: Invalid item: `, item);
+        return;
     }
 
     if (item.roomType === 'Direct') {
