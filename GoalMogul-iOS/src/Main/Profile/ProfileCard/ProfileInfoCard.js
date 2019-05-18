@@ -22,7 +22,8 @@ import profileStyles from './Styles';
 class ProfileInfoCard extends Component {
 
   handleEditOnPressed() {
-    this.props.openProfileDetailEditForm();
+    const { userId, pageId } = this.props;
+    this.props.openProfileDetailEditForm(userId, pageId);
   }
 
   renderOccupation(occupation) {

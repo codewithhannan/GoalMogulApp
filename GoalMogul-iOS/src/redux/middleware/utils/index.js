@@ -197,6 +197,7 @@ export const generateInvitationLink = (inviteCode) => {
 };
 
 export const PAGE_TYPE_MAP = {
+  user_profile_detail: 'USER_DETAIL',
   user: 'USER',
   goal: 'GOAL',
   post: 'POST',

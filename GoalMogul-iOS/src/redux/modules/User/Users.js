@@ -226,7 +226,7 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         case PROFILE_CLOSE_PROFILE_DETAIL: 
-        case PROFILE_CLOSE_PROFILE: {
+        case PROFILE_CLOSE_PROFILE: {            
             let newState = _.cloneDeep(state);
             const { pageId, userId } = action.payload;
             if (!_.has(newState, `${userId}`)) return newState;
