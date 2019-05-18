@@ -418,7 +418,7 @@ export default (state = INITIAL_STATE, action) => {
                 return newState;
             }
 
-            let newFriendship = _.cloneDeep(newState, `${userId}.friendship`);
+            let newFriendship = _.get(newState, `${userId}.friendship`);
             if (!message) {
                 // If no message, upate succeeded
                 if (type === 'requestFriend') {
@@ -428,7 +428,7 @@ export default (state = INITIAL_STATE, action) => {
                         newFriendship.status = 'Invited';
                     }
                 } else if (type === 'deleteFriend' && friendshipId === newFriendship._id) {
-                    newFriendship.status = undefined;
+                    newFriendship = { ...INITIAL_FRIENDSHIP };
                 } else if (type === 'acceptFriend' && friendshipId === newFriendship._id) {
                     newFriendship.status = 'Accepted';
                 }
