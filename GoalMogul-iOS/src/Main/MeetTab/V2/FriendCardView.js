@@ -31,7 +31,7 @@ const DEBUG_KEY = '[ UI FriendCardView ]';
 class FriendCardView extends React.PureComponent {
   state = {
     requested: false,
-    accpeted: false
+    accepted: false
   }
 
   handleOnOpenProfile = () => {

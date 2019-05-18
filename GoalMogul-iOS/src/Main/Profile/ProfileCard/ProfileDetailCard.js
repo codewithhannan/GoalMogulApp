@@ -48,7 +48,7 @@ const CANCEL_REQUEST_CANCEL_INDEX = 1;
 const UNFRIEND_REQUEST_OPTIONS = ['Unfriend', 'Cancel'];
 const UNFRIEND_REQUEST_CANCEL_INDEX = 1;
 
-const RESPOND_REQUEST_OPTIONS = ['Accpet friend request', 'Dismiss', 'Cancel'];
+const RESPOND_REQUEST_OPTIONS = ['Accept friend request', 'Dismiss', 'Cancel'];
 const RESPOND_REQUEST_CANCEL_INDEX = 2;
 
 // TODO: use redux instead of passed in props
@@ -170,7 +170,7 @@ class ProfileDetailCard extends Component {
           );
         }],
         [R.equals(0), () => {
-          console.log(`${DEBUG_KEY} User accpet _id: `, this.props.friendship._id);
+          console.log(`${DEBUG_KEY} User accept _id: `, this.props.friendship._id);
           this.props.updateFriendship(
             this.props.userId,
             this.props.friendship._id,

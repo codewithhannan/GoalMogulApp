@@ -25,7 +25,7 @@ const CANCEL_INDEX = 1;
 class MeetCard extends Component {
   state = {
     requested: false,
-    accpeted: false
+    accepted: false
   }
 
   componentWillReceiveProps(props) {

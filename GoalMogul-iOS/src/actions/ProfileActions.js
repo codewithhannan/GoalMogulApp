@@ -641,7 +641,7 @@ export const handleProfileTabOnLoadMore = (tab, userId, pageId) => (dispatch, ge
 
 /**
  * Original field for orderBy should be ['ascending', 'descending'],
- * server accpeted types are ['asc', 'desc']
+ * server accepted types are ['asc', 'desc']
  */
 const profileFilterAdapter = (filter, tab) => {
   let newFilter = _.cloneDeep(filter);

@@ -38,7 +38,7 @@ const DEBUG_KEY = '[ UI FriendTabCardView ]';
 class FriendTabCardView extends React.PureComponent {
   state = {
     requested: false,
-    accpeted: false
+    accepted: false
   }
 
   handleUpdateFriendship = (item) => {

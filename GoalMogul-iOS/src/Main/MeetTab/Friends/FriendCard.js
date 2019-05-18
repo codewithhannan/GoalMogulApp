@@ -35,7 +35,7 @@ const DEBUG_KEY = '[ UI FriendCard ]';
 class FriendCard extends Component {
   state = {
     requested: false,
-    accpeted: false
+    accepted: false
   }
 
   // onButtonClicked = (friendshipId) => {

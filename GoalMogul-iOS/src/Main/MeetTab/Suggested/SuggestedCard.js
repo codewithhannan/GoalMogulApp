@@ -36,7 +36,7 @@ const DEBUG_KEY = '[ Component SearchUserCard ]';
 class SuggestedCard extends Component {
   state = {
     requested: false,
-    accpeted: false
+    accepted: false
   }
 
   onButtonClicked = (_id) => {
