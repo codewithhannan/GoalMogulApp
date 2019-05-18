@@ -130,6 +130,10 @@ export const handlePushNotification = (notification) => (dispatch, getState) => 
 export const openNotificationDetail = (item) => (dispatch, getState) => {
   // TODO: use the parsedNoti.path to determine which detail to open
   // console.log(`${DEBUG_KEY}: [ openNotificationDetail ]: item is:`, item);
+  if (!item) {
+    console.warn(`${DEBUG_KEY}: [ openNotificationDetail ]: invalid notification item:`, item);
+    return;
+  }
   const { parsedNoti, _id } = item;
   const { path } = parsedNoti;
   if (!isString(path)) {
@@ -149,6 +153,7 @@ export const openNotificationDetail = (item) => (dispatch, getState) => {
   markNotifAsReadById(_id)(dispatch, getState);
 
   if (entityType === 'user') {
+    // Open user goal list page
     return openProfile(entityId)(dispatch, getState);
   }
 

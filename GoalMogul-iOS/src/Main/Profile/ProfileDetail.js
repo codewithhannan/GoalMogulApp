@@ -25,7 +25,8 @@ class ProfileDetail extends Component {
   }
 
   handleOnBackPress = () => {
-    this.props.closeProfileDetail();
+    const { userId, pageId } = this.props;
+    this.props.closeProfileDetail(userId, pageId);
   }
 
   render() {

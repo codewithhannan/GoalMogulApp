@@ -36,11 +36,11 @@ class ProfileSummaryCard extends Component {
 
   onButtonClicked = (_id) => {
     console.log(`${DEBUG_KEY} open profile detail for id: ${_id}`);
-    this.props.openProfileDetail(this.props.userId, this.props.pageId);
+    this.props.openProfileDetail(this.props.userId);
   }
 
   handleOpenProfileDetail() {
-    this.props.openProfileDetail(this.props.userId, this.props.pageId);
+    this.props.openProfileDetail(this.props.userId);
   }
 
   renderStats() {
