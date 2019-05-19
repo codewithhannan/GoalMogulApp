@@ -34,6 +34,9 @@ import {
   getUserData
 } from '../../../redux/modules/User/Selector';
 
+/** Constants */
+import { IMAGE_BASE_URL } from '../../../Utils/Constants';
+
 const BUTTONS = ['Take a Picture', 'Camera Roll', 'Cancel'];
 const TAKING_PICTURE_INDEX = 0;
 const CAMERA_ROLL_INDEX = 1;
@@ -115,7 +118,7 @@ class ProfileDetailEditForm extends Component {
       if (hasImageModified) {
         image = value;
       } else {
-        image = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${value}`;
+        image = `${IMAGE_BASE_URL}${value}`;
       }
       profileImage = (
         <View style={styles.imageContainerStyle}>
@@ -123,7 +126,7 @@ class ProfileDetailEditForm extends Component {
             <ImageBackground
               style={styles.imageStyle}
               source={{ uri: image }}
-              imageStyle={{ borderRadius: 13, opacity: 0.95, resizeMode: 'cover' }}
+              imageStyle={{ borderRadius: 13, opacity: 0.6, resizeMode: 'cover' }}
             >
               <View style={styles.iconContainerStyle}>
                 <Image style={styles.editIconStyle} source={editImage} />
@@ -388,17 +391,17 @@ const styles = {
   },
   imageWrapperStyle: {
     alignItems: 'center',
-    borderRadius: 14,
-    borderColor: 'white',
-    borderWidth: 1
+    borderRadius: 13,
+    backgroundColor: 'black'
   },
   imageContainerStyle: {
     marginTop: 30,
-    borderWidth: 1,
+    borderWidth: 0.5,
+    padding: 1.5,
     borderColor: 'lightgray',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 14,
+    borderRadius: 15,
     alignSelf: 'center',
     backgroundColor: 'white',
     shadowColor: '#ddd',
