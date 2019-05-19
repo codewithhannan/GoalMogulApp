@@ -6,7 +6,8 @@ import {
   Text,
   TouchableWithoutFeedback,
   Keyboard,
-  TouchableOpacity
+  TouchableOpacity,
+  Linking
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
@@ -23,6 +24,8 @@ import Styles from './Registration/Styles';
 
 /* Actions */
 import { registerUser, loginUser } from './actions';
+
+import { RESET_PASSWORD_URL } from './Utils/Constants';
 
 const validate = values => {
   const errors = {};
@@ -41,6 +44,13 @@ class LoginPage extends Component {
     Keyboard.dismiss();
   }
 
+  handleResetPassword = async () => {
+    const canOpen = await Linking.canOpenURL(RESET_PASSWORD_URL);
+    if (canOpen) {
+      await Linking.openURL(RESET_PASSWORD_URL);
+    }
+  }
+
   handleSignUp() {
     console.log('User try to register');
     this.props.registerUser();
@@ -57,6 +67,16 @@ class LoginPage extends Component {
     return this.props.loginUser({ username, password });
   }
 
+  renderResetPassword() {
+    return (
+      <TouchableWithoutFeedback onPress={this.handleResetPassword.bind(this)}>
+        <View>
+          <Button text='Reset password' onlyText />
+        </View>
+      </TouchableWithoutFeedback>
+    );
+  }
+
   renderSplitter() {
     return (
       <View style={styles.splitterStyle}>
@@ -71,7 +91,7 @@ class LoginPage extends Component {
     return (
       <TouchableWithoutFeedback onPress={this.handleSignUp.bind(this)}>
         <View>
-          <Button text='Create a new account' arrow />
+          <Button text='Create a new account' onlyText />
         </View>
       </TouchableWithoutFeedback>
     );
@@ -133,8 +153,9 @@ class LoginPage extends Component {
                   <Button text='Log In' />
                 </View>
               </TouchableOpacity>
-              {this.renderSplitter()}
               {this.renderCreateAccount()}
+              {this.renderSplitter()}
+              {this.renderResetPassword()}
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -205,7 +226,7 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
+    // marginTop: 22,
   },
   splitterTextStyle: {
     fontSize: 15,
