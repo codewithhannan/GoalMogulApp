@@ -71,7 +71,7 @@ class LoginPage extends Component {
     return (
       <TouchableWithoutFeedback onPress={this.handleResetPassword.bind(this)}>
         <View>
-          <Button text='Reset password' onlyText />
+          <Button text='Reset Password' arrow />
         </View>
       </TouchableWithoutFeedback>
     );
@@ -87,6 +87,9 @@ class LoginPage extends Component {
     );
   }
 
+  /**
+   * This is no longer used after reset password is added
+   */
   renderCreateAccount() {
     return (
       <TouchableWithoutFeedback onPress={this.handleSignUp.bind(this)}>
@@ -153,7 +156,7 @@ class LoginPage extends Component {
                   <Button text='Log In' />
                 </View>
               </TouchableOpacity>
-              {this.renderCreateAccount()}
+              {/* {this.renderCreateAccount()} */}
               {this.renderSplitter()}
               {this.renderResetPassword()}
             </View>
@@ -226,7 +229,7 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    // marginTop: 22,
+    marginTop: 22,
   },
   splitterTextStyle: {
     fontSize: 15,
