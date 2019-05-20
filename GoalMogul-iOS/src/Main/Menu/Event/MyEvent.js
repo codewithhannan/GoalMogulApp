@@ -32,7 +32,7 @@ import EmptyResult from '../../Common/Text/EmptyResult';
 import PlusButton from '../../Common/Button/PlusButton';
 
 // Asset
-import TestEventImage from '../../../asset/TestEventImage.png';
+import event_default_image from '../../../asset/utils/eventIcon.png';
 import EditIcon from '../../../asset/utils/edit.png';
 import DefaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
 import plus from '../../../asset/utils/plus.png';
@@ -81,6 +81,7 @@ import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../../../styles';
 
 // Constants
 import { 
+  IMAGE_BASE_URL,
   CARET_OPTION_NOTIFICATION_SUBSCRIBE,
   CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
@@ -448,9 +449,13 @@ class MyEvent extends Component {
 
   renderEventImage(picture) {
     let imageUrl;
-    let eventImage = (<Image source={TestEventImage} style={styles.coverImageStyle} />);
+    let eventImage = (
+      <View style={{ height: 110, width, alignItems: 'center', justifyContent: 'center' }}>
+        <Image source={event_default_image} style={styles.defaultCoverImageStyle} />
+      </View>
+    );
     if (picture) {
-      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
+      imageUrl = `${IMAGE_BASE_URL}${picture}`;
       eventImage = (
         <Image
           onLoadStart={() => this.setState({ imageLoading: true })}
@@ -719,6 +724,10 @@ const styles = {
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
+  },
+  defaultCoverImageStyle: {
+    height: 65,
+    width: 65
   },
   coverImageStyle: {
     height: 110,

@@ -42,6 +42,7 @@ import invite from '../../../asset/utils/invite.png';
 import envelope from '../../../asset/utils/envelope.png';
 
 import TestEventImage from '../../../asset/TestEventImage.png';
+import tribe_icon from '../../../asset/utils/tribeIcon.png';
 
 // Actions
 import {
@@ -89,6 +90,7 @@ import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../../../styles';
 // Constants
 import {
   IPHONE_MODELS,
+  IMAGE_BASE_URL,
   CARET_OPTION_NOTIFICATION_SUBSCRIBE,
   CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
@@ -508,9 +510,14 @@ class MyTribe extends Component {
 
   renderTribeImage(picture) {
     let imageUrl;
-    let eventImage = (<Image source={TestEventImage} style={styles.imageStyle} />);
+    // let eventImage = (<Image source={tribe_icon} style={styles.defaultImageStyle} />);
+    let eventImage = (
+      <View style={styles.defaultImageContainerStyle}>
+        <Image source={tribe_icon} style={styles.defaultImageStyle} />
+      </View>
+    );
     if (picture) {
-      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
+      imageUrl = `${IMAGE_BASE_URL}${picture}`;
       eventImage = (
         <Image
           onLoadStart={() => this.setState({ imageLoading: true })}
@@ -876,6 +883,20 @@ const styles = {
     bottom: 10,
     alignSelf: 'center',
     backgroundColor: 'white'
+  },
+  defaultImageContainerStyle: {
+    width: (width * 1.1) / 3,
+    height: (width * 0.95) / 3,
+    borderRadius: 13,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  defaultImageStyle: {
+    width: (width * 1.1) * 0.75 / 3 + 2,
+    height: (width * 0.95) * 0.75 / 3,
+    borderRadius: 13,
+    borderWidth: 1,
+    borderColor: 'white'
   },
   imageStyle: {
     width: (width * 1.1) / 3,
