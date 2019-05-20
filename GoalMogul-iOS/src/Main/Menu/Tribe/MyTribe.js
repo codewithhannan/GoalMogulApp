@@ -42,7 +42,7 @@ import invite from '../../../asset/utils/invite.png';
 import envelope from '../../../asset/utils/envelope.png';
 
 import TestEventImage from '../../../asset/TestEventImage.png';
-import tribe_icon from '../../../asset/utils/tribeIcon.png';
+import tribe_default_icon from '../../../asset/utils/tribeIcon.png';
 
 // Actions
 import {
@@ -510,15 +510,15 @@ class MyTribe extends Component {
 
   renderTribeImage(picture) {
     let imageUrl;
-    // let eventImage = (<Image source={tribe_icon} style={styles.defaultImageStyle} />);
-    let eventImage = (
+    // let eventImage = (<Image source={tribe_default_icon} style={styles.defaultImageStyle} />);
+    let tribeImage = (
       <View style={styles.defaultImageContainerStyle}>
-        <Image source={tribe_icon} style={styles.defaultImageStyle} />
+        <Image source={tribe_default_icon} style={styles.defaultImageStyle} />
       </View>
     );
     if (picture) {
       imageUrl = `${IMAGE_BASE_URL}${picture}`;
-      eventImage = (
+      tribeImage = (
         <Image
           onLoadStart={() => this.setState({ imageLoading: true })}
           onLoadEnd={() => this.setState({ imageLoading: false })}
@@ -530,7 +530,7 @@ class MyTribe extends Component {
 
     return (
       <View style={styles.imageContainerStyle}>
-        {eventImage}
+        {tribeImage}
       </View>
     );
   }
