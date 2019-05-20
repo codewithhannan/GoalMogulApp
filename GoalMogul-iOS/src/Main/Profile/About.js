@@ -6,13 +6,19 @@
 
 import React from 'react';
 import {
-    View 
+    View,
+    ScrollView
 } from 'react-native';
+
+import ProfileInfoCard from './ProfileCard/ProfileInfoCard';
 
 class About extends React.PureComponent {
     render() {
+        const { userId, pageId } = this.props;
         return (
-            <View />
+            <ScrollView>
+                <ProfileInfoCard userId={userId} pageId={pageId} />
+            </ScrollView>
         );
     }
 }

@@ -7,6 +7,7 @@ import { Actions } from 'react-native-router-flux';
 
 /* Components */
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
+import ProfileDetailCard from './ProfileCard/ProfileDetailCard';
 import ProfileSummaryCard from './ProfileSummaryCard';
 import TabButtonGroup from '../Common/TabButtonGroup';
 
@@ -128,6 +129,7 @@ class Profile extends Component {
   }
 
   render() {
+    const { userId, pageId } = this.props;
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={styles.containerStyle}>
@@ -135,9 +137,10 @@ class Profile extends Component {
             backButton 
             setting 
             onBackPress={this.handleOnBackPress} 
-            userId={this.props.userId}  
+            userId={userId}  
           />
-          <ProfileSummaryCard pageId={this.props.pageId} userId={this.props.userId} />
+          {/* <ProfileSummaryCard pageId={this.props.pageId} userId={this.props.userId} /> */}
+          <ProfileDetailCard pageId={pageId} userId={userId} />
           <TabView
             navigationState={this.props.navigationState}
             renderScene={this._renderScene}

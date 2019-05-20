@@ -1,3 +1,7 @@
+/**
+ * This component is replaced by ProfileDetailCard in new version 0.3.5 since we are merging
+ * user goal page and user profile page
+ */
 import React, { Component } from 'react';
 import {
   View,
@@ -45,8 +49,8 @@ class ProfileSummaryCard extends Component {
 
   renderStats() {
     const data = this.props.isSelf ?
-      [{ name: 'Friends', stat: 0 || this.props.friendsCount }] :
-      [{ name: 'Mutual Friends', stat: 0 || this.props.mutualFriends.count }];
+      [{ name: 'Friends', stat: this.props.friendsCount || 0 }] :
+      [{ name: 'Mutual Friends', stat: this.props.mutualFriends.count || 0 }];
     return <Stats data={data} />;
   }
 
