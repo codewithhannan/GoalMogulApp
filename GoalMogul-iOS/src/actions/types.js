@@ -54,12 +54,11 @@ export const HOME_SWITCH_TAB = 'home_switch_tab';
 
 /* Profile actions */
 export const PROFILE_OPEN_PROFILE = 'profile_open_profile'; // User tries to open a profile
-export const PROFILE_CLOSE_PROFILE_DETAIL = 'profile_open_profile_detail';
+export const PROFILE_CLOSE_PROFILE_DETAIL = 'profile_close_profile_detail';
 export const PROFILE_CLOSE_PROFILE = 'profile_close_profile'; // User closes a profile
 export const PROFILE_FETCHING_SUCCESS = 'profile_fetching_success'; // Loading profile succeed
 export const PROFILE_FETCHING_FAIL = 'profile_fetching_fail'; // Loading profile fails
-export const PROFILE_OPEN_PROFILE_DETAIL
-  = 'profile_open_profile_detail'; // User opens a profile detail
+export const PROFILE_OPEN_PROFILE_DETAIL = 'profile_open_profile_detail'; // User opens a profile detail
 export const PROFILE_SUBMIT_UPDATE = 'profile_submit_update';
 export const PROFILE_IMAGE_UPLOAD_SUCCESS = 'profile_image_upload_success';
 export const PROFILE_UPDATE_SUCCESS = 'profile_update_success';

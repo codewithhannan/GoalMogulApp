@@ -26,11 +26,6 @@ import {
 } from '../../../styles';
 
 class ContactCard extends Component {
-  state = {
-    requested: false,
-    accpeted: false
-  }
-
   handleOnOpenProfile = () => {
     const { _id } = this.props.item;
     if (_id) {

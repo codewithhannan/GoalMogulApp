@@ -24,6 +24,19 @@ const Button = (props) => {
       </View>
     );
   }
+
+  if (props.onlyText) {
+    containerStyle.backgroundColor = '#ffffff';
+    textStyle.color = '#17B3EC';
+    textStyle.fontWeight = '600';
+
+    return (
+      <View style={containerStyle}>
+        <Text style={textStyle}>{props.text}</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.containerStyle}>
       <Text style={styles.textStyle}>{props.text}</Text>

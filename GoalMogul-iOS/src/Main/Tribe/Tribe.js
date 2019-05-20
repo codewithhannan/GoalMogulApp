@@ -33,6 +33,7 @@ import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 
 // Asset
+import tribe_default_icon from '../../asset/utils/tribeIcon.png';
 import check from '../../asset/utils/check.png';
 import plus from '../../asset/utils/plus.png';
 import post from '../../asset/utils/post.png';
@@ -81,6 +82,7 @@ import { APP_DEEP_BLUE } from '../../styles';
 
 // Constants
 import {
+  IMAGE_BASE_URL,
   CARET_OPTION_NOTIFICATION_SUBSCRIBE,
   CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../Utils/Constants';
@@ -439,10 +441,15 @@ class Tribe extends Component {
 
   renderTribeImage(picture) {
     let imageUrl;
-    let eventImage = (<Image source={TestEventImage} style={styles.imageStyle} />);
+    // let eventImage = (<Image source={TestEventImage} style={styles.imageStyle} />);
+    let tribeImage = (
+      <View style={styles.defaultImageContainerStyle}>
+        <Image source={tribe_default_icon} style={styles.defaultImageStyle} />
+      </View>
+    );
     if (picture) {
-      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
-      eventImage = (
+      imageUrl = `${IMAGE_BASE_URL}${picture}`;
+      tribeImage = (
         <Image
           onLoadStart={() => this.setState({ imageLoading: true })}
           onLoadEnd={() => this.setState({ imageLoading: false })}
@@ -454,7 +461,7 @@ class Tribe extends Component {
 
     return (
       <View style={styles.imageContainerStyle}>
-        {eventImage}
+        {tribeImage}
       </View>
     );
   }
@@ -778,6 +785,20 @@ const styles = {
     backgroundColor: 'white'
   },
   // Style for the empty view for image top
+  defaultImageContainerStyle: {
+    width: (width * 1.1) / 3,
+    height: (width * 0.95) / 3,
+    borderRadius: 13,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  defaultImageStyle: {
+    width: (width * 1.1) * 0.75 / 3 + 2,
+    height: (width * 0.95) * 0.75 / 3,
+    borderRadius: 13,
+    borderWidth: 1,
+    borderColor: 'white'
+  },
   imagePaddingContainerStyle: {
     height: ((width * 0.95) / 3 + 30 - 10) / 2,
     backgroundColor: '#1998c9'

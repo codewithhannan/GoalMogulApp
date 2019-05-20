@@ -16,7 +16,7 @@ import {
 const INITIAL_EXPLORE_CHAT_STATE = {
   data: [], // a list of user ids
   skip: 0,
-  limit: 10,
+  limit: 6,
   hasNextPage: undefined,
   refreshing: false, // Boolean to determine refreshing status
   loading: false // Boolean to determine loading more status
@@ -33,14 +33,14 @@ const INITIAL_STATE = {
       { key: 'people', title: 'People' },
       { key: 'tribes', title: 'Tribes' },
       { key: 'events', title: 'Events' },
-      { key: 'chatRooms', title: 'Chat'}
+      { key: 'chatRooms', title: 'Chats'}
     ]
   },
   selectedTab: 'events',
   people: {
     data: [], // a list of user ids
     skip: 0,
-    limit: 10,
+    limit: 6,
     hasNextPage: undefined,
     refreshing: false, // Boolean to determine refreshing status
     loading: false // Boolean to determine loading more status
@@ -198,8 +198,10 @@ export default (state = INITIAL_STATE, action) => {
       const { data, hasNextPage, skip } = action.payload;
       newState = _.set(newState, 'chatRooms.loading', false);
 
-      // TODO: de-duplicate of chat rooms
-      newState = _.set(newState, 'chatRooms.data', data);
+      const oldData = _.get(newState, 'chatRooms.data');
+      const newData = _.uniq(oldData.concat(data));
+
+      newState = _.set(newState, 'chatRooms.data', newData);
       newState = _.set(newState, 'chatRooms.hasNextPage', hasNextPage);
       newState = _.set(newState, 'chatRooms.skip', skip);
       return newState;

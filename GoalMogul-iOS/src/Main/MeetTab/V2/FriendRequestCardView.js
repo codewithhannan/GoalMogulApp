@@ -45,7 +45,7 @@ const DEBUG_KEY = '[ UI FriendRequestCardView ]';
 class FriendRequestCardView extends React.PureComponent {
     state = {
         requested: false,
-        accpeted: false
+        accepted: false
     }
 
     onRespondClicked = (item) => {

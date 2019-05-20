@@ -457,7 +457,12 @@ class NewGoalView extends Component {
     // );
   }
 
-  renderUserInfo(user) {
+  /**
+   * 
+   * @param {object} user 
+   * @param {boolean} isEdit: initializeFromState to determine if this is editing a goal
+   */
+  renderUserInfo(user, isEdit) {
     if (!user) return null;
     let imageUrl = user.profile.image;
     let profileImage =
@@ -478,6 +483,7 @@ class NewGoalView extends Component {
           <ViewableSettingMenu
             viewableSetting={this.props.privacy}
             callback={callback}
+            isEdit={isEdit}
             shareToMastermind={this.props.shareToMastermind}
             shareToMastermindCallback={shareToMastermindCallback}
           />
@@ -994,9 +1000,9 @@ class NewGoalView extends Component {
   }
 
   render() {
-    const { handleSubmit, errors, user } = this.props;
-    const actionText = this.props.initializeFromState ? 'Update' : 'Create';
-    const titleText = this.props.initializeFromState ? 'Edit Goal' : 'New Goal';
+    const { handleSubmit, errors, user, initializeFromState } = this.props;
+    const actionText = initializeFromState ? 'Update' : 'Create';
+    const titleText = initializeFromState ? 'Edit Goal' : 'New Goal';
 
     return (
       <ScrollView
@@ -1005,7 +1011,7 @@ class NewGoalView extends Component {
         ref={r => { this.scrollView = r; }}
       >
         <View style={{ flex: 1, padding: 20 }}>
-          {this.renderUserInfo(user)}
+          {this.renderUserInfo(user, initializeFromState)}
           {this.renderGoal()}
           <FieldArray
             name="details"

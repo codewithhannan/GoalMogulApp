@@ -11,7 +11,7 @@ import {
   SafeAreaView,
   Keyboard
 } from 'react-native';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, formValueSelector } from 'redux-form';
 import { TextField } from 'react-native-material-textfield';
 import { connect } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -33,6 +33,9 @@ import {
   getUserDataByPageId,
   getUserData
 } from '../../../redux/modules/User/Selector';
+
+/** Constants */
+import { IMAGE_BASE_URL } from '../../../Utils/Constants';
 
 const BUTTONS = ['Take a Picture', 'Camera Roll', 'Cancel'];
 const TAKING_PICTURE_INDEX = 0;
@@ -115,7 +118,7 @@ class ProfileDetailEditForm extends Component {
       if (hasImageModified) {
         image = value;
       } else {
-        image = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${value}`;
+        image = `${IMAGE_BASE_URL}${value}`;
       }
       profileImage = (
         <View style={styles.imageContainerStyle}>
@@ -192,7 +195,8 @@ class ProfileDetailEditForm extends Component {
   };
 
   render() {
-    const { handleSubmit } = this.props;
+    const { headline, about, elevatorPitch, handleSubmit, uploading } = this.props;
+    const isValidValues = validValues({ headline, about, elevatorPitch });
 
     return (
       <SafeAreaView
@@ -209,6 +213,7 @@ class ProfileDetailEditForm extends Component {
         <FormHeader
           title='Profile'
           onSubmit={handleSubmit(this.submit)}
+          actionDisabled={!isValidValues || uploading}
         />
         <KeyboardAwareScrollView
           innerRef={ref => {this.scrollview = ref}}
@@ -224,7 +229,7 @@ class ProfileDetailEditForm extends Component {
             name='name'
             label='Name'
             component={this.renderInput}
-            disabled={this.props.uploading}
+            disabled={uploading}
             autoCorrect
           />
           <Field
@@ -232,7 +237,8 @@ class ProfileDetailEditForm extends Component {
             name='headline'
             label='Headline'
             component={this.renderInput}
-            disabled={this.props.uploading}
+            limitation={42}
+            disabled={uploading}
             returnKeyType='next'
             onNextPress={() => {
               this.refs['occupation'].getRenderedComponent().focus();
@@ -245,14 +251,14 @@ class ProfileDetailEditForm extends Component {
             name='profile.occupation'
             label='Occupation'
             component={this.renderInput}
-            disabled={this.props.uploading}
+            disabled={uploading}
             autoCorrect
           />
           <Field
             name='profile.elevatorPitch'
             label='Elevator Pitch'
             component={this.renderInput}
-            disabled={this.props.uploading}
+            disabled={uploading}
             limitation={250}
             multiline
             clearButtonMode='while-editing'
@@ -264,7 +270,7 @@ class ProfileDetailEditForm extends Component {
             label='About'
             component={this.renderInput}
             limitation={250}
-            disabled={this.props.uploading}
+            disabled={uploading}
             multiline
             autoCorrect
           />
@@ -340,6 +346,28 @@ class ProfileDetailEditForm extends Component {
   }
 }
 
+/**
+ * Validate critical form values
+ * @param {*} headline 
+ * @param {*} about 
+ * @param {*} elevatorPitch 
+ */
+const validValues = ({ headline, about, elevatorPitch }) => {
+  if (headline && headline.length > 42) {
+    return false;
+  }
+
+  if (about && about.length > 250) {
+    return false;
+  }
+
+  if (elevatorPitch && elevatorPitch.length > 250) {
+    return false;
+  }
+
+  return true;
+};
+
 const styles = {
   containerStyle: {
     flex: 1,
@@ -363,17 +391,17 @@ const styles = {
   },
   imageWrapperStyle: {
     alignItems: 'center',
-    borderRadius: 14,
-    borderColor: 'white',
-    borderWidth: 1
+    borderRadius: 13,
+    backgroundColor: 'black'
   },
   imageContainerStyle: {
     marginTop: 30,
-    borderWidth: 1,
+    borderWidth: 0.5,
+    padding: 1.5,
     borderColor: 'lightgray',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 14,
+    borderRadius: 15,
     alignSelf: 'center',
     backgroundColor: 'white',
     shadowColor: '#ddd',
@@ -394,7 +422,7 @@ const styles = {
     width: 28,
     height: 28,
     borderRadius: 10,
-    tintColor: 'darkgray'
+    tintColor: 'white'
   }
 };
 
@@ -406,6 +434,8 @@ ProfileDetailEditForm = reduxForm({
 const mapStateToProps = (state, props) => {
   const { userId, pageId } = props;
 
+  const selector = formValueSelector('profileDetailEditForm');
+
   const uploading = getUserDataByPageId(state, userId, pageId, 'uploading');
   const user = getUserData(state, userId, 'user');
 
@@ -413,7 +443,10 @@ const mapStateToProps = (state, props) => {
     // uploading: state.profile.uploading,
     // initialValues: state.profile.user // This is before reducer redesign way
     uploading,
-    initialValues: user
+    initialValues: user,
+    headline: selector(state, 'headline'),
+    elevatorPitch: selector(state, 'profile.elevatorPitch'),
+    about: selector(state, 'profile.about')
   };
 };
 

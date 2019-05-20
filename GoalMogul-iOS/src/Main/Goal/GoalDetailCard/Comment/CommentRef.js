@@ -8,6 +8,7 @@ import {
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import Expo, { WebBrowser } from 'expo';
+import { Actions } from 'react-native-router-flux';
 
 // Components
 import ProfileImage from '../../../Common/ProfileImage';
@@ -106,7 +107,7 @@ class CommentRef extends React.PureComponent {
     }
     if (suggestionType === 'ChatConvoRoom' && chatRoomRef) {
       Actions.push('chatRoomConversation', { chatRoomId: chatRoomRef._id, });
-      console.log(`${DEBUG_KEY}: suggestion type is ChatConvoRoom, chatRoomRef is: `, chatRoomRef);
+      console.log(`${DEBUG_KEY}: suggestion type is ChatConvoRoom, chatRoomId is: ${chatRoomRef._id}, chatRoomRef is: `, chatRoomRef);
     }
     if (suggestionType === 'Custom' && suggestionLink) {
       this.handleSuggestionLinkOnPress(suggestionLink);
@@ -129,8 +130,14 @@ class CommentRef extends React.PureComponent {
 
   renderTextContent(item) {
     const { title, content } = getTextContent(item);
+
+    const { suggestionType } = item;
+    const defaultImage = switchDefaultImageType(suggestionType, item);
+    const { imageUrl } = defaultImage;
+    const marginLeft = imageUrl ? 10 : 0; // There is only margin left if it's not default icon
+
     return (
-      <View style={{ flex: 1, justifyContent: 'center', marginLeft: 10 }}>
+      <View style={{ flex: 1, justifyContent: 'center', marginLeft }}>
         <Text 
           style={styles.titleTextStyle}
           numberOfLines={1}

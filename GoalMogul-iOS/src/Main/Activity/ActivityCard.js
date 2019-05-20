@@ -57,6 +57,7 @@ import ProfileImage from '../Common/ProfileImage';
 import Headline from '../Goal/Common/Headline';
 import ImageModal from '../Common/ImageModal';
 import RichText from '../Common/Text/RichText';
+import CommentRef from '../Goal/GoalDetailCard/Comment/CommentRef';
 
 // Styles
 import { imagePreviewContainerStyle } from '../../styles';
@@ -78,6 +79,8 @@ class ActivityCard extends React.PureComponent {
     this.state = {
       mediaModal: false
     };
+    this.renderCommentRef = this.renderCommentRef.bind(this);
+    this.renderMedia = this.renderMedia.bind(this);
   }
 
   handleCardOnPress = (item, props) => {
@@ -201,13 +204,13 @@ class ActivityCard extends React.PureComponent {
   }
 
   // If this is a comment activity, render comment summary
-  renderCommentRef(item) {
+  renderComment(item) {
     // CommentRef shouldn't be null as we already sanity check the activity card
     const { actedWith, commentRef, actor } = item;
     if (actedWith !== 'Comment') return null;
 
     // console.log(`${DEBUG_KEY}: commentRef: `, commentRef);
-    const { content, mediaRef } = commentRef;
+    const { content, mediaRef, suggestion } = commentRef;
     const {
       text,
       tags
@@ -254,8 +257,19 @@ class ActivityCard extends React.PureComponent {
             }}
           />
           {this.renderMedia(mediaRef)}
+          {this.renderCommentRef(suggestion)}
         </TouchableOpacity>
       </View>
+    );
+  }
+
+  /**
+   * Render commentRef
+   * @param {object} item 
+   */
+  renderCommentRef(item) {
+    return (
+      <CommentRef item={item} />
     );
   }
 
@@ -313,7 +327,7 @@ class ActivityCard extends React.PureComponent {
           <View style={{ ...styles.containerStyle, marginTop: 1 }}>
             {this.renderActionButtons(item)}
           </View>
-          {this.renderCommentRef(item)}
+          {this.renderComment(item)}
         </View>
       </View>
     );

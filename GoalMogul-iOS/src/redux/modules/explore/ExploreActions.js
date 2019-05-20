@@ -75,7 +75,7 @@ export const exploreRefreshTab = (tab) => (dispatch, getState) => {
  */
 export const exploreLoadMoreTab = (tab) => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, hasNextPage, refreshing } = _.get(getState().explore, tab);
+  const { skip, limit, hasNextPage, refreshing, loading } = _.get(getState().explore, tab);
   const oldData = _.get(getState().explore, `${tab}.data`);
 
   // Load constants from reducer
@@ -87,7 +87,7 @@ export const exploreLoadMoreTab = (tab) => (dispatch, getState) => {
   const initialAction = _.get(actions, 'load_more');
   const endingAction = _.get(actions, 'load_more_done');
 
-  if (hasNextPage === false || refreshing) return;
+  if (hasNextPage === false || refreshing || loading) return;
 
   const onSuccess = (res) => {
     const { data } = res;
@@ -97,11 +97,12 @@ export const exploreLoadMoreTab = (tab) => (dispatch, getState) => {
       type: endingAction,
       payload: {
         data: res.data,
-        hasNextPage: data && data.length !== 0 && data.length <= limit,
+        hasNextPage: data && data.length !== 0 && data.length >= limit,
         skip: data ? data.length + skip : skip,
         oldData
       }
     });
+    // console.log(`${DEBUG_KEY}: [ ${tab} ] new skip is: `, data ? data.length + skip : skip);
   };
 
   const onError = (err) => {

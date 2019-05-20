@@ -70,7 +70,21 @@ export const submitGoal = (
 
   // If user is editing the goal, then call another endpoint
   if (isEdit) {
-    return submitEditGoal(goal, goalId, token, callback, dispatch, tab, user);
+    let goalToUse = _.cloneDeep(goal);
+    // Check if user wants to share to goal feed
+    // Otherwise default to not sharing to goal feed
+    Alert.alert('Share to Goal Feed', 'All your friends will see this updated goal on their home page', [
+        { text: 'Don’t share', onPress: () => {
+          goalToUse = _.set(goalToUse, 'shareToGoalFeed', false);
+          return submitEditGoal(goalToUse, goalId, token, callback, dispatch, tab, user);
+        }},
+        { text: 'Share', onPress: () => {
+          goalToUse = _.set(goalToUse, 'shareToGoalFeed', true);
+          return submitEditGoal(goalToUse, goalId, token, callback, dispatch, tab, user);
+        }}
+      ]
+    );
+    return;
   }
 
   const onError = () => {

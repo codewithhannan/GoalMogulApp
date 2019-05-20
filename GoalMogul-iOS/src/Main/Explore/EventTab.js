@@ -3,7 +3,8 @@ import {
   View,
   FlatList,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -83,7 +84,22 @@ class EventTab extends React.Component {
         </TouchableOpacity>
       </View>
     )
-}
+  }
+
+  renderListFooter() {
+		if (!this.props.loading) return null;
+		return (
+			<View
+				style={{
+					paddingVertical: 20,
+					borderTopWidth: 1,
+					borderColor: "#CED0CE"
+				}}
+			>
+				<ActivityIndicator animating size="small" />
+			</View>
+		);
+	}
 
   render() {
     return (
@@ -96,8 +112,9 @@ class EventTab extends React.Component {
           refreshing={this.props.loading}
           onRefresh={this.handleOnRefresh}
           onEndReached={this.handleOnLoadMore}
-          ListHeaderComponent={this.renderListHeader()}
-          ListEmptyComponent={this.renderListEmptyComponent()}
+          ListHeaderComponent={this.renderListHeader.bind(this)}
+          ListEmptyComponent={this.renderListEmptyComponent.bind(this)}
+          ListFooterComponent={this.renderListFooter.bind(this)}
           onEndThreshold={0}
         />
       </View>
@@ -106,13 +123,14 @@ class EventTab extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { data, loading, sortBy } = state.eventTab;
+  const { data, loading, sortBy, refreshing } = state.eventTab;
   
   return {
     data,
     // data: [],
     loading,
-    sortBy
+    sortBy,
+    refreshing
   };
 };
 

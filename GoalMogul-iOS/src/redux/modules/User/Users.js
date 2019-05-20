@@ -225,8 +225,8 @@ export default (state = INITIAL_STATE, action) => {
             return _.set(newState, `${userId}.reference`, reference);
         }
 
-        // case PROFILE_CLOSE_PROFILE_DETAIL: we don't want to update on PROFILE_DETAIL_CLOSE
-        case PROFILE_CLOSE_PROFILE: {
+        case PROFILE_CLOSE_PROFILE_DETAIL: 
+        case PROFILE_CLOSE_PROFILE: {            
             let newState = _.cloneDeep(state);
             const { pageId, userId } = action.payload;
             if (!_.has(newState, `${userId}`)) return newState;
@@ -254,12 +254,22 @@ export default (state = INITIAL_STATE, action) => {
             let reference = [];
             if (userId in newState) {
                 reference = _.get(newState, `${userId}.reference`);
+            } else {
+                newState = _.set(newState, `${userId}.user`, { ...INITIAL_DUMMY_USER });
+
+                // Set user related initial state
+                newState = _.set(newState, `${userId}.friendship`, { ...INITIAL_FRIENDSHIP });
+                newState = _.set(newState, `${userId}.userId`, userId);
+                newState = _.set(newState, `${userId}.mutualFriends`, { ...INITIAL_MUTUAL_FRIENDS });
             }
 
-            if (reference !== undefined && reference.some(r => r === pageId)) {
+            if (!_.isEmpty(reference) && reference.some(r => r === pageId)) {
                 console.warn(`${DEBUG_KEY}: page ${pageId} already opened`);
                 return newState;
             }
+
+            // Update reference
+            reference = reference.concat(pageId);
 
             newState = _.set(newState, `${userId}.${pageId}`, { ...INITIAL_USER_PROFILE_DETAIL_PAGE });
             return _.set(newState, `${userId}.reference`, reference);
@@ -408,7 +418,7 @@ export default (state = INITIAL_STATE, action) => {
                 return newState;
             }
 
-            let newFriendship = _.cloneDeep(newState, `${userId}.friendship`);
+            let newFriendship = _.get(newState, `${userId}.friendship`);
             if (!message) {
                 // If no message, upate succeeded
                 if (type === 'requestFriend') {
@@ -418,7 +428,7 @@ export default (state = INITIAL_STATE, action) => {
                         newFriendship.status = 'Invited';
                     }
                 } else if (type === 'deleteFriend' && friendshipId === newFriendship._id) {
-                    newFriendship.status = undefined;
+                    newFriendship = { ...INITIAL_FRIENDSHIP };
                 } else if (type === 'acceptFriend' && friendshipId === newFriendship._id) {
                     newFriendship.status = 'Accepted';
                 }

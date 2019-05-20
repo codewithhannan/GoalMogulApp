@@ -6,6 +6,7 @@ import {
     View,
     FlatList,
     Text,
+    ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -47,6 +48,7 @@ class ChatTab extends React.Component {
         const { userId, tab } = this.props;
         if (!item) {
             console.warn(`${DEBUG_KEY}: [ handleItemSelect ]: Invalid item: `, item);
+            return;
         }
 
         if (item.roomType === 'Direct') {
@@ -126,6 +128,21 @@ class ChatTab extends React.Component {
         return null;
     }
 
+    renderListFooter() {
+		if (!this.props.loading) return null;
+		return (
+			<View
+				style={{
+					paddingVertical: 20,
+					borderTopWidth: 1,
+					borderColor: "#CED0CE"
+				}}
+			>
+				<ActivityIndicator animating size="small" />
+			</View>
+		);
+	}
+
     render() {
         return (
             <View style={{ flex: 1 }}>
@@ -139,6 +156,7 @@ class ChatTab extends React.Component {
                     onEndReached={this.handleOnLoadMore}
                     ListHeaderComponent={this.renderListHeader()}
                     ListEmptyComponent={this.renderListEmptyComponent()}
+                    ListFooterComponent={this.renderListFooter.bind(this)}
                     onEndThreshold={0}
                 />
             </View>

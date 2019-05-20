@@ -34,13 +34,13 @@ class ProfileSummaryCard extends Component {
     imageLoading: false
   }
 
-  onButtonClicked = (_id) => {
-    console.log(`${DEBUG_KEY} open profile detail for id: ${_id}`);
-    this.props.openProfileDetail(this.props.userId, this.props.pageId);
+  onButtonClicked = () => {
+    console.log(`${DEBUG_KEY} open profile detail for id: ${this.props.userId}`);
+    this.props.openProfileDetail(this.props.userId);
   }
 
   handleOpenProfileDetail() {
-    this.props.openProfileDetail(this.props.userId, this.props.pageId);
+    this.props.openProfileDetail(this.props.userId);
   }
 
   renderStats() {
@@ -54,7 +54,7 @@ class ProfileSummaryCard extends Component {
     return (
       <TouchableOpacity
         activeOpacity={0.6}
-        onPress={this.onButtonClicked.bind(this, _id)}
+        onPress={this.onButtonClicked.bind(this)}
         style={{
           padding: 20,
           paddingTop: 10,

@@ -644,8 +644,11 @@ class CreatePostModal extends Component {
   // }
 
   render() {
-    const { handleSubmit, errors, initializeFromState } = this.props;
+    const { handleSubmit, errors, initializeFromState, post, mediaRef } = this.props;
     const modalActionText = initializeFromState ? 'Update' : 'Create';
+
+    const actionDisabled = this.props.uploading || 
+      ((!post || post.trim() === '') && !mediaRef);
 
     return (
       <KeyboardAvoidingView
@@ -662,7 +665,7 @@ class CreatePostModal extends Component {
             Actions.pop();
           }}
           onAction={handleSubmit(this.handleCreate)}
-          actionDisabled={this.props.uploading}
+          actionDisabled={actionDisabled}
         />
         <ScrollView style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}>
           <View style={{ flex: 1, padding: 20 }}>

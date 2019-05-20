@@ -33,7 +33,7 @@ import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 import { MenuFactory } from '../Common/MenuFactory';
 
 // Asset
-import TestEventImage from '../../asset/TestEventImage.png';
+import event_default_image from '../../asset/utils/eventIcon.png';
 import EditIcon from '../../asset/utils/edit.png';
 import DefaultUserProfile from '../../asset/utils/defaultUserProfile.png';
 
@@ -282,7 +282,12 @@ class Event extends Component {
 
   renderEventImage(picture) {
     let imageUrl;
-    let eventImage = (<Image source={TestEventImage} style={styles.coverImageStyle} />);
+    // let eventImage = (<Image source={TestEventImage} style={styles.coverImageStyle} />);
+    let eventImage = (
+      <View style={{ height: 110, width, alignItems: 'center', justifyContent: 'center' }}>
+        <Image source={event_default_image} style={styles.defaultCoverImageStyle} />
+      </View>
+    );
     if (picture) {
       imageUrl = `${IMAGE_BASE_URL}${picture}`;
       eventImage = (
@@ -488,6 +493,10 @@ const styles = {
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
+  },
+  defaultCoverImageStyle: {
+    height: 65,
+    width: 65
   },
   coverImageStyle: {
     height: 110,

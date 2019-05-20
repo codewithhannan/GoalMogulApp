@@ -1,4 +1,7 @@
-// This reducer stores information for recommended tribes
+/**
+ * This reducer stores information for recommended tribes.
+ * TODO: merge with explore tab since they are actually the same thing
+ */
 import _ from 'lodash';
 import { arrayUnique } from '../../middleware/utils';
 
@@ -12,6 +15,7 @@ const INITIAL_STATE = {
   limit: 20,
   skip: 0,
   loading: false,
+  refreshing: false,
   // ['Popular', 'RecentlyCreated', 'Random']
   sortBy: 'Popular',
 };
@@ -19,6 +23,7 @@ const INITIAL_STATE = {
 const sortByList = ['Popular', 'RecentlyCreated', 'Random'];
 
 export const TRIBETAB_REFRESH_DONE = 'tribetab_refresh_done';
+export const TRIBETAB_REFRESH = 'tribetab_refresh';
 export const TRIBETAB_LOAD_DONE = 'tribetab_load_done';
 export const TRIBETAB_LOAD = 'tribetab_load';
 export const TRIBETAB_SORTBY = 'tribetab_sortby';
@@ -26,17 +31,30 @@ export const TRIBETAB_UPDATE_FILTEROPTIONS = 'tribetab_update_filteroptions';
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
+
+    case TRIBETAB_REFRESH: {
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'refreshing', true);
+      return newState;
+    }
+
     // Tribe refresh done
     case TRIBETAB_REFRESH_DONE: {
       const { skip, data, hasNextPage, type } = action.payload;
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, 'loading', false);
+      newState = _.set(newState, 'refreshing', false);
 
       if (skip !== undefined) {
         newState = _.set(newState, 'skip', skip);
       }
       newState = _.set(newState, 'hasNextPage', hasNextPage);
       return _.set(newState, 'data', data);
+    }
+
+    // Tribe tab starts any type of loading
+    case TRIBETAB_LOAD: {
+      let newState = _.cloneDeep(state);
+      return _.set(newState, 'loading', true);
     }
 
     // Tribe load done.
@@ -60,12 +78,6 @@ export default (state = INITIAL_STATE, action) => {
       const oldData = _.get(newState, 'data');
       const newData = oldData.filter(t => t._id !== tribeId);
       return _.set(newState, 'data', newData);
-    }
-
-    // Tribe tab starts any type of loading
-    case TRIBETAB_LOAD: {
-      let newState = _.cloneDeep(state);
-      return _.set(newState, 'loading', true);
     }
 
     // case related to filtering

@@ -26,9 +26,9 @@ class MyEventCard extends React.Component {
   }
 
   renderTimeStamp(item) {
-    const { created } = item;
-    const timeStamp = (created === undefined || created.length === 0)
-      ? new Date() : created;
+    const { start } = item;
+    const timeStamp = (start === undefined || start.length === 0)
+      ? new Date() : start;
     const { timeStampContainerStyle, timeStampTextStyle } = styles;
 
     return (

@@ -9,6 +9,8 @@ import { connect } from 'react-redux';
 /* Actions */
 import { back } from '../../../actions';
 
+import DelayedButton from '../Button/DelayedButton';
+
 class FormHeader extends Component {
 
   onSavePress = () => {
@@ -20,7 +22,13 @@ class FormHeader extends Component {
   }
 
   render() {
+    const { actionDisabled } = this.props;
     const { cancelTextStyle, saveTextStyle, titleTextStyle } = styles;
+
+    const actionTextStyle = actionDisabled
+    ? { ...saveTextStyle, color: 'lightgray' }
+    : saveTextStyle;
+
     return (
       <View style={styles.headerStyle}>
         <View style={{ flex: 2, alignItems: 'flex-start' }}>
@@ -35,10 +43,12 @@ class FormHeader extends Component {
           <Text style={titleTextStyle}>{this.props.title}</Text>
         </View>
         <View style={{ flex: 2, alignItems: 'flex-end' }}>
-        <TouchableOpacity activeOpacity={0.6} onPress={this.onSavePress}>
-
-            <Text style={saveTextStyle}>Save</Text>
-
+        <TouchableOpacity 
+          activeOpacity={0.6} 
+          onPress={this.onSavePress}
+          disabled={actionDisabled}
+        >
+          <Text style={actionTextStyle}>Save</Text>
         </TouchableOpacity>
         </View>
       </View>

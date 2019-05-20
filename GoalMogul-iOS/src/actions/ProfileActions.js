@@ -187,6 +187,11 @@ export const closeProfile = (userId, pageId) => (dispatch, getState) => {
   });
 };
 
+/**
+ * Open user goal list by userId
+ * @param {string} userId 
+ * @param {string} tab 
+ */
 export const openProfile = (userId, tab) => (dispatch, getState) => {
   const pageId = constructPageId('user');
   dispatch({
@@ -269,6 +274,48 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
     });
 };
 
+/**
+ * Open user profile detail based on an userId and a pageId. This is used when we enter user page through
+ * user goal list
+ * @param {*} userId 
+ * @param {*} pageId 
+ */
+export const openProfileDetail = (userId) => (dispatch, getState) => {
+  // pageId here should be created when a profile component is opened.
+  // We append the detail to the end of pageId to create a new one
+  const newPageId = constructPageId('user_profile_detail');
+  dispatch({
+    type: PROFILE_OPEN_PROFILE_DETAIL,
+    payload: {
+      userId,
+      pageId: newPageId
+    }
+  });
+  // Whether a new pageId or reuse the one that is generated when user opens the 
+  // Profile component seem to be much of a difference due to the added use case of notification
+  // Go with appending to create a new pageId first
+  const { tab } = getState().navigation;
+  let componentKeyToOpen = 'profileDetail';
+  if (tab !== 'homeTab' && tab !== undefined) {
+    componentKeyToOpen = `${tab}_profileDetail`;
+  }
+  Actions.push(`${componentKeyToOpen}`, { userId, pageId: newPageId });
+};
+
+export const closeProfileDetail = (userId, pageId) => (dispatch) => {
+  // Pop the profile detail page
+  Actions.pop();
+
+  // Clear related component reference
+  dispatch({
+    type: PROFILE_CLOSE_PROFILE_DETAIL,
+    payload: {
+      userId,
+      pageId
+    }
+  });
+};
+
 // Fetch mutual friends
 export const fetchMutualFriends = (userId, refresh) => (dispatch, getState) => {
   const { token } = getState().user;
@@ -325,42 +372,6 @@ export const fetchMutualFriends = (userId, refresh) => (dispatch, getState) => {
         });
       });
   }
-};
-
-export const openProfileDetail = (userId, pageId) => (dispatch, getState) => {
-  // pageId here should be created when a profile component is opened.
-  // We append the detail to the end of pageId to create a new one
-  const newPageId = `${pageId}`;
-  dispatch({
-    type: PROFILE_OPEN_PROFILE_DETAIL,
-    payload: {
-      userId,
-      pageId: newPageId
-    }
-  });
-  // Whether a new pageId or reuse the one that is generated when user opens the 
-  // Profile component doesn't seem to be much of a difference. 
-  // Go with appending to create a new pageId first
-  const { tab } = getState().navigation;
-  let componentKeyToOpen = 'profileDetail';
-  if (tab !== 'homeTab' && tab !== undefined) {
-    componentKeyToOpen = `${tab}_profileDetail`;
-  }
-  Actions.push(`${componentKeyToOpen}`, { userId, pageId: newPageId });
-};
-
-export const closeProfileDetail = (userId, pageId) => (dispatch) => {
-  // Pop the profile detail page
-  Actions.pop();
-
-  // Clear related component reference
-  dispatch({
-    type: PROFILE_CLOSE_PROFILE_DETAIL,
-    payload: {
-      userId,
-      pageId
-    }
-  });
 };
 
 export const openProfileDetailEditForm = (userId, pageId) => {
@@ -641,7 +652,7 @@ export const handleProfileTabOnLoadMore = (tab, userId, pageId) => (dispatch, ge
 
 /**
  * Original field for orderBy should be ['ascending', 'descending'],
- * server accpeted types are ['asc', 'desc']
+ * server accepted types are ['asc', 'desc']
  */
 const profileFilterAdapter = (filter, tab) => {
   let newFilter = _.cloneDeep(filter);
