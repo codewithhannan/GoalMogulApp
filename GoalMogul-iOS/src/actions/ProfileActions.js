@@ -480,7 +480,9 @@ export const selectProfileTab = (index, userId, pageId) => (dispatch, getState) 
   // const { data } = _.get(getState().profile, tab);
   const routes = getUserDataByPageId(getState(), userId, pageId, 'navigationState.routes');
   const tab = routes[index].key;
-  const { data } = getUserDataByPageId(getState(), userId, pageId, `${tab}.data`);
+
+  if (tab === 'about') return; // No need to refresh tab for about
+  const data = getUserDataByPageId(getState(), userId, pageId, `${tab}.data`);
 
   // Only attempt to load if there is no data
   if (!data || data.length === 0) {

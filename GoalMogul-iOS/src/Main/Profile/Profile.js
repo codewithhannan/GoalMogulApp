@@ -13,6 +13,7 @@ import TabButtonGroup from '../Common/TabButtonGroup';
 import MyGoals from './MyGoals';
 import MyNeeds from './MyNeeds';
 import MyPosts from './MyPosts';
+import About from './About';
 
 /* Actions */
 import {
@@ -109,6 +110,8 @@ class Profile extends Component {
         return <MyPosts pageId={this.props.pageId} userId={this.props.userId} />;
       case 'needs':
         return <MyNeeds pageId={this.props.pageId} userId={this.props.userId} />;
+      case 'about':
+        return <About pageId={this.props.pageId} userId={this.props.userId} />;
       default:
         return null;
     }
