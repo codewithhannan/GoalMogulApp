@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Image } from 'react-native';
+import { View, Animated } from 'react-native';
 import { MenuProvider } from 'react-native-popup-menu';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
+import { Constants } from 'expo';
 
 /* Components */
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
@@ -41,12 +42,23 @@ import {
 import PlusButton from '../Common/Button/PlusButton';
 
 const DEBUG_KEY = '[ UI Profile ]';
+const SEARCHBAR_HEIGHT = 70;
+const COLLAPSED_HEIGHT = 30 + SEARCHBAR_HEIGHT;
+const HEADER_HEIGHT = 284 + 30 + SEARCHBAR_HEIGHT;
+const INFO_CARD_HEIGHT = 284;
+const DEFAULT_TRANSITION_TIME = 120;
 
 class Profile extends Component {
   constructor(props) {
     super(props);
     this._handleIndexChange = this._handleIndexChange.bind(this);
+    this._renderScene = this._renderScene.bind(this);
+    this._renderHeader = this._renderHeader.bind(this);
     this.handleOnBackPress = this.handleOnBackPress.bind(this);
+    this.state = {
+      infoCardHeight: new Animated.Value(INFO_CARD_HEIGHT), // Initial info card height
+      infoCardOpacity: new Animated.Value(1)
+    }
   }
 
   componentDidMount() {
@@ -77,14 +89,44 @@ class Profile extends Component {
   }
 
   _handleIndexChange = (index) => {
-    const { pageId, userId } = this.props;
+    const { pageId, userId, navigationState } = this.props;
+    const { routes } = navigationState;
+
+    if (routes[index].key === 'about') {
+      // Animated to hide the infoCard if not on about tab
+      Animated.parallel([
+        Animated.timing(this.state.infoCardHeight, {
+          duration: DEFAULT_TRANSITION_TIME,
+          toValue: INFO_CARD_HEIGHT,
+        }),
+        Animated.timing(this.state.infoCardOpacity, {
+          duration: DEFAULT_TRANSITION_TIME,
+          toValue: 1,
+        }),
+      ]).start();
+    } else {
+      // Animated to hide the infoCard if not on about tab
+      Animated.parallel([
+        Animated.timing(this.state.infoCardHeight, {
+          duration: DEFAULT_TRANSITION_TIME,
+          toValue: 0,
+        }),
+        Animated.timing(this.state.infoCardOpacity, {
+          duration: DEFAULT_TRANSITION_TIME,
+          toValue: 0,
+        }),
+      ]).start();
+    }
+
+    // Update the reducer for index selected
     this.props.selectProfileTab(index, userId, pageId);
   };
 
-  _renderHeader = props => {
+  _renderHeader = (props) => {
     return (
       <TabButtonGroup 
-        buttons={props} 
+        buttons={props}
+        onBorder={this.props.selectedTab !== 'about'}
         buttonStyle={{
           selected: {
             backgroundColor: APP_DEEP_BLUE,
@@ -106,13 +148,33 @@ class Profile extends Component {
   _renderScene = ({ route }) => {
     switch (route.key) {
       case 'goals':
-        return <MyGoals pageId={this.props.pageId} userId={this.props.userId} />;
+        return (
+          <MyGoals 
+            pageId={this.props.pageId} 
+            userId={this.props.userId}
+          />
+        );
       case 'posts':
-        return <MyPosts pageId={this.props.pageId} userId={this.props.userId} />;
+        return (
+          <MyPosts 
+            pageId={this.props.pageId} 
+            userId={this.props.userId} 
+          />
+        );
       case 'needs':
-        return <MyNeeds pageId={this.props.pageId} userId={this.props.userId} />;
+        return (
+          <MyNeeds 
+            pageId={this.props.pageId} 
+            userId={this.props.userId} 
+          />
+        );
       case 'about':
-        return <About pageId={this.props.pageId} userId={this.props.userId} />;
+        return (
+          <About 
+            pageId={this.props.pageId} 
+            userId={this.props.userId} 
+          />
+        );
       default:
         return null;
     }
@@ -128,6 +190,19 @@ class Profile extends Component {
     />);
   }
 
+  renderUserInfo({ userId, pageId }) {
+    return (
+      <Animated.View
+        style={{ 
+          height: this.state.infoCardHeight,
+          opacity: this.state.infoCardOpacity
+        }}
+      >
+        <ProfileDetailCard pageId={pageId} userId={userId} />
+      </Animated.View>
+    );
+  }
+
   render() {
     const { userId, pageId } = this.props;
     return (
@@ -140,8 +215,9 @@ class Profile extends Component {
             userId={userId}  
           />
           {/* <ProfileSummaryCard pageId={this.props.pageId} userId={this.props.userId} /> */}
-          <ProfileDetailCard pageId={pageId} userId={userId} />
+          {this.renderUserInfo({ userId, pageId })}
           <TabView
+            style={{ flex: 1 }}
             navigationState={this.props.navigationState}
             renderScene={this._renderScene}
             renderTabBar={this._renderHeader}

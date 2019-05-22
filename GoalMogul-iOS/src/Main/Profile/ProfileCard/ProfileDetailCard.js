@@ -4,7 +4,8 @@ import {
   Image,
   Text,
   Dimensions,
-  TouchableOpacity
+  TouchableOpacity,
+  Animated
 } from 'react-native';
 import { connect } from 'react-redux';
 import R from 'ramda';
@@ -38,6 +39,8 @@ import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactor
 import {
   DotIcon
 } from '../../../Utils/Icons';
+
+import { IMAGE_BASE_URL } from '../../../Utils/Constants';
 
 const { width } = Dimensions.get('window');
 const DEBUG_KEY = '[ Copmonent ProfileDetailCard ]';
@@ -276,18 +279,6 @@ class ProfileDetailCard extends Component {
           iconContainerStyle={{ ...styles.dotIconContainerStyle }}
           iconStyle={{ tintColor: '#818181', ...styles.dotIconStyle, height: 5, width: 5 }}
         />
-        {/**
-          <View>
-          <Icon
-            name='dot-single'
-            type='entypo'
-            color='#818181'
-            size={18}
-            iconStyle={styles.dotIconStyle}
-            containerStyle={styles.dotIconContainerStyle}
-          />
-        </View>
-         */}
         <TouchableOpacity activeOpacity={0.6} onPress={this.handleMutualFriendOnPressed}>
           <ButtonArrow text='View friends' arrow />
         </TouchableOpacity>
@@ -305,7 +296,7 @@ class ProfileDetailCard extends Component {
       </View>
     );
     if (image) {
-      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+      imageUrl = `${IMAGE_BASE_URL}${image}`;
       // if (imageUrl !== this.state.imageUrl) {
       //   this.prefetchImage(image);
       // }
@@ -322,8 +313,9 @@ class ProfileDetailCard extends Component {
   }
 
   render() {
-    if (!this.props.user) return null;
-    const { name, headline, profile } = this.props.user;
+    const { user } = this.props;
+    if (!user) return null;
+    const { name, headline, profile } = user;
     // const { name, headline, profile } = testData;
     // console.log(`${DEBUG_KEY}: rerender with profile: `, profile);
 

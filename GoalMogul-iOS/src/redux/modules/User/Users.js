@@ -132,7 +132,7 @@ const INITIAL_USER_PAGE = {
     // uploading user profile changes, this might be unused due to the INITIAL_USER_PROFILE_DETAIL_PAGE
     uploading: false, 
     // navigation state
-    selectedTab: 'goals',
+    selectedTab: 'about',
     navigationState: {
       index: 0,
       routes: [
@@ -141,6 +141,11 @@ const INITIAL_USER_PAGE = {
         { key: 'posts', title: 'Posts' },
         { key: 'needs', title: 'Needs' }
       ]
+    },
+    about: {
+        loading: false,
+        refreshing: false,
+        filter: {}
     },
     goals: {
         data: [],

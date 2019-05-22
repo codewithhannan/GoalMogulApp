@@ -64,7 +64,7 @@ import DiscoverTabView from './Main/MeetTab/V2/DiscoverTab/DiscoverTabView';
 import FriendInvitationView from './Main/MeetTab/V2/FriendInvitationView';
 
 // Profile
-import Profile from './Main/Profile/Profile';
+import Profile from './Main/Profile/ProfileV2';
 import ProfileDetail from './Main/Profile/ProfileDetail';
 // ProfileForm
 import ProfileDetailEditForm from './Main/Profile/ProfileCard/ProfileDetailEditForm';
