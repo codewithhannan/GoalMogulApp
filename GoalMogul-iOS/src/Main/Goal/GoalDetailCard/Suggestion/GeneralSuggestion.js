@@ -46,7 +46,7 @@ class GeneralSuggestion extends React.Component {
         <View style={{ marginBottom: 5, height: MaxHeight }}>
           <Text style={styles.headerTextStyle}>Content</Text>
           <TextInput
-            placeholder='What is in your mind?'
+            placeholder='Enter a suggestion title'
             onChangeText={val => this.props.onSuggestionTextChange(val, pageId)}
             style={styles.inputStyle}
             maxHeight={MaxHeight}
