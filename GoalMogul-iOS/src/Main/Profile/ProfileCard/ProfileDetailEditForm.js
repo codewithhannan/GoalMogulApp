@@ -263,6 +263,7 @@ class ProfileDetailEditForm extends Component {
             multiline
             clearButtonMode='while-editing'
             autoCorrect
+            returnKeyType='Enter'
           />
           {/*  forFocus={() => this.handleOnFocus(150)} */}
           <Field
@@ -273,6 +274,7 @@ class ProfileDetailEditForm extends Component {
             disabled={uploading}
             multiline
             autoCorrect
+            returnKeyType='Enter'
           />
         {/*   forFocus={() => this.handleOnFocus(200)} */}
 
