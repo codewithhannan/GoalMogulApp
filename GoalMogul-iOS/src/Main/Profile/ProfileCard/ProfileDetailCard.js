@@ -316,8 +316,6 @@ class ProfileDetailCard extends Component {
     const { user } = this.props;
     if (!user) return null;
     const { name, headline, profile } = user;
-    // const { name, headline, profile } = testData;
-    // console.log(`${DEBUG_KEY}: rerender with profile: `, profile);
 
     return (
       <View style={styles.cardContainerStyle}>

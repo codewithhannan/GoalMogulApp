@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity
+  StatusBar
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -30,26 +30,31 @@ class FormHeader extends Component {
     : saveTextStyle;
 
     return (
-      <View style={styles.headerStyle}>
-        <View style={{ flex: 2, alignItems: 'flex-start' }}>
-        <TouchableOpacity activeOpacity={0.6} onPress={this.onCancelPress}>
+      <View>
+        <StatusBar
+          barStyle="dark-content"
+        />
+        <View style={styles.headerStyle}>
+          <View style={{ flex: 2, alignItems: 'flex-start' }}>
+            <DelayedButton activeOpacity={0.6} onPress={this.onCancelPress}>
 
-            <Text style={cancelTextStyle}>Cancel</Text>
+                <Text style={cancelTextStyle}>Cancel</Text>
 
-        </TouchableOpacity>
-        </View>
+            </DelayedButton>
+          </View>
 
-        <View style={{ flex: 1 }}>
-          <Text style={titleTextStyle}>{this.props.title}</Text>
-        </View>
-        <View style={{ flex: 2, alignItems: 'flex-end' }}>
-        <TouchableOpacity 
-          activeOpacity={0.6} 
-          onPress={this.onSavePress}
-          disabled={actionDisabled}
-        >
-          <Text style={actionTextStyle}>Save</Text>
-        </TouchableOpacity>
+          <View style={{ flex: 1 }}>
+            <Text style={titleTextStyle}>{this.props.title}</Text>
+          </View>
+          <View style={{ flex: 2, alignItems: 'flex-end' }}>
+            <DelayedButton 
+              activeOpacity={0.6} 
+              onPress={this.onSavePress}
+              disabled={actionDisabled}
+            >
+              <Text style={actionTextStyle}>Save</Text>
+            </DelayedButton>
+          </View>
         </View>
       </View>
     );

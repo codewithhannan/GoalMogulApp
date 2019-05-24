@@ -160,8 +160,6 @@ class ActivityFeed extends Component {
 const mapStateToProps = state => {
   const { loading, loadingMore, filter, data } = state.home.activityfeed;
 
-  // const data = testData;
-
   return {
     data,
     loading,

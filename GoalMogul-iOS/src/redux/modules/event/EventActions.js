@@ -283,7 +283,7 @@ export const eventDetailOpen = (event) => (dispatch, getState) => {
   const { _id } = event;
   const eventId = _id;
   const pageId = constructPageId('event');
-  const componentToOpen = componentKeyByTab(tab, 'eventDetail');
+  const componentToOpen = componentKeyByTab(tab, 'myEventDetail');
 
   // If user is not a member nor an invitee and event is not public visible,
   // Show not found for this tribe

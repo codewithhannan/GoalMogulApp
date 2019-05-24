@@ -272,9 +272,9 @@ class PostDetailSection extends React.PureComponent {
         >
         <View style={{ marginTop: 10 }}>
           <ImageBackground
-            style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle }}
+            style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle, borderRadius: 8, backgroundColor: 'black' }}
             source={{ uri: imageUrl }}
-            imageStyle={{ borderRadius: 8, resizeMode: 'cover' }}
+            imageStyle={{ borderRadius: 8, opacity: 0.8, resizeMode: 'cover' }}
           >
             {/* <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
               <Image

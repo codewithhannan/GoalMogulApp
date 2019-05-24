@@ -5,7 +5,6 @@
 import React from 'react';
 import {
   View,
-  TouchableOpacity,
   Text,
   Image
 } from 'react-native';
@@ -18,6 +17,7 @@ import Timestamp from '../Common/Timestamp';
 import ProgressBar from '../Common/ProgressBar';
 import Category from '../Common/Category';
 import PriorityBar from '../../Common/PriorityBar';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
@@ -153,9 +153,12 @@ class ProfileGoalCard2 extends React.Component {
     const { item } = this.props;
     if (!item || _.isEmpty(item)) return null;
 
+    // const cardOpacity = item.isCompleted ? 0.5 : 1;
+    const cardOpacity = 1;
     return (
-      <TouchableOpacity activeOpacity={0.6}
-        style={styles.cardContainerStyle}
+      <DelayedButton 
+        activeOpacity={0.6}
+        style={[styles.cardContainerStyle, { opacity: cardOpacity }]}
         onPress={() => this.handleOnCardPress(item)}
       >
         <View style={{ flex: 1 }}>
@@ -165,7 +168,7 @@ class ProfileGoalCard2 extends React.Component {
         </View>
         {this.renderStats(item)}
         {this.renderPriorityBar(item)}
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 }
