@@ -135,7 +135,7 @@ class ChatRoomPublicView extends React.Component {
                             borderWidth: 0.5
                         }}
                     />
-                    <View style={styles.eventContainerStyle}>
+                    {/* <View style={styles.eventContainerStyle}>
                         <StackedAvatarsV2 chatMembers={chatRoom.members} />
                         <Text style={{ ...styles.eventInfoBasicTextStyle }}>
                             {chatRoom.memberCount} members
@@ -144,7 +144,45 @@ class ChatRoomPublicView extends React.Component {
                             iconStyle={{ tintColor: '#616161', width: 4, height: 4, marginLeft: 4, marginRight: 4 }}
                         />
                         <Text style={{ ...styles.eventInfoBasicTextStyle }}>Created: {date} </Text>
+                    </View> */}
+                    <View style={{ alignSelf: 'center', marginTop: 20, width: windowWidth * 0.75 }}>
+                        <Text style={{
+                            fontSize: 12,
+                            color: '#646464',
+                            fontStyle: 'italic',
+                            marginBottom: 2,
+                            alignSelf: 'flex-start'
+                        }}>
+                            About
+                        </Text>
+                        <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                            <StackedAvatarsV2 chatMembers={chatRoom.members} />
+                            <Text style={{ ...styles.eventInfoBasicTextStyle }}>
+                                {chatRoom.memberCount} members
+                            </Text>
+                            <Dot
+                                iconStyle={{ tintColor: '#616161', width: 4, height: 4, marginLeft: 4, marginRight: 4 }}
+                            />
+                            <Text style={{ ...styles.eventInfoBasicTextStyle }}>Created: {date} </Text>
+                        </View>
                     </View>
+
+                    {
+                        chatRoom.description ? (
+                            <View style={{ alignSelf: 'center', marginTop: 20, width: windowWidth * 0.75 }}>
+                                <Text style={{
+                                    fontSize: 12,
+                                    color: '#646464',
+                                    fontStyle: 'italic',
+                                    marginBottom: 2,
+                                    alignSelf: 'flex-start'
+                                }}>
+                                    Description
+                                </Text>
+                                <Text style={{ fontSize: 14, color: '#646464' }}>{chatRoom.description}</Text>
+                            </View>
+                        ) : null
+                    }
                 </View>
             </View>
         );
