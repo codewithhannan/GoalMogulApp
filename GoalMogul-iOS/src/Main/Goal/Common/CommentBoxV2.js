@@ -368,7 +368,6 @@ class CommentBoxV2 extends Component {
         onPress={() => {
           console.log('suggestion on click in comment box');
           Keyboard.dismiss();
-          this.blur();
           this.props.createSuggestion(goalId, pageId);
         }}
         disabled={disableButton}
