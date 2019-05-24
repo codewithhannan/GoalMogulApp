@@ -21,7 +21,7 @@ const ProgressBar = (props) => {
     steps,
     needs,
     goalRef,
-    marginRight
+    marginRight,
   } = props;
   let progressPercentage = getProgress(steps || [], needs || []);
   if (goalRef && goalRef.isCompleted) {
@@ -44,7 +44,7 @@ const ProgressBar = (props) => {
   : (<Text style={styles.textStyle}>{endTimeText}</Text>);
 
   return (
-    <View style={styles.containerStyle}>
+    <View style={[styles.containerStyle]}>
       <View style={{ zIndex: 2, marginRight }}>
         {startTimeTextView}
       </View>
@@ -62,7 +62,7 @@ const ProgressBar = (props) => {
 
 const renderProgressBar = (props) => {
   const { percentage } = props;
-  const { height, width, edgeIconSource, iconSource } = props;
+  const { height, width, edgeIconSource, iconSource, goalRef, isProfileGoalCard } = props;
 
   const colorFlex = Math.round(percentage * 10);
   const layerFlex = Math.round((1 - percentage) * 10);
@@ -78,6 +78,11 @@ const renderProgressBar = (props) => {
     </View>
   ) : null;
   // console.log(`percentage is: ${percentage}, colorFlex is: ${colorFlex}, layerFlex is: ${layerFlex}`);
+  
+  // For completed profile goal card goal, it's background is set to #F6F6F6. Thus we need to change
+  // the background to the same color
+  const layeredTintColor = goalRef && goalRef.isCompleted && isProfileGoalCard ? '#F6F6F6' : 'white';
+
   return (
     <View
       style={{
@@ -101,7 +106,7 @@ const renderProgressBar = (props) => {
       >
         <Image
           source={iconSource || OpacBar}
-          style={{ flex: 1, width, height, tintColor: 'white' }}
+          style={{ flex: 1, width, height, tintColor: layeredTintColor }}
         />
       </View>
 

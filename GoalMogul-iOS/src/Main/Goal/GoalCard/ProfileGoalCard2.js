@@ -102,6 +102,7 @@ class ProfileGoalCard2 extends React.Component {
           height={11}
           width={200}
           marginRight={7}
+          isProfileGoalCard
         />
       </View>
     );
@@ -155,10 +156,11 @@ class ProfileGoalCard2 extends React.Component {
 
     // const cardOpacity = item.isCompleted ? 0.5 : 1;
     const cardOpacity = 1;
+    const backgroundColor = item.isCompleted ? '#F6F6F6' : 'white';
     return (
       <DelayedButton 
         activeOpacity={0.6}
-        style={[styles.cardContainerStyle, { opacity: cardOpacity }]}
+        style={[styles.cardContainerStyle, { opacity: cardOpacity, backgroundColor }]}
         onPress={() => this.handleOnCardPress(item)}
       >
         <View style={{ flex: 1 }}>

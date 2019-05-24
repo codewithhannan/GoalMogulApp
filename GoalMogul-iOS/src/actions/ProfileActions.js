@@ -540,7 +540,7 @@ export const handleTabRefresh = (tab, userId, pageId) => (dispatch, getState) =>
   const page = getUserDataByPageId(getState(), userId, pageId, `${tab}`);
   const { filter, limit, refreshing } = page;
 
-  if (!user || !user._id) return;
+  if (!user || !user._id || refreshing) return;
   console.log(`${DEBUG_KEY}: refresh tab for user with name ${user.name} and id: ${user._id} and pageId: ${pageId}`);
   const userIdToUser = user._id;
   const filterToUse = profileFilterAdapter(filter, tab);
