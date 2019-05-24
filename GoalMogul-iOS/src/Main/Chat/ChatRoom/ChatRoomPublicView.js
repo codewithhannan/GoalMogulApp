@@ -131,11 +131,11 @@ class ChatRoomPublicView extends React.Component {
                     <View
                         style={{
                             width: windowWidth * 0.75,
-                            borderColor: '#dcdcdc',
+                            borderColor: '#f1f1f1',
                             borderWidth: 0.5
                         }}
                     />
-                    {/* <View style={styles.eventContainerStyle}>
+                    <View style={styles.eventContainerStyle}>
                         <StackedAvatarsV2 chatMembers={chatRoom.members} />
                         <Text style={{ ...styles.eventInfoBasicTextStyle }}>
                             {chatRoom.memberCount} members
@@ -144,32 +144,11 @@ class ChatRoomPublicView extends React.Component {
                             iconStyle={{ tintColor: '#616161', width: 4, height: 4, marginLeft: 4, marginRight: 4 }}
                         />
                         <Text style={{ ...styles.eventInfoBasicTextStyle }}>Created: {date} </Text>
-                    </View> */}
-                    <View style={{ alignSelf: 'center', marginTop: 20, width: windowWidth * 0.75 }}>
-                        <Text style={{
-                            fontSize: 12,
-                            color: '#646464',
-                            fontStyle: 'italic',
-                            marginBottom: 2,
-                            alignSelf: 'flex-start'
-                        }}>
-                            About
-                        </Text>
-                        <View style={{ alignItems: 'center', flexDirection: 'row' }}>
-                            <StackedAvatarsV2 chatMembers={chatRoom.members} />
-                            <Text style={{ ...styles.eventInfoBasicTextStyle }}>
-                                {chatRoom.memberCount} members
-                            </Text>
-                            <Dot
-                                iconStyle={{ tintColor: '#616161', width: 4, height: 4, marginLeft: 4, marginRight: 4 }}
-                            />
-                            <Text style={{ ...styles.eventInfoBasicTextStyle }}>Created: {date} </Text>
-                        </View>
                     </View>
 
                     {
                         chatRoom.description ? (
-                            <View style={{ alignSelf: 'center', marginTop: 20, width: windowWidth * 0.75 }}>
+                            <View style={{ alignSelf: 'center', width: windowWidth * 0.75, marginBottom: 15 }}>
                                 <Text style={{
                                     fontSize: 12,
                                     color: '#646464',
@@ -217,6 +196,7 @@ class ChatRoomPublicView extends React.Component {
                                     icon={leaveIcon}
                                     explanation={"Click to cancel the join request"}
                                     onPress={this.cancelJoinRequest.bind(this)}
+                                    containerStyle={{ borderTopWidth: 1, borderTopColor: '#e6e6e6' }}
                                 />
                             ) : (
                                 <SettingCard
@@ -224,6 +204,7 @@ class ChatRoomPublicView extends React.Component {
                                     icon={plusIcon}
                                     explanation={"Click to send join request"}
                                     onPress={this.sendJoinRequest.bind(this)}
+                                    containerStyle={{ borderTopWidth: 1, borderTopColor: '#e6e6e6' }}
                                 />
                             )}
                         </ScrollView>

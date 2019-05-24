@@ -17,9 +17,10 @@ class SettingCard extends Component {
   }
 
   render() {
+    const { containerStyle } = this.props;
     return (
       <DelayedButton activeOpacity={0.6} onPress={this.props.onPress} delay={700}>
-        <View style={styles.containerStyle}>
+        <View style={[styles.containerStyle, { ...containerStyle }]}>
           <View style={styles.titleContainerStyle}>
             {this.renderIcon()}
             <Text style={styles.titleStyle}>
