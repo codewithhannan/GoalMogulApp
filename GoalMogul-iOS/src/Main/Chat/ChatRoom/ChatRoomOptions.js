@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-const { windowWidth } = Dimensions.get('window');
+const windowWidth = Dimensions.get('window').width;
 
 import ModalHeader from '../../Common/Header/ModalHeader';
 import Dot from '../../Common/Dot';
@@ -170,6 +170,7 @@ class ChatRoomOptions extends React.Component {
                         onLoadEnd={() => this.setState({ imageLoading: false })}
                         style={styles.imageStyle}
                         source={chatRoomImage}
+                        resizeMode='cover'
                         />
                     </View>
                 </View>

@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { Image, Text, Divider } from 'react-native-elements';
 import { DotIndicator } from 'react-native-indicators';
 
-const { windowWidth } = Dimensions.get('window');
+const windowWidth = Dimensions.get('window').width;
 
 import ModalHeader from '../../Common/Header/ModalHeader';
 import Dot from '../../Common/Dot';
@@ -22,7 +22,6 @@ import profilePic from '../../../asset/utils/defaultUserProfile.png';
 import membersIcon from '../../../asset/utils/profile_people_black.png';
 import plusIcon from '../../../asset/utils/plus.png';
 import leaveIcon from '../../../asset/utils/logout.png';
-import deleteIcon from '../../../asset/utils/trash.png';
 import { MenuProvider } from 'react-native-popup-menu';
 import SettingCard from '../../Setting/SettingCard';
 import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Constants';
@@ -35,7 +34,7 @@ import LoadingModal from '../../Common/Modal/LoadingModal';
 // Selector
 import { makeGetChatRoom } from '../../../redux/modules/chat/ChatSelector';
 
-const DEBUG_KEY = '[ UI ChatRoomOptions ]';
+const DEBUG_KEY = '[ UI ChatRoomPublicView ]';
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const LISTENER_KEY = 'ChatRoomOptions';
 class ChatRoomPublicView extends React.Component {
@@ -112,6 +111,7 @@ class ChatRoomPublicView extends React.Component {
                             onLoadEnd={() => this.setState({ imageLoading: false })}
                             style={styles.imageStyle}
                             source={chatRoomImage}
+                            resizeMode='cover'
                         />
                     </View>
                 </View>
@@ -288,13 +288,14 @@ const styles = {
         fontWeight: '300'
     },
     imagePaddingContainerStyle: {
-      height: ((windowWidth * 0.95) / 3 + 30 - 10) / 2,
-      backgroundColor: '#1998c9'
+        height: ((windowWidth * 0.95) / 3 + 30 - 10) / 2,
+        backgroundColor: '#1998c9'
+        // backgroundColor: 'white'
     },
     imageWrapperStyle: {
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
+        shadowOpacity: 0,
         shadowRadius: 2,
         height: ((windowWidth * 0.95) / 3 + 30 + 10) / 2,
         // height: 80,

@@ -3,6 +3,7 @@ import {
   View,
   Image
 } from 'react-native';
+import _ from 'lodash';
 import ProfileImage from './ProfileImage';
 
 // Assets
@@ -36,6 +37,8 @@ const DEBUG_KEY = '[ UI StackedAvatarsV2 ]';
 export const StackedAvatarsV2 = (props) => {
   const { participants, chatMembers, tribeMembers } = props;
   if (participants) {
+    // If there is no members than return null
+    if (_.isEmpty(participants)) return null;
     const participantPictures = participants
       .filter((participant) => participant.rsvp === 'Going' || participant.rsvp === 'Interested')
       .map((participant, index) => {
@@ -64,6 +67,8 @@ export const StackedAvatarsV2 = (props) => {
       </View>
     );
   } else if(chatMembers) {
+    // If there is no members than return null
+    if (_.isEmpty(chatMembers)) return null;
     const realMembers = chatMembers.filter((memberDoc) => memberDoc.status != 'JoinRequester');
     let pictures = realMembers
       .filter(memberDoc => memberDoc.memberRef && memberDoc.memberRef.profile && memberDoc.memberRef.profile.image)
