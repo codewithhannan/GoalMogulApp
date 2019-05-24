@@ -385,6 +385,9 @@ class RouterComponent extends Component {
                       <Scene key="meetTab_privacy" component={Privacy} />
                       <Scene key="meetTab_friendsSetting" component={FriendsSetting} />
 
+                      <Scene key="meetTab_myEventTab" component={MyEventTab} />
+                      <Scene key="meetTab_myTribeTab" component={MyTribeTab} />
+
                       <Scene key="meetTab_chatRoomPublicView" component={ChatRoomPubicView} />
 
                       <Scene key="meetTab_meetContactSync" component={ContactSync} />
@@ -451,6 +454,9 @@ class RouterComponent extends Component {
                       <Scene key="notificationTab_friendsSetting" component={FriendsSetting} />
                       <Scene key="notificationTab_chatRoomPublicView" component={ChatRoomPubicView} />
                       <Scene key="notificationTab_searchLightBox" component={SearchOverlay} hideNavBar />
+
+                      <Scene key="notificationTab_myEventTab" component={MyEventTab} />
+                      <Scene key="notificationTab_myTribeTab" component={MyTribeTab} />
                     </Stack>
 
                     <Stack
@@ -502,6 +508,9 @@ class RouterComponent extends Component {
                       <Scene key="exploreTab_friendInvitationView" component={FriendInvitationView} />
 
                       <Scene key="exploreTab_searchLightBox" component={SearchOverlay} hideNavBar />
+
+                      <Scene key="exploreTab_myEventTab" component={MyEventTab} />
+                      <Scene key="exploreTab_myTribeTab" component={MyTribeTab} />
                     </Stack>
 
                     <Stack
@@ -549,6 +558,9 @@ class RouterComponent extends Component {
                       <Scene key="chatTab_friendsBlocked" component={FriendsBlocked} />
                       <Scene key="chatTab_privacy" component={Privacy} />
                       <Scene key="chatTab_friendsSetting" component={FriendsSetting} />
+
+                      <Scene key="chatTab_myEventTab" component={MyEventTab} />
+                      <Scene key="chatTab_myTribeTab" component={MyTribeTab} />
                     </Stack>
 
                   </Tabs>
