@@ -82,7 +82,6 @@ class MyNeeds extends Component {
     return (
       <View style={{ flex: 1 }}>
         <GoalFilterBar
-          selectedTab={this.props.selectedTab}
           filter={this.props.filter}
           onMenuChange={this.handleOnMenuChange}
         />

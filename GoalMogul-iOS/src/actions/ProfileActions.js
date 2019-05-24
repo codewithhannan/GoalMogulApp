@@ -239,7 +239,6 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
     .all([profilePromise, friendsCountPromise, friendshipPromise])
     .then((res) => {
       const [profileRes, friendsCountRes, friendshipRes] = res;
-
       if (profileRes.message || profileRes.status !== 200) {
         /* TODO: error handling */
         return fetchProfileFail(pageId, userId, profileRes, dispatch);
@@ -255,7 +254,6 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
       } else {
         fetchFriendsCountSucceed(userId, friendsCountRes, self, dispatch);
       }
-
 
       if (friendshipRes.message) {
         /* TODO: error handling for failing to fetch friends */
@@ -480,6 +478,8 @@ export const selectProfileTab = (index, userId, pageId) => (dispatch, getState) 
   // const { data } = _.get(getState().profile, tab);
   const routes = getUserDataByPageId(getState(), userId, pageId, 'navigationState.routes');
   const tab = routes[index].key;
+
+  if (tab === 'about') return; // No need to refresh tab for about
   const data = getUserDataByPageId(getState(), userId, pageId, `${tab}.data`);
 
   // Only attempt to load if there is no data
@@ -526,10 +526,12 @@ export const handleCurrentTabRefresh = ({ userId, pageId }) => (dispatch, getSta
  * Handle user profile on refresh
  * NOTE: This is TODO for milestone 2
  * Refresh for profile tab
- * @params tab: one of ['goals', 'posts', 'needs']
+ * @params tab: one of ['about', 'goals', 'posts', 'needs']
  */
 export const handleTabRefresh = (tab, userId, pageId) => (dispatch, getState) => {
   const { token } = getState().user;
+
+  if (tab === 'about') return; // we don't need to refresh about
 
   // Get user by userId
   const user = getUserData(getState(), userId, 'user');

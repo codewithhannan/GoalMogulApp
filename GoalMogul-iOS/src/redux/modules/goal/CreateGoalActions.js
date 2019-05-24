@@ -22,7 +22,7 @@ import {
 import {
   openProfile,
   handleTabRefresh,
-  selectProfileTab
+  selectProfileTabByName
 } from '../../../actions';
 
 const DEBUG_KEY = '[ Action CreateGoal ]';
@@ -108,7 +108,7 @@ export const submitGoal = (
     if (needOpenProfile === false) {
       if (needRefreshProfile) {
         // User is already on profile page thus there should be pageId
-        selectProfileTab(0, userId, pageId)(dispatch, getState);
+        selectProfileTabByName('goals', userId, pageId)(dispatch, getState);
         handleTabRefresh('goals', userId, pageId)(dispatch, getState);
       }
       return;

@@ -17,6 +17,12 @@ import { openProfileDetailEditForm } from '../../../actions/';
 import briefcase from '../../../asset/utils/briefcase.png';
 import profileStyles from './Styles';
 
+/* Select */
+import {
+  getUserData
+} from '../../../redux/modules/User/Selector';
+
+const DEBUG_KEY = '[ UI ProfileInfoCard ]';
 // TODO: use redux instead of passed in props
 // TODO: profile reducer redesign to change here. Evaluate all the components used
 class ProfileInfoCard extends Component {
@@ -77,14 +83,18 @@ class ProfileInfoCard extends Component {
   render() {
     // TODO: profile reducer redesign to change here.
     // Refactor to use userId to fetch the corresponding profile from the source of truth reducer
-    const { elevatorPitch, occupation, about } = this.props.data.profile;
+    const { user } = this.props;
+    if (!user || !user.profile) {
+      console.log(`${DEBUG_KEY}: [ render ]: invalid user:`, user);
+      return null;
+    }
+    const { elevatorPitch, occupation, about } = user.profile;
     if (!occupation && !elevatorPitch) {
       return null;
     }
-    const divider = elevatorPitch || about ?
-      (<View style={profileStyles.dividerStyle} />)
-      :
-      '';
+    const divider = elevatorPitch || about 
+      ? (<View style={profileStyles.dividerStyle} />)
+      : null;
     return (
       <View style={styles.cardContainerStyle}>
         <View style={styles.containerStyle}>
@@ -152,9 +162,11 @@ const styles = {
 const mapStateToProps = (state, props) => {
   const { userId } = props;
   const canEdit = userId === state.user.userId;
+  const user = getUserData(state, userId, 'user');
 
   return {
-    canEdit
+    canEdit,
+    user
   };
 };
 

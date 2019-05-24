@@ -82,26 +82,23 @@ class MyGoals extends Component {
     return (
       <View style={{ flex: 1 }}>
         <GoalFilterBar
-          selectedTab={this.props.selectedTab}
           filter={this.props.filter}
           onMenuChange={this.handleOnMenuChange}
         />
-        <View style={{ flex: 1 }}>
-          <FlatList
-            data={data}
-            renderItem={this.renderItem}
-            keyExtractor={this._keyExtractor}
-            onRefresh={this.handleRefresh}
-            onEndReached={this.handleOnLoadMore}
-            onEndReachedThreshold={0}
-            refreshing={this.props.refreshing}
-            ListFooterComponent={this.renderListFooter()}
-          />
-        </View>
-        {/*
-          onEndReached={() => this.props.handleProfileTabOnLoadMore(key)}
-        */}
-      </View>
+        <FlatList
+          data={data}
+          renderItem={this.renderItem}
+          keyExtractor={this._keyExtractor}
+          onRefresh={this.handleRefresh}
+          onEndReached={this.handleOnLoadMore}
+          onEndReachedThreshold={0}
+          refreshing={this.props.refreshing}
+          ListFooterComponent={this.renderListFooter()}
+        />
+      {/*
+        onEndReached={() => this.props.handleProfileTabOnLoadMore(key)}
+      */}
+    </View>
     );
   }
 }

@@ -47,7 +47,7 @@ class ProfileDetail extends Component {
         />
         <ScrollView style={{ backgroundColor }}>
           <ProfileDetailCard pageId={this.props.pageId} userId={this.props.userId} />
-          <ProfileInfoCard data={this.props.user} userId={this.props.userId} pageId={this.props.pageId} />
+          <ProfileInfoCard userId={this.props.userId} pageId={this.props.pageId} />
         </ScrollView>
       </View>
     );

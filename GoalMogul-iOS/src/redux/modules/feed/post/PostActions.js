@@ -22,7 +22,7 @@ import {
 import {
   openProfile,
   handleTabRefresh,
-  selectProfileTab
+  selectProfileTabByName
 } from '../../../../actions';
 
 // Actions
@@ -246,7 +246,7 @@ export const submitCreatingPost = (
 
       if (needRefreshProfile) {
         // Change to post tab and then refresh the page
-        selectProfileTab(1, userId, pageId)(dispatch, getState);
+        selectProfileTabByName('posts', userId, pageId)(dispatch, getState);
         handleTabRefresh('posts', userId, pageId)(dispatch, getState);
       }
     };

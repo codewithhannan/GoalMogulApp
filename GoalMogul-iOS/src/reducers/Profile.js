@@ -121,6 +121,7 @@ const INITIAL_STATE = {
   navigationState: {
     index: 0,
     routes: [
+      { key: 'about', title: 'About' },
       { key: 'goals', title: 'Goals' },
       { key: 'posts', title: 'Posts' },
       { key: 'needs', title: 'Needs' }

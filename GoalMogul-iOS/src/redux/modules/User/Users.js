@@ -132,14 +132,20 @@ const INITIAL_USER_PAGE = {
     // uploading user profile changes, this might be unused due to the INITIAL_USER_PROFILE_DETAIL_PAGE
     uploading: false, 
     // navigation state
-    selectedTab: 'goals',
+    selectedTab: 'about',
     navigationState: {
       index: 0,
       routes: [
+        { key: 'about', title: 'About' },
         { key: 'goals', title: 'Goals' },
         { key: 'posts', title: 'Posts' },
         { key: 'needs', title: 'Needs' }
       ]
+    },
+    about: {
+        loading: false,
+        refreshing: false,
+        filter: {}
     },
     goals: {
         data: [],
@@ -482,11 +488,10 @@ export default (state = INITIAL_STATE, action) => {
         case PROFILE_SWITCH_TAB: {
             const { index, pageId, userId } = action.payload;
             let newState = _.cloneDeep(state);
-            sanityCheck(newState, userId, PROFILE_SWITCH_TAB);
-            const shouldUpdate = sanityCheckPageId(state, userId, pageId, PROFILE_SWITCH_TAB);
+            sanityCheck(newState, userId, action.type);
+            const shouldUpdate = sanityCheckPageId(state, userId, pageId, action.type);
 
             if (!shouldUpdate) return newState;
-            
             const navigationstate = _.get(newState, `${userId}.${pageId}.navigationState`);
             const newSelectedTab = navigationstate.routes[index].key;
 
@@ -627,7 +632,7 @@ export default (state = INITIAL_STATE, action) => {
             const newState = _.cloneDeep(state);
             const shouldUpdate = sanityCheckPageId(newState, userId, pageId, PROFILE_RESET_FILTER);
 
-            if (!shouldUpdate) return newState;
+            if (!shouldUpdate || !_.has(state, `${userId}.${pageId}.${tab}.filter`)) return newState;
             return _.set(newState, `${userId}.${pageId}.${tab}.filter`, { ...INITIAL_FILTER_STATE });
         }
 
