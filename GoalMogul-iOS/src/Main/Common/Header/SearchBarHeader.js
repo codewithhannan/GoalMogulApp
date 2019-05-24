@@ -152,7 +152,9 @@ class SearchBarHeader extends Component {
 
   renderSearchBarLeftIcon() {
     if (this.props.backButton) {
-      const backButtonTintColor = this.props.title ? 'white' : tintColor;
+      // For version 0.3.5, we standardized the header color to dark blue
+      // const backButtonTintColor = this.props.title ? 'white' : tintColor;
+      const backButtonTintColor = tintColor;
       return (
         <View style={{ height: 25, width: 25 }}>
           <DelayedButton activeOpacity={0.6} onPress={this.handleBackOnClick.bind(this)}>
@@ -273,9 +275,12 @@ class SearchBarHeader extends Component {
 
   renderSearchBarOrTitle() {
     if (this.props.title) {
+      // For version 0.3.5, we standardized the header color to dark blue
+      // const titleColor = 'white';
+      const titleColor = tintColor;
       return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, color: 'white' }} >
+          <Text style={{ fontSize: 20, color: titleColor }} >
             {this.props.title}
           </Text>
         </View>
