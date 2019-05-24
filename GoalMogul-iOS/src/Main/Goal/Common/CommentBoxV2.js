@@ -52,6 +52,7 @@ import { arrayUnique, clearTags } from '../../../redux/middleware/utils';
 import PhotoIcon from '../../../asset/utils/cameraRoll.png';
 import LightBulb from '../../../asset/utils/makeSuggestion.png';
 import DefaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Consts
 const maxHeight = 120;
@@ -361,12 +362,13 @@ class CommentBoxV2 extends Component {
     if (commentType === 'Reply') return null;
 
     return (
-      <TouchableOpacity
+      <DelayedButton
         activeOpacity={0.6}
         style={styles.iconContainerStyle}
         onPress={() => {
           console.log('suggestion on click in comment box');
           Keyboard.dismiss();
+          this.blur();
           this.props.createSuggestion(goalId, pageId);
         }}
         disabled={disableButton}
@@ -379,7 +381,7 @@ class CommentBoxV2 extends Component {
             margin: 4
           }}
         />
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 
