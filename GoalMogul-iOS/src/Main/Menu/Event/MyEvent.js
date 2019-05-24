@@ -839,6 +839,7 @@ const makeMapStateToProps = () => {
   const getEventParticipantSelector = makeGetEventParticipantSelector();
 
   const mapStateToProps = (state, props) => {
+    const { userId } = state.user;
     const { eventId, pageId } = props;
     const feed = getEventFeed(state, eventId, pageId);
     const { event, eventPage } = getEventPageById(state, eventId, pageId);
@@ -878,7 +879,8 @@ const makeMapStateToProps = () => {
       status: userStatus,
       memberNavigationState,
       tab: routes[index].key,
-      loading: eventLoading || false
+      loading: eventLoading || false,
+      userId
     };
   };
 

@@ -51,7 +51,7 @@ import {
 } from '../../redux/modules/User/Selector';
 import PlusButton from '../Common/Button/PlusButton';
 
-const DEBUG_KEY = '[ UI Profile ]';
+const DEBUG_KEY = '[ UI ProfileV2 ]';
 // const SEARCHBAR_HEIGHT = 70;
 // const COLLAPSED_HEIGHT = 30 + SEARCHBAR_HEIGHT;
 // const HEADER_HEIGHT = 284 + 30 + SEARCHBAR_HEIGHT;
@@ -72,6 +72,11 @@ class ProfileV2 extends Component {
 
     componentDidMount() {
         console.log(`${DEBUG_KEY}: mounting Profile with pageId: ${this.props.pageId}`);
+        const { userId, pageId } = this.props;
+
+        this.props.handleTabRefresh('goals', userId, pageId);
+        this.props.handleTabRefresh('posts', userId, pageId);
+        this.props.handleTabRefresh('needs', userId, pageId);
     }
 
     componentWillUnmount() {

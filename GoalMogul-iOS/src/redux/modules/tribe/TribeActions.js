@@ -8,8 +8,12 @@ import {
   TRIBE_FEED_FETCH,
   TRIBE_FEED_FETCH_DONE,
   TRIBE_FEED_REFRESH_DONE,
+  TRIBE_REQUEST_JOIN,
   TRIBE_REQUEST_JOIN_SUCCESS,
+  TRIBE_REQUEST_JOIN_ERROR,
   TRIBE_REQUEST_CANCEL_JOIN_SUCCESS,
+  TRIBE_REQUEST_CANCEL_JOIN_ERROR,
+  TRIBE_REQUEST_CANCEL_JOIN,
   TRIBE_MEMBER_SELECT_FILTER,
   TRIBE_MEMBER_INVITE_SUCCESS,
   TRIBE_MEMBER_INVITE_FAIL,
@@ -25,7 +29,11 @@ import {
   MYTRIBE_MEMBER_REMOVE_SUCCESS,
   MYTRIBE_MEMBER_ACCEPT_SUCCESS,
   MYTRIBE_REQUEST_JOIN_SUCCESS,
-  MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS
+  MYTRIBE_REQUEST_JOIN_ERROR,
+  MYTRIBE_REQUEST_JOIN,
+  MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS,
+  MYTRIBE_REQUEST_CANCEL_JOIN_ERROR,
+  MYTRIBE_REQUEST_CANCEL_JOIN
 } from './MyTribeReducers';
 
 import {
@@ -283,6 +291,33 @@ export const declineTribeInvit = (tribeId, type) => (dispatch, getState) => {
 export const requestJoinTribe = (tribeId, join, type) => (dispatch, getState) => {
   const { token, userId, user } = getState().user;
 
+  let startActionType;
+  if (join) {
+    startActionType = type && type === 'mytribe'
+      ? MYTRIBE_REQUEST_JOIN
+      : TRIBE_REQUEST_JOIN
+  } else {
+    startActionType = type && type === 'mytribe'
+      ? MYTRIBE_REQUEST_CANCEL_JOIN
+      : TRIBE_REQUEST_CANCEL_JOIN
+  }
+
+  let endActionErrorType;
+  if (join) {
+    endActionErrorType = type && type === 'mytribe'
+      ? MYTRIBE_REQUEST_JOIN_ERROR
+      : TRIBE_REQUEST_JOIN_ERROR
+  } else {
+    endActionErrorType = type && type === 'mytribe'
+      ? MYTRIBE_REQUEST_CANCEL_JOIN_ERROR
+      : TRIBE_REQUEST_CANCEL_JOIN_ERROR
+  }
+
+  console.log(`${DEBUG_KEY}: startActiontype: ${startActionType}, join: ${join}, type:${type}`);
+  dispatch({
+    type: startActionType
+  });
+
   const onSuccess = () => {
     if (join) {
       return dispatch({
@@ -326,6 +361,9 @@ export const requestJoinTribe = (tribeId, join, type) => (dispatch, getState) =>
     }
 
     console.log(`${DEBUG_KEY}: request to join tribe failed with err: `, err);
+    dispatch({
+      type: endActionErrorType
+    });
   };
 
   if (!join) {

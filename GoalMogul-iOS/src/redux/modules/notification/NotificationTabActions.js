@@ -53,45 +53,21 @@ export const seeLessNotification = (type) => (dispatch) => {
  * Refresh notifications and needs
  */
 export const refreshNotificationTab = () => (dispatch, getState) => {
-  refreshNotifications({ refreshForUnreadNotif: true })(dispatch, getState);
-  refreshNeeds()(dispatch, getState);
+  refreshNotifications({ refreshForUnreadNotif: true, shouldRefreshNeeds: true })(dispatch, getState);
+  // refreshNeeds()(dispatch, getState);
 };
 
-const TestData = [
-  {
-    _id: 'notification1',
-    created: new Date(),
-    read: false,
-    parsedNoti: {
-      notificationMessage: 'Hi There',  
-      path: 'path'
-    }
-  },
-  {
-    _id: 'notification2',
-    created: new Date(),
-    read: false,
-    parsedNoti: {
-      notificationMessage: 'Hi There 2',  
-      path: 'path'
-    }
-  },
-  {
-    _id: 'notification3',
-    created: new Date(),
-    read: false,
-    parsedNoti: {
-      notificationMessage: 'Hi There 3',  
-      path: 'path'
-    }
-  }
-];
-
+/**
+ * refreshNeeds: boolean to determine should refresh needs on notification loads
+ * refreshForUnreadNotif: boolean to determine should refresh unread notif
+ * 
+ * @param {object} param: { refreshForUnreadNotif, shouldRefreshNeeds }
+ */
 export const refreshNotifications = (params) => 
 (dispatch, getState) => {
   const { skip, limit, refreshing } = getState().notification.notifications;
 
-  const { refreshForUnreadNotif } = params;
+  const { refreshForUnreadNotif, shouldRefreshNeeds } = params;
   const skipToUse = refreshForUnreadNotif ? 0 : skip;
 
   // if (refreshing) return; // Do not refresh again if already refreshing
@@ -110,7 +86,6 @@ export const refreshNotifications = (params) =>
 
     Logger.log(`${DEBUG_KEY}: refresh notifications succeed with res length: `, res.notis.length, 3);
     const data = res.notis;
-    // const data = TestData;
     dispatch({
       type: NOTIFICATION_REFRESH_SUCCESS,
       payload: {
@@ -125,7 +100,13 @@ export const refreshNotifications = (params) =>
 
     if (refreshForUnreadNotif && data.length <= limit) {
       console.log(`${DEBUG_KEY}: refresh notification again since data.length ${data.length} is smaller than limit ${limit}`);
-      refreshNotifications({ refreshForUnreadNotif: false })(dispatch, getState);
+      refreshNotifications({ refreshForUnreadNotif: false, shouldRefreshNeeds })(dispatch, getState);
+      return;
+    }
+
+    // Should refresh notification needs. This function will be called after notification is loaded
+    if (shouldRefreshNeeds) {
+      refreshNeeds()(dispatch, getState);
     }
   };
 

@@ -10,6 +10,7 @@ import {
   Animated
 } from 'react-native';
 import { connect } from 'react-redux';
+import { TextField } from 'react-native-material-textfield';
 
 import {
   onSuggestionTextChange,
@@ -25,25 +26,37 @@ const MaxHeight = 70;
 class GeneralSuggestion extends React.Component {
   renderLinkInput(pageId) {
     return (
-      <View style={{ marginBottom: 5, height: MaxHeight }}>
-        <Text style={styles.headerTextStyle}>Link</Text>
-        <TextInput
-          placeholder='Enter the link'
-          onChangeText={val => this.props.onSuggestionLinkChange(val, pageId)}
-          style={styles.inputStyle}
-          maxHeight={MaxHeight}
-          multiline
-          autoCapitalize='none'
-          value={this.props.suggestionLink}
-        />
-      </View>
+      // <View style={{ marginBottom: 5, height: MaxHeight }}>
+      //   <Text style={styles.headerTextStyle}>Link</Text>
+      //   <TextInput
+      //     placeholder='Enter the link'
+      //     onChangeText={val => this.props.onSuggestionLinkChange(val, pageId)}
+      //     style={styles.inputStyle}
+      //     maxHeight={MaxHeight}
+      //     multiline
+      //     autoCapitalize='none'
+      //     value={this.props.suggestionLink}
+      //   />
+      // </View>
+      <View style={styles.inputContainerStyle}>
+          <TextField
+            label='Link'
+            placeholder='Enter the link'
+            autoCapitalize={false}
+            autoCorrect
+            onChangeText={val => this.props.onSuggestionLinkChange(val, pageId)}
+            returnKeyType='done'
+            clearButtonMode='while-editing'
+            value={this.props.suggestionLink}
+          />
+        </View>
     );
   }
 
   renderSuggestionText(pageId) {
     return (
       <SafeAreaView>
-        <View style={{ marginBottom: 5, height: MaxHeight }}>
+        {/* <View style={{ marginBottom: 5, height: MaxHeight }}>
           <Text style={styles.headerTextStyle}>Content</Text>
           <TextInput
             placeholder='Enter a suggestion title'
@@ -51,6 +64,18 @@ class GeneralSuggestion extends React.Component {
             style={styles.inputStyle}
             maxHeight={MaxHeight}
             multiline
+            value={this.props.suggestionText}
+          />
+        </View> */}
+        <View style={styles.inputContainerStyle}>
+          <TextField
+            label='Content'
+            placeholder='Enter a suggestion title'
+            autoCapitalize
+            autoCorrect
+            onChangeText={val => this.props.onSuggestionTextChange(val, pageId)}
+            returnKeyType='done'
+            clearButtonMode='while-editing'
             value={this.props.suggestionText}
           />
         </View>
@@ -84,7 +109,12 @@ const styles = {
     padding: 10,
     marginBottom: 5,
     fontSize: 15
-  }
+  },
+  inputContainerStyle: {
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginBottom: 5,
+  },
 };
 
 const mapStateToProps = (state, props) => {

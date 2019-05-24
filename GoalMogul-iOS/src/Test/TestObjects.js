@@ -584,3 +584,33 @@ const TribeTestData = [
     memberCount: 19,
   }
 ];
+
+export const TestNotificationData = [
+  {
+    _id: 'notification1',
+    created: new Date(),
+    read: false,
+    parsedNoti: {
+      notificationMessage: 'Hi There',  
+      path: 'path'
+    }
+  },
+  {
+    _id: 'notification2',
+    created: new Date(),
+    read: false,
+    parsedNoti: {
+      notificationMessage: 'Hi There 2',  
+      path: 'path'
+    }
+  },
+  {
+    _id: 'notification3',
+    created: new Date(),
+    read: false,
+    parsedNoti: {
+      notificationMessage: 'Hi There 3',  
+      path: 'path'
+    }
+  }
+];

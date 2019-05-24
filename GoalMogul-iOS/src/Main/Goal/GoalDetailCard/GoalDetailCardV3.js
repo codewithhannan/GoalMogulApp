@@ -583,8 +583,14 @@ class GoalDetailCardV3 extends Component {
           {this.renderCommentBox(focusType, pageId)}
           <SuggestionModal
             visible={this.props.showSuggestionModal}
-            onCancel={() => this.props.cancelSuggestion(pageId)}
+            onCancel={() => {
+              // Programmatically focus textinput to avoid floating input bug
+              this.handleReplyTo();
+              this.props.cancelSuggestion(pageId);
+            }}
             onAttach={() => {
+              // Programmatically focus textinput to avoid floating input bug
+              this.handleReplyTo();
               this.props.attachSuggestion(goalDetail, focusType, focusRef, pageId);
             }}
             pageId={this.props.pageId}

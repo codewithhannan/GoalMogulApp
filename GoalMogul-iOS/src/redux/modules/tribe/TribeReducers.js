@@ -27,6 +27,7 @@ const INITIAL_STATE = {
   skip: 0,
   limit: 10,
   hasRequested: undefined,
+  updating: false, // boolean indicator for joining / leaving tribe
   // ['Admin', 'Member', 'JoinRequester', 'Invitee']
   membersFilter: 'Admin',
   memberNavigationState: {
@@ -58,8 +59,10 @@ export const TRIBE_FEED_FETCH_DONE = 'tribe_feed_fetch_done';
 export const TRIBE_FEED_REFRESH_DONE = 'tribe_feed_refresh_done';
 export const TRIBE_REQUEST_JOIN = 'tribe_request_join';
 export const TRIBE_REQUEST_JOIN_SUCCESS = 'tribe_request_join_success';
-export const TRIBE_REQUEST_JOIN_FAIL = 'tribe_request_join_fail';
+export const TRIBE_REQUEST_JOIN_ERROR = 'tribe_request_join_error';
 export const TRIBE_REQUEST_CANCEL_JOIN_SUCCESS = 'tribe_request_cancel_join_success';
+export const TRIBE_REQUEST_CANCEL_JOIN_ERROR = 'tribe_request_cancel_join_error';
+export const TRIBE_REQUEST_CANCEL_JOIN = 'tribe_request_cancel_join';
 export const TRIBE_MEMBER_SELECT_FILTER = 'tribe_member_select_filter';
 export const TRIBE_MEMBER_INVITE_SUCCESS = 'tribe_member_invite_success';
 export const TRIBE_MEMBER_INVITE_FAIL = 'tribe_member_invite_fail';
@@ -141,13 +144,27 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
 
-    case TRIBE_REQUEST_JOIN_SUCCESS: {
+    case TRIBE_REQUEST_CANCEL_JOIN_ERROR:
+    case TRIBE_REQUEST_JOIN_ERROR: {
       const newState = _.cloneDeep(state);
+      return _.set(newState, 'updating', false);
+    }
+
+    case TRIBE_REQUEST_CANCEL_JOIN:
+    case TRIBE_REQUEST_JOIN: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'updating', true);
+    }
+
+    case TRIBE_REQUEST_JOIN_SUCCESS: {
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'updating', false);
       return _.set(newState, 'hasRequested', true);
     }
 
     case TRIBE_REQUEST_CANCEL_JOIN_SUCCESS: {
-      const newState = _.cloneDeep(state);
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'updating', false);
       return _.set(newState, 'hasRequested', false);
     }
 
