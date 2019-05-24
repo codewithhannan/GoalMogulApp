@@ -33,6 +33,7 @@ const INITIAL_STATE = {
   skip: 0,
   limit: 10,
   hasRequested: undefined,
+  updating: false, // boolean indicator for joining / leaving tribe
   // ['Admin', 'Member', 'JoinRequester', 'Invitee']
   membersFilter: 'Admin',
   memberNavigationState: {
@@ -67,7 +68,11 @@ export const MYTRIBE_FEED_FETCH = 'mytribe_feed_fetch';
 export const MYTRIBE_FEED_FETCH_DONE = 'mytribe_feed_fetch_done';
 export const MYTRIBE_FEED_REFRESH_DONE = 'mytribe_feed_refresh_done';
 export const MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS = 'mytribe_request_cancel_join_success';
+export const MYTRIBE_REQUEST_CANCEL_JOIN_ERROR = 'mytribe_request_cancel_join_error';
+export const MYTRIBE_REQUEST_CANCEL_JOIN = 'mytribe_request_cancel_join';
 export const MYTRIBE_REQUEST_JOIN_SUCCESS = 'mytribe_request_join_success';
+export const MYTRIBE_REQUEST_JOIN_ERROR = 'mytribe_request_join_error';
+export const MYTRIBE_REQUEST_JOIN = 'mytribe_request_join';
 export const MYTRIBE_MEMBER_SELECT_FILTER = 'mytribe_member_select_filter';
 
 // Either reject user join request or remove user from tribe
@@ -174,7 +179,20 @@ export default (state = INITIAL_STATE, action) => {
       const newMembers = oldMembers.filter((member) => member.memberRef._id !== userId);
 
       newState = _.set(newState, 'hasRequested', false);
+      newState = _.set(newState, 'updating', false);
       return _.set(newState, 'item.members', newMembers);
+    }
+
+    case MYTRIBE_REQUEST_CANCEL_JOIN_ERROR:
+    case MYTRIBE_REQUEST_JOIN_ERROR: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'updating', false);
+    }
+
+    case MYTRIBE_REQUEST_CANCEL_JOIN:
+    case MYTRIBE_REQUEST_JOIN: {
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'updating', true);
     }
 
     case MYTRIBE_REQUEST_JOIN_SUCCESS: {
@@ -188,6 +206,7 @@ export default (state = INITIAL_STATE, action) => {
       newMembers = newMembers.concat(member);
 
       newState = _.set(newState, 'hasRequested', true);
+      newState = _.set(newState, 'updating', false);
       return _.set(newState, 'item.members', newMembers);
     }
 

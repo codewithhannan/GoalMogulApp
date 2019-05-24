@@ -14,6 +14,9 @@ import R from 'ramda';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
 import Fuse from 'fuse.js';
+import {
+  DotIndicator
+} from 'react-native-indicators';
 
 // Components
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
@@ -31,6 +34,7 @@ import PlusButton from '../Common/Button/PlusButton';
 
 import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
+import LoadingModal from '../Common/Modal/LoadingModal';
 
 // Asset
 import tribe_default_icon from '../../asset/utils/tribeIcon.png';
@@ -38,8 +42,6 @@ import check from '../../asset/utils/check.png';
 import plus from '../../asset/utils/plus.png';
 import post from '../../asset/utils/post.png';
 import envelope from '../../asset/utils/envelope.png';
-
-import TestEventImage from '../../asset/TestEventImage.png';
 
 // Actions
 import {
@@ -744,6 +746,10 @@ class Tribe extends Component {
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+        <LoadingModal 
+          visible={this.props.updating} 
+          customIndicator={<DotIndicator size={12} color='white' />}  
+        />
         <View style={styles.containerStyle}>
           <SearchBarHeader
             backButton
@@ -905,9 +911,8 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { item, feed, hasRequested, feedLoading, tribeLoading } = state.tribe;
+  const { item, feed, hasRequested, feedLoading, tribeLoading, updating } = state.tribe;
   const { userId } = state.user;
-
   const navigationState = getTribeNavigationState(state);
   const memberNavigationState = getTribeMemberNavigationState(state);
   const { routes, index } = navigationState;
@@ -938,7 +943,8 @@ const mapStateToProps = state => {
     userId,
     memberNavigationState,
     loading: tribeLoading,
-    feedLoading
+    feedLoading,
+    updating
   };
 };
 
