@@ -13,7 +13,7 @@ import {
 } from './MyEventTabReducers';
 
 import { api as API } from '../../middleware/api';
-import { queryBuilder } from '../../middleware/utils';
+import { queryBuilder, componentKeyByTab } from '../../middleware/utils';
 import { Logger } from '../../middleware/utils/Logger';
 
 const DEBUG_KEY = '[ Action MyEventTab ]';
@@ -21,10 +21,12 @@ const BASE_ROUTE = 'secure/event';
 
 // Open my event tab
 export const openMyEventTab = () => (dispatch, getState) => {
+  const { tab } = getState().navigation;
   dispatch({
     type: MYEVENTTAB_OPEN
   });
-  Actions.push('myEventTab');
+  const componentToOpen = componentKeyByTab(tab, 'myEventTab');
+  Actions.push(componentToOpen);
   refreshEvent()(dispatch, getState);
 };
 

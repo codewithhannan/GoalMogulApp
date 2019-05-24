@@ -12,18 +12,19 @@ import {
 } from './MyTribeTabReducers';
 
 import { api as API } from '../../middleware/api';
-import { queryBuilder } from '../../middleware/utils';
+import { queryBuilder, componentKeyByTab } from '../../middleware/utils';
 
 const DEBUG_KEY = '[ Action MyTribeTab ]';
 const BASE_ROUTE = 'secure/tribe';
 
 // Open my tribe modal
 export const openMyTribeTab = () => (dispatch, getState) => {
+  const { tab } = getState().navigation;
   dispatch({
     type: MYTRIBETAB_OPEN
   });
-
-  Actions.push('myTribeTab');
+  const componentToOpen = componentKeyByTab(tab, 'myTribeTab');
+  Actions.push(componentToOpen);
   refreshTribe()(dispatch, getState);
 };
 
