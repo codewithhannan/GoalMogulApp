@@ -670,7 +670,6 @@ export const openCurrentSuggestion = (pageId) => (dispatch, getState) => {
 export const attachSuggestion = (goalDetail, focusType,
 focusRef, pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
-  console.log(`${DEBUG_KEY}: i am here at attachSuggestion`);
   const page = pageId ? `${pageId}` : 'default';
   const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
   const { tmpSuggestion } = _.get(getState().newComment, `${path}`);
