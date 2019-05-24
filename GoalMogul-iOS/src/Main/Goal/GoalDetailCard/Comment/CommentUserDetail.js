@@ -108,7 +108,7 @@ class CommentUserDetail extends Component {
           source={{ uri: imageUrl }}
           imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
         >
-          <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
+          {/* <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
             <Image
               source={photoIcon}
               style={{
@@ -119,7 +119,7 @@ class CommentUserDetail extends Component {
                 tintColor: '#fafafa'
               }}
             />
-          </View>
+          </View> */}
 
           <TouchableOpacity 
             activeOpacity={0.6}
