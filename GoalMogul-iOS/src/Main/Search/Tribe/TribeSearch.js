@@ -17,17 +17,6 @@ import {
 const key = 'tribes';
 const DEBUG_KEY = '[ Component TribeSearch ]';
 
-/* TODO: delete the test data */
-const testDataSuggested = [
-  {
-    _id: '10827309872',
-    name: 'Welcome home Jia',
-  },
-  {
-    _id: '12790872342',
-    name: 'Randome Crazy Tribe',
-  }
-];
 
 class TribeSearch extends Component {
   _keyExtractor = (item) => item._id;

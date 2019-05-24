@@ -126,7 +126,6 @@ const mapStateToProps = state => {
   const { data, loading, sortBy, refreshing } = state.tribeTab;
 
   return {
-    // data: [...data, ...testData],
     data,
     // data: [],
     refreshing,

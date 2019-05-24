@@ -132,6 +132,7 @@ const styles = {
     paddingTop: padding,
     paddingBottom: padding,
     textAlign: 'center',
+    fontWeight: '600'
   },
   titleTextIconStyle: {
     borderRadius: 5,

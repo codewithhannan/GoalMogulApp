@@ -324,7 +324,6 @@ class ProfileDetailCard extends Component {
   render() {
     if (!this.props.user) return null;
     const { name, headline, profile } = this.props.user;
-    // const { name, headline, profile } = testData;
     // console.log(`${DEBUG_KEY}: rerender with profile: `, profile);
 
     return (

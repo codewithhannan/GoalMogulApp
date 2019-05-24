@@ -17,17 +17,6 @@ import {
 const key = 'events';
 const DEBUG_KEY = '[ Component EventSearch ]';
 
-/* TODO: delete the test data */
-const testDataSuggested = [
-  {
-    _id: '10827309872',
-    title: 'Welcome home Jia',
-  },
-  {
-    _id: '12790872342',
-    title: 'Randome Crazy Event',
-  }
-];
 
 class EventSearch extends Component {
   _keyExtractor = (item) => item._id;
