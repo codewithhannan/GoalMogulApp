@@ -198,6 +198,7 @@ class ProfileDetailCard extends Component {
     if (this.props.self) {
       // Jump to meetTab
       Actions.jump('meetTab');
+      Actions.push('friendTabView');
       return;  
     }
     Actions.push('mutualFriends', { userId, pageId });
