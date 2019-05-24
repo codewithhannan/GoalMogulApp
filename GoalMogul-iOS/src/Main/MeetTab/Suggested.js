@@ -17,23 +17,6 @@ import {
 const key = 'suggested';
 const DEBUG_KEY = '[ Component Suggested ]';
 
-/* TODO: delete the test data */
-const testDataSuggested = [
-  {
-    _id: 1,
-    name: 'Jia Zeng',
-    profile: {
-      occupation: 'student'
-    }
-  },
-  {
-    _id: 3,
-    name: 'Jay Patel',
-    profile: {
-
-    }
-  }
-];
 
 class Suggested extends Component {
 

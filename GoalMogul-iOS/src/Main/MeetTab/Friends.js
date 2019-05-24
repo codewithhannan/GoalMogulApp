@@ -20,13 +20,6 @@ import {
 const key = 'friends';
 const DEBUG_KEY = '[ Component Friends ]';
 
-/* TODO: delete the test data */
-const testData = [
-  {
-    name: 'Jia Zeng',
-    _id: 1
-  }
-];
 
 class Friends extends Component {
 

@@ -91,7 +91,6 @@ const loadFeed = (skip, limit, token, priority, categories, callback, onError) =
     )
     .then((res) => {
       if (res && res.data) {
-        // return callback([...res.data, ...testData]);
         return callback([...res.data]);
       }
       console.log(`${DEBUG_KEY}: Loading activity feed with no data: `, res);
@@ -99,57 +98,10 @@ const loadFeed = (skip, limit, token, priority, categories, callback, onError) =
     .catch((err) => {
       console.log(`${DEBUG_KEY} load activity feed with error: ${err}`);
       // if (skip === 0) {
-      //   callback(testData);
+      //   callback([]);
       // } else {
       //   callback([]);
       // }
       callback([]);
     });
 };
-
-// TODO: delete this test data
-const testData = [
-  {
-    _id: '5b5677e2e2f7ceccddb56069',
-    created: '2018-07-24T00:50:42.632Z',
-    actor: {
-      _id: '5b172a82e64f7e001a2ade23',
-      name: 'John Doe',
-      headline: 'Your friendly boi',
-      profile: {
-        views: 0,
-        pointsEarned: 0,
-        image: 'ProfileImage/5e339201-31bf-4a00-b0e9-1c5cc1d20236'
-      }
-    },
-    action: 'Create',
-    actedWith: 'Post',
-    actedUponEntityOwnerId: '5b172a82e64f7e001a2ade23',
-    actedUponEntityType: 'Post',
-    actedUponEntityId: '5b5677e2e2f7ceccddb56068',
-    postRef: {
-      _id: '5b5677e2e2f7ceccddb56068',
-      created: '2018-07-24T00:50:42.534Z',
-      lastUpdated: '2018-07-24T00:50:42.534Z',
-      owner: {
-          _id: '5b17781ebec96d001a409960',
-          name: 'jia zeng',
-          profile: {
-              views: 0,
-              pointsEarned: 0,
-              elevatorPitch: '',
-              occupation: 'test'
-          }
-      },
-      postType: 'General',
-      privacy: 'friends',
-      __v: 0,
-      content: {
-        text: 'test 4!',
-        links: [],
-        tags: []
-      }
-    },
-    __v: 0
-  }
-];

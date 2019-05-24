@@ -593,8 +593,7 @@ const mapStateToProps = state => {
         return participantSelector(state);
 
       case 'posts':
-      // TODO: delete testData
-        return [...feed, ...testData];
+        return [...feed];
 
       default: return [];
     }
