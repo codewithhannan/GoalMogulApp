@@ -12,6 +12,7 @@ class LiveChatService {
         userId: null,
         authToken: null,
     };
+    oneUserMountedListeners = [];
 
     /**
      * Initializes the service
@@ -36,6 +37,13 @@ class LiveChatService {
                 if (resp.success) {
                     this.isUserMounted = true;
                     this.mountedUser = userState;
+                    this.oneUserMountedListeners.forEach(listener => {
+                        try {
+                            listener();
+                        } catch(e) {
+                            console.log(`${DEBUG_KEY}: Error firing oneUserMounted listener`, e);
+                        };
+                    });
                 } else {
                     console.log(`${DEBUG_KEY}: Error mounting user with authToken: ${authToken}`, resp.message);
                 };
@@ -50,6 +58,17 @@ class LiveChatService {
         this.mountedUser = {
             authToken: null,
             userId: null,
+        };
+    }
+    /**
+     * Fires listener once when a user has been mounted
+     * @param {Function} listener : one-time listener fired when a user is mounted
+     */
+    oneUserMounted(listener) {
+        if (this.isUserMounted) {
+            listener();
+        } else {
+            this.oneUserMountedListeners.push(listener);
         };
     }
 

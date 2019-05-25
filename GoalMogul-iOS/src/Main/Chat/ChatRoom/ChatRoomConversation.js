@@ -109,6 +109,7 @@ class ChatRoomConversation extends React.Component {
 		};
 	}
 	componentDidUpdate(prevPros) {
+		const { userId } = this.props;
 		// if we change chat rooms, switch rooms accordingly and re-initialize the component
 		const newChatRoomId = this.props.chatRoomId;
 		const oldChatRoomId = prevPros.chatRoomId;
@@ -119,6 +120,11 @@ class ChatRoomConversation extends React.Component {
 			// leave old chat room
 			LiveChatService.emitEvent(OUTGOING_EVENT_NAMES.leaveRoom, { chatRoomId: oldChatRoomId, }, (resp) => {/* nothing to do */});
 			LiveChatService.cancelEmitOnConnect(LISTENER_KEY);
+			LiveChatService.emitEvent(OUTGOING_EVENT_NAMES.updateTypingStatus, {
+				userId,
+				chatRoomId: oldChatRoomId,
+				typingStatus: false,
+			}, resp => {});
 			// join new chat room
 			LiveChatService.emitEvent(OUTGOING_EVENT_NAMES.joinRoom, { chatRoomId: newChatRoomId, }, (resp) => {
 				if (resp.error) {
@@ -133,8 +139,7 @@ class ChatRoomConversation extends React.Component {
 		};
 	}
 	componentWillUnmount() {
-		const { chatRoom, userId } = this.props;
-		const chatRoomId = chatRoom && chatRoom._id;
+		const { chatRoomId, userId } = this.props;
 		if (!chatRoomId) return;
 
 		this.props.closeActiveChatRoom();
@@ -159,9 +164,10 @@ class ChatRoomConversation extends React.Component {
 		clearInterval(this.chatRoomDocumentPoll);
 	}
 	_refreshChatRoom() {
-		const { chatRoom } = this.props;
+		const { chatRoom, messages } = this.props;
 		if (chatRoom) {
 			this.props.refreshChatRoom(chatRoom._id);
+			this.props.updateMessageList(chatRoom, messages || []);
 		};
 	}
 	_handleIncomingTypingStatusUpdate(data) {
@@ -334,10 +340,10 @@ class ChatRoomConversation extends React.Component {
 		});
 	}
 	onChatTextInputChanged(text) {
-		const { userId, chatRoom } = this.props;
+		const { userId, chatRoomId } = this.props;
 		LiveChatService.emitEvent(OUTGOING_EVENT_NAMES.updateTypingStatus, {
 			userId,
-			chatRoomId: chatRoom && chatRoom._id,
+			chatRoomId: chatRoomId,
 			typingStatus: text.length != 0,
 		}, (resp) => {
 			if (resp.error) {
@@ -351,6 +357,7 @@ class ChatRoomConversation extends React.Component {
 		if (numUsersTyping) {
 			return (
 				<FlatList
+					keyExtractor={this._keyExtractor}
 					data={currentlyTypingUserIds.slice(0, MAX_TYPING_INDICATORS_TO_DISPLAY)
 							.map(userId => chatRoomMembersMap[userId])
 							.filter(docExists => docExists)}

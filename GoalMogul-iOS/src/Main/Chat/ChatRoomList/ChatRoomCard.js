@@ -95,10 +95,16 @@ class ChatRoomCard extends React.Component {
 		let content;
 		if (this.props.renderDescription && item.description) {
 			content = item.description;
-		} else if (item.isFriend) {
+		} else if (item.isFriend) { // for friend search results
 			content = 'Tap to start a conversation...';
-		} else if (item.latestMessage && item.latestMessage.content.message) {
-			content = item.latestMessage.content.message;
+		} else if (item.latestMessage) {
+			if (item.latestMessage.content.message) {
+				content = item.latestMessage.content.message;
+			} else if (item.latestMessage.media) {
+				content = "Chat member sent an image...";
+			} else {
+				content = "View latest message...";
+			}
 		} else {
 			content = 'No messages in this conversation...';
 		};

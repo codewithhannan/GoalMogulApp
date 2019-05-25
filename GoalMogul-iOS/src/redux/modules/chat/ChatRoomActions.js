@@ -103,7 +103,7 @@ export const refreshChatRoom = (currentChatRoomId, maybeCallback) => (dispatch, 
 			});
 		}).catch(err => {
 			maybeCallback && maybeCallback(err);
-			Alert.alert('Error', 'Could not refresh chat room.');
+			// Alert.alert('Error', 'Could not refresh chat room.');
 		});
 };
 
@@ -340,12 +340,12 @@ export async function _transformMessagesForGiftedChat(messages, chatRoom, token)
 			createdAt: new Date(created),
 			image: media && `${IMAGE_BASE_URL}${media}`,
 			text: content && content.message,
-			user: await MemberDocumentFetcher.getUserDocument(creator, token, chatRoomMemberMap),
+			user: creator && await MemberDocumentFetcher.getUserDocument(creator, token, chatRoomMemberMap),
 			system: !!isSystemMessage,
 		};
 	}));
 };
-function _transformUserForGiftedChat(userDoc) {
+export function _transformUserForGiftedChat(userDoc) {
 	const {_id, name, profile} = userDoc;
 	const profileImage = profile && profile.image && `${IMAGE_BASE_URL}${profile.image}`;
 	return { _id, name, avatar: profileImage };

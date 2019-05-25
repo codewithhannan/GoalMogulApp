@@ -365,16 +365,18 @@ class MessageStorageService {
         localDb.insert(this._transformMessageForLocalStorage(messageDoc), (err) => {
             // if error, the message will go to the server's message queue and we can try reinserting on a later pull
             if (err) return;
-            // ack message if no error
-            LiveChatService.emitEvent(
-                OUTGOING_EVENT_NAMES.ackMessage,
-                { messageAckId },
-                (resp) => {
-                    if (resp.error) {
-                        console.log(`${DEBUG_KEY} Error ack'ing message: ${resp.message}`, messageDoc);
-                    };
-                }
-            );
+            // ack message if no error and not system message
+            if (!messageDoc.isSystemMessage) {
+                LiveChatService.emitEvent(
+                    OUTGOING_EVENT_NAMES.ackMessage,
+                    { messageAckId },
+                    (resp) => {
+                        if (resp.error) {
+                            console.log(`${DEBUG_KEY} Error ack'ing message: ${resp.message}`, messageDoc);
+                        };
+                    }
+                );
+            };
             // fire listeners to this event
             const listeners = Object.values(this.incomingMessageListeners);
             for (let listener of listeners) {
@@ -467,7 +469,7 @@ class MessageStorageService {
     _transformMessageForLocalStorage = (messageDoc) => {
         let transformedDoc = { ...messageDoc };
         transformedDoc.created = new Date(transformedDoc.created);
-        if (messageDoc.creator.toString() == this.mountedUser.userId) {
+        if (messageDoc.isSystemMessage || messageDoc.creator == this.mountedUser.userId) {
             transformedDoc.isRead = true;
         };
         return transformedDoc;

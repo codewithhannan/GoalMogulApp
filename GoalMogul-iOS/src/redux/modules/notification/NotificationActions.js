@@ -52,6 +52,7 @@ import {
   NOTIFICATION_UNREAD_MARK_AS_READ,
   NOTIFICATION_UNREAD_MARK_AS_READ_BY_PARSEDNOTI
 } from './NotificationTabReducers';
+import LiveChatService from '../../../socketio/services/LiveChatService';
 
 const BASE_ROUTE = 'secure/notification';
 const DEBUG_KEY = '[ Action Notification ]';
@@ -118,7 +119,7 @@ export const handlePushNotification = (notification) => (dispatch, getState) => 
   }
 
   if (entityType === 'chatroom') {
-    Actions.push('chatRoomConversation', { chatRoomId: entityId });
+    LiveChatService.oneUserMounted(() => Actions.push('chatRoomConversation', { chatRoomId: entityId }));
     return;
   }
 };
