@@ -16,8 +16,8 @@ export const initialLoad = (currentChatRoomId, pageSize) => (dispatch, getState)
 	const { token } = state.user;
 
 	// load chat room if it already exists in the state
-    const { chatRoomsMap, activeChatRoomId } = state.chatRoom;
-	const maybeChatRoom = activeChatRoomId && chatRoomsMap[activeChatRoomId];
+    const { chatRoomsMap } = state.chatRoom;
+	const maybeChatRoom = currentChatRoomId && chatRoomsMap[currentChatRoomId];
 	if (maybeChatRoom) {
 		dispatch({
 			type: CHAT_ROOM_LOAD_INITIAL,

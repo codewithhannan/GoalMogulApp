@@ -342,8 +342,7 @@ class ChatRoomConversation extends React.Component {
 	onChatTextInputChanged(text) {
 		const { userId, chatRoomId } = this.props;
 		LiveChatService.emitEvent(OUTGOING_EVENT_NAMES.updateTypingStatus, {
-			userId,
-			chatRoomId: chatRoomId,
+			userId, chatRoomId,
 			typingStatus: text.length != 0,
 		}, (resp) => {
 			if (resp.error) {
