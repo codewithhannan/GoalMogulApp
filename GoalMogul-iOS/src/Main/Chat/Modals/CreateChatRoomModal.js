@@ -93,7 +93,8 @@ class CreateChatroomModal extends React.Component {
 	}
 
 	handleSubmit = () => {
-		const { initializeFromState, chat, picture, membersToAdd, formVals } = this.props;
+		const { initializeFromState, chat, picture, membersToAdd, formVals, uploading } = this.props;
+		if (uploading) return;
 		const chatId = chat && chat._id;
 		const needUpload =
 			(initializeFromState && chat.picture && chat.picture !== picture)
