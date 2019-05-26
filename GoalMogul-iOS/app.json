@@ -3,7 +3,7 @@
     "name": "GoalMogul",
     "icon": "./assets/logo.png",
     "sdkVersion": "30.0.0",
-    "version": "0.3.7",
+    "version": "0.3.8",
     "slug": "goalmogul",
     "orientation": "portrait",
     "ios": {
