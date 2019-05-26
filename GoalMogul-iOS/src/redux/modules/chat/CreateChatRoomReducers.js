@@ -44,9 +44,7 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case CHAT_NEW_SUBMIT_SUCCESS: {
-      let newState = _.cloneDeep(state);
-      newState = _.set(newState, 'picture', undefined);
-      return _.set(newState, 'uploading', false);
+      return INITIAL_STATE;
     }
 
     case CHAT_NEW_UPDATE_SELECTED_MEMBERS: {

@@ -338,7 +338,7 @@ async function transformChatRoomResultsAndDispatch(dispatchType, dispatchPayload
 	} catch (e) { /* we tried */ };
 
 	try {
-		transformedPayload.data = await Promise.all(chatRooms.map(async chatRoom => {
+		transformedPayload.data = !chatRooms.length ? [] : await Promise.all(chatRooms.map(async chatRoom => {
 			chatRoom.isChatRoom = true;
 			chatRoom.unreadMessageCount = unreadMessageCountByConversationMap[chatRoom._id];
 			try {

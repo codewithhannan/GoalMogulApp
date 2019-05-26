@@ -122,11 +122,11 @@ class ChatRoomTab extends React.Component {
 			<SearchBar
 				ref={search => this.search = search}
 				platform="default"
-				clearIcon={<MaterialIcons
+				clearIcon={null/*<MaterialIcons
 					name="clear"
 					color="#777"
 					size={21}
-				/>}
+				/>*/}
 				containerStyle={{
 					backgroundColor: '#EEE',
 					padding: 6,

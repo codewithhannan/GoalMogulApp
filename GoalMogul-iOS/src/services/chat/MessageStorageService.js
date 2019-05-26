@@ -224,6 +224,7 @@ class MessageStorageService {
      * @returns {{conversationId -> unreadCount}} - an object that maps conversationId to unreadCount
      */
     getUnreadMessageCountByConversations = (conversationIds, callback) => {
+        if (!conversationIds.length) return callback(null, {});
         let unreadCountMap = {};
         let queryFiredCount = 0; // to ensure all db queries have fired before running callback
         conversationIds.forEach(conversationId => {

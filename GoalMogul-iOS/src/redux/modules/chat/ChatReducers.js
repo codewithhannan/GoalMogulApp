@@ -19,7 +19,7 @@ const INITIAL_STATE = {
 		unreadCount: 0,
 		data: [],
 		searchQuery: '',
-		hasNextPage: undefined,
+		hasNextPage: true,
 		limit: 5,
 		skip: 0,
 		loading: false,
@@ -29,7 +29,7 @@ const INITIAL_STATE = {
 		unreadCount: 0,
 		data: [],
 		searchQuery: '',
-		hasNextPage: undefined,
+		hasNextPage: true,
 		limit: 5,
 		skip: 0,
 		loading: false,
@@ -87,6 +87,7 @@ export default (state=INITIAL_STATE, action) => {
 			let newState = _.cloneDeep(state);
 			newState = _.set(newState, `${type}.refreshing`, false);
 			newState = _.set(newState, `${type}.skip`, 0);
+			newState = _.set(newState, `${type}.hasNextPage`, true);
 
 			return _.set(newState, `${type}.data`, data);
 		}
@@ -97,10 +98,10 @@ export default (state=INITIAL_STATE, action) => {
 			let newState = _.cloneDeep(state);
 			newState = _.set(newState, `${type}.loading`, false);
 
-			if (skip !== undefined) {
+			if (typeof skip !== "undefined") {
 				newState = _.set(newState, `${type}.skip`, skip);
 			}
-			if (hasNextPage !== undefined) {
+			if (typeof hasNextPage !== "undefined") {
 				newState = _.set(newState, `${type}.hasNextPage`, hasNextPage);
 			};
 			const oldData = _.get(newState, `${type}.data`);
