@@ -64,6 +64,7 @@ import ChatRoomConversationInputToolbar from './ChatRoomConversationInputToolbar
 import { toHashCode } from '../../../Utils/ImageUtils';
 import ChatMessageImage from '../Modals/ChatMessageImage';
 import ChatRoomConversationBubble from './ChatRoomConversationBubble';
+import ChatRoomLoaderOverlay from '../Modals/ChatRoomLoaderOverlay';
 
 const DEBUG_KEY = '[ UI ChatRoomConversation ]';
 const LISTENER_KEY = 'ChatRoomConversation';
@@ -564,6 +565,7 @@ class ChatRoomConversation extends React.Component {
 		return (
 			<MenuProvider customStyles={{ backdrop: styles.backdrop }}>
 				<View style={styles.homeContainerStyle}>
+					{this.props.showInitialLoader ? <ChatRoomLoaderOverlay /> : null}
 					<ModalHeader
 						title={this.props.chatRoomName}
 						titleIcon={this.props.chatRoomImage}

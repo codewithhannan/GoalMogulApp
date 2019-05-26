@@ -94,7 +94,7 @@ class ChatRoomTab extends React.Component {
 			this.props.createOrGetDirectMessage(item._id);
 			this.search.clear();
 		} else {
-			Actions.push('chatRoomConversation', { chatRoomId: item._id, });
+			Actions.push('chatRoomConversation', { chatRoomId: item._id });
 		};
 	}
 
