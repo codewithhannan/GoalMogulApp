@@ -395,6 +395,7 @@ class MessageStorageService {
      */
     _beginMessageQueuePolling = () => {
         const { authToken } = this.mountedUser;
+        this._pollMessageQueue(authToken);
         this._messageQueuePoller = setInterval(() => this._pollMessageQueue(authToken), MESSAGE_QUEUE_POLLING_INTERVAL_SECONDS * 1000);
     }
     _resetAppNotificationsBadge = () => {
