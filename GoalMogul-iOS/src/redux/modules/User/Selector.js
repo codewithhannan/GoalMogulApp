@@ -51,6 +51,11 @@ export const getUserDataByPageId = (state, userId, pageId, path) => {
     const pathToGet = path && path.trim() !== ''
         ? `${pageId}.${path}`
         : `${pageId}`;
+
+    if (!_.has(user, pathToGet)) {
+        console.warn(`${DEBUG_KEY}: no path found when getting ${pathToGet} in user:`, user);
+        return ret;
+    }
     ret = _.get(user, `${pathToGet}`);
     return ret;
 };

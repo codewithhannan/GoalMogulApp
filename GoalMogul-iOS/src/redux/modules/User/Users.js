@@ -124,7 +124,7 @@ const INITIAL_USER_PROFILE_DETAIL_PAGE = {
  * Call getUserDataByPageId(state, userId, pageId, 'navigationState') 
  * will return navigationState object
  */
-const INITIAL_USER_PAGE = {
+export const INITIAL_USER_PAGE = {
     // Profile page plus icon for goal / post creation
     showPlus: true,
     // Overall loading status

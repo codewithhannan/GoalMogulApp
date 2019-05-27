@@ -50,6 +50,7 @@ import {
   makeGetUserPosts
 } from '../../redux/modules/User/Selector';
 import PlusButton from '../Common/Button/PlusButton';
+import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users';
 
 const DEBUG_KEY = '[ UI ProfileV2 ]';
 // const SEARCHBAR_HEIGHT = 70;
@@ -379,9 +380,14 @@ const makeMapStateToProps = () => {
         const { userId, pageId } = props;
     
         const user = getUserData(state, userId, 'user');
-        const userPage = getUserDataByPageId(state, userId, pageId, '');
+        let userPage = getUserDataByPageId(state, userId, pageId, '');
+
+        if (!userPage || _.isEmpty(userPage)) {
+            userPage = _.cloneDeep(INITIAL_USER_PAGE);
+        }
+
         const { navigationState, showPlus } = userPage;
-    
+
         const { routes, index } = navigationState;
         const selectedTab = routes[index].key;
         // Get page info by tab

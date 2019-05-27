@@ -100,7 +100,7 @@ class RichText extends React.Component {
 
     if (!contentText) return null;
 
-    console.log(`${DEBUG_KEY}: render contentText: ${contentText.substring(10)}`);
+    // console.log(`${DEBUG_KEY}: render contentText: ${contentText.substring(10)}`);
 
     const parsedTags = this.constructParsedUserTags(contentTags, contentText);
     const convertedText = Decode(contentText);
