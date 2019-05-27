@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import {
   MenuProvider
 } from 'react-native-popup-menu';
+import _ from 'lodash';
 
 // Actions
 import {
@@ -48,7 +49,7 @@ const DEBUG_KEY = '[ UI PostDetailCard ]';
 const TABBAR_HEIGHT = 48.5;
 const TOTAL_HEIGHT = TABBAR_HEIGHT;
 
-class PostDetailCard extends Component {
+class PostDetailCard extends React.PureComponent {
   constructor(props) {
     super(props);
     this.commentBox = undefined;
@@ -125,6 +126,12 @@ class PostDetailCard extends Component {
       ...this.state,
       keyboardDidShow: false
     });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.nextcommentBoxPadding !== this.state.nextState) return false;
+    if (nextState.keyboardDidShow !== this.state.keyboardDidShow) return false;
+    return true;
   }
 
   handleRefresh = () => {
