@@ -59,7 +59,7 @@ const CommentHeadline = (props) => {
     case 'Suggestion': {
       if (!suggestion || _.isEmpty(suggestion)) return null;
       return (
-        <SuggestionHeadline
+        <SuggestionHeadlineV2
           goalRef={goalRef}
           item={item}
           timeStamp={timeStamp}
@@ -71,7 +71,7 @@ const CommentHeadline = (props) => {
 
     case 'Comment': {
       return (
-        <CommentHead 
+        <CommentHeadV2 
           goalRef={goalRef}
           item={item}
           timeStamp={timeStamp}
@@ -146,6 +146,77 @@ const CommentHead = (props) => {
           </View>
         </View>
         <Timestamp time={timeago().format(timeStamp)} />
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.containerStyle}>
+      <Name 
+        text={owner.name} 
+        textStyle={{ fontSize: 12 }} 
+        onPress={onNamePress}  
+      />
+      <UserBanner user={owner} />
+      <Timestamp time={timeago().format(timeStamp)} />
+      <View style={styles.caretContainer}>
+        {menu}
+      </View>
+    </View>
+  );
+};
+
+/**
+ * Render headline when it's for comment
+ * @param {*} props 
+ */
+const CommentHeadV2 = (props) => {
+  const { goalRef, item, timeStamp, menu, onNamePress } = props;
+  const { owner, needRef, stepRef } = item;
+
+  let text;
+  if (needRef) {
+    text = suggestionForNeedStepText(goalRef, 'Need', needRef);
+  }
+
+  if (stepRef) {
+    text = suggestionForNeedStepText(goalRef, 'Step', stepRef);
+  }
+
+  if (needRef || stepRef) {
+    return (
+      <View>
+        <View style={styles.containerStyle}>
+          <Text
+            onPress={onNamePress}
+            style={{ 
+              fontSize: 12,
+              fontWeight: '600',
+              maxWidth: 150,
+            }} 
+            numberOfLines={1}
+          >
+            {owner.name}
+          </Text>
+          <UserBanner user={owner} />
+          <Timestamp time={timeago().format(timeStamp)} />
+          <View style={styles.caretContainer}>
+            {menu}
+          </View>
+        </View>
+        
+        <View style={styles.containerStyle}>
+          <Text
+            style={{ ...styles.suggestionTextStyle }}
+            numberOfLines={2}
+            ellipsizeMode='tail'
+          >
+            commented for
+            <Text style={styles.suggestionDetailTextStyle}>
+              {text}
+            </Text>
+          </Text>
+        </View>
       </View>
     );
   }
@@ -242,39 +313,16 @@ const SuggestionHeadlineV2 = (props) => {
   return (
     <View>
       <View style={styles.containerStyle}>
+        <Name text={owner.name} textStyle={{ fontSize: 12 }} onPress={onNamePress} />
+        <Image style={styles.imageStyle} source={badge} />
+        <Timestamp time={timeago().format(timeStamp)} />
+        <View style={styles.caretContainer}>
+          {menu}
+        </View>
+      </View>
+
+      <View style={styles.containerStyle}>
         <Text
-          numberOfLines={2}
-          ellipsizeMode='tail'
-          style={{ marginRight: 8 }}
-        >
-          <Text
-            style={{ 
-              fontSize: 12,
-              fontWeight: '600',
-              maxWidth: 150,
-            }}
-            onPress={onNamePress}
-          >
-            {owner.name}
-          </Text>
-          <View style={{ width: 15, height: 13 }}>
-            <Image style={styles.imageStyleV2} source={badge} resizeMode='contain' />
-          </View>
-          
-          <Text
-            style={styles.suggestionTextStyleV2}
-            numberOfLines={1}
-            ellipsizeMode='tail'
-          >
-            suggested {suggestionTypeText}for
-            <Text style={styles.suggestionDetailTextStyle}>
-              {text}
-            </Text>
-          </Text>
-        </Text>
-        {/* <Name text={owner.name} textStyle={{ fontSize: 12 }} onPress={onNamePress} /> */}
-        
-        {/* <Text
           style={styles.suggestionTextStyle}
           numberOfLines={1}
           ellipsizeMode='tail'
@@ -283,13 +331,9 @@ const SuggestionHeadlineV2 = (props) => {
           <Text style={styles.suggestionDetailTextStyle}>
             {text}
           </Text>
-        </Text> */}
-        <View style={styles.caretContainer}>
-          {menu}
-        </View>
+        </Text>
       </View>
-      <Timestamp time={timeago().format(timeStamp)} />
-    </View>
+  </View>
   );
 };
 
