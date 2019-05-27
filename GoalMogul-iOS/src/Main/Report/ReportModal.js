@@ -40,7 +40,7 @@ class ReportModal extends Component {
         <TextInput
           title='title'
           autoCapitalize={'none'}
-          autoCorrect={false}
+          autoCorrect
           onChangeText={this.props.updateReportTitle}
           returnKeyType='done'
           editable={!loading}
@@ -64,7 +64,7 @@ class ReportModal extends Component {
         <TextInput
           title='description'
           autoCapitalize={'none'}
-          autoCorrect={false}
+          autoCorrect
           onChangeText={this.props.updateReportDetails}
           returnKeyType='done'
           multiline

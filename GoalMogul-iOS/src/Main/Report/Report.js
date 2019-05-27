@@ -40,7 +40,7 @@ class Report extends Component {
         <TextInput
           title='title'
           autoCapitalize={'none'}
-          autoCorrect={false}
+          autoCorrect
           onChangeText={this.props.updateReportDetails}
           returnKeyType='done'
           multiline

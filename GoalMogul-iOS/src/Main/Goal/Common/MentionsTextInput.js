@@ -309,6 +309,7 @@ export default class MentionsTextInput extends Component {
                 ),
               });
             }}
+            autoCorrect
             ref={component => this._textInput = component}
             onChangeText={this.onChangeText.bind(this)}
             onSelectionChange={this.handleOnSelectionChange.bind(this)}

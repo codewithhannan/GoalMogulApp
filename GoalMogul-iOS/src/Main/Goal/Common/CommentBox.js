@@ -342,6 +342,7 @@ class CommentBox extends Component {
               style={inputStyle}
               editable={!uploading}
               maxHeight={maxHeight}
+              autoCorrect
               multiline
               value={newComment.contentText}
               defaultValue={this.state.defaultValue}
