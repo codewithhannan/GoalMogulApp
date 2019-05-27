@@ -18,6 +18,7 @@ import {
   CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../../Utils/Constants';
 
+const DEBUG_KEY = '[ UI CommentHeadline ]';
 /**
  * Props passed in are:
  * @param reportType={reportType}
@@ -174,14 +175,16 @@ const CommentHeadV2 = (props) => {
   const { goalRef, item, timeStamp, menu, onNamePress } = props;
   const { owner, needRef, stepRef } = item;
 
-  let text;
+  let headerText = { lead: '', description: '' };
   if (needRef) {
-    text = suggestionForNeedStepText(goalRef, 'Need', needRef);
+    headerText = suggestionForNeedStepTextV2(goalRef, true, 'Need', needRef, undefined);
   }
 
   if (stepRef) {
-    text = suggestionForNeedStepText(goalRef, 'Step', stepRef);
+    headerText = suggestionForNeedStepTextV2(goalRef, true, 'Step', stepRef, undefined);
   }
+
+  const { lead, description } = headerText;
 
   if (needRef || stepRef) {
     return (
@@ -208,12 +211,12 @@ const CommentHeadV2 = (props) => {
         <View style={styles.containerStyle}>
           <Text
             style={{ ...styles.suggestionTextStyle }}
-            numberOfLines={2}
+            numberOfLines={1}
             ellipsizeMode='tail'
           >
-            commented for
+            {lead}
             <Text style={styles.suggestionDetailTextStyle}>
-              {text}
+              {description}
             </Text>
           </Text>
         </View>
@@ -305,10 +308,12 @@ const SuggestionHeadlineV2 = (props) => {
 
   const { suggestionFor, suggestionForRef, suggestionType } = suggestion;
   const text = suggestionFor === 'Goal'
-    ? suggestionForGoalText(goalRef)
-    : suggestionForNeedStepText(goalRef, suggestionFor, suggestionForRef);
+    ? suggestionForGoalTextV2(goalRef, suggestionType)
+    : suggestionForNeedStepTextV2(goalRef, false, suggestionFor, suggestionForRef, suggestionType);
 
-  const suggestionTypeText = makeSuggestionTypeText(suggestionType);
+  const {
+    lead, description
+  } = text;
 
   return (
     <View>
@@ -327,9 +332,9 @@ const SuggestionHeadlineV2 = (props) => {
           numberOfLines={1}
           ellipsizeMode='tail'
         >
-          suggested {suggestionTypeText}for
+          {lead}
           <Text style={styles.suggestionDetailTextStyle}>
-            {text}
+            {description}
           </Text>
         </Text>
       </View>
@@ -352,7 +357,72 @@ const makeSuggestionTypeText = (suggestionType) => {
   }
   return '';
 };
+
+/**
+ * Construct suggestion comment card headline text for a goal
+ * e.g Suggested an Event for Goal: ${goalTitle}
+ * 
+ * @param {*} goalRef 
+ * @param {*} suggestionType 
+ */
+const suggestionForGoalTextV2 = (goalRef, suggestionType) => {
+  const suggestionTypeText = makeSuggestionTypeText(suggestionType);
+  return {
+    lead: `Suggested ${suggestionTypeText}for Goal: `,
+    description: goalRef.title
+  };
+};
+
+/**
+ * Construct suggestion comment card headline text for a goal
+ * e.g Goal: ${goalTitle}
+ * 
+ * @param {*} goalRef 
+ * @param {*} suggestionType 
+ */
 const suggestionForGoalText = (goalRef) => ` Goal: ${goalRef.title}`;
+
+
+/**
+ * Construct suggestion comment card headline text for a need/step
+ * e.g Suggested an Event for Need: ${needText}
+ * 
+ * @param {*} goalRef 
+ * @param {boolean} isComment 
+ * @param {string} suggestionFor ['Need', 'Step']
+ * @param {*} suggestionForRef 
+ * @param {string} suggestionType [User, Event, Tribe, ChatConvoRoom] This can be undefined for comment
+ */
+const suggestionForNeedStepTextV2 = (goalRef, isComment, suggestionFor, suggestionForRef, suggestionType) => {
+  let ret = {
+    lead: '', // ['Commented for Need: ', 'Commented for Step 1: ', 'Suggested for Step 1: ', 'Suggestion for Need: ']
+    description: ''
+  };
+  const dataToGet = suggestionFor === 'Step'
+    ? goalRef.steps
+    : goalRef.needs;
+
+  if (!dataToGet || _.isEmpty(dataToGet)) return ret;
+  dataToGet.forEach((item) => {
+    if (item._id === suggestionForRef) {
+      const order = suggestionFor === 'Need' ? '' : ` ${item.order}`;
+      const suggestionTypeText = makeSuggestionTypeText(suggestionType);
+      const leadText = isComment ? 'Commented for' : `Suggested ${suggestionTypeText}for`;
+      ret = {
+        lead: `${leadText} ${suggestionFor}${order}: `,
+        description: item.description
+      }
+    }
+  });
+  return ret;
+};
+
+/**
+ * 
+ * @param {*} goalRef 
+ * @param {*} suggestionFor ['Need', 'Step']
+ * @param {*} suggestionForRef 
+ */
 const suggestionForNeedStepText = (goalRef, suggestionFor, suggestionForRef) => {
   let ret = '';
   const dataToGet = suggestionFor === 'Step'
