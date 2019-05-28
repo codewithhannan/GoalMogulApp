@@ -3,12 +3,14 @@ import {
   View,
   StyleSheet,
   ViewPropTypes,
-  Text
+  Text,
+  Linking
 } from 'react-native';
 import { connect } from 'react-redux';
 import ParsedText from 'react-native-parsed-text';
 import PropTypes from 'prop-types';
 import Decode from 'unescape';
+import _ from 'lodash';
 
 // Styles
 import {
@@ -23,10 +25,16 @@ import {
 
 const DEBUG_KEY = '[ UI RichText ]';
 
-class RichText extends React.PureComponent {
+class RichText extends React.Component {
   constructor(props) {
     super(props);
     this.handleUrlPress = this.handleUrlPress.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    // Only update if bricks change
+    // console.log(`${DEBUG_KEY}: [ shouldComponentUpdate ]: ${this.props.contentText}`);
+    return !_.isEqual(nextProps.numberOfLines, this.props.numberOfLines);
   }
 
   constructParsedUserTags(contentTags = [], contentText) {
@@ -44,12 +52,44 @@ class RichText extends React.PureComponent {
     return ret;
   }
 
-  handleUrlPress(url) {
+  handleUrlPress = async (url) => {
     // TODO: open web url
     if (this.props.handleUrlPress) {
       return this.props.handleUrlPress(url);
     }
     console.log(`${DEBUG_KEY}: url on pressed: `, url);
+    
+    // Below is the original expo webbrowser way of opening but it doesn't work in real
+    // build environment
+    // const returnUrl = Expo.Linking.makeUrl('/');
+    // Expo.Linking.addEventListener('url', this.handleSuggestionLinkOnClose);
+    // const result = await WebBrowser.openBrowserAsync(url);
+    // Expo.Linking.removeEventListener('url', this.handleSuggestionLinkOnClose);
+
+    // Se we switch to the new react native way
+    let urlToOpen = url;
+
+    const canOpen = await Linking.canOpenURL(urlToOpen);
+    if (canOpen) {
+      console.log(`${DEBUG_KEY}: open url:`, urlToOpen);
+      await Linking.openURL(urlToOpen);
+      return;
+    }
+
+
+    if (!urlToOpen.match(/^[a-zA-Z]+:\/\//)) {
+      urlToOpen = 'http://' + urlToOpen;
+    }
+
+    const canOpenWithProtocal = await Linking.canOpenURL(urlToOpen);
+    
+    if (canOpenWithProtocal) {
+      console.log(`${DEBUG_KEY}: open url with protocal added:`, urlToOpen);
+      await Linking.openURL(urlToOpen);
+      return;
+    }
+
+    console.log(`${DEBUG_KEY}: failed to open url: `, urlToOpen);    
   }
 
   render() {
@@ -59,6 +99,8 @@ class RichText extends React.PureComponent {
     } = this.props;
 
     if (!contentText) return null;
+
+    // console.log(`${DEBUG_KEY}: render contentText: ${contentText.substring(10)}`);
 
     const parsedTags = this.constructParsedUserTags(contentTags, contentText);
     const convertedText = Decode(contentText);
@@ -90,7 +132,7 @@ class RichText extends React.PureComponent {
   }
 }
 
-const styles = StyleSheet.create({
+const styles = {
   url: {
     color: APP_BLUE_BRIGHT
   },
@@ -98,7 +140,7 @@ const styles = StyleSheet.create({
     color: APP_DEEP_BLUE,
     // textDecorationLine: 'underline',
   }
-});
+};
 
 export default connect(
   null,

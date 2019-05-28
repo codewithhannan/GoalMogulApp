@@ -63,6 +63,7 @@ class NeedStepSuggestion extends React.Component {
           style={styles.inputStyle}
           maxHeight={100}
           keyboardType={'default'}
+          autoCorrect
           multiline
           value={suggestionText}
         />

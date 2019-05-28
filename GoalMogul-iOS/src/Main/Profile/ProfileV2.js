@@ -50,6 +50,7 @@ import {
   makeGetUserPosts
 } from '../../redux/modules/User/Selector';
 import PlusButton from '../Common/Button/PlusButton';
+import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users';
 
 const DEBUG_KEY = '[ UI ProfileV2 ]';
 // const SEARCHBAR_HEIGHT = 70;
@@ -57,6 +58,7 @@ const DEBUG_KEY = '[ UI ProfileV2 ]';
 // const HEADER_HEIGHT = 284 + 30 + SEARCHBAR_HEIGHT;
 const INFO_CARD_HEIGHT = 284;
 const DEFAULT_TRANSITION_TIME = 120;
+const PROMPT_TRANSITION_TIME = 50;
 
 class ProfileV2 extends Component {
     constructor(props) {
@@ -72,7 +74,21 @@ class ProfileV2 extends Component {
 
     componentDidMount() {
         console.log(`${DEBUG_KEY}: mounting Profile with pageId: ${this.props.pageId}`);
-        const { userId, pageId } = this.props;
+        const { userId, pageId, hideProfileDetail } = this.props;
+
+        // Hide profile detail as it's not on about tab
+        if (hideProfileDetail) {
+            Animated.parallel([
+                Animated.timing(this.state.infoCardHeight, {
+                    duration: PROMPT_TRANSITION_TIME,
+                    toValue: 0,
+                }),
+                Animated.timing(this.state.infoCardOpacity, {
+                    duration: PROMPT_TRANSITION_TIME,
+                    toValue: 0,
+                }),
+            ]).start();
+        }
 
         this.props.handleTabRefresh('goals', userId, pageId);
         this.props.handleTabRefresh('posts', userId, pageId);
@@ -379,9 +395,14 @@ const makeMapStateToProps = () => {
         const { userId, pageId } = props;
     
         const user = getUserData(state, userId, 'user');
-        const userPage = getUserDataByPageId(state, userId, pageId, '');
+        let userPage = getUserDataByPageId(state, userId, pageId, '');
+
+        if (!userPage || _.isEmpty(userPage)) {
+            userPage = _.cloneDeep(INITIAL_USER_PAGE);
+        }
+
         const { navigationState, showPlus } = userPage;
-    
+
         const { routes, index } = navigationState;
         const selectedTab = routes[index].key;
         // Get page info by tab

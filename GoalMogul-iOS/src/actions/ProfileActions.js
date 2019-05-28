@@ -215,7 +215,7 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
     componentKeyToOpen = `${mainNavigationTab}_profile`;
   }
   console.log(`${DEBUG_KEY}: componentKeyToOpen is: ${componentKeyToOpen}`);
-  Actions.push(`${componentKeyToOpen}`, { pageId, userId });
+  Actions.push(`${componentKeyToOpen}`, { pageId, userId, hideProfileDetail: tab && tab !== 'about' });
   // Actions[`${componentKeyToOpen}`].call({ pageId, userId });
 
   const { token } = getState().user;

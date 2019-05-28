@@ -6,6 +6,7 @@ import Bar from '../../../asset/utils/progressBar.png';
 import OpacBar from '../../../asset/utils/progressBarOpac.png';
 import CounterBar from '../../../asset/utils/progressBarCounter.png';
 
+const DEBUG_KEY = '[ UI ProgressBar ]';
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const PROGRESSBAR_COLOR = '#F7EB37';
 const formatDate = (date) => {
@@ -23,7 +24,7 @@ const ProgressBar = (props) => {
     goalRef,
     marginRight,
   } = props;
-  let progressPercentage = getProgress(steps || [], needs || []);
+  let progressPercentage = getProgress(steps || [], needs || [], goalRef);
   if (goalRef && goalRef.isCompleted) {
     progressPercentage = 1;
   }
@@ -50,7 +51,7 @@ const ProgressBar = (props) => {
       </View>
       {/* <Image source={Bar} style={styles.imageStyle} /> */}
       <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', zIndex: 2 }}>
-        {renderProgressBar({ percentage: progressPercentage, ...props })}
+        {renderProgressBarV2({ percentage: progressPercentage, ...props })}
       </View>
 
       <View style={{ zIndex: 2 }}>
@@ -67,14 +68,19 @@ const renderProgressBar = (props) => {
   const colorFlex = Math.round(percentage * 10);
   const layerFlex = Math.round((1 - percentage) * 10);
 
+  // console.log(`${DEBUG_KEY}: [ renderProgressBar ]: percentage is: ${percentage}, colorFex: ${colorFlex}, for goalRef: ${goalRef.title}`);
+
+
   const layerComponent = layerFlex ?
   (
-    <View style={{ flex: layerFlex, flexDirection: 'row' }}>
-      <Image
-        source={edgeIconSource || CounterBar}
-        style={{ tintColor: '#f2f2f2', height: height || 11 }}
-      />
-      <View style={{ flex: 1, backgroundColor: '#f2f2f2', width, height }} />
+    <View style={{ flex: layerFlex, flexDirection: 'row', display: 'flex' }}>
+      <View>
+        <Image
+          source={edgeIconSource || CounterBar}
+          style={{ tintColor: '#f2f2f2', height: height || 11 }}
+        />
+      </View>
+      <View style={{ flex: 1, backgroundColor: '#f2f2f2', height }} />
     </View>
   ) : null;
   // console.log(`percentage is: ${percentage}, colorFlex is: ${colorFlex}, layerFlex is: ${layerFlex}`);
@@ -122,7 +128,7 @@ const renderProgressBar = (props) => {
         style={{
           height: height || 11,
           width: width || 260,
-          // flex: 1,
+          flex: 1,
           zIndex: 1,
           flexDirection: 'row',
           position: 'absolute',
@@ -132,9 +138,114 @@ const renderProgressBar = (props) => {
           bottom: 0
         }}
       >
-        <View style={{ flex: colorFlex }} />
+        {/* {colorFlex ? <View style={{ flex: colorFlex }} /> : null} */}
         {layerComponent}
       </View>
+    </View>
+  );
+};
+
+const renderProgressBarV2 = (props) => {
+  const { percentage } = props;
+  const { height, width, edgeIconSource, iconSource, goalRef, isProfileGoalCard } = props;
+
+  const colorFlex = Math.round(percentage * 10);
+  const layerFlex = Math.round((1 - percentage) * 10);
+
+  // console.log(`${DEBUG_KEY}: [ renderProgressBar ]: percentage is: ${percentage}, colorFex: ${colorFlex}, for goalRef: ${goalRef.title}`);
+
+
+  const layerComponent = layerFlex ?
+  (
+    <View style={{ flex: layerFlex, flexDirection: 'row', display: 'flex' }}>
+      <View>
+        <Image
+          source={edgeIconSource || CounterBar}
+          style={{ tintColor: '#f2f2f2', height: height || 11 }}
+        />
+      </View>
+      <View style={{ flex: 1, backgroundColor: '#f2f2f2', height }} />
+    </View>
+  ) : null;
+  // console.log(`percentage is: ${percentage}, colorFlex is: ${colorFlex}, layerFlex is: ${layerFlex}`);
+  
+  // For completed profile goal card goal, it's background is set to #F6F6F6. Thus we need to change
+  // the background to the same color
+  const layeredTintColor = goalRef && goalRef.isCompleted && isProfileGoalCard ? '#F6F6F6' : 'white';
+
+  return (
+    <View
+      style={{
+        ...styles.imageStyle,
+        // flexDirection: 'row',
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        width,
+        height,
+        flex: 1
+      }}
+    >
+      <View
+        style={{
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0,
+          zIndex: 2,
+          position: 'absolute',
+        }}
+      >
+        <Image
+          source={iconSource || OpacBar}
+          style={{ flex: 1, width, height, tintColor: layeredTintColor }}
+        />
+      </View>
+
+      <View
+        style={{
+          backgroundColor: PROGRESSBAR_COLOR,
+          height: height || 11,
+          width: width || 260,
+          paddingRight: 2
+        }}
+      />
+      {
+        colorFlex ? (
+          <View
+            style={{
+              height: height || 11,
+              width: width || 260,
+              flex: 1,
+              zIndex: 1,
+              flexDirection: 'row',
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0
+            }}
+          >
+            {colorFlex ? <View style={{ flex: colorFlex }} /> : null}
+            {layerComponent}
+          </View>
+        ) : (
+          <View
+            style={{
+              height: height || 11,
+              width: width || 260,
+              flex: 1,
+              zIndex: 1,
+              flexDirection: 'row',
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+              backgroundColor: '#f2f2f2'
+            }}
+          />
+        )
+      }
     </View>
   );
 };
@@ -142,7 +253,7 @@ const renderProgressBar = (props) => {
 /**
  * Return the percentage of progress
  */
-const getProgress = (steps, needs) => {
+const getProgress = (steps, needs, goalRef) => {
   let stepsCompleteCount = 0;
   steps.forEach(step => {
     if (step.isCompleted) {
@@ -159,7 +270,9 @@ const getProgress = (steps, needs) => {
 
   const totalCount = steps.length + needs.length;
   // console.log('total count is: ', totalCount);
-  return totalCount === 0 ? 1 : ((needsCompleteCount + stepsCompleteCount) / totalCount);
+  // return totalCount === 0 ? 1 : ((needsCompleteCount + stepsCompleteCount) / totalCount);
+  if (goalRef && goalRef.isCompleted) return 1;
+  return steps.length === 0 ? 0 : ((stepsCompleteCount) / steps.length);
 };
 
 const styles = {

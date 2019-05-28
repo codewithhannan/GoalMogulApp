@@ -32,6 +32,14 @@ import {
   SETTING_BLOCK_PAGE_CLOSE
 } from '../reducers/Setting';
 
+import {
+  SETTING_UPDATE_NOTIFICATION_PREFERENCE,
+  SETTING_UPDATE_NOTIFICATION_PREFERENCE_SUCCESS,
+  SETTING_UPDATE_NOTIFICATION_PREFERENCE_ERROR
+} from '../redux/modules/User/Setting';
+import { Logger } from '../redux/middleware/utils/Logger';
+import { DropDownHolder } from '../Main/Common/Modal/DropDownModal';
+
 const DEBUG_KEY = '[ Setting Action ]';
 const BASE_ROUTE = 'secure/user/settings';
 
@@ -467,4 +475,71 @@ export const registerForPushNotificationsAsync = () => async (dispatch, getState
     .catch((err) => {
       onError(err);
     });
+};
+
+
+export const saveNotificationSetting = (formValues) => (dispatch, getState) => {
+  const { token, userId, user } = getState().user;
+  const { emailNotiPref, pushNotiPref } = formValues;
+  const prefToUpdate = {
+    pushDisabled: !pushNotiPref,
+    emailDisabled: !emailNotiPref
+  };
+
+  const newNotificationPreferences = { ...user.notificationPreferences, ...prefToUpdate };
+
+  const onSuccess = (res) => {
+    Logger.log(`${DEBUG_KEY}: [ saveNotificationSetting ]: update notification success`, res, 2);
+    dispatch({
+      type: SETTING_UPDATE_NOTIFICATION_PREFERENCE_SUCCESS,
+      payload: {
+        notificationPreferences: newNotificationPreferences,
+        userId
+      }
+    });
+    
+    // DropDownHolder.alert('success', 'Success', 'You have updated your notification preferences');
+  };
+
+  const onError = (err) => {
+    console.warn(`${DEBUG_KEY}: [ saveNotificationSetting ]: failed with err:`, err, 1);
+    dispatch({
+      type: SETTING_UPDATE_NOTIFICATION_PREFERENCE_ERROR,
+      payload: {
+        notificationPreferences: newNotificationPreferences,
+        userId
+      }
+    });
+
+    // DropDownHolder.alert('error', 'Error', 'Please try to update your preference later');
+  };
+
+  Logger.log(`${DEBUG_KEY}: [ saveNotificationSetting ]: new notification pref is:`, newNotificationPreferences, 2);
+  // dispatch({
+  //   type: SETTING_UPDATE_NOTIFICATION_PREFERENCE,
+  //   payload: {
+  //     notificationPreferences: newNotificationPreferences,
+  //     userId
+  //   }
+  // });
+  
+  // Since we save user state at the beginning, we need to assume its sucess
+  dispatch({
+    type: SETTING_UPDATE_NOTIFICATION_PREFERENCE_SUCCESS,
+    payload: {
+      notificationPreferences: newNotificationPreferences,
+      userId
+    }
+  });
+
+  API
+    .put(`${BASE_ROUTE}/notification-preferences`, { ...prefToUpdate }, token)
+    .then(res => {
+      if (res.status === 200) {
+        onSuccess(res);
+        return;
+      }
+      onError(res);
+    })
+    .catch(err => onError(err));
 };

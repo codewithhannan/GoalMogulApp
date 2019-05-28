@@ -18,6 +18,7 @@ import {
   CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../../Utils/Constants';
 
+const DEBUG_KEY = '[ UI CommentHeadline ]';
 /**
  * Props passed in are:
  * @param reportType={reportType}
@@ -59,7 +60,7 @@ const CommentHeadline = (props) => {
     case 'Suggestion': {
       if (!suggestion || _.isEmpty(suggestion)) return null;
       return (
-        <SuggestionHeadline
+        <SuggestionHeadlineV2
           goalRef={goalRef}
           item={item}
           timeStamp={timeStamp}
@@ -71,7 +72,7 @@ const CommentHeadline = (props) => {
 
     case 'Comment': {
       return (
-        <CommentHead 
+        <CommentHeadV2 
           goalRef={goalRef}
           item={item}
           timeStamp={timeStamp}
@@ -166,6 +167,79 @@ const CommentHead = (props) => {
   );
 };
 
+/**
+ * Render headline when it's for comment
+ * @param {*} props 
+ */
+const CommentHeadV2 = (props) => {
+  const { goalRef, item, timeStamp, menu, onNamePress } = props;
+  const { owner, needRef, stepRef } = item;
+
+  let headerText = { lead: '', description: '' };
+  if (needRef) {
+    headerText = suggestionForNeedStepTextV2(goalRef, true, 'Need', needRef, undefined);
+  }
+
+  if (stepRef) {
+    headerText = suggestionForNeedStepTextV2(goalRef, true, 'Step', stepRef, undefined);
+  }
+
+  const { lead, description } = headerText;
+
+  if (needRef || stepRef) {
+    return (
+      <View>
+        <View style={styles.containerStyle}>
+          <Text
+            onPress={onNamePress}
+            style={{ 
+              fontSize: 12,
+              fontWeight: '600',
+              maxWidth: 150,
+            }} 
+            numberOfLines={1}
+          >
+            {owner.name}
+          </Text>
+          <UserBanner user={owner} />
+          <Timestamp time={timeago().format(timeStamp)} />
+          <View style={styles.caretContainer}>
+            {menu}
+          </View>
+        </View>
+        
+        <View style={styles.containerStyle}>
+          <Text
+            style={{ ...styles.suggestionTextStyle }}
+            numberOfLines={1}
+            ellipsizeMode='tail'
+          >
+            {lead}
+            <Text style={styles.suggestionDetailTextStyle}>
+              {description}
+            </Text>
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.containerStyle}>
+      <Name 
+        text={owner.name} 
+        textStyle={{ fontSize: 12 }} 
+        onPress={onNamePress}  
+      />
+      <UserBanner user={owner} />
+      <Timestamp time={timeago().format(timeStamp)} />
+      <View style={styles.caretContainer}>
+        {menu}
+      </View>
+    </View>
+  );
+};
+
 const UserBanner = (props) => {
   const { user, iconStyle } = props;
 
@@ -234,62 +308,37 @@ const SuggestionHeadlineV2 = (props) => {
 
   const { suggestionFor, suggestionForRef, suggestionType } = suggestion;
   const text = suggestionFor === 'Goal'
-    ? suggestionForGoalText(goalRef)
-    : suggestionForNeedStepText(goalRef, suggestionFor, suggestionForRef);
+    ? suggestionForGoalTextV2(goalRef, suggestionType)
+    : suggestionForNeedStepTextV2(goalRef, false, suggestionFor, suggestionForRef, suggestionType);
 
-  const suggestionTypeText = makeSuggestionTypeText(suggestionType);
+  const {
+    lead, description
+  } = text;
 
   return (
     <View>
       <View style={styles.containerStyle}>
-        <Text
-          numberOfLines={2}
-          ellipsizeMode='tail'
-          style={{ marginRight: 8 }}
-        >
-          <Text
-            style={{ 
-              fontSize: 12,
-              fontWeight: '600',
-              maxWidth: 150,
-            }}
-            onPress={onNamePress}
-          >
-            {owner.name}
-          </Text>
-          <View style={{ width: 15, height: 13 }}>
-            <Image style={styles.imageStyleV2} source={badge} resizeMode='contain' />
-          </View>
-          
-          <Text
-            style={styles.suggestionTextStyleV2}
-            numberOfLines={1}
-            ellipsizeMode='tail'
-          >
-            suggested {suggestionTypeText}for
-            <Text style={styles.suggestionDetailTextStyle}>
-              {text}
-            </Text>
-          </Text>
-        </Text>
-        {/* <Name text={owner.name} textStyle={{ fontSize: 12 }} onPress={onNamePress} /> */}
-        
-        {/* <Text
-          style={styles.suggestionTextStyle}
-          numberOfLines={1}
-          ellipsizeMode='tail'
-        >
-          suggested {suggestionTypeText}for
-          <Text style={styles.suggestionDetailTextStyle}>
-            {text}
-          </Text>
-        </Text> */}
+        <Name text={owner.name} textStyle={{ fontSize: 12 }} onPress={onNamePress} />
+        <Image style={styles.imageStyle} source={badge} />
+        <Timestamp time={timeago().format(timeStamp)} />
         <View style={styles.caretContainer}>
           {menu}
         </View>
       </View>
-      <Timestamp time={timeago().format(timeStamp)} />
-    </View>
+
+      <View style={styles.containerStyle}>
+        <Text
+          style={styles.suggestionTextStyle}
+          numberOfLines={1}
+          ellipsizeMode='tail'
+        >
+          {lead}
+          <Text style={styles.suggestionDetailTextStyle}>
+            {description}
+          </Text>
+        </Text>
+      </View>
+  </View>
   );
 };
 
@@ -308,7 +357,72 @@ const makeSuggestionTypeText = (suggestionType) => {
   }
   return '';
 };
+
+/**
+ * Construct suggestion comment card headline text for a goal
+ * e.g Suggested an Event for Goal: ${goalTitle}
+ * 
+ * @param {*} goalRef 
+ * @param {*} suggestionType 
+ */
+const suggestionForGoalTextV2 = (goalRef, suggestionType) => {
+  const suggestionTypeText = makeSuggestionTypeText(suggestionType);
+  return {
+    lead: `Suggested ${suggestionTypeText}for Goal: `,
+    description: goalRef.title
+  };
+};
+
+/**
+ * Construct suggestion comment card headline text for a goal
+ * e.g Goal: ${goalTitle}
+ * 
+ * @param {*} goalRef 
+ * @param {*} suggestionType 
+ */
 const suggestionForGoalText = (goalRef) => ` Goal: ${goalRef.title}`;
+
+
+/**
+ * Construct suggestion comment card headline text for a need/step
+ * e.g Suggested an Event for Need: ${needText}
+ * 
+ * @param {*} goalRef 
+ * @param {boolean} isComment 
+ * @param {string} suggestionFor ['Need', 'Step']
+ * @param {*} suggestionForRef 
+ * @param {string} suggestionType [User, Event, Tribe, ChatConvoRoom] This can be undefined for comment
+ */
+const suggestionForNeedStepTextV2 = (goalRef, isComment, suggestionFor, suggestionForRef, suggestionType) => {
+  let ret = {
+    lead: '', // ['Commented for Need: ', 'Commented for Step 1: ', 'Suggested for Step 1: ', 'Suggestion for Need: ']
+    description: ''
+  };
+  const dataToGet = suggestionFor === 'Step'
+    ? goalRef.steps
+    : goalRef.needs;
+
+  if (!dataToGet || _.isEmpty(dataToGet)) return ret;
+  dataToGet.forEach((item) => {
+    if (item._id === suggestionForRef) {
+      const order = suggestionFor === 'Need' ? '' : ` ${item.order}`;
+      const suggestionTypeText = makeSuggestionTypeText(suggestionType);
+      const leadText = isComment ? 'Commented for' : `Suggested ${suggestionTypeText}for`;
+      ret = {
+        lead: `${leadText} ${suggestionFor}${order}: `,
+        description: item.description
+      }
+    }
+  });
+  return ret;
+};
+
+/**
+ * 
+ * @param {*} goalRef 
+ * @param {*} suggestionFor ['Need', 'Step']
+ * @param {*} suggestionForRef 
+ */
 const suggestionForNeedStepText = (goalRef, suggestionFor, suggestionForRef) => {
   let ret = '';
   const dataToGet = suggestionFor === 'Step'

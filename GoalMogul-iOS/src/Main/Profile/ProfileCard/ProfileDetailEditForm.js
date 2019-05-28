@@ -182,6 +182,7 @@ class ProfileDetailEditForm extends Component {
           clearButtonMode={clearButtonMode}
           onFocus={forFocus}
           disabled={disabled}
+          autoCorrect
           onKeyPress={(key) => {
             if (key === 'next' && onNextPress) {
               onNextPress();

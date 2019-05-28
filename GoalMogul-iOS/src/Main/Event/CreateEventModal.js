@@ -161,6 +161,7 @@ class CreateEventModal extends React.Component {
           style={inputStyle}
           editable={editable}
           maxHeight={150}
+          autoCorrect
           keyboardType={keyboardType || 'default'}
           multiline={multiline}
           value={value}

@@ -82,3 +82,5 @@ export const CARET_OPTION_NOTIFICATION_SUBSCRIBE = 'Follow';
 export const CARET_OPTION_NOTIFICATION_UNSUBSCRIBE = 'Unfollow';
 
 export const GROUP_CHAT_DEFAULT_ICON_URL = 'https://i.imgur.com/dP71It0.png';
+
+export const SHOW_SEE_MORE_TEXT_LENGTH = 110;

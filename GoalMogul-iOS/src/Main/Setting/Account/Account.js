@@ -44,6 +44,16 @@ class Account extends Component {
             }}
           />
           <SettingCard
+            title="Notification"
+            key="notification"
+            explanation="Manage your notification preferences"
+            onPress={() => {
+              const componentKeyToOpen = componentKeyByTab(tab, 'notification_setting');
+              const notificationPreferences = this.props.user.notificationPreferences || { pushDisabled: undefined, emailDisabled: undefined };
+              Actions.push(`${componentKeyToOpen}`, { initializeFromState: true, notificationPreferences });
+            }}
+          />
+          <SettingCard
             title="Password"
             key="password"
             explanation="Update your passwords"
@@ -80,12 +90,13 @@ class Account extends Component {
 }
 
 const mapStateToProps = state => {
-  const { userId } = state.user;
+  const { userId, user } = state.user;
   const { tab } = state.navigation;
 
   return {
     userId,
-    tab
+    tab,
+    user
   };
 };
 

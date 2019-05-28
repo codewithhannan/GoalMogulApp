@@ -38,6 +38,7 @@ import Headline from '../Goal/Common/Headline';
 import Timestamp from '../Goal/Common/Timestamp';
 import ProfileImage from '../Common/ProfileImage';
 import RichText from '../Common/Text/RichText';
+import DelayedButton from '../Common/Button/DelayedButton';
 
 // Utils
 import { makeCaretOptions, PAGE_TYPE_MAP } from '../../redux/middleware/utils';
@@ -45,12 +46,43 @@ import { makeCaretOptions, PAGE_TYPE_MAP } from '../../redux/middleware/utils';
 // Constants
 import {
   CARET_OPTION_NOTIFICATION_SUBSCRIBE,
-  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
+  SHOW_SEE_MORE_TEXT_LENGTH
 } from '../../Utils/Constants';
+
+import { APP_BLUE } from '../../styles';
 
 const DEBUG_KEY = '[ UI ActivityHeader ]';
 
 class ActivityHeader extends Component {
+
+  renderSeeMore(postRef, actedUponEntityType) {
+    const hasLongText = postRef && postRef.content && postRef.content.text && postRef.content.text.length > SHOW_SEE_MORE_TEXT_LENGTH;
+    const showSeeMore = actedUponEntityType === 'Post' && hasLongText;
+
+    if (!showSeeMore) return null;
+    return(
+      <DelayedButton
+        onPress={() => this.props.openPostDetail(postRef)}
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          marginTop: 2
+        }}
+      >
+        <Text 
+          style={{
+            fontSize: 12,
+            color: APP_BLUE
+          }}
+        >
+          See more
+        </Text>
+      </DelayedButton>
+    );
+  }
+
   // user basic information
   renderUserDetail({ postRef, goalRef, actedUponEntityType, actor, actedWith, created }) {
     const item = actedUponEntityType === 'Post' ? postRef : goalRef;
@@ -190,7 +222,7 @@ class ActivityHeader extends Component {
               this.props.openProfile(user);
             }}
           />
-
+          {this.renderSeeMore(postRef, actedUponEntityType)}
         </View>
       </View>
     );

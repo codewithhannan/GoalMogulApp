@@ -145,6 +145,7 @@ class CreateTribeModal extends React.Component {
           keyboardType={keyboardType || 'default'}
           multiline={multiline}
           value={value}
+          autoCorrect
         />
       </SafeAreaView>
     );

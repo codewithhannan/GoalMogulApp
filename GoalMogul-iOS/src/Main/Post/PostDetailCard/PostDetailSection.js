@@ -100,6 +100,13 @@ class PostDetailSection extends React.PureComponent {
     seeMore: true
   }
 
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   const seeMoreChanged = nextState.seeMore !== this.state.seeMore;
+  //   const itemChanged = _.isEqual(nextProps.item, this.props.item);
+  //   console.log(`${DEBUG_KEY}: [ shouldComponentUpdate ]: seeMoreChanged: ${seeMoreChanged || itemChanged}, ${seeMoreChanged}, itemChanged: ${itemChanged}`);
+  //   return seeMoreChanged || itemChanged;
+  // }
+
   handleShareOnClick = () => {
     const { item } = this.props;
     const { _id } = item;
@@ -440,6 +447,7 @@ class PostDetailSection extends React.PureComponent {
     // { postExploreTab: { pageId, pageIdCount, // all the fileds for the real object }}
     if (!item || _.isEmpty(item) || !item.created) return null;
 
+    // console.log(`${DEBUG_KEY}: render post detail section`);
     return (
       <View>
         <View style={{ ...styles.containerStyle }}>
