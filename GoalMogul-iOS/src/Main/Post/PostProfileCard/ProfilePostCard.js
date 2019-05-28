@@ -53,12 +53,16 @@ import ProfileImage from '../../Common/ProfileImage';
 import RichText from '../../Common/Text/RichText';
 import Headline from '../../Goal/Common/Headline';
 import Timestamp from '../../Goal/Common/Timestamp';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Constants
 import { 
   CARET_OPTION_NOTIFICATION_SUBSCRIBE,
-  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
+  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
+  SHOW_SEE_MORE_TEXT_LENGTH
 } from '../../../Utils/Constants';
+
+import { APP_BLUE } from '../../../styles';
 
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
@@ -161,6 +165,32 @@ class ProfilePostCard extends React.PureComponent {
     );
   }
 
+  renderSeeMore(item) {
+    const showSeeMore = item && item.content && item.content.text && item.content.text.length > SHOW_SEE_MORE_TEXT_LENGTH;
+
+    if (!showSeeMore) return null;
+    return(
+      <DelayedButton
+        onPress={() => this.props.openPostDetail(item)}
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          marginTop: 2
+        }}
+      >
+        <Text 
+          style={{
+            fontSize: 12,
+            color: APP_BLUE
+          }}
+        >
+          See more
+        </Text>
+      </DelayedButton>
+    );
+  }
+
   renderHeader(item) {
     const { owner, _id, created, maybeIsSubscribed } = item;
     const timeStamp = created || new Date();
@@ -245,6 +275,7 @@ class ProfilePostCard extends React.PureComponent {
               </Text>
             </View>
           */}
+          {this.renderSeeMore(item)}
         </View>
       </View>
     );
