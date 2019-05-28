@@ -71,7 +71,7 @@ class NotificationSetting extends React.PureComponent {
         return (
             <View style={{ marginTop: 15 }}>
 				<CheckBox
-					title='Enable push notification'
+					title='Enable Push Notifications'
 					textStyle={{fontWeight: 'normal'}}
 					checked={this.props.pushNotiPref}
 					checkedIcon={<MaterialIcons
@@ -87,7 +87,7 @@ class NotificationSetting extends React.PureComponent {
 					onPress={() => this.props.change('pushNotiPref', !this.props.pushNotiPref)}
 				/>
 				<CheckBox
-					title='Enable email notification'
+					title='Enable Email Notifications'
 					textStyle={{fontWeight: 'normal'}}
 					checked={this.props.emailNotiPref}
 					checkedIcon={<MaterialIcons
@@ -116,7 +116,7 @@ class NotificationSetting extends React.PureComponent {
                 <SearchBarHeader 
                     backButton 
                     rightIcon='empty' 
-                    title="Notification"
+                    title="Notifications"
                 />
                 <View style={Styles.titleSectionStyle}>
                     <Text style={Styles.titleTextStyle}>
