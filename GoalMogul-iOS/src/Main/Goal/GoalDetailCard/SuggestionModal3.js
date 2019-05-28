@@ -546,6 +546,8 @@ const SuggestedItem = (props) => {
   if (index === -1) return null;
   const item = items.find((temp) => temp._id === refToSearchFor);
 
+  const orderText = type === 'Need' || needRef ? '' : ` ${item.order}`;
+  const typeText = type === 'Need' || needRef ? 'Need' : 'Step';
   return (
     <View
       style={{
@@ -562,7 +564,7 @@ const SuggestedItem = (props) => {
         numberOfLines={2}
         ellipsizeMode='tail'
       >
-        {`${type} ${item.order}: ${item.description}`}
+        {`${typeText}${orderText}: ${item.description}`}
       </Text>
     </View>
   );
