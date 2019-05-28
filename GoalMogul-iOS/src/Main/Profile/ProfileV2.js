@@ -58,6 +58,7 @@ const DEBUG_KEY = '[ UI ProfileV2 ]';
 // const HEADER_HEIGHT = 284 + 30 + SEARCHBAR_HEIGHT;
 const INFO_CARD_HEIGHT = 284;
 const DEFAULT_TRANSITION_TIME = 120;
+const PROMPT_TRANSITION_TIME = 50;
 
 class ProfileV2 extends Component {
     constructor(props) {
@@ -73,7 +74,21 @@ class ProfileV2 extends Component {
 
     componentDidMount() {
         console.log(`${DEBUG_KEY}: mounting Profile with pageId: ${this.props.pageId}`);
-        const { userId, pageId } = this.props;
+        const { userId, pageId, hideProfileDetail } = this.props;
+
+        // Hide profile detail as it's not on about tab
+        if (hideProfileDetail) {
+            Animated.parallel([
+                Animated.timing(this.state.infoCardHeight, {
+                    duration: PROMPT_TRANSITION_TIME,
+                    toValue: 0,
+                }),
+                Animated.timing(this.state.infoCardOpacity, {
+                    duration: PROMPT_TRANSITION_TIME,
+                    toValue: 0,
+                }),
+            ]).start();
+        }
 
         this.props.handleTabRefresh('goals', userId, pageId);
         this.props.handleTabRefresh('posts', userId, pageId);
