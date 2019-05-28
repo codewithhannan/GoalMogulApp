@@ -98,6 +98,7 @@ import EditPasswordForm from './Main/Setting/Account/EditPasswordForm';
 import FriendsBlocked from './Main/Setting/Account/Blocking/FriendsBlocked';
 import Privacy from './Main/Setting/Privacy/Privacy';
 import FriendsSetting from './Main/Setting/Privacy/FriendsSetting';
+import NotificationSetting from './Main/Setting/Account/NotificationSetting';
 
 // Lightbox form
 import ShareModal from './Main/Post/ShareModal';
@@ -336,6 +337,7 @@ class RouterComponent extends Component {
                       <Scene key="privacy" component={Privacy} />
                       <Scene key="friendsSetting" component={FriendsSetting} />
                       <Scene key="chatRoomPublicView" component={ChatRoomPubicView} />
+                      <Scene key="notification_setting" component={NotificationSetting} />
 
                       <Scene key="searchLightBox" component={SearchOverlay} />
                     </Stack>
@@ -384,6 +386,7 @@ class RouterComponent extends Component {
                       <Scene key="meetTab_friendsBlocked" component={FriendsBlocked} />
                       <Scene key="meetTab_privacy" component={Privacy} />
                       <Scene key="meetTab_friendsSetting" component={FriendsSetting} />
+                      <Scene key="meetTab_notification_setting" component={NotificationSetting} />
 
                       <Scene key="meetTab_myEventTab" component={MyEventTab} />
                       <Scene key="meetTab_myTribeTab" component={MyTribeTab} />
@@ -454,6 +457,7 @@ class RouterComponent extends Component {
                       <Scene key="notificationTab_friendsSetting" component={FriendsSetting} />
                       <Scene key="notificationTab_chatRoomPublicView" component={ChatRoomPubicView} />
                       <Scene key="notificationTab_searchLightBox" component={SearchOverlay} hideNavBar />
+                      <Scene key="notificationTab_notification_setting" component={NotificationSetting} />
 
                       <Scene key="notificationTab_myEventTab" component={MyEventTab} />
                       <Scene key="notificationTab_myTribeTab" component={MyTribeTab} />
@@ -504,6 +508,7 @@ class RouterComponent extends Component {
                       <Scene key="exploreTab_friendsBlocked" component={FriendsBlocked} />
                       <Scene key="exploreTab_privacy" component={Privacy} />
                       <Scene key="exploreTab_friendsSetting" component={FriendsSetting} />
+                      <Scene key="exploreTab_notification_setting" component={NotificationSetting} />
 
                       <Scene key="exploreTab_friendInvitationView" component={FriendInvitationView} />
 
@@ -558,6 +563,7 @@ class RouterComponent extends Component {
                       <Scene key="chatTab_friendsBlocked" component={FriendsBlocked} />
                       <Scene key="chatTab_privacy" component={Privacy} />
                       <Scene key="chatTab_friendsSetting" component={FriendsSetting} />
+                      <Scene key="chatTab_notification_setting" component={NotificationSetting} />
 
                       <Scene key="chatTab_myEventTab" component={MyEventTab} />
                       <Scene key="chatTab_myTribeTab" component={MyTribeTab} />

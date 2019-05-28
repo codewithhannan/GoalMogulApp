@@ -22,6 +22,12 @@ import {
   USER_LOG_OUT
 } from './User';
 
+import {
+  SETTING_UPDATE_NOTIFICATION_PREFERENCE,
+  SETTING_UPDATE_NOTIFICATION_PREFERENCE_SUCCESS,
+  SETTING_UPDATE_NOTIFICATION_PREFERENCE_ERROR
+} from '../redux/modules/User/Setting';
+
 export const SETTING_NOTIFICATION_TOKEN_PUSH_SUCCESS = 'setting_notification_token_push_success';
 export const SETTING_SWITCH_TAB = 'setting_switch_tab';
 export const SETTING_BLOCK_PAGE_CLOSE = 'setting_block_page_close';
@@ -32,6 +38,10 @@ const INITIAL_STATE = {
   phone: {},
   privacy: {
     friends: ''
+  },
+  notificationPreferences: {
+    pushDisabled: undefined,
+		emailDisabled: undefined,
   },
   selectedTab: 'account',
   block: {
@@ -89,11 +99,12 @@ export default (state = INITIAL_STATE, action) => {
         // Do not update if not current user
         return newState;
       }
-      const { privacy, email, phone } = user;
+      const { privacy, email, phone, notificationPreferences } = user;
 
       newState = _.set(newState, 'privacy', privacy);
       newState = _.set(newState, 'email', email);
       newState = _.set(newState, 'phone', phone);
+      newState = _.set(newState, 'notificationPreferences', notificationPreferences);
 
       return newState;
     }
@@ -215,6 +226,12 @@ export default (state = INITIAL_STATE, action) => {
       const { notificationToken } = action.payload;
       const newState = _.cloneDeep(state);
       return _.set(newState, 'notificationToken', notificationToken);
+    }
+
+    case SETTING_UPDATE_NOTIFICATION_PREFERENCE_SUCCESS: {
+      const { notificationPreferences } = action.payload;
+      const newState = _.cloneDeep(state);
+      return _.set(newState, 'notificationPreferences', notificationPreferences);
     }
 
     default:

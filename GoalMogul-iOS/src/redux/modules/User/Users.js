@@ -58,6 +58,13 @@ import {
     EXPLORE_REFRENCE_KEY
 } from '../explore/ExploreReducers';
 
+// Setting
+import {
+    SETTING_UPDATE_NOTIFICATION_PREFERENCE,
+    SETTING_UPDATE_NOTIFICATION_PREFERENCE_SUCCESS,
+    SETTING_UPDATE_NOTIFICATION_PREFERENCE_ERROR
+} from './Setting';
+
 const DEBUG_KEY = '[ Reducer Users ]';
 
 const INITIAL_DUMMY_USER = {
@@ -801,6 +808,16 @@ export default (state = INITIAL_STATE, action) => {
                 });
             }
 
+            return newState;
+        }
+
+        /* Setting actions */
+        case SETTING_UPDATE_NOTIFICATION_PREFERENCE_SUCCESS: {
+            const { notificationPreferences, userId } = action.payload;
+            let newState = _.cloneDeep(state);
+            if (!_.has(newState, userId)) return newState; // User hasn't been opened
+            
+            newState = _.set(newState, `${userId}.user.notificationPreferences`, notificationPreferences);
             return newState;
         }
 

@@ -10,6 +10,12 @@ import {
   ACCOUNT_UPDATE_PASSWORD
 } from '../actions/types';
 
+import {
+  SETTING_UPDATE_NOTIFICATION_PREFERENCE,
+  SETTING_UPDATE_NOTIFICATION_PREFERENCE_ERROR,
+  SETTING_UPDATE_NOTIFICATION_PREFERENCE_SUCCESS
+} from '../redux/modules/User/Setting';
+
 const INITIAL_STATE = {
   userId: '',
   token: '',
@@ -24,7 +30,8 @@ const INITIAL_STATE = {
     chatNotificationPreferences: undefined,
   },
   profile: {},
-  updatingPassword: false
+  updatingPassword: false,
+  updateAccountSetting: false // Boolean indicator for account setting is being updated
 };
 
 export const USER_LOAD_PROFILE_DONE = 'user_load_profile_done';
@@ -83,6 +90,27 @@ export default (state = INITIAL_STATE, action) => {
     case ACCOUNT_UPDATE_PASSWORD_DONE: {
       const newState = _.cloneDeep(state);
       return _.set(newState, 'updatingPassword', false);
+    }
+
+    // User setting update
+    case SETTING_UPDATE_NOTIFICATION_PREFERENCE: {
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'updateAccountSetting', true);
+      return newState;
+    }
+
+    case SETTING_UPDATE_NOTIFICATION_PREFERENCE_ERROR: {
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'updateAccountSetting', false);
+      return newState;
+    }
+    
+    case SETTING_UPDATE_NOTIFICATION_PREFERENCE_SUCCESS: {
+      let newState = _.cloneDeep(state);
+      const { notificationPreferences } = action.payload;
+      newState = _.set(newState, 'user.notificationPreferences', notificationPreferences);
+      newState = _.set(newState, 'updateAccountSetting', false);
+      return newState;
     }
 
     default:
