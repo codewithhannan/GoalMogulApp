@@ -416,9 +416,9 @@ class MessageStorageService {
             if (resp.status == 200) {
                 const messages = resp.data;
                 // Update app badge count now that we've pulled from message queue
-                if (messages.length) {
+                // if (messages.length) {
                     this._resetAppNotificationsBadge();
-                };
+                // };
                 messages.forEach(messageDoc => {
                     localDb.insert(this._transformMessageForLocalStorage(messageDoc), (err) => {
                         if (err) return;

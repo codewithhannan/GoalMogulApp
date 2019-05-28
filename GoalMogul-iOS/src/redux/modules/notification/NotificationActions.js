@@ -119,11 +119,18 @@ export const handlePushNotification = (notification) => (dispatch, getState) => 
   }
 
   if (entityType === 'chatroom') {
-    LiveChatService.oneUserMounted(() => setTimeout(() =>
+    if (!LiveChatService.isUserMounted) {
+      LiveChatService.oneUserMounted(() => setTimeout(() =>
+        Actions.push('chatRoomConversation', {
+          chatRoomId: entityId,
+          showInitialLoader: true,
+        }), 1000));
+    } else {
       Actions.push('chatRoomConversation', {
         chatRoomId: entityId,
         showInitialLoader: true,
-      }), 1000));
+      });
+    };
     return;
   }
 };
