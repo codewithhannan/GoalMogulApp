@@ -8,20 +8,23 @@
  * Header left action is back button
  */
 import React from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import { MaterialIcons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { reduxForm, formValueSelector } from 'redux-form';
 import { DotIndicator } from 'react-native-indicators';
 
-import ModalHeader from '../../Common/Header/ModalHeader';
+import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import LoadingModal from '../../Common/Modal/LoadingModal';
 
 import {
     saveNotificationSetting
 } from '../../../actions/SettingActions';
 import { Logger } from '../../../redux/middleware/utils/Logger';
+
+/* Styles */
+import Styles from '../Styles';
 
 const DEBUG_KEY = '[ UI NotificationSetting ]';
 class NotificationSetting extends React.PureComponent {
@@ -66,7 +69,7 @@ class NotificationSetting extends React.PureComponent {
 
     renderCheckBoxes() {
         return (
-            <View>
+            <View style={{ marginTop: 15 }}>
 				<CheckBox
 					title='Enable push notification'
 					textStyle={{fontWeight: 'normal'}}
@@ -110,11 +113,16 @@ class NotificationSetting extends React.PureComponent {
                     visible={this.props.updateAccountSetting} 
                     customIndicator={<DotIndicator size={12} color='white' />}  
                 /> */}
-                <ModalHeader
-                    back
-                    title="Notification preferences" 
-                    actionDisabled={this.props.updateAccountSetting}
+                <SearchBarHeader 
+                    backButton 
+                    rightIcon='empty' 
+                    title="Notification"
                 />
+                <View style={Styles.titleSectionStyle}>
+                    <Text style={Styles.titleTextStyle}>
+                        Your notification preferences
+                    </Text>
+                </View>
                 {this.renderCheckBoxes()}
             </View>
         );
