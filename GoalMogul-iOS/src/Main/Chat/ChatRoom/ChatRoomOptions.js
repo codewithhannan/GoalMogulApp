@@ -70,6 +70,9 @@ class ChatRoomOptions extends React.Component {
         const cardIconStyle = { tintColor: APP_BLUE_BRIGHT };
         const cardIconSource = plusIcon;
         const callback = (selectedUserId) => {
+            if (chatRoom.members.find(memberDoc => memberDoc.status != 'JoinRequester' && memberDoc.memberRef._id == selectedUserId)) {
+                return Alert.alert('User is already a member');
+            };
             this.props.addMemberToChatRoom(chatRoom._id, selectedUserId);
         };
         Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle, callback });
