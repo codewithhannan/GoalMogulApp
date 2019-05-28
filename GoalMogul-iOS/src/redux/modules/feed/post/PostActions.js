@@ -444,6 +444,22 @@ export const postToFormAdapter = (values) => {
   return {
     post: content.text,
     viewableSetting: privacy === 'self' ? 'Private' : capitalizeWord(privacy),
-    mediaRef
+    mediaRef,
+    tags: _.isEmpty(content.tags) ? [] : constructTags(content.tags, content.text)
   };
+};
+
+const constructTags = (tags, content) => {
+  return tags.map((t) => {
+    const { startIndex, endIndex, user } = t;
+    const tagText = content.slice(startIndex, endIndex);
+    const tagReg = `\\B@${tagText}`;
+    return {
+      tagText,
+      tagReg,
+      startIndex,
+      endIndex,
+      user
+    };
+  });
 };
