@@ -1,5 +1,6 @@
 // This is the reducer for creating a new comment
 import _ from 'lodash';
+import validator from 'validator';
 import {
   GOAL_DETAIL_OPEN,
   GOAL_DETAIL_CLOSE,
@@ -370,6 +371,22 @@ export default (state = INITIAL_STATE, action) => {
           !tmpSuggestion.suggestionText) {
             tmpSuggestion = _.set(tmpSuggestion, 'suggestionText', 'Suggestion');
       }
+
+      // Append https:// to the url if suggestion type is custome with suggestionLink
+      if (tmpSuggestion.suggestionType === 'Custom' && tmpSuggestion.suggestionLink) {
+        let url = tmpSuggestion.suggestionLink;
+
+        // url is a valid url without protocol
+        if (validator.isURL(url) && !validator.isURL(url, { protocols: ['http','https'], require_protocol: true })) {
+
+          // Set https:// as protocol
+          url = `https://${url}`;
+          // Update tmpSuggestion.suggestionLink
+          tmpSuggestion = _.set(tmpSuggestion, 'suggestionLink', url);
+        }
+        console.log(`${DEBUG_KEY}: updaetd url is:`, url);
+      }
+
       newState = _.set(newState, `${path}.suggestion`, tmpSuggestion);
       newState = _.set(newState, `${path}.showAttachedSuggestion`, true);
       // Only set the commentType to suggestion if something is attached
