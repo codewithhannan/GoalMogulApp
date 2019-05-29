@@ -99,7 +99,13 @@ export const handlePushNotification = (notification) => (dispatch, getState) => 
   }
 
   if (entityType === 'goal') {
-    return openGoalDetailById(entityId)(dispatch, getState);
+    let initialProps = {};
+    if (path.length > 3) {
+      if (path[2] === 'smsplanner' && path[3] === 'true') {
+        initialProps = { showCaret: true };
+      }
+    }
+    return openGoalDetailById(entityId, initialProps)(dispatch, getState);
   }
 
   if (entityType === 'user') {
@@ -184,6 +190,12 @@ export const openNotificationDetail = (item) => (dispatch, getState) => {
           focusType: 'comment',
           focusRef: undefined,
           initialShowSuggestionModal: false
+        }
+      }
+
+      if (path.length > 3) {
+        if (path[2] === 'smsplanner' && path[3] === 'true') {
+          initialProps = { ...initialProps, showCaret: true };
         }
       }
       return openGoalDetail(item.goalRef, initialProps)(dispatch, getState);  

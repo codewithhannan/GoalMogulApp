@@ -1,3 +1,6 @@
+/**
+ * On version 0.3.9, MenuFactory is refactored out to Menu.js under the same path. Please read more for information.
+ */
 import React from 'react';
 import {
   TouchableOpacity,
@@ -22,6 +25,7 @@ import _ from 'lodash';
 import Name from './Name';
 import Category from './Category';
 import { UserBanner, openProfile } from '../../../actions';
+import MenuFactory from './Menu';
 
 // Actions
 import {
@@ -50,6 +54,19 @@ const DEBUG_KEY = '[ UI Headline ]';
  * hasCaret: if null, show no caret
  */
 class Headline extends React.PureComponent {
+  componentDidMount() {
+    if (this.props.onRef !== null && this.props.onRef !== undefined) {
+      this.props.onRef(this);
+    }
+  }
+
+  openMenu() {
+    if (this.headlineMenu !== undefined) {
+      console.log(`${DEBUG_KEY}: [ openMenu ]`);
+      this.headlineMenu.openMenu();
+    }
+  }
+
   handleSelfCaretOnPress = (val) => {
     const { item } = this.props;
     if (!item) return null;
@@ -89,38 +106,76 @@ class Headline extends React.PureComponent {
     this.props.openProfile(_id);
   }
 
-  renderDeleteOptionOnly() {
-    const caret = MenuFactory(
-      [
-        { option: 'Delete' },
-      ],
-      () => this.props.caretOnDelete(),
-      '',
-      { ...styles.caretContainer },
-      () => console.log('Report Modal is opened'),
-      false
+  renderDeleteOptionOnly(menuName) {
+    const caret = (
+      <MenuFactory
+        ref={(ref) => { this.headlineMenu = ref; }}
+        options={
+          [
+            { option: 'Delete' }
+          ]
+        }
+        callback={() => this.props.caretOnDelete()}
+        triggerText={''}
+        triggerContainerStyle={styles.caretContainer} 
+        animationCallback={() => console.log('Report Modal is opened')} 
+        shouldExtendOptionLength={false}
+        menuName={menuName}
+      />
     );
+    // const caret = MenuFactory(
+    //   [
+    //     { option: 'Delete' },
+    //   ],
+    //   () => this.props.caretOnDelete(),
+    //   '',
+    //   { ...styles.caretContainer },
+    //   () => console.log('Report Modal is opened'),
+    //   false,
+    //   menuName
+    // );
     return caret;
   }
 
-  renderSelfCaret(item, deleteOnly) {
-    if (!item || deleteOnly) return this.renderDeleteOptionOnly();
+  renderSelfCaret(item, deleteOnly, menuName) {
+    if (!item || deleteOnly) return this.renderDeleteOptionOnly(menuName);
     const { isCompleted } = item;
 
-    const caret = MenuFactory(
-      [
-        { option: 'Edit Goal', iconSource: EditIcon },
-        { option: 'Share to Goal Feed', iconSource: ShareIcon },
-        { option: isCompleted ? 'Unmark as Complete' : 'Mark as Complete',
-          iconSource: isCompleted ? UndoIcon : CheckIcon },
-        { option: 'Delete', iconSource: TrashIcon },
-      ],
-      (val) => this.handleSelfCaretOnPress(val),
-      '',
-      { ...styles.caretContainer },
-      () => console.log('Report Modal is opened'),
-      true
+    const caret = (
+      <MenuFactory 
+        ref={(ref) => { this.headlineMenu = ref; }}
+        options={
+          [
+            { option: 'Edit Goal', iconSource: EditIcon },
+            { option: 'Share to Goal Feed', iconSource: ShareIcon },
+            { option: isCompleted ? 'Unmark as Complete' : 'Mark as Complete',
+              iconSource: isCompleted ? UndoIcon : CheckIcon },
+            { option: 'Delete', iconSource: TrashIcon },
+          ]
+        }
+        callback={(val) => this.handleSelfCaretOnPress(val)}
+        triggerText={''}
+        triggerContainerStyle={styles.caretContainer} 
+        animationCallback={() => console.log('Report Modal is opened')} 
+        shouldExtendOptionLength 
+        menuName={menuName}
+      />
     );
+    // const caret = MenuFactory(
+    //   [
+    //     { option: 'Edit Goal', iconSource: EditIcon },
+    //     { option: 'Share to Goal Feed', iconSource: ShareIcon },
+    //     { option: isCompleted ? 'Unmark as Complete' : 'Mark as Complete',
+    //       iconSource: isCompleted ? UndoIcon : CheckIcon },
+    //     { option: 'Delete', iconSource: TrashIcon },
+    //   ],
+    //   (val) => this.handleSelfCaretOnPress(val),
+    //   '',
+    //   { ...styles.caretContainer },
+    //   () => console.log('Report Modal is opened'),
+    //   true,
+    //   menuName
+    // );
     return caret;
   }
 
@@ -135,34 +190,61 @@ class Headline extends React.PureComponent {
       item,
       deleteOnly,
       caret,
-      textStyle
+      textStyle,
+      menuName
     } = this.props;
 
     // If item belongs to self, then caret displays delete
     let menu;
     if (caret && !_.isEmpty(caret)) {
       const { options, onPress, shouldExtendOptionLength } = isSelf ? caret.self : caret.others;
-      menu = MenuFactory(
-        options,
-        onPress,
-        '',
-        { ...styles.caretContainer },
-        () => console.log(`${DEBUG_KEY}: menu is opened for options with shouldExtendOptionLength: ${shouldExtendOptionLength}. `, options),
-        shouldExtendOptionLength
-      );
+      menu = (
+        <MenuFactory 
+          ref={(ref) => { this.headlineMenu = ref; }}
+          options={options}
+          callback={onPress}
+          triggerText={''}
+          triggerContainerStyle={styles.caretContainer} 
+          animationCallback={() => console.log(`${DEBUG_KEY}: menu is opened for options with shouldExtendOptionLength: ${shouldExtendOptionLength}. `, options)} 
+          shouldExtendOptionLength={shouldExtendOptionLength} 
+          menuName={menuName}
+        />
+      )
+      // menu = MenuFactory(
+      //   options,
+      //   onPress,
+      //   '',
+      //   { ...styles.caretContainer },
+      //   () => console.log(`${DEBUG_KEY}: menu is opened for options with shouldExtendOptionLength: ${shouldExtendOptionLength}. `, options),
+      //   shouldExtendOptionLength,
+      //   menuName
+      // );
     } else {
       menu = isSelf === undefined || !isSelf
-      ? MenuFactory(
-          [
-            { option: 'Report' },
-          ],
-          () => caretOnPress(),
-          '',
-          { ...styles.caretContainer },
-          () => console.log('Report Modal is opened'),
-          false
-        )
-      : this.renderSelfCaret(item, deleteOnly);
+      ? (
+        <MenuFactory 
+          ref={(ref) => { this.headlineMenu = ref; }}
+          options={[{ option: 'Report' }]}
+          callback={() => caretOnPress()}
+          triggerText={''}
+          triggerContainerStyle={styles.caretContainer} 
+          animationCallback={() => console.log('Report Modal is opened')} 
+          shouldExtendOptionLength={false} 
+          menuName={menuName}
+        />
+      ) : this.renderSelfCaret(item, deleteOnly, menuName);
+      
+      // MenuFactory(
+      //     [
+      //       { option: 'Report' },
+      //     ],
+      //     () => caretOnPress(),
+      //     '',
+      //     { ...styles.caretContainer },
+      //     () => console.log('Report Modal is opened'),
+      //     false,
+      //     menuName
+      //   )
     }
 
     const categoryComponent = category ? <Category text={category} /> : null;
@@ -188,82 +270,83 @@ class Headline extends React.PureComponent {
 // </TouchableOpacity>
 
 
-// Following is a duplicated code and it should be abstracted out
-const { Popover } = renderers;
-export const MenuFactory =
-(options, callback, triggerText, triggerContainerStyle, animationCallback, shouldExtendOptionLength) => {
-  const triggerTextView = triggerText
-    ? (
-        <Text
-          style={{ fontSize: 15, margin: 10, marginLeft: 15, flex: 1 }}
-        >
-          {triggerText}
-        </Text>
-      )
-    : null;
+// Following is a duplicated code and it should be abstracted out to Menu.js under the same path
+// const { Popover } = renderers;
+// export const MenuFactory =
+// ({ options, callback, triggerText, triggerContainerStyle, animationCallback, shouldExtendOptionLength, menuName }) => {
+//   const triggerTextView = triggerText
+//     ? (
+//         <Text
+//           style={{ fontSize: 15, margin: 10, marginLeft: 15, flex: 1 }}
+//         >
+//           {triggerText}
+//         </Text>
+//       )
+//     : null;
 
-  // console.log(`${DEBUG_KEY}: shouldExtendOptionLength:`, shouldExtendOptionLength);
-  const menuOptionsStyles = shouldExtendOptionLength === true
-    ? getUpdatedStyles()
-    : styles.menuOptionsStyles;
+//   // console.log(`${DEBUG_KEY}: shouldExtendOptionLength:`, shouldExtendOptionLength);
+//   const menuOptionsStyles = shouldExtendOptionLength === true
+//     ? getUpdatedStyles()
+//     : styles.menuOptionsStyles;
 
-  // console.log(`${DEBUG_KEY}: styles.menuOptionsStyles is:`, styles.menuOptionsStyles);
-  // console.log(`${DEBUG_KEY}: shouldExtendOptionLength: ${shouldExtendOptionLength}, menuOptionsStyles:`, menuOptionsStyles);
-  return (
-    <Menu
-      onSelect={value => callback(value)}
-      rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
-      renderer={Popover}
-      onOpen={animationCallback}
-    >
-      <MenuTrigger
-        customStyles={{
-          TriggerTouchableComponent: TouchableOpacity,
-        }}
-      >
-        <View style={triggerContainerStyle}>
-          {triggerTextView}
-          <Image source={dropDown} style={{ height: 12, width: 12 }} />
-        </View>
-      </MenuTrigger>
-      <MenuOptions customStyles={menuOptionsStyles}>
-        <FlatList
-          data={options}
-          renderItem={({ item }) => {
-            const { iconSource, option } = item;
-            return (
-              <View
-                style={{ flexDirection: 'row', alignItems: 'center' }}
-              >
-                {
-                  iconSource
-                    ? (
-                      <View
-                        style={{
-                          paddingTop: 10,
-                          paddingBottom: 10,
-                          paddingLeft: 10,
-                          paddingRight: 5
-                        }}
-                      >
-                        <Image source={iconSource} style={styles.iconStyle} />
-                      </View>
-                    )
-                    : null
-                }
-                <View style={{ flex: 1 }}>
-                  <MenuOption value={option} text={option} />
-                </View>
-              </View>
-            );
-          }}
-          keyExtractor={(item, index) => index.toString()}
-          style={{ height: 37 * options.length }}
-        />
-      </MenuOptions>
-    </Menu>
-  );
-};
+//   // console.log(`${DEBUG_KEY}: styles.menuOptionsStyles is:`, styles.menuOptionsStyles);
+//   // console.log(`${DEBUG_KEY}: shouldExtendOptionLength: ${shouldExtendOptionLength}, menuOptionsStyles:`, menuOptionsStyles);
+//   return (
+//     <Menu
+//       onSelect={value => callback(value)}
+//       rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
+//       renderer={Popover}
+//       onOpen={animationCallback}
+//       name={menuName}
+//     >
+//       <MenuTrigger
+//         customStyles={{
+//           TriggerTouchableComponent: TouchableOpacity,
+//         }}
+//       >
+//         <View style={triggerContainerStyle}>
+//           {triggerTextView}
+//           <Image source={dropDown} style={{ height: 12, width: 12 }} />
+//         </View>
+//       </MenuTrigger>
+//       <MenuOptions customStyles={menuOptionsStyles}>
+//         <FlatList
+//           data={options}
+//           renderItem={({ item }) => {
+//             const { iconSource, option } = item;
+//             return (
+//               <View
+//                 style={{ flexDirection: 'row', alignItems: 'center' }}
+//               >
+//                 {
+//                   iconSource
+//                     ? (
+//                       <View
+//                         style={{
+//                           paddingTop: 10,
+//                           paddingBottom: 10,
+//                           paddingLeft: 10,
+//                           paddingRight: 5
+//                         }}
+//                       >
+//                         <Image source={iconSource} style={styles.iconStyle} />
+//                       </View>
+//                     )
+//                     : null
+//                 }
+//                 <View style={{ flex: 1 }}>
+//                   <MenuOption value={option} text={option} />
+//                 </View>
+//               </View>
+//             );
+//           }}
+//           keyExtractor={(item, index) => index.toString()}
+//           style={{ height: 37 * options.length }}
+//         />
+//       </MenuOptions>
+//     </Menu>
+//   );
+// };
 
 const getUpdatedStyles = () => {
   let ret = _.cloneDeep(styles.menuOptionsStyles);

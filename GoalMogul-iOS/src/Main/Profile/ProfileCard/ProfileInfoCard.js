@@ -5,6 +5,7 @@ import {
   Image
 } from 'react-native';
 import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 
 /* Components */
 import ProfileActionButton from '../../Common/Button/ProfileActionButton';
@@ -36,7 +37,8 @@ class ProfileInfoCard extends Component {
 
   handleMutualFriendOnPressed = () => {
     const { pageId, userId } = this.props;
-    if (this.props.self) {
+    // canEdit means self
+    if (this.props.canEdit) {
       // Jump to meetTab
       Actions.jump('meetTab');
       Actions.push('friendTabView');

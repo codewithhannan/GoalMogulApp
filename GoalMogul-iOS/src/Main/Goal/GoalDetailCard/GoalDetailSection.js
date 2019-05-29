@@ -87,6 +87,19 @@ class GoalDetailSection extends React.PureComponent {
     };
   }
 
+  componentDidMount() {
+    if (this.props.onRef !== null) {
+      this.props.onRef(this);
+    }
+  }
+
+  openHeadlineMenu() {
+    if (this.headline !== undefined) {
+      console.log(`${DEBUG_KEY}: [ openHeadlineMenu ]`);
+      this.headline.openMenu();
+    }
+  }
+
   handleOnLayout = (event) => {
     const { height } = event.nativeEvent.layout;
     this.props.onContentSizeChange(height);
@@ -235,6 +248,7 @@ class GoalDetailSection extends React.PureComponent {
         />
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
+            onRef={(ref) => { this.headline = ref; }}
             name={owner.name || ''}
             category={category}
             isSelf={this.props.userId === owner._id}
@@ -243,6 +257,7 @@ class GoalDetailSection extends React.PureComponent {
             user={owner}
             pageId={this.props.pageId}
             goalId={this.props.goalId}
+            menuName={this.props.menuName}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <View style={{ flexDirection: 'row', marginTop: 5 }}>

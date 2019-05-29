@@ -115,12 +115,18 @@ class RichText extends React.Component {
     // },
     return (
       <View style={[this.props.textContainerStyle]}>
-        <Hyperlink linkStyle={styles.url} onPress={(url, text) => this.handleUrlPress(url)}>
+        {/* <Hyperlink linkStyle={styles.url} onPress={(url, text) => this.handleUrlPress(url)}> */}
           <ParsedText
             {...this.props}
             style={[this.props.textStyle]}
             parse={
               [
+                { type: 'url', style: styles.url, onPress: this.handleUrlPress },
+                { 
+                  pattern: URL_REGEX, // Additional regex to match without HTTP protocal
+                  style: styles.url,
+                  onPress: this.handleUrlPress
+                },
                 // { type: 'phone', style: styles.phone, onPress: this.handlePhonePress },
                 // { type: 'email', style: styles.email, onPress: this.handleEmailPress },
                 ...parsedTags
@@ -130,7 +136,7 @@ class RichText extends React.Component {
           >
             {convertedText}
           </ParsedText>
-        </Hyperlink>
+        {/* </Hyperlink> */}
       </View>
     );
   }

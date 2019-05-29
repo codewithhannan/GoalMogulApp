@@ -302,3 +302,5 @@ export const makeCaretOptions = (type, goalRef, postRef) => {
   console.warn(`[ Utils ]: [ makeCaretOptions ]: invalid type`, type);
   return [];
 };
+
+export const constructMenuName = (component, pageId) => `${component}-${pageId}`;

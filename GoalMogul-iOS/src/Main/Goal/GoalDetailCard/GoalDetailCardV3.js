@@ -12,7 +12,8 @@ import {
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import {
-  MenuProvider
+  MenuProvider,
+  withMenuContext
 } from 'react-native-popup-menu';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { Constants } from 'expo';
@@ -78,6 +79,7 @@ import {
   // APP_BLUE
 } from '../../../styles';
 import { Logger } from '../../../redux/middleware/utils/Logger';
+import { constructMenuName } from '../../../redux/middleware/utils';
 
 const initialLayout = {
   height: 0,
@@ -90,6 +92,7 @@ const DEBUG_KEY = '[ UI GoalDetailCardV3 ]';
 const TABBAR_HEIGHT = 48.5;
 // const COMMENTBOX_HEIGHT = 43;
 const TOTAL_HEIGHT = TABBAR_HEIGHT;
+const COMPONENT_NAME = 'goalDetail';
 
 class GoalDetailCardV3 extends Component {
   constructor(props) {
@@ -133,7 +136,8 @@ class GoalDetailCardV3 extends Component {
         initialFocusCommentBox, // Boolean to determine if we focus on comment box initially
         initialShowGoalModal, // Boolean to determine if we open goal edition modal
         initialUnMarkGoalAsComplete, // Boolean to determine if we unmark a goal as complete
-        initialMarkGoalAsComplete // Boolean to determine if we mark a goal as complete
+        initialMarkGoalAsComplete, // Boolean to determine if we mark a goal as complete
+        showCaret // Boolean to determine if we open caret on the top right for goal
       } = initial;
       let newCommentParams = {
         commentDetail: {
@@ -191,8 +195,17 @@ class GoalDetailCardV3 extends Component {
           this.handleReplyTo();
         }, 500);        
       }
-      this.handleOnCommentSubmitEditing = this.handleOnCommentSubmitEditing.bind(this);
+
+      if (showCaret) {
+        if (this.goalDetailSection !== undefined) {
+          setTimeout(() => {
+            this.goalDetailSection.openHeadlineMenu();
+          }, 300);
+        }
+      }
     }
+
+    this.handleOnCommentSubmitEditing = this.handleOnCommentSubmitEditing.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -432,6 +445,7 @@ class GoalDetailCardV3 extends Component {
       >
         <View style={{ height: this.state.cardHeight, backgroundColor: 'white' }}>
           <GoalDetailSection
+            onRef={(ref) => { this.goalDetailSection = ref; }}
             item={goalDetail}
             onSuggestion={() => {
               // Goes to central tab by opening all comments
@@ -447,6 +461,7 @@ class GoalDetailCardV3 extends Component {
             onContentSizeChange={this.onContentSizeChange}
             pageId={pageId}
             goalId={goalId}
+            menuName={constructMenuName(COMPONENT_NAME, this.props.pageId)}
           />
           <View style={{ borderBottomWidth: 0.5, borderColor: '#e5e5e5' }} />
           {this.renderFocusedItem()}

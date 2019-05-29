@@ -300,7 +300,7 @@ class ProfileDetailCard extends Component {
     ]);
 
     const moreButtonActionSheet = actionSheet(
-      ['Share to direct message', 'Share to group conversation', 'Cancel'],
+      ['Share as Direct Message', 'Share to Group Chat', 'Cancel'],
       2,
       moreButtonOptions
     );
@@ -316,7 +316,7 @@ class ProfileDetailCard extends Component {
   /**
    * Two buttons are rendered
    * 1. Message
-   * 2. More --> open iOS menu with two options ['Share to direct message', 'Share to group conversation']
+   * 2. More --> open iOS menu with two options ['Share as Direct Message', 'Share to Group Chat', 'Cancel']
    */
   renderChatButtons() {
     return (
