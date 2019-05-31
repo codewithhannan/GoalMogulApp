@@ -12,6 +12,7 @@ import {
 	TouchableOpacity,
 	ImageBackground,
 	FlatList,
+	ActivityIndicator,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { CheckBox, SearchBar } from 'react-native-elements';
