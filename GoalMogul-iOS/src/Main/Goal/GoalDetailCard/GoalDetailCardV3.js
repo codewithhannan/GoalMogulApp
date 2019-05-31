@@ -249,8 +249,7 @@ class GoalDetailCardV3 extends Component {
   }
 
   // Can be replaced by memorized selector
-  getFocusedItem(focusType, focusRef) {
-    const { goalDetail } = this.props;
+  getFocusedItem(focusType, focusRef, goalDetail) {
     const type = focusType === 'step' ? 'steps' : 'needs';
     let focusedItem = { description: '', isCompleted: false };
     if (_.has(goalDetail, `${type}`)) {
@@ -367,13 +366,19 @@ class GoalDetailCardV3 extends Component {
       return;
     }
 
-    this.setState({
-      ...this.state,
-      centralTabContentOffset: this.state.scroll._value
-    });
+    // Only record the scroll if we are switching tab.
+    // This method can be called in the same tab
+    if (navigationState && navigationState.index !== index) {
+      this.setState({
+        ...this.state,
+        centralTabContentOffset: this.state.scroll._value
+      });
+    }
+    
     this.props.goalDetailSwitchTabV2ByKey(
       'focusTab', focusRef, focusType, goalId, pageId
     );
+    
     Animated.timing(this.state.scroll, {
       toValue: new Animated.Value(0),
       duration: 300,
@@ -419,6 +424,7 @@ class GoalDetailCardV3 extends Component {
             goalId={this.props.goalId}
             handleReplyTo={this.handleReplyTo}
             isSelf={this.props.isSelf}
+            handleIndexChange={this._handleIndexChange}
             initial={this.props.initial}
           />
         );
@@ -478,7 +484,7 @@ class GoalDetailCardV3 extends Component {
     const { goalDetail, navigationState } = this.props;
     const { focusType, focusRef } = navigationState;
     if (!focusType) return null;
-    const focusedItem = this.getFocusedItem(focusType, focusRef);
+    const focusedItem = this.getFocusedItem(focusType, focusRef, goalDetail);
 
     return (
       <View style={{ zIndex: 2 }}>

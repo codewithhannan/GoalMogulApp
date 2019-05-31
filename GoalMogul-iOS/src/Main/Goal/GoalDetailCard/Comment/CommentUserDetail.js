@@ -225,6 +225,7 @@ class CommentUserDetail extends Component {
                 this.props.openProfile(item.owner._id);
               }
             }}
+            onHeadlinePressed={this.props.onHeadlinePressed}
             caretOnPress={(type) => {
               console.log('Comment options type is: ', type);
               if (type === 'Report') {
@@ -325,6 +326,7 @@ class CommentUserDetail extends Component {
 
   render() {
     const { item } = this.props;
+    // console.log(`${DEBUG_KEY}: item is:`, item.owner);
     if (!item) return null;
 
     return (
