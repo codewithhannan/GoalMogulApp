@@ -20,7 +20,8 @@ import cancel from '../../../asset/utils/cancel.png';
 import {
   openProfileDetailEditForm,
   updateFriendship,
-  UserBanner
+  UserBanner,
+  shareUserProfileAsMessage
 } from '../../../actions/';
 
 // Selector
@@ -41,6 +42,8 @@ import DelayedButton from '../../Common/Button/DelayedButton';
 
 
 import { IMAGE_BASE_URL } from '../../../Utils/Constants';
+import { createOrGetDirectMessage } from '../../../redux/modules/chat/ChatActions';
+import { APP_BLUE_BRIGHT } from '../../../styles';
 
 const { width } = Dimensions.get('window');
 const DEBUG_KEY = '[ Copmonent ProfileDetailCard ]';
@@ -291,8 +294,20 @@ class ProfileDetailCard extends Component {
   // Open iOS menu with two options
   handleMoreButtonOnPress = () => {
     const moreButtonOptions = switchByButtonIndex([
-      [R.equals(0), () => {
-        // TODO: @Jay Share to direct message actions
+      [R.equals(0), () => { // share to Direct Chat
+          const searchFor = {
+            type: 'directChat',
+          };
+          const cardIconStyle = { tintColor: APP_BLUE_BRIGHT };
+          const cardIconSource = next;
+          const callback = (selectedUserId) => {
+            // fetch the direct message chat room
+            this.props.createOrGetDirectMessage(selectedUserId, (err, chatRoom) => {
+              // send the message to this room
+              this.props.shareUserProfileAsMessage(chatRoom._id, this.props.userId);
+            });
+          };
+          Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle, callback });
       }],
       [R.equals(1), () => {
         // TODO: @Jay Share to group conversation
@@ -309,8 +324,14 @@ class ProfileDetailCard extends Component {
 
   // Open direct message with this person
   handleMessageButtonOnPress = () => {
-    // TODO: @Jay open direct message with this person
-    // profile user id: this.props.userId
+    // TODO: @Jia, disable 'Message' button while this processes
+    this.props.createOrGetDirectMessage(this.props.userId, (err, chatRoom) => {
+      // TODO: @Jia re-enable the 'Message' button
+      if (err || !chatRoom) {
+        return Alert.alert('Error', 'Could not start the conversation. Please try again later.');
+      };
+      Actions.push('chatRoomConversation', { chatRoomId: chatRoom._id });
+    });
   }
 
   /**
@@ -518,6 +539,8 @@ export default connect(
   mapStateToProps,
   {
     openProfileDetailEditForm,
-    updateFriendship
+    updateFriendship,
+    createOrGetDirectMessage,
+    shareUserProfileAsMessage
   }
 )(ProfileDetailCard);

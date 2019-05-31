@@ -381,6 +381,30 @@ export const openProfileDetailEditForm = (userId, pageId) => {
   };
 };
 
+export const shareUserProfileAsMessage = (chatRoomRef, userRef) => (dispatch, getState) => {
+  const { token } = getState().user;
+
+  // send the message
+  let body = {
+    chatRoomRef,
+    content: {
+      message: '',
+    },
+    sharedEntity: {
+      userRef,
+    },
+  };
+  const handleRequestFailure = (failure) => {
+    Alert.alert('Error', 'Could not send message to selected chat.');
+  };
+  API.post(`secure/chat/message`, body, token).then(resp => {
+    if (resp.status != 200) {
+      handleRequestFailure();
+    };
+    Alert.alert('Success', 'User has been shared to the selected chat.');
+  }).catch(handleRequestFailure);
+}
+
 // TODO: profile reducer redesign to change here. The method signature. Search for usage
 export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
   return (dispatch, getState) => {
