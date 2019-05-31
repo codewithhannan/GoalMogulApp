@@ -645,7 +645,7 @@ class CreatePostModal extends Component {
 
   render() {
     const { handleSubmit, errors, initializeFromState, post, mediaRef } = this.props;
-    const modalActionText = initializeFromState ? 'Update' : 'Create';
+    const modalActionText = initializeFromState ? 'Update' : 'Post';
 
     const actionDisabled = this.props.uploading || 
       ((!post || post.trim() === '') && !mediaRef);
