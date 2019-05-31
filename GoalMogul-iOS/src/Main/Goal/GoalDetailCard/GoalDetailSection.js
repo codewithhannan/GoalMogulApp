@@ -164,7 +164,7 @@ class GoalDetailSection extends React.PureComponent {
           onPress={this.handleSeeMore}
         >
           <Text style={styles.seeMoreTextStyle}>
-            {this.state.seeMore && text.length > 130 ? 'See less' : 'See more'}
+            {this.state.seeMore ? 'See less' : 'See more'}
           </Text>
         </TouchableOpacity>
       );

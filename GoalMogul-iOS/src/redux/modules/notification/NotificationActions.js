@@ -102,9 +102,20 @@ export const handlePushNotification = (notification) => (dispatch, getState) => 
     let initialProps = {};
     if (path.length > 3) {
       if (path[2] === 'smsplanner' && path[3] === 'true') {
-        initialProps = { showCaret: true };
+        initialProps = { ...initialProps, showCaret: true };
+      }
+
+      if (path[2] === 'comment' && !_.isEmpty(path[3])) {
+        initialProps = { 
+          ...initialProps,
+          focusType: 'comment',
+          focusRef: undefined,
+          initialScrollToComment: true,
+          commentId: p[3]
+        };
       }
     }
+
     return openGoalDetailById(entityId, initialProps)(dispatch, getState);
   }
 
@@ -183,24 +194,37 @@ export const openNotificationDetail = (item) => (dispatch, getState) => {
   }
 
   if (entityType === 'goal') {
-    if (isValidItem(item.goalRef)) {
-      let initialProps = {};
-      if (item.commentRef) {
-        initialProps = {
-          focusType: 'comment',
-          focusRef: undefined,
-          initialShowSuggestionModal: false
-        }
+    let initialProps = {};
+    if (item.commentRef) {
+      initialProps = {
+        focusType: 'comment',
+        focusRef: undefined,
+        initialShowSuggestionModal: false
+      }
+    }
+
+    if (p.length > 3) {
+      if (p[2] === 'smsplanner' && p[3] === 'true') {
+        initialProps = { ...initialProps, showCaret: true };
       }
 
-      if (path.length > 3) {
-        if (path[2] === 'smsplanner' && path[3] === 'true') {
-          initialProps = { ...initialProps, showCaret: true };
-        }
+      if (p[2] === 'comment' && !_.isEmpty(p[3])) {
+        initialProps = { 
+          ...initialProps,
+          focusType: 'comment',
+          focusRef: undefined,
+          initialScrollToComment: true,
+          commentId: p[3]
+        };
       }
+    }
+
+    console.log(`${DEBUG_KEY}: initialProps: `, initialProps);
+    console.log(`${DEBUG_KEY}: path: `, p);
+    if (isValidItem(item.goalRef)) {
       return openGoalDetail(item.goalRef, initialProps)(dispatch, getState);  
     }
-    return openGoalDetailById(entityId)(dispatch, getState);
+    return openGoalDetailById(entityId, initialProps)(dispatch, getState);
   }
 
   // if (entityType === 'share') {

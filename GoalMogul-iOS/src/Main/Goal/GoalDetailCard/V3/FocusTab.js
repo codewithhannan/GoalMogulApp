@@ -64,6 +64,9 @@ class FocusTab extends React.PureComponent {
 
   componentDidMount() {
     console.log(`${DEBUG_KEY}: component did mount`);
+    if (this.props.onRef !== null) {
+      this.props.onRef(this);
+    }
   }
   
   // Refresh goal detail and comments all together
@@ -228,5 +231,7 @@ export default connect(
   {
     goalDetailSwitchTabV2ByKey,
     resetCommentType
-  }
+  },
+  null,
+  { withRef: true }
 )(FocusTab);

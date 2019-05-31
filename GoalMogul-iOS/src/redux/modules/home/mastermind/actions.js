@@ -57,8 +57,9 @@ export const openGoalDetailById = (goalId, initialProps) => (dispatch, getState)
     }
   });
 
-  refreshGoalDetailById(goalId, pageId)(dispatch, getState);
-  refreshComments('Goal', goalId, tab, pageId)(dispatch, getState);
+  // In the version 0.3.9 and later, loading goal and comment is done in goal detail
+  // refreshGoalDetailById(goalId, pageId)(dispatch, getState);
+  // refreshComments('Goal', goalId, tab, pageId)(dispatch, getState);
   // TODO: create new stack using Actions.create(React.Element) if needed
   const componentToOpen = componentKeyByTab(tab, 'goal');
   Actions.push(`${componentToOpen}`, { initial: { ...initialProps }, goalId, pageId });
@@ -88,8 +89,8 @@ export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
     refreshGoalDetailById(_id, pageId)(dispatch, getState);
   }
 
-  refreshComments('Goal', _id, tab, pageId)(dispatch, getState);
-  // TODO: create new stack using Actions.create(React.Element) if needed
+  // In the version 0.3.9 and later, loading goal and comment is done in goal detail
+  // refreshComments('Goal', _id, tab, pageId)(dispatch, getState);
   const componentToOpen = componentKeyByTab(tab, 'goal');
   Actions.push(`${componentToOpen}`, { initial: { ...initialProps }, goalId: _id, pageId });
 };
