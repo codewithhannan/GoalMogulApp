@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   View,
-  TouchableOpacity,
   FlatList,
   ActivityIndicator
 } from 'react-native';
@@ -15,6 +14,7 @@ import ContactCard from './ContactCard';
 import ContactDetail from './ContactDetail';
 import ModalHeader from '../Main/Common/Header/ModalHeader';
 import EmptyResult from '../Main/Common/Text/EmptyResult';
+import DelayedButton from '../Main/Common/Button/DelayedButton';
 
 /* Styles */
 import Styles from './Styles';
@@ -103,11 +103,11 @@ class ContactSync extends Component {
     // Assign actionable buttons
     const button = (type !== undefined && type === 'meet') ?
     null :
-    (<TouchableOpacity activeOpacity={0.6} onPress={this.handleDoneOnPressed.bind(this)}>
+    (<DelayedButton activeOpacity={0.6} onPress={this.handleDoneOnPressed.bind(this)}>
       <View style={styles.footer}>
         <Button text='Done' />
       </View>
-    </TouchableOpacity>);
+    </DelayedButton>);
 
     const data = (type !== undefined && type === 'meet') ?
       this.props.meetMatchedContacts.data : this.props.registrationMatchedContacts.data;

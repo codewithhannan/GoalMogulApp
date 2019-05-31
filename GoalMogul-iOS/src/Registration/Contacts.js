@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -10,6 +9,7 @@ import { connect } from 'react-redux';
 import Header from './Common/Header';
 import Button from './Common/Button';
 import Divider from './Common/Divider';
+import DelayedButton from '../Main/Common/Button/DelayedButton';
 
 /* Styles */
 import Styles from './Styles';
@@ -58,17 +58,17 @@ class Contacts extends Component {
             Note: we do not collect or share contact data.
           </Text>
 
-          <TouchableOpacity activeOpacity={0.6} onPress={this.handleNextOnPressed.bind(this)}>
+          <DelayedButton activeOpacity={0.6} onPress={this.handleNextOnPressed.bind(this)}>
             <View>
               <Button text='Sync' />
             </View>
-          </TouchableOpacity>
+          </DelayedButton>
 
-          <TouchableOpacity activeOpacity={0.6} onPress={this.handleSkipOnPressed.bind(this)}>
+          <DelayedButton activeOpacity={0.6} onPress={this.handleSkipOnPressed.bind(this)}>
             <View>
               <Button text='Skip' arrow />
             </View>
-          </TouchableOpacity>
+          </DelayedButton>
         </View>
       </View>
     );

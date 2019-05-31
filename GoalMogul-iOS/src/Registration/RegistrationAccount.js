@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import {
-  KeyboardAvoidingView,
   View,
-  ScrollView,
   Text,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
   Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -18,6 +14,7 @@ import Header from './Common/Header';
 import Button from './Common/Button';
 import Divider from './Common/Divider';
 import Input from './Common/Input';
+import DelayedButton from '../Main/Common/Button/DelayedButton';
 
 /* Styles */
 import Styles from './Styles';
@@ -123,7 +120,7 @@ class Account extends Component {
             {this.renderError(error)}
             <Field
               name='name'                  
-              label='Full name'
+              label='Full Name'
               withRef
               component={Input}
               disabled={this.props.loading}
@@ -135,7 +132,7 @@ class Account extends Component {
             <Field
               ref='email'
               name='email'
-              label='Email or Phone number'
+              label='Email or Phone Number'
               withRef
               title='Please specify your country code, e.g. +1 for US'
               returnKeyType='next'
@@ -160,11 +157,11 @@ class Account extends Component {
               onSubmitEditing={handleSubmit(this.handleNextPressed)}
             />
 
-            <TouchableOpacity activeOpacity={0.6} onPress={handleSubmit(this.handleNextPressed)}>
+            <DelayedButton activeOpacity={0.6} onPress={handleSubmit(this.handleNextPressed)}>
               <View>
                 <Button text='Next' />
               </View>
-            </TouchableOpacity>
+            </DelayedButton>
             {this.renderSplitter()}
             {this.renderLogIn()}
           </View>
