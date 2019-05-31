@@ -87,7 +87,7 @@ class CreateGoalButtonOverlay extends Component {
     ]).start(() => {
       Actions.pop();
       Actions.createPostModal({ 
-        callback: this.props.onClose,
+        callback: this.props.callback,
         onClose: this.props.onClose,
         openProfile: this.props.openProfile,
         pageId: this.props.pageId
@@ -116,6 +116,7 @@ class CreateGoalButtonOverlay extends Component {
     ]).start(() => {
       Actions.pop();
       Actions.createGoalModal({ 
+        callback: this.props.callback,
         onCreate: this.props.onCreate, 
         onClose: this.props.onClose,
         openProfile: this.props.openProfile,
