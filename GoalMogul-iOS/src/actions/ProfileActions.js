@@ -381,6 +381,39 @@ export const openProfileDetailEditForm = (userId, pageId) => {
   };
 };
 
+
+export const createOrGetDirectMessage = (userId, maybeCallback) => (dispatch, getState) => {
+	const { token } = getState().user;
+	const body = {
+		roomType: 'Direct',
+		membersToAdd: userId,
+	};
+	API.post(`secure/chat/room`, body, token).then(resp => {
+		if (resp.status != 200) {
+			if (maybeCallback) {
+				return maybeCallback(new Error('Error creating chat.'));
+			};
+			return Alert.alert('Error', 'Could not start the conversation. Please try again later.');
+		};
+		const chatRoom = resp.data;
+		if (!chatRoom) {
+			if (maybeCallback) {
+				return maybeCallback(new Error('Error creating chat.'));
+			};
+			return Alert.alert('Error', 'Could not start the conversation. Please try again later.');
+    };
+		if (maybeCallback) {
+			maybeCallback(null, chatRoom);
+		} else {
+			Actions.push('chatRoomConversation', { chatRoomId: chatRoom._id });
+		};
+	}).catch(err => {
+		if (maybeCallback) {
+			return maybeCallback(err);
+		};
+		Alert.alert('Error', 'Could not create a conversation with specified user.');
+	});
+};
 export const shareUserProfileAsMessage = (chatRoomRef, userRef) => (dispatch, getState) => {
   const { token } = getState().user;
 

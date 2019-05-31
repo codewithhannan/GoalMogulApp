@@ -21,7 +21,8 @@ import {
   openProfileDetailEditForm,
   updateFriendship,
   UserBanner,
-  shareUserProfileAsMessage
+  shareUserProfileAsMessage,
+  createOrGetDirectMessage
 } from '../../../actions/';
 
 // Selector
@@ -42,8 +43,8 @@ import DelayedButton from '../../Common/Button/DelayedButton';
 
 
 import { IMAGE_BASE_URL } from '../../../Utils/Constants';
-import { createOrGetDirectMessage } from '../../../redux/modules/chat/ChatActions';
 import { APP_BLUE_BRIGHT } from '../../../styles';
+import { Actions } from 'react-native-router-flux';
 
 const { width } = Dimensions.get('window');
 const DEBUG_KEY = '[ Copmonent ProfileDetailCard ]';
@@ -107,7 +108,6 @@ class ProfileDetailCard extends Component {
   // type: ['unfriend', 'deleteFriend', 'requestFriend']
   handleButtonOnPress = (type) => {
     if (type === 'requestFriend') {
-      console.log('request friend');
       this.props.updateFriendship(
         this.props.userId,
         '',
@@ -304,6 +304,9 @@ class ProfileDetailCard extends Component {
             // fetch the direct message chat room
             this.props.createOrGetDirectMessage(selectedUserId, (err, chatRoom) => {
               // send the message to this room
+              if (err || !chatRoom) {
+                return Alert.alert('Error retrieving chat with user');
+              };
               this.props.shareUserProfileAsMessage(chatRoom._id, this.props.userId);
             });
           };
