@@ -22,6 +22,9 @@ import {
 import {
   refreshGoalDetailById
 } from '../../goal/GoalDetailActions';
+import {
+  EMPTY_GOAL
+} from '../../../../Utils/Constants';
 
 import { api as API } from '../../../middleware/api';
 import { queryBuilder, constructPageId, componentKeyByTab } from '../../../middleware/utils';
@@ -49,7 +52,8 @@ export const openGoalDetailById = (goalId, initialProps) => (dispatch, getState)
     payload: {
       tab,
       pageId,
-      goalId
+      goalId,
+      goal: { ...EMPTY_GOAL }
     }
   });
 

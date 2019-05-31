@@ -84,3 +84,28 @@ export const CARET_OPTION_NOTIFICATION_UNSUBSCRIBE = 'Unfollow';
 export const GROUP_CHAT_DEFAULT_ICON_URL = 'https://i.imgur.com/dP71It0.png';
 
 export const SHOW_SEE_MORE_TEXT_LENGTH = 110;
+
+export const EMPTY_GOAL = {
+    _id: '',
+    category: 'General',
+    details: {
+        tags: [],
+        text: ''
+    },
+    lastUpdated: '',
+    needs: [],
+    owner: {
+        _id: '',
+        name: '',
+        profile: {
+        elevatorPitch: '',
+        occupation: '',
+        pointsEarned: 0,
+        views: 0,
+        },
+    },
+    priority: 0,
+    privacy: 'friends',
+    steps: [],
+    title: '',
+};
