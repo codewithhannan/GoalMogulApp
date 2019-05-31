@@ -343,6 +343,9 @@ class ProfileDetailCard extends Component {
    * 2. More --> open iOS menu with two options ['Share as Direct Message', 'Share to Group Chat', 'Cancel']
    */
   renderChatButtons() {
+    if (this.props.self) {
+      return <View style={{ height: 55.5 }}/>
+    }
     return (
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: padding, marginTop: 5 }}>
         <DelayedButton 
