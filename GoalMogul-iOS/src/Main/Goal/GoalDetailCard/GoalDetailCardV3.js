@@ -475,7 +475,8 @@ class GoalDetailCardV3 extends Component {
    * Render focused item.
    */
   renderFocusedItem() {
-    const { focusType, focusRef } = this.props.navigationState;
+    const { goalDetail, navigationState } = this.props;
+    const { focusType, focusRef } = navigationState;
     if (!focusType) return null;
     const focusedItem = this.getFocusedItem(focusType, focusRef);
 
@@ -483,6 +484,7 @@ class GoalDetailCardV3 extends Component {
       <View style={{ zIndex: 2 }}>
         <SectionCardV2
           type={focusType}
+          goalRef={goalDetail}
           item={focusedItem}
           isFocusedItem
           isSelf={this.props.isSelf}
