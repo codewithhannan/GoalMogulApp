@@ -58,10 +58,15 @@ class FocusTab extends React.PureComponent {
       commentBoxPadding: new Animated.Value(0),
       keyboardDidShow: false
     };
+    this.scrollToIndex = this.scrollToIndex.bind(this);
+    this.handleHeadlineOnPressed = this.handleHeadlineOnPressed.bind(this);
   }
 
   componentDidMount() {
     console.log(`${DEBUG_KEY}: component did mount`);
+    if (this.props.onRef !== null) {
+      this.props.onRef(this);
+    }
   }
   
   // Refresh goal detail and comments all together
@@ -69,14 +74,22 @@ class FocusTab extends React.PureComponent {
     console.log(`${DEBUG_KEY}: user tries to refresh.`);
   }
 
-  scrollToIndex = (index, viewOffset = 0) => {
+  scrollToIndex = (index, viewOffset = 0, animated = true) => {
     this.flatlist.getNode().scrollToIndex({
     // this.flatlist.scrollToIndex({
       index,
-      animated: true,
+      animated,
       viewPosition: 1,
       viewOffset
     });
+  }
+
+  handleHeadlineOnPressed = (focusType, focusRef) => {
+    // Scroll to top without animation
+    this.scrollToIndex(0, 0, false);
+
+    // Switch to the focused item
+    this.props.handleIndexChange(1, focusType, focusRef);
   }
 
   keyExtractor = (item) => {
@@ -100,12 +113,13 @@ class FocusTab extends React.PureComponent {
         reportType='detail'
         pageId={this.props.pageId}
         entityId={this.props.goalId}
+        onHeadlinePressed={this.handleHeadlineOnPressed}
       />
     );
   }
 
   render() {
-    const { data, focusType, pageId } = this.props;
+    const { data, focusType, pageId, focusRef } = this.props;
     if (!focusType) return null;
     const emptyText = switchCaseEmptyText(focusType);
 
@@ -189,6 +203,7 @@ const makeMapStateToProps = () => {
       newComment,
       data, // Comments of interest
       // loading: loading || goal.loading,
+      loading: false,
       focusType,
       focusRef,
       goalDetail: goal
@@ -216,5 +231,7 @@ export default connect(
   {
     goalDetailSwitchTabV2ByKey,
     resetCommentType
-  }
+  },
+  null,
+  { withRef: true }
 )(FocusTab);

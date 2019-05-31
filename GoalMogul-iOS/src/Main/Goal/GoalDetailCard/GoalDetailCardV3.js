@@ -19,7 +19,6 @@ import { Constants } from 'expo';
 import {
   DotIndicator
 } from 'react-native-indicators';
-import { Actions } from 'react-native-router-flux';
 
 // Actions
 import {
@@ -28,7 +27,8 @@ import {
   goalDetailSwitchTabV2,
   goalDetailSwitchTabV2ByKey,
   editGoal,
-  markGoalAsComplete
+  markGoalAsComplete,
+  refreshGoalDetailById
 } from '../../../redux/modules/goal/GoalDetailActions';
 
 import {
@@ -40,7 +40,8 @@ import {
   createCommentForSuggestion,
   resetCommentType,
   updateNewComment,
-  createSuggestion
+  createSuggestion,
+  refreshComments
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 // selector
@@ -78,6 +79,7 @@ import {
   // APP_BLUE
 } from '../../../styles';
 import { Logger } from '../../../redux/middleware/utils/Logger';
+import { constructMenuName } from '../../../redux/middleware/utils';
 
 const initialLayout = {
   height: 0,
@@ -90,6 +92,7 @@ const DEBUG_KEY = '[ UI GoalDetailCardV3 ]';
 const TABBAR_HEIGHT = 48.5;
 // const COMMENTBOX_HEIGHT = 43;
 const TOTAL_HEIGHT = TABBAR_HEIGHT;
+const COMPONENT_NAME = 'goalDetail';
 
 class GoalDetailCardV3 extends Component {
   constructor(props) {
@@ -114,6 +117,8 @@ class GoalDetailCardV3 extends Component {
     this.getFocusedItem = this.getFocusedItem.bind(this);
     this.keyboardWillShow = this.keyboardWillShow.bind(this);
     this.keyboardWillHide = this.keyboardWillHide.bind(this);
+    this.handleScrollToCommentItem = this.handleScrollToCommentItem.bind(this);
+    this.focusTab = undefined;
   }
 
   componentDidMount() {
@@ -123,7 +128,19 @@ class GoalDetailCardV3 extends Component {
     this.keyboardWillHideListener = Keyboard.addListener(
       'keyboardWillHide', this.keyboardWillHide);
 
-    const { initial, goalDetail, goalId, pageId } = this.props;
+    const { initial, goalDetail, goalId, pageId, tab } = this.props;
+
+    // On comment loaded, scroll to corresponding comment item if needed
+    const refreshCommentsCallback = initial && initial.initialScrollToComment && initial.commentId
+      ? () => this.handleScrollToCommentItem(initial.commentId)
+      : undefined;
+
+    this.props.refreshComments('Goal', goalId, tab, pageId, refreshCommentsCallback);
+
+    if (initial && initial.refreshGoal !== false) {
+      this.props.refreshGoalDetailById(goalId, pageId);
+    }
+
     console.log(`${DEBUG_KEY}: did mount with goalId: ${goalId}, pageId: ${pageId}`);
     if (initial && !_.isEmpty(initial)) {
       const { 
@@ -133,7 +150,8 @@ class GoalDetailCardV3 extends Component {
         initialFocusCommentBox, // Boolean to determine if we focus on comment box initially
         initialShowGoalModal, // Boolean to determine if we open goal edition modal
         initialUnMarkGoalAsComplete, // Boolean to determine if we unmark a goal as complete
-        initialMarkGoalAsComplete // Boolean to determine if we mark a goal as complete
+        initialMarkGoalAsComplete, // Boolean to determine if we mark a goal as complete
+        showCaret // Boolean to determine if we open caret on the top right for goal
       } = initial;
       let newCommentParams = {
         commentDetail: {
@@ -191,8 +209,17 @@ class GoalDetailCardV3 extends Component {
           this.handleReplyTo();
         }, 500);        
       }
-      this.handleOnCommentSubmitEditing = this.handleOnCommentSubmitEditing.bind(this);
+
+      if (showCaret) {
+        if (this.goalDetailSection !== undefined) {
+          setTimeout(() => {
+            this.goalDetailSection.openHeadlineMenu();
+          }, 300);
+        }
+      }
     }
+
+    this.handleOnCommentSubmitEditing = this.handleOnCommentSubmitEditing.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -236,8 +263,7 @@ class GoalDetailCardV3 extends Component {
   }
 
   // Can be replaced by memorized selector
-  getFocusedItem(focusType, focusRef) {
-    const { goalDetail } = this.props;
+  getFocusedItem(focusType, focusRef, goalDetail) {
     const type = focusType === 'step' ? 'steps' : 'needs';
     let focusedItem = { description: '', isCompleted: false };
     if (_.has(goalDetail, `${type}`)) {
@@ -305,6 +331,29 @@ class GoalDetailCardV3 extends Component {
     ]).start();
   }
 
+  /**
+   * Scroll to a comment item from wherever
+   */
+  handleScrollToCommentItem = (commentId) => {
+    this._handleIndexChange(1, 'comment', undefined);
+    const { originalComments, comments } = this.props;
+
+    Logger.log(`${DEBUG_KEY}: [ handleScrollToCommentItem ]: originalComments`, originalComments, 2);
+    const parentCommentId = getParentCommentId(commentId, originalComments);
+
+    Logger.log(`${DEBUG_KEY}: [ handleScrollToCommentItem ]: commentId`, commentId, 2);
+    if (!parentCommentId) return; // Do nothing since it's no loaded. Defensive coding
+    
+    Logger.log(`${DEBUG_KEY}: [ handleScrollToCommentItem ]: parentCommentId`, parentCommentId, 2);
+    const parentCommentIndex = comments.findIndex(c => c._id === parentCommentId);
+    if (this.focusTab === undefined || parentCommentIndex === -1) return;
+
+    Logger.log(`${DEBUG_KEY}: [ handleScrollToCommentItem ]: parentCommentIndex`, parentCommentIndex, 2);
+    setTimeout(() => {
+      this.focusTab.scrollToIndex(parentCommentIndex);
+    }, 200);
+  }
+
   handleReplyTo = (type) => {
     this.setState({
       ...this.state,
@@ -338,7 +387,10 @@ class GoalDetailCardV3 extends Component {
     this.props.updateNewComment(commentToReturn, this.props.pageId);
   }
 
-  // Tab related handlers
+  /**
+   * Tab related handlers
+   * focusType: ['comment', 'need', 'step']
+   */
   _handleIndexChange = (index, focusType, focusRef) => {
     // TODO: change to v2
     const { navigationState, pageId, goalId } = this.props;
@@ -354,13 +406,19 @@ class GoalDetailCardV3 extends Component {
       return;
     }
 
-    this.setState({
-      ...this.state,
-      centralTabContentOffset: this.state.scroll._value
-    });
+    // Only record the scroll if we are switching tab.
+    // This method can be called in the same tab
+    if (navigationState && navigationState.index !== index) {
+      this.setState({
+        ...this.state,
+        centralTabContentOffset: this.state.scroll._value
+      });
+    }
+    
     this.props.goalDetailSwitchTabV2ByKey(
       'focusTab', focusRef, focusType, goalId, pageId
     );
+    
     Animated.timing(this.state.scroll, {
       toValue: new Animated.Value(0),
       duration: 300,
@@ -393,6 +451,7 @@ class GoalDetailCardV3 extends Component {
       case 'focusTab':
         return (
           <FocusTab
+            onRef={(ref) => { this.focusTab = ref; }}
             onScroll={Animated.event(
               [{ nativeEvent: { contentOffset: { y: this.state.scroll } } }],
               { useNativeDriver: true }
@@ -406,6 +465,7 @@ class GoalDetailCardV3 extends Component {
             goalId={this.props.goalId}
             handleReplyTo={this.handleReplyTo}
             isSelf={this.props.isSelf}
+            handleIndexChange={this._handleIndexChange}
             initial={this.props.initial}
           />
         );
@@ -432,6 +492,7 @@ class GoalDetailCardV3 extends Component {
       >
         <View style={{ height: this.state.cardHeight, backgroundColor: 'white' }}>
           <GoalDetailSection
+            onRef={(ref) => { this.goalDetailSection = ref; }}
             item={goalDetail}
             onSuggestion={() => {
               // Goes to central tab by opening all comments
@@ -447,6 +508,7 @@ class GoalDetailCardV3 extends Component {
             onContentSizeChange={this.onContentSizeChange}
             pageId={pageId}
             goalId={goalId}
+            menuName={constructMenuName(COMPONENT_NAME, this.props.pageId)}
           />
           <View style={{ borderBottomWidth: 0.5, borderColor: '#e5e5e5' }} />
           {this.renderFocusedItem()}
@@ -460,14 +522,16 @@ class GoalDetailCardV3 extends Component {
    * Render focused item.
    */
   renderFocusedItem() {
-    const { focusType, focusRef } = this.props.navigationState;
+    const { goalDetail, navigationState } = this.props;
+    const { focusType, focusRef } = navigationState;
     if (!focusType) return null;
-    const focusedItem = this.getFocusedItem(focusType, focusRef);
+    const focusedItem = this.getFocusedItem(focusType, focusRef, goalDetail);
 
     return (
       <View style={{ zIndex: 2 }}>
         <SectionCardV2
           type={focusType}
+          goalRef={goalDetail}
           item={focusedItem}
           isFocusedItem
           isSelf={this.props.isSelf}
@@ -604,6 +668,23 @@ class GoalDetailCardV3 extends Component {
   }
 }
 
+const getParentCommentId = (commentId, comments) => {
+  let ret;
+  comments.forEach(c => {
+    if (!c || _.isEmpty(c)) return;
+    if (ret) return; // Already find. No need to continue
+
+    const { _id, replyToRef } = c;
+    if (_id === commentId) {
+      ret = commentId;
+    }
+    if (replyToRef === commentId) {
+      ret = replyToRef;
+    }
+  });
+  return ret;
+};
+
 const styles = StyleSheet.create({
   composerContainer: {
     left: 0,
@@ -672,6 +753,7 @@ const makeMapStateToProps = () => {
   
     const { showingModalInDetail } = state.report;
     const { userId } = state.user;
+
     const comments = getCommentByEntityId(state, goalId, pageId);
     const { data, transformedComments, loading } = comments || {
       transformedComments: [],
@@ -686,6 +768,7 @@ const makeMapStateToProps = () => {
       commentLoading: loading,
       stepsAndNeeds: getGoalStepsAndNeedsV2(state, goalId, pageId),
       comments: transformedComments,
+      originalComments: data, // All comments in raw form
       goalDetail: goal,
       navigationState: navigationStateV2,
       showingModalInDetail,
@@ -760,6 +843,8 @@ export default connect(
     createCommentForSuggestion,
     createSuggestion,
     editGoal,
-    markGoalAsComplete
+    markGoalAsComplete,
+    refreshGoalDetailById,
+    refreshComments
   }
 )(GoalDetailCardV3);

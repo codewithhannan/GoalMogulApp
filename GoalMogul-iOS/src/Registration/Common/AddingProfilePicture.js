@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import {
   View,
-  TouchableWithoutFeedback,
   ActionSheetIOS,
   Image
 } from 'react-native';
 import { connect } from 'react-redux';
 
+import DelayedButton from '../../Main/Common/Button/DelayedButton';
 import ghost from '../../asset/utils/default_profile.png';
 
 /* Actions */
@@ -69,9 +69,9 @@ class AddingProfilePicture extends Component {
 
   render() {
     return (
-      <TouchableWithoutFeedback onPress={this.handlePictureOnPressed.bind(this)}>
+      <DelayedButton onPress={this.handlePictureOnPressed.bind(this)} touchableWithoutFeedback>
         {this.renderImage()}
-      </TouchableWithoutFeedback>
+      </DelayedButton>
     );
   }
 }

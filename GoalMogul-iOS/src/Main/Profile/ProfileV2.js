@@ -51,12 +51,14 @@ import {
 } from '../../redux/modules/User/Selector';
 import PlusButton from '../Common/Button/PlusButton';
 import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users';
+import { Logger } from '../../redux/middleware/utils/Logger';
 
 const DEBUG_KEY = '[ UI ProfileV2 ]';
 // const SEARCHBAR_HEIGHT = 70;
 // const COLLAPSED_HEIGHT = 30 + SEARCHBAR_HEIGHT;
 // const HEADER_HEIGHT = 284 + 30 + SEARCHBAR_HEIGHT;
-const INFO_CARD_HEIGHT = 284;
+// const INFO_CARD_HEIGHT = 284;
+const INFO_CARD_HEIGHT = 303.5; 
 const DEFAULT_TRANSITION_TIME = 120;
 const PROMPT_TRANSITION_TIME = 50;
 
@@ -66,6 +68,7 @@ class ProfileV2 extends Component {
         this._handleIndexChange = this._handleIndexChange.bind(this);
         this.renderTabs = this.renderTabs.bind(this);
         this.handleOnBackPress = this.handleOnBackPress.bind(this);
+        this.closeProfileInfoCard = this.closeProfileInfoCard.bind(this);
         this.state = {
             infoCardHeight: new Animated.Value(INFO_CARD_HEIGHT), // Initial info card height
             infoCardOpacity: new Animated.Value(1)
@@ -78,16 +81,7 @@ class ProfileV2 extends Component {
 
         // Hide profile detail as it's not on about tab
         if (hideProfileDetail) {
-            Animated.parallel([
-                Animated.timing(this.state.infoCardHeight, {
-                    duration: PROMPT_TRANSITION_TIME,
-                    toValue: 0,
-                }),
-                Animated.timing(this.state.infoCardOpacity, {
-                    duration: PROMPT_TRANSITION_TIME,
-                    toValue: 0,
-                }),
-            ]).start();
+            this.closeProfileInfoCard();
         }
 
         this.props.handleTabRefresh('goals', userId, pageId);
@@ -98,6 +92,20 @@ class ProfileV2 extends Component {
     componentWillUnmount() {
         const { pageId, userId } = this.props;
         this.props.closeProfile(userId, pageId);
+    }
+
+    closeProfileInfoCard = () => {
+        Logger.log(`${DEBUG_KEY}: [ closeProfileInfoCard ]`, {}, 2);
+        Animated.parallel([
+            Animated.timing(this.state.infoCardHeight, {
+                duration: PROMPT_TRANSITION_TIME,
+                toValue: 0,
+            }),
+            Animated.timing(this.state.infoCardOpacity, {
+                duration: PROMPT_TRANSITION_TIME,
+                toValue: 0,
+            }),
+        ]).start();
     }
 
     handleRefresh = () => {
@@ -132,6 +140,7 @@ class ProfileV2 extends Component {
         // As we move the create option here, we no longer need to care about the tab
         Actions.createGoalButtonOverlay({ 
             tab: 'mastermind', 
+            callback: () => this.closeProfileInfoCard(),
             onCreate: () => this.props.openCreateOverlay(userId, pageId),
             onClose: () => this.props.closeCreateOverlay(userId, pageId),
             openProfile: false,

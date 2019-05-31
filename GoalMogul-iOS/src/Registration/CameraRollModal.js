@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import {
   View,
-  TouchableWithoutFeedback,
   FlatList
 } from 'react-native';
 import { connect } from 'react-redux';

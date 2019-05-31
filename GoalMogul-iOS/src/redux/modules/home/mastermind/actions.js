@@ -22,6 +22,9 @@ import {
 import {
   refreshGoalDetailById
 } from '../../goal/GoalDetailActions';
+import {
+  EMPTY_GOAL
+} from '../../../../Utils/Constants';
 
 import { api as API } from '../../../middleware/api';
 import { queryBuilder, constructPageId, componentKeyByTab } from '../../../middleware/utils';
@@ -49,12 +52,14 @@ export const openGoalDetailById = (goalId, initialProps) => (dispatch, getState)
     payload: {
       tab,
       pageId,
-      goalId
+      goalId,
+      goal: { ...EMPTY_GOAL }
     }
   });
 
-  refreshGoalDetailById(goalId, pageId)(dispatch, getState);
-  refreshComments('Goal', goalId, tab, pageId)(dispatch, getState);
+  // In the version 0.3.9 and later, loading goal and comment is done in goal detail
+  // refreshGoalDetailById(goalId, pageId)(dispatch, getState);
+  // refreshComments('Goal', goalId, tab, pageId)(dispatch, getState);
   // TODO: create new stack using Actions.create(React.Element) if needed
   const componentToOpen = componentKeyByTab(tab, 'goal');
   Actions.push(`${componentToOpen}`, { initial: { ...initialProps }, goalId, pageId });
@@ -84,8 +89,8 @@ export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
     refreshGoalDetailById(_id, pageId)(dispatch, getState);
   }
 
-  refreshComments('Goal', _id, tab, pageId)(dispatch, getState);
-  // TODO: create new stack using Actions.create(React.Element) if needed
+  // In the version 0.3.9 and later, loading goal and comment is done in goal detail
+  // refreshComments('Goal', _id, tab, pageId)(dispatch, getState);
   const componentToOpen = componentKeyByTab(tab, 'goal');
   Actions.push(`${componentToOpen}`, { initial: { ...initialProps }, goalId: _id, pageId });
 };
@@ -136,8 +141,9 @@ export const changeFilter = (tab, filterType, value) => (dispatch) => {
 //Refresh goal for mastermind tab
 export const refreshGoals = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { limit, filter } = getState().home.mastermind;
+  const { limit, filter, refreshing } = getState().home.mastermind;
   const { categories, priorities, sortBy } = filter;
+  if (refreshing) return;
   dispatch({
     type: HOME_REFRESH_GOAL,
     payload: {

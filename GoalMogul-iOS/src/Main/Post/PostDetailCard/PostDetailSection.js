@@ -157,7 +157,7 @@ class PostDetailSection extends React.PureComponent {
   }
 
   renderSeeMore(text) {
-    if (text && text.length > 60) {
+    if (text && text.length > 120) {
       return (
         <TouchableOpacity
           activeOpacity={0.6}
@@ -165,7 +165,7 @@ class PostDetailSection extends React.PureComponent {
           onPress={this.handleSeeMore}
         >
           <Text style={styles.seeMoreTextStyle}>
-            {this.state.seeMore && text.length > 100 ? 'See less' : 'See more'}
+            {this.state.seeMore? 'See less' : 'See more'}
           </Text>
         </TouchableOpacity>
       );

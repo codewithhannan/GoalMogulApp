@@ -5,16 +5,19 @@ import {
   Image
 } from 'react-native';
 import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 
 /* Components */
-import Card from './Card';
 import ProfileActionButton from '../../Common/Button/ProfileActionButton';
+import DelayedButton from '../../Common/Button/DelayedButton';
+import { DotIcon } from '../../../Utils/Icons';
 
 /* Actions */
 import { openProfileDetailEditForm } from '../../../actions/';
 
 /* Asset */
-import briefcase from '../../../asset/utils/briefcase.png';
+import brief_case from '../../../asset/utils/briefcase.png';
+import icon_meet from '../../../asset/footer/navigation/meet.png';
 import profileStyles from './Styles';
 
 /* Select */
@@ -32,11 +35,46 @@ class ProfileInfoCard extends Component {
     this.props.openProfileDetailEditForm(userId, pageId);
   }
 
+  handleMutualFriendOnPressed = () => {
+    const { pageId, userId } = this.props;
+    // canEdit means self
+    if (this.props.canEdit) {
+      // Jump to meetTab
+      Actions.jump('meetTab');
+      Actions.push('friendTabView');
+      return;  
+    }
+    Actions.push('mutualFriends', { userId, pageId });
+  }
+
+  renderFriendInfo() {
+    const title = this.props.canEdit ? 'Friends' : 'Mutual Friends';
+    const data = this.props.canEdit ? this.props.friendsCount : this.props.mutualFriends.count;
+    return (
+      <View style={{ flexDirection: 'row', paddingBottom: 25 }}>
+        <Image source={icon_meet} style={styles.iconStyle} />
+        <View style={{ marginRight: 10, marginLeft: 10, flexDirection: 'row' }}>
+          <Text style={{ fontSize: 13, color: '#646464', alignSelf: 'center' }}>
+            <Text style={{ fontWeight: 'bold' }}>{data === undefined ? 0 : data} </Text>
+            {title}
+          </Text>
+          <DotIcon 
+            iconContainerStyle={{ ...styles.dotIconContainerStyle }}
+            iconStyle={{ tintColor: '#818181', ...styles.dotIconStyle, height: 5, width: 5 }}
+          />
+          <DelayedButton activeOpacity={0.6} onPress={this.handleMutualFriendOnPressed} style={{ justifyContent: 'center' }}>
+            <Text style={{ color: '#17B3EC', fontWeight: '600', fontSize: 13 }}>View friends</Text>
+          </DelayedButton>
+        </View>
+      </View>
+    );
+  }
+
   renderOccupation(occupation) {
     if (occupation) {
       return (
-        <View style={{ flexDirection: 'row', paddingBottom: 30 }}>
-          <Image source={briefcase} style={styles.iconStyle} />
+        <View style={{ flexDirection: 'row', paddingBottom: 25 }}>
+          <Image source={brief_case} style={styles.iconStyle} />
           <Text
             style={profileStyles.headerTextStyle}
             numberOfLines={1}
@@ -98,6 +136,7 @@ class ProfileInfoCard extends Component {
     return (
       <View style={styles.cardContainerStyle}>
         <View style={styles.containerStyle}>
+          {this.renderFriendInfo()}
           {this.renderOccupation(occupation)}
           {divider}
           {this.renderElevatorPitch(elevatorPitch)}
@@ -156,17 +195,33 @@ const styles = {
   iconStyle: {
     height: 20,
     width: 20
+  },
+  dotIconStyle: {
+
+
+  },
+  dotIconContainerStyle: {
+    width: 4,
+    marginLeft: 4,
+    marginRight: 5,
+    alignSelf: 'center',
+    justifyContent: 'center'
   }
 };
 
 const mapStateToProps = (state, props) => {
   const { userId } = props;
   const canEdit = userId === state.user.userId;
-  const user = getUserData(state, userId, 'user');
+
+  const userObject = getUserData(state, userId, '');
+  const { user, mutualFriends, friendship } = userObject;
+  const friendsCount = state.meet.friends.count;
 
   return {
     canEdit,
-    user
+    user,
+    mutualFriends,
+    friendsCount
   };
 };
 

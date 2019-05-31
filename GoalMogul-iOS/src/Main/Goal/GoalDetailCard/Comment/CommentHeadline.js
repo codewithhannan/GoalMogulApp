@@ -17,6 +17,7 @@ import {
   CARET_OPTION_NOTIFICATION_SUBSCRIBE,
   CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../../Utils/Constants';
+import DelayedButton from '../../../Common/Button/DelayedButton';
 
 const DEBUG_KEY = '[ UI CommentHeadline ]';
 /**
@@ -29,7 +30,7 @@ const DEBUG_KEY = '[ UI CommentHeadline ]';
  */
 const CommentHeadline = (props) => {
   // TODO: format time
-  const { item, caretOnPress, goalRef, isCommentOwner, onNamePress } = props;
+  const { item, caretOnPress, goalRef, isCommentOwner, onNamePress, onHeadlinePressed } = props;
   const { owner, commentType, suggestion, created, maybeIsSubscribed } = item;
   const timeStamp = (created === undefined || created.length === 0)
     ? new Date() : created;
@@ -78,6 +79,7 @@ const CommentHeadline = (props) => {
           timeStamp={timeStamp}
           menu={menu}
           onNamePress={onNamePress}
+          onHeadlinePressed={onHeadlinePressed}
         />
       );
     }
@@ -172,16 +174,21 @@ const CommentHead = (props) => {
  * @param {*} props 
  */
 const CommentHeadV2 = (props) => {
-  const { goalRef, item, timeStamp, menu, onNamePress } = props;
+  const { goalRef, item, timeStamp, menu, onNamePress, onHeadlinePressed } = props;
   const { owner, needRef, stepRef } = item;
 
   let headerText = { lead: '', description: '' };
+  let focusType, focusRef;
   if (needRef) {
     headerText = suggestionForNeedStepTextV2(goalRef, true, 'Need', needRef, undefined);
+    focusType = 'need';
+    focusRef = needRef;
   }
 
   if (stepRef) {
     headerText = suggestionForNeedStepTextV2(goalRef, true, 'Step', stepRef, undefined);
+    focusType = 'step';
+    focusRef = stepRef;
   }
 
   const { lead, description } = headerText;
@@ -210,15 +217,27 @@ const CommentHeadV2 = (props) => {
         
         <View style={styles.containerStyle}>
           <Text
-            style={{ ...styles.suggestionTextStyle }}
+            style={{
+              fontSize: 10,
+              flexWrap: 'wrap',
+              alignSelf: 'center',
+              color: '#767676',
+              marginBottom: 2
+            }}
             numberOfLines={1}
             ellipsizeMode='tail'
           >
             {lead}
-            <Text style={styles.suggestionDetailTextStyle}>
+          </Text>
+          <DelayedButton activeOpacity={0.6} onPress={() => onHeadlinePressed(focusType, focusRef)}>
+            <Text 
+              style={styles.suggestionDetailTextStyle}
+              numberOfLines={1}
+              ellipsizeMode='tail'
+            >
               {description}
             </Text>
-          </Text>
+          </DelayedButton>
         </View>
       </View>
     );
@@ -483,7 +502,11 @@ const styles = {
   },
   suggestionDetailTextStyle: {
     fontWeight: '700',
-    color: '#6bc6f0'
+    color: '#6bc6f0',
+    fontSize: 10,
+    flexWrap: 'wrap',
+    paddingRight: 15,
+    marginBottom: 2
   }
 };
 

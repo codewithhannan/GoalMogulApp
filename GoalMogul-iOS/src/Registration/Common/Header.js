@@ -10,6 +10,7 @@ import Pagination from './Pagination';
 import { BackIcon } from '../../Utils/Icons';
 
 import { registrationBack, registrationLogin } from '../../actions';
+import DelayedButton from '../../Main/Common/Button/DelayedButton';
 
 // const IMAGE_HEIGHT_SMALL = 60;
 // const IMAGE_HEIGHT = 80;
@@ -64,7 +65,7 @@ class Header extends Component {
       return null;
     }
     return (
-      <TouchableWithoutFeedback onPress={this.handleBackOnClick.bind(this)}>
+      <DelayedButton onPress={this.handleBackOnClick.bind(this)} touchableWithoutFeedback>
         <View style={styles.navBarStyle}>
           <BackIcon 
             iconStyle={{
@@ -81,7 +82,7 @@ class Header extends Component {
           />
            */}
         </View>
-      </TouchableWithoutFeedback>
+      </DelayedButton>
     );
   }
 
@@ -142,7 +143,7 @@ class Header extends Component {
 
     return (
       <View style={headerStyle}>
-        <TouchableWithoutFeedback onPress={this.handleLoginBackOnClick.bind(this)}>
+        <DelayedButton onPress={this.handleLoginBackOnClick.bind(this)} touchableWithoutFeedback>
           <View style={styles.navBarStyle}>
             <BackIcon 
               iconStyle={{
@@ -151,7 +152,7 @@ class Header extends Component {
               }}
             />
           </View>
-        </TouchableWithoutFeedback>
+        </DelayedButton>
         <Image source={HeaderImage} />
       </View>
     );

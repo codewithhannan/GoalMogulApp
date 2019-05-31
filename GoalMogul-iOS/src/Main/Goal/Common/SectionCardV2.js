@@ -17,6 +17,7 @@ import next from '../../../asset/utils/next.png';
 
 // Components
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Actions
 import {
@@ -79,13 +80,13 @@ class SectionCardV2 extends Component {
     if (type === 'comment') return null;
     return (
       <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-        <TouchableOpacity
+        <DelayedButton
           activeOpacity={0.6}
           style={styles.iconContainerStyle}
           onPress={() => this.handleShareOnClick()}
         >
           <Image style={styles.iconStyle} source={forward} />
-        </TouchableOpacity>
+        </DelayedButton>
       </View>
     );
   }
@@ -103,13 +104,13 @@ class SectionCardV2 extends Component {
       : { ...styles.checkIconContainerStyle, backgroundColor: '#efefef' };
 
     return (
-      <TouchableOpacity
+      <DelayedButton
         activeOpacity={0.6}
         style={iconContainerStyle}
         onPress={onPress}
       >
         <Image style={styles.checkIconStyle} source={checkIcon} />
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 
@@ -175,7 +176,7 @@ class SectionCardV2 extends Component {
     const textToDisplay = Decode(sectionText === undefined ? 'No content' : sectionText);
 
     return (
-      <TouchableOpacity
+      <DelayedButton
         activeOpacity={0.6}
         style={{
           ...styles.sectionContainerStyle,
@@ -208,7 +209,7 @@ class SectionCardV2 extends Component {
           {this.renderStats(type)}
         </View>
         {this.renderActionIcons(type)}
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 }

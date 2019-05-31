@@ -4,12 +4,10 @@ import {
   Image,
   Text,
   Dimensions,
-  TouchableOpacity,
-  Animated
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 import R from 'ramda';
-import { Actions } from 'react-native-router-flux';
 
 /* Assets */
 import profilePic from '../../../asset/utils/defaultUserProfile.png';
@@ -22,7 +20,9 @@ import cancel from '../../../asset/utils/cancel.png';
 import {
   openProfileDetailEditForm,
   updateFriendship,
-  UserBanner
+  UserBanner,
+  shareUserProfileAsMessage,
+  createOrGetDirectMessage
 } from '../../../actions/';
 
 // Selector
@@ -39,8 +39,12 @@ import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactor
 import {
   DotIcon
 } from '../../../Utils/Icons';
+import DelayedButton from '../../Common/Button/DelayedButton';
+
 
 import { IMAGE_BASE_URL } from '../../../Utils/Constants';
+import { APP_BLUE_BRIGHT } from '../../../styles';
+import { Actions } from 'react-native-router-flux';
 
 const { width } = Dimensions.get('window');
 const DEBUG_KEY = '[ Copmonent ProfileDetailCard ]';
@@ -104,7 +108,6 @@ class ProfileDetailCard extends Component {
   // type: ['unfriend', 'deleteFriend', 'requestFriend']
   handleButtonOnPress = (type) => {
     if (type === 'requestFriend') {
-      console.log('request friend');
       this.props.updateFriendship(
         this.props.userId,
         '',
@@ -193,17 +196,6 @@ class ProfileDetailCard extends Component {
     }
   }
 
-  handleMutualFriendOnPressed = () => {
-    const { pageId, userId } = this.props;
-    if (this.props.self) {
-      // Jump to meetTab
-      Actions.jump('meetTab');
-      Actions.push('friendTabView');
-      return;  
-    }
-    Actions.push('mutualFriends', { userId, pageId });
-  }
-
   renderProfileActionButton() {
     if (this.props.self) {
       return (
@@ -267,22 +259,123 @@ class ProfileDetailCard extends Component {
     }
   }
 
-  renderFriendInfo() {
-    const title = this.props.self ? 'Friends' : 'Mutual Friends';
-    const data = this.props.self ? this.props.friendsCount : this.props.mutualFriends.count;
+  // handleMutualFriendOnPressed = () => {
+  //   const { pageId, userId } = this.props;
+  //   if (this.props.self) {
+  //     // Jump to meetTab
+  //     Actions.jump('meetTab');
+  //     Actions.push('friendTabView');
+  //     return;  
+  //   }
+  //   Actions.push('mutualFriends', { userId, pageId });
+  // }
+
+  // This is moved to ProfileInfoCard --> About section
+  // renderFriendInfo() {
+  //   const title = this.props.self ? 'Friends' : 'Mutual Friends';
+  //   const data = this.props.self ? this.props.friendsCount : this.props.mutualFriends.count;
+  //   return (
+  //     <View style={styles.friendInfoContainerStyle}>
+  //       <Text style={{ fontSize: 13, color: '#646464', alignSelf: 'center' }}>
+  //         <Text style={{ fontWeight: 'bold' }}>{data === undefined ? 0 : data} </Text>
+  //         {title}
+  //       </Text>
+  //       <DotIcon 
+  //         iconContainerStyle={{ ...styles.dotIconContainerStyle }}
+  //         iconStyle={{ tintColor: '#818181', ...styles.dotIconStyle, height: 5, width: 5 }}
+  //       />
+  //       <TouchableOpacity activeOpacity={0.6} onPress={this.handleMutualFriendOnPressed}>
+  //         <ButtonArrow text='View friends' arrow />
+  //       </TouchableOpacity>
+  //     </View>
+  //   );
+  // }
+
+  // Open iOS menu with two options
+  handleMoreButtonOnPress = () => {
+    const moreButtonOptions = switchByButtonIndex([
+      [R.equals(0), () => { // share to Direct Chat
+          const searchFor = {
+            type: 'directChat',
+          };
+          const cardIconStyle = { tintColor: APP_BLUE_BRIGHT };
+          const cardIconSource = next;
+          const callback = (selectedUserId) => {
+            // fetch the direct message chat room
+            this.props.createOrGetDirectMessage(selectedUserId, (err, chatRoom) => {
+              // send the message to this room
+              if (err || !chatRoom) {
+                return Alert.alert('Error retrieving chat with user');
+              };
+              this.props.shareUserProfileAsMessage(chatRoom._id, this.props.userId);
+            });
+          };
+          Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle, callback });
+      }],
+      [R.equals(1), () => {
+        // TODO: @Jay Share to group conversation
+      }]
+    ]);
+
+    const moreButtonActionSheet = actionSheet(
+      ['Share as Direct Message', 'Share to Group Chat', 'Cancel'],
+      2,
+      moreButtonOptions
+    );
+    return moreButtonActionSheet();
+  }
+
+  // Open direct message with this person
+  handleMessageButtonOnPress = () => {
+    // TODO: @Jia, disable 'Message' button while this processes
+    this.props.createOrGetDirectMessage(this.props.userId, (err, chatRoom) => {
+      // TODO: @Jia re-enable the 'Message' button
+      if (err || !chatRoom) {
+        return Alert.alert('Error', 'Could not start the conversation. Please try again later.');
+      };
+      Actions.push('chatRoomConversation', { chatRoomId: chatRoom._id });
+    });
+  }
+
+  /**
+   * Two buttons are rendered
+   * 1. Message
+   * 2. More --> open iOS menu with two options ['Share as Direct Message', 'Share to Group Chat', 'Cancel']
+   */
+  renderChatButtons() {
+    if (this.props.self) {
+      return <View style={{ height: 55.5 }}/>
+    }
     return (
-      <View style={styles.friendInfoContainerStyle}>
-        <Text style={{ fontSize: 13, color: '#646464', alignSelf: 'center' }}>
-          <Text style={{ fontWeight: 'bold' }}>{data === undefined ? 0 : data} </Text>
-          {title}
-        </Text>
-        <DotIcon 
-          iconContainerStyle={{ ...styles.dotIconContainerStyle }}
-          iconStyle={{ tintColor: '#818181', ...styles.dotIconStyle, height: 5, width: 5 }}
-        />
-        <TouchableOpacity activeOpacity={0.6} onPress={this.handleMutualFriendOnPressed}>
-          <ButtonArrow text='View friends' arrow />
-        </TouchableOpacity>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: padding, marginTop: 5 }}>
+        <DelayedButton 
+          activeOpacity={0.6}
+          style={{
+            borderRadius: 5,
+            backgroundColor: '#1998c9',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 10,
+          }}
+          onPress={this.handleMessageButtonOnPress}
+        >
+          <Text style={{ fontSize: 12, color: 'white', fontWeight: '600' }}>Message</Text>
+        </DelayedButton>
+
+        <DelayedButton 
+          activeOpacity={0.6}
+          style={{
+            borderRadius: 5,
+            backgroundColor: 'white',
+            borderWidth: 0.5,
+            borderColor: 'gray',
+            padding: 10,
+            marginLeft: 10
+          }}
+          onPress={this.handleMoreButtonOnPress}
+        >
+          <Text style={{ fontSize: 12, color: '#646464', fontWeight: '600' }}>More...</Text>
+        </DelayedButton>
       </View>
     );
   }
@@ -336,7 +429,8 @@ class ProfileDetailCard extends Component {
             {headline}
           </Text>
           <View style={styles.dividerStyle} />
-          {this.renderFriendInfo()}
+          {/* {this.renderFriendInfo()} */}
+          {this.renderChatButtons()}
         </View>
       </View>
     );
@@ -451,6 +545,8 @@ export default connect(
   mapStateToProps,
   {
     openProfileDetailEditForm,
-    updateFriendship
+    updateFriendship,
+    createOrGetDirectMessage,
+    shareUserProfileAsMessage
   }
 )(ProfileDetailCard);

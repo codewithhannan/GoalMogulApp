@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
   Keyboard,
   KeyboardAvoidingView,
   ScrollView
@@ -16,6 +14,7 @@ import Button from './Common/Button';
 import Divider from './Common/Divider';
 import FormContainer from './Common/FormContainer';
 import InputField from './Common/InputField';
+import DelayedButton from '../Main/Common/Button/DelayedButton';
 
 /* Styles */
 import Styles from './Styles';
@@ -62,7 +61,7 @@ class IntroForm extends Component {
           overScrollMode='never'
           bounces={false}
         >
-          <TouchableWithoutFeedback onPress={this.handleContainerOnPressed.bind(this)}>
+          <DelayedButton onPress={this.handleContainerOnPressed.bind(this)} touchableWithoutFeedback>
             <View style={Styles.containerStyle}>
                 <Header name={this.props.name} type='intro' />
                 <View style={Styles.bodyContainerStyle}>
@@ -89,19 +88,19 @@ class IntroForm extends Component {
                     error={this.props.error.headline}
                   />
 
-                  <TouchableWithoutFeedback onPress={this.handleNextOnPressed.bind(this)}>
+                  <DelayedButton onPress={this.handleNextOnPressed.bind(this)} touchableWithoutFeedback>
                     <View>
                       <Button text='Next' />
                     </View>
-                  </TouchableWithoutFeedback>
-                  <TouchableOpacity activeOpacity={0.6} onPress={this.handleSkipOnPressed.bind(this)}>
+                  </DelayedButton>
+                  <DelayedButton activeOpacity={0.6} onPress={this.handleSkipOnPressed.bind(this)}>
                     <View>
                       <Button text='Skip' arrow />
                     </View>
-                  </TouchableOpacity>
+                  </DelayedButton>
                 </View>
             </View>
-          </TouchableWithoutFeedback>
+          </DelayedButton>
         </ScrollView>
       </KeyboardAvoidingView>
     );

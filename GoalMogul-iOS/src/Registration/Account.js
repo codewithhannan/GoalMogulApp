@@ -8,7 +8,6 @@ import {
   View,
   ScrollView,
   Text,
-  TouchableWithoutFeedback,
   Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -18,6 +17,7 @@ import Header from './Common/Header';
 import Button from './Common/Button';
 import Divider from './Common/Divider';
 import InputField from './Common/InputField';
+import DelayedButton from '../Main/Common/Button/DelayedButton';
 
 /* Styles */
 import Styles from './Styles';
@@ -78,11 +78,11 @@ class Account extends Component {
 
   renderLogIn() {
     return (
-      <TouchableWithoutFeedback onPress={this.handleLogInPressed.bind(this)}>
+      <DelayedButton onPress={this.handleLogInPressed.bind(this)} touchableWithoutFeedback>
         <View>
           <Button text='Log In to your account' arrow />
         </View>
-      </TouchableWithoutFeedback>
+      </DelayedButton>
     );
   }
   // <KeyboardAvoidingView
@@ -104,7 +104,7 @@ class Account extends Component {
           overScrollMode='never'
           bounces={false}
         >
-          <TouchableWithoutFeedback onPress={this.handleContainerOnPressed.bind(this)}>
+          <DelayedButton onPress={this.handleContainerOnPressed.bind(this)} touchableWithoutFeedback>
             <View style={Styles.containerStyle}>
               <Header />
               <View style={Styles.bodyContainerStyle}>
@@ -131,16 +131,16 @@ class Account extends Component {
                   error={this.props.error.password}
                 />
 
-                <TouchableWithoutFeedback onPress={this.handleNextPressed.bind(this)}>
+                <DelayedButton onPress={this.handleNextPressed.bind(this)} touchableWithoutFeedback>
                   <View>
                     <Button text='Next' />
                   </View>
-                </TouchableWithoutFeedback>
+                </DelayedButton>
                 {this.renderSplitter()}
                 {this.renderLogIn()}
               </View>
             </View>
-          </TouchableWithoutFeedback>
+          </DelayedButton>
         </ScrollView>
       </KeyboardAvoidingView>
     );

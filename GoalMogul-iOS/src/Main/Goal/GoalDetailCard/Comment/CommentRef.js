@@ -28,7 +28,7 @@ import readingIcon from '../../../../asset/suggestion/book.png';
 
 // Utils
 import {
-  switchCaseFWithVal
+  switchCaseFWithVal, componentKeyByTab
 } from '../../../../redux/middleware/utils';
 
 // Actions
@@ -77,7 +77,7 @@ class CommentRef extends React.PureComponent {
     console.log(`${DEBUG_KEY}: suggestion link close with path: ${path} and param: `, queryParams);
   }
 
-  handleOnRefPress = (item) => {
+  handleOnRefPress = (item, userId, tab) => {
     const {
       suggestionType,
       chatRoomRef,
@@ -106,8 +106,19 @@ class CommentRef extends React.PureComponent {
       return;
     }
     if (suggestionType === 'ChatConvoRoom' && chatRoomRef) {
-      Actions.push('chatRoomConversation', { chatRoomId: chatRoomRef._id, });
-      console.log(`${DEBUG_KEY}: suggestion type is ChatConvoRoom, chatRoomId is: ${chatRoomRef._id}, chatRoomRef is: `, chatRoomRef);
+
+      const isMember = chatRoomRef.members && 
+        chatRoomRef.members.find(memberDoc => 
+          memberDoc.memberRef._id == userId && (memberDoc.status == 'Admin' || memberDoc.status == 'Member'));
+      if (isMember) {
+        Actions.push('chatRoomConversation', { chatRoomId: chatRoomRef._id });
+        return;
+      }
+
+      // User is a non-member. Open ChatRoomPublicView
+      const componentKey = componentKeyByTab(tab, 'chatRoomPublicView');
+      Actions.push(`${componentKey}`, { chatRoomId: item._id, chatRoom: chatRoomRef });
+      // console.log(`${DEBUG_KEY}: suggestion type is ChatConvoRoom, chatRoomId is: ${chatRoomRef._id}, chatRoomRef is: `, chatRoomRef);
     }
     if (suggestionType === 'Custom' && suggestionLink) {
       this.handleSuggestionLinkOnPress(suggestionLink);
@@ -189,7 +200,7 @@ class CommentRef extends React.PureComponent {
 
   // Currently this is a dummy component
   render() {
-    const { item } = this.props;
+    const { item, userId, tab } = this.props;
     if (!item) return null;
     const { suggestionType, suggestionText, suggestionLink } = item;
 
@@ -207,7 +218,7 @@ class CommentRef extends React.PureComponent {
       <TouchableOpacity
         activeOpacity={0.6}
         style={styles.containerStyle}
-        onPress={() => this.handleOnRefPress(item)}
+        onPress={() => this.handleOnRefPress(item, userId, tab)}
       >
         {this.renderImage(item)}
         {this.renderTextContent(item)}
@@ -368,8 +379,18 @@ const styles = {
   }
 };
 
+const mapStateToProps = (state) => {
+  const { userId } = state.user;
+  const { tab } = state.navigation;
+
+  return {
+    tab,
+    userId
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   {
     openProfile,
     myTribeDetailOpenWithId,

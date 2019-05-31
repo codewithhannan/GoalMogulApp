@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
-  TouchableOpacity
+  Text
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -17,6 +16,7 @@ import Styles from './Styles';
 
 /* Actions */
 import { registrationNextIntro } from '../actions';
+import DelayedButton from '../Main/Common/Button/DelayedButton';
 
 class AddProfilePic extends Component {
 
@@ -47,16 +47,16 @@ class AddProfilePic extends Component {
             It helps your friends identify you
           </Text>
           <AddingProfilePicture />
-          <TouchableOpacity activeOpacity={0.6} onPress={this.handleNextOnPressed.bind(this)}>
+          <DelayedButton activeOpacity={0.6} onPress={this.handleNextOnPressed.bind(this)}>
             <View>
               <Button text='Next' />
             </View>
-          </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.6} onPress={this.handleSkipOnPressed.bind(this)}>
+          </DelayedButton>
+          <DelayedButton activeOpacity={0.6} onPress={this.handleSkipOnPressed.bind(this)}>
             <View>
               <Button text='Skip' arrow />
             </View>
-          </TouchableOpacity>
+          </DelayedButton>
         </View>
       </View>
     );

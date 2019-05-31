@@ -72,6 +72,9 @@ class CreateGoalModal extends React.Component {
       initializeFromState,
       () => {
         console.log(`${DEBUG_KEY}: poping the modal`);
+        if (this.props.callback) {
+          this.props.callback();
+        }
         if (this.props.onClose) {
           this.props.onClose();
         } 

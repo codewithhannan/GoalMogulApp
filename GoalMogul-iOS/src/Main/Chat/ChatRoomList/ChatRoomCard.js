@@ -102,9 +102,30 @@ class ChatRoomCard extends React.Component {
 				content = item.latestMessage.content.message;
 			} else if (item.latestMessage.media) {
 				content = "Chat member sent an image...";
+			} else if (item.latestMessage.sharedEntity) {
+				const { chatRoomRef, eventRef, goalRef, needRef, stepRef, postRef, tribeRef, userRef } = item.latestMessage.sharedEntity;
+				if (chatRoomRef) {
+					content = "Chat member shared a chat room...";
+				} else if (eventRef) {
+					content = "Chat member shared an event...";
+				} else if (goalRef && needRef) {
+					content = "Chat member shared a need...";
+				} else if (goalRef && stepRef) {
+					content = "Chat member shared a step...";
+				} else if (goalRef) {
+					content = "Chat member shared a goal...";
+				} else if (postRef) {
+					content = "Chat member shared a post...";
+				} else if (tribeRef) {
+					content = "Chat member shared a tribe...";
+				} else if (userRef) {
+					content = "Chat member shared a user...";
+				} else {
+					content = "View latest message...";
+				};
 			} else {
 				content = "View latest message...";
-			}
+			};
 		} else {
 			content = 'No messages in this conversation...';
 		};

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, ActionSheetIOS } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { connect } from 'react-redux';
 
 // Components
 import ProfileImage from '../Main/Common/ProfileImage';
+import DelayedButton from '../Main/Common/Button/DelayedButton';
 
 // Assets
 import badge from '../asset/utils/badge.png';
@@ -91,7 +92,7 @@ class ContactDetail extends Component {
             borderWidth: 0
           }}
         /> */}
-        <TouchableOpacity 
+        <DelayedButton 
           style={styles.bodyContainerStyle}
           activeOpacity={0.6}
           onPress={() => this.props.openProfile(_id)}
@@ -111,14 +112,14 @@ class ContactDetail extends Component {
           >
             {headline}
           </Text>
-        </TouchableOpacity>
+        </DelayedButton>
         <View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
-        <TouchableOpacity 
+        <DelayedButton 
           activeOpacity={0.6} 
           onPress={this.onFriendRequest.bind(this, _id)}
         >
           {this.renderButton()}
-        </TouchableOpacity>
+        </DelayedButton>
         </View>
       </View>
     );

@@ -381,6 +381,63 @@ export const openProfileDetailEditForm = (userId, pageId) => {
   };
 };
 
+
+export const createOrGetDirectMessage = (userId, maybeCallback) => (dispatch, getState) => {
+	const { token } = getState().user;
+	const body = {
+		roomType: 'Direct',
+		membersToAdd: userId,
+	};
+	API.post(`secure/chat/room`, body, token).then(resp => {
+		if (resp.status != 200) {
+			if (maybeCallback) {
+				return maybeCallback(new Error('Error creating chat.'));
+			};
+			return Alert.alert('Error', 'Could not start the conversation. Please try again later.');
+		};
+		const chatRoom = resp.data;
+		if (!chatRoom) {
+			if (maybeCallback) {
+				return maybeCallback(new Error('Error creating chat.'));
+			};
+			return Alert.alert('Error', 'Could not start the conversation. Please try again later.');
+    };
+		if (maybeCallback) {
+			maybeCallback(null, chatRoom);
+		} else {
+			Actions.push('chatRoomConversation', { chatRoomId: chatRoom._id });
+		};
+	}).catch(err => {
+		if (maybeCallback) {
+			return maybeCallback(err);
+		};
+		Alert.alert('Error', 'Could not create a conversation with specified user.');
+	});
+};
+export const shareUserProfileAsMessage = (chatRoomRef, userRef) => (dispatch, getState) => {
+  const { token } = getState().user;
+
+  // send the message
+  let body = {
+    chatRoomRef,
+    content: {
+      message: '',
+    },
+    sharedEntity: {
+      userRef,
+    },
+  };
+  const handleRequestFailure = (failure) => {
+    Alert.alert('Error', 'Could not send message to selected chat.');
+  };
+  API.post(`secure/chat/message`, body, token).then(resp => {
+    if (resp.status != 200) {
+      handleRequestFailure();
+    };
+    Alert.alert('Success', 'User has been shared to the selected chat.');
+  }).catch(handleRequestFailure);
+}
+
 // TODO: profile reducer redesign to change here. The method signature. Search for usage
 export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
   return (dispatch, getState) => {

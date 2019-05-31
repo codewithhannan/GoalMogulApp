@@ -746,7 +746,7 @@ export const onSuggestionItemSelect = (selectedItem, pageId) => (dispatch, getSt
  * NOTE: goal feed and activity feed share the same constants with different
  * input on type field
  */
-export const refreshComments = (parentType, parentId, tab, pageId) => (dispatch, getState) => {
+export const refreshComments = (parentType, parentId, tab, pageId, callback) => (dispatch, getState) => {
   const { token } = getState().user;
   const page = pageId ? `${pageId}` : 'default';
   const path = tab ? `${tab}.${page}` : `homeTab.${page}`;
@@ -777,7 +777,11 @@ export const refreshComments = (parentType, parentId, tab, pageId) => (dispatch,
         parentId
       }
     });
-    console.log(`${DEBUG_KEY}: refresh comment success with data length: `, data.length);
+    console.log(`${DEBUG_KEY}: [ refreshComments ]: refresh comment success with data length: `, data.length);
+    if (callback) {
+      // console.log(`${DEBUG_KEY}: [ refreshComments ]: calling callback`); 
+      callback();
+    }
   };
 
   const onError = (err) => {
