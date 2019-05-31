@@ -221,7 +221,13 @@ const makeMapStateToProps = () => {
     const mapStateToProps = (state, props) => {
         const { userId, user } = state.user;
         const { chatRoomId, path } = props;
-        const chatRoom = getChatRoom(state, chatRoomId, path);
+
+        let chatRoom;
+        if (!path && props.chatRoom) {
+            chatRoom = props.chatRoom;
+        } else {
+            chatRoom = getChatRoom(state, chatRoomId, path);
+        }
         
         // extract details from the chat room
         let chatRoomName = 'Loading...';
