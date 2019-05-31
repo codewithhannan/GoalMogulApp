@@ -40,6 +40,7 @@ import {
 
 import { IPHONE_MODELS } from '../../Utils/Constants';
 import { APP_DEEP_BLUE, BACKGROUND_COLOR } from '../../styles';
+import { Logger } from '../../redux/middleware/utils/Logger';
 
 const ITEM_HEIGHT = Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
@@ -56,6 +57,11 @@ class Mastermind extends Component {
       onListEndReached: false
     };
     this.scrollToTop = this.scrollToTop.bind(this);
+  }
+
+  componentDidMount() {
+    Logger.log(`${DEBUG_KEY}: [ componentDidMount ]: refresh goals`, {}, 2);
+    this.props.refreshGoals();
   }
 
   componentWillUnmount() {

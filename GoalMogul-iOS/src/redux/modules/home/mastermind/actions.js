@@ -136,8 +136,9 @@ export const changeFilter = (tab, filterType, value) => (dispatch) => {
 //Refresh goal for mastermind tab
 export const refreshGoals = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { limit, filter } = getState().home.mastermind;
+  const { limit, filter, refreshing } = getState().home.mastermind;
   const { categories, priorities, sortBy } = filter;
+  if (refreshing) return;
   dispatch({
     type: HOME_REFRESH_GOAL,
     payload: {
