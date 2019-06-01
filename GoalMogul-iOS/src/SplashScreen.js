@@ -415,7 +415,7 @@ function cacheImages(images) {
 }
 
 function cacheFonts(fonts) {
-  return Font.loadAsync(fonts);
+  return [Font.loadAsync(fonts)];
 }
 
 const mapDispatchToProps = (dispatch) => {
