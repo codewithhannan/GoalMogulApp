@@ -253,7 +253,10 @@ export default class ChatRoomConversationBubble extends React.Component {
 		return (
 			<View style={[
 				styles[this.props.position].container,
-				this.props.containerStyle[this.props.position]
+				this.props.containerStyle[this.props.position],
+				this.props.currentMessage.isLocal ? {
+					opacity: 0.6,
+				} : {}
 			]}>
 				<TouchableOpacity
 					activeOpacity={0.6}
