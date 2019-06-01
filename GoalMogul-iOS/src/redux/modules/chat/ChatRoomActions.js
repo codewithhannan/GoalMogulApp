@@ -252,7 +252,7 @@ export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMe
 		messagesToSend.forEach(messageToSend => {
 			// insert message into local storage
 			const messageToInsert = _transformMessageFromGiftedChat(messageToSend, uploadedMediaRef, chatRoom);
-			MessageStorageService.storeLocallyCreatedMessage({...messageToInsert, isRead: true}, (err, insertedDoc) => {
+			MessageStorageService.storeLocallyCreatedMessage({...messageToInsert, isRead: true, isLocal: true}, (err, insertedDoc) => {
 				if (err) {
 					// clear ghost message
 					dispatch({
@@ -271,6 +271,7 @@ export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMe
 					content: {
 						message: text,
 					},
+					customIdentifier: insertedDoc._id,
 				};
 				if (uploadedMediaRef) {
 					body.media = uploadedMediaRef;
@@ -334,9 +335,9 @@ export async function _transformMessagesForGiftedChat(messages, chatRoom, token)
 		}, {});
 	};
 	return await Promise.all(messages.map(async messageDoc => {
-		const { _id, created, creator, content, media, isSystemMessage } = messageDoc;
+		const { _id, created, creator, content, media, isSystemMessage, isLocal } = messageDoc;
 		return {
-			_id,
+			_id, isLocal,
 			createdAt: new Date(created),
 			image: media && `${IMAGE_BASE_URL}${media}`,
 			text: content && content.message,

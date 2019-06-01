@@ -9,8 +9,8 @@ const LISTENER_BASE_IDENTIFIER = 'chatmessageservice';
 const CHAT_MESSAGES_COLLECTION_NAME = 'chatmessages';
 const DEBUG_KEY = '[MessageStorageService]';
 const MESSAGE_QUEUE_POLLING_INTERVAL_SECONDS = 3;
-const DB_RESULTS_RESPONSE_CAP = 250000;
-const DB_QUERY_RESULTS_CAP = 25000000;
+const DB_RESULTS_RESPONSE_CAP = 5000;
+const DB_QUERY_RESULTS_CAP = 50000;
 const FUSE_MESSAGE_SEARCH_OPTIONS = {
     shouldSort: true,
     tokenize: true,
@@ -173,7 +173,10 @@ class MessageStorageService {
         localDb.remove({
             recipient: this.mountedUser.userId,
             _id: messageId,
-        }, callback);
+        }, (err, res) => {
+            callback(err, res);
+            if (!err) this._deleteRemoteMessage(messageId);
+        });
     }
     /**
      * Deletes all messages in a conversation from the store
@@ -184,7 +187,10 @@ class MessageStorageService {
         localDb.remove({
             recipient: this.mountedUser.userId,
             chatRoomRef: conversationId,
-        }, { multi: true }, callback);
+        }, { multi: true }, (err, numRemoved) => {
+            callback(err, numRemoved);
+            if (!err) this._deleteRemoteMessagesByConversation(conversationId);
+        });
     }
 
     // -------------------------------- Getters -------------------------------- //
@@ -260,7 +266,49 @@ class MessageStorageService {
         localDb.find({
             recipient: this.mountedUser.userId,
             chatRoomRef: conversationId,
-        }).sort({ created: -1 }).limit(limit).skip(skip).exec(callback);
+        }).sort({ created: -1 })
+        .limit(limit)
+        .skip(skip)
+        .exec((err, localDocs) => {
+            if (err) return callback(err);
+            if (localDocs.length === limit || limit === 1) {
+                return callback(null, localDocs);
+            };
+            // Attempt to fetch remainder of messages from remote backup
+
+            // start by getting the oldest message we have stored
+            localDb.find({
+                recipient: this.mountedUser.userId,
+                chatRoomRef: conversationId,
+            })
+            .sort({created: 1})
+            .limit(1)
+            .exec((err, oldestDoc) => {
+                if (err) return callback(null, localDocs);
+
+                const markerMessage = oldestDoc[0];
+
+                // fetch the next #{limit^2} documents from remote server
+                this._fetchRemoteMessagesByConversation(conversationId, limit*limit, markerMessage, skip, (err, remoteDocs) => {
+                    if (err || !remoteDocs || !remoteDocs.length) return callback(null, localDocs);
+                    // transform and store the remote docs locally
+                    const transformedDocs = remoteDocs.map(messageDoc => this._transformMessageForLocalStorage(messageDoc));
+                    let insertedDocs = [];
+                    let processedCount = 0;
+                    transformedDocs.forEach(messageDoc => localDb.insert(messageDoc, (err) => {
+                        ++processedCount;
+                        // ignore all documents that we already have stored locally
+                        if (!err) insertedDocs.push(messageDoc);
+
+                        // Once we've processed all the documents
+                        if (processedCount == transformedDocs.length) {
+                            // return the concatenation of #{limit} insertedDocs and #{all} localDocs to the callback
+                            callback(null, localDocs.concat(insertedDocs.slice(0, limit)));
+                        };
+                    }));
+                });
+            });
+        });
     }
     /**
      * Gets all messages created after a specified message
@@ -345,23 +393,87 @@ class MessageStorageService {
         localDb.find({
             recipient: this.mountedUser.userId,
             chatRoomRef: conversationId,
-        }).sort({ created: -1 }).limit(DB_QUERY_RESULTS_CAP).exec((err, docs) => {
+        }).sort({ created: -1 }).limit(DB_QUERY_RESULTS_CAP).exec((err, localDocs) => {
             if (err) {
                 return callback(err);
             };
-            const fuseSearch = new Fuse(docs, FUSE_MESSAGE_SEARCH_OPTIONS);
-            callback(null, fuseSearch.search(searchQuery));
+            // see if we can provide meaningful results from locally stored messages
+            const fuseSearch = new Fuse(localDocs, FUSE_MESSAGE_SEARCH_OPTIONS);
+            const localResults = fuseSearch.search(searchQuery);
+            if (localResults.length > 2 || localDocs.length == DB_QUERY_RESULTS_CAP) {
+                return callback(null, localResults);
+            };
+
+            // fetch remotely backed up messages
+            this._fetchRemoteMessagesByConversation(conversationId, DB_RESULTS_RESPONSE_CAP, localResults[localResults.length - 1], localResults.length - 1, (err, remoteDocs) => {
+                if (err || !remoteDocs || !remoteDocs.length) return callback(null, localDocs);
+                // transform and store the remote docs locally
+                const transformedDocs = remoteDocs.map(messageDoc => this._transformMessageForLocalStorage(messageDoc));
+                let insertedDocs = [];
+                let processedCount = 0;
+                transformedDocs.forEach(messageDoc => localDb.insert(messageDoc, (err) => {
+                    ++processedCount;
+                    // ignore all documents that we already have stored locally
+                    if (!err) insertedDocs.push(messageDoc);
+
+                    // Once we've processed all the documents
+                    if (processedCount == transformedDocs.length) {
+                        // search the concatenation of insertedDocs and localDocs
+                        const finalDocs = localDocs.concat(insertedDocs);
+                        const fuseSearch = new Fuse(finalDocs, FUSE_MESSAGE_SEARCH_OPTIONS);
+                        const finalResults = fuseSearch.search(searchQuery);
+                        callback(null, finalResults);
+                    };
+                }));
+            });
         });
     }
 
     // -------------------------------- Private -------------------------------- //
 
+    //** ---- Management utilities for remotely backed up messages ---- **/
+    _fetchRemoteMessagesByConversation(conversationId, limit, maybeMarkerMessage, maybeSkipFactor, callback) {
+        const { authToken } = this.mountedUser;
+
+        let path = `secure/chat/message/backup?limit=${limit}&chatRoomRef=${conversationId}`;
+        if (maybeMarkerMessage) {
+            path += `&markerMessageRef=${maybeMarkerMessage._id}`;
+        };
+        if (typeof maybeSkipFactor == "number") {
+            path += `&skipFactor=${maybeSkipFactor}`;
+        };
+        API.get(path, authToken).then(res => {
+            if (res.status != 200) {
+                return callback(new Error('Error fetching remote backup messages'));
+            } else {
+                callback(null, res.data);
+            };
+        }).catch(callback);
+    }
+
+    _deleteRemoteMessagesByConversation(conversationId) {
+        const { authToken } = this.mountedUser;
+        API.delete(`secure/chat/message?chatRoomRef=${conversationId}`, {}, authToken).then(() => {});
+    }
+
+    _deleteRemoteMessage(messageId) {
+        const { authToken } = this.mountedUser;
+        API.delete(`secure/chat/message?messageIds=${messageId}`, {}, authToken).then(() => {});
+    }
+
+    //** ---- Real time message management utilities ---- **/
     /**
      * Handles incoming messages from socketio
      * @param data: the incoming message from socketio
      */
     _onIncomingMessage = (data) => {
         const { messageAckId, messageDoc, senderName, chatRoomName, chatRoomType, chatRoomPicture } = data.data;
+        // remove if we have a locally created copy
+        if (messageDoc.customIdentifier) {
+            localDb.remove({
+                _id: messageDoc.customIdentifier,
+            }, () => {});
+        };
         // store message doc
         localDb.insert(this._transformMessageForLocalStorage(messageDoc), (err) => {
             // if error, the message will go to the server's message queue and we can try reinserting on a later pull
@@ -420,6 +532,13 @@ class MessageStorageService {
                     this._resetAppNotificationsBadge();
                 // };
                 messages.forEach(messageDoc => {
+                    // remove if we have a locally created copy of the message
+                    if (messageDoc.customIdentifier) {
+                        localDb.remove({
+                            _id: messageDoc.customIdentifier,
+                        }, () => {});
+                    };
+                    // store message
                     localDb.insert(this._transformMessageForLocalStorage(messageDoc), (err) => {
                         if (err) return;
                         // fire listeners to this event
