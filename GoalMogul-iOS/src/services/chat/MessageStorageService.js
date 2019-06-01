@@ -422,13 +422,13 @@ class MessageStorageService {
     }
 
     _deleteRemoteMessagesByConversation(conversationId) {
-        // const { authToken } = this.mountedUser;
-        // API.delete(`secure/chat/message?chatRoomRef=${conversationId}`, {}, authToken).then(() => {});
+        const { authToken } = this.mountedUser;
+        API.delete(`secure/chat/message?chatRoomRef=${conversationId}`, {}, authToken).then(() => {});
     }
 
     _deleteRemoteMessage(messageId) {
-        // const { authToken } = this.mountedUser;
-        // API.delete(`secure/chat/message?messageIds=${messageId}`, {}, authToken).then(() => {});
+        const { authToken } = this.mountedUser;
+        API.delete(`secure/chat/message?messageIds=${messageId}`, {}, authToken).then(() => {});
     }
 
     //** ---- Real time message management utilities ---- **/
