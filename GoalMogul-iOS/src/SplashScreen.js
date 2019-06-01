@@ -166,7 +166,10 @@ class SplashScreen extends Component {
     });
 
     await Promise
-      .all([...imageAssets, ...fontAssets]);
+      .all([...imageAssets, ...fontAssets])
+      .catch(err => {
+        console.log(`${DEBUG_KEY}: [ _loadAssetsAsync ]: err`, err);
+      });
 
     console.log('finish loading images');
 

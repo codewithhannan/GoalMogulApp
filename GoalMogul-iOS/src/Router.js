@@ -13,7 +13,7 @@ import {
 } from 'react-native-router-flux';
 import { Easing, Animated } from 'react-native';
 import { connect } from 'react-redux';
-import CardStackStyleInterpolator from "react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator";
+// import CardStackStyleInterpolator from "react-navigation-stack/src/views/StackView/StackViewStyleInterpolator";
 
 /* Auth */
 import SplashScreen from './SplashScreen';
