@@ -150,8 +150,10 @@ class NotificationCard extends React.Component {
 
     return (
       <DelayedButton 
+        activeOpacity={0.6}
         style={styles.cardContainerStyle}
         onPress={() => this.handleOnOpen(item)}
+        delay={600}
       >
         {this.renderProfileImage(item)}
         {this.renderNeed(item)}

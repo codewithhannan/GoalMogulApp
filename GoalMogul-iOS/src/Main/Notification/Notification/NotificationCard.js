@@ -139,6 +139,7 @@ class NotificationCard extends React.PureComponent {
       : { ...styles.cardContainerStyle, backgroundColor: '#eef8fb' };
     return (
       <DelayedButton 
+        delay={600}
         activeOpacity={0.6}
         style={cardContainerStyle}
         onPress={() => this.handleNotificationCardOnPress(item)}
