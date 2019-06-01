@@ -163,7 +163,6 @@ class ChatRoomCard extends React.Component {
 			cardImage = (cardImage && cardImage.image) || profilePic;
 		} else {
 			cardImage = (item && item.picture) || GROUP_CHAT_DEFAULT_ICON_URL;
-
 		};
 
 		const maybeUnreadHighlight = item.unreadMessageCount > 0 ? {

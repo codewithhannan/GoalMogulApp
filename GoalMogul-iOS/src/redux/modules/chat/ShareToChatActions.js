@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { SHARE_TO_CHAT_RESET, SHARE_TO_CHAT_UPDATE_SEARCH_QUERY, SHARE_TO_CHAT_UPDATE_SHARE_MESSAGE, SHARE_TO_CHAT_UPDATE_SELECTED_ITEMS, SHARE_TO_CHAT_SEARCH_COMPLETE, SHARE_TO_CHAT_UPDATE_SUBMITTING } from "./ShareToChatReducers";
+import { SHARE_TO_CHAT_RESET, SHARE_TO_CHAT_UPDATE_SEARCH_QUERY, SHARE_TO_CHAT_UPDATE_SHARE_MESSAGE, SHARE_TO_CHAT_UPDATE_SELECTED_ITEMS, SHARE_TO_CHAT_SEARCH_COMPLETE, SHARE_TO_CHAT_UPDATE_SUBMITTING, SHARE_TO_CHAT_BEGIN_SEARCH } from "./ShareToChatReducers";
 import { api as API } from '../../../redux/middleware/api';
 import { Actions } from 'react-native-router-flux';
 
@@ -37,7 +37,10 @@ export const shareToChatChangeSelectedItems = (selectedItems) => (dispatch) => {
 export const shareToChatClearSearch = () => (dispatch) => {
     dispatch({
         type: SHARE_TO_CHAT_SEARCH_COMPLETE,
-        payload: [],
+        payload: {
+            results: [],
+            hasNextPage: true,
+        },
     });
 };
 
@@ -57,12 +60,18 @@ export const shareToChatSearch = (searchQuery, currentResults, limit, searchType
         const results = resp.data;
         dispatch({
             type: SHARE_TO_CHAT_SEARCH_COMPLETE,
-            payload: currentResults.concat(results || []),
+            payload: {
+                results: currentResults.concat(results || []),
+                hasNextPage: !!(results && results.length),
+            },
         });
     }).catch(err => {
         dispatch({
             type: SHARE_TO_CHAT_SEARCH_COMPLETE,
-            payload: [],
+            payload: {
+                results: [],
+                hasNextPage: true,
+            },
         });
         Alert.alert('Error', 'Could not load results. Please try again later.');
     });

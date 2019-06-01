@@ -297,10 +297,13 @@ class ProfileDetailCard extends Component {
         // TODO: @Jay Share to direct message
         const userToShare = this.props.user;
         const chatRoomType = 'Direct';
-        
+        Actions.push('shareToChatLightBox', { userToShare, chatRoomType });
       }],
       [R.equals(1), () => {
         // TODO: @Jay Share to group conversation
+        const userToShare = this.props.user;
+        const chatRoomType = 'Group';
+        Actions.push('shareToChatLightBox', { userToShare, chatRoomType });
       }]
     ]);
 

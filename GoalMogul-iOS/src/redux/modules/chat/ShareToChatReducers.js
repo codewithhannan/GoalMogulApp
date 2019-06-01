@@ -26,12 +26,12 @@ export default (state = INITIAL_STATE, action) => {
     }
     case SHARE_TO_CHAT_BEGIN_SEARCH: {
         let newState = _.cloneDeep(state);
-        newState = _.set(newState, 'searchResults', []);
         return _.set(newState, 'loading', true);
     }
     case SHARE_TO_CHAT_SEARCH_COMPLETE: {
         let newState = _.cloneDeep(state);
-        newState = _.set(newState, 'searchResults', action.payload);
+        newState = _.set(newState, 'searchResults', action.payload.results);
+        newState = _.set(newState, 'hasNextPage', action.payload.hasNextPage);
         return _.set(newState, 'loading', false);
     }
     case SHARE_TO_CHAT_UPDATE_SELECTED_ITEMS: {

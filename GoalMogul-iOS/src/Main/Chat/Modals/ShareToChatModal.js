@@ -6,27 +6,30 @@ import React, { Component } from 'react';
 import {
   View,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  ScrollView,
   Text,
   TextInput,
-  Alert
+  Alert,
+  Image,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Constants } from 'expo';
 import _ from 'lodash';
+import plus from '../../../asset/utils/plus.png';
+import times from '../../../asset/utils/times.png'
+import ModalHeader from '../../Common/Header/ModalHeader';
+import ProfileImage from '../../Common/ProfileImage';
 
-// Component
-import BaseOverlay from './BaseOverlay';
-
-// Constants
-import {
-  IPHONE_MODELS
-} from '../../Utils/Constants';
-import { SearchIcon } from '../../Utils/Icons';
+import { SearchIcon } from '../../../Utils/Icons';
 import { FlatList } from 'react-native-gesture-handler';
 import SearchUserCard from '../../Search/People/SearchUserCard';
 import { shareToChatReset, shareToChatChangeSearchQuery, shareToChatChangeShareMessage, shareToChatChangeSelectedItems, shareToChatSearch, shareToSelectedChats, shareToChatClearSearch } from '../../../redux/modules/chat/ShareToChatActions';
+import { GROUP_CHAT_DEFAULT_ICON_URL } from '../../../Utils/Constants';
+import DelayedButton from '../../Common/Button/DelayedButton';
+import { Actions } from 'react-native-router-flux';
 
 const DEBUG_KEY = '[ ShareToChatModal ]';
 const AUTO_SEARCH_DELAY_MS = 500;
@@ -38,18 +41,18 @@ class ShareToChatModal extends Component {
         this.props.shareToChatChangeSearchQuery(searchText);
 
         clearTimeout(this.searchTimeout);
-        if (searchText == '') {
+        if (!searchText.trim().length) {
             return this.props.shareToChatClearSearch()
         };
         this.searchTimeout = setTimeout(() => this.props.shareToChatSearch(
             this.props.searchQuery,
-            this.props.searchResults,
+            [],
             5,
             this.props.chatRoomType
         ), AUTO_SEARCH_DELAY_MS);
     }
     handleLoadMore = () => {
-        if (!this.props.hasNextPage || this.props.loading) return;
+        if (!this.props.hasNextPage || this.props.loading || !this.props.searchQuery.length) return;
         this.props.shareToChatSearch(
             this.props.searchQuery,
             this.props.searchResults,
@@ -85,7 +88,7 @@ class ShareToChatModal extends Component {
 
         const { userToShare, selectedItems, shareMessage, chatRoomType } = this.props;
         if (!selectedItems.length) {
-            Alert.alert('Select a conversation to continue');
+            return Alert.alert('Select a conversation to continue');
         };
         this.props.shareToSelectedChats(selectedItems, shareMessage, userToShare, chatRoomType);
     }
@@ -96,6 +99,7 @@ class ShareToChatModal extends Component {
 
 	renderListItem = (item) => {
         if (this.props.chatRoomType == 'Direct') {
+            // User Card
             return (
                 <SearchUserCard
                     item={item.item}
@@ -105,9 +109,53 @@ class ShareToChatModal extends Component {
                 />
             );
         } else {
-            // TODO: Chat room result
+            // Chat Room Card
+            const doc = item.item;
+            if (!doc) return null;
+            const cardImage = (doc.picture) || GROUP_CHAT_DEFAULT_ICON_URL;
+
             return (
-                null
+                <View style={{
+                    ...styles.cardContainerStyle,
+                    backgroundColor: doc.isSearchResult ? 'white' : '#D8EDFF',
+                }} >
+                    {/* Image */}
+                    <ProfileImage
+                        imageStyle={{ height: 55, width: 55, borderRadius: 5 }}
+                        imageUrl={cardImage}
+                        rounded
+                        imageContainerStyle={styles.imageContainerStyle}
+                    />
+                    {/* Title */}
+                    <View style={{ marginLeft: 10, marginTop: 2, flexGrow: 1, height: 55, alignItems: 'center', flexDirection: 'row' }}>
+                        <Text
+                            style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 21, fontWeight: '300' }}
+                            numberOfLines={1}
+                            ellipsizeMode='tail'
+                        >
+                            {doc.name}
+                        </Text>
+                    </View>
+                    {/* Action */}
+                    <DelayedButton
+                        style={{
+                            marginLeft: 6,
+                            marginRight: 12,
+                            width: 30,
+                            height: 30,
+                        }}
+                        onPress={() => this.onSearchResultSelect(doc._id, doc)}
+                    >
+                        <Image
+                            source={doc.isSearchResult ? plus : times}
+                            style={{
+                                height: 30,
+                                width: 30,
+                                tintColor: '#17B3EC',
+                            }}
+                        />
+                    </DelayedButton>
+                </View>
             );
         };
 	}
@@ -156,10 +204,9 @@ class ShareToChatModal extends Component {
         const searchPlaceHolder = this.props.chatRoomType == 'Direct'
         ? 'Search friends'
         : 'Search group conversations';
-        const modalTitle = this.props.chatRoomType == 'Direct'
-        ? 'to direct conversations'
-        : 'to group conversations';
-
+        const modalDescriptionSuffix = this.props.chatRoomType == 'Direct'
+        ? 'as a direct message'
+        : 'to group convrsations';
         return (
 			<MenuProvider customStyles={{ backdrop: styles.backdrop }}>
 				<KeyboardAvoidingView
@@ -167,7 +214,7 @@ class ShareToChatModal extends Component {
 					style={{ ...styles.homeContainerStyle, flex: 1, backgroundColor: '#ffffff' }}
 				>
 					<ModalHeader
-						title={`Share profile ${modalTitle}`}
+						title={`Share profile`}
 						actionText={'Share'}
 						onCancel={this.handleClose}
 						onAction={this.handleSubmit}
@@ -176,12 +223,30 @@ class ShareToChatModal extends Component {
 						style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
 					>
                         <View>
-                            <Text>Share {this.props.userToShare.name}'s profile {modalTitle}</Text>
+                            <Text
+                                style={{
+                                    fontSize: 12,
+                                    textAlign: 'center',
+                                    marginTop: 24,
+                                    marginBottom: 24,
+                                    color: '#aaa',
+                                }}
+                            >
+                                Share {this.props.userToShare.name}'s profile {modalDescriptionSuffix}
+                            </Text>
                             <TextInput
                                 multiline={true}
                                 placeholder={'Enter a message...'}
                                 value={this.props.shareMessage}
-                                onChangeText={this.props.handleChangeMessage}
+                                onChangeText={this.handleChangeMessage}
+                                style={{
+                                    height: 81,
+                                    padding: 15,
+                                    paddingTop: 24,
+                                    fontSize: 15,
+                                    borderTopColor: '#EEE',
+                                    borderTopWidth: 1,
+                                }}
                             />
                         </View>
                         <SearchBar
@@ -238,6 +303,23 @@ class ShareToChatModal extends Component {
 };
 
 const styles = {
+	cardContainerStyle: {
+		backgroundColor: 'white',
+        flexDirection: 'row',
+        alignItems: 'center',
+		paddingTop: 8,
+		paddingBottom: 8,
+		paddingLeft: 12,
+		paddingRight: 12,
+        marginTop: 1,
+    },
+    imageContainerStyle: {
+		borderWidth: 0.5,
+		padding: 1.5,
+		borderColor: 'lightgray',
+		borderRadius: 6,
+		backgroundColor: 'white'
+	},
   searchContainerStyle: {
     padding: 0,
     marginRight: 3,
@@ -284,7 +366,6 @@ const mapStateToProps = (state) => {
         submitting,
     };
 };
-
 
 export default connect(
   mapStateToProps,
