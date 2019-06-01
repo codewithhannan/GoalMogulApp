@@ -289,7 +289,7 @@ class MessageStorageService {
                 const markerMessage = oldestDoc[0];
 
                 // fetch the next #{limit^2} documents from remote server
-                this._fetchRemoteMessagesByConversation(conversationId, limit*limit, markerMessage, (err, remoteDocs) => {
+                this._fetchRemoteMessagesByConversation(conversationId, limit*limit, markerMessage, skip, (err, remoteDocs) => {
                     if (err || !remoteDocs || !remoteDocs.length) return callback(null, localDocs);
                     // transform and store the remote docs locally
                     const transformedDocs = remoteDocs.map(messageDoc => this._transformMessageForLocalStorage(messageDoc));
@@ -393,24 +393,54 @@ class MessageStorageService {
         localDb.find({
             recipient: this.mountedUser.userId,
             chatRoomRef: conversationId,
-        }).sort({ created: -1 }).limit(DB_QUERY_RESULTS_CAP).exec((err, docs) => {
+        }).sort({ created: -1 }).limit(DB_QUERY_RESULTS_CAP).exec((err, localDocs) => {
             if (err) {
                 return callback(err);
             };
-            const fuseSearch = new Fuse(docs, FUSE_MESSAGE_SEARCH_OPTIONS);
-            callback(null, fuseSearch.search(searchQuery));
+            // see if we can provide meaningful results from locally stored messages
+            const fuseSearch = new Fuse(localDocs, FUSE_MESSAGE_SEARCH_OPTIONS);
+            const localResults = fuseSearch.search(searchQuery);
+            if (localResults.length > 2 || localDocs.length == DB_QUERY_RESULTS_CAP) {
+                return callback(null, localResults);
+            };
+
+            // fetch remotely backed up messages
+            this._fetchRemoteMessagesByConversation(conversationId, DB_RESULTS_RESPONSE_CAP, localResults[localResults.length - 1], localResults.length - 1, (err, remoteDocs) => {
+                if (err || !remoteDocs || !remoteDocs.length) return callback(null, localDocs);
+                // transform and store the remote docs locally
+                const transformedDocs = remoteDocs.map(messageDoc => this._transformMessageForLocalStorage(messageDoc));
+                let insertedDocs = [];
+                let processedCount = 0;
+                transformedDocs.forEach(messageDoc => localDb.insert(messageDoc, (err) => {
+                    ++processedCount;
+                    // ignore all documents that we already have stored locally
+                    if (!err) insertedDocs.push(messageDoc);
+
+                    // Once we've processed all the documents
+                    if (processedCount == transformedDocs.length) {
+                        // search the concatenation of insertedDocs and localDocs
+                        const finalDocs = localDocs.concat(insertedDocs);
+                        const fuseSearch = new Fuse(finalDocs, FUSE_MESSAGE_SEARCH_OPTIONS);
+                        const finalResults = fuseSearch.search(searchQuery);
+                        callback(null, finalResults);
+                    };
+                }));
+            });
         });
     }
 
     // -------------------------------- Private -------------------------------- //
 
     //** ---- Management utilities for remotely backed up messages ---- **/
-    _fetchRemoteMessagesByConversation(conversationId, limit, maybeMarkerMessage, callback) {
+    _fetchRemoteMessagesByConversation(conversationId, limit, maybeMarkerMessage, maybeSkipFactor, callback) {
         const { authToken } = this.mountedUser;
 
         let path = `secure/chat/message/backup?limit=${limit}&chatRoomRef=${conversationId}`;
         if (maybeMarkerMessage) {
             path += `&markerMessageRef=${maybeMarkerMessage._id}`;
+        };
+        if (typeof maybeSkipFactor == "number") {
+            path += `&skipFactor=${maybeSkipFactor}`;
         };
         API.get(path, authToken).then(res => {
             if (res.status != 200) {
