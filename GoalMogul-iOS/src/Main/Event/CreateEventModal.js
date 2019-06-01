@@ -514,11 +514,14 @@ class CreateEventModal extends React.Component {
   }
 
   renderImageModal(imageUrl) {
+    const { initializeFromState, event, picture } = this.props;
+
     return (
       <ImageModal 
         mediaRef={imageUrl}
         mediaModal={this.state.mediaModal}
         closeModal={() => this.setState({ mediaModal: false })}
+        isLocalFile={!(initializeFromState && event.picture && event.picture === picture)}
       />
     );
   }
