@@ -26,6 +26,7 @@ import ImageModal from '../Common/ImageModal';
 import EmptyResult from '../Common/Text/EmptyResult';
 import ProfileImage from '../Common/ProfileImage';
 import MentionsTextInput from '../Goal/Common/MentionsTextInput';
+import DelayedButton from '../Common/Button/DelayedButton';
 
 // assets
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
@@ -259,7 +260,7 @@ class CreatePostModal extends Component {
     const callback = R.curry((result) => {
       this.props.change('mediaRef', result.uri);
     });
-    this.props.openCameraRoll(callback);
+    this.props.openCameraRoll(callback, { disableEditing: true });
   }
 
   /**
@@ -273,9 +274,9 @@ class CreatePostModal extends Component {
    * Synchronize validate form values, contains simple check
    */
   handleCreate = (values) => {
-    const { initializeFromState, post, mediaRef, belongsToTribe, belongsToEvent, openProfile, initialPost } = this.props;
+    const { initializeFromState, initialPost, mediaRef, belongsToTribe, belongsToEvent, openProfile } = this.props;
     const needUpload =
-      (initializeFromState && post.mediaRef && post.mediaRef !== mediaRef)
+      (initializeFromState && initialPost.mediaRef && initialPost.mediaRef !== mediaRef)
       || (!initializeFromState && mediaRef);
 
     const needOpenProfile = (belongsToTribe === undefined && belongsToEvent === undefined) &&
@@ -550,11 +551,16 @@ class CreatePostModal extends Component {
   }
 
   renderImageModal() {
+    const { initializeFromState, initialPost, mediaRef } = this.props;
+    
+    // This is not a local file if
+    // this is an edit and mediaRef has not changed yet
     return (
       <ImageModal
         mediaRef={this.props.mediaRef}
         mediaModal={this.state.mediaModal}
         closeModal={() => this.setState({ mediaModal: false })}
+        isLocalFile={!(initializeFromState && initialPost.mediaRef && initialPost.mediaRef === mediaRef)}
       />
     );
   }
@@ -589,20 +595,20 @@ class CreatePostModal extends Component {
     const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
     return (
       <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10 }}>
-        <TouchableOpacity
+        <DelayedButton
           activeOpacity={0.6}
           style={actionIconWrapperStyle}
           onPress={this.handleOpenCamera}
         >
           <Image style={actionIconStyle} source={camera} />
-        </TouchableOpacity>
-        <TouchableOpacity
+        </DelayedButton>
+        <DelayedButton
           activeOpacity={0.6}
           style={{ ...actionIconWrapperStyle, marginLeft: 5 }}
           onPress={this.handleOpenCameraRoll}
         >
           <Image style={actionIconStyle} source={cameraRoll} />
-        </TouchableOpacity>
+        </DelayedButton>
       </View>
     );
   }

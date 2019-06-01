@@ -281,7 +281,7 @@ class CommentBoxV2 extends Component {
     const callback = R.curry((result) => {
       this.props.newCommentOnMediaRefChange(result.uri, this.props.pageId);
     });
-    this.props.openCameraRoll(callback);
+    this.props.openCameraRoll(callback, { disableEditing: true });
   }
 
   /**
