@@ -533,11 +533,14 @@ class ChatRoomConversation extends React.Component {
 			.then(Alert.alert('Saved', 'Photo saved to camera roll'))
 	  };
 	}
-	renderMessage(props) {
+	renderMessage = (props) => {
 		return (
 			<Message
 				{...props}
-				renderBubble={props =><ChatRoomConversationBubble {...props} />}
+				renderBubble={props => <ChatRoomConversationBubble
+					{...props}
+					apiToken={this.props.token}
+				/>}
 			/>
 		);
 	}
@@ -657,7 +660,7 @@ class ChatRoomConversation extends React.Component {
 }
 
 const mapStateToProps = (state, props) => {
-	const { userId, user } = state.user;
+	const { userId, user, token } = state.user;
 	const {
 		initializing,
 		chatRoomsMap, activeChatRoomId,
@@ -694,6 +697,7 @@ const mapStateToProps = (state, props) => {
 		initializing,
 		userId,
 		user,
+		token,
 		chatRoom,
 		chatRoomName,
 		chatRoomImage,
