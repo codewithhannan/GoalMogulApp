@@ -304,3 +304,24 @@ export const makeCaretOptions = (type, goalRef, postRef) => {
 };
 
 export const constructMenuName = (component, pageId) => `${component}-${pageId}`;
+
+/**
+ * Given a commentId and all comments, find its parentCommentId. It can return self,
+ * if it has no parent comment.
+ * @param {*} commentId 
+ * @param {*} comments 
+ */
+export const getParentCommentId = (commentId, comments) => {
+  let ret = commentId; // Set to self
+  if (!comments) return ret;
+
+  comments.forEach(c => {
+    if (!c || _.isEmpty(c)) return;
+
+    const { _id, replyToRef } = c;
+    if (_id === commentId && replyToRef) {
+      ret = replyToRef; // Set to parent comment
+    }
+  });
+  return ret;
+}; 
