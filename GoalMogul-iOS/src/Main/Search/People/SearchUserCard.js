@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Expo from 'expo';
 import {
   View,
   Text,
