@@ -249,7 +249,7 @@ export const submitCreatingPost = (
         .then(({ width, height }) => {
           // Resize image
           console.log('width, height are: ', width, height);
-          return ImageUtils.resizeImage(imageUri, width, height);
+          return ImageUtils.resizeImage(imageUri, width, height, { capHeight: 720, capWidth: 720 });
         })
         .then((image) => {
           // Upload image to S3 server
