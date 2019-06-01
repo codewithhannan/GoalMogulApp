@@ -7,6 +7,8 @@ import { Animated, Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewProp
 import { MessageText, MessageVideo } from 'react-native-gifted-chat';
 import ChatMessageImage from '../Modals/ChatMessageImage';
 import moment from 'moment';
+import CommentRef from '../../Goal/GoalDetailCard/Comment/CommentRef';
+import { MemberDocumentFetcher } from '../../../Utils/UserUtils';
 
 function isSameDay(currentMessage = {}, diffMessage = {}) {
 	if (!diffMessage.createdAt) {
@@ -35,7 +37,20 @@ export default class ChatRoomConversationBubble extends React.Component {
 			wrapperOpacityAnim: new Animated.Value(1),
 			wrapperPaddingAnim: new Animated.Value(0),
 			timeHeightAnim: new Animated.Value(0),
+			userRef: null,
 		});
+	}
+
+	componentDidMount() {
+		const { currentMessage } = this.props;
+		if (currentMessage.sharedEntity && currentMessage.sharedEntity.userRef) {
+			const token = this.props.token;
+			MemberDocumentFetcher.getUserDocument(currentMessage.sharedEntity.userRef, token, {}).then(userDoc => {
+				this.setState({
+					userRef: userDoc,
+				});
+			});
+		}
 	}
 
 	onLongPress = () => {
@@ -117,6 +132,23 @@ export default class ChatRoomConversationBubble extends React.Component {
 				}}
 			/>
 		}
+		return null;
+	}
+
+	renderSharedContent() {
+		const { currentMessage } = this.props;
+		if (currentMessage.sharedEntity) {
+			if (currentMessage.sharedEntity.userRef) {
+				const suggestionType = 'User';
+				const userRef = this.state.userRef;
+				if (!userRef) return null;
+				return (
+					<CommentRef
+						item={{ suggestionType, userRef }}
+					/>
+				);
+			};
+		};
 		return null;
 	}
 
@@ -281,6 +313,7 @@ export default class ChatRoomConversationBubble extends React.Component {
 							{this.renderCustomView()}
 							{this.renderMessageImage()}
 							{this.renderMessageVideo()}
+							{this.renderSharedContent()}
 							{this.renderMessageText()}
 							<View style={[styles[this.props.position].bottom, this.props.bottomContainerStyle[this.props.position]]}>
 								{this.renderUsername()}
