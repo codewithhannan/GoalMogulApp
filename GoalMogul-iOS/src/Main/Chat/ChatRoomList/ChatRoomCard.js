@@ -80,8 +80,8 @@ class ChatRoomCard extends React.Component {
 				{/*<Text style={defaultTextStyle}>{category}</Text>
 				<Dot />*/}
 				{(count && item.roomType == 'Group') ? 
-					<View>
-						<Text style={{ color: '#15aad6' }}>
+					<View style={{flexDirection: 'row'}}>
+						<Text style={{ ...defaultTextStyle, color: '#15aad6', }}>
 							{count}
 						</Text>
 						<Text style={defaultTextStyle}>&nbsp;members</Text>

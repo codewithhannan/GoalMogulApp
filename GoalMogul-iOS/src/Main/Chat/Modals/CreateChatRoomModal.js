@@ -205,7 +205,7 @@ class CreateChatroomModal extends React.Component {
 	renderMedia = () => {
 		const { initializeFromState, chat, picture } = this.props;
 		let imageUrl = picture;
-		if (initializeFromState && picture) {
+		if (initializeFromState && chat.picture) {
 			const hasImageModified = chat.picture && chat.picture !== picture;
 			if (!hasImageModified) {
 				// If editing a tribe and image hasn't changed, then image source should
