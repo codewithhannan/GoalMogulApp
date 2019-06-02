@@ -23,7 +23,8 @@ import EmojiSelector from 'react-native-emoji-selector';
 
 import {
 	Permissions,
-	FileSystem
+	FileSystem,
+	Constants,
 } from 'expo';
 
 import MessageStorageService from '../../../services/chat/MessageStorageService';
@@ -59,7 +60,7 @@ import ProfileImage from '../../Common/ProfileImage';
 import { openCamera, openCameraRoll, openProfile } from '../../../actions';
 import profilePic from '../../../asset/utils/defaultUserProfile.png';
 import { Image, Text } from 'react-native-elements';
-import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Constants';
+import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL, IPHONE_MODELS_2 } from '../../../Utils/Constants';
 import ChatRoomConversationInputToolbar from './ChatRoomConversationInputToolbar';
 import { toHashCode } from '../../../Utils/ImageUtils';
 import ChatMessageImage from '../Modals/ChatMessageImage';
@@ -70,6 +71,8 @@ const DEBUG_KEY = '[ UI ChatRoomConversation ]';
 const LISTENER_KEY = 'ChatRoomConversation';
 const MAX_TYPING_INDICATORS_TO_DISPLAY = 3;
 const CHAT_ROOM_DOCUMENT_REFRESH_INTERVAL = 3000; // milliseconds
+
+const GIFTED_CHAT_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(Constants.platform.ios.model.toLowerCase()) ? 110 : 75;
 
 /**
  * @prop {String} chatRoomId: required
@@ -429,7 +432,10 @@ class ChatRoomConversation extends React.Component {
 		const { messageMediaRef } = this.props;
 		if (!messageMediaRef) return null;
 		const onPress = () => {};
-		const onRemove = () => this.props.changeMessageMediaRef(undefined);
+		const onRemove = () => {
+			this.props.changeMessageMediaRef(undefined);
+			this._textInput.blur();
+		};
 		return (
 			<TouchableOpacity activeOpacity={0.6} style={styles.mediaContainerStyle} onPress={onPress}>
 				<ProfileImage
@@ -610,7 +616,7 @@ class ChatRoomConversation extends React.Component {
 						renderMessage={this.renderMessage}
 						renderInputToolbar={this.renderInputToolbar}
 						renderAvatar={this.renderAvatar}
-						bottomOffset={this.props.messageMediaRef ? 18 : 75}
+						bottomOffset={this.props.messageMediaRef ? GIFTED_CHAT_BOTTOM_OFFSET - 57 : GIFTED_CHAT_BOTTOM_OFFSET}
 					/>
 					{this.state.showEmojiSelector &&
 						<Animated.View
