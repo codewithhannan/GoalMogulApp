@@ -5,6 +5,9 @@
  */
 import React, { Component } from 'react';
 import {
+	Constants
+} from 'expo';
+import {
 	View,
 	Text,
 	Image,
@@ -22,6 +25,9 @@ import cancel from '../../../asset/utils/cancel_no_background.png';
 import {
 	closeCreateOverlay
 } from '../../../redux/modules/home/mastermind/actions';
+import { IPHONE_MODELS_2 } from '../../../Utils/Constants';
+
+const BUTTON_GROUP_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(Constants.platform.ios.model.toLowerCase()) ? 119 : 84;
 
 class CreateButtonOverlay extends Component {
 	constructor(...args) {
@@ -224,7 +230,7 @@ const styles = {
 	},
 	containerStyle: {
 		position: 'absolute',
-		bottom: 84,
+		bottom: BUTTON_GROUP_BOTTOM_OFFSET,
 		right: 15,
 		alignItems: 'center'
 	},
