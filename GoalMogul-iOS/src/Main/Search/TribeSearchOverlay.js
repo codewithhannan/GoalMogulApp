@@ -29,7 +29,7 @@ import {
 } from '../../Utils/Constants';
 
 const DEBUG_KEY = '[ Tribe Search ]';
-const SEARCH_TYPE = 'tribes';
+const SEARCH_TYPE = 'myTribes';
 
 class TribeSearchOverlay extends Component {
   constructor(props) {
@@ -68,7 +68,7 @@ class TribeSearchOverlay extends Component {
       searchContent: value 
     }, () => {
       if (value === '') {
-        this.props.clearSearchState(this.props.selectedTab);
+        this.props.clearSearchState(SEARCH_TYPE);
       }
       this.props.debouncedSearch(value.trim(), SEARCH_TYPE);
     });

@@ -23,14 +23,24 @@ class TribeSearch extends Component {
 
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing search`);
+    let keyToUse = key;
+    if (this.props.type !== 'GeneralSearch') {
+      keyToUse = 'myTribes';
+    }
+
     // Only refresh if there is content
     if (this.props.searchContent && this.props.searchContent.trim() !== '') {
-      this.props.refreshSearchResult(key);
+      this.props.refreshSearchResult(keyToUse);
     }
   }
 
   handleOnLoadMore = () => {
-    this.props.onLoadMore(key);
+    let keyToUse = key;
+    if (this.props.type !== 'GeneralSearch') {
+      keyToUse = 'myTribes';
+    }
+
+    this.props.onLoadMore(keyToUse);
   }
 
   renderItem = ({ item }) => {

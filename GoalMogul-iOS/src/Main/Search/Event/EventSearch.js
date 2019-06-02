@@ -23,15 +23,23 @@ class EventSearch extends Component {
 
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing search: `, key);
+    let keyToUse = key;
+    if (this.props.type !== 'GeneralSearch') {
+      keyToUse = 'myEvents';
+    }
     // Only refresh if there is content
     if (this.props.searchContent && this.props.searchContent.trim() !== '') {
-      this.props.refreshSearchResult(key);
+      this.props.refreshSearchResult(keyToUse);
     }
   }
 
   handleOnLoadMore = () => {
     console.log(`${DEBUG_KEY} Loading more for search: `, key);
-    this.props.onLoadMore(key);
+    let keyToUse = key;
+    if (this.props.type !== 'GeneralSearch') {
+      keyToUse = 'myEvents';
+    }
+    this.props.onLoadMore(keyToUse);
   }
 
   renderItem = ({ item }) => {

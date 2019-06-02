@@ -74,8 +74,14 @@ export const SearchRouteMap = {
   friends: {
     route: `${BASE_ROUTE}/user/friendship/es`
   },
+  myEvents: {
+    route: `${BASE_ROUTE}/event/es/myevents`
+  },
   events: {
     route: `${BASE_ROUTE}/event/es`
+  },
+  myTribes: {
+    route: `${BASE_ROUTE}/tribe/es/mytribes`
   },
   tribes: {
     route: `${BASE_ROUTE}/tribe/es`

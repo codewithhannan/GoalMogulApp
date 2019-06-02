@@ -28,7 +28,7 @@ import {
 } from '../../Utils/Constants';
 
 const DEBUG_KEY = '[ Event Search ]';
-const SEARCH_TYPE = 'events';
+const SEARCH_TYPE = 'myEvents';
 
 class EventSearchOverlay extends Component {
   constructor(props) {
@@ -67,7 +67,7 @@ class EventSearchOverlay extends Component {
       searchContent: value 
     }, () => {
       if (value === '') {
-        this.props.clearSearchState(this.props.selectedTab);
+        this.props.clearSearchState(SEARCH_TYPE);
       }
       this.props.debouncedSearch(value.trim(), SEARCH_TYPE);
     });

@@ -115,7 +115,7 @@ class ChatCard extends React.Component {
         return (
             <DelayedButton activeOpacity={0.6} onPress={this.onCardPress}>
                 <View style={styles.containerStyle}>
-                <Check selected={selected} />;
+                <Check selected={selected} />
                 {this.renderImage(item)}
                 {this.renderTimeStamp(item)}
                 <View style={styles.detailContainerStyle}>

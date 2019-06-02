@@ -65,10 +65,10 @@ export const SearchRouteMap = {
     route: `${BASE_ROUTE}/user/profile/es`
   },
   Event: {
-    route: `${BASE_ROUTE}/event/es`
+    route: `${BASE_ROUTE}/event/es/myevents`
   },
   Tribe: {
-    route: `${BASE_ROUTE}/tribe/es`
+    route: `${BASE_ROUTE}/tribe/es/mytribes`
   },
   ChatConvoRoom: {
     route: `${BASE_ROUTE}/chat/room/es`
