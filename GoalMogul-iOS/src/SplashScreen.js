@@ -5,13 +5,15 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import {
   LinearGradient,
   Font,
   AppLoading,
-  Asset
+  Asset,
+  Constants
 } from 'expo';
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
@@ -31,6 +33,11 @@ import Helpfulness from './asset/utils/help.png';
 import {
   RightArrowIcon
 } from './Utils/Icons';
+
+import { IPHONE_MODELS } from './Utils/Constants';
+
+const IS_SMALL_PHONE = Platform.OS === 'ios' &&
+  IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
 
 const width = Dimensions.get('window').width
 const DEBUG_KEY = '[ UI SplashScreen ]';
@@ -195,14 +202,18 @@ class SplashScreen extends Component {
   }
 
   renderLogo() {
+    const headerContainerStyle = IS_SMALL_PHONE ? styles.headerContainerStyle : styles.largePhoneHeaderContainerStyle;
+    const logoImageStyle = IS_SMALL_PHONE ? styles.logoImageStyle : styles.largePhoneLogoImageStyle;
+    const headerFontSize = IS_SMALL_PHONE ? 36 : 38;
+
     return (
-      <View style={styles.headerContainerStyle}>
-        <Image style={styles.logoImageStyle} source={HeaderLogo} />
+      <View style={headerContainerStyle}>
+        <Image style={logoImageStyle} source={HeaderLogo} />
         {
           this.state.fontLoaded ?
             <View style={{ flexDirection: 'row' }}>
-              <Text style={styles.headerBoldTextStyle}>Goal</Text>
-              <Text style={styles.headerTextStyle}>Mogul</Text>
+              <Text style={{ ...styles.headerBoldTextStyle, fontSize: headerFontSize }}>Goal</Text>
+              <Text style={{ ...styles.headerTextStyle, fontSize: headerFontSize }}>Mogul</Text>
             </View>
           : null
         }
@@ -275,7 +286,7 @@ class SplashScreen extends Component {
 
           <TouchableOpacity
             activeOpacity={0.6}
-            style={styles.loginHighlightContainerStyle}
+            style={{ ...styles.loginHighlightContainerStyle, height: IS_SMALL_PHONE ? 60 : 90}}
             onPress={this.handleLoginPress.bind(this)}
           >
             {
@@ -306,6 +317,12 @@ const styles = {
     flex: 1
   },
   // Header style
+  largePhoneHeaderContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 90
+  },
   headerContainerStyle: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -323,6 +340,12 @@ const styles = {
     fontWeight: '800',
     fontFamily: 'gotham-pro-bold'
   },
+  largePhoneLogoImageStyle: {
+    height: 54,
+    width: 54,
+    marginRight: 10,
+    marginBottom: 4
+  },
   logoImageStyle: {
     height: 45,
     width: 45,
@@ -335,6 +358,11 @@ const styles = {
     marginTop: 40,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  largePhoneImageStyle: {
+    height: 330,
+    width: 330,
+    tintColor: '#045C7A'
   },
   imageStyle: {
     height: 200,
@@ -363,8 +391,8 @@ const styles = {
     marginTop: 50,
     marginBottom: 40,
     backgroundColor: '#4ccbf5',
-    height: 50,
-    width: 220,
+    height: 56,
+    width: 230,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
