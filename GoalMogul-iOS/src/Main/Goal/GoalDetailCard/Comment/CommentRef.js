@@ -200,7 +200,7 @@ class CommentRef extends React.PureComponent {
 
   // Currently this is a dummy component
   render() {
-    const { item, userId, tab } = this.props;
+    const { item, userId, tab, containerStyles } = this.props;
     if (!item) return null;
     const { suggestionType, suggestionText, suggestionLink } = item;
 
@@ -217,7 +217,7 @@ class CommentRef extends React.PureComponent {
     return (
       <TouchableOpacity
         activeOpacity={0.6}
-        style={styles.containerStyle}
+        style={{...styles.containerStyle, ...(containerStyles || {}) }}
         onPress={() => this.handleOnRefPress(item, userId, tab)}
       >
         {this.renderImage(item)}

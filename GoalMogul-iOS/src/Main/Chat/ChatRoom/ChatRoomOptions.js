@@ -160,7 +160,7 @@ class ChatRoomOptions extends React.Component {
 
     renderChatRoomDetails() {
         const { chatRoom, chatRoomName, chatRoomImage } = this.props;
-        if (!chatRoom) return;
+        if (!chatRoom) return null;
         const newDate = chatRoom.created ? new Date(chatRoom.created) : new Date();
         const date = `${months[newDate.getMonth() - 1]} ${newDate.getDate()}, ${newDate.getFullYear()}`;
         return (
@@ -226,7 +226,7 @@ class ChatRoomOptions extends React.Component {
                         back={true}
                         onCancel={this.closeOptions}
                     />
-                    <View style={{ flex: 1, backgroundColor: '#ffffff' }}>}
+                    <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
                         <ScrollView>
                             {/* insert chat room details preview card here */}
                             {this.renderChatRoomDetails()}
@@ -241,7 +241,7 @@ class ChatRoomOptions extends React.Component {
                                         this.openUserProfile(otherUser);
                                     }}
                                 />
-                            ): (isAdmin &&
+                            ): (isAdmin ?
                                 <SettingCard
                                     title={`Edit Conversation`}
                                     key="editchatroom"
@@ -249,7 +249,7 @@ class ChatRoomOptions extends React.Component {
                                     iconStyle={styles.chatIconStyle}
                                     explanation="Edit the conversation's details"
                                     onPress={this.openChatRoomEdit.bind(this)}
-                                />
+                                /> : null
                             )}
                             <SettingCard
                                 title={isMuted ? 'Unmute Conversation' : 'Mute Conversation'}
@@ -257,22 +257,22 @@ class ChatRoomOptions extends React.Component {
                                 explanation={isMuted ? 'Conversation is currently muted' : 'Mute push notifications from this conversation'}
                                 onPress={this.toggleMute.bind(this)}
                             />
-                            {chatRoom.roomType != 'Direct' && (isAdmin || chatRoom.membersCanAdd) && (
+                            {chatRoom.roomType != 'Direct' && (isAdmin || chatRoom.membersCanAdd) ? (
                                 <SettingCard
                                     title="Add Member"
                                     icon={plusIcon}
                                     explanation={`${isAdmin ? 'Manage' : 'View'} Conversation Members`}
                                     onPress={this.openAddMember.bind(this)}
                                 />
-                            )}
-                            {chatRoom.roomType != 'Direct' && (
+                            ) : null}
+                            {chatRoom.roomType != 'Direct' ? (
                                 <SettingCard
                                     title={`${isAdmin ? 'Manage' : 'View'} Members`}
                                     icon={membersIcon}
                                     explanation={`${isAdmin ? 'Manage' : 'View'} this conversation's members`}
                                     onPress={this.openMembers.bind(this)}
                                 />
-                            )}
+                            ): null}
                             <SettingCard
                                 title="Search Messages"
                                 icon={searchIcon}
@@ -285,14 +285,14 @@ class ChatRoomOptions extends React.Component {
                                 explanation="Delete all your copies of this conversation's messages"
                                 onPress={this.deleteConversationMessages.bind(this)}
                             />
-                            {chatRoom.roomType != 'Direct' && (
+                            {chatRoom.roomType != 'Direct' ? (
                                 <SettingCard
                                     title={'Leave Conversation'}
                                     icon={leaveIcon}
                                     explanation={'Leave this group conversation'}
                                     onPress={this.leaveConversation.bind(this)}
                                 />
-                            )}
+                            ) : null}
                         </ScrollView>
                     </View>
 				</View>

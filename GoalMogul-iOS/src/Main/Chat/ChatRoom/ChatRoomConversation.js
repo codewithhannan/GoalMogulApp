@@ -539,7 +539,6 @@ class ChatRoomConversation extends React.Component {
 				{...props}
 				renderBubble={props => <ChatRoomConversationBubble
 					{...props}
-					apiToken={this.props.token}
 				/>}
 			/>
 		);

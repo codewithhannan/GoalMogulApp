@@ -41,18 +41,6 @@ export default class ChatRoomConversationBubble extends React.Component {
 		});
 	}
 
-	componentDidMount() {
-		const { currentMessage } = this.props;
-		if (currentMessage.sharedEntity && currentMessage.sharedEntity.userRef) {
-			const token = this.props.token;
-			MemberDocumentFetcher.getUserDocument(currentMessage.sharedEntity.userRef, token, {}).then(userDoc => {
-				this.setState({
-					userRef: userDoc,
-				});
-			});
-		}
-	}
-
 	onLongPress = () => {
 		if (this.props.onLongPress) {
 			this.props.onLongPress(this.context, this.props.currentMessage);
@@ -140,10 +128,22 @@ export default class ChatRoomConversationBubble extends React.Component {
 		if (currentMessage.sharedEntity) {
 			if (currentMessage.sharedEntity.userRef) {
 				const suggestionType = 'User';
-				const userRef = this.state.userRef;
-				if (!userRef) return null;
+				let userRef = currentMessage.sharedEntity.userRef;
+				if (typeof userRef == "string") {
+					userRef = {
+						_id: userRef,
+						name: 'GoalMogul member'
+					};
+				} else if (!userRef) {
+					return null;
+				};
 				return (
 					<CommentRef
+						containerStyles={{
+							width: 240,
+							marginLeft: 12,
+							marginRight: 12,
+						}}
 						item={{ suggestionType, userRef }}
 					/>
 				);
