@@ -35,6 +35,9 @@ class EventSearchOverlay extends Component {
     super(props);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleOnEndSubmitting = this.handleOnEndSubmitting.bind(this);
+    this.state = {
+      searchContent: undefined
+    };
   }
 
   // Search bar functions
@@ -58,10 +61,16 @@ class EventSearchOverlay extends Component {
     if (value === undefined) {
       return;
     }
-    if (value === '') {
-      this.props.clearSearchState(this.props.selectedTab);
-    }
-    this.props.debouncedSearch(value.trim(), SEARCH_TYPE);
+
+    this.setState({
+      ...this.state,
+      searchContent: value 
+    }, () => {
+      if (value === '') {
+        this.props.clearSearchState(this.props.selectedTab);
+      }
+      this.props.debouncedSearch(value.trim(), SEARCH_TYPE);
+    });
   }
 
   render() {
@@ -99,6 +108,7 @@ class EventSearchOverlay extends Component {
                 />
               )}
               onSubmitEditing={this.handleOnEndSubmitting}
+              value={this.state.searchContent}
             />
           </View>
           <EventSearch callback={this.props.callback} />

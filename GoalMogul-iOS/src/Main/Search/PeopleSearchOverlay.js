@@ -47,6 +47,9 @@ class PeopleSearchOverlay extends Component {
     super(props);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleOnEndSubmitting = this.handleOnEndSubmitting.bind(this);
+    this.state = {
+      searchContent: undefined
+    };
   }
 
   handleOnResSelect = (_id) => {
@@ -92,11 +95,16 @@ class PeopleSearchOverlay extends Component {
     if (value === undefined) {
       return;
     }
+
+    this.setState({
+      ...this.state,
+      searchContent: value 
+    }, () => {
       if (value === '') {
-      return this.props.clearSearchState(SEARCH_TYPE);
-    }
-    console.log('debouced serach is: ', this.props.debouncedSearch);
-    this.props.debouncedSearch(value.trim(), SEARCH_TYPE);
+        return this.props.clearSearchState(SEARCH_TYPE);
+      }
+      this.props.debouncedSearch(value.trim(), SEARCH_TYPE);
+    });
   }
 
   render() {
@@ -132,6 +140,7 @@ class PeopleSearchOverlay extends Component {
               cancelButtonProps={{ color: '#17B3EC' }}
               showLoading={this.props.loading}
               onSubmitEditing={this.handleOnEndSubmitting}
+              value={this.state.searchContent}
             />
           </View>
           <FriendsSearch reducerPath='' onSelect={this.handleOnResSelect} {...this.props} />
