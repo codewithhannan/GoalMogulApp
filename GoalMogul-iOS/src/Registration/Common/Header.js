@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Image, Text, TouchableWithoutFeedback } from 'react-native';
+import { View, Image, Text, Platform } from 'react-native';
 import { connect } from 'react-redux';
+import { Constants } from 'expo';
 
 /* Asset */
 import HeaderImage from '../../asset/header/header-logo.png';
@@ -11,11 +12,16 @@ import { BackIcon } from '../../Utils/Icons';
 
 import { registrationBack, registrationLogin } from '../../actions';
 import DelayedButton from '../../Main/Common/Button/DelayedButton';
+import { IPHONE_MODELS } from '../../Utils/Constants';
 
 // const IMAGE_HEIGHT_SMALL = 60;
 // const IMAGE_HEIGHT = 80;
 // const VIEW_HEIGHT = 207;
 // const VIEW_AMOUNT = 20;
+
+
+const IS_SMALL_PHONE = Platform.OS === 'ios' &&
+  IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
 
 class Header extends Component {
 
@@ -172,7 +178,7 @@ const styles = {
     alignSelf: 'flex-start',
     position: 'absolute',
     left: 20,
-    top: 30,
+    top: IS_SMALL_PHONE ? 30 : 42,
     display: 'flex',
     flexDirection: 'row'
   },

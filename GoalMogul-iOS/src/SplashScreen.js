@@ -286,12 +286,12 @@ class SplashScreen extends Component {
 
           <TouchableOpacity
             activeOpacity={0.6}
-            style={{ ...styles.loginHighlightContainerStyle, height: IS_SMALL_PHONE ? 60 : 90}}
+            style={{ ...styles.loginHighlightContainerStyle, height: IS_SMALL_PHONE ? 60 : 81}}
             onPress={this.handleLoginPress.bind(this)}
           >
             {
               this.state.fontLoaded ?
-                <Text style={styles.haveAccountTextStyle}>
+                <Text style={{...styles.haveAccountTextStyle, paddingBottom: IS_SMALL_PHONE ? 0 : 21}}>
                   Have an account?
                 </Text>
               : null
@@ -300,7 +300,7 @@ class SplashScreen extends Component {
             <TouchableOpacity activeOpacity={0.6} onPress={this.handleLoginPress.bind(this)}>
               {
                 this.state.fontLoaded ?
-                  <Text style={styles.loginTextStyle}>Log In</Text>
+                  <Text style={{...styles.loginTextStyle, paddingBottom: IS_SMALL_PHONE ? 0 : 24}}>Log In</Text>
                 : null
               }
             </TouchableOpacity>
