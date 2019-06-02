@@ -44,7 +44,7 @@ class Account extends Component {
             }}
           />
           <SettingCard
-            title="Notification"
+            title="Notifications"
             key="notification"
             explanation="Manage your notification preferences"
             onPress={() => {

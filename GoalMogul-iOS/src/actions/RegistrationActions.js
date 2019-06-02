@@ -1,6 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import { CameraRoll, ImagePickerIOS } from 'react-native';
-import Expo from 'expo';
+import { Permissions, ImagePicker } from 'expo';
 import { SubmissionError } from 'redux-form';
 import { api as API } from '../redux/middleware/api';
 import { tutorial as Tutorial } from '../redux/modules/auth/Tutorial';
@@ -265,7 +265,6 @@ export const registrationNextIntro = (skip) => {
 
 // Actions to Open Camera to take photos
 export const openCamera = (callback) => async (dispatch) => {
-  const { Permissions } = Expo;
   const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL];
 
   const permissionGranted = await ImageUtils.checkPermission(permissions);
@@ -274,7 +273,7 @@ export const openCamera = (callback) => async (dispatch) => {
     return;
   }
 
-  const result = await Expo.ImagePicker.launchCameraAsync({
+  const result = await ImagePicker.launchCameraAsync({
       mediaTypes: 'Images',
     })
     .catch(error => console.log(permissions, { error }));
@@ -294,7 +293,6 @@ export const openCamera = (callback) => async (dispatch) => {
 
 // Action to open camera roll modal
 export const openCameraRoll = (callback, maybeOptions) => async (dispatch) => {
-  const { Permissions } = Expo;
   const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL];
 
   const permissionGranted = await ImageUtils.checkPermission(permissions);
@@ -303,7 +301,7 @@ export const openCameraRoll = (callback, maybeOptions) => async (dispatch) => {
   }
   const disableEditing = maybeOptions && maybeOptions.disableEditing;
 
-  const result = await Expo.ImagePicker.launchImageLibraryAsync(disableEditing ? {} : {
+  const result = await ImagePicker.launchImageLibraryAsync(disableEditing ? {} : {
     allowsEditing: true,
     aspect: [4, 3],
     quality: 0.7,
@@ -484,7 +482,7 @@ export const registrationNextContactSync = ({ skip }) => {
   // TODO: load contacts from iphone contacts and send to server
 
   return async (dispatch, getState) => {
-    const permission = await Expo.Permissions.askAsync(Expo.Permissions.CONTACTS);
+    const permission = await Permissions.askAsync(Permissions.CONTACTS);
     if (permission.status !== 'granted') {
     // Permission was denied and dispatch an action
       return;

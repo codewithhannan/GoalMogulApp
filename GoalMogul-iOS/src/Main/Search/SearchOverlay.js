@@ -189,6 +189,7 @@ class SearchOverlay extends Component {
                 />
               )}
               onSubmitEditing={this.handleOnEndSubmitting}
+              value={this.state.searchContent}
             />
           </View>
           <TabView

@@ -34,6 +34,10 @@ import {
 } from '../reducers/GoalDetailReducers';
 
 import {
+  POST_NEW_POST_SUBMIT_SUCCESS
+} from '../redux/modules/feed/post/PostReducers';
+
+import {
   NOTIFICATION_SUBSCRIBE,
   NOTIFICATION_UNSUBSCRIBE
 } from '../redux/modules/notification/NotificationTabReducers';
@@ -307,6 +311,31 @@ export default (state = INITIAL_STATE, action) => {
       });
 
       newState = _.set(newState, 'activityfeed.data', newActivityData);
+      return newState;
+    }
+
+    /**
+     * Only if it's update then check
+     */
+    case POST_NEW_POST_SUBMIT_SUCCESS: {
+      let newState = _.cloneDeep(state);
+      const { post, update } = action.payload;
+      if (!update) return newState;
+
+      // Update activity feed
+      const oldActivityFeed = _.get(newState, 'activityfeed.data');
+      const newActivityFeed = oldActivityFeed.map((activity) => {
+        const { actedUponEntityType, postRef } = activity; 
+        let newActivity = _.cloneDeep(activity);
+        if (actedUponEntityType === 'Post' && postRef && postRef._id === post._id) {
+          console.log(`${DEBUG_KEY}: new post is:`, post);
+          newActivity = _.set(newActivity, 'postRef', post);
+        }
+
+        return newActivity;
+      });
+
+      newState = _.set(newState, 'activityfeed.data', newActivityFeed);
       return newState;
     }
 

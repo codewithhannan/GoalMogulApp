@@ -30,6 +30,7 @@ class RichText extends React.Component {
   constructor(props) {
     super(props);
     this.handleUrlPress = this.handleUrlPress.bind(this);
+    // this.constructParsedUserTags = this.constructParsedUserTags.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -101,7 +102,7 @@ class RichText extends React.Component {
 
     if (!contentText) return null;
 
-    // console.log(`${DEBUG_KEY}: render contentText: ${contentText.substring(10)}`);
+    // console.log(`${DEBUG_KEY}: render contentText: ${contentText.substring(0, 5)}`);
 
     const parsedTags = this.constructParsedUserTags(contentTags, contentText);
     const convertedText = Decode(contentText);
@@ -121,19 +122,20 @@ class RichText extends React.Component {
             style={[this.props.textStyle]}
             parse={
               [
-                { type: 'url', style: styles.url, onPress: this.handleUrlPress },
+                // { type: 'url', style: styles.url, onPress: this.handleUrlPress },
+                // { type: 'phone', style: styles.phone, onPress: this.handlePhonePress },
+                // { type: 'email', style: styles.email, onPress: this.handleEmailPress },
+                ...parsedTags,
                 { 
                   pattern: URL_REGEX, // Additional regex to match without HTTP protocal
                   style: styles.url,
                   onPress: this.handleUrlPress
                 },
-                // { type: 'phone', style: styles.phone, onPress: this.handlePhonePress },
-                // { type: 'email', style: styles.email, onPress: this.handleEmailPress },
-                ...parsedTags
               ]
             }
             childrenProps={{ allowFontScaling: false }}
           >
+            {/* <Hyperlink linkStyle={styles.url} onPress={(url, text) => this.handleUrlPress(url)}>{convertedText}</Hyperlink> */}
             {convertedText}
           </ParsedText>
         {/* </Hyperlink> */}

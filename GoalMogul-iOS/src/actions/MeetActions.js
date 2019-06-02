@@ -1,6 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
-import Expo from 'expo';
+import { Permissions } from 'expo';
 import { api as API, singleFetch } from '../redux/middleware/api';
 import {
   MEET_SELECT_TAB,
@@ -348,7 +348,7 @@ export const requestsSelectTab = (key) => (dispatch) => {
 
 // Contact sync
 export const meetContactSync = (callback, componentKey) => async (dispatch, getState) => {
-    const permission = await Expo.Permissions.askAsync(Expo.Permissions.CONTACTS);
+    const permission = await Permissions.askAsync(Permissions.CONTACTS);
     if (permission.status !== 'granted') {
     // Permission was denied and dispatch an action
       alert('Please grant access to sync contact');

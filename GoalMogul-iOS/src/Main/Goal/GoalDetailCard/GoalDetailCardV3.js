@@ -79,7 +79,7 @@ import {
   // APP_BLUE
 } from '../../../styles';
 import { Logger } from '../../../redux/middleware/utils/Logger';
-import { constructMenuName } from '../../../redux/middleware/utils';
+import { constructMenuName, getParentCommentId } from '../../../redux/middleware/utils';
 
 const initialLayout = {
   height: 0,
@@ -668,23 +668,6 @@ class GoalDetailCardV3 extends Component {
   }
 }
 
-const getParentCommentId = (commentId, comments) => {
-  let ret;
-  comments.forEach(c => {
-    if (!c || _.isEmpty(c)) return;
-    if (ret) return; // Already find. No need to continue
-
-    const { _id, replyToRef } = c;
-    if (_id === commentId) {
-      ret = commentId;
-    }
-    if (replyToRef === commentId) {
-      ret = replyToRef;
-    }
-  });
-  return ret;
-};
-
 const styles = StyleSheet.create({
   composerContainer: {
     left: 0,
@@ -757,7 +740,8 @@ const makeMapStateToProps = () => {
     const comments = getCommentByEntityId(state, goalId, pageId);
     const { data, transformedComments, loading } = comments || {
       transformedComments: [],
-      loading: false
+      loading: false,
+      data: []
     };
   
     const { focusType, focusRef } = navigationStateV2;

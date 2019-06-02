@@ -23,6 +23,7 @@ import {
   openNotificationDetail,
   removeNotification
 } from '../../../redux/modules/notification/NotificationActions';
+import { Logger } from '../../../redux/middleware/utils/Logger';
 
 // Constants
 const DEBUG_KEY = '[ UI NotificationCard ]';
@@ -31,7 +32,7 @@ class NotificationCard extends React.PureComponent {
   handleNotificationCardOnPress = (item) => {
     const { parsedNoti, _id } = item;
     if (!parsedNoti || !parsedNoti.path) {
-      console.log(`${DEBUG_KEY}: no parsedNoti or path is in notification:`, item);
+      console.warn(`${DEBUG_KEY}: no parsedNoti or path is in notification:`, item);
       return;
     }
 
@@ -41,7 +42,7 @@ class NotificationCard extends React.PureComponent {
     }
 
     // TODO: open detail based on the path;
-    console.log(`${DEBUG_KEY}: open notification detail for item: `, item);
+    Logger.log(`${DEBUG_KEY}: open notification detail for item: `, item, 2);
     this.props.openNotificationDetail(item);
   }
 
@@ -138,6 +139,7 @@ class NotificationCard extends React.PureComponent {
       : { ...styles.cardContainerStyle, backgroundColor: '#eef8fb' };
     return (
       <DelayedButton 
+        delay={600}
         activeOpacity={0.6}
         style={cardContainerStyle}
         onPress={() => this.handleNotificationCardOnPress(item)}

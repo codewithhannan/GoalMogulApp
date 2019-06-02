@@ -50,6 +50,7 @@ import CreateChatRoomReducers from '../redux/modules/chat/CreateChatRoomReducers
 import ChatRoomReducers from '../redux/modules/chat/ChatRoomReducers';
 import TabIconReducers from '../redux/modules/navigation/TabIconReducers';
 import ChatRoomMembersReducers from '../redux/modules/chat/ChatRoomMembersReducers';
+import ShareToChatReducers from '../redux/modules/chat/ShareToChatReducers';
 
 const rootPersistConfig = {
   key: 'root',
@@ -98,6 +99,7 @@ const reducers = combineReducers({
   newTribe: NewTribeReducers,
   newEvent: NewEventReducers,
   newChatRoom: CreateChatRoomReducers,
+  shareToChat: ShareToChatReducers,
   notification: NotificationTabReducers,
   chat: ChatReducers,
   chatRoom: ChatRoomReducers,

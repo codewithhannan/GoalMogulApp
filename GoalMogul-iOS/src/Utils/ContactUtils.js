@@ -1,4 +1,4 @@
-import Expo from 'expo';
+import { Contacts } from 'expo';
 import { FileSystem } from 'expo';
 
 import { api as API, BASE_API_URL } from '../redux/middleware/api';
@@ -31,7 +31,7 @@ const ContactUtils = {
       //     Expo.Contacts.DATES,
       //   ]
       // });
-    const contacts = await Expo.Contacts.getContactsAsync();
+    const contacts = await Contacts.getContactsAsync();
     console.log(`${DEBUG_KEY}: [ handleUploadContacts ] contacts load with length: `, 
       contacts && contacts.data ? contacts.data.length : 0);
     uploadPromise.push(ContactUtils.uploadContacts(contacts.data, token));
@@ -41,7 +41,7 @@ const ContactUtils = {
   },
 
   async getContactSize() {
-    const contacts = await Expo.Contacts.getContactsAsync({
+    const contacts = await Contacts.getContactsAsync({
       fields: [],
       pageSize: 1,
       pageOffset: 0

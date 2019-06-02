@@ -28,7 +28,7 @@ import {
 } from '../feed/post/PostActions';
 
 import {
-  openShareDetail
+  openShareDetail, openShareDetailById
 } from '../feed/post/ShareActions';
 
 import {
@@ -111,7 +111,7 @@ export const handlePushNotification = (notification) => (dispatch, getState) => 
           focusType: 'comment',
           focusRef: undefined,
           initialScrollToComment: true,
-          commentId: p[3]
+          commentId: path[3]
         };
       }
     }
@@ -124,7 +124,22 @@ export const handlePushNotification = (notification) => (dispatch, getState) => 
   }
 
   if (entityType === 'post') {
-    return openPostDetailById(entityId)(dispatch, getState);
+    let initialProps = {};
+    if (path.length > 3) {
+      if (path[2] === 'comment' && !_.isEmpty(path[3])) {
+        initialProps = { 
+          ...initialProps,
+          initialScrollToComment: true,
+          commentId: path[3]
+        };
+      }
+    }
+
+    if (checkIfShare(path)) {
+      return openShareDetailById(entityId, initialProps)(dispatch, getState);
+    } else {
+      return openPostDetailById(entityId, initialProps)(dispatch, getState);
+    } 
   }
 
   if (entityType === 'event') {
@@ -150,6 +165,19 @@ export const handlePushNotification = (notification) => (dispatch, getState) => 
     };
     return;
   }
+};
+
+/**
+ * If postType and its subsequent field is not General, then this is a share notification
+ * @param {array} path 
+ */
+const checkIfShare = (path = []) => {
+  const postTypeIndex = path.findIndex(p => p === 'postType');
+  if (postTypeIndex === -1) return false;
+  if (path.length > postTypeIndex + 1 && path[postTypeIndex + 1] !== 'General') {
+    return true;
+  }
+  return false;
 };
 
 /**
@@ -187,10 +215,26 @@ export const openNotificationDetail = (item) => (dispatch, getState) => {
   }
 
   if (entityType === 'post') {
-    if (isValidItem(item.postRef)) {
-      return openPostDetail(item.postRef)(dispatch, getState);  
+    let initialProps = {};
+    if (p.length > 3) {
+      if (p[2] === 'comment' && !_.isEmpty(p[3])) {
+        initialProps = { 
+          ...initialProps,
+          initialScrollToComment: true,
+          commentId: p[3]
+        };
+      }
     }
-    return openPostDetailById(entityId)(dispatch, getState);
+
+    if (isValidItem(item.postRef)) {
+      return openPostDetail(item.postRef, initialProps)(dispatch, getState);  
+    }
+
+    if (checkIfShare(p)) {
+      return openShareDetailById(entityId, initialProps)(dispatch, getState);
+    } else {
+      return openPostDetailById(entityId, initialProps)(dispatch, getState);
+    } 
   }
 
   if (entityType === 'goal') {

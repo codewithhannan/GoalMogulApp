@@ -98,14 +98,35 @@ export const EMPTY_GOAL = {
         _id: '',
         name: '',
         profile: {
-        elevatorPitch: '',
-        occupation: '',
-        pointsEarned: 0,
-        views: 0,
+            elevatorPitch: '',
+            occupation: '',
+            pointsEarned: 0,
+            views: 0,
         },
     },
     priority: 0,
     privacy: 'friends',
     steps: [],
     title: '',
+};
+
+export const EMPTY_POST =  {
+	lastUpdated: '',
+	owner: {
+		_id: '',
+        name: '',
+        profile: {
+            elevatorPitch: '',
+            occupation: '',
+            pointsEarned: 0,
+            views: 0,
+        },
+	},
+	privacy: "public",
+	content: {
+		text: '',
+		tags: [],
+		links: []
+	},
+	postType: "General",
 };

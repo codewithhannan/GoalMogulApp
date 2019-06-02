@@ -80,12 +80,12 @@ class ChatRoomCard extends React.Component {
 				{/*<Text style={defaultTextStyle}>{category}</Text>
 				<Dot />*/}
 				{(count && item.roomType == 'Group') ? 
-					<Text style={defaultTextStyle}>
-						<Text style={{ color: '#15aad6' }}>
+					<View style={{flexDirection: 'row'}}>
+						<Text style={{ ...defaultTextStyle, color: '#15aad6', }}>
 							{count}
 						</Text>
-						&nbsp;members
-					</Text>
+						<Text style={defaultTextStyle}>&nbsp;members</Text>
+					</View>
 				: null}
 			</View>
 		);
@@ -163,7 +163,6 @@ class ChatRoomCard extends React.Component {
 			cardImage = (cardImage && cardImage.image) || profilePic;
 		} else {
 			cardImage = (item && item.picture) || GROUP_CHAT_DEFAULT_ICON_URL;
-
 		};
 
 		const maybeUnreadHighlight = item.unreadMessageCount > 0 ? {

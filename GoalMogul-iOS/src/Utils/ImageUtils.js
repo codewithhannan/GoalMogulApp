@@ -76,8 +76,17 @@ const ImageUtils = {
     });
   },
 
-  resizeImage(file, width, height) {
+  /**
+   * 
+   * @param {*} file 
+   * @param {*} width 
+   * @param {*} height 
+   * @param {object} capDimensions: { capHeight, capWidth }
+   */
+  resizeImage(file, width, height, capDimensions) {
     console.log('file to resize is: ', file);
+    const widthCap = capDimensions && capDimensions.capWidth? capDimensions.capWidth : 500;
+    const heightCap = capDimensions && capDimensions.capHeight? capDimensions.capHeight : 500;
 
     const cropData = {
       offset: { x: 0, y: 0 },
@@ -86,8 +95,8 @@ const ImageUtils = {
         height,
       },
       displaySize: {
-        width: 600 * (width > height ? 1 : width / height),
-        height: 600 * (height > width ? 1 : height / width),
+        width: widthCap * (width > height ? 1 : width / height),
+        height: heightCap * (height > width ? 1 : height / width),
       },
       resizeMode: 'cover',
     };

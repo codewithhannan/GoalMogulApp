@@ -65,7 +65,7 @@ class SearchEventCard extends Component {
             <View style={{ ...styles.imageStyle, alignItems: 'center', justifyContent: 'center' }}>
                <ActivityIndicator size="large" color="lightgray" />
             </View>
-            : ''
+            : null
           }
         </View>
 

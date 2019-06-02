@@ -20,7 +20,8 @@ import {
 import {
   switchCaseF,
   sanitizeTags,
-  componentKeyByTab
+  componentKeyByTab,
+  constructPageId
 } from '../../../middleware/utils';
 
 import {
@@ -34,10 +35,21 @@ import {
 
 import { api as API } from '../../../middleware/api';
 import { DropDownHolder } from '../../../../Main/Common/Modal/DropDownModal';
+import { EMPTY_POST } from '../../../../Utils/Constants';
 
 const DEBUG_KEY = '[ Action Share ]';
 
 /* Functions related to a share detail */
+
+export const openShareDetailById = (shareId, initialProps) => (dispatch, getState) => {
+  const pageId = constructPageId('post');
+  const share = {
+    ...EMPTY_POST,
+    created: new Date(),
+    _id: shareId
+  };
+  openShareDetail(share, pageId, initialProps)(dispatch, getState);
+};
 
 /*
  * open share detail
@@ -61,7 +73,8 @@ export const openShareDetail = (share, pageId, initialProps) => (dispatch, getSt
   });
 
   fetchPostDetail(postId, pageId)(dispatch, getState);
-  refreshComments('Post', postId, tab, pageId)(dispatch, getState);
+  // In the version 0.3.9 and later, loading comment is done in share detail
+  // refreshComments('Post', postId, tab, pageId)(dispatch, getState);
 
   const componentToOpen = componentKeyByTab(tab, 'share');
   Actions.push(`${componentToOpen}`, { pageId, postId, initialProps });

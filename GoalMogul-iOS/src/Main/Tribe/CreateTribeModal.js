@@ -263,11 +263,14 @@ class CreateTribeModal extends React.Component {
   }
 
   renderImageModal(imageUrl) {
+    const { initializeFromState, tribe, picture } = this.props;
+
     return (
       <ImageModal 
         mediaRef={imageUrl}
         mediaModal={this.state.mediaModal}
         closeModal={() => this.setState({ mediaModal: false })}
+        isLocalFile={!(initializeFromState && tribe.picture && tribe.picture === picture)}
       />
     );
   }

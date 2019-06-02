@@ -21,8 +21,7 @@ import {
   openProfileDetailEditForm,
   updateFriendship,
   UserBanner,
-  shareUserProfileAsMessage,
-  createOrGetDirectMessage
+  createOrGetDirectMessage,
 } from '../../../actions/';
 
 // Selector
@@ -295,25 +294,16 @@ class ProfileDetailCard extends Component {
   handleMoreButtonOnPress = () => {
     const moreButtonOptions = switchByButtonIndex([
       [R.equals(0), () => { // share to Direct Chat
-          const searchFor = {
-            type: 'directChat',
-          };
-          const cardIconStyle = { tintColor: APP_BLUE_BRIGHT };
-          const cardIconSource = next;
-          const callback = (selectedUserId) => {
-            // fetch the direct message chat room
-            this.props.createOrGetDirectMessage(selectedUserId, (err, chatRoom) => {
-              // send the message to this room
-              if (err || !chatRoom) {
-                return Alert.alert('Error retrieving chat with user');
-              };
-              this.props.shareUserProfileAsMessage(chatRoom._id, this.props.userId);
-            });
-          };
-          Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle, callback });
+        // TODO: @Jay Share to direct message
+        const userToShare = this.props.user;
+        const chatRoomType = 'Direct';
+        Actions.push('shareToChatLightBox', { userToShare, chatRoomType });
       }],
       [R.equals(1), () => {
         // TODO: @Jay Share to group conversation
+        const userToShare = this.props.user;
+        const chatRoomType = 'Group';
+        Actions.push('shareToChatLightBox', { userToShare, chatRoomType });
       }]
     ]);
 
@@ -547,6 +537,5 @@ export default connect(
     openProfileDetailEditForm,
     updateFriendship,
     createOrGetDirectMessage,
-    shareUserProfileAsMessage
   }
 )(ProfileDetailCard);

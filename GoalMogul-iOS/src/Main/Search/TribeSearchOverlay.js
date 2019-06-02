@@ -29,13 +29,16 @@ import {
 } from '../../Utils/Constants';
 
 const DEBUG_KEY = '[ Tribe Search ]';
-const SEARCH_TYPE = 'tribes';
+const SEARCH_TYPE = 'myTribes';
 
 class TribeSearchOverlay extends Component {
   constructor(props) {
     super(props);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleOnEndSubmitting = this.handleOnEndSubmitting.bind(this);
+    this.state = {
+      searchContent: undefined
+    };
   }
 
   handleOnEndSubmitting = ({ nativeEvent }) => {
@@ -59,10 +62,16 @@ class TribeSearchOverlay extends Component {
     if (value === undefined) {
       return;
     }
-    if (value === '') {
-      this.props.clearSearchState(this.props.selectedTab);
-    }
-    this.props.debouncedSearch(value.trim(), SEARCH_TYPE);
+
+    this.setState({
+      ...this.state,
+      searchContent: value 
+    }, () => {
+      if (value === '') {
+        this.props.clearSearchState(SEARCH_TYPE);
+      }
+      this.props.debouncedSearch(value.trim(), SEARCH_TYPE);
+    });
   }
 
   // searchIcon = () => (
@@ -111,6 +120,7 @@ class TribeSearchOverlay extends Component {
                 />
               )}
               onSubmitEditing={this.handleOnEndSubmitting}
+              value={this.state.searchContent}
             />
           </View>
           <TribeSearch callback={this.props.callback} />

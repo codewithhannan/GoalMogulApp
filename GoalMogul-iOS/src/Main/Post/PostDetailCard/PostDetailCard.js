@@ -15,7 +15,8 @@ import _ from 'lodash';
 // Actions
 import {
   closePostDetail,
-  editPost
+  editPost,
+  fetchPostDetail
 } from '../../../redux/modules/feed/post/PostActions';
 
 import {
@@ -44,6 +45,8 @@ import PostDetailSection from './PostDetailSection';
 import {
   BACKGROUND_COLOR
 } from '../../../styles';
+import { Logger } from '../../../redux/middleware/utils/Logger';
+import { getParentCommentId } from '../../../redux/middleware/utils';
 
 const DEBUG_KEY = '[ UI PostDetailCard ]';
 const TABBAR_HEIGHT = 48.5;
@@ -58,6 +61,7 @@ class PostDetailCard extends React.PureComponent {
       commentBoxPadding: new Animated.Value(0),
       keyboardDidShow: false
     };
+    this.handleScrollToCommentItem = this.handleScrollToCommentItem.bind(this);
   }
 
   componentDidMount() {
@@ -67,12 +71,22 @@ class PostDetailCard extends React.PureComponent {
     this.keyboardWillHideListener = Keyboard.addListener(
       'keyboardWillHide', this.keyboardWillHide);
 
-    const { initialProps, postDetail } = this.props;
-    console.log(`${DEBUG_KEY}: [ componentDidMount ]: initialProps is:`, initialProps);
+    const { initialProps, postDetail, pageId, postId, tab } = this.props;
+    console.log(`${DEBUG_KEY}: [ componentDidMount ]: initialProps:`, initialProps);
+
+    // Check if needed to scroll to comment after loading
+    const refreshCommentsCallback = initialProps && initialProps.initialScrollToComment && initialProps.commentId
+      ? () => this.handleScrollToCommentItem(initialProps.commentId)
+      : undefined;
+
+    this.props.refreshComments('Post', postId, tab, pageId, refreshCommentsCallback);
 
     // Check if there is any initial operations
     if (initialProps) {
-      const { initialShowPostModal, initialFocusCommentBox } = initialProps;
+      const { 
+        initialShowPostModal, 
+        initialFocusCommentBox
+      } = initialProps;
 
       // Display CreatePostModal
       if (initialShowPostModal) { 
@@ -132,6 +146,31 @@ class PostDetailCard extends React.PureComponent {
     if (nextState.nextcommentBoxPadding !== this.state.nextState) return false;
     if (nextState.keyboardDidShow !== this.state.keyboardDidShow) return false;
     return true;
+  }
+
+  /**
+   * Scroll to comment item
+   */
+  handleScrollToCommentItem = (commentId) => {
+    const { originalComments, comments } = this.props;
+
+    Logger.log(`${DEBUG_KEY}: [ handleScrollToCommentItem ]: originalComments`, originalComments, 2);
+    const parentCommentId = getParentCommentId(commentId, originalComments);
+
+    Logger.log(`${DEBUG_KEY}: [ handleScrollToCommentItem ]: commentId`, commentId, 2);
+    if (!parentCommentId) return; // Do nothing since it's no loaded. Defensive coding
+    
+    Logger.log(`${DEBUG_KEY}: [ handleScrollToCommentItem ]: parentCommentId`, parentCommentId, 2);
+    const parentCommentIndex = comments.findIndex(c => c._id === parentCommentId);
+    Logger.log(`${DEBUG_KEY}: [ handleScrollToCommentItem ]: parentCommentIndex`, parentCommentIndex, 2);
+    if (this.refs['flatList'] === undefined || parentCommentIndex === -1) return;
+
+    setTimeout(() => {
+      this.refs['flatList'].scrollToIndex({
+        index: parentCommentIndex,
+        animated: true
+      });
+    }, 200);
   }
 
   handleRefresh = () => {
@@ -295,16 +334,19 @@ const makeMapStateToProps = () => {
 
     const comments = getCommentByEntityId(state, postId, pageId);
     
-    const { transformedComments, loading } = comments || {
+    const { transformedComments, loading, data } = comments || {
       transformedComments: [],
-      loading: false
+      loading: false,
+      data: []
     };
   
     return {
       commentLoading: loading,
       comments: transformedComments,
+      originalComments: data, // All comments in raw form
       postDetail,
-      pageId
+      pageId,
+      tab: state.navigation.tab,
     };
   };
 
@@ -316,6 +358,7 @@ export default connect(
   {
     closePostDetail,
     refreshComments,
-    editPost
+    editPost,
+    fetchPostDetail
   }
 )(PostDetailCard);

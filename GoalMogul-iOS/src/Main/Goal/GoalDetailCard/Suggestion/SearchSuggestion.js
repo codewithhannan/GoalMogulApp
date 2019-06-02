@@ -51,8 +51,11 @@ import { arrayUnique } from '../../../../reducers/MeetReducers';
 const DEBUG_KEY = '[ UI SearchSuggestion ]';
 
 class SearchSuggestion extends React.Component {
-  state = {
-    query: ''
+  constructor(props) {
+    super(props);
+    this.state = {
+      query: ''
+    };
   }
 
   // Search Query handler
@@ -74,11 +77,17 @@ class SearchSuggestion extends React.Component {
     if (query === undefined) {
       return;
     }
-    if (query === '') {
-      this.props.clearSearchState(this.props.selectedTab);
-      return;
-    }
-    this.props.debouncedSearch(query.trim(), this.props.selectedTab);
+
+    this.setState({
+      ...this.state,
+      query
+    }, () => {
+      if (query === '') {
+        this.props.clearSearchState(this.props.selectedTab);
+        return;
+      }
+      this.props.debouncedSearch(query.trim(), this.props.selectedTab);
+    });
   }
 
   handleRefresh = () => {
@@ -196,6 +205,7 @@ class SearchSuggestion extends React.Component {
             iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
           />
         )}
+        value={this.state.query}
       />
     );
   }

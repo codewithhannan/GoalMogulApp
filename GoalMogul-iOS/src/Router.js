@@ -13,7 +13,7 @@ import {
 } from 'react-native-router-flux';
 import { Easing, Animated } from 'react-native';
 import { connect } from 'react-redux';
-import CardStackStyleInterpolator from "react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator";
+// import CardStackStyleInterpolator from "react-navigation-stack/src/views/StackView/StackViewStyleInterpolator";
 
 /* Auth */
 import SplashScreen from './SplashScreen';
@@ -112,6 +112,7 @@ import ChatRoomPubicView from './Main/Chat/ChatRoom/ChatRoomPublicView';
 import ChatRoomMembers from './Main/Chat/ChatRoom/ChatRoomMembers';
 import ChatRoomMessageSearch from './Main/Chat/ChatRoom/ChatRoomMessageSearch';
 import ChatMessageSnapshotModal from './Main/Chat/Modals/ChatMessageSnapshotModal';
+import ShareToChatModal from './Main/Chat/Modals/ShareToChatModal';
 
 class RouterComponent extends Component {
   onTabPress = (all) => {
@@ -632,6 +633,7 @@ class RouterComponent extends Component {
           <Scene key="searchEventLightBox" component={EventSearchOverlay} hideNavBar />
           <Scene key="searchTribeLightBox" component={TribeSearchOverlay} hideNavBar />
           <Scene key="searchPeopleLightBox" component={PeopleSearchOverlay} hideNavBar />
+          <Scene key="shareToChatLightBox" component={ShareToChatModal} hideNavBar />
 
           <Scene key="mutualFriends" component={MutualFriends} />
           <Scene key="meetContactSync" component={ContactSync} hideNavBar />

@@ -7,6 +7,8 @@ import { Animated, Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewProp
 import { MessageText, MessageVideo } from 'react-native-gifted-chat';
 import ChatMessageImage from '../Modals/ChatMessageImage';
 import moment from 'moment';
+import CommentRef from '../../Goal/GoalDetailCard/Comment/CommentRef';
+import { MemberDocumentFetcher } from '../../../Utils/UserUtils';
 
 function isSameDay(currentMessage = {}, diffMessage = {}) {
 	if (!diffMessage.createdAt) {
@@ -35,7 +37,20 @@ export default class ChatRoomConversationBubble extends React.Component {
 			wrapperOpacityAnim: new Animated.Value(1),
 			wrapperPaddingAnim: new Animated.Value(0),
 			timeHeightAnim: new Animated.Value(0),
+			userRef: null,
 		});
+	}
+
+	componentDidMount() {
+		const { currentMessage } = this.props;
+		if (currentMessage.sharedEntity && currentMessage.sharedEntity.userRef) {
+			const token = this.props.token;
+			MemberDocumentFetcher.getUserDocument(currentMessage.sharedEntity.userRef, token, {}).then(userDoc => {
+				this.setState({
+					userRef: userDoc,
+				});
+			});
+		}
 	}
 
 	onLongPress = () => {
@@ -117,6 +132,35 @@ export default class ChatRoomConversationBubble extends React.Component {
 				}}
 			/>
 		}
+		return null;
+	}
+
+	renderSharedContent() {
+		const { currentMessage } = this.props;
+		if (currentMessage.sharedEntity) {
+			if (currentMessage.sharedEntity.userRef) {
+				const suggestionType = 'User';
+				let userRef = currentMessage.sharedEntity.userRef;
+				if (typeof userRef == "string") {
+					userRef = {
+						_id: userRef,
+						name: 'GoalMogul member'
+					};
+				} else if (!userRef) {
+					return null;
+				};
+				return (
+					<CommentRef
+						containerStyles={{
+							width: 240,
+							marginLeft: 12,
+							marginRight: 12,
+						}}
+						item={{ suggestionType, userRef }}
+					/>
+				);
+			};
+		};
 		return null;
 	}
 
@@ -253,7 +297,10 @@ export default class ChatRoomConversationBubble extends React.Component {
 		return (
 			<View style={[
 				styles[this.props.position].container,
-				this.props.containerStyle[this.props.position]
+				this.props.containerStyle[this.props.position],
+				this.props.currentMessage.isLocal ? {
+					opacity: 0.6,
+				} : {}
 			]}>
 				<TouchableOpacity
 					activeOpacity={0.6}
@@ -278,6 +325,7 @@ export default class ChatRoomConversationBubble extends React.Component {
 							{this.renderCustomView()}
 							{this.renderMessageImage()}
 							{this.renderMessageVideo()}
+							{this.renderSharedContent()}
 							{this.renderMessageText()}
 							<View style={[styles[this.props.position].bottom, this.props.bottomContainerStyle[this.props.position]]}>
 								{this.renderUsername()}

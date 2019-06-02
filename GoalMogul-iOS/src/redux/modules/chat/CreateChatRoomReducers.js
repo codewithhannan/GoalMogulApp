@@ -5,7 +5,7 @@ const INITIAL_STATE = {
     uploading: false,
     refreshing: false,
     loading: false,
-    hasNextPage: false,
+    hasNextPage: true,
     pageSize: 5,
     pageOffset: 0,
     picture: undefined,

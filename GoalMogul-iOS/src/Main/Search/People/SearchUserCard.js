@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Expo from 'expo';
 import {
   View,
   Text,
@@ -55,7 +54,7 @@ class SearchUserCard extends Component {
             <View style={{ ...styles.imageStyle, alignItems: 'center', justifyContent: 'center' }}>
                <ActivityIndicator size="large" color="lightgray" />
             </View>
-            : ''
+            : null
           }
         </View>
 
@@ -97,16 +96,15 @@ class SearchUserCard extends Component {
     const { profile } = this.props.item;
     if (profile.occupation) {
       return (
-        <Text
+        <View
           style={styles.titleTextStyle}
           numberOfLines={1}
           ellipsizeMode='tail'
         >
           <Text style={styles.detailTextStyle}>{profile.occupation}</Text>
-        </Text>
+        </View>
       );
     }
-    return null;
   }
 
   render() {

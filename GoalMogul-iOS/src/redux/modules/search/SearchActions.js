@@ -27,9 +27,18 @@ export const searchChangeFilter = (type, value) => ({
 	 * Sends a search requests and update reducers
 	 * @param searchContent: searchContent of the current search
    * @param queryId: hashCode of searchContent
-   * @param type: one of ['people', 'events', 'tribes']
+   * @param type: one of ['people', 'events', 'tribes', 'myEvents', 'myTribes', 'friends', 'chatRooms']
 	 */
-const searchWithId = (searchContent, queryId, type) => (dispatch, getState) => {
+const searchWithId = (searchContent, queryId, searchType) => (dispatch, getState) => {
+
+  let type = searchType;
+  if (type === 'myEvents') {
+    type = 'events';
+  }
+  if (type === 'myTribes') {
+    type = 'tribes';
+  }
+
   const { token } = getState().user;
   const { limit } = getState().search[type];
   console.log(`${DEBUG_KEY} with text: ${searchContent} and queryId: ${queryId}`);
@@ -42,7 +51,7 @@ const searchWithId = (searchContent, queryId, type) => (dispatch, getState) => {
     }
   });
   // Send request to end point using API
-  fetchData(searchContent, type, 0, limit, token, (res) => {
+  fetchData(searchContent, searchType, 0, limit, token, (res) => {
     const data = res.data ? res.data : [];
     dispatch({
       type: SEARCH_REQUEST_DONE,
@@ -162,11 +171,19 @@ export const searchEventParticipants = (searchContent, eventId, skip, limit, cal
 };
 
 /**
-  * Refresh search result
-  * @param type: tab that needs to refresh
+  * Refresh search result. SearchType can be myEvents, but it will be translated to events.
+  * @param searchType: tab that needs to refresh
   */
-export const refreshSearchResult = curry((type) => (dispatch, getState) => {
-  console.log(`${DEBUG_KEY} refresh tab: ${type}`);
+export const refreshSearchResult = curry((searchType) => (dispatch, getState) => {
+  let type = searchType;
+  if (type === 'myEvents') {
+    type = 'events';
+  }
+  if (type === 'myTribes') {
+    type = 'tribes';
+  }
+
+  console.log(`${DEBUG_KEY} refresh tab: ${searchType}`);
   const { token } = getState().user;
   const { searchContent } = getState().search;
   const { limit, queryId } = getState().search[type];
@@ -179,7 +196,7 @@ export const refreshSearchResult = curry((type) => (dispatch, getState) => {
     }
   });
 
-  fetchData(searchContent, type, 0, limit, token, (res) => {
+  fetchData(searchContent, searchType, 0, limit, token, (res) => {
     const data = res.data ? res.data : [];
     dispatch({
       type: SEARCH_REFRESH_DONE,
@@ -195,10 +212,18 @@ export const refreshSearchResult = curry((type) => (dispatch, getState) => {
 });
 
 /**
-  * Load more for search result
+  * Load more for search result. SearchType can be myEvents, but it will be translated to events.
   * @param type: tab that needs to load more
   */
-export const onLoadMore = (type) => (dispatch, getState) => {
+export const onLoadMore = (searchType) => (dispatch, getState) => {
+  let type = searchType;
+  if (type === 'myEvents') {
+    type = 'events';
+  }
+  if (type === 'myTribes') {
+    type = 'tribes';
+  }
+
   const { token } = getState().user;
   const { skip, limit, queryId, searchContent, hasNextPage, refreshing } = getState().search[type];
   if ((hasNextPage !== undefined && !hasNextPage) || refreshing) {
@@ -217,8 +242,8 @@ export const onLoadMore = (type) => (dispatch, getState) => {
     }
   });
 
-  console.log(`${DEBUG_KEY}: loading more for search type: ${type}`);
-  fetchData(searchContent, type, skip, limit, token, (res) => {
+  console.log(`${DEBUG_KEY}: loading more for search type: ${searchType}`);
+  fetchData(searchContent, searchType, skip, limit, token, (res) => {
     const data = res.data ? res.data : [];
     dispatch({
       type: SEARCH_ON_LOADMORE_DONE,
