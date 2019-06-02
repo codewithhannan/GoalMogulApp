@@ -330,18 +330,31 @@ export async function _transformMessagesForGiftedChat(messages, chatRoom, token)
 	let chatRoomMemberMap = {};
 	if (chatRoom && chatRoom.members) {
 		chatRoomMemberMap = chatRoom.members.reduce((map, memberDoc) => {
-			map[memberDoc.memberRef._id] = _transformUserForGiftedChat(memberDoc.memberRef);
+			map[memberDoc.memberRef._id] = memberDoc.memberRef;
 			return map;
 		}, {});
 	};
 	return await Promise.all(messages.map(async messageDoc => {
-		const { _id, created, creator, content, media, isSystemMessage, isLocal } = messageDoc;
+		let { _id, created, creator, content, media, isSystemMessage, isLocal, sharedEntity } = messageDoc;
+
+		//--- populate message content ---//
+
+		if (sharedEntity && sharedEntity.userRef) {
+			try {
+				sharedEntity.userRef = await MemberDocumentFetcher.getUserDocument(sharedEntity.userRef, token, chatRoomMemberMap, true);
+			} catch (e) { /* best attempt */ };
+		};
+		let user;
+		if (creator) {
+			user = await MemberDocumentFetcher.getUserDocument(creator, token, chatRoomMemberMap);
+		};
+
+		// return transformed message
 		return {
-			_id, isLocal,
+			_id, isLocal, sharedEntity, user,
 			createdAt: new Date(created),
 			image: media && `${IMAGE_BASE_URL}${media}`,
 			text: content && content.message,
-			user: creator && await MemberDocumentFetcher.getUserDocument(creator, token, chatRoomMemberMap),
 			system: !!isSystemMessage,
 		};
 	}));
