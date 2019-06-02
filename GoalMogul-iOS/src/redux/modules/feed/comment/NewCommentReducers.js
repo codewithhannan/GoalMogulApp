@@ -380,7 +380,7 @@ export default (state = INITIAL_STATE, action) => {
         if (validator.isURL(url) && !validator.isURL(url, { protocols: ['http','https'], require_protocol: true })) {
 
           // Set https:// as protocol
-          url = `https://${url}`;
+          url = `http://${url}`;
           // Update tmpSuggestion.suggestionLink
           tmpSuggestion = _.set(tmpSuggestion, 'suggestionLink', url);
         }
