@@ -273,7 +273,7 @@ const mapStateToProps = (state, props) => {
     let chatRoomMembersMap = {};
     if (chatRoom) {
         if (chatRoom.roomType == 'Direct') {
-            const otherUser = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id != userId);
+            let otherUser = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id != userId);
             if (otherUser) {
                 otherUser = otherUser.memberRef;
                 chatRoomName = otherUser.name;
