@@ -121,7 +121,7 @@ class ChatRoomPublicView extends React.Component {
                     >
                         {chatRoomName}
                     </Text>
-                    {chatRoom.roomType == 'Direct' ? null : (
+                    {chatRoom.roomType === 'Direct' ? null : (
                         <View style={{ flexDirection: 'row', marginTop: 8, marginBottom: 8, alignItems: 'center' }}>
                             <Text style={styles.tribeStatusTextStyle}>{chatRoom.isPublic ? 'Public' : 'Private'}</Text>
                             <Divider orthogonal height={12} borderColor='gray' />
@@ -186,27 +186,28 @@ class ChatRoomPublicView extends React.Component {
                         back={true}
                         onCancel={this.closeOptions}
                     />
-                    <View style={{ flex: 1, backgroundColor: '#ffffff' }}>}
+                    <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
                         <ScrollView>
-                            {/* insert chat room details preview card here */}
                             {this.renderChatRoomDetails()}
-                            {isJoinRequester ? (
-                                <SettingCard
-                                    title="Cancel join request"
-                                    icon={leaveIcon}
-                                    explanation={"Click to cancel the join request"}
-                                    onPress={this.cancelJoinRequest.bind(this)}
-                                    containerStyle={{ borderTopWidth: 1, borderTopColor: '#e6e6e6' }}
-                                />
-                            ) : (
-                                <SettingCard
-                                    title="Join the conversation"
-                                    icon={plusIcon}
-                                    explanation={"Click to send join request"}
-                                    onPress={this.sendJoinRequest.bind(this)}
-                                    containerStyle={{ borderTopWidth: 1, borderTopColor: '#e6e6e6' }}
-                                />
-                            )}
+                            {
+                                isJoinRequester ? (
+                                    <SettingCard
+                                        title="Cancel join request"
+                                        icon={leaveIcon}
+                                        explanation={"Click to cancel the join request"}
+                                        onPress={this.cancelJoinRequest.bind(this)}
+                                        containerStyle={{ borderTopWidth: 1, borderTopColor: '#e6e6e6' }}
+                                    />
+                                ) : (
+                                    <SettingCard
+                                        title="Join the conversation"
+                                        icon={plusIcon}
+                                        explanation={"Click to send join request"}
+                                        onPress={this.sendJoinRequest.bind(this)}
+                                        containerStyle={{ borderTopWidth: 1, borderTopColor: '#e6e6e6' }}
+                                    />
+                                )
+                            }
                         </ScrollView>
                     </View>
 				</View>
