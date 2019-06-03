@@ -366,18 +366,20 @@ const doMyTribeAdminDemoteUser = (userId, tribeId) => (dispatch, getState) => {
 
 
 export const myTribeAdminAcceptUser = (userId, tribeId) => (dispatch, getState) => {
-  Alert.alert(
-    'Confirmation',
-    'Are you sure to accept this user?',
-    [
-      { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-      {
-        text: 'Confirm',
-        onPress: () => doAdminAcceptUser(userId, tribeId)(dispatch, getState)
-      }
-    ],
-    { cancelable: false }
-  );
+  // Starting 0.3.10, we don't show accept confirmation
+  doAdminAcceptUser(userId, tribeId)(dispatch, getState);
+  // Alert.alert(
+  //   'Confirmation',
+  //   'Are you sure to accept this user?',
+  //   [
+  //     { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+  //     {
+  //       text: 'Confirm',
+  //       onPress: () => doAdminAcceptUser(userId, tribeId)(dispatch, getState)
+  //     }
+  //   ],
+  //   { cancelable: false }
+  // );
 };
 
 const doAdminAcceptUser = (userId, tribeId) => (dispatch, getState) => {
