@@ -318,6 +318,8 @@ const SuggestionHeadline = (props) => {
 /**
  * This is new version of suggestion headline and is still in progress. Once done, it should replace
  * SuggestionHeadline. 
+ * 
+ * If 
  * @param {} props 
  */
 const SuggestionHeadlineV2 = (props) => {
@@ -326,9 +328,14 @@ const SuggestionHeadlineV2 = (props) => {
   if (!goalRef) return null;
 
   const { suggestionFor, suggestionForRef, suggestionType } = suggestion;
+
+  // NOTE: starting version 0.3.10, we only say Suggested for Goal. Thus we pass in undefined for suggestionType
+  // const text = suggestionFor === 'Goal'
+  //   ? suggestionForGoalTextV2(goalRef, suggestionType)
+  //   : suggestionForNeedStepTextV2(goalRef, false, suggestionFor, suggestionForRef, suggestionType);
   const text = suggestionFor === 'Goal'
-    ? suggestionForGoalTextV2(goalRef, suggestionType)
-    : suggestionForNeedStepTextV2(goalRef, false, suggestionFor, suggestionForRef, suggestionType);
+    ? suggestionForGoalTextV2(goalRef, undefined)
+    : suggestionForNeedStepTextV2(goalRef, false, suggestionFor, suggestionForRef, undefined);
 
   const {
     lead, description
@@ -405,6 +412,8 @@ const suggestionForGoalText = (goalRef) => ` Goal: ${goalRef.title}`;
 /**
  * Construct suggestion comment card headline text for a need/step
  * e.g Suggested an Event for Need: ${needText}
+ * 
+ * NOTE: if suggestionType is undefined, there is no 'an Event' or 'an User'
  * 
  * @param {*} goalRef 
  * @param {boolean} isComment 
