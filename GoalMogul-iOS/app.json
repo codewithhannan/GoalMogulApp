@@ -9,7 +9,11 @@
     "ios": {
       "bundleIdentifier": "com.goalmogul.goalmogulbeta",
       "infoPlist": {
-        "NSLocationAlwaysUsageDescription" : "needs gps data.",
+        "NSLocationAlwaysUsageDescription" : "This app may use GPS data to help provide localized content recommendations",
+        "NSCameraUsageDescription": "This app uses the camera to allow members to share images with other members",
+        "NSPhotoLibraryUsageDescription": "This app uses the gallery to allow members to share photos with other members",
+        "NSPhotoLibraryAddUsageDescription": "This app allows members to save shared photos into their own gallery",
+        "NSContactsUsageDescription": "This app uses the user's contacts to help the user find friends who have already signed up on the platform",
         "NSAppTransportSecurity" : {
           "NSAllowsArbitraryLoads" : true,
           "NSAllowsArbitraryLoadsForMedia": true,
