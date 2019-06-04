@@ -15,7 +15,7 @@ const INITIAL_STATE = {
     loading: false,
     refreshing: false,
     skip: 0,
-    limit: 13,
+    limit: 15,
     hasNextPage: undefined,
     deleting: false,
     seeMoreSkip: 5, // Every time shows 5 more notifications
@@ -26,7 +26,7 @@ const INITIAL_STATE = {
     loading: false,
     refreshing: false,
     skip: 0,
-    limit: 7,
+    limit: 15,
     hasNextPage: undefined,
     seeMoreSkip: 5, // Every time shows 5 more notifications
     seeMoreCount: 5 // how many items are shown currently
