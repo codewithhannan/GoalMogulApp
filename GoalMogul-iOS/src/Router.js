@@ -13,6 +13,8 @@ import {
 } from 'react-native-router-flux';
 import { Easing, Animated } from 'react-native';
 import { connect } from 'react-redux';
+import { copilot } from 'react-native-copilot';
+
 // import CardStackStyleInterpolator from "react-navigation-stack/src/views/StackView/StackViewStyleInterpolator";
 
 /* Auth */
@@ -659,5 +661,7 @@ const styles = {
     elevation: 1,
   }
 };
+
+RouterComponent = copilot()(RouterComponent);
 
 export default connect()(RouterComponent);
