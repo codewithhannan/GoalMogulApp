@@ -330,12 +330,12 @@ class MyEvent extends Component {
     if (isAdmin) {
       options = switchByButtonIndex([
         [R.equals(0), () => {
-          console.log(`${DEBUG_KEY} User chooses to delete current event`);
-          this.props.deleteEvent(_id);
-        }],
-        [R.equals(1), () => {
           console.log(`${DEBUG_KEY} User chooses to edit current event`);
           this.props.editEvent(item);
+        }],
+        [R.equals(1), () => {
+          console.log(`${DEBUG_KEY} User chooses to delete current event`);
+          this.props.deleteEvent(_id);
         }],
       ]);
     } else {
@@ -347,7 +347,7 @@ class MyEvent extends Component {
       ]);
     }
 
-    const requestOptions = isAdmin ? ['Delete', 'Edit', 'Cancel'] : ['Report', 'Cancel'];
+    const requestOptions = isAdmin ? ['Edit', 'Delete', 'Cancel'] : ['Report', 'Cancel'];
     const cancelIndex = isAdmin ? 2 : 1;
 
     const eventActionSheet = actionSheet(
@@ -432,8 +432,9 @@ class MyEvent extends Component {
         )
       : MenuFactory(
           [
-            'Delete',
-            'Edit'
+            'Edit',
+            'Delete'
+            
           ],
           this.handleEventOptionsOnSelect,
           '',
