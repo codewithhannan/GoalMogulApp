@@ -347,7 +347,17 @@ export async function _transformMessagesForGiftedChat(messages, chatRoom, token)
 
 		if (sharedEntity && sharedEntity.userRef) {
 			try {
-				sharedEntity.userRef = await MemberDocumentFetcher.getUserDocument(sharedEntity.userRef, token, chatRoomMemberMap, true);
+				sharedEntity.userRef = (await MemberDocumentFetcher.getUserDocument(sharedEntity.userRef, token, chatRoomMemberMap, true)) || sharedEntity.userRef;
+			} catch (e) { /* best attempt */ };
+		};
+		if (sharedEntity && sharedEntity.tribeRef) {
+			try {
+				sharedEntity.tribeRef = (await fetchTribe(sharedEntity.tribeRef, token)) || sharedEntity.tribeRef;
+			} catch (e) { /* best attempt */ };
+		};
+		if (sharedEntity && sharedEntity.eventRef) {
+			try {
+				sharedEntity.eventRef = (await fetchEvent(sharedEntity.eventRef, token)) || sharedEntity.eventRef;
 			} catch (e) { /* best attempt */ };
 		};
 		let user;
@@ -364,6 +374,16 @@ export async function _transformMessagesForGiftedChat(messages, chatRoom, token)
 			system: !!isSystemMessage,
 		};
 	}));
+};
+async function fetchTribe(tribeId, token) {
+	try {
+		return await API.get(`secure/tribe/documents/${tribeId}`, token);
+	} catch(e) { /* best attempt */ };
+};
+async function fetchEvent(eventId, token) {
+	try {
+		return await API.get(`secure/event/documents/${eventId}`, token);
+	} catch(e) { /* best attempt */ };
 };
 export function _transformUserForGiftedChat(userDoc) {
 	const {_id, name, profile} = userDoc;
