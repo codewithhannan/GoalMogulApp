@@ -17,10 +17,11 @@ import {
 	Alert,
 	TextInput,
 	Animated,
+	ActionSheetIOS
 } from 'react-native';
 import { connect } from 'react-redux';
 import EmojiSelector from 'react-native-emoji-selector';
-
+import UUID from 'uuid/v4';
 import {
 	Permissions,
 	FileSystem,
@@ -36,6 +37,7 @@ import { RemoveComponent } from '../../Goal/GoalDetailCard/SuggestionPreview';
 
 import { Octicons } from '@expo/vector-icons';
 import SendButton from '../../../asset/utils/sendButton.png';
+import NextButton from '../../../asset/utils/next.png';
 
 import { MenuProvider } from 'react-native-popup-menu';
 // Actions
@@ -55,6 +57,7 @@ import { GiftedChat, Send, Message, Bubble, MessageText, Time, MessageImage, Mes
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import PhotoIcon from '../../../asset/utils/cameraRoll.png';
 import EmojiIcon from '../../../asset/utils/emoji.png';
+import LightBulb from '../../../asset/utils/lightBulb.png';
 import { Actions } from 'react-native-router-flux';
 import ProfileImage from '../../Common/ProfileImage';
 import { openCamera, openCameraRoll, openProfile } from '../../../actions';
@@ -66,6 +69,7 @@ import { toHashCode } from '../../../Utils/ImageUtils';
 import ChatMessageImage from '../Modals/ChatMessageImage';
 import GMGiftedChatBubble from './GiftedChat/GMGiftedChatBubble';
 import ChatRoomLoaderOverlay from '../Modals/ChatRoomLoaderOverlay';
+import { APP_BLUE_BRIGHT } from '../../../styles';
 
 const DEBUG_KEY = '[ UI ChatRoomConversation ]';
 const LISTENER_KEY = 'ChatRoomConversation';
@@ -346,6 +350,42 @@ class ChatRoomConversation extends React.Component {
 			};
 		});
 	}
+	onShareContentButtonPress() {
+		const { user, chatRoom, messages } = this.props;
+		const options = [
+			'Share a Friend',
+			'Share a Tribe',
+			'Share an Event',
+			'Cancel',
+		];
+		const cancelButtonIndex = options.length - 1;
+		ActionSheetIOS.showActionSheetWithOptions({
+			options,
+			cancelButtonIndex,
+		}, (buttonIndex) => {
+			switch (buttonIndex) {
+				case 0:
+					const searchFor = {
+						type: 'directChat',
+					};
+					const cardIconStyle = { tintColor: APP_BLUE_BRIGHT };
+					const cardIconSource = NextButton;
+					const callback = (selectedUserId) => this.props.sendMessage([{
+						sharedEntity: { userRef: selectedUserId, },
+						text: '',
+						user,
+						createdAt: new Date(),
+						_id: UUID(),
+					}], null, chatRoom, messages);
+					Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle, callback });
+					break;
+				case 1:
+					break;
+				case 2:
+					break;
+			}
+		});
+	}
 	onChatTextInputChanged(text) {
 		const { userId, chatRoomId } = this.props;
 		LiveChatService.emitEvent(OUTGOING_EVENT_NAMES.updateTypingStatus, {
@@ -393,6 +433,24 @@ class ChatRoomConversation extends React.Component {
 			>
 			  <Image
 				source={PhotoIcon}
+				style={{
+				  ...styles.iconStyle,
+				  tintColor: '#cbd6d8'
+				}}
+				resizeMode='contain'
+			  />
+			</TouchableOpacity>
+		  );
+	}
+	renderShareContentButton() {
+		return (
+			<TouchableOpacity
+			  activeOpacity={0.6}
+			  style={styles.iconContainerStyle}
+			  onPress={this.onShareContentButtonPress.bind(this)}
+			>
+			  <Image
+				source={LightBulb}
 				style={{
 				  ...styles.iconStyle,
 				  tintColor: '#cbd6d8'
@@ -453,6 +511,7 @@ class ChatRoomConversation extends React.Component {
 					>
 						{messageMediaRef ? null : this.renderSendImageButton()}
 						{this.renderEmojiSelector()}
+						{this.renderShareContentButton()}
 					</View>
 					<View
 						style={{

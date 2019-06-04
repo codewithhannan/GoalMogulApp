@@ -468,15 +468,7 @@ class MessageStorageService {
      */
     _onIncomingMessage = (data) => {
         const { messageAckId, messageDoc, senderName, chatRoomName, chatRoomType, chatRoomPicture } = data.data;
-        // remove if we have a locally created copy
-        if (messageDoc.customIdentifier) {
-            localDb.remove({
-                _id: messageDoc.customIdentifier,
-            }, onProceed);
-        } else {
-            onProceed();
-        };
-        function onProceed () {
+        const onProceed = () => {
             // store message doc
             localDb.insert(this._transformMessageForLocalStorage(messageDoc), (err) => {
                 // if error, the message will go to the server's message queue and we can try reinserting on a later pull
@@ -505,6 +497,15 @@ class MessageStorageService {
                     };
                 };
             });
+        };
+
+        // remove if we have a locally created copy
+        if (messageDoc.customIdentifier) {
+            localDb.remove({
+                _id: messageDoc.customIdentifier,
+            }, onProceed);
+        } else {
+            onProceed();
         };
     }
     /**
