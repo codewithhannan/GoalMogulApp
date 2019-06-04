@@ -353,9 +353,9 @@ class ChatRoomConversation extends React.Component {
 	onShareContentButtonPress() {
 		const { user, chatRoom, messages } = this.props;
 		const options = [
-			'Share friend',
-			'Share tribe',
-			'Share event',
+			'Share a Friend',
+			'Share a Tribe',
+			'Share an Event',
 			'Cancel',
 		];
 		const cancelButtonIndex = options.length - 1;
