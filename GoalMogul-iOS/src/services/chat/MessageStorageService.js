@@ -472,36 +472,40 @@ class MessageStorageService {
         if (messageDoc.customIdentifier) {
             localDb.remove({
                 _id: messageDoc.customIdentifier,
-            }, () => {});
+            }, onProceed);
+        } else {
+            onProceed();
         };
-        // store message doc
-        localDb.insert(this._transformMessageForLocalStorage(messageDoc), (err) => {
-            // if error, the message will go to the server's message queue and we can try reinserting on a later pull
-            if (err) return;
-            // ack message if no error
-            LiveChatService.emitEvent(
-                OUTGOING_EVENT_NAMES.ackMessage,
-                { messageAckId },
-                (resp) => {
-                    if (resp.error) {
-                        console.log(`${DEBUG_KEY} Error ack'ing message: ${resp.message}`, messageDoc);
+        function onProceed () {
+            // store message doc
+            localDb.insert(this._transformMessageForLocalStorage(messageDoc), (err) => {
+                // if error, the message will go to the server's message queue and we can try reinserting on a later pull
+                if (err) return;
+                // ack message if no error
+                LiveChatService.emitEvent(
+                    OUTGOING_EVENT_NAMES.ackMessage,
+                    { messageAckId },
+                    (resp) => {
+                        if (resp.error) {
+                            console.log(`${DEBUG_KEY} Error ack'ing message: ${resp.message}`, messageDoc);
+                        };
+                    }
+                );
+                // fire listeners to this event
+                const listeners = Object.values(this.incomingMessageListeners);
+                for (let listener of listeners) {
+                    if (typeof listener != "function") continue;
+                    try {
+                        listener(data.data);
+                    } catch(e) {
+                        console.log(
+                            `${DEBUG_KEY}: Error running incomingMessage listener`,
+                            e
+                        );
                     };
-                }
-            );
-            // fire listeners to this event
-            const listeners = Object.values(this.incomingMessageListeners);
-            for (let listener of listeners) {
-                if (typeof listener != "function") continue;
-                try {
-                    listener(data.data);
-                } catch(e) {
-                    console.log(
-                        `${DEBUG_KEY}: Error running incomingMessage listener`,
-                        e
-                    );
                 };
-            };
-        })
+            });
+        };
     }
     /**
      * Poll the server's message queue in case the LiveChatService experiences interruptions and some messages end up in the queue

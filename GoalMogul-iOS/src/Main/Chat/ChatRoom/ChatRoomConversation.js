@@ -61,10 +61,10 @@ import { openCamera, openCameraRoll, openProfile } from '../../../actions';
 import profilePic from '../../../asset/utils/defaultUserProfile.png';
 import { Image, Text } from 'react-native-elements';
 import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL, IPHONE_MODELS_2 } from '../../../Utils/Constants';
-import ChatRoomConversationInputToolbar from './ChatRoomConversationInputToolbar';
+import ChatRoomConversationInputToolbar from './GiftedChat/GMGiftedChatInputToolbar';
 import { toHashCode } from '../../../Utils/ImageUtils';
 import ChatMessageImage from '../Modals/ChatMessageImage';
-import ChatRoomConversationBubble from './ChatRoomConversationBubble';
+import GMGiftedChatBubble from './GiftedChat/GMGiftedChatBubble';
 import ChatRoomLoaderOverlay from '../Modals/ChatRoomLoaderOverlay';
 
 const DEBUG_KEY = '[ UI ChatRoomConversation ]';
@@ -72,7 +72,7 @@ const LISTENER_KEY = 'ChatRoomConversation';
 const MAX_TYPING_INDICATORS_TO_DISPLAY = 3;
 const CHAT_ROOM_DOCUMENT_REFRESH_INTERVAL = 3000; // milliseconds
 
-const GIFTED_CHAT_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(Constants.platform.ios.model.toLowerCase()) ? 110 : 75;
+const GIFTED_CHAT_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(Constants.platform.ios.model.toLowerCase()) ? 102 : 66;
 
 /**
  * @prop {String} chatRoomId: required
@@ -255,6 +255,9 @@ class ChatRoomConversation extends React.Component {
 	sendMessage(messagesToSend) {
 		const { messageMediaRef, chatRoom, messages } = this.props;
 		if (!messagesToSend[0].text.trim().length && !messageMediaRef) return;
+		if (messageMediaRef) {
+			this._textInput.blur();
+		};
 		this.props.sendMessage(messagesToSend, messageMediaRef, chatRoom, messages);
 	}
 
@@ -418,6 +421,8 @@ class ChatRoomConversation extends React.Component {
 		  </View>);
 	}
 	renderExtraActions() {
+		return null;
+		// we're moving this below
 		return (<View
 			style={{
 				flexDirection: 'row',
@@ -426,10 +431,40 @@ class ChatRoomConversation extends React.Component {
 		>
 			{this.renderSendImageButton()}
 			{this.renderEmojiSelector()}
-		</View>)
+		</View>);
 	}
-	renderMedia() {
+	renderAccessory(props, accessoryLocation) {
 		const { messageMediaRef } = this.props;
+		if (accessoryLocation == 'bottom') {
+			return (
+				<View
+					style={{
+						alignItems: 'center',
+						flexDirection: 'row',
+					}}
+				>
+					<View
+						style={{
+							flexDirection: 'row',
+							flexGrow: 2,
+							alignItems: 'center',
+							paddingLeft: 15,
+						}}
+					>
+						{messageMediaRef ? null : this.renderSendImageButton()}
+						{this.renderEmojiSelector()}
+					</View>
+					<View
+						style={{
+							alignItems: 'center',
+						}}
+					>
+						{this.renderSendButton(props)}
+					</View>
+				</View>
+			);
+		};
+
 		if (!messageMediaRef) return null;
 		const onPress = () => {};
 		const onRemove = () => {
@@ -543,7 +578,7 @@ class ChatRoomConversation extends React.Component {
 		return (
 			<Message
 				{...props}
-				renderBubble={props => <ChatRoomConversationBubble
+				renderBubble={props => <GMGiftedChatBubble
 					{...props}
 				/>}
 			/>
@@ -609,14 +644,15 @@ class ChatRoomConversation extends React.Component {
 						renderActions={this.renderExtraActions.bind(this)}
 						onSend={this.sendMessage.bind(this)}
 						onInputTextChanged={this.onChatTextInputChanged.bind(this)}
-						renderAccessory={this.renderMedia.bind(this)}
-						renderSend={this.renderSendButton}
+						renderAccessory={this.renderAccessory.bind(this)}
+						renderSend={null /*this.renderSendButton*/}
 						renderComposer={this.renderComposer.bind(this)}
 						maxComposerHeight={120 - 18} // padding
 						renderMessage={this.renderMessage}
 						renderInputToolbar={this.renderInputToolbar}
 						renderAvatar={this.renderAvatar}
-						bottomOffset={this.props.messageMediaRef ? GIFTED_CHAT_BOTTOM_OFFSET - 57 : GIFTED_CHAT_BOTTOM_OFFSET}
+						bottomOffset={GIFTED_CHAT_BOTTOM_OFFSET}
+						minInputToolbarHeight={this.props.messageMediaRef ? 90 : 60}
 					/>
 					{this.state.showEmojiSelector &&
 						<Animated.View
