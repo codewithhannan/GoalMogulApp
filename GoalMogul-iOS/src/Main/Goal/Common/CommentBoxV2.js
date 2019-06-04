@@ -90,6 +90,7 @@ class CommentBoxV2 extends Component {
     this.updateSearchRes = this.updateSearchRes.bind(this);
     this.focus = this.focus.bind(this);
     this.focusForReply = this.focusForReply.bind(this);
+    this.handleOnSubmitEditing = this.handleOnSubmitEditing.bind(this);
   }
 
   componentDidMount() {
@@ -308,7 +309,7 @@ class CommentBoxV2 extends Component {
 
   handleOnBlur = (newComment) => {
     console.log(`${DEBUG_KEY}: [ handleOnBlur ]`);
-    const { resetCommentType } = this.props;
+    const { resetCommentType, onSubmitEditing } = this.props;
     const { contentText, tmpSuggestion } = newComment;
     // On Blur if no content then set default value to comment the goal / post
     if ((contentText === undefined || contentText === '' || contentText.trim() === '')) {
@@ -319,12 +320,20 @@ class CommentBoxV2 extends Component {
       if (resetCommentType) {
         resetCommentType();
       }
+      if (onSubmitEditing) {
+        onSubmitEditing();
+      }
     }
   }
 
+  /**
+   * NOTE: this function might not be called by TextInput somehow.
+   */
   handleOnSubmitEditing = (newComment) => {
     const { onSubmitEditing } = this.props;
-    if (onSubmitEditing) onSubmitEditing();
+    if (onSubmitEditing) {
+      onSubmitEditing();
+    };
     this.handleOnBlur(newComment);
   }
 
