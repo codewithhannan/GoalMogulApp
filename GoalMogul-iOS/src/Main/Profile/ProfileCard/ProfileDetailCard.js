@@ -467,7 +467,7 @@ const styles = {
     paddingTop: 10,
     paddingLeft: 15,
     paddingRight: 15,
-    paddingBottom: 5
+    paddingBottom: 15
   },
   imageWrapperStyle: {
     shadowColor: '#000',

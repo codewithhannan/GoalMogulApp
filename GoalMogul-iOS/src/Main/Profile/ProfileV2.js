@@ -67,7 +67,7 @@ const DEBUG_KEY = '[ UI ProfileV2 ]';
 // const HEADER_HEIGHT = 284 + 30 + SEARCHBAR_HEIGHT;
 // const INFO_CARD_HEIGHT = 284;
 // const INFO_CARD_HEIGHT = 303.5; 
-const INFO_CARD_HEIGHT = 232; 
+const INFO_CARD_HEIGHT = 242; 
 const DEFAULT_TRANSITION_TIME = 120;
 const PROMPT_TRANSITION_TIME = 50;
 
@@ -80,7 +80,19 @@ class ProfileV2 extends Component {
         this.closeProfileInfoCard = this.closeProfileInfoCard.bind(this);
         this.state = {
             infoCardHeight: new Animated.Value(INFO_CARD_HEIGHT), // Initial info card height
-            infoCardOpacity: new Animated.Value(1)
+            infoCardOpacity: new Animated.Value(1),
+            hasLoadedProfile: false,
+            cardHeight: INFO_CARD_HEIGHT // Read info card height
+        }
+        this.handleProfileDetailCardLayout = this.handleProfileDetailCardLayout.bind(this);
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.userPageLoading !== this.props.userPageLoading && this.props.userPageLoading === false) {
+            this.setState({
+                ...this.state,
+                hasLoadedProfile: true
+            });
         }
     }
 
@@ -147,13 +159,20 @@ class ProfileV2 extends Component {
      * Profile detail card onLayout will call this function to adjust INFO_CARD_HEIGHT
      */
     handleProfileDetailCardLayout = (e) => {
-        const newHeight = e.nativeEvent.layout.height;
-        Animated.parallel([
-            Animated.timing(this.state.infoCardHeight, {
-                duration: PROMPT_TRANSITION_TIME,
-                toValue: newHeight,
-            })
-        ]).start();
+        return;
+        // if (!this.state.hasLoadedProfile || this.props.user.profile.headline) {
+        //     return;
+        // }
+
+        // const { navigationState } = this.props;
+        // const { routes, index } = navigationState;
+        // if (routes[index].key !== 'about') return;
+
+        // const newHeight = e.nativeEvent.layout.height;
+        // this.setState({
+        //     ...this.state,
+        //     cardHeight: newHeight
+        // });
     }
 
     /**
@@ -221,7 +240,7 @@ class ProfileV2 extends Component {
             Animated.parallel([
                 Animated.timing(this.state.infoCardHeight, {
                     duration: DEFAULT_TRANSITION_TIME,
-                    toValue: INFO_CARD_HEIGHT,
+                    toValue: this.state.cardHeight,
                 }),
                 Animated.timing(this.state.infoCardOpacity, {
                     duration: DEFAULT_TRANSITION_TIME,
@@ -510,6 +529,7 @@ const makeMapStateToProps = () => {
             navigationState,
             isSelf: user && appUser && userId === appUser._id,
             showPlus,
+            userPageLoading: userPage.loading,
             // Page related info
             loading, refreshing, filter, data,
             user // user for the current profile page
