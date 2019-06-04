@@ -20,6 +20,7 @@ import { selectTribe } from '../../../redux/modules/feed/post/ShareActions';
 import {
   tribeDetailOpen
 } from '../../../redux/modules/tribe/TribeActions';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 const DEBUG_KEY = '[ Component SearchTribeCard ]';
 
@@ -33,14 +34,23 @@ class SearchTribeCard extends Component {
    * @param item: search result item
    */
   onButtonClicked = (item, type) => {
+    const { onItemSelect, selectTribe, tribeDetailOpen } = this.props;
     if (!type || type === 'SearchSuggestion') {
       console.log(`${DEBUG_KEY} select tribe: `, item);
-      this.props.selectTribe(item, this.props.callback);
+
+      // This is passed in through EventSearchOverlay. It is initially used by ChatRoomConversation
+      if (onItemSelect) {
+        onItemSelect(item._id);
+        return;
+      }
+
+      selectTribe(item, this.props.callback);
       return;
     }
+
     if (type === 'GeneralSearch') {
       console.log('open tribe detail with type GeneralSearch');
-      this.props.tribeDetailOpen(item);
+      tribeDetailOpen(item);
       return;
     }
   }
@@ -76,7 +86,7 @@ class SearchTribeCard extends Component {
   renderButton(item, type) {
     return (
       <View style={styles.iconContainerStyle}>
-        <TouchableOpacity activeOpacity={0.6}
+        <DelayedButton activeOpacity={0.6}
           onPress={() => this.onButtonClicked(item, type)}
           style={{ padding: 15 }}
         >
@@ -84,7 +94,7 @@ class SearchTribeCard extends Component {
             source={next}
             style={{ ...styles.iconStyle, opacity: 0.8 }}
           />
-        </TouchableOpacity>
+        </DelayedButton>
       </View>
     );
   }
@@ -118,7 +128,7 @@ class SearchTribeCard extends Component {
     const { item, type } = this.props;
     const { _id } = this.props.item;
     return (
-      <TouchableOpacity activeOpacity={0.6}>
+      <DelayedButton activeOpacity={0.6}>
         <View style={styles.containerStyle}>
           {this.renderTribeImage()}
 
@@ -128,7 +138,7 @@ class SearchTribeCard extends Component {
           </View>
           {this.renderButton(item, type)}
         </View>
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 }
