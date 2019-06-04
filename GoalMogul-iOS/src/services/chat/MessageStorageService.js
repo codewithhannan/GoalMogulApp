@@ -518,7 +518,7 @@ class MessageStorageService {
     }
     _resetAppNotificationsBadge = () => {
         const { authToken } = this.mountedUser;
-        API.get('secure/notification/entity/unread-count', authToken).then(res => {
+        API.get('secure/notification/entity/unread-count', authToken, 4).then(res => {
             if (res.status === 200) {
                 let notiCount = parseInt(res.count);
                 notiCount = isNaN(notiCount) ? 0 : notiCount;

@@ -140,6 +140,7 @@ class LoginPage extends Component {
                 onSubmitEditing={() => {
                   this.refs['password'].getRenderedComponent().focus();
                 }}
+                textContentType='username'
               />
               <Field
                 ref='password'
@@ -150,6 +151,7 @@ class LoginPage extends Component {
                 secure
                 disabled={this.props.loading}
                 onSubmitEditing={handleSubmit(this.handleLoginPressed)}
+                textContentType='password'
               />
               <TouchableOpacity activeOpacity={0.6} onPress={handleSubmit(this.handleLoginPressed)}>
                 <View>

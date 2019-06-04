@@ -94,7 +94,7 @@ export const refreshNotifications = (params) =>
         data,
         skip: (skipToUse + data.length), // The first refresh we use 0, but the next refresh we use the skip
         limit,
-        hasNextPage: !(data === undefined || data.length === 0 || data.length < limit)
+        hasNextPage: !(data === undefined || data.length === 0)
       }
     });
 
@@ -150,7 +150,7 @@ export const loadMoreNotifications = () => (dispatch, getState) => {
         data,
         skip: skip + data.length,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0 || data.length < limit)
+        hasNextPage: !(data === undefined || data.length === 0)
       }
     });
   };
@@ -203,7 +203,7 @@ export const refreshNeeds = () => (dispatch, getState) => {
         data,
         skip: data.length,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0 || data.length < limit)
+        hasNextPage: !(data === undefined || data.length === 0)
       }
     });
   };
@@ -248,7 +248,7 @@ export const loadMoreNeeds = () => (dispatch, getState) => {
         data,
         skip: skip + data.length,
         limit,
-        hasNextPage: !(data === undefined || data.length === 0 || data.length < limit)
+        hasNextPage: !(data === undefined || data.length === 0)
       }
     });
   };

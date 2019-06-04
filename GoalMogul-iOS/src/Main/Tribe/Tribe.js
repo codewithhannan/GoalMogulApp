@@ -275,12 +275,12 @@ class Tribe extends Component {
     if (isAdmin) {
       options = switchByButtonIndex([
         [R.equals(0), () => {
-          console.log(`${DEBUG_KEY} User chooses to delete current tribe`);
-          this.props.deleteTribe(_id);
-        }],
-        [R.equals(1), () => {
           console.log(`${DEBUG_KEY} User chooses to edit current tribe`);
           this.props.editTribe(item);
+        }],
+        [R.equals(1), () => {
+          console.log(`${DEBUG_KEY} User chooses to delete current tribe`);
+          this.props.deleteTribe(_id);
         }],
       ]);
     } else {
@@ -292,7 +292,7 @@ class Tribe extends Component {
       ]);
     }
 
-    const requestOptions = isAdmin ? ['Delete', 'Edit', 'Cancel'] : ['Report', 'Cancel'];
+    const requestOptions = isAdmin ? ['Edit', 'Delete', 'Cancel'] : ['Report', 'Cancel'];
     const cancelIndex = isAdmin ? 2 : 1;
 
     const tribeActionSheet = actionSheet(
@@ -426,8 +426,8 @@ class Tribe extends Component {
         )
       : MenuFactory(
           [
-            'Delete',
-            'Edit'
+            'Edit',
+            'Delete'
           ],
           this.handleTribeOptionsOnSelect,
           '',

@@ -183,8 +183,8 @@ class PostDetailSection extends React.PureComponent {
     const caret = {
       self: {
         options: [
-          { option: 'Delete' },
-          { option: 'Edit Post' }
+          { option: 'Edit Post' },
+          { option: 'Delete' }
         ],
         onPress: (key) => {
           if (key === 'Delete') {

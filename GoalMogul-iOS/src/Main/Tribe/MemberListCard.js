@@ -73,15 +73,15 @@ class MemberListCard extends Component {
     } else {
       requestOptions = switchByButtonIndex([
         [R.equals(0), () => {
-          console.log(`${DEBUG_KEY} User chooses to remove requester from current tribe`);
-          return onRemoveUser(_id) || console.log(`${DEBUG_KEY}:
-             No remove user function is supplied.`);
-        }],
-        [R.equals(1), () => {
           console.log(`${DEBUG_KEY} User chooses to promote current user to become admin`);
           return onAcceptUser(_id) || console.log(`${DEBUG_KEY}:
              No accept user function is supplied.`);
         }],
+        [R.equals(1), () => {
+          console.log(`${DEBUG_KEY} User chooses to remove requester from current tribe`);
+          return onRemoveUser(_id) || console.log(`${DEBUG_KEY}:
+             No remove user function is supplied.`);
+        }]
       ]);
     }
 
@@ -279,7 +279,7 @@ const switchSettingOptions = (category) => switchCase({
     cancelIndex: 1
   },
   JoinRequester: {
-    options: ['Reject Request', 'Accept Request', 'Cancel'],
+    options: ['Accept Request', 'Reject Request', 'Cancel'],
     cancelIndex: 2
   }
 })('Admin')(category);

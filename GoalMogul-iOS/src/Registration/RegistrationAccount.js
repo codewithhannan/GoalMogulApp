@@ -155,6 +155,7 @@ class Account extends Component {
               validate={minLength8}
               disabled={this.props.loading}
               onSubmitEditing={handleSubmit(this.handleNextPressed)}
+              textContentType='newPassword'
             />
 
             <DelayedButton activeOpacity={0.6} onPress={handleSubmit(this.handleNextPressed)}>

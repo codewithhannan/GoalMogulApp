@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 
 // Components
 import Name from '../../Common/Name';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Assets
 import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
@@ -33,14 +34,22 @@ class SearchEventCard extends Component {
    * @param item: search result item
    */
   onButtonClicked = (item, type) => {
+    const { onItemSelect, selectEvent, eventDetailOpen } = this.props;
     if (!type || type === 'SearchSuggestion') {
       console.log(`${DEBUG_KEY} select event: `, item);
-      this.props.selectEvent(item, this.props.callback);
+
+      // This is passed in through EventSearchOverlay. It is initially used by ChatRoomConversation
+      if (onItemSelect) {
+        onItemSelect(item._id);
+        return;
+      }
+
+      selectEvent(item, this.props.callback);
       return;
     }
     if (type === 'GeneralSearch') {
       console.log('open event detail with type GeneralSearch');
-      this.props.eventDetailOpen(item);
+      eventDetailOpen(item);
       return;
     }
     // Open event page
@@ -77,7 +86,7 @@ class SearchEventCard extends Component {
   renderButton(item, type) {
     return (
       <View style={styles.iconContainerStyle}>
-        <TouchableOpacity activeOpacity={0.6}
+        <DelayedButton activeOpacity={0.6}
           onPress={() => this.onButtonClicked(item, type)}
           style={{ padding: 15 }}
         >
@@ -85,7 +94,7 @@ class SearchEventCard extends Component {
             source={next}
             style={{ ...styles.iconStyle, opacity: 0.8 }}
           />
-        </TouchableOpacity>
+        </DelayedButton>
       </View>
     );
   }
@@ -119,7 +128,7 @@ class SearchEventCard extends Component {
     const { item, type } = this.props;
 
     return (
-      <TouchableOpacity activeOpacity={0.6}>
+      <DelayedButton activeOpacity={0.6}>
         <View style={styles.containerStyle}>
           {this.renderEventImage()}
 
@@ -129,7 +138,7 @@ class SearchEventCard extends Component {
           </View>
           {this.renderButton(item, type)}
         </View>
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 }

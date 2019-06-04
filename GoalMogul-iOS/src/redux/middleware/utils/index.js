@@ -272,8 +272,8 @@ export const makeCaretOptions = (type, goalRef, postRef) => {
     // This is a post
     if (postRef.postType === 'General') {
       return [
-        { option: 'Delete' },
-        { option: 'Edit Post' }
+        { option: 'Edit Post' },
+        { option: 'Delete' }
       ];
     }
     

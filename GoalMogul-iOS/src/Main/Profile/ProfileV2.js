@@ -4,6 +4,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
+import R from 'ramda';
 
 /* Components */
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
@@ -24,7 +25,8 @@ import {
   // Page related functions
   handleTabRefresh,
   handleProfileTabOnLoadMore,
-  changeFilter
+  changeFilter,
+  blockUser
 } from '../../actions';
 
 import {
@@ -34,6 +36,12 @@ import {
 import {
   closeProfile
 } from '../../actions/ProfileActions';
+
+import {
+    createReport
+} from '../../redux/modules/report/ReportActions';
+
+import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 
 /* Styles */
 import { BACKGROUND_COLOR, APP_DEEP_BLUE } from '../../styles';
@@ -58,7 +66,8 @@ const DEBUG_KEY = '[ UI ProfileV2 ]';
 // const COLLAPSED_HEIGHT = 30 + SEARCHBAR_HEIGHT;
 // const HEADER_HEIGHT = 284 + 30 + SEARCHBAR_HEIGHT;
 // const INFO_CARD_HEIGHT = 284;
-const INFO_CARD_HEIGHT = 303.5; 
+// const INFO_CARD_HEIGHT = 303.5; 
+const INFO_CARD_HEIGHT = 242; 
 const DEFAULT_TRANSITION_TIME = 120;
 const PROMPT_TRANSITION_TIME = 50;
 
@@ -71,7 +80,19 @@ class ProfileV2 extends Component {
         this.closeProfileInfoCard = this.closeProfileInfoCard.bind(this);
         this.state = {
             infoCardHeight: new Animated.Value(INFO_CARD_HEIGHT), // Initial info card height
-            infoCardOpacity: new Animated.Value(1)
+            infoCardOpacity: new Animated.Value(1),
+            hasLoadedProfile: false,
+            cardHeight: INFO_CARD_HEIGHT // Read info card height
+        }
+        this.handleProfileDetailCardLayout = this.handleProfileDetailCardLayout.bind(this);
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.userPageLoading !== this.props.userPageLoading && this.props.userPageLoading === false) {
+            this.setState({
+                ...this.state,
+                hasLoadedProfile: true
+            });
         }
     }
 
@@ -134,6 +155,67 @@ class ProfileV2 extends Component {
         Actions.pop();
     }
 
+    /**
+     * Profile detail card onLayout will call this function to adjust INFO_CARD_HEIGHT
+     */
+    handleProfileDetailCardLayout = (e) => {
+        return;
+        // if (!this.state.hasLoadedProfile || this.props.user.profile.headline) {
+        //     return;
+        // }
+
+        // const { navigationState } = this.props;
+        // const { routes, index } = navigationState;
+        // if (routes[index].key !== 'about') return;
+
+        // const newHeight = e.nativeEvent.layout.height;
+        // this.setState({
+        //     ...this.state,
+        //     cardHeight: newHeight
+        // });
+    }
+
+    /**
+     * Handle SearchBarHeader Setting icon onPress. This is only called if viewing 
+     * profile that is not self
+     */
+    handlePageSetting = () => {
+        const text = 'Please go to Settings to manage blocked users.';
+        const switchCases = switchByButtonIndex([
+            [R.equals(0), () => {
+                console.log(`${DEBUG_KEY} User blocks _id: `, this.props.userId);
+                this.props.blockUser(
+                this.props.userId,
+                () => alert(
+                    `You have successfully blocked ${this.props.user.name}. ${text}`
+                )
+                );
+            }],
+            [R.equals(1), () => {
+                console.log(`${DEBUG_KEY} User reports profile with _id: `, this.props.userId);
+                this.props.createReport(this.props.userId, 'User');
+            }],
+            [R.equals(2), () => { // share to Direct Chat
+                // TODO: @Jay Share to direct message
+                const userToShare = this.props.user;
+                const chatRoomType = 'Direct';
+                Actions.push('shareToChatLightBox', { userToShare, chatRoomType });
+            }],
+            [R.equals(3), () => {
+                // TODO: @Jay Share to group conversation
+                const userToShare = this.props.user;
+                const chatRoomType = 'Group';
+                Actions.push('shareToChatLightBox', { userToShare, chatRoomType });
+            }]
+        ]);
+        const profileSettingActionSheet = actionSheet(
+            ['Block', 'Report', 'Share as Direct Message', 'Share to Group Chat', 'Cancel'],
+            4,
+            switchCases
+        );
+        profileSettingActionSheet();
+    }
+
     handleCreateGoal = () => {
         const { userId, pageId } = this.props;
         this.props.openCreateOverlay(userId, pageId);
@@ -158,7 +240,7 @@ class ProfileV2 extends Component {
             Animated.parallel([
                 Animated.timing(this.state.infoCardHeight, {
                     duration: DEFAULT_TRANSITION_TIME,
-                    toValue: INFO_CARD_HEIGHT,
+                    toValue: this.state.cardHeight,
                 }),
                 Animated.timing(this.state.infoCardOpacity, {
                     duration: DEFAULT_TRANSITION_TIME,
@@ -283,7 +365,7 @@ class ProfileV2 extends Component {
                 opacity: this.state.infoCardOpacity
                 }}
             >
-                <ProfileDetailCard pageId={pageId} userId={userId} />
+                <ProfileDetailCard pageId={pageId} userId={userId} onLayout={this.handleProfileDetailCardLayout} />
             </Animated.View>
         );
     }
@@ -333,6 +415,7 @@ class ProfileV2 extends Component {
                     setting 
                     onBackPress={this.handleOnBackPress} 
                     userId={userId}  
+                    handlePageSetting={this.handlePageSetting}
                 />
                 {/* <ProfileSummaryCard pageId={this.props.pageId} userId={this.props.userId} /> */}
                 <FlatList
@@ -446,8 +529,10 @@ const makeMapStateToProps = () => {
             navigationState,
             isSelf: user && appUser && userId === appUser._id,
             showPlus,
+            userPageLoading: userPage.loading,
             // Page related info
-            loading, refreshing, filter, data
+            loading, refreshing, filter, data,
+            user // user for the current profile page
         };
     };
 
@@ -463,6 +548,8 @@ export default connect(
         openCreateOverlay,
         closeProfile,
         openPostDetail,
+        blockUser,
+        createReport,
         // Page related functions
         handleTabRefresh,
         handleProfileTabOnLoadMore,
