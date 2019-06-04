@@ -265,7 +265,7 @@ export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMe
 				updateMessageList(chatRoom, currentMessageList, true)(dispatch, getState);
 
 				// send the message
-				const { text } = messageToSend;
+				const { text, sharedEntity } = messageToSend;
 				let body = {
 					chatRoomRef: chatRoom._id,
 					content: {
@@ -273,6 +273,9 @@ export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMe
 					},
 					customIdentifier: insertedDoc._id,
 				};
+				if (sharedEntity) {
+					body.sharedEntity = sharedEntity;
+				}
 				if (uploadedMediaRef) {
 					body.media = uploadedMediaRef;
 				};
@@ -309,7 +312,7 @@ function buildSendingImageGhostMessage(messageToSend) {
 }
 
 function _transformMessageFromGiftedChat(messageDoc, uploadedMediaRef, chatRoom) {
-	const { _id, createdAt, text, user } = messageDoc;
+	const { _id, createdAt, text, user, sharedEntity } = messageDoc;
 	let transformedDoc = {
 		_id,
 		created: new Date(createdAt),
@@ -319,6 +322,9 @@ function _transformMessageFromGiftedChat(messageDoc, uploadedMediaRef, chatRoom)
 			message: text,
 		},
 		chatRoomRef: chatRoom._id,
+	};
+	if (sharedEntity) {
+		transformedDoc.sharedEntity = sharedEntity;
 	};
 	if (uploadedMediaRef) {
 		transformedDoc.media = uploadedMediaRef;
