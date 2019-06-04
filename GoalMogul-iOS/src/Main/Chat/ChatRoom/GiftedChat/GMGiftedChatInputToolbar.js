@@ -54,18 +54,20 @@ export default class ChatRoomConversationInputToolbar extends React.Component {
     if (this.props.renderSend) {
       return this.props.renderSend(this.props);
     };
+    return null;
   }
 
   renderComposer() {
     if (this.props.renderComposer) {
       return this.props.renderComposer(this.props);
     };
+    return null;
   }
 
-  renderAccessory() {
+  renderAccessory(accessoryLocation) {
     if (this.props.renderAccessory) {
       return (
-        <View style={[styles.accessory, this.props.accessoryStyle]}>{this.props.renderAccessory(this.props)}</View>
+        <View style={[styles.accessory, this.props.accessoryStyle]}>{this.props.renderAccessory(this.props, accessoryLocation)}</View>
       );
     }
     return null;
@@ -74,12 +76,13 @@ export default class ChatRoomConversationInputToolbar extends React.Component {
   render() {
     return (
       <View style={[styles.container, this.props.containerStyle, { position: this.state.position }]}>
-        {this.renderAccessory()}
+        {this.renderAccessory('top')}
         <View style={[styles.primary, this.props.primaryStyle]}>
           {this.renderActions()}
           {this.renderComposer()}
           {this.renderSend()}
         </View>
+        {this.renderAccessory('bottom')}
       </View>
     );
   }

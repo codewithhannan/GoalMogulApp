@@ -5,10 +5,10 @@ import React from 'react';
 import { Animated, Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes } from 'react-native';
 
 import { MessageText, MessageVideo } from 'react-native-gifted-chat';
-import ChatMessageImage from '../Modals/ChatMessageImage';
+import ChatMessageImage from '../../Modals/ChatMessageImage';
 import moment from 'moment';
-import CommentRef from '../../Goal/GoalDetailCard/Comment/CommentRef';
-import { MemberDocumentFetcher } from '../../../Utils/UserUtils';
+import CommentRef from '../../../Goal/GoalDetailCard/Comment/CommentRef';
+import { MemberDocumentFetcher } from '../../../../Utils/UserUtils';
 
 function isSameDay(currentMessage = {}, diffMessage = {}) {
 	if (!diffMessage.createdAt) {
