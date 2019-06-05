@@ -429,7 +429,8 @@ class ProfileDetailCard extends Component {
         <View style={styles.imageWrapperStyle}>
           {this.renderProfileImage(profile)}
           <View style={{ flexDirection: 'row', flex: 1, margin: 8 }}>
-            <View style={{ width: ((width * 0.9) / 3) + 30 + 10 }} />
+            {/* <View style={{ width: ((width * 0.9) / 3) + 40 + 10 }} /> */}
+            <View style={{ flex: 1 }} />
             {this.renderProfileActionButton()}
             {this.renderMessageButton()}
           </View>
@@ -468,8 +469,8 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'flex-start',
     paddingTop: 10,
-    paddingLeft: 30,
-    paddingRight: 30,
+    paddingLeft: 35,
+    paddingRight: 35,
     paddingBottom: 15
   },
   imageWrapperStyle: {
@@ -487,7 +488,7 @@ const styles = {
     borderRadius: 14,
     position: 'absolute',
     bottom: 10,
-    left: 30,
+    left: 35,
     alignSelf: 'center',
     backgroundColor: 'white'
   },
