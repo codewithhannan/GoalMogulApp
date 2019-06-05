@@ -205,12 +205,15 @@ class ProfileDetailCard extends Component {
   renderMessageButton() {
     if (this.props.self) return null;
     return (
-      <ProfileActionButton
-        text='Message'
-        source={message_icon}
-        style={{ marginTop: 1 }}
-        onPress={() => this.handleMessageButtonOnPress()}
-      />
+      <View style={{ marginLeft: 5 }}>
+        <ProfileActionButton
+          text='Message'
+          source={message_icon}
+          style={{ marginTop: 1 }}
+          onPress={() => this.handleMessageButtonOnPress()}
+        />
+      </View>
+
     );
   }
 
@@ -234,7 +237,7 @@ class ProfileDetailCard extends Component {
           source={addUser}
           text='Respond'
           onPress={this.handleButtonOnPress.bind(this, 'respond')}
-          style={{ height: 14, width: 15 }}
+          style={{ height: 16, width: 17 }}
         />
       );
     }
@@ -246,7 +249,7 @@ class ProfileDetailCard extends Component {
             text='Add friend'
             source={addUser}
             onPress={this.handleButtonOnPress.bind(this, 'requestFriend')}
-            style={{ height: 14, width: 15 }}
+            style={{ height: 16, width: 17 }}
             containerStyle={{ backgroundColor: '#E3F3FA' }}
           />
         );
@@ -257,7 +260,7 @@ class ProfileDetailCard extends Component {
             text='Friend'
             source={love}
             onPress={this.handleButtonOnPress.bind(this, 'unfriend')}
-            style={{ width: 15, height: 13 }}
+            style={{ width: 17, height: 16 }}
             containerStyle={{ backgroundColor: '#E3F3FA' }}
           />
         );
@@ -426,9 +429,9 @@ class ProfileDetailCard extends Component {
         <View style={styles.imageWrapperStyle}>
           {this.renderProfileImage(profile)}
           <View style={{ flexDirection: 'row', flex: 1, margin: 8 }}>
-            {this.renderMessageButton()}
-            <View style={{ flex: 1 }} />
+            <View style={{ width: ((width * 0.9) / 3) + 30 + 10 }} />
             {this.renderProfileActionButton()}
+            {this.renderMessageButton()}
           </View>
         </View>
         <View style={styles.containerStyle}>
@@ -463,10 +466,10 @@ const styles = {
     backgroundColor: '#fff',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     paddingTop: 10,
-    paddingLeft: 15,
-    paddingRight: 15,
+    paddingLeft: 30,
+    paddingRight: 30,
     paddingBottom: 15
   },
   imageWrapperStyle: {
@@ -484,6 +487,7 @@ const styles = {
     borderRadius: 14,
     position: 'absolute',
     bottom: 10,
+    left: 30,
     alignSelf: 'center',
     backgroundColor: 'white'
   },

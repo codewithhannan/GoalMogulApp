@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Text
 } from 'react-native';
+import DelayedButton from './DelayedButton';
 
 const DEBUG_KEY = '[ UI ProfileActionButton ]';
 const ProfileActionButton = (props) => {
@@ -18,8 +19,15 @@ const ProfileActionButton = (props) => {
     );
   }
 
+  const textComponent = props.text
+    ? (
+      <Text style={{ fontSize: 9.5, marginLeft: 5, alignSelf: 'center' }}>
+          {props.text}
+      </Text>
+    ) : null
+
   return (
-    <TouchableOpacity activeOpacity={0.6} onPress={props.onPress}>
+    <DelayedButton activeOpacity={0.6} onPress={props.onPress}>
       <View
         style={{
           flexDirection: 'row',
@@ -31,11 +39,9 @@ const ProfileActionButton = (props) => {
         }}
       >
         {image}
-        <Text style={{ fontSize: 9.5, marginLeft: 5, alignSelf: 'center' }}>
-          {props.text}
-        </Text>
+        {textComponent}
       </View>
-    </TouchableOpacity>
+    </DelayedButton>
   );
 };
 
