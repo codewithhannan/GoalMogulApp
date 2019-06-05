@@ -137,7 +137,7 @@ const switchShareToAction = (dest, callback) => switchCaseF({
     Actions.push('shareModal', { callback });
   },
   // Open search overlay if share to either tribe or event
-  tribe: () => Actions.searchTribeLightBox({ callback }),
+  tribe: () => Actions.push('searchTribeLightBox', { callback }),
   event: () => Actions.push('searchEventLightBox', { callback })
 })('feed')(dest);
 

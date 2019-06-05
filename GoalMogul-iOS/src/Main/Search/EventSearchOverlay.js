@@ -111,7 +111,7 @@ class EventSearchOverlay extends Component {
               value={this.state.searchContent}
             />
           </View>
-          <EventSearch callback={this.props.callback} />
+          <EventSearch callback={this.props.callback} onItemSelect={this.props.onItemSelect} />
         </MenuProvider>
       </BaseOverlay>
     );

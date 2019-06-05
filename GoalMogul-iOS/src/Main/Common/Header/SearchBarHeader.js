@@ -412,7 +412,8 @@ const mapStateToProps = (state, props) => {
     profileUserName,
     image,
     appUserId,
-    navigationTab
+    navigationTab,
+    user
   };
 };
 

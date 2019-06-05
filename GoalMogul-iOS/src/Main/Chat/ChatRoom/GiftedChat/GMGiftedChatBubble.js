@@ -5,10 +5,10 @@ import React from 'react';
 import { Animated, Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes } from 'react-native';
 
 import { MessageText, MessageVideo } from 'react-native-gifted-chat';
-import ChatMessageImage from '../Modals/ChatMessageImage';
+import ChatMessageImage from '../../Modals/ChatMessageImage';
 import moment from 'moment';
-import CommentRef from '../../Goal/GoalDetailCard/Comment/CommentRef';
-import { MemberDocumentFetcher } from '../../../Utils/UserUtils';
+import CommentRef from '../../../Goal/GoalDetailCard/Comment/CommentRef';
+import { MemberDocumentFetcher } from '../../../../Utils/UserUtils';
 
 function isSameDay(currentMessage = {}, diffMessage = {}) {
 	if (!diffMessage.createdAt) {
@@ -138,28 +138,34 @@ export default class ChatRoomConversationBubble extends React.Component {
 	renderSharedContent() {
 		const { currentMessage } = this.props;
 		if (currentMessage.sharedEntity) {
+			let userRef, tribeRef, eventRef,
+				suggestionType;
 			if (currentMessage.sharedEntity.userRef) {
-				const suggestionType = 'User';
-				let userRef = currentMessage.sharedEntity.userRef;
-				if (typeof userRef == "string") {
+				suggestionType = 'User';
+				userRef = currentMessage.sharedEntity.userRef;
+				if (typeof userRef != "object") {
 					userRef = {
 						_id: userRef,
 						name: 'GoalMogul member'
 					};
-				} else if (!userRef) {
-					return null;
-				};
-				return (
-					<CommentRef
-						containerStyles={{
-							width: 240,
-							marginLeft: 12,
-							marginRight: 12,
-						}}
-						item={{ suggestionType, userRef }}
-					/>
-				);
+				}
+			} else if(currentMessage.sharedEntity.tribeRef) {
+				tribeRef = currentMessage.sharedEntity.tribeRef;
+			} else if(currentMessage.sharedEntity.eventRef) {
+				eventRef = currentMessage.sharedEntity.eventRef;
+			} else {
+				return null;
 			};
+			return (
+				<CommentRef
+					containerStyles={{
+						width: 240,
+						marginLeft: 12,
+						marginRight: 12,
+					}}
+					item={{ suggestionType, userRef, tribeRef, eventRef }}
+				/>
+			);
 		};
 		return null;
 	}

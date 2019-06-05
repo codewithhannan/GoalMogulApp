@@ -265,7 +265,7 @@ export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMe
 				updateMessageList(chatRoom, currentMessageList, true)(dispatch, getState);
 
 				// send the message
-				const { text } = messageToSend;
+				const { text, sharedEntity } = messageToSend;
 				let body = {
 					chatRoomRef: chatRoom._id,
 					content: {
@@ -273,6 +273,9 @@ export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMe
 					},
 					customIdentifier: insertedDoc._id,
 				};
+				if (sharedEntity) {
+					body.sharedEntity = sharedEntity;
+				}
 				if (uploadedMediaRef) {
 					body.media = uploadedMediaRef;
 				};
@@ -309,7 +312,7 @@ function buildSendingImageGhostMessage(messageToSend) {
 }
 
 function _transformMessageFromGiftedChat(messageDoc, uploadedMediaRef, chatRoom) {
-	const { _id, createdAt, text, user } = messageDoc;
+	const { _id, createdAt, text, user, sharedEntity } = messageDoc;
 	let transformedDoc = {
 		_id,
 		created: new Date(createdAt),
@@ -319,6 +322,9 @@ function _transformMessageFromGiftedChat(messageDoc, uploadedMediaRef, chatRoom)
 			message: text,
 		},
 		chatRoomRef: chatRoom._id,
+	};
+	if (sharedEntity) {
+		transformedDoc.sharedEntity = sharedEntity;
 	};
 	if (uploadedMediaRef) {
 		transformedDoc.media = uploadedMediaRef;
@@ -341,7 +347,17 @@ export async function _transformMessagesForGiftedChat(messages, chatRoom, token)
 
 		if (sharedEntity && sharedEntity.userRef) {
 			try {
-				sharedEntity.userRef = await MemberDocumentFetcher.getUserDocument(sharedEntity.userRef, token, chatRoomMemberMap, true);
+				sharedEntity.userRef = (await MemberDocumentFetcher.getUserDocument(sharedEntity.userRef, token, chatRoomMemberMap, true)) || sharedEntity.userRef;
+			} catch (e) { /* best attempt */ };
+		};
+		if (sharedEntity && sharedEntity.tribeRef) {
+			try {
+				sharedEntity.tribeRef = (await fetchTribe(sharedEntity.tribeRef, token)) || sharedEntity.tribeRef;
+			} catch (e) { /* best attempt */ };
+		};
+		if (sharedEntity && sharedEntity.eventRef) {
+			try {
+				sharedEntity.eventRef = (await fetchEvent(sharedEntity.eventRef, token)) || sharedEntity.eventRef;
 			} catch (e) { /* best attempt */ };
 		};
 		let user;
@@ -358,6 +374,16 @@ export async function _transformMessagesForGiftedChat(messages, chatRoom, token)
 			system: !!isSystemMessage,
 		};
 	}));
+};
+async function fetchTribe(tribeId, token) {
+	try {
+		return await API.get(`secure/tribe/documents/${tribeId}`, token);
+	} catch(e) { /* best attempt */ };
+};
+async function fetchEvent(eventId, token) {
+	try {
+		return await API.get(`secure/event/documents/${eventId}`, token);
+	} catch(e) { /* best attempt */ };
 };
 export function _transformUserForGiftedChat(userDoc) {
 	const {_id, name, profile} = userDoc;

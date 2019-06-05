@@ -17,10 +17,11 @@ import {
 	Alert,
 	TextInput,
 	Animated,
+	ActionSheetIOS
 } from 'react-native';
 import { connect } from 'react-redux';
 import EmojiSelector from 'react-native-emoji-selector';
-
+import UUID from 'uuid/v4';
 import {
 	Permissions,
 	FileSystem,
@@ -36,6 +37,7 @@ import { RemoveComponent } from '../../Goal/GoalDetailCard/SuggestionPreview';
 
 import { Octicons } from '@expo/vector-icons';
 import SendButton from '../../../asset/utils/sendButton.png';
+import NextButton from '../../../asset/utils/next.png';
 
 import { MenuProvider } from 'react-native-popup-menu';
 // Actions
@@ -55,24 +57,26 @@ import { GiftedChat, Send, Message, Bubble, MessageText, Time, MessageImage, Mes
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import PhotoIcon from '../../../asset/utils/cameraRoll.png';
 import EmojiIcon from '../../../asset/utils/emoji.png';
+import LightBulb from '../../../asset/utils/lightBulb.png';
 import { Actions } from 'react-native-router-flux';
 import ProfileImage from '../../Common/ProfileImage';
 import { openCamera, openCameraRoll, openProfile } from '../../../actions';
 import profilePic from '../../../asset/utils/defaultUserProfile.png';
 import { Image, Text } from 'react-native-elements';
 import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL, IPHONE_MODELS_2 } from '../../../Utils/Constants';
-import ChatRoomConversationInputToolbar from './ChatRoomConversationInputToolbar';
+import ChatRoomConversationInputToolbar from './GiftedChat/GMGiftedChatInputToolbar';
 import { toHashCode } from '../../../Utils/ImageUtils';
 import ChatMessageImage from '../Modals/ChatMessageImage';
-import ChatRoomConversationBubble from './ChatRoomConversationBubble';
+import GMGiftedChatBubble from './GiftedChat/GMGiftedChatBubble';
 import ChatRoomLoaderOverlay from '../Modals/ChatRoomLoaderOverlay';
+import { APP_BLUE_BRIGHT } from '../../../styles';
 
 const DEBUG_KEY = '[ UI ChatRoomConversation ]';
 const LISTENER_KEY = 'ChatRoomConversation';
 const MAX_TYPING_INDICATORS_TO_DISPLAY = 3;
 const CHAT_ROOM_DOCUMENT_REFRESH_INTERVAL = 3000; // milliseconds
 
-const GIFTED_CHAT_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(Constants.platform.ios.model.toLowerCase()) ? 110 : 75;
+const GIFTED_CHAT_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(Constants.platform.ios.model.toLowerCase()) ? 102 : 66;
 
 /**
  * @prop {String} chatRoomId: required
@@ -255,6 +259,9 @@ class ChatRoomConversation extends React.Component {
 	sendMessage(messagesToSend) {
 		const { messageMediaRef, chatRoom, messages } = this.props;
 		if (!messagesToSend[0].text.trim().length && !messageMediaRef) return;
+		if (messageMediaRef) {
+			this._textInput.blur();
+		};
 		this.props.sendMessage(messagesToSend, messageMediaRef, chatRoom, messages);
 	}
 
@@ -343,6 +350,59 @@ class ChatRoomConversation extends React.Component {
 			};
 		});
 	}
+	onShareContentButtonPress() {
+		const { user, chatRoom, messages } = this.props;
+		const options = [
+			'Share a Friend',
+			'Share a Tribe',
+			'Share an Event',
+			'Cancel',
+		];
+		const cancelButtonIndex = options.length - 1;
+		ActionSheetIOS.showActionSheetWithOptions({
+			options,
+			cancelButtonIndex,
+		}, (buttonIndex) => {
+			let onItemSelect
+			switch (buttonIndex) {
+				case 0:
+					const searchFor = {
+						type: 'directChat',
+					};
+					const cardIconStyle = { tintColor: APP_BLUE_BRIGHT };
+					const cardIconSource = NextButton;
+					const callback = (selectedUserId) => this.props.sendMessage([{
+						sharedEntity: { userRef: selectedUserId, },
+						text: '',
+						user,
+						createdAt: new Date(),
+						_id: UUID(),
+					}], null, chatRoom, messages);
+					Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle, callback });
+					break;
+				case 1:
+					onItemSelect = (selectedTribeId) => this.props.sendMessage([{
+						sharedEntity: { tribeRef: selectedTribeId, },
+						text: '',
+						user,
+						createdAt: new Date(),
+						_id: UUID(),
+					}], null, chatRoom, messages);
+					Actions.push('searchTribeLightBox', { onItemSelect });
+					break;
+				case 2:
+					onItemSelect = (selectedEventId) => this.props.sendMessage([{
+						sharedEntity: { eventRef: selectedEventId, },
+						text: '',
+						user,
+						createdAt: new Date(),
+						_id: UUID(),
+					}], null, chatRoom, messages);
+					Actions.push('searchEventLightBox', { onItemSelect });
+					break;
+			}
+		});
+	}
 	onChatTextInputChanged(text) {
 		const { userId, chatRoomId } = this.props;
 		LiveChatService.emitEvent(OUTGOING_EVENT_NAMES.updateTypingStatus, {
@@ -399,6 +459,24 @@ class ChatRoomConversation extends React.Component {
 			</TouchableOpacity>
 		  );
 	}
+	renderShareContentButton() {
+		return (
+			<TouchableOpacity
+			  activeOpacity={0.6}
+			  style={styles.iconContainerStyle}
+			  onPress={this.onShareContentButtonPress.bind(this)}
+			>
+			  <Image
+				source={LightBulb}
+				style={{
+				  ...styles.iconStyle,
+				  tintColor: '#cbd6d8'
+				}}
+				resizeMode='contain'
+			  />
+			</TouchableOpacity>
+		  );
+	}
 	renderEmojiSelector() {
 		return (<View>
 			<TouchableOpacity
@@ -418,6 +496,8 @@ class ChatRoomConversation extends React.Component {
 		  </View>);
 	}
 	renderExtraActions() {
+		return null;
+		// we're moving this below
 		return (<View
 			style={{
 				flexDirection: 'row',
@@ -426,10 +506,41 @@ class ChatRoomConversation extends React.Component {
 		>
 			{this.renderSendImageButton()}
 			{this.renderEmojiSelector()}
-		</View>)
+		</View>);
 	}
-	renderMedia() {
+	renderAccessory(props, accessoryLocation) {
 		const { messageMediaRef } = this.props;
+		if (accessoryLocation == 'bottom') {
+			return (
+				<View
+					style={{
+						alignItems: 'center',
+						flexDirection: 'row',
+					}}
+				>
+					<View
+						style={{
+							flexDirection: 'row',
+							flexGrow: 2,
+							alignItems: 'center',
+							paddingLeft: 15,
+						}}
+					>
+						{messageMediaRef ? null : this.renderSendImageButton()}
+						{this.renderEmojiSelector()}
+						{this.renderShareContentButton()}
+					</View>
+					<View
+						style={{
+							alignItems: 'center',
+						}}
+					>
+						{this.renderSendButton(props)}
+					</View>
+				</View>
+			);
+		};
+
 		if (!messageMediaRef) return null;
 		const onPress = () => {};
 		const onRemove = () => {
@@ -543,7 +654,7 @@ class ChatRoomConversation extends React.Component {
 		return (
 			<Message
 				{...props}
-				renderBubble={props => <ChatRoomConversationBubble
+				renderBubble={props => <GMGiftedChatBubble
 					{...props}
 				/>}
 			/>
@@ -609,14 +720,15 @@ class ChatRoomConversation extends React.Component {
 						renderActions={this.renderExtraActions.bind(this)}
 						onSend={this.sendMessage.bind(this)}
 						onInputTextChanged={this.onChatTextInputChanged.bind(this)}
-						renderAccessory={this.renderMedia.bind(this)}
-						renderSend={this.renderSendButton}
+						renderAccessory={this.renderAccessory.bind(this)}
+						renderSend={null /*this.renderSendButton*/}
 						renderComposer={this.renderComposer.bind(this)}
 						maxComposerHeight={120 - 18} // padding
 						renderMessage={this.renderMessage}
 						renderInputToolbar={this.renderInputToolbar}
 						renderAvatar={this.renderAvatar}
-						bottomOffset={this.props.messageMediaRef ? GIFTED_CHAT_BOTTOM_OFFSET - 57 : GIFTED_CHAT_BOTTOM_OFFSET}
+						bottomOffset={GIFTED_CHAT_BOTTOM_OFFSET}
+						minInputToolbarHeight={this.props.messageMediaRef ? 90 : 60}
 					/>
 					{this.state.showEmojiSelector &&
 						<Animated.View

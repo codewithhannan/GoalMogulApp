@@ -24,6 +24,7 @@ import {
 import {
   cardBoxShadow
 } from '../../../styles';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 const FRIENDSHIP_BUTTONS = ['Block', 'Unfriend', 'Cancel'];
 const BLOCK_INDEX = 0;
@@ -67,6 +68,11 @@ class FriendCard extends Component {
 
   handleOnOpenProfile = (item) => {
     const { _id } = item;
+    const { onItemSelect } = this.props;
+    if (onItemSelect) {
+      return onItemSelect(_id);
+    }
+
     if (_id) {
       // return this.props.openProfile(_id);
     }
@@ -204,7 +210,7 @@ class FriendCard extends Component {
 
     const { headline } = item;
     return (
-      <TouchableOpacity
+      <DelayedButton
         activeOpacity={0.6}
         style={[styles.containerStyle, cardBoxShadow]}
         onPress={() => this.handleOnOpenProfile(item)}
@@ -219,7 +225,7 @@ class FriendCard extends Component {
           */}
           {this.renderGoals(item)}
         </View>
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 }

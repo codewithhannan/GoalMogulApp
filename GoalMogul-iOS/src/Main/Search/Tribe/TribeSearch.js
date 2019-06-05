@@ -44,7 +44,7 @@ class TribeSearch extends Component {
   }
 
   renderItem = ({ item }) => {
-    return <TribeSearchCard item={item} type={this.props.type} callback={this.props.callback} />;
+    return <TribeSearchCard item={item} type={this.props.type} callback={this.props.callback} onItemSelect={this.props.onItemSelect} />;
   };
 
   render() {

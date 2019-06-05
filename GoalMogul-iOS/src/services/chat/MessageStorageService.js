@@ -468,40 +468,45 @@ class MessageStorageService {
      */
     _onIncomingMessage = (data) => {
         const { messageAckId, messageDoc, senderName, chatRoomName, chatRoomType, chatRoomPicture } = data.data;
+        const onProceed = () => {
+            // store message doc
+            localDb.insert(this._transformMessageForLocalStorage(messageDoc), (err) => {
+                // if error, the message will go to the server's message queue and we can try reinserting on a later pull
+                if (err) return;
+                // ack message if no error
+                LiveChatService.emitEvent(
+                    OUTGOING_EVENT_NAMES.ackMessage,
+                    { messageAckId },
+                    (resp) => {
+                        if (resp.error) {
+                            console.log(`${DEBUG_KEY} Error ack'ing message: ${resp.message}`, messageDoc);
+                        };
+                    }
+                );
+                // fire listeners to this event
+                const listeners = Object.values(this.incomingMessageListeners);
+                for (let listener of listeners) {
+                    if (typeof listener != "function") continue;
+                    try {
+                        listener(data.data);
+                    } catch(e) {
+                        console.log(
+                            `${DEBUG_KEY}: Error running incomingMessage listener`,
+                            e
+                        );
+                    };
+                };
+            });
+        };
+
         // remove if we have a locally created copy
         if (messageDoc.customIdentifier) {
             localDb.remove({
                 _id: messageDoc.customIdentifier,
-            }, () => {});
+            }, onProceed);
+        } else {
+            onProceed();
         };
-        // store message doc
-        localDb.insert(this._transformMessageForLocalStorage(messageDoc), (err) => {
-            // if error, the message will go to the server's message queue and we can try reinserting on a later pull
-            if (err) return;
-            // ack message if no error
-            LiveChatService.emitEvent(
-                OUTGOING_EVENT_NAMES.ackMessage,
-                { messageAckId },
-                (resp) => {
-                    if (resp.error) {
-                        console.log(`${DEBUG_KEY} Error ack'ing message: ${resp.message}`, messageDoc);
-                    };
-                }
-            );
-            // fire listeners to this event
-            const listeners = Object.values(this.incomingMessageListeners);
-            for (let listener of listeners) {
-                if (typeof listener != "function") continue;
-                try {
-                    listener(data.data);
-                } catch(e) {
-                    console.log(
-                        `${DEBUG_KEY}: Error running incomingMessage listener`,
-                        e
-                    );
-                };
-            };
-        })
     }
     /**
      * Poll the server's message queue in case the LiveChatService experiences interruptions and some messages end up in the queue
@@ -513,7 +518,7 @@ class MessageStorageService {
     }
     _resetAppNotificationsBadge = () => {
         const { authToken } = this.mountedUser;
-        API.get('secure/notification/entity/unread-count', authToken).then(res => {
+        API.get('secure/notification/entity/unread-count', authToken, 4).then(res => {
             if (res.status === 200) {
                 let notiCount = parseInt(res.count);
                 notiCount = isNaN(notiCount) ? 0 : notiCount;

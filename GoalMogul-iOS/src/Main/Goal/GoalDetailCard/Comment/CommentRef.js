@@ -44,6 +44,7 @@ import {
 import {
   myEventDetailOpenWithId
 } from '../../../../redux/modules/event/MyEventActions';
+import DelayedButton from '../../../Common/Button/DelayedButton';
 
 const DEBUG_KEY = '[ UI CommentRef ]';
 
@@ -162,7 +163,6 @@ class CommentRef extends React.PureComponent {
             ...styles.headingTextStyle, flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 10 
           }}
           textContainerStyle={{ flexDirection: 'row' }}
-          numberOfLines={2}
           ellipsizeMode='tail'
           handleUrlPress={this.handleSuggestionLinkOnPress}
           onUserTagPressed={() => console.log(`${DEBUG_KEY}: user tag pressed`)}
@@ -215,7 +215,7 @@ class CommentRef extends React.PureComponent {
     }
 
     return (
-      <TouchableOpacity
+      <DelayedButton
         activeOpacity={0.6}
         style={{...styles.containerStyle, ...(containerStyles || {}) }}
         onPress={() => this.handleOnRefPress(item, userId, tab)}
@@ -223,7 +223,7 @@ class CommentRef extends React.PureComponent {
         {this.renderImage(item)}
         {this.renderTextContent(item)}
         {this.renderEndImage(item)}
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 }
@@ -348,7 +348,7 @@ const getTextContent = (item) => {
 const styles = {
   containerStyle: {
     flexDirection: 'row',
-    height: 50,
+    minHeight: 50,
     marginTop: 12,
     marginBottom: 8,
     borderWidth: 0.5,

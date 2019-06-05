@@ -123,7 +123,7 @@ class TribeSearchOverlay extends Component {
               value={this.state.searchContent}
             />
           </View>
-          <TribeSearch callback={this.props.callback} />
+          <TribeSearch callback={this.props.callback} onItemSelect={this.props.onItemSelect} />
         </MenuProvider>
       </BaseOverlay>
     );

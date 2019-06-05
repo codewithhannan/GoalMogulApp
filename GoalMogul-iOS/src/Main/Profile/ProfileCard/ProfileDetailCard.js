@@ -15,6 +15,7 @@ import addUser from '../../../asset/utils/addUser.png';
 import love from '../../../asset/utils/love.png';
 import edit from '../../../asset/utils/edit.png';
 import cancel from '../../../asset/utils/cancel.png';
+import message_icon from '../../../asset/utils/message_icon.png';
 
 /* Actions */
 import {
@@ -88,6 +89,12 @@ class ProfileDetailCard extends Component {
         this.prefetchImage(image);
         // console.log(`prefetching image, imageUrl: ${imageUrl}, prevImageUrl: ${prevImageUrl}`);
       }
+    }
+  }
+
+  onLayout = (e) => {
+    if (this.props.onLayout) {
+      this.props.onLayout(e);
     }
   }
 
@@ -193,6 +200,18 @@ class ProfileDetailCard extends Component {
       );
       return respondActionSheet();
     }
+  }
+
+  renderMessageButton() {
+    if (this.props.self) return null;
+    return (
+      <ProfileActionButton
+        text='Message'
+        source={message_icon}
+        style={{ marginTop: 1 }}
+        onPress={() => this.handleMessageButtonOnPress()}
+      />
+    );
   }
 
   renderProfileActionButton() {
@@ -317,7 +336,6 @@ class ProfileDetailCard extends Component {
 
   // Open direct message with this person
   handleMessageButtonOnPress = () => {
-    // TODO: @Jia, disable 'Message' button while this processes
     this.props.createOrGetDirectMessage(this.props.userId, (err, chatRoom) => {
       // TODO: @Jia re-enable the 'Message' button
       if (err || !chatRoom) {
@@ -328,6 +346,7 @@ class ProfileDetailCard extends Component {
   }
 
   /**
+   * Starting version 0.3.10 or 0.4.0, we move the chat buttons to top right corner
    * Two buttons are rendered
    * 1. Message
    * 2. More --> open iOS menu with two options ['Share as Direct Message', 'Share to Group Chat', 'Cancel']
@@ -402,11 +421,15 @@ class ProfileDetailCard extends Component {
     const { name, headline, profile } = user;
 
     return (
-      <View style={styles.cardContainerStyle}>
+      <View style={styles.cardContainerStyle} onLayout={this.onLayout}>
         <View style={{ height: 90, backgroundColor: '#1998c9' }} />
         <View style={styles.imageWrapperStyle}>
           {this.renderProfileImage(profile)}
-          {this.renderProfileActionButton()}
+          <View style={{ flexDirection: 'row', flex: 1, margin: 8 }}>
+            {this.renderMessageButton()}
+            <View style={{ flex: 1 }} />
+            {this.renderProfileActionButton()}
+          </View>
         </View>
         <View style={styles.containerStyle}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
@@ -418,9 +441,9 @@ class ProfileDetailCard extends Component {
           <Text style={styles.headlineTextStyle}>
             {headline}
           </Text>
-          <View style={styles.dividerStyle} />
+          {/* <View style={styles.dividerStyle} /> */}
           {/* {this.renderFriendInfo()} */}
-          {this.renderChatButtons()}
+          {/* {this.renderChatButtons()} */}
         </View>
       </View>
     );
@@ -444,7 +467,7 @@ const styles = {
     paddingTop: 10,
     paddingLeft: 15,
     paddingRight: 15,
-    paddingBottom: 5
+    paddingBottom: 15
   },
   imageWrapperStyle: {
     shadowColor: '#000',

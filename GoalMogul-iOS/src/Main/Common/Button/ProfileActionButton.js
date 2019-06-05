@@ -24,8 +24,6 @@ const ProfileActionButton = (props) => {
         style={{
           flexDirection: 'row',
           alignSelf: 'flex-end',
-          marginTop: 7,
-          marginRight: 8,
           padding: 7,
           borderRadius: 5,
           backgroundColor: '#f3f3f3',
