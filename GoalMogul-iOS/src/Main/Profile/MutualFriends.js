@@ -14,7 +14,7 @@ import EmptyResult from '../Common/Text/EmptyResult';
 import FriendCard from '../MeetTab/Friends/FriendCard';
 
 // actions
-import { fetchMutualFriends } from '../../actions';
+import { fetchMutualFriends, openProfile } from '../../actions';
 
 // Selectors
 import { 
@@ -52,11 +52,19 @@ class MutualFriends extends Component {
     this.props.fetchMutualFriends(this.props.userId, false);
   }
 
+  handleOnItemSelect = (user) => {
+    if (user && user._id) {
+      Actions.pop();
+      this.props.openProfile(user._id);
+      return;
+    }
+  }
+
   _keyExtractor = (item) => item._id;
 
   renderItem = (props) => {
     const { item } = props;
-    return <FriendCard item={item} />;
+    return <FriendCard item={item} onItemSelect={() => this.handleOnItemSelect(item)} />;
   }
 
   renderListFooter() {
@@ -136,6 +144,7 @@ const mapStateToProps = (state, props) => {
 export default connect(
   mapStateToProps,
   {
-    fetchMutualFriends
+    fetchMutualFriends,
+    openProfile
   }
 )(MutualFriends);
