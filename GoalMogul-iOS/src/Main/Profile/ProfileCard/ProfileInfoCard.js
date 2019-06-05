@@ -161,8 +161,8 @@ const styles = {
   containerStyle: {
     display: 'flex',
     padding: 30,
-    paddingLeft: 35,
-    paddingRight: 35,
+    paddingLeft: 20,
+    paddingRight: 20,
     backgroundColor: 'white',
     flex: 1
   },

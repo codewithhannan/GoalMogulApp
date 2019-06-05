@@ -428,7 +428,7 @@ class ProfileDetailCard extends Component {
         <View style={{ height: 90, backgroundColor: '#1998c9' }} />
         <View style={styles.imageWrapperStyle}>
           {this.renderProfileImage(profile)}
-          <View style={{ flexDirection: 'row', flex: 1, margin: 8 }}>
+          <View style={{ flexDirection: 'row', flex: 1, marginTop: 8, marginRight: 15 }}>
             {/* <View style={{ width: ((width * 0.9) / 3) + 40 + 10 }} /> */}
             <View style={{ flex: 1 }} />
             {this.renderProfileActionButton()}
@@ -469,8 +469,8 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'flex-start',
     paddingTop: 10,
-    paddingLeft: 35,
-    paddingRight: 35,
+    paddingLeft: 20,
+    paddingRight: 20,
     paddingBottom: 15
   },
   imageWrapperStyle: {
@@ -488,7 +488,7 @@ const styles = {
     borderRadius: 14,
     position: 'absolute',
     bottom: 10,
-    left: 35,
+    left: 20,
     alignSelf: 'center',
     backgroundColor: 'white'
   },
