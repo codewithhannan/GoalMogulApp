@@ -662,6 +662,9 @@ const styles = {
   }
 };
 
-RouterComponent = copilot()(RouterComponent);
+// const RouterComponentExplained = copilot({
+//   overlay: 'svg', // or 'view'
+//   animated: true, // or false
+// })(RouterComponent);
 
 export default connect()(RouterComponent);

@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { View, TouchableWithoutFeedback, Image, AppState, Animated } from 'react-native';
+import { View, AppState } from 'react-native';
 import { connect } from 'react-redux';
 import { TabView } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
 import { Notifications } from 'expo';
+import { copilot } from 'react-native-copilot';
 
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup';
@@ -89,9 +90,20 @@ class Home extends Component {
     // Set timer to fetch profile again if previously failed
     this.setTimer();
     this.props.checkIfNewlyCreated();
+
+    setTimeout(() => {
+      console.log(`${DEBUG_KEY}: start start start`, this.props.start === undefined);
+      this.props.start();
+    }, 2000);
+
+    // this.props.copilotEvents.on('stop', () => {
+    //    // open PlusButton and then select Goal button
+    //   
+    // });
   }
 
   componentWillUnmount() {
+    this.props.copilotEvents.off('stop');
     console.log(`${DEBUG_KEY}: [ componentWillUnmount ]`);
     AppState.removeEventListener('change', this.handleAppStateChange);
     this._notificationSubscription.remove();
@@ -343,6 +355,12 @@ const styles = {
   }
 };
 
+const HomeExplained = copilot({
+  overlay: 'svg', // or 'view'
+  animated: true, // or false
+  stepNumberComponent: () => <View />
+})(Home);
+
 export default connect(
   mapStateToProps,
   {
@@ -362,4 +380,4 @@ export default connect(
   },
   null,
   { withRef: true }
-)(Home);
+)(HomeExplained);

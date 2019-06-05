@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
+import { copilot } from 'react-native-copilot';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
@@ -176,6 +177,12 @@ const mapStateToProps = state => {
   };
 };
 
+const CreateGoalModalExplained = copilot({
+  overlay: 'svg', // or 'view'
+  animated: true, // or false
+  stepNumberComponent: () => <View />
+})(CreateGoalModal);
+
 export default connect(
   mapStateToProps,
   {
@@ -184,4 +191,4 @@ export default connect(
     validate,
     refreshTrendingGoals
   }
-)(CreateGoalModal);
+)(CreateGoalModalExplained);

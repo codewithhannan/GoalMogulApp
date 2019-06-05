@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image, View, Text } from 'react-native';
 import { connect } from 'react-redux';
+import { copilot, walkthroughable, CopilotStep } from 'react-native-copilot';
 
 /* Assets */
 import IconHome from '../../asset/footer/navigation/home.png';
@@ -19,8 +20,15 @@ import { Logger } from '../../redux/middleware/utils/Logger';
 const CHAT_COUNT_UPDATE_INTERVAL = 1000;
 const NOTIFICATION_COUNT_UPDATE_INTERVAL = 10000;
 const DEBUG_KEY = '[ UI TabIcon ]';
+const WalkableImage = walkthroughable(Image);
+const TUTORIAL_KEY = 'meet_tab_icon'
 
 class TabIcon extends React.PureComponent {
+  componentDidUpdate(prevProps) {
+    // Tutorial logics
+    // componentDidUpdate receive this new props {@showTutorial} for tutorial reducers
+    // And it’s navigation.state.key is meet tab, then start tutorial on this guy
+  }
 
   componentDidMount() {
     const { navigation } = this.props;
@@ -78,7 +86,9 @@ class TabIcon extends React.PureComponent {
         );
       case 'meetTab':
         return (
-          <Image source={IconMeet} style={style} />
+          <CopilotStep text="This is a hello world example!" order={1} name="hello">
+            <WalkableImage source={IconMeet} style={style} />
+          </CopilotStep>
         );
       case 'notificationTab':
         return (
@@ -160,6 +170,8 @@ const mapStateToProps = state => {
   const { unreadCount } = state.notification.unread;
   const { chatCount } = state.navigationTabBadging;
   const { activeChatRoomId } = state.chatRoom;
+
+  // TODO: @Jia Tutorial get showTutorial from tutorial reducer for this TUTORIAL_KEY
   return {
     notificationCount: unreadCount,
     chatCount,
@@ -167,10 +179,16 @@ const mapStateToProps = state => {
   };
 };
 
+const TabIconExplained = copilot({
+  overlay: 'svg', // or 'view'
+  animated: true, // or false
+  stepNumberComponent: () => <View />
+})(TabIcon);
+
 export default connect(
   mapStateToProps,
   {
     updateChatCount,
     fetchUnreadCount
   }
-)(TabIcon);
+)(TabIconExplained);
