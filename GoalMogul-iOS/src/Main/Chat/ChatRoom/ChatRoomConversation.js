@@ -381,23 +381,30 @@ class ChatRoomConversation extends React.Component {
 					Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle, callback });
 					break;
 				case 1:
-					onItemSelect = (selectedTribeId) => this.props.sendMessage([{
-						sharedEntity: { tribeRef: selectedTribeId, },
-						text: '',
-						user,
-						createdAt: new Date(),
-						_id: UUID(),
-					}], null, chatRoom, messages);
+					onItemSelect = (selectedTribeId) => {
+						Actions.pop();
+						this.props.sendMessage([{
+							sharedEntity: { tribeRef: selectedTribeId, },
+							text: '',
+							user,
+							createdAt: new Date(),
+							_id: UUID(),
+						}], null, chatRoom, messages);
+					};
 					Actions.push('searchTribeLightBox', { onItemSelect });
 					break;
 				case 2:
-					onItemSelect = (selectedEventId) => this.props.sendMessage([{
-						sharedEntity: { eventRef: selectedEventId, },
-						text: '',
-						user,
-						createdAt: new Date(),
-						_id: UUID(),
-					}], null, chatRoom, messages);
+					onItemSelect = (selectedEventId) => {
+						Actions.pop();
+						this.props.sendMessage([{
+							sharedEntity: { eventRef: selectedEventId, },
+							text: '',
+							user,
+							createdAt: new Date(),
+							_id: UUID(),
+						}], null, chatRoom, messages);
+						Actions.pop();
+					};
 					Actions.push('searchEventLightBox', { onItemSelect });
 					break;
 			}
