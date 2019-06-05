@@ -205,9 +205,8 @@ class ProfileDetailCard extends Component {
   renderMessageButton() {
     if (this.props.self) return null;
     return (
-      <View style={{ marginLeft: 5 }}>
+      <View style={{ marginRight: 5 }}>
         <ProfileActionButton
-          text='Message'
           source={message_icon}
           style={{ marginTop: 1 }}
           onPress={() => this.handleMessageButtonOnPress()}
@@ -431,8 +430,8 @@ class ProfileDetailCard extends Component {
           <View style={{ flexDirection: 'row', flex: 1, marginTop: 8, marginRight: 15 }}>
             {/* <View style={{ width: ((width * 0.9) / 3) + 40 + 10 }} /> */}
             <View style={{ flex: 1 }} />
-            {this.renderProfileActionButton()}
             {this.renderMessageButton()}
+            {this.renderProfileActionButton()}
           </View>
         </View>
         <View style={styles.containerStyle}>
