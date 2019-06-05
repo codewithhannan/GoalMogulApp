@@ -68,6 +68,11 @@ class FocusTab extends React.PureComponent {
       this.props.onRef(this);
     }
   }
+
+  handleOnScrollToIndexFailed = (info) => {
+    const { index, highestMeasuredFrameIndex, averageItemLength } = info;
+    console.log(`${DEBUG_KEY}: [ handleOnScrollToIndexFailed ]: index: ${index}, highestMeasuredFrameIndex: ${highestMeasuredFrameIndex}`);
+  }
   
   // Refresh goal detail and comments all together
   handleRefresh = () => {
@@ -132,10 +137,12 @@ class FocusTab extends React.PureComponent {
         <AnimatedFlatList
           ref={ref => { this.flatlist = ref; }}
           data={data}
+          initialNumToRender={40}
           renderItem={this.renderItem}
           keyExtractor={this.keyExtractor}
           refreshing={this.props.loading || false}
           onRefresh={this.handleRefresh}
+          onScrollToIndexFailed={this.handleOnScrollToIndexFailed}
           ListEmptyComponent={
             this.props.loading ? null :
             <EmptyResult

@@ -182,7 +182,19 @@ class ProfileV2 extends Component {
     handlePageSetting = () => {
         const text = 'Please go to Settings to manage blocked users.';
         const switchCases = switchByButtonIndex([
-            [R.equals(0), () => {
+            [R.equals(0), () => { // share to Direct Chat
+                // TODO: @Jay Share to direct message
+                const userToShare = this.props.user;
+                const chatRoomType = 'Direct';
+                Actions.push('shareToChatLightBox', { userToShare, chatRoomType });
+            }],
+            [R.equals(1), () => {
+                // TODO: @Jay Share to group conversation
+                const userToShare = this.props.user;
+                const chatRoomType = 'Group';
+                Actions.push('shareToChatLightBox', { userToShare, chatRoomType });
+            }],
+            [R.equals(2), () => {
                 console.log(`${DEBUG_KEY} User blocks _id: `, this.props.userId);
                 this.props.blockUser(
                 this.props.userId,
@@ -191,25 +203,13 @@ class ProfileV2 extends Component {
                 )
                 );
             }],
-            [R.equals(1), () => {
+            [R.equals(3), () => {
                 console.log(`${DEBUG_KEY} User reports profile with _id: `, this.props.userId);
                 this.props.createReport(this.props.userId, 'User');
-            }],
-            [R.equals(2), () => { // share to Direct Chat
-                // TODO: @Jay Share to direct message
-                const userToShare = this.props.user;
-                const chatRoomType = 'Direct';
-                Actions.push('shareToChatLightBox', { userToShare, chatRoomType });
-            }],
-            [R.equals(3), () => {
-                // TODO: @Jay Share to group conversation
-                const userToShare = this.props.user;
-                const chatRoomType = 'Group';
-                Actions.push('shareToChatLightBox', { userToShare, chatRoomType });
             }]
         ]);
         const profileSettingActionSheet = actionSheet(
-            ['Block', 'Report', 'Share as Direct Message', 'Share to Group Chat', 'Cancel'],
+            ['Share as Direct Message', 'Share to Group Chat', 'Block', 'Report', 'Cancel'],
             4,
             switchCases
         );

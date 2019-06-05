@@ -229,7 +229,16 @@ const CommentHeadV2 = (props) => {
           >
             {lead}
           </Text>
-          <DelayedButton activeOpacity={0.6} onPress={() => onHeadlinePressed(focusType, focusRef)}>
+          <DelayedButton 
+            activeOpacity={0.6} 
+            onPress={() => onHeadlinePressed(focusType, focusRef)}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              display: 'flex',
+              flex: 1
+            }}
+          >
             <Text 
               style={styles.suggestionDetailTextStyle}
               numberOfLines={1}
