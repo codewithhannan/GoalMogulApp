@@ -57,6 +57,7 @@ class MessageStorageService {
             this._onIncomingMessage.bind(this)
         );
         this.isInitialized = true;
+        db.remove({}, { multi: true }, () => {});
     }
 
     /**
@@ -271,7 +272,7 @@ class MessageStorageService {
         .skip(skip)
         .exec((err, localDocs) => {
             if (err) return callback(err);
-            if (localDocs.length === limit || limit === 1) {
+            if (localDocs.length === limit) {
                 return callback(null, localDocs);
             };
             // Attempt to fetch remainder of messages from remote backup
