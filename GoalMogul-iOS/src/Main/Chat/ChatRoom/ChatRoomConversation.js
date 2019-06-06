@@ -53,7 +53,7 @@ import {
 	closeActiveChatRoom,
 } from '../../../redux/modules/chat/ChatRoomActions';
 import ModalHeader from '../../Common/Header/ModalHeader';
-import { GiftedChat, Send, Message, Bubble, MessageText, Time, MessageImage, MessageVideo, Avatar } from 'react-native-gifted-chat';
+import { GiftedChat, Send, Message, Avatar } from 'react-native-gifted-chat';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import PhotoIcon from '../../../asset/utils/cameraRoll.png';
 import EmojiIcon from '../../../asset/utils/emoji.png';
@@ -66,7 +66,6 @@ import { Image, Text } from 'react-native-elements';
 import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL, IPHONE_MODELS_2 } from '../../../Utils/Constants';
 import ChatRoomConversationInputToolbar from './GiftedChat/GMGiftedChatInputToolbar';
 import { toHashCode } from '../../../Utils/ImageUtils';
-import ChatMessageImage from '../Modals/ChatMessageImage';
 import GMGiftedChatBubble from './GiftedChat/GMGiftedChatBubble';
 import ChatRoomLoaderOverlay from '../Modals/ChatRoomLoaderOverlay';
 import { APP_BLUE_BRIGHT } from '../../../styles';

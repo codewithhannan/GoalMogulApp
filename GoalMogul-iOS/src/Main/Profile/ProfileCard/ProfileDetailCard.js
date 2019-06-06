@@ -208,6 +208,7 @@ class ProfileDetailCard extends Component {
       <View style={{ marginRight: 5 }}>
         <ProfileActionButton
           source={message_icon}
+          text='Message'
           style={{ marginTop: 1 }}
           onPress={() => this.handleMessageButtonOnPress()}
         />

@@ -57,7 +57,7 @@ class MessageStorageService {
             this._onIncomingMessage.bind(this)
         );
         this.isInitialized = true;
-        db.remove({}, { multi: true }, () => {});
+        localDb.remove({}, { multi: true }, () => {});
     }
 
     /**
@@ -152,7 +152,7 @@ class MessageStorageService {
             recipient: this.mountedUser.userId,
             chatRoomRef: conversationId,
         }, {
-            $set: { isRead: true },
+            $set: { isRead: true, isPulled: true },
         }, {
             multi: true,
         });
@@ -205,8 +205,18 @@ class MessageStorageService {
             recipient: this.mountedUser.userId,
             $or: [{
                 isRead: {$exists: false},
+                $or: [{
+                    isPulled: {$exists: false},
+                }, {
+                    isPulled: {$ne: true},
+                }],
             }, {
                 isRead: {$ne: true},
+                $or: [{
+                    isPulled: {$exists: false},
+                }, {
+                    isPulled: {$ne: true},
+                }],
             }],
         }, callback);
     }
@@ -221,8 +231,18 @@ class MessageStorageService {
             recipient: this.mountedUser.userId,
             $or: [{
                 isRead: {$exists: false},
+                $or: [{
+                    isPulled: {$exists: false},
+                }, {
+                    isPulled: {$ne: true},
+                }]
             }, {
                 isRead: {$ne: true},
+                $or: [{
+                    isPulled: {$exists: false},
+                }, {
+                    isPulled: {$ne: true},
+                }]
             }],
         }, callback);
     }
@@ -240,8 +260,18 @@ class MessageStorageService {
                 chatRoomRef: conversationId,
                 $or: [{
                     isRead: {$exists: false},
+                    $or: [{
+                        isPulled: {$exists: false},
+                    }, {
+                        isPulled: {$ne: true},
+                    }]
                 }, {
                     isRead: {$ne: true},
+                    $or: [{
+                        isPulled: {$exists: false},
+                    }, {
+                        isPulled: {$ne: true},
+                    }]
                 }],
             }, (err, count) => {
                 if (typeof count == "number") {
