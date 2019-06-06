@@ -117,16 +117,16 @@ class ProfileV2 extends Component {
 
     closeProfileInfoCard = () => {
         Logger.log(`${DEBUG_KEY}: [ closeProfileInfoCard ]`, {}, 2);
-        Animated.parallel([
-            Animated.timing(this.state.infoCardHeight, {
-                duration: PROMPT_TRANSITION_TIME,
-                toValue: 0,
-            }),
-            Animated.timing(this.state.infoCardOpacity, {
-                duration: PROMPT_TRANSITION_TIME,
-                toValue: 0,
-            }),
-        ]).start();
+        // Animated.parallel([
+        //     Animated.timing(this.state.infoCardHeight, {
+        //         duration: PROMPT_TRANSITION_TIME,
+        //         toValue: 0,
+        //     }),
+        //     Animated.timing(this.state.infoCardOpacity, {
+        //         duration: PROMPT_TRANSITION_TIME,
+        //         toValue: 0,
+        //     }),
+        // ]).start();
     }
 
     handleRefresh = () => {
@@ -235,31 +235,31 @@ class ProfileV2 extends Component {
         const { pageId, userId, navigationState } = this.props;
         const { routes } = navigationState;
 
-        if (routes[nextIndex].key === 'about') {
-        // Animated to hide the infoCard if not on about tab
-            Animated.parallel([
-                Animated.timing(this.state.infoCardHeight, {
-                    duration: DEFAULT_TRANSITION_TIME,
-                    toValue: this.state.cardHeight,
-                }),
-                Animated.timing(this.state.infoCardOpacity, {
-                    duration: DEFAULT_TRANSITION_TIME,
-                    toValue: 1,
-                }),
-            ]).start();
-        } else {
-            // Animated to hide the infoCard if not on about tab
-            Animated.parallel([
-                Animated.timing(this.state.infoCardHeight, {
-                    duration: DEFAULT_TRANSITION_TIME,
-                    toValue: 0,
-                }),
-                Animated.timing(this.state.infoCardOpacity, {
-                    duration: DEFAULT_TRANSITION_TIME,
-                    toValue: 0,
-                }),
-            ]).start();
-        }
+        // if (routes[nextIndex].key === 'about') {
+        // // Animated to hide the infoCard if not on about tab
+        //     Animated.parallel([
+        //         Animated.timing(this.state.infoCardHeight, {
+        //             duration: DEFAULT_TRANSITION_TIME,
+        //             toValue: this.state.cardHeight,
+        //         }),
+        //         Animated.timing(this.state.infoCardOpacity, {
+        //             duration: DEFAULT_TRANSITION_TIME,
+        //             toValue: 1,
+        //         }),
+        //     ]).start();
+        // } else {
+        //     // Animated to hide the infoCard if not on about tab
+        //     Animated.parallel([
+        //         Animated.timing(this.state.infoCardHeight, {
+        //             duration: DEFAULT_TRANSITION_TIME,
+        //             toValue: 0,
+        //         }),
+        //         Animated.timing(this.state.infoCardOpacity, {
+        //             duration: DEFAULT_TRANSITION_TIME,
+        //             toValue: 0,
+        //         }),
+        //     ]).start();
+        // }
 
         // Update the reducer for index selected
         this.props.selectProfileTab(nextIndex, userId, pageId);
@@ -269,7 +269,7 @@ class ProfileV2 extends Component {
         return (
             <TabButtonGroup 
                 buttons={props}
-                noBorder={this.props.selectedTab !== 'about'}
+                // noBorder={this.props.selectedTab !== 'about'}
                 buttonStyle={{
                 selected: {
                     backgroundColor: APP_DEEP_BLUE,

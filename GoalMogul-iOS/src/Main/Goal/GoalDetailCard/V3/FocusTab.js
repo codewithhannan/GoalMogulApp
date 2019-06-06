@@ -124,7 +124,7 @@ class FocusTab extends React.PureComponent {
   }
 
   render() {
-    const { data, focusType, pageId, focusRef } = this.props;
+    const { data, focusType, pageId, focusRef, initial } = this.props;
     if (!focusType) return null;
     const emptyText = switchCaseEmptyText(focusType);
 
