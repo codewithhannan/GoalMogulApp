@@ -148,11 +148,25 @@ export default class ChatRoomConversationBubble extends React.Component {
 						_id: userRef,
 						name: 'GoalMogul member'
 					};
-				}
+				};
 			} else if(currentMessage.sharedEntity.tribeRef) {
+				suggestionType = 'Tribe';
 				tribeRef = currentMessage.sharedEntity.tribeRef;
+				if (typeof tribeRef != "object") {
+					tribeRef = {
+						_id: tribeRef,
+						name: 'GoalMogul tribe'
+					};
+				};
 			} else if(currentMessage.sharedEntity.eventRef) {
+				suggestionType = 'Event';
 				eventRef = currentMessage.sharedEntity.eventRef;
+				if (typeof eventRef != "object") {
+					eventRef = {
+						_id: eventRef,
+						name: 'GoalMogul event'
+					};
+				};
 			} else {
 				return null;
 			};
