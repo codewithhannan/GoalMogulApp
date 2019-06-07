@@ -1,4 +1,5 @@
 /**
+ * NOTE: with the new step by step tutorial, this is not used any more.
  * User can choose to either copy invitation code or choose sharing options
  */
 import React from 'react';

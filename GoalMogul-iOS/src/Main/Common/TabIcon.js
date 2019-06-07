@@ -21,6 +21,7 @@ const CHAT_COUNT_UPDATE_INTERVAL = 1000;
 const NOTIFICATION_COUNT_UPDATE_INTERVAL = 10000;
 const DEBUG_KEY = '[ UI TabIcon ]';
 const WalkableImage = walkthroughable(Image);
+const WalkableView = walkthroughable(View);
 const TUTORIAL_KEY = 'meet_tab_icon'
 
 class TabIcon extends React.PureComponent {
@@ -82,12 +83,16 @@ class TabIcon extends React.PureComponent {
     switch (navigation.state.key) {
       case 'homeTab':
         return (
-          <Image source={IconHome} style={style} />
+          <View style={styles.iconContainerStyle}>
+            <Image source={IconHome} style={style} />
+          </View>
         );
       case 'meetTab':
         return (
           <CopilotStep text="This is a hello world example!" order={1} name="hello">
-            <WalkableImage source={IconMeet} style={style} />
+            <WalkableView style={styles.iconContainerStyle}>
+              <WalkableImage source={IconMeet} style={style} />
+            </WalkableView>
           </CopilotStep>
         );
       case 'notificationTab':
@@ -120,7 +125,9 @@ class TabIcon extends React.PureComponent {
         );
       case 'exploreTab':
         return (
-          <Image source={IconStar} style={style} />
+          <View style={styles.iconContainerStyle}>
+            <Image source={IconStar} style={style} />
+          </View>
         );
       default:
         return (

@@ -6,11 +6,13 @@ import {
     Image,
     ScrollView,
     RefreshControl,
-    Platform
+    Platform,
+    Share
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Constants } from 'expo';
 import { Actions } from 'react-native-router-flux';
+import { copilot } from 'react-native-copilot';
 
 /* Components */
 import FriendCardView from './V2/FriendCardView';
@@ -46,6 +48,7 @@ import {
 
 /* Constants */
 import { IPHONE_MODELS } from '../../Utils/Constants';
+import { generateInvitationLink } from '../../redux/middleware/utils';
 
 const DEBUG_KEY = '[ UI MeetTabV2 ]'; 
 const NumCardsToShow = Platform.OS === 'ios' &&
@@ -97,7 +100,18 @@ class MeetTabV2 extends React.Component {
     }
 
     handleInviteFriends = () => {
-        Actions.push('friendInvitationView');
+        // With the new step by step tutorial, this is directly showing the more options
+        // Actions.push('friendInvitationView');
+        console.log(`${DEBUG_KEY}: user chooses to see more options`);
+        const { user, inviteCode } = this.props;
+        console.log(`${DEBUG_KEY}: user is: `, user);
+        const { name } = user;
+        const inviteLink = generateInvitationLink(inviteCode);
+        // const title = `Your friend ${name} is asking you to help achieve his goals on GoalMogul`;
+        const message = 'Hey, I’m using GoalMogul to get more stuff done and better myself. ' + 
+        'Can you check out this link and suggest ways to help me achieve my goals faster? Thanks! \n';
+
+        Share.share({ title: undefined, message, url: inviteLink }, {});
     }
 
     // List header is the FriendInvitationCTR, Sync Conacts and Discover Friends option
@@ -332,6 +346,8 @@ const styles = {
 
 const mapStateToProps = state => {
     // Use new selector to cache the format the meettab data
+    const { user } = state.user;
+    const { inviteCode } = user;
     const { requests, friends } = state.meet;
     const { data, count } = friends;
     const { incoming, outgoing } = requests;
@@ -343,7 +359,9 @@ const mapStateToProps = state => {
         incomingRequests,
         outgoingRequests,
         friends: data,
-        friendCount: count
+        friendCount: count,
+        user,
+        inviteCode
     };
 };
 
@@ -367,10 +385,16 @@ const requestDataToRender = (incomingRequests, outgoingRequests, threshold) => {
     return dataToRender;
 };
 
+const MeetTabV2Explained = copilot({
+    overlay: 'svg', // or 'view'
+    animated: true, // or false
+    stepNumberComponent: () => <View />
+})(MeetTabV2);
+
 export default connect(
     mapStateToProps,
     {
         handleRefresh,
         meetContactSync
     }
-)(MeetTabV2);
+)(MeetTabV2Explained);
