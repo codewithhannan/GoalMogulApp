@@ -351,7 +351,7 @@ class GoalDetailCardV3 extends Component {
     Logger.log(`${DEBUG_KEY}: [ handleScrollToCommentItem ]: parentCommentIndex`, parentCommentIndex, 2);
     setTimeout(() => {
       this.focusTab.scrollToIndex(parentCommentIndex);
-    }, 200);
+    }, 500);
   }
 
   handleReplyTo = (type) => {

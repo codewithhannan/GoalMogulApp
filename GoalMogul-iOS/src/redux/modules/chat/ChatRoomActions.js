@@ -353,11 +353,17 @@ export async function _transformMessagesForGiftedChat(messages, chatRoom, token)
 		if (sharedEntity && sharedEntity.tribeRef) {
 			try {
 				sharedEntity.tribeRef = (await fetchTribe(sharedEntity.tribeRef, token)) || sharedEntity.tribeRef;
+				if (typeof sharedEntity.tribeRef == "object") {
+					sharedEntity.tribeRef = sharedEntity.tribeRef.data; // extract data from api result
+				};
 			} catch (e) { /* best attempt */ };
 		};
 		if (sharedEntity && sharedEntity.eventRef) {
 			try {
 				sharedEntity.eventRef = (await fetchEvent(sharedEntity.eventRef, token)) || sharedEntity.eventRef;
+				if (typeof sharedEntity.eventRef == "object") {
+					sharedEntity.eventRef = sharedEntity.eventRef.data; // extract data from api result
+				};
 			} catch (e) { /* best attempt */ };
 		};
 		let user;

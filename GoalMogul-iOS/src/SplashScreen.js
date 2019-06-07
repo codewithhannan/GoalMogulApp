@@ -165,7 +165,12 @@ class SplashScreen extends Component {
       // Tutorial
       require('../assets/tutorial/RightArrow.png'),
       require('../assets/tutorial/Replay.png'),
-      require('../assets/tutorial/logo.png')
+      require('../assets/tutorial/logo.png'),
+      //Chat
+      require('./asset/utils/direct_message.png'),
+      require('./asset/utils/profile_people.png'),
+      require('./asset/utils/sendButton.png'),
+      require('./asset/utils/emoji.png'),
     ]);
 
     const fontAssets = cacheFonts({

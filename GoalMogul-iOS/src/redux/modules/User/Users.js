@@ -139,9 +139,9 @@ export const INITIAL_USER_PAGE = {
     // uploading user profile changes, this might be unused due to the INITIAL_USER_PROFILE_DETAIL_PAGE
     uploading: false, 
     // navigation state
-    selectedTab: 'about',
+    selectedTab: 'goals',
     navigationState: {
-      index: 0,
+      index: 1,
       routes: [
         { key: 'about', title: 'About' },
         { key: 'goals', title: 'Goals' },
