@@ -1,6 +1,6 @@
 /**
  * This is the reducer for user step by step tutorial.
- * NOTE: right now we can't resume a step.
+ * NOTE: right now we can't resume a step. Step order starts from 0 and totalStep is the length
  */
 import _ from 'lodash';
 
@@ -14,13 +14,25 @@ export const INITIAL_TUTORIAL = {
             showTutorial: false,
             hasShown: false,
             totalStep: 1, // Used for onStepChange and check if this is the last step to fire showNextTutorialPage action
-
+            tutorialText: [
+                'Enter your goal here (i.e. lose 10 lbs, earn $1m dollars, etc)	'
+            ]
         },
         create_goal_modal: {
             nextPage: undefined, // This is the last page for this flow
             showTutorial: false,
             hasShown: false,
-            totalStep: 1 // Used for onStepChange and check if this is the last step
+            totalStep: 8, // Used for onStepChange and check if this is the last step
+            tutorialText: [
+                'Click here to toggle who\'s allowed to see your goals',
+                '(optional) Pick a Category for your goal',
+                '(optional) Pick a number 1-10 to note the importance of your goal',
+                '(optional) Pick a Start and End date to keep track of progress',
+                '(optional) List some steps to achieving your goal',
+                '(optional) Type in your needs so others know how they can help you',
+                'Click Create whenever you\'re ready to post your goal!',
+                'You can run the tutorial again by selecting it from the menu in the upper right corner.'
+            ]
         },
         hasShown: false
     },
