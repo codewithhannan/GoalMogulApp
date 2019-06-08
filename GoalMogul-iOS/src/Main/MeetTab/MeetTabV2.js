@@ -33,7 +33,8 @@ import {
 
 import {
     showNextTutorialPage,
-    startTutorial
+    startTutorial,
+    saveTutorialState
 } from '../../redux/modules/User/TutorialActions';
 
 /* Assets */
@@ -78,10 +79,11 @@ class MeetTabV2 extends React.Component {
         // Preloading data by calling handleOnRefresh
         this.handleOnRefresh();
 
+        // We always fire this event since it's only stored locally
         setTimeout(() => {
             console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ startTutorial ]`);
             this.props.startTutorial('meet_tab_friend', 'meet_tab');
-        }, 2000);
+        }, 1000);
 
         this.props.copilotEvents.on('stop', () => {
             console.log(`${DEBUG_KEY}: [ componentDidMount ]: tutorial stop.`);
@@ -91,6 +93,7 @@ class MeetTabV2 extends React.Component {
 
     componentWillUnmount() {
         this.props.copilotEvents.off('stop');
+        this.props.saveTutorialState();
     }
 
     keyExtractor = (item) => item._id;
@@ -451,6 +454,7 @@ export default connect(
         handleRefresh,
         meetContactSync,
         showNextTutorialPage,
-        startTutorial
+        startTutorial,
+        saveTutorialState
     }
 )(MeetTabV2Explained);
