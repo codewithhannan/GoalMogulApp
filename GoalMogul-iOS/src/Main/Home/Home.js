@@ -91,10 +91,10 @@ class Home extends Component {
     this.setTimer();
     this.props.checkIfNewlyCreated();
 
-    setTimeout(() => {
-      console.log(`${DEBUG_KEY}: start start start`, this.props.start === undefined);
-      this.props.start();
-    }, 2000);
+    // setTimeout(() => {
+    //   console.log(`${DEBUG_KEY}: start start start`, this.props.start === undefined);
+    //   this.props.start();
+    // }, 2000);
 
     // this.props.copilotEvents.on('stop', () => {
     //    // open PlusButton and then select Goal button

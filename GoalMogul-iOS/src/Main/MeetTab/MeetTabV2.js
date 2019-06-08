@@ -12,7 +12,7 @@ import {
 import { connect } from 'react-redux';
 import { Constants } from 'expo';
 import { Actions } from 'react-native-router-flux';
-import { copilot } from 'react-native-copilot';
+import { copilot, walkthroughable, CopilotStep } from 'react-native-copilot';
 
 /* Components */
 import FriendCardView from './V2/FriendCardView';
@@ -30,6 +30,11 @@ import {
 import { 
     meetContactSync
 } from '../../actions';
+
+import {
+    showNextTutorialPage,
+    startTutorial
+} from '../../redux/modules/User/TutorialActions';
 
 /* Assets */
 import People from '../../asset/utils/People.png';
@@ -54,15 +59,38 @@ const DEBUG_KEY = '[ UI MeetTabV2 ]';
 const NumCardsToShow = Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
   ? 3 : 5;
+const WalkableView = walkthroughable(View);
 
 class MeetTabV2 extends React.Component {
     constructor(props) {
         super(props);
         this.handleOnRefresh = this.handleOnRefresh.bind(this);
     }
+    
+    componentDidUpdate(prevProps) {
+        if (!this.props.hasShown && !prevProps.showTutorial && this.props.showTutorial === true) {
+            console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: [ start ]`);
+            this.props.start();
+        }
+    }
+
     componentDidMount() {
         // Preloading data by calling handleOnRefresh
         this.handleOnRefresh();
+
+        setTimeout(() => {
+            console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ startTutorial ]`);
+            this.props.startTutorial('meet_tab_friend', 'meet_tab');
+        }, 2000);
+
+        this.props.copilotEvents.on('stop', () => {
+            console.log(`${DEBUG_KEY}: [ componentDidMount ]: tutorial stop.`);
+            this.props.showNextTutorialPage('meet_tab_friend', 'meet_tab');
+        });
+    }
+
+    componentWillUnmount() {
+        this.props.copilotEvents.off('stop');
     }
 
     keyExtractor = (item) => item._id;
@@ -118,7 +146,10 @@ class MeetTabV2 extends React.Component {
     renderListHeader() {
         return (
             <View>
-                <FriendInvitationCTR handleInviteFriends={this.handleInviteFriends.bind(this)} />
+                <FriendInvitationCTR 
+                    handleInviteFriends={this.handleInviteFriends.bind(this)}
+                    tutorialText={this.props.tutorialText[1]}
+                />
                 <View 
                     style={{ 
                         flexDirection: 'row', 
@@ -142,18 +173,23 @@ class MeetTabV2 extends React.Component {
                         <Text style={styles.CTRTextStyle}>Sync Contacts</Text>
                     </DelayedButton>
                     <View style={{ height: 25, width: 0.5, backgroundColor: 'lightgray' }} />
-                    <DelayedButton 
-                        activeOpacity={0.6}
-                        style={styles.CTRContainerStyle} 
-                        onPress={this.handleDiscoverFriend}
-                    >
-                        <Image 
-                            source={People} 
-                            style={styles.iconStyle} 
-                            resizeMode='contain' 
-                        />
-                        <Text style={styles.CTRTextStyle}>Discover Friends</Text>
-                    </DelayedButton>
+
+                    <CopilotStep text={this.props.tutorialText[0]} order={0} name="discover_friend">
+                        <WalkableView>
+                            <DelayedButton 
+                                activeOpacity={0.6}
+                                style={styles.CTRContainerStyle} 
+                                onPress={this.handleDiscoverFriend}
+                            >
+                                <Image 
+                                    source={People} 
+                                    style={styles.iconStyle} 
+                                    resizeMode='contain' 
+                                />
+                                <Text style={styles.CTRTextStyle}>Discover Friends</Text>
+                            </DelayedButton>
+                        </WalkableView>
+                    </CopilotStep>
                 </View>
                 
             </View>
@@ -283,7 +319,17 @@ class MeetTabV2 extends React.Component {
         const { incomingRequests, outgoingRequests, friends, friendCount } = this.props;
         return (
             <View style={{ flex: 1, backgroundColor: 'white' }}>
-                <SearchBarHeader rightIcon='menu' />
+                <SearchBarHeader 
+                    rightIcon='menu' 
+                    tutorialOn={{
+                        rightIcon: {
+                            iconType: 'menu',
+                            tutorialText: this.props.tutorialText[2],
+                            order: 2,
+                            name: 'meettab_menu'
+                        }
+                    }}
+                />
                 <ScrollView
                     refreshControl={
                         <RefreshControl
@@ -353,6 +399,11 @@ const mapStateToProps = state => {
     const { incoming, outgoing } = requests;
     const incomingRequests = getIncomingUserFromFriendship(state);
     const outgoingRequests = getOutgoingUserFromFriendship(state);
+
+    const { meet_tab_friend } = state.tutorials;
+    const { meet_tab } = meet_tab_friend;
+    const { tutorialText, showTutorial, hasShown } = meet_tab;
+
     return {
         // Meet tab is on refreshing state if one of them is refreshing
         refreshing: incoming.refreshing || outgoing.refreshing || friends.refreshing, 
@@ -361,7 +412,10 @@ const mapStateToProps = state => {
         friends: data,
         friendCount: count,
         user,
-        inviteCode
+        inviteCode,
+        tutorialText,
+        showTutorial,
+        hasShown
     };
 };
 
@@ -395,6 +449,8 @@ export default connect(
     mapStateToProps,
     {
         handleRefresh,
-        meetContactSync
+        meetContactSync,
+        showNextTutorialPage,
+        startTutorial
     }
 )(MeetTabV2Explained);

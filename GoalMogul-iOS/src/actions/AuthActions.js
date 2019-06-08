@@ -21,8 +21,14 @@ import { auth as Auth } from '../redux/modules/auth/Auth';
 import { tutorial as Tutorial } from '../redux/modules/auth/Tutorial';
 import { openProfile } from '../actions';
 import {
-  saveUnreadNotification
+  saveUnreadNotification,
+  loadUnreadNotification
 } from '../redux/modules/notification/NotificationActions';
+
+import {
+  saveTutorialState,
+  loadTutorialState
+} from '../redux/modules/User/TutorialActions';
 
 import {
   refreshFeed,
@@ -126,6 +132,12 @@ export const loginUser = ({ username, password, navigate }) => {
           refreshFeed()(dispatch, getState);
           refreshGoals()(dispatch, getState);
           const hasTutorialShown = await Tutorial.getTutorialShown(res.userId); 
+          
+          // Load unread notification
+          await loadUnreadNotification()(dispatch, getState);
+
+          // Load tutorial state
+          await loadTutorialState(res.userId)(dispatch, getState);
 
           // If navigate is set to false, it means user has already opened up the home page
           // We only need to reload the profile and feed data
@@ -198,6 +210,7 @@ export const registerUser = () => (dispatch) => {
 export const logout = () => async (dispatch, getState) => {
   // Store the unread notification first as USER_LOG_OUT will clear its state
   await saveUnreadNotification()(dispatch, getState);
+  await saveTutorialState()(dispatch, getState);
 
   const callback = (res) => {
     if (res instanceof Error) {

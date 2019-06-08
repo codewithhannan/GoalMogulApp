@@ -14,7 +14,7 @@ export const INITIAL_TUTORIAL = {
             showTutorial: false,
             hasShown: false,
             totalStep: 1, // Used for onStepChange and check if this is the last step to fire showNextTutorialPage action
-            
+
         },
         create_goal_modal: {
             nextPage: undefined, // This is the last page for this flow
@@ -50,8 +50,10 @@ export const TUTORIAL_START_TUTORIAL = 'tutorial_start_tutorial';
 // 2. Mark next [flow][page][nextPage] = true, if nextPage is undefined, just log last page of flow
 export const TUTORIAL_NEXT_TUTORIAL_PAGE = 'tutorial_next_tutorial_page';
 
-// TODO: @Jia Tutorial, what should be done here
+// Load the serialized json string from async storage and update the tutorial on user login
 export const TUTORIAL_LOAD_TUTORIAL_STATE = 'tutorial_load_tutorial_state';
+
+export const TUTORIAL_STATE_KEY = 'tutorial_state';
 
 export const TUTORIAL_STOP_TUTORIAL = 'tutorial_stop_tutorial'; 
 
@@ -99,11 +101,10 @@ export default (state = INITIAL_TUTORIAL, action) => {
             return newState;
         }
 
-        // TODO: @Jia Tutorial, update the tutorial on user login
+        // Load the serialized json string from async storage and update the tutorial on user login
         case TUTORIAL_LOAD_TUTORIAL_STATE: {
-            let newState = _.cloneDeep(state);
-
-            return newState;
+            const { data } = action.payload;
+            return _.cloneDeep(data);
         }
 
         default:

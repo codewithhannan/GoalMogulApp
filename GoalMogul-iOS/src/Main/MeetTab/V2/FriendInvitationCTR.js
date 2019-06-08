@@ -22,7 +22,7 @@ import DelayedButton from '../../Common/Button/DelayedButton';
 
 /* Constants */
 const { width } = Dimensions.get('window');
-const WalkableDelayedButton = walkthroughable(DelayedButton);
+const WalkableView = walkthroughable(View);
 
 class FriendInvitationCTR extends React.PureComponent {
     handleOnPress = () => {
@@ -31,14 +31,16 @@ class FriendInvitationCTR extends React.PureComponent {
 
     renderInvitationButton() {
         return (
-            <CopilotStep text="This is a hello world example!" order={1} name="hello">
-                <WalkableDelayedButton
-                    activeOpacity={0.6}
-                    onPress={this.handleOnPress}
-                    style={styles.buttonContainerStyle}
-                >
-                    <Text style={styles.buttonTextStyle}>Invite friends now</Text>
-                </WalkableDelayedButton>
+            <CopilotStep text={this.props.tutorialText} order={1} name="invite_friend">
+                <WalkableView>
+                    <DelayedButton
+                        activeOpacity={0.6}
+                        onPress={this.handleOnPress}
+                        style={styles.buttonContainerStyle}
+                    >
+                        <Text style={styles.buttonTextStyle}>Invite friends now</Text>
+                    </DelayedButton>
+                </WalkableView>
             </CopilotStep>
         );
     }
