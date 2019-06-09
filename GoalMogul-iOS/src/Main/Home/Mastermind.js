@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 // This is commented out as we switch back to the old implementation
 import Carousel from 'react-native-snap-carousel';
 import { Constants } from 'expo';
+import { walkthroughable, CopilotStep } from 'react-native-copilot';
 
 // Components
 // import GoalFilterBar from '../Common/GoalFilterBar';
@@ -48,6 +49,7 @@ const ITEM_HEIGHT = Platform.OS === 'ios' &&
 
 const TAB_KEY = 'mastermind';
 const DEBUG_KEY = '[ UI Mastermind ]';
+const WalkableView = walkthroughable(View);
 
 class Mastermind extends Component {
   constructor(props) {
@@ -214,17 +216,21 @@ class Mastermind extends Component {
 
   // This was used in V2 where user can only create Goal here. But we decide
   // to move this function to Home component so that it won't scroll over
-  // renderPlus() {
-  //   return (
-  //     <TouchableOpacity
-  //       activeOpacity={0.6}
-  //       style={styles.iconContainerStyle}
-  //       onPress={() => Actions.createGoalModal()}
-  //     >
-  //       <Image style={styles.iconStyle} source={plus} />
-  //     </TouchableOpacity>
-  //   );
-  // }
+  renderPlus() {
+    return (
+      <CopilotStep text="This is a tutorial" order={0} name="create_goal_home_0">
+        <WalkableView>
+          <TouchableOpacity
+            activeOpacity={0.6}
+            style={styles.iconContainerStyle}
+            onPress={() => Actions.createGoalModal()}
+          >
+            <Image style={styles.iconStyle} source={plus} />
+          </TouchableOpacity>
+        </WalkableView>
+      </CopilotStep>
+    );
+  }
 
   /**
    * This method is not used currently as we switch back to the old scrolling pattern
@@ -335,6 +341,7 @@ class Mastermind extends Component {
           }
           onEndThreshold={0}
         />
+        {this.renderPlus()}
       </View>
     );
   }
@@ -344,10 +351,10 @@ const styles = {
   iconContainerStyle: {
     position: 'absolute',
     bottom: 20,
-    right: 15,
-    height: 50,
-    width: 50,
-    borderRadius: 25,
+    right: 29,
+    height: 54,
+    width: 54,
+    borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 3,

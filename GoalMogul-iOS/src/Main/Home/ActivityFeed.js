@@ -3,15 +3,18 @@ import {
   View,
   FlatList,
   ActivityIndicator,
+  TouchableOpacity,
+  Image
 } from 'react-native';
 import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 
 // Components
 import ActivityCard from '../Activity/ActivityCard';
 import EmptyResult from '../Common/Text/EmptyResult';
 
 // Assets
-// import plus from '../../asset/utils/plus.png';
+import plus from '../../asset/utils/plus.png';
 
 // actions
 import {
@@ -115,19 +118,18 @@ class ActivityFeed extends Component {
     return null;
   }
 
-  // This was used in V2 where user can only create Goal here. But we decide
-  // to move this function to Home component so that it won't scroll over
-  // renderPlus() {
-  //   return (
-  //     <TouchableOpacity
-  //       activeOpacity={0.6}
-  //       style={styles.iconContainerStyle}
-  //       onPress={() => Actions.createPostModal()}
-  //     >
-  //       <Image style={styles.iconStyle} source={plus} />
-  //     </TouchableOpacity>
-  //   );
-  // }
+  // This was used in V2 where user can only create Goal here. 
+  renderPlus() {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.6}
+        style={styles.iconContainerStyle}
+        onPress={() => Actions.createPostModal()}
+      >
+        <Image style={styles.iconStyle} source={plus} />
+      </TouchableOpacity>
+    );
+  }
 
   render() {
     return (
@@ -149,9 +151,7 @@ class ActivityFeed extends Component {
           ListFooterComponent={this.renderListFooter()}
           onEndThreshold={0}
         />
-        {
-          //this.renderPlus()
-        }
+        {this.renderPlus()}
       </View>
     );
   }
@@ -172,10 +172,10 @@ const styles = {
   iconContainerStyle: {
     position: 'absolute',
     bottom: 20,
-    right: 15,
-    height: 50,
-    width: 50,
-    borderRadius: 25,
+    right: 29,
+    height: 54,
+    width: 54,
+    borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 3,

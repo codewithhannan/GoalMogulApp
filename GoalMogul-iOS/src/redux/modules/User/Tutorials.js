@@ -15,7 +15,8 @@ export const INITIAL_TUTORIAL = {
             hasShown: false,
             totalStep: 1, // Used for onStepChange and check if this is the last step to fire showNextTutorialPage action
             tutorialText: [
-                'Enter your goal here (i.e. lose 10 lbs, earn $1m dollars, etc)	'
+                'Click here to add a goal',
+                'You can run the tutorial again by selecting it from the menu in the upper right corner.'
             ]
         },
         create_goal_modal: {
@@ -25,13 +26,13 @@ export const INITIAL_TUTORIAL = {
             totalStep: 8, // Used for onStepChange and check if this is the last step
             tutorialText: [
                 'Click here to toggle who\'s allowed to see your goals',
+                'Enter your goal here (i.e. lose 10 lbs, earn $1m dollars, etc)	',
                 '(optional) Pick a Category for your goal',
                 '(optional) Pick a number 1-10 to note the importance of your goal',
                 '(optional) Pick a Start and End date to keep track of progress',
                 '(optional) List some steps to achieving your goal',
                 '(optional) Type in your needs so others know how they can help you',
                 'Click Create whenever you\'re ready to post your goal!',
-                'You can run the tutorial again by selecting it from the menu in the upper right corner.'
             ]
         },
         hasShown: false
@@ -64,6 +65,9 @@ export const TUTORIAL_NEXT_TUTORIAL_PAGE = 'tutorial_next_tutorial_page';
 
 // Load the serialized json string from async storage and update the tutorial on user login
 export const TUTORIAL_LOAD_TUTORIAL_STATE = 'tutorial_load_tutorial_state';
+
+// Mark user as onBoarded
+export const TUTORIAL_MARK_USER_ONBOARDED = 'tutorial_mark_user_onboard';
 
 export const TUTORIAL_STATE_KEY = 'tutorial_state';
 

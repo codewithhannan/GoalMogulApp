@@ -1,7 +1,6 @@
 import React from 'react';
 import { Image, View, Text } from 'react-native';
 import { connect } from 'react-redux';
-import { copilot, walkthroughable, CopilotStep } from 'react-native-copilot';
 
 /* Assets */
 import IconHome from '../../asset/footer/navigation/home.png';
@@ -20,8 +19,6 @@ import { Logger } from '../../redux/middleware/utils/Logger';
 const CHAT_COUNT_UPDATE_INTERVAL = 1000;
 const NOTIFICATION_COUNT_UPDATE_INTERVAL = 10000;
 const DEBUG_KEY = '[ UI TabIcon ]';
-const WalkableImage = walkthroughable(Image);
-const WalkableView = walkthroughable(View);
 const TUTORIAL_KEY = 'meet_tab_icon'
 
 class TabIcon extends React.PureComponent {
@@ -89,11 +86,9 @@ class TabIcon extends React.PureComponent {
         );
       case 'meetTab':
         return (
-          <CopilotStep text="This is a hello world example!" order={1} name="hello">
-            <WalkableView style={styles.iconContainerStyle}>
-              <WalkableImage source={IconMeet} style={style} />
-            </WalkableView>
-          </CopilotStep>
+          <View style={styles.iconContainerStyle}>
+            <Image source={IconMeet} style={style} />
+          </View>
         );
       case 'notificationTab':
         return (
@@ -186,16 +181,10 @@ const mapStateToProps = state => {
   };
 };
 
-const TabIconExplained = copilot({
-  overlay: 'svg', // or 'view'
-  animated: true, // or false
-  stepNumberComponent: () => <View />
-})(TabIcon);
-
 export default connect(
   mapStateToProps,
   {
     updateChatCount,
     fetchUnreadCount
   }
-)(TabIconExplained);
+)(TabIcon);

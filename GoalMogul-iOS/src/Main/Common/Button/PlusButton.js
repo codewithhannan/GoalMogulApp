@@ -7,14 +7,12 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { walkthroughable, CopilotStep } from 'react-native-copilot';
 
 /* asset */
 import plus from '../../../asset/utils/plus.png';
 import { APP_BLUE, APP_DEEP_BLUE } from '../../../styles';
 
 const DEBUG_KEY = '[ UI PlusButton ]';
-const WalkableView = walkthroughable(View);
 
 class PlusButton extends Component {
   constructor(...args) {
@@ -113,9 +111,6 @@ class PlusButton extends Component {
                     }]}
                     source={plus}
                 />
-                <CopilotStep text="This is a hello world example!" order={1} name="hello">
-                  <WalkableView style={{ height: 54, width: 54, borderRadius: 28, position: 'absolute' }} />
-                </CopilotStep>
             </Animated.View>
           </TouchableWithoutFeedback>
       );
@@ -147,10 +142,9 @@ const styles = {
     },
 };
 
-const PlusButtonExplained = walkthroughable(PlusButton);
 export default connect(null, {
 
-})(PlusButtonExplained);
+})(PlusButton);
 
 PlusButton.prototypes = {
   plusActivated: PropTypes.bool,
