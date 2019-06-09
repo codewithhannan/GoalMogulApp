@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import R from 'ramda';
+import { walkthroughable, CopilotStep } from 'react-native-copilot';
 
 // Component
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
@@ -26,6 +27,7 @@ import { } from '../../actions';
 const VIEWABLE_SETTING_MENU_OPTTIONS = ['Friends', 'Public', 'Private', 'Cancel'];
 const CANCEL_INDEX = 3;
 const DEBUG_KEY = '[ ViewableSettingMenu Component ]';
+const WalkableView = walkthroughable(View);
 
 class ViewableSettingMenu extends Component {
 
@@ -89,6 +91,37 @@ class ViewableSettingMenu extends Component {
       : (<Image style={styles.informationIconStyle} source={informationIconBlack} />);
 
     const shareIconTintColor = this.props.shareToMastermind ? 'white' : '#9b9b9b';
+
+    if (this.props.tutorialOn && this.props.tutorialOn.shareToMastermind) {
+      const { tutorialText, order, name } = this.props.tutorialOn.shareToMastermind;
+      return (
+        <CopilotStep text={tutorialText} order={order} name={name}>
+          <WalkableView style={{ ...styles.containerStyle, backgroundColor: 'transparent', borderWidth: 0, marginRight: 0 }}>
+            <TouchableOpacity
+              activeOpacity={0.6}
+              style={{ ...containerStyle, marginRight: 0 }}
+              onPress={() => this.props.shareToMastermindCallback(!this.props.shareToMastermind)}
+            >
+              <Image
+                style={{ ...styles.profileIconStyle, tintColor: shareIconTintColor }}
+                source={shareIcon}
+              />
+              <Text style={{ fontSize: 10, marginLeft: 3, marginRight: 2, color }}>
+                Share to Goals feed
+              </Text>
+              <TouchableOpacity
+                activeOpacity={0.6}
+                style={{ padding: 5 }}
+                onPress={this.handleInfoIcon}
+              >
+                {icon}
+              </TouchableOpacity>
+            </TouchableOpacity>
+            {/* <View style={{ margin: 10, borderLeftWidth: 1, borderColor: '#e9e9e9' }} /> */}
+          </WalkableView>
+        </CopilotStep>
+      );
+    }
 
     return (
       <View style={{ ...styles.containerStyle, backgroundColor: 'transparent', borderWidth: 0 }}>
