@@ -7,9 +7,11 @@ import {
     TUTORIAL_START_TUTORIAL,
     TUTORIAL_NEXT_TUTORIAL_PAGE,
     TUTORIAL_LOAD_TUTORIAL_STATE,
+    TUTORIAL_MARK_USER_ONBOARDED,
     TUTORIAL_STATE_KEY
 } from './Tutorials';
 import { Logger } from '../../middleware/utils/Logger';
+import { api as API } from '../../middleware/api';
 
 const DEBUG_KEY = '[ Actions StepTutorials ]';
 /**
@@ -60,12 +62,14 @@ export const loadTutorialState = (userId) => async (dispatch, getState) => {
         return;
     }
   
-    dispatch({
-        type: TUTORIAL_LOAD_TUTORIAL_STATE,
-        payload: {
-            data: parsedTutorialState
-        }
-    });
+    // Temporarily disable loading previous tutorial state
+    // dispatch({
+    //     type: TUTORIAL_LOAD_TUTORIAL_STATE,
+    //     payload: {
+    //         data: parsedTutorialState
+    //     }
+    // });
+    return;
 };
 
 /**
@@ -92,6 +96,43 @@ export const saveTutorialState = () => async (dispatch, getState) => {
     Logger.log(`${DEBUG_KEY}: [saveTutorialState] done with res: `, res, 1);
     return;
 }
+
+/**
+ * Mark user as onboarded
+ * TODO: @Jia Tutorial
+ */
+export const markUserAsOnboarded = () => (dispatch, getState) => {
+    const { userId, token } = getState().user;
+    // dispatch event to update both state.user and state.users
+    dispatch({
+        type: TUTORIAL_MARK_USER_ONBOARDED,
+        payload: {
+            userId
+        }
+    });
+
+    const onSuccess = (res) => {
+        Logger.log(`${DEBUG_KEY}: [ markUserAsOnboarded ] success with res:`, res, 1);
+    };
+
+    const onError = (err) => {
+        console.warn(`${DEBUG_KEY}: [ markUserAsOnboarded ] failed with err`, err);
+    }
+
+    // Fire request to update server user state
+    API
+        .put('user/account/mark-as-onboarded', {}, token, 1)
+        .then((res) => {
+            if (res.status === 200) {
+                onSuccess(res);
+                return;
+            }
+            onError(res);
+        })
+        .catch((err) => {
+            onError(err);
+        });
+};
 
 /**
  * Currently not supported

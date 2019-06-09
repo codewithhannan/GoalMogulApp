@@ -26,6 +26,13 @@ import {
   refreshTrendingGoals,
 } from '../../redux/modules/goal/CreateGoalActions';
 
+import {
+  showNextTutorialPage,
+  startTutorial,
+  saveTutorialState,
+  markUserAsOnboarded
+} from '../../redux/modules/User/TutorialActions';
+
 // Styles
 import {
   APP_DEEP_BLUE,
@@ -41,13 +48,56 @@ class CreateGoalModal extends React.Component {
     this.handleIndexChange = this.handleIndexChange.bind(this);
   }
 
+  componentDidUpdate(prevProps) {
+    if (!this.props.hasShown && !prevProps.showTutorial && this.props.showTutorial === true) {
+      console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: tutorial start`);
+      this.props.start();
+    }
+  }
+
   componentDidMount() {
     // Loading trending goals on modal is opened
     this.props.refreshTrendingGoals();
+
+    if (!this.props.user.isOnBoarded) {
+      setTimeout(() => {
+        console.log(`${DEBUG_KEY}: [ componentDidMount ]: startTutorial: create_goal, page: create_goal_modal`);
+        this.props.startTutorial('create_goal', 'create_goal_modal');
+      }, 1000);
+    }
+
+    this.props.copilotEvents.on('stop', () => {
+      console.log(`${DEBUG_KEY}: [ componentDidMount ]: create_goal_modal tutorial stop. Show next page`);
+
+      // Close create goal modal
+      Actions.pop();
+      setTimeout(() => {
+        this.props.showNextTutorialPage('create_goal', 'create_goal_modal');
+      }, 300);
+      // this.props.markUserAsOnboarded();
+    });
+
+    this.props.copilotEvents.on('stepChange', (step) => {
+      const { name, order, visible, target, wrapper } = step;
+      console.log(`${DEBUG_KEY}: [ onStepChange ]: step order: ${order}, step visible: ${name} `);
+      if (order === 5) {
+        if (this.newGoalView !== undefined) {
+          console.log(`${DEBUG_KEY}: [ onStepChange ]: scrolling to end`);
+          // this.newGoalView.scrollToEnd();
+          // return new Promise(r => setTimeout(r, 4000));
+        } else {
+          console.warn(`${DEBUG_KEY}: [ onStepChange ]: newGoalView ref is undefined`);
+        }
+      }
+    });
   }
 
   componentWillUnmount() {
-    console.log(`${DEBUG_KEY}: unmounting CreateGoalModal`);
+    console.log(`${DEBUG_KEY}: [ componentWillUnmount ]`);
+
+    // Remove tutorial listener
+    this.props.copilotEvents.off('stop');
+    this.props.copilotEvents.off('stepChange');
   }
 
   handleIndexChange = (index) => {
@@ -117,6 +167,8 @@ class CreateGoalModal extends React.Component {
       <NewGoalView 
         initializeFromState={this.props.initializeFromState}
         goal={this.props.goal}
+        tutorialText={this.props.tutorialText}
+        onRef={r => { this.newGoalView = r; }}
       />
     ),
     trendingGoal: TrendingGoalView,
@@ -169,11 +221,18 @@ const mapStateToProps = state => {
   const { navigationState, uploading } = state.createGoal;
   const { user } = state.user;
 
+  // Tutorial related
+  const { create_goal } = state.tutorials;
+  const { create_goal_modal } = create_goal;
+  const { hasShown, showTutorial, tutorialText } = create_goal_modal;
+
   return {
     navigationState,
     uploading,
     formVals: state.form.createGoalModal,
-    user
+    user,
+    // Tutorial related
+    hasShown, showTutorial, tutorialText
   };
 };
 
@@ -189,6 +248,11 @@ export default connect(
     createGoalSwitchTab,
     submitGoal,
     validate,
-    refreshTrendingGoals
+    refreshTrendingGoals,
+    // Tutorial related
+    showNextTutorialPage,
+    startTutorial,
+    saveTutorialState,
+    markUserAsOnboarded
   }
 )(CreateGoalModalExplained);

@@ -35,6 +35,7 @@ import {
 import Slider from 'react-native-slider';
 import DraggableFlatlist from 'react-native-draggable-flatlist';
 import DateTimePicker from 'react-native-modal-datetime-picker';
+import { walkthroughable, CopilotStep } from 'react-native-copilot';
 
 // Components
 // import DraggableFlatlist from '../Common/DraggableFlatlist';
@@ -81,6 +82,7 @@ const INITIAL_TAG_SEARCH = {
   loading: false
 };
 const DEBUG_KEY = '[ UI NewGoalView ]';
+const WalkableView = walkthroughable(View);
 
 class NewGoalView extends Component {
   constructor(props) {
@@ -94,14 +96,27 @@ class NewGoalView extends Component {
     this.updateSearchRes = this.updateSearchRes.bind(this);
     this.scrollTo = this.scrollTo.bind(this);
     this.handleLayoutChange = this.handleLayoutChange.bind(this);
+    this.scrollToEnd = this.scrollToEnd.bind(this);
   }
 
   componentDidMount() {
     this.initializeForm();
+    if (this.props.onRef !== null) {
+      this.props.onRef(this);
+    }
   }
 
   componentWillUnmount() {
     console.log(`${DEBUG_KEY}: unmounting NewGoalView`);
+  }
+
+  /**
+   * Scroll the form to the end
+   */
+  scrollToEnd() {
+    if (this.scrollView !== undefined) {
+      this.scrollView.scrollToEnd();
+    }
   }
 
   /**
@@ -480,13 +495,20 @@ class NewGoalView extends Component {
           <Text style={{ fontSize: 18, marginBottom: 8 }}>
             {user.name}
           </Text>
-          <ViewableSettingMenu
-            viewableSetting={this.props.privacy}
-            callback={callback}
-            isEdit={isEdit}
-            shareToMastermind={this.props.shareToMastermind}
-            shareToMastermindCallback={shareToMastermindCallback}
-          />
+            <ViewableSettingMenu
+              viewableSetting={this.props.privacy}
+              callback={callback}
+              isEdit={isEdit}
+              shareToMastermind={this.props.shareToMastermind}
+              shareToMastermindCallback={shareToMastermindCallback}
+              tutorialOn={{
+                shareToMastermind: {
+                  tutorialText: this.props.tutorialText[0],
+                  order: 0,
+                  name: 'create_goal_create_goal_modal_0'
+                }
+              }}
+            />
         </View>
       </View>
     );
@@ -504,22 +526,24 @@ class NewGoalView extends Component {
       </View>
     );
     return (
-      <View>
-        {header}
-        <Field
-          name='title'
-          label='title'
-          component={InputField}
-          editable={this.props.uploading}
-          style={{ ...styles.goalInputStyle, paddingTop: 20, paddingBottom: 0 }}
-          placeholder='What are you trying to achieve?'
-          autoCorrect
-          autoCapitalize={'sentences'}
-          multiline
-          blurOnSubmit
-          maxLength={90}
-        />
-      </View>
+      <CopilotStep text={this.props.tutorialText[1]} order={1} name="create_goal_create_goal_modal_1">
+        <WalkableView>
+          {header}
+          <Field
+            name='title'
+            label='title'
+            component={InputField}
+            editable={this.props.uploading}
+            style={{ ...styles.goalInputStyle, paddingTop: 20, paddingBottom: 0 }}
+            placeholder='What are you trying to achieve?'
+            autoCorrect
+            autoCapitalize={'sentences'}
+            multiline
+            blurOnSubmit
+            maxLength={90}
+          />
+        </WalkableView>
+      </CopilotStep>
     );
   }
 
@@ -601,16 +625,18 @@ class NewGoalView extends Component {
     );
 
     return (
-      <View
-        style={{
-          ...styles.sectionMargin,
-          justifyContent: 'flex-start',
-          flex: 1
-        }}
-      >
-        {titleText}
-        {menu}
-      </View>
+      <CopilotStep text={this.props.tutorialText[2]} order={2} name="create_goal_create_goal_modal_2">
+        <WalkableView
+          style={{
+            ...styles.sectionMargin,
+            justifyContent: 'flex-start',
+            flex: 1
+          }}
+        >
+          {titleText}
+          {menu}
+        </WalkableView>
+      </CopilotStep>
     );
   }
 
@@ -653,10 +679,12 @@ class NewGoalView extends Component {
     );
 
     return (
-      <View style={{ ...styles.sectionMargin, justifyContent: 'flex-start', flex: 1 }}>
-        {titleText}
-        {menu}
-      </View>
+      <CopilotStep text={this.props.tutorialText[3]} order={3} name="create_goal_create_goal_modal_3">
+        <WalkableView style={{ ...styles.sectionMargin, justifyContent: 'flex-start', flex: 1 }}>
+          {titleText}
+          {menu}
+        </WalkableView>
+      </CopilotStep>
     );
   }
 
@@ -826,53 +854,55 @@ class NewGoalView extends Component {
       : null;
 
     return (
-      <View style={{ ...styles.sectionMargin }}>
-        {titleText}
-        <View style={{ marginTop: 8, flexDirection: 'row' }}>
-          <TouchableOpacity
-            activeOpacity={0.6}
-            style={{
-              height: 50,
-              width: 130,
-              alignItems: 'center',
-              justifyContent: 'center',
-              ...styles.borderStyle
-            }}
-            onPress={() =>
-              this.props.change('startTime', {
-                date: this.props.startTime.date ? this.props.startTime.date : new Date(),
-                picker: true
-              })
-            }
-          >
-            {startTime}
-          </TouchableOpacity>
+      <CopilotStep text={this.props.tutorialText[4]} order={4} name="create_goal_create_goal_modal_4">
+        <WalkableView style={{ ...styles.sectionMargin }}>
+          {titleText}
+          <View style={{ marginTop: 8, flexDirection: 'row' }}>
+            <TouchableOpacity
+              activeOpacity={0.6}
+              style={{
+                height: 50,
+                width: 130,
+                alignItems: 'center',
+                justifyContent: 'center',
+                ...styles.borderStyle
+              }}
+              onPress={() =>
+                this.props.change('startTime', {
+                  date: this.props.startTime.date ? this.props.startTime.date : new Date(),
+                  picker: true
+                })
+              }
+            >
+              {startTime}
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            activeOpacity={0.6}
-            style={{
-              height: 50,
-              width: 130,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginLeft: 15,
-              ...styles.borderStyle
-            }}
-            onPress={() =>
-              this.props.change('endTime', {
-                date: this.props.endTime.date ? this.props.endTime.date : new Date(),
-                picker: true
-              })
-            }
-          >
-            {endTime}
-          </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.6}
+              style={{
+                height: 50,
+                width: 130,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginLeft: 15,
+                ...styles.borderStyle
+              }}
+              onPress={() =>
+                this.props.change('endTime', {
+                  date: this.props.endTime.date ? this.props.endTime.date : new Date(),
+                  picker: true
+                })
+              }
+            >
+              {endTime}
+            </TouchableOpacity>
 
-          {cancelButton}
-        </View>
-        {startDatePicker}
-        {endDatePicker}
-      </View>
+            {cancelButton}
+          </View>
+          {startDatePicker}
+          {endDatePicker}
+        </WalkableView>
+      </CopilotStep>
     );
   }
 
@@ -986,17 +1016,32 @@ class NewGoalView extends Component {
   }
 
   renderSteps = ({ fields, meta: { error, submitFailed } }) => {
-    return this.renderFieldArray(
-      'Steps (optional)',
-      'step',
-      STEP_PLACE_HOLDER,
-      fields,
-      error
+    return (
+      <CopilotStep text={this.props.tutorialText[5]} order={5} name="create_goal_create_goal_modal_5">
+        <WalkableView style={{ ...styles.sectionMargin }}>
+          {
+            this.renderFieldArray(
+              'Steps (optional)',
+              'step',
+              STEP_PLACE_HOLDER,
+              fields,
+              error
+            )
+          }
+        </WalkableView>
+      </CopilotStep>
     );
   }
 
   renderNeeds = ({ fields, meta: { error, submitFailed } }) => {
     return this.renderFieldArray('Needs (optional)', 'need', NEED_PLACE_HOLDER, fields, error);
+    // return (
+    //   <CopilotStep text={this.props.tutorialText[6]} order={6} name="create_goal_create_goal_modal_6">
+    //     <WalkableView style={{ ...styles.sectionMargin }}>
+    //       {this.renderFieldArray('Needs (optional)', 'need', NEED_PLACE_HOLDER, fields, error)}
+    //     </WalkableView>
+    //   </CopilotStep>
+    // );
   }
 
   render() {
