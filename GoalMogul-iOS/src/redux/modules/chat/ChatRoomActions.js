@@ -341,7 +341,7 @@ export async function _transformMessagesForGiftedChat(messages, chatRoom, token)
 		}, {});
 	};
 	return await Promise.all(messages.map(async messageDoc => {
-		let { _id, created, creator, content, media, isSystemMessage, isLocal, sharedEntity } = messageDoc;
+		let { _id, created, creator, content, media, isSystemMessage, isLocal, sharedEntity, goalRecommendation } = messageDoc;
 
 		//--- populate message content ---//
 
@@ -373,7 +373,7 @@ export async function _transformMessagesForGiftedChat(messages, chatRoom, token)
 
 		// return transformed message
 		return {
-			_id, isLocal, sharedEntity, user,
+			_id, isLocal, sharedEntity, user, goalRecommendation,
 			createdAt: new Date(created),
 			image: media && `${IMAGE_BASE_URL}${media}`,
 			text: content && content.message,
@@ -383,12 +383,12 @@ export async function _transformMessagesForGiftedChat(messages, chatRoom, token)
 };
 async function fetchTribe(tribeId, token) {
 	try {
-		return await API.get(`secure/tribe/documents/${tribeId}`, token);
+		return await API.get(`secure/tribe/documents/${tribeId}?noMembers=true`, token);
 	} catch(e) { /* best attempt */ };
 };
 async function fetchEvent(eventId, token) {
 	try {
-		return await API.get(`secure/event/documents/${eventId}`, token);
+		return await API.get(`secure/event/documents/${eventId}?noParticipants=true`, token);
 	} catch(e) { /* best attempt */ };
 };
 export function _transformUserForGiftedChat(userDoc) {
