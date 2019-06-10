@@ -31,6 +31,15 @@ import {
   handlePushNotification
 } from '../../redux/modules/notification/NotificationActions';
 
+import {
+  showNextTutorialPage,
+  startTutorial,
+  saveTutorialState,
+  updateNextStepNumber,
+  pauseTutorial,
+  markUserAsOnboarded
+} from '../../redux/modules/User/TutorialActions';
+
 // Assets
 import Logo from '../../asset/header/logo.png';
 import Activity from '../../asset/utils/activity.png';
@@ -82,6 +91,13 @@ class Home extends Component {
     this._notificationSubscription = undefined;
   }
 
+  componentDidUpdate(prevProps) {
+    if (!prevProps.showTutorial && this.props.showTutorial === true) {
+      console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: tutorial start`);
+      this.props.start();
+    }
+  }
+
 
   componentDidMount() {
     AppState.addEventListener('change', this.handleAppStateChange);
@@ -91,20 +107,44 @@ class Home extends Component {
     this.setTimer();
     this.props.checkIfNewlyCreated();
 
-    // setTimeout(() => {
-    //   console.log(`${DEBUG_KEY}: start start start`, this.props.start === undefined);
-    //   this.props.start();
-    // }, 2000);
+    if (!this.props.user.isOnBoarded) {
+      setTimeout(() => {
+        console.log(`${DEBUG_KEY}: [ componentDidMount ]: startTutorial: create_goal, page: home`);
+        this.props.startTutorial('create_goal', 'home');
+      }, 1000);
+    }
 
-    // this.props.copilotEvents.on('stop', () => {
-    //    // open PlusButton and then select Goal button
-    //   
-    // });
+    this.props.copilotEvents.on('stop', () => {
+      console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ copilotEvents ] 
+        tutorial stop. show next page. Next step number is: `, this.props.nextStepNumber);
+
+      if (this.props.nextStepNumber === 0) {
+        this.props.pauseTutorial('create_goal', 'home', 1);
+        Actions.createGoalModal();
+        return;
+      }
+
+      if (this.props.nextStepNumber === 1) {
+        this.props.updateNextStepNumber('create_goal', 'home', 2);
+        this.props.showNextTutorialPage('create_goal', 'home');
+        this.props.markUserAsOnboarded();
+      }
+    });
+
+    this.props.copilotEvents.on('stepChange', (step) => {
+      // console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ stepChange ]: step change to ${step.order}`);
+      // TODO: if later we have more steps in between, change here
+      // This is called before changing to a new step
+    });
   }
 
   componentWillUnmount() {
-    this.props.copilotEvents.off('stop');
     console.log(`${DEBUG_KEY}: [ componentWillUnmount ]`);
+
+    // Remove tutorial listener
+    this.props.copilotEvents.off('stop');
+    this.props.copilotEvents.off('stepChange');
+
     AppState.removeEventListener('change', this.handleAppStateChange);
     this._notificationSubscription.remove();
     // Remove timer in case app crash
@@ -148,7 +188,7 @@ class Home extends Component {
     // As we move the create option here, we no longer need to care about the tab
     Actions.createGoalButtonOverlay({ tab: 'mastermind', onClose: () => {
       this.props.closeCreateOverlay('mastermind');
-    } });
+    }});
   }
 
   handleAppStateChange = (nextAppState) => {
@@ -248,7 +288,15 @@ class Home extends Component {
   _renderScene = ({ route }) => {
     switch (route.key) {
       case 'goals': 
-        return <Mastermind ref={m => (this.mastermind = m)} />;
+        return (
+          <Mastermind 
+            ref={m => (this.mastermind = m)} 
+            tutorialText={this.props.tutorialText[0]}
+            nextStepNumber={this.props.nextStepNumber}
+            order={0}
+            name='create_goal_home_0'
+          />
+        );
 
       case 'activity': 
         return <ActivityFeed ref={a => (this.activityFeed = a)} />;
@@ -260,6 +308,7 @@ class Home extends Component {
 
   _keyExtractor = (item, index) => index;
 
+  // Starting version 0.4.2, we change back to each screen has one plus button
   renderPlus() {
     return (
       <PlusButton
@@ -275,10 +324,22 @@ class Home extends Component {
       1. use flatlist instead of scrollview
       2. assign key on for TabButton
     */
+    const tutorialOn = this.props.nextStepNumber >= 1 
+      ? {
+        rightIcon: {
+          iconType: 'menu',
+          tutorialText: this.props.tutorialText[1],
+          order: 1,
+          name: 'create_goal_home_menu'
+        }
+      } : undefined;
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={styles.homeContainerStyle}>
-          <SearchBarHeader rightIcon='menu' />
+          <SearchBarHeader 
+            rightIcon='menu' 
+            tutorialOn={tutorialOn}
+          />
           <TabView
             ref={ref => (this.tab = ref)}
             navigationState={this.state.navigationState}
@@ -286,7 +347,7 @@ class Home extends Component {
             renderTabBar={this._renderHeader}
             onIndexChange={this._handleIndexChange}
           />
-          {this.renderPlus()}
+          {/* {this.renderPlus()} */}
         </View>
       </MenuProvider>
     );
@@ -301,13 +362,23 @@ const mapStateToProps = state => {
   const needRefreshActivity = _.isEmpty(state.home.activityfeed.data);
   const { user } = state.user;
 
+  // Tutorial related
+  const { create_goal } = state.tutorials;
+  const { home } = create_goal;
+  const { hasShown, showTutorial, tutorialText, nextStepNumber } = home;
+
   return {
     showingModal,
     showPlus,
     user,
     needRefreshActivity,
     needRefreshMastermind,
-    userId
+    userId,
+    // Tutorial related
+    hasShown,
+    showTutorial,
+    tutorialText,
+    nextStepNumber
   };
 };
 
@@ -376,7 +447,14 @@ export default connect(
     refreshFeed,
     fetchProfile,
     checkIfNewlyCreated,
-    closeCreateOverlay
+    closeCreateOverlay,
+    /* Tutorial related */
+    showNextTutorialPage,
+    startTutorial,
+    saveTutorialState,
+    updateNextStepNumber,
+    pauseTutorial,
+    markUserAsOnboarded
   },
   null,
   { withRef: true }

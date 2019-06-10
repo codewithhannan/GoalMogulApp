@@ -442,7 +442,7 @@ export const refreshTrendingGoals = () => (dispatch, getState) => {
   });
 
   const onSuccess = (res) => {
-    console.log(`${DEBUG_KEY}: refresh trending goal success with res: `, res);
+    console.log(`${DEBUG_KEY}: refresh trending goal success with res: `, res && res.data ? res.data.length : res);
     const { data } = res;
     dispatch({
       type: GOAL_CREATE_TRENDING_REFRESH_DONE,
@@ -478,7 +478,7 @@ export const loadMoreTrendingGoals = () => (dispatch, getState) => {
   });
 
   const onSuccess = (res) => {
-    console.log(`${DEBUG_KEY}: loading more trending goal success with res: `, res);
+    console.log(`${DEBUG_KEY}: loading more trending goal success with res: `, res && res.data ? res.data.length : res);
     const { data } = res;
     dispatch({
       type: GOAL_CREATE_TRENDING_LOADING_MORE_DONE,

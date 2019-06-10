@@ -31,17 +31,16 @@ class FriendInvitationCTR extends React.PureComponent {
 
     renderInvitationButton() {
         return (
-            <CopilotStep text={this.props.tutorialText} order={1} name="invite_friend">
-                <WalkableView>
-                    <DelayedButton
-                        activeOpacity={0.6}
-                        onPress={this.handleOnPress}
-                        style={styles.buttonContainerStyle}
-                    >
-                        <Text style={styles.buttonTextStyle}>Invite friends now</Text>
-                    </DelayedButton>
-                </WalkableView>
-            </CopilotStep>
+            <DelayedButton
+                activeOpacity={0.6}
+                onPress={this.handleOnPress}
+                style={styles.buttonContainerStyle}
+            >
+                <Text style={styles.buttonTextStyle}>Invite friends now</Text>
+                <CopilotStep text={this.props.tutorialText} order={1} name="invite_friend">
+                    <WalkableView style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} />
+                </CopilotStep>
+            </DelayedButton>            
         );
     }
 

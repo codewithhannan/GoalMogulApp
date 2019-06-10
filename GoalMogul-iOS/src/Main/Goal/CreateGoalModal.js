@@ -30,7 +30,7 @@ import {
   showNextTutorialPage,
   startTutorial,
   saveTutorialState,
-  markUserAsOnboarded
+  updateNextStepNumber
 } from '../../redux/modules/User/TutorialActions';
 
 // Styles
@@ -63,7 +63,7 @@ class CreateGoalModal extends React.Component {
       setTimeout(() => {
         console.log(`${DEBUG_KEY}: [ componentDidMount ]: startTutorial: create_goal, page: create_goal_modal`);
         this.props.startTutorial('create_goal', 'create_goal_modal');
-      }, 1000);
+      }, 600);
     }
 
     this.props.copilotEvents.on('stop', () => {
@@ -71,10 +71,10 @@ class CreateGoalModal extends React.Component {
 
       // Close create goal modal
       Actions.pop();
+      this.props.updateNextStepNumber('create_goal', 'create_goal_modal', 8)
       setTimeout(() => {
         this.props.showNextTutorialPage('create_goal', 'create_goal_modal');
-      }, 300);
-      // this.props.markUserAsOnboarded();
+      }, 600);
     });
 
     this.props.copilotEvents.on('stepChange', (step) => {
@@ -253,6 +253,6 @@ export default connect(
     showNextTutorialPage,
     startTutorial,
     saveTutorialState,
-    markUserAsOnboarded
+    updateNextStepNumber
   }
 )(CreateGoalModalExplained);

@@ -1,5 +1,20 @@
 /**
  * This file defines all the actions related to step by step Tutorials.js
+ * 
+ * Here are usage summary of thses major API
+ * 
+ * startTutorial: this is used when we want to start a tutorial by updating its reducer state 
+ * where its component has componentDidUpdate to call this.props.start()
+ *
+ * pauseTutorial: this is used when we want to stop a tutorial and pass in a nextStepNumber as 
+ * check poinst file. This function servers as a pause function
+ * 
+ * showNextTutorialPage: this means the end of a tutorial flow on a page. It does 2 things
+ * 1. Mark current page as shown and update the nextStepNumber to zero
+ * 2. Find the next page to update the showTutorial to true and set the nextStepNumber for the next page
+ * 
+ * updateNextStepNumber
+ * 
  */
 import { SecureStore } from 'expo';
 import _ from 'lodash';
@@ -8,7 +23,9 @@ import {
     TUTORIAL_NEXT_TUTORIAL_PAGE,
     TUTORIAL_LOAD_TUTORIAL_STATE,
     TUTORIAL_MARK_USER_ONBOARDED,
-    TUTORIAL_STATE_KEY
+    TUTORIAL_STATE_KEY,
+    TUTORIAL_UPDATE_CURRENT_STEP_NUMBER,
+    TUTORIAL_PAUSE_TUTORIAL
 } from './Tutorials';
 import { Logger } from '../../middleware/utils/Logger';
 import { api as API } from '../../middleware/api';
@@ -35,6 +52,7 @@ export const startTutorial = (flow, page) => (dispatch, getState) => {
  * @param {string} page name of the current page in the tutorial flow. Page as to the top most parent component under Router.js
  */
 export const showNextTutorialPage = (flow, page) => (dispatch, getState) => {
+    console.log(`${DEBUG_KEY}: [ showNextTutorialPage ]: flow: ${flow}, page: ${page}`);
     dispatch({
         type: TUTORIAL_NEXT_TUTORIAL_PAGE,
         payload: {
@@ -62,13 +80,12 @@ export const loadTutorialState = (userId) => async (dispatch, getState) => {
         return;
     }
   
-    // Temporarily disable loading previous tutorial state
-    // dispatch({
-    //     type: TUTORIAL_LOAD_TUTORIAL_STATE,
-    //     payload: {
-    //         data: parsedTutorialState
-    //     }
-    // });
+    dispatch({
+        type: TUTORIAL_LOAD_TUTORIAL_STATE,
+        payload: {
+            data: parsedTutorialState
+        }
+    });
     return;
 };
 
@@ -99,10 +116,12 @@ export const saveTutorialState = () => async (dispatch, getState) => {
 
 /**
  * Mark user as onboarded
- * TODO: @Jia Tutorial
+ * TODO: @Jia Tutorial to update Users.js reducer
  */
 export const markUserAsOnboarded = () => (dispatch, getState) => {
     const { userId, token } = getState().user;
+    Logger.log(`${DEBUG_KEY}: [ markUserAsOnboarded ] for user: `, userId, 1);
+
     // dispatch event to update both state.user and state.users
     dispatch({
         type: TUTORIAL_MARK_USER_ONBOARDED,
@@ -135,8 +154,26 @@ export const markUserAsOnboarded = () => (dispatch, getState) => {
 };
 
 /**
- * Currently not supported
+ * Update current step number for a flow and a page. This is typically used when we need to put a checkpoint
+ * on a tutorial. We can comeback and visit it.
  */
-export const stopTutorial = () => (dispatch, getState) => {
+export const updateNextStepNumber = (flow, page, nextStepNumber) => (dispatch, getState) => {
+    dispatch({
+        type: TUTORIAL_UPDATE_CURRENT_STEP_NUMBER,
+        payload: {
+            nextStepNumber, flow, page
+        }
+    });
+};
 
+/**
+ * Stop a tutorial to mark showTutorial for the page as false. Update the nextStepNumber
+ */
+export const pauseTutorial = (flow, page, nextStepNumber) => (dispatch, getState) => {
+    dispatch({
+        type: TUTORIAL_PAUSE_TUTORIAL,
+        payload: {
+            flow, page, nextStepNumber
+        }
+    });
 };

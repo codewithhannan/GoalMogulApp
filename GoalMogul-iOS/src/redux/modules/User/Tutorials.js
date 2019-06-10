@@ -10,17 +10,29 @@ import _ from 'lodash';
 export const INITIAL_TUTORIAL = {
     create_goal: {
         home: {
-            nextPage: 'create_goal_modal',
+            nextPage: { // Map between current step and nextPage
+                1: {
+                    pageName: 'create_goal_modal',
+                    step: 0
+                },
+                2: undefined
+            },
             showTutorial: false,
             hasShown: false,
             totalStep: 1, // Used for onStepChange and check if this is the last step to fire showNextTutorialPage action
             tutorialText: [
                 'Click here to add a goal',
                 'You can run the tutorial again by selecting it from the menu in the upper right corner.'
-            ]
+            ],
+            nextStepNumber: 0 // This is a zero indexed variable. Since if tutorial has not started, next step number is zero.
         },
         create_goal_modal: {
-            nextPage: undefined, // This is the last page for this flow
+            nextPage: {
+                8: {
+                    pageName: 'home',
+                    step: 1
+                }
+            },
             showTutorial: false,
             hasShown: false,
             totalStep: 8, // Used for onStepChange and check if this is the last step
@@ -33,7 +45,8 @@ export const INITIAL_TUTORIAL = {
                 '(optional) List some steps to achieving your goal',
                 '(optional) Type in your needs so others know how they can help you',
                 'Click Create whenever you\'re ready to post your goal!',
-            ]
+            ],
+            nextStepNumber: 0
         },
         hasShown: false
     },
@@ -47,7 +60,8 @@ export const INITIAL_TUTORIAL = {
                 'Click here (Discover Friends) to Discover New Friends',
                 'Click here to Invite More Friends so you can share/help one another with goals!',
                 'You can run the tutorial again by selecting it from the menu in the upper right corner'
-            ]
+            ],
+            nextStepNumber: 0
         },
         hasShown: false
     },
@@ -71,7 +85,11 @@ export const TUTORIAL_MARK_USER_ONBOARDED = 'tutorial_mark_user_onboard';
 
 export const TUTORIAL_STATE_KEY = 'tutorial_state';
 
-export const TUTORIAL_STOP_TUTORIAL = 'tutorial_stop_tutorial'; 
+// Update current step number. This is currently used by home tutorial flow to mark the current step of a page
+export const TUTORIAL_UPDATE_CURRENT_STEP_NUMBER = 'tutorial_update_current_step_number';
+
+// Stop a tutorial. Mark showTutorial to false and update the nextStepNumber
+export const TUTORIAL_PAUSE_TUTORIAL = 'tutorial_pause_tutorial'; 
 
 const DEBUG_KEY = '[ Reducer Tutorials ]';
 export default (state = INITIAL_TUTORIAL, action) => {
@@ -107,23 +125,87 @@ export default (state = INITIAL_TUTORIAL, action) => {
                 return newState;
             }
 
-            if (!_.has(newState, `${flow}.${nextPage}`)) {
-                console.warn(`${DEBUG_KEY}: [ ${action.type} ]: invalid next page: ${nextPage} from flow: ${flow} and page: ${page}`);
+            // Get current page's next step number. This is used to determine next page's name and step
+            const currentPageNextStepNumber = _.get(newState, `${flow}.${page}.nextStepNumber`);
+
+            let nextPageString = nextPage;
+            let nextPageNextStepNumber;
+            if (typeof nextPage === "object") {
+                if (!_.has(nextPage, currentPageNextStepNumber)) {
+                    // It means we have some misconfiguration.
+                    console.warn(`${DEBUG_KEY}: [ ${action.type} ]: invalid next page. NextPage: ${nextPage}, nextStepNumber: ${currentPageNextStepNumber}`);
+                    return newState;
+                }
+
+                // Use the current page's current step to find the next page
+                let { pageName, step } = _.get(nextPage, currentPageNextStepNumber);
+                // Set next page string to the real one. 
+                nextPageString = pageName;
+                // Ste next page next step number
+                nextPageNextStepNumber = step;
+            }
+
+            if (!_.has(newState, `${flow}.${nextPageString}`)) {
+                console.warn(`${DEBUG_KEY}: [ ${action.type} ]: invalid next page: ${nextPageString} from flow: ${flow} and page: ${page}`);
                 return newState;
             }
 
             // Update the state of the nextPage to start the tutorial
-            newState = _.set(newState, `${flow}.${nextPage}.showTutorial`, true);
+            newState = _.set(newState, `${flow}.${nextPageString}.showTutorial`, true);
+
+            if (nextPageNextStepNumber) {
+                newState = _.set(newState, `${flow}.${nextPageString}.nextStepNumber`, nextPageNextStepNumber);    
+            }
             return newState;
         }
 
         // Load the serialized json string from async storage and update the tutorial on user login
         case TUTORIAL_LOAD_TUTORIAL_STATE: {
             const { data } = action.payload;
-            return _.cloneDeep(data);
+            let newState = _.cloneDeep(state);
+
+            // NOTE: here we merge saved state into default state, customizer will keep the array
+            // in the default state than merging or concat
+            const updatedState = _.mergeWith(newState, data, customizer);
+
+            return _.cloneDeep(updatedState);
+        }
+
+        case TUTORIAL_UPDATE_CURRENT_STEP_NUMBER: {
+            const { nextStepNumber, flow, page } = action.payload;
+            let newState = _.cloneDeep(state);
+            
+            if (!_.has(newState, `${flow}.${page}`)) {
+                console.warn(`${DEBUG_KEY}: [ ${action.type} ]: invalid flow: ${flow}, ${page}`);
+                return newState;
+            }
+
+            newState = _.set(newState, `${flow}.${page}.nextStepNumber`, nextStepNumber);
+            return newState;   
+        }
+
+        case TUTORIAL_PAUSE_TUTORIAL: {
+            const { flow, page, nextStepNumber } = action.payload; 
+            let newState = _.cloneDeep(state);
+            
+            if (!_.has(newState, `${flow}.${page}`)) {
+                console.warn(`${DEBUG_KEY}: [ ${action.type} ]: invalid flow: ${flow}, ${page}`);
+                return newState;
+            }
+
+            newState = _.set(newState, `${flow}.${page}.nextStepNumber`, nextStepNumber);
+            newState = _.set(newState, `${flow}.${page}.showTutorial`, false);
+            return newState;   
         }
 
         default:
             return { ...state };
     }
 };
+
+// This customizer preserves objValue's array values
+function customizer(objValue, srcValue) {
+    if (_.isArray(objValue)) {
+        return objValue;
+    }
+}

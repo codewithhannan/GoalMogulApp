@@ -217,18 +217,23 @@ class Mastermind extends Component {
   // This was used in V2 where user can only create Goal here. But we decide
   // to move this function to Home component so that it won't scroll over
   renderPlus() {
-    return (
-      <CopilotStep text="This is a tutorial" order={0} name="create_goal_home_0">
-        <WalkableView>
-          <TouchableOpacity
-            activeOpacity={0.6}
-            style={styles.iconContainerStyle}
-            onPress={() => Actions.createGoalModal()}
-          >
-            <Image style={styles.iconStyle} source={plus} />
-          </TouchableOpacity>
-        </WalkableView>
+    const { tutorialText, order, name, nextStepNumber } = this.props;
+
+    const tutorialView = nextStepNumber <= order ? (
+      <CopilotStep text={tutorialText} order={order} name={name}>
+        <WalkableView style={{ height: 54, width: 54, borderRadius: 28, position: 'absolute' }} />
       </CopilotStep>
+    ) : null;
+
+    return (
+      <TouchableOpacity
+        activeOpacity={0.6}
+        style={styles.iconContainerStyle}
+        onPress={() => Actions.createGoalModal()}
+      >
+        <Image style={styles.iconStyle} source={plus} />
+        {tutorialView}
+      </TouchableOpacity>
     );
   }
 
