@@ -2,13 +2,14 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Animated, Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes } from 'react-native';
+import { Animated, Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes, Alert } from 'react-native';
 
 import { MessageText, MessageVideo } from 'react-native-gifted-chat';
 import ChatMessageImage from '../../Modals/ChatMessageImage';
 import moment from 'moment';
 import CommentRef from '../../../Goal/GoalDetailCard/Comment/CommentRef';
 import { MemberDocumentFetcher } from '../../../../Utils/UserUtils';
+import { APP_DEEP_BLUE } from '../../../../styles';
 
 function isSameDay(currentMessage = {}, diffMessage = {}) {
 	if (!diffMessage.createdAt) {
@@ -313,6 +314,97 @@ export default class ChatRoomConversationBubble extends React.Component {
 		this.setState({ isExpanded });
 	}
 
+	renderGoalRecommendation() {
+		const { goalRecommendation } = this.props.currentMessage;
+		if (!goalRecommendation) return null;
+		return (<View
+			style={{
+				backgroundColor: '#fafafa',
+				shadowColor: '#000',
+				shadowOffset: { width: 0, height: 1 },
+				shadowOpacity: 0.1,
+				shadowRadius: 3,
+				padding: 6,
+				marginBottom: 12,
+			}}
+		>
+			<View>
+				<Text
+					style={{
+						fontSize: 12,
+						color: '#ccc',
+						marginBottom: 6,
+					}}
+				>
+					Suggested Goal:
+				</Text>
+				<Text
+					style={{
+						fontSize: 18,
+						color: APP_DEEP_BLUE,
+						fontWeight: '600',
+					}}
+				>
+					{goalRecommendation.recommendedTitle}
+				</Text>
+			</View>
+			<View
+				style={{
+					borderTopColor: '#eee',
+					borderTopWidth: 1,
+					marginTop: 12,
+					paddingTop: 9,
+					paddingBottom: 6,
+				}}
+			>
+				<Text
+					style={{
+						marginBottom: 9,
+						fontSize: 12,
+						color: '#333',
+					}}
+				>
+					Do you want to edit this goal and add it to your profile?
+				</Text>
+				<TouchableOpacity
+					style={{
+						alignItems: 'center',
+						justifyContent: 'center',
+						paddingTop: 6,
+						paddingBottom: 6,
+						marginBottom: 9,
+						borderRadius: 6,
+						backgroundColor: '#D5F8D2',
+					}}
+				>
+					<Text style={{ color: '#1A8A11', fontSize: 15, }} >Yes</Text>
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={{
+						alignItems: 'center',
+						justifyContent: 'center',
+						paddingTop: 6,
+						paddingBottom: 6,
+						borderRadius: 6,
+						backgroundColor: '#eee',
+					}}
+					onPress={this.deleteMessage.bind(this)}
+				>
+					<Text style={{ color: '#333', fontSize: 15, }} >Dismiss</Text>
+				</TouchableOpacity>
+			</View>
+		</View>)
+	}
+	deleteMessage() {
+		Alert.alert('Dismiss...', 'Are you sure you want to delete this message?', [{
+			text: 'Dismiss',
+			onPress: () => this.props.deleteMessage(this.props.currentMessage._id),
+		}, {
+			text: 'Cancel',
+			style: 'cancel',
+		}]);
+	}
+
 	render() {
 		return (
 			<View style={[
@@ -352,6 +444,7 @@ export default class ChatRoomConversationBubble extends React.Component {
 								{this.renderTime()}
 								{this.renderTicks()}
 							</View>
+							{this.renderGoalRecommendation()}
 						</View>
 					</Animated.View>
 				</TouchableOpacity>
