@@ -53,6 +53,16 @@ export const startTutorial = (flow, page) => (dispatch, getState) => {
  */
 export const showNextTutorialPage = (flow, page) => (dispatch, getState) => {
     console.log(`${DEBUG_KEY}: [ showNextTutorialPage ]: flow: ${flow}, page: ${page}`);
+
+    const pageInfo = _.get(getState().tutorials, `${flow}.${page}`);
+    const { nextPage, nextStepNumber } = pageInfo;
+    if (typeof nextPage === 'object') {
+        if (_.has(nextPage, nextStepNumber)) {
+            const { pageName, step } = _.get(nextPage, nextStepNumber);
+            updateNextStepNumber(flow, pageName, step)(dispatch, getState);
+        }
+    }
+
     dispatch({
         type: TUTORIAL_NEXT_TUTORIAL_PAGE,
         payload: {

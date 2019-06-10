@@ -92,37 +92,6 @@ class ViewableSettingMenu extends Component {
 
     const shareIconTintColor = this.props.shareToMastermind ? 'white' : '#9b9b9b';
 
-    if (this.props.tutorialOn && this.props.tutorialOn.shareToMastermind) {
-      const { tutorialText, order, name } = this.props.tutorialOn.shareToMastermind;
-      return (
-        <CopilotStep text={tutorialText} order={order} name={name}>
-          <WalkableView style={{ ...styles.containerStyle, backgroundColor: 'transparent', borderWidth: 0, marginRight: 0 }}>
-            <TouchableOpacity
-              activeOpacity={0.6}
-              style={{ ...containerStyle, marginRight: 0 }}
-              onPress={() => this.props.shareToMastermindCallback(!this.props.shareToMastermind)}
-            >
-              <Image
-                style={{ ...styles.profileIconStyle, tintColor: shareIconTintColor }}
-                source={shareIcon}
-              />
-              <Text style={{ fontSize: 10, marginLeft: 3, marginRight: 2, color }}>
-                Share to Goals feed
-              </Text>
-              <TouchableOpacity
-                activeOpacity={0.6}
-                style={{ padding: 5 }}
-                onPress={this.handleInfoIcon}
-              >
-                {icon}
-              </TouchableOpacity>
-            </TouchableOpacity>
-            {/* <View style={{ margin: 10, borderLeftWidth: 1, borderColor: '#e9e9e9' }} /> */}
-          </WalkableView>
-        </CopilotStep>
-      );
-    }
-
     return (
       <View style={{ ...styles.containerStyle, backgroundColor: 'transparent', borderWidth: 0 }}>
         <TouchableOpacity
@@ -163,6 +132,16 @@ class ViewableSettingMenu extends Component {
             <Image style={styles.caretStyle} source={dropDown} />
           </View>
       );
+
+    let tutorialComponent = null;
+    if (this.props.tutorialOn && this.props.tutorialOn.shareToMastermind) {
+      const { tutorialText, order, name } = this.props.tutorialOn.shareToMastermind;
+      tutorialComponent = (
+        <CopilotStep text={tutorialText} order={order} name={name}>
+          <WalkableView style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} />
+        </CopilotStep>
+      );
+    }
     return (
       <View style={{ flexDirection: 'row' }}>
         <TouchableOpacity
@@ -185,6 +164,7 @@ class ViewableSettingMenu extends Component {
             {this.props.viewableSetting}
           </Text>
           {caret}
+          {tutorialComponent}
         </TouchableOpacity>
         {this.renderShareToMSButton()}
       </View>

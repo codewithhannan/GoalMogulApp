@@ -83,7 +83,7 @@ class MeetTabV2 extends React.Component {
         setTimeout(() => {
             console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ startTutorial ]`);
             this.props.startTutorial('meet_tab_friend', 'meet_tab');
-        }, 1000);
+        }, 600);
 
         this.props.copilotEvents.on('stop', () => {
             console.log(`${DEBUG_KEY}: [ componentDidMount ]: tutorial stop.`);

@@ -57,13 +57,28 @@ export const INITIAL_TUTORIAL = {
             hasShown: false,
             totalStep: 3, // Used for onStepChange and check if this is the last step,
             tutorialText: [
-                'Click here (Discover Friends) to Discover New Friends',
+                'Click here to Discover New Friends',
                 'Click here to Invite More Friends so you can share/help one another with goals!',
                 'You can run the tutorial again by selecting it from the menu in the upper right corner'
             ],
             nextStepNumber: 0
         },
         hasShown: false
+    },
+    goal_detail: { // First timer on goal detail
+        goal_detail_page: {
+            nextPage: undefined, // This is the last page for this flow
+            showTutorial: false,
+            hasShown: false,
+            totalStep: 4, // Used for onStepChange and check if this is the last step,
+            tutorialText: [
+                'Click here to Discover New Friends',
+                'Click here to Invite More Friends so you can share/help one another with goals!',
+                'You can run the tutorial again by selecting it from the menu in the upper right corner',
+                'Click here'
+            ],
+            nextStepNumber: 0
+        }
     },
     isOnBoarded: false,
     lastFlow: undefined,
