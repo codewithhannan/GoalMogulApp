@@ -181,11 +181,15 @@ class GoalDetailSection extends React.PureComponent {
     const caret = {
       self: {
         options: [
-          { option: 'Edit Goal', iconSource: EditIcon },
-          { option: 'Share to Goal Feed', iconSource: ShareIcon },
+          { option: 'Edit Goal', iconSource: EditIcon, 
+            tutorialText: this.props.tutorialText[0], order: 0, name: 'goal_detail_goal_detail_page_0' },
+          { option: 'Share to Goal Feed', iconSource: ShareIcon, 
+            tutorialText: this.props.tutorialText[1], order: 1, name: 'goal_detail_goal_detail_page_1' },
           { option: isCompleted ? 'Unmark as Complete' : 'Mark as Complete',
-            iconSource: isCompleted ? UndoIcon : CheckIcon },
-          { option: 'Delete', iconSource: TrashIcon },
+            iconSource: isCompleted ? UndoIcon : CheckIcon,
+            tutorialText: this.props.tutorialText[2], order: 2, name: 'goal_detail_goal_detail_page_2' },
+          { option: 'Delete', iconSource: TrashIcon,
+            tutorialText: this.props.tutorialText[3], order: 3, name: 'goal_detail_goal_detail_page_3' },
         ],
         onPress: (val) => {
           const markCompleteOnPress = isCompleted
@@ -483,8 +487,11 @@ const styles = {
 
 const mapStateToProps = state => {
   const { userId } = state.user;
+  const { tutorialText } = state.tutorials.goal_detail.goal_detail_page;
+
   return {
-    userId
+    userId,
+    tutorialText
   };
 };
 
