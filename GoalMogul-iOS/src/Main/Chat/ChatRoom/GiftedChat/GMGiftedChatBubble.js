@@ -376,6 +376,7 @@ export default class ChatRoomConversationBubble extends React.Component {
 						borderRadius: 6,
 						backgroundColor: '#D5F8D2',
 					}}
+					onPress={this.openCreateGoal.bind(this)}
 				>
 					<Text style={{ color: '#1A8A11', fontSize: 15, }} >Yes</Text>
 				</TouchableOpacity>
@@ -394,6 +395,11 @@ export default class ChatRoomConversationBubble extends React.Component {
 				</TouchableOpacity>
 			</View>
 		</View>)
+	}
+	openCreateGoal() {
+		const { goalRecommendation } = this.props.currentMessage;
+		const { goalTitle } = goalRecommendation;
+		// TODO @Jia
 	}
 	deleteMessage() {
 		Alert.alert('Dismiss...', 'Are you sure you want to delete this message?', [{
