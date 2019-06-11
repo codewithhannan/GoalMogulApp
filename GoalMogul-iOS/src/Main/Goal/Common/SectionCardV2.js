@@ -103,13 +103,17 @@ class SectionCardV2 extends Component {
       ? { ...styles.checkIconContainerStyle }
       : { ...styles.checkIconContainerStyle, backgroundColor: '#efefef' };
 
+    const checkIconStyle = isCompleted
+      ? { ...styles.checkIconStyle, tintColor: '#4e966d' }
+      : { ...styles.checkIconStyle, tintColor: '#999' }
+
     return (
       <DelayedButton
         activeOpacity={0.6}
         style={iconContainerStyle}
         onPress={onPress}
       >
-        <Image style={styles.checkIconStyle} source={checkIcon} />
+        <Image style={checkIconStyle} source={checkIcon} />
       </DelayedButton>
     );
   }
@@ -288,7 +292,8 @@ const styles = {
     height: 28,
     width: 28,
     borderRadius: 14,
-    backgroundColor: '#eafcee',
+    // backgroundColor: '#eafcee',
+    backgroundColor: '#a5e5c0',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10

@@ -7,12 +7,12 @@ import check from '../../asset/utils/check.png';
 
 const Check = ({ selected }) => {
   const checkIconContainerStyle = selected
-    ? { ...styles.checkIconContainerStyle, borderWidth: 0.5, backgroundColor: '#a0deba' }
-    : { ...styles.checkIconContainerStyle };
+    ? { ...styles.checkIconContainerStyle, backgroundColor: '#a5e5c0' }
+    : { ...styles.checkIconContainerStyle, backgroundColor: '#efefef' };
 
   const checkIconStyle = selected
-    ? { ...styles.checkIconStyle }
-    : { ...styles.checkIconStyle };
+    ? { ...styles.checkIconStyle, tintColor: '#4e966d' }
+    : { ...styles.checkIconStyle, tintColor: '#999' };
 
   return (
     <View style={checkIconContainerStyle}>
@@ -29,8 +29,8 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 12,
-    borderWidth: 0.5,
-    borderColor: 'lightgray',
+    // borderWidth: 0.5,
+    // borderColor: 'lightgray',
     alignSelf: 'center'
   },
   checkIconStyle: {
