@@ -267,6 +267,7 @@ export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMe
 				// send the message
 				const { text, sharedEntity } = messageToSend;
 				let body = {
+					created: insertedDoc.created,
 					chatRoomRef: chatRoom._id,
 					content: {
 						message: text,
