@@ -484,7 +484,7 @@ class CommentBoxV2 extends Component {
 
     const color = disable ? '#cbd6d8' : '#17B3EC';
     return (
-      <TouchableOpacity
+      <DelayedButton
         activeOpacity={0.6}
         style={styles.postContainerStyle}
         onPress={() => this.handleOnPost(uploading)}
@@ -495,12 +495,12 @@ class CommentBoxV2 extends Component {
         >
           Post
         </Text>
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 
   renderSuggestionPreview(newComment, pageId) {
-    const { showAttachedSuggestion, suggestion } = newComment;
+    const { showAttachedSuggestion, suggestion, uploading } = newComment;
 
     if (showAttachedSuggestion) {
       return (
@@ -512,6 +512,7 @@ class CommentBoxV2 extends Component {
           onPress={() => {
             this.props.openCurrentSuggestion(pageId);
           }}
+          uploading={uploading}
         />
       );
     }

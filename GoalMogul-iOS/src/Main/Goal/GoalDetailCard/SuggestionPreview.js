@@ -28,6 +28,7 @@ import readingIcon from '../../../asset/suggestion/book.png';
 
 // Components
 import ProfileImage from '../../Common/ProfileImage';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 class SuggestionPreview extends Component {
 
@@ -109,7 +110,7 @@ class SuggestionPreview extends Component {
 
   // Currently this is a dummy component
   render() {
-    const { item, onPress, onRemove } = this.props;
+    const { item, onPress, onRemove, uploading } = this.props;
     const { suggestionType, selectedItem } = item;
     if (!item) return null;
 
@@ -118,7 +119,7 @@ class SuggestionPreview extends Component {
         {this.renderImage(suggestionType, selectedItem)}
         {this.renderText(item)}
         {this.renderEndImage(suggestionType, selectedItem)}
-        <RemoveComponent onRemove={onRemove} />
+        <RemoveComponent onRemove={onRemove} uploading={uploading} />
       </TouchableOpacity>
     );
   }
@@ -127,11 +128,12 @@ class SuggestionPreview extends Component {
 // <Text style={styles.headingTextStyle}>{content}</Text>
 
 export const RemoveComponent = (props) => {
-  const { onRemove } = props;
+  const { onRemove, uploading } = props;
+
   return (
-    <TouchableOpacity activeOpacity={0.6} onPress={onRemove} style={styles.iconContainerStyle}>
-      <Image source={cancelIcon} style={{ height: 20, width: 20 }} />
-    </TouchableOpacity>
+    <DelayedButton activeOpacity={0.6} onPress={onRemove} style={styles.iconContainerStyle} disabled={uploading}>
+      <Image source={cancelIcon} style={{ height: 20, width: 20, opacity: uploading ? 0.3 : 1 }} />
+    </DelayedButton>
   );
 };
 
