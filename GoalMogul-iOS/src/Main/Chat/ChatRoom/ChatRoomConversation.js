@@ -708,7 +708,7 @@ class ChatRoomConversation extends React.Component {
 					/>
 					<GiftedChat
 						ref={chatRef => this._giftedChat = chatRef}
-						messages={(this.props.ghostMessages || []).concat(this.props.messages)}
+						messages={(this.props.ghostMessages || []).concat((this.props.messages || []).sort((doc1, doc2) => doc2.createdAt - doc1.createdAt))}
 						user={{
 							_id, name,
 							avatar: profile && profile.image && `${IMAGE_BASE_URL}${profile.image}`,
@@ -735,6 +735,7 @@ class ChatRoomConversation extends React.Component {
 						renderAvatar={this.renderAvatar}
 						bottomOffset={GIFTED_CHAT_BOTTOM_OFFSET}
 						minInputToolbarHeight={this.props.messageMediaRef ? 90 : 60}
+						deleteMessage={this.deleteMessage.bind(this)}
 					/>
 					{this.state.showEmojiSelector &&
 						<Animated.View

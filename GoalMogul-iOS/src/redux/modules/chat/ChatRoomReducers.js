@@ -132,12 +132,14 @@ export default (state=INITIAL_STATE, action) => {
         }
         case CHAT_ROOM_SEARCH_MESSAGES: {
             let newState = _.cloneDeep(state);
-            newState = _.set(newState, 'searchResults', action.payload);
+            const messages = action.payload;
+            newState = _.set(newState, 'searchResults', messages);
             return _.set(newState, `searching`, false);
         }
         case CHAT_ROOM_SEARCH_MESSAGES_UPDATE_PREVIEW: {
             let newState = _.cloneDeep(state);
-            return _.set(newState, 'searchResultPreviewMessages', action.payload);
+            const messages = action.payload
+            return _.set(newState, 'searchResultPreviewMessages', messages);
         }
         case CHAT_ROOM_SEARCH_MESSAGES_UPDATE_QUERY: {
             let newState = _.cloneDeep(state);
