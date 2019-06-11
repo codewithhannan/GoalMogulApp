@@ -19,6 +19,7 @@ import { Constants } from 'expo';
 import {
   DotIndicator
 } from 'react-native-indicators';
+import { copilot } from 'react-native-copilot';
 
 // Actions
 import {
@@ -43,6 +44,11 @@ import {
   createSuggestion,
   refreshComments
 } from '../../../redux/modules/feed/comment/CommentActions';
+
+import {
+  showNextTutorialPage,
+  startTutorial,
+} from '../../../redux/modules/User/TutorialActions';
 
 // selector
 import {
@@ -121,12 +127,37 @@ class GoalDetailCardV3 extends Component {
     this.focusTab = undefined;
   }
 
+  componentDidUpdate(prevProps) {
+    if (!this.props.hasShown && !prevProps.showTutorial && this.props.showTutorial === true) {
+      console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: tutorial start: `, this.props.nextStepNumber);
+      this.goalDetailSection.openHeadlineMenu();
+      setTimeout(() => {
+        this.props.start();
+      }, 500);
+    }
+  }
+
   componentDidMount() {
     this.state.scroll.addListener(({ value }) => { this._value = value; });    
     this.keyboardWillShowListener = Keyboard.addListener(
       'keyboardWillShow', this.keyboardWillShow);
     this.keyboardWillHideListener = Keyboard.addListener(
       'keyboardWillHide', this.keyboardWillHide);
+
+    // Listeners for tutorial
+    this.props.copilotEvents.on('stop', () => {
+      console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ copilotEvents ] 
+        tutorial stop. show next page. Next step number is: `, this.props.nextStepNumber);
+      
+      this.props.showNextTutorialPage('goal_detail', 'goal_detail_page');
+    });
+
+    // Start tutorial if not previously shown
+    if (!this.props.hasShown) {
+      setTimeout(() => {
+        this.props.startTutorial('goal_detail', 'goal_detail_page');
+      }, 400);
+    }
 
     const { initial, goalDetail, goalId, pageId, tab } = this.props;
 
@@ -234,6 +265,9 @@ class GoalDetailCardV3 extends Component {
     this.keyboardWillHideListener.remove();
     this.state.scroll.removeAllListeners();
     this.props.closeGoalDetailWithoutPoping(goalId, pageId);
+
+    // Remove tutorial listener
+    this.props.copilotEvents.off('stop');
   }
 
   // Switch tab to FocusTab and display all the comments
@@ -747,6 +781,9 @@ const makeMapStateToProps = () => {
     const { focusType, focusRef } = navigationStateV2;
     const focusedItemCount = getFocusedItemCount(transformedComments, focusType, focusRef);
     const isSelf = userId === (!goal || _.isEmpty(goal) ? '' : goal.owner._id);
+
+    // Tutorial related
+    const { tutorialText, hasShown, showTutorial } = state.tutorials.goal_detail.goal_detail_page;
   
     return {
       commentLoading: loading,
@@ -762,7 +799,9 @@ const makeMapStateToProps = () => {
       // When on focusTab, show the count for focusedItem
       focusedItemCount,
       updating,
-      newComment
+      newComment,
+      // Tutorial related
+      tutorialText, hasShown, showTutorial
     };
   };
 
@@ -810,6 +849,12 @@ const getFocusedItemCount = (comments, focusType, focusRef) => {
   return focusedItemCount;
 };
 
+const GoalDetailCardV3Explained = copilot({
+  overlay: 'svg', // or 'view'
+  animated: true, // or false
+  stepNumberComponent: () => <View />
+})(GoalDetailCardV3);
+
 export default connect(
   makeMapStateToProps,
   {
@@ -829,6 +874,9 @@ export default connect(
     editGoal,
     markGoalAsComplete,
     refreshGoalDetailById,
-    refreshComments
+    refreshComments,
+    // Tutorial related
+    showNextTutorialPage,
+    startTutorial,
   }
-)(GoalDetailCardV3);
+)(GoalDetailCardV3Explained);

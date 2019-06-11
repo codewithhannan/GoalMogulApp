@@ -72,10 +72,10 @@ export const INITIAL_TUTORIAL = {
             hasShown: false,
             totalStep: 4, // Used for onStepChange and check if this is the last step,
             tutorialText: [
-                'Click here to Discover New Friends',
-                'Click here to Invite More Friends so you can share/help one another with goals!',
-                'You can run the tutorial again by selecting it from the menu in the upper right corner',
-                'Click here'
+                'Click here to Edit your goal',
+                'Click here to Share your goal to friend\'s feed',
+                'Click here to Mark this goal as complete',
+                'Click here to Delete your goal'
             ],
             nextStepNumber: 0
         }

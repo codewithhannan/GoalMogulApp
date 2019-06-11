@@ -45,7 +45,7 @@ class MenuFactory extends React.Component {
 
     renderItem = ({ item }) => {
         const { iconSource, option, tutorialText, order, name } = item;
-        if (!tutorialText || !order || !name) {
+        if (!tutorialText || !name) {
             // render normally
             return (
                 <View
@@ -140,34 +140,7 @@ class MenuFactory extends React.Component {
                 <MenuOptions customStyles={menuOptionsStyles}>
                     <FlatList
                         data={options}
-                        renderItem={({ item }) => {
-                            const { iconSource, option } = item;
-                            return (
-                                <View
-                                    style={{ flexDirection: 'row', alignItems: 'center' }}
-                                >
-                                    {
-                                    iconSource
-                                        ? (
-                                        <View
-                                            style={{
-                                            paddingTop: 10,
-                                            paddingBottom: 10,
-                                            paddingLeft: 10,
-                                            paddingRight: 5
-                                            }}
-                                        >
-                                            <Image source={iconSource} style={styles.iconStyle} />
-                                        </View>
-                                        )
-                                        : null
-                                    }
-                                    <View style={{ flex: 1 }}>
-                                    <MenuOption value={option} text={option} />
-                                    </View>
-                                </View>
-                            );
-                        }}
+                        renderItem={this.renderItem}
                         keyExtractor={(item, index) => index.toString()}
                         style={{ height: 37 * options.length }}
                     />

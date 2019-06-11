@@ -150,7 +150,7 @@ export const markUserAsOnboarded = () => (dispatch, getState) => {
 
     // Fire request to update server user state
     API
-        .put('user/account/mark-as-onboarded', {}, token, 1)
+        .put('secure/user/account/mark-as-onboarded', {}, token, 1)
         .then((res) => {
             if (res.status === 200) {
                 onSuccess(res);
