@@ -236,34 +236,34 @@ const switchDefaultImageType = (type, item) => switchCaseFWithVal(item)({
       height: 28
     },
     style: undefined,
-    imageUrl: item.picture ? item.picture : undefined
+    imageUrl: item && item.picture ? item.picture : undefined
   }),
   Event: val => {
     const { eventRef } = val;
     return ({
       source: eventIcon,
-      imageUrl: eventRef.picture
+      imageUrl: eventRef ? eventRef.picture : undefined
     });
   },
   Tribe: val => {
     const { tribeRef } = val;
     return ({
       source: tribeIcon,
-      imageUrl: tribeRef.picture
+      imageUrl: tribeRef ? tribeRef.picture : undefined
     });
   },
   Friend: val => {
     const { userRef } = val;
     return ({
       source: friendIcon,
-      imageUrl: userRef.profile ? userRef.profile.image : undefined
+      imageUrl: userRef && userRef.profile ? userRef.profile.image : undefined
     });
   },
   User: val => {
     const { userRef } = val;
     return ({
       source: userIcon,
-      imageUrl: userRef.profile ? userRef.profile.image : undefined
+      imageUrl: userRef && userRef.profile ? userRef.profile.image : undefined
     });
   },
   Reading: () => ({
