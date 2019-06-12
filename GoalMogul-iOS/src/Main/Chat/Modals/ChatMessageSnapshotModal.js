@@ -178,6 +178,19 @@ class ChatMessageSnapshotModal extends React.Component {
                         back={true}
                         actionDisabled={true}
                         actionHidden={true}
+						containerStyles={{
+							elevation: 3,
+							shadowColor: '#666',
+							shadowOffset: { width: 0, height: 1, },
+							shadowOpacity: 0.15,
+							shadowRadius: 3,
+						}}
+						backButtonStyle={{
+							tintColor: '#21364C',
+						}}
+						titleTextStyle={{
+							color: '#21364C',
+						}}
 					/>
                     <GiftedChat
                         messages={searchResultPreviewMessages}

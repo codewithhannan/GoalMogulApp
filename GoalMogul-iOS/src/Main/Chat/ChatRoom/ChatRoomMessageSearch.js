@@ -216,7 +216,7 @@ class ChatRoomMessageSearch extends React.Component {
 							color: '#999',
 						}}
 					>
-						{this.props.searchQuery.trim().length ? 'No messages found' : 'Search Messages...'}
+						{this.props.searchQuery.trim().length ? 'No messages found' : 'Search Messages'}
 					</Text>
 				</View>
 			);
@@ -240,6 +240,15 @@ class ChatRoomMessageSearch extends React.Component {
                         back={true}
                         actionDisabled={true}
                         actionHidden={true}
+						containerStyles={{
+							backgroundColor: APP_BLUE_BRIGHT,
+						}}
+						backButtonStyle={{
+							tintColor: '#21364C',
+						}}
+						titleTextStyle={{
+							color: '#21364C',
+						}}
 					/>
                     <FlatList
                         data={this.props.searchResults.slice(0, this.state.pageSize)}

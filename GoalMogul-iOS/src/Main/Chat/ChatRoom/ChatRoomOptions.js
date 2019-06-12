@@ -225,6 +225,20 @@ class ChatRoomOptions extends React.Component {
                         actionHidden={true}
                         back={true}
                         onCancel={this.closeOptions}
+						containerStyles={{
+							elevation: 3,
+							shadowColor: '#666',
+							shadowOffset: { width: 0, height: 1, },
+							shadowOpacity: 0.3,
+							shadowRadius: 3,
+							backgroundColor: APP_BLUE_BRIGHT,
+						}}
+						backButtonStyle={{
+							tintColor: '#21364C',
+						}}
+						titleTextStyle={{
+							color: '#21364C',
+						}}
                     />
                     <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
                         <ScrollView>

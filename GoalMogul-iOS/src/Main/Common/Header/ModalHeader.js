@@ -44,14 +44,15 @@ const paddingTop = (
 ) ? 25 : 43;
 
 const ModalHeader = (props) => {
-  const { title, actionText, onCancel, onAction, actionDisabled, cancelText, back, actionHidden, titleIcon, containerStyles } = props;
+  const { title, actionText, onCancel, onAction, actionDisabled, cancelText, back, actionHidden, titleIcon, containerStyles, actionTextStyle, backButtonStyle, titleTextStyle } = props;
   const cancel = cancelText !== null && cancelText !== undefined ? cancelText : 'Cancel';
 
+  const extraBackButtonStyle = backButtonStyle || {};
   let leftComponent = back
     ? (
       <Image
         source={BackButton}
-        style={{ height: 25, width: 25, tintColor: APP_BLUE, marginRight: 20 }}
+        style={{ height: 25, width: 25, tintColor: APP_BLUE, marginRight: 20, ...extraBackButtonStyle }}
       />
     )
     : (
@@ -62,13 +63,19 @@ const ModalHeader = (props) => {
     leftComponent = null;
   }
 
-  const actionTextStyle = actionDisabled
+  const extraContainerStyles = containerStyles || {};
+  const extraActionTextStyle = actionTextStyle || {};
+  const extraTitleTextStyle = titleTextStyle || {};
+
+  const primaryActionTextStyle = actionDisabled
     ? { ...styles.actionTextStyle, color: 'lightgray' }
     : styles.actionTextStyle;
-
-  const extraContainerStyles = containerStyles || {};
   return (
-    <View>
+    <View
+      style={{
+        zIndex: 1000,
+      }}
+    >
       <StatusBar
         barStyle="dark-content"
       />
@@ -87,7 +94,7 @@ const ModalHeader = (props) => {
               style={styles.titleTextIconStyle}
               source={titleIcon}
             />}
-            <Text style={styles.titleTextStyle}>{title}</Text>
+            <Text style={[styles.titleTextStyle, extraTitleTextStyle]} numberOfLines={1}>{title}</Text>
           </View>
         </TouchableOpacity>
 
@@ -97,7 +104,7 @@ const ModalHeader = (props) => {
           onPress={onAction}
           disabled={actionDisabled}
         >
-          <Text style={actionTextStyle}>{actionText}</Text>
+          <Text style={[primaryActionTextStyle, extraActionTextStyle]}>{actionText}</Text>
         </TouchableOpacity>
 
       </View>
@@ -142,6 +149,7 @@ const styles = {
     marginRight: 6,
     padding: 1,
     border: '1px solid #F1F1F1',
+    backgroundColor: '#fff',
   },
   titleTextContainerStyle: {
     alignSelf: 'center',

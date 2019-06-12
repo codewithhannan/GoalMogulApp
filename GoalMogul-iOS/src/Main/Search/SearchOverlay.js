@@ -179,7 +179,7 @@ class SearchOverlay extends Component {
               cancelButtonProps={{
                 buttonTextStyle: {
                   // color: APP_DEEP_BLUE
-                  color: '#33485e'
+                  color: '#21364C'
                 }
               }}
               searchIcon={() => (

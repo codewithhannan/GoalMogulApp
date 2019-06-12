@@ -68,7 +68,7 @@ import ChatRoomConversationInputToolbar from './GiftedChat/GMGiftedChatInputTool
 import { toHashCode } from '../../../Utils/ImageUtils';
 import GMGiftedChatBubble from './GiftedChat/GMGiftedChatBubble';
 import ChatRoomLoaderOverlay from '../Modals/ChatRoomLoaderOverlay';
-import { APP_BLUE_BRIGHT } from '../../../styles';
+import { APP_BLUE_BRIGHT, APP_BLUE } from '../../../styles';
 
 const DEBUG_KEY = '[ UI ChatRoomConversation ]';
 const LISTENER_KEY = 'ChatRoomConversation';
@@ -578,7 +578,7 @@ class ChatRoomConversation extends React.Component {
 			>
 				<View style={{paddingRight: 15, paddingBottom: 15, position: 'relative' }}>
 					<Image
-						style={{height: 27, width: 27}}
+						style={{height: 27, width: 27, tintColor: APP_BLUE_BRIGHT}}
 						source={SendButton}
 						resizeMode="contain"
 					/>
@@ -619,7 +619,7 @@ class ChatRoomConversation extends React.Component {
 					}}
 					value={props.text}
 					multiline={true}
-					placeholder={`${props.placeholder.slice(0, 27)}...`}
+					placeholder={`${props.placeholder.slice(0, 42)}...`}
 					style={{
 						fontSize: 15,
 						padding: 9,
@@ -702,8 +702,17 @@ class ChatRoomConversation extends React.Component {
 							elevation: 3,
 							shadowColor: '#666',
 							shadowOffset: { width: 0, height: 1, },
-							shadowOpacity: 0.3,
-							shadowRadius: 1,
+							shadowOpacity: 0.15,
+							shadowRadius: 3,
+						}}
+						backButtonStyle={{
+							tintColor: '#21364C',
+						}}
+						actionTextStyle={{
+							color: '#21364C'
+						}}
+						titleTextStyle={{
+							color: '#21364C',
 						}}
 					/>
 					<GiftedChat
@@ -794,7 +803,7 @@ const mapStateToProps = (state, props) => {
 	} = state.chatRoom;
 	const chatRoom = activeChatRoomId && chatRoomsMap[activeChatRoomId];
 	
-	let chatRoomName = 'Loading...';
+	let chatRoomName = 'Loading';
 	let chatRoomImage = null;
 	let chatRoomMembersMap = {};
 	if (chatRoom) {
