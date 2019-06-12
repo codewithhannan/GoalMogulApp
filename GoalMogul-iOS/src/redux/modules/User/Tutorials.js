@@ -57,8 +57,8 @@ export const INITIAL_TUTORIAL = {
             hasShown: false,
             totalStep: 3, // Used for onStepChange and check if this is the last step,
             tutorialText: [
-                'Tap here to Discover New Friends',
-                'Tap here to Invite More Friends so you can share/help one another with goals!',
+                'Find people you know or find interesting!',
+                'This app is MUCH better with friends. Invite them to GoaMogul today!',
                 'You can run the tutorial again by selecting it from the menu in the upper right corner'
             ],
             nextStepNumber: 0
