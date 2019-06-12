@@ -319,11 +319,11 @@ export default class ChatRoomConversationBubble extends React.Component {
 		if (!goalRecommendation) return null;
 		return (<View
 			style={{
-				backgroundColor: '#fafafa',
+				backgroundColor: '#F7FBFC',
 				shadowColor: '#000',
 				shadowOffset: { width: 0, height: 1 },
 				shadowOpacity: 0.1,
-				shadowRadius: 3,
+				shadowRadius: 6,
 				padding: 6,
 				marginBottom: 12,
 			}}
@@ -332,7 +332,7 @@ export default class ChatRoomConversationBubble extends React.Component {
 				<Text
 					style={{
 						fontSize: 12,
-						color: '#ccc',
+						color: '#6FBAD4',
 						marginBottom: 6,
 					}}
 				>
@@ -362,9 +362,10 @@ export default class ChatRoomConversationBubble extends React.Component {
 						marginBottom: 9,
 						fontSize: 12,
 						color: '#333',
+						textAlign: 'center',
 					}}
 				>
-					Do you want to edit this goal and add it to your profile?
+					Edit goal and add to profile?
 				</Text>
 				<TouchableOpacity
 					style={{
@@ -378,7 +379,7 @@ export default class ChatRoomConversationBubble extends React.Component {
 					}}
 					onPress={this.openCreateGoal.bind(this)}
 				>
-					<Text style={{ color: '#1A8A11', fontSize: 15, }} >Yes</Text>
+					<Text style={{ color: '#1A8A11', fontSize: 15, }} >Edit and Add</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
 					style={{
@@ -387,11 +388,11 @@ export default class ChatRoomConversationBubble extends React.Component {
 						paddingTop: 6,
 						paddingBottom: 6,
 						borderRadius: 6,
-						backgroundColor: '#eee',
+						backgroundColor: '#E2EFF4',
 					}}
 					onPress={this.deleteMessage.bind(this)}
 				>
-					<Text style={{ color: '#333', fontSize: 15, }} >Dismiss</Text>
+					<Text style={{ color: '#72B5CD', fontSize: 15, }} >Dismiss</Text>
 				</TouchableOpacity>
 			</View>
 		</View>)

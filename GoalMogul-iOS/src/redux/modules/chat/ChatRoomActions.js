@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { CHAT_ROOM_LOAD_INITIAL_BEGIN, CHAT_ROOM_LOAD_INITIAL, CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS, CHAT_ROOM_UPDATE_MESSAGES, CHAT_ROOM_LOAD_MORE_MESSAGES_BEGIN, CHAT_ROOM_LOAD_MORE_MESSAGES, CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF, CHAT_ROOM_UPDATE_GHOST_MESSAGES, CHAT_ROOM_CLOSE_ACTIVE_ROOM } from "./ChatRoomReducers";
 import { api as API } from "../../middleware/api";
 import { Alert } from 'react-native';
+import Decode from 'unescape';
 
 import MessageStorageService from '../../../services/chat/MessageStorageService';
 import { IMAGE_BASE_URL } from "../../../Utils/Constants";
@@ -267,6 +268,7 @@ export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMe
 				// send the message
 				const { text, sharedEntity } = messageToSend;
 				let body = {
+					created: insertedDoc.created,
 					chatRoomRef: chatRoom._id,
 					content: {
 						message: text,
@@ -376,7 +378,7 @@ export async function _transformMessagesForGiftedChat(messages, chatRoom, token)
 			_id, isLocal, sharedEntity, user, goalRecommendation,
 			createdAt: new Date(created),
 			image: media && `${IMAGE_BASE_URL}${media}`,
-			text: content && content.message,
+			text: content && Decode(content.message),
 			system: !!isSystemMessage,
 		};
 	}));
