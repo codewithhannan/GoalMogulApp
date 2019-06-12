@@ -21,7 +21,7 @@ export const INITIAL_TUTORIAL = {
             hasShown: false,
             totalStep: 1, // Used for onStepChange and check if this is the last step to fire showNextTutorialPage action
             tutorialText: [
-                'Click here to add a goal',
+                'Tap here to add a goal',
                 'You can run the tutorial again by selecting it from the menu in the upper right corner.'
             ],
             nextStepNumber: 0 // This is a zero indexed variable. Since if tutorial has not started, next step number is zero.
@@ -37,14 +37,14 @@ export const INITIAL_TUTORIAL = {
             hasShown: false,
             totalStep: 8, // Used for onStepChange and check if this is the last step
             tutorialText: [
-                'Click here to toggle who\'s allowed to see your goals',
-                'Enter your goal here (i.e. lose 10 lbs, earn $1m dollars, etc)	',
+                'Tap here to toggle who\'s allowed to see your goals',
+                'Enter your goal here (i.e. lose 10 lbs, earn $1m dollars, etc.)	',
                 '(optional) Pick a Category for your goal',
                 '(optional) Pick a number 1-10 to note the importance of your goal',
                 '(optional) Pick a Start and End date to keep track of progress',
                 '(optional) List some steps to achieving your goal',
                 '(optional) Type in your needs so others know how they can help you',
-                'Click Create whenever you\'re ready to post your goal!',
+                'Tap Create whenever you\'re ready to post your goal!',
             ],
             nextStepNumber: 0
         },
@@ -57,8 +57,8 @@ export const INITIAL_TUTORIAL = {
             hasShown: false,
             totalStep: 3, // Used for onStepChange and check if this is the last step,
             tutorialText: [
-                'Click here to Discover New Friends',
-                'Click here to Invite More Friends so you can share/help one another with goals!',
+                'Tap here to Discover New Friends',
+                'Tap here to Invite More Friends so you can share/help one another with goals!',
                 'You can run the tutorial again by selecting it from the menu in the upper right corner'
             ],
             nextStepNumber: 0
@@ -72,10 +72,10 @@ export const INITIAL_TUTORIAL = {
             hasShown: false,
             totalStep: 4, // Used for onStepChange and check if this is the last step,
             tutorialText: [
-                'Click here to Edit your goal',
-                'Click here to Share your goal to friend\'s feed',
-                'Click here to Mark this goal as complete',
-                'Click here to Delete your goal'
+                'Tap here to Edit your goal',
+                'Tap here to Share your goal to the top of your friends\' Goal feed',
+                'Tap here to Mark this goal as complete',
+                'Tap here to Delete your goal'
             ],
             nextStepNumber: 0
         }
