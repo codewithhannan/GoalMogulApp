@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 // This is commented out as we switch back to the old implementation
 import Carousel from 'react-native-snap-carousel';
 import { Constants } from 'expo';
-import { walkthroughable, CopilotStep } from 'react-native-copilot';
+import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 // Components
 // import GoalFilterBar from '../Common/GoalFilterBar';

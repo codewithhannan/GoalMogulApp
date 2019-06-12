@@ -35,7 +35,7 @@ import {
 import Slider from 'react-native-slider';
 import DraggableFlatlist from 'react-native-draggable-flatlist';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import { walkthroughable, CopilotStep } from 'react-native-copilot';
+import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 // Components
 // import DraggableFlatlist from '../Common/DraggableFlatlist';

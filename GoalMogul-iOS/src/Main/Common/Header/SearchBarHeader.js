@@ -27,7 +27,7 @@ import R from 'ramda';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { Constants } from 'expo';
-import { walkthroughable, CopilotStep } from 'react-native-copilot';
+import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 /* Asset */
 // import Logo from '../../../asset/header/logo.png';

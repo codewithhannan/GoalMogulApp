@@ -8,7 +8,7 @@ import {
     Text,
     Dimensions
 } from 'react-native';
-import { walkthroughable, CopilotStep } from 'react-native-copilot';
+import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 /* Styles */
 import { APP_BLUE_BRIGHT, APP_BLUE } from '../../../styles';

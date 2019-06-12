@@ -6,7 +6,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
 import { Notifications } from 'expo';
-import { copilot } from 'react-native-copilot';
+import { copilot } from 'react-native-copilot-gm';
 
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup';
@@ -93,7 +93,7 @@ class Home extends Component {
 
   componentDidUpdate(prevProps) {
     if (!prevProps.showTutorial && this.props.showTutorial === true) {
-      console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: tutorial start`);
+      console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: tutorial start: `, this.props.nextStepNumber);
       this.props.start();
     }
   }
@@ -110,7 +110,8 @@ class Home extends Component {
     if (!this.props.user.isOnBoarded) {
       setTimeout(() => {
         console.log(`${DEBUG_KEY}: [ componentDidMount ]: startTutorial: create_goal, page: home`);
-        this.props.startTutorial('create_goal', 'home');
+        // TODO: @Jia Tutorial uncomment
+        // this.props.startTutorial('create_goal', 'home');
       }, 1000);
     }
 
@@ -127,7 +128,9 @@ class Home extends Component {
       if (this.props.nextStepNumber === 1) {
         this.props.updateNextStepNumber('create_goal', 'home', 2);
         this.props.showNextTutorialPage('create_goal', 'home');
-        this.props.markUserAsOnboarded();
+
+        // TODO: @Jia Tutorial uncomment
+        // this.props.markUserAsOnboarded();
       }
     });
 

@@ -19,7 +19,7 @@ import {
     renderers
 } from 'react-native-popup-menu';
 import _ from 'lodash';
-import { walkthroughable, CopilotStep } from 'react-native-copilot';
+import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 /* Asset */
 import dropDown from '../../../asset/utils/dropDown.png';

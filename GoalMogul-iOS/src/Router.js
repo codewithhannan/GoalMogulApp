@@ -13,7 +13,7 @@ import {
 } from 'react-native-router-flux';
 import { Easing, Animated } from 'react-native';
 import { connect } from 'react-redux';
-import { copilot } from 'react-native-copilot';
+import { copilot } from 'react-native-copilot-gm';
 
 // import CardStackStyleInterpolator from "react-navigation-stack/src/views/StackView/StackViewStyleInterpolator";
 

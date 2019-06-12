@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
-import { copilot } from 'react-native-copilot';
+import { copilot } from 'react-native-copilot-gm';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
@@ -38,6 +38,7 @@ import {
   APP_DEEP_BLUE,
   APP_BLUE
 } from '../../styles';
+import Tooltip from '../Tutorial/Tooltip';
 
 const DEBUG_KEY = '[ UI CreateGoalModal ]';
 
@@ -239,7 +240,8 @@ const mapStateToProps = state => {
 const CreateGoalModalExplained = copilot({
   overlay: 'svg', // or 'view'
   animated: true, // or false
-  stepNumberComponent: () => <View />
+  stepNumberComponent: () => <View />,
+  tooltipComponent: Tooltip
 })(CreateGoalModal);
 
 export default connect(

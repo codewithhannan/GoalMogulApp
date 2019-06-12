@@ -19,7 +19,7 @@ import { Constants } from 'expo';
 import {
   DotIndicator
 } from 'react-native-indicators';
-import { copilot } from 'react-native-copilot';
+import { copilot } from 'react-native-copilot-gm';
 
 // Actions
 import {

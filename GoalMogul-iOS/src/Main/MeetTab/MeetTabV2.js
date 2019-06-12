@@ -12,7 +12,7 @@ import {
 import { connect } from 'react-redux';
 import { Constants } from 'expo';
 import { Actions } from 'react-native-router-flux';
-import { copilot, walkthroughable, CopilotStep } from 'react-native-copilot';
+import { copilot, walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 /* Components */
 import FriendCardView from './V2/FriendCardView';
