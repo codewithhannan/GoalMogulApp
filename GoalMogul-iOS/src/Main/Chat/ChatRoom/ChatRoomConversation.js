@@ -619,6 +619,7 @@ class ChatRoomConversation extends React.Component {
 					}}
 					value={props.text}
 					multiline={true}
+					numberOfLines={6}
 					placeholder={`${props.placeholder.slice(0, 42)}...`}
 					style={{
 						fontSize: 15,
