@@ -69,7 +69,7 @@ class GeneralSuggestion extends React.Component {
         </View> */}
         <View style={styles.inputContainerStyle}>
           <TextField
-            label='Content'
+            label='Suggestion Title'
             placeholder='Enter a suggestion title'
             autoCapitalize
             autoCorrect
