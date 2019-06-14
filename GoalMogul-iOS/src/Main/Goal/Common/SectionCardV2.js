@@ -142,7 +142,7 @@ class SectionCardV2 extends Component {
     if (!isCompleted) return null;
     return (
       <View style={styles.checkIconContainerStyle}>
-        <Image source={checkIcon} style={styles.checkIconStyle} />
+        <Image source={checkIcon} style={{ ...styles.checkIconStyle, tintColor: '#4e966d' }} />
       </View>
     );
   }
