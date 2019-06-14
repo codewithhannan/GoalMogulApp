@@ -156,12 +156,14 @@ export default (state = INITIAL_TUTORIAL, action) => {
                     return newState;
                 }
 
-                // Use the current page's current step to find the next page
-                let { pageName, step } = _.get(nextPage, currentPageNextStepNumber);
-                // Set next page string to the real one. 
-                nextPageString = pageName;
-                // Ste next page next step number
-                nextPageNextStepNumber = step;
+                if (_.get(nextPage, currentPageNextStepNumber) !== undefined) {
+                    // Use the current page's current step to find the next page
+                    let { pageName, step } = _.get(nextPage, currentPageNextStepNumber);
+                    // Set next page string to the real one. 
+                    nextPageString = pageName;
+                    // Ste next page next step number
+                    nextPageNextStepNumber = step;
+                }
             }
 
             if (!_.has(newState, `${flow}.${nextPageString}`)) {
@@ -241,8 +243,16 @@ export default (state = INITIAL_TUTORIAL, action) => {
 };
 
 // This customizer preserves objValue's array values
-function customizer(objValue, srcValue) {
+function customizer(objValue, srcValue, key) {
     if (_.isArray(objValue)) {
         return objValue;
     }
+
+    if (key === 'totalStep') {
+        return objValue;
+    }
+
+    if (key === 'step') {
+        return objValue;
+    }
 }

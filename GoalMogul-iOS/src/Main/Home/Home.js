@@ -97,6 +97,19 @@ class Home extends Component {
       console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: tutorial start: `, this.props.nextStepNumber);
       this.props.start();
     }
+
+    if (!_.isEqual(prevProps.user, this.props.user)) {
+      console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: prev user: `, prevProps.user);
+      console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: now user: `, this.props.user);
+    }
+
+    if (!_.isEqual(prevProps.user, this.props.user) && this.props.user.isOnBoarded === false) {
+      setTimeout(() => {
+        console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: startTutorial: create_goal, page: home`);
+        // TODO: @Jia Tutorial uncomment
+        this.props.startTutorial('create_goal', 'home');
+      }, 1100);
+    }
   }
 
 
@@ -107,14 +120,6 @@ class Home extends Component {
     // Set timer to fetch profile again if previously failed
     this.setTimer();
     this.props.checkIfNewlyCreated();
-
-    if (!this.props.user.isOnBoarded) {
-      setTimeout(() => {
-        console.log(`${DEBUG_KEY}: [ componentDidMount ]: startTutorial: create_goal, page: home`);
-        // TODO: @Jia Tutorial uncomment
-        this.props.startTutorial('create_goal', 'home');
-      }, 1000);
-    }
 
     this.props.copilotEvents.on('stop', () => {
       console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ copilotEvents ] 
@@ -130,8 +135,8 @@ class Home extends Component {
         this.props.updateNextStepNumber('create_goal', 'home', 2);
         this.props.showNextTutorialPage('create_goal', 'home');
 
-        // TODO: @Jia Tutorial uncomment
-        // this.props.markUserAsOnboarded();
+        console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ copilotEvents ]: markUserAsOnboarded`);
+        this.props.markUserAsOnboarded();
       }
     });
 
