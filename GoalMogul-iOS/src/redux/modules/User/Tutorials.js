@@ -237,6 +237,12 @@ export default (state = INITIAL_TUTORIAL, action) => {
             return newState;   
         }
 
+        case TUTORIAL_MARK_USER_ONBOARDED: {
+            let newState = _.cloneDeep(state);
+            newState = _.set(newState, 'isOnBoarded', true);
+            return newState;   
+        }
+
         default:
             return { ...state };
     }
