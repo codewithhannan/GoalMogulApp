@@ -34,7 +34,8 @@ import {
 import {
     showNextTutorialPage,
     startTutorial,
-    saveTutorialState
+    saveTutorialState,
+    updateNextStepNumber
 } from '../../redux/modules/User/TutorialActions';
 
 /* Assets */
@@ -55,6 +56,7 @@ import {
 /* Constants */
 import { IPHONE_MODELS } from '../../Utils/Constants';
 import { generateInvitationLink } from '../../redux/middleware/utils';
+import Tooltip from '../Tutorial/Tooltip';
 
 const DEBUG_KEY = '[ UI MeetTabV2 ]'; 
 const NumCardsToShow = Platform.OS === 'ios' &&
@@ -88,6 +90,14 @@ class MeetTabV2 extends React.Component {
         this.props.copilotEvents.on('stop', () => {
             console.log(`${DEBUG_KEY}: [ componentDidMount ]: tutorial stop.`);
             this.props.showNextTutorialPage('meet_tab_friend', 'meet_tab');
+        });
+
+        this.props.copilotEvents.on('stepChange', (step) => {
+            const { name, order, visible, target, wrapper } = step;
+            console.log(`${DEBUG_KEY}: [ onStepChange ]: step order: ${order}, step visible: ${name} `);
+        
+            // We showing current order. SO the next step should be order + 1
+            this.props.updateNextStepNumber('meet_tab_friend', 'meet_tab', order + 1);
         });
     }
 
@@ -445,7 +455,8 @@ const requestDataToRender = (incomingRequests, outgoingRequests, threshold) => {
 const MeetTabV2Explained = copilot({
     overlay: 'svg', // or 'view'
     animated: true, // or false
-    stepNumberComponent: () => <View />
+    stepNumberComponent: () => <View />,
+    tooltipComponent: Tooltip
 })(MeetTabV2);
 
 export default connect(
@@ -455,6 +466,7 @@ export default connect(
         meetContactSync,
         showNextTutorialPage,
         startTutorial,
-        saveTutorialState
+        saveTutorialState,
+        updateNextStepNumber
     }
 )(MeetTabV2Explained);

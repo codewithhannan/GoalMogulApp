@@ -75,7 +75,7 @@ class CreateGoalModal extends React.Component {
       this.props.updateNextStepNumber('create_goal', 'create_goal_modal', 8);
       setTimeout(() => {
         this.props.showNextTutorialPage('create_goal', 'create_goal_modal');
-      }, 600);
+      }, 400);
     });
 
     this.props.copilotEvents.on('stepChange', (step) => {
