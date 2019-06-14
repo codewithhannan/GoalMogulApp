@@ -169,6 +169,7 @@ class CreateGoalModal extends React.Component {
     newGoal: () => (
       <NewGoalView 
         initializeFromState={this.props.initializeFromState}
+        isImportedGoal={this.props.isImportedGoal}
         goal={this.props.goal}
         tutorialText={this.props.tutorialText}
         onRef={r => { this.newGoalView = r; }}

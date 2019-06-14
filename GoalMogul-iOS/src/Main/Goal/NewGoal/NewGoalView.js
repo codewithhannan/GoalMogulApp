@@ -310,8 +310,8 @@ class NewGoalView extends Component {
     };
 
     // Initialize based on the props, if it's opened through edit button
-    const { initializeFromState, goal } = this.props;
-    const initialVals = initializeFromState
+    const { initializeFromState, goal, isImportedGoal } = this.props;
+    const initialVals = initializeFromState || isImportedGoal
       ? { ...goalToFormAdaptor(goal) }
       : { ...defaulVals };
     // console.log('initial values are: ', initialVals);
@@ -349,7 +349,7 @@ class NewGoalView extends Component {
       return Alert.alert('Error', 'You have incomplete fields.');
     }
 
-    const { goal, initializeFromState, uploading } = this.props;
+    const { goal, initializeFromState, uploading, callback } = this.props;
     if (!uploading) return; // when uploading is false, it's actually uploading.
     const goalId = goal ? goal._id : undefined;
 
@@ -358,8 +358,11 @@ class NewGoalView extends Component {
       this.props.user._id,
       initializeFromState,
       () => {
-        console.log(`${DEBUG_KEY}: poping the modal`);
+        console.log(`${DEBUG_KEY}: [handleCreate] poping the modal`);
         Actions.pop();
+        if (callback) {
+          callback(); // Callback passed to CreateGoalModal
+        }
       },
       goalId
     );

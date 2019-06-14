@@ -301,24 +301,25 @@ export const goalToFormAdaptor = (values) => {
     needs,
     steps,
     start,
-    end
+    end,
+    shareToGoalFeed
   } = values;
 
   // console.log('values are: ', values);
-  const { tags, text } = details;
+  // const { tags, text } = details;
   return {
     title: title || '',
     category: category || 'General',
     privacy: privacy ? (privacy === 'self' ? 'Private' : capitalizeWord(privacy)) : 'Friends',
     // Following are not required
-    shareToMastermind: feedInfo && !_.isEmpty(feedInfo),
+    shareToMastermind: shareToGoalFeed || (feedInfo && !_.isEmpty(feedInfo)),
     // needs: stepsNeedsReverseAdapter(needs),
     needs: (needs.length === 0 || _.isEmpty(needs)) ? [{}] : stepsNeedsReverseAdapter(needs),
     steps: (steps.length === 0 || _.isEmpty(steps)) ? [{}] : stepsNeedsReverseAdapter(steps),
     // steps: stepsNeedsReverseAdapter(steps),
     // TODO: TAG:
     details: details ? [details.text] : [''],
-    tags: details ? constructTags(tags, text) : [],
+    tags: details ? constructTags(details.tags, details.text) : [],
     priority: priority || 1,
     startTime: {
       date: start ? new Date(`${start}`) : undefined,

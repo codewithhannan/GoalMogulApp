@@ -10,6 +10,7 @@ import moment from 'moment';
 import CommentRef from '../../../Goal/GoalDetailCard/Comment/CommentRef';
 import { MemberDocumentFetcher } from '../../../../Utils/UserUtils';
 import { APP_DEEP_BLUE } from '../../../../styles';
+import { Actions } from 'react-native-router-flux';
 
 function isSameDay(currentMessage = {}, diffMessage = {}) {
 	if (!diffMessage.createdAt) {
@@ -399,8 +400,19 @@ export default class ChatRoomConversationBubble extends React.Component {
 	}
 	openCreateGoal() {
 		const { goalRecommendation } = this.props.currentMessage;
-		const { goalTitle } = goalRecommendation;
-		// TODO @Jia
+		const { recommendedTitle } = goalRecommendation;
+
+		const goal = {
+			title: recommendedTitle,
+			shareToGoalFeed: true,
+			needs: [],
+			steps: []
+		};
+
+		// This callback will be called after goal is successfully created. See CreateGoalModal.js line 127.
+		const callback = () => {};
+
+		Actions.push('createGoalModal', { isImportedGoal: true, goal, callback });
 	}
 	deleteMessage() {
 		Alert.alert('Dismiss...', 'Are you sure you want to delete this message?', [{
