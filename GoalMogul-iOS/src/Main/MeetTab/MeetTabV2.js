@@ -103,6 +103,7 @@ class MeetTabV2 extends React.Component {
 
     componentWillUnmount() {
         this.props.copilotEvents.off('stop');
+        this.props.copilotEvents.off('stepChange');
         this.props.saveTutorialState();
     }
 

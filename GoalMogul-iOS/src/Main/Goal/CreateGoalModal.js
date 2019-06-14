@@ -60,7 +60,8 @@ class CreateGoalModal extends React.Component {
     // Loading trending goals on modal is opened
     this.props.refreshTrendingGoals();
 
-    if (!this.props.user.isOnBoarded) {
+    if (!this.props.user.isOnBoarded && !this.props.isImportedGoal) {
+      // NOTE: don't show tutorial if this is imported goal
       setTimeout(() => {
         console.log(`${DEBUG_KEY}: [ componentDidMount ]: startTutorial: create_goal, page: create_goal_modal`);
         this.props.startTutorial('create_goal', 'create_goal_modal');

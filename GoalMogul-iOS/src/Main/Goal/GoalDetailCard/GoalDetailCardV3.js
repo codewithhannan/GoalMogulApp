@@ -48,6 +48,7 @@ import {
 import {
   showNextTutorialPage,
   startTutorial,
+  updateNextStepNumber
 } from '../../../redux/modules/User/TutorialActions';
 
 // selector
@@ -86,6 +87,7 @@ import {
 } from '../../../styles';
 import { Logger } from '../../../redux/middleware/utils/Logger';
 import { constructMenuName, getParentCommentId } from '../../../redux/middleware/utils';
+import Tooltip from '../../Tutorial/Tooltip';
 
 const initialLayout = {
   height: 0,
@@ -150,6 +152,14 @@ class GoalDetailCardV3 extends Component {
         tutorial stop. show next page. Next step number is: `, this.props.nextStepNumber);
       
       this.props.showNextTutorialPage('goal_detail', 'goal_detail_page');
+    });
+
+    this.props.copilotEvents.on('stepChange', (step) => {
+      const { name, order, visible, target, wrapper } = step;
+      console.log(`${DEBUG_KEY}: [ onStepChange ]: step order: ${order}, step visible: ${name} `);
+
+      // We showing current order. SO the next step should be order + 1
+      this.props.updateNextStepNumber('goal_detail', 'goal_detail_page', order + 1);
     });
 
     // Start tutorial if not previously shown
@@ -268,6 +278,7 @@ class GoalDetailCardV3 extends Component {
 
     // Remove tutorial listener
     this.props.copilotEvents.off('stop');
+    this.props.copilotEvents.off('stepChange');
   }
 
   // Switch tab to FocusTab and display all the comments
@@ -852,7 +863,8 @@ const getFocusedItemCount = (comments, focusType, focusRef) => {
 const GoalDetailCardV3Explained = copilot({
   overlay: 'svg', // or 'view'
   animated: true, // or false
-  stepNumberComponent: () => <View />
+  stepNumberComponent: () => <View />,
+  tooltipComponent: Tooltip
 })(GoalDetailCardV3);
 
 export default connect(
@@ -878,5 +890,6 @@ export default connect(
     // Tutorial related
     showNextTutorialPage,
     startTutorial,
+    updateNextStepNumber,
   }
 )(GoalDetailCardV3Explained);
