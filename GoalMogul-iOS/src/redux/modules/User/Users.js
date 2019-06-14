@@ -636,11 +636,16 @@ export default (state = INITIAL_STATE, action) => {
 
         case PROFILE_RESET_FILTER: {
             const { tab, pageId, userId } = action.payload;
-            const newState = _.cloneDeep(state);
+            let newState = _.cloneDeep(state);
             const shouldUpdate = sanityCheckPageId(newState, userId, pageId, PROFILE_RESET_FILTER);
 
-            if (!shouldUpdate || !_.has(state, `${userId}.${pageId}.${tab}.filter`)) return newState;
-            return _.set(newState, `${userId}.${pageId}.${tab}.filter`, { ...INITIAL_FILTER_STATE });
+            if (!shouldUpdate || !_.has(state, `${userId}.${pageId}.${tab}.filter`)) {
+                console.warn(`${DEBUG_KEY}: can't find filter for ${userId}.${pageId}.${tab}`);
+                return newState
+            };
+
+            newState = _.set(newState, `${userId}.${pageId}.${tab}.filter`, { ...INITIAL_FILTER_STATE });
+            return newState;
         }
 
         /* Goal / Post deletion */

@@ -690,7 +690,7 @@ class NewGoalView extends Component {
 
   // Renderer for timeline
   renderTimeline = () => {
-    const titleText = <Text style={styles.titleTextStyle}>Timeline</Text>;
+    const titleText = <Text style={styles.titleTextStyle}>Timeline (optional)</Text>;
     // if (!this.props.hasTimeline) {
     //   return (
     //     <View style={{ ...styles.sectionMargin }}>

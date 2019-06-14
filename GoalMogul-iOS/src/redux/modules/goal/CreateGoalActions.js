@@ -105,16 +105,19 @@ export const submitGoal = (
     //   'Success',
     //   'You have successfully created a goal.'
     // );
+
+    const initialFilter = { goals: { filter: { sortBy: 'created' }}};
+
     if (needOpenProfile === false) {
       if (needRefreshProfile) {
         // User is already on profile page thus there should be pageId
-        selectProfileTabByName('goals', userId, pageId)(dispatch, getState);
-        handleTabRefresh('goals', userId, pageId)(dispatch, getState);
+        selectProfileTabByName('goals', userId, pageId, initialFilter)(dispatch, getState);
+        handleTabRefresh('goals', userId, pageId, initialFilter)(dispatch, getState);
       }
       return;
     }
 
-    openProfile(userId, 'goals')(dispatch, getState);
+    openProfile(userId, 'goals', initialFilter)(dispatch, getState);
   };
 
   // Creating new goal
@@ -304,9 +307,9 @@ export const goalToFormAdaptor = (values) => {
   // console.log('values are: ', values);
   const { tags, text } = details;
   return {
-    title,
-    category,
-    privacy: privacy === 'self' ? 'Private' : capitalizeWord(privacy),
+    title: title || '',
+    category: category || 'General',
+    privacy: privacy ? (privacy === 'self' ? 'Private' : capitalizeWord(privacy)) : 'Friends',
     // Following are not required
     shareToMastermind: feedInfo && !_.isEmpty(feedInfo),
     // needs: stepsNeedsReverseAdapter(needs),
@@ -316,7 +319,7 @@ export const goalToFormAdaptor = (values) => {
     // TODO: TAG:
     details: details ? [details.text] : [''],
     tags: details ? constructTags(tags, text) : [],
-    priority,
+    priority: priority || 1,
     startTime: {
       date: start ? new Date(`${start}`) : undefined,
       picker: false

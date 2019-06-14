@@ -105,7 +105,7 @@ class ProfileV2 extends Component {
             this.closeProfileInfoCard();
         }
 
-        this.props.handleTabRefresh('goals', userId, pageId);
+        this.props.handleTabRefresh('goals', userId, pageId, this.props.initialFilter);
         this.props.handleTabRefresh('posts', userId, pageId);
         this.props.handleTabRefresh('needs', userId, pageId);
     }
