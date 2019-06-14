@@ -371,15 +371,15 @@ export default class ChatRoomConversationBubble extends React.Component {
 					style={{
 						alignItems: 'center',
 						justifyContent: 'center',
-						paddingTop: 6,
-						paddingBottom: 6,
+						paddingTop: 9,
+						paddingBottom: 9,
 						marginBottom: 9,
 						borderRadius: 6,
-						backgroundColor: '#D5F8D2',
+						backgroundColor: APP_DEEP_BLUE,
 					}}
 					onPress={this.openCreateGoal.bind(this)}
 				>
-					<Text style={{ color: '#1A8A11', fontSize: 15, }} >Edit and Add</Text>
+					<Text style={{ color: '#fff', fontSize: 15, }} >Edit and Add</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
 					style={{
@@ -388,11 +388,11 @@ export default class ChatRoomConversationBubble extends React.Component {
 						paddingTop: 6,
 						paddingBottom: 6,
 						borderRadius: 6,
-						backgroundColor: '#E2EFF4',
+						backgroundColor: '#F4DFDE',
 					}}
 					onPress={this.deleteMessage.bind(this)}
 				>
-					<Text style={{ color: '#72B5CD', fontSize: 15, }} >Dismiss</Text>
+					<Text style={{ color: '#C13E35', fontSize: 12, }} >Dismiss</Text>
 				</TouchableOpacity>
 			</View>
 		</View>)

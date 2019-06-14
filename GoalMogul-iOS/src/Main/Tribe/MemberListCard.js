@@ -168,7 +168,7 @@ class MemberListCard extends Component {
           style={{ alignSelf: 'center', justifyContent: 'center' }}
         >
           <Image
-            style={{ width: 23, height: 19, tintColor: '#33485e' }}
+            style={{ width: 23, height: 19, tintColor: '#21364C' }}
             source={FriendsSettingIcon}
           />
         </TouchableOpacity>

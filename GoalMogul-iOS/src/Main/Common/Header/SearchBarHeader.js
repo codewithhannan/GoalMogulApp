@@ -80,7 +80,7 @@ import {
 } from '../../../Utils/Constants';
 import { getUserData } from '../../../redux/modules/User/Selector';
 
-const tintColor = '#33485e';
+const tintColor = '#21364C';
 
 // For profile friend setting ActionSheetIOS
 const FRIENDSHIP_SETTING_BUTTONS = ['Block', 'Report', 'Cancel'];

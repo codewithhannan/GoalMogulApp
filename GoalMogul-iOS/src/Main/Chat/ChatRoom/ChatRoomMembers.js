@@ -222,6 +222,15 @@ class ChatRoomMembers extends React.Component {
                         actionHidden={true}
                         back={true}
                         onCancel={this.closeMembers}
+						containerStyles={{
+							backgroundColor: APP_BLUE_BRIGHT,
+						}}
+						backButtonStyle={{
+							tintColor: '#21364C',
+						}}
+						titleTextStyle={{
+							color: '#21364C',
+						}}
                     />
 					<TabView
 						navigationState={this.props.navigationState}

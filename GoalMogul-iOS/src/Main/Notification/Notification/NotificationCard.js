@@ -94,7 +94,7 @@ class NotificationCard extends React.PureComponent {
         style={{ alignSelf: 'center', justifyContent: 'center', padding: 5, paddingTop: 10, paddingBottom: 10 }}
       >
         <Image
-          style={{ width: 23, height: 19, tintColor: '#33485e' }}
+          style={{ width: 23, height: 19, tintColor: '#21364C' }}
           source={FriendsSettingIcon}
         />
       </TouchableOpacity>
