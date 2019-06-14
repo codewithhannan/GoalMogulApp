@@ -71,7 +71,7 @@ class MeetTabV2 extends React.Component {
     }
     
     componentDidUpdate(prevProps) {
-        if (!this.props.hasShown && !prevProps.showTutorial && this.props.showTutorial === true) {
+        if (!prevProps.showTutorial && this.props.showTutorial === true) {
             console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: [ start ]`);
             this.props.start();
         }
@@ -82,14 +82,19 @@ class MeetTabV2 extends React.Component {
         this.handleOnRefresh();
 
         // We always fire this event since it's only stored locally
-        setTimeout(() => {
-            console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ startTutorial ]`);
-            this.props.startTutorial('meet_tab_friend', 'meet_tab');
-        }, 600);
+        if (!this.props.hasShown) {
+            setTimeout(() => {
+                console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ startTutorial ]`);
+                this.props.startTutorial('meet_tab_friend', 'meet_tab');
+            }, 600);
+        }
 
         this.props.copilotEvents.on('stop', () => {
             console.log(`${DEBUG_KEY}: [ componentDidMount ]: tutorial stop.`);
             this.props.showNextTutorialPage('meet_tab_friend', 'meet_tab');
+
+            // Right now we don't need to have conditions here
+            this.props.resetTutorial('meet_tab_friend');
         });
 
         this.props.copilotEvents.on('stepChange', (step) => {

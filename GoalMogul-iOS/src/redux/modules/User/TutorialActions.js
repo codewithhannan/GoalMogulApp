@@ -25,7 +25,8 @@ import {
     TUTORIAL_MARK_USER_ONBOARDED,
     TUTORIAL_STATE_KEY,
     TUTORIAL_UPDATE_CURRENT_STEP_NUMBER,
-    TUTORIAL_PAUSE_TUTORIAL
+    TUTORIAL_PAUSE_TUTORIAL,
+    TUTORIAL_RESET_TUTORIAL
 } from './Tutorials';
 import { Logger } from '../../middleware/utils/Logger';
 import { api as API } from '../../middleware/api';
@@ -124,6 +125,15 @@ export const saveTutorialState = () => async (dispatch, getState) => {
     Logger.log(`${DEBUG_KEY}: [saveTutorialState] done with res: `, res, 1);
     return;
 }
+
+export const resetTutorial = (flow) => (dispatch, getState) => {
+    dispatch({
+        type: TUTORIAL_RESET_TUTORIAL,
+        payload: {
+            flow
+        }
+    });
+};
 
 /**
  * Mark user as onboarded

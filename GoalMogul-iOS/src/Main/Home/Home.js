@@ -37,7 +37,8 @@ import {
   saveTutorialState,
   updateNextStepNumber,
   pauseTutorial,
-  markUserAsOnboarded
+  markUserAsOnboarded,
+  resetTutorial
 } from '../../redux/modules/User/TutorialActions';
 
 // Assets
@@ -126,8 +127,11 @@ class Home extends Component {
         tutorial stop. show next page. Next step number is: `, this.props.nextStepNumber);
 
       if (this.props.nextStepNumber === 1) {
-        this.props.pauseTutorial('create_goal', 'home', 1);
         Actions.createGoalModal();
+        this.props.pauseTutorial('create_goal', 'home', 1);
+        setTimeout(() => {
+          this.props.showNextTutorialPage('create_goal', 'home');
+        }, 600);
         return;
       }
 
@@ -137,6 +141,7 @@ class Home extends Component {
 
         console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ copilotEvents ]: markUserAsOnboarded`);
         this.props.markUserAsOnboarded();
+        this.props.resetTutorial('create_goal');
       }
     });
 
@@ -467,7 +472,8 @@ export default connect(
     saveTutorialState,
     updateNextStepNumber,
     pauseTutorial,
-    markUserAsOnboarded
+    markUserAsOnboarded,
+    resetTutorial
   },
   null,
   { withRef: true }

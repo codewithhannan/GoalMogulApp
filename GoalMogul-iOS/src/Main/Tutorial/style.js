@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-import { APP_DEEP_BLUE } from '../../styles';
 
 export const STEP_NUMBER_RADIUS = 14;
 export const STEP_NUMBER_DIAMETER = STEP_NUMBER_RADIUS * 2;

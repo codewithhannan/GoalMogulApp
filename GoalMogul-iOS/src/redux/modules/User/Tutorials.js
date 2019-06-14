@@ -109,6 +109,8 @@ export const TUTORIAL_UPDATE_CURRENT_STEP_NUMBER = 'tutorial_update_current_step
 // Stop a tutorial. Mark showTutorial to false and update the nextStepNumber
 export const TUTORIAL_PAUSE_TUTORIAL = 'tutorial_pause_tutorial'; 
 
+export const TUTORIAL_RESET_TUTORIAL = 'tutorial_reset_tutorial'; 
+
 const DEBUG_KEY = '[ Reducer Tutorials ]';
 export default (state = INITIAL_TUTORIAL, action) => {
     switch (action.type) {
@@ -122,6 +124,7 @@ export default (state = INITIAL_TUTORIAL, action) => {
 
             newState = _.set(newState, 'isOnCurrentFlowLastStep', false);
             newState = _.set(newState, `${flow}.${page}.showTutorial`, true);
+            newState = _.set(newState, `${flow}.${page}.nextStepNumber`, 0);
             return newState;
         }
 
@@ -141,6 +144,7 @@ export default (state = INITIAL_TUTORIAL, action) => {
             const nextPage = _.get(newState, `${flow}.${page}.nextPage`);
             if (!nextPage) {
                 console.log(`${DEBUG_KEY}: [ ${action.type} ]: last page for flow: ${flow} and page: ${page}`);
+                newState = _.set(newState, `${flow}.${page}.nextStepNumber`, 0);
                 return newState;
             }
 
@@ -243,6 +247,19 @@ export default (state = INITIAL_TUTORIAL, action) => {
             return newState;   
         }
 
+
+        case TUTORIAL_RESET_TUTORIAL: {
+            let newState = _.cloneDeep(state);
+            const { flow } = action.payload;
+
+            const hasShown = _.get(newState, `${flow}.hasShown`);
+            let originalFlow = _.cloneDeep(_.get(INITIAL_TUTORIAL, flow));
+            originalFlow = _.set(originalFlow, 'hasShown', hasShown);
+
+            newState = _.set(newState, `${flow}`, originalFlow);
+            return newState;
+        }
+
         default:
             return { ...state };
     }
@@ -259,6 +276,10 @@ function customizer(objValue, srcValue, key) {
     }
 
     if (key === 'step') {
+        return objValue;
+    }
+
+    if (key !== 'hasShown') {
         return objValue;
     }
 }
