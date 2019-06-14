@@ -72,7 +72,7 @@ class CreateGoalModal extends React.Component {
 
       // Close create goal modal
       Actions.pop();
-      this.props.updateNextStepNumber('create_goal', 'create_goal_modal', 8)
+      this.props.updateNextStepNumber('create_goal', 'create_goal_modal', 8);
       setTimeout(() => {
         this.props.showNextTutorialPage('create_goal', 'create_goal_modal');
       }, 600);
@@ -81,9 +81,12 @@ class CreateGoalModal extends React.Component {
     this.props.copilotEvents.on('stepChange', (step) => {
       const { name, order, visible, target, wrapper } = step;
       console.log(`${DEBUG_KEY}: [ onStepChange ]: step order: ${order}, step visible: ${name} `);
+
+      // We showing current order. SO the next step should be order + 1
+      this.props.updateNextStepNumber('create_goal', 'create_goal_modal', order + 1);
+
       if (order === 5) {
         if (this.newGoalView !== undefined) {
-          console.log(`${DEBUG_KEY}: [ onStepChange ]: scrolling to end`);
           // this.newGoalView.scrollToEnd();
           // return new Promise(r => setTimeout(r, 4000));
         } else {
@@ -200,6 +203,13 @@ class CreateGoalModal extends React.Component {
               }}
               onAction={this.handleCreate}
               actionDisabled={!this.props.uploading}
+              tutorialOn={{
+                actionText: {
+                  tutorialText: this.props.tutorialText[7],
+                  order: 7,
+                  name: 'create_goal_create_goal_modal_7'
+                }
+              }}
             />
             <TabView
               navigationState={this.props.navigationState}

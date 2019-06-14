@@ -19,7 +19,7 @@ export const INITIAL_TUTORIAL = {
             },
             showTutorial: false,
             hasShown: false,
-            totalStep: 1, // Used for onStepChange and check if this is the last step to fire showNextTutorialPage action
+            totalStep: 2, // Used for onStepChange and check if this is the last step to fire showNextTutorialPage action
             tutorialText: [
                 'Tap here to add a goal',
                 'You can run the tutorial again by selecting it from the menu in the upper right corner.'
@@ -30,7 +30,9 @@ export const INITIAL_TUTORIAL = {
             nextPage: {
                 8: {
                     pageName: 'home',
-                    step: 1
+                    // This is the next step number for the tutorial we are going to show.
+                    // For example, if we are going to show step 1, then its next step number should be 2
+                    step: 2 
                 }
             },
             showTutorial: false,
@@ -82,7 +84,8 @@ export const INITIAL_TUTORIAL = {
     },
     isOnBoarded: false,
     lastFlow: undefined,
-    lastPage: undefined
+    lastPage: undefined,
+    isOnCurrentFlowLastStep: false
 };
 
 // Mark a reducer[flow][page][showTutorial] = true to start
@@ -117,6 +120,7 @@ export default (state = INITIAL_TUTORIAL, action) => {
                 return newState;
             }
 
+            newState = _.set(newState, 'isOnCurrentFlowLastStep', false);
             newState = _.set(newState, `${flow}.${page}.showTutorial`, true);
             return newState;
         }
@@ -193,6 +197,24 @@ export default (state = INITIAL_TUTORIAL, action) => {
             if (!_.has(newState, `${flow}.${page}`)) {
                 console.warn(`${DEBUG_KEY}: [ ${action.type} ]: invalid flow: ${flow}, ${page}`);
                 return newState;
+            }
+
+            // Check if current step is the last step
+            const currentPage = _.get(newState, `${flow}.${page}`);
+            const { totalStep, nextPage } = currentPage;
+
+            console.log(`${DEBUG_KEY}: totalStep: ${totalStep}, nextStepNumber: ${nextStepNumber}`);
+            if (nextStepNumber >= totalStep) {
+                // If nextStepNumber === total step and nextPage === undefined, this is last page
+                if (nextPage === undefined) {
+                    newState = _.set(newState, 'isOnCurrentFlowLastStep', true);
+                    console.log(`${DEBUG_KEY}: totalStep: ${totalStep}, nextStepNumber: ${nextStepNumber}, set isOnCurrentFlowLastStep to true`);
+                }
+
+                if (typeof nextPage === "object" && _.has(nextPage, totalStep) && _.get(nextPage, totalStep) === undefined) {
+                    newState = _.set(newState, 'isOnCurrentFlowLastStep', true);
+                    console.log(`${DEBUG_KEY}: totalStep: ${totalStep}, nextStepNumber: ${nextStepNumber}, set isOnCurrentFlowLastStep to true`);
+                }
             }
 
             newState = _.set(newState, `${flow}.${page}.nextStepNumber`, nextStepNumber);

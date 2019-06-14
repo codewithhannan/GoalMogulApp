@@ -50,6 +50,7 @@ import { APP_DEEP_BLUE } from '../../styles';
 // Utils
 import { Logger } from '../../redux/middleware/utils/Logger';
 import PlusButton from '../Common/Button/PlusButton';
+import Tooltip from '../Tutorial/Tooltip';
 
 const TabIconMap = {
   goals: {
@@ -111,7 +112,7 @@ class Home extends Component {
       setTimeout(() => {
         console.log(`${DEBUG_KEY}: [ componentDidMount ]: startTutorial: create_goal, page: home`);
         // TODO: @Jia Tutorial uncomment
-        // this.props.startTutorial('create_goal', 'home');
+        this.props.startTutorial('create_goal', 'home');
       }, 1000);
     }
 
@@ -119,13 +120,13 @@ class Home extends Component {
       console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ copilotEvents ] 
         tutorial stop. show next page. Next step number is: `, this.props.nextStepNumber);
 
-      if (this.props.nextStepNumber === 0) {
+      if (this.props.nextStepNumber === 1) {
         this.props.pauseTutorial('create_goal', 'home', 1);
         Actions.createGoalModal();
         return;
       }
 
-      if (this.props.nextStepNumber === 1) {
+      if (this.props.nextStepNumber === 2) {
         this.props.updateNextStepNumber('create_goal', 'home', 2);
         this.props.showNextTutorialPage('create_goal', 'home');
 
@@ -135,9 +136,12 @@ class Home extends Component {
     });
 
     this.props.copilotEvents.on('stepChange', (step) => {
+      const { order, name } = step;
+      console.log(`${DEBUG_KEY}: [ onStepChange ]: step order: ${order}, step visible: ${name} `);
       // console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ stepChange ]: step change to ${step.order}`);
       // TODO: if later we have more steps in between, change here
       // This is called before changing to a new step
+      this.props.updateNextStepNumber('create_goal', 'home', order + 1);
     });
   }
 
@@ -327,7 +331,7 @@ class Home extends Component {
       1. use flatlist instead of scrollview
       2. assign key on for TabButton
     */
-    const tutorialOn = this.props.nextStepNumber >= 1 
+    const tutorialOn = this.props.nextStepNumber >= 2
       ? {
         rightIcon: {
           iconType: 'menu',
@@ -432,7 +436,8 @@ const styles = {
 const HomeExplained = copilot({
   overlay: 'svg', // or 'view'
   animated: true, // or false
-  stepNumberComponent: () => <View />
+  stepNumberComponent: () => <View />,
+  tooltipComponent: Tooltip
 })(Home);
 
 export default connect(

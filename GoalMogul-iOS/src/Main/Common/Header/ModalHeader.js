@@ -8,6 +8,8 @@ import {
   Platform
 } from 'react-native';
 import { Constants } from 'expo';
+import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
+
 import {
   APP_BLUE
 } from '../../../styles';
@@ -38,13 +40,24 @@ import BackButton from '../../../asset/utils/back.png';
 //   return leftComponent;
 // };
 
+const WalkableView = walkthroughable(View);
+
 const paddingTop = (
   Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
 ) ? 25 : 43;
 
 const ModalHeader = (props) => {
-  const { title, actionText, onCancel, onAction, actionDisabled, cancelText, back, actionHidden, titleIcon, containerStyles, actionTextStyle, backButtonStyle, titleTextStyle } = props;
+  const { 
+    title, 
+    actionText, 
+    onCancel, 
+    onAction, 
+    actionDisabled, 
+    cancelText, 
+    back, 
+    actionHidden, 
+    titleIcon, containerStyles, actionTextStyle, backButtonStyle, titleTextStyle, tutorialOn } = props;
   const cancel = cancelText !== null && cancelText !== undefined ? cancelText : 'Cancel';
 
   const extraBackButtonStyle = backButtonStyle || {};
@@ -70,6 +83,29 @@ const ModalHeader = (props) => {
   const primaryActionTextStyle = actionDisabled
     ? { ...styles.actionTextStyle, color: 'lightgray' }
     : styles.actionTextStyle;
+
+  let actionComponent = (
+    <TouchableOpacity
+      activeOpacity={0.6}
+      style={{ alignItems: 'center', flex: 1, opacity: actionHidden ? 0 : 1 }}
+      onPress={onAction}
+      disabled={actionDisabled}
+    >
+      <Text style={[primaryActionTextStyle, extraActionTextStyle]}>{actionText}</Text>
+    </TouchableOpacity>
+  );
+
+  if (tutorialOn && tutorialOn.actionText) {
+    const { tutorialText, name, order } = tutorialOn.actionText;
+    actionComponent = (
+      <CopilotStep text={tutorialText} order={order} name={name}>
+        <WalkableView>
+            {actionComponent}
+        </WalkableView>
+      </CopilotStep>
+    );
+  }
+
   return (
     <View
       style={{
@@ -97,16 +133,8 @@ const ModalHeader = (props) => {
             <Text style={[styles.titleTextStyle, extraTitleTextStyle]} numberOfLines={1}>{title}</Text>
           </View>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity={0.6}
-          style={{ alignItems: 'center', flex: 1, opacity: actionHidden ? 0 : 1 }}
-          onPress={onAction}
-          disabled={actionDisabled}
-        >
-          <Text style={[primaryActionTextStyle, extraActionTextStyle]}>{actionText}</Text>
-        </TouchableOpacity>
-
+            
+        {actionComponent}
       </View>
     </View>
   );

@@ -16,6 +16,25 @@ const Tooltip = ({
     currentTutorialFinished
 }) => {
     console.log(`${DEBUG_KEY}: currentTutorialFinished: `, currentTutorialFinished);
+    let component;
+    if (isLastStep && currentTutorialFinished) {
+        component = (<TouchableOpacity onPress={handleStop}>
+            <Button>Finish</Button>
+        </TouchableOpacity>);
+    }
+
+    if (isLastStep && !currentTutorialFinished) {
+        component = (<TouchableOpacity onPress={handleStop}>
+            <Button>Next</Button>
+        </TouchableOpacity>);
+    }
+
+    if (!isLastStep) {
+        component = (<TouchableOpacity onPress={handleNext}>
+            <Button>Next</Button>
+        </TouchableOpacity>);
+    }
+
     return (
         <View style={{ paddingBottom: 15, alignItems: 'center' }}>
             <View style={styles.tooltipContainer}>
@@ -23,13 +42,7 @@ const Tooltip = ({
             </View>
             <View style={[styles.bottomBar]}>
             {
-                !isLastStep ?
-                    (<TouchableOpacity onPress={handleNext}>
-                        <Button>Next</Button>
-                    </TouchableOpacity>) :
-                    (<TouchableOpacity onPress={handleStop}>
-                        <Button>Finish</Button>
-                    </TouchableOpacity>)
+                component
             }
             </View>
         </View>
@@ -45,7 +58,7 @@ const Button = ({ wrapperStyle, style, ...rest }) => (
 const mapStateToProps = (state) => {
 
     return {
-        currentTutorialFinished: state.tutorials.create_goal.create_goal_modal.nextStepNumber === 8
+        currentTutorialFinished: state.tutorials.isOnCurrentFlowLastStep
     };
 };
 

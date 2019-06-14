@@ -219,7 +219,7 @@ class Mastermind extends Component {
   renderPlus() {
     const { tutorialText, order, name, nextStepNumber } = this.props;
 
-    const tutorialView = nextStepNumber <= order ? (
+    const tutorialView = nextStepNumber <= order + 1 ? (
       <CopilotStep text={tutorialText} order={order} name={name}>
         <WalkableView style={{ height: 54, width: 54, borderRadius: 28, position: 'absolute' }} />
       </CopilotStep>
