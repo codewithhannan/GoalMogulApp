@@ -28,6 +28,7 @@ import {
 /* Asset */
 import HeaderLogo from './asset/header/header-logo-white.png';
 import Helpfulness from './asset/utils/help.png';
+import Icons from './asset/base64/Icons';
 
 // Components
 import {
@@ -180,8 +181,10 @@ class SplashScreen extends Component {
       'gotham-pro-bold': require('../assets/fonts/GothamPro-Bold.ttf')
     });
 
+    const loadBase64Icons = [Image.prefetch(Icons.CheckIcon)];
+
     await Promise
-      .all([...imageAssets, ...fontAssets])
+      .all([...imageAssets, ...fontAssets, ...loadBase64Icons])
       .catch(err => {
         console.log(`${DEBUG_KEY}: [ _loadAssetsAsync ]: err`, err);
       });
@@ -449,6 +452,7 @@ function cacheImages(images) {
     if (typeof image === 'string') {
       return Image.prefetch(image);
     }
+
     return Asset.fromModule(image).downloadAsync();
   });
 }

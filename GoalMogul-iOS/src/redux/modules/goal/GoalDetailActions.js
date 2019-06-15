@@ -49,14 +49,14 @@ const GOAL_BASE_ROUTE = 'secure/goal';
 export const scheduleNotification = (date, goal) => async (dispatch, getState) => {
   const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
   if (status !== 'granted') {
-    return Alert.alert('Denied', 'Enable push notification in your phone\'s settings to continue...');
+    return Alert.alert('Denied', 'Enable Push Notifications for GoalMogul in your phone’s settings to get reminders');
   };
 
   const { title, _id } = goal;
     
   const localNotification = {
     title: 'Goal Reminder',
-    body: `Tap here to update the progress on your goal: ${title}`,
+    body: `Tap here to update the progress on your goal: "${title}"`,
     data: {
       path: `/goal/${_id}`
     },
@@ -70,7 +70,7 @@ export const scheduleNotification = (date, goal) => async (dispatch, getState) =
   const notificationId = await Notifications
     .scheduleLocalNotificationAsync(localNotification, schedulingOptions)
     .then((notificationId) => {
-      DropDownHolder.alert('success', 'You have successfully set the reminder', '');
+      DropDownHolder.alert('success', 'Reminder set', `We’ll remind you about this goal at ${moment(date).calendar()}`);
     });
 };
 

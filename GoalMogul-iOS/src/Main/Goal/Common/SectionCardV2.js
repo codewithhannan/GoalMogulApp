@@ -12,7 +12,9 @@ import Decode from 'unescape';
 // Asset
 import bulb from '../../../asset/utils/bulb.png';
 import forward from '../../../asset/utils/forward.png';
-import checkIcon from '../../../asset/utils/check.png';
+// import checkIcon from '../../../asset/utils/check.png';
+// import { CheckIcon as checkIcon } from '../../../asset/base64/Icons';
+import Icons from '../../../asset/base64/Icons';
 import next from '../../../asset/utils/next.png';
 
 // Components
@@ -113,7 +115,7 @@ class SectionCardV2 extends Component {
         style={iconContainerStyle}
         onPress={onPress}
       >
-        <Image style={checkIconStyle} source={checkIcon} />
+        <Image style={checkIconStyle} source={Icons.CheckIcon} />
       </DelayedButton>
     );
   }
@@ -142,7 +144,7 @@ class SectionCardV2 extends Component {
     if (!isCompleted) return null;
     return (
       <View style={styles.checkIconContainerStyle}>
-        <Image source={checkIcon} style={{ ...styles.checkIconStyle, tintColor: '#4e966d' }} />
+        <Image source={Icons.CheckIcon} style={{ ...styles.checkIconStyle, tintColor: '#4e966d' }} />
       </View>
     );
   }
