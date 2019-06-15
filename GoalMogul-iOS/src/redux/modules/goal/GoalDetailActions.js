@@ -5,6 +5,7 @@ import {
   Alert
 } from 'react-native';
 import { Notifications, Permissions } from 'expo';
+import moment from 'moment';
 
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
@@ -70,7 +71,7 @@ export const scheduleNotification = (date, goal) => async (dispatch, getState) =
   const notificationId = await Notifications
     .scheduleLocalNotificationAsync(localNotification, schedulingOptions)
     .then((notificationId) => {
-      DropDownHolder.alert('success', 'Reminder set', `We’ll remind you about this goal at ${moment(date).calendar()}`);
+      DropDownHolder.alert('success', 'Reminder set', `We’ll remind you about this goal ${moment(date).calendar()}`);
     });
 };
 
