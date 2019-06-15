@@ -73,8 +73,8 @@ import { arrayUnique, clearTags } from '../../../redux/middleware/utils';
 const { Popover } = renderers;
 const { width } = Dimensions.get('window');
 
-const STEP_PLACE_HOLDER = 'Add an important step to achieving your goal...';
-const NEED_PLACE_HOLDER = 'Something you\'re specifically looking for help with';
+const STEP_PLACE_HOLDER = 'Add an important step to your goal...';
+const NEED_PLACE_HOLDER = 'Something you\'re looking for help with';
 const INITIAL_TAG_SEARCH = {
   data: [],
   skip: 0,
@@ -928,7 +928,7 @@ class NewGoalView extends Component {
           component={InputField}
           editable={this.props.uploading}
           numberOfLines={4}
-          style={styles.standardInputStyle}
+          style={{ ...styles.standardInputStyle, fontSize: 15 }}
           placeholder={placeholder}
           iconSource={cancel}
           iconStyle={styles.cancelIconStyle}
