@@ -51,11 +51,15 @@ export const scheduleNotification = (date, goal) => async (dispatch, getState) =
   if (status !== 'granted') {
     return Alert.alert('Denied', 'Enable push notification in your phone\'s settings to continue...');
   };
+
+  const { title, _id } = goal;
     
   const localNotification = {
-    title: 'Hi there',
-    body: 'Check out the title',
-    data: {},
+    title: 'Goal Reminder',
+    body: `Tap here to update the progress on your goal: ${title}`,
+    data: {
+      path: `/goal/${_id}`
+    },
   };
 
   const schedulingOptions = {
