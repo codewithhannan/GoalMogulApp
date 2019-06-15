@@ -112,17 +112,17 @@ class GoalDetailSection extends React.PureComponent {
     const goalReminderSwitch = switchByButtonIndex([
       [R.equals(0), () => {
         // Add 24 hours to current time
-        const reminderTime = moment(new Date()).add(24, 'hours')
+        const reminderTime = moment(new Date()).add(24, 'hours').toDate();
         this.props.scheduleNotification(reminderTime, goal);
       }],
       [R.equals(1), () => {
         // Add 7 days to current time
-        const reminderTime = moment(new Date()).add(7, 'days')
+        const reminderTime = moment(new Date()).add(7, 'days').toDate();
         this.props.scheduleNotification(reminderTime, goal);
       }],
       [R.equals(2), () => {
         // Add 1 months
-        const reminderTime = moment(new Date()).add(1, 'month');
+        const reminderTime = moment(new Date()).add(1, 'month').toDate();
         this.props.scheduleNotification(reminderTime, goal);
       }],
       [R.equals(3), () => {
