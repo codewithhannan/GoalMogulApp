@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import R from 'ramda';
+import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 // Component
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
@@ -26,6 +27,7 @@ import { } from '../../actions';
 const VIEWABLE_SETTING_MENU_OPTTIONS = ['Friends', 'Public', 'Private', 'Cancel'];
 const CANCEL_INDEX = 3;
 const DEBUG_KEY = '[ ViewableSettingMenu Component ]';
+const WalkableView = walkthroughable(View);
 
 class ViewableSettingMenu extends Component {
 
@@ -130,6 +132,16 @@ class ViewableSettingMenu extends Component {
             <Image style={styles.caretStyle} source={dropDown} />
           </View>
       );
+
+    let tutorialComponent = null;
+    if (this.props.tutorialOn && this.props.tutorialOn.shareToMastermind) {
+      const { tutorialText, order, name } = this.props.tutorialOn.shareToMastermind;
+      tutorialComponent = (
+        <CopilotStep text={tutorialText} order={order} name={name}>
+          <WalkableView style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} />
+        </CopilotStep>
+      );
+    }
     return (
       <View style={{ flexDirection: 'row' }}>
         <TouchableOpacity
@@ -152,6 +164,7 @@ class ViewableSettingMenu extends Component {
             {this.props.viewableSetting}
           </Text>
           {caret}
+          {tutorialComponent}
         </TouchableOpacity>
         {this.renderShareToMSButton()}
       </View>

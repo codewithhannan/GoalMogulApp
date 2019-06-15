@@ -4,27 +4,29 @@
  */
 import React from 'react';
 import {
-  TouchableOpacity,
-  View,
-  Image,
-  Text,
-  FlatList,
-  Dimensions
+    TouchableOpacity,
+    View,
+    Image,
+    Text,
+    FlatList,
+    Dimensions
 } from 'react-native';
 import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-  renderers
+    Menu,
+    MenuOptions,
+    MenuOption,
+    MenuTrigger,
+    renderers
 } from 'react-native-popup-menu';
 import _ from 'lodash';
+import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 /* Asset */
 import dropDown from '../../../asset/utils/dropDown.png';
 
 const { width } = Dimensions.get('window');
 const DEBUG_KEY = '[ UI Menu ]';
+const WalkableView = walkthroughable(View);
 
 const { Popover } = renderers;
 class MenuFactory extends React.Component {
@@ -39,6 +41,61 @@ class MenuFactory extends React.Component {
         } else {
             console.warn(`${DEBUG_KEY}: [ openMenu ]: menu is undefined`);
         }
+    }
+
+    renderItem = ({ item }) => {
+        const { iconSource, option, tutorialText, order, name, iconStyle } = item;
+        if (!tutorialText || !name) {
+            // render normally
+            return (
+                <View
+                    style={{ flexDirection: 'row', alignItems: 'center' }}
+                >
+                    {
+                        iconSource ? (
+                            <View
+                                style={{
+                                paddingTop: 10,
+                                paddingBottom: 10,
+                                paddingLeft: 10,
+                                paddingRight: 5
+                                }}
+                            >
+                                <Image source={iconSource} style={{ ...styles.iconStyle, ...iconStyle }} />
+                            </View>
+                        ) : null
+                    }
+                    <View style={{ flex: 1 }}>
+                    <MenuOption value={option} text={option} />
+                    </View>
+                </View>
+            );
+        }
+        return (
+            <CopilotStep text={tutorialText} order={order} name={name}>
+                <WalkableView
+                    style={{ flexDirection: 'row', alignItems: 'center' }}
+                >
+                    {
+                        iconSource ? (
+                            <View
+                                style={{
+                                paddingTop: 10,
+                                paddingBottom: 10,
+                                paddingLeft: 10,
+                                paddingRight: 5
+                                }}
+                            >
+                                <Image source={iconSource} style={{ ...styles.iconStyle, ...iconStyle }} />
+                            </View>
+                        ) : null
+                    }
+                    <View style={{ flex: 1 }}>
+                    <MenuOption value={option} text={option} />
+                    </View>
+                </WalkableView>
+            </CopilotStep>
+        );
     }
 
     render() {
@@ -83,34 +140,7 @@ class MenuFactory extends React.Component {
                 <MenuOptions customStyles={menuOptionsStyles}>
                     <FlatList
                         data={options}
-                        renderItem={({ item }) => {
-                            const { iconSource, option } = item;
-                            return (
-                            <View
-                                style={{ flexDirection: 'row', alignItems: 'center' }}
-                            >
-                                {
-                                iconSource
-                                    ? (
-                                    <View
-                                        style={{
-                                        paddingTop: 10,
-                                        paddingBottom: 10,
-                                        paddingLeft: 10,
-                                        paddingRight: 5
-                                        }}
-                                    >
-                                        <Image source={iconSource} style={styles.iconStyle} />
-                                    </View>
-                                    )
-                                    : null
-                                }
-                                <View style={{ flex: 1 }}>
-                                <MenuOption value={option} text={option} />
-                                </View>
-                            </View>
-                            );
-                        }}
+                        renderItem={this.renderItem}
                         keyExtractor={(item, index) => index.toString()}
                         style={{ height: 37 * options.length }}
                     />
@@ -121,80 +151,80 @@ class MenuFactory extends React.Component {
 }
 
 const getUpdatedStyles = () => {
-  let ret = _.cloneDeep(styles.menuOptionsStyles);
-  ret = _.set(ret, 'optionsContainer.width', 200);
-  ret = _.set(ret, 'optionsContainer.paddingLeft', 0);
-  ret = _.set(ret, 'optionsContainer.paddingRight', 0);
-  return ret;
+    let ret = _.cloneDeep(styles.menuOptionsStyles);
+    ret = _.set(ret, 'optionsContainer.width', 200);
+    ret = _.set(ret, 'optionsContainer.paddingLeft', 0);
+    ret = _.set(ret, 'optionsContainer.paddingRight', 0);
+    return ret;
 };
 
 
 const styles = {
-  containerStyle: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start'
-  },
-  caretContainer: {
-    paddingBottom: 8,
-    paddingRight: 8,
-    paddingLeft: 10,
-    paddingTop: 1
-  },
-  imageStyle: {
-    alignSelf: 'center',
-    marginLeft: 3,
-    marginRight: 3
-  },
-  iconStyle: {
-    height: 17,
-    width: 17,
-    tintColor: '#555'
-  },
-  // Menu related style
-  triggerContainerStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 3,
-    borderWidth: 1,
-    borderRadius: 5,
-    borderColor: '#e9e9e9',
-    shadowColor: '#ddd',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.8,
-    shadowRadius: 1,
-    elevation: 1,
-  },
-  anchorStyle: {
-    backgroundColor: 'white'
-  },
-  menuOptionsStyles: {
-    optionsContainer: {
-      width: width / 3,
-      paddingTop: 5,
-      paddingBottom: 5,
-      paddingLeft: 10,
-      paddingRight: 10
+    containerStyle: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start'
     },
-    optionsWrapper: {
+    caretContainer: {
+        paddingBottom: 8,
+        paddingRight: 8,
+        paddingLeft: 10,
+        paddingTop: 1
+    },
+    imageStyle: {
+        alignSelf: 'center',
+        marginLeft: 3,
+        marginRight: 3
+    },
+    iconStyle: {
+        height: 17,
+        width: 17,
+        tintColor: '#555'
+    },
+    // Menu related style
+    triggerContainerStyle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 3,
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: '#e9e9e9',
+        shadowColor: '#ddd',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 1,
+        elevation: 1,
+    },
+    anchorStyle: {
+        backgroundColor: 'white'
+    },
+    menuOptionsStyles: {
+        optionsContainer: {
+            width: width / 3,
+            paddingTop: 5,
+            paddingBottom: 5,
+            paddingLeft: 10,
+            paddingRight: 10
+        },
+        optionsWrapper: {
 
-    },
-    optionWrapper: {
-      flex: 1,
-      width: '100%'
-    },
-    optionTouchable: {
-      underlayColor: 'lightgray',
-      activeOpacity: 10,
-      flex: 1
-    },
-    optionText: {
-      paddingTop: 5,
-      paddingBottom: 5,
-      color: '#555'
-    },
-  }
+        },
+        optionWrapper: {
+            flex: 1,
+            width: '100%'
+        },
+        optionTouchable: {
+            underlayColor: 'lightgray',
+            activeOpacity: 10,
+            flex: 1
+        },
+        optionText: {
+            paddingTop: 5,
+            paddingBottom: 5,
+            color: '#555'
+        },
+    }
 };
 
 export default MenuFactory;

@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
+import { copilot } from 'react-native-copilot-gm';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
@@ -25,11 +26,19 @@ import {
   refreshTrendingGoals,
 } from '../../redux/modules/goal/CreateGoalActions';
 
+import {
+  showNextTutorialPage,
+  startTutorial,
+  saveTutorialState,
+  updateNextStepNumber
+} from '../../redux/modules/User/TutorialActions';
+
 // Styles
 import {
   APP_DEEP_BLUE,
   APP_BLUE
 } from '../../styles';
+import Tooltip from '../Tutorial/Tooltip';
 
 const DEBUG_KEY = '[ UI CreateGoalModal ]';
 
@@ -40,13 +49,60 @@ class CreateGoalModal extends React.Component {
     this.handleIndexChange = this.handleIndexChange.bind(this);
   }
 
+  componentDidUpdate(prevProps) {
+    if (!prevProps.showTutorial && this.props.showTutorial === true) {
+      console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: tutorial start`);
+      this.props.start();
+    }
+  }
+
   componentDidMount() {
     // Loading trending goals on modal is opened
     this.props.refreshTrendingGoals();
+
+    if (this.props.user.isOnBoarded === false && !this.props.isImportedGoal && !this.props.hasShown) {
+      // NOTE: don't show tutorial if this is imported goal
+      setTimeout(() => {
+        console.log(`${DEBUG_KEY}: [ componentDidMount ]: startTutorial: create_goal, page: create_goal_modal`);
+        this.props.startTutorial('create_goal', 'create_goal_modal');
+      }, 600);
+    }
+
+    this.props.copilotEvents.on('stop', () => {
+      console.log(`${DEBUG_KEY}: [ componentDidMount ]: create_goal_modal tutorial stop. Show next page`);
+
+      // Close create goal modal
+      Actions.pop();
+      this.props.updateNextStepNumber('create_goal', 'create_goal_modal', 8);
+      setTimeout(() => {
+        this.props.showNextTutorialPage('create_goal', 'create_goal_modal');
+      }, 400);
+    });
+
+    this.props.copilotEvents.on('stepChange', (step) => {
+      const { name, order, visible, target, wrapper } = step;
+      console.log(`${DEBUG_KEY}: [ onStepChange ]: step order: ${order}, step visible: ${name} `);
+
+      // We showing current order. SO the next step should be order + 1
+      this.props.updateNextStepNumber('create_goal', 'create_goal_modal', order + 1);
+
+      if (order === 5) {
+        if (this.newGoalView !== undefined) {
+          // this.newGoalView.scrollToEnd();
+          // return new Promise(r => setTimeout(r, 4000));
+        } else {
+          console.warn(`${DEBUG_KEY}: [ onStepChange ]: newGoalView ref is undefined`);
+        }
+      }
+    });
   }
 
   componentWillUnmount() {
-    console.log(`${DEBUG_KEY}: unmounting CreateGoalModal`);
+    console.log(`${DEBUG_KEY}: [ componentWillUnmount ]`);
+
+    // Remove tutorial listener
+    this.props.copilotEvents.off('stop');
+    this.props.copilotEvents.off('stepChange');
   }
 
   handleIndexChange = (index) => {
@@ -71,11 +127,13 @@ class CreateGoalModal extends React.Component {
       this.props.user._id,
       initializeFromState,
       () => {
-        console.log(`${DEBUG_KEY}: poping the modal`);
+        console.log(`${DEBUG_KEY}: [handleCreate] poping the modal`);
         if (this.props.callback) {
+          console.log(`${DEBUG_KEY}: [handleCreate] calling callback`);
           this.props.callback();
         }
         if (this.props.onClose) {
+          console.log(`${DEBUG_KEY}: [handleCreate] calling onClose`);
           this.props.onClose();
         } 
         Actions.pop();
@@ -115,7 +173,10 @@ class CreateGoalModal extends React.Component {
     newGoal: () => (
       <NewGoalView 
         initializeFromState={this.props.initializeFromState}
+        isImportedGoal={this.props.isImportedGoal}
         goal={this.props.goal}
+        tutorialText={this.props.tutorialText}
+        onRef={r => { this.newGoalView = r; }}
       />
     ),
     trendingGoal: TrendingGoalView,
@@ -143,6 +204,13 @@ class CreateGoalModal extends React.Component {
               }}
               onAction={this.handleCreate}
               actionDisabled={!this.props.uploading}
+              tutorialOn={{
+                actionText: {
+                  tutorialText: this.props.tutorialText[7],
+                  order: 7,
+                  name: 'create_goal_create_goal_modal_7'
+                }
+              }}
             />
             <TabView
               navigationState={this.props.navigationState}
@@ -168,13 +236,27 @@ const mapStateToProps = state => {
   const { navigationState, uploading } = state.createGoal;
   const { user } = state.user;
 
+  // Tutorial related
+  const { create_goal } = state.tutorials;
+  const { create_goal_modal } = create_goal;
+  const { hasShown, showTutorial, tutorialText } = create_goal_modal;
+
   return {
     navigationState,
     uploading,
     formVals: state.form.createGoalModal,
-    user
+    user,
+    // Tutorial related
+    hasShown, showTutorial, tutorialText
   };
 };
+
+const CreateGoalModalExplained = copilot({
+  overlay: 'svg', // or 'view'
+  animated: true, // or false
+  stepNumberComponent: () => <View />,
+  tooltipComponent: Tooltip
+})(CreateGoalModal);
 
 export default connect(
   mapStateToProps,
@@ -182,6 +264,11 @@ export default connect(
     createGoalSwitchTab,
     submitGoal,
     validate,
-    refreshTrendingGoals
+    refreshTrendingGoals,
+    // Tutorial related
+    showNextTutorialPage,
+    startTutorial,
+    saveTutorialState,
+    updateNextStepNumber
   }
-)(CreateGoalModal);
+)(CreateGoalModalExplained);

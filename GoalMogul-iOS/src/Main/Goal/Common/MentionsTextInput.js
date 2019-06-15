@@ -305,7 +305,7 @@ export default class MentionsTextInput extends Component {
                 textInputHeight: (
                   this.props.textInputMinHeight >= event.nativeEvent.contentSize.height
                   ? this.props.textInputMinHeight
-                  : event.nativeEvent.contentSize.height + 10
+                  : event.nativeEvent.contentSize.height + 15
                 ),
               });
             }}

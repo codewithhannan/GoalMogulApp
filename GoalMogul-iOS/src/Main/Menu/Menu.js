@@ -11,9 +11,11 @@ import {
 import { connect } from 'react-redux';
 import { Constants, WebBrowser } from 'expo';
 import { Actions } from 'react-native-router-flux';
+import R from 'ramda';
 
 // Components
 import DelayedButton from '../Common/Button/DelayedButton';
+import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 
 // Actions
 import {
@@ -27,6 +29,13 @@ import {
 import {
   logout
 } from '../../actions';
+
+import {
+  showNextTutorialPage,
+  startTutorial,
+  saveTutorialState,
+  updateNextStepNumber
+} from '../../redux/modules/User/TutorialActions';
 
 // Assets
 import TribeIcon from '../../asset/explore/tribe.png';
@@ -43,6 +52,35 @@ import {
 const DEBUG_KEY = '[ UI Menu ]';
 
 class Menu extends React.PureComponent {
+
+  handleTutorialOnPress = () => {
+    // Actions.push('myTutorial', { initial: false })
+    const tutorialSwitchCases = switchByButtonIndex([
+      [R.equals(0), () => {
+        console.log(`${DEBUG_KEY}: [handleTutorialOnPress]: Create goal walkthrough`);
+        Actions.pop();
+        Actions.jump('homeTab');
+        setTimeout(() => {
+          this.props.startTutorial('create_goal', 'home');
+        }, 500);
+      }],
+      [R.equals(1), () => {
+        console.log(`${DEBUG_KEY}: [handleTutorialOnPress]: Friends Tab Walkthrough`);
+        Actions.pop();
+        Actions.jump('meetTab');
+        setTimeout(() => {
+          this.props.startTutorial('meet_tab_friend', 'meet_tab');
+        }, 500);
+      }]
+    ]);
+
+    const shareToActionSheet = actionSheet(
+      ['Create Goal Walkthrough', 'Friends Tab Walkthrough', 'Cancel'],
+      2,
+      tutorialSwitchCases
+    );
+    return shareToActionSheet();
+  }
 
   handleBugReportOnPress = async () => {
     const url = BUG_REPORT_URL;
@@ -65,9 +103,10 @@ class Menu extends React.PureComponent {
     return (
       <View style={{ flex: 1 }}>
         <View style={{ ...styles.headerStyle, paddingTop }}>
-          <View style={{ flex: 1, height: 30, flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ height: 15 }} />
+          {/* <View style={{ flex: 1, height: 30, flexDirection: 'row', alignItems: 'center' }}>
             <Text style={{ fontSize: 16 }}>{name}</Text>
-          </View>
+          </View> */}
         </View>
         <DelayedButton
           activeOpacity={0.6}
@@ -75,7 +114,7 @@ class Menu extends React.PureComponent {
           style={styles.buttonStyle}
         >
           <Image source={TribeIcon} style={styles.iconStyle} />
-          <Text style={styles.titleTextStyle}>My tribes</Text>
+          <Text style={styles.titleTextStyle}>My Tribes</Text>
         </DelayedButton>
         <DelayedButton
           activeOpacity={0.6}
@@ -83,15 +122,15 @@ class Menu extends React.PureComponent {
           style={styles.buttonStyle}
         >
           <Image source={EventIcon} style={styles.iconStyle} />
-          <Text style={styles.titleTextStyle}>My events</Text>
+          <Text style={styles.titleTextStyle}>My Events</Text>
         </DelayedButton>
         <DelayedButton
           activeOpacity={0.6}
-          onPress={() => Actions.push('myTutorial', { initial: false })}
+          onPress={this.handleTutorialOnPress}
           style={styles.buttonStyle}
         >
           <Image source={TutorialIcon} style={styles.iconStyle} />
-          <Text style={styles.titleTextStyle}>Tutorial video</Text>
+          <Text style={styles.titleTextStyle}>Tutorials</Text>
         </DelayedButton>
         <DelayedButton
           activeOpacity={0.6}
@@ -99,7 +138,7 @@ class Menu extends React.PureComponent {
           style={styles.buttonStyle}
         >
           <Image source={BugReportIcon} style={styles.iconStyle} />
-          <Text style={styles.titleTextStyle}>Report bug</Text>
+          <Text style={styles.titleTextStyle}>Report Bug</Text>
         </DelayedButton>
         <DelayedButton
           activeOpacity={0.6}
@@ -115,7 +154,7 @@ class Menu extends React.PureComponent {
           <View style={{ padding: 2.5 }}>
             <Image source={LogoutIcon} style={{ ...styles.iconStyle, height: 20, width: 20 }} />
           </View>
-          <Text style={styles.titleTextStyle}>Log out</Text>
+          <Text style={styles.titleTextStyle}>Log Out</Text>
         </DelayedButton>
       </View>
     );
@@ -179,7 +218,11 @@ export default connect(
   {
     openMyEventTab,
     openMyTribeTab,
-    logout
-
+    logout,
+    // Tutorial related,
+    showNextTutorialPage,
+    startTutorial,
+    saveTutorialState,
+    updateNextStepNumber
   }
 )(Menu);

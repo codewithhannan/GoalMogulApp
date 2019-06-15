@@ -1,8 +1,10 @@
+import React from 'react';
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
 import {
   Alert
 } from 'react-native';
+import { Notifications, Permissions } from 'expo';
 
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
@@ -39,6 +41,38 @@ const BASE_ROUTE = 'secure/feed';
 const LIKE_BASE_ROUTE = `${BASE_ROUTE}/like`;
 const COMMENT_BASE_ROUTE = `${BASE_ROUTE}/comment`;
 const GOAL_BASE_ROUTE = 'secure/goal';
+
+/**
+ * 
+ * @param {string} type: ['Tomorrow', 'Next Week', 'Next Month', 'Custom']
+ */
+export const scheduleNotification = (date, goal) => async (dispatch, getState) => {
+  const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+  if (status !== 'granted') {
+    return Alert.alert('Denied', 'Enable push notification in your phone\'s settings to continue...');
+  };
+
+  const { title, _id } = goal;
+    
+  const localNotification = {
+    title: 'Goal Reminder',
+    body: `Tap here to update the progress on your goal: ${title}`,
+    data: {
+      path: `/goal/${_id}`
+    },
+  };
+
+  const schedulingOptions = {
+    time: date
+  };
+
+  console.log(`${DEBUG_KEY}: [ scheduleNotification ]: date: `, date);
+  const notificationId = await Notifications
+    .scheduleLocalNotificationAsync(localNotification, schedulingOptions)
+    .then((notificationId) => {
+      DropDownHolder.alert('success', 'You have successfully set the reminder', '');
+    });
+};
 
 /**
  * Refresh goal detail and comments by goal Id

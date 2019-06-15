@@ -192,7 +192,7 @@ export const closeProfile = (userId, pageId) => (dispatch, getState) => {
  * @param {string} userId 
  * @param {string} tab 
  */
-export const openProfile = (userId, tab) => (dispatch, getState) => {
+export const openProfile = (userId, tab, initialFilter) => (dispatch, getState) => {
   const pageId = constructPageId('user');
   dispatch({
     type: PROFILE_OPEN_PROFILE,
@@ -204,7 +204,7 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
 
   // Refresh goals on open
   if (tab) {
-    selectProfileTabByName(`${tab}`, userId, pageId)(dispatch, getState);
+    selectProfileTabByName(`${tab}`, userId, pageId, initialFilter)(dispatch, getState);
     resetFilterType(`${tab}`, userId, pageId)(dispatch, getState);
   }
 
@@ -214,8 +214,10 @@ export const openProfile = (userId, tab) => (dispatch, getState) => {
   if (mainNavigationTab !== 'homeTab' && mainNavigationTab !== undefined) {
     componentKeyToOpen = `${mainNavigationTab}_profile`;
   }
-  console.log(`${DEBUG_KEY}: componentKeyToOpen is: ${componentKeyToOpen}`);
-  Actions.push(`${componentKeyToOpen}`, { pageId, userId, hideProfileDetail: tab && tab !== 'about' });
+  console.log(`${DEBUG_KEY}: componentKeyToOpen is: ${componentKeyToOpen}, initialFilter:`, initialFilter);
+  Actions.push(`${componentKeyToOpen}`, { 
+    pageId, userId, hideProfileDetail: tab && tab !== 'about', initialFilter 
+  });
   // Actions[`${componentKeyToOpen}`].call({ pageId, userId });
 
   const { token } = getState().user;
@@ -506,7 +508,7 @@ export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
 /**
  * select a tab by tab name
  */
-export const selectProfileTabByName = (tab, userId, pageId) => (dispatch, getState) => {
+export const selectProfileTabByName = (tab, userId, pageId, initialFilter) => (dispatch, getState) => {
   const routes = getUserDataByPageId(getState(), userId, pageId, 'navigationState.routes');
   
   let index = 0;
@@ -515,13 +517,13 @@ export const selectProfileTabByName = (tab, userId, pageId) => (dispatch, getSta
       index = i;
     }
   });
-  selectProfileTab(index, userId, pageId)(dispatch, getState);
+  selectProfileTab(index, userId, pageId, initialFilter)(dispatch, getState);
 };
 
 /**
  * Select a tab by index
  */
-export const selectProfileTab = (index, userId, pageId) => (dispatch, getState) => {
+export const selectProfileTab = (index, userId, pageId, initialFilter) => (dispatch, getState) => {
   dispatch({
     type: PROFILE_SWITCH_TAB,
     payload: {
@@ -540,8 +542,8 @@ export const selectProfileTab = (index, userId, pageId) => (dispatch, getState) 
   const data = getUserDataByPageId(getState(), userId, pageId, `${tab}.data`);
 
   // Only attempt to load if there is no data
-  if (!data || data.length === 0) {
-    handleTabRefresh(tab, userId, pageId)(dispatch, getState);
+  if ((!data || data.length === 0)) {
+    handleTabRefresh(tab, userId, pageId, initialFilter)(dispatch, getState);
   }
 };
 
@@ -585,7 +587,7 @@ export const handleCurrentTabRefresh = ({ userId, pageId }) => (dispatch, getSta
  * Refresh for profile tab
  * @params tab: one of ['about', 'goals', 'posts', 'needs']
  */
-export const handleTabRefresh = (tab, userId, pageId) => (dispatch, getState) => {
+export const handleTabRefresh = (tab, userId, pageId, initialFilter) => (dispatch, getState) => {
   const { token } = getState().user;
 
   if (tab === 'about') return; // we don't need to refresh about
@@ -598,11 +600,15 @@ export const handleTabRefresh = (tab, userId, pageId) => (dispatch, getState) =>
   const { filter, limit, refreshing } = page;
 
   if (!user || !user._id || refreshing) return;
-  console.log(`${DEBUG_KEY}: refresh tab for user with name ${user.name} and id: ${user._id} and pageId: ${pageId}`);
+  console.log(`${DEBUG_KEY}: refresh tab ${tab} for user with name ${user.name} and id: ${user._id} and pageId: ${pageId}`);
   const userIdToUser = user._id;
-  const filterToUse = profileFilterAdapter(filter, tab);
 
+  let filterToAdapt = filter;
+  if (initialFilter && _.has(initialFilter, `${tab}.filter`)) {
+    filterToAdapt = _.merge(filter, _.get(initialFilter, `${tab}.filter`));
+  }
 
+  const filterToUse = profileFilterAdapter(filterToAdapt, tab);
   dispatch({
     type: PROFILE_REFRESH_TAB,
     payload: {

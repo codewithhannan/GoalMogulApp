@@ -32,6 +32,8 @@ import goalIcon from '../../asset/header/home-logo.png';
 // Components
 import ProfileImage from './ProfileImage';
 
+const DEBUG_KEY = '[ UI RefPreview ]';
+
 class RefPreview extends Component {
   handleOnPress(item, postType, goalRef) {
     // console.log('item is : ', item);
@@ -181,11 +183,16 @@ const switchCaseItem = (val, type) => switchCaseFWithVal(val)({
       };
     }
 
+    let contentText = item.content && item.content.text ? item.content.text : undefined;
+    if (!contentText && item.mediaRef) {
+      contentText = 'Posted an Image';
+    }
+
     return {
       title: item.owner ? item.owner.name : undefined,
       // TODO: TAG: convert this to string later on
-      content: item.content ? item.content.text : undefined,
-      picture: item.media ? item.media : undefined,
+      content: contentText,
+      picture: item.mediaRef ? item.mediaRef : undefined,
       defaultPicture: postIcon,
     };
   },

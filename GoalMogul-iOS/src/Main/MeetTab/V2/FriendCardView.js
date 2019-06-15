@@ -54,6 +54,9 @@ class FriendCardView extends React.PureComponent {
     );
   }
 
+  /**
+   * Starting 0.4.1, we don't render this button to clear more space for Goals and Needs
+   */
   renderButton(item, shouldRenderNextButton) {
     if (shouldRenderNextButton === false) {
       return null;
@@ -166,7 +169,7 @@ class FriendCardView extends React.PureComponent {
         {this.renderProfileImage(item)}
         {this.renderProfile(item)}
         <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: 35 }} />
-        {this.renderButton(item, shouldRenderNextButton)}
+        {/* {this.renderButton(item, shouldRenderNextButton)} */}
       </DelayedButton>
     );
   }

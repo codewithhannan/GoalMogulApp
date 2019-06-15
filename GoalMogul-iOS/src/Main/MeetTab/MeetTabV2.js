@@ -6,11 +6,13 @@ import {
     Image,
     ScrollView,
     RefreshControl,
-    Platform
+    Platform,
+    Share
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Constants } from 'expo';
 import { Actions } from 'react-native-router-flux';
+import { copilot, walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 /* Components */
 import FriendCardView from './V2/FriendCardView';
@@ -29,6 +31,13 @@ import {
     meetContactSync
 } from '../../actions';
 
+import {
+    showNextTutorialPage,
+    startTutorial,
+    saveTutorialState,
+    updateNextStepNumber
+} from '../../redux/modules/User/TutorialActions';
+
 /* Assets */
 import People from '../../asset/utils/People.png';
 import ContactSyncIcon from '../../asset/utils/ContactSync.png';
@@ -46,20 +55,61 @@ import {
 
 /* Constants */
 import { IPHONE_MODELS } from '../../Utils/Constants';
+import { generateInvitationLink } from '../../redux/middleware/utils';
+import Tooltip from '../Tutorial/Tooltip';
 
 const DEBUG_KEY = '[ UI MeetTabV2 ]'; 
 const NumCardsToShow = Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
   ? 3 : 5;
+const WalkableView = walkthroughable(View);
 
 class MeetTabV2 extends React.Component {
     constructor(props) {
         super(props);
         this.handleOnRefresh = this.handleOnRefresh.bind(this);
     }
+    
+    componentDidUpdate(prevProps) {
+        if (!prevProps.showTutorial && this.props.showTutorial === true) {
+            console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: [ start ]`);
+            this.props.start();
+        }
+    }
+
     componentDidMount() {
         // Preloading data by calling handleOnRefresh
         this.handleOnRefresh();
+
+        // We always fire this event since it's only stored locally
+        if (!this.props.hasShown) {
+            setTimeout(() => {
+                console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ startTutorial ]`);
+                this.props.startTutorial('meet_tab_friend', 'meet_tab');
+            }, 600);
+        }
+
+        this.props.copilotEvents.on('stop', () => {
+            console.log(`${DEBUG_KEY}: [ componentDidMount ]: tutorial stop.`);
+            this.props.showNextTutorialPage('meet_tab_friend', 'meet_tab');
+
+            // Right now we don't need to have conditions here
+            this.props.resetTutorial('meet_tab_friend');
+        });
+
+        this.props.copilotEvents.on('stepChange', (step) => {
+            const { name, order, visible, target, wrapper } = step;
+            console.log(`${DEBUG_KEY}: [ onStepChange ]: step order: ${order}, step visible: ${name} `);
+        
+            // We showing current order. SO the next step should be order + 1
+            this.props.updateNextStepNumber('meet_tab_friend', 'meet_tab', order + 1);
+        });
+    }
+
+    componentWillUnmount() {
+        this.props.copilotEvents.off('stop');
+        this.props.copilotEvents.off('stepChange');
+        this.props.saveTutorialState();
     }
 
     keyExtractor = (item) => item._id;
@@ -97,14 +147,28 @@ class MeetTabV2 extends React.Component {
     }
 
     handleInviteFriends = () => {
-        Actions.push('friendInvitationView');
+        // With the new step by step tutorial, this is directly showing the more options
+        // Actions.push('friendInvitationView');
+        console.log(`${DEBUG_KEY}: user chooses to see more options`);
+        const { user, inviteCode } = this.props;
+        console.log(`${DEBUG_KEY}: user is: `, user);
+        const { name } = user;
+        const inviteLink = generateInvitationLink(inviteCode);
+        // const title = `Your friend ${name} is asking you to help achieve his goals on GoalMogul`;
+        const message = 'Hey, I’m using GoalMogul to get more stuff done and better myself. ' + 
+        'Can you check out this link and suggest ways to help me achieve my goals faster? Thanks! \n';
+
+        Share.share({ title: undefined, message, url: inviteLink }, {});
     }
 
     // List header is the FriendInvitationCTR, Sync Conacts and Discover Friends option
     renderListHeader() {
         return (
             <View>
-                <FriendInvitationCTR handleInviteFriends={this.handleInviteFriends.bind(this)} />
+                <FriendInvitationCTR 
+                    handleInviteFriends={this.handleInviteFriends.bind(this)}
+                    tutorialText={this.props.tutorialText[1]}
+                />
                 <View 
                     style={{ 
                         flexDirection: 'row', 
@@ -128,18 +192,23 @@ class MeetTabV2 extends React.Component {
                         <Text style={styles.CTRTextStyle}>Sync Contacts</Text>
                     </DelayedButton>
                     <View style={{ height: 25, width: 0.5, backgroundColor: 'lightgray' }} />
-                    <DelayedButton 
-                        activeOpacity={0.6}
-                        style={styles.CTRContainerStyle} 
-                        onPress={this.handleDiscoverFriend}
-                    >
-                        <Image 
-                            source={People} 
-                            style={styles.iconStyle} 
-                            resizeMode='contain' 
-                        />
-                        <Text style={styles.CTRTextStyle}>Discover Friends</Text>
-                    </DelayedButton>
+
+                    <CopilotStep text={this.props.tutorialText[0]} order={0} name="discover_friend">
+                        <WalkableView>
+                            <DelayedButton 
+                                activeOpacity={0.6}
+                                style={styles.CTRContainerStyle} 
+                                onPress={this.handleDiscoverFriend}
+                            >
+                                <Image 
+                                    source={People} 
+                                    style={styles.iconStyle} 
+                                    resizeMode='contain' 
+                                />
+                                <Text style={styles.CTRTextStyle}>Discover Friends</Text>
+                            </DelayedButton>
+                        </WalkableView>
+                    </CopilotStep>
                 </View>
                 
             </View>
@@ -269,7 +338,17 @@ class MeetTabV2 extends React.Component {
         const { incomingRequests, outgoingRequests, friends, friendCount } = this.props;
         return (
             <View style={{ flex: 1, backgroundColor: 'white' }}>
-                <SearchBarHeader rightIcon='menu' />
+                <SearchBarHeader 
+                    rightIcon='menu' 
+                    tutorialOn={{
+                        rightIcon: {
+                            iconType: 'menu',
+                            tutorialText: this.props.tutorialText[2],
+                            order: 2,
+                            name: 'meettab_menu'
+                        }
+                    }}
+                />
                 <ScrollView
                     refreshControl={
                         <RefreshControl
@@ -332,18 +411,30 @@ const styles = {
 
 const mapStateToProps = state => {
     // Use new selector to cache the format the meettab data
+    const { user } = state.user;
+    const { inviteCode } = user;
     const { requests, friends } = state.meet;
     const { data, count } = friends;
     const { incoming, outgoing } = requests;
     const incomingRequests = getIncomingUserFromFriendship(state);
     const outgoingRequests = getOutgoingUserFromFriendship(state);
+
+    const { meet_tab_friend } = state.tutorials;
+    const { meet_tab } = meet_tab_friend;
+    const { tutorialText, showTutorial, hasShown } = meet_tab;
+
     return {
         // Meet tab is on refreshing state if one of them is refreshing
         refreshing: incoming.refreshing || outgoing.refreshing || friends.refreshing, 
         incomingRequests,
         outgoingRequests,
         friends: data,
-        friendCount: count
+        friendCount: count,
+        user,
+        inviteCode,
+        tutorialText,
+        showTutorial,
+        hasShown
     };
 };
 
@@ -367,10 +458,21 @@ const requestDataToRender = (incomingRequests, outgoingRequests, threshold) => {
     return dataToRender;
 };
 
+const MeetTabV2Explained = copilot({
+    overlay: 'svg', // or 'view'
+    animated: true, // or false
+    stepNumberComponent: () => <View />,
+    tooltipComponent: Tooltip
+})(MeetTabV2);
+
 export default connect(
     mapStateToProps,
     {
         handleRefresh,
-        meetContactSync
+        meetContactSync,
+        showNextTutorialPage,
+        startTutorial,
+        saveTutorialState,
+        updateNextStepNumber
     }
-)(MeetTabV2);
+)(MeetTabV2Explained);

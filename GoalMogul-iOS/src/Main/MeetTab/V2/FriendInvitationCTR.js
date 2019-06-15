@@ -6,9 +6,9 @@ import {
     View,
     Image,
     Text,
-    TouchableOpacity,
     Dimensions
 } from 'react-native';
+import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 /* Styles */
 import { APP_BLUE_BRIGHT, APP_BLUE } from '../../../styles';
@@ -22,6 +22,7 @@ import DelayedButton from '../../Common/Button/DelayedButton';
 
 /* Constants */
 const { width } = Dimensions.get('window');
+const WalkableView = walkthroughable(View);
 
 class FriendInvitationCTR extends React.PureComponent {
     handleOnPress = () => {
@@ -36,7 +37,10 @@ class FriendInvitationCTR extends React.PureComponent {
                 style={styles.buttonContainerStyle}
             >
                 <Text style={styles.buttonTextStyle}>Invite friends now</Text>
-            </DelayedButton>
+                <CopilotStep text={this.props.tutorialText} order={1} name="invite_friend">
+                    <WalkableView style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} />
+                </CopilotStep>
+            </DelayedButton>            
         );
     }
 

@@ -10,6 +10,8 @@ import timeago from 'timeago.js';
 import _ from 'lodash';
 import R from 'ramda';
 import { Actions } from 'react-native-router-flux';
+import moment from 'moment';
+import DateTimePicker from 'react-native-modal-datetime-picker';
 
 // Actions
 import {
@@ -32,7 +34,8 @@ import {
 import {
   editGoal,
   shareGoalToMastermind,
-  markGoalAsComplete
+  markGoalAsComplete,
+  scheduleNotification
 } from '../../../redux/modules/goal/GoalDetailActions';
 
 import { deleteGoal, openProfile } from '../../../actions';
@@ -48,6 +51,7 @@ import LoveIcon from '../../../asset/utils/love.png';
 import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 import EditIcon from '../../../asset/utils/edit.png';
+import BellIcon from '../../../asset/utils/bell_icon.png';
 import CheckIcon from '../../../asset/utils/check.png';
 import ProgressBarMedium from '../../../asset/utils/progressBar_medium.png';
 import ProgressBarMediumCounter from '../../../asset/utils/progressBar_counter_medium.png';
@@ -83,8 +87,10 @@ class GoalDetailSection extends React.PureComponent {
     super(props);
     this.state = {
       numberOfLines: 2,
-      seeMore: false
+      seeMore: false,
+      goalReminderDatePicker: false
     };
+    this.handleGoalReminder = this.handleGoalReminder.bind(this);
   }
 
   componentDidMount() {
@@ -98,6 +104,42 @@ class GoalDetailSection extends React.PureComponent {
       console.log(`${DEBUG_KEY}: [ openHeadlineMenu ]`);
       this.headline.openMenu();
     }
+  }
+
+  // Handle user clicks on option "Remind me about this"
+  handleGoalReminder = () => {
+    const goal = this.props.item;
+    const goalReminderSwitch = switchByButtonIndex([
+      [R.equals(0), () => {
+        // Add 24 hours to current time
+        const reminderTime = moment(new Date()).add(24, 'hours')
+        this.props.scheduleNotification(reminderTime, goal);
+      }],
+      [R.equals(1), () => {
+        // Add 7 days to current time
+        const reminderTime = moment(new Date()).add(7, 'days')
+        this.props.scheduleNotification(reminderTime, goal);
+      }],
+      [R.equals(2), () => {
+        // Add 1 months
+        const reminderTime = moment(new Date()).add(1, 'month');
+        this.props.scheduleNotification(reminderTime, goal);
+      }],
+      [R.equals(3), () => {
+        // Show customized time picker
+        this.setState({
+          ...this.state,
+          goalReminderDatePicker: true
+        });
+      }]
+    ]);
+
+    const shareToActionSheet = actionSheet(
+      ['Tomorrow', 'Next Week', 'Next Month', 'Custom', 'Cancel'],
+      4,
+      goalReminderSwitch
+    );
+    return shareToActionSheet();
   }
 
   handleOnLayout = (event) => {
@@ -181,11 +223,17 @@ class GoalDetailSection extends React.PureComponent {
     const caret = {
       self: {
         options: [
-          { option: 'Edit Goal', iconSource: EditIcon },
-          { option: 'Share to Goal Feed', iconSource: ShareIcon },
+          { option: 'Remind me about this', iconSource: BellIcon, iconStyle: { width: 14, height: 16, marginLeft: 1, marginRight: 1 },
+            tutorialText: this.props.tutorialText[0], order: 0, name: 'goal_detail_goal_detail_page_0' },
+          { option: 'Share to Goal Feed', iconSource: ShareIcon, 
+            tutorialText: this.props.tutorialText[1], order: 1, name: 'goal_detail_goal_detail_page_1' },
           { option: isCompleted ? 'Unmark as Complete' : 'Mark as Complete',
-            iconSource: isCompleted ? UndoIcon : CheckIcon },
-          { option: 'Delete', iconSource: TrashIcon },
+            iconSource: isCompleted ? UndoIcon : CheckIcon,
+            tutorialText: this.props.tutorialText[2], order: 2, name: 'goal_detail_goal_detail_page_2' },
+          { option: 'Edit Goal', iconSource: EditIcon, 
+            tutorialText: this.props.tutorialText[3], order: 3, name: 'goal_detail_goal_detail_page_3' },
+          { option: 'Delete', iconSource: TrashIcon,
+            tutorialText: this.props.tutorialText[4], order: 4, name: 'goal_detail_goal_detail_page_4' },
         ],
         onPress: (val) => {
           const markCompleteOnPress = isCompleted
@@ -212,7 +260,10 @@ class GoalDetailSection extends React.PureComponent {
           if (val === 'Edit Goal') return this.props.editGoal(item, this.props.pageId);
           if (val === 'Share to Goal Feed') return this.props.shareGoalToMastermind(_id, this.props.pageId);
           if (val === 'Unmark as Complete' || val === 'Mark as Complete') {
-            markCompleteOnPress();
+            return markCompleteOnPress();
+          }
+          if (val === 'Remind me about this') {
+            this.handleGoalReminder();
           }
         },
         shouldExtendOptionLength: true
@@ -284,6 +335,32 @@ class GoalDetailSection extends React.PureComponent {
           {this.renderSeeMore(text)}
         </View>
       </View>
+    );
+  }
+
+  renderGoalReminderDatePicker() {
+    const goal = this.props.item;
+    return (
+      <DateTimePicker
+        isVisible={this.state.goalReminderDatePicker}
+        mode='datetime'
+        titleIOS='Pick a time'
+        minimumDate={new Date()}
+        onConfirm={(date) => {
+          this.setState({
+            ...this.state,
+            goalReminderDatePicker: false
+          }, () => {
+            this.props.scheduleNotification(date, goal);
+          });
+        }}
+        onCancel={() => {
+          this.setState({
+            ...this.state,
+            goalReminderDatePicker: false
+          });
+        }}
+      />
     );
   }
 
@@ -439,6 +516,7 @@ class GoalDetailSection extends React.PureComponent {
         <View style={styles.containerStyle}>
           {this.renderActionButtons(item)}
         </View>
+        {this.renderGoalReminderDatePicker()}
       </View>
     );
   }
@@ -483,8 +561,11 @@ const styles = {
 
 const mapStateToProps = state => {
   const { userId } = state.user;
+  const { tutorialText } = state.tutorials.goal_detail.goal_detail_page;
+
   return {
-    userId
+    userId,
+    tutorialText
   };
 };
 
@@ -497,6 +578,7 @@ export default connect(
     createCommentFromSuggestion,
     chooseShareDest,
     editGoal,
+    scheduleNotification,
     shareGoalToMastermind,
     markGoalAsComplete,
     deleteGoal,

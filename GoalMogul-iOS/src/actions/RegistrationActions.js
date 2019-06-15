@@ -471,10 +471,11 @@ export const registrationNextContactSync = ({ skip }) => {
       dispatch({
         type,
       });
-      if (!hasTutorialShown) {
-        Actions.replace('tutorial');
-        return;
-      }
+      // Starting version 0.4.2, we replace this with step by step tutorial
+      // if (!hasTutorialShown) {
+      //   Actions.replace('tutorial');
+      //   return;
+      // }
       Actions.replace('drawer');
     };
   }
@@ -615,10 +616,11 @@ export const registrationContactSyncDone = () => {
       type: REGISTRATION_CONTACT_SYNC_DONE
     });
 
-    if (!hasTutorialShown) {
-      Actions.replace('tutorial');
-      return;
-    }  
+    // Starting version 0.4.2, we replace this with step by step tutorial
+    // if (!hasTutorialShown) {
+    //   Actions.replace('tutorial');
+    //   return;
+    // }  
     // Actions.mainTabs();
     Actions.replace('drawer');
   };

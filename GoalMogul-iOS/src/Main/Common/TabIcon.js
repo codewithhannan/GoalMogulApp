@@ -19,8 +19,14 @@ import { Logger } from '../../redux/middleware/utils/Logger';
 const CHAT_COUNT_UPDATE_INTERVAL = 1000;
 const NOTIFICATION_COUNT_UPDATE_INTERVAL = 10000;
 const DEBUG_KEY = '[ UI TabIcon ]';
+const TUTORIAL_KEY = 'meet_tab_icon'
 
 class TabIcon extends React.PureComponent {
+  componentDidUpdate(prevProps) {
+    // Tutorial logics
+    // componentDidUpdate receive this new props {@showTutorial} for tutorial reducers
+    // And it’s navigation.state.key is meet tab, then start tutorial on this guy
+  }
 
   componentDidMount() {
     const { navigation } = this.props;
@@ -74,11 +80,15 @@ class TabIcon extends React.PureComponent {
     switch (navigation.state.key) {
       case 'homeTab':
         return (
-          <Image source={IconHome} style={style} />
+          <View style={styles.iconContainerStyle}>
+            <Image source={IconHome} style={style} />
+          </View>
         );
       case 'meetTab':
         return (
-          <Image source={IconMeet} style={style} />
+          <View style={styles.iconContainerStyle}>
+            <Image source={IconMeet} style={style} />
+          </View>
         );
       case 'notificationTab':
         return (
@@ -110,7 +120,9 @@ class TabIcon extends React.PureComponent {
         );
       case 'exploreTab':
         return (
-          <Image source={IconStar} style={style} />
+          <View style={styles.iconContainerStyle}>
+            <Image source={IconStar} style={style} />
+          </View>
         );
       default:
         return (
@@ -160,6 +172,8 @@ const mapStateToProps = state => {
   const { unreadCount } = state.notification.unread;
   const { chatCount } = state.navigationTabBadging;
   const { activeChatRoomId } = state.chatRoom;
+
+  // TODO: @Jia Tutorial get showTutorial from tutorial reducer for this TUTORIAL_KEY
   return {
     notificationCount: unreadCount,
     chatCount,

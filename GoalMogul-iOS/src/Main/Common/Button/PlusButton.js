@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   Animated,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 
 /* asset */

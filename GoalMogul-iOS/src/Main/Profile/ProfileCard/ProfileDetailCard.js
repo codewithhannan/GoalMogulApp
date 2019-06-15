@@ -211,6 +211,7 @@ class ProfileDetailCard extends Component {
           text='Message'
           style={{ marginTop: 1 }}
           onPress={() => this.handleMessageButtonOnPress()}
+          containerStyle={{ backgroundColor: '#f3f3f3' }}
         />
       </View>
 
@@ -224,6 +225,7 @@ class ProfileDetailCard extends Component {
           text='Edit profile'
           source={edit}
           onPress={() => this.handleEditOnPressed()}
+          containerStyle={{ backgroundColor: '#f3f3f3' }}
         />
       );
     }

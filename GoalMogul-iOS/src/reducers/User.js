@@ -16,6 +16,10 @@ import {
   SETTING_UPDATE_NOTIFICATION_PREFERENCE_SUCCESS
 } from '../redux/modules/User/Setting';
 
+import {
+  TUTORIAL_MARK_USER_ONBOARDED
+} from '../redux/modules/User/Tutorials';
+
 const INITIAL_STATE = {
   userId: '',
   token: '',
@@ -110,6 +114,19 @@ export default (state = INITIAL_STATE, action) => {
       const { notificationPreferences } = action.payload;
       newState = _.set(newState, 'user.notificationPreferences', notificationPreferences);
       newState = _.set(newState, 'updateAccountSetting', false);
+      return newState;
+    }
+
+    case TUTORIAL_MARK_USER_ONBOARDED: {
+      const { userId } = action.payload;
+      let newState = _.cloneDeep(state);
+      if (newState.userId !== userId) {
+        console.warn(`${DEBUG_KEY}: [ ${action.type} ]: not updating current user. 
+          Current user: ${newState.user.userId}, user updated: ${userId}`);
+        return newState;
+      }
+
+      newState = _.set(newState, 'user.isOnBoarded', true);
       return newState;
     }
 

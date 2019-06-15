@@ -51,6 +51,8 @@ import ChatRoomReducers from '../redux/modules/chat/ChatRoomReducers';
 import TabIconReducers from '../redux/modules/navigation/TabIconReducers';
 import ChatRoomMembersReducers from '../redux/modules/chat/ChatRoomMembersReducers';
 import ShareToChatReducers from '../redux/modules/chat/ShareToChatReducers';
+// Step by Step tutorial reducers
+import Tutorials from '../redux/modules/User/Tutorials';
 
 const rootPersistConfig = {
   key: 'root',
@@ -105,6 +107,7 @@ const reducers = combineReducers({
   chatRoom: ChatRoomReducers,
   chatRoomMembers: ChatRoomMembersReducers,
   navigationTabBadging: TabIconReducers,
+  tutorials: Tutorials
 });
 
 export default persistReducer(rootPersistConfig, reducers);

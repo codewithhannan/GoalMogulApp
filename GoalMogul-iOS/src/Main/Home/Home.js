@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { View, TouchableWithoutFeedback, Image, AppState, Animated } from 'react-native';
+import { View, AppState } from 'react-native';
 import { connect } from 'react-redux';
 import { TabView } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
 import { Notifications } from 'expo';
+import { copilot } from 'react-native-copilot-gm';
 
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup';
@@ -30,6 +31,16 @@ import {
   handlePushNotification
 } from '../../redux/modules/notification/NotificationActions';
 
+import {
+  showNextTutorialPage,
+  startTutorial,
+  saveTutorialState,
+  updateNextStepNumber,
+  pauseTutorial,
+  markUserAsOnboarded,
+  resetTutorial
+} from '../../redux/modules/User/TutorialActions';
+
 // Assets
 import Logo from '../../asset/header/logo.png';
 import Activity from '../../asset/utils/activity.png';
@@ -40,6 +51,7 @@ import { APP_DEEP_BLUE } from '../../styles';
 // Utils
 import { Logger } from '../../redux/middleware/utils/Logger';
 import PlusButton from '../Common/Button/PlusButton';
+import Tooltip from '../Tutorial/Tooltip';
 
 const TabIconMap = {
   goals: {
@@ -81,6 +93,26 @@ class Home extends Component {
     this._notificationSubscription = undefined;
   }
 
+  componentDidUpdate(prevProps) {
+    if (!prevProps.showTutorial && this.props.showTutorial === true) {
+      console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: tutorial start: `, this.props.nextStepNumber);
+      this.props.start();
+    }
+
+    if (!_.isEqual(prevProps.user, this.props.user)) {
+      console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: prev user: `, prevProps.user);
+      console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: now user: `, this.props.user);
+    }
+
+    if (!_.isEqual(prevProps.user, this.props.user) && this.props.user.isOnBoarded === false) {
+      setTimeout(() => {
+        console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: startTutorial: create_goal, page: home`);
+        // TODO: @Jia Tutorial uncomment
+        this.props.startTutorial('create_goal', 'home');
+      }, 1100);
+    }
+  }
+
 
   componentDidMount() {
     AppState.addEventListener('change', this.handleAppStateChange);
@@ -89,10 +121,47 @@ class Home extends Component {
     // Set timer to fetch profile again if previously failed
     this.setTimer();
     this.props.checkIfNewlyCreated();
+
+    this.props.copilotEvents.on('stop', () => {
+      console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ copilotEvents ] 
+        tutorial stop. show next page. Next step number is: `, this.props.nextStepNumber);
+
+      if (this.props.nextStepNumber === 1) {
+        Actions.createGoalModal();
+        this.props.pauseTutorial('create_goal', 'home', 1);
+        setTimeout(() => {
+          this.props.showNextTutorialPage('create_goal', 'home');
+        }, 600);
+        return;
+      }
+
+      if (this.props.nextStepNumber === 2) {
+        this.props.updateNextStepNumber('create_goal', 'home', 2);
+        this.props.showNextTutorialPage('create_goal', 'home');
+
+        console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ copilotEvents ]: markUserAsOnboarded`);
+        this.props.markUserAsOnboarded();
+        this.props.resetTutorial('create_goal');
+      }
+    });
+
+    this.props.copilotEvents.on('stepChange', (step) => {
+      const { order, name } = step;
+      console.log(`${DEBUG_KEY}: [ onStepChange ]: step order: ${order}, step visible: ${name} `);
+      // console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ stepChange ]: step change to ${step.order}`);
+      // TODO: if later we have more steps in between, change here
+      // This is called before changing to a new step
+      this.props.updateNextStepNumber('create_goal', 'home', order + 1);
+    });
   }
 
   componentWillUnmount() {
     console.log(`${DEBUG_KEY}: [ componentWillUnmount ]`);
+
+    // Remove tutorial listener
+    this.props.copilotEvents.off('stop');
+    this.props.copilotEvents.off('stepChange');
+
     AppState.removeEventListener('change', this.handleAppStateChange);
     this._notificationSubscription.remove();
     // Remove timer in case app crash
@@ -136,7 +205,7 @@ class Home extends Component {
     // As we move the create option here, we no longer need to care about the tab
     Actions.createGoalButtonOverlay({ tab: 'mastermind', onClose: () => {
       this.props.closeCreateOverlay('mastermind');
-    } });
+    }});
   }
 
   handleAppStateChange = (nextAppState) => {
@@ -236,7 +305,15 @@ class Home extends Component {
   _renderScene = ({ route }) => {
     switch (route.key) {
       case 'goals': 
-        return <Mastermind ref={m => (this.mastermind = m)} />;
+        return (
+          <Mastermind 
+            ref={m => (this.mastermind = m)} 
+            tutorialText={this.props.tutorialText[0]}
+            nextStepNumber={this.props.nextStepNumber}
+            order={0}
+            name='create_goal_home_0'
+          />
+        );
 
       case 'activity': 
         return <ActivityFeed ref={a => (this.activityFeed = a)} />;
@@ -248,6 +325,7 @@ class Home extends Component {
 
   _keyExtractor = (item, index) => index;
 
+  // Starting version 0.4.2, we change back to each screen has one plus button
   renderPlus() {
     return (
       <PlusButton
@@ -263,10 +341,22 @@ class Home extends Component {
       1. use flatlist instead of scrollview
       2. assign key on for TabButton
     */
+    const tutorialOn = this.props.nextStepNumber >= 2
+      ? {
+        rightIcon: {
+          iconType: 'menu',
+          tutorialText: this.props.tutorialText[1],
+          order: 1,
+          name: 'create_goal_home_menu'
+        }
+      } : undefined;
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={styles.homeContainerStyle}>
-          <SearchBarHeader rightIcon='menu' />
+          <SearchBarHeader 
+            rightIcon='menu' 
+            tutorialOn={tutorialOn}
+          />
           <TabView
             ref={ref => (this.tab = ref)}
             navigationState={this.state.navigationState}
@@ -274,7 +364,7 @@ class Home extends Component {
             renderTabBar={this._renderHeader}
             onIndexChange={this._handleIndexChange}
           />
-          {this.renderPlus()}
+          {/* {this.renderPlus()} */}
         </View>
       </MenuProvider>
     );
@@ -289,13 +379,23 @@ const mapStateToProps = state => {
   const needRefreshActivity = _.isEmpty(state.home.activityfeed.data);
   const { user } = state.user;
 
+  // Tutorial related
+  const { create_goal } = state.tutorials;
+  const { home } = create_goal;
+  const { hasShown, showTutorial, tutorialText, nextStepNumber } = home;
+
   return {
     showingModal,
     showPlus,
     user,
     needRefreshActivity,
     needRefreshMastermind,
-    userId
+    userId,
+    // Tutorial related
+    hasShown,
+    showTutorial,
+    tutorialText,
+    nextStepNumber
   };
 };
 
@@ -343,6 +443,13 @@ const styles = {
   }
 };
 
+const HomeExplained = copilot({
+  overlay: 'svg', // or 'view'
+  animated: true, // or false
+  stepNumberComponent: () => <View />,
+  tooltipComponent: Tooltip
+})(Home);
+
 export default connect(
   mapStateToProps,
   {
@@ -358,8 +465,16 @@ export default connect(
     refreshFeed,
     fetchProfile,
     checkIfNewlyCreated,
-    closeCreateOverlay
+    closeCreateOverlay,
+    /* Tutorial related */
+    showNextTutorialPage,
+    startTutorial,
+    saveTutorialState,
+    updateNextStepNumber,
+    pauseTutorial,
+    markUserAsOnboarded,
+    resetTutorial
   },
   null,
   { withRef: true }
-)(Home);
+)(HomeExplained);

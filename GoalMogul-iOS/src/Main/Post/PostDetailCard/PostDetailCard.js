@@ -11,6 +11,7 @@ import {
   MenuProvider
 } from 'react-native-popup-menu';
 import _ from 'lodash';
+import { getBottomSpace } from 'react-native-iphone-x-helper';
 
 // Actions
 import {
@@ -121,7 +122,7 @@ class PostDetailCard extends React.PureComponent {
       Animated.delay(timeout),
       Animated.parallel([
         Animated.timing(this.state.commentBoxPadding, {
-          toValue: e.endCoordinates.height - TOTAL_HEIGHT,
+          toValue: e.endCoordinates.height - TOTAL_HEIGHT - getBottomSpace(),
           duration: (210 - timeout)
         }),
       ])

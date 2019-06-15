@@ -1,3 +1,19 @@
+/**
+ * TODO: add prop types for this component. Start documenting from version 0.4.1
+ * 
+ * props
+ * 
+ * tutorialOn: describe if there is any tutorial for the component
+ * Sample usage is at:
+ * tutorialOn={{
+      rightIcon: {
+          iconType: 'menu',
+          tutorialText: this.props.tutorialText[2],
+          order: 2,
+          name: 'meettab_menu'
+      }
+  }}
+ */
 import React, { Component } from 'react';
 import {
   View,
@@ -11,6 +27,7 @@ import R from 'ramda';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { Constants } from 'expo';
+import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 /* Asset */
 // import Logo from '../../../asset/header/logo.png';
@@ -72,6 +89,7 @@ const CANCEL_INDEX = 2;
 const DEBUG_KEY = '[ Component SearchBarHeader ]';
 const SHARE_TO_MENU_OPTTIONS = ['My Tribes', 'My Events', 'Cancel'];
 const CANCEL_INDEX_MEN = 2;
+const WalkableView = walkthroughable(View);
 
 /**
   TODO: refactor element to have consistent behavior
@@ -231,6 +249,9 @@ class SearchBarHeader extends Component {
    * @param rightIcon:
    */
   renderSearchBarRightIcon() {
+    const { menuOnPress, tutorialOn } = this.props;
+    const hasRightIconTutorial =  tutorialOn && tutorialOn.rightIcon;
+
     // On other people's profile page
     if ((this.props.setting && !this.props.haveSetting) || this.props.pageSetting) {
     // if (this.props.setting && true) {
@@ -258,8 +279,19 @@ class SearchBarHeader extends Component {
     }
 
     // Standard search bar menu
-    const { menuOnPress } = this.props;
     if (this.props.rightIcon === 'menu') {
+      // has tutorial for right icon menu
+      if (hasRightIconTutorial && tutorialOn.rightIcon.iconType === 'menu') {
+        return (
+          <CopilotStep text={tutorialOn.rightIcon.tutorialText} order={tutorialOn.rightIcon.order} name={tutorialOn.rightIcon.name}>
+            <WalkableView>
+              <TouchableOpacity activeOpacity={0.6} onPress={menuOnPress || this.handleMenuIconOnClick}>
+                <Image style={{ ...styles.headerRightImage, tintColor }} source={IconMenu} />
+              </TouchableOpacity>
+            </WalkableView>
+          </CopilotStep>
+        );
+      }
       return (
         <TouchableOpacity activeOpacity={0.6} onPress={menuOnPress || this.handleMenuIconOnClick}>
           <Image style={{ ...styles.headerRightImage, tintColor }} source={IconMenu} />
