@@ -14,7 +14,7 @@ const ProfileActionButton = (props) => {
     image = (
       <Image
         source={props.source}
-        style={{ backgroundColor: '#f3f3f3', height: 15, width: 15, ...props.style }}
+        style={{ height: 15, width: 15, ...props.style }}
       />
     );
   }
@@ -34,7 +34,6 @@ const ProfileActionButton = (props) => {
           alignSelf: 'flex-end',
           padding: 7,
           borderRadius: 5,
-          backgroundColor: '#f3f3f3',
           ...props.containerStyle
         }}
       >

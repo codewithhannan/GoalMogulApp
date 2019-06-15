@@ -52,6 +52,7 @@ class SplashScreen extends Component {
   }
 
   async componentDidMount() {
+    console.log(`${DEBUG_KEY}: [componentDidMount]: iphone model: `, Constants.platform.ios.model.toLowerCase());
     await Font.loadAsync({
       'gotham-pro': require('../assets/fonts/GothamPro.ttf'),
       'gotham-pro-bold': require('../assets/fonts/GothamPro-Bold.ttf')
