@@ -71,7 +71,7 @@ export const scheduleNotification = (date, goal) => async (dispatch, getState) =
   const notificationId = await Notifications
     .scheduleLocalNotificationAsync(localNotification, schedulingOptions)
     .then((notificationId) => {
-      DropDownHolder.alert('success', 'Reminder set', `We’ll remind you about this goal ${moment(date).calendar()}`);
+      DropDownHolder.alert('success', 'Reminder set', `We’ll remind you about this goal ${moment(date).fromNow()}`);
     });
 };
 
