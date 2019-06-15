@@ -72,11 +72,12 @@ export const INITIAL_TUTORIAL = {
             nextPage: undefined, // This is the last page for this flow
             showTutorial: false,
             hasShown: false,
-            totalStep: 4, // Used for onStepChange and check if this is the last step,
+            totalStep: 5, // Used for onStepChange and check if this is the last step,
             tutorialText: [
-                'Tap here to Edit your goal',
+                'Tap here to Set a reminder for this goal',
                 'Tap here to Share your goal to the top of your friends\' Goal feed',
                 'Tap here to Mark this goal as complete',
+                'Tap here to Edit your goal',
                 'Tap here to Delete your goal'
             ],
             nextStepNumber: 0

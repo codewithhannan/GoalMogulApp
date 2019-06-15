@@ -164,6 +164,7 @@ class GoalDetailCardV3 extends Component {
 
     // Start tutorial if not previously shown
     if (!this.props.hasShown) {
+      // TODO: @Jia Tutorial to uncomment
       setTimeout(() => {
         this.props.startTutorial('goal_detail', 'goal_detail_page');
       }, 400);
