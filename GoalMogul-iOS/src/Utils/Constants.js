@@ -1,5 +1,5 @@
 export const IPHONE_MODELS_2 = ['iphone 7 plus', 'iphone x', 'iPhone xs', 'iphone xr', 'simulator'];
-export const IPHONE_MODELS = ['iphone 7', 'iphone 6', 
+export const IPHONE_MODELS = ['iphone 7', 'iphone 6', 'iphone 6s',
     'iphone 5', 'iphone 6 plus', 'iphone 4', 'iphone 5s'];
 
 // Base url for image location. Should concat with the mediaRef or image to form the 
