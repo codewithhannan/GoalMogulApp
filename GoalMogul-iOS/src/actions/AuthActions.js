@@ -145,13 +145,15 @@ export const loginUser = ({ username, password, navigate }) => {
             return;
           }
 
+          Actions.replace('drawer');
+          // Starting version 0.4.2, we replace this with step by step tutorial
           // User has watched the tutorial
-          if (hasTutorialShown) {
-            Actions.replace('drawer'); // Go to the main route and replace the auth stack
-            return;
-          }
+          // if (hasTutorialShown) {
+          //   Actions.replace('drawer'); // Go to the main route and replace the auth stack
+          //   return;
+          // }
           // Show tutorial
-          Actions.replace('tutorial');
+          // Actions.replace('tutorial');
         } else {
           // User login fail
           return res.message;
