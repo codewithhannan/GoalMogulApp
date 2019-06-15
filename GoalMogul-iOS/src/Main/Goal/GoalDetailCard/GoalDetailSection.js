@@ -51,6 +51,7 @@ import LoveIcon from '../../../asset/utils/love.png';
 import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 import EditIcon from '../../../asset/utils/edit.png';
+import BellIcon from '../../../asset/utils/bell_icon.png';
 import CheckIcon from '../../../asset/utils/check.png';
 import ProgressBarMedium from '../../../asset/utils/progressBar_medium.png';
 import ProgressBarMediumCounter from '../../../asset/utils/progressBar_counter_medium.png';
@@ -222,7 +223,7 @@ class GoalDetailSection extends React.PureComponent {
     const caret = {
       self: {
         options: [
-          { option: 'Remind me about this', iconSource: ShareIcon, 
+          { option: 'Remind me about this', iconSource: BellIcon, iconStyle: { width: 14, height: 16, marginLeft: 1, marginRight: 1 },
             tutorialText: this.props.tutorialText[0], order: 0, name: 'goal_detail_goal_detail_page_0' },
           { option: 'Share to Goal Feed', iconSource: ShareIcon, 
             tutorialText: this.props.tutorialText[1], order: 1, name: 'goal_detail_goal_detail_page_1' },

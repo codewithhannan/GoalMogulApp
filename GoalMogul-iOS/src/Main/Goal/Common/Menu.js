@@ -44,7 +44,7 @@ class MenuFactory extends React.Component {
     }
 
     renderItem = ({ item }) => {
-        const { iconSource, option, tutorialText, order, name } = item;
+        const { iconSource, option, tutorialText, order, name, iconStyle } = item;
         if (!tutorialText || !name) {
             // render normally
             return (
@@ -61,7 +61,7 @@ class MenuFactory extends React.Component {
                                 paddingRight: 5
                                 }}
                             >
-                                <Image source={iconSource} style={styles.iconStyle} />
+                                <Image source={iconSource} style={{ ...styles.iconStyle, ...iconStyle }} />
                             </View>
                         ) : null
                     }
@@ -86,7 +86,7 @@ class MenuFactory extends React.Component {
                                 paddingRight: 5
                                 }}
                             >
-                                <Image source={iconSource} style={styles.iconStyle} />
+                                <Image source={iconSource} style={{ ...styles.iconStyle, ...iconStyle }} />
                             </View>
                         ) : null
                     }
