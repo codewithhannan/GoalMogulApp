@@ -403,7 +403,7 @@ class CommentBoxV2 extends Component {
           flexDirection: 'row',
           marginLeft: 5,
           marginRight: 5,
-          marginBottom: 5
+          marginBottom: 7
         }}
       >
         {suggestionIcon}
@@ -491,7 +491,7 @@ class CommentBoxV2 extends Component {
         disabled={disable}
       >
         <Text
-          style={{ color, fontSize: 14, fontWeight: '700', padding: 13, letterSpacing: 0.5 }}
+          style={{ color, fontSize: 15, fontWeight: '700', padding: 13, letterSpacing: 0.5, paddingBottom: 15 }}
         >
           Post
         </Text>
@@ -613,7 +613,7 @@ class CommentBoxV2 extends Component {
             }
             return <EmptyResult text={'No User Found'} textStyle={{ paddingTop: 15, height: 50 }} />;
           }}
-          textInputMinHeight={30}
+          textInputMinHeight={28}
           textInputMaxHeight={80}
           trigger={'@'}
           triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
@@ -681,14 +681,19 @@ const styles = {
     marginBottom: 5,
     borderColor: '#F1F1F1',
     borderWidth: 1,
-    flex: 1
+    flex: 1,
+    paddingTop: 5,
+    paddingBottom: 5,
   },
   inputStyle: {
-    paddingTop: 7,
-    paddingBottom: 7,
-    padding: 13,
+    // paddingTop: 5,
+    // paddingBottom: 5,
+    // padding: 13,
+    paddingLeft: 15,
+    paddingRight: 15,
     backgroundColor: 'white',
     borderRadius: 22,
+    fontSize: 15
   },
   postContainerStyle: {
     alignItems: 'flex-end',
