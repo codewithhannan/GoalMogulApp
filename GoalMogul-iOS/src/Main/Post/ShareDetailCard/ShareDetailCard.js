@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import {
   MenuProvider
 } from 'react-native-popup-menu';
+import { getBottomSpace } from 'react-native-iphone-x-helper';
 
 // Actions
 import {
@@ -114,7 +115,7 @@ class ShareDetailCard extends Component {
       Animated.delay(timeout),
       Animated.parallel([
         Animated.timing(this.state.commentBoxPadding, {
-          toValue: e.endCoordinates.height - TOTAL_HEIGHT,
+          toValue: e.endCoordinates.height - TOTAL_HEIGHT - getBottomSpace(),
           duration: (210 - timeout)
         }),
       ])

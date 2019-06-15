@@ -20,6 +20,7 @@ import {
   DotIndicator
 } from 'react-native-indicators';
 import { copilot } from 'react-native-copilot-gm';
+import { getBottomSpace } from 'react-native-iphone-x-helper';
 
 // Actions
 import {
@@ -342,11 +343,11 @@ class GoalDetailCardV3 extends Component {
       Animated.delay(timeout),
       Animated.parallel([
         Animated.timing(this.state.commentBoxPadding, {
-          toValue: e.endCoordinates.height - TOTAL_HEIGHT,
+          toValue: e.endCoordinates.height - TOTAL_HEIGHT - getBottomSpace(),
           duration: (210 - timeout)
         }),
         Animated.timing(this.state.focusTabBottomPadding, {
-          toValue: e.endCoordinates.height - TOTAL_HEIGHT,
+          toValue: e.endCoordinates.height - TOTAL_HEIGHT - getBottomSpace(),
           duration: (210 - timeout)
         })
       ])
