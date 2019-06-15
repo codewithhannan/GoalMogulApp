@@ -38,7 +38,6 @@ import { IPHONE_MODELS } from './Utils/Constants';
 
 const IS_SMALL_PHONE = Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
-
 const width = Dimensions.get('window').width
 const DEBUG_KEY = '[ UI SplashScreen ]';
 class SplashScreen extends Component {
