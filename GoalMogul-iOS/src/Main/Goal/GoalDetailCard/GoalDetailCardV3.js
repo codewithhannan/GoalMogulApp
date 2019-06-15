@@ -163,7 +163,7 @@ class GoalDetailCardV3 extends Component {
     });
 
     // Start tutorial if not previously shown
-    if (!this.props.hasShown) {
+    if (!this.props.hasShown && this.props.isSelf) {
       // TODO: @Jia Tutorial to uncomment
       setTimeout(() => {
         this.props.startTutorial('goal_detail', 'goal_detail_page');
