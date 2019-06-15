@@ -73,8 +73,8 @@ import { arrayUnique, clearTags } from '../../../redux/middleware/utils';
 const { Popover } = renderers;
 const { width } = Dimensions.get('window');
 
-const STEP_PLACE_HOLDER = 'Add an important step to your goal...';
-const NEED_PLACE_HOLDER = 'Something you\'re looking for help with';
+const STEP_PLACE_HOLDER = 'Add an important step to achieving your goal...';
+const NEED_PLACE_HOLDER = 'Something you\'re specifically looking for help with';
 const INITIAL_TAG_SEARCH = {
   data: [],
   skip: 0,
@@ -912,7 +912,7 @@ class NewGoalView extends Component {
   /**
    * type: ['step', 'need']
    */
-  renderFieldArrayItem = (props, placeholder, fields, canDrag, type) => {
+  renderFieldArrayItem = (props, placeholder, fields, canDrag, type, onSubmitEditing) => {
     const { item, index, move, moveEnd, isActive } = props;
     const iconOnPress = index === 0 ?
       undefined
@@ -939,10 +939,12 @@ class NewGoalView extends Component {
           canDrag={canDrag}
           autoCorrect
           autoCapitalize={'sentences'}
-          inputContainerStyle={{ flexDirection: 'row' }}
+          inputContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}
           scrollTo={this.scrollTo}
           index={index}
           type={type}
+          multiline
+          onSubmitEditing={onSubmitEditing}
         />
       </View>
     );
@@ -952,6 +954,12 @@ class NewGoalView extends Component {
     const button = <Button text={buttonText} source={plus} onPress={() => fields.push({})} />;
     const titleText = <Text style={styles.titleTextStyle}>{title}</Text>;
 
+    const onSubmitEditing = ({ nativeEvent }) => {
+      const { text } = nativeEvent;
+      if (text && text.trim() !== '') {
+        fields.push({});
+      }
+    };
     let dataToRender = [];
     fields.forEach((field, index) => {
       const dataToPush = {
@@ -963,7 +971,7 @@ class NewGoalView extends Component {
     const fieldsComponent = fields.length > 0 ?
       (
         <DraggableFlatlist
-          renderItem={(props) => this.renderFieldArrayItem(props, placeholder, fields, true, buttonText)}
+          renderItem={(props) => this.renderFieldArrayItem(props, placeholder, fields, true, buttonText, onSubmitEditing)}
           data={dataToRender}
           keyExtractor={item => `${item.index}`}
           scrollPercent={5}
