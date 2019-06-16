@@ -89,6 +89,7 @@ import {
 import { Logger } from '../../../redux/middleware/utils/Logger';
 import { constructMenuName, getParentCommentId } from '../../../redux/middleware/utils';
 import Tooltip from '../../Tutorial/Tooltip';
+import { Actions } from 'react-native-router-flux';
 
 const initialLayout = {
   height: 0,
@@ -171,7 +172,7 @@ class GoalDetailCardV3 extends Component {
     if (willStartTutorial) {
       // TODO: @Jia Tutorial to uncomment
       setTimeout(() => {
-        // this.props.startTutorial('goal_detail', 'goal_detail_page');
+        this.props.startTutorial('goal_detail', 'goal_detail_page');
       }, 400);
     }
 

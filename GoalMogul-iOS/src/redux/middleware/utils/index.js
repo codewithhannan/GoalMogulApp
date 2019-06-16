@@ -292,10 +292,10 @@ export const makeCaretOptions = (type, goalRef, postRef) => {
     } 
     const { isCompleted } = goalRef;
     return [
-      { option: 'Edit Goal', iconSource: EditIcon },
       { option: 'Share to Goal Feed', iconSource: ShareIcon },
       { option: isCompleted ? 'Unmark as Complete' : 'Mark as Complete',
         iconSource: isCompleted ? UndoIcon : CheckIcon },
+      { option: 'Edit Goal', iconSource: EditIcon },
       { option: 'Delete', iconSource: TrashIcon },
     ];
   }
