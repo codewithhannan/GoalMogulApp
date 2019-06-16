@@ -338,7 +338,7 @@ class CommentBoxV2 extends Component {
   }
 
   focusForReply(type) {
-    console.log(`${DEBUG_KEY}: [ focusForReply ]: with type: ${type}`);
+    console.log(`${DEBUG_KEY}: [ focusForReply ]: with type: `, type);
     if (this.textInput !== undefined) {
       this.textInput.focus();
     } else {

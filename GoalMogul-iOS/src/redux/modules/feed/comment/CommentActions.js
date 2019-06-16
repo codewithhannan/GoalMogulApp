@@ -682,7 +682,7 @@ focusRef, pageId) => (dispatch, getState) => {
   }
 
   let isUrl = true;
-  if (suggestionType === 'Custom') {
+  if (suggestionType === 'Custom' && suggestionLink) {
     isUrl = validator.isURL(suggestionLink);
   }
 
