@@ -85,7 +85,7 @@ export const loadTutorialState = (userId) => async (dispatch, getState) => {
   
     // Deserialize the json serialized object
     const parsedTutorialState = JSON.parse(tutorialState);
-    Logger.log(`${DEBUG_KEY}: [loadTutorialState] pased json with res:`, parsedTutorialState, 2);
+    Logger.log(`${DEBUG_KEY}: [loadTutorialState] pased json with res:`, parsedTutorialState ? parsedTutorialState.length : 0, 2);
   
     if (!parsedTutorialState || _.isEmpty(parsedTutorialState)) {
         Logger.log(`${DEBUG_KEY}: [loadTutorialState] abort as empty:`, parsedTutorialState, 1);

@@ -143,8 +143,8 @@ class GoalDetailSection extends React.PureComponent {
   }
 
   handleOnLayout = (event) => {
-    const { height } = event.nativeEvent.layout;
-    this.props.onContentSizeChange(height);
+    // const { height } = event.nativeEvent.layout;
+    this.props.onContentSizeChange('goalDetailSectionCard', event);
   }
 
   handleShareOnClick = () => {

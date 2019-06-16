@@ -585,7 +585,7 @@ export const loadUnreadNotification = () => async (dispatch, getState) => {
 
   // Deserialize the json serialized object
   const parsedUnreadQueue = JSON.parse(unreadQueue);
-  Logger.log(`${DEBUG_KEY}: get unread notification queue with res:`, parsedUnreadQueue, 2);
+  Logger.log(`${DEBUG_KEY}: [loadUnreadNotification]: get unread notification queue with res:`, parsedUnreadQueue ? parsedUnreadQueue.length : 0, 2);
 
   if (!parsedUnreadQueue || _.isEmpty(parsedUnreadQueue)) {
     console.log(`${DEBUG_KEY}: [ Load Unread Queue ] abort as queue empty:`, parsedUnreadQueue);

@@ -115,7 +115,10 @@ class GoalDetailCardV3 extends Component {
       keyboardDidShow: false,
       cardHeight: HEADER_HEIGHT,
       centralTabContentOffset: 0,
-      goalCardzIndex: 2
+      goalCardzIndex: 2,
+      // For card width
+      goalDetailSectionHeight: HEADER_HEIGHT, // TODO: Update to the bareminimum height
+      focusedItemHeight: 48, // Default height we use right now
     };
     this.onContentSizeChange = this.onContentSizeChange.bind(this);
     this._renderScene = this._renderScene.bind(this);
@@ -164,10 +167,11 @@ class GoalDetailCardV3 extends Component {
     });
 
     // Start tutorial if not previously shown
-    if (!this.props.hasShown && this.props.isSelf) {
+    const willStartTutorial = !this.props.hasShown && this.props.isSelf;
+    if (willStartTutorial) {
       // TODO: @Jia Tutorial to uncomment
       setTimeout(() => {
-        this.props.startTutorial('goal_detail', 'goal_detail_page');
+        // this.props.startTutorial('goal_detail', 'goal_detail_page');
       }, 400);
     }
 
@@ -185,7 +189,7 @@ class GoalDetailCardV3 extends Component {
     }
 
     console.log(`${DEBUG_KEY}: did mount with goalId: ${goalId}, pageId: ${pageId}`);
-    if (initial && !_.isEmpty(initial)) {
+    if (initial && !_.isEmpty(initial) && !willStartTutorial) {
       const { 
         focusType, 
         focusRef, 
@@ -300,12 +304,48 @@ class GoalDetailCardV3 extends Component {
     }).start();
   }
 
-  // Handle on GoalDetailSection content size change to update the height
-  onContentSizeChange(cardHeight) {
+  /**
+   * Handle on GoalDetailSection content size change to update the height
+   * @param {*} type: ['goalDetailSectionCard', 'focusedItem', 'allCommentItem']
+   * @param {*} cardHeight 
+   */
+  onContentSizeChange(type, event) {
     // console.log('new card height: ', cardHeight);
+    const { height } = event.nativeEvent.layout;
+    const { focusType } = this.props.navigationState;
+
+    let { goalDetailSectionHeight, focusedItemHeight, cardHeight } = this.state;
+
+    if (type === 'goalDetailSectionCard') {
+      if (height === goalDetailSectionHeight) return;
+      goalDetailSectionHeight = height;
+    }
+
+    // Don't update if it's currently not on focused tab
+    if (type === 'focusedItem' && focusType !== undefined) {
+      if (height === focusedItemHeight) return;
+      focusedItemHeight = height;
+    }
+
+    // Don't update if it's currently not on all comment item
+    if (type === 'allCommentItem' && focusType === undefined) {
+      if (height === focusedItemHeight) return;
+      focusedItemHeight = height;
+    }
+
+    const newCardHeight = goalDetailSectionHeight + focusedItemHeight;
+    Logger.log(`${DEBUG_KEY}: [onContentSizeChange]: height: ${height}, type: ${type}`, {}, 2);
+
     this.setState({
       ...this.state,
-      cardHeight: cardHeight + 48
+      cardHeight: newCardHeight,
+      goalDetailSectionHeight,
+      focusedItemHeight
+    }, () => {
+      Logger.log(`${DEBUG_KEY}: [onContentSizeChange]: total new height: ${newCardHeight}, old height: ${cardHeight}`, {}, 2);
+      if (cardHeight !== newCardHeight) {
+        this.forceUpdate();
+      }
     });
   }
 
@@ -575,7 +615,7 @@ class GoalDetailCardV3 extends Component {
     const focusedItem = this.getFocusedItem(focusType, focusRef, goalDetail);
 
     return (
-      <View style={{ zIndex: 2 }}>
+      <View style={{ zIndex: 2 }} onLayout={(event) => this.onContentSizeChange('focusedItem', event)}>
         <SectionCardV2
           type={focusType}
           goalRef={goalDetail}
@@ -583,7 +623,6 @@ class GoalDetailCardV3 extends Component {
           isFocusedItem
           isSelf={this.props.isSelf}
           onBackPress={() => this._handleIndexChange(0)}
-          onContentSizeChange={this.props.onContentSizeChange}
           count={this.props.focusedItemCount}
           pageId={this.props.pageId}
           goalId={this.props.goalId}
@@ -603,6 +642,7 @@ class GoalDetailCardV3 extends Component {
         activeOpacity={0.6}
         style={{ paddingTop: 10, backgroundColor: BACKGROUND_COLOR }}
         onPress={this.onViewCommentPress}
+        onLayout={(event) => this.onContentSizeChange('allCommentItem', event)}
       >
         <View
           style={{

@@ -205,7 +205,7 @@ class SectionCardV2 extends Component {
             <View style={{ flexWrap: 'wrap', flex: 1 }}>
               <Text
                 style={{ ...styles.sectionTextStyle, paddingTop: textToDisplay && textToDisplay.length > 40 ? 0 : 4 }}
-                numberOfLines={2}
+                multiline
                 ellipsizeMode='tail'
               >
                 {textToDisplay}
