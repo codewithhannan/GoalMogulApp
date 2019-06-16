@@ -112,6 +112,9 @@ class CommentBoxV2 extends Component {
 
   componentWillUnmount() {
     // console.log(`${DEBUG_KEY}: [ ${this.props.pageId} ]: componentWillUnmount`);
+    if (this.reqTimer) {
+      clearTimeout(this.reqTimer);
+    }
   }
 
   onTaggingSuggestionTap(item, hidePanel, cursorPosition) {

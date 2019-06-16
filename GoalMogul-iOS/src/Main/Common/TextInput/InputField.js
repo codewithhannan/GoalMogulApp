@@ -27,7 +27,8 @@ class InputField extends Component {
     this.keyboardDidHide = this.keyboardDidHide.bind(this);
     this.state = {
       keyboardHeight: 0
-    }
+    },
+    this.scrollToTimer = undefined;
   }
 
  componentDidMount() {
@@ -39,6 +40,10 @@ class InputField extends Component {
   componentWillUnmount() {
     Keyboard.removeListener('keyboardDidShow', this.keyboardDidShow);
     Keyboard.removeListener('keyboardDidHide', this.keyboardDidHide);
+
+    if (this.scrollToTimer) {
+      clearTimeout(this.scrollToTimer);
+    }
   }
 
   keyboardDidShow(e) {
@@ -100,7 +105,11 @@ class InputField extends Component {
       if ((py + this.state.keyboardHeight + 50) > screenHeight) {
         const scrollToHeight = (py - (screenHeight / 2)) + 46 + 10;
         console.log('scrollToHeight is: ', scrollToHeight);
-        setTimeout(() => {
+        if (this.scrollToTimer) {
+          clearTimeout(this.scrollToTimer);
+        }
+
+        this.scrollToTimer = setTimeout(() => {
           scrollTo(scrollToHeight, type, index);
         }, 50);
       } else {

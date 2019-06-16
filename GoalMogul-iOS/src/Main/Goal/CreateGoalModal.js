@@ -111,6 +111,8 @@ class CreateGoalModal extends React.Component {
   }
 
   handleCreate = () => {
+    // Close keyboard no matter what
+    Keyboard.dismiss();
     const errors = validate(this.props.formVals.values);
     console.log(`${DEBUG_KEY}: raw goal values are: `, this.props.formVals.values);
     if (!(Object.keys(errors).length === 0 && errors.constructor === Object)) {
@@ -135,7 +137,7 @@ class CreateGoalModal extends React.Component {
         if (this.props.onClose) {
           console.log(`${DEBUG_KEY}: [handleCreate] calling onClose`);
           this.props.onClose();
-        } 
+        }
         Actions.pop();
       },
       goalId,

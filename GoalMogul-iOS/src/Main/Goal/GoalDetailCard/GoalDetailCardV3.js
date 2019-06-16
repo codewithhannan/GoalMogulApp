@@ -396,6 +396,12 @@ class GoalDetailCardV3 extends Component {
 
   keyboardWillHide = () => {
     // console.log(`${DEBUG_KEY}: [ ${this.props.pageId} ]: keyboard will hide`);
+    const { focusType } = this.props.navigationState;
+
+    // Keyboard listener will fire when goal edition modal is opened
+    if (focusType === undefined) return;
+    console.log(`${DEBUG_KEY}: hi there`);
+
     this.setState({
       ...this.state,
       keyboardDidShow: false,

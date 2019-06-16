@@ -108,6 +108,9 @@ class NewGoalView extends Component {
 
   componentWillUnmount() {
     console.log(`${DEBUG_KEY}: unmounting NewGoalView`);
+    if (this.reqTimer) {
+      clearTimeout(this.reqTimer);
+    }
   }
 
   /**
