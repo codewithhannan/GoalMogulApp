@@ -35,7 +35,8 @@ import {
     showNextTutorialPage,
     startTutorial,
     saveTutorialState,
-    updateNextStepNumber
+    updateNextStepNumber,
+    pauseTutorial
 } from '../../redux/modules/User/TutorialActions';
 
 /* Assets */
@@ -72,8 +73,13 @@ class MeetTabV2 extends React.Component {
     
     componentDidUpdate(prevProps) {
         if (!prevProps.showTutorial && this.props.showTutorial === true) {
-            console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: [ start ]`);
-            this.props.start();
+            if (Actions.currentScene === 'meet') {
+                console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: [ start ]`);
+                this.props.start();
+            } else {
+                // Current scene is not meet thus reseting the showTutorial state
+                this.props.pauseTutorial('meet_tab_friend', 'meet_tab', 0);
+            }
         }
     }
 
@@ -81,13 +87,18 @@ class MeetTabV2 extends React.Component {
         // Preloading data by calling handleOnRefresh
         this.handleOnRefresh();
 
-        // We always fire this event since it's only stored locally
-        if (!this.props.hasShown) {
-            setTimeout(() => {
-                console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ startTutorial ]`);
-                this.props.startTutorial('meet_tab_friend', 'meet_tab');
-            }, 600);
-        }
+        this.didFocusListener = this.props.navigation.addListener(
+            'didFocus',
+            () => {
+                // We always fire this event since it's only stored locally
+                if (!this.props.hasShown) {
+                    setTimeout(() => {
+                        console.log(`${DEBUG_KEY}: [ onFocus ]: [ startTutorial ]`);
+                        this.props.startTutorial('meet_tab_friend', 'meet_tab');
+                    }, 600);
+                }
+            },
+        );
 
         this.props.copilotEvents.on('stop', () => {
             console.log(`${DEBUG_KEY}: [ componentDidMount ]: tutorial stop.`);
@@ -110,6 +121,7 @@ class MeetTabV2 extends React.Component {
         this.props.copilotEvents.off('stop');
         this.props.copilotEvents.off('stepChange');
         this.props.saveTutorialState();
+        this.didFocusListener.remove();
     }
 
     keyExtractor = (item) => item._id;
@@ -473,6 +485,7 @@ export default connect(
         showNextTutorialPage,
         startTutorial,
         saveTutorialState,
-        updateNextStepNumber
+        updateNextStepNumber,
+        pauseTutorial
     }
 )(MeetTabV2Explained);
