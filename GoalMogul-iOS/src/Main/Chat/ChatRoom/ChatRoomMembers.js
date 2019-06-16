@@ -20,7 +20,6 @@ import { TabView, SceneMap } from 'react-native-tab-view';
 import ModalHeader from '../../Common/Header/ModalHeader';
 import Dot from '../../Common/Dot';
 import { Actions } from 'react-native-router-flux';
-import check from '../../../asset/utils/check.png';
 import profilePic from '../../../asset/utils/defaultUserProfile.png';
 import plusIcon from '../../../asset/utils/plus.png';
 import editIcon from '../../../asset/utils/edit.png';
@@ -33,7 +32,6 @@ import ProfileImage from '../../Common/ProfileImage';
 import { Button, Text, Divider } from 'react-native-elements';
 import { MaterialIcons } from '@expo/vector-icons';
 import TabButtonGroup from '../../Common/TabButtonGroup';
-
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SEARCHBAR_HEIGHT = Platform.OS === 'ios' &&

@@ -71,7 +71,7 @@ class SplashScreen extends Component {
       require('./asset/utils/help.png'),
       require('./asset/utils/privacy.png'),
       require('./asset/utils/edit.png'),
-      require('./asset/utils/check.png'),
+      // require('./asset/utils/check.png'),
       require('./asset/utils/addUser.png'),
       require('./asset/utils/default_profile.png'),
       require('./asset/utils/defaultUserProfile.png'),

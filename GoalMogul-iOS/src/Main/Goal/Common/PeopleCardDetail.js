@@ -8,10 +8,11 @@ import ProfileImage from '../../Common/ProfileImage';
 // Assets
 import badge from '../../../asset/utils/badge.png';
 import addUser from '../../../asset/utils/addUser.png';
-import check from '../../../asset/utils/check.png';
+import Icons from '../../../asset/base64/Icons';
 
 // Actions
 
+const { CheckIcon: check } = Icons;
 const checkIconColor = '#2dca4a';
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
 const WITHDRAW_INDEX = 0;

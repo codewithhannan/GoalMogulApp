@@ -12,8 +12,6 @@ import Decode from 'unescape';
 // Asset
 import bulb from '../../../asset/utils/bulb.png';
 import forward from '../../../asset/utils/forward.png';
-// import checkIcon from '../../../asset/utils/check.png';
-// import { CheckIcon as checkIcon } from '../../../asset/base64/Icons';
 import Icons from '../../../asset/base64/Icons';
 import next from '../../../asset/utils/next.png';
 
@@ -35,6 +33,7 @@ import {
 const DEBUG_KEY = '[ UI GoalCard.Need/Step SectionCardV2 ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
+const { CheckIcon: checkIcon } = Icons;
 
 // SectionCardV2.defaultPros = {
 //   item,
@@ -115,7 +114,7 @@ class SectionCardV2 extends Component {
         style={iconContainerStyle}
         onPress={onPress}
       >
-        <Image style={checkIconStyle} source={Icons.CheckIcon} />
+        <Image style={checkIconStyle} source={checkIcon} />
       </DelayedButton>
     );
   }
@@ -144,7 +143,7 @@ class SectionCardV2 extends Component {
     if (!isCompleted) return null;
     return (
       <View style={styles.checkIconContainerStyle}>
-        <Image source={Icons.CheckIcon} style={{ ...styles.checkIconStyle, tintColor: '#4e966d' }} />
+        <Image source={checkIcon} style={{ ...styles.checkIconStyle, tintColor: '#4e966d' }} />
       </View>
     );
   }

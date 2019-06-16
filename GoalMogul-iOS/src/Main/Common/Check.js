@@ -3,7 +3,8 @@ import {
   View,
   Image
 } from 'react-native';
-import check from '../../asset/utils/check.png';
+import Icons from '../../asset/base64/Icons';
+const { CheckIcon: check } = Icons;
 
 const Check = ({ selected }) => {
   const checkIconContainerStyle = selected

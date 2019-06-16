@@ -4,10 +4,11 @@ import _ from 'lodash';
 // Assets
 import ShareIcon from '../../../asset/utils/forward.png';
 import EditIcon from '../../../asset/utils/edit.png';
-import CheckIcon from '../../../asset/utils/check.png';
 import UndoIcon from '../../../asset/utils/undo.png';
 import TrashIcon from '../../../asset/utils/trash.png';
+import Icons from '../../../asset/base64/Icons';
 
+const { CheckIcon } = Icons;
 /**
  * Url query builder to query URL based on params
  */

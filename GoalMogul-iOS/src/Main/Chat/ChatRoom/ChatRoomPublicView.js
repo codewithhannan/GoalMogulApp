@@ -17,7 +17,7 @@ const windowWidth = Dimensions.get('window').width;
 import ModalHeader from '../../Common/Header/ModalHeader';
 import Dot from '../../Common/Dot';
 import { Actions } from 'react-native-router-flux';
-import check from '../../../asset/utils/check.png';
+import Icons from '../../../asset/base64/Icons';
 import profilePic from '../../../asset/utils/defaultUserProfile.png';
 import membersIcon from '../../../asset/utils/profile_people_black.png';
 import plusIcon from '../../../asset/utils/plus.png';
@@ -34,6 +34,7 @@ import LoadingModal from '../../Common/Modal/LoadingModal';
 // Selector
 import { makeGetChatRoom } from '../../../redux/modules/chat/ChatSelector';
 
+const { CheckIcon: check } = Icons;
 const DEBUG_KEY = '[ UI ChatRoomPublicView ]';
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const LISTENER_KEY = 'ChatRoomOptions';
