@@ -149,7 +149,7 @@ class CommentRef extends React.PureComponent {
     const marginLeft = imageUrl ? 10 : 0; // There is only margin left if it's not default icon
 
     return (
-      <View style={{ flex: 1, justifyContent: 'center', marginLeft }}>
+      <View style={{ flex: 1, justifyContent: 'center', marginLeft, marginRight: 10 }}>
         <Text 
           style={styles.titleTextStyle}
           numberOfLines={1}
@@ -162,6 +162,7 @@ class CommentRef extends React.PureComponent {
           textStyle={{ 
             ...styles.headingTextStyle, flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 10 
           }}
+          numberOfLines={2}
           textContainerStyle={{ flexDirection: 'row' }}
           ellipsizeMode='tail'
           handleUrlPress={this.handleSuggestionLinkOnPress}
