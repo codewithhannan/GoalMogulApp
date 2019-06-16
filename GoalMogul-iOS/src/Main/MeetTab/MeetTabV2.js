@@ -40,8 +40,8 @@ import {
 } from '../../redux/modules/User/TutorialActions';
 
 /* Assets */
-import People from '../../asset/utils/People.png';
 import ContactSyncIcon from '../../asset/utils/ContactSync.png';
+import Icons from '../../asset/base64/Icons';
 
 /* Selectors */
 import {
@@ -59,6 +59,7 @@ import { IPHONE_MODELS } from '../../Utils/Constants';
 import { generateInvitationLink } from '../../redux/middleware/utils';
 import Tooltip from '../Tutorial/Tooltip';
 
+const { PeopleIcon: People } = Icons;
 const DEBUG_KEY = '[ UI MeetTabV2 ]'; 
 const NumCardsToShow = Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
