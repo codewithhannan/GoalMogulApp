@@ -18,7 +18,8 @@ import {
 } from '../../../redux/modules/feed/post/ShareActions';
 
 import {
-  fetchPostDetail
+  fetchPostDetail,
+  markUserViewPost
 } from '../../../redux/modules/feed/post/PostActions';
 
 import {
@@ -76,8 +77,13 @@ class ShareDetailCard extends Component {
     this.keyboardWillHideListener = Keyboard.addListener(
       'keyboardWillHide', this.keyboardWillHide);
 
-    const { initialProps, postId, pageId, tab } = this.props;
+    const { initialProps, postId, pageId, tab, shareDetail, userId } = this.props;
     console.log(`${DEBUG_KEY}: [ componentDidMount ]: initialProps:`, initialProps);
+
+    // Send tracking event to mark this share as viewed
+    if (shareDetail && shareDetail.owner && shareDetail.owner._id && shareDetail.owner._id !== userId) {
+      this.props.markUserViewPost(postId);
+    }
 
     // Check if needed to scroll to comment after loading
     const refreshCommentsCallback = initialProps && initialProps.initialScrollToComment && initialProps.commentId
@@ -317,6 +323,7 @@ const makeMapStateToProps = () => {
     // const { pageId } = shareDetail;
     // const comments = getCommentByTab(state, props.pageId);
 
+    const { userId } = state.user;
     const { pageId, postId } = props;
     const { post } = getPostById(state, postId);
     const shareDetail = post;
@@ -333,6 +340,7 @@ const makeMapStateToProps = () => {
       comments: transformedComments,
       shareDetail,
       pageId,
+      userId,
       originalComments: data, // All comments in raw form,
       tab: state.navigation.tab,
     };
@@ -353,6 +361,7 @@ export default connect(
   {
     closeShareDetail,
     refreshComments,
-    fetchPostDetail
+    fetchPostDetail,
+    markUserViewPost
   }
 )(ShareDetailCard);

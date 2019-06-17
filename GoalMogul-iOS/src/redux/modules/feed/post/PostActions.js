@@ -40,6 +40,7 @@ import {
 
 import ImageUtils from '../../../../Utils/ImageUtils';
 import { EMPTY_POST } from '../../../../Utils/Constants';
+import { Logger } from '../../../middleware/utils/Logger';
 
 const DEBUG_KEY = '[ Action Post ]';
 /**
@@ -384,6 +385,31 @@ const postToUpdateAdaptor = (post) => {
     content,
     privacy
   };
+};
+
+/**
+ * Mark user view goal
+ * @param {string} postId 
+ */
+export const markUserViewPost = (postId) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const onSuccess = (res) => {
+    Logger.log(`${DEBUG_KEY}: [markUserViewPost]: success with res: `, res, 2);
+  };
+
+  const onError = (err) => {
+    Logger.log(`${DEBUG_KEY}: [markUserViewPost]: failed with err: `, err, 1);
+  };
+
+  API
+    .put('secure/feed/post/views', { postId }, token)
+    .then((res) => {
+      if (res.status === 200) {
+        return onSuccess(res);
+      }
+      return onError(res);
+    })
+    .catch(err => onError(err));
 };
 
 /**

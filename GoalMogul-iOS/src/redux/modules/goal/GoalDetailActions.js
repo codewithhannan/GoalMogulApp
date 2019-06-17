@@ -34,6 +34,7 @@ import {
 import {
   refreshComments
 } from '../feed/comment/CommentActions';
+import { Logger } from '../../middleware/utils/Logger';
 
 const DEBUG_KEY = '[ Action GoalDetail ]';
 
@@ -42,6 +43,31 @@ const BASE_ROUTE = 'secure/feed';
 const LIKE_BASE_ROUTE = `${BASE_ROUTE}/like`;
 const COMMENT_BASE_ROUTE = `${BASE_ROUTE}/comment`;
 const GOAL_BASE_ROUTE = 'secure/goal';
+
+/**
+ * Send request to server endpoint /secure/goal/views
+ * @param {string} goalId 
+ */
+export const markUserViewGoal = (goalId) => (dispatch, getState) => {
+  const { token } = getState().user;
+  const onSuccess = (res) => {
+    Logger.log(`${DEBUG_KEY}: [markUserViewGoal]: success with res: `, res, 2);
+  };
+
+  const onError = (err) => {
+    Logger.log(`${DEBUG_KEY}: [markUserViewGoal]: failed with err: `, err, 1);
+  };
+
+  API
+    .put('secure/goal/views', { goalId }, token)
+    .then((res) => {
+      if (res.status === 200) {
+        return onSuccess(res);
+      }
+      return onError(res);
+    })
+    .catch(err => onError(err));
+};
 
 /**
  * 

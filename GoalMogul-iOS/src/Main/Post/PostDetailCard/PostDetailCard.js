@@ -17,7 +17,8 @@ import { getBottomSpace } from 'react-native-iphone-x-helper';
 import {
   closePostDetail,
   editPost,
-  fetchPostDetail
+  fetchPostDetail,
+  markUserViewPost
 } from '../../../redux/modules/feed/post/PostActions';
 
 import {
@@ -72,8 +73,13 @@ class PostDetailCard extends React.PureComponent {
     this.keyboardWillHideListener = Keyboard.addListener(
       'keyboardWillHide', this.keyboardWillHide);
 
-    const { initialProps, postDetail, pageId, postId, tab } = this.props;
+    const { initialProps, postDetail, pageId, postId, tab, userId } = this.props;
     console.log(`${DEBUG_KEY}: [ componentDidMount ]: initialProps:`, initialProps);
+
+    // Send tracking event to mark this post as viewed
+    if (postDetail && postDetail.owner && postDetail.owner._id && postDetail.owner._id !== userId) {
+      this.props.markUserViewPost(postId);
+    }
 
     // Check if needed to scroll to comment after loading
     const refreshCommentsCallback = initialProps && initialProps.initialScrollToComment && initialProps.commentId
@@ -328,7 +334,7 @@ const makeMapStateToProps = () => {
     // const getPostDetail = getPostDetailByTab();
     // const postDetail = getPostDetail(state);
     // const { pageId } = postDetail;
-
+    const { userId } = state.user;
     const { pageId, postId } = props;
     const { post } = getPostById(state, postId);
     const postDetail = post;
@@ -347,6 +353,8 @@ const makeMapStateToProps = () => {
       originalComments: data, // All comments in raw form
       postDetail,
       pageId,
+      postId,
+      userId,
       tab: state.navigation.tab,
     };
   };
@@ -360,6 +368,7 @@ export default connect(
     closePostDetail,
     refreshComments,
     editPost,
-    fetchPostDetail
+    fetchPostDetail,
+    markUserViewPost
   }
 )(PostDetailCard);
