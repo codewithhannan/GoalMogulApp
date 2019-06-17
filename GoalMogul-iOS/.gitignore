@@ -22,3 +22,5 @@ yarn-error.log*
 package-lock.json
 ../GoalMogul-iOS.code-workspace
 src/asset/utils/.DS_Store
+
+*.DS_Store
