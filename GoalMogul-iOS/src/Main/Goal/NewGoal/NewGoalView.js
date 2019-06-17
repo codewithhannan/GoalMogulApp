@@ -137,9 +137,10 @@ class NewGoalView extends Component {
     }
 
     if (type === 'need') {
-      extraNumber = (this.props.steps.length) + index;
+      extraNumber = (this.props.steps.length + 1) + index;
     }
     const extraScrollToHeight = extraNumber * 50;
+    // console.log(`${DEBUG_KEY}: extra scroll height:`, extraScrollToHeight);
     this.scrollView.scrollTo({ y: y + extraScrollToHeight, animated: true });
   }
 
