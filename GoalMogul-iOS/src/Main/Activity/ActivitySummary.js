@@ -14,7 +14,7 @@ class ActivitySummary extends React.Component {
     const { boldTextStyle, textStyle } = styles;
     const {
       action, // ['Create', 'Update']
-      actionDetails, // ['GoalComplete'],
+      actionDetails, // ['GoalComplete', 'GoalShare'],
       actor,
       actedWith, // ['Comment', 'Goal', 'Post', 'Like']
       actedUponEntityType, // ['Goal', 'Post']
@@ -32,7 +32,12 @@ class ActivitySummary extends React.Component {
     const actorText = <Text style={{ ...boldTextStyle, ...textStyle }}>{actor.name} </Text>;
     const text = getSummaryText({
       Create: {
-        Goal: (val) => `${val.action.toLowerCase()}d a ${val.actedWith}`,
+        Goal: (val) => {
+          if (actionDetails && actionDetails === 'GoalShare') {
+            return `shared a ${val.actedWith}`;
+          }
+          return `${val.action.toLowerCase()}d a ${val.actedWith}`;
+        },
         Post: (val) => {
           if (!val.postRef && !val.postRef.postType) return '';
           if (val.postRef.postType === 'General') {
