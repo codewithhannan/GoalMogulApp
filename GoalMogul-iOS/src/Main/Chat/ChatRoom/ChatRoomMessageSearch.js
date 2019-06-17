@@ -23,7 +23,6 @@ import {
 import ModalHeader from '../../Common/Header/ModalHeader';
 import Dot from '../../Common/Dot';
 import { Actions } from 'react-native-router-flux';
-import check from '../../../asset/utils/check.png';
 import profilePic from '../../../asset/utils/defaultUserProfile.png';
 import membersIcon from '../../../asset/utils/profile_people_black.png';
 import plusIcon from '../../../asset/utils/plus.png';

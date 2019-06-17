@@ -11,11 +11,10 @@ import R from 'ramda';
 
 /* Assets */
 import profilePic from '../../../asset/utils/defaultUserProfile.png';
-import addUser from '../../../asset/utils/addUser.png';
 import love from '../../../asset/utils/love.png';
 import edit from '../../../asset/utils/edit.png';
 import cancel from '../../../asset/utils/cancel.png';
-import message_icon from '../../../asset/utils/message_icon.png';
+import Icons from '../../../asset/base64/Icons';
 
 /* Actions */
 import {
@@ -46,6 +45,7 @@ import { IMAGE_BASE_URL } from '../../../Utils/Constants';
 import { APP_BLUE_BRIGHT } from '../../../styles';
 import { Actions } from 'react-native-router-flux';
 
+const { MessageIcon, AddUser } = Icons;
 const { width } = Dimensions.get('window');
 const DEBUG_KEY = '[ Copmonent ProfileDetailCard ]';
 
@@ -207,7 +207,7 @@ class ProfileDetailCard extends Component {
     return (
       <View style={{ marginRight: 5 }}>
         <ProfileActionButton
-          source={message_icon}
+          source={MessageIcon}
           text='Message'
           style={{ marginTop: 1 }}
           onPress={() => this.handleMessageButtonOnPress()}
@@ -236,10 +236,11 @@ class ProfileDetailCard extends Component {
     if (this.props.needRespond) {
       return (
         <ProfileActionButton
-          source={addUser}
+          source={AddUser}
           text='Respond'
           onPress={this.handleButtonOnPress.bind(this, 'respond')}
           style={{ height: 16, width: 17 }}
+          containerStyle={{ backgroundColor: '#f3f3f3' }}
         />
       );
     }
@@ -249,7 +250,7 @@ class ProfileDetailCard extends Component {
         return (
           <ProfileActionButton
             text='Add friend'
-            source={addUser}
+            source={AddUser}
             onPress={this.handleButtonOnPress.bind(this, 'requestFriend')}
             style={{ height: 16, width: 17 }}
             containerStyle={{ backgroundColor: '#E3F3FA' }}

@@ -1,7 +1,4 @@
 import React from 'react';
-import {
-  TouchableOpacity
-} from 'react-native';
 
 // Components
 import PeopleCard from '../../Common/PeopleCard';

@@ -27,8 +27,6 @@ import {
 } from '../../../redux/modules/meet/MeetActions';
 
 // Assets
-import AddUserIcon from '../../../asset/utils/addUser.png';
-
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
 const WITHDRAW_INDEX = 0;
 const CANCEL_INDEX = 1;

@@ -161,10 +161,10 @@ const submitEditGoal = (goal, goalId, token, callback, dispatch, tab, owner) => 
   };
 
   const onSuccess = (data) => {
-    Alert.alert(
-      'Success',
-      'You have successfully edited a goal.'
-    );
+    if (callback) {
+      callback();
+    }
+
     dispatch({
       type: GOAL_CREATE_SUBMIT_SUCCESS
     });
@@ -183,6 +183,13 @@ const submitEditGoal = (goal, goalId, token, callback, dispatch, tab, owner) => 
         tab
       }
     });
+
+    setTimeout(() => {
+      Alert.alert(
+        'Success',
+        'You have successfully edited a goal.'
+      );
+    }, 300);
   };
 
   API
@@ -199,7 +206,6 @@ const submitEditGoal = (goal, goalId, token, callback, dispatch, tab, owner) => 
         console.log(`${DEBUG_KEY}: editing goal success`);
         console.log(`${DEBUG_KEY}: result is`, res);
         // TODO: dispatch changes to feed and clear CreateGoalForm state
-        callback();
         onSuccess(res.data);
         dispatch(reset('createGoalModal'));
         return;

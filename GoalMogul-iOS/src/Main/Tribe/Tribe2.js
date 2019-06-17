@@ -20,7 +20,7 @@ import {
 } from '../../Utils/Icons';
 
 // Asset
-import check from '../../asset/utils/check.png';
+import Icons from '../../asset/base64/Icons';
 
 import TestEventImage from '../../asset/TestEventImage.png';
 import {
@@ -28,6 +28,7 @@ import {
   tribeDetailClose
 } from '../../redux/modules/tribe/TribeActions';
 
+const { CheckIcon: check } = Icons;
 const { width } = Dimensions.get('window');
 /**
  * This is the UI file for a single event.

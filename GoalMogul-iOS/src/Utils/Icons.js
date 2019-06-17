@@ -8,7 +8,9 @@ import search_icon from '../asset/utils/search.png';
 import right_arrow_icon from '../asset/utils/right_arrow.png';
 import dot_icon from '../asset/utils/dot.png';
 import BackButton from '../asset/utils/back.png';
-import check_icon from '../asset/utils/check.png';
+import Icons from '../asset/base64/Icons';
+
+const { CheckIcon: check_icon } = Icons;
 
 export const SearchIcon = (props) => {
     const { iconContainerStyle, iconStyle } = props; 

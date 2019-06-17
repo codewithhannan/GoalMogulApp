@@ -74,7 +74,7 @@ export const INITIAL_TUTORIAL = {
             hasShown: false,
             totalStep: 5, // Used for onStepChange and check if this is the last step,
             tutorialText: [
-                'Tap here to Set a reminder for this goal',
+                'Tap here to set a Reminder for this Goal',
                 'Tap here to Share your goal to the top of your friends\' Goal feed',
                 'Tap here to Mark this goal as complete',
                 'Tap here to Edit your goal',

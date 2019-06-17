@@ -123,7 +123,7 @@ class CentralTab extends React.PureComponent {
           this.props.loading ? null :
           <EmptyResult
             text='No needs and steps'
-            textStyle={{ paddingTop: 100 }}
+            textStyle={{ paddingTop: 70 }}
           />
         }
         {...this.props}

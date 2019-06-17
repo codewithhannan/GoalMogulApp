@@ -51,12 +51,11 @@ import LoveIcon from '../../../asset/utils/love.png';
 import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 import EditIcon from '../../../asset/utils/edit.png';
-import BellIcon from '../../../asset/utils/bell_icon.png';
-import CheckIcon from '../../../asset/utils/check.png';
 import ProgressBarMedium from '../../../asset/utils/progressBar_medium.png';
 import ProgressBarMediumCounter from '../../../asset/utils/progressBar_counter_medium.png';
 import UndoIcon from '../../../asset/utils/undo.png';
 import TrashIcon from '../../../asset/utils/trash.png';
+import Icons from '../../../asset/base64/Icons';
 
 // Components
 import ProgressBar from '../Common/ProgressBar';
@@ -78,6 +77,7 @@ import {
   CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
 
+const { CheckIcon, BellIcon } = Icons;
 const DEBUG_KEY = '[ UI GoalDetailCardV3.GoalDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
@@ -143,8 +143,8 @@ class GoalDetailSection extends React.PureComponent {
   }
 
   handleOnLayout = (event) => {
-    const { height } = event.nativeEvent.layout;
-    this.props.onContentSizeChange(height);
+    // const { height } = event.nativeEvent.layout;
+    this.props.onContentSizeChange('goalDetailSectionCard', event);
   }
 
   handleShareOnClick = () => {

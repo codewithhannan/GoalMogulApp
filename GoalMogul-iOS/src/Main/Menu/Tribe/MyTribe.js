@@ -35,11 +35,11 @@ import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
 import { switchCase } from '../../../redux/middleware/utils';
 
 // Asset
-import check from '../../../asset/utils/check.png';
 import plus from '../../../asset/utils/plus.png';
 import post from '../../../asset/utils/post.png';
 import invite from '../../../asset/utils/invite.png';
 import envelope from '../../../asset/utils/envelope.png';
+import Icons from '../../../asset/base64/Icons';
 
 import TestEventImage from '../../../asset/TestEventImage.png';
 import tribe_default_icon from '../../../asset/utils/tribeIcon.png';
@@ -95,6 +95,7 @@ import {
   CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
 
+const { CheckIcon: check } = Icons;
 const DEBUG_KEY = '[ UI MyTribe ]';
 const { width } = Dimensions.get('window');
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

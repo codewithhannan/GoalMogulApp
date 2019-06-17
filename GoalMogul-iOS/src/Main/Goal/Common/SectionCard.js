@@ -12,7 +12,7 @@ import Decode from 'unescape';
 // Asset
 import bulb from '../../../asset/utils/bulb.png';
 import forward from '../../../asset/utils/forward.png';
-import checkIcon from '../../../asset/utils/check.png';
+import Icons from '../../../asset/base64/Icons';
 
 // Components
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
@@ -28,6 +28,7 @@ import {
 } from '../../../redux/modules/goal/GoalDetailActions';
 
 // Constants
+const { CheckIcon: checkIcon } = Icons;
 const DEBUG_KEY = '[ UI GoalCard.Need/Step SectionCard ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;

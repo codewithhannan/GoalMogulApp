@@ -147,7 +147,7 @@ class FocusTab extends React.PureComponent {
             this.props.loading ? null :
             <EmptyResult
               text={emptyText}
-              textStyle={{ paddingTop: 110 }}
+              textStyle={{ paddingTop: 70 }}
             />
           }
           ListFooterComponent={<View style={{ height: 43, backgroundColor: 'transparent' }} />}
