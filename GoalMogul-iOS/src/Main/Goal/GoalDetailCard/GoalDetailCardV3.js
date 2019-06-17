@@ -49,7 +49,8 @@ import {
 import {
   showNextTutorialPage,
   startTutorial,
-  updateNextStepNumber
+  updateNextStepNumber,
+  pauseTutorial
 } from '../../../redux/modules/User/TutorialActions';
 
 // selector
@@ -287,6 +288,9 @@ class GoalDetailCardV3 extends Component {
     // Remove tutorial listener
     this.props.copilotEvents.off('stop');
     this.props.copilotEvents.off('stepChange');
+
+    // Reset the states for tutorial
+    this.props.pauseTutorial('goal_detail', 'goal_detail_page', 0);
   }
 
   // Switch tab to FocusTab and display all the comments
@@ -942,5 +946,6 @@ export default connect(
     showNextTutorialPage,
     startTutorial,
     updateNextStepNumber,
+    pauseTutorial
   }
 )(GoalDetailCardV3Explained);
