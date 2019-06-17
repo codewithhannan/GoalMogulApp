@@ -35,7 +35,8 @@ export default style = {
     },
     tooltipText: {
         fontSize: 18,
-        color: '#038ebf'
+        color: '#038ebf',
+        textAlign: 'center'
     },
     tooltipContainer: {
         flex: 1,

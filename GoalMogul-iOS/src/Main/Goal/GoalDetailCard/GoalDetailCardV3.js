@@ -90,6 +90,7 @@ import { Logger } from '../../../redux/middleware/utils/Logger';
 import { constructMenuName, getParentCommentId } from '../../../redux/middleware/utils';
 import Tooltip from '../../Tutorial/Tooltip';
 import { Actions } from 'react-native-router-flux';
+import { svgMaskPath } from '../../Tutorial/Utils';
 
 const initialLayout = {
   height: 0,
@@ -913,7 +914,8 @@ const GoalDetailCardV3Explained = copilot({
   overlay: 'svg', // or 'view'
   animated: true, // or false
   stepNumberComponent: () => <View />,
-  tooltipComponent: Tooltip
+  tooltipComponent: Tooltip,
+  svgMaskPath: svgMaskPath
 })(GoalDetailCardV3);
 
 export default connect(

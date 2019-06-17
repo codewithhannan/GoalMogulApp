@@ -36,7 +36,7 @@ const Tooltip = ({
     }
 
     return (
-        <View style={{ paddingBottom: 15, alignItems: 'center' }}>
+        <View style={{ alignItems: 'center' }}>
             <View style={styles.tooltipContainer}>
                 <Text testID="stepDescription" style={styles.tooltipText}>{currentStep.text}</Text>
             </View>
