@@ -52,6 +52,7 @@ import { APP_DEEP_BLUE } from '../../styles';
 import { Logger } from '../../redux/middleware/utils/Logger';
 import PlusButton from '../Common/Button/PlusButton';
 import Tooltip from '../Tutorial/Tooltip';
+import { svgMaskPath } from '../Tutorial/Utils';
 
 const TabIconMap = {
   goals: {
@@ -447,7 +448,8 @@ const HomeExplained = copilot({
   overlay: 'svg', // or 'view'
   animated: true, // or false
   stepNumberComponent: () => <View />,
-  tooltipComponent: Tooltip
+  tooltipComponent: Tooltip,
+  svgMaskPath: svgMaskPath
 })(Home);
 
 export default connect(

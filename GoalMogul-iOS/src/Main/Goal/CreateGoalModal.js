@@ -39,6 +39,7 @@ import {
   APP_BLUE
 } from '../../styles';
 import Tooltip from '../Tutorial/Tooltip';
+import { svgMaskPath } from '../Tutorial/Utils';
 
 const DEBUG_KEY = '[ UI CreateGoalModal ]';
 
@@ -257,7 +258,8 @@ const CreateGoalModalExplained = copilot({
   overlay: 'svg', // or 'view'
   animated: true, // or false
   stepNumberComponent: () => <View />,
-  tooltipComponent: Tooltip
+  tooltipComponent: Tooltip,
+  svgMaskPath: svgMaskPath
 })(CreateGoalModal);
 
 export default connect(

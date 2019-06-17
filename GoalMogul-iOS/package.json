@@ -32,7 +32,7 @@
     "react": "^16.6.3",
     "react-native": "^0.57",
     "react-native-autogrow-textinput": "^5.2.0",
-    "react-native-copilot-gm": "^0.0.2",
+    "react-native-copilot-gm": "^0.0.13",
     "react-native-draggable-flatlist": "^1.1.5",
     "react-native-dropdownalert-jia": "0.0.6",
     "react-native-elements": "^1.1.0",

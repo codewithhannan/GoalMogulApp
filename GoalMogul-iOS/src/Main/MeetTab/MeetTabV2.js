@@ -58,6 +58,7 @@ import {
 import { IPHONE_MODELS } from '../../Utils/Constants';
 import { generateInvitationLink } from '../../redux/middleware/utils';
 import Tooltip from '../Tutorial/Tooltip';
+import { svgMaskPath } from '../Tutorial/Utils';
 
 const { PeopleIcon: People } = Icons;
 const DEBUG_KEY = '[ UI MeetTabV2 ]'; 
@@ -475,7 +476,8 @@ const MeetTabV2Explained = copilot({
     overlay: 'svg', // or 'view'
     animated: true, // or false
     stepNumberComponent: () => <View />,
-    tooltipComponent: Tooltip
+    tooltipComponent: Tooltip,
+    svgMaskPath: svgMaskPath
 })(MeetTabV2);
 
 export default connect(
