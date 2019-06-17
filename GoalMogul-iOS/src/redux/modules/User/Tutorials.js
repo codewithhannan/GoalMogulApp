@@ -76,9 +76,9 @@ export const INITIAL_TUTORIAL = {
             tutorialText: [
                 'Tap here to set a Reminder for this Goal',
                 'Tap here to share your Goal to the top of your friends\' Goal feed',
-                'Tap here to Mark this goal as complete',
-                'Tap here to Edit your goal',
-                'Tap here to Delete your goal'
+                'Tap here to mark this Goal as complete',
+                'Tap here to edit your Goal',
+                'Tap here to delete your Goal'
             ],
             nextStepNumber: 0
         }
