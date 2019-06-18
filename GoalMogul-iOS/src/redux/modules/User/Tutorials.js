@@ -57,11 +57,10 @@ export const INITIAL_TUTORIAL = {
             nextPage: undefined, // This is the last page for this flow
             showTutorial: false,
             hasShown: false,
-            totalStep: 3, // Used for onStepChange and check if this is the last step,
+            totalStep: 2, // Used for onStepChange and check if this is the last step,
             tutorialText: [
                 'Discover interesting people that can help you achieve your goals!',
                 'This app is MUCH better with friends. Invite them to GoaMogul today!',
-                'You can run the tutorial again by selecting it from the menu in the upper right corner'
             ],
             nextStepNumber: 0
         },
