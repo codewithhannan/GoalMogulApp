@@ -1,120 +1,104 @@
 import React, { Component } from 'react';
-import {
-  Scene,
-  Router,
-  Stack,
-  Tabs,
-  Modal,
-  Reducer,
-  Lightbox,
-  Actions,
-  Drawer,
-  ActionConst
-} from 'react-native-router-flux';
-import { Easing, Animated } from 'react-native';
+import { Animated, Easing } from 'react-native';
+import { ActionConst, Actions, Drawer, Lightbox, Modal, Reducer, Router, Scene, Stack, Tabs } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import { copilot } from 'react-native-copilot-gm';
-
-// import CardStackStyleInterpolator from "react-navigation-stack/src/views/StackView/StackViewStyleInterpolator";
-
-/* Auth */
-import SplashScreen from './SplashScreen';
 // import Login from './Login';
 import LoginPage from './LoginPage';
-
-import Tutorial from './Tutorial/Tutorial';
-
-/* Registration */
-// import RegistrationAccount from './Registration/Account';
-import RegistrationAccount from './Registration/RegistrationAccount';
-import IntroForm from './Registration/IntroForm';
-import AddProfilePic from './Registration/AddProfilePic';
-import Contacts from './Registration/Contacts';
-import ContactSync from './Registration/ContactSync';
-
+// Chat
+import Chat from './Main/Chat/Chat';
+import ChatRoomConversation from './Main/Chat/ChatRoom/ChatRoomConversation';
+import ChatRoomMembers from './Main/Chat/ChatRoom/ChatRoomMembers';
+import ChatRoomMessageSearch from './Main/Chat/ChatRoom/ChatRoomMessageSearch';
+import ChatRoomOptions from './Main/Chat/ChatRoom/ChatRoomOptions';
+import ChatRoomPubicView from './Main/Chat/ChatRoom/ChatRoomPublicView';
+import ChatMessageSnapshotModal from './Main/Chat/Modals/ChatMessageSnapshotModal';
+import CreateChatRoomModal from './Main/Chat/Modals/CreateChatRoomModal';
+import ShareToChatModal from './Main/Chat/Modals/ShareToChatModal';
+import CreateButtonOverlay from './Main/Common/Button/CreateButtonOverlay';
+import CreateGoalButtonOverlay from './Main/Common/Button/CreateGoalButtonOverlay';
 /* Main App */
 import TabIcon from './Main/Common/TabIcon';
-import MeetTab from './Main/MeetTab/MeetTabV2';
-import SearchOverlay from './Main/Search/SearchOverlay';
-import EventSearchOverlay from './Main/Search/EventSearchOverlay';
-import TribeSearchOverlay from './Main/Search/TribeSearchOverlay';
-import PeopleSearchOverlay from './Main/Search/PeopleSearchOverlay';
+import CreateEventModal from './Main/Event/CreateEventModal';
+// Event
+import Event from './Main/Event/Event';
+// Explore Tab
+import Explore from './Main/Explore/Explore';
+import CreateGoalModal from './Main/Goal/CreateGoalModal';
+import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCardV3';
 // import MeetCard from './Main/MeetTab/MeetCard';
-
 // Home Tab
 import Home from './Main/Home/Home';
-import CreateGoalButtonOverlay from './Main/Common/Button/CreateGoalButtonOverlay';
-import CreateButtonOverlay from './Main/Common/Button/CreateButtonOverlay';
-import CreateGoalModal from './Main/Goal/CreateGoalModal';
-import CreatePostModal from './Main/Post/CreatePostModal';
-import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCardV3';
-import PostDetailCard from './Main/Post/PostDetailCard/PostDetailCard';
-import ShareDetailCard from './Main/Post/ShareDetailCard/ShareDetailCard';
-// Menu
-import MyEventTab from './Main/Menu/Event/MyEventTab';
-import MyEvent from './Main/Menu/Event/MyEvent';
-import CreateEventModal from './Main/Event/CreateEventModal';
-import MyTribeTab from './Main/Menu/Tribe/MyTribeTab';
-import MyTribe from './Main/Menu/Tribe/MyTribe';
-import CreateTribeModal from './Main/Tribe/CreateTribeModal';
-import Menu from './Main/Menu/Menu';
-
+import MeetTab from './Main/MeetTab/MeetTabV2';
+import DiscoverTabView from './Main/MeetTab/V2/DiscoverTab/DiscoverTabView';
+import FriendInvitationView from './Main/MeetTab/V2/FriendInvitationView';
 // Meet
 import FriendTabView from './Main/MeetTab/V2/FriendTab/FriendTabView';
 import RequestTabView from './Main/MeetTab/V2/RequestTab/RequestTabView';
-import DiscoverTabView from './Main/MeetTab/V2/DiscoverTab/DiscoverTabView';
-import FriendInvitationView from './Main/MeetTab/V2/FriendInvitationView';
-
-// Profile
-import Profile from './Main/Profile/ProfileV2';
-import ProfileDetail from './Main/Profile/ProfileDetail';
-// ProfileForm
-import ProfileDetailEditForm from './Main/Profile/ProfileCard/ProfileDetailEditForm';
-import MutualFriends from './Main/Profile/MutualFriends';
-
-// Explore Tab
-import Explore from './Main/Explore/Explore';
-// Event
-import Event from './Main/Event/Event';
-
-// Tribe
-import Tribe from './Main/Tribe/Tribe';
-
+import MyEvent from './Main/Menu/Event/MyEvent';
+// Menu
+import MyEventTab from './Main/Menu/Event/MyEventTab';
+import Menu from './Main/Menu/Menu';
+import MyTribe from './Main/Menu/Tribe/MyTribe';
+import MyTribeTab from './Main/Menu/Tribe/MyTribeTab';
+import NotificationNeedListView from './Main/Notification/Need/NotificationNeedListView';
+import NotificationListView from './Main/Notification/Notification/NotificationListView';
 // Notification
 import NotificationTab from './Main/Notification/NotificationTab';
-import NotificationListView from './Main/Notification/Notification/NotificationListView';
-import NotificationNeedListView from './Main/Notification/Need/NotificationNeedListView';
-
-// Chat
-import Chat from './Main/Chat/Chat';
-import CreateChatRoomModal from './Main/Chat/Modals/CreateChatRoomModal';
-
-// Account
-import Setting from './Main/Setting/Setting';
-import Email from './Main/Setting/Account/Email';
-import EditEmailForm from './Main/Setting/Account/EditEmailForm';
-import Phone from './Main/Setting/Account/Phone';
-import AddPhoneNumberForm from './Main/Setting/Account/AddPhoneNumberForm';
-import EditPhoneNumberForm from './Main/Setting/Account/EditPhoneNumberForm';
-import EditPasswordForm from './Main/Setting/Account/EditPasswordForm';
-import FriendsBlocked from './Main/Setting/Account/Blocking/FriendsBlocked';
-import Privacy from './Main/Setting/Privacy/Privacy';
-import FriendsSetting from './Main/Setting/Privacy/FriendsSetting';
-import NotificationSetting from './Main/Setting/Account/NotificationSetting';
-
+import CreatePostModal from './Main/Post/CreatePostModal';
+import PostDetailCard from './Main/Post/PostDetailCard/PostDetailCard';
+import ShareDetailCard from './Main/Post/ShareDetailCard/ShareDetailCard';
 // Lightbox form
 import ShareModal from './Main/Post/ShareModal';
+import MutualFriends from './Main/Profile/MutualFriends';
+// ProfileForm
+import ProfileDetailEditForm from './Main/Profile/ProfileCard/ProfileDetailEditForm';
+import ProfileDetail from './Main/Profile/ProfileDetail';
+// Profile
+import Profile from './Main/Profile/ProfileV2';
 import ReportModal from './Main/Report/ReportModal';
+import EventSearchOverlay from './Main/Search/EventSearchOverlay';
+import PeopleSearchOverlay from './Main/Search/PeopleSearchOverlay';
+import SearchOverlay from './Main/Search/SearchOverlay';
+import TribeSearchOverlay from './Main/Search/TribeSearchOverlay';
+import AddPhoneNumberForm from './Main/Setting/Account/AddPhoneNumberForm';
+import FriendsBlocked from './Main/Setting/Account/Blocking/FriendsBlocked';
+import EditEmailForm from './Main/Setting/Account/EditEmailForm';
+import EditPasswordForm from './Main/Setting/Account/EditPasswordForm';
+import EditPhoneNumberForm from './Main/Setting/Account/EditPhoneNumberForm';
+import Email from './Main/Setting/Account/Email';
+import NotificationSetting from './Main/Setting/Account/NotificationSetting';
+import Phone from './Main/Setting/Account/Phone';
+import FriendsSetting from './Main/Setting/Privacy/FriendsSetting';
+import Privacy from './Main/Setting/Privacy/Privacy';
+// Account
+import Setting from './Main/Setting/Setting';
+import CreateTribeModal from './Main/Tribe/CreateTribeModal';
+// Tribe
+import Tribe from './Main/Tribe/Tribe';
+import AddProfilePic from './Registration/AddProfilePic';
+import Contacts from './Registration/Contacts';
+import ContactSync from './Registration/ContactSync';
+import IntroForm from './Registration/IntroForm';
+/* Registration */
+// import RegistrationAccount from './Registration/Account';
+import RegistrationAccount from './Registration/RegistrationAccount';
+// import CardStackStyleInterpolator from "react-navigation-stack/src/views/StackView/StackViewStyleInterpolator";
+/* Auth */
+import SplashScreen from './SplashScreen';
+import Tutorial from './Tutorial/Tutorial';
 
-// Navigation
-import { customPanHandlers, iosOnlyPanHandlers } from './redux/modules/navigation';
-import ChatRoomConversation from './Main/Chat/ChatRoom/ChatRoomConversation';
-import ChatRoomOptions from './Main/Chat/ChatRoom/ChatRoomOptions';
-import ChatRoomPubicView from './Main/Chat/ChatRoom/ChatRoomPublicView';
-import ChatRoomMembers from './Main/Chat/ChatRoom/ChatRoomMembers';
-import ChatRoomMessageSearch from './Main/Chat/ChatRoom/ChatRoomMessageSearch';
-import ChatMessageSnapshotModal from './Main/Chat/Modals/ChatMessageSnapshotModal';
-import ShareToChatModal from './Main/Chat/Modals/ShareToChatModal';
+
+
+
+
+
+
+
+
+
+
+
+
 
 class RouterComponent extends Component {
   onTabPress = (all) => {
@@ -153,7 +137,7 @@ class RouterComponent extends Component {
 
     if (state.key === 'homeTab' && isFocused()) {
       if (Actions.refs.home !== undefined) {
-        Actions.refs.home.getWrappedInstance().scrollToTop();
+        // Actions.refs.home.getWrappedInstance().scrollToTop();
       }
     }
     return Actions[state.key].call();

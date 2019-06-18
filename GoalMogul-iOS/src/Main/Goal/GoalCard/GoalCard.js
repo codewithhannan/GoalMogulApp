@@ -1,95 +1,67 @@
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  // MaskedViewIOS,
-  Dimensions,
-  TouchableOpacity,
-  Platform
-} from 'react-native';
-import { connect } from 'react-redux';
 import { Constants } from 'expo';
+import _ from 'lodash';
+import R from 'ramda';
+import React from 'react';
+import {
+  // MaskedViewIOS,
+  Dimensions, Platform, Text, View
+} from 'react-native';
 // import {
 //   FlingGestureHandler,
 //   Directions,
 //   State
 // } from 'react-native-gesture-handler';
-import { TabView, SceneMap } from 'react-native-tab-view';
+import { TabView } from 'react-native-tab-view';
+import { connect } from 'react-redux';
 import timeago from 'timeago.js';
-import R from 'ramda';
-import _ from 'lodash';
 import Decode from 'unescape';
-
-// Actions
-import {
-  createReport
-} from '../../../redux/modules/report/ReportActions';
-
-import {
-  likeGoal,
-  unLikeGoal
-} from '../../../redux/modules/like/LikeActions';
-
-import {
-  chooseShareDest
-} from '../../../redux/modules/feed/post/ShareActions';
-
-import {
-  deleteGoal,
-} from '../../../actions';
-
-import { PAGE_TYPE_MAP } from '../../../redux/middleware/utils';
-
-import {
-  subscribeEntityNotification,
-  unsubscribeEntityNotification
-} from '../../../redux/modules/notification/NotificationActions';
-
-// Components
-import Headline from '../Common/Headline';
-import Timestamp from '../Common/Timestamp';
-import ActionButton from '../Common/ActionButton';
-import ActionButtonGroup from '../Common/ActionButtonGroup';
-import TabButtonGroup from '../Common/TabButtonGroup';
-import ProgressBar from '../Common/ProgressBar';
-import NeedTab from './NeedTab';
-import StepTab from './StepTab';
-import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
-import ProfileImage from '../../Common/ProfileImage';
-import GoalCardHeader from '../Common/GoalCardHeader';
-import {
-  RightArrowIcon
-} from '../../../Utils/Icons';
-import DelayedButton from '../../Common/Button/DelayedButton';
-
-// Asset
-import LoveIcon from '../../../asset/utils/love.png';
+import { deleteGoal } from '../../../actions';
 // import BulbIcon from '../../../asset/utils/bulb.png';
 import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 import HelpIcon from '../../../asset/utils/help.png';
-import StepIcon from '../../../asset/utils/steps.png';
-import ProgressBarLarge from '../../../asset/utils/progressBar_large.png';
+// Asset
+import LoveIcon from '../../../asset/utils/love.png';
 import ProgressBarLargeCounter from '../../../asset/utils/progressBar_counter_large.png';
-
+import ProgressBarLarge from '../../../asset/utils/progressBar_large.png';
+import StepIcon from '../../../asset/utils/steps.png';
+import { makeCaretOptions, PAGE_TYPE_MAP } from '../../../redux/middleware/utils';
+import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions';
+import { markUserViewGoal, shareGoalToMastermind } from '../../../redux/modules/goal/GoalDetailActions';
 // Actions
 import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions';
-import {
-  shareGoalToMastermind
-} from '../../../redux/modules/goal/GoalDetailActions';
-
+import { likeGoal, unLikeGoal } from '../../../redux/modules/like/LikeActions';
+import { subscribeEntityNotification, unsubscribeEntityNotification } from '../../../redux/modules/notification/NotificationActions';
+// Actions
+import { createReport } from '../../../redux/modules/report/ReportActions';
 // Constants
-import { 
-  IPHONE_MODELS,
-  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
-  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
-} from '../../../Utils/Constants';
+import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE, IPHONE_MODELS } from '../../../Utils/Constants';
+import { RightArrowIcon } from '../../../Utils/Icons';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import DelayedButton from '../../Common/Button/DelayedButton';
+import ProfileImage from '../../Common/ProfileImage';
+import ActionButton from '../Common/ActionButton';
+import ActionButtonGroup from '../Common/ActionButtonGroup';
+import GoalCardHeader from '../Common/GoalCardHeader';
+// Components
+import Headline from '../Common/Headline';
+import ProgressBar from '../Common/ProgressBar';
+import TabButtonGroup from '../Common/TabButtonGroup';
+import Timestamp from '../Common/Timestamp';
+import NeedTab from './NeedTab';
+import StepTab from './StepTab';
 
-// Utils
-import { makeCaretOptions } from '../../../redux/middleware/utils';
 
-// Styles
-import { APP_BLUE } from '../../../styles';
+
+
+
+
+
+
+
+
+
+
 
 const { height } = Dimensions.get('window');
 const CardHeight = height * 0.7;
@@ -130,6 +102,7 @@ class GoalCard extends React.PureComponent {
   componentDidMount() {
     const { item } = this.props;
     this.updateRoutes(item);
+    this.props.markUserViewGoal(item._id);
   }
 
   updateRoutes(item) {
@@ -530,13 +503,13 @@ class GoalCard extends React.PureComponent {
               </View>
             </DelayedButton>
             { // Disable tabs if neither needs or steps
-              _.isEmpty(steps) && _.isEmpty(needs)
-              ? null
-              : (
-                <View style={{ height: tabHeight }}>
-                  {this.renderTabs()}
-                </View>
-              )
+              // _.isEmpty(steps) && _.isEmpty(needs)
+              // ? null
+              // : (
+              //   <View style={{ height: tabHeight }}>
+              //     {this.renderTabs()}
+              //   </View>
+              // )
             }
             <View style={styles.containerStyle}>
               {this.renderActionButtons(item)}
@@ -625,6 +598,7 @@ export default connect(
     subscribeEntityNotification,
     unsubscribeEntityNotification,
     openGoalDetail,
-    shareGoalToMastermind
+    shareGoalToMastermind,
+    markUserViewGoal,
   }
 )(GoalCard);
