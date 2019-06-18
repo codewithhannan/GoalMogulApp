@@ -99,7 +99,7 @@ class TabButtonGroup extends Component {
         const { tutorialText, order, name } = b.tutorial;
         return (
           <CopilotStep text={tutorialText} order={order} name={name}>
-            <WalkableView>
+            <WalkableView style={{ flex: 1 }}>
               {buttonComponent}
             </WalkableView>
           </CopilotStep>

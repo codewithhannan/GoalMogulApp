@@ -28,7 +28,7 @@ export const INITIAL_TUTORIAL = {
         },
         create_goal_modal: {
             nextPage: {
-                8: {
+                9: {
                     pageName: 'home',
                     // This is the next step number for the tutorial we are going to show.
                     // For example, if we are going to show step 1, then its next step number should be 2
@@ -37,7 +37,7 @@ export const INITIAL_TUTORIAL = {
             },
             showTutorial: false,
             hasShown: false,
-            totalStep: 8, // Used for onStepChange and check if this is the last step
+            totalStep: 9, // Used for onStepChange and check if this is the last step
             tutorialText: [
                 'Tap here to toggle who\'s allowed to see your goals',
                 'Enter your goal here (i.e. lose 10 lbs, earn $1m dollars, etc.)	',
@@ -46,6 +46,7 @@ export const INITIAL_TUTORIAL = {
                 '(optional) Pick a Start and End date to keep track of progress',
                 '(optional) List some steps to achieving your goal',
                 '(optional) Type in your needs so others know how they can help you',
+                'Too busy to think about what goals to add? Try picking some from this list!',
                 'Tap Create whenever you\'re ready to post your goal!',
             ],
             nextStepNumber: 0

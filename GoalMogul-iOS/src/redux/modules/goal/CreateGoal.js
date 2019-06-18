@@ -19,7 +19,11 @@ const INITIAL_STATE = {
     index: 0,
     routes: [
       { key: 'newGoal', title: 'New Goal' },
-      { key: 'trendingGoal', title: 'Trending Goals' }
+      { key: 'trendingGoal', title: 'Trending Goals', tutorial: { 
+        tutorialText: 'Too busy to think about what goals to add? Try picking some from this list!', 
+        order: 7, 
+        name: 'create_goal_create_goal_modal_7' 
+      }}
     ]
   }
 };
