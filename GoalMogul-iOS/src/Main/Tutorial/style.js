@@ -34,7 +34,7 @@ export default style = {
         overflow: 'hidden',
     },
     tooltipText: {
-        fontSize: 18,
+        fontSize: 15,
         color: '#038ebf',
         textAlign: 'center'
     },
@@ -63,14 +63,14 @@ export default style = {
         color: '#FFFFFF',
     },
     button: {
-        padding: 6,
-        paddingHorizontal: 14,
+        padding: 8,
+        paddingHorizontal: 15,
         borderRadius: 6,
         backgroundColor: '#0796cb',
     },
     buttonText: {
         color: '#fff',
-        fontSize: 10
+        fontSize: 12
     },
     bottomBar: {
         marginTop: 10,

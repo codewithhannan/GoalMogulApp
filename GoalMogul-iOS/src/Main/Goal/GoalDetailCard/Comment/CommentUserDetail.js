@@ -190,7 +190,7 @@ class CommentUserDetail extends Component {
       <RichText
         contentText={text}
         contentTags={tags}
-        textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 12, marginTop: 3 }}
+        textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 14, lineHeight: 16, marginTop: 3 }}
         multiline
         onUserTagPressed={(user) => {
           console.log(`${DEBUG_KEY}: user tag press for user: `, user);

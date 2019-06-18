@@ -180,7 +180,7 @@ class SplashScreen extends Component {
       'gotham-pro-bold': require('../assets/fonts/GothamPro-Bold.ttf')
     });
 
-    const loadBase64Icons = [Image.prefetch(Icons.CheckIcon)];
+    const loadBase64Icons = Object.keys(Icons).map((k) => Image.prefetch(Icons[k]));
 
     await Promise
       .all([...imageAssets, ...fontAssets, ...loadBase64Icons])

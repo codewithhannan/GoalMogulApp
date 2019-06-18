@@ -230,6 +230,7 @@ class Home extends Component {
     if (this.state.appState === 'active' && nextAppState === 'inactive') {
       console.log(`${DEBUG_KEY}: [handleAppStateChange] App has become inactive!`);
       this.props.saveUnreadNotification();
+      this.props.saveTutorialState();
     }
 
     this.setState({

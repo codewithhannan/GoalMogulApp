@@ -3,7 +3,8 @@ import {
   View,
   Text,
   Alert,
-  TouchableOpacity
+  TouchableOpacity,
+  Image
 } from 'react-native';
 import { connect } from 'react-redux';
 import timeago from 'timeago.js';
@@ -76,8 +77,9 @@ import {
   CARET_OPTION_NOTIFICATION_SUBSCRIBE,
   CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
+import { DotIcon } from '../../../Utils/Icons';
 
-const { CheckIcon, BellIcon } = Icons;
+const { CheckIcon, BellIcon, ViewCountIcon } = Icons;
 const DEBUG_KEY = '[ UI GoalDetailCardV3.GoalDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
@@ -216,7 +218,7 @@ class GoalDetailSection extends React.PureComponent {
 
   // user basic information
   renderUserDetail(item) {
-    const { _id, created, title, owner, category, details, isCompleted, maybeIsSubscribed } = item;
+    const { _id, created, title, owner, category, details, isCompleted, maybeIsSubscribed, viewCount } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
 
@@ -310,7 +312,7 @@ class GoalDetailSection extends React.PureComponent {
             goalId={this.props.goalId}
             menuName={this.props.menuName}
           />
-          <Timestamp time={timeago().format(timeStamp)} />
+          <Timestamp time={timeago().format(timeStamp)} viewCount={viewCount} />
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
             <Text
               style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 15 }}

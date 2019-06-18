@@ -30,7 +30,8 @@ import {
   goalDetailSwitchTabV2ByKey,
   editGoal,
   markGoalAsComplete,
-  refreshGoalDetailById
+  refreshGoalDetailById,
+  markUserViewGoal
 } from '../../../redux/modules/goal/GoalDetailActions';
 
 import {
@@ -147,6 +148,11 @@ class GoalDetailCardV3 extends Component {
   }
 
   componentDidMount() {
+    // Send request to mark user viewed this goal
+    if (!this.props.isSelf) {
+      this.props.markUserViewGoal(this.props.goalId);
+    }
+
     this.state.scroll.addListener(({ value }) => { this._value = value; });    
     this.keyboardWillShowListener = Keyboard.addListener(
       'keyboardWillShow', this.keyboardWillShow);
@@ -942,6 +948,7 @@ export default connect(
     markGoalAsComplete,
     refreshGoalDetailById,
     refreshComments,
+    markUserViewGoal,
     // Tutorial related
     showNextTutorialPage,
     startTutorial,

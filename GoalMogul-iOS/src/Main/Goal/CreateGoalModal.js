@@ -74,7 +74,7 @@ class CreateGoalModal extends React.Component {
 
       // Close create goal modal
       Actions.pop();
-      this.props.updateNextStepNumber('create_goal', 'create_goal_modal', 8);
+      this.props.updateNextStepNumber('create_goal', 'create_goal_modal', 9);
       setTimeout(() => {
         this.props.showNextTutorialPage('create_goal', 'create_goal_modal');
       }, 400);
@@ -209,9 +209,9 @@ class CreateGoalModal extends React.Component {
               actionDisabled={!this.props.uploading}
               tutorialOn={{
                 actionText: {
-                  tutorialText: this.props.tutorialText[7],
-                  order: 7,
-                  name: 'create_goal_create_goal_modal_7'
+                  tutorialText: this.props.tutorialText[8],
+                  order: 8,
+                  name: 'create_goal_create_goal_modal_8'
                 }
               }}
             />

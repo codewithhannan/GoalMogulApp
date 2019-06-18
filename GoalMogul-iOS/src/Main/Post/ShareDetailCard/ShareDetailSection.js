@@ -166,7 +166,7 @@ class ShareDetailSection extends Component {
   // user basic information
   renderUserDetail(item) {
     // TODO: TAG: for content
-    const { _id, created, content, owner, category, maybeIsSubscribed } = item;
+    const { _id, created, content, owner, category, maybeIsSubscribed, viewCount } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
 
@@ -216,7 +216,7 @@ class ShareDetailSection extends Component {
             user={owner}
             pageId={this.props.pageId}
           />
-          <Timestamp time={timeago().format(timeStamp)} />
+          <Timestamp time={timeago().format(timeStamp)} viewCount={viewCount} />
           {/*
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
               <Text

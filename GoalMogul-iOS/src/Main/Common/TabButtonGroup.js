@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { View, TouchableOpacity } from 'react-native';
+import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 import Divider from './Divider';
 import TabButton from './Button/TabButton';
 import SubTabButton from './Button/SubTabButton';
+
+const WalkableView = walkthroughable(View);
 
 /**
  * Note: stat shouldn't be provided together with tabNotificationMap
@@ -51,10 +54,12 @@ class TabButtonGroup extends Component {
             tabNotificationMap={tabNotificationMap}
           />
         );
+
+      let buttonComponent;
       if (i !== 0) {
         // render divider to the left
         const divider = noVerticalDivider ? null : (<Divider />);
-        return (
+        buttonComponent = (
           <TouchableOpacity 
             activeOpacity={0.6}
             key={b.key}
@@ -71,24 +76,37 @@ class TabButtonGroup extends Component {
             {button}
           </TouchableOpacity>
         );
+      } else {
+        buttonComponent = (
+          <TouchableOpacity 
+            activeOpacity={0.6}
+            key={b.key}
+            style={styles.dividerContainerStyle}
+            onPress={() => {
+              if (jumpTo) {
+                jumpTo(b.key);
+              } else {
+                jumpToIndex(i);
+              }
+            }}
+          >
+            {button}
+          </TouchableOpacity>
+        );
       }
 
-      return (
-        <TouchableOpacity 
-          activeOpacity={0.6}
-          key={b.key}
-          style={styles.dividerContainerStyle}
-          onPress={() => {
-            if (jumpTo) {
-              jumpTo(b.key);
-            } else {
-              jumpToIndex(i);
-            }
-          }}
-        >
-          {button}
-        </TouchableOpacity>
-      );
+      if (b && b.tutorial) {
+        const { tutorialText, order, name } = b.tutorial;
+        return (
+          <CopilotStep text={tutorialText} order={order} name={name}>
+            <WalkableView style={{ flex: 1 }}>
+              {buttonComponent}
+            </WalkableView>
+          </CopilotStep>
+        );
+      }
+
+      return buttonComponent;
     });
   }
 

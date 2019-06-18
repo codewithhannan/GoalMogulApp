@@ -74,8 +74,12 @@ class MeetTabV2 extends React.Component {
     }
     
     componentDidUpdate(prevProps) {
+        if (prevProps.refreshing && !this.props.refreshing && !this.props.hasShown && Actions.currentScene === 'meet') {
+            this.props.start();
+        }
+
         if (!prevProps.showTutorial && this.props.showTutorial === true) {
-            if (Actions.currentScene === 'meet') {
+            if (Actions.currentScene === 'meet' && !this.props.refreshing) {
                 console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: [ start ]`);
                 this.props.start();
             } else {
@@ -352,17 +356,7 @@ class MeetTabV2 extends React.Component {
         const { incomingRequests, outgoingRequests, friends, friendCount } = this.props;
         return (
             <View style={{ flex: 1, backgroundColor: 'white' }}>
-                <SearchBarHeader 
-                    rightIcon='menu' 
-                    tutorialOn={{
-                        rightIcon: {
-                            iconType: 'menu',
-                            tutorialText: this.props.tutorialText[2],
-                            order: 2,
-                            name: 'meettab_menu'
-                        }
-                    }}
-                />
+                <SearchBarHeader rightIcon='menu' />
                 <ScrollView
                     refreshControl={
                         <RefreshControl

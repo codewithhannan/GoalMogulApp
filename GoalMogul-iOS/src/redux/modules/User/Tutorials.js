@@ -28,7 +28,7 @@ export const INITIAL_TUTORIAL = {
         },
         create_goal_modal: {
             nextPage: {
-                8: {
+                9: {
                     pageName: 'home',
                     // This is the next step number for the tutorial we are going to show.
                     // For example, if we are going to show step 1, then its next step number should be 2
@@ -37,15 +37,16 @@ export const INITIAL_TUTORIAL = {
             },
             showTutorial: false,
             hasShown: false,
-            totalStep: 8, // Used for onStepChange and check if this is the last step
+            totalStep: 9, // Used for onStepChange and check if this is the last step
             tutorialText: [
                 'Tap here to toggle who\'s allowed to see your goals',
-                'Enter your goal here (i.e. lose 10 lbs, earn $1m dollars, etc.)	',
+                'Enter your goal here (i.e. lose 10 lbs, earn $1m dollars, etc.)',
                 '(optional) Pick a Category for your goal',
                 '(optional) Pick a number 1-10 to note the importance of your goal',
                 '(optional) Pick a Start and End date to keep track of progress',
                 '(optional) List some steps to achieving your goal',
                 '(optional) Type in your needs so others know how they can help you',
+                'Too busy to think about what goals to add? Try picking some from this list!',
                 'Tap Create whenever you\'re ready to post your goal!',
             ],
             nextStepNumber: 0
@@ -57,11 +58,10 @@ export const INITIAL_TUTORIAL = {
             nextPage: undefined, // This is the last page for this flow
             showTutorial: false,
             hasShown: false,
-            totalStep: 3, // Used for onStepChange and check if this is the last step,
+            totalStep: 2, // Used for onStepChange and check if this is the last step,
             tutorialText: [
                 'Discover interesting people that can help you achieve your goals!',
                 'This app is MUCH better with friends. Invite them to GoaMogul today!',
-                'You can run the tutorial again by selecting it from the menu in the upper right corner'
             ],
             nextStepNumber: 0
         },
@@ -75,10 +75,10 @@ export const INITIAL_TUTORIAL = {
             totalStep: 5, // Used for onStepChange and check if this is the last step,
             tutorialText: [
                 'Tap here to set a Reminder for this Goal',
-                'Tap here to Share your goal to the top of your friends\' Goal feed',
-                'Tap here to Mark this goal as complete',
-                'Tap here to Edit your goal',
-                'Tap here to Delete your goal'
+                'Tap here to share your Goal to the top of your friends\' Goal feed',
+                'Tap here to mark this Goal as complete',
+                'Tap here to edit your Goal',
+                'Tap here to delete your Goal'
             ],
             nextStepNumber: 0
         }

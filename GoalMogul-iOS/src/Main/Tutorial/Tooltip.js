@@ -35,10 +35,32 @@ const Tooltip = ({
         </TouchableOpacity>);
     }
 
+    const { text } = currentStep;
+
+    let startingIndex, endingIndex, optionalIndex, focusedText, optionalText;
+    if (text) {
+        focusedText = text;
+        optionalIndex = text.indexOf('optional');
+        startingIndex = optionalIndex - 1;
+        endingIndex = optionalIndex + 9;
+    }
+    
+    if (optionalIndex !== -1) {
+        optionalText = text.substring(startingIndex, endingIndex + 1);
+        focusedText = text.substring(endingIndex + 1);
+    }
+
     return (
         <View style={{ alignItems: 'center' }}>
             <View style={styles.tooltipContainer}>
-                <Text testID="stepDescription" style={styles.tooltipText}>{currentStep.text}</Text>
+                <Text testID="stepDescription" style={styles.tooltipText}>
+                    {focusedText}
+                </Text>
+                {
+                    optionalIndex !== -1
+                        ? (<Text style={{ ...styles.tooltipText, color: '#025a7a', fontWeight: '600', marginTop: 4, fontSize: 13 }}>{optionalText}</Text>)
+                        : null
+                }
             </View>
             <View style={[styles.bottomBar]}>
             {

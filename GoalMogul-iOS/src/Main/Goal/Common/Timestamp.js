@@ -1,12 +1,29 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, Image, View } from 'react-native';
+
+import Icons from '../../../asset/base64/Icons';
+import { DotIcon } from '../../../Utils/Icons';
+
+const { ViewCountIcon } = Icons;
 
 const Timestamp = (props) => {
   // TODO: format time
+  const { time, viewCount } = props;
+  const viewCountComponent = viewCount ? (
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <DotIcon iconStyle={{ tintColor: '#818181', width: 3, height: 3, marginLeft: 4, marginRight: 5, marginTop: 1 }} />
+      <Image source={ViewCountIcon} style={{ height: 9, width: 13, marginTop: 1, tintColor: '#636363' }}/>
+      <Text style={{ fontSize: 10, color: '#636363', marginLeft: 3 }}>{viewCount}</Text>
+    </View>
+  ) : null;
   return (
-    <Text style={styles.containerStyle}>
-      {props.time}
-    </Text>
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <Text style={styles.containerStyle}>
+        {time}
+      </Text>
+      {viewCountComponent}
+    </View>
+    
   );
 };
 
