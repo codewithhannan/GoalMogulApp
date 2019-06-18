@@ -1,71 +1,48 @@
-import React, { Component } from 'react';
-import {
-  View,
-  TouchableOpacity,
-  ImageBackground,
-  TouchableWithoutFeedback,
-  Dimensions
-} from 'react-native';
-import { connect } from 'react-redux';
 import _ from 'lodash';
 import R from 'ramda';
-
+import React from 'react';
+import { Dimensions, ImageBackground, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { connect } from 'react-redux';
 // Actions
-import {
-  openProfile
-} from '../../actions';
-
-import {
-  likeGoal,
-  unLikeGoal
-} from '../../redux/modules/like/LikeActions';
-
-import {
-
-} from '../../redux/modules/feed/comment/CommentActions';
-
-import {
-  chooseShareDest
-} from '../../redux/modules/feed/post/ShareActions';
-
-import {
-  openPostDetail
-} from '../../redux/modules/feed/post/PostActions';
-
-import {
-  openGoalDetail
-} from '../../redux/modules/home/mastermind/actions';
-
-import {
-  refreshFeed
-} from '../../redux/modules/home/feed/actions';
-
+import { openProfile } from '../../actions';
+import CommentIcon from '../../asset/utils/comment.png';
+import ShareIcon from '../../asset/utils/forward.png';
 // Assets
 import LoveIcon from '../../asset/utils/love.png';
-import BulbIcon from '../../asset/utils/bulb.png';
-import ShareIcon from '../../asset/utils/forward.png';
-import CommentIcon from '../../asset/utils/comment.png';
-
+import { } from '../../redux/modules/feed/comment/CommentActions';
+import { markUserViewPost, openPostDetail } from '../../redux/modules/feed/post/PostActions';
+import { chooseShareDest } from '../../redux/modules/feed/post/ShareActions';
+import { markUserViewGoal } from '../../redux/modules/goal/GoalDetailActions';
+import { refreshFeed } from '../../redux/modules/home/feed/actions';
+import { openGoalDetail } from '../../redux/modules/home/mastermind/actions';
+import { likeGoal, unLikeGoal } from '../../redux/modules/like/LikeActions';
+// Styles
+import { imagePreviewContainerStyle } from '../../styles';
+// Constants
+import { IMAGE_BASE_URL } from '../../Utils/Constants';
+import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
+import ImageModal from '../Common/ImageModal';
+import ProfileImage from '../Common/ProfileImage';
+import RichText from '../Common/Text/RichText';
 // Components
 import ActionButton from '../Goal/Common/ActionButton';
 import ActionButtonGroup from '../Goal/Common/ActionButtonGroup';
-import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
-import ActivityHeader from './ActivityHeader';
-import ActivityBody from './ActivityBody';
-import ActivitySummary from './ActivitySummary';
-import ProfileImage from '../Common/ProfileImage';
 import Headline from '../Goal/Common/Headline';
-import ImageModal from '../Common/ImageModal';
-import RichText from '../Common/Text/RichText';
 import CommentRef from '../Goal/GoalDetailCard/Comment/CommentRef';
+import ActivityBody from './ActivityBody';
+import ActivityHeader from './ActivityHeader';
+import ActivitySummary from './ActivitySummary';
 
-// Styles
-import { imagePreviewContainerStyle } from '../../styles';
 
-// Constants
-import {
-  IMAGE_BASE_URL
-} from '../../Utils/Constants';
+
+
+
+
+
+
+
+
+
 
 
 const DEBUG_KEY = '[ UI ActivityCard ]';
@@ -81,6 +58,17 @@ class ActivityCard extends React.PureComponent {
     };
     this.renderCommentRef = this.renderCommentRef.bind(this);
     this.renderMedia = this.renderMedia.bind(this);
+  }
+
+  componentDidMount() {
+    const { item } = this.props;
+    if (item.postRef) {
+      const postId = item.postRef._id;
+      this.props.markUserViewPost(postId);
+    } else if (item.goalRef) {
+      const goalId = item.goalRef._id;
+      this.props.markUserViewPost(goalId);
+    };
   }
 
   handleCardOnPress = (item, props) => {
@@ -405,6 +393,8 @@ export default connect(
     openPostDetail,
     openGoalDetail,
     refreshFeed,
-    openProfile
+    openProfile,
+    markUserViewGoal,
+    markUserViewPost,
   }
 )(ActivityCard);
