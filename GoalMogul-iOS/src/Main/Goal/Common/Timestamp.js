@@ -12,7 +12,7 @@ const Timestamp = (props) => {
   const viewCountComponent = viewCount ? (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <DotIcon iconStyle={{ tintColor: '#818181', width: 3, height: 3, marginLeft: 4, marginRight: 5, marginTop: 1 }} />
-      <Image source={ViewCountIcon} style={{ height: 9, width: 13, marginTop: 1, tintColor: '#333' }}/>
+      <Image source={ViewCountIcon} style={{ height: 9, width: 13, marginTop: 1, tintColor: '#636363' }}/>
       <Text style={{ fontSize: 10, color: '#636363', marginLeft: 3 }}>{viewCount}</Text>
     </View>
   ) : null;
