@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
-  TouchableOpacity,
   Text,
   ActivityIndicator,
   Platform,
@@ -42,6 +41,7 @@ import {
 import { IPHONE_MODELS } from '../../Utils/Constants';
 import { APP_DEEP_BLUE, BACKGROUND_COLOR } from '../../styles';
 import { Logger } from '../../redux/middleware/utils/Logger';
+import DelayedButton from '../Common/Button/DelayedButton';
 
 const ITEM_HEIGHT = Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
@@ -174,7 +174,7 @@ class Mastermind extends Component {
 
   renderInfoHeader() {
     return (
-      <TouchableOpacity
+      <DelayedButton
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -192,7 +192,7 @@ class Mastermind extends Component {
         >
           What is the ‘Goals’ feed?
         </Text>
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 
@@ -226,14 +226,14 @@ class Mastermind extends Component {
     ) : null;
 
     return (
-      <TouchableOpacity
+      <DelayedButton
         activeOpacity={0.6}
         style={styles.iconContainerStyle}
         onPress={() => Actions.createGoalModal()}
       >
         <Image style={styles.iconStyle} source={plus} />
         {tutorialView}
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 

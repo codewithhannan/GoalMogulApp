@@ -3,7 +3,6 @@ import {
   View,
   FlatList,
   ActivityIndicator,
-  TouchableOpacity,
   Image
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -31,6 +30,7 @@ import {
 } from '../../redux/modules/home/mastermind/actions';
 
 import { APP_DEEP_BLUE } from '../../styles';
+import DelayedButton from '../Common/Button/DelayedButton';
 
 const TAB_KEY = 'activityfeed';
 const DEBUG_KEY = '[ UI ActivityFeed ]';
@@ -121,13 +121,13 @@ class ActivityFeed extends Component {
   // This was used in V2 where user can only create Goal here. 
   renderPlus() {
     return (
-      <TouchableOpacity
+      <DelayedButton
         activeOpacity={0.6}
         style={styles.iconContainerStyle}
         onPress={() => Actions.createPostModal()}
       >
         <Image style={styles.iconStyle} source={plus} />
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 

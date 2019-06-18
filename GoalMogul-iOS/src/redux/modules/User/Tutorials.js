@@ -40,7 +40,7 @@ export const INITIAL_TUTORIAL = {
             totalStep: 9, // Used for onStepChange and check if this is the last step
             tutorialText: [
                 'Tap here to toggle who\'s allowed to see your goals',
-                'Enter your goal here (i.e. lose 10 lbs, earn $1m dollars, etc.)	',
+                'Enter your goal here (i.e. lose 10 lbs, earn $1m dollars, etc.)',
                 '(optional) Pick a Category for your goal',
                 '(optional) Pick a number 1-10 to note the importance of your goal',
                 '(optional) Pick a Start and End date to keep track of progress',
