@@ -27,7 +27,7 @@ import ProgressBarLarge from '../../../asset/utils/progressBar_large.png';
 import StepIcon from '../../../asset/utils/steps.png';
 import { makeCaretOptions, PAGE_TYPE_MAP } from '../../../redux/middleware/utils';
 import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions';
-import { markUserViewGoal, shareGoalToMastermind } from '../../../redux/modules/goal/GoalDetailActions';
+import { shareGoalToMastermind } from '../../../redux/modules/goal/GoalDetailActions';
 // Actions
 import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions';
 import { likeGoal, unLikeGoal } from '../../../redux/modules/like/LikeActions';
@@ -50,18 +50,6 @@ import TabButtonGroup from '../Common/TabButtonGroup';
 import Timestamp from '../Common/Timestamp';
 import NeedTab from './NeedTab';
 import StepTab from './StepTab';
-
-
-
-
-
-
-
-
-
-
-
-
 
 const { height } = Dimensions.get('window');
 const CardHeight = height * 0.7;
@@ -102,7 +90,6 @@ class GoalCard extends React.PureComponent {
   componentDidMount() {
     const { item } = this.props;
     this.updateRoutes(item);
-    this.props.markUserViewGoal(item._id);
   }
 
   updateRoutes(item) {
@@ -598,7 +585,6 @@ export default connect(
     subscribeEntityNotification,
     unsubscribeEntityNotification,
     openGoalDetail,
-    shareGoalToMastermind,
-    markUserViewGoal,
+    shareGoalToMastermind
   }
 )(GoalCard);

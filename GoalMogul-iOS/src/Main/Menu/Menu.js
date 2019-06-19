@@ -40,16 +40,17 @@ import {
 // Assets
 import TribeIcon from '../../asset/explore/tribe.png';
 import EventIcon from '../../asset/suggestion/event.png';
-import TutorialIcon from '../../asset/utils/tutorial.png';
 import BugReportIcon from '../../asset/utils/bug_report.png';
 import LogoutIcon from '../../asset/utils/logout.png';
 
+import Icons from '../../asset/base64/Icons';
 import {
   IPHONE_MODELS,
   BUG_REPORT_URL
 } from '../../Utils/Constants';
 
 const DEBUG_KEY = '[ UI Menu ]';
+const { TutorialIcon } = Icons;
 
 class Menu extends React.PureComponent {
 

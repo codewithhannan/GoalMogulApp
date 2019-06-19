@@ -206,7 +206,7 @@ class Headline extends React.PureComponent {
           callback={onPress}
           triggerText={''}
           triggerContainerStyle={styles.caretContainer} 
-          animationCallback={() => console.log(`${DEBUG_KEY}: menu is opened for options with shouldExtendOptionLength: ${shouldExtendOptionLength}. `, options)} 
+          animationCallback={() => console.log(`${DEBUG_KEY}: menu is opened for options with shouldExtendOptionLength: ${shouldExtendOptionLength}. `)} 
           shouldExtendOptionLength={shouldExtendOptionLength} 
           menuName={menuName}
         />

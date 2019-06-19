@@ -45,6 +45,7 @@ import {
   myEventDetailOpenWithId
 } from '../../../../redux/modules/event/MyEventActions';
 import DelayedButton from '../../../Common/Button/DelayedButton';
+import SuggestionDetailModal from './SuggestionDetailModal';
 
 const DEBUG_KEY = '[ UI CommentRef ]';
 
@@ -53,6 +54,9 @@ class CommentRef extends React.PureComponent {
     super(props);
     this.handleSuggestionLinkOnPress = this.handleSuggestionLinkOnPress.bind(this);
     this.handleSuggestionLinkOnClose = this.handleSuggestionLinkOnClose.bind(this);
+    this.state = {
+      suggestionModal: false
+    };
   }
 
   handleSuggestionLinkOnPress = async (url) => {
@@ -101,9 +105,17 @@ class CommentRef extends React.PureComponent {
       return this.props.myEventDetailOpenWithId(eventRef._id);
     }
     if (suggestionType === 'NewNeed') {
+      this.setState({
+        ...this.state,
+        suggestionModal: true
+      });
       return;
     }
     if (suggestionType === 'NewStep') {
+      this.setState({
+        ...this.state,
+        suggestionModal: true
+      });
       return;
     }
     if (suggestionType === 'ChatConvoRoom' && chatRoomRef) {
@@ -199,6 +211,16 @@ class CommentRef extends React.PureComponent {
     );
   }
 
+  renderSuggestionModal(item) {
+    return (
+      <SuggestionDetailModal
+        isVisible={this.state.suggestionModal}
+        suggestion={item}
+        closeModal={() => this.setState({ suggestionModal: false })}
+      />
+    )
+  }
+
   // Currently this is a dummy component
   render() {
     const { item, userId, tab, containerStyles } = this.props;
@@ -221,6 +243,7 @@ class CommentRef extends React.PureComponent {
         style={{...styles.containerStyle, ...(containerStyles || {}) }}
         onPress={() => this.handleOnRefPress(item, userId, tab)}
       >
+        {this.renderSuggestionModal(item)}
         {this.renderImage(item)}
         {this.renderTextContent(item)}
         {this.renderEndImage(item)}

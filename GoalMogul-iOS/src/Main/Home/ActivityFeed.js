@@ -21,10 +21,8 @@ import {
   refreshFeed
 } from '../../redux/modules/home/feed/actions';
 
-import {
-  openPostDetail
-} from '../../redux/modules/feed/post/PostActions';
-
+import { openPostDetail, markUserViewPost } from '../../redux/modules/feed/post/PostActions';
+import { markUserViewGoal } from '../../redux/modules/goal/GoalDetailActions';
 import {
   openGoalDetail
 } from '../../redux/modules/home/mastermind/actions';
@@ -36,6 +34,29 @@ const TAB_KEY = 'activityfeed';
 const DEBUG_KEY = '[ UI ActivityFeed ]';
 
 class ActivityFeed extends Component {
+  constructor(props) {
+    super(props);
+
+    // Same config is used in Mastermind.js
+    this.viewabilityConfig = {
+      waitForInteraction: true,
+      itemVisiblePercentThreshold: 100,
+      minimumViewTime: 1500
+    }
+  }
+
+  handleOnViewableItemsChanged = ({ viewableItems, changed }) => {
+    viewableItems.map(({ item }) => {
+      if (item.postRef) {
+        const postId = item.postRef._id;
+        this.props.markUserViewPost(postId);
+      } else if (item.goalRef) {
+        const goalId = item.goalRef._id;
+        this.props.markUserViewGoal(goalId);
+      };
+    });
+  }
+
   handleOnLoadMore = () => this.props.loadMoreFeed();
 
   handleOnRefresh = () => this.props.refreshFeed();
@@ -143,6 +164,8 @@ class ActivityFeed extends Component {
           refreshing={this.props.loading}
           onRefresh={this.handleOnRefresh}
           onEndReached={this.handleOnLoadMore}
+          onViewableItemsChanged={this.handleOnViewableItemsChanged}
+          viewabilityConfig={this.viewabilityConfig}
           ListHeaderComponent={this.renderListHeader()}
           ListEmptyComponent={
             this.props.loading ? null :
@@ -199,7 +222,9 @@ export default connect(
     loadMoreFeed,
     refreshFeed,
     openPostDetail,
-    openGoalDetail
+    openGoalDetail,
+    markUserViewPost,
+    markUserViewGoal
   },
   null,
   { withRef: true }

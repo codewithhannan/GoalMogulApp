@@ -229,8 +229,9 @@ class ShareDetailSection extends Component {
             </View>
           */}
           <RichText
-            contentText={content.text}
-            contentTags={content.tags}
+            contentText={content ? content.text : ''}
+            contentTags={content ? content.tags : []}
+            contentLinks={content ? content.links : []}
             textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
             textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
             numberOfLines={this.state.numberOfLines}

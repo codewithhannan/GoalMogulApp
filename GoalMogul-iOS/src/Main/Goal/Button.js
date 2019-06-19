@@ -30,7 +30,7 @@ const Button = (props) => {
             ...props.style
           }}
         />
-        <Text style={{ fontSize: 10, marginLeft: 5, alignSelf: 'center', color: '#a1a1a1' }}>
+        <Text style={{ fontSize: 13, marginLeft: 5, alignSelf: 'center', color: '#a1a1a1' }}>
           {props.text}
         </Text>
       </View>

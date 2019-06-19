@@ -104,8 +104,9 @@ const INITIAL_STATE = {
     data: [],
     limit: MEET_REQUEST_LIMIT,
     skip: 0,
-    refreshing: true,
-    hasNextPage: undefined
+    refreshing: false,
+    hasNextPage: undefined,
+    uploading: true,
   },
 };
 
@@ -377,12 +378,18 @@ export default (state = INITIAL_STATE, action) => {
     case MEET_CONTACT_SYNC: {
       const newState = _.cloneDeep(state);
       let newMatchedContacts = _.get(newState, 'matchedContacts');
-      const { refresh } = action.payload;
-      if (refresh) {
-        newMatchedContacts = _.set(newMatchedContacts, 'refreshing', true);
+      const { refresh, uploading } = action.payload;
+      if (uploading) {
+        newMatchedContacts = _.set(newMatchedContacts, 'uploading', true);
       } else {
-        newMatchedContacts = _.set(newMatchedContacts, 'loading', true);
+        newMatchedContacts = _.set(newMatchedContacts, 'uploading', false);
+        if (refresh) {
+          newMatchedContacts = _.set(newMatchedContacts, 'refreshing', true);
+        } else {
+          newMatchedContacts = _.set(newMatchedContacts, 'loading', true);
+        }
       }
+      
       return _.set(newState, 'matchedContacts', newMatchedContacts);
     }
 

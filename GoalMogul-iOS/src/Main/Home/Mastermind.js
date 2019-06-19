@@ -24,6 +24,8 @@ import EmptyResult from '../Common/Text/EmptyResult';
 import NextButton from '../Goal/Common/NextButton';
 import GoalFeedInfoModal from './GoalFeedInfoModal';
 
+import { markUserViewGoal } from '../../redux/modules/goal/GoalDetailActions';
+
 // asset
 import plus from '../../asset/utils/plus.png';
 import informationIconBlack from '../../asset/utils/info.png';
@@ -59,6 +61,12 @@ class Mastermind extends Component {
       onListEndReached: false
     };
     this.scrollToTop = this.scrollToTop.bind(this);
+    // Same config is used in ActivityFeed
+    this.viewabilityConfig = {
+      waitForInteraction: true,
+      itemVisiblePercentThreshold: 100,
+      minimumViewTime: 1500
+    }
   }
 
   componentDidMount() {
@@ -99,6 +107,10 @@ class Mastermind extends Component {
   handleCreateGoal = () => {
     this.props.openCreateOverlay();
     Actions.createGoalButtonOverlay({ tab: TAB_KEY });
+  }
+
+  handleOnViewableItemsChanged = ({ viewableItems, changed }) => {
+    viewableItems.map(({ item }) => this.props.markUserViewGoal(item._id));
   }
 
   handleOnLoadMore = () => {
@@ -335,6 +347,8 @@ class Mastermind extends Component {
           refreshing={this.props.loading}
           onRefresh={this.handleOnRefresh}
           onEndReached={this.handleOnLoadMore}
+          onViewableItemsChanged={this.handleOnViewableItemsChanged}
+          viewabilityConfig={this.viewabilityConfig}
           ListHeaderComponent={this.renderListHeader()}
           ListFooterComponent={this.renderListFooter()}
           ListEmptyComponent={
@@ -409,7 +423,8 @@ export default connect(
     loadMoreGoals,
     refreshGoals,
     openGoalDetail,
-    changeFilter
+    changeFilter,
+    markUserViewGoal
   },
   null,
   { withRef: true }

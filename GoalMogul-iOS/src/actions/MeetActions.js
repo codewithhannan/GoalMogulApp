@@ -362,7 +362,7 @@ export const meetContactSync = (callback, componentKey) => async (dispatch, getS
     dispatch({
       type: MEET_CONTACT_SYNC,
       payload: {
-        refresh: true
+        uploading: true
       }
     });
 
@@ -373,6 +373,14 @@ export const meetContactSync = (callback, componentKey) => async (dispatch, getS
       .then((res) => {
         console.log(`${DEBUG_KEY}: response for uploading contacts is: `, res);
 
+        // Finished uploading. Set uploading to false and refresh to true
+        dispatch({
+          type: MEET_CONTACT_SYNC,
+          payload: {
+            uploading: false,
+            refresh: true
+          }
+        });
         /* TODO: load matched contacts */
         return fetchMatchedContacts(token, 0, limit);
       })
