@@ -103,7 +103,7 @@ class InputField extends Component {
       // console.log('py is: ' + py);
       // console.log('screen height is: ', screenHeight);
       // console.log('keyboard height is: ', this.state.keyboardHeight);
-      if ((py + this.state.keyboardHeight + 45) > screenHeight) {
+      if ((py + this.state.keyboardHeight + 46) > screenHeight) {
         // const scrollToHeight = (py - (screenHeight / 2)) + 46 + 10;
         const scrollToHeight = (py - (screenHeight / 2)) + 46 + 34 + 10;
         console.log('scrollToHeight is: ', scrollToHeight);

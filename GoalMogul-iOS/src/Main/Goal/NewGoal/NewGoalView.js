@@ -139,7 +139,7 @@ class NewGoalView extends Component {
     if (type === 'need') {
       extraNumber = (this.props.steps.length + 1) + index;
     }
-    const extraScrollToHeight = extraNumber * 50;
+    const extraScrollToHeight = extraNumber * 52;
     // console.log(`${DEBUG_KEY}: extra scroll height:`, extraScrollToHeight);
     this.scrollView.scrollTo({ y: y + extraScrollToHeight, animated: true });
   }
@@ -591,7 +591,7 @@ class NewGoalView extends Component {
               minHeight: 80
             }}
             numberOfLines={5}
-            placeholder="Decribe your goal"
+            placeholder="Describe your goal"
             multiline
             loading={this.state.tagSearchData.loading}
             tagData={this.state.tagSearchData.data}
@@ -932,7 +932,7 @@ class NewGoalView extends Component {
           component={InputField}
           editable={this.props.uploading}
           numberOfLines={4}
-          style={{ ...styles.standardInputStyle, fontSize: 15 }}
+          style={{ ...styles.standardInputStyle, fontSize: 16 }}
           placeholder={placeholder}
           iconSource={cancel}
           iconStyle={styles.cancelIconStyle}
@@ -1170,7 +1170,7 @@ const styles = {
   },
   standardInputStyle: {
     flex: 1,
-    fontSize: 12,
+    fontSize: 16,
     padding: 13,
     paddingTop: 13,
     paddingRight: 6,
