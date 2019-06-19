@@ -81,7 +81,8 @@ export const INITIAL_TUTORIAL = {
                 'Tap here to delete your Goal'
             ],
             nextStepNumber: 0
-        }
+        },
+        hasShown: false
     },
     isOnBoarded: false,
     lastFlow: undefined,
@@ -251,13 +252,15 @@ export default (state = INITIAL_TUTORIAL, action) => {
 
         case TUTORIAL_RESET_TUTORIAL: {
             let newState = _.cloneDeep(state);
-            const { flow } = action.payload;
+            const { flow, page } = action.payload;
 
-            const hasShown = _.get(newState, `${flow}.hasShown`);
-            let originalFlow = _.cloneDeep(_.get(INITIAL_TUTORIAL, flow));
-            originalFlow = _.set(originalFlow, 'hasShown', hasShown);
+            const originalFlow = _.get(newState, `${flow}`);
+            const defaultFlow = _.cloneDeep(_.get(INITIAL_TUTORIAL, flow));
 
-            newState = _.set(newState, `${flow}`, originalFlow);
+            // Preserve hasShown
+            const mergedFlow = _.mergeWith(defaultFlow, originalFlow, preserveHasShown);
+
+            newState = _.set(newState, `${flow}`, mergedFlow);
             return newState;
         }
 
@@ -265,6 +268,19 @@ export default (state = INITIAL_TUTORIAL, action) => {
             return { ...state };
     }
 };
+
+/**
+ * Preserve hasShown in the curren reducer
+ * @param {*} objValue value from INITIAL_STATE
+ * @param {*} srcValue value in the current reducer
+ * @param {*} key 
+ */
+function preserveHasShown(objValue, srcValue, key) {
+    // Only apply value that is hasShown
+    if (key !== 'hasShown') {
+        return objValue;
+    }
+}
 
 // This customizer preserves objValue's array values
 function customizer(objValue, srcValue, key) {
@@ -278,6 +294,10 @@ function customizer(objValue, srcValue, key) {
 
     if (key === 'step') {
         return objValue;
+    }
+
+    if (key === 'hasShown') {
+        return srcValue;
     }
 
     if (key !== 'hasShown') {

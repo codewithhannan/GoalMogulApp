@@ -209,7 +209,7 @@ class Home extends Component {
     }});
   }
 
-  handleAppStateChange = (nextAppState) => {
+  handleAppStateChange = async (nextAppState) => {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       console.log(`${DEBUG_KEY}: [handleAppStateChange] App has become active!`);
 
@@ -229,8 +229,8 @@ class Home extends Component {
 
     if (this.state.appState === 'active' && nextAppState === 'inactive') {
       console.log(`${DEBUG_KEY}: [handleAppStateChange] App has become inactive!`);
-      this.props.saveUnreadNotification();
-      this.props.saveTutorialState();
+      await this.props.saveUnreadNotification();
+      await this.props.saveTutorialState();
     }
 
     this.setState({
