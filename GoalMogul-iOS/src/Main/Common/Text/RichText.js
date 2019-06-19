@@ -39,6 +39,18 @@ class RichText extends React.Component {
     return !_.isEqual(nextProps.numberOfLines, this.props.numberOfLines);
   }
 
+  constructParsedLink(contentLinks = []) {
+    const ret = contentLinks.map((link) => {
+      return {
+        pattern: new RegExp(`${link}`),
+        style: styles.url,
+        onPress: () => this.handleUrlPress(link)
+      };
+    });
+
+    return ret;
+  }
+
   constructParsedUserTags(contentTags = [], contentText) {
     const ret = contentTags.map((tag) => {
       const { startIndex, endIndex, user } = tag;
@@ -98,6 +110,7 @@ class RichText extends React.Component {
     const {
       contentText,
       contentTags,
+      contentLinks
     } = this.props;
 
     if (!contentText) return null;
@@ -105,6 +118,7 @@ class RichText extends React.Component {
     // console.log(`${DEBUG_KEY}: render contentText: ${contentText.substring(0, 5)}`);
 
     const parsedTags = this.constructParsedUserTags(contentTags, contentText);
+    const parsedLink = this.constructParsedLink(contentLinks);
     const convertedText = Decode(contentText);
 
     // Following is the original url detection for ParsedText. After we added HyperLink, this is no longer needed.
@@ -126,11 +140,12 @@ class RichText extends React.Component {
                 // { type: 'phone', style: styles.phone, onPress: this.handlePhonePress },
                 // { type: 'email', style: styles.email, onPress: this.handleEmailPress },
                 ...parsedTags,
-                { 
-                  pattern: URL_REGEX, // Additional regex to match without HTTP protocal
-                  style: styles.url,
-                  onPress: this.handleUrlPress
-                },
+                ...parsedLink,
+                // { 
+                //   pattern: URL_REGEX, // Additional regex to match without HTTP protocal
+                //   style: styles.url,
+                //   onPress: this.handleUrlPress
+                // },
               ]
             }
             childrenProps={{ allowFontScaling: false }}

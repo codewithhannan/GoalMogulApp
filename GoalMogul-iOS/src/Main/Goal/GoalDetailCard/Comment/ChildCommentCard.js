@@ -94,16 +94,19 @@ class ChildCommentCard extends Component {
     const { item } = this.props;
     let text;
     let tags = [];
+    let links = [];
     if (item.commentType === 'Suggestion') {
       text = item.suggestion.suggestionText;
     } else {
       text = item.content.text;
       tags = item.content.tags;
+      links = item.content.links;
     }
     return (
       <RichText
         contentText={text}
         contentTags={tags}
+        contentLinks={links}
         textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 14, lineHeight: 16, marginTop: 3 }}
         multiline
         onUserTagPressed={(user) => {

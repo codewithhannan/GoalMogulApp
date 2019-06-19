@@ -167,6 +167,7 @@ class CommentUserDetail extends Component {
     const { item } = this.props;
     let text;
     let tags = [];
+    let links = [];
     if (item.commentType === 'Suggestion' &&
         item.suggestion &&
         item.suggestion.suggestionType === 'Link') {
@@ -176,6 +177,7 @@ class CommentUserDetail extends Component {
     } else {
       text = item.content.text;
       tags = item.content.tags;
+      links = item.content.links;
     }
     // return (
     //   <Text
@@ -190,6 +192,7 @@ class CommentUserDetail extends Component {
       <RichText
         contentText={text}
         contentTags={tags}
+        contentLinks={links}
         textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 14, lineHeight: 16, marginTop: 3 }}
         multiline
         onUserTagPressed={(user) => {
