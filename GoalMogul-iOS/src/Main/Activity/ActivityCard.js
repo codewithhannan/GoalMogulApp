@@ -10,9 +10,8 @@ import ShareIcon from '../../asset/utils/forward.png';
 // Assets
 import LoveIcon from '../../asset/utils/love.png';
 import { } from '../../redux/modules/feed/comment/CommentActions';
-import { markUserViewPost, openPostDetail } from '../../redux/modules/feed/post/PostActions';
+import { openPostDetail } from '../../redux/modules/feed/post/PostActions';
 import { chooseShareDest } from '../../redux/modules/feed/post/ShareActions';
-import { markUserViewGoal } from '../../redux/modules/goal/GoalDetailActions';
 import { refreshFeed } from '../../redux/modules/home/feed/actions';
 import { openGoalDetail } from '../../redux/modules/home/mastermind/actions';
 import { likeGoal, unLikeGoal } from '../../redux/modules/like/LikeActions';
@@ -33,18 +32,6 @@ import ActivityBody from './ActivityBody';
 import ActivityHeader from './ActivityHeader';
 import ActivitySummary from './ActivitySummary';
 
-
-
-
-
-
-
-
-
-
-
-
-
 const DEBUG_KEY = '[ UI ActivityCard ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
@@ -58,17 +45,6 @@ class ActivityCard extends React.PureComponent {
     };
     this.renderCommentRef = this.renderCommentRef.bind(this);
     this.renderMedia = this.renderMedia.bind(this);
-  }
-
-  componentDidMount() {
-    const { item } = this.props;
-    if (item.postRef) {
-      const postId = item.postRef._id;
-      this.props.markUserViewPost(postId);
-    } else if (item.goalRef) {
-      const goalId = item.goalRef._id;
-      this.props.markUserViewPost(goalId);
-    };
   }
 
   handleCardOnPress = (item, props) => {
@@ -393,8 +369,6 @@ export default connect(
     openPostDetail,
     openGoalDetail,
     refreshFeed,
-    openProfile,
-    markUserViewGoal,
-    markUserViewPost,
+    openProfile 
   }
 )(ActivityCard);
