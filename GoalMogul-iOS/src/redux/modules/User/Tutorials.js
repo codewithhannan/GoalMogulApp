@@ -276,31 +276,14 @@ export default (state = INITIAL_TUTORIAL, action) => {
  * @param {*} key 
  */
 function preserveHasShown(objValue, srcValue, key) {
-    // Only apply value that is hasShown
-    if (key !== 'hasShown') {
-        return objValue;
+    if (key === 'hasShown') {
+        return  srcValue;
     }
 }
 
 // This customizer preserves objValue's array values
 function customizer(objValue, srcValue, key) {
-    if (_.isArray(objValue)) {
-        return objValue;
-    }
-
-    if (key === 'totalStep') {
-        return objValue;
-    }
-
-    if (key === 'step') {
-        return objValue;
-    }
-
     if (key === 'hasShown') {
         return srcValue;
-    }
-
-    if (key !== 'hasShown') {
-        return objValue;
     }
 }

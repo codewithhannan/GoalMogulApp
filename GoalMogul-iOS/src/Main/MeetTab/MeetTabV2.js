@@ -36,7 +36,8 @@ import {
     startTutorial,
     saveTutorialState,
     updateNextStepNumber,
-    pauseTutorial
+    pauseTutorial,
+    resetTutorial
 } from '../../redux/modules/User/TutorialActions';
 
 /* Assets */
@@ -111,7 +112,7 @@ class MeetTabV2 extends React.Component {
             this.props.showNextTutorialPage('meet_tab_friend', 'meet_tab');
 
             // Right now we don't need to have conditions here
-            this.props.resetTutorial('meet_tab_friend');
+            this.props.resetTutorial('meet_tab_friend', 'meet_tab');
         });
 
         this.props.copilotEvents.on('stepChange', (step) => {
@@ -483,6 +484,7 @@ export default connect(
         startTutorial,
         saveTutorialState,
         updateNextStepNumber,
-        pauseTutorial
+        pauseTutorial,
+        resetTutorial
     }
 )(MeetTabV2Explained);
