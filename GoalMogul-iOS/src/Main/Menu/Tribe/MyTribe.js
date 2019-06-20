@@ -193,9 +193,9 @@ class MyTribe extends Component {
       this.props.refreshMyTribeDetail(_id);
     };
 
-    const members = item.members
+    const members = item ? item.members
       .filter(m => m.category === 'Admin' || m.category === 'Member')
-      .map(m => m.memberRef);
+      .map(m => m.memberRef) : [];
     const fuse = new Fuse(members, TAG_SEARCH_OPTIONS);
     const tagSearch = (keyword, callback) => {
       const result = fuse.search(keyword.replace('@', ''));
