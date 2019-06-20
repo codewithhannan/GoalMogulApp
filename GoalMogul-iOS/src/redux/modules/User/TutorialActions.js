@@ -84,8 +84,11 @@ export const loadTutorialState = (userId) => async (dispatch, getState) => {
     const tutorialState = await SecureStore.getItemAsync(tutorialStateKey, {});
   
     // Deserialize the json serialized object
-    const parsedTutorialState = JSON.parse(tutorialState);
-    Logger.log(`${DEBUG_KEY}: [loadTutorialState] pased json with res:`, parsedTutorialState ? parsedTutorialState.length : 0, 2);
+    let parsedTutorialState;
+    if (tutorialState !== null) {
+        parsedTutorialState = JSON.parse(tutorialState);
+    }
+    Logger.log(`${DEBUG_KEY}: [loadTutorialState] pased json with res:`, parsedTutorialState ? parsedTutorialState.length : 0, 1);
   
     if (!parsedTutorialState || _.isEmpty(parsedTutorialState)) {
         Logger.log(`${DEBUG_KEY}: [loadTutorialState] abort as empty:`, parsedTutorialState, 1);
@@ -126,11 +129,13 @@ export const saveTutorialState = () => async (dispatch, getState) => {
     return;
 }
 
-export const resetTutorial = (flow) => (dispatch, getState) => {
+export const resetTutorial = (flow, page) => async (dispatch, getState) => {
+    await saveTutorialState()(dispatch, getState);
     dispatch({
         type: TUTORIAL_RESET_TUTORIAL,
         payload: {
-            flow
+            flow,
+            page
         }
     });
 };

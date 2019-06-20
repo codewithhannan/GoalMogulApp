@@ -233,7 +233,7 @@ class Home extends Component {
       console.log(`${DEBUG_KEY}: [handleAppStateChange] App has become inactive!`);
       await this.props.saveUnreadNotification();
       await this.props.saveTutorialState();
-      await this.props.saveRemoteMatches();
+      // await this.props.saveRemoteMatches();
     }
 
     this.setState({
