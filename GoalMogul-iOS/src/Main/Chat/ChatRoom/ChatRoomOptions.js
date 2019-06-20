@@ -329,6 +329,7 @@ const mapStateToProps = (state, props) => {
     let chatRoomImage = null;
     let otherUser = null;
     let isAdmin = false;
+
     if (chatRoom) {
         if (chatRoom.roomType == 'Direct') {
             otherUser = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id != userId);
@@ -349,7 +350,7 @@ const mapStateToProps = (state, props) => {
     // extract details from the user object
     const notificationPrefs = user.chatNotificationPreferences;
     const mutedChatRooms = notificationPrefs && notificationPrefs.mutedChatRoomRefs;
-    const isMuted = mutedChatRooms && mutedChatRooms.find(id => id.toString() == chatRoom._id.toString());
+    const isMuted = mutedChatRooms && mutedChatRooms.find(id => chatRoom && id.toString() == chatRoom._id.toString());
 
 	return {
         chatRoom,

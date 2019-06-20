@@ -36,7 +36,8 @@ class RichText extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     // Only update if bricks change
     // console.log(`${DEBUG_KEY}: [ shouldComponentUpdate ]: ${this.props.contentText}`);
-    return !_.isEqual(nextProps.numberOfLines, this.props.numberOfLines);
+    const hasTextChanged = !_.isEqual(nextProps.contentText, this.props.contentText);
+    return !_.isEqual(nextProps.numberOfLines, this.props.numberOfLines) || hasTextChanged;
   }
 
   constructParsedLink(contentLinks = []) {

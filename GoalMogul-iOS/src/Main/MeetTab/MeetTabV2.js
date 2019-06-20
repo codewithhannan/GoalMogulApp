@@ -101,7 +101,7 @@ class MeetTabV2 extends React.Component {
                     setTimeout(() => {
                         console.log(`${DEBUG_KEY}: [ onFocus ]: [ startTutorial ]`);
                         this.props.startTutorial('meet_tab_friend', 'meet_tab');
-                    }, 600);
+                    }, 650);
                 }
             },
         );

@@ -33,6 +33,7 @@ const filter = {
 export const MEET_CONTACT_SYNC_FETCH_DONE = 'meet_contact_sync_fetch_done';
 export const MEET_CONTACT_SYNC = 'meet_contact_sync';
 export const MEET_CONTACT_SYNC_REFRESH_DONE = 'meet_contact_sync_refresh_done';
+export const MEET_CONTACT_SYNC_LOAD_REMOTE_MATCH = 'meet_contact_sync_load_remote_match';
 
 const INITIAL_STATE = {
   selectedTab: 'suggested',

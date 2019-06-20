@@ -101,13 +101,15 @@ class NotificationCard extends React.PureComponent {
     );
   }
 
-  renderContent(item) {
+  renderContent(item, isInvalidCommentNotif) {
     const { created, parsedNoti } = item;
-    const text = parsedNoti && parsedNoti.notificationMessage
+    let text = parsedNoti && parsedNoti.notificationMessage
       ? parsedNoti.notificationMessage
-      : 'Jordan Gardner commented on your post in "Society of Gamma -' +
-      ' Bay Area this is the test part."';
+      : '';
 
+    if (text === '' && isInvalidCommentNotif) {
+      text = 'Comment was removed by the owner';
+    }
     return (
       <View style={{ flex: 1, marginLeft: 10, marginRight: 18 }}>
         <Text
@@ -128,7 +130,10 @@ class NotificationCard extends React.PureComponent {
     const { item } = this.props;
     if (!item) return null;
     if (!item.parsedNoti) return null;
-    if (item.parsedNoti.error) {
+
+    // Right now we do a hack to go around invalid commentRef
+    const isInvalidCommentNotif = item.commentRef === null;
+    if (item.parsedNoti.error && !isInvalidCommentNotif) {
       console.warn(`${DEBUG_KEY}: invalid notification with error: `, item.parsedNoti.error);
       return null;
     }
@@ -145,7 +150,7 @@ class NotificationCard extends React.PureComponent {
         onPress={() => this.handleNotificationCardOnPress(item)}
       >
         {this.renderProfileImage(item)}
-        {this.renderContent(item)}
+        {this.renderContent(item, isInvalidCommentNotif)}
         {this.renderOptions(item)}
       </DelayedButton>
     );
