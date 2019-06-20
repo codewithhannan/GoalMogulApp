@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import {
   View,
   FlatList,
-  ActivityIndicator
+  ActivityIndicator,
+  Text
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
+import * as Animatable from 'react-native-animatable';
+import { DotIndicator } from 'react-native-indicators';
+import Modal from 'react-native-modal';
 
 /* Components */
 import Header from './Common/Header';
@@ -15,6 +19,7 @@ import ContactDetail from './ContactDetail';
 import ModalHeader from '../Main/Common/Header/ModalHeader';
 import EmptyResult from '../Main/Common/Text/EmptyResult';
 import DelayedButton from '../Main/Common/Button/DelayedButton';
+import LoadingModal from '../Main/Common/Modal/LoadingModal';
 
 /* Styles */
 import Styles from './Styles';
@@ -26,10 +31,16 @@ import {
   contactSyncLoadMore,
   meetContactSyncLoadMore
 } from '../actions';
+import { APP_BLUE } from '../styles';
 
 class ContactSync extends Component {
-  state = {
-    type: 'registration'
+  constructor(props) {
+    super(props);
+    this.state = {
+      type: 'registration',
+      showUploadingModal: true
+    };
+    this.modalTimer = undefined;
   }
 
   componentWillReceiveProps(props) {
@@ -37,6 +48,24 @@ class ContactSync extends Component {
       this.setState({ type: props.type });
     }
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.uploading && !this.props.uploading) {
+      this.modalTimer = setTimeout(() => {
+        this.setState({
+          ...this.state,
+          showUploadingModal: false
+        });
+      }, 500);
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.modalTimer !== undefined) {
+      clearInterval(this.modalTimer);
+    }
+  }
+  
 
   onLoadMore = () => {
     if (this.state.type === 'meet') {
@@ -67,6 +96,23 @@ class ContactSync extends Component {
     );
   }
 
+  renderListEmptyComponent(refreshing) {
+    if (refreshing) return null;
+
+    if (this.props.uploading) {
+      return (
+        <View style={{ flex: 1 }}>
+          <EmptyResult text={'Uploading Contacts'} textStyle={{ marginBottom: 20 }} />
+          <DotIndicator size={10} color={APP_BLUE} />
+        </View>
+      );
+    }
+              
+    return (
+      <EmptyResult text={'No contacts found'} />
+    );
+  }
+
   renderListFooter(loading, data) {
     if (loading && data.length >= 4) {
       return (
@@ -82,6 +128,33 @@ class ContactSync extends Component {
     return null;
   }
 
+  // Currently this is not being used
+  renderUploadingModal() {
+    return (
+      <Modal
+        backdropColor={'black'}
+        isVisible={this.state.showUploadingModal}
+        backdropOpacity={0.7}
+        style={{ alignItems: 'center', justifyContent: 'center' }}
+        animationIn='fadeIn'
+        animationOut='fadeOut'
+        animationOutTiming={500}
+        backdropTransitionOutTiming={500}
+        onModalHide={() => this.handleRefresh()}
+      >
+        <View style={styles.modalContainerStyle}>
+          <Text style={{ color: 'black', fontWeight: '600', margin: 15, fontSize: 20 }}>
+            Uploading
+          </Text>
+          <View style={{ height: 30 }} />
+          <View style={{ position: 'absolute', bottom: 44 }}>
+            <DotIndicator size={10} color={APP_BLUE} />
+          </View>
+        </View>
+      </Modal>
+    );
+  }
+
   // TODO: replace data with this.props.data
   render() {
     const { type, actionCallback } = this.props;
@@ -89,12 +162,29 @@ class ContactSync extends Component {
     // Assign header
     const header = (type !== undefined && type === 'meet') ?
       (<ModalHeader
-        cancelText={null}
         title='Sync contacts'
-        actionText='Done'
-        onAction={() => {
+        actionText={null}
+        back
+        onCancel={() => {
           Actions.popTo('meet');
           actionCallback();
+        }}
+        containerStyles={{
+          elevation: 3,
+          shadowColor: '#666',
+          shadowOffset: { width: 0, height: 1, },
+          shadowOpacity: 0.15,
+          shadowRadius: 3,
+          backgroundColor: APP_BLUE
+        }}
+        backButtonStyle={{
+          tintColor: '#21364C',
+        }}
+        actionTextStyle={{
+          color: '#21364C'
+        }}
+        titleTextStyle={{
+          color: '#21364C',
         }}
       />)
       :
@@ -139,10 +229,7 @@ class ContactSync extends Component {
             refreshing={refreshing}
             onRefresh={this.handleRefresh}
             onEndReached={this.onLoadMore}
-            ListEmptyComponent={
-              refreshing ? null :
-              <EmptyResult text={'No contacts found'} />
-            }
+            ListEmptyComponent={() => this.renderListEmptyComponent(refreshing)}
             ListFooterComponent={() => this.renderListFooter(loading, data)}
             onEndThreshold={0}
           />
@@ -157,16 +244,30 @@ class ContactSync extends Component {
 const styles = {
   footer: {
 
+  },
+  modalContainerStyle: {
+    height: 150, 
+    width: 150, 
+    backgroundColor: 'white', 
+    borderRadius: 14, 
+    marginBottom: 30,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  uploadingTextStyle: {
+    
   }
 };
 
 const mapStateToProps = state => {
   const meetMatchedContacts = state.meet.matchedContacts;
   const registrationMatchedContacts = state.registration.matchedContacts;
+  const { uploading } = meetMatchedContacts;
 
   return {
     meetMatchedContacts,
-    registrationMatchedContacts
+    registrationMatchedContacts,
+    uploading
   };
 };
 

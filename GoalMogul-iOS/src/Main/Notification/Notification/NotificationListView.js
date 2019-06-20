@@ -92,7 +92,8 @@ const mapStateToProps = state => {
     } = notifications;
 
     return {
-        data: data.filter(d => !d.parsedNoti.error),
+        // data: data.filter(d => !d.parsedNoti.error),
+        data,
         refreshing,
         loading
     };

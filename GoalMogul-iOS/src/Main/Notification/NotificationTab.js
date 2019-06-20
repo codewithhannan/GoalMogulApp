@@ -222,10 +222,13 @@ const TitleComponent = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const notificationData = getNotifications(state).filter(d => {
-    if (d && d.parsedNoti && d.parsedNoti.error) return false;
-    return true;
-  });
+  const notificationData = getNotifications(state)
+  // .filter(d => {
+  //   if (d && d.parsedNoti && d.parsedNoti.error) return false;
+  //   return true;
+  // });
+  // console.log(`${DEBUG_KEY}: notificationData: `, notificationData.length);
+
   const notificationNeedData = getNotificationNeeds(state);
   const { needs, notifications, unread } = state.notification;
   const { shouldUpdateUnreadCount } = unread;
