@@ -656,6 +656,15 @@ class NewGoalView extends Component {
     //   () => console.log('animationCallback')
     //   // () => this.scrollView.scrollTo({ x: 0, y: 50, animated: true })
     // );
+    let priorityText = '';
+    if (this.props.priority <= 3) {
+      priorityText = 'Low';
+    } else if (this.props.priority <= 6) {
+      priorityText = 'Medium';
+    } else {
+      priorityText = 'High';
+    }
+
     const valueText = (
       <Text
         style={{
@@ -670,7 +679,7 @@ class NewGoalView extends Component {
 
     const titleText = (
       <Text style={styles.titleTextStyle}>
-        Priority  {valueText}
+        Priority  {valueText}  <Text style={{ fontWeight: '700' }}>{priorityText}</Text>
       </Text>
     );
 
