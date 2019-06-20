@@ -29,7 +29,6 @@ import {
 import {
   showNextTutorialPage,
   startTutorial,
-  saveTutorialState,
   updateNextStepNumber
 } from '../../redux/modules/User/TutorialActions';
 
@@ -272,7 +271,6 @@ export default connect(
     // Tutorial related
     showNextTutorialPage,
     startTutorial,
-    saveTutorialState,
     updateNextStepNumber
   }
 )(CreateGoalModalExplained);

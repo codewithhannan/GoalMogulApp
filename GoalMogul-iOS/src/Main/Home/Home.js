@@ -41,6 +41,8 @@ import {
   resetTutorial
 } from '../../redux/modules/User/TutorialActions';
 
+import { saveRemoteMatches } from '../../actions/MeetActions';
+
 // Assets
 import Logo from '../../asset/header/logo.png';
 import Activity from '../../asset/utils/activity.png';
@@ -231,6 +233,7 @@ class Home extends Component {
       console.log(`${DEBUG_KEY}: [handleAppStateChange] App has become inactive!`);
       await this.props.saveUnreadNotification();
       await this.props.saveTutorialState();
+      await this.props.saveRemoteMatches();
     }
 
     this.setState({
@@ -476,7 +479,9 @@ export default connect(
     updateNextStepNumber,
     pauseTutorial,
     markUserAsOnboarded,
-    resetTutorial
+    resetTutorial,
+    /* Contact sync related */ 
+    saveRemoteMatches
   },
   null,
   { withRef: true }

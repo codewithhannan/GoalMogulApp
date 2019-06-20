@@ -17,10 +17,12 @@ import {
 import {
   MEET_CONTACT_SYNC_FETCH_DONE,
   MEET_CONTACT_SYNC,
-  MEET_CONTACT_SYNC_REFRESH_DONE
+  MEET_CONTACT_SYNC_REFRESH_DONE,
+  MEET_CONTACT_SYNC_LOAD_REMOTE_MATCH
 } from '../reducers/MeetReducers';
 
 import { handleUploadContacts, fetchMatchedContacts } from '../Utils/ContactUtils';
+import { Logger } from '../redux/middleware/utils/Logger';
 
 const BASE_ROUTE = 'secure/user/';
 // const BASE_ROUTE = 'dummy/user/';
@@ -357,7 +359,7 @@ export const meetContactSync = (callback, componentKey) => async (dispatch, getS
     const { token } = getState().user;
     // Skip and limit for fetching matched contacts
     const { matchedContacts } = getState().meet;
-    const { limit } = matchedContacts;
+    const { limit, data } = matchedContacts;
 
     dispatch({
       type: MEET_CONTACT_SYNC,
@@ -430,6 +432,54 @@ export const meetContactSync = (callback, componentKey) => async (dispatch, getS
       });
 };
 
+/**
+ * Load remote matches from async storage on log in
+ */
+export const loadRemoteMatches = (userId) => async (dispatch, getState) => {
+  const matchedContactsKey = `${REMOTE_MATCHES_KEY}_${userId}`;
+  
+  // Disabled for now
+  // const matchedContacts = await SecureStore.getItemAsync(matchedContactsKey, {});
+
+  // // Deserialize the json serialized object
+  // const parsedMatchedContacts = JSON.parse(matchedContacts);
+  // Logger.log(`${DEBUG_KEY}: [loadRemoteMatches] pased json with res:`, parsedMatchedContacts ? parsedMatchedContacts.length : 0, 2);
+
+  // if (!parsedMatchedContacts || _.isEmpty(parsedMatchedContacts)) {
+  //   Logger.log(`${DEBUG_KEY}: [loadRemoteMatches] abort as empty:`, parsedMatchedContacts, 1);
+  //   return;
+  // }
+
+  // dispatch({
+  //   type: MEET_CONTACT_SYNC_LOAD_REMOTE_MATCH,
+  //   payload: {
+  //       data: parsedMatchedContacts
+  //   }
+  // });
+  // return;
+} 
+
+/**
+ * Save remote matches on closing app / log out
+ */
+const REMOTE_MATCHES_KEY = 'remove_matches';
+export const saveRemoteMatches = () => async (dispatch, getState) => {
+  const { userId } = getState().user;
+  let matchedContactsToSave = _.cloneDeep(getState().meet.matchedContacts.data);
+
+  // Disabled for now
+  // Construct key
+  // const matchedContactsKey = `${REMOTE_MATCHES_KEY}_${userId}`;
+  // Logger.log(`${DEBUG_KEY}: [saveRemoteMatches] matchedContactsToSave to store is:`, matchedContactsToSave, 3);
+
+  // const dataToStore = JSON.stringify(matchedContactsToSave);
+  // Logger.log(`${DEBUG_KEY}: [saveRemoteMatches] data to store is:`, dataToStore, 2);
+  // const res = await SecureStore.setItemAsync(
+  //   matchedContactsKey, dataToStore, {}
+  // );
+  // Logger.log(`${DEBUG_KEY}: [saveRemoteMatches] done with res: `, res, 1);
+  // return;
+};
 
 // Load more matched contacts for contact sync
 export const meetContactSyncLoadMore = (refresh) => (dispatch, getState) => {
@@ -456,7 +506,7 @@ export const meetContactSyncLoadMore = (refresh) => (dispatch, getState) => {
             data: res.data, // TODO: replaced with res
             skip: newSkip + res.data.length,
             limit,
-            hasNextPage: res.data.length !== 0 && res.data !== undefined,
+            hasNextPage: res.data !== undefined && res.data.length !== 0,
             refresh
           }
         });

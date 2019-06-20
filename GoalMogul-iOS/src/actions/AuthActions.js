@@ -49,6 +49,7 @@ import LiveChatService from '../socketio/services/LiveChatService';
 import MessageStorageService from '../services/chat/MessageStorageService';
 import { MemberDocumentFetcher } from '../Utils/UserUtils';
 import { Logger } from '../redux/middleware/utils/Logger';
+import { saveRemoteMatches, loadRemoteMatches } from './MeetActions';
 
 const DEBUG_KEY = '[ Action Auth ]';
 export const userNameChanged = (username) => {
@@ -139,6 +140,9 @@ export const loginUser = ({ username, password, navigate }) => {
           // Load tutorial state
           await loadTutorialState(res.userId)(dispatch, getState);
 
+          // Load remote matches
+          await loadRemoteMatches(res.userId)(dispatch, getState);
+
           // If navigate is set to false, it means user has already opened up the home page
           // We only need to reload the profile and feed data
           if (navigate === false) {
@@ -213,6 +217,7 @@ export const logout = () => async (dispatch, getState) => {
   // Store the unread notification first as USER_LOG_OUT will clear its state
   await saveUnreadNotification()(dispatch, getState);
   await saveTutorialState()(dispatch, getState);
+  await saveRemoteMatches()(dispatch, getState);
 
   const callback = (res) => {
     if (res instanceof Error) {
