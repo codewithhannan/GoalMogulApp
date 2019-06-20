@@ -51,7 +51,8 @@ import {
   showNextTutorialPage,
   startTutorial,
   updateNextStepNumber,
-  pauseTutorial
+  pauseTutorial,
+  saveTutorialState
 } from '../../../redux/modules/User/TutorialActions';
 
 // selector
@@ -165,6 +166,9 @@ class GoalDetailCardV3 extends Component {
         tutorial stop. show next page. Next step number is: `, this.props.nextStepNumber);
       
       this.props.showNextTutorialPage('goal_detail', 'goal_detail_page');
+
+      // Right now we don't need to have conditions here
+      // this.props.saveTutorialState();
     });
 
     this.props.copilotEvents.on('stepChange', (step) => {
@@ -953,6 +957,7 @@ export default connect(
     showNextTutorialPage,
     startTutorial,
     updateNextStepNumber,
-    pauseTutorial
+    pauseTutorial,
+    saveTutorialState
   }
 )(GoalDetailCardV3Explained);

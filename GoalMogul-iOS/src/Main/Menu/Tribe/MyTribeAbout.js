@@ -26,7 +26,7 @@ class MyTribeAbout extends Component {
     const { members, memberCount } = item;
     const count = memberCount || 0;
     const memberPicturesWidth = count < 2 ? 45 : 50;
-    const memberPictures = members
+    const memberPictures = members ? members
       .filter((member) => member.category === 'Admin' || member.category === 'Member')
       .map((member, index) => {
         if (index > 1) return null;
@@ -42,7 +42,7 @@ class MyTribeAbout extends Component {
             imageStyle={{ ...styles.pictureStyle }}
           />
         );
-      });
+      }) : [];
 
     return (
       <View style={{ flexDirection: 'row', marginTop: 8, marginBottom: 5 }}>
