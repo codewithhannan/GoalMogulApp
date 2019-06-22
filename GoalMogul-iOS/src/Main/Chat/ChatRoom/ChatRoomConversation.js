@@ -4,71 +4,45 @@
 	- connect to live chat service for typing indicator
 	- fetch the full chat document with members populated
 */
-import React from 'react';
-import R from 'ramda';
-import {
-	View,
-	Clipboard,
-	FlatList,
-	TouchableOpacity,
-	Dimensions,
-	CameraRoll,
-	Platform,
-	Alert,
-	TextInput,
-	Animated,
-	ActionSheetIOS
-} from 'react-native';
-import { connect } from 'react-redux';
-import EmojiSelector from 'react-native-emoji-selector';
-import UUID from 'uuid/v4';
-import {
-	Permissions,
-	FileSystem,
-	Constants,
-} from 'expo';
-
-import MessageStorageService from '../../../services/chat/MessageStorageService';
-import LiveChatService, { OUTGOING_EVENT_NAMES } from '../../../socketio/services/LiveChatService';
-
-// Components
-import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal';
-import { RemoveComponent } from '../../Goal/GoalDetailCard/SuggestionPreview';
-
 import { Octicons } from '@expo/vector-icons';
-import SendButton from '../../../asset/utils/sendButton.png';
-import NextButton from '../../../asset/utils/next.png';
-
+import { Constants, FileSystem, Permissions } from 'expo';
+import R from 'ramda';
+import React from 'react';
+import { ActionSheetIOS, Alert, Animated, CameraRoll, Clipboard, Dimensions, FlatList, Platform, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, Text } from 'react-native-elements';
+import EmojiSelector from 'react-native-emoji-selector';
+import { Avatar, GiftedChat, Message, Send } from 'react-native-gifted-chat';
 import { MenuProvider } from 'react-native-popup-menu';
-// Actions
-import {
-	initialLoad,
-	updateTypingStatus,
-	updateMessageList,
-	loadOlderMessages,
-	deleteMessage,
-	sendMessage,
-	refreshChatRoom,
-	changeMessageMediaRef,
-	closeActiveChatRoom,
-} from '../../../redux/modules/chat/ChatRoomActions';
-import ModalHeader from '../../Common/Header/ModalHeader';
-import { GiftedChat, Send, Message, Avatar } from 'react-native-gifted-chat';
-import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+import UUID from 'uuid/v4';
+import { openCamera, openCameraRoll, openProfile } from '../../../actions';
 import PhotoIcon from '../../../asset/utils/cameraRoll.png';
+import profilePic from '../../../asset/utils/defaultUserProfile.png';
 import EmojiIcon from '../../../asset/utils/emoji.png';
 import LightBulb from '../../../asset/utils/lightBulb.png';
-import { Actions } from 'react-native-router-flux';
-import ProfileImage from '../../Common/ProfileImage';
-import { openCamera, openCameraRoll, openProfile } from '../../../actions';
-import profilePic from '../../../asset/utils/defaultUserProfile.png';
-import { Image, Text } from 'react-native-elements';
+import NextButton from '../../../asset/utils/next.png';
+import SendButton from '../../../asset/utils/sendButton.png';
+// Components
+import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal';
+// Actions
+import { changeMessageMediaRef, closeActiveChatRoom, deleteMessage, initialLoad, loadOlderMessages, refreshChatRoom, sendChatBotCustomResponseMessage, sendMessage, updateMessageList, updateTypingStatus } from '../../../redux/modules/chat/ChatRoomActions';
+import MessageStorageService from '../../../services/chat/MessageStorageService';
+import LiveChatService, { OUTGOING_EVENT_NAMES } from '../../../socketio/services/LiveChatService';
+import { APP_BLUE_BRIGHT } from '../../../styles';
 import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL, IPHONE_MODELS_2 } from '../../../Utils/Constants';
-import ChatRoomConversationInputToolbar from './GiftedChat/GMGiftedChatInputToolbar';
 import { toHashCode } from '../../../Utils/ImageUtils';
-import GMGiftedChatBubble from './GiftedChat/GMGiftedChatBubble';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import ModalHeader from '../../Common/Header/ModalHeader';
+import ProfileImage from '../../Common/ProfileImage';
+import { RemoveComponent } from '../../Goal/GoalDetailCard/SuggestionPreview';
 import ChatRoomLoaderOverlay from '../Modals/ChatRoomLoaderOverlay';
-import { APP_BLUE_BRIGHT, APP_BLUE } from '../../../styles';
+import GMGiftedChatBubble from './GiftedChat/GMGiftedChatBubble';
+import ChatRoomConversationInputToolbar from './GiftedChat/GMGiftedChatInputToolbar';
+
+
+
+
 
 const DEBUG_KEY = '[ UI ChatRoomConversation ]';
 const LISTENER_KEY = 'ChatRoomConversation';
@@ -254,6 +228,10 @@ class ChatRoomConversation extends React.Component {
 		const { chatRoom, messages } = this.props;
 		if (!chatRoom) return;
 		this.props.deleteMessage(messageId, chatRoom, messages);
+	}
+	dismissGoalSuggestion(messageId) {
+		this.deleteMessage(messageId);
+		this.props.sendChatBotCustomResponseMessage('action:dismiss-goal', this.props.chatRoom);
 	}
 	sendMessage(messagesToSend) {
 		const { messageMediaRef, chatRoom, messages } = this.props;
@@ -746,6 +724,7 @@ class ChatRoomConversation extends React.Component {
 						bottomOffset={GIFTED_CHAT_BOTTOM_OFFSET}
 						minInputToolbarHeight={this.props.messageMediaRef ? 90 : 60}
 						deleteMessage={this.deleteMessage.bind(this)}
+						dismissGoalSuggestion={this.dismissGoalSuggestion.bind(this)}
 					/>
 					{this.state.showEmojiSelector &&
 						<Animated.View
@@ -843,7 +822,7 @@ const mapStateToProps = (state, props) => {
 		loading,
 		currentlyTypingUserIds,
 		messageMediaRef,
-		ghostMessages
+		ghostMessages,
 	};
 };
 
@@ -862,6 +841,7 @@ export default connect(
 		openProfile,
 		openCamera,
 		openCameraRoll,
+		sendChatBotCustomResponseMessage,
 	}
 )(ChatRoomConversation);
 
