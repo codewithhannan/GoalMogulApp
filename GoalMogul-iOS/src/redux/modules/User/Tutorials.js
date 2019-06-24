@@ -216,7 +216,7 @@ export default (state = INITIAL_TUTORIAL, action) => {
                 // If nextStepNumber === total step and nextPage === undefined, this is last page
                 if (nextPage === undefined) {
                     newState = _.set(newState, 'isOnCurrentFlowLastStep', true);
-                    console.log(`${DEBUG_KEY}: totalStep: ${totalStep}, nextStepNumber: ${nextStepNumber}, set isOnCurrentFlowLastStep to true`);
+                    console.log(`${DEBUG_KEY}: [isOnCurrentFlowLastStep]: totalStep: ${totalStep}, nextStepNumber: ${nextStepNumber}, set isOnCurrentFlowLastStep to true`);
                 }
 
                 if (typeof nextPage === "object" && _.has(nextPage, totalStep) && _.get(nextPage, totalStep) === undefined) {
@@ -279,6 +279,7 @@ function preserveHasShown(objValue, srcValue, key) {
     if (key === 'hasShown') {
         return  srcValue;
     }
+    return objValue;
 }
 
 // This customizer preserves objValue's array values

@@ -130,7 +130,6 @@ export const saveTutorialState = () => async (dispatch, getState) => {
 }
 
 export const resetTutorial = (flow, page) => async (dispatch, getState) => {
-    await saveTutorialState()(dispatch, getState);
     dispatch({
         type: TUTORIAL_RESET_TUTORIAL,
         payload: {
@@ -138,6 +137,7 @@ export const resetTutorial = (flow, page) => async (dispatch, getState) => {
             page
         }
     });
+    await saveTutorialState()(dispatch, getState);
 };
 
 /**

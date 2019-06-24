@@ -55,6 +55,7 @@ import { Logger } from '../../redux/middleware/utils/Logger';
 import PlusButton from '../Common/Button/PlusButton';
 import Tooltip from '../Tutorial/Tooltip';
 import { svgMaskPath } from '../Tutorial/Utils';
+import WelcomSreen from './WelcomeScreen';
 
 const TabIconMap = {
   goals: {
@@ -87,6 +88,7 @@ class Home extends Component {
         ],
       },
       appState: AppState.currentState,
+      showWelcomeScreen: false
     };
     this.scrollToTop = this.scrollToTop.bind(this);
     this._renderScene = this._renderScene.bind(this);
@@ -107,12 +109,12 @@ class Home extends Component {
       console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: now user: `, this.props.user);
     }
 
-    if (!_.isEqual(prevProps.user, this.props.user) && this.props.user.isOnBoarded === false) {
-      setTimeout(() => {
-        console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: startTutorial: create_goal, page: home`);
-        // TODO: @Jia Tutorial uncomment
-        this.props.startTutorial('create_goal', 'home');
-      }, 1100);
+    if (!_.isEqual(prevProps.user, this.props.user) && !this.props.user.isOnBoarded) {
+      // Tutorial will be started by on welcome screen closed
+      this.setState({
+        ...this.state,
+        showWelcomeScreen: true
+      });
     }
   }
 
@@ -144,13 +146,13 @@ class Home extends Component {
 
         console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ copilotEvents ]: markUserAsOnboarded`);
         this.props.markUserAsOnboarded();
-        this.props.resetTutorial('create_goal');
+        this.props.resetTutorial('create_goal', 'home');
       }
     });
 
     this.props.copilotEvents.on('stepChange', (step) => {
       const { order, name } = step;
-      console.log(`${DEBUG_KEY}: [ onStepChange ]: step order: ${order}, step visible: ${name} `);
+      console.log(`${DEBUG_KEY}: [ onStepChange ]: step order: ${order}, step visible: ${name}, current next step is: ${this.props.nextStepNumber}`);
       // console.log(`${DEBUG_KEY}: [ componentDidMount ]: [ stepChange ]: step change to ${step.order}`);
       // TODO: if later we have more steps in between, change here
       // This is called before changing to a new step
@@ -368,6 +370,21 @@ class Home extends Component {
             renderScene={this._renderScene}
             renderTabBar={this._renderHeader}
             onIndexChange={this._handleIndexChange}
+          />
+          <WelcomSreen 
+            isVisible={this.state.showWelcomeScreen}
+            name={this.props.user.name}
+            closeModal={() => {
+              this.setState({
+                ...this.state,
+                showWelcomeScreen: false
+              }, () => {
+                setTimeout(() => {
+                  console.log(`${DEBUG_KEY}: [ WelcomSreen onClose ]: startTutorial: create_goal, page: home`);
+                  this.props.startTutorial('create_goal', 'home');
+                }, 400);
+              });
+            }}
           />
           {/* {this.renderPlus()} */}
         </View>
