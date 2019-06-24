@@ -106,7 +106,7 @@ class Home extends Component {
 
     if (!_.isEqual(prevProps.user, this.props.user)) {
       console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: prev user: `, prevProps.user);
-      console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: now user: `, this.props.user);
+      // console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: now user: `, this.props.user);
     }
 
     if (!_.isEqual(prevProps.user, this.props.user) && !this.props.user.isOnBoarded) {

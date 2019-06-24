@@ -84,6 +84,19 @@ export const INITIAL_TUTORIAL = {
         },
         hasShown: false
     },
+    chat_tab_flow: {
+        chat_tab: {
+            nextPage: undefined,
+            showTutorial: false,
+            hasShown: false,
+            totalStep: 2, // Used for onStepChange and check if this is the last step,
+            tutorialText: [
+                'Tap here to start a conversation',
+                'GoalMogul Bot can help you think about new goals if you’re too busy do that on your own.  Click here to learn more.'
+            ],
+            nextStepNumber: 0
+        }
+    },
     isOnBoarded: false,
     lastFlow: undefined,
     lastPage: undefined,
@@ -147,6 +160,7 @@ export default (state = INITIAL_TUTORIAL, action) => {
             if (!nextPage) {
                 console.log(`${DEBUG_KEY}: [ ${action.type} ]: last page for flow: ${flow} and page: ${page}`);
                 newState = _.set(newState, `${flow}.${page}.nextStepNumber`, 0);
+                console.log(`${DEBUG_KEY}: new state is: `, newState);  
                 return newState;
             }
 
@@ -260,6 +274,10 @@ export default (state = INITIAL_TUTORIAL, action) => {
             // Preserve hasShown
             const mergedFlow = _.mergeWith(defaultFlow, originalFlow, preserveHasShown);
 
+            // console.log(`${DEBUG_KEY}: defaultFlow flow before merge is : `, defaultFlow);
+            // console.log(`${DEBUG_KEY}: original flow is : `, originalFlow);
+            // console.log(`${DEBUG_KEY}: mergedFlow flow is : `, mergedFlow);
+
             newState = _.set(newState, `${flow}`, mergedFlow);
             return newState;
         }
@@ -279,7 +297,7 @@ function preserveHasShown(objValue, srcValue, key) {
     if (key === 'hasShown') {
         return  srcValue;
     }
-    return objValue;
+    // return objValue;
 }
 
 // This customizer preserves objValue's array values
