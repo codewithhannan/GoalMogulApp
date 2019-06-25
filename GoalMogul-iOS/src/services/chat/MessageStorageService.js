@@ -1,9 +1,9 @@
 import { Notifications } from 'expo';
-import { default as LiveChatService, INCOMING_EVENT_NAMES, OUTGOING_EVENT_NAMES } from '../../socketio/services/LiveChatService';
-import MongoDatastore from 'react-native-local-mongodb';
 import Fuse from 'fuse.js';
-import { api as API } from '../../redux/middleware/api';
+import MongoDatastore from 'react-native-local-mongodb';
 import { arrayUnique } from '../../reducers/MeetReducers';
+import { api as API } from '../../redux/middleware/api';
+import { default as LiveChatService, INCOMING_EVENT_NAMES, OUTGOING_EVENT_NAMES } from '../../socketio/services/LiveChatService';
 
 const LISTENER_BASE_IDENTIFIER = 'chatmessageservice';
 const CHAT_MESSAGES_COLLECTION_NAME = 'chatmessages';
@@ -42,6 +42,7 @@ class MessageStorageService {
     currentlyActiveChatRoomId = null;
     incomingMessageListeners = {}; // listens to incoming messages via sockets
     pulledMessageListeners = {}; // listens to new messages via pull
+    isLatestMessageFetchEmpty = {}; // map of latest message fetch to drop repeat fetches
 
     // -------------------------------- Initializations -------------------------------- //
 
@@ -306,6 +307,9 @@ class MessageStorageService {
                 return callback(null, localDocs);
             };
             // Attempt to fetch remainder of messages from remote backup
+            if (limit == 1 && skip == 0 && this.isLatestMessageFetchEmpty[conversationId]) {
+                return callback(null, []);
+            };
 
             // start by getting the oldest message we have stored
             localDb.find({
@@ -318,12 +322,18 @@ class MessageStorageService {
                 if (err) return callback(null, localDocs);
 
                 const markerMessage = oldestDoc[0];
-
                 // fetch the next #{limit^2} documents from remote server
                 this._fetchRemoteMessagesByConversation(conversationId, limit*limit, markerMessage, skip, (err, remoteDocs) => {
-                    if (err || !remoteDocs || !remoteDocs.length) return callback(null, localDocs);
+                    if (err) return callback(null, localDocs);
+                    if (!remoteDocs || !remoteDocs.length) {
+                        if (limit == 1 && skip == 0) {
+                            this.isLatestMessageFetchEmpty[conversationId] = true;
+                        };
+                        return callback(null, localDocs);
+                    };
                     // transform and store the remote docs locally
                     const transformedDocs = remoteDocs.map(messageDoc => this._transformMessageForLocalStorage(messageDoc));
+
                     let insertedDocs = [];
                     let processedCount = 0;
                     transformedDocs.forEach(messageDoc => localDb.insert(messageDoc, (err) => {
