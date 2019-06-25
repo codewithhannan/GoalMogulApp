@@ -65,7 +65,7 @@ class WelcomSreen extends React.PureComponent {
                 <View style={styles.containerStyle}>
                     {this.renderHeader()}
                     <View style={styles.mainContentContainerStyle}>
-                        <View style={{ padding: 20, alignItems: 'center' }}>
+                        <View style={{ paddingTop: 30, paddingBottom: 10, alignItems: 'center' }}>
                             <ProfileImage 
                                 imageUrl={undefined}
                                 defaultImageSource={profile_people_image}
@@ -132,14 +132,15 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
-        paddingVertical: 10,
+        paddingVertical: 14,
         paddingHorizontal: 50,
         margin: 40
     },
     buttonTextStyle: {
         color: 'white',
         fontSize: 17,
-        fontWeight: '600'
+        fontWeight: '600',
+        marginRight: 6
     },
     // Styles for header
     headerContainerStyle: {
@@ -205,6 +206,7 @@ const styles = {
 		borderWidth: 1,
 		borderColor: '#f4f4f4',
         padding: 2,
+        margin: 5,
         alignItems: 'center',
     },
     profileImageStyle: {
@@ -215,18 +217,18 @@ const styles = {
         height: 0,
         backgroundColor: 'transparent',
         borderStyle: 'solid',
-        borderLeftWidth: 13,
-        borderRightWidth: 13,
-        borderBottomWidth: 15,
+        borderLeftWidth: 15,
+        borderRightWidth: 15,
+        borderBottomWidth: 17,
         borderLeftColor: 'transparent',
         borderRightColor: 'transparent',
         borderBottomColor: 'white',
     },
     shadow: {
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.15,
-        shadowRadius: 3
+        shadowOffset: { width: 0, height: 1.2 },
+        shadowOpacity: 0.23,
+        shadowRadius: 4
     }
 };
 
