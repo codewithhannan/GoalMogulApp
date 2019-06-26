@@ -14,7 +14,9 @@ import DelayedButton from '../Common/Button/DelayedButton';
 import { RightArrowIcon } from '../../Utils/Icons';
 import profile_people_image from '../../asset/suggestion/friend.png';
 import HeaderLogo from '../../asset/header/header-logo-white.png';
+import Icons from '../../asset/base64/Icons';
 
+const { MikeIcon } = Icons;
 
 class WelcomSreen extends React.PureComponent {
 
@@ -64,17 +66,23 @@ class WelcomSreen extends React.PureComponent {
             >
                 <View style={styles.containerStyle}>
                     {this.renderHeader()}
-                    <View style={styles.mainContentContainerStyle}>
+                    <View style={{ ...styles.mainContentContainerStyle, ...styles.shadow }}>
                         <View style={{ paddingTop: 30, paddingBottom: 10, alignItems: 'center' }}>
-                            <ProfileImage 
-                                imageUrl={undefined}
+                            <View style={styles.profileImageContainerStyle}>
+                                <Image 
+                                    source={MikeIcon}
+                                    style={{ width: 60, height: 60, borderRadius: 4 }}
+                                />
+                            </View>
+                            {/* <ProfileImage 
+                                imageUrl={MikeIcon.uri}
                                 defaultImageSource={profile_people_image}
                                 disabled
                                 imageStyle={{ width: 60, height: 60, borderRadius: 4 }}
                                 defaultImageStyle={{ width: 60, height: 60 }}
                                 defaultImageContainerStyle={styles.profileImageContainerStyle}
                                 imageContainerStyle={style.profileImageContainerStyle}
-                            />
+                            /> */}
                             <Text style={{
                                 color: 'rgba(121, 121, 121, 1)',
                                 fontSize: 12
@@ -86,7 +94,12 @@ class WelcomSreen extends React.PureComponent {
                         {this.renderPrompt()}
 
                         <DelayedButton 
-                            style={styles.buttonContainerStyle} 
+                            style={{ 
+                                ...styles.buttonContainerStyle, 
+                                ...styles.shadow,
+                                shadowOpacity: 0.2,
+
+                            }}
                             activeOpacity={0.6}
                             onPress={this.handleStartOnPress}
                         >
@@ -112,7 +125,8 @@ const styles = {
     },
     mainContentContainerStyle: {
         flex: 1,
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: 'white'
     },
     // User image style
     imageStyle: {
@@ -200,12 +214,10 @@ const styles = {
     },
     // Profile image
     profileImageContainerStyle: {
-        width: 60,
-        height: 60,
         borderRadius: 5,
-		borderWidth: 1,
-		borderColor: '#f4f4f4',
-        padding: 2,
+		borderWidth: 0.5,
+		borderColor: 'lightgray',
+        padding: 1,
         margin: 5,
         alignItems: 'center',
     },
@@ -225,10 +237,14 @@ const styles = {
         borderBottomColor: 'white',
     },
     shadow: {
+        // shadowColor: '#000',
+        // shadowOffset: { width: 0, height: 1.2 },
+        // shadowOpacity: 0.23,
+        // shadowRadius: 4
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1.2 },
-        shadowOpacity: 0.23,
-        shadowRadius: 4
+        shadowOffset: { width: 1, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 5,
     }
 };
 
