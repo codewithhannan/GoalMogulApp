@@ -207,6 +207,7 @@ class CreateEventModal extends React.Component {
       (
         <DateTimePicker
           isVisible={this.props.startTime.picker}
+          date={this.props.startTime && this.props.startTime.date ? this.props.startTime.date : new Date()}
           mode='datetime'
           onConfirm={(date) => {
             if (!validateTime(date, this.props.endTime.date)) {
@@ -260,6 +261,7 @@ class CreateEventModal extends React.Component {
         (
           <DateTimePicker
             isVisible={this.props.endTime.picker}
+            date={this.props.endTime && this.props.endTime.date ? this.props.endTime.date : new Date()}
             mode='datetime'
             onConfirm={(date) => {
               if (!validateTime(this.props.startTime.date, date)) {

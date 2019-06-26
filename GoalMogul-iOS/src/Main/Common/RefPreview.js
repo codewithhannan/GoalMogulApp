@@ -18,7 +18,7 @@ import {
 } from '../../redux/modules/feed/post/PostActions';
 
 import {
-  openGoalDetail
+  openGoalDetailById
 } from '../../redux/modules/home/mastermind/actions';
 
 // Assets
@@ -42,7 +42,7 @@ class RefPreview extends Component {
     // When RefPreview is rendered from ShareModal and it's a share of Goal
     // goalRef will be undefined.
     if (postType === 'ShareGoal' && goalRef) {
-      return this.props.openGoalDetail(goalRef);
+      return this.props.openGoalDetailById(goalRef._id);
     }
 
     if (postType === 'ShareNeed' || postType === 'ShareStep') {
@@ -51,7 +51,7 @@ class RefPreview extends Component {
         focusRef: item._id,
         initialShowSuggestionModal: false
       };
-      return this.props.openGoalDetail(goalRef, initialProps);
+      return this.props.openGoalDetailById(goalRef._id, initialProps);
     }
 
     if (postType === 'ShareUser') {
@@ -285,6 +285,6 @@ export default connect(
   null,
   {
     openPostDetail,
-    openGoalDetail
+    openGoalDetailById
   }
 )(RefPreview);

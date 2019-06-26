@@ -17,6 +17,10 @@ class SuggestionDetailModal extends React.PureComponent {
         this.props.closeModal && this.props.closeModal();
     }
 
+    renderHeader() {
+        return null;
+    }
+
     render() {
         const { suggestion } = this.props;
         if (!suggestion) return null;
@@ -83,7 +87,7 @@ const styles = {
     },
     titleTextStyle: {
         margin: 14,
-        fontSize: 17,
+        fontSize: 18,
         fontWeight: '500'
     },
     cancelIconStyle: {
@@ -91,7 +95,9 @@ const styles = {
         width: 16,
     },
     contentTextStyle: {
-        fontSize: 14, lineHeight: 16
+        fontSize: 15, 
+        lineHeight: 21,
+        color: '#333'
     }
     
 };

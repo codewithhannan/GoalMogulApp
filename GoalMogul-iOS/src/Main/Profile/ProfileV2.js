@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Animated, FlatList, ActivityIndicator } from 'react-native';
+import { View, Animated, FlatList, ActivityIndicator, Text } from 'react-native';
 import { MenuProvider } from 'react-native-popup-menu';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
@@ -389,6 +389,38 @@ class ProfileV2 extends Component {
         )
     }
 
+    renderListEmptyState() {
+        const { navigationState, refreshing } = this.props;
+        const { routes, index } = navigationState;
+        let emptyText = '';
+        if (routes[index].key === 'about' || refreshing) {
+            return null;
+        }
+
+        emptyText = routes[index].key;
+        return (
+            <View
+                style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flex: 1,
+                }}
+            >
+                <Text
+                    style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        fontSize: 18,
+                        color: '#999',
+                        paddingTop: 80
+                    }}
+                >
+                    No {emptyText}
+                </Text>
+            </View>
+        );
+    }
+
     renderListFooter() {
         const { loading, data } = this.props;
         // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
@@ -426,6 +458,7 @@ class ProfileV2 extends Component {
                     onEndReached={this.handleOnLoadMore}
                     onEndReachedThreshold={0}
                     refreshing={false}
+                    ListEmptyComponent={this.renderListEmptyState()}
                     ListHeaderComponent={this.renderHeader({ userId, pageId, selectedTab, navigationState })}
                     ListFooterComponent={this.renderListFooter()}
                 />

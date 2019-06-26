@@ -2,6 +2,10 @@ import { Constants } from 'expo';
 import React from 'react';
 import { ActivityIndicator, Dimensions, FlatList, Platform, Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
+import { MaterialIcons } from '@expo/vector-icons';
+import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
+import _ from 'lodash';
+
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 // Actions
@@ -23,6 +27,7 @@ const SEARCHBAR_HEIGHT = Platform.OS === 'ios' &&
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const BODY_HEIGHT = SCREEN_HEIGHT - 48.5 - SEARCHBAR_HEIGHT - 150;
 const DEBUG_KEY = '[ UI ChatRoomTab ]';
+const WalkableView = walkthroughable(View);
 
 class ChatRoomTab extends React.Component {
 
@@ -79,6 +84,23 @@ class ChatRoomTab extends React.Component {
 	}
 
 	renderItem = ({ item }) => {
+		const { chatBotState } = item;
+		const { tutorialOn } = this.props;
+		if (chatBotState && !_.isEmpty(chatBotState) && tutorialOn) {
+			const { chatBot } = tutorialOn;
+			const { tutorialText, order, name } = chatBot;
+			return (
+				<CopilotStep 
+					text={tutorialText} 
+					order={order} 
+					name={name}
+				>
+				    <WalkableView>
+						<ChatRoomCard item={item} onItemSelect={this.handleItemSelect} />
+					</WalkableView>
+				</CopilotStep>
+			);
+		}
 		return (
 			<ChatRoomCard item={item} onItemSelect={this.handleItemSelect} />
 		);

@@ -161,7 +161,7 @@ class CommentRef extends React.PureComponent {
     const marginLeft = imageUrl ? 10 : 0; // There is only margin left if it's not default icon
 
     return (
-      <View style={{ flex: 1, justifyContent: 'center', marginLeft, marginRight: 10 }}>
+      <View style={{ flex: 1, justifyContent: 'center', marginLeft, marginRight: 10, paddingVertical: 4 }}>
         <Text 
           style={styles.titleTextStyle}
           numberOfLines={1}
@@ -195,17 +195,16 @@ class CommentRef extends React.PureComponent {
 
     return (
       <ProfileImage
-        imageStyle={{ width: 50, height: 50, ...style, borderRadius: 4 }}
+        imageStyle={{ width: 54, height: 54, ...style, borderRadius: 4 }}
         defaultImageSource={source}
-        defaultImageStyle={{ width: 30, height: 30, ...defaultImageStyle }}
+        defaultImageStyle={{ width: 34, height: 34, ...defaultImageStyle }}
         imageUrl={imageUrl}
         imageContainerStyle={{
           alignItems: 'center',
           justifyContent: 'center',
-          width: 50,
-          height: 50,
+          width: 54,
+          height: 54,
           padding: 10,
-          
         }}
       />
     );
@@ -257,7 +256,8 @@ const switchDefaultImageType = (type, item) => switchCaseFWithVal(item)({
     source: chatIcon,
     defaultImageStyle: {
       width: 30,
-      height: 28
+      height: 28,
+      tintColor: '#333'
     },
     style: undefined,
     imageUrl: item && item.picture ? item.picture : undefined
@@ -280,30 +280,51 @@ const switchDefaultImageType = (type, item) => switchCaseFWithVal(item)({
     const { userRef } = val;
     return ({
       source: friendIcon,
-      imageUrl: userRef && userRef.profile ? userRef.profile.image : undefined
+      imageUrl: userRef && userRef.profile ? userRef.profile.image : undefined,
+      defaultImageStyle: {
+        tintColor: '#333'
+      },
     });
   },
   User: val => {
     const { userRef } = val;
     return ({
       source: userIcon,
-      imageUrl: userRef && userRef.profile ? userRef.profile.image : undefined
+      imageUrl: userRef && userRef.profile ? userRef.profile.image : undefined,
+      defaultImageStyle: {
+        tintColor: '#333'
+      },
     });
   },
   Reading: () => ({
-    source: readingIcon
+    source: readingIcon,
+    defaultImageStyle: {
+      tintColor: '#333'
+    },
   }),
   Link: () => ({
-    source: linkIcon
+    source: linkIcon,
+    defaultImageStyle: {
+      tintColor: '#333'
+    },
   }),
   Custom: () => ({
-    source: customIcon
+    source: customIcon,
+    defaultImageStyle: {
+      tintColor: '#333'
+    },
   }),
   NewNeed: () => ({
-    source: needIcon
+    source: needIcon,
+    defaultImageStyle: {
+      tintColor: '#333'
+    },
   }),
   NewStep: () => ({
-    source: stepIcon
+    source: stepIcon,
+    defaultImageStyle: {
+      tintColor: '#333'
+    },
   })
 })('User')(type);
 

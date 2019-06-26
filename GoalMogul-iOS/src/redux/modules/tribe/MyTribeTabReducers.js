@@ -10,6 +10,7 @@ import {
 import {
   TRIBE_DELETE_SUCCESS
 } from './TribeReducers';
+import { TRIBE_NEW_SUBMIT_SUCCESS } from './NewTribeReducers';
 
 const INITIAL_STATE = {
   data: [],
@@ -51,6 +52,19 @@ export default (state = INITIAL_STATE, action) => {
     case MYTRIBETAB_OPEN: {
       const newState = _.cloneDeep(state);
       return _.set(newState, 'showModal', true);
+    }
+
+    // New tribe is created
+    case TRIBE_NEW_SUBMIT_SUCCESS: {
+      let newState = _.cloneDeep(state);
+      const { data } = action.payload;
+      if (!data) return newState;
+
+      const oldData = _.get(newState, 'data');
+      const newData = arrayUnique(oldData.concat(data)).sort((item1, item2) => 
+        new Date(item2.created) - new Date(item1.created))
+      newState = _.set(newState, 'data', newData);
+      return newState;
     }
 
     // Open my event modal

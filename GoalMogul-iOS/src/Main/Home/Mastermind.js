@@ -230,6 +230,8 @@ class Mastermind extends Component {
   // to move this function to Home component so that it won't scroll over
   renderPlus() {
     const { tutorialText, order, name, nextStepNumber } = this.props;
+    // console.log(`${DEBUG_KEY}: [renderPlus]: nextStepNumber <= order + 1: ${nextStepNumber <= order + 1}`);
+    // console.log(`${DEBUG_KEY}: [renderPlus]: order: ${order}, nextStepNumber: ${nextStepNumber}`);
 
     const tutorialView = nextStepNumber <= order + 1 ? (
       <CopilotStep text={tutorialText} order={order} name={name}>

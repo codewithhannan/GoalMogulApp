@@ -84,6 +84,19 @@ export const INITIAL_TUTORIAL = {
         },
         hasShown: false
     },
+    chat_tab_flow: {
+        chat_tab: {
+            nextPage: undefined,
+            showTutorial: false,
+            hasShown: false,
+            totalStep: 2, // Used for onStepChange and check if this is the last step,
+            tutorialText: [
+                'Tap here to start a conversation',
+                'GoalMogul Bot can help you think about new goals. Tap here to learn more.'
+            ],
+            nextStepNumber: 0
+        }
+    },
     isOnBoarded: false,
     lastFlow: undefined,
     lastPage: undefined,
@@ -147,6 +160,7 @@ export default (state = INITIAL_TUTORIAL, action) => {
             if (!nextPage) {
                 console.log(`${DEBUG_KEY}: [ ${action.type} ]: last page for flow: ${flow} and page: ${page}`);
                 newState = _.set(newState, `${flow}.${page}.nextStepNumber`, 0);
+                console.log(`${DEBUG_KEY}: new state is: `, newState);  
                 return newState;
             }
 
@@ -193,6 +207,8 @@ export default (state = INITIAL_TUTORIAL, action) => {
 
             // NOTE: here we merge saved state into default state, customizer will keep the array
             // in the default state than merging or concat
+            // console.log(`${DEBUG_KEY}: loaded tutorial state: `, data);
+            // console.log(`${DEBUG_KEY}: original state: `, newState);
             const updatedState = _.mergeWith(newState, data, customizer);
 
             return _.cloneDeep(updatedState);
@@ -216,7 +232,7 @@ export default (state = INITIAL_TUTORIAL, action) => {
                 // If nextStepNumber === total step and nextPage === undefined, this is last page
                 if (nextPage === undefined) {
                     newState = _.set(newState, 'isOnCurrentFlowLastStep', true);
-                    console.log(`${DEBUG_KEY}: totalStep: ${totalStep}, nextStepNumber: ${nextStepNumber}, set isOnCurrentFlowLastStep to true`);
+                    console.log(`${DEBUG_KEY}: [isOnCurrentFlowLastStep]: totalStep: ${totalStep}, nextStepNumber: ${nextStepNumber}, set isOnCurrentFlowLastStep to true`);
                 }
 
                 if (typeof nextPage === "object" && _.has(nextPage, totalStep) && _.get(nextPage, totalStep) === undefined) {
@@ -260,6 +276,10 @@ export default (state = INITIAL_TUTORIAL, action) => {
             // Preserve hasShown
             const mergedFlow = _.mergeWith(defaultFlow, originalFlow, preserveHasShown);
 
+            // console.log(`${DEBUG_KEY}: defaultFlow flow before merge is : `, defaultFlow);
+            // console.log(`${DEBUG_KEY}: original flow is : `, originalFlow);
+            // console.log(`${DEBUG_KEY}: mergedFlow flow is : `, mergedFlow);
+
             newState = _.set(newState, `${flow}`, mergedFlow);
             return newState;
         }
@@ -279,11 +299,16 @@ function preserveHasShown(objValue, srcValue, key) {
     if (key === 'hasShown') {
         return  srcValue;
     }
+    // return objValue;
 }
 
 // This customizer preserves objValue's array values
 function customizer(objValue, srcValue, key) {
     if (key === 'hasShown') {
         return srcValue;
+    }
+
+    if (Array.isArray(objValue)) {
+        return objValue;
     }
 }

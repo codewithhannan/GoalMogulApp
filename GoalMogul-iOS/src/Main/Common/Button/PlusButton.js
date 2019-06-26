@@ -7,12 +7,15 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
+import _ from 'lodash';
 
 /* asset */
 import plus from '../../../asset/utils/plus.png';
 import { APP_BLUE, APP_DEEP_BLUE } from '../../../styles';
 
 const DEBUG_KEY = '[ UI PlusButton ]';
+const WalkableView = walkthroughable(View);
 
 class PlusButton extends Component {
   constructor(...args) {
@@ -89,6 +92,37 @@ class PlusButton extends Component {
   }
 
   render() {
+      const { tutorial } = this.props;
+
+      const imageComponent = tutorial && !_.isEmpty(tutorial) 
+          ? (
+            <CopilotStep 
+              text={tutorial.tutorialText} 
+              order={tutorial.order} 
+              name={tutorial.name}>
+				      <WalkableView style={{ height: 54, width: 54, alignItems: 'center', justifyContent: 'center' }}>
+                <Animated.Image
+                    style={[styles.iconStyle, {
+                        transform: [{rotate: this.animations.spinAnim.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: ['0deg', '180deg']
+                        })}],
+                    }]}
+                    source={plus}
+                />
+                </WalkableView>
+              </CopilotStep>
+          ) : (
+            <Animated.Image
+                style={[styles.iconStyle, {
+                    transform: [{rotate: this.animations.spinAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ['0deg', '180deg']
+                    })}],
+                }]}
+                source={plus}
+            />
+          );
       return (
         <TouchableWithoutFeedback
             onPress={this.onPress}
@@ -102,17 +136,9 @@ class PlusButton extends Component {
                   right: this.animations.plusRightShift,
               }]}
           >
-                <Animated.Image
-                    style={[styles.iconStyle, {
-                        transform: [{rotate: this.animations.spinAnim.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: ['0deg', '180deg']
-                        })}],
-                    }]}
-                    source={plus}
-                />
-            </Animated.View>
-          </TouchableWithoutFeedback>
+            {imageComponent}
+          </Animated.View>
+        </TouchableWithoutFeedback>
       );
   }
 }
