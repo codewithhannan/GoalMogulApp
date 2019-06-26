@@ -56,9 +56,12 @@ export const createNewTribe = (values, needUpload, isEdit, tribeId) => (dispatch
 	});
 
 	const onSuccess = (res, tribe) => {
+		console.log(`${DEBUG_KEY}: [createNewTribe] success with res: `, res);
 		dispatch({
 			type: TRIBE_NEW_SUBMIT_SUCCESS,
-			payload: res
+			payload: {
+				data: res.data // new tribe object
+			} 
 		});
 
 		if (isEdit) {
