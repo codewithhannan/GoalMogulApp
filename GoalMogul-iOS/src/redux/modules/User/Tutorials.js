@@ -207,6 +207,8 @@ export default (state = INITIAL_TUTORIAL, action) => {
 
             // NOTE: here we merge saved state into default state, customizer will keep the array
             // in the default state than merging or concat
+            // console.log(`${DEBUG_KEY}: loaded tutorial state: `, data);
+            // console.log(`${DEBUG_KEY}: original state: `, newState);
             const updatedState = _.mergeWith(newState, data, customizer);
 
             return _.cloneDeep(updatedState);
@@ -304,5 +306,9 @@ function preserveHasShown(objValue, srcValue, key) {
 function customizer(objValue, srcValue, key) {
     if (key === 'hasShown') {
         return srcValue;
+    }
+
+    if (Array.isArray(objValue)) {
+        return objValue;
     }
 }
