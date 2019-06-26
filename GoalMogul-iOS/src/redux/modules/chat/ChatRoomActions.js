@@ -50,7 +50,7 @@ export const initialLoad = (currentChatRoomId, pageSize) => (dispatch, getState)
 			if (resp.status != 200) {
 				return Alert.alert('Error', 'Could not fetch chat room. Please try again later.');
 			};
-			const chatRoom = resp.data;
+			let chatRoom = resp.data;
 			if (!chatRoom) {
 				dispatch({
 					type: CHAT_ROOM_LOAD_INITIAL,
@@ -58,6 +58,7 @@ export const initialLoad = (currentChatRoomId, pageSize) => (dispatch, getState)
 				});
 				return; // Alert.alert('Error', 'Invalid chat room.');
 			};
+			chatRoom.members = chatRoom.members && chatRoom.members.filter(memberDoc => memberDoc.memberRef);
 			MessageStorageService.getLatestMessagesByConversation(currentChatRoomId, pageSize, 0, async (err, messages) => {
 				if (err || !messages) {
 					Alert.alert('Error', 'Could not load messages for selected chat room.');
@@ -93,11 +94,12 @@ export const refreshChatRoom = (currentChatRoomId, maybeCallback) => (dispatch, 
 				maybeCallback && maybeCallback(new Error('Server error refreshing chat room'));
 				return// Alert.alert('Error', 'Could not refresh chat room. Please try again later.');
 			};
-			const chatRoom = resp.data;
+			let chatRoom = resp.data;
 			maybeCallback && maybeCallback(null, chatRoom);
 			if (!chatRoom) {
 				return; // Alert.alert('Error', 'Invalid chat room.');
 			};
+			chatRoom.members = chatRoom.members && chatRoom.members.filter(memberDoc => memberDoc.memberRef);
 			dispatch({
 				type: CHAT_ROOM_LOAD_INITIAL,
 				payload: { chatRoom },

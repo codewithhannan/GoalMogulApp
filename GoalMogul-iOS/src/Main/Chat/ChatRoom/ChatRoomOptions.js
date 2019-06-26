@@ -5,38 +5,33 @@
     - fetch the full chat document with members populated
 */
 import React from 'react';
-import {
-	View,
-    Dimensions,
-    ScrollView,
-    Alert,
-} from 'react-native';
+import { Alert, Dimensions, ScrollView, View } from 'react-native';
+import { Divider, Image, Text } from 'react-native-elements';
+import { MenuProvider } from 'react-native-popup-menu';
+import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
+import { openProfile } from '../../../actions';
+import Icons from '../../../asset/base64/Icons';
+import profilePic from '../../../asset/utils/defaultUserProfile.png';
+import editIcon from '../../../asset/utils/edit.png';
+import leaveIcon from '../../../asset/utils/logout.png';
+import muteIcon from '../../../asset/utils/mute.png';
+import plusIcon from '../../../asset/utils/plus.png';
+import membersIcon from '../../../asset/utils/profile_people_black.png';
+import searchIcon from '../../../asset/utils/search.png';
+import deleteIcon from '../../../asset/utils/trash.png';
+import { deleteConversationMessages } from '../../../redux/modules/chat/ChatRoomActions';
+import { removeChatMember } from '../../../redux/modules/chat/ChatRoomMembersActions';
+import { addMemberToChatRoom, changeChatRoomMute } from '../../../redux/modules/chat/ChatRoomOptionsActions';
+import { APP_BLUE_BRIGHT } from '../../../styles';
+import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Constants';
+import Dot from '../../Common/Dot';
+import ModalHeader from '../../Common/Header/ModalHeader';
+import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
+import SettingCard from '../../Setting/SettingCard';
 
 const windowWidth = Dimensions.get('window').width;
 
-import ModalHeader from '../../Common/Header/ModalHeader';
-import Dot from '../../Common/Dot';
-import { Actions } from 'react-native-router-flux';
-import profilePic from '../../../asset/utils/defaultUserProfile.png';
-import membersIcon from '../../../asset/utils/profile_people_black.png';
-import plusIcon from '../../../asset/utils/plus.png';
-import muteIcon from '../../../asset/utils/mute.png';
-import editIcon from '../../../asset/utils/edit.png';
-import leaveIcon from '../../../asset/utils/logout.png';
-import searchIcon from '../../../asset/utils/search.png';
-import deleteIcon from '../../../asset/utils/trash.png';
-import { MenuProvider } from 'react-native-popup-menu';
-import SettingCard from '../../Setting/SettingCard';
-import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Constants';
-import { openProfile } from '../../../actions';
-import { changeChatRoomMute, addMemberToChatRoom } from '../../../redux/modules/chat/ChatRoomOptionsActions';
-import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
-import { Image, Text, Divider } from 'react-native-elements';
-import { APP_BLUE_BRIGHT } from '../../../styles';
-import { removeChatMember } from '../../../redux/modules/chat/ChatRoomMembersActions';
-import { deleteConversationMessages } from '../../../redux/modules/chat/ChatRoomActions';
-import Icons from '../../../asset/base64/Icons';
 
 const { CheckIcon: check } = Icons;
 const DEBUG_KEY = '[ UI ChatRoomOptions ]';
@@ -215,8 +210,45 @@ class ChatRoomOptions extends React.Component {
 
 	render() {
         const { otherUser, chatRoom, chatRoomName, chatRoomImage, isMuted, isAdmin } = this.props;
-        if (!chatRoom) {
-            return null;
+        if (!chatRoom || (chatRoom.roomType == 'Direct' && !otherUser)) {
+            return (
+                <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                    <View style={styles.homeContainerStyle}>
+                        <ModalHeader
+                            title={'Details'}
+                            actionHidden={true}
+                            back={true}
+                            onCancel={this.closeOptions}
+                            containerStyles={{
+                                elevation: 3,
+                                shadowColor: '#666',
+                                shadowOffset: { width: 0, height: 1, },
+                                shadowOpacity: 0.3,
+                                shadowRadius: 3,
+                                backgroundColor: APP_BLUE_BRIGHT,
+                            }}
+                            backButtonStyle={{
+                                tintColor: '#21364C',
+                            }}
+                            titleTextStyle={{
+                                color: '#21364C',
+                            }}
+                        />
+                        <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
+                            <Text
+                                style={{
+                                    fontSize: 18,
+                                    color: '#999',
+                                    textAlign: 'center',
+                                    marginTop: 48,
+                                }}
+                            >
+                                Loading...
+                            </Text>
+                        </View>
+                    </View>
+                </MenuProvider>
+            );
         };
 		return (
 			<MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -322,7 +354,7 @@ const mapStateToProps = (state, props) => {
         chatRoomsMap, activeChatRoomId,
     } = state.chatRoom;
 
-    const chatRoom = chatRoomsMap[activeChatRoomId];
+    let chatRoom = chatRoomsMap[activeChatRoomId];
     
     // extract details from the chat room
     let chatRoomName = 'Loading...';
@@ -331,6 +363,7 @@ const mapStateToProps = (state, props) => {
     let isAdmin = false;
 
     if (chatRoom) {
+        chatRoom.members = chatRoom.members && chatRoom.members.filter(memberDoc => memberDoc.memberRef);
         if (chatRoom.roomType == 'Direct') {
             otherUser = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id != userId);
             if (otherUser) {

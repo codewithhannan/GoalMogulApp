@@ -1,37 +1,17 @@
-import React from 'react';
 import { Constants } from 'expo';
-import {
-	View,
-	FlatList,
-	ActivityIndicator,
-	Dimensions,
-	Platform,
-	Text
-} from 'react-native';
-import { connect } from 'react-redux';
+import React from 'react';
+import { ActivityIndicator, Dimensions, FlatList, Platform, Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
-import { MaterialIcons } from '@expo/vector-icons';
-
+import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+// Actions
+import { createOrGetDirectMessage, loadMoreChatRooms, refreshChatRooms, searchQueryUpdated, updateCurrentChatRoomsList } from '../../../redux/modules/chat/ChatActions';
+import MessageStorageService from '../../../services/chat/MessageStorageService';
+import { IPHONE_MODELS } from '../../../Utils/Constants';
+import { SearchIcon } from '../../../Utils/Icons';
 // Components
 import ChatRoomCard from './ChatRoomCard';
 
-import MessageStorageService from '../../../services/chat/MessageStorageService';
-
-// Actions
-import {
-	refreshChatRooms,
-	loadMoreChatRooms,
-	searchQueryUpdated,
-	createOrGetDirectMessage,
-	updateCurrentChatRoomsList,
-} from '../../../redux/modules/chat/ChatActions';
-
-import {
-	SearchIcon
-  } from '../../../Utils/Icons';
-
-import { IPHONE_MODELS } from '../../../Utils/Constants';
-import { Actions } from 'react-native-router-flux';
 
 const CHATROOM_AUTO_SEARCH_DELAY_MS = 500;
 const CHATROOM_LIST_REFRESH_INTERVAL = 3000; // ms
@@ -196,7 +176,7 @@ class ChatRoomTab extends React.Component {
 		return (
 			<View style={{ flex: 1 }}>
 				<FlatList
-					data={[...this.props.data]}
+					data={this.props.data}
 					renderItem={this.renderItem.bind(this)}
 					numColumns={1}
 					keyExtractor={this._keyExtractor}

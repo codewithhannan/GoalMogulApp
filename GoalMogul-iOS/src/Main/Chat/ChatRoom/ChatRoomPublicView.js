@@ -3,36 +3,30 @@
  * room is about
  */
 import React from 'react';
-import {
-	View,
-    Dimensions,
-    ScrollView,
-} from 'react-native';
-import { connect } from 'react-redux';
-import { Image, Text, Divider } from 'react-native-elements';
+import { Dimensions, ScrollView, View } from 'react-native';
+import { Divider, Image, Text } from 'react-native-elements';
 import { DotIndicator } from 'react-native-indicators';
+import { MenuProvider } from 'react-native-popup-menu';
+import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+import { openProfile } from '../../../actions';
+import Icons from '../../../asset/base64/Icons';
+import profilePic from '../../../asset/utils/defaultUserProfile.png';
+import leaveIcon from '../../../asset/utils/logout.png';
+import plusIcon from '../../../asset/utils/plus.png';
+import { cancelJoinRequest, sendJoinRequest } from '../../../redux/modules/chat/ChatRoomOptionsActions';
+// Selector
+import { makeGetChatRoom } from '../../../redux/modules/chat/ChatSelector';
+import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Constants';
+import Dot from '../../Common/Dot';
+import ModalHeader from '../../Common/Header/ModalHeader';
+import LoadingModal from '../../Common/Modal/LoadingModal';
+import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
+import SettingCard from '../../Setting/SettingCard';
 
 const windowWidth = Dimensions.get('window').width;
 
-import ModalHeader from '../../Common/Header/ModalHeader';
-import Dot from '../../Common/Dot';
-import { Actions } from 'react-native-router-flux';
-import Icons from '../../../asset/base64/Icons';
-import profilePic from '../../../asset/utils/defaultUserProfile.png';
-import membersIcon from '../../../asset/utils/profile_people_black.png';
-import plusIcon from '../../../asset/utils/plus.png';
-import leaveIcon from '../../../asset/utils/logout.png';
-import { MenuProvider } from 'react-native-popup-menu';
-import SettingCard from '../../Setting/SettingCard';
-import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Constants';
-import { openProfile } from '../../../actions';
-import { cancelJoinRequest, sendJoinRequest } from '../../../redux/modules/chat/ChatRoomOptionsActions';
-import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
-import { APP_BLUE_BRIGHT } from '../../../styles';
-import LoadingModal from '../../Common/Modal/LoadingModal';
 
-// Selector
-import { makeGetChatRoom } from '../../../redux/modules/chat/ChatSelector';
 
 const { CheckIcon: check } = Icons;
 const DEBUG_KEY = '[ UI ChatRoomPublicView ]';
@@ -229,7 +223,7 @@ const makeMapStateToProps = () => {
             chatRoom = props.chatRoom;
         } else {
             chatRoom = getChatRoom(state, chatRoomId, path);
-        }
+        };
         
         // extract details from the chat room
         let chatRoomName = 'Loading...';
@@ -237,6 +231,7 @@ const makeMapStateToProps = () => {
         let otherUser = null;
         let isJoinRequester;
         if (chatRoom) {
+            chatRoom.members = chatRoom.members && chatRoom.members.filter(memberDoc => memberDoc.memberRef);
             if (chatRoom.roomType == 'Direct') {
                 otherUser = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id != userId);
                 if (otherUser) {
