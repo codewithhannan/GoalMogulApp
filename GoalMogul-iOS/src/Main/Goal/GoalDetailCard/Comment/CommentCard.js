@@ -3,7 +3,6 @@ import {
   View,
   Image,
   Text,
-  TouchableOpacity,
   Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -19,6 +18,7 @@ import ReplyIcon from '../../../../asset/utils/reply.png';
 import {
   cardBoxBorder
 } from '../../../../styles';
+import DelayedButton from '../../../Common/Button/DelayedButton';
 
 const DEBUG_KEY = '[ UI CommentCard ]';
 
@@ -156,20 +156,20 @@ class CommentCard extends React.Component {
 
     if (childComments.length > numberOfChildrenShowing) {
       childCommentCards.push(
-        <TouchableOpacity 
+        <DelayedButton 
           activeOpacity={0.6}
           key={childComments.length}
           onPress={this.showMoreChildComments}
-          style={{ marginTop: 0.5 }}
+          style={{ margin: 3, padding: 5 }}
         >
           <Text
             style={{
               alignSelf: 'center',
               color: '#4ec9f3',
-              padding: 5
+              padding: 2
             }}
           >Load more replies ({childComments.length - numberOfChildrenShowing})</Text>
-        </TouchableOpacity>
+        </DelayedButton>
       );
     }
 
