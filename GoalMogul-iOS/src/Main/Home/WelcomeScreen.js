@@ -126,7 +126,9 @@ const styles = {
     mainContentContainerStyle: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        borderBottomLeftRadius: 15,
+        borderBottomRightRadius: 15,
     },
     // User image style
     imageStyle: {

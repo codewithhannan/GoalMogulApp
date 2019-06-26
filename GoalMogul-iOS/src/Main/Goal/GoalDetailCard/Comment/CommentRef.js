@@ -257,7 +257,8 @@ const switchDefaultImageType = (type, item) => switchCaseFWithVal(item)({
     source: chatIcon,
     defaultImageStyle: {
       width: 30,
-      height: 28
+      height: 28,
+      tintColor: '#333'
     },
     style: undefined,
     imageUrl: item && item.picture ? item.picture : undefined
@@ -280,30 +281,51 @@ const switchDefaultImageType = (type, item) => switchCaseFWithVal(item)({
     const { userRef } = val;
     return ({
       source: friendIcon,
-      imageUrl: userRef && userRef.profile ? userRef.profile.image : undefined
+      imageUrl: userRef && userRef.profile ? userRef.profile.image : undefined,
+      defaultImageStyle: {
+        tintColor: '#333'
+      },
     });
   },
   User: val => {
     const { userRef } = val;
     return ({
       source: userIcon,
-      imageUrl: userRef && userRef.profile ? userRef.profile.image : undefined
+      imageUrl: userRef && userRef.profile ? userRef.profile.image : undefined,
+      defaultImageStyle: {
+        tintColor: '#333'
+      },
     });
   },
   Reading: () => ({
-    source: readingIcon
+    source: readingIcon,
+    defaultImageStyle: {
+      tintColor: '#333'
+    },
   }),
   Link: () => ({
-    source: linkIcon
+    source: linkIcon,
+    defaultImageStyle: {
+      tintColor: '#333'
+    },
   }),
   Custom: () => ({
-    source: customIcon
+    source: customIcon,
+    defaultImageStyle: {
+      tintColor: '#333'
+    },
   }),
   NewNeed: () => ({
-    source: needIcon
+    source: needIcon,
+    defaultImageStyle: {
+      tintColor: '#333'
+    },
   }),
   NewStep: () => ({
-    source: stepIcon
+    source: stepIcon,
+    defaultImageStyle: {
+      tintColor: '#333'
+    },
   })
 })('User')(type);
 
