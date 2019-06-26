@@ -1,16 +1,16 @@
 /* eslint no-use-before-define: ["error", { "variables": false }] */
 
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Animated, Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes, Alert } from 'react-native';
-
+import { Alert, Animated, Clipboard, StyleSheet, Text, TouchableOpacity, View, ViewPropTypes } from 'react-native';
 import { MessageText, MessageVideo } from 'react-native-gifted-chat';
-import ChatMessageImage from '../../Modals/ChatMessageImage';
-import moment from 'moment';
-import CommentRef from '../../../Goal/GoalDetailCard/Comment/CommentRef';
-import { MemberDocumentFetcher } from '../../../../Utils/UserUtils';
-import { APP_DEEP_BLUE } from '../../../../styles';
 import { Actions } from 'react-native-router-flux';
+import { APP_DEEP_BLUE } from '../../../../styles';
+import { MemberDocumentFetcher } from '../../../../Utils/UserUtils';
+import CommentRef from '../../../Goal/GoalDetailCard/Comment/CommentRef';
+import ChatMessageImage from '../../Modals/ChatMessageImage';
+
 
 function isSameDay(currentMessage = {}, diffMessage = {}) {
 	if (!diffMessage.createdAt) {
@@ -391,7 +391,7 @@ export default class ChatRoomConversationBubble extends React.Component {
 						borderRadius: 6,
 						backgroundColor: '#F4DFDE',
 					}}
-					onPress={this.deleteMessage.bind(this)}
+					onPress={this.dismissSuggestion.bind(this)}
 				>
 					<Text style={{ color: '#C13E35', fontSize: 12, }} >Dismiss</Text>
 				</TouchableOpacity>
@@ -414,10 +414,10 @@ export default class ChatRoomConversationBubble extends React.Component {
 
 		Actions.push('createGoalModal', { isImportedGoal: true, goal, callback });
 	}
-	deleteMessage() {
+	dismissSuggestion() {
 		Alert.alert('Dismiss...', 'Are you sure you want to delete this message?', [{
 			text: 'Dismiss',
-			onPress: () => this.props.deleteMessage(this.props.currentMessage._id),
+			onPress: () => this.props.dismissGoalSuggestion(this.props.currentMessage._id),
 		}, {
 			text: 'Cancel',
 			style: 'cancel',

@@ -1,23 +1,19 @@
 import React from 'react';
-import {
-	View,
-	Text,
-	TouchableOpacity
-} from 'react-native';
-import timeago from 'timeago.js';
+import { Text, View } from 'react-native';
 import { connect } from 'react-redux';
-
+import timeago from 'timeago.js';
+import profilePic from '../../../asset/utils/defaultUserProfile.png';
+import { GROUP_CHAT_DEFAULT_ICON_URL } from '../../../Utils/Constants';
+import DelayedButton from '../../Common/Button/DelayedButton';
 // Components
 import ProfileImage from '../../Common/ProfileImage';
 import Timestamp from '../../Goal/Common/Timestamp';
-import DelayedButton from '../../Common/Button/DelayedButton';
 
-import profilePic from '../../../asset/utils/defaultUserProfile.png';
-import { GROUP_CHAT_DEFAULT_ICON_URL } from '../../../Utils/Constants';
+
 
 class ChatRoomCard extends React.Component {
-	handleCardOnPress = (item) => {
-		this.props.onItemSelect(item);
+	handleCardOnPress = () => {
+		this.props.onItemSelect(this.props.item);
 	}
 
 	renderCardImage(imageUrl) {
@@ -154,9 +150,7 @@ class ChatRoomCard extends React.Component {
 		// extract profile
 		let cardImage;
 		if (item.isFriend || item.roomType == 'Direct') {
-			cardImage = item.isFriend ?
-				item :
-				item.members && item.members.find(memDoc => memDoc.memberRef._id.toString() != this.props.currentUserId);
+			cardImage = item.isFriend ? item : item.members && item.members.find(memDoc => memDoc.memberRef._id != this.props.currentUserId);
 			if (cardImage) {
 				cardImage = cardImage.profile || cardImage.memberRef.profile;
 			};
@@ -173,7 +167,7 @@ class ChatRoomCard extends React.Component {
 			<DelayedButton 
 				activeOpacity={0.6}
 				style={{...styles.cardContainerStyle, ...maybeUnreadHighlight }}
-				onPress={() => this.handleCardOnPress(item)}
+				onPress={this.handleCardOnPress}
 			>
 				{this.renderCardImage(cardImage)}
 				{this.renderCardContent(item)}

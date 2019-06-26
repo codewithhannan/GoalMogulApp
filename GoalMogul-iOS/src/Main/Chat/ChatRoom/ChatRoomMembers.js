@@ -4,34 +4,24 @@
     - connect to live chat service for typing indicator
     - fetch the full chat document with members populated
 */
-import React from 'react';
-import {
-	View,
-    Dimensions,
-    FlatList,
-    TouchableOpacity,
-    Platform
-} from 'react-native';
-import { connect } from 'react-redux';
+import { MaterialIcons } from '@expo/vector-icons';
 import { Constants } from 'expo';
-import { TabView, SceneMap } from 'react-native-tab-view';
-
-// Actions
-import ModalHeader from '../../Common/Header/ModalHeader';
-import Dot from '../../Common/Dot';
-import { Actions } from 'react-native-router-flux';
-import profilePic from '../../../asset/utils/defaultUserProfile.png';
-import plusIcon from '../../../asset/utils/plus.png';
-import editIcon from '../../../asset/utils/edit.png';
+import React from 'react';
+import { Dimensions, FlatList, Platform, TouchableOpacity, View } from 'react-native';
+import { Divider, Text } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
+import { Actions } from 'react-native-router-flux';
+import { TabView } from 'react-native-tab-view';
+import { connect } from 'react-redux';
 import { openProfile } from '../../../actions';
-import { selectChatMembersTab, refreshChatMembersTab, promoteChatMember, demoteChatMember, acceptChatMemberJoinRequest, removeChatMember } from '../../../redux/modules/chat/ChatRoomMembersActions';
+import { acceptChatMemberJoinRequest, demoteChatMember, promoteChatMember, refreshChatMembersTab, removeChatMember, selectChatMembersTab } from '../../../redux/modules/chat/ChatRoomMembersActions';
 import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../../../styles';
 import { IPHONE_MODELS } from '../../../Utils/Constants';
+// Actions
+import ModalHeader from '../../Common/Header/ModalHeader';
 import ProfileImage from '../../Common/ProfileImage';
-import { Button, Text, Divider } from 'react-native-elements';
-import { MaterialIcons } from '@expo/vector-icons';
 import TabButtonGroup from '../../Common/TabButtonGroup';
+
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SEARCHBAR_HEIGHT = Platform.OS === 'ios' &&
@@ -250,8 +240,10 @@ const mapStateToProps = (state, props) => {
     } = state.chatRoom;
     const { refreshing, navigationState } = state.chatRoomMembers;
 
-    const chatRoom = chatRoomsMap[activeChatRoomId];
-
+    let chatRoom = chatRoomsMap[activeChatRoomId];
+    if (chatRoom) {
+        chatRoom.members = chatRoom.members && chatRoom.members.filter(memberDoc => memberDoc.memberRef);
+    };
     
     // extract details from the chat room
     let isAdmin = false;

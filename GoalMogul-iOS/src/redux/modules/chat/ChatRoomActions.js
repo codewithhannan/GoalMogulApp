@@ -1,14 +1,14 @@
 import _ from 'lodash';
-
-import { CHAT_ROOM_LOAD_INITIAL_BEGIN, CHAT_ROOM_LOAD_INITIAL, CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS, CHAT_ROOM_UPDATE_MESSAGES, CHAT_ROOM_LOAD_MORE_MESSAGES_BEGIN, CHAT_ROOM_LOAD_MORE_MESSAGES, CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF, CHAT_ROOM_UPDATE_GHOST_MESSAGES, CHAT_ROOM_CLOSE_ACTIVE_ROOM } from "./ChatRoomReducers";
-import { api as API } from "../../middleware/api";
 import { Alert } from 'react-native';
 import Decode from 'unescape';
-
 import MessageStorageService from '../../../services/chat/MessageStorageService';
 import { IMAGE_BASE_URL } from "../../../Utils/Constants";
 import ImageUtils from "../../../Utils/ImageUtils";
 import { MemberDocumentFetcher } from "../../../Utils/UserUtils";
+import { api as API } from "../../middleware/api";
+import { CHAT_ROOM_CLOSE_ACTIVE_ROOM, CHAT_ROOM_LOAD_INITIAL, CHAT_ROOM_LOAD_INITIAL_BEGIN, CHAT_ROOM_LOAD_MORE_MESSAGES, CHAT_ROOM_LOAD_MORE_MESSAGES_BEGIN, CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS, CHAT_ROOM_UPDATE_GHOST_MESSAGES, CHAT_ROOM_UPDATE_MESSAGES, CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF } from "./ChatRoomReducers";
+
+
 
 const LOADING_RIPPLE_URL = "https://i.imgur.com/EhwxDDf.gif";
 
@@ -50,7 +50,7 @@ export const initialLoad = (currentChatRoomId, pageSize) => (dispatch, getState)
 			if (resp.status != 200) {
 				return Alert.alert('Error', 'Could not fetch chat room. Please try again later.');
 			};
-			const chatRoom = resp.data;
+			let chatRoom = resp.data;
 			if (!chatRoom) {
 				dispatch({
 					type: CHAT_ROOM_LOAD_INITIAL,
@@ -58,6 +58,7 @@ export const initialLoad = (currentChatRoomId, pageSize) => (dispatch, getState)
 				});
 				return; // Alert.alert('Error', 'Invalid chat room.');
 			};
+			chatRoom.members = chatRoom.members && chatRoom.members.filter(memberDoc => memberDoc.memberRef);
 			MessageStorageService.getLatestMessagesByConversation(currentChatRoomId, pageSize, 0, async (err, messages) => {
 				if (err || !messages) {
 					Alert.alert('Error', 'Could not load messages for selected chat room.');
@@ -93,11 +94,12 @@ export const refreshChatRoom = (currentChatRoomId, maybeCallback) => (dispatch, 
 				maybeCallback && maybeCallback(new Error('Server error refreshing chat room'));
 				return// Alert.alert('Error', 'Could not refresh chat room. Please try again later.');
 			};
-			const chatRoom = resp.data;
+			let chatRoom = resp.data;
 			maybeCallback && maybeCallback(null, chatRoom);
 			if (!chatRoom) {
 				return; // Alert.alert('Error', 'Invalid chat room.');
 			};
+			chatRoom.members = chatRoom.members && chatRoom.members.filter(memberDoc => memberDoc.memberRef);
 			dispatch({
 				type: CHAT_ROOM_LOAD_INITIAL,
 				payload: { chatRoom },
@@ -297,6 +299,26 @@ export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMe
 		});
 	};
 };
+
+export const sendChatBotCustomResponseMessage = (message, chatRoom) => (dispatch, getState) => {
+	if (!chatRoom) return;
+	const { token } = getState().user;
+
+	const body = {
+		created: new Date(),
+		chatRoomRef: chatRoom._id,
+		content: {
+			message,
+		},
+		doNotSendToSelf: true,
+	};
+	const handleRequestFailure = (failure) => {};
+	API.post(`secure/chat/message`, body, token).then(resp => {
+		if (resp.status != 200) {
+			handleRequestFailure();
+		};
+	}).catch(handleRequestFailure);
+}
 
 export const changeMessageMediaRef = (mediaRef) => (dispatch, getState) => {
 	dispatch({

@@ -1,28 +1,17 @@
 /**
  * Actions for Chat tab
  */
+import Bluebird from 'bluebird';
 import _ from 'lodash';
 import { Alert, AsyncStorage } from 'react-native';
-
-import Bluebird from 'bluebird';
-
-import {
-	CHAT_SWITCH_TAB,
-	PLUS_PRESSED,
-	PLUS_UNPRESSED,
-	CHAT_LOAD_TYPES,
-	CHAT_REFRESH,
-	CHAT_REFRESH_DONE,
-	CHAT_LOAD,
-	CHAT_LOAD_DONE,
-	SEARCH_QUERY_UPDATED,
-	CHAT_UPDATE_TAB_UNREAD_COUNT
-} from './ChatReducers';
-
-import {api as API} from '../../middleware/api';
-import MessageStorageService from '../../../services/chat/MessageStorageService';
 import { Actions } from 'react-native-router-flux';
 import { CHAT_TAB_LAST_INDEX } from '../../../Main/Chat/Chat';
+import MessageStorageService from '../../../services/chat/MessageStorageService';
+import { api as API } from '../../middleware/api';
+import { CHAT_LOAD, CHAT_LOAD_DONE, CHAT_LOAD_TYPES, CHAT_REFRESH, CHAT_REFRESH_DONE, CHAT_SWITCH_TAB, CHAT_UPDATE_TAB_UNREAD_COUNT, PLUS_PRESSED, PLUS_UNPRESSED, SEARCH_QUERY_UPDATED } from './ChatReducers';
+
+
+
 
 export const selectChatTab = (index) => (dispatch) => {
 	AsyncStorage.setItem(CHAT_TAB_LAST_INDEX, index.toString());
@@ -346,7 +335,7 @@ const getUnreadMessageCountByConversations = Bluebird.promisify(MessageStorageSe
 const getLatestMessagesByConversation = Bluebird.promisify(MessageStorageService.getLatestMessagesByConversation);
 async function transformChatRoomResultsAndDispatch(dispatchType, dispatchPayload, dispatch) {
 	let transformedPayload = _.cloneDeep(dispatchPayload);
-	const chatRooms = dispatchPayload.data;
+	let chatRooms = dispatchPayload.data;
 	let unreadMessageCountByConversationMap = {};
 	try {
 		unreadMessageCountByConversationMap = await getUnreadMessageCountByConversations(chatRooms.map(doc => doc._id));
@@ -359,6 +348,7 @@ async function transformChatRoomResultsAndDispatch(dispatchType, dispatchPayload
 			try {
 				chatRoom.latestMessage = (await getLatestMessagesByConversation(chatRoom._id, 1, 0))[0];
 			} catch (e) { /* we tried */ };
+			chatRoom.members = chatRoom.members && chatRoom.members.filter(memberDoc => memberDoc.memberRef);
 			return chatRoom;
 		}));
 	} catch(e) { /* should never happen */ }

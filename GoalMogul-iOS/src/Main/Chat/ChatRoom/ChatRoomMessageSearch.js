@@ -4,42 +4,22 @@
     - connect to live chat service for typing indicator
     - fetch the full chat document with members populated
 */
+import { MaterialIcons } from '@expo/vector-icons';
 import moment from 'moment';
 import React from 'react';
-import {
-    View,
-    ActivityIndicator,
-    KeyboardAvoidingView,
-    TouchableOpacity,
-    FlatList,
-} from 'react-native';
-import { connect } from 'react-redux';
-import { MaterialIcons } from  '@expo/vector-icons';
-
-// Actions
-import {
-    
-} from '../../../redux/modules/chat/ChatRoomActions';
-import ModalHeader from '../../Common/Header/ModalHeader';
-import Dot from '../../Common/Dot';
-import { Actions } from 'react-native-router-flux';
-import profilePic from '../../../asset/utils/defaultUserProfile.png';
-import membersIcon from '../../../asset/utils/profile_people_black.png';
-import plusIcon from '../../../asset/utils/plus.png';
-import muteIcon from '../../../asset/utils/mute.png';
-import editIcon from '../../../asset/utils/edit.png';
-import searchIcon from '../../../asset/utils/search.png';
+import { ActivityIndicator, FlatList, KeyboardAvoidingView, TouchableOpacity, View } from 'react-native';
+import { SearchBar, Text } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
-import SettingCard from '../../Setting/SettingCard';
-import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Constants';
-import { openProfile } from '../../../actions';
+import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+// Actions
+import { } from '../../../redux/modules/chat/ChatRoomActions';
 import { refreshChatMessageSearch, searchQueryUpdated } from '../../../redux/modules/chat/ChatRoomMessageSearchActions';
-import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
-import { Image, Text, Divider, SearchBar } from 'react-native-elements';
 import { APP_BLUE_BRIGHT } from '../../../styles';
-import ProfileImage from '../../Common/ProfileImage';
-import { getUserDocument, MemberDocumentFetcher } from '../../../Utils/UserUtils';
 import { SearchIcon } from '../../../Utils/Icons';
+import ModalHeader from '../../Common/Header/ModalHeader';
+import ProfileImage from '../../Common/ProfileImage';
+
 
 const MESSAGE_SEARCH_AUTO_SEARCH_DELAY_MS = 500;
 
@@ -274,12 +254,13 @@ const mapStateToProps = (state, props) => {
         searchResults, searching, searchQuery,
     } = state.chatRoom;
 
-    const chatRoom = chatRoomsMap[activeChatRoomId];
+    let chatRoom = chatRoomsMap[activeChatRoomId];
     
     // extract details from the chat room
     let chatRoomName = 'Loading...';
     let chatRoomMembersMap = {};
     if (chatRoom) {
+        chatRoom.members = chatRoom.members && chatRoom.members.filter(memberDoc => memberDoc.memberRef);
         if (chatRoom.roomType == 'Direct') {
             let otherUser = chatRoom.members && chatRoom.members.find(memberDoc => memberDoc.memberRef._id != userId);
             if (otherUser) {
