@@ -135,7 +135,7 @@ class FriendRequestCardView extends React.PureComponent {
                 imageContainerStyle={{ marginTop: 5 }}
                 imageUrl={user && user.profile ? user.profile.image : undefined}
                 imageContainerStyle={styles.imageContainerStyle}
-                userId={item._id}
+                userId={user._id}
             />
         );
     }
@@ -160,7 +160,14 @@ class FriendRequestCardView extends React.PureComponent {
     const { user, type } = item;
     if (!user || type === 'info') return null;
     const { name, profile, headline } = user;
-    const detailText = headline || profile.occupation;
+    let detailText;
+    if (headline) {
+        detailText = headline;
+    } else if (profile && profile.occupation) {
+        detailText = profile.occupation;
+    }
+    // console.log(`${DEBUG_KEY}: profile is:`, profile);
+
     return (
         <View style={{ flex: 1, marginLeft: 13 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
