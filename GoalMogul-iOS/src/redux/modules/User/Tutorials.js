@@ -92,7 +92,7 @@ export const INITIAL_TUTORIAL = {
             totalStep: 2, // Used for onStepChange and check if this is the last step,
             tutorialText: [
                 'Tap here to start a conversation',
-                'GoalMogul Bot can help you think about new goals if you’re too busy do that on your own.  Click here to learn more.'
+                'GoalMogul Bot can help you think about new goals. Tap here to learn more.'
             ],
             nextStepNumber: 0
         }

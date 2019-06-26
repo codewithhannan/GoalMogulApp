@@ -6,7 +6,8 @@ import { StyleSheet } from 'react-native';
 
 export const BACKGROUND_COLOR = '#f8f8f8';
 export const APP_BLUE_BRIGHT = '#17B3EC';
-export const APP_BLUE = '#34C1F1';
+// export const APP_BLUE = '#34C1F1';
+export const APP_BLUE = '#23B7E9';
 export const APP_DEEP_BLUE = '#0397CB';
 
 export const imagePreviewContainerStyle = {
