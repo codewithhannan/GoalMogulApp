@@ -86,7 +86,8 @@ export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
   if (initialProps && initialProps.refreshGoal === false) {
     // Do not refresh goal if it's set to false
   } else {
-    refreshGoalDetailById(_id, pageId)(dispatch, getState);
+    // No need to refresh since it's done on goal mounted
+    // refreshGoalDetailById(_id, pageId)(dispatch, getState);
   }
 
   // In the version 0.3.9 and later, loading goal and comment is done in goal detail
