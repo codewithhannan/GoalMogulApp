@@ -136,12 +136,15 @@ export const loginUser = ({ username, password, navigate }) => {
           
           // Load unread notification
           await loadUnreadNotification()(dispatch, getState);
+          // loadUnreadNotification()(dispatch, getState);
 
           // Load tutorial state
           await loadTutorialState(res.userId)(dispatch, getState);
+          // loadTutorialState(res.userId)(dispatch, getState);
 
           // Load remote matches
           await loadRemoteMatches(res.userId)(dispatch, getState);
+          // loadRemoteMatches(res.userId)(dispatch, getState);
 
           // If navigate is set to false, it means user has already opened up the home page
           // We only need to reload the profile and feed data

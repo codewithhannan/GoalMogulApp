@@ -117,12 +117,12 @@ export const auth = {
   }
 };
 
-export const hideSplashScreen = () => (dispatch, getState) => {
+export const hideSplashScreen = () => async (dispatch, getState) => {
   setTimeout(async () => {
     SplashScreen.hide();
     dispatch({
       type: SPLASHSCREEN_HIDE
     });
     await subscribeNotification()(dispatch, getState);
-  }, 1000);
+  }, 100);
 };
