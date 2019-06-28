@@ -128,7 +128,10 @@ class SearchEventCard extends Component {
     const { item, type } = this.props;
 
     return (
-      <DelayedButton activeOpacity={0.6}>
+      <DelayedButton 
+        activeOpacity={0.6}
+        onPress={() => this.onButtonClicked(item, type)}
+      >
         <View style={styles.containerStyle}>
           {this.renderEventImage()}
 
@@ -136,7 +139,7 @@ class SearchEventCard extends Component {
             {this.renderInfo()}
             {this.renderOccupation()}
           </View>
-          {this.renderButton(item, type)}
+          {/* {this.renderButton(item, type)} */}
         </View>
       </DelayedButton>
     );

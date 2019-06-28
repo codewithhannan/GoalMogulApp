@@ -128,7 +128,10 @@ class SearchTribeCard extends Component {
     const { item, type } = this.props;
     const { _id } = this.props.item;
     return (
-      <DelayedButton activeOpacity={0.6}>
+      <DelayedButton 
+        activeOpacity={0.6}
+        onPress={() => this.onButtonClicked(item, type)}
+      >
         <View style={styles.containerStyle}>
           {this.renderTribeImage()}
 
@@ -136,7 +139,7 @@ class SearchTribeCard extends Component {
             {this.renderInfo()}
             {this.renderOccupation()}
           </View>
-          {this.renderButton(item, type)}
+          {/* {this.renderButton(item, type)} */}
         </View>
       </DelayedButton>
     );

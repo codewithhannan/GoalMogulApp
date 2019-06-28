@@ -188,7 +188,7 @@ const submitEditGoal = (goal, goalId, token, callback, dispatch, tab, owner) => 
     setTimeout(() => {
       Alert.alert(
         'Success',
-        'You have successfully edited a goal.'
+        'Your goal has been successfully updated'
       );
     }, 300);
   };
