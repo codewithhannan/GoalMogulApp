@@ -235,7 +235,7 @@ class ProfilePostCard extends React.PureComponent {
     };
 
     // TODO: TAG:
-    const { text, tags } = item.content;
+    const { text, tags, links } = item.content;
 
     return (
       <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
@@ -257,6 +257,7 @@ class ProfilePostCard extends React.PureComponent {
           <RichText
             contentText={text}
             contentTags={tags}
+            contentLinks={links || []}
             textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
             textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
             numberOfLines={3}
