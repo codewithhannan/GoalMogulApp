@@ -84,10 +84,12 @@ class ChatTab extends React.Component {
             () => {
                 // We always fire this event since it's only stored locally
                 if (!this.props.hasShown) {
+					// Force private message tab
+					this.props.selectChatTab(0);
                     setTimeout(() => {
                         console.log(`${DEBUG_KEY}: [ onFocus ]: [ startTutorial ]`);
 						this.props.startTutorial('chat_tab_flow', 'chat_tab');
-                    }, 500);
+                    }, 300);
                 }
             },
         );
