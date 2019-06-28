@@ -18,6 +18,7 @@ import next from '../../../asset/utils/next.png';
 
 // Actions
 import { updateFriendship, openProfile } from '../../../actions';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 const DEBUG_KEY = '[ Component SearchUserCard ]';
 
@@ -114,7 +115,7 @@ class SearchUserCard extends Component {
       cardContainerStyles = {};
     };
     return (
-      <TouchableOpacity activeOpacity={0.6} onPress={this.onButtonClicked.bind(this, _id)}>
+      <DelayedButton activeOpacity={0.6} onPress={this.onButtonClicked.bind(this, _id)}>
         <View style={{...styles.containerStyle, ...cardContainerStyles}}>
           {this.renderProfileImage()}
 
@@ -122,9 +123,9 @@ class SearchUserCard extends Component {
             {this.renderInfo()}
             {this.renderOccupation()}
           </View>
-          {this.renderButton(_id)}
+          {/* {this.renderButton(_id)} */}
         </View>
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 }

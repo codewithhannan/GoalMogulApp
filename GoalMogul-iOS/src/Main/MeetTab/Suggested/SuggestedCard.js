@@ -146,7 +146,7 @@ class SuggestedCard extends Component {
     );
   }
 
-  renderUserInfo(item) {
+  renderUserInfo(item, headline) {
     const { topGoals, topNeeds } = item;
 
     let topGoalText = 'None shared';
@@ -173,8 +173,35 @@ class SuggestedCard extends Component {
       });
     }
 
-    return (
-      <View style={styles.infoContainerStyle}>
+    let textComponent;
+    if (topNeedText === 'None shared' && topGoalText === 'None shared') {
+      if (headline) {
+        textComponent = (
+          <View style={{ flex: 1, marginRight: 4, paddingVertical: 2, marginBottom: 2 }}>
+            <Text 
+              numberOfLines={2} 
+              ellipsizeMode='tail' 
+              style={{ ...styles.bodyTextStyle, fontSize: 14 }}
+            >
+                {headline}
+            </Text>
+          </View>
+        );
+      } else {
+        textComponent = (
+          <View style={{ flex: 1, marginRight: 4, paddingVertical: 2, marginBottom: 2 }}>
+            <Text 
+              numberOfLines={2} 
+              ellipsizeMode='tail' 
+              style={{ ...styles.bodyTextStyle, fontSize: 14, color: '#9B9B9B' }}
+            >
+              No goals or needs shared publicly
+            </Text>
+          </View>
+        );
+      }
+    } else {
+      textComponent = (
         <View style={{ flex: 1, marginRight: 6 }}>
           <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginBottom: 2 }}>
             <Text style={styles.subTitleTextStyle}>Goals: </Text>
@@ -185,6 +212,12 @@ class SuggestedCard extends Component {
             <Text style={styles.bodyTextStyle}>{topNeedText}</Text>
           </Text>
         </View>
+      );
+    }
+
+    return (
+      <View style={styles.infoContainerStyle}>
+        {textComponent}
       </View>
     );
   }
@@ -220,10 +253,10 @@ class SuggestedCard extends Component {
 
         <View style={styles.bodyContainerStyle}>
           {this.renderInfo()}
-          {this.renderUserInfo(item)}
+          {this.renderUserInfo(item, headline)}
         </View>
 
-        {this.renderButton(_id)}
+        {/* {this.renderButton(_id)} */}
 
         {/*
           <View style={styles.buttonContainerStyle}>
@@ -281,7 +314,8 @@ const styles = {
   },
   bodyTextStyle: {
     fontSize: 12,
-    color: '#9B9B9B'
+    // color: '#9B9B9B'
+    color: '#8f8f8f'
   },
   imageStyle: {
     height: 48,

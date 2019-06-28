@@ -298,7 +298,7 @@ class NewGoalView extends Component {
   /* Tag related functions end */
 
   initializeForm() {
-    const values = [{}];
+    const values = [{ isCompleted: false }];
     const defaulVals = {
       steps: [...values],
       needs: [...values],
@@ -970,7 +970,7 @@ class NewGoalView extends Component {
     const onSubmitEditing = ({ nativeEvent }) => {
       const { text } = nativeEvent;
       if (text && text.trim() !== '') {
-        fields.push({});
+        fields.push({ isCompleted: false });
       }
     };
     let dataToRender = [];

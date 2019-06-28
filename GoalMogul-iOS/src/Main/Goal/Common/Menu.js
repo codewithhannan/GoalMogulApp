@@ -116,6 +116,7 @@ class MenuFactory extends React.Component {
             ? getUpdatedStyles()
             : styles.menuOptionsStyles;
 
+        const basicLineHeight = options.some((option) => option.tutorialText) ? 40 : 37;
         // console.log(`${DEBUG_KEY}: styles.menuOptionsStyles is:`, styles.menuOptionsStyles);
         // console.log(`${DEBUG_KEY}: shouldExtendOptionLength: ${shouldExtendOptionLength}, menuOptionsStyles:`, menuOptionsStyles);
         return (
@@ -152,7 +153,7 @@ class MenuFactory extends React.Component {
 
 const getUpdatedStyles = () => {
     let ret = _.cloneDeep(styles.menuOptionsStyles);
-    ret = _.set(ret, 'optionsContainer.width', 200);
+    ret = _.set(ret, 'optionsContainer.width', 220);
     ret = _.set(ret, 'optionsContainer.paddingLeft', 0);
     ret = _.set(ret, 'optionsContainer.paddingRight', 0);
     return ret;

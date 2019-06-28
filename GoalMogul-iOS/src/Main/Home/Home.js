@@ -300,6 +300,7 @@ class Home extends Component {
           },
           unselected: {
             backgroundColor: '#FCFCFC',
+            // backgroundColor: '#e6e6e6',
             tintColor: '#616161',
             color: '#616161',
             fontWeight: '600'

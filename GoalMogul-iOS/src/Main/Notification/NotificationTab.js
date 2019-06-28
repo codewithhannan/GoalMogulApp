@@ -164,13 +164,13 @@ const TestData = [
 const SeeMoreButton = (props) => {
   const { onPress, text } = props;
   return (
-    <TouchableOpacity 
+    <DelayedButton 
       activeOpacity={0.6}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 3
+        padding: 10
       }}
       onPress={() => onPress()}
     >
@@ -187,7 +187,7 @@ const SeeMoreButton = (props) => {
           iconStyle={styles.iconStyle}
         />
       </View> */}
-    </TouchableOpacity>
+    </DelayedButton>
   );
 };
 
@@ -257,8 +257,7 @@ const styles = {
   },
   titleComponentContainerStyle: {
     paddingLeft: 12, // Needs to be aligned with NotificationCard padding
-    paddingTop: 10,
-    padding: 6,
+    padding: 12,
     borderColor: 'lightgray',
     borderBottomWidth: 0.5,
     flexDirection: 'row', 

@@ -62,7 +62,8 @@ export const submitGoal = (
     return;
   }
   
-  console.log('Transformed goal is: ', goal);
+  // console.log('values are: ', values);
+  // console.log('Transformed goal is: ', goal);
 
   dispatch({
     type: GOAL_CREATE_SUBMIT
@@ -117,7 +118,10 @@ export const submitGoal = (
       return;
     }
 
-    openProfile(userId, 'goals', initialFilter)(dispatch, getState);
+    // Timeout to allow create goal modal popping animation to finish
+    setTimeout(() => {
+      openProfile(userId, 'goals', initialFilter)(dispatch, getState);
+    }, 80);
   };
 
   // Creating new goal
@@ -134,7 +138,7 @@ export const submitGoal = (
         console.log(`${DEBUG_KEY}: creating goal success`);
         // console.log(`${DEBUG_KEY}: result is`, res);
         // TODO: dispatch changes to feed and clear CreateGoalForm state
-        callback();
+        callback(res.data);
         onSuccess();
         // dispatch(reset('createGoalModal'));
         return;
@@ -187,7 +191,7 @@ const submitEditGoal = (goal, goalId, token, callback, dispatch, tab, owner) => 
     setTimeout(() => {
       Alert.alert(
         'Success',
-        'You have successfully edited a goal.'
+        'Your goal has been successfully updated'
       );
     }, 300);
   };
@@ -372,9 +376,10 @@ const stepsNeedsAdapter = values => {
   }
   return values.map((val, index) => {
     if (!_.isEmpty(val) && val.description && val.description.trim() !== '') {
+      const { description, isCompleted } = val;
       return {
-        isCompleted: false,
-        description: val.description.trim(),
+        isCompleted: !!isCompleted,
+        description: description.trim(),
         order: index + 1,
         created: new Date()
       };

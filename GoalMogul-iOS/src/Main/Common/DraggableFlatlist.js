@@ -133,6 +133,13 @@ class SortableFlatList extends Component {
       }
     })
     this.state = initialState
+    this.measureContainerTimeout = undefined;
+  }
+
+  componentWillUnmount() {
+    if (this.measureContainerTimeout !== undefined) {
+      clearTimeout(this.measureContainerTimeout);
+    }
   }
 
   onReleaseAnimationEnd = () => {
@@ -319,7 +326,10 @@ class SortableFlatList extends Component {
   measureContainer = ref => {
     if (ref && this._containerOffset === undefined) {
       // setTimeout required or else dimensions reported as 0
-      setTimeout(() => {
+      if (this.measureContainerTimeout !== undefined) {
+        clearTimeout(this.measureContainerTimeout);
+      }
+      this.measureContainerTimeout = setTimeout(() => {
         const { horizontal } = this.props
         ref.measure((x, y, width, height, pageX, pageY) => {
           this._containerOffset = horizontal ? pageX : pageY

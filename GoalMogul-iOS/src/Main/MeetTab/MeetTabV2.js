@@ -213,10 +213,10 @@ class MeetTabV2 extends React.Component {
                     <View style={{ height: 25, width: 0.5, backgroundColor: 'lightgray' }} />
 
                     <CopilotStep text={this.props.tutorialText[0]} order={0} name="discover_friend">
-                        <WalkableView>
+                        <WalkableView style={styles.CTRContainerStyle}>
                             <DelayedButton 
                                 activeOpacity={0.6}
-                                style={styles.CTRContainerStyle} 
+                                style={{ ...styles.CTRContainerStyle, padding: 0 }}
                                 onPress={this.handleDiscoverFriend}
                             >
                                 <Image 
