@@ -62,7 +62,8 @@ export const submitGoal = (
     return;
   }
   
-  console.log('Transformed goal is: ', goal);
+  // console.log('values are: ', values);
+  // console.log('Transformed goal is: ', goal);
 
   dispatch({
     type: GOAL_CREATE_SUBMIT
@@ -372,9 +373,10 @@ const stepsNeedsAdapter = values => {
   }
   return values.map((val, index) => {
     if (!_.isEmpty(val) && val.description && val.description.trim() !== '') {
+      const { description, isCompleted } = val;
       return {
-        isCompleted: false,
-        description: val.description.trim(),
+        isCompleted: !!isCompleted,
+        description: description.trim(),
         order: index + 1,
         created: new Date()
       };
