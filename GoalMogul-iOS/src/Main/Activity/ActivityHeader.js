@@ -106,7 +106,8 @@ class ActivityHeader extends Component {
       ? item.content.text // Show content if entity type is post / share
       : item.title; // Show title if entity type is goal
 
-    const tags = actedUponEntityType === 'Post' ? item.content.tags : [];
+    const tags = actedUponEntityType === 'Post' && item.content ? item.content.tags : [];
+    const links = actedUponEntityType === 'Post' && item.content ? item.content.links : [];
 
     const pageId = _.get(PAGE_TYPE_MAP, 'activity');
     const onDelete = actedUponEntityType === 'Post'
@@ -215,6 +216,7 @@ class ActivityHeader extends Component {
           <RichText
             contentText={content}
             contentTags={tags}
+            contentLinks={links || []}
             textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
             textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
             numberOfLines={3}
