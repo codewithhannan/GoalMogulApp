@@ -118,7 +118,10 @@ export const submitGoal = (
       return;
     }
 
-    openProfile(userId, 'goals', initialFilter)(dispatch, getState);
+    // Timeout to allow create goal modal popping animation to finish
+    setTimeout(() => {
+      openProfile(userId, 'goals', initialFilter)(dispatch, getState);
+    }, 80);
   };
 
   // Creating new goal
@@ -135,7 +138,7 @@ export const submitGoal = (
         console.log(`${DEBUG_KEY}: creating goal success`);
         // console.log(`${DEBUG_KEY}: result is`, res);
         // TODO: dispatch changes to feed and clear CreateGoalForm state
-        callback();
+        callback(res.data);
         onSuccess();
         // dispatch(reset('createGoalModal'));
         return;

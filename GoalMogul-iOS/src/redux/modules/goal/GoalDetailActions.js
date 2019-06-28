@@ -73,11 +73,13 @@ export const markUserViewGoal = (goalId) => (dispatch, getState) => {
  * 
  * @param {string} type: ['Tomorrow', 'Next Week', 'Next Month', 'Custom']
  */
-export const scheduleNotification = (date, goal) => async (dispatch, getState) => {
-  const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-  if (status !== 'granted') {
-    return Alert.alert('Denied', 'Enable Push Notifications for GoalMogul in your phone’s settings to get reminders');
-  };
+export const scheduleNotification = (date, goal, hasAskedPermissions) => async (dispatch, getState) => {
+  if (!hasAskedPermissions) {
+    const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    if (status !== 'granted') {
+      return Alert.alert('Denied', 'Enable Push Notifications for GoalMogul in your phone’s settings to get reminders');
+    };
+  }
 
   const { title, _id } = goal;
     
@@ -94,6 +96,7 @@ export const scheduleNotification = (date, goal) => async (dispatch, getState) =
   };
 
   console.log(`${DEBUG_KEY}: [ scheduleNotification ]: date: `, date);
+  console.log(`${DEBUG_KEY}: [ scheduleNotification ]: goal: `, goal.title);
   const notificationId = await Notifications
     .scheduleLocalNotificationAsync(localNotification, schedulingOptions)
     .then((notificationId) => {

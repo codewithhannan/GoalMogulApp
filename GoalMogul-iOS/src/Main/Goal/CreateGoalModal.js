@@ -10,12 +10,17 @@ import { TabView, SceneMap } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
 import { copilot } from 'react-native-copilot-gm';
+import DateTimePicker from 'react-native-modal-datetime-picker';
+import R from 'ramda';
+import moment from 'moment';
+import { Permissions } from 'expo';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import NewGoalView from './NewGoal/NewGoalView';
 import TrendingGoalView from './NewGoal/TrendingGoalView';
+import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 
 // Actions
 // import { } from '../../actions';
@@ -32,6 +37,10 @@ import {
   updateNextStepNumber
 } from '../../redux/modules/User/TutorialActions';
 
+import {
+  scheduleNotification
+} from '../../redux/modules/goal/GoalDetailActions';
+
 // Styles
 import {
   APP_DEEP_BLUE,
@@ -46,7 +55,11 @@ class CreateGoalModal extends React.Component {
   constructor(props) {
     super(props);
     this.handleCreate = this.handleCreate.bind(this);
+    this.handleGoalReminder = this.handleGoalReminder.bind(this);
     this.handleIndexChange = this.handleIndexChange.bind(this);
+    this.state = {
+      goalReminderDatePicker: false
+    };
   }
 
   componentDidUpdate(prevProps) {
@@ -105,12 +118,72 @@ class CreateGoalModal extends React.Component {
     this.props.copilotEvents.off('stepChange');
   }
 
+  /**
+   * This is entry point for creating goal.
+   * It passes a callback to schedule goal reminder on create
+   */
+  handleGoalReminder = async () => {
+    const { initializeFromState } = this.props;
+    if (initializeFromState) {
+      // This is updating the goal
+      this.handleCreate();
+      return;
+    }
+
+    const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    if (status !== 'granted') {
+      return Alert.alert('Denied', 'Enable Push Notifications for GoalMogul in your phone’s settings to get reminders');
+    };
+
+    const hasAskedPermission = true;
+    const goalReminderSwitch = switchByButtonIndex([
+      [R.equals(0), () => {
+        // Add 24 hours to current time
+        const reminderTime = moment(new Date()).add(24, 'hours').toDate();
+        const scheduleNotificationCallback = (goal) => {
+          this.props.scheduleNotification(reminderTime, goal, hasAskedPermission);
+        };
+        this.handleCreate(scheduleNotificationCallback);
+      }],
+      [R.equals(1), () => {
+        // Add 7 days to current time
+        const reminderTime = moment(new Date()).add(7, 'days').toDate();
+        const scheduleNotificationCallback = (goal) => {
+          this.props.scheduleNotification(reminderTime, goal, hasAskedPermission);
+        };
+        this.handleCreate(scheduleNotificationCallback);
+      }],
+      [R.equals(2), () => {
+        // Add 1 months
+        const reminderTime = moment(new Date()).add(1, 'month').toDate();
+        const scheduleNotificationCallback = (goal) => {
+          this.props.scheduleNotification(reminderTime, goal, hasAskedPermission);
+        };
+        this.handleCreate(scheduleNotificationCallback);
+      }],
+      [R.equals(3), () => {
+        // Show customized time picker
+        this.setState({
+          ...this.state,
+          goalReminderDatePicker: true
+        });
+      }]
+    ]);
+
+    const shareToActionSheet = actionSheet(
+      ['Tomorrow', 'Next Week', 'Next Month', 'Custom', 'No Thanks'],
+      4,
+      goalReminderSwitch
+    );
+    return shareToActionSheet();
+  }
+
   handleIndexChange = (index) => {
     Keyboard.dismiss();
     this.props.createGoalSwitchTab(index);
   }
 
-  handleCreate = () => {
+  handleCreate = (scheduleNotificationCallback) => {
     // Close keyboard no matter what
     Keyboard.dismiss();
     const errors = validate(this.props.formVals.values);
@@ -128,7 +201,7 @@ class CreateGoalModal extends React.Component {
       this.props.formVals.values,
       this.props.user._id,
       initializeFromState,
-      () => {
+      (createdGoal) => {
         console.log(`${DEBUG_KEY}: [handleCreate] poping the modal`);
         if (this.props.callback) {
           console.log(`${DEBUG_KEY}: [handleCreate] calling callback`);
@@ -138,6 +211,13 @@ class CreateGoalModal extends React.Component {
           console.log(`${DEBUG_KEY}: [handleCreate] calling onClose`);
           this.props.onClose();
         }
+        
+        if (scheduleNotificationCallback) {
+          // This is to schedule notification on user create goal
+          // Edit goal won't have this callback
+          console.log(`${DEBUG_KEY}: [handleCreate]: [CreateGoalActions]: callback: scheduleNotificationCallback with created goal: `, createdGoal);
+          scheduleNotificationCallback(createdGoal);
+        }
         Actions.pop();
       },
       goalId,
@@ -146,6 +226,43 @@ class CreateGoalModal extends React.Component {
         needRefreshProfile: this.props.openProfile === false
       },
       this.props.pageId
+    );
+  }
+
+  renderGoalReminderDatePicker() {
+    return (
+      <DateTimePicker
+        isVisible={this.state.goalReminderDatePicker}
+        mode='datetime'
+        titleIOS='Pick a time'
+        minimumDate={new Date()}
+        onConfirm={(date) => {
+          this.setState({
+            ...this.state,
+            goalReminderDatePicker: false
+          }, () => {
+            const scheduleNotificationCallback = (goal) => {
+              this.props.scheduleNotification(date, goal, true);
+            };
+
+            // Timeout is set to allow animation finished
+            setTimeout(() => {
+              this.handleCreate(scheduleNotificationCallback);
+            }, 100);
+          });
+        }}
+        onCancel={() => {
+          this.setState({
+            ...this.state,
+            goalReminderDatePicker: false
+          }, () => {
+            // Timeout is set to allow animation finished
+            setTimeout(() => {
+              this.handleCreate();
+            }, 100);
+          });
+        }}
+      />
     );
   }
 
@@ -195,6 +312,7 @@ class CreateGoalModal extends React.Component {
             style={{ flex: 1, backgroundColor: '#ffffff' }}
           >
           <View style={{ flex: 1, backgroundColor: 'white' }}>
+            {this.renderGoalReminderDatePicker()}
             <ModalHeader
               title={titleText}
               actionText={actionText}
@@ -204,7 +322,7 @@ class CreateGoalModal extends React.Component {
                 }
                 Actions.pop();
               }}
-              onAction={this.handleCreate}
+              onAction={this.handleGoalReminder}
               actionDisabled={!this.props.uploading}
               tutorialOn={{
                 actionText: {
@@ -268,9 +386,10 @@ export default connect(
     submitGoal,
     validate,
     refreshTrendingGoals,
+    scheduleNotification,
     // Tutorial related
     showNextTutorialPage,
     startTutorial,
-    updateNextStepNumber
+    updateNextStepNumber,
   }
 )(CreateGoalModalExplained);
