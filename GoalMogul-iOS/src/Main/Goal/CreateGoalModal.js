@@ -167,7 +167,11 @@ class CreateGoalModal extends React.Component {
           ...this.state,
           goalReminderDatePicker: true
         });
-      }]
+      }],
+      [R.equals(4), () => {
+        // Use chooses not to set reminder
+        this.handleCreate();
+      }],
     ]);
 
     const shareToActionSheet = actionSheet(
