@@ -3,7 +3,7 @@ import {
   View,
   Alert,
   Keyboard,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { TabView, SceneMap } from 'react-native-tab-view';
@@ -136,50 +136,87 @@ class CreateGoalModal extends React.Component {
     };
 
     const hasAskedPermission = true;
-    const goalReminderSwitch = switchByButtonIndex([
-      [R.equals(0), () => {
-        // Add 24 hours to current time
-        const reminderTime = moment(new Date()).add(24, 'hours').toDate();
-        const scheduleNotificationCallback = (goal) => {
-          this.props.scheduleNotification(reminderTime, goal, hasAskedPermission);
-        };
-        this.handleCreate(scheduleNotificationCallback);
-      }],
-      [R.equals(1), () => {
-        // Add 7 days to current time
-        const reminderTime = moment(new Date()).add(7, 'days').toDate();
-        const scheduleNotificationCallback = (goal) => {
-          this.props.scheduleNotification(reminderTime, goal, hasAskedPermission);
-        };
-        this.handleCreate(scheduleNotificationCallback);
-      }],
-      [R.equals(2), () => {
-        // Add 1 months
-        const reminderTime = moment(new Date()).add(1, 'month').toDate();
-        const scheduleNotificationCallback = (goal) => {
-          this.props.scheduleNotification(reminderTime, goal, hasAskedPermission);
-        };
-        this.handleCreate(scheduleNotificationCallback);
-      }],
-      [R.equals(3), () => {
-        // Show customized time picker
-        this.setState({
-          ...this.state,
-          goalReminderDatePicker: true
-        });
-      }],
-      [R.equals(4), () => {
-        // Use chooses not to set reminder
-        this.handleCreate();
-      }],
-    ]);
-
-    const shareToActionSheet = actionSheet(
-      ['Tomorrow', 'Next Week', 'Next Month', 'Custom', 'No Thanks'],
-      4,
-      goalReminderSwitch
+    Alert.alert(
+      'Goal Reminder',
+      'Would you like to set a reminder for this goal?',
+      [
+        {text: 'Tomorrow', onPress: () => {
+          // Add 24 hours to current time
+          const reminderTime = moment(new Date()).add(24, 'hours').toDate();
+          const scheduleNotificationCallback = (goal) => {
+            this.props.scheduleNotification(reminderTime, goal, hasAskedPermission);
+          };
+          this.handleCreate(scheduleNotificationCallback);
+        }},
+        {text: 'Next Week', onPress: () => {
+          // Add 7 days to current time
+          const reminderTime = moment(new Date()).add(7, 'days').toDate();
+          const scheduleNotificationCallback = (goal) => {
+            this.props.scheduleNotification(reminderTime, goal, hasAskedPermission);
+          };
+          this.handleCreate(scheduleNotificationCallback);
+        }},
+        {text: 'Custom', onPress: () => {
+          this.setState({
+            ...this.state,
+            goalReminderDatePicker: true
+          });
+        }},
+        {
+          text: 'No Thanks',
+          onPress: () => {
+            // Use chooses not to set reminder
+            this.handleCreate();
+          },
+          style: 'cancel',
+        },
+      ],
+      {cancelable: false},
     );
-    return shareToActionSheet();
+    // const goalReminderSwitch = switchByButtonIndex([
+    //   [R.equals(0), () => {
+    //     // Add 24 hours to current time
+    //     const reminderTime = moment(new Date()).add(24, 'hours').toDate();
+    //     const scheduleNotificationCallback = (goal) => {
+    //       this.props.scheduleNotification(reminderTime, goal, hasAskedPermission);
+    //     };
+    //     this.handleCreate(scheduleNotificationCallback);
+    //   }],
+    //   [R.equals(1), () => {
+    //     // Add 7 days to current time
+    //     const reminderTime = moment(new Date()).add(7, 'days').toDate();
+    //     const scheduleNotificationCallback = (goal) => {
+    //       this.props.scheduleNotification(reminderTime, goal, hasAskedPermission);
+    //     };
+    //     this.handleCreate(scheduleNotificationCallback);
+    //   }],
+    //   [R.equals(2), () => {
+    //     // Add 1 months
+    //     const reminderTime = moment(new Date()).add(1, 'month').toDate();
+    //     const scheduleNotificationCallback = (goal) => {
+    //       this.props.scheduleNotification(reminderTime, goal, hasAskedPermission);
+    //     };
+    //     this.handleCreate(scheduleNotificationCallback);
+    //   }],
+    //   [R.equals(3), () => {
+    //     // Show customized time picker
+    //     this.setState({
+    //       ...this.state,
+    //       goalReminderDatePicker: true
+    //     });
+    //   }],
+    //   [R.equals(4), () => {
+    //     // Use chooses not to set reminder
+    //     this.handleCreate();
+    //   }],
+    // ]);
+
+    // const shareToActionSheet = actionSheet(
+    //   ['Tomorrow', 'Next Week', 'Next Month', 'Custom', 'No Thanks'],
+    //   4,
+    //   goalReminderSwitch
+    // );
+    // return shareToActionSheet();
   }
 
   handleIndexChange = (index) => {
