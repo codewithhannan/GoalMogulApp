@@ -424,7 +424,7 @@ export const subscribeEntityNotification = (entityId, entityKind) => (dispatch, 
 
     setTimeout(() => {
       console.log(`${DEBUG_KEY}: [ subscribeEntityNotification ]: showing alert`);
-      DropDownHolder.alert('success', 'Successfully subscribe to notifications', '');
+      DropDownHolder.alert('success', 'Successfully subscribed to notifications', '');
     }, 200);
   };
 
@@ -470,7 +470,7 @@ export const unsubscribeEntityNotification = (entityId, entityKind) => (dispatch
     });
     setTimeout(() => {
       console.log(`${DEBUG_KEY}: [ unsubscribeEntityNotification ]: showing alert`);
-      DropDownHolder.alert('success', 'Successfully unsubscribe notification', '');
+      DropDownHolder.alert('success', 'Successfully unsubscribed to notifications', '');
     }, 200);
   };
 
