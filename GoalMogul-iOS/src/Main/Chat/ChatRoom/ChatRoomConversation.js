@@ -57,7 +57,8 @@ const GIFTED_CHAT_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(Constants.platform.io
 class ChatRoomConversation extends React.Component {
 	state = {
 		lastAlertedChatRoomId: null,
-		composerHeight: 'auto'
+		composerHeight: 'auto',
+		lastEmittedTypingIndicatorStatus: false,
 	}
 
 	_keyExtractor = (item) => item._id;
@@ -389,14 +390,17 @@ class ChatRoomConversation extends React.Component {
 	}
 	onChatTextInputChanged(text) {
 		const { userId, chatRoomId } = this.props;
-		LiveChatService.emitEvent(OUTGOING_EVENT_NAMES.updateTypingStatus, {
-			userId, chatRoomId,
-			typingStatus: text.length != 0,
-		}, (resp) => {
-			if (resp.error) {
-				console.log(`${DEBUG_KEY} error setting user's typing status.`, resp.message);
-			};
-		});
+		const typingStatus = text.length != 0;
+		if (this.state.lastEmittedTypingIndicatorStatus != typingStatus) {
+			LiveChatService.emitEvent(OUTGOING_EVENT_NAMES.updateTypingStatus, { userId, chatRoomId, typingStatus }, (resp) => {
+				if (resp.error) {
+					console.log(`${DEBUG_KEY} error setting user's typing status.`, resp.message);
+				};
+			});
+			this.setState({
+				lastEmittedTypingIndicatorStatus: typingStatus,
+			});
+		};
 	}
 	renderTypingIndicatorFooter() {
 		const { currentlyTypingUserIds, chatRoomMembersMap } = this.props;
