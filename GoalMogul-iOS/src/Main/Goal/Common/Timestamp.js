@@ -20,11 +20,11 @@ const Timestamp = (props) => {
   let priorityText;
   if (priority) {
     if (priority <= 3) {
-      priorityText = 'Low';
+      priorityText = 'Low priority';
     } else if (priority <= 6) {
-      priorityText = 'Medium';
+      priorityText = 'Medium priority';
     } else {
-      priorityText = 'High';
+      priorityText = 'High priority';
     }
   }
   const priorityComponent = priorityText ? (
