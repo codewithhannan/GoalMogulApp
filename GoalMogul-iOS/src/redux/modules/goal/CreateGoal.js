@@ -9,7 +9,7 @@ const INITIAL_STATE = {
   trendingGoals: {
     data: [],
     skip: 0,
-    limit: 10,
+    limit: 200,
     refreshing: false,
     loading: false,
     hasNextPage: undefined,
