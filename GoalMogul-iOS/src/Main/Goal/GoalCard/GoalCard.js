@@ -275,7 +275,7 @@ class GoalCard extends React.PureComponent {
 
   // user basic information
   renderUserDetail(item) {
-    const { title, owner, category, _id, created, maybeIsSubscribed, viewCount } = item;
+    const { title, owner, category, _id, created, maybeIsSubscribed, viewCount, priority } = item;
     const timeStamp = (created === undefined || created.length === 0)
       ? new Date() : created;
 
@@ -358,7 +358,7 @@ class GoalCard extends React.PureComponent {
             isSelf={owner._id === this.props.userId}
             caret={caret}
           />
-          <Timestamp time={timeago().format(timeStamp)} viewCount={viewCount} />
+          <Timestamp time={timeago().format(timeStamp)} viewCount={viewCount} priority={priority} />
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
             <Text
               style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 18 }}
