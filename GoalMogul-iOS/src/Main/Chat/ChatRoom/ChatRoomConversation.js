@@ -603,6 +603,7 @@ class ChatRoomConversation extends React.Component {
 					multiline={true}
 					numberOfLines={6}
 					placeholder={`${props.placeholder.slice(0, 42)}...`}
+					editable={!this.props.initializing}
 					style={{
 						fontSize: 15,
 						padding: 9,
