@@ -396,6 +396,7 @@ const styles = {
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.4,
     shadowRadius: 2,
+    backgroundColor: 'white'
   },
   headerRightImage: {
     width: 27,
