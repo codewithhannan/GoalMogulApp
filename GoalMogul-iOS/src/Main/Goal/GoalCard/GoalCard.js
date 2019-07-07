@@ -364,6 +364,7 @@ class GoalCard extends React.PureComponent {
               style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 18 }}
               numberOfLines={2}
               ellipsizeMode='tail'
+              selectable
             >
               {Decode(title)}
             </Text>

@@ -150,6 +150,7 @@ class RichText extends React.Component {
               ]
             }
             childrenProps={{ allowFontScaling: false }}
+            selectable
           >
             {/* <Hyperlink linkStyle={styles.url} onPress={(url, text) => this.handleUrlPress(url)}>{convertedText}</Hyperlink> */}
             {convertedText}
