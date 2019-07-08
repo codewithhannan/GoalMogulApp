@@ -485,8 +485,9 @@ export const refreshTrendingGoals = () => (dispatch, getState) => {
 };
 
 export const loadMoreTrendingGoals = () => (dispatch, getState) => {
-  const { skip, limit, category, hasNextPage, refreshing, loading } = getState().createGoal.trendingGoals;
-  if (hasNextPage === false || refreshing || loading) return;
+  const { data, skip, limit, category, hasNextPage, refreshing, loading } = getState().createGoal.trendingGoals;
+  // No need to load more if there is more than 100 goals
+  if (hasNextPage === false || refreshing || loading || data.length >= 100) return;
   
   dispatch({
     type: GOAL_CREATE_TRENDING_LOADING_MORE
