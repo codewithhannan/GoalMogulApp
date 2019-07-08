@@ -165,6 +165,16 @@ export const handlePushNotification = (notification) => (dispatch, getState) => 
     };
     return;
   }
+
+  // This is for navigation push notification
+  if (entityType === 'navigation') {
+    // path: navigation/friends to open friends tab
+    if (entityId === 'friends') {
+      Actions.jump('meetTab');
+      Actions.reset('meet');
+      return;
+    }
+  }
 };
 
 /**
