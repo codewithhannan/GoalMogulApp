@@ -28,26 +28,34 @@ class WelcomSreen extends React.PureComponent {
         return (
             <View style={styles.headerContainerStyle}>
                 <Image style={styles.headerImageStyle} source={HeaderLogo} />
-                <Text style={styles.welcomeTextStyle}>Welcome to GoalMogul,</Text>
-                <Text style={styles.nameTextStyle}>{this.props.name}</Text>
+                {/* <Text style={styles.welcomeTextStyle}>Welcome to GoalMogul,</Text>
+                <Text style={styles.nameTextStyle}>{this.props.name}</Text> */}
+                <Text style={styles.nameTextStyle}>Welcome</Text>
             </View>
         );
     }
 
     renderPrompt() {
+        let firstName = this.props.name;
+        if (firstName) {
+            firstName = firstName.split(' ')[0];
+        }
         return (
             <View style={{ alignItems: 'center', ...styles.shadow }}>
                 <View style={styles.caretStyle} />
                 <View style={styles.promptContainerStyle}>
-                <Text style={styles.promptWelcomeTextStyle}>Welcome to GoalMogul!</Text>
-                <Text style={styles.promptTextStyle}>Whatever you want done,</Text>
-                <Text style={styles.promptTextStyle}>We hope you'll get it done here,</Text>
-                <Text style={styles.promptTextStyle}>with the help of your friends!</Text>
+                    <View style={{ margin: 12 }}>
+                        <Text style={styles.promptWelcomeTextStyle}>Welcome to GoalMogul,</Text>
+                        <Text style={styles.promptWelcomeTextStyle}>{firstName}</Text>
+                    </View>
+                    <Text style={styles.promptTextStyle}>Whatever you want done,</Text>
+                    <Text style={styles.promptTextStyle}>We hope you'll get it done here,</Text>
+                    <Text style={styles.promptTextStyle}>with the help of your friends!</Text>
 
-                <Text style={{ ...styles.promptTextStyle, margin: 12 }}>
-                    Tap <Text style={{ color: 'rgba(0, 202, 250, 1)' }}>'Start'</Text> to begin!
-                </Text>
-            </View>
+                    <Text style={{ ...styles.promptTextStyle, margin: 12 }}>
+                        Tap <Text style={{ color: 'rgba(0, 202, 250, 1)' }}>'Start'</Text> to begin!
+                    </Text>
+                </View>
             </View>
         );
     }
@@ -205,7 +213,6 @@ const styles = {
         fontWeight: '600',
         fontSize: 15,
         lineHeight: 22,
-        margin: 12
     },
     promptTextStyle: {
         letterSpacing: 0.02,

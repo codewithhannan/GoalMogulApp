@@ -81,7 +81,7 @@ class Menu extends React.PureComponent {
     ]);
 
     const shareToActionSheet = actionSheet(
-      ['Create Goal Walkthrough', 'Friends Tab Walkthrough', 'Cancel'],
+      ['How to Add Goals - Tutorial', 'Grow Your Network - Tutorial', 'Cancel'],
       2,
       tutorialSwitchCases
     );

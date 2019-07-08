@@ -318,6 +318,7 @@ class GoalDetailSection extends React.PureComponent {
               style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 15 }}
               numberOfLines={3}
               ellipsizeMode='tail'
+              selectable
             >
               {title}
             </Text>

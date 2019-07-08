@@ -158,8 +158,10 @@ export default (state = INITIAL_TUTORIAL, action) => {
             // Find the nextPage from the current page
             const nextPage = _.get(newState, `${flow}.${page}.nextPage`);
             if (!nextPage) {
+                // Reset tutorial state since this is last page
                 console.log(`${DEBUG_KEY}: [ ${action.type} ]: last page for flow: ${flow} and page: ${page}`);
                 newState = _.set(newState, `${flow}.${page}.nextStepNumber`, 0);
+                newState = _.set(newState, `${flow}.${page}.showTutorial`, false);
                 console.log(`${DEBUG_KEY}: new state is: `, newState);  
                 return newState;
             }
@@ -183,6 +185,13 @@ export default (state = INITIAL_TUTORIAL, action) => {
                     nextPageString = pageName;
                     // Ste next page next step number
                     nextPageNextStepNumber = step;
+                } else {
+                    // Reset tutorial state since this is last page
+                    console.log(`${DEBUG_KEY}: [ ${action.type} ]: last page for flow: ${flow} and page: ${page}`);
+                    newState = _.set(newState, `${flow}.${page}.nextStepNumber`, 0);
+                    newState = _.set(newState, `${flow}.${page}.showTutorial`, false);
+                    console.log(`${DEBUG_KEY}: new state is: `, newState);  
+                    return newState;
                 }
             }
 

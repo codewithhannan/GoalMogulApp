@@ -9,7 +9,7 @@ const INITIAL_STATE = {
   trendingGoals: {
     data: [],
     skip: 0,
-    limit: 10,
+    limit: 200,
     refreshing: false,
     loading: false,
     hasNextPage: undefined,
@@ -63,7 +63,7 @@ export default (state = INITIAL_STATE, action) => {
     case GOAL_CREATE_TRENDING_REFRESH_DONE: {
       const { data, hasNextPage, skip } = action.payload;
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, 'trendingGoals.data', data);
+      newState = _.set(newState, 'trendingGoals.data', data.slice(0, 100));
       newState = _.set(newState, 'trendingGoals.skip', skip);
       newState = _.set(newState, 'trendingGoals.hasNextPage', hasNextPage);
       return _.set(newState, 'trendingGoals.refreshing', false);
@@ -79,7 +79,10 @@ export default (state = INITIAL_STATE, action) => {
       let newState = _.cloneDeep(state);
       const currentData = _.get(newState, 'trendingGoals.data');
       const newData = currentData.concat(data);
-      newState = _.set(newState, 'trendingGoals.data', uniqueTrendingGoals(newData));
+      // Only keep the first 100 goals
+      const uniqueNewData = uniqueTrendingGoals(newData).slice(0, 100);
+
+      newState = _.set(newState, 'trendingGoals.data', uniqueNewData);
       newState = _.set(newState, 'trendingGoals.skip', skip);
       newState = _.set(newState, 'trendingGoals.hasNextPage', hasNextPage);
       return _.set(newState, 'trendingGoals.loading', false);
