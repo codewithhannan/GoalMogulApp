@@ -36,13 +36,17 @@ class WelcomSreen extends React.PureComponent {
     }
 
     renderPrompt() {
+        let firstName = this.props.name;
+        if (firstName) {
+            firstName = firstName.split(' ')[0];
+        }
         return (
             <View style={{ alignItems: 'center', ...styles.shadow }}>
                 <View style={styles.caretStyle} />
                 <View style={styles.promptContainerStyle}>
                     <View style={{ margin: 12 }}>
                         <Text style={styles.promptWelcomeTextStyle}>Welcome to GoalMogul,</Text>
-                        <Text style={styles.promptWelcomeTextStyle}>{this.props.name}</Text>
+                        <Text style={styles.promptWelcomeTextStyle}>{firstName}</Text>
                     </View>
                     <Text style={styles.promptTextStyle}>Whatever you want done,</Text>
                     <Text style={styles.promptTextStyle}>We hope you'll get it done here,</Text>
