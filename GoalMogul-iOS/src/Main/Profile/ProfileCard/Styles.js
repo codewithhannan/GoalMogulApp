@@ -29,6 +29,7 @@ export default StyleSheet.create({
   },
   detailTextStyle: {
     fontSize: 14,
-    color: '#646464',
+    // color: '#646464',
+    color: '#333'
   }
 });
