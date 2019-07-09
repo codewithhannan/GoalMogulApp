@@ -220,32 +220,31 @@ export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMe
 			payload: [ghostMessage],
 		});
 		// Resize image
-		ImageUtils.getImageSize(mountedMediaRef).then(({ width, height }) => {
-			return ImageUtils.resizeImage(mountedMediaRef, width, height);
-		}).then((image) => {
+		ImageUtils
+			.getImageSize(mountedMediaRef)
+			.then(({ width, height }) => ImageUtils.resizeImage(mountedMediaRef, width, height, { capHeight: 1440, capWidth: 1440 }))
 			// Get image ref and a presigned url
-			return ImageUtils.getPresignedUrl(image.uri, token, (objectKey) => {
+			.then(image => ImageUtils.getPresignedUrl(image.uri, token, (objectKey) => {
 				uploadedMediaRef = objectKey;
-			}, 'ChatFile');
-		}).then(({ signedRequest, file }) => {
-			// upload to s3
-			return ImageUtils.uploadImage(file, signedRequest);
-		}).then((res) => {
-			if (res instanceof Error) {
-				console.log('error uploading image to s3 with res: ', res);
-				Alert.alert('Error', 'Could not upload image. Please try again later.');
-				return;
-			};
-			sendMessages();
-		}).catch(err => {
-			// clear ghost message
-			dispatch({
-				type: CHAT_ROOM_UPDATE_GHOST_MESSAGES,
-				payload: null,
+			}, 'ChatFile'))
+			// upload to s3 
+			.then(({ signedRequest, file }) => ImageUtils.uploadImage(file, signedRequest))
+			.then(res => {
+				if (res instanceof Error) {
+					console.log('error uploading image to s3 with res: ', res);
+					Alert.alert('Error', 'Could not upload image. Please try again later.');
+				} else {
+					sendMessages();
+				};
+			}).catch(err => {
+				// clear ghost message
+				dispatch({
+					type: CHAT_ROOM_UPDATE_GHOST_MESSAGES,
+					payload: null,
+				});
+				console.log('Internal error uploading image to s3 with error: ', err);
+				Alert.alert('Error', 'Could not upload image.');
 			});
-			console.log('Internal error uploading image to s3 with error: ', err);
-			Alert.alert('Error', 'Could not upload image.');
-		});
 	} else {
 		sendMessages();
 	};

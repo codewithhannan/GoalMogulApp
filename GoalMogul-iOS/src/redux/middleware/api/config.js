@@ -1,8 +1,8 @@
 export const config = {
 	url: 'https://api.goalmogul.com/api/', // Official endpoint
-	// url: 'http://192.168.2.174:8081/api/', // # Local endpoint
+	// url: 'http://192.168.2.209:8081/api/', // # Local endpoint
 	socketIOUrl: 'https://api.goalmogul.com/',
-	// socketIOUrl: 'http://192.168.2.174:8081', // # Local
+	// socketIOUrl: 'http://192.168.2.209:8081', // # Local
 
 	/**
 	 * Print out all log with level that is smaller than the logLevel setting here
