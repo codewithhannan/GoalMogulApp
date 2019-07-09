@@ -53,17 +53,19 @@ const INITIAL_STATE = {
     data: [],
     limit: 30,
     skip: 0,
-    refreshing: true,
-    hasNextPage: undefined
+    refreshing: false,
+    loading: false,
+    hasNextPage: undefined,
+    uploading: false
   },
   profilePic: null,
   profileObjectId: null,
   step: '',
   error: {},
   errorMessage: '',
-  uploading: false, // flag for uploading user contacts
-  fetching: false, // flag for fetching matched contacts
-  loading: false // Register account loading. Disable account input when loading
+  uploading: false, // flag for uploading user contacts, no longer being used after v0.4.8
+  fetching: false, // flag for fetching matched contacts, no longer being used after v0.4.8
+  loading: false // Register account loading. Disable account input when loading, no longer being used after v0.4.8
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -125,43 +127,93 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, headline: '' };
 
     // User starts to upload contacts
-    case REGISTRATION_CONTACT_SYNC:
-      return { ...state, step: REGISTRATION_CONTACT_SYNC, uploading: true };
+    case REGISTRATION_CONTACT_SYNC: {
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'step', REGISTRATION_CONTACT_SYNC);
+      newState = _.set(newState, 'uploading', true);
+      newState = _.set(newState, 'matchedContacts.uploading', true); // New standardized way for uploading flag
+      return newState;
+    }
 
     // Contacts upload done
-    case REGISTRATION_CONTACT_SYNC_UPLOAD_DONE:
-      return { ...state, uploading: false };
+    case REGISTRATION_CONTACT_SYNC_UPLOAD_DONE: {
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'uploading', false);
+      newState = _.set(newState, 'matchedContacts.uploading', false); // New standardized way for uploading flag
+      return newState;
+    }
 
-    case REGISTRATION_CONTACT_SYNC_FETCH:
-      return { ...state, fetching: true };
+    case REGISTRATION_CONTACT_SYNC_FETCH: {
+      const { refreshing, loading } = action.payload;
+      let newState = _.cloneDeep(state);
+      // For refreshing, loading will be undefined which is fine and vice versa
+      newState = _.set(newState, 'matchedContacts.refreshing', refreshing); // New standardized way for uploading flag
+      newState = _.set(newState, 'matchedContacts.loading', loading); // New standardized way for uploading flag
+
+      newState = _.set(newState, 'fetching', true);
+      return newState;
+    }
 
     // Contacts fetching done
     case REGISTRATION_CONTACT_SYNC_FETCH_DONE: {
-      const newMatchedContacts = { ...state.matchedContacts };
-      const { data, skip, hasNextPage } = action.payload;
-      newMatchedContacts.data = arrayUnique(newMatchedContacts.data.concat(data));
-      newMatchedContacts.skip = skip;
-      newMatchedContacts.refreshing = false;
-      newMatchedContacts.hasNextPage = hasNextPage;
-      console.log('contact sync fetch done.');
-      return { ...state, fetching: false, matchedContacts: newMatchedContacts };
+      const { data, skip, hasNextPage, refreshing, loading } = action.payload;
+
+      let newState = _.cloneDeep(state);
+      if (refreshing) {
+        newState = _.set(newState, 'matchedContacts.refreshing', false); // New standardized way for uploading flag
+      }
+      if (loading) {
+        newState = _.set(newState, 'matchedContacts.loading', false); // New standardized way for uploading flag
+      }
+      newState = _.set(newState, 'matchedContacts.skip', skip);
+      newState = _.set(newState, 'matchedContacts.hasNextPage', hasNextPage);
+      newState = _.set(newState, 'fetching', false);
+
+      // Set new data based on fetch type
+      let newData = [];
+      if (refreshing) {
+        newData = data;
+      }
+
+      if (loading) {
+        const oldData = _.get(newState, 'matchedContacts.data');
+        newData = arrayUnique(oldData.concat(data));
+      }
+      newState = _.set(newState, 'matchedContacts.data', newData);
+
+      // const newMatchedContacts = { ...state.matchedContacts };
+      // newMatchedContacts.data = arrayUnique(newMatchedContacts.data.concat(data));
+      // newMatchedContacts.skip = skip;
+      // newMatchedContacts.refreshing = false;
+      // newMatchedContacts.hasNextPage = hasNextPage;
+      // console.log('contact sync fetch done.');
+      // return { ...state, fetching: false, matchedContacts: newMatchedContacts };
+      return newState;
     }
 
     // Refresh contact sync
     case REGISTRATION_CONTACT_SYNC_REFRESH: {
-      const newMatchedContacts = { ...state.matchedContacts };
-      newMatchedContacts.refreshing = true;
-      return { ...state, fetching: true, matchedContacts: newMatchedContacts };
+      // const newMatchedContacts = { ...state.matchedContacts };
+      // newMatchedContacts.refreshing = true;
+      // return { ...state, fetching: true, matchedContacts: newMatchedContacts };
+
+      let newState = _.cloneDeep(state);
+      newState = _.set(newState, 'matchedContacts.refreshing', true); // New standardized way for uploading flag
+      newState = _.set(newState, 'fetching', true);
+      return newState;
     }
 
     // Refresh contact sync cards done
     case REGISTRATION_CONTACT_SYNC_REFRESH_DONE: {
-      const newMatchedContacts = { ...state.matchedContacts };
-      newMatchedContacts.data = action.payload.data;
-      newMatchedContacts.refreshing = false;
-      newMatchedContacts.skip = action.payload.skip;
+      const { skip, data } = action.payload;
+      let newState = _.cloneDeep(state);
 
-      return { ...state, fetching: false, matchedContacts: newMatchedContacts };
+      newState = _.set(newState, 'matchedContacts.data', data);
+      newState = _.set(newState, 'matchedContacts.refreshing', false);
+      newState = _.set(newState, 'matchedContacts.skip', skip);
+      newState = _.set(newState, 'fetching', false);
+
+      return newState;
     }
 
     case REGISTRATION_CONTACT_SYNC_DONE:
