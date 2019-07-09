@@ -122,7 +122,7 @@ class CentralTab extends React.PureComponent {
         ListEmptyComponent={
           this.props.loading ? null :
           <EmptyResult
-            text='No needs and steps'
+            text='No steps or needs'
             textStyle={{ paddingTop: 70 }}
           />
         }
