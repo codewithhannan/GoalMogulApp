@@ -96,10 +96,10 @@ class ContactSync extends Component {
     );
   }
 
-  renderListEmptyComponent(refreshing) {
+  renderListEmptyComponent(refreshing, uploading) {
     if (refreshing) return null;
 
-    if (this.props.uploading) {
+    if (uploading) {
       return (
         <View style={{ flex: 1 }}>
           <EmptyResult text={'Uploading Contacts'} textStyle={{ marginBottom: 20 }} />
@@ -192,12 +192,12 @@ class ContactSync extends Component {
 
     // Assign actionable buttons
     const button = (type !== undefined && type === 'meet') ?
-    null :
-    (<DelayedButton activeOpacity={0.6} onPress={this.handleDoneOnPressed.bind(this)}>
-      <View style={styles.footer}>
-        <Button text='Done' />
-      </View>
-    </DelayedButton>);
+      null :
+      (<DelayedButton activeOpacity={0.6} onPress={this.handleDoneOnPressed.bind(this)}>
+        <View style={styles.footer}>
+          <Button text='Done' />
+        </View>
+      </DelayedButton>);
 
     const data = (type !== undefined && type === 'meet') ?
       this.props.meetMatchedContacts.data : this.props.registrationMatchedContacts.data;
@@ -207,6 +207,10 @@ class ContactSync extends Component {
 
     const loading = (type !== undefined && type === 'meet') ?
     this.props.meetMatchedContacts.loading : this.props.registrationMatchedContacts.loading;
+
+    const uploading = (type !== undefined && type === 'meet') 
+      ? this.props.meetMatchedContacts.uploading 
+      : this.props.registrationMatchedContacts.uploading;
 
     return (
       <View style={Styles.containerStyle}>
@@ -229,7 +233,7 @@ class ContactSync extends Component {
             refreshing={refreshing}
             onRefresh={this.handleRefresh}
             onEndReached={this.onLoadMore}
-            ListEmptyComponent={() => this.renderListEmptyComponent(refreshing)}
+            ListEmptyComponent={() => this.renderListEmptyComponent(refreshing, uploading)}
             ListFooterComponent={() => this.renderListFooter(loading, data)}
             onEndThreshold={0}
           />
@@ -262,12 +266,10 @@ const styles = {
 const mapStateToProps = state => {
   const meetMatchedContacts = state.meet.matchedContacts;
   const registrationMatchedContacts = state.registration.matchedContacts;
-  const { uploading } = meetMatchedContacts;
 
   return {
     meetMatchedContacts,
     registrationMatchedContacts,
-    uploading
   };
 };
 

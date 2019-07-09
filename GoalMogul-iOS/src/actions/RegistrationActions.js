@@ -4,6 +4,7 @@ import { Permissions, ImagePicker } from 'expo';
 import { SubmissionError } from 'redux-form';
 import { api as API } from '../redux/middleware/api';
 import { tutorial as Tutorial } from '../redux/modules/auth/Tutorial';
+import { DropDownHolder } from '../Main/Common/Modal/DropDownModal';
 
 import {
   REGISTRATION_BACK,
@@ -494,22 +495,33 @@ export const registrationNextContactSync = ({ skip }) => {
 
     // Show spinning bar
     dispatch({
-      type
+      type,
+      payload: {
+        uploading: true
+      }
     });
+
+    // Push UI to avoid delay
+    Actions.registrationContactSync();
 
     handleUploadContacts(token)
       .then((res) => {
         console.log(' response is: ', res);
         // Uploading contacts done. Hide spinner
         dispatch({
-          type: REGISTRATION_CONTACT_SYNC_UPLOAD_DONE
+          type: REGISTRATION_CONTACT_SYNC_UPLOAD_DONE,
+          payload: {
+            uploading: false
+          }
         });
-
-        Actions.registrationContactSync();
 
         // Fetching matched records. Show spinner
         dispatch({
-          type: REGISTRATION_CONTACT_SYNC_FETCH
+          type: REGISTRATION_CONTACT_SYNC_FETCH,
+          payload: {
+            refreshing: true,
+            loading: false
+          }
         });
 
         /* TODO: load matched contacts */
@@ -519,28 +531,52 @@ export const registrationNextContactSync = ({ skip }) => {
         console.log('matched contacts are: ', res);
         if (res.data) {
           // User finish fetching
-          return dispatch({
+          dispatch({
             type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
             payload: {
               data: res.data, // TODO: replaced with res
-              skip: matchedContacts.skip + matchedContacts.limit,
-              limit: matchedContacts.limit
+              skip: res.data.length,
+              limit: matchedContacts.limit,
+              refreshing: true
             }
           });
+          return;
         }
         // TODO: error handling for fail to fetch contact cards
         // TODO: show toast for user to refresh
+
+        console.warn(`${DEBUG_KEY}: failed to fetch contact cards with res:`, res);
         dispatch({
           type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
           payload: {
             data: [], // TODO: replaced with res
-            skip: matchedContacts.skip,
-            limit: matchedContacts.limit
+            skip: 0,
+            limit: matchedContacts.limit,
+            refreshing: true
           }
         });
       })
       .catch((err) => {
         console.warn('[ Action ContactSync Fail ]: ', err);
+        console.log('error is:', err);
+        // Error handling to clear both uploading and refreshing status
+        dispatch({
+          type: REGISTRATION_CONTACT_SYNC_UPLOAD_DONE,
+          payload: {
+            uploading: false
+          }
+        });
+
+        dispatch({
+          type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
+          payload: {
+            data: [], // TODO: replaced with res
+            skip: 0,
+            limit: matchedContacts.limit,
+            refreshing: true
+          }
+        });
+        DropDownHolder.alert('error', 'Error', 'We\'re sorry that some error happened. Please try again later.');
       });
   };
 };
@@ -548,13 +584,18 @@ export const registrationNextContactSync = ({ skip }) => {
 // Load more matched contacts for contact sync
 export const contactSyncLoadMore = () => (dispatch, getState) => {
   dispatch({
-    type: REGISTRATION_CONTACT_SYNC_FETCH
+    type: REGISTRATION_CONTACT_SYNC_FETCH,
+    payload: {
+      loading: true,
+      refreshing: false
+    }
   });
 
   const { token } = getState().user;
   // Skip and limit for fetching matched contacts
-  const { skip, limit, hasNextPage } = getState().registration.matchedContacts;
+  const { skip, limit, hasNextPage, loading, refreshing } = getState().registration.matchedContacts;
 
+  if (refreshing || loading) return; // Don't load more on refreshing already
   if (hasNextPage === undefined || hasNextPage) {
     fetchMatchedContacts(token, skip, limit).then((res) => {
       if (res.data) {
@@ -562,15 +603,41 @@ export const contactSyncLoadMore = () => (dispatch, getState) => {
           type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
           payload: {
             data: res.data, // TODO: replaced with res
-            skip: skip + limit,
+            skip: skip + res.data.length,
             limit,
-            hasNextPage: res.data.length !== 0
+            hasNextPage: res.data.length !== 0,
+            loading: true
           }
         });
+
+        return;
       }
+
+      // Error no data to return empty list
+      dispatch({
+        type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
+        payload: {
+          data: [],
+          skip,
+          limit,
+          hasNextPage: false,
+          loading: true
+        }
+      });
     })
     .catch((err) => {
       console.warn('[ Action ContactSync Loadmore Fail ]: ', err);
+      // Error no data to return empty list
+      dispatch({
+        type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
+        payload: {
+          data: [],
+          skip,
+          limit,
+          hasNextPage: false,
+          loading: true
+        }
+      });
     });
   }
 };
@@ -585,7 +652,10 @@ export const contactSyncRefresh = () => (dispatch, getState) => {
 
   const { token } = getState().user;
   // Skip and limit for fetching matched contacts
-  const { limit } = getState().registration.matchedContacts;
+  const { limit, refreshing } = getState().registration.matchedContacts;
+
+  // Don't refresh if already refreshing
+  if (refreshing) return;
 
   fetchMatchedContacts(token, 0, limit).then((res) => {
     console.log('[ Action ContactSync ]: Refresh with res: ', res);
@@ -594,14 +664,31 @@ export const contactSyncRefresh = () => (dispatch, getState) => {
         type: REGISTRATION_CONTACT_SYNC_REFRESH_DONE,
         payload: {
           data: res.data, // TODO: replaced with res
-          skip: limit,
+          skip: res.data.length,
+          hasNextPage: res.data.length !== 0,
         }
       });
     }
-    // TODO: error handling for failing to fetch data
+
+    dispatch({
+      type: REGISTRATION_CONTACT_SYNC_REFRESH_DONE,
+      payload: {
+        data: [],
+        skip: 0,
+        hasNextPage: false
+      }
+    });
   })
   .catch((err) => {
     console.warn('[ Action ContactSync Refresh Fail ]: ', err);
+    dispatch({
+      type: REGISTRATION_CONTACT_SYNC_REFRESH_DONE,
+      payload: {
+        data: [],
+        skip: 0,
+        hasNextPage: false
+      }
+    });
   });
 };
 

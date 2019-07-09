@@ -23,6 +23,7 @@ import {
 
 import { handleUploadContacts, fetchMatchedContacts } from '../Utils/ContactUtils';
 import { Logger } from '../redux/middleware/utils/Logger';
+import { DropDownHolder } from '../Main/Common/Modal/DropDownModal';
 
 const BASE_ROUTE = 'secure/user/';
 // const BASE_ROUTE = 'dummy/user/';
@@ -419,6 +420,16 @@ export const meetContactSync = (callback, componentKey) => async (dispatch, getS
       })
       .catch((err) => {
         console.warn('[ Action ContactSync Fail ]: ', err);
+        // Error to reset uploading overlay
+        dispatch({
+          type: MEET_CONTACT_SYNC,
+          payload: {
+            uploading: false,
+            refresh: true
+          }
+        });
+
+        // Error to reset refresh result
         dispatch({
           type: MEET_CONTACT_SYNC_FETCH_DONE,
           payload: {
@@ -429,6 +440,8 @@ export const meetContactSync = (callback, componentKey) => async (dispatch, getS
             refresh: true
           }
         });
+
+        DropDownHolder.alert('error', 'Error', 'We\'re sorry that some error happened. Please try again later.');
       });
 };
 
