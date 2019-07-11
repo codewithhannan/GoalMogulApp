@@ -164,8 +164,18 @@ export default (state = INITIAL_STATE, action) => {
 
     case TRIBE_REQUEST_CANCEL_JOIN_SUCCESS: {
       let newState = _.cloneDeep(state);
+      const { userId, tribeId } = action.payload;
+
+      // Only updating the corresponding item
+      if (!newState.item || newState.item._id !== tribeId) return newState;
+      const oldMembers = _.get(newState, 'item.members');
+      const newMembers = oldMembers.filter((member) => member.memberRef._id !== userId);
+
+      newState = _.set(newState, 'hasRequested', false);
       newState = _.set(newState, 'updating', false);
-      return _.set(newState, 'hasRequested', false);
+      newState = _.set(newState, 'item.members', newMembers);
+
+      return newState;
     }
 
     case TRIBE_MEMBER_SELECT_FILTER: {
