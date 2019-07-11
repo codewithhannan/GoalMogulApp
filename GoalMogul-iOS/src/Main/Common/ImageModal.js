@@ -1,29 +1,17 @@
+import { FileSystem, Permissions } from 'expo';
 import React from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-  CameraRoll,
-  Platform,
-  Alert,
-} from 'react-native';
+import { Alert, CameraRoll, Dimensions, Image, Platform, TouchableOpacity, View } from 'react-native';
+import ImageViewer from 'react-native-image-zoom-viewer';
 import Modal from 'react-native-modal';
-
-import {
-  FileSystem, 
-  Permissions,
-} from 'expo';
-
-
 // Assets
 import cancel from '../../asset/utils/cancel_no_background.png';
+// Constants
+// Constants
+import { IMAGE_BASE_URL } from '../../Utils/Constants';
 
-// Constants
-// Constants
-import {
-  IMAGE_BASE_URL
-} from '../../Utils/Constants';
+
+
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -71,6 +59,34 @@ class ImageModal extends React.Component {
     if (!urlToRender.includes(IMAGE_BASE_URL) && !this.props.isLocalFile) {
       urlToRender = `${IMAGE_BASE_URL}${urlToRender}`;
     };
+
+    return <Modal
+      backdropColor={'transparent'}
+      isVisible={this.props.mediaModal}
+      backdropOpacity={1}
+      onSwipe={this.closeModal.bind(this)}
+      swipeDirection='down'
+      deviceWidth={width}
+      style={{
+        padding: 0,
+        margin: 0,
+      }}
+    >
+      <ImageViewer
+        imageUrls={[{
+          url: urlToRender,
+        }]}
+        renderIndicator={() => null}
+        enableSwipeDown={true}
+        onCancel={this.closeModal.bind(this)}
+        menuContext={{
+          saveToLocal: 'Save to Photos',
+          cancel: 'Cancel',
+        }}
+        onSave={this.saveToCameraRoll.bind(this)}
+        swipeDownThreshold={150}
+      />
+    </Modal>
 
     return (
       <Modal
