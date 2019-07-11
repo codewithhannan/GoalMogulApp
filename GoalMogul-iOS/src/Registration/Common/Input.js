@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   View
 } from 'react-native';
-import { TextField } from 'react-native-material-textfield';
+import { TextField } from 'react-native-material-textfield-gm';
 
 class Input extends Component {
   focus() {
@@ -21,6 +21,7 @@ class Input extends Component {
       disabled,
       onSubmitEditing,
       returnKeyType,
+      textContentType,
       meta: { touched, error },
       ...custom
     } = this.props;
@@ -44,6 +45,7 @@ class Input extends Component {
           fontSize={17}
           disabled={disabled}
           onSubmitEditing={onSubmitEditing}
+          textContentType={textContentType}
           {...custom}
           {...restInput}
         />

@@ -10,7 +10,7 @@ import {
   Animated
 } from 'react-native';
 import { connect } from 'react-redux';
-import { TextField } from 'react-native-material-textfield';
+import { TextField } from 'react-native-material-textfield-gm';
 
 import {
   onSuggestionTextChange,

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   View
 } from 'react-native';
-import { TextField } from 'react-native-material-textfield';
+import { TextField } from 'react-native-material-textfield-gm';
 
 class Input extends Component {
   render() {
