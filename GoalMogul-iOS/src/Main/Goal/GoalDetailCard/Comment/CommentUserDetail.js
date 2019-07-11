@@ -249,7 +249,7 @@ class CommentUserDetail extends Component {
             {this.renderCardContent()}
           </View>
           {this.renderCommentMedia(item)}
-          {this.renderCommentRef(suggestion)}
+          {this.renderCommentRef(item)}
         </View>
     );
   }
@@ -270,9 +270,9 @@ class CommentUserDetail extends Component {
     );
   }
 
-  renderCommentRef(item) {
+  renderCommentRef({ suggestion, owner }) {
     return (
-      <CommentRef item={item} />
+      <CommentRef item={suggestion} owner={owner} />
     );
   }
 

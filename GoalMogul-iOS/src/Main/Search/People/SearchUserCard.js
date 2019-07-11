@@ -53,7 +53,7 @@ class SearchUserCard extends Component {
           {
             this.state.imageLoading ?
             <View style={{ ...styles.imageStyle, alignItems: 'center', justifyContent: 'center' }}>
-               <ActivityIndicator size="large" color="lightgray" />
+               <ActivityIndicator size="small" color="lightgray" />
             </View>
             : null
           }

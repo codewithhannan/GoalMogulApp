@@ -216,6 +216,7 @@ class CommentRef extends React.PureComponent {
         isVisible={this.state.suggestionModal}
         suggestion={item}
         closeModal={() => this.setState({ suggestionModal: false })}
+        owner={this.props.owner}
       />
     )
   }

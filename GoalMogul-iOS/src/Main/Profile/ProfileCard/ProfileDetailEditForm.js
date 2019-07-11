@@ -12,7 +12,7 @@ import {
   Keyboard
 } from 'react-native';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
-import { TextField } from 'react-native-material-textfield';
+import { TextField } from 'react-native-material-textfield-gm';
 import { connect } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { DotIndicator } from 'react-native-indicators';

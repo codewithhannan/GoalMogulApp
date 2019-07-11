@@ -1,6 +1,38 @@
+import { Dimensions, Platform } from 'react-native';
+import { Constants } from 'expo';
+
+const { height } = Dimensions.get('window');
+
+export const DEVICE_STANDARD_HEIGHTS = {
+    "iphone xs max": 896,
+    "iphone xr": 896,
+
+    "iphone x": 812,
+    "iphone xs": 812,
+
+    "iphone 6 plus": 736,
+    "iphone 6s plus": 736,
+    "iphone 7 plus": 736,
+    "iphone 8 plus": 736,
+
+    "iphone 6": 667,
+    "iphone 6s": 667,
+    "iphone 7": 667,
+    "iphone 8": 667,
+};
+
 export const IPHONE_MODELS_2 = ['iphone 7 plus', 'iphone x', 'iPhone xs', 'iphone xr', 'simulator'];
 export const IPHONE_MODELS = ['iphone 7', 'iphone 6', 'iphone 6s',
     'iphone 5', 'iphone 6 plus', 'iphone 4', 'iphone 5s'];
+
+export const DEVICE_MODEL = Constants.platform.ios.model.toLowerCase();
+
+// Simple function to identify if iphone is on zoomed mode
+export const IS_ZOOMED = (
+    Platform.OS === 'ios' && // This is iphone
+    (IPHONE_MODELS.includes(DEVICE_MODEL) || IPHONE_MODELS_2.includes(DEVICE_MODEL)) && // This is one of the recognized phone
+    DEVICE_STANDARD_HEIGHTS[DEVICE_MODEL] > height // Actual view height is smaller
+);
 
 // Base url for image location. Should concat with the mediaRef or image to form the 
 // full image location

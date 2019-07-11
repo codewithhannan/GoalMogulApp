@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Linking, Image } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import DropdownAlert from 'react-native-dropdownalert-jia';
 // import { AppLoading, Font, Asset } from 'expo';
 
@@ -21,6 +21,10 @@ import Router from './src/Router';
 import SocketIOManager from './src/socketio/SocketIOManager';
 import LiveChatService from './src/socketio/services/LiveChatService';
 import MessageStorageService from './src/services/chat/MessageStorageService';
+
+// Disable font scaling at the start of the App
+Text.defaultProps = Text.defaultProps || {};
+Text.defaultProps.allowFontScaling = false;
 
 export default class App extends React.Component {
   constructor(props) {
