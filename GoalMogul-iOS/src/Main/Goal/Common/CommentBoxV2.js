@@ -564,10 +564,14 @@ class CommentBoxV2 extends Component {
       // height: Math.max(36, height + 6)
     };
 
-    const inputStyle = {
-      ...styles.inputStyle,
-      // height: Math.max(30, height)
-    };
+    const inputStyle = uploading 
+      ? {
+        ...styles.inputStyle,
+        color: '#b9c3c4',
+        // height: Math.max(30, height)
+      } : {
+        ...styles.inputStyle,
+      };
 
     return (
       <SafeAreaView

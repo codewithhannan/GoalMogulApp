@@ -69,6 +69,10 @@ class FocusTab extends React.PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    console.log(`${DEBUG_KEY}:  component will unmount`);
+  }
+
   handleOnScrollToIndexFailed = (info) => {
     const { index, highestMeasuredFrameIndex, averageItemLength } = info;
     console.log(`${DEBUG_KEY}: [ handleOnScrollToIndexFailed ]: index: ${index}, highestMeasuredFrameIndex: ${highestMeasuredFrameIndex}`);

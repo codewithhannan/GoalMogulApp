@@ -176,11 +176,11 @@ class Home extends Component {
   setTimer() {
     this.stopTimer(); // Clear the previous timer if there is one
 
-    console.log(`${DEBUG_KEY}: [ Setting New Timer ] for fetching profile after 5s`);
+    console.log(`${DEBUG_KEY}: [ Setting New Timer ] for fetching profile after 1s`);
     this.timer = setTimeout(() => {
       console.log(`${DEBUG_KEY}: [ Timer firing ] fetching profile again.`);
       this.props.fetchProfile(this.props.userId);
-    }, 5000);
+    }, 1000);
   }
 
   stopTimer() {

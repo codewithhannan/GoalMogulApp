@@ -7,10 +7,7 @@ import _ from 'lodash';
 import Name from '../../Common/Name';
 import Timestamp from '../../Common/Timestamp';
 import { MenuFactory } from '../../../Common/MenuFactory';
-import { switchCaseBannerSource } from '../../../../actions';
-
-/* Asset */
-import badge from '../../../../asset/utils/badge.png';
+import { UserBanner } from '../../../../actions';
 
 // Constants
 import { 
@@ -268,26 +265,6 @@ const CommentHeadV2 = (props) => {
   );
 };
 
-const UserBanner = (props) => {
-  const { user, iconStyle } = props;
-
-  if (!user || !user.profile || user.profile.pointsEarned === undefined) return null;
-  const { profile } = user;
-  const { pointsEarned } = profile;
-  const source = switchCaseBannerSource(pointsEarned);
-
-  const defaultIconStyle = {
-    alignSelf: 'center',
-    marginLeft: 4,
-    marginRight: 4,
-    height: 14,
-    width: 10
-  };
-  return (
-    <Image source={source} style={{ ...defaultIconStyle, ...iconStyle }} />
-  );
-};
-
 const SuggestionHeadline = (props) => {
   const { goalRef, item, timeStamp, menu, onNamePress } = props;
   const { owner, suggestion } = item;
@@ -304,7 +281,7 @@ const SuggestionHeadline = (props) => {
     <View>
       <View style={styles.containerStyle}>
         <Name text={owner.name} textStyle={{ fontSize: 12 }} onPress={onNamePress} />
-        <Image style={styles.imageStyle} source={badge} />
+        <UserBanner user={owner} />
         <Text
           style={styles.suggestionTextStyle}
           numberOfLines={1}
@@ -354,7 +331,7 @@ const SuggestionHeadlineV2 = (props) => {
     <View>
       <View style={styles.containerStyle}>
         <Name text={owner.name} textStyle={{ fontSize: 12 }} onPress={onNamePress} />
-        <Image style={styles.imageStyle} source={badge} />
+        <UserBanner user={owner} />
         <Timestamp time={timeago().format(timeStamp)} />
         <View style={styles.caretContainer}>
           {menu}

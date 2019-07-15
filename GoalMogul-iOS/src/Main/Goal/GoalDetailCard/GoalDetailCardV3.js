@@ -249,27 +249,6 @@ class GoalDetailCardV3 extends Component {
         newCommentParams = _.set(newCommentParams, 'commentDetail.stepRef', focusRef);
       }
 
-      this.props.goalDetailSwitchTabV2ByKey('focusTab', focusRef, focusType, goalId, pageId);
-      this.props.createCommentForSuggestion(newCommentParams, pageId);
-      if (initialShowSuggestionModal) {
-        // Show suggestion modal if initialShowSuggestionModal is true
-        // Current source is NotificationNeedCard on suggestion pressed
-        console.log(`${DEBUG_KEY}: i am opening suggestion modal`);
-        setTimeout(() => {
-          this.props.createSuggestion(goalId, pageId);
-        }, 500);
-      }
-
-      console.log(`${DEBUG_KEY}: initial is: `, initial);
-      if (initialFocusCommentBox) {
-        // Focus on comment box if initialFocusCommentBox is true
-        // To reduce taps to enable comment functions
-        setTimeout(() => {
-          console.log(`${DEBUG_KEY}: calling handleReplyTo`);
-          this.handleReplyTo();
-        }, 500);        
-      }
-
       if (showCaret) {
         if (this.goalDetailSection !== undefined) {
           setTimeout(() => {
@@ -277,8 +256,31 @@ class GoalDetailCardV3 extends Component {
           }, 300);
         }
       }
-    }
 
+      // Timeout is required for tab view to finish transition
+      setTimeout(() => {
+        this.props.goalDetailSwitchTabV2ByKey('focusTab', focusRef, focusType, goalId, pageId);
+        this.props.createCommentForSuggestion(newCommentParams, pageId);
+        if (initialShowSuggestionModal) {
+          // Show suggestion modal if initialShowSuggestionModal is true
+          // Current source is NotificationNeedCard on suggestion pressed
+          console.log(`${DEBUG_KEY}: i am opening suggestion modal`);
+          setTimeout(() => {
+            this.props.createSuggestion(goalId, pageId);
+          }, 500);
+        }
+
+        console.log(`${DEBUG_KEY}: initial is: `, initial);
+        if (initialFocusCommentBox) {
+          // Focus on comment box if initialFocusCommentBox is true
+          // To reduce taps to enable comment functions
+          setTimeout(() => {
+            console.log(`${DEBUG_KEY}: calling handleReplyTo`);
+            this.handleReplyTo();
+          }, 500);        
+        }
+      }, 100);
+    }
     this.handleOnCommentSubmitEditing = this.handleOnCommentSubmitEditing.bind(this);
   }
 
