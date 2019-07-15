@@ -19,7 +19,8 @@
           "NSAllowsArbitraryLoadsForMedia": true,
           "NSAllowsArbitraryLoadsInWebContent": true,
           "NSExceptionAllowsInsecureHTTPLoads": true
-        }
+        },
+        "CFBundleExecutable": "ExpoKitApp"
       }
     },
     "splash": {
