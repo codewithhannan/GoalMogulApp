@@ -42,8 +42,11 @@ class RichText extends React.Component {
 
   constructParsedLink(contentLinks = []) {
     const ret = contentLinks.map((link) => {
+      // Need to add backslash to escape question mark
+      if (!link || _.isEmpty(link)) return null;
+      const linkToUse = link.replace('?', '\\?');
       return {
-        pattern: new RegExp(`${link}`),
+        pattern: new RegExp(`${linkToUse}`),
         style: styles.url,
         onPress: () => this.handleUrlPress(link)
       };

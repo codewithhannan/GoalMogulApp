@@ -177,7 +177,8 @@ class ActivityCard extends React.PureComponent {
     const { content, mediaRef, suggestion } = commentRef;
     const {
       text,
-      tags
+      tags,
+      links
     } = content;
 
     const { profile, _id, name } = actor;
@@ -211,6 +212,7 @@ class ActivityCard extends React.PureComponent {
           <RichText
             contentText={text}
             contentTags={tags}
+            contentLinks={links}
             textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 12 }}
             textContainerStyle={{ flexDirection: 'row', marginTop: 5, }}
             numberOfLines={2}
