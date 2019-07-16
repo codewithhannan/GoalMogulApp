@@ -35,7 +35,7 @@ import {
   RightArrowIcon
 } from './Utils/Icons';
 
-import { IPHONE_MODELS } from './Utils/Constants';
+import { IPHONE_MODELS, IS_ZOOMED } from './Utils/Constants';
 
 const IS_SMALL_PHONE = Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
@@ -212,7 +212,22 @@ class SplashScreen extends Component {
   }
 
   renderLogo() {
-    const headerContainerStyle = IS_SMALL_PHONE ? styles.headerContainerStyle : styles.largePhoneHeaderContainerStyle;
+    let headerContainerStyle;
+    if (IS_ZOOMED) {
+      if (IS_SMALL_PHONE) {
+        headerContainerStyle = zoomedStyles.headerContainerStyle;
+      } else {
+        headerContainerStyle = zoomedStyles.largePhoneHeaderContainerStyle;
+      }
+      
+    } else {
+      if (IS_SMALL_PHONE) {
+        headerContainerStyle = styles.headerContainerStyle;
+      } else {
+        headerContainerStyle = styles.largePhoneHeaderContainerStyle;
+      }
+    }
+
     const logoImageStyle = IS_SMALL_PHONE ? styles.logoImageStyle : styles.largePhoneLogoImageStyle;
     const headerFontSize = IS_SMALL_PHONE ? 36 : 38;
 
@@ -243,6 +258,10 @@ class SplashScreen extends Component {
       );
     }
 
+    // Zoomed related style assignment
+    const bodyContainerStyle = IS_ZOOMED ? zoomedStyles.bodyContainerStyle : styles.bodyContainerStyle;
+    const highlightContainerStyle = IS_ZOOMED ? zoomedStyles.highlightContainerStyle : styles.highlightContainerStyle;
+
     return (
       <View style={styles.containerStyle}>
         <LinearGradient
@@ -251,7 +270,7 @@ class SplashScreen extends Component {
         >
           {this.renderLogo()}
 
-          <View style={styles.bodyContainerStyle}>
+          <View style={bodyContainerStyle}>
             <Image style={styles.imageStyle} source={Helpfulness} resizeMode='contain' />
             {this.state.fontLoaded ?
               <View style={{ marginTop: 30 }}>
@@ -262,7 +281,7 @@ class SplashScreen extends Component {
             }
           </View>
 
-          <View style={styles.highlightContainerStyle}>
+          <View style={highlightContainerStyle}>
             <TouchableOpacity
               activeOpacity={0.6}
               style={styles.reactionContainerStyle}
@@ -321,6 +340,36 @@ class SplashScreen extends Component {
     );
   }
 }
+const zoomedStyles = {
+  largePhoneHeaderContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 70
+  },
+  headerContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 50
+  },
+  bodyContainerStyle: {
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  highlightContainerStyle: {
+    marginTop: 30,
+    marginBottom: 20,
+    backgroundColor: '#4ccbf5',
+    height: 56,
+    width: 230,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    borderRadius: 5
+  },
+};
 
 const styles = {
   containerStyle: {
