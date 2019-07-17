@@ -1,3 +1,6 @@
+/**
+ * NOTE: This is used in MeetTab and replaced by ContactSync from registration path
+ */
 import React, { Component } from 'react';
 import {
   View,
