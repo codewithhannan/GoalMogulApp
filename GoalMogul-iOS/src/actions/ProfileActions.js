@@ -855,13 +855,14 @@ export const deletePost = (postId) => (dispatch, getState) => {
 export const UserBanner = (props) => {
   const { user, iconStyle } = props;
 
-  if (!user || !user.profile || user.profile.badges === undefined) return null;
+  // if (!user || !user.profile || user.profile.badges === undefined) return null;
 
   // Before gamification, we only show green badge
   // const { profile } = user;
   // const { pointsEarned } = profile;
   // const source = switchCaseBannerSource(pointsEarned);
 
+  if (!user || !user.profile) return null;
   const defaultIconStyle = {
     alignSelf: 'center',
     marginLeft: 4,
