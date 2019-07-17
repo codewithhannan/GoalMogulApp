@@ -223,8 +223,9 @@ export const openProfile = (userId, tab, initialFilter) => (dispatch, getState) 
   const { token } = getState().user;
   const self = userId.toString() === getState().user.userId.toString();
 
-  const profilePromise =
-    API.get(`secure/user/profile?userId=${userId}`, token);
+  const profilePromise = self 
+    ? API.get(`secure/user/profile?userId=${userId}`, token)
+    : API.get(`secure/user/profile?userId=${userId}&isProfileView=true`, token);
 
   // If self, fetch friend list. Otherwise, fetch mutual friends
   const friendsCountPromise = self ?
