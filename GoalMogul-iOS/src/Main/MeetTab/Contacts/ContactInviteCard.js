@@ -41,7 +41,6 @@ class ContactInviteCard extends React.PureComponent {
         const name = this.getName(contact);
         const infoText = this.infoToDisplay(contact);
 
-        console.log('name is; ', name);
         // We don't display card without email or phone number
         if (!infoText) return null;
 

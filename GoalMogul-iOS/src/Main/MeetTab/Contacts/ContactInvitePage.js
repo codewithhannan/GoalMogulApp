@@ -21,10 +21,6 @@ class ContactInvitePage extends React.PureComponent {
     _keyExtractor = (item) => item.id;
 
     renderItem = ({ item, index }) => {
-        if (index < 10) {
-            console.log(`${DEBUG_KEY}: data is: `, item);
-        }
-        
         return (
             <ContactInviteCard contact={item} />
         );
