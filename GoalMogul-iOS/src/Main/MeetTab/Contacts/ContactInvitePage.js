@@ -11,15 +11,23 @@ import { connect } from 'react-redux';
 import ModalHeader from '../../Common/Header/ModalHeader';
 import { APP_BLUE } from '../../../styles';
 import EmptyResult from '../../Common/Text/EmptyResult';
+import { Actions } from 'react-native-router-flux';
+import ContactInviteCard from './ContactInviteCard';
 
 const DEBUG_KEY = '[ UI ContactInvitePage ]';
 
 class ContactInvitePage extends React.PureComponent {
 
-    _keyExtractor = (item) => `${item.name}_`;
+    _keyExtractor = (item) => item.id;
 
-    renderItem = ({ item }) => {
-        return null;
+    renderItem = ({ item, index }) => {
+        if (index < 10) {
+            console.log(`${DEBUG_KEY}: data is: `, item);
+        }
+        
+        return (
+            <ContactInviteCard contact={item} />
+        );
     }
 
     // When user has no contacts
@@ -30,13 +38,14 @@ class ContactInvitePage extends React.PureComponent {
     }
 
     render() {
+        const { data } = this.props;
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, backgroundColor: 'white' }}>
                 <ModalHeader 
                     title='Sync contacts'
                     actionText='Finish'
                     back
-                    onAction={() => console.log(`${DEBUG_KEY}: Finished`)}
+                    onAction={() => Actions.popTo('meet')}
                     containerStyles={{
                         elevation: 3,
                         shadowColor: '#666',
@@ -70,9 +79,10 @@ class ContactInvitePage extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => {
+    const { data } = state.contactSync.contacts;
 
     return {
-
+        data
     };
 };
 

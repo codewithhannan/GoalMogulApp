@@ -24,6 +24,7 @@ import {
 import { handleUploadContacts, fetchMatchedContacts } from '../Utils/ContactUtils';
 import { Logger } from '../redux/middleware/utils/Logger';
 import { DropDownHolder } from '../Main/Common/Modal/DropDownModal';
+import { CONTACT_SYNC_LOAD_CONTACT_DONE } from '../redux/modules/User/ContactSync/ContactSyncReducers';
 
 const BASE_ROUTE = 'secure/user/';
 // const BASE_ROUTE = 'dummy/user/';
@@ -372,7 +373,16 @@ export const meetContactSync = (callback, componentKey) => async (dispatch, getS
     const componentKeyToUse = componentKey ? componentKey : 'meetContactSync';
     Actions.push(`${componentKeyToUse}`, { type: 'meet', actionCallback: callback });
 
-    handleUploadContacts(token)
+    const loadContactCallback = (contacts) => {
+      dispatch({
+        type: CONTACT_SYNC_LOAD_CONTACT_DONE,
+        payload: {
+          data: contacts
+        }
+      });
+    };
+
+    handleUploadContacts(token, loadContactCallback)
       .then((res) => {
         console.log(`${DEBUG_KEY}: response for uploading contacts is: `, res);
 

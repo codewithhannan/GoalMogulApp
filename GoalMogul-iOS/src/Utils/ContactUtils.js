@@ -8,7 +8,7 @@ const DEBUG_KEY = '[ Utils ContactUtils ]';
 
 const ContactUtils = {
 
-  async handleUploadContacts(token) {
+  async handleUploadContacts(token, loadContactCallback) {
     let pageOffset = 0;
     let uploadPromise = [];
     console.log(`${DEBUG_KEY}: [ handleUploadContacts ]`);
@@ -36,6 +36,11 @@ const ContactUtils = {
       contacts && contacts.data ? contacts.data.length : 0);
     uploadPromise.push(ContactUtils.uploadContacts(contacts.data, token));
     // }
+
+    // Pass loaded contacts through callback to reducer. This is currently passed in through MeetActions
+    if (loadContactCallback && contacts && contacts.data) {
+      loadContactCallback(contacts.data);
+    }
 
     return Promise.all(uploadPromise);
   },

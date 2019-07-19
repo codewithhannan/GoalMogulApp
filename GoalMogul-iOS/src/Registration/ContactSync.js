@@ -159,37 +159,6 @@ class ContactSync extends Component {
   render() {
     const { type, actionCallback } = this.props;
 
-    // Assign header
-    const header = (type !== undefined && type === 'meet') ?
-      (<ModalHeader
-        title='Sync contacts'
-        actionText={null}
-        back
-        onCancel={() => {
-          Actions.popTo('meet');
-          actionCallback();
-        }}
-        containerStyles={{
-          elevation: 3,
-          shadowColor: '#666',
-          shadowOffset: { width: 0, height: 1, },
-          shadowOpacity: 0.15,
-          shadowRadius: 3,
-          backgroundColor: APP_BLUE
-        }}
-        backButtonStyle={{
-          tintColor: '#21364C',
-        }}
-        actionTextStyle={{
-          color: '#21364C'
-        }}
-        titleTextStyle={{
-          color: '#21364C',
-        }}
-      />)
-      :
-      <Header contact type='contact' />;
-
     // Assign actionable buttons
     const button = (type !== undefined && type === 'meet') ?
       null :
@@ -212,6 +181,45 @@ class ContactSync extends Component {
       ? this.props.meetMatchedContacts.uploading 
       : this.props.registrationMatchedContacts.uploading;
 
+    // Assign header
+    const header = (type !== undefined && type === 'meet') ?
+      (<ModalHeader
+        title='Sync contacts'
+        actionText='Next'
+        back
+        showActionLoading
+        actionLoading={uploading}
+        onAction={() => {
+          Actions.push('meetTab_contactInvite');
+        }}
+        onCancel={() => {
+          Actions.popTo('meet');
+          actionCallback();
+        }}
+        containerStyles={{
+          elevation: 3,
+          shadowColor: '#666',
+          shadowOffset: { width: 0, height: 1, },
+          shadowOpacity: 0.15,
+          shadowRadius: 3,
+          backgroundColor: APP_BLUE
+        }}
+        backButtonStyle={{
+          tintColor: '#21364C',
+        }}
+        actionTextStyle={{
+          color: '#21364C'
+        }}
+        titleTextStyle={{
+          color: '#21364C',
+        }}
+        loadingIndicatorStyle={{
+          color: '#21364C',
+        }}
+      />)
+      :
+      <Header contact type='contact' />;
+
     return (
       <View style={Styles.containerStyle}>
         <View 
@@ -225,7 +233,6 @@ class ContactSync extends Component {
         </View>
         <View style={{ flex: 1, display: 'flex' }}>
           <FlatList
-            enableEmptySections
             data={data}
             renderItem={(item) => this.renderItem(item)}
             numColumns={1}
