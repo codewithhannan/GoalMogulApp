@@ -174,6 +174,18 @@ export const handlePushNotification = (notification) => (dispatch, getState) => 
       Actions.reset('meet');
       return;
     }
+
+    // path: navigation/home/create-goal
+    if (entityId === 'home') {
+      if (path[2] && path[2] === 'create-goal') {
+        Actions.jump('homeTab');
+        // Actions.reset('home');
+        setTimeout(() => {
+          Actions.createGoalModal();
+        }, 500);
+        return;
+      }
+    }
   }
 };
 

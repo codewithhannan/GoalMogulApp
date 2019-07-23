@@ -96,14 +96,18 @@ const ModalHeader = (props) => {
       onPress={onAction}
       disabled={actionDisabled}
     >
-      <View 
-        style={{ 
-          ...styles.loadingIndicatorContainerStyle,
-          zIndex: showActionLoading && actionLoading ? 2 : 0
-        }}
-      >
-        <ActivityIndicator size='small' animating={!!(showActionLoading && actionLoading)} {...loadingIndicatorStyle} />
-      </View>
+      {
+        showActionLoading && actionLoading && (
+          <View 
+            style={{ 
+              ...styles.loadingIndicatorContainerStyle,
+              zIndex: showActionLoading && actionLoading ? 2 : 0
+            }}
+          >
+            <ActivityIndicator size='small' animating={!!(showActionLoading && actionLoading)} {...loadingIndicatorStyle} />
+          </View>
+        )
+      }
       <Text style={[primaryActionTextStyle, extraActionTextStyle]}>{actionText}</Text>
     </DelayedButton>
   );
