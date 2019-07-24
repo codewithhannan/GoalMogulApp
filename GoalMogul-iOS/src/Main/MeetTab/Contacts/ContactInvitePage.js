@@ -18,6 +18,12 @@ const DEBUG_KEY = '[ UI ContactInvitePage ]';
 
 class ContactInvitePage extends React.PureComponent {
 
+    renderItemSeparator = () => {
+        return (
+            <View style={{ width: '100%', height: 0.5, backgroundColor: '#eee' }} />
+        );
+    }
+
     _keyExtractor = (item) => item.id;
 
     renderItem = ({ item, index }) => {
@@ -64,6 +70,7 @@ class ContactInvitePage extends React.PureComponent {
                     <FlatList 
                         data={data}
                         renderItem={(item) => this.renderItem(item)}
+                        ItemSeparatorComponent={this.renderItemSeparator}
                         numColumns={1}
                         keyExtractor={this._keyExtractor}
                         ListEmptyComponent={() => this.renderListEmptyComponent()}

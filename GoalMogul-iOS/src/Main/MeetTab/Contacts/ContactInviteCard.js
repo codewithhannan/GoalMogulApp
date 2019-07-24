@@ -51,7 +51,7 @@ class ContactInviteCard extends React.PureComponent {
                 style={{ minHeight: 60, padding: 15 }}
             >
                 <Name text={name} />
-                <Text>{infoText}</Text>
+                <Text style={{ color: '#999' }} >{infoText}</Text>
             </DelayedButton>
         );
     }
