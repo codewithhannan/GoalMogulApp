@@ -4,8 +4,13 @@
 import _ from 'lodash';
 import {
     arrayUnique,
-    hasTypePrefix
+    hasTypePrefix,
+    getEmails,
+    getPhoneNumbers,
 } from '../../../middleware/utils';
+import {
+    MEET_CONTACT_SYNC_FETCH_DONE
+} from '../../../../reducers/MeetReducers';
 
 const INITIAL_STATE = {
     contacts: {
@@ -56,7 +61,52 @@ export default (state = INITIAL_STATE, action) => {
             return newState;
         }
 
+        case MEET_CONTACT_SYNC_FETCH_DONE: {
+            let newState = _.cloneDeep(state);
+            const { data, refresh } = action.payload;
+            // Only take this into account if this is an refresh
+            if (!refresh) return newState;
+            let contacts = _.get(newState, 'contacts.data');
+
+            contacts.filter(c => {
+                let shouldNotSkip = true;
+
+                data.forEach(u => {
+                    if (!shouldNotSkip) return; // Already find the match. Skip for performance
+                    let tempShouldNotSkip = contactUserComparator(u, c);
+                    if (!tempShouldNotSkip) {
+                        shouldNotSkip = tempShouldNotSkip;
+                    }
+                });
+
+                return shouldNotSkip;
+            });
+            
+            newState = _.set(newState, 'contacts.data', contacts);
+            return newState;
+        }
+
         default: 
             return { ...state };
     }
+};
+
+const contactUserComparator = (user, contact) => {
+    if (!user || !contact || _.isEmpty(user) || _.isEmpty(contact)) return true; // Shouldn't skip
+
+    const userName = user.name;
+    const userEmail = user.email && user.email.address ? user.email.address : undefined;
+    const userPhone = user.phone && user.phone.number ? user.phone.number : undefined;
+
+    const contactEmails = getEmails(contact);
+    if (userEmail && contactEmails && !_.isEmpty(contactEmails) && contactEmails.some(e => e === userEmail)) {
+        return false; // Some email matches with user email. Should skip
+    }
+
+    const contactPhoneNumbers = getPhoneNumbers(contact);
+    if (userPhone && contactPhoneNumbers && !_.isEmpty(contactPhoneNumbers) && contactPhoneNumbers.some(p => p === userPhone)) {
+        return false; // Some phone number in the contact matches with user email. Should skip
+    }
+
+    return true;
 };

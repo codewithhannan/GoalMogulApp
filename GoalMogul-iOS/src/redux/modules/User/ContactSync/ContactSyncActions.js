@@ -8,7 +8,7 @@ import {
 // import { Linking } from 'expo';
 import * as SMS from 'expo-sms';
 import _ from 'lodash';
-import { generateInvitationLink } from '../../../middleware/utils';
+import { generateInvitationLink, getEmail, getPhoneNumber } from '../../../middleware/utils';
 import { DropDownHolder } from '../../../../Main/Common/Modal/DropDownModal';
 
 const DEBUG_KEY = '[ Actions ContactSyncActions ]';
@@ -30,31 +30,6 @@ export const inviteUser = (contact) => async (dispatch, getState) => {
     if (email) {
         inviteUserWithEmail(email, user);
     }
-};
-
-export const getPhoneNumber = (contact) => {
-    if (!contact) return null;
-    const { phoneNumbers } = contact;
-    if (!phoneNumbers || _.isEmpty(phoneNumbers)) return null;
-
-    const mobileNumbers = phoneNumbers.filter(c => c.label === 'mobile');
-    if (_.isEmpty(mobileNumbers)) return null;
-    const mobileNumber = mobileNumbers[0];
-    if (mobileNumber && mobileNumber.number) return mobileNumber.number;
-    return null;
-};
-
-export const getEmail = (contact) => {
-    if (!contact) return null;
-    const { emails } = contact;
-    if (!emails || _.isEmpty(emails)) return null;
-    let emailToReturn;
-    emails.forEach(e => {
-        if (e.email && !emailToReturn) {
-            emailToReturn = e.email
-        }
-    });
-    return emailToReturn;
 };
 
 const inviteUserWithText = async (phoneNumber, user) => {
