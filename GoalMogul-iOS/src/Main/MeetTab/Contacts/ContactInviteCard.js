@@ -9,15 +9,28 @@ import {
 import { connect } from 'react-redux';
 import DelayedButton from '../../Common/Button/DelayedButton';
 import { 
-    inviteUser,
-    getPhoneNumber,
-    getEmail
+    inviteUser
 } from '../../../redux/modules/User/ContactSync/ContactSyncActions';
 import Name from '../../Common/Name';
+import { getPhoneNumber, getEmail } from '../../../redux/middleware/utils';
 
 const DEBUG_KEY = '[ UI ContactInviteCard ]';
 class ContactInviteCard extends React.PureComponent {
 
+    renderButton(contact) {
+        return (
+            <DelayedButton 
+                activeOpacity={0.6}
+                onPress={() => this.props.inviteUser(contact)}
+                style={styles.buttonContainerStyle}
+            >   
+                <View style={styles.buttonTextContainerStyle}>
+                    <Text style={{ fontSize: 11, color: '#868686' }}>Invite</Text>
+                </View>
+            </DelayedButton>
+        );
+    }
+    
     getName = (contact) => {
         if (!contact.name) {
             console.warn(`${DEBUG_KEY}: contact has no name: `, contact);
@@ -45,14 +58,16 @@ class ContactInviteCard extends React.PureComponent {
         if (!infoText) return null;
 
         return (
-            <DelayedButton
-                activeOpacity={0.6}
-                onPress={() => this.props.inviteUser(contact)}
-                style={{ minHeight: 60, padding: 15 }}
+            <View
+                style={{ minHeight: 60, flexDirection: 'row', alignItems: 'center' }}
             >
-                <Name text={name} />
-                <Text style={{ color: '#999' }} >{infoText}</Text>
-            </DelayedButton>
+                <View style={{ flex: 1, padding: 15 }}>
+                    <Name text={name} />
+                    <Text style={{ color: '#999' }} >{infoText}</Text>
+                </View>
+                <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: '65%' }} />
+                {this.renderButton(contact)}
+            </View>
         );
     }
 }
@@ -60,7 +75,25 @@ class ContactInviteCard extends React.PureComponent {
 const styles = {
     infoTextStyle: {
         flex: 1,
-    }
+    },
+    // Button styles
+    buttonContainerStyle: {
+        width: 90,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    buttonTextContainerStyle: {
+        paddingTop: 6,
+        paddingBottom: 6,
+        paddingLeft: 12,
+        paddingRight: 12,
+        borderRadius: 5, 
+        backgroundColor: '#f9f9f9', 
+        borderColor: '#dedede',
+        borderWidth: 0.5,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
 };
 
 export default connect(
