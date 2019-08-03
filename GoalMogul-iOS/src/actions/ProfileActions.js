@@ -55,7 +55,9 @@ import {
   PROFILE_POST_DELETE_SUCCESS,
   // Profile Create overlay
   PROFILE_OPEN_CREATE_OVERLAY,
-  PROFILE_CLOSE_CREATE_OVERLAY
+  PROFILE_CLOSE_CREATE_OVERLAY,
+  PROFILE_BADGE_EARN_MODAL_SHOWN,
+  PROFILE_BADGE_EARN_MODAL_SHOWN_ERROR
 } from '../reducers/Profile';
 
 // Constants
@@ -894,6 +896,45 @@ export const closeCreateOverlay = (userId, pageId) => (dispatch) => {
       userId, pageId
     }
   });
+};
+
+/**
+ * When user opens profile for the first time / opens app later on and they earn a new badge,
+ * we show the modal to congradulate. This sends to server to mark that field as shown.
+ * @param {string} badgeName: Ex. 'milestoneBadge'
+ */
+export const markEarnBadgeModalAsShown = (badgeName = 'milestoneBadge') => (dispatch, getState) => {
+  const { token, userId } = getState().user;
+
+  const onSuccess = () => {
+    dispatch({
+      type: PROFILE_BADGE_EARN_MODAL_SHOWN,
+      payload: {
+        userId
+      }
+    });
+  };
+
+  const onError = (err) => {
+    dispatch({
+      type: PROFILE_BADGE_EARN_MODAL_SHOWN_ERROR,
+      payload: {
+        userId
+      }
+    });
+
+    console.warn(`${DEBUG_KEY}: mark earn badge modal as shown failed with res: `, err);
+  };
+
+  API
+    .put('secure/user/profile/badge/award-alert-shown', { badgeName }, token)
+    .then(res => {
+      if (res.status === 200) {
+        return onSuccess(res);
+      }
+      return onError(res);
+    })
+    .catch(err => onError(err));
 };
 
 export const switchCaseBannerSource = (points) => {

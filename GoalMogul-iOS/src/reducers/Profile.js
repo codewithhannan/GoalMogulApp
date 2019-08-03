@@ -52,6 +52,10 @@ export const PROFILE_POST_DELETE_SUCCESS = 'profile_post_delete_success';
 export const PROFILE_OPEN_CREATE_OVERLAY = 'profile_open_create_overlay';
 export const PROFILE_CLOSE_CREATE_OVERLAY = 'profile_close_create_overlay';
 
+// Constants related to badge info
+export const PROFILE_BADGE_EARN_MODAL_SHOWN = 'profile_badge_earn_modal_shown';
+export const PROFILE_BADGE_EARN_MODAL_SHOWN_ERROR = 'profile_badge_earn_modal_shown_error';
+
 export const PROFILE_GOAL_FILTER_CONST = {
   sortBy: ['created', 'updated', 'shared', 'priority'],
   orderBy: {
