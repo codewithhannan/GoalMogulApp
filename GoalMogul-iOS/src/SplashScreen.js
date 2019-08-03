@@ -36,6 +36,7 @@ import {
 } from './Utils/Icons';
 
 import { IPHONE_MODELS, IS_ZOOMED } from './Utils/Constants';
+import banner from './asset/banner';
 
 const IS_SMALL_PHONE = Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
@@ -181,9 +182,10 @@ class SplashScreen extends Component {
     });
 
     const loadBase64Icons = Object.keys(Icons).map((k) => Image.prefetch(Icons[k]));
+    const loadBase64Badges = Object.keys(banner).map((k) => Image.prefetch(Icons[k]));
 
     await Promise
-      .all([...imageAssets, ...fontAssets, ...loadBase64Icons])
+      .all([...imageAssets, ...fontAssets, ...loadBase64Icons, ...loadBase64Badges])
       .catch(err => {
         console.log(`${DEBUG_KEY}: [ _loadAssetsAsync ]: err`, err);
       });

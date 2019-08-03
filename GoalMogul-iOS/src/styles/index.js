@@ -57,3 +57,26 @@ export const tutorial = {
     elevation: 1,
   }
 };
+
+export const modalContainerStyle = {
+  flex: 1, 
+  backgroundColor: 'white', 
+  borderRadius: 15, 
+  padding: 20,
+  alignItems: 'center',
+};
+
+export const modalCancelIconContainerStyle = {
+  height: 30,
+  width: 30,
+  backgroundColor: 'rgb(217,40,40)',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: 15
+};
+
+export const modalCancelIconStyle = {
+  height: 14,
+  width: 14,
+  tintColor: 'white'
+};
