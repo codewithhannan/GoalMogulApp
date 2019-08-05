@@ -927,7 +927,7 @@ export const markEarnBadgeModalAsShown = (badgeName = 'milestoneBadge') => (disp
   };
 
   API
-    .put('secure/user/profile/badge/award-alert-shown', { badgeName }, token)
+    .put('secure/user/profile/badges/award-alert-shown', { badgeName }, token)
     .then(res => {
       if (res.status === 200) {
         return onSuccess(res);
@@ -947,14 +947,13 @@ export const fetchBadgeUserCount = (callback, tier = 3, badgeName = 'milestoneBa
   };
 
   const onSuccess = (res) => {
-    console.log('res is: ', res);
     const { data } = res;
     if (callback) callback(data);
     return data;
   };
 
   API
-    .get(`secure/user/profile/stats/badge-count?badgeName=${badgeName}&tier=${tier}`, token, 1)
+    .get(`secure/user/profile/stats/badge-count?badgeName=${badgeName}&tier=${tier}`, token)
     .then((res) => {
       if (res.status === 200) {
         return onSuccess(res);

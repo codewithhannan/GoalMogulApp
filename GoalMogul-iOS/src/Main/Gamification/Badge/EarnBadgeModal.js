@@ -66,7 +66,7 @@ class EarnBadgeModal extends React.PureComponent {
 
     onModalShow = () => {
         // Mark modal as shown by calling endpoint and update user profile
-        // this.props.markEarnBadgeModalAsShown();
+        this.props.markEarnBadgeModalAsShown();
     }
 
     renderBadgeEarned() {
