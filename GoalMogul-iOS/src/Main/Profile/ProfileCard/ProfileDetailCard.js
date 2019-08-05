@@ -44,6 +44,7 @@ import DelayedButton from '../../Common/Button/DelayedButton';
 import { IMAGE_BASE_URL } from '../../../Utils/Constants';
 import { APP_BLUE_BRIGHT } from '../../../styles';
 import { Actions } from 'react-native-router-flux';
+import RichText from '../../Common/Text/RichText';
 
 const { MessageIcon, AddUser } = Icons;
 const { width } = Dimensions.get('window');
@@ -445,9 +446,12 @@ class ProfileDetailCard extends Component {
             </Text>
             <UserBanner user={this.props.user} iconStyle={{ height: 20, width: 17 }} />
           </View>
-          <Text style={styles.headlineTextStyle}>
-            {headline}
-          </Text>
+          <RichText 
+            textStyle={styles.headlineTextStyle} 
+            contentText={headline} 
+            textContainerStyle={{ flexDirection: 'row' }}
+            numberOfLines={3}
+          />
           {/* <View style={styles.dividerStyle} /> */}
           {/* {this.renderFriendInfo()} */}
           {/* {this.renderChatButtons()} */}
