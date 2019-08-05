@@ -5,10 +5,12 @@
  */
 import React from 'react';
 import { View, Text, Image } from 'react-native';
+import { Constants } from 'expo';
 import Modal from 'react-native-modal';
 import Icons from '../../../asset/base64/Icons';
 import cancel from '../../../asset/utils/cancel_no_background.png';
 import { modalCancelIconContainerStyle, modalCancelIconStyle, modalContainerStyle } from '../../../styles';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 const { CoinSackIcon } = Icons;
 
@@ -41,44 +43,43 @@ class CoinProfileInfoModal extends React.PureComponent {
                 backdropColor={'black'}
                 isVisible={this.props.isVisible}
                 backdropOpacity={0.7}
-                onModalShow={this.onModalShow}
-                style={{ flex: 1, marginTop: Constants.statusBarHeight + 15 }}
+                onModalShow={this.onModalShow} 
             >
-                <View style={modalContainerStyle}>
+                <View style={{ ...modalContainerStyle, padding: 25 }}>
                     {this.renderCancelButton()}
-                    <View style={{ marginTop: 10, alignItems: center, justifyContent: 'center', flexDirection: 'row' }}>
+                    <View style={{ marginTop: 10, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
                         <Image source={CoinSackIcon} style={{ height: 30, width: 30 }} />
-                        <Text>Coins</Text>
+                        <Text style={{ fontSize: 22, marginLeft: 5, color: 'rgb(51, 51, 51)' }}>Coins</Text>
                     </View>
                     {/* Divider */}
-                    <View style={{ width: '76%', height: 0.5, backgroundColor: 'rgb(238, 238, 238)' }} />
+                    <View style={{ width: '76%', height: 0.5, backgroundColor: 'rgb(238, 238, 238)', marginVertical: 14 }} />
                     <View>
-                        <Text>Earn more coins by:</Text>
+                        <Text style={{ fontSize: 16 }}>Earn more coins by:</Text>
                         {
                             coinInfoTextList.map((t) => {
                                 const { text, hasBulletPoint } = t;
                                 if (hasBulletPoint) {
                                     return (
-                                        <Text style={{ color: 'rgb(85, 85, 85)', fontSize: 10 }}>
+                                        <Text style={{ color: 'rgb(85, 85, 85)', fontSize: 12, lineHeight: 18 }}>
                                             {`\u2022 ${text}`}
                                         </Text>
                                     )
                                 }
                                 return (
-                                    <Text style={{ color: 'rgb(85, 85, 85)', fontSize: 10 }}>
-                                        {`  ${text}`}
+                                    <Text style={{ color: 'rgb(85, 85, 85)', fontSize: 12, marginBottom: 4, lineHeigh: 18 }}>
+                                        {`   ${text}`}
                                     </Text>
                                 )
                             })
                         }
                     </View>
                     {/* Divider */}
-                    <View style={{ width: '76%', height: 0.5, backgroundColor: 'rgb(238, 238, 238)' }} />
+                    <View style={{ width: '76%', height: 0.5, backgroundColor: 'rgb(238, 238, 238)', marginVertical: 14 }} />
                     <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={{ color: 'rgb(0, 150, 203)', lineHeight: 6 }}>
+                        <Text style={{ color: 'rgb(0, 150, 203)', fontSize: 12, padding: 3, fontStyle: 'italic' }}>
                             In the future you'll be able to redeem your
                         </Text>
-                        <Text style={{ color: 'rgb(0, 150, 203)', lineHeight: 6 }}>
+                        <Text style={{ color: 'rgb(0, 150, 203)', fontSize: 12, padding: 3, fontStyle: 'italic' }}>
                             coins for useful things!
                         </Text>
                     </View>
@@ -90,16 +91,28 @@ class CoinProfileInfoModal extends React.PureComponent {
 
 const coinInfoTextList = [
     {
-        text: 'Getting Likes, Comments, or Suggestions from other users',
+        text: 'Getting Likes, Comments, or Suggestions',
         hasBulletPoint: true
     },
     {
-        text: 'Giving other users Suggestions that receive Likes',
+        text: 'from other users',
+        hasBulletPoint: false
+    },
+    {
+        text: 'Giving other users Suggestions that receive',
         hasBulletPoint: true
     },
     {
-        text: 'Adding other users to Tribes, Events, or Chatrooms',
+        text: 'Likes',
+        hasBulletPoint: false
+    },
+    {
+        text: 'Adding other users to Tribes, Events,',
         hasBulletPoint: true
+    },
+    {
+        text: 'or Chatrooms',
+        hasBulletPoint: false
     },
 ];
 

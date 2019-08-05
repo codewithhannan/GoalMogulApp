@@ -70,7 +70,7 @@ class EarnBadgeModal extends React.PureComponent {
                 onModalShow={this.onModalShow}
                 style={{ flex: 1, marginTop: Constants.statusBarHeight + 15 }}
             >
-                <View style={modalContainerStyle}>
+                <View style={{ ...modalContainerStyle, flex: 1 }}>
                     {this.renderCancelButton()}
                     <Text style={{ color: 'rgb(0, 150, 203)', fontWeight: '500', fontSize: 22, marginTop: 18 }}>
                         Congratulations!
@@ -254,7 +254,7 @@ const BadgeInfo = [
         linearGradientLocations: [0, 0.5, 1]
     },
     {
-        title: 'Newbie',
+        title: 'Gold + $200 Reward\u002A',
         infoTextList: [
             { text: 'Invite 10 friends to GoalMogul who\'ve', hasBulletPoint: true },
             { text: 'earned a Silver Badge or higher', hasBulletPoint: false }

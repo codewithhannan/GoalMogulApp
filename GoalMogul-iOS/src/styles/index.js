@@ -58,8 +58,7 @@ export const tutorial = {
   }
 };
 
-export const modalContainerStyle = {
-  flex: 1, 
+export const modalContainerStyle = { 
   backgroundColor: 'white', 
   borderRadius: 15, 
   padding: 20,
