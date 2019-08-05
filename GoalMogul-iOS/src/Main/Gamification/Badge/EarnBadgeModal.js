@@ -319,7 +319,7 @@ const BadgeInfo = [
             ...DefaultLeadingIconStyle
         },
         leadingIconContainerStyle: { ...DefaultLeadingIconContainerStyle },
-        linearGradientColors: ['white'],
+        linearGradientColors: ['white', 'white', 'white'],
         linearGradientLocations: [0, 0.5, 1]
     },
 ];
