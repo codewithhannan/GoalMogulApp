@@ -19,6 +19,7 @@ import {
 import {
   TUTORIAL_MARK_USER_ONBOARDED
 } from '../redux/modules/User/Tutorials';
+import { PROFILE_BADGE_EARN_MODAL_SHOWN } from './Profile';
 
 const INITIAL_STATE = {
   userId: '',
@@ -59,6 +60,18 @@ export default (state = INITIAL_STATE, action) => {
       };
       return _.set(newState, 'user', newUser);
     } 
+
+    case PROFILE_BADGE_EARN_MODAL_SHOWN: {
+      let newState = _.cloneDeep(state);
+      const { userId } = action.payload;
+
+      if (userId !== _.get(newState, 'userId')) {
+        return newState;
+      }
+
+      newState = _.set(newState, `user.profile.badges.milestoneBadge.isAwardAlertShown`, true);
+      return newState;
+    }
 
     // TODO: verify if this behavior is necessary
     case SETTING_EMAIL_UPDATE_SUCCESS:

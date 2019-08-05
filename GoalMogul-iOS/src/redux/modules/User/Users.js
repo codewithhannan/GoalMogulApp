@@ -25,6 +25,7 @@ import {
     PROFILE_RESET_FILTER,
     PROFILE_OPEN_CREATE_OVERLAY,
     PROFILE_CLOSE_CREATE_OVERLAY,
+    PROFILE_BADGE_EARN_MODAL_SHOWN,
     updatePriorities,
     INITIAL_FILTER_STATE
 } from '../../../reducers/Profile';
@@ -631,6 +632,15 @@ export default (state = INITIAL_STATE, action) => {
             }
             newState = _.set(newState, `${path}.${type}`, value);
             // console.log(`${DEBUG_KEY}: new state is: `, newState);
+            return newState;
+        }
+
+        case PROFILE_BADGE_EARN_MODAL_SHOWN: {
+            const { userId } = action.payload;
+            let newState = _.cloneDeep(state);
+            if (!_.has(newState, `${userId}`)) return newState;
+
+            newState = _.set(newState, `${userId}.profile.badges.milestoneBadge.isAwardAlertShown`, true);
             return newState;
         }
 

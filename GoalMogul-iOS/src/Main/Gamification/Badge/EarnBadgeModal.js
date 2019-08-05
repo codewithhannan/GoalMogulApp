@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import {
     View, Image, Text, Dimensions
 } from 'react-native';
@@ -16,11 +17,15 @@ import { Logger } from '../../../redux/middleware/utils/Logger';
 import DelayedButton from '../../Common/Button/DelayedButton';
 import { modalCancelIconContainerStyle, modalCancelIconStyle, modalContainerStyle } from '../../../styles';
 import Badges, { Bronze3D, Silver3D, Gold3D, Green } from '../../../asset/banner';
+import { getBagdeIconByTier } from '../../../redux/modules/gamification/BadgeActions';
 
 const { CheckIcon, InfoIcon } = Icons;
 const DEBUG_KEY = '[ UI EarnBadgeModal ]';
 
 class EarnBadgeModal extends React.PureComponent {
+    componentDidMount() {
+        // Send request to fetch the number of 
+    }
 
     closeModal() {
         this.props.closeModal && this.props.closeModal();
@@ -32,12 +37,18 @@ class EarnBadgeModal extends React.PureComponent {
     }
 
     renderBadgeEarned() {
+        let tier = 0;
+        if (_.has(this.props.user, 'profile.badges.milestoneBadge.currentMilestone')) {
+            tier = _.get(this.props.user, 'profile.badges.milestoneBadge.currentMilestone');
+        }
+
+        const badgeIcon = getBagdeIconByTier(tier);
         return (
             <View style={{ ...styles.shadow, marginTop: 10 }}>
                 <View style={{ height: 5, width: '100%'}} />
                 <View style={{ height: 60, width: 60, borderRadius: 30, backgroundColor: 'white' }} />
                 <View style={{ position: 'absolute', top: 3, bottom: 3, left: 3, right: 3, alignItems: 'center' }}>
-                    <Image source={Silver3D} style={{ height: 55, width: 50 }} />
+                    <Image source={badgeIcon} style={{ height: 55, width: 50 }} />
                 </View>
             </View>
         );
@@ -86,7 +97,7 @@ class EarnBadgeModal extends React.PureComponent {
                     }
 
                     <Text style={{ color: 'rgb(95, 95, 95)', fontSize: 11, lineHeight: 6, marginTop: 15, padding: 6 }}>
-                        {`\u002A Limited to the first 15 goal users. `}
+                        {`\u002A Limited to the first 15 gold users. `}
                         <Text style={{ color: 'rgb(0, 150, 203)', fontWeight: '600' }}>
                             View details
                         </Text>
