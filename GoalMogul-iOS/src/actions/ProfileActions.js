@@ -937,6 +937,33 @@ export const markEarnBadgeModalAsShown = (badgeName = 'milestoneBadge') => (disp
     .catch(err => onError(err));
 };
 
+// Fetch the number of users on the badge level
+export const fetchBadgeUserCount = (callback, tier = 3, badgeName = 'milestoneBadge') => (dispatch, getState) => {
+  const { token } = getState().user;
+  const onError = (err) => {
+    console.log(`${DEBUG_KEY}: [ fetchBadgeUserCount ] failed with err: `, err);
+    if (callback) callback(0);
+    return 0;
+  };
+
+  const onSuccess = (res) => {
+    console.log('res is: ', res);
+    const { data } = res;
+    if (callback) callback(data);
+    return data;
+  };
+
+  API
+    .get(`secure/user/profile/stats/badge-count?badgeName=${badgeName}&tier=${tier}`, token, 1)
+    .then((res) => {
+      if (res.status === 200) {
+        return onSuccess(res);
+      }
+      return onError(res);
+    })
+    .catch(err => onError(err));
+};
+
 export const switchCaseBannerSource = (points) => {
   let source;
   if (!points || points < 49) {

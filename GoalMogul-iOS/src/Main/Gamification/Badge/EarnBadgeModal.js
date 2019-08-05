@@ -6,11 +6,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import {
-    View, Image, Text, Dimensions
+    View, Image, Text, Animated
 } from 'react-native';
 import { Constants, LinearGradient } from 'expo';
 import Modal from 'react-native-modal';
-import { markEarnBadgeModalAsShown } from '../../../actions/ProfileActions';
+import { markEarnBadgeModalAsShown, fetchBadgeUserCount } from '../../../actions/ProfileActions';
 import cancel from '../../../asset/utils/cancel_no_background.png';
 import Icons from '../../../asset/base64/Icons';
 import { Logger } from '../../../redux/middleware/utils/Logger';
@@ -23,8 +23,41 @@ const { CheckIcon, InfoIcon } = Icons;
 const DEBUG_KEY = '[ UI EarnBadgeModal ]';
 
 class EarnBadgeModal extends React.PureComponent {
-    componentDidMount() {
-        // Send request to fetch the number of 
+    constructor(props) {
+        super(props);
+        this.state = {
+            numberLoaded: false,
+            numberOfUsersOnSameBadge: undefined
+        };
+
+        this.animations = {
+            numberOfUsersOnSameBadgeOpacity: new Animated.Value(0)
+        };
+    }
+
+    componentDidUpdate(prevProps) {
+        // Modal is shown
+        if (!prevProps.isVisible && this.props.isVisible) {
+            // Send request to fetch the number of
+            console.log('earn badge modal is now alive ');
+            const callback = (count) => {
+                console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: count is: `, count);
+                this.setState({
+                    ...this.state,
+                    numberLoaded: true,
+                    numberOfUsersOnSameBadge: count
+                }, () => {
+                    Animated.timing(this.animations.numberOfUsersOnSameBadgeOpacity, {
+                        toValue: 1,
+                        duration: 400,
+                        useNativeDriver: true,
+                    }).start();
+                });
+            };
+
+            const tier = _.get(this.props.user, 'profile.badges.milestoneBadge.currentMilestone') || 0;
+            this.props.fetchBadgeUserCount(callback);
+        }
     }
 
     closeModal() {
@@ -72,7 +105,6 @@ class EarnBadgeModal extends React.PureComponent {
     }
 
     render() {
-        Object.keys(Badges).map(k => console.log(k));
         return (
             <Modal
                 backdropColor={'black'}
@@ -102,9 +134,16 @@ class EarnBadgeModal extends React.PureComponent {
                             View details
                         </Text>
                     </Text>
-                    <Text style={{ color: 'rgb(209, 163, 16)', fontSize: 11, lineHeight: 6, padding: 8, fontStyle: 'italic' }}>
-                        There are currently 5 gold users.
-                    </Text>
+                    <Animated.Text
+                        style={{ 
+                            color: 'rgb(209, 163, 16)', 
+                            fontSize: 11, lineHeight: 6, padding: 8, 
+                            fontStyle: 'italic',
+                            opacity: this.animations.numberOfUsersOnSameBadgeOpacity
+                        }}
+                    >
+                        {`There are currently ${this.state.numberOfUsersOnSameBadge} gold users.`}
+                    </Animated.Text>
                 </View> 
             </Modal>
         );
@@ -187,7 +226,8 @@ const styles = {
 export default connect(
     null,
     {
-        markEarnBadgeModalAsShown
+        markEarnBadgeModalAsShown,
+        fetchBadgeUserCount
     }
 )(EarnBadgeModal);
 
