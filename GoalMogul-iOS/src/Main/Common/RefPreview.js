@@ -3,8 +3,7 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
-  Text,
-  TouchableOpacity
+  Text
 } from 'react-native';
 import { connect } from 'react-redux';
 import Decode from 'unescape';
@@ -31,6 +30,7 @@ import goalIcon from '../../asset/header/home-logo.png';
 
 // Components
 import ProfileImage from './ProfileImage';
+import DelayedButton from './Button/DelayedButton';
 
 const DEBUG_KEY = '[ UI RefPreview ]';
 
@@ -80,7 +80,7 @@ class RefPreview extends Component {
 
   // Currently this is a dummy component
   render() {
-    const { item, postType, goalRef } = this.props;
+    const { item, postType, goalRef, disabled } = this.props;
     if (!item) return null;
 
     // TODO: add a postType ShareStep
@@ -103,10 +103,11 @@ class RefPreview extends Component {
       padding: 10
     };
     return (
-      <TouchableOpacity
+      <DelayedButton
         activeOpacity={0.6}
         style={styles.containerStyle}
         onPress={() => this.handleOnPress(item, postType, goalRef)}
+        disabled={disabled}
       >
         <ProfileImage
           imageStyle={{ width: 50, height: 50 }}
@@ -147,7 +148,7 @@ class RefPreview extends Component {
 
         </View>
         {this.renderBadge(item, postType)}
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 }
