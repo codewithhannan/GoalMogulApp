@@ -136,6 +136,8 @@ class GoalDetailCardV3 extends Component {
     this.keyboardWillHide = this.keyboardWillHide.bind(this);
     this.handleScrollToCommentItem = this.handleScrollToCommentItem.bind(this);
     this.focusTab = undefined;
+    this.initialHandleReplayToTimeout = undefined; // Initial timeout for handleReplayTo in componentDidMount
+    this.initialCreateSuggestionTimeout = undefined; // Initial timeout for showing suggestion modal
   }
 
   componentDidUpdate(prevProps) {
@@ -198,7 +200,16 @@ class GoalDetailCardV3 extends Component {
     this.props.refreshComments('Goal', goalId, tab, pageId, refreshCommentsCallback);
 
     if (initial && initial.refreshGoal !== false) {
-      this.props.refreshGoalDetailById(goalId, pageId);
+      const onRefreshError = () => {
+        if (this.initialHandleReplayToTimeout !== undefined) {
+          clearTimeout(this.initialHandleReplayToTimeout);
+        }
+
+        if (this.initialCreateSuggestionTimeout !== undefined) {
+          clearTimeout(this.initialCreateSuggestionTimeout);
+        }
+      }
+      this.props.refreshGoalDetailById(goalId, pageId, onRefreshError.bind(this));
     }
 
     console.log(`${DEBUG_KEY}: did mount with goalId: ${goalId}, pageId: ${pageId}`);
@@ -258,14 +269,14 @@ class GoalDetailCardV3 extends Component {
       }
 
       // Timeout is required for tab view to finish transition
-      setTimeout(() => {
+       setTimeout(() => {
         this.props.goalDetailSwitchTabV2ByKey('focusTab', focusRef, focusType, goalId, pageId);
         this.props.createCommentForSuggestion(newCommentParams, pageId);
         if (initialShowSuggestionModal) {
           // Show suggestion modal if initialShowSuggestionModal is true
           // Current source is NotificationNeedCard on suggestion pressed
           console.log(`${DEBUG_KEY}: i am opening suggestion modal`);
-          setTimeout(() => {
+          this.initialCreateSuggestionTimeout = setTimeout(() => {
             this.props.createSuggestion(goalId, pageId);
           }, 500);
         }
@@ -274,7 +285,7 @@ class GoalDetailCardV3 extends Component {
         if (initialFocusCommentBox) {
           // Focus on comment box if initialFocusCommentBox is true
           // To reduce taps to enable comment functions
-          setTimeout(() => {
+          this.initialHandleReplayToTimeout = setTimeout(() => {
             console.log(`${DEBUG_KEY}: calling handleReplyTo`);
             this.handleReplyTo();
           }, 500);        
