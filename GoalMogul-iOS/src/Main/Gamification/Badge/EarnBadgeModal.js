@@ -6,7 +6,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import {
-    View, Image, Text, Animated
+    View, Image, Text, Animated, ImageBackground
 } from 'react-native';
 import { Constants, LinearGradient } from 'expo';
 import Modal from 'react-native-modal';
@@ -17,6 +17,7 @@ import { Logger } from '../../../redux/middleware/utils/Logger';
 import DelayedButton from '../../Common/Button/DelayedButton';
 import { modalCancelIconContainerStyle, modalCancelIconStyle, modalContainerStyle } from '../../../styles';
 import Badges, { Bronze3D, Silver3D, Gold3D, Green } from '../../../asset/banner';
+import { ConfettiFadedBackground } from '../../../asset/background';
 import { getBagdeIconByTier } from '../../../redux/modules/gamification/BadgeActions';
 
 const { CheckIcon, InfoIcon } = Icons;
@@ -111,40 +112,42 @@ class EarnBadgeModal extends React.PureComponent {
                 isVisible={this.props.isVisible}
                 backdropOpacity={0.7}
                 onModalShow={this.onModalShow}
-                style={{ flex: 1, marginTop: Constants.statusBarHeight + 15 }}
+                style={{ flex: 1, marginTop: Constants.statusBarHeight + 15, backgroundColor: 'white', borderRadius: 15 }}
             >
-                <View style={{ ...modalContainerStyle, flex: 1 }}>
-                    {this.renderCancelButton()}
-                    <Text style={{ color: 'rgb(0, 150, 203)', fontWeight: '500', fontSize: 22, marginTop: 18 }}>
-                        Congratulations!
-                    </Text>
-                    {this.renderBadgeEarned()}
-                    <Text style={{ color: 'rgb(153, 153, 153)', fontSize: 14, paddingTop: 15, paddingBottom: 7 }}>
-                        You've earned a Silver Badge.
-                    </Text>
-                    <View style={{ width: '76%', height: 0.5, backgroundColor: 'rgb(238, 238, 238)', marginVertical: 3 }} />
-                    <Text style={{ color: 'rgb(51, 51, 51)', fontSize: 17, paddingVertical: 7 }}>Badges</Text>
-                    {
-                        BadgeInfo.map((b) => (<BadgeInfoCard badgeInfo={b} />))
-                    }
-
-                    <Text style={{ color: 'rgb(95, 95, 95)', fontSize: 11, lineHeight: 6, marginTop: 15, padding: 6 }}>
-                        {`\u002A Limited to the first 15 gold users. `}
-                        <Text style={{ color: 'rgb(0, 150, 203)', fontWeight: '600' }}>
-                            View details
+                <ImageBackground source={ConfettiFadedBackground} style={{ width: '100%', height: '100%', borderRadius: 15 }} imageStyle={{ borderRadius: 15 }}>
+                    <View style={{ ...modalContainerStyle, backgroundColor: 'transparent', flex: 1 }}>
+                        {this.renderCancelButton()}
+                        <Text style={{ color: 'rgb(0, 150, 203)', fontWeight: '500', fontSize: 22, marginTop: 18 }}>
+                            Congratulations!
                         </Text>
-                    </Text>
-                    <Animated.Text
-                        style={{ 
-                            color: 'rgb(209, 163, 16)', 
-                            fontSize: 11, lineHeight: 6, padding: 8, 
-                            fontStyle: 'italic',
-                            opacity: this.animations.numberOfUsersOnSameBadgeOpacity
-                        }}
-                    >
-                        {`There are currently ${this.state.numberOfUsersOnSameBadge} gold users.`}
-                    </Animated.Text>
-                </View> 
+                        {this.renderBadgeEarned()}
+                        <Text style={{ color: 'rgb(153, 153, 153)', fontSize: 14, paddingTop: 15, paddingBottom: 7 }}>
+                            You've earned a Silver Badge.
+                        </Text>
+                        <View style={{ width: '76%', height: 0.5, backgroundColor: 'rgb(238, 238, 238)', marginVertical: 3 }} />
+                        <Text style={{ color: 'rgb(51, 51, 51)', fontSize: 17, paddingVertical: 7 }}>Badges</Text>
+                        {
+                            BadgeInfo.map((b) => (<BadgeInfoCard badgeInfo={b} />))
+                        }
+
+                        <Text style={{ color: 'rgb(95, 95, 95)', fontSize: 11, lineHeight: 6, marginTop: 15, padding: 6 }}>
+                            {`\u002A Limited to the first 15 gold users. `}
+                            <Text style={{ color: 'rgb(0, 150, 203)', fontWeight: '600' }}>
+                                View details
+                            </Text>
+                        </Text>
+                        <Animated.Text
+                            style={{ 
+                                color: 'rgb(209, 163, 16)', 
+                                fontSize: 11, lineHeight: 6, padding: 8, 
+                                fontStyle: 'italic',
+                                opacity: this.animations.numberOfUsersOnSameBadgeOpacity
+                            }}
+                        >
+                            {`There are currently ${this.state.numberOfUsersOnSameBadge} gold users.`}
+                        </Animated.Text>
+                    </View> 
+                </ImageBackground>
             </Modal>
         );
     }
