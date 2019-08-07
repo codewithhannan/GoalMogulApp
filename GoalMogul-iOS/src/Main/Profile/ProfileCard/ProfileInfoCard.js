@@ -59,7 +59,8 @@ class ProfileInfoCard extends Component {
 
   // Coin info on Profile About tab
   renderCoinInfo(user) {
-    if (!user) return null;
+    // Only show coin info if self (canEdit is true)
+    if (!user || !this.props.canEdit) return null;
     const coins = user.profile && user.profile.pointsEarned ? user.profile.pointsEarned : 0;
     return (
       <View style={{ flexDirection: 'row', paddingBottom: 20, alignItems: 'center' }}>
