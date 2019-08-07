@@ -394,7 +394,12 @@ class ProfileV2 extends Component {
                 opacity: this.state.infoCardOpacity
                 }}
             >
-                <ProfileDetailCard pageId={pageId} userId={userId} onLayout={this.handleProfileDetailCardLayout} />
+                <ProfileDetailCard 
+                    pageId={pageId} 
+                    userId={userId} 
+                    onLayout={this.handleProfileDetailCardLayout} 
+                    openEarnBageModal={() => this.setState({ ...this.state, showBadgeEarnModal: true })}
+                />
             </Animated.View>
         );
     }

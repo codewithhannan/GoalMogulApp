@@ -46,7 +46,7 @@ import { APP_BLUE_BRIGHT } from '../../../styles';
 import { Actions } from 'react-native-router-flux';
 import RichText from '../../Common/Text/RichText';
 
-const { MessageIcon, AddUser } = Icons;
+const { MessageIcon, AddUser, InfoIcon } = Icons;
 const { width } = Dimensions.get('window');
 const DEBUG_KEY = '[ Copmonent ProfileDetailCard ]';
 
@@ -110,6 +110,13 @@ class ProfileDetailCard extends Component {
   handleEditOnPressed() {
     const { userId, pageId } = this.props;
     this.props.openProfileDetailEditForm(userId, pageId);
+  }
+
+  handleBannerInfoIconOnPress = () => {
+    const { openEarnBageModal } = this.props;
+    if (openEarnBageModal) {
+      openEarnBageModal();
+    }
   }
 
   // type: ['unfriend', 'deleteFriend', 'requestFriend']
@@ -445,6 +452,13 @@ class ProfileDetailCard extends Component {
               {name}
             </Text>
             <UserBanner user={this.props.user} iconStyle={{ height: 20, width: 17 }} />
+            <DelayedButton
+              onPress={this.handleBannerInfoIconOnPress}
+              style={styles.infoIconContainerStyle}
+              activeOpacity={0.6}
+            >
+              <Image source={InfoIcon} style={styles.infoIconStyle} />
+            </DelayedButton>
           </View>
           <RichText 
             textStyle={styles.headlineTextStyle} 
@@ -537,6 +551,19 @@ const styles = {
     marginRight: 5,
     alignSelf: 'center',
     justifyContent: 'center'
+  },  
+  infoIconContainerStyle: {
+    height: 22, 
+    width: 22, 
+    borderRadius: 11, 
+    borderWidth: 0.8, 
+    borderColor: 'rgb(235, 249, 227)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 5
+  },
+  infoIconStyle: {
+    height: 13, width: 10, tintColor: 'rgb(88, 117, 89)'
   }
 };
 
