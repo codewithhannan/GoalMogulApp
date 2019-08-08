@@ -258,9 +258,9 @@ const styles = {
     justifyContent: 'center'
   },
   infoIconContainerStyle: {
-    height: 22, 
-    width: 22, 
-    borderRadius: 11, 
+    height: 24, 
+    width: 24, 
+    borderRadius: 12, 
     borderWidth: 0.8, 
     borderColor: 'rgb(235, 249, 227)',
     alignItems: 'center',
@@ -268,7 +268,7 @@ const styles = {
     marginLeft: 5
   },
   infoIconStyle: {
-    height: 13, width: 10, tintColor: 'rgb(88, 117, 89)'
+    height: 11, width: 7, tintColor: 'rgb(88, 117, 89)'
   }
 };
 

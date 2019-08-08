@@ -130,7 +130,7 @@ class EarnBadgeModal extends React.PureComponent {
                             BadgeInfo.map((b) => (<BadgeInfoCard badgeInfo={b} />))
                         }
 
-                        <Text style={{ color: 'rgb(95, 95, 95)', fontSize: 11, lineHeight: 6, marginTop: 15, padding: 6 }}>
+                        <Text style={{ color: 'rgb(95, 95, 95)', fontSize: 11, lineHeight: 6, marginTop: 25, padding: 6 }}>
                             {`\u002A Limited to the first 15 gold users. `}
                             <Text style={{ color: 'rgb(0, 150, 203)', fontWeight: '600' }}>
                                 View details
@@ -319,7 +319,8 @@ const BadgeInfo = [
         },
         leadingIcon: InfoIcon,
         leadingIconStyle: {
-            ...DefaultLeadingIconStyle
+            ...DefaultLeadingIconStyle,
+            height: 11, width: 7
         },
         leadingIconContainerStyle: { ...DefaultLeadingIconContainerStyle },
         linearGradientColors: ['white', 'white', 'white'],
