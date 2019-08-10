@@ -79,3 +79,14 @@ export const modalCancelIconStyle = {
   width: 14,
   tintColor: 'white'
 };
+
+export const modalHeaderBadgeShadow = {
+  // shadowColor: '#000',
+  // shadowOffset: { width: 0, height: 1.2 },
+  // shadowOpacity: 0.23,
+  // shadowRadius: 4
+  shadowColor: '#000',
+  shadowOffset: { width: 1, height: 2 },
+  shadowOpacity: 0.25,
+  shadowRadius: 5,
+};

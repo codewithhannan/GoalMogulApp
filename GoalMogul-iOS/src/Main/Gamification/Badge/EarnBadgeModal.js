@@ -15,10 +15,11 @@ import cancel from '../../../asset/utils/cancel_no_background.png';
 import Icons from '../../../asset/base64/Icons';
 import { Logger } from '../../../redux/middleware/utils/Logger';
 import DelayedButton from '../../Common/Button/DelayedButton';
-import { modalCancelIconContainerStyle, modalCancelIconStyle, modalContainerStyle } from '../../../styles';
+import { modalCancelIconContainerStyle, modalCancelIconStyle, modalContainerStyle, modalHeaderBadgeShadow } from '../../../styles';
 import Badges, { Bronze3D, Silver3D, Gold3D, Green } from '../../../asset/banner';
 import { ConfettiFadedBackground } from '../../../asset/background';
 import { getBagdeIconByTier } from '../../../redux/modules/gamification/BadgeActions';
+import GoldBadgeInfoModal from './GoldBadgeInfoModal';
 
 const { CheckIcon, InfoIcon } = Icons;
 const DEBUG_KEY = '[ UI EarnBadgeModal ]';
@@ -28,7 +29,8 @@ class EarnBadgeModal extends React.PureComponent {
         super(props);
         this.state = {
             numberLoaded: false,
-            numberOfUsersOnSameBadge: undefined
+            numberOfUsersOnSameBadge: undefined,
+            showGoldBagdeInfoModal: false
         };
 
         this.animations = {
@@ -78,7 +80,7 @@ class EarnBadgeModal extends React.PureComponent {
 
         const badgeIcon = getBagdeIconByTier(tier);
         return (
-            <View style={{ ...styles.shadow, marginTop: 10 }}>
+            <View style={{ ...modalHeaderBadgeShadow, marginTop: 10 }}>
                 <View style={{ height: 5, width: '100%'}} />
                 <View style={{ height: 60, width: 60, borderRadius: 30, backgroundColor: 'white' }} />
                 <View style={{ position: 'absolute', top: 3, bottom: 3, left: 3, right: 3, alignItems: 'center' }}>
@@ -95,6 +97,7 @@ class EarnBadgeModal extends React.PureComponent {
                     activeOpacity={0.6}
                     onPress={() => this.closeModal()}
                     style={modalCancelIconContainerStyle}
+                    disabled={this.state.showGoldBagdeInfoModal}
                 >
                     <Image
                         source={cancel}
@@ -114,6 +117,15 @@ class EarnBadgeModal extends React.PureComponent {
                 onModalShow={this.onModalShow}
                 style={{ flex: 1, marginTop: Constants.statusBarHeight + 15, backgroundColor: 'white', borderRadius: 15 }}
             >
+                <GoldBadgeInfoModal 
+                    isVisible={this.state.showGoldBagdeInfoModal}
+                    closeModal={() => {
+                        this.setState({
+                            ...this.state,
+                            showGoldBagdeInfoModal: false
+                        });
+                    }}
+                />
                 <ImageBackground source={ConfettiFadedBackground} style={{ width: '100%', height: '100%', borderRadius: 15 }} imageStyle={{ borderRadius: 15 }}>
                     <View style={{ ...modalContainerStyle, backgroundColor: 'transparent', flex: 1 }}>
                         {this.renderCancelButton()}
@@ -127,7 +139,21 @@ class EarnBadgeModal extends React.PureComponent {
                         <View style={{ width: '76%', height: 0.5, backgroundColor: 'rgb(238, 238, 238)', marginVertical: 3 }} />
                         <Text style={{ color: 'rgb(51, 51, 51)', fontSize: 17, paddingVertical: 7 }}>Badges</Text>
                         {
-                            BadgeInfo.map((b) => (<BadgeInfoCard badgeInfo={b} />))
+                            BadgeInfo.map((b) => {
+                                const { id } = b;
+                                let onLeadingIconPress = () => {};
+                                if (id && id === 'gold') {
+                                    onLeadingIconPress = () => {
+                                        this.setState({
+                                            ...this.state,
+                                            showGoldBagdeInfoModal: true
+                                        });
+                                    };
+                                }
+                                return (
+                                    <BadgeInfoCard badgeInfo={b} onLeadingIconPress={onLeadingIconPress} />
+                                );
+                            })
                         }
 
                         <Text style={{ color: 'rgb(95, 95, 95)', fontSize: 11, lineHeight: 6, marginTop: 25, padding: 6 }}>
@@ -155,7 +181,7 @@ class EarnBadgeModal extends React.PureComponent {
 
 // Render badge info
 const BadgeInfoCard = (props) => {
-    const { badgeInfo } = props;
+    const { badgeInfo, onLeadingIconPress } = props;
     if (!badgeInfo) return null;
 
     // NOTE: title can be a component/
@@ -177,9 +203,9 @@ const BadgeInfoCard = (props) => {
                 {/* Left icon and badge */}
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     {/* Info or Check icon */}
-                    <View style={leadingIconContainerStyle}>
+                    <DelayedButton style={leadingIconContainerStyle} onPress={onLeadingIconPress}>
                         <Image source={leadingIcon} style={{ ...leadingIconStyle }} />
-                    </View>
+                    </DelayedButton>
                     <Image source={badgeIcon} style={{ height: 12, ...badgeIconStyle }} />
                 </View>
 
@@ -211,19 +237,6 @@ const BadgeInfoCard = (props) => {
             </LinearGradient>
         </View>
     );
-};
-
-const styles = {
-    shadow: {
-        // shadowColor: '#000',
-        // shadowOffset: { width: 0, height: 1.2 },
-        // shadowOpacity: 0.23,
-        // shadowRadius: 4
-        shadowColor: '#000',
-        shadowOffset: { width: 1, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 5,
-    }
 };
 
 export default connect(
@@ -308,6 +321,7 @@ const BadgeInfo = [
         linearGradientLocations: [0, 0.5, 1]
     },
     {
+        id: 'gold',
         title: 'Gold + $200 Reward\u002A',
         infoTextList: [
             { text: 'Invite 10 friends to GoalMogul who\'ve', hasBulletPoint: true },
