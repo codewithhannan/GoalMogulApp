@@ -56,6 +56,7 @@ import PlusButton from '../Common/Button/PlusButton';
 import Tooltip from '../Tutorial/Tooltip';
 import { svgMaskPath } from '../Tutorial/Utils';
 import WelcomSreen from './WelcomeScreen';
+import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal';
 
 const TabIconMap = {
   goals: {
@@ -88,7 +89,8 @@ class Home extends Component {
         ],
       },
       appState: AppState.currentState,
-      showWelcomeScreen: false
+      showWelcomeScreen: false,
+      showBadgeEarnModal: false
     };
     this.scrollToTop = this.scrollToTop.bind(this);
     this._renderScene = this._renderScene.bind(this);
@@ -115,6 +117,19 @@ class Home extends Component {
         ...this.state,
         showWelcomeScreen: true
       });
+      return;
+    }
+
+    if (!_.isEqual(prevProps.user, this.props.user) && 
+        (!prevProps.user.profile || !prevProps.user.profile.badges) && 
+        _.has(this.props.user, 'profile.badges.milestoneBadge.isAwardAlertShown') &&
+        this.props.user.profile.badges.milestoneBadge.isAwardAlertShown === false) {
+           // Showing modal to congrats user earning a new badge
+          this.setState({
+            ...this.state,
+            showBadgeEarnModal: true
+          });
+          return;
     }
   }
 
@@ -386,6 +401,16 @@ class Home extends Component {
                 }, 400);
               });
             }}
+          />
+          <EarnBadgeModal
+            isVisible={this.state.showBadgeEarnModal}
+            closeModal={() => {
+              this.setState({
+                ...this.state,
+                showBadgeEarnModal: false
+              });
+            }}
+            user={this.props.user}
           />
           {/* {this.renderPlus()} */}
         </View>

@@ -23,6 +23,7 @@ import informationIconBlack from '../../asset/utils/info.png';
 
 // Actions
 import { } from '../../actions';
+import { IS_ZOOMED } from '../../Utils/Constants';
 
 const VIEWABLE_SETTING_MENU_OPTTIONS = ['Friends', 'Public', 'Private', 'Cancel'];
 const CANCEL_INDEX = 3;
@@ -92,8 +93,9 @@ class ViewableSettingMenu extends Component {
 
     const shareIconTintColor = this.props.shareToMastermind ? 'white' : '#9b9b9b';
 
+    const marginTop = IS_ZOOMED ? 10 : 0;
     return (
-      <View style={{ ...styles.containerStyle, backgroundColor: 'transparent', borderWidth: 0 }}>
+      <View style={{ ...styles.containerStyle, backgroundColor: 'transparent', borderWidth: 0, marginTop }}>
         <TouchableOpacity
           activeOpacity={0.6}
           style={{ ...containerStyle }}
@@ -142,8 +144,12 @@ class ViewableSettingMenu extends Component {
         </CopilotStep>
       );
     }
+
+    // Handle zoom mode
+    const flexDirection = IS_ZOOMED ? 'column' : 'row';
+
     return (
-      <View style={{ flexDirection: 'row' }}>
+      <View style={{ flexDirection }}>
         <TouchableOpacity
           activeOpacity={0.6}
           style={{ ...styles.containerStyle, width: 80, opacity: settingDisabled ? 0 : 95 }}

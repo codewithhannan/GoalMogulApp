@@ -490,7 +490,7 @@ class ShareModal extends React.Component {
             {this.renderUserInfo(user)}
             {this.renderContentHeader(shareTo)}
             {this.renderPost()}
-            <RefPreview item={itemToShare} postType={postType} />
+            <RefPreview item={itemToShare} postType={postType} disabled />
           </View>
 
         </ScrollView>

@@ -57,3 +57,36 @@ export const tutorial = {
     elevation: 1,
   }
 };
+
+export const modalContainerStyle = { 
+  backgroundColor: 'white', 
+  borderRadius: 15, 
+  padding: 20,
+  alignItems: 'center',
+};
+
+export const modalCancelIconContainerStyle = {
+  height: 30,
+  width: 30,
+  backgroundColor: 'rgb(217,40,40)',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: 15
+};
+
+export const modalCancelIconStyle = {
+  height: 14,
+  width: 14,
+  tintColor: 'white'
+};
+
+export const modalHeaderBadgeShadow = {
+  // shadowColor: '#000',
+  // shadowOffset: { width: 0, height: 1.2 },
+  // shadowOpacity: 0.23,
+  // shadowRadius: 4
+  shadowColor: '#000',
+  shadowOffset: { width: 1, height: 2 },
+  shadowOpacity: 0.25,
+  shadowRadius: 5,
+};

@@ -55,7 +55,9 @@ import {
   PROFILE_POST_DELETE_SUCCESS,
   // Profile Create overlay
   PROFILE_OPEN_CREATE_OVERLAY,
-  PROFILE_CLOSE_CREATE_OVERLAY
+  PROFILE_CLOSE_CREATE_OVERLAY,
+  PROFILE_BADGE_EARN_MODAL_SHOWN,
+  PROFILE_BADGE_EARN_MODAL_SHOWN_ERROR
 } from '../reducers/Profile';
 
 // Constants
@@ -223,8 +225,9 @@ export const openProfile = (userId, tab, initialFilter) => (dispatch, getState) 
   const { token } = getState().user;
   const self = userId.toString() === getState().user.userId.toString();
 
-  const profilePromise =
-    API.get(`secure/user/profile?userId=${userId}`, token);
+  const profilePromise = self 
+    ? API.get(`secure/user/profile?userId=${userId}`, token)
+    : API.get(`secure/user/profile?userId=${userId}&isProfileView=true`, token);
 
   // If self, fetch friend list. Otherwise, fetch mutual friends
   const friendsCountPromise = self ?
@@ -855,13 +858,14 @@ export const deletePost = (postId) => (dispatch, getState) => {
 export const UserBanner = (props) => {
   const { user, iconStyle } = props;
 
-  if (!user || !user.profile || user.profile.badges === undefined) return null;
+  // if (!user || !user.profile || user.profile.badges === undefined) return null;
 
   // Before gamification, we only show green badge
   // const { profile } = user;
   // const { pointsEarned } = profile;
   // const source = switchCaseBannerSource(pointsEarned);
 
+  if (!user || !user.profile) return null;
   const defaultIconStyle = {
     alignSelf: 'center',
     marginLeft: 4,
@@ -892,6 +896,71 @@ export const closeCreateOverlay = (userId, pageId) => (dispatch) => {
       userId, pageId
     }
   });
+};
+
+/**
+ * When user opens profile for the first time / opens app later on and they earn a new badge,
+ * we show the modal to congradulate. This sends to server to mark that field as shown.
+ * @param {string} badgeName: Ex. 'milestoneBadge'
+ */
+export const markEarnBadgeModalAsShown = (badgeName = 'milestoneBadge') => (dispatch, getState) => {
+  const { token, userId } = getState().user;
+
+  const onSuccess = () => {
+    dispatch({
+      type: PROFILE_BADGE_EARN_MODAL_SHOWN,
+      payload: {
+        userId
+      }
+    });
+  };
+
+  const onError = (err) => {
+    dispatch({
+      type: PROFILE_BADGE_EARN_MODAL_SHOWN_ERROR,
+      payload: {
+        userId
+      }
+    });
+
+    console.warn(`${DEBUG_KEY}: mark earn badge modal as shown failed with res: `, err);
+  };
+
+  API
+    .put('secure/user/profile/badges/award-alert-shown', { badgeName }, token)
+    .then(res => {
+      if (res.status === 200) {
+        return onSuccess(res);
+      }
+      return onError(res);
+    })
+    .catch(err => onError(err));
+};
+
+// Fetch the number of users on the badge level
+export const fetchBadgeUserCount = (callback, tier = 3, badgeName = 'milestoneBadge') => (dispatch, getState) => {
+  const { token } = getState().user;
+  const onError = (err) => {
+    console.log(`${DEBUG_KEY}: [ fetchBadgeUserCount ] failed with err: `, err);
+    if (callback) callback(0);
+    return 0;
+  };
+
+  const onSuccess = (res) => {
+    const { data } = res;
+    if (callback) callback(data);
+    return data;
+  };
+
+  API
+    .get(`secure/user/profile/stats/badge-count?badgeName=${badgeName}&tier=${tier}`, token)
+    .then((res) => {
+      if (res.status === 200) {
+        return onSuccess(res);
+      }
+      return onError(res);
+    })
+    .catch(err => onError(err));
 };
 
 export const switchCaseBannerSource = (points) => {

@@ -60,6 +60,7 @@ import {
 import PlusButton from '../Common/Button/PlusButton';
 import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users';
 import { Logger } from '../../redux/middleware/utils/Logger';
+import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal';
 
 const DEBUG_KEY = '[ UI ProfileV2 ]';
 // const SEARCHBAR_HEIGHT = 70;
@@ -82,7 +83,8 @@ class ProfileV2 extends Component {
             infoCardHeight: new Animated.Value(INFO_CARD_HEIGHT), // Initial info card height
             infoCardOpacity: new Animated.Value(1),
             hasLoadedProfile: false,
-            cardHeight: INFO_CARD_HEIGHT // Read info card height
+            cardHeight: INFO_CARD_HEIGHT, // Read info card height
+            showBadgeEarnModal: false // When user first open profile, show this info
         }
         this.handleProfileDetailCardLayout = this.handleProfileDetailCardLayout.bind(this);
     }
@@ -93,6 +95,20 @@ class ProfileV2 extends Component {
                 ...this.state,
                 hasLoadedProfile: true
             });
+        }
+
+        // This is unlikely to be triggered. This function is to handle when user opens 
+        // profile too fast before profile is being loaded
+        if (this.props.isSelf && !_.isEqual(prevProps.user, this.props.user) 
+            && (!prevProps.user.profile || !prevProps.user.profile.badges) 
+            && _.has(this.props.user, 'profile.badges.milestoneBadge.isAwardAlertShown') 
+            && this.props.user.profile.badges.milestoneBadge.isAwardAlertShown === false) {
+                // Showing modal to congrats user earning a new badge
+                this.setState({
+                    ...this.state,
+                    showBadgeEarnModal: true
+                });
+                return;
         }
     }
 
@@ -108,6 +124,19 @@ class ProfileV2 extends Component {
         this.props.handleTabRefresh('goals', userId, pageId, this.props.initialFilter);
         this.props.handleTabRefresh('posts', userId, pageId);
         this.props.handleTabRefresh('needs', userId, pageId);
+
+        if (_.has(this.props.user, 'profile.badges.milestoneBadge.isAwardAlertShown') 
+            && this.props.user.profile.badges.milestoneBadge.isAwardAlertShown === false) {
+                // added delay to allow screen transition
+                // TODO: refactor default screen transition time to global constant
+                // setTimeout(() => {
+                //     this.setState({
+                //         ...this.state,
+                //         showBadgeEarnModal: true
+                //     });
+                // }, 300);
+                return;
+            }
     }
 
     componentWillUnmount() {
@@ -365,7 +394,12 @@ class ProfileV2 extends Component {
                 opacity: this.state.infoCardOpacity
                 }}
             >
-                <ProfileDetailCard pageId={pageId} userId={userId} onLayout={this.handleProfileDetailCardLayout} />
+                <ProfileDetailCard 
+                    pageId={pageId} 
+                    userId={userId} 
+                    onLayout={this.handleProfileDetailCardLayout} 
+                    openEarnBageModal={() => this.setState({ ...this.state, showBadgeEarnModal: true })}
+                />
             </Animated.View>
         );
     }
@@ -463,6 +497,16 @@ class ProfileV2 extends Component {
                     ListFooterComponent={this.renderListFooter()}
                 />
                 {this.renderPlus()}
+                <EarnBadgeModal
+                    isVisible={this.state.showBadgeEarnModal}
+                    closeModal={() => {
+                        this.setState({
+                            ...this.state,
+                            showBadgeEarnModal: false
+                        });
+                    }}
+                    user={this.props.user}
+                />
                 </View>
             </MenuProvider>
         );

@@ -156,10 +156,10 @@ class ActivityCard extends React.PureComponent {
           textStyle={{ color: '#FCB110' }}
           iconStyle={{ tintColor: '#FCB110', height: 26, width: 26 }}
           onPress={() => {
-            console.log(`${DEBUG_KEY}: user clicks suggest icon`);
+            console.log(`${DEBUG_KEY}: user clicks suggest icon actedWith: ${actedWith}`);
             this.props.onPress(
               item, 
-              (actedWith === 'Comment' || actedWith === 'Like') && actedUponEntityType === 'Goal'
+              (actedWith === 'Comment' || actedWith === 'Like' || actedWith === 'Goal') && actedUponEntityType === 'Goal'
             );
           }}
         />

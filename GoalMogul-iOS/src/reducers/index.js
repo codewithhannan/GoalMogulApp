@@ -53,6 +53,8 @@ import ChatRoomMembersReducers from '../redux/modules/chat/ChatRoomMembersReduce
 import ShareToChatReducers from '../redux/modules/chat/ShareToChatReducers';
 // Step by Step tutorial reducers
 import Tutorials from '../redux/modules/User/Tutorials';
+// Contact Sync
+import ContactSyncReducers from '../redux/modules/User/ContactSync/ContactSyncReducers';
 
 const rootPersistConfig = {
   key: 'root',
@@ -107,7 +109,8 @@ const reducers = combineReducers({
   chatRoom: ChatRoomReducers,
   chatRoomMembers: ChatRoomMembersReducers,
   navigationTabBadging: TabIconReducers,
-  tutorials: Tutorials
+  tutorials: Tutorials,
+  contactSync: ContactSyncReducers
 });
 
 export default persistReducer(rootPersistConfig, reducers);

@@ -35,6 +35,7 @@ import FriendInvitationView from './Main/MeetTab/V2/FriendInvitationView';
 import FriendTabView from './Main/MeetTab/V2/FriendTab/FriendTabView';
 import RequestTabView from './Main/MeetTab/V2/RequestTab/RequestTabView';
 import MyEvent from './Main/Menu/Event/MyEvent';
+import ContactInvitePage from './Main/MeetTab/Contacts/ContactInvitePage';
 // Menu
 import MyEventTab from './Main/Menu/Event/MyEventTab';
 import Menu from './Main/Menu/Menu';
@@ -381,6 +382,7 @@ class RouterComponent extends Component {
                       <Scene key="meetTab_chatRoomPublicView" component={ChatRoomPubicView} />
 
                       <Scene key="meetTab_meetContactSync" component={ContactSync} />
+                      <Scene key="meetTab_contactInvite" component={ContactInvitePage} />
                       <Scene key="meetTab_searchLightBox" component={SearchOverlay} hideNavBar />
                     </Stack>
 

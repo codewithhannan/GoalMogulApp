@@ -44,8 +44,9 @@ import DelayedButton from '../../Common/Button/DelayedButton';
 import { IMAGE_BASE_URL } from '../../../Utils/Constants';
 import { APP_BLUE_BRIGHT } from '../../../styles';
 import { Actions } from 'react-native-router-flux';
+import RichText from '../../Common/Text/RichText';
 
-const { MessageIcon, AddUser } = Icons;
+const { MessageIcon, AddUser, InfoIcon } = Icons;
 const { width } = Dimensions.get('window');
 const DEBUG_KEY = '[ Copmonent ProfileDetailCard ]';
 
@@ -109,6 +110,13 @@ class ProfileDetailCard extends Component {
   handleEditOnPressed() {
     const { userId, pageId } = this.props;
     this.props.openProfileDetailEditForm(userId, pageId);
+  }
+
+  handleBannerInfoIconOnPress = () => {
+    const { openEarnBageModal } = this.props;
+    if (openEarnBageModal) {
+      openEarnBageModal();
+    }
   }
 
   // type: ['unfriend', 'deleteFriend', 'requestFriend']
@@ -444,10 +452,20 @@ class ProfileDetailCard extends Component {
               {name}
             </Text>
             <UserBanner user={this.props.user} iconStyle={{ height: 20, width: 17 }} />
+            <DelayedButton
+              onPress={this.handleBannerInfoIconOnPress}
+              style={styles.infoIconContainerStyle}
+              activeOpacity={0.6}
+            >
+              <Image source={InfoIcon} style={styles.infoIconStyle} />
+            </DelayedButton>
           </View>
-          <Text style={styles.headlineTextStyle}>
-            {headline}
-          </Text>
+          <RichText 
+            textStyle={styles.headlineTextStyle} 
+            contentText={headline} 
+            textContainerStyle={{ flexDirection: 'row' }}
+            numberOfLines={3}
+          />
           {/* <View style={styles.dividerStyle} /> */}
           {/* {this.renderFriendInfo()} */}
           {/* {this.renderChatButtons()} */}
@@ -533,6 +551,19 @@ const styles = {
     marginRight: 5,
     alignSelf: 'center',
     justifyContent: 'center'
+  },  
+  infoIconContainerStyle: {
+    height: 24, 
+    width: 24, 
+    borderRadius: 12, 
+    borderWidth: 0.8, 
+    borderColor: 'rgb(235, 249, 227)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 5
+  },
+  infoIconStyle: {
+    height: 11, width: 7, tintColor: 'rgb(88, 117, 89)'
   }
 };
 

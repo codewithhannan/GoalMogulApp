@@ -57,7 +57,9 @@ class ChatTab extends React.Component {
 
 		AsyncStorage.getItem(CHAT_TAB_LAST_INDEX).then(maybeLastIndex => {
 			if (parseInt(maybeLastIndex)) {
-				this.props.selectChatTab(parseInt(maybeLastIndex));
+				setTimeout(() => {
+					this.props.selectChatTab(parseInt(maybeLastIndex));
+				}, 400);
 			};
 		})
 

@@ -2,7 +2,8 @@ import React from 'react';
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
 import {
-  Alert
+  Alert,
+  Keyboard
 } from 'react-native';
 import { Notifications, Permissions } from 'expo';
 import moment from 'moment';
@@ -107,7 +108,7 @@ export const scheduleNotification = (date, goal, hasAskedPermissions) => async (
 /**
  * Refresh goal detail and comments by goal Id
  */
-export const refreshGoalDetailById = (goalId, pageId) => (dispatch, getState) => {
+export const refreshGoalDetailById = (goalId, pageId, onErrorCallback) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   const { token } = getState().user;
 
@@ -123,6 +124,10 @@ export const refreshGoalDetailById = (goalId, pageId) => (dispatch, getState) =>
   const onError = (err) => {
     console.warn(`${DEBUG_KEY}: refresh goal error: `, err);
     if (err.status === 400 || err.status === 404) {
+      if (onErrorCallback) {
+        onErrorCallback();
+      }
+      Keyboard.dismiss();
       Alert.alert(
         'Content not found',
         'This goal has been removed', 

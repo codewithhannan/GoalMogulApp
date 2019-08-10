@@ -24,11 +24,21 @@ import profileStyles from './Styles';
 import {
   getUserData
 } from '../../../redux/modules/User/Selector';
+import Icons from '../../../asset/base64/Icons';
+import CoinProfileInfoModal from '../../Gamification/Coin/CoinProfileInfoModal';
 
+const { CoinSackIcon, InfoIcon } = Icons;
 const DEBUG_KEY = '[ UI ProfileInfoCard ]';
 // TODO: use redux instead of passed in props
 // TODO: profile reducer redesign to change here. Evaluate all the components used
 class ProfileInfoCard extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      showCoinProfileInfoModal: false
+    };
+  }
 
   handleEditOnPressed() {
     const { userId, pageId } = this.props;
@@ -47,11 +57,41 @@ class ProfileInfoCard extends Component {
     Actions.push('mutualFriends', { userId, pageId });
   }
 
+  // Coin info on Profile About tab
+  renderCoinInfo(user) {
+    // Only show coin info if self (canEdit is true)
+    if (!user || !this.props.canEdit) return null;
+    const coins = user.profile && user.profile.pointsEarned ? user.profile.pointsEarned : 0;
+    return (
+      <View style={{ flexDirection: 'row', paddingBottom: 20, alignItems: 'center' }}>
+        <Image source={CoinSackIcon} style={styles.iconStyle} />
+        <View style={{ marginRight: 10, marginLeft: 10, flexDirection: 'row' }}>
+          <Text style={{ fontSize: 13, color: '#646464', alignSelf: 'center' }}>
+            <Text style={{ fontWeight: 'bold' }}>{coins} </Text>
+            Coins
+          </Text>
+          <DelayedButton 
+            activeOpacity={0.6} 
+            onPress={() => {
+              this.setState({
+                ...this.state,
+                showCoinProfileInfoModal: true
+              });
+            }} 
+            style={styles.infoIconContainerStyle}
+          >
+            <Image source={InfoIcon} style={styles.infoIconStyle} />
+          </DelayedButton>
+        </View>
+      </View>
+    );
+  }
+
   renderFriendInfo() {
     const title = this.props.canEdit ? 'Friends' : 'Mutual Friends';
     const data = this.props.canEdit ? this.props.friendsCount : this.props.mutualFriends.count;
     return (
-      <View style={{ flexDirection: 'row', paddingBottom: 25 }}>
+      <View style={{ flexDirection: 'row', paddingBottom: 20 }}>
         <Image source={icon_meet} style={styles.iconStyle} />
         <View style={{ marginRight: 10, marginLeft: 10, flexDirection: 'row' }}>
           <Text style={{ fontSize: 13, color: '#646464', alignSelf: 'center' }}>
@@ -73,7 +113,7 @@ class ProfileInfoCard extends Component {
   renderOccupation(occupation) {
     if (occupation) {
       return (
-        <View style={{ flexDirection: 'row', paddingBottom: 25 }}>
+        <View style={{ flexDirection: 'row', paddingBottom: 20 }}>
           <Image source={brief_case} style={styles.iconStyle} />
           <Text
             style={profileStyles.headerTextStyle}
@@ -136,11 +176,21 @@ class ProfileInfoCard extends Component {
     return (
       <View style={styles.cardContainerStyle}>
         <View style={styles.containerStyle}>
+          {this.renderCoinInfo(user)}
           {this.renderFriendInfo()}
           {this.renderOccupation(occupation)}
           {divider}
           {this.renderElevatorPitch(elevatorPitch)}
           {this.renderAbout(about)}
+          <CoinProfileInfoModal 
+            isVisible={this.state.showCoinProfileInfoModal}
+            closeModal={() => {
+              this.setState({
+                ...this.state,
+                showCoinProfileInfoModal: false
+              });
+            }}
+          />
         </View>
       </View>
     );
@@ -206,6 +256,19 @@ const styles = {
     marginRight: 5,
     alignSelf: 'center',
     justifyContent: 'center'
+  },
+  infoIconContainerStyle: {
+    height: 24, 
+    width: 24, 
+    borderRadius: 12, 
+    borderWidth: 0.8, 
+    borderColor: 'rgb(235, 249, 227)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 5
+  },
+  infoIconStyle: {
+    height: 11, width: 7, tintColor: 'rgb(88, 117, 89)'
   }
 };
 

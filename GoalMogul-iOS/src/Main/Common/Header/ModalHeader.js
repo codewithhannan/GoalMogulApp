@@ -5,7 +5,8 @@ import {
   TouchableOpacity, 
   Image,
   StatusBar,
-  Platform
+  Platform,
+  ActivityIndicator
 } from 'react-native';
 import { Constants } from 'expo';
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
@@ -20,6 +21,7 @@ import {
 } from '../../../Utils/Constants';
 
 import BackButton from '../../../asset/utils/back.png';
+import DelayedButton from '../Button/DelayedButton';
 
 /* Icon */
 // const renderLeftComponent = (cancelText, back) => {
@@ -50,7 +52,10 @@ const paddingTop = (
 const ModalHeader = (props) => {
   const { 
     title, 
-    actionText, 
+    actionText,
+    showActionLoading, // Should show spinner at the action text
+    actionLoading, // When showActionLoading is true and actionLoading is true, loading spinner will be shown
+    loadingIndicatorStyle,
     onCancel, 
     onAction, 
     actionDisabled, 
@@ -85,14 +90,26 @@ const ModalHeader = (props) => {
     : styles.actionTextStyle;
 
   let actionComponent = (
-    <TouchableOpacity
+    <DelayedButton
       activeOpacity={0.6}
       style={{ alignItems: 'center', flex: 1, opacity: actionHidden ? 0 : 1 }}
       onPress={onAction}
       disabled={actionDisabled}
     >
+      {
+        showActionLoading && actionLoading && (
+          <View 
+            style={{ 
+              ...styles.loadingIndicatorContainerStyle,
+              zIndex: showActionLoading && actionLoading ? 2 : 0
+            }}
+          >
+            <ActivityIndicator size='small' animating={!!(showActionLoading && actionLoading)} {...loadingIndicatorStyle} />
+          </View>
+        )
+      }
       <Text style={[primaryActionTextStyle, extraActionTextStyle]}>{actionText}</Text>
-    </TouchableOpacity>
+    </DelayedButton>
   );
 
   if (tutorialOn && tutorialOn.actionText) {
@@ -190,6 +207,16 @@ const styles = {
     fontSize,
     // color: '#17B3EC'
     color: APP_BLUE,
+  },
+  loadingIndicatorContainerStyle: {
+    position: 'absolute', 
+    top: 0, 
+    bottom: 0, 
+    right: 0, 
+    left: 0, 
+    backgroundColor: APP_BLUE,
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 };
 

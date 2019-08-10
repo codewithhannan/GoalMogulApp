@@ -1,3 +1,6 @@
+/**
+ * NOTE: this is used in Contacts.js for MeetTab.js. It's no longer used in MeetTabV2.js.
+ */
 import React, { Component } from 'react';
 import {
   View,

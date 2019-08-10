@@ -325,16 +325,15 @@ class SearchBarHeader extends Component {
           const componentKeyToOpen = componentKeyByTab(this.props.navigationTab, 'searchLightBox');
           Actions.push(`${componentKeyToOpen}`);
         }}
+        style={styles.searchButtonContainerStyle}
       >
-        <View style={styles.searchButtonContainerStyle}>
-          <SearchIcon 
-            iconContainerStyle={{ marginBottom: 3, marginTop: 1 }} 
-            iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
-          />
-          <Text style={styles.searchPlaceHolderTextStyle}>
-            Search GoalMogul
-          </Text>
-        </View>
+        <SearchIcon 
+          iconContainerStyle={{ marginBottom: 3, marginTop: 1 }} 
+          iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
+        />
+        <Text style={styles.searchPlaceHolderTextStyle}>
+          Search GoalMogul
+        </Text>
       </DelayedButton>
     );
   }
@@ -406,7 +405,8 @@ const styles = {
   // It's currently being used
   searchButtonContainerStyle: {
     height: 30,
-    width: 260,
+    flex: 1,
+    // width: 260,
     // backgroundColor: '#1998c9',
     backgroundColor: APP_DEEP_BLUE,
     borderRadius: 16,

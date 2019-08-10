@@ -326,3 +326,56 @@ export const getParentCommentId = (commentId, comments) => {
   });
   return ret;
 }; 
+
+
+/**
+ * Contact sync related helpers
+ */
+export const getPhoneNumber = (contact) => {
+  if (!contact) return null;
+  const { phoneNumbers } = contact;
+  if (!phoneNumbers || _.isEmpty(phoneNumbers)) return null;
+
+  const mobileNumbers = phoneNumbers.filter(c => c.label === 'mobile');
+  if (_.isEmpty(mobileNumbers)) return null;
+  const mobileNumber = mobileNumbers[0];
+  if (mobileNumber && mobileNumber.number) return mobileNumber.number;
+  return null;
+};
+
+export const getPhoneNumbers = (contact) => {
+  if (!contact) return null;
+  const { phoneNumbers } = contact;
+  if (!phoneNumbers || _.isEmpty(phoneNumbers)) return null;
+
+  if (_.isEmpty(mobileNumbers)) return null;
+
+  return mobileNumbers.map(n => n ? n.number : null).filter(n => !!n);
+};
+
+export const getEmail = (contact) => {
+  if (!contact) return null;
+  const { emails } = contact;
+  if (!emails || _.isEmpty(emails)) return null;
+  let emailToReturn;
+  emails.forEach(e => {
+      if (e.email && !emailToReturn) {
+          emailToReturn = e.email
+      }
+  });
+  return emailToReturn;
+};
+
+export const getEmails = (contact) => {
+  if (!contact) return null;
+  const { emails } = contact;
+  if (!emails || _.isEmpty(emails)) return null;
+  let ret;
+  ret = emails.map(e => {
+      if (e.email) {
+          return e.email;
+      }
+      return null;
+  }).filter(e => e !== null);
+  return ret;
+};
