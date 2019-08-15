@@ -54,19 +54,19 @@ class CoinProfileInfoModal extends React.PureComponent {
                     {/* Divider */}
                     <View style={{ width: '76%', height: 0.5, backgroundColor: 'rgb(238, 238, 238)', marginVertical: 14 }} />
                     <View>
-                        <Text style={{ fontSize: 16 }}>Earn more coins by:</Text>
+                        <Text style={{ fontSize: 17, marginBottom: 5 }}>Earn more coins by:</Text>
                         {
                             coinInfoTextList.map((t) => {
                                 const { text, hasBulletPoint } = t;
                                 if (hasBulletPoint) {
                                     return (
-                                        <Text style={{ color: 'rgb(85, 85, 85)', fontSize: 12, lineHeight: 18 }}>
+                                        <Text style={{ color: 'rgb(85, 85, 85)', fontSize: 14, lineHeight: 19 }}>
                                             {`\u2022 ${text}`}
                                         </Text>
                                     )
                                 }
                                 return (
-                                    <Text style={{ color: 'rgb(85, 85, 85)', fontSize: 12, marginBottom: 4, lineHeigh: 18 }}>
+                                    <Text style={{ color: 'rgb(85, 85, 85)', fontSize: 14, marginBottom: 4, lineHeigh: 19 }}>
                                         {`   ${text}`}
                                     </Text>
                                 )
@@ -99,11 +99,11 @@ const coinInfoTextList = [
         hasBulletPoint: false
     },
     {
-        text: 'Giving other users Suggestions that receive',
+        text: 'Giving other users Suggestions that ',
         hasBulletPoint: true
     },
     {
-        text: 'Likes',
+        text: 'receive Likes',
         hasBulletPoint: false
     },
     {

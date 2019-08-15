@@ -44,7 +44,6 @@ class EarnBadgeModal extends React.PureComponent {
         // Modal is shown
         if (!prevProps.isVisible && this.props.isVisible) {
             // Send request to fetch the number of
-            console.log('earn badge modal is now alive ');
             const callback = (count) => {
                 console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: count is: `, count);
                 this.setState({
