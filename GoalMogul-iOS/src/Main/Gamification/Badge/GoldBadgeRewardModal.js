@@ -51,7 +51,7 @@ class GoldBadgeRewardModal extends React.PureComponent {
                         <TextInput 
                             editable={false}
                             multiline
-                            value={`Beginning September 1, 2019, be one of the first fifteen (15) users to attain Gold Badge status and GoalMogul Inc. will reward you with a USD $300.00 cash prize!\n`}
+                            value={`Beginning September 1, 2019, be one of the first fifteen (15) users to attain Gold Badge status and GoalMogul Inc. will reward you with a USD $700.00 cash prize!\n`}
                             style={styles.contentTextStyle}
                         />
                         <TextInput 
