@@ -20,6 +20,7 @@ import Badges, { Bronze3D, Silver3D, Gold3D, Green } from '../../../asset/banner
 import { ConfettiFadedBackground } from '../../../asset/background';
 import { getBagdeIconByTier } from '../../../redux/modules/gamification/BadgeActions';
 import GoldBadgeInfoModal from './GoldBadgeInfoModal';
+import GoldBadgeRewardModal from './GoldBadgeRewardModal';
 
 const { CheckIcon, InfoIcon } = Icons;
 const DEBUG_KEY = '[ UI EarnBadgeModal ]';
@@ -30,7 +31,8 @@ class EarnBadgeModal extends React.PureComponent {
         this.state = {
             numberLoaded: false,
             numberOfUsersOnSameBadge: undefined,
-            showGoldBagdeInfoModal: false
+            showGoldBagdeInfoModal: false,
+            showGoldBadgeRewardModal: false
         };
 
         this.animations = {
@@ -42,7 +44,6 @@ class EarnBadgeModal extends React.PureComponent {
         // Modal is shown
         if (!prevProps.isVisible && this.props.isVisible) {
             // Send request to fetch the number of
-            console.log('earn badge modal is now alive ');
             const callback = (count) => {
                 console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: count is: `, count);
                 this.setState({
@@ -117,6 +118,15 @@ class EarnBadgeModal extends React.PureComponent {
                 onModalShow={this.onModalShow}
                 style={{ flex: 1, marginTop: Constants.statusBarHeight + 15, backgroundColor: 'white', borderRadius: 15 }}
             >
+                <GoldBadgeRewardModal 
+                    isVisible={this.state.showGoldBadgeRewardModal}
+                    closeModal={() => {
+                        this.setState({
+                            ...this.state,
+                            showGoldBadgeRewardModal: false
+                        });
+                    }}
+                />
                 <GoldBadgeInfoModal 
                     isVisible={this.state.showGoldBagdeInfoModal}
                     closeModal={() => {
@@ -156,12 +166,19 @@ class EarnBadgeModal extends React.PureComponent {
                             })
                         }
 
-                        <Text style={{ color: 'rgb(95, 95, 95)', fontSize: 11, lineHeight: 6, marginTop: 25, padding: 6 }}>
-                            {`\u002A Limited to the first 15 gold users. `}
-                            <Text style={{ color: 'rgb(0, 150, 203)', fontWeight: '600' }}>
-                                View details
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text style={{ color: 'rgb(95, 95, 95)', fontSize: 11, lineHeight: 6, marginTop: 25, padding: 6, paddingRight: 0 }}>
+                                {`\u002A Limited to the first 15 gold users. `}                            
                             </Text>
-                        </Text>
+                            <DelayedButton
+                                activeOpacity={0.6}
+                                onPress={() => { this.setState({ ...this.state, showGoldBadgeRewardModal: true }) }}
+                            >
+                                <Text style={{ fontSize: 11, color: 'rgb(0, 150, 203)', fontWeight: '600', marginTop: 25, lineHeight: 6, padding: 6, paddingLeft: 2 }}>
+                                    View details
+                                </Text>
+                            </DelayedButton>
+                        </View>
                         <Animated.Text
                             style={{ 
                                 color: 'rgb(209, 163, 16)', 

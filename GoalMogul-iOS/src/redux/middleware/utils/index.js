@@ -348,9 +348,7 @@ export const getPhoneNumbers = (contact) => {
   const { phoneNumbers } = contact;
   if (!phoneNumbers || _.isEmpty(phoneNumbers)) return null;
 
-  if (_.isEmpty(mobileNumbers)) return null;
-
-  return mobileNumbers.map(n => n ? n.number : null).filter(n => !!n);
+  return phoneNumbers.map(n => n ? n.number : null).filter(n => !!n);
 };
 
 export const getEmail = (contact) => {
