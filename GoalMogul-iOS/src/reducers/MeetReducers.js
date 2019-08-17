@@ -382,6 +382,8 @@ export default (state = INITIAL_STATE, action) => {
       const { refresh, uploading } = action.payload;
       if (uploading) {
         newMatchedContacts = _.set(newMatchedContacts, 'uploading', true);
+        // Reset the data to display
+        newMatchedContacts = _.set(newMatchedContacts, 'data', []);
       } else {
         newMatchedContacts = _.set(newMatchedContacts, 'uploading', false);
         if (refresh) {

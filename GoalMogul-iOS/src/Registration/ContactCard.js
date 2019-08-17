@@ -11,7 +11,7 @@ const ContactCard = (props) => {
 
 const styles = {
   containerStyle: {
-    height: 50,
+    minHeight: 50,
     flex: 1,
     flexDirection: 'row',
     borderColor: '#eaeaea',

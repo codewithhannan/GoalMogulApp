@@ -11,7 +11,8 @@ import badge from '../asset/utils/badge.png';
 import Icons from '../asset/base64/Icons';
 
 // Actions
-import { updateFriendship, openProfile } from '../actions';
+import { updateFriendship, openProfile, UserBanner } from '../actions';
+import Name from '../Main/Common/Name';
 
 const { CheckIcon: check, AddUser: addUser } = Icons;
 const checkIconColor = '#2dca4a';
@@ -76,11 +77,13 @@ class ContactDetail extends Component {
 
   render() {
     // console.log('item is: ', this.props.item.item);
+    const { item } = this.props;
+    if (!item) return null;
     const { name, headline, _id, profile } = this.props.item;
     return (
       <View style={styles.containerStyle}>
         <ProfileImage 
-          imageStyle={{ height: 30, width: 30, borderRadius: 4 }}
+          imageStyle={{ height: 55, width: 55, borderRadius: 5 }}
           imageUrl={profile ? profile.image : undefined}
           imageContainerStyle={{ ...styles.imageContainerStyle }}
           userId={_id}
@@ -97,14 +100,16 @@ class ContactDetail extends Component {
           activeOpacity={0.6}
           onPress={() => this.props.openProfile(_id)}
         >
-          <Text
-            style={styles.nameTextStyle}
-            numberOfLines={1}
-            ellipsizeMode='tail'
-          >
-            {name}
-          </Text>
-          <Image style={styles.imageStyle} source={badge} />
+          {/* Name and banner  */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }}>
+            <Name text={name} />
+            <UserBanner 
+              user={item} 
+              iconStyle={{ marginTop: 1, marginLeft: 3, height: 18, width: 15 }} 
+            />
+          </View>
+
+          {/* Headline */}
           <Text
             style={styles.titleTextStyle}
             numberOfLines={1}
@@ -138,20 +143,13 @@ const styles = {
     marginBottom: 10
   },
   bodyContainerStyle: {
-    flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     flex: 1,
-    marginLeft: 5,
-    marginRight: 5
-  },
-  nameTextStyle: {
     marginLeft: 8,
-    marginRight: 4,
-    fontSize: 15,
-    fontWeight: '700',
-    maxWidth: 200
+    marginRight: 8
   },
+  
   titleTextStyle: {
     flex: 1,
     flexWrap: 'wrap'
@@ -160,23 +158,23 @@ const styles = {
     marginRight: 3
   },
   addUserIconContainerStyle: {
-    height: 30,
-    width: 30,
-    borderRadius: 15,
+    height: 36,
+    width: 36,
+    borderRadius: 18,
     borderWidth: 0,
     backgroundColor: '#17B3EC',
     justifyContent: 'center',
     alignItems: 'center'
   },
   imageContainerStyle: {
-    borderWidth: 0.5,
-    padding: 0.5,
-    borderColor: 'lightgray',
-    alignItems: 'center',
-    borderRadius: 5,
-    alignSelf: 'flex-start',
-    backgroundColor: 'white'
-  },
+		borderWidth: 0.5,
+		padding: 1.5,
+		borderColor: 'lightgray',
+		alignItems: 'center',
+		borderRadius: 6,
+		alignSelf: 'center',
+		backgroundColor: 'white'
+	},
   checkIconContainerStyle: {
     height: 30,
     width: 30,
@@ -188,8 +186,8 @@ const styles = {
     alignItems: 'center'
   },
   iconStyle: {
-    height: 16,
-    width: 16
+    height: 20,
+    width: 20
   }
 };
 
