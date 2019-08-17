@@ -452,13 +452,17 @@ class ProfileDetailCard extends Component {
               {name}
             </Text>
             <UserBanner user={this.props.user} iconStyle={{ height: 20, width: 17 }} />
-            <DelayedButton
-              onPress={this.handleBannerInfoIconOnPress}
-              style={styles.infoIconContainerStyle}
-              activeOpacity={0.6}
-            >
-              <Image source={InfoIcon} style={styles.infoIconStyle} />
-            </DelayedButton>
+            {
+              this.props.self && (
+                <DelayedButton
+                  onPress={this.handleBannerInfoIconOnPress}
+                  style={styles.infoIconContainerStyle}
+                  activeOpacity={0.6}
+                >
+                  <Image source={InfoIcon} style={styles.infoIconStyle} />
+                </DelayedButton>
+              )
+            }
           </View>
           <RichText 
             textStyle={styles.headlineTextStyle} 
