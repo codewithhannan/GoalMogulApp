@@ -53,6 +53,7 @@ class SearchOverlay extends Component {
     this.state = {
       // We keep a local copy since debounced search takes a while to fire event to update reducer
       searchContent: undefined,
+      tabTransition: false
     };
   }
 
@@ -68,7 +69,7 @@ class SearchOverlay extends Component {
     if ((!this.props.searchContent || this.props.searchContent.trim() === '') && 
         (!this.state.searchContent || this.state.searchContent === '' || this.state.searchContent.trim() === '') &&
         !this.isCanceled) {
-      this.handleCancel();
+      // this.handleCancel();
     }
   }
 
@@ -100,7 +101,8 @@ class SearchOverlay extends Component {
   handleOnEndSubmitting = ({ nativeEvent }) => {
     const { text, eventCount, taget } = nativeEvent;
     // Close the search modal if nothing is entered
-    if (text === undefined || text === null || text === '' || text.trim() === '') {
+    console.log('on end editing');
+    if ((text === undefined || text === null || text === '' || text.trim() === '') && !this.state.tabTransition) {
       this.handleCancel();
     }
   }
@@ -119,7 +121,22 @@ class SearchOverlay extends Component {
   // Tabs handler functions
   _handleIndexChange = index => {
     console.log(`${DEBUG_KEY}: index changed to ${index}`);
+    this.setState({
+      ...this.state,
+      tabTransition: true
+    });
     this.props.searchSwitchTab(index);
+
+    // This is a workaround for cancel button disappear when losing focus
+    // We don't want to trigger onSubmitEnding with handleCancel when
+    // changing the tab
+    setTimeout(() => {
+      this.setState({
+        ...this.state,
+        tabTransition: false
+      });
+      this.search.focus();
+    }, 200);
   };
 
   _renderHeader = props => {
@@ -163,6 +180,7 @@ class SearchOverlay extends Component {
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
           <View style={{ ...styles.headerContainerStyle, paddingTop: marginTop }}>
             <SearchBar
+              ref={search => this.search = search}
               platform='ios'
               round
               autoFocus
@@ -188,7 +206,7 @@ class SearchOverlay extends Component {
                   iconStyle={{ tintColor: APP_BLUE, height: 15, width: 15 }}
                 />
               )}
-              onSubmitEditing={this.handleOnEndSubmitting}
+              onEndEditing={this.handleOnEndSubmitting}
               value={this.state.searchContent}
             />
           </View>
