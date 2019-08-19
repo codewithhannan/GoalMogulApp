@@ -53,8 +53,8 @@ class ContactDetail extends Component {
     });
   }
 
-  renderButton() {
-    if (this.state.requested) {
+  renderButton(maybeInvitationType) {
+    if (this.state.requested || (maybeInvitationType && maybeInvitationType === 'outgoing')) {
       return (
         <View style={styles.checkIconContainerStyle}>
           <Image
@@ -79,7 +79,7 @@ class ContactDetail extends Component {
     // console.log('item is: ', this.props.item.item);
     const { item } = this.props;
     if (!item) return null;
-    const { name, headline, _id, profile } = this.props.item;
+    const { name, headline, _id, profile, maybeInvitationType } = this.props.item;
     return (
       <View style={styles.containerStyle}>
         <ProfileImage 
@@ -105,7 +105,7 @@ class ContactDetail extends Component {
             <Name text={name} />
             <UserBanner 
               user={item} 
-              iconStyle={{ marginTop: 1, marginLeft: 3, height: 18, width: 15 }} 
+              iconStyle={{ marginTop: 1, marginLeft: 5, height: 18, width: 15 }} 
             />
           </View>
 
@@ -123,7 +123,7 @@ class ContactDetail extends Component {
           activeOpacity={0.6} 
           onPress={this.onFriendRequest.bind(this, _id)}
         >
-          {this.renderButton()}
+          {this.renderButton(maybeInvitationType)}
         </DelayedButton>
         </View>
       </View>
