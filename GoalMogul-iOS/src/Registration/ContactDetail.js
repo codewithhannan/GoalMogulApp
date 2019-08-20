@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, ActionSheetIOS} from 'react-native';
 import { connect } from 'react-redux';
 
 // Components
@@ -27,26 +27,25 @@ class ContactDetail extends Component {
     requested: false
   }
 
-  onFriendRequest = (_id) => {
-    if (this.state.requested) {
+  onFriendRequest = (_id, maybeInvitationType) => {
+    if (this.state.requested || maybeInvitationType === 'outgoing') {
       // Currently we don't allow user to withdraw invitation on this page
-      return;
-      // ActionSheetIOS.showActionSheetWithOptions({
-      //   options: FRIENDSHIP_BUTTONS,
-      //   cancelButtonIndex: CANCEL_INDEX,
-      // },
-      // (buttonIndex) => {
-      //   console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
-      //   switch (buttonIndex) {
-      //     case WITHDRAW_INDEX:
-      //       this.props.updateFriendship(_id, '', 'deleteFriend', TAB_KEY, () => {
-      //         this.setState({ requested: false });
-      //       });
-      //       break;
-      //     default:
-      //       return;
+      // ActionSheetIOS.showActionSheetWithOptions(
+      //   {
+      //     options: FRIENDSHIP_BUTTONS,
+      //     cancelButtonIndex: CANCEL_INDEX,
+      //   },
+      //   (buttonIndex) => {
+      //     switch (buttonIndex) {
+      //       case WITHDRAW_INDEX:
+      //         // TODO: send request
+      //         break;
+      //       default:
+      //         return;
+      //     }
       //   }
-      // });
+      // );
+      return;
     }
     this.props.updateFriendship(_id, '', 'requestFriend', TAB_KEY, () => {
       this.setState({ requested: true });
@@ -76,7 +75,6 @@ class ContactDetail extends Component {
   }
 
   render() {
-    // console.log('item is: ', this.props.item.item);
     const { item } = this.props;
     if (!item) return null;
     const { name, headline, _id, profile, maybeInvitationType } = this.props.item;
@@ -121,7 +119,7 @@ class ContactDetail extends Component {
         <View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
         <DelayedButton 
           activeOpacity={0.6} 
-          onPress={this.onFriendRequest.bind(this, _id)}
+          onPress={this.onFriendRequest.bind(this, _id, maybeInvitationType)}
         >
           {this.renderButton(maybeInvitationType)}
         </DelayedButton>

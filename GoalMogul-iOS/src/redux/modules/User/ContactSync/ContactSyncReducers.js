@@ -61,6 +61,10 @@ export default (state = INITIAL_STATE, action) => {
             return newState;
         }
 
+        /**
+         * NOTE: we don't filtered here like MeetReducers since we want to get the set
+         * of people that have no idea about GM
+         */
         case MEET_CONTACT_SYNC_FETCH_DONE: {
             let newState = _.cloneDeep(state);
             const { data, refresh } = action.payload;

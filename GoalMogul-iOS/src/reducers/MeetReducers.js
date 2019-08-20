@@ -352,16 +352,21 @@ export default (state = INITIAL_STATE, action) => {
       let newMatchedContacts = _.cloneDeep(state.matchedContacts);
       const { data, skip, hasNextPage, refresh } = action.payload;
 
+      // Remove remote matches that contain incoming request or are already friends
+      const filteredData = data.filter(i => !(
+        i && i.maybeInvitationType && (i.maybeInvitationType === 'incoming' || i.maybeInvitationType === 'accepted')
+      ));
+
       newMatchedContacts = _.set(newMatchedContacts, 'skip', skip);
       if (refresh) {
         newMatchedContacts = _.set(newMatchedContacts, 'refreshing', false);
         // Override the data since it's a refresh
-        newMatchedContacts = _.set(newMatchedContacts, 'data', data);
+        newMatchedContacts = _.set(newMatchedContacts, 'data', filteredData);
       } else {
         newMatchedContacts = _.set(newMatchedContacts, 'loading', false);
         // Concat with old data and dedup
         const oldData = _.get(newMatchedContacts, 'data');
-        newMatchedContacts = _.set(newMatchedContacts, 'data', arrayUnique(oldData.concat(data)));
+        newMatchedContacts = _.set(newMatchedContacts, 'data', arrayUnique(oldData.concat(filteredData)));
       }
       
       newMatchedContacts = _.set(newMatchedContacts, 'hasNextPage', hasNextPage);
