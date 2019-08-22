@@ -47,6 +47,7 @@ class ContactInvitePage extends React.PureComponent {
                     title='Sync contacts'
                     actionText='Finish'
                     back
+                    onCancel={() => Actions.pop()}
                     onAction={() => Actions.popTo('meet')}
                     containerStyles={{
                         elevation: 3,
