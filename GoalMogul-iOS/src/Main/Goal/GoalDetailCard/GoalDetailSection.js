@@ -78,6 +78,8 @@ import {
   CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
 import { DotIcon } from '../../../Utils/Icons';
+import DelayedButton from '../../Common/Button/DelayedButton';
+import LikeListModal from '../../Common/Modal/LikeListModal';
 
 const { CheckIcon, BellIcon, ViewCountIcon } = Icons;
 const DEBUG_KEY = '[ UI GoalDetailCardV3.GoalDetailSection ]';
@@ -441,6 +443,51 @@ class GoalDetailSection extends React.PureComponent {
     );
   }
 
+  /**
+   * Render goal stats
+   * @param {*} item 
+   */
+  renderGoalStats(item) {
+    const { likeCount, shareCount, commentCount } = item;
+    // Hide the info row if no stats at all
+    if (!likeCount && !shareCount && !commentCount) return null;
+    
+    return (
+      <View style={styles.statsContainerStyle}>
+        {
+          likeCount > 0 ? (
+            <DelayedButton 
+              style={styles.likeCountContainerStyle}
+              onPress={() => this.setState({ ...this.state, showlikeListModal: true })}
+              activeOpacity={0.6}
+            >
+              <Image source={LoveIcon} style={{ tintColor: '#f15860', height: 11, width: 12, marginRight: 4 }} />
+              <Text style={{ ...styles.statsBaseTextStyle, color: '#f15860' }}>
+                <Text style={{ fontWeight: '700' }}>{likeCount}</Text> {likeCount > 1 ? 'people' : 'person'} liked this
+              </Text>
+            </DelayedButton>
+          ) : 
+          // Filler view to occupy the space
+          (
+            <View style={styles.likeCountContainerStyle}>
+              <Text style={{ ...styles.statsBaseTextStyle, color: '#f15860' }}>{' '}</Text>
+            </View>
+          )
+        }
+        {shareCount > 0 && (
+          <Text style={{ ...styles.statsBaseTextStyle, color: '#636363' }}>
+            {shareCount} {shareCount > 1 ? 'Shares' : 'Share'}
+          </Text>
+        )}
+        {commentCount > 0 && (
+          <Text style={{ ...styles.statsBaseTextStyle, color: '#636363' }}>
+            {commentCount} {commentCount > 1 ? 'Replies' : 'Reply'}
+          </Text>
+        )}
+      </View>
+    );
+  }
+
   renderActionButtons(item) {
     const { maybeLikeRef, _id } = item;
     // Self Action Buttons are moved to caret drop down in Headline
@@ -460,7 +507,8 @@ class GoalDetailSection extends React.PureComponent {
       <ActionButtonGroup>
         <ActionButton
           iconSource={LoveIcon}
-          count={likeCount}
+          // count={likeCount}
+          count='Like'
           textStyle={{ color: '#f15860' }}
           iconContainerStyle={likeButtonContainerStyle}
           iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22 }}
@@ -474,14 +522,16 @@ class GoalDetailSection extends React.PureComponent {
         />
         <ActionButton
           iconSource={ShareIcon}
-          count={shareCount}
+          // count={shareCount}
+          count='Share'
           textStyle={{ color: '#a8e1a0' }}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
           onPress={() => this.handleShareOnClick()}
         />
         <ActionButton
           iconSource={CommentIcon}
-          count={commentCount}
+          // count={commentCount}
+          count='Reply'
           iconStyle={{ tintColor: '#FCB110', height: 26, width: 26 }}
           textStyle={{ color: '#FCB110' }}
           onPress={() => {
@@ -508,13 +558,26 @@ class GoalDetailSection extends React.PureComponent {
     if (!item || _.isEmpty(item)) return null;
 
     return (
-      <View onLayout={this.handleOnLayout}>
+      <View onLayout={this.handleOnLayout} style={{ paddingHorizontal: 15 }}>
+        <LikeListModal 
+          isVisible={this.state.showlikeListModal} 
+          closeModal={() => {
+            this.setState({
+              ...this.state,
+              showlikeListModal: false
+            });
+          }}
+          parentId={item._id}
+          parentType='Goal'
+        />
         <View style={{ ...styles.containerStyle }}>
-          <View style={{ marginTop: 12, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
+          <View style={{ marginTop: 12, marginBottom: 10 }}>
             {this.renderUserDetail(item)}
             {this.renderCardContent(item)}
           </View>
         </View>
+
+        {this.renderGoalStats(item)}
 
         <View style={styles.containerStyle}>
           {this.renderActionButtons(item)}
@@ -559,6 +622,23 @@ const styles = {
   seeMoreTextStyle: {
     fontSize: 12,
     color: APP_BLUE
+  },
+  statsContainerStyle: {
+    borderTopWidth: 0.5,
+    borderTopColor: '#f1f1f1',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 3
+  },
+  likeCountContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    paddingHorizontal: 3,
+    paddingVertical: 7
+  },
+  statsBaseTextStyle: {
+    fontSize: 9
   }
 };
 
