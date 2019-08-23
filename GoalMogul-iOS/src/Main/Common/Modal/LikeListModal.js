@@ -15,13 +15,14 @@ import { modalCancelIconContainerStyle, modalCancelIconStyle } from '../../../st
 
 const DEBUG_KEY = '[ UI LikeListModal ]';
 const MODAL_TRANSITION_TIME = 300;
+const INITIAL_STATE = {
+    data: [], // User like list
+    loading: false
+};
 class LikeListModal extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.state = {
-          data: [], // like user list
-          loading: false
-        };
+        this.state = {...INITIAL_STATE};
     }
 
     closeModal() {
@@ -42,6 +43,12 @@ class LikeListModal extends React.PureComponent {
 
     onModalShow = () => {
         this.refreshLikeList();
+    }
+
+    onModalHide = () => {
+        if (this.props.clearDataOnHide) {
+            this.setState({ ...INITIAL_STATE });
+        }
     }
 
     _keyExtractor = (item) => item._id;
@@ -87,6 +94,7 @@ class LikeListModal extends React.PureComponent {
                 isVisible={this.props.isVisible}
                 backdropOpacity={0.5}
                 onModalShow={this.onModalShow}
+                onModalHide={this.onModalHide.bind(this)}
                 swipeDirection='down'
                 onSwipe={this.closeModal.bind(this)}
                 hideModalContentWhileAnimating
