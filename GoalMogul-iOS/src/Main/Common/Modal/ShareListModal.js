@@ -12,6 +12,7 @@ import { Constants } from 'expo';
 import DelayedButton from '../Button/DelayedButton';
 import { ModalHeaderStyle } from './Styles';
 import { getShareList } from '../../../redux/modules/feed/post/PostActions';
+import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
 
 const DEBUG_KEY = '[ UI ShareListModal ]';
 const MODAL_TRANSITION_TIME = 300;
@@ -66,16 +67,24 @@ class ShareListModal extends React.PureComponent {
             return null;
         }
 
-        const callback = (openProfileCallBack) => {
+        const callback = (actionsToDoAfterClosingModal) => {
             this.closeModal();
             // Wait till animation finished. Default for react native modal is 300
             setTimeout(() => {
-                // TODO: open share detail
-                openProfileCallBack();
+                if (actionsToDoAfterClosingModal) {
+                    actionsToDoAfterClosingModal();
+                }
             }, MODAL_TRANSITION_TIME);
         }
-        // TODO: render ProfilePostCard
-        return null;
+
+        return (
+            <ProfilePostCard 
+                item={item}
+                hasActionButton={false}
+                showRefPreview={false}
+                actionDecorator={callback}
+            />
+        );
     }
 
     renderHeader() {
@@ -112,8 +121,8 @@ class ShareListModal extends React.PureComponent {
                 backdropOpacity={0.5}
                 onModalShow={this.onModalShow}
                 onModalHide={this.onModalHide.bind(this)}
-                swipeDirection='down'
-                onSwipe={this.closeModal.bind(this)}
+                // swipeDirection='down'
+                // onSwipe={this.closeModal.bind(this)}
                 hideModalContentWhileAnimating
                 style={{ flex: 1, marginTop: Constants.statusBarHeight + 15, backgroundColor: 'white', borderTopRightRadius: 15, borderTopLeftRadius: 15, marginHorizontal: 0, marginBottom: 0 }}
             >

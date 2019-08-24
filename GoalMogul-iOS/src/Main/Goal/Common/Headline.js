@@ -104,7 +104,11 @@ class Headline extends React.PureComponent {
     if (disabled) return;
 
     const { _id } = user;
-    this.props.openProfile(_id);
+    if (this.props.actionDecorator) {
+      this.props.actionDecorator(() => this.props.openProfile(_id));
+    } else {
+      this.props.openProfile(_id); 
+    }
   }
 
   renderDeleteOptionOnly(menuName) {

@@ -133,7 +133,7 @@ class ActivityCard extends React.PureComponent {
           count={likeCount}
           iconContainerStyle={likeButtonContainerStyle}
           textStyle={{ color: '#f15860' }}
-          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22 }}
+          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22, marginTop: 1.5 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {

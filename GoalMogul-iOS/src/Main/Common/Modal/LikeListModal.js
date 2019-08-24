@@ -104,8 +104,8 @@ class LikeListModal extends React.PureComponent {
                 backdropOpacity={0.5}
                 onModalShow={this.onModalShow}
                 onModalHide={this.onModalHide.bind(this)}
-                swipeDirection='down'
-                onSwipe={this.closeModal.bind(this)}
+                // swipeDirection='down'
+                // onSwipe={this.closeModal.bind(this)}
                 hideModalContentWhileAnimating
                 style={{ flex: 1, marginTop: Constants.statusBarHeight + 15, backgroundColor: 'white', borderTopRightRadius: 15, borderTopLeftRadius: 15, marginHorizontal: 0, marginBottom: 0 }}
             >
