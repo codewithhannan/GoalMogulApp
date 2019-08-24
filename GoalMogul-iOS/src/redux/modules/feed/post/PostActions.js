@@ -464,6 +464,39 @@ export const postToFormAdapter = (values) => {
   };
 };
 
+/**
+ * Get the list of shares for a goal or a post
+ * @param {*} entityType: 'Post' || 'Goal' || 'User'
+ * @param {*} entityId: id of the shared item 
+ * @param {*} callback
+ */
+export const getShareList = (entityType, entityId, callback) => (dispatch, getState) => {
+  const { token } = getState().user;
+
+  const onSuccess = (res) => {
+    Logger.log(`${DEBUG_KEY}: [ getShareList ] success with res: `, res, 3);
+    if (callback) {
+      return callback(res.data);
+    }
+  };
+
+  const onError = (err) => {
+    console.warn(`${DEBUG_KEY}: [ getShareList ] failed with err: `, err);
+  };
+
+  API
+    .get(`secure/feed/post/shares?entityId=${entityId}&entityType=${entityType}`, token)
+    .then((res) => {
+      if (res.status === 200) {
+        return onSuccess(res);
+      }
+      return onError(res);
+    })
+    .catch((err) => {
+      onError(err);
+    });
+}
+
 const constructTags = (tags, content) => {
   return tags.map((t) => {
     const { startIndex, endIndex, user } = t;

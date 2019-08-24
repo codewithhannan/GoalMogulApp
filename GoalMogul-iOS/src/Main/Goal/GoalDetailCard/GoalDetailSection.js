@@ -80,6 +80,7 @@ import {
 import { DotIcon } from '../../../Utils/Icons';
 import DelayedButton from '../../Common/Button/DelayedButton';
 import LikeListModal from '../../Common/Modal/LikeListModal';
+import ShareListModal from '../../Common/Modal/ShareListModal';
 
 const { CheckIcon, BellIcon, ViewCountIcon } = Icons;
 const DEBUG_KEY = '[ UI GoalDetailCardV3.GoalDetailSection ]';
@@ -92,7 +93,9 @@ class GoalDetailSection extends React.PureComponent {
     this.state = {
       numberOfLines: 2,
       seeMore: false,
-      goalReminderDatePicker: false
+      goalReminderDatePicker: false,
+      showShareListModa: false,
+      showlikeListModal: false
     };
     this.handleGoalReminder = this.handleGoalReminder.bind(this);
   }
@@ -475,9 +478,15 @@ class GoalDetailSection extends React.PureComponent {
           )
         }
         {shareCount > 0 && (
-          <Text style={{ ...styles.statsBaseTextStyle, color: '#636363' }}>
-            {shareCount} {shareCount > 1 ? 'Shares' : 'Share'}
-          </Text>
+          <DelayedButton 
+              style={{ padding: 5 }}
+              onPress={() => this.setState({ ...this.state, showShareListModal: true })}
+              activeOpacity={0.6}
+          >
+            <Text style={{ ...styles.statsBaseTextStyle, color: '#636363' }}>
+              {shareCount} {shareCount > 1 ? 'Shares' : 'Share'}
+            </Text>
+          </DelayedButton>
         )}
         {commentCount > 0 && (
           <Text style={{ ...styles.statsBaseTextStyle, color: '#636363' }}>
@@ -569,6 +578,17 @@ class GoalDetailSection extends React.PureComponent {
           }}
           parentId={item._id}
           parentType='Goal'
+        />
+        <ShareListModal
+          isVisible={this.state.showShareListModal} 
+          closeModal={() => {
+            this.setState({
+              ...this.state,
+              showShareListModal: false
+            });
+          }}
+          entityId={item._id}
+          entityType='Goal'
         />
         <View style={{ ...styles.containerStyle }}>
           <View style={{ marginTop: 12, marginBottom: 10 }}>

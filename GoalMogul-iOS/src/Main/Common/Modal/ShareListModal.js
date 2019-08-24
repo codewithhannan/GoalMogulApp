@@ -6,21 +6,27 @@ import React from 'react';
 import { View, FlatList, Image, Text } from 'react-native';
 import { connect } from 'react-redux';
 import UserCard from '../Card/UserCard';
-import { getLikeList } from '../../../redux/modules/like/LikeActions';
 import cancel from '../../../asset/utils/cancel_no_background.png';
 import Modal from 'react-native-modal';
 import { Constants } from 'expo';
 import DelayedButton from '../Button/DelayedButton';
-import { modalCancelIconContainerStyle, modalCancelIconStyle } from '../../../styles';
 import { ModalHeaderStyle } from './Styles';
+import { getShareList } from '../../../redux/modules/feed/post/PostActions';
 
-const DEBUG_KEY = '[ UI LikeListModal ]';
+const DEBUG_KEY = '[ UI ShareListModal ]';
 const MODAL_TRANSITION_TIME = 300;
 const INITIAL_STATE = {
     data: [], // User like list
     refreshing: false
 };
-class LikeListModal extends React.PureComponent {
+
+/**
+ * NOTE: props for this Modal is: 
+ * {
+ *      closeModal, entityType, entityId, isVisible
+ * }
+ */
+class ShareListModal extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {...INITIAL_STATE};
@@ -30,7 +36,7 @@ class LikeListModal extends React.PureComponent {
         this.props.closeModal && this.props.closeModal();
     }
 
-    refreshLikeList = () => {
+    refreshShareList = () => {
         this.setState({ ...this.state, refreshing: true });
         const callback = (data) => {
             this.setState({
@@ -39,11 +45,11 @@ class LikeListModal extends React.PureComponent {
             });
         };
 
-        this.props.getLikeList(this.props.parentId, this.props.parentType, callback);
+        this.props.getShareList(this.props.entityType, this.props.entityId, callback);
     }
 
     onModalShow = () => {
-        this.refreshLikeList();
+        this.refreshShareList();
     }
 
     onModalHide = () => {
@@ -55,8 +61,8 @@ class LikeListModal extends React.PureComponent {
     _keyExtractor = (item) => item._id;
 
     renderItem = ({ item }) => {
-        if (!item || !item.creator) {
-            console.warn(`${DEBUG_KEY}: creator doesn't exist for item:`, item);
+        if (!item) {
+            console.warn(`${DEBUG_KEY}: item is null`);
             return null;
         }
 
@@ -64,10 +70,12 @@ class LikeListModal extends React.PureComponent {
             this.closeModal();
             // Wait till animation finished. Default for react native modal is 300
             setTimeout(() => {
+                // TODO: open share detail
                 openProfileCallBack();
             }, MODAL_TRANSITION_TIME);
         }
-        return <UserCard item={item.creator} callback={callback} />;
+        // TODO: render ProfilePostCard
+        return null;
     }
 
     renderHeader() {
@@ -90,7 +98,7 @@ class LikeListModal extends React.PureComponent {
                         flexDirection: 'row'
                     }}
                 >
-                    <Text style={ModalHeaderStyle.headerTextStyle}>Likes</Text>
+                    <Text style={ModalHeaderStyle.headerTextStyle}>Shares</Text>
                 </View>
             </View>
         );
@@ -125,6 +133,6 @@ class LikeListModal extends React.PureComponent {
 export default connect(
     null,
     {
-        getLikeList   
+        getShareList   
     }
-)(LikeListModal);
+)(ShareListModal);
