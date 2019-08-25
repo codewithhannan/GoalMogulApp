@@ -479,7 +479,7 @@ class GoalDetailSection extends React.PureComponent {
         }
         {shareCount > 0 && (
           <DelayedButton 
-              style={{ padding: 5 }}
+              style={{ padding: 5, marginRight: 4 }}
               onPress={() => this.setState({ ...this.state, showShareListModal: true })}
               activeOpacity={0.6}
           >

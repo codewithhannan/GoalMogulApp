@@ -84,6 +84,8 @@ import {
   CARET_OPTION_NOTIFICATION_SUBSCRIBE,
   CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
+import DelayedButton from '../../Common/Button/DelayedButton';
+import LikeListModal from '../../Common/Modal/LikeListModal';
 
 const DEBUG_KEY = '[ UI ShareDetailCard.ShareDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
@@ -94,7 +96,8 @@ class ShareDetailSection extends Component {
   state = {
     mediaModal: false,
     numberOfLines: undefined,
-    seeMore: true
+    seeMore: true,
+    showlikeListModal: false
   }
 
   handleShareOnClick = () => {
@@ -347,6 +350,46 @@ class ShareDetailSection extends Component {
     );
   }
 
+  /**
+   * Render post stats
+   * @param {*} item 
+   */
+  renderPostStats(item) {
+    const { likeCount, shareCount, commentCount } = item;
+    // Hide the info row if no stats at all
+    if (!likeCount && !shareCount && !commentCount) return null;
+    
+    return (
+      <View style={styles.statsContainerStyle}>
+        {
+          likeCount > 0 ? (
+            <DelayedButton 
+              style={styles.likeCountContainerStyle}
+              onPress={() => this.setState({ ...this.state, showlikeListModal: true })}
+              activeOpacity={0.6}
+            >
+              <Image source={LoveIcon} style={{ tintColor: '#f15860', height: 11, width: 12, marginRight: 4 }} />
+              <Text style={{ ...styles.statsBaseTextStyle, color: '#f15860' }}>
+                <Text style={{ fontWeight: '700' }}>{likeCount}</Text> {likeCount > 1 ? 'people' : 'person'} liked this
+              </Text>
+            </DelayedButton>
+          ) : 
+          // Filler view to occupy the space
+          (
+            <View style={styles.likeCountContainerStyle}>
+              <Text style={{ ...styles.statsBaseTextStyle, color: '#f15860' }}>{' '}</Text>
+            </View>
+          )
+        }
+        {commentCount > 0 && (
+          <Text style={{ ...styles.statsBaseTextStyle, color: '#636363' }}>
+            {commentCount} {commentCount > 1 ? 'Replies' : 'Reply'}
+          </Text>
+        )}
+      </View>
+    );
+  }
+
   renderActionButtons() {
     const { item } = this.props;
     const { maybeLikeRef, _id } = item;
@@ -367,7 +410,8 @@ class ShareDetailSection extends Component {
       <ActionButtonGroup>
         <ActionButton
           iconSource={LoveIcon}
-          count={likeCount}
+          // count={likeCount}
+          count='Like'
           textStyle={{ color: '#f15860' }}
           iconContainerStyle={likeButtonContainerStyle}
           iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22, marginTop: 1.5 }}
@@ -381,7 +425,8 @@ class ShareDetailSection extends Component {
         />
         <ActionButton
           iconSource={ShareIcon}
-          count={shareCount}
+          // count={shareCount}
+          count='Share'
           textStyle={{ color: '#a8e1a0' }}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
           onPress={() => this.handleShareOnClick()}
@@ -389,7 +434,8 @@ class ShareDetailSection extends Component {
         />
         <ActionButton
           iconSource={CommentIcon}
-          count={commentCount}
+          // count={commentCount}
+          count='Reply'
           textStyle={{ color: '#FCB110' }}
           iconStyle={{ tintColor: '#FCB110', height: 26, width: 26 }}
           onPress={() => {
@@ -416,13 +462,24 @@ class ShareDetailSection extends Component {
     if (!item || _.isEmpty(item) || !item.created) return null;
 
     return (
-      <View>
-        <View style={{ ...styles.containerStyle }}>
-          <View style={{ marginTop: 20, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
-            {this.renderUserDetail(item)}
-            {this.renderCardContent(item)}
-          </View>
+      <View style={{ ...styles.containerStyle, paddingHorizontal: 15 }}>
+        <LikeListModal 
+          isVisible={this.state.showlikeListModal} 
+          closeModal={() => {
+            this.setState({
+              ...this.state,
+              showlikeListModal: false
+            });
+          }}
+          parentId={item._id}
+          parentType='Post'
+        />
+        <View style={{ marginTop: 20, marginBottom: 10 }}>
+          {this.renderUserDetail(item)}
+          {this.renderCardContent(item)}
         </View>
+
+        {this.renderPostStats(item)}
 
         <View style={styles.containerStyle}>
           {this.renderActionButtons(item)}
@@ -494,6 +551,23 @@ const styles = {
   seeMoreTextStyle: {
     fontSize: 12,
     color: APP_BLUE
+  },
+  statsContainerStyle: {
+    borderTopWidth: 0.5,
+    borderTopColor: '#f1f1f1',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 3
+  },
+  likeCountContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    paddingHorizontal: 3,
+    paddingVertical: 7
+  },
+  statsBaseTextStyle: {
+    fontSize: 9
   }
 };
 
