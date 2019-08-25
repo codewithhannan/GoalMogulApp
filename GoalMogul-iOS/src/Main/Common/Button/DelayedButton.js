@@ -70,7 +70,7 @@ class DelayedButton extends React.PureComponent {
             <TouchableOpacity 
                 {...this.props}
                 onPress={this.handleOnPress}
-                disabled={this.state.disabled}
+                disabled={this.state.disabled || this.props.disabled}
             >
                 {this.props.children}
             </TouchableOpacity>
