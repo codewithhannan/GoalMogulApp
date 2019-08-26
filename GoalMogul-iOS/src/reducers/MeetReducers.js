@@ -244,6 +244,22 @@ export default (state = INITIAL_STATE, action) => {
           newState = _.set(newState, `${tab}.data`, newData);
           return newState;
         }
+
+        // User removed friend request in contact sync process
+        if (tab === 'contacts') {
+          const oldData = _.get(newState, `matchedContacts.data`);
+          const newData = oldData.map(u => {
+            if (u._id === userId) {
+              let newU = _.cloneDeep(u);
+              newU = _.set(newU, 'maybeInvitationType', undefined);
+              newU = _.set(newU, 'maybeInvitationId', undefined);
+              return newU;
+            }
+            return u;
+          });
+          newState = _.set(newState, `matchedContacts.data`, newData);
+          return newState;
+        }
       }
 
       if (type === 'requestFriend') {
@@ -252,6 +268,26 @@ export default (state = INITIAL_STATE, action) => {
           const oldData = _.get(newState, 'requests.outgoing.data');
           const newData = oldData.concat(data.data);
           newState = _.set(newState, 'requests.outgoing.data', arrayUnique(newData));
+          return newState;
+        }
+
+        // User sends friend requests in contact sync process
+        if (tab === 'contacts') {
+          if (!data.data || !data.data._id) {
+            console.warn(`${DEBUG_KEY}: user sends friend request without getting a friendshipId. Payload is:`, action.payload);
+            return newState;
+          }
+          const oldData = _.get(newState, `matchedContacts.data`);
+          const newData = oldData.map(u => {
+            if (u._id === userId) {
+              let newU = _.cloneDeep(u);
+              newU = _.set(newU, 'maybeInvitationType', 'outgoing');
+              newU = _.set(newU, 'maybeInvitationId', data.data._id); // Update friendship Id
+              return newU;
+            }
+            return u;
+          });
+          newState = _.set(newState, `matchedContacts.data`, newData);
           return newState;
         }
       }
