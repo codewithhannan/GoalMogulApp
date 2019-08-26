@@ -1,86 +1,53 @@
+import _ from 'lodash';
+import moment from 'moment';
+import R from 'ramda';
 import React from 'react';
-import {
-  View,
-  Text,
-  Alert,
-  TouchableOpacity,
-  Image
-} from 'react-native';
+import { Alert, Dimensions, Image, Text, TouchableOpacity, View } from 'react-native';
+import DateTimePicker from 'react-native-modal-datetime-picker';
+import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import timeago from 'timeago.js';
-import _ from 'lodash';
-import R from 'ramda';
-import { Actions } from 'react-native-router-flux';
-import moment from 'moment';
-import DateTimePicker from 'react-native-modal-datetime-picker';
-
-// Actions
-import {
-  createReport
-} from '../../../redux/modules/report/ReportActions';
-
-import {
-  likeGoal,
-  unLikeGoal
-} from '../../../redux/modules/like/LikeActions';
-
-import {
-  createCommentFromSuggestion
-} from '../../../redux/modules/feed/comment/CommentActions';
-
-import {
-  chooseShareDest
-} from '../../../redux/modules/feed/post/ShareActions';
-
-import {
-  editGoal,
-  shareGoalToMastermind,
-  markGoalAsComplete,
-  scheduleNotification
-} from '../../../redux/modules/goal/GoalDetailActions';
-
 import { deleteGoal, openProfile } from '../../../actions';
-
-import {
-  subscribeEntityNotification,
-  unsubscribeEntityNotification
-} from '../../../redux/modules/notification/NotificationActions';
-
-// Assets
-import LoveIcon from '../../../asset/utils/love.png';
+import { ConfettiFadedBackgroundTopHalf } from '../../../asset/background';
+import Icons from '../../../asset/base64/Icons';
 // import BulbIcon from '../../../asset/utils/bulb.png';
 import CommentIcon from '../../../asset/utils/comment.png';
-import ShareIcon from '../../../asset/utils/forward.png';
 import EditIcon from '../../../asset/utils/edit.png';
-import ProgressBarMedium from '../../../asset/utils/progressBar_medium.png';
+import ShareIcon from '../../../asset/utils/forward.png';
+// Assets
+import LoveIcon from '../../../asset/utils/love.png';
 import ProgressBarMediumCounter from '../../../asset/utils/progressBar_counter_medium.png';
-import UndoIcon from '../../../asset/utils/undo.png';
+import ProgressBarMedium from '../../../asset/utils/progressBar_medium.png';
 import TrashIcon from '../../../asset/utils/trash.png';
-import Icons from '../../../asset/base64/Icons';
-
-// Components
-import ProgressBar from '../Common/ProgressBar';
-import ActionButton from '../Common/ActionButton';
-import ActionButtonGroup from '../Common/ActionButtonGroup';
-import Headline from '../Common/Headline';
-import Timestamp from '../Common/Timestamp';
-import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
-import ProfileImage from '../../Common/ProfileImage';
-import IndividualActionButton from '../Common/IndividualActionButton';
-import RichText from '../../Common/Text/RichText';
-
+import UndoIcon from '../../../asset/utils/undo.png';
+import { createCommentFromSuggestion } from '../../../redux/modules/feed/comment/CommentActions';
+import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions';
+import { editGoal, markGoalAsComplete, scheduleNotification, shareGoalToMastermind } from '../../../redux/modules/goal/GoalDetailActions';
+import { likeGoal, unLikeGoal } from '../../../redux/modules/like/LikeActions';
+import { subscribeEntityNotification, unsubscribeEntityNotification } from '../../../redux/modules/notification/NotificationActions';
+// Actions
+import { createReport } from '../../../redux/modules/report/ReportActions';
 import { APP_BLUE } from '../../../styles';
-
 // Constants
 // Constants
-import { 
-  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
-  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
-} from '../../../Utils/Constants';
-import { DotIcon } from '../../../Utils/Icons';
+import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE } from '../../../Utils/Constants';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import DelayedButton from '../../Common/Button/DelayedButton';
 import LikeListModal from '../../Common/Modal/LikeListModal';
 import ShareListModal from '../../Common/Modal/ShareListModal';
+import ProfileImage from '../../Common/ProfileImage';
+import RichText from '../../Common/Text/RichText';
+import ActionButton from '../Common/ActionButton';
+import ActionButtonGroup from '../Common/ActionButtonGroup';
+import Headline from '../Common/Headline';
+import IndividualActionButton from '../Common/IndividualActionButton';
+// Components
+import ProgressBar from '../Common/ProgressBar';
+import Timestamp from '../Common/Timestamp';
+
+
+const { width } = Dimensions.get('window');
+const WINDOW_WIDTH = width;
 
 const { CheckIcon, BellIcon, ViewCountIcon } = Icons;
 const DEBUG_KEY = '[ UI GoalDetailCardV3.GoalDetailSection ]';
@@ -591,6 +558,18 @@ class GoalDetailSection extends React.PureComponent {
           entityType='Goal'
         />
         <View style={{ ...styles.containerStyle }}>
+
+          {item.isCompleted? 
+            <Image
+              source={ConfettiFadedBackgroundTopHalf}
+              style={{
+                height: WINDOW_WIDTH*.575,
+                width: WINDOW_WIDTH,
+                position: 'absolute',
+                resizeMode: 'cover',
+                opacity: 0.65,
+              }}
+            /> : null }
           <View style={{ marginTop: 12, marginBottom: 10 }}>
             {this.renderUserDetail(item)}
             {this.renderCardContent(item)}
