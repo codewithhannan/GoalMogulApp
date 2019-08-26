@@ -279,6 +279,9 @@ class ChildCommentCard extends Component {
         <ActionButton
           iconSource={LikeIcon}
           count={likeCount}
+          unitText={likeCount > 1 ? 'likes' : 'like'}
+          textContainerStyle={{ paddingVertical: 5, paddingRight: 5 }}
+          onTextPress={() => this.props.openCommentLikeList('Comment', _id)}
           textStyle={{ color: tintColor }}
           iconStyle={{ tintColor, borderRadius: 5, height: 20, width: 22 }}
           onPress={() => {

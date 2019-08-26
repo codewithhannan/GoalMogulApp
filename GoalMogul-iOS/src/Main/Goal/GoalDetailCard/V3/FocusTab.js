@@ -40,6 +40,7 @@ import {
   getNewCommentByTab,
   makeGetCommentByEntityId
 } from '../../../../redux/modules/feed/comment/CommentSelector';
+import LikeListModal from '../../../Common/Modal/LikeListModal';
 
 // Constants
 const DEBUG_KEY = '[ UI FocusTab ]';
@@ -56,7 +57,11 @@ class FocusTab extends React.PureComponent {
       keyboardHeight: 0,
       position: 'absolute',
       commentBoxPadding: new Animated.Value(0),
-      keyboardDidShow: false
+      keyboardDidShow: false,
+      // TODO: merge LikeListModal for comment with the one for goal
+      showCommentLikeList: false,
+      likeListParentType: undefined,
+      likeListParentId: undefined
     };
     this.scrollToIndex = this.scrollToIndex.bind(this);
     this.handleHeadlineOnPressed = this.handleHeadlineOnPressed.bind(this);
@@ -71,6 +76,32 @@ class FocusTab extends React.PureComponent {
 
   componentWillUnmount() {
     console.log(`${DEBUG_KEY}:  component will unmount`);
+  }
+
+  /**
+   * Open comment like list
+   */
+  openCommentLikeList = (likeListParentType, likeListParentId) => {
+    console.log(`${DEBUG_KEY}: show comment like list: ${likeListParentType}, ${likeListParentId}`);
+    this.setState({
+      ...this.state,
+      showCommentLikeList: true,
+      likeListParentType,
+      likeListParentId
+    });
+  }
+
+  /**
+   * Close comment like list
+   */
+  closeCommentLikeList = () => {
+    console.log(`${DEBUG_KEY}: close comment like list`);
+    this.setState({
+      ...this.state,
+      showCommentLikeList: false,
+      likeListParentId: undefined,
+      likeListParentType: undefined
+    });
   }
 
   handleOnScrollToIndexFailed = (info) => {
@@ -123,6 +154,7 @@ class FocusTab extends React.PureComponent {
         pageId={this.props.pageId}
         entityId={this.props.goalId}
         onHeadlinePressed={this.handleHeadlineOnPressed}
+        openCommentLikeList={this.openCommentLikeList}
       />
     );
   }
@@ -138,6 +170,13 @@ class FocusTab extends React.PureComponent {
 
     return (
       <View style={{ flex: 1, backgroundColor: 'transparent' }}>
+        <LikeListModal 
+          isVisible={this.state.showCommentLikeList} 
+          closeModal={this.closeCommentLikeList}
+          parentId={this.state.likeListParentId}
+          parentType={this.state.likeListParentType}
+          clearDataOnHide
+        />
         <AnimatedFlatList
           ref={ref => { this.flatlist = ref; }}
           data={data}
