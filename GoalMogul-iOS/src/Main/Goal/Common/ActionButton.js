@@ -92,7 +92,7 @@ const styles = {
     borderRadius: 8
   },
   textStyle: {
-    fontSize: 11,
+    fontSize: 13,
     marginLeft: 8,
     fontWeight: '600'
   }

@@ -350,7 +350,7 @@ class GoalCard extends React.PureComponent {
           imageContainerStyle={styles.imageContainerStyle}
           userId={owner._id}
         />
-        <View style={{ marginLeft: 15, flex: 1 }}>
+        <View style={{ marginLeft: 12, flex: 1 }}>
           <Headline
             name={owner.name}
             category={category}

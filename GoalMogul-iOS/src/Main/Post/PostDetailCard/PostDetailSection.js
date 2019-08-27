@@ -232,7 +232,7 @@ class PostDetailSection extends React.PureComponent {
           imageContainerStyle={styles.imageContainerStyle}
           userId={owner._id}
         />
-        <View style={{ marginLeft: 15, flex: 1 }}>
+        <View style={{ marginLeft: 12, flex: 1 }}>
           <Headline
             name={owner.name || ''}
             category={category}
@@ -532,7 +532,7 @@ class PostDetailSection extends React.PureComponent {
           entityId={item._id}
           entityType='Post'
         />
-        <View style={{ marginTop: 20, marginBottom: 10 }}>
+        <View style={{ marginTop: 15, marginBottom: 10 }}>
           {this.renderUserDetail(item)}
           {this.renderCardContent(item)}
         </View>

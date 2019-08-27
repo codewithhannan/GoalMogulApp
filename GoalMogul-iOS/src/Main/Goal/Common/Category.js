@@ -1,14 +1,21 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 const Category = (props) => {
   // TODO: format time
   return (
-    <Text style={styles.containerStyle}>
-      in {props.text}
-    </Text>
+    <View style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
+      <Text style={styles.containerStyle} ellipsizeMode='tail' numberOfLines={1}>
+        in {props.text}
+      </Text>
+    </View>
+    
   );
 };
+
+{/* <Text style={styles.containerStyle} ellipsizeMode='tail' numberOfLines={1}>
+      in {props.text}
+    </Text> */}
 
 const styles = {
   containerStyle: {

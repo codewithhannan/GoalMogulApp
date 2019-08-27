@@ -259,6 +259,7 @@ class ProfilePostCard extends React.PureComponent {
             caret={caret}
             user={owner}
             actionDecorator={this.props.actionDecorator}
+            hasCaret={this.props.hasCaret}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <RichText

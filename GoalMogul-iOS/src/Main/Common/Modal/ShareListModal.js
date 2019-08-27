@@ -83,6 +83,7 @@ class ShareListModal extends React.PureComponent {
                 hasActionButton={false}
                 showRefPreview={false}
                 actionDecorator={callback}
+                hasCaret={false}
             />
         );
     }

@@ -304,7 +304,7 @@ class GoalDetailSection extends React.PureComponent {
           imageContainerStyle={styles.imageContainerStyle}
           userId={owner._id}
         />
-        <View style={{ marginLeft: 15, flex: 1 }}>
+        <View style={{ marginLeft: 12, flex: 1 }}>
           <Headline
             onRef={(ref) => { this.headline = ref; }}
             name={owner.name || ''}
@@ -591,7 +591,7 @@ class GoalDetailSection extends React.PureComponent {
           entityType='Goal'
         />
         <View style={{ ...styles.containerStyle }}>
-          <View style={{ marginTop: 12, marginBottom: 10 }}>
+          <View style={{ marginTop: 15, marginBottom: 10 }}>
             {this.renderUserDetail(item)}
             {this.renderCardContent(item)}
           </View>
@@ -658,7 +658,7 @@ const styles = {
     paddingVertical: 7
   },
   statsBaseTextStyle: {
-    fontSize: 9
+    fontSize: 11
   }
 };
 
