@@ -71,8 +71,13 @@ const CANCEL_INDEX = 3;
 class ProfilePostCard extends React.PureComponent {
 
   handleCardOnPress = (item) => {
+    const action = () => this.props.openPostDetail({ ...item });
     if (item) {
-      return this.props.openPostDetail({ ...item });
+      if (this.props.actionDecorator) {
+        this.props.actionDecorator(action);
+      } else {
+        action();
+      }
     }
   }
 
@@ -133,7 +138,7 @@ class ProfilePostCard extends React.PureComponent {
             count={likeCount}
             textStyle={{ color: '#f15860' }}
             iconContainerStyle={likeButtonContainerStyle}
-            iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22 }}
+            iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22, marginTop: 1.5 }}
             onPress={() => {
               console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
               if (maybeLikeRef && maybeLikeRef.length > 0) {
@@ -244,6 +249,7 @@ class ProfilePostCard extends React.PureComponent {
           imageUrl={owner && owner.profile ? owner.profile.image : undefined}
           imageContainerStyle={styles.imageContainerStyle}
           userId={owner._id}
+          actionDecorator={this.props.actionDecorator}
         />
 
         <View style={{ marginLeft: 15, flex: 1 }}>
@@ -252,6 +258,8 @@ class ProfilePostCard extends React.PureComponent {
             isSelf={this.props.userId === owner._id}
             caret={caret}
             user={owner}
+            actionDecorator={this.props.actionDecorator}
+            hasCaret={this.props.hasCaret}
           />
           <Timestamp time={timeago().format(timeStamp)} />
           <RichText
@@ -264,7 +272,11 @@ class ProfilePostCard extends React.PureComponent {
             ellipsizeMode='tail'
             onUserTagPressed={(user) => {
               console.log(`${DEBUG_KEY}: user tag press for user: `, user);
-              this.props.openProfile(user);
+              if (this.props.actionDecorator) {
+                this.props.actionDecorator(() => this.props.openProfile(user));
+              } else {
+                this.props.openProfile(user);
+              }
             }}
           />
           {/*
@@ -303,7 +315,7 @@ class ProfilePostCard extends React.PureComponent {
               >
                 {this.renderHeader(item)}
               </TouchableOpacity>
-              <ProfilePostBody item={item} />
+              <ProfilePostBody item={item} showRefPreview={this.props.showRefPreview} />
             </View>
           </View>
           {this.renderActionButtons(item, hasActionButton)}

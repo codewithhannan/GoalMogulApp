@@ -1,83 +1,53 @@
+import _ from 'lodash';
+import moment from 'moment';
+import R from 'ramda';
 import React from 'react';
-import {
-  View,
-  Text,
-  Alert,
-  TouchableOpacity,
-  Image
-} from 'react-native';
+import { Alert, Dimensions, Image, Text, TouchableOpacity, View } from 'react-native';
+import DateTimePicker from 'react-native-modal-datetime-picker';
+import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import timeago from 'timeago.js';
-import _ from 'lodash';
-import R from 'ramda';
-import { Actions } from 'react-native-router-flux';
-import moment from 'moment';
-import DateTimePicker from 'react-native-modal-datetime-picker';
-
-// Actions
-import {
-  createReport
-} from '../../../redux/modules/report/ReportActions';
-
-import {
-  likeGoal,
-  unLikeGoal
-} from '../../../redux/modules/like/LikeActions';
-
-import {
-  createCommentFromSuggestion
-} from '../../../redux/modules/feed/comment/CommentActions';
-
-import {
-  chooseShareDest
-} from '../../../redux/modules/feed/post/ShareActions';
-
-import {
-  editGoal,
-  shareGoalToMastermind,
-  markGoalAsComplete,
-  scheduleNotification
-} from '../../../redux/modules/goal/GoalDetailActions';
-
 import { deleteGoal, openProfile } from '../../../actions';
-
-import {
-  subscribeEntityNotification,
-  unsubscribeEntityNotification
-} from '../../../redux/modules/notification/NotificationActions';
-
-// Assets
-import LoveIcon from '../../../asset/utils/love.png';
+import { ConfettiFadedBackgroundTopHalf } from '../../../asset/background';
+import Icons from '../../../asset/base64/Icons';
 // import BulbIcon from '../../../asset/utils/bulb.png';
 import CommentIcon from '../../../asset/utils/comment.png';
-import ShareIcon from '../../../asset/utils/forward.png';
 import EditIcon from '../../../asset/utils/edit.png';
-import ProgressBarMedium from '../../../asset/utils/progressBar_medium.png';
+import ShareIcon from '../../../asset/utils/forward.png';
+// Assets
+import LoveIcon from '../../../asset/utils/love.png';
 import ProgressBarMediumCounter from '../../../asset/utils/progressBar_counter_medium.png';
-import UndoIcon from '../../../asset/utils/undo.png';
+import ProgressBarMedium from '../../../asset/utils/progressBar_medium.png';
 import TrashIcon from '../../../asset/utils/trash.png';
-import Icons from '../../../asset/base64/Icons';
-
-// Components
-import ProgressBar from '../Common/ProgressBar';
+import UndoIcon from '../../../asset/utils/undo.png';
+import { createCommentFromSuggestion } from '../../../redux/modules/feed/comment/CommentActions';
+import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions';
+import { editGoal, markGoalAsComplete, scheduleNotification, shareGoalToMastermind } from '../../../redux/modules/goal/GoalDetailActions';
+import { likeGoal, unLikeGoal } from '../../../redux/modules/like/LikeActions';
+import { subscribeEntityNotification, unsubscribeEntityNotification } from '../../../redux/modules/notification/NotificationActions';
+// Actions
+import { createReport } from '../../../redux/modules/report/ReportActions';
+import { APP_BLUE } from '../../../styles';
+// Constants
+// Constants
+import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE } from '../../../Utils/Constants';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import DelayedButton from '../../Common/Button/DelayedButton';
+import LikeListModal from '../../Common/Modal/LikeListModal';
+import ShareListModal from '../../Common/Modal/ShareListModal';
+import ProfileImage from '../../Common/ProfileImage';
+import RichText from '../../Common/Text/RichText';
 import ActionButton from '../Common/ActionButton';
 import ActionButtonGroup from '../Common/ActionButtonGroup';
 import Headline from '../Common/Headline';
-import Timestamp from '../Common/Timestamp';
-import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
-import ProfileImage from '../../Common/ProfileImage';
 import IndividualActionButton from '../Common/IndividualActionButton';
-import RichText from '../../Common/Text/RichText';
+// Components
+import ProgressBar from '../Common/ProgressBar';
+import Timestamp from '../Common/Timestamp';
 
-import { APP_BLUE } from '../../../styles';
 
-// Constants
-// Constants
-import { 
-  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
-  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
-} from '../../../Utils/Constants';
-import { DotIcon } from '../../../Utils/Icons';
+const { width } = Dimensions.get('window');
+const WINDOW_WIDTH = width;
 
 const { CheckIcon, BellIcon, ViewCountIcon } = Icons;
 const DEBUG_KEY = '[ UI GoalDetailCardV3.GoalDetailSection ]';
@@ -90,7 +60,9 @@ class GoalDetailSection extends React.PureComponent {
     this.state = {
       numberOfLines: 2,
       seeMore: false,
-      goalReminderDatePicker: false
+      goalReminderDatePicker: false,
+      showShareListModa: false,
+      showlikeListModal: false
     };
     this.handleGoalReminder = this.handleGoalReminder.bind(this);
   }
@@ -299,7 +271,7 @@ class GoalDetailSection extends React.PureComponent {
           imageContainerStyle={styles.imageContainerStyle}
           userId={owner._id}
         />
-        <View style={{ marginLeft: 15, flex: 1 }}>
+        <View style={{ marginLeft: 12, flex: 1 }}>
           <Headline
             onRef={(ref) => { this.headline = ref; }}
             name={owner.name || ''}
@@ -441,6 +413,57 @@ class GoalDetailSection extends React.PureComponent {
     );
   }
 
+  /**
+   * Render goal stats
+   * @param {*} item 
+   */
+  renderGoalStats(item) {
+    const { likeCount, shareCount, commentCount } = item;
+    // Hide the info row if no stats at all
+    if (!likeCount && !shareCount && !commentCount) return null;
+    
+    return (
+      <View style={styles.statsContainerStyle}>
+        {
+          likeCount > 0 ? (
+            <DelayedButton 
+              style={styles.likeCountContainerStyle}
+              onPress={() => this.setState({ ...this.state, showlikeListModal: true })}
+              activeOpacity={0.6}
+            >
+              <Image source={LoveIcon} style={{ tintColor: '#f15860', height: 11, width: 12, marginRight: 4 }} />
+              <Text style={{ ...styles.statsBaseTextStyle, color: '#f15860' }}>
+                <Text style={{ fontWeight: '700' }}>{likeCount}</Text> {likeCount > 1 ? 'people' : 'person'} liked this
+              </Text>
+            </DelayedButton>
+          ) : 
+          // Filler view to occupy the space
+          (
+            <View style={styles.likeCountContainerStyle}>
+              <Text style={{ ...styles.statsBaseTextStyle, color: '#f15860' }}>{' '}</Text>
+            </View>
+          )
+        }
+        {shareCount > 0 && (
+          <DelayedButton 
+              style={{ padding: 5, marginRight: 4 }}
+              onPress={() => this.setState({ ...this.state, showShareListModal: true })}
+              activeOpacity={0.6}
+          >
+            <Text style={{ ...styles.statsBaseTextStyle, color: '#636363' }}>
+              {shareCount} {shareCount > 1 ? 'Shares' : 'Share'}
+            </Text>
+          </DelayedButton>
+        )}
+        {commentCount > 0 && (
+          <Text style={{ ...styles.statsBaseTextStyle, color: '#636363' }}>
+            {commentCount} {commentCount > 1 ? 'Replies' : 'Reply'}
+          </Text>
+        )}
+      </View>
+    );
+  }
+
   renderActionButtons(item) {
     const { maybeLikeRef, _id } = item;
     // Self Action Buttons are moved to caret drop down in Headline
@@ -460,10 +483,11 @@ class GoalDetailSection extends React.PureComponent {
       <ActionButtonGroup>
         <ActionButton
           iconSource={LoveIcon}
-          count={likeCount}
+          // count={likeCount}
+          count='Like'
           textStyle={{ color: '#f15860' }}
           iconContainerStyle={likeButtonContainerStyle}
-          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22 }}
+          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22, marginTop: 1.5 }}
           onPress={() => {
             console.log(`${DEBUG_KEY}: user clicks like icon.`);
             if (maybeLikeRef && maybeLikeRef.length > 0) {
@@ -474,14 +498,16 @@ class GoalDetailSection extends React.PureComponent {
         />
         <ActionButton
           iconSource={ShareIcon}
-          count={shareCount}
+          // count={shareCount}
+          count='Share'
           textStyle={{ color: '#a8e1a0' }}
           iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
           onPress={() => this.handleShareOnClick()}
         />
         <ActionButton
           iconSource={CommentIcon}
-          count={commentCount}
+          // count={commentCount}
+          count='Reply'
           iconStyle={{ tintColor: '#FCB110', height: 26, width: 26 }}
           textStyle={{ color: '#FCB110' }}
           onPress={() => {
@@ -508,13 +534,48 @@ class GoalDetailSection extends React.PureComponent {
     if (!item || _.isEmpty(item)) return null;
 
     return (
-      <View onLayout={this.handleOnLayout}>
+      <View onLayout={this.handleOnLayout} style={{ paddingHorizontal: 15 }}>
+        <LikeListModal 
+          isVisible={this.state.showlikeListModal} 
+          closeModal={() => {
+            this.setState({
+              ...this.state,
+              showlikeListModal: false
+            });
+          }}
+          parentId={item._id}
+          parentType='Goal'
+        />
+        <ShareListModal
+          isVisible={this.state.showShareListModal} 
+          closeModal={() => {
+            this.setState({
+              ...this.state,
+              showShareListModal: false
+            });
+          }}
+          entityId={item._id}
+          entityType='Goal'
+        />
         <View style={{ ...styles.containerStyle }}>
-          <View style={{ marginTop: 12, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
+          {item.isCompleted? 
+            <Image
+              source={ConfettiFadedBackgroundTopHalf}
+              style={{
+                height: WINDOW_WIDTH*.575,
+                width: WINDOW_WIDTH,
+                position: 'absolute',
+                resizeMode: 'cover',
+                opacity: 0.65,
+              }}
+            /> : null }
+          <View style={{ marginTop: 15, marginBottom: 10 }}>
             {this.renderUserDetail(item)}
             {this.renderCardContent(item)}
           </View>
         </View>
+
+        {this.renderGoalStats(item)}
 
         <View style={styles.containerStyle}>
           {this.renderActionButtons(item)}
@@ -559,6 +620,23 @@ const styles = {
   seeMoreTextStyle: {
     fontSize: 12,
     color: APP_BLUE
+  },
+  statsContainerStyle: {
+    borderTopWidth: 0.5,
+    borderTopColor: '#f1f1f1',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 3
+  },
+  likeCountContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    paddingHorizontal: 3,
+    paddingVertical: 7
+  },
+  statsBaseTextStyle: {
+    fontSize: 11
   }
 };
 

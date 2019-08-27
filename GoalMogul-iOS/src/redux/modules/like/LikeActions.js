@@ -12,6 +12,7 @@ import {
   UNLIKE_COMMENT,
   UNLIKE_GOAL
 } from './LikeReducers';
+import { Logger } from '../../middleware/utils/Logger';
 
 const DEBUG_KEY = '[ Action Like ]';
 const LIKE_BASE_ROUTE = 'secure/feed/like';
@@ -19,18 +20,32 @@ const LIKE_BASE_ROUTE = 'secure/feed/like';
 /**
  * action to get like for a goal / post / comment
  * @params parentId: goal/post/comment id
- * @params parentType: ['goal', 'post', 'comment']
+ * @params parentType: ['Goal', 'Post', 'Comment']
  */
-export const getLike = (parentId, parentType) => (dispatch, getState) => {
+export const getLikeList = (parentId, parentType, callback) => (dispatch, getState) => {
   const { token } = getState().user;
+
+  const onSuccess = (res) => {
+    Logger.log(`${DEBUG_KEY}: [ getLikeList ] success with res: `, res, 3);
+    if (callback) {
+      return callback(res.data);
+    }
+  };
+
+  const onError = (err) => {
+    console.warn(`${DEBUG_KEY}: [ getLikeList ] failed with err: `, err);
+  };
+
   API
     .get(`${LIKE_BASE_ROUTE}?parentId=${parentId}&parentType=${parentType}`, token)
     .then((res) => {
-      // TODO: update comment reducer with specific selector
-      console.log(`${DEBUG_KEY}: get like with res, `, res);
+      if (res.status === 200) {
+        return onSuccess(res);
+      }
+      return onError(res);
     })
     .catch((err) => {
-      console.log(`${DEBUG_KEY}: Error in getting like: `, err);
+      onError(err);
     });
 };
 

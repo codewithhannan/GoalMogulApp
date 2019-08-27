@@ -96,6 +96,7 @@ class ProfilePostBody extends React.Component {
       return this.renderPostImage(item.mediaRef);
     }
 
+    if (this.props.showRefPreview === false) return null;
     const previewItem = switchItem(item, postType);
     return (
       <View>

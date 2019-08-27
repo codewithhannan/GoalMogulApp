@@ -858,12 +858,11 @@ export const deletePost = (postId) => (dispatch, getState) => {
 export const UserBanner = (props) => {
   const { user, iconStyle } = props;
 
-  // if (!user || !user.profile || user.profile.badges === undefined) return null;
+  if (!user || !user.profile || user.profile.badges === undefined) return null;
 
   // Before gamification, we only show green badge
-  // const { profile } = user;
-  // const { pointsEarned } = profile;
-  // const source = switchCaseBannerSource(pointsEarned);
+  const level = _.get(user, 'profile.badges.milestoneBadge.currentMilestone');
+  const source = switchCaseBannerSource(level);
 
   if (!user || !user.profile) return null;
   const defaultIconStyle = {
@@ -875,7 +874,7 @@ export const UserBanner = (props) => {
   };
 
   return (
-    <Image source={GreenBanner} style={{ ...defaultIconStyle, ...iconStyle }} />
+    <Image source={source} style={{ ...defaultIconStyle, ...iconStyle }} />
   );
 };
 
@@ -963,20 +962,16 @@ export const fetchBadgeUserCount = (callback, tier = 3, badgeName = 'milestoneBa
     .catch(err => onError(err));
 };
 
-export const switchCaseBannerSource = (points) => {
+export const switchCaseBannerSource = (level) => {
   let source;
-  if (!points || points < 49) {
+  if (level === 0 || level === undefined) {
     source = GreenBanner;
-  } else if (points < 249) {
+  } else if (level === 1) {
     source = BronzeBanner;
-  } else if (points < 499) {
-    source = IronBanner;
-  } else if (points < 2499) {
+  } else if (level === 2) {
     source = SilverBanner;
-  } else if (points < 4999) {
+  } else if (level === 3) {
     source = GoldBanner;
-  } else if (points < 9999) {
-    source = PurpleBanner;
   }
 
   return source;

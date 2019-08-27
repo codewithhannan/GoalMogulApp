@@ -37,10 +37,14 @@ class ActionButton extends React.PureComponent {
   }
 
   render() {
-    const { containerStyle, count, disabled } = this.props;
+    const { containerStyle, count, disabled, onTextPress, textContainerStyle, unitText } = this.props;
     const countText = !count || count === 0
       ? null
-      : <Text style={{ ...styles.textStyle, ...this.props.textStyle }}>{this.props.count}</Text>;
+      : (
+        <DelayedButton activeOpacity={0.6} onPress={onTextPress} style={textContainerStyle} disabled={!onTextPress}>
+          <Text style={{ ...styles.textStyle, ...this.props.textStyle }}>{this.props.count}{unitText ? ` ${unitText}` : ''}</Text>
+        </DelayedButton>
+      );
 
     const buttonDisabled = disabled === true;
     return (
@@ -88,7 +92,7 @@ const styles = {
     borderRadius: 8
   },
   textStyle: {
-    fontSize: 11,
+    fontSize: 13,
     marginLeft: 8,
     fontWeight: '600'
   }

@@ -20,8 +20,8 @@ const styles = {
     flexDirection: 'row',
     // marginLeft: 15,
     // marginRight: 15,
-    paddingLeft: 20,
-    paddingRight: 20,
+    paddingLeft: 5,
+    paddingRight: 5,
     borderTopWidth: 0.5,
     borderTopColor: '#f1f1f1'
   }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, ActionSheetIOS, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 
 // Components
@@ -24,37 +24,56 @@ const TAB_KEY = 'contacts'
 class ContactDetail extends Component {
 
   state = {
-    requested: false
+    requested: false,
+    updating: false
   }
 
-  onFriendRequest = (_id) => {
-    if (this.state.requested) {
+  onFriendRequest = (_id, maybeInvitationType, maybeInvitationId) => {
+    if (this.state.requested || maybeInvitationType === 'outgoing') {
       // Currently we don't allow user to withdraw invitation on this page
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: FRIENDSHIP_BUTTONS,
+          cancelButtonIndex: CANCEL_INDEX,
+        },
+        (buttonIndex) => {
+          switch (buttonIndex) {
+            case WITHDRAW_INDEX:
+              // Send request to withdraw request
+              this.setState({
+                ...this.state,
+                updating: true
+              });
+              const callback = () => this.setState({ ...this.state, requested: false, updating: false });
+              this.props.updateFriendship(_id, maybeInvitationId, 'deleteFriend', TAB_KEY, callback);
+              break;
+            default:
+              return;
+          }
+        }
+      );
       return;
-      // ActionSheetIOS.showActionSheetWithOptions({
-      //   options: FRIENDSHIP_BUTTONS,
-      //   cancelButtonIndex: CANCEL_INDEX,
-      // },
-      // (buttonIndex) => {
-      //   console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
-      //   switch (buttonIndex) {
-      //     case WITHDRAW_INDEX:
-      //       this.props.updateFriendship(_id, '', 'deleteFriend', TAB_KEY, () => {
-      //         this.setState({ requested: false });
-      //       });
-      //       break;
-      //     default:
-      //       return;
-      //   }
-      // });
     }
-    this.props.updateFriendship(_id, '', 'requestFriend', TAB_KEY, () => {
-      this.setState({ requested: true });
+
+    this.setState({
+      ...this.state,
+      updating: true
     });
+    const callback = () => this.setState({ ...this.state, requested: true, updating: false });
+    this.props.updateFriendship(_id, '', 'requestFriend', TAB_KEY, callback);
   }
 
-  renderButton() {
-    if (this.state.requested) {
+  renderButton(maybeInvitationType) {
+     // When it's updating
+     if (this.state.updating) {
+      return (
+        <View style={{ height: 30, width: 30 }}>
+          <ActivityIndicator size="small" />
+        </View>
+      );
+    }
+
+    if (this.state.requested || (maybeInvitationType && maybeInvitationType === 'outgoing')) {
       return (
         <View style={styles.checkIconContainerStyle}>
           <Image
@@ -76,10 +95,9 @@ class ContactDetail extends Component {
   }
 
   render() {
-    // console.log('item is: ', this.props.item.item);
     const { item } = this.props;
     if (!item) return null;
-    const { name, headline, _id, profile } = this.props.item;
+    const { name, headline, _id, profile, maybeInvitationType, maybeInvitationId } = this.props.item;
     return (
       <View style={styles.containerStyle}>
         <ProfileImage 
@@ -105,7 +123,7 @@ class ContactDetail extends Component {
             <Name text={name} />
             <UserBanner 
               user={item} 
-              iconStyle={{ marginTop: 1, marginLeft: 3, height: 18, width: 15 }} 
+              iconStyle={{ marginTop: 1, marginLeft: 5, height: 18, width: 15 }} 
             />
           </View>
 
@@ -121,9 +139,9 @@ class ContactDetail extends Component {
         <View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
         <DelayedButton 
           activeOpacity={0.6} 
-          onPress={this.onFriendRequest.bind(this, _id)}
+          onPress={this.onFriendRequest.bind(this, _id, maybeInvitationType, maybeInvitationId)}
         >
-          {this.renderButton()}
+          {this.renderButton(maybeInvitationType)}
         </DelayedButton>
         </View>
       </View>

@@ -104,7 +104,11 @@ class Headline extends React.PureComponent {
     if (disabled) return;
 
     const { _id } = user;
-    this.props.openProfile(_id);
+    if (this.props.actionDecorator) {
+      this.props.actionDecorator(() => this.props.openProfile(_id));
+    } else {
+      this.props.openProfile(_id); 
+    }
   }
 
   renderDeleteOptionOnly(menuName) {
@@ -248,7 +252,7 @@ class Headline extends React.PureComponent {
       //   )
     }
 
-    const categoryComponent = category ? <Category text={category} /> : null;
+    const categoryComponent = category ? <Category text={category} /> : <View style={{ flex: 1 }} />;
 
     return (
       <View style={styles.containerStyle}>
@@ -256,7 +260,7 @@ class Headline extends React.PureComponent {
         {/* <Image style={styles.imageStyle} source={badge} /> */}
         <UserBanner user={user} iconStyle={{ marginTop: 1 }} />
         {categoryComponent}
-        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
+        <View style={{ flexDirection: 'row', alignSelf: 'flex-end' }}>
           {hasCaret === null || hasCaret === false ? null : menu}
         </View>
       </View>
