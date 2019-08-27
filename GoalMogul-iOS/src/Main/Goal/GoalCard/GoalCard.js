@@ -4,7 +4,7 @@ import R from 'ramda';
 import React from 'react';
 import {
   // MaskedViewIOS,
-  Dimensions, Platform, Text, View
+  Dimensions, Image, Platform, Text, View
 } from 'react-native';
 // import {
 //   FlingGestureHandler,
@@ -16,6 +16,7 @@ import { connect } from 'react-redux';
 import timeago from 'timeago.js';
 import Decode from 'unescape';
 import { deleteGoal } from '../../../actions';
+import { ConfettiFadedBackgroundTopHalf } from '../../../asset/background';
 // import BulbIcon from '../../../asset/utils/bulb.png';
 import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
@@ -51,7 +52,8 @@ import Timestamp from '../Common/Timestamp';
 import NeedTab from './NeedTab';
 import StepTab from './StepTab';
 
-const { height } = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
+const WINDOW_WIDTH = width;
 const CardHeight = height * 0.7;
 const ITEM_COUNT = Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
@@ -485,6 +487,17 @@ class GoalCard extends React.PureComponent {
               style={styles.containerStyle}
               onPress={() => this.props.onPress(this.props.item)}
             >
+              {item.isCompleted? 
+              <Image
+                source={ConfettiFadedBackgroundTopHalf}
+                style={{
+                  height: WINDOW_WIDTH*.575,
+                  width: WINDOW_WIDTH,
+                  position: 'absolute',
+                  resizeMode: 'cover',
+                  opacity: 0.65,
+                }}
+              /> : null }
               <View style={{ marginTop: 14, marginBottom: 15, marginRight: 12, marginLeft: 12 }}>
                 {this.renderUserDetail(item)}
                 {this.renderCardContent(item)}
