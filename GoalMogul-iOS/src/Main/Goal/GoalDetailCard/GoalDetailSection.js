@@ -562,11 +562,11 @@ class GoalDetailSection extends React.PureComponent {
             <Image
               source={ConfettiFadedBackgroundTopHalf}
               style={{
-                height: WINDOW_WIDTH*.575,
+                height: WINDOW_WIDTH*.6,
                 width: WINDOW_WIDTH,
                 position: 'absolute',
                 resizeMode: 'cover',
-                opacity: 0.65,
+                opacity: 0.55,
               }}
             /> : null }
           <View style={{ marginTop: 15, marginBottom: 10 }}>
