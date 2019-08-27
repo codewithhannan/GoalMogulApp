@@ -658,7 +658,7 @@ export const saveUnreadNotification = () => async (dispatch, getState) => {
   }
 
   const dataToStore = JSON.stringify(data);
-  console.log(`${DEBUG_KEY}: [Save Unread Notification] data to store is:`, dataToStore);
+  console.log(`${DEBUG_KEY}: [Save Unread Notification] data to store has length:`, data.length);
   const res = await SecureStore.setItemAsync(
     unReadNotificationKey, dataToStore, {}
   );

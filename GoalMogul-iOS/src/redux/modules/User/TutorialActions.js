@@ -121,7 +121,7 @@ export const saveTutorialState = () => async (dispatch, getState) => {
     Logger.log(`${DEBUG_KEY}: [saveTutorialState] tutorialStateToSave to store is:`, tutorialStateToSave, 3);
 
     const dataToStore = JSON.stringify(tutorialStateToSave);
-    Logger.log(`${DEBUG_KEY}: [saveTutorialState] data to store is:`, dataToStore, 1);
+    Logger.log(`${DEBUG_KEY}: [saveTutorialState] data to store is:`, dataToStore, 3);
     const res = await SecureStore.setItemAsync(
         tutorialStateKey, dataToStore, {}
     );
