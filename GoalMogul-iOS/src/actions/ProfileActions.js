@@ -13,6 +13,7 @@ import {
   getUserDataByPageId
 } from '../redux/modules/User/Selector';
 
+import Badges, { Bronze3D, Silver3D, Gold3D, Green } from '../asset/banner';
 import BronzeBanner from '../asset/banner/bronze.png';
 import GreenBanner from '../asset/banner/green.png';
 import PurpleBanner from '../asset/banner/purple.png';
@@ -967,11 +968,14 @@ export const switchCaseBannerSource = (level) => {
   if (level === 0 || level === undefined) {
     source = GreenBanner;
   } else if (level === 1) {
-    source = BronzeBanner;
+    // source = BronzeBanner;
+    source = Bronze3D;
   } else if (level === 2) {
-    source = SilverBanner;
+    // source = SilverBanner;
+    source = Silver3D;
   } else if (level === 3) {
-    source = GoldBanner;
+    // source = GoldBanner;
+    source = Gold3D;
   }
 
   return source;

@@ -1,10 +1,11 @@
 import _ from 'lodash';
 import R from 'ramda';
 import React from 'react';
-import { Dimensions, ImageBackground, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { Dimensions, Image, ImageBackground, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { connect } from 'react-redux';
 // Actions
 import { openProfile } from '../../actions';
+import { ConfettiFadedBackgroundTopHalf } from '../../asset/background';
 import CommentIcon from '../../asset/utils/comment.png';
 import ShareIcon from '../../asset/utils/forward.png';
 // Assets
@@ -36,6 +37,7 @@ const DEBUG_KEY = '[ UI ActivityCard ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
 const CANCEL_INDEX = 3;
 const { width } = Dimensions.get('window');
+const WINDOW_WIDTH = width;
 
 class ActivityCard extends React.PureComponent {
   constructor(props) {
@@ -277,20 +279,31 @@ class ActivityCard extends React.PureComponent {
 
     return (
       <View style={{ marginTop: 10 }}>
-        <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
+        <View style={{ backgroundColor: 'white', ...styles.borderShadow }}>
+        {item.goalRef && item.goalRef.isCompleted? 
+            <Image
+              source={ConfettiFadedBackgroundTopHalf}
+              style={{
+                height: WINDOW_WIDTH*.6,
+                width: WINDOW_WIDTH,
+                position: 'absolute',
+                resizeMode: 'cover',
+                opacity: 0.55,
+              }}
+          /> : null }
           <ActivitySummary item={item} />
-            <View style={{ ...styles.containerStyle, marginTop: 1 }}>
-              <View style={{ marginTop: 12, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
-                <TouchableOpacity
-                  activeOpacity={0.6}
-                  onPress={() => this.handleCardOnPress(item)}
-                >
-                  <ActivityHeader item={item} />
-                </TouchableOpacity>
-                <ActivityBody item={item} />
-              </View>
+          <View style={{ marginTop: 1 }}>
+            <View style={{ marginTop: 12, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
+              <TouchableOpacity
+                activeOpacity={0.6}
+                onPress={() => this.handleCardOnPress(item)}
+              >
+                <ActivityHeader item={item} />
+              </TouchableOpacity>
+              <ActivityBody item={item} />
             </View>
-          <View style={{ ...styles.containerStyle, marginTop: 1 }}>
+          </View>
+          <View style={{ marginTop: 1, borderBottomColor: '#f8f8f8', borderBottomWidth: 1 }}>
             {this.renderActionButtons(item)}
           </View>
           {this.renderComment(item)}

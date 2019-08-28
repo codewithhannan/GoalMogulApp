@@ -8,7 +8,7 @@ const { ViewCountIcon } = Icons;
 
 const Timestamp = (props) => {
   // TODO: format time
-  const { time, viewCount, priority } = props;
+  const { time, viewCount, priority, isCompleted } = props;
   const viewCountComponent = viewCount ? (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <DotIcon iconStyle={{ tintColor: '#818181', width: 3, height: 3, marginLeft: 4, marginRight: 5, marginTop: 1 }} />
@@ -27,6 +27,11 @@ const Timestamp = (props) => {
       priorityText = 'High priority';
     }
   }
+
+  if (isCompleted) {
+    priorityText = 'Completed';
+  }
+
   const priorityComponent = priorityText ? (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <DotIcon iconStyle={{ tintColor: '#818181', width: 3, height: 3, marginLeft: 4, marginRight: 5, marginTop: 1 }} />

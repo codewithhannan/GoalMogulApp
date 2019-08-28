@@ -36,6 +36,7 @@ class UserCard extends React.PureComponent {
                     imageUrl={profile ? profile.image : undefined}
                     imageContainerStyle={{ ...styles.imageContainerStyle }}
                     userId={_id}
+                    actionDecorator={this.props.callback}
                 />
                 <DelayedButton 
                     style={styles.bodyContainerStyle}

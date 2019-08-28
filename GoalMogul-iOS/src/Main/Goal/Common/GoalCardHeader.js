@@ -4,10 +4,7 @@
  * For GoalCard, Someone shared a goal with you
  */
 import React from 'react';
-import {
-  View,
-  Text
-} from 'react-native';
+import { Text, View } from 'react-native';
 
 const renderText = (item) => {
   const { owner } = item;
@@ -54,10 +51,12 @@ const GoalCardHeader = (props) => {
     <View
       style={{
         marginBottom: 1,
-        backgroundColor: 'white',
+        backgroundColor: 'transparent',
         padding: 5,
         paddingLeft: 12,
-        paddingRight: 12
+        paddingRight: 12,
+        borderBottomColor: '#F8F8F8',
+        borderBottomWidth: 1,
       }}
     >
       {renderText(item)}
