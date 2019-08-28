@@ -1,12 +1,9 @@
 // This component is the card header
 // For example, Jia created a comment for Goal
 import React from 'react';
-import {
-  View,
-  Text
-} from 'react-native';
-
+import { Text, View } from 'react-native';
 import { switchCase } from '../../redux/middleware/utils';
+
 
 class ActivitySummary extends React.Component {
 
@@ -82,7 +79,7 @@ class ActivitySummary extends React.Component {
     if (!item) return null;
 
     return (
-      <View style={{ marginBottom: 0.5, backgroundColor: 'white', padding: 5, paddingLeft: 15, paddingRight: 15 }}>
+      <View style={{ marginBottom: 0.5, padding: 5, paddingLeft: 15, paddingRight: 15, borderBottomColor: '#F8F8F8', borderBottomWidth: 1 }}>
           {this.renderText(item)}
       </View>
     );

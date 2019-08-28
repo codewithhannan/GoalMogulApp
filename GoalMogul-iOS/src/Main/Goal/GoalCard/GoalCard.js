@@ -479,25 +479,24 @@ class GoalCard extends React.PureComponent {
     const tabHeight = getTabHeight(this.state.navigationState, item);
     return (
       <View style={{ marginTop: 10 }}>
-        <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
+        <View style={{ backgroundColor: 'white', ...styles.borderShadow }}>
+          {item.isCompleted? 
+            <Image
+              source={ConfettiFadedBackgroundTopHalf}
+              style={{
+                height: WINDOW_WIDTH*.6,
+                width: WINDOW_WIDTH,
+                position: 'absolute',
+                resizeMode: 'cover',
+                opacity: 0.55,
+              }}
+          /> : null }
           <GoalCardHeader item={item} />
-          <View style={{ backgroundColor: '#e5e5e5' }}>
+          <View>
             <DelayedButton
               activeOpacity={0.6}
-              style={styles.containerStyle}
               onPress={() => this.props.onPress(this.props.item)}
             >
-              {item.isCompleted? 
-              <Image
-                source={ConfettiFadedBackgroundTopHalf}
-                style={{
-                  height: WINDOW_WIDTH*.575,
-                  width: WINDOW_WIDTH,
-                  position: 'absolute',
-                  resizeMode: 'cover',
-                  opacity: 0.65,
-                }}
-              /> : null }
               <View style={{ marginTop: 14, marginBottom: 15, marginRight: 12, marginLeft: 12 }}>
                 {this.renderUserDetail(item)}
                 {this.renderCardContent(item)}
@@ -512,7 +511,7 @@ class GoalCard extends React.PureComponent {
               //   </View>
               // )
             }
-            <View style={styles.containerStyle}>
+            <View>
               {this.renderActionButtons(item)}
             </View>
           </View>
