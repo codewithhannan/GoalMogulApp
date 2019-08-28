@@ -22,7 +22,7 @@ import { getBagdeIconByTier } from '../../../redux/modules/gamification/BadgeAct
 import GoldBadgeInfoModal from './GoldBadgeInfoModal';
 import GoldBadgeRewardModal from './GoldBadgeRewardModal';
 
-const { CheckIcon, InfoIcon } = Icons;
+const { CheckIcon, InfoIcon, QuestionIcon } = Icons;
 const DEBUG_KEY = '[ UI EarnBadgeModal ]';
 
 class EarnBadgeModal extends React.PureComponent {
@@ -348,10 +348,10 @@ const BadgeInfo = [
         badgeIconStyle: {
             ...DefaultBadgeIconStyle
         },
-        leadingIcon: InfoIcon,
+        leadingIcon: QuestionIcon,
         leadingIconStyle: {
             ...DefaultLeadingIconStyle,
-            height: 11, width: 7
+            height: 14, width: 9
         },
         leadingIconContainerStyle: { ...DefaultLeadingIconContainerStyle },
         linearGradientColors: ['white', 'white', 'white'],
