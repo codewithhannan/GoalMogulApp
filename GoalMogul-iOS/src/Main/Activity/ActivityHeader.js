@@ -90,7 +90,7 @@ class ActivityHeader extends Component {
     // If no ref is passed in, then render nothing
     if (!item) return null;
 
-    const { viewCount, priority } = item;
+    const { viewCount, priority, isCompleted } = item;
 
     // If it's a comment, we are rendering the goal/post owner's info rather than actor's info
     const userToRender = actedWith === 'Comment' || actedWith === 'Like' ? item.owner : actor;
@@ -201,7 +201,7 @@ class ActivityHeader extends Component {
             user={userToRender}
             isSelf={this.props.userId === userToRender._id}
           />
-          <Timestamp time={timeago().format(timeStamp)} viewCount={viewCount} priority={priority} />
+          <Timestamp time={timeago().format(timeStamp)} viewCount={viewCount} priority={priority} isCompleted={isCompleted} />
           {/*
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
               <Text
