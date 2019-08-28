@@ -626,6 +626,7 @@ class GoalDetailCardV3 extends Component {
                 this.handleReplyTo();
               }, 500);  
             }}
+            onViewAllComments={this.onViewCommentPress}
             isSelf={this.props.isSelf}
             onContentSizeChange={this.onContentSizeChange}
             pageId={pageId}

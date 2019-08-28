@@ -456,9 +456,16 @@ class GoalDetailSection extends React.PureComponent {
           </DelayedButton>
         )}
         {commentCount > 0 && (
-          <Text style={{ ...styles.statsBaseTextStyle, color: '#636363' }}>
-            {commentCount} {commentCount > 1 ? 'Replies' : 'Reply'}
-          </Text>
+          <DelayedButton
+            style={{ padding: 5 }}
+            onPress={() => this.props.onViewAllComments ? this.props.onViewAllComments() : null}
+            activeOpacity={0.6}
+            disabled={!this.props.onViewAllComments}
+          >
+            <Text style={{ ...styles.statsBaseTextStyle, color: '#636363' }}>
+              {commentCount} {commentCount > 1 ? 'Replies' : 'Reply'}
+            </Text>
+          </DelayedButton>
         )}
       </View>
     );
@@ -511,7 +518,7 @@ class GoalDetailSection extends React.PureComponent {
           iconStyle={{ tintColor: '#FCB110', height: 26, width: 26 }}
           textStyle={{ color: '#FCB110' }}
           onPress={() => {
-            console.log(`${DEBUG_KEY}: user clicks suggestion icon.`);
+            console.log(`${DEBUG_KEY}: user clicks comment icon.`);
             this.props.createCommentFromSuggestion({
               commentDetail: {
                 parentType: 'Goal',
