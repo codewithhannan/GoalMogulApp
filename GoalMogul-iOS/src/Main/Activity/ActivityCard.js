@@ -185,7 +185,7 @@ class ActivityCard extends React.PureComponent {
 
     const { profile, _id, name } = actor;
     return (
-      <View style={{ flexDirection: 'row', padding: 15 }}>
+      <View style={{ flexDirection: 'row', padding: 15, backgroundColor: '#f8f8f8' }}>
         <ProfileImage 
           imageStyle={{ height: 35, width: 35, borderRadius: 4 }}
           imageUrl={profile ? profile.image : undefined}
