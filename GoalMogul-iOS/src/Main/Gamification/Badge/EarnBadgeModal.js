@@ -116,7 +116,7 @@ class EarnBadgeModal extends React.PureComponent {
                 isVisible={this.props.isVisible}
                 backdropOpacity={0.7}
                 onModalShow={this.onModalShow}
-                style={{ flex: 1, marginTop: Constants.statusBarHeight + 15, backgroundColor: 'white', borderRadius: 15 }}
+                style={{ marginTop: Constants.statusBarHeight + 15, borderRadius: 15 }}
             >
                 <GoldBadgeRewardModal 
                     isVisible={this.state.showGoldBadgeRewardModal}
@@ -136,61 +136,64 @@ class EarnBadgeModal extends React.PureComponent {
                         });
                     }}
                 />
-                <ImageBackground source={ConfettiFadedBackground} style={{ width: '100%', height: '100%', borderRadius: 15 }} imageStyle={{ borderRadius: 15 }}>
-                    <View style={{ ...modalContainerStyle, backgroundColor: 'transparent', flex: 1 }}>
-                        {this.renderCancelButton()}
-                        <Text style={{ color: 'rgb(0, 150, 203)', fontWeight: '500', fontSize: 22, marginTop: 18 }}>
-                            Congratulations!
-                        </Text>
-                        {this.renderBadgeEarned()}
-                        <Text style={{ color: 'rgb(153, 153, 153)', fontSize: 14, paddingTop: 15, paddingBottom: 7 }}>
-                            You've earned a Silver Badge.
-                        </Text>
-                        <View style={{ width: '76%', height: 0.5, backgroundColor: 'rgb(238, 238, 238)', marginVertical: 3 }} />
-                        <Text style={{ color: 'rgb(51, 51, 51)', fontSize: 17, paddingVertical: 7 }}>Badges</Text>
-                        {
-                            BadgeInfo.map((b) => {
-                                const { id } = b;
-                                let onLeadingIconPress = () => {};
-                                if (id && id === 'gold') {
-                                    onLeadingIconPress = () => {
-                                        this.setState({
-                                            ...this.state,
-                                            showGoldBagdeInfoModal: true
-                                        });
-                                    };
-                                }
-                                return (
-                                    <BadgeInfoCard badgeInfo={b} onLeadingIconPress={onLeadingIconPress} />
-                                );
-                            })
-                        }
-
-                        <View style={{ flexDirection: 'row' }}>
-                            <Text style={{ color: 'rgb(95, 95, 95)', fontSize: 11, lineHeight: 6, marginTop: 25, padding: 6, paddingRight: 0 }}>
-                                {`\u002A Limited to the first 15 gold users. `}                            
+                <View style={{ backgroundColor: 'white', borderRadius: 15 }}>
+                    <ImageBackground source={ConfettiFadedBackground} style={{ width: '100%', minHeight: 608, borderRadius: 15 }} imageStyle={{ borderRadius: 15 }}>
+                        <View style={{ ...modalContainerStyle, backgroundColor: 'transparent', flex: 1 }}>
+                            {this.renderCancelButton()}
+                            <Text style={{ color: 'rgb(0, 150, 203)', fontWeight: '500', fontSize: 22, marginTop: 18 }}>
+                                Congratulations!
                             </Text>
-                            <DelayedButton
-                                activeOpacity={0.6}
-                                onPress={() => { this.setState({ ...this.state, showGoldBadgeRewardModal: true }) }}
-                            >
-                                <Text style={{ fontSize: 11, color: 'rgb(0, 150, 203)', fontWeight: '600', marginTop: 25, lineHeight: 6, padding: 6, paddingLeft: 2 }}>
-                                    View details
+                            {this.renderBadgeEarned()}
+                            <Text style={{ color: 'rgb(153, 153, 153)', fontSize: 14, paddingTop: 15, paddingBottom: 7 }}>
+                                You've earned a Silver Badge.
+                            </Text>
+                            <View style={{ width: '76%', height: 0.5, backgroundColor: 'rgb(238, 238, 238)', marginVertical: 3 }} />
+                            <Text style={{ color: 'rgb(51, 51, 51)', fontSize: 17, paddingVertical: 7 }}>Badges</Text>
+                            {
+                                BadgeInfo.map((b) => {
+                                    const { id } = b;
+                                    let onLeadingIconPress = () => {};
+                                    if (id && id === 'gold') {
+                                        onLeadingIconPress = () => {
+                                            this.setState({
+                                                ...this.state,
+                                                showGoldBagdeInfoModal: true
+                                            });
+                                        };
+                                    }
+                                    return (
+                                        <BadgeInfoCard badgeInfo={b} onLeadingIconPress={onLeadingIconPress} />
+                                    );
+                                })
+                            }
+
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={{ color: 'rgb(95, 95, 95)', fontSize: 11, lineHeight: 6, marginTop: 25, padding: 6, paddingRight: 0 }}>
+                                    {`\u002A Limited to the first 15 gold users. `}                            
                                 </Text>
-                            </DelayedButton>
-                        </View>
-                        <Animated.Text
-                            style={{ 
-                                color: 'rgb(209, 163, 16)', 
-                                fontSize: 11, lineHeight: 6, padding: 8, 
-                                fontStyle: 'italic',
-                                opacity: this.animations.numberOfUsersOnSameBadgeOpacity
-                            }}
-                        >
-                            {`There are currently ${this.state.numberOfUsersOnSameBadge} gold users.`}
-                        </Animated.Text>
-                    </View> 
-                </ImageBackground>
+                                <DelayedButton
+                                    activeOpacity={0.6}
+                                    onPress={() => { this.setState({ ...this.state, showGoldBadgeRewardModal: true }) }}
+                                >
+                                    <Text style={{ fontSize: 11, color: 'rgb(0, 150, 203)', fontWeight: '600', marginTop: 25, lineHeight: 6, padding: 6, paddingLeft: 2 }}>
+                                        View details
+                                    </Text>
+                                </DelayedButton>
+                            </View>
+                            <Animated.Text
+                                style={{ 
+                                    color: 'rgb(209, 163, 16)', 
+                                    fontSize: 11, lineHeight: 6, padding: 8, 
+                                    fontStyle: 'italic',
+                                    opacity: this.animations.numberOfUsersOnSameBadgeOpacity
+                                }}
+                            >
+                                {`There are currently ${this.state.numberOfUsersOnSameBadge} gold users.`}
+                            </Animated.Text>
+                        </View> 
+                    </ImageBackground>
+                </View>
+                
             </Modal>
         );
     }
