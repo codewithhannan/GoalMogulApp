@@ -390,8 +390,8 @@ class ProfileV2 extends Component {
         return (
             <Animated.View
                 style={{ 
-                height: this.state.infoCardHeight,
-                opacity: this.state.infoCardOpacity
+                // height: this.state.infoCardHeight,
+                    opacity: this.state.infoCardOpacity
                 }}
             >
                 <ProfileDetailCard 
