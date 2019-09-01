@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   Image,
-  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -12,7 +10,7 @@ import { connect } from 'react-redux';
 import Name from '../../Common/Name';
 
 // Assets
-import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
+import tribe_default_icon from '../../../asset/utils/tribeIcon.png';
 import next from '../../../asset/utils/next.png';
 
 // Actions
@@ -21,6 +19,7 @@ import {
   tribeDetailOpen
 } from '../../../redux/modules/tribe/TribeActions';
 import DelayedButton from '../../Common/Button/DelayedButton';
+import ProfileImage from '../../Common/ProfileImage';
 
 const DEBUG_KEY = '[ Component SearchTribeCard ]';
 
@@ -57,30 +56,15 @@ class SearchTribeCard extends Component {
 
   renderTribeImage() {
     const { picture } = this.props.item;
-    let tribeImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
-    if (picture) {
-      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
-      tribeImage =
-      (
-        <View>
-          <Image
-            onLoadStart={() => this.setState({ imageLoading: true })}
-            onLoadEnd={() => this.setState({ imageLoading: false })}
-            style={styles.imageStyle}
-            source={{ uri: imageUrl }}
-          />
-          {
-            this.state.imageLoading ?
-            <View style={{ ...styles.imageStyle, alignItems: 'center', justifyContent: 'center' }}>
-               <ActivityIndicator size="small" color="lightgray" />
-            </View>
-            : null
-          }
-        </View>
-
-      );
-    }
-    return tribeImage;
+		return (
+			<ProfileImage
+				imageStyle={{ height: 55, width: 55, borderRadius: 5 }}
+				imageUrl={picture}
+				rounded
+				imageContainerStyle={styles.imageContainerStyle}
+        defaultUserProfile={tribe_default_icon}
+			/>
+		);
   }
 
   renderButton(item, type) {
@@ -149,11 +133,9 @@ class SearchTribeCard extends Component {
 const styles = {
   containerStyle: {
     flexDirection: 'row',
-    marginTop: 7,
-    marginLeft: 4,
-    marginRight: 4,
-    paddingLeft: 10,
-    paddingRight: 5,
+    marginTop: 1,
+    paddingLeft: 12,
+		paddingRight: 12,
     paddingTop: 8,
     paddingBottom: 8,
     alignItems: 'center',
@@ -197,7 +179,16 @@ const styles = {
     width: 26,
     transform: [{ rotateY: '180deg' }],
     tintColor: '#17B3EC'
-  }
+  },
+  imageContainerStyle: {
+		borderWidth: 0.5,
+		padding: 1.5,
+		borderColor: 'lightgray',
+		alignItems: 'center',
+		borderRadius: 6,
+		alignSelf: 'center',
+		backgroundColor: 'white'
+	},
 };
 
 export default connect(null, {

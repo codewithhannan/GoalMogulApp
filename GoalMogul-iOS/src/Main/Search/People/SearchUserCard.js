@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -19,6 +18,7 @@ import next from '../../../asset/utils/next.png';
 // Actions
 import { updateFriendship, openProfile } from '../../../actions';
 import DelayedButton from '../../Common/Button/DelayedButton';
+import ProfileImage from '../../Common/ProfileImage';
 
 const DEBUG_KEY = '[ Component SearchUserCard ]';
 
@@ -38,30 +38,15 @@ class SearchUserCard extends Component {
 
   renderProfileImage() {
     const { image } = this.props.item.profile;
-    let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
-    if (image) {
-      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
-      profileImage =
-      (
-        <View>
-          <Image
-            onLoadStart={() => this.setState({ imageLoading: true })}
-            onLoadEnd={() => this.setState({ imageLoading: false })}
-            style={styles.imageStyle}
-            source={{ uri: imageUrl }}
-          />
-          {
-            this.state.imageLoading ?
-            <View style={{ ...styles.imageStyle, alignItems: 'center', justifyContent: 'center' }}>
-               <ActivityIndicator size="small" color="lightgray" />
-            </View>
-            : null
-          }
-        </View>
-
-      );
-    }
-    return profileImage;
+		return (
+			<ProfileImage
+				imageStyle={{ height: 55, width: 55, borderRadius: 5 }}
+				imageUrl={image}
+				rounded
+				imageContainerStyle={styles.imageContainerStyle}
+        defaultImageSource={defaultUserProfile}
+			/>
+		);
   }
 
   renderButton(_id) {
@@ -133,11 +118,9 @@ class SearchUserCard extends Component {
 const styles = {
   containerStyle: {
     flexDirection: 'row',
-    marginTop: 7,
-    marginLeft: 4,
-    marginRight: 4,
-    paddingLeft: 10,
-    paddingRight: 5,
+		paddingLeft: 12,
+		paddingRight: 12,
+    marginTop: 1,
     paddingTop: 8,
     paddingBottom: 8,
     alignItems: 'center',
@@ -181,7 +164,16 @@ const styles = {
     width: 26,
     transform: [{ rotateY: '180deg' }],
     tintColor: '#17B3EC'
-  }
+  },
+  imageContainerStyle: {
+		borderWidth: 0.5,
+		padding: 1.5,
+		borderColor: 'lightgray',
+		alignItems: 'center',
+		borderRadius: 6,
+		alignSelf: 'center',
+		backgroundColor: 'white'
+	},
 };
 
 export default connect(null, {

@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   Image,
-  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -13,7 +11,7 @@ import Name from '../../Common/Name';
 import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Assets
-import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
+import event_default_image from '../../../asset/utils/eventIcon.png';
 import next from '../../../asset/utils/next.png';
 
 // Actions
@@ -21,6 +19,7 @@ import { selectEvent } from '../../../redux/modules/feed/post/ShareActions';
 import {
   eventDetailOpen
 } from '../../../redux/modules/event/MyEventActions';
+import ProfileImage from '../../Common/ProfileImage';
 
 const DEBUG_KEY = '[ Component SearchEventCard ]';
 
@@ -57,30 +56,15 @@ class SearchEventCard extends Component {
 
   renderEventImage() {
     const { picture } = this.props.item;
-    let eventImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
-    if (picture) {
-      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
-      eventImage =
-      (
-        <View>
-          <Image
-            onLoadStart={() => this.setState({ imageLoading: true })}
-            onLoadEnd={() => this.setState({ imageLoading: false })}
-            style={styles.imageStyle}
-            source={{ uri: imageUrl }}
-          />
-          {
-            this.state.imageLoading ?
-            <View style={{ ...styles.imageStyle, alignItems: 'center', justifyContent: 'center' }}>
-               <ActivityIndicator size="small" color="lightgray" />
-            </View>
-            : null
-          }
-        </View>
-
-      );
-    }
-    return eventImage;
+    return (
+			<ProfileImage
+				imageStyle={{ height: 55, width: 55, borderRadius: 5 }}
+				imageUrl={picture}
+				rounded
+				imageContainerStyle={styles.imageContainerStyle}
+        defaultUserProfile={event_default_image}
+			/>
+		);
   }
 
   renderButton(item, type) {
@@ -103,7 +87,7 @@ class SearchEventCard extends Component {
     const { title } = this.props.item;
     return (
       <View style={styles.infoContainerStyle}>
-        <Name text={title} textStyle={{ color: '#4F4F4F' }} />
+        <Name text={title} textStyle={{ color: '#4F4F4F', maxWidth: 200 }} />
       </View>
     );
   }
@@ -149,11 +133,9 @@ class SearchEventCard extends Component {
 const styles = {
   containerStyle: {
     flexDirection: 'row',
-    marginTop: 7,
-    marginLeft: 4,
-    marginRight: 4,
-    paddingLeft: 10,
-    paddingRight: 5,
+    marginTop: 1,
+    paddingLeft: 12,
+		paddingRight: 12,
     paddingTop: 8,
     paddingBottom: 8,
     alignItems: 'center',
@@ -197,7 +179,16 @@ const styles = {
     width: 26,
     transform: [{ rotateY: '180deg' }],
     tintColor: '#17B3EC'
-  }
+  },
+  imageContainerStyle: {
+		borderWidth: 0.5,
+		padding: 1.5,
+		borderColor: 'lightgray',
+		alignItems: 'center',
+		borderRadius: 6,
+		alignSelf: 'center',
+		backgroundColor: 'white'
+	},
 };
 
 export default connect(null, {
