@@ -7,7 +7,6 @@ import {
 import { connect } from 'react-redux';
 
 // Components
-import Name from '../../Common/Name';
 
 // Assets
 import tribe_default_icon from '../../../asset/utils/tribeIcon.png';
@@ -83,34 +82,73 @@ class SearchTribeCard extends Component {
     );
   }
 
-  renderInfo() {
-    const { name } = this.props.item;
-    return (
-      <View style={styles.infoContainerStyle}>
-        <Name text={name} textStyle={{ color: '#4F4F4F' }} />
-      </View>
-    );
+  renderTitle(item) {
+    let title = item.name;
+
+		return (
+			<View style={{ flexDirection: 'row', marginTop: 2, alignItems: 'center' }}>
+				<Text
+					style={{ color: 'black', fontSize: 18, fontWeight: '600' }}
+					numberOfLines={1}
+					ellipsizeMode='tail'
+				>
+					{title}
+				</Text>
+			</View>
+		);
   }
 
-  renderOccupation() {
-    const { description } = this.props.item;
-    if (description) {
-      return (
-        <Text
-          style={styles.titleTextStyle}
-          numberOfLines={1}
-          ellipsizeMode='tail'
-        >
-          <Text style={styles.detailTextStyle}>{description}</Text>
-        </Text>
-      );
+  /**
+	 * Render member information
+	 */
+	renderInformation(item) {
+		let count = item.memberCount;
+		if (count > 999) {
+			count = '1k+'
+		}
+		const defaultTextStyle = { color: '#abb1b0', fontSize: 10 };
+
+		return (
+			<View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }}>
+				{/*<Text style={defaultTextStyle}>{category}</Text>
+				<Dot />*/}
+				{(count) ? 
+					<View style={{flexDirection: 'row'}}>
+						<Text style={{ ...defaultTextStyle, color: '#15aad6', }}>
+							{count}
+						</Text>
+						<Text style={defaultTextStyle}>&nbsp;{item.memberCount > 1 ? 'members' : 'member'}</Text>
+					</View>
+				: null}
+			</View>
+		);
+	}
+
+  renderCardContent(item) {
+    let content;
+    if (item.description) {
+      content = item.description;
     }
-    return null;
+
+    return (
+			<View style={{ justifyContent: 'flex-start', flex: 1, marginLeft: 10 }}>
+				{this.renderTitle(item)}
+				<View style={{ marginTop: (item.memberCount ? 3 : 6) }}>
+					<Text
+						style={{ flex: 1, flexWrap: 'wrap', color: '#838f97', fontSize: 15 }}
+						numberOfLines={1}
+						ellipsizeMode='tail'
+					>
+						{content}
+					</Text>
+				</View>
+        {this.renderInformation(item)}
+			</View>
+		);
   }
 
   render() {
     const { item, type } = this.props;
-    const { _id } = this.props.item;
     return (
       <DelayedButton 
         activeOpacity={0.6}
@@ -118,12 +156,7 @@ class SearchTribeCard extends Component {
       >
         <View style={styles.containerStyle}>
           {this.renderTribeImage()}
-
-          <View style={styles.bodyContainerStyle}>
-            {this.renderInfo()}
-            {this.renderOccupation()}
-          </View>
-          {/* {this.renderButton(item, type)} */}
+          {this.renderCardContent(item)}
         </View>
       </DelayedButton>
     );
@@ -138,36 +171,11 @@ const styles = {
 		paddingRight: 12,
     paddingTop: 8,
     paddingBottom: 8,
-    alignItems: 'center',
     backgroundColor: '#ffffff',
     shadowColor: 'gray',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
-  },
-  bodyContainerStyle: {
-    marginLeft: 8,
-    flex: 1,
-  },
-  infoContainerStyle: {
-    flexDirection: 'row',
-    height: 25,
-  },
-  imageStyle: {
-    height: 48,
-    width: 48,
-    borderRadius: 5,
-  },
-  titleTextStyle: {
-    color: '#17B3EC',
-    fontSize: 11,
-    paddingTop: 1,
-    paddingBottom: 1
-  },
-  detailTextStyle: {
-    color: '#9B9B9B',
-    paddingLeft: 3,
-    fontFamily: 'gotham-pro',
   },
   iconContainerStyle: {
     marginLeft: 8,

@@ -8,15 +8,13 @@ import {
 import { connect } from 'react-redux';
 
 // Components
-import Name from '../../Common/Name';
 
 // Assets
 import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
-import badge from '../../../asset/utils/badge.png';
 import next from '../../../asset/utils/next.png';
 
 // Actions
-import { updateFriendship, openProfile } from '../../../actions';
+import { updateFriendship, openProfile, UserBanner } from '../../../actions';
 import DelayedButton from '../../Common/Button/DelayedButton';
 import ProfileImage from '../../Common/ProfileImage';
 
@@ -69,32 +67,52 @@ class SearchUserCard extends Component {
     );
   }
 
-  renderInfo() {
-    const { name } = this.props.item;
-    return (
-      <View style={styles.infoContainerStyle}>
-        <Name text={name} textStyle={{ color: '#4F4F4F' }} />
-      </View>
-    );
+  renderTitle(item) {
+    let title = item.name;
+
+		return (
+			<View style={{ flexDirection: 'row', marginTop: 2, alignItems: 'center' }}>
+				<Text
+					style={{ color: 'black', fontSize: 18, fontWeight: '600' }}
+					numberOfLines={1}
+					ellipsizeMode='tail'
+				>
+					{title}
+				</Text>
+				<UserBanner user={item} iconStyle={{ marginLeft: 3, height: 16, width: 14 }} />
+			</View>
+		);
   }
 
-  renderOccupation() {
-    const { profile } = this.props.item;
-    if (profile.occupation) {
-      return (
-        <View
-          style={styles.titleTextStyle}
-          numberOfLines={1}
-          ellipsizeMode='tail'
-        >
-          <Text style={styles.detailTextStyle}>{profile.occupation}</Text>
-        </View>
-      );
+  renderCardContent(item) {
+    let content;
+    if (item.headline) {
+      content = item.headline;
+    } else if (item.occupation) {
+      content = item.occupation;
     }
+
+    return (
+			<View style={{ justifyContent: 'flex-start', flex: 1, marginLeft: 10 }}>
+				{this.renderTitle(item)}
+				<View style={{ marginTop: 6 }}>
+					<Text
+						style={{ flex: 1, flexWrap: 'wrap', color: '#838f97', fontSize: 15 }}
+						numberOfLines={1}
+						ellipsizeMode='tail'
+					>
+						{content}
+					</Text>
+				</View>
+			</View>
+		);
   }
 
   render() {
-    const { _id } = this.props.item;
+    const { item } = this.props;
+    if (!item) return null;
+
+    const { _id } = item;
     let { cardContainerStyles } = this.props;
     if (!cardContainerStyles) {
       cardContainerStyles = {};
@@ -102,13 +120,8 @@ class SearchUserCard extends Component {
     return (
       <DelayedButton activeOpacity={0.6} onPress={this.onButtonClicked.bind(this, _id)}>
         <View style={{...styles.containerStyle, ...cardContainerStyles}}>
-          {this.renderProfileImage()}
-
-          <View style={styles.bodyContainerStyle}>
-            {this.renderInfo()}
-            {this.renderOccupation()}
-          </View>
-          {/* {this.renderButton(_id)} */}
+          {this.renderProfileImage(item)}
+          {this.renderCardContent(item)}
         </View>
       </DelayedButton>
     );
@@ -123,36 +136,11 @@ const styles = {
     marginTop: 1,
     paddingTop: 8,
     paddingBottom: 8,
-    alignItems: 'center',
     backgroundColor: '#ffffff',
     shadowColor: 'gray',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
-  },
-  bodyContainerStyle: {
-    marginLeft: 8,
-    flex: 1,
-  },
-  infoContainerStyle: {
-    flexDirection: 'row',
-    height: 25,
-  },
-  imageStyle: {
-    height: 48,
-    width: 48,
-    borderRadius: 5,
-  },
-  titleTextStyle: {
-    color: '#17B3EC',
-    fontSize: 11,
-    paddingTop: 1,
-    paddingBottom: 1
-  },
-  detailTextStyle: {
-    color: '#9B9B9B',
-    paddingLeft: 3,
-    fontFamily: 'gotham-pro',
   },
   iconContainerStyle: {
     marginLeft: 8,
