@@ -205,7 +205,7 @@ class Home extends Component {
     }
   }
 
-  scrollToTop = () => {
+  scrollToTop() {
     const { navigationState } = this.state;
     const { index, routes } = navigationState;
     if (routes[index].key === 'goals') {

@@ -10,15 +10,24 @@ import EmptyResult from '../../Common/Text/EmptyResult';
 // actions
 import {
   refreshSearchResult,
-  onLoadMore
+  onLoadMore,
+  refreshPreloadData,
+  loadPreloadData
 } from '../../../redux/modules/search/SearchActions';
 
 // tab key
+const TYPE = 'Event'; // Used for preload function
 const key = 'events';
 const DEBUG_KEY = '[ Component EventSearch ]';
 
 
 class EventSearch extends Component {
+  componentDidMount() {
+    if (this.props.shouldPreload) {
+      this.props.refreshPreloadData(TYPE);
+    }
+  }
+
   _keyExtractor = (item) => item._id;
 
   handleRefresh = () => {
@@ -30,6 +39,11 @@ class EventSearch extends Component {
     // Only refresh if there is content
     if (this.props.searchContent && this.props.searchContent.trim() !== '') {
       this.props.refreshSearchResult(keyToUse);
+      return;
+    }
+
+    if (this.props.shouldPreload) {
+      this.props.refreshPreloadData(TYPE);
     }
   }
 
@@ -39,7 +53,16 @@ class EventSearch extends Component {
     if (this.props.type !== 'GeneralSearch') {
       keyToUse = 'myEvents';
     }
-    this.props.onLoadMore(keyToUse);
+
+    if (this.props.searchContent && this.props.searchContent.trim() !== '') {
+      this.props.onLoadMore(keyToUse);
+      return;
+    }
+
+    if (this.props.shouldPreload) {
+      this.props.loadPreloadData(TYPE);
+      return;
+    }
   }
 
   renderItem = ({ item }) => {
@@ -68,12 +91,23 @@ class EventSearch extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
   const { events, searchContent } = state.search;
-  const { data, refreshing, loading } = events;
+
+  let data, refreshing, loading;
+  const { shouldPreload } = props;
+  if (shouldPreload && (!searchContent || searchContent.trim() === '')) {
+    // Display preload data when search content is null and shouldPreload is true
+    data = events.preload.data;
+    refreshing = events.preload.refreshing;
+    loading = events.preload.loading;
+  } else {
+    data = events.data;
+    refreshing = events.refreshing;
+    loading = events.loading;
+  }
 
   return {
-    events,
     data,
     refreshing,
     loading,
@@ -85,6 +119,8 @@ export default connect(
   mapStateToProps,
   {
     refreshSearchResult,
-    onLoadMore
+    onLoadMore,
+    refreshPreloadData,
+    loadPreloadData
   }
 )(EventSearch);

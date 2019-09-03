@@ -9,7 +9,7 @@ import {
 import { connect } from 'react-redux';
 import ParsedText from 'react-native-parsed-text';
 import PropTypes from 'prop-types';
-import Decode from 'unescape';
+// import Decode from 'unescape'; TODO: removed once new decode is good to go
 import _ from 'lodash';
 import Hyperlink from 'react-native-hyperlink'
 
@@ -23,6 +23,7 @@ import {
 import {
   URL_REGEX
 } from '../../../Utils/Constants';
+import { decode } from '../../../redux/middleware/utils';
 
 const DEBUG_KEY = '[ UI RichText ]';
 
@@ -123,7 +124,7 @@ class RichText extends React.Component {
 
     const parsedTags = this.constructParsedUserTags(contentTags, contentText);
     const parsedLink = this.constructParsedLink(contentLinks);
-    const convertedText = Decode(contentText);
+    const convertedText = decode(contentText);
 
     // Following is the original url detection for ParsedText. After we added HyperLink, this is no longer needed.
     // { type: 'url', style: styles.url, onPress: this.handleUrlPress },

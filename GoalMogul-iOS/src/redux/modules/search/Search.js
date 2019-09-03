@@ -14,6 +14,7 @@ import {
   CHAT_MEMBERS_SEND_JOIN_REQUEST_DONE,
   CHAT_MEMBERS_SEND_JOIN_REQUEST_ERROR
 } from '../chat/ChatRoomMembersReducers';
+import { arrayUnique } from '../../middleware/utils';
 
 const INITIAL_SEARCH_STATE = {
   data: [],
@@ -22,7 +23,14 @@ const INITIAL_SEARCH_STATE = {
   skip: 0,
   limit: 20,
   hasNextPage: undefined,
-  refreshing: false
+  refreshing: false,
+  preload: {
+    data: [],
+    loading: false,
+    refreshing: false,
+    hasNextPage: false,
+    limit: 20,
+  }
 };
 
 const INITIAL_STATE = {
@@ -62,6 +70,11 @@ export const SEARCH_REFRESH_DONE = 'search_refresh_done';
 export const SEARCH_SWITCH_TAB = 'search_switch_tab';
 export const SEARCH_ON_LOADMORE_DONE = 'search_on_loadmore_done';
 export const SEARCH_CLEAR_STATE = 'search_clear_state';
+// Preload related
+export const SEARCH_PRELOAD_REFRESH = 'search_preload_refresh';
+export const SEARCH_PRELOAD_REFRESH_DONE = 'search_preload_refresh_done';
+export const SEARCH_PRELOAD_LOAD = 'search_preload_load';
+export const SEARCH_PRELOAD_LOAD_DONE = 'search_preload_load_done';
 
 // Note: Search has different route map than SuggestionSearch
 export const SearchRouteMap = {
@@ -174,10 +187,25 @@ export default (state = INITIAL_STATE, action) => {
       newState = _.set(newState, 'searchContent', '');
 
       // Clear the search result for all tabs
+      let preload = _.get(newState, 'people.preload');
       newState = _.set(newState, 'people', { ...INITIAL_SEARCH_STATE });
+      newState = _.set(newState, 'people.preload', preload);
+
+      preload = _.get(newState, 'events.preload');
       newState = _.set(newState, 'events', { ...INITIAL_SEARCH_STATE });
+      newState = _.set(newState, 'events.preload', preload);
+
+      preload = _.get(newState, 'tribes.preload');
       newState = _.set(newState, 'tribes', { ...INITIAL_SEARCH_STATE });
+      newState = _.set(newState, 'tribes.preload', preload);
+
+      preload = _.get(newState, 'friends.preload');
       newState = _.set(newState, 'friends', { ...INITIAL_SEARCH_STATE });
+      newState = _.set(newState, 'friends.preload', preload);
+
+      preload = _.get(newState, 'chatRooms.preload');
+      newState = _.set(newState, 'chatRooms', { ...INITIAL_SEARCH_STATE });
+      newState = _.set(newState, 'chatRooms.preload', preload);
 
       return newState;
     }
@@ -282,6 +310,55 @@ export default (state = INITIAL_STATE, action) => {
         return dataToReturn;
       });
       newState = _.set(newState, 'chatRooms.data', newData);
+      return newState;
+    }
+
+    // Preload related
+    case SEARCH_PRELOAD_LOAD: {
+      const { type, path } = action.payload;
+      let newState = _.cloneDeep(state);
+      let dataToUpdate = _.get(newState, path);
+      dataToUpdate = _.set(dataToUpdate, 'loading', true);
+
+      newState = _.set(newState, path, dataToUpdate);
+      return newState;
+    }
+
+    case SEARCH_PRELOAD_LOAD_DONE: {
+      const { type, path, data, hasNextPage, skip } = action.payload;
+      let newState = _.cloneDeep(state);
+      let dataToUpdate = _.get(newState, path);
+      dataToUpdate = _.set(dataToUpdate, 'loading', false);
+      dataToUpdate = _.set(dataToUpdate, 'skip', skip);
+
+      let oldData = _.get(dataToUpdate, 'data');
+      dataToUpdate = _.set(dataToUpdate, 'data', arrayUnique(oldData.concat(data)));
+      dataToUpdate = _.set(dataToUpdate, 'hasNextPage', hasNextPage);
+      
+      newState = _.set(newState, path, dataToUpdate);
+      return newState;
+    }
+
+    case SEARCH_PRELOAD_REFRESH: {
+      const { type, path } = action.payload;
+      let newState = _.cloneDeep(state);
+      let dataToUpdate = _.get(newState, path);
+      dataToUpdate = _.set(dataToUpdate, 'refreshing', true);
+      
+      newState = _.set(newState, path, dataToUpdate);
+      return newState;
+    }
+
+    case SEARCH_PRELOAD_REFRESH_DONE: {
+      const { type, path, data, hasNextPage, skip } = action.payload;
+      let newState = _.cloneDeep(state);
+      let dataToUpdate = _.get(newState, path);
+      dataToUpdate = _.set(dataToUpdate, 'refreshing', false);
+      dataToUpdate = _.set(dataToUpdate, 'skip', skip);
+      dataToUpdate = _.set(dataToUpdate, 'data', data);
+      dataToUpdate = _.set(dataToUpdate, 'hasNextPage', hasNextPage);
+      
+      newState = _.set(newState, path, dataToUpdate);
       return newState;
     }
 

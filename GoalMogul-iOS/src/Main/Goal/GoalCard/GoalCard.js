@@ -14,7 +14,7 @@ import {
 import { TabView } from 'react-native-tab-view';
 import { connect } from 'react-redux';
 import timeago from 'timeago.js';
-import Decode from 'unescape';
+// import Decode from 'unescape'; TODO: removed once new decode is good to go
 import { deleteGoal } from '../../../actions';
 import { ConfettiFadedBackgroundTopHalf } from '../../../asset/background';
 // import BulbIcon from '../../../asset/utils/bulb.png';
@@ -26,7 +26,7 @@ import LoveIcon from '../../../asset/utils/love.png';
 import ProgressBarLargeCounter from '../../../asset/utils/progressBar_counter_large.png';
 import ProgressBarLarge from '../../../asset/utils/progressBar_large.png';
 import StepIcon from '../../../asset/utils/steps.png';
-import { makeCaretOptions, PAGE_TYPE_MAP } from '../../../redux/middleware/utils';
+import { makeCaretOptions, PAGE_TYPE_MAP, decode } from '../../../redux/middleware/utils';
 import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions';
 import { shareGoalToMastermind } from '../../../redux/modules/goal/GoalDetailActions';
 // Actions
@@ -368,7 +368,7 @@ class GoalCard extends React.PureComponent {
               ellipsizeMode='tail'
               selectable
             >
-              {Decode(title)}
+              {decode(title)}
             </Text>
           </View>
 

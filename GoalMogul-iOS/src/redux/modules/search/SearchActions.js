@@ -1,4 +1,5 @@
 import curry from 'ramda/src/curry';
+import _ from 'lodash';
 import { api as API } from '../../middleware/api';
 import {
   SEARCH_CHANGE_FILTER,
@@ -8,10 +9,15 @@ import {
   SEARCH_SWITCH_TAB,
   SEARCH_ON_LOADMORE_DONE,
   SEARCH_CLEAR_STATE,
-  SearchRouteMap
+  SearchRouteMap,
+  SEARCH_PRELOAD_REFRESH,
+  SEARCH_PRELOAD_REFRESH_DONE,
+  SEARCH_PRELOAD_LOAD,
+  SEARCH_PRELOAD_LOAD_DONE
 } from './Search';
 
 import { switchCase } from '../../middleware/utils';
+import { rsvpEvent } from '../event/EventActions';
 
 const DEBUG_KEY = '[ Action Search ]';
 
@@ -321,4 +327,156 @@ const fetchData = curry((searchContent, type, skip, limit, token, callback, forc
       }
     });
 });
-// TODO: integrate with search type later
+
+/**
+ * Preload share to list
+ * @param {*} type: ['Tribe', 'Event', 'ChatConvoRoom']
+ */
+export const refreshPreloadData = (type) => (dispatch, getState) => {
+  const { token, userId } = getState().user;
+  let path; // Path to get the related data and used by reducer
+  if (type === 'Tribe') {
+    path = 'tribes.preload';
+  } else if (type === 'Event') {
+    path = 'events.preload';
+  } else {
+    console.warn(`${DEBUG_KEY}: invalid preload type: `, type);
+    return;
+  }
+  const { limit, refreshing } = _.get(getState().search, path);
+
+  if (refreshing) return;
+
+  const onSuccess = (res) => {
+    const { data } = res;
+    console.log(`${DEBUG_KEY}: refresh preload type: ${type} succeed with data: `, data.length);
+    dispatch({
+      type: SEARCH_PRELOAD_REFRESH_DONE,
+      payload: {
+        data,
+        skip: data.length,
+        hasNextPage: (data && data.length >= limit),
+        type,
+        path
+      }
+    })
+  }
+
+  const onError = (res) => {
+    console.warn(`${DEBUG_KEY}: load more preload type: ${type} failed with err: `, res);
+    dispatch({
+      type: SEARCH_PRELOAD_REFRESH_DONE,
+      payload: {
+        data: [],
+        skip: 0,
+        type,
+        hasNextPage: false,
+        path
+      }
+    })
+  }
+
+  const route = switchCaseRoute(type);
+  if (route === '') {
+    console.warn(`${DEBUG_KEY}: invalid preload type: `, type);
+    return;
+  }
+
+  dispatch({
+    type: SEARCH_PRELOAD_REFRESH,
+    payload: {
+      type,
+      path
+    }
+  });
+
+  API
+    .get(route, token)
+    .then(res => {
+      if (res.status === 200) {
+        return onSuccess(res);
+      }
+      return onError(res);
+    })
+    .catch(err => onError(err));
+};
+
+/**
+ * Load more preload data
+ * @param {String} type: ['Tribe', 'Event']
+ */
+export const loadPreloadData = (type) => (dispatch, getState) => {
+  const { token } = getState().user;
+  let path; // Path to get the related data and used by reducer
+  // This is used due to Search reducer uses 'tribes' and 'events' as key
+  if (type === 'Tribe') {
+    path = 'tribes.preload';
+  } else if (type === 'Event') {
+    path = 'events.preload';
+  } else {
+    console.warn(`${DEBUG_KEY}: invalid preload type: `, type);
+    return;
+  }
+  const { skip, limit, hasNextPage } = _.get(getState().search, path);
+
+  if (hasNextPage === false) return;
+
+  const onSuccess = (res) => {
+    const { data } = res;
+    console.warn(`${DEBUG_KEY}: load more preload type: ${type} succeed with data: `, data.length);
+    dispatch({
+      type: SEARCH_PRELOAD_LOAD_DONE,
+      payload: {
+        data,
+        skip: skip + data.length,
+        hasNextPage: (data && data.length >= limit),
+        type,
+        path
+      }
+    })
+  }
+
+  const onError = (res) => {
+    console.warn(`${DEBUG_KEY}: load more preload type: ${type} failed with err: `, res);
+    dispatch({
+      type: SEARCH_PRELOAD_LOAD_DONE,
+      payload: {
+        data: [],
+        skip,
+        type,
+        hasNextPage: false,
+        path
+      }
+    })
+  }
+
+  const route = switchCaseRoute(type);
+  if (route === '') {
+    console.warn(`${DEBUG_KEY}: invalid preload type: `, type);
+    return;
+  }
+
+  dispatch({
+    type: SEARCH_PRELOAD_LOAD,
+    payload: {
+      type,
+      path
+    }
+  });
+
+  API
+    .get(route, token)
+    .then(res => {
+      if (res.status === 200) {
+        return onSuccess(res);
+      }
+      return onError(res);
+    })
+    .catch(err => onError(err));
+};
+
+const switchCaseRoute = (type) => switchCase({
+  Tribe: `secure/tribe`,
+  Event: `secure/event`,
+  ChatConvoRoom: 'secure/chat/room/latest?roomType=Group'
+})('')(type);

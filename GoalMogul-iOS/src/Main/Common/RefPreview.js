@@ -6,10 +6,10 @@ import {
   Text
 } from 'react-native';
 import { connect } from 'react-redux';
-import Decode from 'unescape';
+// import Decode from 'unescape'; TODO: removed once new decode is good to go
 import _ from 'lodash';
 
-import { switchCaseFWithVal } from '../../redux/middleware/utils';
+import { switchCaseFWithVal, decode } from '../../redux/middleware/utils';
 
 // Actions
 import {
@@ -132,7 +132,7 @@ class RefPreview extends Component {
               numberOfLines={1}
               ellipsizeMode='tail'
             >
-              {Decode(titleToDisplay)}
+              {decode(titleToDisplay)}
             </Text>
           </View>
 
@@ -142,7 +142,7 @@ class RefPreview extends Component {
               numberOfLines={1}
               ellipsizeMode='tail'
             >
-              {Decode(content)}
+              {decode(content)}
             </Text>
           </View>
 

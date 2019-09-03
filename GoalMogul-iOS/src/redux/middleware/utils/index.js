@@ -377,3 +377,7 @@ export const getEmails = (contact) => {
   }).filter(e => e !== null);
   return ret;
 };
+
+const Entities = require('html-entities').XmlEntities;
+const entities = new Entities();
+export const decode = (text) => entities.decode(text);

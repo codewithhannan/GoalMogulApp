@@ -89,18 +89,6 @@ import SplashScreen from './SplashScreen';
 import Tutorial from './Tutorial/Tutorial';
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 class RouterComponent extends Component {
   onTabPress = (all) => {
     const { state, isFocused } = all.navigation;

@@ -1,12 +1,13 @@
 import _ from 'lodash';
 import { Alert } from 'react-native';
-import Decode from 'unescape';
+// import Decode from 'unescape'; TODO: removed once new decode is good to go
 import MessageStorageService from '../../../services/chat/MessageStorageService';
 import { IMAGE_BASE_URL } from "../../../Utils/Constants";
 import ImageUtils from "../../../Utils/ImageUtils";
 import { MemberDocumentFetcher } from "../../../Utils/UserUtils";
 import { api as API } from "../../middleware/api";
 import { CHAT_ROOM_CLOSE_ACTIVE_ROOM, CHAT_ROOM_LOAD_INITIAL, CHAT_ROOM_LOAD_INITIAL_BEGIN, CHAT_ROOM_LOAD_MORE_MESSAGES, CHAT_ROOM_LOAD_MORE_MESSAGES_BEGIN, CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS, CHAT_ROOM_UPDATE_GHOST_MESSAGES, CHAT_ROOM_UPDATE_MESSAGES, CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF } from "./ChatRoomReducers";
+import { decode } from '../../middleware/utils';
 
 
 
@@ -399,7 +400,7 @@ export async function _transformMessagesForGiftedChat(messages, chatRoom, token)
 			_id, isLocal, sharedEntity, user, goalRecommendation,
 			createdAt: new Date(created),
 			image: media && `${IMAGE_BASE_URL}${media}`,
-			text: content && Decode(content.message),
+			text: content && decode(content.message),
 			system: !!isSystemMessage,
 		};
 	}));
