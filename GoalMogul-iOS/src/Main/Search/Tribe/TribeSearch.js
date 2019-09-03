@@ -10,15 +10,24 @@ import EmptyResult from '../../Common/Text/EmptyResult';
 // actions
 import {
   refreshSearchResult,
-  onLoadMore
+  onLoadMore,
+  refreshPreloadData,
+  loadPreloadData
 } from '../../../redux/modules/search/SearchActions';
 
 // tab key
+const TYPE = 'Tribe'; // Used for preload function
 const key = 'tribes';
 const DEBUG_KEY = '[ Component TribeSearch ]';
 
 
 class TribeSearch extends Component {
+  componentDidMount() {
+    if (this.props.shouldPreload) {
+      this.props.refreshPreloadData(TYPE);
+    }
+  }
+
   _keyExtractor = (item) => item._id;
 
   handleRefresh = () => {
@@ -31,6 +40,12 @@ class TribeSearch extends Component {
     // Only refresh if there is content
     if (this.props.searchContent && this.props.searchContent.trim() !== '') {
       this.props.refreshSearchResult(keyToUse);
+      return;
+    }
+
+    if (this.props.shouldPreload) {
+      this.props.refreshPreloadData(TYPE);
+      return;
     }
   }
 
@@ -40,7 +55,15 @@ class TribeSearch extends Component {
       keyToUse = 'myTribes';
     }
 
-    this.props.onLoadMore(keyToUse);
+    if (this.props.searchContent && this.props.searchContent.trim() !== '') {
+      this.props.onLoadMore(keyToUse);
+      return;
+    }
+
+    if (this.props.shouldPreload) {
+      this.props.loadPreloadData(TYPE);
+      return;
+    }
   }
 
   renderItem = ({ item }) => {
@@ -69,9 +92,21 @@ class TribeSearch extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
   const { tribes, searchContent } = state.search;
-  const { data, refreshing, loading } = tribes;
+  let refreshing, loading, data;
+
+  const { shouldPreload } = props;
+  if (shouldPreload && (!searchContent || searchContent.trim() === '')) {
+    // Display preload data when search content is null and shouldPreload is true
+    data = tribes.preload.data;
+    refreshing = tribes.preload.refreshing;
+    loading = tribes.preload.loading;
+  } else {
+    data = tribes.data;
+    refreshing = tribes.refreshing;
+    loading = tribes.loading;
+  }
 
   return {
     tribes,
@@ -86,6 +121,8 @@ export default connect(
   mapStateToProps,
   {
     refreshSearchResult,
-    onLoadMore
+    onLoadMore,
+    refreshPreloadData,
+    loadPreloadData
   }
 )(TribeSearch);

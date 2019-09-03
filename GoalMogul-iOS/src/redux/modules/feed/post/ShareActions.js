@@ -21,7 +21,8 @@ import {
   switchCaseF,
   sanitizeTags,
   componentKeyByTab,
-  constructPageId
+  constructPageId,
+  switchCase
 } from '../../../middleware/utils';
 
 import {
@@ -137,8 +138,8 @@ const switchShareToAction = (dest, callback) => switchCaseF({
     Actions.push('shareModal', { callback });
   },
   // Open search overlay if share to either tribe or event
-  tribe: () => Actions.push('searchTribeLightBox', { callback }),
-  event: () => Actions.push('searchEventLightBox', { callback })
+  tribe: () => Actions.push('searchTribeLightBox', { callback, shouldPreload: true }),
+  event: () => Actions.push('searchEventLightBox', { callback, shouldPreload: true })
 })('feed')(dest);
 
 // User chooses a share destination
