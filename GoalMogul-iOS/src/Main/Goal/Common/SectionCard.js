@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import R from 'ramda';
 import { connect } from 'react-redux';
-import Decode from 'unescape';
+// import Decode from 'unescape'; TODO: removed once new decode is good to go
 
 // Asset
 import bulb from '../../../asset/utils/bulb.png';
@@ -26,6 +26,7 @@ import {
   markStepAsComplete,
   markNeedAsComplete
 } from '../../../redux/modules/goal/GoalDetailActions';
+import { decode } from '../../../redux/middleware/utils';
 
 // Constants
 const { CheckIcon: checkIcon } = Icons;
@@ -195,7 +196,7 @@ class SectionCard extends Component {
               numberOfLines={2}
               ellipsizeMode='tail'
             >
-              {Decode(sectionText)}
+              {decode(sectionText)}
             </Text>
           </View>
           {this.renderActionIcons(item, type)}

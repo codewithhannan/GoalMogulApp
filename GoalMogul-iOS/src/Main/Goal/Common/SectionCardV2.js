@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import R from 'ramda';
 import { connect } from 'react-redux';
-import Decode from 'unescape';
+// import Decode from 'unescape'; TODO: removed once new decode is good to go
 
 // Asset
 import bulb from '../../../asset/utils/bulb.png';
@@ -28,6 +28,7 @@ import {
   markStepAsComplete,
   markNeedAsComplete
 } from '../../../redux/modules/goal/GoalDetailActions';
+import { decode } from '../../../redux/middleware/utils';
 
 // Constants
 const DEBUG_KEY = '[ UI GoalCard.Need/Step SectionCardV2 ]';
@@ -178,7 +179,7 @@ class SectionCardV2 extends Component {
     const { description, isCompleted } = itemToRender;
     const isCommentFocused = type === 'comment';
     const sectionText = isCommentFocused ? 'Back to mastermind' : description;
-    const textToDisplay = Decode(sectionText === undefined ? 'No content' : sectionText);
+    const textToDisplay = decode(sectionText === undefined ? 'No content' : sectionText);
 
     return (
       <DelayedButton
