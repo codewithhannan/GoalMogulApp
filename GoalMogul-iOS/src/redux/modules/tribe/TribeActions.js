@@ -135,6 +135,56 @@ export const openTribeInvitModal = ({ tribeId, cardIconSource, cardIconStyle }) 
   Actions.push('searchPeopleLightBox', { searchFor, cardIconSource, cardIconStyle });
 };
 
+/**
+ * Send invite requests to multiple users for a tribe
+ * @param {*} tribeId 
+ * @param {*} users 
+ * @param {*} callback 
+ */
+export const inviteMultipleUsersToTribe = (tribeId, users, callback) => (dispatch, getState) => {
+  const { token } = getState().user;
+  (async () => {
+    let failedItems = []; 
+
+    for (let user of users) {
+        // send the message
+        const body = {
+            tribeId, inviteeId: user._id
+        };
+        try {
+            const resp = await API.post(`${BASE_ROUTE}/member-invitation`, body, token);
+            if (resp.status != 200) {
+                failedItems.push(user);
+            };
+        } catch(e) {
+            failedItems.push(user);
+        };
+    };
+
+    if (failedItems.length == 0) {
+        Alert.alert('Success', 'Your friends have been invited');
+        // Use callback if there is one
+        if (callback) {
+          callback();
+        } else {
+          Actions.pop();
+        }
+    } else {
+        const failedUserNames = failedItems.reduce((accum, u) => {
+            return `${accum}, ${u.name}`;
+        }, '');
+        Alert.alert('Error', `Could not invite some users: ${failedUserNames}`);
+    };
+  })();
+};
+
+/**
+ * Invite a single user to the tribe. This API is likely to be deprecated after 
+ * inviteMultipleUsersToTribe with the multi-select invite modal is implemented
+ * 
+ * @param {String} tribeId 
+ * @param {String} inviteeId 
+ */
 export const inviteUserToTribe = (tribeId, inviteeId) => (dispatch, getState) => {
   const { token } = getState().user;
 
@@ -433,10 +483,10 @@ export const tribeDetailOpenWithId = (tribeId) => (dispatch, getState) => {
 };
 
 // Refresh tribe detail
-export const refreshTribeDetail = (tribeId) => (dispatch, getState) => {
+export const refreshTribeDetail = (tribeId, callback) => (dispatch, getState) => {
   const { item } = getState().tribe;
   if (!item || item._id !== tribeId) return;
-  fetchTribeDetail(tribeId)(dispatch, getState);
+  fetchTribeDetail(tribeId, callback)(dispatch, getState);
   refreshTribeFeed(tribeId, dispatch, getState);
 };
 

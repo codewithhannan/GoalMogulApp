@@ -45,7 +45,8 @@ import {
   eventDetailClose,
   loadMoreEventFeed,
   myEventSelectMembersFilter,
-  refreshMyEventDetail
+  refreshMyEventDetail,
+  inviteMultipleUsersToEvent
 } from '../../../redux/modules/event/MyEventActions';
 
 import {
@@ -85,6 +86,7 @@ import {
   CARET_OPTION_NOTIFICATION_SUBSCRIBE,
   CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
+import { openMultiUserInviteModal, searchFriend } from '../../../redux/modules/search/SearchActions';
 
 const DEBUG_KEY = '[ UI MyEvent ]';
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
@@ -124,6 +126,29 @@ class MyEvent extends Component {
   componentWillUnmount() {
     const { pageId, eventId } = this.props;
     this.props.eventDetailClose(eventId, pageId);
+  }
+
+  /**
+   * Open multi-select user invite modal
+   */
+  openUserInviteModal = (item) => {
+    const { title, _id } = item;
+    this.props.openMultiUserInviteModal({
+      searchFor: this.props.searchFriend,
+      onSubmitSelection: (users, inviteToEntity, actionToExecute) => {
+        const callback = () => {
+          this.props.refreshMyEventDetail(inviteToEntity, null, this.props.pageId);
+          actionToExecute();
+        };
+        this.props.inviteMultipleUsersToEvent(_id, users, callback);
+      },
+      onCloseCallback: (actionToExecute) => {
+        actionToExecute();
+      },
+      inviteToEntityType: 'Event',
+      inviteToEntityName: title,
+      inviteToEntity: _id
+    });
   }
 
   /**
@@ -200,14 +225,15 @@ class MyEvent extends Component {
             ...this.state,
             showPlus: true
           });
-          this.props.openEventInviteModal(
-            {
-              eventId: _id,
-              cardIconSource: invite,
-              cardIconStyle: { tintColor: APP_BLUE_BRIGHT },
-              callback: inviteCallback
-            }
-          );
+          // this.props.openEventInviteModal(
+          //   {
+          //     eventId: _id,
+          //     cardIconSource: invite,
+          //     cardIconStyle: { tintColor: APP_BLUE_BRIGHT },
+          //     callback: inviteCallback
+          //   }
+          // );
+          this.openUserInviteModal(item);
         }
       }
     ];
@@ -903,6 +929,10 @@ export default connect(
     refreshMyEventDetail,
     openPostDetail,
     subscribeEntityNotification,
-    unsubscribeEntityNotification
+    unsubscribeEntityNotification,
+    // Multi friend invite
+    searchFriend, 
+    openMultiUserInviteModal,
+    inviteMultipleUsersToEvent
   }
 )(MyEvent);

@@ -64,7 +64,8 @@ import {
   leaveTribe,
   acceptTribeInvit,
   declineTribeInvit,
-  requestJoinTribe
+  requestJoinTribe,
+  inviteMultipleUsersToTribe
 } from '../../../redux/modules/tribe/TribeActions';
 
 import {
@@ -94,6 +95,7 @@ import {
   CARET_OPTION_NOTIFICATION_SUBSCRIBE,
   CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
+import { openMultiUserInviteModal, searchFriend } from '../../../redux/modules/search/SearchActions';
 
 const { CheckIcon: check } = Icons;
 const DEBUG_KEY = '[ UI MyTribe ]';
@@ -139,6 +141,26 @@ class MyTribe extends Component {
 
   componentWillUnmount() {
     this.props.myTribeReset();
+  }
+
+  openUserInviteModal = (item) => {
+    const { name, _id } = item;
+    this.props.openMultiUserInviteModal({
+      searchFor: this.props.searchFriend,
+      onSubmitSelection: (users, inviteToEntity, actionToExecute) => {
+        const callback = () => {
+          this.props.refreshMyTribeDetail(inviteToEntity, null, false);
+          actionToExecute();
+        };
+        this.props.inviteMultipleUsersToTribe(_id, users, callback);
+      },
+      onCloseCallback: (actionToExecute) => {
+        actionToExecute();
+      },
+      inviteToEntityType: 'Tribe',
+      inviteToEntityName: name,
+      inviteToEntity: _id
+    });
   }
 
   /**
@@ -234,11 +256,12 @@ class MyTribe extends Component {
             ...this.state,
             showPlus: true
           });
-          this.props.openTribeInvitModal({
-            tribeId: _id,
-            cardIconSource: invite,
-            cardIconStyle: { tintColor: APP_BLUE_BRIGHT }
-          });
+          // this.props.openTribeInvitModal({
+          //   tribeId: _id,
+          //   cardIconSource: invite,
+          //   cardIconStyle: { tintColor: APP_BLUE_BRIGHT }
+          // });
+          this.openUserInviteModal(item);
         }
       }
     ];
@@ -1079,7 +1102,11 @@ export default connect(
     myTribeReset,
     openPostDetail,
     subscribeEntityNotification,
-    unsubscribeEntityNotification
+    unsubscribeEntityNotification,
+    // Multi friend invite
+    searchFriend, 
+    openMultiUserInviteModal,
+    inviteMultipleUsersToTribe
   }
 )(MyTribe);
 
