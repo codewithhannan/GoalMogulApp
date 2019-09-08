@@ -167,9 +167,6 @@ class ProfileInfoCard extends Component {
       return null;
     }
     const { elevatorPitch, occupation, about } = user.profile;
-    if (!occupation && !elevatorPitch) {
-      return null;
-    }
     const divider = elevatorPitch || about 
       ? (<View style={profileStyles.dividerStyle} />)
       : null;
