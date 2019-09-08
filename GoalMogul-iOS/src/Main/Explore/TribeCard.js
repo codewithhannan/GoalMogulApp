@@ -17,6 +17,7 @@ import {
   tribeDetailOpen
 } from '../../redux/modules/tribe/TribeActions';
 import DelayedButton from '../Common/Button/DelayedButton';
+import { IMAGE_BASE_URL } from '../../Utils/Constants';
 
 const DEBUG_KEY = '[UI Tribe Card] ';
 
@@ -46,7 +47,7 @@ class TribeCard extends React.Component {
     const { picture } = this.props.item;
     if (picture && picture.length > 0) {
       // Render the corresponding image
-      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
+      const imageUrl = `${IMAGE_BASE_URL}${picture}`;
       return (
         <View
           style={styles.imageContainerStyle}

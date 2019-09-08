@@ -32,6 +32,7 @@ import CommentRef from '../Goal/GoalDetailCard/Comment/CommentRef';
 import ActivityBody from './ActivityBody';
 import ActivityHeader from './ActivityHeader';
 import ActivitySummary from './ActivitySummary';
+import DelayedButton from '../Common/Button/DelayedButton';
 
 const DEBUG_KEY = '[ UI ActivityCard ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
@@ -192,7 +193,7 @@ class ActivityCard extends React.PureComponent {
           imageContainerStyle={{ ...styles.imageContainerStyle, marginTop: 2 }}
           userId={_id}
         />
-        <TouchableOpacity
+        <DelayedButton
           activeOpacity={0.6} 
           style={{ 
             backgroundColor: 'white', 
@@ -226,7 +227,7 @@ class ActivityCard extends React.PureComponent {
           />
           {this.renderMedia(mediaRef)}
           {this.renderCommentRef(suggestion)}
-        </TouchableOpacity>
+        </DelayedButton>
       </View>
     );
   }
@@ -294,12 +295,12 @@ class ActivityCard extends React.PureComponent {
           <ActivitySummary item={item} />
           <View style={{ marginTop: 1 }}>
             <View style={{ marginTop: 12, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
-              <TouchableOpacity
+              <DelayedButton
                 activeOpacity={0.6}
                 onPress={() => this.handleCardOnPress(item)}
               >
                 <ActivityHeader item={item} />
-              </TouchableOpacity>
+              </DelayedButton>
               <ActivityBody item={item} />
             </View>
           </View>

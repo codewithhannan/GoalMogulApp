@@ -69,6 +69,7 @@ import {
 
 // Utils
 import { arrayUnique, clearTags } from '../../../redux/middleware/utils';
+import { IMAGE_BASE_URL } from '../../../Utils/Constants';
 
 const { Popover } = renderers;
 const { width } = Dimensions.get('window');
@@ -490,7 +491,7 @@ class NewGoalView extends Component {
     let profileImage =
       <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />;
     if (imageUrl) {
-      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
+      imageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
       profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
     }
     const callback = R.curry((value) => this.props.change('privacy', value));

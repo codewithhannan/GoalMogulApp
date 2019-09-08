@@ -44,6 +44,7 @@ import camera from '../../asset/utils/camera.png';
 import cameraRoll from '../../asset/utils/cameraRoll.png';
 import imageOverlay from '../../asset/utils/imageOverlay.png';
 import expand from '../../asset/utils/expand.png';
+import { IMAGE_BASE_URL } from '../../Utils/Constants';
 
 // const { Popover } = renderers;
 const { width } = Dimensions.get('window');
@@ -178,7 +179,7 @@ class CreateTribeModal extends React.Component {
       if (!hasImageModified) {
         // If editing a tribe and image hasn't changed, then image source should
         // be from server
-        imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
+        imageUrl = `${IMAGE_BASE_URL}${picture}`;
       }
     }
 

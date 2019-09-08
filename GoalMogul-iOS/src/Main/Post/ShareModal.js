@@ -40,6 +40,7 @@ import {
   searchTribeMember,
   searchEventParticipants
 } from '../../redux/modules/search/SearchActions';
+import { IMAGE_BASE_URL } from '../../Utils/Constants';
 
 // Constants
 const DEBUG_KEY = '[ UI ShareModal ]';
@@ -382,7 +383,7 @@ class ShareModal extends React.Component {
       <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />
     );
     if (imageUrl) {
-      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
+      imageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
       profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
     }
 

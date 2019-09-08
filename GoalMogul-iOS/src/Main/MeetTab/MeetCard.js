@@ -17,6 +17,7 @@ import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
 
 // Actions
 import { updateFriendship } from '../../actions';
+import { IMAGE_BASE_URL } from '../../Utils/Constants';
 
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
 const WITHDRAW_INDEX = 0;
@@ -60,7 +61,7 @@ class MeetCard extends Component {
     const { image } = this.props.item.profile;
     let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
     if (image) {
-      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+      const imageUrl = `${IMAGE_BASE_URL}${image}`;
       profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
     }
     return profileImage;
