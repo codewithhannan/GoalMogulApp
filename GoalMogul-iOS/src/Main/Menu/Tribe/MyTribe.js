@@ -96,6 +96,7 @@ import {
   CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
 import { openMultiUserInviteModal, searchFriend } from '../../../redux/modules/search/SearchActions';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 const { CheckIcon: check } = Icons;
 const DEBUG_KEY = '[ UI MyTribe ]';
@@ -583,9 +584,10 @@ class MyTribe extends Component {
     if (isMember) {
       const { text, iconSource, iconStyle } = switchCaseMemberStatus(isMember);
       return (
-        <TouchableOpacity
+        <DelayedButton
           activeOpacity={0.6}
-          style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8, height: 23 }}
+          // style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8, height: 23 }}
+          style={{ ...styles.rsvpBoxContainerStyle, marginLeft: 6 }}
           onPress={() => this.handleStatusChange(isMember, item)}
         >
           <Image
@@ -601,7 +603,7 @@ class MyTribe extends Component {
           >
             {text}
           </Text>
-        </TouchableOpacity>
+        </DelayedButton>
       );
     }
     // Return view to request to join
@@ -1025,6 +1027,18 @@ const styles = {
     height: 26,
     width: 26,
     tintColor: 'white',
+  },
+  rsvpBoxContainerStyle: {
+    height: 25,
+    // width: 60,
+    paddingVertical: 3,
+    paddingLeft: 5,
+    paddingRight: 5,
+    borderRadius: 5,
+    backgroundColor: '#efefef',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row'
   },
 };
 
