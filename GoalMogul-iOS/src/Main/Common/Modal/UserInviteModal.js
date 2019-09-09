@@ -33,6 +33,7 @@ import { arrayUnique } from '../../../redux/middleware/utils';
 
 const AUTO_SEARCH_DELAY_MS = 500;
 const DEBUG_KEY = '[ UI UserInviteModal ]';
+const DEFAULT_LIMIT = 10;
 
 class UserInviteModal extends React.PureComponent {
     constructor(props) {
@@ -43,7 +44,14 @@ class UserInviteModal extends React.PureComponent {
             searchQuery: '', // Search query
             loading: false, // Searching state
             hasNextPage: undefined, // If there is next page for the current search res
+            preloadHasNextPage: undefined, // Preload data has next page
+            preloadData: [] // Preload data
         };
+    }
+
+    componentDidMount() {
+        // Preload data
+        this.preload();
     }
 
     // Update search result callback
@@ -53,6 +61,42 @@ class UserInviteModal extends React.PureComponent {
             searchRes: res,
             hasNextPage,
             loading: false
+        });
+    }
+
+    updatePreloadRes = (res, hasNextPage) => {
+        if (!res.length) {
+            this.setState({
+                ...this.state,
+                preloadHasNextPage: false,
+                loading: false
+            });
+            return;
+        }
+
+        const oldData = _.cloneDeep(this.state.preloadData);
+        const newData = arrayUnique(oldData.concat(res));
+        this.setState({
+            ...this.state,
+            preloadData: newData,
+            preloadHasNextPage: hasNextPage,
+            loading: false
+        });
+    }
+
+    preload = () => {
+        // Do not preload if no next page or no preload func defined
+        if (this.state.preloadHasNextPage === false || !this.props.preload || this.props.loading) return;
+        
+        this.setState({
+            ...this.state,
+            loading: true
+        }, () => {
+            this.props.preload(
+                this.state.preloadData, // current preload result
+                DEFAULT_LIMIT, // response limit
+                this.updatePreloadRes // call back to update component state related to preload
+            );
         });
     }
     
@@ -158,6 +202,14 @@ class UserInviteModal extends React.PureComponent {
                 5, // limit
                 this.updateSearchRes // callback to update the state
             );
+            return;
+        }
+
+        const hasInput = this.state.searchQuery.length > 0;
+        const searchHasNoNextPage = hasInput && this.state.hasNextPage === false;
+
+        if (!hasInput || searchHasNoNextPage) {
+            this.preload();
         }
     }
 
@@ -216,6 +268,9 @@ class UserInviteModal extends React.PureComponent {
     render() {
         const searchPlaceHolder = 'Search friends';
         const modalDescriptionAction = getActionType(this.props.inviteToEntityType);
+
+        let dataToUse = this.state.searchQuery.trim().length ? this.state.searchRes : this.state.preloadData;
+
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
 				<KeyboardAvoidingView
@@ -291,7 +346,7 @@ class UserInviteModal extends React.PureComponent {
                         />
                         {/* Search result items */}
                         <FlatList
-                            data={this.state.searchRes.map(doc => {
+                            data={dataToUse.map(doc => {
                                 doc.isSearchResult = true;
                                 return doc;
                             })}
@@ -348,14 +403,16 @@ UserInviteModal.propTypes = {
 
     // Optional props
     onCloseCallback: PropTypes.func, // Function when close is clicked
+    // Preload related
+    preload: PropTypes.func, // Function to prelaod data
 
     // Required props
-    searchFor: PropTypes.func, // Function to load search result
-    onSubmitSelection: PropTypes.func, // On submit click when selection is done
+    searchFor: PropTypes.func.isRequired, // Function to load search result
+    onSubmitSelection: PropTypes.func.isRequired, // On submit click when selection is done
     
-    inviteToEntityType: PropTypes.string, // Entity type to invite to
-    inviteToEntity: PropTypes.string, // Entity id to invite to 
-    inviteToEntityName: PropTypes.string, // Entity name to invite to
+    inviteToEntityType: PropTypes.string.isRequired, // Entity type to invite to
+    inviteToEntity: PropTypes.string.isRequired, // Entity id to invite to 
+    inviteToEntityName: PropTypes.string.isRequired, // Entity name to invite to
 };
 
 export default UserInviteModal;

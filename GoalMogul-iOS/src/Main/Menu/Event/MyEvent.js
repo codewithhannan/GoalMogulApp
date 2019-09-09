@@ -88,6 +88,7 @@ import {
 } from '../../../Utils/Constants';
 import { openMultiUserInviteModal, searchFriend } from '../../../redux/modules/search/SearchActions';
 import DelayedButton from '../../Common/Button/DelayedButton';
+import { loadFriends } from '../../../actions';
 
 const DEBUG_KEY = '[ UI MyEvent ]';
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
@@ -148,7 +149,8 @@ class MyEvent extends Component {
       },
       inviteToEntityType: 'Event',
       inviteToEntityName: title,
-      inviteToEntity: _id
+      inviteToEntity: _id,
+      preload: this.props.loadFriends
     });
   }
 
@@ -934,6 +936,7 @@ export default connect(
     // Multi friend invite
     searchFriend, 
     openMultiUserInviteModal,
-    inviteMultipleUsersToEvent
+    inviteMultipleUsersToEvent,
+    loadFriends
   }
 )(MyEvent);

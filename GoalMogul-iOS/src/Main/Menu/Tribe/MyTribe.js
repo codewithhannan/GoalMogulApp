@@ -97,6 +97,7 @@ import {
 } from '../../../Utils/Constants';
 import { openMultiUserInviteModal, searchFriend } from '../../../redux/modules/search/SearchActions';
 import DelayedButton from '../../Common/Button/DelayedButton';
+import { loadFriends } from '../../../actions';
 
 const { CheckIcon: check } = Icons;
 const DEBUG_KEY = '[ UI MyTribe ]';
@@ -160,7 +161,8 @@ class MyTribe extends Component {
       },
       inviteToEntityType: 'Tribe',
       inviteToEntityName: name,
-      inviteToEntity: _id
+      inviteToEntity: _id,
+      preload: this.props.loadFriends
     });
   }
 
@@ -1120,7 +1122,8 @@ export default connect(
     // Multi friend invite
     searchFriend, 
     openMultiUserInviteModal,
-    inviteMultipleUsersToTribe
+    inviteMultipleUsersToTribe,
+    loadFriends
   }
 )(MyTribe);
 
