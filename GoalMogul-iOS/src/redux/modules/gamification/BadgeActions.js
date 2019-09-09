@@ -8,3 +8,11 @@ export const getBagdeIconByTier = (tier) => {
     if (tier === 3) return Gold3D;
     return Green;
 };
+
+export const getBadgeTextByTier = (tier) => {
+    if (tier === 0) return 'Green';
+    if (tier === 1) return 'Bronze';
+    if (tier === 2) return 'Silver';
+    if (tier === 3) return 'Gold';
+    return 'Green';
+};

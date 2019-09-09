@@ -29,6 +29,7 @@ import {
   getUserDataByPageId,
   getUserData
 } from '../../redux/modules/User/Selector';
+import { IMAGE_BASE_URL } from '../../Utils/Constants';
 
 const DEBUG_KEY = '[ Component ProfileSummaryCard ]';
 
@@ -92,7 +93,7 @@ class ProfileSummaryCard extends Component {
     );
 
     if (imageUrl) {
-      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
+      imageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
       profileImage =
         (
           <View style={styles.imageContainerStyle}>

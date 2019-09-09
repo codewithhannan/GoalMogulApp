@@ -16,8 +16,10 @@ import {
   SEARCH_PRELOAD_LOAD_DONE
 } from './Search';
 
-import { switchCase } from '../../middleware/utils';
+import { switchCase, arrayUnique } from '../../middleware/utils';
 import { rsvpEvent } from '../event/EventActions';
+import { Actions } from 'react-native-router-flux';
+import { Logger } from '../../middleware/utils/Logger';
 
 const DEBUG_KEY = '[ Action Search ]';
 
@@ -480,3 +482,50 @@ const switchCaseRoute = (type) => switchCase({
   Event: `secure/event`,
   ChatConvoRoom: 'secure/chat/room/latest?roomType=Group'
 })('')(type);
+
+/** Multi-select user invite */
+export const openMultiUserInviteModal = (props) => (dispatch) => {
+  Actions.push(
+    'multiSearchPeopleLightBox', 
+    { ...props }
+  );
+};
+
+/**
+ * Search friends
+ * 
+ * @param {*} searchText 
+ * @param {*} lastSearchRes 
+ * @param {*} limit 
+ * @param {*} callback 
+ */
+export const searchFriend = (searchText, lastSearchRes, limit, callback) => (dispatch, getState) => {
+  const { token } = getState().user;
+
+  const onSuccess = (res) => {
+    const { data } = res;
+    let newData = arrayUnique(lastSearchRes.concat(data));
+    Logger.log(`${DEBUG_KEY}: [searchFriend] new data length: ${newData.length}, original length: ${lastSearchRes.length}`, {}, 2);
+    if (callback) {
+      callback(newData, data.length > 0);
+    }
+  };
+
+  const onError = (err) => {
+    console.warn(`${DEBUG_KEY}: [searchFriend] failed for searchText: ${searchText} with err: `, err);
+    if (callback) {
+      callback(lastSearchRes);
+    }
+  };
+
+  const url = `secure/user/friendship/es?skip=${lastSearchRes.length}&limit=${limit}&query=${searchText}`;
+  API
+    .get(url, token, 1)
+    .then((res) => {
+      if (res.status === 200) {
+        return onSuccess(res);
+      }
+      return onError(res);
+    })
+    .catch(err => onError(err));
+};

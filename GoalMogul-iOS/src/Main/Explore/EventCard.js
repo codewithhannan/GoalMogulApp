@@ -19,6 +19,7 @@ import {
 
 // Components
 import DelayedButton from '../Common/Button/DelayedButton';
+import { IMAGE_BASE_URL } from '../../Utils/Constants';
 
 // import {
 //   eventDetailOpen
@@ -52,7 +53,7 @@ class EventCard extends React.Component {
     const { picture } = item;
     if (picture && picture.length > 0) {
       // Render the corresponding image
-      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
+      const imageUrl = `${IMAGE_BASE_URL}${picture}`;
       return (
         <View
           style={styles.imageContainerStyle}

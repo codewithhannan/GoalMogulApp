@@ -70,6 +70,26 @@ export const preloadMeet = () => (dispatch, getState) => {
   // }));
 };
 
+/**
+ * Load friends based on previous result
+ * @param {array} lastRes 
+ * @param {string} limit 
+ * @param {func} callback 
+ */
+export const loadFriends = (lastRes, limit, callback) => (dispatch, getState) => {
+  const { token } = getState().user;
+
+  loadOneTab('friends', lastRes ? lastRes.length : 0, limit, token, dispatch, (data) => {
+    // Invoke callback to pass data and hasNextPage back
+    Logger.log(`${DEBUG_KEY}: [loadFriends] success with length:`, data.length, 2);
+    callback(data, data.length > 0);
+  }, (err) => {
+    // Invoke callback to pass data and hasNextPage back
+    console.warn(`${DEBUG_KEY}: [loadFriends] failed with err:`, err);
+    callback([], false);
+  });
+};
+
 /*
 @param type (string): current tab key
 @param skip (number): number to skip for data

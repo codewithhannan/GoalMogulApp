@@ -74,7 +74,7 @@ class Account extends Component {
           <SettingCard
             title="Log out"
             key="logout"
-            explanation="Log out current account"
+            explanation="Log out of current account"
             onPress={() => {
               Alert.alert('Log out', 'Are you sure to log out?', [
                   { text: 'Cancel', onPress: () => console.log('user cancel logout') },

@@ -318,3 +318,46 @@ export const loadEventFeed = (skip, limit, token, params, callback, onError) => 
       console.log(`${DEBUG_KEY}: loading event error: ${err}`);
     });
 };
+
+/**
+ * Send invite requests to multiple users for an event
+ * @param {*} eventId 
+ * @param {*} users 
+ * @param {*} callback 
+ */
+export const inviteMultipleUsersToEvent = (eventId, users, callback) => (dispatch, getState) => {
+  const { token } = getState().user;
+  (async () => {
+    let failedItems = []; 
+
+    for (let user of users) {
+        // send the message
+        const body = {
+          eventId, inviteeId: user._id
+        };
+        try {
+            const resp = await API.post(`${BASE_ROUTE}/participant`, body, token);
+            if (resp.status != 200) {
+                failedItems.push(user);
+            };
+        } catch(e) {
+            failedItems.push(user);
+        };
+    };
+
+    if (failedItems.length == 0) {
+        Alert.alert('Success', 'Your friends have been invited');
+        // Use callback if there is one
+        if (callback) {
+          callback();
+        } else {
+          Actions.pop();
+        }
+    } else {
+        const failedUserNames = failedItems.reduce((accum, u) => {
+            return `${accum}, ${u.name}`;
+        }, '');
+        Alert.alert('Error', `Could not invite some users: ${failedUserNames}`);
+    };
+  })();
+};

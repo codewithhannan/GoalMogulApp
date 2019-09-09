@@ -80,12 +80,12 @@ class ProfileDetailCard extends Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     let prevImageUrl = '';
     if (prevProps.user && prevProps.user.profile && prevProps.user.profile.image) {
-      prevImageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${prevProps.user.profile.image}`;
+      prevImageUrl = `${IMAGE_BASE_URL}${prevProps.user.profile.image}`;
     }
 
     if (this.props.user && this.props.user.profile && this.props.user.profile.image) {
       const { image } = this.props.user.profile;
-      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+      const imageUrl = `${IMAGE_BASE_URL}${image}`;
       if (imageUrl !== this.state.imageUrl || imageUrl !== prevImageUrl) {
         this.prefetchImage(image);
         // console.log(`prefetching image, imageUrl: ${imageUrl}, prevImageUrl: ${prevImageUrl}`);
@@ -100,7 +100,7 @@ class ProfileDetailCard extends Component {
   }
 
   prefetchImage(image) {
-    const fullImageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+    const fullImageUrl = `${IMAGE_BASE_URL}${image}`;
     this.setState({
       imageUrl: fullImageUrl
     });

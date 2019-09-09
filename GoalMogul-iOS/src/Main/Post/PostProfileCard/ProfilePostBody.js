@@ -6,7 +6,6 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 import _ from 'lodash';
-import Modal from 'react-native-modal';
 
 import {
   switchCase
@@ -21,6 +20,7 @@ import RefPreview from '../../Common/RefPreview';
 
 // Styles
 import { imagePreviewContainerStyle } from '../../../styles';
+import { IMAGE_BASE_URL } from '../../../Utils/Constants';
 
 // Constants
 const DEBUG_KEY = '[ UI ProfilePostCard.ProfilePostBody ]';
@@ -37,7 +37,7 @@ class ProfilePostBody extends React.Component {
     if (!url) {
       return null;
     }
-    const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${url}`;
+    const imageUrl = `${IMAGE_BASE_URL}${url}`;
       return (
         <TouchableWithoutFeedback
           onPress={() => this.setState({ mediaModal: true })}

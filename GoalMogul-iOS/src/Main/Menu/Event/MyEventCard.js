@@ -16,6 +16,7 @@ import eventDefaultIcon from '../../../asset/suggestion/event.png';
 import {
   eventDetailOpen
 } from '../../../redux/modules/event/MyEventActions';
+import { IMAGE_BASE_URL } from '../../../Utils/Constants';
 
 const DEBUG_KEY = '[UI My Event Card] ';
 
@@ -45,7 +46,7 @@ class MyEventCard extends React.Component {
     const { picture } = item;
     if (picture && picture.length > 0) {
       // Render the corresponding image
-      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${picture}`;
+      const imageUrl = `${IMAGE_BASE_URL}${picture}`;
       return (
         <View
           style={styles.imageContainerStyle}

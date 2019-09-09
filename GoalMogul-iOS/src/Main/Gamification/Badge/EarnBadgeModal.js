@@ -18,7 +18,7 @@ import DelayedButton from '../../Common/Button/DelayedButton';
 import { modalCancelIconContainerStyle, modalCancelIconStyle, modalContainerStyle, modalHeaderBadgeShadow } from '../../../styles';
 import Badges, { Bronze3D, Silver3D, Gold3D, Green } from '../../../asset/banner';
 import { ConfettiFadedBackground } from '../../../asset/background';
-import { getBagdeIconByTier } from '../../../redux/modules/gamification/BadgeActions';
+import { getBagdeIconByTier, getBadgeTextByTier } from '../../../redux/modules/gamification/BadgeActions';
 import GoldBadgeInfoModal from './GoldBadgeInfoModal';
 import GoldBadgeRewardModal from './GoldBadgeRewardModal';
 
@@ -73,12 +73,7 @@ class EarnBadgeModal extends React.PureComponent {
         this.props.markEarnBadgeModalAsShown();
     }
 
-    renderBadgeEarned() {
-        let tier = 0;
-        if (_.has(this.props.user, 'profile.badges.milestoneBadge.currentMilestone')) {
-            tier = _.get(this.props.user, 'profile.badges.milestoneBadge.currentMilestone');
-        }
-
+    renderBadgeEarned(tier) {
         const badgeIcon = getBagdeIconByTier(tier);
         return (
             <View style={{ ...modalHeaderBadgeShadow, marginTop: 10 }}>
@@ -110,6 +105,11 @@ class EarnBadgeModal extends React.PureComponent {
     }
 
     render() {
+        let tier = 0;
+        if (_.has(this.props.user, 'profile.badges.milestoneBadge.currentMilestone')) {
+            tier = _.get(this.props.user, 'profile.badges.milestoneBadge.currentMilestone');
+        }
+
         return (
             <Modal
                 backdropColor={'black'}
@@ -143,9 +143,9 @@ class EarnBadgeModal extends React.PureComponent {
                             <Text style={{ color: 'rgb(0, 150, 203)', fontWeight: '500', fontSize: 22, marginTop: 18 }}>
                                 Congratulations!
                             </Text>
-                            {this.renderBadgeEarned()}
+                            {this.renderBadgeEarned(tier)}
                             <Text style={{ color: 'rgb(153, 153, 153)', fontSize: 14, paddingTop: 15, paddingBottom: 7 }}>
-                                You've earned a Silver Badge.
+                                You've earned a {getBadgeTextByTier(tier)} Badge.
                             </Text>
                             <View style={{ width: '76%', height: 0.5, backgroundColor: 'rgb(238, 238, 238)', marginVertical: 3 }} />
                             <Text style={{ color: 'rgb(51, 51, 51)', fontSize: 17, paddingVertical: 7 }}>Badges</Text>

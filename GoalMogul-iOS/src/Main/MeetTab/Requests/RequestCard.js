@@ -22,6 +22,7 @@ import { updateFriendship, openProfile } from '../../../actions';
 import {
   cardBoxShadow
 } from '../../../styles';
+import { IMAGE_BASE_URL } from '../../../Utils/Constants';
 
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
 const WITHDRAW_INDEX = 0;
@@ -95,7 +96,7 @@ class RequestCard extends Component {
     const { image } = profile;
     let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
     if (image) {
-      const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
+      const imageUrl = `${IMAGE_BASE_URL}${image}`;
       profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
     }
     return profileImage;

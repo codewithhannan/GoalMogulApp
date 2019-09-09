@@ -46,6 +46,7 @@ import {
   postToFormAdapter
 } from '../../redux/modules/feed/post/PostActions';
 import { searchUser } from '../../redux/modules/search/SearchActions';
+import { IMAGE_BASE_URL } from '../../Utils/Constants';
 
 const { width } = Dimensions.get('window');
 const DEBUG_KEY = '[ UI CreatePostModal ]';
@@ -457,7 +458,7 @@ class CreatePostModal extends Component {
       <Image style={styles.imageStyle} resizeMode='cover' source={defaultUserProfile} />
     );
     if (imageUrl) {
-      imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${imageUrl}`;
+      imageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
       profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
     }
 
@@ -491,7 +492,7 @@ class CreatePostModal extends Component {
       if (!hasImageModified) {
         // If editing a tribe and image hasn't changed, then image source should
         // be from server
-        imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${mediaRef}`;
+        imageUrl = `${IMAGE_BASE_URL}${mediaRef}`;
       }
     }
 

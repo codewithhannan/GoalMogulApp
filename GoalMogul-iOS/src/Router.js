@@ -87,6 +87,7 @@ import RegistrationAccount from './Registration/RegistrationAccount';
 /* Auth */
 import SplashScreen from './SplashScreen';
 import Tutorial from './Tutorial/Tutorial';
+import UserInviteModal from './Main/Common/Modal/UserInviteModal';
 
 
 class RouterComponent extends Component {
@@ -610,6 +611,7 @@ class RouterComponent extends Component {
           <Scene key="searchTribeLightBox" component={TribeSearchOverlay} hideNavBar />
           <Scene key="searchPeopleLightBox" component={PeopleSearchOverlay} hideNavBar />
           <Scene key="shareToChatLightBox" component={ShareToChatModal} hideNavBar />
+          <Scene key="multiSearchPeopleLightBox" component={UserInviteModal} hideNavBar />
 
           <Scene key="mutualFriends" component={MutualFriends} />
           <Scene key="meetContactSync" component={ContactSync} hideNavBar />

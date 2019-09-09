@@ -64,7 +64,8 @@ import {
   leaveTribe,
   acceptTribeInvit,
   declineTribeInvit,
-  requestJoinTribe
+  requestJoinTribe,
+  inviteMultipleUsersToTribe
 } from '../../../redux/modules/tribe/TribeActions';
 
 import {
@@ -94,6 +95,9 @@ import {
   CARET_OPTION_NOTIFICATION_SUBSCRIBE,
   CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
+import { openMultiUserInviteModal, searchFriend } from '../../../redux/modules/search/SearchActions';
+import DelayedButton from '../../Common/Button/DelayedButton';
+import { loadFriends } from '../../../actions';
 
 const { CheckIcon: check } = Icons;
 const DEBUG_KEY = '[ UI MyTribe ]';
@@ -139,6 +143,27 @@ class MyTribe extends Component {
 
   componentWillUnmount() {
     this.props.myTribeReset();
+  }
+
+  openUserInviteModal = (item) => {
+    const { name, _id } = item;
+    this.props.openMultiUserInviteModal({
+      searchFor: this.props.searchFriend,
+      onSubmitSelection: (users, inviteToEntity, actionToExecute) => {
+        const callback = () => {
+          this.props.refreshMyTribeDetail(inviteToEntity, null, false);
+          actionToExecute();
+        };
+        this.props.inviteMultipleUsersToTribe(_id, users, callback);
+      },
+      onCloseCallback: (actionToExecute) => {
+        actionToExecute();
+      },
+      inviteToEntityType: 'Tribe',
+      inviteToEntityName: name,
+      inviteToEntity: _id,
+      preload: this.props.loadFriends
+    });
   }
 
   /**
@@ -234,11 +259,12 @@ class MyTribe extends Component {
             ...this.state,
             showPlus: true
           });
-          this.props.openTribeInvitModal({
-            tribeId: _id,
-            cardIconSource: invite,
-            cardIconStyle: { tintColor: APP_BLUE_BRIGHT }
-          });
+          // this.props.openTribeInvitModal({
+          //   tribeId: _id,
+          //   cardIconSource: invite,
+          //   cardIconStyle: { tintColor: APP_BLUE_BRIGHT }
+          // });
+          this.openUserInviteModal(item);
         }
       }
     ];
@@ -560,9 +586,10 @@ class MyTribe extends Component {
     if (isMember) {
       const { text, iconSource, iconStyle } = switchCaseMemberStatus(isMember);
       return (
-        <TouchableOpacity
+        <DelayedButton
           activeOpacity={0.6}
-          style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8, height: 23 }}
+          // style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8, height: 23 }}
+          style={{ ...styles.rsvpBoxContainerStyle, marginLeft: 6 }}
           onPress={() => this.handleStatusChange(isMember, item)}
         >
           <Image
@@ -578,7 +605,7 @@ class MyTribe extends Component {
           >
             {text}
           </Text>
-        </TouchableOpacity>
+        </DelayedButton>
       );
     }
     // Return view to request to join
@@ -1003,6 +1030,18 @@ const styles = {
     width: 26,
     tintColor: 'white',
   },
+  rsvpBoxContainerStyle: {
+    height: 25,
+    // width: 60,
+    paddingVertical: 3,
+    paddingLeft: 5,
+    paddingRight: 5,
+    borderRadius: 5,
+    backgroundColor: '#efefef',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row'
+  },
 };
 
 const mapStateToProps = state => {
@@ -1079,7 +1118,12 @@ export default connect(
     myTribeReset,
     openPostDetail,
     subscribeEntityNotification,
-    unsubscribeEntityNotification
+    unsubscribeEntityNotification,
+    // Multi friend invite
+    searchFriend, 
+    openMultiUserInviteModal,
+    inviteMultipleUsersToTribe,
+    loadFriends
   }
 )(MyTribe);
 

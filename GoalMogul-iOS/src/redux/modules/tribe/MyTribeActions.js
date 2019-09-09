@@ -130,22 +130,27 @@ export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
  * Refresh a tribe detail
  * NOTE: callback can be provided to execute on refresh finish
  */
-export const refreshMyTribeDetail = (tribeId, callback) => (dispatch, getState) => {
+export const refreshMyTribeDetail = (tribeId, callback, showIndicator) => (dispatch, getState) => {
   const { item } = getState().myTribe;
   if (!item || item._id !== tribeId) return;
-  fetchTribeDetail(tribeId)(dispatch, getState);
+  fetchTribeDetail(tribeId, null, showIndicator)(dispatch, getState);
   refreshTribeFeed(tribeId, dispatch, getState, callback);
 };
 
 /**
  * Fetch tribe detail for a tribe
+ * @param {string} tribeId 
+ * @param {func} callback 
+ * @param {boolean} showIndicator boolean to determine if tribeLoading needs to be updated
  */
-export const fetchTribeDetail = (tribeId, callback) => (dispatch, getState) => {
+export const fetchTribeDetail = (tribeId, callback, showIndicator) => (dispatch, getState) => {
   const { token } = getState().user;
 
-  dispatch({
-    type: MYTRIBE_DETAIL_LOAD
-  });
+  if (showIndicator !== false) {
+    dispatch({
+      type: MYTRIBE_DETAIL_LOAD
+    });
+  }
 
   const onSuccess = (data) => {
     dispatch({
