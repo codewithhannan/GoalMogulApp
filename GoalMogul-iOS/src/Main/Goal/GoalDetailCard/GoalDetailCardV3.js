@@ -676,7 +676,7 @@ class GoalDetailCardV3 extends Component {
     return (
       <TouchableOpacity
         activeOpacity={0.6}
-        style={{ paddingTop: 10, backgroundColor: BACKGROUND_COLOR }}
+        style={{ backgroundColor: BACKGROUND_COLOR, borderBottomWidth: 0.5, borderColor: '#e5e5e5', minHeight: 54 }}
         onPress={this.onViewCommentPress}
         onLayout={(event) => this.onContentSizeChange('allCommentItem', event)}
       >
@@ -685,6 +685,7 @@ class GoalDetailCardV3 extends Component {
             alignItems: 'center',
             flexDirection: 'row',
             backgroundColor: 'white',
+            flex: 1
           }}
         >
           <View style={styles.iconContainerStyle}>

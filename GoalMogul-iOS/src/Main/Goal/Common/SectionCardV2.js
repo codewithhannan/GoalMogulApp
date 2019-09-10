@@ -94,7 +94,7 @@ class SectionCardV2 extends Component {
   }
 
   // If owner is self, user can click to mark a step / need as complete
-  renderSelfCheckBox(isCompleted) {
+  renderSelfCheckBox(isCompleted, textToDisplay) {
     const { type, item, goalRef, pageId } = this.props;
     const { _id } = item;
     const onPress = type === 'need' || type === 'Need'
@@ -102,8 +102,8 @@ class SectionCardV2 extends Component {
       : () => this.props.markStepAsComplete(_id, goalRef, pageId);
 
     const iconContainerStyle = isCompleted
-      ? { ...styles.checkIconContainerStyle }
-      : { ...styles.checkIconContainerStyle, backgroundColor: '#efefef' };
+      ? { ...styles.checkIconContainerStyle, marginTop: textToDisplay > 40 ? 4 : 0 }
+      : { ...styles.checkIconContainerStyle, marginTop: textToDisplay > 40 ? 4 : 0, backgroundColor: '#efefef' };
 
     const checkIconStyle = isCompleted
       ? { ...styles.checkIconStyle, tintColor: '#4e966d' }
@@ -135,15 +135,15 @@ class SectionCardV2 extends Component {
     );
   }
 
-  renderCheckBox(isCompleted, type) {
+  renderCheckBox(isCompleted, type, textToDisplay) {
     // console.log(`${DEBUG_KEY}: rendering checkbox: isSelf ${this.props.isSelf}, type: ${type}`);
     if (this.props.isSelf && type !== 'comment') {
-      return this.renderSelfCheckBox(isCompleted);
+      return this.renderSelfCheckBox(isCompleted, textToDisplay);
     }
 
-    if (!isCompleted) return null;
+    if (!isCompleted || type == 'comment') return null;
     return (
-      <View style={styles.checkIconContainerStyle}>
+      <View style={{ ...styles.checkIconContainerStyle, marginTop: textToDisplay > 40 ? 4 : 0 }}>
         <Image source={checkIcon} style={{ ...styles.checkIconStyle, tintColor: '#4e966d' }} />
       </View>
     );
@@ -201,10 +201,11 @@ class SectionCardV2 extends Component {
               justifyContent: 'flex-start',
             }}
           >
-            {this.renderCheckBox(isCompleted, type)}
+            {this.renderCheckBox(isCompleted, type, textToDisplay)}
             <View style={{ flexWrap: 'wrap', flex: 1 }}>
               <Text
-                style={{ ...styles.sectionTextStyle, paddingTop: textToDisplay && textToDisplay.length > 40 ? 0 : 4 }}
+                // style={{ ...styles.sectionTextStyle, paddingTop: textToDisplay && textToDisplay.length > 40 ? 0 : 4 }}
+                style={{ ...styles.sectionTextStyle, paddingTop: isCommentFocused ? 0 : 4 }}
                 multiline
                 ellipsizeMode='tail'
               >
