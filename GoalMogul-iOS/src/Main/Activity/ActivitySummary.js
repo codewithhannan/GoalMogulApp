@@ -1,6 +1,7 @@
 // This component is the card header
 // For example, Jia created a comment for Goal
 import React from 'react';
+import _ from 'lodash';
 import { Text, View } from 'react-native';
 import { switchCase } from '../../redux/middleware/utils';
 
@@ -77,6 +78,9 @@ class ActivitySummary extends React.Component {
   render() {
     const { item } = this.props;
     if (!item) return null;
+    
+    // Do not show the summary if this is a badge award activity feed
+    if (item && _.get(item, 'postRef.milestoneCelebration.milestoneIdentifier') !== undefined) return null;
 
     return (
       <View style={{ marginBottom: 0.5, padding: 5, paddingLeft: 15, paddingRight: 15, borderBottomColor: '#F8F8F8', borderBottomWidth: 1 }}>

@@ -633,7 +633,6 @@ class GoalDetailCardV3 extends Component {
             goalId={goalId}
             menuName={constructMenuName(COMPONENT_NAME, this.props.pageId)}
           />
-          <View style={{ borderBottomWidth: 0.5, borderColor: '#e5e5e5' }} />
           {this.renderFocusedItem()}
           {this.renderCommentCTR()}
         </View>
@@ -676,7 +675,7 @@ class GoalDetailCardV3 extends Component {
     return (
       <TouchableOpacity
         activeOpacity={0.6}
-        style={{ backgroundColor: BACKGROUND_COLOR, borderBottomWidth: 0.5, borderColor: '#e5e5e5', minHeight: 54 }}
+        style={{ backgroundColor: BACKGROUND_COLOR, borderTopWidth: 0.5, borderBottomWidth: 0.5, borderColor: '#e5e5e5', minHeight: 54 }}
         onPress={this.onViewCommentPress}
         onLayout={(event) => this.onContentSizeChange('allCommentItem', event)}
       >

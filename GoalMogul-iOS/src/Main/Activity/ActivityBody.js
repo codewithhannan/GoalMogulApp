@@ -25,6 +25,7 @@ import { imagePreviewContainerStyle } from '../../styles';
 import {
   IMAGE_BASE_URL
 } from '../../Utils/Constants';
+import SparkleBadgeView from '../Gamification/Badge/SparkleBadgeView';
 
 const DEBUG_KEY = '[ UI ActivityCard.ActivityBody ]';
 const { width } = Dimensions.get('window');
@@ -118,6 +119,13 @@ class ActivityBody extends React.Component {
       );
   }
 
+  renderBadgeEarnImage(milestoneIdentifier) {
+    return (
+      <SparkleBadgeView
+        milestoneIdentifier={milestoneIdentifier}
+      />
+    );
+  }
 
   renderPostImageModal(imageUrl) {
     return (
@@ -133,6 +141,10 @@ class ActivityBody extends React.Component {
     if (!postRef) return null;
     const { postType, goalRef, needRef, stepRef, userRef } = postRef;
     if (postType === 'General') {
+      const milestoneIdentifier = _.get(postRef, 'milestoneCelebration.milestoneIdentifier');
+      if (milestoneIdentifier !== undefined) {
+        return this.renderBadgeEarnImage(milestoneIdentifier);
+      }
       return this.renderPostImage(postRef.mediaRef);
     }
 
