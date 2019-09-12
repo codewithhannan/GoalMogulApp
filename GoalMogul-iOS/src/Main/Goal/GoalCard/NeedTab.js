@@ -5,7 +5,7 @@ import {
   Text,
   TouchableOpacity
 } from 'react-native';
-import { LinearGradient } from 'expo';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import SectionCard from '../Common/SectionCard';
 import {

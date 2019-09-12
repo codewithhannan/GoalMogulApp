@@ -9,12 +9,12 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import {
-  LinearGradient,
   Font,
   AppLoading,
   Asset,
   Constants
 } from 'expo';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
 
