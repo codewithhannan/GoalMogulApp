@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { SearchBar, Icon } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
 import _ from 'lodash';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import { TabView, SceneMap } from 'react-native-tab-view';
 
 // Component

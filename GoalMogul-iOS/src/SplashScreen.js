@@ -11,9 +11,9 @@ import { connect } from 'react-redux';
 import {
   Font,
   AppLoading,
-  Asset,
-  Constants
+  Asset
 } from 'expo';
+import Constants from 'expo-constants';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';

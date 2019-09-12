@@ -4,9 +4,7 @@
  * an overlay of selection buttons.
  */
 import React, { Component } from 'react';
-import {
-	Constants
-} from 'expo';
+import Constants from 'expo-constants';
 import {
 	View,
 	Text,

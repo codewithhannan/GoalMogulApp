@@ -4,7 +4,6 @@ import { MenuProvider } from 'react-native-popup-menu';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import { Constants } from 'expo';
 
 /* Components */
 import SearchBarHeader from '../Common/Header/SearchBarHeader';

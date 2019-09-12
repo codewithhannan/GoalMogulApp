@@ -4,7 +4,7 @@
 import React from 'react';
 import { View, Image, Text, Dimensions } from 'react-native';
 import Modal from 'react-native-modal';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import { modalContainerStyle, modalCancelIconContainerStyle, modalCancelIconStyle, modalHeaderBadgeShadow } from '../../../styles';
 import DelayedButton from '../../Common/Button/DelayedButton';
 import { Gold3D } from '../../../asset/banner';

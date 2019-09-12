@@ -26,7 +26,7 @@ import {
 import R from 'ramda';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 /* Asset */

@@ -15,7 +15,7 @@ import {
   MenuProvider
 } from 'react-native-popup-menu';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import {
   DotIndicator
 } from 'react-native-indicators';

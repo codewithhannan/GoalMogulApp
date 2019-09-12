@@ -9,9 +9,7 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import {
-  Constants,
-} from 'expo';
+import Constants from 'expo-constants';
 
 /* asset */
 import cancel from '../../../asset/utils/cancel_no_background.png';

@@ -6,7 +6,6 @@ import Modal from 'react-native-modal';
 // Assets
 import cancel from '../../asset/utils/cancel_no_background.png';
 // Constants
-// Constants
 import { IMAGE_BASE_URL } from '../../Utils/Constants';
 
 

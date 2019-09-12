@@ -8,7 +8,7 @@ import {
   Platform,
   ActivityIndicator
 } from 'react-native';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 import {
