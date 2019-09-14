@@ -5,7 +5,7 @@ import {
     Dimensions,
     Text
 } from 'react-native';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import Modal from 'react-native-modal';
 import cancel from '../../../../asset/utils/cancel_no_background.png';
 import profilePic from '../../../../asset/utils/defaultUserProfile.png';

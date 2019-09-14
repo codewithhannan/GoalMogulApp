@@ -2,9 +2,9 @@
  * This modal displays reward info for gold badge
  */
 import React from 'react';
-import { View, Image, Text, Dimensions, ScrollView, TextInput, Linking } from 'react-native';
+import { View, Image, Text, ScrollView, TextInput, Linking } from 'react-native';
 import Modal from 'react-native-modal';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import { modalContainerStyle, modalCancelIconContainerStyle, modalCancelIconStyle, modalHeaderBadgeShadow, APP_BLUE } from '../../../styles';
 import DelayedButton from '../../Common/Button/DelayedButton';
 import cancel from '../../../asset/utils/cancel_no_background.png';

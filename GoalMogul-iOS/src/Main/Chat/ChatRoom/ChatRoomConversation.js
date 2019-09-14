@@ -5,7 +5,8 @@
 	- fetch the full chat document with members populated
 */
 import { Octicons } from '@expo/vector-icons';
-import { Constants, FileSystem, Permissions } from 'expo';
+import { FileSystem, Permissions } from 'expo';
+import Constants from 'expo-constants';
 import R from 'ramda';
 import React from 'react';
 import { ActionSheetIOS, Alert, Animated, CameraRoll, Clipboard, Dimensions, FlatList, Platform, TextInput, TouchableOpacity, View } from 'react-native';

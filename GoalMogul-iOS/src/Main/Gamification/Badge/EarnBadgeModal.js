@@ -8,7 +8,8 @@ import _ from 'lodash';
 import {
     View, Image, Text, Animated, ImageBackground
 } from 'react-native';
-import { Constants, LinearGradient } from 'expo';
+import Constants from 'expo-constants';
+import { LinearGradient } from 'expo-linear-gradient';
 import Modal from 'react-native-modal';
 import { markEarnBadgeModalAsShown, fetchBadgeUserCount } from '../../../actions/ProfileActions';
 import cancel from '../../../asset/utils/cancel_no_background.png';

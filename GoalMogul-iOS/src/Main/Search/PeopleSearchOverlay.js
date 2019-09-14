@@ -10,7 +10,7 @@ import {
 import { connect } from 'react-redux';
 import { SearchBar } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import _ from 'lodash';
 
 // Component

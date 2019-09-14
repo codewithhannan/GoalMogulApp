@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   Platform
 } from 'react-native';
-import { Font, Constants } from 'expo';
+import Constants from 'expo-constants';
+import { Font } from 'expo';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 

@@ -15,7 +15,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 import R from 'ramda';
 import { Actions } from 'react-native-router-flux';
 import Fuse from 'fuse.js';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';

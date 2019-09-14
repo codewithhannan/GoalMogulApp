@@ -16,7 +16,6 @@ import {
 import { connect } from 'react-redux';
 import { SearchBar } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
-import { Constants } from 'expo';
 import _ from 'lodash';
 import plus from '../../../asset/utils/plus.png';
 import times from '../../../asset/utils/times.png'

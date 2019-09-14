@@ -9,7 +9,7 @@ import UserCard from '../Card/UserCard';
 import { getLikeList } from '../../../redux/modules/like/LikeActions';
 import cancel from '../../../asset/utils/cancel_no_background.png';
 import Modal from 'react-native-modal';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import DelayedButton from '../Button/DelayedButton';
 import { modalCancelIconContainerStyle, modalCancelIconStyle } from '../../../styles';
 import { ModalHeaderStyle } from './Styles';

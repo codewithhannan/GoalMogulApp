@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Image, Text, Platform } from 'react-native';
 import { connect } from 'react-redux';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 
 /* Asset */
 import HeaderImage from '../../asset/header/header-logo.png';

@@ -9,7 +9,8 @@ import {
   Linking
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Constants, WebBrowser } from 'expo';
+import { WebBrowser } from 'expo';
+import Constants from 'expo-constants';
 import { Actions } from 'react-native-router-flux';
 import R from 'ramda';
 

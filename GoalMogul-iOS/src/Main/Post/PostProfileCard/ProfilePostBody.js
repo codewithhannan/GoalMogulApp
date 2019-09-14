@@ -21,6 +21,7 @@ import RefPreview from '../../Common/RefPreview';
 // Styles
 import { imagePreviewContainerStyle } from '../../../styles';
 import { IMAGE_BASE_URL } from '../../../Utils/Constants';
+import SparkleBadgeView from '../../Gamification/Badge/SparkleBadgeView';
 
 // Constants
 const DEBUG_KEY = '[ UI ProfilePostCard.ProfilePostBody ]';
@@ -90,9 +91,21 @@ class ProfilePostBody extends React.Component {
     );
   }
 
+  renderBadgeEarnImage(milestoneIdentifier) {
+    return (
+      <SparkleBadgeView
+        milestoneIdentifier={milestoneIdentifier}
+      />
+    );
+  }
+
   renderPostBody(item) {
     const { postType } = item;
     if (postType === 'General') {
+      const milestoneIdentifier = _.get(item, 'milestoneCelebration.milestoneIdentifier');
+      if (milestoneIdentifier !== undefined) {
+        return this.renderBadgeEarnImage(milestoneIdentifier);
+      }
       return this.renderPostImage(item.mediaRef);
     }
 

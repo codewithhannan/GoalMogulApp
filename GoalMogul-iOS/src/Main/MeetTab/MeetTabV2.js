@@ -10,7 +10,7 @@ import {
     Share
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import { Actions } from 'react-native-router-flux';
 import { copilot, walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 

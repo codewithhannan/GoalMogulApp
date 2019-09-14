@@ -1,4 +1,4 @@
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import React from 'react';
 import { ActivityIndicator, Dimensions, FlatList, Platform, Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';

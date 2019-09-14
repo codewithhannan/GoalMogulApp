@@ -7,7 +7,7 @@ import {
     Text,    
     Image,
 } from 'react-native';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import Modal from 'react-native-modal';
 import ProfileImage from '../Common/ProfileImage';
 import DelayedButton from '../Common/Button/DelayedButton';

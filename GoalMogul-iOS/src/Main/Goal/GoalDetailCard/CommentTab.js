@@ -10,7 +10,7 @@ import {
   MaskedViewIOS,
   Text
 } from 'react-native';
-import { LinearGradient } from 'expo';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Icon } from 'react-native-elements';
 
 import SectionCard from '../Common/SectionCard';

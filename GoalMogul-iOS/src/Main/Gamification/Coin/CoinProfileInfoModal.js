@@ -5,7 +5,6 @@
  */
 import React from 'react';
 import { View, Text, Image } from 'react-native';
-import { Constants } from 'expo';
 import Modal from 'react-native-modal';
 import Icons from '../../../asset/base64/Icons';
 import cancel from '../../../asset/utils/cancel_no_background.png';

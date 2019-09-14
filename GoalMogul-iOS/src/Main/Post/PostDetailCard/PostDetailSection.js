@@ -90,6 +90,7 @@ import {
 import ShareListModal from '../../Common/Modal/ShareListModal';
 import LikeListModal from '../../Common/Modal/LikeListModal';
 import DelayedButton from '../../Common/Button/DelayedButton';
+import SparkleBadgeView from '../../Gamification/Badge/SparkleBadgeView';
 
 const DEBUG_KEY = '[ UI PostDetailCard.PostDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
@@ -350,10 +351,22 @@ class PostDetailSection extends React.PureComponent {
     );
   }
 
+  renderBadgeEarnImage(milestoneIdentifier) {
+    return (
+      <SparkleBadgeView
+        milestoneIdentifier={milestoneIdentifier}
+      />
+    );
+  }
+
   // TODO: Switch to decide amoung renderImage, RefPreview and etc.
   renderCardContent(item) {
     const { postType, mediaRef, goalRef } = item;
     if (postType === 'General') {
+      const milestoneIdentifier = _.get(item, 'milestoneCelebration.milestoneIdentifier');
+      if (milestoneIdentifier !== undefined) {
+        return this.renderBadgeEarnImage(milestoneIdentifier);
+      }
       return this.renderPostImage(mediaRef);
     }
     const refPreview = switchItem(item, postType);

@@ -5,10 +5,9 @@
 import React from 'react';
 import { View, FlatList, Image, Text } from 'react-native';
 import { connect } from 'react-redux';
-import UserCard from '../Card/UserCard';
 import cancel from '../../../asset/utils/cancel_no_background.png';
 import Modal from 'react-native-modal';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import DelayedButton from '../Button/DelayedButton';
 import { ModalHeaderStyle } from './Styles';
 import { getShareList } from '../../../redux/modules/feed/post/PostActions';
