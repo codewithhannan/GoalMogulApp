@@ -96,11 +96,13 @@ class RefPreview extends Component {
     const imageContainerstyle = picture ?
     {
       justifyContent: 'center',
-      paddingRight: 10
+      paddingRight: 10,
+      // borderRadius: 5,
     } :
     {
       justifyContent: 'center',
-      padding: 10
+      padding: 10,
+      // borderRadius: 5,
     };
     return (
       <DelayedButton
@@ -110,7 +112,7 @@ class RefPreview extends Component {
         disabled={disabled}
       >
         <ProfileImage
-          imageStyle={{ width: 50, height: 50 }}
+          imageStyle={{ width: 50, height: 50, borderRadius: 5 }}
           imageContainerStyle={imageContainerstyle}
           defaultImageStyle={{ width: 32, height: 34, opacity: 0.6 }}
           defaultImageSource={defaultPicture}
