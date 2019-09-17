@@ -16,7 +16,7 @@
  * updateNextStepNumber
  * 
  */
-import { SecureStore } from 'expo';
+import * as SecureStore from 'expo-secure-store';
 import _ from 'lodash';
 import {
     TUTORIAL_START_TUTORIAL,

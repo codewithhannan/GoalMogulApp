@@ -1,5 +1,6 @@
 // Authantication actions
-import { SecureStore, SplashScreen } from 'expo';
+import { SplashScreen } from 'expo';
+import * as SecureStore from 'expo-secure-store';
 
 import {
   SPLASHSCREEN_HIDE

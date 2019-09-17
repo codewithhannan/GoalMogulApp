@@ -24,6 +24,7 @@
     "expo": "^33.0.0",
     "expo-constants": "^5.0.1",
     "expo-linear-gradient": "^5.0.1",
+    "expo-secure-store": "^5.0.1",
     "expo-sms": "^5.0.1",
     "fuse.js": "^3.4.4",
     "html-entities": "^1.2.1",
