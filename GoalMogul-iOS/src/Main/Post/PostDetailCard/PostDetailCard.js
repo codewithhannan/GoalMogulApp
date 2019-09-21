@@ -49,6 +49,7 @@ import {
 } from '../../../styles';
 import { Logger } from '../../../redux/middleware/utils/Logger';
 import { getParentCommentId } from '../../../redux/middleware/utils';
+import LikeListModal from '../../Common/Modal/LikeListModal';
 
 const DEBUG_KEY = '[ UI PostDetailCard ]';
 const TABBAR_HEIGHT = 48.5;
@@ -156,6 +157,32 @@ class PostDetailCard extends React.PureComponent {
   }
 
   /**
+   * Open comment like list
+   */
+  openCommentLikeList = (likeListParentType, likeListParentId) => {
+    console.log(`${DEBUG_KEY}: show comment like list: ${likeListParentType}, ${likeListParentId}`);
+    this.setState({
+      ...this.state,
+      showCommentLikeList: true,
+      likeListParentType,
+      likeListParentId
+    });
+  }
+
+  /**
+   * Close comment like list
+   */
+  closeCommentLikeList = () => {
+    console.log(`${DEBUG_KEY}: close comment like list`);
+    this.setState({
+      ...this.state,
+      showCommentLikeList: false,
+      likeListParentId: undefined,
+      likeListParentType: undefined
+    });
+  }
+
+  /**
    * Scroll to comment item
    */
   handleScrollToCommentItem = (commentId) => {
@@ -229,6 +256,7 @@ class PostDetailCard extends React.PureComponent {
         reportType='postDetail'
         pageId={pageId}
         entityId={postId}
+        openCommentLikeList={this.openCommentLikeList}
       />
     );
   }
@@ -253,6 +281,13 @@ class PostDetailCard extends React.PureComponent {
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={styles.containerStyle}>
+          <LikeListModal 
+            isVisible={this.state.showCommentLikeList} 
+            closeModal={this.closeCommentLikeList}
+            parentId={this.state.likeListParentId}
+            parentType={this.state.likeListParentType}
+            clearDataOnHide
+          />
           <SearchBarHeader
             backButton
             title='Post'
