@@ -53,6 +53,7 @@ import {
 } from '../../../styles';
 import { Logger } from '../../../redux/middleware/utils/Logger';
 import { getParentCommentId } from '../../../redux/middleware/utils';
+import LikeListModal from '../../Common/Modal/LikeListModal';
 
 const DEBUG_KEY = '[ UI ShareDetailCard ]';
 const TABBAR_HEIGHT = 48.5;
@@ -143,6 +144,32 @@ class ShareDetailCard extends Component {
   }
 
   /**
+   * Open comment like list
+   */
+  openCommentLikeList = (likeListParentType, likeListParentId) => {
+    console.log(`${DEBUG_KEY}: show comment like list: ${likeListParentType}, ${likeListParentId}`);
+    this.setState({
+      ...this.state,
+      showCommentLikeList: true,
+      likeListParentType,
+      likeListParentId
+    });
+  }
+
+  /**
+   * Close comment like list
+   */
+  closeCommentLikeList = () => {
+    console.log(`${DEBUG_KEY}: close comment like list`);
+    this.setState({
+      ...this.state,
+      showCommentLikeList: false,
+      likeListParentId: undefined,
+      likeListParentType: undefined
+    });
+  }
+
+  /**
    * Scroll to comment item
    */
   handleScrollToCommentItem = (commentId) => {
@@ -217,6 +244,7 @@ class ShareDetailCard extends Component {
         reportType='shareDetail'
         pageId={pageId}
         entityId={postId}
+        openCommentLikeList={this.openCommentLikeList}
       />
     );
   }
@@ -242,6 +270,13 @@ class ShareDetailCard extends Component {
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={styles.containerStyle}>
+          <LikeListModal 
+            isVisible={this.state.showCommentLikeList} 
+            closeModal={this.closeCommentLikeList}
+            parentId={this.state.likeListParentId}
+            parentType={this.state.likeListParentType}
+            clearDataOnHide
+          />
           <SearchBarHeader
             backButton
             title={title}
