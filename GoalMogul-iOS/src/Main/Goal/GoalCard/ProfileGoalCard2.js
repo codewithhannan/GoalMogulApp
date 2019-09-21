@@ -24,8 +24,6 @@ import LoveIcon from '../../../asset/utils/love.png';
 // import BulbIcon from '../../../asset/utils/bulb.png';
 import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
-import ProgressBarSmall from '../../../asset/utils/progressBar_small.png';
-import ProgressBarSmallCounter from '../../../asset/utils/progressBar_counter_small.png';
 
 // Actions
 import {
@@ -97,12 +95,9 @@ class ProfileGoalCard2 extends React.Component {
           steps={steps}
           needs={needs}
           goalRef={item}
-          iconSource={ProgressBarSmall}
-          edgeIconSource={ProgressBarSmallCounter}
-          height={11}
-          width={200}
-          marginRight={7}
+          width={200} // TODO: use ratio with screen size rather static number
           isProfileGoalCard
+          size='small'
         />
       </View>
     );

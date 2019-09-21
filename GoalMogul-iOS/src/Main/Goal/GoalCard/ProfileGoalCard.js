@@ -39,6 +39,9 @@ class ProfileGoalCard extends React.Component {
           steps={steps}
           needs={needs}
           goalRef={item}
+          width={200}
+          height={11}
+          size='small'
         />
       </View>
     );

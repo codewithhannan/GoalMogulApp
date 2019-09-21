@@ -266,10 +266,8 @@ class GoalCard extends React.PureComponent {
           steps={steps}
           needs={needs}
           goalRef={item}
-          iconSource={ProgressBarLarge}
-          edgeIconSource={ProgressBarLargeCounter}
-          height={13}
           width={268}
+          size='large'
         />
       </View>
     );
