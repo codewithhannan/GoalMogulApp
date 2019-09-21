@@ -1,5 +1,6 @@
 /**
  * NOTE: This new class is intended to accomodate zoomed view for ProgressBar. It hasn't been updated yet.
+ * Only ProgressBar is being used right now
  */
 import React from 'react';
 import { Text, View, Image, StyleSheet } from 'react-native';
@@ -32,13 +33,11 @@ class ProgressBar extends React.PureComponent {
       
         const layerComponent = layerFlex ?
         (
-            <View style={{ flex: layerFlex, flexDirection: 'row', display: 'flex' }}>
-                <View>
+            <View style={{ width: '30%', flexDirection: 'row', display: 'flex' }}>
                 <Image
                     source={edgeIconSource || CounterBar}
                     style={{ tintColor: '#f2f2f2', height: height || 11 }}
                 />
-                </View>
                 <View style={{ flex: 1, backgroundColor: '#f2f2f2', height }} />
             </View>
         ) : null;
@@ -57,7 +56,7 @@ class ProgressBar extends React.PureComponent {
                 // alignItems: 'center',
                 width,
                 height,
-                flex: 1
+                // flex: 1
                 }}
                 onLayout={(e) => console.log('width is:', e.nativeEvent.layout.width)}
             >
@@ -69,6 +68,9 @@ class ProgressBar extends React.PureComponent {
                         bottom: 0,
                         zIndex: 2,
                         position: 'absolute',
+                        width: width || 260,
+                        height: height || 11,
+                        backgroundColor: 'white'
                     }}
                 >
                     <Image
@@ -91,7 +93,7 @@ class ProgressBar extends React.PureComponent {
                   style={{
                     height: height || 11,
                     width: width || 260,
-                    flex: 1,
+                    // flex: 1,
                     zIndex: 1,
                     flexDirection: 'row',
                     position: 'absolute',
@@ -101,7 +103,7 @@ class ProgressBar extends React.PureComponent {
                     bottom: 0
                   }}
                 >
-                  {colorFlex ? <View style={{ flex: colorFlex }} /> : null}
+                  {colorFlex ? <View style={{ width: '70%' }} /> : null}
                   {layerComponent}
                 </View>
               ) : (

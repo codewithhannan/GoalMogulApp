@@ -349,10 +349,8 @@ class GoalDetailSection extends React.PureComponent {
           steps={steps}
           needs={needs}
           goalRef={item}
-          iconSource={ProgressBarMedium}
-          edgeIconSource={ProgressBarMediumCounter}
-          height={13}
           width={260}
+          size='medium'
         />
       </View>
     );

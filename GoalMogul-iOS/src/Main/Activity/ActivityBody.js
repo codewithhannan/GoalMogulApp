@@ -13,9 +13,6 @@ import ProgressBar from '../Goal/Common/ProgressBar';
 import ImageModal from '../Common/ImageModal';
 
 // Assets
-import cancel from '../../asset/utils/cancel_no_background.png';
-import photoIcon from '../../asset/utils/photoIcon.png';
-import expand from '../../asset/utils/expand.png';
 import RefPreview from '../Common/RefPreview';
 
 // Styles
@@ -38,19 +35,15 @@ class ActivityBody extends React.Component {
   renderGoalBody(goalRef) {
     const { start, end, steps, needs } = goalRef;
 
-    const startDate = start || new Date();
-
-    // const endDate = `${months[(end !== undefined ? end : new Date()).getMonth() - 1]} ` +
-    //   `${(end || new Date()).getFullYear()}`;
-    const endDate = end || new Date();
-
     return (
       <ProgressBar
-        startTime={startDate}
-        endTime={endDate}
+        startTime={start}
+        endTime={end}
         steps={steps}
         needs={needs}
         goalRef={goalRef}
+        width={268} // TODO: use ratio with screen size rather static number
+        size='large'
       />
     );
   }
