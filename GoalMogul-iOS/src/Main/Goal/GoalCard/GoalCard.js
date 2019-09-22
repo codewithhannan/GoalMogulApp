@@ -36,7 +36,7 @@ import { subscribeEntityNotification, unsubscribeEntityNotification } from '../.
 // Actions
 import { createReport } from '../../../redux/modules/report/ReportActions';
 // Constants
-import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE, IPHONE_MODELS } from '../../../Utils/Constants';
+import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE, IPHONE_MODELS, IS_ZOOMED } from '../../../Utils/Constants';
 import { RightArrowIcon } from '../../../Utils/Icons';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import DelayedButton from '../../Common/Button/DelayedButton';
@@ -266,7 +266,7 @@ class GoalCard extends React.PureComponent {
           steps={steps}
           needs={needs}
           goalRef={item}
-          width={268}
+          width={IS_ZOOMED ? 216 : 268} // TODO: use ratio with screen size rather static number
           size='large'
         />
       </View>

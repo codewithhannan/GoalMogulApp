@@ -30,7 +30,7 @@ import { createReport } from '../../../redux/modules/report/ReportActions';
 import { APP_BLUE } from '../../../styles';
 // Constants
 // Constants
-import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE } from '../../../Utils/Constants';
+import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE, IS_ZOOMED } from '../../../Utils/Constants';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import DelayedButton from '../../Common/Button/DelayedButton';
 import LikeListModal from '../../Common/Modal/LikeListModal';
@@ -349,7 +349,7 @@ class GoalDetailSection extends React.PureComponent {
           steps={steps}
           needs={needs}
           goalRef={item}
-          width={260}
+          width={IS_ZOOMED ? 210 : 260} // TODO: use ratio with screen size rather static number
           size='medium'
         />
       </View>

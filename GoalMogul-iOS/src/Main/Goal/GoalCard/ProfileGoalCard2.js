@@ -29,6 +29,7 @@ import ShareIcon from '../../../asset/utils/forward.png';
 import {
   openGoalDetail
 } from '../../../redux/modules/home/mastermind/actions';
+import { IS_ZOOMED } from '../../../Utils/Constants';
 
 class ProfileGoalCard2 extends React.Component {
 
@@ -95,7 +96,7 @@ class ProfileGoalCard2 extends React.Component {
           steps={steps}
           needs={needs}
           goalRef={item}
-          width={200} // TODO: use ratio with screen size rather static number
+          width={IS_ZOOMED ? 156 : 200} // TODO: use ratio with screen size rather static number
           isProfileGoalCard
           size='small'
         />
