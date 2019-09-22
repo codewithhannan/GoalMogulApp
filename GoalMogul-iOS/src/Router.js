@@ -127,7 +127,7 @@ class RouterComponent extends Component {
 
     if (state.key === 'homeTab' && isFocused()) {
       if (Actions.refs.home !== undefined) {
-        // Actions.refs.home.getWrappedInstance().scrollToTop();
+        Actions.refs.home.getWrappedInstance().innerComponent.scrollToTop();
       }
     }
     return Actions[state.key].call();
