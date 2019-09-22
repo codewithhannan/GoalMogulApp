@@ -19,7 +19,7 @@ const PROGRESSBAR_COLOR = '#F7EB37';
 
 // Props will give progress bar width
 // 3175 / 154 = width / heigth. With width, we can calculate the height.
-const PROGRESS_BAR_LARGE_RATIO = 154 / 3175;
+const PROGRESS_BAR_LARGE_RATIO = 154 / 3174;
 const PROGRESS_BAR_MEDIUM_RATIO = 154 / 3083;
 const PROGRESS_BAR_SMALL_RATIO = 154 / 2800;
 
@@ -90,7 +90,8 @@ const renderProgressBarV2 = (props) => {
     progressBarCounterRatio
   } = getIconDataBySize(size);
 
-  const height = width * progressBarRatio;
+  // Round height to 2 decimal points
+  const height = (Math.round((width * progressBarRatio) * 100) / 100) - 0.5;
   const counterBarWidth = height * progressBarCounterRatio;
 
   const finishedPercentage = percentage * 100 > 95 ? 100 : percentage * 100;
@@ -154,8 +155,7 @@ const renderProgressBarV2 = (props) => {
         ) : (
           <View
             style={{
-              height: height || 11,
-              width: width || 260,
+              
               flex: 1,
               zIndex: 1,
               flexDirection: 'row',

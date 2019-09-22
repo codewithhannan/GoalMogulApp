@@ -20,7 +20,7 @@ import { imagePreviewContainerStyle } from '../../styles';
 
 // Constants
 import {
-  IMAGE_BASE_URL
+  IMAGE_BASE_URL, IS_ZOOMED
 } from '../../Utils/Constants';
 import SparkleBadgeView from '../Gamification/Badge/SparkleBadgeView';
 
@@ -42,7 +42,7 @@ class ActivityBody extends React.Component {
         steps={steps}
         needs={needs}
         goalRef={goalRef}
-        width={268} // TODO: use ratio with screen size rather static number
+        width={IS_ZOOMED ? 216 : 268} // TODO: use ratio with screen size rather static number
         size='large'
       />
     );
