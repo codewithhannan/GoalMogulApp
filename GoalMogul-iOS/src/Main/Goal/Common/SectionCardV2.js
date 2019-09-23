@@ -154,13 +154,13 @@ class SectionCardV2 extends Component {
     if (!isFocusedItem) return null;
 
     return (
-      <TouchableOpacity
+      <DelayedButton
         onPress={this.props.onBackPress}
         activeOpacity={0.6}
         style={{ paddingRight: 17 }}
       >
         <Image source={next} style={styles.nextIconStyle} />
-      </TouchableOpacity>
+      </DelayedButton>
     );
   }
 

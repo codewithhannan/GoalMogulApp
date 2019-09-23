@@ -124,6 +124,8 @@ class GoalDetailCardV3 extends Component {
       // For card width
       goalDetailSectionHeight: HEADER_HEIGHT, // TODO: Update to the bareminimum height
       focusedItemHeight: 48, // Default height we use right now
+      // For initial state reset
+      initialScrollToCommentReset: undefined // Set to true after initial comment scroll is completed
     };
     this.onContentSizeChange = this.onContentSizeChange.bind(this);
     this._renderScene = this._renderScene.bind(this);
@@ -473,6 +475,12 @@ class GoalDetailCardV3 extends Component {
     Logger.log(`${DEBUG_KEY}: [ handleScrollToCommentItem ]: parentCommentIndex`, parentCommentIndex, 2);
     setTimeout(() => {
       this.focusTab.scrollToIndex(parentCommentIndex);
+      this.setState({
+        ...this.state,
+        // Initial scrollToComment has completed. Reset all related params including
+        // initialNumberToRender for focus tab
+        initialScrollToCommentReset: true
+      });
     }, 500);
   }
 
@@ -589,6 +597,7 @@ class GoalDetailCardV3 extends Component {
             isSelf={this.props.isSelf}
             handleIndexChange={this._handleIndexChange}
             initial={this.props.initial}
+            initialScrollToCommentReset={this.state.initialScrollToCommentReset}
           />
         );
 

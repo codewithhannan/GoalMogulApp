@@ -160,9 +160,10 @@ class FocusTab extends React.PureComponent {
   }
 
   render() {
-    const { data, focusType, pageId, focusRef, initial } = this.props;
+    const { data, focusType, pageId, focusRef, initial, initialScrollToCommentReset } = this.props;
     if (!focusType) return null;
     const emptyText = switchCaseEmptyText(focusType);
+    const initialScrollToComment = initial && initial.initialScrollToComment && initial.commentId && !initialScrollToCommentReset;
 
     // const resetCommentTypeFunc = focusType === 'comment'
     //   ? () => this.props.resetCommentType('Comment', pageId)
@@ -180,7 +181,7 @@ class FocusTab extends React.PureComponent {
         <AnimatedFlatList
           ref={ref => { this.flatlist = ref; }}
           data={data}
-          initialNumToRender={40}
+          initialNumToRender={initialScrollToComment ? 100 : 5}
           renderItem={this.renderItem}
           keyExtractor={this.keyExtractor}
           refreshing={this.props.loading || false}
