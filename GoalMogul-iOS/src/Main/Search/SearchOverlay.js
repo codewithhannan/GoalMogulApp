@@ -102,7 +102,7 @@ class SearchOverlay extends Component {
     const { text, eventCount, taget } = nativeEvent;
     // Close the search modal if nothing is entered
     console.log('on end editing');
-    if ((text === undefined || text === null || text === '' || text.trim() === '') && !this.state.tabTransition) {
+    if ((text === undefined || text === null || text === '' || text.trim() === '') && !this.state.tabTransition && !this.isCanceled) {
       this.handleCancel();
     }
   }
