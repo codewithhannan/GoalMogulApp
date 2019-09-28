@@ -217,8 +217,8 @@ class ActivityHeader extends Component {
             contentText={content}
             contentTags={tags}
             contentLinks={links || []}
-            textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
-            textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
+            textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 18 }}
+            textContainerStyle={{ flexDirection: 'row', marginTop: 5 }}
             numberOfLines={3}
             ellipsizeMode='tail'
             onUserTagPressed={(user) => {

@@ -294,14 +294,14 @@ class ActivityCard extends React.PureComponent {
           /> : null }
           <ActivitySummary item={item} />
           <View style={{ marginTop: 1 }}>
-            <View style={{ marginTop: 12, marginBottom: 10, marginRight: 15, marginLeft: 15 }}>
+            <View style={{ marginTop: 12, marginBottom: 15, marginRight: 15, marginLeft: 15 }}>
               <DelayedButton
                 activeOpacity={0.6}
                 onPress={() => this.handleCardOnPress(item)}
               >
                 <ActivityHeader item={item} />
               </DelayedButton>
-              <ActivityBody item={item} />
+              <ActivityBody item={item} openCardContent={() => this.handleCardOnPress(item)} />
             </View>
           </View>
           <View style={{ marginTop: 1, borderBottomColor: '#f8f8f8', borderBottomWidth: 1 }}>

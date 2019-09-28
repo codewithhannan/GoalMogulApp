@@ -95,6 +95,7 @@ class ProfilePostBody extends React.Component {
     return (
       <SparkleBadgeView
         milestoneIdentifier={milestoneIdentifier}
+        onPress={this.props.openCardContent}
       />
     );
   }
