@@ -116,6 +116,7 @@ class ActivityBody extends React.Component {
     return (
       <SparkleBadgeView
         milestoneIdentifier={milestoneIdentifier}
+        onPress={this.props.openCardContent}
       />
     );
   }
@@ -190,7 +191,7 @@ class ActivityBody extends React.Component {
     if (!item) return null;
 
     return (
-      <View style={{ marginTop: 10 }}>
+      <View style={{ marginTop: 16 }}>
         {this.renderCardContent(item)}
       </View>
     );

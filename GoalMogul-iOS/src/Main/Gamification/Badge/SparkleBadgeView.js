@@ -8,15 +8,18 @@ import {
     Image,
     ImageBackground,
     ViewPropTypes,
-    Dimensions
+    Dimensions,
+    TouchableWithoutFeedback
 } from 'react-native';
 import { SpackleBackgroundImage } from '../../../asset/image';
 import { Bronze3D, Silver3D, Gold3D } from '../../../asset/banner';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 const width = Dimensions.get('window').width;
 
 const SparkleBadgeView = (props) => {
-    const { 
+    const {
+        onPress,
         backgroundImageSource, 
         containerStyle, 
         containerImageStyle,
@@ -25,7 +28,7 @@ const SparkleBadgeView = (props) => {
 
     const badgeSource = getIconSource(milestoneIdentifier);
 
-    return (
+    const view = (
         <ImageBackground source={backgroundImageSource || SpackleBackgroundImage} style={containerStyle} imageStyle={containerImageStyle}>
             <View style={{ ...styles.shadow, alignItems: 'center' }}>
                 <View style={{ height: 5, width: '100%'}} />
@@ -36,6 +39,17 @@ const SparkleBadgeView = (props) => {
             </View>
         </ImageBackground>
     );
+
+    if (onPress) {
+        return (
+            <DelayedButton onPress={onPress} touchableWithoutFeedback>
+                <View>
+                    {view}
+                </View>
+            </DelayedButton>
+        );
+    }
+    return view;
 };
 
 const styles = {

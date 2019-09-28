@@ -315,7 +315,7 @@ class ProfilePostCard extends React.PureComponent {
               >
                 {this.renderHeader(item)}
               </TouchableOpacity>
-              <ProfilePostBody item={item} showRefPreview={this.props.showRefPreview} />
+              <ProfilePostBody item={item} showRefPreview={this.props.showRefPreview} openCardContent={() => this.handleCardOnPress(item)} />
             </View>
           </View>
           {this.renderActionButtons(item, hasActionButton)}
