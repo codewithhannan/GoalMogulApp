@@ -89,6 +89,7 @@ const CANCEL_INDEX = 2;
 const DEBUG_KEY = '[ Component SearchBarHeader ]';
 const SHARE_TO_MENU_OPTTIONS = ['My Tribes', 'My Events', 'Cancel'];
 const CANCEL_INDEX_MEN = 2;
+const PADDING_HORIZONTAL = 12;
 const WalkableView = walkthroughable(View);
 
 /**
@@ -174,44 +175,28 @@ class SearchBarHeader extends Component {
       // const backButtonTintColor = this.props.title ? 'white' : tintColor;
       const backButtonTintColor = tintColor;
       return (
-        <View style={{ height: 25, width: 25 }}>
-          <DelayedButton activeOpacity={0.6} onPress={this.handleBackOnClick.bind(this)}>
-            {/*<Icon
-              type='entypo'
-              name='chevron-thin-left'
-              color='#35475d'
-              containerStyle={{ justifyContent: 'flex-start' }}
-            />
-            // tintColor: '#32485f' for backbutton
-            */}
-            <Image
-              source={BackButton}
-              style={{ height: 25, width: 25, tintColor: backButtonTintColor }}
-            />
-          </DelayedButton>
-        </View>
-
+        <DelayedButton 
+          activeOpacity={0.6} 
+          onPress={this.handleBackOnClick.bind(this)}
+          style={{ paddingHorizontal: PADDING_HORIZONTAL }}
+        >
+          <Image
+            source={BackButton}
+            style={{ height: 25, width: 25, tintColor: backButtonTintColor }}
+          />
+        </DelayedButton>
       );
     }
     return this.renderProfileImage();
-    // return (
-    //   <TouchableOpacity activeOpacity={0.6}
-    //     style={styles.headerLeftImage}
-    //     onPress={this.handleProfileOnClick.bind(this)}
-    //   >
-    //     <Image style={{ ...styles.headerLeftImage, tintColor }} source={Logo} />
-    //   </TouchableOpacity>
-    // );
   }
 
   // This is to replace logo image with user profile preview
   renderProfileImage() {
     let image = this.props.image;
-    // console.log('image is: ', image);
     let profileImage = (
       <DelayedButton
         activeOpacity={0.6}
-        style={styles.headerLeftImage}
+        style={{ ...styles.shadow, backgroundColor: 'transparent', paddingHorizontal: PADDING_HORIZONTAL }}
         onPress={this.handleProfileOnClick.bind(this)}
       >
         <Image
@@ -227,7 +212,7 @@ class SearchBarHeader extends Component {
       profileImage = (
         <DelayedButton
           activeOpacity={0.6}
-          style={styles.headerLeftImage}
+          style={{ ...styles.shadow, backgroundColor: 'transparent', paddingHorizontal: PADDING_HORIZONTAL }}
           onPress={this.handleProfileOnClick.bind(this)}
         >
           <Image
@@ -261,10 +246,12 @@ class SearchBarHeader extends Component {
           onPress={handlePageSetting || this.handleFriendsSettingOnClick.bind(this)}
           touchableWithoutFeedback
         >
-          <Image
-            style={{ ...styles.headerRightImage, tintColor, height: 21 }}
-            source={FriendsSettingIcon}
-          />
+          <View style={{ paddingHorizontal: PADDING_HORIZONTAL }}>
+            <Image
+              style={{ ...styles.headerRightImage, tintColor, height: 21 }}
+              source={FriendsSettingIcon}
+            />
+          </View>
         </DelayedButton>
       );
     }
@@ -273,7 +260,9 @@ class SearchBarHeader extends Component {
     if (this.props.setting && this.props.haveSetting) {
       return (
         <TouchableWithoutFeedback onPress={this.handleSettingOnClick.bind(this)}>
-          <Image style={{ ...styles.headerRightImage, tintColor }} source={Setting} />
+          <View style={{ paddingHorizontal: PADDING_HORIZONTAL }}>
+            <Image style={{ ...styles.headerRightImage, tintColor }} source={Setting} />
+          </View>
         </TouchableWithoutFeedback>
       );
     }
@@ -285,7 +274,11 @@ class SearchBarHeader extends Component {
         return (
           <CopilotStep text={tutorialOn.rightIcon.tutorialText} order={tutorialOn.rightIcon.order} name={tutorialOn.rightIcon.name}>
             <WalkableView>
-              <TouchableOpacity activeOpacity={0.6} onPress={menuOnPress || this.handleMenuIconOnClick}>
+              <TouchableOpacity 
+                activeOpacity={0.6} 
+                onPress={menuOnPress || this.handleMenuIconOnClick}
+                style={{ paddingHorizontal: PADDING_HORIZONTAL }}
+              >
                 <Image style={{ ...styles.headerRightImage, tintColor }} source={IconMenu} />
               </TouchableOpacity>
             </WalkableView>
@@ -293,7 +286,11 @@ class SearchBarHeader extends Component {
         );
       }
       return (
-        <TouchableOpacity activeOpacity={0.6} onPress={menuOnPress || this.handleMenuIconOnClick}>
+        <TouchableOpacity 
+          activeOpacity={0.6} 
+          onPress={menuOnPress || this.handleMenuIconOnClick}
+          style={{ paddingHorizontal: PADDING_HORIZONTAL }}
+        >
           <Image style={{ ...styles.headerRightImage, tintColor }} source={IconMenu} />
         </TouchableOpacity>
       );
@@ -381,16 +378,16 @@ const styles = {
     backgroundColor: APP_BLUE,
     // backgroundColor: '#6bc6f0',
     paddingTop: 40,
-    paddingLeft: 10,
-    paddingRight: 10,
+    // paddingLeft: 10,
+    // paddingRight: 10,
     paddingBottom: 10,
     justifyContent: 'center',
     alignItems: 'center'
   },
   headerLeftImage: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.4,
@@ -398,32 +395,37 @@ const styles = {
     backgroundColor: 'white'
   },
   headerRightImage: {
-    width: 27,
-    height: 21,
+    width: 29,
+    height: 23,
   },
   // Styles for method 2
   // It's currently being used
   searchButtonContainerStyle: {
-    height: 30,
+    height: 36,
     flex: 1,
     // width: 260,
     // backgroundColor: '#1998c9',
     backgroundColor: APP_DEEP_BLUE,
     borderRadius: 16,
     padding: 0,
-    marginRight: 14,
-    marginLeft: 14,
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'center',
     justifyContent: 'center'
   },
   searchPlaceHolderTextStyle: {
-    fontSize: 13,
+    fontSize: 14,
     alignSelf: 'center',
     // color: '#b2b3b4',
     color: '#4ec9f3',
     marginLeft: 5
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.4,
+    shadowRadius: 2,
+    backgroundColor: 'white'
   }
 };
 
