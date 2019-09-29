@@ -1,59 +1,32 @@
-import _ from 'lodash';
-
-import React from 'react';
-import {
-	View,
-	KeyboardAvoidingView,
-	ScrollView,
-	SafeAreaView,
-	TextInput,
-	Image,
-	Text,
-	TouchableOpacity,
-	ImageBackground,
-	FlatList,
-	ActivityIndicator,
-} from 'react-native';
-import { connect } from 'react-redux';
-import { CheckBox, SearchBar } from 'react-native-elements';
-import {
-	Field,
-	reduxForm,
-	formValueSelector,
-} from 'redux-form';
-import R from 'ramda';
-import {
-	MenuProvider,
-} from 'react-native-popup-menu';
-
 import { MaterialIcons } from '@expo/vector-icons';
-
-import {Alert} from 'react-native';
-
+import _ from 'lodash';
+import R from 'ramda';
+import React from 'react';
+import { ActivityIndicator, Alert, FlatList, Image, ImageBackground, KeyboardAvoidingView, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { CheckBox, SearchBar } from 'react-native-elements';
+import { MenuProvider } from 'react-native-popup-menu';
+import { connect } from 'react-redux';
+import { Field, formValueSelector, reduxForm } from 'redux-form';
+import { openCamera, openCameraRoll } from '../../../actions';
+import camera from '../../../asset/utils/camera.png';
+import cameraRoll from '../../../asset/utils/cameraRoll.png';
+// assets
+import cancel from '../../../asset/utils/cancel_no_background.png';
+import plus from '../../../asset/utils/plus.png';
+import times from '../../../asset/utils/times.png';
+// Actions
+import { cancelCreateOrUpdateChatroom, changeModalPage, createOrUpdateChatroom, loadMoreFriendsSearch, refreshFriendsSearch, searchQueryUpdated, updateSelectedMembers } from '../../../redux/modules/chat/CreateChatRoomActions';
+import { SearchIcon } from '../../../Utils/Icons';
 // Components
 import ModalHeader from '../../Common/Header/ModalHeader';
 import ImageModal from '../../Common/ImageModal';
-import plus from '../../../asset/utils/plus.png';
-import times from '../../../asset/utils/times.png'
-
-// Actions
-import {
-	cancelCreateOrUpdateChatroom,
-	createOrUpdateChatroom,
-	changeModalPage,
-	updateSelectedMembers,
-	refreshFriendsSearch,
-	loadMoreFriendsSearch,
-	searchQueryUpdated,
-} from '../../../redux/modules/chat/CreateChatRoomActions';
-import { openCameraRoll, openCamera } from '../../../actions';
-
-// assets
-import cancel from '../../../asset/utils/cancel_no_background.png';
-import camera from '../../../asset/utils/camera.png';
-import cameraRoll from '../../../asset/utils/cameraRoll.png';
 import SearchUserCard from '../../Search/People/SearchUserCard';
-import { SearchIcon } from '../../../Utils/Icons';
+
+
+
+
+
+
 
 const FRIEND_SEARCH_AUTO_SEARCH_DELAY_MS = 500;
 
