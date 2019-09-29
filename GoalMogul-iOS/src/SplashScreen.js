@@ -265,7 +265,6 @@ class SplashScreen extends Component {
     }
 
     // Zoomed related style assignment
-    const bodyContainerStyle = IS_ZOOMED ? zoomedStyles.bodyContainerStyle : styles.bodyContainerStyle;
     const highlightContainerStyle = IS_ZOOMED ? zoomedStyles.highlightContainerStyle : styles.highlightContainerStyle;
 
     return (
@@ -274,51 +273,46 @@ class SplashScreen extends Component {
           colors={['#4bcaf4', '#1caadb']}
           style={{ flex: 1 }}
         >
+          {/* Top header logo */}
           {this.renderLogo()}
 
-          <View style={bodyContainerStyle}>
-            <Image style={styles.imageStyle} source={Helpfulness} resizeMode='contain' />
-            {this.state.fontLoaded ?
-              <View style={{ marginTop: 30 }}>
-                <Text style={styles.titleTextStyle}>Achieve more,</Text>
-                <Text style={styles.titleTextStyle}>together.</Text>
-              </View>
-              : null
-            }
-          </View>
-
-          <View style={highlightContainerStyle}>
-            <TouchableOpacity
-              activeOpacity={0.6}
-              style={styles.reactionContainerStyle}
-              onPress={this.handleGetStartedOnPress.bind(this)}
-            >
-              {
-                this.state.fontLoaded ?
-                  <Text style={styles.buttonTextStyle}>Get Started</Text>
+          {/* Main content on the center */}
+          <View style={{ flex: 1, justifyContent: 'center' }}>
+            <View style={styles.bodyContainerStyle}>
+              <Image style={styles.imageStyle} source={Helpfulness} resizeMode='contain' />
+              {this.state.fontLoaded ?
+                <View style={{ marginTop: 30 }}>
+                  <Text style={styles.titleTextStyle}>Achieve more,</Text>
+                  <Text style={styles.titleTextStyle}>together.</Text>
+                </View>
                 : null
               }
+            </View>
 
-              <RightArrowIcon 
-                iconStyle={{ 
-                  ...styles.iconStyle, 
-                  tintColor: '#ffffff',
-                  height: 15,
-                  width: 30
-                }} 
-              />
-              {/** 
-                <Icon
-                name='ios-arrow-round-forward'
-                type='ionicon'
-                color='#ffffff'
-                iconStyle={styles.iconStyle}
+            <View style={highlightContainerStyle}>
+              <TouchableOpacity
+                activeOpacity={0.6}
+                style={styles.reactionContainerStyle}
+                onPress={this.handleGetStartedOnPress.bind(this)}
+              >
+                {
+                  this.state.fontLoaded ?
+                    <Text style={styles.buttonTextStyle}>Get Started</Text>
+                  : null
+                }
+                <RightArrowIcon 
+                  iconStyle={{ 
+                    ...styles.iconStyle, 
+                    tintColor: '#ffffff',
+                    height: 15,
+                    width: 30
+                  }} 
                 />
-              */}
-              
-            </TouchableOpacity>
+              </TouchableOpacity>
+            </View>
           </View>
 
+          {/* Bottom bar for direct to login */}
           <TouchableOpacity
             activeOpacity={0.6}
             style={{ ...styles.loginHighlightContainerStyle, height: IS_SMALL_PHONE ? 60 : 81}}
@@ -358,11 +352,6 @@ const zoomedStyles = {
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 50
-  },
-  bodyContainerStyle: {
-    marginTop: 20,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   highlightContainerStyle: {
     marginTop: 30,
@@ -420,7 +409,6 @@ const styles = {
 
   // Body style
   bodyContainerStyle: {
-    marginTop: 40,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -477,9 +465,7 @@ const styles = {
     height: 60,
     width,
     alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    bottom: 0
+    justifyContent: 'center'
   },
   loginTextStyle: {
     paddingLeft: 3,
