@@ -1,78 +1,47 @@
 /**
  * After Event reducer refactoring, this class is no longer in use. It's replaced by MyEvent.js
  */
-import React, { Component } from 'react';
-import {
-  View,
-  Image,
-  Dimensions,
-  Text,
-  FlatList,
-  ActivityIndicator,
-  TouchableOpacity
- } from 'react-native';
-import { connect } from 'react-redux';
 import R from 'ramda';
-import {
-  MenuProvider
-} from 'react-native-popup-menu';
+import React, { Component } from 'react';
+import { ActivityIndicator, Dimensions, FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
-
-// Components
-import SearchBarHeader from '../Common/Header/SearchBarHeader';
-import TabButtonGroup from '../Common/TabButtonGroup';
-import About from './About';
-import { StackedAvatarsV2 } from '../Common/StackedAvatars';
-import Dot from '../Common/Dot';
-import MemberListCard from '../Tribe/MemberListCard';
-import ParticipantFilterBar from './ParticipantFilterBar';
-import EmptyResult from '../Common/Text/EmptyResult';
-
-import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
-import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
-import { MenuFactory } from '../Common/MenuFactory';
-
+import { connect } from 'react-redux';
+import DefaultUserProfile from '../../asset/utils/defaultUserProfile.png';
+import EditIcon from '../../asset/utils/edit.png';
 // Asset
 import event_default_image from '../../asset/utils/eventIcon.png';
-import EditIcon from '../../asset/utils/edit.png';
-import DefaultUserProfile from '../../asset/utils/defaultUserProfile.png';
-
 // Actions
-import {
-  eventSelectTab,
-  eventDetailClose,
-  loadMoreEventFeed,
-  rsvpEvent,
-  openEventInviteModal,
-  deleteEvent,
-  editEvent,
-  reportEvent
-} from '../../redux/modules/event/EventActions';
-
-import {
-  openPostDetail
-} from '../../redux/modules/feed/post/PostActions';
-
-import {
-  subscribeEntityNotification,
-  unsubscribeEntityNotification
-} from '../../redux/modules/notification/NotificationActions';
-
+import { deleteEvent, editEvent, eventDetailClose, eventSelectTab, loadMoreEventFeed, openEventInviteModal, reportEvent, rsvpEvent } from '../../redux/modules/event/EventActions';
 // Selector
-import {
-  getUserStatus,
-  participantSelector
-} from '../../redux/modules/event/EventSelector';
-
-// Constants
-import {
-  IMAGE_BASE_URL,
-  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
-  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
-} from '../../Utils/Constants';
-
+import { getUserStatus, participantSelector } from '../../redux/modules/event/EventSelector';
+import { openPostDetail } from '../../redux/modules/feed/post/PostActions';
+import { subscribeEntityNotification, unsubscribeEntityNotification } from '../../redux/modules/notification/NotificationActions';
 // Styles
 import { APP_DEEP_BLUE } from '../../styles';
+// Constants
+import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE, IMAGE_BASE_URL } from '../../Utils/Constants';
+import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
+import Dot from '../Common/Dot';
+// Components
+import SearchBarHeader from '../Common/Header/SearchBarHeader';
+import { MenuFactory } from '../Common/MenuFactory';
+import { StackedAvatarsV2 } from '../Common/StackedAvatars';
+import TabButtonGroup from '../Common/TabButtonGroup';
+import EmptyResult from '../Common/Text/EmptyResult';
+import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
+import MemberListCard from '../Tribe/MemberListCard';
+import About from './About';
+import ParticipantFilterBar from './ParticipantFilterBar';
+
+
+
+
+
+
+
+
+
 
 const DEBUG_KEY = '[ UI Event ]';
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
@@ -489,10 +458,10 @@ const styles = {
   containerStyle: {
     flex: 1, 
     backgroundColor: '#f8f8f8',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 1 },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 6,
   },
   defaultCoverImageStyle: {
     height: 65,

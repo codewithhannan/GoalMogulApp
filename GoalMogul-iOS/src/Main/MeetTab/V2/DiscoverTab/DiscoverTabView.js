@@ -3,32 +3,24 @@
  * duplicate to Suggested.
  */
 import React, { Component } from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
+import { ActivityIndicator, FlatList, View } from 'react-native';
 import { connect } from 'react-redux';
-
+// actions
+import { handleRefresh } from '../../../../actions';
+// Constants
+import { MEET_REQUEST_LIMIT } from '../../../../reducers/MeetReducers';
+import { loadMoreRequest } from '../../../../redux/modules/meet/MeetActions';
+// Styles
+import { BACKGROUND_COLOR } from '../../../../styles';
+import SearchBarHeader from '../../../Common/Header/SearchBarHeader';
+import EmptyResult from '../../../Common/Text/EmptyResult';
 // Components
 import SuggestedCard from '../../Suggested/SuggestedCard';
-import EmptyResult from '../../../Common/Text/EmptyResult';
-import SearchBarHeader from '../../../Common/Header/SearchBarHeader';
 
-// actions
-import {
-  handleRefresh
-} from '../../../../actions';
 
-import {
-    loadMoreRequest
-} from '../../../../redux/modules/meet/MeetActions';
 
-// Styles
-import {
-    BACKGROUND_COLOR
-} from '../../../../styles';
 
-// Constants
-import {
-  MEET_REQUEST_LIMIT
-} from '../../../../reducers/MeetReducers';
+
 
 // tab key
 const key = 'suggested';
@@ -102,10 +94,10 @@ const styles = {
     flex: 1, 
     backgroundColor: BACKGROUND_COLOR,
     backgroundColor: '#f8f8f8',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 1 },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 6,
   },
 }
 

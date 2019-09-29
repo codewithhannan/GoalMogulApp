@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 
 const window = Dimensions.get('window');
@@ -15,9 +15,9 @@ export default StyleSheet.create({
     flex: 1,
     display: 'flex',
     backgroundColor: '#ffffff',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.3,
   },
   titleTextStyle: {
     fontSize: 25,

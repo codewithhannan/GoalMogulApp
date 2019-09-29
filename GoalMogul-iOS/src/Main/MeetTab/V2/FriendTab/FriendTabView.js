@@ -1,35 +1,24 @@
 /**
  * This is the central hub for current friends management
  */
-import React from 'react';
-import {
-    FlatList,
-    View,
-    ActivityIndicator
-} from 'react-native';
-import { connect } from 'react-redux';
 import _ from 'lodash';
-
+import React from 'react';
+import { ActivityIndicator, FlatList, View } from 'react-native';
+import { connect } from 'react-redux';
+// Constants
+import { MEET_REQUEST_LIMIT } from '../../../../reducers/MeetReducers';
+/* Actions */
+import { handleRefreshFriend, loadMoreRequest } from '../../../../redux/modules/meet/MeetActions';
+/* Styles */
+import { BACKGROUND_COLOR } from '../../../../styles';
+import SearchBarHeader from '../../../Common/Header/SearchBarHeader';
 /* Components */
 import EmptyResult from '../../../Common/Text/EmptyResult';
-import SearchBarHeader from '../../../Common/Header/SearchBarHeader';
 import FriendTabCardView from './FriendTabCardView';
 
-/* Actions */
-import {
-    loadMoreRequest,
-    handleRefreshFriend
-} from '../../../../redux/modules/meet/MeetActions';
 
-// Constants
-import {
-    MEET_REQUEST_LIMIT
-} from '../../../../reducers/MeetReducers';
 
-/* Styles */
-import {
-    BACKGROUND_COLOR
-} from '../../../../styles';
+
 
 const KEY = 'friends';
 const DEBUG_KEY = '[ UI FriendTabView ]';
@@ -99,10 +88,10 @@ const styles = {
       flex: 1, 
       backgroundColor: BACKGROUND_COLOR,
       backgroundColor: '#f8f8f8',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.3,
-      shadowRadius: 6,
+    //   shadowColor: '#000',
+    //   shadowOffset: { width: 0, height: 1 },
+    //   shadowOpacity: 0.3,
+    //   shadowRadius: 6,
     },
   }
 

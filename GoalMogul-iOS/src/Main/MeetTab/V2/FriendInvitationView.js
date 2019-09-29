@@ -3,30 +3,23 @@
  * User can choose to either copy invitation code or choose sharing options
  */
 import React from 'react';
-import {
-    View,
-    ScrollView,
-    Clipboard,
-    Share,
-    Alert
-} from 'react-native';
+import { Alert, Clipboard, ScrollView, Share, View } from 'react-native';
 import { connect } from 'react-redux';
-
+import ClipboardIcon from '../../../asset/utils/clipboard.png';
+// Assets
+import SettingIcon from '../../../asset/utils/friendsSettingIcon.png';
+// Utils
+import { generateInvitationLink } from '../../../redux/middleware/utils';
+// Actions
+// Styles
+import { BACKGROUND_COLOR } from '../../../styles';
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import SettingCard from '../../Setting/SettingCard';
 
-// Actions
 
-// Styles
-import { BACKGROUND_COLOR } from '../../../styles';
 
-// Utils
-import { generateInvitationLink } from '../../../redux/middleware/utils';
 
-// Assets
-import SettingIcon from '../../../asset/utils/friendsSettingIcon.png';
-import ClipboardIcon from '../../../asset/utils/clipboard.png';
 
 // Constants
 const DEBUG_KEY = '[ UI FriendInvitationView ]';
@@ -96,10 +89,10 @@ const styles = {
       flex: 1, 
       backgroundColor: BACKGROUND_COLOR,
       backgroundColor: '#f8f8f8',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.3,
-      shadowRadius: 6,
+    //   shadowColor: '#000',
+    //   shadowOffset: { width: 0, height: 1 },
+    //   shadowOpacity: 0.3,
+    //   shadowRadius: 6,
     },
   }
 

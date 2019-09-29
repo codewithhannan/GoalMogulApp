@@ -1,103 +1,53 @@
-import React, { Component } from 'react';
-import {
-  Animated,
-  View,
-  Image,
-  Dimensions,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  ActivityIndicator,
-  Platform
- } from 'react-native';
-import { connect } from 'react-redux';
-import { MenuProvider } from 'react-native-popup-menu';
-import R from 'ramda';
-import { Actions } from 'react-native-router-flux';
-import Fuse from 'fuse.js';
 import Constants from 'expo-constants';
-
+import Fuse from 'fuse.js';
+import R from 'ramda';
+import React, { Component } from 'react';
+import { ActivityIndicator, Animated, Dimensions, FlatList, Image, Platform, Text, TouchableOpacity, View } from 'react-native';
+import { MenuProvider } from 'react-native-popup-menu';
+import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+import { loadFriends } from '../../../actions';
+import Icons from '../../../asset/base64/Icons';
+import envelope from '../../../asset/utils/envelope.png';
+import invite from '../../../asset/utils/invite.png';
+import post from '../../../asset/utils/post.png';
+import tribe_default_icon from '../../../asset/utils/tribeIcon.png';
+import { switchCase } from '../../../redux/middleware/utils';
+import { openPostDetail } from '../../../redux/modules/feed/post/PostActions';
+import { subscribeEntityNotification, unsubscribeEntityNotification } from '../../../redux/modules/notification/NotificationActions';
+import { openMultiUserInviteModal, searchFriend } from '../../../redux/modules/search/SearchActions';
+// Actions
+import { myTribeAdminAcceptUser, myTribeAdminDemoteUser, myTribeAdminPromoteUser, myTribeAdminRemoveUser, myTribeReset, myTribeSelectMembersFilter, refreshMyTribeDetail, tribeDetailClose, tribeSelectTab } from '../../../redux/modules/tribe/MyTribeActions';
+import { acceptTribeInvit, declineTribeInvit, deleteTribe, editTribe, inviteMultipleUsersToTribe, leaveTribe, openTribeInvitModal, reportTribe, requestJoinTribe } from '../../../redux/modules/tribe/TribeActions';
+// Selector
+import { getMyTribeMemberNavigationState, getMyTribeNavigationState, getMyTribeUserStatus, myTribeMemberSelector } from '../../../redux/modules/tribe/TribeSelector';
+// Styles
+import { APP_DEEP_BLUE } from '../../../styles';
+// Constants
+import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE, IMAGE_BASE_URL, IPHONE_MODELS } from '../../../Utils/Constants';
+import { DotIcon } from '../../../Utils/Icons';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import DelayedButton from '../../Common/Button/DelayedButton';
+import PlusButton from '../../Common/Button/PlusButton';
+import Divider from '../../Common/Divider';
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
-import TabButtonGroup from '../../Common/TabButtonGroup';
-import Divider from '../../Common/Divider';
-import About from './MyTribeAbout';
-import MemberListCard from '../../Tribe/MemberListCard';
 import { MenuFactory } from '../../Common/MenuFactory';
-import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import TabButtonGroup from '../../Common/TabButtonGroup';
 import EmptyResult from '../../Common/Text/EmptyResult';
-import {
-  DotIcon
-} from '../../../Utils/Icons';
-import PlusButton from '../../Common/Button/PlusButton';
-
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
-import { switchCase } from '../../../redux/middleware/utils';
+import MemberListCard from '../../Tribe/MemberListCard';
+import About from './MyTribeAbout';
 
-// Asset
-import plus from '../../../asset/utils/plus.png';
-import post from '../../../asset/utils/post.png';
-import invite from '../../../asset/utils/invite.png';
-import envelope from '../../../asset/utils/envelope.png';
-import Icons from '../../../asset/base64/Icons';
 
-import TestEventImage from '../../../asset/TestEventImage.png';
-import tribe_default_icon from '../../../asset/utils/tribeIcon.png';
 
-// Actions
-import {
-  tribeSelectTab,
-  tribeDetailClose,
-  myTribeAdminRemoveUser,
-  myTribeAdminPromoteUser,
-  myTribeAdminDemoteUser,
-  myTribeSelectMembersFilter,
-  refreshMyTribeDetail,
-  myTribeAdminAcceptUser,
-  myTribeReset
-} from '../../../redux/modules/tribe/MyTribeActions';
-import {
-  openTribeInvitModal,
-  deleteTribe,
-  editTribe,
-  reportTribe,
-  leaveTribe,
-  acceptTribeInvit,
-  declineTribeInvit,
-  requestJoinTribe,
-  inviteMultipleUsersToTribe
-} from '../../../redux/modules/tribe/TribeActions';
 
-import {
-  openPostDetail
-} from '../../../redux/modules/feed/post/PostActions';
 
-import {
-  subscribeEntityNotification,
-  unsubscribeEntityNotification
-} from '../../../redux/modules/notification/NotificationActions';
 
-// Selector
-import {
-  getMyTribeUserStatus,
-  myTribeMemberSelector,
-  getMyTribeNavigationState,
-  getMyTribeMemberNavigationState
-} from '../../../redux/modules/tribe/TribeSelector';
 
-// Styles
-import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../../../styles';
 
-// Constants
-import {
-  IPHONE_MODELS,
-  IMAGE_BASE_URL,
-  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
-  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
-} from '../../../Utils/Constants';
-import { openMultiUserInviteModal, searchFriend } from '../../../redux/modules/search/SearchActions';
-import DelayedButton from '../../Common/Button/DelayedButton';
-import { loadFriends } from '../../../actions';
+
+
 
 const { CheckIcon: check } = Icons;
 const DEBUG_KEY = '[ UI MyTribe ]';
@@ -897,10 +847,10 @@ const styles = {
   containerStyle: {
     flex: 1, 
     backgroundColor: '#f8f8f8',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 1 },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 6,
   },
   imageContainerStyle: {
     borderWidth: 1,
