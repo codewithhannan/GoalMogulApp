@@ -1,99 +1,54 @@
-import React, { Component } from 'react';
-import {
-  View,
-  Animated,
-  Dimensions,
-  StyleSheet,
-  Image,
-  Text,
-  TouchableOpacity,
-  Keyboard
-} from 'react-native';
-import { connect } from 'react-redux';
-import _ from 'lodash';
-import {
-  MenuProvider
-} from 'react-native-popup-menu';
-import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import Constants from 'expo-constants';
-import {
-  DotIndicator
-} from 'react-native-indicators';
+import _ from 'lodash';
+import React, { Component } from 'react';
+import { Animated, Dimensions, Image, Keyboard, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { copilot } from 'react-native-copilot-gm';
+import { DotIndicator } from 'react-native-indicators';
 import { getBottomSpace } from 'react-native-iphone-x-helper';
-
+import { MenuProvider } from 'react-native-popup-menu';
+import { TabView } from 'react-native-tab-view';
+import { connect } from 'react-redux';
+import allComments from '../../../asset/utils/allComments.png';
+// Assets
+import next from '../../../asset/utils/next.png';
+import { constructMenuName, getParentCommentId } from '../../../redux/middleware/utils';
+import { Logger } from '../../../redux/middleware/utils/Logger';
+import { attachSuggestion, cancelSuggestion, createCommentForSuggestion, createCommentFromSuggestion, createSuggestion, openSuggestionModal, refreshComments, removeSuggestion, resetCommentType, updateNewComment } from '../../../redux/modules/feed/comment/CommentActions';
+import {
+  // getCommentByTab,
+  getNewCommentByTab, makeGetCommentByEntityId
+} from '../../../redux/modules/feed/comment/CommentSelector';
 // Actions
-import {
-  closeGoalDetail,
-  closeGoalDetailWithoutPoping,
-  goalDetailSwitchTabV2,
-  goalDetailSwitchTabV2ByKey,
-  editGoal,
-  markGoalAsComplete,
-  refreshGoalDetailById,
-  markUserViewGoal
-} from '../../../redux/modules/goal/GoalDetailActions';
-
-import {
-  attachSuggestion,
-  cancelSuggestion,
-  openSuggestionModal,
-  removeSuggestion,
-  createCommentFromSuggestion,
-  createCommentForSuggestion,
-  resetCommentType,
-  updateNewComment,
-  createSuggestion,
-  refreshComments
-} from '../../../redux/modules/feed/comment/CommentActions';
-
-import {
-  showNextTutorialPage,
-  startTutorial,
-  updateNextStepNumber,
-  pauseTutorial,
-  saveTutorialState
-} from '../../../redux/modules/User/TutorialActions';
-
+import { closeGoalDetail, closeGoalDetailWithoutPoping, editGoal, goalDetailSwitchTabV2, goalDetailSwitchTabV2ByKey, markGoalAsComplete, markUserViewGoal, refreshGoalDetailById } from '../../../redux/modules/goal/GoalDetailActions';
 // selector
 import {
   // getGoalStepsAndNeeds,
   // getGoalDetailByTab,
   // makeGetGoalDetailById,
-  makeGetGoalPageDetailByPageId,
-  makeGetGoalStepsAndNeedsV2
+  makeGetGoalPageDetailByPageId, makeGetGoalStepsAndNeedsV2
 } from '../../../redux/modules/goal/selector';
-
-import {
-  // getCommentByTab,
-  getNewCommentByTab,
-  makeGetCommentByEntityId
-} from '../../../redux/modules/feed/comment/CommentSelector';
-
+import { pauseTutorial, saveTutorialState, showNextTutorialPage, startTutorial, updateNextStepNumber } from '../../../redux/modules/User/TutorialActions';
+// Styles
+import { BACKGROUND_COLOR } from '../../../styles';
 // Component
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
 import LoadingModal from '../../Common/Modal/LoadingModal';
+import Tooltip from '../../Tutorial/Tooltip';
+import { svgMaskPath } from '../../Tutorial/Utils';
+import CommentBox from '../Common/CommentBoxV2';
+import SectionCardV2 from '../Common/SectionCardV2';
+import GoalDetailSection from './GoalDetailSection';
 import SuggestionModal from './SuggestionModal3';
 import CentralTab from './V3/CentralTab';
 import FocusTab from './V3/FocusTab';
-import SectionCardV2 from '../Common/SectionCardV2';
-import CommentBox from '../Common/CommentBoxV2';
-import GoalDetailSection from './GoalDetailSection';
 
-// Assets
-import next from '../../../asset/utils/next.png';
-import allComments from '../../../asset/utils/allComments.png';
 
-// Styles
-import {
-  BACKGROUND_COLOR,
-  // APP_BLUE
-} from '../../../styles';
-import { Logger } from '../../../redux/middleware/utils/Logger';
-import { constructMenuName, getParentCommentId } from '../../../redux/middleware/utils';
-import Tooltip from '../../Tutorial/Tooltip';
-import { Actions } from 'react-native-router-flux';
-import { svgMaskPath } from '../../Tutorial/Utils';
+
+
+
+
+
+
 
 const initialLayout = {
   height: 0,
@@ -809,10 +764,10 @@ const styles = StyleSheet.create({
   containerStyle: {
     backgroundColor: BACKGROUND_COLOR, 
     flex: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 1 },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 6,
   },
   iconContainerStyle: {
     padding: 10,

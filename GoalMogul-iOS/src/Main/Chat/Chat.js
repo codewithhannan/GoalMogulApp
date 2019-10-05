@@ -1,37 +1,27 @@
 import React from 'react';
-import {
-	View
-} from 'react-native';
-import { connect } from 'react-redux';
-import { TabView } from 'react-native-tab-view';
+import { AsyncStorage, View } from 'react-native';
+import { copilot } from 'react-native-copilot-gm';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
-import { AsyncStorage } from 'react-native';
-import { copilot } from 'react-native-copilot-gm';
-
+import { TabView } from 'react-native-tab-view';
+import { connect } from 'react-redux';
+import direct_message_image from '../../asset/utils/direct_message.png';
+import next from '../../asset/utils/next.png';
+import profile_people_image from '../../asset/utils/profile_people.png';
+// Actions
+import { createOrGetDirectMessage, plusPressed, plusUnpressed, refreshUnreadCountForTabs, selectChatTab } from '../../redux/modules/chat/ChatActions';
+import { pauseTutorial, resetTutorial, showNextTutorialPage, startTutorial, updateNextStepNumber } from '../../redux/modules/User/TutorialActions';
+import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../../styles';
+import PlusButton from '../Common/Button/PlusButton';
+import SearchBarHeader from '../Common/Header/SearchBarHeader';
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup';
-import SearchBarHeader from '../Common/Header/SearchBarHeader';
-import ChatRoomTab from './ChatRoomList/ChatRoomTab';
-import PlusButton from '../Common/Button/PlusButton';
-
-// Actions
-import {
-	selectChatTab,
-	plusPressed,
-	plusUnpressed,
-	createOrGetDirectMessage,
-	refreshUnreadCountForTabs,
-} from '../../redux/modules/chat/ChatActions';
-
-import plus_image from '../../asset/utils/plus.png';
-import direct_message_image from '../../asset/utils/direct_message.png';
-import profile_people_image from '../../asset/utils/profile_people.png';
-import { APP_DEEP_BLUE, APP_BLUE_BRIGHT } from '../../styles';
-import next from '../../asset/utils/next.png';
 import Tooltip from '../Tutorial/Tooltip';
 import { svgMaskPath } from '../Tutorial/Utils';
-import { pauseTutorial, showNextTutorialPage, resetTutorial, updateNextStepNumber, startTutorial } from '../../redux/modules/User/TutorialActions';
+import ChatRoomTab from './ChatRoomList/ChatRoomTab';
+
+
+
 
 export const CHAT_TAB_LAST_INDEX = 'chat_tab_last_index';
 const DEBUG_KEY = '[ UI ChatTab ]';
@@ -289,10 +279,10 @@ const styles = {
 	homeContainerStyle: {
 		backgroundColor: '#f8f8f8',
 		flex: 1,
-		shadowColor: '#000',
-		shadowOffset: { width: 0, height: 1 },
-		shadowOpacity: 0.3,
-		shadowRadius: 6,
+		// shadowColor: '#000',
+		// shadowOffset: { width: 0, height: 1 },
+		// shadowOpacity: 0.3,
+		// shadowRadius: 6,
 	},
 	textStyle: {
 		fontSize: 12,

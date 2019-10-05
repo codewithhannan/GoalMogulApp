@@ -2,42 +2,24 @@
  * This view is a central hub for incoming and outgoing request for a user
  */
 import React, { Component } from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Text
-} from 'react-native';
+import { View } from 'react-native';
+import { SceneMap, TabView } from 'react-native-tab-view';
 import { connect } from 'react-redux';
-import { TabView, SceneMap } from 'react-native-tab-view';
-
+// actions
+import { handleRefresh } from '../../../../actions';
+import { handleRequestTabSwitchTab, loadMoreRequest } from '../../../../redux/modules/meet/MeetActions';
+// Styles
+import { APP_DEEP_BLUE, BACKGROUND_COLOR } from '../../../../styles';
 // Components
 import SearchBarHeader from '../../../Common/Header/SearchBarHeader';
 import TabButtonGroup from '../../../Common/TabButtonGroup';
 import IncomingRequestTabView from './IncomingRequestTabView';
 import OutgoingRequestTabView from './OutgoingRequestTabView';
 
-// actions
-import {
-  handleRefresh,
-  requestsSelectTab,
-} from '../../../../actions';
 
-import {
-  loadMoreRequest,
-  handleRequestTabSwitchTab
-} from '../../../../redux/modules/meet/MeetActions';
 
-// Selectors
-import {
-  getOutgoingUserFromFriendship,
-  getIncomingUserFromFriendship
-} from '../../../../redux/modules/meet/selector';
 
-// Styles
-import {
-  BACKGROUND_COLOR,
-  APP_DEEP_BLUE
-} from '../../../../styles';
+
 
 const Tabs = [
   {
@@ -105,10 +87,10 @@ const styles = {
     flex: 1, 
     backgroundColor: BACKGROUND_COLOR,
     backgroundColor: '#f8f8f8',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 1 },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 6,
   },
 }
 

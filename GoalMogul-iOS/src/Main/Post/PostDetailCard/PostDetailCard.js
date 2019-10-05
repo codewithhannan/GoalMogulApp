@@ -1,55 +1,31 @@
-import React, { Component } from 'react';
-import {
-  View,
-  FlatList,
-  KeyboardAvoidingView,
-  Animated,
-  Keyboard
-} from 'react-native';
-import { connect } from 'react-redux';
-import {
-  MenuProvider
-} from 'react-native-popup-menu';
-import _ from 'lodash';
+import React from 'react';
+import { Animated, FlatList, Keyboard, KeyboardAvoidingView, View } from 'react-native';
 import { getBottomSpace } from 'react-native-iphone-x-helper';
-
-// Actions
-import {
-  closePostDetail,
-  editPost,
-  fetchPostDetail,
-  markUserViewPost
-} from '../../../redux/modules/feed/post/PostActions';
-
-import {
-  refreshComments
-} from '../../../redux/modules/feed/comment/CommentActions';
-
+import { MenuProvider } from 'react-native-popup-menu';
+import { connect } from 'react-redux';
+import { getParentCommentId } from '../../../redux/middleware/utils';
+import { Logger } from '../../../redux/middleware/utils/Logger';
+import { refreshComments } from '../../../redux/modules/feed/comment/CommentActions';
 // Selectors
-import { 
-  getCommentByTab,
-  makeGetCommentByEntityId
-} from '../../../redux/modules/feed/comment/CommentSelector';
-
-import {
-  getPostDetailByTab,
-  makeGetPostById
-} from '../../../redux/modules/feed/post/PostSelector';
-
+import { makeGetCommentByEntityId } from '../../../redux/modules/feed/comment/CommentSelector';
+// Actions
+import { closePostDetail, editPost, fetchPostDetail, markUserViewPost } from '../../../redux/modules/feed/post/PostActions';
+import { makeGetPostById } from '../../../redux/modules/feed/post/PostSelector';
+// Styles
+import { BACKGROUND_COLOR } from '../../../styles';
 // Component
 import SearchBarHeader from '../../Common/Header/SearchBarHeader';
+import LikeListModal from '../../Common/Modal/LikeListModal';
 import CommentBox from '../../Goal/Common/CommentBoxV2';
 import CommentCard from '../../Goal/GoalDetailCard/Comment/CommentCard';
-
 import PostDetailSection from './PostDetailSection';
 
-// Styles
-import {
-  BACKGROUND_COLOR
-} from '../../../styles';
-import { Logger } from '../../../redux/middleware/utils/Logger';
-import { getParentCommentId } from '../../../redux/middleware/utils';
-import LikeListModal from '../../Common/Modal/LikeListModal';
+
+
+
+
+
+
 
 const DEBUG_KEY = '[ UI PostDetailCard ]';
 const TABBAR_HEIGHT = 48.5;
@@ -337,10 +313,10 @@ const styles = {
   containerStyle: {
     backgroundColor: BACKGROUND_COLOR, 
     flex: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 1 },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 6,
   },
   iconStyle: {
     alignSelf: 'center',

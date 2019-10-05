@@ -1,66 +1,47 @@
-import React, { Component } from 'react';
-import { View, Animated, FlatList, ActivityIndicator, Text } from 'react-native';
-import { MenuProvider } from 'react-native-popup-menu';
-import { connect } from 'react-redux';
-import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
 import R from 'ramda';
-
+import React, { Component } from 'react';
+import { ActivityIndicator, Animated, FlatList, Text, View } from 'react-native';
+import { MenuProvider } from 'react-native-popup-menu';
+import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+/* Actions */
+import {
+blockUser, changeFilter, closeCreateOverlay, handleProfileTabOnLoadMore,
+    // Page related functions
+    handleTabRefresh, openCreateOverlay, selectProfileTab
+} from '../../actions';
+import { closeProfile } from '../../actions/ProfileActions';
+import { Logger } from '../../redux/middleware/utils/Logger';
+import { openPostDetail } from '../../redux/modules/feed/post/PostActions';
+import { createReport } from '../../redux/modules/report/ReportActions';
+// Selector
+import { getUserData, getUserDataByPageId, makeGetUserGoals, makeGetUserNeeds, makeGetUserPosts } from '../../redux/modules/User/Selector';
+import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users';
+/* Styles */
+import { APP_DEEP_BLUE, BACKGROUND_COLOR } from '../../styles';
+import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
+import PlusButton from '../Common/Button/PlusButton';
+import GoalFilterBar from '../Common/GoalFilterBar';
 /* Components */
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
-import ProfileDetailCard from './ProfileCard/ProfileDetailCard';
 import TabButtonGroup from '../Common/TabButtonGroup';
-import GoalFilterBar from '../Common/GoalFilterBar';
+import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal';
 import ProfileGoalCard from '../Goal/GoalCard/ProfileGoalCard2';
 import ProfileNeedCard from '../Goal/NeedCard/ProfileNeedCard';
 import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
-
 import About from './About';
+import ProfileDetailCard from './ProfileCard/ProfileDetailCard';
 
-/* Actions */
-import {
-  selectProfileTab,
-  closeCreateOverlay,
-  openCreateOverlay,
-  // Page related functions
-  handleTabRefresh,
-  handleProfileTabOnLoadMore,
-  changeFilter,
-  blockUser
-} from '../../actions';
 
-import {
-    openPostDetail
-} from '../../redux/modules/feed/post/PostActions';
 
-import {
-  closeProfile
-} from '../../actions/ProfileActions';
 
-import {
-    createReport
-} from '../../redux/modules/report/ReportActions';
 
-import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 
-/* Styles */
-import { BACKGROUND_COLOR, APP_DEEP_BLUE } from '../../styles';
 
-/* Assets */
-import plus from '../../asset/utils/plus.png';
 
-// Selector
-import {
-  getUserDataByPageId,
-  getUserData,
-  makeGetUserGoals,
-  makeGetUserNeeds,
-  makeGetUserPosts
-} from '../../redux/modules/User/Selector';
-import PlusButton from '../Common/Button/PlusButton';
-import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users';
-import { Logger } from '../../redux/middleware/utils/Logger';
-import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal';
+
+
 
 const DEBUG_KEY = '[ UI ProfileV2 ]';
 // const SEARCHBAR_HEIGHT = 70;
@@ -517,10 +498,10 @@ const styles = {
     containerStyle: {
         flex: 1,
         backgroundColor: BACKGROUND_COLOR,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.3,
-        shadowRadius: 6,
+        // shadowColor: '#000',
+        // shadowOffset: { width: 0, height: 1 },
+        // shadowOpacity: 0.3,
+        // shadowRadius: 6,
     },
     tabContainerStyle: {
         display: 'flex',

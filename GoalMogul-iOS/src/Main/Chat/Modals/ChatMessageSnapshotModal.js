@@ -4,43 +4,19 @@
     - connect to live chat service for typing indicator
     - fetch the full chat document with members populated
 */
-import moment from 'moment';
 import React from 'react';
-import {
-    View,
-    ActivityIndicator,
-    KeyboardAvoidingView,
-    TouchableOpacity,
-    FlatList,
-} from 'react-native';
-import { connect } from 'react-redux';
-import { MaterialIcons } from  '@expo/vector-icons';
-
-// Actions
-import {
-    
-} from '../../../redux/modules/chat/ChatRoomActions';
-import ModalHeader from '../../Common/Header/ModalHeader';
-import Dot from '../../Common/Dot';
-import { Actions } from 'react-native-router-flux';
-import profilePic from '../../../asset/utils/defaultUserProfile.png';
-import membersIcon from '../../../asset/utils/profile_people_black.png';
-import plusIcon from '../../../asset/utils/plus.png';
-import muteIcon from '../../../asset/utils/mute.png';
-import editIcon from '../../../asset/utils/edit.png';
-import searchIcon from '../../../asset/utils/search.png';
+import { KeyboardAvoidingView } from 'react-native';
+import { Bubble, GiftedChat, Message, MessageText, Time } from 'react-native-gifted-chat';
 import { MenuProvider } from 'react-native-popup-menu';
-import SettingCard from '../../Setting/SettingCard';
-import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL } from '../../../Utils/Constants';
+import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
 import { openProfile } from '../../../actions';
-import { refreshChatMessageSearch, searchQueryUpdated, getMessageSnapshots, clearMessageSnapshots, deleteMessageFromSnapshots } from '../../../redux/modules/chat/ChatRoomMessageSearchActions';
-import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
-import { Image, Text, Divider, SearchBar } from 'react-native-elements';
-import { APP_BLUE_BRIGHT } from '../../../styles';
-import ProfileImage from '../../Common/ProfileImage';
-import { getUserDocument, MemberDocumentFetcher } from '../../../Utils/UserUtils';
-import { SearchIcon } from '../../../Utils/Icons';
-import { GiftedChat, Bubble, Message, MessageText, Time } from 'react-native-gifted-chat';
+// Actions
+import { } from '../../../redux/modules/chat/ChatRoomActions';
+import { clearMessageSnapshots, deleteMessageFromSnapshots, getMessageSnapshots } from '../../../redux/modules/chat/ChatRoomMessageSearchActions';
+import { IMAGE_BASE_URL } from '../../../Utils/Constants';
+import ModalHeader from '../../Common/Header/ModalHeader';
+
 
 const MESSAGE_SEARCH_AUTO_SEARCH_DELAY_MS = 500;
 
@@ -239,10 +215,10 @@ const styles = {
 	homeContainerStyle: {
 		backgroundColor: '#f8f8f8',
 		flex: 1,
-		shadowColor: '#000',
-		shadowOffset: { width: 0, height: 1 },
-		shadowOpacity: 0.3,
-		shadowRadius: 6,
+		// shadowColor: '#000',
+		// shadowOffset: { width: 0, height: 1 },
+		// shadowOpacity: 0.3,
+		// shadowRadius: 6,
     },
     imageContainerStyle: {
         height: 35,

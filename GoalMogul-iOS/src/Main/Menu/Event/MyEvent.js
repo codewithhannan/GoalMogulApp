@@ -1,94 +1,56 @@
-import React, { Component } from 'react';
-import {
-  Animated,
-  View,
-  Image,
-  Dimensions,
-  Text,
-  FlatList,
-  ActivityIndicator,
-  TouchableOpacity
- } from 'react-native';
-import { connect } from 'react-redux';
-import {
-  MenuProvider
-} from 'react-native-popup-menu';
-import R from 'ramda';
-import { Actions } from 'react-native-router-flux';
 import Fuse from 'fuse.js';
-
-// Components
-import SearchBarHeader from '../../Common/Header/SearchBarHeader';
-import TabButtonGroup from '../../Common/TabButtonGroup';
-import About from './MyEventAbout';
-import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
-import Dot from '../../Common/Dot';
-import MemberListCard from '../../Tribe/MemberListCard';
-import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
-import { MenuFactory } from '../../Common/MenuFactory';
-import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
-// import ParticipantFilterBar from '../../Event/ParticipantFilterBar';
-import EmptyResult from '../../Common/Text/EmptyResult';
-import PlusButton from '../../Common/Button/PlusButton';
-
+import R from 'ramda';
+import React, { Component } from 'react';
+import { ActivityIndicator, Animated, Dimensions, FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import { MenuProvider } from 'react-native-popup-menu';
+import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+import { loadFriends } from '../../../actions';
+import DefaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
+import EditIcon from '../../../asset/utils/edit.png';
 // Asset
 import event_default_image from '../../../asset/utils/eventIcon.png';
-import EditIcon from '../../../asset/utils/edit.png';
-import DefaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
-import plus from '../../../asset/utils/plus.png';
-import post from '../../../asset/utils/post.png';
 import invite from '../../../asset/utils/invite.png';
-
-// Actions
-import {
-  eventSelectTab,
-  eventDetailClose,
-  loadMoreEventFeed,
-  myEventSelectMembersFilter,
-  refreshMyEventDetail,
-  inviteMultipleUsersToEvent
-} from '../../../redux/modules/event/MyEventActions';
-
-import {
-  subscribeEntityNotification,
-  unsubscribeEntityNotification
-} from '../../../redux/modules/notification/NotificationActions';
-
+import post from '../../../asset/utils/post.png';
+import { deleteEvent, editEvent, openEventInviteModal, reportEvent, rsvpEvent } from '../../../redux/modules/event/EventActions';
 // Selector
 import {
-  getMyEventUserStatus,
-  myEventParticipantSelector,
-  makeGetEventFeed,
-  makeGetEventPageById,
-  makeGetEventUserStatusById,
-  makeGetEventParticipantSelector
+makeGetEventFeed, makeGetEventPageById, makeGetEventParticipantSelector
   // getMyEventMemberNavigationState
+  , makeGetEventUserStatusById
 } from '../../../redux/modules/event/EventSelector';
-
-import {
-  openEventInviteModal,
-  deleteEvent,
-  editEvent,
-  reportEvent,
-  rsvpEvent
-} from '../../../redux/modules/event/EventActions';
-
-import {
-  openPostDetail
-} from '../../../redux/modules/feed/post/PostActions';
-
-// Styles
-import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../../../styles';
-
-// Constants
-import { 
-  IMAGE_BASE_URL,
-  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
-  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
-} from '../../../Utils/Constants';
+// Actions
+import { eventDetailClose, eventSelectTab, inviteMultipleUsersToEvent, loadMoreEventFeed, myEventSelectMembersFilter, refreshMyEventDetail } from '../../../redux/modules/event/MyEventActions';
+import { openPostDetail } from '../../../redux/modules/feed/post/PostActions';
+import { subscribeEntityNotification, unsubscribeEntityNotification } from '../../../redux/modules/notification/NotificationActions';
 import { openMultiUserInviteModal, searchFriend } from '../../../redux/modules/search/SearchActions';
+// Styles
+import { APP_DEEP_BLUE } from '../../../styles';
+// Constants
+import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE, IMAGE_BASE_URL } from '../../../Utils/Constants';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import DelayedButton from '../../Common/Button/DelayedButton';
-import { loadFriends } from '../../../actions';
+import PlusButton from '../../Common/Button/PlusButton';
+import Dot from '../../Common/Dot';
+// Components
+import SearchBarHeader from '../../Common/Header/SearchBarHeader';
+import { MenuFactory } from '../../Common/MenuFactory';
+import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
+import TabButtonGroup from '../../Common/TabButtonGroup';
+// import ParticipantFilterBar from '../../Event/ParticipantFilterBar';
+import EmptyResult from '../../Common/Text/EmptyResult';
+import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
+import MemberListCard from '../../Tribe/MemberListCard';
+import About from './MyEventAbout';
+
+
+
+
+
+
+
+
+
 
 const DEBUG_KEY = '[ UI MyEvent ]';
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
@@ -750,10 +712,10 @@ const styles = {
   containerStyle: {
     flex: 1, 
     backgroundColor: '#f8f8f8',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 1 },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 6,
   },
   defaultCoverImageStyle: {
     height: 65,

@@ -1,98 +1,54 @@
-import React, { Component } from 'react';
-import {
-  Animated,
-  ActivityIndicator,
-  View,
-  Image,
-  Dimensions,
-  Text,
-  FlatList,
-  TouchableOpacity
- } from 'react-native';
-import { connect } from 'react-redux';
+import Fuse from 'fuse.js';
 import R from 'ramda';
+import React, { Component } from 'react';
+import { ActivityIndicator, Animated, Dimensions, FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import { DotIndicator } from 'react-native-indicators';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
-import Fuse from 'fuse.js';
-import {
-  DotIndicator
-} from 'react-native-indicators';
-
-// Components
-import SearchBarHeader from '../Common/Header/SearchBarHeader';
-import TabButtonGroup from '../Common/TabButtonGroup';
-import Divider from '../Common/Divider';
-import About from './About';
-import MemberListCard from './MemberListCard';
-import MemberFilterBar from './MemberFilterBar';
-import { MenuFactory } from '../Common/MenuFactory';
-import EmptyResult from '../Common/Text/EmptyResult';
-import {
-  DotIcon
-} from '../../Utils/Icons';
-import PlusButton from '../Common/Button/PlusButton';
-
-import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
-import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
-import LoadingModal from '../Common/Modal/LoadingModal';
-
+import { connect } from 'react-redux';
+import { loadFriends } from '../../actions';
+import Icons from '../../asset/base64/Icons';
+import envelope from '../../asset/utils/envelope.png';
+import post from '../../asset/utils/post.png';
 // Asset
 import tribe_default_icon from '../../asset/utils/tribeIcon.png';
-import plus from '../../asset/utils/plus.png';
-import post from '../../asset/utils/post.png';
-import envelope from '../../asset/utils/envelope.png';
-import Icons from '../../asset/base64/Icons';
-
-// Actions
-import {
-  tribeSelectTab,
-  tribeDetailClose,
-  requestJoinTribe,
-  openTribeInvitModal,
-  deleteTribe,
-  editTribe,
-  reportTribe,
-  leaveTribe,
-  acceptTribeInvit,
-  declineTribeInvit,
-  tribeSelectMembersFilter,
-  tribeReset,
-  inviteMultipleUsersToTribe,
-  refreshTribeDetail
-} from '../../redux/modules/tribe/TribeActions';
-
-import {
-  openPostDetail
-} from '../../redux/modules/feed/post/PostActions';
-
-import {
-  subscribeEntityNotification,
-  unsubscribeEntityNotification
-} from '../../redux/modules/notification/NotificationActions';
-
-// Selector
-import {
-  getUserStatus,
-  memberSelector,
-  getTribeNavigationState,
-  getTribeMemberNavigationState
-} from '../../redux/modules/tribe/TribeSelector';
-
 // Utils
 import { switchCase } from '../../redux/middleware/utils';
-
+import { openPostDetail } from '../../redux/modules/feed/post/PostActions';
+import { subscribeEntityNotification, unsubscribeEntityNotification } from '../../redux/modules/notification/NotificationActions';
+import { openMultiUserInviteModal, searchFriend } from '../../redux/modules/search/SearchActions';
+// Actions
+import { acceptTribeInvit, declineTribeInvit, deleteTribe, editTribe, inviteMultipleUsersToTribe, leaveTribe, openTribeInvitModal, refreshTribeDetail, reportTribe, requestJoinTribe, tribeDetailClose, tribeReset, tribeSelectMembersFilter, tribeSelectTab } from '../../redux/modules/tribe/TribeActions';
+// Selector
+import { getTribeMemberNavigationState, getTribeNavigationState, getUserStatus, memberSelector } from '../../redux/modules/tribe/TribeSelector';
 // Styles
 import { APP_DEEP_BLUE } from '../../styles';
-
 // Constants
-import {
-  IMAGE_BASE_URL,
-  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
-  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
-} from '../../Utils/Constants';
-import { searchFriend, openMultiUserInviteModal } from '../../redux/modules/search/SearchActions';
+import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE, IMAGE_BASE_URL } from '../../Utils/Constants';
+import { DotIcon } from '../../Utils/Icons';
+import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 import DelayedButton from '../Common/Button/DelayedButton';
-import { loadFriends } from '../../actions';
+import PlusButton from '../Common/Button/PlusButton';
+import Divider from '../Common/Divider';
+// Components
+import SearchBarHeader from '../Common/Header/SearchBarHeader';
+import { MenuFactory } from '../Common/MenuFactory';
+import LoadingModal from '../Common/Modal/LoadingModal';
+import TabButtonGroup from '../Common/TabButtonGroup';
+import EmptyResult from '../Common/Text/EmptyResult';
+import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
+import About from './About';
+import MemberListCard from './MemberListCard';
+
+
+
+
+
+
+
+
+
+
 
 const { CheckIcon: check } = Icons;
 const DEBUG_KEY = '[ UI Tribe ]';
@@ -804,10 +760,10 @@ const styles = {
   containerStyle: {
     flex: 1, 
     backgroundColor: '#f8f8f8',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 1 },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 6,
   },
   imageContainerStyle: {
     borderWidth: 1,

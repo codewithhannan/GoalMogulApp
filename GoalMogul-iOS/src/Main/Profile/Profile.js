@@ -1,45 +1,33 @@
 import React, { Component } from 'react';
-import { View, Animated } from 'react-native';
+import { Animated, View } from 'react-native';
 import { MenuProvider } from 'react-native-popup-menu';
-import { TabView, SceneMap } from 'react-native-tab-view';
-import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-
+import { TabView } from 'react-native-tab-view';
+import { connect } from 'react-redux';
+/* Actions */
+import { closeCreateOverlay, openCreateOverlay, selectProfileTab } from '../../actions';
+import { closeProfile } from '../../actions/ProfileActions';
+// Selector
+import { getUserData, getUserDataByPageId } from '../../redux/modules/User/Selector';
+import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users';
+/* Styles */
+import { APP_DEEP_BLUE, BACKGROUND_COLOR } from '../../styles';
+import PlusButton from '../Common/Button/PlusButton';
 /* Components */
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
-import ProfileDetailCard from './ProfileCard/ProfileDetailCard';
-import ProfileSummaryCard from './ProfileSummaryCard';
 import TabButtonGroup from '../Common/TabButtonGroup';
-
+import About from './About';
 import MyGoals from './MyGoals';
 import MyNeeds from './MyNeeds';
 import MyPosts from './MyPosts';
-import About from './About';
+import ProfileDetailCard from './ProfileCard/ProfileDetailCard';
 
-/* Actions */
-import {
-  selectProfileTab,
-  closeCreateOverlay,
-  openCreateOverlay
-} from '../../actions';
 
-import {
-  closeProfile
-} from '../../actions/ProfileActions';
 
-/* Styles */
-import { BACKGROUND_COLOR, APP_DEEP_BLUE } from '../../styles';
 
-/* Assets */
-import plus from '../../asset/utils/plus.png';
 
-// Selector
-import {
-  getUserDataByPageId,
-  getUserData
-} from '../../redux/modules/User/Selector';
-import PlusButton from '../Common/Button/PlusButton';
-import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users';
+
+
 
 const DEBUG_KEY = '[ UI Profile ]';
 const SEARCHBAR_HEIGHT = 70;
@@ -235,10 +223,10 @@ const styles = {
   containerStyle: {
     flex: 1,
     backgroundColor: BACKGROUND_COLOR,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 1 },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 6,
   },
   tabContainerStyle: {
     display: 'flex',

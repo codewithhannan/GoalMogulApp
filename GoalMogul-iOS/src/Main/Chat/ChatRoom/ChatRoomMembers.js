@@ -5,7 +5,8 @@
     - fetch the full chat document with members populated
 */
 import { MaterialIcons } from '@expo/vector-icons';
-import Constants from 'expo-constants';import React from 'react';
+import Constants from 'expo-constants';
+import React from 'react';
 import { Dimensions, FlatList, Platform, TouchableOpacity, View } from 'react-native';
 import { Divider, Text } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
@@ -276,10 +277,10 @@ const styles = {
 	homeContainerStyle: {
 		backgroundColor: '#f8f8f8',
 		flex: 1,
-		shadowColor: '#000',
-		shadowOffset: { width: 0, height: 1 },
-		shadowOpacity: 0.3,
-		shadowRadius: 6,
+		// shadowColor: '#000',
+		// shadowOffset: { width: 0, height: 1 },
+		// shadowOpacity: 0.3,
+		// shadowRadius: 6,
     },
     backdrop: {
 		backgroundColor: 'gray',

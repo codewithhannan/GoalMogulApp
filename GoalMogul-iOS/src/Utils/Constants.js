@@ -1,11 +1,12 @@
-import { Dimensions, Platform } from 'react-native';
 import Constants from 'expo-constants';
+import { Dimensions, Platform } from 'react-native';
 
 const { height } = Dimensions.get('window');
 
 export const DEVICE_STANDARD_HEIGHTS = {
     "iphone xs max": 896,
     "iphone xr": 896,
+    "iphone": 896, // iphone 11
 
     "iphone x": 812,
     "iphone xs": 812,
@@ -21,7 +22,7 @@ export const DEVICE_STANDARD_HEIGHTS = {
     "iphone 8": 667,
 };
 
-export const IPHONE_MODELS_2 = ['iphone 7 plus', 'iphone x', 'iPhone xs', 'iphone xr', 'simulator'];
+export const IPHONE_MODELS_2 = ['iphone 7 plus', 'iphone x', 'iphone xs', 'iphone xr', 'simulator', 'iphone' /* 11 */];
 export const IPHONE_MODELS = ['iphone 7', 'iphone 6', 'iphone 6s',
     'iphone 5', 'iphone 6 plus', 'iphone 4', 'iphone 5s'];
 
