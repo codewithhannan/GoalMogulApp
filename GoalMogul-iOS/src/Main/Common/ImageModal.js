@@ -1,4 +1,5 @@
-import { FileSystem, Permissions } from 'expo';
+import * as FileSystem from 'expo-file-system';
+import * as Permissions from 'expo-permissions';
 import React from 'react';
 import { Alert, CameraRoll, Dimensions, Image, Platform, TouchableOpacity, View } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';

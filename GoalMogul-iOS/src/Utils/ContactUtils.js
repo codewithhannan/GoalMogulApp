@@ -1,5 +1,5 @@
-import { Contacts } from 'expo';
-import { FileSystem } from 'expo';
+import * as Contacts from 'expo-contacts';
+import * as FileSystem from 'expo-file-system';
 
 import { api as API, BASE_API_URL } from '../redux/middleware/api';
 

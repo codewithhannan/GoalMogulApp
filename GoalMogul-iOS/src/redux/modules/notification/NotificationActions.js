@@ -2,7 +2,8 @@ import { AsyncStorage } from 'react-native';
 /**
  * Actions for notification tab and general notification like subscribe
  */
-import { Permissions, Notifications, Linking } from 'expo';
+import { Notifications, Linking } from 'expo';
+import * as Permissions from 'expo-permissions';
 import * as SecureStore from 'expo-secure-store';
 import { Alert, Platform } from 'react-native';
 import _ from 'lodash';

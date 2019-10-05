@@ -1,6 +1,7 @@
 import { Actions } from 'react-native-router-flux';
 import { SubmissionError } from 'redux-form';
-import Expo, { WebBrowser, Permissions, Notifications } from 'expo';
+import Expo, { WebBrowser, Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
 import { Alert, Platform } from 'react-native';
 
 import { api as API } from '../redux/middleware/api';

@@ -9,7 +9,7 @@ import {
   Platform
 } from 'react-native';
 import Constants from 'expo-constants';
-import { Font } from 'expo';
+import * as Font from 'expo-font';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 

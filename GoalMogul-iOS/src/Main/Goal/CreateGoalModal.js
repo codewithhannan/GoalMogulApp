@@ -13,7 +13,7 @@ import { copilot } from 'react-native-copilot-gm';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import R from 'ramda';
 import moment from 'moment';
-import { Permissions } from 'expo';
+import * as Permissions from 'expo-permissions';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';

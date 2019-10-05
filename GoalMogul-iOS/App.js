@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import DropdownAlert from 'react-native-dropdownalert-jia';
-// import { AppLoading, Font, Asset } from 'expo';
 
 /* State management */
 import { Provider } from 'react-redux';
@@ -142,20 +141,6 @@ export default class App extends React.Component {
     );
   }
 }
-
-// function cacheImages(images) {
-//   return images.map(image => {
-//     if (typeof image === 'string') {
-//       return Image.prefetch(image);
-//     } else {
-//       return Asset.fromModule(image).downloadAsync();
-//     }
-//   });
-// }
-//
-// function cacheFonts(fonts) {
-//   return Font.loadAsync(fonts);
-// }
 
 const styles = StyleSheet.create({
   container: {

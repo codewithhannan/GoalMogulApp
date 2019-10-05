@@ -1,6 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
-import { Permissions } from 'expo';
+import * as Permissions from 'expo-permissions';
 import { api as API, singleFetch } from '../redux/middleware/api';
 import {
   MEET_SELECT_TAB,

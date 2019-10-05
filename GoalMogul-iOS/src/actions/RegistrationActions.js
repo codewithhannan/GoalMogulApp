@@ -1,6 +1,7 @@
 import { Actions } from 'react-native-router-flux';
 import { CameraRoll, ImagePickerIOS } from 'react-native';
-import { Permissions, ImagePicker } from 'expo';
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
 import { SubmissionError } from 'redux-form';
 import { api as API } from '../redux/middleware/api';
 import { tutorial as Tutorial } from '../redux/modules/auth/Tutorial';
