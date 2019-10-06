@@ -343,7 +343,7 @@ const BadgeInfo = [
     },
     {
         id: 'gold',
-        title: 'Gold + $200 Reward\u002A',
+        title: 'Gold + $700 Reward\u002A',
         infoTextList: [
             { text: 'Invite 10 friends to GoalMogul who\'ve', hasBulletPoint: true },
             { text: 'earned a Silver Badge or higher', hasBulletPoint: false }
