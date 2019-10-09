@@ -66,6 +66,7 @@ class InputField extends Component {
           autoCorrect={false}
           placeholderTextColor={placeholderTextColor}
           clearButtonMode='while-editing'
+          textContentType={this.props.textContentType}
         />
       </View>
     );

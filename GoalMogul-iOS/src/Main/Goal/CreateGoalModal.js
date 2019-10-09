@@ -345,6 +345,10 @@ class CreateGoalModal extends React.Component {
   render() {
     const actionText = this.props.initializeFromState ? 'Update' : 'Create';
     const titleText = this.props.initializeFromState ? 'Edit Goal' : 'New Goal';
+    const hasValidFormVals = this.props.formVals && 
+      this.props.formVals.values && 
+      this.props.formVals.values.title &&
+      this.props.formVals.values.title.trim() !== ''
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -364,7 +368,7 @@ class CreateGoalModal extends React.Component {
                 Actions.pop();
               }}
               onAction={this.handleGoalReminder}
-              actionDisabled={!this.props.uploading}
+              actionDisabled={!this.props.uploading || !hasValidFormVals}
               tutorialOn={{
                 actionText: {
                   tutorialText: this.props.tutorialText[8],

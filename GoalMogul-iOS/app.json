@@ -20,6 +20,7 @@
           "NSAllowsArbitraryLoadsInWebContent": true,
           "NSExceptionAllowsInsecureHTTPLoads": true
         },
+        "NSFaceIDUsageDescription": "This app uses FaceId to unlock access to the App.",
         "CFBundleExecutable": "ExpoKitApp"
       }
     },
