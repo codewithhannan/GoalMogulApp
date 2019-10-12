@@ -605,7 +605,10 @@ export const loadUnreadNotification = () => async (dispatch, getState) => {
   const { userId } = getState().user;
   const unReadNotificationKey = `${NOTIFICATION_UNREAD_QUEUE_PREFIX}_${userId}`;
 
-  const unreadQueue = await SecureStore.getItemAsync(unReadNotificationKey, {});
+  // SecureStore has a limit of 2048 bytes. Thus use AsyncStorage to store unread notif
+  // which can potentially be 10k bytes.
+  // const unreadQueue = await SecureStore.getItemAsync(unReadNotificationKey, {});
+  const unreadQueue = await AsyncStorage.getItem(unReadNotificationKey);
 
   // Deserialize the json serialized object
   const parsedUnreadQueue = JSON.parse(unreadQueue);
@@ -661,8 +664,11 @@ export const saveUnreadNotification = () => async (dispatch, getState) => {
 
   const dataToStore = JSON.stringify(data);
   console.log(`${DEBUG_KEY}: [Save Unread Notification] data to store has length:`, data.length);
-  const res = await SecureStore.setItemAsync(
-    unReadNotificationKey, dataToStore, {}
+
+  // SecureStore has a limit of 2048 bytes. Thus use AsyncStorage to store unread notif
+  // which can potentially be 10k bytes.
+  const res = await AsyncStorage.setItem(
+    unReadNotificationKey, dataToStore
   );
   console.log(`${DEBUG_KEY}: [Save Unread Notification] done with res: `, res);
   return;
