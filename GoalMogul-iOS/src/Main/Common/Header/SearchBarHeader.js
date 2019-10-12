@@ -339,7 +339,7 @@ class SearchBarHeader extends Component {
     const paddingTop = (
       Platform.OS === 'ios' &&
       IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
-    ) ? 30 : 40;
+    ) ? 30 : 45;
 
     return (
       <View style={{ ...styles.headerStyle, paddingTop }}>

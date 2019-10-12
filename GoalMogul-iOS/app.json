@@ -22,7 +22,8 @@
         },
         "NSFaceIDUsageDescription": "This app uses FaceId to unlock access to the App.",
         "CFBundleExecutable": "ExpoKitApp"
-      }
+      },
+      "associatedDomains": ["applinks:web.goalmogul.com","webcredentials:web.goalmogul.com"]
     },
     "splash": {
       "image": "./assets/splash1.png",
@@ -31,7 +32,6 @@
     "scheme": "goalmogul",
     "notification": {
       "icon": "./assets/logo.png"
-    },
-    "associatedDomains": ["applinks:web.goalmogul.com","webcredentials:web.goalmogul.com"]
+    }
   }
 }
