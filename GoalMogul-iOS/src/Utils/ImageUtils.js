@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Image, ImageEditor } from 'react-native';
-import Expo, { Permissions } from 'expo';
+import * as Permissions from 'expo-permissions';
 import _ from 'lodash';
 
 const ImageTypes = ['ProfileImage', 'FeedImage', 'PageImage', 'GoalImage', 'ChatFile'];

@@ -1,6 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import React from 'react';
-import { Image, Alert } from 'react-native';
+import { Image, Alert, View } from 'react-native';
 import _ from 'lodash';
 
 import ImageUtils from '../Utils/ImageUtils';
@@ -859,7 +859,9 @@ export const deletePost = (postId) => (dispatch, getState) => {
 export const UserBanner = (props) => {
   const { user, iconStyle } = props;
 
-  if (!user || !user.profile || user.profile.badges === undefined) return null;
+  if (!user || !user.profile || user.profile.badges === undefined) {
+    return <View style={{ padding: 3 }} />
+  }
 
   // Before gamification, we only show green badge
   const level = _.get(user, 'profile.badges.milestoneBadge.currentMilestone');

@@ -5,7 +5,8 @@
 	- fetch the full chat document with members populated
 */
 import { Octicons } from '@expo/vector-icons';
-import { FileSystem, Permissions } from 'expo';
+import * as FileSystem from 'expo-file-system';
+import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import R from 'ramda';
 import React from 'react';

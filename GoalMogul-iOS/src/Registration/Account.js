@@ -129,6 +129,7 @@ class Account extends Component {
                   secureTextEntry
                   onChange={this.handleOnPasswordChange.bind(this)}
                   error={this.props.error.password}
+                  textContentType='newPassword'
                 />
 
                 <DelayedButton onPress={this.handleNextPressed.bind(this)} touchableWithoutFeedback>

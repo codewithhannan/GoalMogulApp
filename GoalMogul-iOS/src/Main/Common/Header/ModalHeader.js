@@ -135,7 +135,7 @@ const ModalHeader = (props) => {
       <View style={[styles.containerStyle, { paddingTop, ...extraContainerStyles  }]}>
         <TouchableOpacity
           activeOpacity={0.6}
-          style={{ alignItems: 'center', flex: 1 }}
+          // style={{ alignItems: 'center', flex: 1 }}
           onPress={onCancel}
         >
           {leftComponent}
@@ -178,6 +178,7 @@ const styles = {
     fontWeight: '800',
     paddingTop: padding,
     paddingBottom: padding,
+    paddingHorizontal: 10
   },
   titleTextStyle: {
     fontSize,
@@ -204,6 +205,7 @@ const styles = {
   cancelTextStyle: {
     paddingTop: padding,
     paddingBottom: padding,
+    paddingHorizontal: 12,
     fontSize,
     // color: '#17B3EC'
     color: APP_BLUE,

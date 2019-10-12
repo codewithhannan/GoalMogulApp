@@ -2,7 +2,7 @@
   "expo": {
     "name": "GoalMogul",
     "icon": "./assets/logo.png",
-    "sdkVersion": "33.0.0",
+    "sdkVersion": "35.0.0",
     "version": "0.5.1",
     "slug": "goalmogul",
     "orientation": "portrait",
@@ -20,8 +20,10 @@
           "NSAllowsArbitraryLoadsInWebContent": true,
           "NSExceptionAllowsInsecureHTTPLoads": true
         },
+        "NSFaceIDUsageDescription": "This app uses FaceId to unlock access to the App.",
         "CFBundleExecutable": "ExpoKitApp"
-      }
+      },
+      "associatedDomains": ["applinks:web.goalmogul.com","webcredentials:web.goalmogul.com"]
     },
     "splash": {
       "image": "./assets/splash1.png",
