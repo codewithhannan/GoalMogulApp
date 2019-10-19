@@ -40,6 +40,7 @@ export const IS_ZOOMED = (
 export const IMAGE_BASE_URL = 'https://s3.us-west-2.amazonaws.com/goalmogul-v1/';
 export const BUG_REPORT_URL = 'https://goo.gl/forms/zfhrCXeLPz3QCKi03';
 export const RESET_PASSWORD_URL = 'https://web.goalmogul.com/password-reset';
+export const PRIVACY_POLICY_URL = 'https://web.goalmogul.com/privacy';
 
 const expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
 export const URL_REGEX = new RegExp(expression);
