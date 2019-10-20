@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
+  Alert
 } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 import { connect } from 'react-redux';
 
 /* Components */
@@ -16,12 +18,21 @@ import Styles from './Styles';
 
 /* Actions */
 import { registrationNextContactSync } from '../actions';
+import { PRIVACY_POLICY_URL } from '../Utils/Constants';
 
 class Contacts extends Component {
 
   handleNextOnPressed() {
     const skip = false;
-    this.props.registrationNextContactSync({ skip });
+    Alert.alert(
+      'Uploading your contacts',
+      'Your contacts will be used to help you find your friends on GoalMogul.', 
+      [
+        { text: 'Cancel', onPress: () => {} },
+        { text: 'Privacy terms', onPress: async () => await WebBrowser.openBrowserAsync(PRIVACY_POLICY_URL, { showTitle: true }) },
+        { text: 'Continue', onPress: () => this.props.registrationNextContactSync({ skip }) }
+      ]
+    );
   }
 
   handleSkipOnPressed() {

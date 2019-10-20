@@ -7,9 +7,11 @@ import {
     ScrollView,
     RefreshControl,
     Platform,
-    Share
+    Share,
+    Alert
 } from 'react-native';
 import { connect } from 'react-redux';
+import * as WebBrowser from 'expo-web-browser';
 import Constants from 'expo-constants';
 import { Actions } from 'react-native-router-flux';
 import { copilot, walkthroughable, CopilotStep } from 'react-native-copilot-gm';
@@ -56,7 +58,7 @@ import {
 } from '../../styles';
 
 /* Constants */
-import { IPHONE_MODELS } from '../../Utils/Constants';
+import { IPHONE_MODELS, PRIVACY_POLICY_URL } from '../../Utils/Constants';
 import { generateInvitationLink } from '../../redux/middleware/utils';
 import Tooltip from '../Tutorial/Tooltip';
 import { svgMaskPath } from '../Tutorial/Utils';
@@ -140,7 +142,15 @@ class MeetTabV2 extends React.Component {
     }
 
     handleSyncContact = () => {
-        this.props.meetContactSync(this.handleOnRefresh, 'meetTab_meetContactSync');
+        Alert.alert(
+            'Uploading your contacts',
+            'Your contacts will be used to help you find your friends on GoalMogul.', 
+            [
+                { text: 'Cancel', onPress: () => {} },
+                { text: 'Privacy terms', onPress: async () => await WebBrowser.openBrowserAsync(PRIVACY_POLICY_URL, { showTitle: true }) },
+                { text: 'Continue', onPress: () => this.props.meetContactSync(this.handleOnRefresh, 'meetTab_meetContactSync') }
+            ]
+        );
     }
 
     handleDiscoverFriend = () => {
