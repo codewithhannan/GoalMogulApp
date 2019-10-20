@@ -9,7 +9,7 @@ import {
   Linking
 } from 'react-native';
 import { connect } from 'react-redux';
-import { WebBrowser } from 'expo';
+import * as WebBrowser from 'expo-web-browser';
 import Constants from 'expo-constants';
 import { Actions } from 'react-native-router-flux';
 import R from 'ramda';
@@ -46,11 +46,12 @@ import LogoutIcon from '../../asset/utils/logout.png';
 import Icons from '../../asset/base64/Icons';
 import {
   IPHONE_MODELS,
-  BUG_REPORT_URL
+  BUG_REPORT_URL,
+  PRIVACY_POLICY_URL
 } from '../../Utils/Constants';
 
 const DEBUG_KEY = '[ UI Menu ]';
-const { TutorialIcon } = Icons;
+const { TutorialIcon, PrivacyIcon } = Icons;
 
 class Menu extends React.PureComponent {
 
@@ -92,11 +93,26 @@ class Menu extends React.PureComponent {
   handleBugReportOnPress = async () => {
     const url = BUG_REPORT_URL;
     // const result = await WebBrowser.openBrowserAsync(url);
-    const canOpen = await Linking.canOpenURL(url);
-    if (canOpen) {
-      await Linking.openURL(url);
-    }
+    // const canOpen = await Linking.canOpenURL(url);
+    // if (canOpen) {
+    //   await Linking.openURL(url);
+    // }
+    // console.log(`${DEBUG_KEY}: close bug report link with res: `, result);
+    let result = await WebBrowser.openBrowserAsync(url);
     console.log(`${DEBUG_KEY}: close bug report link with res: `, result);
+  }
+
+  handlePrivacyPolicyOnPress = async () => {
+    const url = PRIVACY_POLICY_URL;
+    // // const result = await WebBrowser.openBrowserAsync(url);
+    // const canOpen = await Linking.canOpenURL(url);
+    // if (canOpen) {
+    //   await Linking.openURL(url);
+    // }
+    // console.log(`${DEBUG_KEY}: close bug report link with res: `, result);
+
+    let result = await WebBrowser.openBrowserAsync(url, { showTitle: true });
+    console.log(`${DEBUG_KEY}: close privacy policy link with res: `, result);
   } 
 
   render() {
@@ -162,6 +178,16 @@ class Menu extends React.PureComponent {
             <Image source={LogoutIcon} style={{ ...styles.iconStyle, height: 20, width: 20 }} />
           </View>
           <Text style={styles.titleTextStyle}>Log Out</Text>
+        </DelayedButton>
+        <DelayedButton
+          activeOpacity={0.6}
+          onPress={() => this.handlePrivacyPolicyOnPress()}
+          style={styles.buttonStyle}
+        >
+          <View style={{ padding: 2.5 }}>
+            <Image source={PrivacyIcon} style={{ ...styles.iconStyle, height: 20, width: 20 }} />
+          </View>
+          <Text style={styles.titleTextStyle}>Privacy Policy</Text>
         </DelayedButton>
       </View>
     );

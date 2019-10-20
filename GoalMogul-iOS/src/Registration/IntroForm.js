@@ -85,7 +85,7 @@ class IntroForm extends Component {
                     placeholder="Ex: 'CEO of Wayne Enterprises'"
                     value={this.props.headline}
                     onChange={this.handleOnHeadlineChanged.bind(this)}
-                    error={this.props.error.headline}
+                    error={this.props.error && this.props.error.headline ? this.props.error.headline : undefined}
                   />
 
                   <DelayedButton onPress={this.handleNextOnPressed.bind(this)} touchableWithoutFeedback>
