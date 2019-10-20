@@ -92,7 +92,7 @@ const ModalHeader = (props) => {
   let actionComponent = (
     <DelayedButton
       activeOpacity={0.6}
-      style={{ alignItems: 'center', flex: 1, opacity: actionHidden ? 0 : 1 }}
+      style={{ alignItems: 'center', opacity: actionHidden ? 0 : 1 }}
       onPress={onAction}
       disabled={actionDisabled}
     >
@@ -135,13 +135,13 @@ const ModalHeader = (props) => {
       <View style={[styles.containerStyle, { paddingTop, ...extraContainerStyles  }]}>
         <TouchableOpacity
           activeOpacity={0.6}
-          // style={{ alignItems: 'center', flex: 1 }}
+          style={{ alignItems: 'flex-start', flex: 1 }}
           onPress={onCancel}
         >
           {leftComponent}
         </TouchableOpacity>
 
-        <TouchableOpacity activeOpacity={0.6} style={{ alignItems: 'center', flex: 3 }}>
+        <TouchableOpacity activeOpacity={0.6} style={{ alignItems: 'center', flex: 1 }}>
           <View style={styles.titleTextContainerStyle}>
             {titleIcon && <Image
               style={styles.titleTextIconStyle}
@@ -150,8 +150,9 @@ const ModalHeader = (props) => {
             <Text style={[styles.titleTextStyle, extraTitleTextStyle]} numberOfLines={1}>{title}</Text>
           </View>
         </TouchableOpacity>
-            
-        {actionComponent}
+        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+          {actionComponent}
+        </View>
       </View>
     </View>
   );
