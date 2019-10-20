@@ -143,7 +143,7 @@ class MeetTabV2 extends React.Component {
 
     handleSyncContact = () => {
         Alert.alert(
-            'Uploading your contacts',
+            'Upload your contacts',
             'Your contacts will be used to help you find your friends on GoalMogul.', 
             [
                 { text: 'Cancel', onPress: () => {} },
