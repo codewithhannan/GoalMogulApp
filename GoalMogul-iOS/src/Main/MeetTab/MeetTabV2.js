@@ -146,9 +146,8 @@ class MeetTabV2 extends React.Component {
             'Upload your contacts',
             'Your contacts will be used to help you find your friends on GoalMogul.', 
             [
-                { text: 'Cancel', onPress: () => {} },
-                { text: 'Privacy terms', onPress: async () => await WebBrowser.openBrowserAsync(PRIVACY_POLICY_URL, { showTitle: true }) },
-                { text: 'Continue', onPress: () => this.props.meetContactSync(this.handleOnRefresh, 'meetTab_meetContactSync') }
+                { text: 'Privacy Policy', onPress: async () => await WebBrowser.openBrowserAsync(PRIVACY_POLICY_URL, { showTitle: true }) },
+                { text: 'Continue', onPress: () => this.props.meetContactSync(this.handleOnRefresh, 'meetTab_meetContactSync'), style: 'default' }
             ]
         );
     }
