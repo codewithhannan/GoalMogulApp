@@ -165,6 +165,16 @@ class Menu extends React.PureComponent {
         </DelayedButton>
         <DelayedButton
           activeOpacity={0.6}
+          onPress={() => this.handlePrivacyPolicyOnPress()}
+          style={styles.buttonStyle}
+        >
+          <View style={{ padding: 2.5 }}>
+            <Image source={PrivacyIcon} style={{ ...styles.iconStyle, height: 20, width: 20 }} />
+          </View>
+          <Text style={styles.titleTextStyle}>Privacy Policy</Text>
+        </DelayedButton>
+        <DelayedButton
+          activeOpacity={0.6}
           onPress={() => {
             Alert.alert('Log out', 'Are you sure to log out?', [
                 { text: 'Cancel', onPress: () => console.log('user cancel logout') },
@@ -178,16 +188,6 @@ class Menu extends React.PureComponent {
             <Image source={LogoutIcon} style={{ ...styles.iconStyle, height: 20, width: 20 }} />
           </View>
           <Text style={styles.titleTextStyle}>Log Out</Text>
-        </DelayedButton>
-        <DelayedButton
-          activeOpacity={0.6}
-          onPress={() => this.handlePrivacyPolicyOnPress()}
-          style={styles.buttonStyle}
-        >
-          <View style={{ padding: 2.5 }}>
-            <Image source={PrivacyIcon} style={{ ...styles.iconStyle, height: 20, width: 20 }} />
-          </View>
-          <Text style={styles.titleTextStyle}>Privacy Policy</Text>
         </DelayedButton>
       </View>
     );

@@ -120,30 +120,32 @@ class PeopleSearchOverlay extends Component {
     return (
       <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-          <View style={{ ...styles.headerContainerStyle, marginTop }}>
-            <SearchBar
-              platform='ios'
-              round
-              autoFocus
-              searchIcon={<SearchIcon
-              iconContainerStyle={{ marginBottom: 3, marginTop: 1 }} 
-              iconStyle={{ tintColor: '#17B3EC', height: 15, width: 15 }}
-              />}
-              inputStyle={styles.searchInputStyle}
-              inputContainerStyle={styles.searchInputContainerStyle}
-              containerStyle={styles.searchContainerStyle}
-              placeholder={searchPlaceHolder}
-              cancelButtonTitle='Cancel'
-              onCancel={this.handleCancel}
-              onChangeText={this.handleChangeText}
-              clearIcon={null}
-              cancelButtonProps={{ color: '#17B3EC' }}
-              showLoading={this.props.loading}
-              onSubmitEditing={this.handleOnEndSubmitting}
-              value={this.state.searchContent}
-            />
-          </View>
-          <FriendsSearch reducerPath='' onSelect={this.handleOnResSelect} {...this.props} />
+          <KeyboardAvoidingView behavior='padding' style={{ flex: 1 }} enabled>
+            <View style={{ ...styles.headerContainerStyle, marginTop }}>
+              <SearchBar
+                platform='ios'
+                round
+                autoFocus
+                searchIcon={<SearchIcon
+                iconContainerStyle={{ marginBottom: 3, marginTop: 1 }} 
+                iconStyle={{ tintColor: '#17B3EC', height: 15, width: 15 }}
+                />}
+                inputStyle={styles.searchInputStyle}
+                inputContainerStyle={styles.searchInputContainerStyle}
+                containerStyle={styles.searchContainerStyle}
+                placeholder={searchPlaceHolder}
+                cancelButtonTitle='Cancel'
+                onCancel={this.handleCancel}
+                onChangeText={this.handleChangeText}
+                clearIcon={null}
+                cancelButtonProps={{ color: '#17B3EC' }}
+                showLoading={this.props.loading}
+                onSubmitEditing={this.handleOnEndSubmitting}
+                value={this.state.searchContent}
+              />
+            </View>
+            <FriendsSearch reducerPath='' onSelect={this.handleOnResSelect} {...this.props} />
+          </KeyboardAvoidingView>
         </MenuProvider>
       </BaseOverlay>
     );

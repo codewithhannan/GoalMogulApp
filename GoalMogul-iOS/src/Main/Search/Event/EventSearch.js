@@ -83,7 +83,7 @@ class EventSearch extends Component {
               onEndReached={this.handleOnLoadMore}
               onEndReachedThreshold={0.5}
               onRefresh={this.handleRefresh}
-              refreshing={this.props.loading}
+              refreshing={this.props.refreshing}
             />
         }
       </View>

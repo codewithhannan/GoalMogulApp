@@ -3,7 +3,8 @@
 import React, { Component } from 'react';
 import {
   View,
-  Platform
+  Platform,
+  KeyboardAvoidingView
 } from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar } from 'react-native-elements';
@@ -86,32 +87,34 @@ class EventSearchOverlay extends Component {
     return (
       <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-          <View style={{ ...styles.headerContainerStyle, marginTop }}>
-            <SearchBar
-              platform='ios'
-              round
-              autoFocus
-              inputStyle={styles.searchInputStyle}
-              inputContainerStyle={styles.searchInputContainerStyle}
-              containerStyle={styles.searchContainerStyle}
-              placeholder={searchPlaceHolder}
-              cancelButtonTitle='Cancel'
-              onCancel={this.handleCancel}
-              onChangeText={this.handleChangeText}
-              clearIcon={null}
-              cancelButtonProps={{ color: '#17B3EC' }}
-              showLoading={this.props.loading}
-              searchIcon={() => (
-                <SearchIcon 
-                  iconContainerStyle={{ marginBottom: 1, marginTop: 1 }} 
-                  iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
-                />
-              )}
-              onSubmitEditing={this.handleOnEndSubmitting}
-              value={this.state.searchContent}
-            />
-          </View>
-          <EventSearch callback={this.props.callback} onItemSelect={this.props.onItemSelect} shouldPreload={this.props.shouldPreload} />
+          <KeyboardAvoidingView behavior='padding' style={{ flex: 1 }} enabled>
+            <View style={{ ...styles.headerContainerStyle, marginTop }}>
+              <SearchBar
+                platform='ios'
+                round
+                autoFocus
+                inputStyle={styles.searchInputStyle}
+                inputContainerStyle={styles.searchInputContainerStyle}
+                containerStyle={styles.searchContainerStyle}
+                placeholder={searchPlaceHolder}
+                cancelButtonTitle='Cancel'
+                onCancel={this.handleCancel}
+                onChangeText={this.handleChangeText}
+                clearIcon={null}
+                cancelButtonProps={{ color: '#17B3EC' }}
+                showLoading={this.props.loading}
+                searchIcon={() => (
+                  <SearchIcon 
+                    iconContainerStyle={{ marginBottom: 1, marginTop: 1 }} 
+                    iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
+                  />
+                )}
+                onSubmitEditing={this.handleOnEndSubmitting}
+                value={this.state.searchContent}
+              />
+            </View>
+            <EventSearch callback={this.props.callback} onItemSelect={this.props.onItemSelect} shouldPreload={this.props.shouldPreload} />
+          </KeyboardAvoidingView>
         </MenuProvider>
       </BaseOverlay>
     );
