@@ -195,7 +195,7 @@ class FocusTab extends React.PureComponent {
               textStyle={{ paddingTop: 70 }}
             />
           }
-          ListFooterComponent={<View style={{ height: 43, backgroundColor: 'transparent' }} />}
+          ListFooterComponent={<View style={{ height: 51, backgroundColor: 'transparent' }} />}
           onScroll={this.props.onScroll}
           scrollEventThrottle={1}
           contentContainerStyle={{ ...this.props.contentContainerStyle }}
