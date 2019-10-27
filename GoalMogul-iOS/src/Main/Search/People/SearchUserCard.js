@@ -35,7 +35,8 @@ class SearchUserCard extends Component {
   }
 
   renderProfileImage() {
-    const { image } = this.props.item.profile;
+    const { profile, _id } = this.props.item;
+    const { image } = profile;
 		return (
 			<ProfileImage
 				imageStyle={{ height: 55, width: 55, borderRadius: 5 }}
@@ -43,6 +44,7 @@ class SearchUserCard extends Component {
 				rounded
 				imageContainerStyle={styles.imageContainerStyle}
         defaultImageSource={defaultUserProfile}
+        userId={_id}
 			/>
 		);
   }
