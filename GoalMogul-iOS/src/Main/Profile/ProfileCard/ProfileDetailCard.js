@@ -341,7 +341,7 @@ class ProfileDetailCard extends Component {
     ]);
 
     const moreButtonActionSheet = actionSheet(
-      ['Share as Direct Message', 'Share to Group Chat', 'Cancel'],
+      ['Share Profile as Direct Message', 'Share Profile to Group Chat', 'Cancel'],
       2,
       moreButtonOptions
     );

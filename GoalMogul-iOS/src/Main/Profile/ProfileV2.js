@@ -219,7 +219,7 @@ class ProfileV2 extends Component {
             }]
         ]);
         const profileSettingActionSheet = actionSheet(
-            ['Share as Direct Message', 'Share to Group Chat', 'Block', 'Report', 'Cancel'],
+            ['Share Profile as Direct Message', 'Share Profile to Group Chat', 'Block', 'Report', 'Cancel'],
             4,
             switchCases
         );
