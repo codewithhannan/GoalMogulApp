@@ -133,11 +133,11 @@ class CreateGoalModal extends React.Component {
 
     const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
     if (status !== 'granted') {
-      return Alert.alert('Denied', 'Enable Push Notifications for GoalMogul in your phone’s settings to get reminders', [
+      return Alert.alert('Goal Reminders', 'Enable Push Notifications for GoalMogul in your phone’s settings to get reminders', [
         {
           text: 'Settings', onPress: () => Linking.openURL('app-settings:')
         },
-        { text: 'Continue', onPress: () => this.handleCreate() }
+        { text: 'Skip', onPress: () => this.handleCreate() }
       ]);
     };
 
