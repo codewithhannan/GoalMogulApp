@@ -4,6 +4,7 @@ import {
   Alert,
   Keyboard,
   KeyboardAvoidingView,
+  Linking
 } from 'react-native';
 import { connect } from 'react-redux';
 import { TabView, SceneMap } from 'react-native-tab-view';
@@ -132,7 +133,12 @@ class CreateGoalModal extends React.Component {
 
     const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
     if (status !== 'granted') {
-      return Alert.alert('Denied', 'Enable Push Notifications for GoalMogul in your phone’s settings to get reminders');
+      return Alert.alert('Denied', 'Enable Push Notifications for GoalMogul in your phone’s settings to get reminders', [
+        {
+          text: 'Settings', onPress: () => Linking.openURL('app-settings:')
+        },
+        { text: 'Continue', onPress: () => this.handleCreate() }
+      ]);
     };
 
     const hasAskedPermission = true;
