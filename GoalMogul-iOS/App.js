@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import DropdownAlert from 'react-native-dropdownalert-jia';
+import Constants from 'expo-constants';
 
 /* State management */
 import { Provider } from 'react-redux';
@@ -20,6 +21,16 @@ import Router from './src/Router';
 import SocketIOManager from './src/socketio/SocketIOManager';
 import LiveChatService from './src/socketio/services/LiveChatService';
 import MessageStorageService from './src/services/chat/MessageStorageService';
+
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://91069ff4471141bb825818947bcc53f7@sentry.io/1823281',
+  enableInExpoDevelopment: true,
+  debug: true
+});
+
+Sentry.setRelease(Constants.manifest.revisionId);
 
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {};
