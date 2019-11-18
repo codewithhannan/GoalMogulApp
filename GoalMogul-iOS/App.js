@@ -23,7 +23,10 @@ import LiveChatService from './src/socketio/services/LiveChatService';
 import MessageStorageService from './src/services/chat/MessageStorageService';
 
 import * as Sentry from '@sentry/react-native';
+import * as Segment from 'expo-analytics-segment';
 
+// Exception tracking initialization
+// TODO: put into separate file
 Sentry.init({
   dsn: 'https://91069ff4471141bb825818947bcc53f7@sentry.io/1823281',
   enableInExpoDevelopment: true,
@@ -31,6 +34,13 @@ Sentry.init({
 });
 
 Sentry.setRelease(Constants.manifest.revisionId);
+
+
+// User event tracking initialization
+// TODO: put into separate file
+Segment.initialize({ iosWriteKey: "qenLKjq2NrSwUNQYaALKwnU6gu9eLMy3" });
+Segment.identify("jzeng");
+
 
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {};
@@ -47,6 +57,7 @@ export default class App extends React.Component {
     SocketIOManager.initialize();
     LiveChatService.initialize();
     MessageStorageService.initialize();
+    Segment.track("LOGIN");
   }
   // TODO: in ComponentWillMount set up dependencies for verification and
   // Persist app state. Check if AuthReducers' user token is null and valid.
