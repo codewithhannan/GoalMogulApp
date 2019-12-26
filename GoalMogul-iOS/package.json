@@ -18,10 +18,12 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@sentry/react-native": "^1.1.0",
     "axios": "^0.18.0",
     "bluebird": "^3.5.3",
     "eslint": "^4.19.1",
     "expo": "^35.0.0",
+    "expo-analytics-segment": "^7.0.0",
     "expo-asset": "^7.0.0",
     "expo-constants": "^7.0.0",
     "expo-contacts": "^7.0.0",
