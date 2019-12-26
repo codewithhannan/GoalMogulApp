@@ -37,6 +37,8 @@ import { IPHONE_MODELS, IS_ZOOMED } from './Utils/Constants';
 import banner from './asset/banner';
 import background from './asset/background';
 import image from './asset/image';
+import { trackViewScreen } from './monitoring/segment';
+import { Screen } from './monitoring/segment/Constants';
 
 const IS_SMALL_PHONE = Platform.OS === 'ios' &&
   IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
@@ -59,6 +61,7 @@ class SplashScreen extends Component {
       'gotham-pro-bold': require('../assets/fonts/GothamPro-Bold.ttf')
     });
     this.setState({ fontLoaded: true });
+    trackViewScreen(Screen.SPLASH_SCREEN);
   }
 
   // Functions to preload static assets
