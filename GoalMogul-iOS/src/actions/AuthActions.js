@@ -2,6 +2,7 @@ import { Actions } from 'react-native-router-flux';
 import { SubmissionError } from 'redux-form';
 import { AppState, Image } from 'react-native';
 import { api as API } from '../redux/middleware/api';
+import * as Sentry from '@sentry/react-native';
 
 import {
   USERNAME_CHANGED,
@@ -50,6 +51,8 @@ import MessageStorageService from '../services/chat/MessageStorageService';
 import { MemberDocumentFetcher } from '../Utils/UserUtils';
 import { Logger } from '../redux/middleware/utils/Logger';
 import { saveRemoteMatches, loadRemoteMatches } from './MeetActions';
+import { setUser, captureException } from '../monitoring/sentry';
+import { identify, resetUser } from '../monitoring/segment';
 
 const DEBUG_KEY = '[ Action Auth ]';
 export const userNameChanged = (username) => {
@@ -118,6 +121,12 @@ export const loginUser = ({ username, password, navigate }) => {
           });
           Auth.saveKey(username, password);
 
+          // Sentry track user
+          setUser(res.userId, username);
+
+          // Segment track user
+          identify(res.userId, username);
+
           // set up chat listeners
           LiveChatService.mountUser({
             userId: res.userId,
@@ -172,6 +181,8 @@ export const loginUser = ({ username, password, navigate }) => {
       dispatch({
         type: LOGIN_USER_FAIL,
       });
+      
+      captureException(message);
       throw new SubmissionError({
         _error: message
       });
@@ -217,6 +228,8 @@ export const registerUser = () => (dispatch) => {
 };
 
 export const logout = () => async (dispatch, getState) => {
+  // Reset user on logout
+  resetUser();
   // Store the unread notification first as USER_LOG_OUT will clear its state
   await saveUnreadNotification()(dispatch, getState);
   await saveTutorialState()(dispatch, getState);

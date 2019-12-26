@@ -133,7 +133,6 @@ class Home extends Component {
     }
   }
 
-
   componentDidMount() {
     AppState.addEventListener('change', this.handleAppStateChange);
     this._notificationSubscription = Notifications.addListener(this._handleNotification);
