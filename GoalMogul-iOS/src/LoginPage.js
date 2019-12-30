@@ -118,7 +118,7 @@ class LoginPage extends Component {
 
     Keyboard.dismiss();
 
-    if (this.state.numFailLoginAttempt >= 0) {
+    if (this.state.numFailLoginAttempt >= 2) {
       // Show recaptcha for not a robot verification
       this.setState({
         ...this.state,
