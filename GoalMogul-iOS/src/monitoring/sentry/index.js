@@ -1,7 +1,10 @@
 import * as Sentry from '@sentry/react-native';
 import Constants from 'expo-constants';
 import { SENTRY_CONFIG } from '../../config';
+<<<<<<< HEAD
 import { SENTRY_MESSAGE_LEVEL } from './Constants';
+=======
+>>>>>>> 6f031e55ff542c694224b1ab0bffa1ff6ee4fea1
 
 const initSentry = () => {
     Sentry.init({

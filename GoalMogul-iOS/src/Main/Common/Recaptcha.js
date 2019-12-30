@@ -4,7 +4,11 @@ import { WebView } from 'react-native-webview';
 import Constants from 'expo-constants';
 import Modal from 'react-native-modal';
 import { SentryRequestBuilder } from '../../monitoring/sentry';
+<<<<<<< HEAD
 import { SENTRY_TAGS, SENTRY_MESSAGE_LEVEL } from '../../monitoring/sentry/Constants';
+=======
+import { SENTRY_TAGS } from '../../monitoring/sentry/Constants';
+>>>>>>> 6f031e55ff542c694224b1ab0bffa1ff6ee4fea1
 import { GOOGLE_RECAPTCHA_KEY } from '../../config';
 
 const DEBUG_KEY = '[Recaptcha]';
@@ -117,8 +121,11 @@ class Recaptcha extends Component {
                         scrollEnabled={false}
                         onLoadEnd={(e) => {
                             if (!this.state.loaded) {
+<<<<<<< HEAD
                                 // Wait for WebView to be fully loaded and converted to transparent.
                                 // Otherwise, it will be a white glitch.
+=======
+>>>>>>> 6f031e55ff542c694224b1ab0bffa1ff6ee4fea1
                                 setTimeout(() => {
                                     this.setState({ loaded: true });
                                 }, 100);

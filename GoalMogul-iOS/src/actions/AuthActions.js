@@ -53,7 +53,11 @@ import { Logger } from '../redux/middleware/utils/Logger';
 import { saveRemoteMatches, loadRemoteMatches } from './MeetActions';
 import { setUser, captureException, SentryRequestBuilder } from '../monitoring/sentry';
 import { identify, resetUser } from '../monitoring/segment';
+<<<<<<< HEAD
 import { SENTRY_TAGS, SENTRY_MESSAGE_LEVEL } from '../monitoring/sentry/Constants';
+=======
+import { SENTRY_TAGS } from '../monitoring/sentry/Constants';
+>>>>>>> 6f031e55ff542c694224b1ab0bffa1ff6ee4fea1
 
 const DEBUG_KEY = '[ Action Auth ]';
 export const userNameChanged = (username) => {
