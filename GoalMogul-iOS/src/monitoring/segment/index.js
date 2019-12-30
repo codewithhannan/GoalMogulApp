@@ -1,8 +1,8 @@
 import * as Segment from 'expo-analytics-segment';
+import { SEGMENT_CONFIG } from '../../config';
 
-// TODO: put into separate file
 const initSegment = () => {
-    Segment.initialize({ iosWriteKey: "Us6yuw9KLihsRmpihcB5OXTYwT4GDq75" });
+    Segment.initialize({ iosWriteKey: SEGMENT_CONFIG.IOS_WRITE_KEY });
 };
 
 const identify = (userId, username) => {

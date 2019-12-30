@@ -51,8 +51,9 @@ import MessageStorageService from '../services/chat/MessageStorageService';
 import { MemberDocumentFetcher } from '../Utils/UserUtils';
 import { Logger } from '../redux/middleware/utils/Logger';
 import { saveRemoteMatches, loadRemoteMatches } from './MeetActions';
-import { setUser, captureException } from '../monitoring/sentry';
+import { setUser, captureException, SentryRequestBuilder } from '../monitoring/sentry';
 import { identify, resetUser } from '../monitoring/segment';
+import { SENTRY_TAGS, SENTRY_MESSAGE_LEVEL } from '../monitoring/sentry/Constants';
 
 const DEBUG_KEY = '[ Action Auth ]';
 export const userNameChanged = (username) => {
@@ -74,7 +75,7 @@ const validateEmail = (email) => {
    return re.test(String(email).toLowerCase());
 };
 
-export const loginUser = ({ username, password, navigate }) => {
+export const loginUser = ({ username, password, navigate, onError, onSuccess }) => {
   // Call the endpoint to use username and password to signin
   // Obtain the credential
 
@@ -120,6 +121,11 @@ export const loginUser = ({ username, password, navigate }) => {
             payload
           });
           Auth.saveKey(username, password);
+
+          // Invoke onSuccess callback to clear login page state
+          if (onSuccess) {
+            onSuccess();
+          }
 
           // Sentry track user
           setUser(res.userId, username);
@@ -181,11 +187,13 @@ export const loginUser = ({ username, password, navigate }) => {
       dispatch({
         type: LOGIN_USER_FAIL,
       });
+
+      if (onError) {
+        onError(message);
+      }
       
-      captureException(message);
-      throw new SubmissionError({
-        _error: message
-      });
+      // Record failure message in Sentry
+      new SentryRequestBuilder(message).withLevel(SENTRY_MESSAGE_LEVEL.INFO).withTag(SENTRY_TAGS.ACTION.LOGIN_IN, 'failed').send();
     }
   };
 };
