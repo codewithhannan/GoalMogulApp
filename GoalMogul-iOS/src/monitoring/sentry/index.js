@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react-native';
 import Constants from 'expo-constants';
 import { SENTRY_CONFIG } from '../../config';
-import { SENTRY_MESSAGE_LEVEL } from './Constants';
+import { SENTRY_MESSAGE_LEVEL, SENTRY_MESSAGE_TYPE } from './Constants';
 
 const initSentry = () => {
     Sentry.init({
@@ -29,13 +29,13 @@ const captureException = (message, level = 'error') => {
  * @param {*} username 
  */
 const setUser = (userId, username) => {
-    Sentry.setUser({ userId });
+    Sentry.setUser({ id: userId, username });
 };
 
 class SentryRequestBuilder {
-    constructor(message, type = 'message') {
-        this.tags = new Map();
-        this.extraContext = new Map();
+    constructor(message, type = SENTRY_MESSAGE_TYPE.message) {
+        this.tags = {};
+        this.extraContext = {};
         this.level = SENTRY_MESSAGE_LEVEL.INFO; // default level is info
         this.message = message;
         this.type = type;
@@ -47,12 +47,12 @@ class SentryRequestBuilder {
     }
 
     withTag(key, value) {
-        this.tags.set(key, value);
+        this.tags[key] = value;
         return this;
     }
 
     withExtraContext(key, value) {
-        this.extraContext.set(key, value);
+        this.extraContext[key] = value;
         return this;
     }
 
@@ -62,16 +62,28 @@ class SentryRequestBuilder {
     }
 
     send() {
+        const level = this.level;
+        const tags = this.tags;
+        const extraContext = this.extraContext;
+        const message = this.message;
+        const type = this.type;
+
         Sentry.withScope(function(scope) {
-            scope.setLevel(this.level);
-            scope.setTags(this.tags);
-            scope.setExtras(this.extraContext);
-            if (this.type == 'message') {
-                Sentry.captureMessage(this.message);
-            } else if (this.type == 'event') {
-                Sentry.captureEvent(this.message);
+            scope.setLevel(level);
+            if (tags && Object.keys(tags).length > 0) {
+                scope.setTags(tags);
+            }
+            
+            if (extraContext && Object.keys(extraContext).length > 0) {
+                scope.setExtras(extraContext);
+            }
+            
+            if (type == 'message') {
+                Sentry.captureMessage(message);
+            } else if (type == 'event') {
+                Sentry.captureEvent(message);
             } else {
-                Sentry.captureException(this.message);
+                Sentry.captureException(message);
             }
         })
     }
