@@ -5,7 +5,8 @@
 const SENTRY_TAGS = {
     GOOGLE_SERVIVE: 'google service',
     ACTION: {
-        LOGIN_IN: 'login'
+        LOGIN_IN: 'login',
+        USERNAME: 'username'
     }
 };
 
@@ -13,6 +14,12 @@ const SENTRY_TAG_VALUE = {
     ACTIONS: {
         FAILED: 'failed'
     }
+};
+
+const SENTRY_MESSAGE_TYPE = {
+    ERROR: 'error',
+    MESSAGE: 'message',
+    EVENT: 'event'
 };
 
 // Based on the document, exception / message level can be one of:
@@ -27,4 +34,4 @@ const SENTRY_MESSAGE_LEVEL = {
     CRITICAL: 'critical' // TBD
 }
 
-export { SENTRY_TAGS, SENTRY_MESSAGE_LEVEL };
+export { SENTRY_TAGS, SENTRY_TAG_VALUE, SENTRY_MESSAGE_LEVEL, SENTRY_MESSAGE_TYPE };

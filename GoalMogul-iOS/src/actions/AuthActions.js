@@ -53,7 +53,7 @@ import { Logger } from '../redux/middleware/utils/Logger';
 import { saveRemoteMatches, loadRemoteMatches } from './MeetActions';
 import { setUser, captureException, SentryRequestBuilder } from '../monitoring/sentry';
 import { identify, resetUser } from '../monitoring/segment';
-import { SENTRY_TAGS, SENTRY_MESSAGE_LEVEL } from '../monitoring/sentry/Constants';
+import { SENTRY_TAGS, SENTRY_MESSAGE_LEVEL, SENTRY_TAG_VALUE, SENTRY_MESSAGE_TYPE } from '../monitoring/sentry/Constants';
 
 const DEBUG_KEY = '[ Action Auth ]';
 export const userNameChanged = (username) => {
@@ -193,7 +193,11 @@ export const loginUser = ({ username, password, navigate, onError, onSuccess }) 
       }
       
       // Record failure message in Sentry
-      new SentryRequestBuilder(message).withLevel(SENTRY_MESSAGE_LEVEL.INFO).withTag(SENTRY_TAGS.ACTION.LOGIN_IN, 'failed').send();
+      new SentryRequestBuilder(new Error(message), SENTRY_MESSAGE_TYPE.ERROR)
+        .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
+        .withTag(SENTRY_TAGS.ACTION.LOGIN_IN, SENTRY_TAG_VALUE.ACTIONS.FAILED)
+        .withExtraContext(SENTRY_TAGS.ACTION.USERNAME, username)
+        .send();
     }
   };
 };
