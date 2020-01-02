@@ -85,7 +85,7 @@ class Home extends Component {
         index: 0,
         routes: [
           { key: 'goals', title: 'JUST GOALS' },
-          { key: 'activity', title: 'POSTS' },
+          { key: 'activity', title: 'ALL POSTS' },
         ],
       },
       appState: AppState.currentState,
