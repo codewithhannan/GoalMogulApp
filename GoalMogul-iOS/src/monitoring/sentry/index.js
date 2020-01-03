@@ -1,8 +1,9 @@
 import * as Sentry from '@sentry/react-native';
 import Constants from 'expo-constants';
-import { SENTRY_CONFIG } from '../../config';
 import { SENTRY_MESSAGE_LEVEL, SENTRY_MESSAGE_TYPE } from './Constants';
+import getEnvVars from '../../../environment';
 
+const { SENTRY_CONFIG } = getEnvVars();
 const initSentry = () => {
     Sentry.init({
         dsn: SENTRY_CONFIG.DNS,

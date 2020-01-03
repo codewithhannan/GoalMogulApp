@@ -1,7 +1,7 @@
 import SocketIOClient from 'socket.io-client';
-import { config } from '../redux/middleware/api/config';
+import getEnvVars from '../../environment';
 
-const SERVER_URL = config.socketIOUrl;
+const SERVER_URL = getEnvVars().socketIOUrl;;
 const SOCKET_CONFIG = {
     transports: ['websocket'],
     jsonp: false,

@@ -40,15 +40,6 @@ import MemberListCard from '../../Tribe/MemberListCard';
 import About from './MyTribeAbout';
 
 
-
-
-
-
-
-
-
-
-
 const { CheckIcon: check } = Icons;
 const DEBUG_KEY = '[ UI MyTribe ]';
 const { width } = Dimensions.get('window');

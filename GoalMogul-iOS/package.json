@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "devDependencies": {
+    "@sentry/webpack-plugin": "^1.9.3",
     "babel-preset-expo": "^5.0.0",
     "jest-expo": "^32.0.0"
   },

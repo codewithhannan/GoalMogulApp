@@ -1,5 +1,7 @@
 import * as Segment from 'expo-analytics-segment';
-import { SEGMENT_CONFIG } from '../../config';
+import getEnvVars from '../../../environment';
+
+const { SEGMENT_CONFIG } = getEnvVars();
 
 const initSegment = () => {
     Segment.initialize({ iosWriteKey: SEGMENT_CONFIG.IOS_WRITE_KEY });

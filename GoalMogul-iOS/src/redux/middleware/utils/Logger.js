@@ -1,5 +1,6 @@
-import { config } from '../api/config';
+import getEnvVars from '../../../../environment';
 
+const config = getEnvVars();
 export class Logger {
     /**
      * Log message with log level
