@@ -5,15 +5,15 @@
 	- fetch the full chat document with members populated
 */
 import { Octicons } from '@expo/vector-icons';
+import Constants from 'expo-constants';
 import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
-import Constants from 'expo-constants';
 import R from 'ramda';
 import React from 'react';
 import { ActionSheetIOS, Alert, Animated, CameraRoll, Clipboard, Dimensions, FlatList, Platform, TextInput, TouchableOpacity, View } from 'react-native';
 import { Image, Text } from 'react-native-elements';
 import EmojiSelector from 'react-native-emoji-selector';
-import { Avatar, GiftedChat, Message, Send } from 'react-native-gifted-chat';
+import { Avatar, GiftedChat, Message, Send, SystemMessage } from 'react-native-gifted-chat';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
@@ -652,6 +652,18 @@ class ChatRoomConversation extends React.Component {
 			/>
 		);
 	}
+	renderSystemMessage = (props) => {
+		return (
+			<SystemMessage
+				{...props}
+				textStyle={{
+					color: '#666',
+					fontSize: 14,
+					fontWeight: '500'
+				}}
+			/>
+		);
+	}
 	renderAvatar(props) {
 		return (<Avatar
 			{...props}
@@ -726,6 +738,7 @@ class ChatRoomConversation extends React.Component {
 						renderComposer={this.renderComposer.bind(this)}
 						maxComposerHeight={120 - 18} // padding
 						renderMessage={this.renderMessage}
+						renderSystemMessage={this.renderSystemMessage}
 						renderInputToolbar={this.renderInputToolbar}
 						renderAvatar={this.renderAvatar}
 						bottomOffset={GIFTED_CHAT_BOTTOM_OFFSET}
