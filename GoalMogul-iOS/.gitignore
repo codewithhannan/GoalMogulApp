@@ -9,6 +9,9 @@
 # dependencies
 /node_modules
 
+# sentry
+.sentryclirc
+
 # misc
 .env.local
 .env.development.local
