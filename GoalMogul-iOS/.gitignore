@@ -12,6 +12,9 @@
 # sentry
 .sentryclirc
 
+# config
+/config
+
 # misc
 .env.local
 .env.development.local
