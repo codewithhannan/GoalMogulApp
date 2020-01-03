@@ -1,8 +1,9 @@
-import { config } from './config';
 import { Logger } from '../utils/Logger';
 import R from 'ramda';
+import getEnvVars from '../../../../environment';
 
 const DEBUG_KEY = '[ API ]';
+const config = getEnvVars();
 
 export const singleFetch = (path, payload, method, token, logLevel) =>
   fetchData(path, payload, method, token, logLevel).then((res) => {

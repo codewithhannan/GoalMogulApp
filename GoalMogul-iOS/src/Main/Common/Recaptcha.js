@@ -5,9 +5,10 @@ import Constants from 'expo-constants';
 import Modal from 'react-native-modal';
 import { SentryRequestBuilder } from '../../monitoring/sentry';
 import { SENTRY_TAGS, SENTRY_MESSAGE_LEVEL } from '../../monitoring/sentry/Constants';
-import { GOOGLE_RECAPTCHA_KEY } from '../../config';
+import getEnvVars from '../../../environment';
 
 const DEBUG_KEY = '[Recaptcha]';
+const { GOOGLE_RECAPTCHA_KEY } = getEnvVars();
 
 class Recaptcha extends Component {
     constructor(props) {
