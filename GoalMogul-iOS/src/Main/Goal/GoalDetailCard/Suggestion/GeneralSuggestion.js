@@ -4,8 +4,6 @@
 import React from 'react';
 import {
   View,
-  TextInput,
-  Text,
   SafeAreaView,
   Animated
 } from 'react-native';

@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import {
-  KeyboardAvoidingView,
   View,
-  ScrollView,
   Text,
   TouchableWithoutFeedback,
   Keyboard,
@@ -26,6 +24,7 @@ import Styles from './Registration/Styles';
 import { registerUser, loginUser } from './actions';
 
 import { RESET_PASSWORD_URL } from './Utils/Constants';
+import Recaptcha from './Main/Common/Recaptcha';
 
 const validate = values => {
   const errors = {};
@@ -39,9 +38,63 @@ const validate = values => {
 };
 
 class LoginPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showRecaptcha: false,
+      numFailLoginAttempt: 0,
+      username: undefined,
+      password: undefined,
+      errMsg: undefined
+    };
+  }
+
+  openRecaptcha = () => {
+    this.setState({
+      ...this.state,
+      showRecaptcha: true
+    });
+  }
+
+  closeRecaptcha = () => {
+    this.setState({
+      ...this.state,
+      showRecaptcha: false,
+      username: undefined,
+      password: undefined
+    });
+  }
+
+  increaseNumFailLoginAttempt = () => {
+    this.setState({
+      ...this.state,
+      numFailLoginAttempt: this.state.numFailLoginAttempt + 1
+    });
+  }
+
+  resetNumFailLoginAttempt = () => {
+    this.setState({
+      ...this.state,
+      numFailLoginAttempt: 0
+    });
+  }
 
   handleContainerOnPressed() {
     Keyboard.dismiss();
+  }
+
+  setErrorMessage = (errMsg) => {
+    this.setState({
+      ...this.state,
+      errMsg
+    });
+  }
+
+  resetErrorMessage = () => {
+    this.setState({
+      ...this.state,
+      errMsg: undefined
+    });
   }
 
   handleResetPassword = async () => {
@@ -64,7 +117,50 @@ class LoginPage extends Component {
     const { username, password } = values;
 
     Keyboard.dismiss();
-    return this.props.loginUser({ username, password });
+
+    if (this.state.numFailLoginAttempt >= 2) {
+      // Show recaptcha for not a robot verification
+      this.setState({
+        ...this.state,
+        username,
+        password
+      }, () => this.openRecaptcha());
+    } else {
+      this.props.loginUser({ 
+        username, 
+        password, 
+        onError: (errMsg) => {
+          this.increaseNumFailLoginAttempt();
+          this.setErrorMessage(errMsg);
+        },
+        onSuccess: () => {
+          this.resetNumFailLoginAttempt();
+          this.resetErrorMessage();
+        }
+      });
+    }
+  }
+
+  handleRecaptchaOnSuccess = () => {
+    // clear state
+    this.closeRecaptcha();
+    const { username, password } = this.state;
+
+    setTimeout(() => {
+      // handle login
+      this.props.loginUser({ 
+        username, 
+        password, 
+        onError: (errMsg) => {
+          this.increaseNumFailLoginAttempt();
+          this.setErrorMessage(errMsg);
+        },
+        onSuccess: () => {
+          this.resetNumFailLoginAttempt();
+          this.resetErrorMessage();
+        }
+      });
+    }, 100);
   }
 
   renderResetPassword() {
@@ -110,8 +206,18 @@ class LoginPage extends Component {
     );
   }
 
+  renderRecaptcha() {
+    return (
+      <Recaptcha 
+        showRecaptcha={this.state.showRecaptcha} 
+        closeModal={this.closeRecaptcha} 
+        onSuccess={this.handleRecaptchaOnSuccess}
+      />
+    )
+  }
+
   render() {
-    const { handleSubmit, error } = this.props;
+    const { handleSubmit } = this.props;
     return (
       <KeyboardAwareScrollView
         bounces={false}
@@ -127,7 +233,7 @@ class LoginPage extends Component {
           <View style={Styles.containerStyle}>
             <Header canBack={!this.props.loading} />
             <View style={Styles.bodyContainerStyle}>
-              {this.renderError(error)}
+              {this.renderError(this.state.errMsg)}
               {/* <Text style={styles.titleTextStyle}>Get Started!</Text> */}
 
               <Field
@@ -164,6 +270,7 @@ class LoginPage extends Component {
             </View>
           </View>
         </TouchableWithoutFeedback>
+        {this.renderRecaptcha()}
       </KeyboardAwareScrollView>
     );
     

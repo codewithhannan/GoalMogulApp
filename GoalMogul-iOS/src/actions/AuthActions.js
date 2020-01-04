@@ -2,6 +2,7 @@ import { Actions } from 'react-native-router-flux';
 import { SubmissionError } from 'redux-form';
 import { AppState, Image } from 'react-native';
 import { api as API } from '../redux/middleware/api';
+import * as Sentry from '@sentry/react-native';
 
 import {
   USERNAME_CHANGED,
@@ -50,6 +51,9 @@ import MessageStorageService from '../services/chat/MessageStorageService';
 import { MemberDocumentFetcher } from '../Utils/UserUtils';
 import { Logger } from '../redux/middleware/utils/Logger';
 import { saveRemoteMatches, loadRemoteMatches } from './MeetActions';
+import { setUser, captureException, SentryRequestBuilder } from '../monitoring/sentry';
+import { identify, resetUser } from '../monitoring/segment';
+import { SENTRY_TAGS, SENTRY_MESSAGE_LEVEL, SENTRY_TAG_VALUE, SENTRY_MESSAGE_TYPE } from '../monitoring/sentry/Constants';
 
 const DEBUG_KEY = '[ Action Auth ]';
 export const userNameChanged = (username) => {
@@ -71,7 +75,7 @@ const validateEmail = (email) => {
    return re.test(String(email).toLowerCase());
 };
 
-export const loginUser = ({ username, password, navigate }) => {
+export const loginUser = ({ username, password, navigate, onError, onSuccess }) => {
   // Call the endpoint to use username and password to signin
   // Obtain the credential
 
@@ -117,6 +121,17 @@ export const loginUser = ({ username, password, navigate }) => {
             payload
           });
           Auth.saveKey(username, password);
+
+          // Invoke onSuccess callback to clear login page state
+          if (onSuccess) {
+            onSuccess();
+          }
+
+          // Sentry track user
+          setUser(res.userId, username);
+
+          // Segment track user
+          identify(res.userId, username);
 
           // set up chat listeners
           LiveChatService.mountUser({
@@ -172,9 +187,17 @@ export const loginUser = ({ username, password, navigate }) => {
       dispatch({
         type: LOGIN_USER_FAIL,
       });
-      throw new SubmissionError({
-        _error: message
-      });
+
+      if (onError) {
+        onError(message);
+      }
+      
+      // Record failure message in Sentry
+      new SentryRequestBuilder(new Error(message), SENTRY_MESSAGE_TYPE.ERROR)
+        .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
+        .withTag(SENTRY_TAGS.ACTION.LOGIN_IN, SENTRY_TAG_VALUE.ACTIONS.FAILED)
+        .withExtraContext(SENTRY_TAGS.ACTION.USERNAME, username)
+        .send();
     }
   };
 };
@@ -217,6 +240,8 @@ export const registerUser = () => (dispatch) => {
 };
 
 export const logout = () => async (dispatch, getState) => {
+  // Reset user on logout
+  resetUser();
   // Store the unread notification first as USER_LOG_OUT will clear its state
   await saveUnreadNotification()(dispatch, getState);
   await saveTutorialState()(dispatch, getState);

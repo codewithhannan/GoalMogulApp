@@ -84,8 +84,8 @@ class Home extends Component {
       navigationState: {
         index: 0,
         routes: [
-          { key: 'goals', title: 'GOALS' },
-          { key: 'activity', title: 'ACTIVITY' },
+          { key: 'goals', title: 'JUST GOALS' },
+          { key: 'activity', title: 'ALL POSTS' },
         ],
       },
       appState: AppState.currentState,
@@ -132,7 +132,6 @@ class Home extends Component {
           return;
     }
   }
-
 
   componentDidMount() {
     AppState.addEventListener('change', this.handleAppStateChange);

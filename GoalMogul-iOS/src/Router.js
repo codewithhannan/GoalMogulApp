@@ -88,6 +88,7 @@ import RegistrationAccount from './Registration/RegistrationAccount';
 import SplashScreen from './SplashScreen';
 import Tutorial from './Tutorial/Tutorial';
 import UserInviteModal from './Main/Common/Modal/UserInviteModal';
+import { trackViewScreen } from './monitoring/segment';
 
 
 class RouterComponent extends Component {
@@ -143,7 +144,9 @@ class RouterComponent extends Component {
   }
 
   stateHandler = (prevState, newState, action) => {
-    // console.log('onStateChange: ACTION: ', action);
+    if (action && action.routeName) {
+      // trackViewScreen(action.routeName);
+    }
     // console.log('newState is: ', newState);
   }
   rootTransitionConfig = () => {

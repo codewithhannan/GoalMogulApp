@@ -53,7 +53,7 @@ import {
 } from '../../../redux/modules/feed/comment/SuggestionSearchActions';
 
 // Utils function
-import { capitalizeWord, switchCase } from '../../../redux/middleware/utils';
+import { switchCase } from '../../../redux/middleware/utils';
 import { Logger } from '../../../redux/middleware/utils/Logger';
 
 const DEBUG_KEY = '[ UI SuggestionModal3 ]';
@@ -377,7 +377,7 @@ const styles = {
 };
 
 const switchCaseForSuggestionForText = (suggestionType) => switchCase({
-  'User': ['an', 'User'],
+  'User': ['a', 'User'],
   'ChatConvoRoom': ['a', 'Chat room'],
   'NewNeed': ['a', 'Need'],
   'NewStep': ['a', 'Step'],

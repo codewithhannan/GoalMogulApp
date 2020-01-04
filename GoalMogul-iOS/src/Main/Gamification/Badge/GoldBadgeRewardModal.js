@@ -76,7 +76,7 @@ class GoldBadgeRewardModal extends React.PureComponent {
                             After you receive a Gold Badge, follow these instructions to receive your cash prize:{"\n"}{"\n"}
                             Email <Text editable={false} multiline style={styles.emailTextStyle} onPress={this.handleEmailOnPress}>support@goalmogul.com</Text> with subject line "Gold Badge winner" and in the email let us know your
                         </Text>
-                        {/* <Text selectable style={styles.contentTextStyle}>Beginning September 1, 2019, be one of the first fifteen (15) users to attain Gold Badge status and GoalMogul Inc. will reward you with a USD $300.00 cash prize!{`\n`}</Text>
+                        {/* <Text selectable style={styles.contentTextStyle}>Beginning September 1, 2019, be one of the first fifteen (15) users to attain Gold Badge status and GoalMogul Inc. will reward you with a USD $700.00 cash prize!{`\n`}</Text>
                         <Text selectable style={styles.titleTextStyle}>IMPORTANT CONTEST DISCLAIMER:</Text>
                         <Text selectable style={styles.titleTextStyle}>YOU MUST HAVE A PAYPAL OR VENMO ACCOUNT TO RECEIVE PAYMENT FROM US. IN ORDER TO AVOID FRAUDULENT ACTIVITY OR FAKE USER ACCOUNTS, UNFORTUNATELY WE WILL *NOT* BE ABLE TO SEND PAYMENT TO ANOTHER PERSON OR BY MAIL.  SORRY, NO EXCEPTIONS.{"\n"}</Text>
                         <Text selectable style={styles.titleTextStyle}>INSTRUCTIONS:</Text>

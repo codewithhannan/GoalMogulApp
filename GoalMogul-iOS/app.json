@@ -32,6 +32,18 @@
     "scheme": "goalmogul",
     "notification": {
       "icon": "./assets/logo.png"
+    },
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "GoalMogul",
+            "project": "goalmogul-inc",
+            "authToken": "024df661dcbe47f2ab23672121179ad6ad707f1b3ccc43aa8ce9683015061c33"
+          }
+        }
+      ]
     }
   }
 }
