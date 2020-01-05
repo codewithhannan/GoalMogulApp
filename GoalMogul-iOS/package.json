@@ -21,14 +21,13 @@
   "jest": {
     "preset": "jest-expo",
     "transformIgnorePatterns": [
-      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|sentry-expo|native-base)"
+      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|sentry-expo|native-base|@sentry/react-native)"
     ],
     "moduleNameMapper": {
       ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "identity-obj-proxy"
     }
   },
   "dependencies": {
-    "@sentry/react-native": "^1.1.0",
     "axios": "^0.18.0",
     "bluebird": "^3.5.3",
     "eslint": "^4.19.1",
@@ -92,6 +91,7 @@
     "redux-persist": "^5.10.0",
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
+    "sentry-expo": "^2.0.1",
     "socket.io-client": "^2.2.0",
     "timeago.js": "^3.0.2",
     "unescape": "^1.0.1",
