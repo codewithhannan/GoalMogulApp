@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 import { openProfile } from '../../../actions';
 import { acceptChatMemberJoinRequest, demoteChatMember, promoteChatMember, refreshChatMembersTab, removeChatMember, selectChatMembersTab } from '../../../redux/modules/chat/ChatRoomMembersActions';
 import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../../../styles';
-import { IPHONE_MODELS } from '../../../Utils/Constants';
+import { IPHONE_MODELS, DEVICE_MODEL } from '../../../Utils/Constants';
 // Actions
 import ModalHeader from '../../Common/Header/ModalHeader';
 import ProfileImage from '../../Common/ProfileImage';
@@ -25,7 +25,7 @@ import TabButtonGroup from '../../Common/TabButtonGroup';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SEARCHBAR_HEIGHT = Platform.OS === 'ios' &&
-      IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+      IPHONE_MODELS.includes(DEVICE_MODEL)
       ? 30 : 40;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const BODY_HEIGHT = SCREEN_HEIGHT - 48.5 - SEARCHBAR_HEIGHT - 150;

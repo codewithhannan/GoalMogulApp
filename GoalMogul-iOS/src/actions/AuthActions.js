@@ -1,8 +1,6 @@
 import { Actions } from 'react-native-router-flux';
-import { SubmissionError } from 'redux-form';
 import { AppState, Image } from 'react-native';
 import { api as API } from '../redux/middleware/api';
-import * as Sentry from '@sentry/react-native';
 
 import {
   USERNAME_CHANGED,

@@ -11,7 +11,6 @@ import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 // This is commented out as we switch back to the old implementation
 import Carousel from 'react-native-snap-carousel';
-import Constants from 'expo-constants';
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 // Components
@@ -40,13 +39,13 @@ import {
   changeFilter
 } from '../../redux/modules/home/mastermind/actions';
 
-import { IPHONE_MODELS } from '../../Utils/Constants';
+import { IPHONE_MODELS, DEVICE_MODEL } from '../../Utils/Constants';
 import { APP_DEEP_BLUE, BACKGROUND_COLOR } from '../../styles';
 import { Logger } from '../../redux/middleware/utils/Logger';
 import DelayedButton from '../Common/Button/DelayedButton';
 
 const ITEM_HEIGHT = Platform.OS === 'ios' &&
-  IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+  IPHONE_MODELS.includes(DEVICE_MODEL)
   ? 420 : 450;
 
 const TAB_KEY = 'mastermind';

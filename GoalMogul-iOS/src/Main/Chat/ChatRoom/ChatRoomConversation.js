@@ -32,7 +32,7 @@ import { changeMessageMediaRef, closeActiveChatRoom, deleteMessage, initialLoad,
 import MessageStorageService from '../../../services/chat/MessageStorageService';
 import LiveChatService, { OUTGOING_EVENT_NAMES } from '../../../socketio/services/LiveChatService';
 import { APP_BLUE_BRIGHT } from '../../../styles';
-import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL, IPHONE_MODELS_2 } from '../../../Utils/Constants';
+import { GROUP_CHAT_DEFAULT_ICON_URL, IMAGE_BASE_URL, IPHONE_MODELS_2, DEVICE_MODEL } from '../../../Utils/Constants';
 import { toHashCode } from '../../../Utils/ImageUtils';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import ModalHeader from '../../Common/Header/ModalHeader';
@@ -51,7 +51,7 @@ const LISTENER_KEY = 'ChatRoomConversation';
 const MAX_TYPING_INDICATORS_TO_DISPLAY = 3;
 const CHAT_ROOM_DOCUMENT_REFRESH_INTERVAL = 3000; // milliseconds
 
-const GIFTED_CHAT_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(Constants.platform.ios.model.toLowerCase()) ? 102 : 66;
+const GIFTED_CHAT_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(DEVICE_MODEL) ? 102 : 66;
 
 /**
  * @prop {String} chatRoomId: required

@@ -35,7 +35,7 @@ import { openProfile } from '../../actions';
 
 // Constants
 import {
-  IPHONE_MODELS
+  IPHONE_MODELS, DEVICE_MODEL
 } from '../../Utils/Constants';
 import { SearchIcon } from '../../Utils/Icons';
 
@@ -114,7 +114,7 @@ class PeopleSearchOverlay extends Component {
 
     const marginTop = (
       Platform.OS === 'ios' &&
-      IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+      IPHONE_MODELS.includes(DEVICE_MODEL)
     ) ? 20 : 30;
 
     return (

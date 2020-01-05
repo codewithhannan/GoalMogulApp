@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import * as WebBrowser from 'expo-web-browser';
-import Constants from 'expo-constants';
 import { Actions } from 'react-native-router-flux';
 import { copilot, walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
@@ -58,7 +57,7 @@ import {
 } from '../../styles';
 
 /* Constants */
-import { IPHONE_MODELS, PRIVACY_POLICY_URL } from '../../Utils/Constants';
+import { IPHONE_MODELS, PRIVACY_POLICY_URL, DEVICE_MODEL } from '../../Utils/Constants';
 import { generateInvitationLink } from '../../redux/middleware/utils';
 import Tooltip from '../Tutorial/Tooltip';
 import { svgMaskPath } from '../Tutorial/Utils';
@@ -66,7 +65,7 @@ import { svgMaskPath } from '../Tutorial/Utils';
 const { PeopleIcon: People } = Icons;
 const DEBUG_KEY = '[ UI MeetTabV2 ]'; 
 const NumCardsToShow = Platform.OS === 'ios' &&
-  IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+  IPHONE_MODELS.includes(DEVICE_MODEL)
   ? 3 : 5;
 const WalkableView = walkthroughable(View);
 

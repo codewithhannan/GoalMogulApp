@@ -1,4 +1,3 @@
-import Constants from 'expo-constants';
 import _ from 'lodash';
 import R from 'ramda';
 import React from 'react';
@@ -36,7 +35,7 @@ import { subscribeEntityNotification, unsubscribeEntityNotification } from '../.
 // Actions
 import { createReport } from '../../../redux/modules/report/ReportActions';
 // Constants
-import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE, IPHONE_MODELS, IS_ZOOMED } from '../../../Utils/Constants';
+import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE, IPHONE_MODELS, IS_ZOOMED, DEVICE_MODEL } from '../../../Utils/Constants';
 import { RightArrowIcon } from '../../../Utils/Icons';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import DelayedButton from '../../Common/Button/DelayedButton';
@@ -56,7 +55,7 @@ const { height, width } = Dimensions.get('window');
 const WINDOW_WIDTH = width;
 const CardHeight = height * 0.7;
 const ITEM_COUNT = Platform.OS === 'ios' &&
-  IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+  IPHONE_MODELS.includes(DEVICE_MODEL)
   ? 2 : 3;
 
 const TabIconMap = {
