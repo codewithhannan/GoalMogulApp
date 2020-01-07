@@ -16,7 +16,6 @@ export default class MentionsTextInput extends Component {
   constructor() {
     super();
     this.state = {
-      textInputHeight: '',
       isTrackingStarted: false,
       suggestionRowHeight: new Animated.Value(0),
 
@@ -24,12 +23,6 @@ export default class MentionsTextInput extends Component {
     this.isTrackingStarted = false;
     this.previousChar = ' ';
     this.cursorPosition = 0;
-  }
-
-  componentDidMount() {
-    this.setState({
-      textInputHeight: this.props.textInputMinHeight
-    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -258,7 +251,6 @@ export default class MentionsTextInput extends Component {
   resetTextbox() {
     this.previousChar = " ";
     this.stopTracking();
-    this.setState({ textInputHeight: this.props.textInputMinHeight });
   }
 
   focus() {
@@ -300,15 +292,6 @@ export default class MentionsTextInput extends Component {
         <View style={{ ...this.props.textInputContainerStyle }}>
           <TextInput
             {...this.props}
-            onContentSizeChange={(event) => {
-              this.setState({
-                textInputHeight: (
-                  this.props.textInputMinHeight >= event.nativeEvent.contentSize.height
-                  ? this.props.textInputMinHeight
-                  : event.nativeEvent.contentSize.height + 15
-                ),
-              });
-            }}
             autoCorrect
             ref={component => this._textInput = component}
             onChangeText={this.onChangeText.bind(this)}
@@ -318,7 +301,8 @@ export default class MentionsTextInput extends Component {
             style={
               [
                 { ...this.props.textInputStyle },
-                { height: Math.min(this.props.textInputMaxHeight, this.state.textInputHeight) }
+                { minHeight: this.props.textInputMinHeight },
+                { maxHeight: this.props.textInputMaxHeight },
               ]
             }
             placeholder={this.props.placeholder ? this.props.placeholder : 'Write a comment...'}
