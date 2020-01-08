@@ -260,7 +260,6 @@ export default class MentionsTextInput extends Component {
   }
 
   updateTextInputHeight(height) {
-    console.log('Update px: ' + Math.max(this.props.textInputMinHeight, height));
     this.setState({
       textInputHeight: Math.max(this.props.textInputMinHeight, height),
     });
@@ -295,8 +294,6 @@ export default class MentionsTextInput extends Component {
         </View>
       );
     }
-    console.log('this.state.textInputHeight: ' + this.state.textInputHeight);
-    console.log('this.props.textInputMinHeight: ' + this.props.textInputMinHeight);
     return (
       <View style={{ flexDirection: 'row' }}>
         {this.props.renderLeftIcons ? this.props.renderLeftIcons() : null}
@@ -311,10 +308,10 @@ export default class MentionsTextInput extends Component {
             multiline={true}
             value={this.props.value}
             style={{ 
-                  ...this.props.textInputStyle, 
-                  minHeight: this.props.textInputMinHeight, 
-                  maxHeight: this.props.textInputMaxHeight,
-                  paddingTop: this.state.textInputHeight == this.props.textInputMinHeight ? 4 : 0,
+              ...this.props.textInputStyle,
+              minHeight: this.props.textInputMinHeight,
+              maxHeight: this.props.textInputMaxHeight,
+              paddingTop: this.state.textInputHeight == this.props.textInputMinHeight ? 4 : 0,
             }}
             placeholder={this.props.placeholder ? this.props.placeholder : 'Write a comment...'}
           />
@@ -325,7 +322,6 @@ export default class MentionsTextInput extends Component {
   }
 
   render() {
-    // console.log(`${DEBUG_KEY}: rendering MentionsTextInput`);
     return (
       <View style={{ flex: 1 }}>
         {
