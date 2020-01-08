@@ -21,6 +21,8 @@
 .env.test.local
 .env.production.local
 coverage/**/*
+/coverage
+*.zip
 
 npm-debug.log*
 yarn-debug.log*
