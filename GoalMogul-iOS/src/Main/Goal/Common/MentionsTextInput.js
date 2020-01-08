@@ -18,7 +18,7 @@ export default class MentionsTextInput extends Component {
     this.state = {
       isTrackingStarted: false,
       suggestionRowHeight: new Animated.Value(0),
-
+      textInputHeight: 0,
     };
     this.isTrackingStarted = false;
     this.previousChar = ' ';
@@ -53,9 +53,11 @@ export default class MentionsTextInput extends Component {
     }
   }
 
-  // componentWillUnmount() {
-  //   console.log(`${DEBUG_KEY}: componentWillUnmount`);
-  // }
+  componentDidMount() {
+    this.setState({
+      textInputHeight: this.props.textInputMinHeight,
+    });
+  }
 
   onChangeText(val) {
     this.props.onChangeText(val); // pass changed text back
@@ -257,6 +259,13 @@ export default class MentionsTextInput extends Component {
     this._textInput.focus();
   }
 
+  updateTextInputHeight(height) {
+    console.log('Update px: ' + Math.max(this.props.textInputMinHeight, height));
+    this.setState({
+      textInputHeight: Math.max(this.props.textInputMinHeight, height),
+    });
+  }
+
   renderItemSeparator = () => {
     return (
       <View
@@ -286,6 +295,8 @@ export default class MentionsTextInput extends Component {
         </View>
       );
     }
+    console.log('this.state.textInputHeight: ' + this.state.textInputHeight);
+    console.log('this.props.textInputMinHeight: ' + this.props.textInputMinHeight);
     return (
       <View style={{ flexDirection: 'row' }}>
         {this.props.renderLeftIcons ? this.props.renderLeftIcons() : null}
@@ -296,15 +307,15 @@ export default class MentionsTextInput extends Component {
             ref={component => this._textInput = component}
             onChangeText={this.onChangeText.bind(this)}
             onSelectionChange={this.handleOnSelectionChange.bind(this)}
+            onContentSizeChange={(e) => {this.updateTextInputHeight(e.nativeEvent.contentSize.height);}}
             multiline={true}
             value={this.props.value}
-            style={
-              [
-                { ...this.props.textInputStyle },
-                { minHeight: this.props.textInputMinHeight },
-                { maxHeight: this.props.textInputMaxHeight },
-              ]
-            }
+            style={{ 
+                  ...this.props.textInputStyle, 
+                  minHeight: this.props.textInputMinHeight, 
+                  maxHeight: this.props.textInputMaxHeight,
+                  paddingTop: this.state.textInputHeight == this.props.textInputMinHeight ? 4 : 0,
+            }}
             placeholder={this.props.placeholder ? this.props.placeholder : 'Write a comment...'}
           />
         </View>
