@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`hi there should dispatch goal update success with complete as false 1`] = `
+Array [
+  Object {
+    "payload": Object {
+      "complete": false,
+      "goalId": 1,
+      "pageId": 1,
+      "tab": "",
+      "type": "markGoalAsComplete",
+    },
+    "type": "goal_detail_update",
+  },
+  Object {
+    "payload": Object {
+      "complete": false,
+      "goalId": 1,
+      "pageId": 1,
+      "tab": "",
+      "type": "markGoalAsComplete",
+    },
+    "type": "goal_detail_update_done",
+  },
+  Object {
+    "payload": Object {
+      "complete": false,
+      "data": undefined,
+      "goalId": 1,
+      "pageId": 1,
+      "tab": "",
+    },
+    "type": "goal_detail_mark_as_complete_success",
+  },
+]
+`;
+
+exports[`hi there should dispatch goal update success with complete as true 1`] = `
+Array [
+  Object {
+    "payload": Object {
+      "complete": true,
+      "goalId": 1,
+      "pageId": 1,
+      "tab": "",
+      "type": "markGoalAsComplete",
+    },
+    "type": "goal_detail_update",
+  },
+  Object {
+    "payload": Object {
+      "complete": true,
+      "goalId": 1,
+      "pageId": 1,
+      "tab": "",
+      "type": "markGoalAsComplete",
+    },
+    "type": "goal_detail_update_done",
+  },
+  Object {
+    "payload": Object {
+      "complete": true,
+      "data": undefined,
+      "goalId": 1,
+      "pageId": 1,
+      "tab": "",
+    },
+    "type": "goal_detail_mark_as_complete_success",
+  },
+]
+`;
