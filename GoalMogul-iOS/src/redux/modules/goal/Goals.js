@@ -127,15 +127,15 @@ const INITIAL_GOAL_OBJECT = {
     reference: [],
 };
 
-const INITIAL_NAVIGATION_STATE_V2 = {
+export const INITIAL_NAVIGATION_STATE_V2 = {
     index: 0,
     routes: [
-      { key: 'centralTab', title: 'CentralTab' },
-      { key: 'focusTab', title: 'FocusTab' },
+        { key: 'centralTab', title: 'CentralTab' },
+        { key: 'focusTab', title: 'FocusTab' },
     ],
     focusType: undefined, // ['need', 'step', 'comment']
     focusRef: undefined
-  };
+};
 
 export const INITIAL_GOAL_PAGE = {
     refreshing: false, 

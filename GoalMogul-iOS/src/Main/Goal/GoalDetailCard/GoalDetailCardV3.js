@@ -63,7 +63,7 @@ const TABBAR_HEIGHT = 48.5;
 const TOTAL_HEIGHT = TABBAR_HEIGHT;
 const COMPONENT_NAME = 'goalDetail';
 
-class GoalDetailCardV3 extends Component {
+export class GoalDetailCardV3 extends Component {
   constructor(props) {
     super(props);
     this.state = {
