@@ -6,8 +6,11 @@
     "@sentry/webpack-plugin": "^1.9.3",
     "babel-preset-expo": "^5.0.0",
     "cavy": "^3.1.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
     "identity-obj-proxy": "^3.0.0",
     "jest-expo": "^35.0.0",
+    "react-dom": "^16.12.0",
     "react-native-testing-library": "^1.12.0",
     "redux-mock-store": "^1.5.4"
   },
@@ -32,8 +35,10 @@
       ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "identity-obj-proxy"
     },
     "setupFiles": [
-      "./config/jest/globalFetch.js"
-    ]
+      "./config/jest/globalFetch.js",
+      "./config/jest/setup.js"
+    ],
+    "testEnvironment": "jsdom"
   },
   "dependencies": {
     "axios": "^0.18.0",
