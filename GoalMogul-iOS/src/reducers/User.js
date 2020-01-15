@@ -21,7 +21,7 @@ import {
 } from '../redux/modules/User/Tutorials';
 import { PROFILE_BADGE_EARN_MODAL_SHOWN } from './Profile';
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   userId: '',
   token: '',
   // Detail user info

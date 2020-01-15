@@ -32,11 +32,12 @@
       "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|sentry-expo|native-base|@sentry/react-native)"
     ],
     "moduleNameMapper": {
-      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "identity-obj-proxy"
+      ".+\\.(css|styl|less|sass|scss|ttf|woff|woff2)$": "identity-obj-proxy",
+      "^[./a-zA-Z0-9$_-]+\\.png$": "<rootDir>/__tests__/__mocks__/RelativeImageStub.js"
     },
     "setupFiles": [
-      "./config/jest/globalFetch.js",
-      "./config/jest/setup.js"
+      "./__tests__/config/globalFetch.js",
+      "./__tests__/config/setup.js"
     ],
     "testEnvironment": "jsdom"
   },

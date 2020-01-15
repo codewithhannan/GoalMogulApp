@@ -1,7 +1,7 @@
 import { ActionConst, Actions } from 'react-native-router-flux';
 import _ from 'lodash';
 
-const initialState = {
+export const initialState = {
   scene: {},
   stack: [],
   state: {},

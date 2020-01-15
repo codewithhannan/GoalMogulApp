@@ -63,7 +63,7 @@ const rootPersistConfig = {
   blacklist: ['registration', 'form']
 };
 
-const reducers = combineReducers({
+export const reducers = combineReducers({
   auth: AuthReducers,
   registration: RegReducers,
   cameraRoll: CameraRollReducers,

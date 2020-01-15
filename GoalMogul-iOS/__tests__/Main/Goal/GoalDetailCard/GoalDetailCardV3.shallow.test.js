@@ -29,6 +29,7 @@ describe("goal detail v3", () => {
     it("should shallow render basic goal detail v3 page", () => {
         component = shallow(<GoalDetailCardV3 {...DEFAULT_GOALDETAIL_PROPS} />);
         expect(component.debug()).toMatchSnapshot();
+        expect(component.find("Spinner").exists()).toBeTruthy();
     });
 });
 
