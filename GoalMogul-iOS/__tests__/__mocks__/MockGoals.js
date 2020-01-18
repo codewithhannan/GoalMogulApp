@@ -19,6 +19,7 @@ export const DEFAULT_GOAL = {
     __v: 0,
     _id: '5b502211e500e3001afd1e20',
     category: 'General',
+    likeCount: 0,
     created: '2018-07-19T05:30:57.531Z',
     details: {
       tags: [],

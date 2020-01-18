@@ -7,26 +7,31 @@
  */
 
 import React from 'react';
-import { Provider } from 'react-redux';
-import { render, fireEvent } from 'react-native-testing-library';
+import { fireEvent, cleanup } from 'react-native-testing-library';
 import _ from 'lodash';
 import { GoalDetailCardV3 } from '../../../../src/Main/Goal/GoalDetailCard/GoalDetailCardV3';
 import { DEFAULT_GOAL } from '../../../__mocks__/MockGoals';
 import { INITIAL_NAVIGATION_STATE_V2 } from '../../../../src/redux/modules/goal/Goals';
 import { MAIN_NAVIGATION_ROUTES } from '../../../../src/reducers/NavigationReducers';
-import { createStoreWithReducers } from '../../../__mocks__/ReduxMockStore';
+import { createStoreWithReducers, componentWrapperWithStore } from '../../../__mocks__/ReduxMockStore';
 import { DEFAULT_TEST_USER_INTIAL_STATE } from '../../../__mocks__/user/Users';
 import { DEFAULT_TEST_GOALS_INITIAL_STATE, DEFAULT_GOAL_PAGE_ID } from '../../../__mocks__/goal/Goals';
 import { DEFAULT_TEST_COMMENTS_INITIAL_STATE } from '../../../__mocks__/feed/comment/Comments';
 import { DEFAULT_TEST_NAVIGATION_INITIAL_STATE } from '../../../__mocks__/navigation/Navigations';
+import * as likeActions from '../../../../src/redux/modules/like/LikeActions';
+import { customRenderer } from '../../../__mocks__/Utils';
 
-const componentWrapperWithStore = (store) => ({ children }) => {
-    return (
-        <Provider store={store}>
-            {children}
-        </Provider>
-    );
-};
+jest.mock('react-native-reanimated');
+jest.mock('react-native-modal-datetime-picker');
+jest.mock("../../../../src/redux/modules/like/LikeActions", () => {
+    const originalModule = jest.requireActual("../../../../src/redux/modules/like/LikeActions");
+
+    return {
+        ...originalModule,
+        unlikeGoal: jest.fn().mockImplementation(() => () => {}),
+        likeGoal: jest.fn().mockImplementation(() => () => {})
+    }
+});
 
 // initial state for goal detail page integration test and deep rendering
 const INITIAL_STATE = {
@@ -36,28 +41,60 @@ const INITIAL_STATE = {
     navigation: { ...DEFAULT_TEST_NAVIGATION_INITIAL_STATE }
 };
 
-jest.mock('react-native-reanimated');
+// NOTE: best practice is to for each test we only render and re-render once
 describe("goal detail v3", () => {
     // let store;
     let store;
     let wrapper;
     let component;
-    beforeAll(() => {
+    beforeEach(() => {
         // All states that the component required need to be setup
         store = createStoreWithReducers(INITIAL_STATE);
         wrapper = componentWrapperWithStore(store);
         fetch.mockResponseAlwaysSuccess(JSON.stringify({}));
-        component = render(
+        component = customRenderer(
             <GoalDetailCardV3 {...DEFAULT_GOALDETAIL_PROPS} />,
             { wrapper }
         );
+    });
+
+    afterEach(() => {
+        if (component !== undefined && component !== null) {
+            const { unmount } = component;
+            unmount();
+        }
     });
 
     // NOTE: should notice some warning since the mock fetch is not 
     // considering all the cases
     it("should deep render basic goal detail v3 page", () => {
         const { toJSON } = component;
+        // Verify functions for componentDidMount() is called
+        expect(DEFAULT_GOALDETAIL_FUNCTIONS.copilotEvents.on).toHaveBeenCalled();
+        expect(DEFAULT_GOALDETAIL_FUNCTIONS.refreshComments).toHaveBeenCalled();
         expect(toJSON()).toMatchSnapshot();
+    });
+
+    it("like integration test", async () => {
+        const { getByTestId, rerender } = component;
+        fetch.mockResponseSuccess(JSON.stringify({ }));
+        fireEvent.press(getByTestId("like-button"));
+        await new Promise((r) => setTimeout(r, 200));
+        expect(likeActions.likeGoal).toHaveBeenCalled();
+        
+        // Re-render component
+        const newProps = _.set(DEFAULT_GOALDETAIL_PROPS, "goalDetail.likeCount", 1);
+        let rerendered = rerender(
+            <GoalDetailCardV3 {...newProps} />,
+            { wrapper }
+        );
+        await new Promise((r) => setTimeout(r, 200));
+        const likeCount = rerendered.getByTestId("button-open-like-list-like-count");
+        expect(likeCount.props.children).toEqual(1);
+        expect(rerendered.toJSON()).toMatchSnapshot();
+
+        // local cleanup
+        rerendered.unmount();
     });
 
     // TODO: set focusType and focusRef to test renderComment() in the component

@@ -425,13 +425,14 @@ class GoalDetailSection extends React.PureComponent {
         {
           likeCount > 0 ? (
             <DelayedButton 
+              testeID="button-open-like-list"
               style={styles.likeCountContainerStyle}
               onPress={() => this.setState({ ...this.state, showlikeListModal: true })}
               activeOpacity={0.6}
             >
               <Image source={LoveIcon} style={{ tintColor: '#f15860', height: 11, width: 12, marginRight: 4 }} />
               <Text style={{ ...styles.statsBaseTextStyle, color: '#f15860' }}>
-                <Text style={{ fontWeight: '700' }}>{likeCount}</Text> {likeCount > 1 ? 'people' : 'person'} liked this
+                <Text style={{ fontWeight: '700' }} testID="button-open-like-list-like-count">{likeCount}</Text> {likeCount > 1 ? 'people' : 'person'} liked this
               </Text>
             </DelayedButton>
           ) : 
@@ -487,6 +488,7 @@ class GoalDetailSection extends React.PureComponent {
     return (
       <ActionButtonGroup>
         <ActionButton
+          testID="like-button"
           iconSource={LoveIcon}
           // count={likeCount}
           count='Like'
