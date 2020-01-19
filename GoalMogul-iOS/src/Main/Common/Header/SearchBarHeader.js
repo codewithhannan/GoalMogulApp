@@ -176,6 +176,7 @@ class SearchBarHeader extends Component {
       const backButtonTintColor = tintColor;
       return (
         <DelayedButton 
+          testID="button-back"
           activeOpacity={0.6} 
           onPress={this.handleBackOnClick.bind(this)}
           style={{ paddingHorizontal: PADDING_HORIZONTAL }}

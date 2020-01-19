@@ -67,34 +67,58 @@ describe("goal detail v3", () => {
 
     // NOTE: should notice some warning since the mock fetch is not 
     // considering all the cases
-    it("should deep render basic goal detail v3 page", () => {
-        const { toJSON } = component;
-        // Verify functions for componentDidMount() is called
-        expect(DEFAULT_GOALDETAIL_FUNCTIONS.copilotEvents.on).toHaveBeenCalled();
-        expect(DEFAULT_GOALDETAIL_FUNCTIONS.refreshComments).toHaveBeenCalled();
-        expect(toJSON()).toMatchSnapshot();
-    });
+    // it("should deep render basic goal detail v3 page", () => {
+    //     const { toJSON } = component;
+    //     // Verify functions for componentDidMount() is called
+    //     expect(DEFAULT_GOALDETAIL_FUNCTIONS.copilotEvents.on).toHaveBeenCalled();
+    //     expect(DEFAULT_GOALDETAIL_FUNCTIONS.refreshComments).toHaveBeenCalled();
+    //     expect(toJSON()).toMatchSnapshot();
+    // });
 
-    it("like integration test", async () => {
-        const { getByTestId, rerender } = component;
-        fetch.mockResponseSuccess(JSON.stringify({ }));
-        fireEvent.press(getByTestId("like-button"));
-        await new Promise((r) => setTimeout(r, 200));
-        expect(likeActions.likeGoal).toHaveBeenCalled();
+    // it("like integration test", async () => {
+    //     const { getByTestId, rerender } = component;
+    //     fetch.mockResponseSuccess(JSON.stringify({ }));
+    //     fireEvent.press(getByTestId("like-button"));
+    //     await new Promise((r) => setTimeout(r, 200));
+    //     expect(likeActions.likeGoal).toHaveBeenCalled();
         
-        // Re-render component
-        const newProps = _.set(DEFAULT_GOALDETAIL_PROPS, "goalDetail.likeCount", 1);
-        let rerendered = rerender(
-            <GoalDetailCardV3 {...newProps} />,
-            { wrapper }
-        );
-        await new Promise((r) => setTimeout(r, 200));
-        const likeCount = rerendered.getByTestId("button-open-like-list-like-count");
-        expect(likeCount.props.children).toEqual(1);
-        expect(rerendered.toJSON()).toMatchSnapshot();
+    //     // Re-render component
+    //     const newProps = _.set(DEFAULT_GOALDETAIL_PROPS, "goalDetail.likeCount", 1);
+    //     let rerendered = rerender(
+    //         <GoalDetailCardV3 {...newProps} />,
+    //         { wrapper }
+    //     );
+    //     await new Promise((r) => setTimeout(r, 200));
+    //     const likeCount = rerendered.getByTestId("button-open-like-list-like-count");
+    //     expect(likeCount.props.children).toEqual(1);
+    //     expect(rerendered.toJSON()).toMatchSnapshot();
 
-        // local cleanup
-        rerendered.unmount();
+    //     // local cleanup
+    //     rerendered.unmount();
+    // });
+
+    // it("like list integration test", async () => {
+    //     const { getByTestId } = component;
+    //     fetch.mockResponseSuccess(JSON.stringify({}));
+    //     expect(getByTestId("like-list-modal").props.isVisible).toBeFalsy();
+    //     // Open like list by clicking the button
+    //     fireEvent.press(getByTestId("button-open-like-list"));
+    //     expect(getByTestId("like-list-modal").props.isVisible).toBeTruthy();
+    //     // Close the list by clicking the button
+    //     fireEvent.press(getByTestId("like-list-modal-close-button"));
+    //     expect(getByTestId("like-list-modal").props.isVisible).toBeFalsy();
+    // });
+
+    it("share list integration test", async () => {
+        const { getByTestId } = component;
+        fetch.mockResponseSuccess(JSON.stringify({}));
+        expect(getByTestId("share-list-modal").props.isVisible).toBeFalsy();
+        // Open share list by clicking the button
+        fireEvent.press(getByTestId("button-open-share-list"));
+        expect(getByTestId("share-list-modal").props.isVisible).toBeTruthy();
+        // Close share list by clicking the button
+        fireEvent.press(getByTestId("share-list-modal-close-button"));
+        expect(getByTestId("share-list-modal").props.isVisible).toBeFalsy();
     });
 
     // TODO: set focusType and focusRef to test renderComment() in the component
