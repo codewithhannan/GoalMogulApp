@@ -37,6 +37,7 @@ Object {
         "publishDate": "2018-07-19T05:30:57.531Z",
       },
       "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
       "needs": Array [
         Object {
           "_id": 0,
@@ -129,6 +130,7 @@ Object {
         "publishDate": "2018-07-19T05:30:57.531Z",
       },
       "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
       "needs": Array [
         Object {
           "_id": 0,
@@ -241,6 +243,7 @@ Object {
         "publishDate": "2018-07-19T05:30:57.531Z",
       },
       "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
       "needs": Array [
         Object {
           "_id": 0,
@@ -336,7 +339,7 @@ Object {
       },
       "isCompleted": true,
       "lastUpdated": "2018-07-19T05:30:57.531Z",
-      "likeCount": undefined,
+      "likeCount": 0,
       "maybeLikeRef": "like",
       "needs": Array [
         Object {
@@ -433,7 +436,7 @@ Object {
       },
       "isCompleted": true,
       "lastUpdated": "2018-07-19T05:30:57.531Z",
-      "likeCount": NaN,
+      "likeCount": -1,
       "maybeLikeRef": "undefined",
       "needs": Array [
         Object {
@@ -528,6 +531,7 @@ Object {
         "publishDate": "2018-07-19T05:30:57.531Z",
       },
       "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
       "needs": Array [
         Object {
           "_id": 0,
@@ -620,6 +624,7 @@ Object {
         "publishDate": "2018-07-19T05:30:57.531Z",
       },
       "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
       "needs": Array [
         Object {
           "_id": 0,
@@ -712,6 +717,7 @@ Object {
         "publishDate": "2018-07-19T05:30:57.531Z",
       },
       "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
       "needs": Array [
         Object {
           "_id": 0,
@@ -805,6 +811,7 @@ Object {
         "publishDate": "2018-07-19T05:30:57.531Z",
       },
       "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
       "needs": Array [
         Object {
           "_id": 0,
@@ -897,6 +904,7 @@ Object {
         "publishDate": "2018-07-19T05:30:57.531Z",
       },
       "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
       "needs": Array [
         Object {
           "_id": 0,
@@ -991,6 +999,7 @@ Object {
       },
       "isCompleted": true,
       "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
       "needs": Array [
         Object {
           "_id": 0,
@@ -1086,6 +1095,7 @@ Object {
       },
       "isCompleted": true,
       "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
       "needs": Array [
         Object {
           "_id": 0,
@@ -1181,6 +1191,7 @@ Object {
       },
       "isCompleted": true,
       "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
       "needs": Array [
         Object {
           "_id": 0,
@@ -1276,6 +1287,7 @@ Object {
       },
       "isCompleted": true,
       "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
       "needs": Array [
         Object {
           "_id": 0,
@@ -1371,6 +1383,7 @@ Object {
       },
       "isCompleted": true,
       "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
       "needs": Array [
         Object {
           "_id": 0,
@@ -1465,6 +1478,7 @@ Object {
         "publishDate": "2018-07-19T05:30:57.531Z",
       },
       "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
       "needs": Array [
         Object {
           "_id": 0,
@@ -1560,7 +1574,7 @@ Object {
       },
       "isCompleted": true,
       "lastUpdated": "2018-07-19T05:30:57.531Z",
-      "likeCount": NaN,
+      "likeCount": -1,
       "maybeLikeRef": "undefined",
       "needs": Array [
         Object {
@@ -1657,7 +1671,7 @@ Object {
       },
       "isCompleted": true,
       "lastUpdated": "2018-07-19T05:30:57.531Z",
-      "likeCount": NaN,
+      "likeCount": 0,
       "maybeLikeRef": "like",
       "needs": Array [
         Object {
@@ -1753,6 +1767,7 @@ Object {
         "publishDate": "2018-07-19T05:30:57.531Z",
       },
       "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
       "needs": Array [
         Object {
           "_id": 0,
@@ -1846,6 +1861,7 @@ Object {
         "publishDate": "2018-07-19T05:30:57.531Z",
       },
       "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
       "needs": Array [
         Object {
           "_id": 0,
@@ -1939,6 +1955,7 @@ Object {
         "publishDate": "2018-07-19T05:30:57.531Z",
       },
       "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
       "needs": Array [
         Object {
           "_id": 0,

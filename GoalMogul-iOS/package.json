@@ -39,7 +39,10 @@
       "./__tests__/config/globalFetch.js",
       "./__tests__/config/setup.js"
     ],
-    "testEnvironment": "jsdom"
+    "testEnvironment": "jsdom",
+    "testPathIgnorePatterns": [
+      "/__mocks__/", "/node_modules/", "/config/"
+    ]
   },
   "dependencies": {
     "axios": "^0.18.0",
