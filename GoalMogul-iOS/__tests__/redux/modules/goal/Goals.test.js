@@ -28,7 +28,7 @@ import {
     PROFILE_REFRESH_TAB_DONE,
     PROFILE_GOAL_DELETE_SUCCESS
 } from '../../../../src/reducers/Profile';
-import { DEFAULT_GOAL } from '../../../../__mocks__/mockGoals';
+import { DEFAULT_GOAL } from '../../../__mocks__/mockGoals';
 
 // TODO: types missing tests are:
 // [
