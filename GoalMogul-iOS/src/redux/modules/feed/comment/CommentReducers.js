@@ -29,7 +29,7 @@ import {
 
 const DEBUG_KEY = '[ CommentReducers ]';
 
-const COMMENT_INITIAL_STATE = {
+export const COMMENT_INITIAL_STATE = {
   data: [],
   transformedComments: [],
   skip: 0,
@@ -42,7 +42,7 @@ const COMMENT_INITIAL_STATE = {
  * it looks like
  * goal_{pageId}: { COMMENT_INITIAL_STATE };
  */
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   homeTab: {
 
   },
