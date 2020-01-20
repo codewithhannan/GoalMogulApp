@@ -32,21 +32,21 @@ export const DEFAULT_GOAL = {
     },
     lastUpdated: '2018-07-19T05:30:57.531Z',
     needs: [{
-      _id: 0,
+      _id: "need-0",
       created: '2018-07-19T05:30:57.531Z',
       description: 'introduction to someone from the Bill and Melinda Gates Foundation',
       isCompleted: false,
       order: 0,
     },
     {
-      _id: 1,
+      _id: "need-1",
       created: '2018-07-19T05:30:57.531Z',
       description: 'Get in contact with Nuclear experts',
       isCompleted: false,
       order: 1,
     },
     {
-      _id: 2,
+      _id: "neeed-2",
       created: '2018-07-19T05:30:57.531Z',
       description: 'Legal & Safety experts who have worked with the United States',
       isCompleted: false,
@@ -65,7 +65,7 @@ export const DEFAULT_GOAL = {
     priority: 3,
     privacy: 'friends',
     steps: [{
-      _id: 0,
+      _id: "step-0",
       created: '2018-07-19T05:30:57.531Z',
       description: 'This is my first step to complete the goal',
       isCompleted: false,

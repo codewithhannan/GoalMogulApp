@@ -5,7 +5,7 @@ Array [
   Object {
     "payload": Object {
       "goalId": "5b502211e500e3001afd1e20",
-      "isCompleted": true,
+      "isCompleted": undefined,
       "pageId": 0,
       "tab": "",
       "type": "markNeedAsComplete",
@@ -15,7 +15,7 @@ Array [
   Object {
     "payload": Object {
       "goalId": "5b502211e500e3001afd1e20",
-      "isCompleted": true,
+      "isCompleted": undefined,
       "pageId": 0,
       "tab": "",
       "type": "markNeedAsComplete",
@@ -26,7 +26,7 @@ Array [
     "payload": Object {
       "goalId": "5b502211e500e3001afd1e20",
       "id": 0,
-      "isCompleted": true,
+      "isCompleted": undefined,
       "pageId": 0,
       "tab": "",
     },

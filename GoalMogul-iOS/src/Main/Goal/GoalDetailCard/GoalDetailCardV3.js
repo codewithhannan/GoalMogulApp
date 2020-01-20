@@ -516,6 +516,7 @@ export class GoalDetailCardV3 extends Component {
       case 'centralTab':
         return (
           <CentralTab
+            testID="goal-detail-card-central-tab"
             ref={(ref) => (this.centralTabScrollView = ref)}
             onScroll={Animated.event(
               [{ nativeEvent: { contentOffset: { y: this.state.scroll } } }],
@@ -536,6 +537,7 @@ export class GoalDetailCardV3 extends Component {
       case 'focusTab':
         return (
           <FocusTab
+            // testID="goal-detail-card-focus-tab"
             onRef={(ref) => { this.focusTab = ref; }}
             onScroll={Animated.event(
               [{ nativeEvent: { contentOffset: { y: this.state.scroll } } }],
@@ -642,6 +644,7 @@ export class GoalDetailCardV3 extends Component {
         style={{ backgroundColor: BACKGROUND_COLOR, borderTopWidth: 0.5, borderBottomWidth: 0.5, borderColor: '#e5e5e5', minHeight: 54 }}
         onPress={this.onViewCommentPress}
         onLayout={(event) => this.onContentSizeChange('allCommentItem', event)}
+        testID="button-view-all-comments"
       >
         <View
           style={{

@@ -171,7 +171,7 @@ class FocusTab extends React.PureComponent {
     //   : () => this.props.resetCommentType('Suggestion', pageId);
 
     return (
-      <View style={{ flex: 1, backgroundColor: 'transparent' }}>
+      <View style={{ flex: 1, backgroundColor: 'transparent' }} testID="goal-detail-card-focus-tab">
         <LikeListModal 
           isVisible={this.state.showCommentLikeList} 
           closeModal={this.closeCommentLikeList}
@@ -191,6 +191,7 @@ class FocusTab extends React.PureComponent {
           ListEmptyComponent={
             this.props.loading ? null :
             <EmptyResult
+              testID="focus-tab-empty-result"
               text={emptyText}
               textStyle={{ paddingTop: 70 }}
             />
