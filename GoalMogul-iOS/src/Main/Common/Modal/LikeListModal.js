@@ -3,12 +3,12 @@
  * NOTE: before entering a profile, modal is closed first or not
  */
 import React from 'react';
-import { View, FlatList, Image, Text } from 'react-native';
+import { Dimensions, View, FlatList, Image, Text } from 'react-native';
 import { connect } from 'react-redux';
 import UserCard from '../Card/UserCard';
 import { getLikeList } from '../../../redux/modules/like/LikeActions';
 import cancel from '../../../asset/utils/cancel_no_background.png';
-import Modal from 'react-native-modal';
+import Modal from 'react-native-modalbox';
 import Constants from 'expo-constants';
 import DelayedButton from '../Button/DelayedButton';
 import { modalCancelIconContainerStyle, modalCancelIconStyle } from '../../../styles';
@@ -18,12 +18,17 @@ const DEBUG_KEY = '[ UI LikeListModal ]';
 const MODAL_TRANSITION_TIME = 300;
 const INITIAL_STATE = {
     data: [], // User like list
-    refreshing: false
+    refreshing: false,
+    scrollOffset: null,
 };
+const screenHeight = Math.round(Dimensions.get('window').height);
 class LikeListModal extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.state = {...INITIAL_STATE};
+        this.state = {
+            ...INITIAL_STATE,
+            isVisible: this.props.isVisible,
+        };
     }
 
     closeModal() {
@@ -32,12 +37,7 @@ class LikeListModal extends React.PureComponent {
 
     refreshLikeList = () => {
         this.setState({ ...this.state, refreshing: true });
-        const callback = (data) => {
-            this.setState({
-                ...this.state,
-                data
-            });
-        };
+        const callback = (data) => {this.setState({...this.state, data});};
 
         this.props.getLikeList(this.props.parentId, this.props.parentType, callback);
     }
@@ -49,6 +49,12 @@ class LikeListModal extends React.PureComponent {
     onModalHide = () => {
         if (this.props.clearDataOnHide) {
             this.setState({ ...INITIAL_STATE });
+        }
+    }
+
+    onScrollFlatList(offset) {
+        if (offset < -0.1 * screenHeight) {
+            this.closeModal();
         }
     }
 
@@ -83,7 +89,7 @@ class LikeListModal extends React.PureComponent {
                         style={{ ...ModalHeaderStyle.cancelIconStyle, tintColor: '#21364C' }}
                     />
                 </DelayedButton>
-                <View 
+                <View
                     style={{
                         marginHorizontal: 17,
                         alignItems: 'center',
@@ -99,15 +105,16 @@ class LikeListModal extends React.PureComponent {
     render() {
         return (
             <Modal
-                backdropColor={'black'}
-                isVisible={this.props.isVisible}
+                swipeToClose={true}
+                swipeThreshold={50}
+                isOpen={this.props.isVisible}
                 backdropOpacity={0.5}
-                onModalShow={this.onModalShow}
-                onModalHide={this.onModalHide.bind(this)}
-                // swipeDirection='down'
-                // onSwipe={this.closeModal.bind(this)}
-                hideModalContentWhileAnimating
-                style={{ flex: 1, marginTop: Constants.statusBarHeight + 15, backgroundColor: 'white', borderTopRightRadius: 15, borderTopLeftRadius: 15, marginHorizontal: 0, marginBottom: 0 }}
+                onOpened={this.onModalShow}
+                onClosed={() => {this.closeModal(); this.onModalHide();}}
+                coverScreen={true}
+                style={{
+                    flex: 1, marginTop: Constants.statusBarHeight + 15, backgroundColor: 'white', borderTopRightRadius: 15, borderTopLeftRadius: 15, marginHorizontal: 0, marginBottom: 0,
+                }}
             >
                 {this.renderHeader()}
                 <FlatList
@@ -116,6 +123,7 @@ class LikeListModal extends React.PureComponent {
                     renderItem={this.renderItem}
                     contentContainerStyle={{ marginTop: 10 }}
                     refreshing={this.state.refreshing}
+                    onScroll={(e) => {this.onScrollFlatList(e.nativeEvent.contentOffset.y);}}
                 />
             </Modal>
         );
@@ -125,6 +133,6 @@ class LikeListModal extends React.PureComponent {
 export default connect(
     null,
     {
-        getLikeList   
+        getLikeList
     }
 )(LikeListModal);
