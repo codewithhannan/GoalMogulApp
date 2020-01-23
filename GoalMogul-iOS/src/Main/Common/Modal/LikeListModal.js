@@ -19,7 +19,6 @@ const MODAL_TRANSITION_TIME = 300;
 const INITIAL_STATE = {
     data: [], // User like list
     refreshing: false,
-    scrollOffset: null,
 };
 const screenHeight = Math.round(Dimensions.get('window').height);
 class LikeListModal extends React.PureComponent {
@@ -33,6 +32,9 @@ class LikeListModal extends React.PureComponent {
 
     closeModal() {
         this.props.closeModal && this.props.closeModal();
+        if (this.props.clearDataOnHide) {
+            this.setState({...INITIAL_STATE});
+        }
     }
 
     refreshLikeList = () => {
@@ -46,9 +48,9 @@ class LikeListModal extends React.PureComponent {
         this.refreshLikeList();
     }
 
-    onModalHide = () => {
-        if (this.props.clearDataOnHide) {
-            this.setState({ ...INITIAL_STATE });
+    onScrollFlatList(offset) {
+        if (offset < -0.1 * screenHeight) {
+            this.closeModal();
         }
     }
 
@@ -109,11 +111,20 @@ class LikeListModal extends React.PureComponent {
                 swipeThreshold={50}
                 isOpen={this.props.isVisible}
                 backdropOpacity={0.5}
-                onOpened={this.onModalShow}
-                onClosed={() => {this.closeModal(); this.onModalHide();}}
+                onOpened={() => this.onModalShow()}
+                onClosed={() => this.closeModal()}
                 coverScreen={true}
+                // See https://github.com/maxs15/react-native-modalbox/issues/239
+                // Trading slight performance hit for no visible flashing
+                useNativeDriver={false}
                 style={{
-                    flex: 1, marginTop: Constants.statusBarHeight + 15, backgroundColor: 'white', borderTopRightRadius: 15, borderTopLeftRadius: 15, marginHorizontal: 0, marginBottom: 0,
+                    flex: 1,
+                    backgroundColor: 'white',
+                    borderTopRightRadius: 15,
+                    borderTopLeftRadius: 15,
+                    marginBottom: 0,
+                    marginHorizontal: 0,
+                    marginTop: Constants.statusBarHeight + 15,
                 }}
             >
                 {this.renderHeader()}
