@@ -41,7 +41,9 @@
     ],
     "testEnvironment": "jsdom",
     "testPathIgnorePatterns": [
-      "/__mocks__/", "/node_modules/", "/config/"
+      "/__mocks__/",
+      "/node_modules/",
+      "/config/"
     ]
   },
   "dependencies": {
