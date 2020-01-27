@@ -42,9 +42,6 @@ class GoldBadgeRewardModal extends React.PureComponent {
                 backdropOpacity={0.5}
                 isVisible={this.props.isVisible}
                 onBackdropPress={() => this.closeModal()}
-                onSwipeComplete={() => this.closeModal()}
-                swipeDirection={'down'}
-                swipeThreshold={20}
                 style={{ marginTop: Constants.statusBarHeight + 15, borderRadius: 15 }}
             >
                 <View style={{ ...modalContainerStyle, padding: 10, alignItems: 'flex-start', flex: 1 }}>

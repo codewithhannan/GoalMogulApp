@@ -111,6 +111,8 @@ class EarnBadgeModal extends React.PureComponent {
             tier = _.get(this.props.user, 'profile.badges.milestoneBadge.currentMilestone');
         }
 
+        const hasModalOverlay = this.state.showGoldBadgeRewardModal || this.state.showGoldBagdeInfoModal;
+
         return (
             <Modal
                 backdropColor={'black'}
@@ -119,8 +121,7 @@ class EarnBadgeModal extends React.PureComponent {
                 onModalShow={this.onModalShow}
                 onBackdropPress={() => this.closeModal()}
                 onSwipeComplete={() => this.closeModal()}
-                swipeDirection={'down'}
-                swipeThreshold={20}
+                swipeDirection={hasModalOverlay ? null :'down'}
                 style={{ marginTop: Constants.statusBarHeight + 15, borderRadius: 15 }}
             >
                 <GoldBadgeRewardModal 
