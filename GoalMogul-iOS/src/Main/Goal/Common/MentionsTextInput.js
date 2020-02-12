@@ -18,7 +18,6 @@ export default class MentionsTextInput extends Component {
     this.state = {
       isTrackingStarted: false,
       suggestionRowHeight: new Animated.Value(0),
-      textInputHeight: 0,
     };
     this.isTrackingStarted = false;
     this.previousChar = ' ';
@@ -51,12 +50,6 @@ export default class MentionsTextInput extends Component {
     if (!_.isEqual(prevContentTagsReg.sort(), nextContentTagsReg.sort())) {
       // Update the tags to match
     }
-  }
-
-  componentDidMount() {
-    this.setState({
-      textInputHeight: this.props.textInputMinHeight,
-    });
   }
 
   onChangeText(val) {
@@ -259,12 +252,6 @@ export default class MentionsTextInput extends Component {
     this._textInput.focus();
   }
 
-  updateTextInputHeight(height) {
-    this.setState({
-      textInputHeight: Math.max(this.props.textInputMinHeight, height),
-    });
-  }
-
   renderItemSeparator = () => {
     return (
       <View
@@ -304,14 +291,14 @@ export default class MentionsTextInput extends Component {
             ref={component => this._textInput = component}
             onChangeText={this.onChangeText.bind(this)}
             onSelectionChange={this.handleOnSelectionChange.bind(this)}
-            onContentSizeChange={(e) => {this.updateTextInputHeight(e.nativeEvent.contentSize.height);}}
             multiline={true}
             value={this.props.value}
             style={{ 
               ...this.props.textInputStyle,
               minHeight: this.props.textInputMinHeight,
               maxHeight: this.props.textInputMaxHeight,
-              paddingTop: this.state.textInputHeight == this.props.textInputMinHeight ? 4 : 0,
+              paddingTop: 4,
+              paddingBottom: 3,
             }}
             placeholder={this.props.placeholder ? this.props.placeholder : 'Write a comment...'}
           />
