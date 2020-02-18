@@ -5,7 +5,8 @@
 import React, { Component } from 'react';
 import {
   View,
-  Platform
+  Platform,
+  KeyboardAvoidingView
 } from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar } from 'react-native-elements';
