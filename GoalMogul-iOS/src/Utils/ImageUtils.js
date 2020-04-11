@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { Image, ImageEditor } from 'react-native';
+import { Image } from 'react-native';
+import * as ImageManipulator from 'expo-image-manipulator';
 import * as Permissions from 'expo-permissions';
 import _ from 'lodash';
 
@@ -103,22 +104,34 @@ const ImageUtils = {
 
     // get info for original image
     const fileType = 'jpeg';
+    const actions = [{
+      resize: {
+        width: widthCap * (width > height ? 1 : width / height),
+        height: heightCap * (height > width ? 1 : height / width),
+      }
+    }];
+    const saveOptions = {
+      compress: 1, // no compress since we resize the image
+      format: ImageManipulator.SaveFormat.JPEG
+    };
 
-    const promise = new Promise(resolve => {
-      ImageEditor.cropImage(
-        file,
-        cropData,
-        success => {
-          resolve({
-            uri: success,
-            name: `photo.${fileType}`,
-            type: `image/${fileType}`,
-          });
-        },
-        err => {
-          console.log('edited err: ', err);
-        }
-      );
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const editedImage = await ImageManipulator.manipulateAsync(
+          file,
+          actions,
+          saveOptions
+        );
+    
+        resolve({
+          uri: editedImage.uri,
+          name: `photo.${fileType}`,
+          type: `image/${fileType}`
+        });
+      } catch (error) {
+        console.log('edited err: ', err);
+        reject(err);
+      }
     });
 
     return promise;

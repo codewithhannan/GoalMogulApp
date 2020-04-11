@@ -51,9 +51,9 @@ class GoldBadgeInfoModal extends React.PureComponent {
     render() {
         return (
             <Modal
-                backdropColor={'black'}
+                backdropOpacity={0.5}
                 isVisible={this.props.isVisible}
-                backdropOpacity={0.7}
+                onBackdropPress={() => this.closeModal()}
                 style={{ marginTop: Constants.statusBarHeight + 15, borderRadius: 15 }}
             >
                 <View style={modalContainerStyle}>

@@ -41,7 +41,7 @@ class About extends Component {
   renderCreated(item) {
     const { start, durationHours } = item;
     const startDate = start ? new Date(start) : new Date();
-    const date = `${months[startDate.getMonth() - 1]} ${startDate.getDate()}, ` +
+    const date = `${months[startDate.getMonth()]} ${startDate.getDate()}, ` +
       `${startDate.getFullYear()}`;
 
     const startTime = `${startDate.toLocaleString('en-US', {

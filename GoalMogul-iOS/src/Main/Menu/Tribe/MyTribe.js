@@ -572,7 +572,7 @@ class MyTribe extends Component {
   // Render tribe size and created date
   renderTribeInfo(item) {
     const newDate = item.created ? new Date(item.created) : new Date();
-    const date = `${months[newDate.getMonth() - 1]} ${newDate.getDate()}, ${newDate.getFullYear()}`;
+    const date = `${months[newDate.getMonth()]} ${newDate.getDate()}, ${newDate.getFullYear()}`;
     const count = item.memberCount ? item.memberCount : '102';
     return (
       <View style={styles.tribeInfoContainerStyle}>

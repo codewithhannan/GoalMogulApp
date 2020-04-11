@@ -3,10 +3,10 @@
  * NOTE: before entering a profile, modal is closed first or not
  */
 import React from 'react';
-import { View, FlatList, Image, Text } from 'react-native';
+import { Dimensions, View, FlatList, Image, Text } from 'react-native';
 import { connect } from 'react-redux';
 import cancel from '../../../asset/utils/cancel_no_background.png';
-import Modal from 'react-native-modal';
+import Modal from 'react-native-modalbox';
 import Constants from 'expo-constants';
 import DelayedButton from '../Button/DelayedButton';
 import { ModalHeaderStyle } from './Styles';
@@ -19,6 +19,7 @@ const INITIAL_STATE = {
     data: [], // User like list
     refreshing: false
 };
+const screenHeight = Math.round(Dimensions.get('window').height);
 
 /**
  * NOTE: props for this Modal is: 
@@ -34,6 +35,9 @@ class ShareListModal extends React.PureComponent {
 
     closeModal() {
         this.props.closeModal && this.props.closeModal();
+        if (this.props.clearDataOnHide) {
+            this.setState({ ...INITIAL_STATE });
+        }
     }
 
     refreshShareList = () => {
@@ -48,13 +52,13 @@ class ShareListModal extends React.PureComponent {
         this.props.getShareList(this.props.entityType, this.props.entityId, callback);
     }
 
-    onModalShow = () => {
+    onModalShow() {
         this.refreshShareList();
     }
 
-    onModalHide = () => {
-        if (this.props.clearDataOnHide) {
-            this.setState({ ...INITIAL_STATE });
+    onScrollFlatList(offset) {
+        if (offset < -0.1 * screenHeight) {
+            this.closeModal();
         }
     }
 
@@ -117,15 +121,26 @@ class ShareListModal extends React.PureComponent {
     render() {
         return (
             <Modal
-                backdropColor={'black'}
-                isVisible={this.props.isVisible}
+                swipeToClose={true}
+                swipeThreshold={50}
+                isOpen={this.props.isVisible}
                 backdropOpacity={0.5}
-                onModalShow={this.onModalShow}
-                onModalHide={this.onModalHide.bind(this)}
-                // swipeDirection='down'
-                // onSwipe={this.closeModal.bind(this)}
+                onOpened={() => this.onModalShow()}
+                onClosed={() => this.closeModal()}
+                coverScreen={true}
+                // See https://github.com/maxs15/react-native-modalbox/issues/239
+                // Trading slight performance hit for no visible flashing
+                useNativeDriver={false}
                 hideModalContentWhileAnimating
-                style={{ flex: 1, marginTop: Constants.statusBarHeight + 15, backgroundColor: 'white', borderTopRightRadius: 15, borderTopLeftRadius: 15, marginHorizontal: 0, marginBottom: 0 }}
+                style={{
+                    flex: 1,
+                    backgroundColor: 'white',
+                    borderTopRightRadius: 15,
+                    borderTopLeftRadius: 15,
+                    marginTop: Constants.statusBarHeight + 15,
+                    marginBottom: 0,
+                    marginHorizontal: 0,
+                }}
             >
                 {this.renderHeader()}
                 <FlatList
@@ -134,6 +149,7 @@ class ShareListModal extends React.PureComponent {
                     renderItem={this.renderItem}
                     contentContainerStyle={{ marginTop: 10 }}
                     refreshing={this.state.refreshing}
+                    onScroll={e => this.onScrollFlatList(e.nativeEvent.contentOffset.y)}
                 />
             </Modal>
         );

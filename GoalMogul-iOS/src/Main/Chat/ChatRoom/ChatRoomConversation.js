@@ -42,10 +42,6 @@ import ChatRoomLoaderOverlay from '../Modals/ChatRoomLoaderOverlay';
 import GMGiftedChatBubble from './GiftedChat/GMGiftedChatBubble';
 import ChatRoomConversationInputToolbar from './GiftedChat/GMGiftedChatInputToolbar';
 
-
-
-
-
 const DEBUG_KEY = '[ UI ChatRoomConversation ]';
 const LISTENER_KEY = 'ChatRoomConversation';
 const MAX_TYPING_INDICATORS_TO_DISPLAY = 3;
@@ -59,7 +55,6 @@ const GIFTED_CHAT_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(DEVICE_MODEL) ? 102 :
 class ChatRoomConversation extends React.Component {
 	state = {
 		lastAlertedChatRoomId: null,
-		composerHeight: 'auto',
 		lastEmittedTypingIndicatorStatus: false,
 	}
 
@@ -555,6 +550,7 @@ class ChatRoomConversation extends React.Component {
 			</TouchableOpacity>
 		);
 	}
+
 	renderSendButton(props) {
 		return (
 			<Send
@@ -570,11 +566,7 @@ class ChatRoomConversation extends React.Component {
 			</Send>
 		);
 	}
-	onComposerHeightChanged = (contentSize) => {
-		this.setState({
-			composerHeight: Math.min(120, Math.max(42, contentSize.height + 18)),
-		})
-	}
+
 	renderComposer(props) {
 		return(
 			<View
@@ -593,27 +585,19 @@ class ChatRoomConversation extends React.Component {
 						props.onTextChanged(text);
 						props.onInputTextChanged(text);
 					}}
-					onContentSizeChange={(e) => {
-						// RN bug where e.nativeEvent.contentSize is 36 when input is empty, so we reset it to 18
-						this.onComposerHeightChanged((props.text && props.text.length) ? e.nativeEvent.contentSize : 18);
-						props.onInputSizeChanged({
-							...e.nativeEvent.contentSize,
-							height: e.nativeEvent.contentSize.height + 9, // account for padding
-						});
-					}}
 					value={props.text}
 					multiline={true}
-					numberOfLines={6}
 					placeholder={`${props.placeholder.slice(0, 42)}...`}
 					editable={!this.props.initializing}
 					style={{
 						fontSize: 15,
 						padding: 9,
-						paddingTop: 12,
+						paddingTop: 10,
 						borderColor: '#F1F1F1',
 						borderRadius: 6,
 						borderWidth: 1,
-						height: this.state.composerHeight,
+						minHeight: 15 + 18,
+						maxHeight: 15 * 6 + 18,
 					}}
 				/>
 			</View>

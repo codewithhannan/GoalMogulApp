@@ -40,9 +40,12 @@ class CoinProfileInfoModal extends React.PureComponent {
         return (
             <Modal
                 backdropColor={'black'}
+                backdropOpacity={0.5}
                 isVisible={this.props.isVisible}
-                backdropOpacity={0.7}
-                onModalShow={this.onModalShow} 
+                onBackdropPress={() => this.closeModal()}
+                onSwipeComplete={() => this.closeModal()}
+                swipeDirection={['down']}
+                swipeThreshold={20}
             >
                 <View style={{ ...modalContainerStyle, padding: 25 }}>
                     {this.renderCancelButton()}
