@@ -10,6 +10,15 @@ export const APP_BLUE_BRIGHT = '#17B3EC';
 export const APP_BLUE = '#23B7E9';
 export const APP_DEEP_BLUE = '#0397CB';
 
+/**
+ * Following is the new blue for V2 
+ * 
+ * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=1%3A626
+ */
+export const GM_BLUE = "#45C9F6";
+export const GM_BLUE_LIGHT = "#9EE6FF";
+export const GM_BLUE_LIGHT_LIGHT = "#DEF7FF";
+
 export const imagePreviewContainerStyle = {
   shadowColor: '#ddd',
   shadowOffset: { width: 0, height: 1.5 },
