@@ -26,10 +26,10 @@ import {
   REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
   REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS
 } from '../actions/types';
-
 import {
   USER_LOG_OUT
 } from './User';
+import { REGISTRATION_TEXT_CHANGE } from '../redux/modules/registration/RegistrationReducers';
 
 export function arrayUnique(array) {
   let a = array.concat();
@@ -49,6 +49,23 @@ const INITIAL_STATE = {
   email: '',
   password: '',
   headline: '',
+  countryCode: {
+    "cca2": "US",
+    "country": {
+      "callingCode": [
+        "1",
+      ],
+      "cca2": "US",
+      "currency": [
+        "USD",
+      ],
+      "flag": "flag-us",
+      "name": "United States",
+      "region": "Americas",
+      "subregion": "North America",
+    },
+  }, // country code for phone number
+  phone: '',
   matchedContacts: {
     data: [],
     limit: 30,
@@ -70,6 +87,14 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case REGISTRATION_TEXT_CHANGE: {
+      const { type, value } = action.payload;
+      let newState = _.cloneDeep(state);
+
+      // Update the text field for a type
+      newState = _.set(newState, `${type}`, value);
+      return newState;
+    }
 
     case REGISTRATION_ERROR:
      return { ...state, error: action.payload, loading: false };

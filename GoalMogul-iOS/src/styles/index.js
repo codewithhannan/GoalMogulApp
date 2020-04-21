@@ -18,6 +18,18 @@ export const APP_DEEP_BLUE = '#0397CB';
 export const GM_BLUE = "#45C9F6";
 export const GM_BLUE_LIGHT = "#9EE6FF";
 export const GM_BLUE_LIGHT_LIGHT = "#DEF7FF";
+export const GM_DOT_GRAY = "#E0E0E0";
+
+/**
+ * Standardized font size for GM V2
+ * 
+ * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=1%3A626
+ */
+export const GM_FONT_1 = 12;
+export const GM_FONT_2 = 14;
+export const GM_FONT_3 = 16;
+export const GM_FONT_3_5 = 18;
+export const GM_FONT_4 = 22;
 
 export const imagePreviewContainerStyle = {
   shadowColor: '#ddd',
