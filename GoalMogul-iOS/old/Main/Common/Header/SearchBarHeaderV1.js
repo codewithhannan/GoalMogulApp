@@ -30,7 +30,7 @@ import Constants from 'expo-constants';
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 /* Asset */
-import Logo from '../../../asset/header/logo.png';
+// import Logo from '../../../asset/header/logo.png';
 import IconMenu from '../../../asset/header/menu.png';
 import Setting from '../../../asset/header/setting.png';
 import BackButton from '../../../asset/utils/back.png';
@@ -70,8 +70,8 @@ import {
 
 // styles
 import {
-    GM_BLUE,
-    GM_BLUE_LIGHT_LIGHT
+    APP_BLUE,
+    APP_DEEP_BLUE
 } from '../../../styles';
 
 import {
@@ -87,6 +87,8 @@ const FRIENDSHIP_SETTING_BUTTONS = ['Block', 'Report', 'Cancel'];
 const CANCEL_INDEX = 2;
 
 const DEBUG_KEY = '[ Component SearchBarHeader ]';
+const SHARE_TO_MENU_OPTTIONS = ['My Tribes', 'My Events', 'Cancel'];
+const CANCEL_INDEX_MEN = 2;
 const PADDING_HORIZONTAL = 12;
 const WalkableView = walkthroughable(View);
 
@@ -125,7 +127,9 @@ class SearchBarHeader extends Component {
                 console.log(`${DEBUG_KEY} User blocks _id: `, this.props.profileUserId);
                 this.props.blockUser(
                     this.props.profileUserId,
-                    () => alert(`You have successfully blocked ${this.props.profileUserName}. ${text}`)
+                    () => alert(
+                        `You have successfully blocked ${this.props.profileUserName}. ${text}`
+                    )
                 );
             }],
             [R.equals(1), () => {
@@ -143,10 +147,32 @@ class SearchBarHeader extends Component {
 
     handleMenuIconOnClick = () => {
         Actions.drawerOpen();
+        // Menu options are moved to drawer in /Main/Menu/Menu.js
+        // const menuSwitchCases = switchByButtonIndex([
+        //   [R.equals(0), () => {
+        //     // User choose to share to feed
+        //     console.log(`${DEBUG_KEY} User choose My Tribes `);
+        //     this.props.openMyTribeTab();
+        //   }],
+        //   [R.equals(1), () => {
+        //     // User choose to share to an event
+        //     console.log(`${DEBUG_KEY} User choose My Events `);
+        //     this.props.openMyEventTab();
+        //   }]
+        // ]);
+        //
+        // const menuActionSheet = actionSheet(
+        //   SHARE_TO_MENU_OPTTIONS,
+        //   CANCEL_INDEX,
+        //   menuSwitchCases
+        // );
+        // return menuActionSheet();
     };
 
     renderSearchBarLeftIcon() {
         if (this.props.backButton) {
+            // For version 0.3.5, we standardized the header color to dark blue
+            // const backButtonTintColor = this.props.title ? 'white' : tintColor;
             const backButtonTintColor = tintColor;
             return (
                 <DelayedButton
@@ -213,6 +239,7 @@ class SearchBarHeader extends Component {
 
         // On other people's profile page
         if ((this.props.setting && !this.props.haveSetting) || this.props.pageSetting) {
+            // if (this.props.setting && true) {
             const { handlePageSetting } = this.props;
             return (
                 <DelayedButton
@@ -277,6 +304,8 @@ class SearchBarHeader extends Component {
 
     renderSearchBarOrTitle() {
         if (this.props.title) {
+            // For version 0.3.5, we standardized the header color to dark blue
+            // const titleColor = 'white';
             const titleColor = tintColor;
             return (
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -301,7 +330,7 @@ class SearchBarHeader extends Component {
                 />
                 <Text style={styles.searchPlaceHolderTextStyle}>
                     Search GoalMogul
-                </Text>
+        </Text>
             </DelayedButton>
         );
     }
@@ -345,8 +374,12 @@ const styles = {
     },
     headerStyle: {
         flexDirection: 'row',
-        backgroundColor: GM_BLUE,
+        // backgroundColor: '#4ec9f3',
+        backgroundColor: APP_BLUE,
+        // backgroundColor: '#6bc6f0',
         paddingTop: 40,
+        // paddingLeft: 10,
+        // paddingRight: 10,
         paddingBottom: 10,
         justifyContent: 'center',
         alignItems: 'center'
@@ -370,7 +403,9 @@ const styles = {
     searchButtonContainerStyle: {
         height: 36,
         flex: 1,
-        backgroundColor: GM_BLUE_LIGHT_LIGHT,
+        // width: 260,
+        // backgroundColor: '#1998c9',
+        backgroundColor: APP_DEEP_BLUE,
         borderRadius: 16,
         padding: 0,
         flexDirection: 'row',
@@ -381,6 +416,7 @@ const styles = {
     searchPlaceHolderTextStyle: {
         fontSize: 14,
         alignSelf: 'center',
+        // color: '#b2b3b4',
         color: '#4ec9f3',
         marginLeft: 5
     },
