@@ -70,15 +70,16 @@ export const registrationNextAddProfile = (value) => {
   // TODO: verify with server if email has already existed
   // If exist, prompt user to log in
   // If there are missing fields then show red error message
-  const { name, email, password } = value;
+  const { name, email, password, phone } = value;
 
-  const data = validateEmail(email) ?
-  {
-    name, email, password
-  } :
-  {
-    name, phone: email, password
-  };
+  // const data = validateEmail(email) ?
+  // {
+  //   name, email, password, phoneNumber
+  // } :
+  // {
+  //   name, phone: email, password
+  // };
+  const data = { ...value };
 
   // TODO: refactor network request as factory function
   return async (dispatch) => {

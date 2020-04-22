@@ -82,7 +82,8 @@ import ContactSync from './Registration/ContactSync';
 import IntroForm from './Registration/IntroForm';
 /* Registration */
 // import RegistrationAccount from './Registration/Account';
-import RegistrationAccount from './Registration/RegistrationAccount';
+// import RegistrationAccount from './Registration/RegistrationAccount';
+import { RegistrationAccount } from './Main/Onboarding';
 // import CardStackStyleInterpolator from "react-navigation-stack/src/views/StackView/StackViewStyleInterpolator";
 /* Auth */
 import SplashScreen from './SplashScreen';
