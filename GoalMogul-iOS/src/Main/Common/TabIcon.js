@@ -85,7 +85,7 @@ class TabIcon extends React.PureComponent {
             <Image source={IconHome} style={style} />
           </View>
         );
-      case 'meetTab':
+      case 'profileTab':
         return (
           <View style={styles.iconContainerStyle}>
             <Image source={IconProfile} style={style} />
