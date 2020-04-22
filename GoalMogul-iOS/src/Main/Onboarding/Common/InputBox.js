@@ -127,7 +127,7 @@ const styles = {
         borderWidth: 1,
         borderColor: "#E0E0E0",
         borderRadius: 3,
-        height: 40,
+        height: 42,
         paddingTop: 11,
         paddingBottom: 11,
         paddingLeft: 16,
@@ -143,7 +143,7 @@ const styles = {
         borderWidth: 1,
         borderColor: "#E0E0E0",
         borderRadius: 3,
-        height: 40,
+        height: 42,
         paddingLeft: 16,
         paddingRight: 16,
         alignItems: "center",
@@ -152,13 +152,13 @@ const styles = {
     textInputStyle: {
         width: "100%",
         fontSize: GM_FONT_3,
-        lineHeight: 18,
+        lineHeight: 20,
         marginTop: 0
     },
     textInputStylePhone: {
         width: "60%",
         fontSize: GM_FONT_3,
-        lineHeight: 18,
+        lineHeight: 20,
         marginTop: 0
     }
 };

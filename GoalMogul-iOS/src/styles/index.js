@@ -25,11 +25,11 @@ export const GM_DOT_GRAY = "#E0E0E0";
  * 
  * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=1%3A626
  */
-export const GM_FONT_1 = 12;
-export const GM_FONT_2 = 14;
-export const GM_FONT_3 = 16;
-export const GM_FONT_3_5 = 18;
-export const GM_FONT_4 = 22;
+export const GM_FONT_1 = 14;
+export const GM_FONT_2 = 16;
+export const GM_FONT_3 = 18;
+export const GM_FONT_3_5 = 20;
+export const GM_FONT_4 = 24;
 
 export const imagePreviewContainerStyle = {
   shadowColor: '#ddd',

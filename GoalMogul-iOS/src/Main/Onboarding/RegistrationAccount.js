@@ -17,6 +17,7 @@ import DelayedButton from '../Common/Button/DelayedButton';
 import { GM_FONT_3, GM_BLUE } from '../../styles';
 import { registrationLogin, registrationNextAddProfile } from '../../actions';
 import { registrationTextInputChange } from '../../redux/modules/registration/RegistrationActions';
+import PhoneVerificationMoal from './PhoneVerificationModal';
 
 /**
  * Onboarding flow account registration page.
@@ -26,6 +27,31 @@ import { registrationTextInputChange } from '../../redux/modules/registration/Re
  * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
  */
 class RegistrationAccount extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isModalOpen: false
+        };
+    }
+
+    // Open phone verification modal
+    openModal() {
+        this.setState({ ...this.state, isModalOpen: true });
+    }
+
+    // Close phone verification modal
+    closeModal() {
+        this.setState({ ...this.state, isModalOpen: false });
+    }
+
+    /**
+     * Callback when phone verification modal is closed
+     * 1. onSuccess
+     * 2. on user cancel
+     */
+    onModalClosed() {
+
+    }
 
     validateEmail(email) {
         const isValid = (email) => {
@@ -42,11 +68,6 @@ class RegistrationAccount extends React.Component {
                 // [{text: 'OK', onPress: () => this.refs["email"].focus()}]
             );
         }
-    }
-
-    verifyPhoneNumber() {
-        const callback = () => this.refs["password"].focus();
-        callback();
     }
 
     renderLogin() {
@@ -81,60 +102,59 @@ class RegistrationAccount extends React.Component {
                 }}
             >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={{ flex: 1, justifyContent: "center" }}>
-                    <InputBox 
-                    key="name"
-                    inputTitle="Full Name"
-                    placeholder="Your Full Name"
-                    onChangeText={(val) => this.props.registrationTextInputChange("name", val)}
-                    value={name}
-                    disabled={this.props.loading}
-                    returnKeyType="next"
-                    
-                    onSubmitEditing={() => this.refs["email"].focus()}
-                />
-                <InputBox
-                    key="email"
-                    inputTitle="Email"
-                    ref="email"
-                    placeholder="Your Full Name"
-                    onChangeText={(val) => this.props.registrationTextInputChange("email", val)}
-                    value={email}
-                    autoCompleteType="email"
-                    keyboardType="email-address"
-                    returnKeyType="next"
-                    disabled={this.props.loading}
-                    onEndEditing={() => this.validateEmail(email)}
-                />
-                <InputBox
-                    key="phone"
-                    inputTitle="Phone Number"
-                    ref="phone"
-                    countryCode={countryCode}
-                    placeholder="Your Phone Number"
-                    onChangeText={(val) => this.props.registrationTextInputChange("phone", val)}
-                    onCountryCodeSelected={(val) => this.props.registrationTextInputChange("countryCode", val)}
-                    value={phone}
-                    autoCompleteType="tel"
-                    keyboardType="phone-pad" // iOS specific type
-                    optional
-                    returnKeyType="next"
-                    disabled={this.props.loading}
-                    onEndEditing={() => this.verifyPhoneNumber(phone, countryCode)}
-                />
-                <InputBox 
-                    key="password"
-                    inputTitle="Password"
-                    ref="password"
-                    placeholder="Password"
-                    secure
-                    onChangeText={(val) => this.props.registrationTextInputChange("password", val)}
-                    value={password}
-                    textContentType="newPassword"
-                    returnKeyType="done"
-                    disabled={this.props.loading}
-                />
-                {this.renderLogin()}
+                    <View style={{ flex: 1, justifyContent: "center", paddingBottom: 20 }}>
+                        <InputBox 
+                            key="name"
+                            inputTitle="Full Name"
+                            placeholder="Your Full Name"
+                            onChangeText={(val) => this.props.registrationTextInputChange("name", val)}
+                            value={name}
+                            disabled={this.props.loading}
+                            returnKeyType="next"
+                            onSubmitEditing={() => this.refs["email"].focus()}
+                        />
+                        <InputBox
+                            key="email"
+                            inputTitle="Email"
+                            ref="email"
+                            placeholder="Your Full Name"
+                            onChangeText={(val) => this.props.registrationTextInputChange("email", val)}
+                            value={email}
+                            autoCompleteType="email"
+                            keyboardType="email-address"
+                            returnKeyType="next"
+                            disabled={this.props.loading}
+                            onEndEditing={() => this.validateEmail(email)}
+                        />
+                        <InputBox
+                            key="phone"
+                            inputTitle="Phone Number"
+                            ref="phone"
+                            countryCode={countryCode}
+                            placeholder="Your Phone Number"
+                            onChangeText={(val) => this.props.registrationTextInputChange("phone", val)}
+                            onCountryCodeSelected={(val) => this.props.registrationTextInputChange("countryCode", val)}
+                            value={phone}
+                            autoCompleteType="tel"
+                            keyboardType="phone-pad" // iOS specific type
+                            optional
+                            returnKeyType="next"
+                            disabled={this.props.loading}
+                            onEndEditing={() => this.refs["password"].focus()}
+                        />
+                        <InputBox 
+                            key="password"
+                            inputTitle="Password"
+                            ref="password"
+                            placeholder="Password"
+                            secure
+                            onChangeText={(val) => this.props.registrationTextInputChange("password", val)}
+                            value={password}
+                            textContentType="newPassword"
+                            returnKeyType="done"
+                            disabled={this.props.loading}
+                        />
+                        {this.renderLogin()}
                     </View>
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
@@ -147,6 +167,10 @@ class RegistrationAccount extends React.Component {
                 <OnboardingHeader />
                 {this.renderInputs()}
                 <OnboardingFooter totalStep={4} currentStep={1} onNext={this.props.registrationNextAddProfile} />
+                <PhoneVerificationMoal 
+                    isOpen={this.state.isModalOpen}
+                    onClosed={this.onModalClosed}
+                />
             </View>
         )
     }
@@ -155,7 +179,8 @@ class RegistrationAccount extends React.Component {
 const styles = {
     containerStyle: {
         flex: 1,
-        backgroundColor: "white"
+        backgroundColor: "white",
+        paddingBottom: 10
     },
     loginBoxStyle: {
         backgroundColor: "white", 
@@ -163,7 +188,7 @@ const styles = {
         borderWidth: 1, 
         borderColor: "#BDBDBD", 
         borderRadius: 3, 
-        height: 40, 
+        height: 42, 
         justifyContent: "center", 
         alignItems: "center",
         flexDirection: "row",

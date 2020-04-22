@@ -60,7 +60,7 @@ const styles = {
         marginBottom: 20,
         height: 76 // TODO: footer hight should adjust with screen height
     },
-    circleSize: 44, // TODO: circle size should ajust with screen dimension
+    circleSize: 52, // TODO: circle size should ajust with screen dimension
     circle: {
         imageRatio: 28 / 100, // scale down to 28/100 of the height
         // Asusming the icon is pointing right
@@ -88,7 +88,7 @@ const styles = {
         }
     },
     dotStyleEmpty: (size) => {
-        const radius = Math.ceil(size * 250 / 2000);
+        const radius = Math.ceil(size * 200 / 2000);
         return {
             backgroundColor: GM_DOT_GRAY,
             height: radius * 2,
@@ -99,7 +99,7 @@ const styles = {
         };
     },
     dotStyleFull: (size) => {
-        const radius = Math.ceil(size * 250 / 2000);
+        const radius = Math.ceil(size * 200 / 2000);
         return {
             backgroundColor: GM_BLUE,
             height: radius * 2,
