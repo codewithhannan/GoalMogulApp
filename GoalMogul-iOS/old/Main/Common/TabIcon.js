@@ -5,9 +5,9 @@ import { connect } from 'react-redux';
 /* Assets */
 import IconHome from '../../asset/footer/navigation/home.png';
 import IconBell from '../../asset/footer/navigation/bell.png';
-import IconProfile from '../../asset/footer/navigation/profile.png';
+import IconMeet from '../../asset/footer/navigation/meet.png';
 import IconChat from '../../asset/footer/navigation/chat.png';
-import IconGroup from '../../asset/footer/navigation/group.png';
+import IconStar from '../../asset/footer/navigation/star.png';
 
 /* Actions */
 import { updateChatCount } from '../../redux/modules/navigation/TabIconActions';
@@ -74,8 +74,7 @@ class TabIcon extends React.PureComponent {
     const style = {
       tintColor,
       height: 25,
-      width: 35,
-      resizeMode: 'contain'
+      width: 25
     };
 
     switch (navigation.state.key) {
@@ -88,7 +87,7 @@ class TabIcon extends React.PureComponent {
       case 'meetTab':
         return (
           <View style={styles.iconContainerStyle}>
-            <Image source={IconProfile} style={style} />
+            <Image source={IconMeet} style={style} />
           </View>
         );
       case 'notificationTab':
@@ -122,7 +121,7 @@ class TabIcon extends React.PureComponent {
       case 'exploreTab':
         return (
           <View style={styles.iconContainerStyle}>
-            <Image source={IconGroup} style={style} />
+            <Image source={IconStar} style={style} />
           </View>
         );
       default:
@@ -134,6 +133,15 @@ class TabIcon extends React.PureComponent {
 }
 
 const styles = {
+  iconStyle: {
+    width: 10,
+    height: 10
+  },
+  containerStyle: {
+    height: 25,
+    width: 25,
+    alignSelf: 'center'
+  },
   iconContainerStyle: {
     height: 48,
     width: 48,
