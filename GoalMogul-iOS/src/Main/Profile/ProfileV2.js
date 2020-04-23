@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import {
     blockUser, changeFilter, closeCreateOverlay, handleProfileTabOnLoadMore,
     // Page related functions
-    loadMainProfile, handleTabRefresh, openCreateOverlay, selectProfileTab
+    refreshProfile, handleTabRefresh, openCreateOverlay, selectProfileTab
 } from '../../actions';
 import { closeProfile } from '../../actions/ProfileActions';
 import { Logger } from '../../redux/middleware/utils/Logger';
@@ -55,6 +55,7 @@ class ProfileV2 extends Component {
     }
 
     componentDidUpdate(prevProps) {
+        if (!this.props.pageId) this.props.refreshProfile(this.props.userId);
         if (prevProps.userPageLoading !== this.props.userPageLoading && this.props.userPageLoading === false) {
             this.setState({
                 ...this.state,
@@ -380,15 +381,13 @@ class ProfileV2 extends Component {
     render() {
         const { userId, pageId, selectedTab, navigationState, data } = this.props;
         
-        // Routing by TabNavigator does not create pageId
-        if (!pageId) this.props.loadMainProfile(userId);
-        
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <View style={styles.containerStyle}>
                     <SearchBarHeader
-                        backButton={this.props.backButton}
-                        setting
+                        backButton={!this.props.isMainTab}
+                        setting={!this.props.isMainTab}
+                        rightIcon='menu'
                         onBackPress={this.handleOnBackPress}
                         userId={userId}
                         handlePageSetting={this.handlePageSetting}
@@ -466,7 +465,7 @@ const makeMapStateToProps = () => {
 
     const mapStateToProps = (state, props) => {
         // Set userId to main user if no userId present in props
-        const userId = props.userId ? props.userId : state.auth.user.userId;
+        const userId = props.userId || state.auth.user.userId;
         const { pageId } = props;
 
         const user = getUserData(state, userId, 'user');
@@ -531,7 +530,7 @@ export default connect(
         closeCreateOverlay,
         openCreateOverlay,
         closeProfile,
-        loadMainProfile,
+        refreshProfile,
         openPostDetail,
         blockUser,
         createReport,

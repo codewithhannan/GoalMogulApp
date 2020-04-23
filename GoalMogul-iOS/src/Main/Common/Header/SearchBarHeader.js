@@ -18,7 +18,6 @@ import React, { Component } from 'react';
 import {
     View,
     Image,
-    TouchableWithoutFeedback,
     Text,
     TouchableOpacity,
     Platform
@@ -32,20 +31,17 @@ import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 /* Asset */
 import Logo from '../../../asset/header/logo.png';
 import IconMenu from '../../../asset/header/menu.png';
-import Setting from '../../../asset/header/setting.png';
+import IconMeet from '../../../asset/header/meet.png';
+import IconSearch from '../../../asset/header/search.png';
 import BackButton from '../../../asset/utils/back.png';
 import FriendsSettingIcon from '../../../asset/utils/friendsSettingIcon.png';
-import profilePic from '../../../asset/utils/defaultUserProfile.png';
 
 import { actionSheet, switchByButtonIndex } from '../ActionSheetFactory';
 
 /* Component */
 import DelayedButton from '../Button/DelayedButton';
-import {
-    SearchIcon
-} from '../../../Utils/Icons';
 
-// Utils
+/* Utils */
 import { componentKeyByTab } from '../../../redux/middleware/utils';
 
 /* Actions */
@@ -55,33 +51,18 @@ import {
     openSetting,
     blockUser
 } from '../../../actions';
-
-import {
-    openMyEventTab
-} from '../../../redux/modules/event/MyEventTabActions';
-
-import {
-    openMyTribeTab
-} from '../../../redux/modules/tribe/MyTribeTabActions';
-
-import {
-    createReport
-} from '../../../redux/modules/report/ReportActions';
+import { openMyEventTab } from '../../../redux/modules/event/MyEventTabActions';
+import { openMyTribeTab } from '../../../redux/modules/tribe/MyTribeTabActions';
+import { createReport } from '../../../redux/modules/report/ReportActions';
 
 // styles
-import {
-    GM_BLUE,
-    GM_BLUE_LIGHT_LIGHT
-} from '../../../styles';
+import { GM_BLUE, GM_BLUE_LIGHT_LIGHT } from '../../../styles';
 
-import {
-    IPHONE_MODELS,
-    IMAGE_BASE_URL
-} from '../../../Utils/Constants';
+import { IPHONE_MODELS } from '../../../Utils/Constants';
 import { getUserData } from '../../../redux/modules/User/Selector';
 
-const tintColor = '#21364C';
 
+const tintColor = '#21364C';
 // For profile friend setting ActionSheetIOS
 const FRIENDSHIP_SETTING_BUTTONS = ['Block', 'Report', 'Cancel'];
 const CANCEL_INDEX = 2;
@@ -146,58 +127,19 @@ class SearchBarHeader extends Component {
     };
 
     renderSearchBarLeftIcon() {
-        if (this.props.backButton) {
-            const backButtonTintColor = tintColor;
-            return (
-                <DelayedButton
-                    activeOpacity={0.6}
-                    onPress={this.handleBackOnClick.bind(this)}
-                    style={{ paddingHorizontal: PADDING_HORIZONTAL }}
-                >
-                    <Image
-                        source={BackButton}
-                        style={{ height: 25, width: 25, tintColor: backButtonTintColor }}
-                    />
-                </DelayedButton>
-            );
-        }
-        return this.renderProfileImage();
-    }
-
-    // This is to replace logo image with user profile preview
-    renderProfileImage() {
-        let image = this.props.image;
-        let profileImage = (
+        const backButtonTintColor = 'white';
+        const imgHeight = this.props.backButton ? 25 : 38;
+        return (
             <DelayedButton
                 activeOpacity={0.6}
-                style={{ ...styles.shadow, backgroundColor: 'transparent', paddingHorizontal: PADDING_HORIZONTAL }}
-                onPress={this.handleProfileOnClick.bind(this)}
+                onPress={this.props.backButton ? this.handleBackOnClick.bind(this) : ()=>{}}
             >
                 <Image
-                    style={{ ...styles.headerLeftImage }}
-                    resizeMode='contain'
-                    source={profilePic}
+                    source={this.props.backButton ? BackButton : Logo }
+                    style={{ height:  imgHeight, width: 38, tintColor: backButtonTintColor }}
                 />
             </DelayedButton>
-
         );
-        if (image) {
-            image = `${IMAGE_BASE_URL}${image}`;
-            profileImage = (
-                <DelayedButton
-                    activeOpacity={0.6}
-                    style={{ ...styles.shadow, backgroundColor: 'transparent', paddingHorizontal: PADDING_HORIZONTAL }}
-                    onPress={this.handleProfileOnClick.bind(this)}
-                >
-                    <Image
-                        style={{ ...styles.headerLeftImage, borderWidth: 1, borderColor: 'white' }}
-                        resizeMode='contain'
-                        source={{ uri: image }}
-                    />
-                </DelayedButton>
-            );
-        }
-        return profileImage;
     }
 
     /**
@@ -229,17 +171,6 @@ class SearchBarHeader extends Component {
             );
         }
 
-        // On self profile page
-        if (this.props.setting && this.props.haveSetting) {
-            return (
-                <TouchableWithoutFeedback onPress={this.handleSettingOnClick.bind(this)}>
-                    <View style={{ paddingHorizontal: PADDING_HORIZONTAL }}>
-                        <Image style={{ ...styles.headerRightImage, tintColor }} source={Setting} />
-                    </View>
-                </TouchableWithoutFeedback>
-            );
-        }
-
         // Standard search bar menu
         if (this.props.rightIcon === 'menu') {
             // has tutorial for right icon menu
@@ -250,7 +181,7 @@ class SearchBarHeader extends Component {
                             <TouchableOpacity
                                 activeOpacity={0.6}
                                 onPress={menuOnPress || this.handleMenuIconOnClick}
-                                style={{ paddingHorizontal: PADDING_HORIZONTAL }}
+                                style={{ ...styles.headerRightContaner }}
                             >
                                 <Image style={{ ...styles.headerRightImage, tintColor }} source={IconMenu} />
                             </TouchableOpacity>
@@ -259,13 +190,32 @@ class SearchBarHeader extends Component {
                 );
             }
             return (
-                <TouchableOpacity
-                    activeOpacity={0.6}
-                    onPress={menuOnPress || this.handleMenuIconOnClick}
-                    style={{ paddingHorizontal: PADDING_HORIZONTAL }}
-                >
-                    <Image style={{ ...styles.headerRightImage, tintColor }} source={IconMenu} />
-                </TouchableOpacity>
+                <View style={{ flexDirection: "row" }}>
+                    <DelayedButton
+                        activeOpacity={0.6}
+                        onPress={() => {
+                            const componentKeyToOpen = componentKeyByTab(this.props.navigationTab, 'searchLightBox');
+                            Actions.push(`${componentKeyToOpen}`);
+                        }}
+                        style={styles.headerRightContaner}
+                    >
+                        <Image style={{ height: 18, width: 18, tintColor }} source={IconSearch} />
+                    </DelayedButton>
+                    <TouchableOpacity
+                        activeOpacity={0.6}
+                        onPress={menuOnPress || this.handleMenuIconOnClick}
+                        style={{ ...styles.headerRightContaner }}
+                    >
+                        <Image style={{ height: 21, width: 21, tintColor }} source={IconMeet} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        activeOpacity={0.6}
+                        onPress={menuOnPress || this.handleMenuIconOnClick}
+                        style={{ ...styles.headerRightContaner }}
+                    >
+                        <Image style={{ height: 24, width: 24, tintColor }} source={IconMenu} />
+                    </TouchableOpacity>
+                </View>
             );
         }
 
@@ -287,22 +237,7 @@ class SearchBarHeader extends Component {
             );
         }
         return (
-            <DelayedButton
-                activeOpacity={0.6}
-                onPress={() => {
-                    const componentKeyToOpen = componentKeyByTab(this.props.navigationTab, 'searchLightBox');
-                    Actions.push(`${componentKeyToOpen}`);
-                }}
-                style={styles.searchButtonContainerStyle}
-            >
-                <SearchIcon
-                    iconContainerStyle={{ marginBottom: 3, marginTop: 1 }}
-                    iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
-                />
-                <Text style={styles.searchPlaceHolderTextStyle}>
-                    Search GoalMogul
-                </Text>
-            </DelayedButton>
+            <View style={{ flex: 1 }} />
         );
     }
 
@@ -310,7 +245,7 @@ class SearchBarHeader extends Component {
         const paddingTop = (
             Platform.OS === 'ios' &&
             IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
-        ) ? 30 : 45;
+        ) ? 40 : 55;
 
         return (
             <View style={{ ...styles.headerStyle, paddingTop }}>
@@ -323,50 +258,27 @@ class SearchBarHeader extends Component {
 }
 
 const styles = {
-    // Styles for search method 1
-    searchContainerStyle: {
-        backgroundColor: '#ffffff',
-        borderTopColor: '#ffffff',
-        borderBottomColor: '#ffffff',
-        padding: 0,
-        height: 28,
-        width: 250,
-        marginRight: 5,
-    },
-    searchInputStyle: {
-        // backgroundColor: '#f3f4f6',
-        backgroundColor: '#0397CB',
-        fontSize: 12,
-        height: 28,
-    },
-    searchIconStyle: {
-        top: 14,
-        fontSize: 13
-    },
     headerStyle: {
         flexDirection: 'row',
         backgroundColor: GM_BLUE,
-        paddingTop: 40,
-        paddingBottom: 10,
+        padding: 15,
         justifyContent: 'center',
         alignItems: 'center'
     },
     headerLeftImage: {
         width: 32,
         height: 32,
-        borderRadius: 16,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.4,
-        shadowRadius: 2,
         backgroundColor: 'white'
     },
-    headerRightImage: {
-        width: 29,
-        height: 23,
+    headerRightContaner: {
+        width: 38,
+        height: 38,
+        borderRadius: 19,
+        backgroundColor: GM_BLUE_LIGHT_LIGHT,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 8
     },
-    // Styles for method 2
-    // It's currently being used
     searchButtonContainerStyle: {
         height: 36,
         flex: 1,

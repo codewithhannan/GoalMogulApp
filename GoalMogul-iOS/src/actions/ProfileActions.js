@@ -213,7 +213,7 @@ export const openProfile = (userId, tab, initialFilter) => (dispatch, getState) 
     }
     console.log(`${DEBUG_KEY}: componentKeyToOpen is: ${componentKeyToOpen}, initialFilter:`, initialFilter);
     Actions.push(`${componentKeyToOpen}`, {
-        pageId, userId, hideProfileDetail: tab && tab !== 'about', initialFilter, backButton: true
+        pageId, userId, hideProfileDetail: tab && tab !== 'about', initialFilter, isMainTab: false
     });
 
     const { token } = getState().user;
@@ -274,7 +274,7 @@ export const openProfile = (userId, tab, initialFilter) => (dispatch, getState) 
  * Open user goal list by userId
  * @param {string} userId 
  */
-export const loadMainProfile = (userId) => (dispatch, getState) => {
+export const refreshProfile = (userId) => (dispatch, getState) => {
     const pageId = constructPageId('user');
     dispatch({
         type: PROFILE_OPEN_PROFILE,
@@ -285,7 +285,7 @@ export const loadMainProfile = (userId) => (dispatch, getState) => {
     });
 
     Actions.refresh({
-        pageId, userId, hideProfileDetail: false, backButton: false
+        pageId, userId, hideProfileDetail: false, isMainTab: true
     });
 
     const { token } = getState().user;
