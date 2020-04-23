@@ -213,7 +213,7 @@ export const openProfile = (userId, tab, initialFilter) => (dispatch, getState) 
     }
     console.log(`${DEBUG_KEY}: componentKeyToOpen is: ${componentKeyToOpen}, initialFilter:`, initialFilter);
     Actions.push(`${componentKeyToOpen}`, {
-        pageId, userId, hideProfileDetail: tab && tab !== 'about', initialFilter
+        pageId, userId, hideProfileDetail: tab && tab !== 'about', initialFilter, backButton: true
     });
 
     const { token } = getState().user;
@@ -284,8 +284,8 @@ export const loadMainProfile = (userId) => (dispatch, getState) => {
         }
     });
 
-    Actions.replace('profile', {
-        pageId, userId, hideProfileDetail: false
+    Actions.refresh({
+        pageId, userId, hideProfileDetail: false, backButton: false
     });
 
     const { token } = getState().user;

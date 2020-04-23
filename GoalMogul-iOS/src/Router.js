@@ -344,11 +344,11 @@ class RouterComponent extends Component {
                                             })
                                             }
                                         >
-                                            <Scene key="profile" component={Profile} initial />
-                                            <Scene key="goal" component={GoalDetailCard} />
-                                            <Scene key="post" component={PostDetailCard} />
-                                            <Scene key="share" component={ShareDetailCard} />
-                                            <Scene key="profileDetail" component={ProfileDetail} />
+                                            <Scene key="profileTab_profile" component={Profile} initial />
+                                            <Scene key="profileTab_goal" component={GoalDetailCard} />
+                                            <Scene key="profileTab_post" component={PostDetailCard} />
+                                            <Scene key="profileTab_share" component={ShareDetailCard} />
+                                            <Scene key="profileTab_profileDetail" component={ProfileDetail} />
 
                                             <Scene key="profileTab_meet" component={MeetTab} />
                                             <Scene key="profileTab_shareMeetTab" component={ShareDetailCard} />

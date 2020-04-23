@@ -387,7 +387,7 @@ class ProfileV2 extends Component {
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <View style={styles.containerStyle}>
                     <SearchBarHeader
-                        backButton
+                        backButton={this.props.backButton}
                         setting
                         onBackPress={this.handleOnBackPress}
                         userId={userId}
