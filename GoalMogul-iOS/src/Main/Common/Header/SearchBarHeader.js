@@ -62,13 +62,13 @@ import { IPHONE_MODELS } from '../../../Utils/Constants';
 import { getUserData } from '../../../redux/modules/User/Selector';
 
 
-const tintColor = '#21364C';
+const tintColor = 'white';
+const rightIconColor = '#333';
 // For profile friend setting ActionSheetIOS
 const FRIENDSHIP_SETTING_BUTTONS = ['Block', 'Report', 'Cancel'];
 const CANCEL_INDEX = 2;
 
 const DEBUG_KEY = '[ Component SearchBarHeader ]';
-const PADDING_HORIZONTAL = 12;
 const WalkableView = walkthroughable(View);
 
 /**
@@ -126,9 +126,8 @@ class SearchBarHeader extends Component {
         Actions.drawerOpen();
     };
 
-    renderSearchBarLeftIcon() {
-        const backButtonTintColor = 'white';
-        const imgHeight = this.props.backButton ? 25 : 38;
+    renderLeftIcon() {
+        const height = this.props.backButton ? 23 : 38;
         return (
             <DelayedButton
                 activeOpacity={0.6}
@@ -136,7 +135,7 @@ class SearchBarHeader extends Component {
             >
                 <Image
                     source={this.props.backButton ? BackButton : Logo }
-                    style={{ height:  imgHeight, width: 38, tintColor: backButtonTintColor }}
+                    style={{ height, width: 38, tintColor }}
                 />
             </DelayedButton>
         );
@@ -149,7 +148,7 @@ class SearchBarHeader extends Component {
      *        to pass in pageSetting and handlePageSetting
      * @param rightIcon:
      */
-    renderSearchBarRightIcon() {
+    renderRightIcons() {
         const { menuOnPress, tutorialOn } = this.props;
         const hasRightIconTutorial = tutorialOn && tutorialOn.rightIcon;
 
@@ -161,11 +160,8 @@ class SearchBarHeader extends Component {
                     onPress={handlePageSetting || this.handleFriendsSettingOnClick.bind(this)}
                     touchableWithoutFeedback
                 >
-                    <View style={{ paddingHorizontal: PADDING_HORIZONTAL }}>
-                        <Image
-                            style={{ ...styles.headerRightImage, tintColor, height: 21 }}
-                            source={FriendsSettingIcon}
-                        />
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <Image style={{ height: 30, width: 35, tintColor }} source={FriendsSettingIcon} />
                     </View>
                 </DelayedButton>
             );
@@ -183,7 +179,7 @@ class SearchBarHeader extends Component {
                                 onPress={menuOnPress || this.handleMenuIconOnClick}
                                 style={{ ...styles.headerRightContaner }}
                             >
-                                <Image style={{ ...styles.headerRightImage, tintColor }} source={IconMenu} />
+                                <Image style={{ height: 24, width: 24, tintColor: rightIconColor}} source={IconMenu} />
                             </TouchableOpacity>
                         </WalkableView>
                     </CopilotStep>
@@ -199,21 +195,21 @@ class SearchBarHeader extends Component {
                         }}
                         style={styles.headerRightContaner}
                     >
-                        <Image style={{ height: 18, width: 18, tintColor }} source={IconSearch} />
+                        <Image style={{ height: 18, width: 18, tintColor: rightIconColor }} source={IconSearch} />
                     </DelayedButton>
                     <TouchableOpacity
                         activeOpacity={0.6}
                         onPress={menuOnPress || this.handleMenuIconOnClick}
                         style={{ ...styles.headerRightContaner }}
                     >
-                        <Image style={{ height: 21, width: 21, tintColor }} source={IconMeet} />
+                        <Image style={{ height: 21, width: 21, tintColor: rightIconColor }} source={IconMeet} />
                     </TouchableOpacity>
                     <TouchableOpacity
                         activeOpacity={0.6}
                         onPress={menuOnPress || this.handleMenuIconOnClick}
                         style={{ ...styles.headerRightContaner }}
                     >
-                        <Image style={{ height: 24, width: 24, tintColor }} source={IconMenu} />
+                        <Image style={{ height: 24, width: 24, tintColor: rightIconColor }} source={IconMenu} />
                     </TouchableOpacity>
                 </View>
             );
@@ -225,7 +221,7 @@ class SearchBarHeader extends Component {
         );
     }
 
-    renderSearchBarOrTitle() {
+    renderTitle() {
         if (this.props.title) {
             const titleColor = tintColor;
             return (
@@ -249,9 +245,9 @@ class SearchBarHeader extends Component {
 
         return (
             <View style={{ ...styles.headerStyle, paddingTop }}>
-                {this.renderSearchBarLeftIcon()}
-                {this.renderSearchBarOrTitle()}
-                {this.renderSearchBarRightIcon()}
+                {this.renderLeftIcon()}
+                {this.renderTitle()}
+                {this.renderRightIcons()}
             </View>
         );
     }
@@ -282,12 +278,7 @@ const styles = {
     searchButtonContainerStyle: {
         height: 36,
         flex: 1,
-        backgroundColor: GM_BLUE_LIGHT_LIGHT,
-        borderRadius: 16,
-        padding: 0,
-        flexDirection: 'row',
         alignItems: 'center',
-        alignSelf: 'center',
         justifyContent: 'center'
     },
     searchPlaceHolderTextStyle: {

@@ -19,7 +19,7 @@ import { createReport } from '../../redux/modules/report/ReportActions';
 import { getUserData, getUserDataByPageId, makeGetUserGoals, makeGetUserNeeds, makeGetUserPosts } from '../../redux/modules/User/Selector';
 import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users';
 /* Styles */
-import { APP_DEEP_BLUE, BACKGROUND_COLOR } from '../../styles';
+import { APP_DEEP_BLUE, BACKGROUND_COLOR, GM_BLUE } from '../../styles';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 import PlusButton from '../Common/Button/PlusButton';
 import GoalFilterBar from '../Common/GoalFilterBar';
@@ -208,7 +208,7 @@ class ProfileV2 extends Component {
                 buttons={props}
                 buttonStyle={{
                     selected: {
-                        backgroundColor: APP_DEEP_BLUE,
+                        backgroundColor: GM_BLUE,
                         tintColor: 'white',
                         color: 'white',
                         fontWeight: '700'
@@ -296,10 +296,7 @@ class ProfileV2 extends Component {
     renderUserInfo({ userId, pageId }) {
         return (
             <Animated.View
-                style={{
-                    // height: this.state.infoCardHeight,
-                    opacity: this.state.infoCardOpacity
-                }}
+                style={{ opacity: this.state.infoCardOpacity }}
             >
                 <ProfileDetailCard
                     pageId={pageId}
@@ -312,7 +309,6 @@ class ProfileV2 extends Component {
     }
 
     /**
-     * 
      * @param {object} props { navigationState, selectedTab, userId, pageId }
      */
     renderHeader(props) {
@@ -364,7 +360,6 @@ class ProfileV2 extends Component {
 
     renderListFooter() {
         const { loading, data } = this.props;
-        // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
         if (loading && data.length >= 7) {
             return (
                 <View
@@ -380,7 +375,7 @@ class ProfileV2 extends Component {
 
     render() {
         const { userId, pageId, selectedTab, navigationState, data } = this.props;
-        
+
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <View style={styles.containerStyle}>
@@ -426,35 +421,9 @@ const styles = {
         flex: 1,
         backgroundColor: BACKGROUND_COLOR,
     },
-    tabContainerStyle: {
-        display: 'flex',
-        height: 35,
-        flexDirection: 'row'
-    },
     backdrop: {
         backgroundColor: 'gray',
         opacity: 0.7,
-    },
-    iconContainerStyle: {
-        position: 'absolute',
-        bottom: 20,
-        right: 29,
-        height: 54,
-        width: 54,
-        borderRadius: 27,
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 3,
-        backgroundColor: APP_DEEP_BLUE,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.4,
-        shadowRadius: 2,
-    },
-    iconStyle: {
-        height: 26,
-        width: 26,
-        tintColor: 'white',
     }
 };
 
@@ -521,7 +490,6 @@ const makeMapStateToProps = () => {
 
     return mapStateToProps;
 }
-
 
 export default connect(
     makeMapStateToProps,
