@@ -2,50 +2,62 @@ import React from 'react';
 import _ from "ramda";
 import {
     View,
-    Image,
-    TextInput,
     Text
 } from 'react-native';
 import Modal from 'react-native-modal';
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 import DelayedButton from '../Common/Button/DelayedButton';
-import { GM_BLUE, GM_FONT_2, GM_FONT_3, GM_FONT_3_5, GM_FONT_1 } from '../../styles';
+import { GM_BLUE, GM_FONT_SIZE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT } from '../../styles';
 
 class PhoneVerificationMoal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            code: undefined
+            code: undefined,
+            hasFilled: false
         };
     }
 
     onCodeFilled = (code) => {
-        console.log("Code is:", code);
-        this.setState({ ...this.state, code });
+        this.setState({ ...this.state, code, hasFilled: true });
+    }
+
+    onCodeChanged = (code) => {
+        if (code && code.length < 4) {
+            this.setState({ ...this.state, hasFilled: false });
+        }
     }
 
     onClosed() {
         this.props.onClosed && this.props.onClosed();
     }
 
-    // TODO
-    renderContinue() {
+    continue = async () => {
+        // If there is no inputs or string length < 4, continue would be disabled.
 
-    }
+        // this.props.phoneVerify(this.state.code);
+        let verified = await this.props.phoneVerify(this.state.code);
 
-    // TODO
-    renderCancel() {
-
+        if (verified) {
+            // If good, then call this.props.phoneVerifyPass();
+            this.props.phoneVerifyPass();
+        } else {
+            // TODO: Otherwise, clear the input and show the input
+        }
     }
 
     render() {
+        const continueTextContainerStyle = this.state.hasFilled 
+            ? { ...styles.continueTextContainerStyle }
+            : { ...styles.continueTextContainerStyle, backgroundColor: "#E0E0E0" }
+
         return (
             <Modal
                 swipeToClose={false}
                 isVisible={this.props.isOpen}
                 backdropOpacity={0.5}
-                onOpened={() => this.onModalShow()}
                 onClosed={() => this.onClosed()}
+                hideModalContentWhileAnimating={true}
                 useNativeDriver
                 avoidKeyboard
             >
@@ -56,9 +68,15 @@ class PhoneVerificationMoal extends React.Component {
                     backgroundColor: 'white',
                     alignItems: "center" 
                 }}>
-                    <Text style={{ fontSize: GM_FONT_3, lineHeight: GM_FONT_3_5, fontWeight: "bold", textAlign: "center" }}>Verify Phone Number</Text>
-                    <Text style={{ fontSize: GM_FONT_1, lineHeight: GM_FONT_3_5, fontWeight: "500", marginTop: 20, textAlign: "center" }}>Please enter the verification code</Text>
-                    <Text style={{ fontSize: GM_FONT_1, lineHeight: GM_FONT_3_5, fontWeight: "500", textAlign: "center" }}>we sent to your phone number.</Text>
+                    <Text style={{ fontSize: GM_FONT_SIZE.FONT_3, lineHeight: GM_FONT_LINE_HEIGHT.FONT_3, fontWeight: "bold", textAlign: "center", fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD }}>
+                        Verify Phone Number
+                    </Text>
+                    <Text style={{ fontSize: GM_FONT_SIZE.FONT_1, lineHeight: GM_FONT_LINE_HEIGHT.FONT_3_5, fontWeight: "500", marginTop: 20, textAlign: "center", fontFamily: GM_FONT_FAMILY.GOTHAM }}>
+                        Please enter the verification code
+                    </Text>
+                    <Text style={{ fontSize: GM_FONT_SIZE.FONT_1, lineHeight: GM_FONT_LINE_HEIGHT.FONT_3_5, fontWeight: "500", textAlign: "center", fontFamily: GM_FONT_FAMILY.GOTHAM }}>
+                        we sent to your phone number.
+                    </Text>
 
                     <OTPInputView
                         style={{width: '80%', height: 50, marginTop: 25, marginBottom: 25 }}
@@ -72,11 +90,11 @@ class PhoneVerificationMoal extends React.Component {
                         placeholderCharacter={"-"}
                         placeholderTextColor={"black"}
                     />
-                    <DelayedButton onPress={this.props.continue} style={styles.continueTextContainerStyle}>
+                    <DelayedButton onPress={() => this.continue()} style={continueTextContainerStyle}>
                         <Text style={styles.continueTextStyle}>Continue</Text>
                     </DelayedButton>
 
-                    <DelayedButton onPress={this.props.cancel} style={styles.cancelTextContainerStyle}>
+                    <DelayedButton onPress={this.props.phoneVerifyCancel} style={styles.cancelTextContainerStyle}>
                         <Text style={styles.cancelTextStyle}>Cancel</Text>
                     </DelayedButton>
                 </View>
@@ -109,10 +127,11 @@ const styles = {
         justifyContent: "center"
     },
     continueTextStyle: {
-        fontSize: GM_FONT_3,
+        fontSize: GM_FONT_SIZE.FONT_3,
         fontWeight: "bold",
-        lineHeight: GM_FONT_3_5,
-        color: "white"
+        lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
+        color: "white",
+        fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD
     },
     cancelTextContainerStyle: {
         justifyContent: "center",
@@ -120,9 +139,11 @@ const styles = {
         padding: 5
     },
     cancelTextStyle: {
-        fontSize: GM_FONT_1,
+        fontSize: GM_FONT_SIZE.FONT_1,
         color: "#828282",
-        fontWeight: "500"
+        fontWeight: "500",
+        lineHeight: GM_FONT_LINE_HEIGHT.FONT_1,
+        fontFamily: GM_FONT_FAMILY.GOTHAM
     }
 };
 

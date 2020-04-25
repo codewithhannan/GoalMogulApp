@@ -25,11 +25,26 @@ export const GM_DOT_GRAY = "#E0E0E0";
  * 
  * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=1%3A626
  */
-export const GM_FONT_1 = 14;
-export const GM_FONT_2 = 16;
-export const GM_FONT_3 = 18;
-export const GM_FONT_3_5 = 20;
-export const GM_FONT_4 = 24;
+export const GM_FONT_SIZE = {
+  FONT_1: 14,
+  FONT_2: 16,
+  FONT_3: 18,
+  FONT_3_5: 20,
+  FONT_4: 24
+};
+
+export const GM_FONT_LINE_HEIGHT = {
+  FONT_1: 14,
+  FONT_2: 16,
+  FONT_3: 18,
+  FONT_3_5: 20,
+  FONT_4: 24
+};
+
+export const GM_FONT_FAMILY = {
+  GOTHAM_BOLD: "gotham-pro-bold",
+  GOTHAM: "gotham-pro"
+};
 
 export const imagePreviewContainerStyle = {
   shadowColor: '#ddd',

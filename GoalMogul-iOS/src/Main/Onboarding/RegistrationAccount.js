@@ -1,7 +1,6 @@
 import React from 'react';
 import {
     View,
-    Image,
     Text,
     Alert,
     KeyboardAvoidingView,
@@ -9,12 +8,11 @@ import {
     TouchableWithoutFeedback
 } from 'react-native';
 import { connect } from 'react-redux';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import OnboardingHeader from './Common/OnboardingHeader';
 import OnboardingFooter from './Common/OnboardingFooter';
 import InputBox from './Common/InputBox';
 import DelayedButton from '../Common/Button/DelayedButton';
-import { GM_FONT_3, GM_BLUE } from '../../styles';
+import { GM_FONT_SIZE, GM_BLUE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT } from '../../styles';
 import { registrationLogin, registrationNextAddProfile } from '../../actions';
 import { registrationTextInputChange } from '../../redux/modules/registration/RegistrationActions';
 import PhoneVerificationMoal from './PhoneVerificationModal';
@@ -44,13 +42,44 @@ class RegistrationAccount extends React.Component {
         this.setState({ ...this.state, isModalOpen: false });
     }
 
-    /**
-     * Callback when phone verification modal is closed
-     * 1. onSuccess
-     * 2. on user cancel
-     */
-    onModalClosed() {
+    // Invoked by the modal
+    phoneVerify = (code) => {
+        // TODO: verify with endpoint and return the correct value
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              resolve(true);
+            }, 5000);
+        });
+    }
 
+    phoneVerifyPass = () => {
+        const { phone, countryCode, email, password, name } = this.props;
+        this.closeModal();
+        setTimeout(() => {
+            // TODO: change back. Right now only going to the next page
+            
+            // this.props.registrationNextAddProfile({ phone, countryCode, email, password, name });
+        }, 150);
+    }
+
+    phoneVerifyCancel = () => {
+        this.closeModal();
+    }
+
+    onNext = () => {
+        const { phone, countryCode, email, password, name } = this.props;
+        // Check if phone field is supplied
+        console.log("phone is: ", phone)
+        if (!phone) {
+            // If not supplied, register and go to next step
+            console.log("user didn't add phone number");
+            // return this.props.registrationNextAddProfile({ email, password, name });
+        }
+        // TODO: notify server to send registration code
+        // Implement this action in RegistrationAction.js (the one in /src/redux/modules)
+
+        // Display modal
+        this.openModal();
     }
 
     validateEmail(email) {
@@ -73,11 +102,11 @@ class RegistrationAccount extends React.Component {
     renderLogin() {
         return (
             <View style={styles.loginBoxStyle}>
-                <Text style={{ fontSize: GM_FONT_3, lineHeight: 18, fontWeight: "bold", color: "#BDBDBD" }}>
+                <Text style={{ fontSize: GM_FONT_SIZE.FONT_3, lineHeight: GM_FONT_LINE_HEIGHT.FONT_3, fontWeight: "bold", color: "#BDBDBD", fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD }}>
                     Already user GoalMogul?
                 </Text>
                 <DelayedButton onPress={this.props.registrationLogin}>
-                    <Text style={{ fontSize: GM_FONT_3, lineHeight: 18, textAlign: "center",fontWeight: "bold", color: GM_BLUE }}>{" "}Log In</Text>
+                    <Text style={{ fontSize: GM_FONT_SIZE.FONT_3, lineHeight: GM_FONT_LINE_HEIGHT.FONT_3, textAlign: "center", alignItems: "flex-end",fontWeight: "bold", color: GM_BLUE, fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD }}>{" "}Log In</Text>
                 </DelayedButton>
             </View>
         );
@@ -117,7 +146,7 @@ class RegistrationAccount extends React.Component {
                             key="email"
                             inputTitle="Email"
                             ref="email"
-                            placeholder="Your Full Name"
+                            placeholder="Your Email Address"
                             onChangeText={(val) => this.props.registrationTextInputChange("email", val)}
                             value={email}
                             autoCompleteType="email"
@@ -166,10 +195,12 @@ class RegistrationAccount extends React.Component {
             <View style={styles.containerStyle}>
                 <OnboardingHeader />
                 {this.renderInputs()}
-                <OnboardingFooter totalStep={4} currentStep={1} onNext={this.props.registrationNextAddProfile} />
+                <OnboardingFooter totalStep={4} currentStep={1} onNext={this.onNext} />
                 <PhoneVerificationMoal 
                     isOpen={this.state.isModalOpen}
-                    onClosed={this.onModalClosed}
+                    phoneVerify={(code) => this.phoneVerify(code)}
+                    phoneVerifyCancel={() => this.phoneVerifyCancel()}
+                    phoneVerifyPass={() => this.phoneVerifyPass()}
                 />
             </View>
         )
@@ -197,7 +228,7 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-    const { name, password, email, error, loading, countryCode } = state.registration;
+    const { name, password, email, error, loading, countryCode, phone } = state.registration;
   
     return {
       name,
@@ -205,7 +236,8 @@ const mapStateToProps = state => {
       password,
       error,
       loading,
-      countryCode
+      countryCode,
+      phone
     };
   };
 
