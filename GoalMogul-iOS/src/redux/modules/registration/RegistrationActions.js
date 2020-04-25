@@ -5,7 +5,7 @@
  * TODO: migration all actions from /src/actions/RegistrationActions.js here
  */
 
-import { REGISTRATION_TEXT_CHANGE } from "./RegistrationReducers";
+import { REGISTRATION_TEXT_CHANGE, REGISTRATION_USER_TARGETS } from "./RegistrationReducers";
 
 
 /**
@@ -20,4 +20,19 @@ export const registrationTextInputChange = (type, value) => (dispatch, getState)
             value, type
         }
     });
+};
+
+/**
+ * User updates the selection on the targets for using GoalMogul
+ * 
+ * @param {String} title one of titles in REGISTRATION_USER_TARGETS
+ * @param {Boolean} value indicate if a target is selected or not
+ */
+export const registrationTargetSelection = (title, value, extra) => (dispatch, getState) => {
+    dispatch({
+        type: REGISTRATION_USER_TARGETS,
+        payload: {
+            title, value, extra
+        }
+    })
 };

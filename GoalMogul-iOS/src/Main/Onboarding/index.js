@@ -5,4 +5,5 @@
  */
 import RegistrationAccount from './RegistrationAccount';
 import OnboardingIntroTransition from './OnboardingIntroTransition';
-export { RegistrationAccount, OnboardingIntroTransition };
+import OnboardingSelectionTarget from './OnboardingSelectionTarget';
+export { RegistrationAccount, OnboardingIntroTransition, OnboardingSelectionTarget };

@@ -31,9 +31,9 @@ class OnboardingFooter extends React.Component {
                 {
                     [...Array(totalStep)].map((_, i) => {
                         if (currentStep - 1 < i) {
-                            return <View style={styles.dotStyleEmpty(styles.circleSize)} />
+                            return <View style={styles.dotStyleEmpty(styles.circleSize)} key={i} />
                         } else {
-                            return <View style={styles.dotStyleFull(styles.circleSize)} />
+                            return <View style={styles.dotStyleFull(styles.circleSize)} key={i} />
                         }
                     })
                 }
