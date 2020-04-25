@@ -4,4 +4,5 @@
  * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=1%3A430 
  */
 import RegistrationAccount from './RegistrationAccount';
-export { RegistrationAccount };
+import OnboardingIntroTransition from './OnboardingIntroTransition';
+export { RegistrationAccount, OnboardingIntroTransition };

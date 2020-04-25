@@ -62,7 +62,6 @@ class PhoneVerificationMoal extends React.Component {
                 avoidKeyboard
             >
                 <View style={{ 
-                    alignItems: "center", 
                     borderRadius: 14,
                     padding: 23,
                     backgroundColor: 'white',
