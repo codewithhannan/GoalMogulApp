@@ -3,10 +3,6 @@ import { MaterialIcons } from '@expo/vector-icons';
 import {
     View,
     Text,
-    Alert,
-    KeyboardAvoidingView,
-    Keyboard,
-    TouchableWithoutFeedback,
     TextInput,
     Animated,
 } from 'react-native';
@@ -166,7 +162,7 @@ class OnboardingSelectionTarget extends React.Component {
                         {this.renderOtherTextInput()}
                     </KeyboardAwareScrollView>
                 </View>
-                <OnboardingFooter totalStep={4} currentStep={2} onNext={this.onNext} />
+                <OnboardingFooter totalStep={4} currentStep={2} onNext={this.onNext} onPrev={this.onBack} />
             </View>
         );
     }

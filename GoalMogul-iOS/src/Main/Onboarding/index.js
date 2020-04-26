@@ -6,4 +6,5 @@
 import RegistrationAccount from './RegistrationAccount';
 import OnboardingIntroTransition from './OnboardingIntroTransition';
 import OnboardingSelectionTarget from './OnboardingSelectionTarget';
-export { RegistrationAccount, OnboardingIntroTransition, OnboardingSelectionTarget };
+import OnboardingTribeSelection from './OnboardingTribeSelection';
+export { RegistrationAccount, OnboardingIntroTransition, OnboardingSelectionTarget, OnboardingTribeSelection };

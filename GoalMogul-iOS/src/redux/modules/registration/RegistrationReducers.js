@@ -31,3 +31,50 @@ export const REGISTRATION_USER_TARGETS = [
         extra: ""
     },
 ];
+export const REGISTRATION_TRIBE_FETCH = "registration_tribe_fetch";
+export const REGISTRATION_TRIBE_SELECT = "registration_tribe_select"; // select a tribe to join during onboarding
+
+// Fake tribes rendered on network not available
+export const REGISTRATION_DEFAULT_TRIBES = [
+    {
+        _id: 0,
+        name: "Personal Development",
+        picture: undefined
+    },
+    {
+        _id: 1,
+        name: "Fitness",
+        picture: undefined
+    },
+    {
+        _id: 2,
+        name: "Career",
+        picture: undefined
+    },
+    {
+        _id: 3,
+        name: "Travel",
+        picture: undefined
+    },
+    {
+        _id: 4,
+        name: "Learning",
+        picture: undefined
+    },
+    {
+        _id: 5,
+        name: "Arts",
+        picture: undefined
+    },
+    {
+        _id: 6,
+        name: "Personal Development",
+        picture: undefined
+    },
+    {
+        _id: 7,
+        name: "Personal Development",
+        picture: undefined
+    },
+    
+];

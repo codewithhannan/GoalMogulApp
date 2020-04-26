@@ -5,7 +5,7 @@
  * TODO: migration all actions from /src/actions/RegistrationActions.js here
  */
 
-import { REGISTRATION_TEXT_CHANGE, REGISTRATION_USER_TARGETS } from "./RegistrationReducers";
+import { REGISTRATION_TEXT_CHANGE, REGISTRATION_USER_TARGETS, REGISTRATION_TRIBE_SELECT, REGISTRATION_TRIBE_FETCH } from "./RegistrationReducers";
 
 
 /**
@@ -34,5 +34,28 @@ export const registrationTargetSelection = (title, value, extra) => (dispatch, g
         payload: {
             title, value, extra
         }
+    })
+};
+
+/**
+ * User selects a tribe and update the reducer
+ * @param {String} _id tribeId
+ * @param {Boolean} selected {@code true} if this tribe with _id is selected
+ */
+export const registrationTribeSelection = (_id, selected) => (dispatch) => {
+    dispatch({
+        type: REGISTRATION_TRIBE_SELECT,
+        payload: { _id, selected }
+    })
+};
+
+/**
+ * Fetch tribes for user to select during onboarding flow
+ */
+export const registrationFetchTribes = () => (dispatch, getState) => {
+
+    dispatch({
+        type: REGISTRATION_TRIBE_FETCH,
+        payload: { tribes: [], status: "done" }
     })
 };

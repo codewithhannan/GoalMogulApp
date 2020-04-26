@@ -1,0 +1,171 @@
+import React from 'react';
+import { MaterialIcons } from '@expo/vector-icons';
+import {
+    View,
+    Text,
+    FlatList,
+    Animated,
+    Image
+} from 'react-native';
+import { connect } from 'react-redux';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import right_arrow_icon from '../../asset/utils/right_arrow.png';
+import OnboardingHeader from './Common/OnboardingHeader';
+import DelayedButton from '../Common/Button/DelayedButton';
+import { GM_FONT_SIZE, GM_BLUE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT } from '../../styles';
+import { registrationTribeSelection } from '../../redux/modules/registration/RegistrationActions';
+import OnboardingFooter from './Common/OnboardingFooter';
+import { CheckBox } from 'react-native-elements';
+
+/**
+ * Page for user to select interested tribe to join
+ * 
+ * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
+ */
+class OnboardingTribeSelection extends React.Component {
+    constructor(props) {
+        super(props);
+        this.animations = {
+            scrollOpacity: 1
+        }
+    }
+
+    onNext = () => {
+        
+    }
+
+    onBack = () => {
+
+    }
+
+    keyExtractor = (item) => item._id;
+
+    renderItem = ({item, index, separators}) => {
+        console.log("item is:", item);
+        const { selected, name, picture } = item;
+        const containerStyle = selected ? styles.tribeCardSelectedContainerStyle : styles.tribeCardContainerStyle;
+        return (
+            <DelayedButton style={containerStyle} onPress={() => this.props.registrationTribeSelection(item._id, !selected)}>
+                <View style={{ flex: 1 }}>
+                    <Image style={styles.tribeCardImageStyle} source={picture} />
+                </View>
+                <Text style={{ fontSize: GM_FONT_SIZE.FONT_2, lineHeight: GM_FONT_LINE_HEIGHT.FONT_2, fontFamily: GM_FONT_FAMILY.GOTHAM, width: 120, textAlign: "center" }}>{name}</Text>
+            </DelayedButton>
+        )
+    }
+
+    renderScroll = () => {
+        // Only render scroll when iphone model < 8
+
+        return (
+            <Animated.View style={{ opacity: this.animations.scrollOpacity, position: "absolute", bottom: 5, alignSelf: "center" }}>
+                <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", backgroundColor: "#DEF7FF", padding: 7, width: 94, borderRadius: 4 }}>
+                    <Image source={right_arrow_icon} style={{ transform: [{ rotate: '90deg' }], tintColor: "#2F80ED", height: 12, width: 15, marginRight: 5 }} />
+                    <Text style={{ fontSize: GM_FONT_SIZE.FONT_2, fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD, color: "#2F80ED", paddingTop: 2, textAlign: "center" }}>Scroll</Text>
+                </View>
+            </Animated.View>
+        );
+    }
+    
+    render() {
+        return (
+            <View style={styles.containerStyle}>
+                <OnboardingHeader />
+                <View style={{ flex: 1, justifyContent: "center" }}>
+                    <View style={{ alignItems: "center", marginTop: 40 }}>
+                        <Text style={styles.titleTextStyle}>Join some Tribes!</Text>
+                        <Text style={styles.subTitleTextStyle}>It'll be easier to connet to</Text>
+                        <Text style={styles.subTitleTextStyle}>others with similar goals.</Text>
+                    </View>
+                    <FlatList 
+                        data={this.props.tribes}
+                        renderItem={(item, index) => this.renderItem(item, index)}
+                        keyExtractor={this.keyExtractor}
+                        numColumns={2}
+                        style={{ marginTop: 10 }}
+                        contentContainerStyle={{ paddingLeft: 8, paddingRight: 8,paddingTop: 5 }}
+                    />
+                    {this.renderScroll()}
+                </View>
+                    
+                <OnboardingFooter totalStep={4} currentStep={3} onNext={this.onNext} onPrev={this.onBack} />
+            </View>
+        )
+    }
+}
+
+const styles = {
+    containerStyle: {
+        flex: 1,
+        backgroundColor: "white"
+    },
+    titleTextStyle: {
+        fontSize: GM_FONT_SIZE.FONT_4, lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
+        fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+        marginBottom: 20
+    },
+    subTitleTextStyle: {
+        fontSize: GM_FONT_SIZE.FONT_4, lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
+        fontFamily: GM_FONT_FAMILY.GOTHAM,
+    },
+    tribeCardContainerStyle: {
+        backgroundColor: "white",
+        borderRadius: 3,
+        alignItems: "center",
+        justifyContent: "center",
+        flex: 1,
+        marginTop: 20,
+        height: 120,
+        marginLeft: 8,
+        marginRight: 8,
+        paddingBottom: 16,
+        shadowOffset: {
+            width: 0,
+            height: 4
+        },
+        shadowRadius: 26,
+        shadowOpacity: 1,
+        shadowColor: 'rgba(0,0,0,0.06)'
+    },
+    tribeCardSelectedContainerStyle: {
+        backgroundColor: "#F6FDFF",
+        borderWidth: 1,
+        borderColor: GM_BLUE,
+        borderRadius: 3,
+        alignItems: "center",
+        justifyContent: "center",
+        flex: 1,
+        marginTop: 20,
+        height: 120,
+        marginLeft: 8,
+        marginRight: 8,
+        paddingBottom: 16,
+        shadowOffset: {
+            width: 0,
+            height: 4
+        },
+        shadowRadius: 26,
+        shadowOpacity: 1,
+        shadowColor: 'rgba(0,0,0,0.06)'
+    },
+    tribeCardImageStyle: {
+        width: 42,
+        height: 42,
+        marginTop: 20
+    }
+};
+
+const mapStateToProps = state => {
+    const { tribes } = state.registration;
+
+    return {
+        tribes
+    }
+};
+
+export default connect(
+    mapStateToProps,
+    {
+        registrationTribeSelection
+    }
+)(OnboardingTribeSelection);
