@@ -38,7 +38,7 @@ const styles = {
             width: 0,
             height: 0
         },
-        shadowRadius: 12,
+        shadowRadius: 10,
         shadowOpacity: 1,
         shadowColor: 'rgba(0,0,0,0.31667)'
     },

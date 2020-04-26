@@ -124,7 +124,7 @@ class OnboardingSelectionTarget extends React.Component {
             <View style={styles.containerStyle}>
                 <OnboardingHeader />
                 <View style={{ flex: 1, justifyContent: "center" }}>
-                    <View style={{ alignItems: "center", marginTop: 40 }}>
+                    <View style={{ alignItems: "center", marginTop: 35 }}>
                         <Text style={styles.titleTextStyle}>
                             Which of the following are
                         </Text>

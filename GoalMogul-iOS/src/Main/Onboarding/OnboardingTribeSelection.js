@@ -1,5 +1,4 @@
 import React from 'react';
-import { MaterialIcons } from '@expo/vector-icons';
 import {
     View,
     Text,
@@ -8,14 +7,12 @@ import {
     Image
 } from 'react-native';
 import { connect } from 'react-redux';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import right_arrow_icon from '../../asset/utils/right_arrow.png';
 import OnboardingHeader from './Common/OnboardingHeader';
 import DelayedButton from '../Common/Button/DelayedButton';
 import { GM_FONT_SIZE, GM_BLUE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT } from '../../styles';
 import { registrationTribeSelection } from '../../redux/modules/registration/RegistrationActions';
 import OnboardingFooter from './Common/OnboardingFooter';
-import { CheckBox } from 'react-native-elements';
 
 /**
  * Page for user to select interested tribe to join
@@ -31,7 +28,7 @@ class OnboardingTribeSelection extends React.Component {
     }
 
     onNext = () => {
-        
+
     }
 
     onBack = () => {
@@ -58,7 +55,7 @@ class OnboardingTribeSelection extends React.Component {
         // Only render scroll when iphone model < 8
 
         return (
-            <Animated.View style={{ opacity: this.animations.scrollOpacity, position: "absolute", bottom: 5, alignSelf: "center" }}>
+            <Animated.View style={{ opacity: this.animations.scrollOpacity, position: "absolute", bottom: 10, alignSelf: "center" }}>
                 <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", backgroundColor: "#DEF7FF", padding: 7, width: 94, borderRadius: 4 }}>
                     <Image source={right_arrow_icon} style={{ transform: [{ rotate: '90deg' }], tintColor: "#2F80ED", height: 12, width: 15, marginRight: 5 }} />
                     <Text style={{ fontSize: GM_FONT_SIZE.FONT_2, fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD, color: "#2F80ED", paddingTop: 2, textAlign: "center" }}>Scroll</Text>
@@ -72,7 +69,7 @@ class OnboardingTribeSelection extends React.Component {
             <View style={styles.containerStyle}>
                 <OnboardingHeader />
                 <View style={{ flex: 1, justifyContent: "center" }}>
-                    <View style={{ alignItems: "center", marginTop: 40 }}>
+                    <View style={{ alignItems: "center", marginTop: 35 }}>
                         <Text style={styles.titleTextStyle}>Join some Tribes!</Text>
                         <Text style={styles.subTitleTextStyle}>It'll be easier to connet to</Text>
                         <Text style={styles.subTitleTextStyle}>others with similar goals.</Text>
@@ -83,7 +80,7 @@ class OnboardingTribeSelection extends React.Component {
                         keyExtractor={this.keyExtractor}
                         numColumns={2}
                         style={{ marginTop: 10 }}
-                        contentContainerStyle={{ paddingLeft: 8, paddingRight: 8,paddingTop: 5 }}
+                        contentContainerStyle={{ paddingLeft: 8, paddingRight: 8, paddingTop: 5, paddingBottom: 16 }}
                     />
                     {this.renderScroll()}
                 </View>
