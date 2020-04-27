@@ -22,7 +22,7 @@ const ProfileActionButton = (props) => {
 
     const textComponent = props.text
         ? (
-            <Text style={{ fontSize: 9.5, marginLeft: 5, alignSelf: 'center', color }}>
+            <Text style={{ fontSize: 12, fontWeight: 'bold', marginLeft: 5, alignSelf: 'center', color }}>
                 {props.text}
             </Text>
         ) : null
