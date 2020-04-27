@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import R from 'ramda';
 
 /* Assets */
-import profilePic from '../../../asset/utils/defaultUserProfile.png';
+import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
 import love from '../../../asset/utils/love.png';
 import edit from '../../../asset/utils/edit.png';
 import cancel from '../../../asset/utils/cancel.png';
@@ -222,7 +222,7 @@ class ProfileDetailCard extends Component {
         if (this.props.self) {
             return (
                 <ProfileActionButton
-                    text='Edit profile'
+                    text='Edit Profile'
                     source={edit}
                     onPress={() => this.handleEditOnPressed()}
                     containerStyle={{ color: 'white', backgroundColor: GM_BLUE }}
@@ -365,24 +365,21 @@ class ProfileDetailCard extends Component {
 
     renderProfileImage(profile) {
         const { image } = profile;
-        let imageUrl;
 
-        let profileImage = (
-            <View style={styles.imageContainerStyle}>
-                <Image style={styles.imageStyle} resizeMode='contain' source={profilePic} />
-            </View>
-        );
         if (image) {
-            imageUrl = `${IMAGE_BASE_URL}${image}`;
-            profileImage = (
-                <View
-                    style={styles.imageContainerStyle}
-                >
+            let imageUrl = `${IMAGE_BASE_URL}${image}`;
+            return (
+                <View style={styles.imageContainerStyle}>
                     <Image style={styles.imageStyle} source={{ uri: imageUrl }} />
                 </View>
             );
+        } else {
+            return (
+                <View style={{ ...styles.imageContainerStyle, borderWidth: 2, borderColor: '#BDBDBD' }}>
+                    <Image style={{ width: 30, height: 30, margin: (width * 0.3) / 3 }} resizeMode='contain' source={defaultProfilePic} />
+                </View>
+            );
         }
-        return profileImage;
     }
 
     render() {
@@ -460,10 +457,8 @@ const styles = {
         backgroundColor: 'white'
     },
     imageContainerStyle: {
-        borderWidth: 1,
-        borderColor: '#646464',
         alignItems: 'center',
-        borderRadius: 14,
+        borderRadius: (width * 0.9) / 6,
         position: 'absolute',
         bottom: 10,
         left: 20,
@@ -473,9 +468,7 @@ const styles = {
     imageStyle: {
         width: (width * 0.9) / 3,
         height: (width * 0.9) / 3,
-        borderRadius: 13,
-        borderWidth: 1,
-        borderColor: 'white'
+        borderRadius: (width * 0.9) / 3,
     },
     nameTextStyle: {
         fontSize: 25,
