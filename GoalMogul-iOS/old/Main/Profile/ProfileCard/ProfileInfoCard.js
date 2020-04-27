@@ -49,8 +49,9 @@ class ProfileInfoCard extends Component {
     const { pageId, userId } = this.props;
     // canEdit means self
     if (this.props.canEdit) {
-      Actions.push('friendsTab')
-      Actions.replace('friendTabView');
+      // Jump to meetTab
+      Actions.jump('meetTab');
+      Actions.push('friendTabView');
       return;  
     }
     Actions.push('mutualFriends', { userId, pageId });

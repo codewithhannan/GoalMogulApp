@@ -191,7 +191,7 @@ class SearchBarHeader extends Component {
                         activeOpacity={0.6}
                         onPress={() => {
                             const componentKeyToOpen = componentKeyByTab(this.props.navigationTab, 'searchLightBox');
-                            Actions.push(`${componentKeyToOpen}`);
+                            Actions.push(componentKeyToOpen);
                         }}
                         style={styles.headerRightContaner}
                     >
@@ -199,7 +199,9 @@ class SearchBarHeader extends Component {
                     </DelayedButton>
                     <TouchableOpacity
                         activeOpacity={0.6}
-                        onPress={menuOnPress || this.handleMenuIconOnClick}
+                        onPress={() => {
+                            Actions.push('friendsTab');
+                        }}
                         style={{ ...styles.headerRightContaner }}
                     >
                         <Image style={{ height: 21, width: 21, tintColor: rightIconColor }} source={IconMeet} />

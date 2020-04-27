@@ -75,7 +75,7 @@ class Menu extends React.PureComponent {
       [R.equals(1), () => {
         console.log(`${DEBUG_KEY}: [handleTutorialOnPress]: Friends Tab Walkthrough`);
         Actions.pop();
-        Actions.jump('meetTab');
+        Actions.jump('profileTab');
         setTimeout(() => {
           this.props.startTutorial('meet_tab_friend', 'meet_tab');
         }, 500);
