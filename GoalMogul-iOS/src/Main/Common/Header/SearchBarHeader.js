@@ -199,9 +199,7 @@ class SearchBarHeader extends Component {
                     </DelayedButton>
                     <TouchableOpacity
                         activeOpacity={0.6}
-                        onPress={() => {
-                            Actions.push('friendsTab');
-                        }}
+                        onPress={() => { Actions.push('friendsTab') }}
                         style={{ ...styles.headerRightContaner }}
                     >
                         <Image style={{ height: 21, width: 21, tintColor: rightIconColor }} source={IconMeet} />
