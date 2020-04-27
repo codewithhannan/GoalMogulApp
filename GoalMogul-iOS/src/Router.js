@@ -85,7 +85,8 @@ import IntroForm from './Registration/IntroForm';
 // import RegistrationAccount from './Registration/RegistrationAccount';
 import { RegistrationAccount, OnboardingIntroTransition, 
   OnboardingSelectionTarget, OnboardingTribeSelection, 
-  OnboardingCommunity, OnboardingSyncContact, OnboardingWelcome
+  OnboardingCommunity, OnboardingSyncContact, OnboardingWelcome,
+  SyncContactInvite
 } from './Main/Onboarding';
 // import CardStackStyleInterpolator from "react-navigation-stack/src/views/StackView/StackViewStyleInterpolator";
 /* Auth */
@@ -217,7 +218,7 @@ class RouterComponent extends Component {
                 <Scene key="login" component={LoginPage} />
                 <Scene 
                   key="registrationAccount" 
-                  component={OnboardingWelcome}   
+                  component={SyncContactInvite}   
                 />
               </Stack>
 

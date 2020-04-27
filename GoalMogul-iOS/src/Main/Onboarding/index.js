@@ -10,6 +10,7 @@ import OnboardingTribeSelection from './OnboardingTribeSelection';
 import OnboardingCommunity from './OnboardingCommunity';
 import OnboardingSyncContact from './OnboardingSyncContact';
 import OnboardingWelcome from './OnboardingWelcome';
+import SyncContactInvite from './SyncContactInvite';
 export { 
     RegistrationAccount, 
     OnboardingIntroTransition, 
@@ -17,5 +18,6 @@ export {
     OnboardingTribeSelection,
     OnboardingCommunity,
     OnboardingSyncContact,
-    OnboardingWelcome
+    OnboardingWelcome,
+    SyncContactInvite
 };
