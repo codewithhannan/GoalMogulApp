@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import right_arrow_icon from '../../asset/utils/right_arrow.png';
 import OnboardingHeader from './Common/OnboardingHeader';
 import DelayedButton from '../Common/Button/DelayedButton';
-import { GM_FONT_SIZE, GM_BLUE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT } from '../../styles';
+import { GM_FONT_SIZE, GM_BLUE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT, TEXT_STYLE as textStyle } from '../../styles';
 import { registrationTribeSelection } from '../../redux/modules/registration/RegistrationActions';
 import OnboardingFooter from './Common/OnboardingFooter';
 
@@ -70,7 +70,7 @@ class OnboardingTribeSelection extends React.Component {
                 <OnboardingHeader />
                 <View style={{ flex: 1, justifyContent: "center" }}>
                     <View style={{ alignItems: "center", marginTop: 35 }}>
-                        <Text style={styles.titleTextStyle}>Join some Tribes!</Text>
+                        <Text style={[textStyle.onboardingTitleTextStyle, { marginBottom: 20 }]}>Join some Tribes!</Text>
                         <Text style={styles.subTitleTextStyle}>It'll be easier to connet to</Text>
                         <Text style={styles.subTitleTextStyle}>others with similar goals.</Text>
                     </View>
@@ -95,11 +95,6 @@ const styles = {
     containerStyle: {
         flex: 1,
         backgroundColor: "white"
-    },
-    titleTextStyle: {
-        fontSize: GM_FONT_SIZE.FONT_4, lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
-        fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
-        marginBottom: 20
     },
     subTitleTextStyle: {
         fontSize: GM_FONT_SIZE.FONT_4, lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,

@@ -9,7 +9,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
 import OnboardingHeader from './Common/OnboardingHeader';
-import { GM_FONT_SIZE, GM_BLUE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT, BUTTON_STYLE as buttonStyle } from '../../styles';
+import { GM_FONT_SIZE, GM_BLUE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT, BUTTON_STYLE as buttonStyle, TEXT_STYLE as textStyle } from '../../styles';
 import { PRIVACY_POLICY_URL } from '../../Utils/Constants';
 import { registrationTribeSelection } from '../../redux/modules/registration/RegistrationActions';
 import OnboardingFooter from './Common/OnboardingFooter';
@@ -56,8 +56,8 @@ class OnboardingSyncContact extends React.Component {
                     <View style={{ flex: 1, alignItems: "center", width: "100%" }}>
                         <View style={{ height: screenWidth * 0.65, width: screenWidth * 0.65, backgroundColor: "#F2F2F2" }} />
                         <View style={{ marginTop: 40 }}>
-                            <Text style={styles.titleTextStyle}>Find friends who</Text>
-                            <Text style={styles.titleTextStyle}>already use GoalMogul</Text>
+                            <Text style={textStyle.onboardingTitleTextStyle}>Find friends who</Text>
+                            <Text style={textStyle.onboardingTitleTextStyle}>already use GoalMogul!</Text>
                         </View>
                         {this.renderButtons()}
                     </View>
@@ -88,11 +88,6 @@ const styles = {
         alignSelf: "flex-end",
         paddingBottom: 20
     },
-    titleTextStyle: {
-        fontSize: GM_FONT_SIZE.FONT_4, lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
-        fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
-        textAlign: "center"
-    }
 };
 
 const mapStateToProps = state => {

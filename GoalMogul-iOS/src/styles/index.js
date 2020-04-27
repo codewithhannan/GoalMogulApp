@@ -46,6 +46,7 @@ export const GM_FONT_FAMILY = {
   GOTHAM: "gotham-pro"
 };
 
+// Button style
 export const BUTTON_STYLE = {
   GM_BLUE_BG_WHITE_BOLD_TEXT: {
     containerStyle: {
@@ -84,6 +85,23 @@ export const BUTTON_STYLE = {
       fontFamily: GM_FONT_FAMILY.GOTHAM,
       fontWeight: "500"
     }
+  }
+};
+
+// Text style
+export const TEXT_STYLE = {
+  onboardingTitleTextStyle: {
+    fontSize: GM_FONT_SIZE.FONT_4, lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
+    fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+    textAlign: "center"
+  },
+  // Paragraph text style in an
+  onboardingPharagraphTextStyle: {
+    fontSize: GM_FONT_SIZE.FONT_3,
+    lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
+    fontFamily: GM_FONT_FAMILY.GOTHAM,
+    fontWeight: "500",
+    textAlign: "center"
   }
 };
 
