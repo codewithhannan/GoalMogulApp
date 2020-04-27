@@ -8,4 +8,12 @@ import OnboardingIntroTransition from './OnboardingIntroTransition';
 import OnboardingSelectionTarget from './OnboardingSelectionTarget';
 import OnboardingTribeSelection from './OnboardingTribeSelection';
 import OnboardingCommunity from './OnboardingCommunity';
-export { RegistrationAccount, OnboardingIntroTransition, OnboardingSelectionTarget, OnboardingTribeSelection, OnboardingCommunity };
+import OnboardingSyncContact from './OnboardingSyncContact';
+export { 
+    RegistrationAccount, 
+    OnboardingIntroTransition, 
+    OnboardingSelectionTarget, 
+    OnboardingTribeSelection,
+    OnboardingCommunity,
+    OnboardingSyncContact
+};

@@ -46,6 +46,47 @@ export const GM_FONT_FAMILY = {
   GOTHAM: "gotham-pro"
 };
 
+export const BUTTON_STYLE = {
+  GM_BLUE_BG_WHITE_BOLD_TEXT: {
+    containerStyle: {
+      height: 45,
+      width: "100%",  
+      backgroundColor: GM_BLUE,
+      borderRadius: 3,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 5,
+    },
+    textStyle: {
+      fontSize: GM_FONT_SIZE.FONT_3,
+      fontWeight: "bold",
+      lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
+      color: "white",
+      fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD
+    }
+  },
+  GM_WHITE_BG_BLUE_TEXT: {
+    containerStyle: {
+      height: 45,
+      width: "100%",  
+      backgroundColor: "white",
+      borderRadius: 3,
+      alignItems: "center",
+      justifyContent: "center",
+      borderColor: "#BDBDBD",
+      borderWidth: 1,
+      borderRadius: 5,
+    },
+    textStyle: {
+      fontSize: GM_FONT_SIZE.FONT_2,
+      lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
+      color: GM_BLUE,
+      fontFamily: GM_FONT_FAMILY.GOTHAM,
+      fontWeight: "500"
+    }
+  }
+};
+
 export const imagePreviewContainerStyle = {
   shadowColor: '#ddd',
   shadowOffset: { width: 0, height: 1.5 },
