@@ -1,7 +1,6 @@
 /**
  * This file is created during GM V2 implementation
  */
-
 export const REGISTRATION_TEXT_CHANGE = "registration_text_change";
 export const REGISTRATION_TARGET_SELECTION = "registration_target_selection";
 export const REGISTRATION_USER_TARGETS = [
@@ -76,5 +75,27 @@ export const REGISTRATION_DEFAULT_TRIBES = [
         name: "Personal Development",
         picture: undefined
     },
-    
+];
+
+export const REGISTRATION_COMMUNITY_GUIDELINE = [
+    {
+        title: "We're a positive, safe & judgement-free community",
+        subTitle: "(NO NEGATIVITY AND NO TROLLING)",
+        picture: undefined
+    },
+    {
+        title: "Post goals often & stay committed",
+        subTitle: "",
+        picture: undefined
+    },
+    {
+        title: "Inspare others with supportive comments",
+        subTitle: "",
+        picture: undefined
+    },
+    {
+        title: "Give & get suggestions, achieve more together!",
+        subTitle: "",
+        picture: undefined
+    }
 ];

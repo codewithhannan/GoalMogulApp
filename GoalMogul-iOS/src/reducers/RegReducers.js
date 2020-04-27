@@ -29,7 +29,7 @@ import {
 import {
   USER_LOG_OUT
 } from './User';
-import { REGISTRATION_TEXT_CHANGE, REGISTRATION_USER_TARGETS, REGISTRATION_DEFAULT_TRIBES, REGISTRATION_TRIBE_FETCH, REGISTRATION_TRIBE_SELECT } from '../redux/modules/registration/RegistrationReducers';
+import { REGISTRATION_TEXT_CHANGE, REGISTRATION_USER_TARGETS, REGISTRATION_DEFAULT_TRIBES, REGISTRATION_TRIBE_FETCH, REGISTRATION_TRIBE_SELECT, REGISTRATION_COMMUNITY_GUIDELINE } from '../redux/modules/registration/RegistrationReducers';
 
 export function arrayUnique(array) {
   let a = array.concat();
@@ -68,6 +68,7 @@ const INITIAL_STATE = {
   phone: '',
   userTargets: [...REGISTRATION_USER_TARGETS],
   tribes: [...REGISTRATION_DEFAULT_TRIBES],
+  communityGuidelines: [...REGISTRATION_COMMUNITY_GUIDELINE],
   matchedContacts: {
     data: [],
     limit: 30,

@@ -1,7 +1,8 @@
 import React from 'react';
 import {
     View,
-    Image
+    Image,
+    Text
 } from 'react-native';
 import { GM_BLUE, GM_DOT_GRAY, GM_BLUE_LIGHT_LIGHT, GM_FONT_SIZE, GM_FONT_LINE_HEIGHT, GM_FONT_FAMILY } from '../../../styles';
 import right_arrow_icon from '../../../asset/utils/right_arrow.png';
@@ -43,7 +44,7 @@ class OnboardingFooter extends React.Component {
 
     renderButton(buttonText) {
         return (
-            <DelayedButton style={styles.buttonContainerStyle} onPress={this.onButtonPress}>
+            <DelayedButton style={styles.buttonContainerStyle} onPress={this.props.onButtonPress}>
                 <Text style={styles.buttonTextStyle}>{buttonText}</Text>
             </DelayedButton>
         );

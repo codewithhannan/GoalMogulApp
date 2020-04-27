@@ -83,7 +83,7 @@ import IntroForm from './Registration/IntroForm';
 /* Registration */
 // import RegistrationAccount from './Registration/Account';
 // import RegistrationAccount from './Registration/RegistrationAccount';
-import { RegistrationAccount, OnboardingIntroTransition, OnboardingSelectionTarget, OnboardingTribeSelection } from './Main/Onboarding';
+import { RegistrationAccount, OnboardingIntroTransition, OnboardingSelectionTarget, OnboardingTribeSelection, OnboardingCommunity } from './Main/Onboarding';
 // import CardStackStyleInterpolator from "react-navigation-stack/src/views/StackView/StackViewStyleInterpolator";
 /* Auth */
 import SplashScreen from './SplashScreen';
@@ -214,7 +214,7 @@ class RouterComponent extends Component {
                 <Scene key="login" component={LoginPage} />
                 <Scene 
                   key="registrationAccount" 
-                  component={OnboardingTribeSelection}   
+                  component={OnboardingCommunity}   
                 />
               </Stack>
 
