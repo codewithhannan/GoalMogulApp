@@ -7,13 +7,16 @@ const defaultButtonStyle = {
         backgroundColor: '#1aa0dd', // container background style
         tintColor: '#1aa0dd', // icon tintColor
         color: 'white', // text color
-        fontWeight: '700' // text fontWeight
+        fontWeight: '700', // text fontWeight
+        fontSize: 14
+
     },
     unselected: {
         backgroundColor: 'white',
         tintColor: '#696969',
         color: '#696969',
-        fontWeight: '600'
+        fontWeight: '600',
+        fontSize: 14
     }
 };
 
@@ -41,16 +44,11 @@ const SubTabButton = (props) => {
             </View>
         );
 
-    // Select iconStyle
-    const iconStyle = props.onSelect
-        ? { ...styles.iconStyle, ...props.iconStyle, tintColor }
-        : { ...styles.iconStyle, ...props.iconStyle, tintColor };
-
     const icon = !props.iconSource ? null :
         (
             <Image
                 source={props.iconSource}
-                style={iconStyle}
+                style={{ ...styles.iconStyle, ...props.iconStyle, tintColor }}
             />
         );
 
@@ -59,7 +57,6 @@ const SubTabButton = (props) => {
             {icon}
             <Animated.Text
                 style={{
-                    ...styles.textStyle,
                     color,
                     fontWeight,
                     fontSize,

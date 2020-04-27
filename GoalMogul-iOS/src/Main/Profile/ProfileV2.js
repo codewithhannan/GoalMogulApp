@@ -204,23 +204,27 @@ class ProfileV2 extends Component {
 
     renderTabs = (props) => {
         return (
-            <TabButtonGroup
-                buttons={props}
-                buttonStyle={{
-                    selected: {
-                        backgroundColor: GM_BLUE,
-                        tintColor: 'white',
-                        color: 'white',
-                        fontWeight: '700'
-                    },
-                    unselected: {
-                        backgroundColor: '#FCFCFC',
-                        tintColor: '#616161',
-                        color: '#616161',
-                        fontWeight: '600'
-                    }
-                }}
-            />
+            <View style={styles.tabContainer}>
+                <TabButtonGroup
+                    buttons={props}
+                    buttonStyle={{
+                        fontSize: 14,
+                        selected: {
+                            backgroundColor: GM_BLUE,
+                            tintColor: 'white',
+                            color: 'white',
+                            fontWeight: 'bold',
+                            fontSize: 14
+                        },
+                        unselected: {
+                            backgroundColor: 'white',
+                            color: '#BDBDBD',
+                            fontWeight: '0',
+                            fontSize: 14
+                        }
+                    }}
+                />
+            </View>
         );
     }
 
@@ -420,6 +424,10 @@ const styles = {
     containerStyle: {
         flex: 1,
         backgroundColor: BACKGROUND_COLOR,
+    },
+    tabContainer: {
+        padding: 16,
+        backgroundColor: 'white'
     },
     backdrop: {
         backgroundColor: 'gray',

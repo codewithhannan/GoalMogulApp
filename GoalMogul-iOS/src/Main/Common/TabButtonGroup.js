@@ -124,8 +124,7 @@ const styles = {
         display: 'flex',
         height: 30,
         flexDirection: 'row',
-        borderWidth: 0.5,
-        borderBottomWidth: 0.5,
+        borderWidth: 1,
         borderColor: '#ddd',
         backgroundColor: '#fff'
     },

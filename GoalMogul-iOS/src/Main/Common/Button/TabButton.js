@@ -9,13 +9,15 @@ const defaultButtonStyle = {
         backgroundColor: '#f8f8f8', // container background style
         tintColor: '#1998c9', // icon tintColor
         color: '#1998c9', // text color
-        fontWeight: '700' // text fontWeight
+        fontWeight: '700', // text fontWeight
+        fontSize: 14
     },
     unselected: {
         backgroundColor: 'white',
         tintColor: '#696969',
         color: '#696969',
-        fontWeight: '600'
+        fontWeight: '600',
+        fontSize: 14
     }
 };
 
@@ -57,15 +59,11 @@ const TabButton = (props) => {
             </View>
         );
 
-    // Select iconStyle
-    const iconStyle = props.onSelect ? { ...styles.iconStyle, ...props.iconStyle, tintColor }
-        : { ...styles.iconStyle, ...props.iconStyle, tintColor };
-
     const icon = !props.iconSource ? null :
         (
             <Image
                 source={props.iconSource}
-                style={iconStyle}
+                style={{ ...styles.iconStyle, ...props.iconStyle, tintColor }}
             />
         );
 
@@ -74,7 +72,6 @@ const TabButton = (props) => {
             {icon}
             <Animated.Text
                 style={{
-                    ...styles.textStyle,
                     color,
                     fontWeight,
                     fontSize,

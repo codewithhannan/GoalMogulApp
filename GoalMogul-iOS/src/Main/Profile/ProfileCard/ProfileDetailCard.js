@@ -329,7 +329,7 @@ class ProfileDetailCard extends Component {
             return <View style={{ height: 55.5 }} />
         }
         return (
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: padding, marginTop: 5 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: PADDING, marginTop: 5 }}>
                 <DelayedButton
                     activeOpacity={0.6}
                     style={{
@@ -387,7 +387,7 @@ class ProfileDetailCard extends Component {
         const { name, headline, profile } = user;
 
         return (
-            <View style={styles.cardContainerStyle} onLayout={this.onLayout}>
+            <View onLayout={this.onLayout}>
                 <View style={{ height: 90, backgroundColor: GM_BLUE_LIGHT_LIGHT }} />
                 <View style={styles.imageWrapperStyle}>
                     {this.renderProfileImage(profile)}
@@ -419,7 +419,13 @@ class ProfileDetailCard extends Component {
                         textStyle={styles.headlineTextStyle}
                         contentText={headline}
                         textContainerStyle={{ flexDirection: 'row' }}
-                        numberOfLines={3}
+                        numberOfLines={1}
+                    />
+                    <RichText
+                        textStyle={{ ...styles.headlineTextStyle, fontSize: 14 }}
+                        contentText={'Geater Toronto Area'}
+                        textContainerStyle={{ flexDirection: 'row' }}
+                        numberOfLines={1}
                     />
                 </View>
             </View>
@@ -427,15 +433,9 @@ class ProfileDetailCard extends Component {
     }
 }
 
-const padding = 15;
+const PADDING = 15;
 
 const styles = {
-    cardContainerStyle: {
-        shadowColor: '#ddd',
-        shadowOffset: { width: 0, height: 1.2 },
-        shadowOpacity: 0.7,
-        shadowRadius: 1,
-    },
     containerStyle: {
         backgroundColor: '#fff',
         display: 'flex',
@@ -443,14 +443,9 @@ const styles = {
         alignItems: 'flex-start',
         paddingTop: 10,
         paddingLeft: 20,
-        paddingRight: 20,
-        paddingBottom: 15
+        paddingRight: 20
     },
     imageWrapperStyle: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
         height: 60,
         backgroundColor: 'white'
     },
@@ -466,29 +461,31 @@ const styles = {
     imageStyle: {
         width: (width * 0.9) / 3,
         height: (width * 0.9) / 3,
-        borderRadius: (width * 0.9) / 3,
+        borderRadius: (width * 0.9) / 6
     },
     nameTextStyle: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
-        marginBottom: 5,
+        marginTop: 6,
+        marginBottom: 9,
         marginRight: 6
     },
     headlineTextStyle: {
-        fontSize: 14,
-        color: '#646464',
-        marginBottom: padding
+        fontSize: 16,
+        color: '#333',
+        fontWeight: '500',
+        marginBottom: 9
     },
     dividerStyle: {
         height: 1,
         width: (width * 5) / 7,
         borderColor: '#dcdcdc',
         borderBottomWidth: 1,
-        marginBottom: padding
+        marginBottom: PADDING
     },
     friendInfoContainerStyle: {
         flexDirection: 'row',
-        marginBottom: padding,
+        marginBottom: PADDING,
         alignItems: 'center'
     },
     dotIconStyle: {
