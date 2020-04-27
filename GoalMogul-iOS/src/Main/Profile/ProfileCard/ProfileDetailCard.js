@@ -230,7 +230,6 @@ class ProfileDetailCard extends Component {
             );
         }
 
-        // const status = DEBUG ? 'Accepted' : this.props.friendship.status;
         const status = this.props.friendship.status;
 
         if (this.props.needRespond) {
@@ -393,7 +392,6 @@ class ProfileDetailCard extends Component {
                 <View style={styles.imageWrapperStyle}>
                     {this.renderProfileImage(profile)}
                     <View style={{ flexDirection: 'row', flex: 1, marginTop: 8, marginRight: 15 }}>
-                        {/* <View style={{ width: ((width * 0.9) / 3) + 40 + 10 }} /> */}
                         <View style={{ flex: 1 }} />
                         {this.renderMessageButton()}
                         {this.renderProfileActionButton()}
@@ -471,8 +469,10 @@ const styles = {
         borderRadius: (width * 0.9) / 3,
     },
     nameTextStyle: {
-        fontSize: 25,
-        marginBottom: 5
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 5,
+        marginRight: 6
     },
     headlineTextStyle: {
         fontSize: 14,
@@ -503,22 +503,24 @@ const styles = {
         justifyContent: 'center'
     },
     infoIconContainerStyle: {
-        height: 24,
-        width: 24,
-        borderRadius: 12,
-        borderWidth: 0.8,
-        borderColor: 'rgb(235, 249, 227)',
+        height: 15,
+        width: 15,
+        borderRadius: 7.5,
+        borderWidth: 1,
+        borderColor: '#333',
         alignItems: 'center',
         justifyContent: 'center',
         marginLeft: 5
     },
     infoIconStyle: {
-        height: 11, width: 7, tintColor: 'rgb(88, 117, 89)'
+        height: 9,
+        width: 5,
+        tintColor: '#333'
     }
 };
 
 const mapStateToProps = (state, props) => {
-    const { userId, pageId } = props;
+    const { userId } = props;
 
     const self = userId === state.user.userId;
 
