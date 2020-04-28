@@ -19,7 +19,7 @@ import { createReport } from '../../redux/modules/report/ReportActions';
 import { getUserData, getUserDataByPageId, makeGetUserGoals, makeGetUserNeeds, makeGetUserPosts } from '../../redux/modules/User/Selector';
 import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users';
 /* Styles */
-import { APP_DEEP_BLUE, BACKGROUND_COLOR, GM_BLUE } from '../../styles';
+import { BACKGROUND_COLOR, GM_BLUE } from '../../styles';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 import PlusButton from '../Common/Button/PlusButton';
 import GoalFilterBar from '../Common/GoalFilterBar';
@@ -207,6 +207,7 @@ class ProfileV2 extends Component {
             <View style={styles.tabContainer}>
                 <TabButtonGroup
                     buttons={props}
+                    borderRadius={3}
                     buttonStyle={{
                         fontSize: 14,
                         selected: {
@@ -218,8 +219,9 @@ class ProfileV2 extends Component {
                         },
                         unselected: {
                             backgroundColor: 'white',
+                            tintColor: '#BDBDBD',
                             color: '#BDBDBD',
-                            fontWeight: '0',
+                            fontWeight: '500',
                             fontSize: 14
                         }
                     }}

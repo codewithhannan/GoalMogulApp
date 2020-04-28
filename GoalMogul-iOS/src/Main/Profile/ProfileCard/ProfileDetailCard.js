@@ -225,7 +225,7 @@ class ProfileDetailCard extends Component {
                     text='Edit Profile'
                     source={edit}
                     onPress={() => this.handleEditOnPressed()}
-                    containerStyle={{ color: 'white', backgroundColor: GM_BLUE }}
+                    containerStyle={{ color: 'white', backgroundColor: GM_BLUE, borderRadius: 3 }}
                 />
             );
         }

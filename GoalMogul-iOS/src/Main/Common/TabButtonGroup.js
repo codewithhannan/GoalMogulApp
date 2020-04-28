@@ -6,6 +6,7 @@ import Divider from './Divider';
 import TabButton from './Button/TabButton';
 import SubTabButton from './Button/SubTabButton';
 
+
 const WalkableView = walkthroughable(View);
 
 /**
@@ -20,25 +21,31 @@ class TabButtonGroup extends Component {
             subTab,
             buttonStyle,
             noVerticalDivider, // Vertical border between two tabs
-            tabNotificationMap // Map between tab key and if there is notification and its style, not required
+            tabNotificationMap, // Map between tab key and if there is notification and its style, not required
+            borderRadius
         } = this.props;
         const { navigationState, jumpTo, jumpToIndex } = buttons;
-
         const { index, routes } = navigationState;
         return routes.map((b, i) => {
             const selected = i === index;
             const iconSource = tabIconMap ? tabIconMap[b.key].iconSource : undefined;
-            const iconStyle = tabIconMap ? tabIconMap[b.key].iconStyle : undefined;
+            const iconStyle = tabIconMap ? tabIconMap[b.key].iconStyle : undefined; 
+            const btnStyle = {
+                ...(selected ? buttonStyle.selected : buttonStyle.unselected),
+                borderTopLeftRadius: i == 0 ? borderRadius : 0,
+                borderBottomLeftRadius: i == 0 ? borderRadius : 0,
+                borderTopRightRadius: (i == routes.length - 1) ? borderRadius : 0,
+                borderBottomRightRadius: (i == routes.length - 1) ? borderRadius : 0
+            };
             const button = subTab
                 ? (
                     <SubTabButton
                         key={b.key}
                         text={b.title}
-                        onSelect={selected}
                         stat={b.stat}
                         iconSource={iconSource}
                         iconStyle={iconStyle}
-                        buttonStyle={buttonStyle}
+                        buttonStyle={btnStyle}
                         tabNotificationMap={tabNotificationMap}
                     />
                 )
@@ -46,11 +53,11 @@ class TabButtonGroup extends Component {
                     <TabButton
                         tabKey={b.key}
                         text={b.title}
-                        onSelect={selected}
                         stat={b.stat}
+                        onSelect={selected}
                         iconSource={iconSource}
                         iconStyle={iconStyle}
-                        buttonStyle={buttonStyle}
+                        buttonStyle={btnStyle}
                         tabNotificationMap={tabNotificationMap}
                     />
                 );
@@ -105,14 +112,8 @@ class TabButtonGroup extends Component {
     }
 
     render() {
-        const containerStyle = this.props.noBorder
-            ? {
-                ...styles.containerStyle,
-                borderWidth: 0
-            }
-            : styles.containerStyle;
         return (
-            <View style={containerStyle}>
+            <View style={{ ...styles.containerStyle, borderRadius: this.props.borderRadius }}>
                 {this.renderButton()}
             </View>
         );
@@ -125,8 +126,8 @@ const styles = {
         height: 30,
         flexDirection: 'row',
         borderWidth: 1,
-        borderColor: '#ddd',
-        backgroundColor: '#fff'
+        borderColor: '#F2F2F2',
+        backgroundColor: 'white'
     },
     dividerContainerStyle: {
         flexDirection: 'row',

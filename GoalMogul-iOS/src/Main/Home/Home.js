@@ -48,7 +48,7 @@ import Logo from '../../asset/header/logo.png';
 import Activity from '../../asset/utils/activity.png';
 
 // Styles
-import { APP_DEEP_BLUE } from '../../styles';
+import { APP_DEEP_BLUE, GM_BLUE } from '../../styles';
 
 // Utils
 import { Logger } from '../../redux/middleware/utils/Logger';
@@ -275,18 +275,21 @@ class Home extends Component {
                 <TabButtonGroup
                     buttons={props}
                     tabIconMap={TabIconMap}
+                    borderRadius={3}
                     buttonStyle={{
                         selected: {
-                            backgroundColor: APP_DEEP_BLUE,
+                            backgroundColor: GM_BLUE,
                             tintColor: 'white',
                             color: 'white',
-                            fontWeight: '700'
+                            fontWeight: 'bold',
+                            fontSize: 14
                         },
                         unselected: {
-                            backgroundColor: '#FCFCFC',
-                            tintColor: '#616161',
-                            color: '#616161',
-                            fontWeight: '600'
+                            backgroundColor: 'white',
+                            tintColor: '#BDBDBD',
+                            color: '#BDBDBD',
+                            fontWeight: '500',
+                            fontSize: 14
                         }
                     }}
                 />

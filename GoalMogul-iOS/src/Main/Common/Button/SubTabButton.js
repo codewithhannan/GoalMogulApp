@@ -1,37 +1,22 @@
 import React from 'react';
 import { View, Text, Animated, Image } from 'react-native';
 
-// Default button style
-const defaultButtonStyle = {
-    selected: {
-        backgroundColor: '#1aa0dd', // container background style
-        tintColor: '#1aa0dd', // icon tintColor
-        color: 'white', // text color
-        fontWeight: '700', // text fontWeight
-        fontSize: 14
-
-    },
-    unselected: {
-        backgroundColor: 'white',
-        tintColor: '#696969',
-        color: '#696969',
-        fontWeight: '600',
-        fontSize: 14
-    }
-};
 
 const SubTabButton = (props) => {
-    const buttonStyle = props.buttonStyle || defaultButtonStyle;
+    const buttonStyle = props.buttonStyle;
     const {
         color,
         backgroundColor,
         tintColor,
         fontWeight,
         fontSize,
-        fontFamily
-    } = props.onSelect ? buttonStyle.selected : buttonStyle.unselected;
+        fontFamily,
+        borderTopLeftRadius,
+        borderTopRightRadius,
+        borderBottomLeftRadius,
+        borderBottomRightRadius
+    } =  buttonStyle;
 
-    // const color = props.onSelect ? '#1aa0dd' : 'white';
     const stat = !props.stat ? null :
         (
             <View>
@@ -53,7 +38,14 @@ const SubTabButton = (props) => {
         );
 
     return (
-        <View style={{ ...styles.containerStyle, backgroundColor }}>
+        <View style={{
+            ...styles.containerStyle,
+            backgroundColor,
+            borderTopLeftRadius,
+            borderTopRightRadius,
+            borderBottomLeftRadius,
+            borderBottomRightRadius
+        }}>
             {icon}
             <Animated.Text
                 style={{

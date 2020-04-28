@@ -3,23 +3,6 @@ import { View, Text, Animated, Image } from 'react-native';
 import _ from 'lodash';
 import { DotIcon } from '../../../Utils/Icons';
 
-// Default button style
-const defaultButtonStyle = {
-    selected: {
-        backgroundColor: '#f8f8f8', // container background style
-        tintColor: '#1998c9', // icon tintColor
-        color: '#1998c9', // text color
-        fontWeight: '700', // text fontWeight
-        fontSize: 14
-    },
-    unselected: {
-        backgroundColor: 'white',
-        tintColor: '#696969',
-        color: '#696969',
-        fontWeight: '600',
-        fontSize: 14
-    }
-};
 
 const renderNotificationIndicator = (props) => {
     const { tabNotificationMap, tabKey, isSelected } = props;
@@ -37,16 +20,21 @@ const renderNotificationIndicator = (props) => {
 
 const TabButton = (props) => {
     const { tabNotificationMap, tabKey } = props;
-    const buttonStyle = props.buttonStyle || defaultButtonStyle;
+    const buttonStyle = props.buttonStyle;
     const {
         color,
         backgroundColor,
         tintColor,
         fontWeight,
         fontSize,
-        fontFamily
-    } = props.onSelect ? buttonStyle.selected : buttonStyle.unselected;
+        fontFamily,
+        borderTopLeftRadius,
+        borderTopRightRadius,
+        borderBottomLeftRadius,
+        borderBottomRightRadius
+    } = buttonStyle;
 
+    console.log("\n\n\n\n\n\n", borderBottomRightRadius, "\n\n\n\n\n\n\n");
     const stat = !props.stat ? null :
         (
             <View>
@@ -68,7 +56,14 @@ const TabButton = (props) => {
         );
 
     return (
-        <View style={{ ...styles.containerStyle, backgroundColor }}>
+        <View style={{
+            ...styles.containerStyle,
+            backgroundColor,
+            borderTopLeftRadius,
+            borderTopRightRadius,
+            borderBottomLeftRadius,
+            borderBottomRightRadius
+        }}>
             {icon}
             <Animated.Text
                 style={{
