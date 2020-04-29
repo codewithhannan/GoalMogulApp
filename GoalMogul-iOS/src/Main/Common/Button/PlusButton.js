@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   TouchableWithoutFeedback,
   Animated,
-  TouchableOpacity,
   View
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -12,7 +11,7 @@ import _ from 'lodash';
 
 /* asset */
 import plus from '../../../asset/utils/plus.png';
-import { APP_BLUE, APP_DEEP_BLUE } from '../../../styles';
+import { GM_BLUE } from '../../../styles';
 
 const DEBUG_KEY = '[ UI PlusButton ]';
 const WalkableView = walkthroughable(View);
@@ -154,8 +153,7 @@ const styles = {
       alignItems: 'center',
       justifyContent: 'center',
       zIndex: 3,
-      // backgroundColor: '#17B3EC',
-      backgroundColor: APP_DEEP_BLUE,
+      backgroundColor: GM_BLUE,
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.4,
