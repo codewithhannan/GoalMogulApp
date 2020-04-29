@@ -6,13 +6,12 @@ import {
     Image
 } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
+import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import Carousel from 'react-native-snap-carousel';
 import OnboardingHeader from './Common/OnboardingHeader';
 import { GM_FONT_SIZE, GM_BLUE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT, BUTTON_STYLE as buttonStyle, TEXT_STYLE as textStyle } from '../../styles';
 import { PRIVACY_POLICY_URL } from '../../Utils/Constants';
 import { registrationTribeSelection } from '../../redux/modules/registration/RegistrationActions';
-import OnboardingFooter from './Common/OnboardingFooter';
 import { REGISTRATION_SYNC_CONTACT_NOTES } from '../../redux/modules/registration/RegistrationReducers';
 import DelayedButton from '../Common/Button/DelayedButton';
 
@@ -24,12 +23,23 @@ const screenWidth = Math.round(Dimensions.get('window').width);
  */
 class OnboardingSyncContact extends React.Component {
 
+    /**
+     * TODO: 
+     * 1. Show uploading overlay / modal
+     * 2. If not found say, show not found modal
+     *    - If invite, then go to invite page with only 1 tab
+     *    - otherwise, go to welcome page
+     * 3. If found, go to invite page with 2 tabs
+     */
     onSyncContact = () => {
-
+        
     }
 
     onNotNow = () => {
-
+        const screenTransitionCallback = () => { 
+            Actions.push("registration_welcome");
+        };
+        screenTransitionCallback();
     }
 
     renderButtons() {

@@ -218,28 +218,25 @@ class RouterComponent extends Component {
                 <Scene key="login" component={LoginPage} />
                 <Scene 
                   key="registrationAccount" 
-                  component={SyncContactInvite}   
+                  component={RegistrationAccount}   
                 />
               </Stack>
 
-              <Stack key="registration" hideNavBar type={ActionConst.RESET}>
-                <Scene
-                  key="registrationProfile"
-                  component={AddProfilePic}
-                  initial
-                />
-                <Scene
-                  key="registrationIntro"
-                  component={IntroForm}
-                />
-                <Scene
-                  key="registrationContact"
-                  component={Contacts}
-                />
-                <Scene
-                  key="registrationContactSync"
-                  component={ContactSync}
-                />
+              {/** V1 implementation for registration process */}
+              {/* <Stack key="registration" hideNavBar type={ActionConst.RESET}>
+                <Scene key="registrationProfile" component={AddProfilePic} initial />
+                <Scene key="registrationIntro" component={IntroForm} />
+                <Scene key="registrationContact" component={Contacts} />
+                <Scene key="registrationContactSync" component={ContactSync} />
+              </Stack> */}
+              <Stack key="registration" hideNavBar type={ActionConst.RESET} drawerLockMode='locked-closed' gesturesEnabled={false} panHandlers={null}>
+                <Scene key="registration_transition" component={OnboardingIntroTransition} initial />
+                <Scene key="registration_target_selection" component={OnboardingSelectionTarget} />
+                <Scene key="registration_tribe_selection" component={OnboardingTribeSelection} />
+                <Scene key="registration_community_guideline" component={OnboardingCommunity} />
+                <Scene key="registration_contact_sync" component={OnboardingSyncContact} />
+                <Scene key="registration_contact_invite" component={SyncContactInvite} />
+                <Scene key="registration_welcome" component={OnboardingWelcome} />
               </Stack>
               <Scene key="tutorial" component={Tutorial} hideNavBar />
 

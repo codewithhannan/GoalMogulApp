@@ -11,6 +11,7 @@ import OnboardingHeader from './Common/OnboardingHeader';
 import { GM_FONT_SIZE, GM_BLUE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT, TEXT_STYLE as textStyle } from '../../styles';
 import { registrationTribeSelection } from '../../redux/modules/registration/RegistrationActions';
 import OnboardingFooter from './Common/OnboardingFooter';
+import { Actions } from 'react-native-router-flux';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 /**
@@ -24,6 +25,14 @@ class OnboardingCommunity extends React.Component {
         this.state = {
             swipeAll: false
         };
+    }
+
+    onContinue = () => {
+        const screenTransitionCallback = () => { 
+            Actions.push("registration_contact_sync");
+        };
+        screenTransitionCallback();
+        // TODO: pass screen transition to action
     }
 
     onSwipedAll = (index) => {
@@ -77,7 +86,7 @@ class OnboardingCommunity extends React.Component {
                         />
                     </View>
                     <View style={{ opacity: this.state.swipeAll ? 1 : 0 }}>
-                        <OnboardingFooter buttonText="Continue" onButtonPress={() => console.log("continue")} />
+                        <OnboardingFooter buttonText="Continue" onButtonPress={this.onContinue} />
                     </View>
                 </View>
             </View>

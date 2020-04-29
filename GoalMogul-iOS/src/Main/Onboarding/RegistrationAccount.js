@@ -8,6 +8,7 @@ import {
     TouchableWithoutFeedback
 } from 'react-native';
 import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 import OnboardingHeader from './Common/OnboardingHeader';
 import OnboardingFooter from './Common/OnboardingFooter';
 import InputBox from './Common/InputBox';
@@ -48,7 +49,7 @@ class RegistrationAccount extends React.Component {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
               resolve(true);
-            }, 5000);
+            }, 1000);
         });
     }
 
@@ -57,8 +58,11 @@ class RegistrationAccount extends React.Component {
         this.closeModal();
         setTimeout(() => {
             // TODO: change back. Right now only going to the next page
-            
+            const screenTransitionCallback = () => { 
+                Actions.push("registration");
+            };
             // this.props.registrationNextAddProfile({ phone, countryCode, email, password, name });
+            screenTransitionCallback();
         }, 150);
     }
 

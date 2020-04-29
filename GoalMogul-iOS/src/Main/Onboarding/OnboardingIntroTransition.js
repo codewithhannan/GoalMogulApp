@@ -3,6 +3,7 @@ import {
     View,
     Text
 } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import OnboardingHeader from './Common/OnboardingHeader';
 import DelayedButton from '../Common/Button/DelayedButton';
@@ -18,7 +19,11 @@ import { registrationTextInputChange } from '../../redux/modules/registration/Re
 class OnboardingIntroTransition extends React.Component {
 
     onContinue = () => {
+        const screenTransitionCallback = () => { 
+            Actions.push("registration_target_selection");
+        };
 
+        screenTransitionCallback();
     }
 
     renderProfileImage() {

@@ -5,13 +5,11 @@ import {
     Dimensions,
     Image
 } from 'react-native';
-import * as WebBrowser from 'expo-web-browser';
+import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import Carousel from 'react-native-snap-carousel';
 import OnboardingHeader from './Common/OnboardingHeader';
 import { BUTTON_STYLE as buttonStyle, TEXT_STYLE as textStyle } from '../../styles';
 import { registrationTribeSelection } from '../../redux/modules/registration/RegistrationActions';
-import { REGISTRATION_SYNC_CONTACT_NOTES } from '../../redux/modules/registration/RegistrationReducers';
 import DelayedButton from '../Common/Button/DelayedButton';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
@@ -23,7 +21,10 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 class OnboardingWelcome extends React.Component {
 
     continue = () => {
-
+        const screenTransitionCallback = () => { 
+            Actions.replace('drawer');
+        };
+        screenTransitionCallback();
     }
 
     render() {

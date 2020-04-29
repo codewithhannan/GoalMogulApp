@@ -43,7 +43,8 @@ const TabButton = (props) => {
     backgroundColor,
     tintColor,
     fontWeight,
-    statColor
+    statColor,
+    ...otherTextProps
   } = props.onSelect ? buttonStyle.selected : buttonStyle.unselected;
 
   const stat = !props.stat ? null :
@@ -75,11 +76,12 @@ const TabButton = (props) => {
       <View style={{ ...styles.onSelectContainerStyle, backgroundColor }}>
         {icon}
         <Animated.Text 
-          style={{
-            ...styles.onSelectTextStyle,
-            color,
-            fontWeight
-          }}
+          style={[
+            styles.onSelectTextStyle, otherTextProps, {
+              color,
+              fontWeight
+            }
+          ]}
         >
           {props.text}
         </Animated.Text>
@@ -92,11 +94,12 @@ const TabButton = (props) => {
     <View style={{ ...styles.containerStyle, backgroundColor }}>
       {icon}
       <Animated.Text 
-        style={{ 
-          ...styles.textStyle,
-          color,
-          fontWeight
-        }}
+        style={[ 
+          styles.textStyle, otherTextProps, {
+            color,
+            fontWeight,
+          }
+        ]}
       >
         {props.text}
       </Animated.Text>

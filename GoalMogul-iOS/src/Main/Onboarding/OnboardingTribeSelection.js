@@ -6,6 +6,7 @@ import {
     Animated,
     Image
 } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import right_arrow_icon from '../../asset/utils/right_arrow.png';
 import OnboardingHeader from './Common/OnboardingHeader';
@@ -28,11 +29,18 @@ class OnboardingTribeSelection extends React.Component {
     }
 
     onNext = () => {
-
+        const screenTransitionCallback = () => { 
+            Actions.push("registration_community_guideline");
+        };
+        screenTransitionCallback();
+        // TODO: pass callback to actions
     }
 
     onBack = () => {
-
+        const screenTransitionCallback = () => { 
+            Actions.pop();
+        };
+        screenTransitionCallback();
     }
 
     keyExtractor = (item) => item._id;
