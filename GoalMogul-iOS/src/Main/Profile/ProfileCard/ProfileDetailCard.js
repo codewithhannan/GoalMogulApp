@@ -35,7 +35,7 @@ import DelayedButton from '../../Common/Button/DelayedButton';
 
 
 import { IMAGE_BASE_URL } from '../../../Utils/Constants';
-import { GM_BLUE_LIGHT_LIGHT, GM_BLUE, GM_BLUE_LIGHT } from '../../../styles';
+import { GM_BLUE_LIGHT_LIGHT, GM_BLUE, GM_BLUE_LIGHT, GM_FONT_FAMILY_1, GM_FONT_FAMILY_2, GM_FONT_2 } from '../../../styles';
 import { Actions } from 'react-native-router-flux';
 import RichText from '../../Common/Text/RichText';
 
@@ -219,13 +219,25 @@ class ProfileDetailCard extends Component {
     }
 
     renderProfileActionButton() {
+        const containerStyle = {
+            color: 'white',
+            backgroundColor: GM_BLUE,
+            borderRadius: 3,
+            height: 30
+        };
+        const textStyle = {
+            fontFamily: GM_FONT_FAMILY_1,
+            fontSize: 12
+        };
+
         if (this.props.self) {
             return (
                 <ProfileActionButton
                     text='Edit Profile'
                     source={edit}
                     onPress={() => this.handleEditOnPressed()}
-                    containerStyle={{ color: 'white', backgroundColor: GM_BLUE, borderRadius: 3 }}
+                    containerStyle={containerStyle}
+                    textStyle={textStyle}
                 />
             );
         }
@@ -238,8 +250,9 @@ class ProfileDetailCard extends Component {
                     source={AddUser}
                     text='Respond'
                     onPress={this.handleButtonOnPress.bind(this, 'respond')}
-                    style={{ height: 16, width: 17 }}
-                    containerStyle={{ color: 'white', backgroundColor: GM_BLUE }}
+                    iconStyle={{ height: 16, width: 17 }}
+                    containerStyle={containerStyle}
+                    textStyle={textStyle}
                 />
             );
         }
@@ -422,7 +435,7 @@ class ProfileDetailCard extends Component {
                         numberOfLines={1}
                     />
                     <RichText
-                        textStyle={{ ...styles.headlineTextStyle, fontSize: 14 }}
+                        textStyle={{ ...styles.headlineTextStyle, marginBottom: 0, fontSize: 15 }}
                         contentText={'Geater Toronto Area'}
                         textContainerStyle={{ flexDirection: 'row' }}
                         numberOfLines={1}
@@ -464,17 +477,19 @@ const styles = {
         borderRadius: (width * 0.9) / 6
     },
     nameTextStyle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginTop: 6,
-        marginBottom: 9,
+        fontSize: GM_FONT_2,
+        fontFamily: GM_FONT_FAMILY_1,
+        color: '#333',
+        marginTop: 9,
+        marginBottom: 10,
         marginRight: 6
     },
     headlineTextStyle: {
-        fontSize: 16,
+        fontSize: GM_FONT_2,
+        fontFamily: GM_FONT_FAMILY_2,
         color: '#333',
         fontWeight: '500',
-        marginBottom: 9
+        marginBottom: 10
     },
     dividerStyle: {
         height: 1,

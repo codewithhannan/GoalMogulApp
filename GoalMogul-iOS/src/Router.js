@@ -254,8 +254,8 @@ class RouterComponent extends Component {
                                         hideNavBar
                                         swipeEnabled={false}
                                         tabBarStyle={styles.tabBarStyle}
-                                        activeTintColor="#0397cb"
-                                        inactiveTintColor="#dde4e6"
+                                        activeTintColor="#0397CB"
+                                        inactiveTintColor="#DCE4E6"
                                         tabs
                                         showLabel={false}
                                         tabBarOnPress={this.onTabPress}
@@ -655,10 +655,5 @@ const styles = {
         elevation: 1,
     }
 };
-
-// const RouterComponentExplained = copilot({
-//   overlay: 'svg', // or 'view'
-//   animated: true, // or false
-// })(RouterComponent);
 
 export default connect()(RouterComponent);

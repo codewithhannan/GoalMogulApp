@@ -19,7 +19,7 @@ import { createReport } from '../../redux/modules/report/ReportActions';
 import { getUserData, getUserDataByPageId, makeGetUserGoals, makeGetUserNeeds, makeGetUserPosts } from '../../redux/modules/User/Selector';
 import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users';
 /* Styles */
-import { BACKGROUND_COLOR, GM_BLUE } from '../../styles';
+import { BACKGROUND_COLOR, GM_BLUE, GM_FONT_FAMILY_1, GM_FONT_FAMILY_2, GM_FONT_1 } from '../../styles';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 import PlusButton from '../Common/Button/PlusButton';
 import GoalFilterBar from '../Common/GoalFilterBar';
@@ -203,26 +203,28 @@ class ProfileV2 extends Component {
     };
 
     renderTabs = (props) => {
+        const paddingBottom = props.renderFilter ? 0 : styles.tabContainer.padding;
         return (
-            <View style={styles.tabContainer}>
+            <View style={{ ...styles.tabContainer, paddingBottom }}>
                 <TabButtonGroup
                     buttons={props}
                     borderRadius={3}
                     buttonStyle={{
-                        fontSize: 14,
                         selected: {
                             backgroundColor: GM_BLUE,
                             tintColor: 'white',
                             color: 'white',
                             fontWeight: 'bold',
-                            fontSize: 14
+                            fontSize: GM_FONT_1,
+                            fontFamily: GM_FONT_FAMILY_1
                         },
                         unselected: {
                             backgroundColor: 'white',
                             tintColor: '#BDBDBD',
                             color: '#BDBDBD',
                             fontWeight: '500',
-                            fontSize: 14
+                            fontSize: GM_FONT_1,
+                            fontFamily: GM_FONT_FAMILY_2
                         }
                     }}
                 />
@@ -287,23 +289,18 @@ class ProfileV2 extends Component {
         );
     }
 
-    renderFilterBar({ selectedTab }) {
-        if (selectedTab === 'goals' || selectedTab === 'needs') {
-            return (
-                <GoalFilterBar
-                    filter={this.props.filter}
-                    onMenuChange={this.handleOnMenuChange}
-                />
-            );
-        }
-        return null;
+    renderFilterBar() {
+        return (
+            <GoalFilterBar
+                filter={this.props.filter}
+                onMenuChange={this.handleOnMenuChange}
+            />
+        );
     }
 
     renderUserInfo({ userId, pageId }) {
         return (
-            <Animated.View
-                style={{ opacity: this.state.infoCardOpacity }}
-            >
+            <Animated.View style={{ opacity: this.state.infoCardOpacity }}>
                 <ProfileDetailCard
                     pageId={pageId}
                     userId={userId}
@@ -318,16 +315,18 @@ class ProfileV2 extends Component {
      * @param {object} props { navigationState, selectedTab, userId, pageId }
      */
     renderHeader(props) {
+        const renderFilter = (props.selectedTab === 'goals' || props.selectedTab === 'needs');
         return (
             <View>
                 {this.renderUserInfo(props)}
                 {this.renderTabs(
                     {
                         jumpToIndex: (i) => this._handleIndexChange(i),
-                        navigationState: props.navigationState
+                        navigationState: props.navigationState,
+                        renderFilter
                     })
                 }
-                {this.renderFilterBar(props)}
+                {renderFilter ? this.renderFilterBar(props) : null}
             </View>
         )
     }

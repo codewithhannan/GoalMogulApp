@@ -81,7 +81,7 @@ const styles = {
         alignSelf: 'center',
         justifyContent: 'center',
         tintColor: '#1998c9',
-        marginRight: 7
+        marginRight: 9
     }
 };
 

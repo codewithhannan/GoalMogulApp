@@ -34,7 +34,6 @@ const TabButton = (props) => {
         borderBottomRightRadius
     } = buttonStyle;
 
-    console.log("\n\n\n\n\n\n", borderBottomRightRadius, "\n\n\n\n\n\n\n");
     const stat = !props.stat ? null :
         (
             <View>
@@ -100,7 +99,7 @@ const styles = {
         alignSelf: 'center',
         justifyContent: 'center',
         tintColor: '#1998c9',
-        marginRight: 7
+        marginRight: 9
     }
 };
 

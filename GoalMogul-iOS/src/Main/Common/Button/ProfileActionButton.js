@@ -15,14 +15,21 @@ const ProfileActionButton = (props) => {
         image = (
             <Image
                 source={props.source}
-                style={{ height: 15, width: 15, ...props.style, tintColor: color }}
+                style={{ height: 15, width: 15, ...props.iconStyle, tintColor: color }}
             />
         );
     }
 
     const textComponent = props.text
         ? (
-            <Text style={{ fontSize: 12, fontWeight: 'bold', marginLeft: 5, alignSelf: 'center', color }}>
+            <Text style={{
+                fontSize: 12,
+                fontWeight: 'bold',
+                marginLeft: 5,
+                alignSelf: 'center',
+                color,
+                ...props.textStyle
+            }}>
                 {props.text}
             </Text>
         ) : null

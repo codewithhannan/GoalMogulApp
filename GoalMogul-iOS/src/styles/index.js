@@ -28,6 +28,10 @@ export const GM_FONT_3 = 18;
 export const GM_FONT_3_5 = 20;
 export const GM_FONT_4 = 24;
 
+export const GM_FONT_FAMILY_1 = 'gotham-pro-bold';
+export const GM_FONT_FAMILY_2 = 'gotham-pro';
+export const GM_FONT_FAMILY_3 = 'Helvetica';
+
 export const imagePreviewContainerStyle = {
     shadowColor: '#ddd',
     shadowOffset: { width: 0, height: 1.5 },
