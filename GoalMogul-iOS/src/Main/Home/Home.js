@@ -451,7 +451,6 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 3,
-        // backgroundColor: '#17B3EC',
         backgroundColor: APP_DEEP_BLUE,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
