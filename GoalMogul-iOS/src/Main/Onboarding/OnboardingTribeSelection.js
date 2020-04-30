@@ -14,6 +14,7 @@ import DelayedButton from '../Common/Button/DelayedButton';
 import { GM_FONT_SIZE, GM_BLUE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT, TEXT_STYLE as textStyle } from '../../styles';
 import { registrationTribeSelection } from '../../redux/modules/registration/RegistrationActions';
 import OnboardingFooter from './Common/OnboardingFooter';
+import * as Animatable from 'react-native-animatable';
 
 /**
  * Page for user to select interested tribe to join
@@ -23,10 +24,19 @@ import OnboardingFooter from './Common/OnboardingFooter';
 class OnboardingTribeSelection extends React.Component {
     constructor(props) {
         super(props);
-        this.animations = {
-            scrollOpacity: 1
+        this.state = {
+            scroll: new Animated.Value(1)
         }
     }
+    
+    componentDidMount() {
+        setTimeout(() => {
+            this.scrollView.bounce(1000);
+        }, 1000)
+        
+    }
+
+    handleAnimatableTextRef = (ref) => this.scrollView = ref;
 
     onNext = () => {
         const screenTransitionCallback = () => { 
@@ -46,7 +56,6 @@ class OnboardingTribeSelection extends React.Component {
     keyExtractor = (item) => item._id;
 
     renderItem = ({item, index, separators}) => {
-        console.log("item is:", item);
         const { selected, name, picture } = item;
         const containerStyle = selected ? styles.tribeCardSelectedContainerStyle : styles.tribeCardContainerStyle;
         return (
@@ -61,14 +70,22 @@ class OnboardingTribeSelection extends React.Component {
 
     renderScroll = () => {
         // Only render scroll when iphone model < 8
+        const opacity = this.state.scroll.interpolate({
+            inputRange: [0, 70],
+            outputRange: [1, 0],
+            extrapolate: 'clamp',
+        });
 
         return (
-            <Animated.View style={{ opacity: this.animations.scrollOpacity, position: "absolute", bottom: 10, alignSelf: "center" }}>
+            <Animatable.View 
+                style={{ opacity, position: "absolute", bottom: 10, alignSelf: "center" }}  
+                ref={this.handleAnimatableTextRef}
+            >
                 <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", backgroundColor: "#DEF7FF", padding: 7, width: 94, borderRadius: 4 }}>
                     <Image source={right_arrow_icon} style={{ transform: [{ rotate: '90deg' }], tintColor: "#2F80ED", height: 12, width: 15, marginRight: 5 }} />
                     <Text style={{ fontSize: GM_FONT_SIZE.FONT_2, fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD, color: "#2F80ED", paddingTop: 2, textAlign: "center" }}>Scroll</Text>
                 </View>
-            </Animated.View>
+            </Animatable.View>
         );
     }
     
@@ -83,6 +100,10 @@ class OnboardingTribeSelection extends React.Component {
                         <Text style={styles.subTitleTextStyle}>others with similar goals.</Text>
                     </View>
                     <FlatList 
+                        onScroll={Animated.event(
+                            [{ nativeEvent: { contentOffset: { y: this.state.scroll } } }],
+                            
+                        )}
                         data={this.props.tribes}
                         renderItem={(item, index) => this.renderItem(item, index)}
                         keyExtractor={this.keyExtractor}
