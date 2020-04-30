@@ -21,7 +21,6 @@ import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
-// import BulbIcon from '../../../asset/utils/bulb.png';
 import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 
@@ -30,6 +29,7 @@ import {
     openGoalDetail
 } from '../../../redux/modules/home/mastermind/actions';
 import { IS_ZOOMED } from '../../../Utils/Constants';
+import { GM_FONT_FAMILY_2, GM_FONT_FAMILY_1, GM_FONT_1 } from '../../../styles';
 
 class ProfileGoalCard2 extends React.Component {
 
@@ -52,18 +52,20 @@ class ProfileGoalCard2 extends React.Component {
         return (
             <View style={styles.headerContainerStyle}>
                 <View style={{ alignSelf: 'center', alignItems: 'center' }}>
-                    <Text
-                        style={{
-                            fontSize: 11,
-                            color: '#6d6d6d',
-                            fontWeight: '600',
-                            alignSelf: 'center'
-                        }}
-                    >
+                    <Text style={{
+                        fontSize: 11,
+                        fontFamily: GM_FONT_FAMILY_1,
+                        color: '#3B414B',
+                        alignSelf: 'center',
+                        letterSpacing: 0.7
+                    }}>
                         {category}
                     </Text>
                 </View>
-                <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+                <View style={{
+                    alignSelf: 'center',
+                    alignItems: 'center',
+                }}>
                     <Timestamp time={timeago().format(created)} />
                 </View>
             </View>
@@ -77,7 +79,13 @@ class ProfileGoalCard2 extends React.Component {
         const { title } = item;
         return (
             <Text
-                style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 15, marginTop: 4 }}
+                style={{
+                    flex: 1,
+                    flexWrap: 'wrap',
+                    fontSize: GM_FONT_1,
+                    color: '#3B414B',
+                    fontFamily: GM_FONT_FAMILY_2
+                }}
                 numberOfLines={1}
                 ellipsizeMode='tail'
             >
@@ -89,14 +97,15 @@ class ProfileGoalCard2 extends React.Component {
     renderProgressBar(item) {
         const { start, end, steps, needs } = item;
         return (
-            <View style={{ marginTop: 8 }}>
+            <View style={{ marginTop: 12 }}>
                 <ProgressBar
                     startTime={start}
                     endTime={end}
                     steps={steps}
                     needs={needs}
                     goalRef={item}
-                    width={IS_ZOOMED ? 156 : 200} // TODO: use ratio with screen size rather static number
+                    barHeight={11}
+                    sections={6}
                     isProfileGoalCard
                     size='small'
                 />
@@ -185,7 +194,7 @@ const StatsComponent = (props) => {
 const styles = {
     cardContainerStyle: {
         marginBottom: 2,
-        padding: 10,
+        padding: 16,
         backgroundColor: 'white',
         flexDirection: 'row',
         alignItems: 'center',
@@ -200,7 +209,7 @@ const styles = {
         flexDirection: 'row',
         justifyContent: 'space-between',
         flex: 1,
-        marginBottom: 5
+        marginBottom: 8
     },
     priorityTextStyle: {
         fontSize: 7,
