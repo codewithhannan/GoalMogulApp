@@ -18,6 +18,7 @@ import { GM_FONT_FAMILY_2, GM_FONT_2, GM_FONT_FAMILY_1, GM_FONT_1 } from '../../
 
 const { SlideInMenu } = renderers;
 const { width, height } = Dimensions.get('window');
+const CATEGORY_OPTION_HEIGHT = 34;
 
 /**
  * Update the filter based on parents functions
@@ -31,27 +32,6 @@ class GoalFilterBar extends Component {
      */
     handleOnMenuSelect = (type, value) => {
         this.props.onMenuChange(type, value);
-    }
-
-    renderRadioButton(isSelected) {
-        return (
-            <View style={{
-                height: 20,
-                width: 20,
-                borderRadius: 10,
-                borderWidth: 1,
-                borderColor: isSelected ? '#1B63DC' : '#B4BFC9',
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}>
-                <View style={{
-                    backgroundColor: isSelected ? '#1B63DC' : '',
-                    height: 8,
-                    width: 8,
-                    borderRadius: 4
-                }}/>
-            </View>
-        );
     }
 
     render() {
@@ -127,13 +107,17 @@ class GoalFilterBar extends Component {
                                             <Text style={styles.categoryOptionText}>
                                                 {text}
                                             </Text>
-                                            {this.renderRadioButton(categoryText === text)}
+                                            <RadioButton
+                                                isSelected={categoryText === text}
+                                                radius={10}
+                                                borderWidth={1}
+                                            />
                                         </View>
                                     </MenuOption>
                                 );
                             }}
                             getItemLayout={(data, index) => (
-                                {length: 34, offset: 34 * index, index}
+                                {length: CATEGORY_OPTION_HEIGHT, offset: CATEGORY_OPTION_HEIGHT * index, index}
                             )}
                             style={{ height: height/3, paddingTop: 5 }}
                         />
@@ -142,6 +126,28 @@ class GoalFilterBar extends Component {
             </View>
         );
     }
+}
+
+const RadioButton = (props) => {
+    const { isSelected, radius, borderWidth } = props
+    return (
+        <View style={{
+            height: radius*2,
+            width: radius*2,
+            borderRadius: radius,
+            borderWidth: borderWidth,
+            borderColor: isSelected ? '#1B63DC' : '#B4BFC9',
+            justifyContent: 'center',
+            alignItems: 'center'
+        }}>
+            <View style={{
+                backgroundColor: isSelected ? '#1B63DC' : '',
+                height: radius*0.8,
+                width: radius*0.8,
+                borderRadius: radius*0.4
+            }}/>
+        </View>
+    );
 }
 
 const styles = {
@@ -217,7 +223,7 @@ const styles = {
         color: '#3B414B'
     },
     categoryOptionWrapper: {
-        height: 34,
+        height: CATEGORY_OPTION_HEIGHT,
         paddingLeft: 16,
         paddingRight: 16,
         flex: 1,

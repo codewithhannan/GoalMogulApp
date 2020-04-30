@@ -431,7 +431,7 @@ const styles = {
         backgroundColor: 'white'
     },
     backdrop: {
-        backgroundColor: 'gray',
+        backgroundColor: 'white',
         opacity: 0.7,
     }
 };

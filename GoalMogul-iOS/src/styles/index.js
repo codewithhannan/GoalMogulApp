@@ -3,7 +3,6 @@
  */
 export const BACKGROUND_COLOR = '#f8f8f8';
 export const APP_BLUE_BRIGHT = '#17B3EC';
-// export const APP_BLUE = '#34C1F1';
 export const APP_BLUE = '#23B7E9';
 export const APP_DEEP_BLUE = '#0397CB';
 
@@ -103,10 +102,6 @@ export const modalCancelIconStyle = {
 };
 
 export const modalHeaderBadgeShadow = {
-    // shadowColor: '#000',
-    // shadowOffset: { width: 0, height: 1.2 },
-    // shadowOpacity: 0.23,
-    // shadowRadius: 4
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 2 },
     shadowOpacity: 0.25,

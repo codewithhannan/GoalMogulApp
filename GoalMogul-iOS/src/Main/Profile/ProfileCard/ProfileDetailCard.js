@@ -431,7 +431,7 @@ class ProfileDetailCard extends Component {
                         textStyle={styles.headlineTextStyle}
                         contentText={headline}
                         textContainerStyle={{ flexDirection: 'row' }}
-                        numberOfLines={1}
+                        numberOfLines={2}
                     />
                     { location && (
                         <RichText
@@ -481,6 +481,7 @@ const styles = {
         fontSize: GM_FONT_2,
         fontFamily: GM_FONT_FAMILY_1,
         color: '#333',
+        letterSpacing: 0.3,
         marginTop: 9,
         marginBottom: 10,
         marginRight: 6
@@ -488,6 +489,7 @@ const styles = {
     headlineTextStyle: {
         fontSize: GM_FONT_2,
         fontFamily: GM_FONT_FAMILY_2,
+        letterSpacing: 0.3,
         color: '#333',
         fontWeight: '500',
         marginBottom: 10

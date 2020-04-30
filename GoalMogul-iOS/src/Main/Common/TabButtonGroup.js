@@ -32,10 +32,10 @@ class TabButtonGroup extends Component {
             const iconStyle = tabIconMap ? tabIconMap[b.key].iconStyle : undefined; 
             const btnStyle = {
                 ...(selected ? buttonStyle.selected : buttonStyle.unselected),
-                borderTopLeftRadius: i == 0 ? borderRadius : 0,
-                borderBottomLeftRadius: i == 0 ? borderRadius : 0,
-                borderTopRightRadius: (i == routes.length - 1) ? borderRadius : 0,
-                borderBottomRightRadius: (i == routes.length - 1) ? borderRadius : 0
+                borderTopLeftRadius: i === 0 ? borderRadius : 0,
+                borderBottomLeftRadius: i === 0 ? borderRadius : 0,
+                borderTopRightRadius: (i === routes.length - 1) ? borderRadius : 0,
+                borderBottomRightRadius: (i === routes.length - 1) ? borderRadius : 0
             };
             const button = subTab
                 ? (
