@@ -398,6 +398,7 @@ class ProfileDetailCard extends Component {
         const { user } = this.props;
         if (!user) return null;
         const { name, headline, profile } = user;
+        const { location } = profile
 
         return (
             <View onLayout={this.onLayout}>
@@ -416,17 +417,15 @@ class ProfileDetailCard extends Component {
                             {name}
                         </Text>
                         <UserBanner user={this.props.user} iconStyle={{ height: 20, width: 17 }} />
-                        {
-                            this.props.self && (
-                                <DelayedButton
-                                    onPress={this.handleBannerInfoIconOnPress}
-                                    style={styles.infoIconContainerStyle}
-                                    activeOpacity={0.6}
-                                >
-                                    <Image source={InfoIcon} style={styles.infoIconStyle} />
-                                </DelayedButton>
-                            )
-                        }
+                        {this.props.self && (
+                            <DelayedButton
+                                onPress={this.handleBannerInfoIconOnPress}
+                                style={styles.infoIconContainerStyle}
+                                activeOpacity={0.6}
+                            >
+                                <Image source={InfoIcon} style={styles.infoIconStyle} />
+                            </DelayedButton>
+                        )}
                     </View>
                     <RichText
                         textStyle={styles.headlineTextStyle}
@@ -434,12 +433,14 @@ class ProfileDetailCard extends Component {
                         textContainerStyle={{ flexDirection: 'row' }}
                         numberOfLines={1}
                     />
-                    <RichText
-                        textStyle={{ ...styles.headlineTextStyle, marginBottom: 0, fontSize: 15 }}
-                        contentText={'Geater Toronto Area'}
-                        textContainerStyle={{ flexDirection: 'row' }}
-                        numberOfLines={1}
-                    />
+                    { location && (
+                        <RichText
+                            textStyle={{ ...styles.headlineTextStyle, marginBottom: 0, fontSize: 15 }}
+                            contentText={location}
+                            textContainerStyle={{ flexDirection: 'row' }}
+                            numberOfLines={1}
+                        />
+                    )}
                 </View>
             </View>
         );

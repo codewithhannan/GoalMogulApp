@@ -33,6 +33,27 @@ class GoalFilterBar extends Component {
         this.props.onMenuChange(type, value);
     }
 
+    renderRadioButton(isSelected) {
+        return (
+            <View style={{
+                height: 20,
+                width: 20,
+                borderRadius: 10,
+                borderWidth: 1,
+                borderColor: isSelected ? '#1B63DC' : '#B4BFC9',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <View style={{
+                    backgroundColor: isSelected ? '#1B63DC' : '',
+                    height: 8,
+                    width: 8,
+                    borderRadius: 4
+                }}/>
+            </View>
+        );
+    }
+
     render() {
         const {
             sortBy,
@@ -57,21 +78,9 @@ class GoalFilterBar extends Component {
                     <MenuOptions customStyles={styles.menuOptionsStyles}>
                         {/* SortBy Header */}
                         <View
-                            style={{
-                                backgroundColor: 'white',
-                                shadowColor: '#000',
-                                shadowOffset: { width: 0, height: 1 },
-                                shadowOpacity: 0.1,
-                                shadowRadius: 0.1,
-                                padding: 16,
-                                paddingBottom: 14
-                            }}
+                            style={styles.sortByHeaderWrapper}
                         >
-                            <Text style={{
-                                fontSize: GM_FONT_2,
-                                fontFamily: GM_FONT_FAMILY_1,
-                                color: '#3B414B'
-                            }}>
+                            <Text style={styles.sortByHeaderText}>
                                 Sort By
                             </Text>
                         </View>
@@ -86,7 +95,7 @@ class GoalFilterBar extends Component {
                                 return (
                                     <MenuOption onSelect={() => this.handleOnMenuSelect('sortBy', value)}>
                                         <View style={styles.sortByOptionWrapper}>
-                                            <Text style={styles.optionText}>
+                                            <Text style={styles.sortByOptionText}>
                                                 {text}
                                             </Text>
                                         </View>
@@ -96,19 +105,9 @@ class GoalFilterBar extends Component {
                         </View>
 
                         {/* Catrgory header */}
-                        <View
-                            style={{
-                                backgroundColor: '#F2F2F2',
-                                padding: 8,
-                                paddingLeft: 16
-                            }}
+                        <View style={styles.categoryHeaderWrapper}
                         >
-                            <Text style={{
-                                fontSize: GM_FONT_1,
-                                fontFamily: GM_FONT_FAMILY_2,
-                                fontWeight: 'bold',
-                                color: '#3B414B'
-                            }}>
+                            <Text style={styles.categoryHeaderText}>
                                 Category
                             </Text>
                         </View>
@@ -123,27 +122,11 @@ class GoalFilterBar extends Component {
                                             <Text style={styles.categoryOptionText}>
                                                 {text}
                                             </Text>
-                                            <View style={{
-                                                height: 20,
-                                                width: 20,
-                                                borderRadius: 10,
-                                                borderWidth: 1,
-                                                borderColor: categoryText == text ? '#1B63DC' : '#B4BFC9',
-                                                justifyContent: 'center',
-                                                alignItems: 'center'
-                                            }}>
-                                                <View style={{
-                                                    backgroundColor: categoryText == text ? '#1B63DC' : '',
-                                                    height: 8,
-                                                    width: 8,
-                                                    borderRadius: 4
-                                                }}/>
-                                            </View>
+                                            {this.renderRadioButton(categoryText == text)}
                                         </View>
                                     </MenuOption>
                                 );
                             }}
-                            keyExtractor={(item, index) => index.toString()}
                             style={{ height: height/3, paddingTop: 5 }}
                         />
                     </MenuOptions>
@@ -174,14 +157,6 @@ const styles = {
         color: '#828282',
         fontWeight: '500',
     },
-    standardTextStyle: {
-        fontSize: 9,
-        color: 'black'
-    },
-    caretStyle: {
-        tintColor: '#696969',
-        marginLeft: 5
-    },
     anchorStyle: {
         backgroundColor: 'white'
     },
@@ -193,6 +168,20 @@ const styles = {
             underlayColor: 'lightgray',
             activeOpacity: 10,
         }
+    },
+    sortByHeaderWrapper: {
+        backgroundColor: 'white',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 0.1,
+        padding: 16,
+        paddingBottom: 14
+    },
+    sortByHeaderText: {
+        fontSize: GM_FONT_2,
+        fontFamily: GM_FONT_FAMILY_1,
+        color: '#3B414B'
     },
     sortByOptionWrapper: {
         backgroundColor: '#F2F2F2',
@@ -207,6 +196,17 @@ const styles = {
         fontSize: GM_FONT_1,
         fontFamily: GM_FONT_FAMILY_2,
         fontWeight: '500'
+    },
+    categoryHeaderWrapper: {
+        backgroundColor: '#F2F2F2',
+        padding: 8,
+        paddingLeft: 16
+    },
+    categoryHeaderText: {
+        fontSize: GM_FONT_1,
+        fontFamily: GM_FONT_FAMILY_2,
+        fontWeight: 'bold',
+        color: '#3B414B'
     },
     categoryOptionWrapper: {
         height: 34,
