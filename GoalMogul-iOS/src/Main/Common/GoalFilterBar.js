@@ -60,6 +60,10 @@ class GoalFilterBar extends Component {
             categories
         } = this.props.filter;
         const categoryText = categories;
+        let initalCatrgotyScrollIndex = 0;
+        CATEGORY_OPTIONS.forEach(({ text }, index) => {
+            if (text === categoryText) initalCatrgotyScrollIndex = index;
+        });
         return (
             <View style={styles.containerStyle}>
                 <Menu
@@ -114,6 +118,7 @@ class GoalFilterBar extends Component {
                         {/* Category Options */}
                         <FlatList
                             data={CATEGORY_OPTIONS}
+                            initialScrollIndex={initalCatrgotyScrollIndex}
                             renderItem={({ item }) => {
                                 const { value, text } = item;
                                 return (
@@ -122,11 +127,14 @@ class GoalFilterBar extends Component {
                                             <Text style={styles.categoryOptionText}>
                                                 {text}
                                             </Text>
-                                            {this.renderRadioButton(categoryText == text)}
+                                            {this.renderRadioButton(categoryText === text)}
                                         </View>
                                     </MenuOption>
                                 );
                             }}
+                            getItemLayout={(data, index) => (
+                                {length: 34, offset: 34 * index, index}
+                            )}
                             style={{ height: height/3, paddingTop: 5 }}
                         />
                     </MenuOptions>
