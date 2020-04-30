@@ -122,23 +122,30 @@ class ProfileGoalCard2 extends React.Component {
         const shareCount = item.shareCount ? item.shareCount : 0;
 
         return (
-            <View style={{ display: 'flex', justifyContent: 'space-between', marginLeft: 8, marginRight: 8 }}>
-                <StatsComponent
-                    iconSource={LoveIcon}
-                    iconStyle={styles.loveIconStyle}
-                    text={likeCount}
-                    textStyle={styles.loveTextStyle}
-                />
-                <StatsComponent
-                    iconSource={ShareIcon}
-                    iconStyle={styles.shareIconStyle}
-                    text={shareCount}
-                    textStyle={styles.shareTextStyle}
-                />
+            <View style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginTop: 10
+            }}>
+                <View style={{ flexDirection: 'row' }}>
+                    <StatsComponent
+                        iconSource={LoveIcon}
+                        iconStyle={styles.loveIconStyle}
+                        text={likeCount}
+                        textStyle={styles.loveTextStyle}
+                    />
+                    <StatsComponent
+                        iconSource={ShareIcon}
+                        iconStyle={styles.shareIconStyle}
+                        text={shareCount}
+                        textStyle={styles.shareTextStyle}
+                    />
+                </View>
                 <StatsComponent
                     iconSource={CommentIcon}
                     iconStyle={styles.commentIconStyle}
-                    text={commentCount}
+                    text={commentCount + ' Comment' + (commentCount !== 1 ? 's' : '')}
                     textStyle={styles.commentTextStyle}
                 />
             </View>
@@ -148,7 +155,7 @@ class ProfileGoalCard2 extends React.Component {
     renderPriorityBar(item) {
         const { priority } = item;
         return (
-            <View style={{ alignItems: 'center' }}>
+            <View style={{ alignItems: 'center', marginLeft: 16 }}>
                 <Text style={styles.priorityTextStyle}>Priority</Text>
                 <PriorityBar priority={priority} />
             </View>
@@ -168,13 +175,15 @@ class ProfileGoalCard2 extends React.Component {
                 style={[styles.cardContainerStyle, { opacity: cardOpacity, backgroundColor }]}
                 onPress={() => this.handleOnCardPress(item)}
             >
-                <View style={{ flex: 1 }}>
-                    {this.renderHeader(item)}
-                    {this.renderTitle(item)}
-                    {this.renderProgressBar(item)}
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ flex: 1 }}>
+                        {this.renderHeader(item)}
+                        {this.renderTitle(item)}
+                        {this.renderProgressBar(item)}
+                    </View>
+                    {this.renderPriorityBar(item)}
                 </View>
                 {this.renderStats(item)}
-                {this.renderPriorityBar(item)}
             </DelayedButton>
         );
     }
@@ -184,7 +193,7 @@ const StatsComponent = (props) => {
     const { iconStyle, textStyle, iconSource, text } = props;
     const { statsTextDefaultStyle, statsIconDefaultStyle } = styles;
     return (
-        <View style={{ flexDirection: 'row', marginTop: 5, marginBottom: 5 }}>
+        <View style={{ marginTop: 5, marginBottom: 5, flexDirection: 'row' }}>
             <Image source={iconSource} style={{ ...statsIconDefaultStyle, ...iconStyle }} />
             <Text style={{ ...statsTextDefaultStyle, ...textStyle }}>{text}</Text>
         </View>
@@ -196,8 +205,6 @@ const styles = {
         marginBottom: 2,
         padding: 16,
         backgroundColor: 'white',
-        flexDirection: 'row',
-        alignItems: 'center',
         borderRadius: 2,
         shadowColor: 'lightgray',
         shadowOffset: { width: 0, height: 1 },
@@ -212,39 +219,40 @@ const styles = {
         marginBottom: 8
     },
     priorityTextStyle: {
-        fontSize: 7,
+        fontSize: 8,
         fontStyle: 'italic',
-        color: 'darkgray'
+        fontFamily: GM_FONT_FAMILY_2,
+        color: '#3B414B'
     },
     // Stats component default style
     statsTextDefaultStyle: {
-        fontSize: 9
+        fontSize: 11,
+        color: '#3B414B',
+        fontStyle: GM_FONT_FAMILY_2,
+        marginLeft: 7
     },
     statsIconDefaultStyle: {
         height: 12,
-        width: 12,
-        marginRight: 2
+        width: 12
     },
     // Stats component style
     loveIconStyle: {
-        tintColor: '#e26162',
-        width: 12,
-        height: 11
+        tintColor: '#EB5757'
     },
     loveTextStyle: {
-        color: '#e26162'
     },
     shareIconStyle: {
-        tintColor: '#8ec776'
+        tintColor: '#6FCF97',
+        marginLeft: 18,
+        width: 14,
+        height: 14
     },
     shareTextStyle: {
-        color: '#8ec776'
     },
     commentIconStyle: {
-        tintColor: '#f1bf74'
+        tintColor: '#F1BF74'
     },
     commentTextStyle: {
-        color: '#f1bf74'
     }
 };
 
