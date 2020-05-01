@@ -341,7 +341,7 @@ export const refreshProfile = (userId) => (dispatch, getState) => {
             // TODO: show toaster saying loading fail
         });
 
-        return pageId;
+    return pageId;
 };
 
 /**
@@ -486,37 +486,13 @@ export const createOrGetDirectMessage = (userId, maybeCallback) => (dispatch, ge
         Alert.alert('Error', 'Could not create a conversation with specified user.');
     });
 };
-// export const shareUserProfileAsMessage = (chatRoomRef, userRef) => (dispatch, getState) => {
-//   const { token } = getState().user;
-
-//   // send the message
-//   let body = {
-//     chatRoomRef,
-//     content: {
-//       message: '',
-//     },
-//     sharedEntity: {
-//       userRef,
-//     },
-//   };
-//   const handleRequestFailure = (failure) => {
-//     Alert.alert('Error', 'Could not send message to selected chat.');
-//   };
-//   API.post(`secure/chat/message`, body, token).then(resp => {
-//     if (resp.status != 200) {
-//       handleRequestFailure();
-//     };
-//     Alert.alert('Success', 'User has been shared to the selected chat.');
-//   }).catch(handleRequestFailure);
-// }
 
 // TODO: profile reducer redesign to change here. The method signature. Search for usage
 export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
     return (dispatch, getState) => {
         const { headline, name, oldPassword, newPassword } = values;
-        const { about, occupation, elevatorPitch } = values.profile;
+        const { about, occupation, elevatorPitch, location } = values.profile;
         const imageUri = values.profile.image;
-
         const { token, userId } = getState().user;
 
         // Start updaing process
@@ -537,6 +513,7 @@ export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
                     image,
                     about,
                     occupation,
+                    location,
                     elevatorPitch,
                     token
                 });

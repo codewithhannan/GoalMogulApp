@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
     View,
     Image,
-    ImageBackground,
     TouchableOpacity,
     ActionSheetIOS,
     Dimensions,
@@ -227,7 +226,6 @@ class ProfileDetailEditForm extends Component {
                         returnKeyType='next'
                         onNextPress={() => {
                             this.refs['occupation'].getRenderedComponent().focus();
-                            // this._scrollToInput(findNodeHandle(this._occupation));
                         }}
                         autoCorrect
                     />
@@ -235,6 +233,17 @@ class ProfileDetailEditForm extends Component {
                         ref='occupation'
                         name='profile.occupation'
                         label='Occupation'
+                        component={this.renderInput}
+                        disabled={uploading}
+                        onNextPress={() => {
+                            this.refs['location'].getRenderedComponent().focus();
+                        }}
+                        autoCorrect
+                    />
+                    <Field
+                        ref='location'
+                        name='profile.location'
+                        label='Location'
                         component={this.renderInput}
                         disabled={uploading}
                         autoCorrect
@@ -250,7 +259,6 @@ class ProfileDetailEditForm extends Component {
                         autoCorrect
                         returnKeyType='Enter'
                     />
-                    {/*  forFocus={() => this.handleOnFocus(150)} */}
                     <Field
                         name='profile.about'
                         label='About'
@@ -261,9 +269,6 @@ class ProfileDetailEditForm extends Component {
                         autoCorrect
                         returnKeyType='Enter'
                     />
-                    {/*   forFocus={() => this.handleOnFocus(200)} */}
-
-
                 </KeyboardAwareScrollView>
             </SafeAreaView>
         );
@@ -306,20 +311,20 @@ const styles = {
     imageContainerStyle: {
         height: 60,
         backgroundColor: 'white',
+        alignSelf: 'center'
     },
     imageWrapperStyle: {
         alignItems: 'center',
         borderRadius: (width * 0.15),
         position: 'absolute',
         bottom: 10,
-        left: 20,
         alignSelf: 'center',
         backgroundColor: 'white'
     },
     iconContainerStyle: {
         position: 'absolute',
         bottom: 10,
-        left: 20+(width * 0.2),
+        right: (width * 0.35),
 
         width: (width*0.1),
         height: (width*0.1),
