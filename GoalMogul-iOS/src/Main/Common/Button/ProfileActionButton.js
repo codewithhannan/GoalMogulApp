@@ -15,7 +15,7 @@ const ProfileActionButton = (props) => {
         image = (
             <Image
                 source={props.source}
-                style={{ height: 15, width: 15, ...props.iconStyle, tintColor: color }}
+                style={{ height: 15, width: 15, tintColor: color, ...props.iconStyle }}
             />
         );
     }

@@ -168,9 +168,7 @@ class ProfileInfoCard extends Component {
             return null;
         }
         const { elevatorPitch, occupation, about } = user.profile;
-        const divider = elevatorPitch || about
-            ? (<View style={{ ...shadowStyle, }} />)
-            : null;
+
         return (
             <View>
                 <View style={styles.containerStyle}>

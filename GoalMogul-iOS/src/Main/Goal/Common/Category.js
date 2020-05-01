@@ -18,7 +18,8 @@ const styles = {
         fontSize: 11,
         color: '#3B414B',
         fontFamily: GM_FONT_FAMILY_2,
-        alignSelf: 'center'
+        alignSelf: 'center',
+        fontWeight: '500'
     }
 };
 

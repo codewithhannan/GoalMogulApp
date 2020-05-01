@@ -157,7 +157,8 @@ const styles = {
     headlineTextStyle: {
         fontSize: GM_FONT_1,
         fontFamily: GM_FONT_FAMILY_1,
-        color: '#3B414B'
+        color: '#3B414B',
+        fontWeight: 'bold'
     },
     textStyle: {
         flex: 1,

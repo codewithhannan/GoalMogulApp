@@ -213,6 +213,7 @@ class ProfileDetailCard extends Component {
                     style={{ marginTop: 1 }}
                     onPress={() => this.handleMessageButtonOnPress()}
                     containerStyle={{ color: 'white', backgroundColor: GM_BLUE }}
+                    textStyle={{ fontFamily: GM_FONT_FAMILY_1 }}
                 />
             </View>
         );
@@ -477,6 +478,7 @@ const styles = {
         fontSize: GM_FONT_2,
         fontFamily: GM_FONT_FAMILY_1,
         color: '#333',
+        fontWeight: 'bold',
         letterSpacing: 0.3,
         marginTop: 9,
         marginBottom: 10,

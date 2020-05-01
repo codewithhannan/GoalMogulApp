@@ -51,6 +51,7 @@ class ProfileGoalCard2 extends React.Component {
                     <Text style={{
                         fontSize: 11,
                         fontFamily: GM_FONT_FAMILY_1,
+                        fontWeight: '500',
                         color: '#3B414B',
                         alignSelf: 'center',
                         letterSpacing: 0.7

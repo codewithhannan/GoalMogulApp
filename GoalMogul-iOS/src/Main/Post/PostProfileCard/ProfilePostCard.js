@@ -328,7 +328,8 @@ const styles = {
         flexWrap: 'wrap',
         fontSize: 13,
         fontFamily: GM_FONT_FAMILY_2,
-        color: '#3B414B'
+        color: '#3B414B',
+        fontWeight: 'bold'
     }
 };
 

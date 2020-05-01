@@ -40,10 +40,7 @@ class GoalFilterBar extends Component {
             categories
         } = this.props.filter;
         const categoryText = categories;
-        let initalCatrgotyScrollIndex = 0;
-        CATEGORY_OPTIONS.forEach(({ text }, index) => {
-            if (text === categoryText) initalCatrgotyScrollIndex = index;
-        });
+
         return (
             <View style={styles.containerStyle}>
                 <Menu
@@ -98,7 +95,6 @@ class GoalFilterBar extends Component {
                         {/* Category Options */}
                         <FlatList
                             data={CATEGORY_OPTIONS}
-                            initialScrollIndex={initalCatrgotyScrollIndex}
                             renderItem={({ item }) => {
                                 const { value, text } = item;
                                 return (
@@ -116,9 +112,6 @@ class GoalFilterBar extends Component {
                                     </MenuOption>
                                 );
                             }}
-                            getItemLayout={(data, index) => (
-                                {length: CATEGORY_OPTION_HEIGHT, offset: CATEGORY_OPTION_HEIGHT * index, index}
-                            )}
                             style={{ height: height/3, paddingTop: 5 }}
                         />
                     </MenuOptions>
@@ -195,7 +188,8 @@ const styles = {
     sortByHeaderText: {
         fontSize: GM_FONT_2,
         fontFamily: GM_FONT_FAMILY_1,
-        color: '#3B414B'
+        color: '#3B414B',
+        fontWeight: 'bold'
     },
     sortByOptionWrapper: {
         backgroundColor: '#F2F2F2',
@@ -219,7 +213,7 @@ const styles = {
     categoryHeaderText: {
         fontSize: GM_FONT_1,
         fontFamily: GM_FONT_FAMILY_2,
-        fontWeight: 'bold',
+        fontWeight: '500',
         color: '#3B414B'
     },
     categoryOptionWrapper: {
@@ -237,12 +231,5 @@ const styles = {
         fontFamily: GM_FONT_FAMILY_2
     }
 };
-
-const switchSortByText = (sortBy) => switchCase({
-    created: 'Date',
-    updated: 'Updated',
-    shared: 'Last Shared',
-    priority: 'Priority'
-})('created')(sortBy);
 
 export default GoalFilterBar;
