@@ -16,15 +16,14 @@ const formatDate = (date) => {
 const renderProgressBar = (props) => {
     const {
         sections,
-        color,
         height,
         percentage,
         backgroundColor
     } = props;
     const percentagePerBar = 100 / sections;
 
-    let progressBar = [];
-    for (let i = 1; i <= sections; i++) {
+    let progressBar = Array.from(Array(sections)).map((a, index) => {
+        const i = index+1;
         const borderRadius = {
             borderTopLeftRadius: i === 1 ? height/2 : 0,
             borderBottomLeftRadius: i === 1 ? height/2 : 0,
@@ -36,7 +35,7 @@ const renderProgressBar = (props) => {
             : (progressFill >= percentagePerBar ? 100 : (100 * progressFill / percentagePerBar)))
             + '%';
 
-        progressBar.push(
+        return (
             <View style={{
                 flex: 1,
                 height,
@@ -52,10 +51,10 @@ const renderProgressBar = (props) => {
                 }}/>
             </View>
         );
-    }
+    });
 
     return(
-        <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center', alignItems: 'center' }}>
+        <View style={styles.barContainerStyle}>
             {progressBar}
         </View>
     );
@@ -115,7 +114,6 @@ const ProgressBar = (props) => {
                 {startTimeTextView}
                 {endTimeTextView}
             </View>
-            {/* <Image source={Bar} style={styles.imageStyle} /> */}
             {renderProgressBar({
                 percentage,
                 backgroundColor: props.color || GM_BLUE,
@@ -129,8 +127,7 @@ const ProgressBar = (props) => {
 const styles = {
     containerStyle: {
         flex: 1,
-        marginTop: 2,
-        marginBottom: 6
+        marginTop: 2
     },
     imageStyle: {
         flex: 1
@@ -140,6 +137,12 @@ const styles = {
         fontSize: 9,
         fontFamily: GM_FONT_FAMILY_2,
         alignSelf: 'center'
+    },
+    barContainerStyle: {
+        flex: 1,
+        flexDirection: 'row',
+        alignSelf: 'center',
+        alignItems: 'center'
     }
 };
 

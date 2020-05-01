@@ -16,33 +16,28 @@ const getColor = (priority) => {
 
 const PriorityBar = (props) => {
   const { priority } = props;
-  const backgroundColor = getColor(parseInt(`${priority}`, 10));
+  const backgroundColor = getColor(parseInt(priority, 10));
 
   const views = Array.from(Array(10)).map((a, index) => {
     let style = { ...styles.defaultStyle };
     if (index >= (10 - priority)) {
       style = _.set(style, 'backgroundColor', backgroundColor);
     }
-
     return <View style={style} key={index} />;
   });
 
   return (
-    <View style={styles.containerStyle}>
+    <View>
       {views}
     </View>
   );
 };
 
 const styles = {
-  containerStyle: {
-    marginTop: 3,
-    display: 'flex'
-  },
   defaultStyle: {
     height: 4,
-    width: 20,
-    marginTop: 1,
+    width: 30,
+    marginTop: 4,
     backgroundColor: '#f2f2f2'
   }
 };

@@ -1,7 +1,7 @@
 /**
  * This is a central hub that defines the global usage of certain color
  */
-export const BACKGROUND_COLOR = '#f8f8f8';
+export const BACKGROUND_COLOR = 'white';
 export const APP_BLUE_BRIGHT = '#17B3EC';
 export const APP_BLUE = '#23B7E9';
 export const APP_DEEP_BLUE = '#0397CB';
@@ -107,3 +107,9 @@ export const modalHeaderBadgeShadow = {
     shadowOpacity: 0.25,
     shadowRadius: 5,
 };
+
+export const shadowStyle = {
+    width: '100%',
+    height: 5,
+    backgroundColor: '#F2F2F2'
+}
