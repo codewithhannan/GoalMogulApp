@@ -311,6 +311,13 @@ class RouterComponent extends Component {
                                             <Scene key="notification_setting" component={NotificationSetting} />
 
                                             <Scene key="searchLightBox" component={SearchOverlay} />
+
+                                            <Scene key="meet" component={MeetTab} />
+                                            <Scene key="shareMeetTab" component={ShareDetailCard} />
+                                            <Scene key="friendTabView" component={FriendTabView} />
+                                            <Scene key="requestTabView" component={RequestTabView} />
+                                            <Scene key="discoverTabView" component={DiscoverTabView} />
+                                            <Scene key="friendInvitationView" component={FriendInvitationView} />
                                         </Stack>
 
                                         <Stack
@@ -359,6 +366,13 @@ class RouterComponent extends Component {
                                             <Scene key="profileTab_myTribeTab" component={MyTribeTab} />
 
                                             <Scene key="profileTab_searchLightBox" component={SearchOverlay} />
+
+                                            <Scene key="profileTab_meet" component={MeetTab} />
+                                            <Scene key="profileTab_shareMeetTab" component={ShareDetailCard} />
+                                            <Scene key="profileTab_friendTabView" component={FriendTabView} />
+                                            <Scene key="profileTab_requestTabView" component={RequestTabView} />
+                                            <Scene key="profileTab_discoverTabView" component={DiscoverTabView} />
+                                            <Scene key="profileTab_friendInvitationView" component={FriendInvitationView} />
                                         </Stack>
 
                                         <Stack
@@ -426,6 +440,13 @@ class RouterComponent extends Component {
                                             <Scene key="notificationTab_myEventTab" component={MyEventTab} />
                                             <Scene key="notificationTab_myEventDetail" component={MyEvent} />
                                             <Scene key="notificationTab_myTribeTab" component={MyTribeTab} />
+
+                                            <Scene key="notificationTab_meet" component={MeetTab} />
+                                            <Scene key="notificationTab_shareMeetTab" component={ShareDetailCard} />
+                                            <Scene key="notificationTab_friendTabView" component={FriendTabView} />
+                                            <Scene key="notificationTab_requestTabView" component={RequestTabView} />
+                                            <Scene key="notificationTab_discoverTabView" component={DiscoverTabView} />
+                                            <Scene key="notificationTab_friendInvitationView" component={FriendInvitationView} />
                                         </Stack>
 
                                         <Stack
@@ -480,6 +501,13 @@ class RouterComponent extends Component {
                                             <Scene key="exploreTab_myEventTab" component={MyEventTab} />
                                             <Scene key="exploreTab_myEventDetail" component={MyEvent} />
                                             <Scene key="exploreTab_myTribeTab" component={MyTribeTab} />
+
+                                            <Scene key="exploreTab_meet" component={MeetTab} />
+                                            <Scene key="exploreTab_shareMeetTab" component={ShareDetailCard} />
+                                            <Scene key="exploreTab_friendTabView" component={FriendTabView} />
+                                            <Scene key="exploreTab_requestTabView" component={RequestTabView} />
+                                            <Scene key="exploreTab_discoverTabView" component={DiscoverTabView} />
+                                            <Scene key="exploreTab_friendInvitationView" component={FriendInvitationView} />
                                         </Stack>
 
                                         <Stack
@@ -533,6 +561,13 @@ class RouterComponent extends Component {
 
                                             <Scene key="chatTab_myEventTab" component={MyEventTab} />
                                             <Scene key="chatTab_myTribeTab" component={MyTribeTab} />
+
+                                            <Scene key="chatTab_meet" component={MeetTab} />
+                                            <Scene key="chatTab_shareMeetTab" component={ShareDetailCard} />
+                                            <Scene key="chatTab_friendTabView" component={FriendTabView} />
+                                            <Scene key="chatTab_requestTabView" component={RequestTabView} />
+                                            <Scene key="chatTab_discoverTabView" component={DiscoverTabView} />
+                                            <Scene key="chatTab_friendInvitationView" component={FriendInvitationView} />
                                         </Stack>
                                     </Tabs>
                                 </Scene>
@@ -588,42 +623,6 @@ class RouterComponent extends Component {
 
                     <Stack key="createReportStack" hideNavBar>
                         <Scene key="createReport" component={ReportModal} intial hideNavBar />
-                    </Stack>
-
-                    <Stack key="friendsTab" hideNavBar>
-                        <Scene key="meet" component={MeetTab} hideNavBar initial />
-                        <Scene key="shareMeetTab" component={ShareDetailCard} />
-                        <Scene key="friendTabView" component={FriendTabView} />
-                        <Scene key="requestTabView" component={RequestTabView} />
-                        <Scene key="discoverTabView" component={DiscoverTabView} />
-                        <Scene key="friendInvitationView" component={FriendInvitationView} />
-
-                        <Scene key="friendsTab_myEventDetail" component={MyEvent} />
-                        <Scene key="friendsTab_goal" component={GoalDetailCard} />
-                        <Scene key="friendsTab_post" component={PostDetailCard} />
-                        <Scene key="friendsTab_share" component={ShareDetailCard} />
-                        <Scene key="friendsTab_profile" component={Profile} />
-                        <Scene key="friendsTab_profileDetail" component={ProfileDetail} />
-                        <Scene key="friendsTab_setting" component={Setting} />
-                        <Scene key="friendsTab_email" component={Email} />
-                        <Scene key="friendsTab_editEmailForm" component={EditEmailForm} />
-                        <Scene key="friendsTab_editPasswordForm" component={EditPasswordForm} />
-                        <Scene key="friendsTab_phone" component={Phone} path='/phone/verification' />
-                        <Scene key="friendsTab_addPhoneNumberForm" component={AddPhoneNumberForm} />
-                        <Scene key="friendsTab_editPhoneNumberForm" component={EditPhoneNumberForm} />
-                        <Scene key="friendsTab_friendsBlocked" component={FriendsBlocked} />
-                        <Scene key="friendsTab_privacy" component={Privacy} />
-                        <Scene key="friendsTab_friendsSetting" component={FriendsSetting} />
-                        <Scene key="friendsTab_notification_setting" component={NotificationSetting} />
-
-                        <Scene key="friendsTab_myEventTab" component={MyEventTab} />
-                        <Scene key="friendsTab_myTribeTab" component={MyTribeTab} />
-
-                        <Scene key="friendsTab_chatRoomPublicView" component={ChatRoomPubicView} />
-
-                        <Scene key="friendsTab_meetContactSync" component={ContactSync} />
-                        <Scene key="friendsTab_contactInvite" component={ContactInvitePage} />
-                        <Scene key="friendsTab_searchLightBox" component={SearchOverlay} hideNavBar />
                     </Stack>
 
                     <Scene key="shareModal" component={ShareModal} hideNavBar />

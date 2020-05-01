@@ -1,4 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native';
+import { GM_FONT_2, GM_FONT_FAMILY_1, GM_FONT_1, GM_FONT_FAMILY_2 } from '../../../styles';
 
 
 const window = Dimensions.get('window');
@@ -22,14 +23,15 @@ export default StyleSheet.create({
     alignSelf: 'center'
   },
   subHeaderTextStyle: {
-    fontSize: 12,
-    color: '#646464',
-    fontStyle: 'italic',
-    marginBottom: 2
+    fontSize: GM_FONT_2,
+    color: '#333',
+    fontFamily: GM_FONT_FAMILY_1,
+    marginBottom: 16,
+    letterSpacing: 0.3
   },
   detailTextStyle: {
-    fontSize: 14,
-    // color: '#646464',
-    color: '#333'
+    fontSize: GM_FONT_1,
+    fontFamily: GM_FONT_FAMILY_2,
+    color: '#3B414B'
   }
 });

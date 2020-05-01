@@ -26,6 +26,8 @@ import {
 } from '../../../redux/modules/User/Selector';
 import Icons from '../../../asset/base64/Icons';
 import CoinProfileInfoModal from '../../Gamification/Coin/CoinProfileInfoModal';
+import { shadowStyle } from '../../../styles';
+import { componentKeyByTab } from '../../../redux/middleware/utils';
 
 const { CoinSackIcon, InfoIcon } = Icons;
 const DEBUG_KEY = '[ UI ProfileInfoCard ]';
@@ -49,8 +51,8 @@ class ProfileInfoCard extends Component {
         const { pageId, userId } = this.props;
         // canEdit means self
         if (this.props.canEdit) {
-            Actions.push('friendsTab')
-            Actions.replace('friendTabView');
+            const componentKeyToOpen = componentKeyByTab(this.props.navigationTab, 'friendTabView');
+            Actions.push(componentKeyToOpen);
             return;
         }
         Actions.push('mutualFriends', { userId, pageId });
@@ -67,8 +69,8 @@ class ProfileInfoCard extends Component {
                 <View style={{ marginRight: 10, marginLeft: 10, flexDirection: 'row' }}>
                     <Text style={{ fontSize: 13, color: '#646464', alignSelf: 'center' }}>
                         <Text style={{ fontWeight: 'bold' }}>{coins} </Text>
-            Coins
-          </Text>
+                        Coins
+                    </Text>
                     <DelayedButton
                         activeOpacity={0.6}
                         onPress={() => {
@@ -112,7 +114,7 @@ class ProfileInfoCard extends Component {
     renderOccupation(occupation) {
         if (occupation) {
             return (
-                <View style={{ flexDirection: 'row', paddingBottom: 20 }}>
+                <View style={{ flexDirection: 'row' }}>
                     <Image source={brief_case} style={styles.iconStyle} />
                     <Text
                         style={profileStyles.headerTextStyle}
@@ -130,7 +132,7 @@ class ProfileInfoCard extends Component {
     renderElevatorPitch(elevatorPitch) {
         if (elevatorPitch) {
             return (
-                <View style={{ alignSelf: 'flex-start', marginTop: 20 }}>
+                <View style={{ alignSelf: 'flex-start' }}>
                     <Text style={profileStyles.subHeaderTextStyle}>Elevator Pitch</Text>
                     <Text style={profileStyles.detailTextStyle}>{elevatorPitch}</Text>
                 </View>
@@ -142,7 +144,7 @@ class ProfileInfoCard extends Component {
     renderAbout(about) {
         if (about) {
             return (
-                <View style={{ alignSelf: 'flex-start', marginTop: 20 }}>
+                <View style={{ alignSelf: 'flex-start', marginTop: 24 }}>
                     <Text style={profileStyles.subHeaderTextStyle}>About</Text>
                     <Text style={profileStyles.detailTextStyle}>{about}</Text>
                 </View>
@@ -167,17 +169,19 @@ class ProfileInfoCard extends Component {
         }
         const { elevatorPitch, occupation, about } = user.profile;
         const divider = elevatorPitch || about
-            ? (<View style={profileStyles.dividerStyle} />)
+            ? (<View style={{ ...shadowStyle, }} />)
             : null;
         return (
-            <View style={styles.cardContainerStyle}>
+            <View>
+                <View style={styles.containerStyle}>
+                    {this.renderElevatorPitch(elevatorPitch)}
+                    {this.renderAbout(about)}
+                </View>
+                <View style={shadowStyle}/>
                 <View style={styles.containerStyle}>
                     {this.renderCoinInfo(user)}
                     {this.renderFriendInfo()}
                     {this.renderOccupation(occupation)}
-                    {divider}
-                    {this.renderElevatorPitch(elevatorPitch)}
-                    {this.renderAbout(about)}
                     <CoinProfileInfoModal
                         isVisible={this.state.showCoinProfileInfoModal}
                         closeModal={() => {
@@ -188,18 +192,13 @@ class ProfileInfoCard extends Component {
                         }}
                     />
                 </View>
+                <View style={shadowStyle}/>
             </View>
         );
     }
 }
 
 const styles = {
-    cardContainerStyle: {
-        display: 'flex',
-        flex: 1,
-        borderTopWidth: 1.5,
-        borderColor: '#f2f2f2'
-    },
     containerStyle: {
         display: 'flex',
         padding: 30,
@@ -242,6 +241,7 @@ const styles = {
 const mapStateToProps = (state, props) => {
     const { userId } = props;
     const canEdit = userId === state.user.userId;
+    const navigationTab = state.navigation.tab;
 
     const userObject = getUserData(state, userId, '');
     const { user, mutualFriends, friendship } = userObject;
@@ -251,7 +251,8 @@ const mapStateToProps = (state, props) => {
         canEdit,
         user,
         mutualFriends,
-        friendsCount
+        friendsCount,
+        navigationTab
     };
 };
 
