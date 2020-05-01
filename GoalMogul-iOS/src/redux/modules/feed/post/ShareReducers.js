@@ -22,7 +22,7 @@ const INITIAL_STATE = {
     ...SHARE_INITIAL_STATE
   },
   // Share detail in meet tab
-  shareMeetTab: {
+  shareProfileTab: {
     ...SHARE_INITIAL_STATE
   },
   // Share detail in notification tab

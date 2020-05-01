@@ -108,7 +108,7 @@ class RouterComponent extends Component {
 
         // Back to initial for friendTab
         if (state.key === 'profileTab' && isFocused() && state.routes.length > 1) {
-            return Actions.popTo('profile');
+            return Actions.popTo('profileTab_profile');
         }
 
         // Back to initial for notificationTab
@@ -334,10 +334,11 @@ class RouterComponent extends Component {
                                             })
                                             }
                                         >
-                                            <Scene key="profileTab_profile" component={Profile} initial />
+
                                             <Scene key="profileTab_goal" component={GoalDetailCard} />
                                             <Scene key="profileTab_post" component={PostDetailCard} />
                                             <Scene key="profileTab_share" component={ShareDetailCard} />
+                                            <Scene key="profileTab_profile" component={Profile} initial />
                                             <Scene key="profileTab_profileDetail" component={ProfileDetail} />
 
                                             <Scene key="profileTab_setting" component={Setting} />

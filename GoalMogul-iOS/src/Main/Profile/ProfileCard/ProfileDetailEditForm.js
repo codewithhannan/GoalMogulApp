@@ -4,8 +4,6 @@ import {
   Image,
   ImageBackground,
   TouchableOpacity,
-  ScrollView,
-  KeyboardAvoidingView,
   ActionSheetIOS,
   Dimensions,
   SafeAreaView,
