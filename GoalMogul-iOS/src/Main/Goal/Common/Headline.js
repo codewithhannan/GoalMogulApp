@@ -198,7 +198,6 @@ class Headline extends React.PureComponent {
         return (
             <View style={styles.containerStyle}>
                 <Name text={name} onPress={() => this.handleNameOnPress(user)} textStyle={textStyle} />
-                {/* <Image style={styles.imageStyle} source={badge} /> */}
                 <UserBanner user={user} iconStyle={{ marginTop: 1 }} />
                 {categoryComponent}
                 <View style={{ flexDirection: 'row', alignSelf: 'flex-end' }}>
@@ -222,59 +221,6 @@ const styles = {
         paddingLeft: 10,
         paddingTop: 1
     },
-    imageStyle: {
-        alignSelf: 'center',
-        marginLeft: 3,
-        marginRight: 3
-    },
-    iconStyle: {
-        height: 17,
-        width: 17,
-        tintColor: '#555'
-    },
-    // Menu related style
-    triggerContainerStyle: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 3,
-        borderWidth: 1,
-        borderRadius: 5,
-        borderColor: '#e9e9e9',
-        shadowColor: '#ddd',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.8,
-        shadowRadius: 1,
-        elevation: 1,
-    },
-    anchorStyle: {
-        backgroundColor: 'white'
-    },
-    menuOptionsStyles: {
-        optionsContainer: {
-            width: width / 3,
-            paddingTop: 5,
-            paddingBottom: 5,
-            paddingLeft: 10,
-            paddingRight: 10
-        },
-        optionsWrapper: {
-
-        },
-        optionWrapper: {
-            flex: 1,
-            width: '100%'
-        },
-        optionTouchable: {
-            underlayColor: 'lightgray',
-            activeOpacity: 10,
-            flex: 1
-        },
-        optionText: {
-            paddingTop: 5,
-            paddingBottom: 5,
-            color: '#555'
-        },
-    }
 };
 
 export default connect(
