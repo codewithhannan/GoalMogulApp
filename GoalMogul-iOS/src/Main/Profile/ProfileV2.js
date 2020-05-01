@@ -454,7 +454,6 @@ const makeMapStateToProps = () => {
         }
 
         const { navigationState, showPlus } = userPage;
-
         const { routes, index } = navigationState;
         const selectedTab = routes[index].key;
         // Get page info by tab
@@ -478,10 +477,7 @@ const makeMapStateToProps = () => {
         }
 
         // console.log(`${DEBUG_KEY}: refreshing is:`, refreshing);
-        if (refreshing) {
-            data = [{ type: 'refreshing' }].concat(data);
-        }
-
+        if (refreshing) data = [{ type: 'refreshing' }].concat(data);
         const appUser = state.user.user;
 
         return {

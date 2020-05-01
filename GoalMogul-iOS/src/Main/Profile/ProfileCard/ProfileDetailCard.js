@@ -342,7 +342,7 @@ class ProfileDetailCard extends Component {
             return <View style={{ height: 55.5 }} />
         }
         return (
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: PADDING, marginTop: 5 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 15, marginTop: 5 }}>
                 <DelayedButton
                     activeOpacity={0.6}
                     style={{
@@ -377,21 +377,18 @@ class ProfileDetailCard extends Component {
 
     renderProfileImage(profile) {
         const { image } = profile;
-
-        if (image) {
-            let imageUrl = `${IMAGE_BASE_URL}${image}`;
-            return (
-                <View style={styles.imageContainerStyle}>
-                    <Image style={styles.imageStyle} source={{ uri: imageUrl }} />
-                </View>
-            );
-        } else {
-            return (
-                <View style={{ ...styles.imageContainerStyle, borderWidth: 2, borderColor: '#BDBDBD' }}>
-                    <Image style={{ width: 30, height: 30, margin: (width * 0.3) / 3 }} resizeMode='contain' source={defaultProfilePic} />
-                </View>
-            );
-        }
+        const style = image ? styles.imageStyle : { width: 30, height: 30, margin: (width * 0.1) };
+        const containerStyle = [styles.imageContainerStyle, image ? {} : {
+            borderColor: '#BDBDBD',
+            borderRadius: (width * 0.15),
+            borderWidth: 2
+        }];
+        const imageUrl = `${IMAGE_BASE_URL}${image}`;
+        return (
+            <View style={containerStyle}>
+                <Image style={style} source={image ? { uri: imageUrl } : defaultProfilePic} />
+            </View>
+        );
     }
 
     render() {
@@ -403,7 +400,7 @@ class ProfileDetailCard extends Component {
         return (
             <View onLayout={this.onLayout}>
                 <View style={{ height: 90, backgroundColor: GM_BLUE_LIGHT_LIGHT }} />
-                <View style={styles.imageWrapperStyle}>
+                <View style={styles.topWrapperStyle}>
                     {this.renderProfileImage(profile)}
                     <View style={{ flexDirection: 'row', flex: 1, marginTop: 8, marginRight: 15 }}>
                         <View style={{ flex: 1 }} />
@@ -447,8 +444,6 @@ class ProfileDetailCard extends Component {
     }
 }
 
-const PADDING = 15;
-
 const styles = {
     containerStyle: {
         backgroundColor: '#fff',
@@ -459,13 +454,14 @@ const styles = {
         paddingLeft: 20,
         paddingRight: 20
     },
-    imageWrapperStyle: {
+    topWrapperStyle: {
         height: 60,
         backgroundColor: 'white'
     },
     imageContainerStyle: {
         alignItems: 'center',
-        borderRadius: (width * 0.9) / 6,
+        borderRadius: (width * 0.15),
+        borderColor: '#BDBDBD',
         position: 'absolute',
         bottom: 10,
         left: 20,
@@ -473,9 +469,9 @@ const styles = {
         backgroundColor: 'white'
     },
     imageStyle: {
-        width: (width * 0.9) / 3,
-        height: (width * 0.9) / 3,
-        borderRadius: (width * 0.9) / 6
+        width: (width * 0.3),
+        height: (width * 0.3),
+        borderRadius: (width * 0.15)
     },
     nameTextStyle: {
         fontSize: GM_FONT_2,
@@ -493,29 +489,6 @@ const styles = {
         color: '#333',
         fontWeight: '500',
         marginBottom: 10
-    },
-    dividerStyle: {
-        height: 1,
-        width: (width * 5) / 7,
-        borderColor: '#dcdcdc',
-        borderBottomWidth: 1,
-        marginBottom: PADDING
-    },
-    friendInfoContainerStyle: {
-        flexDirection: 'row',
-        marginBottom: PADDING,
-        alignItems: 'center'
-    },
-    dotIconStyle: {
-
-
-    },
-    dotIconContainerStyle: {
-        width: 4,
-        marginLeft: 4,
-        marginRight: 5,
-        alignSelf: 'center',
-        justifyContent: 'center'
     },
     infoIconContainerStyle: {
         height: 15,
