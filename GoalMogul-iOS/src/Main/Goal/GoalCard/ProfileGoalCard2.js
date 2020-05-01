@@ -15,7 +15,6 @@ import _ from 'lodash';
 // Components
 import Timestamp from '../Common/Timestamp';
 import ProgressBar from '../Common/ProgressBar';
-import Category from '../Common/Category';
 import PriorityBar from '../../Common/PriorityBar';
 import DelayedButton from '../../Common/Button/DelayedButton';
 
@@ -25,11 +24,8 @@ import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 
 // Actions
-import {
-    openGoalDetail
-} from '../../../redux/modules/home/mastermind/actions';
-import { IS_ZOOMED } from '../../../Utils/Constants';
-import { GM_FONT_FAMILY_2, GM_FONT_FAMILY_1, GM_FONT_1 } from '../../../styles';
+import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions';
+import { GM_FONT_FAMILY_2, GM_FONT_FAMILY_1, GM_FONT_1, shadowStyle } from '../../../styles';
 
 class ProfileGoalCard2 extends React.Component {
 
@@ -122,12 +118,7 @@ class ProfileGoalCard2 extends React.Component {
         const shareCount = item.shareCount ? item.shareCount : 0;
 
         return (
-            <View style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginTop: 10
-            }}>
+            <View style={styles.statsContainerStyle}>
                 <View style={{ flexDirection: 'row' }}>
                     <StatsComponent
                         iconSource={LoveIcon}
@@ -170,21 +161,24 @@ class ProfileGoalCard2 extends React.Component {
         const cardOpacity = 1;
         const backgroundColor = item.isCompleted ? '#F6F6F6' : 'white';
         return (
-            <DelayedButton
-                activeOpacity={0.6}
-                style={[styles.cardContainerStyle, { opacity: cardOpacity, backgroundColor }]}
-                onPress={() => this.handleOnCardPress(item)}
-            >
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <View style={{ flex: 1 }}>
-                        {this.renderHeader(item)}
-                        {this.renderTitle(item)}
-                        {this.renderProgressBar(item)}
+            <View>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    style={[styles.cardContainerStyle, { opacity: cardOpacity, backgroundColor }]}
+                    onPress={() => this.handleOnCardPress(item)}
+                >
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <View style={{ flex: 1 }}>
+                            {this.renderHeader(item)}
+                            {this.renderTitle(item)}
+                            {this.renderProgressBar(item)}
+                        </View>
+                        {this.renderPriorityBar(item)}
                     </View>
-                    {this.renderPriorityBar(item)}
-                </View>
-                {this.renderStats(item)}
-            </DelayedButton>
+                    {this.renderStats(item)}
+                </DelayedButton>
+                <View style={shadowStyle}/>
+            </View>
         );
     }
 }
@@ -202,15 +196,9 @@ const StatsComponent = (props) => {
 
 const styles = {
     cardContainerStyle: {
-        marginBottom: 2,
         padding: 16,
         backgroundColor: 'white',
-        borderRadius: 2,
-        shadowColor: 'lightgray',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 1,
-        shadowRadius: 3,
-        elevation: 1,
+        borderRadius: 2
     },
     headerContainerStyle: {
         flexDirection: 'row',
@@ -219,12 +207,18 @@ const styles = {
         marginBottom: 8
     },
     priorityTextStyle: {
-        fontSize: 8,
+        fontSize: 8.5,
         fontStyle: 'italic',
         fontFamily: GM_FONT_FAMILY_2,
         color: '#3B414B'
     },
     // Stats component default style
+    statsContainerStyle: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 20
+    },
     statsTextDefaultStyle: {
         fontSize: 11,
         color: '#3B414B',
