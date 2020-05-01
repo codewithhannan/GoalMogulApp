@@ -17,9 +17,6 @@ import EmptyResult from '../../../Common/Text/EmptyResult';
 import FriendTabCardView from './FriendTabCardView';
 
 
-
-
-
 const KEY = 'friends';
 const DEBUG_KEY = '[ UI FriendTabView ]';
 
@@ -87,11 +84,7 @@ const styles = {
     containerStyle: {
       flex: 1, 
       backgroundColor: BACKGROUND_COLOR,
-      backgroundColor: '#f8f8f8',
-    //   shadowColor: '#000',
-    //   shadowOffset: { width: 0, height: 1 },
-    //   shadowOpacity: 0.3,
-    //   shadowRadius: 6,
+      backgroundColor: '#f8f8f8'
     },
   }
 
