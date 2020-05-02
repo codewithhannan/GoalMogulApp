@@ -223,7 +223,7 @@ const styles = {
     statsTextDefaultStyle: {
         fontSize: 11,
         color: '#3B414B',
-        fontStyle: GM_FONT_FAMILY_2,
+        fontFamily: GM_FONT_FAMILY_2,
         marginLeft: 7
     },
     statsIconDefaultStyle: {

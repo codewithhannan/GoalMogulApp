@@ -427,35 +427,9 @@ const styles = {
         padding: 16,
         backgroundColor: 'white'
     },
-    textStyle: {
-        fontSize: 12,
-        fontWeight: '600',
-        color: '#696969'
-    },
-    onSelectTextStyle: {
-        fontSize: 12,
-        fontWeight: '600',
-        color: 'white',
-    },
     backdrop: {
         backgroundColor: 'gray',
         opacity: 0.5,
-    },
-    iconContainerStyle: {
-        position: 'absolute',
-        bottom: 20,
-        right: 29,
-        height: 54,
-        width: 54,
-        borderRadius: 28,
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 3,
-        backgroundColor: APP_DEEP_BLUE,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.4,
-        shadowRadius: 2,
     },
     iconStyle: {
         height: 26,
