@@ -14,6 +14,7 @@ import { PRIVACY_POLICY_URL } from '../../Utils/Constants';
 import { registrationTribeSelection } from '../../redux/modules/registration/RegistrationActions';
 import { REGISTRATION_SYNC_CONTACT_NOTES } from '../../redux/modules/registration/RegistrationReducers';
 import DelayedButton from '../Common/Button/DelayedButton';
+import SyncContactInfoModal from './SyncContactInfoModal';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 /**
@@ -22,6 +23,28 @@ const screenWidth = Math.round(Dimensions.get('window').width);
  * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
  */
 class OnboardingSyncContact extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            syncContactInfoModalVisible: false,
+            loading: true // test loading param
+        }
+    }
+
+    openModal = () => this.setState({ ...this.state, syncContactInfoModalVisible: true });
+    
+    closeModal = () => this.setState({ ...this.state, syncContactInfoModalVisible: false });
+
+    onModalNotNow = () => {
+        this.closeModal();
+        setTimeout(() => {
+            this.onNotNow();
+        });
+    }
+
+    onModalInvite = () => {
+
+    }
 
     /**
      * TODO: 
@@ -33,6 +56,9 @@ class OnboardingSyncContact extends React.Component {
      */
     onSyncContact = () => {
         
+        this.openModal();
+
+        setTimeout(() => { this.setState({ ...this.state, loading: false })}, 6000);
     }
 
     onNotNow = () => {
@@ -79,6 +105,12 @@ class OnboardingSyncContact extends React.Component {
                     </Text>
                     
                 </View>
+                <SyncContactInfoModal 
+                    isOpen={this.state.syncContactInfoModalVisible} 
+                    loading={this.state.loading} 
+                    onNotNow={this.onModalNotNow} 
+                    onInvite={this.onModalInvite} 
+                />
             </View>
         );
     }

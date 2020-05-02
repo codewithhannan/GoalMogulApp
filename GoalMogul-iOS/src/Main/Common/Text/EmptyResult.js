@@ -2,9 +2,9 @@ import React from 'react';
 import { Text, View } from 'react-native';
 
 const EmptyResult = (props) => {
-  const { textStyle } = props;
+  const { textStyle, containerStyle } = props;
   return (
-    <View style={styles.containerStyle}>
+    <View style={[styles.containerStyle, containerStyle]}>
       <Text style={{ ...styles.textStyle, ...textStyle }}>{props.text}</Text>
     </View>
   );
