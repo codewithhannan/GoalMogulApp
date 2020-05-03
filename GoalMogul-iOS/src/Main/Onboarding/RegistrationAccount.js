@@ -14,8 +14,8 @@ import OnboardingFooter from './Common/OnboardingFooter';
 import InputBox from './Common/InputBox';
 import DelayedButton from '../Common/Button/DelayedButton';
 import { GM_FONT_SIZE, GM_BLUE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT } from '../../styles';
-import { registrationLogin, registrationNextAddProfile } from '../../actions';
-import { registrationTextInputChange } from '../../redux/modules/registration/RegistrationActions';
+import { registrationLogin } from '../../actions';
+import { registrationTextInputChange, registerAccount, validatePhoneCode } from '../../redux/modules/registration/RegistrationActions';
 import PhoneVerificationMoal from './PhoneVerificationModal';
 
 /**
@@ -49,41 +49,39 @@ class RegistrationAccount extends React.Component {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
               resolve(true);
+              // this.props.validatePhoneCode(code);
             }, 1000);
         });
     }
 
     phoneVerifyPass = () => {
-        const { phone, countryCode, email, password, name } = this.props;
         this.closeModal();
         setTimeout(() => {
-            // TODO: change back. Right now only going to the next page
-            const screenTransitionCallback = () => { 
-                Actions.push("registration");
-            };
-            // this.props.registrationNextAddProfile({ phone, countryCode, email, password, name });
-            screenTransitionCallback();
+            // Go to next step
+            Actions.push("registration");
         }, 150);
     }
 
     phoneVerifyCancel = () => {
         this.closeModal();
+        setTimeout(() => {
+            // Go to next step
+            Actions.replace("registration");
+        }, 150);
     }
 
     onNext = () => {
-        const { phone, countryCode, email, password, name } = this.props;
-        // Check if phone field is supplied
-        console.log("phone is: ", phone)
-        if (!phone) {
-            // If not supplied, register and go to next step
-            console.log("user didn't add phone number");
-            // return this.props.registrationNextAddProfile({ email, password, name });
-        }
-        // TODO: notify server to send registration code
-        // Implement this action in RegistrationAction.js (the one in /src/redux/modules)
-
-        // Display modal
-        this.openModal();
+        const { phone } = this.props;
+        const onSuccess = () => {
+            // If phone number is input, go through phone verification
+            if (phone) {
+                this.openModal();
+                return;
+            }
+            // Go directly to next step
+            Actions.replace("registration");
+        };
+        // return this.props.registrationAccount(onSuccess);
     }
 
     validateEmail(email) {
@@ -120,13 +118,6 @@ class RegistrationAccount extends React.Component {
         const { phone, email, password, name, countryCode } = this.props;
         return (
             <KeyboardAvoidingView 
-                // bounces={false}
-                // innerRef={ref => {this.scrollview = ref}}
-                // contentContainerStyle={{
-                //     flex: 1, marginLeft: 20, marginRight: 20, justifyContent: "center",
-                //     backgroundColor: 'transparent',
-                //     flexGrow: 1 // this will fix scrollview scroll issue by passing parent view width and height to it
-                // }}
                 behavior={Platform.OS == "ios" ? "padding" : "height"}
                 style={{
                     flex: 1, marginLeft: 20, marginRight: 20, justifyContent: "center",
@@ -180,7 +171,7 @@ class RegistrationAccount extends React.Component {
                             inputTitle="Password"
                             ref="password"
                             placeholder="Password"
-                            secure
+                            secureTextEntry
                             onChangeText={(val) => this.props.registrationTextInputChange("password", val)}
                             value={password}
                             textContentType="newPassword"
@@ -220,9 +211,6 @@ const styles = {
     loginBoxStyle: {
         backgroundColor: "white", 
         width: "100%",
-        borderWidth: 1, 
-        borderColor: "#BDBDBD", 
-        borderRadius: 3, 
         height: 42, 
         justifyContent: "center", 
         alignItems: "center",
@@ -249,7 +237,8 @@ export default connect(
     mapStateToProps,
     {
         registrationLogin,
-        registrationNextAddProfile,
+        registerAccount,
+        validatePhoneCode,
         registrationTextInputChange
     }
 )(RegistrationAccount);

@@ -39,11 +39,14 @@ class OnboardingSyncContact extends React.Component {
         this.closeModal();
         setTimeout(() => {
             this.onNotNow();
-        });
+        }, 150);
     }
 
     onModalInvite = () => {
-
+        this.closeModal();
+        setTimeout(() => {
+            Actions.push("registration_contact_invite", { inviteOnly: true });
+        }, 150);
     }
 
     /**
@@ -55,9 +58,7 @@ class OnboardingSyncContact extends React.Component {
      * 3. If found, go to invite page with 2 tabs
      */
     onSyncContact = () => {
-        
         this.openModal();
-
         setTimeout(() => { this.setState({ ...this.state, loading: false })}, 6000);
     }
 

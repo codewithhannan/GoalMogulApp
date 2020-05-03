@@ -218,8 +218,8 @@ class RouterComponent extends Component {
                 <Scene key="login" component={LoginPage} />
                 <Scene 
                   key="registrationAccount" 
-                  // component={RegistrationAccount}  
-                  component={OnboardingSyncContact} 
+                  component={RegistrationAccount}  
+                  // component={OnboardingSyncContact} 
                 />
               </Stack>
 
