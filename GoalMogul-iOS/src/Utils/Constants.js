@@ -134,6 +134,7 @@ export const EMPTY_GOAL = {
         profile: {
             elevatorPitch: '',
             occupation: '',
+            location: '',
             pointsEarned: 0,
             views: 0,
         },
@@ -152,6 +153,7 @@ export const EMPTY_POST =  {
         profile: {
             elevatorPitch: '',
             occupation: '',
+            location: '',
             pointsEarned: 0,
             views: 0,
         },

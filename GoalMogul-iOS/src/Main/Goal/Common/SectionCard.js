@@ -27,6 +27,7 @@ import {
   markNeedAsComplete
 } from '../../../redux/modules/goal/GoalDetailActions';
 import { decode } from '../../../redux/middleware/utils';
+import { GM_FONT_FAMILY_2 } from '../../../styles';
 
 // Constants
 const { CheckIcon: checkIcon } = Icons;
@@ -242,6 +243,7 @@ const styles = {
   sectionTextStyle: {
     color: '#909090',
     fontSize: 13,
+    fontFamily: GM_FONT_FAMILY_2
   },
   textContainerStyle: {
     flexDirection: 'row',
@@ -270,7 +272,6 @@ const styles = {
     height: 28,
     width: 28,
     borderRadius: 14,
-    // backgroundColor: '#eafcee',
     backgroundColor: '#a5e5c0',
     alignItems: 'center',
     justifyContent: 'center',

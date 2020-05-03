@@ -4,9 +4,9 @@
  */
 import React from 'react';
 import {
-  View,
-  Text,
-  Image
+    View,
+    Text,
+    Image
 } from 'react-native';
 import { connect } from 'react-redux';
 import timeago from 'timeago.js';
@@ -15,233 +15,245 @@ import _ from 'lodash';
 // Components
 import Timestamp from '../Common/Timestamp';
 import ProgressBar from '../Common/ProgressBar';
-import Category from '../Common/Category';
 import PriorityBar from '../../Common/PriorityBar';
 import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
-// import BulbIcon from '../../../asset/utils/bulb.png';
 import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 
 // Actions
-import {
-  openGoalDetail
-} from '../../../redux/modules/home/mastermind/actions';
-import { IS_ZOOMED } from '../../../Utils/Constants';
+import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions';
+import { GM_FONT_FAMILY_2, GM_FONT_FAMILY_1, GM_FONT_1, shadowStyle } from '../../../styles';
 
 class ProfileGoalCard2 extends React.Component {
 
-  /* Handler functions for actions */
+    /* Handler functions for actions */
 
-  /**
-   * Open Goal Detail page on Card pressed
-   */
-  handleOnCardPress = (item) => {
-    this.props.openGoalDetail(item);
-  }
+    /**
+     * Open Goal Detail page on Card pressed
+     */
+    handleOnCardPress = (item) => {
+        this.props.openGoalDetail(item);
+    }
 
-  /* Renderers for views */
+    /* Renderers for views */
 
-  /**
-   * This method renders category and timestamp
-   */
-  renderHeader(item) {
-    const { category, created } = item;
-    return (
-      <View style={styles.headerContainerStyle}>
-        <View style={{ alignSelf: 'center', alignItems: 'center' }}>
-          <Text
-            style={{
-              fontSize: 11,
-              color: '#6d6d6d',
-              fontWeight: '600',
-              alignSelf: 'center'
-            }}
-          >
-            {category}
-          </Text>
-        </View>
-        <View style={{ alignSelf: 'center', alignItems: 'center' }}>
-          <Timestamp time={timeago().format(created)} />
-        </View>
-      </View>
-    );
-  }
+    /**
+     * This method renders category and timestamp
+     */
+    renderHeader(item) {
+        const { category, created } = item;
+        return (
+            <View style={styles.headerContainerStyle}>
+                <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+                    <Text style={{
+                        fontSize: 11,
+                        fontFamily: GM_FONT_FAMILY_1,
+                        fontWeight: '500',
+                        color: '#3B414B',
+                        alignSelf: 'center',
+                        letterSpacing: 0.7
+                    }}>
+                        {category}
+                    </Text>
+                </View>
+                <View style={{
+                    alignSelf: 'center',
+                    alignItems: 'center',
+                }}>
+                    <Timestamp time={timeago().format(created)} />
+                </View>
+            </View>
+        );
+    }
 
-  /**
-   * This method renders goal title
-   */
-  renderTitle(item) {
-    const { title } = item;
-    return (
-      <Text
-        style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 15, marginTop: 4 }}
-        numberOfLines={1}
-        ellipsizeMode='tail'
-      >
-        {title}
-      </Text>
-    );
-  }
+    /**
+     * This method renders goal title
+     */
+    renderTitle(item) {
+        const { title } = item;
+        return (
+            <Text
+                style={{
+                    flex: 1,
+                    flexWrap: 'wrap',
+                    fontSize: GM_FONT_1,
+                    color: '#3B414B',
+                    fontFamily: GM_FONT_FAMILY_2
+                }}
+                numberOfLines={1}
+                ellipsizeMode='tail'
+            >
+                {title}
+            </Text>
+        );
+    }
 
-  renderProgressBar(item) {
-    const { start, end, steps, needs } = item;
-    return (
-      <View style={{ marginTop: 8 }}>
-        <ProgressBar
-          startTime={start}
-          endTime={end}
-          steps={steps}
-          needs={needs}
-          goalRef={item}
-          width={IS_ZOOMED ? 156 : 200} // TODO: use ratio with screen size rather static number
-          isProfileGoalCard
-          size='small'
-        />
-      </View>
-    );
-  }
+    renderProgressBar(item) {
+        const { start, end, steps, needs } = item;
+        return (
+            <View style={{ marginTop: 12 }}>
+                <ProgressBar
+                    startTime={start}
+                    endTime={end}
+                    steps={steps}
+                    needs={needs}
+                    goalRef={item}
+                    barHeight={11}
+                    sections={6}
+                    isProfileGoalCard
+                    size='small'
+                />
+            </View>
+        );
+    }
 
-  /**
-   * THis method renders stats including like, forward and suggestion count
-   */
-  renderStats(item) {
-    const likeCount = item.likeCount ? item.likeCount : 0;
-    const commentCount = item.commentCount ? item.commentCount : 0;
-    const shareCount = item.shareCount ? item.shareCount : 0;
+    /**
+     * THis method renders stats including like, forward and suggestion count
+     */
+    renderStats(item) {
+        const likeCount = item.likeCount ? item.likeCount : 0;
+        const commentCount = item.commentCount ? item.commentCount : 0;
+        const shareCount = item.shareCount ? item.shareCount : 0;
 
-    return (
-      <View style={{ display: 'flex', justifyContent: 'space-between', marginLeft: 8, marginRight: 8 }}>
-        <StatsComponent
-          iconSource={LoveIcon}
-          iconStyle={styles.loveIconStyle}
-          text={likeCount}
-          textStyle={styles.loveTextStyle}
-        />
-        <StatsComponent
-          iconSource={ShareIcon}
-          iconStyle={styles.shareIconStyle}
-          text={shareCount}
-          textStyle={styles.shareTextStyle}
-        />
-        <StatsComponent
-          iconSource={CommentIcon}
-          iconStyle={styles.commentIconStyle}
-          text={commentCount}
-          textStyle={styles.commentTextStyle}
-        />
-      </View>
-    );
-  }
+        return (
+            <View style={styles.statsContainerStyle}>
+                <View style={{ flexDirection: 'row' }}>
+                    <StatsComponent
+                        iconSource={LoveIcon}
+                        iconStyle={styles.loveIconStyle}
+                        text={likeCount}
+                        textStyle={styles.loveTextStyle}
+                    />
+                    <StatsComponent
+                        iconSource={ShareIcon}
+                        iconStyle={styles.shareIconStyle}
+                        text={shareCount}
+                        textStyle={styles.shareTextStyle}
+                    />
+                </View>
+                <StatsComponent
+                    iconSource={CommentIcon}
+                    iconStyle={styles.commentIconStyle}
+                    text={commentCount + ' Comment' + (commentCount !== 1 ? 's' : '')}
+                    textStyle={styles.commentTextStyle}
+                />
+            </View>
+        );
+    }
 
-  renderPriorityBar(item) {
-    const { priority } = item;
-    return (
-      <View style={{ alignItems: 'center' }}>
-        <Text style={styles.priorityTextStyle}>Priority</Text>
-        <PriorityBar priority={priority} />
-      </View>
-    );
-  }
+    renderPriorityBar(item) {
+        const { priority } = item;
+        return (
+            <View style={{ alignItems: 'center', marginLeft: 16 }}>
+                <Text style={styles.priorityTextStyle}>Priority</Text>
+                <PriorityBar priority={priority} />
+            </View>
+        );
+    }
 
-  render() {
-    const { item } = this.props;
-    if (!item || _.isEmpty(item)) return null;
+    render() {
+        const { item } = this.props;
+        if (!item || _.isEmpty(item)) return null;
 
-    // const cardOpacity = item.isCompleted ? 0.5 : 1;
-    const cardOpacity = 1;
-    const backgroundColor = item.isCompleted ? '#F6F6F6' : 'white';
-    return (
-      <DelayedButton 
-        activeOpacity={0.6}
-        style={[styles.cardContainerStyle, { opacity: cardOpacity, backgroundColor }]}
-        onPress={() => this.handleOnCardPress(item)}
-      >
-        <View style={{ flex: 1 }}>
-          {this.renderHeader(item)}
-          {this.renderTitle(item)}
-          {this.renderProgressBar(item)}
-        </View>
-        {this.renderStats(item)}
-        {this.renderPriorityBar(item)}
-      </DelayedButton>
-    );
-  }
+        // const cardOpacity = item.isCompleted ? 0.5 : 1;
+        const cardOpacity = 1;
+        const backgroundColor = item.isCompleted ? '#F6F6F6' : 'white';
+        return (
+            <View>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    style={[styles.cardContainerStyle, { opacity: cardOpacity, backgroundColor }]}
+                    onPress={() => this.handleOnCardPress(item)}
+                >
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <View style={{ flex: 1 }}>
+                            {this.renderHeader(item)}
+                            {this.renderTitle(item)}
+                            {this.renderProgressBar(item)}
+                        </View>
+                        {this.renderPriorityBar(item)}
+                    </View>
+                    {this.renderStats(item)}
+                </DelayedButton>
+                <View style={shadowStyle}/>
+            </View>
+        );
+    }
 }
 
 const StatsComponent = (props) => {
-  const { iconStyle, textStyle, iconSource, text } = props;
-  const { statsTextDefaultStyle, statsIconDefaultStyle } = styles;
-  return (
-    <View style={{ flexDirection: 'row', marginTop: 5, marginBottom: 5 }}>
-      <Image source={iconSource} style={{ ...statsIconDefaultStyle, ...iconStyle }} />
-      <Text style={{ ...statsTextDefaultStyle, ...textStyle }}>{text}</Text>
-    </View>
-  );
+    const { iconStyle, textStyle, iconSource, text } = props;
+    const { statsTextDefaultStyle, statsIconDefaultStyle } = styles;
+    return (
+        <View style={{ marginTop: 5, marginBottom: 5, flexDirection: 'row' }}>
+            <Image source={iconSource} style={{ ...statsIconDefaultStyle, ...iconStyle }} />
+            <Text style={{ ...statsTextDefaultStyle, ...textStyle }}>{text}</Text>
+        </View>
+    );
 };
 
 const styles = {
-  cardContainerStyle: {
-    marginBottom: 2,
-    padding: 10,
-    backgroundColor: 'white',
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 2,
-    shadowColor: 'lightgray',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 1,
-    shadowRadius: 3,
-    elevation: 1,
-  },
-  headerContainerStyle: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    flex: 1,
-    marginBottom: 5
-  },
-  priorityTextStyle: {
-    fontSize: 7,
-    fontStyle: 'italic',
-    color: 'darkgray'
-  },
-  // Stats component default style
-  statsTextDefaultStyle: {
-    fontSize: 9
-  },
-  statsIconDefaultStyle: {
-    height: 12,
-    width: 12,
-    marginRight: 2
-  },
-  // Stats component style
-  loveIconStyle: {
-    tintColor: '#e26162',
-    width: 12,
-    height: 11
-  },
-  loveTextStyle: {
-    color: '#e26162'
-  },
-  shareIconStyle: {
-    tintColor: '#8ec776'
-  },
-  shareTextStyle: {
-    color: '#8ec776'
-  },
-  commentIconStyle: {
-    tintColor: '#f1bf74'
-  },
-  commentTextStyle: {
-    color: '#f1bf74'
-  }
+    cardContainerStyle: {
+        padding: 16,
+        backgroundColor: 'white',
+        borderRadius: 2
+    },
+    headerContainerStyle: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        flex: 1,
+        marginBottom: 8
+    },
+    priorityTextStyle: {
+        fontSize: 8.5,
+        fontStyle: 'italic',
+        fontFamily: GM_FONT_FAMILY_2,
+        color: '#3B414B'
+    },
+    // Stats component default style
+    statsContainerStyle: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 20
+    },
+    statsTextDefaultStyle: {
+        fontSize: 11,
+        color: '#3B414B',
+        fontFamily: GM_FONT_FAMILY_2,
+        marginLeft: 7
+    },
+    statsIconDefaultStyle: {
+        height: 12,
+        width: 12
+    },
+    // Stats component style
+    loveIconStyle: {
+        tintColor: '#EB5757'
+    },
+    loveTextStyle: {
+    },
+    shareIconStyle: {
+        tintColor: '#6FCF97',
+        marginLeft: 18,
+        width: 14,
+        height: 14
+    },
+    shareTextStyle: {
+    },
+    commentIconStyle: {
+        tintColor: '#F1BF74'
+    },
+    commentTextStyle: {
+    }
 };
 
 export default connect(
-  null,
-  {
-    openGoalDetail
-  }
+    null,
+    {
+        openGoalDetail
+    }
 )(ProfileGoalCard2);

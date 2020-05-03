@@ -1,9 +1,9 @@
 // This component is used to display post on a user's profile page
-import React, { Component } from 'react';
+import React from 'react';
 import {
-  View,
-  TouchableOpacity,
-  Text
+    View,
+    TouchableOpacity,
+    Text
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -12,31 +12,16 @@ import timeago from 'timeago.js';
 
 // Actions
 import {
-  likeGoal,
-  unLikeGoal
+    likeGoal,
+    unLikeGoal
 } from '../../../redux/modules/like/LikeActions';
-
-import {
-
-} from '../../../redux/modules/feed/comment/CommentActions';
-
-import {
-  chooseShareDest
-} from '../../../redux/modules/feed/post/ShareActions';
-
-import {
-  openPostDetail
-} from '../../../redux/modules/feed/post/PostActions';
-
-import {
-
-} from '../../../redux/modules/home/mastermind/actions';
-
+import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions';
+import { openPostDetail } from '../../../redux/modules/feed/post/PostActions';
 import { deletePost, openProfile } from '../../../actions';
 
 import {
-  subscribeEntityNotification,
-  unsubscribeEntityNotification
+    subscribeEntityNotification,
+    unsubscribeEntityNotification
 } from '../../../redux/modules/notification/NotificationActions';
 
 // Assets
@@ -56,13 +41,13 @@ import Timestamp from '../../Goal/Common/Timestamp';
 import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Constants
-import { 
-  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
-  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
-  SHOW_SEE_MORE_TEXT_LENGTH
+import {
+    CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+    CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
+    SHOW_SEE_MORE_TEXT_LENGTH
 } from '../../../Utils/Constants';
 
-import { APP_BLUE } from '../../../styles';
+import { APP_BLUE, shadowStyle, GM_FONT_FAMILY_1, GM_FONT_1, GM_FONT_FAMILY_2 } from '../../../styles';
 
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
@@ -70,313 +55,301 @@ const CANCEL_INDEX = 3;
 
 class ProfilePostCard extends React.PureComponent {
 
-  handleCardOnPress = (item) => {
-    const action = () => this.props.openPostDetail({ ...item });
-    if (item) {
-      if (this.props.actionDecorator) {
-        this.props.actionDecorator(action);
-      } else {
-        action();
-      }
+    handleCardOnPress = (item) => {
+        const action = () => this.props.openPostDetail({ ...item });
+        if (item) {
+            if (this.props.actionDecorator) {
+                this.props.actionDecorator(action);
+            } else {
+                action();
+            }
+        }
     }
-  }
 
-  handleShareOnClick = (item) => {
-    const { _id } = item;
-    const shareType = 'SharePost';
+    handleShareOnClick = (item) => {
+        const { _id } = item;
+        const shareType = 'SharePost';
 
-    const shareToSwitchCases = switchByButtonIndex([
-      [R.equals(0), () => {
-        // User choose to share to feed
-        console.log(`${DEBUG_KEY} User choose destination: Feed `);
-        this.props.chooseShareDest(shareType, _id, 'feed', item);
-        // TODO: update reducer state
-      }],
-      [R.equals(1), () => {
-        // User choose to share to an event
-        console.log(`${DEBUG_KEY} User choose destination: Event `);
-        this.props.chooseShareDest(shareType, _id, 'event', item);
-      }],
-      [R.equals(2), () => {
-        // User choose to share to a tribe
-        console.log(`${DEBUG_KEY} User choose destination: Tribe `);
-        this.props.chooseShareDest(shareType, _id, 'tribe', item);
-      }],
-    ]);
+        const shareToSwitchCases = switchByButtonIndex([
+            [R.equals(0), () => {
+                // User choose to share to feed
+                console.log(`${DEBUG_KEY} User choose destination: Feed `);
+                this.props.chooseShareDest(shareType, _id, 'feed', item);
+                // TODO: update reducer state
+            }],
+            [R.equals(1), () => {
+                // User choose to share to an event
+                console.log(`${DEBUG_KEY} User choose destination: Event `);
+                this.props.chooseShareDest(shareType, _id, 'event', item);
+            }],
+            [R.equals(2), () => {
+                // User choose to share to a tribe
+                console.log(`${DEBUG_KEY} User choose destination: Tribe `);
+                this.props.chooseShareDest(shareType, _id, 'tribe', item);
+            }],
+        ]);
 
-    const shareToActionSheet = actionSheet(
-      SHARE_TO_MENU_OPTTIONS,
-      CANCEL_INDEX,
-      shareToSwitchCases
-    );
-    return shareToActionSheet();
-  };
-
-  renderActionButtons(item, hasActionButton) {
-    // Sanity check if ref exists
-    if (!item || !hasActionButton) return null;
-
-    const { maybeLikeRef, _id } = item;
-
-    const likeCount = item.likeCount ? item.likeCount : 0;
-    const commentCount = item.commentCount ? item.commentCount : 0;
-    const shareCount = item.shareCount ? item.shareCount : 0;
-
-    const likeButtonContainerStyle = maybeLikeRef && maybeLikeRef.length > 0
-      ? { backgroundColor: '#FAD6C8' }
-      : { backgroundColor: 'white' };
-
-    // User shouldn't share a share. When Activity on a post which is a share,
-    // We disable the share button.
-    const isShare = item.postType !== 'General';
-
-    return (
-      <View style={{ ...styles.containerStyle, marginTop: 1 }}>
-        <ActionButtonGroup>
-          <ActionButton
-            iconSource={LoveIcon}
-            count={likeCount}
-            textStyle={{ color: '#f15860' }}
-            iconContainerStyle={likeButtonContainerStyle}
-            iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22, marginTop: 1.5 }}
-            onPress={() => {
-              console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
-              if (maybeLikeRef && maybeLikeRef.length > 0) {
-                return this.props.unLikeGoal('post', _id, maybeLikeRef);
-              }
-              this.props.likeGoal('post', _id);
-            }}
-          />
-          <ActionButton
-            iconSource={ShareIcon}
-            count={shareCount}
-            textStyle={{ color: '#a8e1a0' }}
-            iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
-            onPress={() => this.handleShareOnClick(item)}
-            disabled={isShare}
-          />
-          <ActionButton
-            iconSource={CommentIcon}
-            count={commentCount}
-            textStyle={{ color: '#FCB110' }}
-            iconStyle={{ tintColor: '#FCB110', height: 26, width: 26 }}
-            onPress={() => {
-              console.log(`${DEBUG_KEY}: user clicks suggest icon`);
-              this.props.onPress(item);
-            }}
-          />
-        </ActionButtonGroup>
-      </View>
-    );
-  }
-
-  renderSeeMore(item) {
-    const showSeeMore = item && item.content && item.content.text && item.content.text.length > SHOW_SEE_MORE_TEXT_LENGTH;
-
-    if (!showSeeMore) return null;
-    return(
-      <DelayedButton
-        onPress={() => this.props.openPostDetail(item)}
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'flex-start',
-          marginTop: 2
-        }}
-      >
-        <Text 
-          style={{
-            fontSize: 12,
-            color: APP_BLUE
-          }}
-        >
-          See more
-        </Text>
-      </DelayedButton>
-    );
-  }
-
-  renderHeader(item) {
-    const { owner, _id, created, maybeIsSubscribed } = item;
-    const timeStamp = created || new Date();
-
-    const caret = {
-      self: {
-        options: [
-          { option: 'Edit Post' },
-          { option: 'Delete' }
-        ],
-        onPress: (key) => {
-          if (key === 'Delete') {
-            return this.props.deletePost(_id);
-          }
-          if (key === 'Edit Post') {
-            // Open post detail with a callback to open post edition
-            const initial = {
-              initialShowPostModal: true
-            };
-            return this.props.openPostDetail(item, initial);
-          }
-        },
-        shouldExtendOptionLength: false
-      },
-      others: {
-        options: [
-          { option: 'Report' }, 
-          { option: maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE }
-        ],
-        onPress: (key) => {
-          if (key === 'Report') {
-            return this.props.createReport(_id, 'profile', 'Post');
-          }
-          if (key === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
-            return this.props.unsubscribeEntityNotification(_id, 'Post');
-          }
-          if (key === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
-            return this.props.subscribeEntityNotification(_id, 'Post');
-          }
-        },
-      }
+        const shareToActionSheet = actionSheet(
+            SHARE_TO_MENU_OPTTIONS,
+            CANCEL_INDEX,
+            shareToSwitchCases
+        );
+        return shareToActionSheet();
     };
 
-    // TODO: TAG:
-    const { text, tags, links } = item.content;
+    renderActionButtons(item, hasActionButton) {
+        // Sanity check if ref exists
+        if (!item || !hasActionButton) return null;
 
-    return (
-      <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
-        <ProfileImage
-          imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
-          imageUrl={owner && owner.profile ? owner.profile.image : undefined}
-          imageContainerStyle={styles.imageContainerStyle}
-          userId={owner._id}
-          actionDecorator={this.props.actionDecorator}
-        />
+        const { maybeLikeRef, _id } = item;
 
-        <View style={{ marginLeft: 15, flex: 1 }}>
-          <Headline
-            name={owner.name || ''}
-            isSelf={this.props.userId === owner._id}
-            caret={caret}
-            user={owner}
-            actionDecorator={this.props.actionDecorator}
-            hasCaret={this.props.hasCaret}
-          />
-          <Timestamp time={timeago().format(timeStamp)} />
-          <RichText
-            contentText={text}
-            contentTags={tags}
-            contentLinks={links || []}
-            textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
-            textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
-            numberOfLines={3}
-            ellipsizeMode='tail'
-            onUserTagPressed={(user) => {
-              console.log(`${DEBUG_KEY}: user tag press for user: `, user);
-              if (this.props.actionDecorator) {
-                this.props.actionDecorator(() => this.props.openProfile(user));
-              } else {
-                this.props.openProfile(user);
-              }
-            }}
-          />
-          {/*
-            <View style={{ flexDirection: 'row', marginTop: 10 }}>
-              <Text
-                style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
-              >
-                {content}
-              </Text>
-            </View>
-          */}
-          {this.renderSeeMore(item)}
-        </View>
-      </View>
-    );
-  }
+        const likeCount = item.likeCount ? item.likeCount : 0;
+        const commentCount = item.commentCount ? item.commentCount : 0;
+        const shareCount = item.shareCount ? item.shareCount : 0;
 
-  render() {
-    const { item, hasActionButton } = this.props;
-    if (!item || _.isEmpty(item)) return null;
+        const likeButtonContainerStyle = maybeLikeRef && maybeLikeRef.length > 0
+            ? { backgroundColor: '#FAD6C8' }
+            : { backgroundColor: 'white' };
 
-    return (
-      <View style={{ marginTop: 3, marginBottom: 3 }}>
-        <View style={{ backgroundColor: '#f8f8f8', ...styles.borderShadow }}>
-          <View style={{ ...styles.containerStyle, marginTop: 1 }}>
-            <View
-              style={{
-                marginTop: 12,
-                marginBottom: 10,
-                marginRight: 12,
-                marginLeft: 12 }}
-            >
-              <TouchableOpacity
-                activeOpacity={0.6}
-                onPress={() => this.handleCardOnPress(item)}
-              >
-                {this.renderHeader(item)}
-              </TouchableOpacity>
-              <ProfilePostBody item={item} showRefPreview={this.props.showRefPreview} openCardContent={() => this.handleCardOnPress(item)} />
-            </View>
-          </View>
-          {this.renderActionButtons(item, hasActionButton)}
-          {/*
-            Temperoraily remove action icons from ProfilePostCard. It was at line 194.
+        // User shouldn't share a share. When Activity on a post which is a share,
+        // We disable the share button.
+        const isShare = item.postType !== 'General';
+
+        return (
             <View style={{ ...styles.containerStyle, marginTop: 1 }}>
-              {this.renderActionButtons(item)}
+                <ActionButtonGroup>
+                    <ActionButton
+                        iconSource={LoveIcon}
+                        count={likeCount}
+                        textStyle={{ color: '#f15860' }}
+                        iconContainerStyle={likeButtonContainerStyle}
+                        iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22, marginTop: 1.5 }}
+                        onPress={() => {
+                            console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
+                            if (maybeLikeRef && maybeLikeRef.length > 0) {
+                                return this.props.unLikeGoal('post', _id, maybeLikeRef);
+                            }
+                            this.props.likeGoal('post', _id);
+                        }}
+                    />
+                    <ActionButton
+                        iconSource={ShareIcon}
+                        count={shareCount}
+                        textStyle={{ color: '#a8e1a0' }}
+                        iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
+                        onPress={() => this.handleShareOnClick(item)}
+                        disabled={isShare}
+                    />
+                    <ActionButton
+                        iconSource={CommentIcon}
+                        count={commentCount}
+                        textStyle={{ color: '#FCB110' }}
+                        iconStyle={{ tintColor: '#FCB110', height: 26, width: 26 }}
+                        onPress={() => {
+                            console.log(`${DEBUG_KEY}: user clicks suggest icon`);
+                            this.props.onPress(item);
+                        }}
+                    />
+                </ActionButtonGroup>
             </View>
-            */}
-          </View>
-      </View>
-    );
-  }
+        );
+    }
+
+    renderSeeMore(item) {
+        const showSeeMore = item && item.content && item.content.text && item.content.text.length > SHOW_SEE_MORE_TEXT_LENGTH;
+
+        if (!showSeeMore) return null;
+        return (
+            <DelayedButton
+                onPress={() => this.props.openPostDetail(item)}
+                style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                    marginTop: 2
+                }}
+            >
+                <Text
+                    style={{
+                        fontSize: 12,
+                        color: APP_BLUE
+                    }}
+                >
+                    See more
+        </Text>
+            </DelayedButton>
+        );
+    }
+
+    renderHeader(item) {
+        const { owner, _id, created, maybeIsSubscribed } = item;
+        const timeStamp = created || new Date();
+
+        const caret = {
+            self: {
+                options: [
+                    { option: 'Edit Post' },
+                    { option: 'Delete' }
+                ],
+                onPress: (key) => {
+                    if (key === 'Delete') {
+                        return this.props.deletePost(_id);
+                    }
+                    if (key === 'Edit Post') {
+                        // Open post detail with a callback to open post edition
+                        const initial = {
+                            initialShowPostModal: true
+                        };
+                        return this.props.openPostDetail(item, initial);
+                    }
+                },
+                shouldExtendOptionLength: false
+            },
+            others: {
+                options: [
+                    { option: 'Report' },
+                    { option: maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE }
+                ],
+                onPress: (key) => {
+                    if (key === 'Report') {
+                        return this.props.createReport(_id, 'profile', 'Post');
+                    }
+                    if (key === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
+                        return this.props.unsubscribeEntityNotification(_id, 'Post');
+                    }
+                    if (key === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
+                        return this.props.subscribeEntityNotification(_id, 'Post');
+                    }
+                },
+            }
+        };
+
+        // TODO: TAG:
+        const { text, tags, links } = item.content;
+
+        return (
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
+                <ProfileImage
+                    imageStyle={{ height: 60, width: 60, borderRadius: 30 }}
+                    imageUrl={owner && owner.profile ? owner.profile.image : undefined}
+                    imageContainerStyle={styles.imageContainerStyle}
+                    userId={owner._id}
+                    actionDecorator={this.props.actionDecorator}
+                />
+                <View style={{ marginLeft: 15, flex: 1 }}>
+                    <Headline
+                        name={owner.name || ''}
+                        isSelf={this.props.userId === owner._id}
+                        caret={caret}
+                        user={owner}
+                        actionDecorator={this.props.actionDecorator}
+                        hasCaret={this.props.hasCaret}
+                        textStyle={styles.headlineTextStyle}
+                    />
+                    <Timestamp time={timeago().format(timeStamp)} />
+                    <RichText
+                        contentText={text}
+                        contentTags={tags}
+                        contentLinks={links || []}
+                        textStyle={styles.textStyle}
+                        textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
+                        numberOfLines={3}
+                        ellipsizeMode='tail'
+                        onUserTagPressed={(user) => {
+                            console.log(`${DEBUG_KEY}: user tag press for user: `, user);
+                            if (this.props.actionDecorator) {
+                                this.props.actionDecorator(() => this.props.openProfile(user));
+                            } else {
+                                this.props.openProfile(user);
+                            }
+                        }}
+                    />
+                    {this.renderSeeMore(item)}
+                </View>
+            </View>
+        );
+    }
+
+    render() {
+        const { item, hasActionButton } = this.props;
+        if (!item || _.isEmpty(item)) return null;
+
+        return (
+            <View>
+                <View style={styles.containerStyle}>
+                    <View
+                        style={{
+                            marginTop: 12,
+                            marginBottom: 10,
+                            marginRight: 12,
+                            marginLeft: 12
+                        }}
+                    >
+                        <TouchableOpacity
+                            activeOpacity={0.6}
+                            onPress={() => this.handleCardOnPress(item)}
+                        >
+                            {this.renderHeader(item)}
+                        </TouchableOpacity>
+                        <ProfilePostBody
+                            item={item}
+                            showRefPreview={this.props.showRefPreview}
+                            openCardContent={() => this.handleCardOnPress(item)}
+                        />
+                    </View>
+                </View>
+                {this.renderActionButtons(item, hasActionButton)}
+                <View style={shadowStyle}/>
+            </View>
+        );
+    }
 }
 
 const styles = {
-  containerStyle: {
-    backgroundColor: 'white',
+    containerStyle: {
+        backgroundColor: 'white',
 
-  },
-  iconStyle: {
-    alignSelf: 'center',
-    fontSize: 20,
-    marginLeft: 5,
-    marginTop: 2
-  },
-  borderShadow: {
-    shadowColor: 'lightgray',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.5,
-    shadowRadius: 3,
-    elevation: 1,
-  },
-  imageContainerStyle: {
-    borderWidth: 0.5,
-    padding: 1.5,
-    borderColor: 'lightgray',
-    alignItems: 'center',
-    borderRadius: 6,
-    alignSelf: 'flex-start',
-    backgroundColor: 'white'
-  },
+    },
+    imageContainerStyle: {
+        borderWidth: 0.5,
+        borderColor: 'lightgray',
+        alignItems: 'center',
+        borderRadius: 30,
+        alignSelf: 'flex-start',
+        backgroundColor: 'white'
+    },
+    headlineTextStyle: {
+        fontSize: GM_FONT_1,
+        fontFamily: GM_FONT_FAMILY_1,
+        color: '#3B414B'
+    },
+    textStyle: {
+        flex: 1,
+        flexWrap: 'wrap',
+        fontSize: 13,
+        fontFamily: GM_FONT_FAMILY_2,
+        color: '#3B414B',
+        fontWeight: 'bold'
+    }
 };
 
 const mapStateToProps = state => {
-  const { userId } = state.user;
-  return {
-    userId
-  };
+    const { userId } = state.user;
+    return {
+        userId
+    };
 };
 
 export default connect(
-  mapStateToProps,
-  {
-    likeGoal,
-    unLikeGoal,
-    chooseShareDest,
-    openPostDetail,
-    deletePost,
-    openProfile,
-    subscribeEntityNotification,
-    unsubscribeEntityNotification
-  }
+    mapStateToProps,
+    {
+        likeGoal,
+        unLikeGoal,
+        chooseShareDest,
+        openPostDetail,
+        deletePost,
+        openProfile,
+        subscribeEntityNotification,
+        unsubscribeEntityNotification
+    }
 )(ProfilePostCard);
