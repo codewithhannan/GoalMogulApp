@@ -3,14 +3,14 @@
  */
 import _ from 'lodash';
 import React from 'react';
-import { ActivityIndicator, FlatList, View } from 'react-native';
+import { ActivityIndicator, FlatList, View, Text } from 'react-native';
 import { connect } from 'react-redux';
 // Constants
 import { MEET_REQUEST_LIMIT } from '../../../../reducers/MeetReducers';
 /* Actions */
 import { handleRefreshFriend, loadMoreRequest } from '../../../../redux/modules/meet/MeetActions';
 /* Styles */
-import { BACKGROUND_COLOR } from '../../../../styles';
+import { BACKGROUND_COLOR, GM_FONT_FAMILY_1, GM_FONT_2 } from '../../../../styles';
 import SearchBarHeader from '../../../Common/Header/SearchBarHeader';
 /* Components */
 import EmptyResult from '../../../Common/Text/EmptyResult';
@@ -36,7 +36,11 @@ class FriendTabView extends React.Component {
     keyExtractor = (item) => item._id;
 
     renderItem = ({ item }) => {
-        return <FriendTabCardView item={item} />;
+        return (
+            <View style={{ paddingTop: 10, paddingLeft: 16, paddingRight: 16 }}>
+                <FriendTabCardView item={item} />
+            </View>
+        );
     }
 
     renderListFooter() {
@@ -44,11 +48,7 @@ class FriendTabView extends React.Component {
         // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
         if (loading && data.length >= MEET_REQUEST_LIMIT) {
             return (
-                <View
-                    style={{
-                        paddingVertical: 20
-                    }}
-                >
+                <View style={{ paddingVertical: 20 }}>
                     <ActivityIndicator size='small' />
                 </View>
             );
@@ -58,9 +58,18 @@ class FriendTabView extends React.Component {
     render() {
         const { user } = this.props;
         const modalTitle = `${user.name}'s Friends`;
+        const friendCount = this.props.data ? this.props.data.length : 0;
         return (
             <View style={styles.containerStyle}>
                 <SearchBarHeader backButton title={modalTitle} />
+                <Text style={{
+                    fontFamily: GM_FONT_FAMILY_1,
+                    fontWeight: 'bold',
+                    fontSize: GM_FONT_2,
+                    letterSpacing: 0.3,
+                    marginLeft: 24,
+                    marginTop: 24
+                }}>{friendCount} Friend{friendCount !== 1 ? 's' : null }</Text>
                 <FlatList
                     data={this.props.data}
                     renderItem={this.renderItem}
@@ -84,7 +93,7 @@ const styles = {
     containerStyle: {
         flex: 1,
         backgroundColor: BACKGROUND_COLOR,
-        backgroundColor: '#f8f8f8'
+        backgroundColor: 'white'
     },
 }
 
