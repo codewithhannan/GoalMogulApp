@@ -19,58 +19,42 @@ const renderNotificationIndicator = (props) => {
 };
 
 const TabButton = (props) => {
-    const { tabNotificationMap, tabKey } = props;
-    const buttonStyle = props.buttonStyle;
     const {
-        color,
-        backgroundColor,
-        tintColor,
-        fontWeight,
-        fontSize,
-        fontFamily,
-        borderTopLeftRadius,
-        borderTopRightRadius,
-        borderBottomLeftRadius,
-        borderBottomRightRadius
-    } = buttonStyle;
+        tabNotificationMap,
+        tabKey,
+        iconSource,
+        iconStyle,
+        textStyle,
+        containerStyle,
+        statTextStyle
+    } = props;
 
-    const stat = !props.stat ? null :
-        (
-            <View>
-                <DotIcon
-                    iconStyle={{ tintColor: '#818181', width: 3, height: 3, marginLeft: 4, marginRight: 4 }}
-                />
-                <Text style={styles.textStyle}>
-                    {props.stat}
-                </Text>
-            </View>
-        );
-
-    const icon = !props.iconSource ? null :
-        (
-            <Image
-                source={props.iconSource}
-                style={{ ...styles.iconStyle, ...props.iconStyle, tintColor }}
+    const stat = !props.stat ? null : (
+        <View>
+            <DotIcon
+                iconStyle={{ width: 3, height: 3, marginLeft: 4, marginRight: 4, ...iconStyle }}
             />
-        );
+            <Text style={{ ...styles.textStyle, ...statTextStyle }}>
+                {props.stat}
+            </Text>
+        </View>
+    );
+    
+    const icon = !iconSource ? null : (
+        <Image
+            source={iconSource}
+            style={{ ...styles.iconStyle, ...iconStyle }}
+        />
+    );
 
     return (
         <View style={{
             ...styles.containerStyle,
-            backgroundColor,
-            borderTopLeftRadius,
-            borderTopRightRadius,
-            borderBottomLeftRadius,
-            borderBottomRightRadius
+            ...containerStyle
         }}>
             {icon}
             <Animated.Text
-                style={{
-                    color,
-                    fontWeight,
-                    fontSize,
-                    fontFamily
-                }}
+                style={textStyle}
             >
                 {props.text}
             </Animated.Text>

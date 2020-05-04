@@ -24,19 +24,30 @@ class TabButtonGroup extends Component {
             tabNotificationMap, // Map between tab key and if there is notification and its style, not required
             borderRadius
         } = this.props;
+
         const { navigationState, jumpTo, jumpToIndex } = buttons;
         const { index, routes } = navigationState;
+
         return routes.map((b, i) => {
-            const selected = i === index;
+            const selectedStyle = i === index ? buttonStyle.selected : buttonStyle.unselected;
             const iconSource = tabIconMap ? tabIconMap[b.key].iconSource : undefined;
-            const iconStyle = tabIconMap ? tabIconMap[b.key].iconStyle : undefined; 
-            const btnStyle = {
-                ...(selected ? buttonStyle.selected : buttonStyle.unselected),
+            const iconStyle = tabIconMap ? {
+                ...tabIconMap[b.key].iconStyle,
+                tintColor: selectedStyle.tintColor
+            } : { tintColor: selectedStyle.tintColor };
+            const containerStyle = {
+                backgroundColor: selectedStyle.backgroundColor,
                 borderTopLeftRadius: i === 0 ? borderRadius : 0,
                 borderBottomLeftRadius: i === 0 ? borderRadius : 0,
                 borderTopRightRadius: (i === routes.length - 1) ? borderRadius : 0,
                 borderBottomRightRadius: (i === routes.length - 1) ? borderRadius : 0
             };
+            const textStyle = {
+                color: selectedStyle.color,
+                fontWeight: selectedStyle.fontWeight,
+                fontSize: selectedStyle.fontSize,
+                fontFamily: selectedStyle.fontFamily
+            }
             const button = subTab
                 ? (
                     <SubTabButton
@@ -45,7 +56,9 @@ class TabButtonGroup extends Component {
                         stat={b.stat}
                         iconSource={iconSource}
                         iconStyle={iconStyle}
-                        buttonStyle={btnStyle}
+                        containerStyle={containerStyle}
+                        textStyle={textStyle}
+                        statTextStyle={{ ...textStyle, fontSize: 10 }}
                         tabNotificationMap={tabNotificationMap}
                     />
                 )
@@ -54,10 +67,11 @@ class TabButtonGroup extends Component {
                         tabKey={b.key}
                         text={b.title}
                         stat={b.stat}
-                        onSelect={selected}
                         iconSource={iconSource}
                         iconStyle={iconStyle}
-                        buttonStyle={btnStyle}
+                        containerStyle={containerStyle}
+                        textStyle={textStyle}
+                        statTextStyle={{ ...textStyle, fontSize: 10 }}
                         tabNotificationMap={tabNotificationMap}
                     />
                 );

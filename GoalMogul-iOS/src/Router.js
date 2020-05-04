@@ -185,7 +185,6 @@ class RouterComponent extends Component {
                     } else { // hide all screens in between
                         return { opacity: 0, };
                     };
-
                 };
 
                 return {
