@@ -44,13 +44,13 @@ class FriendTabView extends React.Component {
         // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
         if (loading && data.length >= MEET_REQUEST_LIMIT) {
             return (
-            <View
-                style={{
-                paddingVertical: 20
-                }}
-            >
-                <ActivityIndicator size='small' />
-            </View>
+                <View
+                    style={{
+                        paddingVertical: 20
+                    }}
+                >
+                    <ActivityIndicator size='small' />
+                </View>
             );
         }
     }
@@ -70,8 +70,8 @@ class FriendTabView extends React.Component {
                     onEndReached={this.handleOnLoadMore}
                     onEndReachedThreshold={0}
                     ListEmptyComponent={
-                    this.props.refreshing ? null :
-                        <EmptyResult text={'You haven\'t added any friends'} />
+                        this.props.refreshing ? null :
+                            <EmptyResult text={'You haven\'t added any friends'} />
                     }
                     ListFooterComponent={this.renderListFooter()}
                 />
@@ -82,11 +82,11 @@ class FriendTabView extends React.Component {
 
 const styles = {
     containerStyle: {
-      flex: 1, 
-      backgroundColor: BACKGROUND_COLOR,
-      backgroundColor: '#f8f8f8'
+        flex: 1,
+        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: '#f8f8f8'
     },
-  }
+}
 
 const mapStateToProps = state => {
     const { friends } = state.meet;

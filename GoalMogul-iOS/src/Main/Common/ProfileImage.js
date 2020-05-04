@@ -1,36 +1,36 @@
 import React from 'react';
 import {
-  Image,
-  View,
-  TouchableWithoutFeedback
+    Image,
+    View,
+    TouchableWithoutFeedback
 } from 'react-native';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 
 // default profile picture
-import profilePic from '../../asset/utils/defaultUserProfile.png';
+import defaultProfilePic from '../../asset/utils/defaultUserProfile.png';
 
 // actions
 import {
-  openProfile
+    openProfile
 } from '../../actions';
 
 // Constants
 import {
-  IMAGE_BASE_URL
+    IMAGE_BASE_URL
 } from '../../Utils/Constants';
 
 const styles = {
-  imageContainerStyle: {
+    imageContainerStyle: {
 
-  },
-  imageStyle: {
-    height: 54,
-    width: 54,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: 'white'
-  },
+    },
+    imageStyle: {
+        height: 54,
+        width: 54,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: 'white'
+    },
 };
 
 const DEBUG_KEY = '[ UI ProfileImage ]';
@@ -39,86 +39,68 @@ const DEBUG_KEY = '[ UI ProfileImage ]';
  */
 class ProfileImage extends React.Component {
 
-  shouldComponentUpdate(nextProps) {
-    if (this.props.imageUrl !== nextProps.imageUrl) {
-      return true;
-    }
-    return false;
-  }
-
-  handleProfileImageOnPress = () => {
-    const { userId, disabled } = this.props;
-    if (!userId || _.isEmpty(userId) || disabled) return;
-
-    if (this.props.actionDecorator) {
-      this.props.actionDecorator(() => this.props.openProfile(userId));
-    } else {
-      this.props.openProfile(userId);
-    }
-  }
-
-  render() {
-    let { imageUrl } = this.props;
-    const { imageContainerStyle, imageStyle, defaultImageSource, rounded } = this.props;
-    const resizeMode = setValue(this.props.resizeMode).withDefaultCase('cover');
-
-    let defaultImageStyle;
-    if (this.props.defaultImageStyle) {
-      defaultImageStyle = { ...this.props.defaultImageStyle };
-    } else if (imageStyle) {
-      defaultImageStyle = { ...imageStyle };
-    } else {
-      defaultImageStyle = { ...styles.imageStyle };
+    shouldComponentUpdate(nextProps) {
+        if (this.props.imageUrl !== nextProps.imageUrl) {
+            return true;
+        }
+        return false;
     }
 
-    if (rounded) {
-      defaultImageStyle = _.set(defaultImageStyle, 'borderRadius', 5);
+    handleProfileImageOnPress = () => {
+        const { userId, disabled } = this.props;
+        if (!userId || _.isEmpty(userId) || disabled) return;
+
+        if (this.props.actionDecorator) {
+            this.props.actionDecorator(() => this.props.openProfile(userId));
+        } else {
+            this.props.openProfile(userId);
+        }
     }
 
-    const defaultImageContainerStyle = this.props.defaultImageContainerStyle || imageContainerStyle;
+    render() {
+        let { imageUrl } = this.props;
+        const { imageContainerStyle, imageStyle, defaultImageSource } = this.props;
+        const resizeMode = setValue(this.props.resizeMode).withDefaultCase('cover');
 
-    let profileImage = (
-      <TouchableWithoutFeedback onPress={this.handleProfileImageOnPress}>
-        <View
-          style={[defaultImageContainerStyle || styles.imageContainerStyle]}
-        >
-          <Image
-            style={defaultImageStyle}
-            resizeMode={resizeMode}
-            source={defaultImageSource || profilePic}
-          />
-        </View>
-      </TouchableWithoutFeedback>
-    );
-    if (imageUrl && typeof imageUrl !== "number") {
-      imageUrl = typeof imageUrl == "string" && imageUrl.indexOf('https://') != 0 ? `${IMAGE_BASE_URL}${imageUrl}` : imageUrl;
-      profileImage = (
-        <TouchableWithoutFeedback onPress={this.handleProfileImageOnPress}>
-          <View
-            style={imageContainerStyle || styles.imageContainerStyle}
-          >
-            <Image
-              style={imageStyle || styles.imageStyle}
-              source={{ uri: imageUrl }}
-              resizeMode={resizeMode}
-            />
-          </View>
-        </TouchableWithoutFeedback>
-      );
+        let defaultImageStyle;
+        if (this.props.defaultImageStyle) defaultImageStyle = { ...this.props.defaultImageStyle };
+        else if (imageStyle) defaultImageStyle = { ...imageStyle };
+        else defaultImageStyle = { ...styles.imageStyle };
+
+        const defaultImageContainerStyle = this.props.defaultImageContainerStyle || imageContainerStyle;
+        if (imageUrl) {
+            imageUrl = typeof imageUrl == "string" && imageUrl.indexOf('https://') != 0 ?
+                `${IMAGE_BASE_URL}${imageUrl}` : imageUrl;
+        }
+
+        return (
+            <TouchableWithoutFeedback onPress={this.handleProfileImageOnPress}>
+                <View
+                    style={
+                        imageUrl ? imageContainerStyle || styles.imageContainerStyle
+                        : defaultImageContainerStyle || styles.imageContainerStyle
+                    }
+                >
+                    <Image
+                        style={imageUrl ? imageStyle || styles.imageStyle : defaultImageStyle}
+                        source={imageUrl ? { uri: imageUrl } : defaultImageSource || defaultProfilePic}
+                        resizeMode={resizeMode}
+                    />
+                </View>
+            </TouchableWithoutFeedback>
+        );;
     }
-    return profileImage;
-  }
 }
 
 const setValue = (value) => ({
-  withDefaultCase(defaultValue) {
-    return value === undefined ? defaultValue : value;
-  }
+    withDefaultCase(defaultValue) {
+        return value === undefined ? defaultValue : value;
+    }
 });
 
 export default connect(
-  null,
-  {
-    openProfile
-  }
+    null,
+    {
+        openProfile
+    }
 )(ProfileImage);

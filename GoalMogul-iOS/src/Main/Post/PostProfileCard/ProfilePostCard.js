@@ -231,8 +231,15 @@ class ProfilePostCard extends React.PureComponent {
             <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
                 <ProfileImage
                     imageStyle={{ height: 60, width: 60, borderRadius: 30 }}
+                    defaultImageStyle={{ width: 20, height: 20, margin: 20 }}
                     imageUrl={owner && owner.profile ? owner.profile.image : undefined}
                     imageContainerStyle={styles.imageContainerStyle}
+                    defaultImageContainerStyle={{
+                        ...styles.imageContainerStyle,
+                        borderColor: '#BDBDBD',
+                        borderRadius: 30,
+                        borderWidth: 2
+                    }}
                     userId={owner._id}
                     actionDecorator={this.props.actionDecorator}
                 />
