@@ -47,7 +47,7 @@ import {
     SHOW_SEE_MORE_TEXT_LENGTH
 } from '../../../Utils/Constants';
 
-import { APP_BLUE, shadowStyle, DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles';
+import { DEFAULT_STYLE, BACKGROUND_COLOR, GM_BLUE } from '../../../styles';
 
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
@@ -171,7 +171,7 @@ class ProfilePostCard extends React.PureComponent {
             >
                 <Text style={{
                     ...DEFAULT_STYLE.smallText_1,
-                    color: APP_BLUE
+                    color: GM_BLUE
                 }}>
                     See more
                 </Text>
@@ -301,7 +301,7 @@ class ProfilePostCard extends React.PureComponent {
                     </View>
                 </View>
                 {this.renderActionButtons(item, hasActionButton)}
-                <View style={shadowStyle}/>
+                <View style={DEFAULT_STYLE.shadow}/>
             </View>
         );
     }

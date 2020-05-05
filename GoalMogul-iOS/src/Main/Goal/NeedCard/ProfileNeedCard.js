@@ -32,7 +32,7 @@ import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
-import { shadowStyle, GM_FONT_1, GM_FONT_FAMILY_1, GM_FONT_FAMILY_2, DEFAULT_STYLE } from '../../../styles';
+import { DEFAULT_STYLE } from '../../../styles';
 
 class ProfileNeedCard extends React.Component {
 
@@ -133,7 +133,7 @@ class ProfileNeedCard extends React.Component {
                     </View>
                     {this.renderCardContent(item)}
                 </View>
-                <View style={shadowStyle}/>
+                <View style={DEFAULT_STYLE.shadow}/>
             </View>
         );
     }

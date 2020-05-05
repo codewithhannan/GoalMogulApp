@@ -25,7 +25,7 @@ import ShareIcon from '../../../asset/utils/forward.png';
 
 // Actions
 import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions';
-import { shadowStyle, DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles';
+import { DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles';
 
 class ProfileGoalCard2 extends React.Component {
 
@@ -96,7 +96,6 @@ class ProfileGoalCard2 extends React.Component {
                     needs={needs}
                     goalRef={item}
                     barHeight={11}
-                    sections={6}
                     isProfileGoalCard
                     size='small'
                 />
@@ -150,7 +149,6 @@ class ProfileGoalCard2 extends React.Component {
         const { item } = this.props;
         if (!item || _.isEmpty(item)) return null;
 
-        // const cardOpacity = item.isCompleted ? 0.5 : 1;
         const cardOpacity = 1;
         const backgroundColor = item.isCompleted ? '#F6F6F6' : BACKGROUND_COLOR;
         return (
@@ -170,7 +168,7 @@ class ProfileGoalCard2 extends React.Component {
                     </View>
                     {this.renderStats(item)}
                 </DelayedButton>
-                <View style={shadowStyle}/>
+                <View style={DEFAULT_STYLE.shadow}/>
             </View>
         );
     }

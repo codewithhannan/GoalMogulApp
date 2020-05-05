@@ -108,12 +108,6 @@ export const modalHeaderBadgeShadow = {
     shadowRadius: 5,
 };
 
-export const shadowStyle = {
-    width: '100%',
-    height: 5,
-    backgroundColor: '#F2F2F2'
-}
-
 const UI_SCALE = 1;
 export const TEXT_COLOR_1 = '#333';
 
@@ -197,5 +191,10 @@ export const DEFAULT_STYLE = {
         height: 20 * UI_SCALE,
         width: 20 * UI_SCALE,
         margin: 20 * UI_SCALE
+    },
+    shadow: {
+        width: '100%',
+        height: 5,
+        backgroundColor: '#F2F2F2'
     }
 }

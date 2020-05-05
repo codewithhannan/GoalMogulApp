@@ -19,7 +19,7 @@ import { createReport } from '../../redux/modules/report/ReportActions';
 import { getUserData, getUserDataByPageId, makeGetUserGoals, makeGetUserNeeds, makeGetUserPosts } from '../../redux/modules/User/Selector';
 import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users';
 /* Styles */
-import { BACKGROUND_COLOR, GM_BLUE, shadowStyle, DEFAULT_STYLE } from '../../styles';
+import { BACKGROUND_COLOR, GM_BLUE, DEFAULT_STYLE } from '../../styles';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 import PlusButton from '../Common/Button/PlusButton';
 import GoalFilterBar from '../Common/GoalFilterBar';
@@ -320,7 +320,7 @@ class ProfileV2 extends Component {
                     })
                 }
                 {renderFilter ? this.renderFilterBar(props) : null}
-                <View style={shadowStyle}/>
+                <View style={DEFAULT_STYLE.shadow}/>
             </View>
         )
     }

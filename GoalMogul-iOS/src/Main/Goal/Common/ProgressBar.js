@@ -118,7 +118,7 @@ const ProgressBar = (props) => {
                 percentage,
                 backgroundColor: props.color || GM_BLUE,
                 height: props.barHeight || 11,
-                sections: props.sections || 6
+                sections: props.sections || steps.length || 1
             })}
         </View>
     );

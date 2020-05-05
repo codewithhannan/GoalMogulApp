@@ -26,7 +26,7 @@ import {
 } from '../../../redux/modules/User/Selector';
 import Icons from '../../../asset/base64/Icons';
 import CoinProfileInfoModal from '../../Gamification/Coin/CoinProfileInfoModal';
-import { shadowStyle, DEFAULT_STYLE, FONT_FAMILY_1, GM_BLUE } from '../../../styles';
+import { DEFAULT_STYLE, FONT_FAMILY_1, GM_BLUE } from '../../../styles';
 import { componentKeyByTab } from '../../../redux/middleware/utils';
 
 const { CoinSackIcon, InfoIcon } = Icons;
@@ -185,7 +185,7 @@ class ProfileInfoCard extends Component {
                     {this.renderElevatorPitch(elevatorPitch)}
                     {this.renderAbout(about)}
                 </View>
-                <View style={shadowStyle}/>
+                <View style={DEFAULT_STYLE.shadow}/>
                 <View style={styles.containerStyle}>
                     {this.renderCoinInfo(user)}
                     {this.renderFriendInfo()}
@@ -200,7 +200,7 @@ class ProfileInfoCard extends Component {
                         }}
                     />
                 </View>
-                <View style={shadowStyle}/>
+                <View style={DEFAULT_STYLE.shadow}/>
             </View>
         );
     }
