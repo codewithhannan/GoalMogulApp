@@ -47,7 +47,7 @@ import {
     SHOW_SEE_MORE_TEXT_LENGTH
 } from '../../../Utils/Constants';
 
-import { APP_BLUE, shadowStyle, GM_FONT_FAMILY_1, GM_FONT_1, GM_FONT_FAMILY_2 } from '../../../styles';
+import { APP_BLUE, shadowStyle, DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles';
 
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
@@ -109,7 +109,7 @@ class ProfilePostCard extends React.PureComponent {
 
         const likeButtonContainerStyle = maybeLikeRef && maybeLikeRef.length > 0
             ? { backgroundColor: '#FAD6C8' }
-            : { backgroundColor: 'white' };
+            : { backgroundColor: BACKGROUND_COLOR };
 
         // User shouldn't share a share. When Activity on a post which is a share,
         // We disable the share button.
@@ -169,14 +169,12 @@ class ProfilePostCard extends React.PureComponent {
                     marginTop: 2
                 }}
             >
-                <Text
-                    style={{
-                        fontSize: 12,
-                        color: APP_BLUE
-                    }}
-                >
+                <Text style={{
+                    ...DEFAULT_STYLE.smallText_1,
+                    color: APP_BLUE
+                }}>
                     See more
-        </Text>
+                </Text>
             </DelayedButton>
         );
     }
@@ -230,14 +228,13 @@ class ProfilePostCard extends React.PureComponent {
         return (
             <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
                 <ProfileImage
-                    imageStyle={{ height: 60, width: 60, borderRadius: 30 }}
-                    defaultImageStyle={{ width: 20, height: 20, margin: 20 }}
+                    imageStyle={DEFAULT_STYLE.profileImage_1}
+                    defaultImageStyle={DEFAULT_STYLE.profileImage_2}
                     imageUrl={owner && owner.profile ? owner.profile.image : undefined}
                     imageContainerStyle={styles.imageContainerStyle}
                     defaultImageContainerStyle={{
                         ...styles.imageContainerStyle,
                         borderColor: '#BDBDBD',
-                        borderRadius: 30,
                         borderWidth: 2
                     }}
                     userId={owner._id}
@@ -251,14 +248,14 @@ class ProfilePostCard extends React.PureComponent {
                         user={owner}
                         actionDecorator={this.props.actionDecorator}
                         hasCaret={this.props.hasCaret}
-                        textStyle={styles.headlineTextStyle}
+                        textStyle={DEFAULT_STYLE.titleText_2}
                     />
                     <Timestamp time={timeago().format(timeStamp)} />
                     <RichText
                         contentText={text}
                         contentTags={tags}
                         contentLinks={links || []}
-                        textStyle={styles.textStyle}
+                        textStyle={[ DEFAULT_STYLE.normalText_1, styles.textStyle]}
                         textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
                         numberOfLines={3}
                         ellipsizeMode='tail'
@@ -284,14 +281,12 @@ class ProfilePostCard extends React.PureComponent {
         return (
             <View>
                 <View style={styles.containerStyle}>
-                    <View
-                        style={{
-                            marginTop: 12,
-                            marginBottom: 10,
-                            marginRight: 12,
-                            marginLeft: 12
-                        }}
-                    >
+                    <View style={{
+                        marginTop: 12,
+                        marginBottom: 10,
+                        marginRight: 12,
+                        marginLeft: 12
+                    }}>
                         <TouchableOpacity
                             activeOpacity={0.6}
                             onPress={() => this.handleCardOnPress(item)}
@@ -315,27 +310,18 @@ class ProfilePostCard extends React.PureComponent {
 const styles = {
     containerStyle: {
         backgroundColor: 'white',
-
     },
     imageContainerStyle: {
         borderWidth: 0.5,
         borderColor: 'lightgray',
         alignItems: 'center',
-        borderRadius: 30,
+        borderRadius: 100,
         alignSelf: 'flex-start',
         backgroundColor: 'white'
-    },
-    headlineTextStyle: {
-        fontSize: GM_FONT_1,
-        fontFamily: GM_FONT_FAMILY_1,
-        color: '#3B414B'
     },
     textStyle: {
         flex: 1,
         flexWrap: 'wrap',
-        fontSize: 13,
-        fontFamily: GM_FONT_FAMILY_2,
-        color: '#3B414B',
         fontWeight: 'bold'
     }
 };

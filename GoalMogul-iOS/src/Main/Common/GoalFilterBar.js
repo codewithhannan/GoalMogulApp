@@ -51,7 +51,7 @@ class GoalFilterBar extends Component {
                         }}
                     >
                         <View style={styles.detailContainerStyle}>
-                            <Text style={{ ...DEFAULT_STYLE.buttonText_1, color: '#828282' }}>Sort &amp; Filter</Text>
+                            <Text style={{ ...DEFAULT_STYLE.buttonText_1, color: '#A2A2A2' }}>Sort &amp; Filter</Text>
                         </View>
                     </MenuTrigger>
                     <MenuOptions customStyles={styles.menuOptionsStyles}>

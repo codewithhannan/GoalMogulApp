@@ -55,7 +55,6 @@ class ProfileV2 extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (!this.props.pageId) this.props.refreshProfile(this.props.userId);
         if (prevProps.userPageLoading !== this.props.userPageLoading && this.props.userPageLoading === false) {
             this.setState({
                 ...this.state,
@@ -212,16 +211,12 @@ class ProfileV2 extends Component {
                     buttonStyle={{
                         selected: {
                             backgroundColor: GM_BLUE,
-                            tintColor: BACKGROUND_COLOR,
                             color: 'white',
-                            fontWeight: 'bold',
                             ...DEFAULT_STYLE.buttonText_1,
                         },
                         unselected: {
                             backgroundColor: BACKGROUND_COLOR,
-                            tintColor: '#BDBDBD',
                             color: '#BDBDBD',
-                            fontWeight: '500',
                             ...DEFAULT_STYLE.buttonText_1
                         }
                     }}
@@ -378,7 +373,8 @@ class ProfileV2 extends Component {
     }
 
     render() {
-        const { userId, pageId, selectedTab, navigationState, data } = this.props;
+        const { userId, pageId, selectedTab, navigationState, data, refreshProfile } = this.props;
+        if (!pageId) refreshProfile(userId);
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>

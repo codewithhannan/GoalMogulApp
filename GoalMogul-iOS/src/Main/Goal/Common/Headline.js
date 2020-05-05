@@ -198,7 +198,7 @@ class Headline extends React.PureComponent {
         return (
             <View style={styles.containerStyle}>
                 <Name text={name} onPress={() => this.handleNameOnPress(user)} textStyle={textStyle} />
-                <UserBanner user={user} iconStyle={{ marginTop: 1 }} />
+                <UserBanner user={user} />
                 {categoryComponent}
                 <View style={{ flexDirection: 'row', alignSelf: 'flex-end' }}>
                     {hasCaret === null || hasCaret === false ? null : menu}

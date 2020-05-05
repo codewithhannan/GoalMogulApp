@@ -140,7 +140,7 @@ const styles = {
         height: 30,
         flexDirection: 'row',
         borderWidth: 1,
-        borderColor: '#F2F2F2',
+        borderColor: '#E8E8E8',
         backgroundColor: 'white'
     },
     dividerContainerStyle: {

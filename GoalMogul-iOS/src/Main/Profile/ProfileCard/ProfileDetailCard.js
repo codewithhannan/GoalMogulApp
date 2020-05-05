@@ -35,7 +35,7 @@ import DelayedButton from '../../Common/Button/DelayedButton';
 
 
 import { IMAGE_BASE_URL } from '../../../Utils/Constants';
-import { GM_BLUE_LIGHT_LIGHT, GM_BLUE, GM_BLUE_LIGHT, DEFAULT_STYLE, TEXT_COLOR_1, FONT_SCALE, BACKGROUND_COLOR } from '../../../styles';
+import { GM_BLUE_LIGHT_LIGHT, GM_BLUE, GM_BLUE_LIGHT, DEFAULT_STYLE, TEXT_COLOR_1, BACKGROUND_COLOR } from '../../../styles';
 import { Actions } from 'react-native-router-flux';
 import RichText from '../../Common/Text/RichText';
 
@@ -373,7 +373,7 @@ class ProfileDetailCard extends Component {
                                 style={[styles.infoIconContainerStyle, styles.userInfoStyle]}
                                 activeOpacity={0.6}
                             >
-                                <Image source={InfoIcon} style={styles.infoIconStyle} />
+                                <Image source={InfoIcon} style={DEFAULT_STYLE.infoIcon} />
                             </DelayedButton>
                         )}
                     </View>
@@ -446,11 +446,6 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         marginLeft: 5
-    },
-    infoIconStyle: {
-        height: 9*FONT_SCALE,
-        width: 5*FONT_SCALE,
-        tintColor: TEXT_COLOR_1
     }
 };
 

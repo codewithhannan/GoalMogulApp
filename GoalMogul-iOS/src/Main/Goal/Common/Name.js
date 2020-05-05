@@ -5,7 +5,7 @@ const styles = {
   containerStyle: {
     fontSize: 15,
     fontWeight: '600',
-    maxWidth: 150,
+    maxWidth: 200,
   }
 };
 
