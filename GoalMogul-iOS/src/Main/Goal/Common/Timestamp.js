@@ -2,7 +2,7 @@ import React from 'react';
 import { Image, Text, View } from 'react-native';
 import Icons from '../../../asset/base64/Icons';
 import { DotIcon } from '../../../Utils/Icons';
-import { GM_FONT_FAMILY_2 } from '../../../styles';
+import { GM_FONT_FAMILY_2, DEFAULT_STYLE } from '../../../styles';
 
 
 const { ViewCountIcon } = Icons;
@@ -42,7 +42,7 @@ const Timestamp = (props) => {
 
     return (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={styles.containerStyle}>
+            <Text style={DEFAULT_STYLE.smallText_1}>
                 {time}
             </Text>
             {priorityComponent}
@@ -50,13 +50,6 @@ const Timestamp = (props) => {
         </View>
 
     );
-};
-
-const styles = {
-    containerStyle: {
-        fontSize: 10,
-        color: '#636363'
-    }
 };
 
 export default Timestamp;

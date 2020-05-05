@@ -113,3 +113,63 @@ export const shadowStyle = {
     height: 5,
     backgroundColor: '#F2F2F2'
 }
+
+export const FONT_SCALE = 1;
+export const TEXT_COLOR_1 = '#333';
+
+export const FONT_FAMILY_1 = 'gotham-pro-bold';
+export const FONT_FAMILY_2 = 'gotham-pro';
+export const FONT_FAMILY_3 = 'Helvetica';
+
+export const DEFAULT_STYLE = {
+    // Headers
+    titleText_1: {
+        fontFamily: FONT_FAMILY_1,
+        fontSize: 16 * FONT_SCALE,
+        color: TEXT_COLOR_1,
+        letterSpacing: 0.3
+    },
+    subTitleText_1: {
+        fontFamily: FONT_FAMILY_2,
+        fontSize: 16 * FONT_SCALE,
+        color: TEXT_COLOR_1,
+        letterSpacing: 0.3
+    },
+    // Normal texts
+    normalText_1: {
+        fontFamily: FONT_FAMILY_2,
+        fontSize: 14 * FONT_SCALE,
+        color: TEXT_COLOR_1
+    },
+    // Detailing texts
+    smallTitle_1: {
+        fontFamily: FONT_FAMILY_1,
+        fontSize: 12 * FONT_SCALE,
+        color: TEXT_COLOR_1,
+        letterSpacing: 0.7
+    },
+    smallText_1: {
+        fontFamily: FONT_FAMILY_2,
+        fontSize: 11 * FONT_SCALE,
+        color: TEXT_COLOR_1
+    },
+    smallText_2: {
+        fontFamily: FONT_FAMILY_2,
+        fontSize: 9 * FONT_SCALE,
+        color: TEXT_COLOR_1
+    },
+    smallIcon_1: {
+        height: 12 * FONT_SCALE,
+        width: 12 * FONT_SCALE
+    },
+    // Button styles
+    buttonText_1: {
+        fontFamily: FONT_FAMILY_1,
+        fontSize: 14 * FONT_SCALE,
+        borderRadius: 3
+    },
+    buttonIcon_1: {
+        height: 16 * FONT_SCALE,
+        width: 16 * FONT_SCALE
+    }
+}

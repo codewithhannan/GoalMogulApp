@@ -25,7 +25,7 @@ import ShareIcon from '../../../asset/utils/forward.png';
 
 // Actions
 import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions';
-import { GM_FONT_FAMILY_2, GM_FONT_FAMILY_1, GM_FONT_1, shadowStyle } from '../../../styles';
+import { shadowStyle, DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles';
 
 class ProfileGoalCard2 extends React.Component {
 
@@ -49,12 +49,8 @@ class ProfileGoalCard2 extends React.Component {
             <View style={styles.headerContainerStyle}>
                 <View style={{ alignSelf: 'center', alignItems: 'center' }}>
                     <Text style={{
-                        fontSize: 11,
-                        fontFamily: GM_FONT_FAMILY_1,
-                        fontWeight: '500',
-                        color: '#3B414B',
-                        alignSelf: 'center',
-                        letterSpacing: 0.7
+                        ...DEFAULT_STYLE.smallTitle_1,
+                        alignSelf: 'center'
                     }}>
                         {category}
                     </Text>
@@ -77,11 +73,9 @@ class ProfileGoalCard2 extends React.Component {
         return (
             <Text
                 style={{
+                    ...DEFAULT_STYLE.normalText_1,
                     flex: 1,
-                    flexWrap: 'wrap',
-                    fontSize: GM_FONT_1,
-                    color: '#3B414B',
-                    fontFamily: GM_FONT_FAMILY_2
+                    flexWrap: 'wrap'
                 }}
                 numberOfLines={1}
                 ellipsizeMode='tail'
@@ -125,20 +119,18 @@ class ProfileGoalCard2 extends React.Component {
                         iconSource={LoveIcon}
                         iconStyle={styles.loveIconStyle}
                         text={likeCount}
-                        textStyle={styles.loveTextStyle}
                     />
                     <StatsComponent
                         iconSource={ShareIcon}
                         iconStyle={styles.shareIconStyle}
                         text={shareCount}
-                        textStyle={styles.shareTextStyle}
+                        containerStyle={{ marginLeft: 18 }}
                     />
                 </View>
                 <StatsComponent
                     iconSource={CommentIcon}
                     iconStyle={styles.commentIconStyle}
                     text={commentCount + ' Comment' + (commentCount !== 1 ? 's' : '')}
-                    textStyle={styles.commentTextStyle}
                 />
             </View>
         );
@@ -148,7 +140,7 @@ class ProfileGoalCard2 extends React.Component {
         const { priority } = item;
         return (
             <View style={{ alignItems: 'center', marginLeft: 16 }}>
-                <Text style={styles.priorityTextStyle}>Priority</Text>
+                <Text style={DEFAULT_STYLE.smallText_2}>Priority</Text>
                 <PriorityBar priority={priority} />
             </View>
         );
@@ -160,7 +152,7 @@ class ProfileGoalCard2 extends React.Component {
 
         // const cardOpacity = item.isCompleted ? 0.5 : 1;
         const cardOpacity = 1;
-        const backgroundColor = item.isCompleted ? '#F6F6F6' : 'white';
+        const backgroundColor = item.isCompleted ? '#F6F6F6' : BACKGROUND_COLOR;
         return (
             <View>
                 <DelayedButton
@@ -185,12 +177,18 @@ class ProfileGoalCard2 extends React.Component {
 }
 
 const StatsComponent = (props) => {
-    const { iconStyle, textStyle, iconSource, text } = props;
-    const { statsTextDefaultStyle, statsIconDefaultStyle } = styles;
+    const { iconStyle, textStyle, iconSource, text, containerStyle } = props;
     return (
-        <View style={{ marginTop: 5, marginBottom: 5, flexDirection: 'row' }}>
-            <Image source={iconSource} style={{ ...statsIconDefaultStyle, ...iconStyle }} />
-            <Text style={{ ...statsTextDefaultStyle, ...textStyle }}>{text}</Text>
+        <View style={{
+            marginTop: 3,
+            marginBottom: 3,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            ...containerStyle
+        }}>
+            <Image source={iconSource} style={{ ...DEFAULT_STYLE.smallIcon_1, ...iconStyle }} />
+            <Text style={{ ...DEFAULT_STYLE.smallText_1, marginLeft: 7, ...textStyle }}>{text}</Text>
         </View>
     );
 };
@@ -198,7 +196,7 @@ const StatsComponent = (props) => {
 const styles = {
     cardContainerStyle: {
         padding: 16,
-        backgroundColor: 'white',
+        backgroundColor: BACKGROUND_COLOR,
         borderRadius: 2
     },
     headerContainerStyle: {
@@ -207,12 +205,6 @@ const styles = {
         flex: 1,
         marginBottom: 8
     },
-    priorityTextStyle: {
-        fontSize: 8.5,
-        fontStyle: 'italic',
-        fontFamily: GM_FONT_FAMILY_2,
-        color: '#3B414B'
-    },
     // Stats component default style
     statsContainerStyle: {
         flex: 1,
@@ -220,34 +212,16 @@ const styles = {
         justifyContent: 'space-between',
         marginTop: 20
     },
-    statsTextDefaultStyle: {
-        fontSize: 11,
-        color: '#3B414B',
-        fontFamily: GM_FONT_FAMILY_2,
-        marginLeft: 7
-    },
-    statsIconDefaultStyle: {
-        height: 12,
-        width: 12
-    },
     // Stats component style
     loveIconStyle: {
         tintColor: '#EB5757'
     },
-    loveTextStyle: {
-    },
     shareIconStyle: {
         tintColor: '#6FCF97',
-        marginLeft: 18,
-        width: 14,
-        height: 14
-    },
-    shareTextStyle: {
+        ...DEFAULT_STYLE.buttonIcon_1
     },
     commentIconStyle: {
         tintColor: '#F1BF74'
-    },
-    commentTextStyle: {
     }
 };
 

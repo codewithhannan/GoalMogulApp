@@ -26,7 +26,6 @@ const ProfileActionButton = (props) => {
                 fontSize: 12,
                 fontWeight: 'bold',
                 marginLeft: 5,
-                alignSelf: 'center',
                 color,
                 ...props.textStyle
             }}>
@@ -39,9 +38,8 @@ const ProfileActionButton = (props) => {
             <View
                 style={{
                     flexDirection: 'row',
-                    alignSelf: 'flex-end',
                     padding: 7,
-                    borderRadius: 5,
+                    borderRadius: 3,
                     ...props.containerStyle
                 }}
             >

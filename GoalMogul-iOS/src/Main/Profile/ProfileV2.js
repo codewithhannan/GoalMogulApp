@@ -19,7 +19,7 @@ import { createReport } from '../../redux/modules/report/ReportActions';
 import { getUserData, getUserDataByPageId, makeGetUserGoals, makeGetUserNeeds, makeGetUserPosts } from '../../redux/modules/User/Selector';
 import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users';
 /* Styles */
-import { BACKGROUND_COLOR, GM_BLUE, GM_FONT_FAMILY_1, GM_FONT_FAMILY_2, GM_FONT_1, shadowStyle } from '../../styles';
+import { BACKGROUND_COLOR, GM_BLUE, shadowStyle, DEFAULT_STYLE } from '../../styles';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 import PlusButton from '../Common/Button/PlusButton';
 import GoalFilterBar from '../Common/GoalFilterBar';
@@ -208,23 +208,21 @@ class ProfileV2 extends Component {
             <View style={{ ...styles.tabContainer, paddingBottom }}>
                 <TabButtonGroup
                     buttons={props}
-                    borderRadius={3}
+                    borderRadius={DEFAULT_STYLE.buttonIcon_1.borderRadius}
                     buttonStyle={{
                         selected: {
                             backgroundColor: GM_BLUE,
-                            tintColor: 'white',
+                            tintColor: BACKGROUND_COLOR,
                             color: 'white',
                             fontWeight: 'bold',
-                            fontSize: GM_FONT_1,
-                            fontFamily: GM_FONT_FAMILY_1
+                            ...DEFAULT_STYLE.buttonText_1,
                         },
                         unselected: {
-                            backgroundColor: 'white',
+                            backgroundColor: BACKGROUND_COLOR,
                             tintColor: '#BDBDBD',
                             color: '#BDBDBD',
                             fontWeight: '500',
-                            fontSize: GM_FONT_1,
-                            fontFamily: GM_FONT_FAMILY_2
+                            ...DEFAULT_STYLE.buttonText_1
                         }
                     }}
                 />
@@ -429,10 +427,10 @@ const styles = {
     },
     tabContainer: {
         padding: 16,
-        backgroundColor: 'white'
+        backgroundColor: BACKGROUND_COLOR
     },
     backdrop: {
-        backgroundColor: 'white',
+        backgroundColor: BACKGROUND_COLOR,
     }
 };
 

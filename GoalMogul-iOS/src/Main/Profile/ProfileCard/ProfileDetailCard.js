@@ -35,7 +35,7 @@ import DelayedButton from '../../Common/Button/DelayedButton';
 
 
 import { IMAGE_BASE_URL } from '../../../Utils/Constants';
-import { GM_BLUE_LIGHT_LIGHT, GM_BLUE, GM_BLUE_LIGHT, GM_FONT_FAMILY_1, GM_FONT_FAMILY_2, GM_FONT_2 } from '../../../styles';
+import { GM_BLUE_LIGHT_LIGHT, GM_BLUE, GM_BLUE_LIGHT, DEFAULT_STYLE, TEXT_COLOR_1, FONT_SCALE, BACKGROUND_COLOR } from '../../../styles';
 import { Actions } from 'react-native-router-flux';
 import RichText from '../../Common/Text/RichText';
 
@@ -206,30 +206,23 @@ class ProfileDetailCard extends Component {
     renderMessageButton() {
         if (this.props.self) return null;
         return (
-            <View style={{ marginRight: 5 }}>
+            <View style={{ marginRight: 10 }}>
                 <ProfileActionButton
                     source={MessageIcon}
                     text='Message'
-                    style={{ marginTop: 1 }}
                     onPress={() => this.handleMessageButtonOnPress()}
-                    containerStyle={{ color: 'white', backgroundColor: GM_BLUE }}
-                    textStyle={{ fontFamily: GM_FONT_FAMILY_1 }}
+                    containerStyle={styles.buttonContainerStyle}
+                    textStyle={DEFAULT_STYLE.buttonText_1}
+                    iconStyle={DEFAULT_STYLE.buttonIcon_1}
                 />
             </View>
         );
     }
 
     renderProfileActionButton() {
-        const containerStyle = {
-            color: 'white',
-            backgroundColor: GM_BLUE,
-            borderRadius: 3,
-            height: 30
-        };
-        const textStyle = {
-            fontFamily: GM_FONT_FAMILY_1,
-            fontSize: 12
-        };
+        const containerStyle = styles.buttonContainerStyle;
+        const textStyle = DEFAULT_STYLE.buttonText_1;
+        const iconStyle = DEFAULT_STYLE.buttonIcon_1;
 
         if (this.props.self) {
             return (
@@ -239,6 +232,7 @@ class ProfileDetailCard extends Component {
                     onPress={() => this.handleEditOnPressed()}
                     containerStyle={containerStyle}
                     textStyle={textStyle}
+                    iconStyle={iconStyle}
                 />
             );
         }
@@ -251,7 +245,7 @@ class ProfileDetailCard extends Component {
                     source={AddUser}
                     text='Respond'
                     onPress={this.handleButtonOnPress.bind(this, 'respond')}
-                    iconStyle={{ height: 16, width: 17 }}
+                    iconStyle={iconStyle}
                     containerStyle={containerStyle}
                     textStyle={textStyle}
                 />
@@ -265,7 +259,7 @@ class ProfileDetailCard extends Component {
                         text='Add friend'
                         source={AddUser}
                         onPress={this.handleButtonOnPress.bind(this, 'requestFriend')}
-                        style={{ height: 16, width: 17 }}
+                        iconStyle={iconStyle}
                         containerStyle={{ color: 'white', backgroundColor: GM_BLUE_LIGHT }}
                     />
                 );
@@ -276,7 +270,7 @@ class ProfileDetailCard extends Component {
                         text='Friend'
                         source={love}
                         onPress={this.handleButtonOnPress.bind(this, 'unfriend')}
-                        style={{ width: 17, height: 16 }}
+                        iconStyle={iconStyle}
                         containerStyle={{ color: 'white', backgroundColor: GM_BLUE_LIGHT }}
                     />
                 );
@@ -288,6 +282,8 @@ class ProfileDetailCard extends Component {
                         source={cancel}
                         onPress={this.handleButtonOnPress.bind(this, 'deleteFriend')}
                         containerStyle={{ color: 'white', backgroundColor: GM_BLUE_LIGHT }}
+                        textStyle={textStyle}
+                        iconStyle={iconStyle}
                     />
                 );
 
@@ -332,50 +328,6 @@ class ProfileDetailCard extends Component {
         });
     }
 
-    /**
-     * Starting version 0.3.10 or 0.4.0, we move the chat buttons to top right corner
-     * Two buttons are rendered
-     * 1. Message
-     * 2. More --> open iOS menu with two options ['Share as Direct Message', 'Share to Group Chat', 'Cancel']
-     */
-    renderChatButtons() {
-        if (this.props.self) {
-            return <View style={{ height: 55.5 }} />
-        }
-        return (
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 15, marginTop: 5 }}>
-                <DelayedButton
-                    activeOpacity={0.6}
-                    style={{
-                        borderRadius: 5,
-                        backgroundColor: '#1998c9',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        padding: 10,
-                    }}
-                    onPress={this.handleMessageButtonOnPress}
-                >
-                    <Text style={{ fontSize: 12, color: 'white', fontWeight: '600' }}>Message</Text>
-                </DelayedButton>
-
-                <DelayedButton
-                    activeOpacity={0.6}
-                    style={{
-                        borderRadius: 5,
-                        backgroundColor: 'white',
-                        borderWidth: 0.5,
-                        borderColor: 'gray',
-                        padding: 10,
-                        marginLeft: 10
-                    }}
-                    onPress={this.handleMoreButtonOnPress}
-                >
-                    <Text style={{ fontSize: 12, color: '#646464', fontWeight: '600' }}>More...</Text>
-                </DelayedButton>
-            </View>
-        );
-    }
-
     renderProfileImage(profile) {
         const { image } = profile;
         const style = image ? styles.imageStyle : { width: 30, height: 30, margin: (width * 0.1) };
@@ -396,29 +348,29 @@ class ProfileDetailCard extends Component {
         const { user } = this.props;
         if (!user) return null;
         const { name, headline, profile } = user;
-        const { location } = profile
+        const { location } = profile;
 
         return (
             <View onLayout={this.onLayout}>
                 <View style={{ height: 90, backgroundColor: GM_BLUE_LIGHT_LIGHT }} />
                 <View style={styles.topWrapperStyle}>
                     {this.renderProfileImage(profile)}
-                    <View style={{ flexDirection: 'row', flex: 1, marginTop: 8, marginRight: 15 }}>
+                    <View style={{ flexDirection: 'row', flex: 1 }}>
                         <View style={{ flex: 1 }} />
                         {this.renderMessageButton()}
                         {this.renderProfileActionButton()}
                     </View>
                 </View>
                 <View style={styles.containerStyle}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={styles.nameTextStyle}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={[ styles.userInfoStyle, DEFAULT_STYLE.titleText_1 ]}>
                             {name}
                         </Text>
-                        <UserBanner user={this.props.user} iconStyle={{ height: 20, width: 17 }} />
+                        <UserBanner user={this.props.user} iconStyle={{ ...styles.userInfoStyle, height: 20, width: 17 }} />
                         {this.props.self && (
                             <DelayedButton
                                 onPress={this.handleBannerInfoIconOnPress}
-                                style={styles.infoIconContainerStyle}
+                                style={[styles.infoIconContainerStyle, styles.userInfoStyle]}
                                 activeOpacity={0.6}
                             >
                                 <Image source={InfoIcon} style={styles.infoIconStyle} />
@@ -426,14 +378,14 @@ class ProfileDetailCard extends Component {
                         )}
                     </View>
                     <RichText
-                        textStyle={styles.headlineTextStyle}
+                        textStyle={[ styles.userInfoStyle, DEFAULT_STYLE.subTitleText_1 ]}
                         contentText={headline}
                         textContainerStyle={{ flexDirection: 'row' }}
                         numberOfLines={2}
                     />
                     { location && (
                         <RichText
-                            textStyle={{ ...styles.headlineTextStyle, marginBottom: 0, fontSize: 15 }}
+                            textStyle={[styles.userInfoStyle, DEFAULT_STYLE.normalText_1 ]}
                             contentText={location}
                             textContainerStyle={{ flexDirection: 'row' }}
                             numberOfLines={1}
@@ -457,7 +409,8 @@ const styles = {
     },
     topWrapperStyle: {
         height: 60,
-        backgroundColor: 'white'
+        backgroundColor: BACKGROUND_COLOR,
+        padding: 16
     },
     imageContainerStyle: {
         alignItems: 'center',
@@ -467,45 +420,37 @@ const styles = {
         bottom: 10,
         left: 20,
         alignSelf: 'center',
-        backgroundColor: 'white'
+        backgroundColor: BACKGROUND_COLOR
     },
     imageStyle: {
         width: (width * 0.3),
         height: (width * 0.3),
         borderRadius: (width * 0.15)
     },
-    nameTextStyle: {
-        fontSize: GM_FONT_2,
-        fontFamily: GM_FONT_FAMILY_1,
-        color: '#333',
-        fontWeight: 'bold',
-        letterSpacing: 0.3,
-        marginTop: 9,
-        marginBottom: 10,
-        marginRight: 6
+    buttonContainerStyle: {
+        color: 'white',
+        backgroundColor: GM_BLUE,
+        borderRadius: 3,
+        height: 30,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
-    headlineTextStyle: {
-        fontSize: GM_FONT_2,
-        fontFamily: GM_FONT_FAMILY_2,
-        letterSpacing: 0.3,
-        color: '#333',
-        fontWeight: '500',
-        marginBottom: 10
+    userInfoStyle: {
+        marginBottom: 10,
     },
     infoIconContainerStyle: {
-        height: 15,
-        width: 15,
-        borderRadius: 7.5,
+        ...DEFAULT_STYLE.buttonIcon_1,
+        borderRadius: 100,
         borderWidth: 1,
-        borderColor: '#333',
+        borderColor: TEXT_COLOR_1,
         alignItems: 'center',
         justifyContent: 'center',
         marginLeft: 5
     },
     infoIconStyle: {
-        height: 9,
-        width: 5,
-        tintColor: '#333'
+        height: 9*FONT_SCALE,
+        width: 5*FONT_SCALE,
+        tintColor: TEXT_COLOR_1
     }
 };
 

@@ -3,6 +3,7 @@ import {
   View
 } from 'react-native';
 import _ from 'lodash';
+import { FONT_SCALE } from '../../styles';
 
 const LOW_PRIORITY_COLOR = '#f3d94e';
 const MEDIAM_PRIORITY_COLOR = '#ef8258';
@@ -35,9 +36,9 @@ const PriorityBar = (props) => {
 
 const styles = {
   defaultStyle: {
-    height: 4,
-    width: 30,
-    marginTop: 4,
+    height: 4*FONT_SCALE,
+    width: 30*FONT_SCALE,
+    marginTop: 4*FONT_SCALE,
     backgroundColor: '#f2f2f2'
   }
 };

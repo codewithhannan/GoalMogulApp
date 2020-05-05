@@ -8,13 +8,11 @@ import {
     renderers,
 } from 'react-native-popup-menu';
 
-import { switchCase } from '../../redux/middleware/utils';
-
 import {
     SORT_BY_OPTIONS,
     CATEGORY_OPTIONS
 } from '../../Utils/Constants';
-import { GM_FONT_FAMILY_2, GM_FONT_2, GM_FONT_FAMILY_1, GM_FONT_1 } from '../../styles';
+import { DEFAULT_STYLE, BACKGROUND_COLOR } from '../../styles';
 
 const { SlideInMenu } = renderers;
 const { width, height } = Dimensions.get('window');
@@ -53,17 +51,13 @@ class GoalFilterBar extends Component {
                         }}
                     >
                         <View style={styles.detailContainerStyle}>
-                            <Text style={styles.textStyle}>Sort By</Text>
+                            <Text style={{ ...DEFAULT_STYLE.buttonText_1, color: '#828282' }}>Sort &amp; Filter</Text>
                         </View>
                     </MenuTrigger>
                     <MenuOptions customStyles={styles.menuOptionsStyles}>
                         {/* SortBy Header */}
-                        <View
-                            style={styles.sortByHeaderWrapper}
-                        >
-                            <Text style={styles.sortByHeaderText}>
-                                Sort By
-                            </Text>
+                        <View style={styles.sortByHeaderWrapper}>
+                            <Text style={DEFAULT_STYLE.titleText_1}>Sort By</Text>
                         </View>
                         {/* SortBy Options */}
                         <View style={{
@@ -76,7 +70,7 @@ class GoalFilterBar extends Component {
                                 return (
                                     <MenuOption onSelect={() => this.handleOnMenuSelect('sortBy', value)}>
                                         <View style={styles.sortByOptionWrapper}>
-                                            <Text style={styles.sortByOptionText}>
+                                            <Text style={{ ...DEFAULT_STYLE.normalText_1, color: '#828282' }}>
                                                 {text}
                                             </Text>
                                         </View>
@@ -86,11 +80,8 @@ class GoalFilterBar extends Component {
                         </View>
 
                         {/* Catrgory header */}
-                        <View style={styles.categoryHeaderWrapper}
-                        >
-                            <Text style={styles.categoryHeaderText}>
-                                Category
-                            </Text>
+                        <View style={styles.categoryHeaderWrapper}>
+                            <Text style={DEFAULT_STYLE.normalText_1}>Category</Text>
                         </View>
                         {/* Category Options */}
                         <FlatList
@@ -100,7 +91,7 @@ class GoalFilterBar extends Component {
                                 return (
                                     <MenuOption onSelect={() => this.handleOnMenuSelect('categories', value)}>
                                         <View style={styles.categoryOptionWrapper}>
-                                            <Text style={styles.categoryOptionText}>
+                                            <Text style={DEFAULT_STYLE.subTitleText_1}>
                                                 {text}
                                             </Text>
                                             <RadioButton
@@ -145,7 +136,7 @@ const RadioButton = (props) => {
 
 const styles = {
     containerStyle: {
-        backgroundColor: 'white',
+        backgroundColor: BACKGROUND_COLOR,
         padding: 16,
         paddingTop: 9
     },
@@ -158,14 +149,8 @@ const styles = {
         borderColor: '#E0E0E0',
         borderRadius: 100
     },
-    textStyle: {
-        fontSize: 15,
-        fontFamily: GM_FONT_FAMILY_2,
-        color: '#828282',
-        fontWeight: '500',
-    },
     anchorStyle: {
-        backgroundColor: 'white'
+        backgroundColor: BACKGROUND_COLOR
     },
     menuOptionsStyles: {
         optionsContainer: {
@@ -177,19 +162,13 @@ const styles = {
         }
     },
     sortByHeaderWrapper: {
-        backgroundColor: 'white',
+        backgroundColor: BACKGROUND_COLOR,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
         shadowRadius: 0.1,
         padding: 16,
         paddingBottom: 14
-    },
-    sortByHeaderText: {
-        fontSize: GM_FONT_2,
-        fontFamily: GM_FONT_FAMILY_1,
-        color: '#3B414B',
-        fontWeight: 'bold'
     },
     sortByOptionWrapper: {
         backgroundColor: '#F2F2F2',
@@ -199,22 +178,10 @@ const styles = {
         borderRadius: 100,
         margin: 2
     },
-    sortByOptionText: {
-        color: '#828282',
-        fontSize: GM_FONT_1,
-        fontFamily: GM_FONT_FAMILY_2,
-        fontWeight: '500'
-    },
     categoryHeaderWrapper: {
         backgroundColor: '#F2F2F2',
         padding: 8,
         paddingLeft: 16
-    },
-    categoryHeaderText: {
-        fontSize: GM_FONT_1,
-        fontFamily: GM_FONT_FAMILY_2,
-        fontWeight: '500',
-        color: '#3B414B'
     },
     categoryOptionWrapper: {
         height: CATEGORY_OPTION_HEIGHT,
@@ -224,11 +191,6 @@ const styles = {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'
-    },
-    categoryOptionText: {
-        color: '#000',
-        fontSize: GM_FONT_2,
-        fontFamily: GM_FONT_FAMILY_2
     }
 };
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 
-import { GM_FONT_FAMILY_2, GM_BLUE } from '../../../styles';
+import { GM_BLUE, DEFAULT_STYLE } from '../../../styles';
 
 
 const DEBUG_KEY = '[ UI ProgressBar ]';
@@ -96,12 +96,12 @@ const ProgressBar = (props) => {
         : formatDate(new Date(endTime));
 
     const startTimeTextView = startTimeText === 'undefined NaN'
-        ? (<Text style={{ ...styles.textStyle, opacity: 0 }}/>)
-        : (<Text style={styles.textStyle}>{startTimeText}</Text>);
+        ? (<Text style={{ ...DEFAULT_STYLE.smallText_2, opacity: 0 }}/>)
+        : (<Text style={DEFAULT_STYLE.smallText_2}>{startTimeText}</Text>);
 
     const endTimeTextView = endTimeText === 'undefined NaN'
-        ? (<Text style={{ ...styles.textStyle, opacity: 0 }}/>)
-        : (<Text style={styles.textStyle}>{endTimeText}</Text>);
+        ? (<Text style={{ ...DEFAULT_STYLE.smallText_2, opacity: 0 }}/>)
+        : (<Text style={DEFAULT_STYLE.smallText_2}>{endTimeText}</Text>);
 
     return (
         <View style={styles.containerStyle}>
@@ -128,15 +128,6 @@ const styles = {
     containerStyle: {
         flex: 1,
         marginTop: 2
-    },
-    imageStyle: {
-        flex: 1
-    },
-    textStyle: {
-        color: '#3B414B',
-        fontSize: 9,
-        fontFamily: GM_FONT_FAMILY_2,
-        alignSelf: 'center'
     },
     barContainerStyle: {
         flex: 1,
