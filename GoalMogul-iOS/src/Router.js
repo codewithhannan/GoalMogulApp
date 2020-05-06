@@ -279,8 +279,7 @@ class RouterComponent extends Component {
                                                             return this.rootTransitionConfig().screenInterpolator(props);
                                                     }
                                                 }
-                                            })
-                                            }
+                                            })}
                                         >
                                             <Scene key="home" initial component={Home} />
 

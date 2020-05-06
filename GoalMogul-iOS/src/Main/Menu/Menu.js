@@ -27,6 +27,7 @@ import {
 } from '../../redux/modules/tribe/MyTribeTabActions';
 
 import {
+    openSetting,
     logout
 } from '../../actions';
 
@@ -41,27 +42,26 @@ import TribeIcon from '../../asset/explore/tribe.png';
 import EventIcon from '../../asset/suggestion/event.png';
 import BugReportIcon from '../../asset/utils/bug_report.png';
 import LogoutIcon from '../../asset/utils/logout.png';
-
+import Setting from '../../asset/header/setting.png';
 import Icons from '../../asset/base64/Icons';
 import {
     IPHONE_MODELS,
     BUG_REPORT_URL,
     PRIVACY_POLICY_URL
 } from '../../Utils/Constants';
+import { DEFAULT_STYLE } from '../../styles';
+
 
 const DEBUG_KEY = '[ UI Menu ]';
 const { TutorialIcon, PrivacyIcon } = Icons;
 
 class Menu extends React.PureComponent {
 
-    handleTutorialOnPress = () => {
-        // Actions.pop();
-        // Actions.jump('homeTab');
-        // setTimeout(() => {
-        //   this.props.startTutorial('create_goal', 'home');
-        // }, 500);
-        // Actions.push('myTutorial', { initial: false })
+    handleSettingOnPress = () => {
+        this.props.openSetting();
+    }
 
+    handleTutorialOnPress = () => {
         const tutorialSwitchCases = switchByButtonIndex([
             [R.equals(0), () => {
                 console.log(`${DEBUG_KEY}: [handleTutorialOnPress]: Create goal walkthrough`);
@@ -71,14 +71,14 @@ class Menu extends React.PureComponent {
                     this.props.startTutorial('create_goal', 'home');
                 }, 500);
             }],
-            [R.equals(1), () => {
-                console.log(`${DEBUG_KEY}: [handleTutorialOnPress]: Friends Tab Walkthrough`);
-                Actions.pop();
-                Actions.jump('profileTab');
-                setTimeout(() => {
-                    this.props.startTutorial('meet_tab_friend', 'meet_tab');
-                }, 500);
-            }]
+            // [R.equals(1), () => {
+            //     console.log(`${DEBUG_KEY}: [handleTutorialOnPress]: Friends Tab Walkthrough`);
+            //     Actions.pop();
+            //     Actions.jump('meetTab');
+            //     setTimeout(() => {
+            //         this.props.startTutorial('meet_tab_friend', 'meet_tab');
+            //     }, 500);
+            // }]
         ]);
 
         const shareToActionSheet = actionSheet(
@@ -91,25 +91,12 @@ class Menu extends React.PureComponent {
 
     handleBugReportOnPress = async () => {
         const url = BUG_REPORT_URL;
-        // const result = await WebBrowser.openBrowserAsync(url);
-        // const canOpen = await Linking.canOpenURL(url);
-        // if (canOpen) {
-        //   await Linking.openURL(url);
-        // }
-        // console.log(`${DEBUG_KEY}: close bug report link with res: `, result);
         let result = await WebBrowser.openBrowserAsync(url);
         console.log(`${DEBUG_KEY}: close bug report link with res: `, result);
     }
 
     handlePrivacyPolicyOnPress = async () => {
         const url = PRIVACY_POLICY_URL;
-        // // const result = await WebBrowser.openBrowserAsync(url);
-        // const canOpen = await Linking.canOpenURL(url);
-        // if (canOpen) {
-        //   await Linking.openURL(url);
-        // }
-        // console.log(`${DEBUG_KEY}: close bug report link with res: `, result);
-
         let result = await WebBrowser.openBrowserAsync(url, { showTitle: true });
         console.log(`${DEBUG_KEY}: close privacy policy link with res: `, result);
     }
@@ -126,9 +113,6 @@ class Menu extends React.PureComponent {
             <View style={{ flex: 1 }}>
                 <View style={{ ...styles.headerStyle, paddingTop }}>
                     <View style={{ height: 15 }} />
-                    {/* <View style={{ flex: 1, height: 30, flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ fontSize: 16 }}>{name}</Text>
-          </View> */}
                 </View>
                 <DelayedButton
                     activeOpacity={0.6}
@@ -153,6 +137,14 @@ class Menu extends React.PureComponent {
                 >
                     <Image source={TutorialIcon} style={styles.iconStyle} />
                     <Text style={styles.titleTextStyle}>Tutorials</Text>
+                </DelayedButton>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    onPress={this.handleSettingOnPress}
+                    style={styles.buttonStyle}
+                >
+                    <Image source={Setting} style={styles.iconStyle} />
+                    <Text style={styles.titleTextStyle}>Settings</Text>
                 </DelayedButton>
                 <DelayedButton
                     activeOpacity={0.6}
@@ -193,21 +185,6 @@ class Menu extends React.PureComponent {
     }
 }
 
-const Button = (props) => {
-    const { onPress, title, iconSource } = props;
-
-    return (
-        <TouchableOpacity
-            activeOpacity={0.6}
-            onPress={onPress}
-            style={styles.buttonStyle}
-        >
-            <Image source={iconSource} style={styles.iconStyle} />
-            <Text style={styles.titleTextStyle}>{title}</Text>
-        </TouchableOpacity>
-    );
-};
-
 const styles = {
     headerStyle: {
         flexDirection: 'row',
@@ -232,9 +209,7 @@ const styles = {
         height: 25,
         width: 25
     },
-    titleTextStyle: {
-        fontSize: 16
-    }
+    titleTextStyle: DEFAULT_STYLE.subTitleText_1
 };
 
 const mapStateToProps = state => {
@@ -250,6 +225,7 @@ export default connect(
     {
         openMyEventTab,
         openMyTribeTab,
+        openSetting,
         logout,
         // Tutorial related,
         showNextTutorialPage,

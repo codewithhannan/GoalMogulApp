@@ -426,7 +426,8 @@ const styles = {
         backgroundColor: BACKGROUND_COLOR
     },
     backdrop: {
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: 'gray',
+        opacity: 0.5
     }
 };
 

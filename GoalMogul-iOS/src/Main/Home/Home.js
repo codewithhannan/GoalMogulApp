@@ -48,7 +48,7 @@ import Logo from '../../asset/header/logo.png';
 import Activity from '../../asset/utils/activity.png';
 
 // Styles
-import { APP_DEEP_BLUE, GM_BLUE } from '../../styles';
+import { GM_BLUE, BACKGROUND_COLOR } from '../../styles';
 
 // Utils
 import { Logger } from '../../redux/middleware/utils/Logger';
@@ -425,16 +425,11 @@ const styles = {
     },
     tabContainer: {
         padding: 16,
-        backgroundColor: 'white'
+        backgroundColor: BACKGROUND_COLOR
     },
     backdrop: {
         backgroundColor: 'gray',
         opacity: 0.5,
-    },
-    iconStyle: {
-        height: 26,
-        width: 26,
-        tintColor: 'white',
     }
 };
 

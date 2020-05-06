@@ -14,7 +14,6 @@ import {
 } from '../../Utils/Constants';
 import { DEFAULT_STYLE, BACKGROUND_COLOR } from '../../styles';
 
-const { SlideInMenu } = renderers;
 const { width, height } = Dimensions.get('window');
 const CATEGORY_OPTION_HEIGHT = 34;
 
@@ -43,7 +42,7 @@ class GoalFilterBar extends Component {
             <View style={styles.containerStyle}>
                 <Menu
                     rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
-                    renderer={SlideInMenu}
+                    renderer={renderers.SlideInMenu}
                 >
                     <MenuTrigger
                         customStyles={{
