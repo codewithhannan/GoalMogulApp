@@ -145,7 +145,7 @@ export const DEFAULT_STYLE = {
         fontFamily: FONT_FAMILY_1,
         fontSize: 12 * UI_SCALE,
         color: TEXT_COLOR_1,
-        letterSpacing: 0.5
+        letterSpacing: 0.3
     },
     smallText_1: {
         fontFamily: FONT_FAMILY_2,

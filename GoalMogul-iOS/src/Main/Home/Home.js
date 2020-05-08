@@ -219,16 +219,6 @@ class Home extends Component {
         this.props.handlePushNotification(notification);
     }
 
-    handleCreateGoal = () => {
-        this.props.openCreateOverlay();
-        // As we move the create option here, we no longer need to care about the tab
-        Actions.createGoalButtonOverlay({
-            tab: 'mastermind', onClose: () => {
-                this.props.closeCreateOverlay('mastermind');
-            }
-        });
-    }
-
     handleAppStateChange = async (nextAppState) => {
         if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
             console.log(`${DEBUG_KEY}: [handleAppStateChange] App has become active!`);
@@ -317,18 +307,6 @@ class Home extends Component {
                 return null;
         }
     };
-
-    _keyExtractor = (item, index) => index;
-
-    // Starting version 0.4.2, we change back to each screen has one plus button
-    renderPlus() {
-        return (
-            <PlusButton
-                plusActivated={this.props.showPlus}
-                onPress={this.handleCreateGoal}
-            />
-        );
-    }
 
     render() {
         /*

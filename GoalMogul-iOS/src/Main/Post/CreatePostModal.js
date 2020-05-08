@@ -420,13 +420,11 @@ class CreatePostModal extends Component {
         );
     }
 
-    renderUserInfo() {
+renderUserInfo() {
         const { belongsToTribe, belongsToEvent, user } = this.props;
         const { profile, name } = user;
         let imageUrl = profile.image;
-        let profileImage = (
-            <Image style={DEFAULT_STYLE.profileImage_2} resizeMode='cover' source={defaultUserProfile} />
-        );
+        let profileImage = <Image style={DEFAULT_STYLE.profileImage_2} source={defaultUserProfile} />;
         if (imageUrl) {
             imageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
             profileImage = <Image style={DEFAULT_STYLE.profileImage_1} source={{ uri: imageUrl }} />;
@@ -632,7 +630,7 @@ class CreatePostModal extends Component {
                     onAction={handleSubmit(this.handleCreate)}
                     actionDisabled={actionDisabled}
                 />
-                <ScrollView style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}>
+                <ScrollView style={{ borderTopColor: '#E0E0E0', borderTopWidth: 1 }}>
                     <View style={{ flex: 1, padding: 20 }}>
                         {this.renderUserInfo()}
                         {this.renderPost()}
@@ -654,21 +652,7 @@ const styles = {
         marginTop: 5,
         borderWidth: 1,
         borderRadius: 5,
-        borderColor: '#e9e9e9',
-        shadowColor: '#ddd',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.8,
-        shadowRadius: 1,
-        elevation: 1,
-    },
-    goalInputStyle: {
-        fontSize: 17,
-        paddingTop: 20,
-        padding: 20,
-        width: '100%',
-        height: 'auto',
-        maxHeight: 200,
-        minHeight: 80
+        borderColor: '#E0E0E0'
     },
     imageStyle: {
         height: 54,

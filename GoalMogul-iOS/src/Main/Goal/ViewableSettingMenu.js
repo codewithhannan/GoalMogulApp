@@ -16,12 +16,8 @@ import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 // Asset
 import dropDown from '../../asset/utils/dropDown.png';
 import profilePeople from '../../asset/utils/profile_people.png';
-import shareIcon from '../../asset/utils/share.png';
-import informationIcon from '../../asset/utils/info_white.png';
-import informationIconBlack from '../../asset/utils/info.png';
 
 // Actions
-import { IS_ZOOMED } from '../../Utils/Constants';
 import { DEFAULT_STYLE } from '../../styles';
 
 
@@ -67,54 +63,6 @@ class ViewableSettingMenu extends Component {
         return viewableSettingActionSheet();
     }
 
-    renderShareToMSButton() {
-        if (this.props.shareToMastermind === null || this.props.isEdit) return null;
-
-        const containerStyle = this.props.shareToMastermind ?
-            {
-                ...styles.containerStyle,
-                backgroundColor: '#17B3EC',
-                borderWidth: 0
-            } : { ...styles.containerStyle };
-
-        const color = this.props.shareToMastermind ?
-            'white' : '#a1a1a1';
-
-        const icon = this.props.shareToMastermind
-            ? (<Image resizeMode="contain" style={styles.informationIconStyle} source={informationIcon} />)
-            : (<Image resizeMode="contain" style={styles.informationIconStyle} source={informationIconBlack} />);
-
-        const shareIconTintColor = this.props.shareToMastermind ? 'white' : '#9b9b9b';
-
-        const marginTop = IS_ZOOMED ? 10 : 0;
-        return (
-            <View style={{ ...styles.containerStyle, backgroundColor: 'transparent', borderWidth: 0, marginTop }}>
-                <TouchableOpacity
-                    activeOpacity={0.6}
-                    style={{ ...containerStyle }}
-                    onPress={() => this.props.shareToMastermindCallback(!this.props.shareToMastermind)}
-                >
-                    <Image
-                        resizeMode="contain"
-                        style={{ ...styles.profileIconStyle, tintColor: shareIconTintColor }}
-                        source={shareIcon}
-                    />
-                    <Text style={{ ...DEFAULT_STYLE.smallText_1, marginLeft: 3, marginRight: 2, color }}>
-                        Share to Goals feed
-                    </Text>
-                    <TouchableOpacity
-                        activeOpacity={0.6}
-                        style={{ padding: 5 }}
-                        onPress={this.handleInfoIcon}
-                    >
-                        {icon}
-                    </TouchableOpacity>
-                </TouchableOpacity>
-                <View style={{ margin: 10, borderLeftWidth: 1, borderColor: '#e9e9e9' }} />
-            </View>
-        );
-    }
-
     render() {
         const { belongsToTribe, belongsToEvent } = this.props;
 
@@ -139,14 +87,16 @@ class ViewableSettingMenu extends Component {
             );
         }
 
-        // Handle zoom mode
-        const flexDirection = IS_ZOOMED ? 'column' : 'row';
-
         return (
-            <View style={{ flexDirection }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={DEFAULT_STYLE.smallText_1}>Share To: </Text>
                 <TouchableOpacity
                     activeOpacity={0.6}
-                    style={{ ...styles.containerStyle, opacity: settingDisabled ? 0 : 95 }}
+                    style={{
+                        ...styles.containerStyle,
+                        opacity: settingDisabled ? 0 : 95,
+                        marginLeft: 5
+                    }}
                     onPress={this.handleOnClick}
                     disabled={settingDisabled}
                 >
@@ -165,7 +115,6 @@ class ViewableSettingMenu extends Component {
                     {caret}
                     {tutorialComponent}
                 </TouchableOpacity>
-                {this.renderShareToMSButton()}
             </View>
 
         );

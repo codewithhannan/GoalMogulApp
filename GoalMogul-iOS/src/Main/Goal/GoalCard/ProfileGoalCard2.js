@@ -50,6 +50,7 @@ class ProfileGoalCard2 extends React.Component {
                 <View style={{ alignSelf: 'center', alignItems: 'center' }}>
                     <Text style={{
                         ...DEFAULT_STYLE.smallTitle_1,
+                        letterSpacing: 0.7,
                         alignSelf: 'center'
                     }}>
                         {category}
