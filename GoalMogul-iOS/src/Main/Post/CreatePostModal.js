@@ -7,7 +7,6 @@ import {
     Text,
     TouchableOpacity,
     ImageBackground,
-    Dimensions,
     ActivityIndicator,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -40,12 +39,10 @@ import { arrayUnique, clearTags } from '../../redux/middleware/utils';
 
 // Actions
 import { openCameraRoll, openCamera } from '../../actions';
-import {
-    submitCreatingPost,
-    postToFormAdapter
-} from '../../redux/modules/feed/post/PostActions';
+import { submitCreatingPost, postToFormAdapter } from '../../redux/modules/feed/post/PostActions';
 import { searchUser } from '../../redux/modules/search/SearchActions';
 import { IMAGE_BASE_URL } from '../../Utils/Constants';
+import { DEFAULT_STYLE, BACKGROUND_COLOR, GM_BLUE } from '../../styles';
 
 
 const DEBUG_KEY = '[ UI CreatePostModal ]';
@@ -263,6 +260,10 @@ class CreatePostModal extends Component {
         this.props.openCameraRoll(callback, { disableEditing: true });
     }
 
+    handleSaveDraft = () => {
+
+    }
+
     /**
      * This is a hacky solution due to the fact that redux-form
      * handleSubmit values differ from the values actually stored.
@@ -393,11 +394,11 @@ class CreatePostModal extends Component {
         const { profile, name } = user;
         let imageUrl = profile.image;
         let profileImage = (
-            <Image style={styles.imageStyle} resizeMode='cover' source={defaultUserProfile} />
+            <Image style={DEFAULT_STYLE.profileImage_2} resizeMode='cover' source={defaultUserProfile} />
         );
         if (imageUrl) {
             imageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
-            profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
+            profileImage = <Image style={DEFAULT_STYLE.profileImage_1} source={{ uri: imageUrl }} />;
         }
 
         const callback = R.curry((value) => this.props.change('viewableSetting', value));
@@ -405,8 +406,8 @@ class CreatePostModal extends Component {
         return (
             <View style={{ flexDirection: 'row', marginBottom: 15 }}>
                 {profileImage}
-                <View style={{ flexDirection: 'column', marginLeft: 15 }}>
-                    <Text style={{ fontSize: 18, marginBottom: 8 }}>
+                <View style={{ flexDirection: 'column', margin: 7 }}>
+                    <Text style={{ ...DEFAULT_STYLE.titleText_1, marginBottom: 8 }}>
                         {name}
                     </Text>
                     <ViewableSettingMenu
@@ -507,7 +508,7 @@ class CreatePostModal extends Component {
     renderPost() {
         const titleText = <Text style={styles.titleTextStyle}>Your thoughts</Text>;
         return (
-            <View style={{ marginTop: 15 }}>
+            <View style={{ marginTop: 5 }}>
                 {titleText}
                 <Field
                     name='post'
@@ -529,40 +530,69 @@ class CreatePostModal extends Component {
     renderActionIcons() {
         // If user already has the image, they need to delete the image and then
         // these icons would show up to attach another image
-        if (this.props.mediaRef) return null;
-        const actionIconStyle = { ...styles.actionIconStyle };
+        const { post, mediaRef, uploading } = this.props;
+        const actionIconStyle = {
+            ...DEFAULT_STYLE.buttonIcon_1,
+            tintColor: '#828282',
+            marginRight: 8
+        };
         const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
+        const actionDisabled = uploading || ((!post || post.trim() === '') && !mediaRef);
         return (
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
                 <DelayedButton
                     activeOpacity={0.6}
-                    style={actionIconWrapperStyle}
-                    onPress={this.handleOpenCamera}
+                    style={{ marginTop: 8, padding: 2 }}
+                    onPress={this.handleSaveDraft}
+                    disabled={actionDisabled}
                 >
-                    <Image style={actionIconStyle} source={camera} />
+                    <Text style={{
+                        ...DEFAULT_STYLE.titleText_2,
+                        color: actionDisabled ? BACKGROUND_COLOR : GM_BLUE
+                    }} >
+                        Save Draft
+                    </Text>
                 </DelayedButton>
-                <DelayedButton
-                    activeOpacity={0.6}
-                    style={{ ...actionIconWrapperStyle, marginLeft: 5 }}
-                    onPress={this.handleOpenCameraRoll}
-                >
-                    <Image style={actionIconStyle} source={cameraRoll} />
-                </DelayedButton>
+                <View style={{ flexDirection: 'row' }}>
+                    <DelayedButton
+                        activeOpacity={0.6}
+                        style={actionIconWrapperStyle}
+                        onPress={this.handleOpenCamera}
+                    >
+                        <Image
+                            resizeMode="contain"
+                            style={actionIconStyle}
+                            source={camera}
+                        />
+                        <Text style={{ ...DEFAULT_STYLE.normalText_1, marginTop: 2 }} >Camera</Text>
+                    </DelayedButton>
+                    <DelayedButton
+                        activeOpacity={0.6}
+                        style={{ ...actionIconWrapperStyle, marginLeft: 8 }}
+                        onPress={this.handleOpenCameraRoll}
+                    >
+                        <Image
+                            resizeMode="contain"
+                            style={actionIconStyle}
+                            source={cameraRoll}
+                        />
+                        <Text style={{ ...DEFAULT_STYLE.normalText_1, marginTop: 2 }} >Photo</Text>
+                    </DelayedButton>
+                </View>
             </View>
         );
     }
 
     render() {
-        const { handleSubmit, initializeFromState, post, mediaRef } = this.props;
+        const { handleSubmit, initializeFromState, post, mediaRef, uploading } = this.props;
         const modalActionText = initializeFromState ? 'Update' : 'Create';
 
-        const actionDisabled = this.props.uploading ||
-            ((!post || post.trim() === '') && !mediaRef);
+        const actionDisabled = uploading || ((!post || post.trim() === '') && !mediaRef);
 
         return (
             <KeyboardAvoidingView
                 behavior='padding'
-                style={{ flex: 1, backgroundColor: '#ffffff' }}
+                style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}
             >
                 <ModalHeader
                     title='New Post'
@@ -620,8 +650,7 @@ const styles = {
         borderRadius: 5,
     },
     titleTextStyle: {
-        fontSize: 13,
-        color: '#a1a1a1',
+        ...DEFAULT_STYLE.smallTitle_1,
         padding: 2
     },
     mediaStyle: {
@@ -630,10 +659,11 @@ const styles = {
         justifyContent: 'center'
     },
     actionIconWrapperStyle: {
-        backgroundColor: '#fafafa',
-        padding: 10,
-        paddingLeft: 15,
-        paddingRight: 15,
+        flexDirection: 'row',
+        backgroundColor: '#F2F2F2',
+        padding: 8,
+        paddingLeft: 16,
+        paddingRight: 16,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 4

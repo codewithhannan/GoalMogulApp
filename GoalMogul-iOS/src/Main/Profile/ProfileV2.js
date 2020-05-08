@@ -207,7 +207,7 @@ class ProfileV2 extends Component {
             <View style={{ ...styles.tabContainer, paddingBottom }}>
                 <TabButtonGroup
                     buttons={props}
-                    borderRadius={DEFAULT_STYLE.buttonIcon_1.borderRadius}
+                    borderRadius={3}
                     buttonStyle={{
                         selected: {
                             backgroundColor: GM_BLUE,

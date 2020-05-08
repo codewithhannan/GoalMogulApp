@@ -14,6 +14,7 @@ const ProfileActionButton = (props) => {
     if (props.source) {
         image = (
             <Image
+                resizeMode="contain"
                 source={props.source}
                 style={{ height: 15, width: 15, tintColor: color, ...props.iconStyle }}
             />

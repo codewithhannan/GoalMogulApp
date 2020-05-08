@@ -63,6 +63,7 @@ class ActionButton extends React.PureComponent {
                     }}
                 >
                     <Image
+                        resizeMode="contain"
                         source={this.props.iconSource}
                         style={{ ...DEFAULT_STYLE.buttonIcon_1, ...this.props.iconStyle }}
                     />

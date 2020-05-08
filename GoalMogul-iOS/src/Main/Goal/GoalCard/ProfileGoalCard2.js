@@ -185,7 +185,7 @@ const StatsComponent = (props) => {
             justifyContent: 'center',
             ...containerStyle
         }}>
-            <Image source={iconSource} style={{ ...DEFAULT_STYLE.smallIcon_1, ...iconStyle }} />
+            <Image resizeMode="contain" source={iconSource} style={{ ...DEFAULT_STYLE.smallIcon_1, ...iconStyle }} />
             <Text style={{ ...DEFAULT_STYLE.smallText_1, marginLeft: 7, ...textStyle }}>{text}</Text>
         </View>
     );

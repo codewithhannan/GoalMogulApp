@@ -29,7 +29,9 @@ class TabButtonGroup extends Component {
         const { index, routes } = navigationState;
 
         return routes.map((b, i) => {
-            const selectedStyle = i === index ? buttonStyle.selected : buttonStyle.unselected;
+            const isFirst = i === 0, isLast = i === routes.length - 1, isSelected = i === index;
+
+            const selectedStyle = isSelected ? buttonStyle.selected : buttonStyle.unselected;
             const iconSource = tabIconMap ? tabIconMap[b.key].iconSource : undefined;
             const iconStyle = tabIconMap ? {
                 ...tabIconMap[b.key].iconStyle,
@@ -37,10 +39,10 @@ class TabButtonGroup extends Component {
             } : { tintColor: selectedStyle.tintColor };
             const containerStyle = {
                 backgroundColor: selectedStyle.backgroundColor,
-                borderTopLeftRadius: i === 0 ? borderRadius : 0,
-                borderBottomLeftRadius: i === 0 ? borderRadius : 0,
-                borderTopRightRadius: (i === routes.length - 1) ? borderRadius : 0,
-                borderBottomRightRadius: (i === routes.length - 1) ? borderRadius : 0
+                borderTopLeftRadius: isFirst ? borderRadius : 0,
+                borderBottomLeftRadius: isFirst ? borderRadius : 0,
+                borderTopRightRadius: isLast ? borderRadius : 0,
+                borderBottomRightRadius: isLast ? borderRadius : 0,
             };
             const textStyle = {
                 color: selectedStyle.color,
@@ -76,39 +78,22 @@ class TabButtonGroup extends Component {
                     />
                 );
 
-            let buttonComponent;
-            if (i !== 0) {
                 // render divider to the left
-                const divider = noVerticalDivider ? null : (<Divider />);
-                buttonComponent = (
-                    <TouchableOpacity
-                        activeOpacity={0.6}
-                        key={b.key}
-                        style={styles.dividerContainerStyle}
-                        onPress={() => {
-                            if (jumpTo) jumpTo(b.key);
-                            else jumpToIndex(i);
-                        }}
-                    >
-                        {divider}
-                        {button}
-                    </TouchableOpacity>
-                );
-            } else {
-                buttonComponent = (
-                    <TouchableOpacity
-                        activeOpacity={0.6}
-                        key={b.key}
-                        style={styles.dividerContainerStyle}
-                        onPress={() => {
-                            if (jumpTo) jumpTo(b.key);
-                            else jumpToIndex(i);
-                        }}
-                    >
-                        {button}
-                    </TouchableOpacity>
-                );
-            }
+            const divider = noVerticalDivider ? null : <Divider />;
+            const buttonComponent = (
+                <TouchableOpacity
+                    activeOpacity={0.6}
+                    key={b.key}
+                    style={styles.dividerContainerStyle}
+                    onPress={() => {
+                        if (jumpTo) jumpTo(b.key);
+                        else jumpToIndex(i);
+                    }}
+                >
+                    {!isFirst ? divider : null}
+                    {button}
+                </TouchableOpacity>
+            );
 
             if (b && b.tutorial) {
                 const { tutorialText, order, name } = b.tutorial;

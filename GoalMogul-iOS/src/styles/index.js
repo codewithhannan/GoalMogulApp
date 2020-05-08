@@ -145,7 +145,7 @@ export const DEFAULT_STYLE = {
         fontFamily: FONT_FAMILY_1,
         fontSize: 12 * UI_SCALE,
         color: TEXT_COLOR_1,
-        letterSpacing: 0.7
+        letterSpacing: 0.5
     },
     smallText_1: {
         fontFamily: FONT_FAMILY_2,
@@ -158,8 +158,8 @@ export const DEFAULT_STYLE = {
         color: TEXT_COLOR_1
     },
     smallIcon_1: {
-        height: 12 * UI_SCALE,
-        width: 12 * UI_SCALE
+        height: 13 * UI_SCALE,
+        width: 13 * UI_SCALE
     },
     // Button styles
     buttonText_1: {
@@ -168,8 +168,7 @@ export const DEFAULT_STYLE = {
     },
     buttonIcon_1: {
         height: 16 * UI_SCALE,
-        width: 16 * UI_SCALE,
-        borderRadius: 8 * UI_SCALE
+        width: 16 * UI_SCALE
     },
     // Misc
     infoIcon: {

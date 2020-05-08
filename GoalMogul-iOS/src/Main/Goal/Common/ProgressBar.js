@@ -39,7 +39,7 @@ const renderProgressBar = (props) => {
             <View style={{
                 flex: 1,
                 height,
-                marginRight: i < sections ? 1 : 0,
+                marginRight: i < sections ? 2.5 : 0,
                 backgroundColor: '#E0E0E0',
                 ...borderRadius
             }}>
