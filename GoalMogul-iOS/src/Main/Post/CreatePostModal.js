@@ -25,6 +25,7 @@ import EmptyResult from '../Common/Text/EmptyResult';
 import ProfileImage from '../Common/ProfileImage';
 import MentionsTextInput from '../Goal/Common/MentionsTextInput';
 import DelayedButton from '../Common/Button/DelayedButton';
+import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 
 // assets
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
@@ -52,6 +53,8 @@ const INITIAL_TAG_SEARCH = {
     limit: 10,
     loading: false
 };
+const ON_CANCEL_OPTIONS = ['Save Draft', 'Delete', 'Cancel'];
+const ON_CANCEL_CANCEL_INDEX = 2;
 
 class CreatePostModal extends Component {
     constructor(props) {
@@ -257,11 +260,11 @@ class CreatePostModal extends Component {
         const callback = R.curry((result) => {
             this.props.change('mediaRef', result.uri);
         });
-        this.props.openCameraRoll(callback, { disableEditing: true });
+        this.props.openCameraRoll(callback, { disableEditing: false });
     }
 
     handleSaveDraft = () => {
-
+        
     }
 
     /**
@@ -296,6 +299,34 @@ class CreatePostModal extends Component {
             this.props.callback,
             this.props.pageId
         );
+    }
+
+    handleCancel = () => {
+        const { post, mediaRef, uploading } = this.props;
+        // TODO: check if draft is already saved
+        const draftSaved = uploading || ((!post || post.trim() === '') && !mediaRef);
+        if (draftSaved) {
+            if (this.props.onClose) this.props.onClose();
+            return Actions.pop();
+        }
+
+        const onCancelSwitchCases = switchByButtonIndex([
+            [R.equals(0), () => {
+                this.handleSaveDraft()
+                if (this.props.onClose) this.props.onClose();
+                Actions.pop();
+            }],
+            [R.equals(1), () => {
+                if (this.props.onClose) this.props.onClose();
+                Actions.pop();
+            }]
+        ]);
+        const onCancelActionSheet = actionSheet(
+            ON_CANCEL_OPTIONS,
+            ON_CANCEL_CANCEL_INDEX,
+            onCancelSwitchCases
+        );
+        return onCancelActionSheet();
     }
 
     renderTagSearchLoadingComponent(loading) {
@@ -452,7 +483,7 @@ class CreatePostModal extends Component {
 
         if (this.props.mediaRef) {
             return (
-                <View style={{ backgroundColor: 'gray', borderRadius: 8 }}>
+                <View style={{ marginTop: 8, backgroundColor: 'gray', borderRadius: 8 }}>
                     <ImageBackground
                         style={styles.mediaStyle}
                         source={{ uri: imageUrl }}
@@ -597,21 +628,16 @@ class CreatePostModal extends Component {
                 <ModalHeader
                     title='New Post'
                     actionText={modalActionText}
-                    onCancel={() => {
-                        if (this.props.onClose) {
-                            this.props.onClose();
-                        }
-                        Actions.pop();
-                    }}
+                    onCancel={this.handleCancel}
                     onAction={handleSubmit(this.handleCreate)}
                     actionDisabled={actionDisabled}
                 />
                 <ScrollView style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}>
                     <View style={{ flex: 1, padding: 20 }}>
                         {this.renderUserInfo()}
-                        {this.renderMedia()}
                         {this.renderPost()}
                         {this.renderActionIcons()}
+                        {this.renderMedia()}
                     </View>
 
                 </ScrollView>
