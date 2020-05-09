@@ -402,9 +402,10 @@ class NewGoalView extends Component {
                 }}
             >
                 <ProfileImage
-                    imageContainerStyle={styles.imageContainerStyle}
+                    defaultImageContainerStyle={styles.imageContainerStyle}
+                    imageContainerStyle={{ ...styles.imageContainerStyle, borderWidth: 0 }}
                     imageUrl={profile && profile.image ? profile.image : undefined}
-                    imageStyle={{ height: 31, width: 30, borderRadius: 3 }}
+                    imageStyle={{ height: 30, width: 30, borderRadius: 15 }}
                     defaultImageSource={defaultUserProfile}
                 />
                 <Text style={{ fontSize: 16, color: 'darkgray' }}>{name}</Text>
@@ -470,15 +471,21 @@ class NewGoalView extends Component {
      */
     renderUserInfo(user, isEdit) {
         if (!user) return null;
-        const imageUrl = user.profile.image;
 
         const callback = R.curry((value) => this.props.change('privacy', value));
         const shareToMastermindCallback = R.curry((value) => this.props.change('shareToMastermind', value));
         return (
-            <View style={{ flexDirection: 'row', marginBottom: 15 }}>
-                <Image
-                    style={imageUrl ? DEFAULT_STYLE.profileImage_1 : DEFAULT_STYLE.profileImage_2}
-                    source={imageUrl ? { uri: `${IMAGE_BASE_URL}${imageUrl}` } : defaultUserProfile}
+            <View style={{ flexDirection: 'row' }}>
+                <ProfileImage
+                    imageStyle={DEFAULT_STYLE.profileImage_1}
+                    defaultImageStyle={DEFAULT_STYLE.profileImage_2}
+                    imageUrl={user && user.profile ? user.profile.image : undefined}
+                    imageContainerStyle={styles.userImageContainerStyle}
+                    defaultImageContainerStyle={{
+                        ...styles.userImageContainerStyle,
+                        borderColor: '#BDBDBD',
+                        borderWidth: 2
+                    }}
                 />
                 <View style={{ margin: 8 }}>
                     <Text style={{ ...DEFAULT_STYLE.titleText_1, marginBottom: 8 }}>
@@ -508,13 +515,9 @@ class NewGoalView extends Component {
         return (
             <CopilotStep text={this.props.tutorialText[1]} order={1} name="create_goal_create_goal_modal_1">
                 <WalkableView>
-                    <Text style={{ color: 'red', marginTop: 16, marginBottom: 16 }}>
-                        *<Text style={DEFAULT_STYLE.titleText_2}>
-                            What are you trying to achieve?
-                        </Text>
-                    </Text>
+                    {this.renderRequiredTitleText('What are you trying to achieve?', 16)}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={styles.titleTextStyle}>Your Goal</Text>
+                        <Text style={styles.subTitleTextStyle}>Your Goal</Text>
                         <Text style={DEFAULT_STYLE.smallText_2}>{title ? title.length : 0}/90</Text>
                     </View>
                     <Field
@@ -543,7 +546,7 @@ class NewGoalView extends Component {
             return (
                 <WalkableView>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 }}>
-                        <Text style={styles.titleTextStyle}>
+                        <Text style={styles.subTitleTextStyle}>
                             Description <Text style={DEFAULT_STYLE.smallText_1}>(Optional)</Text>
                         </Text>
                         <Text style={DEFAULT_STYLE.smallText_2}>
@@ -577,7 +580,7 @@ class NewGoalView extends Component {
     }
 
     renderCategory = () => {
-        const titleText = <Text style={styles.titleTextStyle}>Category</Text>;
+        const titleText = <Text style={styles.subTitleTextStyle}>Category</Text>;
 
         const menu = MenuFactory(
             [
@@ -602,7 +605,7 @@ class NewGoalView extends Component {
             <CopilotStep text={this.props.tutorialText[2]} order={2} name="create_goal_create_goal_modal_2">
                 <WalkableView
                     style={{
-                        ...styles.sectionMargin,
+                        marginTop: 16,
                         justifyContent: 'flex-start',
                         flex: 1
                     }}
@@ -615,41 +618,27 @@ class NewGoalView extends Component {
     }
 
     renderPriority = () => {
-        let priorityText = '';
-        if (this.props.priority <= 3) {
-            priorityText = 'Low';
-        } else if (this.props.priority <= 6) {
-            priorityText = 'Medium';
-        } else {
-            priorityText = 'High';
-        }
+        const THUMB_COLORS = ['#219653', '#F07E1A', '#D71919'];
+        const TRACK_COLORS = ['#27AE60', '#F2994A', '#EB5757'];
+        const SLIDER_NUMS = [0, 5, 10];
+        let colorIndex = 0;
+        if (this.props.priority <= 3) colorIndex = 0;
+        else if (this.props.priority <= 6) colorIndex = 1;
+        else colorIndex = 2;
 
-        const valueText = (
-            <Text
-                style={{
-                    ...styles.titleTextStyle,
-                    fontSize: 14,
-                    fontWeight: '700'
-                }}
-            >
-                {this.props.priority}
-            </Text>
-        );
+        const titleText = this.renderRequiredTitleText('How important is your goal?', 12);
 
-        const titleText = (
-            <Text style={styles.titleTextStyle}>
-                Priority  {valueText}  <Text style={{ fontWeight: '700' }}>{priorityText}</Text>
-            </Text>
-        );
-
-        const menu = (
+        const slider = (
             <Slider
                 value={this.props.priority}
                 onValueChange={value => this.handlePriorityOnSelect(value)}
                 step={1}
-                minimumValue={1}
+                minimumValue={0}
                 maximumValue={10}
                 disabled={!this.props.uploading}
+                trackStyle={{ height: 10, backgroundColor: '#F2F2F2' }}
+                minimumTrackTintColor={TRACK_COLORS[colorIndex]}
+                thumbStyle={{ width: 12, height: 20, backgroundColor: THUMB_COLORS[colorIndex] }}
             />
         );
 
@@ -657,7 +646,13 @@ class NewGoalView extends Component {
             <CopilotStep text={this.props.tutorialText[3]} order={3} name="create_goal_create_goal_modal_3">
                 <WalkableView style={{ ...styles.sectionMargin, justifyContent: 'flex-start', flex: 1 }}>
                     {titleText}
-                    {menu}
+                    <Text style={styles.descriptionTextStyle}>Use is to set reletive priority of your Goal.</Text>
+                    {slider}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        {SLIDER_NUMS.map((val) => {
+                            return <Text style={DEFAULT_STYLE.normalText_1}>{val}</Text>;
+                        })}
+                    </View>
                 </WalkableView>
             </CopilotStep>
         );
@@ -665,13 +660,14 @@ class NewGoalView extends Component {
 
     // Renderer for timeline
     renderTimeline = () => {
-        const titleText = <Text style={styles.titleTextStyle}>Timeline (optional)</Text>;
+        const titleText = this.renderRequiredTitleText('Timeline', 12);
         if (this.props.startTime === undefined) return;
 
         const newPicker = true;
         const startDatePicker = newPicker ?
             (<DateTimePicker
                 isVisible={this.props.startTime.picker}
+                date={new Date()}
                 onConfirm={(date) => {
                     if (validateTime(date, this.props.endTime.date)) {
                         this.props.change('startTime', { date, picker: false });
@@ -762,13 +758,29 @@ class NewGoalView extends Component {
 
             </Modal>);
 
-        const startTime = this.props.startTime.date ?
-            <Text>{moment(this.props.startTime.date).format('ll')}</Text> :
-            <Text style={{ fontSize: 15 }}>Start date</Text>;
+        const startTime = (
+            <Text style={{ ...DEFAULT_STYLE.subTitleText_1, margin: 12 }}>
+                {moment(this.props.startTime.date ? this.props.startTime.date : new Date()).format('ll')}
+            </Text>
+        );
 
-        const endTime = this.props.endTime.date ?
-            <Text>{moment(this.props.endTime.date).format('ll')}</Text> :
-            <Text style={{ fontSize: 15 }}>End date</Text>;
+        const endTime = (
+            <Text style={{ ...DEFAULT_STYLE.subTitleText_1, margin: 12 }}>
+                {moment(this.props.endTime.date ? this.props.endTime.date : new Date()).format('ll')}
+            </Text>
+        );
+
+        const icon = (
+            <View style={{
+                height: 40,
+                width: 34,
+                borderWidth: 1,
+                borderColor: '#DFE0E1',
+                backgroundColor: '#F5F7FA'
+            }}>
+                <Image />
+            </View>
+        );
 
         // Show cancel button if there is date set
         const cancelButton = this.props.endTime.date || this.props.startTime.date ?
@@ -792,14 +804,14 @@ class NewGoalView extends Component {
             <CopilotStep text={this.props.tutorialText[4]} order={4} name="create_goal_create_goal_modal_4">
                 <WalkableView style={{ ...styles.sectionMargin }}>
                     {titleText}
+                    <Text style={styles.descriptionTextStyle}>Give your best estimate.</Text>
                     <View style={{ marginTop: 8, flexDirection: 'row' }}>
                         <TouchableOpacity
                             activeOpacity={0.6}
                             style={{
-                                height: 50,
-                                width: 130,
+                                height: 40,
+                                flexDirection: 'row',
                                 alignItems: 'center',
-                                justifyContent: 'center',
                                 ...styles.borderStyle
                             }}
                             onPress={() =>
@@ -809,16 +821,17 @@ class NewGoalView extends Component {
                                 })
                             }
                         >
+                            {icon}
                             {startTime}
                         </TouchableOpacity>
 
                         <TouchableOpacity
                             activeOpacity={0.6}
                             style={{
-                                height: 50,
-                                width: 130,
+                                height: 40,
+                                flexDirection: 'row',
                                 alignItems: 'center',
-                                justifyContent: 'center',
+                                justifyContent: 'flex-start',
                                 marginLeft: 15,
                                 ...styles.borderStyle
                             }}
@@ -829,6 +842,7 @@ class NewGoalView extends Component {
                                 })
                             }
                         >
+                            {icon}
                             {endTime}
                         </TouchableOpacity>
                         {cancelButton}
@@ -925,9 +939,7 @@ class NewGoalView extends Component {
             ) : null;
 
         return (
-            <View
-                style={{ ...styles.sectionMargin }}
-            >
+            <View style={styles.sectionMargin}>
                 {titleText}
                 {fieldsComponent}
                 {button}
@@ -938,7 +950,7 @@ class NewGoalView extends Component {
     renderSteps = ({ fields, meta: { error, submitFailed } }) => {
         return (
             <CopilotStep text={this.props.tutorialText[5]} order={5} name="create_goal_create_goal_modal_5">
-                <WalkableView style={{ ...styles.sectionMargin }}>
+                <WalkableView>
                     {
                         this.renderFieldArray(
                             'Steps (optional)',
@@ -957,6 +969,16 @@ class NewGoalView extends Component {
         return this.renderFieldArray('Needs (optional)', 'need', NEED_PLACE_HOLDER, fields, error);
     }
 
+    renderRequiredTitleText(text, marginBottom = 0) {
+        return (
+            <Text style={{ ...DEFAULT_STYLE.normalText_1, color: 'red', marginBottom: marginBottom }}>
+                *<Text style={styles.titleTextStyle}>
+                    {text}
+                </Text>
+            </Text>
+        );
+    }
+
     render() {
         const { user, initializeFromState } = this.props;
 
@@ -965,8 +987,11 @@ class NewGoalView extends Component {
                 scrollEnabled={this.state.scrollEnabled}
                 ref={r => { this.scrollView = r; }}
             >
-                <View style={{ flex: 1, padding: 20 }}>
+                <View style={{ padding: 20, paddingBottom: 0 }}>
                     {this.renderUserInfo(user, initializeFromState)}
+                </View>
+                <View style={[DEFAULT_STYLE.shadow, styles.sectionMargin]} />
+                <View style={{ padding: 20, paddingBottom: 0 }}>
                     {this.renderGoal()}
                     <FieldArray
                         name="details"
@@ -975,15 +1000,12 @@ class NewGoalView extends Component {
                         tagData={this.state.tagSearchData.data}
                         keyword={this.state.keyword}
                     />
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={{ flex: 1, marginRight: 8 }}>
-                            {this.renderCategory()}
-                        </View>
-                        <View style={{ flex: 1 }}>
-                            {this.renderPriority()}
-                        </View>
-                    </View>
+                    {this.renderCategory()}
+                    {this.renderPriority()}
                     {this.renderTimeline()}
+                </View>
+                <View style={[DEFAULT_STYLE.shadow, styles.sectionMargin]} />
+                <View style={{ padding: 20, paddingTop: 0 }}>
                     <FieldArray name="steps" component={this.renderSteps} />
                     <FieldArray
                         name="needs"
@@ -1003,22 +1025,32 @@ const validateTime = (start, end) => {
 
 const styles = {
     activityIndicatorStyle: {
-        flex: 1, height: 50, width: '100%', justifyContent: 'center', alignItems: 'center'
+        flex: 1,
+        height: 50,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    userImageContainerStyle: {
+        borderWidth: 0.5,
+        borderColor: 'lightgray',
+        alignItems: 'center',
+        borderRadius: 100,
+        alignSelf: 'flex-start',
+        backgroundColor: 'white'
     },
     imageContainerStyle: {
         borderWidth: 0.5,
         padding: 1,
         borderColor: 'lightgray',
         alignItems: 'center',
-        borderRadius: 3,
+        borderRadius: 100,
         alignSelf: 'center',
         backgroundColor: 'white',
-        marginLeft: 10,
-        marginRight: 10,
         margin: 5
     },
     sectionMargin: {
-        marginTop: 20
+        marginTop: 40
     },
     inputContainerStyle: {
         flex: 1,
@@ -1028,13 +1060,16 @@ const styles = {
         borderRadius: 5,
         borderColor: '#E0E0E0'
     },
-    imageStyle: {
-        height: 54,
-        width: 54,
-        borderRadius: 5,
-    },
     titleTextStyle: {
+        ...DEFAULT_STYLE.titleText_2,
+        padding: 2
+    },
+    subTitleTextStyle: {
         ...DEFAULT_STYLE.smallTitle_1,
+        padding: 2
+    },
+    descriptionTextStyle: {
+        ...DEFAULT_STYLE.normalText_1,
         padding: 2
     },
     standardInputStyle: {
@@ -1066,20 +1101,16 @@ const styles = {
         alignItems: 'center',
         marginTop: 5,
         borderWidth: 1,
-        borderRadius: 5,
-        borderColor: '#e9e9e9',
-        shadowColor: '#ddd',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.8,
-        shadowRadius: 1,
-        elevation: 1,
+        borderRadius: 3,
+        borderColor: '#E0E0E0'
     },
     anchorStyle: {
         backgroundColor: 'white'
     },
     menuOptionsStyles: {
         optionsContainer: {
-            width: width - 14,
+            width: width - 40,
+            paddingTop: 5
         },
         optionWrapper: {
             flex: 1,
@@ -1089,11 +1120,11 @@ const styles = {
             activeOpacity: 10,
         },
         optionText: {
+            ...DEFAULT_STYLE.normalText_1,
             paddingTop: 5,
             paddingBottom: 5,
             paddingLeft: 10,
-            paddingRight: 10,
-            color: 'black',
+            paddingRight: 10
         },
     }
 };
@@ -1154,7 +1185,7 @@ const MenuFactory = (options, callback, triggerText, triggerContainerStyle, anim
             >
                 <View style={triggerContainerStyle}>
                     <Text
-                        style={{ fontSize: 15, margin: 10, marginLeft: 15, flex: 1 }}
+                        style={{ ...DEFAULT_STYLE.normalText_1, margin: 10, flex: 1 }}
                     >
                         {triggerText}
                     </Text>

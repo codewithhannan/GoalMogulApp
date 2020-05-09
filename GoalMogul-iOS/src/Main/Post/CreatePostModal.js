@@ -434,7 +434,17 @@ renderUserInfo() {
 
         return (
             <View style={{ flexDirection: 'row', marginBottom: 15 }}>
-                {profileImage}
+                <ProfileImage
+                    imageStyle={DEFAULT_STYLE.profileImage_1}
+                    defaultImageStyle={DEFAULT_STYLE.profileImage_2}
+                    imageUrl={profile ? profile.image : undefined}
+                    imageContainerStyle={styles.userImageContainerStyle}
+                    defaultImageContainerStyle={{
+                        ...styles.userImageContainerStyle,
+                        borderColor: '#BDBDBD',
+                        borderWidth: 2
+                    }}
+                />
                 <View style={{ flexDirection: 'column', margin: 7 }}>
                     <Text style={{ ...DEFAULT_STYLE.titleText_1, marginBottom: 8 }}>
                         {name}
@@ -682,6 +692,14 @@ const styles = {
         tintColor: '#4a4a4a',
         height: 15,
         width: 18
+    },
+    userImageContainerStyle: {
+        borderWidth: 0.5,
+        borderColor: 'lightgray',
+        alignItems: 'center',
+        borderRadius: 100,
+        alignSelf: 'flex-start',
+        backgroundColor: 'white'
     },
     imageContainerStyle: {
         borderWidth: 0.5,
