@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { GM_CONTAINER_BACKGROUND } from '../../styles/basic/color';
+import SearchBarHeader from '../Common/Header/SearchBarHeader';
 
 /**
  * Friend tab page for GM main tabs
@@ -14,7 +15,12 @@ class FriendTab extends React.Component {
     render() {
         return (
             <View style={styles.containerStyle}>
-                
+                <SearchBarHeader
+                    backButton={false}
+                    setting={false}
+                    rightIcon='menu'
+                />
+
             </View>
         );
     }

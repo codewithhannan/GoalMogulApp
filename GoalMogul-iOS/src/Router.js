@@ -80,6 +80,8 @@ import AddProfilePic from './Registration/AddProfilePic';
 import Contacts from './Registration/Contacts';
 import ContactSync from './Registration/ContactSync';
 import IntroForm from './Registration/IntroForm';
+// Friend tab
+import FriendTab from './Main/FriendTab';
 /* Registration */
 // import RegistrationAccount from './Registration/Account';
 // import RegistrationAccount from './Registration/RegistrationAccount';
@@ -218,7 +220,8 @@ class RouterComponent extends Component {
                                 <Scene key="login" component={LoginPage} />
                                 <Scene
                                     key="registrationAccount"
-                                    component={RegistrationAccount}
+                                    // component={RegistrationAccount}
+                                    component={FriendTab}
                                 />
                             </Stack>
 
@@ -230,13 +233,13 @@ class RouterComponent extends Component {
                               <Scene key="registrationContactSync" component={ContactSync} />
                             </Stack> */}
                             <Stack key="registration" hideNavBar type={ActionConst.RESET} drawerLockMode='locked-closed' gesturesEnabled={false} panHandlers={null}>
-                              <Scene key="registration_transition" component={OnboardingIntroTransition} initial />
-                              <Scene key="registration_target_selection" component={OnboardingSelectionTarget} />
-                              <Scene key="registration_tribe_selection" component={OnboardingTribeSelection} />
-                              <Scene key="registration_community_guideline" component={OnboardingCommunity} />
-                              <Scene key="registration_contact_sync" component={OnboardingSyncContact} />
-                              <Scene key="registration_contact_invite" component={SyncContactInvite} />
-                              <Scene key="registration_welcome" component={OnboardingWelcome} />
+                                <Scene key="registration_transition" component={OnboardingIntroTransition} initial />
+                                <Scene key="registration_target_selection" component={OnboardingSelectionTarget} />
+                                <Scene key="registration_tribe_selection" component={OnboardingTribeSelection} />
+                                <Scene key="registration_community_guideline" component={OnboardingCommunity} />
+                                <Scene key="registration_contact_sync" component={OnboardingSyncContact} />
+                                <Scene key="registration_contact_invite" component={SyncContactInvite} />
+                                <Scene key="registration_welcome" component={OnboardingWelcome} />
                             </Stack>
                             <Scene key="tutorial" component={Tutorial} hideNavBar />
                             <Drawer
