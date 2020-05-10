@@ -32,9 +32,6 @@ import {
   BACKGROUND_COLOR
 } from '../../../../styles';
 
-// Test Data
-import { testFriendRequests } from '../../../../Test/TestObjects';
-
 // Constants
 import {
   MEET_REQUEST_LIMIT

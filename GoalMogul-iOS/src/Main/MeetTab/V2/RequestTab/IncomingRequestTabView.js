@@ -37,9 +37,6 @@ import {
   MEET_REQUEST_LIMIT
 } from '../../../../reducers/MeetReducers';
 
-// Test Data
-import { testFriendRequests } from '../../../../Test/TestObjects';
-
 // tab key
 const routes = {
   outgoing: 'requests.outgoing',

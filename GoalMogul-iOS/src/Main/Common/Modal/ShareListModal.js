@@ -95,6 +95,7 @@ class ShareListModal extends React.PureComponent {
         return (
             <View style={ModalHeaderStyle.headerContainerStyle}>
                 <DelayedButton
+                    testID="share-list-modal-close-button"
                     activeOpacity={0.6}
                     onPress={() => this.closeModal()}
                     style={{ position: 'absolute', top: 5, left: 5, padding: 12 }}

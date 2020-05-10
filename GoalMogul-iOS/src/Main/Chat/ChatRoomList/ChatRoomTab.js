@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 // Actions
 import { createOrGetDirectMessage, loadMoreChatRooms, refreshChatRooms, searchQueryUpdated, updateCurrentChatRoomsList } from '../../../redux/modules/chat/ChatActions';
 import MessageStorageService from '../../../services/chat/MessageStorageService';
-import { IPHONE_MODELS } from '../../../Utils/Constants';
+import { IPHONE_MODELS, DEVICE_MODEL } from '../../../Utils/Constants';
 import { SearchIcon } from '../../../Utils/Icons';
 // Components
 import ChatRoomCard from './ChatRoomCard';
@@ -21,7 +21,7 @@ const CHATROOM_AUTO_SEARCH_DELAY_MS = 500;
 const CHATROOM_LIST_REFRESH_INTERVAL = 3000; // ms
 
 const SEARCHBAR_HEIGHT = Platform.OS === 'ios' &&
-      IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+      IPHONE_MODELS.includes(DEVICE_MODEL)
       ? 30 : 40;
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;

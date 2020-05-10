@@ -25,7 +25,6 @@ import {
 import R from 'ramda';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import Constants from 'expo-constants';
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 /* Asset */
@@ -58,7 +57,11 @@ import { createReport } from '../../../redux/modules/report/ReportActions';
 // styles
 import { GM_BLUE, GM_BLUE_LIGHT_LIGHT } from '../../../styles';
 
-import { IPHONE_MODELS } from '../../../Utils/Constants';
+import {
+    IPHONE_MODELS,
+    IMAGE_BASE_URL,
+    DEVICE_MODEL
+} from '../../../Utils/Constants';
 import { getUserData } from '../../../redux/modules/User/Selector';
 
 
@@ -242,7 +245,7 @@ class SearchBarHeader extends Component {
     render() {
         const paddingTop = (
             Platform.OS === 'ios' &&
-            IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+            IPHONE_MODELS.includes(DEVICE_MODEL)
         ) ? 40 : 55;
 
         return (

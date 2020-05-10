@@ -33,7 +33,7 @@ import {
   RightArrowIcon
 } from './Utils/Icons';
 
-import { IPHONE_MODELS, IS_ZOOMED } from './Utils/Constants';
+import { IPHONE_MODELS, IS_ZOOMED, DEVICE_MODEL } from './Utils/Constants';
 import banner from './asset/banner';
 import background from './asset/background';
 import image from './asset/image';
@@ -41,7 +41,7 @@ import { trackViewScreen } from './monitoring/segment';
 import { Screen } from './monitoring/segment/Constants';
 
 const IS_SMALL_PHONE = Platform.OS === 'ios' &&
-  IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+  IPHONE_MODELS.includes(DEVICE_MODEL)
 const width = Dimensions.get('window').width
 const DEBUG_KEY = '[ UI SplashScreen ]';
 class SplashScreen extends Component {
@@ -55,7 +55,7 @@ class SplashScreen extends Component {
   }
 
   async componentDidMount() {
-    console.log(`${DEBUG_KEY}: [componentDidMount]: iphone model: `, Constants.platform.ios.model.toLowerCase());
+    console.log(`${DEBUG_KEY}: [componentDidMount]: iphone model: `, DEVICE_MODEL);
     await Font.loadAsync({
       'gotham-pro': require('../assets/fonts/GothamPro.ttf'),
       'gotham-pro-bold': require('../assets/fonts/GothamPro-Bold.ttf')

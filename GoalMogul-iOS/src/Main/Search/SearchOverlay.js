@@ -10,7 +10,6 @@ import { connect } from 'react-redux';
 import { SearchBar, Icon } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
 import _ from 'lodash';
-import Constants from 'expo-constants';
 import { TabView, SceneMap } from 'react-native-tab-view';
 
 // Component
@@ -38,7 +37,7 @@ import {
 
 // Constants
 import {
-  IPHONE_MODELS
+  IPHONE_MODELS, DEVICE_MODEL
 } from '../../Utils/Constants';
 
 const DEBUG_KEY = '[ Component Search ]';
@@ -172,7 +171,7 @@ class SearchOverlay extends Component {
   render() {
     const marginTop = (
       Platform.OS === 'ios' &&
-      IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+      IPHONE_MODELS.includes(DEVICE_MODEL)
     ) ? 45 : 70;
 
     return (

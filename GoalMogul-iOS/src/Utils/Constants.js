@@ -26,7 +26,8 @@ export const IPHONE_MODELS_2 = ['iphone 7 plus', 'iphone x', 'iphone xs', 'iphon
 export const IPHONE_MODELS = ['iphone 7', 'iphone 6', 'iphone 6s',
     'iphone 5', 'iphone 6 plus', 'iphone 4', 'iphone 5s'];
 
-export const DEVICE_MODEL = Constants.platform.ios.model.toLowerCase();
+export const DEVICE_MODEL = Constants.platform && Constants.platform.ios && Constants.platform.ios.model
+    ? Constants.platform.ios.model.toLowerCase() : "iphone 7";
 
 // Simple function to identify if iphone is on zoomed mode
 export const IS_ZOOMED = (
