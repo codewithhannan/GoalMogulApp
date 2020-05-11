@@ -15,15 +15,32 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 
 import { TEXT_STYLE as textStyle } from '../../styles';
+import OnboardingHeader from './Common/OnboardingHeader';
+import OnboardingFooter from './Common/OnboardingFooter';
 
-const OnboardingAddPhotos = () => {
-  return (
-    <View style={styles.containerStyles}>
-      <Text style={[textStyle.onboardingPharagraphTextStyle, styles.firstTextStyles]}>OnboardingAddPhotos</Text>
-    </View>
-  );
+class OnboardingAddPhotos extends React.Component {
+  onNext = () => {
+    Actions.push("registration_tribe_selection");
+  };
+  
+  onBack = () => {
+    Actions.pop();
+  };
+
+  render() {
+    return (
+      <View style={styles.containerStyles}>
+        <OnboardingHeader />
+        <View style={styles.containerStyles}>
+
+        </View>
+        <OnboardingFooter totalStep={4} currentStep={1} onNext={this.onNext} onPrev={this.onBack} />
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -31,9 +48,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white"
   },
-  firstTextStyles: {
-    marginTop: 50,
-  }
 });
 
 const mapStateToProps = (state) => {
