@@ -85,7 +85,7 @@ import FriendTab from './Main/FriendTab';
 /* Registration */
 // import RegistrationAccount from './Registration/Account';
 // import RegistrationAccount from './Registration/RegistrationAccount';
-import { RegistrationAccount, OnboardingIntroTransition, 
+import { RegistrationAccount, OnboardingAddPhotos, OnboardingIntroTransition, 
   OnboardingSelectionTarget, OnboardingTribeSelection, 
   OnboardingCommunity, OnboardingSyncContact, OnboardingWelcome,
   SyncContactInvite
@@ -221,7 +221,7 @@ class RouterComponent extends Component {
                                 <Scene
                                     key="registrationAccount"
                                     // component={RegistrationAccount}
-                                    component={FriendTab}
+                                    component={OnboardingAddPhotos}
                                 />
                             </Stack>
 
@@ -240,6 +240,7 @@ class RouterComponent extends Component {
                                 <Scene key="registration_contact_sync" component={OnboardingSyncContact} />
                                 <Scene key="registration_contact_invite" component={SyncContactInvite} />
                                 <Scene key="registration_welcome" component={OnboardingWelcome} />
+                                <Scene key="registration_add_photo" component={OnboardingAddPhotos} />
                             </Stack>
                             <Scene key="tutorial" component={Tutorial} hideNavBar />
                             <Drawer

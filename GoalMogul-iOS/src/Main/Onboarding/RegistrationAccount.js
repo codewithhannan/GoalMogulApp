@@ -82,6 +82,7 @@ class RegistrationAccount extends React.Component {
             Actions.replace("registration");
         };
         // return this.props.registrationAccount(onSuccess);
+        onSuccess();
     }
 
     validateEmail(email) {
