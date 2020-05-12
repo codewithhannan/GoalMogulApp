@@ -18,6 +18,7 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  ActionSheetIOS,
   StyleSheet
 } from 'react-native';
 import { connect } from 'react-redux';
