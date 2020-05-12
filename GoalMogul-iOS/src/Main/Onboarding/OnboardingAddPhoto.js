@@ -18,7 +18,6 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  ActionSheetIOS,
   StyleSheet
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -26,16 +25,13 @@ import { Actions } from 'react-native-router-flux';
 
 import OnboardingHeader from './Common/OnboardingHeader';
 import DelayedButton from '../Common/Button/DelayedButton';
+import ImagePicker from './Common/ImagePicker';
 
 import {
   TEXT_STYLE as textStyle,
-  BUTTON_STYLE as buttonStyle,
-  GM_DOT_GRAY
+  BUTTON_STYLE as buttonStyle
 } from '../../styles';
-
-
-// Resources
-const TAKE_PIC_ICON = require('../../asset/image/takePictureIcon.png');
+import { openCamera, openCameraRoll } from '../../actions';
 
 
 class OnboardingAddPhotos extends Component {
@@ -49,26 +45,22 @@ class OnboardingAddPhotos extends Component {
     Actions.pop();
   };
 
-  /**Prompt user for an image selection */
-  onAddImagePressed = () => {
-    console.log("onAddImagePressed");
-  }
-
   render() {
+    const { openCamera, openCameraRoll, profilePic } = this.props;
+
     return (
       <View style={styles.containerStyles}>
         <OnboardingHeader />
         <View style={styles.containerStyles}>
           <View>
-            <TouchableOpacity
-              style={styles.roundedButtonStyles}
-              onPress={this.onAddImagePressed}
-            >
-              <Image
-                style={styles.iconStyles}
-                source={TAKE_PIC_ICON}
-              />
-            </TouchableOpacity>
+            <ImagePicker
+              handleTakingPicture={openCamera}
+              handleCameraRoll={openCameraRoll}
+              imageUri={profilePic}
+              style={styles.imagePickerStyles}
+              bordered
+              rounded
+            />
             <Text style={[textStyle.onboardingTitleTextStyle, styles.titleStyles]}>
               Now, add a photo
             </Text>
@@ -105,6 +97,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     justifyContent: 'space-between',
   },
+  imagePickerStyles: {
+    marginVertical: 40
+  },
   buttonContainerStyles: {
     marginBottom: 60,
     paddingHorizontal: 25,
@@ -114,30 +109,18 @@ const styles = StyleSheet.create({
   },
   titleStyles: {
     marginBottom: 16,
-  },
-  roundedButtonStyles: {
-    width: 150,
-    height: 150,
-    marginTop: 40,
-    marginBottom: 40,
-    borderWidth: 2,
-    borderRadius: 180,
-    borderColor: GM_DOT_GRAY,
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  iconStyles: {
   }
 });
 
 
 const mapStateToProps = (state) => {
-  return {};
+  const { profilePic } = state.registration;
+
+  return { profilePic };
 };
 
 
 export default connect(
   mapStateToProps,
-  {}
+  { openCamera, openCameraRoll }
 )(OnboardingAddPhotos);
