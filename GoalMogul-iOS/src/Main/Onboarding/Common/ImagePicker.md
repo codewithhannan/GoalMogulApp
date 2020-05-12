@@ -21,7 +21,7 @@ Note that `ImagePicker` is self closing. Please do **NOT** assign children to th
 | rounded              | boolean      | If true, ImagePicker will be rounded in appearence. |
 | bordered             | boolean      | If true, ImagePicker will include a 2mm border of gray colour. |
 
-* required props
+\* required props
 
 ## Examples
 To effectively use the `ImagePicker` component, we complement the use of two action creators:
