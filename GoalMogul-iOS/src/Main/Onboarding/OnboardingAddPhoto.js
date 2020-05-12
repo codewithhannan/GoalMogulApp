@@ -13,15 +13,24 @@
  ***********************************************************/
 
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet
+} from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 
 import OnboardingHeader from './Common/OnboardingHeader';
-import OnboardingFooter from './Common/OnboardingFooter';
 import DelayedButton from '../Common/Button/DelayedButton';
 
-import { TEXT_STYLE as textStyle, BUTTON_STYLE as buttonStyle, GM_DOT_GRAY } from '../../styles';
+import {
+  TEXT_STYLE as textStyle,
+  BUTTON_STYLE as buttonStyle,
+  GM_DOT_GRAY
+} from '../../styles';
 
 
 // Resources
