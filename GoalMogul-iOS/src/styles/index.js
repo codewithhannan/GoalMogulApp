@@ -49,7 +49,6 @@ export const BUTTON_STYLE = {
       height: 45,
       width: "100%",  
       backgroundColor: GM_BLUE,
-      borderRadius: 3,
       alignItems: "center",
       justifyContent: "center",
       borderRadius: 5,
@@ -67,7 +66,6 @@ export const BUTTON_STYLE = {
       height: 45,
       width: "100%",  
       backgroundColor: "white",
-      borderRadius: 3,
       alignItems: "center",
       justifyContent: "center",
       borderColor: "#BDBDBD",
@@ -80,6 +78,20 @@ export const BUTTON_STYLE = {
       color: GM_BLUE,
       fontFamily: GM_FONT_FAMILY.GOTHAM,
       fontWeight: "500"
+    }
+  },
+  /*
+  * Added 11 May 20 by Yanxiang Lan.
+  * For use as secondary button in onboarding v2
+  */
+  GM_WHITE_BG_GRAY_TEXT: {
+    containerStyle: {
+      height: 45,
+      width: "100%",  
+      borderRadius: 5,
+      backgroundColor: "white",
+      alignItems: "center",
+      justifyContent: "center",
     }
   }
 };

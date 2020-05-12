@@ -17,9 +17,11 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 
-import { TEXT_STYLE as textStyle } from '../../styles';
 import OnboardingHeader from './Common/OnboardingHeader';
 import OnboardingFooter from './Common/OnboardingFooter';
+import DelayedButton from '../Common/Button/DelayedButton';
+
+import { TEXT_STYLE as textStyle, BUTTON_STYLE as buttonStyle } from '../../styles';
 
 
 // Resources
@@ -47,23 +49,40 @@ class OnboardingAddPhotos extends Component {
       <View style={styles.containerStyles}>
         <OnboardingHeader />
         <View style={styles.containerStyles}>
-          <TouchableOpacity
-            style={styles.roundedButtonStyles}
-            onPress={this.onAddImagePressed}
-          >
-            <Image
-              style={styles.iconStyles}
-              source={TAKE_PIC_ICON}
-            />
-          </TouchableOpacity>
-          <Text style={textStyle.onboardingTitleTextStyle}>Now, add a photo</Text>
+          <View>
+            <TouchableOpacity
+              style={styles.roundedButtonStyles}
+              onPress={this.onAddImagePressed}
+            >
+              <Image
+                style={styles.iconStyles}
+                source={TAKE_PIC_ICON}
+              />
+            </TouchableOpacity>
+            <Text style={[textStyle.onboardingTitleTextStyle, styles.titleStyles]}>
+              Now, add a photo
+            </Text>
+            <Text style={textStyle.onboardingPharagraphTextStyle}>
+              This way, people will recgonize you
+            </Text>
+          </View>
+          <View style={styles.buttonContainerStyles}>
+            <DelayedButton
+              style={[buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle]}
+            >
+              <Text style={buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.textStyle}>
+                Continue
+              </Text>
+            </DelayedButton>
+            <DelayedButton
+              style={[buttonStyle.GM_WHITE_BG_BLUE_TEXT.containerStyle]}
+            >
+              <Text style={buttonStyle.GM_WHITE_BG_BLUE_TEXT.textStyle}>
+                Skip
+              </Text>
+            </DelayedButton>
+          </View>
         </View>
-        <OnboardingFooter
-          totalStep={4}
-          currentStep={1}
-          onNext={this.onNext}
-          onPrev={this.onBack}
-        />
       </View>
     );
   }
@@ -73,7 +92,15 @@ class OnboardingAddPhotos extends Component {
 const styles = StyleSheet.create({
   containerStyles: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: 'white',
+    justifyContent: 'space-between',
+  },
+  buttonContainerStyles: {
+    marginBottom: 80,
+    paddingHorizontal: 25,
+  },
+  titleStyles: {
+    marginBottom: 16,
   },
   roundedButtonStyles: {
     width: 150,
