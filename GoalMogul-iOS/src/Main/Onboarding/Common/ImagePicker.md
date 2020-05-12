@@ -54,7 +54,7 @@ const mapStateToProps = (state) => {
 
 As Jia Zeng handles the update of `profilePic`, once the user obtains an image through `openCamera` or `openCameraRoll`, `profilePic` is updated with the uri of the image, hence the `ImagePicker` will show the correct image.
 
-### Chaning the Appearence
+### Changing the Appearence
 
 When we want a circular image picker, or when we want an image picker with border, or perhaps both, we use the props `rounded` and `bordered`. For example:
 
