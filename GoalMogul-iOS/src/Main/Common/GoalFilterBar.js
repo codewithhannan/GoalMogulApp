@@ -37,6 +37,7 @@ class GoalFilterBar extends Component {
             categories
         } = this.props.filter;
         const categoryText = categories;
+        const isCategorySelected = categories !== CATEGORY_OPTIONS[0].value;
 
         return (
             <View style={styles.containerStyle}>
@@ -44,13 +45,17 @@ class GoalFilterBar extends Component {
                     rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
                     renderer={renderers.SlideInMenu}
                 >
-                    <MenuTrigger
-                        customStyles={{
-                            TriggerTouchableComponent: TouchableOpacity,
-                        }}
-                    >
-                        <View style={styles.detailContainerStyle}>
-                            <Text style={{ ...DEFAULT_STYLE.buttonText_1, color: '#A2A2A2' }}>Sort &amp; Filter</Text>
+                    <MenuTrigger customStyles={{ TriggerTouchableComponent: TouchableOpacity }}>
+                        <View style={[
+                            styles.detailContainerStyle,
+                            isCategorySelected ? styles.selectedContainerStyle : null
+                        ]}>
+                            <Text style={{
+                                ...DEFAULT_STYLE.buttonText_1,
+                                fontWeight: isCategorySelected ? '700' : '500'
+                            }}>
+                                Sort &amp; Filter
+                            </Text>
                         </View>
                     </MenuTrigger>
                     <MenuOptions customStyles={styles.menuOptionsStyles}>
@@ -66,10 +71,17 @@ class GoalFilterBar extends Component {
                         }}>
                             {SORT_BY_OPTIONS.map((option) => {
                                 const { value, text } = option;
+                                const isSelected = sortBy === value;
                                 return (
                                     <MenuOption onSelect={() => this.handleOnMenuSelect('sortBy', value)}>
-                                        <View style={styles.sortByOptionWrapper}>
-                                            <Text style={{ ...DEFAULT_STYLE.normalText_1, color: '#828282' }}>
+                                        <View style={[
+                                            styles.sortByOptionWrapper,
+                                            isSelected ? styles.selectedContainerStyle : null
+                                        ]}>
+                                            <Text style={{
+                                                ...DEFAULT_STYLE.normalText_1,
+                                                color: isSelected ? '#333' : '#828282'
+                                            }}>
                                                 {text}
                                             </Text>
                                         </View>
@@ -148,6 +160,10 @@ const styles = {
         borderColor: '#E0E0E0',
         borderRadius: 100
     },
+    selectedContainerStyle: {
+        borderColor: '#828282',
+        backgroundColor: '#F2F2F2'
+    },
     anchorStyle: {
         backgroundColor: BACKGROUND_COLOR
     },
@@ -170,11 +186,12 @@ const styles = {
         paddingBottom: 14
     },
     sortByOptionWrapper: {
-        backgroundColor: '#F2F2F2',
-        padding: 8,
-        paddingLeft: 16,
-        paddingRight: 16,
+        padding: 4,
+        paddingLeft: 12,
+        paddingRight: 12,
         borderRadius: 100,
+        borderWidth: 1,
+        borderColor: '#E0E0E0',
         margin: 2
     },
     categoryHeaderWrapper: {

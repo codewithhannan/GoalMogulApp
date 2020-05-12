@@ -210,14 +210,13 @@ class ProfileV2 extends Component {
                     borderRadius={3}
                     buttonStyle={{
                         selected: {
+                            ...DEFAULT_STYLE.buttonText_1,
                             backgroundColor: GM_BLUE,
                             color: 'white',
-                            ...DEFAULT_STYLE.buttonText_1,
                         },
                         unselected: {
-                            backgroundColor: BACKGROUND_COLOR,
-                            color: '#BDBDBD',
-                            ...DEFAULT_STYLE.buttonText_1
+                            ...DEFAULT_STYLE.buttonText_1,
+                            backgroundColor: '#F2F2F2'
                         }
                     }}
                 />

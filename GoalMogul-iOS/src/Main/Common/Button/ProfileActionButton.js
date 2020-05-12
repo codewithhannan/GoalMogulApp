@@ -39,8 +39,9 @@ const ProfileActionButton = (props) => {
             <View
                 style={{
                     flexDirection: 'row',
-                    padding: 7,
-                    borderRadius: 3,
+                    padding: 8,
+                    paddingLeft: textComponent ? 12 : 8,
+                    paddingRight: textComponent ? 12 : 8,
                     ...props.containerStyle
                 }}
             >

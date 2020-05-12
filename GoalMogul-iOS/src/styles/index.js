@@ -111,8 +111,8 @@ export const modalHeaderBadgeShadow = {
 const UI_SCALE = 1;
 export const TEXT_COLOR_1 = '#333';
 
-export const FONT_FAMILY_1 = 'gotham-pro-bold';
-export const FONT_FAMILY_2 = 'gotham-pro';
+export const FONT_FAMILY_1 = 'Avenir';
+export const FONT_FAMILY_2 = 'Avenir';
 export const FONT_FAMILY_3 = 'Helvetica';
 
 export const DEFAULT_STYLE = {
@@ -121,16 +121,19 @@ export const DEFAULT_STYLE = {
         fontFamily: FONT_FAMILY_1,
         fontSize: 16 * UI_SCALE,
         color: TEXT_COLOR_1,
+        fontWeight: 'bold',
         letterSpacing: 0.3
     },
     titleText_2: {
         fontFamily: FONT_FAMILY_1,
         fontSize: 14 * UI_SCALE,
+        fontWeight: 'bold',
         color: TEXT_COLOR_1
     },
     subTitleText_1: {
         fontFamily: FONT_FAMILY_2,
         fontSize: 16 * UI_SCALE,
+        fontWeight: '400',
         color: TEXT_COLOR_1,
         letterSpacing: 0.3
     },
@@ -143,7 +146,8 @@ export const DEFAULT_STYLE = {
     // Detailing texts
     smallTitle_1: {
         fontFamily: FONT_FAMILY_1,
-        fontSize: 12 * UI_SCALE,
+        fontSize: 11 * UI_SCALE,
+        fontWeight: 'bold',
         color: TEXT_COLOR_1,
         letterSpacing: 0.3
     },
@@ -164,16 +168,19 @@ export const DEFAULT_STYLE = {
     // Button styles
     buttonText_1: {
         fontFamily: FONT_FAMILY_1,
-        fontSize: 14 * UI_SCALE
+        fontSize: 14 * UI_SCALE,
+        fontWeight: '400',
+        color: TEXT_COLOR_1
     },
     buttonIcon_1: {
-        height: 16 * UI_SCALE,
-        width: 16 * UI_SCALE
+        height: 24 * UI_SCALE,
+        width: 24 * UI_SCALE,
+        tintColor: TEXT_COLOR_1
     },
     // Misc
     infoIcon: {
-        height: 9 * UI_SCALE,
-        width: 5 * UI_SCALE,
+        height: 8 * UI_SCALE,
+        width: 8 * UI_SCALE,
         tintColor: TEXT_COLOR_1
     },
     priortyBar: {

@@ -87,6 +87,8 @@ const ProgressBar = (props) => {
         goalRef
     } = props;
     const percentage = getProgress(steps || [], needs || [], goalRef) * 100;
+    // min sections 3 max 10
+    const sections = steps.length < 3 ? 3 : (steps.length > 10 ? 10 : steps.length);
 
     const startTimeText = startTime instanceof Date
         ? formatDate(startTime)
@@ -118,7 +120,7 @@ const ProgressBar = (props) => {
                 percentage,
                 backgroundColor: props.color || GM_BLUE,
                 height: props.barHeight || 11,
-                sections: props.sections || steps.length || 1
+                sections: props.sections || sections
             })}
         </View>
     );

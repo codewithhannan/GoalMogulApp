@@ -209,11 +209,9 @@ class ProfileDetailCard extends Component {
             <View style={{ marginRight: 10 }}>
                 <ProfileActionButton
                     source={MessageIcon}
-                    text='Message'
                     onPress={() => this.handleMessageButtonOnPress()}
                     containerStyle={styles.buttonContainerStyle}
-                    textStyle={DEFAULT_STYLE.buttonText_1}
-                    iconStyle={DEFAULT_STYLE.buttonIcon_1}
+                    iconStyle={{ ...DEFAULT_STYLE.buttonIcon_1, tintColor: 'white' }}
                 />
             </View>
         );
@@ -221,17 +219,15 @@ class ProfileDetailCard extends Component {
 
     renderProfileActionButton() {
         const containerStyle = styles.buttonContainerStyle;
-        const textStyle = DEFAULT_STYLE.buttonText_1;
-        const iconStyle = DEFAULT_STYLE.buttonIcon_1;
+        const textStyle = { ...DEFAULT_STYLE.buttonText_1, color: 'white' };
+        const iconStyle = { ...DEFAULT_STYLE.buttonIcon_1, tintColor: 'white' };
 
         if (this.props.self) {
             return (
                 <ProfileActionButton
-                    text='Edit Profile'
                     source={edit}
                     onPress={() => this.handleEditOnPressed()}
                     containerStyle={containerStyle}
-                    textStyle={textStyle}
                     iconStyle={iconStyle}
                 />
             );
@@ -256,11 +252,10 @@ class ProfileDetailCard extends Component {
             case undefined:
                 return (
                     <ProfileActionButton
-                        text='Add friend'
                         source={AddUser}
                         onPress={this.handleButtonOnPress.bind(this, 'requestFriend')}
                         iconStyle={iconStyle}
-                        containerStyle={{ color: 'white', backgroundColor: GM_BLUE_LIGHT }}
+                        containerStyle={{ ...containerStyle, backgroundColor: GM_BLUE_LIGHT }}
                     />
                 );
 
@@ -270,8 +265,9 @@ class ProfileDetailCard extends Component {
                         text='Friend'
                         source={love}
                         onPress={this.handleButtonOnPress.bind(this, 'unfriend')}
+                        textStyle={textStyle}
                         iconStyle={iconStyle}
-                        containerStyle={{ color: 'white', backgroundColor: GM_BLUE_LIGHT }}
+                        containerStyle={{ ...containerStyle, backgroundColor: GM_BLUE_LIGHT }}
                     />
                 );
 
@@ -281,7 +277,7 @@ class ProfileDetailCard extends Component {
                         text='Cancel request'
                         source={cancel}
                         onPress={this.handleButtonOnPress.bind(this, 'deleteFriend')}
-                        containerStyle={{ color: 'white', backgroundColor: GM_BLUE_LIGHT }}
+                        containerStyle={{ ...containerStyle, backgroundColor: GM_BLUE_LIGHT }}
                         textStyle={textStyle}
                         iconStyle={iconStyle}
                     />
@@ -430,8 +426,7 @@ const styles = {
     buttonContainerStyle: {
         color: 'white',
         backgroundColor: GM_BLUE,
-        borderRadius: 3,
-        height: 30,
+        borderRadius: 100,
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -439,12 +434,12 @@ const styles = {
         marginBottom: 10,
     },
     infoIconContainerStyle: {
-        ...DEFAULT_STYLE.buttonIcon_1,
         borderRadius: 100,
         borderWidth: 1,
         borderColor: TEXT_COLOR_1,
         alignItems: 'center',
         justifyContent: 'center',
+        padding: 2,
         marginLeft: 5
     }
 };

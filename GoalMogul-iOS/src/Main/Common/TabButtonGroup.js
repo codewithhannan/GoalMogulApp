@@ -39,10 +39,7 @@ class TabButtonGroup extends Component {
             } : { tintColor: selectedStyle.tintColor };
             const containerStyle = {
                 backgroundColor: selectedStyle.backgroundColor,
-                borderTopLeftRadius: isFirst ? borderRadius : 0,
-                borderBottomLeftRadius: isFirst ? borderRadius : 0,
-                borderTopRightRadius: isLast ? borderRadius : 0,
-                borderBottomRightRadius: isLast ? borderRadius : 0,
+                borderRadius
             };
             const textStyle = {
                 color: selectedStyle.color,
@@ -50,47 +47,42 @@ class TabButtonGroup extends Component {
                 fontSize: selectedStyle.fontSize,
                 fontFamily: selectedStyle.fontFamily
             }
-            const button = subTab
-                ? (
-                    <SubTabButton
-                        key={b.key}
-                        text={b.title}
-                        stat={b.stat}
-                        iconSource={iconSource}
-                        iconStyle={iconStyle}
-                        containerStyle={containerStyle}
-                        textStyle={textStyle}
-                        statTextStyle={{ ...textStyle, fontSize: 10 }}
-                        tabNotificationMap={tabNotificationMap}
-                    />
-                )
-                : (
-                    <TabButton
-                        tabKey={b.key}
-                        text={b.title}
-                        stat={b.stat}
-                        iconSource={iconSource}
-                        iconStyle={iconStyle}
-                        containerStyle={containerStyle}
-                        textStyle={textStyle}
-                        statTextStyle={{ ...textStyle, fontSize: 10 }}
-                        tabNotificationMap={tabNotificationMap}
-                    />
-                );
-
-                // render divider to the left
-            const divider = noVerticalDivider ? null : <Divider />;
+            const button = subTab ? (
+                <SubTabButton
+                    key={b.key}
+                    text={b.title}
+                    stat={b.stat}
+                    iconSource={iconSource}
+                    iconStyle={iconStyle}
+                    containerStyle={containerStyle}
+                    textStyle={textStyle}
+                    statTextStyle={{ ...textStyle, fontSize: 10 }}
+                    tabNotificationMap={tabNotificationMap}
+                />
+            ) : (
+                <TabButton
+                    tabKey={b.key}
+                    text={b.title}
+                    stat={b.stat}
+                    iconSource={iconSource}
+                    iconStyle={iconStyle}
+                    containerStyle={containerStyle}
+                    textStyle={textStyle}
+                    statTextStyle={{ ...textStyle, fontSize: 10 }}
+                    tabNotificationMap={tabNotificationMap}
+                />
+            );
+            // render divider to the left
             const buttonComponent = (
                 <TouchableOpacity
                     activeOpacity={0.6}
                     key={b.key}
-                    style={styles.dividerContainerStyle}
+                    style={{ flex: 1 }}
                     onPress={() => {
                         if (jumpTo) jumpTo(b.key);
                         else jumpToIndex(i);
                     }}
                 >
-                    {!isFirst ? divider : null}
                     {button}
                 </TouchableOpacity>
             );
@@ -112,7 +104,11 @@ class TabButtonGroup extends Component {
 
     render() {
         return (
-            <View style={{ ...styles.containerStyle, borderRadius: this.props.borderRadius }}>
+            <View style={{
+                ...styles.containerStyle,
+                borderRadius: this.props.borderRadius,
+                backgroundColor: this.props.buttonStyle.unselected.backgroundColor
+            }}>
                 {this.renderButton()}
             </View>
         );
@@ -122,15 +118,15 @@ class TabButtonGroup extends Component {
 const styles = {
     containerStyle: {
         display: 'flex',
+        flexDirection: 'row',
         height: 30,
         flexDirection: 'row',
         borderWidth: 1,
         borderColor: '#E8E8E8',
-        backgroundColor: 'white'
-    },
-    dividerContainerStyle: {
-        flexDirection: 'row',
-        flex: 1
+        backgroundColor: 'white',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        padding: 2
     }
 };
 

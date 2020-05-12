@@ -48,7 +48,7 @@ import Logo from '../../asset/header/logo.png';
 import Activity from '../../asset/utils/activity.png';
 
 // Styles
-import { GM_BLUE, BACKGROUND_COLOR } from '../../styles';
+import { GM_BLUE, BACKGROUND_COLOR, DEFAULT_STYLE } from '../../styles';
 
 // Utils
 import { Logger } from '../../redux/middleware/utils/Logger';
@@ -268,18 +268,15 @@ class Home extends Component {
                     borderRadius={3}
                     buttonStyle={{
                         selected: {
+                            ...DEFAULT_STYLE.buttonText_1,
                             backgroundColor: GM_BLUE,
                             tintColor: 'white',
                             color: 'white',
-                            fontWeight: 'bold',
-                            fontSize: 14
                         },
                         unselected: {
-                            backgroundColor: 'white',
-                            tintColor: '#BDBDBD',
-                            color: '#BDBDBD',
-                            fontWeight: '500',
-                            fontSize: 14
+                            ...DEFAULT_STYLE.buttonText_1,
+                            backgroundColor: '#F2F2F2',
+                            tintColor: DEFAULT_STYLE.buttonIcon_1.tintColor
                         }
                     }}
                 />

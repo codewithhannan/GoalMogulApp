@@ -74,7 +74,7 @@ class ProfileGoalCard2 extends React.Component {
         return (
             <Text
                 style={{
-                    ...DEFAULT_STYLE.normalText_1,
+                    ...DEFAULT_STYLE.subTitleText_1,
                     flex: 1,
                     flexWrap: 'wrap'
                 }}
@@ -216,8 +216,7 @@ const styles = {
         tintColor: '#EB5757'
     },
     shareIconStyle: {
-        tintColor: '#6FCF97',
-        ...DEFAULT_STYLE.buttonIcon_1
+        tintColor: '#6FCF97'
     },
     commentIconStyle: {
         tintColor: '#F1BF74'
