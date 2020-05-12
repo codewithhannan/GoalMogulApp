@@ -21,7 +21,7 @@ import OnboardingHeader from './Common/OnboardingHeader';
 import OnboardingFooter from './Common/OnboardingFooter';
 import DelayedButton from '../Common/Button/DelayedButton';
 
-import { TEXT_STYLE as textStyle, BUTTON_STYLE as buttonStyle } from '../../styles';
+import { TEXT_STYLE as textStyle, BUTTON_STYLE as buttonStyle, GM_DOT_GRAY } from '../../styles';
 
 
 // Resources
@@ -68,16 +68,16 @@ class OnboardingAddPhotos extends Component {
           </View>
           <View style={styles.buttonContainerStyles}>
             <DelayedButton
-              style={[buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle]}
+              style={[buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle, styles.buttonPrimaryStyles]}
             >
               <Text style={buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.textStyle}>
                 Continue
               </Text>
             </DelayedButton>
             <DelayedButton
-              style={[buttonStyle.GM_WHITE_BG_BLUE_TEXT.containerStyle]}
+              style={[buttonStyle.GM_WHITE_BG_GRAY_TEXT.containerStyle]}
             >
-              <Text style={buttonStyle.GM_WHITE_BG_BLUE_TEXT.textStyle}>
+              <Text style={buttonStyle.GM_WHITE_BG_GRAY_TEXT.textStyle}>
                 Skip
               </Text>
             </DelayedButton>
@@ -96,8 +96,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   buttonContainerStyles: {
-    marginBottom: 80,
+    marginBottom: 60,
     paddingHorizontal: 25,
+  },
+  buttonPrimaryStyles: {
+    marginBottom: 15,
   },
   titleStyles: {
     marginBottom: 16,
@@ -108,8 +111,8 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginBottom: 40,
     borderWidth: 2,
-    borderColor: '#E0E0E0',
     borderRadius: 180,
+    borderColor: GM_DOT_GRAY,
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center'

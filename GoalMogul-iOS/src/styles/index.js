@@ -92,6 +92,13 @@ export const BUTTON_STYLE = {
       backgroundColor: "white",
       alignItems: "center",
       justifyContent: "center",
+    },
+    textStyle: {
+      fontSize: GM_FONT_SIZE.FONT_2,
+      lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
+      color: "#828282",
+      fontFamily: GM_FONT_FAMILY.GOTHAM,
+      fontWeight: "500"
     }
   }
 };
