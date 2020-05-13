@@ -78,13 +78,11 @@ class ProfileV2 extends Component {
     }
 
     componentDidMount() {
-        const { userId, pageId, hideProfileDetail } = this.props;
-        console.log(`${DEBUG_KEY}: mounting Profile with pageId: ${pageId}`);
+        const { userId, pageId, hideProfileDetail, isSelf } = this.props;
+        // console.log(`${DEBUG_KEY}: mounting Profile with pageId: ${pageId}`);
 
         // Hide profile detail as it's not on about tab
-        if (hideProfileDetail) {
-            this.closeProfileInfoCard();
-        }
+        if (hideProfileDetail) this.closeProfileInfoCard();
 
         this.props.handleTabRefresh('goals', userId, pageId, this.props.initialFilter);
         this.props.handleTabRefresh('posts', userId, pageId);

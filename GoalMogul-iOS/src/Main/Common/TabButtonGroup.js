@@ -29,7 +29,7 @@ class TabButtonGroup extends Component {
         const { index, routes } = navigationState;
 
         return routes.map((b, i) => {
-            const isFirst = i === 0, isLast = i === routes.length - 1, isSelected = i === index;
+            const isSelected = i === index;
 
             const selectedStyle = isSelected ? buttonStyle.selected : buttonStyle.unselected;
             const iconSource = tabIconMap ? tabIconMap[b.key].iconSource : undefined;

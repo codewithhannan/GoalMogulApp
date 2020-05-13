@@ -359,14 +359,14 @@ class ProfileDetailCard extends Component {
                 </View>
                 <View style={styles.containerStyle}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Text style={[ styles.userInfoStyle, DEFAULT_STYLE.titleText_1 ]}>
+                        <Text style={[ styles.marginStyle, DEFAULT_STYLE.titleText_1 ]}>
                             {name}
                         </Text>
-                        <UserBanner user={this.props.user} iconStyle={{ ...styles.userInfoStyle, height: 20, width: 17 }} />
+                        <UserBanner user={this.props.user} iconStyle={{ ...styles.marginStyle, height: 20, width: 17 }} />
                         {this.props.self && (
                             <DelayedButton
                                 onPress={this.handleBannerInfoIconOnPress}
-                                style={[styles.infoIconContainerStyle, styles.userInfoStyle]}
+                                style={[styles.infoIconContainerStyle, styles.marginStyle]}
                                 activeOpacity={0.6}
                             >
                                 <Image source={InfoIcon} style={DEFAULT_STYLE.infoIcon} />
@@ -374,14 +374,14 @@ class ProfileDetailCard extends Component {
                         )}
                     </View>
                     <RichText
-                        textStyle={[ styles.userInfoStyle, DEFAULT_STYLE.subTitleText_1 ]}
+                        textStyle={[ styles.marginStyle, DEFAULT_STYLE.subTitleText_1 ]}
                         contentText={headline}
                         textContainerStyle={{ flexDirection: 'row' }}
-                        numberOfLines={2}
+                        numberOfLines={1}
                     />
                     { location && (
                         <RichText
-                            textStyle={[styles.userInfoStyle, DEFAULT_STYLE.normalText_1 ]}
+                            textStyle={[styles.marginStyle, DEFAULT_STYLE.normalText_1 ]}
                             contentText={location}
                             textContainerStyle={{ flexDirection: 'row' }}
                             numberOfLines={1}
@@ -430,8 +430,8 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center'
     },
-    userInfoStyle: {
-        marginBottom: 10,
+    marginStyle: {
+        marginBottom: 5,
     },
     infoIconContainerStyle: {
         borderRadius: 100,

@@ -119,7 +119,7 @@ export const DEFAULT_STYLE = {
     // Headers
     titleText_1: {
         fontFamily: FONT_FAMILY_1,
-        fontSize: 16 * UI_SCALE,
+        fontSize: 17 * UI_SCALE,
         color: TEXT_COLOR_1,
         fontWeight: 'bold',
         letterSpacing: 0.3
@@ -132,7 +132,7 @@ export const DEFAULT_STYLE = {
     },
     subTitleText_1: {
         fontFamily: FONT_FAMILY_2,
-        fontSize: 16 * UI_SCALE,
+        fontSize: 17 * UI_SCALE,
         fontWeight: '400',
         color: TEXT_COLOR_1,
         letterSpacing: 0.3
