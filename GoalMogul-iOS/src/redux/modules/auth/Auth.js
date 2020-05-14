@@ -24,8 +24,7 @@ export const auth = {
                 const token = await SecureStore.getItemAsync(AUTH_TOKEN);
 
                 const value = username !== null && password !== null
-                    ? { username, password, token }
-                    : {};
+                    ? { username, password, token } : {};
 
                 resolve(value);
             } catch (err) {
@@ -80,7 +79,7 @@ export const auth = {
                 PASSWORD, `${password}`, {}
             );
             await SecureStore.setItemAsync(
-                AUTH_TOKEN, JSON.stringify(token), {}
+                AUTH_TOKEN, token, {}
             );
             if (callback) {
                 callback(true);

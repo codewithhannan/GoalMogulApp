@@ -103,17 +103,19 @@ export const loginUser = ({ username, password, token, navigate, onError, onSucc
             type: LOGIN_USER_LOADING
         });
 
-        if (token) {
-            // If token is more than 2 days old, re-authorize
-            const payload = JSON.parse(token);
-            const minTokenCreationLimit = Date.now() - 2 * 24 * 60 * 60 * 1000;
-
-            if (payload.created > minTokenCreationLimit) {
-                await mountUserWithToken({ payload, username, password, navigate, onSuccess }, dispatch, getState);
-                return;
+        try {
+            if (token) {
+                // If token is more than 2 days old, re-authorize
+                const payload = JSON.parse(token);
+                const minTokenCreationLimit = Date.now() - 2 * 24 * 60 * 60 * 1000;
+    
+                if (payload.created > minTokenCreationLimit) {
+                    await mountUserWithToken({ payload, username, password, navigate, onSuccess }, dispatch, getState);
+                    return;
+                }
             }
-        }
-
+        } catch (error) { }
+        
         const message = await API
             .post('pub/user/authenticate/', { ...data }, undefined)
             .then(async (res) => {
@@ -157,7 +159,7 @@ const mountUserWithToken = async ({ payload, username, password, navigate, onSuc
         payload
     });
 
-    if (saveToken) Auth.saveKey(username, password, payload);
+    if (saveToken) Auth.saveKey(username, password, JSON.stringify(payload));
     // Invoke onSuccess callback to clear login page state
     if (onSuccess) onSuccess();
 
