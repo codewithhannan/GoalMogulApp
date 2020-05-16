@@ -7,7 +7,7 @@ import {
     Text,
     TouchableOpacity,
     ImageBackground,
-    ActivityIndicator,
+    ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
@@ -40,10 +40,12 @@ import { arrayUnique, clearTags } from '../../redux/middleware/utils';
 
 // Actions
 import { openCameraRoll, openCamera } from '../../actions';
-import { submitCreatingPost, postToFormAdapter } from '../../redux/modules/feed/post/PostActions';
+import { submitCreatingPost, postToFormAdapter, fetchPostDrafts, savePostDrafts } from '../../redux/modules/feed/post/PostActions';
 import { searchUser } from '../../redux/modules/search/SearchActions';
 import { IMAGE_BASE_URL } from '../../Utils/Constants';
 import { DEFAULT_STYLE, BACKGROUND_COLOR, GM_BLUE } from '../../styles';
+import DraftsView from './DraftsView';
+import { MenuProvider } from 'react-native-popup-menu';
 
 
 const DEBUG_KEY = '[ UI CreatePostModal ]';
@@ -53,13 +55,15 @@ const INITIAL_TAG_SEARCH = {
     limit: 10,
     loading: false
 };
-const ON_CANCEL_OPTIONS = ['Save Draft', 'Delete', 'Cancel'];
+const ON_CANCEL_OPTIONS = ['Save Draft', 'Discard', 'Cancel'];
 const ON_CANCEL_CANCEL_INDEX = 2;
 
 class CreatePostModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            draftIndex: 0,
+            drafts: [],
             mediaModal: false,
             keyword: '',
             tagSearchData: { ...INITIAL_TAG_SEARCH },
@@ -245,8 +249,16 @@ class CreatePostModal extends Component {
             : { ...defaulVals };
 
         this.props.initialize({
-            // ...initialVals
             ...initialVals
+        });
+
+        fetchPostDrafts().then((drafts) => {
+            if (drafts && drafts.length > 0) {
+                this.setState({
+                    draftIndex: drafts.length,
+                    drafts: drafts
+                });
+            }
         });
     }
 
@@ -257,14 +269,31 @@ class CreatePostModal extends Component {
     }
 
     handleOpenCameraRoll = () => {
-        const callback = R.curry((result) => {
+        const callback = (result) => {
             this.props.change('mediaRef', result.uri);
-        });
-        this.props.openCameraRoll(callback, { disableEditing: false });
+        };
+        this.props.openCameraRoll(callback, { disableEditing: true });
     }
 
     handleSaveDraft = () => {
-        
+        const draft = this.props.formVals.values;
+
+        let index = this.state.draftIndex;
+        let drafts = this.state.drafts;
+
+        if (index >= drafts.length) {
+            drafts.push(draft);
+            index = drafts.length - 1;
+        }
+        else drafts[index] = draft;
+
+        savePostDrafts(drafts).then(() => {
+            this.setState({
+                drafts: drafts,
+                draftIndex: index,
+                isDraftSaved: true
+            });
+        });
     }
 
     /**
@@ -302,23 +331,29 @@ class CreatePostModal extends Component {
     }
 
     handleCancel = () => {
+        this.handleDraftCancel(() => {
+            if (this.props.onClose) this.props.onClose();
+            Actions.pop();
+        });
+    }
+
+    handleDraftCancel = (endActionCallback) => {
         const { post, mediaRef, uploading } = this.props;
         // TODO: check if draft is already saved
-        const draftSaved = uploading || ((!post || post.trim() === '') && !mediaRef);
-        if (draftSaved) {
-            if (this.props.onClose) this.props.onClose();
-            return Actions.pop();
-        }
+        const draftSaved = uploading ||
+            ((!post || post.trim() === '') && !mediaRef) ||
+                !this.isDraftChanged();
+
+        if (draftSaved) 
+            return endActionCallback ? endActionCallback() : null;
 
         const onCancelSwitchCases = switchByButtonIndex([
             [R.equals(0), () => {
                 this.handleSaveDraft()
-                if (this.props.onClose) this.props.onClose();
-                Actions.pop();
+                if (endActionCallback) endActionCallback();
             }],
             [R.equals(1), () => {
-                if (this.props.onClose) this.props.onClose();
-                Actions.pop();
+                if( endActionCallback) endActionCallback();
             }]
         ]);
         const onCancelActionSheet = actionSheet(
@@ -420,15 +455,9 @@ class CreatePostModal extends Component {
         );
     }
 
-renderUserInfo() {
+    renderUserInfo() {
         const { belongsToTribe, belongsToEvent, user } = this.props;
         const { profile, name } = user;
-        let imageUrl = profile.image;
-        let profileImage = <Image style={DEFAULT_STYLE.profileImage_2} source={defaultUserProfile} />;
-        if (imageUrl) {
-            imageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
-            profileImage = <Image style={DEFAULT_STYLE.profileImage_1} source={{ uri: imageUrl }} />;
-        }
 
         const callback = R.curry((value) => this.props.change('viewableSetting', value));
 
@@ -566,6 +595,13 @@ renderUserInfo() {
         );
     }
 
+    isDraftChanged() {
+        const { drafts, draftIndex } = this.state;
+        if (drafts.length <= draftIndex || this.props.post !== drafts[draftIndex].post ||
+            (this.props.mediaRef != drafts[draftIndex].mediaRef)) return true;
+        return false;
+    }
+
     renderActionIcons() {
         // If user already has the image, they need to delete the image and then
         // these icons would show up to attach another image
@@ -577,17 +613,18 @@ renderUserInfo() {
         };
         const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
         const actionDisabled = uploading || ((!post || post.trim() === '') && !mediaRef);
+        const saveDraftDisabled = actionDisabled || !this.isDraftChanged();
         return (
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
                 <DelayedButton
                     activeOpacity={0.6}
                     style={{ marginTop: 8, padding: 2 }}
                     onPress={this.handleSaveDraft}
-                    disabled={actionDisabled}
+                    disabled={saveDraftDisabled}
                 >
                     <Text style={{
                         ...DEFAULT_STYLE.titleText_2,
-                        color: actionDisabled ? BACKGROUND_COLOR : GM_BLUE
+                        color: saveDraftDisabled ? BACKGROUND_COLOR : GM_BLUE
                     }} >
                         Save Draft
                     </Text>
@@ -622,34 +659,59 @@ renderUserInfo() {
         );
     }
 
+    renderDraftsHeader() {
+        return (
+            <View style={styles.draftsHeader}>
+                <Text style={{ ...DEFAULT_STYLE.subTitleText_1, color: '#D39F00' }}>
+                    {this.state.drafts.length} Draft{this.state.drafts.length !== 1 ? 's' : ''}
+                </Text>
+                <DraftsView
+                    drafts={this.state.drafts}
+                    onDraftSelect={(index) => {
+                        this.handleDraftCancel(() => {
+                            const selectedDraft = this.state.drafts[index];
+                            this.setState({ draftIndex: index });
+                            this.props.change('mediaRef', selectedDraft.mediaRef ? selectedDraft.mediaRef : null);
+                            this.props.change('post', selectedDraft.post);
+                            console.log(selectedDraft.mediaRef);
+                        });
+                    }}
+                />
+            </View>
+        );
+    }
+
     render() {
         const { handleSubmit, initializeFromState, post, mediaRef, uploading } = this.props;
         const modalActionText = initializeFromState ? 'Update' : 'Create';
 
         const actionDisabled = uploading || ((!post || post.trim() === '') && !mediaRef);
+        // console.log(this.props);
 
         return (
             <KeyboardAvoidingView
                 behavior='padding'
                 style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}
             >
-                <ModalHeader
-                    title='New Post'
-                    actionText={modalActionText}
-                    onCancel={this.handleCancel}
-                    onAction={handleSubmit(this.handleCreate)}
-                    actionDisabled={actionDisabled}
-                />
-                <ScrollView style={{ borderTopColor: '#E0E0E0', borderTopWidth: 1 }}>
-                    <View style={{ flex: 1, padding: 20 }}>
-                        {this.renderUserInfo()}
-                        {this.renderPost()}
-                        {this.renderActionIcons()}
-                        {this.renderMedia()}
-                    </View>
-
-                </ScrollView>
-                {this.renderImageModal()}
+                <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                    <ModalHeader
+                        title='New Post'
+                        actionText={modalActionText}
+                        onCancel={this.handleCancel}
+                        onAction={handleSubmit(this.handleCreate)}
+                        actionDisabled={actionDisabled}
+                    />
+                    {this.state.drafts.length > 0 && this.renderDraftsHeader()}
+                    <ScrollView>
+                        <View style={{ flex: 1, padding: 20 }}>
+                            {this.renderUserInfo()}
+                            {this.renderPost()}
+                            {this.renderActionIcons()}
+                            {this.renderMedia()}
+                        </View>
+                    </ScrollView>
+                    {this.renderImageModal()}
+                </MenuProvider>
             </KeyboardAvoidingView>
         );
     }
@@ -664,10 +726,32 @@ const styles = {
         borderRadius: 5,
         borderColor: '#E0E0E0'
     },
+    backdrop: {
+        backgroundColor: 'gray',
+        opacity: 0.5
+    },
+    draftsHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: '#FFF8E3',
+        borderColor: '#D39F00',
+        borderWidth: 1,
+        padding: 12
+    },
     imageStyle: {
         height: 54,
         width: 54,
         borderRadius: 5,
+    },
+    goalInputStyle: {
+        ...DEFAULT_STYLE.subTitleText_1,
+        paddingTop: 15,
+        padding: 15,
+        width: '100%',
+        height: 'auto',
+        maxHeight: 200,
+        minHeight: 90
     },
     titleTextStyle: {
         ...DEFAULT_STYLE.smallTitle_1,
@@ -727,7 +811,7 @@ CreatePostModal = reduxForm({
     enableReinitialize: true
 })(CreatePostModal);
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     const selector = formValueSelector('createPostModal');
     const { user } = state.user;
     const { profile } = user;
