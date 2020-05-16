@@ -87,8 +87,9 @@ class CreateTribeModal extends React.Component {
     const { initializeFromState, tribe, picture } = this.props;
     const tribeId = tribe ? tribe._id : undefined;
     const needUpload =
-      (initializeFromState && tribe.picture && tribe.picture !== picture)
-      || (!initializeFromState && picture);
+      (initializeFromState && tribe.picture && tribe.picture !== picture) // picture has changed
+      || (initializeFromState && tribe.picture == undefined && picture !== undefined) // picture is updated
+      || (!initializeFromState && picture); // create new tribe with picture
 
     this.props.createNewTribe(
       this.props.formVals.values,
@@ -106,6 +107,7 @@ class CreateTribeModal extends React.Component {
 
   handleOpenCameraRoll = () => {
     const callback = R.curry((result) => {
+      console.log("result is: ", result);
       this.props.change('picture', result.uri);
     });
     this.props.openCameraRoll(callback);
@@ -175,7 +177,8 @@ class CreateTribeModal extends React.Component {
     const { initializeFromState, tribe, picture } = this.props;
     let imageUrl = picture;
     if (initializeFromState && picture) {
-      const hasImageModified = tribe.picture && tribe.picture !== picture;
+      const hasImageModified = (tribe.picture && tribe.picture !== picture) // Picture has changed
+        || (tribe.picture == undefined && picture !== undefined); // Picture is added
       if (!hasImageModified) {
         // If editing a tribe and image hasn't changed, then image source should
         // be from server
