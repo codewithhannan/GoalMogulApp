@@ -46,9 +46,9 @@ const IS_SMALL_PHONE = Platform.OS === 'ios' &&
 const width = Dimensions.get('window').width
 const DEBUG_KEY = '[ UI SplashScreen ]';
 class SplashScreen extends Component {
+
     constructor(props) {
         super(props);
-        // Expo.SplashScreen.preventAutoHide();
         this.state = {
             fontLoaded: false,
             appReady: false
@@ -242,13 +242,12 @@ class SplashScreen extends Component {
         return (
             <View style={headerContainerStyle}>
                 <Image style={logoImageStyle} source={HeaderLogo} />
-                {
-                    this.state.fontLoaded ?
-                        <View style={{ flexDirection: 'row' }}>
-                            <Text style={{ ...styles.headerBoldTextStyle, fontSize: headerFontSize }}>Goal</Text>
-                            <Text style={{ ...styles.headerTextStyle, fontSize: headerFontSize }}>Mogul</Text>
-                        </View>
-                        : null
+                {this.state.fontLoaded ?
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text style={{ ...styles.headerBoldTextStyle, fontSize: headerFontSize }}>Goal</Text>
+                        <Text style={{ ...styles.headerTextStyle, fontSize: headerFontSize }}>Mogul</Text>
+                    </View>
+                    : null
                 }
             </View>
         );
@@ -339,6 +338,7 @@ class SplashScreen extends Component {
         );
     }
 }
+
 const zoomedStyles = {
     largePhoneHeaderContainerStyle: {
         flexDirection: 'row',
@@ -405,16 +405,10 @@ const styles = {
         marginRight: 10,
         marginBottom: 3
     },
-
     // Body style
     bodyContainerStyle: {
         justifyContent: 'center',
         alignItems: 'center'
-    },
-    largePhoneImageStyle: {
-        height: 330,
-        width: 330,
-        tintColor: '#045C7A'
     },
     imageStyle: {
         height: 200,
@@ -429,7 +423,6 @@ const styles = {
         letterSpacing: 0.5,
         fontFamily: 'gotham-pro'
     },
-
     // Highlight style
     buttonTextStyle: {
         fontSize: 20,
@@ -456,7 +449,6 @@ const styles = {
         justifyContent: 'center',
         alignSelf: 'center'
     },
-
     // Footer style
     loginHighlightContainerStyle: {
         backgroundColor: '#4ccbf5',
@@ -481,7 +473,6 @@ const styles = {
     },
     iconStyle: {
         alignSelf: 'center',
-        // fontSize: 26,
         marginLeft: 5
     }
 };

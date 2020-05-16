@@ -33,7 +33,7 @@ import {
 
 /** Constants */
 import { IMAGE_BASE_URL } from '../../../Utils/Constants';
-import { GM_BLUE_LIGHT_LIGHT, BACKGROUND_COLOR } from '../../../styles';
+import { GM_BLUE_LIGHT_LIGHT, BACKGROUND_COLOR, GM_BLUE } from '../../../styles';
 
 const BUTTONS = ['Take a Picture', 'Camera Roll', 'Cancel'];
 const TAKING_PICTURE_INDEX = 0;
@@ -185,7 +185,7 @@ class ProfileDetailEditForm extends Component {
         return (
             <SafeAreaView
                 forceInset={{ bottom: 'always' }}
-                style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}
+                style={{ flex: 1, backgroundColor: GM_BLUE }}
                 onPress={() => {
                     Keyboard.dismiss()
                 }}

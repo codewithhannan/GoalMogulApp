@@ -82,7 +82,7 @@ class Home extends Component {
         super(props);
         this.state = {
             navigationState: {
-                index: 0,
+                index: 1,
                 routes: [
                     { key: 'goals', title: 'JUST GOALS' },
                     { key: 'activity', title: 'ALL POSTS' },
@@ -134,14 +134,6 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        this.setState({
-            ...this.state,
-            navigationState: {
-                ...this.state.navigationState,
-                index: 1,
-            }
-        });
-
         AppState.addEventListener('change', this.handleAppStateChange);
         this._notificationSubscription = Notifications.addListener(this._handleNotification);
 

@@ -56,7 +56,7 @@ import { openMyTribeTab } from '../../../redux/modules/tribe/MyTribeTabActions';
 import { createReport } from '../../../redux/modules/report/ReportActions';
 
 // styles
-import { GM_BLUE, GM_BLUE_LIGHT_LIGHT } from '../../../styles';
+import { GM_BLUE, GM_BLUE_LIGHT_LIGHT, DEFAULT_STYLE } from '../../../styles';
 
 import { IPHONE_MODELS } from '../../../Utils/Constants';
 import { getUserData } from '../../../redux/modules/User/Selector';
@@ -228,7 +228,7 @@ class SearchBarHeader extends Component {
             const titleColor = tintColor;
             return (
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 20, color: titleColor }} >
+                    <Text style={{ ...DEFAULT_STYLE.subTitleText_1, color: titleColor }} >
                         {this.props.title}
                     </Text>
                 </View>
@@ -263,11 +263,6 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center'
     },
-    headerLeftImage: {
-        width: 32,
-        height: 32,
-        backgroundColor: 'white'
-    },
     headerRightContaner: {
         width: 38,
         height: 38,
@@ -276,25 +271,6 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: 8
-    },
-    searchButtonContainerStyle: {
-        height: 36,
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    searchPlaceHolderTextStyle: {
-        fontSize: 14,
-        alignSelf: 'center',
-        color: '#4ec9f3',
-        marginLeft: 5
-    },
-    shadow: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.4,
-        shadowRadius: 2,
-        backgroundColor: 'white'
     }
 };
 

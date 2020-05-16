@@ -115,7 +115,7 @@ export const loginUser = ({ username, password, token, navigate, onError, onSucc
                 }
             }
         } catch (error) { }
-        
+
         const message = await API
             .post('pub/user/authenticate/', { ...data }, undefined)
             .then(async (res) => {

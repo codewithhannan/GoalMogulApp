@@ -14,6 +14,7 @@ import {
 } from '../../Utils/Constants';
 import { DEFAULT_STYLE, BACKGROUND_COLOR } from '../../styles';
 
+
 const { width, height } = Dimensions.get('window');
 const CATEGORY_OPTION_HEIGHT = 34;
 
