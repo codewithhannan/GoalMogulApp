@@ -20,6 +20,7 @@ import {
   tribeDetailOpen
 } from '../../../redux/modules/tribe/MyTribeActions';
 import { IMAGE_BASE_URL } from '../../../Utils/Constants';
+import { decode } from '../../../redux/middleware/utils';
 
 const DEBUG_KEY = '[UI Tribe Card] ';
 
@@ -78,7 +79,7 @@ class MyTribeCard extends React.Component {
           numberOfLines={1}
           ellipsizeMode='tail'
         >
-          {name}
+          {decode(name)}
         </Text>
       </View>
     );
@@ -93,7 +94,7 @@ class MyTribeCard extends React.Component {
           numberOfLines={1}
           ellipsizeMode='tail'
         >
-          {description}
+          {decode(description)}
         </Text>
       </View>
     );

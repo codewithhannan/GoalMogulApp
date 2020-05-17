@@ -12,7 +12,7 @@ import envelope from '../../../asset/utils/envelope.png';
 import invite from '../../../asset/utils/invite.png';
 import post from '../../../asset/utils/post.png';
 import tribe_default_icon from '../../../asset/utils/tribeIcon.png';
-import { switchCase } from '../../../redux/middleware/utils';
+import { switchCase, decode } from '../../../redux/middleware/utils';
 import { openPostDetail } from '../../../redux/modules/feed/post/PostActions';
 import { subscribeEntityNotification, unsubscribeEntityNotification } from '../../../redux/modules/notification/NotificationActions';
 import { openMultiUserInviteModal, searchFriend } from '../../../redux/modules/search/SearchActions';
@@ -659,7 +659,6 @@ class MyTribe extends Component {
       )
       : null;
 
-
     return (
       <View>
         <Animated.View 
@@ -677,7 +676,7 @@ class MyTribe extends Component {
             <Text
               style={{ fontSize: 22, fontWeight: '300' }}
             >
-              {name}
+              {decode(name)}
             </Text>
             {this.renderVisibilityAndStatus(item)}
             <View

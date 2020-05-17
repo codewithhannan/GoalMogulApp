@@ -1,6 +1,7 @@
 import { Logger } from '../utils/Logger';
 import R from 'ramda';
 import getEnvVars from '../../../../environment';
+import { decode } from '../utils';
 
 const DEBUG_KEY = '[ API ]';
 const config = getEnvVars();
@@ -14,8 +15,9 @@ export const singleFetch = (path, payload, method, token, logLevel) =>
       res
         .json()
         .then((data) => {
+          let decodedData = escapeObj(data);
           resolve({
-            ...data,
+            ...decodedData,
             status: res.status
           });
         })
@@ -68,6 +70,14 @@ const fetchData = R.curry((path, payload = {}, method = 'get', token, logLevel) 
   Logger.log(`${DEBUG_KEY} header is: `, headers, logLevel);
   return fetch(url, headers);
 });
+
+function escapeObj(obj) {
+    if (!Array.isArray(obj) && typeof obj != 'object') return obj;
+    return Object.keys(obj).reduce(function(acc, key) {
+        acc[key] = typeof obj[key] == 'string'? decode(obj[key]) : escapeObj(obj[key]);
+        return acc;
+    }, Array.isArray(obj)? []:{});
+}
 
 export const api = {
   get(path, token, logLevel = 3) {
