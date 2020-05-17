@@ -23,7 +23,7 @@ import {
 import {
   URL_REGEX
 } from '../../../Utils/Constants';
-import { decode } from '../../../redux/middleware/utils';
+import { decode, escapeRegExp } from '../../../redux/middleware/utils';
 
 const DEBUG_KEY = '[ UI RichText ]';
 
@@ -60,7 +60,7 @@ class RichText extends React.Component {
     const ret = contentTags.map((tag) => {
       const { startIndex, endIndex, user } = tag;
       const tagText = contentText.slice(startIndex, endIndex);
-      const tagReg = `\\B${tagText}`;
+      const tagReg = `\\B${escapeRegExp(tagText)}`;
       return {
         pattern: new RegExp(tagReg),
         style: styles.userTag,

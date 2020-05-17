@@ -12,6 +12,7 @@ import ProfileImage from '../../Common/ProfileImage';
 
 // Asset
 import Calendar from '../../../asset/utils/calendar.png';
+import { decode } from '../../../redux/middleware/utils';
 
 const { width } = Dimensions.get('window');
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -95,7 +96,7 @@ class MyTribeAbout extends Component {
           Description
         </Text>
         <Text style={styles.descriptionTextStyle}>
-          {description}
+          {decode(description)}
         </Text>
       </View>
     );
