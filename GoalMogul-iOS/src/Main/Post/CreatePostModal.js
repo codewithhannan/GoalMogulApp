@@ -275,8 +275,21 @@ class CreatePostModal extends Component {
         this.props.openCameraRoll(callback, { disableEditing: true });
     }
 
-    handleSaveDraft = () => {
-        const draft = this.props.formVals.values;
+    handleSaveDraftButtonPress = () => {
+        this.handleSaveDraft(() => {
+            this.setState({
+                drafts: drafts,
+                draftIndex: index,
+                isDraftSaved: true
+            });
+        });
+    }
+
+    handleSaveDraft = (callback) => {
+        const draft = {
+            post: this.props.post,
+            mediaRef: this.props.mediaRef
+        };
 
         let index = this.state.draftIndex;
         let drafts = this.state.drafts;
@@ -287,12 +300,8 @@ class CreatePostModal extends Component {
         }
         else drafts[index] = draft;
 
-        savePostDrafts(drafts).then(() => {
-            this.setState({
-                drafts: drafts,
-                draftIndex: index,
-                isDraftSaved: true
-            });
+        savePostDrafts(drafts).then(callback).catch((error) => {
+
         });
     }
 
@@ -337,7 +346,7 @@ class CreatePostModal extends Component {
         });
     }
 
-    handleDraftCancel = (endActionCallback) => {
+    handleDraftCancel = (endActionCallback = () => {}) => {
         const { post, mediaRef, uploading } = this.props;
         // TODO: check if draft is already saved
         const draftSaved = uploading ||
@@ -349,8 +358,7 @@ class CreatePostModal extends Component {
 
         const onCancelSwitchCases = switchByButtonIndex([
             [R.equals(0), () => {
-                this.handleSaveDraft()
-                if (endActionCallback) endActionCallback();
+                this.handleSaveDraft(endActionCallback);
             }],
             [R.equals(1), () => {
                 if( endActionCallback) endActionCallback();
@@ -673,7 +681,6 @@ class CreatePostModal extends Component {
                             this.setState({ draftIndex: index });
                             this.props.change('mediaRef', selectedDraft.mediaRef ? selectedDraft.mediaRef : null);
                             this.props.change('post', selectedDraft.post);
-                            console.log(selectedDraft.mediaRef);
                         });
                     }}
                 />

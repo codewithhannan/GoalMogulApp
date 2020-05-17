@@ -16,7 +16,7 @@ class DelayedButton extends React.PureComponent {
         this.clearTimer = this.clearTimer.bind(this);
         this.setTimer = this.setTimer.bind(this);
     }
-    
+
     componentWillUnmount = () => {
         this.clearTimer();
     }
@@ -34,7 +34,7 @@ class DelayedButton extends React.PureComponent {
             this.timerHandle = 0;
         }, timeout);
     }
-    
+
     clearTimer = () => {
         if (this.timerHandle) {
             clearTimeout(this.timerHandle);

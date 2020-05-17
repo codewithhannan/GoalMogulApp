@@ -61,7 +61,7 @@ class DraftsView extends Component {
                             );
                         }}
                         ItemSeparatorComponent={()=>(<View style={{ ...DEFAULT_STYLE.shadow, height: 1.5 }} />)}
-                        style={{ height: height/3, paddingTop: 5 }}
+                        style={{ maxHeight: height/3, paddingTop: 5 }}
                     />
                 </MenuOptions>
             </Menu>

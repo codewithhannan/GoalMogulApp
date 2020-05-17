@@ -195,8 +195,7 @@ class SplashScreen extends Component {
             .catch(err => {
                 console.log(`${DEBUG_KEY}: [ _loadAssetsAsync ]: err`, err);
             });
-
-        console.log('finish loading images');
+        console.log('finished loading images');
 
         await Auth.getKey().then((res) => {
             if (!(res instanceof Error)) {

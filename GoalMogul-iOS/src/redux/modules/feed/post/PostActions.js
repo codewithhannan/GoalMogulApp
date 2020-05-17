@@ -523,5 +523,6 @@ export const savePostDrafts = async (drafts = []) => {
         await AsyncStorage.setItem(DRAFTS, JSON.stringify(drafts));
     } catch (error) {
         console.warn(`${DEBUG_KEY}: [ savePostDrafts ] failed with err: `, err);
+        throw error;
     }
 }
