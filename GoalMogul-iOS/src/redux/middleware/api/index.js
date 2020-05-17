@@ -72,6 +72,7 @@ const fetchData = R.curry((path, payload = {}, method = 'get', token, logLevel) 
 });
 
 function escapeObj(obj) {
+    if (obj == null) return obj;
     if (!Array.isArray(obj) && typeof obj != 'object') return obj;
     return Object.keys(obj).reduce(function(acc, key) {
         acc[key] = typeof obj[key] == 'string'? decode(obj[key]) : escapeObj(obj[key]);

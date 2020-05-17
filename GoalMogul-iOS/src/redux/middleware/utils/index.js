@@ -381,3 +381,7 @@ export const getEmails = (contact) => {
 const Entities = require('html-entities').XmlEntities;
 const entities = new Entities();
 export const decode = (text) => entities.decode(text);
+
+export const escapeRegExp = (string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
