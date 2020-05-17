@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Animated, Easing } from 'react-native';
 import { ActionConst, Actions, Drawer, Lightbox, Modal, Reducer, Router, Scene, Stack, Tabs } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-// import Login from './Login';
 import LoginPage from './LoginPage';
 // Chat
 import Chat from './Main/Chat/Chat';
@@ -25,7 +24,6 @@ import Event from './Main/Event/Event';
 import Explore from './Main/Explore/Explore';
 import CreateGoalModal from './Main/Goal/CreateGoalModal';
 import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCardV3';
-// import MeetCard from './Main/MeetTab/MeetCard';
 // Home Tab
 import Home from './Main/Home/Home';
 import MeetTab from './Main/MeetTab/MeetTabV2';
@@ -35,7 +33,6 @@ import FriendInvitationView from './Main/MeetTab/V2/FriendInvitationView';
 import FriendTabView from './Main/MeetTab/V2/FriendTab/FriendTabView';
 import RequestTabView from './Main/MeetTab/V2/RequestTab/RequestTabView';
 import MyEvent from './Main/Menu/Event/MyEvent';
-import ContactInvitePage from './Main/MeetTab/Contacts/ContactInvitePage';
 // Menu
 import MyEventTab from './Main/Menu/Event/MyEventTab';
 import Menu from './Main/Menu/Menu';
@@ -81,15 +78,11 @@ import Contacts from './Registration/Contacts';
 import ContactSync from './Registration/ContactSync';
 import IntroForm from './Registration/IntroForm';
 /* Registration */
-// import RegistrationAccount from './Registration/Account';
-// import RegistrationAccount from './Registration/RegistrationAccount';
 import { RegistrationAccount } from './Main/Onboarding';
-// import CardStackStyleInterpolator from "react-navigation-stack/src/views/StackView/StackViewStyleInterpolator";
 /* Auth */
 import SplashScreen from './SplashScreen';
 import Tutorial from './Tutorial/Tutorial';
 import UserInviteModal from './Main/Common/Modal/UserInviteModal';
-import { trackViewScreen } from './monitoring/segment';
 
 
 class RouterComponent extends Component {
@@ -146,7 +139,6 @@ class RouterComponent extends Component {
 
     stateHandler = (prevState, newState, action) => {
         if (action && action.routeName) {
-            // trackViewScreen(action.routeName);
         }
         // console.log('newState is: ', newState);
     }

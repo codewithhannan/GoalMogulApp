@@ -275,17 +275,7 @@ class CreatePostModal extends Component {
         this.props.openCameraRoll(callback, { disableEditing: true });
     }
 
-    handleSaveDraftButtonPress = () => {
-        this.handleSaveDraft(() => {
-            this.setState({
-                drafts: drafts,
-                draftIndex: index,
-                isDraftSaved: true
-            });
-        });
-    }
-
-    handleSaveDraft = (callback) => {
+    handleSaveDraft = async () => {
         const draft = {
             post: this.props.post,
             mediaRef: this.props.mediaRef
@@ -300,9 +290,34 @@ class CreatePostModal extends Component {
         }
         else drafts[index] = draft;
 
-        savePostDrafts(drafts).then(callback).catch((error) => {
+        await savePostDrafts(drafts).then(()=> {
+            this.setState({
+                drafts: drafts,
+                draftIndex: index
+            });
+        }).catch(this.handleDraftUpdateError);
+    }
 
-        });
+    handleDeleteDraft = async (index) => {
+        let drafts = this.state.drafts;
+
+        if (index < drafts.length) {
+            const { draftIndex } = this.state;
+
+            drafts.splice(index, 1);
+            const newIndex = index === draftIndex ? drafts.length : (index > draftIndex ? draftIndex : draftIndex - 1);
+
+            await savePostDrafts(drafts).then(() => {
+                this.setState({
+                    drafts: drafts,
+                    draftIndex: newIndex
+                });
+            }).catch(this.handleDraftUpdateError);
+        }
+    }
+
+    handleDraftUpdateError(error) {
+
     }
 
     /**
@@ -316,15 +331,19 @@ class CreatePostModal extends Component {
      * Synchronize validate form values, contains simple check
      */
     handleCreate = (values) => {
+        // Delete from drafts
+        this.handleDeleteDraft(this.state.draftIndex);
+
         const { initializeFromState, initialPost, mediaRef, belongsToTribe, belongsToEvent, openProfile } = this.props;
-        const needUpload =
-            (initializeFromState && initialPost.mediaRef && initialPost.mediaRef !== mediaRef)
+
+        const needUpload = (initializeFromState && initialPost.mediaRef && initialPost.mediaRef !== mediaRef)
             || (!initializeFromState && mediaRef);
 
         const needOpenProfile = (belongsToTribe === undefined && belongsToEvent === undefined) &&
             (openProfile === undefined || openProfile === true) && !initializeFromState;
 
         const needRefreshProfile = openProfile === false;
+
         return this.props.submitCreatingPost(
             this.props.formVals.values,
             needUpload,
@@ -346,22 +365,21 @@ class CreatePostModal extends Component {
         });
     }
 
-    handleDraftCancel = (endActionCallback = () => {}) => {
-        const { post, mediaRef, uploading } = this.props;
+    handleDraftCancel = (callback) => {
+        const { post, mediaRef } = this.props;
         // TODO: check if draft is already saved
-        const draftSaved = uploading ||
-            ((!post || post.trim() === '') && !mediaRef) ||
+        const draftSaved = ((!post || post.trim() === '') && !mediaRef) ||
                 !this.isDraftChanged();
 
         if (draftSaved) 
-            return endActionCallback ? endActionCallback() : null;
+            return callback ? callback() : null;
 
         const onCancelSwitchCases = switchByButtonIndex([
             [R.equals(0), () => {
-                this.handleSaveDraft(endActionCallback);
+                this.handleSaveDraft().then(callback);
             }],
             [R.equals(1), () => {
-                if( endActionCallback) endActionCallback();
+                if(callback) callback();
             }]
         ]);
         const onCancelActionSheet = actionSheet(
@@ -675,7 +693,8 @@ class CreatePostModal extends Component {
                 </Text>
                 <DraftsView
                     drafts={this.state.drafts}
-                    onDraftSelect={(index) => {
+                    onDelete={this.handleDeleteDraft}
+                    onSelect={(index) => {
                         this.handleDraftCancel(() => {
                             const selectedDraft = this.state.drafts[index];
                             this.setState({ draftIndex: index });
@@ -691,9 +710,7 @@ class CreatePostModal extends Component {
     render() {
         const { handleSubmit, initializeFromState, post, mediaRef, uploading } = this.props;
         const modalActionText = initializeFromState ? 'Update' : 'Create';
-
         const actionDisabled = uploading || ((!post || post.trim() === '') && !mediaRef);
-        // console.log(this.props);
 
         return (
             <KeyboardAvoidingView

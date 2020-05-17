@@ -8,60 +8,62 @@ import {
     renderers
 } from 'react-native-popup-menu';
 
-import { IMAGE_BASE_URL } from '../../Utils/Constants';
-import { DEFAULT_STYLE, BACKGROUND_COLOR } from '../../styles';
+import { DEFAULT_STYLE, GM_BLUE } from '../../styles';
+import DelayedButton from '../Common/Button/DelayedButton';
 
 
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 /**
  * @param onDraftSelect(index)
  * @param drafts
  */
 class DraftsView extends Component {
 
-    handleOnMenuSelect = (value) => {
-        this.props.onDraftSelect(value);
-    }
-
     render() {
-        const {
-            drafts
-        } = this.props;
-
         return (
             <Menu
                 rendererProps={{ placement: 'bottom' }}
                 renderer={renderers.SlideInMenu}
+                name="DRAFT_MENU"
             >
                 <MenuTrigger customStyles={{ TriggerTouchableComponent: TouchableOpacity }}>
                         <Text style={{ ...DEFAULT_STYLE.subTitleText_1, textDecorationLine: 'underline' }}>View Drafts</Text>
                 </MenuTrigger>
                 <MenuOptions>
+                    <View style={styles.headerWrapper}>
+                        <Text style={{ ...DEFAULT_STYLE.titleText_1, color: 'white' }}>Drafts</Text>
+                    </View>
                     <FlatList
-                        data={drafts}
+                        data={this.props.drafts}
                         renderItem={({ item: { post, mediaRef }, index }) => {
                             return (
-                                <MenuOption onSelect={() => this.handleOnMenuSelect(index)}>
+                                <MenuOption onSelect={() => this.props.onSelect(index)}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <Text
                                             style={{
                                                 ...DEFAULT_STYLE.subTitleText_1,
-                                                padding: 16
+                                                margin: 16
                                             }}
                                             numberOfLines={1}
                                         >
                                             {post}
                                         </Text>
                                         {mediaRef && <Image
-                                            style={{ height: 50, width: 75 }}
+                                            style={{ height: 50, width: 75, borderRadius: 5, marginRight: 16 }}
                                             source={{ uri: mediaRef }}
                                         />}
+                                        <DelayedButton
+                                            activeOpacity={0.6}
+                                            onPress={onDelete(index)}
+                                        >
+                                            {/* <Image src={} /> */}
+                                        </DelayedButton>
                                     </View>
                                 </MenuOption>
                             );
                         }}
                         ItemSeparatorComponent={()=>(<View style={{ ...DEFAULT_STYLE.shadow, height: 1.5 }} />)}
-                        style={{ maxHeight: height/3, paddingTop: 5 }}
+                        style={{ maxHeight: height/3, paddingTop: 5, paddingBottom: 35 }}
                     />
                 </MenuOptions>
             </Menu>
@@ -70,7 +72,16 @@ class DraftsView extends Component {
 }
 
 const styles = {
-    
+    headerWrapper: {
+        backgroundColor: GM_BLUE,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 0.1,
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
 };
 
 export default DraftsView;
