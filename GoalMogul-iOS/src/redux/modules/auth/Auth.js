@@ -10,8 +10,10 @@ import {
     subscribeNotification
 } from '../notification/NotificationActions';
 
+
 const USERNAME = 'username';
 const PASSWORD = 'password';
+const AUTH_TOKEN = 'auth_token';
 const DEBUG_KEY = '[ Action Auth ]';
 export const auth = {
     getKey() {
@@ -19,9 +21,10 @@ export const auth = {
             try {
                 const username = await SecureStore.getItemAsync(USERNAME);
                 const password = await SecureStore.getItemAsync(PASSWORD);
+                const token = await SecureStore.getItemAsync(AUTH_TOKEN);
+
                 const value = username !== null && password !== null
-                    ? { username, password }
-                    : {};
+                    ? { username, password, token } : {};
 
                 resolve(value);
             } catch (err) {
@@ -67,13 +70,16 @@ export const auth = {
         }
     },
 
-    async saveKey(username, password, callback) {
+    async saveKey(username, password, token, callback) {
         try {
             await SecureStore.setItemAsync(
                 USERNAME, `${username}`, {}
             );
             await SecureStore.setItemAsync(
                 PASSWORD, `${password}`, {}
+            );
+            await SecureStore.setItemAsync(
+                AUTH_TOKEN, token, {}
             );
             if (callback) {
                 callback(true);
@@ -85,6 +91,7 @@ export const auth = {
             throw err;
         }
     },
+
     async updatePassword(password) {
         try {
             const username = await SecureStore.getItemAsync(USERNAME);
@@ -95,10 +102,12 @@ export const auth = {
             return false;
         }
     },
+
     async reset(callback) {
         try {
             await SecureStore.deleteItemAsync(USERNAME);
             await SecureStore.deleteItemAsync(PASSWORD);
+
             if (callback) {
                 callback(true);
             }

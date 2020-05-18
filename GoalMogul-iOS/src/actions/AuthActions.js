@@ -55,6 +55,8 @@ import { SENTRY_TAGS, SENTRY_MESSAGE_LEVEL, SENTRY_TAG_VALUE, SENTRY_MESSAGE_TYP
 
 
 const DEBUG_KEY = '[ Action Auth ]';
+const DAY_IN_MS = 24 * 60 * 60 * 1000;
+
 export const userNameChanged = (username) => {
     return {
         type: USERNAME_CHANGED,
@@ -74,7 +76,7 @@ const validateEmail = (email) => {
     return re.test(String(email).toLowerCase());
 };
 
-export const loginUser = ({ username, password, navigate, onError, onSuccess }) => {
+export const loginUser = ({ username, password, token, navigate, onError, onSuccess }) => {
     // Call the endpoint to use username and password to signin
     // Obtain the credential
 
@@ -91,96 +93,55 @@ export const loginUser = ({ username, password, navigate, onError, onSuccess }) 
     return async (dispatch, getState) => {
         console.log(`${DEBUG_KEY}: current app state is: `, AppState.currentState);
         // Do not reload data when on background or inactive
-        if (AppState.currentState === 'inactive' || AppState.currentState === 'background') {
-            return;
-        }
+        if (AppState.currentState === 'inactive'
+            || AppState.currentState === 'background') return;
 
         const { loading } = getState().auth;
 
-        if (loading) {
-            // If user loading is already triggerred, do nothing
-            // Potential place to trigger loading is at Router
-            return;
-        }
+        // If user loading is already triggerred, do nothing
+        // Potential place to trigger loading is at Router
+        if (loading) return;
         dispatch({
             type: LOGIN_USER_LOADING
         });
+
+        try {
+            if (token) {
+                // If token is more than 2 days old, re-authorize
+                const payload = JSON.parse(token);
+                const minTokenCreationLimit = Date.now() - 2 * DAY_IN_MS;
+    
+                if (payload.created > minTokenCreationLimit) {
+                    await mountUserWithToken({ payload, username, password, navigate, onSuccess }, dispatch, getState);
+                    return;
+                }
+            }
+        } catch (error) { }
+
         const message = await API
             .post('pub/user/authenticate/', { ...data }, undefined)
             .then(async (res) => {
-                // console.log('login with message: ', res);
-                // User Login Successfully
-                if (res.token) {
-                    const payload = {
-                        token: res.token,
-                        userId: res.userId
-                    };
-                    dispatch({
-                        type: LOGIN_USER_SUCCESS,
-                        payload
-                    });
-                    Auth.saveKey(username, password);
 
-                    // Invoke onSuccess callback to clear login page state
-                    if (onSuccess) {
-                        onSuccess();
-                    }
+            // User Login Failed
+            if (!res.token) return res.message;
 
-                    // Sentry track user
-                    setUser(res.userId, username);
+            // User Login Successfully
+            const payload = {
+                token: res.token,
+                userId: res.userId,
+                created: Date.now()
+            };
 
-                    // Segment track user
-                    identify(res.userId, username);
-
-                    // set up chat listeners
-                    LiveChatService.mountUser({
-                        userId: res.userId,
-                        authToken: res.token,
-                    });
-                    MessageStorageService.mountUser({
-                        userId: res.userId,
-                        authToken: res.token,
-                    });
-
-                    // Fetch user profile using returned token and userId
-                    fetchAppUserProfile(res.token, res.userId)(dispatch, getState);
-                    refreshFeed()(dispatch, getState);
-                    refreshGoals()(dispatch, getState);
-                    const hasTutorialShown = await Tutorial.getTutorialShown(res.userId);
-
-                    // Load unread notification
-                    await loadUnreadNotification()(dispatch, getState);
-                    // loadUnreadNotification()(dispatch, getState);
-
-                    // Load tutorial state
-                    await loadTutorialState(res.userId)(dispatch, getState);
-                    // loadTutorialState(res.userId)(dispatch, getState);
-
-                    // Load remote matches
-                    await loadRemoteMatches(res.userId)(dispatch, getState);
-                    // loadRemoteMatches(res.userId)(dispatch, getState);
-
-                    // If navigate is set to false, it means user has already opened up the home page
-                    // We only need to reload the profile and feed data
-                    if (navigate === false) {
-                        return;
-                    }
-                    Actions.replace('drawer');
-                } else {
-                    // User login fail
-                    return res.message;
-                }
-            })
-            .catch((err) => err.message || 'Please try again later');
+            await mountUserWithToken({ payload, username, password, navigate, onSuccess, saveToken: true }, dispatch, getState);
+        })
+        .catch((err) => err.message || 'Please try again later');
 
         if (message) {
             dispatch({
                 type: LOGIN_USER_FAIL,
             });
 
-            if (onError) {
-                onError(message);
-            }
+            if (onError) onError(message);
 
             // Record failure message in Sentry
             new SentryRequestBuilder(new Error(message), SENTRY_MESSAGE_TYPE.ERROR)
@@ -191,6 +152,55 @@ export const loginUser = ({ username, password, navigate, onError, onSuccess }) 
         }
     };
 };
+
+const mountUserWithToken = async ({ payload, username, password, navigate, onSuccess, saveToken }, dispatch, getState) => {
+    console.log(payload, saveToken);
+
+    dispatch({
+        type: LOGIN_USER_SUCCESS,
+        payload
+    });
+
+    if (saveToken) Auth.saveKey(username, password, JSON.stringify(payload));
+    // Invoke onSuccess callback to clear login page state
+    if (onSuccess) onSuccess();
+
+    // Sentry track user
+    setUser(payload.userId, username);
+
+    // Segment track user
+    identify(payload.userId, username);
+
+    // set up chat listeners
+    LiveChatService.mountUser({
+        userId: payload.userId,
+        authToken: payload.token,
+    });
+    MessageStorageService.mountUser({
+        userId: payload.userId,
+        authToken: payload.token,
+    });
+
+    // Fetch user profile using returned token and userId
+    fetchAppUserProfile(payload.token, payload.userId)(dispatch, getState);
+    refreshFeed()(dispatch, getState);
+    refreshGoals()(dispatch, getState);
+
+    // Load unread notification
+    await loadUnreadNotification()(dispatch, getState);
+
+    // Load tutorial state
+    await loadTutorialState(payload.userId)(dispatch, getState);
+
+    // Load remote matches
+    await loadRemoteMatches(payload.userId)(dispatch, getState);
+
+    // If navigate is set to false, it means user has already opened up the home page
+    // We only need to reload the profile and feed data
+    if (navigate === false) return;
+
+    Actions.replace('drawer');
+}
 
 // We have the same action in Profile.js
 export const fetchAppUserProfile = (token, userId) => (dispatch, getState) => {
