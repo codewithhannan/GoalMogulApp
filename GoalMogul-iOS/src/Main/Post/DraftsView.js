@@ -11,6 +11,8 @@ import {
 import { DEFAULT_STYLE, GM_BLUE } from '../../styles';
 import DelayedButton from '../Common/Button/DelayedButton';
 
+import cancelImage from '../../asset/utils/cancel_no_background.png';
+
 
 const { height } = Dimensions.get('window');
 /**
@@ -42,28 +44,31 @@ class DraftsView extends Component {
                                         <Text
                                             style={{
                                                 ...DEFAULT_STYLE.subTitleText_1,
-                                                margin: 16
+                                                margin: 16,
+                                                flex: mediaRef ? 3 : 9
                                             }}
                                             numberOfLines={1}
                                         >
                                             {post}
                                         </Text>
-                                        {mediaRef && <Image
-                                            style={{ height: 50, width: 75, borderRadius: 5, marginRight: 16 }}
-                                            source={{ uri: mediaRef }}
-                                        />}
-                                        <DelayedButton
-                                            activeOpacity={0.6}
-                                            onPress={onDelete(index)}
-                                        >
-                                            {/* <Image src={} /> */}
-                                        </DelayedButton>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', flex: 2, marginRight: 16 }}>
+                                            {mediaRef && <Image
+                                                style={{ height: 50, width: 75, borderRadius: 5, marginRight: 16 }}
+                                                source={{ uri: mediaRef }}
+                                            />}
+                                            <DelayedButton
+                                                activeOpacity={0.6}
+                                                onPress={() => this.props.onDelete(index)}
+                                            >
+                                                <Image style={DEFAULT_STYLE.buttonIcon_1} source={cancelImage} />
+                                            </DelayedButton>
+                                        </View>
                                     </View>
                                 </MenuOption>
                             );
                         }}
                         ItemSeparatorComponent={()=>(<View style={{ ...DEFAULT_STYLE.shadow, height: 1.5 }} />)}
-                        style={{ maxHeight: height/3, paddingTop: 5, paddingBottom: 35 }}
+                        style={{ maxHeight: height/2, paddingTop: 5, paddingBottom: 35 }}
                     />
                 </MenuOptions>
             </Menu>
