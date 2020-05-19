@@ -8,7 +8,9 @@ export const GM_BLUE_LIGHT = "#9EE6FF";
 export const GM_BLUE_LIGHT_LIGHT = "#DEF7FF";
 export const GM_DOT_GRAY = "#E0E0E0";
 
-const UI_SCALE = 1;
+import Constants from 'expo-constants';
+
+const UI_SCALE = Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.5 : 1;
 export const TEXT_COLOR_1 = '#333';
 
 export const FONT_FAMILY_1 = 'Avenir';
