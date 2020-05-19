@@ -61,17 +61,11 @@ import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal';
 const TabIconMap = {
     goals: {
         iconSource: Logo,
-        iconStyle: {
-            height: 17,
-            width: 17
-        }
+        iconStyle: DEFAULT_STYLE.normalIcon_1
     },
     activity: {
         iconSource: Activity,
-        iconStyle: {
-            height: 15,
-            width: 15
-        }
+        iconStyle: DEFAULT_STYLE.normalIcon_1
     }
 };
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, TouchableWithoutFeedback } from 'react-native';
+import { DEFAULT_STYLE } from '../../../styles';
 
 const styles = {
   containerStyle: {
-    fontSize: 15,
-    fontWeight: '600',
-    maxWidth: 200,
+    ...DEFAULT_STYLE.titleText_1,
+    maxWidth: 200 * DEFAULT_STYLE.uiScale
   }
 };
 

@@ -763,18 +763,13 @@ const styles = {
         borderWidth: 1,
         padding: 12
     },
-    imageStyle: {
-        height: 54,
-        width: 54,
-        borderRadius: 5,
-    },
     goalInputStyle: {
         ...DEFAULT_STYLE.subTitleText_1,
         paddingTop: 15,
         padding: 15,
         width: '100%',
         height: 'auto',
-        maxHeight: 200,
+        maxHeight: 200 * DEFAULT_STYLE.uiScale,
         minHeight: 90
     },
     titleTextStyle: {
@@ -782,7 +777,7 @@ const styles = {
         padding: 2
     },
     mediaStyle: {
-        height: 150,
+        height: 150 * DEFAULT_STYLE.uiScale,
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -795,11 +790,6 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 4
-    },
-    actionIconStyle: {
-        tintColor: '#4a4a4a',
-        height: 15,
-        width: 18
     },
     userImageContainerStyle: {
         borderWidth: 0.5,

@@ -146,12 +146,6 @@ const styles = {
         paddingRight: 15,
         paddingLeft: 15
     },
-    iconStyle: {
-        alignSelf: 'center',
-        fontSize: 20,
-        marginLeft: 5,
-        marginTop: 2
-    },
     textStyle: {
         flex: 1,
         flexWrap: 'wrap'

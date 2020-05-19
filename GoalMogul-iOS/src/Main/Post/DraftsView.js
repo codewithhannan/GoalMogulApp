@@ -13,8 +13,6 @@ import DelayedButton from '../Common/Button/DelayedButton';
 
 import cancelImage from '../../asset/utils/cancel_no_background.png';
 
-
-const { height } = Dimensions.get('window');
 /**
  * @param onDraftSelect(index)
  * @param drafts
@@ -22,6 +20,8 @@ const { height } = Dimensions.get('window');
 class DraftsView extends Component {
 
     render() {
+        const { width, height } = Dimensions.get('window');
+        const textWidth = width - 3*16 - DEFAULT_STYLE.buttonIcon_1.width - 30;
         return (
             <Menu
                 rendererProps={{ placement: 'bottom' }}
@@ -43,24 +43,25 @@ class DraftsView extends Component {
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <Text
                                             style={{
-                                                ...DEFAULT_STYLE.subTitleText_1,
-                                                margin: 16,
-                                                flex: mediaRef ? 3 : 9
+                                                ...styles.bodyText,
+                                                width: mediaRef ? textWidth - 75 * DEFAULT_STYLE.uiScale - 16
+                                                    : textWidth
                                             }}
                                             numberOfLines={1}
                                         >
                                             {post}
                                         </Text>
-                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', flex: 2, marginRight: 16 }}>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginRight: 16 }}>
                                             {mediaRef && <Image
-                                                style={{ height: 50, width: 75, borderRadius: 5, marginRight: 16 }}
+                                                style={styles.media}
                                                 source={{ uri: mediaRef }}
                                             />}
                                             <DelayedButton
                                                 activeOpacity={0.6}
                                                 onPress={() => this.props.onDelete(index)}
+                                                style={styles.cancelWrapper}
                                             >
-                                                <Image style={DEFAULT_STYLE.buttonIcon_1} source={cancelImage} />
+                                                <Image style={{ ...DEFAULT_STYLE.smallIcon_1, margin: 15, tintColor: 'white' }} source={cancelImage} />
                                             </DelayedButton>
                                         </View>
                                     </View>
@@ -87,6 +88,20 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center'
     },
+    media: {
+        height: 50 * DEFAULT_STYLE.uiScale,
+        width: 75 * DEFAULT_STYLE.uiScale,
+        borderRadius: 5,
+        marginRight: 16
+    },
+    bodyText: {
+        ...DEFAULT_STYLE.subTitleText_1,
+        margin: 16
+    },
+    cancelWrapper: {
+        backgroundColor: '#EB5757',
+        borderRadius: 100
+    }
 };
 
 export default DraftsView;

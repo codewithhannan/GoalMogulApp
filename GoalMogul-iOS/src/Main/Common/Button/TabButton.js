@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Animated, Image } from 'react-native';
 import _ from 'lodash';
 import { DotIcon } from '../../../Utils/Icons';
+import { DEFAULT_STYLE } from '../../../styles';
 
 
 const renderNotificationIndicator = (props) => {
@@ -39,7 +40,7 @@ const TabButton = (props) => {
             </Text>
         </View>
     );
-    
+
     const icon = !iconSource ? null : (
         <Image
             source={iconSource}
@@ -78,11 +79,9 @@ const styles = {
         color: '#696969',
     },
     iconStyle: {
-        height: 12,
-        width: 12,
+        ...DEFAULT_STYLE.smallIcon_1,
         alignSelf: 'center',
         justifyContent: 'center',
-        tintColor: '#1998c9',
         marginRight: 9
     }
 };

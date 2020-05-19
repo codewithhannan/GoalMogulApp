@@ -348,7 +348,7 @@ class ProfileDetailCard extends Component {
 
         return (
             <View onLayout={this.onLayout}>
-                <View style={{ height: 90, backgroundColor: GM_BLUE_LIGHT_LIGHT }} />
+                <View style={{ height: 90 * DEFAULT_STYLE.uiScale, backgroundColor: GM_BLUE_LIGHT_LIGHT }} />
                 <View style={styles.topWrapperStyle}>
                     {this.renderProfileImage(profile)}
                     <View style={{ flexDirection: 'row', flex: 1 }}>
@@ -362,7 +362,14 @@ class ProfileDetailCard extends Component {
                         <Text style={[ styles.marginStyle, DEFAULT_STYLE.titleText_1 ]}>
                             {name}
                         </Text>
-                        <UserBanner user={this.props.user} iconStyle={{ ...styles.marginStyle, height: 20, width: 17 }} />
+                        <UserBanner
+                            user={this.props.user}
+                            iconStyle={{
+                                ...styles.marginStyle,
+                                height: 20 * DEFAULT_STYLE.uiScale,
+                                width: 17 * DEFAULT_STYLE.uiScale
+                            }}
+                        />
                         {this.props.self && (
                             <DelayedButton
                                 onPress={this.handleBannerInfoIconOnPress}
@@ -379,7 +386,7 @@ class ProfileDetailCard extends Component {
                         textContainerStyle={{ flexDirection: 'row' }}
                         numberOfLines={1}
                     />
-                    { location && (
+                    {location && (
                         <RichText
                             textStyle={[styles.marginStyle, DEFAULT_STYLE.normalText_1 ]}
                             contentText={location}
@@ -404,13 +411,13 @@ const styles = {
         paddingRight: 20
     },
     topWrapperStyle: {
-        height: 60,
+        height: DEFAULT_STYLE.uiScale * 60,
         backgroundColor: BACKGROUND_COLOR,
         padding: 16
     },
     imageContainerStyle: {
         alignItems: 'center',
-        borderRadius: (width * 0.15),
+        borderRadius: DEFAULT_STYLE.uiScale * 60,
         borderColor: '#BDBDBD',
         position: 'absolute',
         bottom: 10,
@@ -419,9 +426,9 @@ const styles = {
         backgroundColor: BACKGROUND_COLOR
     },
     imageStyle: {
-        width: (width * 0.3),
-        height: (width * 0.3),
-        borderRadius: (width * 0.15)
+        width: DEFAULT_STYLE.uiScale * 120,
+        height: DEFAULT_STYLE.uiScale * 120,
+        borderRadius: DEFAULT_STYLE.uiScale * 60
     },
     buttonContainerStyle: {
         color: 'white',

@@ -156,10 +156,10 @@ const styles = {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 30,
         borderWidth: 1,
+        height: 30 * DEFAULT_STYLE.uiScale,
         borderColor: '#E0E0E0',
-        borderRadius: 100
+        borderRadius: 15 * DEFAULT_STYLE.uiScale
     },
     selectedContainerStyle: {
         borderColor: '#828282',

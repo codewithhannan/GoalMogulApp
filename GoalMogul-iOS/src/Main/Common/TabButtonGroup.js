@@ -5,6 +5,7 @@ import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 import Divider from './Divider';
 import TabButton from './Button/TabButton';
 import SubTabButton from './Button/SubTabButton';
+import { DEFAULT_STYLE } from '../../styles';
 
 
 const WalkableView = walkthroughable(View);
@@ -20,7 +21,6 @@ class TabButtonGroup extends Component {
             tabIconMap,
             subTab,
             buttonStyle,
-            noVerticalDivider, // Vertical border between two tabs
             tabNotificationMap, // Map between tab key and if there is notification and its style, not required
             borderRadius
         } = this.props;
@@ -56,7 +56,7 @@ class TabButtonGroup extends Component {
                     iconStyle={iconStyle}
                     containerStyle={containerStyle}
                     textStyle={textStyle}
-                    statTextStyle={{ ...textStyle, fontSize: 10 }}
+                    statTextStyle={{ ...textStyle, fontSize: DEFAULT_STYLE.smallText_1.fontSize }}
                     tabNotificationMap={tabNotificationMap}
                 />
             ) : (
@@ -68,7 +68,7 @@ class TabButtonGroup extends Component {
                     iconStyle={iconStyle}
                     containerStyle={containerStyle}
                     textStyle={textStyle}
-                    statTextStyle={{ ...textStyle, fontSize: 10 }}
+                    statTextStyle={{ ...textStyle, fontSize: DEFAULT_STYLE.smallText_1.fontSize }}
                     tabNotificationMap={tabNotificationMap}
                 />
             );
@@ -119,14 +119,13 @@ const styles = {
     containerStyle: {
         display: 'flex',
         flexDirection: 'row',
-        height: 30,
-        flexDirection: 'row',
         borderWidth: 1,
         borderColor: '#E8E8E8',
         backgroundColor: 'white',
         justifyContent: 'space-around',
         alignItems: 'center',
-        padding: 2
+        padding: 3 * DEFAULT_STYLE.uiScale,
+        height: 33 * DEFAULT_STYLE.uiScale
     }
 };
 

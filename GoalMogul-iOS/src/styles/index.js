@@ -108,7 +108,9 @@ export const modalHeaderBadgeShadow = {
     shadowRadius: 5,
 };
 
-const UI_SCALE = 1;
+import Constants from 'expo-constants';
+
+const UI_SCALE = Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.5 : 1;
 export const TEXT_COLOR_1 = '#333';
 
 export const FONT_FAMILY_1 = 'Avenir';
@@ -142,6 +144,10 @@ export const DEFAULT_STYLE = {
         fontFamily: FONT_FAMILY_2,
         fontSize: 14 * UI_SCALE,
         color: TEXT_COLOR_1
+    },
+    normalIcon_1: {
+        height: 16 * UI_SCALE,
+        width: 16 * UI_SCALE
     },
     // Detailing texts
     smallTitle_1: {
@@ -178,6 +184,7 @@ export const DEFAULT_STYLE = {
         tintColor: TEXT_COLOR_1
     },
     // Misc
+    uiScale: UI_SCALE,
     infoIcon: {
         height: 8 * UI_SCALE,
         width: 8 * UI_SCALE,
