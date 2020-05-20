@@ -21,7 +21,8 @@ import { openProfile } from '../actions';
 import {
     subscribeNotification,
     saveUnreadNotification,
-    loadUnreadNotification
+    loadUnreadNotification,
+    unsubscribeNotifications
 } from '../redux/modules/notification/NotificationActions';
 
 import {
@@ -49,7 +50,7 @@ import MessageStorageService from '../services/chat/MessageStorageService';
 import { MemberDocumentFetcher } from '../Utils/UserUtils';
 import { Logger } from '../redux/middleware/utils/Logger';
 import { saveRemoteMatches, loadRemoteMatches } from './MeetActions';
-import { setUser, captureException, SentryRequestBuilder } from '../monitoring/sentry';
+import { setUser, SentryRequestBuilder } from '../monitoring/sentry';
 import { identify, resetUser } from '../monitoring/segment';
 import { SENTRY_TAGS, SENTRY_MESSAGE_LEVEL, SENTRY_TAG_VALUE, SENTRY_MESSAGE_TYPE } from '../monitoring/sentry/Constants';
 
@@ -276,6 +277,7 @@ export const logout = () => async (dispatch, getState) => {
         }
     };
     Auth.reset(callback);
+    await unsubscribeNotifications()(dispatch, getState);
     Actions.reset('root');
     // clear chat service details
     LiveChatService.unMountUser();

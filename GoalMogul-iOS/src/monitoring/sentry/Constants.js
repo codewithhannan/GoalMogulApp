@@ -8,7 +8,8 @@ const SENTRY_TAGS = {
         LOGIN_IN: 'login',
         LOGOUT: 'logout',
         FETCH_USER_PROFILE: 'fetech user profile',
-        USERNAME: 'username'
+        USERNAME: 'username',
+        UNSUBSCRIBE_NOTIFICATIONS: 'unsubscribe notifications (expo push token deletion)'
     }
 };
 
