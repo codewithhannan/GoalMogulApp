@@ -400,10 +400,7 @@ export const subscribeNotification = () => async (dispatch, getState) => {
         await SecureStore.setItemAsync(
             NOTIFICATION_TOKEN_KEY, notificationToken, {}
         );
-        // Alert.alert(
-        //   'Success',
-        //   'You have subscribed to app notifications.'
-        // );
+
         console.log(`${DEBUG_KEY}: register notification succeed success with res: `, res);
     };
 
@@ -418,7 +415,8 @@ export const subscribeNotification = () => async (dispatch, getState) => {
             'secure/user/settings/expo-token', { pushToken: notificationToken }, token
         )
         .then((res) => {
-            if (res.status === 200) {
+            // All 200 status imply success
+            if (res.status >= 200 && res.status < 300) {
                 return onSuccess(res);
             }
             return onError(res);

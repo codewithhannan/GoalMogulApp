@@ -19,6 +19,7 @@ import {
 import { auth as Auth } from '../redux/modules/auth/Auth';
 import { openProfile } from '../actions';
 import {
+    subscribeNotification,
     saveUnreadNotification,
     loadUnreadNotification
 } from '../redux/modules/notification/NotificationActions';
@@ -203,6 +204,8 @@ const mountUserWithToken = ({ payload, username, password, navigate, onSuccess, 
 
     // Load remote matches
     await loadRemoteMatches(payload.userId)(dispatch, getState);
+
+    await subscribeNotification()(dispatch, getState);
 
     // If navigate is set to false, it means user has already opened up the home page
     // We only need to reload the profile and feed data
