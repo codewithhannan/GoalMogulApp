@@ -56,6 +56,10 @@ import {
 } from './NotificationTabReducers';
 import LiveChatService from '../../../socketio/services/LiveChatService';
 
+import { SentryRequestBuilder } from '../../../monitoring/sentry';
+import { SENTRY_TAGS, SENTRY_MESSAGE_LEVEL, SENTRY_TAG_VALUE, SENTRY_MESSAGE_TYPE } from '../../../monitoring/sentry/Constants';
+
+
 const BASE_ROUTE = 'secure/notification';
 const DEBUG_KEY = '[ Action Notification ]';
 const NOTIFICATION_TOKEN_KEY = 'notification_token_key';
@@ -64,7 +68,6 @@ const NOTIFICATION_UNREAD_QUEUE_PREFIX = 'notification_unread_queue_prefix';
 const HAS_RUN_BEFORE = '@global:hasRunBefore';
 
 const isValidItem = (item) => item !== undefined && item !== null && !_.isEmpty(item);
-
 
 /**
  * Handle when push notification is selected
@@ -325,9 +328,7 @@ export const seeMore = (type) => (dispatch, getState) => {
  */
 export const subscribeNotification = () => async (dispatch, getState) => {
     const { token, userId, user } = getState().user;
-    const { status: existingStatus } = await Permissions.getAsync(
-        Permissions.NOTIFICATIONS
-    );
+    const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
 
     // only ask if permissions have not already been determined, because
     // iOS won't necessarily prompt the user a second time.
@@ -399,10 +400,48 @@ export const subscribeNotification = () => async (dispatch, getState) => {
         await SecureStore.setItemAsync(
             NOTIFICATION_TOKEN_KEY, notificationToken, {}
         );
-        // Alert.alert(
-        //   'Success',
-        //   'You have subscribed to app notifications.'
-        // );
+
+        console.log(`${DEBUG_KEY}: register notification succeed success with res: `, res);
+    };
+
+    const onError = (err) => {
+        console.log(`${DEBUG_KEY}: register notification failed with err: `, err);
+        new SentryRequestBuilder(res, SENTRY_MESSAGE_TYPE.ERROR)
+                .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
+                .withTag(SENTRY_TAGS.ACTION.UNSUBSCRIBE_NOTIFICATIONS, SENTRY_TAG_VALUE.ACTIONS.FAILED)
+                .withExtraContext(SENTRY_TAGS.ACTION.USERNAME, username)
+                .send();
+    };
+
+    // POST the token to your backend server from
+    // where you can retrieve it to send push notifications.
+    return API
+        .put(
+            'secure/user/settings/expo-token', { pushToken: notificationToken }, token
+        )
+        .then((res) => {
+            // All 200 status imply success
+            if (res.status >= 200 && res.status < 300) {
+                return onSuccess(res);
+            }
+            return onError(res);
+        })
+        .catch((err) => {
+            onError(err);
+        });
+};
+
+/**
+ * unsubscribe notifications
+ */
+export const unsubscribeNotifications = () => async (dispatch, getState) => {
+    const { token } = getState().user;
+
+    // Get the token that uniquely identifies this device
+    const notificationToken = await SecureStore.getItemAsync(NOTIFICATION_TOKEN_KEY);
+
+    const onSuccess = async (res) => {
+        await SecureStore.deleteItemAsync(NOTIFICATION_TOKEN_KEY);
         console.log(`${DEBUG_KEY}: register notification succeed success with res: `, res);
     };
 
@@ -413,11 +452,10 @@ export const subscribeNotification = () => async (dispatch, getState) => {
     // POST the token to your backend server from
     // where you can retrieve it to send push notifications.
     return API
-        .put(
-            'secure/user/settings/expo-token', { pushToken: notificationToken }, token
-        )
+        .delete('secure/user/settings/expo-token', { pushToken: notificationToken }, token)
         .then((res) => {
-            if (res.status === 200) {
+            // All 200 status imply success
+            if (res.status >= 200 && res.status < 300) {
                 return onSuccess(res);
             }
             return onError(res);

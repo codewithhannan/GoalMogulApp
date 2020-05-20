@@ -6,10 +6,6 @@ import {
     SPLASHSCREEN_HIDE
 } from '../../../reducers/AuthReducers';
 
-import {
-    subscribeNotification
-} from '../notification/NotificationActions';
-
 
 const USERNAME = 'username';
 const PASSWORD = 'password';
@@ -107,6 +103,7 @@ export const auth = {
         try {
             await SecureStore.deleteItemAsync(USERNAME);
             await SecureStore.deleteItemAsync(PASSWORD);
+            await SecureStore.deleteItemAsync(AUTH_TOKEN);
 
             if (callback) {
                 callback(true);
@@ -126,6 +123,5 @@ export const hideSplashScreen = () => async (dispatch, getState) => {
         dispatch({
             type: SPLASHSCREEN_HIDE
         });
-        await subscribeNotification()(dispatch, getState);
     }, 100);
 };
