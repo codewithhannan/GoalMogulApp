@@ -36,7 +36,7 @@ const CANCEL_INDEX = 2;
  * * void     handleCameraRoll()
  * 
  * OPTIONAL PROPS:
- * * image    imageUri
+ * * string   imageUri
  * * image    icon
  * * boolean  rounded
  * * boolean  bordered
