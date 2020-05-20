@@ -17,7 +17,6 @@ import {
 } from '../reducers/User';
 
 import { auth as Auth } from '../redux/modules/auth/Auth';
-import { tutorial as Tutorial } from '../redux/modules/auth/Tutorial';
 import { openProfile } from '../actions';
 import {
     saveUnreadNotification,
@@ -110,31 +109,37 @@ export const loginUser = ({ username, password, token, navigate, onError, onSucc
                 // If token is more than 2 days old, re-authorize
                 const payload = JSON.parse(token);
                 const minTokenCreationLimit = Date.now() - 2 * DAY_IN_MS;
-    
+
                 if (payload.created > minTokenCreationLimit) {
-                    await mountUserWithToken({ payload, username, password, navigate, onSuccess }, dispatch, getState);
+                    await mountUserWithToken({ payload, username, password, navigate, onSuccess })(dispatch, getState);
                     return;
                 }
             }
-        } catch (error) { }
+        } catch (error) {
+            new SentryRequestBuilder(new Error(error.message), SENTRY_MESSAGE_TYPE.ERROR)
+                .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
+                .withTag(SENTRY_TAGS.ACTION.LOGIN_IN, SENTRY_TAG_VALUE.ACTIONS.FAILED)
+                .withExtraContext(SENTRY_TAGS.ACTION.USERNAME, username)
+                .send();
+        }
 
         const message = await API
             .post('pub/user/authenticate/', { ...data }, undefined)
             .then(async (res) => {
 
-            // User Login Failed
-            if (!res.token) return res.message;
+                // User Login Failed
+                if (!res.token) return res.message;
 
-            // User Login Successfully
-            const payload = {
-                token: res.token,
-                userId: res.userId,
-                created: Date.now()
-            };
+                // User Login Successfully
+                const payload = {
+                    token: res.token,
+                    userId: res.userId,
+                    created: Date.now()
+                };
 
-            await mountUserWithToken({ payload, username, password, navigate, onSuccess, saveToken: true }, dispatch, getState);
-        })
-        .catch((err) => err.message || 'Please try again later');
+                await mountUserWithToken({ payload, username, password, navigate, onSuccess, saveToken: true })(dispatch, getState);
+            })
+            .catch((err) => err.message || 'Please try again later');
 
         if (message) {
             dispatch({
@@ -153,9 +158,13 @@ export const loginUser = ({ username, password, token, navigate, onError, onSucc
     };
 };
 
-const mountUserWithToken = async ({ payload, username, password, navigate, onSuccess, saveToken }, dispatch, getState) => {
-    console.log(payload, saveToken);
-
+/**
+ * Dispaches required actions and set's the app state to mount user
+ * and content after login is successful
+ * @param { payload: { userId, token }, username, password, navigate, onSuccess, saveToken } param0
+ * payload: { userId, token }, username and required for a successful user mount
+ */
+const mountUserWithToken = ({ payload: { userId, token }, username, password, navigate, onSuccess, saveToken }) => async (dispatch, getState) => {
     dispatch({
         type: LOGIN_USER_SUCCESS,
         payload
@@ -166,23 +175,23 @@ const mountUserWithToken = async ({ payload, username, password, navigate, onSuc
     if (onSuccess) onSuccess();
 
     // Sentry track user
-    setUser(payload.userId, username);
+    setUser(userId, username);
 
     // Segment track user
-    identify(payload.userId, username);
+    identify(userId, username);
 
     // set up chat listeners
     LiveChatService.mountUser({
-        userId: payload.userId,
-        authToken: payload.token,
+        userId: userId,
+        authToken: token,
     });
     MessageStorageService.mountUser({
-        userId: payload.userId,
-        authToken: payload.token,
+        userId: userId,
+        authToken: token,
     });
 
     // Fetch user profile using returned token and userId
-    fetchAppUserProfile(payload.token, payload.userId)(dispatch, getState);
+    fetchAppUserProfile(token, userId)(dispatch, getState);
     refreshFeed()(dispatch, getState);
     refreshGoals()(dispatch, getState);
 
@@ -190,10 +199,10 @@ const mountUserWithToken = async ({ payload, username, password, navigate, onSuc
     await loadUnreadNotification()(dispatch, getState);
 
     // Load tutorial state
-    await loadTutorialState(payload.userId)(dispatch, getState);
+    await loadTutorialState(userId)(dispatch, getState);
 
     // Load remote matches
-    await loadRemoteMatches(payload.userId)(dispatch, getState);
+    await loadRemoteMatches(userId)(dispatch, getState);
 
     // If navigate is set to false, it means user has already opened up the home page
     // We only need to reload the profile and feed data
@@ -228,7 +237,11 @@ export const fetchAppUserProfile = (token, userId) => (dispatch, getState) => {
             }
         })
         .catch((err) => {
-            console.log('[ Auth Action ] fetch user profile fails: ', err);
+            new SentryRequestBuilder(new Error(message), SENTRY_MESSAGE_TYPE.ERROR)
+                .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
+                .withTag(SENTRY_TAGS.ACTION.FETCH_USER_PROFILE, SENTRY_TAG_VALUE.ACTIONS.FAILED)
+                .withExtraContext(SENTRY_TAGS.ACTION.USERNAME, username)
+                .send();
         });
 };
 
@@ -250,6 +263,11 @@ export const logout = () => async (dispatch, getState) => {
     const callback = (res) => {
         if (res instanceof Error) {
             console.log(`${DEBUG_KEY}: log out user error: `, res);
+            new SentryRequestBuilder(res, SENTRY_MESSAGE_TYPE.ERROR)
+                .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
+                .withTag(SENTRY_TAGS.ACTION.LOGOUT, SENTRY_TAG_VALUE.ACTIONS.FAILED)
+                .withExtraContext(SENTRY_TAGS.ACTION.USERNAME, username)
+                .send();
         } else {
             console.log(`${DEBUG_KEY}: log out user with res: `, res);
         }
@@ -272,6 +290,7 @@ const TOAST_IMAGE_STYLE = {
     width: 36,
     borderRadius: 4
 };
+
 const TOAST_IMAGE_CONTAINER_STYLE = {
     borderWidth: 0.5,
     padding: 0.5,
@@ -281,9 +300,11 @@ const TOAST_IMAGE_CONTAINER_STYLE = {
     alignSelf: 'center',
     backgroundColor: 'transparent'
 };
+
 const NEWLY_CREATED_KEY = 'newly_created_key';
 const makeTitleWithName = (name) => `You\'ve accepted ${name}\'s invite!`;
 const makeMessage = () => 'Tap here to visit their profile and help them with their goals.';
+
 export const checkIfNewlyCreated = () => async (dispatch, getState) => {
     const { token, userId } = getState().user;
     // Check if we already show toast

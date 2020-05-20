@@ -6,6 +6,8 @@ const SENTRY_TAGS = {
     GOOGLE_SERVIVE: 'google service',
     ACTION: {
         LOGIN_IN: 'login',
+        LOGOUT: 'logout',
+        FETCH_USER_PROFILE: 'fetech user profile',
         USERNAME: 'username'
     }
 };
