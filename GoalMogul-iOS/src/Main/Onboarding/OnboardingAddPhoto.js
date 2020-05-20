@@ -1,46 +1,41 @@
 /***********************************************************
  * FILENAME: OnboardingAddPhoto.js    TYPE: Component
- * 
+ *
  * DESCRIPTION:
  *      Prompt user to add a profile photo.
- * 
+ *
  * NOTES:
  *      This component serves as one of the steps in the
  *    onboarding process. See Goal Mogul Docs for detailed
  *    explanation on this.
- * 
+ *
  * AUTHER: Yanxiang Lan     START DATE: 11 May 20
  ***********************************************************/
 
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet
-} from 'react-native';
-import { connect } from 'react-redux';
-import { Actions } from 'react-native-router-flux';
+import React, { Component } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { connect } from "react-redux";
+import { Actions } from "react-native-router-flux";
 
-import OnboardingHeader from './Common/OnboardingHeader';
-import DelayedButton from '../Common/Button/DelayedButton';
-import ImagePicker from './Common/ImagePicker';
+import OnboardingHeader from "./Common/OnboardingHeader";
+import DelayedButton from "../Common/Button/DelayedButton";
+import ImagePicker from "./Common/ImagePicker";
 
 import {
   TEXT_STYLE as textStyle,
-  BUTTON_STYLE as buttonStyle
-} from '../../styles';
-import { openCamera, openCameraRoll } from '../../actions';
-
+  BUTTON_STYLE as buttonStyle,
+} from "../../styles";
+import { openCamera, openCameraRoll } from "../../actions";
 
 class OnboardingAddPhotos extends Component {
   /**Navigate to next step. */
-  onNext = () => {
-    Actions.push("");
+  onSkip = () => {
+    Actions.push("registration_contact_sync");
   };
-  
-  /**Navigate to previous step. */
-  onBack = () => {
-    Actions.pop();
+
+  onContinue = () => {
+    // TODO process uploaded image
+    Actions.push("registration_contact_sync");
   };
 
   render() {
@@ -59,7 +54,9 @@ class OnboardingAddPhotos extends Component {
               bordered
               rounded
             />
-            <Text style={[textStyle.onboardingTitleTextStyle, styles.titleStyles]}>
+            <Text
+              style={[textStyle.onboardingTitleTextStyle, styles.titleStyles]}
+            >
               Now, add a photo
             </Text>
             <Text style={textStyle.onboardingPharagraphTextStyle}>
@@ -68,7 +65,11 @@ class OnboardingAddPhotos extends Component {
           </View>
           <View style={styles.buttonContainerStyles}>
             <DelayedButton
-              style={[buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle, styles.buttonPrimaryStyles]}
+              style={[
+                buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle,
+                styles.buttonPrimaryStyles,
+              ]}
+              onPress={this.onContinue}
             >
               <Text style={buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.textStyle}>
                 Continue
@@ -76,6 +77,7 @@ class OnboardingAddPhotos extends Component {
             </DelayedButton>
             <DelayedButton
               style={[buttonStyle.GM_WHITE_BG_GRAY_TEXT.containerStyle]}
+              onPress={this.onSkip}
             >
               <Text style={buttonStyle.GM_WHITE_BG_GRAY_TEXT.textStyle}>
                 Skip
@@ -88,15 +90,14 @@ class OnboardingAddPhotos extends Component {
   }
 }
 
-
 const styles = StyleSheet.create({
   containerStyles: {
     flex: 1,
-    backgroundColor: 'white',
-    justifyContent: 'space-between',
+    backgroundColor: "white",
+    justifyContent: "space-between",
   },
   imagePickerStyles: {
-    marginVertical: 40
+    marginVertical: 40,
   },
   buttonContainerStyles: {
     marginBottom: 60,
@@ -107,9 +108,8 @@ const styles = StyleSheet.create({
   },
   titleStyles: {
     marginBottom: 16,
-  }
+  },
 });
-
 
 const mapStateToProps = (state) => {
   const { profilePic } = state.registration;
@@ -117,8 +117,6 @@ const mapStateToProps = (state) => {
   return { profilePic };
 };
 
-
-export default connect(
-  mapStateToProps,
-  { openCamera, openCameraRoll }
-)(OnboardingAddPhotos);
+export default connect(mapStateToProps, { openCamera, openCameraRoll })(
+  OnboardingAddPhotos
+);
