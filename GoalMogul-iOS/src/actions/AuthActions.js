@@ -162,9 +162,9 @@ export const loginUser = ({ username, password, token, navigate, onError, onSucc
  * Dispaches required actions and set's the app state to mount user
  * and content after login is successful
  * @param { payload: { userId, token }, username, password, navigate, onSuccess, saveToken } param0
- * payload: { userId, token }, username and required for a successful user mount
+ * payload: { userId, token } and username is required for a successful user mount
  */
-const mountUserWithToken = ({ payload: { userId, token }, username, password, navigate, onSuccess, saveToken }) => async (dispatch, getState) => {
+const mountUserWithToken = ({ payload, username, password, navigate, onSuccess, saveToken }) => async (dispatch, getState) => {
     dispatch({
         type: LOGIN_USER_SUCCESS,
         payload
@@ -175,23 +175,23 @@ const mountUserWithToken = ({ payload: { userId, token }, username, password, na
     if (onSuccess) onSuccess();
 
     // Sentry track user
-    setUser(userId, username);
+    setUser(payload.userId, username);
 
     // Segment track user
-    identify(userId, username);
+    identify(payload.userId, username);
 
     // set up chat listeners
     LiveChatService.mountUser({
-        userId: userId,
-        authToken: token,
+        userId: payload.userId,
+        authToken: payload.token,
     });
     MessageStorageService.mountUser({
-        userId: userId,
-        authToken: token,
+        userId: payload.userId,
+        authToken: payload.token,
     });
 
     // Fetch user profile using returned token and userId
-    fetchAppUserProfile(token, userId)(dispatch, getState);
+    fetchAppUserProfile(payload.token, payload.userId)(dispatch, getState);
     refreshFeed()(dispatch, getState);
     refreshGoals()(dispatch, getState);
 
@@ -199,10 +199,10 @@ const mountUserWithToken = ({ payload: { userId, token }, username, password, na
     await loadUnreadNotification()(dispatch, getState);
 
     // Load tutorial state
-    await loadTutorialState(userId)(dispatch, getState);
+    await loadTutorialState(payload.userId)(dispatch, getState);
 
     // Load remote matches
-    await loadRemoteMatches(userId)(dispatch, getState);
+    await loadRemoteMatches(payload.userId)(dispatch, getState);
 
     // If navigate is set to false, it means user has already opened up the home page
     // We only need to reload the profile and feed data
