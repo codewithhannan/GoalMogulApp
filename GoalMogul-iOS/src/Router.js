@@ -241,7 +241,7 @@ class RouterComponent extends Component {
                 <Scene
                   key="registrationAccount"
                   // component={RegistrationAccount}
-                  component={OnboardingCommunity}
+                  component={OnboardingAddPhotos}
                 />
               </Stack>
 
