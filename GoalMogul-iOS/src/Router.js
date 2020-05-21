@@ -240,8 +240,7 @@ class RouterComponent extends Component {
                 <Scene key="login" component={LoginPage} />
                 <Scene
                   key="registrationAccount"
-                  // component={RegistrationAccount}
-                  component={OnboardingAddPhotos}
+                  component={RegistrationAccount}
                 />
               </Stack>
 
@@ -260,6 +259,10 @@ class RouterComponent extends Component {
                 gesturesEnabled={false}
                 panHandlers={null}
               >
+                <Scene
+                  key="registration_add_photo"
+                  component={OnboardingAddPhotos}
+                />
                 <Scene
                   key="registration_transition"
                   component={OnboardingIntroTransition}
@@ -288,10 +291,6 @@ class RouterComponent extends Component {
                 <Scene
                   key="registration_welcome"
                   component={OnboardingWelcome}
-                />
-                <Scene
-                  key="registration_add_photo"
-                  component={OnboardingAddPhotos}
                 />
               </Stack>
               <Scene key="tutorial" component={Tutorial} hideNavBar />
