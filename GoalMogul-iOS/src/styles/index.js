@@ -2,6 +2,113 @@
  * This is a central hub that defines the global usage of certain color
  */
 export const BACKGROUND_COLOR = 'white';
+
+export const GM_BLUE = "#45C9F6";
+export const GM_BLUE_LIGHT = "#9EE6FF";
+export const GM_BLUE_LIGHT_LIGHT = "#DEF7FF";
+export const GM_DOT_GRAY = "#E0E0E0";
+
+import Constants from 'expo-constants';
+
+const UI_SCALE = Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.5 : 1;
+export const TEXT_COLOR_1 = '#333';
+
+export const FONT_FAMILY_1 = 'Avenir';
+export const FONT_FAMILY_2 = 'Avenir';
+export const FONT_FAMILY_3 = 'Helvetica';
+
+export const DEFAULT_STYLE = {
+    // Headers
+    titleText_1: {
+        fontFamily: FONT_FAMILY_1,
+        fontSize: 17 * UI_SCALE,
+        color: TEXT_COLOR_1,
+        fontWeight: 'bold',
+        letterSpacing: 0.3
+    },
+    titleText_2: {
+        fontFamily: FONT_FAMILY_1,
+        fontSize: 14 * UI_SCALE,
+        fontWeight: 'bold',
+        color: TEXT_COLOR_1
+    },
+    subTitleText_1: {
+        fontFamily: FONT_FAMILY_2,
+        fontSize: 17 * UI_SCALE,
+        fontWeight: '400',
+        color: TEXT_COLOR_1,
+        letterSpacing: 0.3
+    },
+    // Normal texts
+    normalText_1: {
+        fontFamily: FONT_FAMILY_2,
+        fontSize: 14 * UI_SCALE,
+        color: TEXT_COLOR_1
+    },
+    // Detailing texts
+    smallTitle_1: {
+        fontFamily: FONT_FAMILY_1,
+        fontSize: 11 * UI_SCALE,
+        fontWeight: 'bold',
+        color: TEXT_COLOR_1,
+        letterSpacing: 0.3
+    },
+    smallText_1: {
+        fontFamily: FONT_FAMILY_2,
+        fontSize: 11 * UI_SCALE,
+        color: TEXT_COLOR_1
+    },
+    smallText_2: {
+        fontFamily: FONT_FAMILY_2,
+        fontSize: 9 * UI_SCALE,
+        color: TEXT_COLOR_1
+    },
+    smallIcon_1: {
+        height: 13 * UI_SCALE,
+        width: 13 * UI_SCALE
+    },
+    // Button styles
+    buttonText_1: {
+        fontFamily: FONT_FAMILY_1,
+        fontSize: 14 * UI_SCALE,
+        fontWeight: '400',
+        color: TEXT_COLOR_1
+    },
+    buttonIcon_1: {
+        height: 24 * UI_SCALE,
+        width: 24 * UI_SCALE,
+        tintColor: TEXT_COLOR_1
+    },
+    // Misc
+    infoIcon: {
+        height: 8 * UI_SCALE,
+        width: 8 * UI_SCALE,
+        tintColor: TEXT_COLOR_1
+    },
+    priortyBar: {
+        height: 4 * UI_SCALE,
+        width: 30 * UI_SCALE,
+        marginTop: 4 * UI_SCALE
+    },
+    profileImage_1: {
+        height: 60 * UI_SCALE,
+        width: 60 * UI_SCALE,
+        borderRadius: 30 * UI_SCALE
+    },
+    profileImage_2: {
+        height: 20 * UI_SCALE,
+        width: 20 * UI_SCALE,
+        margin: 20 * UI_SCALE
+    },
+    shadow: {
+        width: '100%',
+        height: 5,
+        backgroundColor: '#F2F2F2'
+    }
+}
+
+
+export const BACKGROUND_COLOR = '#f8f8f8';
 export const APP_BLUE_BRIGHT = '#17B3EC';
 export const APP_BLUE = '#23B7E9';
 export const APP_DEEP_BLUE = '#0397CB';
