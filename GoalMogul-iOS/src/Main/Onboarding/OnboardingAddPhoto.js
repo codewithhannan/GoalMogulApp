@@ -35,7 +35,7 @@ class OnboardingAddPhotos extends Component {
 
   onContinue = () => {
     // TODO process uploaded image
-    Actions.push("registration_welcome");
+    Actions.push("registration_contact_sync");
   };
 
   render() {
