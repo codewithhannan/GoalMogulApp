@@ -17,9 +17,10 @@ import { Actions } from 'react-native-router-flux';
 import _ from 'lodash';
 
 // Actions
-import { auth as Auth, hideSplashScreen } from './redux/modules/auth/Auth';
+import { hideSplashScreen } from './redux/modules/auth/Auth';
 
 import {
+    tryAutoLogin,
     loginUser
 } from './actions';
 
@@ -45,8 +46,8 @@ const IS_SMALL_PHONE = Platform.OS === 'ios' &&
     IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
 const width = Dimensions.get('window').width
 const DEBUG_KEY = '[ UI SplashScreen ]';
-class SplashScreen extends Component {
 
+class SplashScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -76,8 +77,6 @@ class SplashScreen extends Component {
             require('./asset/utils/help.png'),
             require('./asset/utils/privacy.png'),
             require('./asset/utils/edit.png'),
-            // require('./asset/utils/check.png'),
-            // require('./asset/utils/addUser.png'),
             require('./asset/utils/default_profile.png'),
             require('./asset/utils/defaultUserProfile.png'),
             require('./asset/utils/meetSetting.png'),
@@ -195,15 +194,10 @@ class SplashScreen extends Component {
             .catch(err => {
                 console.log(`${DEBUG_KEY}: [ _loadAssetsAsync ]: err`, err);
             });
-        console.log('finished loading images');
 
-        await Auth.getKey().then((res) => {
-            if (!(res instanceof Error)) {
-                if (!_.isEmpty(res)) {
-                    return callback(res);
-                }
-            }
-        }).catch((err) => console.log(`${DEBUG_KEY}: log in user with err: `, err));
+        console.log('finish loading images');
+
+        await callback();
         console.log('finish loading keys');
         this.props.hideSplashScreen();
 
@@ -241,12 +235,13 @@ class SplashScreen extends Component {
         return (
             <View style={headerContainerStyle}>
                 <Image style={logoImageStyle} source={HeaderLogo} />
-                {this.state.fontLoaded ?
-                    <View style={{ flexDirection: 'row' }}>
-                        <Text style={{ ...styles.headerBoldTextStyle, fontSize: headerFontSize }}>Goal</Text>
-                        <Text style={{ ...styles.headerTextStyle, fontSize: headerFontSize }}>Mogul</Text>
-                    </View>
-                    : null
+                {
+                    this.state.fontLoaded ?
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text style={{ ...styles.headerBoldTextStyle, fontSize: headerFontSize }}>Goal</Text>
+                            <Text style={{ ...styles.headerTextStyle, fontSize: headerFontSize }}>Mogul</Text>
+                        </View>
+                        : null
                 }
             </View>
         );
@@ -256,7 +251,7 @@ class SplashScreen extends Component {
         if (!this.state.appReady) {
             return (
                 <AppLoading
-                    startAsync={() => this._loadAssetsAsync(this.props.loginUser)}
+                    startAsync={() => this._loadAssetsAsync(this.props.tryAutoLogin)}
                     onFinish={() => this.setState({ appReady: true })}
                     onError={console.warn}
                     autoHideSplash={false}
@@ -295,9 +290,10 @@ class SplashScreen extends Component {
                                 style={styles.reactionContainerStyle}
                                 onPress={this.handleGetStartedOnPress.bind(this)}
                             >
-                                {this.state.fontLoaded ?
-                                    <Text style={styles.buttonTextStyle}>Get Started</Text>
-                                    : null
+                                {
+                                    this.state.fontLoaded ?
+                                        <Text style={styles.buttonTextStyle}>Get Started</Text>
+                                        : null
                                 }
                                 <RightArrowIcon
                                     iconStyle={{
@@ -317,17 +313,19 @@ class SplashScreen extends Component {
                         style={{ ...styles.loginHighlightContainerStyle, height: IS_SMALL_PHONE ? 60 : 81 }}
                         onPress={this.handleLoginPress.bind(this)}
                     >
-                        {this.state.fontLoaded ?
-                            <Text style={{ ...styles.haveAccountTextStyle, paddingBottom: IS_SMALL_PHONE ? 0 : 21 }}>
-                                Have an account?
-                            </Text>
-                            : null
+                        {
+                            this.state.fontLoaded ?
+                                <Text style={{ ...styles.haveAccountTextStyle, paddingBottom: IS_SMALL_PHONE ? 0 : 21 }}>
+                                    Have an account?
+                </Text>
+                                : null
                         }
 
                         <TouchableOpacity activeOpacity={0.6} onPress={this.handleLoginPress.bind(this)}>
-                            {this.state.fontLoaded ?
-                                <Text style={{ ...styles.loginTextStyle, paddingBottom: IS_SMALL_PHONE ? 0 : 24 }}>Log In</Text>
-                                : null
+                            {
+                                this.state.fontLoaded ?
+                                    <Text style={{ ...styles.loginTextStyle, paddingBottom: IS_SMALL_PHONE ? 0 : 24 }}>Log In</Text>
+                                    : null
                             }
                         </TouchableOpacity>
                     </TouchableOpacity>
@@ -495,6 +493,7 @@ const mapDispatchToProps = (dispatch) => {
         registration: () => Actions.push('registrationAccount'),
         login: () => Actions.push('login'),
         loginUser: (val) => dispatch(loginUser(val)),
+        tryAutoLogin: () => dispatch(tryAutoLogin()),
         hideSplashScreen: () => dispatch(hideSplashScreen())
     };
 };
