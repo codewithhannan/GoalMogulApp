@@ -717,7 +717,7 @@ class MyTribe extends Component {
 
   handleOnEndReached = (tribeId) => {
     // Do not load more when user is not on posts tab
-    if (!this.onPostTab()) return;
+    if (!this.onPostTab() || !tribeId) return;
 
     this.props.loadMoreTribeFeed(tribeId);
   }
