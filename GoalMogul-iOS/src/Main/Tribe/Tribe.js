@@ -18,7 +18,7 @@ import { openPostDetail } from '../../redux/modules/feed/post/PostActions';
 import { subscribeEntityNotification, unsubscribeEntityNotification } from '../../redux/modules/notification/NotificationActions';
 import { openMultiUserInviteModal, searchFriend } from '../../redux/modules/search/SearchActions';
 // Actions
-import { acceptTribeInvit, declineTribeInvit, deleteTribe, editTribe, inviteMultipleUsersToTribe, leaveTribe, openTribeInvitModal, refreshTribeDetail, reportTribe, requestJoinTribe, tribeDetailClose, tribeReset, tribeSelectMembersFilter, tribeSelectTab } from '../../redux/modules/tribe/TribeActions';
+import { acceptTribeInvit, declineTribeInvit, deleteTribe, editTribe, inviteMultipleUsersToTribe, leaveTribe, openTribeInvitModal, refreshTribeDetail, reportTribe, requestJoinTribe, tribeDetailClose, tribeReset, tribeSelectMembersFilter, tribeSelectTab, loadMoreTribeFeed } from '../../redux/modules/tribe/TribeActions';
 // Selector
 import { getTribeMemberNavigationState, getTribeNavigationState, getUserStatus, memberSelector } from '../../redux/modules/tribe/TribeSelector';
 // Styles
@@ -108,6 +108,19 @@ class Tribe extends Component {
       inviteToEntity: _id,
       preload: this.props.loadFriends
     });
+  }
+
+  onPostTab = () => {
+    const { navigationState } = this.props;
+    const { routes, index } = navigationState;
+    return routes[index].key == "posts";
+  }
+
+  handleOnEndReached = (tribeId) => {
+    // Do not load more when user is not on posts tab
+    if (!this.onPostTab()) return;
+
+    this.props.loadMoreTribeFeed(tribeId);
   }
 
   /**
@@ -748,6 +761,9 @@ class Tribe extends Component {
             keyExtractor={(i) => i._id}
             ListHeaderComponent={this.renderTribeOverview(item, data)}
             ListFooterComponent={this.renderPadding()}
+            onEndReached={() => this.handleOnEndReached(item._id)}
+            onEndReachedThreshold={2}
+            loading={this.props.tribeLoading && this.onPostTab()}
           />
           {this.renderPlus(item)}
         </View>
@@ -1035,6 +1051,7 @@ export default connect(
     searchFriend, 
     openMultiUserInviteModal,
     inviteMultipleUsersToTribe,
-    loadFriends
+    loadFriends,
+    loadMoreTribeFeed
   }
 )(Tribe);
