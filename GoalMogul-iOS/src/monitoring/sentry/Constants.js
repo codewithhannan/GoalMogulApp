@@ -9,6 +9,7 @@ const SENTRY_TAGS = {
         LOGOUT: 'logout',
         FETCH_USER_PROFILE: 'fetech user profile',
         USERNAME: 'username',
+        TOKEN: 'token verification',
         UNSUBSCRIBE_NOTIFICATIONS: 'unsubscribe notifications (expo push token deletion)'
     }
 };

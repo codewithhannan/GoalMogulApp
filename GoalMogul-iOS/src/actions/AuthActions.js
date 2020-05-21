@@ -77,10 +77,15 @@ const validateEmail = (email) => {
     return re.test(String(email).toLowerCase());
 };
 
+export const tryAutoLogin = () => async (dispatch, getState) => {
+    await Auth.getKey().then((res) => {
+        loginUser(res)(dispatch, getState);
+    });
+}
+
 export const loginUser = ({ username, password, token, navigate, onError, onSuccess }) => {
     // Call the endpoint to use username and password to signin
     // Obtain the credential
-
     const data = validateEmail(username) ?
         {
             email: username,
@@ -121,7 +126,7 @@ export const loginUser = ({ username, password, token, navigate, onError, onSucc
             new SentryRequestBuilder(new Error(error.message), SENTRY_MESSAGE_TYPE.ERROR)
                 .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
                 .withTag(SENTRY_TAGS.ACTION.LOGIN_IN, SENTRY_TAG_VALUE.ACTIONS.FAILED)
-                .withExtraContext(SENTRY_TAGS.ACTION.USERNAME, username)
+                .withExtraContext(SENTRY_TAGS.ACTION.TOKEN, { username, token })
                 .send();
         }
 
@@ -276,8 +281,8 @@ export const logout = () => async (dispatch, getState) => {
             console.log(`${DEBUG_KEY}: log out user with res: `, res);
         }
     };
-    Auth.reset(callback);
     await unsubscribeNotifications()(dispatch, getState);
+    Auth.reset(callback);
     Actions.reset('root');
     // clear chat service details
     LiveChatService.unMountUser();

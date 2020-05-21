@@ -408,10 +408,10 @@ export const subscribeNotification = () => async (dispatch, getState) => {
     const onError = (err) => {
         console.log(`${DEBUG_KEY}: register notification failed with err: `, err);
         new SentryRequestBuilder(res, SENTRY_MESSAGE_TYPE.ERROR)
-                .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
-                .withTag(SENTRY_TAGS.ACTION.UNSUBSCRIBE_NOTIFICATIONS, SENTRY_TAG_VALUE.ACTIONS.FAILED)
-                .withExtraContext(SENTRY_TAGS.ACTION.USERNAME, username)
-                .send();
+            .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
+            .withTag(SENTRY_TAGS.ACTION.UNSUBSCRIBE_NOTIFICATIONS, SENTRY_TAG_VALUE.ACTIONS.FAILED)
+            .withExtraContext(SENTRY_TAGS.ACTION.USERNAME, username)
+            .send();
     };
 
     // POST the token to your backend server from
@@ -448,6 +448,11 @@ export const unsubscribeNotifications = () => async (dispatch, getState) => {
 
     const onError = (err) => {
         console.log(`${DEBUG_KEY}: register notification failed with err: `, err);
+        new SentryRequestBuilder(res, SENTRY_MESSAGE_TYPE.ERROR)
+            .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
+            .withTag(SENTRY_TAGS.ACTION.UNSUBSCRIBE_NOTIFICATIONS, SENTRY_TAG_VALUE.ACTIONS.FAILED)
+            .withExtraContext(SENTRY_TAGS.ACTION.USERNAME, { username, notificationToken })
+            .send();
     };
 
     // POST the token to your backend server from
