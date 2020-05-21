@@ -44,6 +44,7 @@ import IndividualActionButton from '../Common/IndividualActionButton';
 // Components
 import ProgressBar from '../Common/ProgressBar';
 import Timestamp from '../Common/Timestamp';
+import { decode } from '../../../redux/middleware/utils';
 
 
 const { width } = Dimensions.get('window');
@@ -292,7 +293,7 @@ class GoalDetailSection extends React.PureComponent {
               ellipsizeMode='tail'
               selectable
             >
-              {title}
+              {decode(title)}
             </Text>
           </View>
           <RichText

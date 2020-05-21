@@ -97,10 +97,8 @@ export default (state = INITIAL_STATE, action) => {
 
     // Fetching feed for a tribe
     case TRIBE_FEED_FETCH: {
-      return {
-        ...state,
-        feedLoading: true
-      };
+      let newState = _.cloneDeep(state);
+      return _.set(newState, "feedLoading", true);
     }
 
     // Fetching feed done for a tribe

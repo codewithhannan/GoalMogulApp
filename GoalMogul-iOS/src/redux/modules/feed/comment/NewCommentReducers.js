@@ -121,7 +121,7 @@ export default (state = INITIAL_STATE, action) => {
             const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
             newState = _.set(newState, `${path}`, { ...NEW_COMMENT_INITIAL_STATE });
             newState = _.set(newState, `${path}.parentType`, 'Goal');
-            return _.set(newState, `${path}.parentRef`, goal ? goal._id : goalId);
+            return _.set(newState, `${path}.parentRef`, goalId ? goalId : goal._id);
         }
 
         case SHARE_DETAIL_OPEN: {

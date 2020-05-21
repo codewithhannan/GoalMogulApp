@@ -11,12 +11,12 @@ import envelope from '../../../asset/utils/envelope.png';
 import invite from '../../../asset/utils/invite.png';
 import post from '../../../asset/utils/post.png';
 import tribe_default_icon from '../../../asset/utils/tribeIcon.png';
-import { switchCase } from '../../../redux/middleware/utils';
+import { switchCase, decode } from '../../../redux/middleware/utils';
 import { openPostDetail } from '../../../redux/modules/feed/post/PostActions';
 import { subscribeEntityNotification, unsubscribeEntityNotification } from '../../../redux/modules/notification/NotificationActions';
 import { openMultiUserInviteModal, searchFriend } from '../../../redux/modules/search/SearchActions';
 // Actions
-import { myTribeAdminAcceptUser, myTribeAdminDemoteUser, myTribeAdminPromoteUser, myTribeAdminRemoveUser, myTribeReset, myTribeSelectMembersFilter, refreshMyTribeDetail, tribeDetailClose, tribeSelectTab } from '../../../redux/modules/tribe/MyTribeActions';
+import { myTribeAdminAcceptUser, myTribeAdminDemoteUser, myTribeAdminPromoteUser, myTribeAdminRemoveUser, myTribeReset, myTribeSelectMembersFilter, refreshMyTribeDetail, tribeDetailClose, tribeSelectTab, loadMoreTribeFeed } from '../../../redux/modules/tribe/MyTribeActions';
 import { acceptTribeInvit, declineTribeInvit, deleteTribe, editTribe, inviteMultipleUsersToTribe, leaveTribe, openTribeInvitModal, reportTribe, requestJoinTribe } from '../../../redux/modules/tribe/TribeActions';
 // Selector
 import { getMyTribeMemberNavigationState, getMyTribeNavigationState, getMyTribeUserStatus, myTribeMemberSelector } from '../../../redux/modules/tribe/TribeSelector';
@@ -658,7 +658,6 @@ class MyTribe extends Component {
       )
       : null;
 
-
     return (
       <View>
         <Animated.View 
@@ -676,7 +675,7 @@ class MyTribe extends Component {
             <Text
               style={{ fontSize: 22, fontWeight: '300' }}
             >
-              {name}
+              {decode(name)}
             </Text>
             {this.renderVisibilityAndStatus(item)}
             <View
@@ -707,6 +706,19 @@ class MyTribe extends Component {
         {emptyState}
       </View>
     );
+  }
+
+  onPostTab = () => {
+    const { navigationState } = this.props;
+    const { routes, index } = navigationState;
+    return routes[index].key == "posts";
+  }
+
+  handleOnEndReached = (tribeId) => {
+    // Do not load more when user is not on posts tab
+    if (!this.onPostTab() || !tribeId) return;
+
+    this.props.loadMoreTribeFeed(tribeId);
   }
 
   renderItem = (props) => {
@@ -823,6 +835,9 @@ class MyTribe extends Component {
             keyExtractor={(i) => i._id}
             ListHeaderComponent={this.renderTribeOverview(item, data)}
             onRefresh={() => this.props.refreshMyTribeDetail(item._id)}
+            onEndReached={() => this.handleOnEndReached(item._id)}
+            onEndReachedThreshold={2}
+            loading={this.props.tribeLoading && this.onPostTab()}
             refreshing={this.props.loading}
             ListFooterComponent={this.renderPadding()}
           />
@@ -1063,7 +1078,8 @@ export default connect(
     searchFriend, 
     openMultiUserInviteModal,
     inviteMultipleUsersToTribe,
-    loadFriends
+    loadFriends,
+    loadMoreTribeFeed
   }
 )(MyTribe);
 

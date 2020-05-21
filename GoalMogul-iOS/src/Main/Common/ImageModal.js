@@ -64,7 +64,7 @@ class ImageModal extends React.Component {
       backdropColor={'transparent'}
       isVisible={this.props.mediaModal}
       backdropOpacity={1}
-      onSwipe={this.closeModal.bind(this)}
+      onSwipeComplete={this.closeModal.bind(this)}
       swipeDirection='down'
       deviceWidth={width}
       style={{

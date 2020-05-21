@@ -74,7 +74,7 @@ class SuggestionDetailModal extends React.PureComponent {
                 backdropColor={'black'}
                 isVisible={this.props.isVisible}
                 backdropOpacity={0.7}
-                onSwipe={() => this.closeModal()}
+                onSwipeComplete={() => this.closeModal()}
                 swipeDirection='down'
                 style={{ flex: 1, margin: 0, marginTop: Constants.statusBarHeight + 5 }}
                 deviceWidth={width + 100}
