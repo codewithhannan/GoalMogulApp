@@ -3,7 +3,6 @@ import {
     View,
     Image,
     Text,
-    TouchableOpacity,
     Platform,
     Alert
 } from 'react-native';
@@ -27,6 +26,7 @@ import {
 } from '../../redux/modules/tribe/MyTribeTabActions';
 
 import {
+    openMeet,
     openSetting,
     logout
 } from '../../actions';
@@ -56,10 +56,6 @@ const DEBUG_KEY = '[ UI Menu ]';
 const { TutorialIcon, PrivacyIcon } = Icons;
 
 class Menu extends React.PureComponent {
-
-    handleSettingOnPress = () => {
-        this.props.openSetting();
-    }
 
     handleTutorialOnPress = () => {
         const tutorialSwitchCases = switchByButtonIndex([
@@ -107,8 +103,6 @@ class Menu extends React.PureComponent {
             IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
         ) ? 30 : 40;
 
-        const { name } = this.props.user;
-
         return (
             <View style={{ flex: 1 }}>
                 <View style={{ ...styles.headerStyle, paddingTop }}>
@@ -132,6 +126,14 @@ class Menu extends React.PureComponent {
                 </DelayedButton>
                 <DelayedButton
                     activeOpacity={0.6}
+                    onPress={() => this.props.openMeet()}
+                    style={styles.buttonStyle}
+                >
+                    <Image source={EventIcon} style={styles.iconStyle} />
+                    <Text style={styles.titleTextStyle}>My Friends</Text>
+                </DelayedButton>
+                <DelayedButton
+                    activeOpacity={0.6}
                     onPress={this.handleTutorialOnPress}
                     style={styles.buttonStyle}
                 >
@@ -140,7 +142,7 @@ class Menu extends React.PureComponent {
                 </DelayedButton>
                 <DelayedButton
                     activeOpacity={0.6}
-                    onPress={this.handleSettingOnPress}
+                    onPress={() => this.props.openSetting()}
                     style={styles.buttonStyle}
                 >
                     <Image source={Setting} style={styles.iconStyle} />
@@ -170,8 +172,7 @@ class Menu extends React.PureComponent {
                         Alert.alert('Log out', 'Are you sure to log out?', [
                             { text: 'Cancel', onPress: () => console.log('user cancel logout') },
                             { text: 'Confirm', onPress: () => this.props.logout() }
-                        ]
-                        );
+                        ]);
                     }}
                     style={styles.buttonStyle}
                 >
@@ -213,7 +214,7 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-    const { user } = state.user;
+    const { user } = state.user; 
 
     return {
         user
@@ -225,6 +226,7 @@ export default connect(
     {
         openMyEventTab,
         openMyTribeTab,
+        openMeet,
         openSetting,
         logout,
         // Tutorial related,

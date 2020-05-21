@@ -240,38 +240,34 @@ const styles = {
         flexDirection: 'row',
         borderRightWidth: 0.5,
         borderColor: '#e5e5e5',
-        paddingRight: 10,
+        paddingRight: 10 * DEFAULT_STYLE.uiScale,
         flexShrink: 1,
         flex: 20
     },
     iconContainerStyle: {
-        height: 36,
-        width: 36,
-        borderRadius: 18,
+        height: 36 * DEFAULT_STYLE.uiScale,
+        width: 36 * DEFAULT_STYLE.uiScale,
+        borderRadius: 18 * DEFAULT_STYLE.uiScale,
         backgroundColor: '#efefef',
         alignItems: 'center',
         justifyContent: 'center',
-        marginLeft: 15
+        marginLeft: 15 * DEFAULT_STYLE.uiScale
     },
     iconStyle: {
-        height: 16,
-        width: 16,
-        borderRadius: 8,
+        ...DEFAULT_STYLE.normalIcon_1,
         tintColor: '#a4a7a7'
     },
     checkIconContainerStyle: {
-        height: 28,
-        width: 28,
-        borderRadius: 14,
+        height: 28 * DEFAULT_STYLE.uiScale,
+        width: 28 * DEFAULT_STYLE.uiScale,
+        borderRadius: 14 * DEFAULT_STYLE.uiScale,
         backgroundColor: '#a5e5c0',
         alignItems: 'center',
         justifyContent: 'center',
-        marginRight: 10
+        marginRight: 10 * DEFAULT_STYLE.uiScale
     },
     checkIconStyle: {
-        height: 14,
-        width: 16,
-        borderRadius: 6,
+        ...DEFAULT_STYLE.normalIcon_1,
         tintColor: 'black'
     }
 };

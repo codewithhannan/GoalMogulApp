@@ -199,15 +199,6 @@ class SearchBarHeader extends Component {
                     </DelayedButton>
                     <TouchableOpacity
                         activeOpacity={0.6}
-                        onPress={() => {
-                            const componentKeyToOpen = componentKeyByTab(this.props.navigationTab, 'meet');
-                            Actions.push(componentKeyToOpen) }}
-                        style={{ ...styles.headerRightContaner }}
-                    >
-                        <Image style={{ height: 21, width: 21, tintColor: rightIconColor }} source={IconMeet} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        activeOpacity={0.6}
                         onPress={menuOnPress || this.handleMenuIconOnClick}
                         style={{ ...styles.headerRightContaner }}
                     >
