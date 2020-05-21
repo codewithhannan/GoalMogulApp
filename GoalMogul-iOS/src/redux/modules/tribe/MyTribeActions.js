@@ -28,7 +28,7 @@ import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 import { Logger } from '../../middleware/utils/Logger';
 
-const DEBUG_KEY = '[ Tribe Actions ]';
+const DEBUG_KEY = '[ MyTribe Actions ]';
 const BASE_ROUTE = 'secure/tribe';
 
 // Reset myTribe page
@@ -435,7 +435,7 @@ const doAdminAcceptUser = (userId, tribeId) => (dispatch, getState) => {
  */
 export const refreshTribeFeed = (tribeId, dispatch, getState, callback) => {
   const { token } = getState().user;
-  const { limit } = getState().tribe;
+  const { limit } = getState().myTribe;
 
   dispatch({
     type: MYTRIBE_FEED_FETCH
@@ -453,6 +453,7 @@ export const refreshTribeFeed = (tribeId, dispatch, getState, callback) => {
       }
     });
 
+    console.log("hasNextPage is: ", !(data === undefined || data.length === 0));
     // Callback are from frontend to perform scolling
     if (callback) {
       callback();
@@ -464,10 +465,14 @@ export const refreshTribeFeed = (tribeId, dispatch, getState, callback) => {
 
 export const loadMoreTribeFeed = (tribeId) => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, hasNextPage } = getState().tribe;
-  if (hasNextPage === false) {
+  const { skip, limit, hasNextPage, feedLoading, feed } = getState().myTribe;
+
+  // Do not load more in the following conditions
+  // 1. No next page 2. already loading more 3. no feed item (when page is initial loading flatlist will invoke onEndReached)
+  if (hasNextPage === false || feedLoading || feed.length == 0) {
     return;
   }
+  // console.log(`loading more tribe: skip is: ${skip}, hasNextPage: ${hasNextPage}, feedLoading: ${feedLoading}`);
   dispatch({
     type: MYTRIBE_FEED_FETCH
   });
@@ -477,7 +482,7 @@ export const loadMoreTribeFeed = (tribeId) => (dispatch, getState) => {
       payload: {
         type: 'tribefeed',
         data,
-        skip: data.length,
+        skip: data.length + feed.length,
         limit,
         hasNextPage: !(data === undefined || data.length === 0),
         pageId: 'MYTRIBE' // TODO: tribe reducer redesign to change here
@@ -495,7 +500,7 @@ export const loadTribeFeed = (skip, limit, token, params, callback, onError) => 
       token
     )
     .then((res) => {
-      console.log(`${DEBUG_KEY}: loading with res: `, res);
+      console.log(`${DEBUG_KEY}: loading with res: `, res.data.length);
       if (res.status === 200 || (res && res.data)) {
         // Right now return test data
         return callback(res.data);

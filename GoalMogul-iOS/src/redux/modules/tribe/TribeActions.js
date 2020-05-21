@@ -599,8 +599,11 @@ export const refreshTribeFeed = (tribeId, dispatch, getState) => {
 
 export const loadMoreTribeFeed = (tribeId) => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, hasNextPage } = getState().tribe;
-  if (hasNextPage === false) {
+  const { skip, limit, hasNextPage, feed, feedLoading } = getState().tribe;
+
+  // Do not load more in the following conditions
+  // 1. No next page 2. already loading more 3. no feed item (when page is initial loading flatlist will invoke onEndReached)
+  if (hasNextPage === false || feedLoading || feed.length == 0) {
     return;
   }
   dispatch({
@@ -612,7 +615,7 @@ export const loadMoreTribeFeed = (tribeId) => (dispatch, getState) => {
       payload: {
         type: 'tribefeed',
         data,
-        skip: data.length,
+        skip: data.length + feed.length,
         limit,
         hasNextPage: !(data === undefined || data.length === 0),
         pageId: 'TRIBE'
