@@ -61,7 +61,7 @@ class DraftsView extends Component {
                                                 onPress={() => this.props.onDelete(index)}
                                                 style={styles.cancelWrapper}
                                             >
-                                                <Image style={{ ...DEFAULT_STYLE.smallIcon_1, margin: 15, tintColor: 'white' }} source={cancelImage} />
+                                                <Image style={{ ...DEFAULT_STYLE.buttonIcon_1, tintColor: '#EB5757' }} source={cancelImage} />
                                             </DelayedButton>
                                         </View>
                                     </View>
@@ -99,8 +99,9 @@ const styles = {
         margin: 16
     },
     cancelWrapper: {
-        backgroundColor: '#EB5757',
-        borderRadius: 100
+        backgroundColor: '#F2F2F2',
+        borderRadius: 100,
+        padding: 10
     }
 };
 
