@@ -76,10 +76,10 @@ class Home extends Component {
         super(props);
         this.state = {
             navigationState: {
-                index: 1,
+                index: 0,
                 routes: [
-                    { key: 'goals', title: 'JUST GOALS' },
                     { key: 'activity', title: 'ALL POSTS' },
+                    { key: 'goals', title: 'JUST GOALS' },
                 ],
             },
             appState: AppState.currentState,

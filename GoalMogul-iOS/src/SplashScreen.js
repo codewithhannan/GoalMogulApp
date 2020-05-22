@@ -125,12 +125,9 @@ class SplashScreen extends Component {
             require('./asset/utils/envelope.png'),
             require('./asset/utils/eventIcon.png'),
             require('./asset/utils/tribeIcon.png'),
-            // require('./asset/utils/message_icon.png'),
-            // require('./asset/utils/bell_icon.png'),
             // Friends Tab images
             require('./asset/utils/Friends.png'),
             require('./asset/utils/ContactSync.png'),
-            // require('./asset/utils/People.png'),
             require('./asset/utils/Suggest.png'),
             require('./asset/utils/clipboard.png'),
             require('./asset/utils/logout.png'),
