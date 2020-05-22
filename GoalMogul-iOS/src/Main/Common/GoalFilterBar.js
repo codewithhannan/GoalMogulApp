@@ -16,7 +16,6 @@ import { DEFAULT_STYLE, BACKGROUND_COLOR } from '../../styles';
 
 
 const { width, height } = Dimensions.get('window');
-const CATEGORY_OPTION_HEIGHT = 34;
 
 /**
  * Update the filter based on parents functions
@@ -68,7 +67,7 @@ class GoalFilterBar extends Component {
                         <View style={{
                             flexDirection: 'row',
                             flexWrap: 'wrap',
-                            padding: 10
+                            padding: 10 * DEFAULT_STYLE.uiScale
                         }}>
                             {SORT_BY_OPTIONS.map((option) => {
                                 const { value, text } = option;
@@ -108,7 +107,7 @@ class GoalFilterBar extends Component {
                                             </Text>
                                             <RadioButton
                                                 isSelected={categoryText === text}
-                                                radius={10}
+                                                size={(10 * DEFAULT_STYLE.uiScale)}
                                                 borderWidth={1}
                                             />
                                         </View>
@@ -125,12 +124,12 @@ class GoalFilterBar extends Component {
 }
 
 const RadioButton = (props) => {
-    const { isSelected, radius, borderWidth } = props
+    const { isSelected, size, borderWidth } = props
     return (
         <View style={{
-            height: radius*2,
-            width: radius*2,
-            borderRadius: radius,
+            height: size*2,
+            width: size*2,
+            borderRadius: size,
             borderWidth: borderWidth,
             borderColor: isSelected ? '#1B63DC' : '#B4BFC9',
             justifyContent: 'center',
@@ -138,9 +137,9 @@ const RadioButton = (props) => {
         }}>
             <View style={{
                 backgroundColor: isSelected ? '#1B63DC' : '',
-                height: radius*0.8,
-                width: radius*0.8,
-                borderRadius: radius*0.4
+                height: size*0.8,
+                width: size*0.8,
+                borderRadius: size*0.4
             }}/>
         </View>
     );
@@ -201,7 +200,7 @@ const styles = {
         paddingLeft: 16
     },
     categoryOptionWrapper: {
-        height: CATEGORY_OPTION_HEIGHT,
+        height: 34 * DEFAULT_STYLE.uiScale,
         paddingLeft: 16,
         paddingRight: 16,
         flex: 1,

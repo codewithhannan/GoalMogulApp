@@ -26,6 +26,7 @@ import {
 
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
+import LoveOutlineIcon from '../../../asset/utils/love-outline.png';
 import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 
@@ -48,6 +49,7 @@ import {
 } from '../../../Utils/Constants';
 
 import { DEFAULT_STYLE, BACKGROUND_COLOR, GM_BLUE } from '../../../styles';
+
 
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]';
 const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
@@ -107,9 +109,7 @@ class ProfilePostCard extends React.PureComponent {
         const commentCount = item.commentCount ? item.commentCount : 0;
         const shareCount = item.shareCount ? item.shareCount : 0;
 
-        const likeButtonContainerStyle = maybeLikeRef && maybeLikeRef.length > 0
-            ? { backgroundColor: '#FAD6C8' }
-            : { backgroundColor: BACKGROUND_COLOR };
+        const selfLiked = maybeLikeRef && maybeLikeRef.length > 0;
 
         // User shouldn't share a share. When Activity on a post which is a share,
         // We disable the share button.
@@ -119,11 +119,11 @@ class ProfilePostCard extends React.PureComponent {
             <View style={{ ...styles.containerStyle, marginTop: 1 }}>
                 <ActionButtonGroup>
                     <ActionButton
-                        iconSource={LoveIcon}
+                        iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
                         count={likeCount}
-                        textStyle={{ color: '#f15860' }}
-                        iconContainerStyle={likeButtonContainerStyle}
-                        iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22, marginTop: 1.5 }}
+                        unitText="Like"
+                        textStyle={{ color: likeCount > 0 ? '#000' : '#828282' }}
+                        iconStyle={{ tintColor: selfLiked ? '#EB5757' : '#828282' }}
                         onPress={() => {
                             console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
                             if (maybeLikeRef && maybeLikeRef.length > 0) {
@@ -135,16 +135,18 @@ class ProfilePostCard extends React.PureComponent {
                     <ActionButton
                         iconSource={ShareIcon}
                         count={shareCount}
-                        textStyle={{ color: '#a8e1a0' }}
-                        iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
+                        unitText="Share"
+                        textStyle={{ color: '#828282' }}
+                        iconStyle={{ tintColor: '#828282' }}
                         onPress={() => this.handleShareOnClick(item)}
                         disabled={isShare}
                     />
                     <ActionButton
                         iconSource={CommentIcon}
                         count={commentCount}
-                        textStyle={{ color: '#FCB110' }}
-                        iconStyle={{ tintColor: '#FCB110', height: 26, width: 26 }}
+                        unitText="Comment"
+                        textStyle={{ color: '#828282' }}
+                        iconStyle={{ tintColor: '#828282' }}
                         onPress={() => {
                             console.log(`${DEBUG_KEY}: user clicks suggest icon`);
                             this.props.onPress(item);

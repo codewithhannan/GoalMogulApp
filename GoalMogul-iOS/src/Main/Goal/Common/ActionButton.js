@@ -39,10 +39,10 @@ class ActionButton extends React.PureComponent {
 
     render() {
         const { containerStyle, count, disabled, onTextPress, textContainerStyle, unitText } = this.props;
-        const countText = !count || count === 0 ? null : (
+        const countText = (
                 <DelayedButton activeOpacity={0.6} onPress={onTextPress} style={textContainerStyle} disabled={!onTextPress}>
                     <Text style={{ ...DEFAULT_STYLE.buttonText_1, ...styles.textStyle, ...this.props.textStyle }}>
-                        {this.props.count}{unitText ? ` ${unitText}` : ''}
+                        {count > 0 ? count : ''}{unitText ? ` ${unitText + (count > 1 ? 's' : '')}` : ''}
                     </Text>
                 </DelayedButton>
             );
@@ -57,7 +57,6 @@ class ActionButton extends React.PureComponent {
             >
                 <View
                     style={{
-                        ...styles.iconContainerStyle,
                         ...this.props.iconContainerStyle,
                         opacity: buttonDisabled ? 0.4 : 1
                     }}
@@ -82,14 +81,11 @@ const styles = {
         flexDirection: 'row'
     },
     iconContainerStyle: {
-        height: 32,
-        width: 32,
-        borderRadius: 16,
         justifyContent: 'center',
         alignItems: 'center'
     },
     textStyle: {
-        fontFamily: FONT_FAMILY_2,
+        ...DEFAULT_STYLE.smallTitle_1,
         marginLeft: 8
     }
 };

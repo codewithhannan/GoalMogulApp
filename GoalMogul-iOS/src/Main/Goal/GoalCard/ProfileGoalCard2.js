@@ -20,12 +20,14 @@ import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
+import LoveOutlineIcon from '../../../asset/utils/love-outline.png';
 import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 
 // Actions
 import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions';
 import { DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles';
+
 
 class ProfileGoalCard2 extends React.Component {
 
@@ -108,28 +110,35 @@ class ProfileGoalCard2 extends React.Component {
      * THis method renders stats including like, forward and suggestion count
      */
     renderStats(item) {
+        const { maybeLikeRef } = item;
+
         const likeCount = item.likeCount ? item.likeCount : 0;
         const commentCount = item.commentCount ? item.commentCount : 0;
         const shareCount = item.shareCount ? item.shareCount : 0;
+
+        const selfLiked = maybeLikeRef && maybeLikeRef.length > 0;
 
         return (
             <View style={styles.statsContainerStyle}>
                 <View style={{ flexDirection: 'row' }}>
                     <StatsComponent
-                        iconSource={LoveIcon}
-                        iconStyle={styles.loveIconStyle}
-                        text={likeCount}
+                        iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
+                        iconStyle={{tintColor: selfLiked ? '#EB5757' : '#828282'}}
+                        textStyle={{color: '#828282' }}
+                        text={likeCount > 0 ? likeCount : null}
                     />
                     <StatsComponent
                         iconSource={ShareIcon}
-                        iconStyle={styles.shareIconStyle}
+                        iconStyle={{tintColor: '#828282'}}
+                        textStyle={{color: '#828282' }}
                         text={shareCount}
-                        containerStyle={{ marginLeft: 18 }}
+                        containerStyle={{ marginLeft: 18 * DEFAULT_STYLE.uiScale }}
                     />
                 </View>
                 <StatsComponent
                     iconSource={CommentIcon}
-                    iconStyle={styles.commentIconStyle}
+                    iconStyle={{tintColor: '#828282'}}
+                    textStyle={{color: '#828282' }}
                     text={commentCount + ' Comment' + (commentCount !== 1 ? 's' : '')}
                 />
             </View>
@@ -150,13 +159,12 @@ class ProfileGoalCard2 extends React.Component {
         const { item } = this.props;
         if (!item || _.isEmpty(item)) return null;
 
-        const cardOpacity = 1;
         const backgroundColor = item.isCompleted ? '#F6F6F6' : BACKGROUND_COLOR;
         return (
             <View>
                 <DelayedButton
                     activeOpacity={0.6}
-                    style={[styles.cardContainerStyle, { opacity: cardOpacity, backgroundColor }]}
+                    style={[styles.cardContainerStyle, { backgroundColor }]}
                     onPress={() => this.handleOnCardPress(item)}
                 >
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -187,7 +195,7 @@ const StatsComponent = (props) => {
             ...containerStyle
         }}>
             <Image resizeMode="contain" source={iconSource} style={{ ...DEFAULT_STYLE.smallIcon_1, ...iconStyle }} />
-            <Text style={{ ...DEFAULT_STYLE.smallText_1, marginLeft: 7, ...textStyle }}>{text}</Text>
+            <Text style={{ ...DEFAULT_STYLE.smallTitle_1, marginLeft: 7, ...textStyle }}>{text}</Text>
         </View>
     );
 };
@@ -195,7 +203,6 @@ const StatsComponent = (props) => {
 const styles = {
     cardContainerStyle: {
         padding: 16,
-        backgroundColor: BACKGROUND_COLOR,
         borderRadius: 2
     },
     headerContainerStyle: {
@@ -211,16 +218,6 @@ const styles = {
         justifyContent: 'space-between',
         marginTop: 20
     },
-    // Stats component style
-    loveIconStyle: {
-        tintColor: '#EB5757'
-    },
-    shareIconStyle: {
-        tintColor: '#6FCF97'
-    },
-    commentIconStyle: {
-        tintColor: '#F1BF74'
-    }
 };
 
 export default connect(

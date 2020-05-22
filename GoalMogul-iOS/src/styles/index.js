@@ -110,7 +110,7 @@ export const modalHeaderBadgeShadow = {
 
 import Constants from 'expo-constants';
 
-const UI_SCALE = Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.5 : 1;
+const UI_SCALE = Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.3 : 1;
 export const TEXT_COLOR_1 = '#333';
 
 export const FONT_FAMILY_1 = 'Avenir';
@@ -207,7 +207,7 @@ export const DEFAULT_STYLE = {
     },
     shadow: {
         width: '100%',
-        height: 5,
+        height: 5 * UI_SCALE,
         backgroundColor: '#F2F2F2'
     }
 }
