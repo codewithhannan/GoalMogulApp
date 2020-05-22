@@ -634,7 +634,6 @@ class CreatePostModal extends Component {
         const { post, mediaRef, uploading } = this.props;
         const actionIconStyle = {
             ...DEFAULT_STYLE.buttonIcon_1,
-            tintColor: '#828282',
             marginRight: 8
         };
         const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
@@ -663,10 +662,10 @@ class CreatePostModal extends Component {
                     >
                         <Image
                             resizeMode="contain"
-                            style={actionIconStyle}
+                            style={{ ...actionIconStyle, tintColor: '#828282' }}
                             source={camera}
                         />
-                        <Text style={{ ...DEFAULT_STYLE.normalText_1, marginTop: 2 }} >Camera</Text>
+                        <Text style={{ ...DEFAULT_STYLE.titleText_2, color: '#828282', marginTop: 2 }} >Camera</Text>
                     </DelayedButton>
                     <DelayedButton
                         activeOpacity={0.6}
@@ -678,7 +677,7 @@ class CreatePostModal extends Component {
                             style={actionIconStyle}
                             source={cameraRoll}
                         />
-                        <Text style={{ ...DEFAULT_STYLE.normalText_1, marginTop: 2 }} >Photo</Text>
+                        <Text style={{ ...DEFAULT_STYLE.titleText_2, color: '#828282', marginTop: 2 }} >Photo</Text>
                     </DelayedButton>
                 </View>
             </View>
