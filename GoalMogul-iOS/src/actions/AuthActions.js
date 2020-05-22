@@ -57,6 +57,7 @@ import { SENTRY_TAGS, SENTRY_MESSAGE_LEVEL, SENTRY_TAG_VALUE, SENTRY_MESSAGE_TYP
 
 const DEBUG_KEY = '[ Action Auth ]';
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
+const MINUTE_IN_MS = 60 * 1000;
 
 export const userNameChanged = (username) => {
     return {
@@ -79,7 +80,12 @@ const validateEmail = (email) => {
 
 export const tryAutoLogin = () => async (dispatch, getState) => {
     await Auth.getKey().then((res) => {
-        loginUser(res)(dispatch, getState);
+        // refresh token 30s after app load
+        setTimeout(async () => {
+            const { username, password } = res;
+            loginUser({ username, password })(dispatch, getState);
+        }, MINUTE_IN_MS/2);
+        return loginUser(res)(dispatch, getState);
     });
 }
 
