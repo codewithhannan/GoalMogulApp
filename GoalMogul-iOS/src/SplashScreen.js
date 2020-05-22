@@ -67,7 +67,7 @@ class SplashScreen extends Component {
     }
 
     // Functions to preload static assets
-    async _loadAssetsAsync(callback) {
+    async _loadAssetsAsync(callback = async () => {}) {
         const imageAssets = cacheImages([
             require('./asset/utils/badge.png'),
             require('./asset/utils/dropDown.png'),
