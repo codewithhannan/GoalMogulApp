@@ -30,7 +30,6 @@ import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 /* Asset */
 import Logo from '../../../asset/header/logo.png';
-import TextLogo from '../../../asset/header/text-logo.png';
 import IconMenu from '../../../asset/header/menu.png';
 import IconSearch from '../../../asset/header/search.png';
 import BackButton from '../../../asset/utils/back.png';
@@ -139,10 +138,6 @@ class SearchBarHeader extends Component {
                     source={backButton ? BackButton : Logo }
                     style={{ height, width: 38, tintColor }}
                 />
-                {!backButton && <Image
-                    source={backButton ? BackButton : TextLogo }
-                    style={{ height: 25, width: 117, marginLeft: 2.5, marginTop: 7, tintColor }}
-                />}
             </DelayedButton>
         );
     }
