@@ -81,17 +81,21 @@ const validateEmail = (email) => {
 export const tryAutoLogin = () => async (dispatch, getState) => {
     await Auth.getKey().then((res) => {
         // auto-login with current token
-        loginUser(res)(dispatch, getState);
+        authenticate(res)(dispatch, getState);
 
         // refresh token 30s after app load
         setTimeout(async () => {
             const { username, password } = res;
-            loginUser({ username, password })(dispatch, getState);
+            authenticate({ username, password, tokenRefresh: true })(dispatch, getState);
         }, MINUTE_IN_MS/2);
     });
 }
 
-export const loginUser = ({ username, password, token, navigate, onError, onSuccess }) => {
+export const loginUser = ({ username, password, navigate, onError, onSuccess }) => (dispatch, getState) => {
+    return authenticate({ username, password, navigate, onError, onSuccess })(dispatch, getState);
+}
+
+const authenticate = ({ username, password, token, tokenRefresh, navigate, onError, onSuccess }) => {
     // Call the endpoint to use username and password to signin
     // Obtain the credential
     const data = validateEmail(username) ?
@@ -152,7 +156,7 @@ export const loginUser = ({ username, password, token, navigate, onError, onSucc
                     created: Date.now()
                 };
 
-                await mountUserWithToken({ payload, username, password, navigate, onSuccess, saveToken: true })(dispatch, getState);
+                await mountUserWithToken({ payload, username, password, navigate, onSuccess, tokenRefresh })(dispatch, getState);
             })
             .catch((err) => err.message || 'Please try again later');
 
@@ -176,24 +180,14 @@ export const loginUser = ({ username, password, token, navigate, onError, onSucc
 /**
  * Dispaches required actions and set's the app state to mount user
  * and content after login is successful
- * @param { payload: { userId, token }, username, password, navigate, onSuccess, saveToken } param0
+ * @param { payload: { userId, token }, username, password, navigate, onSuccess, tokenRefresh } param0
  * payload: { userId, token } and username is required for a successful user mount
  */
-const mountUserWithToken = ({ payload, username, password, navigate, onSuccess, saveToken }) => async (dispatch, getState) => {
+const mountUserWithToken = ({ payload, username, password, navigate, onSuccess, tokenRefresh }) => async (dispatch, getState) => {
     dispatch({
         type: LOGIN_USER_SUCCESS,
         payload
     });
-
-    if (saveToken) Auth.saveKey(username, password, JSON.stringify(payload));
-    // Invoke onSuccess callback to clear login page state
-    if (onSuccess) onSuccess();
-
-    // Sentry track user
-    setUser(payload.userId, username);
-
-    // Segment track user
-    identify(payload.userId, username);
 
     // set up chat listeners
     LiveChatService.mountUser({
@@ -204,6 +198,18 @@ const mountUserWithToken = ({ payload, username, password, navigate, onSuccess, 
         userId: payload.userId,
         authToken: payload.token,
     });
+
+    Auth.saveKey(username, password, JSON.stringify(payload));
+
+    if (onSuccess) onSuccess();
+    // If just refreshing token do not refresh profile and app state
+    if (tokenRefresh) return;
+
+    // Sentry track user
+    setUser(payload.userId, username);
+
+    // Segment track user
+    identify(payload.userId, username);
 
     // Fetch user profile using returned token and userId
     fetchAppUserProfile(payload.token, payload.userId)(dispatch, getState);
@@ -224,7 +230,6 @@ const mountUserWithToken = ({ payload, username, password, navigate, onSuccess, 
     // If navigate is set to false, it means user has already opened up the home page
     // We only need to reload the profile and feed data
     if (navigate === false) return;
-
     Actions.replace('drawer');
 }
 
