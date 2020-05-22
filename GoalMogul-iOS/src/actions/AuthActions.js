@@ -80,12 +80,14 @@ const validateEmail = (email) => {
 
 export const tryAutoLogin = () => async (dispatch, getState) => {
     await Auth.getKey().then((res) => {
+        // auto-login with current token
+        loginUser(res)(dispatch, getState);
+
         // refresh token 30s after app load
         setTimeout(async () => {
             const { username, password } = res;
             loginUser({ username, password })(dispatch, getState);
         }, MINUTE_IN_MS/2);
-        return loginUser(res)(dispatch, getState);
     });
 }
 
