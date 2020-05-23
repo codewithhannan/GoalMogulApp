@@ -53,7 +53,8 @@ class ProfileInfoCard extends Component {
         const { pageId, userId } = this.props;
         // canEdit means self
         if (this.props.canEdit) {
-            const componentKeyToOpen = componentKeyByTab(this.props.navigationTab, 'friendTabView');
+            // const componentKeyToOpen = componentKeyByTab(this.props.navigationTab, 'friendTabView');
+            const componentKeyToOpen = componentKeyByTab(this.props.navigationTab, 'meet');
             Actions.push(componentKeyToOpen);
             return;
         }

@@ -47,10 +47,11 @@ class FriendTabCardView extends React.PureComponent {
 
         const friendUserId = getFriendUserId(maybeFriendshipRef, this.props.userId);
         const friendshipId = maybeFriendshipRef._id;
-        ActionSheetIOS.showActionSheetWithOptions({
-            options: FRIENDSHIP_BUTTONS,
-            cancelButtonIndex: CANCEL_INDEX,
-        },
+        ActionSheetIOS.showActionSheetWithOptions(
+            {
+                options: FRIENDSHIP_BUTTONS,
+                cancelButtonIndex: CANCEL_INDEX,
+            },
             (buttonIndex) => {
                 console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
                 switch (buttonIndex) {
@@ -71,7 +72,8 @@ class FriendTabCardView extends React.PureComponent {
                     default:
                         return;
                 }
-            });
+            }
+        );
     }
 
     handleOnOpenProfile = () => {
@@ -122,10 +124,7 @@ class FriendTabCardView extends React.PureComponent {
                     onPress={() => this.handleUpdateFriendship(item)}
                     activeOpacity={0.6}
                 >
-                    <View style={{
-                        ...styles.buttonTextContainerStyle,
-                        backgroundColor: '#E0E0E0'
-                    }}>
+                    <View style={[styles.buttonTextContainerStyle, { backgroundColor: '#E0E0E0' }]}>
                         <Text style={styles.textStyle}>Delete</Text>
                     </View>
                 </DelayedButton >
@@ -202,8 +201,7 @@ const styles = {
     containerStyle: {
         padding: 16,
         backgroundColor: 'white',
-        borderWidth: 2,
-        borderRadius: 3,
+        borderWidth: 0.5,
         borderColor: '#F2F2F2'
     },
     // Button styles
