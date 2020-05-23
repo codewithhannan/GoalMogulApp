@@ -1,13 +1,6 @@
 /**
  * This is a central hub that defines the global usage of certain color
  */
-export const BACKGROUND_COLOR = 'white';
-
-export const GM_BLUE = "#45C9F6";
-export const GM_BLUE_LIGHT = "#9EE6FF";
-export const GM_BLUE_LIGHT_LIGHT = "#DEF7FF";
-export const GM_DOT_GRAY = "#E0E0E0";
-
 import Constants from 'expo-constants';
 
 const UI_SCALE = Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.5 : 1;

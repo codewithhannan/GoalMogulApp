@@ -28,7 +28,7 @@ import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCardV3';
 // import MeetCard from './Main/MeetTab/MeetCard';
 // Home Tab
 import Home from './Main/Home/Home';
-import MeetTab from './Main/MeetTab/MeetTabV2';
+// import MeetTab from './Main/MeetTab/MeetTabV2';
 import DiscoverTabView from './Main/MeetTab/V2/DiscoverTab/DiscoverTabView';
 import FriendInvitationView from './Main/MeetTab/V2/FriendInvitationView';
 // Meet
@@ -36,6 +36,8 @@ import FriendTabView from './Main/MeetTab/V2/FriendTab/FriendTabView';
 import RequestTabView from './Main/MeetTab/V2/RequestTab/RequestTabView';
 import MyEvent from './Main/Menu/Event/MyEvent';
 import ContactInvitePage from './Main/MeetTab/Contacts/ContactInvitePage';
+// Friend tab
+import MeetTab from './Main/MeetTab/FriendTab';
 // Menu
 import MyEventTab from './Main/Menu/Event/MyEventTab';
 import Menu from './Main/Menu/Menu';
@@ -80,8 +82,6 @@ import AddProfilePic from './Registration/AddProfilePic';
 import Contacts from './Registration/Contacts';
 import ContactSync from './Registration/ContactSync';
 import IntroForm from './Registration/IntroForm';
-// Friend tab
-import FriendTab from './Main/FriendTab';
 /* Registration */
 // import RegistrationAccount from './Registration/Account';
 // import RegistrationAccount from './Registration/RegistrationAccount';
@@ -221,7 +221,7 @@ class RouterComponent extends Component {
                                 <Scene
                                     key="registrationAccount"
                                     // component={RegistrationAccount}
-                                    component={FriendTab}
+                                    component={MeetTab}
                                 />
                             </Stack>
 

@@ -22,6 +22,14 @@ import PYMKCard from './PYMKCard';
  */
 class FriendTab extends React.Component {
 
+    handleSeeAllFriends = () => {
+        Actions.friendTabView();
+    }
+
+    handleSeeAllRequests = () => {
+        Actions.requestTabView();
+    }
+
     /** Render top card for inviting friends */
     renderInviteFriendCard() {
         return (
@@ -46,7 +54,7 @@ class FriendTab extends React.Component {
 
     renderRequestEmptyCard = () => {
         return (
-            <View style={{ width: "100%", minHeight: 112, alignItems: "center", justifyContent: "center" }}>
+            <View style={{ width: "100%", minHeight: 120, alignItems: "center", justifyContent: "center", borderTopWidth: 1, borderBottomWidth: 1, borderColor: "#F2F2F2" }}>
                 <Image source={Icons.AccountMultiple} style={{ tintColor: "#E0E0E0", width: 40, height: 30 }} resizeMode="cover" />
                 <Text style={{ fontSize: GM_FONT_SIZE.FONT_1, lineHeight: GM_FONT_LINE_HEIGHT.FONT_2, fontFamily: GM_FONT_FAMILY.GOTHAM, color: "#9B9B9B", marginTop: 16 }}>
                     There are currently no friend requests.
@@ -63,20 +71,23 @@ class FriendTab extends React.Component {
                         Friend Requests
                     </Text>
                     <View style={{ flex: 1 }} />
-                    <DelayedButton onPress={() => console.log("View all my friends pressed")} style={{ flexDirection: "row" }}>
+                    <DelayedButton onPress={() => this.handleSeeAllFriends()} style={{ flexDirection: "row" }}>
                         <Text style={{ color: GM_BLUE, fontSize: GM_FONT_SIZE.FONT_2, lineHeight: GM_FONT_LINE_HEIGHT.FONT_3, fontFamily: GM_FONT_FAMILY.GOTHAM, textDecorationLine: "underline" }}>
                             All My Friends
                         </Text>
                         <Image />
                     </DelayedButton>
                 </View>
-                <FlatList 
+                {
+                    !this.props.requests ? this.renderRequestEmptyCard() : null
+                }
+                {/* <FlatList 
                     data={this.props.requests}
                     renderItem={this.renderRequestCard}
                     ListEmptyComponent={this.renderRequestEmptyCard}
                     horizontal
                     contentContainerStyle={{ borderTopWidth: 1, borderBottomWidth: 1, borderColor: "#F2F2F2", width: "100%" }}
-                />
+                /> */}
             </View>
         );
     }
