@@ -33,7 +33,7 @@ import {
 
 /** Constants */
 import { IMAGE_BASE_URL } from '../../../Utils/Constants';
-import { GM_BLUE_LIGHT_LIGHT, BACKGROUND_COLOR, GM_BLUE } from '../../../styles';
+import { GM_BLUE_LIGHT_LIGHT, BACKGROUND_COLOR, GM_BLUE, DEFAULT_STYLE } from '../../../styles';
 
 const BUTTONS = ['Take a Picture', 'Camera Roll', 'Cancel'];
 const TAKING_PICTURE_INDEX = 0;
@@ -104,16 +104,15 @@ class ProfileDetailEditForm extends Component {
         const imageStyle = image ? styles.imageStyle : {
             width: 30,
             height: 30,
-            margin: (width * 0.1)
+            margin: 40 * DEFAULT_STYLE.uiScale
         };
         const imageWrapperStyle = [styles.imageWrapperStyle, image ? {} : {
             borderColor: '#BDBDBD',
-            borderRadius: (width * 0.15),
             borderWidth: 2
         }];
         return (
             <View style={{ width: '100%' }}>
-                <View style={{ height: 90, backgroundColor: GM_BLUE_LIGHT_LIGHT }} />
+                <View style={{ height: 90 * DEFAULT_STYLE.uiScale, backgroundColor: GM_BLUE_LIGHT_LIGHT }} />
                 <TouchableOpacity activeOpacity={0.6} onPress={this.chooseImage}>
                     <View style={styles.imageContainerStyle}>
                         <View style={imageWrapperStyle}>
@@ -185,11 +184,12 @@ class ProfileDetailEditForm extends Component {
         return (
             <SafeAreaView
                 forceInset={{ bottom: 'always' }}
-                style={{ flex: 1, backgroundColor: GM_BLUE }}
+                style={{ backgroundColor: GM_BLUE }}
                 onPress={() => {
                     Keyboard.dismiss()
                 }}
             >
+                <View style={{ marginTop: 30, height: '100%', backgroundColor: 'white' }}>
                 <LoadingModal
                     visible={this.props.uploading}
                     customIndicator={<DotIndicator size={12} color='white' />}
@@ -201,11 +201,11 @@ class ProfileDetailEditForm extends Component {
                 />
                 <KeyboardAwareScrollView
                     innerRef={ref => { this.scrollview = ref }}
-                    style={styles.scroll}
+                    style={{  }}
                     extraScrollHeight={13}
                     contentContainerStyle={{
                         backgroundColor: 'white',
-                        flexGrow: 1 // this will fix scrollview scroll issue by passing parent view width and height to it
+                        flexGrow: 1
                     }}
                 >
                     <Field name='profile.image' label='Profile Picture' component={this.renderImage.bind(this)} />
@@ -270,6 +270,7 @@ class ProfileDetailEditForm extends Component {
                         returnKeyType='Enter'
                     />
                 </KeyboardAwareScrollView>
+                </View>
             </SafeAreaView>
         );
     }
@@ -304,31 +305,31 @@ const styles = {
         marginBottom: 5,
     },
     imageStyle: {
-        width: (width * 0.3),
-        height: (width * 0.3),
-        borderRadius: (width * 0.15)
+        width: 120 * DEFAULT_STYLE.uiScale,
+        height: 120 * DEFAULT_STYLE.uiScale,
+        borderRadius: 60 * DEFAULT_STYLE.uiScale
     },
     imageContainerStyle: {
-        height: 60,
-        backgroundColor: 'white',
-        alignSelf: 'center'
+        height: 60 * DEFAULT_STYLE.uiScale,
+        backgroundColor: 'white'
     },
     imageWrapperStyle: {
         alignItems: 'center',
-        borderRadius: (width * 0.15),
+        borderRadius: 60 * DEFAULT_STYLE.uiScale,
         position: 'absolute',
         bottom: 10,
         alignSelf: 'center',
         backgroundColor: 'white'
     },
     iconContainerStyle: {
+        alignSelf: 'center',
         position: 'absolute',
-        bottom: 10,
-        right: (width * 0.35),
+        bottom: 10 * DEFAULT_STYLE.uiScale,
+        right: (width * 0.5) - 40 * DEFAULT_STYLE.uiScale - 20,
 
-        width: (width*0.1),
-        height: (width*0.1),
-        borderRadius: (width*0.05),
+        width: 40,
+        height: 40,
+        borderRadius: 20,
         borderColor: '#DDD',
         borderWidth: 0.5,
 

@@ -40,24 +40,17 @@ class FormHeader extends Component {
 
         return (
                 <View style={{ ...styles.headerStyle, paddingTop}}>
-                    <View style={{ flex: 2, alignItems: 'flex-start' }}>
-                        <DelayedButton activeOpacity={0.6} onPress={this.onCancelPress}>
-                            <Text style={cancelTextStyle}>Cancel</Text>
-                        </DelayedButton>
-                    </View>
-
-                    <View style={{ flex: 1 }}>
-                        <Text style={titleTextStyle}>{this.props.title}</Text>
-                    </View>
-                    <View style={{ flex: 2, alignItems: 'flex-end' }}>
-                        <DelayedButton
-                            activeOpacity={0.6}
-                            onPress={this.onSavePress}
-                            disabled={actionDisabled}
-                        >
-                            <Text style={actionTextStyle}>Save</Text>
-                        </DelayedButton>
-                    </View>
+                    <DelayedButton activeOpacity={0.6} onPress={this.onCancelPress}>
+                        <Text style={cancelTextStyle}>Cancel</Text>
+                    </DelayedButton>
+                    <Text style={titleTextStyle}>{this.props.title}</Text>
+                    <DelayedButton
+                        activeOpacity={0.6}
+                        onPress={this.onSavePress}
+                        disabled={actionDisabled}
+                    >
+                        <Text style={actionTextStyle}>Save</Text>
+                    </DelayedButton>
                 </View>
         );
     }
@@ -68,7 +61,7 @@ const styles = {
         flexDirection: 'row',
         backgroundColor: GM_BLUE,
         padding: 15,
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center'
     },
     cancelTextStyle: {

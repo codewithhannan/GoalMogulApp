@@ -17,6 +17,8 @@ import { openProfileDetailEditForm } from '../../../actions/';
 
 /* Asset */
 import brief_case from '../../../asset/utils/briefcase.png';
+import ElevatorPitchIcon from '../../../asset/utils/elevator_pitch.png';
+import AboutIcon from '../../../asset/utils/about.png';
 import icon_meet from '../../../asset/footer/navigation/meet.png';
 import profileStyles from './Styles';
 
@@ -143,7 +145,10 @@ class ProfileInfoCard extends Component {
         if (elevatorPitch) {
             return (
                 <View style={{ alignSelf: 'flex-start' }}>
-                    <Text style={[ profileStyles.subHeaderTextStyle, DEFAULT_STYLE.titleText_1 ]}>Elevator Pitch</Text>
+                    <View style={profileStyles.subHeaderStyle}>
+                        <Image resizeMode="contain" source={ElevatorPitchIcon} style={{ ...DEFAULT_STYLE.normalIcon_1, tintColor: '#828282', marginRight: 10 }} />
+                        <Text style={DEFAULT_STYLE.titleText_1}>Elevator Pitch</Text>
+                    </View>
                     <Text style={[ DEFAULT_STYLE.normalText_1 ]}>{elevatorPitch}</Text>
                 </View>
             );
@@ -155,10 +160,13 @@ class ProfileInfoCard extends Component {
         if (about) {
             return (
                 <View style={{ alignSelf: 'flex-start', marginTop: 24 }}>
-                    <Text style={[ profileStyles.subHeaderTextStyle, DEFAULT_STYLE.titleText_1 ]}>About</Text>
+                    <View style={profileStyles.subHeaderStyle}>
+                        <Image resizeMode="contain" source={AboutIcon} style={{ ...DEFAULT_STYLE.normalIcon_1, tintColor: '#828282', marginRight: 10 }} />
+                        <Text style={DEFAULT_STYLE.titleText_1}>About</Text>
+                    </View>
                     <Text style={[ DEFAULT_STYLE.normalText_1 ]}>{about}</Text>
                 </View>
-            );
+            ); 
         }
         return null;
     }

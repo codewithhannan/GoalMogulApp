@@ -19,7 +19,9 @@ export default StyleSheet.create({
         maxWidth: (window.width * 5) / 7,
         alignSelf: 'center'
     },
-    subHeaderTextStyle: {
+    subHeaderStyle: {
+        flexDirection: 'row',
+        alignItems: 'center',
         marginBottom: 16
     }
 });

@@ -169,7 +169,8 @@ class SectionCard extends Component {
             >
                 <View
                     style={{
-                        margin: 12,
+                        marginRight: 12,
+                        marginLeft: this.props.isSelf ? 12 : 30,
                         marginTop: 15,
                         marginBottom: 15,
                         flexDirection: 'row',
@@ -240,7 +241,7 @@ const styles = {
         flexDirection: 'row',
         borderRightWidth: 0.5,
         borderColor: '#e5e5e5',
-        paddingRight: 10 * DEFAULT_STYLE.uiScale,
+        paddingRight: 10,
         flexShrink: 1,
         flex: 20
     },
@@ -251,7 +252,7 @@ const styles = {
         backgroundColor: '#efefef',
         alignItems: 'center',
         justifyContent: 'center',
-        marginLeft: 15 * DEFAULT_STYLE.uiScale
+        marginLeft: 15
     },
     iconStyle: {
         ...DEFAULT_STYLE.normalIcon_1,
@@ -264,7 +265,7 @@ const styles = {
         backgroundColor: '#a5e5c0',
         alignItems: 'center',
         justifyContent: 'center',
-        marginRight: 10 * DEFAULT_STYLE.uiScale
+        marginRight: 10
     },
     checkIconStyle: {
         ...DEFAULT_STYLE.normalIcon_1,
