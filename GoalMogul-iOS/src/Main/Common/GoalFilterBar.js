@@ -8,17 +8,14 @@ import {
     renderers,
 } from 'react-native-popup-menu';
 
-import { switchCase } from '../../redux/middleware/utils';
-
 import {
     SORT_BY_OPTIONS,
     CATEGORY_OPTIONS
 } from '../../Utils/Constants';
-import { GM_FONT_FAMILY_2, GM_FONT_2, GM_FONT_FAMILY_1, GM_FONT_1 } from '../../styles';
+import { DEFAULT_STYLE, BACKGROUND_COLOR } from '../../styles';
 
-const { SlideInMenu } = renderers;
+
 const { width, height } = Dimensions.get('window');
-const CATEGORY_OPTION_HEIGHT = 34;
 
 /**
  * Update the filter based on parents functions
@@ -40,43 +37,51 @@ class GoalFilterBar extends Component {
             categories
         } = this.props.filter;
         const categoryText = categories;
+        const isCategorySelected = categories !== CATEGORY_OPTIONS[0].value;
 
         return (
             <View style={styles.containerStyle}>
                 <Menu
                     rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
-                    renderer={SlideInMenu}
+                    renderer={renderers.SlideInMenu}
                 >
-                    <MenuTrigger
-                        customStyles={{
-                            TriggerTouchableComponent: TouchableOpacity,
-                        }}
-                    >
-                        <View style={styles.detailContainerStyle}>
-                            <Text style={styles.textStyle}>Sort By</Text>
+                    <MenuTrigger customStyles={{ TriggerTouchableComponent: TouchableOpacity }}>
+                        <View style={[
+                            styles.detailContainerStyle,
+                            isCategorySelected ? styles.selectedContainerStyle : null
+                        ]}>
+                            <Text style={{
+                                ...DEFAULT_STYLE.buttonText_1,
+                                fontWeight: isCategorySelected ? '700' : '500'
+                            }}>
+                                Sort &amp; Filter
+                            </Text>
                         </View>
                     </MenuTrigger>
                     <MenuOptions customStyles={styles.menuOptionsStyles}>
                         {/* SortBy Header */}
-                        <View
-                            style={styles.sortByHeaderWrapper}
-                        >
-                            <Text style={styles.sortByHeaderText}>
-                                Sort By
-                            </Text>
+                        <View style={styles.sortByHeaderWrapper}>
+                            <Text style={DEFAULT_STYLE.titleText_1}>Sort By</Text>
                         </View>
                         {/* SortBy Options */}
                         <View style={{
                             flexDirection: 'row',
                             flexWrap: 'wrap',
-                            padding: 10
+                            padding: 10 * DEFAULT_STYLE.uiScale
                         }}>
                             {SORT_BY_OPTIONS.map((option) => {
                                 const { value, text } = option;
+                                const isSelected = sortBy === value;
                                 return (
                                     <MenuOption onSelect={() => this.handleOnMenuSelect('sortBy', value)}>
-                                        <View style={styles.sortByOptionWrapper}>
-                                            <Text style={styles.sortByOptionText}>
+                                        <View style={[
+                                            styles.sortByOptionWrapper,
+                                            isSelected ? styles.selectedContainerStyle : null
+                                        ]}>
+                                            <Text style={{
+                                                ...DEFAULT_STYLE.normalText_1,
+                                                color: isSelected ? '#333' : '#828282'
+                                            }}>
                                                 {text}
                                             </Text>
                                         </View>
@@ -86,11 +91,8 @@ class GoalFilterBar extends Component {
                         </View>
 
                         {/* Catrgory header */}
-                        <View style={styles.categoryHeaderWrapper}
-                        >
-                            <Text style={styles.categoryHeaderText}>
-                                Category
-                            </Text>
+                        <View style={styles.categoryHeaderWrapper}>
+                            <Text style={DEFAULT_STYLE.normalText_1}>Category</Text>
                         </View>
                         {/* Category Options */}
                         <FlatList
@@ -100,12 +102,12 @@ class GoalFilterBar extends Component {
                                 return (
                                     <MenuOption onSelect={() => this.handleOnMenuSelect('categories', value)}>
                                         <View style={styles.categoryOptionWrapper}>
-                                            <Text style={styles.categoryOptionText}>
+                                            <Text style={DEFAULT_STYLE.subTitleText_1}>
                                                 {text}
                                             </Text>
                                             <RadioButton
                                                 isSelected={categoryText === text}
-                                                radius={10}
+                                                size={(10 * DEFAULT_STYLE.uiScale)}
                                                 borderWidth={1}
                                             />
                                         </View>
@@ -122,12 +124,12 @@ class GoalFilterBar extends Component {
 }
 
 const RadioButton = (props) => {
-    const { isSelected, radius, borderWidth } = props
+    const { isSelected, size, borderWidth } = props
     return (
         <View style={{
-            height: radius*2,
-            width: radius*2,
-            borderRadius: radius,
+            height: size*2,
+            width: size*2,
+            borderRadius: size,
             borderWidth: borderWidth,
             borderColor: isSelected ? '#1B63DC' : '#B4BFC9',
             justifyContent: 'center',
@@ -135,9 +137,9 @@ const RadioButton = (props) => {
         }}>
             <View style={{
                 backgroundColor: isSelected ? '#1B63DC' : '',
-                height: radius*0.8,
-                width: radius*0.8,
-                borderRadius: radius*0.4
+                height: size*0.8,
+                width: size*0.8,
+                borderRadius: size*0.4
             }}/>
         </View>
     );
@@ -145,7 +147,7 @@ const RadioButton = (props) => {
 
 const styles = {
     containerStyle: {
-        backgroundColor: 'white',
+        backgroundColor: BACKGROUND_COLOR,
         padding: 16,
         paddingTop: 9
     },
@@ -153,19 +155,17 @@ const styles = {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 30,
         borderWidth: 1,
+        height: 30 * DEFAULT_STYLE.uiScale,
         borderColor: '#E0E0E0',
-        borderRadius: 100
+        borderRadius: 15 * DEFAULT_STYLE.uiScale
     },
-    textStyle: {
-        fontSize: 15,
-        fontFamily: GM_FONT_FAMILY_2,
-        color: '#828282',
-        fontWeight: '500',
+    selectedContainerStyle: {
+        borderColor: '#828282',
+        backgroundColor: '#F2F2F2'
     },
     anchorStyle: {
-        backgroundColor: 'white'
+        backgroundColor: BACKGROUND_COLOR
     },
     menuOptionsStyles: {
         optionsContainer: {
@@ -177,7 +177,7 @@ const styles = {
         }
     },
     sortByHeaderWrapper: {
-        backgroundColor: 'white',
+        backgroundColor: BACKGROUND_COLOR,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
@@ -185,50 +185,28 @@ const styles = {
         padding: 16,
         paddingBottom: 14
     },
-    sortByHeaderText: {
-        fontSize: GM_FONT_2,
-        fontFamily: GM_FONT_FAMILY_1,
-        color: '#3B414B',
-        fontWeight: 'bold'
-    },
     sortByOptionWrapper: {
-        backgroundColor: '#F2F2F2',
-        padding: 8,
-        paddingLeft: 16,
-        paddingRight: 16,
+        padding: 4,
+        paddingLeft: 12,
+        paddingRight: 12,
         borderRadius: 100,
+        borderWidth: 1,
+        borderColor: '#E0E0E0',
         margin: 2
-    },
-    sortByOptionText: {
-        color: '#828282',
-        fontSize: GM_FONT_1,
-        fontFamily: GM_FONT_FAMILY_2,
-        fontWeight: '500'
     },
     categoryHeaderWrapper: {
         backgroundColor: '#F2F2F2',
         padding: 8,
         paddingLeft: 16
     },
-    categoryHeaderText: {
-        fontSize: GM_FONT_1,
-        fontFamily: GM_FONT_FAMILY_2,
-        fontWeight: '500',
-        color: '#3B414B'
-    },
     categoryOptionWrapper: {
-        height: CATEGORY_OPTION_HEIGHT,
+        height: 34 * DEFAULT_STYLE.uiScale,
         paddingLeft: 16,
         paddingRight: 16,
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'
-    },
-    categoryOptionText: {
-        color: '#000',
-        fontSize: GM_FONT_2,
-        fontFamily: GM_FONT_FAMILY_2
     }
 };
 

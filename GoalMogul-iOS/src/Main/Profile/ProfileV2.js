@@ -19,7 +19,7 @@ import { createReport } from '../../redux/modules/report/ReportActions';
 import { getUserData, getUserDataByPageId, makeGetUserGoals, makeGetUserNeeds, makeGetUserPosts } from '../../redux/modules/User/Selector';
 import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users';
 /* Styles */
-import { BACKGROUND_COLOR, GM_BLUE, GM_FONT_FAMILY_1, GM_FONT_FAMILY_2, GM_FONT_1, shadowStyle } from '../../styles';
+import { BACKGROUND_COLOR, GM_BLUE, DEFAULT_STYLE } from '../../styles';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 import PlusButton from '../Common/Button/PlusButton';
 import GoalFilterBar from '../Common/GoalFilterBar';
@@ -55,7 +55,6 @@ class ProfileV2 extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (!this.props.pageId) this.props.refreshProfile(this.props.userId);
         if (prevProps.userPageLoading !== this.props.userPageLoading && this.props.userPageLoading === false) {
             this.setState({
                 ...this.state,
@@ -79,13 +78,11 @@ class ProfileV2 extends Component {
     }
 
     componentDidMount() {
-        const { userId, pageId, hideProfileDetail } = this.props;
-        console.log(`${DEBUG_KEY}: mounting Profile with pageId: ${pageId}`);
+        const { userId, pageId, hideProfileDetail, isSelf } = this.props;
+        // console.log(`${DEBUG_KEY}: mounting Profile with pageId: ${pageId}`);
 
         // Hide profile detail as it's not on about tab
-        if (hideProfileDetail) {
-            this.closeProfileInfoCard();
-        }
+        if (hideProfileDetail) this.closeProfileInfoCard();
 
         this.props.handleTabRefresh('goals', userId, pageId, this.props.initialFilter);
         this.props.handleTabRefresh('posts', userId, pageId);
@@ -211,20 +208,13 @@ class ProfileV2 extends Component {
                     borderRadius={3}
                     buttonStyle={{
                         selected: {
+                            ...DEFAULT_STYLE.buttonText_1,
                             backgroundColor: GM_BLUE,
-                            tintColor: 'white',
                             color: 'white',
-                            fontWeight: 'bold',
-                            fontSize: GM_FONT_1,
-                            fontFamily: GM_FONT_FAMILY_1
                         },
                         unselected: {
-                            backgroundColor: 'white',
-                            tintColor: '#BDBDBD',
-                            color: '#BDBDBD',
-                            fontWeight: '500',
-                            fontSize: GM_FONT_1,
-                            fontFamily: GM_FONT_FAMILY_2
+                            ...DEFAULT_STYLE.buttonText_1,
+                            backgroundColor: '#F2F2F2'
                         }
                     }}
                 />
@@ -327,7 +317,7 @@ class ProfileV2 extends Component {
                     })
                 }
                 {renderFilter ? this.renderFilterBar(props) : null}
-                <View style={shadowStyle}/>
+                <View style={DEFAULT_STYLE.shadow}/>
             </View>
         )
     }
@@ -380,7 +370,8 @@ class ProfileV2 extends Component {
     }
 
     render() {
-        const { userId, pageId, selectedTab, navigationState, data } = this.props;
+        const { userId, pageId, selectedTab, navigationState, data, refreshProfile } = this.props;
+        if (!pageId) refreshProfile(userId);
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -429,10 +420,11 @@ const styles = {
     },
     tabContainer: {
         padding: 16,
-        backgroundColor: 'white'
+        backgroundColor: BACKGROUND_COLOR
     },
     backdrop: {
-        backgroundColor: 'white',
+        backgroundColor: 'gray',
+        opacity: 0.5
     }
 };
 

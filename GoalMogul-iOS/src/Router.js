@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Animated, Easing } from 'react-native';
 import { ActionConst, Actions, Drawer, Lightbox, Modal, Reducer, Router, Scene, Stack, Tabs } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-// import Login from './Login';
 import LoginPage from './LoginPage';
 // Chat
 import Chat from './Main/Chat/Chat';
@@ -25,7 +24,6 @@ import Event from './Main/Event/Event';
 import Explore from './Main/Explore/Explore';
 import CreateGoalModal from './Main/Goal/CreateGoalModal';
 import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCardV3';
-// import MeetCard from './Main/MeetTab/MeetCard';
 // Home Tab
 import Home from './Main/Home/Home';
 // import MeetTab from './Main/MeetTab/MeetTabV2';
@@ -95,7 +93,6 @@ import { RegistrationAccount, OnboardingIntroTransition,
 import SplashScreen from './SplashScreen';
 import Tutorial from './Tutorial/Tutorial';
 import UserInviteModal from './Main/Common/Modal/UserInviteModal';
-import { trackViewScreen } from './monitoring/segment';
 
 
 class RouterComponent extends Component {
@@ -152,7 +149,6 @@ class RouterComponent extends Component {
 
     stateHandler = (prevState, newState, action) => {
         if (action && action.routeName) {
-            // trackViewScreen(action.routeName);
         }
         // console.log('newState is: ', newState);
     }
@@ -191,7 +187,6 @@ class RouterComponent extends Component {
                     } else { // hide all screens in between
                         return { opacity: 0, };
                     };
-
                 };
 
                 return {
@@ -284,8 +279,7 @@ class RouterComponent extends Component {
                                                             return this.rootTransitionConfig().screenInterpolator(props);
                                                     }
                                                 }
-                                            })
-                                            }
+                                            })}
                                         >
                                             <Scene key="home" initial component={Home} />
 

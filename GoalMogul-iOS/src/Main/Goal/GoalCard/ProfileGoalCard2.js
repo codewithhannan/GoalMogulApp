@@ -20,12 +20,14 @@ import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
+import LoveOutlineIcon from '../../../asset/utils/love-outline.png';
 import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 
 // Actions
 import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions';
-import { GM_FONT_FAMILY_2, GM_FONT_FAMILY_1, GM_FONT_1, shadowStyle } from '../../../styles';
+import { DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles';
+
 
 class ProfileGoalCard2 extends React.Component {
 
@@ -49,12 +51,9 @@ class ProfileGoalCard2 extends React.Component {
             <View style={styles.headerContainerStyle}>
                 <View style={{ alignSelf: 'center', alignItems: 'center' }}>
                     <Text style={{
-                        fontSize: 11,
-                        fontFamily: GM_FONT_FAMILY_1,
-                        fontWeight: '500',
-                        color: '#3B414B',
-                        alignSelf: 'center',
-                        letterSpacing: 0.7
+                        ...DEFAULT_STYLE.smallTitle_1,
+                        letterSpacing: 0.7,
+                        alignSelf: 'center'
                     }}>
                         {category}
                     </Text>
@@ -77,11 +76,9 @@ class ProfileGoalCard2 extends React.Component {
         return (
             <Text
                 style={{
+                    ...DEFAULT_STYLE.subTitleText_1,
                     flex: 1,
-                    flexWrap: 'wrap',
-                    fontSize: GM_FONT_1,
-                    color: '#3B414B',
-                    fontFamily: GM_FONT_FAMILY_2
+                    flexWrap: 'wrap'
                 }}
                 numberOfLines={1}
                 ellipsizeMode='tail'
@@ -102,7 +99,6 @@ class ProfileGoalCard2 extends React.Component {
                     needs={needs}
                     goalRef={item}
                     barHeight={11}
-                    sections={6}
                     isProfileGoalCard
                     size='small'
                 />
@@ -114,31 +110,36 @@ class ProfileGoalCard2 extends React.Component {
      * THis method renders stats including like, forward and suggestion count
      */
     renderStats(item) {
+        const { maybeLikeRef } = item;
+
         const likeCount = item.likeCount ? item.likeCount : 0;
         const commentCount = item.commentCount ? item.commentCount : 0;
         const shareCount = item.shareCount ? item.shareCount : 0;
+
+        const selfLiked = maybeLikeRef && maybeLikeRef.length > 0;
 
         return (
             <View style={styles.statsContainerStyle}>
                 <View style={{ flexDirection: 'row' }}>
                     <StatsComponent
-                        iconSource={LoveIcon}
-                        iconStyle={styles.loveIconStyle}
-                        text={likeCount}
-                        textStyle={styles.loveTextStyle}
+                        iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
+                        iconStyle={{tintColor: selfLiked ? '#EB5757' : '#828282'}}
+                        textStyle={{color: '#828282' }}
+                        text={likeCount > 0 ? likeCount : null}
                     />
                     <StatsComponent
                         iconSource={ShareIcon}
-                        iconStyle={styles.shareIconStyle}
+                        iconStyle={{tintColor: '#828282'}}
+                        textStyle={{color: '#828282' }}
                         text={shareCount}
-                        textStyle={styles.shareTextStyle}
+                        containerStyle={{ marginLeft: 18 * DEFAULT_STYLE.uiScale }}
                     />
                 </View>
                 <StatsComponent
                     iconSource={CommentIcon}
-                    iconStyle={styles.commentIconStyle}
+                    iconStyle={{tintColor: '#828282'}}
+                    textStyle={{color: '#828282' }}
                     text={commentCount + ' Comment' + (commentCount !== 1 ? 's' : '')}
-                    textStyle={styles.commentTextStyle}
                 />
             </View>
         );
@@ -148,7 +149,7 @@ class ProfileGoalCard2 extends React.Component {
         const { priority } = item;
         return (
             <View style={{ alignItems: 'center', marginLeft: 16 }}>
-                <Text style={styles.priorityTextStyle}>Priority</Text>
+                <Text style={DEFAULT_STYLE.smallText_2}>Priority</Text>
                 <PriorityBar priority={priority} />
             </View>
         );
@@ -158,14 +159,12 @@ class ProfileGoalCard2 extends React.Component {
         const { item } = this.props;
         if (!item || _.isEmpty(item)) return null;
 
-        // const cardOpacity = item.isCompleted ? 0.5 : 1;
-        const cardOpacity = 1;
-        const backgroundColor = item.isCompleted ? '#F6F6F6' : 'white';
+        const backgroundColor = item.isCompleted ? '#F6F6F6' : BACKGROUND_COLOR;
         return (
             <View>
                 <DelayedButton
                     activeOpacity={0.6}
-                    style={[styles.cardContainerStyle, { opacity: cardOpacity, backgroundColor }]}
+                    style={[styles.cardContainerStyle, { backgroundColor }]}
                     onPress={() => this.handleOnCardPress(item)}
                 >
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -178,19 +177,25 @@ class ProfileGoalCard2 extends React.Component {
                     </View>
                     {this.renderStats(item)}
                 </DelayedButton>
-                <View style={shadowStyle}/>
+                <View style={DEFAULT_STYLE.shadow}/>
             </View>
         );
     }
 }
 
 const StatsComponent = (props) => {
-    const { iconStyle, textStyle, iconSource, text } = props;
-    const { statsTextDefaultStyle, statsIconDefaultStyle } = styles;
+    const { iconStyle, textStyle, iconSource, text, containerStyle } = props;
     return (
-        <View style={{ marginTop: 5, marginBottom: 5, flexDirection: 'row' }}>
-            <Image source={iconSource} style={{ ...statsIconDefaultStyle, ...iconStyle }} />
-            <Text style={{ ...statsTextDefaultStyle, ...textStyle }}>{text}</Text>
+        <View style={{
+            marginTop: 3,
+            marginBottom: 3,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            ...containerStyle
+        }}>
+            <Image resizeMode="contain" source={iconSource} style={{ ...DEFAULT_STYLE.smallIcon_1, ...iconStyle }} />
+            <Text style={{ ...DEFAULT_STYLE.smallTitle_1, marginLeft: 7, ...textStyle }}>{text}</Text>
         </View>
     );
 };
@@ -198,7 +203,6 @@ const StatsComponent = (props) => {
 const styles = {
     cardContainerStyle: {
         padding: 16,
-        backgroundColor: 'white',
         borderRadius: 2
     },
     headerContainerStyle: {
@@ -207,12 +211,6 @@ const styles = {
         flex: 1,
         marginBottom: 8
     },
-    priorityTextStyle: {
-        fontSize: 8.5,
-        fontStyle: 'italic',
-        fontFamily: GM_FONT_FAMILY_2,
-        color: '#3B414B'
-    },
     // Stats component default style
     statsContainerStyle: {
         flex: 1,
@@ -220,35 +218,6 @@ const styles = {
         justifyContent: 'space-between',
         marginTop: 20
     },
-    statsTextDefaultStyle: {
-        fontSize: 11,
-        color: '#3B414B',
-        fontFamily: GM_FONT_FAMILY_2,
-        marginLeft: 7
-    },
-    statsIconDefaultStyle: {
-        height: 12,
-        width: 12
-    },
-    // Stats component style
-    loveIconStyle: {
-        tintColor: '#EB5757'
-    },
-    loveTextStyle: {
-    },
-    shareIconStyle: {
-        tintColor: '#6FCF97',
-        marginLeft: 18,
-        width: 14,
-        height: 14
-    },
-    shareTextStyle: {
-    },
-    commentIconStyle: {
-        tintColor: '#F1BF74'
-    },
-    commentTextStyle: {
-    }
 };
 
 export default connect(

@@ -14,6 +14,7 @@ const ProfileActionButton = (props) => {
     if (props.source) {
         image = (
             <Image
+                resizeMode="contain"
                 source={props.source}
                 style={{ height: 15, width: 15, tintColor: color, ...props.iconStyle }}
             />
@@ -26,7 +27,6 @@ const ProfileActionButton = (props) => {
                 fontSize: 12,
                 fontWeight: 'bold',
                 marginLeft: 5,
-                alignSelf: 'center',
                 color,
                 ...props.textStyle
             }}>
@@ -39,9 +39,9 @@ const ProfileActionButton = (props) => {
             <View
                 style={{
                     flexDirection: 'row',
-                    alignSelf: 'flex-end',
-                    padding: 7,
-                    borderRadius: 5,
+                    padding: 8,
+                    paddingLeft: textComponent ? 12 : 8,
+                    paddingRight: textComponent ? 12 : 8,
                     ...props.containerStyle
                 }}
             >

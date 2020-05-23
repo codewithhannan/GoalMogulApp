@@ -61,6 +61,7 @@ import {
     IMAGE_BASE_URL
 } from '../Utils/Constants';
 import { Logger } from '../redux/middleware/utils/Logger';
+import { DEFAULT_STYLE } from '../styles';
 
 const DEBUG_KEY = '[ Action Profile ]';
 
@@ -915,8 +916,8 @@ export const UserBanner = (props) => {
         alignSelf: 'center',
         marginLeft: 4,
         marginRight: 4,
-        height: 14,
-        width: 10
+        height: 14 * DEFAULT_STYLE.uiScale,
+        width: 10 * DEFAULT_STYLE.uiScale
     };
 
     return (

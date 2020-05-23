@@ -48,7 +48,7 @@ import Logo from '../../asset/header/logo.png';
 import Activity from '../../asset/utils/activity.png';
 
 // Styles
-import { APP_DEEP_BLUE, GM_BLUE } from '../../styles';
+import { GM_BLUE, BACKGROUND_COLOR, DEFAULT_STYLE } from '../../styles';
 
 // Utils
 import { Logger } from '../../redux/middleware/utils/Logger';
@@ -61,17 +61,11 @@ import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal';
 const TabIconMap = {
     goals: {
         iconSource: Logo,
-        iconStyle: {
-            height: 17,
-            width: 17
-        }
+        iconStyle: DEFAULT_STYLE.normalIcon_1
     },
     activity: {
         iconSource: Activity,
-        iconStyle: {
-            height: 15,
-            width: 15
-        }
+        iconStyle: DEFAULT_STYLE.normalIcon_1
     }
 };
 
@@ -84,8 +78,8 @@ class Home extends Component {
             navigationState: {
                 index: 0,
                 routes: [
-                    { key: 'goals', title: 'JUST GOALS' },
                     { key: 'activity', title: 'ALL POSTS' },
+                    { key: 'goals', title: 'JUST GOALS' },
                 ],
             },
             appState: AppState.currentState,
@@ -219,16 +213,6 @@ class Home extends Component {
         this.props.handlePushNotification(notification);
     }
 
-    handleCreateGoal = () => {
-        this.props.openCreateOverlay();
-        // As we move the create option here, we no longer need to care about the tab
-        Actions.createGoalButtonOverlay({
-            tab: 'mastermind', onClose: () => {
-                this.props.closeCreateOverlay('mastermind');
-            }
-        });
-    }
-
     handleAppStateChange = async (nextAppState) => {
         if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
             console.log(`${DEBUG_KEY}: [handleAppStateChange] App has become active!`);
@@ -278,18 +262,15 @@ class Home extends Component {
                     borderRadius={3}
                     buttonStyle={{
                         selected: {
+                            ...DEFAULT_STYLE.buttonText_1,
                             backgroundColor: GM_BLUE,
                             tintColor: 'white',
                             color: 'white',
-                            fontWeight: 'bold',
-                            fontSize: 14
                         },
                         unselected: {
-                            backgroundColor: 'white',
-                            tintColor: '#BDBDBD',
-                            color: '#BDBDBD',
-                            fontWeight: '500',
-                            fontSize: 14
+                            ...DEFAULT_STYLE.buttonText_1,
+                            backgroundColor: '#F2F2F2',
+                            tintColor: DEFAULT_STYLE.buttonIcon_1.tintColor
                         }
                     }}
                 />
@@ -317,18 +298,6 @@ class Home extends Component {
                 return null;
         }
     };
-
-    _keyExtractor = (item, index) => index;
-
-    // Starting version 0.4.2, we change back to each screen has one plus button
-    renderPlus() {
-        return (
-            <PlusButton
-                plusActivated={this.props.showPlus}
-                onPress={this.handleCreateGoal}
-            />
-        );
-    }
 
     render() {
         /*
@@ -425,16 +394,11 @@ const styles = {
     },
     tabContainer: {
         padding: 16,
-        backgroundColor: 'white'
+        backgroundColor: BACKGROUND_COLOR
     },
     backdrop: {
         backgroundColor: 'gray',
         opacity: 0.5,
-    },
-    iconStyle: {
-        height: 26,
-        width: 26,
-        tintColor: 'white',
     }
 };
 

@@ -6,9 +6,9 @@
  */
 import React from 'react';
 import {
-  View,
-  Text,
-  ActionSheetIOS
+    View,
+    Text,
+    ActionSheetIOS
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -22,11 +22,12 @@ import DelayedButton from '../../../Common/Button/DelayedButton';
 
 /* Actions */
 import {
-  updateFriendship,
-  blockUser,
-  openProfile,
-  UserBanner
+    updateFriendship,
+    blockUser,
+    openProfile,
+    UserBanner
 } from '../../../../actions';
+import { GM_FONT_FAMILY_3, GM_FONT_FAMILY_2 } from '../../../../styles';
 
 const FRIENDSHIP_BUTTONS = ['Block', 'Unfriend', 'Cancel'];
 const BLOCK_INDEX = 0;
@@ -36,172 +37,151 @@ const TAB_KEY = 'friends';
 const DEBUG_KEY = '[ UI FriendTabCardView ]';
 
 class FriendTabCardView extends React.PureComponent {
-  state = {
-    requested: false,
-    accepted: false
-  }
+    state = {
+        requested: false,
+        accepted: false
+    }
 
-  handleUpdateFriendship = (item) => {
-    const { maybeFriendshipRef } = item;
+    handleUpdateFriendship = (item) => {
+        const { maybeFriendshipRef } = item;
 
-    const friendUserId = getFriendUserId(maybeFriendshipRef, this.props.userId);
-    const friendshipId = maybeFriendshipRef._id;
-    ActionSheetIOS.showActionSheetWithOptions({
-        options: FRIENDSHIP_BUTTONS,
-        cancelButtonIndex: CANCEL_INDEX,
-    },
-    (buttonIndex) => {
-        console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
-        switch (buttonIndex) {
-            case BLOCK_INDEX:
-                // User chose to block user with id: _id
-                console.log(`${DEBUG_KEY}: User blocks friend with id ${friendUserId}, 
+        const friendUserId = getFriendUserId(maybeFriendshipRef, this.props.userId);
+        const friendshipId = maybeFriendshipRef._id;
+        ActionSheetIOS.showActionSheetWithOptions({
+            options: FRIENDSHIP_BUTTONS,
+            cancelButtonIndex: CANCEL_INDEX,
+        },
+            (buttonIndex) => {
+                console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
+                switch (buttonIndex) {
+                    case BLOCK_INDEX:
+                        // User chose to block user with id: _id
+                        console.log(`${DEBUG_KEY}: User blocks friend with id ${friendUserId}, 
                     friendshipId: ${friendshipId}`);
-                this.props.blockUser(friendUserId);
-                break;
+                        this.props.blockUser(friendUserId);
+                        break;
 
-            case UNFRIEND_INDEX:
-                // User chose to unfriend
-                this.props.updateFriendship('', friendshipId, 'deleteFriend', TAB_KEY, () => {
-                    console.log('Successfully delete friend with friendshipId: ', friendshipId);
-                    this.setState({ requested: false });
-                });
-                break;
-            default:
-                return;
+                    case UNFRIEND_INDEX:
+                        // User chose to unfriend
+                        this.props.updateFriendship('', friendshipId, 'deleteFriend', TAB_KEY, () => {
+                            console.log('Successfully delete friend with friendshipId: ', friendshipId);
+                            this.setState({ requested: false });
+                        });
+                        break;
+                    default:
+                        return;
+                }
+            });
+    }
+
+    handleOnOpenProfile = () => {
+        const { _id } = this.props.item;
+        if (_id) {
+            return this.props.openProfile(_id);
         }
-    });
-  }
-
-  handleOnOpenProfile = () => {
-    const { _id } = this.props.item;
-    if (_id) {
-      return this.props.openProfile(_id);
     }
-  }
 
-  renderProfileImage(item) {
-    return (
-        <ProfileImage
-          imageStyle={{ height: 40, width: 40, borderRadius: 5 }}
-          defaultImageStyle={{ height: 40, width: 37, borderRadius: 5, marginLeft: 1, marginRight: 1 }}
-          imageContainerStyle={{ marginTop: 5 }}
-          imageUrl={item && item.profile ? item.profile.image : undefined}
-          imageContainerStyle={styles.imageContainerStyle}
-          userId={item._id}
-        />
-    );
-  }
-
-  renderButton(item) {
-    return (
-        <DelayedButton 
-            onPress={() => this.handleUpdateFriendship(item)}
-            activeOpacity={0.6}
-            style={styles.buttonContainerStyle}
-        >   
-            <View style={styles.buttonTextContainerStyle}>
-                <Text style={{ fontSize: 11, color: '#868686' }}>Friend</Text>
-            </View>
-        </DelayedButton>
-    );
-  }
-
-  renderProfile(item) {
-    const { name, profile, headline } = item;
-    const detailText = headline || profile.occupation;
-    return (
-        <View style={{ flex: 1, marginLeft: 13 }}>
+    renderHeader(item) {
+        const { name, profile, headline } = item;
+        const detailText = headline || profile.occupation;
+        return (
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Name text={name} />
-                <UserBanner 
-                    user={item} 
-                    iconStyle={{ marginTop: 1, marginLeft: 7, height: 18, width: 15 }} 
+                <ProfileImage
+                    imageStyle={{ height: 40, width: 40, borderRadius: 20 }}
+                    defaultImageStyle={{ width: 20, height: 20, margin: 20 }}
+                    imageUrl={profile ? profile.image : undefined}
+                    imageContainerStyle={styles.imageContainerStyle}
+                    userId={item._id}
                 />
+                <Name text={name} textStyle={{
+                    fontSize: 15,
+                    fontFamily: GM_FONT_FAMILY_3,
+                    fontWeight: 'bold',
+                    color: '#4F4F4F',
+                    marginLeft: 7
+                }} />
+                <UserBanner
+                    user={item}
+                    iconStyle={{ marginLeft: 7, height: 18, width: 15 }}
+                />
+                <Text 
+                    style={styles.infoTextStyle}
+                    numberOfLines={1}
+                    ellipsizeMode='tail'
+                >
+                    {detailText}
+                </Text>
             </View>
-            
-            {/* 
-            // Disabled this detailText and replaced it with top goals and needs
-                <View style={{ flexWrap: 'wrap', marginTop: 4 }}>
-                    <Text 
-                        style={styles.infoTextStyle}
-                        numberOfLines={2}
-                        ellipsizeMode='tail'
-                    >
-                        {detailText}
-                    </Text>
-                </View> 
-            */}
-            {this.renderGoals(item)}
-        </View>
-    );
-  }
-
-  /**
-   * Render user top goals and needs
-   * @param {} item 
-   */
-  renderGoals(item) {
-    const { topGoals, topNeeds } = item;
-
-    let topGoalText = 'None shared';
-    if (topGoals !== null && topGoals !== undefined && topGoals.length !== 0) {
-        topGoalText = '';
-        topGoals.forEach((g, index) => {
-            if (index !== 0) {
-                topGoalText = `${topGoalText}, ${g}`; 
-            } else {
-                topGoalText = `${g}`; 
-            }
-        });
+        );
     }
 
-    let topNeedText = 'None shared';
-    if (topNeeds !== null && topNeeds !== undefined && topNeeds.length !== 0) {
-        topNeedText = '';
-        topNeeds.forEach((n, index) => {
-            if (index !== 0) {
-                topNeedText = `${topNeedText}, ${n}`; 
-            } else {
-                topNeedText = `${n}`; 
-            }
-        });
+    renderButtons(item) {
+        return (
+            <View style={styles.buttonsContainerStyle}>
+                <DelayedButton
+                    onPress={() => this.handleUpdateFriendship(item)}
+                    activeOpacity={0.6}
+                >
+                    <View style={{
+                        ...styles.buttonTextContainerStyle,
+                        backgroundColor: '#E0E0E0'
+                    }}>
+                        <Text style={styles.textStyle}>Delete</Text>
+                    </View>
+                </DelayedButton >
+                <DelayedButton
+                    onPress={() => this.handleUpdateFriendship(item)}
+                    activeOpacity={0.6}
+                >
+                    <View style={{
+                        ...styles.buttonTextContainerStyle,
+                        borderColor: '#EB5757',
+                        borderWidth: 1
+                    }}>
+                        <Text style={{ ...styles.textStyle, color: '#EB5757' }}>Block</Text>
+                    </View>
+                </DelayedButton>
+            </View>
+        );
     }
 
-    return (
-        <View style={styles.infoContainerStyle}>
-            <View style={{ flex: 1, marginRight: 6 }}>
-                <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginBottom: 2 }}>
-                    <Text style={styles.subTitleTextStyle}>Goals: </Text>
+    /**
+     * Render user top goals and needs
+     * @param {} item 
+     */
+    renderTopGoal(item) {
+        const { topGoals, topNeeds } = item;
+
+        let topGoalText = 'None shared';
+        if (topGoals && topGoals.length !== 0) topGoalText = topGoals[0];
+
+        return (
+            <View style={styles.goalContainerStyle}>
+                <Text numberOfLines={2} ellipsizeMode='tail' style={{ marginBottom: 2 }}>
+                    <Text style={styles.subTitleTextStyle}>Top Goal: </Text>
                     <Text style={styles.bodyTextStyle}>{topGoalText}</Text>
                 </Text>
-                <Text numberOfLines={1} ellipsizeMode='tail'>
-                    <Text style={styles.subTitleTextStyle}>Needs: </Text>
-                    <Text style={styles.bodyTextStyle}>{topNeedText}</Text>
-                </Text>
             </View>
-        </View>
-    );
-  }
+        );
+    }
 
-  render() {
-    const { item } = this.props;
-    if (!item) return null;
-    
-    // console.log(`${DEBUG_KEY}: item is: `, item);
-    return (
-        <DelayedButton 
-            style={[styles.containerStyle, styles.shadow]}
-            onPress={() => this.props.openProfile(item._id)}
-            activeOpacity={0.6}
-        >
-            {this.renderProfileImage(item)}
-            {this.renderProfile(item)}
-            <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: 35 }} />
-            {this.renderButton(item)}
-        </DelayedButton>
-    );
-  }
+    render() {
+        const { item } = this.props;
+        if (!item) return null;
+
+        // console.log(`${DEBUG_KEY}: item is: `, item);
+        return (
+            <DelayedButton
+                style={styles.containerStyle}
+                onPress={() => this.props.openProfile(item._id)}
+                activeOpacity={0.6}
+            >
+                {this.renderHeader(item)}
+                {this.renderTopGoal(item)}
+                {this.renderButtons(item)}
+            </DelayedButton>
+        );
+    }
 }
 
 /**
@@ -213,65 +193,62 @@ const getFriendUserId = (maybeFriendshipRef, userId) => {
     const { participants } = maybeFriendshipRef;
     let ret;
     participants.forEach((p) => {
-        if (p.users_id !== userId) {
-            ret = p.users_id;
-        }
+        if (p.users_id !== userId) ret = p.users_id;
     });
     return ret;
 };
 
 const styles = {
     containerStyle: {
-        flexDirection: 'row',
-        paddingLeft: 13,
-        paddingTop: 8,
-        paddingBottom: 8,
-        alignItems: 'center',
-        backgroundColor: 'white'
+        padding: 16,
+        backgroundColor: 'white',
+        borderWidth: 2,
+        borderRadius: 3,
+        borderColor: '#F2F2F2'
     },
     // Button styles
-    buttonContainerStyle: {
-        width: 90,
+    buttonsContainerStyle: {
+        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
     },
     buttonTextContainerStyle: {
-        paddingTop: 6,
-        paddingBottom: 6,
-        paddingLeft: 12,
-        paddingRight: 12,
-        borderRadius: 5, 
-        backgroundColor: '#f9f9f9', 
-        borderColor: '#dedede',
-        borderWidth: 0.5,
+        height: 30,
+        marginRight: 8,
+        paddingTop: 8,
+        paddingBottom: 8,
+        paddingLeft: 16,
+        paddingRight: 16,
+        borderRadius: 3,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    textStyle: {
+        fontSize: 12,
+        fontFamily: GM_FONT_FAMILY_2,
+        fontWeight: '500',
+        color: '#333333'
     },
     // ProfileImage
     imageContainerStyle: {
         borderWidth: 0.5,
-        padding: 1.5,
         borderColor: 'lightgray',
         alignItems: 'center',
-        borderRadius: 6,
+        borderRadius: 30,
         alignSelf: 'flex-start',
         backgroundColor: 'white'
     },
     infoTextStyle: {
-        color: '#9c9c9c',
-        fontSize: 11
-    },
-    shadow: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
+        color: '#9B9B9B',
+        fontSize: 11,
+        fontFamily: GM_FONT_FAMILY_3,
+        marginLeft: 7
     },
     // Top goals and need related styles
-    infoContainerStyle: {
+    goalContainerStyle: {
         flexDirection: 'row',
         flex: 1,
-        marginTop: 2
+        marginTop: 7,
+        marginBottom: 16
     },
     subTitleTextStyle: {
         color: '#17B3EC',
@@ -292,7 +269,7 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps, {
-  updateFriendship,
-  blockUser,
-  openProfile
+    updateFriendship,
+    blockUser,
+    openProfile
 })(FriendTabCardView);

@@ -160,17 +160,7 @@ class MeetTabV2 extends React.Component {
     }
 
     handleSeeAllRequests = () => {
-        // this.setState({
-        //     ...this.state,
-        //     seeAllRequests: false
-        // });
         Actions.requestTabView();
-        // setTimeout(() => {
-        //     this.setState({
-        //         ...this.state,
-        //         seeAllRequests: true
-        //     });
-        // }, 500);
     }
 
     handleInviteFriends = () => {
@@ -349,14 +339,6 @@ class MeetTabV2 extends React.Component {
                     iconStyle={{ tintColor: '#17B3EC', ...styles.arrowIconStyle, height: 12, width: 18 }}
                     iconContainerStyle={{ alignSelf: 'center', alignItems: 'center', marginLeft: 5 }}
                 />
-                {/* <View style={{ alignSelf: 'center', alignItems: 'center' }}>
-                    <Icon
-                        name='ios-arrow-round-forward'
-                        type='ionicon'
-                        color='#17B3EC'
-                        iconStyle={styles.arrowIconStyle}
-                    />
-                </View> */}
             </DelayedButton>
         );
     }
@@ -365,7 +347,7 @@ class MeetTabV2 extends React.Component {
         const { incomingRequests, outgoingRequests, friends, friendCount } = this.props;
         return (
             <View style={{ flex: 1, backgroundColor: 'white' }}>
-                <SearchBarHeader rightIcon='menu' />
+                <SearchBarHeader backButton />
                 <ScrollView
                     refreshControl={
                         <RefreshControl

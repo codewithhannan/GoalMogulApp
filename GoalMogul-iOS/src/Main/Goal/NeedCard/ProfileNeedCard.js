@@ -32,7 +32,7 @@ import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
-import { shadowStyle, GM_FONT_1, GM_FONT_FAMILY_1, GM_FONT_FAMILY_2 } from '../../../styles';
+import { DEFAULT_STYLE } from '../../../styles';
 
 class ProfileNeedCard extends React.Component {
 
@@ -42,20 +42,18 @@ class ProfileNeedCard extends React.Component {
 
     renderCardContent(item) {
         const { needs, owner } = item;
-        const needsComponent = needs
-            // .filter((need) => need.isCompleted === false)
-            .map((need, index) => {
-                return (
-                    <SectionCard
-                        key={index}
-                        item={need}
-                        goalRef={item}
-                        onPress={() => this.props.openGoalDetail(item)}
-                        isSelf={this.props.userId === owner._id}
-                        type='need'
-                    />
-                );
-            });
+        const needsComponent = needs.map((need, index) => {
+            return (
+                <SectionCard
+                    key={index}
+                    item={need}
+                    goalRef={item}
+                    onPress={() => this.props.openGoalDetail(item)}
+                    isSelf={this.props.userId === owner._id}
+                    type='need'
+                />
+            );
+        });
         return (
             <View>
                 {needsComponent}
@@ -104,12 +102,12 @@ class ProfileNeedCard extends React.Component {
                         isSelf={this.props.userId === owner._id}
                         caret={caret}
                         user={owner}
-                        textStyle={styles.headlineTextStyle}
+                        textStyle={DEFAULT_STYLE.titleText_2}
                     />
                     <Timestamp time={timeago().format(timeStamp)} />
                     <View style={{ flexDirection: 'row', marginTop: 10 }}>
                         <Text
-                            style={styles.textStyle}
+                            style={[ DEFAULT_STYLE.normalText_1, styles.textStyle]}
                             numberOfLines={3}
                             ellipsizeMode='tail'
                         >
@@ -135,7 +133,7 @@ class ProfileNeedCard extends React.Component {
                     </View>
                     {this.renderCardContent(item)}
                 </View>
-                <View style={shadowStyle}/>
+                <View style={DEFAULT_STYLE.shadow}/>
             </View>
         );
     }
@@ -148,24 +146,9 @@ const styles = {
         paddingRight: 15,
         paddingLeft: 15
     },
-    iconStyle: {
-        alignSelf: 'center',
-        fontSize: 20,
-        marginLeft: 5,
-        marginTop: 2
-    },
-    headlineTextStyle: {
-        fontSize: GM_FONT_1,
-        fontFamily: GM_FONT_FAMILY_1,
-        color: '#3B414B',
-        fontWeight: 'bold'
-    },
     textStyle: {
         flex: 1,
-        flexWrap: 'wrap',
-        color: '#3B414B',
-        fontSize: 13,
-        fontFamily: GM_FONT_FAMILY_2
+        flexWrap: 'wrap'
     }
 };
 

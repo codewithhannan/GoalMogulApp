@@ -30,7 +30,6 @@ import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 /* Asset */
 import Logo from '../../../asset/header/logo.png';
 import IconMenu from '../../../asset/header/menu.png';
-import IconMeet from '../../../asset/header/meet.png';
 import IconSearch from '../../../asset/header/search.png';
 import BackButton from '../../../asset/utils/back.png';
 import FriendsSettingIcon from '../../../asset/utils/friendsSettingIcon.png';
@@ -55,7 +54,7 @@ import { openMyTribeTab } from '../../../redux/modules/tribe/MyTribeTabActions';
 import { createReport } from '../../../redux/modules/report/ReportActions';
 
 // styles
-import { GM_BLUE, GM_BLUE_LIGHT_LIGHT } from '../../../styles';
+import { GM_BLUE, GM_BLUE_LIGHT_LIGHT, DEFAULT_STYLE } from '../../../styles';
 
 import {
     IPHONE_MODELS,
@@ -130,14 +129,16 @@ class SearchBarHeader extends Component {
     };
 
     renderLeftIcon() {
-        const height = this.props.backButton ? 23 : 38;
+        const { backButton } = this.props;
+        const height = backButton ? 23 : 38;
         return (
             <DelayedButton
                 activeOpacity={0.6}
-                onPress={this.props.backButton ? this.handleBackOnClick.bind(this) : ()=>{}}
+                onPress={backButton ? this.handleBackOnClick.bind(this) : ()=>{}}
+                style={{ flexDirection: 'row', alignItems: 'center' }}
             >
                 <Image
-                    source={this.props.backButton ? BackButton : Logo }
+                    source={backButton ? BackButton : Logo }
                     style={{ height, width: 38, tintColor }}
                 />
             </DelayedButton>
@@ -202,15 +203,6 @@ class SearchBarHeader extends Component {
                     </DelayedButton>
                     <TouchableOpacity
                         activeOpacity={0.6}
-                        onPress={() => {
-                            const componentKeyToOpen = componentKeyByTab(this.props.navigationTab, 'meet');
-                            Actions.push(componentKeyToOpen) }}
-                        style={{ ...styles.headerRightContaner }}
-                    >
-                        <Image style={{ height: 21, width: 21, tintColor: rightIconColor }} source={IconMeet} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        activeOpacity={0.6}
                         onPress={menuOnPress || this.handleMenuIconOnClick}
                         style={{ ...styles.headerRightContaner }}
                     >
@@ -231,7 +223,7 @@ class SearchBarHeader extends Component {
             const titleColor = tintColor;
             return (
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 20, color: titleColor }} >
+                    <Text style={{ ...DEFAULT_STYLE.subTitleText_1, color: titleColor }} >
                         {this.props.title}
                     </Text>
                 </View>
@@ -266,11 +258,6 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center'
     },
-    headerLeftImage: {
-        width: 32,
-        height: 32,
-        backgroundColor: 'white'
-    },
     headerRightContaner: {
         width: 38,
         height: 38,
@@ -279,25 +266,6 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: 8
-    },
-    searchButtonContainerStyle: {
-        height: 36,
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    searchPlaceHolderTextStyle: {
-        fontSize: 14,
-        alignSelf: 'center',
-        color: '#4ec9f3',
-        marginLeft: 5
-    },
-    shadow: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.4,
-        shadowRadius: 2,
-        backgroundColor: 'white'
     }
 };
 
