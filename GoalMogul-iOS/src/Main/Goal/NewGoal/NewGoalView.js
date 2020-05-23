@@ -36,7 +36,6 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 // Components
-// import DraggableFlatlist from '../Common/DraggableFlatlist';
 import ModalHeader from '../../Common/Header/ModalHeader';
 import Button from '../Button';
 import InputField from '../../Common/TextInput/InputField';
@@ -47,12 +46,12 @@ import EmptyResult from '../../Common/Text/EmptyResult';
 
 // assets
 import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
+import CalenderIcon from '../../../asset/utils/calendar_empty.png';
 import plus from '../../../asset/utils/plus.png';
 import cancel from '../../../asset/utils/cancel_no_background.png';
 import dropDown from '../../../asset/utils/dropDown.png';
 
 // Actions
-// import { } from '../../actions';
 import {
     validate,
     submitGoal,
@@ -67,7 +66,6 @@ import {
 
 // Utils
 import { arrayUnique, clearTags } from '../../../redux/middleware/utils';
-import { IMAGE_BASE_URL } from '../../../Utils/Constants';
 import { DEFAULT_STYLE } from '../../../styles';
 
 
@@ -515,7 +513,7 @@ class NewGoalView extends Component {
         return (
             <CopilotStep text={this.props.tutorialText[1]} order={1} name="create_goal_create_goal_modal_1">
                 <WalkableView>
-                    {this.renderRequiredTitleText('What are you trying to achieve?', 16)}
+                    <RequiredTitleText text='What are you trying to achieve?' style={{ marginBottom: 16 }}/>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text style={styles.subTitleTextStyle}>Your Goal</Text>
                         <Text style={DEFAULT_STYLE.smallText_2}>{title ? title.length : 0}/90</Text>
@@ -626,8 +624,6 @@ class NewGoalView extends Component {
         else if (this.props.priority <= 6) colorIndex = 1;
         else colorIndex = 2;
 
-        const titleText = this.renderRequiredTitleText('How important is your goal?', 12);
-
         const slider = (
             <Slider
                 value={this.props.priority}
@@ -645,7 +641,7 @@ class NewGoalView extends Component {
         return (
             <CopilotStep text={this.props.tutorialText[3]} order={3} name="create_goal_create_goal_modal_3">
                 <WalkableView style={{ ...styles.sectionMargin, justifyContent: 'flex-start', flex: 1 }}>
-                    {titleText}
+                    <RequiredTitleText text='How important is your goal?' style={{ marginBottom: 12 }} />
                     <Text style={styles.descriptionTextStyle}>Use is to set reletive priority of your Goal.</Text>
                     {slider}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -660,7 +656,6 @@ class NewGoalView extends Component {
 
     // Renderer for timeline
     renderTimeline = () => {
-        const titleText = this.renderRequiredTitleText('Timeline', 12);
         if (this.props.startTime === undefined) return;
 
         const newPicker = true;
@@ -759,26 +754,28 @@ class NewGoalView extends Component {
             </Modal>);
 
         const startTime = (
-            <Text style={{ ...DEFAULT_STYLE.subTitleText_1, margin: 12 }}>
+            <Text style={{ ...DEFAULT_STYLE.subTitleText_1, marginLeft: 12, marginRight: 12 }}>
                 {moment(this.props.startTime.date ? this.props.startTime.date : new Date()).format('ll')}
             </Text>
         );
 
         const endTime = (
-            <Text style={{ ...DEFAULT_STYLE.subTitleText_1, margin: 12 }}>
+            <Text style={{ ...DEFAULT_STYLE.subTitleText_1, marginLeft: 12, marginRight: 12 }}>
                 {moment(this.props.endTime.date ? this.props.endTime.date : new Date()).format('ll')}
             </Text>
         );
 
         const icon = (
             <View style={{
-                height: 40,
-                width: 34,
+                height: 40 * DEFAULT_STYLE.uiScale,
+                width: 34 * DEFAULT_STYLE.uiScale,
                 borderWidth: 1,
                 borderColor: '#DFE0E1',
-                backgroundColor: '#F5F7FA'
+                backgroundColor: '#F5F7FA',
+                alignItems: 'center',
+                justifyContent: 'center'
             }}>
-                <Image />
+                <Image resizeMode="contain" source={CalenderIcon} style={{ ...DEFAULT_STYLE.buttonIcon_1, tintColor: '#DADADA' }} />
             </View>
         );
 
@@ -803,13 +800,13 @@ class NewGoalView extends Component {
         return (
             <CopilotStep text={this.props.tutorialText[4]} order={4} name="create_goal_create_goal_modal_4">
                 <WalkableView style={{ ...styles.sectionMargin }}>
-                    {titleText}
+                    <RequiredTitleText text='Timeline' style={{ marginBottom: 12 }} />
                     <Text style={styles.descriptionTextStyle}>Give your best estimate.</Text>
                     <View style={{ marginTop: 8, flexDirection: 'row' }}>
                         <TouchableOpacity
                             activeOpacity={0.6}
                             style={{
-                                height: 40,
+                                height: 40 * DEFAULT_STYLE.uiScale,
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 ...styles.borderStyle
@@ -828,7 +825,7 @@ class NewGoalView extends Component {
                         <TouchableOpacity
                             activeOpacity={0.6}
                             style={{
-                                height: 40,
+                                height: 40 * DEFAULT_STYLE.uiScale,
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'flex-start',
@@ -969,16 +966,6 @@ class NewGoalView extends Component {
         return this.renderFieldArray('Needs (optional)', 'need', NEED_PLACE_HOLDER, fields, error);
     }
 
-    renderRequiredTitleText(text, marginBottom = 0) {
-        return (
-            <Text style={{ ...DEFAULT_STYLE.normalText_1, color: 'red', marginBottom: marginBottom }}>
-                *<Text style={styles.titleTextStyle}>
-                    {text}
-                </Text>
-            </Text>
-        );
-    }
-
     render() {
         const { user, initializeFromState } = this.props;
 
@@ -1017,6 +1004,17 @@ class NewGoalView extends Component {
     }
 }
 
+const RequiredTitleText = (props) => {
+    const { text, style } = props;
+    return (
+        <Text style={{ ...DEFAULT_STYLE.normalText_1, color: 'red', ...style }}>
+            *<Text style={styles.titleTextStyle}>
+                {text}
+            </Text>
+        </Text>
+    );
+}
+
 const validateTime = (start, end) => {
     if (!start || !end) return true;
     if (moment(start) > moment(end)) return false;
@@ -1026,7 +1024,7 @@ const validateTime = (start, end) => {
 const styles = {
     activityIndicatorStyle: {
         flex: 1,
-        height: 50,
+        height: 50 * DEFAULT_STYLE.uiScale,
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center'
@@ -1170,7 +1168,6 @@ export default connect(
 )(NewGoalView);
 
 const MenuFactory = (options, callback, triggerText, triggerContainerStyle, animationCallback) => {
-
     return (
         <Menu
             onSelect={value => callback(value)}
