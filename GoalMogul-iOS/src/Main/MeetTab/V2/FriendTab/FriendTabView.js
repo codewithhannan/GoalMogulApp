@@ -2,6 +2,7 @@
  * This is the central hub for current friends management
  */
 import _ from 'lodash';
+import { MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
 import { ActivityIndicator, FlatList, View, Text, Image } from 'react-native';
 import { connect } from 'react-redux';
@@ -10,7 +11,7 @@ import { MEET_REQUEST_LIMIT } from '../../../../reducers/MeetReducers';
 /* Actions */
 import { handleRefreshFriend, loadMoreRequest } from '../../../../redux/modules/meet/MeetActions';
 /* Styles */
-import { BACKGROUND_COLOR, GM_FONT_FAMILY_1, GM_FONT_2, GM_FONT_FAMILY_3, GM_BLUE } from '../../../../styles';
+import { BACKGROUND_COLOR, GM_FONT_FAMILY_1, GM_FONT_2, GM_FONT_FAMILY_3, GM_BLUE, FONT_FAMILY_1 } from '../../../../styles';
 import SearchBarHeader from '../../../Common/Header/SearchBarHeader';
 /* Components */
 import EmptyResult from '../../../Common/Text/EmptyResult';
@@ -19,6 +20,8 @@ import Icons from '../../../../asset/base64/Icons';
 import DelayedButton from '../../../Common/Button/DelayedButton';
 import { Actions } from 'react-native-router-flux';
 import { componentKeyByTab } from '../../../../redux/middleware/utils';
+import { SearchBar } from 'react-native-elements';
+import { SearchIcon } from '../../../../Utils/Icons';
 
 
 const KEY = 'friends';
@@ -27,6 +30,10 @@ const DEBUG_KEY = '[ UI FriendTabView ]';
 class FriendTabView extends React.Component {
     componentDidMount() {
         if (_.isEmpty(this.props.data)) this.props.handleRefreshFriend();
+    }
+
+    handleSearchUpdate = () => {
+
     }
 
     handleRefresh = () => {
@@ -67,8 +74,8 @@ class FriendTabView extends React.Component {
      */
     renderListHeader() {
         return (
-            <View style={{ padding: 16, backgroundColor: BACKGROUND_COLOR, alignItems: "center" }}>
-                <View style={{ flexDirection: "row", width: "100%" }}>
+            <View style={{ padding: 16, backgroundColor: BACKGROUND_COLOR }}>
+                <View style={{ flexDirection: "row" }}>
                     <Text style={{ fontFamily: GM_FONT_FAMILY_1, fontSize: 16, marginTop: 2 }}>
                         All Friends
                     </Text>
@@ -82,6 +89,34 @@ class FriendTabView extends React.Component {
                         </View>
                     </DelayedButton>
                 </View>
+                <SearchBar 
+                    ref={searchBar => this.searchBar = searchBar}
+                    platform="default"
+                    clearIcon={<MaterialIcons
+                        name="clear"
+                        color="#777"
+                        size={21}
+                    />}
+                    containerStyle={{
+                        backgroundColor: 'transparent',
+                        padding: 0,
+                        margin: 0,
+                        marginTop: 10,
+                        borderTopWidth: 0,
+                        borderBottomWidth: 0
+                    }}
+                    inputContainerStyle={{ backgroundColor: "white", borderRadius: 3, borderColor: '#E0E0E0', borderWidth: 1, minHeight: 40, borderBottomWidth: 1 }}
+                    inputStyle={{ fontSize: 16, fontFamily: FONT_FAMILY_1 }}
+                    placeholder="Search"
+                    onChangeText={this.handleSearchUpdate.bind(this)}
+                    onClear={this.handleSearchUpdate.bind(this)}
+                    searchIcon={<SearchIcon 
+                        iconContainerStyle={{ marginBottom: 3, marginTop: 1, marginLeft: 6 }} 
+                        iconStyle={{ tintColor: '#777', height: 15, width: 15 }}
+                        />}
+                    value={this.props.searchQuery}
+                    lightTheme={true}
+                />
             </View>
         )
     }
