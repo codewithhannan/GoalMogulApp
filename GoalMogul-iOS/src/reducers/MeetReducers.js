@@ -60,8 +60,8 @@ const INITIAL_STATE = {
     navigationState: {
       index: 0,
       routes: [
-        { key: 'incoming', title: 'Incoming' },
-        { key: 'outgoing', title: 'Outgoing' }
+        { key: 'incoming', title: 'Received' },
+        { key: 'outgoing', title: 'Sent' }
       ]
     },
     incoming: {

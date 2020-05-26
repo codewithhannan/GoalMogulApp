@@ -9,28 +9,12 @@ import { connect } from 'react-redux';
 import { handleRefresh } from '../../../../actions';
 import { handleRequestTabSwitchTab, loadMoreRequest } from '../../../../redux/modules/meet/MeetActions';
 // Styles
-import { APP_DEEP_BLUE, BACKGROUND_COLOR } from '../../../../styles';
+import { APP_DEEP_BLUE, BACKGROUND_COLOR, GM_BLUE } from '../../../../styles';
 // Components
 import SearchBarHeader from '../../../Common/Header/SearchBarHeader';
 import TabButtonGroup from '../../../Common/TabButtonGroup';
 import IncomingRequestTabView from './IncomingRequestTabView';
 import OutgoingRequestTabView from './OutgoingRequestTabView';
-
-
-
-
-
-
-const Tabs = [
-  {
-    name: 'Incoming',
-    key: 'incoming'
-  },
-  {
-    name: 'Outgoing',
-    key: 'outgoing'
-  }
-];
 
 class RequestTabView extends Component {
   handleIndexChange = index => {
@@ -44,29 +28,32 @@ class RequestTabView extends Component {
 
   renderHeader = props => {
     return (
-      <TabButtonGroup 
-        buttons={props} 
-        noBorder
-        buttonStyle={{
-          selected: {
-            backgroundColor: APP_DEEP_BLUE,
-            tintColor: 'white',
-            color: 'white',
-            fontWeight: '700'
-          },
-          unselected: {
-            backgroundColor: '#FCFCFC',
-            tintColor: '#616161',
-            color: '#616161',
-            fontWeight: '600'
-          }
-        }}
-      />
+      <View style={{ padding: 16, backgroundColor: "white" }}>
+        <TabButtonGroup 
+          buttons={props} 
+          noBorder
+          buttonStyle={{
+            selected: {
+              backgroundColor: GM_BLUE,
+              tintColor: 'white',
+              color: 'white',
+              fontWeight: '700'
+            },
+            unselected: {
+              backgroundColor: '#F2F2F2',
+              tintColor: '#616161',
+              color: '#616161',
+              fontWeight: '600'
+            }
+          }}
+          borderRadius={3}
+        />
+      </View>
     );
   };
 
   render() {
-    const modalTitle = 'Friend Requests';
+    const modalTitle = 'Invitations';
     return (
       <View style={styles.containerStyle}>
         <SearchBarHeader backButton title={modalTitle} />

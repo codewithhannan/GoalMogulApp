@@ -2,14 +2,12 @@ import React from 'react';
 import {
     View,
     Text,
-    Dimensions,
-    Image
+    Dimensions
 } from 'react-native';
 import DelayedButton from '../Common/Button/DelayedButton';
 import { BUTTON_STYLE, GM_FONT_SIZE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT, GM_BLUE } from '../../styles';
-import defaultProfilePic from '../../asset/utils/defaultUserProfile.png';
-import { UserBanner } from '../../actions';
-import Icons from '../../asset/base64/Icons';
+import UserCardHeader from './Common/UserCardHeader';
+import UserTopGoals from './Common/UserTopGoals';
 
 const { width } = Dimensions.get('window');
 
@@ -31,38 +29,6 @@ class PYMKCard extends React.Component {
                     {text}
                 </Text>
             </DelayedButton>
-        );
-    }
-    
-    renderUserInfo = (user) => {
-        const { profile, name } = user;
-        const numCommonGoals = 4;
-        return (
-            <View style={{ flexDirection: "row", width: "100%" }}>
-                <View style={styles.imageContainerStyle}>
-                    <Image source={profile.image || Icons.Account} style={styles.imageStyle} />
-                </View>
-                {/* <View style={[styles.imageContainerStyle, { backgroundColor: "lightgray" }]}/> */}
-                <View>
-                    {/** Name, badge and career */}
-                    <View style={{ flexDirection: "row", paddingTop: 5 }}>
-                        <Text style={{ fontSize: GM_FONT_SIZE.FONT_3, lineHeight: GM_FONT_LINE_HEIGHT.FONT_3_5, fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD, color: "#4F4F4F" }}>
-                            {name}
-                        </Text>
-                        <UserBanner user={user} iconStyle={{ height: 16, width: 14, marginBottom: 4 }} />
-                    </View>
-                    {/** Goal in common */}
-                    <View style={{ flexDirection: "row", alignItems: "center", marginTop: 3 }}>
-                        <View style={{ height: 14, width: 14, marginRight: 4 }}>
-                            <Image source={Icons.Connection} style={{ flex: 1, tintColor: "#777777" }} resizeMode="contain" resizeMethod="scale" />
-                        </View>
-                        <Text style={{ fontSize: GM_FONT_SIZE.FONT_1, fontFamily: GM_FONT_FAMILY.GOTHAM, color: "#555555", paddingTop: 1 }}>
-                            <Text style={{ fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD }}>{`${numCommonGoals} `}</Text>goals in common
-                        </Text>
-                        
-                    </View>
-                </View>
-            </View>
         );
     }
 
@@ -106,10 +72,8 @@ class PYMKCard extends React.Component {
         }
         return (
             <View style={[styles.containerStyle, { padding: 20 }]}>
-                {this.renderUserInfo(user)}
-                {this.renderSeparator()}
-                {this.renderTopGoal(user)}
-                {this.renderSeparator()}
+                <UserCardHeader user={user} />
+                <UserTopGoals user={user} />
                 {this.renderButton()}
             </View>
         )

@@ -8,7 +8,8 @@ import React from 'react';
 import {
     View,
     Text,
-    ActionSheetIOS
+    ActionSheetIOS,
+    Image
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -27,7 +28,9 @@ import {
     openProfile,
     UserBanner
 } from '../../../../actions';
-import { GM_FONT_FAMILY_3, GM_FONT_FAMILY_2 } from '../../../../styles';
+import { GM_FONT_FAMILY_3, GM_FONT_FAMILY_2, FONT_FAMILY_3, FONT_FAMILY_1, DEFAULT_STYLE, GM_BLUE } from '../../../../styles';
+import UserCardHeader from '../../Common/UserCardHeader';
+import UserTopGoals from '../../Common/UserTopGoals';
 
 const FRIENDSHIP_BUTTONS = ['Block', 'Unfriend', 'Cancel'];
 const BLOCK_INDEX = 0;
@@ -83,83 +86,19 @@ class FriendTabCardView extends React.PureComponent {
         }
     }
 
-    renderHeader(item) {
-        const { name, profile, headline } = item;
-        const detailText = headline || profile.occupation;
-        return (
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <ProfileImage
-                    imageStyle={{ height: 40, width: 40, borderRadius: 20 }}
-                    defaultImageStyle={{ width: 20, height: 20, margin: 20 }}
-                    imageUrl={profile ? profile.image : undefined}
-                    imageContainerStyle={styles.imageContainerStyle}
-                    userId={item._id}
-                />
-                <Name text={name} textStyle={{
-                    fontSize: 15,
-                    fontFamily: GM_FONT_FAMILY_3,
-                    fontWeight: 'bold',
-                    color: '#4F4F4F',
-                    marginLeft: 7
-                }} />
-                <UserBanner
-                    user={item}
-                    iconStyle={{ marginLeft: 7, height: 18, width: 15 }}
-                />
-                <Text 
-                    style={styles.infoTextStyle}
-                    numberOfLines={1}
-                    ellipsizeMode='tail'
-                >
-                    {detailText}
-                </Text>
-            </View>
-        );
-    }
-
     renderButtons(item) {
         return (
             <View style={styles.buttonsContainerStyle}>
-                <DelayedButton
-                    onPress={() => this.handleUpdateFriendship(item)}
-                    activeOpacity={0.6}
-                >
+                <DelayedButton onPress={() => this.handleUpdateFriendship(item)} activeOpacity={0.6}>
                     <View style={[styles.buttonTextContainerStyle, { backgroundColor: '#E0E0E0' }]}>
-                        <Text style={styles.textStyle}>Delete</Text>
+                        <Text style={[DEFAULT_STYLE.buttonText_2]}>Delete</Text>
                     </View>
                 </DelayedButton >
-                <DelayedButton
-                    onPress={() => this.handleUpdateFriendship(item)}
-                    activeOpacity={0.6}
-                >
-                    <View style={{
-                        ...styles.buttonTextContainerStyle,
-                        borderColor: '#EB5757',
-                        borderWidth: 1
-                    }}>
-                        <Text style={{ ...styles.textStyle, color: '#EB5757' }}>Block</Text>
+                <DelayedButton onPress={() => this.handleUpdateFriendship(item)} activeOpacity={0.6}>
+                    <View style={[styles.buttonTextContainerStyle, { paddingTop: 7, paddingBottom: 7, borderColor: '#EB5757', borderWidth: 1 }]}>
+                        <Text style={[DEFAULT_STYLE.buttonText_2, { color: "#EB5757" }]}>Block</Text>
                     </View>
                 </DelayedButton>
-            </View>
-        );
-    }
-
-    /**
-     * Render user top goals and needs
-     * @param {} item 
-     */
-    renderTopGoal(item) {
-        const { topGoals, topNeeds } = item;
-
-        let topGoalText = 'None shared';
-        if (topGoals && topGoals.length !== 0) topGoalText = topGoals[0];
-
-        return (
-            <View style={styles.goalContainerStyle}>
-                <Text numberOfLines={2} ellipsizeMode='tail' style={{ marginBottom: 2 }}>
-                    <Text style={styles.subTitleTextStyle}>Top Goal: </Text>
-                    <Text style={styles.bodyTextStyle}>{topGoalText}</Text>
-                </Text>
             </View>
         );
     }
@@ -175,8 +114,8 @@ class FriendTabCardView extends React.PureComponent {
                 onPress={() => this.props.openProfile(item._id)}
                 activeOpacity={0.6}
             >
-                {this.renderHeader(item)}
-                {this.renderTopGoal(item)}
+                <UserCardHeader user={item} />
+                <UserTopGoals user={item} />
                 {this.renderButtons(item)}
             </DelayedButton>
         );
@@ -210,53 +149,15 @@ const styles = {
         alignItems: 'center',
     },
     buttonTextContainerStyle: {
-        height: 30,
         marginRight: 8,
         paddingTop: 8,
         paddingBottom: 8,
-        paddingLeft: 16,
-        paddingRight: 16,
+        paddingLeft: 15,
+        paddingRight: 15,
         borderRadius: 3,
         alignItems: 'center',
         justifyContent: 'center'
-    },
-    textStyle: {
-        fontSize: 12,
-        fontFamily: GM_FONT_FAMILY_2,
-        fontWeight: '500',
-        color: '#333333'
-    },
-    // ProfileImage
-    imageContainerStyle: {
-        borderWidth: 0.5,
-        borderColor: 'lightgray',
-        alignItems: 'center',
-        borderRadius: 30,
-        alignSelf: 'flex-start',
-        backgroundColor: 'white'
-    },
-    infoTextStyle: {
-        color: '#9B9B9B',
-        fontSize: 11,
-        fontFamily: GM_FONT_FAMILY_3,
-        marginLeft: 7
-    },
-    // Top goals and need related styles
-    goalContainerStyle: {
-        flexDirection: 'row',
-        flex: 1,
-        marginTop: 7,
-        marginBottom: 16
-    },
-    subTitleTextStyle: {
-        color: '#17B3EC',
-        fontSize: 12,
-        fontWeight: '600'
-    },
-    bodyTextStyle: {
-        fontSize: 12,
-        color: '#9B9B9B'
-    },
+    }
 };
 
 const mapStateToProps = state => {

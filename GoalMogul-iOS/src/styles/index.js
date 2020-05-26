@@ -249,7 +249,13 @@ export const DEFAULT_STYLE = {
     buttonText_1: {
         fontFamily: FONT_FAMILY_1,
         fontSize: 14 * UI_SCALE,
-        fontWeight: '400',
+        fontWeight: '500',
+        color: TEXT_COLOR_1
+    },
+    buttonText_2: {
+        fontFamily: FONT_FAMILY_1,
+        fontSize: 12 * UI_SCALE,
+        fontWeight: '500',
         color: TEXT_COLOR_1
     },
     buttonIcon_1: {

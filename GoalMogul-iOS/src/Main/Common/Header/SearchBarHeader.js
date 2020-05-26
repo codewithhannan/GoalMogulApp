@@ -223,7 +223,7 @@ class SearchBarHeader extends Component {
             const titleColor = tintColor;
             return (
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ ...DEFAULT_STYLE.subTitleText_1, color: titleColor }} >
+                    <Text style={{ ...DEFAULT_STYLE.titleText_1, color: titleColor }} >
                         {this.props.title}
                     </Text>
                 </View>

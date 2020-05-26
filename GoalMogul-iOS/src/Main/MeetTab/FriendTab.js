@@ -8,6 +8,7 @@ import DelayedButton from '../Common/Button/DelayedButton';
 import Icons from '../../asset/base64/Icons';
 import { BUTTON_STYLE, GM_FONT_SIZE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT } from '../../styles';
 import PYMKCard from './PYMKCard';
+import { handleRefreshFriend } from '../../redux/modules/meet/MeetActions';
 
 /**
  * Friend tab page for GM main tabs
@@ -21,6 +22,11 @@ import PYMKCard from './PYMKCard';
  * }
  */
 class FriendTab extends React.Component {
+
+    componentDidMount() {
+        // Refresh user friends
+        this.props.handleRefreshFriend()
+    }
 
     handleSeeAllFriends = () => {
         Actions.friendTabView();
@@ -159,6 +165,6 @@ const mapStateToProps = (state) => {
 export default connect(
     mapStateToProps,
     {
-
+        handleRefreshFriend
     }
 )(FriendTab);
