@@ -33,14 +33,14 @@ class UserCardHeader extends React.PureComponent {
                 <View style={{ marginLeft: 7 }}>
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
                         <Name text={name} textStyle={{
-                            fontSize: 15,
+                            fontSize: 17,
                             fontFamily: FONT_FAMILY_1,
                             fontWeight: 'bold',
                             color: '#4F4F4F',
                         }} />
                         <UserBanner
                             user={item}
-                            iconStyle={{ marginLeft: 7, height: 18, width: 15 }}
+                            iconStyle={{ marginLeft: 5, height: 18, width: 15 }}
                         />
                         <Text 
                             style={styles.infoTextStyle}
@@ -92,7 +92,7 @@ const styles = {
         color: '#9B9B9B',
         fontSize: 11,
         fontFamily: FONT_FAMILY_1,
-        marginLeft: 7
+        marginLeft: 5
     },
 }
 

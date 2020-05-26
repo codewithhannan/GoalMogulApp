@@ -202,7 +202,7 @@ export const DEFAULT_STYLE = {
     },
     titleText_2: {
         fontFamily: FONT_FAMILY_1,
-        fontSize: 14 * UI_SCALE,
+        fontSize: 15 * UI_SCALE,
         fontWeight: 'bold',
         color: TEXT_COLOR_1
     },
@@ -248,7 +248,7 @@ export const DEFAULT_STYLE = {
     // Button styles
     buttonText_1: {
         fontFamily: FONT_FAMILY_1,
-        fontSize: 14 * UI_SCALE,
+        fontSize: 15 * UI_SCALE,
         fontWeight: '500',
         color: TEXT_COLOR_1
     },

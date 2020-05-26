@@ -192,7 +192,10 @@ const loadOneTab = (type, skip, limit, token, dispatch, callback, onError) => {
     //   });
 };
 
-// Refresh current tab based on selected id
+/**
+ * Refresh current tab based on selected id
+ * @param {String} key type of the meet to refresh for. See requestMap for defined routes.
+ */
 export const handleRefresh = (key) => (dispatch, getState) => {
     const { token } = getState().user;
     const { limit } = _.get(getState().meet, key);

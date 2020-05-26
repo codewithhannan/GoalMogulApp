@@ -1,14 +1,18 @@
 import React from 'react';
-import { View, FlatList, Text, Image } from 'react-native';
+import { View, FlatList, Text, Image, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { GM_CONTAINER_BACKGROUND, GM_BLUE } from '../../styles/basic/color';
 import SearchBarHeader from '../Common/Header/SearchBarHeader';
 import DelayedButton from '../Common/Button/DelayedButton';
 import Icons from '../../asset/base64/Icons';
-import { BUTTON_STYLE, GM_FONT_SIZE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT } from '../../styles';
+import { BUTTON_STYLE, GM_FONT_SIZE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT, DEFAULT_STYLE } from '../../styles';
 import PYMKCard from './PYMKCard';
-import { handleRefreshFriend } from '../../redux/modules/meet/MeetActions';
+import { handleRefreshFriend, handleRefreshRequests } from '../../redux/modules/meet/MeetActions';
+import { getIncomingUserFromFriendship } from '../../redux/modules/meet/selector';
+import RequestCard from './V2/RequestCard';
+import { componentKeyByTab } from '../../redux/middleware/utils';
+import { handleRefresh, meetOnLoadMore } from '../../actions';
 
 /**
  * Friend tab page for GM main tabs
@@ -25,7 +29,11 @@ class FriendTab extends React.Component {
 
     componentDidMount() {
         // Refresh user friends
-        this.props.handleRefreshFriend()
+        this.props.handleRefreshFriend();
+        // Refresh user friend requests for both incoming and outgoing
+        this.props.handleRefreshRequests();
+        // Refresh recommended users
+        this.props.handleRefresh("suggested");
     }
 
     handleSeeAllFriends = () => {
@@ -33,7 +41,8 @@ class FriendTab extends React.Component {
     }
 
     handleSeeAllRequests = () => {
-        Actions.requestTabView();
+        const componentKeyToOpen = componentKeyByTab(this.props.navigationTab, 'requestTabView');
+        Actions.push(componentKeyToOpen);
     }
 
     /** Render top card for inviting friends */
@@ -41,11 +50,12 @@ class FriendTab extends React.Component {
         return (
             <View style={{ padding: styles.padding, flexDirection: "row", flex: 1, backgroundColor: "white", marginBottom: 8 }}>
                 <View style={{ marginRight: 18, width: "56%" }}>
-                    <Text style={{ fontSize: GM_FONT_SIZE.FONT_3, lineHeight: GM_FONT_LINE_HEIGHT.FONT_4, fontFamily: GM_FONT_FAMILY.GOTHAM, marginBottom: styles.padding }}>
+                    {/* <Text style={{ fontSize: GM_FONT_SIZE.FONT_3, lineHeight: GM_FONT_LINE_HEIGHT.FONT_4, fontFamily: GM_FONT_FAMILY.GOTHAM, marginBottom: styles.padding }}> */}
+                    <Text style={[DEFAULT_STYLE.titleText_1, { marginBottom: styles.padding }]}>
                         Great friends help each other achieve so much more!
                     </Text>
                     <DelayedButton onPress={() => console.log("Invite friends")} style={BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle}>
-                        <Text style={BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT.textStyle}>Invite your Friends</Text>
+                        <Text style={[DEFAULT_STYLE.titleText_1, { color: "white" }]}>Invite your Friends</Text>
                     </DelayedButton>
                 </View>
                 <Image source={Icons.Delivery} style={{ width: 150 }}/>
@@ -54,8 +64,24 @@ class FriendTab extends React.Component {
     }
 
     /** Render friend request section */
-    renderRequestCard = ({ item, index }) => {
-        return null;
+    renderRequestSection = () => {
+        const { width } = Dimensions.get("window");
+        const { incomingRequests } = this.props;
+        const requestCount = incomingRequests.length;
+
+        return (
+            <View style={{ width: "100%", paddingBottom: styles.padding, paddingLeft: styles.padding, padingRight: styles.padding }}>
+                <View style={{ flexDirection: "row" }}>
+                    <RequestCard user={incomingRequests[0].user} />
+                    {requestCount < 2 ? null : <RequestCard user={incomingRequests[0].user} /> }
+                </View>
+                {requestCount <= 2 ? null : (
+                    <DelayedButton onPress={this.handleSeeAllRequests} style={{ backgroundColor: "#F2F2F2", borderRadius: 3, padding: 10 }}>
+                        <Text>Show all ({`${requestCount}`} Invites)</Text>
+                    </DelayedButton>
+                )}
+            </View>
+        );
     }
 
     renderRequestEmptyCard = () => {
@@ -71,40 +97,54 @@ class FriendTab extends React.Component {
 
     renderFriendRequests = () => {
         return (
-            <View style={{ width: "100%", backgroundColor: "white" }}>
+            <View style={{ width: "100%", backgroundColor: "white", marginBottom: 8 }}>
                 <View style={{ flexDirection: "row", alignItems: "center", padding: styles.padding }}>
-                    <Text style={{ fontSize: GM_FONT_SIZE.FONT_3, lineHeight: GM_FONT_LINE_HEIGHT.FONT_3_5, fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD }}>
+                    <Text style={[DEFAULT_STYLE.titleText_1]}>
                         Friend Requests
                     </Text>
                     <View style={{ flex: 1 }} />
-                    <DelayedButton onPress={() => this.handleSeeAllFriends()} style={{ flexDirection: "row" }}>
-                        <Text style={{ color: GM_BLUE, fontSize: GM_FONT_SIZE.FONT_2, lineHeight: GM_FONT_LINE_HEIGHT.FONT_3, fontFamily: GM_FONT_FAMILY.GOTHAM, textDecorationLine: "underline" }}>
+                    <DelayedButton onPress={() => this.handleSeeAllFriends()} style={{ flexDirection: "row", alignItems: "center" }} activeOpacity={0.6}>
+                        <Text style={[DEFAULT_STYLE.titleText_2, { color: GM_BLUE, textDecorationLine: "underline" }]}>
                             All My Friends
                         </Text>
-                        <Image />
+                        <View style={{ height: 8, width: 5, marginLeft: 9 }}>
+                            <Image source={Icons.ChevronLeft} style={{ height: 8, width: 5, tintColor: GM_BLUE, transform: [{ rotate: '180deg' }] }} resizeMode="cover" />
+                        </View>
                     </DelayedButton>
                 </View>
                 {
-                    !this.props.requests ? this.renderRequestEmptyCard() : null
+                    !this.props.incomingRequests || this.props.incomingRequests.length == 0 
+                    ? this.renderRequestEmptyCard() : this.renderRequestSection()
                 }
-                {/* <FlatList 
-                    data={this.props.requests}
-                    renderItem={this.renderRequestCard}
-                    ListEmptyComponent={this.renderRequestEmptyCard}
-                    horizontal
-                    contentContainerStyle={{ borderTopWidth: 1, borderBottomWidth: 1, borderColor: "#F2F2F2", width: "100%" }}
-                /> */}
             </View>
+        );
+    }
+
+    renderPYMKHeader = () => {
+        return (
+            <View>
+                <View style={{ padding: 16, alignItems: "flex-start", backgroundColor: "white" }}>
+                    <Text style={[DEFAULT_STYLE.titleText_1]}>People You May Know</Text>
+                </View>
+                {this.renderItemSeparator()}
+            </View>  
         );
     }
 
     renderListHeader = () => {
         return (
-            <View style={{ width: "100%", marginBottom: 8 }}>
+            <View style={{ width: "100%" }}>
                 {this.renderInviteFriendCard()}
                 {this.renderFriendRequests()}
+                {this.renderPYMKHeader()}
             </View>
         )
+    }
+
+    renderItemSeparator = () => {
+        return (
+            <View style={{ height: 1, backgroundColor: "#F2F2F2" }} />
+        );
     }
 
     /** Render people you may know card */
@@ -125,6 +165,9 @@ class FriendTab extends React.Component {
                     ListHeaderComponent={this.renderListHeader}
                     renderItem={this.renderPYMK}
                     contentContainerStyle={{ backgroundColor: GM_CONTAINER_BACKGROUND }}
+                    loading={this.props.loading}
+                    onEndReached={() => this.props.meetOnLoadMore("suggested")}
+                    ItemSeparatorComponent={this.renderItemSeparator}
                 />
             </View>
         );
@@ -157,14 +200,21 @@ const testData = [{
     topGoals: ["Run 100 miles within 1 day 24 hours 20 seconds 203 milliseconds so that this is a super long goal"]}]
 
 const mapStateToProps = (state) => {
+    const { suggested } = state.meet;
+    const { data, refreshing, loading } = suggested;
     return {
-
+        incomingRequests: getIncomingUserFromFriendship(state),
+        pymkData: data,
+        loading
     };
 }
 
 export default connect(
     mapStateToProps,
     {
-        handleRefreshFriend
+        handleRefreshFriend,
+        handleRefreshRequests,
+        handleRefresh,
+        meetOnLoadMore
     }
 )(FriendTab);
