@@ -10,11 +10,14 @@ import {
 import _ from 'lodash';
 
 // Assets
-import menu from '../../../asset/header/menu.png';
+import menu from '../../../asset/utils/drag_indicator.png';
+import { DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles';
+
+
+const { width } = Dimensions.get('window');
 const DEBUG_KEY = '[ UI InputField ]';
 
 class InputField extends Component {
-
     constructor(props) {
         super(props);
         this.updateRef = this.updateRef.bind(this, 'input');
@@ -142,15 +145,15 @@ class InputField extends Component {
                 <TouchableOpacity
                     onLongPress={move}
                     onPressOut={moveEnd}
-                    style={{ padding: 12, paddingRight: 6 }}
+                    style={styles.gestureHandlerContainer}
                 >
-                    <Image source={menu} style={{ height: 20, width: 22 }} />
+                    <Image source={menu} resizeMode="contain" style={{ ...DEFAULT_STYLE.buttonIcon_1, tintColor: '#AAA' }} />
                 </TouchableOpacity>
             ) : null;
 
         return (
             <View
-                style={{ ...styles.inputContainerStyle, ...inputContainerStyle }}
+                style={[ styles.inputContainerStyle, inputContainerStyle ]}
                 ref={v => { this.view = v; }}
             >
                 {gestureHandler}
@@ -167,16 +170,21 @@ class InputField extends Component {
                     onFocus={this.onFocus}
                     editable={editable}
                     placeholder={placeholder}
-                    style={style}
+                    style={{ backgroundColor: 'white', ...style }}
                     value={_.isEmpty(value) ? '' : value}
                     {...custom}
                 />
                 {iconSource ? <TouchableOpacity
                     activeOpacity={0.6}
-                    style={{ padding: 12, paddingLeft: 6, alignItems: 'flex-end', alignSelf: 'center' }}
+                    style={{
+                        backgroundColor: 'white',
+                        padding: 12,
+                        paddingLeft: 6,
+                        height: '100%'
+                    }}
                     onPress={this.onIconPress}
                 >
-                    <Image source={iconSource} style={{ ...iconStyle }} />
+                    <Image source={iconSource} style={iconStyle} />
                 </TouchableOpacity> : null}
             </View>
         );
@@ -188,7 +196,17 @@ const styles = {
         marginTop: 5,
         borderWidth: 1,
         borderRadius: 3,
-        borderColor: '#E0E0E0'
+        borderColor: '#DFE0E1',
+        backgroundColor: BACKGROUND_COLOR
+    },
+    gestureHandlerContainer: {
+        backgroundColor: '#F5F7FA',
+        borderRightWidth: 1,
+        borderColor: '#DFE0E1',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 70 * DEFAULT_STYLE.uiScale,
+        width: 35 * DEFAULT_STYLE.uiScale
     }
 };
 

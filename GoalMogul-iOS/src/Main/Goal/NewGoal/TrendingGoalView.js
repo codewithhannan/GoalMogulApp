@@ -14,7 +14,8 @@ import {
     MenuOptions,
     MenuOption,
     MenuTrigger,
-    renderers
+    renderers,
+    MenuProvider
   } from 'react-native-popup-menu';
 
 // Components
@@ -61,41 +62,46 @@ class TrendingGoalView extends React.PureComponent {
     render() {
         const { refreshing, loading, category } = this.props;
         return (
-            <View style={{ flex: 1, backgroundColor: '#f6f8fa' }}>
-                <FilterBar 
-                    handleOnMenuSelect={(val) => this.handleOnMenuSelect(val)} 
-                    category={category} 
-                />
-                <FlatList
-                    data={this.props.data}
-                    renderItem={this.renderItem}
-                    numColumns={1}
-                    keyExtractor={this.keyExtractor}
-                    refreshing={refreshing}
-                    onRefresh={this.handleOnRefresh}
-                    onEndReached={this.handleOnLoadMore}
-                    ListEmptyComponent={
-                        loading || refreshing ? null :
-                        <EmptyResult text={'No Trending'} textStyle={{ paddingTop: 150 }} />
-                    }
-                    onEndThreshold={0}
-                    ListFooterComponent={
-                        loading 
-                        ? (
-                            <View
-                                style={{ flex: 1, height: 50, width, justifyContent: 'center', alignItems: 'center' }}
-                            >
-                                <ActivityIndicator />
-                            </View>
-                        ) : null
-                    }
-                />
-            </View>
+            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                <View style={{ flex: 1, backgroundColor: '#f6f8fa' }}>
+                    <FilterBar 
+                        handleOnMenuSelect={(val) => this.handleOnMenuSelect(val)} 
+                        category={category} 
+                    />
+                    <FlatList
+                        data={this.props.data}
+                        renderItem={this.renderItem}
+                        numColumns={1}
+                        keyExtractor={this.keyExtractor}
+                        refreshing={refreshing}
+                        onRefresh={this.handleOnRefresh}
+                        onEndReached={this.handleOnLoadMore}
+                        ListEmptyComponent={
+                            loading || refreshing ? null :
+                            <EmptyResult text={'No Trending'} textStyle={{ paddingTop: 150 }} />
+                        }
+                        onEndThreshold={0}
+                        ListFooterComponent={
+                            loading 
+                            ? (
+                                <View
+                                    style={{ flex: 1, height: 50, width, justifyContent: 'center', alignItems: 'center' }}
+                                >
+                                    <ActivityIndicator />
+                                </View>
+                            ) : null
+                        }
+                    />
+                </View>
+            </MenuProvider>
         );
     }
 }
 
 const styles = {
+    backdrop: {
+        backgroundColor: 'transparent'
+    },
     containerStyle: {
         marginLeft: 5,
         marginRight: 5,

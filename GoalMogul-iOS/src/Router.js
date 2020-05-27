@@ -23,6 +23,7 @@ import Event from './Main/Event/Event';
 // Explore Tab
 import Explore from './Main/Explore/Explore';
 import CreateGoalModal from './Main/Goal/CreateGoalModal';
+import TrendingGoalView from './Main/Goal/NewGoal/TrendingGoalView';
 import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCardV3';
 // Home Tab
 import Home from './Main/Home/Home';
@@ -588,6 +589,11 @@ class RouterComponent extends Component {
                     <Scene
                         key="createGoalModal"
                         component={CreateGoalModal}
+                        hideNavBar
+                    />
+                    <Scene
+                        key="trendingGoalView"
+                        component={TrendingGoalView}
                         hideNavBar
                     />
                     <Scene

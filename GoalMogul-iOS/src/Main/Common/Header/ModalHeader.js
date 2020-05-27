@@ -165,9 +165,9 @@ const styles = {
         color: 'white'
     },
     titleTextIconStyle: {
-        borderRadius: 5,
-        height: 24,
-        width: 24,
+        ...DEFAULT_STYLE.buttonIcon_1,
+        tintColor: null,
+        borderRadius: 100,
         marginTop: 4,
         marginRight: 6,
         padding: 1,
