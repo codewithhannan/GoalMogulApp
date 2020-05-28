@@ -426,13 +426,14 @@ class GoalDetailSection extends React.PureComponent {
         {
           likeCount > 0 ? (
             <DelayedButton 
+              testID="button-open-like-list"
               style={styles.likeCountContainerStyle}
               onPress={() => this.setState({ ...this.state, showlikeListModal: true })}
               activeOpacity={0.6}
             >
               <Image source={LoveIcon} style={{ tintColor: '#f15860', height: 11, width: 12, marginRight: 4 }} />
               <Text style={{ ...styles.statsBaseTextStyle, color: '#f15860' }}>
-                <Text style={{ fontWeight: '700' }}>{likeCount}</Text> {likeCount > 1 ? 'people' : 'person'} liked this
+                <Text style={{ fontWeight: '700' }} testID="button-open-like-list-like-count">{likeCount}</Text> {likeCount > 1 ? 'people' : 'person'} liked this
               </Text>
             </DelayedButton>
           ) : 
@@ -445,6 +446,7 @@ class GoalDetailSection extends React.PureComponent {
         }
         {shareCount > 0 && (
           <DelayedButton 
+              testID="button-open-share-list"
               style={{ padding: 5, marginRight: 4 }}
               onPress={() => this.setState({ ...this.state, showShareListModal: true })}
               activeOpacity={0.6}
@@ -488,6 +490,7 @@ class GoalDetailSection extends React.PureComponent {
     return (
       <ActionButtonGroup>
         <ActionButton
+          testID="like-button"
           iconSource={LoveIcon}
           // count={likeCount}
           count='Like'
@@ -541,7 +544,8 @@ class GoalDetailSection extends React.PureComponent {
 
     return (
       <View onLayout={this.handleOnLayout} style={{ paddingHorizontal: 15 }}>
-        <LikeListModal 
+        <LikeListModal
+          testID="like-list-modal"
           isVisible={this.state.showlikeListModal} 
           closeModal={() => {
             this.setState({
@@ -553,6 +557,7 @@ class GoalDetailSection extends React.PureComponent {
           parentType='Goal'
         />
         <ShareListModal
+          testID="share-list-modal"
           isVisible={this.state.showShareListModal} 
           closeModal={() => {
             this.setState({

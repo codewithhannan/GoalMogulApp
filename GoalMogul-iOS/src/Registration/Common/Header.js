@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, Image, Text, Platform } from 'react-native';
 import { connect } from 'react-redux';
-import Constants from 'expo-constants';
 
 /* Asset */
 import HeaderImage from '../../asset/header/header-logo.png';
@@ -12,7 +11,7 @@ import { BackIcon } from '../../Utils/Icons';
 
 import { registrationBack, registrationLogin } from '../../actions';
 import DelayedButton from '../../Main/Common/Button/DelayedButton';
-import { IPHONE_MODELS } from '../../Utils/Constants';
+import { IPHONE_MODELS, DEVICE_MODEL } from '../../Utils/Constants';
 
 // const IMAGE_HEIGHT_SMALL = 60;
 // const IMAGE_HEIGHT = 80;
@@ -21,7 +20,7 @@ import { IPHONE_MODELS } from '../../Utils/Constants';
 
 
 const IS_SMALL_PHONE = Platform.OS === 'ios' &&
-  IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+  IPHONE_MODELS.includes(DEVICE_MODEL)
 
 class Header extends Component {
 

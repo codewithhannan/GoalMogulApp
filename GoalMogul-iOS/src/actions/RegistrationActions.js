@@ -72,6 +72,8 @@ export const registrationNextAddProfile = (value) => {
   // If there are missing fields then show red error message
   const { name, email, password, phone } = value;
 
+  // TODO: phone might not exist
+
   // const data = validateEmail(email) ?
   // {
   //   name, email, password, phoneNumber

@@ -1,13 +1,14 @@
 import _ from 'lodash';
 
-const initialState = {
+export const initialState = {
     scene: {},
     stack: [],
     state: {},
     tab: undefined
 };
 
-const routes = ['homeTab', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'];
+// main navigation routes for the application
+export const MAIN_NAVIGATION_ROUTES = ['homeTab', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'];
 
 export default (state = initialState, action = {}) => {
     switch (action.type) {
@@ -18,7 +19,7 @@ export default (state = initialState, action = {}) => {
 
             let route;
             if (routeName === 'mainTabs') route = 'homeTab';
-            if (!routes.some((r) => r === routeName)) {
+            if (!MAIN_NAVIGATION_ROUTES.some((r) => r === routeName)) {
                 return newState;
             }
             route = routeName;

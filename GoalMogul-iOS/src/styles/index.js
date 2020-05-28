@@ -1,6 +1,8 @@
 /**
  * This is a central hub that defines the global usage of certain color
  */
+import Constants from 'expo-constants';
+
 export const BACKGROUND_COLOR = 'white';
 export const APP_BLUE_BRIGHT = '#17B3EC';
 export const APP_BLUE = '#23B7E9';
@@ -21,11 +23,85 @@ export const GM_DOT_GRAY = "#E0E0E0";
  * 
  * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=1%3A626
  */
-export const GM_FONT_1 = 14;
-export const GM_FONT_2 = 16;
-export const GM_FONT_3 = 18;
-export const GM_FONT_3_5 = 20;
-export const GM_FONT_4 = 24;
+export const GM_FONT_SIZE = {
+  FONT_1: 14,
+  FONT_2: 16,
+  FONT_3: 18,
+  FONT_3_5: 20,
+  FONT_4: 24
+};
+
+export const GM_FONT_LINE_HEIGHT = {
+  FONT_1: 14,
+  FONT_2: 16,
+  FONT_3: 18,
+  FONT_3_5: 20,
+  FONT_4: 24
+};
+
+export const GM_FONT_FAMILY = {
+  GOTHAM_BOLD: "gotham-pro-bold",
+  GOTHAM: "gotham-pro"
+};
+
+// Button style
+export const BUTTON_STYLE = {
+  GM_BLUE_BG_WHITE_BOLD_TEXT: {
+    containerStyle: {
+      height: 45,
+      width: "100%",  
+      backgroundColor: GM_BLUE,
+      borderRadius: 3,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 5,
+    },
+    textStyle: {
+      fontSize: GM_FONT_SIZE.FONT_3,
+      fontWeight: "bold",
+      lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
+      color: "white",
+      fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD
+    }
+  },
+  GM_WHITE_BG_BLUE_TEXT: {
+    containerStyle: {
+      height: 45,
+      width: "100%",  
+      backgroundColor: "white",
+      borderRadius: 3,
+      alignItems: "center",
+      justifyContent: "center",
+      borderColor: "#BDBDBD",
+      borderWidth: 1,
+      borderRadius: 5,
+    },
+    textStyle: {
+      fontSize: GM_FONT_SIZE.FONT_2,
+      lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
+      color: GM_BLUE,
+      fontFamily: GM_FONT_FAMILY.GOTHAM,
+      fontWeight: "500"
+    }
+  }
+};
+
+// Text style
+export const TEXT_STYLE = {
+  onboardingTitleTextStyle: {
+    fontSize: GM_FONT_SIZE.FONT_4, lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
+    fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+    textAlign: "center"
+  },
+  // Paragraph text style in an
+  onboardingPharagraphTextStyle: {
+    fontSize: GM_FONT_SIZE.FONT_3,
+    lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
+    fontFamily: GM_FONT_FAMILY.GOTHAM,
+    fontWeight: "500",
+    textAlign: "center"
+  }
+};
 
 export const GM_FONT_FAMILY_1 = 'gotham-pro-bold';
 export const GM_FONT_FAMILY_2 = 'gotham-pro';
@@ -108,8 +184,6 @@ export const modalHeaderBadgeShadow = {
     shadowRadius: 5,
 };
 
-import Constants from 'expo-constants';
-
 const UI_SCALE = Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.3 : 1;
 export const TEXT_COLOR_1 = '#333';
 
@@ -128,7 +202,7 @@ export const DEFAULT_STYLE = {
     },
     titleText_2: {
         fontFamily: FONT_FAMILY_1,
-        fontSize: 14 * UI_SCALE,
+        fontSize: 15 * UI_SCALE,
         fontWeight: 'bold',
         color: TEXT_COLOR_1
     },
@@ -174,8 +248,14 @@ export const DEFAULT_STYLE = {
     // Button styles
     buttonText_1: {
         fontFamily: FONT_FAMILY_1,
-        fontSize: 14 * UI_SCALE,
-        fontWeight: '400',
+        fontSize: 15 * UI_SCALE,
+        fontWeight: '500',
+        color: TEXT_COLOR_1
+    },
+    buttonText_2: {
+        fontFamily: FONT_FAMILY_1,
+        fontSize: 12 * UI_SCALE,
+        fontWeight: '500',
         color: TEXT_COLOR_1
     },
     buttonIcon_1: {

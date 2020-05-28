@@ -68,7 +68,7 @@ import {
 
 const DEBUG_KEY = '[ Reducer Users ]';
 
-const INITIAL_DUMMY_USER = {
+export const INITIAL_DUMMY_USER = {
     name: '',
     profile: {
         image: undefined
@@ -80,7 +80,7 @@ const INITIAL_DUMMY_USER = {
  * Call getUserData(state, userId, '') will return the following data
  * Call getUserData(state, userId, 'user') will return the actual user object
  */
-const INITIAL_USER = {
+export const INITIAL_USER = {
     user: {
         
     },
@@ -105,13 +105,13 @@ const INITIAL_USER = {
     reference: []
 };
 
-const INITIAL_FRIENDSHIP = {
+export const INITIAL_FRIENDSHIP = {
     _id: undefined,
     initiator_id: undefined,
     status: undefined // one of [undefined, 'Invited', 'Accepted']
 };
 
-const INITIAL_MUTUAL_FRIENDS = {
+export const INITIAL_MUTUAL_FRIENDS = {
     data: [],
     skip: 0,
     limit: 7,
@@ -121,7 +121,7 @@ const INITIAL_MUTUAL_FRIENDS = {
     hasNextPage: undefined
 };
 
-const INITIAL_USER_PROFILE_DETAIL_PAGE = {
+export const INITIAL_USER_PROFILE_DETAIL_PAGE = {
     // uploading user profile changes
     uploading: false,
 };
@@ -201,7 +201,7 @@ export const INITIAL_USER_PAGE = {
     }
 };
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
 
 };
 

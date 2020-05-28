@@ -9,7 +9,6 @@ import {
 import { connect } from 'react-redux';
 import { SearchBar } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
-import Constants from 'expo-constants';
 import _ from 'lodash';
 
 // Component
@@ -25,7 +24,7 @@ import {
 
 // Constants
 import {
-  IPHONE_MODELS
+  IPHONE_MODELS, DEVICE_MODEL
 } from '../../Utils/Constants';
 
 const DEBUG_KEY = '[ Event Search ]';
@@ -81,7 +80,7 @@ class EventSearchOverlay extends Component {
 
     const marginTop = (
       Platform.OS === 'ios' &&
-      IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+      IPHONE_MODELS.includes(DEVICE_MODEL)
     ) ? 20 : 30;
 
     return (

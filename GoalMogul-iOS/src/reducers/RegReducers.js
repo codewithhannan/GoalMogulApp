@@ -29,7 +29,7 @@ import {
 import {
   USER_LOG_OUT
 } from './User';
-import { REGISTRATION_TEXT_CHANGE } from '../redux/modules/registration/RegistrationReducers';
+import { REGISTRATION_TEXT_CHANGE, REGISTRATION_USER_TARGETS, REGISTRATION_DEFAULT_TRIBES, REGISTRATION_TRIBE_FETCH, REGISTRATION_TRIBE_SELECT, REGISTRATION_COMMUNITY_GUIDELINE } from '../redux/modules/registration/RegistrationReducers';
 
 export function arrayUnique(array) {
   let a = array.concat();
@@ -66,6 +66,9 @@ const INITIAL_STATE = {
     },
   }, // country code for phone number
   phone: '',
+  userTargets: [...REGISTRATION_USER_TARGETS],
+  tribes: [...REGISTRATION_DEFAULT_TRIBES],
+  communityGuidelines: [...REGISTRATION_COMMUNITY_GUIDELINE],
   matchedContacts: {
     data: [],
     limit: 30,
@@ -93,6 +96,46 @@ export default (state = INITIAL_STATE, action) => {
 
       // Update the text field for a type
       newState = _.set(newState, `${type}`, value);
+      return newState;
+    }
+
+    case REGISTRATION_USER_TARGETS: {
+      const { title, value, extra } = action.payload;
+      let newState = _.cloneDeep(state);
+
+      let targets = _.get(newState, "userTargets");
+      targets.forEach((v) => {
+        if (v.title == title) {
+          v.selected = value;
+          v.extra = extra;
+        }
+        return v;
+      });
+      // Update the selection
+      newState = _.set(newState, "userTargets", targets);
+      return newState;
+    }
+
+    case REGISTRATION_TRIBE_FETCH: {
+      // status: [loading, error, done]
+      const { tribes, status } = action.payload;
+      let newState = _.cloneDeep(state);
+
+      newState = _.set(newState, "tribes", tribes);
+      return newState;
+    }
+
+    case REGISTRATION_TRIBE_SELECT: {
+      const { _id, selected } = action.payload;
+      let newState = _.cloneDeep(state);
+      let tribes = _.get(newState, "tribes");
+      tribes.forEach((t) => {
+        if (t._id == _id) {
+          t.selected = selected;
+        }
+      });
+
+      newState = _.set(newState, "tribes", tribes);
       return newState;
     }
 

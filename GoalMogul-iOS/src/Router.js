@@ -34,6 +34,9 @@ import FriendInvitationView from './Main/MeetTab/V2/FriendInvitationView';
 import FriendTabView from './Main/MeetTab/V2/FriendTab/FriendTabView';
 import RequestTabView from './Main/MeetTab/V2/RequestTab/RequestTabView';
 import MyEvent from './Main/Menu/Event/MyEvent';
+import ContactInvitePage from './Main/MeetTab/Contacts/ContactInvitePage';
+// Friend tab
+// import MeetTab from './Main/MeetTab/FriendTab';
 // Menu
 import MyEventTab from './Main/Menu/Event/MyEventTab';
 import Menu from './Main/Menu/Menu';
@@ -79,7 +82,14 @@ import Contacts from './Registration/Contacts';
 import ContactSync from './Registration/ContactSync';
 import IntroForm from './Registration/IntroForm';
 /* Registration */
-import { RegistrationAccount } from './Main/Onboarding';
+// import RegistrationAccount from './Registration/Account';
+import RegistrationAccount from './Registration/RegistrationAccount';
+// import { RegistrationAccount, OnboardingIntroTransition, 
+//   OnboardingSelectionTarget, OnboardingTribeSelection, 
+//   OnboardingCommunity, OnboardingSyncContact, OnboardingWelcome,
+//   SyncContactInvite
+// } from './Main/Onboarding';
+// import CardStackStyleInterpolator from "react-navigation-stack/src/views/StackView/StackViewStyleInterpolator";
 /* Auth */
 import SplashScreen from './SplashScreen';
 import Tutorial from './Tutorial/Tutorial';
@@ -210,25 +220,22 @@ class RouterComponent extends Component {
                                 />
                             </Stack>
 
+                            {/** V1 implementation for registration process */}
                             <Stack key="registration" hideNavBar type={ActionConst.RESET}>
-                                <Scene
-                                    key="registrationProfile"
-                                    component={AddProfilePic}
-                                    initial
-                                />
-                                <Scene
-                                    key="registrationIntro"
-                                    component={IntroForm}
-                                />
-                                <Scene
-                                    key="registrationContact"
-                                    component={Contacts}
-                                />
-                                <Scene
-                                    key="registrationContactSync"
-                                    component={ContactSync}
-                                />
+                              <Scene key="registrationProfile" component={AddProfilePic} initial />
+                              <Scene key="registrationIntro" component={IntroForm} />
+                              <Scene key="registrationContact" component={Contacts} />
+                              <Scene key="registrationContactSync" component={ContactSync} />
                             </Stack>
+                            {/* <Stack key="registration" hideNavBar type={ActionConst.RESET} drawerLockMode='locked-closed' gesturesEnabled={false} panHandlers={null}>
+                                <Scene key="registration_transition" component={OnboardingIntroTransition} initial />
+                                <Scene key="registration_target_selection" component={OnboardingSelectionTarget} />
+                                <Scene key="registration_tribe_selection" component={OnboardingTribeSelection} />
+                                <Scene key="registration_community_guideline" component={OnboardingCommunity} />
+                                <Scene key="registration_contact_sync" component={OnboardingSyncContact} />
+                                <Scene key="registration_contact_invite" component={SyncContactInvite} />
+                                <Scene key="registration_welcome" component={OnboardingWelcome} />
+                            </Stack> */}
                             <Scene key="tutorial" component={Tutorial} hideNavBar />
                             <Drawer
                                 drawerType='push-screen'

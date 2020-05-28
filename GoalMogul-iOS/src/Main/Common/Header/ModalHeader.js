@@ -8,12 +8,14 @@ import {
     Platform,
     ActivityIndicator
 } from 'react-native';
-import Constants from 'expo-constants';
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 import { GM_BLUE, DEFAULT_STYLE } from '../../../styles';
 
-import { IPHONE_MODELS } from '../../../Utils/Constants';
+import {
+    IPHONE_MODELS,
+    DEVICE_MODEL
+} from '../../../Utils/Constants';
 
 import BackButton from '../../../asset/utils/back.png';
 import DelayedButton from '../Button/DelayedButton';
@@ -23,7 +25,7 @@ const WalkableView = walkthroughable(View);
 
 const paddingTop = (
     Platform.OS === 'ios' &&
-    IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+    IPHONE_MODELS.includes(DEVICE_MODEL)
 ) ? 40 : 55;
 
 const ModalHeader = (props) => {

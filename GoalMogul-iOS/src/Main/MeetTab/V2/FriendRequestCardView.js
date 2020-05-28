@@ -25,6 +25,11 @@ import {
 import {
     handleRefresh
 } from '../../../redux/modules/meet/MeetActions';
+import UserCardHeader from '../Common/UserCardHeader';
+import { DEFAULT_STYLE, GM_BLUE } from '../../../styles';
+import { SentryRequestBuilder } from '../../../monitoring/sentry';
+import { SENTRY_MESSAGE_LEVEL, SENTRY_MESSAGE_TYPE, SENTRY_TAGS, SENTRY_TAG_VALUE } from '../../../monitoring/sentry/Constants';
+import UserTopGoals from '../Common/UserTopGoals';
 
 // Assets
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
@@ -106,6 +111,27 @@ class FriendRequestCardView extends React.PureComponent {
         });
     }
 
+    handleWithdrawInvite = (item) => {
+        const { friendshipId } = item;
+        this.props.updateFriendship(
+            undefined,
+            friendshipId,
+            'deleteFriend',
+            TAB_KEY_OUTGOING,
+            () => {
+                this.setState({ requested: false });
+            }
+        );
+    }
+
+    handleAcceptFriendRequest = (userId, friendshipId) => {
+        this.props.updateFriendship(userId, friendshipId, 'acceptFriend', TAB_KEY_INCOMING, () => this.props.handleRefresh());
+    }
+
+    handleDeleteFriendRequest = (userId, friendshipId) => {
+        this.props.updateFriendship(userId, friendshipId, 'deleteFriend', TAB_KEY_INCOMING, () => this.props.handleRefresh());
+    }
+
     handleButtonOnPress = (item) => {
         if (item.type === 'incoming') {
             return this.onRespondClicked(item);
@@ -125,116 +151,78 @@ class FriendRequestCardView extends React.PureComponent {
         }
     }
 
-    renderProfileImage(item) {
-        const { user, type } = item;
-        if (!user || type === 'info') return null;
+    renderButton(item) {
+        if (!item.user || item.type === 'info') return null;
+        if (item.type === 'outgoing') {
+            return this.renderButtonOutgoing(item);
+        }
+
+        if (item.type === 'incoming') {
+            return this.renderButtonIncoming(item);
+        }
+        
+        console.warn(`${DEBUG_KEY}: undefined item type: `, item.type);
+        return null;
+    }
+
+    renderButtonOutgoing(item) {
         return (
-            <ProfileImage
-                imageStyle={{ height: 40, width: 40, borderRadius: 5 }}
-                defaultImageStyle={{ height: 40, width: 37, borderRadius: 5, marginLeft: 1, marginRight: 1 }}
-                imageContainerStyle={{ marginTop: 5 }}
-                imageUrl={user && user.profile ? user.profile.image : undefined}
-                imageContainerStyle={styles.imageContainerStyle}
-                userId={user._id}
-            />
+            <View style={{ flex: 1, flexDirection: "row" }}>
+                <DelayedButton onPress={() => this.handleWithdrawInvite(item)} activeOpacity={0.6} style={[styles.buttonTextContainerStyle, { backgroundColor: '#E0E0E0' }]}>
+                    <Text style={[DEFAULT_STYLE.buttonText_2]}>Withdraw</Text>
+                </DelayedButton>
+                <View style={{ flex: 1 }} />
+            </View>
         );
     }
 
-  renderButton(item) {
-    const buttonText = item.type === 'outgoing' ? 'Cancel' : 'Respond';
-    if (!item.user || item.type === 'info') return null;
-    return (
-        <DelayedButton 
-            onPress={() => this.handleButtonOnPress(item)}
-            activeOpacity={0.6}
-            style={styles.buttonContainerStyle}
-        >
-            <View style={styles.buttonTextContainerStyle}>
-                <Text style={{ fontSize: 11, color: '#868686' }}>{buttonText}</Text>
-            </View>
-        </DelayedButton>
-    );
-  }
-
-  renderProfile(item) {
-    const { user, type } = item;
-    if (!user || type === 'info') return null;
-    const { name, profile, headline } = user;
-    let detailText;
-    if (headline) {
-        detailText = headline;
-    } else if (profile && profile.occupation) {
-        detailText = profile.occupation;
-    }
-    // console.log(`${DEBUG_KEY}: profile is:`, profile);
-
-    return (
-        <View style={{ flex: 1, marginLeft: 13 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Name text={name} />
-                <UserBanner 
-                    user={item} 
-                    iconStyle={{ marginTop: 1, marginLeft: 7, height: 18, width: 15 }} 
-                />
-            </View>
-            <View style={{ flexWrap: 'wrap', marginTop: 4 }}>
-                <Text 
-                    style={styles.infoTextStyle}
-                    numberOfLines={2}
-                    ellipsizeMode='tail'
+    renderButtonIncoming(item) {
+        const { friendshipId, user } = item;
+        const userId = user._id;
+        return (
+            <View style={{ flex: 1, flexDirection: "row" }}>
+                <DelayedButton 
+                    onPress={() => this.handleAcceptFriendRequest(userId, friendshipId)} 
+                    activeOpacity={0.6} 
+                    style={[styles.buttonTextContainerStyle, { backgroundColor: GM_BLUE }]}
                 >
-                    {detailText}
-                </Text>
+                    <Text style={[DEFAULT_STYLE.buttonText_2, { color: "white" }]}>Accept</Text>
+                </DelayedButton>
+                <DelayedButton 
+                    onPress={() => this.handleDeleteFriendRequest(userId, friendshipId)} 
+                    activeOpacity={0.6} 
+                    style={[styles.buttonTextContainerStyle, { backgroundColor: '#E0E0E0' }]}
+                >
+                    <Text style={[DEFAULT_STYLE.buttonText_2]}>Delete</Text>
+                </DelayedButton>
+                <View style={{ flex: 1 }} />
             </View>
-            
-        </View>
-    );
-  }
+        );
+    }
 
-  // This is called when rendering No incoming friend request
-  renderInfoText(item) {
-      const { info } = item;
-    return (
-        <View style={{ marginLeft: 13, marginRight: 13 }}>
-            <Text style={{ fontSize: 15, paddingTop: 10, paddingBottom: 10, color: '#6d6d6d' }}>
-                {info}
-            </Text>
-        </View>
-    );
-  }
+    render() {
+        const { item } = this.props;
+        if (!item) return null;
 
-  render() {
-    const { item } = this.props;
-    if (!item) return null;
-
-    // console.log(`${DEBUG_KEY}: item is: `, item);
-    return (
-        <DelayedButton 
-            activeOpacity={0.6}
-            style={[styles.containerStyle, styles.shadow]}
-            onPress={this.handleOnOpenProfile}
-        >
-            {this.renderProfileImage(item)}
-            {this.renderProfile(item)}
-            {
-                item.type !== 'info'
-                    ? <View style={{ borderLeftWidth: 1, borderColor: '#efefef', height: 35 }} />
-                    : null
-            }
-            {this.renderButton(item)}
-            {this.renderInfoText(item)}
-        </DelayedButton>
-    );
-  }
+        // console.log(`${DEBUG_KEY}: item is: `, item);
+        return (
+            <DelayedButton 
+                activeOpacity={0.6}
+                style={[styles.containerStyle, styles.shadow]}
+                onPress={this.handleOnOpenProfile}
+            >
+                <UserCardHeader user={item.user} />
+                <UserTopGoals user={item.user} />
+                {this.renderButton(item)}
+            </DelayedButton>
+        );
+    }
 }
 
 const styles = {
     containerStyle: {
-        flexDirection: 'row',
-        paddingLeft: 13,
-        paddingTop: 8,
-        paddingBottom: 8,
-        alignItems: 'center',
+        flex: 1,
+        padding: 16,
         backgroundColor: 'white'
     },
     // Button styles
@@ -244,30 +232,14 @@ const styles = {
         justifyContent: 'center',
     },
     buttonTextContainerStyle: {
-        paddingTop: 6,
-        paddingBottom: 6,
-        paddingLeft: 12,
-        paddingRight: 12,
-        borderRadius: 5, 
-        backgroundColor: '#f9f9f9', 
-        borderColor: '#dedede',
-        borderWidth: 0.5,
+        marginRight: 8,
+        paddingTop: 8,
+        paddingBottom: 8,
+        paddingLeft: 15,
+        paddingRight: 15,
+        borderRadius: 3,
         alignItems: 'center',
-        justifyContent: 'center',
-    },
-    // ProfileImage
-    imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 1.5,
-        borderColor: 'lightgray',
-        alignItems: 'center',
-        borderRadius: 6,
-        alignSelf: 'flex-start',
-        backgroundColor: 'white'
-    },
-    infoTextStyle: {
-        color: '#9c9c9c',
-        fontSize: 11
+        justifyContent: 'center'
     },
     shadow: {
         shadowColor: '#000',

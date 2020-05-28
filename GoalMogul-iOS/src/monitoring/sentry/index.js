@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/react-native';
+import * as Sentry from 'sentry-expo';
 import Constants from 'expo-constants';
 import { SENTRY_MESSAGE_LEVEL, SENTRY_MESSAGE_TYPE } from './Constants';
 import getEnvVars from '../../../environment';

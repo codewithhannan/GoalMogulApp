@@ -1,0 +1,2033 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test page reference update Test a goal page is closed 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "2": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      2,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test page reference update Test goal is opened twice 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test page reference update Test goal is opened twice 2`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "2": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      2,
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal like 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "General": "test",
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "isCompleted": true,
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "maybeLikeRef": "like",
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "shareToGoalFeed": true,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal like undo 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "General": "test",
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "isCompleted": true,
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
+      "maybeLikeRef": "undefined",
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "shareToGoalFeed": true,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal loading error state change 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal loading state change 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": true,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal loading success for a new page 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal loading success for an opened page with updated goal 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "General": "test",
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal loading success for an unopened page 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal mark a need as complete 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "General": "test",
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "isCompleted": true,
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": true,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "shareToGoalFeed": true,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal mark a need as incomplete 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "General": "test",
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "isCompleted": true,
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "shareToGoalFeed": true,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal mark a step as complete 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "General": "test",
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "isCompleted": true,
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "shareToGoalFeed": true,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal mark a step as incomplete 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "General": "test",
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "isCompleted": true,
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "shareToGoalFeed": true,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal mark as complete 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "General": "test",
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "isCompleted": true,
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "shareToGoalFeed": true,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal share to goal feed success 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "General": "test",
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "shareToGoalFeed": true,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal unlike 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "General": "test",
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "isCompleted": true,
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 0,
+      "maybeLikeRef": "undefined",
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "shareToGoalFeed": true,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal unlike undo 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "General": "test",
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "isCompleted": true,
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "maybeLikeRef": "like",
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "shareToGoalFeed": true,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal update on an unopened page state change 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": true,
+    },
+    "goal": Object {
+      "General": "test",
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal update on done state change 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": false,
+    },
+    "goal": Object {
+      "General": "test",
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;
+
+exports[`Test specific goal update Test goal update state change 1`] = `
+Object {
+  "5b502211e500e3001afd1e20": Object {
+    "1": Object {
+      "loading": false,
+      "navigationStateV2": Object {
+        "focusRef": undefined,
+        "focusType": undefined,
+        "index": 0,
+        "routes": Array [
+          Object {
+            "key": "centralTab",
+            "title": "CentralTab",
+          },
+          Object {
+            "key": "focusTab",
+            "title": "FocusTab",
+          },
+        ],
+      },
+      "refreshing": false,
+      "updating": true,
+    },
+    "goal": Object {
+      "General": "test",
+      "__v": 0,
+      "_id": "5b502211e500e3001afd1e20",
+      "category": "General",
+      "created": "2018-07-19T05:30:57.531Z",
+      "details": Object {
+        "tags": Array [],
+        "text": "This is detail",
+      },
+      "feedInfo": Object {
+        "_id": "5b502211e500e3001afd1e18",
+        "publishDate": "2018-07-19T05:30:57.531Z",
+      },
+      "lastUpdated": "2018-07-19T05:30:57.531Z",
+      "likeCount": 1,
+      "needs": Array [
+        Object {
+          "_id": "need-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "introduction to someone from the Bill and Melinda Gates Foundation",
+          "isCompleted": false,
+          "order": 0,
+        },
+        Object {
+          "_id": "need-1",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Get in contact with Nuclear experts",
+          "isCompleted": false,
+          "order": 1,
+        },
+        Object {
+          "_id": "neeed-2",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "Legal & Safety experts who have worked with the United States",
+          "isCompleted": false,
+          "order": 2,
+        },
+      ],
+      "owner": Object {
+        "_id": "5b17781ebec96d001a409960",
+        "name": "jia zeng",
+        "profile": Object {
+          "elevatorPitch": "This is my elevatorPitch",
+          "occupation": "Software Engineer",
+          "pointsEarned": 10,
+          "views": 0,
+        },
+      },
+      "priority": 3,
+      "privacy": "friends",
+      "shareCount": 2,
+      "steps": Array [
+        Object {
+          "_id": "step-0",
+          "created": "2018-07-19T05:30:57.531Z",
+          "description": "This is my first step to complete the goal",
+          "isCompleted": false,
+          "order": 0,
+        },
+      ],
+      "title": "Establish a LMFBR near Westport, Connecticut by 2020",
+    },
+    "reference": Array [
+      1,
+    ],
+  },
+  "goal": Object {},
+  "reference": Array [],
+}
+`;

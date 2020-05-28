@@ -113,7 +113,6 @@ export const COMMENT_NEW_SELECT_IMAGE = 'comment_new_select_image';
 export const COMMENT_NEW_UPLOAD_PICTURE_SUCCESS = 'comment_new_upload_picture_success';
 
 export default (state = INITIAL_STATE, action) => {
-
     switch (action.type) {
         case GOAL_DETAIL_OPEN: {
             let newState = _.cloneDeep(state);
@@ -123,16 +122,6 @@ export default (state = INITIAL_STATE, action) => {
             newState = _.set(newState, `${path}`, { ...NEW_COMMENT_INITIAL_STATE });
             newState = _.set(newState, `${path}.parentType`, 'Goal');
             return _.set(newState, `${path}.parentRef`, goalId ? goalId : goal._id);
-        }
-
-        case SHARE_DETAIL_OPEN: {
-            let newState = _.cloneDeep(state);
-            const { tab, share, pageId, postId } = action.payload;
-            const page = pageId ? `${pageId}` : 'default';
-            const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
-            newState = _.set(newState, `${path}`, { ...NEW_COMMENT_INITIAL_STATE });
-            newState = _.set(newState, `${path}.parentType`, 'Post');
-            return _.set(newState, `${path}.parentRef`, postId);
         }
 
         case SHARE_DETAIL_OPEN: {

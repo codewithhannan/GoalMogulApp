@@ -1,0 +1,106 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test goal update actions should dispatch goal need update success with complete as true 1`] = `
+Array [
+  Object {
+    "payload": Object {
+      "goalId": "5b502211e500e3001afd1e20",
+      "isCompleted": undefined,
+      "pageId": 0,
+      "tab": "",
+      "type": "markNeedAsComplete",
+    },
+    "type": "goal_detail_update",
+  },
+  Object {
+    "payload": Object {
+      "goalId": "5b502211e500e3001afd1e20",
+      "isCompleted": undefined,
+      "pageId": 0,
+      "tab": "",
+      "type": "markNeedAsComplete",
+    },
+    "type": "goal_detail_update_done",
+  },
+  Object {
+    "payload": Object {
+      "goalId": "5b502211e500e3001afd1e20",
+      "id": 0,
+      "isCompleted": undefined,
+      "pageId": 0,
+      "tab": "",
+    },
+    "type": "goal_detail_mark_need_as_complete_success",
+  },
+]
+`;
+
+exports[`Test goal update actions should dispatch goal update success with complete as false 1`] = `
+Array [
+  Object {
+    "payload": Object {
+      "complete": false,
+      "goalId": 1,
+      "pageId": 1,
+      "tab": "",
+      "type": "markGoalAsComplete",
+    },
+    "type": "goal_detail_update",
+  },
+  Object {
+    "payload": Object {
+      "complete": false,
+      "goalId": 1,
+      "pageId": 1,
+      "tab": "",
+      "type": "markGoalAsComplete",
+    },
+    "type": "goal_detail_update_done",
+  },
+  Object {
+    "payload": Object {
+      "complete": false,
+      "data": undefined,
+      "goalId": 1,
+      "pageId": 1,
+      "tab": "",
+    },
+    "type": "goal_detail_mark_as_complete_success",
+  },
+]
+`;
+
+exports[`Test goal update actions should dispatch goal update success with complete as true 1`] = `
+Array [
+  Object {
+    "payload": Object {
+      "complete": true,
+      "goalId": 1,
+      "pageId": 1,
+      "tab": "",
+      "type": "markGoalAsComplete",
+    },
+    "type": "goal_detail_update",
+  },
+  Object {
+    "payload": Object {
+      "complete": true,
+      "goalId": 1,
+      "pageId": 1,
+      "tab": "",
+      "type": "markGoalAsComplete",
+    },
+    "type": "goal_detail_update_done",
+  },
+  Object {
+    "payload": Object {
+      "complete": true,
+      "data": undefined,
+      "goalId": 1,
+      "pageId": 1,
+      "tab": "",
+    },
+    "type": "goal_detail_mark_as_complete_success",
+  },
+]
+`;

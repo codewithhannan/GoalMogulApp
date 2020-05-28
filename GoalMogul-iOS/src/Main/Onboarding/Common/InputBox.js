@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import CountryPicker, { Flag } from 'react-native-country-picker-modal'
 import dropDown from '../../../asset/utils/dropDown.png';
-import { GM_FONT_1, GM_FONT_3 } from '../../../styles';
+import { GM_FONT_SIZE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT } from '../../../styles';
 import DelayedButton from '../../Common/Button/DelayedButton';
 
 /**
@@ -32,7 +32,8 @@ class InputBox extends React.Component {
         return (
             <DelayedButton style={{ flexDirection: "row" }} onPress={onOpen}>
                 <Flag countryCode={countryCode.cca2} flagSize={14} />
-                <Text style={{ fontSize: GM_FONT_3, lineHeight: 18 }}>{`${countryCode.cca2}`} +({`${callingCode}`})</Text>
+                <Text style={{ fontSize: GM_FONT_SIZE.FONT_3, lineHeight: GM_FONT_LINE_HEIGHT.FONT_3, fontFamily: GM_FONT_FAMILY.GOTHAM, paddingTop: 2 }}>{`${countryCode.cca2} `}</Text>
+                <Text style={{ fontSize: GM_FONT_SIZE.FONT_3, lineHeight: GM_FONT_LINE_HEIGHT.FONT_3, fontFamily: GM_FONT_FAMILY.GOTHAM, paddingTop: 1 }}>+({`${callingCode}`})</Text>
             </DelayedButton>
         );
     }
@@ -41,17 +42,17 @@ class InputBox extends React.Component {
         const { inputTitle } = this.props;
         if (this.props.optional) {
             return (
-                <Text style={{ fontSize: GM_FONT_1, lineHeight: 13 }}>
-                    <Text style={{ fontWeight: "bold" }}>{inputTitle}</Text>
+                <Text style={{ fontSize: GM_FONT_SIZE.FONT_1, lineHeight: GM_FONT_LINE_HEIGHT.FONT_1, fontFamily: GM_FONT_FAMILY.GOTHAM }}>
+                    <Text style={{ fontWeight: "bold", fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD }}>{inputTitle}</Text>
                     <Text>{" "}(Optional)</Text>
                 </Text>
             );
         }
         return (
             <View style={{ flexDirection: "row" }}>
-                <Text style={{ fontSize: GM_FONT_1, lineHeight: 13 }}>
+                <Text style={{ fontSize: GM_FONT_SIZE.FONT_1, lineHeight: GM_FONT_LINE_HEIGHT.FONT_1, fontFamily: GM_FONT_FAMILY.GOTHAM }}>
                     <Text style={{ color: "red" }}>*</Text>
-                    <Text style={{ fontWeight: "bold" }}>{inputTitle}</Text>
+                    <Text style={{ fontWeight: "bold", fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD }}>{inputTitle}</Text>
                 </Text>
             </View>
         );
@@ -151,14 +152,16 @@ const styles = {
     },
     textInputStyle: {
         width: "100%",
-        fontSize: GM_FONT_3,
-        lineHeight: 20,
+        fontSize: GM_FONT_SIZE.FONT_3,
+        fontFamily: GM_FONT_FAMILY.GOTHAM,
+        lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
         marginTop: 0
     },
     textInputStylePhone: {
         width: "60%",
-        fontSize: GM_FONT_3,
-        lineHeight: 20,
+        fontSize: GM_FONT_SIZE.FONT_3,
+        fontFamily: GM_FONT_FAMILY.GOTHAM,
+        lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
         marginTop: 0
     }
 };

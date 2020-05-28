@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import * as WebBrowser from 'expo-web-browser';
-import Constants from 'expo-constants';
 import { Actions } from 'react-native-router-flux';
 import R from 'ramda';
 
@@ -47,7 +46,8 @@ import Icons from '../../asset/base64/Icons';
 import {
     IPHONE_MODELS,
     BUG_REPORT_URL,
-    PRIVACY_POLICY_URL
+    PRIVACY_POLICY_URL,
+    DEVICE_MODEL
 } from '../../Utils/Constants';
 import { DEFAULT_STYLE } from '../../styles';
 
@@ -100,7 +100,7 @@ class Menu extends React.PureComponent {
     render() {
         const paddingTop = (
             Platform.OS === 'ios' &&
-            IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+            IPHONE_MODELS.includes(DEVICE_MODEL)
         ) ? 30 : 40;
 
         return (

@@ -128,11 +128,12 @@ const styles = {
     containerStyle: {
         display: 'flex',
         flexDirection: 'row',
-        borderWidth: 1,
         borderColor: '#E8E8E8',
         backgroundColor: 'white',
         justifyContent: 'space-around',
-        alignItems: 'center'
+        alignItems: 'center',
+        padding: 2 * DEFAULT_STYLE.uiScale,
+        height: 33 * DEFAULT_STYLE.uiScale
     }
 };
 

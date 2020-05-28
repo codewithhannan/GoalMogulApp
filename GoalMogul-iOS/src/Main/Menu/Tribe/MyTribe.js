@@ -1,4 +1,3 @@
-import Constants from 'expo-constants';
 import Fuse from 'fuse.js';
 import R from 'ramda';
 import React, { Component } from 'react';
@@ -24,7 +23,7 @@ import { getMyTribeMemberNavigationState, getMyTribeNavigationState, getMyTribeU
 // Styles
 import { APP_DEEP_BLUE } from '../../../styles';
 // Constants
-import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE, IMAGE_BASE_URL, IPHONE_MODELS } from '../../../Utils/Constants';
+import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE, IMAGE_BASE_URL, IPHONE_MODELS, DEVICE_MODEL } from '../../../Utils/Constants';
 import { DotIcon } from '../../../Utils/Icons';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
 import DelayedButton from '../../Common/Button/DelayedButton';
@@ -60,7 +59,7 @@ const TAG_SEARCH_OPTIONS = {
 };
 
 const SEARCHBAR_HEIGHT = Platform.OS === 'ios' &&
-      IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+      IPHONE_MODELS.includes(DEVICE_MODEL)
       ? 30 : 40;
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;

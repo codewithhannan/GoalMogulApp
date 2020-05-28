@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import Constants from 'expo-constants';
 
 /* asset */
 import cancel from '../../../asset/utils/cancel_no_background.png';
@@ -20,9 +19,9 @@ import goal from '../../../asset/header/home-logo.png';
 import {
   closeCreateOverlay
 } from '../../../redux/modules/home/mastermind/actions';
-import { IPHONE_MODELS_2 } from '../../../Utils/Constants';
+import { IPHONE_MODELS_2, DEVICE_MODEL } from '../../../Utils/Constants';
 
-const BUTTON_GROUP_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(Constants.platform.ios.model.toLowerCase()) ? 119 : 84;
+const BUTTON_GROUP_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(DEVICE_MODEL) ? 119 : 84;
 
 const DEBUG_KEY = '[ UI CreateGoalButtonOverlay ]';
 
