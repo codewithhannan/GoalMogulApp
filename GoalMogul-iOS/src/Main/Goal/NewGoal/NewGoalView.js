@@ -21,7 +21,6 @@ import {
     reduxForm,
     formValueSelector
 } from 'redux-form';
-import R from 'ramda';
 import moment from 'moment';
 import {
     Menu,
@@ -39,7 +38,6 @@ import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 import ModalHeader from '../../Common/Header/ModalHeader';
 import Button from '../Button';
 import InputField from '../../Common/TextInput/InputField';
-import ViewableSettingMenu from '../ViewableSettingMenu';
 import MentionsTextInput from '../Common/MentionsTextInput';
 import ProfileImage from '../../Common/ProfileImage';
 import EmptyResult from '../../Common/Text/EmptyResult';
@@ -50,6 +48,7 @@ import CalenderIcon from '../../../asset/utils/calendar_empty.png';
 import plus from '../../../asset/utils/plus.png';
 import cancel from '../../../asset/utils/cancel_no_background.png';
 import dropDown from '../../../asset/utils/dropDown.png';
+import arrowRight from '../../../asset/utils/arrow_right.png';
 
 // Actions
 import {
@@ -797,7 +796,7 @@ class NewGoalView extends Component {
                 <WalkableView style={{ ...styles.sectionMargin }}>
                     <FieldTitleText text='Timeline' required={true} style={{ marginBottom: 12 }} />
                     <Text style={styles.descriptionTextStyle}>Give your best estimate.</Text>
-                    <View style={{ marginTop: 8, flexDirection: 'row' }}>
+                    <View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
                         <TouchableOpacity
                             activeOpacity={0.6}
                             style={{
@@ -816,7 +815,7 @@ class NewGoalView extends Component {
                             {icon}
                             {startTime}
                         </TouchableOpacity>
-
+                        <Image style={{ margin: 8, ...DEFAULT_STYLE.normalIcon_1 }} source={arrowRight} />
                         <TouchableOpacity
                             activeOpacity={0.6}
                             style={{
@@ -824,7 +823,6 @@ class NewGoalView extends Component {
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'flex-start',
-                                marginLeft: 15,
                                 ...styles.borderStyle
                             }}
                             onPress={() =>
