@@ -19,6 +19,7 @@ import profilePeople from '../../asset/utils/profile_people.png';
 
 // Actions
 import { DEFAULT_STYLE } from '../../styles';
+import { PRIVACY_OPTIONS } from '../../Utils/Constants';
 
 
 const VIEWABLE_SETTING_MENU_OPTTIONS = ['Friends', 'Public', 'Private', 'Cancel'];
@@ -36,24 +37,15 @@ class ViewableSettingMenu extends Component {
     }
 
     handleOnClick = () => {
-        const viewableSettingSwitchCases = switchByButtonIndex([
-            [R.equals(0), () => {
-                // User choose Friends
-                console.log(`${DEBUG_KEY} User choose setting: Friends `);
-                this.props.callback('Friends');
-                // TODO: update reducer state
-            }],
-            [R.equals(1), () => {
-                // User choose Public
-                console.log(`${DEBUG_KEY} User choose setting: Public `);
-                this.props.callback('Public');
-            }],
-            [R.equals(2), () => {
-                // User choose Public
-                console.log(`${DEBUG_KEY} User choose setting: Self `);
-                this.props.callback('Private');
-            }]
-        ]);
+        const viewableSettingSwitchCases = switchByButtonIndex(
+            PRIVACY_OPTIONS.map((value, index) => {
+                return [R.equals(index), () => {
+                    console.log(`${DEBUG_KEY} User choose setting: ${value} `);
+                    this.props.callback(value);
+                    // TODO: update reducer state
+                }]
+            })
+        );
 
         const viewableSettingActionSheet = actionSheet(
             VIEWABLE_SETTING_MENU_OPTTIONS,

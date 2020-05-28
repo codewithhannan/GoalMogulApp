@@ -63,7 +63,7 @@ export const SORT_BY_OPTIONS = [
         value: 'priority'
     },
 ];
-      
+
 export const CATEGORY_OPTIONS = [
     {
         text: 'All',
@@ -111,6 +111,12 @@ export const CATEGORY_OPTIONS = [
     }
 ];
 
+export const PRIVACY_OPTIONS = [
+    'Friends',
+    'Public',
+    'Private'
+];
+
 /** Caret related constants */
 export const CARET_OPTION_NOTIFICATION_SUBSCRIBE = 'Follow';
 export const CARET_OPTION_NOTIFICATION_UNSUBSCRIBE = 'Unfollow';
@@ -145,10 +151,10 @@ export const EMPTY_GOAL = {
     title: '',
 };
 
-export const EMPTY_POST =  {
-	lastUpdated: '',
-	owner: {
-		_id: '',
+export const EMPTY_POST = {
+    lastUpdated: '',
+    owner: {
+        _id: '',
         name: '',
         profile: {
             elevatorPitch: '',
@@ -157,12 +163,12 @@ export const EMPTY_POST =  {
             pointsEarned: 0,
             views: 0,
         },
-	},
-	privacy: "public",
-	content: {
-		text: '',
-		tags: [],
-		links: []
-	},
-	postType: "General",
+    },
+    privacy: "public",
+    content: {
+        text: '',
+        tags: [],
+        links: []
+    },
+    postType: "General",
 };

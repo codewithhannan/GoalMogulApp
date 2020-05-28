@@ -67,6 +67,7 @@ import {
 // Utils
 import { arrayUnique, clearTags } from '../../../redux/middleware/utils';
 import { DEFAULT_STYLE, BACKGROUND_COLOR, GM_BLUE } from '../../../styles';
+import { PRIVACY_OPTIONS } from '../../../Utils/Constants';
 
 
 const { Popover } = renderers;
@@ -468,28 +469,46 @@ class NewGoalView extends Component {
      * @param {boolean} isEdit: initializeFromState to determine if this is editing a goal
      */
     renderPrivacyControl(isEdit) {
-        const callback = R.curry((value) => this.props.change('privacy', value));
-        const shareToMastermindCallback = R.curry((value) => this.props.change('shareToMastermind', value));
         return (
             <View style={styles.sectionMargin}>
-                <ViewableSettingMenu
-                    viewableSetting={this.props.privacy}
-                    callback={callback}
-                    isEdit={isEdit}
-                    shareToMastermind={this.props.shareToMastermind}
-                    shareToMastermindCallback={shareToMastermindCallback}
-                    tutorialOn={{
-                        shareToMastermind: {
-                            tutorialText: this.props.tutorialText[0],
-                            order: 0,
-                            name: 'create_goal_create_goal_modal_0'
+                <Menu rendererProps={{ anchorStyle: styles.anchorStyle }}
+                    renderer={renderers.ContextMenu}
+                >
+                    <Text style={styles.subTitleTextStyle}>Privacy</Text>
+                    <MenuTrigger customStyles={{ TriggerTouchableComponent: TouchableOpacity }}>
+                        <View style={{
+                            width: '100%',
+                            borderWidth: 1,
+                            borderColor: '#E0E0E0',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            marginTop: 5
+                        }}>
+                            <Text style={styles.standardInputStyle}>{this.props.privacy}</Text>
+                            <Image resizeMode="contain" style={styles.caretStyle} source={dropDown} />
+                        </View>
+                    </MenuTrigger>
+                    <MenuOptions customStyles={{
+                        optionsContainer: {
+                            width: width - 32
+                        },
+                        optionTouchable: {
+                            underlayColor: 'lightgray',
+                            activeOpacity: 10,
                         }
-                    }}
-                    containerStyle={{ flexDirection: 'column', justifyContent: 'flex-start' }}
-                    header="Privacy"
-                    headerStyle={styles.subTitleTextStyle}
-                    dropDownStyle={{ marginTop: 7 }}
-                />
+                    }}>
+                        {PRIVACY_OPTIONS.map((value) => {
+                            return <MenuOption onSelect={() => { this.props.change('privacy', value) }}>
+                                <View style={{
+                                    width: '100%'
+                                }}>
+                                    <Text style={styles.standardInputStyle}>{value}</Text>
+                                </View>
+                            </MenuOption>
+                        })}
+                    </MenuOptions>
+                </Menu>
             </View>
         );
     }
@@ -499,7 +518,7 @@ class NewGoalView extends Component {
         return (
             <CopilotStep text={this.props.tutorialText[1]} order={1} name="create_goal_create_goal_modal_1">
                 <WalkableView>
-                    <RequiredTitleText text='What are you trying to achieve?' style={{ marginBottom: 16 }}/>
+                    <FieldTitleText text='What are you trying to achieve?' required={true} style={{ marginBottom: 16 }}/>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text style={styles.subTitleTextStyle}>Your Goal</Text>
                         <Text style={DEFAULT_STYLE.smallText_2}>{title ? title.length : 0}/90</Text>
@@ -625,7 +644,7 @@ class NewGoalView extends Component {
         return (
             <CopilotStep text={this.props.tutorialText[3]} order={3} name="create_goal_create_goal_modal_3">
                 <WalkableView style={{ ...styles.sectionMargin, justifyContent: 'flex-start', flex: 1 }}>
-                    <RequiredTitleText text='How important is your goal?' style={{ marginBottom: 12 }} />
+                    <FieldTitleText text='How important is your goal?' required={true} style={{ marginBottom: 12 }} />
                     <Text style={styles.descriptionTextStyle}>Use is to set reletive priority of your Goal.</Text>
                     {slider}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -784,7 +803,7 @@ class NewGoalView extends Component {
         return (
             <CopilotStep text={this.props.tutorialText[4]} order={4} name="create_goal_create_goal_modal_4">
                 <WalkableView style={{ ...styles.sectionMargin }}>
-                    <RequiredTitleText text='Timeline' style={{ marginBottom: 12 }} />
+                    <FieldTitleText text='Timeline' required={true} style={{ marginBottom: 12 }} />
                     <Text style={styles.descriptionTextStyle}>Give your best estimate.</Text>
                     <View style={{ marginTop: 8, flexDirection: 'row' }}>
                         <TouchableOpacity
@@ -876,7 +895,7 @@ class NewGoalView extends Component {
         );
     }
 
-    renderFieldArray = (title, buttonText, placeholder, fields, error) => {
+    renderFieldArray = (title, buttonText, placeholder, required, fields, error) => {
         const onSubmitEditing = ({ nativeEvent }) => {
             const { text } = nativeEvent;
             if (text && text.trim() !== '') {
@@ -895,7 +914,7 @@ class NewGoalView extends Component {
 
         return (
             <View style={styles.sectionMargin}>
-                <RequiredTitleText text={title} style={{ marginBottom: 12 }} />
+                <FieldTitleText text={title} required={required} style={{ marginBottom: 12 }} />
                 {
                     fields.length > 0 ?
                     <DraggableFlatlist
@@ -950,6 +969,7 @@ class NewGoalView extends Component {
                             'Steps',
                             'Add a Step',
                             STEP_PLACE_HOLDER,
+                            true,
                             fields,
                             error
                         )
@@ -960,7 +980,7 @@ class NewGoalView extends Component {
     }
 
     renderNeeds = ({ fields, meta: { error, submitFailed } }) => {
-        return this.renderFieldArray('Needs', 'Add a Need', NEED_PLACE_HOLDER, fields, error);
+        return this.renderFieldArray('Needs', 'Add a Need', NEED_PLACE_HOLDER, false, fields, error);
     }
 
     render() {
@@ -998,13 +1018,13 @@ class NewGoalView extends Component {
     }
 }
 
-const RequiredTitleText = (props) => {
-    const { text, style } = props;
+const FieldTitleText = (props) => {
+    const { text, style, required } = props;
     return (
         <View style={{ flexDirection: 'row', ...style }}>
-            <Text style={{ ...styles.subTitleTextStyle, color: 'red', paddingRight: 0 }}>
+            {required && <Text style={{ ...styles.subTitleTextStyle, color: 'red', paddingRight: 0 }}>
                 *
-            </Text>
+            </Text>}
             <Text style={styles.titleTextStyle}>
                 {text}
             </Text>
@@ -1076,9 +1096,9 @@ const styles = {
         paddingLeft: 12
     },
     caretStyle: {
-        marginRight: 10,
-        height: 18,
-        width: 18
+        ...DEFAULT_STYLE.smallIcon_1,
+        marginRight: 12,
+        tintColor: '#333'
     },
     borderStyle: {
         borderRadius: 3,
@@ -1178,7 +1198,7 @@ const MenuFactory = (options, callback, triggerText, triggerContainerStyle, anim
                     >
                         {triggerText}
                     </Text>
-                    <Image style={styles.caretStyle} source={dropDown} />
+                    <Image resizeMode="contain" style={styles.caretStyle} source={dropDown} />
                 </View>
             </MenuTrigger>
             <MenuOptions customStyles={styles.menuOptionsStyles}>
