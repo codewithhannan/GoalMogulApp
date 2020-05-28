@@ -26,7 +26,7 @@ import CreateGoalModal from './Main/Goal/CreateGoalModal';
 import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCardV3';
 // Home Tab
 import Home from './Main/Home/Home';
-// import MeetTab from './Main/MeetTab/MeetTabV2';
+import MeetTab from './Main/MeetTab/MeetTabV2';
 import DiscoverTabView from './Main/MeetTab/V2/DiscoverTab/DiscoverTabView';
 import FriendInvitationView from './Main/MeetTab/V2/FriendInvitationView';
 // Meet
@@ -35,7 +35,7 @@ import RequestTabView from './Main/MeetTab/V2/RequestTab/RequestTabView';
 import MyEvent from './Main/Menu/Event/MyEvent';
 import ContactInvitePage from './Main/MeetTab/Contacts/ContactInvitePage';
 // Friend tab
-import MeetTab from './Main/MeetTab/FriendTab';
+// import MeetTab from './Main/MeetTab/FriendTab';
 // Menu
 import MyEventTab from './Main/Menu/Event/MyEventTab';
 import Menu from './Main/Menu/Menu';
@@ -82,12 +82,12 @@ import ContactSync from './Registration/ContactSync';
 import IntroForm from './Registration/IntroForm';
 /* Registration */
 // import RegistrationAccount from './Registration/Account';
-// import RegistrationAccount from './Registration/RegistrationAccount';
-import { RegistrationAccount, OnboardingIntroTransition, 
-  OnboardingSelectionTarget, OnboardingTribeSelection, 
-  OnboardingCommunity, OnboardingSyncContact, OnboardingWelcome,
-  SyncContactInvite
-} from './Main/Onboarding';
+import RegistrationAccount from './Registration/RegistrationAccount';
+// import { RegistrationAccount, OnboardingIntroTransition, 
+//   OnboardingSelectionTarget, OnboardingTribeSelection, 
+//   OnboardingCommunity, OnboardingSyncContact, OnboardingWelcome,
+//   SyncContactInvite
+// } from './Main/Onboarding';
 // import CardStackStyleInterpolator from "react-navigation-stack/src/views/StackView/StackViewStyleInterpolator";
 /* Auth */
 import SplashScreen from './SplashScreen';
@@ -215,19 +215,18 @@ class RouterComponent extends Component {
                                 <Scene key="login" component={LoginPage} />
                                 <Scene
                                     key="registrationAccount"
-                                    // component={RegistrationAccount}
-                                    component={MeetTab}
+                                    component={RegistrationAccount}
                                 />
                             </Stack>
 
                             {/** V1 implementation for registration process */}
-                            {/* <Stack key="registration" hideNavBar type={ActionConst.RESET}>
+                            <Stack key="registration" hideNavBar type={ActionConst.RESET}>
                               <Scene key="registrationProfile" component={AddProfilePic} initial />
                               <Scene key="registrationIntro" component={IntroForm} />
                               <Scene key="registrationContact" component={Contacts} />
                               <Scene key="registrationContactSync" component={ContactSync} />
-                            </Stack> */}
-                            <Stack key="registration" hideNavBar type={ActionConst.RESET} drawerLockMode='locked-closed' gesturesEnabled={false} panHandlers={null}>
+                            </Stack>
+                            {/* <Stack key="registration" hideNavBar type={ActionConst.RESET} drawerLockMode='locked-closed' gesturesEnabled={false} panHandlers={null}>
                                 <Scene key="registration_transition" component={OnboardingIntroTransition} initial />
                                 <Scene key="registration_target_selection" component={OnboardingSelectionTarget} />
                                 <Scene key="registration_tribe_selection" component={OnboardingTribeSelection} />
@@ -235,7 +234,7 @@ class RouterComponent extends Component {
                                 <Scene key="registration_contact_sync" component={OnboardingSyncContact} />
                                 <Scene key="registration_contact_invite" component={SyncContactInvite} />
                                 <Scene key="registration_welcome" component={OnboardingWelcome} />
-                            </Stack>
+                            </Stack> */}
                             <Scene key="tutorial" component={Tutorial} hideNavBar />
                             <Drawer
                                 drawerType='push-screen'

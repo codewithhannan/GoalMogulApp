@@ -55,7 +55,7 @@ class RequestTabView extends Component {
           }}
           borderRadius={3}
         />
-        <SearchBar 
+        {/* <SearchBar 
             ref={searchBar => this.searchBar = searchBar}
             platform="default"
             clearIcon={<MaterialIcons
@@ -82,7 +82,7 @@ class RequestTabView extends Component {
                 />}
             value={this.props.searchQuery}
             lightTheme={true}
-        />
+        /> */}
       </View>
     );
   };

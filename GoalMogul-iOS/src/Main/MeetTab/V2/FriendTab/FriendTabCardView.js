@@ -14,8 +14,6 @@ import {
 import { connect } from 'react-redux';
 
 // Components
-import Name from '../../../Common/Name';
-import ProfileImage from '../../../Common/ProfileImage';
 import DelayedButton from '../../../Common/Button/DelayedButton';
 
 /* Assets */
@@ -25,10 +23,9 @@ import DelayedButton from '../../../Common/Button/DelayedButton';
 import {
     updateFriendship,
     blockUser,
-    openProfile,
-    UserBanner
+    openProfile
 } from '../../../../actions';
-import { GM_FONT_FAMILY_3, GM_FONT_FAMILY_2, FONT_FAMILY_3, FONT_FAMILY_1, DEFAULT_STYLE, GM_BLUE } from '../../../../styles';
+import { DEFAULT_STYLE } from '../../../../styles';
 import UserCardHeader from '../../Common/UserCardHeader';
 import UserTopGoals from '../../Common/UserTopGoals';
 
@@ -45,6 +42,7 @@ class FriendTabCardView extends React.PureComponent {
         accepted: false
     }
 
+    // This is no longer used. Replaced by separate handler functions
     handleUpdateFriendship = (item) => {
         const { maybeFriendshipRef } = item;
 
@@ -79,6 +77,17 @@ class FriendTabCardView extends React.PureComponent {
         );
     }
 
+    handleBlockFriend = (friendUserId) => {
+        this.props.blockUser(friendUserId);
+    }
+
+    handleDeleteFriend = (friendshipId) => {
+        this.props.updateFriendship('', friendshipId, 'deleteFriend', TAB_KEY, () => {
+            console.log('Successfully delete friend with friendshipId: ', friendshipId);
+            this.setState({ requested: false });
+        });
+    }
+
     handleOnOpenProfile = () => {
         const { _id } = this.props.item;
         if (_id) {
@@ -87,14 +96,18 @@ class FriendTabCardView extends React.PureComponent {
     }
 
     renderButtons(item) {
+        const { maybeFriendshipRef } = item;
+
+        const friendUserId = getFriendUserId(maybeFriendshipRef, this.props.userId);
+        const friendshipId = maybeFriendshipRef._id;
         return (
             <View style={styles.buttonsContainerStyle}>
-                <DelayedButton onPress={() => this.handleUpdateFriendship(item)} activeOpacity={0.6}>
+                <DelayedButton onPress={() => this.handleDeleteFriend(friendshipId)} activeOpacity={0.6}>
                     <View style={[styles.buttonTextContainerStyle, { backgroundColor: '#E0E0E0' }]}>
                         <Text style={[DEFAULT_STYLE.buttonText_2]}>Delete</Text>
                     </View>
                 </DelayedButton >
-                <DelayedButton onPress={() => this.handleUpdateFriendship(item)} activeOpacity={0.6}>
+                <DelayedButton onPress={() => this.handleBlockFriend(friendUserId)} activeOpacity={0.6}>
                     <View style={[styles.buttonTextContainerStyle, { paddingTop: 7, paddingBottom: 7, borderColor: '#EB5757', borderWidth: 1 }]}>
                         <Text style={[DEFAULT_STYLE.buttonText_2, { color: "#EB5757" }]}>Block</Text>
                     </View>

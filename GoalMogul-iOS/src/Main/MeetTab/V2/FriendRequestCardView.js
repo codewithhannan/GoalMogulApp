@@ -26,7 +26,7 @@ import {
     handleRefresh
 } from '../../../redux/modules/meet/MeetActions';
 import UserCardHeader from '../Common/UserCardHeader';
-import { DEFAULT_STYLE } from '../../../styles';
+import { DEFAULT_STYLE, GM_BLUE } from '../../../styles';
 import { SentryRequestBuilder } from '../../../monitoring/sentry';
 import { SENTRY_MESSAGE_LEVEL, SENTRY_MESSAGE_TYPE, SENTRY_TAGS, SENTRY_TAG_VALUE } from '../../../monitoring/sentry/Constants';
 import UserTopGoals from '../Common/UserTopGoals';
@@ -111,6 +111,27 @@ class FriendRequestCardView extends React.PureComponent {
         });
     }
 
+    handleWithdrawInvite = (item) => {
+        const { friendshipId } = item;
+        this.props.updateFriendship(
+            undefined,
+            friendshipId,
+            'deleteFriend',
+            TAB_KEY_OUTGOING,
+            () => {
+                this.setState({ requested: false });
+            }
+        );
+    }
+
+    handleAcceptFriendRequest = (userId, friendshipId) => {
+        this.props.updateFriendship(userId, friendshipId, 'acceptFriend', TAB_KEY_INCOMING, () => this.props.handleRefresh());
+    }
+
+    handleDeleteFriendRequest = (userId, friendshipId) => {
+        this.props.updateFriendship(userId, friendshipId, 'deleteFriend', TAB_KEY_INCOMING, () => this.props.handleRefresh());
+    }
+
     handleButtonOnPress = (item) => {
         if (item.type === 'incoming') {
             return this.onRespondClicked(item);
@@ -133,36 +154,46 @@ class FriendRequestCardView extends React.PureComponent {
     renderButton(item) {
         if (!item.user || item.type === 'info') return null;
         if (item.type === 'outgoing') {
-            return this.renderButtonOutgoing();
+            return this.renderButtonOutgoing(item);
         }
 
         if (item.type === 'incoming') {
-            return this.renderButtonIncoming();
+            return this.renderButtonIncoming(item);
         }
         
         console.warn(`${DEBUG_KEY}: undefined item type: `, item.type);
         return null;
     }
 
-    renderButtonOutgoing() {
+    renderButtonOutgoing(item) {
         return (
             <View style={{ flex: 1, flexDirection: "row" }}>
-                <DelayedButton onPress={() => this.handleButtonOnPress(item)} activeOpacity={0.6} style={[styles.buttonTextContainerStyle, { backgroundColor: '#E0E0E0' }]}>
-                    <Text style={[DEFAULT_STYLE.buttonText_2]}>Delete</Text>
-                </DelayedButton>
-                <DelayedButton onPress={() => this.handleButtonOnPress(item)} activeOpacity={0.6} style={[styles.buttonTextContainerStyle, { paddingTop: 7, paddingBottom: 7, borderColor: '#EB5757', borderWidth: 1 }]}>
-                    <Text style={[DEFAULT_STYLE.buttonText_2, { color: "#EB5757" }]}>Block</Text>
+                <DelayedButton onPress={() => this.handleWithdrawInvite(item)} activeOpacity={0.6} style={[styles.buttonTextContainerStyle, { backgroundColor: '#E0E0E0' }]}>
+                    <Text style={[DEFAULT_STYLE.buttonText_2]}>Withdraw</Text>
                 </DelayedButton>
                 <View style={{ flex: 1 }} />
             </View>
         );
     }
 
-    renderButtonIncoming() {
+    renderButtonIncoming(item) {
+        const { friendshipId, user } = item;
+        const userId = user._id;
         return (
             <View style={{ flex: 1, flexDirection: "row" }}>
-                <DelayedButton onPress={() => this.handleButtonOnPress(item)} activeOpacity={0.6} style={[styles.buttonTextContainerStyle, { backgroundColor: '#E0E0E0' }]}>
-                    <Text style={[DEFAULT_STYLE.buttonText_2]}>Withdraw</Text>
+                <DelayedButton 
+                    onPress={() => this.handleAcceptFriendRequest(userId, friendshipId)} 
+                    activeOpacity={0.6} 
+                    style={[styles.buttonTextContainerStyle, { backgroundColor: GM_BLUE }]}
+                >
+                    <Text style={[DEFAULT_STYLE.buttonText_2, { color: "white" }]}>Accept</Text>
+                </DelayedButton>
+                <DelayedButton 
+                    onPress={() => this.handleDeleteFriendRequest(userId, friendshipId)} 
+                    activeOpacity={0.6} 
+                    style={[styles.buttonTextContainerStyle, { backgroundColor: '#E0E0E0' }]}
+                >
+                    <Text style={[DEFAULT_STYLE.buttonText_2]}>Delete</Text>
                 </DelayedButton>
                 <View style={{ flex: 1 }} />
             </View>

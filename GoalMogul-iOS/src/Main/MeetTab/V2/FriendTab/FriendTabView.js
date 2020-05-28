@@ -11,7 +11,7 @@ import { MEET_REQUEST_LIMIT } from '../../../../reducers/MeetReducers';
 /* Actions */
 import { handleRefreshFriend, loadMoreRequest } from '../../../../redux/modules/meet/MeetActions';
 /* Styles */
-import { BACKGROUND_COLOR, GM_FONT_FAMILY_1, GM_FONT_2, GM_FONT_FAMILY_3, GM_BLUE, FONT_FAMILY_1 } from '../../../../styles';
+import { BACKGROUND_COLOR, GM_FONT_FAMILY_1, GM_FONT_FAMILY_3, GM_BLUE, DEFAULT_STYLE, cardBoxShadow } from '../../../../styles';
 import SearchBarHeader from '../../../Common/Header/SearchBarHeader';
 /* Components */
 import EmptyResult from '../../../Common/Text/EmptyResult';
@@ -74,7 +74,7 @@ class FriendTabView extends React.Component {
      */
     renderListHeader() {
         return (
-            <View style={{ padding: 16, backgroundColor: BACKGROUND_COLOR }}>
+            <View style={[{ padding: 16, backgroundColor: BACKGROUND_COLOR, marginBottom: 8 }]}>
                 <View style={{ flexDirection: "row" }}>
                     <Text style={{ fontFamily: GM_FONT_FAMILY_1, fontSize: 16, marginTop: 2 }}>
                         All Friends
@@ -89,7 +89,7 @@ class FriendTabView extends React.Component {
                         </View>
                     </DelayedButton>
                 </View>
-                <SearchBar 
+                {/* <SearchBar 
                     ref={searchBar => this.searchBar = searchBar}
                     platform="default"
                     clearIcon={<MaterialIcons
@@ -116,7 +116,7 @@ class FriendTabView extends React.Component {
                         />}
                     value={this.props.searchQuery}
                     lightTheme={true}
-                />
+                /> */}
             </View>
         )
     }
