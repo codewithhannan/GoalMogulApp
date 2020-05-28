@@ -7,7 +7,7 @@ const Category = (props) => {
     return (
         <View style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
             <Text style={[ DEFAULT_STYLE.smallText_1, styles.containerStyle]} ellipsizeMode='tail' numberOfLines={1}>
-                in {props.text}
+                {props.text}
             </Text>
         </View>
     );
