@@ -324,6 +324,7 @@ class CreateGoalModal extends React.Component {
                         <ModalHeader
                             title={titleText}
                             actionText={actionText}
+                            back
                             onCancel={() => {
                                 if (this.props.onClose) this.props.onClose();
                                 Actions.pop();
@@ -339,7 +340,6 @@ class CreateGoalModal extends React.Component {
                             }}
                         />
                         <View style={{
-                            marginTop: 10,
                             padding: 24
                         }}>
                             <Text style={DEFAULT_STYLE.subTitleText_1}>Need some help forming your Goal?</Text>

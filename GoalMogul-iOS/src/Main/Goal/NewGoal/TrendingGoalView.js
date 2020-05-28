@@ -31,6 +31,9 @@ import {
 
 // Assets
 import dropDown from '../../../asset/utils/dropDown.png';
+import { BACKGROUND_COLOR } from '../../../styles';
+import ModalHeader from '../../Common/Header/ModalHeader';
+import { Actions } from 'react-native-router-flux';
 
 const DEBUG_KEY = '[ UI TrendingGOalView ]';
 const { Popover } = renderers;
@@ -63,7 +66,15 @@ class TrendingGoalView extends React.PureComponent {
         const { refreshing, loading, category } = this.props;
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                <View style={{ flex: 1, backgroundColor: '#f6f8fa' }}>
+                <ModalHeader
+                    title="Treading Goals"
+                    back
+                    onCancel={() => {
+                        if (this.props.onClose) this.props.onClose();
+                        Actions.pop();
+                    }}
+                />
+                <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
                     <FilterBar 
                         handleOnMenuSelect={(val) => this.handleOnMenuSelect(val)} 
                         category={category} 

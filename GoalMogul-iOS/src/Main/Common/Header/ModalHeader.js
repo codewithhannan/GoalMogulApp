@@ -47,7 +47,7 @@ const ModalHeader = (props) => {
         ? (
             <Image
                 source={BackButton}
-                style={{ height: 25, width: 25, tintColor: GM_BLUE, marginRight: 20, ...extraBackButtonStyle }}
+                style={{ height: 25, width: 25, tintColor: 'white', marginRight: 20, ...extraBackButtonStyle }}
             />
         )
         : (
@@ -114,24 +114,20 @@ const ModalHeader = (props) => {
             <View style={[styles.containerStyle, { paddingTop, ...extraContainerStyles }]}>
                 <TouchableOpacity
                     activeOpacity={0.6}
-                    style={{ alignItems: 'flex-start', flex: 1 }}
                     onPress={onCancel}
                 >
                     {leftComponent}
                 </TouchableOpacity>
 
-                <TouchableOpacity activeOpacity={0.6} style={{ alignItems: 'center', flex: 1 }}>
-                    <View style={styles.titleTextContainerStyle}>
-                        {titleIcon && <Image
-                            style={styles.titleTextIconStyle}
-                            source={titleIcon}
-                        />}
-                        <Text style={[styles.titleTextStyle, extraTitleTextStyle]} numberOfLines={1}>{title}</Text>
-                    </View>
-                </TouchableOpacity>
-                <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                    {actionComponent}
+                <View style={styles.titleTextContainerStyle}>
+                    {titleIcon && <Image
+                        style={styles.titleTextIconStyle}
+                        source={titleIcon}
+                    />}
+                    <Text style={[styles.titleTextStyle, extraTitleTextStyle]} numberOfLines={1}>{title}</Text>
                 </View>
+
+                {actionComponent}
             </View>
         </View>
     );
@@ -147,7 +143,7 @@ const styles = {
         paddingLeft: 12,
         paddingRight: 12,
         paddingBottom: 10,
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center'
     },
     actionTextStyle: {
