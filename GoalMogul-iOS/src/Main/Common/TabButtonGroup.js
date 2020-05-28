@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
-import Divider from './Divider';
 import TabButton from './Button/TabButton';
 import SubTabButton from './Button/SubTabButton';
-import { DEFAULT_STYLE } from '../../styles';
+import { DEFAULT_STYLE, GM_BLUE } from '../../styles';
 
 
 const WalkableView = walkthroughable(View);
@@ -31,7 +30,14 @@ class TabButtonGroup extends Component {
         return routes.map((b, i) => {
             const isSelected = i === index;
 
-            const selectedStyle = isSelected ? buttonStyle.selected : buttonStyle.unselected;
+            const selectedStyle = isSelected ? (buttonStyle && buttonStyle.selected) || {
+                    ...DEFAULT_STYLE.buttonText_1,
+                    backgroundColor: GM_BLUE,
+                    color: 'white'
+                } : (buttonStyle && buttonStyle.unselected) || {
+                    ...DEFAULT_STYLE.buttonText_1,
+                    backgroundColor: '#F2F2F2'
+                };
             const iconSource = tabIconMap ? tabIconMap[b.key].iconSource : undefined;
             const iconStyle = tabIconMap ? {
                 ...tabIconMap[b.key].iconStyle,
@@ -110,7 +116,7 @@ class TabButtonGroup extends Component {
                 padding: (padding !== undefined ? padding : 2) * DEFAULT_STYLE.uiScale,
                 height: (padding !== undefined ? 36 - padding : 34) * DEFAULT_STYLE.uiScale,
                 borderRadius: this.props.borderRadius,
-                backgroundColor: this.props.buttonStyle.unselected.backgroundColor
+                backgroundColor: this.props.buttonStyle ? this.props.buttonStyle.unselected.backgroundColor : '#F2F2F2'
             }}>
                 {this.renderButton()}
             </View>
