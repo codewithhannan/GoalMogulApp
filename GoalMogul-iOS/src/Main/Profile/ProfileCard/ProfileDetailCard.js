@@ -336,7 +336,7 @@ class ProfileDetailCard extends Component {
         const imageUrl = `${IMAGE_BASE_URL}${image}`;
         return (
             <View style={containerStyle}>
-                <Image style={style} source={isSelf ? defaultSelfProfile : defaultProfilePic} />
+                <Image style={style} source={image ? { uri: imageUrl } : (isSelf ? defaultSelfProfile : defaultProfilePic)} />
             </View>
         );
     }
