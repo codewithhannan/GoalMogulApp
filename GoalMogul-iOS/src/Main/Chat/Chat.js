@@ -29,15 +29,15 @@ const UNREAD_BADGE_COUNT_REFRESH_INTERVAL_MS = 3000;
 
 class ChatTab extends React.Component {
 	componentDidUpdate(prevProps) {
-        if (!prevProps.showTutorial && this.props.showTutorial === true) {
-            if (Actions.currentScene === 'chat') {
-                console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: [ start ]`);
-                this.props.start();
-            } else {
-                // Current scene is not meet thus reseting the showTutorial state
+		if (!prevProps.showTutorial && this.props.showTutorial === true) {
+			if (Actions.currentScene === 'chat') {
+				console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: [ start ]`);
+				this.props.start();
+			} else {
+				// Current scene is not meet thus reseting the showTutorial state
 				this.props.pauseTutorial('chat_tab_flow', 'chat_tab', 0);
-            }
-        }
+			}
+		}
 	}
 
 	componentDidMount() {
@@ -55,36 +55,36 @@ class ChatTab extends React.Component {
 
 		// Tutorial related
 		this.props.copilotEvents.on('stop', () => {
-            console.log(`${DEBUG_KEY}: [ componentDidMount ]: tutorial stop.`);
-            this.props.showNextTutorialPage('chat_tab_flow', 'chat_tab');
+			console.log(`${DEBUG_KEY}: [ componentDidMount ]: tutorial stop.`);
+			this.props.showNextTutorialPage('chat_tab_flow', 'chat_tab');
 
-            // Right now we don't need to have conditions here
+			// Right now we don't need to have conditions here
 			this.props.resetTutorial('chat_tab_flow', 'chat_tab');
-        });
+		});
 
-        this.props.copilotEvents.on('stepChange', (step) => {
-            const { name, order, visible, target, wrapper } = step;
-            console.log(`${DEBUG_KEY}: [ onStepChange ]: step order: ${order}, step visible: ${name} `);
-        
-            // We showing current order. SO the next step should be order + 1
+		this.props.copilotEvents.on('stepChange', (step) => {
+			const { name, order, visible, target, wrapper } = step;
+			console.log(`${DEBUG_KEY}: [ onStepChange ]: step order: ${order}, step visible: ${name} `);
+
+			// We showing current order. SO the next step should be order + 1
 			this.props.updateNextStepNumber('chat_tab_flow', 'chat_tab', order + 1);
 		});
-		
+
 		// Focus listener
 		this.didFocusListener = this.props.navigation.addListener(
-            'didFocus',
-            () => {
-                // We always fire this event since it's only stored locally
-                if (!this.props.hasShown) {
+			'didFocus',
+			() => {
+				// We always fire this event since it's only stored locally
+				if (!this.props.hasShown) {
 					// Force private message tab
 					this.props.selectChatTab(0);
-                    setTimeout(() => {
-                        console.log(`${DEBUG_KEY}: [ onFocus ]: [ startTutorial ]`);
+					setTimeout(() => {
+						console.log(`${DEBUG_KEY}: [ onFocus ]: [ startTutorial ]`);
 						this.props.startTutorial('chat_tab_flow', 'chat_tab');
-                    }, 300);
-                }
-            },
-        );
+					}, 300);
+				}
+			},
+		);
 	}
 	componentWillUnmount() {
 		clearInterval(this.unreadBadgeRefreshInterval);
@@ -138,23 +138,9 @@ class ChatTab extends React.Component {
 		};
 
 		return (
-			<TabButtonGroup 
-				buttons={props} 
-				noBorder
-				buttonStyle={{
-					selected: {
-						backgroundColor: APP_DEEP_BLUE,
-						tintColor: 'white',
-						color: 'white',
-						fontWeight: '700'
-					},
-					unselected: {
-						backgroundColor: '#FCFCFC',
-						tintColor: '#616161',
-						color: '#616161',
-						fontWeight: '600'
-					}
-				}}
+			<TabButtonGroup
+				buttons={props}
+				borderRadius={3}
 				tabNotificationMap={tabNotificationMap}
 			/>
 		);
@@ -164,8 +150,8 @@ class ChatTab extends React.Component {
 		switch (route.key) {
 			case 'directMessages': {
 				return (
-					<ChatRoomTab 
-						tabKey='directMessages' 
+					<ChatRoomTab
+						tabKey='directMessages'
 						tutorialOn={{
 							chatBot: {
 								tutorialText: this.props.tutorialText[1],
@@ -182,8 +168,8 @@ class ChatTab extends React.Component {
 					<ChatRoomTab tabKey='chatRooms' />
 				);
 			}
-			
-			default: 
+
+			default:
 				return null;
 		}
 	}
@@ -202,7 +188,7 @@ class ChatTab extends React.Component {
 					text: 'Direct',
 					onPress: () => {
 						const searchFor = {
-						  type: 'directChat',
+							type: 'directChat',
 						};
 						const cardIconStyle = { tintColor: APP_BLUE_BRIGHT };
 						const cardIconSource = next;
@@ -227,7 +213,7 @@ class ChatTab extends React.Component {
 	}
 
 	renderPlus() {
-		return(
+		return (
 			<PlusButton
 				onPress={this.openCreateChatMenu.bind(this)}
 				plusActivated={this.props.showPlus}
@@ -262,8 +248,8 @@ class ChatTab extends React.Component {
 const mapStateToProps = state => {
 	const { navigationState, showPlus, directMessages, chatRooms } = state.chat;
 	const { chat_tab_flow } = state.tutorials;
-    const { chat_tab } = chat_tab_flow;
-    const { tutorialText, showTutorial, hasShown } = chat_tab;
+	const { chat_tab } = chat_tab_flow;
+	const { tutorialText, showTutorial, hasShown } = chat_tab;
 
 	return {
 		navigationState,
@@ -278,11 +264,7 @@ const mapStateToProps = state => {
 const styles = {
 	homeContainerStyle: {
 		backgroundColor: '#f8f8f8',
-		flex: 1,
-		// shadowColor: '#000',
-		// shadowOffset: { width: 0, height: 1 },
-		// shadowOpacity: 0.3,
-		// shadowRadius: 6,
+		flex: 1
 	},
 	textStyle: {
 		fontSize: 12,
@@ -324,11 +306,11 @@ const styles = {
 };
 
 const ChatTabExplained = copilot({
-    overlay: 'svg', // or 'view'
-    animated: true, // or false
-    stepNumberComponent: () => <View />,
-    tooltipComponent: Tooltip,
-    svgMaskPath: svgMaskPath
+	overlay: 'svg', // or 'view'
+	animated: true, // or false
+	stepNumberComponent: () => <View />,
+	tooltipComponent: Tooltip,
+	svgMaskPath: svgMaskPath
 })(ChatTab);
 
 export default connect(

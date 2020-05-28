@@ -45,7 +45,7 @@ class TabButtonGroup extends Component {
             } : { tintColor: selectedStyle.tintColor };
             const containerStyle = {
                 backgroundColor: selectedStyle.backgroundColor,
-                borderRadius
+                borderRadius: borderRadius === undefined ? 3 : borderRadius
             };
             const textStyle = {
                 color: selectedStyle.color,
@@ -115,7 +115,7 @@ class TabButtonGroup extends Component {
                 ...styles.containerStyle,
                 padding: (padding !== undefined ? padding : 2) * DEFAULT_STYLE.uiScale,
                 height: (padding !== undefined ? 36 - padding : 34) * DEFAULT_STYLE.uiScale,
-                borderRadius: this.props.borderRadius,
+                borderRadius: this.props.borderRadius === undefined ? 3 : this.props.borderRadius,
                 backgroundColor: this.props.buttonStyle ? this.props.buttonStyle.unselected.backgroundColor : '#F2F2F2'
             }}>
                 {this.renderButton()}
