@@ -143,17 +143,6 @@ class Mastermind extends Component {
                     }
                     this.props.openGoalDetail(goal);
                 }}
-                onSectionCardPress={(goal, subItem) => {
-                    // console.log('[ UI Mastermind ]: onSectionCardPress with subItem: ', subItem);
-                    this.props.openGoalDetail(
-                        goal,
-                        {
-                            focusType: subItem.type,
-                            focusRef: subItem._id,
-                            commentBox: false
-                        }
-                    );
-                }}
             />
         );
     }

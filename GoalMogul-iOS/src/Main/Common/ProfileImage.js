@@ -19,19 +19,8 @@ import {
 import {
     IMAGE_BASE_URL
 } from '../../Utils/Constants';
+import { DEFAULT_STYLE } from '../../styles';
 
-const styles = {
-    imageContainerStyle: {
-
-    },
-    imageStyle: {
-        height: 54,
-        width: 54,
-        borderRadius: 5,
-        borderWidth: 1,
-        borderColor: 'white'
-    },
-};
 
 const DEBUG_KEY = '[ UI ProfileImage ]';
 /*
@@ -65,9 +54,14 @@ class ProfileImage extends React.Component {
         let defaultImageStyle;
         if (this.props.defaultImageStyle) defaultImageStyle = { ...this.props.defaultImageStyle };
         else if (imageStyle) defaultImageStyle = { ...imageStyle };
-        else defaultImageStyle = { ...styles.imageStyle };
+        else defaultImageStyle =  DEFAULT_STYLE.profileImage_2;
 
-        const defaultImageContainerStyle = this.props.defaultImageContainerStyle || imageContainerStyle;
+        const defaultImageContainerStyle = this.props.defaultImageContainerStyle || imageContainerStyle || {
+                ...styles.imageContainerStyle,
+                borderColor: '#BDBDBD',
+                borderWidth: 2
+            };
+
         if (imageUrl) {
             imageUrl = typeof imageUrl == "string" && imageUrl.indexOf('https://') != 0 ?
                 `${IMAGE_BASE_URL}${imageUrl}` : imageUrl;
@@ -77,12 +71,11 @@ class ProfileImage extends React.Component {
             <TouchableWithoutFeedback onPress={this.handleProfileImageOnPress}>
                 <View
                     style={
-                        imageUrl ? imageContainerStyle || styles.imageContainerStyle
-                        : defaultImageContainerStyle || styles.imageContainerStyle
+                        imageUrl ? imageContainerStyle : defaultImageContainerStyle
                     }
                 >
                     <Image
-                        style={imageUrl ? imageStyle || styles.imageStyle : defaultImageStyle}
+                        style={imageUrl ? imageStyle || DEFAULT_STYLE.profileImage_1 : defaultImageStyle}
                         source={imageUrl ? { uri: imageUrl } : defaultImageSource || defaultProfilePic}
                         resizeMode={resizeMode}
                     />
@@ -97,6 +90,17 @@ const setValue = (value) => ({
         return value === undefined ? defaultValue : value;
     }
 });
+
+const styles = {
+    imageContainerStyle : {
+        borderWidth: 0.5,
+        borderColor: 'lightgray',
+        alignItems: 'center',
+        borderRadius: 100,
+        alignSelf: 'flex-start',
+        backgroundColor: 'white'
+    }
+}
 
 export default connect(
     null,

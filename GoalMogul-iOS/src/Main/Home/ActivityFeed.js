@@ -97,7 +97,7 @@ class ActivityFeed extends Component {
                             initialShowSuggestionModal: false,
                             initialFocusCommentBox: true
                         };
-                        return this.props.openGoalDetail({ ...curItem }, initialProps);
+                        return this.props.openGoalDetail(curItem, initialProps);
                     }
 
                     const initialProps = {
@@ -140,6 +140,7 @@ class ActivityFeed extends Component {
     }
 
     render() {
+        console.log(this.props.data[3])
         return (
             <View style={{ flex: 1 }}>
                 <FlatList
