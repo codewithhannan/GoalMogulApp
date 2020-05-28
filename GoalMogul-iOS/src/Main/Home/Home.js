@@ -260,6 +260,7 @@ class Home extends Component {
                     buttons={props}
                     tabIconMap={TabIconMap}
                     borderRadius={3}
+                    padding={0}
                     buttonStyle={{
                         selected: {
                             ...DEFAULT_STYLE.buttonText_1,

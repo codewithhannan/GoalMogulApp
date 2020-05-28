@@ -103,9 +103,12 @@ class TabButtonGroup extends Component {
     }
 
     render() {
+        const { padding } = this.props
         return (
             <View style={{
                 ...styles.containerStyle,
+                padding: (padding !== undefined ? padding : 2) * DEFAULT_STYLE.uiScale,
+                height: (padding !== undefined ? 36 - padding : 34) * DEFAULT_STYLE.uiScale,
                 borderRadius: this.props.borderRadius,
                 backgroundColor: this.props.buttonStyle.unselected.backgroundColor
             }}>
@@ -123,9 +126,7 @@ const styles = {
         borderColor: '#E8E8E8',
         backgroundColor: 'white',
         justifyContent: 'space-around',
-        alignItems: 'center',
-        padding: 3 * DEFAULT_STYLE.uiScale,
-        height: 33 * DEFAULT_STYLE.uiScale
+        alignItems: 'center'
     }
 };
 
