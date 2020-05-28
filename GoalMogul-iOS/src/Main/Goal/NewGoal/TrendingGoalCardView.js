@@ -4,7 +4,8 @@ import {
     View,
     TouchableOpacity,
     Image,
-    Text
+    Text,
+    Dimensions
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -20,7 +21,8 @@ import plus from '../../../asset/utils/plus.png';
 import { nFormatter } from '../../../redux/middleware/utils';
 
 // Styles
-import { APP_BLUE_BRIGHT } from '../../../styles';
+import { GM_BLUE, DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles';
+
 
 class TrendingGoalCard extends React.PureComponent {
     onPress = (title) => {
@@ -28,34 +30,31 @@ class TrendingGoalCard extends React.PureComponent {
     }
 
     renderStats(item) {
-        const { frequency, title } = item;
+        const { title } = item;
         return (
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 8 }}>
-                <Text style={{ color: APP_BLUE_BRIGHT, fontSize: 9 }}>
-                    <Text style={{ fontWeight: '700' }}>
-                        {nFormatter(frequency)}
-                    </Text>{' '}IN COMMON
-                </Text>
                 <TouchableOpacity
                     style={styles.plusIconContainerStyle}
                     onPress={() => this.onPress(title)}
                 >
-                    <Image source={plus} style={{ width: 12, height: 12, tintColor: 'white' }} />
+                    <Image source={plus} style={{ ...DEFAULT_STYLE.smallIcon_1, tintColor: 'white' }} />
                 </TouchableOpacity>
-            </View>
         );
     }
 
     renderTitle(item) {
-        const { title } = item;
+        const { width } = Dimensions.get('window');
+        const { frequency, title } = item;
         return (
-            <View style={{ flexWrap: 'wrap', flex: 1, paddingTop: 10, paddingBottom: 10, paddingRight: 5 }}>
+            <View style={{ paddingTop: 10, paddingBottom: 10, paddingRight: 5, width: 236 * width/375 }}>
                 <Text
-                    style={{ color: '#6e6e6e', fontSize: 15 }}
+                    style={DEFAULT_STYLE.titleText_2}
                     ellipsizeMode='tail'
-                    numberOfLines={4}
+                    numberOfLines={3}
                 >
                     {title}
+                </Text>
+                <Text style={{ ...DEFAULT_STYLE.smallText_1, color: '#9B9B9B' }}>
+                    {nFormatter(frequency)+' '}users have this goal in common
                 </Text>
             </View>
         );
@@ -63,8 +62,8 @@ class TrendingGoalCard extends React.PureComponent {
 
     renderRank(item, index) {
         return (
-            <View style={{ padding: 15 }}>
-                <Text style={{ fontWeight: '700' }}>#{index}</Text>
+            <View style={{ padding: 15, paddingRight: 4 }}>
+                <Text style={DEFAULT_STYLE.titleText_2}>#{index}</Text>
             </View>
         );
     }
@@ -74,9 +73,11 @@ class TrendingGoalCard extends React.PureComponent {
         if (!item) return;
         return (
             <View style={styles.containerStyle}>
-                {this.renderRank(item, index)}
-                {this.renderTitle(item)}
-                <View style={{ height: 25, width: 0.5, backgroundColor: 'lightgray', opacity: 0.8 }} />
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    {this.renderRank(item, index)}
+                    <View style={{ height: 40 * DEFAULT_STYLE.uiScale, width: 1, margin: 8, backgroundColor: '#DADADA' }} />
+                    {this.renderTitle(item)}
+                </View>
                 {this.renderStats(item)}
             </View>
         );
@@ -86,20 +87,24 @@ class TrendingGoalCard extends React.PureComponent {
 const styles = {
     containerStyle: {
         flex: 1, 
-        backgroundColor: 'white', 
-        flexDirection: 'row', 
+        backgroundColor: BACKGROUND_COLOR, 
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        borderTopWidth: 0.5,
-        borderBottomWidth: 0.5,
+
+        borderWidth: 1,
         borderColor: '#e9e9e9',
-        marginBottom: 5
+
+        marginLeft: 16,
+        marginRight: 16,
+        marginBottom: 5,
     },
     plusIconContainerStyle: {
-        backgroundColor: APP_BLUE_BRIGHT, 
-        margin: 8, 
-        borderRadius: 15, 
-        height: 30, 
-        width: 30,
+        backgroundColor: GM_BLUE, 
+        margin: 12, 
+        borderRadius: 15 * DEFAULT_STYLE.uiScale, 
+        height: 30 * DEFAULT_STYLE.uiScale,
+        width: 30 * DEFAULT_STYLE.uiScale,
         alignItems: 'center',
         justifyContent: 'center'
     }

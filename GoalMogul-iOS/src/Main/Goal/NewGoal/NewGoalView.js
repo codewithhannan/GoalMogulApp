@@ -471,8 +471,8 @@ class NewGoalView extends Component {
     renderPrivacyControl(isEdit) {
         return (
             <View style={styles.sectionMargin}>
-                <Menu rendererProps={{ anchorStyle: styles.anchorStyle }}
-                    renderer={renderers.ContextMenu}
+                <Menu rendererProps={{ placement: 'top', anchorStyle: styles.anchorStyle }}
+                    renderer={renderers.Popover}
                 >
                     <Text style={styles.subTitleTextStyle}>Privacy</Text>
                     <MenuTrigger customStyles={{ TriggerTouchableComponent: TouchableOpacity }}>
@@ -489,15 +489,7 @@ class NewGoalView extends Component {
                             <Image resizeMode="contain" style={styles.caretStyle} source={dropDown} />
                         </View>
                     </MenuTrigger>
-                    <MenuOptions customStyles={{
-                        optionsContainer: {
-                            width: width - 32
-                        },
-                        optionTouchable: {
-                            underlayColor: 'lightgray',
-                            activeOpacity: 10,
-                        }
-                    }}>
+                    <MenuOptions customStyles={styles.menuOptionsStyles}>
                         {PRIVACY_OPTIONS.map((value) => {
                             return <MenuOption onSelect={() => { this.props.change('privacy', value) }}>
                                 <View style={{
@@ -1120,7 +1112,7 @@ const styles = {
     menuOptionsStyles: {
         optionsContainer: {
             width: width - 40,
-            paddingTop: 5
+            padding: 5
         },
         optionWrapper: {
             flex: 1,

@@ -33,8 +33,14 @@ class GoalFilterBar extends Component {
 
     render() {
         const {
-            sortBy,
-            categories
+            filter: {
+                sortBy,
+                categories
+            },
+            buttonText
+        } = this.props;
+        const {
+            
         } = this.props.filter;
         const categoryText = categories;
         const isCategorySelected = categories !== CATEGORY_OPTIONS[0].value;
@@ -54,17 +60,17 @@ class GoalFilterBar extends Component {
                                 ...DEFAULT_STYLE.buttonText_1,
                                 fontWeight: isCategorySelected ? '700' : '500'
                             }}>
-                                Sort &amp; Filter
+                                {buttonText || 'Sort & Filter'}
                             </Text>
                         </View>
                     </MenuTrigger>
                     <MenuOptions customStyles={styles.menuOptionsStyles}>
                         {/* SortBy Header */}
-                        <View style={styles.sortByHeaderWrapper}>
+                        { sortBy && <View style={styles.sortByHeaderWrapper}>
                             <Text style={DEFAULT_STYLE.titleText_1}>Sort By</Text>
-                        </View>
+                        </View>}
                         {/* SortBy Options */}
-                        <View style={{
+                        { sortBy && <View style={{
                             flexDirection: 'row',
                             flexWrap: 'wrap',
                             padding: 10 * DEFAULT_STYLE.uiScale
@@ -88,17 +94,16 @@ class GoalFilterBar extends Component {
                                     </MenuOption>
                                 );
                             })}
-                        </View>
+                        </View>}
 
                         {/* Catrgory header */}
-                        <View style={styles.categoryHeaderWrapper}>
+                        { categories && <View style={styles.categoryHeaderWrapper}>
                             <Text style={DEFAULT_STYLE.normalText_1}>Category</Text>
-                        </View>
+                        </View>}
                         {/* Category Options */}
-                        <FlatList
+                        { categories && <FlatList
                             data={CATEGORY_OPTIONS}
-                            renderItem={({ item }) => {
-                                const { value, text } = item;
+                            renderItem={({ item: { value, text } }) => {
                                 return (
                                     <MenuOption onSelect={() => this.handleOnMenuSelect('categories', value)}>
                                         <View style={styles.categoryOptionWrapper}>
@@ -115,7 +120,7 @@ class GoalFilterBar extends Component {
                                 );
                             }}
                             style={{ height: height/3, paddingTop: 5 }}
-                        />
+                        />}
                     </MenuOptions>
                 </Menu>
             </View>

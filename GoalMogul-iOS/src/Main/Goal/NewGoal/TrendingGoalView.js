@@ -2,21 +2,13 @@ import React from 'react';
 import {
     View,
     FlatList,
-    Text,
-    Image,
-    TouchableOpacity,
     Dimensions,
     ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 import {
-    Menu,
-    MenuOptions,
-    MenuOption,
-    MenuTrigger,
-    renderers,
     MenuProvider
-  } from 'react-native-popup-menu';
+} from 'react-native-popup-menu';
 
 // Components
 import TrendingGoalCardView from './TrendingGoalCardView';
@@ -30,13 +22,13 @@ import {
 } from '../../../redux/modules/goal/CreateGoalActions';
 
 // Assets
-import dropDown from '../../../asset/utils/dropDown.png';
 import { BACKGROUND_COLOR } from '../../../styles';
 import ModalHeader from '../../Common/Header/ModalHeader';
 import { Actions } from 'react-native-router-flux';
+import { CATEGORY_OPTIONS } from '../../../Utils/Constants';
+import GoalFilterBar from '../../Common/GoalFilterBar';
 
 const DEBUG_KEY = '[ UI TrendingGOalView ]';
-const { Popover } = renderers;
 const { width } = Dimensions.get('window');
 
 class TrendingGoalView extends React.PureComponent {
@@ -75,9 +67,12 @@ class TrendingGoalView extends React.PureComponent {
                     }}
                 />
                 <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
-                    <FilterBar 
-                        handleOnMenuSelect={(val) => this.handleOnMenuSelect(val)} 
-                        category={category} 
+                    <GoalFilterBar
+                        onMenuChange={(type, value) => this.handleOnMenuSelect(value)}
+                        filter={{
+                            categories: category || CATEGORY_OPTIONS[0].value
+                        }}
+                        buttonText="Category"
                     />
                     <FlatList
                         data={this.props.data}
@@ -89,12 +84,11 @@ class TrendingGoalView extends React.PureComponent {
                         onEndReached={this.handleOnLoadMore}
                         ListEmptyComponent={
                             loading || refreshing ? null :
-                            <EmptyResult text={'No Trending'} textStyle={{ paddingTop: 150 }} />
+                                <EmptyResult text={'No Trending'} textStyle={{ paddingTop: 150 }} />
                         }
                         onEndThreshold={0}
                         ListFooterComponent={
-                            loading 
-                            ? (
+                            loading ? (
                                 <View
                                     style={{ flex: 1, height: 50, width, justifyContent: 'center', alignItems: 'center' }}
                                 >
@@ -130,81 +124,35 @@ const styles = {
         paddingTop: 12,
         paddingBottom: 12
     },
-    textStyle: {
-        fontSize: 10,
-        // color: '#1fb6dd',
-        color: '#696969',
-        fontWeight: '600',
-      },
-      caretStyle: {
-        // tintColor: '#20485f',
+    caretStyle: {
         tintColor: '#696969',
         marginLeft: 5
-      },
-      anchorStyle: {
-        backgroundColor: 'white'
-      },
-      menuOptionsStyles: {
+    },
+    anchorStyle: {
+        backgroundColor: BACKGROUND_COLOR
+    },
+    menuOptionsStyles: {
         optionsContainer: {
-          width: width - 14,
+            width: width - 14,
         },
         optionsWrapper: {
-    
+
         },
         optionWrapper: {
-          flex: 1,
+            flex: 1,
         },
         optionTouchable: {
-          underlayColor: 'lightgray',
-          activeOpacity: 10,
+            underlayColor: 'lightgray',
+            activeOpacity: 10,
         },
         optionText: {
-          paddingTop: 5,
-          paddingBottom: 5,
-          paddingLeft: 10,
-          paddingRight: 10,
-          color: 'black',
+            paddingTop: 5,
+            paddingBottom: 5,
+            paddingLeft: 10,
+            paddingRight: 10,
+            color: 'black',
         },
-      }
-};
-
-const options = [
-    'All', 'General', 'Learning/Education', 'Career/Business', 'Financial', 'Spiritual',
-    'Family/Personal', 'Physical', 'Charity/Philanthropy', 'Things'
-];
-
-const FilterBar = (props) => {
-    const { category, handleOnMenuSelect } = props;
-    const categoryText = category ? ` (${category})` : '';
-
-    return (
-        <Menu
-          onSelect={value => handleOnMenuSelect(value)}
-          rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
-          renderer={Popover}
-        >
-          <MenuTrigger
-            customStyles={{
-              TriggerTouchableComponent: TouchableOpacity,
-            }}
-          >
-            <View style={styles.detailContainerStyle}>
-              <Text style={styles.textStyle}>Category{categoryText}</Text>
-              <Image style={styles.caretStyle} source={dropDown} />
-            </View>
-          </MenuTrigger>
-          <MenuOptions customStyles={styles.menuOptionsStyles}>
-                <FlatList
-                    data={options}
-                    renderItem={({ item }) => (
-                        <MenuOption value={item} text={item} />
-                    )}
-                    keyExtractor={(item, index) => index.toString()}
-                    style={{ height: 200 }}
-                />
-          </MenuOptions>
-        </Menu>
-    );
+    }
 };
 
 const mapStateToProps = state => {
