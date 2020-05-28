@@ -10,6 +10,7 @@ import R from 'ramda';
 
 /* Assets */
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
+import defaultSelfProfile from '../../../asset/utils/defaultSelfUserProfile.png';
 import love from '../../../asset/utils/love.png';
 import edit from '../../../asset/utils/edit.png';
 import cancel from '../../../asset/utils/cancel.png';
@@ -324,7 +325,7 @@ class ProfileDetailCard extends Component {
         });
     }
 
-    renderProfileImage(profile) {
+    renderProfileImage(profile, isSelf) {
         const { image } = profile;
         const style = image ? styles.imageStyle : { width: 30, height: 30, margin: 40 * DEFAULT_STYLE.uiScale };
         const containerStyle = [styles.imageContainerStyle, image ? {} : {
@@ -335,13 +336,13 @@ class ProfileDetailCard extends Component {
         const imageUrl = `${IMAGE_BASE_URL}${image}`;
         return (
             <View style={containerStyle}>
-                <Image style={style} source={image ? { uri: imageUrl } : defaultProfilePic} />
+                <Image style={style} source={isSelf ? defaultSelfProfile : defaultProfilePic} />
             </View>
         );
     }
 
     render() {
-        const { user } = this.props;
+        const { user, self } = this.props;
         if (!user) return null;
         const { name, headline, profile } = user;
         const { location } = profile;
@@ -350,7 +351,7 @@ class ProfileDetailCard extends Component {
             <View onLayout={this.onLayout}>
                 <View style={{ height: 90 * DEFAULT_STYLE.uiScale, backgroundColor: GM_BLUE_LIGHT_LIGHT }} />
                 <View style={styles.topWrapperStyle}>
-                    {this.renderProfileImage(profile)}
+                    {this.renderProfileImage(profile, self)}
                     <View style={{ flexDirection: 'row', flex: 1 }}>
                         <View style={{ flex: 1 }} />
                         {this.renderMessageButton()}
