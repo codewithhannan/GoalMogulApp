@@ -80,7 +80,6 @@ import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
-import DelayedButton from '../../Common/Button/DelayedButton';
 import LikeListModal from '../../Common/Modal/LikeListModal';
 import SparkleBadgeView from '../../Gamification/Badge/SparkleBadgeView';
 

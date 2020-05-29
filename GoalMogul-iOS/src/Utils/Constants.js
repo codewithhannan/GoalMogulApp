@@ -46,6 +46,9 @@ export const PRIVACY_POLICY_URL = 'https://web.goalmogul.com/privacy';
 const expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
 export const URL_REGEX = new RegExp(expression);
 
+export const MINUTE_IN_MS = 60 * 1000;
+export const DAY_IN_MS = 24 * 60 * MINUTE_IN_MS;
+
 export const SORT_BY_OPTIONS = [
     {
         text: 'Date Created',

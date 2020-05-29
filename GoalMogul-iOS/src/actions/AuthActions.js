@@ -39,7 +39,7 @@ import {
 } from '../redux/modules/home/mastermind/actions';
 
 import {
-    IMAGE_BASE_URL
+    IMAGE_BASE_URL, MINUTE_IN_MS, DAY_IN_MS
 } from '../Utils/Constants';
 
 // Components
@@ -56,8 +56,6 @@ import { SENTRY_TAGS, SENTRY_MESSAGE_LEVEL, SENTRY_TAG_VALUE, SENTRY_MESSAGE_TYP
 
 
 const DEBUG_KEY = '[ Action Auth ]';
-const DAY_IN_MS = 24 * 60 * 60 * 1000;
-const MINUTE_IN_MS = 60 * 1000;
 
 export const userNameChanged = (username) => {
     return {

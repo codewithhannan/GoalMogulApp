@@ -66,7 +66,7 @@ import {
 // Utils
 import { arrayUnique, clearTags } from '../../../redux/middleware/utils';
 import { DEFAULT_STYLE, BACKGROUND_COLOR, GM_BLUE } from '../../../styles';
-import { PRIVACY_OPTIONS } from '../../../Utils/Constants';
+import { PRIVACY_OPTIONS, DAY_IN_MS } from '../../../Utils/Constants';
 
 
 const { Popover } = renderers;
@@ -747,15 +747,22 @@ class NewGoalView extends Component {
 
             </Modal>);
 
+        if (!this.props.startTime || !this.props.startTime.date) this.props.change('startTime', { date: new Date(), picker: false })
+        if (!this.props.endTime || !this.props.endTime.date) {
+            this.props.change('endTime', {
+                date: new Date((this.props.startTime.date ? this.props.startTime.date.getTime() : new Date().getTime()) + DAY_IN_MS), picker: false
+            })
+        }
+
+
         const startTime = (
             <Text style={{ ...DEFAULT_STYLE.subTitleText_1, marginLeft: 12, marginRight: 12 }}>
-                {moment(this.props.startTime.date ? this.props.startTime.date : new Date()).format('ll')}
+                {moment(this.props.startTime.date).format('ll')}
             </Text>
         );
-
         const endTime = (
             <Text style={{ ...DEFAULT_STYLE.subTitleText_1, marginLeft: 12, marginRight: 12 }}>
-                {moment(this.props.endTime.date ? this.props.endTime.date : new Date()).format('ll')}
+                {moment(this.props.endTime.date).format('ll')}
             </Text>
         );
 
@@ -773,24 +780,6 @@ class NewGoalView extends Component {
             </View>
         );
 
-        // Show cancel button if there is date set
-        const cancelButton = this.props.endTime.date || this.props.startTime.date ?
-            (<TouchableOpacity
-                activeOpacity={0.6}
-                style={{ justifyContent: 'center', padding: 10, marginLeft: 5 }}
-                onPress={() => {
-                    this.props.change('hasTimeline', false);
-                    this.props.change('endTime', {
-                        date: undefined, picker: false
-                    });
-                    this.props.change('startTime', {
-                        date: undefined, picker: false
-                    });
-                }}
-            >
-                <Image source={cancel} style={{ ...styles.cancelIconStyle }} />
-            </TouchableOpacity>) : null;
-
         return (
             <CopilotStep text={this.props.tutorialText[4]} order={4} name="create_goal_create_goal_modal_4">
                 <WalkableView style={{ ...styles.sectionMargin }}>
@@ -807,7 +796,7 @@ class NewGoalView extends Component {
                             }}
                             onPress={() =>
                                 this.props.change('startTime', {
-                                    date: this.props.startTime.date ? this.props.startTime.date : new Date(),
+                                    date: this.props.startTime.date,
                                     picker: true
                                 })
                             }
@@ -827,7 +816,7 @@ class NewGoalView extends Component {
                             }}
                             onPress={() =>
                                 this.props.change('endTime', {
-                                    date: this.props.endTime.date ? this.props.endTime.date : new Date(),
+                                    date: this.props.endTime.date,
                                     picker: true
                                 })
                             }
@@ -835,7 +824,6 @@ class NewGoalView extends Component {
                             {icon}
                             {endTime}
                         </TouchableOpacity>
-                        {cancelButton}
                     </View>
                     {startDatePicker}
                     {endDatePicker}
