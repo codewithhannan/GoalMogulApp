@@ -184,7 +184,12 @@ export const modalHeaderBadgeShadow = {
     shadowRadius: 5,
 };
 
-const UI_SCALE = Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.3 : 1;
+import { Dimensions } from 'react-native';
+
+const { height } = Dimensions.get('window');
+
+const UI_SCALE = Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.3 :
+    (height < 800 ? 1 : 1.1);
 export const TEXT_COLOR_1 = '#333';
 
 export const FONT_FAMILY_1 = 'Avenir';
