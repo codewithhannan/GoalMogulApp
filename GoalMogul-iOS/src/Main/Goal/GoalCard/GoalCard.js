@@ -12,14 +12,12 @@ import {
 // } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import timeago from 'timeago.js';
-// import Decode from 'unescape'; TODO: removed once new decode is good to go
 import { deleteGoal } from '../../../actions';
+// Asset
 import { ConfettiFadedBackgroundTopHalf } from '../../../asset/background';
-// import BulbIcon from '../../../asset/utils/bulb.png';
 import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
 import HelpIcon from '../../../asset/utils/help.png';
-// Asset
 import LoveOutlineIcon from '../../../asset/utils/love-outline.png';
 import LoveIcon from '../../../asset/utils/love.png';
 import StepIcon from '../../../asset/utils/steps.png';

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {
-  View,
-  TouchableOpacity,
-  Image,
-  ImageBackground,
-  Dimensions,
-  Text
+    View,
+    TouchableOpacity,
+    Image,
+    ImageBackground,
+    Dimensions,
+    Text
 } from 'react-native';
 import { connect } from 'react-redux';
 import timeago from 'timeago.js';
@@ -14,55 +14,51 @@ import R from 'ramda';
 import { Actions } from 'react-native-router-flux';
 
 import {
-  switchCase
+    switchCase
 } from '../../../redux/middleware/utils';
 
 // Actions
 import {
-  createReport
+    createReport
 } from '../../../redux/modules/report/ReportActions';
 
 import {
-  likeGoal,
-  unLikeGoal
+    likeGoal,
+    unLikeGoal
 } from '../../../redux/modules/like/LikeActions';
 
 import {
-  createCommentFromSuggestion
+    createCommentFromSuggestion
 } from '../../../redux/modules/feed/comment/CommentActions';
 
 import {
-  chooseShareDest
+    chooseShareDest
 } from '../../../redux/modules/feed/post/ShareActions';
 
 import {
-  openPostDetail
+    openPostDetail
 } from '../../../redux/modules/feed/post/PostActions';
 
 import {
-  openProfile,
-  deletePost
+    openProfile,
+    deletePost
 } from '../../../actions';
 
 import {
-  openGoalDetail
+    openGoalDetail
 } from '../../../redux/modules/home/mastermind/actions';
 
 import {
-  subscribeEntityNotification,
-  unsubscribeEntityNotification
+    subscribeEntityNotification,
+    unsubscribeEntityNotification
 } from '../../../redux/modules/notification/NotificationActions';
 
 // Assets
 import LoveIcon from '../../../asset/utils/love.png';
-// import BulbIcon from '../../../asset/utils/bulb.png';
 import CommentIcon from '../../../asset/utils/comment.png';
 import ShareIcon from '../../../asset/utils/forward.png';
-import cancel from '../../../asset/utils/cancel_no_background.png';
-import photoIcon from '../../../asset/utils/photoIcon.png';
+import LoveOutlineIcon from '../../../asset/utils/love-outline.png';
 import expand from '../../../asset/utils/expand.png';
-
-// import TestImage from '../../../asset/TestEventImage.png';
 
 // Components
 import ActionButton from '../../Goal/Common/ActionButton';
@@ -76,13 +72,13 @@ import ImageModal from '../../Common/ImageModal';
 import RichText from '../../Common/Text/RichText';
 
 // Styles
-import { imagePreviewContainerStyle, APP_BLUE } from '../../../styles';
+import { imagePreviewContainerStyle, APP_BLUE, DEFAULT_STYLE } from '../../../styles';
 
 // Constants
 import {
-  IMAGE_BASE_URL,
-  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
-  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
+    IMAGE_BASE_URL,
+    CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+    CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
 import DelayedButton from '../../Common/Button/DelayedButton';
 import LikeListModal from '../../Common/Modal/LikeListModal';
@@ -94,420 +90,344 @@ const CANCEL_INDEX = 3;
 const { width } = Dimensions.get('window');
 
 class ShareDetailSection extends Component {
-  state = {
-    mediaModal: false,
-    numberOfLines: undefined,
-    seeMore: true,
-    showlikeListModal: false
-  }
-
-  handleShareOnClick = () => {
-    const { item } = this.props;
-    const { _id } = item;
-    const shareType = 'SharePost';
-
-    const shareToSwitchCases = switchByButtonIndex([
-      [R.equals(0), () => {
-        // User choose to share to feed
-        console.log(`${DEBUG_KEY} User choose destination: Feed `);
-        this.props.chooseShareDest(shareType, _id, 'feed', item);
-      }],
-      [R.equals(1), () => {
-        // User choose to share to an event
-        console.log(`${DEBUG_KEY} User choose destination: Event `);
-        this.props.chooseShareDest(shareType, _id, 'event', item);
-      }],
-      [R.equals(2), () => {
-        // User choose to share to a tribe
-        console.log(`${DEBUG_KEY} User choose destination: Tribe `);
-        this.props.chooseShareDest(shareType, _id, 'tribe', item);
-      }],
-    ]);
-
-    const shareToActionSheet = actionSheet(
-      SHARE_TO_MENU_OPTTIONS,
-      CANCEL_INDEX,
-      shareToSwitchCases
-    );
-    return shareToActionSheet();
-  };
-
-  handleSeeMore = () => {
-    if (this.state.seeMore) {
-      // See less
-      this.setState({
-        ...this.state,
-        numberOfLines: 2,
-        seeMore: false
-      });
-      return;
+    state = {
+        mediaModal: false,
+        numberOfLines: undefined,
+        seeMore: true,
+        showlikeListModal: false
     }
-    // See more
-    this.setState({
-      ...this.state,
-      numberOfLines: undefined,
-      seeMore: true
-    });
-  }
 
-  renderSeeMore(text) {
-    if (text && text.length > 120) {
-      return (
-        <TouchableOpacity
-          activeOpacity={0.6}
-          style={styles.seeMoreTextContainerStyle}
-          onPress={this.handleSeeMore}
-        >
-          <Text style={styles.seeMoreTextStyle}>
-            {this.state.seeMore ? 'See less' : 'See more'}
-          </Text>
-        </TouchableOpacity>
-      );
-    }
-    return null;
-  }
+    handleShareOnClick = () => {
+        const { item } = this.props;
+        const { _id } = item;
+        const shareType = 'SharePost';
 
-  // user basic information
-  renderUserDetail(item) {
-    // TODO: TAG: for content
-    const { _id, created, content, owner, category, maybeIsSubscribed, viewCount } = item;
-    const timeStamp = (created === undefined || created.length === 0)
-      ? new Date() : created;
+        const shareToSwitchCases = switchByButtonIndex([
+            [R.equals(0), () => {
+                // User choose to share to feed
+                console.log(`${DEBUG_KEY} User choose destination: Feed `);
+                this.props.chooseShareDest(shareType, _id, 'feed', item);
+            }],
+            [R.equals(1), () => {
+                // User choose to share to an event
+                console.log(`${DEBUG_KEY} User choose destination: Event `);
+                this.props.chooseShareDest(shareType, _id, 'event', item);
+            }],
+            [R.equals(2), () => {
+                // User choose to share to a tribe
+                console.log(`${DEBUG_KEY} User choose destination: Tribe `);
+                this.props.chooseShareDest(shareType, _id, 'tribe', item);
+            }],
+        ]);
 
-    const caret = {
-      self: {
-        options: [{ option: 'Delete' }],
-        onPress: () => {
-          this.props.deletePost(_id);
-          Actions.pop();
-        },
-        shouldExtendOptionLength: false
-      },
-      others: {
-        options: [
-          { option: 'Report' }, 
-          { option: maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE }
-        ],
-        onPress: (key) => {
-          if (key === 'Report') {
-            return this.props.createReport(_id, 'postDetail', 'Post');
-          }
-          if (key === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
-            return this.props.unsubscribeEntityNotification(_id, 'Post');
-          }
-          if (key === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
-            return this.props.subscribeEntityNotification(_id, 'Post');
-          }
-        },
-        shouldExtendOptionLength: false
-      }
+        const shareToActionSheet = actionSheet(
+            SHARE_TO_MENU_OPTTIONS,
+            CANCEL_INDEX,
+            shareToSwitchCases
+        );
+        return shareToActionSheet();
     };
-    // console.log('item is: ', item);
-    return (
-      <View style={{ flexDirection: 'row' }}>
-        <ProfileImage
-          imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
-          imageUrl={owner && owner.profile ? owner.profile.image : undefined}
-          imageContainerStyle={styles.imageContainerStyle}
-          userId={owner._id}
-        />
-        <View style={{ marginLeft: 12, flex: 1 }}>
-          <Headline
-            name={owner.name || ''}
-            category={category}
-            isSelf={this.props.userId === owner._id}
-            caret={caret}
-            user={owner}
-            pageId={this.props.pageId}
-          />
-          <Timestamp time={timeago().format(timeStamp)} viewCount={viewCount} />
-          {/*
-            <View style={{ flexDirection: 'row', marginTop: 10 }}>
-              <Text
-                style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
-                numberOfLines={3}
-                ellipsizeMode='tail'
-              >
-                {content.text}
-              </Text>
-            </View>
-          */}
-          <RichText
-            contentText={content ? content.text : ''}
-            contentTags={content ? content.tags : []}
-            contentLinks={content ? content.links : []}
-            textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
-            textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
-            numberOfLines={this.state.numberOfLines}
-            ellipsizeMode='tail'
-            onUserTagPressed={(user) => {
-              console.log(`${DEBUG_KEY}: user tag press for user: `, user);
-              this.props.openProfile(user);
-            }}
-          />
-          {this.renderSeeMore(content.text)}
-        </View>
-      </View>
-    );
-  }
 
-  // Current media type is only picture
-  renderPostImage(url) {
-    // TODO: update this to be able to load image
-    if (!url) {
-      return null;
-    }
-    const imageUrl = `${IMAGE_BASE_URL}${url}`;
-      return (
-        <View style={{ marginTop: 10 }}>
-          <ImageBackground
-            style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle, borderRadius: 8, backgroundColor: 'black' }}
-            source={{ uri: imageUrl }}
-            imageStyle={{ borderRadius: 8, opacity: 0.8, resizeMode: 'cover' }}
-          >
-            {/* <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
-              <Image
-                source={photoIcon}
-                style={{
-                  alignSelf: 'center',
-                  justifyContent: 'center',
-                  height: 40,
-                  width: 50,
-                  tintColor: '#fafafa'
-                }}
-              />
-            </View> */}
-
-            <TouchableOpacity
-              activeOpacity={0.6}
-              onPress={() => this.setState({ mediaModal: true })}
-              style={{
-                position: 'absolute',
-                top: 10,
-                right: 15,
-                width: 24,
-                height: 24,
-                borderRadius: 12,
-                padding: 2,
-                backgroundColor: 'rgba(0,0,0,0.3)',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <Image
-                source={expand}
-                style={{
-                  width: 16,
-                  height: 16,
-                  tintColor: '#fafafa',
-                  borderRadius: 4,
-                }}
-              />
-            </TouchableOpacity>
-          </ImageBackground>
-          {this.renderPostImageModal(imageUrl)}
-        </View>
-      );
-  }
-
-
-  renderPostImageModal(imageUrl) {
-    return (
-      <ImageModal
-        mediaRef={imageUrl}
-        mediaModal={this.state.mediaModal}
-        closeModal={() => this.setState({ mediaModal: false })}
-      />
-    );
-  }
-
-  renderBadgeEarnImage(milestoneIdentifier) {
-    return (
-      <SparkleBadgeView
-        milestoneIdentifier={milestoneIdentifier}
-      />
-    );
-  }
-
-  // TODO: Switch to decide amoung renderImage, RefPreview and etc.
-  renderCardContent(item) {
-    const { postType, mediaRef, goalRef } = item;
-    if (postType === 'General') {
-      const milestoneIdentifier = _.get(item, 'milestoneCelebration.milestoneIdentifier');
-      if (milestoneIdentifier !== undefined) {
-        return this.renderBadgeEarnImage(milestoneIdentifier);
-      }
-      return this.renderPostImage(mediaRef);
-    }
-    const refPreview = switchItem(item, postType);
-    let onPress;
-    if (refPreview !== null && !_.isEmpty(refPreview)) {
-      onPress = switchCase({
-        SharePost: () => this.props.openPostDetail(refPreview),
-        ShareUser: () => this.props.openProfile(refPreview._id),
-        ShareGoal: () => this.props.openGoalDetail(goalRef),
-        ShareNeed: () => this.props.openGoalDetail(goalRef),
-        ShareStep: () => this.props.openGoalDetail(goalRef)
-      })(() => console.warn(`${DEBUG_KEY}: invalid item:`, item))(postType);
-    }
-    
-    return (
-      <View style={{ marginTop: 20 }}>
-        <RefPreview
-          item={refPreview}
-          postType={postType}
-          onPress={onPress}
-          goalRef={goalRef}
-        />
-      </View>
-    );
-  }
-
-  /**
-   * Render post stats
-   * @param {*} item 
-   */
-  renderPostStats(item) {
-    const { likeCount, shareCount, commentCount } = item;
-    // Hide the info row if no stats at all
-    if (!likeCount && !shareCount && !commentCount) return null;
-    
-    return (
-      <View style={styles.statsContainerStyle}>
-        {
-          likeCount > 0 ? (
-            <DelayedButton 
-              style={styles.likeCountContainerStyle}
-              onPress={() => this.setState({ ...this.state, showlikeListModal: true })}
-              activeOpacity={0.6}
-            >
-              <Image source={LoveIcon} style={{ tintColor: '#f15860', height: 11, width: 12, marginRight: 4 }} />
-              <Text style={{ ...styles.statsBaseTextStyle, color: '#f15860' }}>
-                <Text style={{ fontWeight: '700' }}>{likeCount}</Text> {likeCount > 1 ? 'people' : 'person'} liked this
-              </Text>
-            </DelayedButton>
-          ) : 
-          // Filler view to occupy the space
-          (
-            <View style={styles.likeCountContainerStyle}>
-              <Text style={{ ...styles.statsBaseTextStyle, color: '#f15860' }}>{' '}</Text>
-            </View>
-          )
-        }
-        {commentCount > 0 && (
-          <Text style={{ ...styles.statsBaseTextStyle, color: '#636363' }}>
-            {commentCount} {commentCount > 1 ? 'Replies' : 'Reply'}
-          </Text>
-        )}
-      </View>
-    );
-  }
-
-  renderActionButtons() {
-    const { item } = this.props;
-    const { maybeLikeRef, _id } = item;
-
-    const likeCount = item.likeCount ? item.likeCount : 0;
-    const commentCount = item.commentCount ? item.commentCount : 0;
-    const shareCount = item.shareCount ? item.shareCount : 0;
-
-    const likeButtonContainerStyle = maybeLikeRef && maybeLikeRef.length > 0
-      ? { backgroundColor: '#FAD6C8' }
-      : { backgroundColor: 'white' };
-
-    // User shouldn't share a share. When Activity on a post which is a share,
-    // We disable the share button.
-    const isShare = item.postType !== 'General';
-
-    return (
-      <ActionButtonGroup>
-        <ActionButton
-          iconSource={LoveIcon}
-          // count={likeCount}
-          count='Like'
-          textStyle={{ color: '#f15860' }}
-          iconContainerStyle={likeButtonContainerStyle}
-          iconStyle={{ tintColor: '#f15860', borderRadius: 5, height: 20, width: 22, marginTop: 1.5 }}
-          onPress={() => {
-            console.log(`${DEBUG_KEY}: user clicks like icon.`);
-            if (maybeLikeRef && maybeLikeRef.length > 0) {
-              return this.props.unLikeGoal('post', _id, maybeLikeRef);
-            }
-            this.props.likeGoal('post', _id);
-          }}
-        />
-        <ActionButton
-          iconSource={ShareIcon}
-          // count={shareCount}
-          count='Share'
-          textStyle={{ color: '#a8e1a0' }}
-          iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
-          onPress={() => this.handleShareOnClick()}
-          disabled={isShare}
-        />
-        <ActionButton
-          iconSource={CommentIcon}
-          // count={commentCount}
-          count='Reply'
-          textStyle={{ color: '#FCB110' }}
-          iconStyle={{ tintColor: '#FCB110', height: 26, width: 26 }}
-          onPress={() => {
-            console.log(`${DEBUG_KEY}: user clicks suggestion icon.`);
-            // this.props.createCommentFromSuggestion({
-            //   commentDetail: {
-            //     parentType: 'Post',
-            //     parentRef: _id,
-            //     commentType: 'Suggestion',
-            //     replyToRef: undefined
-            //   },
-            //   suggestionForRef: _id,
-            //   suggestionFor: 'Post'
-            // }, this.props.pageId);
-            this.props.onSuggestion();
-          }}
-        />
-      </ActionButtonGroup>
-    );
-  }
-
-  render() {
-    const { item } = this.props;
-    if (!item || _.isEmpty(item) || !item.created) return null;
-
-    return (
-      <View style={{ ...styles.containerStyle, paddingHorizontal: 15 }}>
-        <LikeListModal 
-          isVisible={this.state.showlikeListModal} 
-          closeModal={() => {
+    handleSeeMore = () => {
+        if (this.state.seeMore) {
+            // See less
             this.setState({
-              ...this.state,
-              showlikeListModal: false
+                ...this.state,
+                numberOfLines: 2,
+                seeMore: false
             });
-          }}
-          parentId={item._id}
-          parentType='Post'
-        />
-        <View style={{ marginTop: 15, marginBottom: 10 }}>
-          {this.renderUserDetail(item)}
-          {this.renderCardContent(item)}
-        </View>
+            return;
+        }
+        // See more
+        this.setState({
+            ...this.state,
+            numberOfLines: undefined,
+            seeMore: true
+        });
+    }
 
-        {this.renderPostStats(item)}
+    renderSeeMore(text) {
+        if (text && text.length > 120) {
+            return (
+                <TouchableOpacity
+                    activeOpacity={0.6}
+                    style={styles.seeMoreTextContainerStyle}
+                    onPress={this.handleSeeMore}
+                >
+                    <Text style={styles.seeMoreTextStyle}>
+                        {this.state.seeMore ? 'See less' : 'See more'}
+                    </Text>
+                </TouchableOpacity>
+            );
+        }
+        return null;
+    }
 
-        <View style={styles.containerStyle}>
-          {this.renderActionButtons(item)}
-        </View>
-      </View>
-    );
-  }
+    // user basic information
+    renderUserDetail(item) {
+        // TODO: TAG: for content
+        const { _id, created, content, owner, category, maybeIsSubscribed, viewCount } = item;
+        const timeStamp = (created === undefined || created.length === 0)
+            ? new Date() : created;
+
+        const caret = {
+            self: {
+                options: [{ option: 'Delete' }],
+                onPress: () => {
+                    this.props.deletePost(_id);
+                    Actions.pop();
+                },
+                shouldExtendOptionLength: false
+            },
+            others: {
+                options: [
+                    { option: 'Report' },
+                    { option: maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE }
+                ],
+                onPress: (key) => {
+                    if (key === 'Report') {
+                        return this.props.createReport(_id, 'postDetail', 'Post');
+                    }
+                    if (key === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
+                        return this.props.unsubscribeEntityNotification(_id, 'Post');
+                    }
+                    if (key === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
+                        return this.props.subscribeEntityNotification(_id, 'Post');
+                    }
+                },
+                shouldExtendOptionLength: false
+            }
+        };
+        // console.log('item is: ', item);
+        return (
+            <View>
+                <View style={{ flexDirection: 'row' }}>
+                    <ProfileImage
+                        imageUrl={owner && owner.profile ? owner.profile.image : undefined}
+                        userId={owner._id}
+                    />
+                    <View style={{ marginLeft: 12, marginTop: 2, flex: 1 }}>
+                        <Headline
+                            name={owner.name || ''}
+                            category={category}
+                            isSelf={this.props.userId === owner._id}
+                            caret={caret}
+                            user={owner}
+                            pageId={this.props.pageId}
+                            textStyle={DEFAULT_STYLE.titleText_2}
+                        />
+                        <View style={{ marginTop: 2 }} />
+                        <Timestamp time={timeago().format(timeStamp)} viewCount={viewCount} />
+                    </View>
+                </View>
+                <RichText
+                    contentText={content ? content.text : ''}
+                    contentTags={content ? content.tags : []}
+                    contentLinks={content ? content.links : []}
+                    textStyle={{ ...DEFAULT_STYLE.normalText_1, flex: 1, flexWrap: 'wrap', color: 'black' }}
+                    textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
+                    numberOfLines={this.state.numberOfLines}
+                    ellipsizeMode='tail'
+                    onUserTagPressed={(user) => {
+                        console.log(`${DEBUG_KEY}: user tag press for user: `, user);
+                        this.props.openProfile(user);
+                    }}
+                />
+                {this.renderSeeMore(content.text)}
+            </View>
+        );
+    }
+
+    // Current media type is only picture
+    renderPostImage(url) {
+        // TODO: update this to be able to load image
+        if (!url) {
+            return null;
+        }
+        const imageUrl = `${IMAGE_BASE_URL}${url}`;
+        return (
+            <View style={{ marginTop: 10 }}>
+                <ImageBackground
+                    style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle, borderRadius: 8, backgroundColor: 'black' }}
+                    source={{ uri: imageUrl }}
+                    imageStyle={{ borderRadius: 8, opacity: 0.8, resizeMode: 'cover' }}
+                >
+                    <TouchableOpacity
+                        activeOpacity={0.6}
+                        onPress={() => this.setState({ mediaModal: true })}
+                        style={{
+                            position: 'absolute',
+                            top: 10,
+                            right: 15,
+                            width: 24,
+                            height: 24,
+                            borderRadius: 12,
+                            padding: 2,
+                            backgroundColor: 'rgba(0,0,0,0.3)',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}
+                    >
+                        <Image
+                            source={expand}
+                            style={{
+                                width: 16,
+                                height: 16,
+                                tintColor: '#fafafa',
+                                borderRadius: 4,
+                            }}
+                        />
+                    </TouchableOpacity>
+                </ImageBackground>
+                {this.renderPostImageModal(imageUrl)}
+            </View>
+        );
+    }
+
+
+    renderPostImageModal(imageUrl) {
+        return (
+            <ImageModal
+                mediaRef={imageUrl}
+                mediaModal={this.state.mediaModal}
+                closeModal={() => this.setState({ mediaModal: false })}
+            />
+        );
+    }
+
+    renderBadgeEarnImage(milestoneIdentifier) {
+        return (
+            <SparkleBadgeView
+                milestoneIdentifier={milestoneIdentifier}
+            />
+        );
+    }
+
+    // TODO: Switch to decide amoung renderImage, RefPreview and etc.
+    renderCardContent(item) {
+        const { postType, mediaRef, goalRef } = item;
+        if (postType === 'General') {
+            const milestoneIdentifier = _.get(item, 'milestoneCelebration.milestoneIdentifier');
+            if (milestoneIdentifier !== undefined) {
+                return this.renderBadgeEarnImage(milestoneIdentifier);
+            }
+            return this.renderPostImage(mediaRef);
+        }
+        const refPreview = switchItem(item, postType);
+        let onPress;
+        if (refPreview !== null && !_.isEmpty(refPreview)) {
+            onPress = switchCase({
+                SharePost: () => this.props.openPostDetail(refPreview),
+                ShareUser: () => this.props.openProfile(refPreview._id),
+                ShareGoal: () => this.props.openGoalDetail(goalRef),
+                ShareNeed: () => this.props.openGoalDetail(goalRef),
+                ShareStep: () => this.props.openGoalDetail(goalRef)
+            })(() => console.warn(`${DEBUG_KEY}: invalid item:`, item))(postType);
+        }
+
+        return (
+            <View style={{ marginTop: 20 }}>
+                <RefPreview
+                    item={refPreview}
+                    postType={postType}
+                    onPress={onPress}
+                    goalRef={goalRef}
+                />
+            </View>
+        );
+    }
+
+    renderActionButtons() {
+        const { item } = this.props;
+        const { maybeLikeRef, _id } = item;
+
+        const likeCount = item.likeCount ? item.likeCount : 0;
+        const commentCount = item.commentCount ? item.commentCount : 0;
+        const shareCount = item.shareCount ? item.shareCount : 0;
+
+        const selfLiked = maybeLikeRef && maybeLikeRef.length > 0;
+
+        // User shouldn't share a share. When Activity on a post which is a share,
+        // We disable the share button.
+        const isShare = item.postType !== 'General';
+
+        return (
+            <View style={{ marginTop: 1 }}>
+                <ActionButtonGroup>
+                    <ActionButton
+                        iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
+                        count={likeCount}
+                        unitText="Like"
+                        textStyle={{ color: likeCount > 0 ? '#000' : '#828282' }}
+                        iconStyle={{ tintColor: selfLiked ? '#EB5757' : '#828282' }}
+                        onPress={() => {
+                            console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
+                            if (maybeLikeRef && maybeLikeRef.length > 0) {
+                                return this.props.unLikeGoal('post', _id, maybeLikeRef);
+                            }
+                            this.props.likeGoal('post', _id);
+                        }}
+                    />
+                    <ActionButton
+                        iconSource={ShareIcon}
+                        count={shareCount}
+                        unitText="Share"
+                        textStyle={{ color: '#828282' }}
+                        iconStyle={{ tintColor: '#828282' }}
+                        onPress={() => this.handleShareOnClick(item)}
+                        disabled={isShare}
+                    />
+                    <ActionButton
+                        iconSource={CommentIcon}
+                        count={commentCount}
+                        unitText="Comment"
+                        textStyle={{ color: '#828282' }}
+                        iconStyle={{ tintColor: '#828282' }}
+                        onPress={() => {
+                            console.log(`${DEBUG_KEY}: user clicks suggest icon`);
+                            this.props.onSuggestion();
+                        }}
+                    />
+                </ActionButtonGroup>
+            </View>
+        );
+    }
+
+    render() {
+        const { item } = this.props;
+        if (!item || _.isEmpty(item) || !item.created) return null;
+
+        return (
+            <View style={{ ...styles.containerStyle, paddingHorizontal: 15 }}>
+                <LikeListModal
+                    isVisible={this.state.showlikeListModal}
+                    closeModal={() => {
+                        this.setState({
+                            ...this.state,
+                            showlikeListModal: false
+                        });
+                    }}
+                    parentId={item._id}
+                    parentType='Post'
+                />
+                <View style={{ marginTop: 15, marginBottom: 10 }}>
+                    {this.renderUserDetail(item)}
+                    {this.renderCardContent(item)}
+                </View>
+                <View style={styles.containerStyle}>
+                    {this.renderActionButtons(item)}
+                </View>
+            </View>
+        );
+    }
 }
 
 const switchItem = (item, postType) => switchCase({
-  SharePost: item.postRef,
-  ShareUser: item.userRef,
-  ShareGoal: item.goalRef,
-  ShareNeed: getNeedFromRef(item.goalRef, item.needRef),
-  ShareStep: getStepFromGoal(item.goalRef, item.stepRef)
+    SharePost: item.postRef,
+    ShareUser: item.userRef,
+    ShareGoal: item.goalRef,
+    ShareNeed: getNeedFromRef(item.goalRef, item.needRef),
+    ShareStep: getStepFromGoal(item.goalRef, item.stepRef)
 })({})(postType);
 
 const getStepFromGoal = (goal, stepRef) => getItemFromGoal(goal, 'steps', stepRef);
@@ -515,95 +435,95 @@ const getStepFromGoal = (goal, stepRef) => getItemFromGoal(goal, 'steps', stepRe
 const getNeedFromRef = (goal, needRef) => getItemFromGoal(goal, 'needs', needRef);
 
 const getItemFromGoal = (goal, type, ref) => {
-  let ret;
-  if (goal && typeof goal === 'object') {
-    _.get(goal, `${type}`).forEach((item) => {
-      if (item._id === ref) {
-        ret = item;
-      }
-    });
-  }
-  return ret;
+    let ret;
+    if (goal && typeof goal === 'object') {
+        _.get(goal, `${type}`).forEach((item) => {
+            if (item._id === ref) {
+                ret = item;
+            }
+        });
+    }
+    return ret;
 };
 
 const styles = {
-  containerStyle: {
-    backgroundColor: 'white',
-  },
-  iconStyle: {
-    alignSelf: 'center',
-    fontSize: 20,
-    marginLeft: 5,
-    marginTop: 2
-  },
-  mediaStyle: {
-    height: width / 2,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  cancelIconStyle: {
-    height: 20,
-    width: 20,
-    justifyContent: 'flex-end'
-  },
-  imageContainerStyle: {
-    borderWidth: 0.5,
-    padding: 1.5,
-    borderColor: 'lightgray',
-    alignItems: 'center',
-    borderRadius: 6,
-    alignSelf: 'flex-start',
-    backgroundColor: 'white'
-  },
-  seeMoreTextContainerStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginTop: 2
-  },
-  seeMoreTextStyle: {
-    fontSize: 12,
-    color: APP_BLUE
-  },
-  statsContainerStyle: {
-    borderTopWidth: 0.5,
-    borderTopColor: '#f1f1f1',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 3
-  },
-  likeCountContainerStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    paddingHorizontal: 3,
-    paddingVertical: 7
-  },
-  statsBaseTextStyle: {
-    fontSize: 9
-  }
+    containerStyle: {
+        backgroundColor: 'white',
+    },
+    iconStyle: {
+        alignSelf: 'center',
+        fontSize: 20,
+        marginLeft: 5,
+        marginTop: 2
+    },
+    mediaStyle: {
+        height: width / 2,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    cancelIconStyle: {
+        height: 20,
+        width: 20,
+        justifyContent: 'flex-end'
+    },
+    imageContainerStyle: {
+        borderWidth: 0.5,
+        padding: 1.5,
+        borderColor: 'lightgray',
+        alignItems: 'center',
+        borderRadius: 6,
+        alignSelf: 'flex-start',
+        backgroundColor: 'white'
+    },
+    seeMoreTextContainerStyle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        marginTop: 2
+    },
+    seeMoreTextStyle: {
+        fontSize: 12,
+        color: APP_BLUE
+    },
+    statsContainerStyle: {
+        borderTopWidth: 0.5,
+        borderTopColor: '#f1f1f1',
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 3
+    },
+    likeCountContainerStyle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+        paddingHorizontal: 3,
+        paddingVertical: 7
+    },
+    statsBaseTextStyle: {
+        fontSize: 9
+    }
 };
 
 const mapStateToProps = state => {
-  const { userId } = state.user;
-  return {
-    userId
-  };
+    const { userId } = state.user;
+    return {
+        userId
+    };
 };
 
 export default connect(
-  mapStateToProps,
-  {
-    createReport,
-    likeGoal,
-    unLikeGoal,
-    createCommentFromSuggestion,
-    chooseShareDest,
-    openPostDetail,
-    openProfile,
-    openGoalDetail,
-    deletePost,
-    subscribeEntityNotification,
-    unsubscribeEntityNotification
-  }
+    mapStateToProps,
+    {
+        createReport,
+        likeGoal,
+        unLikeGoal,
+        createCommentFromSuggestion,
+        chooseShareDest,
+        openPostDetail,
+        openProfile,
+        openGoalDetail,
+        deletePost,
+        subscribeEntityNotification,
+        unsubscribeEntityNotification
+    }
 )(ShareDetailSection);

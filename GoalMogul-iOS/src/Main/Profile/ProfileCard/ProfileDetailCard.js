@@ -327,7 +327,11 @@ class ProfileDetailCard extends Component {
 
     renderProfileImage(profile, isSelf) {
         const { image } = profile;
-        const style = image ? styles.imageStyle : { width: 30, height: 30, margin: 40 * DEFAULT_STYLE.uiScale };
+        const style = image ? styles.imageStyle : {
+                width: 30 * DEFAULT_STYLE.uiScale,
+                height: 30 * DEFAULT_STYLE.uiScale,
+                margin: 40 * DEFAULT_STYLE.uiScale
+            };
         const containerStyle = [styles.imageContainerStyle, image ? {} : {
             borderColor: '#BDBDBD',
             borderRadius: (width * 0.15),
