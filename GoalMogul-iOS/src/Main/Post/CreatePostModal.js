@@ -490,18 +490,10 @@ class CreatePostModal extends Component {
         return (
             <View style={{ flexDirection: 'row', marginBottom: 15 }}>
                 <ProfileImage
-                    imageStyle={DEFAULT_STYLE.profileImage_1}
-                    defaultImageStyle={DEFAULT_STYLE.profileImage_2}
                     imageUrl={profile ? profile.image : undefined}
-                    imageContainerStyle={styles.userImageContainerStyle}
-                    defaultImageContainerStyle={{
-                        ...styles.userImageContainerStyle,
-                        borderColor: '#BDBDBD',
-                        borderWidth: 2
-                    }}
                 />
-                <View style={{ flexDirection: 'column', margin: 7 }}>
-                    <Text style={{ ...DEFAULT_STYLE.titleText_1, marginBottom: 8 }}>
+                <View style={{ flexDirection: 'column', marginLeft: 12, marginTop: 0 }}>
+                    <Text style={{ ...DEFAULT_STYLE.titleText_2, marginBottom: 2 }}>
                         {name}
                     </Text>
                     <ViewableSettingMenu

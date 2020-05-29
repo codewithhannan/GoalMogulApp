@@ -228,50 +228,45 @@ class ProfilePostCard extends React.PureComponent {
         const { text, tags, links } = item.content;
 
         return (
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
-                <ProfileImage
-                    imageStyle={DEFAULT_STYLE.profileImage_1}
-                    defaultImageStyle={DEFAULT_STYLE.profileImage_2}
-                    imageUrl={owner && owner.profile ? owner.profile.image : undefined}
-                    imageContainerStyle={styles.imageContainerStyle}
-                    defaultImageContainerStyle={{
-                        ...styles.imageContainerStyle,
-                        borderColor: '#BDBDBD',
-                        borderWidth: 2
-                    }}
-                    userId={owner._id}
-                    actionDecorator={this.props.actionDecorator}
-                />
-                <View style={{ marginLeft: 15, flex: 1 }}>
-                    <Headline
-                        name={owner.name || ''}
-                        isSelf={this.props.userId === owner._id}
-                        caret={caret}
-                        user={owner}
+            <View>
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
+                    <ProfileImage
+                        imageUrl={owner && owner.profile ? owner.profile.image : undefined}
+                        userId={owner._id}
                         actionDecorator={this.props.actionDecorator}
-                        hasCaret={this.props.hasCaret}
-                        textStyle={DEFAULT_STYLE.titleText_2}
                     />
-                    <Timestamp time={timeago().format(timeStamp)} />
-                    <RichText
-                        contentText={text}
-                        contentTags={tags}
-                        contentLinks={links || []}
-                        textStyle={[ DEFAULT_STYLE.normalText_1, styles.textStyle]}
-                        textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
-                        numberOfLines={3}
-                        ellipsizeMode='tail'
-                        onUserTagPressed={(user) => {
-                            console.log(`${DEBUG_KEY}: user tag press for user: `, user);
-                            if (this.props.actionDecorator) {
-                                this.props.actionDecorator(() => this.props.openProfile(user));
-                            } else {
-                                this.props.openProfile(user);
-                            }
-                        }}
-                    />
-                    {this.renderSeeMore(item)}
+                    <View style={{ marginLeft: 12, marginTop: 2, flex: 1 }}>
+                        <Headline
+                            name={owner.name || ''}
+                            isSelf={this.props.userId === owner._id}
+                            caret={caret}
+                            user={owner}
+                            actionDecorator={this.props.actionDecorator}
+                            hasCaret={this.props.hasCaret}
+                            textStyle={DEFAULT_STYLE.titleText_2}
+                        />
+                        <View style={{ marginTop: 2 }} />
+                        <Timestamp time={timeago().format(timeStamp)} />
+                    </View>
                 </View>
+                <RichText
+                    contentText={text}
+                    contentTags={tags}
+                    contentLinks={links || []}
+                    textStyle={DEFAULT_STYLE.normalText_1}
+                    textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
+                    numberOfLines={3}
+                    ellipsizeMode='tail'
+                    onUserTagPressed={(user) => {
+                        console.log(`${DEBUG_KEY}: user tag press for user: `, user);
+                        if (this.props.actionDecorator) {
+                            this.props.actionDecorator(() => this.props.openProfile(user));
+                        } else {
+                            this.props.openProfile(user);
+                        }
+                    }}
+                />
+                {this.renderSeeMore(item)}
             </View>
         );
     }
@@ -312,14 +307,6 @@ class ProfilePostCard extends React.PureComponent {
 const styles = {
     containerStyle: {
         backgroundColor: 'white',
-    },
-    imageContainerStyle: {
-        borderWidth: 0.5,
-        borderColor: 'lightgray',
-        alignItems: 'center',
-        borderRadius: 100,
-        alignSelf: 'flex-start',
-        backgroundColor: 'white'
     },
     textStyle: {
         flex: 1,

@@ -219,6 +219,11 @@ export const DEFAULT_STYLE = {
         fontSize: 14 * UI_SCALE,
         color: TEXT_COLOR_1
     },
+    normalText_2: {
+        fontFamily: FONT_FAMILY_2,
+        fontSize: 12 * UI_SCALE,
+        color: TEXT_COLOR_1
+    },
     normalIcon_1: {
         height: 16 * UI_SCALE,
         width: 16 * UI_SCALE
@@ -276,14 +281,14 @@ export const DEFAULT_STYLE = {
         marginTop: 4 * UI_SCALE
     },
     profileImage_1: {
-        height: 60 * UI_SCALE,
-        width: 60 * UI_SCALE,
-        borderRadius: 30 * UI_SCALE
+        height: 42 * UI_SCALE,
+        width: 42 * UI_SCALE,
+        borderRadius: 21 * UI_SCALE
     },
     profileImage_2: {
         height: 20 * UI_SCALE,
         width: 20 * UI_SCALE,
-        margin: 20 * UI_SCALE
+        margin: 10 * UI_SCALE
     },
     shadow: {
         width: '100%',

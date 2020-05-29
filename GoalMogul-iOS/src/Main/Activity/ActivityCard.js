@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import R from 'ramda';
 import React from 'react';
-import { Dimensions, Image, ImageBackground, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { Dimensions, Image, ImageBackground, TouchableWithoutFeedback, View } from 'react-native';
 import { connect } from 'react-redux';
 // Actions
 import { openProfile } from '../../actions';
@@ -279,7 +279,7 @@ class ActivityCard extends React.PureComponent {
 
         return (
             <View style={{ marginTop: 10 }}>
-                <View style={{ backgroundColor: 'white', ...styles.borderShadow }}>
+                <View style={{ backgroundColor: 'white' }}>
                     {item.goalRef && item.goalRef.isCompleted ?
                         <Image
                             source={ConfettiFadedBackgroundTopHalf}
@@ -338,13 +338,6 @@ const styles = {
         fontSize: 20,
         marginLeft: 5,
         marginTop: 2
-    },
-    borderShadow: {
-        shadowColor: 'lightgray',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 1,
-        shadowRadius: 3,
-        elevation: 1,
     }
 };
 

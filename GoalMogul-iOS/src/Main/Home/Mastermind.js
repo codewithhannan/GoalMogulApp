@@ -291,11 +291,7 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 3,
-        backgroundColor: GM_BLUE,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.4,
-        shadowRadius: 2,
+        backgroundColor: GM_BLUE
     },
     iconStyle: {
         height: 26,

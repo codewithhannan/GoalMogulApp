@@ -233,7 +233,7 @@ class GoalCard extends React.PureComponent {
                         imageUrl={owner && owner.profile ? owner.profile.image : undefined}
                         userId={owner._id}
                     />
-                    <View style={{ margin: 12, flex: 1 }}>
+                    <View style={{ marginLeft: 12, marginTop: 2, flex: 1 }}>
                         <Headline
                             name={owner.name}
                             category={category}
@@ -242,12 +242,12 @@ class GoalCard extends React.PureComponent {
                             caret={caret}
                             textStyle={DEFAULT_STYLE.titleText_2}
                         />
-                        <View style={{ marginTop: 6 }} />
+                        <View style={{ marginTop: 2 }} />
                         <Timestamp time={timeago().format(timeStamp)} viewCount={viewCount} priority={priority} isCompleted={isCompleted} />
                     </View>
                 </View>
                 <Text
-                    style={{ ...DEFAULT_STYLE.subTitleText_1, marginTop: 16, flex: 1, flexWrap: 'wrap', color: 'black' }}
+                    style={{ ...DEFAULT_STYLE.normalText_1, marginTop: 16, flex: 1, flexWrap: 'wrap', color: 'black' }}
                     numberOfLines={2}
                     ellipsizeMode='tail'
                     selectable
@@ -316,7 +316,7 @@ class GoalCard extends React.PureComponent {
 
         return (
             <View style={{ marginTop: 10 }}>
-                <View style={{ backgroundColor: 'white', ...styles.borderShadow }}>
+                <View style={{ backgroundColor: 'white' }}>
                     {item.isCompleted ?
                         <Image
                             source={ConfettiFadedBackgroundTopHalf}
@@ -364,13 +364,6 @@ const styles = {
         fontSize: 20,
         marginLeft: 5,
         marginTop: 2
-    },
-    borderShadow: {
-        shadowColor: 'lightgray',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 1,
-        shadowRadius: 3,
-        elevation: 1,
     },
     imageContainerStyle: {
         borderWidth: 0.5,

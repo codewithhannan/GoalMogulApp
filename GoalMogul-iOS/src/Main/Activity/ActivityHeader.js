@@ -192,7 +192,7 @@ class ActivityHeader extends Component {
                         imageUrl={userToRender && userToRender.profile ? userToRender.profile.image : undefined}
                         userId={userToRender._id}
                     />
-                    <View style={{ margin: 12, flex: 1 }}>
+                    <View style={{ marginLeft: 12, marginTop: 2, flex: 1 }}>
                         <Headline
                             name={userToRender.name || ''}
                             category={category}
@@ -201,7 +201,7 @@ class ActivityHeader extends Component {
                             isSelf={this.props.userId === userToRender._id}
                             textStyle={DEFAULT_STYLE.titleText_2}
                         />
-                        <View style={{ marginTop: 4 }} />
+                        <View style={{ marginTop: 2 }} />
                         <Timestamp time={timeago().format(timeStamp)} viewCount={viewCount} priority={priority} isCompleted={isCompleted} />
                     </View>
                 </View>
@@ -209,7 +209,7 @@ class ActivityHeader extends Component {
                     contentText={content}
                     contentTags={tags}
                     contentLinks={links || []}
-                    textStyle={{ ...DEFAULT_STYLE.subTitleText_1, marginTop: 4, flex: 1, flexWrap: 'wrap', color: 'black' }}
+                    textStyle={{ ...DEFAULT_STYLE.normalText_1, marginTop: 4, flex: 1, flexWrap: 'wrap', color: 'black' }}
                     textContainerStyle={{ flexDirection: 'row', marginTop: 5 }}
                     numberOfLines={3}
                     ellipsizeMode='tail'
