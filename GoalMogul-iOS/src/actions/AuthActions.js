@@ -213,6 +213,7 @@ const mountUserWithToken = ({ payload, username, password, navigate, onSuccess, 
     fetchAppUserProfile(payload.token, payload.userId)(dispatch, getState);
     refreshFeed()(dispatch, getState);
     refreshGoals()(dispatch, getState);
+    subscribeNotification()(dispatch, getState);
 
     // Load unread notification
     await loadUnreadNotification()(dispatch, getState);
@@ -222,8 +223,6 @@ const mountUserWithToken = ({ payload, username, password, navigate, onSuccess, 
 
     // Load remote matches
     await loadRemoteMatches(payload.userId)(dispatch, getState);
-
-    await subscribeNotification()(dispatch, getState);
 
     // If navigate is set to false, it means user has already opened up the home page
     // We only need to reload the profile and feed data
