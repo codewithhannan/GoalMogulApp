@@ -217,12 +217,14 @@ export const DEFAULT_STYLE = {
     normalText_1: {
         fontFamily: FONT_FAMILY_2,
         fontSize: 14 * UI_SCALE,
-        color: TEXT_COLOR_1
+        color: TEXT_COLOR_1,
+        fontWeight: '500'
     },
     normalText_2: {
         fontFamily: FONT_FAMILY_2,
         fontSize: 12 * UI_SCALE,
-        color: TEXT_COLOR_1
+        color: TEXT_COLOR_1,
+        fontWeight: '500'
     },
     normalIcon_1: {
         height: 16 * UI_SCALE,
