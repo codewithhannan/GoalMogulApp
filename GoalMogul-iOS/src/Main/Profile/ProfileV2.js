@@ -7,9 +7,9 @@ import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 /* Actions */
 import {
-blockUser, changeFilter, closeCreateOverlay, handleProfileTabOnLoadMore,
+    blockUser, changeFilter, closeCreateOverlay, handleProfileTabOnLoadMore,
     // Page related functions
-    handleTabRefresh, openCreateOverlay, selectProfileTab
+    refreshProfile, handleTabRefresh, openCreateOverlay, selectProfileTab
 } from '../../actions';
 import { closeProfile } from '../../actions/ProfileActions';
 import { Logger } from '../../redux/middleware/utils/Logger';
@@ -19,7 +19,7 @@ import { createReport } from '../../redux/modules/report/ReportActions';
 import { getUserData, getUserDataByPageId, makeGetUserGoals, makeGetUserNeeds, makeGetUserPosts } from '../../redux/modules/User/Selector';
 import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users';
 /* Styles */
-import { APP_DEEP_BLUE, BACKGROUND_COLOR } from '../../styles';
+import { BACKGROUND_COLOR, GM_BLUE, DEFAULT_STYLE } from '../../styles';
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 import PlusButton from '../Common/Button/PlusButton';
 import GoalFilterBar from '../Common/GoalFilterBar';
@@ -34,24 +34,8 @@ import About from './About';
 import ProfileDetailCard from './ProfileCard/ProfileDetailCard';
 
 
-
-
-
-
-
-
-
-
-
 const DEBUG_KEY = '[ UI ProfileV2 ]';
-// const SEARCHBAR_HEIGHT = 70;
-// const COLLAPSED_HEIGHT = 30 + SEARCHBAR_HEIGHT;
-// const HEADER_HEIGHT = 284 + 30 + SEARCHBAR_HEIGHT;
-// const INFO_CARD_HEIGHT = 284;
-// const INFO_CARD_HEIGHT = 303.5; 
-const INFO_CARD_HEIGHT = 242; 
-const DEFAULT_TRANSITION_TIME = 120;
-const PROMPT_TRANSITION_TIME = 50;
+const INFO_CARD_HEIGHT = 242;
 
 class ProfileV2 extends Component {
     constructor(props) {
@@ -80,44 +64,34 @@ class ProfileV2 extends Component {
 
         // This is unlikely to be triggered. This function is to handle when user opens 
         // profile too fast before profile is being loaded
-        if (this.props.isSelf && !_.isEqual(prevProps.user, this.props.user) 
-            && (!prevProps.user.profile || !prevProps.user.profile.badges) 
-            && _.has(this.props.user, 'profile.badges.milestoneBadge.isAwardAlertShown') 
+        if (this.props.isSelf && !_.isEqual(prevProps.user, this.props.user)
+            && (!prevProps.user.profile || !prevProps.user.profile.badges)
+            && _.has(this.props.user, 'profile.badges.milestoneBadge.isAwardAlertShown')
             && this.props.user.profile.badges.milestoneBadge.isAwardAlertShown === false) {
-                // Showing modal to congrats user earning a new badge
-                this.setState({
-                    ...this.state,
-                    showBadgeEarnModal: true
-                });
-                return;
+            // Showing modal to congrats user earning a new badge
+            this.setState({
+                ...this.state,
+                showBadgeEarnModal: true
+            });
+            return;
         }
     }
 
     componentDidMount() {
-        console.log(`${DEBUG_KEY}: mounting Profile with pageId: ${this.props.pageId}`);
-        const { userId, pageId, hideProfileDetail } = this.props;
+        const { userId, pageId, hideProfileDetail, isSelf } = this.props;
+        // console.log(`${DEBUG_KEY}: mounting Profile with pageId: ${pageId}`);
 
         // Hide profile detail as it's not on about tab
-        if (hideProfileDetail) {
-            this.closeProfileInfoCard();
-        }
+        if (hideProfileDetail) this.closeProfileInfoCard();
 
         this.props.handleTabRefresh('goals', userId, pageId, this.props.initialFilter);
         this.props.handleTabRefresh('posts', userId, pageId);
         this.props.handleTabRefresh('needs', userId, pageId);
 
-        if (_.has(this.props.user, 'profile.badges.milestoneBadge.isAwardAlertShown') 
+        if (_.has(this.props.user, 'profile.badges.milestoneBadge.isAwardAlertShown')
             && this.props.user.profile.badges.milestoneBadge.isAwardAlertShown === false) {
-                // added delay to allow screen transition
-                // TODO: refactor default screen transition time to global constant
-                // setTimeout(() => {
-                //     this.setState({
-                //         ...this.state,
-                //         showBadgeEarnModal: true
-                //     });
-                // }, 300);
-                return;
-            }
+            return;
+        }
     }
 
     componentWillUnmount() {
@@ -127,16 +101,6 @@ class ProfileV2 extends Component {
 
     closeProfileInfoCard = () => {
         Logger.log(`${DEBUG_KEY}: [ closeProfileInfoCard ]`, {}, 2);
-        // Animated.parallel([
-        //     Animated.timing(this.state.infoCardHeight, {
-        //         duration: PROMPT_TRANSITION_TIME,
-        //         toValue: 0,
-        //     }),
-        //     Animated.timing(this.state.infoCardOpacity, {
-        //         duration: PROMPT_TRANSITION_TIME,
-        //         toValue: 0,
-        //     }),
-        // ]).start();
     }
 
     handleRefresh = () => {
@@ -170,19 +134,6 @@ class ProfileV2 extends Component {
      */
     handleProfileDetailCardLayout = (e) => {
         return;
-        // if (!this.state.hasLoadedProfile || this.props.user.profile.headline) {
-        //     return;
-        // }
-
-        // const { navigationState } = this.props;
-        // const { routes, index } = navigationState;
-        // if (routes[index].key !== 'about') return;
-
-        // const newHeight = e.nativeEvent.layout.height;
-        // this.setState({
-        //     ...this.state,
-        //     cardHeight: newHeight
-        // });
     }
 
     /**
@@ -207,10 +158,10 @@ class ProfileV2 extends Component {
             [R.equals(2), () => {
                 console.log(`${DEBUG_KEY} User blocks _id: `, this.props.userId);
                 this.props.blockUser(
-                this.props.userId,
-                () => alert(
-                    `You have successfully blocked ${this.props.user.name}. ${text}`
-                )
+                    this.props.userId,
+                    () => alert(
+                        `You have successfully blocked ${this.props.user.name}. ${text}`
+                    )
                 );
             }],
             [R.equals(3), () => {
@@ -230,8 +181,8 @@ class ProfileV2 extends Component {
         const { userId, pageId } = this.props;
         this.props.openCreateOverlay(userId, pageId);
         // As we move the create option here, we no longer need to care about the tab
-        Actions.createGoalButtonOverlay({ 
-            tab: 'mastermind', 
+        Actions.createGoalButtonOverlay({
+            tab: 'mastermind',
             callback: () => this.closeProfileInfoCard(),
             onCreate: () => this.props.openCreateOverlay(userId, pageId),
             onClose: () => this.props.closeCreateOverlay(userId, pageId),
@@ -242,64 +193,37 @@ class ProfileV2 extends Component {
     }
 
     _handleIndexChange = (nextIndex) => {
-        const { pageId, userId, navigationState } = this.props;
-        const { routes } = navigationState;
-
-        // if (routes[nextIndex].key === 'about') {
-        // // Animated to hide the infoCard if not on about tab
-        //     Animated.parallel([
-        //         Animated.timing(this.state.infoCardHeight, {
-        //             duration: DEFAULT_TRANSITION_TIME,
-        //             toValue: this.state.cardHeight,
-        //         }),
-        //         Animated.timing(this.state.infoCardOpacity, {
-        //             duration: DEFAULT_TRANSITION_TIME,
-        //             toValue: 1,
-        //         }),
-        //     ]).start();
-        // } else {
-        //     // Animated to hide the infoCard if not on about tab
-        //     Animated.parallel([
-        //         Animated.timing(this.state.infoCardHeight, {
-        //             duration: DEFAULT_TRANSITION_TIME,
-        //             toValue: 0,
-        //         }),
-        //         Animated.timing(this.state.infoCardOpacity, {
-        //             duration: DEFAULT_TRANSITION_TIME,
-        //             toValue: 0,
-        //         }),
-        //     ]).start();
-        // }
+        const { pageId, userId } = this.props;
 
         // Update the reducer for index selected
         this.props.selectProfileTab(nextIndex, userId, pageId);
     };
 
     renderTabs = (props) => {
+        const paddingBottom = props.renderFilter ? 0 : styles.tabContainer.padding;
         return (
-            <TabButtonGroup 
-                buttons={props}
-                // noBorder={this.props.selectedTab !== 'about'}
-                buttonStyle={{
-                selected: {
-                    backgroundColor: APP_DEEP_BLUE,
-                    tintColor: 'white',
-                    color: 'white',
-                    fontWeight: '700'
-                },
-                unselected: {
-                    backgroundColor: '#FCFCFC',
-                    tintColor: '#616161',
-                    color: '#616161',
-                    fontWeight: '600'
-                }
-                }} 
-            />
+            <View style={{ ...styles.tabContainer, paddingBottom }}>
+                <TabButtonGroup
+                    buttons={props}
+                    borderRadius={3}
+                    buttonStyle={{
+                        selected: {
+                            ...DEFAULT_STYLE.buttonText_1,
+                            backgroundColor: GM_BLUE,
+                            color: 'white',
+                        },
+                        unselected: {
+                            ...DEFAULT_STYLE.buttonText_1,
+                            backgroundColor: '#F2F2F2'
+                        }
+                    }}
+                />
+            </View>
         );
     }
 
     renderItem = ({ item }) => {
-        const { pageId, userId, navigationState, refreshing } = this.props;
+        const { pageId, userId, navigationState } = this.props;
         const { routes, index } = navigationState;
 
         if (item && item.type === 'refreshing') {
@@ -323,8 +247,8 @@ class ProfileV2 extends Component {
             }
             case 'posts': {
                 return (
-                    <ProfilePostCard 
-                        item={item} 
+                    <ProfilePostCard
+                        item={item}
                         onPress={(item) => {
                             const initialProps = {
                                 initialFocusCommentBox: true
@@ -355,30 +279,22 @@ class ProfileV2 extends Component {
         );
     }
 
-    renderFilterBar({ selectedTab }) {
-        if (selectedTab === 'goals' || selectedTab === 'needs') {
-            return (
-                <GoalFilterBar
-                    filter={this.props.filter}
-                    onMenuChange={this.handleOnMenuChange}
-                />
-            );
-        }
-       return null;
+    renderFilterBar() {
+        return (
+            <GoalFilterBar
+                filter={this.props.filter}
+                onMenuChange={this.handleOnMenuChange}
+            />
+        );
     }
 
     renderUserInfo({ userId, pageId }) {
         return (
-            <Animated.View
-                style={{ 
-                // height: this.state.infoCardHeight,
-                    opacity: this.state.infoCardOpacity
-                }}
-            >
-                <ProfileDetailCard 
-                    pageId={pageId} 
-                    userId={userId} 
-                    onLayout={this.handleProfileDetailCardLayout} 
+            <Animated.View style={{ opacity: this.state.infoCardOpacity }}>
+                <ProfileDetailCard
+                    pageId={pageId}
+                    userId={userId}
+                    onLayout={this.handleProfileDetailCardLayout}
                     openEarnBageModal={() => this.setState({ ...this.state, showBadgeEarnModal: true })}
                 />
             </Animated.View>
@@ -386,20 +302,22 @@ class ProfileV2 extends Component {
     }
 
     /**
-     * 
      * @param {object} props { navigationState, selectedTab, userId, pageId }
      */
     renderHeader(props) {
+        const renderFilter = (props.selectedTab === 'goals' || props.selectedTab === 'needs');
         return (
             <View>
                 {this.renderUserInfo(props)}
                 {this.renderTabs(
                     {
                         jumpToIndex: (i) => this._handleIndexChange(i),
-                        navigationState: props.navigationState
+                        navigationState: props.navigationState,
+                        renderFilter
                     })
                 }
-                {this.renderFilterBar(props)}
+                {renderFilter ? this.renderFilterBar(props) : null}
+                <View style={DEFAULT_STYLE.shadow}/>
             </View>
         )
     }
@@ -438,7 +356,6 @@ class ProfileV2 extends Component {
 
     renderListFooter() {
         const { loading, data } = this.props;
-        // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
         if (loading && data.length >= 7) {
             return (
                 <View
@@ -453,41 +370,43 @@ class ProfileV2 extends Component {
     }
 
     render() {
-        const { userId, pageId, selectedTab, navigationState, data } = this.props;
+        const { userId, pageId, selectedTab, navigationState, data, refreshProfile } = this.props;
+        if (!pageId) refreshProfile(userId);
+
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <View style={styles.containerStyle}>
-                <SearchBarHeader 
-                    backButton 
-                    setting 
-                    onBackPress={this.handleOnBackPress} 
-                    userId={userId}  
-                    handlePageSetting={this.handlePageSetting}
-                />
-                {/* <ProfileSummaryCard pageId={this.props.pageId} userId={this.props.userId} /> */}
-                <FlatList
-                    data={data}
-                    renderItem={this.renderItem}
-                    keyExtractor={(i) => i._id}
-                    onRefresh={this.handleRefresh}
-                    onEndReached={this.handleOnLoadMore}
-                    onEndReachedThreshold={0}
-                    refreshing={false}
-                    ListEmptyComponent={this.renderListEmptyState()}
-                    ListHeaderComponent={this.renderHeader({ userId, pageId, selectedTab, navigationState })}
-                    ListFooterComponent={this.renderListFooter()}
-                />
-                {this.renderPlus()}
-                <EarnBadgeModal
-                    isVisible={this.state.showBadgeEarnModal}
-                    closeModal={() => {
-                        this.setState({
-                            ...this.state,
-                            showBadgeEarnModal: false
-                        });
-                    }}
-                    user={this.props.user}
-                />
+                    <SearchBarHeader
+                        backButton={!this.props.isMainTab}
+                        setting={!this.props.isMainTab}
+                        rightIcon='menu'
+                        onBackPress={this.handleOnBackPress}
+                        userId={userId}
+                        handlePageSetting={this.handlePageSetting}
+                    />
+                    <FlatList
+                        data={data}
+                        renderItem={this.renderItem}
+                        keyExtractor={(i) => i._id}
+                        onRefresh={this.handleRefresh}
+                        onEndReached={this.handleOnLoadMore}
+                        onEndReachedThreshold={0}
+                        refreshing={false}
+                        ListEmptyComponent={this.renderListEmptyState()}
+                        ListHeaderComponent={this.renderHeader({ userId, pageId, selectedTab, navigationState })}
+                        ListFooterComponent={this.renderListFooter()}
+                    />
+                    {this.renderPlus()}
+                    <EarnBadgeModal
+                        isVisible={this.state.showBadgeEarnModal}
+                        closeModal={() => {
+                            this.setState({
+                                ...this.state,
+                                showBadgeEarnModal: false
+                            });
+                        }}
+                        user={this.props.user}
+                    />
                 </View>
             </MenuProvider>
         );
@@ -498,41 +417,14 @@ const styles = {
     containerStyle: {
         flex: 1,
         backgroundColor: BACKGROUND_COLOR,
-        // shadowColor: '#000',
-        // shadowOffset: { width: 0, height: 1 },
-        // shadowOpacity: 0.3,
-        // shadowRadius: 6,
     },
-    tabContainerStyle: {
-        display: 'flex',
-        height: 35,
-        flexDirection: 'row'
+    tabContainer: {
+        padding: 16,
+        backgroundColor: BACKGROUND_COLOR
     },
     backdrop: {
         backgroundColor: 'gray',
-        opacity: 0.7,
-    },
-    iconContainerStyle: {
-        position: 'absolute',
-        bottom: 20,
-        right: 29,
-        height: 54,
-        width: 54,
-        borderRadius: 27,
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 3,
-        // backgroundColor: '#17B3EC',
-        backgroundColor: APP_DEEP_BLUE,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.4,
-        shadowRadius: 2,
-    },
-    iconStyle: {
-        height: 26,
-        width: 26,
-        tintColor: 'white',
+        opacity: 0.5
     }
 };
 
@@ -542,8 +434,10 @@ const makeMapStateToProps = () => {
     const getUserPosts = makeGetUserPosts();
 
     const mapStateToProps = (state, props) => {
-        const { userId, pageId } = props;
-    
+        // Set userId to main user if no userId present in props
+        const userId = props.userId || state.auth.user.userId;
+        const { pageId } = props;
+
         const user = getUserData(state, userId, 'user');
         let userPage = getUserDataByPageId(state, userId, pageId, '');
 
@@ -552,7 +446,6 @@ const makeMapStateToProps = () => {
         }
 
         const { navigationState, showPlus } = userPage;
-
         const { routes, index } = navigationState;
         const selectedTab = routes[index].key;
         // Get page info by tab
@@ -576,13 +469,11 @@ const makeMapStateToProps = () => {
         }
 
         // console.log(`${DEBUG_KEY}: refreshing is:`, refreshing);
-        if (refreshing) {
-            data = [{ type: 'refreshing' }].concat(data);
-        }
-        
+        if (refreshing) data = [{ type: 'refreshing' }].concat(data);
         const appUser = state.user.user;
-    
+
         return {
+            userId,
             selectedTab,
             navigationState,
             isSelf: user && appUser && userId === appUser._id,
@@ -597,7 +488,6 @@ const makeMapStateToProps = () => {
     return mapStateToProps;
 }
 
-
 export default connect(
     makeMapStateToProps,
     {
@@ -605,6 +495,7 @@ export default connect(
         closeCreateOverlay,
         openCreateOverlay,
         closeProfile,
+        refreshProfile,
         openPostDetail,
         blockUser,
         createReport,

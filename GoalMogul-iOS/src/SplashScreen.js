@@ -34,7 +34,7 @@ import {
     RightArrowIcon
 } from './Utils/Icons';
 
-import { IPHONE_MODELS, IS_ZOOMED } from './Utils/Constants';
+import { IPHONE_MODELS, IS_ZOOMED, DEVICE_MODEL } from './Utils/Constants';
 import banner from './asset/banner';
 import background from './asset/background';
 import image from './asset/image';
@@ -42,8 +42,7 @@ import { trackViewScreen } from './monitoring/segment';
 import { Screen } from './monitoring/segment/Constants';
 
 
-const IS_SMALL_PHONE = Platform.OS === 'ios' &&
-    IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+const IS_SMALL_PHONE = Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL);
 const width = Dimensions.get('window').width
 const DEBUG_KEY = '[ UI SplashScreen ]';
 
@@ -125,12 +124,9 @@ class SplashScreen extends Component {
             require('./asset/utils/envelope.png'),
             require('./asset/utils/eventIcon.png'),
             require('./asset/utils/tribeIcon.png'),
-            // require('./asset/utils/message_icon.png'),
-            // require('./asset/utils/bell_icon.png'),
             // Friends Tab images
             require('./asset/utils/Friends.png'),
             require('./asset/utils/ContactSync.png'),
-            // require('./asset/utils/People.png'),
             require('./asset/utils/Suggest.png'),
             require('./asset/utils/clipboard.png'),
             require('./asset/utils/logout.png'),
@@ -335,6 +331,7 @@ class SplashScreen extends Component {
         );
     }
 }
+
 const zoomedStyles = {
     largePhoneHeaderContainerStyle: {
         flexDirection: 'row',
@@ -401,16 +398,10 @@ const styles = {
         marginRight: 10,
         marginBottom: 3
     },
-
     // Body style
     bodyContainerStyle: {
         justifyContent: 'center',
         alignItems: 'center'
-    },
-    largePhoneImageStyle: {
-        height: 330,
-        width: 330,
-        tintColor: '#045C7A'
     },
     imageStyle: {
         height: 200,
@@ -425,7 +416,6 @@ const styles = {
         letterSpacing: 0.5,
         fontFamily: 'gotham-pro'
     },
-
     // Highlight style
     buttonTextStyle: {
         fontSize: 20,
@@ -452,7 +442,6 @@ const styles = {
         justifyContent: 'center',
         alignSelf: 'center'
     },
-
     // Footer style
     loginHighlightContainerStyle: {
         backgroundColor: '#4ccbf5',
@@ -477,7 +466,6 @@ const styles = {
     },
     iconStyle: {
         alignSelf: 'center',
-        // fontSize: 26,
         marginLeft: 5
     }
 };

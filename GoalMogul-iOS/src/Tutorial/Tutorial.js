@@ -32,7 +32,7 @@ import Host from './Host';
 
 // Constants
 import {
-  IPHONE_MODELS
+  IPHONE_MODELS, DEVICE_MODEL
 } from '../Utils/Constants';
 
 const DEBUG_KEY = '[ UI Tutorial ]';
@@ -277,7 +277,7 @@ class Tutorial extends React.Component {
   renderHeader() {
     const paddingTop = (
       Platform.OS === 'ios' &&
-      IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+      IPHONE_MODELS.includes(DEVICE_MODEL)
     ) ? 30 : 50;
 
     return (
@@ -355,7 +355,7 @@ const CancelButton = (props) => {
 
   const paddingTop = (
     Platform.OS === 'ios' &&
-    IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
+    IPHONE_MODELS.includes(DEVICE_MODEL)
   ) ? 10 : 30;
 
   return (

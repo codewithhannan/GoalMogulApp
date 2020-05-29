@@ -259,6 +259,7 @@ export const fetchAppUserProfile = (token, userId) => (dispatch, getState) => {
             }
         })
         .catch((err) => {
+            console.log('[ Auth Action ] fetch user profile fails: ', err);
             new SentryRequestBuilder(new Error(message), SENTRY_MESSAGE_TYPE.ERROR)
                 .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
                 .withTag(SENTRY_TAGS.ACTION.FETCH_USER_PROFILE, SENTRY_TAG_VALUE.ACTIONS.FAILED)

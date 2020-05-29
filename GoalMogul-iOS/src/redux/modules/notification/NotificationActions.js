@@ -175,8 +175,7 @@ export const handlePushNotification = (notification) => (dispatch, getState) => 
     if (entityType === 'navigation') {
         // path: navigation/friends to open friends tab
         if (entityId === 'friends') {
-            Actions.jump('meetTab');
-            Actions.reset('meet');
+            Actions.push('friendsTab');
             return;
         }
 

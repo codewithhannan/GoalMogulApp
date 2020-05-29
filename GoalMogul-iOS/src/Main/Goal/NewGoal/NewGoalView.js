@@ -1,36 +1,33 @@
 import React, { Component } from 'react';
 import {
-  View,
-  KeyboardAvoidingView,
-  ScrollView,
-  Image,
-  Text,
-  TouchableOpacity,
-  Dimensions,
-  FlatList,
-  DatePickerIOS,
-  Modal,
-  Alert,
-  ActivityIndicator,
-  Animated
+    View,
+    ScrollView,
+    Image,
+    Text,
+    TouchableOpacity,
+    Dimensions,
+    FlatList,
+    DatePickerIOS,
+    Modal,
+    Alert,
+    ActivityIndicator
 } from 'react-native';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import {
-  FieldArray,
-  Field,
-  reduxForm,
-  formValueSelector
+    FieldArray,
+    Field,
+    reduxForm,
+    formValueSelector
 } from 'redux-form';
-import R from 'ramda';
 import moment from 'moment';
 import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-  renderers
+    Menu,
+    MenuOptions,
+    MenuOption,
+    MenuTrigger,
+    renderers
 } from 'react-native-popup-menu';
 import Slider from 'react-native-slider';
 import DraggableFlatlist from 'react-native-draggable-flatlist';
@@ -38,1293 +35,1172 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
 // Components
-// import DraggableFlatlist from '../Common/DraggableFlatlist';
 import ModalHeader from '../../Common/Header/ModalHeader';
 import Button from '../Button';
 import InputField from '../../Common/TextInput/InputField';
-import ViewableSettingMenu from '../ViewableSettingMenu';
 import MentionsTextInput from '../Common/MentionsTextInput';
 import ProfileImage from '../../Common/ProfileImage';
 import EmptyResult from '../../Common/Text/EmptyResult';
 
 // assets
 import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
+import CalenderIcon from '../../../asset/utils/calendar_empty.png';
 import plus from '../../../asset/utils/plus.png';
 import cancel from '../../../asset/utils/cancel_no_background.png';
 import dropDown from '../../../asset/utils/dropDown.png';
+import arrowRight from '../../../asset/utils/arrow_right.png';
 
 // Actions
-// import { } from '../../actions';
 import {
-  validate,
-  submitGoal,
-  goalToFormAdaptor
+    validate,
+    submitGoal,
+    goalToFormAdaptor
 } from '../../../redux/modules/goal/CreateGoalActions';
 import { searchUser } from '../../../redux/modules/search/SearchActions';
 
 // Selector
 import {
-  getGoalDetailByTab
+    getGoalDetailByTab
 } from '../../../redux/modules/goal/selector';
 
 // Utils
 import { arrayUnique, clearTags } from '../../../redux/middleware/utils';
-import { IMAGE_BASE_URL } from '../../../Utils/Constants';
+import { DEFAULT_STYLE, BACKGROUND_COLOR, GM_BLUE } from '../../../styles';
+import { PRIVACY_OPTIONS } from '../../../Utils/Constants';
+
 
 const { Popover } = renderers;
 const { width } = Dimensions.get('window');
 
-const STEP_PLACE_HOLDER = 'Add an important step to achieving your goal...';
+const STEP_PLACE_HOLDER = 'Add an important step for achieving your goal';
 const NEED_PLACE_HOLDER = 'Something you\'re specifically looking for help with';
 const INITIAL_TAG_SEARCH = {
-  data: [],
-  skip: 0,
-  limit: 10,
-  loading: false
+    data: [],
+    skip: 0,
+    limit: 10,
+    loading: false
 };
 const DEBUG_KEY = '[ UI NewGoalView ]';
 const WalkableView = walkthroughable(View);
 
 class NewGoalView extends Component {
-  constructor(props) {
-    super(props);
-    this.initializeForm();
-    this.state = {
-      scrollEnabled: true,
-      keyword: '',
-      tagSearchData: { ...INITIAL_TAG_SEARCH },
-    };
-    this.updateSearchRes = this.updateSearchRes.bind(this);
-    this.scrollTo = this.scrollTo.bind(this);
-    this.handleLayoutChange = this.handleLayoutChange.bind(this);
-    this.scrollToEnd = this.scrollToEnd.bind(this);
-  }
-
-  componentDidMount() {
-    this.initializeForm();
-    if (this.props.onRef !== null) {
-      this.props.onRef(this);
-    }
-  }
-
-  componentWillUnmount() {
-    console.log(`${DEBUG_KEY}: unmounting NewGoalView`);
-    if (this.reqTimer) {
-      clearTimeout(this.reqTimer);
-    }
-  }
-
-  /**
-   * Scroll the form to the end
-   */
-  scrollToEnd() {
-    if (this.scrollView !== undefined) {
-      this.scrollView.scrollToEnd();
-    }
-  }
-
-  /**
-   * y: calculated height to move based on the screen
-   * type: ['step', 'need']
-   * index: index in the type array starting from 0
-   */
-  scrollTo = (y, type, index) => {
-    // console.log(`${DEBUG_KEY}: scrollTo is called to scroll to y: ${y}`);
-    // console.log(`${DEBUG_KEY}: need length: `, this.props.steps.length);
-    // console.log(`${DEBUG_KEY}: index is: `, index);
-    let extraNumber = 0;
-    if (type === 'step') {
-      extraNumber = index;
+    constructor(props) {
+        super(props);
+        this.initializeForm();
+        this.state = {
+            scrollEnabled: true,
+            keyword: '',
+            tagSearchData: { ...INITIAL_TAG_SEARCH },
+        };
+        this.updateSearchRes = this.updateSearchRes.bind(this);
+        this.scrollTo = this.scrollTo.bind(this);
+        this.handleLayoutChange = this.handleLayoutChange.bind(this);
+        this.scrollToEnd = this.scrollToEnd.bind(this);
     }
 
-    if (type === 'need') {
-      extraNumber = (this.props.steps.length + 1) + index;
+    componentDidMount() {
+        this.initializeForm();
+        if (this.props.onRef !== null) {
+            this.props.onRef(this);
+        }
     }
-    const extraScrollToHeight = extraNumber * 54;
-    // console.log(`${DEBUG_KEY}: extra scroll height:`, extraScrollToHeight);
-    this.scrollView.scrollTo({ y: y + extraScrollToHeight, animated: true });
-  }
 
-  handleLayoutChange = ({ nativeEvent }) => {
-    console.log(`${DEBUG_KEY}: [ handleLayoutChange ]: layout: `, nativeEvent.layout);
-  }
+    componentWillUnmount() {
+        console.log(`${DEBUG_KEY}: unmounting NewGoalView`);
+        if (this.reqTimer) {
+            clearTimeout(this.reqTimer);
+        }
+    }
 
-  /* Tag related functions */
-  onTaggingSuggestionTap(item, hidePanel, cursorPosition) {
-    hidePanel();
-    const { name } = item;
-    const { details, tags } = this.props;
-    if (!details || _.isEmpty(details)) return;
-    const detail = details[0];
+    /**
+     * Scroll the form to the end
+     */
+    scrollToEnd() {
+        if (this.scrollView !== undefined) {
+            this.scrollView.scrollToEnd();
+        }
+    }
 
-    const postCursorContent = detail.slice(cursorPosition);
-    const prevCursorContent = detail.slice(0, cursorPosition);
-    const content = prevCursorContent.slice(0, -this.state.keyword.length);
-    const newContent = `${content}@${name} ${postCursorContent.replace(/^\s+/g, '')}`;
-    // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
-    // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
-    this.props.change('details[0]', newContent);
+    /**
+     * y: calculated height to move based on the screen
+     * type: ['step', 'need']
+     * index: index in the type array starting from 0
+     */
+    scrollTo = (y, type, index) => {
+        // console.log(`${DEBUG_KEY}: scrollTo is called to scroll to y: ${y}`);
+        // console.log(`${DEBUG_KEY}: need length: `, this.props.steps.length);
+        // console.log(`${DEBUG_KEY}: index is: `, index);
+        let extraNumber = 0;
+        if (type === 'step') {
+            extraNumber = index;
+        }
 
-    const newContentTag = {
-      user: item,
-      startIndex: content.length, // `${comment}@${name} `
-      endIndex: content.length + 1 + name.length, // `${comment}@${name} `
-      tagReg: `\\B@${name}`,
-      tagText: `@${name}`
-    };
+        if (type === 'need') {
+            extraNumber = (this.props.steps.length + 1) + index;
+        }
+        const extraScrollToHeight = extraNumber * 54;
+        // console.log(`${DEBUG_KEY}: extra scroll height:`, extraScrollToHeight);
+        this.scrollView.scrollTo({ y: y + extraScrollToHeight, animated: true });
+    }
 
-    // Clean up tags position before comparing
-    const newTags = clearTags(newContent, newContentTag, tags);
+    handleLayoutChange = ({ nativeEvent }) => {
+        console.log(`${DEBUG_KEY}: [ handleLayoutChange ]: layout: `, nativeEvent.layout);
+    }
 
-    // Check if this tags is already in the array
-    const containsTag = newTags.some((t) => (
-      t.tagReg === `\\B@${name}` && t.startIndex === content.length + 1
-    ));
+    /* Tag related functions */
+    onTaggingSuggestionTap(item, hidePanel, cursorPosition) {
+        hidePanel();
+        const { name } = item;
+        const { details, tags } = this.props;
+        if (!details || _.isEmpty(details)) return;
+        const detail = details[0];
 
-    const needReplceOldTag = newTags.some((t) => (
-      t.startIndex === content.length
-    ));
+        const postCursorContent = detail.slice(cursorPosition);
+        const prevCursorContent = detail.slice(0, cursorPosition);
+        const content = prevCursorContent.slice(0, -this.state.keyword.length);
+        const newContent = `${content}@${name} ${postCursorContent.replace(/^\s+/g, '')}`;
+        // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
+        // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
+        this.props.change('details[0]', newContent);
 
-    // Update comment contentTags regex and contentTags
-    if (!containsTag) {
-      let newContentTags;
-      if (needReplceOldTag) {
-        newContentTags = newTags.map((t) => {
-          if (t.startIndex === newContentTag.startIndex) {
-            return newContentTag;
-          }
-          return t;
+        const newContentTag = {
+            user: item,
+            startIndex: content.length, // `${comment}@${name} `
+            endIndex: content.length + 1 + name.length, // `${comment}@${name} `
+            tagReg: `\\B@${name}`,
+            tagText: `@${name}`
+        };
+
+        // Clean up tags position before comparing
+        const newTags = clearTags(newContent, newContentTag, tags);
+
+        // Check if this tags is already in the array
+        const containsTag = newTags.some((t) => (
+            t.tagReg === `\\B@${name}` && t.startIndex === content.length + 1
+        ));
+
+        const needReplceOldTag = newTags.some((t) => (
+            t.startIndex === content.length
+        ));
+
+        // Update comment contentTags regex and contentTags
+        if (!containsTag) {
+            let newContentTags;
+            if (needReplceOldTag) {
+                newContentTags = newTags.map((t) => {
+                    if (t.startIndex === newContentTag.startIndex) {
+                        return newContentTag;
+                    }
+                    return t;
+                });
+            } else {
+                newContentTags = [...newTags, newContentTag];
+            }
+
+            this.props.change(
+                'tags',
+                newContentTags.sort((a, b) => a.startIndex - b.startIndex)
+            );
+        }
+
+        // Clear tag search data state
+        this.setState({
+            ...this.state,
+            tagSearchData: { ...INITIAL_TAG_SEARCH }
         });
-      } else {
-        newContentTags = [...newTags, newContentTag];
-      }
-
-      this.props.change(
-        'tags',
-        newContentTags.sort((a, b) => a.startIndex - b.startIndex)
-      );
     }
 
-    // Clear tag search data state
-    this.setState({
-      ...this.state,
-      tagSearchData: { ...INITIAL_TAG_SEARCH }
-    });
-  }
+    // This is triggered when a trigger (@) is removed. Verify if all tags
+    // are still valid.
+    validateContentTags = (change) => {
+        const { tags, details } = this.props;
+        console.log(`${DEBUG_KEY}: details are: `, details);
+        if (!details || _.isEmpty(details)) return;
+        const content = details[0];
+        const newContentTags = tags.filter((tag) => {
+            const { startIndex, endIndex, tagText } = tag;
 
-  // This is triggered when a trigger (@) is removed. Verify if all tags
-  // are still valid.
-  validateContentTags = (change) => {
-    const { tags, details } = this.props;
-    console.log(`${DEBUG_KEY}: details are: `, details);
-    if (!details || _.isEmpty(details)) return;
-    const content = details[0];
-    const newContentTags = tags.filter((tag) => {
-      const { startIndex, endIndex, tagText } = tag;
-
-      const actualTag = content.slice(startIndex, endIndex);
-      // Verify if with the same startIndex and endIndex, we can still get the
-      // tag. If not, then we remove the tag.
-      return actualTag === tagText;
-    });
-    change('tags', newContentTags);
-  }
-
-  updateSearchRes(res, searchContent) {
-    // console.log(`${DEBUG_KEY}: res is: `, res);
-    // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
-    // console.log(`${DEBUG_KEY}: searchContent is: `, searchContent);
-    if (searchContent !== this.state.keyword) return;
-    this.setState({
-      ...this.state,
-      // keyword,
-      tagSearchData: {
-        ...this.state.tagSearchData,
-        skip: res.data.length, //TODO: new skip
-        data: res.data,
-        loading: false
-      }
-    });
-  }
-
-  triggerCallback(keyword) {
-    if (this.reqTimer) {
-      clearTimeout(this.reqTimer);
+            const actualTag = content.slice(startIndex, endIndex);
+            // Verify if with the same startIndex and endIndex, we can still get the
+            // tag. If not, then we remove the tag.
+            return actualTag === tagText;
+        });
+        change('tags', newContentTags);
     }
 
-    this.reqTimer = setTimeout(() => {
-      console.log(`${DEBUG_KEY}: requesting for keyword: `, keyword);
-      this.setState({
-        ...this.state,
-        keyword,
-        tagSearchData: {
-          ...this.state.tagSearchData,
-          loading: true
+    updateSearchRes(res, searchContent) {
+        // console.log(`${DEBUG_KEY}: res is: `, res);
+        // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
+        // console.log(`${DEBUG_KEY}: searchContent is: `, searchContent);
+        if (searchContent !== this.state.keyword) return;
+        this.setState({
+            ...this.state,
+            // keyword,
+            tagSearchData: {
+                ...this.state.tagSearchData,
+                skip: res.data.length, //TODO: new skip
+                data: res.data,
+                loading: false
+            }
+        });
+    }
+
+    triggerCallback(keyword) {
+        if (this.reqTimer) {
+            clearTimeout(this.reqTimer);
         }
-      });
-      const { limit } = this.state.tagSearchData;
-      this.props.searchUser(keyword, 0, limit, (res, searchContent) => {
-        this.updateSearchRes(res, searchContent);
-      });
-    }, 150);
-  }
 
-  handleTagSearchLoadMore = () => {
-    const { tagSearchData, keyword } = this.state;
-    const { skip, limit, data, loading } = tagSearchData;
-
-    if (loading) return;
-    this.setState({
-      ...this.state,
-      keyword,
-      tagSearchData: {
-        ...this.state.tagSearchData,
-        loading: true
-      }
-    });
-
-    this.props.searchUser(keyword, skip, limit, (res) => {
-      this.setState({
-        ...this.state,
-        keyword,
-        tagSearchData: {
-          ...this.state.tagSearchData,
-          skip: skip + res.data.length, //TODO: new skip
-          data: arrayUnique([...data, ...res.data]),
-          loading: false
-        }
-      });
-    });
-  }
-  /* Tag related functions end */
-
-  initializeForm() {
-    const values = [{ isCompleted: false }];
-    const defaulVals = {
-      steps: [...values],
-      needs: [...values],
-      shareToMastermind: true,
-      category: 'General',
-      privacy: 'Friends',
-      priority: 1,
-      hasTimeline: false,
-      startTime: { date: undefined, picker: false },
-      endTime: { date: undefined, picker: false },
-      title: '',
-      tags: []
-    };
-
-    // Initialize based on the props, if it's opened through edit button
-    const { initializeFromState, goal, isImportedGoal } = this.props;
-    const initialVals = initializeFromState || isImportedGoal
-      ? { ...goalToFormAdaptor(goal) }
-      : { ...defaulVals };
-    // console.log('initial values are: ', initialVals);
-    this.props.initialize({
-      ...initialVals
-    });
-  }
-
-  handleCatergoryOnSelect = (value) => {
-    console.log('category selected is: ', value);
-    this.props.change('category', value);
-  }
-
-  handlePriorityOnSelect = (value) => {
-    // console.log('priority selected is: ', value);
-    this.props.change('priority', value);
-  }
-
-  // Goal creation handler
-  /**
-   * This is a hacky solution due to the fact that redux-form
-   * handleSubmit values differ from the values actually stored.
-   * NOTE:
-   * Verify by comparing
-   * console.log('handleSubmit passed in values are: ', values);
-   * console.log('form state values: ', this.props.formVals);
-   *
-   * Synchronize validate form values, contains simple check
-   */
-  handleCreate = values => {
-    const errors = validate(this.props.formVals.values);
-    console.log(`${DEBUG_KEY}: raw goal values are: `, this.props.formVals.values);
-    if (!(Object.keys(errors).length === 0 && errors.constructor === Object)) {
-      // throw new SubmissionError(errors);
-      return Alert.alert('Error', 'You have incomplete fields.');
-    }
-
-    const { goal, initializeFromState, uploading, callback } = this.props;
-    if (!uploading) return; // when uploading is false, it's actually uploading.
-    const goalId = goal ? goal._id : undefined;
-
-    return this.props.submitGoal(
-      this.props.formVals.values,
-      this.props.user._id,
-      initializeFromState,
-      () => {
-        console.log(`${DEBUG_KEY}: [handleCreate] poping the modal`);
-        Actions.pop();
-        if (callback) {
-          callback(); // Callback passed to CreateGoalModal
-        }
-      },
-      goalId
-    );
-  }
-
-  renderTagSearchLoadingComponent(loading) {
-    if (loading) {
-      return (
-        <View style={styles.activityIndicatorStyle}>
-          <ActivityIndicator />
-        </View>
-      );
-    }
-    return <EmptyResult text={'No User Found'} textStyle={{ paddingTop: 15, height: 50 }} />;
-  }
-
-  /**
-   * This is to render tagging suggestion row
-   * @param hidePanel: lib passed in funct to close suggestion panel
-   * @param item: suggestion item to render
-   */
-  renderSuggestionsRow({ item }, hidePanel, cursorPosition) {
-    const { name, profile } = item;
-    return (
-      <TouchableOpacity
-        onPress={() => this.onTaggingSuggestionTap(item, hidePanel, cursorPosition)}
-        style={{
-          height: 50,
-          width: '100%',
-          flexDirection: 'row',
-          alignItems: 'center',
-          backgroundColor: 'white'
-        }}
-      >
-        <ProfileImage
-          imageContainerStyle={styles.imageContainerStyle}
-          imageUrl={profile && profile.image ? profile.image : undefined}
-          imageStyle={{ height: 31, width: 30, borderRadius: 3 }}
-          defaultImageSource={defaultUserProfile}
-        />
-        <Text style={{ fontSize: 16, color: 'darkgray' }}>{name}</Text>
-      </TouchableOpacity>
-    );
-  }
-
-  /**
-   * This is added on ms2 polish as a new way to render textinput
-   */
-  renderInput = (props) => {
-    const {
-      input: { onFocus, value, onChange, ...restInput },
-      editable,
-      placeholder,
-      numberOfLines,
-      style,
-      loading,
-      tagData,
-      change,
-      meta: { touched, error },
-      ...custom
-    } = props;
-
-    const { tags } = this.props;
-
-    return (
-      <View style={{ zIndex: 3 }}>
-        <MentionsTextInput
-          placeholder={placeholder}
-          onChangeText={(val) => onChange(val)}
-          editable={editable}
-          value={_.isEmpty(value) ? '' : value}
-          contentTags={tags || []}
-          contentTagsReg={tags ? tags.map((t) => t.tagReg) : []}
-          tagSearchRes={this.state.tagSearchData.data}
-          flexGrowDirection='bottom'
-          suggestionPosition='bottom'
-          textInputContainerStyle={{ ...styles.inputContainerStyle }}
-          textInputStyle={style}
-          validateTags={() => this.validateContentTags(change)}
-          autoCorrect
-          suggestionsPanelStyle={{ backgroundColor: '#f8f8f8' }}
-          loadingComponent={() => this.renderTagSearchLoadingComponent(loading)}
-          textInputMinHeight={80}
-          textInputMaxHeight={200}
-          trigger={'@'}
-          triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
-          triggerCallback={(keyword) => this.triggerCallback(keyword)}
-          triggerLoadMore={this.handleTagSearchLoadMore.bind(this)}
-          renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
-          suggestionsData={tagData} // array of objects
-          keyExtractor={(item, index) => item._id}
-          suggestionRowHeight={50}
-          horizontal={false} // defaut is true, change the orientation of the list
-          MaxVisibleRowCount={4} // this is required if horizontal={false}
-        />
-      </View>
-    );
-    // return (
-    //   <View style={styles.inputContainerStyle}>
-    //     <TextInput
-    //       placeholder={placeholder}
-    //       onChangeText={(val) => onChange(val)}
-    //       style={style}
-    //       editable={editable}
-    //       multiline={multiline}
-    //       numberOfLines={numberOfLines}
-    //       value={_.isEmpty(value) ? '' : value}
-    //     />
-    //   </View>
-    // );
-  }
-
-  /**
-   * 
-   * @param {object} user 
-   * @param {boolean} isEdit: initializeFromState to determine if this is editing a goal
-   */
-  renderUserInfo(user, isEdit) {
-    if (!user) return null;
-    let imageUrl = user.profile.image;
-    let profileImage =
-      <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />;
-    if (imageUrl) {
-      imageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
-      profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
-    }
-    const callback = R.curry((value) => this.props.change('privacy', value));
-    const shareToMastermindCallback = R.curry((value) => this.props.change('shareToMastermind', value));
-    return (
-      <View style={{ flexDirection: 'row', marginBottom: 15 }}>
-        {profileImage}
-        <View style={{ marginLeft: 15 }}>
-          <Text style={{ fontSize: 18, marginBottom: 8 }}>
-            {user.name}
-          </Text>
-            <ViewableSettingMenu
-              viewableSetting={this.props.privacy}
-              callback={callback}
-              isEdit={isEdit}
-              shareToMastermind={this.props.shareToMastermind}
-              shareToMastermindCallback={shareToMastermindCallback}
-              tutorialOn={{
-                shareToMastermind: {
-                  tutorialText: this.props.tutorialText[0],
-                  order: 0,
-                  name: 'create_goal_create_goal_modal_0'
+        this.reqTimer = setTimeout(() => {
+            console.log(`${DEBUG_KEY}: requesting for keyword: `, keyword);
+            this.setState({
+                ...this.state,
+                keyword,
+                tagSearchData: {
+                    ...this.state.tagSearchData,
+                    loading: true
                 }
-              }}
-            />
-        </View>
-      </View>
-    );
-  }
-
-  renderGoal() {
-    const { title } = this.props;
-    const titleText = <Text style={styles.titleTextStyle}>Your Goal</Text>;
-    const titleCount = <Text style={styles.titleTextStyle}>{title ? title.length : 0}/90</Text>;
-    const header = (
-      <View style={{ flexDirection: 'row' }}>
-        {titleText}
-        <View style={{ flex: 1 }} />
-        {titleCount}
-      </View>
-    );
-    return (
-      <CopilotStep text={this.props.tutorialText[1]} order={1} name="create_goal_create_goal_modal_1">
-        <WalkableView>
-          {header}
-          <Field
-            name='title'
-            label='title'
-            component={InputField}
-            editable={this.props.uploading}
-            style={{ ...styles.goalInputStyle, paddingTop: 20, paddingBottom: 0 }}
-            placeholder='What are you trying to achieve?'
-            autoCorrect
-            autoCapitalize={'sentences'}
-            multiline
-            blurOnSubmit
-            maxLength={90}
-          />
-        </WalkableView>
-      </CopilotStep>
-    );
-  }
-
-  renderGoalDescription = ({
-    fields,
-    meta: { error, submitFailed },
-    loading,
-    data,
-    keyword
-  }) => {
-    // console.log(`${DEBUG_KEY}: loading: ${loading}, data: ${data}, keyword: ${keyword}`);
-    const button = fields.length > 0 ?
-      (<Button
-        text='remove description'
-        source={cancel}
-        onPress={() => {
-          fields.remove(0);
-          this.props.change('tags', []);
-        }}
-      />)
-      :
-      <Button text='detailed description' source={plus} onPress={() => fields.push({})} />;
-
-    const fieldsComponet = fields.length > 0 ?
-      fields.map((description, index) => {
-        return (
-          <Field
-            key={`goal-description-${index}`}
-            name={description}
-            component={this.renderInput}
-            editable={this.props.uploading}
-            style={{
-              ...styles.standardInputStyle,
-              paddingLeft: 15,
-              paddingRight: 15,
-              // Should approximately match numberOfLines * fontSize height + padding
-              maxHeight: 100,
-              minHeight: 80
-            }}
-            numberOfLines={5}
-            placeholder="Describe your goal"
-            multiline
-            loading={this.state.tagSearchData.loading}
-            tagData={this.state.tagSearchData.data}
-            keyword={this.state.keyword}
-            change={(type, val) => this.props.change(type, val)}
-          />
-        );
-      }) : null;
-    return (
-      <View style={{ marginTop: 10 }}>
-        {fieldsComponet}
-        {button}
-      </View>
-    );
-  }
-
-  renderCategory = () => {
-    const titleText = <Text style={styles.titleTextStyle}>Category</Text>;
-
-    const menu = MenuFactory(
-      [
-        'General',
-        'Learning/Education',
-        'Career/Business',
-        'Financial',
-        'Spiritual',
-        'Family/Personal',
-        'Physical',
-        'Charity/Philanthropy',
-        'Travel',
-        'Things'
-      ],
-      this.handleCatergoryOnSelect,
-      this.props.category,
-      { ...styles.triggerContainerStyle },
-      () => console.log('animationCallback')
-      // () => this.scrollView.scrollTo({ x: 0, y: 50, animated: true })
-    );
-
-    return (
-      <CopilotStep text={this.props.tutorialText[2]} order={2} name="create_goal_create_goal_modal_2">
-        <WalkableView
-          style={{
-            ...styles.sectionMargin,
-            justifyContent: 'flex-start',
-            flex: 1
-          }}
-        >
-          {titleText}
-          {menu}
-        </WalkableView>
-      </CopilotStep>
-    );
-  }
-
-  renderPriority = () => {
-    // const menu = MenuFactory(
-    //   ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-    //   this.handlePriorityOnSelect,
-    //   this.props.priority,
-    //   { ...styles.triggerContainerStyle, width: 80 },
-    //   () => console.log('animationCallback')
-    //   // () => this.scrollView.scrollTo({ x: 0, y: 50, animated: true })
-    // );
-    let priorityText = '';
-    if (this.props.priority <= 3) {
-      priorityText = 'Low';
-    } else if (this.props.priority <= 6) {
-      priorityText = 'Medium';
-    } else {
-      priorityText = 'High';
+            });
+            const { limit } = this.state.tagSearchData;
+            this.props.searchUser(keyword, 0, limit, (res, searchContent) => {
+                this.updateSearchRes(res, searchContent);
+            });
+        }, 150);
     }
 
-    const valueText = (
-      <Text
-        style={{
-          ...styles.titleTextStyle,
-          fontSize: 14,
-          fontWeight: '700'
-        }}
-      >
-        {this.props.priority}
-      </Text>
-    );
+    handleTagSearchLoadMore = () => {
+        const { tagSearchData, keyword } = this.state;
+        const { skip, limit, data, loading } = tagSearchData;
 
-    const titleText = (
-      <Text style={styles.titleTextStyle}>
-        Priority  {valueText}  <Text style={{ fontWeight: '700' }}>{priorityText}</Text>
-      </Text>
-    );
-
-    const menu = (
-      <Slider
-        value={this.props.priority}
-        onValueChange={value => this.handlePriorityOnSelect(value)}
-        step={1}
-        minimumValue={1}
-        maximumValue={10}
-        disabled={!this.props.uploading}
-      />
-    );
-
-    return (
-      <CopilotStep text={this.props.tutorialText[3]} order={3} name="create_goal_create_goal_modal_3">
-        <WalkableView style={{ ...styles.sectionMargin, justifyContent: 'flex-start', flex: 1 }}>
-          {titleText}
-          {menu}
-        </WalkableView>
-      </CopilotStep>
-    );
-  }
-
-  // Renderer for timeline
-  renderTimeline = () => {
-    const titleText = <Text style={styles.titleTextStyle}>Timeline (optional)</Text>;
-    // if (!this.props.hasTimeline) {
-    //   return (
-    //     <View style={{ ...styles.sectionMargin }}>
-    //       {titleText}
-    //       <TouchableOpacity 
-    //         activeOpacity={0.6}
-    //         style={{
-    //           height: 40,
-    //           width: 90,
-    //           backgroundColor: '#fafafa',
-    //           borderRadius: 4,
-    //           alignItems: 'center',
-    //           justifyContent: 'center',
-    //           marginTop: 8,
-    //           flexDirection: 'row',
-    //           padding: 10
-    //         }}
-    //         onPress={() => this.props.change('hasTimeline', true)}
-    //       >
-    //         <Image source={plus} style={{ height: 11, width: 11 }} />
-    //         <Text style={{ fontSize: 14, fontWeight: '600', marginLeft: 4 }}>
-    //           Timeline
-    //         </Text>
-    //       </TouchableOpacity>
-    //     </View>
-    //   );
-    // }
-    if (this.props.startTime === undefined) return;
-
-    const newPicker = true;
-    const startDatePicker = newPicker ?
-      (
-        <DateTimePicker
-          isVisible={this.props.startTime.picker}
-          onConfirm={(date) => {
-            if (validateTime(date, this.props.endTime.date)) {
-              this.props.change('startTime', { date, picker: false });
-              return;
+        if (loading) return;
+        this.setState({
+            ...this.state,
+            keyword,
+            tagSearchData: {
+                ...this.state.tagSearchData,
+                loading: true
             }
-            alert('Start time cannot be later than end time');
-          }}
-          onCancel={() =>
-            this.props.change('startTime', {
-              date: this.props.startTime.date, picker: false
-            })
-          }
-        />
-      ) :
-      (
-        <Modal
-          animationType="fade"
-          transparent={false}
-          visible={this.props.startTime.picker}
-        >
-          <ModalHeader
-            title='Select start time'
-            actionText='Done'
-            onAction={() =>
-              this.props.change('startTime', {
-                date: this.props.startTime.date,
-                picker: false
-              })
-            }
-            onCancel={() =>
-              this.props.change('startTime', {
-                date: this.props.startTime.date,
-                picker: false
-              })
-            }
-          />
-          <View style={{ flex: 1 }}>
-            <DatePickerIOS
-              date={this.props.startTime.date}
-              onDateChange={(date) => this.props.change('startTime', { date, picker: true })}
-              mode='date'
-            />
-          </View>
+        });
 
-        </Modal>
-      );
+        this.props.searchUser(keyword, skip, limit, (res) => {
+            this.setState({
+                ...this.state,
+                keyword,
+                tagSearchData: {
+                    ...this.state.tagSearchData,
+                    skip: skip + res.data.length, //TODO: new skip
+                    data: arrayUnique([...data, ...res.data]),
+                    loading: false
+                }
+            });
+        });
+    }
+    /* Tag related functions end */
 
-      const endDatePicker = newPicker ?
-        (
-          <DateTimePicker
-            isVisible={this.props.endTime.picker}
-            onConfirm={(date) => {
-              if (validateTime(this.props.startTime.date, date)) {
-                this.props.change('endTime', { date, picker: false });
-                return;
-              }
-              alert('End time cannot be early than start time');
-            }}
-            onCancel={() =>
-              this.props.change('endTime', {
-                date: this.props.endTime.date, picker: false
-              })
-            }
-          />
-        ) :
-        (
-          <Modal
-            animationType="fade"
-            transparent={false}
-            visible={this.props.endTime.picker}
-          >
-            <ModalHeader
-              title='Select end time'
-              actionText='Done'
-              onAction={() =>
-                this.props.change('endTime', {
-                  date: this.props.endTime.date,
-                  picker: false
-                })
-              }
-              onCancel={() =>
-                this.props.change('endTime', {
-                  date: this.props.endTime.date,
-                  picker: false
-                })
-              }
-            />
-            <View style={{ flex: 1 }}>
-              <DatePickerIOS
-                date={this.props.endTime.date}
-                onDateChange={(date) => this.props.change('endTime', { date, picker: true })}
-                mode='date'
-              />
+    initializeForm() {
+        const values = [{ isCompleted: false }];
+        const defaulVals = {
+            steps: [...values],
+            needs: [...values],
+            shareToMastermind: true,
+            category: 'General',
+            privacy: 'Friends',
+            priority: 1,
+            hasTimeline: false,
+            startTime: { date: undefined, picker: false },
+            endTime: { date: undefined, picker: false },
+            title: '',
+            tags: []
+        };
+
+        // Initialize based on the props, if it's opened through edit button
+        const { initializeFromState, goal, isImportedGoal } = this.props;
+        const initialVals = initializeFromState || isImportedGoal
+            ? { ...goalToFormAdaptor(goal) }
+            : { ...defaulVals };
+        // console.log('initial values are: ', initialVals);
+        this.props.initialize({
+            ...initialVals
+        });
+    }
+
+    handleCatergoryOnSelect = (value) => {
+        console.log('category selected is: ', value);
+        this.props.change('category', value);
+    }
+
+    handlePriorityOnSelect = (value) => {
+        // console.log('priority selected is: ', value);
+        this.props.change('priority', value);
+    }
+
+    // Goal creation handler
+    /**
+     * This is a hacky solution due to the fact that redux-form
+     * handleSubmit values differ from the values actually stored.
+     * NOTE:
+     * Verify by comparing
+     * console.log('handleSubmit passed in values are: ', values);
+     * console.log('form state values: ', this.props.formVals);
+     *
+     * Synchronize validate form values, contains simple check
+     */
+    handleCreate = values => {
+        const errors = validate(this.props.formVals.values);
+        console.log(`${DEBUG_KEY}: raw goal values are: `, this.props.formVals.values);
+        if (!(Object.keys(errors).length === 0 && errors.constructor === Object)) {
+            return Alert.alert('Error', 'You have incomplete fields.');
+        }
+
+        const { goal, initializeFromState, uploading, callback } = this.props;
+        if (!uploading) return; // when uploading is false, it's actually uploading.
+        const goalId = goal ? goal._id : undefined;
+
+        return this.props.submitGoal(
+            this.props.formVals.values,
+            this.props.user._id,
+            initializeFromState,
+            () => {
+                console.log(`${DEBUG_KEY}: [handleCreate] poping the modal`);
+                Actions.pop();
+                if (callback) {
+                    callback(); // Callback passed to CreateGoalModal
+                }
+            },
+            goalId
+        );
+    }
+
+    renderTagSearchLoadingComponent(loading) {
+        if (loading) {
+            return (
+                <View style={styles.activityIndicatorStyle}>
+                    <ActivityIndicator />
+                </View>
+            );
+        }
+        return <EmptyResult text={'No User Found'} textStyle={{ paddingTop: 15, height: 50 }} />;
+    }
+
+    /**
+     * This is to render tagging suggestion row
+     * @param hidePanel: lib passed in funct to close suggestion panel
+     * @param item: suggestion item to render
+     */
+    renderSuggestionsRow({ item }, hidePanel, cursorPosition) {
+        const { name, profile } = item;
+        return (
+            <TouchableOpacity
+                onPress={() => this.onTaggingSuggestionTap(item, hidePanel, cursorPosition)}
+                style={{
+                    height: 50,
+                    width: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: 'white'
+                }}
+            >
+                <ProfileImage
+                    defaultImageContainerStyle={styles.imageContainerStyle}
+                    imageContainerStyle={{ ...styles.imageContainerStyle, borderWidth: 0 }}
+                    imageUrl={profile && profile.image ? profile.image : undefined}
+                    imageStyle={{ height: 30, width: 30, borderRadius: 15 }}
+                    defaultImageSource={defaultUserProfile}
+                />
+                <Text style={{ fontSize: 16, color: 'darkgray' }}>{name}</Text>
+            </TouchableOpacity>
+        );
+    }
+
+    /**
+     * This is added on ms2 polish as a new way to render textinput
+     */
+    renderInput = (props) => {
+        const {
+            input: { value, onChange },
+            editable,
+            placeholder,
+            style,
+            loading,
+            tagData,
+            change
+        } = props;
+
+        const { tags } = this.props;
+
+        return (
+            <View style={{ zIndex: 3 }}>
+                <MentionsTextInput
+                    placeholder={placeholder}
+                    onChangeText={(val) => onChange(val)}
+                    editable={editable}
+                    value={_.isEmpty(value) ? '' : value}
+                    contentTags={tags || []}
+                    contentTagsReg={tags ? tags.map((t) => t.tagReg) : []}
+                    tagSearchRes={this.state.tagSearchData.data}
+                    flexGrowDirection='bottom'
+                    suggestionPosition='bottom'
+                    textInputContainerStyle={{ ...styles.inputContainerStyle }}
+                    textInputStyle={style}
+                    validateTags={() => this.validateContentTags(change)}
+                    autoCorrect
+                    suggestionsPanelStyle={{ backgroundColor: '#f8f8f8' }}
+                    loadingComponent={() => this.renderTagSearchLoadingComponent(loading)}
+                    textInputMinHeight={80}
+                    textInputMaxHeight={200}
+                    trigger={'@'}
+                    triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
+                    triggerCallback={(keyword) => this.triggerCallback(keyword)}
+                    triggerLoadMore={this.handleTagSearchLoadMore.bind(this)}
+                    renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
+                    suggestionsData={tagData} // array of objects
+                    keyExtractor={(item, index) => item._id}
+                    suggestionRowHeight={50}
+                    horizontal={false} // defaut is true, change the orientation of the list
+                    MaxVisibleRowCount={4} // this is required if horizontal={false}
+                />
             </View>
+        );
+    }
 
-          </Modal>
+    /**
+     * 
+     * @param {object} user 
+     * @param {boolean} isEdit: initializeFromState to determine if this is editing a goal
+     */
+    renderPrivacyControl(isEdit) {
+        return (
+            <View style={styles.sectionMargin}>
+                <Menu rendererProps={{ placement: 'top', anchorStyle: styles.anchorStyle }}
+                    renderer={renderers.Popover}
+                >
+                    <Text style={styles.subTitleTextStyle}>Privacy</Text>
+                    <MenuTrigger customStyles={{ TriggerTouchableComponent: TouchableOpacity }}>
+                        <View style={{
+                            width: '100%',
+                            borderWidth: 1,
+                            borderColor: '#E0E0E0',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            marginTop: 5
+                        }}>
+                            <Text style={styles.standardInputStyle}>{this.props.privacy}</Text>
+                            <Image resizeMode="contain" style={styles.caretStyle} source={dropDown} />
+                        </View>
+                    </MenuTrigger>
+                    <MenuOptions customStyles={styles.menuOptionsStyles}>
+                        {PRIVACY_OPTIONS.map((value) => {
+                            return <MenuOption onSelect={() => { this.props.change('privacy', value) }}>
+                                <View style={{
+                                    width: '100%'
+                                }}>
+                                    <Text style={styles.standardInputStyle}>{value}</Text>
+                                </View>
+                            </MenuOption>
+                        })}
+                    </MenuOptions>
+                </Menu>
+            </View>
+        );
+    }
+
+    renderGoal() {
+        const { title } = this.props;
+        return (
+            <CopilotStep text={this.props.tutorialText[1]} order={1} name="create_goal_create_goal_modal_1">
+                <WalkableView>
+                    <FieldTitleText text='What are you trying to achieve?' required={true} style={{ marginBottom: 16 }}/>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={styles.subTitleTextStyle}>Your Goal</Text>
+                        <Text style={DEFAULT_STYLE.smallText_2}>{title ? title.length : 0}/90</Text>
+                    </View>
+                    <Field
+                        name='title'
+                        label='title'
+                        component={InputField}
+                        editable={this.props.uploading}
+                        style={{ ...styles.standardInputStyle }}
+                        placeholder='What are you trying to achieve?'
+                        autoCorrect
+                        autoCapitalize={'sentences'}
+                        multiline
+                        blurOnSubmit
+                        maxLength={90}
+                    />
+                </WalkableView>
+            </CopilotStep>
+        );
+    }
+
+    renderGoalDescription = ({ fields }) => {
+        const { details } = this.props;
+        if (fields.length === 0) fields.push({});
+
+        return fields.map((description, index) => {
+            return (
+                <WalkableView>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 }}>
+                        <Text style={styles.subTitleTextStyle}>
+                            Description <Text style={DEFAULT_STYLE.smallText_1}>(Optional)</Text>
+                        </Text>
+                        <Text style={DEFAULT_STYLE.smallText_2}>
+                            {details && details[0] && details[0].length > 0 ? this.props.details[0].length : 0}/250
+                        </Text>
+                    </View>
+                    <Field
+                        key={`goal-description-${index}`}
+                        name={description}
+                        component={this.renderInput}
+                        editable={this.props.uploading}
+                        style={{
+                            ...styles.standardInputStyle,
+                            paddingLeft: 15,
+                            paddingRight: 15,
+                            // Should approximately match numberOfLines * fontSize height + padding
+                            maxHeight: 100,
+                            minHeight: 80
+                        }}
+                        numberOfLines={5}
+                        placeholder="Describe your goal"
+                        multiline
+                        loading={this.state.tagSearchData.loading}
+                        tagData={this.state.tagSearchData.data}
+                        keyword={this.state.keyword}
+                        change={(type, val) => this.props.change(type, val)}
+                    />
+                </WalkableView>
+            );
+        });
+    }
+
+    renderCategory = () => {
+        const menu = MenuFactory(
+            [
+                'General',
+                'Learning/Education',
+                'Career/Business',
+                'Financial',
+                'Spiritual',
+                'Family/Personal',
+                'Physical',
+                'Charity/Philanthropy',
+                'Travel',
+                'Things'
+            ],
+            this.handleCatergoryOnSelect,
+            this.props.category,
+            { ...styles.triggerContainerStyle },
+            () => console.log('animationCallback')
         );
 
-    const startTime = this.props.startTime.date ?
-      <Text>{moment(this.props.startTime.date).format('ll')}</Text> :
-      <Text style={{ fontSize: 15 }}>Start date</Text>;
+        return (
+            <CopilotStep text={this.props.tutorialText[2]} order={2} name="create_goal_create_goal_modal_2">
+                <WalkableView
+                    style={{
+                        marginTop: 16,
+                        justifyContent: 'flex-start',
+                        flex: 1
+                    }}
+                >
+                    <Text style={styles.subTitleTextStyle}>Category</Text>
+                    {menu}
+                </WalkableView>
+            </CopilotStep>
+        );
+    }
 
-    const endTime = this.props.endTime.date ?
-      <Text>{moment(this.props.endTime.date).format('ll')}</Text> :
-      <Text style={{ fontSize: 15 }}>End date</Text>;
+    renderPriority = () => {
+        const THUMB_COLORS = ['#219653', '#F07E1A', '#D71919'];
+        const TRACK_COLORS = ['#27AE60', '#F2994A', '#EB5757'];
+        const SLIDER_NUMS = [0, 5, 10];
+        let colorIndex = 0;
+        if (this.props.priority <= 3) colorIndex = 0;
+        else if (this.props.priority <= 6) colorIndex = 1;
+        else colorIndex = 2;
 
-    // Show cancel button if there is date set
-    const cancelButton = this.props.endTime.date || this.props.startTime.date 
-      ? 
-      (
-        <TouchableOpacity
-          activeOpacity={0.6}
-          style={{ justifyContent: 'center', padding: 10, marginLeft: 5 }}
-          onPress={() => {
-            this.props.change('hasTimeline', false);
-            this.props.change('endTime', {
-              date: undefined, picker: false
-            });
-            this.props.change('startTime', {
-              date: undefined, picker: false
-            });
-          }}
-        >
-          <Image source={cancel} style={{ ...styles.cancelIconStyle }} />
-        </TouchableOpacity>
-      )
-      : null;
+        const slider = (
+            <Slider
+                value={this.props.priority}
+                onValueChange={value => this.handlePriorityOnSelect(value)}
+                step={1}
+                minimumValue={0}
+                maximumValue={10}
+                disabled={!this.props.uploading}
+                trackStyle={{ height: 10, backgroundColor: '#F2F2F2' }}
+                minimumTrackTintColor={TRACK_COLORS[colorIndex]}
+                thumbStyle={{ width: 12, height: 20, backgroundColor: THUMB_COLORS[colorIndex] }}
+            />
+        );
 
-    return (
-      <CopilotStep text={this.props.tutorialText[4]} order={4} name="create_goal_create_goal_modal_4">
-        <WalkableView style={{ ...styles.sectionMargin }}>
-          {titleText}
-          <View style={{ marginTop: 8, flexDirection: 'row' }}>
-            <TouchableOpacity
-              activeOpacity={0.6}
-              style={{
-                height: 50,
-                width: 130,
-                alignItems: 'center',
-                justifyContent: 'center',
-                ...styles.borderStyle
-              }}
-              onPress={() =>
-                this.props.change('startTime', {
-                  date: this.props.startTime.date ? this.props.startTime.date : new Date(),
-                  picker: true
-                })
-              }
+        return (
+            <CopilotStep text={this.props.tutorialText[3]} order={3} name="create_goal_create_goal_modal_3">
+                <WalkableView style={{ ...styles.sectionMargin, justifyContent: 'flex-start', flex: 1 }}>
+                    <FieldTitleText text='How important is your goal?' required={true} style={{ marginBottom: 12 }} />
+                    <Text style={styles.descriptionTextStyle}>Use is to set reletive priority of your Goal.</Text>
+                    {slider}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        {SLIDER_NUMS.map((val) => {
+                            return <Text style={DEFAULT_STYLE.normalText_1}>{val}</Text>;
+                        })}
+                    </View>
+                </WalkableView>
+            </CopilotStep>
+        );
+    }
+
+    // Renderer for timeline
+    renderTimeline = () => {
+        if (this.props.startTime === undefined) return;
+
+        const newPicker = true;
+        const startDatePicker = newPicker ?
+            (<DateTimePicker
+                isVisible={this.props.startTime.picker}
+                date={new Date()}
+                onConfirm={(date) => {
+                    if (validateTime(date, this.props.endTime.date)) {
+                        this.props.change('startTime', { date, picker: false });
+                        return;
+                    }
+                    alert('Start time cannot be later than end time');
+                }}
+                onCancel={() =>
+                    this.props.change('startTime', {
+                        date: this.props.startTime.date, picker: false
+                    })
+                }
+            />) : (<Modal
+                animationType="fade"
+                transparent={false}
+                visible={this.props.startTime.picker}
             >
-              {startTime}
-            </TouchableOpacity>
+                <ModalHeader
+                    title='Select start time'
+                    actionText='Done'
+                    onAction={() =>
+                        this.props.change('startTime', {
+                            date: this.props.startTime.date,
+                            picker: false
+                        })
+                    }
+                    onCancel={() =>
+                        this.props.change('startTime', {
+                            date: this.props.startTime.date,
+                            picker: false
+                        })
+                    }
+                />
+                <View style={{ flex: 1 }}>
+                    <DatePickerIOS
+                        date={this.props.startTime.date}
+                        onDateChange={(date) => this.props.change('startTime', { date, picker: true })}
+                        mode='date'
+                    />
+                </View>
 
-            <TouchableOpacity
-              activeOpacity={0.6}
-              style={{
-                height: 50,
-                width: 130,
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginLeft: 15,
-                ...styles.borderStyle
-              }}
-              onPress={() =>
-                this.props.change('endTime', {
-                  date: this.props.endTime.date ? this.props.endTime.date : new Date(),
-                  picker: true
-                })
-              }
+            </Modal>);
+
+        const endDatePicker = newPicker ?
+            (<DateTimePicker
+                isVisible={this.props.endTime.picker}
+                onConfirm={(date) => {
+                    if (validateTime(this.props.startTime.date, date)) {
+                        this.props.change('endTime', { date, picker: false });
+                        return;
+                    }
+                    alert('End time cannot be early than start time');
+                }}
+                onCancel={() =>
+                    this.props.change('endTime', {
+                        date: this.props.endTime.date, picker: false
+                    })
+                }
+            />) :
+            (<Modal
+                animationType="fade"
+                transparent={false}
+                visible={this.props.endTime.picker}
             >
-              {endTime}
-            </TouchableOpacity>
+                <ModalHeader
+                    title='Select end time'
+                    actionText='Done'
+                    onAction={() =>
+                        this.props.change('endTime', {
+                            date: this.props.endTime.date,
+                            picker: false
+                        })
+                    }
+                    onCancel={() =>
+                        this.props.change('endTime', {
+                            date: this.props.endTime.date,
+                            picker: false
+                        })
+                    }
+                />
+                <View style={{ flex: 1 }}>
+                    <DatePickerIOS
+                        date={this.props.endTime.date}
+                        onDateChange={(date) => this.props.change('endTime', { date, picker: true })}
+                        mode='date'
+                    />
+                </View>
 
-            {cancelButton}
-          </View>
-          {startDatePicker}
-          {endDatePicker}
-        </WalkableView>
-      </CopilotStep>
-    );
-  }
+            </Modal>);
 
-  /**
-   * type: ['step', 'need']
-   */
-  renderFieldArrayItem = (props, placeholder, fields, canDrag, type, onSubmitEditing) => {
-    const { item, index, move, moveEnd, isActive } = props;
-    const iconOnPress = index === 0 ?
-      undefined
-      :
-      () => fields.remove(index);
-    return (
-      <View
-        style={{ flexDirection: 'row', alignItems: 'center', flex: 1, backgroundColor: isActive ? 'red' : 'white' }}
-      >
-        <Field
-          key={`description-${index}`}
-          name={`${item.item}.description`}
-          component={InputField}
-          editable={this.props.uploading}
-          numberOfLines={4}
-          style={{ ...styles.standardInputStyle, fontSize: 16 }}
-          placeholder={placeholder}
-          iconSource={cancel}
-          iconStyle={styles.cancelIconStyle}
-          iconOnPress={iconOnPress}
-          move={move}
-          blurOnSubmit
-          moveEnd={moveEnd}
-          canDrag={canDrag}
-          autoCorrect
-          autoCapitalize={'sentences'}
-          inputContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}
-          scrollTo={this.scrollTo}
-          index={index}
-          type={type}
-          multiline
-          onSubmitEditing={onSubmitEditing}
-        />
-      </View>
-    );
-  }
+        const startTime = (
+            <Text style={{ ...DEFAULT_STYLE.subTitleText_1, marginLeft: 12, marginRight: 12 }}>
+                {moment(this.props.startTime.date ? this.props.startTime.date : new Date()).format('ll')}
+            </Text>
+        );
 
-  renderFieldArray = (title, buttonText, placeholder, fields, error) => {
-    const button = <Button text={buttonText} source={plus} onPress={() => fields.push({})} />;
-    const titleText = <Text style={styles.titleTextStyle}>{title}</Text>;
+        const endTime = (
+            <Text style={{ ...DEFAULT_STYLE.subTitleText_1, marginLeft: 12, marginRight: 12 }}>
+                {moment(this.props.endTime.date ? this.props.endTime.date : new Date()).format('ll')}
+            </Text>
+        );
 
-    const onSubmitEditing = ({ nativeEvent }) => {
-      const { text } = nativeEvent;
-      if (text && text.trim() !== '') {
-        fields.push({ isCompleted: false });
-      }
-    };
-    let dataToRender = [];
-    fields.forEach((field, index) => {
-      const dataToPush = {
-        item: _.cloneDeep(field),
-        index
-      };
-      dataToRender.push(dataToPush);
-    });
-    const fieldsComponent = fields.length > 0 ?
-      (
-        <DraggableFlatlist
-          renderItem={(props) => this.renderFieldArrayItem(props, placeholder, fields, true, buttonText, onSubmitEditing)}
-          data={dataToRender}
-          keyExtractor={item => `${item.index}`}
-          scrollPercent={5}
-          onMoveEnd={e => {
-            // console.log('moving end for e: ', e);
-            fields.move(e.from, e.to);
-            this.setState({
-              ...this.state,
-              scrollEnabled: true
-            });
-          }}
-          onMoveBegin={(index) => {
-            // console.log('index is being moved: ', index);
-            this.setState({
-              ...this.state,
-              scrollEnabled: false
-            });
-          }}
-        />
-      )
-      // This is the original version to render undraggable list
-      // fields.map((field, index) => {
-      //   const iconOnPress = index === 0 ?
-      //     undefined
-      //     :
-      //     () => fields.remove(index);
-      //   return (
-      //     <Field
-      //       key={`description-${index}`}
-      //       name={`${field}.description`}
-      //       component={InputField}
-      //       editable={this.props.uploading}
-      //       numberOfLines={4}
-      //       style={styles.standardInputStyle}
-      //       placeholder={placeholder}
-      //       iconSource={cancel}
-      //       iconStyle={styles.cancelIconStyle}
-      //       iconOnPress={iconOnPress}
-      //     />
-      //   );
-      // })
-      : null;
-
-    return (
-      <View 
-        style={{ ...styles.sectionMargin }} 
-      >
-        {titleText}
-        {fieldsComponent}
-        {button}
-      </View>
-    );
-  }
-
-  renderSteps = ({ fields, meta: { error, submitFailed } }) => {
-    return (
-      <CopilotStep text={this.props.tutorialText[5]} order={5} name="create_goal_create_goal_modal_5">
-        <WalkableView style={{ ...styles.sectionMargin }}>
-          {
-            this.renderFieldArray(
-              'Steps (optional)',
-              'step',
-              STEP_PLACE_HOLDER,
-              fields,
-              error
-            )
-          }
-        </WalkableView>
-      </CopilotStep>
-    );
-  }
-
-  renderNeeds = ({ fields, meta: { error, submitFailed } }) => {
-    return this.renderFieldArray('Needs (optional)', 'need', NEED_PLACE_HOLDER, fields, error);
-    // return (
-    //   <CopilotStep text={this.props.tutorialText[6]} order={6} name="create_goal_create_goal_modal_6">
-    //     <WalkableView style={{ ...styles.sectionMargin }}>
-    //       {this.renderFieldArray('Needs (optional)', 'need', NEED_PLACE_HOLDER, fields, error)}
-    //     </WalkableView>
-    //   </CopilotStep>
-    // );
-  }
-
-  render() {
-    const { handleSubmit, errors, user, initializeFromState } = this.props;
-    const actionText = initializeFromState ? 'Update' : 'Create';
-    const titleText = initializeFromState ? 'Edit Goal' : 'New Goal';
-
-    return (
-      <ScrollView
-        style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
-        scrollEnabled={this.state.scrollEnabled}
-        ref={r => { this.scrollView = r; }}
-      >
-        <View style={{ flex: 1, padding: 20 }}>
-          {this.renderUserInfo(user, initializeFromState)}
-          {this.renderGoal()}
-          <FieldArray
-            name="details"
-            component={this.renderGoalDescription}
-            loading={this.state.tagSearchData.loading}
-            tagData={this.state.tagSearchData.data}
-            keyword={this.state.keyword}
-          />
-          <View style={{ flexDirection: 'row' }}>
-            <View style={{ flex: 1, marginRight: 8 }}>
-              {this.renderCategory()}
+        const icon = (
+            <View style={{
+                height: 40 * DEFAULT_STYLE.uiScale,
+                width: 34 * DEFAULT_STYLE.uiScale,
+                borderWidth: 1,
+                borderColor: '#DFE0E1',
+                backgroundColor: '#F5F7FA',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                <Image resizeMode="contain" source={CalenderIcon} style={{ ...DEFAULT_STYLE.buttonIcon_1, tintColor: '#DADADA' }} />
             </View>
-            <View style={{ flex: 1 }}>
-              {this.renderPriority()}
+        );
+
+        // Show cancel button if there is date set
+        const cancelButton = this.props.endTime.date || this.props.startTime.date ?
+            (<TouchableOpacity
+                activeOpacity={0.6}
+                style={{ justifyContent: 'center', padding: 10, marginLeft: 5 }}
+                onPress={() => {
+                    this.props.change('hasTimeline', false);
+                    this.props.change('endTime', {
+                        date: undefined, picker: false
+                    });
+                    this.props.change('startTime', {
+                        date: undefined, picker: false
+                    });
+                }}
+            >
+                <Image source={cancel} style={{ ...styles.cancelIconStyle }} />
+            </TouchableOpacity>) : null;
+
+        return (
+            <CopilotStep text={this.props.tutorialText[4]} order={4} name="create_goal_create_goal_modal_4">
+                <WalkableView style={{ ...styles.sectionMargin }}>
+                    <FieldTitleText text='Timeline' required={true} style={{ marginBottom: 12 }} />
+                    <Text style={styles.descriptionTextStyle}>Give your best estimate.</Text>
+                    <View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
+                        <TouchableOpacity
+                            activeOpacity={0.6}
+                            style={{
+                                height: 40 * DEFAULT_STYLE.uiScale,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                ...styles.borderStyle
+                            }}
+                            onPress={() =>
+                                this.props.change('startTime', {
+                                    date: this.props.startTime.date ? this.props.startTime.date : new Date(),
+                                    picker: true
+                                })
+                            }
+                        >
+                            {icon}
+                            {startTime}
+                        </TouchableOpacity>
+                        <Image style={{ margin: 8, ...DEFAULT_STYLE.normalIcon_1 }} source={arrowRight} />
+                        <TouchableOpacity
+                            activeOpacity={0.6}
+                            style={{
+                                height: 40 * DEFAULT_STYLE.uiScale,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'flex-start',
+                                ...styles.borderStyle
+                            }}
+                            onPress={() =>
+                                this.props.change('endTime', {
+                                    date: this.props.endTime.date ? this.props.endTime.date : new Date(),
+                                    picker: true
+                                })
+                            }
+                        >
+                            {icon}
+                            {endTime}
+                        </TouchableOpacity>
+                        {cancelButton}
+                    </View>
+                    {startDatePicker}
+                    {endDatePicker}
+                </WalkableView>
+            </CopilotStep>
+        );
+    }
+
+    /**
+     * type: ['step', 'need']
+     */
+    renderFieldArrayItem = (props, placeholder, fields, canDrag, type, onSubmitEditing) => {
+        const { item, index, move, moveEnd, isActive } = props;
+        const iconOnPress = index === 0 ? undefined : () => fields.remove(index);
+        return (
+            <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                flex: 1,
+                backgroundColor: isActive ? 'red' : 'white'
+            }}>
+                <Field
+                    key={`description-${index}`}
+                    name={`${item.item}.description`}
+                    component={InputField}
+                    editable={this.props.uploading}
+                    numberOfLines={4}
+                    style={{ ...styles.standardInputStyle }}
+                    placeholder={placeholder}
+                    iconSource={cancel}
+                    iconStyle={DEFAULT_STYLE.normalIcon_1}
+                    iconOnPress={iconOnPress}
+                    move={move}
+                    blurOnSubmit
+                    moveEnd={moveEnd}
+                    canDrag={canDrag}
+                    autoCorrect
+                    autoCapitalize={'sentences'}
+                    inputContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}
+                    scrollTo={this.scrollTo}
+                    index={index}
+                    type={type}
+                    multiline
+                    onSubmitEditing={onSubmitEditing}
+                />
             </View>
-          </View>
+        );
+    }
 
-          {this.renderTimeline()}
-          <FieldArray name="steps" component={this.renderSteps} />
-          <FieldArray 
-            name="needs" 
-            component={this.renderNeeds} 
-          />
-        </View>
+    renderFieldArray = (title, buttonText, placeholder, required, fields, error) => {
+        const onSubmitEditing = ({ nativeEvent }) => {
+            const { text } = nativeEvent;
+            if (text && text.trim() !== '') {
+                fields.push({ isCompleted: false });
+            }
+        };
 
-      </ScrollView>
-    );
-  }
+        let dataToRender = [];
+        fields.forEach((field, index) => {
+            const dataToPush = {
+                item: _.cloneDeep(field),
+                index
+            };
+            dataToRender.push(dataToPush);
+        });
+
+        return (
+            <View style={styles.sectionMargin}>
+                <FieldTitleText text={title} required={required} style={{ marginBottom: 12 }} />
+                {
+                    fields.length > 0 ?
+                    <DraggableFlatlist
+                        renderItem={(props) => this.renderFieldArrayItem(props, placeholder, fields, true, buttonText, onSubmitEditing)}
+                        data={dataToRender}
+                        keyExtractor={item => `${item.index}`}
+                        scrollPercent={5}
+                        onMoveEnd={e => {
+                            // console.log('moving end for e: ', e);
+                            fields.move(e.from, e.to);
+                            this.setState({
+                                ...this.state,
+                                scrollEnabled: true
+                            });
+                        }}
+                        onMoveBegin={(index) => {
+                            // console.log('index is being moved: ', index);
+                            this.setState({
+                                ...this.state,
+                                scrollEnabled: false
+                            });
+                        }}
+                    /> : null
+                }
+                <Button
+                    text={buttonText}
+                    source={plus}
+                    onPress={() => fields.push({})}
+                    containerStyle={{
+                        width: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: BACKGROUND_COLOR,
+                        borderWidth: 1,
+                        borderRadius: 3,
+                        borderColor: GM_BLUE,
+                        padding: 10
+                    }}
+                    iconStyle={{ ...DEFAULT_STYLE.smallIcon_1, backgroundColor: BACKGROUND_COLOR, tintColor: GM_BLUE }}
+                    textStyle={{ ...DEFAULT_STYLE.titleText_1, color: GM_BLUE, marginLeft: 15 }}
+                />
+            </View>
+        );
+    }
+
+    renderSteps = ({ fields, meta: { error, submitFailed } }) => {
+        return (
+            <CopilotStep text={this.props.tutorialText[5]} order={5} name="create_goal_create_goal_modal_5">
+                <WalkableView>
+                    {
+                        this.renderFieldArray(
+                            'Steps',
+                            'Add a Step',
+                            STEP_PLACE_HOLDER,
+                            true,
+                            fields,
+                            error
+                        )
+                    }
+                </WalkableView>
+            </CopilotStep>
+        );
+    }
+
+    renderNeeds = ({ fields, meta: { error, submitFailed } }) => {
+        return this.renderFieldArray('Needs', 'Add a Need', NEED_PLACE_HOLDER, false, fields, error);
+    }
+
+    render() {
+        const { user, initializeFromState } = this.props;
+
+        return (
+            <ScrollView
+                scrollEnabled={this.state.scrollEnabled}
+                ref={r => { this.scrollView = r; }}
+            >
+                <View style={{ padding: 20, paddingBottom: 0 }}>
+                    {this.renderGoal()}
+                    <FieldArray
+                        name="details"
+                        component={this.renderGoalDescription}
+                        loading={this.state.tagSearchData.loading}
+                        tagData={this.state.tagSearchData.data}
+                        keyword={this.state.keyword}
+                    />
+                    {this.renderCategory()}
+                    {this.renderPriority()}
+                    {this.renderTimeline()}
+                </View>
+                <View style={[DEFAULT_STYLE.shadow, styles.sectionMargin]} />
+                <View style={{ padding: 20, paddingTop: 0, marginBottom: 30 }}>
+                    <FieldArray name="steps" component={this.renderSteps} />
+                    <FieldArray
+                        name="needs"
+                        component={this.renderNeeds}
+                    />
+                    {this.renderPrivacyControl(initializeFromState)}
+                </View>
+            </ScrollView>
+        );
+    }
 }
 
-//<KeyboardAvoidingView
-        //   behavior='padding'
-        //   style={{ flex: 1, backgroundColor: '#ffffff' }}
-        // >
-        {/** 
-          <ModalHeader
-            title={titleText}
-            actionText={actionText}
-            onCancel={() => Actions.pop()}
-            onAction={handleSubmit(this.handleCreate)}
-          />
-        */}
-       //</KeyboardAvoidingView> 
-      
-
+const FieldTitleText = (props) => {
+    const { text, style, required } = props;
+    return (
+        <View style={{ flexDirection: 'row', ...style }}>
+            {required && <Text style={{ ...styles.subTitleTextStyle, color: 'red', paddingRight: 0 }}>
+                *
+            </Text>}
+            <Text style={styles.titleTextStyle}>
+                {text}
+            </Text>
+        </View>
+    );
+}
 
 const validateTime = (start, end) => {
-  if (!start || !end) return true;
-  if (moment(start) > moment(end)) return false;
-  return true;
+    if (!start || !end) return true;
+    if (moment(start) > moment(end)) return false;
+    return true;
 };
 
 const styles = {
-  activityIndicatorStyle: {
-    flex: 1, height: 50, width: '100%', justifyContent: 'center', alignItems: 'center'
-  },
-  imageContainerStyle: {
-    borderWidth: 0.5,
-    padding: 1,
-    borderColor: 'lightgray',
-    alignItems: 'center',
-    borderRadius: 3,
-    alignSelf: 'center',
-    backgroundColor: 'white',
-    marginLeft: 10,
-    marginRight: 10,
-    margin: 5
-  },
-  sectionMargin: {
-    marginTop: 20
-  },
-  inputContainerStyle: {
-    flex: 1,
-    // flexDirection: 'row',
-    justifyContent: 'center',
-    // alignItems: 'center',
-    marginTop: 5,
-    borderWidth: 1,
-    borderRadius: 5,
-    borderColor: '#e9e9e9',
-    shadowColor: '#ddd',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.8,
-    shadowRadius: 1,
-    elevation: 1,
-  },
-  imageStyle: {
-    height: 54,
-    width: 54,
-    borderRadius: 5,
-  },
-  titleTextStyle: {
-    fontSize: 11,
-    color: '#a1a1a1',
-    padding: 2
-  },
-  standardInputStyle: {
-    flex: 1,
-    fontSize: 16,
-    padding: 13,
-    paddingTop: 13,
-    paddingRight: 6,
-    paddingLeft: 6
-  },
-  goalInputStyle: {
-    fontSize: 20,
-    padding: 30,
-    paddingRight: 20,
-    paddingLeft: 20
-  },
-  cancelIconStyle: {
-    height: 16,
-    width: 16,
-    justifyContent: 'flex-end'
-  },
-  caretStyle: {
-    marginRight: 10,
-    height: 18,
-    width: 18
-  },
-  borderStyle: {
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: '#e9e9e9',
-    shadowColor: '#ddd',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.8,
-    shadowRadius: 1,
-  },
-  // Menu related style
-  triggerContainerStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 5,
-    borderWidth: 1,
-    borderRadius: 5,
-    borderColor: '#e9e9e9',
-    shadowColor: '#ddd',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.8,
-    shadowRadius: 1,
-    elevation: 1,
-  },
-  anchorStyle: {
-    backgroundColor: 'white'
-  },
-  menuOptionsStyles: {
-    optionsContainer: {
-      width: width - 14,
+    activityIndicatorStyle: {
+        flex: 1,
+        height: 50 * DEFAULT_STYLE.uiScale,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
-    optionsWrapper: {
-
+    userImageContainerStyle: {
+        borderWidth: 0.5,
+        borderColor: 'lightgray',
+        alignItems: 'center',
+        borderRadius: 100,
+        alignSelf: 'flex-start',
+        backgroundColor: 'white'
     },
-    optionWrapper: {
-      flex: 1,
+    imageContainerStyle: {
+        borderWidth: 0.5,
+        padding: 1,
+        borderColor: 'lightgray',
+        alignItems: 'center',
+        borderRadius: 100,
+        alignSelf: 'center',
+        backgroundColor: 'white',
+        margin: 5
     },
-    optionTouchable: {
-      underlayColor: 'lightgray',
-      activeOpacity: 10,
+    sectionMargin: {
+        marginTop: 40
     },
-    optionText: {
-      paddingTop: 5,
-      paddingBottom: 5,
-      paddingLeft: 10,
-      paddingRight: 10,
-      color: 'black',
+    inputContainerStyle: {
+        flex: 1,
+        justifyContent: 'center',
+        marginTop: 5,
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: '#E0E0E0'
     },
-  }
+    titleTextStyle: {
+        ...DEFAULT_STYLE.titleText_1,
+        padding: 2
+    },
+    subTitleTextStyle: {
+        ...DEFAULT_STYLE.titleText_2,
+        padding: 2
+    },
+    descriptionTextStyle: {
+        ...DEFAULT_STYLE.normalText_1,
+        padding: 2
+    },
+    standardInputStyle: {
+        flex: 1,
+        ...DEFAULT_STYLE.subTitleText_1,
+        padding: 12,
+        paddingTop: 12,
+        paddingRight: 12,
+        paddingLeft: 12
+    },
+    caretStyle: {
+        ...DEFAULT_STYLE.smallIcon_1,
+        marginRight: 12,
+        tintColor: '#333'
+    },
+    borderStyle: {
+        borderRadius: 3,
+        borderWidth: 1,
+        borderColor: '#E0E0E0'
+    },
+    // Menu related style
+    triggerContainerStyle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 5,
+        borderWidth: 1,
+        borderRadius: 3,
+        borderColor: '#E0E0E0'
+    },
+    anchorStyle: {
+        backgroundColor: 'white'
+    },
+    menuOptionsStyles: {
+        optionsContainer: {
+            width: width - 40,
+            padding: 5
+        },
+        optionWrapper: {
+            flex: 1,
+        },
+        optionTouchable: {
+            underlayColor: 'lightgray',
+            activeOpacity: 10,
+        },
+        optionText: {
+            ...DEFAULT_STYLE.subTitleText_1,
+            paddingTop: 5,
+            paddingBottom: 5,
+            paddingLeft: 10,
+            paddingRight: 10
+        },
+    }
 };
 
 NewGoalView = reduxForm({
-  form: 'createGoalModal',
-  enableReinitialize: true
+    form: 'createGoalModal',
+    enableReinitialize: true
 })(NewGoalView);
 
 const mapStateToProps = state => {
-  const selector = formValueSelector('createGoalModal');
-  const { user } = state.user;
-  const { profile } = user;
-  const { uploading } = state.createGoal;
+    const selector = formValueSelector('createGoalModal');
+    const { user } = state.user;
+    const { profile } = user;
+    const { uploading } = state.createGoal;
 
-  return {
-    user,
-    profile,
-    category: selector(state, 'category'),
-    privacy: selector(state, 'privacy'),
-    priority: selector(state, 'priority'),
-    shareToMastermind: selector(state, 'shareToMastermind'),
-    hasTimeline: selector(state, 'hasTimeline'),
-    startTime: selector(state, 'startTime'),
-    endTime: selector(state, 'endTime'),
-    needs: selector(state, 'needs'),
-    steps: selector(state, 'steps'),
-    tags: selector(state, 'tags'),
-    details: selector(state, 'details'),
-    title: selector(state, 'title'),
-    formVals: state.form.createGoalModal,
-    goalDetail: getGoalDetailByTab(state),
-    uploading
-  };
+    return {
+        user,
+        profile,
+        category: selector(state, 'category'),
+        privacy: selector(state, 'privacy'),
+        priority: selector(state, 'priority'),
+        shareToMastermind: selector(state, 'shareToMastermind'),
+        hasTimeline: selector(state, 'hasTimeline'),
+        startTime: selector(state, 'startTime'),
+        endTime: selector(state, 'endTime'),
+        needs: selector(state, 'needs'),
+        steps: selector(state, 'steps'),
+        tags: selector(state, 'tags'),
+        details: selector(state, 'details'),
+        title: selector(state, 'title'),
+        formVals: state.form.createGoalModal,
+        goalDetail: getGoalDetailByTab(state),
+        uploading
+    };
 };
 
 export default connect(
-  mapStateToProps,
-  {
-    submitGoal,
-    searchUser
-  }
+    mapStateToProps,
+    {
+        submitGoal,
+        searchUser
+    }
 )(NewGoalView);
 
 const MenuFactory = (options, callback, triggerText, triggerContainerStyle, animationCallback) => {
-
-  return (
-    <Menu
-      onSelect={value => callback(value)}
-      rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
-      renderer={Popover}
-      onOpen={animationCallback}
-    >
-      <MenuTrigger
-        customStyles={{
-          TriggerTouchableComponent: TouchableOpacity,
-        }}
-      >
-        <View style={triggerContainerStyle}>
-          <Text
-            style={{ fontSize: 15, margin: 10, marginLeft: 15, flex: 1 }}
-          >
-            {triggerText}
-          </Text>
-          <Image style={styles.caretStyle} source={dropDown} />
-        </View>
-      </MenuTrigger>
-      <MenuOptions customStyles={styles.menuOptionsStyles}>
-        <FlatList
-          data={options}
-          renderItem={({ item }) => (
-            <MenuOption value={item} text={item} />
-          )}
-          keyExtractor={(item, index) => index.toString()}
-          style={{ height: 200 }}
-        />
-      </MenuOptions>
-    </Menu>
-  );
+    return (
+        <Menu
+            onSelect={value => callback(value)}
+            rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
+            renderer={Popover}
+            onOpen={animationCallback}
+        >
+            <MenuTrigger
+                customStyles={{
+                    TriggerTouchableComponent: TouchableOpacity,
+                }}
+            >
+                <View style={triggerContainerStyle}>
+                    <Text
+                        style={{ ...DEFAULT_STYLE.subTitleText_1, margin: 10, flex: 1 }}
+                    >
+                        {triggerText}
+                    </Text>
+                    <Image resizeMode="contain" style={styles.caretStyle} source={dropDown} />
+                </View>
+            </MenuTrigger>
+            <MenuOptions customStyles={styles.menuOptionsStyles}>
+                <FlatList
+                    data={options}
+                    renderItem={({ item }) => (
+                        <MenuOption value={item} text={item} />
+                    )}
+                    keyExtractor={(item, index) => index.toString()}
+                    style={{ height: 200 }}
+                />
+            </MenuOptions>
+        </Menu>
+    );
 };

@@ -1,25 +1,21 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, Dimensions, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, FlatList } from 'react-native';
 import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-  renderers,
+    Menu,
+    MenuOptions,
+    MenuOption,
+    MenuTrigger,
+    renderers,
 } from 'react-native-popup-menu';
 
-/* asset */
-import dropDown from '../../asset/utils/dropDown.png';
-
-import { switchCase } from '../../redux/middleware/utils';
-
 import {
-  SORT_BY_OPTIONS,
-  CATEGORY_OPTIONS
+    SORT_BY_OPTIONS,
+    CATEGORY_OPTIONS
 } from '../../Utils/Constants';
+import { DEFAULT_STYLE, BACKGROUND_COLOR } from '../../styles';
 
-const { Popover } = renderers;
-const { width } = Dimensions.get('window');
+
+const { width, height } = Dimensions.get('window');
 
 /**
  * Update the filter based on parents functions
@@ -28,304 +24,195 @@ const { width } = Dimensions.get('window');
  */
 class GoalFilterBar extends Component {
 
-  /**
-   * @param type: ['sortBy', 'sortOrder', 'categories', 'priorities']
-   */
-  handleOnMenuSelect = (type, value) => {
-    this.props.onMenuChange(type, value);
-  }
+    /**
+     * @param type: ['sortBy', 'sortOrder', 'categories', 'priorities']
+     */
+    handleOnMenuSelect = (type, value) => {
+        this.props.onMenuChange(type, value);
+    }
 
-  render() {
-    const {
-      containerStyle,
-      textStyle,
-      detailContainerStyle,
-      standardTextStyle,
-      caretStyle
-    } = styles;
+    render() {
+        const {
+            filter: {
+                sortBy,
+                categories
+            },
+            buttonText
+        } = this.props;
+        const {
+            
+        } = this.props.filter;
+        const categoryText = categories;
+        const isCategorySelected = categories !== CATEGORY_OPTIONS[0].value;
 
-    const {
-      sortBy,
-      orderBy,
-      categories,
-      priorities
-    } = this.props.filter;
+        return (
+            <View style={styles.containerStyle}>
+                <Menu
+                    rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
+                    renderer={renderers.SlideInMenu}
+                >
+                    <MenuTrigger customStyles={{ TriggerTouchableComponent: TouchableOpacity }}>
+                        <View style={[
+                            styles.detailContainerStyle,
+                            isCategorySelected ? styles.selectedContainerStyle : null
+                        ]}>
+                            <Text style={{
+                                ...DEFAULT_STYLE.buttonText_1,
+                                fontWeight: isCategorySelected ? '700' : '500'
+                            }}>
+                                {buttonText || 'Sort & Filter'}
+                            </Text>
+                        </View>
+                    </MenuTrigger>
+                    <MenuOptions customStyles={styles.menuOptionsStyles}>
+                        {/* SortBy Header */}
+                        { sortBy && <View style={styles.sortByHeaderWrapper}>
+                            <Text style={DEFAULT_STYLE.titleText_1}>Sort By</Text>
+                        </View>}
+                        {/* SortBy Options */}
+                        { sortBy && <View style={{
+                            flexDirection: 'row',
+                            flexWrap: 'wrap',
+                            padding: 10 * DEFAULT_STYLE.uiScale
+                        }}>
+                            {SORT_BY_OPTIONS.map((option) => {
+                                const { value, text } = option;
+                                const isSelected = sortBy === value;
+                                return (
+                                    <MenuOption onSelect={() => this.handleOnMenuSelect('sortBy', value)}>
+                                        <View style={[
+                                            styles.sortByOptionWrapper,
+                                            isSelected ? styles.selectedContainerStyle : null
+                                        ]}>
+                                            <Text style={{
+                                                ...DEFAULT_STYLE.normalText_1,
+                                                color: isSelected ? '#333' : '#828282'
+                                            }}>
+                                                {text}
+                                            </Text>
+                                        </View>
+                                    </MenuOption>
+                                );
+                            })}
+                        </View>}
 
-    const prioritiesArray = priorities === '' ? [] : priorities.split(',');
-    const orderByText = orderBy === 'ascending' ? 'Order ASC' : 'Order DESC';
-    const sortByText = switchSortByText(sortBy);
-    const categoryText = categories;
-
-    return (
-      <View style={containerStyle}>
-        <View style={{ flex: 1 }}>
-        <Menu
-          onSelect={value => this.handleOnMenuSelect('sortBy', value)}
-          rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
-          renderer={Popover}
-        >
-          <MenuTrigger
-            customStyles={{
-              TriggerTouchableComponent: TouchableOpacity,
-            }}
-          >
-            <View style={styles.detailContainerStyle}>
-              <Text style={styles.textStyle}>Sort By ({`${sortByText}`})</Text>
-              <Image style={styles.caretStyle} source={dropDown} />
+                        {/* Catrgory header */}
+                        { categories && <View style={styles.categoryHeaderWrapper}>
+                            <Text style={DEFAULT_STYLE.normalText_1}>Category</Text>
+                        </View>}
+                        {/* Category Options */}
+                        { categories && <FlatList
+                            data={CATEGORY_OPTIONS}
+                            renderItem={({ item: { value, text } }) => {
+                                return (
+                                    <MenuOption onSelect={() => this.handleOnMenuSelect('categories', value)}>
+                                        <View style={styles.categoryOptionWrapper}>
+                                            <Text style={DEFAULT_STYLE.subTitleText_1}>
+                                                {text}
+                                            </Text>
+                                            <RadioButton
+                                                isSelected={categoryText === text}
+                                                size={(10 * DEFAULT_STYLE.uiScale)}
+                                                borderWidth={1}
+                                            />
+                                        </View>
+                                    </MenuOption>
+                                );
+                            }}
+                            style={{ height: height/3, paddingTop: 5 }}
+                        />}
+                    </MenuOptions>
+                </Menu>
             </View>
-          </MenuTrigger>
-          <MenuOptions customStyles={styles.menuOptionsStyles}>
-            <FlatList
-              data={SORT_BY_OPTIONS}
-              renderItem={({ item }) => {
-                const { value, text } = item;
-                return (
-                    <MenuOption value={value} text={text} />
-                );
-              }}
-              keyExtractor={(item, index) => index.toString()}
-              style={{ height: 37 * SORT_BY_OPTIONS.length }}
-            />
-          </MenuOptions>
-        </Menu>
-        </View>
-        {/*
-        <View style={{ flex: 1 }}>
-        <Menu
-          onSelect={value => this.handleOnMenuSelect('orderBy', value)}
-          rendererProps={{ placement: 'bottom' }}
-          renderer={Popover}
-        >
-          <MenuTrigger
-            customStyles={{
-              TriggerTouchableComponent: TouchableOpacity,
-            }}
-          >
-            <View style={detailContainerStyle}>
-              <Text style={textStyle}>{orderByText}
-                <Text style={standardTextStyle}> (ALL)</Text>
-              </Text>
-              <Image style={caretStyle} source={dropDown} />
-            </View>
-          </MenuTrigger>
-          <MenuOptions customStyles={styles.menuOptionsStyles}>
-            <MenuOption
-              text='Descending'
-              value='descending'
-            />
-            <MenuOption
-              text='Ascending'
-              value='ascending'
-            />
-          </MenuOptions>
-        </Menu>
-        </View>
-        */}
-        <View style={{ flex: 1 }}>
-        <Menu
-          onSelect={value => this.handleOnMenuSelect('categories', value)}
-          rendererProps={{ placement: 'bottom' }}
-          renderer={Popover}
-        >
-          <MenuTrigger
-            customStyles={{
-              TriggerTouchableComponent: TouchableOpacity,
-            }}
-          >
-            <View style={detailContainerStyle}>
-              <Text
-                style={textStyle}
-                numberOfLines={1}
-                ellipsizeMode='tail'
-              >
-                Category ({`${categoryText}`})
-                {/* <Text style={standardTextStyle}> (ALL)</Text> */}
-              </Text>
-              <Image style={caretStyle} source={dropDown} />
-            </View>
-          </MenuTrigger>
-          <MenuOptions customStyles={styles.menuOptionsStyles}>
-            <FlatList
-              data={CATEGORY_OPTIONS}
-              renderItem={({ item }) => {
-                const { value, text } = item;
-                return (
-                    <MenuOption value={value} text={text} />
-                );
-              }}
-              keyExtractor={(item, index) => index.toString()}
-              style={{ height: Math.min(37 * CATEGORY_OPTIONS.length, 390) }}
-            />
-          </MenuOptions>
-        </Menu>
-        </View>
-        {/*
-        <View style={{ flex: 1 }}>
-        <Menu
-          onSelect={value => this.handleOnMenuSelect('priorities', value)}
-          rendererProps={{ placement: 'bottom' }}
-          renderer={Popover}
-        >
-          <MenuTrigger
-            customStyles={{
-              TriggerTouchableComponent: TouchableOpacity,
-            }}
-          >
-            <View style={detailContainerStyle}>
-              <Text style={textStyle}>Priorities
-                <Text style={standardTextStyle}> (ALL)</Text>
-              </Text>
-              <Image style={caretStyle} source={dropDown} />
-            </View>
-          </MenuTrigger>
-          <MenuOptions customStyles={styles.menuOptionsStyles}>
-            <MenuOption
-              text='All'
-              value='All'
-            />
-            <ScrollView style={{ height: 250 }}>
-              <CheckBox
-                title='1'
-                checked={prioritiesArray.indexOf('1') > -1}
-                onPress={() =>
-                  this.handleOnMenuSelect('priorities', '1')
-                }
-              />
-              <CheckBox
-                title='2'
-                checked={prioritiesArray.indexOf('2') > -1}
-                onPress={() =>
-                  this.handleOnMenuSelect('priorities', '2')
-                }
-              />
-              <CheckBox
-                title='3'
-                checked={prioritiesArray.indexOf('3') > -1}
-                onPress={() =>
-                  this.handleOnMenuSelect('priorities', '3')
-                }
-              />
-              <CheckBox
-                title='4'
-                checked={prioritiesArray.indexOf('4') > -1}
-                onPress={() =>
-                  this.handleOnMenuSelect('priorities', '4')
-                }
-              />
-              <CheckBox
-                title='5'
-                checked={prioritiesArray.indexOf('5') > -1}
-                onPress={() =>
-                  this.handleOnMenuSelect('priorities', '5')
-                }
-              />
-              <CheckBox
-                title='6'
-                checked={prioritiesArray.indexOf('6') > -1}
-                onPress={() =>
-                  this.handleOnMenuSelect('priorities', '6')
-                }
-              />
-              <CheckBox
-                title='7'
-                checked={prioritiesArray.indexOf('7') > -1}
-                onPress={() =>
-                  this.handleOnMenuSelect('priorities', '7')
-                }
-              />
-              <CheckBox
-                title='8'
-                checked={prioritiesArray.indexOf('8') > -1}
-                onPress={() =>
-                  this.handleOnMenuSelect('priorities', '8')
-                }
-              />
-              <CheckBox
-                title='9'
-                checked={prioritiesArray.indexOf('9') > -1}
-                onPress={() =>
-                  this.handleOnMenuSelect('priorities', '9')
-                }
-              />
-            </ScrollView>
-          </MenuOptions>
-        </Menu>
-        </View>
-        */}
-      </View>
-    );
-  }
+        );
+    }
 }
 
-const touchableOpacityProps = {
-  activeOpacity: 0.6,
-};
+const RadioButton = (props) => {
+    const { isSelected, size, borderWidth } = props
+    return (
+        <View style={{
+            height: size*2,
+            width: size*2,
+            borderRadius: size,
+            borderWidth: borderWidth,
+            borderColor: isSelected ? '#1B63DC' : '#B4BFC9',
+            justifyContent: 'center',
+            alignItems: 'center'
+        }}>
+            <View style={{
+                backgroundColor: isSelected ? '#1B63DC' : '',
+                height: size*0.8,
+                width: size*0.8,
+                borderRadius: size*0.4
+            }}/>
+        </View>
+    );
+}
 
 const styles = {
-  containerStyle: {
-    marginLeft: 5,
-    marginRight: 5,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  detailContainerStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 15,
-    marginLeft: 15,
-    paddingTop: 12,
-    paddingBottom: 12
-  },
-  textStyle: {
-    fontSize: 10,
-    // color: '#1fb6dd',
-    color: '#696969',
-    fontWeight: '600',
-  },
-  standardTextStyle: {
-    fontSize: 9,
-    color: 'black'
-  },
-  caretStyle: {
-    // tintColor: '#20485f',
-    tintColor: '#696969',
-    marginLeft: 5
-  },
-  anchorStyle: {
-    backgroundColor: 'white'
-  },
-  menuOptionsStyles: {
-    optionsContainer: {
-      width: width - 14,
+    containerStyle: {
+        backgroundColor: BACKGROUND_COLOR,
+        padding: 16,
+        paddingTop: 9
     },
-    optionsWrapper: {
-
+    detailContainerStyle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        height: 30 * DEFAULT_STYLE.uiScale,
+        borderColor: '#E0E0E0',
+        borderRadius: 15 * DEFAULT_STYLE.uiScale
     },
-    optionWrapper: {
-      flex: 1,
+    selectedContainerStyle: {
+        borderColor: '#828282',
+        backgroundColor: '#F2F2F2'
     },
-    optionTouchable: {
-      underlayColor: 'lightgray',
-      activeOpacity: 10,
+    anchorStyle: {
+        backgroundColor: BACKGROUND_COLOR
     },
-    optionText: {
-      paddingTop: 5,
-      paddingBottom: 5,
-      paddingLeft: 10,
-      paddingRight: 10,
-      color: 'black',
+    menuOptionsStyles: {
+        optionsContainer: {
+            width: width
+        },
+        optionTouchable: {
+            underlayColor: 'lightgray',
+            activeOpacity: 10,
+        }
     },
-  }
+    sortByHeaderWrapper: {
+        backgroundColor: BACKGROUND_COLOR,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 0.1,
+        padding: 16,
+        paddingBottom: 14
+    },
+    sortByOptionWrapper: {
+        padding: 4,
+        paddingLeft: 12,
+        paddingRight: 12,
+        borderRadius: 100,
+        borderWidth: 1,
+        borderColor: '#E0E0E0',
+        margin: 2
+    },
+    categoryHeaderWrapper: {
+        backgroundColor: '#F2F2F2',
+        padding: 8,
+        paddingLeft: 16
+    },
+    categoryOptionWrapper: {
+        height: 34 * DEFAULT_STYLE.uiScale,
+        paddingLeft: 16,
+        paddingRight: 16,
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    }
 };
-
-const switchSortByText = (sortBy) => switchCase({
-  created: 'Date',
-  updated: 'Updated',
-  shared: 'Last Shared',
-  priority: 'Priority'
-})('created')(sortBy);
 
 export default GoalFilterBar;

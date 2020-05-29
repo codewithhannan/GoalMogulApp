@@ -82,6 +82,7 @@ class LikeListModal extends React.PureComponent {
         return (
             <View style={ModalHeaderStyle.headerContainerStyle}>
                 <DelayedButton
+                    testID="like-list-modal-close-button"
                     activeOpacity={0.6}
                     onPress={() => this.closeModal()}
                     style={{ position: 'absolute', top: 5, left: 5, padding: 12 }}
@@ -129,6 +130,7 @@ class LikeListModal extends React.PureComponent {
             >
                 {this.renderHeader()}
                 <FlatList
+                    testID="like-list-modal-list"
                     keyExtractor={this._keyExtractor}
                     data={this.state.data}
                     renderItem={this.renderItem}

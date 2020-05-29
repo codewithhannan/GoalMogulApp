@@ -63,7 +63,7 @@ const INITIAL_STATE = {
     },
     updating: false
   },
-  goalMeetTab: {
+  goalProfileTab: {
     navigationStateV2: { ...INITIAL_NAVIGATION_STATE_V2 },
     navigationState: {
       ...INITIAL_NAVIGATION_STATE

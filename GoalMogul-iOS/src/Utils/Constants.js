@@ -26,7 +26,8 @@ export const IPHONE_MODELS_2 = ['iphone 7 plus', 'iphone x', 'iphone xs', 'iphon
 export const IPHONE_MODELS = ['iphone 7', 'iphone 6', 'iphone 6s',
     'iphone 5', 'iphone 6 plus', 'iphone 4', 'iphone 5s'];
 
-export const DEVICE_MODEL = Constants.platform.ios.model.toLowerCase();
+export const DEVICE_MODEL = Constants.platform && Constants.platform.ios && Constants.platform.ios.model
+    ? Constants.platform.ios.model.toLowerCase() : "iphone 7";
 
 // Simple function to identify if iphone is on zoomed mode
 export const IS_ZOOMED = (
@@ -63,7 +64,7 @@ export const SORT_BY_OPTIONS = [
         value: 'priority'
     },
 ];
-      
+
 export const CATEGORY_OPTIONS = [
     {
         text: 'All',
@@ -111,6 +112,12 @@ export const CATEGORY_OPTIONS = [
     }
 ];
 
+export const PRIVACY_OPTIONS = [
+    'Friends',
+    'Public',
+    'Private'
+];
+
 /** Caret related constants */
 export const CARET_OPTION_NOTIFICATION_SUBSCRIBE = 'Follow';
 export const CARET_OPTION_NOTIFICATION_UNSUBSCRIBE = 'Unfollow';
@@ -134,6 +141,7 @@ export const EMPTY_GOAL = {
         profile: {
             elevatorPitch: '',
             occupation: '',
+            location: '',
             pointsEarned: 0,
             views: 0,
         },
@@ -144,23 +152,24 @@ export const EMPTY_GOAL = {
     title: '',
 };
 
-export const EMPTY_POST =  {
-	lastUpdated: '',
-	owner: {
-		_id: '',
+export const EMPTY_POST = {
+    lastUpdated: '',
+    owner: {
+        _id: '',
         name: '',
         profile: {
             elevatorPitch: '',
             occupation: '',
+            location: '',
             pointsEarned: 0,
             views: 0,
         },
-	},
-	privacy: "public",
-	content: {
-		text: '',
-		tags: [],
-		links: []
-	},
-	postType: "General",
+    },
+    privacy: "public",
+    content: {
+        text: '',
+        tags: [],
+        links: []
+    },
+    postType: "General",
 };

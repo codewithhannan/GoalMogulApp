@@ -36,7 +36,7 @@ const INITIAL_STATE = {
     ...NEW_POST_INITIAL_STATE
   },
   // Post detail in meet tab
-  postMeetTab: {
+  postProfileTab: {
     ...POST_INITIAL_STATE
   },
   // Post detail in notification tab

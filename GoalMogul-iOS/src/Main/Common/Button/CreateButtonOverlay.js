@@ -12,11 +12,11 @@ import { connect } from 'react-redux';
 import cancel from '../../../asset/utils/cancel_no_background.png';
 /* actions */
 import { closeCreateOverlay } from '../../../redux/modules/home/mastermind/actions';
-import { IPHONE_MODELS_2 } from '../../../Utils/Constants';
+import { IPHONE_MODELS_2, DEVICE_MODEL } from '../../../Utils/Constants';
 
 
 
-const BUTTON_GROUP_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(Constants.platform.ios.model.toLowerCase()) ? 119 : 84;
+const BUTTON_GROUP_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(DEVICE_MODEL) ? 119 : 84;
 
 class CreateButtonOverlay extends Component {
 	constructor(...args) {

@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import * as WebBrowser from 'expo-web-browser';
-import Constants from 'expo-constants';
 import { Actions } from 'react-native-router-flux';
 import { copilot, walkthroughable, CopilotStep } from 'react-native-copilot-gm';
 
@@ -29,7 +28,7 @@ import {
     handleRefresh,
 } from '../../redux/modules/meet/MeetActions';
 
-import { 
+import {
     meetContactSync
 } from '../../actions';
 
@@ -58,16 +57,16 @@ import {
 } from '../../styles';
 
 /* Constants */
-import { IPHONE_MODELS, PRIVACY_POLICY_URL } from '../../Utils/Constants';
+import { IPHONE_MODELS, PRIVACY_POLICY_URL, DEVICE_MODEL } from '../../Utils/Constants';
 import { generateInvitationLink } from '../../redux/middleware/utils';
 import Tooltip from '../Tutorial/Tooltip';
 import { svgMaskPath } from '../Tutorial/Utils';
 
 const { PeopleIcon: People } = Icons;
-const DEBUG_KEY = '[ UI MeetTabV2 ]'; 
+const DEBUG_KEY = '[ UI MeetTabV2 ]';
 const NumCardsToShow = Platform.OS === 'ios' &&
-  IPHONE_MODELS.includes(Constants.platform.ios.model.toLowerCase())
-  ? 3 : 5;
+    IPHONE_MODELS.includes(DEVICE_MODEL)
+    ? 3 : 5;
 const WalkableView = walkthroughable(View);
 
 class MeetTabV2 extends React.Component {
@@ -75,7 +74,7 @@ class MeetTabV2 extends React.Component {
         super(props);
         this.handleOnRefresh = this.handleOnRefresh.bind(this);
     }
-    
+
     componentDidUpdate(prevProps) {
         if (prevProps.refreshing && !this.props.refreshing && !this.props.hasShown && Actions.currentScene === 'meet') {
             this.props.start();
@@ -120,7 +119,7 @@ class MeetTabV2 extends React.Component {
         this.props.copilotEvents.on('stepChange', (step) => {
             const { name, order, visible, target, wrapper } = step;
             console.log(`${DEBUG_KEY}: [ onStepChange ]: step order: ${order}, step visible: ${name} `);
-        
+
             // We showing current order. SO the next step should be order + 1
             this.props.updateNextStepNumber('meet_tab_friend', 'meet_tab', order + 1);
         });
@@ -144,10 +143,10 @@ class MeetTabV2 extends React.Component {
     handleSyncContact = () => {
         Alert.alert(
             'Upload your contacts',
-            'Your contacts will be used to help you find your friends on GoalMogul.', 
+            'Your contacts will be used to help you find your friends on GoalMogul.',
             [
                 { text: 'Privacy Policy', onPress: async () => await WebBrowser.openBrowserAsync(PRIVACY_POLICY_URL, { showTitle: true }) },
-                { text: 'Continue', onPress: () => this.props.meetContactSync(this.handleOnRefresh, 'meetTab_meetContactSync'), style: 'default' }
+                { text: 'Continue', onPress: () => this.props.meetContactSync(this.handleOnRefresh, 'friendsTab_meetContactSync'), style: 'default' }
             ]
         );
     }
@@ -161,17 +160,7 @@ class MeetTabV2 extends React.Component {
     }
 
     handleSeeAllRequests = () => {
-        // this.setState({
-        //     ...this.state,
-        //     seeAllRequests: false
-        // });
         Actions.requestTabView();
-        // setTimeout(() => {
-        //     this.setState({
-        //         ...this.state,
-        //         seeAllRequests: true
-        //     });
-        // }, 500);
     }
 
     handleInviteFriends = () => {
@@ -183,8 +172,8 @@ class MeetTabV2 extends React.Component {
         const { name } = user;
         const inviteLink = generateInvitationLink(inviteCode);
         // const title = `Your friend ${name} is asking you to help achieve his goals on GoalMogul`;
-        const message = 'Hey, I’m using GoalMogul to get more stuff done and better myself. ' + 
-        'Can you check out this link and suggest ways to help me achieve my goals faster? Thanks! \n';
+        const message = 'Hey, I’m using GoalMogul to get more stuff done and better myself. ' +
+            'Can you check out this link and suggest ways to help me achieve my goals faster? Thanks! \n';
 
         Share.share({ title: undefined, message, url: inviteLink }, {});
     }
@@ -193,29 +182,29 @@ class MeetTabV2 extends React.Component {
     renderListHeader() {
         return (
             <View>
-                <FriendInvitationCTR 
+                <FriendInvitationCTR
                     handleInviteFriends={this.handleInviteFriends.bind(this)}
                     tutorialText={this.props.tutorialText[1]}
                 />
-                <View 
-                    style={{ 
-                        flexDirection: 'row', 
-                        marginTop: 12, 
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        marginTop: 12,
                         marginBottom: 5,
-                        backgroundColor: 'white', 
-                        ...styles.shadow, 
-                        alignItems: 'center', 
+                        backgroundColor: 'white',
+                        ...styles.shadow,
+                        alignItems: 'center',
                     }}
                 >
-                    <DelayedButton 
+                    <DelayedButton
                         activeOpacity={0.6}
-                        style={styles.CTRContainerStyle} 
+                        style={styles.CTRContainerStyle}
                         onPress={this.handleSyncContact}
                     >
-                        <Image 
-                            source={ContactSyncIcon} 
-                            style={styles.iconStyle} 
-                            resizeMode='contain' 
+                        <Image
+                            source={ContactSyncIcon}
+                            style={styles.iconStyle}
+                            resizeMode='contain'
                         />
                         <Text style={styles.CTRTextStyle}>Sync Contacts</Text>
                     </DelayedButton>
@@ -223,22 +212,22 @@ class MeetTabV2 extends React.Component {
 
                     <CopilotStep text={this.props.tutorialText[0]} order={0} name="discover_friend">
                         <WalkableView style={styles.CTRContainerStyle}>
-                            <DelayedButton 
+                            <DelayedButton
                                 activeOpacity={0.6}
                                 style={{ ...styles.CTRContainerStyle, padding: 0 }}
                                 onPress={this.handleDiscoverFriend}
                             >
-                                <Image 
-                                    source={People} 
-                                    style={styles.iconStyle} 
-                                    resizeMode='contain' 
+                                <Image
+                                    source={People}
+                                    style={styles.iconStyle}
+                                    resizeMode='contain'
                                 />
                                 <Text style={styles.CTRTextStyle}>Discover Friends</Text>
                             </DelayedButton>
                         </WalkableView>
                     </CopilotStep>
                 </View>
-                
+
             </View>
         );
     }
@@ -261,7 +250,7 @@ class MeetTabV2 extends React.Component {
         const outLength = outgoingRequests ? outgoingRequests.length : 0;
         const totalLength = inLength + outLength;
         const dataToRender = requestDataToRender(
-            incomingRequests, 
+            incomingRequests,
             [], // We are not rendering outgoing request on this page 
             NumCardsToShow
         );
@@ -277,12 +266,12 @@ class MeetTabV2 extends React.Component {
 
         // TODO: delete the following line
         // ret.push(this.renderSeeAll(totalLength, this.handleSeeAllRequests, 'request-see-all-test'));
-        
+
         // Only render See All if there are incoming requests
         if (inLength > 0) {
             ret.push(this.renderSeeAll(
-                inLength > 0 ? totalLength : 0, 
-                this.handleSeeAllRequests, 
+                inLength > 0 ? totalLength : 0,
+                this.handleSeeAllRequests,
                 'request-see-all'
             ));
         }
@@ -301,8 +290,8 @@ class MeetTabV2 extends React.Component {
         ret = ret.concat(dataToRender.map((d) => <FriendCardView item={d} key={d._id} />));
         if (friendCount > NumCardsToShow) {
             ret.push(this.renderSeeAll(
-                friendCount, 
-                this.handleSeeAllFriends, 
+                friendCount,
+                this.handleSeeAllFriends,
                 'friends-see-all'
             ));
         }
@@ -316,7 +305,7 @@ class MeetTabV2 extends React.Component {
             seeAll = (
                 <DelayedButton
                     style={{ ...seeAllContainerStyle, padding: 13, paddingLeft: 5, alignSelf: 'flex-end' }}
-                    activeOpacity={0.6} 
+                    activeOpacity={0.6}
                     onPress={onPress}
                 >
                     <Text style={seeAllTextStyle}>Manage All</Text>
@@ -341,23 +330,15 @@ class MeetTabV2 extends React.Component {
         return (
             <DelayedButton
                 style={{ ...seeAllContainerStyle, ...shadow }}
-                activeOpacity={0.6} 
+                activeOpacity={0.6}
                 onPress={onPress}
                 key={key}
             >
                 <Text style={seeAllTextStyle}>See All{countToDisplay}</Text>
-                <RightArrowIcon 
+                <RightArrowIcon
                     iconStyle={{ tintColor: '#17B3EC', ...styles.arrowIconStyle, height: 12, width: 18 }}
                     iconContainerStyle={{ alignSelf: 'center', alignItems: 'center', marginLeft: 5 }}
                 />
-                {/* <View style={{ alignSelf: 'center', alignItems: 'center' }}>
-                    <Icon
-                        name='ios-arrow-round-forward'
-                        type='ionicon'
-                        color='#17B3EC'
-                        iconStyle={styles.arrowIconStyle}
-                    />
-                </View> */}
             </DelayedButton>
         );
     }
@@ -366,7 +347,7 @@ class MeetTabV2 extends React.Component {
         const { incomingRequests, outgoingRequests, friends, friendCount } = this.props;
         return (
             <View style={{ flex: 1, backgroundColor: 'white' }}>
-                <SearchBarHeader rightIcon='menu' />
+                <SearchBarHeader backButton />
                 <ScrollView
                     refreshControl={
                         <RefreshControl
@@ -424,7 +405,7 @@ const styles = {
     arrowIconStyle: {
         alignSelf: 'center',
         // fontSize: 20,
-      },
+    },
 };
 
 const mapStateToProps = state => {
@@ -443,7 +424,7 @@ const mapStateToProps = state => {
 
     return {
         // Meet tab is on refreshing state if one of them is refreshing
-        refreshing: incoming.refreshing || outgoing.refreshing || friends.refreshing, 
+        refreshing: incoming.refreshing || outgoing.refreshing || friends.refreshing,
         incomingRequests,
         outgoingRequests,
         friends: data,
@@ -469,7 +450,7 @@ const requestDataToRender = (incomingRequests, outgoingRequests, threshold) => {
     } else {
         // Incoming request is not sufficient, use outgoing request to fulfill the length
         dataToRender = [
-            ...incomingRequests, 
+            ...incomingRequests,
             ...outgoingRequests.slice(0, threshold - inLength)
         ];
     }
