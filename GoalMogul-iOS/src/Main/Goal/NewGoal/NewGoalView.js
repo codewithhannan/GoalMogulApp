@@ -484,17 +484,21 @@ class NewGoalView extends Component {
                             alignItems: 'center',
                             marginTop: 5
                         }}>
-                            <Text style={styles.standardInputStyle}>{this.props.privacy}</Text>
+                            <Text style={styles.standardInputStyle}>
+                                {PRIVACY_OPTIONS.map(({ text, value}) => {
+                                    if (this.props.privacy === value) return text;
+                                })}
+                            </Text>
                             <Image resizeMode="contain" style={styles.caretStyle} source={dropDown} />
                         </View>
                     </MenuTrigger>
                     <MenuOptions customStyles={styles.menuOptionsStyles}>
-                        {PRIVACY_OPTIONS.map((value) => {
+                        {PRIVACY_OPTIONS.map(({ value, text }) => {
                             return <MenuOption onSelect={() => { this.props.change('privacy', value) }}>
                                 <View style={{
                                     width: '100%'
                                 }}>
-                                    <Text style={styles.standardInputStyle}>{value}</Text>
+                                    <Text style={styles.standardInputStyle}>{text}</Text>
                                 </View>
                             </MenuOption>
                         })}

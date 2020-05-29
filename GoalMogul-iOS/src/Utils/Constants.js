@@ -116,9 +116,18 @@ export const CATEGORY_OPTIONS = [
 ];
 
 export const PRIVACY_OPTIONS = [
-    'Friends',
-    'Public',
-    'Private'
+    {
+        text: 'Friends',
+        value: 'Friends'
+    },
+    {
+        text: 'Public',
+        value: 'Public'
+    },
+    {
+        text: 'Only Me',
+        value: 'Private'
+    }
 ];
 
 /** Caret related constants */
