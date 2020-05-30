@@ -125,7 +125,6 @@ class ProfilePostCard extends React.PureComponent {
                         textStyle={{ color: selfLiked ? '#000' : '#828282' }}
                         iconStyle={{ tintColor: selfLiked ? '#EB5757' : '#828282' }}
                         onPress={() => {
-                            console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
                             if (maybeLikeRef && maybeLikeRef.length > 0) {
                                 return this.props.unLikeGoal('post', _id, maybeLikeRef);
                             }
@@ -148,7 +147,6 @@ class ProfilePostCard extends React.PureComponent {
                         textStyle={{ color: '#828282' }}
                         iconStyle={{ tintColor: '#828282' }}
                         onPress={() => {
-                            console.log(`${DEBUG_KEY}: user clicks suggest icon`);
                             this.props.onPress(item);
                         }}
                     />

@@ -275,11 +275,10 @@ class GoalCard extends React.PureComponent {
                         textStyle={{ color: selfLiked ? '#000' : '#828282' }}
                         iconStyle={{ tintColor: selfLiked ? '#EB5757' : '#828282' }}
                         onPress={() => {
-                            console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
                             if (maybeLikeRef && maybeLikeRef.length > 0) {
-                                return this.props.unLikeGoal('post', _id, maybeLikeRef);
+                                return this.props.unLikeGoal('goal', _id, maybeLikeRef);
                             }
-                            this.props.likeGoal('post', _id);
+                            this.props.likeGoal('goal', _id);
                         }}
                     />
                     <ActionButton
@@ -297,8 +296,15 @@ class GoalCard extends React.PureComponent {
                         textStyle={{ color: '#828282' }}
                         iconStyle={{ tintColor: '#828282' }}
                         onPress={() => {
-                            console.log(`${DEBUG_KEY}: user clicks suggest icon`);
-                            this.props.onPress(item);
+                            this.props.onPress(
+                                this.props.item,
+                                {
+                                    type: 'comment',
+                                    _id: undefined,
+                                    initialShowSuggestionModal: false,
+                                    initialFocusCommentBox: true
+                                }
+                            );
                         }}
                     />
                 </ActionButtonGroup>
