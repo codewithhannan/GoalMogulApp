@@ -11,6 +11,7 @@ import OnboardingCommunity from './OnboardingCommunity';
 import OnboardingSyncContact from './OnboardingSyncContact';
 import OnboardingWelcome from './OnboardingWelcome';
 import SyncContactInvite from './SyncContactInvite';
+import OnboardingFbPlugin from './OnboardingFbPlugin';
 export { 
     RegistrationAccount, 
     OnboardingIntroTransition, 
@@ -19,5 +20,6 @@ export {
     OnboardingCommunity,
     OnboardingSyncContact,
     OnboardingWelcome,
-    SyncContactInvite
+    SyncContactInvite,
+    OnboardingFbPlugin
 };

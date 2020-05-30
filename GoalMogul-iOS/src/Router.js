@@ -89,6 +89,7 @@ import RegistrationAccount from './Registration/RegistrationAccount';
 //   OnboardingCommunity, OnboardingSyncContact, OnboardingWelcome,
 //   SyncContactInvite
 // } from './Main/Onboarding';
+import { OnboardingFbPlugin } from './Main/Onboarding';
 // import CardStackStyleInterpolator from "react-navigation-stack/src/views/StackView/StackViewStyleInterpolator";
 /* Auth */
 import SplashScreen from './SplashScreen';

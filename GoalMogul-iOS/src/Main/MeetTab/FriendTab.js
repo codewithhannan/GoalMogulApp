@@ -13,6 +13,7 @@ import { getIncomingUserFromFriendship } from '../../redux/modules/meet/selector
 import RequestCard from './V2/RequestCard';
 import { componentKeyByTab } from '../../redux/middleware/utils';
 import { handleRefresh, meetOnLoadMore } from '../../actions';
+import InviteFriendModal from './Modal/InviteFriendModal';
 
 /**
  * Friend tab page for GM main tabs
@@ -26,6 +27,12 @@ import { handleRefresh, meetOnLoadMore } from '../../actions';
  * }
  */
 class FriendTab extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showInviteFriendModal: false
+        }
+    }
 
     componentDidMount() {
         // Refresh user friends
@@ -34,6 +41,14 @@ class FriendTab extends React.Component {
         this.props.handleRefreshRequests();
         // Refresh recommended users with force refresh
         this.props.handleRefresh("suggested", true);
+    }
+
+    openInviteFriendModal = () => {
+        this.setState({ ...this.state, showInviteFriendModal: true });
+    }
+
+    closeInviteFriendModal = () => {
+        this.setState({ ...this.state, showInviteFriendModal: false });
     }
 
     handleSeeAllFriends = () => {
@@ -54,7 +69,7 @@ class FriendTab extends React.Component {
                     <Text style={[DEFAULT_STYLE.titleText_1, { marginBottom: styles.padding }]}>
                         Great friends help each other achieve so much more!
                     </Text>
-                    <DelayedButton onPress={() => console.log("Invite friends")} style={BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle}>
+                    <DelayedButton onPress={() => this.openInviteFriendModal()} style={BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle}>
                         <Text style={[DEFAULT_STYLE.titleText_1, { color: "white" }]}>Invite your Friends</Text>
                     </DelayedButton>
                 </View>
@@ -170,6 +185,7 @@ class FriendTab extends React.Component {
                     onEndReached={() => this.props.meetOnLoadMore("suggested")}
                     ItemSeparatorComponent={this.renderItemSeparator}
                 />
+                <InviteFriendModal isVisible={this.state.showInviteFriendModal} closeModal={this.closeInviteFriendModal} />
             </View>
         );
     }

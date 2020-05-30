@@ -9,7 +9,7 @@ const config = getEnvVars();
 export const singleFetch = (path, payload, method, token, logLevel) =>
   fetchData(path, payload, method, token, logLevel).then((res) => {
     if (!res.ok || !res.status === 200) {
-      console.log(`Fetch failed with error status: ${res.status}.`);
+      console.log(`Fetch failed with error status: ${res.status} for path: ${path}`);
     }
     return new Promise(async (resolve, reject) => {
       res

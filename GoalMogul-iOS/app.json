@@ -21,7 +21,10 @@
           "NSExceptionAllowsInsecureHTTPLoads": true
         },
         "NSFaceIDUsageDescription": "This app uses FaceId to unlock access to the App.",
-        "CFBundleExecutable": "ExpoKitApp"
+        "CFBundleExecutable": "ExpoKitApp",
+        "LSApplicationQueriesSchemes": [
+          "fb-messenger-share-api", "fbshareextension", "fbauth2", "fbapi", "wechat", "weixin", "twitter", "whatsapp", "instagram"
+        ]
       },
       "associatedDomains": ["applinks:web.goalmogul.com","webcredentials:web.goalmogul.com"]
     },
