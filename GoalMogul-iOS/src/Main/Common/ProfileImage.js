@@ -59,7 +59,7 @@ class ProfileImage extends React.Component {
         const defaultImageContainerStyle = this.props.defaultImageContainerStyle || imageContainerStyle || {
                 ...styles.imageContainerStyle,
                 borderColor: '#BDBDBD',
-                borderWidth: 2
+                borderWidth: 1
             };
 
         if (imageUrl) {

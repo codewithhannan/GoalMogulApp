@@ -68,7 +68,7 @@ class CoinProfileInfoModal extends React.PureComponent {
                                     )
                                 }
                                 return (
-                                    <Text style={{ color: 'rgb(85, 85, 85)', fontSize: 14, marginBottom: 4, lineHeigh: 19 }}>
+                                    <Text style={{ color: 'rgb(85, 85, 85)', fontSize: 14, marginBottom: 4, lineHeight: 19 }}>
                                         {`   ${text}`}
                                     </Text>
                                 )

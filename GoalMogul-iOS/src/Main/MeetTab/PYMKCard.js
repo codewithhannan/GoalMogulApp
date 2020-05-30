@@ -55,7 +55,7 @@ class PYMKCard extends React.Component {
         const text = "Added";
         return (
             <DelayedButton style={[styles.buttonTextContainerStyle, { backgroundColor: "#BDBDBD" }]} onPress={() => {}} disabled>
-                <Text style={[DEFAULT_STYLE.buttonText_1, { color: "white", fontWeight: "500" }]}>
+                <Text style={[DEFAULT_STYLE.buttonText_2, { color: "white", fontWeight: "500" }]}>
                     {text}
                 </Text>
             </DelayedButton>
@@ -66,7 +66,7 @@ class PYMKCard extends React.Component {
         const text = "Add Friend";
         return (
             <DelayedButton style={[styles.buttonTextContainerStyle, { backgroundColor: GM_BLUE }]} onPress={() => this.handleRequestFriend(userId)} activeOpacity={0.6}>
-                <Text style={[DEFAULT_STYLE.buttonText_1, { color: "white", fontWeight: "500" }]}>
+                <Text style={[DEFAULT_STYLE.buttonText_2, { color: "white", fontWeight: "500" }]}>
                     {text}
                 </Text>
             </DelayedButton>
