@@ -32,8 +32,8 @@ class FriendTab extends React.Component {
         this.props.handleRefreshFriend();
         // Refresh user friend requests for both incoming and outgoing
         this.props.handleRefreshRequests();
-        // Refresh recommended users
-        this.props.handleRefresh("suggested");
+        // Refresh recommended users with force refresh
+        this.props.handleRefresh("suggested", true);
     }
 
     handleSeeAllFriends = () => {
@@ -72,8 +72,8 @@ class FriendTab extends React.Component {
         return (
             <View style={{ width: "100%", paddingBottom: styles.padding, paddingLeft: styles.padding, padingRight: styles.padding }}>
                 <View style={{ flexDirection: "row" }}>
-                    <RequestCard user={incomingRequests[0].user} />
-                    {requestCount < 2 ? null : <RequestCard user={incomingRequests[0].user} /> }
+                    <RequestCard user={incomingRequests[0]} />
+                    {requestCount < 2 ? null : <RequestCard user={incomingRequests[0]} /> }
                 </View>
                 {requestCount <= 2 ? null : (
                     <DelayedButton onPress={this.handleSeeAllRequests} style={{ backgroundColor: "#F2F2F2", borderRadius: 3, padding: 10 }}>
@@ -160,7 +160,8 @@ class FriendTab extends React.Component {
                     setting={false}
                     rightIcon='menu'
                 />
-                <FlatList 
+                <FlatList
+                    keyExtractor={(item) => item._id}
                     data={this.props.pymkData || testData}
                     ListHeaderComponent={this.renderListHeader}
                     renderItem={this.renderPYMK}

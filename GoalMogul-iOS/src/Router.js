@@ -27,7 +27,7 @@ import TrendingGoalView from './Main/Goal/NewGoal/TrendingGoalView';
 import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCardV3';
 // Home Tab
 import Home from './Main/Home/Home';
-import MeetTab from './Main/MeetTab/MeetTabV2';
+// import MeetTab from './Main/MeetTab/MeetTabV2';
 import DiscoverTabView from './Main/MeetTab/V2/DiscoverTab/DiscoverTabView';
 import FriendInvitationView from './Main/MeetTab/V2/FriendInvitationView';
 // Meet
@@ -36,7 +36,7 @@ import RequestTabView from './Main/MeetTab/V2/RequestTab/RequestTabView';
 import MyEvent from './Main/Menu/Event/MyEvent';
 import ContactInvitePage from './Main/MeetTab/Contacts/ContactInvitePage';
 // Friend tab
-// import MeetTab from './Main/MeetTab/FriendTab';
+import MeetTab from './Main/MeetTab/FriendTab';
 // Menu
 import MyEventTab from './Main/Menu/Event/MyEventTab';
 import Menu from './Main/Menu/Menu';
