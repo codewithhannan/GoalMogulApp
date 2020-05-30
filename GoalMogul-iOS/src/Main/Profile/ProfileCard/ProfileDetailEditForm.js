@@ -33,14 +33,14 @@ import {
 
 /** Constants */
 import { IMAGE_BASE_URL } from '../../../Utils/Constants';
-import { GM_BLUE_LIGHT_LIGHT, BACKGROUND_COLOR, GM_BLUE, DEFAULT_STYLE } from '../../../styles';
+import { GM_BLUE_LIGHT_LIGHT, GM_BLUE, DEFAULT_STYLE } from '../../../styles';
 
 const BUTTONS = ['Take a Picture', 'Camera Roll', 'Cancel'];
 const TAKING_PICTURE_INDEX = 0;
 const CAMERA_ROLL_INDEX = 1;
 const CANCEL_INDEX = 2;
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const DEBUG_KEY = '[ UI ProfileDetailEditForm ]';
 
 class ProfileDetailEditForm extends Component {
@@ -50,6 +50,7 @@ class ProfileDetailEditForm extends Component {
     }
 
     submit = values => {
+        if (!values.profile.location || values.profile.location === '') values.profile.location = ' ';
         const hasImageModified = JSON.stringify(this.props.initialValues.profile.image) !==
             JSON.stringify(values.profile.image);
         this.props.submitUpdatingProfile({ values, hasImageModified }, this.props.pageId);

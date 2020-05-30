@@ -26,12 +26,10 @@ import { likeGoal, unLikeGoal } from '../../../redux/modules/like/LikeActions';
 import { subscribeEntityNotification, unsubscribeEntityNotification } from '../../../redux/modules/notification/NotificationActions';
 // Actions
 import { createReport } from '../../../redux/modules/report/ReportActions';
-import { APP_BLUE, GM_BLUE, DEFAULT_STYLE } from '../../../styles';
+import { GM_BLUE, DEFAULT_STYLE } from '../../../styles';
 // Constants
-// Constants
-import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE, IS_ZOOMED } from '../../../Utils/Constants';
+import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE } from '../../../Utils/Constants';
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
-import DelayedButton from '../../Common/Button/DelayedButton';
 import LikeListModal from '../../Common/Modal/LikeListModal';
 import ShareListModal from '../../Common/Modal/ShareListModal';
 import ProfileImage from '../../Common/ProfileImage';
@@ -439,11 +437,10 @@ class GoalDetailSection extends React.PureComponent {
                         textStyle={{ color: selfLiked ? '#000' : '#828282' }}
                         iconStyle={{ tintColor: selfLiked ? '#EB5757' : '#828282' }}
                         onPress={() => {
-                            console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
                             if (maybeLikeRef && maybeLikeRef.length > 0) {
-                                return this.props.unLikeGoal('post', _id, maybeLikeRef);
+                                return this.props.unLikeGoal('goal', _id, maybeLikeRef);
                             }
-                            this.props.likeGoal('post', _id);
+                            this.props.likeGoal('goal', _id);
                         }}
                     />
                     <ActionButton
@@ -461,7 +458,6 @@ class GoalDetailSection extends React.PureComponent {
                         textStyle={{ color: '#828282' }}
                         iconStyle={{ tintColor: '#828282' }}
                         onPress={() => {
-                            console.log(`${DEBUG_KEY}: user clicks comment icon.`);
                             this.props.createCommentFromSuggestion({
                                 commentDetail: {
                                     parentType: 'Goal',

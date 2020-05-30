@@ -391,7 +391,7 @@ class ProfileDetailCard extends Component {
                         textContainerStyle={{ flexDirection: 'row' }}
                         numberOfLines={1}
                     />
-                    {location && (
+                    {location && location.trim() !== '' && (
                         <RichText
                             textStyle={[styles.marginStyle, DEFAULT_STYLE.normalText_1 ]}
                             contentText={location}

@@ -373,7 +373,7 @@ class ShareDetailSection extends Component {
                         unitText="Share"
                         textStyle={{ color: '#828282' }}
                         iconStyle={{ tintColor: '#828282' }}
-                        onPress={() => this.handleShareOnClick(item)}
+                        onPress={() => this.handleShareOnClick()}
                         disabled={isShare}
                     />
                     <ActionButton
