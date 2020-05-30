@@ -189,7 +189,7 @@ class ProfileDetailEditForm extends Component {
                     Keyboard.dismiss()
                 }}
             >
-                <View style={{ marginTop: 30, height: '100%', backgroundColor: 'white' }}>
+                <View style={{ paddingBottom: 150, backgroundColor: 'white' }}>
                 <LoadingModal
                     visible={this.props.uploading}
                     customIndicator={<DotIndicator size={12} color='white' />}

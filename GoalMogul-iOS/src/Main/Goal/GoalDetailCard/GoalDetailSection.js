@@ -300,7 +300,7 @@ class GoalDetailSection extends React.PureComponent {
                 </View>
                 <View style={{ flexDirection: 'row', marginTop: 16 }}>
                     <Text
-                        style={{ ...DEFAULT_STYLE.normalText_1, flex: 1, flexWrap: 'wrap', color: 'black' }}
+                        style={{ ...DEFAULT_STYLE.subTitleText_1, flexWrap: 'wrap', color: 'black' }}
                         numberOfLines={3}
                         ellipsizeMode='tail'
                         selectable
@@ -312,7 +312,7 @@ class GoalDetailSection extends React.PureComponent {
                     contentText={text}
                     contentTags={tags}
                     textContainerStyle={{ flexDirection: 'row' }}
-                    textStyle={{ ...DEFAULT_STYLE.normalText_2, color: '#828282', flex: 1, flexWrap: 'wrap', marginTop: 5 }}
+                    textStyle={{ ...DEFAULT_STYLE.normalText_1, color: '#828282', flexWrap: 'wrap', marginTop: 5 }}
                     multiline
                     onUserTagPressed={(user) => {
                         console.log(`${DEBUG_KEY}: user tag press for user: `, user);
@@ -436,7 +436,7 @@ class GoalDetailSection extends React.PureComponent {
                         iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
                         count={likeCount}
                         unitText="Like"
-                        textStyle={{ color: likeCount > 0 ? '#000' : '#828282' }}
+                        textStyle={{ color: selfLiked ? '#000' : '#828282' }}
                         iconStyle={{ tintColor: selfLiked ? '#EB5757' : '#828282' }}
                         onPress={() => {
                             console.log(`${DEBUG_KEY}: user clicks Like Icon.`);

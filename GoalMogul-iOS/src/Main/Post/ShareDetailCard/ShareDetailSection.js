@@ -80,7 +80,6 @@ import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../Utils/Constants';
-import DelayedButton from '../../Common/Button/DelayedButton';
 import LikeListModal from '../../Common/Modal/LikeListModal';
 import SparkleBadgeView from '../../Gamification/Badge/SparkleBadgeView';
 
@@ -358,7 +357,7 @@ class ShareDetailSection extends Component {
                         iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
                         count={likeCount}
                         unitText="Like"
-                        textStyle={{ color: likeCount > 0 ? '#000' : '#828282' }}
+                        textStyle={{ color: selfLiked ? '#000' : '#828282' }}
                         iconStyle={{ tintColor: selfLiked ? '#EB5757' : '#828282' }}
                         onPress={() => {
                             console.log(`${DEBUG_KEY}: user clicks Like Icon.`);

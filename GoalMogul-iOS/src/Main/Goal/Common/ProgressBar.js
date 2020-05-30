@@ -98,20 +98,22 @@ const ProgressBar = (props) => {
         : formatDate(new Date(endTime));
 
     const startTimeTextView = startTimeText === 'undefined NaN'
-        ? (<Text style={{ ...DEFAULT_STYLE.smallText_2, opacity: 0 }}/>)
+        ? (<Text style={{ ...DEFAULT_STYLE.smallText_2 }}/>)
         : (<Text style={DEFAULT_STYLE.smallText_2}>{startTimeText}</Text>);
 
     const endTimeTextView = endTimeText === 'undefined NaN'
-        ? (<Text style={{ ...DEFAULT_STYLE.smallText_2, opacity: 0 }}/>)
+        ? (<Text style={{ ...DEFAULT_STYLE.smallText_2 }}/>)
         : (<Text style={DEFAULT_STYLE.smallText_2}>{endTimeText}</Text>);
+    console.log(startTimeTextView);
 
     return (
         <View style={styles.containerStyle}>
             <View style={{
-                flex: 1,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                marginBottom: 10
+                marginBottom: 10,
+                marginLeft: 2,
+                marginRight: 2
             }}>
                 {startTimeTextView}
                 {endTimeTextView}
@@ -128,11 +130,9 @@ const ProgressBar = (props) => {
 
 const styles = {
     containerStyle: {
-        flex: 1,
         marginTop: 2
     },
     barContainerStyle: {
-        flex: 1,
         flexDirection: 'row',
         alignSelf: 'center',
         alignItems: 'center'

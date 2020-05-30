@@ -245,7 +245,7 @@ class GoalCard extends React.PureComponent {
                     </View>
                 </View>
                 <Text
-                    style={{ ...DEFAULT_STYLE.normalText_1, marginTop: 16, flex: 1, flexWrap: 'wrap', color: 'black' }}
+                    style={{ ...DEFAULT_STYLE.subTitleText_1, marginTop: 16, flex: 1, flexWrap: 'wrap', color: 'black' }}
                     numberOfLines={2}
                     ellipsizeMode='tail'
                     selectable
@@ -272,7 +272,7 @@ class GoalCard extends React.PureComponent {
                         iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
                         count={likeCount}
                         unitText="Like"
-                        textStyle={{ color: likeCount > 0 ? '#000' : '#828282' }}
+                        textStyle={{ color: selfLiked ? '#000' : '#828282' }}
                         iconStyle={{ tintColor: selfLiked ? '#EB5757' : '#828282' }}
                         onPress={() => {
                             console.log(`${DEBUG_KEY}: user clicks Like Icon.`);

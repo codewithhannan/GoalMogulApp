@@ -84,7 +84,7 @@ class ActivityHeader extends Component {
     }
 
     // user basic information
-    renderUserDetail({ postRef, goalRef, actedUponEntityType, actor, owner, actedWith, created }) {
+    renderUserDetail({ postRef, goalRef, actedUponEntityType, actor, actedWith, created }) {
         const item = actedUponEntityType === 'Post' ? postRef : goalRef;
 
         // If no ref is passed in, then render nothing
@@ -209,7 +209,13 @@ class ActivityHeader extends Component {
                     contentText={content}
                     contentTags={tags}
                     contentLinks={links || []}
-                    textStyle={{ ...DEFAULT_STYLE.normalText_1, marginTop: 4, flex: 1, flexWrap: 'wrap', color: 'black' }}
+                    textStyle={{
+                        ...(actedUponEntityType === 'Post' ? DEFAULT_STYLE.normalText_1 : DEFAULT_STYLE.subTitleText_1),
+                        marginTop: 12,
+                        flex: 1,
+                        flexWrap: 'wrap',
+                        color: 'black'
+                    }}
                     textContainerStyle={{ flexDirection: 'row', marginTop: 5 }}
                     numberOfLines={3}
                     ellipsizeMode='tail'
