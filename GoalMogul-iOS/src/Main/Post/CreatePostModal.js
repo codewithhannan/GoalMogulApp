@@ -369,7 +369,7 @@ class CreatePostModal extends Component {
         const { post, mediaRef } = this.props;
         // TODO: check if draft is already saved
         const draftSaved = ((!post || post.trim() === '') && !mediaRef) ||
-                !this.isDraftChanged();
+                !this.isSaveDraftDisabled();
 
         if (draftSaved) 
             return callback ? callback() : null;
@@ -613,7 +613,8 @@ class CreatePostModal extends Component {
         );
     }
 
-    isDraftChanged() {
+    isSaveDraftDisabled() {
+        if (this.props.initializeFromState) return false;
         const { drafts, draftIndex } = this.state;
         if (drafts.length <= draftIndex || this.props.post !== drafts[draftIndex].post ||
             (this.props.mediaRef != drafts[draftIndex].mediaRef)) return true;
@@ -630,7 +631,7 @@ class CreatePostModal extends Component {
         };
         const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
         const actionDisabled = uploading || ((!post || post.trim() === '') && !mediaRef);
-        const saveDraftDisabled = actionDisabled || !this.isDraftChanged();
+        const saveDraftDisabled = actionDisabled || !this.isSaveDraftDisabled();
         return (
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
                 <DelayedButton
@@ -651,6 +652,7 @@ class CreatePostModal extends Component {
                         activeOpacity={0.6}
                         style={actionIconWrapperStyle}
                         onPress={this.handleOpenCamera}
+                        disabled={uploading}
                     >
                         <Image
                             resizeMode="contain"
@@ -663,6 +665,7 @@ class CreatePostModal extends Component {
                         activeOpacity={0.6}
                         style={{ ...actionIconWrapperStyle, marginLeft: 8 }}
                         onPress={this.handleOpenCameraRoll}
+                        disabled={uploading}
                     >
                         <Image
                             resizeMode="contain"
@@ -716,7 +719,7 @@ class CreatePostModal extends Component {
                         onAction={handleSubmit(this.handleCreate)}
                         actionDisabled={actionDisabled}
                     />
-                    {this.state.drafts.length > 0 && this.renderDraftsHeader()}
+                    {!initializeFromState && this.state.drafts.length > 0 && this.renderDraftsHeader()}
                     <ScrollView>
                         <View style={{ flex: 1, padding: 20 }}>
                             {this.renderUserInfo()}

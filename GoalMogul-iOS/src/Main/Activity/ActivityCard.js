@@ -111,7 +111,8 @@ class ActivityCard extends React.PureComponent {
     };
 
     renderActionButtons({ postRef, goalRef, actedUponEntityType, actedWith }) {
-        const item = actedUponEntityType === 'Post' ? postRef : goalRef;
+        const isPost = actedUponEntityType === 'Post';
+        const item = isPost ? postRef : goalRef;
         // Sanity check if ref exists
         if (!item) return null;
 
@@ -125,7 +126,7 @@ class ActivityCard extends React.PureComponent {
 
         // User shouldn't share a share. When Activity on a post which is a share,
         // We disable the share button.
-        const isShare = actedUponEntityType === 'Post' && postRef.postType !== 'General';
+        const isShare = isPost && postRef.postType !== 'General';
 
         return (
             <View style={{ marginTop: 1 }}>
@@ -138,7 +139,7 @@ class ActivityCard extends React.PureComponent {
                         iconStyle={{ tintColor: selfLiked ? '#EB5757' : '#828282' }}
                         onPress={() => {
                             console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
-                            if (maybeLikeRef && maybeLikeRef.length > 0) {
+                            if (selfLiked) {
                                 return this.props.unLikeGoal('post', _id, maybeLikeRef);
                             }
                             this.props.likeGoal('post', _id);
@@ -150,7 +151,7 @@ class ActivityCard extends React.PureComponent {
                         unitText="Share"
                         textStyle={{ color: '#828282' }}
                         iconStyle={{ tintColor: '#828282' }}
-                        onPress={() => this.handleShareOnClick(item)}
+                        onPress={() => this.handleShareOnClick(actedUponEntityType)}
                         disabled={isShare}
                     />
                     <ActionButton
@@ -160,8 +161,11 @@ class ActivityCard extends React.PureComponent {
                         textStyle={{ color: '#828282' }}
                         iconStyle={{ tintColor: '#828282' }}
                         onPress={() => {
-                            console.log(`${DEBUG_KEY}: user clicks suggest icon`);
-                            this.props.onPress(item);
+                            console.log(`${DEBUG_KEY}: user clicks suggest icon actedWith: ${actedWith}`);
+                            this.props.onPress(
+                                item,
+                                (actedWith === 'Comment' || actedWith === 'Like' || actedWith === 'Goal') && actedUponEntityType === 'Goal'
+                            );
                         }}
                     />
                 </ActionButtonGroup>
