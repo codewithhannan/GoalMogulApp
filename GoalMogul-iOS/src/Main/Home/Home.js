@@ -395,6 +395,8 @@ const styles = {
     },
     tabContainer: {
         padding: 16,
+        paddingTop: 8,
+        paddingBottom: 8,
         backgroundColor: BACKGROUND_COLOR
     },
     backdrop: {

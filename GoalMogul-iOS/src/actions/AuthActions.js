@@ -39,7 +39,7 @@ import {
 } from '../redux/modules/home/mastermind/actions';
 
 import {
-    IMAGE_BASE_URL
+    IMAGE_BASE_URL, MINUTE_IN_MS, DAY_IN_MS
 } from '../Utils/Constants';
 
 // Components
@@ -56,8 +56,6 @@ import { SENTRY_TAGS, SENTRY_MESSAGE_LEVEL, SENTRY_TAG_VALUE, SENTRY_MESSAGE_TYP
 
 
 const DEBUG_KEY = '[ Action Auth ]';
-const DAY_IN_MS = 24 * 60 * 60 * 1000;
-const MINUTE_IN_MS = 60 * 1000;
 
 export const userNameChanged = (username) => {
     return {
@@ -215,6 +213,7 @@ const mountUserWithToken = ({ payload, username, password, navigate, onSuccess, 
     fetchAppUserProfile(payload.token, payload.userId)(dispatch, getState);
     refreshFeed()(dispatch, getState);
     refreshGoals()(dispatch, getState);
+    subscribeNotification()(dispatch, getState);
 
     // Load unread notification
     await loadUnreadNotification()(dispatch, getState);
@@ -224,8 +223,6 @@ const mountUserWithToken = ({ payload, username, password, navigate, onSuccess, 
 
     // Load remote matches
     await loadRemoteMatches(payload.userId)(dispatch, getState);
-
-    await subscribeNotification()(dispatch, getState);
 
     // If navigate is set to false, it means user has already opened up the home page
     // We only need to reload the profile and feed data

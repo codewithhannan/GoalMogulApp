@@ -122,7 +122,7 @@ class ProfilePostCard extends React.PureComponent {
                         iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
                         count={likeCount}
                         unitText="Like"
-                        textStyle={{ color: likeCount > 0 ? '#000' : '#828282' }}
+                        textStyle={{ color: selfLiked ? '#000' : '#828282' }}
                         iconStyle={{ tintColor: selfLiked ? '#EB5757' : '#828282' }}
                         onPress={() => {
                             console.log(`${DEBUG_KEY}: user clicks Like Icon.`);

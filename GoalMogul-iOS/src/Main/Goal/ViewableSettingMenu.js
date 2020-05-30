@@ -22,8 +22,6 @@ import { DEFAULT_STYLE } from '../../styles';
 import { PRIVACY_OPTIONS } from '../../Utils/Constants';
 
 
-const VIEWABLE_SETTING_MENU_OPTTIONS = ['Friends', 'Public', 'Private', 'Cancel'];
-const CANCEL_INDEX = 3;
 const DEBUG_KEY = '[ ViewableSettingMenu Component ]';
 const WalkableView = walkthroughable(View);
 
@@ -38,7 +36,7 @@ class ViewableSettingMenu extends Component {
 
     handleOnClick = () => {
         const viewableSettingSwitchCases = switchByButtonIndex(
-            PRIVACY_OPTIONS.map((value, index) => {
+            PRIVACY_OPTIONS.map(({ value }, index) => {
                 return [R.equals(index), () => {
                     console.log(`${DEBUG_KEY} User choose setting: ${value} `);
                     this.props.callback(value);
@@ -48,8 +46,11 @@ class ViewableSettingMenu extends Component {
         );
 
         const viewableSettingActionSheet = actionSheet(
-            VIEWABLE_SETTING_MENU_OPTTIONS,
-            CANCEL_INDEX,
+            [
+                ...PRIVACY_OPTIONS.map(({ text }) => text),
+                'Cancel'
+            ],
+            PRIVACY_OPTIONS.length,
             viewableSettingSwitchCases
         );
         return viewableSettingActionSheet();
@@ -102,7 +103,9 @@ class ViewableSettingMenu extends Component {
                         source={profilePeople}
                     />
                     <Text style={{ ...DEFAULT_STYLE.smallText_1, marginTop: 2 }}>
-                        {this.props.viewableSetting}
+                        {PRIVACY_OPTIONS.map(({ text, value}) => {
+                            if (this.props.viewableSetting === value) return text;
+                        })}
                     </Text>
                     {caret}
                     {tutorialComponent}

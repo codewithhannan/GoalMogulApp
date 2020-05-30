@@ -18,7 +18,6 @@ import _ from 'lodash';
 
 // Actions
 import { hideSplashScreen } from './redux/modules/auth/Auth';
-
 import {
     tryAutoLogin,
     loginUser
