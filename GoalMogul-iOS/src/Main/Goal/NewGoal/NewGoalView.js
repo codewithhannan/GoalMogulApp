@@ -149,8 +149,8 @@ class NewGoalView extends Component {
         }
 
         const extraScrollToHeight = extraNumber * 75 * DEFAULT_STYLE.uiScale;
-        console.log(`${DEBUG_KEY}: extra scroll height:`, extraScrollToHeight);
-        this.scrollView.scrollTo({ y: 300/DEFAULT_STYLE.uiScale+y+extraScrollToHeight, animated: true });
+        // console.log(`${DEBUG_KEY}: extra scroll height:`, extraScrollToHeight);
+        this.scrollView.scrollTo({ y: 300 / DEFAULT_STYLE.uiScale + y + extraScrollToHeight, animated: true });
     }
 
     handleLayoutChange = ({ nativeEvent }) => {
@@ -495,7 +495,7 @@ class NewGoalView extends Component {
                             marginTop: 5
                         }}>
                             <Text style={styles.standardInputStyle}>
-                                {PRIVACY_OPTIONS.map(({ text, value}) => {
+                                {PRIVACY_OPTIONS.map(({ text, value }) => {
                                     if (this.props.privacy === value) return text;
                                 })}
                             </Text>
@@ -523,7 +523,7 @@ class NewGoalView extends Component {
         return (
             <CopilotStep text={this.props.tutorialText[1]} order={1} name="create_goal_create_goal_modal_1">
                 <WalkableView>
-                    <FieldTitleText text='What are you trying to achieve?' required={true} style={{ marginBottom: 16 }}/>
+                    <FieldTitleText text='What are you trying to achieve?' required={true} style={{ marginBottom: 16 }} />
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text style={styles.subTitleTextStyle}>Your Goal</Text>
                         <Text style={DEFAULT_STYLE.smallText_2}>{title ? title.length : 0}/90</Text>
@@ -851,7 +851,11 @@ class NewGoalView extends Component {
      */
     renderFieldArrayItem = (props, placeholder, fields, canDrag, type, onSubmitEditing) => {
         const { item, index, move, moveEnd, isActive } = props;
-        const iconOnPress = index === 0 ? undefined : () => fields.remove(index);
+        console.log(fields);
+        const iconOnPress = () => {
+                if (type !== 'step' || fields.length > 1)
+                    fields.remove(index);
+            };
         return (
             <View style={{
                 flexDirection: 'row',
@@ -909,27 +913,27 @@ class NewGoalView extends Component {
                 <FieldTitleText text={TYPE_MAP[type].title} required={required} style={{ marginBottom: 12 }} />
                 {
                     fields.length > 0 ?
-                    <DraggableFlatlist
-                        renderItem={(props) => this.renderFieldArrayItem(props, TYPE_MAP[type].placeholder, fields, true, type, onSubmitEditing)}
-                        data={dataToRender}
-                        keyExtractor={item => `${item.index}`}
-                        scrollPercent={5}
-                        onMoveEnd={e => {
-                            // console.log('moving end for e: ', e);
-                            fields.move(e.from, e.to);
-                            this.setState({
-                                ...this.state,
-                                scrollEnabled: true
-                            });
-                        }}
-                        onMoveBegin={(index) => {
-                            // console.log('index is being moved: ', index);
-                            this.setState({
-                                ...this.state,
-                                scrollEnabled: false
-                            });
-                        }}
-                    /> : null
+                        <DraggableFlatlist
+                            renderItem={(props) => this.renderFieldArrayItem(props, TYPE_MAP[type].placeholder, fields, true, type, onSubmitEditing)}
+                            data={dataToRender}
+                            keyExtractor={item => `${item.index}`}
+                            scrollPercent={5}
+                            onMoveEnd={e => {
+                                // console.log('moving end for e: ', e);
+                                fields.move(e.from, e.to);
+                                this.setState({
+                                    ...this.state,
+                                    scrollEnabled: true
+                                });
+                            }}
+                            onMoveBegin={(index) => {
+                                // console.log('index is being moved: ', index);
+                                this.setState({
+                                    ...this.state,
+                                    scrollEnabled: false
+                                });
+                            }}
+                        /> : null
                 }
                 <Button
                     text={TYPE_MAP[type].buttonText}

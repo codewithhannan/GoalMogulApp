@@ -95,18 +95,11 @@ class InputField extends Component {
         const { onFocus } = input;
         if (onFocus) onFocus();
         const screenHeight = Dimensions.get('window').height;
-        this.view.measure((fx, fy, width, height, px, py) => {
-            // if ((py + this.state.keyboardHeight + height) > screenHeight) {
-                const scrollToHeight = screenHeight - this.state.keyboardHeight;
-                console.log('scrollToHeight is: ', scrollToHeight);
-                if (this.scrollToTimer) clearTimeout(this.scrollToTimer);
+        const scrollToHeight = screenHeight - this.state.keyboardHeight;
+        console.log('scrollToHeight is: ', scrollToHeight);
+        if (this.scrollToTimer) clearTimeout(this.scrollToTimer);
 
-                this.scrollToTimer = setTimeout(() => scrollTo(scrollToHeight, type, index), 50);
-            // } else {
-            //     console.log(`${DEBUG_KEY}: keyboardHeight: `, this.state.keyboardHeight);
-            // }
-        })
-        // console.log(`${DEBUG_KEY}: nativeEvent with layout is: `, this.view.measure());
+        this.scrollToTimer = setTimeout(() => scrollTo(scrollToHeight, type, index), 50);
     }
 
     updateRef(name, ref) {
