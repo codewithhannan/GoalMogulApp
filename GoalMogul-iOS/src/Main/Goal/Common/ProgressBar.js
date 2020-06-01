@@ -104,7 +104,6 @@ const ProgressBar = (props) => {
     const endTimeTextView = endTimeText === 'undefined NaN'
         ? (<Text style={{ ...DEFAULT_STYLE.smallText_2 }}/>)
         : (<Text style={DEFAULT_STYLE.smallText_2}>{endTimeText}</Text>);
-    console.log(startTimeTextView);
 
     return (
         <View style={styles.containerStyle}>

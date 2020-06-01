@@ -297,10 +297,6 @@ export const openNotificationDetail = (item) => (dispatch, getState) => {
         return openGoalDetailById(entityId, initialProps)(dispatch, getState);
     }
 
-    // if (entityType === 'share') {
-    //   return openShareDetail(entityId)(dispatch, getState);
-    // }
-
     if (entityType === 'event') {
         return myEventDetailOpenWithId(entityId)(dispatch, getState);
     }
