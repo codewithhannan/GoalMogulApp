@@ -72,8 +72,18 @@ import { PRIVACY_OPTIONS, DAY_IN_MS } from '../../../Utils/Constants';
 const { Popover } = renderers;
 const { width } = Dimensions.get('window');
 
-const STEP_PLACE_HOLDER = 'Add an important step for achieving your goal';
-const NEED_PLACE_HOLDER = 'Something you\'re specifically looking for help with';
+const TYPE_MAP = {
+    step: {
+        title: 'Steps',
+        placeholder: 'Add an important step for achieving your goal',
+        buttonText: 'Add a Step'
+    },
+    need: {
+        title: 'Needs',
+        placeholder: 'Something you\'re specifically looking for help with',
+        buttonText: 'Add a Need'
+    }
+}
 const INITIAL_TAG_SEARCH = {
     data: [],
     skip: 0,
@@ -134,13 +144,13 @@ class NewGoalView extends Component {
         if (type === 'step') {
             extraNumber = index;
         }
-
         if (type === 'need') {
-            extraNumber = (this.props.steps.length + 1) + index;
+            extraNumber = (this.props.steps.length + 2) + index;
         }
-        const extraScrollToHeight = extraNumber * 54;
-        // console.log(`${DEBUG_KEY}: extra scroll height:`, extraScrollToHeight);
-        this.scrollView.scrollTo({ y: y + extraScrollToHeight, animated: true });
+
+        const extraScrollToHeight = extraNumber * 75 * DEFAULT_STYLE.uiScale;
+        console.log(`${DEBUG_KEY}: extra scroll height:`, extraScrollToHeight);
+        this.scrollView.scrollTo({ y: 300/DEFAULT_STYLE.uiScale+y+extraScrollToHeight, animated: true });
     }
 
     handleLayoutChange = ({ nativeEvent }) => {
@@ -789,7 +799,7 @@ class NewGoalView extends Component {
                 <WalkableView style={{ ...styles.sectionMargin }}>
                     <FieldTitleText text='Timeline' required={true} style={{ marginBottom: 12 }} />
                     <Text style={styles.descriptionTextStyle}>Give your best estimate.</Text>
-                    <View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center' }}>
                         <TouchableOpacity
                             activeOpacity={0.6}
                             style={{
@@ -877,7 +887,7 @@ class NewGoalView extends Component {
         );
     }
 
-    renderFieldArray = (title, buttonText, placeholder, required, fields, error) => {
+    renderFieldArray = (type, required, fields, error) => {
         const onSubmitEditing = ({ nativeEvent }) => {
             const { text } = nativeEvent;
             if (text && text.trim() !== '') {
@@ -896,11 +906,11 @@ class NewGoalView extends Component {
 
         return (
             <View style={styles.sectionMargin}>
-                <FieldTitleText text={title} required={required} style={{ marginBottom: 12 }} />
+                <FieldTitleText text={TYPE_MAP[type].title} required={required} style={{ marginBottom: 12 }} />
                 {
                     fields.length > 0 ?
                     <DraggableFlatlist
-                        renderItem={(props) => this.renderFieldArrayItem(props, placeholder, fields, true, buttonText, onSubmitEditing)}
+                        renderItem={(props) => this.renderFieldArrayItem(props, TYPE_MAP[type].placeholder, fields, true, type, onSubmitEditing)}
                         data={dataToRender}
                         keyExtractor={item => `${item.index}`}
                         scrollPercent={5}
@@ -922,7 +932,7 @@ class NewGoalView extends Component {
                     /> : null
                 }
                 <Button
-                    text={buttonText}
+                    text={TYPE_MAP[type].buttonText}
                     source={plus}
                     onPress={() => fields.push({})}
                     containerStyle={{
@@ -948,9 +958,7 @@ class NewGoalView extends Component {
                 <WalkableView>
                     {
                         this.renderFieldArray(
-                            'Steps',
-                            'Add a Step',
-                            STEP_PLACE_HOLDER,
+                            'step',
                             true,
                             fields,
                             error
@@ -962,7 +970,7 @@ class NewGoalView extends Component {
     }
 
     renderNeeds = ({ fields, meta: { error, submitFailed } }) => {
-        return this.renderFieldArray('Needs', 'Add a Need', NEED_PLACE_HOLDER, false, fields, error);
+        return this.renderFieldArray('need', false, fields, error);
     }
 
     render() {
@@ -973,6 +981,27 @@ class NewGoalView extends Component {
                 scrollEnabled={this.state.scrollEnabled}
                 ref={r => { this.scrollView = r; }}
             >
+                <View style={{
+                    padding: 24
+                }}>
+                    <Text style={DEFAULT_STYLE.subTitleText_1}>Need some help forming your Goal?</Text>
+                    <Button
+                        text="View Trending Goals"
+                        containerStyle={{
+                            backgroundColor: GM_BLUE,
+                            alignSelf: 'flex-start',
+                            paddingLeft: 16,
+                            paddingRight: 16,
+                            marginTop: 16
+                        }}
+                        textStyle={{
+                            ...DEFAULT_STYLE.titleText_1,
+                            color: 'white'
+                        }}
+                        onPress={() => Actions.push('trendingGoalView')}
+                    />
+                </View>
+                <View style={[DEFAULT_STYLE.shadow, { height: 8 * DEFAULT_STYLE.uiScale }]} />
                 <View style={{ padding: 20, paddingBottom: 0 }}>
                     {this.renderGoal()}
                     <FieldArray
