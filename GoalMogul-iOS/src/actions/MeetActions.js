@@ -102,6 +102,8 @@ export const loadFriends = (lastRes, limit, callback) => (dispatch, getState) =>
     });
 };
 
+const decorateRouteWithForceRefresh = (route) => route + "&refresh=true";
+
 /*
 @param type (string): current tab key
 @param skip (number): number to skip for data
@@ -110,10 +112,15 @@ export const loadFriends = (lastRes, limit, callback) => (dispatch, getState) =>
 @param dispatch:
 @param callback:
 */
-const loadOneTab = (type, skip, limit, token, dispatch, callback, onError) => {
+const loadOneTab = (type, skip, limit, token, dispatch, callback, onError, forceRefresh) => {
     const route = _.get(requestMap, type);
+    let url = `${BASE_ROUTE}${route}?limit=${limit}&skip=${skip}`;
+    if (forceRefresh) {
+        url = decorateRouteWithForceRefresh(url);
+    }
+
     API
-        .get(`${BASE_ROUTE}${route}?limit=${limit}&skip=${skip}`, token)
+        .get(url, token)
         .then((res) => {
             console.log(`loading type: ${type} with res length: `, res.data ? res.data.length : 0);
 
@@ -195,8 +202,9 @@ const loadOneTab = (type, skip, limit, token, dispatch, callback, onError) => {
 /**
  * Refresh current tab based on selected id
  * @param {String} key type of the meet to refresh for. See requestMap for defined routes.
+ * @param {Boolean} forceRefresh boolean indicator if this is a force refresh. This is used for recommendation force refresh
  */
-export const handleRefresh = (key) => (dispatch, getState) => {
+export const handleRefresh = (key, forceRefresh) => (dispatch, getState) => {
     const { token } = getState().user;
     const { limit } = _.get(getState().meet, key);
     dispatch({
@@ -231,7 +239,7 @@ export const handleRefresh = (key) => (dispatch, getState) => {
                 hasNextPage: !(data === undefined || data.length === 0)
             }
         });
-    }, onError);
+    }, onError, forceRefresh);
 };
 
 // Load more data

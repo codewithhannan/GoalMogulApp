@@ -130,7 +130,7 @@ export const loadMoreRequest = (key) => (dispatch, getState) => {
     const url = `${BASE_ROUTE}${route}?skip=${skip}&limit=${limit}`;
     const onSuccess = (res) => {
         const { data } = res;
-        console.log(`${DEBUG_KEY}: load more ${key} success with res: `, res);
+        console.log(`${DEBUG_KEY}: load more ${key} success with res: `, data ? data.length : res);
         dispatch({
             type: MEET_LOADING_DONE,
             payload: {
