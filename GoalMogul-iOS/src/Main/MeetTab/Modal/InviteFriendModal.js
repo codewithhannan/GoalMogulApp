@@ -1,11 +1,11 @@
 import React from 'react';
 import {
     View, Text, Image, TextInput, Keyboard, ScrollView,
-    Share, Linking, Alert, Clipboard
+    Share, Linking, Alert, Clipboard, Dimensions
 } from 'react-native';
 import * as SMS from 'expo-sms';
 import { connect } from 'react-redux';
-import Modal from 'react-native-modal';
+import Modal from 'react-native-modalbox';
 import ModalHeader from '../../Common/Header/ModalHeader';
 import { GM_BLUE, DEFAULT_STYLE } from '../../../styles';
 import cancel from '../../../asset/utils/cancel_no_background.png';
@@ -14,7 +14,7 @@ import { generateInvitationLink } from '../../../redux/middleware/utils';
 
 const DEBUG_KEY = "[UI InviteFriendModal]";
 const DEFAULT_STATE = {
-    description: "I'd love for us to keep each other inspired & motivated on our journeys. Add me on GoalMogul?",
+    description: "I'd love for us to keep each other inspired and motivated on our journeys. Add me on GoalMogul?",
     editEnabled: false
 }
 
@@ -25,9 +25,17 @@ const DEFAULT_CARDS = [{
     image: undefined,
     deepLink: "fb-messenger://",
     deepLinkFormat: (text, url) => {
-        return `fb-messenger://share?&link=${url}&message=${text}`
+        // return `fb-messenger://share?link=${encodeURIComponent(url)}&message=${text}`
+        return `fb-messenger://share?link=${encodeURIComponent(url)}`
     }
 }, {
+    text: "Whatsapp",
+    image: undefined,
+    deepLink: "whatsapp://",
+    deepLinkFormat: (text, url) => {
+        return `whatsapp://send?text=${text}\n\n${encodeURIComponent(url)}`;
+    }
+},{
     type: "sms",
     text: "iMessage",
     image: undefined,
@@ -63,6 +71,10 @@ class InviteFriendModal extends React.PureComponent {
         }
     }
 
+    getInviteLink = () => {
+        return generateInvitationLink(this.props.inviteCode);
+    }
+
     inviteSms = async (message, url) => {
         const isAvailable = await SMS.isAvailableAsync();
         console.log(`${DEBUG_KEY}: SMS is available?`, isAvailable);
@@ -76,8 +88,13 @@ class InviteFriendModal extends React.PureComponent {
         }
     }
 
-    inviteEmail = (message, url) => {
-
+    inviteEmail = async (message, url) => {
+        // Linking.openURL(`mailto:?subject=Join GoalMogul&body=${unescape(message)}\n\n${unescape(url)}`);
+        const canOpen = await Linking.canOpenURL("mailto:?");
+        // Linking.openURL(`mailto:support@goalmogul.com?subject=Gold Badge winner&body=`);
+        if (canOpen) {
+            Linking.openURL(`mailto:?subject=Join GoalMogul&body=${unescape(message)}\n\n${unescape(url)}`);
+        }
     }
 
     inviteNative = (message, url) => {
@@ -92,8 +109,8 @@ class InviteFriendModal extends React.PureComponent {
     }
 
     handleDeepLink = async (item) => {
-        const { type, dl, deepLinkFormat } = item;
-        const inviteLink = generateInvitationLink(this.props.inviteCode);
+        const { type, deepLink, deepLinkFormat } = item;
+        const inviteLink = this.getInviteLink();
         if (type == "sms") {
             return this.inviteSms(this.state.description, inviteLink);
         }
@@ -106,10 +123,17 @@ class InviteFriendModal extends React.PureComponent {
             return this.copyToClipboard(this.state.description, inviteLink);
         }
 
-        const canOpen = await Linking.canOpenURL(dl);
+        if (type == "email") {
+            return this.inviteEmail(this.state.description, inviteLink);
+        }
+
+        console.log("full link is: ", deepLinkFormat(this.state.description, inviteLink));
+        console.log("deepLink is: ", deepLink);
+        const canOpen = await Linking.canOpenURL(deepLink);
         console.log("canOpen", canOpen);
+        
         if (canOpen) {
-            const fullLink = deepLinkFormat ? deepLinkFormat(this.state.description, inviteLink) : dl;
+            const fullLink = deepLinkFormat ? deepLinkFormat(this.state.description, inviteLink) : deepLink;
             await Linking.openURL(fullLink);
         }
     }
@@ -147,15 +171,20 @@ class InviteFriendModal extends React.PureComponent {
 
     render() {
         const link = "web.goalmogul.com/invite/abc123";
+        const { width } = Dimensions.get("window");
+        const inviteLink = this.getInviteLink();
         
         return (
             <Modal
-                isVisible={this.props.isVisible}
-                backdropOpacity={0.5}
+                isOpen={this.props.isVisible}
+                backdropOpacity={0.6}
                 coverScreen={true}
-                style={{ marginBottom: 0, marginHorizontal: 0 }}
+                hideModalContentWhileAnimating
+                onClosed={this.closeModal}
+                style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, flex: 1, marginTop: 50 }}
+                useNativeDriver={false}
             >
-                <View style={{ backgroundColor: "#F2F2F2", top: 30, bottom: 0, left: 0, right: 0, position: "absolute", borderTopLeftRadius: 10, borderTopRightRadius: 10 }}>
+                <View style={{ backgroundColor: "#F2F2F2", flex: 1, borderTopLeftRadius: 10, borderTopRightRadius: 10 }}>
                     <View style={[styles.boxContainerStyle, { flexDirection: "row", marginBottom: 1, borderTopLeftRadius: 10, borderTopRightRadius: 10 }]}>
                         <Text style={[DEFAULT_STYLE.titleText_1]}>Share</Text>
                         <View style={{ flex: 1, alignItems: "center" }} />
@@ -174,39 +203,42 @@ class InviteFriendModal extends React.PureComponent {
 							/>
 						</DelayedButton>
                     </View>
-                    <ScrollView
-                        contentContainerStyle={{ flex: 1 }}
-                    >
-                        <View style={[styles.boxContainerStyle, { marginBottom: 1 }]}>
-                            <View style={{ borderWidth: 1, borderColor: "#E0E0E0", borderRadius: 5, padding: 20, justifyContent: "center" }}>
-                                <TextInput
-                                    ref={input => {this.input = input}}
-                                    defaultValue={this.state.description}
-                                    onChangeText={(text) => this.updateDescription(text)}
-                                    style={[DEFAULT_STYLE.subTitleText_1, { paddingTop: 0 }]}
-                                    multiline
-                                    editable={this.state.editEnabled}
-                                />
-                                <Text style={[DEFAULT_STYLE.titleText_1, { color: GM_BLUE, textDecorationLine: 'underline' }]}>{link}</Text>
+                        <ScrollView
+                            style={{ flex: 1 }}
+                            contentContainerStyle={{ paddingBottom: 30, flexGrow: 1 }}
+                        >
+                            <View style={[styles.boxContainerStyle, { marginBottom: 1 }]}>
+                                <View style={{ borderWidth: 1, borderColor: "#E0E0E0", borderRadius: 5, padding: 20, justifyContent: "center" }}>
+                                    <TextInput
+                                        ref={input => {this.input = input}}
+                                        value={this.state.description}
+                                        onChangeText={(text) => this.updateDescription(text)}
+                                        style={[DEFAULT_STYLE.subTitleText_1, { letterSpacing: 0, fontSize: 18, lineHeight: 26, padding: 0, width: width - 72 }]}
+                                        multiline
+                                        editable={this.state.editEnabled}
+                                    />
+                                    <Text style={[DEFAULT_STYLE.titleText_1, { fontWeight: "400", color: GM_BLUE, textDecorationLine: 'underline' }]}>{inviteLink}</Text>
+                                </View>
+                                <View style={{ flexDirection: "row" }}>
+                                    <View style={{ flex: 1 }} />
+                                    <DelayedButton onPress={this.handleEditDescriptionOnClick}>
+                                        <Text style={[DEFAULT_STYLE.smallTitle_1, { fontSize: 14, padding: 10 }]}>
+                                            {this.state.editEnabled ? "Save Description" : "Edit Invite Description"}
+                                        </Text>
+                                    </DelayedButton>
+                                    {/* <DelayedButton>
+                                        <Text style={[DEFAULT_STYLE.smallTitle_1, { fontSize: 14, padding: 10 }]}>Customize Username</Text>
+                                    </DelayedButton> */}
+                                </View>
                             </View>
-                            <View style={{ flexDirection: "row" }}>
-                                <View style={{ flex: 1 }} />
-                                <DelayedButton onPress={this.handleEditDescriptionOnClick}>
-                                    <Text style={[DEFAULT_STYLE.smallTitle_1, { fontSize: 14, padding: 10 }]}>
-                                        {this.state.editEnabled ? "Save Description" : "Edit Invite Description"}
-                                    </Text>
-                                </DelayedButton>
-                                {/* <DelayedButton>
-                                    <Text style={[DEFAULT_STYLE.smallTitle_1, { fontSize: 14, padding: 10 }]}>Customize Username</Text>
-                                </DelayedButton> */}
-                            </View>
-                        </View>
-                        <View style={{ flex: 1, backgroundColor: "white" }}>
+                            <View style={{ flex: 1, paddingBottom: 30, backgroundColor: "white"}}>
                             {
                                 DEFAULT_CARDS.map(i => this.renderCard(i))
                             }
-                        </View>
-                    </ScrollView>
+                            </View>
+                            
+                            
+                        </ScrollView>
                 </View>
             </Modal>
         );
