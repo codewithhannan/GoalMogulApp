@@ -88,7 +88,7 @@ const ProgressBar = (props) => {
     } = props;
     const percentage = getProgress(steps || [], needs || [], goalRef) * 100;
     // min sections 3 max 10
-    const sections = steps.length < 2 ? 2 : (steps.length > 8 ? 8 : steps.length);
+    const sections = (!steps || steps.length < 2) ? 2 : (steps.length > 8 ? 8 : steps.length);
 
     const startTimeText = startTime instanceof Date
         ? formatDate(startTime)
