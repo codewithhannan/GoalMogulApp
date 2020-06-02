@@ -339,27 +339,6 @@ class CreateGoalModal extends React.Component {
                                 }
                             }}
                         />
-                        <View style={{
-                            padding: 24
-                        }}>
-                            <Text style={DEFAULT_STYLE.subTitleText_1}>Need some help forming your Goal?</Text>
-                            <Button
-                                text="View Trending Goals"
-                                containerStyle={{
-                                    backgroundColor: GM_BLUE,
-                                    alignSelf: 'flex-start',
-                                    paddingLeft: 16,
-                                    paddingRight: 16,
-                                    marginTop: 16
-                                }}
-                                textStyle={{
-                                    ...DEFAULT_STYLE.titleText_1,
-                                    color: 'white'
-                                }}
-                                onPress={() => Actions.push('trendingGoalView')}
-                            />
-                        </View>
-                        <View style={[DEFAULT_STYLE.shadow, { height: 8 * DEFAULT_STYLE.uiScale }]} />
                         <NewGoalView
                             initializeFromState={this.props.initializeFromState}
                             isImportedGoal={this.props.isImportedGoal}
