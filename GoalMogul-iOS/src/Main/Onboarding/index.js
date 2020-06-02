@@ -5,6 +5,7 @@
  */
 import RegistrationAccount from './RegistrationAccount';
 import OnboardingIntroTransition from './OnboardingIntroTransition';
+import OnboardingAddPhotos from './OnboardingAddPhoto';
 import OnboardingSelectionTarget from './OnboardingSelectionTarget';
 import OnboardingTribeSelection from './OnboardingTribeSelection';
 import OnboardingCommunity from './OnboardingCommunity';
@@ -15,6 +16,7 @@ import OnboardingFbPlugin from './OnboardingFbPlugin';
 export { 
     RegistrationAccount, 
     OnboardingIntroTransition, 
+    OnboardingAddPhotos,
     OnboardingSelectionTarget, 
     OnboardingTribeSelection,
     OnboardingCommunity,
