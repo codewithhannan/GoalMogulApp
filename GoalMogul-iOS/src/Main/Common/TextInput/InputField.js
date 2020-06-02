@@ -96,7 +96,7 @@ class InputField extends Component {
         if (onFocus) onFocus();
         const screenHeight = Dimensions.get('window').height;
         const scrollToHeight = screenHeight - this.state.keyboardHeight;
-        console.log('scrollToHeight is: ', scrollToHeight);
+
         if (this.scrollToTimer) clearTimeout(this.scrollToTimer);
 
         this.scrollToTimer = setTimeout(() => scrollTo(scrollToHeight, type, index), 50);
