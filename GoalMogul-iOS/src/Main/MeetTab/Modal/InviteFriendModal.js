@@ -20,22 +20,25 @@ const DEFAULT_STATE = {
 
 const EXCLUDE_ACTIVITY_TYPE = ["com.apple.reminders.RemindersEditorExtension", "com.apple.mobilenotes.SharingExtension"];
 
-const DEFAULT_CARDS = [{
-    text: "Messenger",
-    image: undefined,
-    deepLink: "fb-messenger://",
-    deepLinkFormat: (text, url) => {
-        // return `fb-messenger://share?link=${encodeURIComponent(url)}&message=${text}`
-        return `fb-messenger://share?link=${encodeURIComponent(url)}`
-    }
-}, {
-    text: "Whatsapp",
-    image: undefined,
-    deepLink: "whatsapp://",
-    deepLinkFormat: (text, url) => {
-        return `whatsapp://send?text=${text}\n\n${encodeURIComponent(url)}`;
-    }
-},{
+const DEFAULT_CARDS = [
+// currently disabled as linking to messenger / whatsapp requires ejection
+// {
+//     text: "Messenger",
+//     image: undefined,
+//     deepLink: "fb-messenger://",
+//     deepLinkFormat: (text, url) => {
+//         // return `fb-messenger://share?link=${encodeURIComponent(url)}&message=${text}`
+//         return `fb-messenger://share?link=${encodeURIComponent(url)}`
+//     }
+// }, {
+//     text: "Whatsapp",
+//     image: undefined,
+//     deepLink: "whatsapp://",
+//     deepLinkFormat: (text, url) => {
+//         return `whatsapp://send?text=${text}\n\n${encodeURIComponent(url)}`;
+//     }
+// },
+{
     type: "sms",
     text: "iMessage",
     image: undefined,
