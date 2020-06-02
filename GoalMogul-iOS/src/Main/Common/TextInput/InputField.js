@@ -95,11 +95,13 @@ class InputField extends Component {
         const { onFocus } = input;
         if (onFocus) onFocus();
         const screenHeight = Dimensions.get('window').height;
-        const scrollToHeight = screenHeight - this.state.keyboardHeight;
-
-        if (this.scrollToTimer) clearTimeout(this.scrollToTimer);
-
-        this.scrollToTimer = setTimeout(() => scrollTo(scrollToHeight, type, index), 50);
+        this.view.measure((x, y, width, height, px, py) => {
+            const visibleArea = screenHeight - this.state.keyboardHeight;
+            if (py + height > visibleArea) {
+                if (this.scrollToTimer) clearTimeout(this.scrollToTimer);
+                this.scrollToTimer = setTimeout(() => scrollTo(y, type, index), 50);
+            }
+        });
     }
 
     updateRef(name, ref) {
@@ -143,7 +145,7 @@ class InputField extends Component {
                     <Image source={menu} resizeMode="contain" style={{ ...DEFAULT_STYLE.buttonIcon_1, tintColor: '#AAA' }} />
                 </TouchableOpacity>
             ) : null;
-
+        console.log(inputContainerStyle)
         return (
             <View
                 style={[styles.inputContainerStyle, inputContainerStyle]}
@@ -163,14 +165,15 @@ class InputField extends Component {
                     onFocus={this.onFocus}
                     editable={editable}
                     placeholder={placeholder}
-                    style={{ backgroundColor: 'white', ...style }}
+                    style={{ ...style }}
                     value={_.isEmpty(value) ? '' : value}
                     {...custom}
                 />
                 {iconSource ? <TouchableOpacity
                     activeOpacity={0.6}
                     style={{
-                        backgroundColor: 'white',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                         padding: 12,
                         paddingLeft: 6,
                         height: '100%'
@@ -186,6 +189,9 @@ class InputField extends Component {
 
 const styles = {
     inputContainerStyle: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'stretch',
         marginTop: 5,
         borderWidth: 1,
         borderRadius: 3,
@@ -198,8 +204,7 @@ const styles = {
         borderColor: '#DFE0E1',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 70 * DEFAULT_STYLE.uiScale,
-        width: 35 * DEFAULT_STYLE.uiScale
+        padding: 4
     }
 };
 

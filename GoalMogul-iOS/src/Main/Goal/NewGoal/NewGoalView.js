@@ -136,21 +136,23 @@ class NewGoalView extends Component {
      * type: ['step', 'need']
      * index: index in the type array starting from 0
      */
-    scrollTo = (y, type, index) => {
+    scrollTo = (scrollPos, type, index) => {
         // console.log(`${DEBUG_KEY}: scrollTo is called to scroll to y: ${y}`);
         // console.log(`${DEBUG_KEY}: need length: `, this.props.steps.length);
         // console.log(`${DEBUG_KEY}: index is: `, index);
-        let extraNumber = 0;
-        if (type === 'step') {
-            extraNumber = index;
-        }
-        if (type === 'need') {
-            extraNumber = (this.props.steps.length + 2) + index;
-        }
-
-        const extraScrollToHeight = extraNumber * 75 * DEFAULT_STYLE.uiScale;
-        // console.log(`${DEBUG_KEY}: extra scroll height:`, extraScrollToHeight);
-        this.scrollView.scrollTo({ y: 300 / DEFAULT_STYLE.uiScale + y + extraScrollToHeight, animated: true });
+        const extraScroll = index * 40 * DEFAULT_STYLE.uiScale;
+        this.view.measure((x, vy, width, height, pX, pY) => {
+            if (type === 'step') {
+                this.stepsView.measure((x, y, width, height, pX, pY) => {
+                    this.scrollView.scrollTo({ y: vy+y+scrollPos+extraScroll, animated: true });
+                });
+            }
+            if (type === 'need') {
+                this.needsView.measure((x, y, width, height, pX, pY) => {
+                    this.scrollView.scrollTo({ y: vy+y+scrollPos+extraScroll, animated: true });
+                });
+            }
+        })
     }
 
     handleLayoutChange = ({ nativeEvent }) => {
@@ -850,44 +852,36 @@ class NewGoalView extends Component {
      * type: ['step', 'need']
      */
     renderFieldArrayItem = (props, placeholder, fields, canDrag, type, onSubmitEditing) => {
-        const { item, index, move, moveEnd, isActive } = props;
-        console.log(fields);
+        const { item, index, drag, isActive } = props;
         const iconOnPress = () => {
                 if (type !== 'step' || fields.length > 1)
                     fields.remove(index);
             };
         return (
-            <View style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                flex: 1,
-                backgroundColor: isActive ? 'red' : 'white'
-            }}>
-                <Field
-                    key={`description-${index}`}
-                    name={`${item.item}.description`}
-                    component={InputField}
-                    editable={this.props.uploading}
-                    numberOfLines={4}
-                    style={{ ...styles.standardInputStyle }}
-                    placeholder={placeholder}
-                    iconSource={cancel}
-                    iconStyle={DEFAULT_STYLE.normalIcon_1}
-                    iconOnPress={iconOnPress}
-                    move={move}
-                    blurOnSubmit
-                    moveEnd={moveEnd}
-                    canDrag={canDrag}
-                    autoCorrect
-                    autoCapitalize={'sentences'}
-                    inputContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}
-                    scrollTo={this.scrollTo}
-                    index={index}
-                    type={type}
-                    multiline
-                    onSubmitEditing={onSubmitEditing}
-                />
-            </View>
+            <Field
+                key={`description-${index}`}
+                name={`${item.item}.description`}
+                component={InputField}
+                editable={this.props.uploading}
+                numberOfLines={4}
+                style={{ ...styles.standardInputStyle }}
+                placeholder={placeholder}
+                iconSource={cancel}
+                iconStyle={DEFAULT_STYLE.normalIcon_1}
+                iconOnPress={iconOnPress}
+                move={drag}
+                blurOnSubmit
+                moveEnd={drag}
+                canDrag={canDrag}
+                autoCorrect
+                autoCapitalize={'sentences'}
+                scrollTo={this.scrollTo}
+                index={index}
+                type={type}
+                multiline
+                onSubmitEditing={onSubmitEditing}
+                inputContainerStyle={{backgroundColor: isActive ? '#F2F2F2' : BACKGROUND_COLOR}}
+            />
         );
     }
 
@@ -909,7 +903,13 @@ class NewGoalView extends Component {
         });
 
         return (
-            <View style={styles.sectionMargin}>
+            <View
+                ref={r => {
+                    if (type === 'step') this.stepsView = r
+                    if (type === 'need') this.needsView = r
+                }}
+                style={styles.sectionMargin}
+            >
                 <FieldTitleText text={TYPE_MAP[type].title} required={required} style={{ marginBottom: 12 }} />
                 {
                     fields.length > 0 ?
@@ -917,8 +917,7 @@ class NewGoalView extends Component {
                             renderItem={(props) => this.renderFieldArrayItem(props, TYPE_MAP[type].placeholder, fields, true, type, onSubmitEditing)}
                             data={dataToRender}
                             keyExtractor={item => `${item.index}`}
-                            scrollPercent={5}
-                            onMoveEnd={e => {
+                            onDragEnd={e => {
                                 // console.log('moving end for e: ', e);
                                 fields.move(e.from, e.to);
                                 this.setState({
@@ -926,7 +925,7 @@ class NewGoalView extends Component {
                                     scrollEnabled: true
                                 });
                             }}
-                            onMoveBegin={(index) => {
+                            onDragBegin={(index) => {
                                 // console.log('index is being moved: ', index);
                                 this.setState({
                                     ...this.state,
@@ -960,14 +959,7 @@ class NewGoalView extends Component {
         return (
             <CopilotStep text={this.props.tutorialText[5]} order={5} name="create_goal_create_goal_modal_5">
                 <WalkableView>
-                    {
-                        this.renderFieldArray(
-                            'step',
-                            true,
-                            fields,
-                            error
-                        )
-                    }
+                    {this.renderFieldArray('step',true,fields,error)}
                 </WalkableView>
             </CopilotStep>
         );
@@ -1020,12 +1012,9 @@ class NewGoalView extends Component {
                     {this.renderTimeline()}
                 </View>
                 <View style={[DEFAULT_STYLE.shadow, styles.sectionMargin]} />
-                <View style={{ padding: 20, paddingTop: 0, marginBottom: 30 }}>
+                <View ref={r => {this.view = r}} style={{ padding: 20, paddingTop: 0, marginBottom: 30 }}>
                     <FieldArray name="steps" component={this.renderSteps} />
-                    <FieldArray
-                        name="needs"
-                        component={this.renderNeeds}
-                    />
+                    <FieldArray name="needs" component={this.renderNeeds} />
                     {this.renderPrivacyControl(initializeFromState)}
                 </View>
             </ScrollView>

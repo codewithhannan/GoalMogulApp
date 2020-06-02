@@ -76,11 +76,11 @@ class ProfileGoalCard2 extends React.Component {
         return (
             <Text
                 style={{
-                    ...DEFAULT_STYLE.subTitleText_1,
+                    ...DEFAULT_STYLE.goalTitleText_1,
                     flex: 1,
                     flexWrap: 'wrap'
                 }}
-                numberOfLines={1}
+                numberOfLines={2}
                 ellipsizeMode='tail'
             >
                 {title}
