@@ -210,7 +210,7 @@ class ActivityHeader extends Component {
                     contentTags={tags}
                     contentLinks={links || []}
                     textStyle={{
-                        ...(actedUponEntityType === 'Post' ? DEFAULT_STYLE.normalText_1 : DEFAULT_STYLE.subTitleText_1),
+                        ...(actedUponEntityType === 'Post' ? DEFAULT_STYLE.normalText_1 : DEFAULT_STYLE.goalTitleText_1),
                         marginTop: 12,
                         flex: 1,
                         flexWrap: 'wrap',
