@@ -149,7 +149,7 @@ export const likeGoal = (type, id, pageId, parentId) => (dispatch, getState) => 
     .then((res) => {
       // TODO: update reducers
       console.log(`${DEBUG_KEY}: like goal res: `, res);
-      if (res.status === 200 && res.data) {
+      if ((res.status >= 200 && res.status < 300) && res.data) {
         return tmp.action(res.data._id);
       }
       return tmp.undoAction();

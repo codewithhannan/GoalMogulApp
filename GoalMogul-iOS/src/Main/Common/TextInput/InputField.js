@@ -145,7 +145,6 @@ class InputField extends Component {
                     <Image source={menu} resizeMode="contain" style={{ ...DEFAULT_STYLE.buttonIcon_1, tintColor: '#AAA' }} />
                 </TouchableOpacity>
             ) : null;
-        console.log(inputContainerStyle)
         return (
             <View
                 style={[styles.inputContainerStyle, inputContainerStyle]}

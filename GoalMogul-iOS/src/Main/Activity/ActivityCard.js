@@ -140,9 +140,9 @@ class ActivityCard extends React.PureComponent {
                         onPress={() => {
                             console.log(`${DEBUG_KEY}: user clicks Like Icon.`);
                             if (selfLiked) {
-                                return this.props.unLikeGoal('post', _id, maybeLikeRef);
+                                return this.props.unLikeGoal(isPost ? 'post' : 'goal', _id, maybeLikeRef);
                             }
-                            this.props.likeGoal('post', _id);
+                            this.props.likeGoal(isPost ? 'post' : 'goal', _id);
                         }}
                     />
                     <ActionButton

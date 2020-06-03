@@ -381,8 +381,9 @@ const stepsNeedsAdapter = values => {
     }
     return values.map((val, index) => {
         if (!_.isEmpty(val) && val.description && val.description.trim() !== '') {
-            const { description, isCompleted } = val;
+            const { description, isCompleted, _id } = val;
             return {
+                _id,
                 isCompleted: !!isCompleted,
                 description: description.trim(),
                 order: index + 1,
