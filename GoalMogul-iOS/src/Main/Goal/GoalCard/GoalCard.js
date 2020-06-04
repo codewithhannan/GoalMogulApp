@@ -245,7 +245,7 @@ class GoalCard extends React.PureComponent {
                     </View>
                 </View>
                 <Text
-                    style={{ ...DEFAULT_STYLE.subTitleText_1, marginTop: 16, flex: 1, flexWrap: 'wrap', color: 'black' }}
+                    style={{ ...DEFAULT_STYLE.goalTitleText_1, marginTop: 16, flex: 1, flexWrap: 'wrap', color: 'black' }}
                     numberOfLines={2}
                     ellipsizeMode='tail'
                     selectable

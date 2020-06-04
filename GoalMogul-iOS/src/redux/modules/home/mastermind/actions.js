@@ -44,6 +44,8 @@ export const closeCreateOverlay = (tab) => ({
 
 export const openGoalDetailById = (goalId, initialProps) => (dispatch, getState) => {
   const { tab } = getState().navigation;
+  let goal = EMPTY_GOAL;
+  goal._id = goalId;
 
   // Generate pageId on open
   const pageId = constructPageId('goal');
@@ -53,7 +55,7 @@ export const openGoalDetailById = (goalId, initialProps) => (dispatch, getState)
       tab,
       pageId,
       goalId,
-      goal: { ...EMPTY_GOAL }
+      goal
     }
   });
 
