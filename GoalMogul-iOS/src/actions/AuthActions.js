@@ -51,7 +51,7 @@ import { MemberDocumentFetcher } from '../Utils/UserUtils';
 import { Logger } from '../redux/middleware/utils/Logger';
 import { saveRemoteMatches, loadRemoteMatches } from './MeetActions';
 import { setUser, SentryRequestBuilder } from '../monitoring/sentry';
-import { identify, resetUser } from '../monitoring/segment';
+import { identify, resetUser, track, EVENT as E } from '../monitoring/segment';
 import { SENTRY_TAGS, SENTRY_MESSAGE_LEVEL, SENTRY_TAG_VALUE, SENTRY_MESSAGE_TYPE } from '../monitoring/sentry/Constants';
 
 
@@ -273,6 +273,7 @@ export const registerUser = () => (dispatch) => {
 };
 
 export const logout = () => async (dispatch, getState) => {
+    track(E.USER_LOGOUT);
     // Reset user on logout
     resetUser();
     // Store the unread notification first as USER_LOG_OUT will clear its state

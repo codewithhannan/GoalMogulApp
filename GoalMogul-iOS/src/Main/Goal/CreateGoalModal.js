@@ -4,16 +4,13 @@ import {
     Alert,
     Keyboard,
     KeyboardAvoidingView,
-    Linking,
-    Text
+    Linking
 } from 'react-native';
 import { connect } from 'react-redux';
-import { SceneMap } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
 import { copilot } from 'react-native-copilot-gm';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import R from 'ramda';
 import moment from 'moment';
 import * as Permissions from 'expo-permissions';
 
@@ -21,8 +18,6 @@ import * as Permissions from 'expo-permissions';
 import ModalHeader from '../Common/Header/ModalHeader';
 import TabButtonGroup from '../Common/TabButtonGroup';
 import NewGoalView from './NewGoal/NewGoalView';
-import TrendingGoalView from './NewGoal/TrendingGoalView';
-import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 
 // Actions
 // import { } from '../../actions';
@@ -52,7 +47,7 @@ import {
 } from '../../styles';
 import Tooltip from '../Tutorial/Tooltip';
 import { svgMaskPath } from '../Tutorial/Utils';
-import Button from './Button';
+import { track, trackWithProperties, EVENT as E } from '../../monitoring/segment';
 
 const DEBUG_KEY = '[ UI CreateGoalModal ]';
 
@@ -75,6 +70,8 @@ class CreateGoalModal extends React.Component {
     }
 
     componentDidMount() {
+        this.startTime = new Date();
+        track(this.props.initializeFromState ? E.EDIT_GOAL_MODAL_OPENED : E.CREATE_GOAL_MODAL_OPENED);
         // Loading trending goals on modal is opened
         this.props.refreshTrendingGoals();
 
@@ -210,6 +207,10 @@ class CreateGoalModal extends React.Component {
         if (!uploading) return; // when uploading is false, it's actually uploading.
         const goalId = goal ? goal._id : undefined;
 
+        const durationSec = (new Date().getTime() - this.startTime.getTime()) / 1000;
+        trackWithProperties(this.props.initializeFromState ? E.GOAL_UPDATED : E.GOAL_CREATED,
+            {...this.props.formVals.values, 'DurationSec': durationSec});
+
         return this.props.submitGoal(
             this.props.formVals.values,
             this.props.user._id,
@@ -326,6 +327,10 @@ class CreateGoalModal extends React.Component {
                             actionText={actionText}
                             back
                             onCancel={() => {
+                                const durationSec = (new Date().getTime() - this.startTime.getTime()) / 1000;
+                                trackWithProperties(this.props.initializeFromState ?
+                                    E.EDIT_GOAL_MODAL_CANCELLED : E.CREATE_GOAL_MODAL_CANCELLED,
+                                    {'DurationSec': durationSec});
                                 if (this.props.onClose) this.props.onClose();
                                 Actions.pop();
                             }}

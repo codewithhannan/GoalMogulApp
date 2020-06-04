@@ -42,6 +42,7 @@ class ChatSearch extends Component {
         return;
     }
 
+    trackWithProperties(EVENT.SEARCH_RESULT_CLICKED, {'Type': 'chat', 'Id': item._id});
     if (item.roomType === 'Direct') {
         Actions.push('chatRoomConversation', { chatRoomId: item._id, });
         return;

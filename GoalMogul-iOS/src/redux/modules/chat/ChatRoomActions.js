@@ -8,6 +8,7 @@ import { MemberDocumentFetcher } from "../../../Utils/UserUtils";
 import { api as API } from "../../middleware/api";
 import { CHAT_ROOM_CLOSE_ACTIVE_ROOM, CHAT_ROOM_LOAD_INITIAL, CHAT_ROOM_LOAD_INITIAL_BEGIN, CHAT_ROOM_LOAD_MORE_MESSAGES, CHAT_ROOM_LOAD_MORE_MESSAGES_BEGIN, CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS, CHAT_ROOM_UPDATE_GHOST_MESSAGES, CHAT_ROOM_UPDATE_MESSAGES, CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF } from "./ChatRoomReducers";
 import { decode } from '../../middleware/utils';
+import { trackWithProperties, EVENT as E } from '../../../monitoring/segment';
 
 
 
@@ -208,7 +209,7 @@ export const deleteConversationMessages = (chatRoom, currentMessageList) => (dis
 
 export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMessageList) => (dispatch, getState) => {
 	if (!chatRoom) return;
-	const { token } = getState().user;
+	const { token, userId } = getState().user;
 
 	let uploadedMediaRef = null;
 	// upload the image if a file's mounted
@@ -290,6 +291,7 @@ export const sendMessage = (messagesToSend, mountedMediaRef, chatRoom, currentMe
 						updateMessageList(chatRoom, currentMessageList)(dispatch, getState);
 					});
 				};
+				trackWithProperties(E.CHATROOM_MESSAGE_SENT, {'Message': text, 'UserId': userId, 'ChatroomId': chatRoom._id});
 				API.post(`secure/chat/message`, body, token).then(resp => {
 					if (resp.status != 200) {
 						handleRequestFailure();

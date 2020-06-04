@@ -17,6 +17,7 @@ import next from '../../../asset/utils/next.png';
 import { updateFriendship, openProfile, UserBanner } from '../../../actions';
 import DelayedButton from '../../Common/Button/DelayedButton';
 import ProfileImage from '../../Common/ProfileImage';
+import { EVENT, trackWithProperties } from '../../../monitoring/segment';
 
 const DEBUG_KEY = '[ Component SearchUserCard ]';
 
@@ -28,6 +29,7 @@ class SearchUserCard extends Component {
 
   onButtonClicked = (_id) => {
     console.log(`${DEBUG_KEY} open profile with id: `, _id);
+    trackWithProperties(EVENT.SEARCH_RESULT_CLICKED, {'Type': 'people', 'Id': _id});
     if (this.props.onSelect && this.props.onSelect instanceof Function) {
       return this.props.onSelect(_id, this.props.item);
     }

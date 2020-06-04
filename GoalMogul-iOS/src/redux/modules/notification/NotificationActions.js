@@ -55,6 +55,7 @@ import {
     NOTIFICATION_UNREAD_MARK_AS_READ_BY_PARSEDNOTI
 } from './NotificationTabReducers';
 import LiveChatService from '../../../socketio/services/LiveChatService';
+import { EVENT, trackWithProperties } from '../../../monitoring/segment';
 
 import { SentryRequestBuilder } from '../../../monitoring/sentry';
 import { SENTRY_TAGS, SENTRY_MESSAGE_LEVEL, SENTRY_TAG_VALUE, SENTRY_MESSAGE_TYPE } from '../../../monitoring/sentry/Constants';
@@ -95,6 +96,8 @@ export const handlePushNotification = (notification) => (dispatch, getState) => 
         Logger.log(`${DEBUG_KEY}: [ handlePushNotification ]: unselected notification`, notification, 5);
         return;
     }
+
+    trackWithProperties(EVENT.NOTIFICATION_SELECTED, {'Type': entityType, 'Id': entityId, 'Item': notification});
 
     // Mark this notification as read
     if (data && data.notificationId) {
@@ -231,6 +234,8 @@ export const openNotificationDetail = (item) => (dispatch, getState) => {
 
     const entityType = p[0];
     const entityId = p[1];
+
+    trackWithProperties(EVENT.NOTIFICATION_DETAIL_OPENED, {'Type': entityType, 'Id': entityId, 'Item': item});
 
     // Mark this notification as read
     markNotifAsReadById(_id)(dispatch, getState);
