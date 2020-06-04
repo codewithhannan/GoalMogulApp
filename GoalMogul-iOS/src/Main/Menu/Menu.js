@@ -53,7 +53,7 @@ import { DEFAULT_STYLE } from '../../styles';
 
 
 const DEBUG_KEY = '[ UI Menu ]';
-const { TutorialIcon, PrivacyIcon } = Icons;
+const { TutorialIcon, PrivacyIcon, AccountMultiple } = Icons;
 
 class Menu extends React.PureComponent {
 
@@ -97,6 +97,12 @@ class Menu extends React.PureComponent {
         console.log(`${DEBUG_KEY}: close privacy policy link with res: `, result);
     }
 
+    handleInviteFriend = () => {
+        // Close side drawer
+
+        // Open invite friend modal
+    }
+
     render() {
         const paddingTop = (
             Platform.OS === 'ios' &&
@@ -129,17 +135,17 @@ class Menu extends React.PureComponent {
                     onPress={() => this.props.openMeet()}
                     style={styles.buttonStyle}
                 >
-                    <Image source={EventIcon} style={styles.iconStyle} />
+                    <Image source={AccountMultiple} style={[styles.iconStyle, { tintColor: "black" }]} />
                     <Text style={styles.titleTextStyle}>My Friends</Text>
                 </DelayedButton>
-                <DelayedButton
+                {/* <DelayedButton
                     activeOpacity={0.6}
                     onPress={this.handleTutorialOnPress}
                     style={styles.buttonStyle}
                 >
                     <Image source={TutorialIcon} style={styles.iconStyle} />
                     <Text style={styles.titleTextStyle}>Tutorials</Text>
-                </DelayedButton>
+                </DelayedButton> */}
                 <DelayedButton
                     activeOpacity={0.6}
                     onPress={() => this.props.openSetting()}
