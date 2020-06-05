@@ -85,6 +85,8 @@ export const updateCurrentChatRoomsList = (tab, currentChatRoomsList, minPageSiz
 	const pageSize = Math.max(currentChatRoomsList.length, minPageSize);
 	const { token } = getState().user;
 	switch (tab) {
+		// notes: looks like this is what needs to be merged in, thing is do we need to seperate them? Can't we on the front end - just 
+		// recieve both group chats, and direct messages into the same tab more or less???
 		case CHAT_LOAD_TYPES.directMessages:
 			API.get(`secure/chat/room/latest?roomType=Direct&limit=${pageSize}&skip=0`, token).then(res => {
 				const chatRooms = res.data;
@@ -119,6 +121,7 @@ export const refreshChatRooms = (tab, pageSize, maybeSearchQuery) => (dispatch, 
 	});
 	const { token } = getState().user;
 	switch (tab) {
+		// notes: looks like this is what needs to be merged in
 		case CHAT_LOAD_TYPES.directMessages:
 			if (maybeSearchQuery && maybeSearchQuery.trim().length) {
 				API.get(`secure/user/friendship/es?query=${maybeSearchQuery}&limit=${pageSize}&skip=0`, token).then(res => {
