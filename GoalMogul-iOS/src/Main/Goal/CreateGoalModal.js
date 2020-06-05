@@ -4,28 +4,21 @@ import {
     Alert,
     Keyboard,
     KeyboardAvoidingView,
-    Linking,
-    Text
+    Linking
 } from 'react-native';
 import { connect } from 'react-redux';
-import { SceneMap } from 'react-native-tab-view';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
 import { copilot } from 'react-native-copilot-gm';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import R from 'ramda';
 import moment from 'moment';
 import * as Permissions from 'expo-permissions';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
-import TabButtonGroup from '../Common/TabButtonGroup';
 import NewGoalView from './NewGoal/NewGoalView';
-import TrendingGoalView from './NewGoal/TrendingGoalView';
-import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 
 // Actions
-// import { } from '../../actions';
 import {
     createGoalSwitchTab,
     submitGoal,
@@ -44,15 +37,9 @@ import {
 } from '../../redux/modules/goal/GoalDetailActions';
 
 // Styles
-import {
-    APP_DEEP_BLUE,
-    APP_BLUE,
-    DEFAULT_STYLE,
-    GM_BLUE
-} from '../../styles';
 import Tooltip from '../Tutorial/Tooltip';
 import { svgMaskPath } from '../Tutorial/Utils';
-import Button from './Button';
+
 
 const DEBUG_KEY = '[ UI CreateGoalModal ]';
 
@@ -278,28 +265,6 @@ class CreateGoalModal extends React.Component {
             />
         );
     }
-
-    renderHeader = props => {
-        return (
-            <TabButtonGroup
-                buttons={props}
-                buttonStyle={{
-                    selected: {
-                        backgroundColor: APP_DEEP_BLUE,
-                        tintColor: 'white',
-                        color: 'white',
-                        fontWeight: '700'
-                    },
-                    unselected: {
-                        backgroundColor: '#FCFCFC',
-                        tintColor: '#616161',
-                        color: '#616161',
-                        fontWeight: '600'
-                    }
-                }}
-            />
-        );
-    };
 
     render() {
         const actionText = this.props.initializeFromState ? 'Update' : 'Create';
