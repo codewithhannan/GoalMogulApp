@@ -99,6 +99,7 @@ class ChatTab extends React.Component {
 	}
 	_renderHeader = props => {
 		const tabNotificationMap = {
+			// we need to merge these two tabs, into one. 
 			'directMessages': {
 				hasNotification: this.props.directMessagesUnread,
 				style: {
@@ -148,6 +149,7 @@ class ChatTab extends React.Component {
 
 	_renderScene = ({ route }) => {
 		switch (route.key) {
+			// notes: this controls rendering of the two tabs, DM's and Chat Rooms. 
 			case 'directMessages': {
 				return (
 					<ChatRoomTab
@@ -175,6 +177,7 @@ class ChatTab extends React.Component {
 	}
 
 	openCreateChatMenu() {
+		// notes: this is the plus button, design has changed for this, functionality remains the same!
 		this.props.plusPressed();
 		Actions.push('createButtonOverlay', {
 			onCancel: () => this.props.plusUnpressed(),
@@ -213,6 +216,7 @@ class ChatTab extends React.Component {
 	}
 
 	renderPlus() {
+		// notes: renders the + button, to create either a direct, or group message. 
 		return (
 			<PlusButton
 				onPress={this.openCreateChatMenu.bind(this)}
@@ -227,6 +231,7 @@ class ChatTab extends React.Component {
 	}
 
 	render() {
+		// notes: Renders the scene. 
 		return (
 			<MenuProvider customStyles={{ backdrop: styles.backdrop }}>
 				<View style={styles.homeContainerStyle}>
