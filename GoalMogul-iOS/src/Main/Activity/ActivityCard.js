@@ -191,10 +191,9 @@ class ActivityCard extends React.PureComponent {
         return (
             <View style={{
                 flexDirection: 'row',
-                paddingLeft: 15,
-                paddingRight: 15,
-                paddingTop: 2,
-                backgroundColor: '#f8f8f8'
+                padding: 16,
+                marginTop: 1,
+                backgroundColor: 'white'
             }}>
                 <ProfileImage
                     imageStyle={{ height: 35 * DEFAULT_STYLE.uiScale, width: 35 * DEFAULT_STYLE.uiScale, borderRadius: 100 }}
@@ -205,12 +204,10 @@ class ActivityCard extends React.PureComponent {
                 <DelayedButton
                     activeOpacity={0.6}
                     style={{
-                        backgroundColor: 'white',
                         padding: 8,
-                        borderRadius: 10,
-                        borderWidth: 0.5,
-                        borderColor: '#f2f2f2',
-                        marginLeft: 10, flex: 1
+                        backgroundColor: '#F9F9F9',
+                        marginLeft: 10,
+                        flex: 1
                     }}
                     onPress={() => this.handleCardOnPress(item, { focusType: 'comment' })}
                 >
@@ -219,15 +216,15 @@ class ActivityCard extends React.PureComponent {
                         user={actor}
                         hasCaret={false}
                         isSelf={this.props.userId === _id}
-                        textStyle={DEFAULT_STYLE.smallText_1}
+                        textStyle={DEFAULT_STYLE.titleText_2}
                     />
                     <RichText
                         contentText={text}
                         contentTags={tags}
                         contentLinks={links}
-                        textStyle={{ ...DEFAULT_STYLE.smallText_1, flex: 1, flexWrap: 'wrap', color: 'black' }}
+                        textStyle={{ ...DEFAULT_STYLE.normalText_1, flex: 1, flexWrap: 'wrap' }}
                         textContainerStyle={{ flexDirection: 'row', marginTop: 5, }}
-                        numberOfLines={2}
+                        numberOfLines={3}
                         ellipsizeMode='tail'
                         onUserTagPressed={(user) => {
                             console.log(`${DEBUG_KEY}: user tag press for user: `, user);
