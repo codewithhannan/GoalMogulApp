@@ -2,7 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import _ from 'lodash';
 import R from 'ramda';
 import React from 'react';
-import { ActivityIndicator, Alert, FlatList, Image, ImageBackground, KeyboardAvoidingView, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Image, ImageBackground, KeyboardAvoidingView, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View, Dimensions } from 'react-native';
 import { CheckBox, SearchBar } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
 import { connect } from 'react-redux';
@@ -22,6 +22,13 @@ import ModalHeader from '../../Common/Header/ModalHeader';
 import ImageModal from '../../Common/ImageModal';
 import SearchUserCard from '../../Search/People/SearchUserCard';
 import { track, trackWithProperties, EVENT as E } from '../../../monitoring/segment';
+import { GM_BLUE_LIGHT_LIGHT, GM_BLUE, GM_BLUE_LIGHT, DEFAULT_STYLE, TEXT_COLOR_1, BACKGROUND_COLOR } from '../../../styles';
+
+import { IMAGE_BASE_URL } from '../../../Utils/Constants';
+
+import defaultGroupPic from '../../../asset/utils/defaultSelfUserProfile.png';
+
+const { width } = Dimensions.get('window');
 
 const FRIEND_SEARCH_AUTO_SEARCH_DELAY_MS = 500;
 
@@ -137,9 +144,11 @@ class CreateChatroomModal extends React.Component {
 			<SafeAreaView
 				style={{
 					backgroundColor: 'white',
-					borderBottomWidth: 0.5,
-					margin: 5,
-					borderColor: 'lightgray'
+					borderWidth: 1,
+					borderRadius: 3,
+					margin: 3,
+					marginBottom: 9,
+					borderColor: '#A6AAB4'
 				}}
 			>
 				<TextInput
@@ -245,7 +254,7 @@ class CreateChatroomModal extends React.Component {
 	}
 
 	renderChatroomName() {
-		const titleText = <Text style={styles.titleTextStyle}>Chatroom Name</Text>;
+		const titleText = <Text style={styles.titleTextStyle}>Group Name</Text>;
 		return (
 			<View style={{ marginBottom: 5 }}>
 				{titleText}
@@ -473,10 +482,35 @@ class CreateChatroomModal extends React.Component {
 		return null;
 	}
 
+	renderProfileImage(profile, isSelf) {
+        const { image } = profile;
+        const style = image ? styles.imageStyle : {
+                width: 30 * DEFAULT_STYLE.uiScale,
+                height: 30 * DEFAULT_STYLE.uiScale,
+                margin: 40 * DEFAULT_STYLE.uiScale
+            };
+        const containerStyle = [styles.imageContainerStyle, image ? {} : {
+            borderColor: '#BDBDBD',
+            borderRadius: (width * 0.15),
+            borderWidth: 2
+        }];
+        const imageUrl = `${IMAGE_BASE_URL}${image}`;
+        return (
+            <View style={containerStyle}>
+				<TouchableOpacity activeOpacity={0.85} onPress={this.handleOpenCamera}>
+					<Image style={style} source={image ? { uri: imageUrl } : (defaultGroupPic)} />
+				</TouchableOpacity>
+            </View>
+        );
+    }
+
 	render() {
+		const { user, self } = this.props;
+        if (!user) return null;
+        const { name, headline, profile } = user;
 		const { modalPageNumber } = this.props;
 		const actionText = this.props.initializeFromState ? 'Update' : (this.props.modalPageNumber == 1 ? 'Next' : 'Create');
-		const titleText = this.props.initializeFromState ? 'Edit Group Chat' : 'Create Group Chat';
+		const titleText = this.props.initializeFromState ? 'Edit Group Chat' : 'Group Message';
 
 		return (
 			<MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -500,12 +534,20 @@ class CreateChatroomModal extends React.Component {
 						style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
 					>
 						{modalPageNumber == 1 ?
-							<View style={{ flex: 1, padding: 21 }}>
-								{this.renderChatroomName()}
-								{this.renderChatroomDescription()}
-								{this.renderChatRoomMemberLimit()}
-								{this.renderOptions()}
-								{this.renderImageSelection()}
+							<View style={{ flex: 1, paddingTop: 0}}>
+								<View style={{ height: 90 * DEFAULT_STYLE.uiScale, backgroundColor: GM_BLUE_LIGHT_LIGHT } } />
+								<View style={styles.topWrapperStyle}>
+									{this.renderProfileImage(profile, self)}
+								</View>
+								<View style={{ flex: 1, padding: 20}}>
+									{this.renderChatroomName()}
+									{this.renderChatroomDescription()}
+									{this.renderChatRoomMemberLimit()}
+									{this.renderOptions()}
+									{this.renderImageSelection()}
+								</View>
+							
+								{/* {this.renderImageSelection()} */}
 							</View>
 						:
 							<View style={{ flex: 1, padding: 21 }}>
@@ -614,14 +656,29 @@ const styles = {
 		shadowRadius: 1,
 		elevation: 1,
 	},
-	imageStyle: {
-		height: 54,
-		width: 54,
-		borderRadius: 5,
-	},
+	topWrapperStyle: {
+        height: DEFAULT_STYLE.uiScale * 60,
+        backgroundColor: BACKGROUND_COLOR,
+        padding: 16
+    },
+    imageContainerStyle: {
+        alignItems: 'center',
+        borderRadius: DEFAULT_STYLE.uiScale * 60,
+        borderColor: '#BDBDBD',
+        position: 'absolute',
+        bottom: 10,
+        left: 20,
+        alignSelf: 'center',
+        backgroundColor: BACKGROUND_COLOR
+    },
+    imageStyle: {
+        width: DEFAULT_STYLE.uiScale * 120,
+        height: DEFAULT_STYLE.uiScale * 120,
+        borderRadius: DEFAULT_STYLE.uiScale * 60
+    },
 	titleTextStyle: {
-		fontSize: 11,
-		color: '#a1a1a1',
+		fontSize: 14,
+		color: '#000',
 		padding: 2
 	},
 	standardInputStyle: {
@@ -635,7 +692,8 @@ const styles = {
 		fontSize: 20,
 		padding: 20,
 		paddingRight: 15,
-		paddingLeft: 15
+		paddingLeft: 15,
+		fontWeight: 400
 	},
 	inputStyle: {
 		paddingTop: 6,
