@@ -37,6 +37,7 @@ import expand from '../../asset/utils/expand.png';
 
 // Utils
 import { arrayUnique, clearTags } from '../../redux/middleware/utils';
+import { track, trackWithProperties, EVENT as E } from '../../monitoring/segment';
 
 // Actions
 import { openCameraRoll, openCamera } from '../../actions';
@@ -72,6 +73,8 @@ class CreatePostModal extends Component {
     }
 
     componentDidMount() {
+        this.startTime = new Date();
+        track(this.props.initializeFromState ? E.EDIT_POST_MODAL_OPENED : E.CREATE_POST_MODAL_OPENED);
         this.initializeForm();
     }
 
@@ -344,6 +347,13 @@ class CreatePostModal extends Component {
 
         const needRefreshProfile = openProfile === false;
 
+        const durationSec = (new Date().getTime() - this.startTime.getTime()) / 1000;
+        trackWithProperties(initializeFromState ? E.POST_UPDATED : E.POST_CREATED,
+            {
+            ...this.props.formVals.values,
+            'DurationSec': durationSec,
+            });
+
         return this.props.submitCreatingPost(
             this.props.formVals.values,
             needUpload,
@@ -359,6 +369,10 @@ class CreatePostModal extends Component {
     }
 
     handleCancel = () => {
+        const durationSec = (new Date().getTime() - this.startTime.getTime()) / 1000;
+        trackWithProperties(this.props.initializeFromState ?
+            E.EDIT_POST_MODAL_CANCELLED : E.CREATE_POST_MODAL_CANCELLED,
+            {'DurationSec': durationSec});
         this.handleDraftCancel(() => {
             if (this.props.onClose) this.props.onClose();
             Actions.pop();

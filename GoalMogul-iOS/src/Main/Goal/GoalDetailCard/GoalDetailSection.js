@@ -298,7 +298,7 @@ class GoalDetailSection extends React.PureComponent {
                 </View>
                 <View style={{ flexDirection: 'row', marginTop: 16 }}>
                     <Text
-                        style={{ ...DEFAULT_STYLE.subTitleText_1, flexWrap: 'wrap', color: 'black' }}
+                        style={{ ...DEFAULT_STYLE.goalTitleText_1, flexWrap: 'wrap', color: 'black' }}
                         numberOfLines={3}
                         ellipsizeMode='tail'
                         selectable

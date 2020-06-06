@@ -13,6 +13,7 @@ import {
   UNLIKE_GOAL
 } from './LikeReducers';
 import { Logger } from '../../middleware/utils/Logger';
+import { trackWithProperties, EVENT as E } from '../../../monitoring/segment';
 
 const DEBUG_KEY = '[ Action Like ]';
 const LIKE_BASE_ROUTE = 'secure/feed/like';
@@ -56,11 +57,12 @@ export const getLikeList = (parentId, parentType, callback) => (dispatch, getSta
  * @params pageId: if post / comment, we need to provide pageId
  */
 export const likeGoal = (type, id, pageId, parentId) => (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
   const { tab } = getState().navigation;
   const tmp = ((request) => {
     switch (request) {
       case 'goal':
+        trackWithProperties(E.GOAL_LIKED, {'GoalId': id, 'UserId': userId});
         return {
           requestBody: {
             goalRef: id
@@ -86,6 +88,7 @@ export const likeGoal = (type, id, pageId, parentId) => (dispatch, getState) => 
           })
         };
       case 'post':
+        trackWithProperties(E.POST_LIKED, {'PostId': id, 'UserId': userId});
         return {
           requestBody: {
             postRef: id
@@ -111,6 +114,7 @@ export const likeGoal = (type, id, pageId, parentId) => (dispatch, getState) => 
         };
 
       default:
+        trackWithProperties(E.COMMENT_LIKED, {'CommentId': id, 'UserId': userId});
         return {
           requestBody: {
             commentRef: id
@@ -149,7 +153,7 @@ export const likeGoal = (type, id, pageId, parentId) => (dispatch, getState) => 
     .then((res) => {
       // TODO: update reducers
       console.log(`${DEBUG_KEY}: like goal res: `, res);
-      if (res.status === 200 && res.data) {
+      if ((res.status >= 200 && res.status < 300) && res.data) {
         return tmp.action(res.data._id);
       }
       return tmp.undoAction();
@@ -168,11 +172,12 @@ export const likeGoal = (type, id, pageId, parentId) => (dispatch, getState) => 
 export const unLikeGoal = (type, id, likeId, pageId, parentId) => (dispatch, getState) => {
   console.log(`[ Action Unlike ]: type: ${type} with id: ${id}. ` + 
     `Like id: ${likeId}, pageId: ${pageId}, parentId: ${parentId}`);
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
   const { tab } = getState().navigation;
   const tmp = ((request) => {
     switch (request) {
       case 'goal':
+        trackWithProperties(E.GOAL_UNLIKED, {'GoalId': id, 'UserId': userId});
         return {
           action: (unlikeId) => dispatch({
             type: UNLIKE_GOAL,
@@ -197,6 +202,7 @@ export const unLikeGoal = (type, id, likeId, pageId, parentId) => (dispatch, get
           })
         };
       case 'post':
+        trackWithProperties(E.POST_LIKED, {'PostId': id, 'UserId': userId});
         return {
           action: (unlikeId) => dispatch({
             type: UNLIKE_POST,
@@ -222,6 +228,7 @@ export const unLikeGoal = (type, id, likeId, pageId, parentId) => (dispatch, get
         };
 
       default:
+        trackWithProperties(E.COMMENT_LIKED, {'CommentId': id, 'UserId': userId});
         return {
           action: (unlikeId) => dispatch({
             type: UNLIKE_COMMENT,

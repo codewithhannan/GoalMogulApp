@@ -30,6 +30,7 @@ import {
 } from './Tutorials';
 import { Logger } from '../../middleware/utils/Logger';
 import { api as API } from '../../middleware/api';
+import { track, EVENT } from '../../../monitoring/segment';
 
 const DEBUG_KEY = '[ Actions StepTutorials ]';
 /**
@@ -38,6 +39,7 @@ const DEBUG_KEY = '[ Actions StepTutorials ]';
  * @param {*} page the page to start the tutorial with
  */
 export const startTutorial = (flow, page) => (dispatch, getState) => {
+    track(EVENT.TUTORIAL_STARTED);
     dispatch({
         type: TUTORIAL_START_TUTORIAL,
         payload: {
@@ -54,6 +56,7 @@ export const startTutorial = (flow, page) => (dispatch, getState) => {
  */
 export const showNextTutorialPage = (flow, page) => (dispatch, getState) => {
     console.log(`${DEBUG_KEY}: [ showNextTutorialPage ]: flow: ${flow}, page: ${page}`);
+    track(EVENT.TUTORIAL_PAGE_VIEWED);
     const tutorials = getState().tutorials;
     const pageInfo = _.get(tutorials, `${flow}.${page}`);
 
@@ -147,7 +150,7 @@ export const resetTutorial = (flow, page) => async (dispatch, getState) => {
 export const markUserAsOnboarded = () => (dispatch, getState) => {
     const { userId, token } = getState().user;
     Logger.log(`${DEBUG_KEY}: [ markUserAsOnboarded ] for user: `, userId, 1);
-
+    track(EVENT.TUTORIAL_DONE);
     // dispatch event to update both state.user and state.users
     dispatch({
         type: TUTORIAL_MARK_USER_ONBOARDED,

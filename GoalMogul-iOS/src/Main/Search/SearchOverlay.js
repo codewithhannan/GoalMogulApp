@@ -42,6 +42,7 @@ import {
 import {
     IPHONE_MODELS, DEVICE_MODEL
 } from '../../Utils/Constants';
+import { track, EVENT as E} from '../../monitoring/segment';
 
 const DEBUG_KEY = '[ Component Search ]';
 
@@ -60,10 +61,12 @@ class SearchOverlay extends Component {
     }
 
     componentWillMount() {
+        track(E.SEARCH_OPENED);
         this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
     }
 
     componentWillUnmount() {
+        track(E.SEARCH_CLOSED);
         this.keyboardWillHideListener.remove();
     }
 

@@ -33,6 +33,7 @@ class SearchEventCard extends Component {
    */
   onButtonClicked = (item, type) => {
     const { onItemSelect, selectEvent, eventDetailOpen } = this.props;
+    trackWithProperties(EVENT.SEARCH_RESULT_CLICKED, {'Type': 'event', 'Id': item._id});
     if (!type || type === 'SearchSuggestion') {
       console.log(`${DEBUG_KEY} select event: `, item);
 

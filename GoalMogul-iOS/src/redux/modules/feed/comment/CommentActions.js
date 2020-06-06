@@ -57,6 +57,7 @@ import {
 import { api as API } from '../../../middleware/api';
 import { queryBuilder, switchCase, sanitizeTags } from '../../../middleware/utils';
 import ImageUtils from '../../../../Utils/ImageUtils';
+import { trackWithProperties, EVENT as E } from '../../../../monitoring/segment';
 
 const DEBUG_KEY = '[ Action Comment ]';
 const BASE_ROUTE = 'secure/feed/comment';
@@ -132,10 +133,11 @@ export const updateComment = (commentId, updates) => {
  * @params commentId: id of the comment
  */
 export const deleteComment = (commentId, pageId, parentRef, parentType) => (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
   const { tab } = getState().navigation;
   const onSuccess = (res) => {
     console.log(`${DEBUG_KEY}: comment delete success with res: `, res);
+    trackWithProperties(E.COMMENT_DELETED, {'CommentId': commentId, 'UserId': userId});
     dispatch({
       type: COMMENT_DELETE_SUCCESS,
       payload: {
@@ -177,6 +179,7 @@ export const createComment = (commentDetail, pageId) =>
   const { userId } = getState().user;
   const { tab } = getState().navigation;
   console.log('Creating comment with commentDetail: ', commentDetail);
+  trackWithProperties(E.COMMENT_ADDED, {'CommentDetail': commentDetail, 'UserId': userId});
 
   dispatch({
     type: COMMENT_NEW,

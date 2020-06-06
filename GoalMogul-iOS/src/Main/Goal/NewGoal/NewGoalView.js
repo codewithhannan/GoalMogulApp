@@ -72,8 +72,18 @@ import { PRIVACY_OPTIONS, DAY_IN_MS } from '../../../Utils/Constants';
 const { Popover } = renderers;
 const { width } = Dimensions.get('window');
 
-const STEP_PLACE_HOLDER = 'Add an important step for achieving your goal';
-const NEED_PLACE_HOLDER = 'Something you\'re specifically looking for help with';
+const TYPE_MAP = {
+    step: {
+        title: 'Steps',
+        placeholder: 'Add an important step for achieving your goal',
+        buttonText: 'Add a Step'
+    },
+    need: {
+        title: 'Needs',
+        placeholder: 'Something you\'re specifically looking for help with',
+        buttonText: 'Add a Need'
+    }
+}
 const INITIAL_TAG_SEARCH = {
     data: [],
     skip: 0,
@@ -126,21 +136,23 @@ class NewGoalView extends Component {
      * type: ['step', 'need']
      * index: index in the type array starting from 0
      */
-    scrollTo = (y, type, index) => {
+    scrollTo = (scrollPos, type, index) => {
         // console.log(`${DEBUG_KEY}: scrollTo is called to scroll to y: ${y}`);
         // console.log(`${DEBUG_KEY}: need length: `, this.props.steps.length);
         // console.log(`${DEBUG_KEY}: index is: `, index);
-        let extraNumber = 0;
-        if (type === 'step') {
-            extraNumber = index;
-        }
-
-        if (type === 'need') {
-            extraNumber = (this.props.steps.length + 1) + index;
-        }
-        const extraScrollToHeight = extraNumber * 54;
-        // console.log(`${DEBUG_KEY}: extra scroll height:`, extraScrollToHeight);
-        this.scrollView.scrollTo({ y: y + extraScrollToHeight, animated: true });
+        const extraScroll = index * 40 * DEFAULT_STYLE.uiScale;
+        this.view.measure((x, vy, width, height, pX, pY) => {
+            if (type === 'step') {
+                this.stepsView.measure((x, y, width, height, pX, pY) => {
+                    this.scrollView.scrollTo({ y: vy+y+scrollPos+extraScroll, animated: true });
+                });
+            }
+            if (type === 'need') {
+                this.needsView.measure((x, y, width, height, pX, pY) => {
+                    this.scrollView.scrollTo({ y: vy+y+scrollPos+extraScroll, animated: true });
+                });
+            }
+        })
     }
 
     handleLayoutChange = ({ nativeEvent }) => {
@@ -485,7 +497,7 @@ class NewGoalView extends Component {
                             marginTop: 5
                         }}>
                             <Text style={styles.standardInputStyle}>
-                                {PRIVACY_OPTIONS.map(({ text, value}) => {
+                                {PRIVACY_OPTIONS.map(({ text, value }) => {
                                     if (this.props.privacy === value) return text;
                                 })}
                             </Text>
@@ -513,7 +525,7 @@ class NewGoalView extends Component {
         return (
             <CopilotStep text={this.props.tutorialText[1]} order={1} name="create_goal_create_goal_modal_1">
                 <WalkableView>
-                    <FieldTitleText text='What are you trying to achieve?' required={true} style={{ marginBottom: 16 }}/>
+                    <FieldTitleText text='What are you trying to achieve?' required={true} style={{ marginBottom: 16 }} />
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text style={styles.subTitleTextStyle}>Your Goal</Text>
                         <Text style={DEFAULT_STYLE.smallText_2}>{title ? title.length : 0}/90</Text>
@@ -789,7 +801,7 @@ class NewGoalView extends Component {
                 <WalkableView style={{ ...styles.sectionMargin }}>
                     <FieldTitleText text='Timeline' required={true} style={{ marginBottom: 12 }} />
                     <Text style={styles.descriptionTextStyle}>Give your best estimate.</Text>
-                    <View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center' }}>
                         <TouchableOpacity
                             activeOpacity={0.6}
                             style={{
@@ -840,44 +852,40 @@ class NewGoalView extends Component {
      * type: ['step', 'need']
      */
     renderFieldArrayItem = (props, placeholder, fields, canDrag, type, onSubmitEditing) => {
-        const { item, index, move, moveEnd, isActive } = props;
-        const iconOnPress = index === 0 ? undefined : () => fields.remove(index);
+        const { item, index, drag, isActive } = props;
+        const iconOnPress = () => {
+                if (type !== 'step' || fields.length > 1)
+                    fields.remove(index);
+            };
         return (
-            <View style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                flex: 1,
-                backgroundColor: isActive ? 'red' : 'white'
-            }}>
-                <Field
-                    key={`description-${index}`}
-                    name={`${item.item}.description`}
-                    component={InputField}
-                    editable={this.props.uploading}
-                    numberOfLines={4}
-                    style={{ ...styles.standardInputStyle }}
-                    placeholder={placeholder}
-                    iconSource={cancel}
-                    iconStyle={DEFAULT_STYLE.normalIcon_1}
-                    iconOnPress={iconOnPress}
-                    move={move}
-                    blurOnSubmit
-                    moveEnd={moveEnd}
-                    canDrag={canDrag}
-                    autoCorrect
-                    autoCapitalize={'sentences'}
-                    inputContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}
-                    scrollTo={this.scrollTo}
-                    index={index}
-                    type={type}
-                    multiline
-                    onSubmitEditing={onSubmitEditing}
-                />
-            </View>
+            <Field
+                key={`description-${index}`}
+                name={`${item.item}.description`}
+                component={InputField}
+                editable={this.props.uploading}
+                numberOfLines={4}
+                style={{ ...styles.standardInputStyle }}
+                placeholder={placeholder}
+                iconSource={cancel}
+                iconStyle={DEFAULT_STYLE.normalIcon_1}
+                iconOnPress={iconOnPress}
+                move={drag}
+                blurOnSubmit
+                moveEnd={drag}
+                canDrag={canDrag}
+                autoCorrect
+                autoCapitalize={'sentences'}
+                scrollTo={this.scrollTo}
+                index={index}
+                type={type}
+                multiline
+                onSubmitEditing={onSubmitEditing}
+                inputContainerStyle={{backgroundColor: isActive ? '#F2F2F2' : BACKGROUND_COLOR}}
+            />
         );
     }
 
-    renderFieldArray = (title, buttonText, placeholder, required, fields, error) => {
+    renderFieldArray = (type, required, fields, error) => {
         const onSubmitEditing = ({ nativeEvent }) => {
             const { text } = nativeEvent;
             if (text && text.trim() !== '') {
@@ -895,34 +903,39 @@ class NewGoalView extends Component {
         });
 
         return (
-            <View style={styles.sectionMargin}>
-                <FieldTitleText text={title} required={required} style={{ marginBottom: 12 }} />
+            <View
+                ref={r => {
+                    if (type === 'step') this.stepsView = r
+                    if (type === 'need') this.needsView = r
+                }}
+                style={styles.sectionMargin}
+            >
+                <FieldTitleText text={TYPE_MAP[type].title} required={required} style={{ marginBottom: 12 }} />
                 {
                     fields.length > 0 ?
-                    <DraggableFlatlist
-                        renderItem={(props) => this.renderFieldArrayItem(props, placeholder, fields, true, buttonText, onSubmitEditing)}
-                        data={dataToRender}
-                        keyExtractor={item => `${item.index}`}
-                        scrollPercent={5}
-                        onMoveEnd={e => {
-                            // console.log('moving end for e: ', e);
-                            fields.move(e.from, e.to);
-                            this.setState({
-                                ...this.state,
-                                scrollEnabled: true
-                            });
-                        }}
-                        onMoveBegin={(index) => {
-                            // console.log('index is being moved: ', index);
-                            this.setState({
-                                ...this.state,
-                                scrollEnabled: false
-                            });
-                        }}
-                    /> : null
+                        <DraggableFlatlist
+                            renderItem={(props) => this.renderFieldArrayItem(props, TYPE_MAP[type].placeholder, fields, true, type, onSubmitEditing)}
+                            data={dataToRender}
+                            keyExtractor={item => `${item.index}`}
+                            onDragEnd={e => {
+                                // console.log('moving end for e: ', e);
+                                fields.move(e.from, e.to);
+                                this.setState({
+                                    ...this.state,
+                                    scrollEnabled: true
+                                });
+                            }}
+                            onDragBegin={(index) => {
+                                // console.log('index is being moved: ', index);
+                                this.setState({
+                                    ...this.state,
+                                    scrollEnabled: false
+                                });
+                            }}
+                        /> : null
                 }
                 <Button
-                    text={buttonText}
+                    text={TYPE_MAP[type].buttonText}
                     source={plus}
                     onPress={() => fields.push({})}
                     containerStyle={{
@@ -946,23 +959,14 @@ class NewGoalView extends Component {
         return (
             <CopilotStep text={this.props.tutorialText[5]} order={5} name="create_goal_create_goal_modal_5">
                 <WalkableView>
-                    {
-                        this.renderFieldArray(
-                            'Steps',
-                            'Add a Step',
-                            STEP_PLACE_HOLDER,
-                            true,
-                            fields,
-                            error
-                        )
-                    }
+                    {this.renderFieldArray('step',true,fields,error)}
                 </WalkableView>
             </CopilotStep>
         );
     }
 
     renderNeeds = ({ fields, meta: { error, submitFailed } }) => {
-        return this.renderFieldArray('Needs', 'Add a Need', NEED_PLACE_HOLDER, false, fields, error);
+        return this.renderFieldArray('need', false, fields, error);
     }
 
     render() {
@@ -973,6 +977,27 @@ class NewGoalView extends Component {
                 scrollEnabled={this.state.scrollEnabled}
                 ref={r => { this.scrollView = r; }}
             >
+                <View style={{
+                    padding: 24
+                }}>
+                    <Text style={DEFAULT_STYLE.subTitleText_1}>Need some help forming your Goal?</Text>
+                    <Button
+                        text="View Trending Goals"
+                        containerStyle={{
+                            backgroundColor: GM_BLUE,
+                            alignSelf: 'flex-start',
+                            paddingLeft: 16,
+                            paddingRight: 16,
+                            marginTop: 16
+                        }}
+                        textStyle={{
+                            ...DEFAULT_STYLE.titleText_1,
+                            color: 'white'
+                        }}
+                        onPress={() => Actions.push('trendingGoalView')}
+                    />
+                </View>
+                <View style={[DEFAULT_STYLE.shadow, { height: 8 * DEFAULT_STYLE.uiScale }]} />
                 <View style={{ padding: 20, paddingBottom: 0 }}>
                     {this.renderGoal()}
                     <FieldArray
@@ -987,12 +1012,9 @@ class NewGoalView extends Component {
                     {this.renderTimeline()}
                 </View>
                 <View style={[DEFAULT_STYLE.shadow, styles.sectionMargin]} />
-                <View style={{ padding: 20, paddingTop: 0, marginBottom: 30 }}>
+                <View ref={r => {this.view = r}} style={{ padding: 20, paddingTop: 0, marginBottom: 30 }}>
                     <FieldArray name="steps" component={this.renderSteps} />
-                    <FieldArray
-                        name="needs"
-                        component={this.renderNeeds}
-                    />
+                    <FieldArray name="needs" component={this.renderNeeds} />
                     {this.renderPrivacyControl(initializeFromState)}
                 </View>
             </ScrollView>

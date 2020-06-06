@@ -45,6 +45,7 @@ import cameraRoll from '../../asset/utils/cameraRoll.png';
 import imageOverlay from '../../asset/utils/imageOverlay.png';
 import expand from '../../asset/utils/expand.png';
 import { IMAGE_BASE_URL } from '../../Utils/Constants';
+import { track, EVENT as E } from '../../monitoring/segment';
 
 // const { Popover } = renderers;
 const { width } = Dimensions.get('window');
@@ -58,6 +59,8 @@ class CreateTribeModal extends React.Component {
   }
 
   componentDidMount() {
+    this.startTime = new Date();
+    track(this.props.initializeFromState ? E.EDIT_TRIBE_MODAL_OPENED : E.CREATE_TRIBE_MODAL_OPENED);
     this.initializeForm();
   }
 
@@ -90,7 +93,9 @@ class CreateTribeModal extends React.Component {
       (initializeFromState && tribe.picture && tribe.picture !== picture) // picture has changed
       || (initializeFromState && tribe.picture == undefined && picture !== undefined) // picture is updated
       || (!initializeFromState && picture); // create new tribe with picture
-
+    const durationSec = (new Date().getTime() - this.startTime.getTime()) / 1000;
+    trackWithProperties(initializeFromState ? E.TRIBE_UPDATED : E.TRIBE_CREATED,
+        {...this.props.formVals.values, 'DurationSec': durationSec});
     this.props.createNewTribe(
       this.props.formVals.values,
       needUpload,
@@ -400,7 +405,13 @@ class CreateTribeModal extends React.Component {
           <ModalHeader
             title={titleText}
             actionText={actionText}
-            onCancel={() => this.props.cancelCreatingNewTribe()}
+            onCancel={() => {
+              const durationSec = (new Date().getTime() - this.startTime.getTime()) / 1000;
+              trackWithProperties(this.props.initializeFromState ?
+                  E.EDIT_TRIBE_MODAL_CANCELLED : E.CREATE_TRIBE_MODAL_CANCELLED,
+                  {'DurationSec': durationSec});
+              this.props.cancelCreatingNewTribe();
+            }}
             onAction={handleSubmit(this.handleCreate)}
             actionDisabled={this.props.uploading}
           />

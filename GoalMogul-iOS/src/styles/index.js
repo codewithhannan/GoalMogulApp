@@ -207,8 +207,7 @@ import { Dimensions } from 'react-native';
 
 const { height } = Dimensions.get('window');
 
-const UI_SCALE = Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.3 :
-    (height < 800 ? 1 : 1.1);
+const UI_SCALE = Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.3 : 1;
 export const TEXT_COLOR_1 = '#333';
 
 export const FONT_FAMILY_1 = 'Avenir';
@@ -233,6 +232,13 @@ export const DEFAULT_STYLE = {
     subTitleText_1: {
         fontFamily: FONT_FAMILY_2,
         fontSize: 17 * UI_SCALE,
+        fontWeight: '400',
+        color: TEXT_COLOR_1,
+        letterSpacing: 0.3
+    },
+    goalTitleText_1: {
+        fontFamily: FONT_FAMILY_2,
+        fontSize: 19 * UI_SCALE,
         fontWeight: '400',
         color: TEXT_COLOR_1,
         letterSpacing: 0.3
