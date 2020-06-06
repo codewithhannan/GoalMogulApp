@@ -104,7 +104,7 @@ class FriendTabCardView extends React.PureComponent {
             <View style={styles.buttonsContainerStyle}>
                 <DelayedButton onPress={() => this.handleDeleteFriend(friendshipId)} activeOpacity={0.6}>
                     <View style={[styles.buttonTextContainerStyle, { backgroundColor: '#E0E0E0' }]}>
-                        <Text style={[DEFAULT_STYLE.buttonText_2]}>Delete</Text>
+                        <Text style={[DEFAULT_STYLE.buttonText_2]}>Unfriend</Text>
                     </View>
                 </DelayedButton >
                 <DelayedButton onPress={() => this.handleBlockFriend(friendUserId)} activeOpacity={0.6}>
