@@ -57,7 +57,7 @@ export const reportEvent = (referenceId, type) => (dispatch, getState) => {
 
 // User deletes an event belongs to self
 export const deleteEvent = (eventId) => (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
   trackWithProperties(E.EVENT_DELETED, {'CreatorId': userId, 'EventId': eventId});
   const onSuccess = (res) => {
     Actions.pop();
@@ -110,8 +110,8 @@ export const openEventInviteModal = ({ eventId, cardIconSource, cardIconStyle, c
 };
 
 export const inviteParticipantToEvent = (eventId, inviteeId, callback) => (dispatch, getState) => {
-  const { token } = getState().user;
-  trackWithProperties(E.EVENT_PARTICIPANT_INVITED, {'InviteeId': inviteeId, 'EventId': eventId, 'UserId': token});
+  const { token, userId } = getState().user;
+  trackWithProperties(E.EVENT_PARTICIPANT_INVITED, {'InviteeId': inviteeId, 'EventId': eventId, 'UserId': userId});
 
   const onSuccess = (res) => {
     dispatch({
@@ -155,8 +155,8 @@ export const inviteParticipantToEvent = (eventId, inviteeId, callback) => (dispa
 
 // User updates his rsvp status for an event
 export const rsvpEvent = (option, eventId, pageId) => (dispatch, getState) => {
-  const { token, user } = getState().user;
-  trackWithProperties(E.EVENT_RSVPED, {'EventId': eventId, 'UserId': user});
+  const { token, user, userId } = getState().user;
+  trackWithProperties(E.EVENT_RSVPED, {'EventId': eventId, 'UserId': userId});
 
   const onSuccess = (res) => {
     dispatch({
