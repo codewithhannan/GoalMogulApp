@@ -397,7 +397,7 @@ export const unblockUser = (blockId, callback) => (dispatch, getState) => {
     type: SETTING_BLOCK_UNBLOCK_REQUEST,
     payload: blockId
   });
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
   trackWithProperties(E.USER_UNBLOCKED, {'UserId': userId});
   API
     .delete(`${BASE_ROUTE}/block?blockId=${blockId}`, { blockId }, token)

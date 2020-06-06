@@ -107,10 +107,8 @@ class FriendTabCardView extends React.PureComponent {
                         <Text style={[DEFAULT_STYLE.buttonText_2]}>Unfriend</Text>
                     </View>
                 </DelayedButton >
-                <DelayedButton onPress={() => this.handleBlockFriend(friendUserId)} activeOpacity={0.6}>
-                    <View style={[styles.buttonTextContainerStyle, { paddingTop: 7, paddingBottom: 7, borderColor: '#EB5757', borderWidth: 1 }]}>
-                        <Text style={[DEFAULT_STYLE.buttonText_2, { color: "#EB5757" }]}>Block</Text>
-                    </View>
+                <DelayedButton onPress={() => this.handleBlockFriend(friendUserId)} touchableHighlight underlayColor="#FFDEDE" style={[styles.buttonTextContainerStyle]}>
+                    <Text style={[DEFAULT_STYLE.buttonText_2, { color: "#EB5757" }]}>Block</Text>
                 </DelayedButton>
             </View>
         );
@@ -169,7 +167,8 @@ const styles = {
         paddingRight: 15,
         borderRadius: 3,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: 'transparent'
     }
 };
 
