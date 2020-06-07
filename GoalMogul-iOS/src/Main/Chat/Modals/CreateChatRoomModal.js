@@ -23,10 +23,12 @@ import ImageModal from '../../Common/ImageModal';
 import SearchUserCard from '../../Search/People/SearchUserCard';
 import { track, trackWithProperties, EVENT as E } from '../../../monitoring/segment';
 import { GM_BLUE_LIGHT_LIGHT, GM_BLUE, GM_BLUE_LIGHT, DEFAULT_STYLE, TEXT_COLOR_1, BACKGROUND_COLOR } from '../../../styles';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 import { IMAGE_BASE_URL } from '../../../Utils/Constants';
 
 import defaultGroupPic from '../../../asset/utils/defaultSelfUserProfile.png';
+const { InfoIcon } = Icons;
 
 const { width } = Dimensions.get('window');
 
@@ -406,6 +408,14 @@ class CreateChatroomModal extends React.Component {
             </View>
         );
 	}
+
+	handleInfoIconOnPress() {
+		const { openProfileInfoModal } = true;
+        if (openProfileInfoModal) {
+			// Open info modal here.
+			// How should this work?
+        }
+	}
 	
 	renderGroupChatToggles() {
 
@@ -413,6 +423,15 @@ class CreateChatroomModal extends React.Component {
 		  <View>
 			<View style={styles.toggle}>
 				<Text style={styles.switchLabel}>Publicly Visible</Text>
+				
+                            <DelayedButton
+								onPress={this.handleInfoIconOnPress}
+                                style={[styles.infoIconContainerStyle, styles.marginStyle]}
+                                activeOpacity={0.6}
+                            >
+                                <Image source={InfoIcon} style={DEFAULT_STYLE.infoIcon} />
+                            </DelayedButton>
+                
 					<Switch
 					style={styles.switch}
 					trackColor={{ false: "#767577", true: "#45C9F6" }}
@@ -685,5 +704,14 @@ const styles = {
 	},
 	switchLabel: {
 
-	}
+	},
+	infoIconContainerStyle: {
+        borderRadius: 100,
+        borderWidth: 1,
+        borderColor: TEXT_COLOR_1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 2,
+        marginLeft: 5
+    }
 };
