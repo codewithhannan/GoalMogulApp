@@ -183,62 +183,6 @@ class CreateChatroomModal extends React.Component {
 		);
 	}
 
-	// Current media type is only picture
-	renderMedia = () => {
-		const { initializeFromState, chat, picture } = this.props;
-		let imageUrl = picture;
-		if (initializeFromState && chat.picture) {
-			const hasImageModified = chat.picture && chat.picture !== picture;
-			if (!hasImageModified) {
-				// If editing a tribe and image hasn't changed, then image source should
-				// be from server
-				imageUrl = `${IMAGE_BASE_URL}${picture}`;
-			}
-		}
-
-		if (picture) {
-			return (
-				<View style={{ backgroundColor: 'gray' }}>
-				<TouchableOpacity onPress={() => this.setState({ mediaModal: true })}>
-					<ImageBackground
-						style={styles.mediaStyle}
-						source={{ uri: imageUrl }}
-						imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
-					>
-						<TouchableOpacity activeOpacity={0.85}
-							onPress={() => this.props.change('picture', null)}
-							style={{
-								position: 'absolute',
-								top: 10,
-								left: 15,
-								width: 24,
-								height: 24,
-								borderRadius: 12,
-								backgroundColor: 'rgba(0,0,0,0.3)',
-								alignItems: 'center',
-								justifyContent: 'center'
-							}}
-						>
-							<Image
-								source={cancel}
-								style={{
-									width: 16,
-									height: 16,
-									tintColor: '#fafafa',
-									borderRadius: 8,
-									padding: 2
-								}}
-							/>
-						</TouchableOpacity>
-					</ImageBackground>
-				</TouchableOpacity>
-					{this.renderImageModal(imageUrl)}
-				</View>
-			);
-		}
-		return null;
-	}
-
 	renderImageModal(imageUrl) {
 		if (!this.state.mediaModal) {
 			return null;
@@ -344,18 +288,6 @@ class CreateChatroomModal extends React.Component {
 					/>}
 					onPress={() => this.props.change('membersCanAdd', !this.props.membersCanAdd)}
 				/>
-			</View>
-		);
-	}
-
-	// Render field to select an image for tribe
-	renderImageSelection() {
-		const titleText = <Text style={styles.titleTextStyle}>Select a photo</Text>;
-		return (
-			<View style={{ marginTop: 4 }}>
-				{titleText}
-				{this.renderMedia()}
-				{this.renderActionIcons()}
 			</View>
 		);
 	}
@@ -482,23 +414,32 @@ class CreateChatroomModal extends React.Component {
 		return null;
 	}
 
-	renderProfileImage(profile, isSelf) {
-        const { image } = profile;
-        const style = image ? styles.imageStyle : {
-                width: 30 * DEFAULT_STYLE.uiScale,
-                height: 30 * DEFAULT_STYLE.uiScale,
-                margin: 40 * DEFAULT_STYLE.uiScale
-            };
-        const containerStyle = [styles.imageContainerStyle, image ? {} : {
-            borderColor: '#BDBDBD',
-            borderRadius: (width * 0.15),
-            borderWidth: 2
-        }];
-        const imageUrl = `${IMAGE_BASE_URL}${image}`;
+	renderGroupChatImage() {	
+		const { initializeFromState, chat, picture } = this.props;
+		const profile = this.props;
+		let imageUrl = picture;
+		if (initializeFromState && chat.picture) {
+			const hasImageModified = chat.picture && chat.picture !== picture;
+			if (!hasImageModified) {
+				// If editing a tribe and image hasn't changed, then image source should
+				// be from server
+				imageUrl = `${IMAGE_BASE_URL}${picture}`;
+			}
+		}
+		const style = picture ? styles.imageStyle : {
+			width: 30 * DEFAULT_STYLE.uiScale,
+			height: 30 * DEFAULT_STYLE.uiScale,
+			margin: 40 * DEFAULT_STYLE.uiScale
+		};
+		const containerStyle = [styles.imageContainerStyle, picture ? {} : {
+			borderColor: '#BDBDBD',
+			borderRadius: (width * 0.15),
+			borderWidth: 2
+		}];
         return (
             <View style={containerStyle}>
-				<TouchableOpacity activeOpacity={0.85} onPress={this.handleOpenCamera}>
-					<Image style={style} source={image ? { uri: imageUrl } : (defaultGroupPic)} />
+				<TouchableOpacity activeOpacity={0.85} onPress={this.handleOpenCameraRoll}>
+					<Image style={style} source={{ uri: imageUrl }} />
 				</TouchableOpacity>
             </View>
         );
@@ -537,17 +478,14 @@ class CreateChatroomModal extends React.Component {
 							<View style={{ flex: 1, paddingTop: 0}}>
 								<View style={{ height: 90 * DEFAULT_STYLE.uiScale, backgroundColor: GM_BLUE_LIGHT_LIGHT } } />
 								<View style={styles.topWrapperStyle}>
-									{this.renderProfileImage(profile, self)}
+									{this.renderGroupChatImage()}
 								</View>
 								<View style={{ flex: 1, padding: 20}}>
 									{this.renderChatroomName()}
 									{this.renderChatroomDescription()}
 									{this.renderChatRoomMemberLimit()}
 									{this.renderOptions()}
-									{this.renderImageSelection()}
 								</View>
-							
-								{/* {this.renderImageSelection()} */}
 							</View>
 						:
 							<View style={{ flex: 1, padding: 21 }}>
