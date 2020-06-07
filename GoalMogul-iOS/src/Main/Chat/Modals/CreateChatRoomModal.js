@@ -1,8 +1,8 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import _ from 'lodash';
 import R from 'ramda';
-import React from 'react';
-import { ActivityIndicator, Alert, FlatList, Image, ImageBackground, KeyboardAvoidingView, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View, Dimensions } from 'react-native';
+import React, {useState} from 'react';
+import { ActivityIndicator, Alert, FlatList, Image, ImageBackground, KeyboardAvoidingView, SafeAreaView, Switch, ScrollView, Text, TextInput, TouchableOpacity, View, Dimensions } from 'react-native';
 import { CheckBox, SearchBar } from 'react-native-elements';
 import { MenuProvider } from 'react-native-popup-menu';
 import { connect } from 'react-redux';
@@ -36,7 +36,7 @@ class CreateChatroomModal extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			mediaModal: false
+			mediaModal: false,
 		};
 	}
 	_keyExtractor = (item) => item._id;
@@ -45,6 +45,7 @@ class CreateChatroomModal extends React.Component {
 		this.startTime = new Date();
 		track(this.props.initializeFromState ? E.EDIT_CHATROOM_OPENED : E.CREATE_CHATROOM_OPENED);
 		this.initializeForm();
+		this.switchValue = this.isPublic;
 	}
 
 	initializeForm() {
@@ -253,45 +254,6 @@ class CreateChatroomModal extends React.Component {
 		);
 	}
 
-	renderOptions() {
-		return (
-			<View>
-				<CheckBox
-					title='Publicly visible'
-					textStyle={{fontWeight: 'normal'}}
-					checked={this.props.isPublic}
-					checkedIcon={<MaterialIcons
-						name="done"
-						color="#111"
-						size={21}
-					/>}
-					uncheckedIcon={<MaterialIcons
-						name="done"
-						color="#CCC"
-						size={21}
-					/>}
-					onPress={() => this.props.change('isPublic', !this.props.isPublic)}
-				/>
-				<CheckBox
-					title='Members can add their friends'
-					textStyle={{fontWeight: 'normal'}}
-					checked={this.props.membersCanAdd}
-					checkedIcon={<MaterialIcons
-						name="done"
-						color="#111"
-						size={21}
-					/>}
-					uncheckedIcon={<MaterialIcons
-						name="done"
-						color="#CCC"
-						size={21}
-					/>}
-					onPress={() => this.props.change('membersCanAdd', !this.props.membersCanAdd)}
-				/>
-			</View>
-		);
-	}
-
 	renderMemberItem(item) {
 		return (
 			<SearchUserCard
@@ -443,7 +405,38 @@ class CreateChatroomModal extends React.Component {
 				</TouchableOpacity>
             </View>
         );
-    }
+	}
+	
+	renderGroupChatToggles() {
+
+		return (
+		  <View>
+			<View style={styles.toggle}>
+				<Text style={styles.switchLabel}>Publicly Visible</Text>
+					<Switch
+					style={styles.switch}
+					trackColor={{ false: "#767577", true: "#45C9F6" }}
+					thumbColor={this.state.switchValue ? "#fff" : "#f4f3f4"}
+					ios_backgroundColor="#3e3e3e"
+					value={this.props.isPublic}
+					onValueChange ={(switchValue)=>{this.setState({switchValue}); this.props.change('isPublic', !this.props.isPublic);}}
+					/>
+			</View>
+			<View style={styles.toggle}>
+				<Text style={styles.switchLabel}>Members can invite their friends</Text>
+					<Switch
+					style={styles.switch}
+					trackColor={{ false: "#767577", true: "#45C9F6" }}
+					thumbColor={this.state.switchValue2 ? "#fff" : "#f4f3f4"}
+					ios_backgroundColor="#3e3e3e"
+					value={this.props.membersCanAdd}  
+					onPress={() => this.props.change('membersCanAdd', !this.props.membersCanAdd)}
+					onValueChange ={(switchValue2)=> {this.setState({switchValue2}); this.props.change('membersCanAdd', !this.props.membersCanAdd);}}
+					/>
+			</View>
+		  </View>
+		);
+	}
 
 	render() {
 		const { user, self } = this.props;
@@ -484,7 +477,7 @@ class CreateChatroomModal extends React.Component {
 									{this.renderChatroomName()}
 									{this.renderChatroomDescription()}
 									{this.renderChatRoomMemberLimit()}
-									{this.renderOptions()}
+									{this.renderGroupChatToggles()}
 								</View>
 							</View>
 						:
@@ -551,6 +544,8 @@ const mapStateToProps = state => {
 		roomType: selector(state, 'roomType'),
 		membersToAdd: selectedMembers.map(doc => doc._id.toString()).join(','),
 		formVals: state.form.createChatRoomModal,
+		swithValue: false,
+		switchValue2: false,
 	};
 };
 
@@ -676,5 +671,19 @@ const styles = {
 	// Menu related style
 	backdrop: {
 		backgroundColor: 'transparent'
+	},
+	toggle: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+		flexDirection: 'row',
+		marginBottom: 10
+	},
+	switch: {
+		marginLeft: 'auto',
+		alignSelf: 'flex-end'
+	},
+	switchLabel: {
+
 	}
 };
