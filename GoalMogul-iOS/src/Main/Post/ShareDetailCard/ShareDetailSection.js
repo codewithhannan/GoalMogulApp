@@ -366,6 +366,7 @@ class ShareDetailSection extends Component {
                             }
                             this.props.likeGoal('post', _id);
                         }}
+                        onTextPress={() => { this.setState({ showlikeListModal: true }) }}
                     />
                     <ActionButton
                         iconSource={ShareIcon}

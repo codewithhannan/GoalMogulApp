@@ -296,13 +296,13 @@ class CreateGoalModal extends React.Component {
                             }}
                             onAction={this.handleGoalReminder}
                             actionDisabled={!this.props.uploading || !hasValidFormVals}
-                            tutorialOn={{
-                                actionText: {
-                                    tutorialText: this.props.tutorialText[8],
-                                    order: 8,
-                                    name: 'create_goal_create_goal_modal_8'
-                                }
-                            }}
+                            // tutorialOn={{
+                            //     actionText: {
+                            //         tutorialText: this.props.tutorialText[8],
+                            //         order: 8,
+                            //         name: 'create_goal_create_goal_modal_8'
+                            //     }
+                            // }}
                         />
                         <NewGoalView
                             initializeFromState={this.props.initializeFromState}
@@ -339,7 +339,9 @@ const mapStateToProps = state => {
         formVals: state.form.createGoalModal,
         user,
         // Tutorial related
-        hasShown, showTutorial, tutorialText
+        hasShown,
+        // showTutorial,
+        tutorialText
     };
 };
 

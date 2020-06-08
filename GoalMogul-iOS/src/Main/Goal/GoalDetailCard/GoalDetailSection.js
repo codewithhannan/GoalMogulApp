@@ -442,6 +442,7 @@ class GoalDetailSection extends React.PureComponent {
                             }
                             this.props.likeGoal('goal', _id);
                         }}
+                        onTextPress={() => { this.setState({ showlikeListModal: true }) }}
                     />
                     <ActionButton
                         iconSource={ShareIcon}
@@ -450,6 +451,7 @@ class GoalDetailSection extends React.PureComponent {
                         textStyle={{ color: '#828282' }}
                         iconStyle={{ tintColor: '#828282' }}
                         onPress={() => this.handleShareOnClick(item)}
+                        onTextPress={() => { this.setState({ showShareListModal: true }) }}
                     />
                     <ActionButton
                         iconSource={CommentIcon}

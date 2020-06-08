@@ -313,8 +313,8 @@ class ActivityCard extends React.PureComponent {
                     <View style={{ marginTop: 1, borderBottomColor: '#f8f8f8', borderBottomWidth: 1 }}>
                         {this.renderActionButtons(item)}
                     </View>
-                    {this.renderComment(item)}
                 </View>
+                {this.renderComment(item)}
             </View>
         );
     }
