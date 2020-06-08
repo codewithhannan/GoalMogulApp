@@ -24,7 +24,6 @@ import { componentKeyByTab } from '../../../../redux/middleware/utils';
 import { SearchBar } from 'react-native-elements';
 import { SearchIcon } from '../../../../Utils/Icons';
 
-
 const KEY = 'friends';
 const DEBUG_KEY = '[ UI FriendTabView ]';
 
