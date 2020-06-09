@@ -78,7 +78,7 @@ export const openShareDetail = (share, pageId, initialProps) => (dispatch, getSt
   // refreshComments('Post', postId, tab, pageId)(dispatch, getState);
 
   const componentToOpen = componentKeyByTab(tab, 'share');
-  Actions.push(`${componentToOpen}`, { pageId, postId, initialProps });
+  Actions.push(`${componentToOpen}`, { pageId, postId, initialProps, postType: share.postType });
 };
 
 // close share detail

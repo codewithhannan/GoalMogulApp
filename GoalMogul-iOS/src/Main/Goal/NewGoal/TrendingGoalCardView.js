@@ -60,9 +60,9 @@ class TrendingGoalCard extends React.PureComponent {
         );
     }
 
-    renderRank(item, index) {
+    renderRank(index) {
         return (
-            <View style={{ padding: 15, paddingRight: 4 }}>
+            <View style={{ padding: 15, paddingRight: 4, justifyContent: 'center' }}>
                 <Text style={DEFAULT_STYLE.titleText_2}>#{index}</Text>
             </View>
         );
@@ -73,9 +73,9 @@ class TrendingGoalCard extends React.PureComponent {
         if (!item) return;
         return (
             <View style={styles.containerStyle}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    {this.renderRank(item, index)}
-                    <View style={{ height: 40 * DEFAULT_STYLE.uiScale, width: 1, margin: 8, backgroundColor: '#DADADA' }} />
+                <View style={{ flexDirection: 'row', alignItems: 'stretch' }}>
+                    {this.renderRank(index)}
+                    <View style={{ width: 1, margin: 8, backgroundColor: '#DADADA' }} />
                     {this.renderTitle(item)}
                 </View>
                 {this.renderStats(item)}

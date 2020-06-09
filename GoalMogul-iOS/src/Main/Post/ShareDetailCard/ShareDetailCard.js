@@ -236,10 +236,10 @@ class ShareDetailCard extends Component {
     }
 
     render() {
-        const { comments, shareDetail, pageId, postId } = this.props;
+        const { comments, shareDetail, pageId, postId, postType } = this.props;
         const data = comments;
         if (!shareDetail || !shareDetail.created) return null;
-        const title = switchCaseTitle(shareDetail.postType);
+        const title = switchCaseTitle(shareDetail.postType || postType);
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
