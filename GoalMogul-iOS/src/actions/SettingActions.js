@@ -40,6 +40,7 @@ import {
 } from '../redux/modules/User/Setting';
 import { Logger } from '../redux/middleware/utils/Logger';
 import { DropDownHolder } from '../Main/Common/Modal/DropDownModal';
+import { trackWithProperties, EVENT as E } from '../monitoring/segment';
 
 const DEBUG_KEY = '[ Setting Action ]';
 const BASE_ROUTE = 'secure/user/settings';
@@ -73,6 +74,7 @@ export const onResendEmailPress = (callback, userId) => (dispatch, getState) => 
   const { token } = getState().user;
   
   const email = getUserData(getState(), userId, 'user.email');
+  trackWithProperties(E.VERIFY_EMAIL_RESENT, {'UserId': userId, 'Email': email.address});
   API.post('secure/user/account/verification', { for: 'email' }, token).then((res) => {
     if (callback) {
       callback(`We\'ve resent a verification email to ${email.address}`);
@@ -107,6 +109,7 @@ export const onUpdateEmailSubmit = (values, callback) => {
       .then((res) => {
         console.log('update email address with response: ', res);
         if (res.success) {
+          trackWithProperties(E.EMAIL_UPDATED, {'UserId': userId, 'Email': values.email});
           dispatch({
             type: SETTING_EMAIL_UPDATE_SUCCESS,
             payload: {
@@ -158,6 +161,7 @@ export const onUpdatePhoneNumberSubmit = (values, callback) => {
       .then((res) => {
         console.log('update phone number successfully: ', res);
         if (res.success) {
+          trackWithProperties(E.PHONE_UPDATED, {'UserId': userId, 'PhoneNo': values.phone});
           dispatch({
             type: SETTING_PHONE_UPDATE_SUCCESS,
             payload: {
@@ -199,12 +203,12 @@ export const onAddVerifyPhone = (handleRedirect) => async (dispatch) => {
 // Verify phone number
 export const onVerifyPhoneNumber = (handleRedirect) => {
   return (dispatch, getState) => {
-    const { token } = getState().user;
+    const { token, userId } = getState().user;
     return API
       .post('secure/user/account/verification', { for: 'phone' }, token)
       .then(async (res) => {
         console.log('verify phone number successfully: ', res);
-
+        trackWithProperties(E.PHONE_VERIFIED, {'UserId': userId});
         let returnUrl = Expo.Linking.makeUrl('/');
         addLinkingListener(handleRedirect);
         let result = await WebBrowser.openBrowserAsync(
@@ -361,21 +365,21 @@ export const getBlockedUsers = (refresh) => (dispatch, getState) => {
 };
 
 // Block one particular user with userId
-export const blockUser = (userId, callback) => (dispatch, getState) => {
+export const blockUser = (blockeeId, callback) => (dispatch, getState) => {
   dispatch({
     type: SETTING_BLOCK_BLOCK_REQUEST,
-    payload: userId
+    payload: blockeeId
   });
-  const { token } = getState().user;
-
-  API.post(`${BASE_ROUTE}/block`, { blockeeId: userId }, token).then((res) => {
+  const { token, userId } = getState().user;
+  trackWithProperties(E.USER_BLOCKED, {'UserId': userId, 'BlockId': blockeeId});
+  API.post(`${BASE_ROUTE}/block`, { blockeeId: blockeeId }, token).then((res) => {
     console.log(`${DEBUG_KEY}: block user with res: `, res);
     if (callback) {
       callback();
     }
     dispatch({
       type: SETTING_BLOCK_BLOCK_REQUEST_DONE,
-      payload: userId
+      payload: blockeeId
     });
   })
   .catch((err) => {
@@ -393,7 +397,8 @@ export const unblockUser = (blockId, callback) => (dispatch, getState) => {
     type: SETTING_BLOCK_UNBLOCK_REQUEST,
     payload: blockId
   });
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
+  trackWithProperties(E.USER_UNBLOCKED, {'UserId': userId, 'BlockId': blockId});
   API
     .delete(`${BASE_ROUTE}/block?blockId=${blockId}`, { blockId }, token)
     .then((res) => {

@@ -31,6 +31,7 @@ import {
   constructPageId,
   componentKeyByTab
 } from '../../middleware/utils';
+import { trackWithProperties, EVENT as E} from '../../../monitoring/segment';
 
 const DEBUG_KEY = '[ Event Actions ]';
 const BASE_ROUTE = 'secure/event';
@@ -40,6 +41,7 @@ const BASE_ROUTE = 'secure/event';
 // type: ['detail', something else]
 export const reportEvent = (referenceId, type) => (dispatch, getState) => {
   const { userId } = getState().user;
+  trackWithProperties(E.EVENT_REPORTED, {'CreatorId': userId, 'Type': type});
   // Set the basic information for a report
   dispatch({
     type: REPORT_CREATE,
@@ -55,7 +57,8 @@ export const reportEvent = (referenceId, type) => (dispatch, getState) => {
 
 // User deletes an event belongs to self
 export const deleteEvent = (eventId) => (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
+  trackWithProperties(E.EVENT_DELETED, {'CreatorId': userId, 'EventId': eventId});
   const onSuccess = (res) => {
     Actions.pop();
     dispatch({
@@ -107,7 +110,8 @@ export const openEventInviteModal = ({ eventId, cardIconSource, cardIconStyle, c
 };
 
 export const inviteParticipantToEvent = (eventId, inviteeId, callback) => (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
+  trackWithProperties(E.EVENT_PARTICIPANT_INVITED, {'InviteeId': inviteeId, 'EventId': eventId, 'UserId': userId});
 
   const onSuccess = (res) => {
     dispatch({
@@ -151,7 +155,8 @@ export const inviteParticipantToEvent = (eventId, inviteeId, callback) => (dispa
 
 // User updates his rsvp status for an event
 export const rsvpEvent = (option, eventId, pageId) => (dispatch, getState) => {
-  const { token, user } = getState().user;
+  const { token, user, userId } = getState().user;
+  trackWithProperties(E.EVENT_RSVPED, {'EventId': eventId, 'UserId': userId});
 
   const onSuccess = (res) => {
     dispatch({
@@ -327,7 +332,7 @@ export const eventDetailOpen = (event) => (dispatch, getState) => {
  * Fetch event detail for an event
  */
 export const fetchEventDetail = (eventId, callback, pageId) => (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
   const onSuccess = (data) => {
     dispatch({
       type: EVENT_DETAIL_LOAD_SUCCESS,
@@ -354,6 +359,7 @@ export const fetchEventDetail = (eventId, callback, pageId) => (dispatch, getSta
   API
     .get(`${BASE_ROUTE}/documents/${eventId}`, token)
     .then((res) => {
+      trackWithProperties(E.EVENT_DETAIL_OPENED, {'EventId': eventId, 'UserId': userId});
       if (callback) {
         return callback(res);
       }

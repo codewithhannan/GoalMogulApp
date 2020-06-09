@@ -51,6 +51,7 @@ class FriendRequestCardView extends React.PureComponent {
         accepted: false
     }
 
+    /* This is deprecated and replaced by individual handlers */
     onRespondClicked = (item) => {
         const { friendshipId, user } = item;
         const userId = user._id;
@@ -85,32 +86,6 @@ class FriendRequestCardView extends React.PureComponent {
         });
     }
 
-    onInvitedClicked = (item) => {
-        const { friendshipId } = item;
-        ActionSheetIOS.showActionSheetWithOptions({
-            options: FRIENDSHIP_BUTTONS,
-            cancelButtonIndex: CANCEL_INDEX,
-        },
-        (buttonIndex) => {
-            console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
-            switch (buttonIndex) {
-            case WITHDRAW_INDEX:
-                this.props.updateFriendship(
-                    undefined,
-                    friendshipId,
-                    'deleteFriend',
-                    TAB_KEY_OUTGOING,
-                    () => {
-                        this.setState({ requested: false });
-                    }
-                    );
-                break;
-            default:
-                return;
-            }
-        });
-    }
-
     handleWithdrawInvite = (item) => {
         const { friendshipId } = item;
         this.props.updateFriendship(
@@ -130,18 +105,6 @@ class FriendRequestCardView extends React.PureComponent {
 
     handleDeleteFriendRequest = (userId, friendshipId) => {
         this.props.updateFriendship(userId, friendshipId, 'deleteFriend', TAB_KEY_INCOMING, () => this.props.handleRefresh());
-    }
-
-    handleButtonOnPress = (item) => {
-        if (item.type === 'incoming') {
-            return this.onRespondClicked(item);
-        }
-
-        if (item.type === 'outgoing') {
-            return this.onInvitedClicked(item);
-        }
-
-        console.log(`${DEBUG_KEY}: unknown type when button pressed: `, item);
     }
 
     handleOnOpenProfile = () => {

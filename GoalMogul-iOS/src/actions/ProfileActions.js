@@ -14,6 +14,7 @@ import {
 } from '../redux/modules/User/Selector';
 
 import { Bronze3D, Silver3D, Gold3D } from '../asset/banner';
+import { trackWithProperties, EVENT as E } from '../monitoring/segment';
 import GreenBanner from '../asset/banner/green.png';
 
 import {
@@ -187,7 +188,7 @@ export const closeProfile = (userId, pageId) => (dispatch, getState) => {
 };
 
 /**
- * Open user goal list by userId
+ * Open user profile list by userId
  * @param {string} userId 
  * @param {string} tab 
  */
@@ -200,7 +201,7 @@ export const openProfile = (userId, tab, initialFilter) => (dispatch, getState) 
             pageId
         }
     });
-
+    trackWithProperties(E.PROFILE_OPENED, {'UserId': userId});
     // Refresh goals on open
     if (tab) {
         selectProfileTabByName(`${tab}`, userId, pageId, initialFilter)(dispatch, getState);
@@ -284,7 +285,7 @@ export const refreshProfile = (userId) => (dispatch, getState) => {
             pageId
         }
     });
-
+    trackWithProperties(E.PROFILE_REFRESHED, {'UserId': userId});
     Actions.refresh({
         pageId, userId, hideProfileDetail: false, isMainTab: true
     });
@@ -355,6 +356,7 @@ export const openProfileDetail = (userId) => (dispatch, getState) => {
     // pageId here should be created when a profile component is opened.
     // We append the detail to the end of pageId to create a new one
     const newPageId = constructPageId('user_profile_detail');
+    trackWithProperties(E.PROFILE_OPENED, {'UserId': userId});
     dispatch({
         type: PROFILE_OPEN_PROFILE_DETAIL,
         payload: {
@@ -530,6 +532,7 @@ export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
             .then((res) => {
                 const [accountUpdateRes, profileUpdateRes, passwordUpdateRes] = res;
                 const user = { ...accountUpdateRes, profile: { ...profileUpdateRes } };
+                trackWithProperties(E.PROFILE_UPDATED, {...user, 'UserId': userId});
 
                 dispatch({
                     type: PROFILE_UPDATE_SUCCESS,
@@ -842,6 +845,7 @@ export const deleteGoal = (goalId, pageId) => (dispatch, getState) => {
         // onSuccess
         () => {
             console.log(`${DEBUG_KEY}: delete goal succeed.`);
+            trackWithProperties(E.GOAL_DELETED, {'GoalId': goalId, 'UserId': userId});
             dispatch({
                 type: PROFILE_GOAL_DELETE_SUCCESS,
                 payload: {
@@ -879,6 +883,7 @@ export const deletePost = (postId) => (dispatch, getState) => {
         getState,
         (res) => {
             console.log(`${DEBUG_KEY}: delete post success with res: `, res);
+            trackWithProperties(E.POST_DELETED, {'PostId': postId, 'UserId': userId});
             dispatch({
                 type: PROFILE_POST_DELETE_SUCCESS,
                 payload: {

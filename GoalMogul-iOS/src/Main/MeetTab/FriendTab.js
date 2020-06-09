@@ -13,6 +13,7 @@ import { getIncomingUserFromFriendship } from '../../redux/modules/meet/selector
 import RequestCard from './V2/RequestCard';
 import { componentKeyByTab } from '../../redux/middleware/utils';
 import { handleRefresh, meetOnLoadMore } from '../../actions';
+import InviteFriendModal from './Modal/InviteFriendModal';
 
 /**
  * Friend tab page for GM main tabs
@@ -26,14 +27,28 @@ import { handleRefresh, meetOnLoadMore } from '../../actions';
  * }
  */
 class FriendTab extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showInviteFriendModal: false
+        }
+    }
 
     componentDidMount() {
         // Refresh user friends
         this.props.handleRefreshFriend();
         // Refresh user friend requests for both incoming and outgoing
         this.props.handleRefreshRequests();
-        // Refresh recommended users
-        this.props.handleRefresh("suggested");
+        // Refresh recommended users with force refresh
+        this.props.handleRefresh("suggested", true);
+    }
+
+    openInviteFriendModal = () => {
+        this.setState({ ...this.state, showInviteFriendModal: true });
+    }
+
+    closeInviteFriendModal = () => {
+        this.setState({ ...this.state, showInviteFriendModal: false });
     }
 
     handleSeeAllFriends = () => {
@@ -54,7 +69,7 @@ class FriendTab extends React.Component {
                     <Text style={[DEFAULT_STYLE.titleText_1, { marginBottom: styles.padding }]}>
                         Great friends help each other achieve so much more!
                     </Text>
-                    <DelayedButton onPress={() => console.log("Invite friends")} style={BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle}>
+                    <DelayedButton onPress={() => this.openInviteFriendModal()} style={BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle}>
                         <Text style={[DEFAULT_STYLE.titleText_1, { color: "white" }]}>Invite your Friends</Text>
                     </DelayedButton>
                 </View>
@@ -72,8 +87,8 @@ class FriendTab extends React.Component {
         return (
             <View style={{ width: "100%", paddingBottom: styles.padding, paddingLeft: styles.padding, padingRight: styles.padding }}>
                 <View style={{ flexDirection: "row" }}>
-                    <RequestCard user={incomingRequests[0].user} />
-                    {requestCount < 2 ? null : <RequestCard user={incomingRequests[0].user} /> }
+                    <RequestCard user={incomingRequests[0]} />
+                    {requestCount < 2 ? null : <RequestCard user={incomingRequests[0]} /> }
                 </View>
                 {requestCount <= 2 ? null : (
                     <DelayedButton onPress={this.handleSeeAllRequests} style={{ backgroundColor: "#F2F2F2", borderRadius: 3, padding: 10 }}>
@@ -160,7 +175,8 @@ class FriendTab extends React.Component {
                     setting={false}
                     rightIcon='menu'
                 />
-                <FlatList 
+                <FlatList
+                    keyExtractor={(item) => item._id}
                     data={this.props.pymkData || testData}
                     ListHeaderComponent={this.renderListHeader}
                     renderItem={this.renderPYMK}
@@ -169,6 +185,7 @@ class FriendTab extends React.Component {
                     onEndReached={() => this.props.meetOnLoadMore("suggested")}
                     ItemSeparatorComponent={this.renderItemSeparator}
                 />
+                <InviteFriendModal isVisible={this.state.showInviteFriendModal} closeModal={this.closeInviteFriendModal} />
             </View>
         );
     }

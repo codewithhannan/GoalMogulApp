@@ -19,6 +19,7 @@ import {
 } from '../../../redux/modules/tribe/TribeActions';
 import DelayedButton from '../../Common/Button/DelayedButton';
 import ProfileImage from '../../Common/ProfileImage';
+import { trackWithProperties, EVENT } from '../../../monitoring/segment';
 
 const DEBUG_KEY = '[ Component SearchTribeCard ]';
 
@@ -33,6 +34,7 @@ class SearchTribeCard extends Component {
    */
   onButtonClicked = (item, type) => {
     const { onItemSelect, selectTribe, tribeDetailOpen } = this.props;
+    trackWithProperties(EVENT.SEARCH_RESULT_CLICKED, {'Type': 'tribe', 'Id': item._id});
     if (!type || type === 'SearchSuggestion') {
       console.log(`${DEBUG_KEY} select tribe: `, item);
 

@@ -51,6 +51,7 @@ import expand from '../../asset/utils/expand.png';
 import {
   IMAGE_BASE_URL
 } from '../../Utils/Constants';
+import { track, trackWithProperties, EVENT as E } from '../../monitoring/segment';
 
 // const { Popover } = renderers;
 const { width } = Dimensions.get('window');
@@ -65,6 +66,8 @@ class CreateEventModal extends React.Component {
   }
 
   componentDidMount() {
+    this.startTime = new Date();
+    track(this.props.initializeFromState ? E.EDIT_EVENT_MODAL_OPENED : E.CREATE_EVENT_MODAL_OPENED);
     this.initializeForm();
   }
 
@@ -107,6 +110,10 @@ class CreateEventModal extends React.Component {
       callback();
       return;
     }
+
+    const durationSec = (new Date().getTime() - this.startTime.getTime()) / 1000;
+    trackWithProperties(initializeFromState ? E.EVENT_EDITED : E.EVENT_CREATED,
+        {...this.props.formVals.values, 'DurationSec': durationSec});
 
     this.props.createNewEvent(
       this.props.formVals.values,
@@ -656,7 +663,12 @@ class CreateEventModal extends React.Component {
           <ModalHeader
             title={titleText}
             actionText={actionText}
-            onCancel={() => this.props.cancelCreatingNewEvent()}
+            onCancel={() => {
+              const durationSec = (new Date().getTime() - this.startTime.getTime()) / 1000;
+              trackWithProperties(this.props.initializeFromState ? E.EDIT_EVENT_MODAL_CANCELLED : E.CREATE_EVENT_MODAL_CANCELLED,
+                  {'DurationSec': durationSec});
+              this.props.cancelCreatingNewEvent();
+            }}
             onAction={handleSubmit(this.handleCreate)}
             actionDisabled={this.props.uploading}
           />

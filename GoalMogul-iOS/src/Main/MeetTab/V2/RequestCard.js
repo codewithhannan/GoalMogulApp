@@ -6,11 +6,12 @@ import {
     Image
 } from 'react-native';
 import { connect } from 'react-redux';
-import { FONT_FAMILY_1, DEFAULT_STYLE, GM_BLUE } from '../../../styles';
+import { DEFAULT_STYLE, GM_BLUE } from '../../../styles';
 import DelayedButton from '../../Common/Button/DelayedButton';
-import { openProfileDetail } from '../../../actions';
+import { openProfileDetail, updateFriendship } from '../../../actions';
 import { IMAGE_BASE_URL } from '../../../Utils/Constants';
 import Icons from '../../../asset/base64/Icons';
+import { handleRefresh } from '../../../redux/modules/meet/MeetActions';
 
 /**
  * Component that display condensed request info in FriendTab
@@ -18,8 +19,8 @@ import Icons from '../../../asset/base64/Icons';
  */
 class RequestCard extends React.PureComponent {
 
-    handleAcceptOnPress = () => {
-
+    handleAcceptOnPress = (userId, friendshipId) => {
+        this.props.updateFriendship(userId, friendshipId, 'acceptFriend', 'requests.incoming', () => this.props.handleRefresh());
     }
 
     handleOpenProfile = (userId) => {
@@ -55,13 +56,11 @@ class RequestCard extends React.PureComponent {
     }
 
     render() {
-        const { user } = this.props;
+        const { user, friendshipId } = this.props.user;
         if (!user) return null;
         const cardWidth = this.getCardWidth(styles.parentPadding);
         const detailText = this.getDetailText(user);
         const { name, mutualFriendCount } = user;
-
-        // TODO: accept / view profile
 
         return (
             <DelayedButton style={[styles.containerStyle, { width: cardWidth }]} onPress={() => this.handleOpenProfile(user._id)} activeOpacity={0.9}>
@@ -71,7 +70,7 @@ class RequestCard extends React.PureComponent {
                 <Text numberOfLines={1} style={[DEFAULT_STYLE.smallText_1, { color: "#555" }]}>
                     <Text></Text>mutual {mutualFriendCount > 1 ? "friends" : "friend"}
                 </Text>
-                <DelayedButton onPress={this.handleAcceptOnPress} style={{ borderRadius: 3, borderColor: GM_BLUE, borderWidth: 1, width: "100%", alignItems: "center", padding: 8, marginTop: 10 }}>
+                <DelayedButton onPress={() => this.handleAcceptOnPress(user._id, friendshipId)} style={{ borderRadius: 3, borderColor: GM_BLUE, borderWidth: 1, width: "100%", alignItems: "center", padding: 8, marginTop: 10 }}>
                     <Text style={[DEFAULT_STYLE.buttonText_1, { color: GM_BLUE }]}>Accept</Text>
                 </DelayedButton>
             </DelayedButton>
@@ -93,6 +92,8 @@ const styles = {
 export default connect(
     null,
     {
-        openProfileDetail
+        openProfileDetail,
+        handleRefresh,
+        updateFriendship
     }
 )(RequestCard);

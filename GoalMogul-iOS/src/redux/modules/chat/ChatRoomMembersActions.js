@@ -2,6 +2,7 @@ import { CHAT_MEMBERS_SWITCH_TAB, CHAT_MEMBERS_RESET_STATE, CHAT_MEMBERS_REFRESH
 import { refreshChatRoom } from "./ChatRoomActions";
 import { Alert } from 'react-native';
 import { api as API } from '../../middleware/api';
+import { track, trackWithProperties, EVENT as E } from "../../../monitoring/segment";
 
 
 const DEBUG_KEY = '[ UI ChatRoomMembersActions ]';
@@ -41,7 +42,7 @@ export const refreshChatMembersTab = (currentChatRoomId) => (dispatch, getState)
 };
 
 export const promoteChatMember = (memberId, chatRoomId) => (dispatch, getState) => {
-    const { token } = getState().user;
+    const { token, userId } = getState().user;
     API.post('secure/chat/room/members/admin', {
         chatRoomId,
         promoteeId: memberId,
@@ -50,6 +51,7 @@ export const promoteChatMember = (memberId, chatRoomId) => (dispatch, getState) 
             Alert.alert('Error', 'Could not promote member. Please try again later.');
             console.log(`${ChatRoomMembersActions} error promoting member`, res.message);
         } else {
+            trackWithProperties(E.CHATROOM_MEMBER_PROMOTED, {'MemberId': memberId, 'ChatRoomId': chatRoomId, 'UserId': userId});
             refreshChatMembersTab(chatRoomId)(dispatch, getState);
         };
     }).catch(err => {
@@ -58,12 +60,13 @@ export const promoteChatMember = (memberId, chatRoomId) => (dispatch, getState) 
     });
 }
 export const demoteChatMember = (memberId, chatRoomId) => (dispatch, getState) => {
-    const { token } = getState().user;
+    const { token, userId } = getState().user;
     API.delete(`secure/chat/room/members/admin?chatRoomId=${chatRoomId}&demoteeId=${memberId}` , {}, token).then(resp => {
         if (resp.status != 200) {
             Alert.alert('Error', 'Could not demote member. Please try again later.');
             console.log(`${ChatRoomMembersActions} error demoting member`, res.message);
         } else {
+            trackWithProperties(E.CHATROOM_MEMBER_DEMOTED, {'MemberId': memberId, 'ChatRoomId': chatRoomId, 'UserId': userId});
             refreshChatMembersTab(chatRoomId)(dispatch, getState);
         };
     }).catch(err => {
@@ -72,7 +75,7 @@ export const demoteChatMember = (memberId, chatRoomId) => (dispatch, getState) =
     });
 }
 export const acceptChatMemberJoinRequest = (memberId, chatRoomId) => (dispatch, getState) => {
-    const { token } = getState().user;
+    const { token, userId } = getState().user;
     API.post('secure/chat/room/members/request/accept', {
         chatRoomId,
         requesterId: memberId,
@@ -81,6 +84,7 @@ export const acceptChatMemberJoinRequest = (memberId, chatRoomId) => (dispatch, 
             Alert.alert('Error', 'Could not accept request. Please try again later.');
             console.log(`${ChatRoomMembersActions} error accepting member request`, res.message);
         } else {
+            trackWithProperties(E.CHATROOM_JOIN_REQUEST_ACCEPTED, {'MemberId': memberId, 'ChatRoomId': chatRoomId, 'UserId': userId});
             refreshChatMembersTab(chatRoomId)(dispatch, getState);
         };
     }).catch(err => {
@@ -89,13 +93,14 @@ export const acceptChatMemberJoinRequest = (memberId, chatRoomId) => (dispatch, 
     });
 }
 export const removeChatMember = (memberId, chatRoomId, maybeCallback) => (dispatch, getState) => {
-    const { token } = getState().user;
+    const { token, userId } = getState().user;
     API.delete(`secure/chat/room/members?chatRoomId=${chatRoomId}&removeeId=${memberId}` , {}, token).then(resp => {
         if (resp.status != 200) {
             Alert.alert('Error', 'Could not remove member. Please try again later.');
             console.log(`${ChatRoomMembersActions} error removing member`, res.message);
             maybeCallback && maybeCallback(new Error(resp.message));
         } else {
+            trackWithProperties(E.CHATROOM_MEMBER_REMOVED, {'MemberId': memberId, 'ChatRoomId': ChatRoomId, 'UserId': userId});
             maybeCallback && maybeCallback(null, true);
             refreshChatMembersTab(chatRoomId)(dispatch, getState);
         };

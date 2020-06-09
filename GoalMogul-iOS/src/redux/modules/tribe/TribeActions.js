@@ -52,6 +52,7 @@ import {
 
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
+import { trackWithProperties, EVENT as E } from '../../../monitoring/segment';
 
 const DEBUG_KEY = '[ Tribe Actions ]';
 const BASE_ROUTE = 'secure/tribe';
@@ -68,6 +69,7 @@ export const tribeReset = () => (dispatch) => {
 // type: ['detail', something else]
 export const reportTribe = (referenceId, type) => (dispatch, getState) => {
   const { userId } = getState().user;
+  trackWithProperties(E.TRIBE_REPORTED, {'UserId': userId, 'ReferenceId': referenceId});
   // Set the basic information for a report
   dispatch({
     type: REPORT_CREATE,
@@ -84,8 +86,9 @@ export const reportTribe = (referenceId, type) => (dispatch, getState) => {
 
 // User deletes an tribe belongs to self
 export const deleteTribe = (tribeId) => (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
   const onSuccess = (res) => {
+    trackWithProperties(E.TRIBE_DELETED, {'UserId': userId, 'TribeId': tribeId});
     Actions.pop();
     dispatch({
       type: TRIBE_DELETE_SUCCESS,
@@ -142,7 +145,8 @@ export const openTribeInvitModal = ({ tribeId, cardIconSource, cardIconStyle }) 
  * @param {*} callback 
  */
 export const inviteMultipleUsersToTribe = (tribeId, users, callback) => (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
+  trackWithProperties(E.TRIBE_INVITE_SENT, {'UserId': userId, 'TribeId': tribeId});
   (async () => {
     let failedItems = []; 
 
@@ -186,9 +190,9 @@ export const inviteMultipleUsersToTribe = (tribeId, users, callback) => (dispatc
  * @param {String} inviteeId 
  */
 export const inviteUserToTribe = (tribeId, inviteeId) => (dispatch, getState) => {
-  const { token } = getState().user;
-
+  const { token, userId } = getState().user;
   const onSuccess = (res) => {
+    trackWithProperties(E.TRIBE_INVITE_SENT, {'UserId': userId, 'TribeId': tribeId});
     dispatch({
       type: TRIBE_MEMBER_INVITE_SUCCESS
     });
@@ -247,6 +251,8 @@ export const leaveTribe = (tribeId, type) => (dispatch, getState) => {
     ? MYTRIBE_MEMBER_REMOVE_SUCCESS
     : TRIBE_MEMBER_REMOVE_SUCCESS;
   const onSuccess = () => {
+    trackWithProperties(type === 'mytribe' ? E.TRIBE_LEFT : E.TRIBE_MEMBER_REMOVED,
+      {'UserId': userId, 'TribeId': tribeId, 'RemoveeId': userId});
     dispatch({
       type: actionType,
       payload: {
@@ -288,6 +294,7 @@ export const acceptTribeInvit = (tribeId, type) => (dispatch, getState) => {
     ? MYTRIBE_MEMBER_ACCEPT_SUCCESS
     : TRIBE_MEMBER_ACCEPT_SUCCESS;
   const onSuccess = (res) => {
+    trackWithProperties(E.TRIBE_INVITE_ACCEPTED, {'UserId': userId, 'TribeId': tribeId});
     dispatch({
       type: actionType,
       payload: {
@@ -340,27 +347,15 @@ export const declineTribeInvit = (tribeId, type) => (dispatch, getState) => {
  */
 export const requestJoinTribe = (tribeId, join, type) => (dispatch, getState) => {
   const { token, userId, user } = getState().user;
-
-  let startActionType;
+  let startActionType, endActionErrorType;
   if (join) {
-    startActionType = type && type === 'mytribe'
-      ? MYTRIBE_REQUEST_JOIN
-      : TRIBE_REQUEST_JOIN
+    startActionType = type && type === 'mytribe' ? MYTRIBE_REQUEST_JOIN : TRIBE_REQUEST_JOIN;
+    endActionErrorType = type && type === 'mytribe'? MYTRIBE_REQUEST_JOIN_ERROR : TRIBE_REQUEST_JOIN_ERROR;
+    trackWithProperties(E.TRIBE_JOIN_REQUESTED, {'TribeId': tribeId, 'UserId': userId});
   } else {
-    startActionType = type && type === 'mytribe'
-      ? MYTRIBE_REQUEST_CANCEL_JOIN
-      : TRIBE_REQUEST_CANCEL_JOIN
-  }
-
-  let endActionErrorType;
-  if (join) {
-    endActionErrorType = type && type === 'mytribe'
-      ? MYTRIBE_REQUEST_JOIN_ERROR
-      : TRIBE_REQUEST_JOIN_ERROR
-  } else {
-    endActionErrorType = type && type === 'mytribe'
-      ? MYTRIBE_REQUEST_CANCEL_JOIN_ERROR
-      : TRIBE_REQUEST_CANCEL_JOIN_ERROR
+    startActionType = type && type === 'mytribe' ? MYTRIBE_REQUEST_CANCEL_JOIN : TRIBE_REQUEST_CANCEL_JOIN;
+    endActionErrorType = type && type === 'mytribe' ? MYTRIBE_REQUEST_CANCEL_JOIN_ERROR : TRIBE_REQUEST_CANCEL_JOIN_ERROR;
+    trackWithProperties(E.TRIBE_JOIN_CANCELLED, {'TribeId': tribeId, 'UserId': userId});
   }
 
   console.log(`${DEBUG_KEY}: startActiontype: ${startActionType}, join: ${join}, type:${type}`);
@@ -552,10 +547,10 @@ export const fetchTribeDetail = (tribeId, callback) => (dispatch, getState) => {
   API
     .get(`${BASE_ROUTE}/documents/${tribeId}`, token)
     .then((res) => {
+      trackWithProperties(E.TRIBE_DETAIL_OPENED, {...res, 'TribeId': tribeId});
       if (callback) {
         return callback(res);
       }
-
       if (res.data) {
         return onSuccess(res.data);
       }

@@ -21,15 +21,9 @@ import { SearchIcon } from '../../../Utils/Icons';
 import ModalHeader from '../../Common/Header/ModalHeader';
 import ImageModal from '../../Common/ImageModal';
 import SearchUserCard from '../../Search/People/SearchUserCard';
-
-
-
-
-
-
+import { track, trackWithProperties, EVENT as E } from '../../../monitoring/segment';
 
 const FRIEND_SEARCH_AUTO_SEARCH_DELAY_MS = 500;
-
 
 class CreateChatroomModal extends React.Component {
 	constructor(props) {
@@ -41,6 +35,8 @@ class CreateChatroomModal extends React.Component {
 	_keyExtractor = (item) => item._id;
 
 	componentDidMount() {
+		this.startTime = new Date();
+		track(this.props.initializeFromState ? E.EDIT_CHATROOM_OPENED : E.CREATE_CHATROOM_OPENED);
 		this.initializeForm();
 	}
 
@@ -73,6 +69,10 @@ class CreateChatroomModal extends React.Component {
 		const needUpload =
 			(initializeFromState && chat.picture && chat.picture !== picture)
 			|| (!initializeFromState && picture);
+
+		const durationSec = (new Date().getTime() - this.startTime.getTime()) / 1000;
+		trackWithProperties(initializeFromState ? E.CHATROOM_UPDATED : E.CHATROOM_CREATED,
+			{...formVals.values, 'ChatId': chatId, 'DurationSec': durationSec});
 
 		this.props.createOrUpdateChatroom(
 			formVals.values,
@@ -487,7 +487,13 @@ class CreateChatroomModal extends React.Component {
 					<ModalHeader
 						title={titleText}
 						actionText={actionText}
-						onCancel={() => this.props.cancelCreateOrUpdateChatroom()}
+						onCancel={() => {
+							const durationSec = (new Date().getTime() - this.startTime.getTime()) / 1000;
+							trackWithProperties(this.props.initializeFromState ?
+								E.EDIT_CHATROOM_CANCELLED : E.CREATE_CHATROOM_CANCELLED,
+								{'DurationSec': durationSec});
+							this.props.cancelCreateOrUpdateChatroom();
+						}}
 						onAction={this.handleNext}
 					/>
 					<ScrollView

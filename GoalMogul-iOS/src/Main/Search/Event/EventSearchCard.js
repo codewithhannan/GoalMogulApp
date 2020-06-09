@@ -19,6 +19,7 @@ import {
   eventDetailOpen
 } from '../../../redux/modules/event/MyEventActions';
 import ProfileImage from '../../Common/ProfileImage';
+import { trackWithProperties, EVENT as E } from '../../../monitoring/segment';
 
 const DEBUG_KEY = '[ Component SearchEventCard ]';
 
@@ -33,6 +34,7 @@ class SearchEventCard extends Component {
    */
   onButtonClicked = (item, type) => {
     const { onItemSelect, selectEvent, eventDetailOpen } = this.props;
+    trackWithProperties(E.SEARCH_RESULT_CLICKED, {'Type': 'event', 'Id': item._id});
     if (!type || type === 'SearchSuggestion') {
       console.log(`${DEBUG_KEY} select event: `, item);
 

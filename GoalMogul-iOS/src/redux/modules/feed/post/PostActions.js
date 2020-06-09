@@ -35,6 +35,7 @@ import {
 import ImageUtils from '../../../../Utils/ImageUtils';
 import { EMPTY_POST } from '../../../../Utils/Constants';
 import { Logger } from '../../../middleware/utils/Logger';
+import { trackWithProperties, EVENT as E } from '../../../../monitoring/segment';
 
 
 const DRAFTS = 'draft_posts';
@@ -71,7 +72,7 @@ export const openPostDetail = (post, initialProps) => (dispatch, getState) => {
     const { tab } = getState().navigation;
     // const scene = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
     // const { pageId } = _.get(getState().postDetail, `${scene}`);
-
+    trackWithProperties(E.POST_OPENED, {...post, 'PostId': postId});
     dispatch({
         type: POST_DETAIL_OPEN,
         payload: {

@@ -20,6 +20,7 @@ import { switchCase, arrayUnique } from '../../middleware/utils';
 import { rsvpEvent } from '../event/EventActions';
 import { Actions } from 'react-native-router-flux';
 import { Logger } from '../../middleware/utils/Logger';
+import { trackWithProperties, EVENT as E } from '../../../monitoring/segment';
 
 const DEBUG_KEY = '[ Action Search ]';
 
@@ -47,9 +48,10 @@ const searchWithId = (searchContent, queryId, searchType) => (dispatch, getState
     type = 'tribes';
   }
 
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
   const { limit } = getState().search[type];
   console.log(`${DEBUG_KEY} with text: ${searchContent} and queryId: ${queryId}`);
+  trackWithProperties(E.SEARCH_QUERY_SENT, {'Term': searchContent, 'Type': searchType, 'UserId': userId});
   dispatch({
     type: SEARCH_REQUEST,
     payload: {
@@ -95,11 +97,11 @@ export const handleSearch = (searchContent, type) => {
  * comments / goal description / post / share
  */
 export const searchUser = (searchContent, skip, limit, callback) => (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
   if (searchContent.replace('@', '').trim().length === 0) {
     return callback({ data: [] });
   }
-
+  trackWithProperties(E.USER_SEARCHED, {'UserId': userId, 'Term': searchContent});
   API
     .get(
       `secure/user/friendship/es?skip=${skip}&limit=${limit}&query=${searchContent}`,
@@ -124,11 +126,11 @@ export const searchUser = (searchContent, skip, limit, callback) => (dispatch, g
  */
 export const searchTribeMember = (searchContent, tribeId, skip, limit, callback) =>
 (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
   if (searchContent.replace('@', '').trim().length === 0) {
     return callback({ data: [] });
   }
-
+  trackWithProperties(E.TRIBE_MEMBER_SEARCHED, {'UserId': userId, 'Term': searchContent, 'TribeId': tribeId});
   API
     .get(
       `secure/tribe/members/es?&query=${searchContent}&tribeId=${tribeId}`,

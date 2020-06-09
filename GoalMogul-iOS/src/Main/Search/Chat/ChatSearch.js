@@ -15,6 +15,8 @@ import {
 } from '../../../redux/modules/search/SearchActions';
 import { componentKeyByTab } from '../../../redux/middleware/utils';
 
+import { trackWithProperties, EVENT as E } from '../../../monitoring/segment';
+
 // tab key
 const key = 'chatRooms';
 const DEBUG_KEY = '[ UI ChatSearch ]';
@@ -42,6 +44,7 @@ class ChatSearch extends Component {
         return;
     }
 
+    trackWithProperties(E.SEARCH_RESULT_CLICKED, {'Type': 'chat', 'Id': item._id});
     if (item.roomType === 'Direct') {
         Actions.push('chatRoomConversation', { chatRoomId: item._id, });
         return;
