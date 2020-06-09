@@ -126,7 +126,7 @@ export const searchUser = (searchContent, skip, limit, callback) => (dispatch, g
  */
 export const searchTribeMember = (searchContent, tribeId, skip, limit, callback) =>
 (dispatch, getState) => {
-  const { token } = getState().user;
+  const { token, userId } = getState().user;
   if (searchContent.replace('@', '').trim().length === 0) {
     return callback({ data: [] });
   }

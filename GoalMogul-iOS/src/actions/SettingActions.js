@@ -365,21 +365,21 @@ export const getBlockedUsers = (refresh) => (dispatch, getState) => {
 };
 
 // Block one particular user with userId
-export const blockUser = (userId, callback) => (dispatch, getState) => {
+export const blockUser = (blockeeId, callback) => (dispatch, getState) => {
   dispatch({
     type: SETTING_BLOCK_BLOCK_REQUEST,
-    payload: userId
+    payload: blockeeId
   });
-  const { token } = getState().user;
-  trackWithProperties(E.USER_BLOCKED, {'UserId': userId});
-  API.post(`${BASE_ROUTE}/block`, { blockeeId: userId }, token).then((res) => {
+  const { token, userId } = getState().user;
+  trackWithProperties(E.USER_BLOCKED, {'UserId': userId, 'BlockId': blockeeId});
+  API.post(`${BASE_ROUTE}/block`, { blockeeId: blockeeId }, token).then((res) => {
     console.log(`${DEBUG_KEY}: block user with res: `, res);
     if (callback) {
       callback();
     }
     dispatch({
       type: SETTING_BLOCK_BLOCK_REQUEST_DONE,
-      payload: userId
+      payload: blockeeId
     });
   })
   .catch((err) => {
@@ -398,7 +398,7 @@ export const unblockUser = (blockId, callback) => (dispatch, getState) => {
     payload: blockId
   });
   const { token, userId } = getState().user;
-  trackWithProperties(E.USER_UNBLOCKED, {'UserId': userId});
+  trackWithProperties(E.USER_UNBLOCKED, {'UserId': userId, 'BlockId': blockId});
   API
     .delete(`${BASE_ROUTE}/block?blockId=${blockId}`, { blockId }, token)
     .then((res) => {
