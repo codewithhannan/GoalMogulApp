@@ -2,26 +2,26 @@ import { Actions } from 'react-native-router-flux';
 import { Alert } from 'react-native';
 import _ from 'lodash';
 import {
-  MYTRIBE_SWITCH_TAB,
-  MYTRIBE_DETAIL_OPEN,
-  MYTRIBE_DETAIL_LOAD,
-  MYTRIBE_DETAIL_LOAD_SUCCESS,
-  MYTRIBE_DETAIL_LOAD_FAIL,
-  MYTRIBE_DETAIL_CLOSE,
-  MYTRIBE_FEED_FETCH,
-  MYTRIBE_FEED_FETCH_DONE,
-  MYTRIBE_FEED_REFRESH_DONE,
-  MYTRIBE_MEMBER_REMOVE_SUCCESS,
-  MYTRIBE_PROMOTE_MEMBER_SUCCESS,
-  MYTRIBE_MEMBER_SELECT_FILTER,
-  MYTRIBE_ACCEPT_MEMBER_SUCCESS,
-  MYTRIBE_DEMOTE_MEMBER_SUCCESS,
-  MYTRIBE_RESET
+    MYTRIBE_SWITCH_TAB,
+    MYTRIBE_DETAIL_OPEN,
+    MYTRIBE_DETAIL_LOAD,
+    MYTRIBE_DETAIL_LOAD_SUCCESS,
+    MYTRIBE_DETAIL_LOAD_FAIL,
+    MYTRIBE_DETAIL_CLOSE,
+    MYTRIBE_FEED_FETCH,
+    MYTRIBE_FEED_FETCH_DONE,
+    MYTRIBE_FEED_REFRESH_DONE,
+    MYTRIBE_MEMBER_REMOVE_SUCCESS,
+    MYTRIBE_PROMOTE_MEMBER_SUCCESS,
+    MYTRIBE_MEMBER_SELECT_FILTER,
+    MYTRIBE_ACCEPT_MEMBER_SUCCESS,
+    MYTRIBE_DEMOTE_MEMBER_SUCCESS,
+    MYTRIBE_RESET
 } from './MyTribeReducers';
 
 // Selectors
 import {
-  getMyTribeUserStatus
+    getMyTribeUserStatus
 } from './TribeSelector';
 
 import { api as API } from '../../middleware/api';
@@ -33,33 +33,33 @@ const BASE_ROUTE = 'secure/tribe';
 
 // Reset myTribe page
 export const myTribeReset = () => (dispatch) => {
-  dispatch({
-    type: MYTRIBE_RESET
-  });
+    dispatch({
+        type: MYTRIBE_RESET
+    });
 };
 
 export const tribeSelectTab = (index) => (dispatch) => {
-  dispatch({
-    type: MYTRIBE_SWITCH_TAB,
-    payload: index
-  });
+    dispatch({
+        type: MYTRIBE_SWITCH_TAB,
+        payload: index
+    });
 };
 
 export const myTribeSelectMembersFilter = (option, index) => (dispatch) => {
-  dispatch({
-    type: MYTRIBE_MEMBER_SELECT_FILTER,
-    payload: {
-      option,
-      index
-    }
-  });
+    dispatch({
+        type: MYTRIBE_MEMBER_SELECT_FILTER,
+        payload: {
+            option,
+            index
+        }
+    });
 };
 
 export const tribeDetailClose = () => (dispatch) => {
-  Actions.pop();
-  dispatch({
-    type: MYTRIBE_DETAIL_CLOSE,
-  });
+    Actions.pop();
+    dispatch({
+        type: MYTRIBE_DETAIL_CLOSE,
+    });
 };
 
 /**
@@ -67,28 +67,28 @@ export const tribeDetailClose = () => (dispatch) => {
  * and then open tribe detail with id
  */
 export const myTribeDetailOpenWithId = (tribeId) => (dispatch, getState) => {
-  const callback = (res) => {
-    console.log(`${DEBUG_KEY}: res for verifying user identify: `, res);
-    if (!res.data || res.status === 400 || res.status === 404) {
-      return Alert.alert(
-        'Tribe not found'
-      );
-    }
-    // Only if status is 200, we open the detail
-    if (res.status === 200) {
-      dispatch({
-        type: MYTRIBE_DETAIL_LOAD_SUCCESS,
-        payload: {
-          tribe: res.data
+    const callback = (res) => {
+        console.log(`${DEBUG_KEY}: res for verifying user identify: `, res);
+        if (!res.data || res.status === 400 || res.status === 404) {
+            return Alert.alert(
+                'Tribe not found'
+            );
         }
-      });
-      Actions.push('myTribeDetail');
-      return;
-    }
-    return;
-  };
+        // Only if status is 200, we open the detail
+        if (res.status === 200) {
+            dispatch({
+                type: MYTRIBE_DETAIL_LOAD_SUCCESS,
+                payload: {
+                    tribe: res.data
+                }
+            });
+            Actions.push('myTribeDetail');
+            return;
+        }
+        return;
+    };
 
-  fetchTribeDetail(tribeId, callback)(dispatch, getState);
+    fetchTribeDetail(tribeId, callback)(dispatch, getState);
 };
 
 
@@ -97,33 +97,33 @@ export const myTribeDetailOpenWithId = (tribeId) => (dispatch, getState) => {
  * Fetch tribe detail
  */
 export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
-  Logger.log(`${DEBUG_KEY}: [ tribeDetailOpen ]: tribe is:`, tribe, 3);
-  const { _id } = tribe;
-  const callback = (res) => {
-    if (!res.data || res.status === 400 || res.status === 404) {
-      // If user is not a member nor an invitee and tribe is not public visible,
-      // Show not found for this tribe
-      return Alert.alert(
-        'Tribe not found'
-      );
-    }
-
-    // Only if status is 200, we open the detail
-    if (res.status === 200) {
-      Actions.push('myTribeDetail');
-      dispatch({
-        type: MYTRIBE_DETAIL_LOAD_SUCCESS,
-        payload: {
-          tribe: res.data
+    Logger.log(`${DEBUG_KEY}: [ tribeDetailOpen ]: tribe is:`, tribe, 3);
+    const { _id } = tribe;
+    const callback = (res) => {
+        if (!res.data || res.status === 400 || res.status === 404) {
+            // If user is not a member nor an invitee and tribe is not public visible,
+            // Show not found for this tribe
+            return Alert.alert(
+                'Tribe not found'
+            );
         }
-      });
-      refreshTribeFeed(_id, dispatch, getState);
-      return;
+
+        // Only if status is 200, we open the detail
+        if (res.status === 200) {
+            Actions.push('myTribeDetail');
+            dispatch({
+                type: MYTRIBE_DETAIL_LOAD_SUCCESS,
+                payload: {
+                    tribe: res.data
+                }
+            });
+            refreshTribeFeed(_id, dispatch, getState);
+            return;
+        }
+
     }
 
-  }
-
-  fetchTribeDetail(_id, callback)(dispatch, getState);
+    fetchTribeDetail(_id, callback)(dispatch, getState);
 };
 
 /**
@@ -131,10 +131,10 @@ export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
  * NOTE: callback can be provided to execute on refresh finish
  */
 export const refreshMyTribeDetail = (tribeId, callback, showIndicator) => (dispatch, getState) => {
-  const { item } = getState().myTribe;
-  if (!item || item._id !== tribeId) return;
-  fetchTribeDetail(tribeId, null, showIndicator)(dispatch, getState);
-  refreshTribeFeed(tribeId, dispatch, getState, callback);
+    const { item } = getState().myTribe;
+    if (!item || item._id !== tribeId) return;
+    fetchTribeDetail(tribeId, null, showIndicator)(dispatch, getState);
+    refreshTribeFeed(tribeId, dispatch, getState, callback);
 };
 
 /**
@@ -144,52 +144,52 @@ export const refreshMyTribeDetail = (tribeId, callback, showIndicator) => (dispa
  * @param {boolean} showIndicator boolean to determine if tribeLoading needs to be updated
  */
 export const fetchTribeDetail = (tribeId, callback, showIndicator) => (dispatch, getState) => {
-  const { token } = getState().user;
+    const { token } = getState().user;
 
-  if (showIndicator !== false) {
-    dispatch({
-      type: MYTRIBE_DETAIL_LOAD
-    });
-  }
+    if (showIndicator !== false) {
+        dispatch({
+            type: MYTRIBE_DETAIL_LOAD
+        });
+    }
 
-  const onSuccess = (data) => {
-    dispatch({
-      type: MYTRIBE_DETAIL_LOAD_SUCCESS,
-      payload: {
-        tribe: data
-      }
-    });
-    console.log(`${DEBUG_KEY}: load tribe detail success with data: `, data);
-  };
+    const onSuccess = (data) => {
+        dispatch({
+            type: MYTRIBE_DETAIL_LOAD_SUCCESS,
+            payload: {
+                tribe: data
+            }
+        });
+        console.log(`${DEBUG_KEY}: load tribe detail success with data: `, data);
+    };
 
-  const onError = (err) => {
-    dispatch({
-      type: MYTRIBE_DETAIL_LOAD_FAIL
-    });
-    console.log(`${DEBUG_KEY}: failed to load tribe detail with err: `, err);
-  };
+    const onError = (err) => {
+        dispatch({
+            type: MYTRIBE_DETAIL_LOAD_FAIL
+        });
+        console.log(`${DEBUG_KEY}: failed to load tribe detail with err: `, err);
+    };
 
-  API
-    .get(`${BASE_ROUTE}/documents/${tribeId}`, token)
-    .then((res) => {
-      if (res.status === 200 || res.data) {
-        onSuccess(res.data);
-        if (callback) {
-          callback(res);
-        }
-        return;
-      }
-      onError(res);
-      if (callback) {
-        callback(res);
-      }
-    })
-    .catch((err) => {
-      onError(err);
-      if (callback) {
-        callback(err);
-      }
-    });
+    API
+        .get(`${BASE_ROUTE}/documents/${tribeId}`, token)
+        .then((res) => {
+            if (res.status === 200 || res.data) {
+                onSuccess(res.data);
+                if (callback) {
+                    callback(res);
+                }
+                return;
+            }
+            onError(res);
+            if (callback) {
+                callback(res);
+            }
+        })
+        .catch((err) => {
+            onError(err);
+            if (callback) {
+                callback(err);
+            }
+        });
 };
 
 /**
@@ -198,55 +198,55 @@ export const fetchTribeDetail = (tribeId, callback, showIndicator) => (dispatch,
  * @param tribeId: tribeId
  */
 export const myTribeAdminRemoveUser = (userId, tribeId) => (dispatch, getState) => {
-  Alert.alert(
-    'Confirmation',
-    'Are you sure to remove this user?',
-    [
-      { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-      {
-        text: 'Confirm',
-        onPress: () => doMyTribeAdminRemoveUser(userId, tribeId)(dispatch, getState)
-      }
-    ],
-    { cancelable: false }
-  );
+    Alert.alert(
+        'Confirmation',
+        'Are you sure to remove this user?',
+        [
+            { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+            {
+                text: 'Confirm',
+                onPress: () => doMyTribeAdminRemoveUser(userId, tribeId)(dispatch, getState)
+            }
+        ],
+        { cancelable: false }
+    );
 };
 
 const doMyTribeAdminRemoveUser = (userId, tribeId) => (dispatch, getState) => {
-  const { token } = getState().user;
-  const onSuccess = (res) => {
-    console.log(`${DEBUG_KEY}: remove member ${userId} successfully with res: `, res);
-    dispatch({
-      type: MYTRIBE_MEMBER_REMOVE_SUCCESS,
-      payload: {
-        userId,
-        tribeId
-      }
-    });
-    Alert.alert(
-      'Member is removed successfully'
-    );
-    // refreshMyTribeDetail(tribeId)(dispatch, getState);
-  };
-  const onError = (err) => {
-    console.log(`${DEBUG_KEY}: failed to remove member ${userId} with err: `, err);
-    Alert.alert(
-      'Remove member failed',
-      'Please try again later'
-    );
-  };
+    const { token } = getState().user;
+    const onSuccess = (res) => {
+        console.log(`${DEBUG_KEY}: remove member ${userId} successfully with res: `, res);
+        dispatch({
+            type: MYTRIBE_MEMBER_REMOVE_SUCCESS,
+            payload: {
+                userId,
+                tribeId
+            }
+        });
+        Alert.alert(
+            'Member is removed successfully'
+        );
+        // refreshMyTribeDetail(tribeId)(dispatch, getState);
+    };
+    const onError = (err) => {
+        console.log(`${DEBUG_KEY}: failed to remove member ${userId} with err: `, err);
+        Alert.alert(
+            'Remove member failed',
+            'Please try again later'
+        );
+    };
 
-  API
-    .delete(`${BASE_ROUTE}/member?removeeId=${userId}&tribeId=${tribeId}`, {}, token)
-    .then((res) => {
-      if (res.status === 200 || (res.data && res.message)) {
-        return onSuccess(res);
-      }
-      onError(res);
-    })
-    .catch((err) => {
-      onError(err);
-    });
+    API
+        .delete(`${BASE_ROUTE}/member?removeeId=${userId}&tribeId=${tribeId}`, {}, token)
+        .then((res) => {
+            if (res.status === 200 || (res.data && res.message)) {
+                return onSuccess(res);
+            }
+            onError(res);
+        })
+        .catch((err) => {
+            onError(err);
+        });
 };
 
 /**
@@ -255,58 +255,58 @@ const doMyTribeAdminRemoveUser = (userId, tribeId) => (dispatch, getState) => {
  * @param tribeId: tribeId
  */
 export const myTribeAdminPromoteUser = (userId, tribeId) => (dispatch, getState) => {
-  Alert.alert(
-    'Confirmation',
-    'Are you sure to promote this user?',
-    [
-      { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-      {
-        text: 'Confirm',
-        onPress: () => doMyTribeAdminPromoteUser(userId, tribeId)(dispatch, getState)
-      }
-    ],
-    { cancelable: false }
-  );
+    Alert.alert(
+        'Confirmation',
+        'Are you sure to promote this user?',
+        [
+            { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+            {
+                text: 'Confirm',
+                onPress: () => doMyTribeAdminPromoteUser(userId, tribeId)(dispatch, getState)
+            }
+        ],
+        { cancelable: false }
+    );
 };
 
 const doMyTribeAdminPromoteUser = (userId, tribeId) => (dispatch, getState) => {
-  const { token } = getState().user;
-  const onSuccess = (res) => {
-    console.log(`${DEBUG_KEY}: promote member ${userId} successfully with res: `, res);
-    dispatch({
-      type: MYTRIBE_PROMOTE_MEMBER_SUCCESS,
-      payload: {
-        promoteeId: userId,
-        tribeId
-      }
-    });
-  };
-  const onError = (err) => {
-    console.log(`${DEBUG_KEY}: failed to promote member ${userId} with err: `, err);
-    Alert.alert(
-      'Promote member failed',
-      'Please try again later'
-    );
-  };
+    const { token } = getState().user;
+    const onSuccess = (res) => {
+        console.log(`${DEBUG_KEY}: promote member ${userId} successfully with res: `, res);
+        dispatch({
+            type: MYTRIBE_PROMOTE_MEMBER_SUCCESS,
+            payload: {
+                promoteeId: userId,
+                tribeId
+            }
+        });
+    };
+    const onError = (err) => {
+        console.log(`${DEBUG_KEY}: failed to promote member ${userId} with err: `, err);
+        Alert.alert(
+            'Promote member failed',
+            'Please try again later'
+        );
+    };
 
-  API
-    .post(
-      `${BASE_ROUTE}/admin`,
-      {
-        promoteeId: userId,
-        tribeId
-      },
-      token
-    )
-    .then((res) => {
-      if (res.status === 200 || (res.data && res.message)) {
-        return onSuccess(res);
-      }
-      onError(res);
-    })
-    .catch((err) => {
-      onError(err);
-    });
+    API
+        .post(
+            `${BASE_ROUTE}/admin`,
+            {
+                promoteeId: userId,
+                tribeId
+            },
+            token
+        )
+        .then((res) => {
+            if (res.status === 200 || (res.data && res.message)) {
+                return onSuccess(res);
+            }
+            onError(res);
+        })
+        .catch((err) => {
+            onError(err);
+        });
 };
 
 /**
@@ -315,115 +315,115 @@ const doMyTribeAdminPromoteUser = (userId, tribeId) => (dispatch, getState) => {
  * @param tribeId: tribeId
  */
 export const myTribeAdminDemoteUser = (userId, tribeId) => (dispatch, getState) => {
-  Alert.alert(
-    'Confirmation',
-    'Are you sure to demote this user?',
-    [
-      { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-      {
-        text: 'Confirm',
-        onPress: () => doMyTribeAdminDemoteUser(userId, tribeId)(dispatch, getState)
-      }
-    ],
-    { cancelable: false }
-  );
+    Alert.alert(
+        'Confirmation',
+        'Are you sure to demote this user?',
+        [
+            { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+            {
+                text: 'Confirm',
+                onPress: () => doMyTribeAdminDemoteUser(userId, tribeId)(dispatch, getState)
+            }
+        ],
+        { cancelable: false }
+    );
 };
 
 const doMyTribeAdminDemoteUser = (userId, tribeId) => (dispatch, getState) => {
-  const { token } = getState().user;
-  const onSuccess = (res) => {
-    console.log(`${DEBUG_KEY}: demote member ${userId} successfully with res: `, res);
-    dispatch({
-      type: MYTRIBE_DEMOTE_MEMBER_SUCCESS,
-      payload: {
-        demoteeId: userId,
-        tribeId
-      }
-    });
-  };
-  const onError = (err) => {
-    console.log(`${DEBUG_KEY}: failed to demote member ${userId} with err: `, err);
-    Alert.alert(
-      'Demote member failed',
-      'Please try again later'
-    );
-  };
+    const { token } = getState().user;
+    const onSuccess = (res) => {
+        console.log(`${DEBUG_KEY}: demote member ${userId} successfully with res: `, res);
+        dispatch({
+            type: MYTRIBE_DEMOTE_MEMBER_SUCCESS,
+            payload: {
+                demoteeId: userId,
+                tribeId
+            }
+        });
+    };
+    const onError = (err) => {
+        console.log(`${DEBUG_KEY}: failed to demote member ${userId} with err: `, err);
+        Alert.alert(
+            'Demote member failed',
+            'Please try again later'
+        );
+    };
 
-  API
-    .post(
-      `${BASE_ROUTE}/admin`,
-      {
-        demoteeId: userId,
-        tribeId
-      },
-      token
-    )
-    .then((res) => {
-      if (res.status === 200 || (res.data && res.message)) {
-        return onSuccess(res);
-      }
-      onError(res);
-    })
-    .catch((err) => {
-      onError(err);
-    });
+    API
+        .delete(
+            `${BASE_ROUTE}/admin`,
+            {
+                demoteeId: userId,
+                tribeId
+            },
+            token
+        )
+        .then((res) => {
+            if (res.status === 200 || (res.data && res.message)) {
+                return onSuccess(res);
+            }
+            onError(res);
+        })
+        .catch((err) => {
+            onError(err);
+        });
 };
 
 
 export const myTribeAdminAcceptUser = (userId, tribeId) => (dispatch, getState) => {
-  // Starting 0.3.10, we don't show accept confirmation
-  doAdminAcceptUser(userId, tribeId)(dispatch, getState);
-  // Alert.alert(
-  //   'Confirmation',
-  //   'Are you sure to accept this user?',
-  //   [
-  //     { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-  //     {
-  //       text: 'Confirm',
-  //       onPress: () => doAdminAcceptUser(userId, tribeId)(dispatch, getState)
-  //     }
-  //   ],
-  //   { cancelable: false }
-  // );
+    // Starting 0.3.10, we don't show accept confirmation
+    doAdminAcceptUser(userId, tribeId)(dispatch, getState);
+    // Alert.alert(
+    //   'Confirmation',
+    //   'Are you sure to accept this user?',
+    //   [
+    //     { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+    //     {
+    //       text: 'Confirm',
+    //       onPress: () => doAdminAcceptUser(userId, tribeId)(dispatch, getState)
+    //     }
+    //   ],
+    //   { cancelable: false }
+    // );
 };
 
 const doAdminAcceptUser = (userId, tribeId) => (dispatch, getState) => {
-  const { token, user } = getState().user;
-  const onSuccess = (res) => {
-    console.log(`${DEBUG_KEY}: accept member ${userId} successfully with res: `, res);
-    dispatch({
-      type: MYTRIBE_ACCEPT_MEMBER_SUCCESS,
-      payload: {
-        joinerId: userId,
-        tribeId,
-        member: {
-          memberRef: user,
-          cateory: 'Member'
-        }
-      }
-    });
-  };
-  const onError = (err) => {
-    console.log(`${DEBUG_KEY}: failed to accept member: ${userId} with err: `, err);
-    Alert.alert(
-      'Accept member join request failed',
-      'Please try again later'
-    );
-  };
+    const { token, user } = getState().user;
+    const onSuccess = (res) => {
+        console.log(`${DEBUG_KEY}: accept member ${userId} successfully with res: `, res);
+        dispatch({
+            type: MYTRIBE_ACCEPT_MEMBER_SUCCESS,
+            payload: {
+                joinerId: userId,
+                tribeId,
+                member: {
+                    memberRef: user,
+                    cateory: 'Member'
+                }
+            }
+        });
+    };
+    const onError = (err) => {
+        console.log(`${DEBUG_KEY}: failed to accept member: ${userId} with err: `, err);
+        Alert.alert(
+            'Accept member join request failed',
+            'Please try again later'
+        );
+    };
 
-  API
-    .put(
-      `${BASE_ROUTE}/accept-join-request`, { joinerId: userId, tribeId }, token
-    )
-    .then((res) => {
-      if (res.status === 200 || (res.data && res.message)) {
-        return onSuccess(res);
-      }
-      onError(res);
-    })
-    .catch((err) => {
-      onError(err);
-    });
+    API
+        .put(
+            `${BASE_ROUTE}/accept-join-request`, { joinerId: userId, tribeId }, token
+        )
+        .then((res) => {
+            if (res.status === 200 || (res.data && res.message)) {
+                return onSuccess(res);
+            }
+            onError(res);
+        })
+        .catch((err) => {
+            onError(err);
+        });
 };
 
 /**
@@ -434,80 +434,80 @@ const doAdminAcceptUser = (userId, tribeId) => (dispatch, getState) => {
  * input on type field
  */
 export const refreshTribeFeed = (tribeId, dispatch, getState, callback) => {
-  const { token } = getState().user;
-  const { limit } = getState().myTribe;
+    const { token } = getState().user;
+    const { limit } = getState().myTribe;
 
-  dispatch({
-    type: MYTRIBE_FEED_FETCH
-  });
-  loadTribeFeed(0, limit, token, { tribeId }, (data) => {
     dispatch({
-      type: MYTRIBE_FEED_REFRESH_DONE,
-      payload: {
-        type: 'tribefeed',
-        data,
-        skip: data.length,
-        limit,
-        hasNextPage: !(data === undefined || data.length === 0),
-        pageId: 'MYTRIBE' // TODO: tribe reducer redesign to change here
-      }
+        type: MYTRIBE_FEED_FETCH
     });
+    loadTribeFeed(0, limit, token, { tribeId }, (data) => {
+        dispatch({
+            type: MYTRIBE_FEED_REFRESH_DONE,
+            payload: {
+                type: 'tribefeed',
+                data,
+                skip: data.length,
+                limit,
+                hasNextPage: !(data === undefined || data.length === 0),
+                pageId: 'MYTRIBE' // TODO: tribe reducer redesign to change here
+            }
+        });
 
-    console.log("hasNextPage is: ", !(data === undefined || data.length === 0));
-    // Callback are from frontend to perform scolling
-    if (callback) {
-      callback();
-    }
-  }, () => {
-    // TODO: implement for onError
-  });
+        console.log("hasNextPage is: ", !(data === undefined || data.length === 0));
+        // Callback are from frontend to perform scolling
+        if (callback) {
+            callback();
+        }
+    }, () => {
+        // TODO: implement for onError
+    });
 };
 
 export const loadMoreTribeFeed = (tribeId) => (dispatch, getState) => {
-  const { token } = getState().user;
-  const { skip, limit, hasNextPage, feedLoading, feed } = getState().myTribe;
+    const { token } = getState().user;
+    const { skip, limit, hasNextPage, feedLoading, feed } = getState().myTribe;
 
-  // Do not load more in the following conditions
-  // 1. No next page 2. already loading more 3. no feed item (when page is initial loading flatlist will invoke onEndReached)
-  if (hasNextPage === false || feedLoading || feed.length == 0) {
-    return;
-  }
-  // console.log(`loading more tribe: skip is: ${skip}, hasNextPage: ${hasNextPage}, feedLoading: ${feedLoading}`);
-  dispatch({
-    type: MYTRIBE_FEED_FETCH
-  });
-  loadTribeFeed(skip, limit, token, { tribeId }, (data) => {
+    // Do not load more in the following conditions
+    // 1. No next page 2. already loading more 3. no feed item (when page is initial loading flatlist will invoke onEndReached)
+    if (hasNextPage === false || feedLoading || feed.length == 0) {
+        return;
+    }
+    // console.log(`loading more tribe: skip is: ${skip}, hasNextPage: ${hasNextPage}, feedLoading: ${feedLoading}`);
     dispatch({
-      type: MYTRIBE_FEED_FETCH_DONE,
-      payload: {
-        type: 'tribefeed',
-        data,
-        skip: data.length + feed.length,
-        limit,
-        hasNextPage: !(data === undefined || data.length === 0),
-        pageId: 'MYTRIBE' // TODO: tribe reducer redesign to change here
-      }
+        type: MYTRIBE_FEED_FETCH
     });
-  }, () => {
-    // TODO: implement for onError
-  });
+    loadTribeFeed(skip, limit, token, { tribeId }, (data) => {
+        dispatch({
+            type: MYTRIBE_FEED_FETCH_DONE,
+            payload: {
+                type: 'tribefeed',
+                data,
+                skip: data.length + feed.length,
+                limit,
+                hasNextPage: !(data === undefined || data.length === 0),
+                pageId: 'MYTRIBE' // TODO: tribe reducer redesign to change here
+            }
+        });
+    }, () => {
+        // TODO: implement for onError
+    });
 };
 
 export const loadTribeFeed = (skip, limit, token, params, callback, onError) => {
-  API
-    .get(
-      `${BASE_ROUTE}/feed?${queryBuilder(skip, limit, { ...params })}`,
-      token
-    )
-    .then((res) => {
-      console.log(`${DEBUG_KEY}: loading with res: `, res.data.length);
-      if (res.status === 200 || (res && res.data)) {
-        // Right now return test data
-        return callback(res.data);
-      }
-      console.warn(`${DEBUG_KEY}: loading with no res. Message is: `, res.message);
-    })
-    .catch((err) => {
-      console.log(`${DEBUG_KEY}: loading comment error: ${err}`);
-    });
+    API
+        .get(
+            `${BASE_ROUTE}/feed?${queryBuilder(skip, limit, { ...params })}`,
+            token
+        )
+        .then((res) => {
+            console.log(`${DEBUG_KEY}: loading with res: `, res.data.length);
+            if (res.status === 200 || (res && res.data)) {
+                // Right now return test data
+                return callback(res.data);
+            }
+            console.warn(`${DEBUG_KEY}: loading with no res. Message is: `, res.message);
+        })
+        .catch((err) => {
+            console.log(`${DEBUG_KEY}: loading comment error: ${err}`);
+        });
 };

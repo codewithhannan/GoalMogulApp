@@ -604,6 +604,16 @@ class RouterComponent extends Component {
                         component={TrendingGoalView}
                         hideNavBar
                     />
+                    {/* <Scene
+                        key="trendingGoalView"
+                        component={Like}
+                        hideNavBar
+                    />
+                    <Scene
+                        key="trendingGoalView"
+                        component={TrendingGoalView}
+                        hideNavBar
+                    /> */}
                     <Scene
                         key="createPostModal"
                         component={CreatePostModal}
