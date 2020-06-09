@@ -6,28 +6,19 @@
  */
 import React from 'react';
 import {
-    View,
-    Text,
     ActionSheetIOS,
-    Image
 } from 'react-native';
 import { connect } from 'react-redux';
-
-// Components
 import DelayedButton from '../../../Common/Button/DelayedButton';
-
-/* Assets */
-
-
-/* Actions */
+import BottomSheet from '../../../Common/Modal/BottomSheet';
 import {
     updateFriendship,
     blockUser,
     openProfile
 } from '../../../../actions';
-import { DEFAULT_STYLE } from '../../../../styles';
 import UserCardHeader from '../../Common/UserCardHeader';
 import UserTopGoals from '../../Common/UserTopGoals';
+import Icons from '../../../../asset/base64/Icons';
 
 const FRIENDSHIP_BUTTONS = ['Block', 'Unfriend', 'Cancel'];
 const BLOCK_INDEX = 0;
@@ -95,24 +86,44 @@ class FriendTabCardView extends React.PureComponent {
         }
     }
 
-    renderButtons(item) {
+    closeOptionModal = () => this.bottomSheetRef.close()
+
+    openOptionModal = () => this.bottomSheetRef.open()
+
+    makeFriendCardOptions = (item) => {
         const { maybeFriendshipRef } = item;
 
         const friendUserId = getFriendUserId(maybeFriendshipRef, this.props.userId);
         const friendshipId = maybeFriendshipRef._id;
+
+        return [
+            { text: "Unfriend", image: Icons.AccountRemove, imageStyle: { tintColor:  "black" }, onPress: () => {
+                this.handleDeleteFriend(friendshipId);
+                this.closeOptionModal();
+            }}, 
+            { text: "Block", textStyle: { color: "#EB5757" }, image: Icons.AccountCancel, imageStyle: { tintColor:  "#EB5757" }, onPress: () => {
+                this.handleBlockFriend(friendUserId);
+                this.closeOptionModal();
+            }}
+        ];
+    }
+    
+    renderBottomSheet = (item) => {
+        const options = this.makeFriendCardOptions(item);
         return (
-            <View style={styles.buttonsContainerStyle}>
-                <DelayedButton onPress={() => this.handleDeleteFriend(friendshipId)} activeOpacity={0.6}>
-                    <View style={[styles.buttonTextContainerStyle, { backgroundColor: '#E0E0E0' }]}>
-                        <Text style={[DEFAULT_STYLE.buttonText_2]}>Delete</Text>
-                    </View>
-                </DelayedButton >
-                <DelayedButton onPress={() => this.handleBlockFriend(friendUserId)} activeOpacity={0.6}>
-                    <View style={[styles.buttonTextContainerStyle, { paddingTop: 7, paddingBottom: 7, borderColor: '#EB5757', borderWidth: 1 }]}>
-                        <Text style={[DEFAULT_STYLE.buttonText_2, { color: "#EB5757" }]}>Block</Text>
-                    </View>
-                </DelayedButton>
-            </View>
+            <BottomSheet 
+                ref={r => this.bottomSheetRef = r}
+                buttons={options}
+            />
+        )
+    }
+
+    renderHeader(item) {
+        return (
+            <UserCardHeader
+                user={item} 
+                optionsOnPress={this.openOptionModal}
+            />
         );
     }
 
@@ -127,9 +138,10 @@ class FriendTabCardView extends React.PureComponent {
                 onPress={() => this.props.openProfile(item._id)}
                 activeOpacity={0.6}
             >
-                <UserCardHeader user={item} />
+                {this.renderHeader(item)}
                 <UserTopGoals user={item} />
-                {this.renderButtons(item)}
+                {/* {this.renderButtons(item)} */}
+                {this.renderBottomSheet(item)}
             </DelayedButton>
         );
     }
@@ -169,7 +181,8 @@ const styles = {
         paddingRight: 15,
         borderRadius: 3,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: 'transparent'
     }
 };
 

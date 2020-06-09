@@ -100,6 +100,7 @@
     "react-native-modalbox": "^2.0.0",
     "react-native-parsed-text": "0.0.21",
     "react-native-popup-menu": "^0.15.6",
+    "react-native-raw-bottom-sheet": "^2.2.0",
     "react-native-reanimated": "^1.2.0",
     "react-native-router-flux": "4.0.6",
     "react-native-slider": "^0.11.0",
