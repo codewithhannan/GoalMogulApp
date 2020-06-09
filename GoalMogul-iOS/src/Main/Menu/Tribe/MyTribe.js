@@ -674,22 +674,9 @@ class MyTribe extends Component {
                         {this.renderTribeInfo(item)}
                     </View>
                 </Animated.View>
-                {
-                    this._renderHeader(
-                        {
-                            jumpToIndex: (i) => {
-                                this._handleIndexChange(i);
-                                {/* this.refs['flatList'].scrollToOffset({
-                  offset: 250
-                }); */}
-                            },
-                            navigationState: this.props.navigationState
-                        },
-                        this.props.tab !== 'about'
-                    )
-                }
                 {filterBar}
                 {emptyState}
+                <About item={this.props.item} key={this.props.index} />
             </View>
         );
     }
@@ -714,7 +701,19 @@ class MyTribe extends Component {
 
         switch (routes[index].key) {
             case 'about': {
-                return <About item={props.item} key={props.index} />;
+                return (
+                    // <View>
+                    <ProfilePostCard
+                        item={props.item}
+                        key={props.index}
+                        hasActionButton
+                        onPress={(item) => {
+                            // onPress is called by CommentIcon
+                            this.props.openPostDetail(item, { initialFocusCommentBox: true });
+                        }}
+                    />
+                    // {/* </View> */}
+                   );
             }
 
             case 'posts': {
@@ -802,6 +801,7 @@ class MyTribe extends Component {
     render() {
         const { item, data } = this.props;
         if (!item) return <View />;
+        const props = this.props;
 
         // console.log(`${DEBUG_KEY}: data is: `, data);
 
@@ -854,22 +854,21 @@ const styles = {
         backgroundColor: 'white'
     },
     defaultImageContainerStyle: {
-        width: (width * 1.1) / 3,
-        height: (width * 0.95) / 3,
+       
         borderRadius: 13,
         alignItems: 'center',
         justifyContent: 'center',
     },
     defaultImageStyle: {
-        width: (width * 1.1) * 0.75 / 3 + 2,
-        height: (width * 0.95) * 0.75 / 3,
+        width: (width * 1.1) * 0.75,
+        height: (width * 0.95) * 0.75,
         borderRadius: 13,
         borderWidth: 1,
         borderColor: 'white'
     },
     imageStyle: {
-        width: (width * 1.1) / 3,
-        height: (width * 0.95) / 3,
+        width: (width * 1.1),
+        height: (width * 0.95),
         borderRadius: 13,
         borderWidth: 1,
         borderColor: 'white'
@@ -995,7 +994,7 @@ const mapStateToProps = state => {
     const data = ((key) => {
         switch (key) {
             case 'about':
-                return [item];
+                return feed;
 
             case 'members':
                 return myTribeMemberSelector(state);
