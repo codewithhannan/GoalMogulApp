@@ -119,11 +119,9 @@ class FriendTabCardView extends React.PureComponent {
     }
 
     renderHeader(item) {
-        const options = [{ text: "unfriend", action: () => console.log("unfriend pressed") }, { text: "block", action: () => console.log("block") }]
         return (
             <UserCardHeader
                 user={item} 
-                options={options}
                 optionsOnPress={this.openOptionModal}
             />
         );
