@@ -56,6 +56,7 @@ import {
 
 /* Tribe related */
 import {
+    // TODO: tribe: close tribe to remove all references in allFeedRefs of a tribe page.
     MYTRIBE_FEED_FETCH_DONE,
     MYTRIBE_FEED_REFRESH_DONE
 } from '../../tribe/MyTribeReducers';

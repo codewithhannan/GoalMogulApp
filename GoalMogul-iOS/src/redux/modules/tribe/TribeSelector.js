@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import _ from 'lodash';
 
+// TODO: tribe: update selectors and their callers e.g. passing in pageId and etc
 const getTribeMembers = (state) => {
   if (state.tribe.item) {
     return state.tribe.item.members;

@@ -16,8 +16,29 @@ import { openPostDetail } from '../../../redux/modules/feed/post/PostActions';
 import { subscribeEntityNotification, unsubscribeEntityNotification } from '../../../redux/modules/notification/NotificationActions';
 import { openMultiUserInviteModal, searchFriend } from '../../../redux/modules/search/SearchActions';
 // Actions
-import { myTribeAdminAcceptUser, myTribeAdminDemoteUser, myTribeAdminPromoteUser, myTribeAdminRemoveUser, myTribeReset, myTribeSelectMembersFilter, refreshMyTribeDetail, tribeDetailClose, tribeSelectTab, loadMoreTribeFeed } from '../../../redux/modules/tribe/MyTribeActions';
-import { acceptTribeInvit, declineTribeInvit, deleteTribe, editTribe, inviteMultipleUsersToTribe, leaveTribe, openTribeInvitModal, reportTribe, requestJoinTribe } from '../../../redux/modules/tribe/TribeActions';
+import {
+    myTribeAdminAcceptUser,
+    myTribeAdminDemoteUser,
+    myTribeAdminPromoteUser,
+    myTribeAdminRemoveUser,
+    myTribeReset,
+    myTribeSelectMembersFilter,
+    refreshMyTribeDetail,
+    tribeDetailClose,
+    tribeSelectTab,
+    loadMoreTribeFeed,
+    requestJoinTribe,
+} from '../../../redux/modules/tribe/MyTribeActions'
+import {
+    acceptTribeInvit,
+    declineTribeInvit,
+    deleteTribe,
+    editTribe,
+    inviteMultipleUsersToTribe,
+    leaveTribe,
+    openTribeInvitModal,
+    reportTribe,
+} from '../../../redux/modules/tribe/TribeActions'
 // Selector
 import { getMyTribeMemberNavigationState, getMyTribeNavigationState, getMyTribeUserStatus, myTribeMemberSelector } from '../../../redux/modules/tribe/TribeSelector';
 // Styles
@@ -91,7 +112,7 @@ class MyTribe extends Component {
             searchFor: this.props.searchFriend,
             onSubmitSelection: (users, inviteToEntity, actionToExecute) => {
                 const callback = () => {
-                    this.props.refreshMyTribeDetail(inviteToEntity, null, false);
+                    this.props.refreshMyTribeDetail(inviteToEntity, this.props.pageId, null, false);
                     actionToExecute();
                 };
                 this.props.inviteMultipleUsersToTribe(_id, users, callback);
@@ -155,7 +176,7 @@ class MyTribe extends Component {
 
         const postCallback = () => {
             this._handleIndexChange(indexToGo);
-            this.props.refreshMyTribeDetail(_id);
+            this.props.refreshMyTribeDetail(_id, this.props.pageId);
         };
 
         const members = item ? item.members
@@ -252,10 +273,10 @@ class MyTribe extends Component {
 
     // Tab related functions
     _handleIndexChange = (index) => {
-        const { navigationState } = this.props;
+        const { navigationState, tribeId, pageId } = this.props;
         const { routes } = navigationState;
 
-        this.props.tribeSelectTab(index);
+        this.props.tribeSelectTab(index, tribeId, pageId);
 
         if (routes[index].key !== 'about') {
             // Animated to hide the infoCard if not on about tab
@@ -306,7 +327,7 @@ class MyTribe extends Component {
             options = switchByButtonIndex([
                 [R.equals(0), () => {
                     console.log(`${DEBUG_KEY} User chooses to remove request`);
-                    this.props.requestJoinTribe(_id, false, 'mytribe');
+                    this.props.requestJoinTribe(_id, false, 'mytribe', this.props.pageId);
                 }]
             ]);
         } else if (isMember === 'Invitee') {
@@ -388,14 +409,14 @@ class MyTribe extends Component {
             options = switchByButtonIndex([
                 [R.equals(0), () => {
                     console.log(`${DEBUG_KEY} User chooses to remove request`);
-                    this.props.requestJoinTribe(_id, false, 'mytribe');
+                    this.props.requestJoinTribe(_id, false, 'mytribe', this.props.pageId);
                 }]
             ]);
         } else {
             options = switchByButtonIndex([
                 [R.equals(0), () => {
                     console.log(`${DEBUG_KEY} User chooses to join the tribe`);
-                    this.props.requestJoinTribe(_id, true, 'mytribe');
+                    this.props.requestJoinTribe(_id, true, 'mytribe', this.props.pageId);
                 }]
             ]);
         }
@@ -599,7 +620,7 @@ class MyTribe extends Component {
         // };
 
         const props = {
-            jumpToIndex: (i) => this.props.myTribeSelectMembersFilter(routes[i].key, i),
+            jumpToIndex: (i) => this.props.myTribeSelectMembersFilter(routes[i].key, i, this.props.tribeId, this.props.pageId),
             navigationState: this.props.memberNavigationState
         };
 
@@ -820,7 +841,7 @@ class MyTribe extends Component {
                         renderItem={this.renderItem}
                         keyExtractor={(i) => i._id}
                         ListHeaderComponent={this.renderTribeOverview(item, data)}
-                        onRefresh={() => this.props.refreshMyTribeDetail(item._id)}
+                        onRefresh={() => this.props.refreshMyTribeDetail(item._id, this.props.pageId)}
                         onEndReached={() => this.handleOnEndReached(item._id)}
                         onEndReachedThreshold={2}
                         loading={this.props.tribeLoading && this.onPostTab()}

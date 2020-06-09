@@ -26,8 +26,6 @@ import {
 } from './TribeReducers';
 
 import {
-  MYTRIBE_MEMBER_REMOVE_SUCCESS,
-  MYTRIBE_MEMBER_ACCEPT_SUCCESS,
   MYTRIBE_REQUEST_JOIN_SUCCESS,
   MYTRIBE_REQUEST_JOIN_ERROR,
   MYTRIBE_REQUEST_JOIN,
@@ -53,6 +51,7 @@ import {
 import { api as API } from '../../middleware/api';
 import { queryBuilder } from '../../middleware/utils';
 import { trackWithProperties, EVENT as E } from '../../../monitoring/segment';
+import { MYTRIBE_UPDATE_MEMBER_SUCCESS, MEMBER_UPDATE_TYPE } from './Tribes';
 
 const DEBUG_KEY = '[ Tribe Actions ]';
 const BASE_ROUTE = 'secure/tribe';
@@ -248,16 +247,26 @@ export const tribeSelectMembersFilter = (option, index) => (dispatch) => {
 export const leaveTribe = (tribeId, type) => (dispatch, getState) => {
   const { token, userId } = getState().user;
   const actionType = type === 'mytribe'
-    ? MYTRIBE_MEMBER_REMOVE_SUCCESS
+    ? MYTRIBE_UPDATE_MEMBER_SUCCESS
     : TRIBE_MEMBER_REMOVE_SUCCESS;
   const onSuccess = () => {
     trackWithProperties(type === 'mytribe' ? E.TRIBE_LEFT : E.TRIBE_MEMBER_REMOVED,
       {'UserId': userId, 'TribeId': tribeId, 'RemoveeId': userId});
+    
+    // TODO: tribe: remove below action and move the function to MyTribeActions.js
     dispatch({
       type: actionType,
       payload: {
         userId,
         tribeId
+      }
+    });
+    dispatch({
+      type: MYTRIBE_UPDATE_MEMBER_SUCCESS,
+      payload: {
+        userId,
+        tribeId,
+        updateType: MEMBER_UPDATE_TYPE.removeMember
       }
     });
     console.log(`${DEBUG_KEY}: leave tribe success.`);
@@ -291,10 +300,12 @@ export const leaveTribe = (tribeId, type) => (dispatch, getState) => {
 export const acceptTribeInvit = (tribeId, type) => (dispatch, getState) => {
   const { token, userId, user } = getState().user;
   const actionType = type === 'mytribe'
-    ? MYTRIBE_MEMBER_ACCEPT_SUCCESS
+    ? MYTRIBE_UPDATE_MEMBER_SUCCESS
     : TRIBE_MEMBER_ACCEPT_SUCCESS;
   const onSuccess = (res) => {
     trackWithProperties(E.TRIBE_INVITE_ACCEPTED, {'UserId': userId, 'TribeId': tribeId});
+
+    // TODO: tribe: cleanup below action and move this function to MyTribeActions
     dispatch({
       type: actionType,
       payload: {
@@ -307,6 +318,14 @@ export const acceptTribeInvit = (tribeId, type) => (dispatch, getState) => {
           },
           category: 'Member'
         }
+      }
+    });
+    dispatch({
+      type: MYTRIBE_UPDATE_MEMBER_SUCCESS,
+      payload: {
+        tribeId,
+        userId,
+        updateType: MEMBER_UPDATE_TYPE.acceptMember
       }
     });
     console.log(`${DEBUG_KEY}: success accept tribe invitation with res: `, res);
@@ -345,7 +364,7 @@ export const declineTribeInvit = (tribeId, type) => (dispatch, getState) => {
  * @param type: if type is undefined or tribe, then it's requested from tribe page
  * Otherwise, it's from mytribe
  */
-export const requestJoinTribe = (tribeId, join, type) => (dispatch, getState) => {
+export const requestJoinTribe = (tribeId, join, type, pageId) => (dispatch, getState) => {
   const { token, userId, user } = getState().user;
   let startActionType, endActionErrorType;
   if (join) {
@@ -372,6 +391,7 @@ export const requestJoinTribe = (tribeId, join, type) => (dispatch, getState) =>
         payload: {
           tribeId,
           userId,
+          pageId,
           member: {
             memberRef: {
               ...user
@@ -387,7 +407,8 @@ export const requestJoinTribe = (tribeId, join, type) => (dispatch, getState) =>
         : TRIBE_REQUEST_CANCEL_JOIN_SUCCESS,
       payload: {
         tribeId,
-        userId
+        userId,
+        pageId
       }
     });
   };
@@ -407,7 +428,11 @@ export const requestJoinTribe = (tribeId, join, type) => (dispatch, getState) =>
 
     console.log(`${DEBUG_KEY}: request to join tribe failed with err: `, err);
     dispatch({
-      type: endActionErrorType
+      type: endActionErrorType,
+      payload: {
+        tribeId,
+        pageId
+      }
     });
   };
 
