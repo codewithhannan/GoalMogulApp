@@ -81,7 +81,7 @@ class ProfileImage extends React.Component {
                     />
                 </View>
             </TouchableWithoutFeedback>
-        );;
+        );
     }
 }
 

@@ -225,7 +225,7 @@ const getTotalViewHeight = (state) => {
 const ChildCommentIcon = () => {
     return (
         <View style={styles.replyIconContainerStyle}>
-            <Image source={ReplyIcon} style={styles.replyIconStyle} />
+            {/* <Image source={ReplyIcon} style={styles.replyIconStyle} /> */}
         </View>
     );
 };
@@ -242,7 +242,6 @@ const styles = {
         tintColor: '#d2d2d2'
     },
     replyIconContainerStyle: {
-        backgroundColor: '#fafafa',
         alignItems: 'center',
         justifyContent: 'center',
         width: 44

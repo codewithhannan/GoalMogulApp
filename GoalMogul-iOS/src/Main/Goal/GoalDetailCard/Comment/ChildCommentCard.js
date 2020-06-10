@@ -107,7 +107,7 @@ class ChildCommentCard extends Component {
                 contentText={text}
                 contentTags={tags}
                 contentLinks={links}
-                textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 14, lineHeight: 16, marginTop: 3 }}
+                textStyle={{ flex: 1, flexWrap: 'wrap', ...DEFAULT_STYLE.normalText_1, marginTop: 3 }}
                 multiline
                 onUserTagPressed={(user) => {
                     console.log(`${DEBUG_KEY}: user tag press for user: `, user);
@@ -142,19 +142,6 @@ class ChildCommentCard extends Component {
                         source={{ uri: imageUrl }}
                         imageStyle={{ borderRadius: 8, opacity: 0.8, resizeMode: 'cover' }}
                     >
-                        {/* <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
-            <Image
-              source={photoIcon}
-              style={{
-                alignSelf: 'center',
-                justifyContent: 'center',
-                height: 40,
-                width: 50,
-                tintColor: '#fafafa'
-              }}
-            />
-          </View> */}
-
                         <TouchableOpacity
                             activeOpacity={0.6}
                             onPress={() => this.setState({ mediaModal: true })}
@@ -200,7 +187,11 @@ class ChildCommentCard extends Component {
         const isCommentOwner = userId === owner._id || (goalRef && goalRef.owner._id === userId);
 
         return (
-            <View style={{ marginLeft: 15, flex: 1 }}>
+            <View style={{
+                padding: 10,
+                backgroundColor: '#F9F9F9',
+                borderRadius: 8
+            }}>
                 <CommentHeadline
                     reportType={reportType}
                     isCommentOwner={isCommentOwner}
@@ -242,7 +233,9 @@ class ChildCommentCard extends Component {
         }
         return (
             <ProfileImage
+                imageStyle={DEFAULT_STYLE.profileImage_2}
                 imageUrl={imageUrl}
+                imageContainerStyle={{}}
                 userId={item.owner._id}
             />
         );
@@ -265,9 +258,13 @@ class ChildCommentCard extends Component {
 
         const likeCount = item.likeCount ? item.likeCount : 0;
         const selfLiked = maybeLikeRef && maybeLikeRef.length > 0;
+        const buttonContainerStyle = { flex: 0 };
 
         return (
-            <ActionButtonGroup containerStyle={{ height: 40 }}>
+            <View style={{
+                flexDirection: 'row',
+                marginTop: 8
+            }}>
                 <ActionButton
                     iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
                     count={likeCount}
@@ -282,6 +279,7 @@ class ChildCommentCard extends Component {
                         }
                         this.props.likeGoal('comment', _id, this.props.pageId, parentRef);
                     }}
+                    containerStyle={buttonContainerStyle}
                 />
                 <ActionButton
                     iconSource={CommentIcon}
@@ -298,8 +296,9 @@ class ChildCommentCard extends Component {
                             replyToRef: parentCommentId
                         }, this.props.pageId);
                     }}
+                    containerStyle={{ ...buttonContainerStyle, marginLeft: 16 }}
                 />
-            </ActionButtonGroup>
+            </View>
         );
     }
 
@@ -308,23 +307,10 @@ class ChildCommentCard extends Component {
         if (!item) return null;
 
         return (
-            <View onLayout={this.onLayout}>
-                <View style={{ ...styles.containerStyle }}>
-                    <View
-                        style={{
-                            marginTop: 16,
-                            marginBottom: 16,
-                            marginRight: 15,
-                            marginLeft: 15,
-                            flexDirection: 'row'
-                        }}
-                    >
-                        {this.renderUserProfileImage(item)}
-                        {this.renderUserDetail()}
-                    </View>
-                </View>
-
-                <View style={{ ...styles.containerStyle, marginTop: 0.5 }}>
+            <View onLayout={this.onLayout} style={styles.containerStyle}>
+                {this.renderUserProfileImage(item)}
+                <View style={{ flex: 1 }}>
+                    {this.renderUserDetail()}
                     {this.renderActionButtons()}
                 </View>
             </View>
@@ -335,7 +321,7 @@ class ChildCommentCard extends Component {
 const styles = {
     containerStyle: {
         backgroundColor: 'white',
-        marginTop: 0.5
+        flexDirection: 'row'
     },
     actionIcon: {
         ...DEFAULT_STYLE.normalIcon_1,

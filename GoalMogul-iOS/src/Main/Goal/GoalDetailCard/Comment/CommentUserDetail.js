@@ -10,7 +10,6 @@ import {
 import { connect } from 'react-redux';
 
 // Assets
-import defaultProfilePic from '../../../../asset/utils/defaultUserProfile.png';
 import LoveOutlineIcon from '../../../../asset/utils/love-outline.png';
 import LoveIcon from '../../../../asset/utils/love.png';
 import CommentIcon from '../../../../asset/utils/comment.png';
@@ -18,7 +17,6 @@ import expand from '../../../../asset/utils/expand.png';
 
 // Components
 import ActionButton from '../../Common/ActionButton';
-import ActionButtonGroup from '../../Common/ActionButtonGroup';
 import CommentHeadline from './CommentHeadline';
 import CommentRef from './CommentRef';
 import ProfileImage from '../../../Common/ProfileImage';
@@ -60,6 +58,7 @@ import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
 } from '../../../../Utils/Constants';
+
 
 // Constants
 const DEBUG_KEY = '[ UI CommentCard.CommentUserDetail ]';
@@ -108,19 +107,6 @@ class CommentUserDetail extends Component {
                         source={{ uri: imageUrl }}
                         imageStyle={{ borderRadius: 8, opacity: 0.8, resizeMode: 'cover' }}
                     >
-                        {/* <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
-            <Image
-              source={photoIcon}
-              style={{
-                alignSelf: 'center',
-                justifyContent: 'center',
-                height: 40,
-                width: 50,
-                tintColor: '#fafafa'
-              }}
-            />
-          </View> */}
-
                         <TouchableOpacity
                             activeOpacity={0.6}
                             onPress={() => this.setState({ mediaModal: true })}
@@ -179,21 +165,13 @@ class CommentUserDetail extends Component {
             tags = item.content.tags;
             links = item.content.links;
         }
-        // return (
-        //   <Text
-        //     style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 12, marginTop: 3 }}
-        //     multiline
-        //   >
-        //     {text}
-        //   </Text>
-        // );
 
         return (
             <RichText
                 contentText={text}
                 contentTags={tags}
                 contentLinks={links}
-                textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 14, lineHeight: 16, marginTop: 3 }}
+                textStyle={{ flex: 1, flexWrap: 'wrap', ...DEFAULT_STYLE.normalText_1, marginTop: 3 }}
                 multiline
                 onUserTagPressed={(user) => {
                     console.log(`${DEBUG_KEY}: user tag press for user: `, user);
@@ -218,7 +196,11 @@ class CommentUserDetail extends Component {
             (goalRef && goalRef.owner._id === userId);
 
         return (
-            <View style={{ marginLeft: 15, flex: 1 }}>
+            <View style={{
+                padding: 10,
+                backgroundColor: '#F9F9F9',
+                borderRadius: 8
+            }}>
                 <CommentHeadline
                     item={item}
                     isCommentOwner={isCommentOwner}
@@ -282,9 +264,13 @@ class CommentUserDetail extends Component {
 
         const likeCount = item.likeCount || 0;
         const selfLiked = maybeLikeRef && maybeLikeRef.length > 0;
+        const buttonContainerStyle = { flex: 0 };
 
         return (
-            <ActionButtonGroup containerStyle={{ height: 40 }}>
+            <View style={{
+                flexDirection: 'row',
+                marginTop: 8
+            }}>
                 <ActionButton
                     iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
                     count={likeCount}
@@ -299,6 +285,7 @@ class CommentUserDetail extends Component {
                         }
                         this.props.likeGoal('comment', _id, this.props.pageId, parentRef);
                     }}
+                    containerStyle={buttonContainerStyle}
                 />
                 <ActionButton
                     iconSource={CommentIcon}
@@ -317,8 +304,9 @@ class CommentUserDetail extends Component {
                             replyToRef: _id
                         }, this.props.pageId);
                     }}
+                    containerStyle={{ ...buttonContainerStyle, marginLeft: 16 }}
                 />
-            </ActionButtonGroup>
+            </View>
         );
     }
 
@@ -327,23 +315,10 @@ class CommentUserDetail extends Component {
         if (!item) return null;
 
         return (
-            <View onLayout={this.onLayout}>
-                <View style={{ ...styles.containerStyle }}>
-                    <View
-                        style={{
-                            marginTop: 16,
-                            marginBottom: 10,
-                            marginRight: 15,
-                            marginLeft: 15,
-                            flexDirection: 'row'
-                        }}
-                    >
-                        {this.renderUserProfileImage(item)}
-                        {this.renderUserDetail()}
-                    </View>
-                </View>
-
-                <View style={{ ...styles.containerStyle, marginTop: 0.5 }}>
+            <View onLayout={this.onLayout} style={styles.containerStyle}>
+                {this.renderUserProfileImage(item)}
+                <View style={{ flex: 1, marginLeft: 6 }}>
+                    {this.renderUserDetail()}
                     {this.renderActionButtons()}
                 </View>
             </View>
@@ -351,11 +326,12 @@ class CommentUserDetail extends Component {
     }
 }
 
-const ImageHeight = 46;
-
 const styles = {
     containerStyle: {
         backgroundColor: 'white',
+        margin: 16,
+        marginBottom: 10,
+        flexDirection: 'row'
     },
     actionIcon: {
         ...DEFAULT_STYLE.normalIcon_1,
