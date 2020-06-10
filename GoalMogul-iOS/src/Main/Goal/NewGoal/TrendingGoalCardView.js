@@ -42,12 +42,11 @@ class TrendingGoalCard extends React.PureComponent {
     }
 
     renderTitle(item) {
-        const { width } = Dimensions.get('window');
         const { frequency, title } = item;
         return (
-            <View style={{ paddingTop: 10, paddingBottom: 10, paddingRight: 5, width: 236 * width/375 }}>
+            <View style={{ paddingTop: 10, paddingBottom: 10, paddingRight: 5, flex: 1 }}>
                 <Text
-                    style={DEFAULT_STYLE.titleText_2}
+                    style={{...DEFAULT_STYLE.titleText_2, flex: 1}}
                     ellipsizeMode='tail'
                     numberOfLines={3}
                 >
@@ -73,12 +72,12 @@ class TrendingGoalCard extends React.PureComponent {
         if (!item) return;
         return (
             <View style={styles.containerStyle}>
-                <View style={{ flexDirection: 'row', alignItems: 'stretch' }}>
-                    {this.renderRank(index)}
-                    <View style={{ width: 1, margin: 8, backgroundColor: '#DADADA' }} />
-                    {this.renderTitle(item)}
+                {this.renderRank(index)}
+                <View style={{ width: 1, margin: 8, backgroundColor: '#DADADA' }} />
+                {this.renderTitle(item)}
+                <View style={{ justifyContent: 'center' }}>
+                    {this.renderStats(item)}
                 </View>
-                {this.renderStats(item)}
             </View>
         );
     }
@@ -89,8 +88,7 @@ const styles = {
         flex: 1, 
         backgroundColor: BACKGROUND_COLOR, 
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        alignItems: 'stretch',
 
         borderWidth: 1,
         borderColor: '#e9e9e9',
@@ -101,10 +99,9 @@ const styles = {
     },
     plusIconContainerStyle: {
         backgroundColor: GM_BLUE, 
-        margin: 12, 
-        borderRadius: 15 * DEFAULT_STYLE.uiScale, 
-        height: 30 * DEFAULT_STYLE.uiScale,
-        width: 30 * DEFAULT_STYLE.uiScale,
+        margin: 12,
+        padding: 8,
+        borderRadius: 100,
         alignItems: 'center',
         justifyContent: 'center'
     }

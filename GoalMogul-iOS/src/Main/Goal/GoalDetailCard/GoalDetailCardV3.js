@@ -616,7 +616,7 @@ export class GoalDetailCardV3 extends Component {
     const focusedItem = this.getFocusedItem(focusType, focusRef, goalDetail);
 
     return (
-      <View style={{ zIndex: 2 }} onLayout={(event) => this.onContentSizeChange('focusedItem', event)}>
+      <View style={{ zIndex: 2, flex: 1 }} onLayout={(event) => this.onContentSizeChange('focusedItem', event)}>
         <SectionCardV2
           type={focusType}
           goalRef={goalDetail}
