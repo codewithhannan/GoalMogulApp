@@ -69,11 +69,7 @@ class ProfileImage extends React.Component {
 
         return (
             <TouchableWithoutFeedback onPress={this.handleProfileImageOnPress}>
-                <View
-                    style={
-                        imageUrl ? { ...imageContainerStyle, borderRadius: 100 } : defaultImageContainerStyle
-                    }
-                >
+                <View style={imageUrl ? { ...imageContainerStyle, borderRadius: 100 } : defaultImageContainerStyle}>
                     <Image
                         style={imageUrl ? (imageStyle && { ...imageStyle, borderRadius: 100 }) || DEFAULT_STYLE.profileImage_1 : defaultImageStyle}
                         source={imageUrl ? { uri: imageUrl } : defaultImageSource || defaultProfilePic}

@@ -1,7 +1,6 @@
 import React from 'react';
 import {
     View,
-    Image,
     Text,
     Keyboard
 } from 'react-native';
@@ -13,7 +12,9 @@ import ChildCommentCard from './ChildCommentCard';
 import DelayedButton from '../../../Common/Button/DelayedButton';
 
 // Assets
-import ReplyIcon from '../../../../asset/utils/reply.png';
+import { GM_BLUE, DEFAULT_STYLE } from '../../../../styles';
+import ProfileImage from '../../../Common/ProfileImage';
+import Name from '../../Common/Name';
 
 
 const DEBUG_KEY = '[ UI CommentCard ]';
@@ -28,6 +29,7 @@ class CommentCard extends React.Component {
             commentLength: 0,
             numberOfChildrenShowing: 3,
             showMoreCount: 3,
+            showReplies: false
         };
     }
 
@@ -123,6 +125,32 @@ class CommentCard extends React.Component {
         const { childComments } = item;
         if (!childComments || childComments.length === 0) return null;
 
+        if (!this.state.showReplies) {
+            const comment = childComments[childComments.length - 1];
+            const { owner } = comment;
+            const imageUrl = owner && owner.profile && owner.profile.image && owner.profile.image;
+            const onPress = () => this.setState({ showReplies: true });
+            return (
+                <DelayedButton
+                    activeOpacity={0.6}
+                    key={childComments.length}
+                    onPress={onPress}
+                    style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}
+                >
+                    <ProfileImage
+                        imageStyle={DEFAULT_STYLE.profileImage_2}
+                        imageContainerStyle={{ margin: -10, marginTop: -12, marginRight: -2 }}
+                        imageUrl={imageUrl}
+                        disabled
+                    />
+                    <Text style={DEFAULT_STYLE.smallTitle_1}>{owner.name} </Text>
+                    <Text style={{ ...DEFAULT_STYLE.smallText_1, color: '#6D6D6D' }}>
+                         Replied  |  {childComments.length} Repl{childComments.length > 1 ? 'ies' : 'y'}
+                    </Text>
+                </DelayedButton>
+            );
+        }
+
         const { numberOfChildrenShowing } = this.state;
 
         // For child comments, only load the first three
@@ -132,19 +160,15 @@ class CommentCard extends React.Component {
                 return (
                     <View
                         key={index}
-                        style={{ flexDirection: 'row', marginTop: 0.5 }}
                         onLayout={(e) => this.onLayout(e, `${index}`)}
                     >
-                        <ChildCommentIcon />
-                        <View style={{ flex: 1 }}>
-                            <ChildCommentCard
-                                {...this.props}
-                                item={comment}
-                                parentCommentId={item._id}
-                                viewOffset={viewOffset}
-                                userId={this.props.userId}
-                            />
-                        </View>
+                        <ChildCommentCard
+                            {...this.props}
+                            item={comment}
+                            parentCommentId={item._id}
+                            viewOffset={viewOffset}
+                            userId={this.props.userId}
+                        />
                     </View>
                 );
             }
@@ -156,15 +180,16 @@ class CommentCard extends React.Component {
                     activeOpacity={0.6}
                     key={childComments.length}
                     onPress={this.showMoreChildComments}
-                    style={{ margin: 3, padding: 5 }}
+                    style={{ marginTop: 10 }}
                 >
                     <Text
                         style={{
+                            ...DEFAULT_STYLE.normalText_1,
                             alignSelf: 'center',
-                            color: '#4ec9f3',
+                            color: GM_BLUE,
                             padding: 2
                         }}
-                    >Load more replies ({childComments.length - numberOfChildrenShowing})</Text>
+                    >Load more replies...</Text>
                 </DelayedButton>
             );
         }
@@ -187,13 +212,12 @@ class CommentCard extends React.Component {
                     onLayout={(layout) => this.updateUserDetailLayout(layout)}
                     viewOffset={viewOffset}
                     userId={this.props.userId}
+                    childrenRenderer={this.renderChildComments.bind(this)}
                 />
-                {this.renderChildComments()}
             </View>
         );
     }
 }
-// <CommentRef item={item.}/>
 
 const getTotalPrevHeight = (state, index) => {
     const { childCommentLayouts } = state;
@@ -221,14 +245,6 @@ const getTotalViewHeight = (state) => {
 
     return totalHeights;
 }
-
-const ChildCommentIcon = () => {
-    return (
-        <View style={styles.replyIconContainerStyle}>
-            {/* <Image source={ReplyIcon} style={styles.replyIconStyle} /> */}
-        </View>
-    );
-};
 
 const styles = {
     cardContainerStyle: {

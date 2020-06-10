@@ -555,7 +555,7 @@ export class GoalDetailCardV3 extends Component {
                             { useNativeDriver: true }
                         )}
                         contentContainerStyle={{
-                            paddingTop: this.state.cardHeight + (focusType === 'comment' ? -1 : 0),
+                            paddingTop: this.state.cardHeight,
                             flexGrow: 1
                         }}
                         paddingBottom={this.state.focusTabBottomPadding}
@@ -668,7 +668,7 @@ export class GoalDetailCardV3 extends Component {
                     }}
                 >
                     <Text style={{ ...DEFAULT_STYLE.smallTitle_1, flex: 1, color: 'black', marginTop: 4 }}>
-                        View {commentCount > 2  ? 'all' : ''} {commentCount && commentCount} comment{commentCount !== 1 && 's'}
+                        View{commentCount > 2  ? ' all' : ''}{commentCount > 0 && ` ${commentCount}`} comment{commentCount !== 1 && 's'}
                     </Text>
                     <TouchableOpacity
                         activeOpacity={0.6}

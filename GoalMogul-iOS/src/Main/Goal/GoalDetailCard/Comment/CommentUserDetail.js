@@ -320,6 +320,7 @@ class CommentUserDetail extends Component {
                 <View style={{ flex: 1, marginLeft: 6 }}>
                     {this.renderUserDetail()}
                     {this.renderActionButtons()}
+                    {this.props.childrenRenderer()}
                 </View>
             </View>
         );
@@ -330,7 +331,7 @@ const styles = {
     containerStyle: {
         backgroundColor: 'white',
         margin: 16,
-        marginBottom: 10,
+        marginBottom: 0,
         flexDirection: 'row'
     },
     actionIcon: {

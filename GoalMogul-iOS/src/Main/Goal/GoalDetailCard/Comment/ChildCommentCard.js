@@ -235,7 +235,7 @@ class ChildCommentCard extends Component {
             <ProfileImage
                 imageStyle={DEFAULT_STYLE.profileImage_2}
                 imageUrl={imageUrl}
-                imageContainerStyle={{}}
+                imageContainerStyle={{ margin: -10 }}
                 userId={item.owner._id}
             />
         );
@@ -309,7 +309,7 @@ class ChildCommentCard extends Component {
         return (
             <View onLayout={this.onLayout} style={styles.containerStyle}>
                 {this.renderUserProfileImage(item)}
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, marginLeft: 6 }}>
                     {this.renderUserDetail()}
                     {this.renderActionButtons()}
                 </View>
@@ -321,7 +321,8 @@ class ChildCommentCard extends Component {
 const styles = {
     containerStyle: {
         backgroundColor: 'white',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        marginTop: 10
     },
     actionIcon: {
         ...DEFAULT_STYLE.normalIcon_1,

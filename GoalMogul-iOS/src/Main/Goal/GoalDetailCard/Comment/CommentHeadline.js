@@ -88,8 +88,8 @@ const CommentHeadline = (props) => {
 				<View style={styles.containerStyle}>
 					<Name
 						text={owner.name}
-						textStyle={{ fontSize: 12 }}
 						onPress={onNamePress}
+						textStyle={DEFAULT_STYLE.smallTitle_1}
 					/>
 					<UserBanner user={owner} />
 					<Timestamp time={timeago().format(timeStamp)} />
@@ -133,8 +133,7 @@ const CommentHeadV2 = (props) => {
 					<Text
 						onPress={onNamePress}
 						style={{
-							fontSize: 12,
-							fontWeight: '600',
+							...DEFAULT_STYLE.smallTitle_1,
 							maxWidth: 150,
 						}}
 						numberOfLines={1}
@@ -230,7 +229,7 @@ const SuggestionHeadlineV2 = (props) => {
 	return (
 		<View>
 			<View style={styles.containerStyle}>
-				<Name text={owner.name} onPress={onNamePress} />
+				<Name text={owner.name} textStyle={DEFAULT_STYLE.smallTitle_1} onPress={onNamePress} />
 				<UserBanner user={owner} />
 				<Timestamp time={timeago().format(timeStamp)} />
 				<View style={styles.caretContainer}>
