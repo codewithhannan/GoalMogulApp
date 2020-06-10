@@ -135,16 +135,16 @@ class SectionCardV2 extends Component {
         }
     }
 
-    renderBackIcon() {
+    renderBackIcon(type) {
         if (!this.props.isFocusedItem) return null;
         return (
-            <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 10 }}>
+            <View style={{ justifyContent: type === 'comment' ? 'center' : 'flex-start', marginRight: 10 }}>
                 <DelayedButton
                     onPress={this.props.onBackPress}
                     activeOpacity={0.6}
                     style={{
                         padding: 4,
-                        backgroundColor: GM_BLUE,
+                        backgroundColor: type === 'comment' ? GM_BLUE : GM_BLUE,
                         borderRadius: 100,
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -172,7 +172,7 @@ class SectionCardV2 extends Component {
         const isCommentFocused = type === 'comment';
         const sectionText = isCommentFocused ? 'Back to Steps & Needs' : description;
         const textToDisplay = decode(sectionText === undefined ? 'No content' : sectionText);
-        const textStyle = isCommentFocused ? [ DEFAULT_STYLE.smallTitle_1, { color: 'black', marginTop: 5 } ]
+        const textStyle = isCommentFocused ? [ DEFAULT_STYLE.smallTitle_1, { color: 'black', marginTop: 4 } ]
             : [ DEFAULT_STYLE.normalText_1, { marginLeft: 4 } ];
 
         return (
@@ -183,7 +183,7 @@ class SectionCardV2 extends Component {
                 }}
                 onPress={this.props.onCardPress || this.props.onBackPress}
             >
-                {this.renderBackIcon()}
+                {this.renderBackIcon(type)}
                 <View style={{ justifyContent: 'flex-start' }}>
                     {this.renderCheckBox(isCompleted, type)}
                 </View>

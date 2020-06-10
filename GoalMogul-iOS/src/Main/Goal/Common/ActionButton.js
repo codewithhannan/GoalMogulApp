@@ -42,7 +42,7 @@ class ActionButton extends React.PureComponent {
         const buttonDisabled = disabled === true || this.state.buttonDisabled;
 
         const countText = (
-                <DelayedButton activeOpacity={0.6} onPress={count > 0 ? onTextPress : this.handleOnPress} style={textContainerStyle} disabled={buttonDisabled}>
+                <DelayedButton activeOpacity={0.6} onPress={count > 0 && onTextPress ? onTextPress : this.handleOnPress} style={textContainerStyle} disabled={buttonDisabled}>
                     <Text style={{ ...DEFAULT_STYLE.buttonText_1, ...styles.textStyle, ...this.props.textStyle }}>
                         {count > 0 ? `${count} ` : ''}{unitText ? unitText + (count > 1 ? 's' : '') : ''}
                     </Text>
