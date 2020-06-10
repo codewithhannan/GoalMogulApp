@@ -84,7 +84,7 @@ class SectionCardV2 extends Component {
         if (type === 'comment') return null;
         const commentCount = this.props.count === undefined ? 15 : this.props.count;
         return (
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12, paddingBottom: 4 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 4 }}>
                 <Image source={bulb} style={{ ...DEFAULT_STYLE.smallIcon_1, tintColor: '#FCB110' }} />
                 <Text style={styles.actionTextStyle}>{commentCount} comments</Text>
                 <DelayedButton
@@ -109,7 +109,7 @@ class SectionCardV2 extends Component {
             ? styles.checkIconContainerStyle
             : {
                 ...styles.checkIconContainerStyle,
-                padding: 2,
+                padding: 0,
                 borderWidth: 2,
                 borderColor: '#DADADA',
                 backgroundColor: isSelf ? 'white' : '#DADADA'
@@ -144,7 +144,7 @@ class SectionCardV2 extends Component {
                     activeOpacity={0.6}
                     style={{
                         padding: 4,
-                        backgroundColor: type === 'comment' ? GM_BLUE : GM_BLUE,
+                        backgroundColor: type === 'comment' ? GM_BLUE : '#BFBFBF',
                         borderRadius: 100,
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -156,9 +156,14 @@ class SectionCardV2 extends Component {
         );
     }
 
+    handleOnLayout = (event) => {
+        if (this.props.onContentSizeChange)
+            this.props.onContentSizeChange(event);
+    }
+
     render() {
         // console.log('item for props is: ', this.props.item);
-        const { type, item } = this.props;
+        const { type, item, isFocusedItem } = this.props;
         let itemToRender = item;
 
         // Render empty state
@@ -174,14 +179,15 @@ class SectionCardV2 extends Component {
         const textToDisplay = decode(sectionText === undefined ? 'No content' : sectionText);
         const textStyle = isCommentFocused ? [ DEFAULT_STYLE.smallTitle_1, { color: 'black', marginTop: 4 } ]
             : [ DEFAULT_STYLE.normalText_1, { marginLeft: 4 } ];
+        const containerStyle = isCommentFocused ? { paddingTop: 0, paddingBottom: 0, minHeight: 40, alignItems: 'center' }
+            : { borderBottomWidth: isFocusedItem ? 0 : 0.5 }
 
         return (
             <DelayedButton
                 activeOpacity={0.6}
-                style={{
-                    ...styles.sectionContainerStyle
-                }}
+                style={[ styles.sectionContainerStyle, containerStyle]}
                 onPress={this.props.onCardPress || this.props.onBackPress}
+                onLayout={this.handleOnLayout}
             >
                 {this.renderBackIcon(type)}
                 <View style={{ justifyContent: 'flex-start' }}>
@@ -194,6 +200,12 @@ class SectionCardV2 extends Component {
                     >
                         {textToDisplay}
                     </Text>
+                    {!isCommentFocused && <View style={{
+                        backgroundColor: '#F2F2F2',
+                        height: 2,
+                        marginTop: 8,
+                        marginBottom: 8
+                    }} />}
                     {this.renderActionIcons(type)}
                 </View>
             </DelayedButton>
@@ -229,7 +241,7 @@ const renderEmptyState = (text) => {
 
 const styles = {
     sectionContainerStyle: {
-        padding: 18,
+        padding: 16,
         paddingBottom: 11,
 
         backgroundColor: 'white',
@@ -245,15 +257,8 @@ const styles = {
         marginLeft: 6,
         marginTop: 2
     },
-    iconContainerStyle: {
-        padding: 8,
-        borderRadius: 18,
-        backgroundColor: '#efefef',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     checkIconContainerStyle: {
-        padding: 4,
+        padding: 2,
         borderRadius: 100,
         backgroundColor: '#27AE60',
         alignItems: 'center',

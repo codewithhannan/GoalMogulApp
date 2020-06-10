@@ -52,7 +52,7 @@ export const getCommentWithPageInfo = (state, entityId, pageId) => {
   const commentObject = getCommentByEntityId(state, entityId);
   let commentPage = { ...INITIAL_COMMENT_PAGE };
   if (!_.has(commentObject, pageId)) {
-    console.warn(`${DEBUG_KEY}: no comments page for entityId: ${entityId}`); 
+    // console.warn(`${DEBUG_KEY}: no comments page for entityId: ${entityId}`); 
   } else {
     commentPage = _.get(commentObject, pageId);
   }
