@@ -533,7 +533,7 @@ export class GoalDetailCardV3 extends Component {
                             { useNativeDriver: true }
                         )}
                         contentContainerStyle={{
-                            paddingTop: this.state.cardHeight - 8,
+                            paddingTop: this.state.cardHeight,
                             flexGrow: 1
                         }}
                         contentOffset={{ y: this.state.centralTabContentOffset }}

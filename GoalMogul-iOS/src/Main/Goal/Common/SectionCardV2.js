@@ -180,7 +180,7 @@ class SectionCardV2 extends Component {
         const textStyle = isCommentFocused ? [ DEFAULT_STYLE.smallTitle_1, { color: 'black', marginTop: 4 } ]
             : [ DEFAULT_STYLE.normalText_1, { marginLeft: 4 } ];
         const containerStyle = isCommentFocused ? { paddingTop: 0, paddingBottom: 0, minHeight: 40, alignItems: 'center' }
-            : { borderBottomWidth: isFocusedItem ? 0 : 0.5 }
+            : {  };
 
         return (
             <DelayedButton
@@ -248,9 +248,9 @@ const styles = {
         flexDirection: 'row',
 
         borderTopWidth: 0.5,
-        borderBottomWidth: 0.5,
-        borderTopColor: '#eaeaea',
-        borderBottomColor: '#eaeaea'
+        borderBottomWidth: 1,
+        borderTopColor: '#F2F2F2',
+        borderBottomColor: '#F2F2F2'
     },
     actionTextStyle: {
         ...DEFAULT_STYLE.normalText_2,
