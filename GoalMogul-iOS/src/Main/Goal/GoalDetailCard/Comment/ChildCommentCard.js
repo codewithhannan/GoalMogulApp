@@ -293,7 +293,9 @@ class ChildCommentCard extends Component {
                         this.props.createComment({
                             ...commentDetail,
                             commentType: 'Reply',
-                            replyToRef: parentCommentId
+                            replyToRef: parentCommentId,
+                            name: item.owner && item.owner.name,
+                            tag: true
                         }, this.props.pageId);
                     }}
                     containerStyle={{ ...buttonContainerStyle, marginLeft: 16 }}

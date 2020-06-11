@@ -14,7 +14,6 @@ import DelayedButton from '../../../Common/Button/DelayedButton';
 // Assets
 import { GM_BLUE, DEFAULT_STYLE } from '../../../../styles';
 import ProfileImage from '../../../Common/ProfileImage';
-import Name from '../../Common/Name';
 
 
 const DEBUG_KEY = '[ UI CommentCard ]';

@@ -301,7 +301,8 @@ class CommentUserDetail extends Component {
                         this.props.createComment({
                             ...commentDetail,
                             commentType: 'Reply',
-                            replyToRef: _id
+                            replyToRef: _id,
+                            name: item.owner && item.owner.name
                         }, this.props.pageId);
                     }}
                     containerStyle={{ ...buttonContainerStyle, marginLeft: 16 }}

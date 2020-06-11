@@ -468,7 +468,7 @@ class GoalDetailSection extends React.PureComponent {
                             },
                             suggestionForRef: _id,
                             suggestionFor: 'Goal'
-                        });
+                        }, this.props.pageId);
                         this.props.onSuggestion();
                     }}
                 />

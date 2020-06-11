@@ -23,6 +23,7 @@ import EmptyResult from '../../Common/Text/EmptyResult';
 
 // Actions
 import {
+    createComment,
     openCurrentSuggestion,
     removeSuggestion,
     createSuggestion,
@@ -53,6 +54,7 @@ import PhotoIcon from '../../../asset/utils/cameraRoll.png';
 import LightBulb from '../../../asset/utils/makeSuggestion.png';
 import DefaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
 import DelayedButton from '../../Common/Button/DelayedButton';
+import { DEFAULT_STYLE } from '../../../styles';
 
 // Consts
 const maxHeight = 120;
@@ -132,13 +134,13 @@ class CommentBoxV2 extends Component {
         // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
 
 
-        console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
-        console.log(`${DEBUG_KEY}: keyword length is: `, this.state.keyword.length);
-        console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: prevCursorContent is: `, prevCursorContent);
-        console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: prevCursorContent length is: `, prevCursorContent.length);
-        console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: postCursorContent is: `, postCursorContent);
-        console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: comment is: `, comment);
-        console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: newContentText is: `, newContentText);
+        // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
+        // console.log(`${DEBUG_KEY}: keyword length is: `, this.state.keyword.length);
+        // console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: prevCursorContent is: `, prevCursorContent);
+        // console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: prevCursorContent length is: `, prevCursorContent.length);
+        // console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: postCursorContent is: `, postCursorContent);
+        // console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: comment is: `, comment);
+        // console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: newContentText is: `, newContentText);
 
         this.props.newCommentOnTextChange(newContentText, pageId);
 
@@ -355,6 +357,7 @@ class CommentBoxV2 extends Component {
                 defaultValue: 'Reply to...'
             });
         }
+        this.props.createComment({ ...this.props.newComment, name: undefined, replyToRef: undefined, tag: false }, this.props.pageId);
     }
 
     focus() {
@@ -552,27 +555,36 @@ class CommentBoxV2 extends Component {
         );
     }
 
+    renderReplyingTo() {
+        const { newComment, pageId } = this.props;
+        if (!newComment.name) return null;
+        return (
+            <DelayedButton
+                style={{ flexDirection: 'row', margin: 8, marginLeft: 24, alignItems: 'center' }}
+                onPress={() => {this.props.createComment({ ...newComment, name: undefined, tag: false, replyToRef: undefined }, pageId);}}
+            >
+                <Text style={{ ...DEFAULT_STYLE.smallText_1, marginTop: -2 }}>x   </Text>
+                <Text style={DEFAULT_STYLE.normalText_1}>Replying to </Text>
+                <Text style={DEFAULT_STYLE.titleText_2}>{newComment.name}</Text>
+            </DelayedButton>
+        );
+    }
+
     render() {
         const { pageId, newComment, hasSuggestion, goalId } = this.props;
-        // console.log(`${DEBUG_KEY}: new comment in commentbox: `, newComment);
+        console.log(`${DEBUG_KEY}: new comment in commentbox: `, newComment);
 
         if (!newComment || !newComment.parentRef) return null;
+        const { uploading, tag, name, contentText } = newComment;
 
-        const { uploading } = newComment;
-
-        const inputContainerStyle = {
-            ...styles.inputContainerStyle,
-            // height: Math.max(36, height + 6)
-        };
-
+        const inputContainerStyle = styles.inputContainerStyle;
         const inputStyle = uploading
             ? {
                 ...styles.inputStyle,
-                color: '#b9c3c4',
-                // height: Math.max(30, height)
-            } : {
-                ...styles.inputStyle,
-            };
+                color: '#b9c3c4'
+            } : styles.inputStyle;
+
+        // if (tag && name && (!contentText || contentText.length === 0)) this.props.newCommentOnTextChange('@'+name, pageId);
 
         return (
             <SafeAreaView
@@ -585,6 +597,7 @@ class CommentBoxV2 extends Component {
                     elevation: 0.3
                 }}
             >
+                {this.renderReplyingTo()}
                 <MentionsTextInput
                     ref={r => (this.textInput = r)}
                     placeholder={this.state.defaultValue}
@@ -753,6 +766,7 @@ export default connect(
     mapStateToProps,
     {
         searchUser,
+        createComment,
         newCommentOnTextChange,
         openCurrentSuggestion,
         removeSuggestion,
