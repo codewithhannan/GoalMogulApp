@@ -14,7 +14,6 @@ const EVENT = {
     GOAL_UNLIKED: 'Goal Unliked',
     GOAL_FOLLOWED: 'Goal Followed',//
     GOAL_UNFOLLOWED: 'Goal Unfollowed',//
-    GOAL_REPORTED: 'Goal Reported',//
 
     // Post
     CREATE_POST_MODAL_OPENED: 'CreatePostModal Opened',
@@ -29,7 +28,6 @@ const EVENT = {
     POST_OPENED: 'Post Opened',
     POST_FOLLOWED: 'Post Followed',//
     POST_UNFOLLOWED: 'Post Unfollowed',//
-    POST_REPORTED: 'Post Reported',//
     
     // Comment
     COMMENT_ADDED: 'Comment Added',
@@ -47,7 +45,6 @@ const EVENT = {
     EVENT_DELETED: 'Event Deleted',
     EVENT_RSVPED: 'Event Rsvped',
     EVENT_PARTICIPANT_INVITED: 'Event Participant Invited',
-    EVENT_REPORTED: 'Event Reported',
     EVENT_DETAIL_OPENED: 'Event Detail Opened',
 
     // Tribe
@@ -64,7 +61,6 @@ const EVENT = {
     TRIBE_JOIN_CANCELLED: 'TribeJoin Cancelled',
     TRIBE_LEFT: 'Tribe Left',
     TRIBE_MEMBER_REMOVED: 'TribeMember Removed',
-    TRIBE_REPORTED: 'Tribe Reported',
     TRIBE_DETAIL_OPENED: 'Tribe Detail Opened',
 
     // Chat
@@ -91,6 +87,18 @@ const EVENT = {
     PROFILE_OPENED: 'Profile Opened',
     PROFILE_REFRESHED: 'Profile Refreshed',
 
+    // Registration
+    REG_INTRO: 'Registration Intro Opened',
+    REG_INTRO_SKIP: 'Registration Intro Skiped',
+    REG_PROFILE: 'Registration AddProfile Opened',
+    REG_CAMERA: 'Registration Camera Opened',
+    REG_CAMROLL: 'Registration CameraRoll Opened',
+    REG_CONTACT: 'Registration Contact Opened',
+    REG_CONTACT_SKIP: 'Registration Contact Skiped',
+    REG_CONTACT_SYNC: 'Registration Contact Synced',
+    REG_CONTACT_SYNC_SKIP: 'Registration Contact Sync Skiped',
+    REG_SUCCESS: 'Registration Success',
+
     // Search
     SEARCH_OPENED: 'Search Opened',
     SEARCH_CLOSED: 'Search Closed',
@@ -98,6 +106,15 @@ const EVENT = {
     SEARCH_QUERY_SENT: 'Search Query Sent',
     TRIBE_MEMBER_SEARCHED: 'Tribe Member Searched',
     SEARCH_RESULT_CLICKED: 'Search Result Clicked',
+
+    // Report
+    USER_REPORTED: 'User Reported',
+    GOAL_REPORTED: 'Goal Reported',
+    POST_REPORTED: 'Post Reported',
+    TRIBE_REPORTED: 'Tribe Reported',
+    EVENT_REPORTED: 'Event Reported',
+    COMMENT_REPORTED: 'Comment Reported',
+    GENERAL_REPORT_CREATED: 'General Report Created',
 
     // App
     APP_ACTIVE: 'App Active',
@@ -136,7 +153,7 @@ const trackWithProperties = (event, properties) => {
 };
 
 const trackViewScreen = (screenName) => {
-    // Segment.screen(screenName);
+    Segment.screen(screenName);
 };
 
 const resetUser = () => {
