@@ -1,260 +1,233 @@
-import { createSelector } from 'reselect';
-import _ from 'lodash';
+/** @format */
 
-// TODO: tribe: update selectors and their callers e.g. passing in pageId and etc
-const getTribeMembers = (state) => {
-  if (state.tribe.item) {
-    return state.tribe.item.members;
-  }
-  return [];
-};
+import { createSelector } from 'reselect'
+import _ from 'lodash'
+import {
+    TRIBE_USER_ROUTES,
+    INITIAL_TRIBE_PAGE,
+    TRIBE_NATIVATION_ROUTES,
+} from './Tribes'
+
+/**
+ * get tribe member filter by tribeId and pageId
+ * @param {*} state
+ * @param {*} tribeId
+ * @param {*} pageId
+ */
+const getMyTribeMembersFilter = (state, tribeId, pageId) =>
+    _.get(state.tribes, `${tribeId}.${pageId}.membersFilter`, 'Member')
+
+/**
+ * Get tribe members by tribeId
+ * @param {*} state
+ * @param {*} tribeId
+ */
+const getMyTribeMembers = (state, tribeId) => {
+    const tribes = state.tribes
+    return _.get(tribes, `${tribeId}.tribe.members`, [])
+}
+
+/**
+ * Get tribe navigation states by tribeId and pageId
+ * @param {*} state
+ */
+const getMyTribeNavigationStates = (state, tribeId, pageId) => {
+    const tribes = state.tribes
+    return {
+        navigationState: _.get(
+            tribes,
+            `${tribeId}.${pageId}.navigationState`,
+            _.cloneDeep(INITIAL_TRIBE_PAGE.navigationState)
+        ),
+        defaultRoutes: _.cloneDeep(TRIBE_NATIVATION_ROUTES.default),
+    }
+}
+
+/**
+ * Get tribe member navigation state by tribeId and pageId
+ * @param {*} state
+ * @param {*} tribeId
+ * @param {*} pageId
+ */
+const getMyTribeMemberNavigationStates = (state, tribeId, pageId) => {
+    const tribes = state.tribes
+    if (!_.has(tribes, `${tribeId}.${pageId}`)) {
+        // TODO: tribe: sentry error logging
+        return {
+            index: 0,
+            routes: _.cloneDeep(TRIBE_USER_ROUTES.default),
+        }
+    }
+
+    return _.get(tribes, `${tribeId}.${pageId}.memberNavigationState`)
+}
+
+const getMyTribeIsMemberCanInvite = (state, tribeId) => {
+    const tribes = state.tribes
+    return _.get(tribes, `${tribeId}.tribe`, false)
+}
+
+const getMyTribePage = (state, tribeId, pageId) =>
+    _.cloneDeep(
+        _.get(
+            state.tribes,
+            `${tribeId}.${pageId}`,
+            _.cloneDeep(INITIAL_TRIBE_PAGE)
+        )
+    )
+const getMyTribe = (state, tribeId, pageId) =>
+    _.cloneDeep(_.get(state.tribes, `${tribeId}.tribe`, {}))
 const getUserId = (state) => state.user.userId;
 
-const getMembersFilter = (state) => state.tribe.membersFilter;
+const getMyTribeFeed = (state, tribeId, pageId) => {
+    const tribes = state.tribes;
+    const posts = state.posts;
 
-const getTribeNavigationStates = (state) => {
-  const { navigationState, defaultRoutes } = state.tribe;
-  return {
-    navigationState,
-    defaultRoutes
-  };
-};
+    if (!_.has(tribes, tribeId) || !_.has(tribes, `${tribeId}.${pageId}`)) {
+        console.error(`${DEBUG_KEY}: [getMyTribeFeed]: tribeId: ${tribeId} or pageId: ${pageId} not in tribes`);
+        return [];
+    }
 
-const getTribeIsMemberCanInvite = (state) => {
-  const { item } = state.tribe;
-  if (!item || !item.membersCanInvite) return false;
+    const feedRefs = _.get(tribes, `${tribeId}.${pageId}.feed`);
+    let ret = feedRefs.map(r => {
+        if (!_.has(posts, r)) {
+            // TODO: tribe: add sentry log
+            return undefined;
+        }
+        return _.cloneDeep(_.get(posts, `${r}.post`));
+    }).filter(r => r !== undefined);
 
-  return true;
-};
-
-const getTribeMemberNavigationStates = (state) => {
-  const { memberNavigationState, memberDefaultRoutes, memberCanInviteRoutes } = state.tribe;
-  return {
-    memberNavigationState,
-    memberDefaultRoutes,
-    memberCanInviteRoutes
-  };
+    return ret;
 };
 
 /**
- * My tribes related
+ * Select tribe detail and tribe page detail by tribeId and pageId
  */
-const getMyTribeMembersFilter = (state) => state.myTribe.membersFilter;
-const getMyTribeMembers = (state) => {
-  if (state.myTribe.item) {
-    return state.myTribe.item.members;
-  }
-  return [];
-};
-
-const getMyTribeNavigationStates = (state) => {
-  const { navigationState, defaultRoutes } = state.myTribe;
-  return {
-    navigationState,
-    defaultRoutes
-  };
-};
-
-const getMyTribeMemberNavigationStates = (state) => {
-  const { memberNavigationState, memberDefaultRoutes, memberCanInviteRoutes } = state.myTribe;
-  return {
-    memberNavigationState,
-    memberDefaultRoutes,
-    memberCanInviteRoutes
-  };
-};
-
-const getMyTribeIsMemberCanInvite = (state) => {
-  const { item } = state.myTribe;
-  if (!item || !item.membersCanInvite) return false;
-
-  return true;
-};
-
-/*
- * Iterate through member list to check if user is a current member
- */
-export const getUserStatus = createSelector(
-  [getTribeMembers, getUserId],
-  (members, userId) => {
-    if (!members) return '';
-
-    let status;
-    members.map((member) => {
-      const { memberRef, category } = member;
-      if (memberRef && memberRef._id === userId) {
-        status = category;
-      }
-      return '';
-    });
-    return status;
-  }
-);
-
-export const memberSelector = createSelector(
-  // Select participants based on the filter option
-  [getMembersFilter, getTribeMembers],
-  (filterOption, members) => {
-    if (!members) return '';
-
-    return members.filter((member) => member.category === filterOption);
-  }
-);
-
-// Get tribe navigationState, if not a member, obfuscate Post tab with default routes
-export const getTribeNavigationState = createSelector(
-  [getTribeNavigationStates, getTribeMembers, getUserId],
-  (navigationStates, members, userId) => {
-    const { navigationState, defaultRoutes } = navigationStates;
-    const navigationStateToReturn = _.cloneDeep(navigationState);
-
-    if (!members || members.length === 0) {
-      return _.set(navigationStateToReturn, 'routes', defaultRoutes);
+export const getMyTribeDetailById = createSelector(
+    [getMyTribe, getMyTribePage],
+    (tribe, tribePage) => {
+        return { tribe, tribePage }
     }
+)
 
-    let isMember;
-    members.forEach((member) => {
-      if (member.memberRef && member.memberRef._id === userId
-        && (member.category === 'Admin'
-        || member.category === 'Member'
-        || member.category === 'Invitee')) {
-        isMember = true;
-      }
-    });
-
-    return isMember
-      ? navigationStateToReturn
-      : _.set(navigationStateToReturn, 'routes', defaultRoutes);
-  }
-);
-
-export const getTribeMemberNavigationState = createSelector(
-  [getTribeMemberNavigationStates, getTribeMembers, getUserId, getTribeIsMemberCanInvite],
-  (navigationStates, members, userId, membersCanInvite) => {
-    const {
-      memberNavigationState,
-      memberDefaultRoutes,
-      memberCanInviteRoutes
-    } = navigationStates;
-    const navigationStateToReturn = _.cloneDeep(memberNavigationState);
-
-    if (!members || members.length === 0) {
-      return _.set(navigationStateToReturn, 'routes', memberDefaultRoutes);
-    }
-
-    let isAdmin;
-    let isMember;
-    members.forEach((member) => {
-      if (member.memberRef && member.memberRef._id === userId) {
-        if (member.category === 'Admin') {
-          isAdmin = true;
-        }
-        if (member.category === 'Member') {
-          isMember = true;
-        }
-      }
-    });
-
-    if (isMember && membersCanInvite) {
-      return _.set(navigationStateToReturn, 'routes', memberCanInviteRoutes);
-    }
-
-    return isAdmin
-      ? navigationStateToReturn
-      : _.set(navigationStateToReturn, 'routes', memberDefaultRoutes);
-  }
+export const getMyTribeFeedSelector = createSelector(
+    [getMyTribeFeed],
+    (feed) => feed
 );
 
 /**
- * My tribe related selectors
+ * Select current user membership for a tribe by tribeId
  */
 export const getMyTribeUserStatus = createSelector(
-  [getMyTribeMembers, getUserId],
-  (members, userId) => {
-    if (!members) return '';
+    [getMyTribeMembers, getUserId],
+    (members, userId) => {
+        if (!members) return ''
 
-    let status;
-    members.map((member) => {
-      const { memberRef, category } = member;
-      if (memberRef && memberRef._id === userId) {
-        status = category;
-      }
-      return '';
-    });
-    return status;
-  }
-);
+        let status
+        members.map((member) => {
+            const { memberRef, category } = member
+            if (memberRef && memberRef._id === userId) {
+                status = category
+            }
+            return ''
+        })
+        return status
+    }
+)
 
+/**
+ * Select tribe members by filter
+ */
 export const myTribeMemberSelector = createSelector(
-  // Select participants based on the filter option
-  [getMyTribeMembersFilter, getMyTribeMembers],
-  (filterOption, members) => {
-    if (!members || _.isEmpty(members)) return '';
+    // Select participants based on the filter option
+    [getMyTribeMembersFilter, getMyTribeMembers],
+    (filterOption, members) => {
+        if (!members || _.isEmpty(members)) return []
 
-    return members.filter((member) => member.category === filterOption);
-  }
-);
+        return members.filter((member) => member.category === filterOption)
+    }
+)
 
-// Get my tribe navigationState, if not a member, obfuscate Post tab with default routes
+/**
+ * Select tribe navigationState, if not a member, obfuscate Post tab with default routes
+ */
 export const getMyTribeNavigationState = createSelector(
-  [getMyTribeNavigationStates, getMyTribeMembers, getUserId],
-  (navigationStates, members, userId) => {
-    const { navigationState, defaultRoutes } = navigationStates;
-    const navigationStateToReturn = _.cloneDeep(navigationState);
+    [getMyTribeNavigationStates, getMyTribeMembers, getUserId],
+    (navigationStates, members, userId) => {
+        const { navigationState, defaultRoutes } = navigationStates
+        const navigationStateToReturn = _.cloneDeep(navigationState)
 
-    if (!members || members.length === 0) {
-      return _.set(navigationStateToReturn, 'routes', defaultRoutes);
+        if (!members || members.length === 0) {
+            return _.set(navigationStateToReturn, 'routes', defaultRoutes)
+        }
+
+        let isMember
+        members.forEach((member) => {
+            if (
+                member.memberRef &&
+                member.memberRef._id === userId &&
+                (member.category === 'Admin' ||
+                    member.category === 'Member' ||
+                    member.category === 'Invitee')
+            ) {
+                isMember = true
+            }
+        })
+
+        return isMember
+            ? navigationStateToReturn
+            : _.set(navigationStateToReturn, 'routes', defaultRoutes)
     }
+)
 
-    let isMember;
-    members.forEach((member) => {
-      if (member.memberRef && member.memberRef._id === userId
-        && (member.category === 'Admin'
-        || member.category === 'Member'
-        || member.category === 'Invitee')) {
-        isMember = true;
-      }
-    });
-
-    return isMember
-      ? navigationStateToReturn
-      : _.set(navigationStateToReturn, 'routes', defaultRoutes);
-  }
-);
-
+/**
+ * Select member tab navigationState
+ */
 export const getMyTribeMemberNavigationState = createSelector(
-  [getMyTribeMemberNavigationStates, getMyTribeMembers, getUserId, getMyTribeIsMemberCanInvite],
-  (navigationStates, members, userId, membersCanInvite) => {
-    const {
-      memberNavigationState,
-      memberDefaultRoutes,
-      memberCanInviteRoutes
-    } = navigationStates;
-    const navigationStateToReturn = _.cloneDeep(memberNavigationState);
+    [
+        getMyTribeMemberNavigationStates,
+        getMyTribeMembers,
+        getUserId,
+        getMyTribeIsMemberCanInvite,
+    ],
+    (memberNavigationState, members, userId, membersCanInvite) => {
+        const navigationStateToReturn = _.cloneDeep(memberNavigationState)
 
-    if (!members || members.length === 0) {
-      return _.set(navigationStateToReturn, 'routes', memberDefaultRoutes);
-    }
-
-    let isAdmin;
-    let isMember;
-    members.forEach((member) => {
-      if (member.memberRef && member.memberRef._id === userId) {
-        if (member.category === 'Admin') {
-          isAdmin = true;
+        if (!members || members.length === 0) {
+            return _.set(
+                navigationStateToReturn,
+                'routes',
+                TRIBE_USER_ROUTES.memberDefaultRoutes
+            )
         }
-        if (member.category === 'Member') {
-          isMember = true;
+
+        let isAdmin
+        let isMember
+        members.forEach((member) => {
+            if (member.memberRef && member.memberRef._id === userId) {
+                if (member.category === 'Admin') {
+                    isAdmin = true
+                }
+                if (member.category === 'Member') {
+                    isMember = true
+                }
+            }
+        })
+
+        if (isMember && membersCanInvite) {
+            return _.set(
+                navigationStateToReturn,
+                'routes',
+                TRIBE_USER_ROUTES.memberCanInviteRoutes
+            )
         }
-      }
-    });
 
-    if (isMember && membersCanInvite) {
-      return _.set(navigationStateToReturn, 'routes', memberCanInviteRoutes);
+        return isAdmin
+            ? navigationStateToReturn
+            : _.set(
+                  navigationStateToReturn,
+                  'routes',
+                  TRIBE_USER_ROUTES.memberDefaultRoutes
+              )
     }
-
-    return isAdmin
-      ? navigationStateToReturn
-      : _.set(navigationStateToReturn, 'routes', memberDefaultRoutes);
-  }
-);
+)

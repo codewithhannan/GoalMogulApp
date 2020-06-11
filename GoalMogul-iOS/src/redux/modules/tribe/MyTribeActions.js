@@ -4,7 +4,6 @@ import { Actions } from 'react-native-router-flux'
 import { Alert } from 'react-native'
 import _ from 'lodash'
 import {
-    MYTRIBE_SWITCH_TAB,
     MYTRIBE_DETAIL_OPEN,
     MYTRIBE_DETAIL_LOAD,
     MYTRIBE_DETAIL_LOAD_SUCCESS,
@@ -93,7 +92,7 @@ export const tribeDetailClose = () => (dispatch) => {
  * and then open tribe detail with id
  */
 export const myTribeDetailOpenWithId = (tribeId) => (dispatch, getState) => {
-    const { tab } = getState().navigation
+    const { tab } = getState().navigation;
     const pageId = constructPageId('tribe')
     const callback = (res) => {
         console.log(`${DEBUG_KEY}: res for verifying user identify: `, res)
@@ -135,6 +134,7 @@ export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
         return
     }
     const tribeId = tribe._id
+    const { tab } = getState().navigation;
     const pageId = constructPageId('tribe')
     const callback = (res) => {
         if (!res.data || res.status === 400 || res.status === 404) {
@@ -177,8 +177,13 @@ export const refreshMyTribeDetail = (
     callback,
     showIndicator
 ) => (dispatch, getState) => {
-    const { item } = getState().myTribe
-    if (!item || item._id !== tribeId) return
+    const tribes = getState().tribes
+    if (!_.has(tribes, tribeId) || !_.has(tribes, `${tribeId}.${pageId}`)) {
+
+      // TODO: tribe: add sentry log
+      console.error(`${DEBUG_KEY}: tribeId ${tribeId} or ${pageId} not in tribes for refreshMyTribeDetail`);
+      return;
+    }
     fetchTribeDetail(tribeId, pageId, null, showIndicator)(dispatch, getState)
     refreshTribeFeed(tribeId, pageId, dispatch, getState, callback)
 }
@@ -545,7 +550,7 @@ export const refreshTribeFeed = (
     callback
 ) => {
     const { token } = getState().user
-    const tribes = getState().myTribe
+    const tribes = getState().tribes;
 
     if (!_.has(tribes, tribeId) || !_.has(tribes, `${tribeId}.${pageId}`)) {
         // TODO: tribe: sentry error logging
@@ -601,7 +606,7 @@ export const refreshTribeFeed = (
  */
 export const loadMoreTribeFeed = (tribeId, pageId) => (dispatch, getState) => {
     const { token } = getState().user
-    const tribes = getState().myTribe
+    const tribes = getState().tribes;
 
     if (!_.has(tribes, tribeId) || !_.has(tribes, `${tribeId}.${pageId}`)) {
         // TODO: tribe: sentry error logging

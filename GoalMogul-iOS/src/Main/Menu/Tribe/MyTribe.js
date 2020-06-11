@@ -40,7 +40,14 @@ import {
     reportTribe,
 } from '../../../redux/modules/tribe/TribeActions'
 // Selector
-import { getMyTribeMemberNavigationState, getMyTribeNavigationState, getMyTribeUserStatus, myTribeMemberSelector } from '../../../redux/modules/tribe/TribeSelector';
+import {
+    getMyTribeMemberNavigationState,
+    getMyTribeNavigationState,
+    getMyTribeUserStatus,
+    myTribeMemberSelector,
+    getMyTribeDetailById,
+    getMyTribeFeedSelector
+} from '../../../redux/modules/tribe/TribeSelector'
 // Styles
 import { APP_DEEP_BLUE } from '../../../styles';
 // Constants
@@ -90,7 +97,7 @@ const INFO_CARD_HEIGHT = (width * 0.95) / 3 + 30 + 106.5;
 /**
  * This is the UI file for a single event.
  */
-class MyTribe extends Component {
+class MyTribe extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -725,7 +732,7 @@ class MyTribe extends Component {
         // Do not load more when user is not on posts tab
         if (!this.onPostTab() || !tribeId) return;
 
-        this.props.loadMoreTribeFeed(tribeId);
+        this.props.loadMoreTribeFeed(tribeId, this.props.pageId);
     }
 
     renderItem = (props) => {
@@ -823,8 +830,6 @@ class MyTribe extends Component {
     render() {
         const { item, data } = this.props;
         if (!item) return <View />;
-
-        // console.log(`${DEBUG_KEY}: data is: `, data);
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -1006,23 +1011,25 @@ const styles = {
     },
 };
 
-const mapStateToProps = state => {
-    const { item, feed, hasRequested, tribeLoading, feedLoading } = state.myTribe;
+const mapStateToProps = (state, props) => {
+    const { tribeId, pageId } = props;
+    const { tribe, tribePage } = getMyTribeDetailById(state, tribeId, pageId);
+    const { hasRequested, tribeLoading, feedLoading, feedRefreshing } = tribePage;
     const { userId } = state.user;
-    const navigationState = getMyTribeNavigationState(state);
-    const memberNavigationState = getMyTribeMemberNavigationState(state);
+    const navigationState = getMyTribeNavigationState(state, tribeId, pageId);
+    const memberNavigationState = getMyTribeMemberNavigationState(state, tribeId, pageId);
 
     const { routes, index } = navigationState;
     const data = ((key) => {
         switch (key) {
             case 'about':
-                return [item];
+                return [tribe];
 
             case 'members':
-                return myTribeMemberSelector(state);
+                return myTribeMemberSelector(state, tribeId, pageId);
 
             case 'posts':
-                return feed;
+                return getMyTribeFeedSelector(state, tribeId, pageId);
 
             default: return [];
         }
@@ -1030,17 +1037,18 @@ const mapStateToProps = state => {
 
     return {
         navigationState,
-        item,
+        item: tribe,
         user: state.user,
         data,
-        isMember: getMyTribeUserStatus(state),
+        isMember: getMyTribeUserStatus(state, tribeId),
         hasRequested,
         tab: routes[index].key,
         userId,
-        isUserAdmin: checkIsAdmin(item ? item.members : [], userId),
+        isUserAdmin: checkIsAdmin(tribe ? tribe.members : [], userId),
         memberNavigationState,
         loading: tribeLoading,
-        feedLoading
+        feedLoading,
+        feedRefreshing
     };
 };
 
@@ -1049,7 +1057,7 @@ const checkIsAdmin = (members, userId) => {
     // Sanity check if member is not empty or undefined
     if (members && members.length > 0) {
         members.forEach((member) => {
-            if (member.memberRef._id === userId && member.category === 'Admin') {
+            if (member.memberRef && member.memberRef._id === userId && member.category === 'Admin') {
                 isAdmin = true;
             }
         });

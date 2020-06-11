@@ -478,73 +478,12 @@ export const tribeDetailClose = () => (dispatch) => {
   });
 };
 
-/**
- * Current behavior is to go to explore page and opens up tribe detail
- * and then open tribe detail with id
- */
-export const tribeDetailOpenWithId = (tribeId) => (dispatch, getState) => {
-  const callback = (res) => {
-    console.log(`${DEBUG_KEY}: res for verifying user identify: `, res);
-    if (!res.data) {
-      return Alert.alert(
-        'Tribe not found'
-      );
-    }
-    dispatch({
-      type: TRIBE_DETAIL_LOAD_SUCCESS,
-      payload: {
-        tribe: res.data
-      }
-    });
-    Actions.tribeDetail();
-  };
-
-  fetchTribeDetail(tribeId, callback)(dispatch, getState);
-};
-
 // Refresh tribe detail
 export const refreshTribeDetail = (tribeId, callback) => (dispatch, getState) => {
   const { item } = getState().tribe;
   if (!item || item._id !== tribeId) return;
   fetchTribeDetail(tribeId, callback)(dispatch, getState);
   refreshTribeFeed(tribeId, dispatch, getState);
-};
-
-export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
-  const isMember = getUserStatus(getState());
-  const { _id } = tribe;
-
-  if ((!isMember || isMember === 'JoinRequester') && !tribe.isPubliclyVisible) {
-    const callback = (res) => {
-      console.log(`${DEBUG_KEY}: res for verifying user identify: `, res);
-      if (!res.data || res.status === 400 || res.status === 404) {
-        return Alert.alert(
-          'Tribe not found'
-        );
-      }
-      dispatch({
-        type: TRIBE_DETAIL_LOAD_SUCCESS,
-        payload: {
-          tribe: res.data
-        }
-      });
-      Actions.tribeDetail();
-    };
-
-    fetchTribeDetail(_id, callback)(dispatch, getState);
-    return;
-  }
-
-  const newTribe = _.cloneDeep(tribe);
-  dispatch({
-    type: TRIBE_DETAIL_OPEN,
-    payload: {
-      tribe: _.set(newTribe, 'members', [])
-    }
-  });
-  Actions.tribeDetail();
-  fetchTribeDetail(_id)(dispatch, getState);
-  refreshTribeFeed(_id, dispatch, getState);
 };
 
 /**

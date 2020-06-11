@@ -22,7 +22,6 @@ import {
     MYTRIBE_MEMBER_SELECT_FILTER,
     MYTRIBE_SWITCH_TAB
 } from './MyTribeReducers';
-import { arrayUnique } from '../../middleware/utils';
 
 /**
  * List of actions to add
@@ -98,7 +97,7 @@ export const MEMBER_UPDATE_TYPE = {
 };
 
 // page metadata related to a tribe page
-const INITIAL_TRIBE_PAGE = {
+export const INITIAL_TRIBE_PAGE = {
     navigationState: {
         index: 0,
         routes: _.cloneDeep(TRIBE_NATIVATION_ROUTES.member)
@@ -282,7 +281,7 @@ export default (state = INITIAL_STATE, action) => {
             const postRefs = data ? data.map(d => d._id) : [];
             const currPostRefs = _.get(tribePageToUpdate, "feed");
             const curAllFeedRefs = _.get(tribePageToUpdate, "allFeedRefs");
-            tribePageToUpdate = _.set(tribePageToUpdate, "feed", arrayUnique(currPostRefs.concat(postRefs)));
+            tribePageToUpdate = _.set(tribePageToUpdate, "feed", _.uniq(currPostRefs.concat(postRefs)));
 
             // Update all feed refs for cleanup
             tribePageToUpdate = _.set(tribePageToUpdate, "allFeedRefs", _.union(curAllFeedRefs, postRefs));
@@ -312,7 +311,7 @@ export default (state = INITIAL_STATE, action) => {
             const postRefs = data ? data.map(d => d._id) : [];
             const curAllFeedRefs = _.get(tribePageToUpdate, "allFeedRefs");
             // replace feed 
-            tribePageToUpdate = _.set(tribePageToUpdate, "feed", arrayUnique(postRefs));
+            tribePageToUpdate = _.set(tribePageToUpdate, "feed", _.uniq(postRefs));
 
             // Update all feed refs for cleanup
             tribePageToUpdate = _.set(tribePageToUpdate, "allFeedRefs", _.union(curAllFeedRefs, postRefs));
@@ -363,7 +362,7 @@ export default (state = INITIAL_STATE, action) => {
                 return newState;
             }
 
-            let tribePageToUpdate = _.get(newState, tribeId);
+            let tribePageToUpdate = _.get(newState, `${tribeId}.${pageId}`);
             if (option) {
                 tribePageToUpdate = _.set(tribePageToUpdate, 'membersFilter', option);
             }
