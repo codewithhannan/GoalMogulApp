@@ -39,7 +39,7 @@ class MyTribeAbout extends Component {
               ...styles.topPictureContainerStyle,
               left: ((index * 13))
             }}
-            imageUrl={memberRef.profile.image}
+            imageUrl={memberRef && memberRef.profile ? memberRef.profile.image : undefined}
             imageStyle={{ ...styles.pictureStyle }}
           />
         );

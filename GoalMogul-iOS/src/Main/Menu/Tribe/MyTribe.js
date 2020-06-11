@@ -825,7 +825,7 @@ class MyTribe extends React.PureComponent {
                 <View style={styles.containerStyle}>
                     <SearchBarHeader
                         backButton
-                        onBackPress={() => this.props.tribeDetailClose(this.props.tribeId, this.props.pageId)}
+                        onBackPress={() => Actions.pop()} // componentWillUnmount takes care of the state cleaning
                         pageSetting
                         handlePageSetting={() => this.handlePageSetting(item)}
                     />

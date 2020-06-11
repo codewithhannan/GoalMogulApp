@@ -6,7 +6,7 @@ import {
   MYTRIBE_DETAIL_OPEN,
   MYTRIBE_DETAIL_CLOSE,
   MYTRIBE_DELETE_SUCCESS
-} from './MyTribeReducers';
+} from './Tribes';
 
 import { TRIBE_NEW_SUBMIT_SUCCESS } from './NewTribeReducers';
 

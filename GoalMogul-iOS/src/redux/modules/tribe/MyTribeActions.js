@@ -21,15 +21,6 @@ import {
     MYTRIBE_REQUEST_CANCEL_JOIN_ERROR,
     MYTRIBE_REQUEST_CANCEL_JOIN,
     MYTRIBE_SWITCH_TAB,
-} from './MyTribeReducers'
-import { api as API } from '../../middleware/api'
-import {
-    queryBuilder,
-    constructPageId,
-    componentKeyByTab,
-} from '../../middleware/utils'
-import { Logger } from '../../middleware/utils/Logger'
-import {
     MYTRIBE_NOT_FOUND,
     MYTRIBE_FEED_REFRESH,
     MYTRIBE_UPDATE_MEMBER_SUCCESS,
@@ -38,6 +29,13 @@ import {
     MYTRIBE_MEMBER_INVITE_FAIL,
     MYTRIBE_DELETE_SUCCESS,
 } from './Tribes'
+import { api as API } from '../../middleware/api'
+import {
+    queryBuilder,
+    constructPageId,
+    componentKeyByTab,
+} from '../../middleware/utils'
+import { Logger } from '../../middleware/utils/Logger'
 import { REPORT_CREATE } from '../report/ReportReducers'
 import { trackWithProperties, EVENT as E } from '../../../monitoring/segment'
 
@@ -77,7 +75,6 @@ export const myTribeSelectMembersFilter = (option, index, tribeId, pageId) => (
 }
 
 export const tribeDetailClose = (tribeId, pageId) => (dispatch, getState) => {
-    Actions.pop()
     const tribes = getState().tribes;
     const allFeedRefs = _.get(tribes, `${tribeId}.${pageId}.allFeedRefs`, []);
     dispatch({
@@ -690,8 +687,8 @@ export const loadTribeFeed = (
         token
     )
         .then((res) => {
-            console.log(`${DEBUG_KEY}: loading with res: `, res.data.length)
             if (res.status === 200 || (res && res.data)) {
+                console.log(`${DEBUG_KEY}: loading tribe feed with res: `, res.data.length)
                 // Right now return test data
                 return callback(res.data)
             }
@@ -701,7 +698,7 @@ export const loadTribeFeed = (
             )
         })
         .catch((err) => {
-            console.log(`${DEBUG_KEY}: loading comment error: ${err}`)
+            console.log(`${DEBUG_KEY}: loading tribe feed error: ${err}`)
             // TODO: tribe: implement for onError
         })
 }
@@ -734,10 +731,14 @@ export const requestJoinTribe = (tribeId, join, pageId) => (
     }
 
     console.log(
-        `${DEBUG_KEY}: startActiontype: ${startActionType}, join: ${join}, type:${type}`
+        `${DEBUG_KEY}: startActiontype: ${startActionType}, join: ${join}`
     )
     dispatch({
         type: startActionType,
+        payload: {
+            tribeId,
+            pageId,
+        }
     })
 
     const onSuccess = () => {

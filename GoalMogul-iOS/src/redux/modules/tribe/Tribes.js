@@ -4,25 +4,6 @@
  */
 
 import _ from 'lodash';
-import {
-    MYTRIBE_DETAIL_OPEN, // Not used in actions
-    MYTRIBE_DETAIL_LOAD,
-    MYTRIBE_DETAIL_LOAD_SUCCESS,
-    MYTRIBE_DETAIL_LOAD_FAIL,
-    MYTRIBE_DETAIL_CLOSE,
-    MYTRIBE_FEED_FETCH,
-    MYTRIBE_FEED_FETCH_DONE,
-    MYTRIBE_FEED_REFRESH_DONE,
-    MYTRIBE_REQUEST_JOIN_SUCCESS,
-    MYTRIBE_REQUEST_JOIN_ERROR,
-    MYTRIBE_REQUEST_JOIN,
-    MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS,
-    MYTRIBE_REQUEST_CANCEL_JOIN_ERROR,
-    MYTRIBE_REQUEST_CANCEL_JOIN,
-    MYTRIBE_MEMBER_SELECT_FILTER,
-    MYTRIBE_SWITCH_TAB
-} from './MyTribeReducers';
-
 /**
  * List of actions to add
  * 
@@ -91,6 +72,32 @@ export const MYTRIBE_EDIT_SUCCESS = 'mytribe_edit_success';
 export const MYTRIBE_MEMBER_INVITE_FAIL = 'mytribe_member_invite_fail';
 export const MYTRIBE_MEMBER_INVITE_SUCCESS = 'mytribe_member_invite_success';
 export const MYTRIBE_DELETE_SUCCESS = 'mytribe_delete_success';
+export const MYTRIBE_SWITCH_TAB = 'mytribe_switch_tab';
+export const MYTRIBE_DETAIL_OPEN = 'mytribe_detail_open';
+export const MYTRIBE_DETAIL_LOAD = 'mytribe_detail_load';
+// Successfully load tribe detail
+export const MYTRIBE_DETAIL_LOAD_SUCCESS = 'mytribe_detail_load_success';
+// Failed to load tribe detail
+export const MYTRIBE_DETAIL_LOAD_FAIL = 'mytribe_detail_load_fail';
+export const MYTRIBE_DETAIL_CLOSE = 'mytribe_detail_close';
+export const MYTRIBE_FEED_FETCH = 'mytribe_feed_fetch';
+export const MYTRIBE_FEED_FETCH_DONE = 'mytribe_feed_fetch_done';
+export const MYTRIBE_FEED_REFRESH_DONE = 'mytribe_feed_refresh_done';
+export const MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS = 'mytribe_request_cancel_join_success';
+export const MYTRIBE_REQUEST_CANCEL_JOIN_ERROR = 'mytribe_request_cancel_join_error';
+export const MYTRIBE_REQUEST_CANCEL_JOIN = 'mytribe_request_cancel_join';
+export const MYTRIBE_REQUEST_JOIN_SUCCESS = 'mytribe_request_join_success';
+export const MYTRIBE_REQUEST_JOIN_ERROR = 'mytribe_request_join_error';
+export const MYTRIBE_REQUEST_JOIN = 'mytribe_request_join';
+export const MYTRIBE_MEMBER_SELECT_FILTER = 'mytribe_member_select_filter';
+// Either reject user join request or remove user from tribe
+export const MYTRIBE_MEMBER_REMOVE_SUCCESS = 'mytribe_member_remove_success';
+export const MYTRIBE_DEMOTE_MEMBER_SUCCESS = 'mytribe_demote_member_success';
+export const MYTRIBE_PROMOTE_MEMBER_SUCCESS = 'mytribe_promote_member_success';
+// admin accept join request
+export const MYTRIBE_ACCEPT_MEMBER_SUCCESS = 'mytribe_accept_member_success';
+// user accept invitation
+export const MYTRIBE_MEMBER_ACCEPT_SUCCESS = 'mytribe_member_accept_success';
 
 export const MEMBER_UPDATE_TYPE = {
     promoteAdmin: 'promoteAdmin',
@@ -389,7 +396,7 @@ export default (state = INITIAL_STATE, action) => {
             let tribeToUpdate = _.get(newState, tribeId);
 
             const oldMembers = _.get(tribeToUpdate, 'tribe.members');
-            let newMembers = oldMembers.filter((m) => m.memberRef._id !== userId);
+            let newMembers = oldMembers.filter((m) => !m.memberRef || m.memberRef._id !== userId);
             newMembers = newMembers.concat(member);
 
             tribeToUpdate = _.set(tribeToUpdate, 'hasRequested', true);
@@ -403,26 +410,26 @@ export default (state = INITIAL_STATE, action) => {
         case MYTRIBE_REQUEST_CANCEL_JOIN_ERROR:
         case MYTRIBE_REQUEST_JOIN_ERROR: {
             const { tribeId, pageId } = action.payload;
+            let newState = _.cloneDeep(state);
             if (!_.has(newState, tribeId) || !_.has(newState, `${tribeId}.${pageId}`)) {
                 // TODO: tribe: add sentry log
                 console.error(`${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: `, action);
                 return newState;
             }
 
-            const newState = _.cloneDeep(state);
             return _.set(newState, `${tribeId}.${pageId}.updating`, false);
         } 
 
         case MYTRIBE_REQUEST_JOIN:
         case MYTRIBE_REQUEST_CANCEL_JOIN: {
             const { tribeId, pageId } = action.payload;
+            let newState = _.cloneDeep(state);
             if (!_.has(newState, tribeId) || !_.has(newState, `${tribeId}.${pageId}`)) {
                 // TODO: tribe: add sentry log
                 console.error(`${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: `, action);
                 return newState;
             }
 
-            const newState = _.cloneDeep(state);
             return _.set(newState, `${tribeId}.${pageId}.updating`, true);
         }
         
@@ -439,7 +446,8 @@ export default (state = INITIAL_STATE, action) => {
             let tribeToUpdate = _.get(newState, tribeId);
 
             const oldMembers = _.get(tribeToUpdate, 'tribe.members');
-            let newMembers = oldMembers.filter((m) => m.memberRef._id !== userId);
+            // Keep members that have no memberRef (invitee) or are not current user
+            let newMembers = oldMembers.filter((m) => !m.memberRef || m.memberRef._id !== userId);
 
             tribeToUpdate = _.set(tribeToUpdate, 'hasRequested', false);
             tribeToUpdate = _.set(tribeToUpdate, `${pageId}.updating`, false);

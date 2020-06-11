@@ -56,16 +56,11 @@ import {
 
 /* Tribe related */
 import {
-    // TODO: tribe: close tribe to remove all references in allFeedRefs of a tribe page.
     MYTRIBE_FEED_FETCH_DONE,
     MYTRIBE_FEED_REFRESH_DONE,
     MYTRIBE_DETAIL_CLOSE
-} from '../../tribe/MyTribeReducers';
+} from '../../tribe/Tribes';
 
-import {
-    TRIBE_FEED_FETCH_DONE,
-    TRIBE_FEED_REFRESH_DONE
-} from '../../tribe/TribeReducers';
 import {
     MYEVENT_FEED_FETCH_DONE,
     MYEVENT_FEED_REFRESH_DONE
@@ -326,8 +321,6 @@ export default (state = INITIAL_STATE, action) => {
         /* Profile, Home, Event and Tribe related */
         case MYTRIBE_FEED_FETCH_DONE:
         case MYTRIBE_FEED_REFRESH_DONE:
-        case TRIBE_FEED_REFRESH_DONE:
-        case TRIBE_FEED_FETCH_DONE:
         case MYEVENT_FEED_FETCH_DONE:
         case MYEVENT_FEED_REFRESH_DONE:
         case EVENT_FEED_FETCH_DONE:

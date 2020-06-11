@@ -12,11 +12,6 @@ import {
 	TRIBE_NEW_UPLOAD_PICTURE_SUCCESS
 } from './NewTribeReducers';
 
-
-import {
-	TRIBE_EDIT_SUCCESS
-} from './TribeReducers';
-
 import {
 	refreshTribe
 } from './MyTribeTabActions';
