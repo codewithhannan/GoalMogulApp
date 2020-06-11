@@ -140,7 +140,6 @@ class ActivityFeed extends Component {
     }
 
     render() {
-        console.log(this.props.data[3])
         return (
             <View style={{ flex: 1 }}>
                 <FlatList

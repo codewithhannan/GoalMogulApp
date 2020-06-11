@@ -76,13 +76,16 @@ export const myTribeSelectMembersFilter = (option, index, tribeId, pageId) => (
     })
 }
 
-export const tribeDetailClose = (tribeId, pageId) => (dispatch) => {
+export const tribeDetailClose = (tribeId, pageId) => (dispatch, getState) => {
     Actions.pop()
+    const tribes = getState().tribes;
+    const allFeedRefs = _.get(tribes, `${tribeId}.${pageId}.allFeedRefs`, []);
     dispatch({
         type: MYTRIBE_DETAIL_CLOSE,
         payload: {
             tribeId,
             pageId,
+            allFeedRefs
         },
     })
 }
@@ -219,7 +222,7 @@ export const fetchTribeDetail = (tribeId, pageId, callback, showIndicator) => (
                 tribeId,
             },
         })
-        console.log(`${DEBUG_KEY}: load tribe detail success with data: `, data)
+        // console.log(`${DEBUG_KEY}: load tribe detail success with data: `, data)
     }
 
     const onError = (err) => {
@@ -576,6 +579,12 @@ export const refreshTribeFeed = (
         token,
         { tribeId },
         (data) => {
+            const curTribes = getState().tribes;
+            if (!_.has(curTribes, `${tribeId}.${pageId}`)) {
+                // Don't update as page already closed before data loaded
+                return;
+            }
+
             dispatch({
                 type: MYTRIBE_FEED_REFRESH_DONE,
                 payload: {
@@ -643,6 +652,12 @@ export const loadMoreTribeFeed = (tribeId, pageId) => (dispatch, getState) => {
         token,
         { tribeId },
         (data) => {
+            const curTribes = getState().tribes;
+            if (!_.has(curTribes, `${tribeId}.${pageId}`)) {
+                // Don't update as page already closed before data loaded
+                return;
+            }
+
             dispatch({
                 type: MYTRIBE_FEED_FETCH_DONE,
                 payload: {

@@ -108,7 +108,7 @@ class MyTribe extends React.PureComponent {
     }
 
     componentWillUnmount() {
-        this.props.myTribeReset();
+        this.props.tribeDetailClose(this.props.tribeId, this.props.pageId);
     }
 
     openUserInviteModal = (item) => {
