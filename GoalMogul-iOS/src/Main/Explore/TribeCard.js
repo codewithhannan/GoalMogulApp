@@ -15,7 +15,7 @@ import tribeDefaultIcon from '../../asset/explore/tribe.png';
 // Actions
 import {
   tribeDetailOpen
-} from '../../redux/modules/tribe/TribeActions';
+} from '../../redux/modules/tribe/MyTribeActions';
 import DelayedButton from '../Common/Button/DelayedButton';
 import { IMAGE_BASE_URL } from '../../Utils/Constants';
 

@@ -88,6 +88,9 @@ export const MYTRIBE_NOT_FOUND = "mytribe_not_found";
 export const MYTRIBE_FEED_REFRESH = "mytribe_feed_refresh";
 export const MYTRIBE_UPDATE_MEMBER_SUCCESS = "mytribe_update_member_success";
 export const MYTRIBE_EDIT_SUCCESS = 'mytribe_edit_success';
+export const MYTRIBE_MEMBER_INVITE_FAIL = 'mytribe_member_invite_fail';
+export const MYTRIBE_MEMBER_INVITE_SUCCESS = 'mytribe_member_invite_success';
+export const MYTRIBE_DELETE_SUCCESS = 'mytribe_delete_success';
 
 export const MEMBER_UPDATE_TYPE = {
     promoteAdmin: 'promoteAdmin',

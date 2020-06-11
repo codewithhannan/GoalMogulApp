@@ -4,12 +4,10 @@ import { arrayUnique } from '../../middleware/utils';
 
 import {
   MYTRIBE_DETAIL_OPEN,
-  MYTRIBE_DETAIL_CLOSE
+  MYTRIBE_DETAIL_CLOSE,
+  MYTRIBE_DELETE_SUCCESS
 } from './MyTribeReducers';
 
-import {
-  TRIBE_DELETE_SUCCESS
-} from './TribeReducers';
 import { TRIBE_NEW_SUBMIT_SUCCESS } from './NewTribeReducers';
 
 const INITIAL_STATE = {
@@ -75,7 +73,7 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     // One tribe is deleted
-    case TRIBE_DELETE_SUCCESS: {
+    case MYTRIBE_DELETE_SUCCESS: {
       const { tribeId } = action.payload;
       const newState = _.cloneDeep(state);
       const oldData = _.get(newState, 'data');

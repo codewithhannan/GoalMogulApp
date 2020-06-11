@@ -20,16 +20,8 @@ import {
     MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS,
     MYTRIBE_REQUEST_CANCEL_JOIN_ERROR,
     MYTRIBE_REQUEST_CANCEL_JOIN,
-    MYTRIBE_SWITCH_TAB
+    MYTRIBE_SWITCH_TAB,
 } from './MyTribeReducers'
-import {
-    TRIBE_REQUEST_JOIN,
-    TRIBE_REQUEST_JOIN_SUCCESS,
-    TRIBE_REQUEST_JOIN_ERROR,
-    TRIBE_REQUEST_CANCEL_JOIN_SUCCESS,
-    TRIBE_REQUEST_CANCEL_JOIN_ERROR,
-    TRIBE_REQUEST_CANCEL_JOIN,
-} from './TribeReducers';
 import { api as API } from '../../middleware/api'
 import {
     queryBuilder,
@@ -42,8 +34,12 @@ import {
     MYTRIBE_FEED_REFRESH,
     MYTRIBE_UPDATE_MEMBER_SUCCESS,
     MEMBER_UPDATE_TYPE,
+    MYTRIBE_MEMBER_INVITE_SUCCESS,
+    MYTRIBE_MEMBER_INVITE_FAIL,
+    MYTRIBE_DELETE_SUCCESS,
 } from './Tribes'
-import { trackWithProperties, EVENT as E } from '../../../monitoring/segment';
+import { REPORT_CREATE } from '../report/ReportReducers'
+import { trackWithProperties, EVENT as E } from '../../../monitoring/segment'
 
 const DEBUG_KEY = '[ MyTribe Actions ]'
 const BASE_ROUTE = 'secure/tribe'
@@ -80,10 +76,14 @@ export const myTribeSelectMembersFilter = (option, index, tribeId, pageId) => (
     })
 }
 
-export const tribeDetailClose = () => (dispatch) => {
+export const tribeDetailClose = (tribeId, pageId) => (dispatch) => {
     Actions.pop()
     dispatch({
         type: MYTRIBE_DETAIL_CLOSE,
+        payload: {
+            tribeId,
+            pageId,
+        },
     })
 }
 
@@ -92,7 +92,7 @@ export const tribeDetailClose = () => (dispatch) => {
  * and then open tribe detail with id
  */
 export const myTribeDetailOpenWithId = (tribeId) => (dispatch, getState) => {
-    const { tab } = getState().navigation;
+    const { tab } = getState().navigation
     const pageId = constructPageId('tribe')
     const callback = (res) => {
         console.log(`${DEBUG_KEY}: res for verifying user identify: `, res)
@@ -134,7 +134,7 @@ export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
         return
     }
     const tribeId = tribe._id
-    const { tab } = getState().navigation;
+    const { tab } = getState().navigation
     const pageId = constructPageId('tribe')
     const callback = (res) => {
         if (!res.data || res.status === 400 || res.status === 404) {
@@ -179,10 +179,11 @@ export const refreshMyTribeDetail = (
 ) => (dispatch, getState) => {
     const tribes = getState().tribes
     if (!_.has(tribes, tribeId) || !_.has(tribes, `${tribeId}.${pageId}`)) {
-
-      // TODO: tribe: add sentry log
-      console.error(`${DEBUG_KEY}: tribeId ${tribeId} or ${pageId} not in tribes for refreshMyTribeDetail`);
-      return;
+        // TODO: tribe: add sentry log
+        console.error(
+            `${DEBUG_KEY}: tribeId ${tribeId} or ${pageId} not in tribes for refreshMyTribeDetail`
+        )
+        return
     }
     fetchTribeDetail(tribeId, pageId, null, showIndicator)(dispatch, getState)
     refreshTribeFeed(tribeId, pageId, dispatch, getState, callback)
@@ -550,7 +551,7 @@ export const refreshTribeFeed = (
     callback
 ) => {
     const { token } = getState().user
-    const tribes = getState().tribes;
+    const tribes = getState().tribes
 
     if (!_.has(tribes, tribeId) || !_.has(tribes, `${tribeId}.${pageId}`)) {
         // TODO: tribe: sentry error logging
@@ -606,7 +607,7 @@ export const refreshTribeFeed = (
  */
 export const loadMoreTribeFeed = (tribeId, pageId) => (dispatch, getState) => {
     const { token } = getState().user
-    const tribes = getState().tribes;
+    const tribes = getState().tribes
 
     if (!_.has(tribes, tribeId) || !_.has(tribes, `${tribeId}.${pageId}`)) {
         // TODO: tribe: sentry error logging
@@ -692,38 +693,25 @@ export const loadTribeFeed = (
 
 /**
  * User request to join a tribe
- * type: ['mytribe', 'tribe']
  * @param type: if type is undefined or tribe, then it's requested from tribe page
  * Otherwise, it's from mytribe
  */
-export const requestJoinTribe = (tribeId, join, type, pageId) => (
+export const requestJoinTribe = (tribeId, join, pageId) => (
     dispatch,
     getState
 ) => {
     const { token, userId, user } = getState().user
     let startActionType, endActionErrorType
     if (join) {
-        startActionType =
-            type && type === 'mytribe'
-                ? MYTRIBE_REQUEST_JOIN
-                : TRIBE_REQUEST_JOIN
-        endActionErrorType =
-            type && type === 'mytribe'
-                ? MYTRIBE_REQUEST_JOIN_ERROR
-                : TRIBE_REQUEST_JOIN_ERROR
+        startActionType = MYTRIBE_REQUEST_JOIN
+        endActionErrorType = MYTRIBE_REQUEST_JOIN_ERROR
         trackWithProperties(E.TRIBE_JOIN_REQUESTED, {
             TribeId: tribeId,
             UserId: userId,
         })
     } else {
-        startActionType =
-            type && type === 'mytribe'
-                ? MYTRIBE_REQUEST_CANCEL_JOIN
-                : TRIBE_REQUEST_CANCEL_JOIN
-        endActionErrorType =
-            type && type === 'mytribe'
-                ? MYTRIBE_REQUEST_CANCEL_JOIN_ERROR
-                : TRIBE_REQUEST_CANCEL_JOIN_ERROR
+        startActionType = MYTRIBE_REQUEST_CANCEL_JOIN
+        endActionErrorType = MYTRIBE_REQUEST_CANCEL_JOIN_ERROR
         trackWithProperties(E.TRIBE_JOIN_CANCELLED, {
             TribeId: tribeId,
             UserId: userId,
@@ -740,10 +728,7 @@ export const requestJoinTribe = (tribeId, join, type, pageId) => (
     const onSuccess = () => {
         if (join) {
             return dispatch({
-                type:
-                    type && type === 'mytribe'
-                        ? MYTRIBE_REQUEST_JOIN_SUCCESS
-                        : TRIBE_REQUEST_JOIN_SUCCESS,
+                type: MYTRIBE_REQUEST_JOIN_SUCCESS,
                 payload: {
                     tribeId,
                     userId,
@@ -758,10 +743,7 @@ export const requestJoinTribe = (tribeId, join, type, pageId) => (
             })
         }
         return dispatch({
-            type:
-                type && type === 'mytribe'
-                    ? MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS
-                    : TRIBE_REQUEST_CANCEL_JOIN_SUCCESS,
+            type: MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS,
             payload: {
                 tribeId,
                 userId,
@@ -821,4 +803,309 @@ export const requestJoinTribe = (tribeId, join, type, pageId) => (
         .catch((err) => {
             onError(err)
         })
+}
+
+/**
+ * Invite a single user to the tribe. This API is likely to be deprecated after
+ * inviteMultipleUsersToTribe with the multi-select invite modal is implemented
+ *
+ * @param {String} tribeId
+ * @param {String} inviteeId
+ */
+export const inviteUserToTribe = (tribeId, inviteeId) => (
+    dispatch,
+    getState
+) => {
+    const { token, userId } = getState().user
+    const onSuccess = (res) => {
+        trackWithProperties(E.TRIBE_INVITE_SENT, {
+            UserId: userId,
+            TribeId: tribeId,
+        })
+        dispatch({
+            type: MYTRIBE_MEMBER_INVITE_SUCCESS,
+            payload: { tribeId, userId: inviteeId },
+        })
+        console.log(`${DEBUG_KEY}: invite user success: `, res)
+        refreshMyTribeDetail(tribeId)(dispatch, getState)
+        Actions.pop()
+        Alert.alert('Success', 'You have successfully invited the user.')
+    }
+
+    const onError = (err) => {
+        dispatch({
+            type: MYTRIBE_MEMBER_INVITE_FAIL,
+            payload: { tribeId, userId: inviteeId },
+        })
+        Alert.alert(
+            'Error',
+            'Failed to send invitation to user. Please try again later.'
+        )
+        console.log(`${DEBUG_KEY}: error sending invitation to user: `, err)
+    }
+
+    API.post(`${BASE_ROUTE}/member-invitation`, { tribeId, inviteeId }, token)
+        .then((res) => {
+            if (res && res.success) {
+                return onSuccess(res.data)
+            }
+            return onError(res)
+        })
+        .catch((err) => {
+            onError(err)
+        })
+}
+
+/**
+ * User accept tribe invitation
+ * type: ['mytribe', 'tribe'];
+ */
+export const acceptTribeInvit = (tribeId) => (dispatch, getState) => {
+    const { token, userId, user } = getState().user
+    const onSuccess = (res) => {
+        trackWithProperties(E.TRIBE_INVITE_ACCEPTED, {
+            UserId: userId,
+            TribeId: tribeId,
+        })
+
+        dispatch({
+            type: MYTRIBE_UPDATE_MEMBER_SUCCESS,
+            payload: {
+                tribeId,
+                userId,
+                updateType: MEMBER_UPDATE_TYPE.acceptMember,
+            },
+        })
+        console.log(
+            `${DEBUG_KEY}: success accept tribe invitation with res: `,
+            res
+        )
+        // TODO: tribe: refresh page
+    }
+
+    const onError = (err) => {
+        // TODO: tribe: error handling
+        Alert.alert(
+            'Error',
+            'Failed to accept inivitation. Please try again later.'
+        )
+        console.log(
+            `${DEBUG_KEY}: error accept tribe invitation with err: `,
+            err
+        )
+    }
+
+    API.put(`${BASE_ROUTE}/accept-invitation`, { tribeId }, token)
+        .then((res) => {
+            if (res && res.message) {
+                return onSuccess(res)
+            }
+            onError(res)
+        })
+        .catch((err) => {
+            onError(err)
+        })
+}
+
+/**
+ * User chooses to leave a tribe
+ * type: ['decline', undefined]
+ */
+export const leaveTribe = (tribeId, type) => (dispatch, getState) => {
+    const { token, userId } = getState().user
+    const onSuccess = () => {
+        trackWithProperties(
+            type == 'decline' ? E.TRIBE_INVITE_DECLINED : E.TRIBE_LEFT,
+            { UserId: userId, TribeId: tribeId, RemoveeId: userId }
+        )
+
+        dispatch({
+            type: MYTRIBE_UPDATE_MEMBER_SUCCESS,
+            payload: {
+                userId,
+                tribeId,
+                updateType: MEMBER_UPDATE_TYPE.removeMember,
+            },
+        })
+        console.log(`${DEBUG_KEY}: leave tribe success.`)
+    }
+
+    const onError = (err) => {
+        Alert.alert('Error', 'Failed to leave tribe. Please try again later.')
+        console.log(`${DEBUG_KEY}: error leaving tribe with err: `, err)
+    }
+
+    API.delete(
+        `${BASE_ROUTE}/member?tribeId=${tribeId}&removeeId=${userId}`,
+        {},
+        token
+    )
+        .then((res) => {
+            if (
+                res.status === 200 ||
+                (res && res.message && res.message.includes('Delete'))
+            ) {
+                return onSuccess()
+            }
+            onError(res)
+        })
+        .catch((err) => {
+            onError(err)
+        })
+}
+
+// Decline tribe invitation is the same as leaving a tribe
+export const declineTribeInvit = (tribeId) => (dispatch, getState) => {
+    leaveTribe(tribeId, 'decline')(dispatch, getState)
+}
+
+// User deletes an tribe belongs to self
+export const deleteTribe = (tribeId) => (dispatch, getState) => {
+    const { token, userId } = getState().user
+    const onSuccess = (res) => {
+        trackWithProperties(E.TRIBE_DELETED, {
+            UserId: userId,
+            TribeId: tribeId,
+        })
+        Actions.pop()
+        dispatch({
+            type: MYTRIBE_DELETE_SUCCESS,
+            payload: {
+                tribeId,
+            },
+        })
+        console.log(
+            `${DEBUG_KEY}: tribe with id: ${tribeId}, is deleted with res: `,
+            res
+        )
+        Alert.alert('Success', 'You have successfully deleted the tribe.')
+    }
+
+    const onError = (err) => {
+        // TODO: tribe: sentry log error handling
+        Alert.alert(
+            'Error',
+            'Failed to delete this tribe. Please try again later.'
+        )
+        console.log(`${DEBUG_KEY}: delete tribe error: `, err)
+    }
+
+    API.delete(`${BASE_ROUTE}?tribeId=${tribeId}`, {}, token)
+        .then((res) => {
+            if (
+                res.status === 200 ||
+                (res.message && res.message.includes('Deleted'))
+            ) {
+                return onSuccess(res)
+            }
+            onError(res)
+        })
+        .catch((err) => {
+            onError(err)
+        })
+}
+
+// User edits a tribe. Open the create tribe modal with pre-populated item.
+export const editTribe = (tribe) => (dispatch, getState) => {
+    Actions.push('createTribeStack', { initializeFromState: true, tribe })
+}
+
+/**
+ * Send invite requests to multiple users for a tribe
+ * @param {*} tribeId
+ * @param {*} users
+ * @param {*} callback
+ */
+export const inviteMultipleUsersToTribe = (tribeId, users, callback) => (
+    dispatch,
+    getState
+) => {
+    const { token, userId } = getState().user
+    trackWithProperties(E.TRIBE_INVITE_SENT, {
+        UserId: userId,
+        TribeId: tribeId,
+    })
+    ;(async () => {
+        let failedItems = []
+
+        for (let user of users) {
+            // send the message
+            const body = {
+                tribeId,
+                inviteeId: user._id,
+            }
+            try {
+                const resp = await API.post(
+                    `${BASE_ROUTE}/member-invitation`,
+                    body,
+                    token
+                )
+                if (resp.status != 200) {
+                    failedItems.push(user)
+                }
+            } catch (e) {
+                failedItems.push(user)
+            }
+        }
+
+        if (failedItems.length == 0) {
+            Alert.alert('Success', 'Your friends have been invited')
+            // Use callback if there is one
+            if (callback) {
+                callback()
+            } else {
+                Actions.pop()
+            }
+        } else {
+            const failedUserNames = failedItems.reduce((accum, u) => {
+                return `${accum}, ${u.name}`
+            }, '')
+            Alert.alert(
+                'Error',
+                `Could not invite some users: ${failedUserNames}`
+            )
+        }
+    })()
+}
+
+export const openTribeInvitModal = ({
+    tribeId,
+    cardIconSource,
+    cardIconStyle,
+}) => (dispatch) => {
+    const searchFor = {
+        type: 'tribe',
+        id: tribeId,
+    }
+    Actions.push('searchPeopleLightBox', {
+        searchFor,
+        cardIconSource,
+        cardIconStyle,
+    })
+}
+
+/**
+ * Creating a new report
+ * category: ['General', 'User', 'Post', 'Goal', 'Comment', 'Tribe', 'Event']
+ * type: ['detail', something else]
+ * @param {*} referenceId
+ * @param {*} type
+ */
+export const reportTribe = (referenceId, type) => (dispatch, getState) => {
+    const { userId } = getState().user
+    trackWithProperties(E.TRIBE_REPORTED, {
+        UserId: userId,
+        ReferenceId: referenceId,
+    })
+    // Set the basic information for a report
+    dispatch({
+        type: REPORT_CREATE,
+        payload: {
+            type,
+            creatorId: userId,
+            category: 'Tribe',
+            referenceId,
+        },
+    })
+    Actions.push('createReport')
 }

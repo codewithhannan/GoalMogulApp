@@ -28,17 +28,15 @@ import {
     tribeSelectTab,
     loadMoreTribeFeed,
     requestJoinTribe,
-} from '../../../redux/modules/tribe/MyTribeActions'
-import {
     acceptTribeInvit,
     declineTribeInvit,
+    leaveTribe,
     deleteTribe,
     editTribe,
     inviteMultipleUsersToTribe,
-    leaveTribe,
     openTribeInvitModal,
     reportTribe,
-} from '../../../redux/modules/tribe/TribeActions'
+} from '../../../redux/modules/tribe/MyTribeActions'
 // Selector
 import {
     getMyTribeMemberNavigationState,
@@ -334,18 +332,18 @@ class MyTribe extends React.PureComponent {
             options = switchByButtonIndex([
                 [R.equals(0), () => {
                     console.log(`${DEBUG_KEY} User chooses to remove request`);
-                    this.props.requestJoinTribe(_id, false, 'mytribe', this.props.pageId);
+                    this.props.requestJoinTribe(_id, false, this.props.pageId);
                 }]
             ]);
         } else if (isMember === 'Invitee') {
             options = switchByButtonIndex([
                 [R.equals(0), () => {
                     console.log(`${DEBUG_KEY} User chooses to accept`);
-                    this.props.acceptTribeInvit(_id, 'mytribe');
+                    this.props.acceptTribeInvit(_id);
                 }],
                 [R.equals(1), () => {
                     console.log(`${DEBUG_KEY} User chooses to decline`);
-                    this.props.declineTribeInvit(_id, 'mytribe');
+                    this.props.declineTribeInvit(_id);
                 }],
             ]);
         } else {
@@ -416,14 +414,14 @@ class MyTribe extends React.PureComponent {
             options = switchByButtonIndex([
                 [R.equals(0), () => {
                     console.log(`${DEBUG_KEY} User chooses to remove request`);
-                    this.props.requestJoinTribe(_id, false, 'mytribe', this.props.pageId);
+                    this.props.requestJoinTribe(_id, false, this.props.pageId);
                 }]
             ]);
         } else {
             options = switchByButtonIndex([
                 [R.equals(0), () => {
                     console.log(`${DEBUG_KEY} User chooses to join the tribe`);
-                    this.props.requestJoinTribe(_id, true, 'mytribe', this.props.pageId);
+                    this.props.requestJoinTribe(_id, true, this.props.pageId);
                 }]
             ]);
         }
@@ -642,15 +640,6 @@ class MyTribe extends React.PureComponent {
 
     renderTribeOverview(item, data) {
         const { name, _id, picture } = item;
-
-        // const filterBar = this.props.tab === 'members'
-        //   ? (
-        //     <MemberFilterBar
-        //       onSelect={(option) => this.props.myTribeSelectMembersFilter(option)}
-        //     />
-        //   )
-        //   : null;
-
         const filterBar = this.props.tab === 'members'
             ? this.renderMemberTabs()
             : null;
@@ -836,7 +825,7 @@ class MyTribe extends React.PureComponent {
                 <View style={styles.containerStyle}>
                     <SearchBarHeader
                         backButton
-                        onBackPress={() => this.props.tribeDetailClose()}
+                        onBackPress={() => this.props.tribeDetailClose(this.props.tribeId, this.props.pageId)}
                         pageSetting
                         handlePageSetting={() => this.handlePageSetting(item)}
                     />
