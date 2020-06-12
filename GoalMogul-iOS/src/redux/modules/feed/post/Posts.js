@@ -57,13 +57,10 @@ import {
 /* Tribe related */
 import {
     MYTRIBE_FEED_FETCH_DONE,
-    MYTRIBE_FEED_REFRESH_DONE
-} from '../../tribe/MyTribeReducers';
+    MYTRIBE_FEED_REFRESH_DONE,
+    MYTRIBE_DETAIL_CLOSE
+} from '../../tribe/Tribes';
 
-import {
-    TRIBE_FEED_FETCH_DONE,
-    TRIBE_FEED_REFRESH_DONE
-} from '../../tribe/TribeReducers';
 import {
     MYEVENT_FEED_FETCH_DONE,
     MYEVENT_FEED_REFRESH_DONE
@@ -324,8 +321,6 @@ export default (state = INITIAL_STATE, action) => {
         /* Profile, Home, Event and Tribe related */
         case MYTRIBE_FEED_FETCH_DONE:
         case MYTRIBE_FEED_REFRESH_DONE:
-        case TRIBE_FEED_REFRESH_DONE:
-        case TRIBE_FEED_FETCH_DONE:
         case MYEVENT_FEED_FETCH_DONE:
         case MYEVENT_FEED_REFRESH_DONE:
         case EVENT_FEED_FETCH_DONE:
@@ -401,6 +396,41 @@ export default (state = INITIAL_STATE, action) => {
             // Update the goal by goalId
             postToUpdate = _.set(postToUpdate, 'reference', newReference);
             newState = _.set(newState, `${postId}`, postToUpdate);
+            return newState;
+        }
+
+        // Tribe page close. Remove related post refs
+        case MYTRIBE_DETAIL_CLOSE: {
+            const { pageId, tribeId, allFeedRefs } = action.payload;
+            let newState = _.cloneDeep(state);
+            
+            if (!allFeedRefs || _.isEmpty(allFeedRefs)) return newState;
+
+            allFeedRefs.forEach(postId => {
+                // Check if postId in the Posts
+                if (!_.has(newState, postId)) {
+                    return;
+                }
+
+                let postToUpdate = _.get(newState, `${postId}`);
+
+                const oldReference = _.get(newState, `${postId}.reference`);
+                const hasPageReference = (oldReference !== undefined && oldReference.some(r => r === pageId));
+                // Remove reference
+                let newReference = _.cloneDeep(oldReference);
+                if (hasPageReference) {
+                    newReference = oldReference.filter(r => r !== pageId);
+                }
+
+                // Remove this goal if it's no longer referenced
+                if (!newReference || _.isEmpty(newReference)) {
+                    newState = _.omit(newState, `${postId}`);
+                    return;
+                }
+                postToUpdate = _.set(postToUpdate, 'reference', newReference);
+                newState = _.set(newState, `${postId}`, postToUpdate);
+            })
+
             return newState;
         }
 

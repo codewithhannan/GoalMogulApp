@@ -57,6 +57,7 @@ const EVENT = {
     TRIBE_DELETED: 'Tribe Deleted',
     TRIBE_INVITE_SENT: 'TribeInvit Sent',
     TRIBE_INVITE_ACCEPTED: 'TribeInvit Accepted',
+    TRIBE_INVITE_DECLINED: 'TribeInvit Declined',
     TRIBE_JOIN_REQUESTED: 'TribeJoin Requested',
     TRIBE_JOIN_CANCELLED: 'TribeJoin Cancelled',
     TRIBE_LEFT: 'Tribe Left',

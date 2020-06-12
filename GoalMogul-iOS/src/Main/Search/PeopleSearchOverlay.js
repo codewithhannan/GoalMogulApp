@@ -26,7 +26,7 @@ import {
 
 import {
   inviteUserToTribe
-} from '../../redux/modules/tribe/TribeActions';
+} from '../../redux/modules/tribe/MyTribeActions';
 
 import {
   inviteParticipantToEvent
