@@ -394,6 +394,7 @@ class PostDetailSection extends React.PureComponent {
                             }
                             this.props.likeGoal('post', _id);
                         }}
+                        onTextPress={() => { this.setState({ showlikeListModal: true }) }}
                     />
                     <ActionButton
                         iconSource={ShareIcon}
@@ -403,6 +404,7 @@ class PostDetailSection extends React.PureComponent {
                         iconStyle={{ tintColor: '#828282' }}
                         onPress={() => this.handleShareOnClick(item)}
                         disabled={isShare}
+                        onTextPress={() => { this.setState({ showShareListModal: true }) }}
                     />
                     <ActionButton
                         iconSource={CommentIcon}
@@ -433,7 +435,6 @@ class PostDetailSection extends React.PureComponent {
                     isVisible={this.state.showlikeListModal}
                     closeModal={() => {
                         this.setState({
-                            ...this.state,
                             showlikeListModal: false
                         });
                     }}
@@ -444,7 +445,6 @@ class PostDetailSection extends React.PureComponent {
                     isVisible={this.state.showShareListModal}
                     closeModal={() => {
                         this.setState({
-                            ...this.state,
                             showShareListModal: false
                         });
                     }}

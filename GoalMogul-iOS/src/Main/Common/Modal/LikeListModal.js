@@ -11,8 +11,8 @@ import cancel from '../../../asset/utils/cancel_no_background.png';
 import Modal from 'react-native-modalbox';
 import Constants from 'expo-constants';
 import DelayedButton from '../Button/DelayedButton';
-import { modalCancelIconContainerStyle, modalCancelIconStyle } from '../../../styles';
 import { ModalHeaderStyle } from './Styles';
+
 
 const DEBUG_KEY = '[ UI LikeListModal ]';
 const MODAL_TRANSITION_TIME = 300;
@@ -33,13 +33,13 @@ class LikeListModal extends React.PureComponent {
     closeModal() {
         this.props.closeModal && this.props.closeModal();
         if (this.props.clearDataOnHide) {
-            this.setState({...INITIAL_STATE});
+            this.setState({ ...INITIAL_STATE });
         }
     }
 
     refreshLikeList = () => {
         this.setState({ ...this.state, refreshing: true });
-        const callback = (data) => {this.setState({...this.state, data});};
+        const callback = (data) => { this.setState({ ...this.state, data }); };
 
         this.props.getLikeList(this.props.parentId, this.props.parentType, callback);
     }
@@ -136,7 +136,7 @@ class LikeListModal extends React.PureComponent {
                     renderItem={this.renderItem}
                     contentContainerStyle={{ marginTop: 10 }}
                     refreshing={this.state.refreshing}
-                    onScroll={(e) => {this.onScrollFlatList(e.nativeEvent.contentOffset.y);}}
+                    onScroll={(e) => { this.onScrollFlatList(e.nativeEvent.contentOffset.y); }}
                 />
             </Modal>
         );

@@ -93,7 +93,7 @@ import { OnboardingFbPlugin } from './Main/Onboarding';
 import SplashScreen from './SplashScreen';
 import Tutorial from './Tutorial/Tutorial';
 import UserInviteModal from './Main/Common/Modal/UserInviteModal';
-
+import { trackViewScreen } from './monitoring/segment';
 
 class RouterComponent extends Component {
     onTabPress = (all) => {
@@ -149,6 +149,7 @@ class RouterComponent extends Component {
 
     stateHandler = (prevState, newState, action) => {
         if (action && action.routeName) {
+            trackViewScreen(action.routeName);
         }
         // console.log('newState is: ', newState);
     }
@@ -605,6 +606,16 @@ class RouterComponent extends Component {
                         component={TrendingGoalView}
                         hideNavBar
                     />
+                    {/* <Scene
+                        key="trendingGoalView"
+                        component={Like}
+                        hideNavBar
+                    />
+                    <Scene
+                        key="trendingGoalView"
+                        component={TrendingGoalView}
+                        hideNavBar
+                    /> */}
                     <Scene
                         key="createPostModal"
                         component={CreatePostModal}

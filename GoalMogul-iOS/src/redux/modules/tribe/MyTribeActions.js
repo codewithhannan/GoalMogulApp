@@ -463,7 +463,7 @@ const doMyTribeAdminDemoteUser = (userId, tribeId) => (dispatch, getState) => {
         Alert.alert('Demote member failed', 'Please try again later')
     }
 
-    API.post(
+    API.delete(
         `${BASE_ROUTE}/admin`,
         {
             demoteeId: userId,
