@@ -4,6 +4,8 @@
  */
 
 import _ from 'lodash';
+import { SentryRequestBuilder } from '../../../monitoring/sentry'
+import { SENTRY_MESSAGE_TYPE, SENTRY_TAGS, SENTRY_MESSAGE_LEVEL, SENTRY_CONTEXT } from '../../../monitoring/sentry/Constants'
 /**
  * List of actions to add
  * 
@@ -190,8 +192,12 @@ export default (state = INITIAL_STATE, action) => {
                 : _.cloneDeep(INITIAL_TRIBE_OBJECT);
 
             if (!pageId) {
-                // pageId doesn't exist log error
-                // TODO: tribe: sentry log
+                new SentryRequestBuilder("PageId doesn't exist", SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.REDUCER, MYTRIBE_DETAIL_LOAD)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                    .send();
                 return newState;
             }
 
@@ -221,7 +227,12 @@ export default (state = INITIAL_STATE, action) => {
 
             if (!pageId) {
                 // pageId doesn't exist log error.
-                // TODO: tribe: sentry log
+                new SentryRequestBuilder("PageId doesn't exist", SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.REDUCER, MYTRIBE_DETAIL_LOAD_SUCCESS)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                    .send();
                 return newState;
             }
 
@@ -248,7 +259,12 @@ export default (state = INITIAL_STATE, action) => {
             const { pageId, tribeId } = action.payload;
             let newState = _.cloneDeep(state);
             if (!_.has(newState, tribeId) || !_.has(newState, `${tribeId}.${pageId}`)) {
-                // TODO: tribe: add sentry log
+                new SentryRequestBuilder("Tribes doesn't contain tribeId or pageId", SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.REDUCER, MYTRIBE_FEED_REFRESH)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                    .send();
                 console.error(`${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: ${action.type}`);
                 return newState;
             }
@@ -262,7 +278,12 @@ export default (state = INITIAL_STATE, action) => {
             const { pageId, tribeId } = action.payload;
             let newState = _.cloneDeep(state);
             if (!_.has(newState, tribeId) || !_.has(newState, `${tribeId}.${pageId}`)) {
-                // TODO: tribe: add sentry log
+                new SentryRequestBuilder("Tribes doesn't contain tribeId or pageId", SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.REDUCER, MYTRIBE_FEED_FETCH)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                    .send();
                 console.error(`${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: ${action.type}`);
                 return newState;
             }
@@ -276,7 +297,12 @@ export default (state = INITIAL_STATE, action) => {
             const { pageId, tribeId, hasNextPage, data, skip } = action.payload;
             let newState = _.cloneDeep(state);
             if (!_.has(newState, tribeId) || !_.has(newState, `${tribeId}.${pageId}`)) {
-                // TODO: tribe: add sentry log
+                new SentryRequestBuilder("Tribes doesn't contain tribeId or pageId", SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.REDUCER, MYTRIBE_FEED_FETCH_DONE)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                    .send();
                 console.error(`${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: ${action.type}`);
                 return newState;
             }
@@ -306,7 +332,12 @@ export default (state = INITIAL_STATE, action) => {
             const { pageId, tribeId, hasNextPage, data, skip } = action.payload;
             let newState = _.cloneDeep(state);
             if (!_.has(newState, tribeId) || !_.has(newState, `${tribeId}.${pageId}`)) {
-                // TODO: tribe: add sentry log
+                new SentryRequestBuilder("Tribes doesn't contain tribeId or pageId", SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.REDUCER, MYTRIBE_FEED_REFRESH_DONE)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                    .send();
                 console.error(`${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: ${action.type}`);
                 return newState;
             }
@@ -339,7 +370,13 @@ export default (state = INITIAL_STATE, action) => {
             }
 
             if (!_.has(newState, tribeId)) {
-                // TODO: tribe: add sentry log
+                new SentryRequestBuilder("Tribes doesn't contain tribeId", SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.REDUCER, MYTRIBE_UPDATE_MEMBER_SUCCESS)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
+                    .withExtraContext(SENTRY_CONTEXT.MEMBER_UPDATE_TYPE, updateType)
+                    .send();
                 console.error(`${DEBUG_KEY}: tribeId: ${tribeId} doesn't exist in redux for action: `, action);
                 return newState;
             }
@@ -354,7 +391,13 @@ export default (state = INITIAL_STATE, action) => {
             } else if (updateType == MEMBER_UPDATE_TYPE.demoteMember || updateType == MEMBER_UPDATE_TYPE.acceptMember) {
                 newMembers = updateMemberStatus(oldMembers, userId, 'Member');
             } else {
-                // TODO: tribe: sentry error log
+                new SentryRequestBuilder("Member update type is not supported", SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.REDUCER, MYTRIBE_UPDATE_MEMBER_SUCCESS)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
+                    .withExtraContext(SENTRY_CONTEXT.MEMBER_UPDATE_TYPE, updateType)
+                    .send();
             }
 
             tribeToUpdate = _.set(tribeToUpdate, 'tribe.members', newMembers);
@@ -367,7 +410,12 @@ export default (state = INITIAL_STATE, action) => {
             const { option, index, tribeId, pageId } = action.payload;
             let newState = _.cloneDeep(state);
             if (!_.has(newState, tribeId) || !_.has(newState, `${tribeId}.${pageId}`)) {
-                // TODO: tribe: add sentry log
+                new SentryRequestBuilder("Tribes doesn't contain tribeId or pageId", SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.REDUCER, MYTRIBE_MEMBER_SELECT_FILTER)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                    .send();
                 console.error(`${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: `, action);
                 return newState;
             }
@@ -388,7 +436,12 @@ export default (state = INITIAL_STATE, action) => {
             const { userId, tribeId, member, pageId } = action.payload;
             let newState = _.cloneDeep(state);
             if (!_.has(newState, tribeId) || !_.has(newState, `${tribeId}.${pageId}`)) {
-                // TODO: tribe: add sentry log
+                new SentryRequestBuilder("Tribes doesn't contain tribeId or pageId", SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.REDUCER, MYTRIBE_REQUEST_JOIN_SUCCESS)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                    .send();
                 console.error(`${DEBUG_KEY}: tribeId: ${tribeId} or pageId: ${pageId} is not in redux for action`, action);
                 return newState;
             }
@@ -412,7 +465,12 @@ export default (state = INITIAL_STATE, action) => {
             const { tribeId, pageId } = action.payload;
             let newState = _.cloneDeep(state);
             if (!_.has(newState, tribeId) || !_.has(newState, `${tribeId}.${pageId}`)) {
-                // TODO: tribe: add sentry log
+                new SentryRequestBuilder("Tribes doesn't contain tribeId or pageId", SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.REDUCER, MYTRIBE_REQUEST_JOIN_ERROR)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                    .send();
                 console.error(`${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: `, action);
                 return newState;
             }
@@ -425,7 +483,12 @@ export default (state = INITIAL_STATE, action) => {
             const { tribeId, pageId } = action.payload;
             let newState = _.cloneDeep(state);
             if (!_.has(newState, tribeId) || !_.has(newState, `${tribeId}.${pageId}`)) {
-                // TODO: tribe: add sentry log
+                new SentryRequestBuilder("Tribes doesn't contain tribeId or pageId", SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.REDUCER, MYTRIBE_REQUEST_JOIN)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                    .send();
                 console.error(`${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: `, action);
                 return newState;
             }
@@ -438,7 +501,12 @@ export default (state = INITIAL_STATE, action) => {
             const { userId, tribeId, pageId } = action.payload;
             let newState = _.cloneDeep(state);
             if (!_.has(newState, tribeId) || !_.has(newState, `${tribeId}.${pageId}`)) {
-                // TODO: tribe: add sentry log
+                new SentryRequestBuilder("Tribes doesn't contain tribeId or pageId", SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.REDUCER, MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                    .send();
                 console.error(`${DEBUG_KEY}: tribeId: ${tribeId} is not in redux for action`, action);
                 return newState;
             }
@@ -461,7 +529,12 @@ export default (state = INITIAL_STATE, action) => {
             const { index, tribeId, pageId } = action.payload;
             let newState = _.cloneDeep(state);
             if (!_.has(newState, tribeId) || !_.has(newState, `${tribeId}.${pageId}`)) {
-                // TODO: tribe: add sentry log
+                new SentryRequestBuilder("Tribes doesn't contain tribeId or pageId", SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.REDUCER, MYTRIBE_SWITCH_TAB)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                    .send();
                 console.error(`${DEBUG_KEY}: tribeId: ${tribeId} is not in redux for action`, action);
                 return newState;
             }
@@ -478,7 +551,11 @@ export default (state = INITIAL_STATE, action) => {
             const newState = _.cloneDeep(state);
 
             if (!_.has(newState, tribeId)) {
-                // TODO: tribe: add sentry log
+                new SentryRequestBuilder("Tribes doesn't contain tribeId", SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.REDUCER, MYTRIBE_EDIT_SUCCESS)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .send();
                 console.error(`${DEBUG_KEY}: tribeId: ${tribeId} is not in redux for action`, action);
                 return newState;
             }

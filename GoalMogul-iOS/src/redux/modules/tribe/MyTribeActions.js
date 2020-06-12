@@ -38,6 +38,8 @@ import {
 import { Logger } from '../../middleware/utils/Logger'
 import { REPORT_CREATE } from '../report/ReportReducers'
 import { trackWithProperties, EVENT as E } from '../../../monitoring/segment'
+import { SentryRequestBuilder } from '../../../monitoring/sentry'
+import { SENTRY_MESSAGE_TYPE, SENTRY_TAGS, SENTRY_TAG_VALUE, SENTRY_MESSAGE_LEVEL, SENTRY_CONTEXT } from '../../../monitoring/sentry/Constants'
 
 const DEBUG_KEY = '[ MyTribe Actions ]'
 const BASE_ROUTE = 'secure/tribe'
@@ -104,7 +106,6 @@ export const myTribeDetailOpenWithId = (tribeId) => (dispatch, getState) => {
             return Alert.alert('Tribe not found')
         }
         // Only if status is 200, we open the detail
-        // TODO: tribe: contrust page Id and open corresponding page with componentByTab or something
         if (res.status === 200) {
             dispatch({
                 type: MYTRIBE_DETAIL_LOAD_SUCCESS,
@@ -130,7 +131,10 @@ export const myTribeDetailOpenWithId = (tribeId) => (dispatch, getState) => {
 export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
     Logger.log(`${DEBUG_KEY}: [ tribeDetailOpen ]: tribe is:`, tribe, 3)
     if (!tribe || !tribe._id) {
-        // TODO: tribe: sentry error
+        new SentryRequestBuilder("Tribe or tribe._id is not defined", SENTRY_MESSAGE_TYPE.MESSAGE)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.TRIBE.ACTION, "TribeDetail Open")
+            .send();
         return
     }
     const tribeId = tribe._id
@@ -179,7 +183,12 @@ export const refreshMyTribeDetail = (
 ) => (dispatch, getState) => {
     const tribes = getState().tribes
     if (!_.has(tribes, tribeId) || !_.has(tribes, `${tribeId}.${pageId}`)) {
-        // TODO: tribe: add sentry log
+        new SentryRequestBuilder("Tribes doesn't contain tribeId or pageId", SENTRY_MESSAGE_TYPE.MESSAGE)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.TRIBE.ACTION, "TribeDetail Refresh")
+            .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+            .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+            .send();
         console.error(
             `${DEBUG_KEY}: tribeId ${tribeId} or ${pageId} not in tribes for refreshMyTribeDetail`
         )
@@ -554,7 +563,12 @@ export const refreshTribeFeed = (
     const tribes = getState().tribes
 
     if (!_.has(tribes, tribeId) || !_.has(tribes, `${tribeId}.${pageId}`)) {
-        // TODO: tribe: sentry error logging
+        new SentryRequestBuilder("Tribes doesn't contain tribeId or pageId", SENTRY_MESSAGE_TYPE.MESSAGE)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.TRIBE.ACTION, "TribeDetail Refresh Feed")
+            .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+            .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+            .send();
         console.error(
             `${DEBUG_KEY}: pageId: ${pageId} or tribeId: ${tribeId} is not in tribes`
         )
@@ -600,8 +614,15 @@ export const refreshTribeFeed = (
                 callback()
             }
         },
-        () => {
-            // TODO: tribe: implement for onError
+        (err) => {
+            new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
+                .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                .withTag(SENTRY_TAGS.TRIBE.ACTION, "TribeDetail Refresh Feed")
+                .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                .withExtraContext(SENTRY_CONTEXT.PAGINATION.SKIP, skip)
+                .withExtraContext(SENTRY_CONTEXT.PAGINATION.LIMIT, limit)
+                .send();
         }
     )
 }
@@ -616,7 +637,12 @@ export const loadMoreTribeFeed = (tribeId, pageId) => (dispatch, getState) => {
     const tribes = getState().tribes
 
     if (!_.has(tribes, tribeId) || !_.has(tribes, `${tribeId}.${pageId}`)) {
-        // TODO: tribe: sentry error logging
+        new SentryRequestBuilder("Tribes doesn't contain tribeId or pageId", SENTRY_MESSAGE_TYPE.MESSAGE)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.TRIBE.ACTION, "TribeDetail Load More Feed")
+            .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+            .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+            .send();
         return
     }
     const {
@@ -668,8 +694,15 @@ export const loadMoreTribeFeed = (tribeId, pageId) => (dispatch, getState) => {
                 },
             })
         },
-        () => {
-            // TODO: tribe: implement for onError
+        (err) => {
+            new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
+                .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                .withTag(SENTRY_TAGS.TRIBE.ACTION, "TribeDetail Refresh Feed")
+                .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                .withExtraContext(SENTRY_CONTEXT.PAGINATION.SKIP, skip)
+                .withExtraContext(SENTRY_CONTEXT.PAGINATION.LIMIT, limit)
+                .send();
         }
     )
 }
@@ -698,8 +731,7 @@ export const loadTribeFeed = (
             )
         })
         .catch((err) => {
-            console.log(`${DEBUG_KEY}: loading tribe feed error: ${err}`)
-            // TODO: tribe: implement for onError
+            onError(err)
         })
 }
 
@@ -900,15 +932,16 @@ export const acceptTribeInvit = (tribeId) => (dispatch, getState) => {
     }
 
     const onError = (err) => {
-        // TODO: tribe: error handling
         Alert.alert(
             'Error',
             'Failed to accept inivitation. Please try again later.'
         )
-        console.log(
-            `${DEBUG_KEY}: error accept tribe invitation with err: `,
-            err
-        )
+        new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.TRIBE.ACTION, "TribeDetail Accept Invite")
+            .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+            .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
+            .send();
     }
 
     API.put(`${BASE_ROUTE}/accept-invitation`, { tribeId }, token)
@@ -948,7 +981,13 @@ export const leaveTribe = (tribeId, type) => (dispatch, getState) => {
 
     const onError = (err) => {
         Alert.alert('Error', 'Failed to leave tribe. Please try again later.')
-        console.log(`${DEBUG_KEY}: error leaving tribe with err: `, err)
+        new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.TRIBE.ACTION, "TribeDetail Leave tribe")
+            .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+            .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
+            .withExtraContext(SENTRY_CONTEXT.TRIBE.LEAVE_TYPE, type)
+            .send();
     }
 
     API.delete(
@@ -998,12 +1037,16 @@ export const deleteTribe = (tribeId) => (dispatch, getState) => {
     }
 
     const onError = (err) => {
-        // TODO: tribe: sentry log error handling
         Alert.alert(
             'Error',
             'Failed to delete this tribe. Please try again later.'
         )
-        console.log(`${DEBUG_KEY}: delete tribe error: `, err)
+        new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.TRIBE.ACTION, "TribeDetail Delete")
+            .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+            .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
+            .send();
     }
 
     API.delete(`${BASE_ROUTE}?tribeId=${tribeId}`, {}, token)
