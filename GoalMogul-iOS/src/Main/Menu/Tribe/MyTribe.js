@@ -698,13 +698,15 @@ class MyTribe extends React.PureComponent {
                 <TouchableOpacity
                         style={styles.buttonStyle}
                         underlayColor='#fff'
+                        onPress={() => console.log('go to about')}
                        >
                         <Text style={styles.buttonText}>About</Text>
                    
                 </TouchableOpacity>
                 <TouchableOpacity
                         style={styles.buttonStyleInvite}
-                        underlayColor='#fff'>
+                        underlayColor='#fff'
+                        onPress={()=> console.log('go to invite')}>
                         <Text style={{color: '#fff', textAlign: 'center'}}>Invite friends</Text>
                 </TouchableOpacity>
                 </View>
@@ -729,9 +731,6 @@ class MyTribe extends React.PureComponent {
         const { navigationState } = this.props;
         const { routes, index } = navigationState;
         const { isUserAdmin } = this.props;
-
-        console.log(routes[index].key);
-
         switch (routes[index].key) {
             case 'about': {
                 return <About item={props.item} key={props.index} />;
