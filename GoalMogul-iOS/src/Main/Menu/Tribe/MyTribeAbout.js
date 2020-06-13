@@ -15,7 +15,7 @@ import ProfileImage from '../../Common/ProfileImage';
 // Asset
 import Calendar from '../../../asset/utils/calendar.png';
 import { decode } from '../../../redux/middleware/utils';
-import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
+import defaultProfilePic from '../../../asset/icons/dots-horizontal-circle.png';
 
 const { width } = Dimensions.get('window');
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -60,7 +60,7 @@ class MyTribeAbout extends Component {
               }}
           >
               <Image
-                        style={{...styles.pictureStyle}}
+                        style={{...styles.pictureStyle, ...styles.pictureStyleMenu}}
                         source={defaultProfilePic}
                     />
           </TouchableOpacity>
@@ -189,6 +189,11 @@ const styles = {
   pictureStyle: {
     height: PictureDimension*1.8,
     width: PictureDimension*1.8,
+    borderRadius: PictureDimension / 2
+  },
+  pictureStyleMenu: {
+    height: PictureDimension*2.2,
+    width: PictureDimension*2.2,
     borderRadius: PictureDimension / 2
   }
 };
