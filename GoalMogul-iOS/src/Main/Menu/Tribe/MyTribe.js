@@ -16,10 +16,36 @@ import { openPostDetail } from '../../../redux/modules/feed/post/PostActions';
 import { subscribeEntityNotification, unsubscribeEntityNotification } from '../../../redux/modules/notification/NotificationActions';
 import { openMultiUserInviteModal, searchFriend } from '../../../redux/modules/search/SearchActions';
 // Actions
-import { myTribeAdminAcceptUser, myTribeAdminDemoteUser, myTribeAdminPromoteUser, myTribeAdminRemoveUser, myTribeReset, myTribeSelectMembersFilter, refreshMyTribeDetail, tribeDetailClose, tribeSelectTab, loadMoreTribeFeed } from '../../../redux/modules/tribe/MyTribeActions';
-import { acceptTribeInvit, declineTribeInvit, deleteTribe, editTribe, inviteMultipleUsersToTribe, leaveTribe, openTribeInvitModal, reportTribe, requestJoinTribe } from '../../../redux/modules/tribe/TribeActions';
+import {
+    myTribeAdminAcceptUser,
+    myTribeAdminDemoteUser,
+    myTribeAdminPromoteUser,
+    myTribeAdminRemoveUser,
+    myTribeReset,
+    myTribeSelectMembersFilter,
+    refreshMyTribeDetail,
+    tribeDetailClose,
+    tribeSelectTab,
+    loadMoreTribeFeed,
+    requestJoinTribe,
+    acceptTribeInvit,
+    declineTribeInvit,
+    leaveTribe,
+    deleteTribe,
+    editTribe,
+    inviteMultipleUsersToTribe,
+    openTribeInvitModal,
+    reportTribe,
+} from '../../../redux/modules/tribe/MyTribeActions'
 // Selector
-import { getMyTribeMemberNavigationState, getMyTribeNavigationState, getMyTribeUserStatus, myTribeMemberSelector } from '../../../redux/modules/tribe/TribeSelector';
+import {
+    getMyTribeMemberNavigationState,
+    getMyTribeNavigationState,
+    getMyTribeUserStatus,
+    myTribeMemberSelector,
+    getMyTribeDetailById,
+    getMyTribeFeedSelector
+} from '../../../redux/modules/tribe/TribeSelector'
 // Styles
 import { APP_DEEP_BLUE } from '../../../styles';
 // Constants
@@ -69,7 +95,7 @@ const INFO_CARD_HEIGHT = (width * 0.95) / 3 + 30 + 106.5;
 /**
  * This is the UI file for a single event.
  */
-class MyTribe extends Component {
+class MyTribe extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -82,7 +108,7 @@ class MyTribe extends Component {
     }
 
     componentWillUnmount() {
-        this.props.myTribeReset();
+        this.props.tribeDetailClose(this.props.tribeId, this.props.pageId);
     }
 
     openUserInviteModal = (item) => {
@@ -91,7 +117,7 @@ class MyTribe extends Component {
             searchFor: this.props.searchFriend,
             onSubmitSelection: (users, inviteToEntity, actionToExecute) => {
                 const callback = () => {
-                    this.props.refreshMyTribeDetail(inviteToEntity, null, false);
+                    this.props.refreshMyTribeDetail(inviteToEntity, this.props.pageId, null, false);
                     actionToExecute();
                 };
                 this.props.inviteMultipleUsersToTribe(_id, users, callback);
@@ -155,7 +181,7 @@ class MyTribe extends Component {
 
         const postCallback = () => {
             this._handleIndexChange(indexToGo);
-            this.props.refreshMyTribeDetail(_id);
+            this.props.refreshMyTribeDetail(_id, this.props.pageId);
         };
 
         const members = item ? item.members
@@ -252,10 +278,10 @@ class MyTribe extends Component {
 
     // Tab related functions
     _handleIndexChange = (index) => {
-        const { navigationState } = this.props;
+        const { navigationState, tribeId, pageId } = this.props;
         const { routes } = navigationState;
 
-        this.props.tribeSelectTab(index);
+        this.props.tribeSelectTab(index, tribeId, pageId);
 
         if (routes[index].key !== 'about') {
             // Animated to hide the infoCard if not on about tab
@@ -306,18 +332,18 @@ class MyTribe extends Component {
             options = switchByButtonIndex([
                 [R.equals(0), () => {
                     console.log(`${DEBUG_KEY} User chooses to remove request`);
-                    this.props.requestJoinTribe(_id, false, 'mytribe');
+                    this.props.requestJoinTribe(_id, false, this.props.pageId);
                 }]
             ]);
         } else if (isMember === 'Invitee') {
             options = switchByButtonIndex([
                 [R.equals(0), () => {
                     console.log(`${DEBUG_KEY} User chooses to accept`);
-                    this.props.acceptTribeInvit(_id, 'mytribe');
+                    this.props.acceptTribeInvit(_id);
                 }],
                 [R.equals(1), () => {
                     console.log(`${DEBUG_KEY} User chooses to decline`);
-                    this.props.declineTribeInvit(_id, 'mytribe');
+                    this.props.declineTribeInvit(_id);
                 }],
             ]);
         } else {
@@ -388,14 +414,14 @@ class MyTribe extends Component {
             options = switchByButtonIndex([
                 [R.equals(0), () => {
                     console.log(`${DEBUG_KEY} User chooses to remove request`);
-                    this.props.requestJoinTribe(_id, false, 'mytribe');
+                    this.props.requestJoinTribe(_id, false, this.props.pageId);
                 }]
             ]);
         } else {
             options = switchByButtonIndex([
                 [R.equals(0), () => {
                     console.log(`${DEBUG_KEY} User chooses to join the tribe`);
-                    this.props.requestJoinTribe(_id, true, 'mytribe');
+                    this.props.requestJoinTribe(_id, true, this.props.pageId);
                 }]
             ]);
         }
@@ -599,7 +625,7 @@ class MyTribe extends Component {
         // };
 
         const props = {
-            jumpToIndex: (i) => this.props.myTribeSelectMembersFilter(routes[i].key, i),
+            jumpToIndex: (i) => this.props.myTribeSelectMembersFilter(routes[i].key, i, this.props.tribeId, this.props.pageId),
             navigationState: this.props.memberNavigationState
         };
 
@@ -614,15 +640,6 @@ class MyTribe extends Component {
 
     renderTribeOverview(item, data) {
         const { name, _id, picture } = item;
-
-        // const filterBar = this.props.tab === 'members'
-        //   ? (
-        //     <MemberFilterBar
-        //       onSelect={(option) => this.props.myTribeSelectMembersFilter(option)}
-        //     />
-        //   )
-        //   : null;
-
         const filterBar = this.props.tab === 'members'
             ? this.renderMemberTabs()
             : null;
@@ -691,7 +708,7 @@ class MyTribe extends Component {
         // Do not load more when user is not on posts tab
         if (!this.onPostTab() || !tribeId) return;
 
-        this.props.loadMoreTribeFeed(tribeId);
+        this.props.loadMoreTribeFeed(tribeId, this.props.pageId);
     }
 
     renderItem = (props) => {
@@ -803,14 +820,12 @@ class MyTribe extends Component {
         if (!item) return <View />;
         const props = this.props;
 
-        // console.log(`${DEBUG_KEY}: data is: `, data);
-
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <View style={styles.containerStyle}>
                     <SearchBarHeader
                         backButton
-                        onBackPress={() => this.props.tribeDetailClose()}
+                        onBackPress={() => Actions.pop()} // componentWillUnmount takes care of the state cleaning
                         pageSetting
                         handlePageSetting={() => this.handlePageSetting(item)}
                     />
@@ -820,7 +835,7 @@ class MyTribe extends Component {
                         renderItem={this.renderItem}
                         keyExtractor={(i) => i._id}
                         ListHeaderComponent={this.renderTribeOverview(item, data)}
-                        onRefresh={() => this.props.refreshMyTribeDetail(item._id)}
+                        onRefresh={() => this.props.refreshMyTribeDetail(item._id, this.props.pageId)}
                         onEndReached={() => this.handleOnEndReached(item._id)}
                         onEndReachedThreshold={2}
                         loading={this.props.tribeLoading && this.onPostTab()}
@@ -984,23 +999,25 @@ const styles = {
     },
 };
 
-const mapStateToProps = state => {
-    const { item, feed, hasRequested, tribeLoading, feedLoading } = state.myTribe;
+const mapStateToProps = (state, props) => {
+    const { tribeId, pageId } = props;
+    const { tribe, tribePage } = getMyTribeDetailById(state, tribeId, pageId);
+    const { hasRequested, tribeLoading, feedLoading, feedRefreshing } = tribePage;
     const { userId } = state.user;
-    const navigationState = getMyTribeNavigationState(state);
-    const memberNavigationState = getMyTribeMemberNavigationState(state);
+    const navigationState = getMyTribeNavigationState(state, tribeId, pageId);
+    const memberNavigationState = getMyTribeMemberNavigationState(state, tribeId, pageId);
 
     const { routes, index } = navigationState;
     const data = ((key) => {
         switch (key) {
             case 'about':
-                return feed;
+                return [tribe];
 
             case 'members':
-                return myTribeMemberSelector(state);
+                return myTribeMemberSelector(state, tribeId, pageId);
 
             case 'posts':
-                return feed;
+                return getMyTribeFeedSelector(state, tribeId, pageId);
 
             default: return [];
         }
@@ -1008,17 +1025,18 @@ const mapStateToProps = state => {
 
     return {
         navigationState,
-        item,
+        item: tribe,
         user: state.user,
         data,
-        isMember: getMyTribeUserStatus(state),
+        isMember: getMyTribeUserStatus(state, tribeId),
         hasRequested,
         tab: routes[index].key,
         userId,
-        isUserAdmin: checkIsAdmin(item ? item.members : [], userId),
+        isUserAdmin: checkIsAdmin(tribe ? tribe.members : [], userId),
         memberNavigationState,
         loading: tribeLoading,
-        feedLoading
+        feedLoading,
+        feedRefreshing
     };
 };
 
@@ -1027,7 +1045,7 @@ const checkIsAdmin = (members, userId) => {
     // Sanity check if member is not empty or undefined
     if (members && members.length > 0) {
         members.forEach((member) => {
-            if (member.memberRef._id === userId && member.category === 'Admin') {
+            if (member.memberRef && member.memberRef._id === userId && member.category === 'Admin') {
                 isAdmin = true;
             }
         });

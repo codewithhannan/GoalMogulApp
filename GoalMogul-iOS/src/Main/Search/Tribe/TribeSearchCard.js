@@ -16,7 +16,7 @@ import next from '../../../asset/utils/next.png';
 import { selectTribe } from '../../../redux/modules/feed/post/ShareActions';
 import {
   tribeDetailOpen
-} from '../../../redux/modules/tribe/TribeActions';
+} from '../../../redux/modules/tribe/MyTribeActions';
 import DelayedButton from '../../Common/Button/DelayedButton';
 import ProfileImage from '../../Common/ProfileImage';
 import { trackWithProperties, EVENT } from '../../../monitoring/segment';

@@ -1,5 +1,6 @@
 /**
- * This is the central hub for current friends management
+ * This is the central hub for current friends management. This is implemented based off design
+ * https://www.figma.com/file/pbqMYdES3eWbz6bxlrIFP4/Friends?node-id=0%3A1
  */
 import _ from 'lodash';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -22,7 +23,6 @@ import { Actions } from 'react-native-router-flux';
 import { componentKeyByTab } from '../../../../redux/middleware/utils';
 import { SearchBar } from 'react-native-elements';
 import { SearchIcon } from '../../../../Utils/Icons';
-
 
 const KEY = 'friends';
 const DEBUG_KEY = '[ UI FriendTabView ]';

@@ -57,7 +57,7 @@ import Tooltip from '../Tutorial/Tooltip';
 import { svgMaskPath } from '../Tutorial/Utils';
 import WelcomSreen from './WelcomeScreen';
 import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal';
-import { track, EVENT } from '../../monitoring/segment';
+import { track, EVENT as E } from '../../monitoring/segment';
 
 const TabIconMap = {
     goals: {
@@ -217,7 +217,7 @@ class Home extends Component {
     handleAppStateChange = async (nextAppState) => {
         if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
             console.log(`${DEBUG_KEY}: [handleAppStateChange] App has become active!`);
-            track(EVENT.APP_ACTIVE);
+            track(E.APP_ACTIVE);
             const { needRefreshActivity, needRefreshMastermind, user } = this.props;
             if (user === undefined || _.isEmpty(user) || !user.profile) {
                 this.props.fetchAppUserProfile({ navigate: false });
@@ -234,7 +234,7 @@ class Home extends Component {
 
         if (this.state.appState === 'active' && nextAppState !== 'active') {
             console.log(`${DEBUG_KEY}: [handleAppStateChange] App has become inactive!`);
-            track(EVENT.APP_INACTIVE);
+            track(E.APP_INACTIVE);
             await this.props.saveUnreadNotification();
             await this.props.saveTutorialState();
         }

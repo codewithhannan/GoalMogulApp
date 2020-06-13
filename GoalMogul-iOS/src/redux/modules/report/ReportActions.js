@@ -13,6 +13,8 @@ import {
 import { api as API } from '../../middleware/api';
 import { switchCase } from '../../middleware/utils';
 
+import { trackWithProperties, EVENT as E} from '../../../monitoring/segment';
+
 const BASE_ROUTE = 'secure/report';
 const DEBUG_KEY = '[ Action Report ]';
 
@@ -21,6 +23,24 @@ const DEBUG_KEY = '[ Action Report ]';
 // type: ['detail', something else]
 export const createReport = (referenceId, type, category = 'User') => (dispatch, getState) => {
   const { userId } = getState().user;
+  
+  const trackingProp = {'ReferenceId': referenceId, 'Type': type};
+  if (category === 'General') {
+    trackWithProperties(E.GENERAL_REPORT_CREATED, trackingProp);
+  } else if (category === 'User') {
+    trackWithProperties(E.USER_REPORTED, trackingProp);
+  } else if (category === 'Post') {
+    trackWithProperties(E.POST_REPORTED, trackingProp);
+  } else if (category === 'Goal') {
+    trackWithProperties(E.GOAL_REPORTED, trackingProp);
+  } else if (category === 'Comment') {
+    trackWithProperties(E.COMMENT_REPORTED, trackingProp);
+  } else if (category === 'Tribe') {
+    trackWithProperties(E.GOAL_REPORTED, trackingProp);
+  } else if (category === 'Event') {
+    trackWithProperties(E.EVENT_REPORTED, trackingProp);
+  }
+
   // Set the basic information for a report
   dispatch({
     type: REPORT_CREATE,

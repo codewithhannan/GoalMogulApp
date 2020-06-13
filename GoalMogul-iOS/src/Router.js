@@ -75,8 +75,6 @@ import Privacy from './Main/Setting/Privacy/Privacy';
 // Account
 import Setting from './Main/Setting/Setting';
 import CreateTribeModal from './Main/Tribe/CreateTribeModal';
-// Tribe
-import Tribe from './Main/Tribe/Tribe';
 import AddProfilePic from './Registration/AddProfilePic';
 import Contacts from './Registration/Contacts';
 import ContactSync from './Registration/ContactSync';
@@ -95,7 +93,7 @@ import { OnboardingFbPlugin } from './Main/Onboarding';
 import SplashScreen from './SplashScreen';
 import Tutorial from './Tutorial/Tutorial';
 import UserInviteModal from './Main/Common/Modal/UserInviteModal';
-
+import { trackViewScreen } from './monitoring/segment';
 
 class RouterComponent extends Component {
     onTabPress = (all) => {
@@ -151,6 +149,7 @@ class RouterComponent extends Component {
 
     stateHandler = (prevState, newState, action) => {
         if (action && action.routeName) {
+            trackViewScreen(action.routeName);
         }
         // console.log('newState is: ', newState);
     }
@@ -372,6 +371,7 @@ class RouterComponent extends Component {
                                             <Scene key="profileTab_requestTabView" component={RequestTabView} />
                                             <Scene key="profileTab_discoverTabView" component={DiscoverTabView} />
                                             <Scene key="profileTab_friendInvitationView" component={FriendInvitationView} />
+                                            <Scene key="profileTab_myTribeDetail" component={MyTribe} />
                                         </Stack>
 
                                         <Stack
@@ -446,6 +446,7 @@ class RouterComponent extends Component {
                                             <Scene key="notificationTab_requestTabView" component={RequestTabView} />
                                             <Scene key="notificationTab_discoverTabView" component={DiscoverTabView} />
                                             <Scene key="notificationTab_friendInvitationView" component={FriendInvitationView} />
+                                            <Scene key="notificationTab_myTribeDetail" component={MyTribe} />
                                         </Stack>
 
                                         <Stack
@@ -470,7 +471,7 @@ class RouterComponent extends Component {
                                             }
                                         >
                                             <Scene key="explore" component={Explore} initial />
-                                            <Scene key="tribeDetail" component={Tribe} />
+                                            <Scene key="exploreTab_myTribeDetail" component={MyTribe} />
                                             <Scene key="eventDetail" component={Event} />
                                             <Scene key="postExploreTab" component={PostDetailCard} />
                                             <Scene key="goalExploreTab" component={GoalDetailCard} />
@@ -567,6 +568,7 @@ class RouterComponent extends Component {
                                             <Scene key="chatTab_requestTabView" component={RequestTabView} />
                                             <Scene key="chatTab_discoverTabView" component={DiscoverTabView} />
                                             <Scene key="chatTab_friendInvitationView" component={FriendInvitationView} />
+                                            <Scene key="chatTab_myTribeDetail" component={MyTribe} />
                                         </Stack>
                                     </Tabs>
                                 </Scene>
@@ -604,6 +606,16 @@ class RouterComponent extends Component {
                         component={TrendingGoalView}
                         hideNavBar
                     />
+                    {/* <Scene
+                        key="trendingGoalView"
+                        component={Like}
+                        hideNavBar
+                    />
+                    <Scene
+                        key="trendingGoalView"
+                        component={TrendingGoalView}
+                        hideNavBar
+                    /> */}
                     <Scene
                         key="createPostModal"
                         component={CreatePostModal}

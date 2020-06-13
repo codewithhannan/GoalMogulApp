@@ -145,7 +145,7 @@ const styles = {
         paddingLeft: 12,
         paddingRight: 12,
         paddingBottom: 10,
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center'
     },
     actionTextStyle: {
@@ -173,9 +173,10 @@ const styles = {
         backgroundColor: '#fff',
     },
     titleTextContainerStyle: {
-        alignSelf: 'center',
+        flex: 1,
         flexDirection: 'row',
         justifyContent: 'center',
+        alignItems: 'center'
     },
     cancelTextStyle: {
         ...DEFAULT_STYLE.subTitleText_1,
