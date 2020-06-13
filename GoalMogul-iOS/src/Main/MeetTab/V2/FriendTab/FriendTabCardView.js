@@ -6,7 +6,7 @@
  */
 import React from 'react';
 import {
-    ActionSheetIOS,
+    ActionSheetIOS, Alert,
 } from 'react-native';
 import { connect } from 'react-redux';
 import DelayedButton from '../../../Common/Button/DelayedButton';
@@ -91,19 +91,45 @@ class FriendTabCardView extends React.PureComponent {
     openOptionModal = () => this.bottomSheetRef.open()
 
     makeFriendCardOptions = (item) => {
-        const { maybeFriendshipRef } = item;
+        const { maybeFriendshipRef, name } = item;
 
         const friendUserId = getFriendUserId(maybeFriendshipRef, this.props.userId);
         const friendshipId = maybeFriendshipRef._id;
 
         return [
             { text: "Unfriend", image: Icons.AccountRemove, imageStyle: { tintColor:  "black" }, onPress: () => {
-                this.handleDeleteFriend(friendshipId);
-                this.closeOptionModal();
+                Alert.alert(
+                    `Remove ${name} as a friend`,
+                    undefined,
+                    [
+                        { text: 'Cancel', onPress: () => {}, style: 'cancel' },
+                        { 
+                            text: 'Confirm', 
+                            onPress: () => {
+                                this.handleDeleteFriend(friendshipId);
+                                this.closeOptionModal();
+                            }, style: 'default' }
+                    ]
+                )
             }}, 
-            { text: "Block", textStyle: { color: "#EB5757" }, image: Icons.AccountCancel, imageStyle: { tintColor:  "#EB5757" }, onPress: () => {
-                this.handleBlockFriend(friendUserId);
-                this.closeOptionModal();
+            {
+                text: "Block", textStyle: { color: "#EB5757" }, image: Icons.AccountCancel, imageStyle: { tintColor:  "#EB5757" }, 
+                onPress: () => {
+                    Alert.alert(
+                        `Block ${name}`,
+                        `${name} will no longer receive your updates`,
+                        [
+                            { text: 'Cancel', onPress: () => {}, style: 'cancel' },
+                            { 
+                                text: 'Block', 
+                                onPress: () => {
+                                    this.handleBlockFriend(friendUserId);
+                                    this.closeOptionModal();
+                                }, 
+                                style: 'default' 
+                            }
+                        ]
+                    )
             }}
         ];
     }
