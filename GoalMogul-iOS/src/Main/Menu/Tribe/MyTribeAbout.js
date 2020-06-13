@@ -26,18 +26,18 @@ class MyTribeAbout extends Component {
   renderMemberStatus(item) {
     const { members, memberCount } = item;
     const count = memberCount || 0;
-    const memberPicturesWidth = count < 2 ? 45 : 50;
+    const memberPicturesWidth = count < 2 ? 45 : 90;
     const memberPictures = members ? members
       .filter((member) => member.category === 'Admin' || member.category === 'Member')
       .map((member, index) => {
-        if (index > 1) return null;
+        if (index > 5) return null;
         const { memberRef } = member;
         return (
           <ProfileImage
             key={index}
             imageContainerStyle={{
               ...styles.topPictureContainerStyle,
-              left: ((index * 13))
+              left: ((index * 50))
             }}
             imageUrl={memberRef && memberRef.profile ? memberRef.profile.image : undefined}
             imageStyle={{ ...styles.pictureStyle }}
@@ -46,14 +46,14 @@ class MyTribeAbout extends Component {
       }) : [];
 
     return (
-      <View style={{ flexDirection: 'row', marginTop: 8, marginBottom: 5 }}>
+      <View style={{ flexDirection: 'row', marginTop: 8, marginBottom: 0, justifyContent: 'flex-start', left: 45 }}>
         <View style={{ ...styles.memberPicturesContainerStyle, width: memberPicturesWidth }}>
           {memberPictures}
         </View>
-        <Text style={{ alignSelf: 'center' }}>
+        {/* <Text style={{ alignSelf: 'center' }}>
           <Text style={styles.boldTextStyle}>{count} </Text>
           members
-        </Text>
+        </Text> */}
       </View>
     );
   }
@@ -67,7 +67,6 @@ class MyTribeAbout extends Component {
         style={{
           flexDirection: 'row',
           marginTop: 5,
-          marginBottom: 10,
           alignItems: 'center'
         }}
       >
@@ -109,9 +108,9 @@ class MyTribeAbout extends Component {
     return (
       <View style={{ flex: 1, margin: 25, marginTop: 15 }}>
         {this.renderMemberStatus(item)}
-        {this.renderCreated(item)}
-        <Divider horizontal width={0.8 * width} borderColor='gray' />
-        {this.renderDescription(item)}
+        {/* {this.renderCreated(item)} */}
+        {/* <Divider horizontal width={0.8 * width} borderColor='gray' />
+        {this.renderDescription(item)} */}
       </View>
     );
   }
@@ -171,8 +170,8 @@ const styles = {
     left: 15
   },
   pictureStyle: {
-    height: PictureDimension,
-    width: PictureDimension,
+    height: PictureDimension*1.8,
+    width: PictureDimension*1.8,
     borderRadius: PictureDimension / 2
   }
 };

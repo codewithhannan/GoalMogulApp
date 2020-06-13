@@ -1,7 +1,7 @@
 import Fuse from 'fuse.js';
 import R from 'ramda';
 import React, { Component } from 'react';
-import { ActivityIndicator, Animated, Dimensions, FlatList, Image, Platform, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Animated, Dimensions, FlatList, Image, Platform, Text, TouchableOpacity, View, Button } from 'react-native';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
@@ -694,6 +694,20 @@ class MyTribe extends React.PureComponent {
                 {filterBar}
                 {emptyState}
                 <About item={this.props.item} key={this.props.index} />
+                <View style={styles.buttonGroup}>
+                <TouchableOpacity
+                        style={styles.buttonStyle}
+                        underlayColor='#fff'
+                       >
+                        <Text style={styles.buttonText}>About</Text>
+                   
+                </TouchableOpacity>
+                <TouchableOpacity
+                        style={styles.buttonStyleInvite}
+                        underlayColor='#fff'>
+                        <Text style={{color: '#fff', textAlign: 'center'}}>Invite friends</Text>
+                </TouchableOpacity>
+                </View>
             </View>
         );
     }
@@ -716,21 +730,11 @@ class MyTribe extends React.PureComponent {
         const { routes, index } = navigationState;
         const { isUserAdmin } = this.props;
 
+        console.log(routes[index].key);
+
         switch (routes[index].key) {
             case 'about': {
-                return (
-                    // <View>
-                    <ProfilePostCard
-                        item={props.item}
-                        key={props.index}
-                        hasActionButton
-                        onPress={(item) => {
-                            // onPress is called by CommentIcon
-                            this.props.openPostDetail(item, { initialFocusCommentBox: true });
-                        }}
-                    />
-                    // {/* </View> */}
-                   );
+                return <About item={props.item} key={props.index} />;
             }
 
             case 'posts': {
@@ -818,7 +822,6 @@ class MyTribe extends React.PureComponent {
     render() {
         const { item, data } = this.props;
         if (!item) return <View />;
-        const props = this.props;
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -869,21 +872,22 @@ const styles = {
         backgroundColor: 'white'
     },
     defaultImageContainerStyle: {
-       
+        width: (width * 1.1) / 3,
+        height: (width * 0.95) / 3,
         borderRadius: 13,
         alignItems: 'center',
         justifyContent: 'center',
     },
     defaultImageStyle: {
-        width: (width * 1.1) * 0.75,
-        height: (width * 0.95) * 0.75,
+        width: (width * 1.1) * 0.75 / 3 + 2,
+        height: (width * 0.95) * 0.75 / 3,
         borderRadius: 13,
         borderWidth: 1,
         borderColor: 'white'
     },
     imageStyle: {
-        width: (width * 1.1),
-        height: (width * 0.95),
+        width: (width * 1.1) / 3,
+        height: (width * 0.95) / 3,
         borderRadius: 13,
         borderWidth: 1,
         borderColor: 'white'
@@ -997,6 +1001,36 @@ const styles = {
         justifyContent: 'center',
         flexDirection: 'row'
     },
+    buttonGroup: {
+        flex: 1, 
+        flexDirection: 'row',
+    },
+    buttonStyle: {
+        flexGrow: 2,
+        marginRight:10,
+        marginLeft:10,
+        marginTop:10,
+        marginBottom: 10,
+        padding: 10,
+        backgroundColor: '#F2F2F2',
+        borderRadius: 3,
+        borderColor: '#fff'
+    },
+    buttonStyleInvite: {
+        flexGrow: 3,
+        marginRight:10,
+        marginLeft:10,
+        marginTop:10,
+        marginBottom: 10,
+        padding: 10,
+        backgroundColor:'#42C0F5',
+        borderRadius: 3,
+        borderColor: '#fff'
+    },
+    buttonText: {
+        textAlign: 'center',
+        color: '#333333'
+    }
 };
 
 const mapStateToProps = (state, props) => {

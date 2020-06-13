@@ -111,10 +111,10 @@ export const MEMBER_UPDATE_TYPE = {
 // page metadata related to a tribe page
 export const INITIAL_TRIBE_PAGE = {
     navigationState: {
-        index: 0,
+        index: 1,
         routes: _.cloneDeep(TRIBE_NATIVATION_ROUTES.member)
     },
-    selectedTab: 'about',
+    selectedTab: 'posts',
     /*
      feed is put inside the TRIBE_PAGE as we don't want scrolling context to lose when other pages are refreshing
     */
