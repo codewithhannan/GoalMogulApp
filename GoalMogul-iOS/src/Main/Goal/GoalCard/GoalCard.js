@@ -275,7 +275,7 @@ class GoalCard extends React.PureComponent {
                         textStyle={{ color: selfLiked ? '#000' : '#828282' }}
                         iconStyle={{ tintColor: selfLiked ? '#EB5757' : '#828282' }}
                         onPress={() => {
-                            if (maybeLikeRef && maybeLikeRef.length > 0) {
+                            if (selfLiked) {
                                 return this.props.unLikeGoal('goal', _id, maybeLikeRef);
                             }
                             this.props.likeGoal('goal', _id);

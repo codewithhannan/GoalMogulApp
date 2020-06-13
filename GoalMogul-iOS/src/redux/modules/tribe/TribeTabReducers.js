@@ -6,8 +6,8 @@ import _ from 'lodash';
 import { arrayUnique } from '../../middleware/utils';
 
 import {
-  TRIBE_DELETE_SUCCESS
-} from './TribeReducers';
+  MYTRIBE_DELETE_SUCCESS
+} from './Tribes';
 
 const INITIAL_STATE = {
   data: [],
@@ -72,7 +72,7 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     // One tribe is deleted
-    case TRIBE_DELETE_SUCCESS: {
+    case MYTRIBE_DELETE_SUCCESS: {
       const { tribeId } = action.payload;
       const newState = _.cloneDeep(state);
       const oldData = _.get(newState, 'data');

@@ -12,14 +12,10 @@ import {
 	TRIBE_NEW_UPLOAD_PICTURE_SUCCESS
 } from './NewTribeReducers';
 
-
-import {
-	TRIBE_EDIT_SUCCESS
-} from './TribeReducers';
-
 import {
 	refreshTribe
 } from './MyTribeTabActions';
+import { MYTRIBE_EDIT_SUCCESS } from './Tribes';
 
 const BASE_ROUTE = 'secure/tribe';
 const DEBUG_KEY = '[ Action Create Tribe ]';
@@ -68,8 +64,9 @@ export const createNewTribe = (values, needUpload, isEdit, tribeId) => (dispatch
 			// console.log(`${DEBUG_KEY}: tribe edit success with res: `, res);
 			// console.log(`${DEBUG_KEY}: tribe edit success with new tribe: `, tribe);
 			dispatch({
-				type: TRIBE_EDIT_SUCCESS,
+				type: MYTRIBE_EDIT_SUCCESS,
 				payload: {
+					tribeId,
 					newTribe: {
 						_id: tribe.tribeId,
 						...tribe.details
