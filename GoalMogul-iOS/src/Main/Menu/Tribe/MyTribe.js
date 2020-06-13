@@ -91,7 +91,7 @@ const SEARCHBAR_HEIGHT = Platform.OS === 'ios' &&
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const PADDING = SCREEN_HEIGHT - 48.5 - SEARCHBAR_HEIGHT;
 
-const INFO_CARD_HEIGHT = (width * 0.95) / 3 + 30 + 106.5;
+const INFO_CARD_HEIGHT = (width * 0.95) / 3 + 30 + 56.5;
 /**
  * This is the UI file for a single event.
  */
@@ -587,15 +587,13 @@ class MyTribe extends React.PureComponent {
         const count = item.memberCount ? item.memberCount : '102';
         return (
             <View style={styles.tribeInfoContainerStyle}>
-                <Text style={{ ...styles.tribeSizeTextStyle, color: '#4ec9f3' }}>
+                <Text style={{ ...styles.tribeSizeTextStyle, color: '#737475' }}>
                     <Text style={styles.tribeCountTextStyle}>{count} </Text>
             members
-        </Text>
-                <DotIcon
-                    iconStyle={{ tintColor: '#616161', width: 4, height: 4, marginLeft: 4, marginRight: 4 }}
-                />
+                </Text>
+                <Text style={{ ...styles.tribeSizeTextStyle, color: '#737475', marginLeft: 3, marginRight: 3 }}>|</Text>
                 {/* <Icon name='dot-single' type='entypo' color="#616161" size={16} /> */}
-                <Text style={{ ...styles.tribeSizeTextStyle }}>
+                <Text style={{ ...styles.tribeSizeTextStyle, color: '#737475' }}>
                     Created {date}
                 </Text>
             </View>
@@ -676,29 +674,29 @@ class MyTribe extends React.PureComponent {
                     <View style={styles.generalInfoContainerStyle}>
                         {/* {this.renderCaret(item)} */}
                         <Text
-                            style={{ fontSize: 22, fontWeight: '300' }}
+                            style={{ fontSize: 16, fontWeight: '700' }}
                         >
                             {decode(name)}
                         </Text>
-                        {this.renderVisibilityAndStatus(item)}
-                        <View
+                        {/* {this.renderVisibilityAndStatus(item)} */}
+                        {/* <View
                             style={{
                                 width: width * 0.75,
                                 borderColor: '#dcdcdc',
                                 borderWidth: 0.5
                             }}
-                        />
+                        /> */}
                         {this.renderTribeInfo(item)}
                     </View>
                 </Animated.View>
                 {filterBar}
                 {emptyState}
-                <About item={this.props.item} key={this.props.index} />
+                <About item={this.props.item} key={this.props.index} style={style.aboutStyle}/>
                 <View style={styles.buttonGroup}>
                 <TouchableOpacity
                         style={styles.buttonStyle}
                         underlayColor='#fff'
-                        onPress={() => console.log('go to about')}
+                        onPress={() => Actions.push('about')}
                        >
                         <Text style={styles.buttonText}>About</Text>
                    
@@ -706,7 +704,7 @@ class MyTribe extends React.PureComponent {
                 <TouchableOpacity
                         style={styles.buttonStyleInvite}
                         underlayColor='#fff'
-                        onPress={()=> console.log('go to invite')}>
+                        onPress={()=> this.openUserInviteModal(item)}>
                         <Text style={{color: '#fff', textAlign: 'center'}}>Invite friends</Text>
                 </TouchableOpacity>
                 </View>
@@ -864,30 +862,26 @@ const styles = {
         borderWidth: 1,
         borderColor: '#646464',
         alignItems: 'center',
-        borderRadius: 14,
         position: 'absolute',
         bottom: 10,
         alignSelf: 'center',
         backgroundColor: 'white'
     },
     defaultImageContainerStyle: {
-        width: (width * 1.1) / 3,
-        height: (width * 0.95) / 3,
-        borderRadius: 13,
+        width: width,
+        height: width/2,
         alignItems: 'center',
         justifyContent: 'center',
     },
     defaultImageStyle: {
-        width: (width * 1.1) * 0.75 / 3 + 2,
+        width: width,
         height: (width * 0.95) * 0.75 / 3,
-        borderRadius: 13,
         borderWidth: 1,
         borderColor: 'white'
     },
     imageStyle: {
-        width: (width * 1.1) / 3,
-        height: (width * 0.95) / 3,
-        borderRadius: 13,
+        width: width,
+        height: (width * 0.50),
         borderWidth: 1,
         borderColor: 'white'
     },
@@ -928,7 +922,7 @@ const styles = {
         height: 23,
         justifyContent: 'center',
         borderRadius: 5,
-        backgroundColor: '#efefef',
+        backgroundColor: '#fff',
     },
 
     // caret for options
@@ -952,6 +946,7 @@ const styles = {
     tribeInfoContainerStyle: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         marginTop: 5,
         marginBottom: 5,
         height: 30
@@ -963,7 +958,7 @@ const styles = {
         fontWeight: '600'
     },
     backdrop: {
-        backgroundColor: 'gray',
+        backgroundColor: 'white',
         opacity: 0.5,
     },
     // Styles for plus icon
@@ -1003,6 +998,8 @@ const styles = {
     buttonGroup: {
         flex: 1, 
         flexDirection: 'row',
+        backgroundColor: '#fff',
+        marginBottom: 10
     },
     buttonStyle: {
         flexGrow: 2,
@@ -1029,6 +1026,9 @@ const styles = {
     buttonText: {
         textAlign: 'center',
         color: '#333333'
+    },
+    aboutStyle: {
+        backgroundColor: '#ffffff',
     }
 };
 

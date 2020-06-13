@@ -3,7 +3,9 @@ import {
   View,
   Text,
   Dimensions,
-  Image
+  Image,
+  TouchableOpacity,
+  TouchableWithoutFeedback
 } from 'react-native';
 
 // Component
@@ -13,6 +15,7 @@ import ProfileImage from '../../Common/ProfileImage';
 // Asset
 import Calendar from '../../../asset/utils/calendar.png';
 import { decode } from '../../../redux/middleware/utils';
+import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png';
 
 const { width } = Dimensions.get('window');
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -30,7 +33,7 @@ class MyTribeAbout extends Component {
     const memberPictures = members ? members
       .filter((member) => member.category === 'Admin' || member.category === 'Member')
       .map((member, index) => {
-        if (index > 5) return null;
+        if (index > 4) return null;
         const { memberRef } = member;
         return (
           <ProfileImage
@@ -49,6 +52,18 @@ class MyTribeAbout extends Component {
       <View style={{ flexDirection: 'row', marginTop: 8, marginBottom: 0, justifyContent: 'flex-start', left: 45 }}>
         <View style={{ ...styles.memberPicturesContainerStyle, width: memberPicturesWidth }}>
           {memberPictures}
+          <TouchableOpacity
+            onPress={()=> console.log('testtter')}
+            style={{ 
+              ...styles.topPictureContainerStyle,
+              left: ((5 * 50))
+              }}
+          >
+              <Image
+                        style={{...styles.pictureStyle}}
+                        source={defaultProfilePic}
+                    />
+          </TouchableOpacity>
         </View>
         {/* <Text style={{ alignSelf: 'center' }}>
           <Text style={styles.boldTextStyle}>{count} </Text>
@@ -106,7 +121,7 @@ class MyTribeAbout extends Component {
     if (!item) return <View />;
 
     return (
-      <View style={{ flex: 1, margin: 25, marginTop: 15 }}>
+      <View style={{ flex: 1, padding: 25, paddingTop: 15, backgroundColor: 'white' }}>
         {this.renderMemberStatus(item)}
         {/* {this.renderCreated(item)} */}
         {/* <Divider horizontal width={0.8 * width} borderColor='gray' />
@@ -122,7 +137,8 @@ const styles = {
     height: 30,
     width: 40,
     alignItems: 'flex-start',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: 'white'
   },
   iconStyle: {
     height: 28,
@@ -141,7 +157,8 @@ const styles = {
     fontSize: 13,
     fontWeight: '300',
     marginTop: 8,
-    color: '#696969'
+    color: '#696969',
+    backgroundColor: 'white'
   },
   // Style for member pictures
   memberPicturesContainerStyle: {
