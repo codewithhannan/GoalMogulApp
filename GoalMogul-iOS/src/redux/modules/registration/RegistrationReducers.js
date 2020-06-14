@@ -101,5 +101,5 @@ export const REGISTRATION_COMMUNITY_GUIDELINE = [
 ];
 
 export const REGISTRATION_SYNC_CONTACT_NOTES = "Contacts from your address book will be uploaded to GoalMogul on an ongoing " +
-"basis to help connect you with your friends and personalize content, such as making suggestions for you and others. You can" +
+"basis to help connect you with your friends and personalize content, such as making suggestions for you and others. You can " +
 "turn off syncing and remove previously uploaded contacts in your settings.";

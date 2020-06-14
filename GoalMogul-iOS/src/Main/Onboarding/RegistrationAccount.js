@@ -159,7 +159,8 @@ class RegistrationAccount extends React.Component {
           marginRight: 20,
           justifyContent: "center",
           backgroundColor: "transparent",
-          flexGrow: 1, // this will fix scrollview scroll issue by passing parent view width and height to it
+          zIndex: 0
+          // flexGrow: 1, // this will fix scrollview scroll issue by passing parent view width and height to it
         }}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -237,8 +238,13 @@ class RegistrationAccount extends React.Component {
   render() {
     return (
       <View style={styles.containerStyle}>
-        <OnboardingHeader />
-        {this.renderInputs()}
+        <View style={{ zIndex: 1 }}>
+          <OnboardingHeader />
+        </View>
+        
+        <View style={{ flex: 1, zIndex: 0 }}>
+          {this.renderInputs()}
+        </View>
         <OnboardingFooter totalStep={4} currentStep={1} onNext={this.onNext} />
         <PhoneVerificationMoal
           isOpen={this.state.isModalOpen}
@@ -256,6 +262,7 @@ const styles = {
     flex: 1,
     backgroundColor: "white",
     paddingBottom: 10,
+    zIndex: 1
   },
   loginBoxStyle: {
     backgroundColor: "white",
