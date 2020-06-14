@@ -652,7 +652,7 @@ class NewGoalView extends Component {
             <CopilotStep text={this.props.tutorialText[3]} order={3} name="create_goal_create_goal_modal_3">
                 <WalkableView style={{ ...styles.sectionMargin, justifyContent: 'flex-start', flex: 1 }}>
                     <FieldTitleText text='How important is your goal?' required={true} style={{ marginBottom: 12 }} />
-                    <Text style={styles.descriptionTextStyle}>Use is to set reletive priority of your Goal.</Text>
+                    <Text style={styles.descriptionTextStyle}>Use is to set relative priority of your Goal.</Text>
                     {slider}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         {SLIDER_NUMS.map((val) => {

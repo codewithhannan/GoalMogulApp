@@ -653,7 +653,7 @@ export class GoalDetailCardV3 extends Component {
         return (
             <TouchableOpacity
                 activeOpacity={0.6}
-                style={{ backgroundColor: BACKGROUND_COLOR, borderTopWidth: 0.5, borderBottomWidth: 0.5, borderColor: '#e5e5e5', minHeight: 40 }}
+                style={{ backgroundColor: BACKGROUND_COLOR, borderTopWidth: 0.5, borderBottomWidth: 0.5, borderColor: '#e5e5e5', minHeight: 40 * DEFAULT_STYLE.uiScale }}
                 onPress={this.onViewCommentPress}
                 onLayout={(event) => this.onContentSizeChange('allCommentItem', event)}
                 testID="button-view-all-comments"

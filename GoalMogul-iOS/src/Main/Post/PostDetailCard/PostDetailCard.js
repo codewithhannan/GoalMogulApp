@@ -43,6 +43,7 @@ class PostDetailCard extends React.PureComponent {
             'keyboardWillShow', this.keyboardWillShow);
         this.keyboardWillHideListener = Keyboard.addListener(
             'keyboardWillHide', this.keyboardWillHide);
+
         const { initialProps, postDetail, pageId, postId, tab, userId } = this.props;
         console.log(`${DEBUG_KEY}: [ componentDidMount ]: initialProps:`, initialProps);
 

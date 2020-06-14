@@ -7,7 +7,8 @@
 import React from 'react';
 import {
     FlatList,
-    Animated
+    Animated,
+    View
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -22,7 +23,8 @@ import StepAndNeedCardV3 from './StepAndNeedCardV3';
 import {
     refreshGoalDetailById,
     goalDetailSwitchTabV2,
-    goalDetailSwitchTabV2ByKey
+    goalDetailSwitchTabV2ByKey,
+    swapGoalItems
 } from '../../../../redux/modules/goal/GoalDetailActions';
 
 import {
@@ -39,7 +41,7 @@ import {
 } from '../../../../redux/modules/goal/selector';
 
 // Styles
-import { BACKGROUND_COLOR } from '../../../../styles';
+import DraggableFlatList from 'react-native-draggable-flatlist';
 
 // Constants
 const DEBUG_KEY = '[ UI CentralTab ]';
@@ -105,12 +107,54 @@ class CentralTab extends React.PureComponent {
                 count={props.item.count}
                 pageId={pageId}
                 goalId={goalId}
+                drag={props.drag}
+                isActive={props.isActive}
             />
         );
     }
 
     render() {
-        const { data } = this.props;
+        const { data, isSelf, goalDetail, pageId } = this.props;
+        if (isSelf) {
+            return (
+                <DraggableFlatList
+                    ref={ref => (this.flatlist = ref)}
+                    data={data}
+                    renderItem={this.renderItem}
+                    keyExtractor={this.keyExtractor}
+                    refreshing={this.props.loading || false}
+                    onRefresh={this.handleRefresh}
+                    ListEmptyComponent={
+                        this.props.loading ? null :
+                            <EmptyResult
+                                text='No steps or needs'
+                                textStyle={{ paddingTop: 70 }}
+                            />
+                    }
+                    onDragEnd={e => {
+                        let type = 'needs';
+                        let to = e.to; let from = e.from;
+
+                        // Find the type of item to be swapped
+                        if (e.from <= goalDetail.steps.length) {
+                            to -= 1; from -= 1;
+                            type = 'steps';
+                        } else {
+                            to -= (2 + goalDetail.steps.length);
+                            from -= (2 + goalDetail.steps.length);
+                        }
+
+                        // Return if user is trying move steps/needs in wrong place
+                        if (e.to === e.from || e.to === 0 || (type === 'steps' && e.to > goalDetail.steps.length) ||
+                                (type === 'needs' && e.to <= goalDetail.steps.length + 1)) return;
+
+                        this.props.swapGoalItems(type, to, from, goalDetail, pageId);
+                    }}
+                    {...this.props}
+                    scrollEventThrottle={2}
+                />
+            );
+        }
         return (
             <AnimatedFlatList
                 ref={ref => (this.flatlist = ref)}
@@ -146,7 +190,6 @@ const makeMapStateToProps = () => {
     const mapStateToProps = (state, props) => {
         const { pageId, goalId } = props;
         const goalDetail = getGoalPageDetailByPageId(state, goalId, pageId);
-        // const goalDetail = getGoalDetailByTab(state); // These are used before refactoring
         const { goal, goalPage } = goalDetail;
         let loading = false;
         if (goalPage) {
@@ -156,7 +199,6 @@ const makeMapStateToProps = () => {
         return {
             goalDetail: goal,
             loading,
-            // data: getGoalStepsAndNeeds(state, props.pageId), // These are used before refactoring
             data: getGoalStepsAndNeedsV2(state, goalId, pageId)
         };
     };
@@ -172,7 +214,8 @@ export default connect(
         goalDetailSwitchTabV2ByKey,
         refreshGoalDetailById,
         createCommentFromSuggestion,
-        createCommentForSuggestion
+        createCommentForSuggestion,
+        swapGoalItems
     },
     null,
     { withRef: true }

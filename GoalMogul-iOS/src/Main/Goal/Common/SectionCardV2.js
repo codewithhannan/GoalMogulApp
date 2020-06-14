@@ -14,6 +14,7 @@ import bulb from '../../../asset/utils/bulb.png';
 import forward from '../../../asset/utils/forward.png';
 import Icons from '../../../asset/base64/Icons';
 import back from '../../../asset/utils/back.png';
+import menu from '../../../asset/utils/drag_indicator.png';
 
 // Components
 import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
@@ -84,7 +85,7 @@ class SectionCardV2 extends Component {
         if (type === 'comment') return null;
         const commentCount = this.props.count === undefined ? 15 : this.props.count;
         return (
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 4 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Image source={bulb} style={{ ...DEFAULT_STYLE.smallIcon_1, tintColor: '#FCB110' }} />
                 <Text style={styles.actionTextStyle}>{commentCount} comments</Text>
                 <DelayedButton
@@ -163,7 +164,7 @@ class SectionCardV2 extends Component {
 
     render() {
         // console.log('item for props is: ', this.props.item);
-        const { type, item, isFocusedItem } = this.props;
+        const { type, item, isActive } = this.props;
         let itemToRender = item;
 
         // Render empty state
@@ -179,8 +180,8 @@ class SectionCardV2 extends Component {
         const textToDisplay = decode(sectionText === undefined ? 'No content' : sectionText);
         const textStyle = isCommentFocused ? [ DEFAULT_STYLE.smallTitle_1, { color: 'black', marginTop: 4 } ]
             : [ DEFAULT_STYLE.normalText_1, { marginLeft: 4 } ];
-        const containerStyle = isCommentFocused ? { paddingTop: 0, paddingBottom: 0, minHeight: 40, alignItems: 'center' }
-            : {  };
+        const containerStyle = isCommentFocused ? { paddingTop: 0, paddingBottom: 0, minHeight: 40 * DEFAULT_STYLE.uiScale, alignItems: 'center' }
+            : { backgroundColor: isActive ? '#F2F2F2' : 'white' };
 
         return (
             <DelayedButton
@@ -203,11 +204,18 @@ class SectionCardV2 extends Component {
                     {!isCommentFocused && <View style={{
                         backgroundColor: '#F2F2F2',
                         height: 2,
-                        marginTop: 8,
-                        marginBottom: 8
+                        marginTop: 2,
+                        marginBottom: 10
                     }} />}
                     {this.renderActionIcons(type)}
                 </View>
+                {this.props.drag && <TouchableOpacity
+                    onLongPress={this.props.drag}
+                    onPressOut={this.props.drag}
+                    style={styles.gestureHandlerContainer}
+                >
+                    <Image source={menu} resizeMode="contain" style={{ ...DEFAULT_STYLE.buttonIcon_1, tintColor: '#AAA' }} />
+                </TouchableOpacity>}
             </DelayedButton>
         );
     }
@@ -242,9 +250,6 @@ const renderEmptyState = (text) => {
 const styles = {
     sectionContainerStyle: {
         padding: 16,
-        paddingBottom: 11,
-
-        backgroundColor: 'white',
         flexDirection: 'row',
 
         borderTopWidth: 0.5,
@@ -268,6 +273,19 @@ const styles = {
     checkIconStyle: {
         ...DEFAULT_STYLE.normalIcon_1,
         tintColor: 'white'
+    },
+    gestureHandlerContainer: {
+        backgroundColor: '#F5F7FA',
+        borderWidth: 1,
+        borderRadius: 8,
+        borderColor: '#DFE0E1',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 4,
+        paddingRight: 6,
+        margin: -10,
+        marginRight: -18,
+        marginLeft: 8
     }
 };
 

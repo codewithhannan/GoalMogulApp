@@ -26,7 +26,6 @@ class StepAndNeedCardV3 extends Component {
                     iconStyle={{ ...DEFAULT_STYLE.normalIcon_1, tintColor: '#333' }}
                     text='Needs'
                     count={item.count}
-                    goalRef={this.props.goalRef}
                 />
             );
         }
@@ -36,13 +35,12 @@ class StepAndNeedCardV3 extends Component {
                 iconStyle={{ ...DEFAULT_STYLE.normalIcon_1, tintColor: '#333' }}
                 text='Steps'
                 count={item.count}
-                goalRef={this.props.goalRef}
             />
         );
     }
 
     render() {
-        const { item, goalRef } = this.props;
+        const { item } = this.props;
 
         if (item.sectionTitle) {
             return this.renderSectionTitle(item);
