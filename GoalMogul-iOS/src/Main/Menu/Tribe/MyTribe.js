@@ -15,6 +15,9 @@ import { switchCase, decode } from '../../../redux/middleware/utils';
 import { openPostDetail } from '../../../redux/modules/feed/post/PostActions';
 import { subscribeEntityNotification, unsubscribeEntityNotification } from '../../../redux/modules/notification/NotificationActions';
 import { openMultiUserInviteModal, searchFriend } from '../../../redux/modules/search/SearchActions';
+
+// middleware
+import { componentKeyByTab } from '../../../redux/middleware/utils';
 // Actions
 import {
     myTribeAdminAcceptUser,
@@ -696,7 +699,9 @@ class MyTribe extends React.PureComponent {
                 <TouchableOpacity
                         style={styles.buttonStyle}
                         underlayColor='#fff'
-                        onPress={() => Actions.push('about')}
+                        onPress={() => {
+                            Actions.push('myTribeDescriptionLightBox', { item: this.props.item });
+                        }}
                        >
                         <Text style={styles.buttonText}>About</Text>
                    
@@ -1040,6 +1045,8 @@ const mapStateToProps = (state, props) => {
     const navigationState = getMyTribeNavigationState(state, tribeId, pageId);
     const memberNavigationState = getMyTribeMemberNavigationState(state, tribeId, pageId);
 
+    const navigationTab = state.navigation;
+
     const { routes, index } = navigationState;
     const data = ((key) => {
         switch (key) {
@@ -1069,7 +1076,8 @@ const mapStateToProps = (state, props) => {
         memberNavigationState,
         loading: tribeLoading,
         feedLoading,
-        feedRefreshing
+        feedRefreshing,
+        navigationTab
     };
 };
 
