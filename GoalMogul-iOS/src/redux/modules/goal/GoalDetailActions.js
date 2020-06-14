@@ -1,6 +1,6 @@
 import React from 'react';
 import { Actions } from 'react-native-router-flux';
-import _ from 'lodash';
+import _, { get } from 'lodash';
 import {
     Alert,
     Keyboard
@@ -27,8 +27,11 @@ import {
     GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS,
     GOAL_DETAIL_SWITCH_TAB,
     GOAL_DETAIL_SWITCH_TAB_V2,
-    GOAL_DETAIL_ITEM_SWAP_SUCCESS
 } from '../../../reducers/GoalDetailReducers';
+
+import {
+    GOAL_CREATE_EDIT_SUCCESS
+} from './CreateGoal';
 
 import {
     getGoalDetailByTab
@@ -247,33 +250,38 @@ export const closeGoalDetailWithoutPoping = (goalId, pageId) => (dispatch, getSt
     });
 };
 
+const move = (indexFrom, indexTo, itemArr) => {
+    if (indexFrom === indexTo) return; 
+    const itemFrom = itemArr.splice(indexFrom, 1)[0];
+    itemArr.splice(indexTo, 0, itemFrom);
+    itemArr.forEach((item, i) => {
+        item.order = i+1;
+        return item;
+    })
+}
+
 /**
  * If a step is already mark as completed, then it will change its state to incomplete
  * @param goal: if it's in the need card, then goal is passed in. Otherwise, goal is
  *              undefined
  */
-export const swapGoalItems = (type, indexFrom, indexTo, goal, pageId) => (dispatch, getState) => {
+export const updateGoalItemsOrder = (type, indexFrom, indexTo, goal, pageId) => (dispatch, getState) => {
+    if (indexFrom === indexTo) return; 
+
     const { token } = getState().user;
-    const goalToUpdate = goal || getGoalDetailByTab(getState()).goal;
+    const goalToUpdate = _.cloneDeep(goal);
+    const { _id } = goalToUpdate;
 
     const { tab } = getState().navigation;
-    const { _id, steps, needs } = goalToUpdate;
-    let itemsToUpdate;
-
-    if (type === 'steps') itemsToUpdate = _.cloneDeep(steps);
-    else if (type === 'needs') itemsToUpdate = _.cloneDeep(needs);
+    
+    if (type === 'steps') move(indexFrom, indexTo, goalToUpdate.steps);
+    else if (type === 'needs') move(indexFrom, indexTo, goalToUpdate.needs);
     else return;
-
-    const itemFrom = itemsToUpdate[indexFrom];
-    const itemTo = itemsToUpdate[indexTo];
-    itemsToUpdate[indexFrom] = itemTo;
-    itemsToUpdate[indexTo] = itemFrom;
-    itemsToUpdate[indexFrom].order = indexFrom+1;
-    itemsToUpdate[indexTo].order = indexTo+1;
 
     const onSuccess = (res) => {
         console.log(`${DEBUG_KEY}: mark step complete succeed with res: `, res);
 
+        refreshGoalDetailById(_id, pageId)(dispatch, getState);
         dispatch({
             type: GOAL_DETAIL_UPDATE_DONE,
             payload: {
@@ -282,19 +290,16 @@ export const swapGoalItems = (type, indexFrom, indexTo, goal, pageId) => (dispat
                 pageId
             }
         });
-
-        dispatch({
-            type: GOAL_DETAIL_ITEM_SWAP_SUCCESS,
-            payload: {
-                steps: type === 'steps' ? itemsToUpdate : steps,
-                needs: type === 'needs' ? itemsToUpdate : needs,
-                goalId: _id,
-                tab,
-                pageId
-            }
-        });
     };
     const onError = (err) => {
+        // This will undo the dragged cards to previous position
+        dispatch({
+            type: GOAL_CREATE_EDIT_SUCCESS,
+            payload: {
+                tab,
+                goal
+            }
+        });
         dispatch({
             type: GOAL_DETAIL_UPDATE_DONE,
             payload: {
@@ -311,6 +316,14 @@ export const swapGoalItems = (type, indexFrom, indexTo, goal, pageId) => (dispat
         console.warn(`${DEBUG_KEY}: update goal failed with error: `, err);
     };
 
+    // This will keep the dragged cards where user intend them to be
+    dispatch({
+        type: GOAL_CREATE_EDIT_SUCCESS,
+        payload: {
+            tab,
+            goal: goalToUpdate
+        }
+    });
     dispatch({
         type: GOAL_DETAIL_UPDATE,
         payload: {
@@ -320,7 +333,8 @@ export const swapGoalItems = (type, indexFrom, indexTo, goal, pageId) => (dispat
         }
     });
 
-    updateGoalWithFields(_id, type === 'steps' ? { steps: itemsToUpdate } : { needs: itemsToUpdate }, token, onSuccess, onError);
+    const fields = type === 'steps' ? { steps: goalToUpdate.steps } : { needs: goalToUpdate.needs };
+    updateGoalWithFields(_id, fields, token, onSuccess, onError);
 };
 
 /**

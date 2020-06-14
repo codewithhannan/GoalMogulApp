@@ -24,7 +24,7 @@ import {
     refreshGoalDetailById,
     goalDetailSwitchTabV2,
     goalDetailSwitchTabV2ByKey,
-    swapGoalItems
+    updateGoalItemsOrder
 } from '../../../../redux/modules/goal/GoalDetailActions';
 
 import {
@@ -88,8 +88,7 @@ class CentralTab extends React.PureComponent {
 
         if (props.item.type === 'need') {
             newCommentParams = _.set(newCommentParams, 'commentDetail.needRef', props.item._id);
-        }
-        if (props.item.type === 'step') {
+        } else if (props.item.type === 'step') {
             newCommentParams = _.set(newCommentParams, 'commentDetail.stepRef', props.item._id);
         }
 
@@ -115,6 +114,7 @@ class CentralTab extends React.PureComponent {
 
     render() {
         const { data, isSelf, goalDetail, pageId } = this.props;
+
         if (isSelf) {
             return (
                 <DraggableFlatList
@@ -147,8 +147,9 @@ class CentralTab extends React.PureComponent {
                         // Return if user is trying move steps/needs in wrong place
                         if (e.to === e.from || e.to === 0 || (type === 'steps' && e.to > goalDetail.steps.length) ||
                                 (type === 'needs' && e.to <= goalDetail.steps.length + 1)) return;
-
-                        this.props.swapGoalItems(type, to, from, goalDetail, pageId);
+                        const item = this.props.data.splice(e.from, 1);
+                        this.props.data.splice(e.to, 0, item);
+                        this.props.updateGoalItemsOrder(type, from, to, goalDetail, pageId);
                     }}
                     {...this.props}
                     scrollEventThrottle={2}
@@ -215,7 +216,7 @@ export default connect(
         refreshGoalDetailById,
         createCommentFromSuggestion,
         createCommentForSuggestion,
-        swapGoalItems
+        updateGoalItemsOrder
     },
     null,
     { withRef: true }

@@ -102,7 +102,6 @@ export const GOAL_DETAIL_OPEN = 'goal_detail_open';
 export const GOAL_DETAIL_CLOSE = 'goal_detail_close';
 export const GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS = 'goal_detail_mark_as_complete_success';
 export const GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS = 'goal_detail_share_to_mastermind_success';
-export const GOAL_DETAIL_ITEM_SWAP_SUCCESS = 'goal_detail_item_swap_success';
 export const GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS =
     'goal_detail_mark_step_as_complete_success';
 export const GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS =
@@ -263,16 +262,6 @@ export default (state = INITIAL_STATE, action) => {
             return _.set(newState, `${path}.shareToGoalFeed`, true);
         }
 
-        case GOAL_DETAIL_ITEM_SWAP_SUCCESS: {
-            const { steps, needs, tab } = action.payload;
-            const newState = _.cloneDeep(state);
-            const path = !tab || tab === 'homeTab' ? 'goal.goal' : `goal${capitalizeWord(tab)}.goal`;
-            let goal = _.get(newState, `${path}`);
-            goal.steps = steps; goal.needs = needs;
-
-            return _.set(newState, `${path}`, goal);
-        }
-
         case GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS: {
             const { isCompleted, id, tab } = action.payload;
             const newState = _.cloneDeep(state);
@@ -340,7 +329,7 @@ export default (state = INITIAL_STATE, action) => {
 
         // Update goal updating status
         case GOAL_DETAIL_UPDATE: {
-            const { tab, type, goalId } = action.payload;
+            const { tab, goalId } = action.payload;
             const newState = _.cloneDeep(state);
             const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
             const currentGoal = _.get(newState, `${path}.goal`);
@@ -351,7 +340,7 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         case GOAL_DETAIL_UPDATE_DONE: {
-            const { tab, type, goalId } = action.payload;
+            const { tab, goalId } = action.payload;
             const newState = _.cloneDeep(state);
             const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
             const currentGoal = _.get(newState, `${path}.goal`);
