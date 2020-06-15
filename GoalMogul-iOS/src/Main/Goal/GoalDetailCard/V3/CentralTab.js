@@ -8,16 +8,16 @@ import React from 'react';
 import {
     FlatList,
     Animated,
+    ScrollView,
     View
 } from 'react-native';
+import DraggableFlatList from 'react-native-draggable-flatlist';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
 // Components
 import EmptyResult from '../../../Common/Text/EmptyResult';
 import StepAndNeedCardV3 from './StepAndNeedCardV3';
-
-// Assets
 
 // Actions
 import {
@@ -40,8 +40,6 @@ import {
     makeGetGoalStepsAndNeedsV2
 } from '../../../../redux/modules/goal/selector';
 
-// Styles
-import DraggableFlatList from 'react-native-draggable-flatlist';
 
 // Constants
 const DEBUG_KEY = '[ UI CentralTab ]';
@@ -50,14 +48,6 @@ const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 class CentralTab extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.scrollToOffset = this.scrollToOffset.bind(this);
-    }
-
-    scrollToOffset = (offset) => {
-        this.flatlist.getNode().scrollToOffset({
-            offset,
-            animated: true
-        });
     }
 
     // Refresh goal content and comment
@@ -73,7 +63,8 @@ class CentralTab extends React.PureComponent {
     }
 
     renderItem = (props) => {
-        const { goalDetail, pageId, goalId } = this.props;
+        const { goalDetail, pageId } = this.props;
+        const { item } = props;
         if (!goalDetail) return null;
 
         let newCommentParams = {
@@ -82,30 +73,29 @@ class CentralTab extends React.PureComponent {
                 parentRef: goalDetail._id, // Goal ref
                 commentType: 'Comment',
             },
-            suggestionForRef: props.item._id, // Need or Step ref
-            suggestionFor: props.item.type === 'need' ? 'Need' : 'Step'
+            suggestionForRef: item._id, // Need or Step ref
+            suggestionFor: item.type === 'need' ? 'Need' : 'Step'
         };
 
-        if (props.item.type === 'need') {
-            newCommentParams = _.set(newCommentParams, 'commentDetail.needRef', props.item._id);
-        } else if (props.item.type === 'step') {
-            newCommentParams = _.set(newCommentParams, 'commentDetail.stepRef', props.item._id);
+        if (item.type === 'need') {
+            newCommentParams = _.set(newCommentParams, 'commentDetail.needRef', item._id);
+        } else if (item.type === 'step') {
+            newCommentParams = _.set(newCommentParams, 'commentDetail.stepRef', item._id);
         }
 
         return (
             <StepAndNeedCardV3
                 key={`mastermind-${props.index}`}
-                item={props.item}
+                item={item}
                 goalRef={goalDetail}
                 onCardPress={() => {
                     // Use passed in function to handle tab switch with animation
-                    this.props.handleIndexChange(1, props.item.type, props.item._id);
+                    this.props.handleIndexChange(1, item.type, item._id);
                     this.props.createCommentForSuggestion(newCommentParams, pageId);
                 }}
                 isSelf={this.props.isSelf}
-                count={props.item.count}
+                count={item.count}
                 pageId={pageId}
-                goalId={goalId}
                 drag={props.drag}
                 isActive={props.isActive}
             />
@@ -113,12 +103,12 @@ class CentralTab extends React.PureComponent {
     }
 
     render() {
-        const { data, isSelf, goalDetail, pageId } = this.props;
+        const { data, isSelf, goalDetail, pageId, topOffset } = this.props;
 
         if (isSelf) {
             return (
                 <DraggableFlatList
-                    ref={ref => (this.flatlist = ref)}
+                    {...this.props}
                     data={data}
                     renderItem={this.renderItem}
                     keyExtractor={this.keyExtractor}
@@ -151,14 +141,13 @@ class CentralTab extends React.PureComponent {
                         this.props.data.splice(e.to, 0, item);
                         this.props.updateGoalItemsOrder(type, from, to, goalDetail, pageId);
                     }}
-                    {...this.props}
-                    scrollEventThrottle={2}
+                    contentContainerStyle={{ flexGrow: 1, paddingTop: topOffset }}
                 />
             );
         }
         return (
             <AnimatedFlatList
-                ref={ref => (this.flatlist = ref)}
+                {...this.props}
                 data={data}
                 renderItem={this.renderItem}
                 keyExtractor={this.keyExtractor}
@@ -171,7 +160,7 @@ class CentralTab extends React.PureComponent {
                             textStyle={{ paddingTop: 70 }}
                         />
                 }
-                {...this.props}
+                contentContainerStyle={{ flexGrow: 1, paddingTop: topOffset }}
                 scrollEventThrottle={2}
             />
         );

@@ -527,16 +527,11 @@ export class GoalDetailCardV3 extends Component {
                 return (
                     <CentralTab
                         testID="goal-detail-card-central-tab"
-                        ref={(ref) => (this.centralTabScrollView = ref)}
                         onScroll={Animated.event(
                             [{ nativeEvent: { contentOffset: { y: this.state.scroll } } }],
                             { useNativeDriver: true }
                         )}
-                        contentContainerStyle={{
-                            paddingTop: this.state.cardHeight,
-                            flexGrow: 1
-                        }}
-                        contentOffset={{ y: this.state.centralTabContentOffset }}
+                        topOffset={this.state.cardHeight}
                         isSelf={this.props.isSelf}
                         handleIndexChange={this._handleIndexChange}
                         pageId={this.props.pageId}
