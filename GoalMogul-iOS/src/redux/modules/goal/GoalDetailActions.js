@@ -23,8 +23,8 @@ import {
     GOAL_DETAIL_CLOSE,
     GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
     GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS,
+    GOAL_DETAIL_UPDATE_STEP_NEED_SUCCESS,
     GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS,
-    GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS,
     GOAL_DETAIL_SWITCH_TAB,
     GOAL_DETAIL_SWITCH_TAB_V2,
 } from '../../../reducers/GoalDetailReducers';
@@ -281,7 +281,6 @@ export const updateGoalItemsOrder = (type, indexFrom, indexTo, goal, pageId) => 
     const onSuccess = (res) => {
         console.log(`${DEBUG_KEY}: mark step complete succeed with res: `, res);
 
-        refreshGoalDetailById(_id, pageId)(dispatch, getState);
         dispatch({
             type: GOAL_DETAIL_UPDATE_DONE,
             payload: {
@@ -342,20 +341,24 @@ export const updateGoalItemsOrder = (type, indexFrom, indexTo, goal, pageId) => 
  * @param goal: if it's in the need card, then goal is passed in. Otherwise, goal is
  *              undefined
  */
-export const markStepAsComplete = (stepId, goal, pageId) => (dispatch, getState) => {
+export const updateGoalItems = (itemId, type, updates, goal, pageId) => (dispatch, getState) => {
+    if (type !== 'step' && type !== 'need') return;
+    let { isCompleted, description } = updates;
+
     const { token } = getState().user;
     const goalToUpdate = goal || getGoalDetailByTab(getState()).goal;
 
     // const { goal } = getState().goalDetail;
     const { tab } = getState().navigation;
-    const { _id, steps } = goalToUpdate;
+    const { _id } = goalToUpdate;
+    const items = type === 'step' ? goalToUpdate.steps : goalToUpdate.needs;
 
-    let isCompleted;
-    const stepToUpdate = steps.map((item) => {
+    
+    const itemsToUpdate = items.map((item) => {
         const newItem = _.cloneDeep(item);
-        if (item._id === stepId) {
-            newItem.isCompleted = newItem.isCompleted === undefined ? true : !newItem.isCompleted;
-            isCompleted = newItem.isCompleted;
+        if (item._id === itemId) {
+            isCompleted = newItem.isCompleted = typeof isCompleted === 'boolean' ? isCompleted : !!newItem.isCompleted;
+            description = newItem.description = description ? description : newItem.description;
         }
         return newItem;
     });
@@ -366,22 +369,23 @@ export const markStepAsComplete = (stepId, goal, pageId) => (dispatch, getState)
         dispatch({
             type: GOAL_DETAIL_UPDATE_DONE,
             payload: {
-                isCompleted,
                 tab,
-                goalId: _id,
                 pageId,
-                type: 'markStepAsComplete'
+                goalId: _id
             }
         });
 
         dispatch({
-            type: GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS,
+            type: GOAL_DETAIL_UPDATE_STEP_NEED_SUCCESS,
             payload: {
-                id: stepId,
-                isCompleted,
-                goalId: _id,
-                tab,
-                pageId
+                id: itemId,
+                updates: {
+                    isCompleted,
+                    description
+                },
+                type: type+'s',
+                pageId,
+                goalId: goal._id
             }
         });
     };
@@ -389,11 +393,9 @@ export const markStepAsComplete = (stepId, goal, pageId) => (dispatch, getState)
         dispatch({
             type: GOAL_DETAIL_UPDATE_DONE,
             payload: {
-                isCompleted,
                 tab,
-                goalId: _id,
-                type: 'markStepAsComplete',
-                pageId
+                pageId,
+                goalId: _id
             }
         });
 
@@ -407,91 +409,13 @@ export const markStepAsComplete = (stepId, goal, pageId) => (dispatch, getState)
     dispatch({
         type: GOAL_DETAIL_UPDATE,
         payload: {
-            isCompleted,
             tab,
-            goalId: _id,
-            type: 'markStepAsComplete',
-            pageId
+            pageId,
+            goalId: _id
         }
     });
 
-    updateGoalWithFields(_id, { steps: stepToUpdate }, token, onSuccess, onError);
-};
-
-// If a need is already mark as completed, then it will change its state to incomplete
-export const markNeedAsComplete = (needId, goal, pageId) => (dispatch, getState) => {
-    const { token } = getState().user;
-    const goalToUpdate = goal || getGoalDetailByTab(getState()).goal;
-    // const { goal } = getState().goalDetail;
-    const { _id, needs } = goalToUpdate;
-    const { tab } = getState().navigation;
-
-    let isCompleted;
-    const needToUpdate = needs.map((item) => {
-        const newItem = _.cloneDeep(item);
-        if (item._id === needId) {
-            newItem.isCompleted = newItem.isCompleted === undefined ? true : !newItem.isCompleted;
-            isCompleted = newItem.isCompleted;
-        }
-        return newItem;
-    });
-
-    const onSuccess = (res) => {
-        console.log(`${DEBUG_KEY}: mark need complete succeed with res: `, res);
-        dispatch({
-            type: GOAL_DETAIL_UPDATE_DONE,
-            payload: {
-                isCompleted,
-                tab,
-                goalId: _id,
-                pageId,
-                type: 'markNeedAsComplete'
-            }
-        });
-
-        dispatch({
-            type: GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS,
-            payload: {
-                id: needId,
-                isCompleted,
-                goalId: _id,
-                pageId,
-                tab
-            }
-        });
-    };
-
-    const onError = (err) => {
-        dispatch({
-            type: GOAL_DETAIL_UPDATE_DONE,
-            payload: {
-                isCompleted,
-                tab,
-                goalId: _id,
-                type: 'markNeedAsComplete',
-                pageId
-            }
-        });
-
-        Alert.alert(
-            'Update need status failed',
-            'Please try again later.'
-        );
-        console.warn(`${DEBUG_KEY}: update need status failed with error: `, err);
-    };
-
-    dispatch({
-        type: GOAL_DETAIL_UPDATE,
-        payload: {
-            isCompleted,
-            tab,
-            goalId: _id,
-            type: 'markNeedAsComplete',
-            pageId
-        }
-    });
-
-    updateGoalWithFields(_id, { needs: needToUpdate }, token, onSuccess, onError);
+    updateGoalWithFields(_id, type === 'step' ? { steps: itemsToUpdate } : { needs: itemsToUpdate }, token, onSuccess, onError);
 };
 
 // User marks a goal as completed
