@@ -102,9 +102,11 @@ export const GOAL_DETAIL_OPEN = 'goal_detail_open';
 export const GOAL_DETAIL_CLOSE = 'goal_detail_close';
 export const GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS = 'goal_detail_mark_as_complete_success';
 export const GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS = 'goal_detail_share_to_mastermind_success';
+export const GOAL_DETAIL_UPDATE_STEP_NEED_SUCCESS =
+    'goal_detail_update_step_need_success';
 export const GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS =
     'goal_detail_mark_step_as_complete_success';
-export const GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS =
+    export const GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS =
     'goal_detail_mark_need_as_complete_success';
 
 export const GOAL_DETAIL_SWITCH_TAB = 'goal_detail_switch_tab';
@@ -262,30 +264,6 @@ export default (state = INITIAL_STATE, action) => {
             return _.set(newState, `${path}.shareToGoalFeed`, true);
         }
 
-        case GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS: {
-            const { isCompleted, id, tab } = action.payload;
-            const newState = _.cloneDeep(state);
-            const path = !tab || tab === 'homeTab' ? 'goal.goal' : `goal${capitalizeWord(tab)}.goal`;
-            const oldSteps = _.get(newState, `${path}.steps`);
-
-            // When mark step as complete, user might not be in goal detail view
-            // so oldSteps could be undefined
-            if (!oldSteps || oldSteps.length === 0) return newState;
-            return _.set(newState, `${path}.steps`, findAndUpdate(id, oldSteps, { isCompleted }));
-        }
-
-        case GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS: {
-            const { isCompleted, id, tab } = action.payload;
-            const newState = _.cloneDeep(state);
-            const path = !tab || tab === 'homeTab' ? 'goal.goal' : `goal${capitalizeWord(tab)}.goal`;
-            const oldNeeds = _.get(newState, `${path}.needs`);
-
-            // When mark need as complete, user might not be in goal detail view
-            // so oldNeeds could be undefined
-            if (!oldNeeds || oldNeeds.length === 0) return newState;
-            return _.set(newState, `${path}.needs`, findAndUpdate(id, oldNeeds, { isCompleted }));
-        }
-
         // Comment with suggestion for need or step is posted successfully
         case COMMENT_NEW_POST_SUGGESTION_SUCCESS: {
             const { tab } = action.payload;
@@ -359,15 +337,17 @@ export default (state = INITIAL_STATE, action) => {
 function findAndUpdate(id, data, newValsMap) {
     if (!data || data.length === 0) return [];
     return data.map((item) => {
-        let newItem = _.cloneDeep(item);
         if (item._id === id) {
+            let newItem = _.cloneDeep(item);
             Object.keys(newValsMap).forEach(key => {
                 if (newValsMap[key] !== null) {
                     newItem = _.set(newItem, `${key}`, newValsMap[key]);
                 }
             });
+            console.log(newItem);
+            return newItem;
         }
-        return newItem;
+        return item;
     });
 }
 

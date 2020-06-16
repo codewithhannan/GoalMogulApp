@@ -28,6 +28,7 @@ import {
     GOAL_DETAIL_UPDATE,
     GOAL_DETAIL_UPDATE_DONE,
     GOAL_DETAIL_CLOSE,
+    GOAL_DETAIL_UPDATE_STEP_NEED_SUCCESS,
     GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS,
     GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS,
     GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS,
@@ -303,25 +304,25 @@ export default (state = INITIAL_STATE, action) => {
             return newState;
         }
 
-        case GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS: {
-            const { id, isCompleted, goalId, pageId } = action.payload;
+        case GOAL_DETAIL_UPDATE_STEP_NEED_SUCCESS: {
+            const { id, updates, type, goalId, pageId } = action.payload;
             let newState = _.cloneDeep(state);
-            const shouldUpdate = sanityCheck(newState, goalId, GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS);
+            const shouldUpdate = sanityCheck(newState, goalId, GOAL_DETAIL_UPDATE_STEP_NEED_SUCCESS);
             if (!shouldUpdate) {
                 return newState;
             }
 
-            const shouldUpdatePage = sanityCheckByPageId(newState, goalId, pageId, GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS);
+            const shouldUpdatePage = sanityCheckByPageId(newState, goalId, pageId, GOAL_DETAIL_UPDATE_STEP_NEED_SUCCESS);
             if (shouldUpdatePage) {
                 newState = _.set(newState, `${goalId}.${pageId}.updating`, false);
             }
 
-            const oldSteps = _.get(newState, `${goalId}.goal.steps`);
+            const oldSteps = _.get(newState, `${goalId}.goal.${type}`);
             // When mark step as complete, user might not be in goal detail view
             // so oldNeeds could be undefined
             if (oldSteps !== undefined && oldSteps.length > 0) {
-                const newSteps = findAndUpdate(id, oldSteps, { isCompleted });
-                newState = _.set(newState, `${goalId}.goal.steps`, newSteps);
+                const newSteps = findAndUpdate(id, oldSteps, updates);
+                newState = _.set(newState, `${goalId}.goal.${type}`, newSteps);
             }
 
             return newState;
@@ -711,14 +712,15 @@ const sanityCheckByPageId = (state, goalId, pageId, type) => {
 function findAndUpdate(id, data, newValsMap) {
     if (!data || data.length === 0) return [];
     return data.map((item) => {
-        let newItem = _.cloneDeep(item);
         if (item._id === id) {
+            let newItem = _.cloneDeep(item);
             Object.keys(newValsMap).forEach(key => {
                 if (newValsMap[key] !== null) {
                     newItem = _.set(newItem, `${key}`, newValsMap[key]);
                 }
             });
+            return newItem;
         }
-        return newItem;
+        return item;
     });
 }

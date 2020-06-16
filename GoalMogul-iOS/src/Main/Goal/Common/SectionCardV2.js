@@ -3,7 +3,8 @@ import {
     View,
     Text,
     TouchableOpacity,
-    Image
+    Image,
+    TextInput
 } from 'react-native';
 import R from 'ramda';
 import { connect } from 'react-redux';
@@ -25,12 +26,10 @@ import {
     chooseShareDest
 } from '../../../redux/modules/feed/post/ShareActions';
 
-import {
-    markStepAsComplete,
-    markNeedAsComplete
-} from '../../../redux/modules/goal/GoalDetailActions';
+import { updateGoalItems } from '../../../redux/modules/goal/GoalDetailActions';
 import { decode } from '../../../redux/middleware/utils';
-import { GM_BLUE, DEFAULT_STYLE } from '../../../styles';
+import { GM_BLUE, DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles';
+
 
 // Constants
 const DEBUG_KEY = '[ UI GoalCard.Need/Step SectionCardV2 ]';
@@ -47,6 +46,13 @@ const { CheckIcon: checkIcon } = Icons;
 // };
 
 class SectionCardV2 extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isInputFocused: false,
+            textValue: props.item ? props.item.description : ''
+        }
+    }
 
     handleShareOnClick = () => {
         const { item, goalRef, type } = this.props;
@@ -81,8 +87,7 @@ class SectionCardV2 extends Component {
     };
 
     // Render Suggestion icon and number of comments
-    renderActionIcons(type) {
-        if (type === 'comment') return null;
+    renderActionIcons() {
         const commentCount = this.props.count === undefined ? 15 : this.props.count;
         return (
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -100,11 +105,8 @@ class SectionCardV2 extends Component {
         );
     }
 
-    renderCheckBox(isCompleted, type) {
-        const { item: { _id }, goalRef, pageId, isFocusedItem, isSelf } = this.props;
-        const onPress = type === 'need' || type === 'Need'
-            ? () => this.props.markNeedAsComplete(_id, goalRef, pageId)
-            : () => this.props.markStepAsComplete(_id, goalRef, pageId);
+    renderCheckBox(isCompleted) {
+        const { item: { _id }, goalRef, pageId, isFocusedItem, isSelf, type } = this.props;
 
         const iconContainerStyle = isCompleted
             ? styles.checkIconContainerStyle
@@ -122,7 +124,7 @@ class SectionCardV2 extends Component {
                 <DelayedButton
                     activeOpacity={0.6}
                     style={iconContainerStyle}
-                    onPress={onPress}
+                    onPress={() => this.props.updateGoalItems(_id, type, { isCompleted: !isCompleted }, goalRef, pageId)}
                 >
                     <Image style={styles.checkIconStyle} source={checkIcon} />
                 </DelayedButton>
@@ -136,8 +138,9 @@ class SectionCardV2 extends Component {
         }
     }
 
-    renderBackIcon(type) {
-        if (!this.props.isFocusedItem) return null;
+    renderBackIcon() {
+        const { type, isFocusedItem } = this.props;
+        if (!isFocusedItem) return null;
         return (
             <View style={{ justifyContent: type === 'comment' ? 'center' : 'flex-start', marginRight: 10 }}>
                 <DelayedButton
@@ -162,56 +165,122 @@ class SectionCardV2 extends Component {
             this.props.onContentSizeChange(event);
     }
 
+    renderTextStuff(isCommentFocused, description) {
+        const { item: { _id }, goalRef, pageId, isSelf, type } = this.props;
+
+        const sectionText = isCommentFocused ? 'Back to Steps & Needs' : description;
+        const hasTextChanged = this.input && this.input.props.value !== description;
+        const showSave = hasTextChanged && this.input.props.value !== '';
+
+        const textToDisplay = decode(sectionText === undefined ? 'No content' : sectionText);
+        const textStyle = isCommentFocused ? [ DEFAULT_STYLE.smallTitle_1, { color: 'black', marginTop: 4 } ]
+            : [ DEFAULT_STYLE.normalText_1, { marginLeft: 4 } ];
+        
+        return(
+            <View style={{
+                marginRight: isSelf ? 4 : 0
+            }}>
+                {isSelf === true && !isCommentFocused ?
+                    <TextInput
+                        ref={ref => this.input = ref}
+                        style={{
+                            ...textStyle,
+                            padding: 4,
+                            backgroundColor: this.state.isInputFocused ? '#F2F2F2' : styles.backgroundColor
+                        }}
+                        value={this.state.textValue}
+                        onFocus={() => this.setState({ isInputFocused: true })}
+                        onBlur={() => this.setState({ isInputFocused: false })}
+                        onChangeText={text => this.setState({ textValue: text })}
+                        multiline
+                    />
+                    : <Text style={textStyle} ellipsizeMode='tail' >
+                        {textToDisplay}
+                    </Text>
+                }
+                {!isCommentFocused &&
+                    <View
+                        style={{
+                            height: isSelf ? 2 : 0,
+                            backgroundColor: '#F2F2F2',
+                            marginBottom: 10
+                        }} 
+                    />
+                }
+                {hasTextChanged &&
+                    <View style={{
+                        flexDirection: 'row',
+                        justifyContent: 'flex-end',
+                        alignItems: 'center'
+                    }}>
+                        <DelayedButton
+                            activeOpacity={0.6}
+                            style={{
+                                backgroundColor: '#E0E0E0',
+                                borderRadius: 3,
+                                padding: 2,
+                                paddingRight: 8,
+                                paddingLeft: 8
+                            }}
+                            onPress={() => this.setState({ textValue: description })}
+                        >
+                            <Text style={DEFAULT_STYLE.normalText_2}>Cancel</Text>
+                        </DelayedButton>
+                        {showSave && <DelayedButton
+                            activeOpacity={0.6}
+                            style={{
+                                backgroundColor: GM_BLUE,
+                                borderRadius: 3,
+                                padding: 2,
+                                paddingRight: 8,
+                                paddingLeft: 8,
+                                marginLeft: 12
+                            }}
+                            onPress={() => this.props.updateGoalItems(_id, type, { description: this.state.textValue }, goalRef, pageId)}
+                        >
+                            <Text style={{ ...DEFAULT_STYLE.normalText_2, color: 'white' }}>Save</Text>
+                        </DelayedButton>}
+                    </View>
+                }
+            </View>
+        );
+    }
+
     render() {
         // console.log('item for props is: ', this.props.item);
-        const { type, item, isActive } = this.props;
+        const { type, item, isActive, drag } = this.props;
         let itemToRender = item;
+        const isCommentFocused = type === 'comment';
 
         // Render empty state
-        if (!item && type !== 'comment') {
+        if (!item && !isCommentFocused) {
             const emptyText = (type === 'need' || type === 'Need') ? 'No needs' : 'No steps';
             itemToRender = { description: `${emptyText}`, isCompleted: false };
             return renderEmptyState(emptyText);
         }
 
         const { description, isCompleted } = itemToRender;
-        const isCommentFocused = type === 'comment';
-        const sectionText = isCommentFocused ? 'Back to Steps & Needs' : description;
-        const textToDisplay = decode(sectionText === undefined ? 'No content' : sectionText);
-        const textStyle = isCommentFocused ? [ DEFAULT_STYLE.smallTitle_1, { color: 'black', marginTop: 4 } ]
-            : [ DEFAULT_STYLE.normalText_1, { marginLeft: 4 } ];
         const containerStyle = isCommentFocused ? { paddingTop: 0, paddingBottom: 0, minHeight: 40 * DEFAULT_STYLE.uiScale, alignItems: 'center' }
-            : { backgroundColor: isActive ? '#F2F2F2' : 'white' };
+            : { backgroundColor: isActive ? '#F2F2F2' : styles.backgroundColor };
 
         return (
             <DelayedButton
                 activeOpacity={0.6}
-                style={[ styles.sectionContainerStyle, containerStyle]}
+                style={[styles.sectionContainerStyle, containerStyle]}
                 onPress={this.props.onCardPress || this.props.onBackPress}
                 onLayout={this.handleOnLayout}
             >
-                {this.renderBackIcon(type)}
+                {this.renderBackIcon()}
                 <View style={{ justifyContent: 'flex-start' }}>
-                    {this.renderCheckBox(isCompleted, type)}
+                    {this.renderCheckBox(isCompleted)}
                 </View>
                 <View style={{ flex: 1 }}>
-                    <Text
-                        style={textStyle}
-                        ellipsizeMode='tail'
-                    >
-                        {textToDisplay}
-                    </Text>
-                    {!isCommentFocused && <View style={{
-                        backgroundColor: '#F2F2F2',
-                        height: 2,
-                        marginTop: 2,
-                        marginBottom: 10
-                    }} />}
-                    {this.renderActionIcons(type)}
+                    {this.renderTextStuff(isCommentFocused, description)}
+                    {!isCommentFocused && this.renderActionIcons()}
                 </View>
-                {this.props.drag && <TouchableOpacity
-                    onLongPress={this.props.drag}
-                    onPressOut={this.props.drag}
+                {drag && <TouchableOpacity
+                    onLongPress={drag}
+                    onPressOut={drag}
                     style={styles.gestureHandlerContainer}
                 >
                     <Image source={menu} resizeMode="contain" style={{ ...DEFAULT_STYLE.buttonIcon_1, tintColor: '#AAA' }} />
@@ -248,6 +317,7 @@ const renderEmptyState = (text) => {
 };
 
 const styles = {
+    backgroundColor: BACKGROUND_COLOR,
     sectionContainerStyle: {
         padding: 16,
         flexDirection: 'row',
@@ -293,7 +363,6 @@ export default connect(
     null,
     {
         chooseShareDest,
-        markStepAsComplete,
-        markNeedAsComplete
+        updateGoalItems
     }
 )(SectionCardV2);
