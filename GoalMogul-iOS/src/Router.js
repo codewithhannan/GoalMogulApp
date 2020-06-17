@@ -43,6 +43,7 @@ import Menu from './Main/Menu/Menu';
 import MyTribe from './Main/Menu/Tribe/MyTribe';
 import MyTribeTab from './Main/Menu/Tribe/MyTribeTab';
 import MyTribeDescription from './Main/Menu/Tribe/MyTribeDescription';
+import MyTribeMembers from './Main/Menu/Tribe/MyTribeMembers';
 import NotificationNeedListView from './Main/Notification/Need/NotificationNeedListView';
 import NotificationListView from './Main/Notification/Notification/NotificationListView';
 // Notification
@@ -649,6 +650,7 @@ class RouterComponent extends Component {
                     <Scene key="shareToChatLightBox" component={ShareToChatModal} hideNavBar />
                     <Scene key="multiSearchPeopleLightBox" component={UserInviteModal} hideNavBar />
                     <Scene key="myTribeDescriptionLightBox" component={MyTribeDescription}/>
+                    <Scene key="myTribeMembers" component={MyTribeMembers}/>
 
                     <Scene key="mutualFriends" component={MutualFriends} />
                     <Scene key="meetContactSync" component={ContactSync} hideNavBar />

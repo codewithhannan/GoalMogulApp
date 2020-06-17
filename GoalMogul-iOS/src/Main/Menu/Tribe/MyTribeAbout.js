@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback
 } from 'react-native';
-
+import { Actions } from 'react-native-router-flux';
 // Component
 import Divider from '../../Common/Divider';
 import ProfileImage from '../../Common/ProfileImage';
@@ -22,11 +22,15 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 const DEBUG_KEY = '[ UI MyTribeAbout ]';
 
 class MyTribeAbout extends Component {
+
+  constructor(props) {
+    super(props);
+}
   /**
    * Note: Tribe.js has its member pictures moved to StackedAvatars
    * @param {*} item 
    */
-  renderMemberStatus(item) {
+  renderMemberStatus(item, indexChange) {
     const { members, memberCount } = item;
     const count = memberCount || 0;
     const memberPicturesWidth = count < 2 ? 45 : 90;
@@ -53,7 +57,7 @@ class MyTribeAbout extends Component {
         <View style={{ ...styles.memberPicturesContainerStyle, width: memberPicturesWidth }}>
           {memberPictures}
           <TouchableOpacity
-            onPress={()=> console.log('testtter')}
+            onPress={()=> Actions.push('myTribeMembers', { item: this.props.memberProps, data: this.props.data })}
             style={{ 
               ...styles.topPictureContainerStyle,
               left: ((5 * 50))
@@ -118,11 +122,13 @@ class MyTribeAbout extends Component {
 
   render() {
     const { item } = this.props;
+    const indexChange = this.props.indexChange;
+
     if (!item) return <View />;
 
     return (
       <View style={{ flex: 1, padding: 25, paddingTop: 15, backgroundColor: 'white' }}>
-        {this.renderMemberStatus(item)}
+        {this.renderMemberStatus(item, indexChange)}
         {/* {this.renderCreated(item)} */}
         {/* <Divider horizontal width={0.8 * width} borderColor='gray' />
         {this.renderDescription(item)} */}

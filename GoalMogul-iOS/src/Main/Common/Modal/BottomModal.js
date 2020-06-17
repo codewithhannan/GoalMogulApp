@@ -1,5 +1,5 @@
 /**
- * This modal shows the tribe description, when the about button is clicked. 
+ * This modal shows content from the bottom of the screen, currently used in About for Tribes.
  */
 
 import React from 'react';
@@ -15,8 +15,7 @@ import DelayedButton from '../../Common/Button/DelayedButton';
 
 import flagIcon from '../../../asset/icons/flag.png'
 
-
-class MyTribeDescription extends React.PureComponent {
+class BottomModal extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -95,7 +94,7 @@ class MyTribeDescription extends React.PureComponent {
 
 export default connect(
  
-)(MyTribeDescription);
+)(BottomModal);
 
 const styles = {
     containerStyle: {
