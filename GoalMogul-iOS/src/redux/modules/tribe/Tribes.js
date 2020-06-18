@@ -100,6 +100,11 @@ export const MYTRIBE_PROMOTE_MEMBER_SUCCESS = 'mytribe_promote_member_success';
 export const MYTRIBE_ACCEPT_MEMBER_SUCCESS = 'mytribe_accept_member_success';
 // user accept invitation
 export const MYTRIBE_MEMBER_ACCEPT_SUCCESS = 'mytribe_member_accept_success';
+// Tribe goal related constants
+export const MYTRIBE_GOAL_LOAD = 'mytribe_goal_load';
+export const MYTRIBE_GOAL_LOAD_DONE = 'mytribe_goal_load_done';
+export const MYTRIBE_GOAL_REFRESH = 'mytribe_goal_refresh';
+export const MYTRIBE_GOAL_REFRESH_DONE = 'mytribe_goal_refresh_done';
 
 export const MEMBER_UPDATE_TYPE = {
     promoteAdmin: 'promoteAdmin',
@@ -123,6 +128,15 @@ export const INITIAL_TRIBE_PAGE = {
     feedRefreshing: false,
     allFeedRefs: [], // list of all post refs that this tribe has ever load. This is for cleanup purpose.
     tribeLoading: false,
+    goals: {
+        skip: 0,
+        limit: 8,
+        hasNextPage: undefined,
+        refs: [], // current user's goal references
+        allRefs: [], // all loaded user's goal references
+        refreshing: false,
+        loading: false,
+    },
     hasNextPage: undefined,
     updating: false,
     membersFilter: 'Admin',
@@ -566,6 +580,81 @@ export default (state = INITIAL_STATE, action) => {
             tribeToUpdate = _.set(tribeToUpdate, 'tribe', updatedTribe);
 
             newState = _.set(newState, tribeId, tribeToUpdate);
+            return newState;
+        }
+
+        case MYTRIBE_GOAL_REFRESH: {
+            const { tribeId, pageId } = action.payload;
+            let newState = _.cloneDeep(state);
+            if (!_.has(newState, `${tribeId}.${pageId}.goals`)) {
+                return newState;
+            }
+            newState = _.set(newState, `${tribeId}.${pageId}.goals.refreshing`, true);
+            return newState;
+        }
+
+        case MYTRIBE_GOAL_LOAD: {
+            const { tribeId, pageId } = action.payload;
+            let newState = _.cloneDeep(state);
+            if (!_.has(newState, `${tribeId}.${pageId}.goals`)) {
+                return newState;
+            }
+            newState = _.set(newState, `${tribeId}.${pageId}.goals.loading`, true);
+            return newState;
+        }
+
+        case MYTRIBE_GOAL_LOAD_DONE: {
+            const { tribeId, pageId, data, skip, hasNextPage } = action.payload;
+            let newState = _.cloneDeep(state);
+            if (!_.has(newState, `${tribeId}.${pageId}.goals`)) {
+                return newState;
+            }
+
+            let tribePageToUpdate = _.get(newState, `${tribeId}.${pageId}`);
+
+            // Update metadata
+            tribePageToUpdate = _.set(tribePageToUpdate, "goals.hasNextPage", hasNextPage);
+            tribePageToUpdate = _.set(tribePageToUpdate, "goals.skip", skip);
+            tribePageToUpdate = _.set(tribePageToUpdate, "goals.loading", false);
+
+            // Merge new goal references
+            const goalRefs = data ? data.map(d => d._id) : [];
+            const currGoalRefs = _.get(tribePageToUpdate, "goals.refs");
+            const curAllGoalRefs = _.get(tribePageToUpdate, "goals.allRefs");
+            tribePageToUpdate = _.set(tribePageToUpdate, "goals.refs", _.uniq(currGoalRefs.concat(goalRefs)));
+
+            // Update all goal refs for cleanup
+            tribePageToUpdate = _.set(tribePageToUpdate, "goals.allRefs", _.union(curAllGoalRefs, goalRefs));
+            
+            // Update tribe page in new state
+            newState = _.set(newState, `${tribeId}.${pageId}`, tribePageToUpdate);
+            return newState;
+        }
+        
+        case MYTRIBE_GOAL_REFRESH_DONE: {
+            const { tribeId, pageId, data, skip, hasNextPage } = action.payload;
+            let newState = _.cloneDeep(state);
+            if (!_.has(newState, `${tribeId}.${pageId}.goals`)) {
+                return newState;
+            }
+
+            let tribePageToUpdate = _.get(newState, `${tribeId}.${pageId}`);
+
+            // Update metadata
+            tribePageToUpdate = _.set(tribePageToUpdate, "goals.hasNextPage", hasNextPage);
+            tribePageToUpdate = _.set(tribePageToUpdate, "goals.skip", skip);
+            tribePageToUpdate = _.set(tribePageToUpdate, "goals.refreshing", false);
+
+            // Merge new goal references
+            const goalRefs = data ? data.map(d => d._id) : [];
+            const curAllGoalRefs = _.get(tribePageToUpdate, "goals.allRefs");
+            tribePageToUpdate = _.set(tribePageToUpdate, "goals.refs", _.uniq(goalRefs));
+
+            // Update all goal refs for cleanup
+            tribePageToUpdate = _.set(tribePageToUpdate, "goals.allRefs", _.union(curAllGoalRefs, goalRefs));
+            
+            // Update tribe page in new state
+            newState = _.set(newState, `${tribeId}.${pageId}`, tribePageToUpdate);
             return newState;
         }
 

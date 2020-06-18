@@ -1,4 +1,18 @@
-// This reducer stores information for my tribes
+/**
+ * In V1, this reducer stores information for my tribes. In V2, this reducer has been refactored to 
+ * store related information for tribe hub including
+ * - All tribe feed
+ * - Your tribes (favorite tribe, managed tribes, others)
+ * - Discover (tribe recommendations)
+ * 
+ * Tribe id is stored as reference and tribe object is stored in Tribes.js as the
+ * source of truth for all tribe. 
+ * 
+ * Code / section with comment "// TODO: cleanup" refers to legacy code that 
+ * should be cleaned up once tribe hub is finished
+ * 
+ * This file is to be renamed as TribeHub.js once legacy code is cleaned up
+ */
 import _ from 'lodash';
 import { arrayUnique } from '../../middleware/utils';
 

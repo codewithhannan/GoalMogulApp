@@ -63,6 +63,7 @@ import {
 } from '../Utils/Constants';
 import { Logger } from '../redux/middleware/utils/Logger';
 import { DEFAULT_STYLE } from '../styles';
+import { loadUserGoals } from '../redux/modules/goal/GoalActions';
 
 const DEBUG_KEY = '[ Action Profile ]';
 
@@ -810,10 +811,11 @@ const profileFilterAdapter = (filter, tab) => {
  * @param callback:
  */
 const loadOneTab = (tab, skip, limit, filter, token, onSuccess, onError) => {
-    // Todo: base route depends on tab selection
-    const route = tab === 'posts'
-        ? `secure/feed/post/user?${queryBuilder(skip, limit, { userId: filter.userId })}`
-        : `secure/goal/user?${queryBuilder(skip, limit, filter)}`;
+    if (tab !== 'posts') {
+        return loadUserGoals(skip, limit, filter, token, onSuccess, onError);
+    }
+
+    const route = `secure/feed/post/user?${queryBuilder(skip, limit, { userId: filter.userId })}`;
     API
         .get(route, token)
         .then((res) => {

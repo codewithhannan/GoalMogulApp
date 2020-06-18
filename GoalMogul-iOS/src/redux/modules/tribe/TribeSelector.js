@@ -113,6 +113,31 @@ const getMyTribeFeed = (state, tribeId, pageId) => {
     return ret;
 };
 
+const getUserGoals = (state, tribeId, pageId) => {
+    const tribes = state.tribes;
+    const goals = state.goals;
+    if (!_.has(tribes, tribeId) || !_.has(tribes, `${tribeId}.${pageId}`)) {
+        return [];
+    }
+
+    const goalRefs = _.get(tribes, `${tribeId}.${pageId}.goals.refs`, []);
+    let ret = goalRefs.map(r => {
+        if (!_.has(posts, r)) {
+            new SentryRequestBuilder("Goals don't have goalRef stored in Tribe", SENTRY_MESSAGE_TYPE.MESSAGE)
+                .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                .withTag(SENTRY_TAGS.TRIBE.SELECTOR, "getUserGoals")
+                .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                .withExtraContext(SENTRY_CONTEXT.GOAL.GOAL_ID, r)
+                .send();
+            return undefined;
+        }
+        return _.cloneDeep(_.get(goals, `${r}.goal`));
+    }).filter(r => r !== undefined);
+
+    return ret;
+}
+
 /**
  * Select tribe detail and tribe page detail by tribeId and pageId
  */
@@ -244,3 +269,12 @@ export const getMyTribeMemberNavigationState = createSelector(
               )
     }
 )
+
+/**
+ * Get user goals to share on tribe
+ * Inputs are: state, tribeId, pageId
+ */
+export const getUserGoalsForTribeShare = createSelector(
+    [getUserGoals],
+    (goals) => goals
+);
