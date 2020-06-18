@@ -911,28 +911,27 @@ class NewGoalView extends Component {
                 style={styles.sectionMargin}
             >
                 <FieldTitleText text={TYPE_MAP[type].title} required={required} style={{ marginBottom: 12 }} />
-                {
-                    fields.length > 0 ?
-                        <DraggableFlatlist
-                            renderItem={(props) => this.renderFieldArrayItem(props, TYPE_MAP[type].placeholder, fields, true, type, onSubmitEditing)}
-                            data={dataToRender}
-                            keyExtractor={item => `${item.index}`}
-                            onDragEnd={e => {
-                                // console.log('moving end for e: ', e);
-                                fields.move(e.from, e.to);
-                                this.setState({
-                                    ...this.state,
-                                    scrollEnabled: true
-                                });
-                            }}
-                            onDragBegin={(index) => {
-                                // console.log('index is being moved: ', index);
-                                this.setState({
-                                    ...this.state,
-                                    scrollEnabled: false
-                                });
-                            }}
-                        /> : null
+                {fields.length > 0 ?
+                    <DraggableFlatlist
+                        renderItem={(props) => this.renderFieldArrayItem(props, TYPE_MAP[type].placeholder, fields, true, type, onSubmitEditing)}
+                        data={dataToRender}
+                        keyExtractor={item => `${item.index}`}
+                        onDragEnd={e => {
+                            // console.log('moving end for e: ', e);
+                            fields.move(e.from, e.to);
+                            this.setState({
+                                ...this.state,
+                                scrollEnabled: true
+                            });
+                        }}
+                        onDragBegin={(index) => {
+                            // console.log('index is being moved: ', index);
+                            this.setState({
+                                ...this.state,
+                                scrollEnabled: false
+                            });
+                        }}
+                    /> : null
                 }
                 <Button
                     text={TYPE_MAP[type].buttonText}
