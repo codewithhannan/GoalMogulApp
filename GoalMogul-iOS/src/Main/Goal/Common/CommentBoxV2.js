@@ -572,7 +572,7 @@ class CommentBoxV2 extends Component {
 
     render() {
         const { pageId, newComment, hasSuggestion, goalId } = this.props;
-        console.log(`${DEBUG_KEY}: new comment in commentbox: `, newComment);
+        // console.log(`${DEBUG_KEY}: new comment in commentbox: `, newComment);
 
         if (!newComment || !newComment.parentRef) return null;
         const { uploading, tag, name, contentText } = newComment;

@@ -26,7 +26,7 @@ import {
     chooseShareDest
 } from '../../../redux/modules/feed/post/ShareActions';
 
-import { updateGoalItems } from '../../../redux/modules/goal/GoalDetailActions';
+import { updateGoal } from '../../../redux/modules/goal/GoalDetailActions';
 import { decode } from '../../../redux/middleware/utils';
 import { GM_BLUE, DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles';
 
@@ -124,7 +124,7 @@ class SectionCardV2 extends Component {
                 <DelayedButton
                     activeOpacity={0.6}
                     style={iconContainerStyle}
-                    onPress={() => this.props.updateGoalItems(_id, type, { isCompleted: !isCompleted }, goalRef, pageId)}
+                    onPress={() => this.props.updateGoal(_id, type, { isCompleted: !isCompleted }, goalRef, pageId)}
                 >
                     <Image style={styles.checkIconStyle} source={checkIcon} />
                 </DelayedButton>
@@ -165,6 +165,11 @@ class SectionCardV2 extends Component {
             this.props.onContentSizeChange(event);
     }
 
+    /**
+     * Renders main text component to be displayed along with any buttons needed to support text edit
+     * @param {boolean} isCommentFocused true if component type is comment
+     * @param {string} description text to be displayed
+     */
     renderTextStuff(isCommentFocused, description) {
         const { item: { _id }, goalRef, pageId, isSelf, type } = this.props;
 
@@ -236,7 +241,7 @@ class SectionCardV2 extends Component {
                                 paddingLeft: 8,
                                 marginLeft: 12
                             }}
-                            onPress={() => this.props.updateGoalItems(_id, type, { description: this.state.textValue }, goalRef, pageId)}
+                            onPress={() => this.props.updateGoal(_id, type, { description: this.state.textValue }, goalRef, pageId)}
                         >
                             <Text style={{ ...DEFAULT_STYLE.normalText_2, color: 'white' }}>Save</Text>
                         </DelayedButton>}
@@ -363,6 +368,6 @@ export default connect(
     null,
     {
         chooseShareDest,
-        updateGoalItems
+        updateGoal
     }
 )(SectionCardV2);

@@ -24,7 +24,6 @@ import {
     GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
     GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS,
     GOAL_DETAIL_UPDATE_STEP_NEED_SUCCESS,
-    GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS,
     GOAL_DETAIL_SWITCH_TAB,
     GOAL_DETAIL_SWITCH_TAB_V2,
 } from '../../../reducers/GoalDetailReducers';
@@ -41,6 +40,9 @@ import {
     refreshComments
 } from '../feed/comment/CommentActions';
 import { Logger } from '../../middleware/utils/Logger';
+import { SentryRequestBuilder } from '../../../monitoring/sentry';
+import { SENTRY_MESSAGE_TYPE, SENTRY_MESSAGE_LEVEL, SENTRY_TAGS, SENTRY_TAG_VALUE } from '../../../monitoring/sentry/Constants';
+
 
 const DEBUG_KEY = '[ Action GoalDetail ]';
 
@@ -254,10 +256,10 @@ const move = (indexFrom, indexTo, itemArr) => {
     if (indexFrom === indexTo) return; 
     const itemFrom = itemArr.splice(indexFrom, 1)[0];
     itemArr.splice(indexTo, 0, itemFrom);
-    itemArr.forEach((item, i) => {
-        item.order = i+1;
+    itemArr.forEach((item, index) => {
+        item.order = index+1;
         return item;
-    })
+    });
 }
 
 /**
@@ -307,7 +309,7 @@ export const updateGoalItemsOrder = (type, indexFrom, indexTo, goal, pageId) => 
                 pageId
             }
         });
-
+    
         Alert.alert(
             'Operation failed',
             'Please try again later.'
@@ -341,7 +343,7 @@ export const updateGoalItemsOrder = (type, indexFrom, indexTo, goal, pageId) => 
  * @param goal: if it's in the need card, then goal is passed in. Otherwise, goal is
  *              undefined
  */
-export const updateGoalItems = (itemId, type, updates, goal, pageId) => (dispatch, getState) => {
+export const updateGoal = (itemId, type, updates, goal, pageId) => (dispatch, getState) => {
     if (type !== 'step' && type !== 'need') return;
     let { isCompleted, description } = updates;
 
@@ -355,12 +357,13 @@ export const updateGoalItems = (itemId, type, updates, goal, pageId) => (dispatc
 
     
     const itemsToUpdate = items.map((item) => {
-        const newItem = _.cloneDeep(item);
         if (item._id === itemId) {
+            const newItem = _.cloneDeep(item);
             isCompleted = newItem.isCompleted = typeof isCompleted === 'boolean' ? isCompleted : !!newItem.isCompleted;
             description = newItem.description = description ? description : newItem.description;
+            return newItem;
         }
-        return newItem;
+        return item;
     });
 
     const onSuccess = (res) => {
@@ -590,7 +593,7 @@ const shareToMastermind = (goalId, pageId, dispatch, getState) => {
  * @param dispatch
  */
 const updateGoalWithFields = (goalId, fields, token, onSuccessFunc, onErrorFunc) => {    
-    JSON.stringify({ ...fields }, '\n\n\n\n\n\n\n')
+
     const onError = onErrorFunc ||
         ((err) => console.log(`${DEBUG_KEY}: updating fields with Error: `, err));
     const onSuccess = onSuccessFunc ||
@@ -603,9 +606,19 @@ const updateGoalWithFields = (goalId, fields, token, onSuccessFunc, onErrorFunc)
             }
             console.log(`${DEBUG_KEY}: updating fields ${fields} with with message: `, res);
             onError(res);
+            new SentryRequestBuilder(res, SENTRY_MESSAGE_TYPE.ERROR)
+                .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
+                .withTag(SENTRY_TAGS.ACTION.GOAL_UPDATE, SENTRY_TAG_VALUE.ACTIONS.FAILED)
+                .withExtraContext(SENTRY_TAGS.ACTION.GOAL_UPDATE, { fields, token })
+                .send();
         })
         .catch((err) => {
             console.log(`${DEBUG_KEY}: updating fields ${fields} with err: `, err);
             onError(err);
+            new SentryRequestBuilder(error, SENTRY_MESSAGE_TYPE.ERROR)
+                .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
+                .withTag(SENTRY_TAGS.ACTION.GOAL_UPDATE, SENTRY_TAG_VALUE.ACTIONS.FAILED)
+                .withExtraContext(SENTRY_TAGS.ACTION.GOAL_UPDATE, { fields, token })
+                .send();
         });
 };
