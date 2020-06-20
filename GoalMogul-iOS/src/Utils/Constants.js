@@ -115,18 +115,22 @@ export const CATEGORY_OPTIONS = [
     }
 ];
 
+export const PRIVACY_FRIENDS = 'friends';
+export const PRIVACY_PUBLIC = 'public';
+export const PRIVACY_PRIVATE = 'self';
+
 export const PRIVACY_OPTIONS = [
     {
         text: 'Friends',
-        value: 'Friends'
+        value: PRIVACY_FRIENDS
     },
     {
         text: 'Public',
-        value: 'Public'
+        value: PRIVACY_PUBLIC
     },
     {
         text: 'Only Me',
-        value: 'Private'
+        value: PRIVACY_PRIVATE
     }
 ];
 

@@ -18,6 +18,138 @@ export const GM_BLUE_LIGHT = "#9EE6FF";
 export const GM_BLUE_LIGHT_LIGHT = "#DEF7FF";
 export const GM_DOT_GRAY = "#E0E0E0";
 
+const UI_SCALE = Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.3 : 1;
+export const TEXT_COLOR_1 = '#333';
+
+export const FONT_FAMILY_1 = 'SFProDisplay-Bold';
+export const FONT_FAMILY_2 = 'SFProDisplay-Regular';
+export const FONT_FAMILY_3 = 'SFProDisplay-Semibold';
+
+const LETTER_SPACING = 0.2;
+const LETTER_SPACING_TITLE = 0.5;
+
+export const DEFAULT_STYLE = {
+    // Headers
+    titleText_1: {
+        fontFamily: FONT_FAMILY_1,
+        fontSize: 17 * UI_SCALE,
+        color: TEXT_COLOR_1,
+        fontWeight: 'bold',
+        letterSpacing: LETTER_SPACING_TITLE
+    },
+    titleText_2: {
+        fontFamily: FONT_FAMILY_1,
+        fontSize: 15 * UI_SCALE,
+        fontWeight: 'bold',
+        color: TEXT_COLOR_1,
+        letterSpacing: LETTER_SPACING
+    },
+    subTitleText_1: {
+        fontFamily: FONT_FAMILY_2,
+        fontSize: 17 * UI_SCALE,
+        fontWeight: '400',
+        color: TEXT_COLOR_1,
+        letterSpacing: LETTER_SPACING_TITLE
+    },
+    goalTitleText_1: {
+        fontFamily: FONT_FAMILY_2,
+        fontSize: 19 * UI_SCALE,
+        fontWeight: '400',
+        color: TEXT_COLOR_1,
+        letterSpacing: LETTER_SPACING_TITLE
+    },
+    // Normal texts
+    normalText_1: {
+        fontFamily: FONT_FAMILY_2,
+        fontSize: 14 * UI_SCALE,
+        color: TEXT_COLOR_1,
+        fontWeight: '500',
+        letterSpacing: LETTER_SPACING
+    },
+    normalText_2: {
+        fontFamily: FONT_FAMILY_2,
+        fontSize: 12 * UI_SCALE,
+        color: TEXT_COLOR_1,
+        fontWeight: '500',
+        letterSpacing: LETTER_SPACING
+    },
+    normalIcon_1: {
+        height: 16 * UI_SCALE,
+        width: 16 * UI_SCALE
+    },
+    // Detailing texts
+    smallTitle_1: {
+        fontFamily: FONT_FAMILY_1,
+        fontSize: 11 * UI_SCALE,
+        fontWeight: 'bold',
+        color: TEXT_COLOR_1,
+        letterSpacing: LETTER_SPACING_TITLE
+    },
+    smallText_1: {
+        fontFamily: FONT_FAMILY_2,
+        fontSize: 11 * UI_SCALE,
+        color: TEXT_COLOR_1,
+        letterSpacing: LETTER_SPACING
+    },
+    smallText_2: {
+        fontFamily: FONT_FAMILY_2,
+        fontSize: 9 * UI_SCALE,
+        color: TEXT_COLOR_1,
+        letterSpacing: LETTER_SPACING
+    },
+    smallIcon_1: {
+        height: 13 * UI_SCALE,
+        width: 13 * UI_SCALE
+    },
+    // Button styles
+    buttonText_1: {
+        fontFamily: FONT_FAMILY_3,
+        fontSize: 15 * UI_SCALE,
+        fontWeight: '700',
+        color: TEXT_COLOR_1,
+        letterSpacing: LETTER_SPACING
+    },
+    buttonText_2: {
+        fontFamily: FONT_FAMILY_1,
+        fontSize: 12 * UI_SCALE,
+        fontWeight: '500',
+        color: TEXT_COLOR_1,
+        letterSpacing: LETTER_SPACING
+    },
+    buttonIcon_1: {
+        height: 24 * UI_SCALE,
+        width: 24 * UI_SCALE,
+        tintColor: TEXT_COLOR_1
+    },
+    // Misc
+    uiScale: UI_SCALE,
+    infoIcon: {
+        height: 8 * UI_SCALE,
+        width: 8 * UI_SCALE,
+        tintColor: TEXT_COLOR_1
+    },
+    priortyBar: {
+        height: 4 * UI_SCALE,
+        width: 30 * UI_SCALE,
+        marginTop: 4 * UI_SCALE
+    },
+    profileImage_1: {
+        height: 42 * UI_SCALE,
+        width: 42 * UI_SCALE,
+        borderRadius: 21 * UI_SCALE
+    },
+    profileImage_2: {
+        height: 20 * UI_SCALE,
+        width: 20 * UI_SCALE,
+        margin: 10 * UI_SCALE
+    },
+    shadow: {
+        width: '100%',
+        height: 5 * UI_SCALE,
+        backgroundColor: '#F2F2F2'
+    }
+}
+
 /**
  * Standardized font size for GM V2
  * 
@@ -183,129 +315,3 @@ export const modalHeaderBadgeShadow = {
     shadowOpacity: 0.25,
     shadowRadius: 5,
 };
-
-import { Dimensions } from 'react-native';
-
-const { height } = Dimensions.get('window');
-
-const UI_SCALE = Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.3 : 1;
-export const TEXT_COLOR_1 = '#333';
-
-export const FONT_FAMILY_1 = 'Avenir';
-export const FONT_FAMILY_2 = 'Avenir';
-export const FONT_FAMILY_3 = 'Helvetica';
-
-export const DEFAULT_STYLE = {
-    // Headers
-    titleText_1: {
-        fontFamily: FONT_FAMILY_1,
-        fontSize: 17 * UI_SCALE,
-        color: TEXT_COLOR_1,
-        fontWeight: 'bold',
-        letterSpacing: 0.3
-    },
-    titleText_2: {
-        fontFamily: FONT_FAMILY_1,
-        fontSize: 15 * UI_SCALE,
-        fontWeight: 'bold',
-        color: TEXT_COLOR_1
-    },
-    subTitleText_1: {
-        fontFamily: FONT_FAMILY_2,
-        fontSize: 17 * UI_SCALE,
-        fontWeight: '400',
-        color: TEXT_COLOR_1,
-        letterSpacing: 0.3
-    },
-    goalTitleText_1: {
-        fontFamily: FONT_FAMILY_2,
-        fontSize: 19 * UI_SCALE,
-        fontWeight: '400',
-        color: TEXT_COLOR_1,
-        letterSpacing: 0.3
-    },
-    // Normal texts
-    normalText_1: {
-        fontFamily: FONT_FAMILY_2,
-        fontSize: 14 * UI_SCALE,
-        color: TEXT_COLOR_1,
-        fontWeight: '500'
-    },
-    normalText_2: {
-        fontFamily: FONT_FAMILY_2,
-        fontSize: 12 * UI_SCALE,
-        color: TEXT_COLOR_1,
-        fontWeight: '500'
-    },
-    normalIcon_1: {
-        height: 16 * UI_SCALE,
-        width: 16 * UI_SCALE
-    },
-    // Detailing texts
-    smallTitle_1: {
-        fontFamily: FONT_FAMILY_1,
-        fontSize: 11 * UI_SCALE,
-        fontWeight: 'bold',
-        color: TEXT_COLOR_1,
-        letterSpacing: 0.3
-    },
-    smallText_1: {
-        fontFamily: FONT_FAMILY_2,
-        fontSize: 11 * UI_SCALE,
-        color: TEXT_COLOR_1
-    },
-    smallText_2: {
-        fontFamily: FONT_FAMILY_2,
-        fontSize: 9 * UI_SCALE,
-        color: TEXT_COLOR_1
-    },
-    smallIcon_1: {
-        height: 13 * UI_SCALE,
-        width: 13 * UI_SCALE
-    },
-    // Button styles
-    buttonText_1: {
-        fontFamily: FONT_FAMILY_1,
-        fontSize: 15 * UI_SCALE,
-        fontWeight: '500',
-        color: TEXT_COLOR_1
-    },
-    buttonText_2: {
-        fontFamily: FONT_FAMILY_1,
-        fontSize: 12 * UI_SCALE,
-        fontWeight: '500',
-        color: TEXT_COLOR_1
-    },
-    buttonIcon_1: {
-        height: 24 * UI_SCALE,
-        width: 24 * UI_SCALE,
-        tintColor: TEXT_COLOR_1
-    },
-    // Misc
-    uiScale: UI_SCALE,
-    infoIcon: {
-        height: 8 * UI_SCALE,
-        width: 8 * UI_SCALE,
-        tintColor: TEXT_COLOR_1
-    },
-    priortyBar: {
-        height: 4 * UI_SCALE,
-        width: 30 * UI_SCALE,
-        marginTop: 4 * UI_SCALE
-    },
-    profileImage_1: {
-        height: 42 * UI_SCALE,
-        width: 42 * UI_SCALE,
-        borderRadius: 21 * UI_SCALE
-    },
-    profileImage_2: {
-        height: 20 * UI_SCALE,
-        width: 20 * UI_SCALE,
-        margin: 10 * UI_SCALE
-    },
-    shadow: {
-        width: '100%',
-        height: 5 * UI_SCALE,
-        backgroundColor: '#F2F2F2'
-    }
-}

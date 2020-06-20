@@ -229,6 +229,8 @@ export default (state = INITIAL_STATE, action) => {
                 parentRef,
                 commentType,
                 replyToRef,
+                name,
+                tag,
                 owner,
                 tab,
                 pageId,
@@ -251,6 +253,8 @@ export default (state = INITIAL_STATE, action) => {
             newState = setState(newState, `${path}.parentRef`, parentRef);
             newState = setState(newState, `${path}.commentType`, commentType);
             newState = setState(newState, `${path}.replyToRef`, replyToRef);
+            newState = setState(newState, `${path}.name`, name);
+            newState = setState(newState, `${path}.tag`, tag);
             newState = setState(newState, `${path}.owner`, owner);
 
             if (needRef) {

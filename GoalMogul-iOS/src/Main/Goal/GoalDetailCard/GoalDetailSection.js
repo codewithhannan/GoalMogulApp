@@ -428,53 +428,51 @@ class GoalDetailSection extends React.PureComponent {
         const selfLiked = maybeLikeRef && maybeLikeRef.length > 0;
 
         return (
-            <View style={{ marginTop: 1 }}>
-                <ActionButtonGroup>
-                    <ActionButton
-                        iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
-                        count={likeCount}
-                        unitText="Like"
-                        textStyle={{ color: selfLiked ? '#000' : '#828282' }}
-                        iconStyle={{ tintColor: selfLiked ? '#EB5757' : '#828282' }}
-                        onPress={() => {
-                            if (maybeLikeRef && maybeLikeRef.length > 0) {
-                                return this.props.unLikeGoal('goal', _id, maybeLikeRef);
-                            }
-                            this.props.likeGoal('goal', _id);
-                        }}
-                        onTextPress={() => { this.setState({ showlikeListModal: true }) }}
-                    />
-                    <ActionButton
-                        iconSource={ShareIcon}
-                        count={shareCount}
-                        unitText="Share"
-                        textStyle={{ color: '#828282' }}
-                        iconStyle={{ tintColor: '#828282' }}
-                        onPress={() => this.handleShareOnClick(item)}
-                        onTextPress={() => { this.setState({ showShareListModal: true }) }}
-                    />
-                    <ActionButton
-                        iconSource={CommentIcon}
-                        count={commentCount}
-                        unitText="Comment"
-                        textStyle={{ color: '#828282' }}
-                        iconStyle={{ tintColor: '#828282' }}
-                        onPress={() => {
-                            this.props.createCommentFromSuggestion({
-                                commentDetail: {
-                                    parentType: 'Goal',
-                                    parentRef: _id,
-                                    commentType: 'Suggestion',
-                                    replyToRef: undefined
-                                },
-                                suggestionForRef: _id,
-                                suggestionFor: 'Goal'
-                            });
-                            this.props.onSuggestion();
-                        }}
-                    />
-                </ActionButtonGroup>
-            </View>
+            <ActionButtonGroup>
+                <ActionButton
+                    iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
+                    count={likeCount}
+                    unitText="Like"
+                    textStyle={{ color: selfLiked ? '#000' : '#828282' }}
+                    iconStyle={{ tintColor: selfLiked ? '#EB5757' : '#828282' }}
+                    onPress={() => {
+                        if (maybeLikeRef && maybeLikeRef.length > 0) {
+                            return this.props.unLikeGoal('goal', _id, maybeLikeRef);
+                        }
+                        this.props.likeGoal('goal', _id);
+                    }}
+                    onTextPress={() => { this.setState({ showlikeListModal: true }) }}
+                />
+                <ActionButton
+                    iconSource={ShareIcon}
+                    count={shareCount}
+                    unitText="Share"
+                    textStyle={{ color: '#828282' }}
+                    iconStyle={{ tintColor: '#828282' }}
+                    onPress={() => this.handleShareOnClick(item)}
+                    onTextPress={() => { this.setState({ showShareListModal: true }) }}
+                />
+                <ActionButton
+                    iconSource={CommentIcon}
+                    count={commentCount}
+                    unitText="Comment"
+                    textStyle={{ color: '#828282' }}
+                    iconStyle={{ tintColor: '#828282' }}
+                    onPress={() => {
+                        this.props.createCommentFromSuggestion({
+                            commentDetail: {
+                                parentType: 'Goal',
+                                parentRef: _id,
+                                commentType: 'Suggestion',
+                                replyToRef: undefined
+                            },
+                            suggestionForRef: _id,
+                            suggestionFor: 'Goal'
+                        }, this.props.pageId);
+                        this.props.onSuggestion();
+                    }}
+                />
+            </ActionButtonGroup>
         );
     }
 
@@ -525,9 +523,7 @@ class GoalDetailSection extends React.PureComponent {
                         {this.renderCardContent(item)}
                     </View>
                 </View>
-                <View style={styles.containerStyle}>
-                    {this.renderActionButtons(item)}
-                </View>
+                {this.renderActionButtons(item)}
                 {this.renderGoalReminderDatePicker()}
             </View>
         );

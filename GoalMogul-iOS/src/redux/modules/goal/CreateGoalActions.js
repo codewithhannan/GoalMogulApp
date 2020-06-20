@@ -25,6 +25,7 @@ import {
     selectProfileTabByName
 } from '../../../actions';
 import { Actions } from 'react-native-router-flux';
+import { PRIVACY_PRIVATE } from '../../../Utils/Constants';
 
 const DEBUG_KEY = '[ Action CreateGoal ]';
 
@@ -73,12 +74,14 @@ export const submitGoal = (
     // If user is editing the goal, then call another endpoint
     if (isEdit) {
         let goalToUse = _.cloneDeep(goal);
+        goalToUse = _.set(goalToUse, 'shareToGoalFeed', false);
+        if (goalToUse.privacy === PRIVACY_PRIVATE)
+            return submitEditGoal(goalToUse, goalId, token, callback, dispatch, tab, user);
         // Check if user wants to share to goal feed
         // Otherwise default to not sharing to goal feed
         Alert.alert('Share to Goal Feed', 'All your friends will see this updated goal on their home page', [
             {
                 text: 'Don’t share', onPress: () => {
-                    goalToUse = _.set(goalToUse, 'shareToGoalFeed', false);
                     return submitEditGoal(goalToUse, goalId, token, callback, dispatch, tab, user);
                 }
             },
@@ -289,7 +292,7 @@ const formToGoalAdapter = (values, userId) => {
         owner: userId,
         title,
         category,
-        privacy: privacy === 'Private' ? 'self' : privacy.toLowerCase(),
+        privacy,
         shareToGoalFeed: shareToMastermind,
         needs: stepsNeedsAdapter(needs),
         steps: stepsNeedsAdapter(steps),
@@ -325,7 +328,7 @@ export const goalToFormAdaptor = (values) => {
     return {
         title: title || '',
         category: category || 'General',
-        privacy: privacy ? (privacy === 'self' ? 'Private' : capitalizeWord(privacy)) : 'Friends',
+        privacy,
         // Following are not required
         shareToMastermind: shareToGoalFeed || (feedInfo && !_.isEmpty(feedInfo)),
         // needs: stepsNeedsReverseAdapter(needs),
