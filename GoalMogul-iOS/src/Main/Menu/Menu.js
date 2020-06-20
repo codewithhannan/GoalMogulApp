@@ -1,72 +1,63 @@
-import React from 'react';
-import {
-    View,
-    Image,
-    Text,
-    Platform,
-    Alert
-} from 'react-native';
-import { connect } from 'react-redux';
-import * as WebBrowser from 'expo-web-browser';
-import { Actions } from 'react-native-router-flux';
-import R from 'ramda';
+/** @format */
+
+import React from 'react'
+import { View, Image, Text, Platform, Alert } from 'react-native'
+import { connect } from 'react-redux'
+import * as WebBrowser from 'expo-web-browser'
+import { Actions } from 'react-native-router-flux'
+import R from 'ramda'
 
 // Components
-import DelayedButton from '../Common/Button/DelayedButton';
-import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
+import DelayedButton from '../Common/Button/DelayedButton'
+import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
 
 // Actions
-import {
-    openMyEventTab
-} from '../../redux/modules/event/MyEventTabActions';
+import { openMyEventTab } from '../../redux/modules/event/MyEventTabActions'
 
-import {
-    openMyTribeTab
-} from '../../redux/modules/tribe/MyTribeTabActions';
+import { openMyTribeTab } from '../../redux/modules/tribe/MyTribeTabActions'
 
-import {
-    openMeet,
-    openSetting,
-    logout
-} from '../../actions';
+import { openMeet, openSetting, logout } from '../../actions'
 
 import {
     showNextTutorialPage,
     startTutorial,
-    updateNextStepNumber
-} from '../../redux/modules/User/TutorialActions';
+    updateNextStepNumber,
+} from '../../redux/modules/User/TutorialActions'
 
 // Assets
-import TribeIcon from '../../asset/explore/tribe.png';
-import EventIcon from '../../asset/suggestion/event.png';
-import BugReportIcon from '../../asset/utils/bug_report.png';
-import LogoutIcon from '../../asset/utils/logout.png';
-import Setting from '../../asset/header/setting.png';
-import Icons from '../../asset/base64/Icons';
+import TribeIcon from '../../asset/explore/tribe.png'
+import EventIcon from '../../asset/suggestion/event.png'
+import BugReportIcon from '../../asset/utils/bug_report.png'
+import LogoutIcon from '../../asset/utils/logout.png'
+import Setting from '../../asset/header/setting.png'
+import Icons from '../../asset/base64/Icons'
 import {
     IPHONE_MODELS,
     BUG_REPORT_URL,
     PRIVACY_POLICY_URL,
-    DEVICE_MODEL
-} from '../../Utils/Constants';
-import { DEFAULT_STYLE } from '../../styles';
+    DEVICE_MODEL,
+} from '../../Utils/Constants'
+import { DEFAULT_STYLE } from '../../styles'
 
-
-const DEBUG_KEY = '[ UI Menu ]';
-const { TutorialIcon, PrivacyIcon, AccountMultiple } = Icons;
+const DEBUG_KEY = '[ UI Menu ]'
+const { TutorialIcon, PrivacyIcon, AccountMultiple } = Icons
 
 class Menu extends React.PureComponent {
-
     handleTutorialOnPress = () => {
         const tutorialSwitchCases = switchByButtonIndex([
-            [R.equals(0), () => {
-                console.log(`${DEBUG_KEY}: [handleTutorialOnPress]: Create goal walkthrough`);
-                Actions.pop();
-                Actions.jump('homeTab');
-                setTimeout(() => {
-                    this.props.startTutorial('create_goal', 'home');
-                }, 500);
-            }],
+            [
+                R.equals(0),
+                () => {
+                    console.log(
+                        `${DEBUG_KEY}: [handleTutorialOnPress]: Create goal walkthrough`
+                    )
+                    Actions.pop()
+                    Actions.jump('homeTab')
+                    setTimeout(() => {
+                        this.props.startTutorial('create_goal', 'home')
+                    }, 500)
+                },
+            ],
             // [R.equals(1), () => {
             //     console.log(`${DEBUG_KEY}: [handleTutorialOnPress]: Friends Tab Walkthrough`);
             //     Actions.pop();
@@ -75,39 +66,45 @@ class Menu extends React.PureComponent {
             //         this.props.startTutorial('meet_tab_friend', 'meet_tab');
             //     }, 500);
             // }]
-        ]);
+        ])
 
         const shareToActionSheet = actionSheet(
-            ['How to Add Goals - Tutorial', 'Grow Your Network - Tutorial', 'Cancel'],
+            [
+                'How to Add Goals - Tutorial',
+                'Grow Your Network - Tutorial',
+                'Cancel',
+            ],
             2,
             tutorialSwitchCases
-        );
-        return shareToActionSheet();
+        )
+        return shareToActionSheet()
     }
 
     handleBugReportOnPress = async () => {
-        const url = BUG_REPORT_URL;
-        let result = await WebBrowser.openBrowserAsync(url);
-        console.log(`${DEBUG_KEY}: close bug report link with res: `, result);
+        const url = BUG_REPORT_URL
+        let result = await WebBrowser.openBrowserAsync(url)
+        console.log(`${DEBUG_KEY}: close bug report link with res: `, result)
     }
 
     handlePrivacyPolicyOnPress = async () => {
-        const url = PRIVACY_POLICY_URL;
-        let result = await WebBrowser.openBrowserAsync(url, { showTitle: true });
-        console.log(`${DEBUG_KEY}: close privacy policy link with res: `, result);
+        const url = PRIVACY_POLICY_URL
+        let result = await WebBrowser.openBrowserAsync(url, { showTitle: true })
+        console.log(
+            `${DEBUG_KEY}: close privacy policy link with res: `,
+            result
+        )
     }
 
     handleInviteFriend = () => {
         // Close side drawer
-
         // Open invite friend modal
     }
 
     render() {
-        const paddingTop = (
-            Platform.OS === 'ios' &&
-            IPHONE_MODELS.includes(DEVICE_MODEL)
-        ) ? 30 : 40;
+        const paddingTop =
+            Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL)
+                ? 30
+                : 40
 
         return (
             <View style={{ flex: 1 }}>
@@ -135,7 +132,10 @@ class Menu extends React.PureComponent {
                     onPress={() => this.props.openMeet()}
                     style={styles.buttonStyle}
                 >
-                    <Image source={AccountMultiple} style={[styles.iconStyle, { tintColor: "black" }]} />
+                    <Image
+                        source={AccountMultiple}
+                        style={[styles.iconStyle, { tintColor: 'black' }]}
+                    />
                     <Text style={styles.titleTextStyle}>My Friends</Text>
                 </DelayedButton>
                 {/* <DelayedButton
@@ -168,7 +168,14 @@ class Menu extends React.PureComponent {
                     style={styles.buttonStyle}
                 >
                     <View style={{ padding: 2.5 }}>
-                        <Image source={PrivacyIcon} style={{ ...styles.iconStyle, height: 20, width: 20 }} />
+                        <Image
+                            source={PrivacyIcon}
+                            style={{
+                                ...styles.iconStyle,
+                                height: 20,
+                                width: 20,
+                            }}
+                        />
                     </View>
                     <Text style={styles.titleTextStyle}>Privacy Policy</Text>
                 </DelayedButton>
@@ -176,19 +183,33 @@ class Menu extends React.PureComponent {
                     activeOpacity={0.6}
                     onPress={() => {
                         Alert.alert('Log out', 'Are you sure to log out?', [
-                            { text: 'Cancel', onPress: () => console.log('user cancel logout') },
-                            { text: 'Confirm', onPress: () => this.props.logout() }
-                        ]);
+                            {
+                                text: 'Cancel',
+                                onPress: () =>
+                                    console.log('user cancel logout'),
+                            },
+                            {
+                                text: 'Confirm',
+                                onPress: () => this.props.logout(),
+                            },
+                        ])
                     }}
                     style={styles.buttonStyle}
                 >
                     <View style={{ padding: 2.5 }}>
-                        <Image source={LogoutIcon} style={{ ...styles.iconStyle, height: 20, width: 20 }} />
+                        <Image
+                            source={LogoutIcon}
+                            style={{
+                                ...styles.iconStyle,
+                                height: 20,
+                                width: 20,
+                            }}
+                        />
                     </View>
                     <Text style={styles.titleTextStyle}>Log Out</Text>
                 </DelayedButton>
             </View>
-        );
+        )
     }
 }
 
@@ -201,43 +222,40 @@ const styles = {
         paddingBottom: 10,
         alignItems: 'center',
         borderBottomWidth: 0.5,
-        borderBottomColor: 'lightgray'
+        borderBottomColor: 'lightgray',
     },
     buttonStyle: {
         paddingTop: 10,
         paddingBottom: 10,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-start'
+        justifyContent: 'flex-start',
     },
     iconStyle: {
         marginLeft: 15,
         marginRight: 15,
         height: 25,
-        width: 25
+        width: 25,
     },
-    titleTextStyle: DEFAULT_STYLE.subTitleText_1
-};
+    titleTextStyle: DEFAULT_STYLE.subTitleText_1,
+}
 
-const mapStateToProps = state => {
-    const { user } = state.user; 
+const mapStateToProps = (state) => {
+    const { user } = state.user
 
     return {
-        user
-    };
-};
-
-export default connect(
-    mapStateToProps,
-    {
-        openMyEventTab,
-        openMyTribeTab,
-        openMeet,
-        openSetting,
-        logout,
-        // Tutorial related,
-        showNextTutorialPage,
-        startTutorial,
-        updateNextStepNumber
+        user,
     }
-)(Menu);
+}
+
+export default connect(mapStateToProps, {
+    openMyEventTab,
+    openMyTribeTab,
+    openMeet,
+    openSetting,
+    logout,
+    // Tutorial related,
+    showNextTutorialPage,
+    startTutorial,
+    updateNextStepNumber,
+})(Menu)

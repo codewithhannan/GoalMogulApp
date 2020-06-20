@@ -1,10 +1,7 @@
-import React from 'react';
-import {
-    View,
-    Image,
-    TouchableOpacity,
-    Text
-} from 'react-native';
+/** @format */
+
+import React from 'react'
+import { View, Image, TouchableOpacity, Text } from 'react-native'
 
 const Button = (props) => {
     return (
@@ -17,27 +14,37 @@ const Button = (props) => {
                     padding: 7,
                     borderRadius: 5,
                     backgroundColor: '#f3f3f3',
-                    ...props.containerStyle
+                    ...props.containerStyle,
                 }}
             >
-                {props.source && <Image
-                    source={props.source}
+                {props.source && (
+                    <Image
+                        source={props.source}
+                        style={{
+                            backgroundColor: '#f3f3f3',
+                            height: 10,
+                            width: 10,
+                            tintColor: '#a1a1a1',
+                            alignSelf: 'center',
+                            ...props.style,
+                            ...props.iconStyle,
+                        }}
+                    />
+                )}
+                <Text
                     style={{
-                        backgroundColor: '#f3f3f3',
-                        height: 10,
-                        width: 10,
-                        tintColor: '#a1a1a1',
+                        fontSize: 13,
+                        marginLeft: 5,
                         alignSelf: 'center',
-                        ...props.style,
-                        ...props.iconStyle
+                        color: '#a1a1a1',
+                        ...props.textStyle,
                     }}
-                />}
-                <Text style={{ fontSize: 13, marginLeft: 5, alignSelf: 'center', color: '#a1a1a1', ...props.textStyle }}>
+                >
                     {props.text}
                 </Text>
             </View>
         </TouchableOpacity>
-    );
-};
+    )
+}
 
-export default Button;
+export default Button

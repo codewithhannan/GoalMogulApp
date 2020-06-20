@@ -1,19 +1,17 @@
-import React from 'react';
-import { Text } from 'react-native';
+/** @format */
+
+import React from 'react'
+import { Text } from 'react-native'
 
 const Name = (props) => {
-  return (
-    <Text style={styles.containerStyle}>
-      {props.text}
-    </Text>
-  );
-};
+    return <Text style={styles.containerStyle}>{props.text}</Text>
+}
 
 const styles = {
-  containerStyle: {
-    fontSize: 12,
-    fontWeight: 'bold'
-  }
-};
+    containerStyle: {
+        fontSize: 12,
+        fontWeight: 'bold',
+    },
+}
 
-export default Name;
+export default Name

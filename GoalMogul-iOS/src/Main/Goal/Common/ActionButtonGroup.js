@@ -1,16 +1,16 @@
-import React from 'react';
-import {
-    View
-} from 'react-native';
+/** @format */
+
+import React from 'react'
+import { View } from 'react-native'
 
 const ActionButtonGroup = (props) => {
-    const { containerStyle } = props;
+    const { containerStyle } = props
     return (
         <View style={{ ...styles.containerStyle, ...containerStyle }}>
             {props.children}
         </View>
-    );
-};
+    )
+}
 
 const styles = {
     containerStyle: {
@@ -19,8 +19,8 @@ const styles = {
         flexDirection: 'row',
         padding: 10,
         borderTopWidth: 0.5,
-        borderTopColor: '#f1f1f1'
-    }
-};
+        borderTopColor: '#f1f1f1',
+    },
+}
 
-export default ActionButtonGroup;
+export default ActionButtonGroup

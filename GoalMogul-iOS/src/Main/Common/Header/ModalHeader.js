@@ -1,4 +1,6 @@
-import React from 'react';
+/** @format */
+
+import React from 'react'
 import {
     Text,
     View,
@@ -6,27 +8,21 @@ import {
     Image,
     StatusBar,
     Platform,
-    ActivityIndicator
-} from 'react-native';
-import { walkthroughable, CopilotStep } from 'react-native-copilot-gm';
+    ActivityIndicator,
+} from 'react-native'
+import { walkthroughable, CopilotStep } from 'react-native-copilot-gm'
 
-import { GM_BLUE, DEFAULT_STYLE } from '../../../styles';
+import { GM_BLUE, DEFAULT_STYLE } from '../../../styles'
 
-import {
-    IPHONE_MODELS,
-    DEVICE_MODEL
-} from '../../../Utils/Constants';
+import { IPHONE_MODELS, DEVICE_MODEL } from '../../../Utils/Constants'
 
-import BackButton from '../../../asset/utils/back.png';
-import DelayedButton from '../Button/DelayedButton';
+import BackButton from '../../../asset/utils/back.png'
+import DelayedButton from '../Button/DelayedButton'
 
+const WalkableView = walkthroughable(View)
 
-const WalkableView = walkthroughable(View);
-
-const paddingTop = (
-    Platform.OS === 'ios' &&
-    IPHONE_MODELS.includes(DEVICE_MODEL)
-) ? 40 : 55;
+const paddingTop =
+    Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL) ? 40 : 55
 
 const ModalHeader = (props) => {
     const {
@@ -41,32 +37,43 @@ const ModalHeader = (props) => {
         cancelText,
         back,
         actionHidden,
-        titleIcon, containerStyles, actionTextStyle, backButtonStyle, titleTextStyle, tutorialOn } = props;
-    const cancel = cancelText !== null && cancelText !== undefined ? cancelText : 'Cancel';
+        titleIcon,
+        containerStyles,
+        actionTextStyle,
+        backButtonStyle,
+        titleTextStyle,
+        tutorialOn,
+    } = props
+    const cancel =
+        cancelText !== null && cancelText !== undefined ? cancelText : 'Cancel'
 
-    const extraBackButtonStyle = backButtonStyle || {};
-    let leftComponent = back
-        ? (
-            <Image
-                source={BackButton}
-                style={{ height: 25, width: 25, tintColor: 'white', marginRight: 20, ...extraBackButtonStyle }}
-            />
-        )
-        : (
-            <Text style={styles.cancelTextStyle}>{cancel}</Text>
-        );
+    const extraBackButtonStyle = backButtonStyle || {}
+    let leftComponent = back ? (
+        <Image
+            source={BackButton}
+            style={{
+                height: 25,
+                width: 25,
+                tintColor: 'white',
+                marginRight: 20,
+                ...extraBackButtonStyle,
+            }}
+        />
+    ) : (
+        <Text style={styles.cancelTextStyle}>{cancel}</Text>
+    )
 
     if (cancelText === null) {
-        leftComponent = null;
+        leftComponent = null
     }
 
-    const extraContainerStyles = containerStyles || {};
-    const extraActionTextStyle = actionTextStyle || {};
-    const extraTitleTextStyle = titleTextStyle || {};
+    const extraContainerStyles = containerStyles || {}
+    const extraActionTextStyle = actionTextStyle || {}
+    const extraTitleTextStyle = titleTextStyle || {}
 
     const primaryActionTextStyle = actionDisabled
         ? { ...styles.actionTextStyle, color: GM_BLUE }
-        : styles.actionTextStyle;
+        : styles.actionTextStyle
 
     let actionComponent = (
         <DelayedButton
@@ -79,29 +86,29 @@ const ModalHeader = (props) => {
                 <View
                     style={{
                         ...styles.loadingIndicatorContainerStyle,
-                        zIndex: showActionLoading && actionLoading ? 2 : 0
+                        zIndex: showActionLoading && actionLoading ? 2 : 0,
                     }}
                 >
                     <ActivityIndicator
-                        size='small'
+                        size="small"
                         animating={!!(showActionLoading && actionLoading)}
                         {...loadingIndicatorStyle}
                     />
                 </View>
             )}
-            <Text style={[primaryActionTextStyle, extraActionTextStyle]}>{actionText}</Text>
+            <Text style={[primaryActionTextStyle, extraActionTextStyle]}>
+                {actionText}
+            </Text>
         </DelayedButton>
-    );
+    )
 
     if (tutorialOn && tutorialOn.actionText) {
-        const { tutorialText, name, order } = tutorialOn.actionText;
+        const { tutorialText, name, order } = tutorialOn.actionText
         actionComponent = (
             <CopilotStep text={tutorialText} order={order} name={name}>
-                <WalkableView>
-                    {actionComponent}
-                </WalkableView>
+                <WalkableView>{actionComponent}</WalkableView>
             </CopilotStep>
-        );
+        )
     }
 
     return (
@@ -110,32 +117,39 @@ const ModalHeader = (props) => {
                 zIndex: 1000,
             }}
         >
-            <StatusBar
-                barStyle="dark-content"
-            />
-            <View style={[styles.containerStyle, { paddingTop, ...extraContainerStyles }]}>
-                <TouchableOpacity
-                    activeOpacity={0.6}
-                    onPress={onCancel}
-                >
+            <StatusBar barStyle="dark-content" />
+            <View
+                style={[
+                    styles.containerStyle,
+                    { paddingTop, ...extraContainerStyles },
+                ]}
+            >
+                <TouchableOpacity activeOpacity={0.6} onPress={onCancel}>
                     {leftComponent}
                 </TouchableOpacity>
 
                 <View style={styles.titleTextContainerStyle}>
-                    {titleIcon && <Image
-                        style={styles.titleTextIconStyle}
-                        source={titleIcon}
-                    />}
-                    <Text style={[styles.titleTextStyle, extraTitleTextStyle]} numberOfLines={1}>{title}</Text>
+                    {titleIcon && (
+                        <Image
+                            style={styles.titleTextIconStyle}
+                            source={titleIcon}
+                        />
+                    )}
+                    <Text
+                        style={[styles.titleTextStyle, extraTitleTextStyle]}
+                        numberOfLines={1}
+                    >
+                        {title}
+                    </Text>
                 </View>
 
                 {actionComponent}
             </View>
         </View>
-    );
-};
+    )
+}
 
-const padding = 7;
+const padding = 7
 
 const styles = {
     containerStyle: {
@@ -146,21 +160,21 @@ const styles = {
         paddingRight: 12,
         paddingBottom: 10,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     actionTextStyle: {
         ...DEFAULT_STYLE.subTitleText_1,
         color: 'white',
         paddingTop: padding,
         paddingBottom: padding,
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
     },
     titleTextStyle: {
         ...DEFAULT_STYLE.titleText_1,
         paddingTop: padding,
         paddingBottom: padding,
         textAlign: 'center',
-        color: 'white'
+        color: 'white',
     },
     titleTextIconStyle: {
         ...DEFAULT_STYLE.buttonIcon_1,
@@ -176,14 +190,14 @@ const styles = {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     cancelTextStyle: {
         ...DEFAULT_STYLE.subTitleText_1,
         paddingTop: padding,
         paddingBottom: padding,
         paddingHorizontal: 12,
-        color: 'white'
+        color: 'white',
     },
     loadingIndicatorContainerStyle: {
         position: 'absolute',
@@ -193,8 +207,8 @@ const styles = {
         left: 0,
         backgroundColor: GM_BLUE,
         alignItems: 'center',
-        justifyContent: 'center'
-    }
-};
+        justifyContent: 'center',
+    },
+}
 
-export default ModalHeader;
+export default ModalHeader
