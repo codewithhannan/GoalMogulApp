@@ -58,7 +58,6 @@ import { GM_BLUE, GM_BLUE_LIGHT_LIGHT, DEFAULT_STYLE } from '../../../styles';
 
 import {
     IPHONE_MODELS,
-    IMAGE_BASE_URL,
     DEVICE_MODEL
 } from '../../../Utils/Constants';
 import { getUserData } from '../../../redux/modules/User/Selector';
@@ -72,6 +71,11 @@ const CANCEL_INDEX = 2;
 
 const DEBUG_KEY = '[ Component SearchBarHeader ]';
 const WalkableView = walkthroughable(View);
+
+const paddingTop = (
+    Platform.OS === 'ios' &&
+    IPHONE_MODELS.includes(DEVICE_MODEL)
+) ? 40 : 55;
 
 /**
   TODO: refactor element to have consistent behavior
@@ -235,11 +239,6 @@ class SearchBarHeader extends Component {
     }
 
     render() {
-        const paddingTop = (
-            Platform.OS === 'ios' &&
-            IPHONE_MODELS.includes(DEVICE_MODEL)
-        ) ? 40 : 55;
-
         return (
             <View style={{ ...styles.headerStyle, paddingTop }}>
                 {this.renderLeftIcon()}

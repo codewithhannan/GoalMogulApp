@@ -8,7 +8,7 @@ import _ from "lodash";
 import { REGISTRATION_TEXT_CHANGE, REGISTRATION_USER_TARGETS, REGISTRATION_TRIBE_SELECT, REGISTRATION_TRIBE_FETCH } from "./RegistrationReducers";
 import { REGISTRATION_ACCOUNT_LOADING, REGISTRATION_ADDPROFILE, REGISTRATION_ACCOUNT_SUCCESS } from "../../../actions/types";
 import { api as API } from "../../middleware/api";
-
+import { track, EVENT as E} from '../../../monitoring/segment';
 
 /**
  * Alter the state of registration text input
@@ -136,6 +136,8 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
 
             // Invoke screen transition callback for registration success
             onSuccess();
+
+            track(E.REG_SUCCESS);
 
             // set up chat listeners
             LiveChatService.mountUser({

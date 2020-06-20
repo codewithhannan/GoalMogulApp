@@ -22,7 +22,6 @@ import CreateGoal from '../redux/modules/goal/CreateGoal';
 import PostReducers from '../redux/modules/feed/post/PostReducers';
 import Posts from '../redux/modules/feed/post/Posts';
 import ShareReducers from '../redux/modules/feed/post/ShareReducers';
-import TribeReducers from '../redux/modules/tribe/TribeReducers';
 import Tribes from '../redux/modules/tribe/Tribes';
 import EventReducers from '../redux/modules/event/EventReducers';
 import Events from '../redux/modules/event/Events';
@@ -43,7 +42,6 @@ import NewEventReducers from '../redux/modules/event/NewEventReducers';
 import MyEventTabReducers from '../redux/modules/event/MyEventTabReducers';
 import MyEventReducers from '../redux/modules/event/MyEventReducers';
 import MyTribeTabReducers from '../redux/modules/tribe/MyTribeTabReducers';
-import MyTribeReducers from '../redux/modules/tribe/MyTribeReducers';
 // Chat related reducers
 import ChatReducers from '../redux/modules/chat/ChatReducers';
 import CreateChatRoomReducers from '../redux/modules/chat/CreateChatRoomReducers';
@@ -82,7 +80,6 @@ export const reducers = combineReducers({
   postDetail: PostReducers,
   posts: Posts,
   shareDetail: ShareReducers,
-  tribe: TribeReducers,
   tribes: Tribes,
   event: EventReducers,
   events: Events,
@@ -99,7 +96,6 @@ export const reducers = combineReducers({
   myEventTab: MyEventTabReducers,
   myTribeTab: MyTribeTabReducers,
   myEvent: MyEventReducers,
-  myTribe: MyTribeReducers,
   newTribe: NewTribeReducers,
   newEvent: NewEventReducers,
   newChatRoom: CreateChatRoomReducers,

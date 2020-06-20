@@ -16,11 +16,9 @@ import * as Permissions from 'expo-permissions';
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader';
-import TabButtonGroup from '../Common/TabButtonGroup';
 import NewGoalView from './NewGoal/NewGoalView';
 
 // Actions
-// import { } from '../../actions';
 import {
     createGoalSwitchTab,
     submitGoal,
@@ -39,15 +37,11 @@ import {
 } from '../../redux/modules/goal/GoalDetailActions';
 
 // Styles
-import {
-    APP_DEEP_BLUE,
-    APP_BLUE,
-    DEFAULT_STYLE,
-    GM_BLUE
-} from '../../styles';
 import Tooltip from '../Tutorial/Tooltip';
 import { svgMaskPath } from '../Tutorial/Utils';
+
 import { track, trackWithProperties, EVENT as E } from '../../monitoring/segment';
+
 
 const DEBUG_KEY = '[ UI CreateGoalModal ]';
 
@@ -280,28 +274,6 @@ class CreateGoalModal extends React.Component {
         );
     }
 
-    renderHeader = props => {
-        return (
-            <TabButtonGroup
-                buttons={props}
-                buttonStyle={{
-                    selected: {
-                        backgroundColor: APP_DEEP_BLUE,
-                        tintColor: 'white',
-                        color: 'white',
-                        fontWeight: '700'
-                    },
-                    unselected: {
-                        backgroundColor: '#FCFCFC',
-                        tintColor: '#616161',
-                        color: '#616161',
-                        fontWeight: '600'
-                    }
-                }}
-            />
-        );
-    };
-
     render() {
         const actionText = this.props.initializeFromState ? 'Update' : 'Create';
         const titleText = this.props.initializeFromState ? 'Edit Goal' : 'New Goal';
@@ -336,13 +308,13 @@ class CreateGoalModal extends React.Component {
                             }}
                             onAction={this.handleGoalReminder}
                             actionDisabled={!this.props.uploading || !hasValidFormVals}
-                            tutorialOn={{
-                                actionText: {
-                                    tutorialText: this.props.tutorialText[8],
-                                    order: 8,
-                                    name: 'create_goal_create_goal_modal_8'
-                                }
-                            }}
+                            // tutorialOn={{
+                            //     actionText: {
+                            //         tutorialText: this.props.tutorialText[8],
+                            //         order: 8,
+                            //         name: 'create_goal_create_goal_modal_8'
+                            //     }
+                            // }}
                         />
                         <NewGoalView
                             initializeFromState={this.props.initializeFromState}
@@ -379,7 +351,9 @@ const mapStateToProps = state => {
         formVals: state.form.createGoalModal,
         user,
         // Tutorial related
-        hasShown, showTutorial, tutorialText
+        hasShown,
+        // showTutorial,
+        tutorialText
     };
 };
 

@@ -45,7 +45,7 @@ import cameraRoll from '../../asset/utils/cameraRoll.png';
 import imageOverlay from '../../asset/utils/imageOverlay.png';
 import expand from '../../asset/utils/expand.png';
 import { IMAGE_BASE_URL } from '../../Utils/Constants';
-import { track, EVENT as E } from '../../monitoring/segment';
+import { track, EVENT as E, trackWithProperties } from '../../monitoring/segment';
 
 // const { Popover } = renderers;
 const { width } = Dimensions.get('window');

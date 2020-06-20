@@ -4,6 +4,7 @@ import React from 'react';
 import _ from 'lodash';
 import { Text, View } from 'react-native';
 import { switchCase } from '../../redux/middleware/utils';
+import { DEFAULT_STYLE } from '../../styles';
 
 
 class ActivitySummary extends React.Component {
@@ -130,12 +131,10 @@ const switchPostType = (postType) => switchCase({
 
 const styles = {
     boldTextStyle: {
-        fontWeight: '700',
-        color: '#6d6d6d',
+        ...DEFAULT_STYLE.smallTitle_1,
     },
     textStyle: {
-        fontSize: 9,
-        color: '#6d6d6d',
+        ...DEFAULT_STYLE.smallText_1,
     }
 };
 
