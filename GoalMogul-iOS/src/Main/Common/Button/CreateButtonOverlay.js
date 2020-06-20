@@ -20,9 +20,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-  Button,
 } from "react-native";
-import { Text, withStyles } from "@ui-kitten/components";
+import { Button, Text, withStyles } from "@ui-kitten/components";
 import { Actions } from "react-native-router-flux";
 import { connect } from "react-redux";
 import { StyleSheet } from "react-native";
@@ -33,6 +32,7 @@ import cancel from "../../../asset/utils/cancel_no_background.png";
 import { closeCreateOverlay } from "../../../redux/modules/home/mastermind/actions";
 import { IPHONE_MODELS_2, DEVICE_MODEL } from "../../../Utils/Constants";
 import DelayedButton from "./DelayedButton";
+import style from "../../Tutorial/style";
 
 const BUTTON_GROUP_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(DEVICE_MODEL)
   ? 119
@@ -121,7 +121,7 @@ class CreateButtonOverlay extends Component {
         <TouchableWithoutFeedback
           activeOpacity={0.85}
           style={{
-            ...styles.iconContainerStyle,
+            ...styles.iconContainer,
             backgroundColor: "transparent",
           }}
           onPress={this.handleCancel}
@@ -130,7 +130,7 @@ class CreateButtonOverlay extends Component {
             onPress={onPress}
             style={[cancelButtonStyle, styles.cancelButton]}
           >
-            <Animated.Image style={styles.iconStyle} source={cancel} />
+            <Animated.Image style={styles.icon} source={cancel} />
           </DelayedButton>
         </TouchableWithoutFeedback>
       </Animated.View>
@@ -140,18 +140,8 @@ class CreateButtonOverlay extends Component {
   renderActionButtons() {
     const { buttons } = this.props;
     const actionsButtons = buttons.map((button, index) => {
-      let {
-        name,
-        textStyle,
-        iconStyle,
-        iconSource,
-        text,
-        onPress,
-        customContainerStyle,
-      } = button;
-      if (!customContainerStyle) {
-        customContainerStyle = {};
-      }
+      let { name, iconSource, text, onPress } = button;
+
       return (
         <Animated.View
           style={{
@@ -167,21 +157,19 @@ class CreateButtonOverlay extends Component {
             ],
             right: 18,
           }}
+          key={index}
         >
-          <ActionButton
-            text={text}
-            source={iconSource}
-            style={{
-              iconStyle,
-              textStyle,
-              customContainerStyle,
-            }}
+          <Button
+            accessoryLeft={this.renderIcon(iconSource, styles.actionButtonIcon)}
+            style={styles.actionButton}
+            status="basic"
             onPress={() => {
               this.handleActionSelect(name);
               onPress();
             }}
-            key={index}
-          />
+          >
+            {text}
+          </Button>
         </Animated.View>
       );
     });
@@ -189,11 +177,19 @@ class CreateButtonOverlay extends Component {
     return actionsButtons;
   }
 
+  /**
+   * Return a function which returns an image corresponding to iconSource.
+   * @param {String} iconSource source of icon
+   */
+  renderIcon = (iconSource, style) => () => {
+    return <Image style={style} source={iconSource} />;
+  };
+
   render() {
     const { eva } = this.props;
 
     return (
-      <View style={{ ...styles.wrapperStyle }}>
+      <View style={{ ...styles.wrapper }}>
         <TouchableWithoutFeedback onPress={this.handleCancel}>
           <Animated.View
             style={[
@@ -208,7 +204,7 @@ class CreateButtonOverlay extends Component {
             ]}
           ></Animated.View>
         </TouchableWithoutFeedback>
-        <View style={styles.containerStyle}>
+        <View style={styles.container}>
           {this.renderActionButtons()}
           {this.renderCancelButton(
             eva.style.cancelButtonBackground,
@@ -220,6 +216,10 @@ class CreateButtonOverlay extends Component {
   }
 }
 
+/**
+ * @deprecated
+ * @param {*} props
+ */
 const ActionButton = (props) => {
   const { text, source, style, onPress } = props;
   const { containerStyle, iconStyle, textStyle } = actionButtonStyles;
@@ -235,6 +235,9 @@ const ActionButton = (props) => {
   );
 };
 
+/**
+ * @deprecated
+ */
 const actionButtonStyles = {
   containerStyle: {
     // backgroundColor: '#17B3EC',
@@ -264,20 +267,20 @@ const actionButtonStyles = {
 };
 
 const styles = StyleSheet.create({
-  wrapperStyle: {
+  wrapper: {
     position: "absolute",
     top: 0,
     bottom: 0,
     left: 0,
     right: 0,
   },
-  containerStyle: {
+  container: {
     position: "absolute",
     bottom: BUTTON_GROUP_BOTTOM_OFFSET,
     right: 15,
     alignItems: "center",
   },
-  iconContainerStyle: {
+  iconContainer: {
     height: 40,
     width: 40,
     borderRadius: 20,
@@ -289,10 +292,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 2,
   },
-  iconStyle: {
+  icon: {
     height: 20,
     width: 20,
     tintColor: "white",
+  },
+  actionButtonIcon: {
+    height: 20,
+    width: 20,
+    tintColor: "black",
+  },
+  actionButton: {
+    borderRadius: 0,
   },
   cancelButton: {
     width: 50,
