@@ -3,69 +3,69 @@
  * for a goal. Steps, needs and all comment card.
  * On tab for each subcomponent, it will open FocusTab to render corresponding
  * focus content.
+ *
+ * @format
  */
-import React from 'react';
-import {
-    FlatList,
-    Animated,
-    ScrollView,
-    View
-} from 'react-native';
-import DraggableFlatList from 'react-native-draggable-flatlist';
-import { connect } from 'react-redux';
-import _ from 'lodash';
+
+import React from 'react'
+import { FlatList, Animated, ScrollView, View } from 'react-native'
+import DraggableFlatList from 'react-native-draggable-flatlist'
+import { connect } from 'react-redux'
+import _ from 'lodash'
 
 // Components
-import EmptyResult from '../../../Common/Text/EmptyResult';
-import StepAndNeedCardV3 from './StepAndNeedCardV3';
+import EmptyResult from '../../../Common/Text/EmptyResult'
+import StepAndNeedCardV3 from './StepAndNeedCardV3'
 
 // Actions
 import {
     refreshGoalDetailById,
     goalDetailSwitchTabV2,
     goalDetailSwitchTabV2ByKey,
-    updateGoalItemsOrder
-} from '../../../../redux/modules/goal/GoalDetailActions';
+    updateGoalItemsOrder,
+} from '../../../../redux/modules/goal/GoalDetailActions'
 
 import {
     createCommentFromSuggestion,
-    createCommentForSuggestion
-} from '../../../../redux/modules/feed/comment/CommentActions';
+    createCommentForSuggestion,
+} from '../../../../redux/modules/feed/comment/CommentActions'
 
 // Selectors
 import {
     // getGoalStepsAndNeeds, // These are used before refactoring
     // getGoalDetailByTab, // These are used before refactoring
     makeGetGoalPageDetailByPageId,
-    makeGetGoalStepsAndNeedsV2
-} from '../../../../redux/modules/goal/selector';
-
+    makeGetGoalStepsAndNeedsV2,
+} from '../../../../redux/modules/goal/selector'
 
 // Constants
-const DEBUG_KEY = '[ UI CentralTab ]';
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+const DEBUG_KEY = '[ UI CentralTab ]'
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList)
 
 class CentralTab extends React.PureComponent {
     constructor(props) {
-        super(props);
+        super(props)
     }
 
     // Refresh goal content and comment
     handleRefresh = () => {
         if (this.props.goalDetail) {
-            this.props.refreshGoalDetailById(this.props.goalDetail._id, this.props.pageId);
+            this.props.refreshGoalDetailById(
+                this.props.goalDetail._id,
+                this.props.pageId
+            )
         }
     }
 
     keyExtractor = (item) => {
-        const { _id } = item;
-        return _id;
+        const { _id } = item
+        return _id
     }
 
     renderItem = (props) => {
-        const { goalDetail, pageId } = this.props;
-        const { item } = props;
-        if (!goalDetail) return null;
+        const { goalDetail, pageId } = this.props
+        const { item } = props
+        if (!goalDetail) return null
 
         let newCommentParams = {
             commentDetail: {
@@ -74,13 +74,21 @@ class CentralTab extends React.PureComponent {
                 commentType: 'Comment',
             },
             suggestionForRef: item._id, // Need or Step ref
-            suggestionFor: item.type === 'need' ? 'Need' : 'Step'
-        };
+            suggestionFor: item.type === 'need' ? 'Need' : 'Step',
+        }
 
         if (item.type === 'need') {
-            newCommentParams = _.set(newCommentParams, 'commentDetail.needRef', item._id);
+            newCommentParams = _.set(
+                newCommentParams,
+                'commentDetail.needRef',
+                item._id
+            )
         } else if (item.type === 'step') {
-            newCommentParams = _.set(newCommentParams, 'commentDetail.stepRef', item._id);
+            newCommentParams = _.set(
+                newCommentParams,
+                'commentDetail.stepRef',
+                item._id
+            )
         }
 
         return (
@@ -90,8 +98,11 @@ class CentralTab extends React.PureComponent {
                 goalRef={goalDetail}
                 onCardPress={() => {
                     // Use passed in function to handle tab switch with animation
-                    this.props.handleIndexChange(1, item.type, item._id);
-                    this.props.createCommentForSuggestion(newCommentParams, pageId);
+                    this.props.handleIndexChange(1, item.type, item._id)
+                    this.props.createCommentForSuggestion(
+                        newCommentParams,
+                        pageId
+                    )
                 }}
                 isSelf={this.props.isSelf}
                 count={item.count}
@@ -99,11 +110,11 @@ class CentralTab extends React.PureComponent {
                 drag={props.drag}
                 isActive={props.isActive}
             />
-        );
+        )
     }
 
     render() {
-        const { data, isSelf, goalDetail, pageId, topOffset } = this.props;
+        const { data, isSelf, goalDetail, pageId, topOffset } = this.props
 
         if (isSelf) {
             return (
@@ -115,35 +126,54 @@ class CentralTab extends React.PureComponent {
                     refreshing={this.props.loading || false}
                     onRefresh={this.handleRefresh}
                     ListEmptyComponent={
-                        this.props.loading ? null :
+                        this.props.loading ? null : (
                             <EmptyResult
-                                text='No steps or needs'
+                                text="No steps or needs"
                                 textStyle={{ paddingTop: 70 }}
                             />
+                        )
                     }
-                    onDragEnd={e => {
-                        let type = 'needs';
-                        let to = e.to; let from = e.from;
+                    onDragEnd={(e) => {
+                        let type = 'needs'
+                        let to = e.to
+                        let from = e.from
 
                         // Find the type of item to be swapped
                         if (e.from <= goalDetail.steps.length) {
-                            to -= 1; from -= 1;
-                            type = 'steps';
+                            to -= 1
+                            from -= 1
+                            type = 'steps'
                         } else {
-                            to -= (2 + goalDetail.steps.length);
-                            from -= (2 + goalDetail.steps.length);
+                            to -= 2 + goalDetail.steps.length
+                            from -= 2 + goalDetail.steps.length
                         }
 
                         // Return if user is trying move steps/needs in wrong place
-                        if (e.to === e.from || e.to === 0 || (type === 'steps' && e.to > goalDetail.steps.length) ||
-                                (type === 'needs' && e.to <= goalDetail.steps.length + 1)) return;
-                        const item = this.props.data.splice(e.from, 1);
-                        this.props.data.splice(e.to, 0, item);
-                        this.props.updateGoalItemsOrder(type, from, to, goalDetail, pageId);
+                        if (
+                            e.to === e.from ||
+                            e.to === 0 ||
+                            (type === 'steps' &&
+                                e.to > goalDetail.steps.length) ||
+                            (type === 'needs' &&
+                                e.to <= goalDetail.steps.length + 1)
+                        )
+                            return
+                        const item = this.props.data.splice(e.from, 1)
+                        this.props.data.splice(e.to, 0, item)
+                        this.props.updateGoalItemsOrder(
+                            type,
+                            from,
+                            to,
+                            goalDetail,
+                            pageId
+                        )
                     }}
-                    contentContainerStyle={{ flexGrow: 1, paddingTop: topOffset }}
+                    contentContainerStyle={{
+                        flexGrow: 1,
+                        paddingTop: topOffset,
+                    }}
                 />
-            );
+            )
         }
         return (
             <AnimatedFlatList
@@ -154,48 +184,48 @@ class CentralTab extends React.PureComponent {
                 refreshing={this.props.loading || false}
                 onRefresh={this.handleRefresh}
                 ListEmptyComponent={
-                    this.props.loading ? null :
+                    this.props.loading ? null : (
                         <EmptyResult
-                            text='No steps or needs'
+                            text="No steps or needs"
                             textStyle={{ paddingTop: 70 }}
                         />
+                    )
                 }
                 contentContainerStyle={{ flexGrow: 1, paddingTop: topOffset }}
                 scrollEventThrottle={2}
             />
-        );
+        )
     }
 }
 
 CentralTab.defaultPros = {
     data: [],
     goalDetail: undefined,
-    isSelf: false
-};
+    isSelf: false,
+}
 
 const makeMapStateToProps = () => {
-    const getGoalPageDetailByPageId = makeGetGoalPageDetailByPageId();
-    const getGoalStepsAndNeedsV2 = makeGetGoalStepsAndNeedsV2();
+    const getGoalPageDetailByPageId = makeGetGoalPageDetailByPageId()
+    const getGoalStepsAndNeedsV2 = makeGetGoalStepsAndNeedsV2()
 
     const mapStateToProps = (state, props) => {
-        const { pageId, goalId } = props;
-        const goalDetail = getGoalPageDetailByPageId(state, goalId, pageId);
-        const { goal, goalPage } = goalDetail;
-        let loading = false;
+        const { pageId, goalId } = props
+        const goalDetail = getGoalPageDetailByPageId(state, goalId, pageId)
+        const { goal, goalPage } = goalDetail
+        let loading = false
         if (goalPage) {
-            loading = goalPage.loading;
+            loading = goalPage.loading
         }
 
         return {
             goalDetail: goal,
             loading,
-            data: getGoalStepsAndNeedsV2(state, goalId, pageId)
-        };
-    };
+            data: getGoalStepsAndNeedsV2(state, goalId, pageId),
+        }
+    }
 
-    return mapStateToProps;
-};
-
+    return mapStateToProps
+}
 
 export default connect(
     makeMapStateToProps,
@@ -205,8 +235,8 @@ export default connect(
         refreshGoalDetailById,
         createCommentFromSuggestion,
         createCommentForSuggestion,
-        updateGoalItemsOrder
+        updateGoalItemsOrder,
     },
     null,
     { withRef: true }
-)(CentralTab);
+)(CentralTab)
