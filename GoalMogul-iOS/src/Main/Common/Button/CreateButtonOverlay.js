@@ -293,6 +293,7 @@ const styles = StyleSheet.create({
   },
   menuContainer: {
     marginBottom: 12,
+    borderRadius: 5,
   },
   iconContainer: {
     height: 40,
