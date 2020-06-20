@@ -21,7 +21,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { Button, Text, withStyles } from "@ui-kitten/components";
+import { Button, Text, List, withStyles } from "@ui-kitten/components";
 import { Actions } from "react-native-router-flux";
 import { connect } from "react-redux";
 import { StyleSheet } from "react-native";
@@ -116,6 +116,7 @@ class CreateButtonOverlay extends Component {
             },
           ],
           opacity: this.fadeAnim,
+          alignSelf: "flex-end",
         }}
       >
         <TouchableWithoutFeedback
@@ -139,43 +140,49 @@ class CreateButtonOverlay extends Component {
 
   renderActionButtons() {
     const { buttons } = this.props;
-    const actionsButtons = buttons.map((button, index) => {
-      let { name, iconSource, text, onPress } = button;
 
-      return (
-        <Animated.View
-          style={{
-            opacity: this.fadeAnim,
-            position: "relative",
-            transform: [
-              {
-                translateY: this.fadeAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [(buttons.length - index) * 30, 0],
-                }),
-              },
-            ],
-            right: 18,
-          }}
-          key={index}
-        >
-          <Button
-            accessoryLeft={this.renderIcon(iconSource, styles.actionButtonIcon)}
-            style={styles.actionButton}
-            status="basic"
-            onPress={() => {
-              this.handleActionSelect(name);
-              onPress();
-            }}
-          >
-            {text}
-          </Button>
-        </Animated.View>
-      );
-    });
-
-    return actionsButtons;
+    return (
+      <List
+        style={styles.menuContainer}
+        data={buttons}
+        renderItem={this.renderActionButton()}
+      />
+    );
   }
+
+  renderActionButton = () => (info) => {
+    const { name, iconSource, text, onPress } = info.item;
+
+    return (
+      <Animated.View
+        style={{
+          opacity: this.fadeAnim,
+          position: "relative",
+          // transform: [
+          //   {
+          //     translateY: this.fadeAnim.interpolate({
+          //       inputRange: [0, 1],
+          //       outputRange: [itemCount - info.index * 30, 0],
+          //     }),
+          //   },
+          // ],
+        }}
+        key={info.index}
+      >
+        <Button
+          accessoryLeft={this.renderIcon(iconSource, styles.actionButtonIcon)}
+          style={styles.actionButton}
+          status="basic"
+          onPress={() => {
+            this.handleActionSelect(name);
+            onPress();
+          }}
+        >
+          {text}
+        </Button>
+      </Animated.View>
+    );
+  };
 
   /**
    * Return a function which returns an image corresponding to iconSource.
@@ -279,6 +286,9 @@ const styles = StyleSheet.create({
     bottom: BUTTON_GROUP_BOTTOM_OFFSET,
     right: 15,
     alignItems: "center",
+  },
+  menuContainer: {
+    marginBottom: 12,
   },
   iconContainer: {
     height: 40,
