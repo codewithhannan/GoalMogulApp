@@ -1,18 +1,27 @@
-/**
- * This component is an abstraction of CreateGoalButtonOverlay. By passing in
- * two sets of icons and texts and corresponding functions, it will render
- * an overlay of selection buttons.
- */
-import Constants from "expo-constants";
+/***********************************************************
+ * FILENAME: CreateButtonOverlay.js    TYPE: Component
+ *
+ * DESCRIPTION:
+ *      Render a menu of buttons.
+ *
+ * NOTE:
+ * 			This component is an abstraction of CreateGoalButtonOverlay.
+ * By passing in two sets of icons and texts and corresponding functions,
+ * it will render an overlay of selection buttons.
+ *
+ * AUTHOR: Jia Zeng
+ * EDITED: Yanxiang Lan			NOTE: Style updates.
+ ***********************************************************/
+
 import React, { Component } from "react";
 import {
   Animated,
   Image,
-  Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { Text, withStyles } from "@ui-kitten/components";
 import { Actions } from "react-native-router-flux";
 import { connect } from "react-redux";
 import { StyleSheet } from "react-native";
@@ -22,6 +31,7 @@ import cancel from "../../../asset/utils/cancel_no_background.png";
 /* actions */
 import { closeCreateOverlay } from "../../../redux/modules/home/mastermind/actions";
 import { IPHONE_MODELS_2, DEVICE_MODEL } from "../../../Utils/Constants";
+import DelayedButton from "./DelayedButton";
 
 const BUTTON_GROUP_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(DEVICE_MODEL)
   ? 119
@@ -92,28 +102,30 @@ class CreateButtonOverlay extends Component {
     });
   };
 
-  renderCancelButton() {
+  renderCancelButton(cancelButtonStyle) {
     return (
       <TouchableWithoutFeedback
         activeOpacity={0.85}
         style={{ ...styles.iconContainerStyle, backgroundColor: "transparent" }}
         onPress={this.handleCancel}
       >
-        <Animated.Image
-          style={{
-            ...styles.iconStyle,
-            transform: [
-              {
-                rotate: this.spinAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: ["0deg", "180deg"],
-                }),
-              },
-            ],
-            opacity: this.fadeAnim,
-          }}
-          source={cancel}
-        />
+        <DelayedButton style={[cancelButtonStyle, styles.cancelButton]}>
+          <Animated.Image
+            style={{
+              ...styles.iconStyle,
+              transform: [
+                {
+                  rotate: this.spinAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: ["0deg", "180deg"],
+                  }),
+                },
+              ],
+              opacity: this.fadeAnim,
+            }}
+            source={cancel}
+          />
+        </DelayedButton>
       </TouchableWithoutFeedback>
     );
   }
@@ -171,6 +183,8 @@ class CreateButtonOverlay extends Component {
   }
 
   render() {
+    const { eva } = this.props;
+
     return (
       <View style={{ ...styles.wrapperStyle }}>
         <TouchableWithoutFeedback onPress={this.handleCancel}>
@@ -189,7 +203,7 @@ class CreateButtonOverlay extends Component {
         </TouchableWithoutFeedback>
         <View style={styles.containerStyle}>
           {this.renderActionButtons()}
-          {this.renderCancelButton()}
+          {this.renderCancelButton(eva.style.cancelButtonBackground)}
         </View>
       </View>
     );
@@ -270,6 +284,13 @@ const styles = StyleSheet.create({
     width: 20,
     tintColor: "white",
   },
+  cancelButton: {
+    width: 50,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 180,
+  },
   fullscreen: {
     opacity: 0,
     position: "absolute",
@@ -280,4 +301,17 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(null, { closeCreateOverlay })(CreateButtonOverlay);
+/**
+ * Map application theme variables into style objects
+ * @param {JSON} theme
+ */
+const mapThemeToStyles = (theme) =>
+  StyleSheet.create({
+    cancelButtonBackground: {
+      backgroundColor: theme["color-danger-500"],
+    },
+  });
+
+export default connect(null, { closeCreateOverlay })(
+  withStyles(CreateButtonOverlay, mapThemeToStyles)
+);

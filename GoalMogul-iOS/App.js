@@ -22,7 +22,7 @@ import { initSegment } from "./src/monitoring/segment";
 import { initSentry } from "./src/monitoring/sentry";
 
 // UI theme provider
-import { ThemeProvider } from "react-native-country-picker-modal/lib/CountryTheme";
+import ThemeProvider from "./ThemeProvider";
 
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {};
