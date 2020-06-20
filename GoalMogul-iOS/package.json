@@ -48,7 +48,9 @@
     ]
   },
   "dependencies": {
+    "@eva-design/eva": "^2.0.0",
     "@twotalltotems/react-native-otp-input": "^1.3.5",
+    "@ui-kitten/components": "^5.0.0",
     "axios": "^0.18.0",
     "bluebird": "^3.5.3",
     "dimensions": "^0.1.0",
