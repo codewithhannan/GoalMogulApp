@@ -6,6 +6,7 @@ import { SubmissionError } from 'redux-form';
 import { api as API } from '../redux/middleware/api';
 import { tutorial as Tutorial } from '../redux/modules/auth/Tutorial';
 import { DropDownHolder } from '../Main/Common/Modal/DropDownModal';
+import { track, trackWithProperties, EVENT as E} from '../monitoring/segment';
 
 import {
   REGISTRATION_BACK,
@@ -82,6 +83,8 @@ export const registrationNextAddProfile = (value) => {
   //   name, phone: email, password
   // };
   const data = { ...value };
+
+  track(E.REG_PROFILE);
 
   // TODO: refactor network request as factory function
   return async (dispatch) => {
@@ -180,6 +183,7 @@ export * from './AccountActions';
 
 export const registrationNextIntro = (skip) => {
   const type = skip ? REGISTRATION_INTRO_SKIP : REGISTRATION_INTRO;
+  track(skip ? E.REG_INTRO_SKIP : E.REG_INTRO);
   return (dispatch, getState) => {
     if (skip) {
       dispatch({
@@ -277,7 +281,7 @@ export const openCamera = (callback) => async (dispatch) => {
   if (!permissionGranted) {
     return;
   }
-
+  track(E.CAMERA);
   const result = await ImagePicker.launchCameraAsync({
       mediaTypes: 'Images',
     })
@@ -304,6 +308,8 @@ export const openCameraRoll = (callback, maybeOptions) => async (dispatch) => {
   if (!permissionGranted) {
     return;
   }
+  track(E.CAMERA_ROLL);
+
   const disableEditing = maybeOptions && maybeOptions.disableEditing;
 
   const result = await ImagePicker.launchImageLibraryAsync(disableEditing ? {} : {
@@ -388,6 +394,7 @@ export const registrationCameraRollOnImageChoosen = (uri) => {
 
 export const registrationNextContact = (headline, skip) => {
   const type = skip ? REGISTRATION_CONTACT_SKIP : REGISTRATION_CONTACT;
+  track(skip ? E.REG_CONTACT_SKIP : E.REG_CONTACT);
 
   const error = {};
   if (headline === '' && !skip) {
@@ -468,6 +475,7 @@ export const handleOnHeadlineChanged = (headline) => {
 
 export const registrationNextContactSync = ({ skip }) => {
   const type = skip ? REGISTRATION_CONTACT_SYNC_SKIP : REGISTRATION_CONTACT_SYNC;
+  track(skip ? E.REG_CONTACT_SYNC_SKIP : E.REG_CONTACT_SYNC);
 
   if (skip) {
     return (dispatch, getState) => {

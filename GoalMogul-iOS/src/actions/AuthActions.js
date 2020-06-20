@@ -133,7 +133,7 @@ const authenticate = ({ username, password, token, tokenRefresh, navigate, onErr
                 }
             }
         } catch (error) {
-            new SentryRequestBuilder(new Error(error.message), SENTRY_MESSAGE_TYPE.ERROR)
+            new SentryRequestBuilder(error, SENTRY_MESSAGE_TYPE.ERROR)
                 .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
                 .withTag(SENTRY_TAGS.ACTION.LOGIN_IN, SENTRY_TAG_VALUE.ACTIONS.FAILED)
                 .withExtraContext(SENTRY_TAGS.ACTION.TOKEN, { username, token })
