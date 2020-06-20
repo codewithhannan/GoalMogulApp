@@ -10,7 +10,8 @@ const SENTRY_TAGS = {
         FETCH_USER_PROFILE: 'fetech user profile',
         USERNAME: 'username',
         TOKEN: 'token verification',
-        UNSUBSCRIBE_NOTIFICATIONS: 'unsubscribe notifications (expo push token deletion)'
+        UNSUBSCRIBE_NOTIFICATIONS: 'unsubscribe notifications (expo push token deletion)',
+        GOAL_UPDATE: 'goal update'
     },
     TRIBE: {
         ACTION: "tribe action",

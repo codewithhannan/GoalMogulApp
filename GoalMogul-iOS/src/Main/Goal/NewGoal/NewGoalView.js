@@ -652,7 +652,7 @@ class NewGoalView extends Component {
             <CopilotStep text={this.props.tutorialText[3]} order={3} name="create_goal_create_goal_modal_3">
                 <WalkableView style={{ ...styles.sectionMargin, justifyContent: 'flex-start', flex: 1 }}>
                     <FieldTitleText text='How important is your goal?' required={true} style={{ marginBottom: 12 }} />
-                    <Text style={styles.descriptionTextStyle}>Use is to set reletive priority of your Goal.</Text>
+                    <Text style={styles.descriptionTextStyle}>Use is to set relative priority of your Goal.</Text>
                     {slider}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         {SLIDER_NUMS.map((val) => {
@@ -911,28 +911,27 @@ class NewGoalView extends Component {
                 style={styles.sectionMargin}
             >
                 <FieldTitleText text={TYPE_MAP[type].title} required={required} style={{ marginBottom: 12 }} />
-                {
-                    fields.length > 0 ?
-                        <DraggableFlatlist
-                            renderItem={(props) => this.renderFieldArrayItem(props, TYPE_MAP[type].placeholder, fields, true, type, onSubmitEditing)}
-                            data={dataToRender}
-                            keyExtractor={item => `${item.index}`}
-                            onDragEnd={e => {
-                                // console.log('moving end for e: ', e);
-                                fields.move(e.from, e.to);
-                                this.setState({
-                                    ...this.state,
-                                    scrollEnabled: true
-                                });
-                            }}
-                            onDragBegin={(index) => {
-                                // console.log('index is being moved: ', index);
-                                this.setState({
-                                    ...this.state,
-                                    scrollEnabled: false
-                                });
-                            }}
-                        /> : null
+                {fields.length > 0 ?
+                    <DraggableFlatlist
+                        renderItem={(props) => this.renderFieldArrayItem(props, TYPE_MAP[type].placeholder, fields, true, type, onSubmitEditing)}
+                        data={dataToRender}
+                        keyExtractor={item => `${item.index}`}
+                        onDragEnd={e => {
+                            // console.log('moving end for e: ', e);
+                            fields.move(e.from, e.to);
+                            this.setState({
+                                ...this.state,
+                                scrollEnabled: true
+                            });
+                        }}
+                        onDragBegin={(index) => {
+                            // console.log('index is being moved: ', index);
+                            this.setState({
+                                ...this.state,
+                                scrollEnabled: false
+                            });
+                        }}
+                    /> : null
                 }
                 <Button
                     text={TYPE_MAP[type].buttonText}

@@ -39,28 +39,24 @@ class ActionButton extends React.PureComponent {
 
     render() {
         const { containerStyle, count, disabled, onTextPress, textContainerStyle, unitText } = this.props;
+        const buttonDisabled = disabled === true || this.state.buttonDisabled;
+
         const countText = (
-                <DelayedButton activeOpacity={0.6} onPress={count > 0 ? onTextPress : this.handleOnPress} style={textContainerStyle} disabled={!onTextPress}>
+                <DelayedButton activeOpacity={0.6} onPress={count > 0 && onTextPress ? onTextPress : this.handleOnPress} style={textContainerStyle} disabled={buttonDisabled}>
                     <Text style={{ ...DEFAULT_STYLE.buttonText_1, ...styles.textStyle, ...this.props.textStyle }}>
                         {count > 0 ? `${count} ` : ''}{unitText ? unitText + (count > 1 ? 's' : '') : ''}
                     </Text>
                 </DelayedButton>
             );
 
-        const buttonDisabled = disabled === true;
         return (
             <DelayedButton
                 activeOpacity={0.6}
-                style={{ ...styles.containerStyle, ...containerStyle }}
+                style={{ ...styles.containerStyle, ...containerStyle, opacity: buttonDisabled ? 0.4 : 1 }}
                 onPress={this.handleOnPress}
-                disabled={(this.state.buttonDisabled || buttonDisabled)}
+                disabled={buttonDisabled}
             >
-                <View
-                    style={{
-                        ...this.props.iconContainerStyle,
-                        opacity: buttonDisabled ? 0.4 : 1
-                    }}
-                >
+                <View style={this.props.iconContainerStyle}>
                     <Image
                         resizeMode="contain"
                         source={this.props.iconSource}

@@ -206,6 +206,7 @@ class ActivityCard extends React.PureComponent {
                     style={{
                         padding: 8,
                         backgroundColor: '#F9F9F9',
+                        borderRadius: 8,
                         marginLeft: 10,
                         flex: 1
                     }}
