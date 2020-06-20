@@ -18,15 +18,20 @@ import { queryBuilder } from '../../middleware/utils'
 export const BASE_ROUTE = 'secure/tribe'
 
 export const TRIBE_TYPE = {
-    MANAGED: 'managed',
-    FAVORITE: 'favorite',
-    OTHERS: 'others',
+    managed: 'managed',
+    favorite: 'favorite',
+    others: 'others',
 }
 
 const ROUTES = {
-    managed: `${BASE_ROUTE}?filterForMembershipCategory=Admin`,
-    favorite: `${BASE_ROUTE}`, // TODO: tribe: API was not made yet
-    others: `${BASE_ROUTE}?filterForMembershipCategory=Member`,
+    tribes: (type) => {
+        switch (type) {
+            case TRIBE_TYPE.managed: return () => `${BASE_ROUTE}?filterForMembershipCategory=Admin`;
+            case TRIBE_TYPE.favorite: return () => `${BASE_ROUTE}`; // TODO: tribe: API was not made yet
+            case TRIBE_TYPE.others: return () => `${BASE_ROUTE}?filterForMembershipCategory=Member`;
+        }
+    },
+    feed: (skip, limit) => `${BASE_ROUTE}/feed?${queryBuilder(skip, limit, {})}`
 }
 
 /**
@@ -73,4 +78,50 @@ const loadTribeByType = (skip, limit, token, type, onSuccess, onError) => {
             return onError(res)
         })
         .catch((err) => onError(err))
+}
+
+export const refreshTribeHubFeed = () => (dispatch, getState) => {
+
+}
+
+export const loadMoreTribeHubFeed = () => (dispatch, getState) => {
+    
+}
+
+const loadTribeFeed = (skip, limit, params, onSuccess, onError) => (getState) => {
+    const { token } = getState().user;
+    API.get(`${BASE_ROUTE}/feed?${queryBuilder(skip, limit)}`, token)
+        .then((res) => {
+            if (res.status == 200 || res.data) {
+                return onSuccess(res.data)
+            }
+            return onError(res)
+        })
+        .catch((err) => onError(err))
+}
+
+/** */
+const tribeGetter = (routeMaker, skip, limit, params, onSuccess, onError) => (getState) => {
+    const { token } = getState().user;
+    API.get(routeMaker(skip, limit, params), token)
+        .then((res) => {
+            if (res.status == 200 || res.data) {
+                return onSuccess(res.data)
+            }
+            return onError(res)
+        })
+        .catch((err) => onError(err))
+}
+
+const tribeUpdator = (routeMaker, onSuccess, onError) => (getState) => {
+    const { token } = getState().user;
+};
+
+/**
+ * Action to favorite a tribe
+ * @param {String} tribeId 
+ * @param {String} action: ['favorite', 'unfavorite'] 
+ */
+export const favoriteTribe = (tribeId, action) => (dispatch, getState) => {
+
 }
