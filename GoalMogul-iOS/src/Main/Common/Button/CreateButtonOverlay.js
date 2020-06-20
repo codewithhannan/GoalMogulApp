@@ -20,6 +20,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
+  Button,
 } from "react-native";
 import { Text, withStyles } from "@ui-kitten/components";
 import { Actions } from "react-native-router-flux";
@@ -102,31 +103,37 @@ class CreateButtonOverlay extends Component {
     });
   };
 
-  renderCancelButton(cancelButtonStyle) {
+  renderCancelButton(cancelButtonStyle, onPress) {
     return (
-      <TouchableWithoutFeedback
-        activeOpacity={0.85}
-        style={{ ...styles.iconContainerStyle, backgroundColor: "transparent" }}
-        onPress={this.handleCancel}
+      <Animated.View
+        style={{
+          transform: [
+            {
+              rotate: this.spinAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: ["0deg", "180deg"],
+              }),
+            },
+          ],
+          opacity: this.fadeAnim,
+        }}
       >
-        <DelayedButton style={[cancelButtonStyle, styles.cancelButton]}>
-          <Animated.Image
-            style={{
-              ...styles.iconStyle,
-              transform: [
-                {
-                  rotate: this.spinAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: ["0deg", "180deg"],
-                  }),
-                },
-              ],
-              opacity: this.fadeAnim,
-            }}
-            source={cancel}
-          />
-        </DelayedButton>
-      </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback
+          activeOpacity={0.85}
+          style={{
+            ...styles.iconContainerStyle,
+            backgroundColor: "transparent",
+          }}
+          onPress={this.handleCancel}
+        >
+          <DelayedButton
+            onPress={onPress}
+            style={[cancelButtonStyle, styles.cancelButton]}
+          >
+            <Animated.Image style={styles.iconStyle} source={cancel} />
+          </DelayedButton>
+        </TouchableWithoutFeedback>
+      </Animated.View>
     );
   }
 
@@ -203,7 +210,10 @@ class CreateButtonOverlay extends Component {
         </TouchableWithoutFeedback>
         <View style={styles.containerStyle}>
           {this.renderActionButtons()}
-          {this.renderCancelButton(eva.style.cancelButtonBackground)}
+          {this.renderCancelButton(
+            eva.style.cancelButtonBackground,
+            this.handleCancel
+          )}
         </View>
       </View>
     );
