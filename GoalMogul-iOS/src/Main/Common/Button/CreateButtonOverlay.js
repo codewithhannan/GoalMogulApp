@@ -35,8 +35,8 @@ import DelayedButton from "./DelayedButton";
 import style from "../../Tutorial/style";
 
 const BUTTON_GROUP_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(DEVICE_MODEL)
-  ? 119
-  : 84;
+  ? 106
+  : 71;
 
 class CreateButtonOverlay extends Component {
   constructor(...args) {
@@ -284,7 +284,11 @@ const styles = StyleSheet.create({
   container: {
     position: "absolute",
     bottom: BUTTON_GROUP_BOTTOM_OFFSET,
-    right: 15,
+    right: 29,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 2,
     alignItems: "center",
   },
   menuContainer: {
