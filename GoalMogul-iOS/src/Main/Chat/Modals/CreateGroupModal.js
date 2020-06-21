@@ -22,3 +22,5 @@ import {
 } from "../../../redux/modules/chat/CreateChatRoomActions";
 
 class CreateGroupChat extends Component {}
+
+const mapStateToProps = (state) => {};
