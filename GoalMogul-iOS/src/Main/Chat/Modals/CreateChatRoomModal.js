@@ -19,6 +19,7 @@ import {
   Dimensions,
 } from "react-native";
 import { CheckBox, SearchBar } from "react-native-elements";
+import { Input, Icon } from "@ui-kitten/components";
 import { MenuProvider } from "react-native-popup-menu";
 import { connect } from "react-redux";
 import { Field, formValueSelector, reduxForm } from "redux-form";
@@ -176,7 +177,7 @@ class CreateChatroomModal extends React.Component {
   };
 
   renderInput = ({
-    input: { onChange, onFocus, value, ...restInput },
+    input: { onChange, onFocus, value },
     editable,
     numberOfLines,
     meta: { touched, error },
@@ -260,63 +261,93 @@ class CreateChatroomModal extends React.Component {
     );
   }
 
+  AlertIcon = (props) => <Icon {...props} name="alert-circle-outline" />;
+
   renderChatroomName() {
-    const titleText = <Text style={styles.titleTextStyle}>Group Name</Text>;
+    // const titleText = <Text style={styles.titleTextStyle}>Group Name</Text>;
+    // return (
+    //   <View style={{ marginBottom: 5 }}>
+    //     {titleText}
+    //     <Field
+    //       name="name"
+    //       label="name"
+    //       component={this.renderInput}
+    //       editable={!this.props.uploading}
+    //       numberOfLines={1}
+    //       multiline
+    //       style={styles.goalInputStyle}
+    //     />
+    //   </View>
+    // );
     return (
-      <View style={{ marginBottom: 5 }}>
-        {titleText}
-        <Field
-          name="name"
-          label="name"
-          component={this.renderInput}
-          editable={!this.props.uploading}
-          numberOfLines={1}
-          multiline
-          style={styles.goalInputStyle}
-          placeholder="Enter a name for this room..."
-        />
-      </View>
+      <Input
+        label="Group Name"
+        placeholder="Enter a name for this room..."
+        captionIcon={this.AlertIcon}
+        caption="This field is required."
+        disabled={this.props.uploading}
+        style={styles.inputStyle}
+      />
     );
   }
 
   renderChatRoomMemberLimit() {
-    const titleText = (
-      <Text style={styles.titleTextStyle}>Member Limit (Optional)</Text>
-    );
+    // const titleText = (
+    //   <Text style={styles.titleTextStyle}>Member Limit (Optional)</Text>
+    // );
+    // return (
+    //   <View style={{ marginBottom: 5 }}>
+    //     {titleText}
+    //     <Field
+    //       name="memberLimit"
+    //       label="memberLimit"
+    //       component={this.renderInput}
+    //       editable={!this.props.uploading}
+    //       numberOfLines={1}
+    //       keyboardType="number-pad"
+    //       style={styles.goalInputStyle}
+    //       placeholder="Enter a number..."
+    //     />
+    //   </View>
+    // );
     return (
-      <View style={{ marginBottom: 5 }}>
-        {titleText}
-        <Field
-          name="memberLimit"
-          label="memberLimit"
-          component={this.renderInput}
-          editable={!this.props.uploading}
-          numberOfLines={1}
-          keyboardType="number-pad"
-          style={styles.goalInputStyle}
-          placeholder="Enter a number..."
-        />
-      </View>
+      <Input
+        label="Member Limit"
+        disabled={this.props.uploading}
+        placeholder="Enter a number..."
+        keyboardType="number-pad"
+        style={styles.inputStyle}
+      />
     );
   }
 
   renderChatroomDescription() {
-    const titleText = (
-      <Text style={styles.titleTextStyle}>Description (Optional)</Text>
-    );
+    // const titleText = (
+    //   <Text style={styles.titleTextStyle}>Description (Optional)</Text>
+    // );
+    // return (
+    //   <View style={{ marginBottom: 5 }}>
+    //     {titleText}
+    //     <Field
+    //       name="description"
+    //       label="description"
+    //       component={this.renderInput}
+    //       editable={!this.props.uploading}
+    //       numberOfLines={5}
+    //       style={styles.goalInputStyle}
+    //       placeholder="What's this room about?"
+    //     />
+    //   </View>
+    // );
     return (
-      <View style={{ marginBottom: 5 }}>
-        {titleText}
-        <Field
-          name="description"
-          label="description"
-          component={this.renderInput}
-          editable={!this.props.uploading}
-          numberOfLines={5}
-          style={styles.goalInputStyle}
-          placeholder="What's this room about?"
-        />
-      </View>
+      <Input
+        label="Description"
+        disabled={this.props.uploading}
+        placeholder="What's this room about?"
+        multiline
+        textStyle={styles.multilineTextStyle}
+        style={styles.inputStyle}
+      />
     );
   }
 
@@ -776,12 +807,18 @@ const styles = {
     paddingLeft: 15,
     fontWeight: 400,
   },
+  // inputStyle: {
+  //   paddingTop: 6,
+  //   paddingBottom: 6,
+  //   padding: 10,
+  //   backgroundColor: "white",
+  //   borderRadius: 22,
+  // },
   inputStyle: {
-    paddingTop: 6,
-    paddingBottom: 6,
-    padding: 10,
-    backgroundColor: "white",
-    borderRadius: 22,
+    paddingVertical: 6,
+  },
+  multilineTextStyle: {
+    height: 100,
   },
   cancelIconStyle: {
     height: 20,
