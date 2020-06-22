@@ -1,23 +1,39 @@
-import React from 'react';
-import { View, Text, Animated, Image } from 'react-native';
-import _ from 'lodash';
-import { DotIcon } from '../../../Utils/Icons';
-import { DEFAULT_STYLE } from '../../../styles';
+/** @format */
 
+import React from 'react'
+import { View, Text, Animated, Image } from 'react-native'
+import _ from 'lodash'
+import { DotIcon } from '../../../Utils/Icons'
+import { DEFAULT_STYLE } from '../../../styles'
 
 const renderNotificationIndicator = (props) => {
-    const { tabNotificationMap, tabKey, isSelected } = props;
-    if (!tabNotificationMap) return null;
-    if (!tabNotificationMap.hasOwnProperty(tabKey) || !_.has(tabNotificationMap, tabKey)) return null;
+    const { tabNotificationMap, tabKey, isSelected } = props
+    if (!tabNotificationMap) return null
+    if (
+        !tabNotificationMap.hasOwnProperty(tabKey) ||
+        !_.has(tabNotificationMap, tabKey)
+    )
+        return null
 
-    const { hasNotification, style, containerStyle, selectedStyle, selectedContainerStyle } = _.get(tabNotificationMap, tabKey);
-    if (!hasNotification) return null;
+    const {
+        hasNotification,
+        style,
+        containerStyle,
+        selectedStyle,
+        selectedContainerStyle,
+    } = _.get(tabNotificationMap, tabKey)
+    if (!hasNotification) return null
     return (
-        <View style={{ ...containerStyle, ...(isSelected ? selectedContainerStyle : {}) }}>
+        <View
+            style={{
+                ...containerStyle,
+                ...(isSelected ? selectedContainerStyle : {}),
+            }}
+        >
             <View style={{ ...style, ...(isSelected ? selectedStyle : {}) }} />
         </View>
     )
-};
+}
 
 const TabButton = (props) => {
     const {
@@ -27,43 +43,51 @@ const TabButton = (props) => {
         iconStyle,
         textStyle,
         containerStyle,
-        statTextStyle
-    } = props;
+        statTextStyle,
+    } = props
 
     const stat = !props.stat ? null : (
         <View>
             <DotIcon
-                iconStyle={{ width: 3, height: 3, marginLeft: 4, marginRight: 4, ...iconStyle }}
+                iconStyle={{
+                    width: 3,
+                    height: 3,
+                    marginLeft: 4,
+                    marginRight: 4,
+                    ...iconStyle,
+                }}
             />
             <Text style={{ ...styles.textStyle, ...statTextStyle }}>
                 {props.stat}
             </Text>
         </View>
-    );
+    )
 
     const icon = !iconSource ? null : (
         <Image
             source={iconSource}
             style={{ ...styles.iconStyle, ...iconStyle }}
         />
-    );
+    )
 
     return (
-        <View style={{
-            ...styles.containerStyle,
-            ...containerStyle
-        }}>
+        <View
+            style={{
+                ...styles.containerStyle,
+                ...containerStyle,
+            }}
+        >
             {icon}
-            <Animated.Text
-                style={textStyle}
-            >
-                {props.text}
-            </Animated.Text>
+            <Animated.Text style={textStyle}>{props.text}</Animated.Text>
             {stat}
-            {renderNotificationIndicator({ tabNotificationMap, tabKey, isSelected: props.onSelect })}
+            {renderNotificationIndicator({
+                tabNotificationMap,
+                tabKey,
+                isSelected: props.onSelect,
+            })}
         </View>
-    );
-};
+    )
+}
 
 const styles = {
     containerStyle: {
@@ -72,7 +96,7 @@ const styles = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
     },
     textStyle: {
         fontSize: 10,
@@ -82,8 +106,8 @@ const styles = {
         ...DEFAULT_STYLE.smallIcon_1,
         alignSelf: 'center',
         justifyContent: 'center',
-        marginRight: 9
-    }
-};
+        marginRight: 9,
+    },
+}
 
-export default TabButton;
+export default TabButton

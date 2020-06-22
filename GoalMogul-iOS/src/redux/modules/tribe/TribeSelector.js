@@ -8,7 +8,12 @@ import {
     TRIBE_NATIVATION_ROUTES,
 } from './Tribes'
 import { SentryRequestBuilder } from '../../../monitoring/sentry'
-import { SENTRY_MESSAGE_TYPE, SENTRY_TAGS, SENTRY_MESSAGE_LEVEL, SENTRY_CONTEXT } from '../../../monitoring/sentry/Constants'
+import {
+    SENTRY_MESSAGE_TYPE,
+    SENTRY_TAGS,
+    SENTRY_MESSAGE_LEVEL,
+    SENTRY_CONTEXT,
+} from '../../../monitoring/sentry/Constants'
 
 /**
  * get tribe member filter by tribeId and pageId
@@ -54,12 +59,18 @@ const getMyTribeNavigationStates = (state, tribeId, pageId) => {
 const getMyTribeMemberNavigationStates = (state, tribeId, pageId) => {
     const tribes = state.tribes
     if (!_.has(tribes, `${tribeId}.${pageId}`)) {
-        new SentryRequestBuilder("PageId doesn't exist in Tribes", SENTRY_MESSAGE_TYPE.MESSAGE)
+        new SentryRequestBuilder(
+            "PageId doesn't exist in Tribes",
+            SENTRY_MESSAGE_TYPE.MESSAGE
+        )
             .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
-            .withTag(SENTRY_TAGS.TRIBE.SELECTOR, "getMyTribeMemberNavigationStates")
+            .withTag(
+                SENTRY_TAGS.TRIBE.SELECTOR,
+                'getMyTribeMemberNavigationStates'
+            )
             .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
             .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
-            .send();
+            .send()
         return {
             index: 0,
             routes: _.cloneDeep(TRIBE_USER_ROUTES.default),
@@ -84,58 +95,70 @@ const getMyTribePage = (state, tribeId, pageId) =>
     )
 const getMyTribe = (state, tribeId, pageId) =>
     _.cloneDeep(_.get(state.tribes, `${tribeId}.tribe`, {}))
-const getUserId = (state) => state.user.userId;
+const getUserId = (state) => state.user.userId
 
 const getMyTribeFeed = (state, tribeId, pageId) => {
-    const tribes = state.tribes;
-    const posts = state.posts;
+    const tribes = state.tribes
+    const posts = state.posts
 
     if (!_.has(tribes, tribeId) || !_.has(tribes, `${tribeId}.${pageId}`)) {
-        console.error(`${DEBUG_KEY}: [getMyTribeFeed]: tribeId: ${tribeId} or pageId: ${pageId} not in tribes`);
-        return [];
+        console.error(
+            `${DEBUG_KEY}: [getMyTribeFeed]: tribeId: ${tribeId} or pageId: ${pageId} not in tribes`
+        )
+        return []
     }
 
-    const feedRefs = _.get(tribes, `${tribeId}.${pageId}.feed`);
-    let ret = feedRefs.map(r => {
-        if (!_.has(posts, r)) {
-            new SentryRequestBuilder("Posts doesn't have postRef for feed stored in Tribe", SENTRY_MESSAGE_TYPE.MESSAGE)
-                .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
-                .withTag(SENTRY_TAGS.TRIBE.SELECTOR, "getMyTribeFeed")
-                .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
-                .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
-                .withExtraContext(SENTRY_CONTEXT.POST.POST_ID, r)
-                .send();
-            return undefined;
-        }
-        return _.cloneDeep(_.get(posts, `${r}.post`));
-    }).filter(r => r !== undefined);
+    const feedRefs = _.get(tribes, `${tribeId}.${pageId}.feed`)
+    let ret = feedRefs
+        .map((r) => {
+            if (!_.has(posts, r)) {
+                new SentryRequestBuilder(
+                    "Posts doesn't have postRef for feed stored in Tribe",
+                    SENTRY_MESSAGE_TYPE.MESSAGE
+                )
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.SELECTOR, 'getMyTribeFeed')
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                    .withExtraContext(SENTRY_CONTEXT.POST.POST_ID, r)
+                    .send()
+                return undefined
+            }
+            return _.cloneDeep(_.get(posts, `${r}.post`))
+        })
+        .filter((r) => r !== undefined)
 
-    return ret;
-};
+    return ret
+}
 
 const getUserGoals = (state, tribeId, pageId) => {
-    const tribes = state.tribes;
-    const goals = state.goals;
+    const tribes = state.tribes
+    const goals = state.goals
     if (!_.has(tribes, tribeId) || !_.has(tribes, `${tribeId}.${pageId}`)) {
-        return [];
+        return []
     }
 
-    const goalRefs = _.get(tribes, `${tribeId}.${pageId}.goals.refs`, []);
-    let ret = goalRefs.map(r => {
-        if (!_.has(posts, r)) {
-            new SentryRequestBuilder("Goals don't have goalRef stored in Tribe", SENTRY_MESSAGE_TYPE.MESSAGE)
-                .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
-                .withTag(SENTRY_TAGS.TRIBE.SELECTOR, "getUserGoals")
-                .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
-                .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
-                .withExtraContext(SENTRY_CONTEXT.GOAL.GOAL_ID, r)
-                .send();
-            return undefined;
-        }
-        return _.cloneDeep(_.get(goals, `${r}.goal`));
-    }).filter(r => r !== undefined);
+    const goalRefs = _.get(tribes, `${tribeId}.${pageId}.goals.refs`, [])
+    let ret = goalRefs
+        .map((r) => {
+            if (!_.has(posts, r)) {
+                new SentryRequestBuilder(
+                    "Goals don't have goalRef stored in Tribe",
+                    SENTRY_MESSAGE_TYPE.MESSAGE
+                )
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.SELECTOR, 'getUserGoals')
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                    .withExtraContext(SENTRY_CONTEXT.GOAL.GOAL_ID, r)
+                    .send()
+                return undefined
+            }
+            return _.cloneDeep(_.get(goals, `${r}.goal`))
+        })
+        .filter((r) => r !== undefined)
 
-    return ret;
+    return ret
 }
 
 /**
@@ -151,7 +174,7 @@ export const getMyTribeDetailById = createSelector(
 export const getMyTribeFeedSelector = createSelector(
     [getMyTribeFeed],
     (feed) => feed
-);
+)
 
 /**
  * Select current user membership for a tribe by tribeId
@@ -277,4 +300,4 @@ export const getMyTribeMemberNavigationState = createSelector(
 export const getUserGoalsForTribeShare = createSelector(
     [getUserGoals],
     (goals) => goals
-);
+)

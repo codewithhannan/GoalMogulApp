@@ -1,88 +1,106 @@
 /**
  * This component allows user to manage the relationship with this current friend
+ *
+ * @format
  */
+
 /**
  * This View is the Friend Card View
  */
-import React from 'react';
-import {
-    ActionSheetIOS,
-} from 'react-native';
-import { connect } from 'react-redux';
-import DelayedButton from '../../../Common/Button/DelayedButton';
-import BottomSheet from '../../../Common/Modal/BottomSheet';
-import {
-    updateFriendship,
-    blockUser,
-    openProfile
-} from '../../../../actions';
-import UserCardHeader from '../../Common/UserCardHeader';
-import UserTopGoals from '../../Common/UserTopGoals';
-import Icons from '../../../../asset/base64/Icons';
+import React from 'react'
+import { ActionSheetIOS } from 'react-native'
+import { connect } from 'react-redux'
+import DelayedButton from '../../../Common/Button/DelayedButton'
+import BottomSheet from '../../../Common/Modal/BottomSheet'
+import { updateFriendship, blockUser, openProfile } from '../../../../actions'
+import UserCardHeader from '../../Common/UserCardHeader'
+import UserTopGoals from '../../Common/UserTopGoals'
+import Icons from '../../../../asset/base64/Icons'
 
-const FRIENDSHIP_BUTTONS = ['Block', 'Unfriend', 'Cancel'];
-const BLOCK_INDEX = 0;
-const UNFRIEND_INDEX = 1;
-const CANCEL_INDEX = 2;
-const TAB_KEY = 'friends';
-const DEBUG_KEY = '[ UI FriendTabCardView ]';
+const FRIENDSHIP_BUTTONS = ['Block', 'Unfriend', 'Cancel']
+const BLOCK_INDEX = 0
+const UNFRIEND_INDEX = 1
+const CANCEL_INDEX = 2
+const TAB_KEY = 'friends'
+const DEBUG_KEY = '[ UI FriendTabCardView ]'
 
 class FriendTabCardView extends React.PureComponent {
     state = {
         requested: false,
-        accepted: false
+        accepted: false,
     }
 
     // This is no longer used. Replaced by separate handler functions
     handleUpdateFriendship = (item) => {
-        const { maybeFriendshipRef } = item;
+        const { maybeFriendshipRef } = item
 
-        const friendUserId = getFriendUserId(maybeFriendshipRef, this.props.userId);
-        const friendshipId = maybeFriendshipRef._id;
+        const friendUserId = getFriendUserId(
+            maybeFriendshipRef,
+            this.props.userId
+        )
+        const friendshipId = maybeFriendshipRef._id
         ActionSheetIOS.showActionSheetWithOptions(
             {
                 options: FRIENDSHIP_BUTTONS,
                 cancelButtonIndex: CANCEL_INDEX,
             },
             (buttonIndex) => {
-                console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
+                console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex])
                 switch (buttonIndex) {
                     case BLOCK_INDEX:
                         // User chose to block user with id: _id
                         console.log(`${DEBUG_KEY}: User blocks friend with id ${friendUserId}, 
-                    friendshipId: ${friendshipId}`);
-                        this.props.blockUser(friendUserId);
-                        break;
+                    friendshipId: ${friendshipId}`)
+                        this.props.blockUser(friendUserId)
+                        break
 
                     case UNFRIEND_INDEX:
                         // User chose to unfriend
-                        this.props.updateFriendship('', friendshipId, 'deleteFriend', TAB_KEY, () => {
-                            console.log('Successfully delete friend with friendshipId: ', friendshipId);
-                            this.setState({ requested: false });
-                        });
-                        break;
+                        this.props.updateFriendship(
+                            '',
+                            friendshipId,
+                            'deleteFriend',
+                            TAB_KEY,
+                            () => {
+                                console.log(
+                                    'Successfully delete friend with friendshipId: ',
+                                    friendshipId
+                                )
+                                this.setState({ requested: false })
+                            }
+                        )
+                        break
                     default:
-                        return;
+                        return
                 }
             }
-        );
+        )
     }
 
     handleBlockFriend = (friendUserId) => {
-        this.props.blockUser(friendUserId);
+        this.props.blockUser(friendUserId)
     }
 
     handleDeleteFriend = (friendshipId) => {
-        this.props.updateFriendship('', friendshipId, 'deleteFriend', TAB_KEY, () => {
-            console.log('Successfully delete friend with friendshipId: ', friendshipId);
-            this.setState({ requested: false });
-        });
+        this.props.updateFriendship(
+            '',
+            friendshipId,
+            'deleteFriend',
+            TAB_KEY,
+            () => {
+                console.log(
+                    'Successfully delete friend with friendshipId: ',
+                    friendshipId
+                )
+                this.setState({ requested: false })
+            }
+        )
     }
 
     handleOnOpenProfile = () => {
-        const { _id } = this.props.item;
+        const { _id } = this.props.item
         if (_id) {
-            return this.props.openProfile(_id);
+            return this.props.openProfile(_id)
         }
     }
 
@@ -91,28 +109,42 @@ class FriendTabCardView extends React.PureComponent {
     openOptionModal = () => this.bottomSheetRef.open()
 
     makeFriendCardOptions = (item) => {
-        const { maybeFriendshipRef } = item;
+        const { maybeFriendshipRef } = item
 
-        const friendUserId = getFriendUserId(maybeFriendshipRef, this.props.userId);
-        const friendshipId = maybeFriendshipRef._id;
+        const friendUserId = getFriendUserId(
+            maybeFriendshipRef,
+            this.props.userId
+        )
+        const friendshipId = maybeFriendshipRef._id
 
         return [
-            { text: "Unfriend", image: Icons.AccountRemove, imageStyle: { tintColor:  "black" }, onPress: () => {
-                this.handleDeleteFriend(friendshipId);
-                this.closeOptionModal();
-            }}, 
-            { text: "Block", textStyle: { color: "#EB5757" }, image: Icons.AccountCancel, imageStyle: { tintColor:  "#EB5757" }, onPress: () => {
-                this.handleBlockFriend(friendUserId);
-                this.closeOptionModal();
-            }}
-        ];
+            {
+                text: 'Unfriend',
+                image: Icons.AccountRemove,
+                imageStyle: { tintColor: 'black' },
+                onPress: () => {
+                    this.handleDeleteFriend(friendshipId)
+                    this.closeOptionModal()
+                },
+            },
+            {
+                text: 'Block',
+                textStyle: { color: '#EB5757' },
+                image: Icons.AccountCancel,
+                imageStyle: { tintColor: '#EB5757' },
+                onPress: () => {
+                    this.handleBlockFriend(friendUserId)
+                    this.closeOptionModal()
+                },
+            },
+        ]
     }
-    
+
     renderBottomSheet = (item) => {
-        const options = this.makeFriendCardOptions(item);
+        const options = this.makeFriendCardOptions(item)
         return (
-            <BottomSheet 
-                ref={r => this.bottomSheetRef = r}
+            <BottomSheet
+                ref={(r) => (this.bottomSheetRef = r)}
                 buttons={options}
             />
         )
@@ -120,16 +152,13 @@ class FriendTabCardView extends React.PureComponent {
 
     renderHeader(item) {
         return (
-            <UserCardHeader
-                user={item} 
-                optionsOnPress={this.openOptionModal}
-            />
-        );
+            <UserCardHeader user={item} optionsOnPress={this.openOptionModal} />
+        )
     }
 
     render() {
-        const { item } = this.props;
-        if (!item) return null;
+        const { item } = this.props
+        if (!item) return null
 
         // console.log(`${DEBUG_KEY}: item is: `, item);
         return (
@@ -143,7 +172,7 @@ class FriendTabCardView extends React.PureComponent {
                 {/* {this.renderButtons(item)} */}
                 {this.renderBottomSheet(item)}
             </DelayedButton>
-        );
+        )
     }
 }
 
@@ -153,20 +182,20 @@ class FriendTabCardView extends React.PureComponent {
  * @param {*} userId current userId
  */
 const getFriendUserId = (maybeFriendshipRef, userId) => {
-    const { participants } = maybeFriendshipRef;
-    let ret;
+    const { participants } = maybeFriendshipRef
+    let ret
     participants.forEach((p) => {
-        if (p.users_id !== userId) ret = p.users_id;
-    });
-    return ret;
-};
+        if (p.users_id !== userId) ret = p.users_id
+    })
+    return ret
+}
 
 const styles = {
     containerStyle: {
         padding: 16,
         backgroundColor: 'white',
         borderWidth: 0.5,
-        borderColor: '#F2F2F2'
+        borderColor: '#F2F2F2',
     },
     // Button styles
     buttonsContainerStyle: {
@@ -182,19 +211,19 @@ const styles = {
         borderRadius: 3,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'transparent'
-    }
-};
+        backgroundColor: 'transparent',
+    },
+}
 
-const mapStateToProps = state => {
-    const { userId } = state.user;
+const mapStateToProps = (state) => {
+    const { userId } = state.user
     return {
-        userId
-    };
-};
+        userId,
+    }
+}
 
 export default connect(mapStateToProps, {
     updateFriendship,
     blockUser,
-    openProfile
-})(FriendTabCardView);
+    openProfile,
+})(FriendTabCardView)

@@ -1,8 +1,8 @@
-import { createSelector } from 'reselect';
-import R from 'ramda';
+/** @format */
 
-const getFilter = (state) => state.search;
+import { createSelector } from 'reselect'
+import R from 'ramda'
 
-export const getFilteredSearch = createSelector(
+const getFilter = (state) => state.search
 
-);
+export const getFilteredSearch = createSelector()
