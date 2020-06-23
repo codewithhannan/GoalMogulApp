@@ -1,14 +1,14 @@
-import {
-  REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO
-} from '../actions/types';
+/** @format */
 
-const INITIAL_STATE = {};
+import { REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO } from '../actions/types'
+
+const INITIAL_STATE = {}
 
 export default (state = INITIAL_STATE, action) => {
-  switch (action.type) {
-    case REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO:
-      return action.payload;
-    default:
-      return { ...state };
-  }
-};
+    switch (action.type) {
+        case REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO:
+            return action.payload
+        default:
+            return { ...state }
+    }
+}

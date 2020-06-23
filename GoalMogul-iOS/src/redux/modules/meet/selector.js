@@ -1,53 +1,55 @@
-import { createSelector } from 'reselect';
-import R from 'ramda';
-import _ from 'lodash';
+/** @format */
 
-const getFriendsFilter = (state) => state.meet.friends.filter.sortBy;
-const getFriendsData = (state) => state.meet.friends.data;
+import { createSelector } from 'reselect'
+import R from 'ramda'
+import _ from 'lodash'
 
-const userAlphabeticalComparator
-  = R.comparator((a, b) => R.lt(R.prop('name', a), R.prop('name', b)));
+const getFriendsFilter = (state) => state.meet.friends.filter.sortBy
+const getFriendsData = (state) => state.meet.friends.data
 
-const userCreatedAtComparator
-  = R.comparator((a, b) => R.lt(R.prop('created', a), R.prop('created', b)));
+const userAlphabeticalComparator = R.comparator((a, b) =>
+    R.lt(R.prop('name', a), R.prop('name', b))
+)
+
+const userCreatedAtComparator = R.comparator((a, b) =>
+    R.lt(R.prop('created', a), R.prop('created', b))
+)
 
 export const getFilteredFriendsList = createSelector(
-  [getFriendsFilter, getFriendsData],
-  (friendsFilter, data) => {
-    switch (friendsFilter) {
-      case 'alphabetical': {
-        return R.sort(userAlphabeticalComparator, data);
-      }
+    [getFriendsFilter, getFriendsData],
+    (friendsFilter, data) => {
+        switch (friendsFilter) {
+            case 'alphabetical': {
+                return R.sort(userAlphabeticalComparator, data)
+            }
 
-      case 'lastadd': {
-        return data;
-      }
+            case 'lastadd': {
+                return data
+            }
 
-      default:
-        return data;
+            default:
+                return data
+        }
     }
-  }
-);
+)
 
 // Extract outgoing request user information
-const getOutgoingData = (state) => state.meet.requests.outgoing.data;
+const getOutgoingData = (state) => state.meet.requests.outgoing.data
 
-const extractUser = R.map(
-  d => ({
+const extractUser = R.map((d) => ({
     user: R.pipe(R.prop('participants'), R.last, R.prop('users_id'))(d),
     friendshipId: R.prop('_id', d),
     type: 'outgoing',
     _id: R.prop('_id', d), // For standardizing keyExtractor function
-  })
-);
+}))
 
 export const getOutgoingUserFromFriendship = createSelector(
-  [getOutgoingData],
-  (data) => extractUser(data)
-);
+    [getOutgoingData],
+    (data) => extractUser(data)
+)
 
 // Extract incoming request user information
-const getIncomingData = (state) => state.meet.requests.incoming.data;
+const getIncomingData = (state) => state.meet.requests.incoming.data
 
 // const extractIncomingUser = R.map(
 //   d => ({
@@ -57,23 +59,21 @@ const getIncomingData = (state) => state.meet.requests.incoming.data;
 // );
 
 /**
- * Transfor the [Friendship] to 
+ * Transfor the [Friendship] to
  * {
  *    user: userRef,
  *    friendshipId: _id,
  *    _id: _id
  * }
  */
-const extractIncomingUser = R.map(
-  d => ({
+const extractIncomingUser = R.map((d) => ({
     user: R.pipe(R.prop('participants'), R.head, R.prop('users_id'))(d),
     friendshipId: R.prop('_id', d),
     type: 'incoming',
-    _id: R.prop('_id', d) // For standardizing keyExtractor function,
-  })
-);
+    _id: R.prop('_id', d), // For standardizing keyExtractor function,
+}))
 
 export const getIncomingUserFromFriendship = createSelector(
-  [getIncomingData],
-  (data) => extractIncomingUser(data)
-);
+    [getIncomingData],
+    (data) => extractIncomingUser(data)
+)

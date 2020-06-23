@@ -1,92 +1,105 @@
+/** @format */
+
 // This is the view for a TrendingGoalCard
-import React from 'react';
-import {
-    View,
-    TouchableOpacity,
-    Image,
-    Text,
-    Dimensions
-} from 'react-native';
-import { connect } from 'react-redux';
+import React from 'react'
+import { View, TouchableOpacity, Image, Text, Dimensions } from 'react-native'
+import { connect } from 'react-redux'
 
 // Actions
-import {
-    selectTrendingGoals
-} from '../../../redux/modules/goal/CreateGoalActions';
+import { selectTrendingGoals } from '../../../redux/modules/goal/CreateGoalActions'
 
 // Assets
-import plus from '../../../asset/utils/plus.png';
+import plus from '../../../asset/utils/plus.png'
 
 // Utils
-import { nFormatter } from '../../../redux/middleware/utils';
+import { nFormatter } from '../../../redux/middleware/utils'
 
 // Styles
-import { GM_BLUE, DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles';
-
+import { GM_BLUE, DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles'
 
 class TrendingGoalCard extends React.PureComponent {
     onPress = (title) => {
-        this.props.selectTrendingGoals(title);
+        this.props.selectTrendingGoals(title)
     }
 
     renderStats(item) {
-        const { title } = item;
+        const { title } = item
         return (
-                <TouchableOpacity
-                    style={styles.plusIconContainerStyle}
-                    onPress={() => this.onPress(title)}
-                >
-                    <Image source={plus} style={{ ...DEFAULT_STYLE.smallIcon_1, tintColor: 'white' }} />
-                </TouchableOpacity>
-        );
+            <TouchableOpacity
+                style={styles.plusIconContainerStyle}
+                onPress={() => this.onPress(title)}
+            >
+                <Image
+                    source={plus}
+                    style={{ ...DEFAULT_STYLE.smallIcon_1, tintColor: 'white' }}
+                />
+            </TouchableOpacity>
+        )
     }
 
     renderTitle(item) {
-        const { frequency, title } = item;
+        const { frequency, title } = item
         return (
-            <View style={{ paddingTop: 10, paddingBottom: 10, paddingRight: 5, flex: 1 }}>
+            <View
+                style={{
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    paddingRight: 5,
+                    flex: 1,
+                }}
+            >
                 <Text
-                    style={{...DEFAULT_STYLE.titleText_2, flex: 1}}
-                    ellipsizeMode='tail'
+                    style={{ ...DEFAULT_STYLE.titleText_2, flex: 1 }}
+                    ellipsizeMode="tail"
                     numberOfLines={3}
                 >
                     {title}
                 </Text>
-                <Text style={{ ...DEFAULT_STYLE.smallText_1, color: '#9B9B9B' }}>
-                    {nFormatter(frequency)+' '}users have this goal in common
+                <Text
+                    style={{ ...DEFAULT_STYLE.smallText_1, color: '#9B9B9B' }}
+                >
+                    {nFormatter(frequency) + ' '}users have this goal in common
                 </Text>
             </View>
-        );
+        )
     }
 
     renderRank(index) {
         return (
-            <View style={{ padding: 15, paddingRight: 4, justifyContent: 'center' }}>
+            <View
+                style={{
+                    padding: 15,
+                    paddingRight: 4,
+                    justifyContent: 'center',
+                }}
+            >
                 <Text style={DEFAULT_STYLE.titleText_2}>#{index}</Text>
             </View>
-        );
+        )
     }
 
     render() {
-        const { item, index } = this.props;
-        if (!item) return;
+        const { item, index } = this.props
+        if (!item) return
         return (
             <View style={styles.containerStyle}>
                 {this.renderRank(index)}
-                <View style={{ width: 1, margin: 8, backgroundColor: '#DADADA' }} />
+                <View
+                    style={{ width: 1, margin: 8, backgroundColor: '#DADADA' }}
+                />
                 {this.renderTitle(item)}
                 <View style={{ justifyContent: 'center' }}>
                     {this.renderStats(item)}
                 </View>
             </View>
-        );
+        )
     }
 }
 
 const styles = {
     containerStyle: {
-        flex: 1, 
-        backgroundColor: BACKGROUND_COLOR, 
+        flex: 1,
+        backgroundColor: BACKGROUND_COLOR,
         flexDirection: 'row',
         alignItems: 'stretch',
 
@@ -98,18 +111,15 @@ const styles = {
         marginBottom: 5,
     },
     plusIconContainerStyle: {
-        backgroundColor: GM_BLUE, 
+        backgroundColor: GM_BLUE,
         margin: 12,
         padding: 8,
         borderRadius: 100,
         alignItems: 'center',
-        justifyContent: 'center'
-    }
-};
+        justifyContent: 'center',
+    },
+}
 
-export default connect(
-    null,
-    {
-        selectTrendingGoals
-    }
-)(TrendingGoalCard);
+export default connect(null, {
+    selectTrendingGoals,
+})(TrendingGoalCard)

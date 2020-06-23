@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
+/** @format */
 
-export const ChatStyles = StyleSheet.create({
-    
-});
+import { StyleSheet } from 'react-native'
+
+export const ChatStyles = StyleSheet.create({})
