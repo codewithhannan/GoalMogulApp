@@ -29,6 +29,7 @@ import {
 import { updateGoal } from '../../../redux/modules/goal/GoalDetailActions';
 import { decode } from '../../../redux/middleware/utils';
 import { GM_BLUE, DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles';
+import { TABBAR_HEIGHT } from '../../../styles/Goal';
 
 
 // Constants
@@ -194,7 +195,10 @@ class SectionCardV2 extends Component {
                             backgroundColor: this.state.isInputFocused ? '#F2F2F2' : styles.backgroundColor
                         }}
                         value={this.state.textValue}
-                        onFocus={() => this.setState({ isInputFocused: true })}
+                        onFocus={() => {
+                            this.setState({ isInputFocused: true });
+                            if (this.props.onEdit) this.props.onEdit();
+                        }}
                         onBlur={() => this.setState({ isInputFocused: false })}
                         onChangeText={text => this.setState({ textValue: text })}
                         multiline
@@ -265,7 +269,7 @@ class SectionCardV2 extends Component {
         }
 
         const { description, isCompleted } = itemToRender;
-        const containerStyle = isCommentFocused ? { paddingTop: 0, paddingBottom: 0, minHeight: 40 * DEFAULT_STYLE.uiScale, alignItems: 'center' }
+        const containerStyle = isCommentFocused ? { paddingTop: 0, paddingBottom: 0, minHeight: TABBAR_HEIGHT, alignItems: 'center' }
             : { backgroundColor: isActive ? '#F2F2F2' : styles.backgroundColor };
 
         return (
@@ -285,7 +289,6 @@ class SectionCardV2 extends Component {
                 </View>
                 {drag && <TouchableOpacity
                     onLongPress={drag}
-                    onPressOut={drag}
                     style={styles.gestureHandlerContainer}
                 >
                     <Image source={menu} resizeMode="contain" style={{ ...DEFAULT_STYLE.buttonIcon_1, tintColor: '#AAA' }} />
@@ -350,17 +353,13 @@ const styles = {
         tintColor: 'white'
     },
     gestureHandlerContainer: {
-        backgroundColor: '#F5F7FA',
-        borderWidth: 1,
-        borderRadius: 8,
-        borderColor: '#DFE0E1',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 4,
         paddingRight: 6,
         margin: -10,
-        marginRight: -18,
-        marginLeft: 8
+        marginRight: -12,
+        marginLeft: 0
     }
 };
 

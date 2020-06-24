@@ -3,7 +3,6 @@
  */
 import Constants from 'expo-constants';
 
-export const BACKGROUND_COLOR = 'white';
 export const APP_BLUE_BRIGHT = '#17B3EC';
 export const APP_BLUE = '#23B7E9';
 export const APP_DEEP_BLUE = '#0397CB';
@@ -17,6 +16,8 @@ export const GM_BLUE = "#45C9F6";
 export const GM_BLUE_LIGHT = "#9EE6FF";
 export const GM_BLUE_LIGHT_LIGHT = "#DEF7FF";
 export const GM_DOT_GRAY = "#E0E0E0";
+
+export const BACKGROUND_COLOR = 'white';
 
 const UI_SCALE = Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.3 : 1;
 export const TEXT_COLOR_1 = '#333';
