@@ -356,11 +356,7 @@ class CreateGoalModal extends React.Component {
             this.props.formVals &&
             this.props.formVals.values &&
             this.props.formVals.values.title &&
-            this.props.formVals.values.title.trim() !== '' &&
-            this.props.formVals.values.steps &&
-            this.props.formVals.values.steps.length > 0 &&
-            this.props.formVals.values.steps[0].description &&
-            this.props.formVals.values.steps[0].description.trim() !== ''
+            this.props.formVals.values.title.trim() !== ''
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
