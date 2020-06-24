@@ -11,9 +11,19 @@
  * @format
  */
 
-import {} from './MyTribeTabReducers'
+import {
+    TRIBE_HUB_FEED_REFRESH_DONE,
+    TRIBE_HUB_FEED_REFRESH,
+    TRIBE_HUB_FEED_LOAD,
+    TRIBE_HUB_FEED_LOAD_DONE,
+    TRIBE_HUB_REFRESH_DONE,
+    TRIBE_HUB_REFRESH,
+    TRIBE_HUB_LOAD_DONE,
+    TRIBE_HUB_LOAD,
+} from './MyTribeTabReducers'
 import { api as API } from '../../middleware/api'
 import { queryBuilder } from '../../middleware/utils'
+import _ from 'lodash'
 
 export const BASE_ROUTE = 'secure/tribe'
 
@@ -26,13 +36,19 @@ export const TRIBE_TYPE = {
 const ROUTES = {
     tribes: (type) => {
         switch (type) {
-            case TRIBE_TYPE.managed: return () => `${BASE_ROUTE}?filterForMembershipCategory=Admin`;
-            case TRIBE_TYPE.favorite: return () => `${BASE_ROUTE}`; // TODO: tribe: API was not made yet
-            case TRIBE_TYPE.others: return () => `${BASE_ROUTE}?filterForMembershipCategory=Member`;
+            case TRIBE_TYPE.managed:
+                return () => `${BASE_ROUTE}?filterForMembershipCategory=Admin`
+            case TRIBE_TYPE.favorite:
+                return () => `${BASE_ROUTE}` // TODO: tribe: API was not made yet
+            case TRIBE_TYPE.others:
+                return () => `${BASE_ROUTE}?filterForMembershipCategory=Member`
         }
     },
-    feed: (skip, limit) => `${BASE_ROUTE}/feed?${queryBuilder(skip, limit, {})}`
+    feed: (skip, limit) =>
+        `${BASE_ROUTE}/feed?${queryBuilder(skip, limit, {})}`,
 }
+
+const PAGE_ID = 'tribe_hub'
 
 /**
  * Refresh all types of tribe for tribe hub
@@ -44,65 +60,197 @@ export const refreshTribeHub = () => (dispatch, getState) => {
 }
 
 /**
- * Refresh tribes based of a type
+ * Refresh tribes based of a type {@code TRIBE_TYPE}
  * @param {*} type: ['managed', 'favorite', 'others']
  */
-export const refreshTribes = (type) => (dispatch, getState) => {}
+export const refreshTribes = (type) => (dispatch, getState) => {
+    const tribeHub = getState().myTribeTab // TODO: tribe hub: rename myTribeTab to tribeHub
+    if (!_.has(tribeHub, type)) {
+        // For debugging purpose since type passed isn't one of defined ['favorite', 'managed', 'others']
+        console.error(
+            `${DEBUG_KEY}: ${action.type}: incorrect type: ${type} used in action`
+        )
+        return
+    }
+
+    const { limit } = _.get(tribeHub, type)
+    const onSuccess = (data) => {
+        dispatch({
+            type: TRIBE_HUB_REFRESH_DONE,
+            payload: {
+                pageId: PAGE_ID,
+                data,
+                hasNextPage: !data.length,
+                type,
+            },
+        })
+    }
+
+    const onError = (err) => {
+        dispatch({
+            type: TRIBE_HUB_REFRESH_DONE,
+            payload: {
+                pageId: PAGE_ID,
+                data: [],
+                hasNextPage: false,
+                type,
+            },
+        })
+        // TODO: tribe hub: sentry error log
+    }
+
+    dispatch({
+        type: TRIBE_HUB_REFRESH,
+    })
+
+    tribeGetter(ROUTES[type], 0, limit, {}, onSuccess, onError)(getState)
+}
 
 /**
  * Load more tribes for a type
  * @param {*} type: ['managed', 'favorite', 'others']
  */
-export const loadMoreTribes = (type) => (dispatch, getState) => {}
+export const loadMoreTribes = (type) => (dispatch, getState) => {
+    const tribeHub = getState().myTribeTab // TODO: tribe hub: rename myTribeTab to tribeHub
+    if (!_.has(tribeHub, type)) {
+        // For debugging purpose since type passed isn't one of defined ['favorite', 'managed', 'others']
+        console.error(
+            `${DEBUG_KEY}: ${action.type}: incorrect type: ${type} used in action`
+        )
+        return
+    }
 
-/**
- * Fetching tribes with below parameters
- *
- * @param {*} skip
- * @param {*} limit
- * @param {*} token
- * @param {TRIBE_TYPE} type
- * @param {*} onSuccess
- * @param {*} onError
- */
-const loadTribeByType = (skip, limit, token, type, onSuccess, onError) => {
-    // TODO: define routes / construct routes based off types, skip and limit
-    const route = _.get(ROUTES, type)
-    const path = `${route}${queryBuilder(skip, limit)}`
-
-    API.get(path, token)
-        .then((res) => {
-            if (res.status == 200 || res.data) {
-                return onSuccess(res.data)
-            }
-            return onError(res)
+    const { skip, limit, loading, refreshing, hasNextPage } = _.get(
+        tribeHub,
+        type
+    )
+    if (loading || refreshing || hasNextPage == false) return
+    const onSuccess = (data) => {
+        dispatch({
+            type: TRIBE_HUB_LOAD_DONE,
+            payload: {
+                pageId: PAGE_ID,
+                data,
+                hasNextPage: !data.length,
+                type,
+            },
         })
-        .catch((err) => onError(err))
+    }
+
+    const onError = (err) => {
+        dispatch({
+            type: TRIBE_HUB_LOAD_DONE,
+            payload: {
+                pageId: PAGE_ID,
+                data: [],
+                hasNextPage: false,
+                type,
+            },
+        })
+        // TODO: tribe hub: sentry error log
+    }
+
+    dispatch({
+        type: TRIBE_HUB_LOAD,
+    })
+
+    tribeGetter(ROUTES[type], skip, limit, {}, onSuccess, onError)(getState)
 }
 
+/**
+ * Refresh all feeds in tribe hub
+ */
 export const refreshTribeHubFeed = () => (dispatch, getState) => {
+    const { skip, limit } = getState().myTribeTab.feed
+    const onSuccess = (data) => {
+        dispatch({
+            type: TRIBE_HUB_FEED_REFRESH_DONE,
+            payload: {
+                pageId: PAGE_ID,
+                data,
+            },
+        })
+    }
 
+    const onError = (err) => {
+        dispatch({
+            type: TRIBE_HUB_FEED_REFRESH_DONE,
+            payload: {
+                pageId: PAGE_ID,
+                data: [],
+            },
+        })
+        // TODO: tribe hub: sentry error log
+    }
+
+    dispatch({
+        type: TRIBE_HUB_FEED_REFRESH,
+    })
+
+    tribeGetter(ROUTES['feed'], skip, limit, {}, onSuccess, onError)(getState)
 }
 
 export const loadMoreTribeHubFeed = () => (dispatch, getState) => {
-    
-}
+    const {
+        skip,
+        limit,
+        hasNextPage,
+        refreshing,
+        loading,
+    } = getState().myTribeTab.feed
+    if (refreshing || loading || hasNextPage == false) {
+        // Don't refresh when it's refreshing or loading or there is no next page.
+        return
+    }
 
-const loadTribeFeed = (skip, limit, params, onSuccess, onError) => (getState) => {
-    const { token } = getState().user;
-    API.get(`${BASE_ROUTE}/feed?${queryBuilder(skip, limit)}`, token)
-        .then((res) => {
-            if (res.status == 200 || res.data) {
-                return onSuccess(res.data)
-            }
-            return onError(res)
+    const onSuccess = (newData) => {
+        dispatch({
+            type: TRIBE_HUB_FEED_LOAD_DONE,
+            payload: {
+                pageId: PAGE_ID,
+                data: newData,
+            },
         })
-        .catch((err) => onError(err))
+    }
+
+    const onError = (err) => {
+        dispatch({
+            type: TRIBE_HUB_FEED_LOAD_DONE,
+            payload: {
+                pageId: PAGE_ID,
+                data: [],
+            },
+        })
+        // TODO: tribe hub: sentry error log
+    }
+
+    dispatch({
+        type: TRIBE_HUB_FEED_LOAD,
+    })
+
+    tribeGetter(ROUTES['feed'], skip, limit, {}, onSuccess, onError)(getState)
 }
 
-/** */
-const tribeGetter = (routeMaker, skip, limit, params, onSuccess, onError) => (getState) => {
-    const { token } = getState().user;
+/**
+ * Action to favorite a tribe
+ * @param {String} tribeId
+ * @param {String} action: ['favorite', 'unfavorite']
+ */
+export const favoriteTribe = (tribeId, action) => (dispatch, getState) => {}
+
+/**
+ * Send get request for tribe related queries based off routes
+ * @param {*} routeMaker function to create route based off passed in params including skip, limit and params
+ * @param {*} skip
+ * @param {*} limit
+ * @param {*} params
+ * @param {*} onSuccess
+ * @param {*} onError
+ */
+const tribeGetter = (routeMaker, skip, limit, params, onSuccess, onError) => (
+    getState
+) => {
+    const { token } = getState().user
     API.get(routeMaker(skip, limit, params), token)
         .then((res) => {
             if (res.status == 200 || res.data) {
@@ -111,17 +259,4 @@ const tribeGetter = (routeMaker, skip, limit, params, onSuccess, onError) => (ge
             return onError(res)
         })
         .catch((err) => onError(err))
-}
-
-const tribeUpdator = (routeMaker, onSuccess, onError) => (getState) => {
-    const { token } = getState().user;
-};
-
-/**
- * Action to favorite a tribe
- * @param {String} tribeId 
- * @param {String} action: ['favorite', 'unfavorite'] 
- */
-export const favoriteTribe = (tribeId, action) => (dispatch, getState) => {
-
 }

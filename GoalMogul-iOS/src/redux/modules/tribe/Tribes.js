@@ -13,6 +13,10 @@ import {
     SENTRY_MESSAGE_LEVEL,
     SENTRY_CONTEXT,
 } from '../../../monitoring/sentry/Constants'
+import {
+    TRIBE_HUB_LOAD_DONE,
+    TRIBE_HUB_REFRESH_DONE,
+} from './MyTribeTabReducers'
 /**
  * List of actions to add
  *
@@ -953,6 +957,36 @@ export default (state = INITIAL_STATE, action) => {
                 `${tribeId}.${pageId}`,
                 tribePageToUpdate
             )
+            return newState
+        }
+
+        // Tribe group load tribes
+        case TRIBE_HUB_LOAD_DONE:
+        case TRIBE_HUB_REFRESH_DONE: {
+            const { data, pageId } = action.payload
+            let newState = _.cloneDeep(state)
+            if (!data || _.isEmpty(data)) return newState
+
+            data.forEach((tribe) => {
+                const tribeId = tribe._id
+
+                let tribeToUpdate = { ...INITIAL_TRIBE_OBJECT }
+                // Update goal
+                if (_.has(newState, tribeId)) {
+                    tribeToUpdate = _.get(newState, tribeId)
+                }
+
+                if (tribe !== undefined) {
+                    tribeToUpdate = _.set(tribeToUpdate, 'tribe', tribe)
+                }
+
+                // Put pageId onto reference if not previously existed
+                const oldReference = _.get(newState, `${tribeId}.reference`)
+                const newReference = _.uniq(oldReference.concat(pageId))
+                tribeToUpdate = _.set(tribeToUpdate, 'reference', newReference)
+                newState = _.set(newState, tribeId, tribeToUpdate)
+            })
+
             return newState
         }
 
