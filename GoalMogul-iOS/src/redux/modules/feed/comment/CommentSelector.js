@@ -1,22 +1,21 @@
-import { createSelector } from 'reselect';
-import _ from 'lodash';
+/** @format */
 
-import {
-    INITIAL_COMMENT_OBJECT,
-    INITIAL_COMMENT_PAGE
-} from './Comments';
+import { createSelector } from 'reselect'
+import _ from 'lodash'
 
-const DEBUG_KEY = '[ Selector Comments ]';
+import { INITIAL_COMMENT_OBJECT, INITIAL_COMMENT_PAGE } from './Comments'
+
+const DEBUG_KEY = '[ Selector Comments ]'
 
 const getNavigationTab = (state) => {
-    const { tab } = state.navigation;
-    return tab;
-};
-const getComment = (state) => state.comment;
+    const { tab } = state.navigation
+    return tab
+}
+const getComment = (state) => state.comment
 
-const getNewComment = (state) => state.newComment;
+const getNewComment = (state) => state.newComment
 
-const getPageId = (state, pageId) => pageId;
+const getPageId = (state, pageId) => pageId
 
 /*
  * Iterate through member list to check if user is a current member
@@ -24,51 +23,48 @@ const getPageId = (state, pageId) => pageId;
 export const getCommentByTab = createSelector(
     [getNavigationTab, getComment, getPageId],
     (tab, comment, pageId) => {
-        const page = pageId ? `${pageId}` : 'default';
-        const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
-        return _.get(comment, `${path}`);
+        const page = pageId ? `${pageId}` : 'default'
+        const path = !tab ? `homeTab.${page}` : `${tab}.${page}`
+        return _.get(comment, `${path}`)
     }
-);
+)
 
 export const getNewCommentByTab = createSelector(
     [getNavigationTab, getNewComment, getPageId],
     (tab, newComment, pageId) => {
-        const page = pageId ? `${pageId}` : 'default';
-        const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
-        return _.get(newComment, `${path}`);
+        const page = pageId ? `${pageId}` : 'default'
+        const path = !tab ? `homeTab.${page}` : `${tab}.${page}`
+        return _.get(newComment, `${path}`)
     }
-);
+)
 
 const getCommentByEntityId = (state, entityId) => {
-    const comments = state.comments;
+    const comments = state.comments
     if (!_.has(comments, entityId)) {
-        console.warn(`${DEBUG_KEY}: no comments for entityId: ${entityId}`);
-        return { ...INITIAL_COMMENT_OBJECT };
+        console.warn(`${DEBUG_KEY}: no comments for entityId: ${entityId}`)
+        return { ...INITIAL_COMMENT_OBJECT }
     }
-    return _.get(comments, entityId);
-};
+    return _.get(comments, entityId)
+}
 
 export const getCommentWithPageInfo = (state, entityId, pageId) => {
-    const commentObject = getCommentByEntityId(state, entityId);
-    let commentPage = { ...INITIAL_COMMENT_PAGE };
+    const commentObject = getCommentByEntityId(state, entityId)
+    let commentPage = { ...INITIAL_COMMENT_PAGE }
     if (!_.has(commentObject, pageId)) {
-        console.warn(`${DEBUG_KEY}: no comments page for entityId: ${entityId}`);
+        console.warn(`${DEBUG_KEY}: no comments page for entityId: ${entityId}`)
     } else {
-        commentPage = _.get(commentObject, pageId);
+        commentPage = _.get(commentObject, pageId)
     }
 
-    const { data, transformedComments } = commentObject;
+    const { data, transformedComments } = commentObject
 
     return {
         data,
         transformedComments,
-        ...commentPage
-    };
-};
+        ...commentPage,
+    }
+}
 
 export const makeGetCommentByEntityId = () => {
-    return createSelector(
-        [getCommentWithPageInfo],
-        (comments) => comments
-    );
-};
+    return createSelector([getCommentWithPageInfo], (comments) => comments)
+}

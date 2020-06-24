@@ -1,9 +1,11 @@
+/** @format */
+
 export const ModalHeaderStyle = {
     headerContainerStyle: {
         width: '100%',
-        borderBottomWidth: 0.5, 
+        borderBottomWidth: 0.5,
         borderColor: 'lightgray',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     cancelIconStyle: {
         height: 16,
@@ -14,7 +16,7 @@ export const ModalHeaderStyle = {
         marginHorizontal: 8,
         fontSize: 18,
         fontWeight: '500',
-        color: '#21364C'
+        color: '#21364C',
     },
     headerImageStyle: {
         borderRadius: 5,
@@ -24,4 +26,4 @@ export const ModalHeaderStyle = {
         border: '1px solid #F1F1F1',
         backgroundColor: '#fff',
     },
-};
+}

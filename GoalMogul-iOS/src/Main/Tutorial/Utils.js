@@ -1,3 +1,5 @@
+/** @format */
+
 export const svgMaskPath = ({ size, position, canvasSize }) => `M0,0
     H${canvasSize.x}
     V${canvasSize.y}
@@ -13,4 +15,4 @@ export const svgMaskPath = ({ size, position, canvasSize }) => `M0,0
     a8,8 0 0 1 -8,-8
     V${position.y._value - 2}
     a8,8 0 0 1 8,-8
-    Z`;
+    Z`

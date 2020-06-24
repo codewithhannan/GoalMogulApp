@@ -3,55 +3,57 @@
  * for a goal. Steps, needs and all comment card.
  * On tab for each subcomponent, it will open FocusTab to render corresponding
  * focus content.
+ *
+ * @format
  */
-import React from 'react';
-import {
-    FlatList,
-    Animated
-} from 'react-native';
-import DraggableFlatList from 'react-native-draggable-flatlist';
-import { connect } from 'react-redux';
-import _ from 'lodash';
+
+import React from 'react'
+import { FlatList, Animated } from 'react-native'
+import DraggableFlatList from 'react-native-draggable-flatlist'
+import { connect } from 'react-redux'
+import _ from 'lodash'
 
 // Components
-import EmptyResult from '../../../Common/Text/EmptyResult';
-import StepAndNeedCardV3 from './StepAndNeedCardV3';
+import EmptyResult from '../../../Common/Text/EmptyResult'
+import StepAndNeedCardV3 from './StepAndNeedCardV3'
 
 // Actions
 import {
     refreshGoalDetailById,
     goalDetailSwitchTabV2,
     goalDetailSwitchTabV2ByKey,
-    updateGoalItemsOrder
-} from '../../../../redux/modules/goal/GoalDetailActions';
+    updateGoalItemsOrder,
+} from '../../../../redux/modules/goal/GoalDetailActions'
 
 import {
     createCommentFromSuggestion,
-    createCommentForSuggestion
-} from '../../../../redux/modules/feed/comment/CommentActions';
+    createCommentForSuggestion,
+} from '../../../../redux/modules/feed/comment/CommentActions'
 
 // Selectors
 import {
     // getGoalStepsAndNeeds, // These are used before refactoring
     // getGoalDetailByTab, // These are used before refactoring
     makeGetGoalPageDetailByPageId,
-    makeGetGoalStepsAndNeedsV2
-} from '../../../../redux/modules/goal/selector';
-
+    makeGetGoalStepsAndNeedsV2,
+} from '../../../../redux/modules/goal/selector'
 
 // Constants
-const DEBUG_KEY = '[ UI CentralTab ]';
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+const DEBUG_KEY = '[ UI CentralTab ]'
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList)
 
 class CentralTab extends React.PureComponent {
     constructor(props) {
-        super(props);
+        super(props)
     }
 
     // Refresh goal content and comment
     handleRefresh = () => {
         if (this.props.goalDetail) {
-            this.props.refreshGoalDetailById(this.props.goalDetail._id, this.props.pageId);
+            this.props.refreshGoalDetailById(
+                this.props.goalDetail._id,
+                this.props.pageId
+            )
         }
     }
 
@@ -68,8 +70,8 @@ class CentralTab extends React.PureComponent {
     }
 
     keyExtractor = (item) => {
-        const { _id } = item;
-        return _id;
+        const { _id } = item
+        return _id
     }
 
     renderItem = (props) => {
@@ -84,13 +86,21 @@ class CentralTab extends React.PureComponent {
                 commentType: 'Comment',
             },
             suggestionForRef: item._id, // Need or Step ref
-            suggestionFor: item.type === 'need' ? 'Need' : 'Step'
-        };
+            suggestionFor: item.type === 'need' ? 'Need' : 'Step',
+        }
 
         if (item.type === 'need') {
-            newCommentParams = _.set(newCommentParams, 'commentDetail.needRef', item._id);
+            newCommentParams = _.set(
+                newCommentParams,
+                'commentDetail.needRef',
+                item._id
+            )
         } else if (item.type === 'step') {
-            newCommentParams = _.set(newCommentParams, 'commentDetail.stepRef', item._id);
+            newCommentParams = _.set(
+                newCommentParams,
+                'commentDetail.stepRef',
+                item._id
+            )
         }
 
         return (
@@ -100,8 +110,11 @@ class CentralTab extends React.PureComponent {
                 goalRef={goalDetail}
                 onCardPress={() => {
                     // Use passed in function to handle tab switch with animation
-                    this.props.handleIndexChange(1, item.type, item._id);
-                    this.props.createCommentForSuggestion(newCommentParams, pageId);
+                    this.props.handleIndexChange(1, item.type, item._id)
+                    this.props.createCommentForSuggestion(
+                        newCommentParams,
+                        pageId
+                    )
                 }}
                 isSelf={this.props.isSelf}
                 count={item.count}
@@ -110,7 +123,7 @@ class CentralTab extends React.PureComponent {
                 isActive={props.isActive}
                 onEdit={() => { this.scrollToIndex(index) }}
             />
-        );
+        )
     }
 
     render() {
@@ -164,11 +177,12 @@ class CentralTab extends React.PureComponent {
                 refreshing={this.props.loading || false}
                 onRefresh={this.handleRefresh}
                 ListEmptyComponent={
-                    this.props.loading ? null :
+                    this.props.loading ? null : (
                         <EmptyResult
-                            text='No steps or needs'
+                            text="No steps or needs"
                             textStyle={{ paddingTop: 70 }}
                         />
+                    )
                 }
                 scrollEventThrottle={2}
             />;
@@ -184,32 +198,31 @@ class CentralTab extends React.PureComponent {
 CentralTab.defaultPros = {
     data: [],
     goalDetail: undefined,
-    isSelf: false
-};
+    isSelf: false,
+}
 
 const makeMapStateToProps = () => {
-    const getGoalPageDetailByPageId = makeGetGoalPageDetailByPageId();
-    const getGoalStepsAndNeedsV2 = makeGetGoalStepsAndNeedsV2();
+    const getGoalPageDetailByPageId = makeGetGoalPageDetailByPageId()
+    const getGoalStepsAndNeedsV2 = makeGetGoalStepsAndNeedsV2()
 
     const mapStateToProps = (state, props) => {
-        const { pageId, goalId } = props;
-        const goalDetail = getGoalPageDetailByPageId(state, goalId, pageId);
-        const { goal, goalPage } = goalDetail;
-        let loading = false;
+        const { pageId, goalId } = props
+        const goalDetail = getGoalPageDetailByPageId(state, goalId, pageId)
+        const { goal, goalPage } = goalDetail
+        let loading = false
         if (goalPage) {
-            loading = goalPage.loading;
+            loading = goalPage.loading
         }
 
         return {
             goalDetail: goal,
             loading,
-            data: getGoalStepsAndNeedsV2(state, goalId, pageId)
-        };
-    };
+            data: getGoalStepsAndNeedsV2(state, goalId, pageId),
+        }
+    }
 
-    return mapStateToProps;
-};
-
+    return mapStateToProps
+}
 
 export default connect(
     makeMapStateToProps,
@@ -219,8 +232,8 @@ export default connect(
         refreshGoalDetailById,
         createCommentFromSuggestion,
         createCommentForSuggestion,
-        updateGoalItemsOrder
+        updateGoalItemsOrder,
     },
     null,
     { withRef: true }
-)(CentralTab);
+)(CentralTab)
