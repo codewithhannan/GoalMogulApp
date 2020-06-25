@@ -1,8 +1,15 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, Text, Dimensions, Image } from 'react-native'
-
+import {
+    View,
+    Text,
+    Dimensions,
+    Image,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+} from 'react-native'
+import { Actions } from 'react-native-router-flux'
 // Component
 import Divider from '../../Common/Divider'
 import ProfileImage from '../../Common/ProfileImage'
@@ -29,14 +36,17 @@ const months = [
 const DEBUG_KEY = '[ UI MyTribeAbout ]'
 
 class MyTribeAbout extends Component {
+    constructor(props) {
+        super(props)
+    }
     /**
      * Note: Tribe.js has its member pictures moved to StackedAvatars
      * @param {*} item
      */
-    renderMemberStatus(item) {
+    renderMemberStatus(item, indexChange) {
         const { members, memberCount } = item
         const count = memberCount || 0
-        const memberPicturesWidth = count < 2 ? 45 : 50
+        const memberPicturesWidth = count < 2 ? 45 : 90
         const memberPictures = members
             ? members
                   .filter(
@@ -45,14 +55,14 @@ class MyTribeAbout extends Component {
                           member.category === 'Member'
                   )
                   .map((member, index) => {
-                      if (index > 1) return null
+                      if (index > 4) return null
                       const { memberRef } = member
                       return (
                           <ProfileImage
                               key={index}
                               imageContainerStyle={{
                                   ...styles.topPictureContainerStyle,
-                                  left: index * 13,
+                                  left: index * 50,
                               }}
                               imageUrl={
                                   memberRef && memberRef.profile
@@ -67,7 +77,13 @@ class MyTribeAbout extends Component {
 
         return (
             <View
-                style={{ flexDirection: 'row', marginTop: 8, marginBottom: 5 }}
+                style={{
+                    flexDirection: 'row',
+                    marginTop: 8,
+                    marginBottom: 0,
+                    justifyContent: 'flex-start',
+                    left: 45,
+                }}
             >
                 <View
                     style={{
@@ -76,11 +92,28 @@ class MyTribeAbout extends Component {
                     }}
                 >
                     {memberPictures}
+                    <TouchableOpacity
+                        onPress={() =>
+                            Actions.push('myTribeMembers', {
+                                item: this.props.memberProps,
+                                data: this.props.data,
+                            })
+                        }
+                        style={{
+                            ...styles.topPictureContainerStyle,
+                            left: 5 * 50,
+                        }}
+                    >
+                        <Image
+                            style={{ ...styles.pictureStyle }}
+                            source={defaultProfilePic}
+                        />
+                    </TouchableOpacity>
                 </View>
-                <Text style={{ alignSelf: 'center' }}>
-                    <Text style={styles.boldTextStyle}>{count} </Text>
-                    members
-                </Text>
+                {/* <Text style={{ alignSelf: 'center' }}>
+          <Text style={styles.boldTextStyle}>{count} </Text>
+          members
+        </Text> */}
             </View>
         )
     }
@@ -131,14 +164,23 @@ class MyTribeAbout extends Component {
 
     render() {
         const { item } = this.props
+        const indexChange = this.props.indexChange
+
         if (!item) return <View />
 
         return (
-            <View style={{ flex: 1, margin: 25, marginTop: 15 }}>
-                {this.renderMemberStatus(item)}
-                {this.renderCreated(item)}
-                <Divider horizontal width={0.8 * width} borderColor="gray" />
-                {this.renderDescription(item)}
+            <View
+                style={{
+                    flex: 1,
+                    padding: 25,
+                    paddingTop: 15,
+                    backgroundColor: 'white',
+                }}
+            >
+                {this.renderMemberStatus(item, indexChange)}
+                {/* {this.renderCreated(item)} */}
+                {/* <Divider horizontal width={0.8 * width} borderColor='gray' />
+        {this.renderDescription(item)} */}
             </View>
         )
     }

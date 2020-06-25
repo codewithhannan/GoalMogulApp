@@ -153,6 +153,7 @@ class UserInviteModal extends React.PureComponent {
             newSelectedItems.push(newItemDoc)
             this.search.clear()
             this.search.focus()
+            itemDoc.isSearchResult = false
 
             // Reset states
             this.setState({
@@ -175,6 +176,7 @@ class UserInviteModal extends React.PureComponent {
                 ...this.state,
                 selectedItems: newSelectedItems,
             })
+            itemDoc.isSearchResult = true
         }
     }
 
@@ -288,6 +290,7 @@ class UserInviteModal extends React.PureComponent {
             <SearchUserCard
                 item={item}
                 onSelect={this.onSearchResultSelect}
+                itemIsSelected={item.isSearchResult ? true : false}
                 cardIconSource={item.isSearchResult ? plus : times}
                 cardContainerStyles={
                     item.isSearchResult ? {} : { backgroundColor: '#D8EDFF' }
@@ -317,7 +320,7 @@ class UserInviteModal extends React.PureComponent {
                     }}
                 >
                     <ModalHeader
-                        title={`Invite friends`}
+                        title={`Add Members`}
                         actionText={'Invite'}
                         onCancel={this.handleClose}
                         onAction={this.handleSubmit}
@@ -325,34 +328,6 @@ class UserInviteModal extends React.PureComponent {
                     <ScrollView
                         style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
                     >
-                        <View>
-                            <Text
-                                style={{
-                                    fontSize: 12,
-                                    textAlign: 'center',
-                                    marginTop: 24,
-                                    marginBottom: 24,
-                                    color: '#aaa',
-                                }}
-                            >
-                                Invite your friends to {modalDescriptionAction}{' '}
-                                {this.props.inviteToEntityName}
-                            </Text>
-                            {/* <TextInput
-                                multiline={true}
-                                placeholder={'Enter a message...'}
-                                value={this.props.shareMessage}
-                                onChangeText={this.handleChangeMessage}
-                                style={{
-                                    height: 81,
-                                    padding: 15,
-                                    paddingTop: 24,
-                                    fontSize: 15,
-                                    borderTopColor: '#EEE',
-                                    borderTopWidth: 1,
-                                }}
-                            /> */}
-                        </View>
                         <SearchBar
                             ref={(search) => (this.search = search)}
                             platform="default"

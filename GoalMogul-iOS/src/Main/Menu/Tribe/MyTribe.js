@@ -13,6 +13,7 @@ import {
     Text,
     TouchableOpacity,
     View,
+    Button,
 } from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
@@ -33,6 +34,10 @@ import {
     openMultiUserInviteModal,
     searchFriend,
 } from '../../../redux/modules/search/SearchActions'
+// modal
+import MyTribeDescription from './MyTribeDescription'
+// middleware
+import { componentKeyByTab } from '../../../redux/middleware/utils'
 // Actions
 import {
     myTribeAdminAcceptUser,
@@ -90,6 +95,7 @@ import EmptyResult from '../../Common/Text/EmptyResult'
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard'
 import MemberListCard from '../../Tribe/MemberListCard'
 import About from './MyTribeAbout'
+import MyTribeBanner from './MyTribeBanner'
 
 const { CheckIcon: check } = Icons
 const DEBUG_KEY = '[ UI MyTribe ]'
@@ -139,6 +145,7 @@ class MyTribe extends React.PureComponent {
             showPlus: true,
             infoCardHeight: new Animated.Value(INFO_CARD_HEIGHT),
             infoCardOpacity: new Animated.Value(1),
+            showAboutModal: false,
         }
         this._handleIndexChange = this._handleIndexChange.bind(this)
     }
@@ -426,6 +433,10 @@ class MyTribe extends React.PureComponent {
             options
         )
         statusActionSheet()
+    }
+
+    getMemberData() {
+        return this.props.memberData
     }
 
     /**
@@ -729,24 +740,6 @@ class MyTribe extends React.PureComponent {
         const { memberNavigationState } = this.props
         const { routes } = memberNavigationState
 
-        // Button style 1
-        // const buttonStyle = {
-        //   selected: {
-        //     backgroundColor: 'white', // container background style
-        //     tintColor: '#696969', // icon tintColor
-        //     color: '#696969', // text color
-        //     fontWeight: '800', // text fontWeight
-        //     statColor: 'white' // stat icon color
-        //   },
-        //   unselected: {
-        //     backgroundColor: 'white',
-        //     tintColor: '#696969',
-        //     color: '#b2b2b2',
-        //     fontWeight: '600',
-        //     statColor: '#696969'
-        //   }
-        // };
-
         const props = {
             jumpToIndex: (i) =>
                 this.props.myTribeSelectMembersFilter(
@@ -760,6 +753,12 @@ class MyTribe extends React.PureComponent {
 
         return (
             <View>
+                <SearchBarHeader
+                    backButton
+                    onBackPress={() => this._handleIndexChange(1)} // componentWillUnmount takes care of the state cleaning
+                    pageSetting
+                    handlePageSetting={() => this.handlePageSetting(item)}
+                />
                 {/* <TabButtonGroup buttons={props} subTab buttonStyle={buttonStyle} noVerticalDivider noBorder /> */}
                 <View
                     style={{
@@ -844,6 +843,43 @@ class MyTribe extends React.PureComponent {
                 )}
                 {filterBar}
                 {emptyState}
+                <About
+                    item={this.props.item}
+                    key={this.props.index}
+                    data={this.props.memberData}
+                    memberProps={this.props.item}
+                    indexChange={this._handleIndexChange}
+                    style={style.aboutStyle}
+                />
+                <View>
+                    <View style={styles.buttonGroup}>
+                        <TouchableOpacity
+                            style={styles.buttonStyle}
+                            underlayColor="#fff"
+                            onPress={() => {
+                                // Actions.push('myTribeDescriptionLightBox', { item: this.props.item });
+                                this.setState({
+                                    ...this.state,
+                                    showAboutModal: true,
+                                })
+                            }}
+                        >
+                            <Text style={styles.buttonText}>About</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.buttonStyleInvite}
+                            underlayColor="#fff"
+                            onPress={() => this.openUserInviteModal(item)}
+                        >
+                            <Text
+                                style={{ color: '#fff', textAlign: 'center' }}
+                            >
+                                Invite friends
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                    <MyTribeBanner />
+                </View>
             </View>
         )
     }
@@ -962,15 +998,20 @@ class MyTribe extends React.PureComponent {
         const { item, data } = this.props
         if (!item) return <View />
 
+        const filterBar =
+            this.props.tab === 'members' ? null : (
+                <SearchBarHeader
+                    backButton
+                    onBackPress={() => Actions.pop()} // componentWillUnmount takes care of the state cleaning
+                    pageSetting
+                    handlePageSetting={() => this.handlePageSetting(item)}
+                />
+            )
+
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <View style={styles.containerStyle}>
-                    <SearchBarHeader
-                        backButton
-                        onBackPress={() => Actions.pop()} // componentWillUnmount takes care of the state cleaning
-                        pageSetting
-                        handlePageSetting={() => this.handlePageSetting(item)}
-                    />
+                    {filterBar}
                     <FlatList
                         ref="flatList"
                         data={data}
@@ -994,6 +1035,16 @@ class MyTribe extends React.PureComponent {
                     />
                     {this.renderPlus(item)}
                 </View>
+                <MyTribeDescription
+                    isVisible={this.state.showAboutModal}
+                    closeModal={() => {
+                        this.setState({
+                            ...this.state,
+                            showAboutModal: false,
+                        })
+                    }}
+                    item={this.props.item}
+                />
             </MenuProvider>
         )
     }
@@ -1164,6 +1215,8 @@ const mapStateToProps = (state, props) => {
         tribeId,
         pageId
     )
+    const navigationTab = state.navigation
+    const memberData = myTribeMemberSelector(state, tribeId, pageId)
 
     const { routes, index } = navigationState
     const data = ((key) => {
@@ -1196,6 +1249,8 @@ const mapStateToProps = (state, props) => {
         loading: tribeLoading,
         feedLoading,
         feedRefreshing,
+        navigationTab,
+        memberData,
     }
 }
 
