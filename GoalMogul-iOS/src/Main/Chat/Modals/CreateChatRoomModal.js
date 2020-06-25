@@ -66,6 +66,8 @@ import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 
 import defaultGroupPic from '../../../asset/utils/defaultSelfUserProfile.png'
 import ToggleField from '../../Common/ToggleField'
+import ImagePicker from '../../Common/ImagePicker'
+
 const { InfoIcon } = Icons
 
 const { width } = Dimensions.get('window')
@@ -509,33 +511,42 @@ class CreateChatroomModal extends React.Component {
                 imageUrl = `${IMAGE_BASE_URL}${picture}`
             }
         }
-        const style = picture
-            ? styles.imageStyle
-            : {
-                  width: 30 * DEFAULT_STYLE.uiScale,
-                  height: 30 * DEFAULT_STYLE.uiScale,
-                  margin: 40 * DEFAULT_STYLE.uiScale,
-              }
-        const containerStyle = [
-            styles.imageContainerStyle,
-            picture
-                ? {}
-                : {
-                      borderColor: '#BDBDBD',
-                      borderRadius: width * 0.15,
-                      borderWidth: 2,
-                  },
-        ]
+        // const style = picture
+        //     ? styles.imageStyle
+        //     : {
+        //           width: 30 * DEFAULT_STYLE.uiScale,
+        //           height: 30 * DEFAULT_STYLE.uiScale,
+        //           margin: 40 * DEFAULT_STYLE.uiScale,
+        //       }
+        // const containerStyle = [
+        //     styles.imageContainerStyle,
+        //     picture
+        //         ? {}
+        //         : {
+        //               borderColor: '#BDBDBD',
+        //               borderRadius: width * 0.15,
+        //               borderWidth: 2,
+        //           },
+        // ]
         return (
-            <View style={containerStyle}>
-                <TouchableOpacity
-                    activeOpacity={0.85}
-                    onPress={this.handleOpenCameraRoll}
-                >
-                    <Image style={style} source={{ uri: imageUrl }} />
-                </TouchableOpacity>
+            <View style={styles.imageContainerStyle}>
+                <ImagePicker
+                    handleTakingPicture={this.handleOpenCamera}
+                    handleCameraRoll={this.handleOpenCameraRoll}
+                    imageUri={imageUrl}
+                    style={styles.imageStyle}
+                    bordered
+                    rounded
+                />
             </View>
         )
+
+        // <TouchableOpacity
+        //             activeOpacity={0.85}
+        //             onPress={this.handleOpenCameraRoll}
+        //         >
+        //             <Image style={style} source={{ uri: imageUrl }} />
+        //         </TouchableOpacity>
     }
 
     handleInfoIconOnPress() {
@@ -849,7 +860,7 @@ const styles = {
     },
     imageContainerStyle: {
         alignItems: 'center',
-        borderRadius: DEFAULT_STYLE.uiScale * 60,
+        borderRadius: DEFAULT_STYLE.uiScale * 120,
         borderColor: '#BDBDBD',
         position: 'absolute',
         bottom: 10,
