@@ -21,7 +21,7 @@ import {
     Dimensions,
 } from 'react-native'
 import { CheckBox, SearchBar } from 'react-native-elements'
-import { Input, Icon } from '@ui-kitten/components'
+import { Input, Icon, Button } from '@ui-kitten/components'
 import { MenuProvider } from 'react-native-popup-menu'
 import { connect } from 'react-redux'
 import { Field, formValueSelector, reduxForm } from 'redux-form'
@@ -150,7 +150,7 @@ class CreateChatroomModal extends React.Component {
     handleNext = () => {
         const isEdit = this.props.initializeFromState
         if (!this.props.name.trim().length) {
-            return Alert.alert('Warning', 'You must enter a Name.')
+            // return Alert.alert('Warning', 'You must enter a Name.')
         }
         if (isEdit) {
             this.handleSubmit()
@@ -761,6 +761,13 @@ class CreateChatroomModal extends React.Component {
                             </View>
                         )}
                     </ScrollView>
+                    <Button
+                        size="large"
+                        style={styles.actionButtonStyle}
+                        onPress={this.handleNext}
+                    >
+                        {actionText}
+                    </Button>
                 </KeyboardAvoidingView>
             </MenuProvider>
         )
@@ -966,5 +973,9 @@ const styles = {
         width: 18,
         height: 18,
         marginLeft: 5,
+    },
+    actionButtonStyle: {
+        marginHorizontal: 16,
+        marginBottom: 32,
     },
 }
