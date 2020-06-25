@@ -142,7 +142,7 @@ const getUserGoals = (state, tribeId, pageId) => {
     const goalRefs = _.get(tribes, `${tribeId}.${pageId}.goals.refs`, [])
     let ret = goalRefs
         .map((r) => {
-            if (!_.has(posts, r)) {
+            if (!_.has(goals, r)) {
                 new SentryRequestBuilder(
                     "Goals don't have goalRef stored in Tribe",
                     SENTRY_MESSAGE_TYPE.MESSAGE
