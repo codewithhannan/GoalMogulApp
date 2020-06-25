@@ -12,13 +12,16 @@ import {
     ImageBackground,
     KeyboardAvoidingView,
     SafeAreaView,
+    Switch,
     ScrollView,
     Text,
     TextInput,
     TouchableOpacity,
     View,
+    Dimensions,
 } from 'react-native'
 import { CheckBox, SearchBar } from 'react-native-elements'
+import { Input, Icon } from '@ui-kitten/components'
 import { MenuProvider } from 'react-native-popup-menu'
 import { connect } from 'react-redux'
 import { Field, formValueSelector, reduxForm } from 'redux-form'
@@ -49,6 +52,22 @@ import {
     trackWithProperties,
     EVENT as E,
 } from '../../../monitoring/segment'
+import {
+    GM_BLUE_LIGHT_LIGHT,
+    GM_BLUE,
+    GM_BLUE_LIGHT,
+    DEFAULT_STYLE,
+    TEXT_COLOR_1,
+    BACKGROUND_COLOR,
+} from '../../../styles'
+import DelayedButton from '../../Common/Button/DelayedButton'
+
+import { IMAGE_BASE_URL } from '../../../Utils/Constants'
+
+import defaultGroupPic from '../../../asset/utils/defaultSelfUserProfile.png'
+const { InfoIcon } = Icons
+
+const { width } = Dimensions.get('window')
 
 const FRIEND_SEARCH_AUTO_SEARCH_DELAY_MS = 500
 
@@ -69,6 +88,7 @@ class CreateChatroomModal extends React.Component {
                 : E.CREATE_CHATROOM_OPENED
         )
         this.initializeForm()
+        this.switchValue = this.isPublic
     }
 
     initializeForm() {
@@ -164,7 +184,7 @@ class CreateChatroomModal extends React.Component {
     }
 
     renderInput = ({
-        input: { onChange, onFocus, value, ...restInput },
+        input: { onChange, onFocus, value },
         editable,
         numberOfLines,
         meta: { touched, error },
@@ -184,9 +204,11 @@ class CreateChatroomModal extends React.Component {
             <SafeAreaView
                 style={{
                     backgroundColor: 'white',
-                    borderBottomWidth: 0.5,
-                    margin: 5,
-                    borderColor: 'lightgray',
+                    borderWidth: 1,
+                    borderRadius: 3,
+                    margin: 3,
+                    marginBottom: 9,
+                    borderColor: '#A6AAB4',
                 }}
             >
                 <TextInput
@@ -232,71 +254,6 @@ class CreateChatroomModal extends React.Component {
         )
     }
 
-    // Current media type is only picture
-    renderMedia = () => {
-        const { initializeFromState, chat, picture } = this.props
-        let imageUrl = picture
-        if (initializeFromState && chat.picture) {
-            const hasImageModified = chat.picture && chat.picture !== picture
-            if (!hasImageModified) {
-                // If editing a tribe and image hasn't changed, then image source should
-                // be from server
-                imageUrl = `${IMAGE_BASE_URL}${picture}`
-            }
-        }
-
-        if (picture) {
-            return (
-                <View style={{ backgroundColor: 'gray' }}>
-                    <TouchableOpacity
-                        onPress={() => this.setState({ mediaModal: true })}
-                    >
-                        <ImageBackground
-                            style={styles.mediaStyle}
-                            source={{ uri: imageUrl }}
-                            imageStyle={{
-                                borderRadius: 8,
-                                opacity: 0.7,
-                                resizeMode: 'cover',
-                            }}
-                        >
-                            <TouchableOpacity
-                                activeOpacity={0.85}
-                                onPress={() =>
-                                    this.props.change('picture', null)
-                                }
-                                style={{
-                                    position: 'absolute',
-                                    top: 10,
-                                    left: 15,
-                                    width: 24,
-                                    height: 24,
-                                    borderRadius: 12,
-                                    backgroundColor: 'rgba(0,0,0,0.3)',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                <Image
-                                    source={cancel}
-                                    style={{
-                                        width: 16,
-                                        height: 16,
-                                        tintColor: '#fafafa',
-                                        borderRadius: 8,
-                                        padding: 2,
-                                    }}
-                                />
-                            </TouchableOpacity>
-                        </ImageBackground>
-                    </TouchableOpacity>
-                    {this.renderImageModal(imageUrl)}
-                </View>
-            )
-        }
-        return null
-    }
-
     renderImageModal(imageUrl) {
         if (!this.state.mediaModal) {
             return null
@@ -311,117 +268,93 @@ class CreateChatroomModal extends React.Component {
         )
     }
 
+    AlertIcon = (props) => <Icon {...props} name="alert-circle-outline" />
+
     renderChatroomName() {
-        const titleText = (
-            <Text style={styles.titleTextStyle}>Chatroom Name</Text>
-        )
+        // const titleText = <Text style={styles.titleTextStyle}>Group Name</Text>;
+        // return (
+        //   <View style={{ marginBottom: 5 }}>
+        //     {titleText}
+        //     <Field
+        //       name="name"
+        //       label="name"
+        //       component={this.renderInput}
+        //       editable={!this.props.uploading}
+        //       numberOfLines={1}
+        //       multiline
+        //       style={styles.goalInputStyle}
+        //     />
+        //   </View>
+        // );
         return (
-            <View style={{ marginBottom: 5 }}>
-                {titleText}
-                <Field
-                    name="name"
-                    label="name"
-                    component={this.renderInput}
-                    editable={!this.props.uploading}
-                    numberOfLines={1}
-                    multiline
-                    style={styles.goalInputStyle}
-                    placeholder="Enter a name for this room..."
-                />
-            </View>
+            <Input
+                label="Group Name"
+                placeholder="Enter a name for this room..."
+                captionIcon={this.AlertIcon}
+                caption="This field is required."
+                disabled={this.props.uploading}
+                style={styles.inputStyle}
+            />
         )
     }
 
     renderChatRoomMemberLimit() {
-        const titleText = (
-            <Text style={styles.titleTextStyle}>Member Limit (Optional)</Text>
-        )
+        // const titleText = (
+        //   <Text style={styles.titleTextStyle}>Member Limit (Optional)</Text>
+        // );
+        // return (
+        //   <View style={{ marginBottom: 5 }}>
+        //     {titleText}
+        //     <Field
+        //       name="memberLimit"
+        //       label="memberLimit"
+        //       component={this.renderInput}
+        //       editable={!this.props.uploading}
+        //       numberOfLines={1}
+        //       keyboardType="number-pad"
+        //       style={styles.goalInputStyle}
+        //       placeholder="Enter a number..."
+        //     />
+        //   </View>
+        // );
         return (
-            <View style={{ marginBottom: 5 }}>
-                {titleText}
-                <Field
-                    name="memberLimit"
-                    label="memberLimit"
-                    component={this.renderInput}
-                    editable={!this.props.uploading}
-                    numberOfLines={1}
-                    keyboardType="number-pad"
-                    style={styles.goalInputStyle}
-                    placeholder="Enter a number..."
-                />
-            </View>
+            <Input
+                label="Member Limit"
+                disabled={this.props.uploading}
+                placeholder="Enter a number..."
+                keyboardType="number-pad"
+                style={styles.inputStyle}
+            />
         )
     }
 
     renderChatroomDescription() {
-        const titleText = (
-            <Text style={styles.titleTextStyle}>Description (Optional)</Text>
-        )
+        // const titleText = (
+        //   <Text style={styles.titleTextStyle}>Description (Optional)</Text>
+        // );
+        // return (
+        //   <View style={{ marginBottom: 5 }}>
+        //     {titleText}
+        //     <Field
+        //       name="description"
+        //       label="description"
+        //       component={this.renderInput}
+        //       editable={!this.props.uploading}
+        //       numberOfLines={5}
+        //       style={styles.goalInputStyle}
+        //       placeholder="What's this room about?"
+        //     />
+        //   </View>
+        // );
         return (
-            <View style={{ marginBottom: 5 }}>
-                {titleText}
-                <Field
-                    name="description"
-                    label="description"
-                    component={this.renderInput}
-                    editable={!this.props.uploading}
-                    numberOfLines={5}
-                    style={styles.goalInputStyle}
-                    placeholder="What's this room about?"
-                />
-            </View>
-        )
-    }
-
-    renderOptions() {
-        return (
-            <View>
-                <CheckBox
-                    title="Publicly visible"
-                    textStyle={{ fontWeight: 'normal' }}
-                    checked={this.props.isPublic}
-                    checkedIcon={
-                        <MaterialIcons name="done" color="#111" size={21} />
-                    }
-                    uncheckedIcon={
-                        <MaterialIcons name="done" color="#CCC" size={21} />
-                    }
-                    onPress={() =>
-                        this.props.change('isPublic', !this.props.isPublic)
-                    }
-                />
-                <CheckBox
-                    title="Members can add their friends"
-                    textStyle={{ fontWeight: 'normal' }}
-                    checked={this.props.membersCanAdd}
-                    checkedIcon={
-                        <MaterialIcons name="done" color="#111" size={21} />
-                    }
-                    uncheckedIcon={
-                        <MaterialIcons name="done" color="#CCC" size={21} />
-                    }
-                    onPress={() =>
-                        this.props.change(
-                            'membersCanAdd',
-                            !this.props.membersCanAdd
-                        )
-                    }
-                />
-            </View>
-        )
-    }
-
-    // Render field to select an image for tribe
-    renderImageSelection() {
-        const titleText = (
-            <Text style={styles.titleTextStyle}>Select a photo</Text>
-        )
-        return (
-            <View style={{ marginTop: 4 }}>
-                {titleText}
-                {this.renderMedia()}
-                {this.renderActionIcons()}
-            </View>
+            <Input
+                label="Description"
+                disabled={this.props.uploading}
+                placeholder="What's this room about?"
+                multiline
+                textStyle={styles.multilineTextStyle}
+                style={styles.inputStyle}
+            />
         )
     }
 
@@ -563,7 +496,122 @@ class CreateChatroomModal extends React.Component {
         return null
     }
 
+    renderGroupChatImage() {
+        const { initializeFromState, chat, picture } = this.props
+        const profile = this.props
+        let imageUrl = picture
+        if (initializeFromState && chat.picture) {
+            const hasImageModified = chat.picture && chat.picture !== picture
+            if (!hasImageModified) {
+                // If editing a tribe and image hasn't changed, then image source should
+                // be from server
+                imageUrl = `${IMAGE_BASE_URL}${picture}`
+            }
+        }
+        const style = picture
+            ? styles.imageStyle
+            : {
+                  width: 30 * DEFAULT_STYLE.uiScale,
+                  height: 30 * DEFAULT_STYLE.uiScale,
+                  margin: 40 * DEFAULT_STYLE.uiScale,
+              }
+        const containerStyle = [
+            styles.imageContainerStyle,
+            picture
+                ? {}
+                : {
+                      borderColor: '#BDBDBD',
+                      borderRadius: width * 0.15,
+                      borderWidth: 2,
+                  },
+        ]
+        return (
+            <View style={containerStyle}>
+                <TouchableOpacity
+                    activeOpacity={0.85}
+                    onPress={this.handleOpenCameraRoll}
+                >
+                    <Image style={style} source={{ uri: imageUrl }} />
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
+    handleInfoIconOnPress() {
+        const { openProfileInfoModal } = true
+        if (openProfileInfoModal) {
+            // Open info modal here.
+            // How should this work?
+        }
+    }
+
+    renderGroupChatToggles() {
+        return (
+            <View>
+                <View style={styles.toggle}>
+                    <Text style={styles.switchLabel}>Publicly Visible</Text>
+
+                    <DelayedButton
+                        onPress={this.handleInfoIconOnPress}
+                        style={[
+                            styles.infoIconContainerStyle,
+                            styles.marginStyle,
+                        ]}
+                        activeOpacity={0.6}
+                    >
+                        <Image
+                            source={InfoIcon}
+                            style={DEFAULT_STYLE.infoIcon}
+                        />
+                    </DelayedButton>
+
+                    <Switch
+                        style={styles.switch}
+                        trackColor={{ false: '#767577', true: '#45C9F6' }}
+                        thumbColor={this.state.switchValue ? '#fff' : '#f4f3f4'}
+                        ios_backgroundColor="#3e3e3e"
+                        value={this.props.isPublic}
+                        onValueChange={(switchValue) => {
+                            this.setState({ switchValue })
+                            this.props.change('isPublic', !this.props.isPublic)
+                        }}
+                    />
+                </View>
+                <View style={styles.toggle}>
+                    <Text style={styles.switchLabel}>
+                        Members can invite their friends
+                    </Text>
+                    <Switch
+                        style={styles.switch}
+                        trackColor={{ false: '#767577', true: '#45C9F6' }}
+                        thumbColor={
+                            this.state.switchValue2 ? '#fff' : '#f4f3f4'
+                        }
+                        ios_backgroundColor="#3e3e3e"
+                        value={this.props.membersCanAdd}
+                        onPress={() =>
+                            this.props.change(
+                                'membersCanAdd',
+                                !this.props.membersCanAdd
+                            )
+                        }
+                        onValueChange={(switchValue2) => {
+                            this.setState({ switchValue2 })
+                            this.props.change(
+                                'membersCanAdd',
+                                !this.props.membersCanAdd
+                            )
+                        }}
+                    />
+                </View>
+            </View>
+        )
+    }
+
     render() {
+        const { user, self } = this.props
+        if (!user) return null
+        const { name, headline, profile } = user
         const { modalPageNumber } = this.props
         const actionText = this.props.initializeFromState
             ? 'Update'
@@ -572,7 +620,7 @@ class CreateChatroomModal extends React.Component {
             : 'Create'
         const titleText = this.props.initializeFromState
             ? 'Edit Group Chat'
-            : 'Create Group Chat'
+            : 'Group Message'
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -606,12 +654,22 @@ class CreateChatroomModal extends React.Component {
                         style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
                     >
                         {modalPageNumber == 1 ? (
-                            <View style={{ flex: 1, padding: 21 }}>
-                                {this.renderChatroomName()}
-                                {this.renderChatroomDescription()}
-                                {this.renderChatRoomMemberLimit()}
-                                {this.renderOptions()}
-                                {this.renderImageSelection()}
+                            <View style={{ flex: 1, paddingTop: 0 }}>
+                                <View
+                                    style={{
+                                        height: 90 * DEFAULT_STYLE.uiScale,
+                                        backgroundColor: GM_BLUE_LIGHT_LIGHT,
+                                    }}
+                                />
+                                <View style={styles.topWrapperStyle}>
+                                    {this.renderGroupChatImage()}
+                                </View>
+                                <View style={{ flex: 1, padding: 20 }}>
+                                    {this.renderChatroomName()}
+                                    {this.renderChatroomDescription()}
+                                    {this.renderChatRoomMemberLimit()}
+                                    {this.renderGroupChatToggles()}
+                                </View>
                             </View>
                         ) : (
                             <View style={{ flex: 1, padding: 21 }}>
@@ -709,6 +767,8 @@ const mapStateToProps = (state) => {
             .map((doc) => doc._id.toString())
             .join(','),
         formVals: state.form.createChatRoomModal,
+        swithValue: false,
+        switchValue2: false,
     }
 }
 
@@ -749,14 +809,29 @@ const styles = {
         shadowRadius: 1,
         elevation: 1,
     },
+    topWrapperStyle: {
+        height: DEFAULT_STYLE.uiScale * 60,
+        backgroundColor: BACKGROUND_COLOR,
+        padding: 16,
+    },
+    imageContainerStyle: {
+        alignItems: 'center',
+        borderRadius: DEFAULT_STYLE.uiScale * 60,
+        borderColor: '#BDBDBD',
+        position: 'absolute',
+        bottom: 10,
+        left: 20,
+        alignSelf: 'center',
+        backgroundColor: BACKGROUND_COLOR,
+    },
     imageStyle: {
-        height: 54,
-        width: 54,
-        borderRadius: 5,
+        width: DEFAULT_STYLE.uiScale * 120,
+        height: DEFAULT_STYLE.uiScale * 120,
+        borderRadius: DEFAULT_STYLE.uiScale * 60,
     },
     titleTextStyle: {
-        fontSize: 11,
-        color: '#a1a1a1',
+        fontSize: 14,
+        color: '#000',
         padding: 2,
     },
     standardInputStyle: {
@@ -771,13 +846,20 @@ const styles = {
         padding: 20,
         paddingRight: 15,
         paddingLeft: 15,
+        fontWeight: 400,
     },
+    // inputStyle: {
+    //   paddingTop: 6,
+    //   paddingBottom: 6,
+    //   padding: 10,
+    //   backgroundColor: "white",
+    //   borderRadius: 22,
+    // },
     inputStyle: {
-        paddingTop: 6,
-        paddingBottom: 6,
-        padding: 10,
-        backgroundColor: 'white',
-        borderRadius: 22,
+        paddingVertical: 6,
+    },
+    multilineTextStyle: {
+        height: 100,
     },
     cancelIconStyle: {
         height: 20,
@@ -815,5 +897,26 @@ const styles = {
     // Menu related style
     backdrop: {
         backgroundColor: 'transparent',
+    },
+    toggle: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        marginBottom: 10,
+    },
+    switch: {
+        marginLeft: 'auto',
+        alignSelf: 'flex-end',
+    },
+    switchLabel: {},
+    infoIconContainerStyle: {
+        borderRadius: 100,
+        borderWidth: 1,
+        borderColor: TEXT_COLOR_1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 2,
+        marginLeft: 5,
     },
 }
