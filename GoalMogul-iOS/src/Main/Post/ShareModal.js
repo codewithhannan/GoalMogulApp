@@ -46,7 +46,7 @@ import {
     searchTribeMember,
     searchEventParticipants,
 } from '../../redux/modules/search/SearchActions'
-import { IMAGE_BASE_URL } from '../../Utils/Constants'
+import { IMAGE_BASE_URL, PRIVACY_FRIENDS } from '../../Utils/Constants'
 
 // Constants
 const DEBUG_KEY = '[ UI ShareModal ]'
@@ -270,7 +270,7 @@ class ShareModal extends React.Component {
 
     initializeForm() {
         this.props.initialize({
-            privacy: 'Friends',
+            privacy: PRIVACY_FRIENDS,
             tags: [],
         })
     }
