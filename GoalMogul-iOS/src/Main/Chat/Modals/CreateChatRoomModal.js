@@ -548,14 +548,34 @@ class CreateChatroomModal extends React.Component {
 
     renderGroupChatToggles() {
         return (
-            <ToggleField
-                label="Publicly Visible"
-                checked={this.props.isPublic}
-                onCheckedChange={(switchValue) => {
-                    this.setState({ switchValue })
-                    this.props.change('isPublic', !this.props.isPublic)
-                }}
-            />
+            <>
+                <ToggleField
+                    label="Publicly Visible"
+                    checked={this.props.isPublic}
+                    onCheckedChange={(switchValue) => {
+                        this.setState({ switchValue })
+                        this.props.change('isPublic', !this.props.isPublic)
+                    }}
+                >
+                    <TouchableOpacity>
+                        <Icon
+                            style={styles.infoIconStyle}
+                            name="info-outline"
+                        />
+                    </TouchableOpacity>
+                </ToggleField>
+                <ToggleField
+                    label="Members can invite their friends"
+                    checked={this.props.membersCanAdd}
+                    onCheckedChange={(switchValue2) => {
+                        this.setState({ switchValue2 })
+                        this.props.change(
+                            'membersCanAdd',
+                            !this.props.membersCanAdd
+                        )
+                    }}
+                />
+            </>
         )
         /*
         return (
@@ -924,12 +944,16 @@ const styles = {
     },
     switchLabel: {},
     infoIconContainerStyle: {
-        borderRadius: 100,
+        borderRadius: 180,
         borderWidth: 1,
-        borderColor: TEXT_COLOR_1,
         alignItems: 'center',
         justifyContent: 'center',
         padding: 2,
+        marginLeft: 5,
+    },
+    infoIconStyle: {
+        width: 18,
+        height: 18,
         marginLeft: 5,
     },
 }
