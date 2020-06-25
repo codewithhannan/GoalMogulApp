@@ -289,6 +289,61 @@ export default (state = INITIAL_STATE, action) => {
             return newState
         }
 
+        case TRIBE_HUB_FEED_REFRESH: {
+            let newState = _.cloneDeep(state)
+            newState = _.set(newState, 'feed.refreshing', true)
+            return newState
+        }
+
+        case TRIBE_HUB_FEED_LOAD: {
+            let newState = _.cloneDeep(state)
+            newState = _.set(newState, 'feed.loading', true)
+            return newState
+        }
+
+        case TRIBE_HUB_FEED_REFRESH_DONE: {
+            const { data } = action.payload
+            let newState = _.cloneDeep(state)
+            newState = _.set(
+                newState,
+                'feed.data',
+                data.map((d) => d._id).filter((d) => d !== undefined)
+            )
+            newState = _.set(newState, 'feed.skip', data ? data.length : 0)
+            newState = _.set(
+                newState,
+                'feed.hasNextPage',
+                data !== undefined && data.length > 0
+            )
+            newState = _.set(newState, 'feed.refreshing', false)
+            return newState
+        }
+
+        case TRIBE_HUB_FEED_LOAD_DONE: {
+            const { data } = action.payload
+            let newState = _.cloneDeep(state)
+            const curData = _.get(newState, 'feed.data', [])
+            newState = _.set(
+                newState,
+                'feed.data',
+                _.uniq(curData.concat(data))
+            )
+            newState = _.set(
+                newState,
+                'feed.skip',
+                data !== undefined
+                    ? curData.length + data.length
+                    : curData.length
+            )
+            newState = _.set(
+                newState,
+                'feed.hasNextPage',
+                data !== undefined && data.length > 0
+            )
+            newState = _.set(newState, 'feed.loading', false)
+            return newState
+        }
+
         default:
             return { ...state }
     }

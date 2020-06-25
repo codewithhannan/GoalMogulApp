@@ -161,7 +161,11 @@ export const loadMoreTribes = (type) => (dispatch, getState) => {
  * Refresh all feeds in tribe hub
  */
 export const refreshTribeHubFeed = () => (dispatch, getState) => {
-    const { skip, limit } = getState().myTribeTab.feed
+    const { skip, limit, refreshing } = getState().myTribeTab.feed
+    if (refreshing) {
+        // Don't refresh when it's already refreshing
+        return
+    }
     const onSuccess = (data) => {
         dispatch({
             type: TRIBE_HUB_FEED_REFRESH_DONE,
@@ -198,8 +202,8 @@ export const loadMoreTribeHubFeed = () => (dispatch, getState) => {
         refreshing,
         loading,
     } = getState().myTribeTab.feed
-    if (refreshing || loading || hasNextPage == false) {
-        // Don't refresh when it's refreshing or loading or there is no next page.
+    if (loading || hasNextPage == false) {
+        // Don't refresh when it's already loading or there is no next page.
         return
     }
 
