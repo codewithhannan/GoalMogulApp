@@ -72,7 +72,7 @@ const ModalHeader = (props) => {
     const extraTitleTextStyle = titleTextStyle || {}
 
     const primaryActionTextStyle = actionDisabled
-        ? { ...styles.actionTextStyle, color: GM_BLUE }
+        ? { ...styles.actionTextStyle, opacity: 0.6 }
         : styles.actionTextStyle
 
     let actionComponent = (

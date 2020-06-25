@@ -356,13 +356,12 @@ class PostDetailCard extends React.PureComponent {
                             ListFooterComponent={
                                 <View
                                     style={{
-                                        height: 43,
+                                        height: 90,
                                         backgroundColor: 'transparent',
                                     }}
                                 />
                             }
                         />
-
                         <Animated.View
                             style={[
                                 styles.composerContainer,
