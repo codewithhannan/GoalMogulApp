@@ -18,12 +18,13 @@ import { StyleSheet } from 'react-native'
 import { Layout, Text, Toggle } from '@ui-kitten/components'
 
 /**
+ * REQUIRED PROPS:
+ * * string     label
+ * * boolean    checked
  *
- * @param {Object} props <label> the label to be displayed,
- *  <checked> whether the toggle should be checked,
- *  <onCheckedChange> callback with parameter "isChecked" indicating
- *    the current state of the toggle
- *  <children> Any component that you would like to add beside the label
+ * OPTIONAL PROPS:
+ * * function   onCheckedChange
+ * * children   component to be displayed beside label
  */
 function ToggleField(props) {
     const { label, checked, children, onCheckedChange, style } = props
