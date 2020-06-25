@@ -1,11 +1,13 @@
-import { StyleSheet } from 'react-native';
+/** @format */
 
-export const STEP_NUMBER_RADIUS = 14;
-export const STEP_NUMBER_DIAMETER = STEP_NUMBER_RADIUS * 2;
-export const ZINDEX = 100;
-export const MARGIN = 13;
-export const OFFSET_WIDTH = 4;
-export const ARROW_SIZE = 6;
+import { StyleSheet } from 'react-native'
+
+export const STEP_NUMBER_RADIUS = 14
+export const STEP_NUMBER_DIAMETER = STEP_NUMBER_RADIUS * 2
+export const ZINDEX = 100
+export const MARGIN = 13
+export const OFFSET_WIDTH = 4
+export const ARROW_SIZE = 6
 
 export default style = {
     container: {
@@ -20,7 +22,7 @@ export default style = {
         position: 'absolute',
         borderColor: 'transparent',
         borderWidth: ARROW_SIZE,
-        backgroundColor: '#d1ecf6'
+        backgroundColor: '#d1ecf6',
     },
     tooltip: {
         position: 'absolute',
@@ -36,7 +38,7 @@ export default style = {
     tooltipText: {
         fontSize: 15,
         color: '#038ebf',
-        textAlign: 'center'
+        textAlign: 'center',
     },
     tooltipContainer: {
         flex: 1,
@@ -70,7 +72,7 @@ export default style = {
     },
     buttonText: {
         color: '#fff',
-        fontSize: 12
+        fontSize: 12,
     },
     bottomBar: {
         marginTop: 10,
@@ -92,4 +94,4 @@ export default style = {
         bottom: 0,
         right: 0,
     },
-};
+}

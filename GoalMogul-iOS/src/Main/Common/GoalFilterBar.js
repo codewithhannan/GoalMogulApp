@@ -1,21 +1,25 @@
-import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, FlatList } from 'react-native';
+/** @format */
+
+import React, { Component } from 'react'
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    Dimensions,
+    FlatList,
+} from 'react-native'
 import {
     Menu,
     MenuOptions,
     MenuOption,
     MenuTrigger,
     renderers,
-} from 'react-native-popup-menu';
+} from 'react-native-popup-menu'
 
-import {
-    SORT_BY_OPTIONS,
-    CATEGORY_OPTIONS
-} from '../../Utils/Constants';
-import { DEFAULT_STYLE, BACKGROUND_COLOR } from '../../styles';
+import { SORT_BY_OPTIONS, CATEGORY_OPTIONS } from '../../Utils/Constants'
+import { DEFAULT_STYLE, BACKGROUND_COLOR } from '../../styles'
 
-
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window')
 
 /**
  * Update the filter based on parents functions
@@ -23,138 +27,200 @@ const { width, height } = Dimensions.get('window');
  * @param filter
  */
 class GoalFilterBar extends Component {
-
     /**
      * @param type: ['sortBy', 'sortOrder', 'categories', 'priorities']
      */
     handleOnMenuSelect = (type, value) => {
-        this.props.onMenuChange(type, value);
+        this.props.onMenuChange(type, value)
     }
 
     render() {
         const {
-            filter: {
-                sortBy,
-                categories
-            },
-            buttonText
-        } = this.props;
-        const {
-            
-        } = this.props.filter;
-        const categoryText = categories;
-        const isCategorySelected = categories !== CATEGORY_OPTIONS[0].value;
+            filter: { sortBy, categories },
+            buttonText,
+        } = this.props
+        const {} = this.props.filter
+        const categoryText = categories
+        const isCategorySelected = categories !== CATEGORY_OPTIONS[0].value
 
         return (
             <View style={styles.containerStyle}>
                 <Menu
-                    rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
+                    rendererProps={{
+                        placement: 'bottom',
+                        anchorStyle: styles.anchorStyle,
+                    }}
                     renderer={renderers.SlideInMenu}
                 >
-                    <MenuTrigger customStyles={{ TriggerTouchableComponent: TouchableOpacity }}>
-                        <View style={[
-                            styles.detailContainerStyle,
-                            isCategorySelected ? styles.selectedContainerStyle : null
-                        ]}>
-                            <Text style={{
-                                ...DEFAULT_STYLE.buttonText_1,
-                                fontWeight: isCategorySelected ? '700' : '500'
-                            }}>
+                    <MenuTrigger
+                        customStyles={{
+                            TriggerTouchableComponent: TouchableOpacity,
+                        }}
+                    >
+                        <View
+                            style={[
+                                styles.detailContainerStyle,
+                                isCategorySelected
+                                    ? styles.selectedContainerStyle
+                                    : null,
+                            ]}
+                        >
+                            <Text
+                                style={{
+                                    ...DEFAULT_STYLE.buttonText_1,
+                                    fontWeight: isCategorySelected
+                                        ? '700'
+                                        : '500',
+                                }}
+                            >
                                 {buttonText || 'Sort & Filter'}
                             </Text>
                         </View>
                     </MenuTrigger>
                     <MenuOptions customStyles={styles.menuOptionsStyles}>
                         {/* SortBy Header */}
-                        { sortBy && <View style={styles.sortByHeaderWrapper}>
-                            <Text style={DEFAULT_STYLE.titleText_1}>Sort By</Text>
-                        </View>}
+                        {sortBy && (
+                            <View style={styles.sortByHeaderWrapper}>
+                                <Text style={DEFAULT_STYLE.titleText_1}>
+                                    Sort By
+                                </Text>
+                            </View>
+                        )}
                         {/* SortBy Options */}
-                        { sortBy && <View style={{
-                            flexDirection: 'row',
-                            flexWrap: 'wrap',
-                            padding: 10 * DEFAULT_STYLE.uiScale
-                        }}>
-                            {SORT_BY_OPTIONS.map((option) => {
-                                const { value, text } = option;
-                                const isSelected = sortBy === value;
-                                return (
-                                    <MenuOption onSelect={() => this.handleOnMenuSelect('sortBy', value)}>
-                                        <View style={[
-                                            styles.sortByOptionWrapper,
-                                            isSelected ? styles.selectedContainerStyle : null
-                                        ]}>
-                                            <Text style={{
-                                                ...DEFAULT_STYLE.normalText_1,
-                                                color: isSelected ? '#333' : '#828282'
-                                            }}>
-                                                {text}
-                                            </Text>
-                                        </View>
-                                    </MenuOption>
-                                );
-                            })}
-                        </View>}
+                        {sortBy && (
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    flexWrap: 'wrap',
+                                    padding: 10 * DEFAULT_STYLE.uiScale,
+                                }}
+                            >
+                                {SORT_BY_OPTIONS.map((option) => {
+                                    const { value, text } = option
+                                    const isSelected = sortBy === value
+                                    return (
+                                        <MenuOption
+                                            onSelect={() =>
+                                                this.handleOnMenuSelect(
+                                                    'sortBy',
+                                                    value
+                                                )
+                                            }
+                                        >
+                                            <View
+                                                style={[
+                                                    styles.sortByOptionWrapper,
+                                                    isSelected
+                                                        ? styles.selectedContainerStyle
+                                                        : null,
+                                                ]}
+                                            >
+                                                <Text
+                                                    style={{
+                                                        ...DEFAULT_STYLE.normalText_1,
+                                                        color: isSelected
+                                                            ? '#333'
+                                                            : '#828282',
+                                                    }}
+                                                >
+                                                    {text}
+                                                </Text>
+                                            </View>
+                                        </MenuOption>
+                                    )
+                                })}
+                            </View>
+                        )}
 
                         {/* Catrgory header */}
-                        { categories && <View style={styles.categoryHeaderWrapper}>
-                            <Text style={DEFAULT_STYLE.normalText_1}>Category</Text>
-                        </View>}
+                        {categories && (
+                            <View style={styles.categoryHeaderWrapper}>
+                                <Text style={DEFAULT_STYLE.normalText_1}>
+                                    Category
+                                </Text>
+                            </View>
+                        )}
                         {/* Category Options */}
-                        { categories && <FlatList
-                            data={CATEGORY_OPTIONS}
-                            renderItem={({ item: { value, text } }) => {
-                                return (
-                                    <MenuOption onSelect={() => this.handleOnMenuSelect('categories', value)}>
-                                        <View style={styles.categoryOptionWrapper}>
-                                            <Text style={DEFAULT_STYLE.subTitleText_1}>
-                                                {text}
-                                            </Text>
-                                            <RadioButton
-                                                isSelected={categoryText === text}
-                                                size={(10 * DEFAULT_STYLE.uiScale)}
-                                                borderWidth={1}
-                                            />
-                                        </View>
-                                    </MenuOption>
-                                );
-                            }}
-                            style={{ height: height/3, paddingTop: 5 }}
-                        />}
+                        {categories && (
+                            <FlatList
+                                data={CATEGORY_OPTIONS}
+                                renderItem={({ item: { value, text } }) => {
+                                    return (
+                                        <MenuOption
+                                            onSelect={() =>
+                                                this.handleOnMenuSelect(
+                                                    'categories',
+                                                    value
+                                                )
+                                            }
+                                        >
+                                            <View
+                                                style={
+                                                    styles.categoryOptionWrapper
+                                                }
+                                            >
+                                                <Text
+                                                    style={
+                                                        DEFAULT_STYLE.subTitleText_1
+                                                    }
+                                                >
+                                                    {text}
+                                                </Text>
+                                                <RadioButton
+                                                    isSelected={
+                                                        categoryText === text
+                                                    }
+                                                    size={
+                                                        10 *
+                                                        DEFAULT_STYLE.uiScale
+                                                    }
+                                                    borderWidth={1}
+                                                />
+                                            </View>
+                                        </MenuOption>
+                                    )
+                                }}
+                                style={{ height: height / 3, paddingTop: 5 }}
+                            />
+                        )}
                     </MenuOptions>
                 </Menu>
             </View>
-        );
+        )
     }
 }
 
 const RadioButton = (props) => {
     const { isSelected, size, borderWidth } = props
     return (
-        <View style={{
-            height: size*2,
-            width: size*2,
-            borderRadius: size,
-            borderWidth: borderWidth,
-            borderColor: isSelected ? '#1B63DC' : '#B4BFC9',
-            justifyContent: 'center',
-            alignItems: 'center'
-        }}>
-            <View style={{
-                backgroundColor: isSelected ? '#1B63DC' : '',
-                height: size*0.8,
-                width: size*0.8,
-                borderRadius: size*0.4
-            }}/>
+        <View
+            style={{
+                height: size * 2,
+                width: size * 2,
+                borderRadius: size,
+                borderWidth: borderWidth,
+                borderColor: isSelected ? '#1B63DC' : '#B4BFC9',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}
+        >
+            <View
+                style={{
+                    backgroundColor: isSelected ? '#1B63DC' : '',
+                    height: size * 0.8,
+                    width: size * 0.8,
+                    borderRadius: size * 0.4,
+                }}
+            />
         </View>
-    );
+    )
 }
 
 const styles = {
     containerStyle: {
         backgroundColor: BACKGROUND_COLOR,
         padding: 16,
-        paddingTop: 9
+        paddingTop: 9,
     },
     detailContainerStyle: {
         flexDirection: 'row',
@@ -163,23 +229,23 @@ const styles = {
         borderWidth: 1,
         height: 30 * DEFAULT_STYLE.uiScale,
         borderColor: '#E0E0E0',
-        borderRadius: 15 * DEFAULT_STYLE.uiScale
+        borderRadius: 15 * DEFAULT_STYLE.uiScale,
     },
     selectedContainerStyle: {
         borderColor: '#828282',
-        backgroundColor: '#F2F2F2'
+        backgroundColor: '#F2F2F2',
     },
     anchorStyle: {
-        backgroundColor: BACKGROUND_COLOR
+        backgroundColor: BACKGROUND_COLOR,
     },
     menuOptionsStyles: {
         optionsContainer: {
-            width: width
+            width: width,
         },
         optionTouchable: {
             underlayColor: 'lightgray',
             activeOpacity: 10,
-        }
+        },
     },
     sortByHeaderWrapper: {
         backgroundColor: BACKGROUND_COLOR,
@@ -188,7 +254,7 @@ const styles = {
         shadowOpacity: 0.1,
         shadowRadius: 0.1,
         padding: 16,
-        paddingBottom: 14
+        paddingBottom: 14,
     },
     sortByOptionWrapper: {
         padding: 4,
@@ -197,12 +263,12 @@ const styles = {
         borderRadius: 100,
         borderWidth: 1,
         borderColor: '#E0E0E0',
-        margin: 2
+        margin: 2,
     },
     categoryHeaderWrapper: {
         backgroundColor: '#F2F2F2',
         padding: 8,
-        paddingLeft: 16
+        paddingLeft: 16,
     },
     categoryOptionWrapper: {
         height: 34 * DEFAULT_STYLE.uiScale,
@@ -211,8 +277,8 @@ const styles = {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
-    }
-};
+        alignItems: 'center',
+    },
+}
 
-export default GoalFilterBar;
+export default GoalFilterBar

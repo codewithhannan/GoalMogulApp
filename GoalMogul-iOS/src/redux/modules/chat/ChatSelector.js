@@ -1,16 +1,17 @@
-/** 
+/**
  * This is the object selector for user object.
+ *
+ * @format
  */
 
-import { createSelector } from 'reselect';
-import _ from 'lodash';
+import { createSelector } from 'reselect'
+import _ from 'lodash'
 
-const getReducer = (state, chatRoomId, path) => _.get(state, path);
-const getChatRoomId = (state, chatRoomId, path) => chatRoomId;
+const getReducer = (state, chatRoomId, path) => _.get(state, path)
+const getChatRoomId = (state, chatRoomId, path) => chatRoomId
 
 export const makeGetChatRoom = () => {
-    return createSelector(
-        [getReducer, getChatRoomId],
-        (data, chatRoomId) => data.find(chatRoom => chatRoom._id === chatRoomId)
-    );
-};
+    return createSelector([getReducer, getChatRoomId], (data, chatRoomId) =>
+        data.find((chatRoom) => chatRoom._id === chatRoomId)
+    )
+}

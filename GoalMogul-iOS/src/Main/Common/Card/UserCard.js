@@ -1,34 +1,34 @@
 /**
  * There are multiple different user cards throughout the app. This is the first effort to align
  * all user cards.
+ *
+ * @format
  */
-import React from 'react';
-import {
-    View,
-    Text
-} from 'react-native';
-import { connect } from 'react-redux';
-import ProfileImage from '../ProfileImage';
-import Name from '../../Goal/Common/Name';
-import { UserBanner, openProfile } from '../../../actions';
-import DelayedButton from '../Button/DelayedButton';
+
+import React from 'react'
+import { View, Text } from 'react-native'
+import { connect } from 'react-redux'
+import ProfileImage from '../ProfileImage'
+import Name from '../../Goal/Common/Name'
+import { UserBanner, openProfile } from '../../../actions'
+import DelayedButton from '../Button/DelayedButton'
 
 class UserCard extends React.PureComponent {
     handleOpenProfile = (_id) => {
         // Pass openProfile as a callback to a callback function
         if (this.props.callback) {
-            this.props.callback(() => this.props.openProfile(_id));
-            return;
+            this.props.callback(() => this.props.openProfile(_id))
+            return
         }
 
         // If no callback, then directly open profile
-        this.props.openProfile(_id);
+        this.props.openProfile(_id)
     }
 
     render() {
-        const { item } = this.props;
-        if (!item) return null;
-        const { name, headline, _id, profile, occupation } = this.props.item;
+        const { item } = this.props
+        if (!item) return null
+        const { name, headline, _id, profile, occupation } = this.props.item
         return (
             <View style={styles.containerStyle}>
                 <ProfileImage
@@ -38,17 +38,28 @@ class UserCard extends React.PureComponent {
                     userId={_id}
                     actionDecorator={this.props.callback}
                 />
-                <DelayedButton 
+                <DelayedButton
                     style={styles.bodyContainerStyle}
                     activeOpacity={0.6}
                     onPress={() => this.handleOpenProfile(_id)}
                 >
                     {/* Name and banner  */}
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }}>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            marginTop: 3,
+                        }}
+                    >
                         <Name text={name} />
-                        <UserBanner 
-                            user={item} 
-                            iconStyle={{ marginTop: 1, marginLeft: 5, height: 18, width: 15 }} 
+                        <UserBanner
+                            user={item}
+                            iconStyle={{
+                                marginTop: 1,
+                                marginLeft: 5,
+                                height: 18,
+                                width: 15,
+                            }}
                         />
                     </View>
 
@@ -57,15 +68,14 @@ class UserCard extends React.PureComponent {
                         <Text
                             style={styles.titleTextStyle}
                             numberOfLines={2}
-                            ellipsizeMode='tail'
+                            ellipsizeMode="tail"
                         >
                             {headline || occupation}
                         </Text>
                     </View>
-                    
                 </DelayedButton>
             </View>
-        );
+        )
     }
 }
 
@@ -78,21 +88,21 @@ const styles = {
         marginLeft: 15,
         marginRight: 15,
         marginTop: 10,
-        marginBottom: 10
+        marginBottom: 10,
     },
     bodyContainerStyle: {
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         flex: 1,
         marginLeft: 8,
-        marginRight: 8
+        marginRight: 8,
     },
     titleTextStyle: {
         fontSize: 11,
         color: '#9B9B9B',
     },
     imageStyle: {
-        marginRight: 3
+        marginRight: 3,
     },
     imageContainerStyle: {
         borderWidth: 0.5,
@@ -101,8 +111,8 @@ const styles = {
         alignItems: 'center',
         borderRadius: 6,
         alignSelf: 'center',
-        backgroundColor: 'white'
-    }
-};
+        backgroundColor: 'white',
+    },
+}
 
-export default connect(null, { openProfile })(UserCard);
+export default connect(null, { openProfile })(UserCard)

@@ -1,5 +1,7 @@
-import * as Segment from 'expo-analytics-segment';
-import getEnvVars from '../../../environment';
+/** @format */
+
+import * as Segment from 'expo-analytics-segment'
+import getEnvVars from '../../../environment'
 
 const EVENT = {
     // Goal
@@ -12,8 +14,8 @@ const EVENT = {
     GOAL_DELETED: 'Goal Deleted',
     GOAL_LIKED: 'Goal Liked',
     GOAL_UNLIKED: 'Goal Unliked',
-    GOAL_FOLLOWED: 'Goal Followed',//
-    GOAL_UNFOLLOWED: 'Goal Unfollowed',//
+    GOAL_FOLLOWED: 'Goal Followed', //
+    GOAL_UNFOLLOWED: 'Goal Unfollowed', //
 
     // Post
     CREATE_POST_MODAL_OPENED: 'CreatePostModal Opened',
@@ -26,9 +28,9 @@ const EVENT = {
     POST_LIKED: 'Post Liked',
     POST_UNLIKED: 'Post Unliked',
     POST_OPENED: 'Post Opened',
-    POST_FOLLOWED: 'Post Followed',//
-    POST_UNFOLLOWED: 'Post Unfollowed',//
-    
+    POST_FOLLOWED: 'Post Followed', //
+    POST_UNFOLLOWED: 'Post Unfollowed', //
+
     // Comment
     COMMENT_ADDED: 'Comment Added',
     COMMENT_DELETED: 'Comment Deleted',
@@ -126,39 +128,47 @@ const EVENT = {
     TUTORIAL_DONE: 'Tutorial Done',
     NOTIFICATION_SELECTED: 'Notification Selected',
     NOTIFICATION_DETAIL_OPENED: 'Notification Detail Opened',
-    
-};
+}
 
-const { SEGMENT_CONFIG } = getEnvVars();
+const { SEGMENT_CONFIG } = getEnvVars()
 
 const initSegment = () => {
-    Segment.initialize({ iosWriteKey: SEGMENT_CONFIG.IOS_WRITE_KEY });
-};
+    Segment.initialize({ iosWriteKey: SEGMENT_CONFIG.IOS_WRITE_KEY })
+}
 
 const identify = (userId, username) => {
-    Segment.identify(userId);
-};
+    Segment.identify(userId)
+}
 
 const identifyWithTraits = (userId, trait) => {
-    Segment.identifyWithTraits(userId, trait);
-};
+    Segment.identifyWithTraits(userId, trait)
+}
 
 const track = (event) => {
-    Segment.track(event);
+    Segment.track(event)
     // console.log(`>>>>>> Track: ${event}`);
-};
+}
 
 const trackWithProperties = (event, properties) => {
     // console.log(`>>>>>> Track: ${event}: \n ${JSON.stringify(properties)}`);
-    Segment.trackWithProperties(event, properties);
-};
+    Segment.trackWithProperties(event, properties)
+}
 
 const trackViewScreen = (screenName) => {
-    Segment.screen(screenName);
-};
+    Segment.screen(screenName)
+}
 
 const resetUser = () => {
-    Segment.reset();
-};
+    Segment.reset()
+}
 
-export { resetUser, trackViewScreen, track, trackWithProperties, identify, initSegment, identifyWithTraits, EVENT};
+export {
+    resetUser,
+    trackViewScreen,
+    track,
+    trackWithProperties,
+    identify,
+    initSegment,
+    identifyWithTraits,
+    EVENT,
+}

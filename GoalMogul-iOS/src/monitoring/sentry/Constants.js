@@ -1,5 +1,7 @@
 /**
  * Sentry related constants
+ *
+ * @format
  */
 
 const SENTRY_TAGS = {
@@ -10,59 +12,61 @@ const SENTRY_TAGS = {
         FETCH_USER_PROFILE: 'fetech user profile',
         USERNAME: 'username',
         TOKEN: 'token verification',
-        UNSUBSCRIBE_NOTIFICATIONS: 'unsubscribe notifications (expo push token deletion)'
+        UNSUBSCRIBE_NOTIFICATIONS:
+            'unsubscribe notifications (expo push token deletion)',
+        GOAL_UPDATE: 'goal update',
     },
     TRIBE: {
-        ACTION: "tribe action",
-        REDUCER: "tribe reducer",
-        SELECTOR: "tribe selector",
+        ACTION: 'tribe action',
+        REDUCER: 'tribe reducer',
+        SELECTOR: 'tribe selector',
     },
     GOAL: {
-        ACTION: "goal action",
-        REDUCER: "goal reducer",
-        SELECTOR: "goal selector"
+        ACTION: 'goal action',
+        REDUCER: 'goal reducer',
+        SELECTOR: 'goal selector',
     },
     POST: {
-        ACTION: "post action",
-        REDUCER: "post reduer",
-        SELECTOR: "post selector"
-    }
-};
+        ACTION: 'post action',
+        REDUCER: 'post reduer',
+        SELECTOR: 'post selector',
+    },
+}
 
 const SENTRY_TAG_VALUE = {
     ACTIONS: {
-        FAILED: 'failed'
-    }
-};
+        FAILED: 'failed',
+    },
+}
 
 const SENTRY_MESSAGE_TYPE = {
     ERROR: 'error', // handle exception being thrown, e.g. catch(err)
     MESSAGE: 'message', // customized error messages in code piece
-    EVENT: 'event' // currently this is not used as context is added in scope 
-};
+    EVENT: 'event', // currently this is not used as context is added in scope
+}
 
 const SENTRY_CONTEXT = {
     USER: {
-        USER_ID: "user id",
+        USER_ID: 'user id',
     },
     TRIBE: {
         PAGE: {
-            PAGE_ID: "tribe page id"
+            PAGE_ID: 'tribe page id',
         },
-        MEMBER_UPDATE_TYPE: "tribe membership update type",
-        TRIBE_ID: "tribe id",
-        LEAVE_TYPE: "leave type", // leave type can be removed by admin or member leaves himself
+        MEMBER_UPDATE_TYPE: 'tribe membership update type',
+        TRIBE_ID: 'tribe id',
+        LEAVE_TYPE: 'leave type', // leave type can be removed by admin or member leaves himself
     },
     PAGINATION: {
-        SKIP: "skip",
-        LIMIT: "limit",
+        SKIP: 'skip',
+        LIMIT: 'limit',
     },
     POST: {
-        POST_ID: "post id",
+        POST_ID: 'post id',
     },
     GOAL: {
-        GOAL_ID: "goal id",
-    }
+        GOAL_ID: 'goal id',
+    },
 }
 
 // Based on the document, exception / message level can be one of:
@@ -74,7 +78,13 @@ const SENTRY_MESSAGE_LEVEL = {
     WARNING: 'warning', // TBD
     ERROR: 'error', // request exception and un-intended behavior of app
     FATAL: 'fatal', // app crash, this should be handled by Sentry mostly
-    CRITICAL: 'critical' // TBD
+    CRITICAL: 'critical', // TBD
 }
 
-export { SENTRY_TAGS, SENTRY_TAG_VALUE, SENTRY_MESSAGE_LEVEL, SENTRY_MESSAGE_TYPE, SENTRY_CONTEXT };
+export {
+    SENTRY_TAGS,
+    SENTRY_TAG_VALUE,
+    SENTRY_MESSAGE_LEVEL,
+    SENTRY_MESSAGE_TYPE,
+    SENTRY_CONTEXT,
+}

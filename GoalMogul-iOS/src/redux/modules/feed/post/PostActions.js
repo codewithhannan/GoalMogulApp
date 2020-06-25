@@ -1,7 +1,9 @@
+/** @format */
+
 // Post Detail Page related Actions
-import { Actions } from 'react-native-router-flux';
-import { Alert, AsyncStorage } from 'react-native';
-import _ from 'lodash';
+import { Actions } from 'react-native-router-flux'
+import { Alert, AsyncStorage } from 'react-native'
+import _ from 'lodash'
 import {
     POST_DETAIL_OPEN,
     POST_DETAIL_CLOSE,
@@ -11,113 +13,109 @@ import {
     POST_NEW_POST_SUBMIT,
     POST_DETAIL_FETCH,
     POST_DETAIL_FETCH_DONE,
-    POST_DETAIL_FETCH_ERROR
-} from './PostReducers';
+    POST_DETAIL_FETCH_ERROR,
+} from './PostReducers'
 
-import {
-    openShareDetail
-} from './ShareActions';
+import { openShareDetail } from './ShareActions'
 
 import {
     openProfile,
     handleTabRefresh,
-    selectProfileTabByName
-} from '../../../../actions';
+    selectProfileTabByName,
+} from '../../../../actions'
 
-import { api as API } from '../../../middleware/api';
+import { api as API } from '../../../middleware/api'
 import {
     capitalizeWord,
     sanitizeTags,
     constructPageId,
-    componentKeyByTab
-} from '../../../middleware/utils';
+    componentKeyByTab,
+} from '../../../middleware/utils'
 
-import ImageUtils from '../../../../Utils/ImageUtils';
-import { EMPTY_POST } from '../../../../Utils/Constants';
-import { Logger } from '../../../middleware/utils/Logger';
-import { trackWithProperties, EVENT as E } from '../../../../monitoring/segment';
+import ImageUtils from '../../../../Utils/ImageUtils'
+import { EMPTY_POST } from '../../../../Utils/Constants'
+import { Logger } from '../../../middleware/utils/Logger'
+import { trackWithProperties, EVENT as E } from '../../../../monitoring/segment'
 
-
-const DRAFTS = 'draft_posts';
-const DEBUG_KEY = '[ Action Post ]';
+const DRAFTS = 'draft_posts'
+const DEBUG_KEY = '[ Action Post ]'
 /**
  * Open a post by postId
- * @param {} postId 
+ * @param {} postId
  */
-export const openPostDetailById = (postId, initialProps) => (dispatch, getState) => {
+export const openPostDetailById = (postId, initialProps) => (
+    dispatch,
+    getState
+) => {
     // Open share detail if not a general post
     // Generate pageId on open
     const post = {
         ...EMPTY_POST,
         created: new Date(),
-        _id: postId
-    };
+        _id: postId,
+    }
 
-    openPostDetail(post, initialProps)(dispatch, getState);
-};
+    openPostDetail(post, initialProps)(dispatch, getState)
+}
 
 /**
  * If post is a share, then open share detail. Otherwise, open post detail
  */
 export const openPostDetail = (post, initialProps) => (dispatch, getState) => {
     // Open share detail if not a general post
-    const postId = post._id;
+    const postId = post._id
 
     // Generate pageId on open
-    const pageId = constructPageId('post');
+    const pageId = constructPageId('post')
     if (post.postType && post.postType !== 'General') {
-        return openShareDetail(post, pageId, initialProps)(dispatch, getState);
+        return openShareDetail(post, pageId, initialProps)(dispatch, getState)
     }
 
-    const { tab } = getState().navigation;
+    const { tab } = getState().navigation
     // const scene = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
     // const { pageId } = _.get(getState().postDetail, `${scene}`);
-    trackWithProperties(E.POST_OPENED, {...post, 'PostId': postId});
+    trackWithProperties(E.POST_OPENED, { ...post, PostId: postId })
     dispatch({
         type: POST_DETAIL_OPEN,
         payload: {
             post,
             tab,
             postId,
-            pageId
+            pageId,
         },
-    });
+    })
 
     // In the version 0.3.9 and later, loading comment is done in post detail
-    fetchPostDetail(postId, pageId)(dispatch, getState);
+    fetchPostDetail(postId, pageId)(dispatch, getState)
     // refreshComments('Post', postId, tab, pageId)(dispatch, getState);
 
-    const componentToOpen = componentKeyByTab(tab, 'post');
+    const componentToOpen = componentKeyByTab(tab, 'post')
     // Initial is used to manipulate the post
-    Actions.push(`${componentToOpen}`, { pageId, postId, initialProps });
-};
+    Actions.push(`${componentToOpen}`, { pageId, postId, initialProps })
+}
 
 export const fetchPostDetail = (postId, pageId) => (dispatch, getState) => {
-    const { tab } = getState().navigation;
-    const { token } = getState().user;
+    const { tab } = getState().navigation
+    const { token } = getState().user
 
     dispatch({
         type: POST_DETAIL_FETCH,
         payload: {
             postId,
             tab,
-            pageId
-        }
-    });
+            pageId,
+        },
+    })
 
     const onError = (err) => {
-        console.warn(`${DEBUG_KEY}: refresh post error: `, err);
+        console.warn(`${DEBUG_KEY}: refresh post error: `, err)
         if (err.status === 400 || err.status === 404) {
-            Alert.alert(
-                'Content not found',
-                'This post has been removed',
-                [
-                    {
-                        text: 'Cancel',
-                        onPress: () => Actions.pop()
-                    }
-                ]
-            );
+            Alert.alert('Content not found', 'This post has been removed', [
+                {
+                    text: 'Cancel',
+                    onPress: () => Actions.pop(),
+                },
+            ])
         }
         dispatch({
             type: POST_DETAIL_FETCH_ERROR,
@@ -126,42 +124,41 @@ export const fetchPostDetail = (postId, pageId) => (dispatch, getState) => {
                 postId,
                 pageId,
                 tab,
-                error: err
-            }
-        });
-    };
+                error: err,
+            },
+        })
+    }
 
     const onSuccess = (res) => {
-        console.log(`${DEBUG_KEY}: refresh post done with res: `, res);
+        console.log(`${DEBUG_KEY}: refresh post done with res: `, res)
         dispatch({
             type: POST_DETAIL_FETCH_DONE,
             payload: {
                 post: res.data,
                 postId,
                 tab,
-                pageId
-            }
-        });
-    };
+                pageId,
+            },
+        })
+    }
 
-    API
-        .get(`secure/feed/post?postId=${postId}`, token)
+    API.get(`secure/feed/post?postId=${postId}`, token)
         .then((res) => {
             if (res.status === 200) {
-                return onSuccess(res);
+                return onSuccess(res)
             }
-            onError(res);
+            onError(res)
         })
         .catch((err) => {
-            onError(err);
-        });
-};
+            onError(err)
+        })
+}
 
 // close post detail
 export const closePostDetail = (postId, pageId) => (dispatch, getState) => {
-    Actions.pop();
+    Actions.pop()
 
-    const { tab } = getState().navigation;
+    const { tab } = getState().navigation
     // const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
     // const { pageId } = _.get(getState().postDetail, `${path}`);
 
@@ -170,17 +167,20 @@ export const closePostDetail = (postId, pageId) => (dispatch, getState) => {
         payload: {
             tab,
             pageId,
-            postId
-        }
-    });
-};
+            postId,
+        },
+    })
+}
 
 // open edit modal for post given post belongs to current user
 export const editPost = (post) => (dispatch, getState) => {
     // We don't need to pass pageId since the pageId is for profile in this case
-    console.log(`${DEBUG_KEY}: [ editPost ]: post is:`, post);
-    Actions.push('createPostModal', { initializeFromState: true, initialPost: post });
-};
+    console.log(`${DEBUG_KEY}: [ editPost ]: post is:`, post)
+    Actions.push('createPostModal', {
+        initializeFromState: true,
+        initialPost: post,
+    })
+}
 
 // Submit creating new post
 /**
@@ -189,91 +189,107 @@ export const editPost = (post) => (dispatch, getState) => {
 export const submitCreatingPost = (
     values,
     needUpload,
-    {
-        needOpenProfile,
-        needRefreshProfile
-    },
+    { needOpenProfile, needRefreshProfile },
     initializeFromState, // initializeFromState means it's an update
     initialPost,
     callback,
     pageId // TODO: profile reducer redesign to change here
 ) => (dispatch, getState) => {
-    const { userId, token, user } = getState().user;
-    const newPost = newPostAdaptor(values, userId);
-    console.log(`${DEBUG_KEY}: post to submit is: `, newPost);
+    const { userId, token, user } = getState().user
+    const newPost = newPostAdaptor(values, userId)
+    console.log(`${DEBUG_KEY}: post to submit is: `, newPost)
     // console.log(`${DEBUG_KEY}: initializeFromState is: `, initializeFromState);
     dispatch({
-        type: POST_NEW_POST_SUBMIT
-    });
+        type: POST_NEW_POST_SUBMIT,
+    })
 
     const onSuccess = (res) => {
-        console.log('Creating post succeed with res: ', res);
+        console.log('Creating post succeed with res: ', res)
         dispatch({
             type: POST_NEW_POST_SUBMIT_SUCCESS,
             payload: {
                 post: {
                     ...res.data,
-                    owner: user
+                    owner: user,
                 },
-                update: initializeFromState
-            }
-        });
+                update: initializeFromState,
+            },
+        })
 
         if (callback) {
-            callback();
+            callback()
         }
 
-        Actions.pop(); // This is needed for all the actions below
+        Actions.pop() // This is needed for all the actions below
 
         if (needOpenProfile) {
             // Open profile and then refresh
-            openProfile(userId, 'posts')(dispatch, getState);
-            return;
+            openProfile(userId, 'posts')(dispatch, getState)
+            return
         }
 
         if (needRefreshProfile) {
             // Change to post tab and then refresh the page
-            selectProfileTabByName('posts', userId, pageId)(dispatch, getState);
-            handleTabRefresh('posts', userId, pageId)(dispatch, getState);
+            selectProfileTabByName('posts', userId, pageId)(dispatch, getState)
+            handleTabRefresh('posts', userId, pageId)(dispatch, getState)
         }
-    };
+    }
 
-    const imageUri = newPost.mediaRef;
+    const imageUri = newPost.mediaRef
     if (!needUpload) {
         // If no mediaRef then directly submit the post
-        sendCreatePostRequest(newPost, token, dispatch, onSuccess, null, initializeFromState, initialPost);
+        sendCreatePostRequest(
+            newPost,
+            token,
+            dispatch,
+            onSuccess,
+            null,
+            initializeFromState,
+            initialPost
+        )
     } else {
         ImageUtils.getImageSize(imageUri)
             .then(({ width, height }) => {
                 // Resize image
-                console.log('width, height are: ', width, height);
-                return ImageUtils.resizeImage(imageUri, width, height, { capHeight: 720, capWidth: 720 });
+                console.log('width, height are: ', width, height)
+                return ImageUtils.resizeImage(imageUri, width, height, {
+                    capHeight: 720,
+                    capWidth: 720,
+                })
             })
             .then((image) => {
                 // Upload image to S3 server
-                console.log('image to upload is: ', image);
-                return ImageUtils.getPresignedUrl(image.uri, token, (objectKey) => {
-                    // Obtain pre-signed url and store in getState().postDetail.newPost.mediaRef
-                    dispatch({
-                        type: POST_NEW_POST_UPDATE_MEDIA,
-                        payload: objectKey
-                    });
-                }, 'FeedImage');
+                console.log('image to upload is: ', image)
+                return ImageUtils.getPresignedUrl(
+                    image.uri,
+                    token,
+                    (objectKey) => {
+                        // Obtain pre-signed url and store in getState().postDetail.newPost.mediaRef
+                        dispatch({
+                            type: POST_NEW_POST_UPDATE_MEDIA,
+                            payload: objectKey,
+                        })
+                    },
+                    'FeedImage'
+                )
             })
             .then(({ signedRequest, file }) => {
-                return ImageUtils.uploadImage(file, signedRequest);
+                return ImageUtils.uploadImage(file, signedRequest)
             })
             .then((res) => {
                 if (res instanceof Error) {
                     // uploading to s3 failed
-                    console.log(`${DEBUG_KEY}: error uploading image to s3 with res: `, res);
-                    throw res;
+                    console.log(
+                        `${DEBUG_KEY}: error uploading image to s3 with res: `,
+                        res
+                    )
+                    throw res
                 }
-                return getState().postDetail.newPost.mediaRef;
+                return getState().postDetail.newPost.mediaRef
             })
             .then((image) => {
                 // Use the presignedUrl as media string
-                console.log('media ref after uploading is: ', image);
+                console.log('media ref after uploading is: ', image)
                 return sendCreatePostRequest(
                     { ...newPost, mediaRef: image },
                     token,
@@ -282,7 +298,7 @@ export const submitCreatingPost = (
                     null,
                     initializeFromState,
                     initialPost
-                );
+                )
             })
             .catch((err) => {
                 // TODO: error handling for different kinds of errors.
@@ -293,17 +309,14 @@ export const submitCreatingPost = (
                   image upload to S3
                   update profile image Id
                 */
-                console.warn(`${DEBUG_KEY}: Creating post with Error: `, err);
-                Alert.alert(
-                    'Create post failed',
-                    'Please try again later.'
-                );
+                console.warn(`${DEBUG_KEY}: Creating post with Error: `, err)
+                Alert.alert('Create post failed', 'Please try again later.')
                 dispatch({
-                    type: POST_NEW_POST_SUBMIT_FAIL
-                });
-            });
+                    type: POST_NEW_POST_SUBMIT_FAIL,
+                })
+            })
     }
-};
+}
 
 /**
  * Call API to send the create post request
@@ -314,116 +327,145 @@ export const submitCreatingPost = (
  * @param needOpenProfile: if creating post from home page, then open profile post type
  * @param update: if update, use put request
  */
-const sendCreatePostRequest = (newPost, token, dispatch, onSuccess, onError, update, initialPost) => {
-    const handleError = onError || (() => {
-        Alert.alert(
-            'Create post failed',
-            'Please try again later.'
-        );
-        dispatch({
-            type: POST_NEW_POST_SUBMIT_FAIL
-        });
-    });
+const sendCreatePostRequest = (
+    newPost,
+    token,
+    dispatch,
+    onSuccess,
+    onError,
+    update,
+    initialPost
+) => {
+    const handleError =
+        onError ||
+        (() => {
+            Alert.alert('Create post failed', 'Please try again later.')
+            dispatch({
+                type: POST_NEW_POST_SUBMIT_FAIL,
+            })
+        })
 
     if (update) {
-        API
-            .put(
-                'secure/feed/post',
-                {
-                    postId: initialPost._id,
-                    updates: JSON.stringify(postToUpdateAdaptor(newPost))
-                },
-                token
-            )
-            .then((res) => {
-                if ((!res.message && res.data) || res.status === 200) {
-                    onSuccess(res);
-                    return;
-                }
-                console.log('Creating post failed with message: ', res);
-                handleError();
-            })
-            .catch((err) => {
-                console.log(`${DEBUG_KEY}: Error creating post in submitting the values: `, err);
-                handleError();
-            });
-        return;
-    }
-
-    API
-        .post(
+        API.put(
             'secure/feed/post',
             {
-                post: JSON.stringify({ ...newPost })
+                postId: initialPost._id,
+                updates: JSON.stringify(postToUpdateAdaptor(newPost)),
             },
             token
         )
+            .then((res) => {
+                if ((!res.message && res.data) || res.status === 200) {
+                    onSuccess(res)
+                    return
+                }
+                console.log('Creating post failed with message: ', res)
+                handleError()
+            })
+            .catch((err) => {
+                console.log(
+                    `${DEBUG_KEY}: Error creating post in submitting the values: `,
+                    err
+                )
+                handleError()
+            })
+        return
+    }
+
+    API.post(
+        'secure/feed/post',
+        {
+            post: JSON.stringify({ ...newPost }),
+        },
+        token
+    )
         .then((res) => {
             if ((!res.message && res.data) || res.status === 200) {
-                onSuccess(res);
-                return;
+                onSuccess(res)
+                return
             }
-            console.log('Creating post failed with message: ', res);
-            handleError();
+            console.log('Creating post failed with message: ', res)
+            handleError()
         })
         .catch((err) => {
-            console.log(`${DEBUG_KEY}: Error creating post in submitting the values: `, err);
-            handleError();
-        });
-};
+            console.log(
+                `${DEBUG_KEY}: Error creating post in submitting the values: `,
+                err
+            )
+            handleError()
+        })
+}
 
 /**
  * Transform a post to only update
- * @param {} post 
+ * @param {} post
  */
 const postToUpdateAdaptor = (post) => {
-    const { content, privacy } = post;
+    const { content, privacy } = post
     return {
         content,
-        privacy
-    };
-};
+        privacy,
+    }
+}
 
 /**
  * Mark user view goal
- * @param {string} postId 
+ * @param {string} postId
  */
 export const markUserViewPost = (postId) => (dispatch, getState) => {
-    const { token } = getState().user;
+    const { token } = getState().user
     const onSuccess = (res) => {
-        Logger.log(`${DEBUG_KEY}: [markUserViewPost]: success with res: `, res, 2);
-    };
+        Logger.log(
+            `${DEBUG_KEY}: [markUserViewPost]: success with res: `,
+            res,
+            2
+        )
+    }
 
     const onError = (err) => {
-        Logger.log(`${DEBUG_KEY}: [markUserViewPost]: failed with err: `, err, 1);
-    };
+        Logger.log(
+            `${DEBUG_KEY}: [markUserViewPost]: failed with err: `,
+            err,
+            1
+        )
+    }
 
-    API
-        .put('secure/feed/post/views', { postId }, token)
+    API.put('secure/feed/post/views', { postId }, token)
         .then((res) => {
             if (res.status === 200) {
-                return onSuccess(res);
+                return onSuccess(res)
             }
-            return onError(res);
+            return onError(res)
         })
-        .catch(err => onError(err));
-};
+        .catch((err) => onError(err))
+}
 
 /**
  * Transform values in CreatePostModal to Server readable format
  */
 const newPostAdaptor = (values, userId) => {
-    const { viewableSetting, mediaRef, post, belongsToTribe, belongsToEvent, tags } = values;
+    const {
+        viewableSetting,
+        mediaRef,
+        post,
+        belongsToTribe,
+        belongsToEvent,
+        tags,
+    } = values
     // Tags sanitization will reassign index as well as removing the unused tags
-    const tagsToUser = sanitizeTags(post, tags);
+    const tagsToUser = sanitizeTags(post, tags)
     // const tagsToUser = clearTags(post, {}, tags); // Update the index before submitting
 
-    const shouldBePublic = belongsToTribe !== undefined || belongsToEvent !== undefined;
-    let privacySetting;
+    const shouldBePublic =
+        belongsToTribe !== undefined || belongsToEvent !== undefined
+    let privacySetting
     if (shouldBePublic) {
-        privacySetting = 'public';
+        privacySetting = 'public'
     } else {
-        privacySetting = viewableSetting === 'Private' ? 'self' : viewableSetting.toLowerCase();
+        privacySetting =
+            viewableSetting === 'Private'
+                ? 'self'
+                : viewableSetting.toLowerCase()
     }
     return {
         owner: userId,
@@ -431,99 +473,103 @@ const newPostAdaptor = (values, userId) => {
         content: {
             text: post,
             tags: tagsToUser.map((t) => {
-                const { user, startIndex, endIndex } = t;
-                return { user, startIndex, endIndex };
+                const { user, startIndex, endIndex } = t
+                return { user, startIndex, endIndex }
             }),
             // links: [] no link is needed for now
         },
         mediaRef,
         postType: 'General',
         belongsToTribe,
-        belongsToEvent
-    };
-};
+        belongsToEvent,
+    }
+}
 /**
  * Transform a post to CreatePostModal initial values
  */
 export const postToFormAdapter = (values) => {
-    console.log(`${DEBUG_KEY}: values are:`, values);
-    const {
-        privacy,
-        content,
-        mediaRef
-    } = values;
+    console.log(`${DEBUG_KEY}: values are:`, values)
+    const { privacy, content, mediaRef } = values
 
     return {
         post: content.text,
-        viewableSetting: privacy === 'self' ? 'Private' : capitalizeWord(privacy),
+        viewableSetting:
+            privacy === 'self' ? 'Private' : capitalizeWord(privacy),
         mediaRef,
-        tags: _.isEmpty(content.tags) ? [] : constructTags(content.tags, content.text)
-    };
-};
+        tags: _.isEmpty(content.tags)
+            ? []
+            : constructTags(content.tags, content.text),
+    }
+}
 
 /**
  * Get the list of shares for a goal or a post
  * @param {*} entityType: 'Post' || 'Goal' || 'User'
- * @param {*} entityId: id of the shared item 
+ * @param {*} entityId: id of the shared item
  * @param {*} callback
  */
-export const getShareList = (entityType, entityId, callback) => (dispatch, getState) => {
-    const { token } = getState().user;
+export const getShareList = (entityType, entityId, callback) => (
+    dispatch,
+    getState
+) => {
+    const { token } = getState().user
 
     const onSuccess = (res) => {
-        Logger.log(`${DEBUG_KEY}: [ getShareList ] success with res: `, res, 3);
+        Logger.log(`${DEBUG_KEY}: [ getShareList ] success with res: `, res, 3)
         if (callback) {
-            return callback(res.data);
+            return callback(res.data)
         }
-    };
+    }
 
     const onError = (err) => {
-        console.warn(`${DEBUG_KEY}: [ getShareList ] failed with err: `, err);
-    };
+        console.warn(`${DEBUG_KEY}: [ getShareList ] failed with err: `, err)
+    }
 
-    API
-        .get(`secure/feed/post/shares?entityId=${entityId}&entityType=${entityType}`, token)
+    API.get(
+        `secure/feed/post/shares?entityId=${entityId}&entityType=${entityType}`,
+        token
+    )
         .then((res) => {
             if (res.status === 200) {
-                return onSuccess(res);
+                return onSuccess(res)
             }
-            return onError(res);
+            return onError(res)
         })
         .catch((err) => {
-            onError(err);
-        });
+            onError(err)
+        })
 }
 
 const constructTags = (tags, content) => {
     return tags.map((t) => {
-        const { startIndex, endIndex, user } = t;
-        const tagText = content.slice(startIndex, endIndex);
-        const tagReg = `\\B@${tagText}`;
+        const { startIndex, endIndex, user } = t
+        const tagText = content.slice(startIndex, endIndex)
+        const tagReg = `\\B@${tagText}`
         return {
             tagText,
             tagReg,
             startIndex,
             endIndex,
-            user
-        };
-    });
-};
+            user,
+        }
+    })
+}
 
 export const fetchPostDrafts = async () => {
     try {
-        const drafts = await AsyncStorage.getItem(DRAFTS);
-        if (drafts) return JSON.parse(drafts);
+        const drafts = await AsyncStorage.getItem(DRAFTS)
+        if (drafts) return JSON.parse(drafts)
     } catch (error) {
-        console.warn(`${DEBUG_KEY}: [ fetchPostDrafts ] failed with err: `, err);
+        console.warn(`${DEBUG_KEY}: [ fetchPostDrafts ] failed with err: `, err)
     }
-    return [];
+    return []
 }
 
 export const savePostDrafts = async (drafts = []) => {
     try {
-        await AsyncStorage.setItem(DRAFTS, JSON.stringify(drafts));
+        await AsyncStorage.setItem(DRAFTS, JSON.stringify(drafts))
     } catch (error) {
-        console.warn(`${DEBUG_KEY}: [ savePostDrafts ] failed with err: `, err);
-        throw error;
+        console.warn(`${DEBUG_KEY}: [ savePostDrafts ] failed with err: `, err)
+        throw error
     }
 }
