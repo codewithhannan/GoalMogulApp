@@ -65,6 +65,7 @@ import DelayedButton from '../../Common/Button/DelayedButton'
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 
 import defaultGroupPic from '../../../asset/utils/defaultSelfUserProfile.png'
+import ToggleField from '../../Common/ToggleField'
 const { InfoIcon } = Icons
 
 const { width } = Dimensions.get('window')
@@ -547,6 +548,17 @@ class CreateChatroomModal extends React.Component {
 
     renderGroupChatToggles() {
         return (
+            <ToggleField
+                label="Publicly Visible"
+                checked={this.props.isPublic}
+                onCheckedChange={(switchValue) => {
+                    this.setState({ switchValue })
+                    this.props.change('isPublic', !this.props.isPublic)
+                }}
+            />
+        )
+        /*
+        return (
             <View>
                 <View style={styles.toggle}>
                     <Text style={styles.switchLabel}>Publicly Visible</Text>
@@ -606,6 +618,7 @@ class CreateChatroomModal extends React.Component {
                 </View>
             </View>
         )
+        */
     }
 
     render() {

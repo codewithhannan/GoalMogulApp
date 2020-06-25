@@ -15,16 +15,26 @@
 
 import React from 'react'
 import { StyleSheet } from 'react-native'
-import { Layout, Text } from '@ui-kitten/components'
+import { Layout, Text, Toggle } from '@ui-kitten/components'
 
-function ToggleField({ label }) {
+function ToggleField(props) {
+    const { label, checked, children, onCheckedChange, style } = props
     return (
-        <Layout>
+        <Layout style={[styles.container, style]} {...props}>
             <Text>{label}</Text>
+            {children}
+            <Toggle checked={checked} onCheckedChange={onCheckedChange} />
         </Layout>
     )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+})
 
 export default ToggleField
