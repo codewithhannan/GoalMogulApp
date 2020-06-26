@@ -84,6 +84,7 @@ import { RemoveComponent } from '../../Goal/GoalDetailCard/SuggestionPreview'
 import ChatRoomLoaderOverlay from '../Modals/ChatRoomLoaderOverlay'
 import GMGiftedChatBubble from './GiftedChat/GMGiftedChatBubble'
 import ChatRoomConversationInputToolbar from './GiftedChat/GMGiftedChatInputToolbar'
+import { Layout } from '@ui-kitten/components'
 
 const DEBUG_KEY = '[ UI ChatRoomConversation ]'
 const LISTENER_KEY = 'ChatRoomConversation'
@@ -159,6 +160,7 @@ class ChatRoomConversation extends React.Component {
             ),
         }
     }
+
     componentDidUpdate(prevPros) {
         const { userId } = this.props
         // if we change chat rooms, switch rooms accordingly and re-initialize the component
@@ -214,6 +216,7 @@ class ChatRoomConversation extends React.Component {
             )
         }
     }
+
     componentWillUnmount() {
         const { chatRoomId, userId } = this.props
         if (!chatRoomId) return
@@ -903,7 +906,7 @@ class ChatRoomConversation extends React.Component {
         const { _id, name, profile } = this.props.user
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                <View style={styles.homeContainerStyle}>
+                <Layout style={styles.homeContainerStyle}>
                     {this.props.showInitialLoader ? (
                         <ChatRoomLoaderOverlay />
                     ) : null}
@@ -1025,7 +1028,7 @@ class ChatRoomConversation extends React.Component {
                             </View>
                         </Animated.View>
                     )}
-                </View>
+                </Layout>
             </MenuProvider>
         )
     }
@@ -1122,7 +1125,6 @@ export default connect(mapStateToProps, {
 
 const styles = {
     homeContainerStyle: {
-        backgroundColor: '#f8f8f8',
         flex: 1,
         // shadowColor: '#000',
         // shadowOffset: { width: 0, height: 1 },
