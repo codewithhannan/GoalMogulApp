@@ -328,7 +328,7 @@ class ChatRoomConversation extends React.Component {
     }
 
     openOptions() {
-        Actions.push('chatRoomOptions')
+        Actions.push('groupChatInfo')
     }
     closeConversation() {
         Actions.pop()
@@ -928,10 +928,10 @@ class ChatRoomConversation extends React.Component {
                             tintColor: '#21364C',
                         }}
                         actionTextStyle={{
-                            color: '#21364C',
+                            color: '#fff',
                         }}
                         titleTextStyle={{
-                            color: '#21364C',
+                            color: '#fff',
                         }}
                     />
                     <GiftedChat

@@ -22,6 +22,7 @@ import ChatRoomConversation from './Main/Chat/ChatRoom/ChatRoomConversation'
 import ChatRoomMembers from './Main/Chat/ChatRoom/ChatRoomMembers'
 import ChatRoomMessageSearch from './Main/Chat/ChatRoom/ChatRoomMessageSearch'
 import ChatRoomOptions from './Main/Chat/ChatRoom/ChatRoomOptions'
+import GroupChatInfo from './Main/Chat/ChatRoom/GroupChatInfo'
 import ChatRoomPubicView from './Main/Chat/ChatRoom/ChatRoomPublicView'
 import ChatMessageSnapshotModal from './Main/Chat/Modals/ChatMessageSnapshotModal'
 import CreateChatRoomModal from './Main/Chat/Modals/CreateChatRoomModal'
@@ -1014,6 +1015,10 @@ class RouterComponent extends Component {
                                             <Scene
                                                 key="chatRoomOptions"
                                                 component={ChatRoomOptions}
+                                            />
+                                            <Scene
+                                                key="groupChatInfo"
+                                                component={GroupChatInfo}
                                             />
                                             <Scene
                                                 key="chatRoomMembers"
