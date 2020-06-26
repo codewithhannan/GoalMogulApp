@@ -13,8 +13,16 @@
  * @see https://akveo.github.io/react-native-ui-kitten/docs/
  */
 
-import React from 'react'
-import { Text, Input, Layout, withStyles } from '@ui-kitten/components'
+import React, { useState } from 'react'
+import {
+    Text,
+    Input,
+    Layout,
+    withStyles,
+    Menu,
+    MenuItem,
+    Icon,
+} from '@ui-kitten/components'
 import { Actions } from 'react-native-router-flux'
 import { MenuProvider } from 'react-native-popup-menu'
 import { ScrollView, StyleSheet } from 'react-native'
@@ -22,6 +30,16 @@ import { ScrollView, StyleSheet } from 'react-native'
 import ModalHeader from '../../Common/Header/ModalHeader'
 import { Divider } from 'react-native-elements'
 
+// Icons
+function ForwardIcon(props) {
+    return <Icon {...props} name="arrow-ios-forward" />
+}
+
+function BellIcon(props) {
+    return <Icon {...props} name="bell-outline" />
+}
+
+// Sections
 function BasicInfoSection() {
     return (
         <Input
@@ -30,6 +48,24 @@ function BasicInfoSection() {
             size="large"
             style={styles.input}
         />
+    )
+}
+
+function NotificationSection() {
+    const [selected, setSelected] = useState(false)
+
+    return (
+        <Menu style={styles.menu}>
+            <MenuItem
+                title={() => <Text category="h6">Notification</Text>}
+                accessoryRight={ForwardIcon}
+                // TODO replace the following two attributes
+                //  when wiring up functionalities
+                selected={selected}
+                onPress={() => setSelected(true)}
+                style={styles.menuItem}
+            />
+        </Menu>
     )
 }
 
@@ -63,6 +99,7 @@ class GroupChatInfo extends React.Component {
                         <Layout style={styles.formContainer}>
                             <BasicInfoSection />
                             <Divider />
+                            <NotificationSection />
                         </Layout>
                     </ScrollView>
                 </Layout>
@@ -105,6 +142,13 @@ const styles = StyleSheet.create({
     formContainer: {},
     input: {
         padding: 16,
+    },
+    menu: {
+        marginVertical: 16,
+    },
+    menuItem: {
+        paddingVertical: 16,
+        paddingLeft: 24,
     },
 })
 
