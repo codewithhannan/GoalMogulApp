@@ -20,6 +20,18 @@ import { MenuProvider } from 'react-native-popup-menu'
 import { ScrollView, StyleSheet } from 'react-native'
 
 import ModalHeader from '../../Common/Header/ModalHeader'
+import { Divider } from 'react-native-elements'
+
+function BasicInfoSection() {
+    return (
+        <Input
+            label="*Group Message Name"
+            placeholder="Enter a name for this group"
+            size="large"
+            style={styles.input}
+        />
+    )
+}
 
 class GroupChatInfo extends React.Component {
     /**
@@ -49,10 +61,8 @@ class GroupChatInfo extends React.Component {
                     />
                     <ScrollView style={styles.container}>
                         <Layout style={styles.formContainer}>
-                            <Input
-                                label="Group Message Name"
-                                placeholder="Enter a name for this group"
-                            />
+                            <BasicInfoSection />
+                            <Divider />
                         </Layout>
                     </ScrollView>
                 </Layout>
@@ -92,7 +102,8 @@ const styles = StyleSheet.create({
     modalTitleText: {
         color: '#fff',
     },
-    formContainer: {
+    formContainer: {},
+    input: {
         padding: 16,
     },
 })
