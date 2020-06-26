@@ -11,6 +11,7 @@ import { View, Image, Text } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 import bulbIcon from '../../../asset/icons/bulb.png'
+import { DEFAULT_STYLE, GM_BLUE } from '../../../styles'
 
 class MyTribeBanner extends React.PureComponent {
     constructor(props) {
@@ -19,27 +20,19 @@ class MyTribeBanner extends React.PureComponent {
 
     render() {
         return (
-            <View style={{ ...styles.containerStyle }}>
-                <View style={{ ...styles.imageContainer }}>
-                    <Image
-                        style={{ ...styles.imageStyle }}
-                        source={bulbIcon}
-                    ></Image>
+            <View style={styles.containerStyle}>
+                <View style={styles.imageContainer}>
+                    <Image style={styles.imageStyle} source={bulbIcon}></Image>
                 </View>
-
-                <View style={{ ...styles.aboutContainer }}>
-                    <Text style={{ ...styles.header }}>
-                        Get tips and suggestions
-                    </Text>
-
-                    <Text style={{ ...styles.copy }}>
+                <View style={styles.aboutContainer}>
+                    <Text style={styles.header}>Get tips and suggestions</Text>
+                    <Text style={styles.copy}>
                         By sharing your goals to the selected tribe, you can
                         recieve tips and suggestions even faster.
                     </Text>
-
-                    {/* Add your onClick handler here, for the share your goal button. */}
+                    {/* TODO: Add your onClick handler here, for the share your goal button. */}
                     <TouchableOpacity>
-                        <Text style={{ ...styles.link }}>Share your goal</Text>
+                        <Text style={styles.link}>Share your goal</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -52,34 +45,32 @@ export default connect()(MyTribeBanner)
 const styles = {
     containerStyle: {
         flexDirection: 'row',
-        backgroundColor: '#fff',
-        marginBottom: 10,
+        backgroundColor: 'white',
+        marginTop: 8,
+        marginBottom: 8,
+        marginLeft: 16,
+        marginRight: 16,
+        borderRadius: 5,
     },
     aboutContainer: {
         padding: 20,
-        paddingLeft: 0,
-        flex: 3,
     },
     header: {
-        fontSize: 16,
+        ...DEFAULT_STYLE.titleText_1,
         marginBottom: 8,
-        fontWeight: '700',
     },
-    copy: {
-        fontSize: 14,
-    },
+    copy: DEFAULT_STYLE.normalText_1,
     imageStyle: {
-        margin: 5,
-        width: 50,
-        height: 50,
+        width: 40 * DEFAULT_STYLE.uiScale,
+        height: 40 * DEFAULT_STYLE.uiScale,
     },
     imageContainer: {
-        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        marginLeft: 16,
     },
     link: {
         marginTop: 12,
-        color: '#42C0F5',
+        color: GM_BLUE,
     },
 }

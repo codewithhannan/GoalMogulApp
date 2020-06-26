@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Text, View } from 'react-native'
+import { DEFAULT_STYLE } from '../../../styles'
 
 const EmptyResult = (props) => {
     const { textStyle, containerStyle } = props
@@ -16,13 +17,11 @@ const EmptyResult = (props) => {
 
 const styles = {
     containerStyle: {
-        flex: 1,
         alignItems: 'center',
     },
     textStyle: {
+        ...DEFAULT_STYLE.subTitleText_1,
         paddingTop: 150,
-        fontSize: 17,
-        fontWeight: '600',
         color: '#818181',
     },
 }

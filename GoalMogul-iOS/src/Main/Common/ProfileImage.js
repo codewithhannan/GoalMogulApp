@@ -55,13 +55,10 @@ class ProfileImage extends React.Component {
         else if (imageStyle) defaultImageStyle = { ...imageStyle }
         else defaultImageStyle = DEFAULT_STYLE.profileImage_2
 
-        const defaultImageContainerStyle = this.props
-            .defaultImageContainerStyle ||
-            imageContainerStyle || {
-                ...styles.imageContainerStyle,
-                borderColor: '#BDBDBD',
-                borderWidth: 1,
-            }
+        const defaultImageContainerStyle =
+            this.props.defaultImageContainerStyle ||
+            imageContainerStyle ||
+            styles.imageContainerStyle
 
         if (imageUrl) {
             imageUrl =
@@ -110,12 +107,12 @@ const setValue = (value) => ({
 
 const styles = {
     imageContainerStyle: {
-        borderWidth: 0.5,
-        borderColor: 'lightgray',
         alignItems: 'center',
         borderRadius: 100,
         alignSelf: 'flex-start',
         backgroundColor: 'white',
+        borderColor: '#BDBDBD',
+        borderWidth: 1,
     },
 }
 

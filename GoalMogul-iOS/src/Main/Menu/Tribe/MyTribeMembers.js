@@ -85,7 +85,7 @@ class MyTribeMembers extends React.PureComponent {
                 <View>
                     <SearchBarHeader
                         backButton
-                        onBackPress={() => this._handleIndexChange(1)} // componentWillUnmount takes care of the state cleaning
+                        onBackPress={() => Actions.pop()} // componentWillUnmount takes care of the state cleaning
                         pageSetting
                         handlePageSetting={() => this.handlePageSetting(item)}
                     />
@@ -98,7 +98,6 @@ class MyTribeMembers extends React.PureComponent {
                         }}
                     />
                 </View>
-
                 <View style={styles.containerStyle}>
                     <FlatList
                         ref="flatList"
@@ -106,7 +105,6 @@ class MyTribeMembers extends React.PureComponent {
                         renderItem={this.renderItem}
                         keyExtractor={(i) => i._id}
                     />
-                    <Text>test test test</Text>
                 </View>
             </MenuProvider>
         )
