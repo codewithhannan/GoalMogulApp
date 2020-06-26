@@ -8,7 +8,7 @@
  */
 
 import React from 'react'
-import { FlatList, Animated, ScrollView, View } from 'react-native'
+import { FlatList, Animated } from 'react-native'
 import DraggableFlatList from 'react-native-draggable-flatlist'
 import { connect } from 'react-redux'
 import _ from 'lodash'
@@ -57,15 +57,27 @@ class CentralTab extends React.PureComponent {
         }
     }
 
+    scrollToIndex = (index, viewOffset = 0, animated = true) => {
+        // Set timeout so keyboard pops up before autoscroll begins to ensure proper scrolling
+        setTimeout(() => {
+            this.flatlist.getNode().scrollToIndex({
+                index,
+                animated,
+                viewPosition: 1,
+                viewOffset
+            });
+        }, 200)
+    }
+
     keyExtractor = (item) => {
         const { _id } = item
         return _id
     }
 
     renderItem = (props) => {
-        const { goalDetail, pageId } = this.props
-        const { item } = props
-        if (!goalDetail) return null
+        const { goalDetail, pageId } = this.props;
+        const { item, index } = props;
+        if (!goalDetail) return null;
 
         let newCommentParams = {
             commentDetail: {
@@ -109,75 +121,56 @@ class CentralTab extends React.PureComponent {
                 pageId={pageId}
                 drag={props.drag}
                 isActive={props.isActive}
+                onEdit={() => { this.scrollToIndex(index) }}
             />
         )
     }
 
     render() {
-        const { data, isSelf, goalDetail, pageId, topOffset } = this.props
+        const { data, isSelf, goalDetail, pageId, bottomOffset, onScroll, contentContainerStyle } = this.props;
 
-        if (isSelf) {
-            return (
-                <DraggableFlatList
-                    {...this.props}
-                    data={data}
-                    renderItem={this.renderItem}
-                    keyExtractor={this.keyExtractor}
-                    refreshing={this.props.loading || false}
-                    onRefresh={this.handleRefresh}
-                    ListEmptyComponent={
-                        this.props.loading ? null : (
-                            <EmptyResult
-                                text="No steps or needs"
-                                textStyle={{ paddingTop: 70 }}
-                            />
-                        )
-                    }
-                    onDragEnd={(e) => {
-                        let type = 'needs'
-                        let to = e.to
-                        let from = e.from
+        const list = isSelf ? <DraggableFlatList
+            ref={ref => { if (ref && ref.containerRef) this.flatlist = ref.flatlistRef.current }}
+            contentContainerStyle={contentContainerStyle}
+            data={data}
+            renderItem={this.renderItem}
+            keyExtractor={this.keyExtractor}
+            refreshing={this.props.loading || false}
+            onRefresh={this.handleRefresh}
+            ListEmptyComponent={
+                this.props.loading ? null :
+                    <EmptyResult
+                        text='No steps or needs'
+                        textStyle={{ paddingTop: 70 }}
+                    />
+            }
+            onDragEnd={e => {
+                let type = 'needs';
+                let to = e.to; let from = e.from;
 
-                        // Find the type of item to be swapped
-                        if (e.from <= goalDetail.steps.length) {
-                            to -= 1
-                            from -= 1
-                            type = 'steps'
-                        } else {
-                            to -= 2 + goalDetail.steps.length
-                            from -= 2 + goalDetail.steps.length
-                        }
+                // Find the type of item to be swapped and it's index
+                if (e.from <= goalDetail.steps.length) {
+                    to -= 1; from -= 1;
+                    type = 'steps';
+                } else {
+                    to -= (2 + goalDetail.steps.length);
+                    from -= (2 + goalDetail.steps.length);
+                }
 
-                        // Return if user is trying move steps/needs in wrong place
-                        if (
-                            e.to === e.from ||
-                            e.to === 0 ||
-                            (type === 'steps' &&
-                                e.to > goalDetail.steps.length) ||
-                            (type === 'needs' &&
-                                e.to <= goalDetail.steps.length + 1)
-                        )
-                            return
-                        const item = this.props.data.splice(e.from, 1)
-                        this.props.data.splice(e.to, 0, item)
-                        this.props.updateGoalItemsOrder(
-                            type,
-                            from,
-                            to,
-                            goalDetail,
-                            pageId
-                        )
-                    }}
-                    contentContainerStyle={{
-                        flexGrow: 1,
-                        paddingTop: topOffset,
-                    }}
-                />
-            )
-        }
-        return (
-            <AnimatedFlatList
-                {...this.props}
+                // Return if user is trying move steps/needs in wrong place
+                if (e.to === e.from || e.to === 0 || (type === 'steps' && e.to > goalDetail.steps.length) ||
+                    (type === 'needs' && e.to <= goalDetail.steps.length + 1)) return;
+
+                const item = this.props.data.splice(e.from, 1);
+                this.props.data.splice(e.to, 0, item);
+                this.props.updateGoalItemsOrder(type, from, to, goalDetail, pageId);
+            }}
+            onScrollOffsetChange={onScroll}
+            scrollEventThrottle={2}
+        /> : <AnimatedFlatList
+                ref={ref => { this.flatlist = ref }}
+                onScroll={onScroll}
+                contentContainerStyle={contentContainerStyle}
                 data={data}
                 renderItem={this.renderItem}
                 keyExtractor={this.keyExtractor}
@@ -191,10 +184,14 @@ class CentralTab extends React.PureComponent {
                         />
                     )
                 }
-                contentContainerStyle={{ flexGrow: 1, paddingTop: topOffset }}
                 scrollEventThrottle={2}
-            />
-        )
+            />;
+
+        return (
+            <Animated.View style={{ flex: 1, marginBottom: bottomOffset }}>
+                {list}
+            </Animated.View>
+        );
     }
 }
 

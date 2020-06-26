@@ -318,7 +318,7 @@ class ProfileDetailEditForm extends Component {
                             name="profile.about"
                             label="About"
                             component={this.renderInput}
-                            limitation={250}
+                            limitation={500}
                             disabled={uploading}
                             multiline
                             autoCorrect
@@ -342,8 +342,8 @@ const validValues = ({ headline, about, elevatorPitch }) => {
         return false
     }
 
-    if (about && about.length > 250) {
-        return false
+    if (about && about.length > 500) {
+        return false;
     }
 
     if (elevatorPitch && elevatorPitch.length > 250) {

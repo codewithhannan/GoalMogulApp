@@ -22,10 +22,11 @@ import DelayedButton from '../../Common/Button/DelayedButton'
 
 // Actions
 import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions'
-
 import { updateGoal } from '../../../redux/modules/goal/GoalDetailActions'
+
 import { decode } from '../../../redux/middleware/utils'
 import { GM_BLUE, DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles'
+import { TABBAR_HEIGHT } from '../../../styles/Goal'
 
 // Constants
 const DEBUG_KEY = '[ UI GoalCard.Need/Step SectionCardV2 ]'
@@ -277,6 +278,7 @@ class SectionCardV2 extends Component {
             >
                 {isSelf === true && !isCommentFocused ? (
                     <TextInput
+                        scrollEnabled={false}
                         ref={(ref) => (this.input = ref)}
                         style={{
                             ...textStyle,
@@ -286,7 +288,10 @@ class SectionCardV2 extends Component {
                                 : styles.backgroundColor,
                         }}
                         value={this.state.textValue}
-                        onFocus={() => this.setState({ isInputFocused: true })}
+                        onFocus={() => {
+                            this.setState({ isInputFocused: true });
+                            if (this.props.onEdit) this.props.onEdit();
+                        }}
                         onBlur={() => this.setState({ isInputFocused: false })}
                         onChangeText={(text) =>
                             this.setState({ textValue: text })
@@ -383,15 +388,15 @@ class SectionCardV2 extends Component {
             return renderEmptyState(emptyText)
         }
 
-        const { description, isCompleted } = itemToRender
+        const { description, isCompleted } = itemToRender;
         const containerStyle = isCommentFocused
             ? {
-                  paddingTop: 0,
-                  paddingBottom: 0,
-                  minHeight: 40 * DEFAULT_STYLE.uiScale,
-                  alignItems: 'center',
-              }
-            : { backgroundColor: isActive ? '#F2F2F2' : styles.backgroundColor }
+                paddingTop: 0,
+                paddingBottom: 0,
+                minHeight: TABBAR_HEIGHT,
+                alignItems: 'center'
+            }
+            : { backgroundColor: isActive ? '#F2F2F2' : styles.backgroundColor };
 
         return (
             <DelayedButton
@@ -408,22 +413,19 @@ class SectionCardV2 extends Component {
                     {this.renderTextStuff(isCommentFocused, description)}
                     {!isCommentFocused && this.renderActionIcons()}
                 </View>
-                {drag && (
-                    <TouchableOpacity
-                        onLongPress={drag}
-                        onPressOut={drag}
-                        style={styles.gestureHandlerContainer}
-                    >
-                        <Image
-                            source={menu}
-                            resizeMode="contain"
-                            style={{
-                                ...DEFAULT_STYLE.buttonIcon_1,
-                                tintColor: '#AAA',
-                            }}
-                        />
-                    </TouchableOpacity>
-                )}
+                {drag && <TouchableOpacity
+                    onLongPress={drag}
+                    style={styles.gestureHandlerContainer}
+                >
+                    <Image
+                        source={menu}
+                        resizeMode="contain"
+                        style={{
+                            ...DEFAULT_STYLE.buttonIcon_1,
+                            tintColor: '#AAA'
+                        }}
+                    />
+                </TouchableOpacity>}
             </DelayedButton>
         )
     }
@@ -484,19 +486,15 @@ const styles = {
         tintColor: 'white',
     },
     gestureHandlerContainer: {
-        backgroundColor: '#F5F7FA',
-        borderWidth: 1,
-        borderRadius: 8,
-        borderColor: '#DFE0E1',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 4,
         paddingRight: 6,
         margin: -10,
-        marginRight: -18,
-        marginLeft: 8,
-    },
-}
+        marginRight: -12,
+        marginLeft: 0
+    }
+};
 
 export default connect(null, {
     chooseShareDest,
