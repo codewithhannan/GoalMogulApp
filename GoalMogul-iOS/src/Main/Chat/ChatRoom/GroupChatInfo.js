@@ -30,6 +30,7 @@ import { ScrollView, StyleSheet } from 'react-native'
 
 import ModalHeader from '../../Common/Header/ModalHeader'
 import ToggleField from '../../Common/ToggleField'
+import { add } from 'lodash'
 
 // Icons
 function ForwardIcon(props) {
@@ -69,8 +70,52 @@ function NotificationSection() {
                 />
             </Menu>
             <Layout style={styles.formContainer}>
-                <ToggleField label={<Text>Mute Channel</Text>} checked={true} />
+                <ToggleField
+                    label={<Text category="h6">Mute Channel</Text>}
+                    checked={true}
+                />
             </Layout>
+        </>
+    )
+}
+
+function OtherSettingsSection() {
+    // TODO update this
+    const [manageMembersSelected, setManagedMembersSelected] = useState(false)
+    const [addSomeoneSelected, setAddSomeoneSelected] = useState(false)
+    const [leaveSelected, setLeaveSelected] = useState(false)
+
+    return (
+        <>
+            <Menu style={styles.menu}>
+                <MenuItem
+                    title={() => <Text category="h6">Manage Members</Text>}
+                    accessoryRight={ForwardIcon}
+                    // TODO replace the following two attributes
+                    //  when wiring up functionalities
+                    selected={manageMembersSelected}
+                    onPress={() => setManagedMembersSelected(true)}
+                    style={styles.menuItem}
+                />
+                <MenuItem
+                    title={() => <Text category="h6">Add Someone</Text>}
+                    accessoryRight={ForwardIcon}
+                    // TODO replace the following two attributes
+                    //  when wiring up functionalities
+                    selected={addSomeoneSelected}
+                    onPress={() => setAddSomeoneSelected(true)}
+                    style={styles.menuItem}
+                />
+                <MenuItem
+                    title={() => <Text category="h6">Leave Group Message</Text>}
+                    accessoryRight={ForwardIcon}
+                    // TODO replace the following two attributes
+                    //  when wiring up functionalities
+                    selected={leaveSelected}
+                    onPress={() => setLeaveSelected(true)}
+                    style={styles.menuItem}
+                />
+            </Menu>
         </>
     )
 }
@@ -106,6 +151,8 @@ class GroupChatInfo extends React.Component {
                             <BasicInfoSection />
                             <Divider />
                             <NotificationSection />
+                            <Divider />
+                            <OtherSettingsSection />
                         </Layout>
                     </ScrollView>
                 </Layout>
@@ -153,7 +200,7 @@ const styles = StyleSheet.create({
     },
     menuItem: {
         paddingVertical: 16,
-        paddingLeft: 24,
+        paddingLeft: 16,
     },
 })
 
