@@ -21,6 +21,7 @@ import {
     withStyles,
     Menu,
     MenuItem,
+    Divider,
     Icon,
 } from '@ui-kitten/components'
 import { Actions } from 'react-native-router-flux'
@@ -28,7 +29,7 @@ import { MenuProvider } from 'react-native-popup-menu'
 import { ScrollView, StyleSheet } from 'react-native'
 
 import ModalHeader from '../../Common/Header/ModalHeader'
-import { Divider } from 'react-native-elements'
+import ToggleField from '../../Common/ToggleField'
 
 // Icons
 function ForwardIcon(props) {
@@ -46,7 +47,7 @@ function BasicInfoSection() {
             label="*Group Message Name"
             placeholder="Enter a name for this group"
             size="large"
-            style={styles.input}
+            style={styles.formContainer}
         />
     )
 }
@@ -55,17 +56,22 @@ function NotificationSection() {
     const [selected, setSelected] = useState(false)
 
     return (
-        <Menu style={styles.menu}>
-            <MenuItem
-                title={() => <Text category="h6">Notification</Text>}
-                accessoryRight={ForwardIcon}
-                // TODO replace the following two attributes
-                //  when wiring up functionalities
-                selected={selected}
-                onPress={() => setSelected(true)}
-                style={styles.menuItem}
-            />
-        </Menu>
+        <>
+            <Menu style={styles.menu}>
+                <MenuItem
+                    title={() => <Text category="h6">Notification</Text>}
+                    accessoryRight={ForwardIcon}
+                    // TODO replace the following two attributes
+                    //  when wiring up functionalities
+                    selected={selected}
+                    onPress={() => setSelected(true)}
+                    style={styles.menuItem}
+                />
+            </Menu>
+            <Layout style={styles.formContainer}>
+                <ToggleField label={<Text>Mute Channel</Text>} checked={true} />
+            </Layout>
+        </>
     )
 }
 
@@ -96,7 +102,7 @@ class GroupChatInfo extends React.Component {
                         titleTextStyle={styles.modalTitleText}
                     />
                     <ScrollView style={styles.container}>
-                        <Layout style={styles.formContainer}>
+                        <Layout>
                             <BasicInfoSection />
                             <Divider />
                             <NotificationSection />
@@ -139,12 +145,11 @@ const styles = StyleSheet.create({
     modalTitleText: {
         color: '#fff',
     },
-    formContainer: {},
-    input: {
+    formContainer: {
         padding: 16,
     },
     menu: {
-        marginVertical: 16,
+        marginTop: 16,
     },
     menuItem: {
         paddingVertical: 16,

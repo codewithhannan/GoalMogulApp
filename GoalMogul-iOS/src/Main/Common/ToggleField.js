@@ -19,7 +19,7 @@ import { Layout, Text, Toggle } from '@ui-kitten/components'
 
 /**
  * REQUIRED PROPS:
- * * string     label
+ * * component  label
  * * boolean    checked
  *
  * OPTIONAL PROPS:
@@ -31,7 +31,7 @@ function ToggleField(props) {
     return (
         <Layout style={[styles.container, style]} {...props}>
             <Layout style={styles.label}>
-                <Text>{label}</Text>
+                {label}
                 {children}
             </Layout>
             <Toggle checked={checked} onCheckedChange={onCheckedChange} />
@@ -41,7 +41,6 @@ function ToggleField(props) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',

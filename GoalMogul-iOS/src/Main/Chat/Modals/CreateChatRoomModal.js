@@ -561,7 +561,7 @@ class CreateChatroomModal extends React.Component {
         return (
             <>
                 <ToggleField
-                    label="Publicly Visible"
+                    label={<Text>Publicly Visible</Text>}
                     checked={this.props.isPublic}
                     onCheckedChange={(switchValue) => {
                         this.setState({ switchValue })
@@ -576,7 +576,7 @@ class CreateChatroomModal extends React.Component {
                     </TouchableOpacity>
                 </ToggleField>
                 <ToggleField
-                    label="Members can invite their friends"
+                    label={<Text>Members can invite their friends</Text>}
                     checked={this.props.membersCanAdd}
                     onCheckedChange={(switchValue2) => {
                         this.setState({ switchValue2 })
