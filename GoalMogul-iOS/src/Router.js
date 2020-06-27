@@ -106,7 +106,27 @@ import { OnboardingFbPlugin } from './Main/Onboarding'
 import SplashScreen from './SplashScreen'
 import Tutorial from './Tutorial/Tutorial'
 import UserInviteModal from './Main/Common/Modal/UserInviteModal'
-import { trackViewScreen } from './monitoring/segment'
+import * as analytics from './monitoring/segment'
+
+function wrapAnalytics(Comp, screenName) {
+    return class AnalyticsWrapped extends Component {
+        componentDidMount() {
+            this.startTime = new Date()
+            analytics.trackScreenWithProps(screenName, { Action: 'Open' })
+        }
+        componentWillUnmount() {
+            const duration =
+                (new Date().getTime() - this.startTime.getTime()) / 1000
+            analytics.trackScreenWithProps(screenName, {
+                Action: 'Close',
+                DurationSec: duration,
+            })
+        }
+        render() {
+            return <Comp {...this.props} {...this.state} />
+        }
+    }
+}
 
 class RouterComponent extends Component {
     onTabPress = (all) => {
@@ -178,7 +198,7 @@ class RouterComponent extends Component {
 
     stateHandler = (prevState, newState, action) => {
         if (action && action.routeName) {
-            trackViewScreen(action.routeName)
+            // trackViewScreen(action.routeName)
         }
         // console.log('newState is: ', newState);
     }
@@ -252,7 +272,13 @@ class RouterComponent extends Component {
                                     component={SplashScreen}
                                     initial
                                 />
-                                <Scene key="login" component={LoginPage} />
+                                <Scene
+                                    key="login"
+                                    component={wrapAnalytics(
+                                        LoginPage,
+                                        analytics.SCREENS.LOGIN_PAGE
+                                    )}
+                                />
                                 <Scene
                                     key="registrationAccount"
                                     component={RegistrationAccount}
@@ -356,126 +382,234 @@ class RouterComponent extends Component {
                                             <Scene
                                                 key="home"
                                                 initial
-                                                component={Home}
+                                                component={wrapAnalytics(
+                                                    Home,
+                                                    analytics.SCREENS.HOME
+                                                )}
                                             />
 
                                             <Scene
                                                 key="goal"
-                                                component={GoalDetailCard}
+                                                component={wrapAnalytics(
+                                                    GoalDetailCard,
+                                                    analytics.SCREENS
+                                                        .GOAL_DETAIL
+                                                )}
                                             />
                                             <Scene
                                                 key="post"
-                                                component={PostDetailCard}
+                                                component={wrapAnalytics(
+                                                    PostDetailCard,
+                                                    analytics.SCREENS
+                                                        .POST_DETAIL
+                                                )}
                                             />
                                             <Scene
                                                 key="share"
-                                                component={ShareDetailCard}
+                                                component={wrapAnalytics(
+                                                    ShareDetailCard,
+                                                    analytics.SCREENS
+                                                        .SHARE_DETAIL
+                                                )}
                                             />
                                             <Scene
                                                 key="profile"
-                                                component={Profile}
+                                                component={wrapAnalytics(
+                                                    Profile,
+                                                    analytics.SCREENS.PROFILE
+                                                )}
                                             />
                                             <Scene
                                                 key="profileDetail"
-                                                component={ProfileDetail}
+                                                component={wrapAnalytics(
+                                                    ProfileDetail,
+                                                    analytics.SCREENS
+                                                        .PROFILE_DETAIL
+                                                )}
                                             />
 
                                             <Scene
                                                 key="myEventTab"
-                                                component={MyEventTab}
+                                                component={wrapAnalytics(
+                                                    MyEventTab,
+                                                    analytics.SCREENS.EVENT_TAB
+                                                )}
                                             />
                                             <Scene
                                                 key="myEventDetail"
-                                                component={MyEvent}
+                                                component={wrapAnalytics(
+                                                    MyEvent,
+                                                    analytics.SCREENS
+                                                        .EVENT_DETAIL
+                                                )}
                                             />
 
                                             <Scene
                                                 key="myTribeTab"
-                                                component={MyTribeTab}
+                                                component={wrapAnalytics(
+                                                    MyTribeTab,
+                                                    analytics.SCREENS.TRIBE_TAB
+                                                )}
                                             />
                                             <Scene
                                                 key="myTribeDetail"
-                                                component={MyTribe}
+                                                component={wrapAnalytics(
+                                                    MyTribe,
+                                                    analytics.SCREENS
+                                                        .TRIBE_DETAIL
+                                                )}
                                             />
 
                                             <Scene
                                                 key="setting"
-                                                component={Setting}
+                                                component={wrapAnalytics(
+                                                    Setting,
+                                                    analytics.SCREENS.SETTING
+                                                )}
                                             />
                                             <Scene
                                                 key="email"
-                                                component={Email}
+                                                component={wrapAnalytics(
+                                                    Email,
+                                                    analytics.SCREENS.EMAIL
+                                                )}
                                             />
                                             <Scene
                                                 key="editEmailForm"
-                                                component={EditEmailForm}
+                                                component={wrapAnalytics(
+                                                    EditEmailForm,
+                                                    analytics.SCREENS
+                                                        .EDIT_EMAIL_FORM
+                                                )}
                                             />
                                             <Scene
                                                 key="editPasswordForm"
-                                                component={EditPasswordForm}
+                                                component={wrapAnalytics(
+                                                    EditPasswordForm,
+                                                    analytics.SCREENS
+                                                        .EDIT_PWD_FORM
+                                                )}
                                             />
                                             <Scene
                                                 key="phone"
-                                                component={Phone}
                                                 path="/phone/verification"
+                                                component={wrapAnalytics(
+                                                    Phone,
+                                                    analytics.SCREENS
+                                                        .PHONE_VERIFICATION
+                                                )}
                                             />
                                             <Scene
                                                 key="addPhoneNumberForm"
-                                                component={AddPhoneNumberForm}
+                                                component={wrapAnalytics(
+                                                    AddPhoneNumberForm,
+                                                    analytics.SCREENS
+                                                        .ADD_PHONE_NUMBER
+                                                )}
                                             />
                                             <Scene
                                                 key="editPhoneNumberForm"
-                                                component={EditPhoneNumberForm}
+                                                component={wrapAnalytics(
+                                                    EditPhoneNumberForm,
+                                                    analytics.SCREENS
+                                                        .EDIT_PHONE_NUMBER
+                                                )}
                                             />
                                             <Scene
                                                 key="friendsBlocked"
-                                                component={FriendsBlocked}
+                                                component={wrapAnalytics(
+                                                    FriendsBlocked,
+                                                    analytics.SCREENS
+                                                        .FRIENDS_BLOCKED
+                                                )}
                                             />
                                             <Scene
                                                 key="privacy"
-                                                component={Privacy}
+                                                component={wrapAnalytics(
+                                                    Privacy,
+                                                    analytics.SCREENS.PRIVACY
+                                                )}
                                             />
                                             <Scene
                                                 key="friendsSetting"
-                                                component={FriendsSetting}
+                                                component={wrapAnalytics(
+                                                    FriendsSetting,
+                                                    analytics.SCREENS
+                                                        .FRIENDS_SETTING
+                                                )}
                                             />
                                             <Scene
                                                 key="chatRoomPublicView"
-                                                component={ChatRoomPubicView}
+                                                component={wrapAnalytics(
+                                                    ChatRoomPubicView,
+                                                    analytics.SCREENS
+                                                        .CHATROOM_PUBLIC_VIEW
+                                                )}
                                             />
                                             <Scene
                                                 key="notification_setting"
-                                                component={NotificationSetting}
+                                                component={wrapAnalytics(
+                                                    NotificationSetting,
+                                                    analytics.SCREENS
+                                                        .NOTIFICATION_SETTING
+                                                )}
                                             />
 
                                             <Scene
                                                 key="searchLightBox"
-                                                component={SearchOverlay}
+                                                component={wrapAnalytics(
+                                                    SearchOverlay,
+                                                    analytics.SCREENS
+                                                        .SEARCH_OVERLAY
+                                                )}
                                             />
 
                                             <Scene
                                                 key="meet"
-                                                component={MeetTab}
+                                                component={wrapAnalytics(
+                                                    MeetTab,
+                                                    analytics.SCREENS.MEET_TAB
+                                                )}
                                             />
                                             <Scene
                                                 key="shareMeetTab"
-                                                component={ShareDetailCard}
+                                                component={wrapAnalytics(
+                                                    ShareDetailCard,
+                                                    analytics.SCREENS
+                                                        .SHARE_MEET_TAB
+                                                )}
                                             />
                                             <Scene
                                                 key="friendTabView"
-                                                component={FriendTabView}
+                                                component={wrapAnalytics(
+                                                    FriendTabView,
+                                                    analytics.SCREENS
+                                                        .FRIEND_TAB_VIEW
+                                                )}
                                             />
                                             <Scene
                                                 key="requestTabView"
-                                                component={RequestTabView}
+                                                component={wrapAnalytics(
+                                                    RequestTabView,
+                                                    analytics.SCREENS
+                                                        .REQUEST_TAB_VIEW
+                                                )}
                                             />
                                             <Scene
                                                 key="discoverTabView"
-                                                component={DiscoverTabView}
+                                                component={wrapAnalytics(
+                                                    DiscoverTabView,
+                                                    analytics.SCREENS
+                                                        .DISCOVER_TAB_VIEW
+                                                )}
                                             />
                                             <Scene
                                                 key="friendInvitationView"
-                                                component={FriendInvitationView}
+                                                component={wrapAnalytics(
+                                                    FriendInvitationView,
+                                                    analytics.SCREENS
+                                                        .FRIEND_INVITATION_VIEW
+                                                )}
                                             />
                                         </Stack>
 
